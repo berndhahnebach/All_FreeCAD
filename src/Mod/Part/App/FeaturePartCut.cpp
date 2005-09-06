@@ -39,18 +39,18 @@ using namespace Part;
 void PartCutFeature::initFeature(void)
 {
 
-  addProperty("Link","First");
-  addProperty("Link","Second");
+  addProperty("Link","Base");
+  addProperty("Link","Tool");
 }
 
 Standard_Integer PartCutFeature::execute(TFunction_Logbook& log)
 {
  
-  PartFeature *pcFirst  = dynamic_cast<PartFeature*>(getPropertyLink("First"));
-  if(pcFirst->getStatus() != Valid)
+  PartFeature *pcFirst  = dynamic_cast<PartFeature*>(getPropertyLink("Base"));
+  if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
-  PartFeature *pcSecond = dynamic_cast<PartFeature*>(getPropertyLink("Second"));
-  if(pcSecond->getStatus() != Valid)
+  PartFeature *pcSecond = dynamic_cast<PartFeature*>(getPropertyLink("Tool"));
+  if(!pcSecond || pcSecond->getStatus() != Valid)
     return 1;
 
   // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:

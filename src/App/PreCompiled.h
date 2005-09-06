@@ -134,6 +134,10 @@
 
 #include <TDF_Reference.hxx>
 
+#include <OSD_Process.hxx>
+
+#include <Quantity_Date.hxx>
+
 //#include <TDataStd_Reference.hxx>
 
 #include <xercesc/util/XercesDefs.hpp>

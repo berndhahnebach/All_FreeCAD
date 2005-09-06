@@ -37,7 +37,7 @@ using namespace Raytracing;
 
 void FeatureRayExportPov::InitLabel(const TDF_Label &rcLabel)
 {
-	Base::Console().Log("PartBoxFeature::InitLabel()\n");
+//	Base::Console().Log("PartBoxFeature::InitLabel()\n");
 
 	AddProperty("Float","x","0.0");
 	AddProperty("Float","y","0.0");

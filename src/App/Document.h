@@ -72,10 +72,10 @@ namespace App
 class AppExport DocChanges
 {
 public:
-  std::vector<Feature*> NewFeatures;
-  std::vector<Feature*> UpdatedFeatures;
-  std::vector<Feature*> ErrorFeatures;
-  std::vector<Feature*> DeletedFeatures;
+  std::set<Feature*> NewFeatures;
+  std::set<Feature*> UpdatedFeatures;
+  std::set<Feature*> ErrorFeatures;
+  std::set<Feature*> DeletedFeatures;
 };
 
 
@@ -165,6 +165,9 @@ public:
 	void PurgeModified();
 	/// Recompute if the document was  not valid and propagate the reccorded modification.
 	void Recompute();
+  /// Recompute only this feature
+  void RecomputeFeature(Feature* Feat);
+
 
 	/** @name methodes for the UNDO REDO handling
 	 *  this methodes are usaly used by the GUI document! Its not intended
@@ -236,6 +239,10 @@ virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Inte
 	friend class Feature;
 
 protected:
+
+  /// helper which Recompute only this feature
+  void _RecomputeFeature(Feature* Feat);
+
 
   TFunction_Logbook &getLogBook(void){return _LogBook;}
 

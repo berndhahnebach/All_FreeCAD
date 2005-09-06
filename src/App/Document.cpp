@@ -240,6 +240,7 @@ int Document::GetAvailableRedos() const
   return _hDoc->GetAvailableRedos(); 
 }
 
+/*
 /// Recompute if the document was  not valid and propagate the reccorded modification.
 void Document::Recompute()
 {  
@@ -265,12 +266,15 @@ void Document::Recompute()
 		if (Feat->MustExecute())
 		{
 			//_LogBook.SetTouched(It.Key());
-      Base::Console().Log("Execute: %s\n",TCollection_AsciiString(hName->Get()).ToCString());
+      Base::Console().Log("Executing Feature: %s\n",Feat->getName());
 
       Feat->_eStatus = Feature::Recompute;
       int  succes = 1;
       try{
         succes = Feat->execute(_LogBook);
+      }catch(Base::Exception &e){
+        e.ReportException();
+        succes = 3;
       }catch(...){
         succes = 3;
         Base::Console().Warning("exception in Feature::execute(thrown)\n");
@@ -278,7 +282,7 @@ void Document::Recompute()
 
       if(succes > 0){
         Feat->_eStatus = Feature::Error;
-        Base::Console().Message("Recompute of Feature failed (%s)\n",Feat->getErrorString());
+        Base::Console().Message("Recompute of Feature %s failed (%s)\n",Feat->getName(),Feat->getErrorString());
         DocChange.ErrorFeatures.push_back(Feat);
       }else{
         DocChange.UpdatedFeatures.push_back(Feat);
@@ -296,6 +300,120 @@ void Document::Recompute()
 
   Notify(DocChange);
 
+}
+*/
+
+/// Recompute if the document was  not valid and propagate the reccorded modification.
+void Document::Recompute()
+{  
+  int iSentinel = 20;
+  bool goOn;
+  DocChanges DocChange;
+  std::set<Feature*>::iterator i;
+  
+//  TDF_MapIteratorOfLabelMap It;
+
+  do{
+    goOn = false;
+    std::map<std::string,FeatEntry>::iterator It;
+
+    for(It = FeatMap.begin();It != FeatMap.end();++It)
+    {
+      // map the new features
+      if (It->second.F->getStatus() == Feature::New)
+        DocChange.NewFeatures.insert(It->second.F);
+
+		  if (It->second.F->MustExecute())
+		  {
+        // if a feature change a other (earlier) Feature could be impacted, so go on ...
+        goOn = true;
+
+        _RecomputeFeature(It->second.F);
+
+        if(It->second.F->getStatus() == Feature::Error)
+          DocChange.ErrorFeatures.insert(It->second.F);
+        
+        if(It->second.F->getStatus() == Feature::Valid)
+        {
+          DocChange.UpdatedFeatures.insert(It->second.F);
+          DocChange.ErrorFeatures.erase(It->second.F);
+        }
+		  }
+    }
+  }while(iSentinel > 0 && goOn);
+  
+  // remove the new features from the update set, get updated anyway
+  for(i = DocChange.NewFeatures.begin();i!=DocChange.NewFeatures.end();++i)
+    DocChange.UpdatedFeatures.erase(*i);
+
+  _hDoc->Recompute(); 
+
+  Notify(DocChange);
+
+  for(i = DocChange.ErrorFeatures.begin();i!=DocChange.ErrorFeatures.end();++i)
+    Base::Console().Log("Error in Feature \"%s\": %s\n",(*i)->getName(),(*i)->getErrorString());
+
+  Base::Console().Log("Recomputation of Document \"%s\" with %d new, %d Updated and %d errors finished\n",
+                      getName(),
+                      DocChange.NewFeatures.size(),
+                      DocChange.UpdatedFeatures.size(),
+                      DocChange.ErrorFeatures.size());
+  
+}
+
+void Document::RecomputeFeature(Feature* Feat)
+{
+  DocChanges DocChange;
+
+  _RecomputeFeature(Feat);
+
+  if(Feat->getStatus() == Feature::Error)
+    DocChange.ErrorFeatures.insert(Feat);
+  
+  if(Feat->getStatus() == Feature::Valid)
+    DocChange.UpdatedFeatures.insert(Feat);
+
+  Notify(DocChange);
+
+}
+
+// call the recompute of the Feature and handle the exceptions and errors.
+void Document::_RecomputeFeature(Feature* Feat)
+{
+  Base::Console().Log("Executing Feature: %s\n",Feat->getName());
+
+  Feat->_eStatus = Feature::Recompute;
+  int  succes;
+  try{
+    succes = Feat->execute(_LogBook);
+  }catch(Base::Exception &e){
+    e.ReportException();
+    succes = 3;
+  }catch(Standard_Failure e){
+		Handle(Standard_Failure) E = Standard_Failure::Caught();
+		std::stringstream strm;
+		strm << E << endl;
+
+    Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),strm.str().c_str());
+    Feat->setError(strm.str().c_str());
+    succes = 3;
+  }catch(std::exception &e){                                           
+    Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),e.what());
+    Feat->setError(e.what());
+    succes = 3;
+  }catch(...){
+    Base::Console().Error("Unknown exception in Feature \"%s\" thrown\n",Feat->getName());
+    succes = 3;
+  }
+
+  if(succes > 0){
+    Feat->_eStatus = Feature::Error;
+  }else{
+    Feat->_eStatus = Feature::Valid;
+    // set the time of change
+    OSD_Process pro;
+    Feat->touchTime = pro.SystemDate ();
+  }
 }
 
 
@@ -361,7 +479,7 @@ void Document::remFeature(const char* sName)
 
   FeatEntry e = pos->second;
 
-  DocChange.DeletedFeatures.push_back(e.F);
+  DocChange.DeletedFeatures.insert(e.F);
 
   Notify(DocChange);
 

@@ -136,7 +136,7 @@ PyParentObject PartFeaturePy::Parents[] = {&PartFeaturePy::Type ,&App::FeaturePy
 PartFeaturePy::PartFeaturePy(PartFeature *pcFeature, PyTypeObject *T)
 : App::FeaturePy(pcFeature, T), _pcFeature(pcFeature)
 {
-	Base::Console().Log("Create PartFeaturePy: %p \n",this);
+//	Base::Console().Log("Create PartFeaturePy: %p \n",this);
 }
 
 PyObject *PartFeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -150,7 +150,7 @@ PyObject *PartFeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wra
 //--------------------------------------------------------------------------
 PartFeaturePy::~PartFeaturePy()						// Everything handled in parent
 {
-	Base::Console().Log("Destroy PartFeaturePy: %p \n",this);
+//	Base::Console().Log("Destroy PartFeaturePy: %p \n",this);
 } 
 
 

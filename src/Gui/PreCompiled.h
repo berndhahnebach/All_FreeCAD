@@ -108,6 +108,9 @@
 #include <V3d_OrthographicView.hxx>
 #include <V3d_Viewer.hxx>
 #include <V3d_View.hxx>
+#include <OSD_Process.hxx>
+
+#include <Quantity_Date.hxx>
 
 // Open Inventor
 #include <GL/gl.h>

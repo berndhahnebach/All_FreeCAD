@@ -38,6 +38,8 @@
 // OpenCASCADE
 
 #include <TDF_Label.hxx>
+#include <Quantity_Date.hxx>
+
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>

@@ -87,8 +87,9 @@ Feature::Feature(void)
   _pointSize = 2.0;
   _showMode = "Flat";
 
-  time(&touchTime);
-  time(&touchViewTime);
+  OSD_Process pro;
+  touchTime = pro.SystemDate();
+  touchViewTime = pro.SystemDate();
 }
 
 Feature::~Feature(void)
@@ -113,7 +114,10 @@ void Feature::addProperty(const char *Type, const char *Name)
    	TDF_Reference::Set(L,TDF_Label());
 	
   // remember for search effecience
-  _PropertiesMap[Name] = _nextFreeLabel;
+  _PropertiesMap[Name].Label = _nextFreeLabel;
+  OSD_Process pro;
+  _PropertiesMap[Name].Time = pro.SystemDate();
+
   TDataStd_Comment::Set(L,TCollection_ExtendedString((Standard_CString) Name ));
   
   _nextFreeLabel++;
@@ -121,12 +125,12 @@ void Feature::addProperty(const char *Type, const char *Name)
 
 const char *Feature::getPropertyType(const char *Name)
 {
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
     throw Base::Exception("Feature::getPropertyType() unknown property name");
 
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   if( L.IsAttribute(TDataStd_Real::GetID()) ) return "Float";
   if( L.IsAttribute(TDataStd_Name::GetID()) ) return "String";
@@ -140,12 +144,12 @@ const char *Feature::getPropertyType(const char *Name)
 
 double Feature::getPropertyFloat(const char *Name)
 {
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
     throw Base::Exception("Feature::getPropertyFloat() unknown property name");
 
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   Handle(TDataStd_Real) RealAttr;
 
@@ -157,12 +161,12 @@ double Feature::getPropertyFloat(const char *Name)
 
 void Feature::setPropertyFloat(double d, const char *Name)
 {
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
     throw Base::Exception("Feature::setPropertyFloat() unknown property name");
 
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   Handle(TDataStd_Real) RealAttr;
 
@@ -171,16 +175,19 @@ void Feature::setPropertyFloat(double d, const char *Name)
 
   RealAttr->Set(d);
 
+  OSD_Process pro;
+  It->second.Time = pro.SystemDate();
+
 }
 
 long Feature::getPropertyInt(const char *Name)
 {
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
     throw Base::Exception("Feature::getPropertyInt() unknown property name");
 
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   Handle(TDataStd_Integer) IntAttr;
 
@@ -192,12 +199,12 @@ long Feature::getPropertyInt(const char *Name)
 
 void Feature::setPropertyInt(long d, const char *Name)
 {
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
     throw Base::Exception("Feature::setPropertyInt() unknown property name");
 
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   Handle(TDataStd_Integer) IntAttr;
 
@@ -206,16 +213,18 @@ void Feature::setPropertyInt(long d, const char *Name)
 
   IntAttr->Set(d);
 
+  OSD_Process pro;
+  It->second.Time = pro.SystemDate();
 }
 
 std::string Feature::getPropertyString(const char *Name)
 {
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
     throw Base::Exception("Feature::getPropertyString() unknown property name");
 
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   Handle(TDataStd_Name) StrAttr;
 
@@ -227,12 +236,12 @@ std::string Feature::getPropertyString(const char *Name)
 
 void Feature::setPropertyString(const char* s, const char *Name)
 {
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
     throw Base::Exception("Feature::setPropertyString() unknown property name");
 
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   Handle(TDataStd_Name) StrAttr;
 
@@ -241,16 +250,18 @@ void Feature::setPropertyString(const char* s, const char *Name)
 
   StrAttr->Set((Standard_CString)s);
 
+  OSD_Process pro;
+  It->second.Time = pro.SystemDate();
 }
 
 void Feature::setPropertyLink(Feature *pcToLink, const char *Name)
 {
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
     throw Base::Exception("Feature::setPropertyLink() unknown property name");
 
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   Handle(TDF_Reference) RefAttr;
 
@@ -258,16 +269,19 @@ void Feature::setPropertyLink(Feature *pcToLink, const char *Name)
     throw Base::Exception("Type mismatch, no Link attribute!");
 
   RefAttr->Set( pcToLink->Label());
+
+  OSD_Process pro;
+  It->second.Time = pro.SystemDate();
 }
 
 Feature *Feature::getPropertyLink(const char *Name)
 {
-  std::map<std::string,int>::iterator It = _PropertiesMap.find(Name);
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
     throw Base::Exception("Feature::getPropertyLink() unknown property name");
 
-  TDF_Label L = _cFeatureLabel.FindChild(It->second);
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   Handle(TDF_Reference) RefAttr;
 
@@ -275,6 +289,11 @@ Feature *Feature::getPropertyLink(const char *Name)
     throw Base::Exception("Type mismatch, no Link attribute!");
 
   TDF_Label Link = RefAttr->Get();
+
+  // Link unset?
+  if(Link.IsNull())
+    return 0;
+
   Handle(FeatureAttr) LinkFeat;
 
   if (!Link.FindAttribute(FeatureAttr::GetID(), LinkFeat)) 
@@ -287,23 +306,26 @@ Feature *Feature::getPropertyLink(const char *Name)
 
 void Feature::TouchProperty(const char *Name)
 {
-  std::map<std::string,int>::iterator it = _PropertiesMap.find( Name );
+  std::map<std::string,FeatEntry>::iterator it = _PropertiesMap.find( Name );
   if ( it != _PropertiesMap.end() )
   {
-    _pDoc->getLogBook().SetTouched( _cFeatureLabel.FindChild( it->second ) );
-    //_pDoc->TouchState( _cFeatureLabel );
+    _pDoc->getLogBook().SetTouched( _cFeatureLabel.FindChild( it->second.Label ) );
+    OSD_Process pro;
+    it->second.Time = pro.SystemDate();
   }
 }
 
 void Feature::Touch(void)
 {
-    _pDoc->getLogBook().SetTouched( _cFeatureLabel );
-    time(&touchTime);
+  _pDoc->getLogBook().SetTouched( _cFeatureLabel );
+  OSD_Process pro;
+  touchTime = pro.SystemDate();
 }
 
 void Feature::TouchView(void)
 {
-    time(&touchViewTime);
+  OSD_Process pro;
+  touchViewTime = pro.SystemDate();
 }
 
 void Feature::AttachLabel(const TDF_Label &rcLabel,Document* dt)
@@ -317,7 +339,7 @@ void Feature::AttachLabel(const TDF_Label &rcLabel,Document* dt)
 
 
 }
-
+/* Old version (logbook)
 bool Feature::MustExecute(void)
 {
   const TFunction_Logbook& log = _pDoc->getLogBook();
@@ -329,7 +351,7 @@ bool Feature::MustExecute(void)
     return Standard_True;
 
   // checks if a known property has changed
-  for(std::map<std::string,int>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
+  for(std::map<std::string,FeatEntry>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
   {
     L = _cFeatureLabel.FindChild(It->second);
     if (log.IsModified(L ))
@@ -348,23 +370,66 @@ bool Feature::MustExecute(void)
   return false;
 
 }
+*/
+bool Feature::MustExecute(void)
+{
+  Handle(TDF_Reference) RefAttr;
+  TDF_Label L;
+
+  // If the object's label is modified:
+  if (getStatus() != Valid && getStatus()!= Inactive) 
+    return true;
+
+  // checks if a known property has changed
+  for(std::map<std::string,FeatEntry>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
+  {
+    L = _cFeatureLabel.FindChild(It->second.Label);
+    // if the property is a link?
+    if (L.FindAttribute(TDF_Reference::GetID(), RefAttr ))
+    {
+      TDF_Label Link = RefAttr->Get();
+      if(Link.IsNull())
+        return false;
+      // get the linked feature
+      Handle(FeatureAttr) LinkFeat;
+
+      if (!Link.FindAttribute(FeatureAttr::GetID(), LinkFeat)) 
+         throw Base::Exception("Feature::getPropertyLink() link dont link a feature!");
+
+      if (LinkFeat->Get()->getTouchTime() > getTouchTime() || LinkFeat->Get()->getTouchTime() == getTouchTime())
+        return true;
+    }
+
+    if (It->second.Time > getTouchTime() || It->second.Time == getTouchTime() )
+      return true;
+
+  }
+
+  return false;
+
+}
 
 void Feature::recompute(void)
 {
+
+  _pDoc->RecomputeFeature(this);
+
+  /*
 
   if(MustExecute())
   {
     execute(_pDoc->getLogBook());
     removeModifications();
-  }
+    time(&touchTime);
+  }*/
 }
 
 void Feature::removeModifications(void)
 {
   // checks if a known property has changed
-  for(std::map<std::string,int>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
+  for(std::map<std::string,FeatEntry>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
   {
-    _pDoc->getLogBook().IsModified( _cFeatureLabel.FindChild(It->second) );
+    _pDoc->getLogBook().IsModified( _cFeatureLabel.FindChild(It->second.Label) );
   }
 }
 

@@ -219,6 +219,10 @@
 #include <IGESControl_Writer.hxx>
 #include <IGESControl_Reader.hxx>
 
+#include <OSD_Process.hxx>
+
+#include <Quantity_Date.hxx>
+
 
 #endif //_PreComp_
 

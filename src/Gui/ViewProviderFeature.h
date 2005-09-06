@@ -26,6 +26,7 @@
 
 #include "../Base/Factory.h"
 #include "ViewProvider.h"
+#include "Quantity_Date.hxx"
 
 
 class SoMaterial;
@@ -81,7 +82,7 @@ protected:
 
   App::Feature *pcFeature;
 
-  time_t calcMaterial,calcData;
+  Quantity_Date calcMaterial,calcData;
 
 };
 

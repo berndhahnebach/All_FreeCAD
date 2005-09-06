@@ -195,7 +195,6 @@ void FCCmdPartBox::activated(int iMsg)
 	  doCommand(Doc,"f.l = %f",cDlg.ULineEdit->text().toFloat());
 	  doCommand(Doc,"f.w = %f",cDlg.VLineEdit->text().toFloat());
 	  doCommand(Doc,"f.h = %f",cDlg.WLineEdit->text().toFloat());
-//	  DoCommand(Doc,"App.DocGet().Update()");
     commitCommand();
   
     updateActive();
@@ -244,7 +243,6 @@ void FCCmdPartBox2::activated(int iMsg)
 	doCommand(Doc,"f.l = 100.0");
 	doCommand(Doc,"f.w = 100.0");
 	doCommand(Doc,"f.h = 100.0");
- // DoCommand(Doc,"App.DocGet().Update()");
 
   updateActive();
 
@@ -380,7 +378,6 @@ void PartImportStep::activated(int iMsg)
     openCommand("Part ImportSTEP Create");
 	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportStep\",\"PartImportStep\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
-//	  DoCommand(Doc,"App.DocGet().Update()");
     commitCommand();
   
     updateActive();
@@ -431,9 +428,7 @@ void PartImportIges::activated(int iMsg)
   {
     openCommand("Part ImportIGES Create");
 	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportIges\",\"PartImportIges\")");
-//	  doCommand(Doc,"f.FileName = \"%s\"",cDlg.FileName->text().ascii());
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
-	  doCommand(Doc,"App.DocGet().Update()");
     commitCommand();
   
     updateActive();

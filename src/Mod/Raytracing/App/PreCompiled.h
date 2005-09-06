@@ -126,6 +126,7 @@
 #include <TopoDS_Edge.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_UniformDeflection.hxx>
+#include <Quantity_Date.hxx>
 
 
 #endif //_PreComp_

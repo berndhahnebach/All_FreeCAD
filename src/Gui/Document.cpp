@@ -187,7 +187,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   std::list<Gui::BaseView*>::iterator VIt;
 
   // remove the representation of Features no longer exist
-  std::vector<App::Feature*>::const_iterator It;
+  std::set<App::Feature*>::const_iterator It;
   for(It=Reason.DeletedFeatures.begin();It!=Reason.DeletedFeatures.end();It++)
   {
     // cycling to all views of the document

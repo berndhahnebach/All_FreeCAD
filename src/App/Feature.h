@@ -35,6 +35,7 @@
 
 #include <App/Material.h>
 
+# include <Quantity_Date.hxx>
 
 class TFunction_Logbook;
 class PyObjectBase;
@@ -161,12 +162,6 @@ public:
   std::string getPropertyString(const char *Name);
 	void setPropertyString(const char*, const char *Name);
 
-
-	/** Get a Property and put it to float
-	 *  This works with all Properties inhereting from Float and Int Properties..
-	 */
-	//const char *GetStringProperty(const char *Name);
-
   /** Set the property touched -> changed, cause recomputation in Update()
 	 *  
 	 */
@@ -176,9 +171,9 @@ public:
   /// set the view parameter of this feature touched (cause recomputation of representation)
 	void TouchView(void);
   /// get the touch time
-  time_t getTouchTime(void){return touchTime;}
+  Quantity_Date getTouchTime(void){return touchTime;}
   /// get the view touch time
-  time_t getTouchViewTime(void){return touchViewTime;}
+  Quantity_Date getTouchViewTime(void){return touchViewTime;}
 	//@}
 
 
@@ -262,25 +257,30 @@ protected:
   /// Get called by the framework when the label is attached to the document
 	void AttachLabel(const TDF_Label &rcLabel,Document*);
 
-	/** Validate
-	 * Validation of the object label, its arguments and its results.
-	 */
-//	virtual void Validate(TFunction_Logbook& log)=0;
 	//@}
 
-  // Material stuff
+	/** @name Material
+    */
+	//@{
   Material    _solidMaterial;
   Material    _lineMaterial;
   float       _lineSize;
   Material    _pointMaterial;
   float       _pointSize;
   std::string _showMode;
+	//@}
 
-  time_t touchTime,touchViewTime;
+  Quantity_Date touchTime,touchViewTime;
 
 	TDF_Label            _cFeatureLabel;
 	int                  _nextFreeLabel;
-  std::map<std::string,int> _PropertiesMap;
+
+  struct FeatEntry {
+    int Label;
+    Quantity_Date Time;
+  };
+  
+  std::map<std::string,FeatEntry> _PropertiesMap;
 
   App::Document* _pDoc;
 

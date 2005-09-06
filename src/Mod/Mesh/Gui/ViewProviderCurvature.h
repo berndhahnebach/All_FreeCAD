@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,64 +20,68 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef __ViewProviderInventorMeshCurvature_H__
+#define __ViewProviderInventorMeshCurvature_H__
 
-#ifndef __VIEWPROVIDERPART_H__
-#define __VIEWPROVIDERPART_H__
-
-#include "../../../Gui/ViewProviderFeature.h"
-
-
-class TopoDS_Shape;
-class TopoDS_Face;
 class SoSeparator;
 class SbVec3f;
+class SoSwitch;
+class SoCoordinate3;
+class SoNormal;
+class SoIndexedFaceSet;
+class SoFaceSet;
+class SoPath;
+class SoLocateHighlight;
+class SoTransformerManip;
 
-namespace PartGui {
+namespace Gui {
+  class View3DInventorViewer;
+}
 
 
-class AppPartGuiExport ViewProviderInventorPart:public Gui::ViewProviderInventorFeature
+namespace Mesh {
+  class MeshWithProperty;
+  class MeshPropertyColor;
+}
+
+#include "ViewProvider.h"
+
+namespace MeshGui {
+
+/** Like Mesh viewprovider but with manipulator
+ */
+class ViewProviderInventorMeshCurvature: public ViewProviderInventorMesh
 {
 public:
-  /// constructor
-  ViewProviderInventorPart();
-  /// destructor
-  virtual ~ViewProviderInventorPart();
+  ViewProviderInventorMeshCurvature();
+  virtual ~ViewProviderInventorMeshCurvature();
 
 
+  /** 
+   * Extracts the mesh data from the feature \a pcFeature and creates
+   * an Inventor node \a SoNode with these data. 
+   */
   virtual void attache(App::Feature *);
 
+  /// set the viewing mode
+  virtual void setMode(const char* ModeName);
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
-  /// Update the Part representation
-  //virtual void update(const ChangeType&);
-
+  /// Update the Mesh representation
   virtual void updateData(void);
 
 protected:
-  Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
 
-  void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace );
+  /// helper
+  void SetVertexColorMode(Mesh::MeshPropertyColor* pcProp);
 
-  // nodes for the data representation
-  SoSeparator *EdgeRoot;
-  SoSeparator *FaceRoot;
-  SoSeparator *VertexRoot;
-
-
-  // settings stuff
-  ParameterGrp::handle hGrp;
-  float fMeshDeviation;     
-  bool  bNoPerVertexNormals;
-  long  lHilightColor;      
-  bool  bQualityNormals;    
+  SoMaterial        *pcColorMat;
 
 
 };
 
-} // namespace PartGui
+} // namespace MeshGui
 
 
-#endif // __VIEWPROVIDERPART_H__
+#endif // __ViewProviderInventorMeshCurvature_H__
 

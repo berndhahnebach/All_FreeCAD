@@ -120,7 +120,6 @@ PyMethodDef DocumentPy::Methods[] = {
 	PYMETHODEDEF(AddFeature)
 	PYMETHODEDEF(GetActiveFeature)
 	PYMETHODEDEF(GetFeature)
-	PYMETHODEDEF(Update)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -371,19 +370,6 @@ PYFUNCIMP_D(DocumentPy,GetFeature)
 	  else
 		  Py_Error(PyExc_Exception,"No Feature with this name!");
   } PY_CATCH;
-}
-
-
-PYFUNCIMP_D(DocumentPy,Update)
-{
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-
-  PY_TRY{
-	  _pcDoc->Recompute();   
-    Py_Return;
-  }PY_CATCH;
-
 }
 
 

@@ -86,7 +86,7 @@ void CmdMeshExMakeMesh::activated(int iMsg)
     "App.DocGet().AddFeature(\"Mesh\",\"MeshBox\")\n"
     "App.DocGet().MeshBox.setMesh(mb)\n"
     "App.DocGet().MeshBox.showMode = \"FlatWire\"\n" 
-    "App.DocGet().Update()" );
+    "App.DocGet().Recompute()" );
 
   doCommand(Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFit\")");
   commitCommand();

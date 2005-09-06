@@ -110,6 +110,7 @@
 #include <Standard_Underflow.hxx>
 #include <Standard_UUID.hxx>
 #include <Standard_WayOfLife.hxx>
+#include <Quantity_Date.hxx>
 
  
 #include <TCollection_ExtendedString.hxx>

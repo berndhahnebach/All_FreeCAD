@@ -139,8 +139,16 @@ PyObject *PyObjectBase::_getattr(char *attr)
 
 int PyObjectBase::_setattr(char *attr, PyObject *value)
 {
-	//FCcerr << "Unknown attribute" << FCendl;
-  return 0;
+	string err = "Unknown attribute: ";
+  err += attr;
+  PyErr_SetString(PyExc_AttributeError,err.c_str());
+  return -1;
+}
+
+// static wrapper
+int __setattr(PyObject *PyObj, char *attr, PyObject *value)
+{
+  return ((PyObjectBase*) PyObj)->_setattr(attr, value);
 }
 
 /*------------------------------

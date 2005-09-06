@@ -36,7 +36,7 @@ using namespace Part;
 
 void PartBoxFeature::initFeature(void)
 {
-	Base::Console().Log("PartBoxFeature::InitLabel()\n");
+//	Base::Console().Log("PartBoxFeature::InitLabel()\n");
 
 	addProperty("Float","x");
 	addProperty("Float","y");
@@ -50,27 +50,21 @@ void PartBoxFeature::initFeature(void)
 
 int PartBoxFeature::execute(TFunction_Logbook& log)
 {
-	Base::Console().Log("PartBoxFeature::Execute()\n");
 
-  try{
-    double x = getPropertyFloat("x");
-    double y = getPropertyFloat("y");
-    double z = getPropertyFloat("z");
-    double l = getPropertyFloat("l");
-    double h = getPropertyFloat("h");
-    double w = getPropertyFloat("w");
-	  // Build a box using the dimension and position attributes
-	  BRepPrimAPI_MakeBox mkBox( gp_Pnt( x, y, z ), l, h, w );
+  double x = getPropertyFloat("x");
+  double y = getPropertyFloat("y");
+  double z = getPropertyFloat("z");
+  double l = getPropertyFloat("l");
+  double h = getPropertyFloat("h");
+  double w = getPropertyFloat("w");
+	// Build a box using the dimension and position attributes
+	BRepPrimAPI_MakeBox mkBox( gp_Pnt( x, y, z ), l, h, w );
 
-    TopoDS_Shape ResultShape = mkBox.Shape();
+  TopoDS_Shape ResultShape = mkBox.Shape();
 
 
-	  setShape(ResultShape);
+	setShape(ResultShape);
 
-  }
-  catch(...){
-    return 1;
-  }
 
   return 0;
 }

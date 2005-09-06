@@ -136,7 +136,7 @@ PyParentObject App::FeaturePy::Parents[] = { &FeaturePy::Type, &PyObjectBase::Ty
 App::FeaturePy::FeaturePy(Feature *pcFeature, PyTypeObject *T)
 : PyObjectBase( T), _pcFeature(pcFeature),shadedMaterialPy(0),lineMaterialPy(0),pointMaterialPy(0)
 {
-	Base::Console().Log("Create FeaturePy: %p \n",this);
+//	Base::Console().Log("Create FeaturePy: %p \n",this);
 }
 
 PyObject *FeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -161,7 +161,7 @@ Base::PyObjectBase *Feature::GetPyObject(void)
 //--------------------------------------------------------------------------
 FeaturePy::~FeaturePy()						// Everything handled in parent
 {
-	Base::Console().Log("Destroy FeaturePy: %p \n",this);
+//	Base::Console().Log("Destroy FeaturePy: %p \n",this);
 
   if(shadedMaterialPy) shadedMaterialPy->DecRef();
   if(lineMaterialPy) lineMaterialPy->DecRef();

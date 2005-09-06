@@ -47,20 +47,22 @@ ViewProviderInventorFeature::ViewProviderInventorFeature()
 :pcFeature(0)
 {
   pcShadedMaterial = new SoMaterial;
+  pcShadedMaterial->ref();
   pcLineMaterial   = new SoMaterial;
+  pcLineMaterial->ref();
   pcPointMaterial  = new SoMaterial;
+  pcPointMaterial->ref();
   fLineSize        = 0.0;
   fPointSize       = 0.0;
-
-  calcMaterial = 0;
-  calcData=0;
 
 }
 
 
 ViewProviderInventorFeature::~ViewProviderInventorFeature()
 {
-
+  pcShadedMaterial->unref();
+  pcLineMaterial->unref();
+  pcPointMaterial->unref();
 }
 
 
@@ -81,14 +83,14 @@ bool ViewProviderInventorFeature::ifDataNewer(void)
 {
   // first do attache
   assert(pcFeature);
-  return pcFeature->getTouchTime() >= calcData; 
+  return pcFeature->getTouchTime() > calcData || pcFeature->getTouchTime() == calcData; 
 }
 
 bool ViewProviderInventorFeature::ifMaterialNewer(void)
 {
   // first do attache
   assert(pcFeature);
-  return pcFeature->getTouchViewTime() >= calcMaterial; 
+  return pcFeature->getTouchViewTime() > calcMaterial || pcFeature->getTouchViewTime() == calcMaterial; 
 
 }
 
@@ -134,7 +136,8 @@ void ViewProviderInventorFeature::setMatFromFeature(void)
   fPointSize       = pcFeature->getPointSize();
 
   // touch the material time
-  time(&calcMaterial);
+  OSD_Process pro;
+  calcMaterial = pro.SystemDate ();
 }
 
 void ViewProviderInventorFeature::setTransparency(float trans)

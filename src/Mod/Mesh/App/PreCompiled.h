@@ -80,6 +80,9 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
+#include <OSD_Process.hxx>
+
+#include <Quantity_Date.hxx>
 
 // WildMagic (MagicSoftware)
 #include <Wm3ApprPlaneFit3.h>
@@ -100,6 +103,8 @@
 #include <Wm3Sphere3.h>
 #include <Wm3Triangle3.h>
 #include <Wm3Vector3.h>
+
+
 
 #endif //_PreComp_
 

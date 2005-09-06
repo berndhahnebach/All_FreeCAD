@@ -88,33 +88,31 @@ using namespace PartGui;
        
 ViewProviderInventorPart::ViewProviderInventorPart()
 {
+  EdgeRoot = new SoSeparator();
+  EdgeRoot->ref();
+  FaceRoot = new SoSeparator();
+  FaceRoot->ref();
+  VertexRoot = new SoSeparator();
+  VertexRoot->ref();
+
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
 
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
-  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
-  lHilightColor       = hGrp->GetInt ("HilightColor",0);
-  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+//  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
+//  lHilightColor       = hGrp->GetInt ("HilightColor",0);
+//  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+
+
 }
 
 ViewProviderInventorPart::~ViewProviderInventorPart()
 {
+  EdgeRoot->unref();
+  FaceRoot->unref();
+  VertexRoot->unref();
 
 }
 
-/*
-
-void ViewProviderInventorPart::selected(Gui::View3DInventorViewer *, SoPath *)
-{
-   Base::Console().Log("Select viewprovider Part  %p\n",this);
-   Gui::Selection().addFeature(pcFeature);
-
-}
-void ViewProviderInventorPart::unselected(Gui::View3DInventorViewer *, SoPath *)
-{
-   Base::Console().Log("Unselect viewprovider Part  %p\n",this);
-   Gui::Selection().removeFeature(pcFeature);
-}
-*/
 std::vector<std::string> ViewProviderInventorPart::getModes(void)
 {
   // get the modes of the father
@@ -129,7 +127,7 @@ std::vector<std::string> ViewProviderInventorPart::getModes(void)
   return StrList;
 }
 
-
+/*
 void ViewProviderInventorPart::update(const ChangeType& Reason)
 {
   Reason;
@@ -139,29 +137,28 @@ void ViewProviderInventorPart::update(const ChangeType& Reason)
   setMatFromFeature();
 
 }
-
-void ViewProviderInventorPart::attache(App::Feature *pcFeat)
+*/
+void ViewProviderInventorPart::updateData(void)
 {
-  // call father (set material and feature pointer)
-  ViewProviderInventorFeature::attache(pcFeat);
+  Base::Console().Log("ViewProviderInventorPart::updateData() for %s called\n",pcFeature->getName()); 
 
   // geting actual setting values...
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
-  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
-  lHilightColor       = hGrp->GetInt ("HilightColor",0);
-  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+//  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
+//  lHilightColor       = hGrp->GetInt ("HilightColor",0);
+//  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
-
-  if ( pcFeature->getStatus() ==  App::Feature::Error )
-    return; // feature is invalid
 
   TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->getShape();
 
-  // creat achor nodes
-  SoSeparator *EdgeRoot = new SoSeparator();
-  SoSeparator *FaceRoot = new SoSeparator();
-  SoSeparator *VertexRoot = new SoSeparator();
+  // clear anchor nodes
+  EdgeRoot->removeAllChildren();
+  FaceRoot->removeAllChildren();
+  VertexRoot->removeAllChildren();
 
+  // if the Feature not valid, do nothing at all
+  if ( pcFeature->getStatus() ==  App::Feature::Error )
+    return; // feature is invalid
 
   // creating the mesh on the data structure
   BRepMesh::Mesh(cShape,fMeshDeviation);
@@ -175,6 +172,16 @@ void ViewProviderInventorPart::attache(App::Feature *pcFeat)
   } catch (...){
     Base::Console().Error("ViewProviderInventorPart::create() Cannot compute Inventor representation for the actual shape");
   }
+
+}
+
+void ViewProviderInventorPart::attache(App::Feature *pcFeat)
+{
+  // call father (set material and feature pointer)
+  ViewProviderInventorFeature::attache(pcFeat);
+
+  // Build up the view represetation from the shape
+  updateData();
 
   SoGroup* pcNormalRoot = new SoGroup();
   SoGroup* pcFlatRoot = new SoGroup();
