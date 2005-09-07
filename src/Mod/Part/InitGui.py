@@ -42,6 +42,30 @@ class PartWorkbench ( Workbench ):
 		except:
 			Err('Cannot load PartGui')
 			raise
+	def GetIcon(self):
+		# returns an icon for the workbench
+		return ["/* XPM */\n"
+						"static const char *Part_Box[]={\n"
+						"\"16 16 3 1\",\n"
+						"\". c None\",\n"
+						"\"# c #000000\",\n"
+						"\"a c #c6c642\",\n"
+						"\"................\",\n"
+						"\".......#######..\",\n"
+						"\"......#aaaaa##..\",\n"
+						"\".....#aaaaa###..\",\n"
+						"\"....#aaaaa##a#..\",\n"
+						"\"...#aaaaa##aa#..\",\n"
+						"\"..#aaaaa##aaa#..\",\n"
+						"\".########aaaa#..\",\n"
+						"\".#aaaaa#aaaaa#..\",\n"
+						"\".#aaaaa#aaaa##..\",\n"
+						"\".#aaaaa#aaa##...\",\n"
+						"\".#aaaaa#aa##....\",\n"
+						"\".#aaaaa#a##... .\",\n"
+						"\".#aaaaa###......\",\n"
+						"\".########.......\",\n"
+						"\"................\"};\n"]
 	def Start(self):
 		# load the module
 		try:

@@ -44,7 +44,7 @@ public:
   /// recalculate the Feature
   virtual int execute(TFunction_Logbook& log);
   /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "MeshTransform";};
+  virtual const char *type(void){return "MeshCurvature";};
   //@}
 
   virtual MeshWithProperty& getMesh();

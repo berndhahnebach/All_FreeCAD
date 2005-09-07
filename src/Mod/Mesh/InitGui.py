@@ -41,6 +41,44 @@ class MeshWorkbench ( Workbench ):
 		except:
 			Err('Cannot load MeshGui')
 			raise
+	def GetIcon(self):
+		# returns an icon for the workbench
+		return ["/* XPM */\n"
+						"static const char *curv_info[]={\n"
+						"\"22 22 11 1\",\n"
+						"\"a c #000000\",\n"
+						"\"g c #0000ff\",\n"
+						"\"f c #008080\",\n"
+						"\"c c #008000\",\n"
+						"\"d c #00ffff\",\n"
+						"\"# c #808080\",\n"
+						"\". c None\",\n"
+						"\"e c #ff0000\",\n"
+						"\"h c #ffaa00\",\n"
+						"\"b c #000000\",\n"
+						"\"k c #ffff00\",\n"
+						"\"......................\",\n"
+						"\"......................\",\n"
+						"\".......#aaaa#.........\",\n"
+						"\".bb...aa....aa........\",\n"
+						"\".bcb.a#ddd...#a...eee.\",\n"
+						"\".bcc#add......a#..eee.\",\n"
+						"\"..bcacd........a..hhh.\",\n"
+						"\"..bcacdb.......a..hhh.\",\n"
+						"\"..bcacccb......a..kkk.\",\n"
+						"\"..bcaccccb...d.a..kkk.\",\n"
+						"\"..bc#accccb.d.a#..ccc.\",\n"
+						"\"...bca#ccccdd#a...ccc.\",\n"
+						"\"...bccaaccccaaaa..fff.\",\n"
+						"\"...bccc#aaaa#.aaa.fff.\",\n"
+						"\"...bccccccccbb.aa.ddd.\",\n"
+						"\"....bccccbbb....a.ddd.\",\n"
+						"\"....bcbbb.........ggg.\",\n"
+						"\".....bb...........ggg.\",\n"
+						"\"......................\",\n"
+						"\"......................\",\n"
+						"\"......................\",\n"
+						"\"......................\"};\n"]
 	def Start(self):
 		# load the module
 		try:

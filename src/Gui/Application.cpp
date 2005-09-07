@@ -1049,6 +1049,49 @@ void ApplicationWindow::removeWorkbench(const char* name)
 //  }
 }
 
+QPixmap ApplicationWindow::workbenchIcon( const QString& wb ) const
+{
+  // net buffer because of char* <-> const char*
+  Base::PyBuf Name(wb.latin1());
+  // get the python workbench object from the dictionary
+  PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
+  // test if the workbench exists
+  if ( pcWorkbench )
+  {
+    // call its GetIcon method if possible
+    try{
+      PyErr_Clear(); /* ## Python interpreter is in an incon. state => bug in Base::Interpreter somewhere */
+      PyObject* res = Interpreter().runMethodObject(pcWorkbench, "GetIcon");
+      if ( PyList_Check(res) )
+      {
+        // create temporary buffer
+        int ct = PyList_Size(res);
+        QByteArray ary;
+
+        if ( ct > 0 )
+        {
+          PyObject* line = PyList_GetItem(res,0);
+          if ( line && PyString_Check(line) )
+          {
+            const char* szBuf = PyString_AsString(line);
+            int strlen = PyString_Size(line);
+            ary.resize(strlen);
+            for ( int j=0; j<strlen; j++ )
+              ary[j]=szBuf[j];
+          }
+        }
+
+        QPixmap px; px.loadFromData(ary, "XPM");
+        return px;
+      }
+    } catch ( const Base::Exception& ) {
+      PyErr_Clear(); /* ## Python interpreter is in an incon. state => bug in Base::Interpreter somewhere */
+    }
+  }
+
+  return QPixmap();
+}
+
 QStringList ApplicationWindow::workbenches(void)
 {
   PyObject *key, *value;

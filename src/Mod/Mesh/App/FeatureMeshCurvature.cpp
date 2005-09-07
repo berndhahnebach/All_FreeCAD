@@ -165,5 +165,4 @@ MeshWithProperty& FeatureMeshCurvature::getMesh()
     return MeshFeature::getMesh();
 
   return pcFeat->getMesh();
-
 }

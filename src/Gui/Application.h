@@ -148,6 +148,7 @@ public:
   /// update the combo box when there are changes in the workbenches
   void appendWorkbench(const char* name);
   void removeWorkbench(const char* name);
+  QPixmap workbenchIcon( const QString& ) const;
   /// returns the name of the active workbench
   QString activeWorkbench(void);
   QStringList workbenches(void);
