@@ -70,7 +70,7 @@ protected:
   ParameterGrp::handle hGrp;
   float fMeshDeviation;     
   bool  bNoPerVertexNormals;
-  long  lHilightColor;      
+//  long  lHilightColor;      
   bool  bQualityNormals;    
 
 

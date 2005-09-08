@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"Release\Mesh.pyd" /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Release\Mesh.pyd ..\..\..\..\Mod\Mesh	copy ..\Init.py ..\..\..\..\Mod\Mesh
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Release\Mesh.pyd ..\..\..\..\Mod\Mesh	copy ..\Init.py ..\..\..\..\Mod\Mesh	copy Release\Mesh.lib ..\..\..\..\Mod\Mesh
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppMesh - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"Debug\Mesh_d.pyd" /pdbtype:sept /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Debug\Mesh_d.pyd ..\..\..\..\Mod\Mesh	copy ..\Init.py ..\..\..\..\Mod\Mesh
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Debug\Mesh_d.pyd ..\..\..\..\Mod\Mesh	copy ..\Init.py ..\..\..\..\Mod\Mesh	copy Debug\Mesh_d.lib ..\..\..\..\Mod\Mesh
 # End Special Build Tool
 
 !ENDIF 

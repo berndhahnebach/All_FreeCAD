@@ -654,7 +654,13 @@ void Application::initApplication(void)
 
 
 	// starting the init script
-	Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADInit"));
+  try{
+	  Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADInit"));
+  }catch(Base::PyException &e){
+      cerr << e.what() << endl;
+      cerr << e.getStackTrace() << endl;
+      throw exception("internal error in init script!");
+  }
 
 	// Add the one and only FreeCAD FunctionDriver to the driver Tabel 
 	Handle(TFunction_Driver) myDriver = new Function();

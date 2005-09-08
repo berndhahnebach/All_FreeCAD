@@ -50,18 +50,57 @@ struct GUIDDefs {
  *  associated TreeLabel which controls the visibility 
  *  and the functions of the Label.
  *  \author Jürgen Riegel
- */
-class TreeLabel : public QListViewItem
+ *//*
+class DocItem : public QListViewItem
 {
 public:
   /// Constructor
-  TreeLabel( TreeLabel * parent, TDF_Label &hcLabel );
-  TreeLabel( TreeView * parent);
+  DocItem( TreeLabel * parent, TDF_Label &hcLabel );
+  DocItem( TreeView * parent);
 
   /// Opens the Leafs and generate them.
-  void setOpen( bool );
+  virtual void setOpen( bool );
   /// Im not realy sure whats this method do ;-).
-  void setup();
+  //virtual void setup();
+
+  /// Delivers the pixmap that is shown.
+//    const QPixmap *pixmap( int i ) const;
+  /// Sets the pixmap that will be shown.
+//    void setPixmap( QPixmap *p );
+
+  void update(void);
+
+  void buildUp(void);
+
+protected:
+  void activate (); 
+  TDF_Label _hcTDFLabel;
+  //FCPyHandle<FCLabel> _hcLabel;
+
+  TreeLabel * _pcParent;
+  Gui::Document*  _pcDocument;
+
+//  bool _bOpend;
+};
+*/
+
+/** The link between the Tree and the shown Label.
+ *  Every (shown) Label in the FCDocument class get it 
+ *  associated TreeLabel which controls the visibility 
+ *  and the functions of the Label.
+ *  \author Jürgen Riegel
+ *//*
+class FeatureItem : public QListViewItem
+{
+public:
+  /// Constructor
+  FeatureItem( TreeLabel * parent, TDF_Label &hcLabel );
+  FeatureItem( TreeView * parent);
+
+  /// Opens the Leafs and generate them.
+  virtual void setOpen( bool );
+  /// Im not realy sure whats this method do ;-).
+  //virtual void setup();
 
   /// Delivers the pixmap that is shown.
 //    const QPixmap *pixmap( int i ) const;
@@ -83,7 +122,7 @@ protected:
 //  bool _bOpend;
 };
 
-
+*/
 
 /** 
  *  \author Jürgen Riegel

@@ -54,7 +54,7 @@ namespace MeshGui {
  * a node representing the mesh data structure.
  * @author Werner Mayer
  */
-class ViewProviderInventorMesh : public Gui::ViewProviderInventorFeature
+class GuiMeshExport ViewProviderInventorMesh : public Gui::ViewProviderInventorFeature
 {
 public:
   ViewProviderInventorMesh();

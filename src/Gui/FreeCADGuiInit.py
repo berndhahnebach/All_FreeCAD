@@ -182,8 +182,12 @@ def InitApplications():
 			Log('      Initializing: ' + Dir + '... ')
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"InitGui.py")
 			if ( os.path.exists(InstallFile) ):
-				execfile(InstallFile)
-				Log('done\n')
+				try:
+					execfile(InstallFile)
+				except:
+					Err(" Unexpected error in " + InstallFile + " not initialized!\n")
+				else:
+					Log('done\n')
 			else:
 				Wrn("InitGui.py not found! "+Dir+" not initialized!\n")
  

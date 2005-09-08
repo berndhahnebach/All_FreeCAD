@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="AppPointsGui" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=AppPointsGui - Win32 Debug
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "AppPointsGui.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "AppPointsGui.mak" CFG="AppPointsGui - Win32 Debug"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "AppPointsGui - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "AppPointsGui - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppPointsGui - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppPointsGui - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"Release\PointsGui.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy Release\PointsGui.pyd ..\..\..\..\Mod\Points	copy ..\InitGui.py ..\..\..\..\Mod\Points
+PostBuild_Cmds=copy Release\PointsGui.pyd ..\..\..\..\Mod\Points	copy ..\InitGui.py ..\..\..\..\Mod\Points	copy Release\PointsGui.lib ..\..\..\..\Mod\Points
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppPointsGui - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"Debug\PointsGui_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy Debug\PointsGui_d.pyd ..\..\..\..\Mod\Points	copy ..\InitGui.py ..\..\..\..\Mod\Points
+PostBuild_Cmds=copy Debug\PointsGui_d.pyd ..\..\..\..\Mod\Points	copy ..\InitGui.py ..\..\..\..\Mod\Points	copy Debug\PointsGui_d.lib ..\..\..\..\Mod\Points
 # End Special Build Tool
 
 !ENDIF 

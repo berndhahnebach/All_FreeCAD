@@ -82,11 +82,6 @@ std::string InterpreterSingleton::runString(const char *sCmd)
   {
     PyErr_Clear(); // must be called to keep Python interpreter in a valid state (Werner)
     throw PyException();
-/*    if ( PyErr_Occurred() )
-    {
-      void PP_Fetch_Error_Text();
-      throw PythonException(PP_last_error_type,PP_last_error_info,PP_last_error_trace);
-    }*/
   }
 
   presult = PyObject_Repr( presult) ;

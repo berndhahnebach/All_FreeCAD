@@ -57,7 +57,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386 /out:"Release\Part.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Part	copy Release\Part.pyd ..\..\..\..\Mod\Part	copy ..\Init.py ..\..\..\..\Mod\Part
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Part	copy Release\Part.pyd ..\..\..\..\Mod\Part	copy ..\Init.py ..\..\..\..\Mod\Part	copy Release\Part.lib ..\..\..\..\Mod\Part
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppPart - Win32 Debug"
@@ -87,7 +87,7 @@ LINK32=link.exe
 # ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /out:"Debug\Part_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Part	copy Debug\Part_d.pyd ..\..\..\..\Mod\Part	copy ..\Init.py ..\..\..\..\Mod\Part
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Part	copy Debug\Part_d.pyd ..\..\..\..\Mod\Part	copy ..\Init.py ..\..\..\..\Mod\Part	copy Debug\Part_d.lib ..\..\..\..\Mod\Part
 # End Special Build Tool
 
 !ENDIF 

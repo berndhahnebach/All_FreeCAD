@@ -46,7 +46,7 @@ using namespace Gui;
 GUIDDefs AttrNames[] = {
   {0,0}
 };
-
+/*
 
 TreeLabel::TreeLabel( TreeView * parent)
   :QListViewItem(parent->_pcListView), _pcDocument(parent->_pcDocument)
@@ -64,12 +64,12 @@ TreeLabel::TreeLabel( TreeView * parent)
     setText(0,QObject::tr("No Active Document"));
   }
 }
-
+*/
 /** Constructor
  *  Instanciate the class with his parent (in the tree) and the
  *  acociated FCLabel.
  *  @return Const string with the date/time
- */
+ *//*
 TreeLabel::TreeLabel( TreeLabel * parent, TDF_Label &hcLabel )
     : QListViewItem( parent ),
   _hcTDFLabel(hcLabel),
@@ -89,7 +89,7 @@ void TreeLabel::update(void)
   //puts("Updtate");
 
 
-  /*
+  
   // quieck an dirty
   if(_pcDocument && _hcLabel->GetOCCLabel().HasChild() && !isOpen())
   {
@@ -106,34 +106,14 @@ void TreeLabel::update(void)
     setPixmap(0,*FCTree::pcLabelOpen);
 
   }
-*/
+
 
 }
 
 void TreeLabel::buildUp(void)
 {
 
-/*  std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
-
-  for(std::vector<FCPyHandle<FCLabel> >::reverse_iterator It=vpcLabels.rbegin();It != vpcLabels.rend(); It++)
-  {
-    new TreeLabel(this,*It);
-  }
-
-  TDF_Label l = _hcLabel->GetOCCLabel();
-
-  if( l.IsAttribute(TNaming_NamedShape::GetID()) )
-    (new QListViewItem(this,"Shape","1"))->setPixmap(0,*FCTree::pcAttribute);
-  if( l.IsAttribute(TDataStd_Integer::GetID()) )
-    (new QListViewItem(this,"Int","1"))->setPixmap(0,*FCTree::pcAttribute);
-  if( l.IsAttribute(TDataStd_Name::GetID()) )
-    (new QListViewItem(this,"String","1"))->setPixmap(0,*FCTree::pcAttribute);
-
-
-  if(childCount()>0)
-    setExpandable( TRUE );
-*/
-  }
+}
 
 void TreeLabel::setOpen( bool o )
 {
@@ -163,7 +143,7 @@ void TreeLabel::activate ()
 {
   //puts("Activated");
 }
-
+*/
 
 QPixmap* TreeView::pcLabelOpen=0;
 QPixmap* TreeView::pcLabelClosed=0;
@@ -191,7 +171,7 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 
 
   // Add the first main label
-  _pcMainItem = new TreeLabel(this);
+  _pcMainItem = new QListViewItem(_pcListView,"Application");
 
   //_pcListView->setRootIsDecorated(true);
 
@@ -210,18 +190,20 @@ void TreeView::onUpdate(void)
 
   // quick and dirty so far
   delete _pcMainItem;
-  _pcMainItem = new TreeLabel(this);
+  //_pcMainItem = new TreeLabel(this);
 }
 
 void TreeView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument)
 {
 //  Console().Log("Tree doc activated %p\n",pcNewDocument);
 
+  /*
   if(pcOldDocument != pcNewDocument)
   {
     delete _pcMainItem;
     _pcMainItem = new TreeLabel(this);
   }
+  */
 }
 
 bool TreeView::onMsg(const char* pMsg)

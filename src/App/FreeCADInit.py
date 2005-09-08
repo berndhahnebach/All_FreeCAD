@@ -74,8 +74,12 @@ def InitApplications():
 			PathExtension += ";" + os.path.join(ModDir,Dir)
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"Init.py")
 			if ( os.path.exists(InstallFile) ):
-				execfile(InstallFile)
-				Log('done\n')
+				try:
+					execfile(InstallFile)
+				except:
+					Err("Unexpected error in : " + InstallFile + " not initialized!\n")
+				else:
+					Log('done\n')
 			else:
 				Wrn("Init.py not found! "+Dir+" not initialized!\n")
 	os.environ["PATH"] += PathExtension

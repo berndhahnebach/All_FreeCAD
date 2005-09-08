@@ -98,9 +98,9 @@ ViewProviderInventorPart::ViewProviderInventorPart()
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
 
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
-//  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
+  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
 //  lHilightColor       = hGrp->GetInt ("HilightColor",0);
-//  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
 
 }
@@ -144,9 +144,9 @@ void ViewProviderInventorPart::updateData(void)
 
   // geting actual setting values...
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
-//  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
+  bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
 //  lHilightColor       = hGrp->GetInt ("HilightColor",0);
-//  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
+  bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
 
   TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->getShape();
