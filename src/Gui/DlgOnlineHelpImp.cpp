@@ -69,6 +69,13 @@ QString DlgOnlineHelpImp::getStartpage()
   ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
   QString home = QString(hURLGrp->GetASCII( "Startpage", "" ).c_str());
 
+  // help start in in config?
+  if ( home.isEmpty() && App::Application::Config()["HelpStart"] != "")
+  {
+    home = App::GetApplication().GetHomePath();
+    home +=   App::Application::Config()["HelpStart"].c_str();
+  }
+
   if ( home.isEmpty() )
   {
     QString hm = App::GetApplication().GetHomePath();

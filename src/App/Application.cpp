@@ -362,6 +362,11 @@ void Application::setActiveDocument(const char *Name)
     Base::Console().Warning("try to set unknown document active (ignored)!");
 }
 
+const char* Application::GetHomePath(void)
+{
+  return _mConfig["HomePath"].c_str();
+}
+
 
 
 ParameterManager & Application::GetSystemParameter(void) 

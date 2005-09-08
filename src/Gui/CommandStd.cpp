@@ -54,7 +54,7 @@
 #include "BitmapFactory.h"
 #include "View.h"
 
-#include "DlgDocTemplatesImp.h"
+//#include "DlgDocTemplatesImp.h"
 #include "DlgParameterImp.h"
 #include "DlgMacroExecuteImp.h"
 #include "DlgMacroRecordImp.h"

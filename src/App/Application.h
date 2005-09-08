@@ -123,8 +123,6 @@ class AppExport Application //: public PythonExport
 public:
 
 
-	const char* GetHomePath(void){return _mConfig["HomePath"].c_str();}
-
   //---------------------------------------------------------------------
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
@@ -205,6 +203,9 @@ public:
 	static int GetARGC(void){return _argc;}
 	static char** GetARGV(void){return _argv;}
 	//@}
+
+ 	const char* GetHomePath(void);
+
 
 
 private:

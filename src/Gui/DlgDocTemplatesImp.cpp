@@ -29,7 +29,7 @@
 # include <qlineedit.h>
 #endif
 
-#include "DlgDocTemplatesImp.h"
+//#include "DlgDocTemplatesImp.h"
 #include "Command.h"
 #include "Application.h"
 #include "BitmapFactory.h"

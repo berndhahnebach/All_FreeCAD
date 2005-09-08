@@ -297,6 +297,11 @@ ENV_INLINE std::string FindHomePathWin32(HANDLE hModule)
 	pos = TempHomePath.find_last_of(PATHSEP);
 	TempHomePath.assign(TempHomePath,0,pos+1);
 
+  // switch to posix style
+  for(std::string::iterator i=TempHomePath.begin();i!=TempHomePath.end();++i)
+    if(*i == '\\')
+      *i = '/';
+
 	EnvPrint(TempHomePath.c_str());
 //	return FindHomePath(szFileName);
 	return TempHomePath;

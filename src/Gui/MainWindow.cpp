@@ -60,7 +60,7 @@
 #include "PropertyView.h"
 
 #include "CommandLine.h"
-#include "DlgDocTemplatesImp.h"
+//#include "DlgDocTemplatesImp.h"
 #include "DlgTipOfTheDayImp.h"
 #include "DlgUndoRedo.h"
 #include "DlgOnlineHelpImp.h"
