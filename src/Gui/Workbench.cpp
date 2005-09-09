@@ -27,10 +27,15 @@
 # include <qpopupmenu.h>
 #endif
 
+#include <Base/Parameter.h>
+#include <App/Application.h>
+
 #include "Workbench.h"
 #include "WorkbenchPy.h"
 #include "MenuManager.h"
 #include "ToolBarManager.h"
+#include "Application.h"
+#include "Command.h"
 #include "CommandBarManager.h"
 
 using namespace Gui;
@@ -54,6 +59,72 @@ void Workbench::setName( const QString& name )
   _name = name;
 }
 
+ToolBarItem* Workbench::importCustomToolBars() const
+{
+  const char* szName = this->name().latin1();
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup("Toolbars");
+  
+  ToolBarItem* root = new ToolBarItem;
+  std::vector<FCHandle<ParameterGrp> > hGrps = hGrp->GetGroups();
+  CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
+  for ( std::vector<FCHandle<ParameterGrp> >::iterator it = hGrps.begin(); it != hGrps.end(); ++it )
+  {
+    ToolBarItem* bar = new ToolBarItem( root );
+    bar->setCommand( (*it)->GetGroupName() );
+   
+    // get the elements of the subgroups
+    std::map<std::string,std::string> items = hGrp->GetGroup( (*it)->GetGroupName() )->GetASCIIMap();
+    for ( std::map<std::string,std::string>::iterator it2 = items.begin(); it2 != items.end(); ++it2 )
+    {
+      // to save the order a number is prepended
+      QString cmd = it2->first.c_str(); // command name
+      cmd = cmd.mid(2);
+      const char* mod = it2->second.c_str(); // module name
+//      Command* pCmd = rMgr.getCommandByName( cmd ); 
+      *bar << cmd;
+    }
+  }
+
+  return root;
+}
+
+void Workbench::exportCustomToolBars( ToolBarItem* ) const
+{
+}
+
+ToolBarItem* Workbench::importCustomCommandBars() const
+{
+  const char* szName = this->name().latin1();
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup("Commandbars");
+  
+  ToolBarItem* root = new ToolBarItem;
+  std::vector<FCHandle<ParameterGrp> > hGrps = hGrp->GetGroups();
+  CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
+  for ( std::vector<FCHandle<ParameterGrp> >::iterator it = hGrps.begin(); it != hGrps.end(); ++it )
+  {
+    ToolBarItem* bar = new ToolBarItem( root );
+    bar->setCommand( (*it)->GetGroupName() );
+   
+    // get the elements of the subgroups
+    std::map<std::string,std::string> items = hGrp->GetGroup( (*it)->GetGroupName() )->GetASCIIMap();
+    for ( std::map<std::string,std::string>::iterator it2 = items.begin(); it2 != items.end(); ++it2 )
+    {
+      // to save the order a number is prepended
+      QString cmd = it2->first.c_str(); // command name
+      cmd = cmd.mid(2);
+      const char* mod = it2->second.c_str(); // module name
+//      Command* pCmd = rMgr.getCommandByName( cmd ); 
+      *bar << cmd;
+    }
+  }
+
+  return root;
+}
+
+void Workbench::exportCustomCommandBars( ToolBarItem* ) const
+{
+}
+
 bool Workbench::activate()
 {
   MenuItem* mb = setupMenuBar();
@@ -63,10 +134,16 @@ bool Workbench::activate()
   ToolBarItem* tb = setupToolBars();
   ToolBarManager::getInstance()->setup( tb );
   delete tb;
+  ToolBarItem* cw = importCustomToolBars();
+  ToolBarManager::getInstance()->customSetup(cw);
+  delete cw;
 
   ToolBarItem* cb = setupCommandBars();
   CommandBarManager::getInstance()->setup( cb );
   delete cb;
+  ToolBarItem* cc = importCustomCommandBars();
+  CommandBarManager::getInstance()->customSetup(cc);
+  delete cc;
 
   return true;
 }

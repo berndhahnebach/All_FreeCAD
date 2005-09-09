@@ -47,9 +47,10 @@ class GuiExport CommandBarManager
 public:
   static CommandBarManager* getInstance();
   void setup( ToolBarItem* ) const;
+  void customSetup( ToolBarItem* ) const;
   void setToolBox( DockWnd::ToolBox* );
   QPtrList<QToolBar> commandBars() const;
-  QToolBar* getOrCreateCommandBar( const QString& name, bool activate=false );
+  QToolBar* getOrCreateCommandBar( const QString& name, bool activate=false, bool modify=false ) const;
 
 protected:
   CommandBarManager();

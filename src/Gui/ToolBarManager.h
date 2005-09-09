@@ -64,6 +64,9 @@ class GuiExport ToolBarManager
 public:
   static ToolBarManager* getInstance();
   void setup( ToolBarItem* ) const;
+  void customSetup( ToolBarItem* ) const;
+  QPtrList<QToolBar> toolBars() const;
+  QToolBar* getOrCreateToolBar( const QString& name, bool modify=false ) const;
 
 protected:
   ToolBarManager();

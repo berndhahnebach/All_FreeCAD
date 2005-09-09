@@ -741,7 +741,7 @@ void MainWindow::appendWorkbench(const char* name)
 
   if ( pCmd && pCmd->getAction(false) )
   {
-    pCmd->appendItem( name );
+    pCmd->refresh();
   }
 }
 

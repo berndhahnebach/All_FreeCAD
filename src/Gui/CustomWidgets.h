@@ -68,9 +68,10 @@ public:
 
   void loadXML();
   void saveXML();
-#endif
+
   virtual void setRemovable(bool b);
   bool isRemovable() const;
+#endif
 
   virtual void setCanModify(bool b);
   bool canModify() const;
@@ -150,6 +151,9 @@ protected slots:
  * \author Werner Mayer
  */
 class GuiExport CustomPopupMenu : public QPopupMenu, public CustomWidget
+#ifdef NEW_WB_FRAMEWORK
+                                , public ParameterGrp::ObserverType
+#endif
 {
   Q_OBJECT
 
@@ -173,7 +177,9 @@ protected:
   virtual void savePreferences();
 #endif
 private:
+#ifndef NEW_WB_FRAMEWORK
   QString _parent;
+#endif
   bool    _bAllowDrag;
 #ifndef NEW_WB_FRAMEWORK
   ParameterGrp::handle _hCommonGrp;

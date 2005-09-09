@@ -142,12 +142,13 @@ public:
   /// Activate a named workbench
 #ifndef NEW_WB_FRAMEWORK
   void activateWorkbench(const char* name);
-#else
-  bool activateWorkbench( const char* name );
-#endif
   /// update the combo box when there are changes in the workbenches
   void appendWorkbench(const char* name);
   void removeWorkbench(const char* name);
+#else
+  bool activateWorkbench( const char* name );
+  void refreshWorkbenchList();
+#endif
   QPixmap workbenchIcon( const QString& ) const;
   /// returns the name of the active workbench
   QString activeWorkbench(void);

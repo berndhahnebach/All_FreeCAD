@@ -964,6 +964,36 @@ bool ApplicationWindow::activateWorkbench( const char* name )
 
   return ok;
 }
+
+void ApplicationWindow::refreshWorkbenchList()
+{
+  StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
+
+  if ( pCmd && pCmd->getAction(false) )
+  {
+    pCmd->refresh();
+    if ( d->_cActiveWorkbench )
+    {
+      PyObject* wb = PyDict_GetItemString(d->_pcWorkbenchDictionary,d->_cActiveWorkbench->name().latin1()); 
+      if ( !wb ) // this workbench has been removed
+      {
+        // then just load the last workbench
+        int ct = PyDict_Size( d->_pcWorkbenchDictionary );
+        if ( ct > 0 )
+        {
+          PyObject* list = PyDict_Keys( d->_pcWorkbenchDictionary ); 
+          PyObject* str = PyList_GetItem( list, ct-1 );
+          Py_DECREF(list); // frees the list
+          const char* name = PyString_AsString( str );
+          activateWorkbench( name );
+        }
+      }
+      else
+        pCmd->notify( d->_cActiveWorkbench->name() );
+    }
+  }
+}
+
 #else
 /**
  *  Activate the named workbench by calling the methodes in the 
@@ -1019,36 +1049,27 @@ void ApplicationWindow::activateWorkbench(const char* name)
     // do nothing here
   }
 }
-#endif
+
 void ApplicationWindow::appendWorkbench(const char* name)
 {
   StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
 
   if ( pCmd && pCmd->getAction(false) )
   {
-    pCmd->appendItem( name );
+    pCmd->refresh();
   }
 }
 
 void ApplicationWindow::removeWorkbench(const char* name)
 {
-//	PyObject *key, *value;
-//	int pos = 0;
-//     
-//  Command* pCmd = d->_cCommandManager.GetCommandByName("Std_Workbench");
-//  if (pCmd)
-//  {
-//  	// remove all items from the command
-//    ((StdCmdWorkbench*)pCmd)->Clear();
-//
-//  	// insert all items
-//    while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
-//		  /* do something interesting with the values... */
-//      ((StdCmdWorkbench*)pCmd)->AddItem(PyString_AsString(key));
-//	  }
-//  }
-}
+  StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
 
+  if ( pCmd && pCmd->getAction(false) )
+  {
+    pCmd->refresh();
+  }
+}
+#endif
 QPixmap ApplicationWindow::workbenchIcon( const QString& wb ) const
 {
   // net buffer because of char* <-> const char*
@@ -1746,9 +1767,16 @@ PYFUNCIMP_S(ApplicationWindow,sAddWorkbench)
   if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
+  PyObject* wb = PyDict_GetItemString(Instance->d->_pcWorkbenchDictionary,psKey); 
+  if ( wb )
+  {
+    PyErr_Format(PyExc_KeyError, "'%s' already exists.", psKey);
+    return NULL;
+  }
+
   PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
 
-  Instance->appendWorkbench(psKey);
+  Instance->refreshWorkbenchList();
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -1765,7 +1793,7 @@ PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
 
   PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
 
-  Instance->appendWorkbench(psKey);
+  Instance->refreshWorkbenchList();
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -1827,9 +1855,17 @@ PYFUNCIMP_S(ApplicationWindow,sRemoveWorkbench)
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
+  PyObject* wb = PyDict_GetItemString(Instance->d->_pcWorkbenchDictionary,psKey); 
+  if ( !wb )
+  {
+    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
+    return NULL;
+  }
+
+
   PyDict_DelItemString(Instance->d->_pcWorkbenchDictionary,psKey);
 
-  Instance->removeWorkbench(psKey);
+  Instance->refreshWorkbenchList();
 
   Py_INCREF(Py_None);
   return Py_None;

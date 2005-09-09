@@ -99,6 +99,11 @@ public:
   void appendDockWindow() const;
   void removeDockWindow() const;
 
+  ToolBarItem* importCustomToolBars() const;
+  void exportCustomToolBars( ToolBarItem* ) const;
+  ToolBarItem* importCustomCommandBars() const;
+  void exportCustomCommandBars( ToolBarItem* ) const;
+
 protected:
   virtual MenuItem* setupMenuBar() const=0;
   virtual ToolBarItem* setupToolBars() const=0;

@@ -108,9 +108,10 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
 
     if ( !bar )
     {
-      bar = new ToolBoxBar( item->command(), _toolBox, item->command().latin1() );
-      bar->setLabel( QObject::tr( item->command() ) ); // i18n
-      _toolBox->addItem( bar, bar->label() );
+      bar = getOrCreateCommandBar( item->command(), false, false );
+//      bar = new ToolBoxBar( item->command(), _toolBox, item->command().latin1() );
+//      bar->setLabel( QObject::tr( item->command() ) ); // i18n
+//      _toolBox->addItem( bar, bar->label() );
 
       QPtrList<ToolBarItem> subitems = item->getItems();
       ToolBarItem* subitem;
@@ -129,6 +130,45 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
   _toolBox->show();
 }
 
+void CommandBarManager::customSetup( ToolBarItem* toolBar ) const
+{
+  if ( !toolBar || !_toolBox )
+    return; // empty menu bar
+
+  int ct = _toolBox->count();
+  for ( int i=0; i<ct; i++ )
+  {
+    QWidget* w = _toolBox->item( i );
+    if ( w && w->inherits("Gui::CustomToolBar") )
+    {
+      CustomToolBar* cw = dynamic_cast<CustomToolBar*>(w);
+      if ( cw && cw->canModify() )
+      {
+        _toolBox->removeItem( cw );
+      }
+    }
+  }
+
+  CommandManager& mgr = ApplicationWindow::Instance->commandManager();
+  QPtrList<ToolBarItem> items = toolBar->getItems();
+
+  ToolBarItem* item;
+  for ( item = items.first(); item; item = items.next() )
+  {
+    QToolBar* bar = getOrCreateCommandBar( item->command(), true );
+
+    QPtrList<ToolBarItem> subitems = item->getItems();
+    ToolBarItem* subitem;
+    for ( subitem = subitems.first(); subitem; subitem = subitems.next() )
+    {
+      if ( subitem->command() == "Separator" )
+        bar->addSeparator();
+      else
+        mgr.addTo( subitem->command().latin1(), bar );
+    }
+  }
+}
+
 QPtrList<QToolBar> CommandBarManager::commandBars() const
 {
   QPtrList<QToolBar> bars;
@@ -145,7 +185,7 @@ QPtrList<QToolBar> CommandBarManager::commandBars() const
   return bars;
 }
 
-QToolBar* CommandBarManager::getOrCreateCommandBar( const QString& name, bool activate )
+QToolBar* CommandBarManager::getOrCreateCommandBar( const QString& name, bool activate, bool modify ) const
 {
   QToolBar* bar=0;
   int ct = _toolBox->count();
@@ -164,8 +204,11 @@ QToolBar* CommandBarManager::getOrCreateCommandBar( const QString& name, bool ac
   
   if ( !bar )
   {
-    bar = new ToolBoxBar( name, _toolBox, name.latin1() );
-    _toolBox->addItem( bar, name );
+    ToolBoxBar* cw = new ToolBoxBar( name, _toolBox, name.latin1() );
+    cw->setCanModify( modify );
+    bar = cw;
+    bar->setLabel( QObject::tr( name ) ); // i18n
+    _toolBox->addItem( bar, bar->label() );
   }
 
   if ( activate )

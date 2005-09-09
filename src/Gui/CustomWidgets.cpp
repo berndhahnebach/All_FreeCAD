@@ -219,7 +219,7 @@ void CustomWidget::removeCustomItems( ParameterGrp::handle hGrp, const QStringLi
 
   rebuild();
 }
-#endif
+
 /** 
  * Sets the 'removable' property to b
  * After switching to a new workbench the customizable
@@ -239,7 +239,7 @@ bool CustomWidget::isRemovable() const
 {
   return _bCanRemove;
 }
-
+#endif
 /**
  * If \a b is true this widget can be modified, otherwise it cannot be modified.
  */
@@ -386,6 +386,7 @@ bool CustomToolBar::isAllowed( QWidget* w )
 
 void CustomToolBar::dropEvent ( QDropEvent * e)
 {
+#ifndef NEW_WB_FRAMEWORK
   QPtrList<QWidget> childs;
   if ( children() )
   {
@@ -407,9 +408,7 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   // is the same as the number of items
   //
   // different sizes ->just append at the end
-#ifndef NEW_WB_FRAMEWORK
   if ( childs.count() != _Items.size() )
-#endif
   {
     /*    // create a new button
         //
@@ -456,7 +455,6 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   }
 #endif
 
-#ifndef NEW_WB_FRAMEWORK
   // find right position for the new widget(s)
   QStringList items;
   QStringList::Iterator it2 = _Items.begin();
@@ -501,6 +499,18 @@ void CustomToolBar::dropEvent ( QDropEvent * e)
   // clear all and rebuild it again
   //
   rebuild();
+#else
+  // append the dropped items
+  CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
+  if (!canModify())
+    return; // no need to read again
+  QStringList actions = ActionDrag::actions;
+  for (QStringList::Iterator it = actions.begin(); it != actions.end(); ++it)
+  {
+    rMgr.addTo( (*it).latin1(), this );
+  }
+
+  ActionDrag::actions.clear();
 #endif
 }
 
@@ -548,6 +558,10 @@ CustomPopupMenu::CustomPopupMenu(QWidget * parent, const char * name, const char
   //  setAcceptDrops(true);
   if (menu)
     this->_parent = menu;
+#else
+  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  hGrp->Attach(this);
+  _bAllowDrag = hGrp->GetBool("AllowDrag", _bAllowDrag);
 #endif
 }
 
@@ -555,6 +569,9 @@ CustomPopupMenu::~CustomPopupMenu()
 {
 #ifndef NEW_WB_FRAMEWORK
   _hCommonGrp->Detach(this);
+#else
+  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  hGrp->Detach(this);
 #endif
 }
 
@@ -566,7 +583,6 @@ void CustomPopupMenu::OnChange(Base::Subject<const char*> &rCaller, const char *
     _bAllowDrag = rclGrp.GetBool("AllowDrag", false);
   }
 }
-
 /**
  * If this menu can be modified it is rebuild, otherwise nothing happens.
  */

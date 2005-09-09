@@ -31,6 +31,7 @@
 #include "MenuManager.h"
 #include "Application.h"
 #include "Command.h"
+#include "CustomWidgets.h"
 
 using namespace Gui;
 
@@ -178,7 +179,7 @@ void MenuManager::setup( MenuItem* item, QMenuData* data ) const
   QPopupMenu* menu = findMenu( data, item->command() );
   if ( !menu )
   {
-    menu = new QPopupMenu( ApplicationWindow::Instance, item->command() );
+    menu = new CustomPopupMenu( ApplicationWindow::Instance, item->command() );
     int id = data->insertItem(item->command(), menu);
   }
   else

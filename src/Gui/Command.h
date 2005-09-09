@@ -470,8 +470,8 @@ public:
   /** Creates the accompanying QAction object to the command. */
   QAction * createAction(void);
 
-  /** Appends a new workbench \a item. */
-  void appendItem ( const QString& item );
+  /** Refreshes the list of available workbenches. */
+  void refresh ();
 
   /** Activates the workbench \a item. */
   void activate( const QString& item );
@@ -485,6 +485,9 @@ public:
   bool addTo(QWidget *);
 
 private:
+  /** Appends a new workbench \a item. */
+  void addWorkbench ( const QString& item );
+
   QActionGroup *pcAction;
 };
 

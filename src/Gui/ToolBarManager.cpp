@@ -30,6 +30,7 @@
 #include "ToolBarManager.h"
 #include "Application.h"
 #include "Command.h"
+#include "CustomWidgets.h"
 
 using namespace Gui;
 
@@ -185,9 +186,10 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
 
     if ( !bar )
     {
-      bar = new QToolBar( item->command(), ApplicationWindow::Instance, ApplicationWindow::Instance, false, item->command().latin1() );
-      bar->setLabel( QObject::tr( item->command() ) ); // i18n
-      ApplicationWindow::Instance->addDockWindow( bar );
+      bar = getOrCreateToolBar( item->command(), false );
+//      bar = new CustomToolBar( item->command(), ApplicationWindow::Instance, ApplicationWindow::Instance, false, item->command().latin1() );
+//      bar->setLabel( QObject::tr( item->command() ) ); // i18n
+//      ApplicationWindow::Instance->addDockWindow( bar );
 
       QPtrList<ToolBarItem> subitems = item->getItems();
       ToolBarItem* subitem;
@@ -201,3 +203,86 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
     }
   }
 }
+
+void ToolBarManager::customSetup( ToolBarItem* toolBar ) const
+{
+  if ( !toolBar )
+    return; // empty menu bar
+
+  QPtrList<QDockWindow> dws = ApplicationWindow::Instance->dockWindows();
+  QDockWindow* dw;
+  for ( dw = dws.first(); dw; dw = dws.next() )
+  {
+    // search for changable bars
+    if ( dw->inherits("Gui::CustomToolBar") )
+    {
+      CustomToolBar* cw = dynamic_cast<CustomToolBar*>(dw);
+      if ( cw && cw->canModify() )
+      {
+        ApplicationWindow::Instance->removeDockWindow( cw );
+        delete cw;
+      }
+    }
+  }
+
+  CommandManager& mgr = ApplicationWindow::Instance->commandManager();
+  QPtrList<ToolBarItem> items = toolBar->getItems();
+
+  ToolBarItem* item;
+  for ( item = items.first(); item; item = items.next() )
+  {
+    QToolBar* bar = getOrCreateToolBar( item->command(), true );
+
+    QPtrList<ToolBarItem> subitems = item->getItems();
+    ToolBarItem* subitem;
+    for ( subitem = subitems.first(); subitem; subitem = subitems.next() )
+    {
+      if ( subitem->command() == "Separator" )
+        bar->addSeparator();
+      else
+        mgr.addTo( subitem->command().latin1(), bar );
+    }
+  }
+}
+
+QPtrList<QToolBar> ToolBarManager::toolBars() const
+{
+  QPtrList<QToolBar> tbs;
+  QPtrList<QDockWindow> dws = ApplicationWindow::Instance->dockWindows();
+  QDockWindow* dw;
+  for ( dw = dws.first(); dw; dw = dws.next() )
+  {
+    if ( dw->inherits("QToolBar") )
+    {
+      tbs.append( reinterpret_cast<QToolBar*>(dw) );
+    }
+  }
+
+  return tbs;
+}
+
+QToolBar* ToolBarManager::getOrCreateToolBar( const QString& name, bool modify ) const
+{
+  QPtrList<QToolBar> bars = toolBars();
+  QToolBar* bar=0;
+  for ( bar = bars.first(); bar; bar = bars.next() )
+  {
+    if ( strcmp(bar->name(), name.latin1()) == 0 )
+    {
+      break;
+    }
+  }
+  
+  if ( !bar )
+  {
+    CustomToolBar* cw = new CustomToolBar( name, ApplicationWindow::Instance, ApplicationWindow::Instance, false, name.latin1() );
+    cw->setCanModify( modify );
+    bar = cw;
+    bar->setLabel( QObject::tr( name ) ); // i18n
+    ApplicationWindow::Instance->addDockWindow( bar );
+  }
+
+  return bar;
+}
+
+

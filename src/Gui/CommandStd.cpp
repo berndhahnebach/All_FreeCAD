@@ -435,20 +435,17 @@ QAction * StdCmdWorkbench::createAction(void)
   if(sPixmap)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
   pcAction->setAccel(iAccel);
- 
-  // sort the workbenches
-  QStringList items = ApplicationWindow::Instance->workbenches();
-  items.sort();
-  for (QStringList::Iterator it = items.begin(); it!=items.end(); ++it)
-    appendItem( *it );
+
+  // fill up with workbench actions
+  refresh();
 
   return pcAction;
 }
 
 /**
- * Append a new workbench with \a item to the list of workbenches.
+ * Appends a new workbench with name \a item to the list of workbenches.
  */
-void StdCmdWorkbench::appendItem ( const QString& item )
+void StdCmdWorkbench::addWorkbench ( const QString& item )
 {
   if ( pcAction )
   {
@@ -462,6 +459,34 @@ void StdCmdWorkbench::appendItem ( const QString& item )
     else
       action->setIconSet( px );
     pcAction->add( action );
+  }
+}
+
+/**
+ * Refreshes the list of available workbenches.
+ */
+void StdCmdWorkbench::refresh ()
+{
+  if ( pcAction )
+  {
+    // remove all workbench actions and rebuild it
+    QObjectList *childs = pcAction->queryList( "Gui::WorkbenchAction" );
+    QObjectListIt it( *childs ); // iterate over the actions
+    QObject *obj;
+
+    while ( (obj = it.current()) != 0 ) 
+    {
+      pcAction->removeChild( obj );
+      delete obj;
+      ++it;
+    }
+    delete childs; // delete the list, not the objects  
+
+    // sort the workbenches
+    QStringList items = ApplicationWindow::Instance->workbenches();
+    items.sort();
+    for (QStringList::Iterator item = items.begin(); item!=items.end(); ++item)
+      addWorkbench( *item );
   }
 }
 
