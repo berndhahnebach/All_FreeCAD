@@ -74,7 +74,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
     if ( w && w->inherits("QToolBar") )
     {
       // if the bar already exists keep it unchanged
-      if ( toolBar->findItem( w->name() ) )
+      if ( toolBar->findItem( w->name() ) && strcmp(w->name(), "file operations") == 0 )
       {
         tbs.append( reinterpret_cast<QToolBar*>(w) );
       }
@@ -92,7 +92,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
   {
      _toolBox->removeItem( w );
   }
-  
+
   CommandManager& mgr = ApplicationWindow::Instance->commandManager();
   QPtrList<ToolBarItem> items = toolBar->getItems();
 
@@ -155,7 +155,10 @@ void CommandBarManager::customSetup( ToolBarItem* toolBar ) const
   ToolBarItem* item;
   for ( item = items.first(); item; item = items.next() )
   {
-    QToolBar* bar = getOrCreateCommandBar( item->command(), true );
+    QToolBar* bar = getOrCreateCommandBar( item->command(), true, true );
+    CustomToolBar* cw = dynamic_cast<CustomToolBar*>(bar);
+    if ( !(cw && cw->canModify()) )
+      continue; // standard toolbar (not user defined)
 
     QPtrList<ToolBarItem> subitems = item->getItems();
     ToolBarItem* subitem;

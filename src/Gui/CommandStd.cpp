@@ -499,9 +499,13 @@ bool StdCmdWorkbench::addTo(QWidget *w)
 {
   if (!w->inherits("QToolBar") || QString(w->name()) != QString("file operations"))
   {
+#ifdef FC_DEBUG
     char szBuf[200];
     sprintf(szBuf, "Adding the command \"%s\" to this widget is not permitted!", getName());
     QMessageBox::information(ApplicationWindow::Instance, "Warning", szBuf);
+#else
+    Base::Console().Log("Cannot add '%s' to this widget.\n", sName.c_str());
+#endif
     return false;
   }
 

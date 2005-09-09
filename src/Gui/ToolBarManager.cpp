@@ -159,7 +159,7 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
   {
     if ( dw->inherits("QToolBar") )
     {
-      if ( toolBar->findItem( dw->name() ) )
+      if ( toolBar->findItem( dw->name() ) && strcmp(dw->name(), "file operations") == 0 )
       {
         tbs.append( reinterpret_cast<QToolBar*>(dw) );
       }
@@ -232,6 +232,9 @@ void ToolBarManager::customSetup( ToolBarItem* toolBar ) const
   for ( item = items.first(); item; item = items.next() )
   {
     QToolBar* bar = getOrCreateToolBar( item->command(), true );
+    CustomToolBar* cw = dynamic_cast<CustomToolBar*>(bar);
+    if ( !(cw && cw->canModify()) )
+      continue; // standard toolbar (not user defined)
 
     QPtrList<ToolBarItem> subitems = item->getItems();
     ToolBarItem* subitem;
