@@ -76,40 +76,48 @@ void ViewProviderInventorMeshTransformDemolding::attache(App::Feature *pcFeat)
   // creats the satandard viewing modes
   ViewProviderInventorMesh::attache(pcFeat);
 
-//  SoTransformerDragger *pcTransformerDragger = new SoTransformerDragger();
-  pcTransformerDragger = new SoTransformerManip();
+
+  SoGroup* pcColorShadedRoot = new SoGroup();
 
 
-  SoSeparator* pcEditRoot = new SoSeparator();
-
-
-  // flat shaded (Normal) ------------------------------------------
+  // color shaded  ------------------------------------------
   SoDrawStyle *pcFlatStyle = new SoDrawStyle();
   pcFlatStyle->style = SoDrawStyle::FILLED;
-  SoNormalBinding* pcBinding = new SoNormalBinding();
-	pcBinding->value=SoNormalBinding::PER_FACE;
+  pcColorShadedRoot->addChild(pcFlatStyle);
 
-  pcEditRoot->addChild(pcTransformerDragger);
-  pcEditRoot->addChild(pcFlatStyle);
-  pcEditRoot->addChild(pcShadedMaterial);
-  pcEditRoot->addChild(pcBinding);
-  pcEditRoot->addChild(pcHighlight);
-
-
+  SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
+  pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
+  SoMaterial* pcColorMat = new SoMaterial;
+  pcColorShadedRoot->addChild(pcColorMat);
+  pcColorShadedRoot->addChild(pcMatBinding);
+//  pcColorShadedRoot->addChild(pcBinding);  
+  pcColorShadedRoot->addChild(pcHighlight);
 
   // adding to the switch
-  pcModeSwitch->addChild(pcEditRoot);
+  pcModeSwitch->addChild(pcColorShadedRoot);
 
 }
 
+
+
+
+std::vector<std::string> ViewProviderInventorMeshTransformDemolding::getModes(void)
+{
+  std::vector<std::string> StrList = ViewProviderInventorMesh::getModes();
+
+  StrList.push_back("Demold");
+
+  return StrList;
+}
+
+
+
+/*
 void ViewProviderInventorMeshTransformDemolding::updateData(void)
 {
   ViewProviderInventorMesh::updateData();
-
-  
 }
 
-/*
 void ViewProviderInventorMeshTransformDemolding::setMode(const char* ModeName)
 {
   ViewProviderInventorMesh::setMode(ModeName);
@@ -117,14 +125,5 @@ void ViewProviderInventorMeshTransformDemolding::setMode(const char* ModeName)
   int i = getMode();
 }
 */
-
-std::vector<std::string> ViewProviderInventorMeshTransformDemolding::getModes(void)
-{
-  std::vector<std::string> StrList = ViewProviderInventorMesh::getModes();
-
-  StrList.push_back("Transform");
-
-  return StrList;
-}
 
 

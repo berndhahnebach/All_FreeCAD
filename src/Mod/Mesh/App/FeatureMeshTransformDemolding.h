@@ -46,6 +46,8 @@ public:
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "MeshTransformDemolding";};
   //@}
+
+  Matrix4D Rotation;
 };
 
 }

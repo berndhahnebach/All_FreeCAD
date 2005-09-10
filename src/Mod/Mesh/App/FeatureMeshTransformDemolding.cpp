@@ -42,39 +42,19 @@ using namespace MeshCore;
 void FeatureMeshTransformDemolding::initFeature(void)
 {
   Base::Console().Log("FeatureMeshImport::InitLabel()\n");
-  addProperty("String","FileName");
+  addProperty("Link","Base");
+  addProperty("Float","Rotation");
 }
 
 int FeatureMeshTransformDemolding::execute(TFunction_Logbook& log)
 {
-  Base::Console().Log("FeatureMeshImport::Execute()\n");
+  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(getPropertyLink("Base"));
+  if(!pcFirst || pcFirst->getStatus() != Valid)
+    return 1;
 
-  try{
-
-    std::string FileName =getPropertyString("FileName");
-
-    // ask for read permisson
-		if ( access(FileName.c_str(), 4) != 0 )
-    {
-      Base::Console().Log("FeatureMeshImport::Execute() not able to open %s!\n",FileName.c_str());
-      return 1;
-    }
-
-    MeshSTL aReader(*(_cMesh.getKernel()) );
-
-    // read file
-    FileStream str( FileName.c_str(), std::ios::in);
-    if ( !aReader.Load( str ) )
-      throw Base::Exception("Import failed (load file)");
-  }
-  catch(Base::AbortException& e){
-    return 0;
-  }
-  catch(...){
-    Base::Console().Error("FeatureMeshTransform::Execute() failed!");
-    return 2;
-  }
-
+  setMesh(pcFirst->getMesh());
+  getMesh().transform(Rotation);
+  
   return 0;
 }
 

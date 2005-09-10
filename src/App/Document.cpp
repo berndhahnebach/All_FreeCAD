@@ -340,7 +340,12 @@ void Document::Recompute()
         }
 		  }
     }
+    // for detecting recursions
+    iSentinel --;
   }while(iSentinel > 0 && goOn);
+
+  if(iSentinel <= 0)
+    Base::Console().Warning("Document::Recompute(): bailing out with to high solver count, possible recursion!\n");
   
   // remove the new features from the update set, get updated anyway
   for(i = DocChange.NewFeatures.begin();i!=DocChange.NewFeatures.end();++i)

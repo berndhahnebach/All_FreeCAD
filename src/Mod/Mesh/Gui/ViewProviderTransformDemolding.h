@@ -44,7 +44,7 @@ namespace Mesh {
   class MeshPropertyColor;
 }
 
-#include "ViewProviderTransform.h"
+#include "ViewProvider.h"
 
 namespace MeshGui {
 
@@ -68,13 +68,11 @@ public:
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
   /// Update the Mesh representation
-  virtual void updateData(void);
+  //virtual void updateData(void);
 
 protected:
 
   SoTransformerManip *pcTransformerDragger;
-
-  //SoSwitch          *pcManipSwitch;
 
 };
 

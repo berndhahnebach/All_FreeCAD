@@ -189,7 +189,7 @@ void TreeView::onUpdate(void)
 #endif
 
   // quick and dirty so far
-  delete _pcMainItem;
+  //delete _pcMainItem;
   //_pcMainItem = new TreeLabel(this);
 }
 

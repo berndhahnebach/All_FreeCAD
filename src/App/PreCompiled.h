@@ -125,6 +125,16 @@
 #include <TDataStd_RealArray.hxx>
 #include <TDataStd_IntegerArray.hxx>
 #include <TDataStd_Comment.hxx>
+#include <TDataStd_Point.hxx>
+#include <TDataStd_Plane.hxx>
+#include <TDataStd_Constraint.hxx>
+#include <TDataStd_Axis.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDataStd_Directory.hxx>
+#include <TDataStd_Geometry.hxx>
+#include <TDataStd_ConstraintEnum.hxx>
+#include <TDataStd_GeometryEnum.hxx>
+#include <TDataStd_RealEnum.hxx>
 #include <TDF_Reference.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <TNaming_Builder.hxx>
@@ -137,6 +147,12 @@
 #include <OSD_Process.hxx>
 
 #include <Quantity_Date.hxx>
+
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Ax3.hxx>
+#include <gp_Dir.hxx>
+
 
 //#include <TDataStd_Reference.hxx>
 

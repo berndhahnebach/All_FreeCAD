@@ -56,11 +56,6 @@ void CreateViewStdCommands(void);
 void CreateWindowStdCommands(void);
 void CreateTestCommands(void);
 
-/// Type of Commands
-enum CMD_Type { 
-  Cmd_Normal=0,
-  Cmd_Toggle=1
-};
 
 
 
@@ -75,6 +70,11 @@ enum CMD_Type {
 class GuiExport Command 
 {
 public:
+  /// Type of Commands
+  enum CMD_Type { 
+    Cmd_Normal=0, /** Normal command */
+    Cmd_Toggle=1  /** A toogle command */
+  };
   Command(const char* name,CMD_Type eType=Cmd_Normal);
   virtual ~Command();
 

@@ -45,6 +45,8 @@
 #include <Base/PyExportImp.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/Vector3D.h>
+#include <Base/Matrix.h>
 using Base::Console;
 
 #include "Document.h"
@@ -138,6 +140,68 @@ const char *Feature::getPropertyType(const char *Name)
   if( L.IsAttribute(TDF_Reference::GetID()) ) return "Link";
 
   return "";
+
+}
+
+
+void Feature::setPropertyVector(const Vector3D& p, const char *Name)
+{  /*
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::setPropertyFloat() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
+
+  Handle(TDataStd_Point) PointAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Point::GetID(), PointAttr )) 
+    throw Base::Exception("Type mismatch, no Float attribute!");
+
+  PointAttr->Set(gp_Pnt(p.x,p.y,p.z));
+
+  OSD_Process pro;
+  It->second.Time = pro.SystemDate();
+*/
+}
+
+Vector3D Feature::getPropertyVector(const char *Name)
+{/*
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::getPropertyVector() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
+
+  Handle(TDataStd_Point) PointAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Point::GetID(), PointAttr )) 
+    throw Base::Exception("Feature::getPropertyVector(): Type mismatch, no Point attribute!");
+
+  gp_Pnt p = PointAttr->Get();
+  return Vector3D(p.X(),p.Y(),p.Z());*/
+  return Vector3D();
+}
+
+void Feature::setPropertyMatrix(const Matrix4D&, const char *Name)
+{
+
+}
+
+
+Matrix4D Feature::getPropertyMatrix(const char *Name)
+{
+  return Matrix4D();
+}
+
+void setPropertyPlane(const Vector3D& Base, const Vector3D& Norm, const char *Name)
+{
+
+}
+
+void getPropertyPlane(Vector3D& Base, Vector3D& Norm, const char *Name)
+{
 
 }
 

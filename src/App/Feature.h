@@ -43,6 +43,15 @@ class TopoDS_Shape;
 class TDF_Label;
 //class Standard_Integer;
 
+namespace Base
+{
+  class Vector3D;
+  class Matrix4D;
+}
+
+using Base::Vector3D;
+using Base::Matrix4D;
+
 namespace App
 {
 
@@ -137,7 +146,14 @@ public:
 	 */
 	//Property &GetProperty(const char *Name);
 
-	/** Insert a Link Property
+	void setPropertyVector(const Vector3D&, const char *Name);
+	Vector3D getPropertyVector(const char *Name);
+	void setPropertyMatrix(const Matrix4D&, const char *Name);
+	Matrix4D getPropertyMatrix(const char *Name);
+	void setPropertyPlane(const Vector3D& Base, const Vector3D& Norm, const char *Name);
+	void getPropertyPlane(Vector3D& Base, Vector3D& Norm, const char *Name);
+
+  /** Insert a Link Property
 	 *  Call this method to add a Link to an other Feature to that Feature
 	 */
 	void setPropertyLink(Feature *pcToLink, const char *Name);

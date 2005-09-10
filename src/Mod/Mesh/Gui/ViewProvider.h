@@ -74,7 +74,7 @@ public:
   /// Update the Mesh representation
   virtual void updateData(void);
 
-
+ 
 protected:
 
   /// helper methode to build up the FaceSet
