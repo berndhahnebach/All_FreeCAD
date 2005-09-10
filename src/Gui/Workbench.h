@@ -39,6 +39,7 @@ namespace Gui {
 
 class MenuItem;
 class ToolBarItem;
+class WorkbenchManager;
 
 /**
  * This is the base class for the workbench facility. Each FreeCAD module can provide its own 
@@ -63,10 +64,6 @@ public:
    */
   void setName( const QString& );
 
-  /**
-   * Activates the workbench and adds/remove GUI elements.
-   */
-  virtual bool activate();
   /**
    * Creates and returns immediately the corresponding Python workbench object.
    */
@@ -99,19 +96,23 @@ public:
   void appendDockWindow() const;
   void removeDockWindow() const;
 
-  ToolBarItem* importCustomToolBars() const;
-  void exportCustomToolBars( ToolBarItem* ) const;
-  ToolBarItem* importCustomCommandBars() const;
-  void exportCustomCommandBars( ToolBarItem* ) const;
+  ToolBarItem* importCustomBars( const char* node ) const;
+  void exportCustomBars( ToolBarItem*, const char* node ) const;
 
 protected:
   virtual MenuItem* setupMenuBar() const=0;
   virtual ToolBarItem* setupToolBars() const=0;
   virtual ToolBarItem* setupCommandBars() const=0;
+  /**
+   * Activates the workbench and adds/remove GUI elements.
+   */
+  bool activate();
 
 private:
   QString _name;
   Base::PyObjectBase* _workbenchPy;
+
+  friend class WorkbenchManager;
 };
 
 class GuiExport StdWorkbench : public Workbench

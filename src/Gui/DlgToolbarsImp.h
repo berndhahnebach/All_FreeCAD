@@ -35,6 +35,7 @@
 namespace Gui {
 class Command;
 class CustomToolBar;
+class ToolBarItem;
 
 namespace Dialog {
 
@@ -55,9 +56,9 @@ protected:
   virtual ~DlgCustomToolbars();
 
 protected:
-  virtual void apply();
+  virtual void refreshActionList();
   virtual void cancel();
-  virtual void updateData();
+  virtual void refreshToolBarList();
 
 protected slots:
   void onItemActivated(const QString &);
@@ -68,14 +69,17 @@ protected slots:
   void onMoveDownAction();
   void onNewActionChanged( QListViewItem *i );
   void onAllActionsChanged( QListViewItem *i );
-
+#ifdef NEW_WB_FRAMEWORK
+  void onCreateToolbar();
+  void onDeleteToolbar();
+#endif
 protected:
-  /** Groups of commands */
-  std::map<std::string, std::vector<Command*> > _alCmdGroups;
   /** List of all toolbars */
 
 #ifndef NEW_WB_FRAMEWORK
   QPtrList<Gui::CustomToolBar>                _aclToolbars;
+#else
+  ToolBarItem* _toolBars;
 #endif
 };
 
@@ -93,13 +97,17 @@ public:
   ~DlgCustomToolbarsImp();
 
 protected:
-  void apply();
+#ifndef NEW_WB_FRAMEWORK
+  void refreshActionList();
+  void refreshToolBarList();
+#endif
   void cancel();
-  void updateData();
 
 protected slots:
+#ifndef NEW_WB_FRAMEWORK
   void onCreateToolbar();
   void onDeleteToolbar();
+#endif
 };
 
 } // namespace Dialog

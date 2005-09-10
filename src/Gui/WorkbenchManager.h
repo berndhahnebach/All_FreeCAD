@@ -46,6 +46,8 @@ public:
   Workbench* getWorkbench ( const QString& name );
   /** Activates the workbench with name \a name. */
   bool activate( const QString& name );
+  /** Returns the active workbench. */
+  Workbench* active() const;
 
 protected:
 	WorkbenchManager();
@@ -53,6 +55,7 @@ protected:
 
 private:
   static WorkbenchManager* _instance;
+  Workbench*  _activeWorkbench;
   QMap<QString, Workbench*> _workbenches;
 };
 

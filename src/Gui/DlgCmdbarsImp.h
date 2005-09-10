@@ -51,16 +51,17 @@ public:
   ~DlgCustomCmdbarsImp();
 
 protected:
-  void apply();
+#ifndef NEW_WB_FRAMEWORK
+  void refreshActionList();
+  void refreshToolBarList();
+#endif
   void cancel();
-  void updateData();
 
 protected slots:
+#ifndef NEW_WB_FRAMEWORK
   void onCreateToolbar();
-#ifdef NEW_WB_FRAMEWORK
-  void onItemActivated(const QString &);
-#endif
   void onDeleteToolbar();
+#endif
 };
 
 } // namespace Dialog

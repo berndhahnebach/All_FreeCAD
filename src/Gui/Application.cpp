@@ -115,7 +115,7 @@ struct ApplicationWindowP
     // create the macro manager
     _pcMacroMngr = new MacroManager();
 #ifdef NEW_WB_FRAMEWORK
-    _cActiveWorkbench = 0;
+//    _cActiveWorkbench = 0;
 #endif
   }
 
@@ -142,7 +142,8 @@ struct ApplicationWindowP
   /// workbench python dictionary
   PyObject*		 _pcWorkbenchDictionary;
 #ifdef NEW_WB_FRAMEWORK
-  Workbench*	 _cActiveWorkbench;
+//  Workbench*	 _cActiveWorkbench;
+  QString	 _cActiveWorkbenchName;
 #else
   QString	 _cActiveWorkbenchName;
 #endif
@@ -923,7 +924,7 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 #ifdef NEW_WB_FRAMEWORK
 bool ApplicationWindow::activateWorkbench( const char* name )
 {
-  if ( d->_cActiveWorkbench && d->_cActiveWorkbench->name() == name )
+  if ( d->_cActiveWorkbenchName == name )
     return false; // already active
   // net buffer because of char* <-> const char*
   Base::PyBuf Name(name);
@@ -941,25 +942,18 @@ bool ApplicationWindow::activateWorkbench( const char* name )
     // do nothing here
   }
 
-  // now try to create the matching workbench object  
-  Workbench* actWb = WorkbenchManager::instance()->getWorkbench( name );
-
-  // either the wrong name or the module couldn't be loaded :-(
-  if ( !actWb )
-  { 
-    return false;
-  }
-
-  bool ok = actWb->activate();
+  // now try to create and activate the matching workbench object
+  bool ok = WorkbenchManager::instance()->activate( name );
   if ( ok )
   {
-    d->_cActiveWorkbench = actWb;
-    // update the Std_Workbench command and its action object
-    StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
-    if ( pCmd && pCmd->getAction(false) )
-    {
-      pCmd->notify( name );
-    }
+    d->_cActiveWorkbenchName = name;
+  }
+
+  // update the Std_Workbench command and its action object
+  StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
+  if ( pCmd && pCmd->getAction(false) )
+  {
+    pCmd->notify( d->_cActiveWorkbenchName );
   }
 
   return ok;
@@ -972,25 +966,22 @@ void ApplicationWindow::refreshWorkbenchList()
   if ( pCmd && pCmd->getAction(false) )
   {
     pCmd->refresh();
-    if ( d->_cActiveWorkbench )
+    PyObject* wb = PyDict_GetItemString(d->_pcWorkbenchDictionary,d->_cActiveWorkbenchName.latin1()); 
+    if ( !wb ) // this workbench has been removed
     {
-      PyObject* wb = PyDict_GetItemString(d->_pcWorkbenchDictionary,d->_cActiveWorkbench->name().latin1()); 
-      if ( !wb ) // this workbench has been removed
+      // then just load the last workbench
+      int ct = PyDict_Size( d->_pcWorkbenchDictionary );
+      if ( ct > 0 )
       {
-        // then just load the last workbench
-        int ct = PyDict_Size( d->_pcWorkbenchDictionary );
-        if ( ct > 0 )
-        {
-          PyObject* list = PyDict_Keys( d->_pcWorkbenchDictionary ); 
-          PyObject* str = PyList_GetItem( list, ct-1 );
-          Py_DECREF(list); // frees the list
-          const char* name = PyString_AsString( str );
-          activateWorkbench( name );
-        }
+        PyObject* list = PyDict_Keys( d->_pcWorkbenchDictionary ); 
+        PyObject* str = PyList_GetItem( list, ct-1 );
+        Py_DECREF(list); // frees the list
+        const char* name = PyString_AsString( str );
+        activateWorkbench( name );
       }
-      else
-        pCmd->notify( d->_cActiveWorkbench->name() );
     }
+    else
+      pCmd->notify( d->_cActiveWorkbenchName );
   }
 }
 
@@ -1328,11 +1319,7 @@ Gui::CustomWidgetManager* ApplicationWindow::customWidgetManager(void)
 #endif
 QString ApplicationWindow::activeWorkbench(void)
 {
-#ifndef NEW_WB_FRAMEWORK
   return d->_cActiveWorkbenchName;
-#else
-  return d->_cActiveWorkbench ? d->_cActiveWorkbench->name() : /*QString::null*/"__NONE__";
-#endif
 }
 
 MacroManager *ApplicationWindow::macroManager(void)
@@ -1895,7 +1882,7 @@ PYFUNCIMP_S(ApplicationWindow,sActiveWorkbench)
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                       // NULL triggers exception 
 
-  Workbench* actWb = Instance->d->_cActiveWorkbench;
+  Workbench* actWb = WorkbenchManager::instance()->getWorkbench(Instance->d->_cActiveWorkbenchName);
   if ( !actWb )
   {
     PyErr_SetString(PyExc_AssertionError, "No active workbench\n");		
@@ -1932,7 +1919,6 @@ PYFUNCIMP_S(ApplicationWindow,sGetWorkbench)
     return NULL;
   }
 
-  wb->activate();
   Base::PyObjectBase* pyObj = wb->GetPyObject();
 //  pyObj->_INCREF();
   return pyObj;

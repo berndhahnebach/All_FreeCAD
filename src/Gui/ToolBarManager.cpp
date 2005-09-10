@@ -46,13 +46,7 @@ ToolBarItem::ToolBarItem( ToolBarItem* item )
 
 ToolBarItem::~ToolBarItem()
 {
-  ToolBarItem* item;
-  for ( item = _items.first(); item; item = _items.next() )
-  {
-    delete item;
-  }
-
-  _items.clear();
+  clear();
 }
 
 void ToolBarItem::setCommand( const QString& name )
@@ -89,6 +83,11 @@ ToolBarItem* ToolBarItem::findItem( const QString& name )
   return 0;
 }
 
+uint ToolBarItem::count() const
+{
+  return _items.count();
+}
+
 void ToolBarItem::appendItem( const ToolBarItem* item )
 {
   _items.append( item );
@@ -108,6 +107,17 @@ bool ToolBarItem::insertItem( const ToolBarItem* before, const ToolBarItem* item
 void ToolBarItem::removeItem( const ToolBarItem* item )
 {
   _items.remove( item );
+}
+
+void ToolBarItem::clear()
+{
+  ToolBarItem* item;
+  for ( item = _items.first(); item; item = _items.next() )
+  {
+    delete item;
+  }
+
+  _items.clear();
 }
 
 ToolBarItem& ToolBarItem::operator<< ( const ToolBarItem* item )

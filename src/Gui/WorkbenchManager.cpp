@@ -41,7 +41,7 @@ WorkbenchManager* WorkbenchManager::instance()
   return _instance;
 }
 
-WorkbenchManager::WorkbenchManager()
+WorkbenchManager::WorkbenchManager() : _activeWorkbench(0)
 {
 }
 
@@ -76,6 +76,14 @@ bool WorkbenchManager::activate( const QString& name )
 {
   Workbench* wb = getWorkbench( name );
   if ( wb ) 
+  {
+    _activeWorkbench = wb;
     return wb->activate();
+  }
   return false;
+}
+
+Workbench* WorkbenchManager::active() const
+{
+  return _activeWorkbench;
 }

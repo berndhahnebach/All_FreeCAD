@@ -28,6 +28,8 @@
 #endif
 
 #include <Base/Parameter.h>
+#include <Base/Interpreter.h>
+
 #include <App/Application.h>
 
 #include "Workbench.h"
@@ -59,10 +61,10 @@ void Workbench::setName( const QString& name )
   _name = name;
 }
 
-ToolBarItem* Workbench::importCustomToolBars() const
+ToolBarItem* Workbench::importCustomBars( const char* node ) const
 {
   const char* szName = this->name().latin1();
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup("Toolbars");
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup( node );
   
   ToolBarItem* root = new ToolBarItem;
   std::vector<FCHandle<ParameterGrp> > hGrps = hGrp->GetGroups();
@@ -80,7 +82,18 @@ ToolBarItem* Workbench::importCustomToolBars() const
       QString cmd = it2->first.c_str(); // command name
       cmd = cmd.mid(2);
       const char* mod = it2->second.c_str(); // module name
-//      Command* pCmd = rMgr.getCommandByName( cmd ); 
+      Command* pCmd = rMgr.getCommandByName( cmd );
+      if ( !pCmd ) // unknown command
+      {
+        // try to find out the appropriate module name
+        QString pyMod = QString("%1Gui").arg(mod);
+        try{
+          Base::Interpreter().loadModule( pyMod.latin1() );
+        }
+        catch( const Base::Exception& ) {
+        }
+      }
+
       *bar << cmd;
     }
   }
@@ -88,41 +101,34 @@ ToolBarItem* Workbench::importCustomToolBars() const
   return root;
 }
 
-void Workbench::exportCustomToolBars( ToolBarItem* ) const
-{
-}
-
-ToolBarItem* Workbench::importCustomCommandBars() const
+void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
 {
   const char* szName = this->name().latin1();
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup("Commandbars");
-  
-  ToolBarItem* root = new ToolBarItem;
-  std::vector<FCHandle<ParameterGrp> > hGrps = hGrp->GetGroups();
   CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
-  for ( std::vector<FCHandle<ParameterGrp> >::iterator it = hGrps.begin(); it != hGrps.end(); ++it )
+
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup( node );
+  hGrp->Clear();
+
+  QPtrList<ToolBarItem> items = toolBar->getItems();
+
+  ToolBarItem* item;
+  for ( item = items.first(); item; item = items.next() )
   {
-    ToolBarItem* bar = new ToolBarItem( root );
-    bar->setCommand( (*it)->GetGroupName() );
-   
-    // get the elements of the subgroups
-    std::map<std::string,std::string> items = hGrp->GetGroup( (*it)->GetGroupName() )->GetASCIIMap();
-    for ( std::map<std::string,std::string>::iterator it2 = items.begin(); it2 != items.end(); ++it2 )
+    ParameterGrp::handle hSubGrp = hGrp->GetGroup( item->command().latin1() );
+    QPtrList<ToolBarItem> subitems = item->getItems();
+    ToolBarItem* subitem;
+
+    int pos = 0;
+    for ( subitem = subitems.first(); subitem; subitem = subitems.next() )
     {
-      // to save the order a number is prepended
-      QString cmd = it2->first.c_str(); // command name
-      cmd = cmd.mid(2);
-      const char* mod = it2->second.c_str(); // module name
-//      Command* pCmd = rMgr.getCommandByName( cmd ); 
-      *bar << cmd;
+      Command* pCmd = rMgr.getCommandByName( subitem->command().latin1() );
+      QString mod = "unknown";
+      if ( pCmd )
+        mod = pCmd->getGroupName();
+      QString key; key.sprintf("%.2d%s", pos++, subitem->command().latin1() );
+      hSubGrp->SetASCII( key.latin1(), mod.latin1() );
     }
   }
-
-  return root;
-}
-
-void Workbench::exportCustomCommandBars( ToolBarItem* ) const
-{
 }
 
 bool Workbench::activate()
@@ -134,14 +140,14 @@ bool Workbench::activate()
   ToolBarItem* tb = setupToolBars();
   ToolBarManager::getInstance()->setup( tb );
   delete tb;
-  ToolBarItem* cw = importCustomToolBars();
+  ToolBarItem* cw = importCustomBars("Toolbars");
   ToolBarManager::getInstance()->customSetup(cw);
   delete cw;
 
   ToolBarItem* cb = setupCommandBars();
   CommandBarManager::getInstance()->setup( cb );
   delete cb;
-  ToolBarItem* cc = importCustomCommandBars();
+  ToolBarItem* cc = importCustomBars("Commandbars");
   CommandBarManager::getInstance()->customSetup(cc);
   delete cc;
 

@@ -40,7 +40,6 @@
 
 #include "DlgPreferencesImp.h"
 #include "WidgetFactory.h"
-#include "PropertyPage.h"
 #include "BitmapFactory.h"
 
 #ifdef FC_DEBUG

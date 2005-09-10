@@ -42,10 +42,12 @@ public:
 
   bool hasItems() const;
   ToolBarItem* findItem( const QString& );
+  uint count() const;
 
   void appendItem( const ToolBarItem* );
   bool insertItem( const ToolBarItem*, const ToolBarItem* );
   void removeItem( const ToolBarItem* );
+  void clear();
 
   ToolBarItem& operator<< ( const ToolBarItem* item );
   ToolBarItem& operator<< ( const QString& command );
