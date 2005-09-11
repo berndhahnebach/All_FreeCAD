@@ -138,14 +138,14 @@ std::vector<float> MeshPropertyCurvature::getCurvature( MeshPropertyCurvature::M
 MeshWithProperty::MeshWithProperty()
 {
   _Mesh = new MeshKernel();
-  Base::Console().Log("Create MeshWithProperty: %p \n",this);
+//  Base::Console().Log("Create MeshWithProperty: %p \n",this);
 }
 
 
 MeshWithProperty::MeshWithProperty(const MeshWithProperty& New)
 {
   _Mesh = new MeshKernel(*(New._Mesh));
-  Base::Console().Log("Create MeshWithProperty: %p \n",this);
+//  Base::Console().Log("Create MeshWithProperty: %p \n",this);
 
 }
 
@@ -153,7 +153,7 @@ MeshWithProperty::MeshWithProperty(const MeshWithProperty& New)
 MeshWithProperty::~MeshWithProperty(void)
 { 
   delete _Mesh;
-  Base::Console().Log("Destroy MeshWithProperty: %p \n",this);
+//  Base::Console().Log("Destroy MeshWithProperty: %p \n",this);
 }
 
 void MeshWithProperty::operator= ( const MeshWithProperty& New)

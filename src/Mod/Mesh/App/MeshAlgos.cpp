@@ -639,7 +639,7 @@ void MeshAlgos::LoftOnCurve(MeshWithProperty &ResultMesh, const TopoDS_Shape &Sh
       Up.Normalize();
       Vector3D Third(Tng%Up);
 
-      Base::Console().Log("Pos: %f %f %f \n",Ptn.x,Ptn.y,Ptn.z);
+//      Base::Console().Log("Pos: %f %f %f \n",Ptn.x,Ptn.y,Ptn.z);
 
       unsigned int l=0;
       std::vector<Vector3D>::const_iterator It;

@@ -310,11 +310,14 @@ void Document::Recompute()
   bool goOn;
   DocChanges DocChange;
   std::set<Feature*>::iterator i;
+  std::set<Feature*> tempErr;
   
 //  TDF_MapIteratorOfLabelMap It;
 
   do{
     goOn = false;
+    tempErr = DocChange.ErrorFeatures;
+
     std::map<std::string,FeatEntry>::iterator It;
 
     for(It = FeatMap.begin();It != FeatMap.end();++It)
@@ -342,7 +345,8 @@ void Document::Recompute()
     }
     // for detecting recursions
     iSentinel --;
-  }while(iSentinel > 0 && goOn);
+
+  }while(iSentinel > 0 && goOn && tempErr != DocChange.ErrorFeatures);
 
   if(iSentinel <= 0)
     Base::Console().Warning("Document::Recompute(): bailing out with to high solver count, possible recursion!\n");
