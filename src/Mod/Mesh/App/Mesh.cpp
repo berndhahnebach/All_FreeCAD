@@ -151,14 +151,14 @@ MeshWithProperty::MeshWithProperty(const MeshWithProperty& New)
 
  	/// destructor
 MeshWithProperty::~MeshWithProperty(void)
-{
+{ 
   delete _Mesh;
   Base::Console().Log("Destroy MeshWithProperty: %p \n",this);
 }
 
 void MeshWithProperty::operator= ( const MeshWithProperty& New)
 {
-  _Mesh = New._Mesh;
+  *_Mesh = *New._Mesh;
   
   DataWithPropertyBag::operator= (New);
 }

@@ -115,7 +115,7 @@ public:
   /// get the error Message (if any)
   const char *getErrorString(void) const{return _cErrorMessage.c_str();}
   /// set an error on recoputation
-  void setError(const char* s);
+  void setError(const char* pMsg,...);
   /// checks if valid
   bool isValid(void){return _eStatus == Valid;}
   /// Recompute only this feature and makes it valid again

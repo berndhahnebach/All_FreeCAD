@@ -46,7 +46,7 @@
 /// switch on the loging of Feature update and execution
 #  define FC_LOGFEATUREUPDATE 
 /// switch on the loging of the Update execution through Doc, App, GuiApp and GuiDoc
-#  define FC_LOGUPDATECHAIN 
+#  undef FC_LOGUPDATECHAIN 
 #endif
 
  

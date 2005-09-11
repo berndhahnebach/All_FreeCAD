@@ -516,10 +516,18 @@ const char* Feature::getStatusString(void) const
   }
 }
 
-void Feature::setError(const char* s)
+void Feature::setError(const char* pMsg,...)
 {
+  // temp buffer
+  char* format = (char*) malloc(strlen(pMsg)+4024);
+
+  va_list namelessVars;
+  va_start(namelessVars, pMsg);  // Get the "..." vars
+  vsprintf(format, pMsg, namelessVars);
+  va_end(namelessVars);
+
   _eStatus = Error;
-  _cErrorMessage = s;
+  _cErrorMessage = format;
 }
 
 
@@ -566,7 +574,7 @@ Feature* FeatureFactorySingleton::Produce (const char* sName) const
   if (!w)
   {
 #ifdef FC_DEBUG
-    Console().Warning("\"%s\" is not registered\n", sName);
+    Console().Warning("FeatureFactorySingleton::Produce(): Feature type \"%s\" is not registered\n", sName);
 #else
     Console().Log("\"%s\" is not registered\n", sName);
 #endif

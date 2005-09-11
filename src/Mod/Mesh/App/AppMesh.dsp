@@ -250,6 +250,14 @@ SOURCE=.\FeatureMeshCurvature.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\FeatureMeshExport.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureMeshExport.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\FeatureMeshImport.cpp
 # End Source File
 # Begin Source File

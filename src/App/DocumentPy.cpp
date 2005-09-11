@@ -330,14 +330,16 @@ PYFUNCIMP_D(DocumentPy,AddFeature)
 	char *sType,*sName=0;
   if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
-
+ 
+  Feature *pcFtr;
+  
   PY_TRY {
-	  Feature *pcFtr = _pcDoc->addFeature(sType,sName);
+	  pcFtr = _pcDoc->addFeature(sType,sName);
+  }PY_CATCH;
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
 		  Py_Error(PyExc_Exception,"No Feature with this name!");
-  }PY_CATCH;
 }
 
 

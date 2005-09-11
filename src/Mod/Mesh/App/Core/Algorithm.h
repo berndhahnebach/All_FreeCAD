@@ -30,6 +30,7 @@
 #endif
 
 #include "MeshKernel.h"
+#include "Elements.h"
 
 // forward declarations
 class TopoDS_Shape;
@@ -53,6 +54,7 @@ class MeshGeomFacet;
 class MeshGeomEdge;
 class MeshKernel;
 class MeshFacetGrid;
+class MeshFacetArray;
 
 /**
  * The MeshAlgorithm class provides algorithms base on meshes.

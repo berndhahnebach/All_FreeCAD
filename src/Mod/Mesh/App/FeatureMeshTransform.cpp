@@ -47,33 +47,23 @@ void FeatureMeshTransform::initFeature(void)
 
 int FeatureMeshTransform::execute(TFunction_Logbook& log)
 {
-  Base::Console().Log("FeatureMeshImport::Execute()\n");
 
-  try{
 
-    std::string FileName =getPropertyString("FileName");
+  std::string FileName =getPropertyString("FileName");
 
-    // ask for read permisson
-		if ( access(FileName.c_str(), 4) != 0 )
-    {
-      Base::Console().Log("FeatureMeshImport::Execute() not able to open %s!\n",FileName.c_str());
-      return 1;
-    }
-
-    MeshSTL aReader(*(_cMesh.getKernel()) );
-
-    // read file
-    FileStream str( FileName.c_str(), std::ios::in);
-    if ( !aReader.Load( str ) )
-      throw Base::Exception("Import failed (load file)");
+  // ask for read permisson
+	if ( access(FileName.c_str(), 4) != 0 )
+  {
+    setError("FeatureMeshTransform::Execute() not able to open %s!\n",FileName.c_str());
+    return 1;
   }
-  catch(Base::AbortException& e){
-    return 0;
-  }
-  catch(...){
-    Base::Console().Error("FeatureMeshTransform::Execute() failed!");
-    return 2;
-  }
+
+  MeshSTL aReader(*(_cMesh.getKernel()) );
+
+  // read file
+  FileStream str( FileName.c_str(), std::ios::in);
+  if ( !aReader.Load( str ) )
+    throw Base::Exception("Import failed (load file)");
 
   return 0;
 }

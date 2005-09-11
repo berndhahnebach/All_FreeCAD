@@ -242,7 +242,7 @@ void Command::abortCommand(void)
 void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
 {
   // temp buffer
-  char* format = (char*) malloc(strlen(sCmd)+1024);
+  char* format = (char*) malloc(strlen(sCmd)+4024);
   va_list namelessVars;
   va_start(namelessVars, sCmd);  // Get the "..." vars
   vsprintf(format, sCmd, namelessVars);

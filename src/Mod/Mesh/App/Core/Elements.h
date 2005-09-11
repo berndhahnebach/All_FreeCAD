@@ -590,7 +590,7 @@ typedef std::vector<MeshFacet>  TMeshFacetArray;
 /**
  * Stores all facets of the mesh data-structure.
  */
-class MeshFacetArray: public TMeshFacetArray
+class AppMeshExport MeshFacetArray: public TMeshFacetArray
 {
 public:
   // Iterator interface

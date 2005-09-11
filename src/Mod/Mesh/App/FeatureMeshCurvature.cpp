@@ -49,7 +49,6 @@ void FeatureMeshCurvature::initFeature(void)
 
 int FeatureMeshCurvature::execute(TFunction_Logbook& log)
 {
-  Base::Console().Log("FeatureMeshCurvature::Execute()\n");
 
   MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
   if(!pcFeat || pcFeat->getStatus() != Valid)

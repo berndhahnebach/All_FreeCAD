@@ -32,6 +32,7 @@
 #include <Python.h>
 
 #include "FeatureMeshImport.h"
+#include "FeatureMeshExport.h"
 #include "FeatureMeshTransform.h"
 #include "FeatureMeshTransformDemolding.h"
 #include "FeatureMeshCurvature.h"
@@ -51,6 +52,7 @@ void AppMeshExport initMesh() {
 
   Base::Console().Log("AppMesh loaded\n");
 	App::FeatureFactory().AddProducer("MeshImport",            new App::FeatureProducer<Mesh::FeatureMeshImport>);
+	App::FeatureFactory().AddProducer("MeshExport",            new App::FeatureProducer<Mesh::FeatureMeshExport>);
 	App::FeatureFactory().AddProducer("Mesh",                  new App::FeatureProducer<Mesh::MeshFeature>      );
 	App::FeatureFactory().AddProducer("MeshTransform"         ,new App::FeatureProducer<Mesh::FeatureMeshTransform>      );
 	App::FeatureFactory().AddProducer("MeshTransformDemolding",new App::FeatureProducer<Mesh::FeatureMeshTransformDemolding>      );

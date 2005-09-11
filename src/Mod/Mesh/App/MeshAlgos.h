@@ -33,6 +33,7 @@
 using Base::Vector3D;
 
 #include "CurveProjector.h"
+#include "gts.h"
 
 class TopoDS_Edge;
 class TopoDS_Shape;

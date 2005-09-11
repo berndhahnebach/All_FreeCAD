@@ -51,6 +51,9 @@ PyException::PyException(void)
   _sErrMsg = temp;
 
   _stackTrace = PP_last_error_trace;     /* exception traceback text */
+
+  PyErr_Clear(); // must be called to keep Python interpreter in a valid state (Werner)
+
 }
 
 
@@ -80,7 +83,6 @@ std::string InterpreterSingleton::runString(const char *sCmd)
   presult = PyRun_String(buf.str, Py_file_input, dict, dict); /* eval direct */
   if(!presult)
   {
-    PyErr_Clear(); // must be called to keep Python interpreter in a valid state (Werner)
     throw PyException();
   }
 
