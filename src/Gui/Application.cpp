@@ -65,7 +65,7 @@
 #include "BitmapFactory.h"
 #include "Splashscreen.h"
 #include "MenuManager.h"
-
+#include "WorkbenchFactory.h"
 
 #include "CommandLine.h"
 //#include "DlgDocTemplatesImp.h"
@@ -1744,7 +1744,17 @@ PYFUNCIMP_S(ApplicationWindow,sListWorkbenches)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
       return NULL;                             // NULL triggers exception 
-  return Instance->d->_pcWorkbenchDictionary;
+  QStringList wb = WorkbenchFactory().workbenches();
+  PyObject* pyList = PyList_New(wb.count()); 
+  int i=0;
+  for ( QStringList::Iterator it = wb.begin(); it != wb.end(); ++it )
+  {
+    PyObject* str = PyString_FromString((*it).latin1());
+    PyList_SetItem(pyList, i++, str);
+  }
+
+//  return Instance->d->_pcWorkbenchDictionary;
+  return pyList;
 } 
 
 PYFUNCIMP_S(ApplicationWindow,sAddWorkbench)

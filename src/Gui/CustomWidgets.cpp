@@ -290,8 +290,10 @@ CustomToolBar::CustomToolBar ( const QString & label, QMainWindow *mainWindow, Q
                                bool newLine, const char * name, WFlags f, const char* type )
   : QToolBar(label, mainWindow, parent, newLine, name, f), CustomWidget(type, name)
 {
+#ifndef NEW_WB_FRAMEWORK
   // allow drag and drop
   setAcceptDrops(true);
+#endif
 }
 
 /**
@@ -301,8 +303,10 @@ CustomToolBar::CustomToolBar ( const QString & label, QMainWindow *mainWindow, Q
 CustomToolBar::CustomToolBar ( QMainWindow * parent, const char * name, const char* type )
     : QToolBar(parent, name), CustomWidget(type, name)
 {
+#ifndef NEW_WB_FRAMEWORK
   // allow drag and drop
   setAcceptDrops(true);
+#endif
 }
 
 CustomToolBar::~CustomToolBar()
@@ -354,7 +358,9 @@ void CustomToolBar::rebuild()
 void CustomToolBar::setCanModify(bool b)
 {
   CustomWidget::setCanModify( b );
+#ifndef NEW_WB_FRAMEWORK
   setAcceptDrops(b);
+#endif
 }
 
 /**

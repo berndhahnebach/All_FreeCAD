@@ -59,3 +59,11 @@ Workbench* WorkbenchFactoryInst::createWorkbench ( const char* sName ) const
   w->setName( sName );
   return w;
 }
+
+QStringList WorkbenchFactoryInst::workbenches() const
+{
+  QStringList wb;
+  for ( std::map<const std::string, Base::AbstractProducer*>::const_iterator it = _mpcProducers.begin(); it != _mpcProducers.end(); ++it )
+    wb << it->first.c_str();
+  return wb;
+}

@@ -45,6 +45,7 @@ public:
   static void destruct ();
 
   Workbench* createWorkbench ( const char* sName ) const;
+  QStringList workbenches() const;
 
 private:
   static WorkbenchFactoryInst* _pcSingleton;
