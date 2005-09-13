@@ -62,7 +62,6 @@ DEF_STD_CMD_A(FCCmdTest1);
 FCCmdTest1::FCCmdTest1()
   :CppCommand("Std_Test1")
 {
-  sAppModule    = "";
   sGroup        = "Standard-Test";
   sMenuText     = "Test1";
   sToolTipText  = "Test function 1";
@@ -174,7 +173,6 @@ DEF_STD_CMD_A(FCCmdTest2);
 FCCmdTest2::FCCmdTest2()
 	:CppCommand("Std_Test2")
 {
-	sAppModule		= "";
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test2";
 	sToolTipText	= "Test function 2";
@@ -223,7 +221,6 @@ DEF_STD_CMD_A(FCCmdTest3);
 FCCmdTest3::FCCmdTest3()
 	:CppCommand("Std_Test3")
 {
-	sAppModule		= "";
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test3";
 	sToolTipText	= "Test function 3";
@@ -256,7 +253,6 @@ DEF_STD_CMD_A(FCCmdTest4);
 FCCmdTest4::FCCmdTest4()
 	:CppCommand("Std_Test4")
 {
-	sAppModule		= "";
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test4";
 	sToolTipText	= "Test function 4";
@@ -288,7 +284,6 @@ DEF_STD_CMD_A(FCCmdTest5);
 FCCmdTest5::FCCmdTest5()
 	:CppCommand("Std_Test5")
 {
-	sAppModule		= "";
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test5";
 	sToolTipText	= "Test function 5";
@@ -321,7 +316,6 @@ DEF_STD_CMD_A(FCCmdTest6);
 FCCmdTest6::FCCmdTest6()
 	:CppCommand("Std_Test6")
 {
-	sAppModule		= "";
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test6";
 	sToolTipText	= "Test function 6";
@@ -354,7 +348,6 @@ DEF_STD_CMD_A(FCCmdTest7);
 FCCmdTest7::FCCmdTest7()
 	:CppCommand("Std_Test7")
 {
-	sAppModule		= "";
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test progress bar";
 	sToolTipText	= "Test progress bar";
@@ -399,7 +392,6 @@ DEF_STD_CMD_A(FCCmdTest8);
 FCCmdTest8::FCCmdTest8()
 	:CppCommand("Std_Test8")
 {
-	sAppModule		= "";
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test progress bar";
 	sToolTipText	= "Test progress bar";

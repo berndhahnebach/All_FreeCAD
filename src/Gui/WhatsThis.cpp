@@ -118,7 +118,6 @@ QTextBrowser* StdCmdDescription::_helpViewer = 0L;
 StdCmdDescription::StdCmdDescription()
   :CppCommand("Std_DescriptionMode", Cmd_Toggle)
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Des&cription");
   sToolTipText  = QT_TR_NOOP("Long description of commands");

@@ -124,7 +124,7 @@ void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
       Command* pCmd = rMgr.getCommandByName( subitem->command().latin1() );
       QString mod = "unknown";
       if ( pCmd )
-        mod = pCmd->getGroupName();
+        mod = pCmd->getAppModuleName();
       QString key; key.sprintf("%.2d%s", pos++, subitem->command().latin1() );
       hSubGrp->SetASCII( key.latin1(), mod.latin1() );
     }

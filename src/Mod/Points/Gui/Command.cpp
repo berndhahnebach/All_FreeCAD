@@ -48,7 +48,7 @@ DEF_STD_CMD_A(CmdPointsTest);
 CmdPointsTest::CmdPointsTest()
   :CppCommand("Points_Test")
 {
-  sAppModule    = QT_TR_NOOP("Points");
+  sAppModule    = "Points";
   sGroup        = QT_TR_NOOP("Points");
   sMenuText     = QT_TR_NOOP("Import");
   sToolTipText  = QT_TR_NOOP("Points Test function");

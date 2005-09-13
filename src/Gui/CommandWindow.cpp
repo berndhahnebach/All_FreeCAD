@@ -49,7 +49,6 @@ DEF_STD_CMD_A(StdCmdTileHor);
 StdCmdTileHor::StdCmdTileHor()
   :CppCommand("Std_TileHoricontal")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Tile &Horizontally");
   sToolTipText  = QT_TR_NOOP("Tile the windows horizontally");
@@ -77,7 +76,6 @@ DEF_STD_CMD_A(StdCmdTileVer);
 StdCmdTileVer::StdCmdTileVer()
   :CppCommand("Std_TileVertical")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Tile Vertically");
   sToolTipText  = QT_TR_NOOP("Tile the windows vertically");
@@ -105,7 +103,6 @@ DEF_STD_CMD_A(StdCmdTilePra);
 StdCmdTilePra::StdCmdTilePra()
   :CppCommand("Std_TilePragmatic")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Cascade");
   sToolTipText  = QT_TR_NOOP("Tile pragmatic");
@@ -133,7 +130,6 @@ DEF_STD_CMD_A(StdCmdCloseActiveWindow);
 StdCmdCloseActiveWindow::StdCmdCloseActiveWindow()
   :CppCommand("Std_CloseActiveWindow")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Cl&ose");
   sToolTipText  = QT_TR_NOOP("Close active window");
@@ -160,7 +156,6 @@ DEF_STD_CMD_A(StdCmdCloseAllWindows);
 StdCmdCloseAllWindows::StdCmdCloseAllWindows()
   :CppCommand("Std_CloseAllWindows")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Close Al&l");
   sToolTipText  = QT_TR_NOOP("Close all windows");
@@ -187,7 +182,6 @@ DEF_STD_CMD_A(StdCmdActivateNextWindow);
 StdCmdActivateNextWindow::StdCmdActivateNextWindow()
   :CppCommand("Std_ActivateNextWindow")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Ne&xt");
   sToolTipText  = QT_TR_NOOP("Activate next window");
@@ -215,7 +209,6 @@ DEF_STD_CMD_A(StdCmdActivatePrevWindow);
 StdCmdActivatePrevWindow::StdCmdActivatePrevWindow()
   :CppCommand("Std_ActivatePrevWindow")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Pre&vious");
   sToolTipText  = QT_TR_NOOP("Activate previous window");
@@ -243,7 +236,6 @@ DEF_STD_CMD(StdCmdWindows);
 StdCmdWindows::StdCmdWindows()
   :CppCommand("Std_Windows")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Windows...");
   sToolTipText  = QT_TR_NOOP("Windows list");
@@ -268,7 +260,6 @@ DEF_STD_CMD(StdCmdMDINormal);
 StdCmdMDINormal::StdCmdMDINormal()
   :CppCommand("Std_MDINormal")
 {
-  sAppModule    = "";
   sGroup        = "Standard";
   sMenuText     = "MDI Normal";
   sToolTipText  = "Set the standard MDI mode";
@@ -293,7 +284,6 @@ DEF_STD_CMD(StdCmdMDIToplevel);
 StdCmdMDIToplevel::StdCmdMDIToplevel()
   :CppCommand("Std_MDIToplevel",Cmd_Toggle)
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("MDI seperate windows");
   sToolTipText  = QT_TR_NOOP("Set the seperate window MDI mode");
@@ -322,7 +312,6 @@ DEF_STD_CMD(StdCmdMDITabbed);
 StdCmdMDITabbed::StdCmdMDITabbed()
   :CppCommand("Std_MDITabbed",Cmd_Toggle)
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("MDI tabbed");
   sToolTipText  = QT_TR_NOOP("Set the tabbed MDI mode");
@@ -352,6 +341,12 @@ DEF_STD_CMD_AC(StdCmdViewMenu);
 StdCmdViewMenu::StdCmdViewMenu()
   :CppCommand("Std_ViewMenu")
 {
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Toggles this window");
+  sToolTipText  = QT_TR_NOOP("Toggles this window");
+  sWhatsThis    = QT_TR_NOOP("Toggles this window");
+  sStatusTip    = QT_TR_NOOP("Toggles this window");
+  iAccel        = 0;
 }
 
 void StdCmdViewMenu::activated(int iMsg)
@@ -377,7 +372,6 @@ DEF_STD_CMD_AC(StdCmdStatusBar);
 StdCmdStatusBar::StdCmdStatusBar()
   :CppCommand("Std_ViewStatusBar", Cmd_Toggle)
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Status bar");
   sToolTipText  = QT_TR_NOOP("Toggles the status bar");
@@ -415,6 +409,12 @@ DEF_STD_CMD_AC(StdCmdWindowsMenu );
 StdCmdWindowsMenu::StdCmdWindowsMenu()
   :CppCommand("Std_WindowsMenu")
 {
+  sGroup        = QT_TR_NOOP("Standard");
+  sMenuText     = QT_TR_NOOP("Activates this window");
+  sToolTipText  = QT_TR_NOOP("Activates this window");
+  sWhatsThis    = QT_TR_NOOP("Activates this window");
+  sStatusTip    = QT_TR_NOOP("Activates this window");
+  iAccel        = 0;
 }
 
 void StdCmdWindowsMenu::activated(int iMsg)

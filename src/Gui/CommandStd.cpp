@@ -81,7 +81,6 @@ StdCmdOpen::StdCmdOpen()
   :CppCommand("Std_Open")
 {
   // seting the
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Open");
   sToolTipText  = QT_TR_NOOP("Open a Document or import Files");
@@ -131,7 +130,6 @@ StdCmdNew::StdCmdNew()
   :CppCommand("Std_New")
 {
   // seting the 
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&New");
   sToolTipText  = QT_TR_NOOP("Create a new empty Document");
@@ -157,7 +155,6 @@ DEF_STD_CMD_A(StdCmdSave);
 StdCmdSave::StdCmdSave()
   :CppCommand("Std_Save")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Save");
   sToolTipText  = QT_TR_NOOP("Save the active document");
@@ -193,7 +190,6 @@ DEF_STD_CMD_A(StdCmdSaveAs);
 StdCmdSaveAs::StdCmdSaveAs()
   :CppCommand("Std_SaveAs")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Save &As...");
   sToolTipText  = QT_TR_NOOP("Save the active document under a new file name");
@@ -226,7 +222,6 @@ DEF_STD_CMD_A(StdCmdPrint );
 StdCmdPrint::StdCmdPrint()
   :CppCommand("Std_Print")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Print...");
   sToolTipText  = QT_TR_NOOP("Print the window");
@@ -260,7 +255,6 @@ DEF_STD_CMD(StdCmdQuit );
 StdCmdQuit::StdCmdQuit()
   :CppCommand("Std_Quit")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("E&xit");
   sToolTipText  = QT_TR_NOOP("Quits the application");
@@ -283,7 +277,6 @@ DEF_STD_CMD_AC(StdCmdUndo);
 StdCmdUndo::StdCmdUndo()
   :CppCommand("Std_Undo")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Undo");
   sToolTipText  = QT_TR_NOOP("Undo exactly one action");
@@ -330,7 +323,6 @@ DEF_STD_CMD_AC(StdCmdRedo );
 StdCmdRedo::StdCmdRedo()
   :CppCommand("Std_Redo")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Redo");
   sToolTipText  = QT_TR_NOOP("Redoes a previously undid action");
@@ -375,7 +367,6 @@ QAction * StdCmdRedo::createAction(void)
 StdCmdWorkbench::StdCmdWorkbench()
   :CppCommand("Std_Workbench"), pcAction(NULL)
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Workbench");
   sToolTipText  = QT_TR_NOOP("Switch between workbenches");
@@ -519,7 +510,6 @@ bool StdCmdWorkbench::addTo(QWidget *w)
 StdCmdMRU::StdCmdMRU()
   :CppCommand("Std_MRU"), pcAction(0), _nMaxItems(4)
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Recent files");
   sToolTipText  = QT_TR_NOOP("Recent file list");
@@ -677,7 +667,6 @@ DEF_STD_CMD_A(StdCmdCut);
 StdCmdCut::StdCmdCut()
   :CppCommand("Std_Cut")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Cut");
   sToolTipText  = QT_TR_NOOP("Cut out");
@@ -705,7 +694,6 @@ DEF_STD_CMD_A(StdCmdCopy);
 StdCmdCopy::StdCmdCopy()
   :CppCommand("Std_Copy")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("C&opy");
   sToolTipText  = QT_TR_NOOP("Copy operation");
@@ -733,7 +721,6 @@ DEF_STD_CMD_A(StdCmdPaste);
 StdCmdPaste::StdCmdPaste()
   :CppCommand("Std_Paste")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Paste");
   sToolTipText  = QT_TR_NOOP("Paste operation");
@@ -761,7 +748,6 @@ DEF_STD_CMD(StdCmdAbout);
 StdCmdAbout::StdCmdAbout()
   :CppCommand("Std_About")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&About FreeCAD");
   sToolTipText  = QT_TR_NOOP("About FreeCAD");
@@ -784,7 +770,6 @@ DEF_STD_CMD(StdCmdAboutQt);
 StdCmdAboutQt::StdCmdAboutQt()
   :CppCommand("Std_AboutQt")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("About &Qt");
   sToolTipText  = QT_TR_NOOP("About Qt");
@@ -805,7 +790,6 @@ DEF_STD_CMD(StdCmdTipOfTheDay);
 StdCmdTipOfTheDay::StdCmdTipOfTheDay()
   :CppCommand("Std_TipOfTheDay")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Tip of the day...");
   sToolTipText  = QT_TR_NOOP("Tip of the day");
@@ -827,7 +811,6 @@ DEF_STD_CMD(StdCmdWhatsThis);
 StdCmdWhatsThis::StdCmdWhatsThis()
   :CppCommand("Std_WhatsThis")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&What's This?");
   sToolTipText  = QT_TR_NOOP("What's This");
@@ -851,7 +834,6 @@ DEF_STD_CMD(StdCmdDlgParameter);
 StdCmdDlgParameter::StdCmdDlgParameter()
   :CppCommand("Std_DlgParameter")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("E&dit parameters ...");
   sToolTipText  = QT_TR_NOOP("Opens a Dialog to edit the parameters");
@@ -875,7 +857,6 @@ DEF_STD_CMD(StdCmdDlgPreferences);
 StdCmdDlgPreferences::StdCmdDlgPreferences()
   :CppCommand("Std_DlgPreferences")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Preferences ...");
   sToolTipText  = QT_TR_NOOP("Opens a Dialog to edit the preferences");
@@ -899,7 +880,6 @@ DEF_STD_CMD_A(StdCmdDlgMacroRecord);
 StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
   :CppCommand("Std_DlgMacroRecord")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("&Macro recording ...");
   sToolTipText  = QT_TR_NOOP("Opens a Dialog to record a macro");
@@ -928,7 +908,6 @@ DEF_STD_CMD_A(StdCmdDlgMacroExecute);
 StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
   :CppCommand("Std_DlgMacroExecute")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("E&xecute macro ...");
   sToolTipText  = QT_TR_NOOP("Opens a Dialog let you execute a recorded macro");
@@ -957,7 +936,6 @@ DEF_STD_CMD_A(StdCmdMacroStop);
 StdCmdMacroStop::StdCmdMacroStop()
   :CppCommand("Std_DlgMacroStop")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("S&top macro recording");
   sToolTipText  = QT_TR_NOOP("Stop the a running macro recording sassion");
@@ -985,7 +963,6 @@ DEF_STD_CMD(StdCmdDlgCustomize);
 StdCmdDlgCustomize::StdCmdDlgCustomize()
   :CppCommand("Std_DlgCustomize")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Cu&stomize...");
   sToolTipText  = QT_TR_NOOP("Customize toolbars and commandbars");
@@ -1009,7 +986,6 @@ DEF_STD_CMD(StdCmdCommandLine);
 StdCmdCommandLine::StdCmdCommandLine()
   :CppCommand("Std_CommandLine")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Start command &line...");
   sToolTipText  = QT_TR_NOOP("Opens the command line in the console");
@@ -1062,7 +1038,6 @@ DEF_STD_CMD_A(StdCmdOCAFBrowse);
 StdCmdOCAFBrowse::StdCmdOCAFBrowse()
   :CppCommand("Std_OCAFBrowser")
 {
-  sAppModule    = "";
   sGroup        = QT_TR_NOOP("Standard");
   sMenuText     = QT_TR_NOOP("Start &raw document browser...");
   sToolTipText  = QT_TR_NOOP("Starts a new window to deeply examine the document structure");

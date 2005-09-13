@@ -57,8 +57,8 @@ using namespace Gui::DockWnd;
 Command::Command(const char* name,CMD_Type eType)
   : sName(name),_pcAction(0),_eType(eType)
 {
-  sAppModule  = "";
-  sGroup      = "";
+  sAppModule  = "FreeCAD";
+  sGroup      = QT_TR_NOOP("Standard");
 }
 
 Command::~Command()
@@ -391,8 +391,7 @@ void CppCommand::languageChange()
 MacroCommand::MacroCommand(const char* name)
   :CppCommand(name,Cmd_Normal)
 {
-  sAppModule    = "";
-  sGroup        = "Macros";
+  sGroup        = QT_TR_NOOP("Macros");
 }
 
 void MacroCommand::activated(int iMsg)

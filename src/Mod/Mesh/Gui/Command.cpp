@@ -54,7 +54,7 @@ DEF_STD_CMD_A(CmdMeshExMakeMesh);
 CmdMeshExMakeMesh::CmdMeshExMakeMesh()
   :CppCommand("Mesh_ExMakeMesh")
 {
-  sAppModule    = QT_TR_NOOP("Mesh");
+  sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Make a Box");
   sToolTipText  = sMenuText;
@@ -107,7 +107,7 @@ DEF_STD_CMD_A(CmdMeshExMakeTool);
 CmdMeshExMakeTool::CmdMeshExMakeTool()
   :CppCommand("Mesh_ExMakeTool")
 {
-  sAppModule    = QT_TR_NOOP("Mesh");
+  sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Make a Tool");
   sToolTipText  = sMenuText;
@@ -161,7 +161,7 @@ DEF_STD_CMD_A(CmdMeshExMakeUnion);
 CmdMeshExMakeUnion::CmdMeshExMakeUnion()
   :CppCommand("Mesh_ExMakeUnion")
 {
-  sAppModule    = QT_TR_NOOP("Mesh");
+  sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Make Union");
   sToolTipText  = sMenuText;
@@ -211,7 +211,7 @@ DEF_STD_CMD_A(CmdMeshImport);
 CmdMeshImport::CmdMeshImport()
   :CppCommand("Mesh_Import")
 {
-  sAppModule    = QT_TR_NOOP("Mesh");
+  sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Import Mesh");
   sToolTipText  = QT_TR_NOOP("Imports a mesh from file");
@@ -249,7 +249,7 @@ DEF_STD_CMD_A(CmdMeshVertexCurvature);
 CmdMeshVertexCurvature::CmdMeshVertexCurvature()
   :CppCommand("Mesh_VertexCurvature")
 {
-  sAppModule    = QT_TR_NOOP("Mesh");
+  sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Curvature per vertex");
   sToolTipText  = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
