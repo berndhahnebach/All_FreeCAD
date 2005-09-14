@@ -30,7 +30,7 @@
 #include "../Base/PyExportImp.h"
 
 namespace Gui {
-class Workbench;
+class PythonWorkbench;
 
 /** 
  * The workbench Python class.
@@ -42,7 +42,7 @@ class GuiExport WorkbenchPy : public Base::PyObjectBase
   Py_Header;
 
 public:
-  WorkbenchPy(Workbench *pcWb, PyTypeObject *T = &Type);
+  WorkbenchPy(PythonWorkbench *pcWb, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
 
   ~WorkbenchPy();
@@ -54,40 +54,27 @@ public:
   PyObject *_getattr(char *attr);               // __getattr__ function
   int _setattr(char *attr, PyObject *value);    // __setattr__ function
 
+  PYFUNCDEF_D(WorkbenchPy,Name)
+  PYFUNCDEF_D(WorkbenchPy,Activate)
+
   // menu stuff
-  PYFUNCDEF_D(WorkbenchPy,AppendMenuItems)
-  PYFUNCDEF_D(WorkbenchPy,RemoveMenuItems)
   PYFUNCDEF_D(WorkbenchPy,AppendMenu)
   PYFUNCDEF_D(WorkbenchPy,RemoveMenu)
-  PYFUNCDEF_D(WorkbenchPy,AppendSubmenuItems)
-  PYFUNCDEF_D(WorkbenchPy,RemoveSubmenuItems)
-  PYFUNCDEF_D(WorkbenchPy,AppendSubmenu)
-  PYFUNCDEF_D(WorkbenchPy,RemoveSubmenu)
 
   // context menu stuff
-  PYFUNCDEF_D(WorkbenchPy,AppendContextMenuItems)
-  PYFUNCDEF_D(WorkbenchPy,RemoveContextMenuItems)
   PYFUNCDEF_D(WorkbenchPy,AppendContextMenu)
   PYFUNCDEF_D(WorkbenchPy,RemoveContextMenu)
 
   // toolbar stuff
-  PYFUNCDEF_D(WorkbenchPy,AppendToolbarItems)
-  PYFUNCDEF_D(WorkbenchPy,RemoveToolbarItems)
   PYFUNCDEF_D(WorkbenchPy,AppendToolbar)
   PYFUNCDEF_D(WorkbenchPy,RemoveToolbar)
 
   // commandbar stuff
-  PYFUNCDEF_D(WorkbenchPy,AppendCommandbarItems)
-  PYFUNCDEF_D(WorkbenchPy,RemoveCommandbarItems)
   PYFUNCDEF_D(WorkbenchPy,AppendCommandbar)
   PYFUNCDEF_D(WorkbenchPy,RemoveCommandbar)
 
-  // dockable window stuff
-  PYFUNCDEF_D(WorkbenchPy,AppendDockWindow)
-  PYFUNCDEF_D(WorkbenchPy,RemoveDockWindow)
-
 protected:
-  Workbench *_pcWorkbench;
+  PythonWorkbench *_pcWorkbench;
 };
 
 } // namespace Gui 

@@ -1009,11 +1009,7 @@ void StdCmdCommandLine::activated(int iMsg)
 
   // create temporary console sequencer
   Base::ConsoleSequencer* seq = new Base::ConsoleSequencer;
-  Base::Interpreter().runString("PyConsole.restoreStdout()");
-  Base::Interpreter().runString("PyConsole.restoreStderr()");
   Base::Interpreter().runCommandLine("Console mode");
-  Base::Interpreter().runString("PyConsole.redirectStdout()");
-  Base::Interpreter().runString("PyConsole.redirectStderr()");
   delete seq;
 
 #ifdef Q_WS_X11

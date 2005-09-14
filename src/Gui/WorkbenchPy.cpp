@@ -28,6 +28,7 @@
 
 #include "WorkbenchPy.h"
 #include "Workbench.h"
+#include "WorkbenchManager.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 
@@ -60,28 +61,16 @@ PyTypeObject WorkbenchPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef WorkbenchPy::Methods[] = {
-  PYMETHODEDEF(AppendMenuItems)
-  PYMETHODEDEF(RemoveMenuItems)
+  PYMETHODEDEF(Name)
+  PYMETHODEDEF(Activate)
   PYMETHODEDEF(AppendMenu)
   PYMETHODEDEF(RemoveMenu)
-  PYMETHODEDEF(AppendSubmenuItems)
-  PYMETHODEDEF(RemoveSubmenuItems)
-  PYMETHODEDEF(AppendSubmenu)
-  PYMETHODEDEF(RemoveSubmenu)
-  PYMETHODEDEF(AppendContextMenuItems)
-  PYMETHODEDEF(RemoveContextMenuItems)
   PYMETHODEDEF(AppendContextMenu)
   PYMETHODEDEF(RemoveContextMenu)
-  PYMETHODEDEF(AppendToolbarItems)
-  PYMETHODEDEF(RemoveToolbarItems)
   PYMETHODEDEF(AppendToolbar)
   PYMETHODEDEF(RemoveToolbar)
-  PYMETHODEDEF(AppendCommandbarItems)
-  PYMETHODEDEF(RemoveCommandbarItems)
   PYMETHODEDEF(AppendCommandbar)
   PYMETHODEDEF(RemoveCommandbar)
-  PYMETHODEDEF(AppendDockWindow)
-  PYMETHODEDEF(RemoveDockWindow)
   {NULL, NULL}          /* Sentinel */
 };
 
@@ -93,7 +82,7 @@ PyParentObject WorkbenchPy::Parents[] = {&PyObjectBase::Type, NULL};
 //--------------------------------------------------------------------------
 // Constructor
 //--------------------------------------------------------------------------
-WorkbenchPy::WorkbenchPy(Workbench *pcWb, PyTypeObject *T)
+WorkbenchPy::WorkbenchPy(PythonWorkbench *pcWb, PyTypeObject *T)
  : PyObjectBase( T), _pcWorkbench(pcWb)
 {
   Base::Console().Log("Create WorkbenchPy (%d)\n",this);
@@ -117,7 +106,7 @@ WorkbenchPy::~WorkbenchPy()     // Everything handled in parent
 //--------------------------------------------------------------------------
 PyObject *WorkbenchPy::_repr(void)
 {
-  return Py_BuildValue("s", "Workbench");
+  return Py_BuildValue("s", "PythonWorkbench");
 }
 
 //--------------------------------------------------------------------------
@@ -136,10 +125,27 @@ int WorkbenchPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function:
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-PYFUNCIMP_D(WorkbenchPy,AppendMenuItems)
+PYFUNCIMP_D(WorkbenchPy,Name)
 {
   PY_TRY {
+    QString name = _pcWorkbench->name(); 
+    PyObject* pyName = PyString_FromString( name.latin1() );
+    return pyName;
+  }PY_CATCH;
+} 
 
+PYFUNCIMP_D(WorkbenchPy,Activate)
+{
+  PY_TRY {
+    QString name = _pcWorkbench->name(); 
+    WorkbenchManager::instance()->activate( name );
+    Py_Return; 
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(WorkbenchPy,AppendMenu)
+{
+  PY_TRY {
     PyObject* pObject;
     char* psMenu;
     if ( !PyArg_ParseTuple(args, "sO", &psMenu, &pObject) )
@@ -163,62 +169,15 @@ PYFUNCIMP_D(WorkbenchPy,AppendMenuItems)
       items.push_back(pItem);
     }
 
-    _pcWorkbench->appendMenuItems( psMenu, items );
+    _pcWorkbench->appendMenu( psMenu, items );
 
     Py_Return; 
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(WorkbenchPy,RemoveMenuItems)
-{ 
-  PY_TRY {
-
-    PyObject* pObject;
-    char* psMenu;
-    if ( !PyArg_ParseTuple(args, "sO", &psMenu, &pObject) )
-    {
-      return NULL;                             // NULL triggers exception 
-    }
-    if (!PyList_Check(pObject))
-    {
-      PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-      return NULL;                             // NULL triggers exception 
-    }
-
-    QStringList items;
-    int nSize = PyList_Size(pObject);
-    for (int i=0; i<nSize;++i)
-    {
-      PyObject* item = PyList_GetItem(pObject, i);
-      if (!PyString_Check(item))
-        continue;
-      char* pItem = PyString_AsString(item);
-      items.push_back(pItem);
-    }
-
-    _pcWorkbench->removeMenuItems( psMenu, items );
-
-    Py_Return; 
-  }PY_CATCH;
-}
-
-PYFUNCIMP_D(WorkbenchPy,AppendMenu)
-{ 
-  PY_TRY {
-
-    char *psMenu;
-    if (!PyArg_ParseTuple(args, "s", &psMenu))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-    
-    _pcWorkbench->appendMenu( psMenu );
-    Py_Return; 
-  }PY_CATCH;
-}
-
 PYFUNCIMP_D(WorkbenchPy,RemoveMenu)
 { 
   PY_TRY {
-
     char *psMenu;
     if (!PyArg_ParseTuple(args, "s", &psMenu))     // convert args: Python->C 
         return NULL;                             // NULL triggers exception 
@@ -228,115 +187,34 @@ PYFUNCIMP_D(WorkbenchPy,RemoveMenu)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(WorkbenchPy,AppendSubmenuItems)
-{
-  PY_TRY {
-
-    PyObject* pObject;
-    char* psMenu;
-    if ( !PyArg_ParseTuple(args, "sO", &psMenu, &pObject) )
-    {
-      return NULL;                             // NULL triggers exception 
-    }
-    if (!PyList_Check(pObject))
-    {
-      PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-      return NULL;                             // NULL triggers exception 
-    }
-
-    QStringList items;
-    int nSize = PyList_Size(pObject);
-    for (int i=0; i<nSize;++i)
-    {
-      PyObject* item = PyList_GetItem(pObject, i);
-      if (!PyString_Check(item))
-        continue;
-      char* pItem = PyString_AsString(item);
-      items.push_back(pItem);
-    }
-
-    _pcWorkbench->appendSubmenuItems( psMenu, items );
-
-    Py_Return; 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(WorkbenchPy,RemoveSubmenuItems)
-{ 
-  PY_TRY {
-
-    PyObject* pObject;
-    char* psMenu;
-    if ( !PyArg_ParseTuple(args, "sO", &psMenu, &pObject) )
-    {
-      return NULL;                             // NULL triggers exception 
-    }
-    if (!PyList_Check(pObject))
-    {
-      PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-      return NULL;                             // NULL triggers exception 
-    }
-
-    QStringList items;
-    int nSize = PyList_Size(pObject);
-    for (int i=0; i<nSize;++i)
-    {
-      PyObject* item = PyList_GetItem(pObject, i);
-      if (!PyString_Check(item))
-        continue;
-      char* pItem = PyString_AsString(item);
-      items.push_back(pItem);
-    }
-
-    _pcWorkbench->removeSubmenuItems( psMenu, items );
-
-    Py_Return; 
-  }PY_CATCH;
-}
-
-PYFUNCIMP_D(WorkbenchPy,AppendSubmenu)
-{ 
-  PY_TRY {
-
-    char *psMenu, *psSubmenu;
-    if (!PyArg_ParseTuple(args, "ss", &psMenu, &psSubmenu))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-    
-    _pcWorkbench->appendSubmenu( psMenu, psSubmenu );
-    Py_Return; 
-  }PY_CATCH;
-}
-
-PYFUNCIMP_D(WorkbenchPy,RemoveSubmenu)
-{ 
-  PY_TRY {
-
-    char *psMenu, *psSubmenu;
-    if (!PyArg_ParseTuple(args, "ss", &psMenu, &psSubmenu))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-    
-    _pcWorkbench->removeSubmenu( psMenu, psSubmenu );
-    Py_Return; 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(WorkbenchPy,AppendContextMenuItems)
-{
-  PY_TRY {
-    Py_Return; 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(WorkbenchPy,RemoveContextMenuItems)
-{ 
-  PY_TRY {
-    Py_Return; 
-  }PY_CATCH;
-}
-
 PYFUNCIMP_D(WorkbenchPy,AppendContextMenu)
 { 
   PY_TRY {
+    PyObject* pObject;
+    char* psMenu;
+    if ( !PyArg_ParseTuple(args, "sO", &psMenu, &pObject) )
+    {
+      return NULL;                             // NULL triggers exception 
+    }
+    if (!PyList_Check(pObject))
+    {
+      PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
+      return NULL;                             // NULL triggers exception 
+    }
+
+    QStringList items;
+    int nSize = PyList_Size(pObject);
+    for (int i=0; i<nSize;++i)
+    {
+      PyObject* item = PyList_GetItem(pObject, i);
+      if (!PyString_Check(item))
+        continue;
+      char* pItem = PyString_AsString(item);
+      items.push_back(pItem);
+    }
+
+    _pcWorkbench->appendContextMenu( psMenu, items );
+
     Py_Return; 
   }PY_CATCH;
 } 
@@ -344,20 +222,11 @@ PYFUNCIMP_D(WorkbenchPy,AppendContextMenu)
 PYFUNCIMP_D(WorkbenchPy,RemoveContextMenu)
 { 
   PY_TRY {
-    Py_Return; 
-  }PY_CATCH;
-}
-
-PYFUNCIMP_D(WorkbenchPy,AppendToolbarItems)
-{ 
-  PY_TRY {
-    Py_Return; 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(WorkbenchPy,RemoveToolbarItems)
-{ 
-  PY_TRY {
+    char *psMenu;
+    if (!PyArg_ParseTuple(args, "s", &psMenu))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+    
+    _pcWorkbench->removeContextMenu( psMenu );
     Py_Return; 
   }PY_CATCH;
 }
@@ -365,6 +234,31 @@ PYFUNCIMP_D(WorkbenchPy,RemoveToolbarItems)
 PYFUNCIMP_D(WorkbenchPy,AppendToolbar)
 { 
   PY_TRY {
+    PyObject* pObject;
+    char* psToolBar;
+    if ( !PyArg_ParseTuple(args, "sO", &psToolBar, &pObject) )
+    {
+      return NULL;                             // NULL triggers exception 
+    }
+    if (!PyList_Check(pObject))
+    {
+      PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
+      return NULL;                             // NULL triggers exception 
+    }
+
+    QStringList items;
+    int nSize = PyList_Size(pObject);
+    for (int i=0; i<nSize;++i)
+    {
+      PyObject* item = PyList_GetItem(pObject, i);
+      if (!PyString_Check(item))
+        continue;
+      char* pItem = PyString_AsString(item);
+      items.push_back(pItem);
+    }
+
+    _pcWorkbench->appendToolbar( psToolBar, items );
+
     Py_Return; 
   }PY_CATCH;
 } 
@@ -372,48 +266,55 @@ PYFUNCIMP_D(WorkbenchPy,AppendToolbar)
 PYFUNCIMP_D(WorkbenchPy,RemoveToolbar)
 { 
   PY_TRY {
-    Py_Return; 
-  }PY_CATCH;
-}
-
-PYFUNCIMP_D(WorkbenchPy,AppendCommandbarItems)
-{ 
-  PY_TRY {
-    Py_Return; 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(WorkbenchPy,RemoveCommandbarItems)
-{ 
-  PY_TRY {
+    char *psToolBar;
+    if (!PyArg_ParseTuple(args, "s", &psToolBar))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+    
+    _pcWorkbench->removeToolbar( psToolBar );
     Py_Return; 
   }PY_CATCH;
 }
 
 PYFUNCIMP_D(WorkbenchPy,AppendCommandbar)
-{
-  PY_TRY {
-    Py_Return; 
-  }PY_CATCH;
-}
-
-PYFUNCIMP_D(WorkbenchPy,RemoveCommandbar)
 { 
   PY_TRY {
-    Py_Return; 
-  }PY_CATCH;
-}
+    PyObject* pObject;
+    char* psToolBar;
+    if ( !PyArg_ParseTuple(args, "sO", &psToolBar, &pObject) )
+    {
+      return NULL;                             // NULL triggers exception 
+    }
+    if (!PyList_Check(pObject))
+    {
+      PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
+      return NULL;                             // NULL triggers exception 
+    }
 
-PYFUNCIMP_D(WorkbenchPy,AppendDockWindow)
-{ 
-  PY_TRY {
+    QStringList items;
+    int nSize = PyList_Size(pObject);
+    for (int i=0; i<nSize;++i)
+    {
+      PyObject* item = PyList_GetItem(pObject, i);
+      if (!PyString_Check(item))
+        continue;
+      char* pItem = PyString_AsString(item);
+      items.push_back(pItem);
+    }
+
+    _pcWorkbench->appendCommandbar( psToolBar, items );
+
     Py_Return; 
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(WorkbenchPy,RemoveDockWindow)
-{
+PYFUNCIMP_D(WorkbenchPy,RemoveCommandbar)
+{ 
   PY_TRY {
+    char *psToolBar;
+    if (!PyArg_ParseTuple(args, "s", &psToolBar))     // convert args: Python->C 
+        return NULL;                             // NULL triggers exception 
+    
+    _pcWorkbench->removeCommandbar( psToolBar );
     Py_Return; 
   }PY_CATCH;
 }

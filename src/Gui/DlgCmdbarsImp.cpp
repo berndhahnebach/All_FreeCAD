@@ -53,7 +53,8 @@ DlgCustomCmdbarsImp::DlgCustomCmdbarsImp( QWidget* parent, const char* name, WFl
 {
   setCaption( tr( "Commandbars" ) );
 #ifdef NEW_WB_FRAMEWORK
-  _toolBars = WorkbenchManager::instance()->active()->importCustomBars("Commandbars"); 
+  if ( WorkbenchManager::instance()->active() )
+    _toolBars = WorkbenchManager::instance()->active()->importCustomBars("Commandbars"); 
 #endif
   refreshToolBarList();
 }
@@ -62,8 +63,11 @@ DlgCustomCmdbarsImp::DlgCustomCmdbarsImp( QWidget* parent, const char* name, WFl
 DlgCustomCmdbarsImp::~DlgCustomCmdbarsImp()
 {
 #ifdef NEW_WB_FRAMEWORK
-  CommandBarManager::getInstance()->customSetup(_toolBars);
-  WorkbenchManager::instance()->active()->exportCustomBars(_toolBars, "Commandbars");
+  if ( _toolBars )
+  {
+    CommandBarManager::getInstance()->customSetup(_toolBars);
+    WorkbenchManager::instance()->active()->exportCustomBars(_toolBars, "Commandbars");
+  }
 #endif
 }
 

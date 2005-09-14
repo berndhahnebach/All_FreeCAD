@@ -93,6 +93,7 @@ DlgCustomToolbars::~DlgCustomToolbars()
 void DlgCustomToolbars::refreshActionList()
 {
 #ifdef NEW_WB_FRAMEWORK
+  if ( !_toolBars ) return; // no valid pointer
   QString text = ComboToolbars->currentText();
   ToolBarItem* bar = _toolBars->findItem( text );
   bar->clear();
@@ -125,6 +126,7 @@ void DlgCustomToolbars::cancel()
 void DlgCustomToolbars::refreshToolBarList()
 {
 #ifdef NEW_WB_FRAMEWORK
+  if ( !_toolBars ) return;
   ComboToolbars->clear();
   ToolbarActions->clear();
 
@@ -219,6 +221,7 @@ void DlgCustomToolbars::onItemActivated(const QString & name)
     }
   }
 #else
+  if ( !_toolBars ) return;
   CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
 
   ToolbarActions->clear();
@@ -392,6 +395,7 @@ void DlgCustomToolbars::onDoubleClickedAction(QListViewItem* item)
 #ifdef NEW_WB_FRAMEWORK
 void DlgCustomToolbars::onCreateToolbar()
 {
+  if ( !_toolBars ) return;
   QString def = QString("custom bar%1").arg(_toolBars->count()+1);
   QString text = QInputDialog::getText(tr("New custom bar"), tr("Specify the name of the new custom bar, please."),
                                       QLineEdit::Normal, def, 0, this);
@@ -427,6 +431,7 @@ void DlgCustomToolbars::onCreateToolbar()
 
 void DlgCustomToolbars::onDeleteToolbar()
 {
+  if ( !_toolBars ) return;
   QValueList<CheckListItem> items;
   QPtrList<ToolBarItem> bars = _toolBars->getItems();
   ToolBarItem* bar;
@@ -471,7 +476,8 @@ DlgCustomToolbarsImp::DlgCustomToolbarsImp( QWidget* parent, const char* name, W
   : DlgCustomToolbars(parent, name, fl)
 {
 #ifdef NEW_WB_FRAMEWORK
-  _toolBars = WorkbenchManager::instance()->active()->importCustomBars("Toolbars"); 
+  if ( WorkbenchManager::instance()->active() )
+    _toolBars = WorkbenchManager::instance()->active()->importCustomBars("Toolbars"); 
 #endif
   refreshToolBarList();
 }
@@ -480,8 +486,11 @@ DlgCustomToolbarsImp::DlgCustomToolbarsImp( QWidget* parent, const char* name, W
 DlgCustomToolbarsImp::~DlgCustomToolbarsImp()
 {
 #ifdef NEW_WB_FRAMEWORK
-  ToolBarManager::getInstance()->customSetup(_toolBars);
-  WorkbenchManager::instance()->active()->exportCustomBars(_toolBars, "Toolbars");
+  if ( _toolBars )
+  {
+    ToolBarManager::getInstance()->customSetup(_toolBars);
+    WorkbenchManager::instance()->active()->exportCustomBars(_toolBars, "Toolbars");
+  }
 #endif
 }
 

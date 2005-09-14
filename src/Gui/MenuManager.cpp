@@ -91,6 +91,26 @@ MenuItem* MenuItem::findItem( const QString& name )
   return 0;
 }
 
+MenuItem* MenuItem::copy() const
+{
+  MenuItem* root = new MenuItem;
+  root->setCommand( command() );
+
+  QPtrList<MenuItem> items = getItems();
+  MenuItem* item;
+  for ( item=items.first(); item; item=items.next() )
+  {
+    root->appendItem( item->copy() );
+  }
+
+  return root;
+}
+
+uint MenuItem::count() const
+{
+  return _items.count();
+}
+
 void MenuItem::appendItem( const MenuItem* item )
 {
   _items.append( item );
@@ -112,6 +132,17 @@ void MenuItem::removeItem( const MenuItem* item )
   _items.remove( item );
 }
 
+void MenuItem::clear()
+{
+  MenuItem* item;
+  for ( item = _items.first(); item; item = _items.next() )
+  {
+    delete item;
+  }
+
+  _items.clear();
+}
+
 MenuItem& MenuItem::operator<< ( const QString& command )
 {
   MenuItem* item = new MenuItem(this);
@@ -124,7 +155,6 @@ MenuItem& MenuItem::operator<< ( const MenuItem* item )
   appendItem(item);
   return *this;
 }
-
 
 QPtrList<MenuItem> MenuItem::getItems() const
 {
@@ -227,7 +257,6 @@ void MenuManager::setupContextMenu( MenuItem* item, QPopupMenu &menu ) const
   }
 }
 
-
 QPopupMenu* MenuManager::findMenu( QMenuData* menu, const QString& name ) const
 {
   uint cnt = menu->count();
@@ -247,180 +276,8 @@ QPopupMenu* MenuManager::findMenu( QMenuData* menu, const QString& name ) const
   return 0;
 }
 
-void MenuManager::appendMenuItems( const QString& menu, const QStringList& items )
-{
-  int id;
-  QPopupMenu* popup = findMenu( menu, id, false );
-
-  if ( popup )
-  {
-    CommandManager& mgr = ApplicationWindow::Instance->commandManager();
-    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
-      mgr.addTo( (*it).latin1(), popup );
-  }
-}
-
-void MenuManager::removeMenuItems( const QString& menu, const QStringList& items )
-{
-  int id;
-  QPopupMenu* popup = findMenu( menu, id, false );
-
-  if ( popup )
-  {
-    CommandManager& mgr = ApplicationWindow::Instance->commandManager();
-    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
-      mgr.removeFrom( (*it).latin1(), popup );
-  }
-}
-
-void MenuManager::appendMenu( const QString& menu )
-{
-  QPopupMenu *popup = new QPopupMenu( ApplicationWindow::Instance, menu );
-  ApplicationWindow::Instance->menuBar()->insertItem( menu, popup );
-}
-
-void MenuManager::removeMenu( const QString& menu )
-{
-  QMenuBar* bar = ApplicationWindow::Instance->menuBar();
-  uint cnt = bar->count();
-  for ( uint i=0; i<cnt; i++ )
-  {
-    int id = bar->idAt( i );
-    if ( bar->text( id ) == menu )
-    {
-      ApplicationWindow::Instance->menuBar()->removeItem( id );
-      break;
-    }
-  }
-}
-
-void MenuManager::appendSubmenuItems( const QString& submenu, const QStringList& items )
-{
-  int id;
-  QPopupMenu* popup = findMenu( submenu, id, true );
-
-  if ( popup )
-  {
-    CommandManager& mgr = ApplicationWindow::Instance->commandManager();
-    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
-      mgr.addTo( (*it).latin1(), popup );
-  }
-}
-
-void MenuManager::removeSubmenuItems( const QString& submenu, const QStringList& items )
-{
-  int id;
-  QPopupMenu* popup = findMenu( submenu, id, true );
-
-  if ( popup )
-  {
-    CommandManager& mgr = ApplicationWindow::Instance->commandManager();
-    for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
-      mgr.removeFrom( (*it).latin1(), popup );
-  }
-}
-
-void MenuManager::appendSubmenu( const QString& menu, const QString& submenu )
-{
-  int id;
-  QPopupMenu* popup = findMenu( menu, id, true );
-
-  if ( popup )
-  {
-    QPopupMenu* subpopup = new QPopupMenu( ApplicationWindow::Instance, submenu );
-    popup->insertItem( submenu, subpopup );
-  }
-}
-
-void MenuManager::removeSubmenu( const QString& menu, const QString& submenu )
-{
-  int id;
-  QPopupMenu* popup = findMenu( menu, id, true );
-
-  if ( popup )
-  {
-    popup->removeItem( id );
-  }
-}
-
-QPopupMenu* MenuManager::findMenu( const QString& menu, int& index, bool sub )
-{
-  QMenuBar* bar = ApplicationWindow::Instance->menuBar();
-  uint cnt = bar->count();
-
-  // search in the menubar first
-  for ( uint i=0; i<cnt; i++ )
-  {
-    int id = bar->idAt( i );
-    QMenuItem* item = bar->findItem( id );
-    if ( item && item->popup() )
-    {
-      if ( bar->text( id ) == menu )
-      {
-        index = id;
-        return item->popup();
-      }
-    }
-  }
-
-  if ( sub )
-  {
-    // now search recursively in all top-level menus 
-    for ( uint j=0; j<cnt; j++ )
-    {
-      int id = bar->idAt( j );
-      QMenuItem* item = bar->findItem( id );
-      if ( item && item->popup() )
-      {
-        // search for 'menu' in popupmenu
-        QPopupMenu* popup = findSubmenu( item->popup(), menu, index );
-        if ( popup )
-        {
-          return popup;
-        }
-      }
-    }
-  }
-
-  return 0; // sorry, nothing found
-}
-
-QPopupMenu* MenuManager::findSubmenu( QPopupMenu* menu, const QString& submenu, int& index )
-{
-  uint cnt = menu->count();
-  for ( uint i=0; i<cnt; i++ )
-  {
-    int id = menu->idAt( i );
-    QMenuItem* item = menu->findItem( id );
-    if ( item && item->popup() )
-    {
-      if ( menu->text( id ) == submenu )
-      {
-        index = id;
-        return item->popup();
-      }
-      else
-      {
-        // recursion
-        return findSubmenu( item->popup(), submenu, index );
-      }
-    }
-  }
-
-  return 0;
-}
-
 void MenuManager::languageChange() const
 {
-//  QMenuBar* mb = ApplicationWindow::Instance->menuBar();
-//  uint cnt = mb->count();
-//  for ( uint i=0; i<cnt; i++ )
-//  {
-//    int id = mb->idAt( i );
-//    QMap<int, QString>::ConstIterator it = _menuBar.find( id );
-//    if ( it != _menuBar.end() )
-//      mb->changeItem( id, ApplicationWindow::tr( it.data() ) );
-//  }
   QMenuBar* mb = ApplicationWindow::Instance->menuBar();
   uint ct = mb->count();
   for ( uint i=0; i<ct; i++ )

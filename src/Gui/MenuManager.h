@@ -47,10 +47,13 @@ public:
 
   bool hasItems() const;
   MenuItem* findItem( const QString& );
+  MenuItem* copy() const;
+  uint count() const;
 
   void appendItem( const MenuItem* );
   bool insertItem( const MenuItem*, const MenuItem* );
   void removeItem( const MenuItem* );
+  void clear();
 
   MenuItem& operator<< ( const MenuItem* item );
   MenuItem& operator<< ( const QString& command );
@@ -71,26 +74,15 @@ public:
   /// sets up a context menu out of item
   void setupContextMenu( MenuItem* item, QPopupMenu &menu ) const;
 
-  void appendMenuItems( const QString& menu, const QStringList& items );
-  void removeMenuItems( const QString& menu, const QStringList& items );
-  void appendMenu( const QString& menu );
-  void removeMenu( const QString& menu );
-  void appendSubmenuItems( const QString& submenu, const QStringList& items );
-  void removeSubmenuItems( const QString& submenu, const QStringList& items );
-  void appendSubmenu( const QString& menu, const QString& submenu );
-  void removeSubmenu( const QString& menu, const QString& submenu );
-
   static MenuManager* getInstance();
+
 protected:
   MenuManager();
   ~MenuManager();
   void languageChange() const;
 
 private:
-  QPopupMenu* findSubmenu( QPopupMenu* menu, const QString& submenu, int& );
-  QPopupMenu* findMenu( const QString& menu, int&, bool  );
   QPopupMenu* findMenu( QMenuData*, const QString& menu ) const;
-
   void setup( MenuItem*, QMenuData* ) const;
 
 private:

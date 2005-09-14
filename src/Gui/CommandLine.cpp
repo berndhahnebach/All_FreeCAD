@@ -176,37 +176,16 @@ void CommandLineBase::onLaunchCommand()
       Interpreter().runInteractiveString(text(currentItem()).latin1());
     }
   }
-  catch (const Base::Exception& /*rclE*/)
+  catch ( const Base::Exception& e )
   {
-//    QString txt = rclE.what();
-//    QString err = QString("'%1' is not defined!").arg( cmd );
-//    QMessageBox::warning(this, txt, err);
+    Base::Console().Error(e.what());
   }
 #ifndef FC_DEBUG
   catch (...)
   {
-    QMessageBox::critical(this, tr("Error"), tr("A really nesty error occurred in the running script"));
+    Base::Console().Error(tr("A really nesty error occurred in the running script").latin1());
   }
 #endif
-
-  // try to update the Python console to show the result output
-  //
-  QWidgetList  *list = QApplication::allWidgets();
-  QWidgetListIt it( *list );         // iterate over the widgets
-  QWidget* w=0L;
-  while ( (w=it.current()) != 0 ) {  // for each widget...
-    ++it;
-    if ( w->qt_cast("Gui::PythonConsole") )
-      break;
-  }
-  delete list;                      // delete the list, not the widgets
-
-  if ( w )
-  {
-    // emulate an key return event to let decide keyPressEvent() how to continue
-    QKeyEvent ke( QEvent::KeyPress, Key_Return, '\n', Qt::NoButton );
-    QApplication::sendEvent( w, &ke );
-  }
 
   // remove first item
   if ( count() > _maxCount )

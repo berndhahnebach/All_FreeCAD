@@ -324,7 +324,6 @@ void CommandIconView::onSelectionChanged(QIconViewItem * item)
  */
 QDragObject * CommandIconView::dragObject ()
 {
-#ifndef NEW_WB_FRAMEWORK
   ActionDrag::actions.clear();
   if ( !currentItem() )
     return 0;
@@ -350,9 +349,6 @@ QDragObject * CommandIconView::dragObject ()
   }
 
   return ad;
-#else
-  return 0;
-#endif
 }
 
 // ------------------------------------------------------------------------------

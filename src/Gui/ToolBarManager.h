@@ -42,6 +42,7 @@ public:
 
   bool hasItems() const;
   ToolBarItem* findItem( const QString& );
+  ToolBarItem* copy() const;
   uint count() const;
 
   void appendItem( const ToolBarItem* );

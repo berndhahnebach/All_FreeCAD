@@ -83,6 +83,21 @@ ToolBarItem* ToolBarItem::findItem( const QString& name )
   return 0;
 }
 
+ToolBarItem* ToolBarItem::copy() const
+{
+  ToolBarItem* root = new ToolBarItem;
+  root->setCommand( command() );
+
+  QPtrList<ToolBarItem> items = getItems();
+  ToolBarItem* item;
+  for ( item=items.first(); item; item=items.next() )
+  {
+    root->appendItem( item->copy() );
+  }
+
+  return root;
+}
+
 uint ToolBarItem::count() const
 {
   return _items.count();

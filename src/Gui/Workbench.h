@@ -63,38 +63,10 @@ public:
    * Set the name to the workbench object.
    */
   void setName( const QString& );
-
   /**
-   * Creates and returns immediately the corresponding Python workbench object.
+   * The default implementation returns 0.
    */
   virtual Base::PyObjectBase* GetPyObject();
-
-  void appendMenuItems( const QString& menu, const QStringList& items ) const;
-  void removeMenuItems( const QString& menu, const QStringList& items ) const;
-  void appendMenu( const QString& menu ) const;
-  void removeMenu( const QString& menu ) const;
-  void appendSubmenuItems( const QString& submenu, const QStringList& items ) const;
-  void removeSubmenuItems( const QString& submenu, const QStringList& items ) const;
-  void appendSubmenu( const QString& menu, const QString& submenu ) const;
-  void removeSubmenu( const QString& menu, const QString& submenu ) const;
-
-  void appendContextMenuItems() const;
-  void removeContextMenuItems() const;
-  void appendContextMenu() const;
-  void removeContextMenu() const;
-
-  void appendToolbarItems() const;
-  void removeToolbarItems() const;
-  void appendToolbar() const;
-  void removeToolbar() const;
-
-  void appendCommandbarItems() const;
-  void removeCommandbarItems() const;
-  void appendCommandbar() const;
-  void removeCommandbar() const;
-
-  void appendDockWindow() const;
-  void removeDockWindow() const;
 
   ToolBarItem* importCustomBars( const char* node ) const;
   void exportCustomBars( ToolBarItem*, const char* node ) const;
@@ -110,7 +82,6 @@ protected:
 
 private:
   QString _name;
-  Base::PyObjectBase* _workbenchPy;
 
   friend class WorkbenchManager;
 };
@@ -137,6 +108,40 @@ protected:
   MenuItem* setupMenuBar() const;
   ToolBarItem* setupToolBars() const;
   ToolBarItem* setupCommandBars() const;
+};
+
+class GuiExport PythonWorkbench : public StdWorkbench
+{
+public:
+  PythonWorkbench();
+  ~PythonWorkbench();
+  /**
+   * Creates and returns immediately the corresponding Python workbench object.
+   */
+  Base::PyObjectBase* GetPyObject();
+
+  void appendMenu( const QString& menu, const QStringList& items ) const;
+  void removeMenu( const QString& menu ) const;
+
+  void appendContextMenu( const QString& menu, const QStringList& items ) const;
+  void removeContextMenu( const QString& menu ) const;
+
+  void appendToolbar( const QString& bar, const QStringList& items ) const;
+  void removeToolbar( const QString& bar ) const;
+
+  void appendCommandbar( const QString& bar, const QStringList& items ) const;
+  void removeCommandbar( const QString& bar ) const;
+
+protected:
+  MenuItem* setupMenuBar() const;
+  ToolBarItem* setupToolBars() const;
+  ToolBarItem* setupCommandBars() const;
+
+private:
+  MenuItem* _menuBar;
+  ToolBarItem* _toolBar;
+  ToolBarItem* _commandBar;
+  Base::PyObjectBase* _workbenchPy;
 };
 
 } // namespace Gui

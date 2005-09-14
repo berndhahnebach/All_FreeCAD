@@ -97,6 +97,8 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
     Base::Interpreter().runString("PyConsole.redirectStdin()");
     Base::Interpreter().runString("print 'Python' + sys.version + ' on ' + sys.platform");
     Base::Interpreter().runString("print \"Type 'help', 'copyright', 'credits' or 'license' for more information.\"");
+    Base::Interpreter().runString("PyConsole.restoreStdout()");
+    Base::Interpreter().runString("PyConsole.restoreStderr()");
   }
   catch (...)
   {
@@ -519,11 +521,17 @@ bool PythonConsole::printCommand( const QString& cmd )
   bool ok = true;
   try
   {
+    Base::Interpreter().runString("PyConsole.redirectStdout()");
+    Base::Interpreter().runString("PyConsole.redirectStderr()");
     Base::Interpreter().runStringArg("print '%s'", cmd.latin1() );
+    Base::Interpreter().runString("PyConsole.restoreStdout()");
+    Base::Interpreter().runString("PyConsole.restoreStderr()");
     _history.append( cmd );
   }
   catch( ... )
   {
+    Base::Interpreter().runString("PyConsole.restoreStdout()");
+    Base::Interpreter().runString("PyConsole.restoreStderr()");
     ok = false; // an error occurred
   }
 
@@ -661,12 +669,18 @@ bool PythonConsole::performPythonCommand()
     try
     {
       // launch the command now
+      Base::Interpreter().runString("PyConsole.redirectStdout()");
+      Base::Interpreter().runString("PyConsole.redirectStderr()");
       Base::Interpreter().runInteractiveString( pyCmd.latin1() );
+      Base::Interpreter().runString("PyConsole.restoreStdout()");
+      Base::Interpreter().runString("PyConsole.restoreStderr()");
       setFocus(); // if focus was lost
     }
     catch ( const Base::Exception& )
     {
       // Write Python's error output instead, if there is!
+      Base::Interpreter().runString("PyConsole.restoreStdout()");
+      Base::Interpreter().runString("PyConsole.restoreStderr()");
       ok = false;
     }
 

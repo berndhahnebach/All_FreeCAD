@@ -43,7 +43,7 @@
 using namespace Gui;
 
 Workbench::Workbench()
-  : _name(QString::null), _workbenchPy(0)
+  : _name(QString::null)
 {
 }
 
@@ -156,108 +156,7 @@ bool Workbench::activate()
 
 Base::PyObjectBase* Workbench::GetPyObject()
 {
-  if ( !_workbenchPy )
-  {
-    _workbenchPy = new WorkbenchPy(this);
-  }
-
-  return _workbenchPy;
-}
-
-void Workbench::appendMenuItems( const QString& menu, const QStringList& items ) const
-{
-  MenuManager::getInstance()->appendMenuItems( menu, items );
-}
-
-void Workbench::removeMenuItems( const QString& menu, const QStringList& items ) const
-{
-  MenuManager::getInstance()->removeMenuItems( menu, items );
-}
-
-void Workbench::appendMenu( const QString& menu ) const
-{
-  MenuManager::getInstance()->appendMenu( menu );
-}
-
-void Workbench::removeMenu( const QString& menu ) const
-{
-  MenuManager::getInstance()->removeMenu( menu );
-}
-
-void Workbench::appendSubmenuItems( const QString& submenu, const QStringList& items ) const
-{
-  MenuManager::getInstance()->appendSubmenuItems( submenu, items );
-}
-
-void Workbench::removeSubmenuItems( const QString& submenu, const QStringList& items ) const
-{
-  MenuManager::getInstance()->removeSubmenuItems( submenu, items );
-}
-
-void Workbench::appendSubmenu( const QString& menu, const QString& submenu ) const
-{
-  MenuManager::getInstance()->appendSubmenu( menu, submenu );
-}
-
-void Workbench::removeSubmenu( const QString& menu, const QString& submenu ) const
-{
-  MenuManager::getInstance()->removeSubmenu( menu, submenu );
-}
-
-void Workbench::appendContextMenuItems() const
-{
-}
-
-void Workbench::removeContextMenuItems() const
-{
-}
-
-void Workbench::appendContextMenu() const
-{
-}
-
-void Workbench::removeContextMenu() const
-{
-}
-
-void Workbench::appendToolbarItems() const
-{
-}
-
-void Workbench::removeToolbarItems() const
-{
-}
-
-void Workbench::appendToolbar() const
-{
-}
-
-void Workbench::removeToolbar() const
-{
-}
-
-void Workbench::appendCommandbarItems() const
-{
-}
-
-void Workbench::removeCommandbarItems() const
-{
-}
-
-void Workbench::appendCommandbar() const
-{
-}
-
-void Workbench::removeCommandbar() const
-{
-}
-
-void Workbench::appendDockWindow() const
-{
-}
-
-void Workbench::removeDockWindow() const
-{
+  return 0;
 }
 
 // --------------------------------------------------------------------
@@ -410,3 +309,158 @@ ToolBarItem* TestWorkbench::setupCommandBars() const
   return 0;
 }
 
+// -----------------------------------------------------------------------
+
+PythonWorkbench::PythonWorkbench() : _workbenchPy(0)
+{
+  _menuBar = StdWorkbench::setupMenuBar();
+  _toolBar = StdWorkbench::setupToolBars();
+  _commandBar = new ToolBarItem;
+}
+
+PythonWorkbench::~PythonWorkbench()
+{
+  delete _menuBar;
+  delete _toolBar;
+  delete _commandBar;
+  if ( _workbenchPy )
+    _workbenchPy->DecRef();
+}
+
+Base::PyObjectBase* PythonWorkbench::GetPyObject()
+{
+  if ( !_workbenchPy )
+  {
+    _workbenchPy = new WorkbenchPy(this);
+  }
+
+  // Increment every time when this object is returned
+  _workbenchPy->IncRef();
+
+  return _workbenchPy;
+}
+
+MenuItem* PythonWorkbench::setupMenuBar() const
+{
+  return _menuBar->copy();
+}
+
+ToolBarItem* PythonWorkbench::setupToolBars() const
+{
+  return _toolBar->copy();
+  ToolBarItem* root = new ToolBarItem;
+  root->setCommand(_toolBar->command());
+  QPtrList<ToolBarItem> bars = _toolBar->getItems();
+
+  ToolBarItem* bar;
+  for ( bar = bars.first(); bar; bar = bars.next() )
+  {
+    ToolBarItem* nbar = new ToolBarItem(root);
+    nbar->setCommand(bar->command());
+    QPtrList<ToolBarItem> items = bar->getItems(); 
+
+    ToolBarItem* item;
+    for ( item = items.first(); item; item = items.next() )
+    {
+      ToolBarItem* nitem = new ToolBarItem(nbar);
+      nitem->setCommand(item->command());
+    }
+  }
+
+  return root;
+}
+
+ToolBarItem* PythonWorkbench::setupCommandBars() const
+{
+  return _commandBar->copy();
+  ToolBarItem* root = new ToolBarItem;
+  root->setCommand(_commandBar->command());
+  QPtrList<ToolBarItem> bars = _commandBar->getItems();
+
+  ToolBarItem* bar;
+  for ( bar = bars.first(); bar; bar = bars.next() )
+  {
+    ToolBarItem* nbar = new ToolBarItem(root);
+    nbar->setCommand(bar->command());
+    QPtrList<ToolBarItem> items = bar->getItems(); 
+
+    ToolBarItem* item;
+    for ( item = items.first(); item; item = items.next() )
+    {
+      ToolBarItem* nitem = new ToolBarItem(nbar);
+      nitem->setCommand(item->command());
+    }
+  }
+
+  return root;
+}
+
+void PythonWorkbench::appendMenu( const QString& menu, const QStringList& items ) const
+{
+  MenuItem* item = _menuBar->findItem( menu );
+  if ( !item )
+  {
+    Gui::MenuItem* wnd = _menuBar->findItem( "&Windows" );
+    item = new MenuItem;
+    item->setCommand( menu );
+    _menuBar->insertItem( wnd, item );
+  }
+
+  for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
+    *item << *it;
+}
+
+void PythonWorkbench::removeMenu( const QString& menu ) const
+{
+  MenuItem* item = _menuBar->findItem( menu );
+  if ( item )
+    _menuBar->removeItem( item );
+}
+
+void PythonWorkbench::appendContextMenu( const QString& menu, const QStringList& items ) const
+{
+}
+
+void PythonWorkbench::removeContextMenu( const QString& menu ) const
+{
+}
+
+void PythonWorkbench::appendToolbar( const QString& bar, const QStringList& items ) const
+{
+  ToolBarItem* item = _toolBar->findItem( bar );
+  if ( !item )
+  {
+    item = new ToolBarItem(_toolBar);
+    item->setCommand(bar);
+  }
+
+  for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
+    *item << *it;
+}
+
+void PythonWorkbench::removeToolbar( const QString& bar) const
+{
+  ToolBarItem* item = _toolBar->findItem( bar );
+  if ( item )
+    _toolBar->removeItem( item );
+}
+
+void PythonWorkbench::appendCommandbar( const QString& bar, const QStringList& items ) const
+{
+  ToolBarItem* item = _commandBar->findItem( bar );
+  if ( !item )
+  {
+    item = new ToolBarItem(_commandBar);
+    item->setCommand(bar);
+  }
+
+  for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
+    *item << *it;
+}
+
+void PythonWorkbench::removeCommandbar( const QString& bar ) const
+{
+  ToolBarItem* item = _commandBar->findItem( bar );
+  if ( item )
+    _commandBar->removeItem( item );
+}

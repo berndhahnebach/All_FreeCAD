@@ -199,13 +199,15 @@ public:
   PYFUNCDEF_S(sCommandbarRemoveItems);
   PYFUNCDEF_S(sCommandbarDelete);
 
-  PYFUNCDEF_S(sAddWorkbench);      // adds a new workbench name to a list
+  PYFUNCDEF_S(sAddWorkbench);      // adds a new workbench module to a list
+  PYFUNCDEF_S(sCreateWorkbench);   // creates a new workbench object
   PYFUNCDEF_S(sRemoveWorkbench);   // removes a workbench name from the list
   PYFUNCDEF_S(sActiveWorkbench);   // retrieves the active workbench object
   PYFUNCDEF_S(sActivateWorkbench); // activates a workbench object
   PYFUNCDEF_S(sListWorkbenches);   // retrieves a list of all workbench objects
   PYFUNCDEF_S(sWorkbenchModule);   // retrieves the module object
   PYFUNCDEF_S(sGetWorkbench);      // retrieves a workbench object
+  PYFUNCDEF_S(sHasWorkbench);      // retrieves a workbench object
 #else
 
   PYFUNCDEF_S(sMenuAppendItems); // append items

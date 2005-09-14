@@ -1072,7 +1072,6 @@ QPixmap ApplicationWindow::workbenchIcon( const QString& wb ) const
   {
     // call its GetIcon method if possible
     try{
-      PyErr_Clear(); /* ## Python interpreter is in an incon. state => bug in Base::Interpreter somewhere */
       PyObject* res = Interpreter().runMethodObject(pcWorkbench, "GetIcon");
       if ( PyList_Check(res) )
       {
@@ -1096,8 +1095,8 @@ QPixmap ApplicationWindow::workbenchIcon( const QString& wb ) const
         QPixmap px; px.loadFromData(ary, "XPM");
         return px;
       }
-    } catch ( const Base::Exception& ) {
-      PyErr_Clear(); /* ## Python interpreter is in an incon. state => bug in Base::Interpreter somewhere */
+    } catch ( const Base::Exception& e ) {
+      Base::Console().Log("%s\n", e.what() );
     }
   }
 
@@ -1624,11 +1623,13 @@ PyMethodDef ApplicationWindow::Methods[] = {
   {"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
 
   {"AddWorkbench",          (PyCFunction) ApplicationWindow::sAddWorkbench,            1},
+  {"CreateWorkbench",       (PyCFunction) ApplicationWindow::sCreateWorkbench,         1},
   {"RemoveWorkbench",       (PyCFunction) ApplicationWindow::sRemoveWorkbench,         1},
   {"ActiveWorkbench",       (PyCFunction) ApplicationWindow::sActiveWorkbench,         1},
   {"ActivateWorkbench",     (PyCFunction) ApplicationWindow::sActivateWorkbench,       1},
   {"ListWorkbenches",       (PyCFunction) ApplicationWindow::sListWorkbenches,         1},
   {"GetWorkbench",          (PyCFunction) ApplicationWindow::sGetWorkbench,            1},
+  {"HasWorkbench",          (PyCFunction) ApplicationWindow::sHasWorkbench,            1},
   {"WorkbenchModule",       (PyCFunction) ApplicationWindow::sWorkbenchModule,         1},
 #else
   {"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
@@ -1845,6 +1846,24 @@ PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
   return Py_None;
 }
 
+PYFUNCIMP_S(ApplicationWindow,sCreateWorkbench)
+{
+  char*       psKey;
+  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
+
+  if ( WorkbenchFactory().CanProduce(psKey) )
+  {
+    PyErr_Format(PyExc_KeyError, "Workbench '%s' already exists", psKey);
+    return NULL;
+  }
+
+  WorkbenchFactory().AddProducer(psKey, new WorkbenchProducer<PythonWorkbench>);
+  Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
+  
+  Base::PyObjectBase* pyObj = wb->GetPyObject();
+  return pyObj;
+} 
 
 PYFUNCIMP_S(ApplicationWindow,sRemoveWorkbench)
 {
@@ -1931,7 +1950,17 @@ PYFUNCIMP_S(ApplicationWindow,sGetWorkbench)
 
   Base::PyObjectBase* pyObj = wb->GetPyObject();
 //  pyObj->_INCREF();
-  return pyObj;
+  return pyObj ? pyObj : Py_None;
+} 
+
+PYFUNCIMP_S(ApplicationWindow,sHasWorkbench)
+{
+  char*       psKey;
+  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
+
+  Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
+  return wb ? Py_True : Py_False;
 } 
 #endif
 #ifndef NEW_WB_FRAMEWORK
