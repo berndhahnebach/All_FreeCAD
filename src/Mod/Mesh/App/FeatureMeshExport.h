@@ -37,7 +37,7 @@ namespace Mesh
 class FeatureMeshExport : public MeshFeature
 {
 public:
-  /** @name methods overide Feature */
+  /** @name methods override Feature */
   //@{
   /// Initialize Feature structure
   virtual void initFeature(void);
@@ -50,4 +50,4 @@ public:
 
 }
 
-#endif // FEATURE_MESH_IMPORT_H 
+#endif // FEATURE_MESH_Export_H 
