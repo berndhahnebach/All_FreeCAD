@@ -98,7 +98,6 @@ std::string InterpreterSingleton::runString(const char *sCmd)
   }
 }
 
-
 void InterpreterSingleton::runInteractiveString(const char *sCmd)
 {
   PyBuf buf(sCmd);
@@ -112,9 +111,18 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
   presult = PyRun_String(buf.str, Py_single_input, dict, dict); /* eval direct */
   if(!presult)
   {
+    /* get latest python exception information */
+    /* and print the error to the error output */
+    PyObject *errobj, *errdata, *errtraceback;
+    PyErr_Fetch(&errobj, &errdata, &errtraceback);
+
+    Exception exc; // do not use PyException since this clears the error indicator
+    if ( PyString_Check( errdata ) )
+      exc.SetMessage( PyString_AsString( errdata ) );
+    PyErr_Restore(errobj, errdata, errtraceback);
     if ( PyErr_Occurred() )
       PyErr_Print();
-    throw Exception();
+    throw exc;
   }
 }
 
@@ -143,7 +151,7 @@ bool InterpreterSingleton::loadModule(const char* psModName)
 
 	module = PP_Load_Module(ModName.str);
 
-	if(!module ) throw Exception("InterpreterSingleton::LoadModule(): Module not loaded!");
+	if(!module ) throw PyException(/*"InterpreterSingleton::LoadModule(): Module not loaded!"*/);
 
 	Py_XINCREF(module);
 
@@ -221,7 +229,7 @@ void InterpreterSingleton::runMethodVoid(PyObject *pobject, const char *method)
 				     0,		       // so no return object
 					 "()")		   // no arguments
 					 != 0)
-		throw Exception("Error running InterpreterSingleton::RunMethodeVoid()");
+		throw PyException(/*"Error running InterpreterSingleton::RunMethodeVoid()"*/);
 
 }
 
@@ -238,7 +246,7 @@ PyObject* InterpreterSingleton::runMethodObject(PyObject *pobject, const char *m
 				     &pcO,		   // return object
 					 "()")		   // no arguments
 					 != 0)
-		throw Exception("Error runing InterpreterSingleton::RunMethodeObject()");
+		throw PyException(/*"Error runing InterpreterSingleton::RunMethodeObject()"*/);
 	
 	return pcO;
 }
@@ -269,7 +277,8 @@ void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
     Py_DECREF(pargs);
 	if(PP_Convert_Result(presult, cResfmt.str, cresult)!= 0)
 	{
-		PyErr_Print();
+    if ( PyErr_Occurred() )
+      PyErr_Print();
 		throw Exception("Error runing InterpreterSingleton::RunMethod() exception in called methode");
 	}
 }
