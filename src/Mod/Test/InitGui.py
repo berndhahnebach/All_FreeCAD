@@ -30,6 +30,39 @@
 
 class TestWorkbench ( Workbench ):
 	"Test workbench object"
+	def Import(self):
+		try:
+			Log ('Loading TestGui module\n')
+			import TestGui
+			w=0
+			if Gui.HasWorkbench('Test framework') == False:
+				w = Gui.CreateWorkbench('Test framework')
+				Log ('Activating Test workbench...\n')
+
+				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
+				w.AppendToolbar("TestTools",list)
+
+				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
+				w.AppendCommandbar("TestToolsGui",list)
+
+				list = ["Test_TestAllText","Test_TestDocText","Test_TestBaseText"]
+				w.AppendCommandbar("TestToolsText",list)
+
+				list = ["Test_TestCreateMenu", "Test_TestDeleteMenu"]
+				w.AppendCommandbar("TestToolsMenu",list)
+
+				list = ["Std_Test1", "Std_Test2", "Std_Test3", "Std_Test4", "Std_Test5", "Std_Test6", "Std_Test7", "Std_Test8"]
+				w.AppendMenu("Test &Commands",list)
+
+				list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3", "Std_ViewIvDecorationOn", "Std_ViewIvDecorationOff", 
+				"Std_ViewIvStereoOn", "Std_ViewIvStereoOff", "Std_ViewIvIssueCamPos"]
+				w.AppendMenu("Inventor View",list)
+
+				Log ('   Set up Test menues...\n')
+		except:
+			Err('Activating of workbench "Test framework" failed\n')
+			raise
+
 	def Start(self):
 		# load the module
 		try:
