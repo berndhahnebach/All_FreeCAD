@@ -187,7 +187,7 @@ FCCmdTest2::FCCmdTest2()
 void FCCmdTest2::activated(int iMsg)
 {
 
-  App::Document *pcDoc = getActiveOCCDocument();
+  App::Document *pcDoc = getDocument();
 	if(!pcDoc) return;
 
 	Base::Console().Log("Trac: Using Doc: %p\n",pcDoc);
@@ -210,7 +210,7 @@ void FCCmdTest2::activated(int iMsg)
 
 bool FCCmdTest2::isActive(void)
 {
-  return (getActiveOCCDocument()!=NULL);
+  return (getDocument()!=NULL);
 }
 
 //===========================================================================
@@ -233,7 +233,7 @@ FCCmdTest3::FCCmdTest3()
 void FCCmdTest3::activated(int iMsg)
 {
 
-  App::Document *pcDoc = getActiveOCCDocument();
+  App::Document *pcDoc = getDocument();
 	if(!pcDoc) return;
 
 }
@@ -241,7 +241,7 @@ void FCCmdTest3::activated(int iMsg)
 
 bool FCCmdTest3::isActive(void)
 {
-  return (getActiveOCCDocument()!=NULL);
+  return (getDocument()!=NULL);
 }
 
 //===========================================================================
@@ -265,7 +265,7 @@ FCCmdTest4::FCCmdTest4()
 void FCCmdTest4::activated(int iMsg)
 {
 
-  App::Document *pcDoc = getActiveOCCDocument();
+  App::Document *pcDoc = getDocument();
 	if(!pcDoc) return;
 
 }
@@ -273,7 +273,7 @@ void FCCmdTest4::activated(int iMsg)
 
 bool FCCmdTest4::isActive(void)
 {
-  return (getActiveOCCDocument()!=NULL);
+  return (getDocument()!=NULL);
 }
 
 //===========================================================================
@@ -296,7 +296,7 @@ FCCmdTest5::FCCmdTest5()
 void FCCmdTest5::activated(int iMsg)
 {
 
-  App::Document *pcDoc = getActiveOCCDocument();
+  App::Document *pcDoc = getDocument();
 	if(!pcDoc) return;
 
 }
@@ -304,7 +304,7 @@ void FCCmdTest5::activated(int iMsg)
 
 bool FCCmdTest5::isActive(void)
 {
-  return (getActiveOCCDocument()!=NULL);
+  return (getDocument()!=NULL);
 }
 
 
@@ -328,7 +328,7 @@ FCCmdTest6::FCCmdTest6()
 void FCCmdTest6::activated(int iMsg)
 {
 
-  App::Document *pcDoc = getActiveOCCDocument();
+  App::Document *pcDoc = getDocument();
 	if(!pcDoc) return;
 
 }
@@ -336,7 +336,7 @@ void FCCmdTest6::activated(int iMsg)
 
 bool FCCmdTest6::isActive(void)
 {
-  return (getActiveOCCDocument()!=NULL);
+  return (getDocument()!=NULL);
 }
 
 

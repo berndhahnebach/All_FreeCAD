@@ -238,7 +238,7 @@ void CmdMeshImport::activated(int iMsg)
 
 bool CmdMeshImport::isActive(void)
 {
-  if( getActiveDocument() )
+  if( getActiveGuiDocument() )
     return true;
   else
     return false;

@@ -119,7 +119,7 @@ void ImportStep::activated(int iMsg)
 
 bool ImportStep::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;
@@ -170,7 +170,7 @@ void ImportIges::activated(int iMsg)
 
 bool ImportIges::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;

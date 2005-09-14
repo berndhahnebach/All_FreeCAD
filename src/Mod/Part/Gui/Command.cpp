@@ -128,7 +128,7 @@ FCCmdPartTest2::FCCmdPartTest2()
 void FCCmdPartTest2::activated(int iMsg)
 {
 
-  App::Document *pcDoc = getActiveOCCDocument();
+  App::Document *pcDoc = getDocument();
 	if(!pcDoc) return;
 
 
@@ -206,7 +206,7 @@ void FCCmdPartBox::activated(int iMsg)
 
 bool FCCmdPartBox::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;
@@ -251,7 +251,7 @@ void FCCmdPartBox2::activated(int iMsg)
 
 bool FCCmdPartBox2::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;
@@ -295,7 +295,7 @@ void FCCmdPartBox3::activated(int iMsg)
 
 bool FCCmdPartBox3::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;
@@ -388,7 +388,7 @@ void PartImportStep::activated(int iMsg)
 
 bool PartImportStep::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;
@@ -439,7 +439,7 @@ void PartImportIges::activated(int iMsg)
 
 bool PartImportIges::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;
@@ -491,7 +491,7 @@ void PartImportBrep::activated(int iMsg)
 
 bool PartImportBrep::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;
@@ -540,7 +540,7 @@ void PartImportCurveNet::activated(int iMsg)
 
 bool PartImportCurveNet::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;

@@ -113,14 +113,14 @@ StdCmdToggleVisibility::StdCmdToggleVisibility()
 
 void StdCmdToggleVisibility::activated(int iMsg)
 {
-  if( getActiveDocument() )
+  if( getActiveGuiDocument() )
   {
     for(std::vector<App::Feature*>::const_iterator It=Gui::Selection().getSelectedFeatures().begin();It!=Gui::Selection().getSelectedFeatures().end();It++)
     {
-      if(getActiveDocument()->isShow(*It))
-        getActiveDocument()->setHide(*It);
+      if(getActiveGuiDocument()->isShow(*It))
+        getActiveGuiDocument()->setHide(*It);
       else
-        getActiveDocument()->setShow(*It);
+        getActiveGuiDocument()->setShow(*It);
 
     }
     Gui::Selection().clearSelection();
@@ -361,7 +361,7 @@ StdViewFullScreen::StdViewFullScreen()
 
 void StdViewFullScreen::activated(int iMsg)
 {
-  MDIView* view = getActiveDocument()->getActiveView();
+  MDIView* view = getActiveGuiDocument()->getActiveView();
   if ( view && view->isFullScreen() )
     view->setFullScreenMode( false );
   else
@@ -370,7 +370,7 @@ void StdViewFullScreen::activated(int iMsg)
 
 bool StdViewFullScreen::isActive(void)
 {
-  return (getActiveDocument()!=NULL);
+  return (getActiveGuiDocument()!=NULL);
 }
 
 //===========================================================================
@@ -392,12 +392,12 @@ StdCmdViewCreateOCC::StdCmdViewCreateOCC()
 
 void StdCmdViewCreateOCC::activated(int iMsg)
 {
-  getActiveDocument()->createView("View3DOCC");
+  getActiveGuiDocument()->createView("View3DOCC");
 }
 
 bool StdCmdViewCreateOCC::isActive(void)
 {
-  return (getActiveDocument()!=NULL);
+  return (getActiveGuiDocument()!=NULL);
 }
 
 //===========================================================================
@@ -419,12 +419,12 @@ StdCmdViewCreateInventor::StdCmdViewCreateInventor()
 
 void StdCmdViewCreateInventor::activated(int iMsg)
 {
-  getActiveDocument()->createView("View3DIv");
+  getActiveGuiDocument()->createView("View3DIv");
 }
 
 bool StdCmdViewCreateInventor::isActive(void)
 {
-  return (getActiveDocument()!=NULL);
+  return (getActiveGuiDocument()!=NULL);
 }
 
 //===========================================================================

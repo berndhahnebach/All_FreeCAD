@@ -59,7 +59,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
 
   for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
-    pcProv = pcCmd->getActiveDocument()->getViewProvider(*It);
+    pcProv = pcCmd->getActiveGuiDocument()->getViewProvider(*It);
 
     if ( pcProv )
     {
@@ -106,7 +106,7 @@ void DlgDisplayPropertiesImp::onChangeMode(const QString&s)
   Base::Console().Log("Mode = %s\n",s.latin1());
   for( std::vector<ViewProviderInventor*>::iterator It= Provider.begin();It!=Provider.end();It++)
     (*It)->setMode(s.latin1()); 
-  _pcCmd->getActiveDocument()->onUpdate();
+  _pcCmd->getActiveGuiDocument()->onUpdate();
 }
 
 void DlgDisplayPropertiesImp::onChangePlot(const QString&s)
@@ -134,7 +134,7 @@ void DlgDisplayPropertiesImp::onChangeTrans(int i)
 {
   for( std::vector<ViewProviderInventor*>::iterator It= Provider.begin();It!=Provider.end();It++)
     (*It)->setTransparency( i/100.0); 
-  _pcCmd->getActiveDocument()->onUpdate();
+  _pcCmd->getActiveGuiDocument()->onUpdate();
 }
 
 

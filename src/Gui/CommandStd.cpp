@@ -166,9 +166,9 @@ StdCmdSave::StdCmdSave()
 
 void StdCmdSave::activated(int iMsg)
 {
-  if( getActiveDocument() )
+  if( getActiveGuiDocument() )
 //    DoCommand(Command::Doc,"FreeCAD.DocGetActive().Save()");		
-    getActiveDocument()->save();
+    getActiveGuiDocument()->save();
   else
     doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Save\")");
 //    getAppWnd()->SendMsgToActiveView("Save");
@@ -176,7 +176,7 @@ void StdCmdSave::activated(int iMsg)
 
 bool StdCmdSave::isActive(void)
 {
-  if( getActiveDocument() )
+  if( getActiveGuiDocument() )
     return true;
   else
     return getAppWnd()->sendHasMsgToActiveView("Save");
@@ -200,15 +200,15 @@ StdCmdSaveAs::StdCmdSaveAs()
 
 void StdCmdSaveAs::activated(int iMsg)
 {
-  if( getActiveDocument() )
-    getActiveDocument()->saveAs();
+  if( getActiveGuiDocument() )
+    getActiveGuiDocument()->saveAs();
   else
     doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SaveAs\")");
 }
 
 bool StdCmdSaveAs::isActive(void)
 {
-  if( getActiveDocument() )
+  if( getActiveGuiDocument() )
     return true;
   else
     return getAppWnd()->sendHasMsgToActiveView("SaveAs");

@@ -87,19 +87,34 @@ ApplicationWindow *Command::getAppWnd(void)
   return ApplicationWindow::Instance;
 }
 
-Gui::Document* Command::getActiveDocument(void)
+Gui::Document* Command::getActiveGuiDocument(void)
 {
   return getAppWnd()->activeDocument();
 }
 
-App::Document* Command::getActiveOCCDocument(void)
+App::Document* Command::getDocument(const char* Name)
 {
-  Gui::Document * pcDoc = getAppWnd()->activeDocument();
-  if(pcDoc)
-    return pcDoc->getDocument();
+  if(Name)
+    return App::GetApplication().getDocument(Name);
   else
-    return 0l;
+  {
+    Gui::Document * pcDoc = getAppWnd()->activeDocument();
+    if(pcDoc)
+      return pcDoc->getDocument();
+    else
+      return 0l;
+  }
 }
+
+App::Feature* Command::getFeature(const char* Name)
+{
+  App::Document*pDoc = getDocument();
+  if(pDoc)
+    return pDoc->getFeature(Name);
+  else
+    return 0;
+}
+
 
 QAction* Command::getAction( bool create ) 
 { 
@@ -185,12 +200,12 @@ void Command::testActive(void)
 
 bool Command::hasActiveDocument(void)
 {
-  return getActiveDocument() != 0;
+  return getActiveGuiDocument() != 0;
 }
 /// true when there is a document and a Feature with Name
 bool Command::hasFeature(const char* Name)
 {
-  return getActiveOCCDocument() != 0 && getActiveOCCDocument()->getFeature(Name) != 0;
+  return getDocument() != 0 && getDocument()->getFeature(Name) != 0;
 }
 
 Gui::SelectionSingelton&  Command::getSelection(void)
@@ -202,7 +217,7 @@ std::string Command::getUniqueFeatureName(const char *BaseName)
 {
   assert(hasActiveDocument());
 
-  return getActiveDocument()->getDocument()->getUniqueFeatureName(BaseName);
+  return getActiveGuiDocument()->getDocument()->getUniqueFeatureName(BaseName);
 }
 
 

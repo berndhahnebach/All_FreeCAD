@@ -83,7 +83,7 @@ void CmdPointsTest::activated(int iMsg)
 
 bool CmdPointsTest::isActive(void)
 {
-  if( getActiveDocument() )
+  if( getActiveGuiDocument() )
     return true;
   else
     return false;

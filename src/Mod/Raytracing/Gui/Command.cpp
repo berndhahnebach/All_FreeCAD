@@ -316,7 +316,7 @@ void CmdRaytracingWritePart::activated(int iMsg)
 
 bool CmdRaytracingWritePart::isActive(void)
 {
-	if( getActiveDocument() )
+	if( getActiveGuiDocument() )
 		return true;
 	else
 		return false;

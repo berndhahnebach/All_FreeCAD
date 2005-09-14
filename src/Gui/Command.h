@@ -36,6 +36,7 @@
 namespace App
 {
   class Document;
+  class Feature;
 }
 
 class QAction;
@@ -101,9 +102,15 @@ public:
   /// Get a referenc to the selection 
   Gui::SelectionSingelton&  getSelection(void);
   /// Get pointer to the active gui document
-  Gui::Document*  getActiveDocument(void);
-  /// Get ponter to the active CasCade document 
-  App::Document*  getActiveOCCDocument(void);
+  Gui::Document*  getActiveGuiDocument(void);
+  /** Get pointer to the named or active App document
+   *  Returns a pointer to the named docuement or the active
+   *  document when no name is given. NULL is returnd
+   *  when the name not exist or no document is active!
+   */
+  App::Document*  getDocument(const char* Name=0);
+  /// returns the named feature or the active one from the active document or NULL
+  App::Feature* getFeature(const char* Name=0);
   /// Get unique Feature name from the active document 
   std::string getUniqueFeatureName(const char *BaseName);
   /// Get the FCAxtion object of this command
