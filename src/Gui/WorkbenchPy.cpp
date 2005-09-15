@@ -34,6 +34,110 @@
 
 using namespace Gui;
 
+
+//--------------------------------------------------------------------------
+// Type structure
+//--------------------------------------------------------------------------
+PyTypeObject WorkbenchPy::Type = {
+  PyObject_HEAD_INIT(&PyType_Type)
+  0,                      /*ob_size*/
+  "WorkbenchPy",          /*tp_name*/
+  sizeof(WorkbenchPy),    /*tp_basicsize*/
+  0,                      /*tp_itemsize*/
+  /* methods */
+  PyDestructor,           /*tp_dealloc*/
+  0,                      /*tp_print*/
+  __getattr,              /*tp_getattr*/
+  __setattr,              /*tp_setattr*/
+  0,                      /*tp_compare*/
+  __repr,                 /*tp_repr*/
+  0,                      /*tp_as_number*/
+  0,                      /*tp_as_sequence*/
+  0,                      /*tp_as_mapping*/
+  0,                      /*tp_hash*/
+  0,                      /*tp_call */
+};
+
+//--------------------------------------------------------------------------
+// Methods structure
+//--------------------------------------------------------------------------
+PyMethodDef WorkbenchPy::Methods[] = {
+  PYMETHODEDEF(Name)
+  PYMETHODEDEF(Activate)
+  {NULL, NULL}          /* Sentinel */
+};
+
+//--------------------------------------------------------------------------
+// Parents structure
+//--------------------------------------------------------------------------
+PyParentObject WorkbenchPy::Parents[] = {&PyObjectBase::Type, NULL};     
+
+//--------------------------------------------------------------------------
+// Constructor
+//--------------------------------------------------------------------------
+WorkbenchPy::WorkbenchPy(Workbench *pcWb, PyTypeObject *T)
+ : PyObjectBase( T), _pcWorkbench(pcWb)
+{
+  Base::Console().Log("Create StandardWorkbenchPy (%d)\n",this);
+}
+
+PyObject *WorkbenchPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+{
+  return 0;
+}
+
+//--------------------------------------------------------------------------
+// destructor 
+//--------------------------------------------------------------------------
+WorkbenchPy::~WorkbenchPy()     // Everything handled in parent
+{
+  Base::Console().Log("Destroy StandardWorkbenchPy: %p \n",this);
+} 
+
+//--------------------------------------------------------------------------
+// PythonWorkbenchPy representation
+//--------------------------------------------------------------------------
+PyObject *WorkbenchPy::_repr(void)
+{
+  return Py_BuildValue("s", "StandardWorkbench");
+}
+
+//--------------------------------------------------------------------------
+// PythonWorkbenchPy Attributes
+//--------------------------------------------------------------------------
+PyObject *WorkbenchPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
+{
+  _getattr_up(PyObjectBase); 
+} 
+
+int WorkbenchPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+{ 
+  return PyObjectBase::_setattr(attr, value); 	// send up to parent
+} 
+
+//--------------------------------------------------------------------------
+// Python wrappers
+//--------------------------------------------------------------------------
+PYFUNCIMP_D(WorkbenchPy,Name)
+{
+  PY_TRY {
+    QString name = _pcWorkbench->name(); 
+    PyObject* pyName = PyString_FromString( name.latin1() );
+    return pyName;
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(WorkbenchPy,Activate)
+{
+  PY_TRY {
+    QString name = _pcWorkbench->name(); 
+    WorkbenchManager::instance()->activate( name );
+    Py_Return; 
+  }PY_CATCH;
+} 
+
+// -------------------------------------------------------------------------
+
 //--------------------------------------------------------------------------
 // Type structure
 //--------------------------------------------------------------------------
@@ -55,6 +159,38 @@ PyTypeObject PythonWorkbenchPy::Type = {
   0,                      /*tp_as_mapping*/
   0,                      /*tp_hash*/
   0,                      /*tp_call */
+  0,                                                /*tp_str  */
+  0,                                                /*tp_getattro*/
+  0,                                                /*tp_setattro*/
+  /* --- Functions to access object as input/output buffer ---------*/
+  0,                                                /* tp_as_buffer */
+  /* --- Flags to define presence of optional/expanded features */
+  Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
+  "About PythonWorkbench",                          /*tp_doc */
+  0,                                                /*tp_traverse */
+  0,                                                /*tp_clear */
+  0,                                                /*tp_richcompare */
+  0,                                                /*tp_weaklistoffset */
+  0,                                                /*tp_iter */
+  0,                                                /*tp_iternext */
+  0,                                                /*tp_methods */
+  0,                                                /*tp_members */
+  0,                                                /*tp_getset */
+  &WorkbenchPy::Type,                               /*tp_base */
+  0,                                                /*tp_dict */
+  0,                                                /*tp_descr_get */
+  0,                                                /*tp_descr_set */
+  0,                                                /*tp_dictoffset */
+  0,                                                /*tp_init */
+  0,                                                /*tp_alloc */
+  0,                                                /*tp_new */
+  0,                                                /*tp_free   Low-level free-memory routine */
+  0,                                                /*tp_is_gc  For PyObject_IS_GC */
+  0,                                                /*tp_bases */
+  0,                                                /*tp_mro    method resolution order */
+  0,                                                /*tp_cache */
+  0,                                                /*tp_subclasses */
+  0                                                 /*tp_weaklist */
 };
 
 //--------------------------------------------------------------------------
@@ -86,7 +222,7 @@ PyParentObject PythonWorkbenchPy::Parents[] = {&PyObjectBase::Type, NULL};
 // Constructor
 //--------------------------------------------------------------------------
 PythonWorkbenchPy::PythonWorkbenchPy(PythonWorkbench *pcWb, PyTypeObject *T)
- : PyObjectBase( T), _pcWorkbench(pcWb)
+ : WorkbenchPy( pcWb, T), _pcWorkbench(pcWb)
 {
   Base::Console().Log("Create PythonWorkbenchPy (%d)\n",this);
 }
@@ -128,23 +264,6 @@ int PythonWorkbenchPy::_setattr(char *attr, PyObject *value) 	// __setattr__ fun
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-PYFUNCIMP_D(PythonWorkbenchPy,Name)
-{
-  PY_TRY {
-    QString name = _pcWorkbench->name(); 
-    PyObject* pyName = PyString_FromString( name.latin1() );
-    return pyName;
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(PythonWorkbenchPy,Activate)
-{
-  PY_TRY {
-    QString name = _pcWorkbench->name(); 
-    WorkbenchManager::instance()->activate( name );
-    Py_Return; 
-  }PY_CATCH;
-} 
 
 PYFUNCIMP_D(PythonWorkbenchPy,AppendMenu)
 {

@@ -30,13 +30,43 @@
 #include "../Base/PyExportImp.h"
 
 namespace Gui {
+class Workbench;
 class PythonWorkbench;
+
+/** 
+ * The workbench Python base class.
+ * @author Werner Mayer
+ */
+class GuiExport WorkbenchPy : public Base::PyObjectBase
+{
+  /// always start with Py_Header
+  Py_Header;
+
+public:
+  WorkbenchPy(Workbench* pcWb, PyTypeObject *T = &Type);
+  static PyObject *PyMake(PyObject *, PyObject *);
+
+  ~WorkbenchPy();
+
+  //---------------------------------------------------------------------
+  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+  //---------------------------------------------------------------------
+  virtual PyObject *_repr(void);                // the representation
+  PyObject *_getattr(char *attr);               // __getattr__ function
+  int _setattr(char *attr, PyObject *value);    // __setattr__ function
+
+  PYFUNCDEF_D(WorkbenchPy,Name)
+  PYFUNCDEF_D(WorkbenchPy,Activate)
+
+protected:
+  Workbench *_pcWorkbench;
+};
 
 /** 
  * The workbench Python class.
  * @author Werner Mayer
  */
-class GuiExport PythonWorkbenchPy : public Base::PyObjectBase
+class GuiExport PythonWorkbenchPy : public WorkbenchPy
 {
   /// always start with Py_Header
   Py_Header;
@@ -53,9 +83,6 @@ public:
   virtual PyObject *_repr(void);                // the representation
   PyObject *_getattr(char *attr);               // __getattr__ function
   int _setattr(char *attr, PyObject *value);    // __setattr__ function
-
-  PYFUNCDEF_D(PythonWorkbenchPy,Name)
-  PYFUNCDEF_D(PythonWorkbenchPy,Activate)
 
   // menu stuff
   PYFUNCDEF_D(PythonWorkbenchPy,AppendMenu)

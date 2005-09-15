@@ -156,7 +156,7 @@ bool Workbench::activate()
 
 Base::PyObjectBase* Workbench::GetPyObject()
 {
-  return 0;
+  return new WorkbenchPy(this);
 }
 
 // --------------------------------------------------------------------
