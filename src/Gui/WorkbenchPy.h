@@ -36,16 +36,16 @@ class PythonWorkbench;
  * The workbench Python class.
  * @author Werner Mayer
  */
-class GuiExport WorkbenchPy : public Base::PyObjectBase
+class GuiExport PythonWorkbenchPy : public Base::PyObjectBase
 {
   /// always start with Py_Header
   Py_Header;
 
 public:
-  WorkbenchPy(PythonWorkbench *pcWb, PyTypeObject *T = &Type);
+  PythonWorkbenchPy(PythonWorkbench *pcWb, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
 
-  ~WorkbenchPy();
+  ~PythonWorkbenchPy();
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -54,24 +54,27 @@ public:
   PyObject *_getattr(char *attr);               // __getattr__ function
   int _setattr(char *attr, PyObject *value);    // __setattr__ function
 
-  PYFUNCDEF_D(WorkbenchPy,Name)
-  PYFUNCDEF_D(WorkbenchPy,Activate)
+  PYFUNCDEF_D(PythonWorkbenchPy,Name)
+  PYFUNCDEF_D(PythonWorkbenchPy,Activate)
 
   // menu stuff
-  PYFUNCDEF_D(WorkbenchPy,AppendMenu)
-  PYFUNCDEF_D(WorkbenchPy,RemoveMenu)
+  PYFUNCDEF_D(PythonWorkbenchPy,AppendMenu)
+  PYFUNCDEF_D(PythonWorkbenchPy,RemoveMenu)
+  PYFUNCDEF_D(PythonWorkbenchPy,ListMenus)
 
   // context menu stuff
-  PYFUNCDEF_D(WorkbenchPy,AppendContextMenu)
-  PYFUNCDEF_D(WorkbenchPy,RemoveContextMenu)
+  PYFUNCDEF_D(PythonWorkbenchPy,AppendContextMenu)
+  PYFUNCDEF_D(PythonWorkbenchPy,RemoveContextMenu)
 
   // toolbar stuff
-  PYFUNCDEF_D(WorkbenchPy,AppendToolbar)
-  PYFUNCDEF_D(WorkbenchPy,RemoveToolbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,AppendToolbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,RemoveToolbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,ListToolbars)
 
   // commandbar stuff
-  PYFUNCDEF_D(WorkbenchPy,AppendCommandbar)
-  PYFUNCDEF_D(WorkbenchPy,RemoveCommandbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,AppendCommandbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,RemoveCommandbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,ListCommandbars)
 
 protected:
   PythonWorkbench *_pcWorkbench;

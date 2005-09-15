@@ -127,7 +127,7 @@ class TestWorkbenchCmd:
 class TestCreateMenuCmd:
     "Base test commando object"
     def Activated(self):
-        TestApp.TestText("Menu.MenuCreateCases")
+        TestApp.TestGui("Menu.MenuCreateCases")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
@@ -137,7 +137,7 @@ class TestCreateMenuCmd:
 class TestDeleteMenuCmd:
     "Base test commando object"
     def Activated(self):
-        TestApp.TestText("Menu.MenuDeleteCases")
+        TestApp.TestGui("Menu.MenuDeleteCases")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',

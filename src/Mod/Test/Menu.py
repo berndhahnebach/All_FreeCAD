@@ -3,7 +3,7 @@
 #
 
 #***************************************************************************
-#*   (c) Werner Mayer <werner.wm.mayer@gmx.de> 2005                        *   
+#*   (c) Werner Mayer <werner.wm.mayer@gmx.de> 2005                        *
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
@@ -14,12 +14,12 @@
 #*   for detail see the LICENCE text file.                                 *
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
 #*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
 #*   GNU Library General Public License for more details.                  *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
-#*   License along with FreeCAD; if not, write to the Free Software        * 
+#*   License along with FreeCAD; if not, write to the Free Software        *
 #*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
 #*   USA                                                                   *
 #*                                                                         *
@@ -44,29 +44,52 @@ import FreeCAD, os, unittest, FreeCADGui
 class MenuCreateCases(unittest.TestCase):
 
     def setUp(self):
-        FreeCAD.PrintLog ('   Set up Test menus...\n')
+        FreeCAD.PrintLog ('Setup Test menu...\n')
         list = ["Std_CommandLine","Std_DlgCustomize","Std_DlgMacroStop","Std_DlgMacroExecute"]
-        FreeCADGui.MenuAppendItems("TestMenu",list,0)
+        w = FreeCADGui.GetWorkbench('Test framework')
+        w.AppendMenu("TestMenu",list)
+        w.Activate()
+        FreeCADGui.UpdateGui()
 
-    def testSaveAndRestore(self):
-        # saving and restoring
-        FreeCAD.PrintMessage ('Switch to <none> and back to Test framework\n')
-        FreeCADGui.WorkbenchActivate("<none>")
-        FreeCADGui.WorkbenchActivate("Test framework")
+    def testMenu(self):
+        # check menu for items
+        FreeCAD.PrintLog ('Checking Test menu...\n')
+        w = FreeCADGui.GetWorkbench('Test framework')
+        list = w.ListMenus()
+        self.b = False
+        for i in list:
+          if i == 'TestMenu': self.b=True
+        self.failUnless(self.b==True,"Test menu not found")
 
     def tearDown(self):
-        FreeCAD.PrintMessage ('Press Test_TestDeleteMenu to remove menu...\n')
+      if self.b == True:
+        FreeCAD.PrintLog ('Test menu successfully added\n')
+      else:
+        FreeCAD.PrintLog ('Adding Test menu failed\n')
 
 
 class MenuDeleteCases(unittest.TestCase):
 
     def setUp(self):
-        FreeCAD.PrintLog ('   Delete menu:\n')
+        FreeCAD.PrintLog ('Remove Test menu...\n')
+        w = FreeCADGui.GetWorkbench('Test framework')
+        w.RemoveMenu("TestMenu")
+        w.Activate()
+        FreeCADGui.UpdateGui()
 
-    def testLabels(self):
-        FreeCAD.PrintLog ('   Test menus...\n')
+    def testMenu(self):
+        # check menu for items
+        FreeCAD.PrintLog ('Checking Test menu...\n')
+        w = FreeCADGui.GetWorkbench('Test framework')
+        list = w.ListMenus()
+        self.b = True
+        for i in list:
+          if i == 'TestMenu': self.b=False
+        self.failUnless(self.b==True,"Test menu still added")
 
     def tearDown(self):
-        FreeCAD.PrintMessage ('Remove Test menus...\n')
-        FreeCADGui.MenuDelete("TestMenu")
+      if self.b == True:
+        FreeCAD.PrintLog ('Test menu successfully removed\n')
+      else:
+        FreeCAD.PrintLog ('Removing Test menu failed\n')
 

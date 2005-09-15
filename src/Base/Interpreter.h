@@ -114,6 +114,8 @@ public:
   int cleanup(void (*func)(void));
   /// This calls the registered cleanup functions. @see cleanup() for more details.
   void finalize();
+  /// This shuts down the application.
+  void systemExit();
   //@}
 
 //	void Register(FCPythonExport *pcPyExporter);

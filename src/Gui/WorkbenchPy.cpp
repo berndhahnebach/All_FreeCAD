@@ -37,11 +37,11 @@ using namespace Gui;
 //--------------------------------------------------------------------------
 // Type structure
 //--------------------------------------------------------------------------
-PyTypeObject WorkbenchPy::Type = {
+PyTypeObject PythonWorkbenchPy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "WorkbenchPy",          /*tp_name*/
-  sizeof(WorkbenchPy),    /*tp_basicsize*/
+  "PythonWorkbenchPy",          /*tp_name*/
+  sizeof(PythonWorkbenchPy),    /*tp_basicsize*/
   0,                      /*tp_itemsize*/
   /* methods */
   PyDestructor,           /*tp_dealloc*/
@@ -60,35 +60,38 @@ PyTypeObject WorkbenchPy::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef WorkbenchPy::Methods[] = {
+PyMethodDef PythonWorkbenchPy::Methods[] = {
   PYMETHODEDEF(Name)
   PYMETHODEDEF(Activate)
   PYMETHODEDEF(AppendMenu)
   PYMETHODEDEF(RemoveMenu)
+  PYMETHODEDEF(ListMenus)
   PYMETHODEDEF(AppendContextMenu)
   PYMETHODEDEF(RemoveContextMenu)
   PYMETHODEDEF(AppendToolbar)
   PYMETHODEDEF(RemoveToolbar)
+  PYMETHODEDEF(ListToolbars)
   PYMETHODEDEF(AppendCommandbar)
   PYMETHODEDEF(RemoveCommandbar)
+  PYMETHODEDEF(ListCommandbars)
   {NULL, NULL}          /* Sentinel */
 };
 
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject WorkbenchPy::Parents[] = {&PyObjectBase::Type, NULL};     
+PyParentObject PythonWorkbenchPy::Parents[] = {&PyObjectBase::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // Constructor
 //--------------------------------------------------------------------------
-WorkbenchPy::WorkbenchPy(PythonWorkbench *pcWb, PyTypeObject *T)
+PythonWorkbenchPy::PythonWorkbenchPy(PythonWorkbench *pcWb, PyTypeObject *T)
  : PyObjectBase( T), _pcWorkbench(pcWb)
 {
-  Base::Console().Log("Create WorkbenchPy (%d)\n",this);
+  Base::Console().Log("Create PythonWorkbenchPy (%d)\n",this);
 }
 
-PyObject *WorkbenchPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *PythonWorkbenchPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
   return 0;
 }
@@ -96,28 +99,28 @@ PyObject *WorkbenchPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapp
 //--------------------------------------------------------------------------
 // destructor 
 //--------------------------------------------------------------------------
-WorkbenchPy::~WorkbenchPy()     // Everything handled in parent
+PythonWorkbenchPy::~PythonWorkbenchPy()     // Everything handled in parent
 {
-  Base::Console().Log("Destroy WorkbenchPy: %p \n",this);
+  Base::Console().Log("Destroy PythonWorkbenchPy: %p \n",this);
 } 
 
 //--------------------------------------------------------------------------
-// WorkbenchPy representation
+// PythonWorkbenchPy representation
 //--------------------------------------------------------------------------
-PyObject *WorkbenchPy::_repr(void)
+PyObject *PythonWorkbenchPy::_repr(void)
 {
   return Py_BuildValue("s", "PythonWorkbench");
 }
 
 //--------------------------------------------------------------------------
-// WorkbenchPy Attributes
+// PythonWorkbenchPy Attributes
 //--------------------------------------------------------------------------
-PyObject *WorkbenchPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
+PyObject *PythonWorkbenchPy::_getattr(char *attr)     // __getattr__ function: note only need to handle new state
 {
   _getattr_up(PyObjectBase); 
 } 
 
-int WorkbenchPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int PythonWorkbenchPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
   return PyObjectBase::_setattr(attr, value); 	// send up to parent
 } 
@@ -125,7 +128,7 @@ int WorkbenchPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function:
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-PYFUNCIMP_D(WorkbenchPy,Name)
+PYFUNCIMP_D(PythonWorkbenchPy,Name)
 {
   PY_TRY {
     QString name = _pcWorkbench->name(); 
@@ -134,7 +137,7 @@ PYFUNCIMP_D(WorkbenchPy,Name)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(WorkbenchPy,Activate)
+PYFUNCIMP_D(PythonWorkbenchPy,Activate)
 {
   PY_TRY {
     QString name = _pcWorkbench->name(); 
@@ -143,7 +146,7 @@ PYFUNCIMP_D(WorkbenchPy,Activate)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(WorkbenchPy,AppendMenu)
+PYFUNCIMP_D(PythonWorkbenchPy,AppendMenu)
 {
   PY_TRY {
     PyObject* pObject;
@@ -175,7 +178,7 @@ PYFUNCIMP_D(WorkbenchPy,AppendMenu)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(WorkbenchPy,RemoveMenu)
+PYFUNCIMP_D(PythonWorkbenchPy,RemoveMenu)
 { 
   PY_TRY {
     char *psMenu;
@@ -187,7 +190,23 @@ PYFUNCIMP_D(WorkbenchPy,RemoveMenu)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(WorkbenchPy,AppendContextMenu)
+PYFUNCIMP_D(PythonWorkbenchPy,ListMenus)
+{ 
+  PY_TRY {
+    QStringList menus = _pcWorkbench->listMenus();
+
+    PyObject* pyList = PyList_New(menus.count());
+    int i=0;
+    for ( QStringList::Iterator it = menus.begin(); it != menus.end(); ++it, ++i )
+    {
+      PyObject* str = PyString_FromString( (*it).latin1() );
+      PyList_SetItem(pyList, i, str);
+    }
+    return pyList; 
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(PythonWorkbenchPy,AppendContextMenu)
 { 
   PY_TRY {
     PyObject* pObject;
@@ -219,7 +238,7 @@ PYFUNCIMP_D(WorkbenchPy,AppendContextMenu)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(WorkbenchPy,RemoveContextMenu)
+PYFUNCIMP_D(PythonWorkbenchPy,RemoveContextMenu)
 { 
   PY_TRY {
     char *psMenu;
@@ -231,7 +250,7 @@ PYFUNCIMP_D(WorkbenchPy,RemoveContextMenu)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(WorkbenchPy,AppendToolbar)
+PYFUNCIMP_D(PythonWorkbenchPy,AppendToolbar)
 { 
   PY_TRY {
     PyObject* pObject;
@@ -263,7 +282,7 @@ PYFUNCIMP_D(WorkbenchPy,AppendToolbar)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(WorkbenchPy,RemoveToolbar)
+PYFUNCIMP_D(PythonWorkbenchPy,RemoveToolbar)
 { 
   PY_TRY {
     char *psToolBar;
@@ -275,7 +294,23 @@ PYFUNCIMP_D(WorkbenchPy,RemoveToolbar)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(WorkbenchPy,AppendCommandbar)
+PYFUNCIMP_D(PythonWorkbenchPy,ListToolbars)
+{ 
+  PY_TRY {
+    QStringList bars = _pcWorkbench->listToolbars();
+
+    PyObject* pyList = PyList_New(bars.count());
+    int i=0;
+    for ( QStringList::Iterator it = bars.begin(); it != bars.end(); ++it, ++i )
+    {
+      PyObject* str = PyString_FromString( (*it).latin1() );
+      PyList_SetItem(pyList, i, str);
+    }
+    return pyList; 
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(PythonWorkbenchPy,AppendCommandbar)
 { 
   PY_TRY {
     PyObject* pObject;
@@ -307,7 +342,7 @@ PYFUNCIMP_D(WorkbenchPy,AppendCommandbar)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(WorkbenchPy,RemoveCommandbar)
+PYFUNCIMP_D(PythonWorkbenchPy,RemoveCommandbar)
 { 
   PY_TRY {
     char *psToolBar;
@@ -316,5 +351,21 @@ PYFUNCIMP_D(WorkbenchPy,RemoveCommandbar)
     
     _pcWorkbench->removeCommandbar( psToolBar );
     Py_Return; 
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(PythonWorkbenchPy,ListCommandbars)
+{ 
+  PY_TRY {
+    QStringList bars = _pcWorkbench->listCommandbars();
+
+    PyObject* pyList = PyList_New(bars.count());
+    int i=0;
+    for ( QStringList::Iterator it = bars.begin(); it != bars.end(); ++it, ++i )
+    {
+      PyObject* str = PyString_FromString( (*it).latin1() );
+      PyList_SetItem(pyList, i, str);
+    }
+    return pyList; 
   }PY_CATCH;
 }

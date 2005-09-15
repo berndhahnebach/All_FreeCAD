@@ -331,7 +331,7 @@ Base::PyObjectBase* PythonWorkbench::GetPyObject()
 {
   if ( !_workbenchPy )
   {
-    _workbenchPy = new WorkbenchPy(this);
+    _workbenchPy = new PythonWorkbenchPy(this);
   }
 
   // Increment every time when this object is returned
@@ -417,6 +417,16 @@ void PythonWorkbench::removeMenu( const QString& menu ) const
     _menuBar->removeItem( item );
 }
 
+QStringList PythonWorkbench::listMenus() const
+{
+	QStringList menus;
+	QPtrList<MenuItem> items = _menuBar->getItems();
+	MenuItem* item;
+	for ( item=items.first(); item; item=items.next() )
+		menus << item->command();
+	return menus;
+}
+
 void PythonWorkbench::appendContextMenu( const QString& menu, const QStringList& items ) const
 {
 }
@@ -445,6 +455,16 @@ void PythonWorkbench::removeToolbar( const QString& bar) const
     _toolBar->removeItem( item );
 }
 
+QStringList PythonWorkbench::listToolbars() const
+{
+	QStringList bars;
+	QPtrList<ToolBarItem> items = _toolBar->getItems();
+	ToolBarItem* item;
+	for ( item=items.first(); item; item=items.next() )
+		bars << item->command();
+	return bars;
+}
+
 void PythonWorkbench::appendCommandbar( const QString& bar, const QStringList& items ) const
 {
   ToolBarItem* item = _commandBar->findItem( bar );
@@ -463,4 +483,14 @@ void PythonWorkbench::removeCommandbar( const QString& bar ) const
   ToolBarItem* item = _commandBar->findItem( bar );
   if ( item )
     _commandBar->removeItem( item );
+}
+
+QStringList PythonWorkbench::listCommandbars() const
+{
+	QStringList bars;
+	QPtrList<ToolBarItem> items = _commandBar->getItems();
+	ToolBarItem* item;
+	for ( item=items.first(); item; item=items.next() )
+		bars << item->command();
+	return bars;
 }

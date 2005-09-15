@@ -122,15 +122,18 @@ public:
 
   void appendMenu( const QString& menu, const QStringList& items ) const;
   void removeMenu( const QString& menu ) const;
+  QStringList listMenus() const;
 
   void appendContextMenu( const QString& menu, const QStringList& items ) const;
   void removeContextMenu( const QString& menu ) const;
 
   void appendToolbar( const QString& bar, const QStringList& items ) const;
   void removeToolbar( const QString& bar ) const;
+  QStringList listToolbars() const;
 
   void appendCommandbar( const QString& bar, const QStringList& items ) const;
   void removeCommandbar( const QString& bar ) const;
+  QStringList listCommandbars() const;
 
 protected:
   MenuItem* setupMenuBar() const;
