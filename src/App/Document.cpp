@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <OSD_Process.hxx>
 #	include <TDocStd_Application.hxx>
 #	include <TDataStd_Real.hxx>
 #	include <TDataStd_Name.hxx>

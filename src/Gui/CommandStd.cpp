@@ -31,6 +31,7 @@
 # include <qapplication.h>
 # include <qstatusbar.h>
 # include <qfiledialog.h>
+# include <qobjectlist.h>
 # include <qprinter.h>
 # include <qtimer.h>
 #endif

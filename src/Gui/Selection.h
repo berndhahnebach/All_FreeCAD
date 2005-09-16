@@ -28,6 +28,8 @@
 
 #ifndef _PreComp_
 # include <string>
+# include <vector>
+# include <list>
 # include <map>
 #endif
 

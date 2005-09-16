@@ -7,7 +7,9 @@ libImportGui_la_SOURCES=\
 		AppImportGui.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
-		PreCompiled.h
+		PreCompiled.h \
+		Workbench.cpp \
+		Workbench.h
 
 # the library search path.
 libImportGui_la_LDFLAGS = \

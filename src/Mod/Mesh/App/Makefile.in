@@ -178,6 +178,10 @@ libMesh_la_SOURCES = \
 		CurveProjector.cpp \
 		CurveProjector.h \
 		Doxygen.cpp \
+		FeatureMeshCurvature.cpp \
+		FeatureMeshCurvature.h \
+		FeatureMeshExport.cpp \
+		FeatureMeshExport.h \
 		FeatureMeshImport.cpp \
 		FeatureMeshImport.h \
 		FeatureMeshTransform.cpp \
@@ -227,7 +231,8 @@ am_libMesh_la_OBJECTS = libMesh_la-Algorithm.lo \
 	libMesh_la-TopoAlgorithm.lo libMesh_la-Visitor.lo \
 	libMesh_la-AppMesh.lo libMesh_la-AppMeshPy.lo \
 	libMesh_la-CurveProjector.lo libMesh_la-Doxygen.lo \
-	libMesh_la-FeatureMeshImport.lo \
+	libMesh_la-FeatureMeshCurvature.lo \
+	libMesh_la-FeatureMeshExport.lo libMesh_la-FeatureMeshImport.lo \
 	libMesh_la-FeatureMeshTransform.lo \
 	libMesh_la-FeatureMeshTransformDemolding.lo libMesh_la-Mesh.lo \
 	libMesh_la-MeshAlgos.lo libMesh_la-MeshCurvature.lo \
@@ -248,6 +253,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Doxygen.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Elements.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-Evaluation.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-FeatureMeshExport.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-FeatureMeshImport.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-FeatureMeshTransform.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMesh_la-FeatureMeshTransformDemolding.Plo \
@@ -341,6 +348,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Elements.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-Evaluation.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-FeatureMeshExport.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-FeatureMeshImport.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-FeatureMeshTransform.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMesh_la-FeatureMeshTransformDemolding.Plo@am__quote@
@@ -989,6 +998,72 @@ libMesh_la-Doxygen.lo: Doxygen.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-Doxygen.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-Doxygen.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-Doxygen.lo `test -f 'Doxygen.cpp' || echo '$(srcdir)/'`Doxygen.cpp
+
+libMesh_la-FeatureMeshCurvature.o: FeatureMeshCurvature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshCurvature.o -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshCurvature.o `test -f 'FeatureMeshCurvature.cpp' || echo '$(srcdir)/'`FeatureMeshCurvature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshCurvature.cpp' object='libMesh_la-FeatureMeshCurvature.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Po' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshCurvature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshCurvature.o `test -f 'FeatureMeshCurvature.cpp' || echo '$(srcdir)/'`FeatureMeshCurvature.cpp
+
+libMesh_la-FeatureMeshCurvature.obj: FeatureMeshCurvature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshCurvature.obj -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshCurvature.obj `if test -f 'FeatureMeshCurvature.cpp'; then $(CYGPATH_W) 'FeatureMeshCurvature.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureMeshCurvature.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshCurvature.cpp' object='libMesh_la-FeatureMeshCurvature.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Po' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshCurvature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshCurvature.obj `if test -f 'FeatureMeshCurvature.cpp'; then $(CYGPATH_W) 'FeatureMeshCurvature.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureMeshCurvature.cpp'; fi`
+
+libMesh_la-FeatureMeshCurvature.lo: FeatureMeshCurvature.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshCurvature.lo -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshCurvature.lo `test -f 'FeatureMeshCurvature.cpp' || echo '$(srcdir)/'`FeatureMeshCurvature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshCurvature.cpp' object='libMesh_la-FeatureMeshCurvature.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshCurvature.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshCurvature.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshCurvature.lo `test -f 'FeatureMeshCurvature.cpp' || echo '$(srcdir)/'`FeatureMeshCurvature.cpp
+
+libMesh_la-FeatureMeshExport.o: FeatureMeshExport.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshExport.o -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshExport.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshExport.o `test -f 'FeatureMeshExport.cpp' || echo '$(srcdir)/'`FeatureMeshExport.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshExport.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshExport.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshExport.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshExport.cpp' object='libMesh_la-FeatureMeshExport.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshExport.Po' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshExport.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshExport.o `test -f 'FeatureMeshExport.cpp' || echo '$(srcdir)/'`FeatureMeshExport.cpp
+
+libMesh_la-FeatureMeshExport.obj: FeatureMeshExport.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshExport.obj -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshExport.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshExport.obj `if test -f 'FeatureMeshExport.cpp'; then $(CYGPATH_W) 'FeatureMeshExport.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureMeshExport.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshExport.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshExport.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshExport.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshExport.cpp' object='libMesh_la-FeatureMeshExport.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshExport.Po' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshExport.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshExport.obj `if test -f 'FeatureMeshExport.cpp'; then $(CYGPATH_W) 'FeatureMeshExport.cpp'; else $(CYGPATH_W) '$(srcdir)/FeatureMeshExport.cpp'; fi`
+
+libMesh_la-FeatureMeshExport.lo: FeatureMeshExport.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshExport.lo -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshExport.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMesh_la-FeatureMeshExport.lo `test -f 'FeatureMeshExport.cpp' || echo '$(srcdir)/'`FeatureMeshExport.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMesh_la-FeatureMeshExport.Tpo" "$(DEPDIR)/libMesh_la-FeatureMeshExport.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMesh_la-FeatureMeshExport.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='FeatureMeshExport.cpp' object='libMesh_la-FeatureMeshExport.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMesh_la-FeatureMeshExport.Plo' tmpdepfile='$(DEPDIR)/libMesh_la-FeatureMeshExport.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMesh_la-FeatureMeshExport.lo `test -f 'FeatureMeshExport.cpp' || echo '$(srcdir)/'`FeatureMeshExport.cpp
 
 libMesh_la-FeatureMeshImport.o: FeatureMeshImport.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMesh_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMesh_la-FeatureMeshImport.o -MD -MP -MF "$(DEPDIR)/libMesh_la-FeatureMeshImport.Tpo" \

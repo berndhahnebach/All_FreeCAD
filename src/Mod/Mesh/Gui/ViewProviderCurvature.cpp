@@ -26,8 +26,12 @@
 #ifndef _PreComp_
 # include <qlistview.h>
 # include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoFaceSet.h>
+# include <Inventor/nodes/SoGroup.h>
+# include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoNormal.h>
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoSeparator.h>

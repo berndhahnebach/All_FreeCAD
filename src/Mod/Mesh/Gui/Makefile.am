@@ -11,6 +11,8 @@ libMeshGui_la_SOURCES=\
 		PreCompiled.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
+		ViewProviderCurvature.cpp \
+		ViewProviderCurvature.h \
 		ViewProviderTransform.cpp \
 		ViewProviderTransform.h \
 		ViewProviderTransformDemolding.cpp \

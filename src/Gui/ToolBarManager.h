@@ -28,6 +28,8 @@
 # include <qstring.h>
 #endif
 
+class QToolBar;
+
 namespace Gui {
 
 class GuiExport ToolBarItem

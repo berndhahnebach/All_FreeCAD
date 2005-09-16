@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qlabel.h>
 # include <qmainwindow.h>
 # include <qobjectlist.h>

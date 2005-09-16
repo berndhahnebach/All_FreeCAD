@@ -152,6 +152,8 @@ libMeshGui_la_SOURCES = \
 		PreCompiled.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
+		ViewProviderCurvature.cpp \
+		ViewProviderCurvature.h \
 		ViewProviderTransform.cpp \
 		ViewProviderTransform.h \
 		ViewProviderTransformDemolding.cpp \
@@ -180,6 +182,7 @@ libMeshGui_la_DEPENDENCIES =
 am_libMeshGui_la_OBJECTS = libMeshGui_la-AppMeshGui.lo \
 	libMeshGui_la-Command.lo libMeshGui_la-Doxygen.lo \
 	libMeshGui_la-PreCompiled.lo libMeshGui_la-ViewProvider.lo \
+	libMeshGui_la-ViewProviderCurvature.lo \
 	libMeshGui_la-ViewProviderTransform.lo \
 	libMeshGui_la-ViewProviderTransformDemolding.lo \
 	libMeshGui_la-Workbench.lo
@@ -193,6 +196,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-Doxygen.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-ViewProvider.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-ViewProviderTransformDemolding.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libMeshGui_la-Workbench.Plo
@@ -266,6 +270,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-Doxygen.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-ViewProvider.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-ViewProviderTransformDemolding.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libMeshGui_la-Workbench.Plo@am__quote@
@@ -470,6 +475,39 @@ libMeshGui_la-ViewProvider.lo: ViewProvider.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-ViewProvider.Plo' tmpdepfile='$(DEPDIR)/libMeshGui_la-ViewProvider.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-ViewProvider.lo `test -f 'ViewProvider.cpp' || echo '$(srcdir)/'`ViewProvider.cpp
+
+libMeshGui_la-ViewProviderCurvature.o: ViewProviderCurvature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-ViewProviderCurvature.o -MD -MP -MF "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMeshGui_la-ViewProviderCurvature.o `test -f 'ViewProviderCurvature.cpp' || echo '$(srcdir)/'`ViewProviderCurvature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Tpo" "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProviderCurvature.cpp' object='libMeshGui_la-ViewProviderCurvature.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Po' tmpdepfile='$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-ViewProviderCurvature.o `test -f 'ViewProviderCurvature.cpp' || echo '$(srcdir)/'`ViewProviderCurvature.cpp
+
+libMeshGui_la-ViewProviderCurvature.obj: ViewProviderCurvature.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-ViewProviderCurvature.obj -MD -MP -MF "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMeshGui_la-ViewProviderCurvature.obj `if test -f 'ViewProviderCurvature.cpp'; then $(CYGPATH_W) 'ViewProviderCurvature.cpp'; else $(CYGPATH_W) '$(srcdir)/ViewProviderCurvature.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Tpo" "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProviderCurvature.cpp' object='libMeshGui_la-ViewProviderCurvature.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Po' tmpdepfile='$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-ViewProviderCurvature.obj `if test -f 'ViewProviderCurvature.cpp'; then $(CYGPATH_W) 'ViewProviderCurvature.cpp'; else $(CYGPATH_W) '$(srcdir)/ViewProviderCurvature.cpp'; fi`
+
+libMeshGui_la-ViewProviderCurvature.lo: ViewProviderCurvature.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-ViewProviderCurvature.lo -MD -MP -MF "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libMeshGui_la-ViewProviderCurvature.lo `test -f 'ViewProviderCurvature.cpp' || echo '$(srcdir)/'`ViewProviderCurvature.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Tpo" "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='ViewProviderCurvature.cpp' object='libMeshGui_la-ViewProviderCurvature.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.Plo' tmpdepfile='$(DEPDIR)/libMeshGui_la-ViewProviderCurvature.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libMeshGui_la-ViewProviderCurvature.lo `test -f 'ViewProviderCurvature.cpp' || echo '$(srcdir)/'`ViewProviderCurvature.cpp
 
 libMeshGui_la-ViewProviderTransform.o: ViewProviderTransform.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libMeshGui_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libMeshGui_la-ViewProviderTransform.o -MD -MP -MF "$(DEPDIR)/libMeshGui_la-ViewProviderTransform.Tpo" \

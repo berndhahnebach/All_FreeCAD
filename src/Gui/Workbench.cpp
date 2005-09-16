@@ -27,11 +27,6 @@
 # include <qpopupmenu.h>
 #endif
 
-#include <Base/Parameter.h>
-#include <Base/Interpreter.h>
-
-#include <App/Application.h>
-
 #include "Workbench.h"
 #include "WorkbenchPy.h"
 #include "MenuManager.h"
@@ -39,6 +34,11 @@
 #include "Application.h"
 #include "Command.h"
 #include "CommandBarManager.h"
+
+#include <App/Application.h>
+
+#include <Base/Parameter.h>
+#include <Base/Interpreter.h>
 
 using namespace Gui;
 

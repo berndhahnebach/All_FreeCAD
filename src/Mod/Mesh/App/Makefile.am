@@ -37,6 +37,10 @@ libMesh_la_SOURCES=\
 		CurveProjector.cpp \
 		CurveProjector.h \
 		Doxygen.cpp \
+		FeatureMeshCurvature.cpp \
+		FeatureMeshCurvature.h \
+		FeatureMeshExport.cpp \
+		FeatureMeshExport.h \
 		FeatureMeshImport.cpp \
 		FeatureMeshImport.h \
 		FeatureMeshTransform.cpp \

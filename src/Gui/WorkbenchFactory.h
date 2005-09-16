@@ -25,6 +25,7 @@
 #define WORK_BENCH_FACTORY_H
 
 #ifndef _PreComp_
+# include <qstringlist.h>
 #endif
 
 #include <Base/Factory.h>

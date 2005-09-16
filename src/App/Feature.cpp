@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <OSD_Process.hxx>
 # include <TDF_ChildIterator.hxx>
 # include <TDF_Tool.hxx>
 # include <TCollection_AsciiString.hxx>

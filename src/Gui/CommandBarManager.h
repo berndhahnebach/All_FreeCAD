@@ -29,6 +29,8 @@
 # include <qptrlist.h>
 #endif
 
+class QToolBar;
+
 namespace Gui {
 
 class ToolBarItem;
