@@ -33,6 +33,10 @@ namespace Gui {
 
 class Workbench;
 
+/**
+ * The WorkbenchManager class manages all workbench objects.
+ * @author Werner Mayer
+ */
 class GuiExport WorkbenchManager  
 {
 public:

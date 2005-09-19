@@ -42,6 +42,52 @@
 
 using namespace Gui;
 
+/** \defgroup workbench Workbench concept
+ *
+ * + Default & Custom toolbars
+ * + dock windows
+ * + Python workbench loader InitGui.py
+ * + FreeCADGui.AddWorkbench
+ * + Limitations (name, file operations, mod. of default stuff n.p.)
+ * + GetIcon
+ * + register wb in C++
+ * + register wb in Python
+ * This is the base class for the workbench facility. Each FreeCAD module can provide its own 
+ * workbench implementation. The workbench defines which GUI elements (such as toolbars, menus, 
+ * dockable windows, ...) are added to the mainwindow and which gets removed or hidden. 
+ * When a workbench object gets activated the first time the module - it stands for - gets 
+ * loaded into RAM.
+ * 
+ * Workbench
+ * StdWorkbench
+ * PythonWorkbench
+ * 
+ * \code
+ * 
+ * class MyWorkbench : public StdWorkbench
+ * {
+ *  ...
+ * protected:
+ *   MenuItem* setupMenuBar() const
+ *   {
+ *     MenuItem* root = StdWorkbench::setupMenuBar();
+ *     return root;
+ *   }
+ *   ToolBarItem* setupToolBars() const
+ *   {
+ *     ToolBarItem* root = StdWorkbench::setupToolBars();
+ *     return root;
+ *   }
+ *   ToolBarItem* setupCommandBars() const
+ *   {
+ *     ToolBarItem* root = StdWorkbench::setupCommandBars();
+ *     return root;
+ *   }
+ * };
+ * 
+ * \endcode
+ */
+
 Workbench::Workbench()
   : _name(QString::null)
 {
@@ -191,7 +237,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
   MenuItem* view = new MenuItem( menuBar );
   view->setCommand( "&View" );
   *view << "Std_ViewCreateInventor" << "Separator" << "Std_ToggleVisibility" << "Std_ViewFullScreen" 
-        << "Separator" << "Std_ViewMenu" << "Std_ViewStatusBar";
+        << "Separator" << "Std_Workbench" << "Std_ViewMenu" << "Separator" << "Std_ViewStatusBar";
   
   // Tools
   MenuItem* tool = new MenuItem( menuBar );

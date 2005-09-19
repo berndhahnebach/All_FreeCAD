@@ -393,11 +393,7 @@ void StdCmdWorkbench::activated( int pos )
 void StdCmdWorkbench::activate ( const QString& item )
 {
   try{
-#ifdef NEW_WB_FRAMEWORK
     doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", item.latin1());
-#else
-    doCommand(Gui, "Gui.WorkbenchActivate(\"%s\")", item.latin1());
-#endif
   }
   catch(const Base::Exception&)
   {
@@ -483,13 +479,13 @@ void StdCmdWorkbench::refresh ()
 }
 
 /** 
- * Can only be added to the "standard file" toolbar. This is because this command changes the workbenches
- * and so there will several toolbars/cmdbars be deleted. If the corresponding combobox were
- * inside such a toolbar/cmdbar FreeCAD would crash.
+ * Can only be added to the "file operations" toolbar or any other kind of widgets. This is because this 
+ * command changes the workbenches and so there will several toolbars/cmdbars be deleted. If the 
+ * corresponding combobox were inside such a toolbar/cmdbar FreeCAD would crash.
  */
 bool StdCmdWorkbench::addTo(QWidget *w)
 {
-  if (!w->inherits("QToolBar") || QString(w->name()) != QString("file operations"))
+  if (w->inherits("QToolBar") && QString(w->name()) != QString("file operations"))
   {
 #ifdef FC_DEBUG
     char szBuf[200];
@@ -501,6 +497,7 @@ bool StdCmdWorkbench::addTo(QWidget *w)
     return false;
   }
 
+  // either add to the "file operations" toolbar or another widget type (e.g. popup menu)
   return Command::addTo(w);
 }
 

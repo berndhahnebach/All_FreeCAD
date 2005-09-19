@@ -48,9 +48,6 @@ class QSplashScreen;
 
 namespace Gui{
 class BaseView;
-#ifndef NEW_WB_FRAMEWORK
-class CustomWidgetManager;
-#endif
 class CommandManager;
 class Document;
 class MacroManager;
@@ -127,10 +124,6 @@ public:
 
   /// Reference to the command manager
   Gui::CommandManager &commandManager(void);
-#ifndef NEW_WB_FRAMEWORK
-  /// Returns the widget manager
-  Gui::CustomWidgetManager* customWidgetManager(void);
-#endif
   /** @name status bar handling */
   //@{	
   /// set text to the pane
@@ -140,18 +133,9 @@ public:
   /** @name workbench handling */
   //@{	
   /// Activate a named workbench
-#ifndef NEW_WB_FRAMEWORK
-  void activateWorkbench(const char* name);
-  /// update the combo box when there are changes in the workbenches
-  void appendWorkbench(const char* name);
-  void removeWorkbench(const char* name);
-#else
   bool activateWorkbench( const char* name );
   void refreshWorkbenchList();
-#endif
   QPixmap workbenchIcon( const QString& ) const;
-  /// returns the name of the active workbench
-  QString activeWorkbench(void);
   QStringList workbenches(void);
   //@}
 
@@ -185,55 +169,24 @@ public:
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
   //---------------------------------------------------------------------
 
-#ifdef NEW_WB_FRAMEWORK
   // static python wrapper of the exported functions
-  PYFUNCDEF_S(sWorkbenchActivate);
-  PYFUNCDEF_S(sWorkbenchAdd);
-  PYFUNCDEF_S(sMenuAppendItems); // append items
-  PYFUNCDEF_S(sMenuRemoveItems); // remove items
-  PYFUNCDEF_S(sMenuDelete);      // delete the whole menu
-  PYFUNCDEF_S(sToolbarAppendItems);
-  PYFUNCDEF_S(sToolbarRemoveItems);
-  PYFUNCDEF_S(sToolbarDelete);
-  PYFUNCDEF_S(sCommandbarAppendItems);
-  PYFUNCDEF_S(sCommandbarRemoveItems);
-  PYFUNCDEF_S(sCommandbarDelete);
+  PYFUNCDEF_S(sAddWorkbenchHandler);     // adds a new workbench handler to a list
+  PYFUNCDEF_S(sRemoveWorkbenchHandler);  // removes a workbench handler from the list
+  PYFUNCDEF_S(sGetWorkbenchHandler);     // retrieves the workbench handler
+  PYFUNCDEF_S(sCreateWorkbench);         // creates a new workbench object
+  PYFUNCDEF_S(sActiveWorkbench);         // retrieves the active workbench object
+  PYFUNCDEF_S(sActivateWorkbench);       // activates a workbench object
+  PYFUNCDEF_S(sListWorkbenches);         // retrieves a list of all workbench objects
+  PYFUNCDEF_S(sGetWorkbench);            // retrieves a workbench object
+  PYFUNCDEF_S(sHasWorkbench);            // checks for a workbench object
 
-  PYFUNCDEF_S(sAddWorkbench);      // adds a new workbench module to a list
-  PYFUNCDEF_S(sCreateWorkbench);   // creates a new workbench object
-  PYFUNCDEF_S(sRemoveWorkbench);   // removes a workbench name from the list
-  PYFUNCDEF_S(sActiveWorkbench);   // retrieves the active workbench object
-  PYFUNCDEF_S(sActivateWorkbench); // activates a workbench object
-  PYFUNCDEF_S(sListWorkbenches);   // retrieves a list of all workbench objects
-  PYFUNCDEF_S(sWorkbenchModule);   // retrieves the module object
-  PYFUNCDEF_S(sGetWorkbench);      // retrieves a workbench object
-  PYFUNCDEF_S(sHasWorkbench);      // retrieves a workbench object
-#else
-
-  PYFUNCDEF_S(sMenuAppendItems); // append items
-  PYFUNCDEF_S(sMenuRemoveItems); // remove items
-  PYFUNCDEF_S(sMenuDelete);      // delete the whole menu
-
-  PYFUNCDEF_S(sToolbarAppendItems);
-  PYFUNCDEF_S(sToolbarRemoveItems);
-  PYFUNCDEF_S(sToolbarDelete);
-
-  PYFUNCDEF_S(sCommandbarAppendItems);
-  PYFUNCDEF_S(sCommandbarRemoveItems);
-  PYFUNCDEF_S(sCommandbarDelete);
-
-  PYFUNCDEF_S(sWorkbenchAdd);
-  PYFUNCDEF_S(sWorkbenchDelete);
-  PYFUNCDEF_S(sWorkbenchActivate);
-  PYFUNCDEF_S(sWorkbenchGet);
-#endif
   PYFUNCDEF_S(sSendActiveView);
 
   PYFUNCDEF_S(sUpdateGui);
   PYFUNCDEF_S(sCreateDialog);
 
   PYFUNCDEF_S(sRunCommand);
-  PYFUNCDEF_S(sCommandAdd);
+  PYFUNCDEF_S(sAddCommand);
 
   PYFUNCDEF_S(shide);
   PYFUNCDEF_S(sshow);
@@ -295,6 +248,8 @@ private slots:
 
 private:
   struct ApplicationWindowP* d;
+  /// workbench python dictionary
+  PyObject*		 _pcWorkbenchDictionary;
 };
 
 

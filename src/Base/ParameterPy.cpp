@@ -427,7 +427,7 @@ PyObject *ParameterGrpPy::PyGetString(PyObject *args)
 { 
 	char *pstr;
 	char *  str="";
-  if (!PyArg_ParseTuple(args, "s|d", &pstr,&str))     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "s|s", &pstr,&str))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
   PY_TRY {
   	return Py_BuildValue("s",_cParamGrp->GetASCII(pstr,str).c_str());

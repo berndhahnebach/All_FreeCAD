@@ -36,6 +36,7 @@
 #include "Action.h"
 #include "Command.h"
 #include "DlgEditorImp.h"
+#include "FileDialog.h"
 
 #include <Base/Interpreter.h>
 #include <Base/Exception.h>
@@ -749,6 +750,34 @@ bool PythonConsole::isBlockComment( const QString& ) const
     return false;
 }
 
+QPopupMenu * PythonConsole::createPopupMenu ( const QPoint & pos )
+{
+  QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
+  menu->insertItem( tr("Save history as..."), this, SLOT(onSaveHistoryAs()));
+  return menu;
+}
+
+void PythonConsole::onSaveHistoryAs()
+{
+  QString cMacroPath = getParameter()->GetGroup( "Macro" )->GetASCII("MacroPath",App::GetApplication().GetHomePath()).c_str();
+  QString fn = FileDialog::getSaveFileName(cMacroPath,"Macro Files (*.FCMacro *.py)", this, tr("Save History"));
+  if (!fn.isEmpty())
+  {
+    int dot = fn.find('.');
+    if (dot != -1)
+    {
+      QFile f(fn);
+      if (f.open(IO_WriteOnly))
+      {
+        QTextStream t (&f);
+        for ( _history.first(); _history.more(); _history.next() )
+          t << _history.value() << "\n";
+        f.close();
+      }
+    }
+  }
+}
+
 // ---------------------------------------------------------------------
 
 PythonConsoleHighlighter::PythonConsoleHighlighter(QTextEdit* edit)
@@ -834,6 +863,16 @@ ConsoleHistory::ConsoleHistory()
 
 ConsoleHistory::~ConsoleHistory()
 {
+}
+
+void ConsoleHistory::first()
+{
+  it = _history.begin();
+}
+
+bool ConsoleHistory::more()
+{
+  return (it != _history.end());
 }
 
 bool ConsoleHistory::next() 

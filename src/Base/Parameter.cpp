@@ -731,10 +731,15 @@ std::string ParameterGrp::GetASCII(const char* Name, const char * pPreset)
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
 	// if not return preset
-	if(!pcElem) return std::string(pPreset);
+  if(!pcElem){
+    if (pPreset==0)
+      return std::string("");
+    else
+      return std::string(pPreset);
+  }
 	// if yes check the value and return
-    DOMNode *pcElem2 = pcElem->getFirstChild();
-    if (pcElem2)
+  DOMNode *pcElem2 = pcElem->getFirstChild();
+  if (pcElem2)
 		return std::string(StrX(pcElem2->getNodeValue()).c_str());	
 	else if (pPreset==0)
 		return std::string("");

@@ -108,13 +108,13 @@ class TestWorkbenchCmd:
     def Activated(self):
     	i=0
     	while (i<20):
-	        FreeCADGui.WorkbenchActivate("Import")
+	        FreeCADGui.ActivateWorkbench("Import")
 	        FreeCADGui.UpdateGui()
-	        FreeCADGui.WorkbenchActivate("<none>")
+	        FreeCADGui.ActivateWorkbench("<none>")
 	        FreeCADGui.UpdateGui()
-	        FreeCADGui.WorkbenchActivate("Part design")
+	        FreeCADGui.ActivateWorkbench("Part design")
 	        FreeCADGui.UpdateGui()
-	        FreeCADGui.WorkbenchActivate("Sketcher")
+	        FreeCADGui.ActivateWorkbench("Sketcher")
 	        FreeCADGui.UpdateGui()
 	        print i
 	        i=i+1
@@ -147,14 +147,14 @@ class TestDeleteMenuCmd:
 #---------------------------------------------------------------------------
 # Adds the commands to the FreeCAD command manager
 #---------------------------------------------------------------------------
-FreeCADGui.CommandAdd('Test_Test'        ,TestCmd())
-FreeCADGui.CommandAdd('Test_TestAllText' ,TestAllTextCmd())
-FreeCADGui.CommandAdd('Test_TestDocText' ,TestDocTextCmd())
-FreeCADGui.CommandAdd('Test_TestBaseText',TestBaseTextCmd())
-FreeCADGui.CommandAdd('Test_TestAll'     ,TestAllCmd())
-FreeCADGui.CommandAdd('Test_TestDoc'     ,TestDocCmd())
-FreeCADGui.CommandAdd('Test_TestBase'    ,TestBaseCmd())
-FreeCADGui.CommandAdd('Test_TestWork'    ,TestWorkbenchCmd())
-FreeCADGui.CommandAdd('Test_TestCreateMenu'    ,TestCreateMenuCmd())
-FreeCADGui.CommandAdd('Test_TestDeleteMenu'    ,TestDeleteMenuCmd())
+FreeCADGui.AddCommand('Test_Test'        ,TestCmd())
+FreeCADGui.AddCommand('Test_TestAllText' ,TestAllTextCmd())
+FreeCADGui.AddCommand('Test_TestDocText' ,TestDocTextCmd())
+FreeCADGui.AddCommand('Test_TestBaseText',TestBaseTextCmd())
+FreeCADGui.AddCommand('Test_TestAll'     ,TestAllCmd())
+FreeCADGui.AddCommand('Test_TestDoc'     ,TestDocCmd())
+FreeCADGui.AddCommand('Test_TestBase'    ,TestBaseCmd())
+FreeCADGui.AddCommand('Test_TestWork'    ,TestWorkbenchCmd())
+FreeCADGui.AddCommand('Test_TestCreateMenu'    ,TestCreateMenuCmd())
+FreeCADGui.AddCommand('Test_TestDeleteMenu'    ,TestDeleteMenuCmd())
 

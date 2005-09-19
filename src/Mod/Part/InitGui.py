@@ -6,7 +6,7 @@
 # runs when the gui is up
 
 #***************************************************************************
-#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *   
+#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
@@ -17,12 +17,12 @@
 #*   for detail see the LICENCE text file.                                 *
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
 #*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
 #*   GNU Library General Public License for more details.                  *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
-#*   License along with FreeCAD; if not, write to the Free Software        * 
+#*   License along with FreeCAD; if not, write to the Free Software        *
 #*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
 #*   USA                                                                   *
 #*                                                                         *
@@ -33,7 +33,7 @@
 
 class PartWorkbench ( Workbench ):
 	"Part workbench object"
-	def Import(self):
+	def Activate(self):
 		# load the module
 		try:
 			Log ('Loading PartGui module')
@@ -45,56 +45,26 @@ class PartWorkbench ( Workbench ):
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"
-						"static const char *Part_Box[]={\n"
-						"\"16 16 3 1\",\n"
-						"\". c None\",\n"
-						"\"# c #000000\",\n"
-						"\"a c #c6c642\",\n"
-						"\"................\",\n"
-						"\".......#######..\",\n"
-						"\"......#aaaaa##..\",\n"
-						"\".....#aaaaa###..\",\n"
-						"\"....#aaaaa##a#..\",\n"
-						"\"...#aaaaa##aa#..\",\n"
-						"\"..#aaaaa##aaa#..\",\n"
-						"\".########aaaa#..\",\n"
-						"\".#aaaaa#aaaaa#..\",\n"
-						"\".#aaaaa#aaaa##..\",\n"
-						"\".#aaaaa#aaa##...\",\n"
-						"\".#aaaaa#aa##....\",\n"
-						"\".#aaaaa#a##... .\",\n"
-						"\".#aaaaa###......\",\n"
-						"\".########.......\",\n"
-						"\"................\"};\n"]
-	def Start(self):
-		# load the module
-		try:
-			Log ('Loading PartGui module')
-			import PartGui
-			import Part
-		except:
-			Err('   can not load PartGui')
-			raise
-		else:	
-			Log ('   Set up part toolbar...\n')
-			list = ["Part_Test1","Part_Test2","Part_Box","Part_Box2","Part_Box3","Part_Cut","Part_ImportStep","Part_ImportIges","Part_ImportBrep"]
-			Gui.ToolbarAppendItems("PartTools", list, 0)
+			"static const char *Part_Box[]={\n"
+			"\"16 16 3 1\",\n"
+			"\". c None\",\n"
+			"\"# c #000000\",\n"
+			"\"a c #c6c642\",\n"
+			"\"................\",\n"
+			"\".......#######..\",\n"
+			"\"......#aaaaa##..\",\n"
+			"\".....#aaaaa###..\",\n"
+			"\"....#aaaaa##a#..\",\n"
+			"\"...#aaaaa##aa#..\",\n"
+			"\"..#aaaaa##aaa#..\",\n"
+			"\".########aaaa#..\",\n"
+			"\".#aaaaa#aaaaa#..\",\n"
+			"\".#aaaaa#aaaa##..\",\n"
+			"\".#aaaaa#aaa##...\",\n"
+			"\".#aaaaa#aa##....\",\n"
+			"\".#aaaaa#a##... .\",\n"
+			"\".#aaaaa###......\",\n"
+			"\".########.......\",\n"
+			"\"................\"};\n"]
 
-			Log ('   Set up part commandbar...\n')
-			list = ["Part_NewDoc","Part_ImportStep","Part_ImportIges","Part_ImportBrep","Part_ImportCurveNet"]
-			Gui.CommandbarAppendItems("Import", list, 0)
-			list = ["Part_NewDoc","Part_Box","Part_Box2","Part_Box3","Part_Cut"]
-			Gui.CommandbarAppendItems("Boolean", list, 0)
-			list = ["Part_Test1","Part_Test2"]
-			Gui.CommandbarAppendItems("Testing", list, 0)
-
-			Log ('   Set up part menues...\n')
-
-	def Stop(self):
-		Log ('   Stoping part workbench...\n')
-		Gui.CommandbarDelete("PartTools")
-		Gui.ToolbarDelete("PartTools")
-
-
-#Gui.WorkbenchAdd("Part design",PartWorkbench())
-Gui.WorkbenchAdd("Part design",PartWorkbench())
+Gui.AddWorkbenchHandler("Part design",PartWorkbench())

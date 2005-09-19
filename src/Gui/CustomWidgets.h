@@ -54,61 +54,18 @@ class ToolBox;
  * \author Werner Mayer
  */
 class GuiExport CustomWidget
-#ifndef NEW_WB_FRAMEWORK
- : public PrefWidget
-#endif
 {
 public:
-#ifndef NEW_WB_FRAMEWORK
-  bool hasCustomItems();
-  const QStringList& getCustomItems() const;
-  void setCustomItems( const QStringList& items );
-  void addCustomItems( ParameterGrp::handle, const QStringList& item );
-  void removeCustomItems( ParameterGrp::handle, const QStringList& item );
-
-  void loadXML();
-  void saveXML();
-
-  virtual void setRemovable(bool b);
-  bool isRemovable() const;
-#endif
-
   virtual void setCanModify(bool b);
   bool canModify() const;
 
-#ifndef NEW_WB_FRAMEWORK
-  QString getWorkbench();
-#endif
   virtual ~CustomWidget();
 
-#ifndef NEW_WB_FRAMEWORK
-  static ParameterGrp::handle getParameter();
-#endif
 protected:
-#ifndef NEW_WB_FRAMEWORK
-  virtual void rebuild() = 0;
-#endif
-#ifndef NEW_WB_FRAMEWORK
-  typedef QMap<ParameterGrp::handle, QStringList> WorkbenchItems;
-#endif
-  CustomWidget( const char* grp, const char * name );
-#ifndef NEW_WB_FRAMEWORK
-  virtual void restorePreferences();
-  virtual void savePreferences();
+  CustomWidget();
 
-  QStringList _Items;
-  WorkbenchItems _WbItems;
-
-  ParameterGrp::handle hPrefGrp; /**< Handle to the appropriate parameter group. */
-#endif
 private:
-  void init( const char* grp, const char* name );
-
-#ifndef NEW_WB_FRAMEWORK
-  QString  _Workbench;
-#endif
   bool     _bCanModify;
-  bool     _bCanRemove;
 };
 
 /**
@@ -126,22 +83,12 @@ public:
 
   void setCanModify( bool b );
 
-public:
-  static bool isAllowed( QWidget* w );
-
 protected:
-#ifndef NEW_WB_FRAMEWORK
-  void rebuild();
-#endif
   void dropEvent       ( QDropEvent      * );
   void dragEnterEvent  ( QDragEnterEvent * );
   void dragLeaveEvent  ( QDragLeaveEvent * );
   void dragMoveEvent   ( QDragMoveEvent  * );
 
-#ifndef NEW_WB_FRAMEWORK
-  virtual void restorePreferences();
-  virtual void savePreferences();
-#endif
 protected slots:
   void languageChange();
 };
@@ -150,10 +97,7 @@ protected slots:
  * The CustomToolbar class provides method to customize toolbars.
  * \author Werner Mayer
  */
-class GuiExport CustomPopupMenu : public QPopupMenu, public CustomWidget
-#ifdef NEW_WB_FRAMEWORK
-                                , public ParameterGrp::ObserverType
-#endif
+class GuiExport CustomPopupMenu : public QPopupMenu, public CustomWidget, public ParameterGrp::ObserverType
 {
   Q_OBJECT
 
@@ -163,80 +107,16 @@ public:
   virtual void OnChange( Base::Subject<const char*> &rCaller, const char * sReason );
 
 protected:
-#ifndef NEW_WB_FRAMEWORK
-  void rebuild();
-#endif
   void dropEvent        ( QDropEvent      * );
   void dragEnterEvent   ( QDragEnterEvent * );
   void dragLeaveEvent   ( QDragLeaveEvent * );
   void dragMoveEvent    ( QDragMoveEvent  * );
   void mouseMoveEvent   ( QMouseEvent     * );
 
-#ifndef NEW_WB_FRAMEWORK
-  virtual void restorePreferences();
-  virtual void savePreferences();
-#endif
 private:
-#ifndef NEW_WB_FRAMEWORK
-  QString _parent;
-#endif
   bool    _bAllowDrag;
-#ifndef NEW_WB_FRAMEWORK
-  ParameterGrp::handle _hCommonGrp;
-#endif
 };
 
-#ifndef NEW_WB_FRAMEWORK
-/**
- * Class that manages the construction/destruction of all customizable widgets.
- * At destruction time of a custom widget its content will be written to preferences.
- * At construction time the content will be restored.
- * @see CustomToolBar, CustomPopupMenu
- * \author Werner Mayer
- */
-class GuiExport CustomWidgetManager
-{
-public:
-  CustomWidgetManager( Gui::DockWnd::ToolBox* pCmdBar );
-  ~CustomWidgetManager();
-
-  bool loadCustomWidegts( const QString& workbench );
-  bool update( const QString& workbench );
-  bool update();
-
-  CustomToolBar* getToolBar( const QString& name );
-  QPtrList<CustomToolBar> getToolBars();
-  void addToolBar   ( const QString& type, const QStringList& defIt );
-  void removeToolBarFromSettings( const QString& name);
-  void removeToolBar( const QString& name);
-  void removeToolBarItems ( const QString& type, const QStringList& item );
-  int countToolBars();
-
-  CustomToolBar* getCommandBar( const QString& name );
-  QPtrList<CustomToolBar> getCommdandBars();
-  void addCommandBar    ( const QString& type, const QStringList& defIt );
-  void removeCommandBarFromSettings( const QString& name);
-  void removeCommandBar ( const QString& name );
-  void removeCommandBarItems (const QString& type, const QStringList& item);
-  int countCommandBars();
-
-  CustomPopupMenu* getPopupMenu( const QString& name, const char* parent = 0 );
-  QPtrList<CustomPopupMenu> getPopupMenus();
-  void addPopupMenu ( const QString& type, const QStringList& defIt,
-                      const char* parent = 0);
-  void removePopupMenuFromSettings( const QString& name);
-  void removePopupMenu ( const QString& name );
-  void removeMenuItems ( const QString& type, const QStringList& item );
-  int countPopupMenus();
-  const QMap<int, QString>&  menuBarItems() const;
-
-  void showToolBox();
-  void hideToolBox();
-
-private:
-  struct CustomWidgetManagerP* d;
-};
-#endif //NEW_WB_FRAMEWORK
 } // namespace Gui
 
 #endif // CUSTOM_WIDGETS_H__

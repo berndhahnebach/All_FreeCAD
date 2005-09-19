@@ -64,16 +64,26 @@ public:
    */
   void setName( const QString& );
   /**
-   * The default implementation returns 0.
+   * The default implementation returns an instance of @ref WorkbenchPy.
    */
   virtual Base::PyObjectBase* GetPyObject();
-
+  /**
+   * The method imports the user defined toolbars or command bars and creates
+   * a ToolBarItem tree structure.
+   */
   ToolBarItem* importCustomBars( const char* node ) const;
+  /**
+   * The method exports the user defined ToolBarItem tree structure into the parameter
+   * settings.
+   */
   void exportCustomBars( ToolBarItem*, const char* node ) const;
 
 protected:
+  /** Rreturns a MenuItem tree structure of menus for the this workbench. */
   virtual MenuItem* setupMenuBar() const=0;
+  /** Rreturns a ToolBarItem tree structure of toolbars for the this workbench. */
   virtual ToolBarItem* setupToolBars() const=0;
+  /** Rreturns a ToolBarItem tree structure of command bars for the this workbench. */
   virtual ToolBarItem* setupCommandBars() const=0;
   /**
    * Activates the workbench and adds/remove GUI elements.
@@ -86,6 +96,12 @@ private:
   friend class WorkbenchManager;
 };
 
+/**
+ * The StdWorkbench class defines the standard menus, toolbars, commandbars etc. 
+ * To define own workbenches you should inherit from StdWorkbench instead of Workbench
+ * to have defined the standard GUI elements.
+ * @author Werner Mayer
+ */
 class GuiExport StdWorkbench : public Workbench
 {
 public:
@@ -93,8 +109,11 @@ public:
   virtual ~StdWorkbench();
 
 protected:
+  /** Defines the standard menus. */
   virtual MenuItem* setupMenuBar() const;
+  /** Defines the standard toolbars. */
   virtual ToolBarItem* setupToolBars() const;
+  /** Defines the standard command bars. */
   virtual ToolBarItem* setupCommandBars() const;
 };
 
@@ -110,6 +129,11 @@ protected:
   ToolBarItem* setupCommandBars() const;
 };
 
+/**
+ * The PythonWorkbench class allows the manipulation of the workbench from Python.
+ * Therefore PythonWorkbenchPy provides the required Python interface.
+ * @author Werner Mayer
+ */
 class GuiExport PythonWorkbench : public StdWorkbench
 {
 public:
@@ -120,20 +144,34 @@ public:
    */
   Base::PyObjectBase* GetPyObject();
 
+  /** @name Manipulation methods */
+  //@{
+  /// Appends a new menu
   void appendMenu( const QString& menu, const QStringList& items ) const;
+  /// Removes a menu
   void removeMenu( const QString& menu ) const;
+  //// Shows a list of all menus
   QStringList listMenus() const;
 
+  /// Appends new context menu items
   void appendContextMenu( const QString& menu, const QStringList& items ) const;
+  /// Removes a context menu
   void removeContextMenu( const QString& menu ) const;
 
+  /// Appends a new toolbar
   void appendToolbar( const QString& bar, const QStringList& items ) const;
+  /// Removes a toolbar
   void removeToolbar( const QString& bar ) const;
+  //// Shows a list of all toolbars
   QStringList listToolbars() const;
 
+  /// Appends a new command bar
   void appendCommandbar( const QString& bar, const QStringList& items ) const;
+  /// Removes a command bar
   void removeCommandbar( const QString& bar ) const;
+  //// Shows a list of all command bars
   QStringList listCommandbars() const;
+  //@}
 
 protected:
   MenuItem* setupMenuBar() const;

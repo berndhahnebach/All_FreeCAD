@@ -2,9 +2,6 @@
 #define __PRECOMPILED_GUI__
 
 #include "../FCConfig.h"
-//#ifdef _DEBUG
-# define NEW_WB_FRAMEWORK
-//#endif
 #ifdef _PreComp_
 
 #ifdef FC_OS_WIN32

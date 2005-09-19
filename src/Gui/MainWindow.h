@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -27,12 +27,11 @@
 #ifndef _PreComp_
 # include <string>
 # include <vector>
-# include <qmainwindow.h>
-# include <qworkspace.h>
+# include <qstringlist.h>
 #endif
 
-#include "../Base/Console.h"
-#include "../App/Application.h"
+#include <qmainwindow.h>
+#include <qworkspace.h>
 
 class QComboBox;
 class QToolBar;
@@ -74,11 +73,19 @@ public:
    * to the tab bar.
    */
   void addWindow( MDIView* view );
-
+  /**
+   * Removes an MDI window from the main window's workspace and its associated tab with
+   * deleting the widget.
+   */
+  void removeWindow( MDIView* view );
   /**
    * Returns a list of all MDI windows in the worpspace.
    */
   QWidgetList windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;
+  /**
+   * Returns the active MDI window active or 0 if there is none.
+   */
+  MDIView* activeView();
 
 protected slots:
   /**
@@ -88,16 +95,22 @@ protected slots:
    */
   virtual void languageChange();
 
+
+
+
+
+
+
+
+
 private:
   void createStandardOperations();
 
 private slots:
-  void onShowView();
   void onWindowActivated( QWidget* );
   void onWindowsMenuAboutToShow();
   void onWindowsMenuActivated( int id );
   void onWindowDestroyed();
-  void onToggleStatusBar();
   void onTabSelected( int i);
 
 private:
@@ -111,15 +124,18 @@ private:
 
 
 
+  /// some kind of singelton
+  static MainWindow* Instance;
+  /// open a file
+  void open(const char* FileName);
+  /// import a file in the active document
+  void import(const char* FileName);
 
 
-public:
 
   /// message when a GuiDocument is about to vanish
   void onLastWindowClosed(Gui::Document* pcDoc);
 
-  /// some kind of singelton
-  static MainWindow* Instance;
 
   /** @name methodes for View handling */
   //@{
@@ -127,8 +143,6 @@ public:
   bool sendMsgToActiveView(const char* pMsg, const char** ppReturn=0);
   /// send Messages test to the active view
   bool sendHasMsgToActiveView(const char* pMsg);
-  /// returns the active view or NULL
-  Gui::MDIView* activeView(void);
   /// Geter for the Active View
   Gui::Document* activeDocument(void);
   /// Attach a view (get called by the FCView constructor)
@@ -155,24 +169,12 @@ public:
 
   /// Reference to the command manager
   Gui::CommandManager &commandManager(void);
-
   /** @name status bar handling */
   //@{	
   /// set text to the pane
   void setPaneText(int i, QString text);
   //@}
 
-  /** @name workbench handling */
-  //@{	
-  /// Activate a named workbench
-  void activateWorkbench(const char* name);
-  /// update the combo box when there are changes in the workbenches
-  void appendWorkbench(const char* name);
-  void removeWorkbench(const char* name);
-  /// returns the name of the active workbench
-  QString activeWorkbench(void);
-  std::vector<std::string> workbenches(void);
-  //@}
 
   /// MRU: recent files
   void appendRecentFile(const char* file);
@@ -180,12 +182,9 @@ public:
   /// Get macro manager
   Gui::MacroManager *macroManager(void);
 
-
-public:
   /** @name Init, Destruct an Access methodes */
   //@{
   static void initApplication(void);
-  static void runApplication(void);
   static void startSplasher(void);
   static void stopSplasher(void);
   static void showTipOfTheDay(bool force=false);
@@ -197,17 +196,23 @@ private:
   static  QApplication* _pcQApp ;
   static  QSplashScreen *_splash;
 
+
 signals:
   void sendQuit();
   void timeEvent();
 
 public:
-  void onPolish();
   bool isCustomizable () const;
   void customize ();
+
+public slots:
   void tileHorizontal();
   void tile();
   void cascade();
+  void closeActiveWindow ();
+  void closeAllWindows ();
+  void activateNextWindow ();
+  void activatePrevWindow ();
 
 protected: // Protected methods
   virtual void closeEvent ( QCloseEvent * e );
@@ -234,7 +239,6 @@ public slots:
   void onUndo();
   void onRedo();
   //@}
-
 };
 
 

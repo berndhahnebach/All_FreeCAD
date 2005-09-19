@@ -30,7 +30,7 @@
 
 class TestWorkbench ( Workbench ):
 	"Test workbench object"
-	def Import(self):
+	def Activate(self):
 		try:
 			Log ('Loading TestGui module\n')
 			import TestGui
@@ -62,35 +62,28 @@ class TestWorkbench ( Workbench ):
 		except:
 			Err('Activating of workbench "Test framework" failed\n')
 			raise
+	def GetIcon(self):
+		# returns an icon for the workbench
+		return ["/* XPM */\n"
+			"static const char *test_icon[]={\n"
+			"\"16 16 2 1\",\n"
+			"\"a c #000000\",\n"
+			"\". c None\",\n"
+			"\"................\",\n"
+			"\"................\",\n"
+			"\"..############..\",\n"
+			"\"..############..\",\n"
+			"\"..############..\",\n"
+			"\"......####......\",\n"
+			"\"......####......\",\n"
+			"\"......####......\",\n"
+			"\"......####......\",\n"
+			"\"......####......\",\n"
+			"\"......####......\",\n"
+			"\"......####......\",\n"
+			"\"......####......\",\n"
+			"\"......####......\",\n"
+			"\"................\",\n"
+			"\"................\"};\n"]
 
-	def Start(self):
-		# load the module
-		try:
-			Log ('Loading TestGui module\n')
-			import TestGui
-		except:
-			Err('   can not load TestGui\n')
-			raise
-		else:	
-			Log ('   Set up Test toolbar...\n')
-			list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
-			Gui.ToolbarAppendItems("TestTools",list,0)
-
-			Log ('   Set up Test commandbar...\n')
-			list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
-			Gui.CommandbarAppendItems("TestToolsGui",list,0)
-			list = ["Test_TestAllText","Test_TestDocText","Test_TestBaseText"]
-			Gui.CommandbarAppendItems("TestToolsText",list,0)
-			list = ["Test_TestCreateMenu", "Test_TestDeleteMenu"]
-			Gui.CommandbarAppendItems("TestToolsMenu",list,0)
-                            
-			Log ('   Set up Test menues...\n')
-
-	def Stop(self):
-		Log ('   Stoping Test workbench...\n')
-		Gui.CommandbarDelete("TestTools")
-		Gui.ToolbarDelete("TestTools")
-
-
-#Gui.WorkbenchAdd("Part design",PartWorkbench())
-Gui.WorkbenchAdd("Test framework",TestWorkbench())
+Gui.AddWorkbenchHandler("Test framework",TestWorkbench())

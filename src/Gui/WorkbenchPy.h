@@ -34,7 +34,12 @@ class Workbench;
 class PythonWorkbench;
 
 /** 
- * The workbench Python base class.
+ * The workbench Python base class doesn't allow you to manipulate the C++ workbench class behind.
+ * You're only allowed either to activate the workbench class or get its name.
+ * The WorkbenchPy class is associated to all C++ workbench classes except of PythonWorkbench.
+ * @see Workbench
+ * @see PythonWorkbench
+ * @see PythonWorkbenchPy
  * @author Werner Mayer
  */
 class GuiExport WorkbenchPy : public Base::PyObjectBase
@@ -55,15 +60,25 @@ public:
   PyObject *_getattr(char *attr);               // __getattr__ function
   int _setattr(char *attr, PyObject *value);    // __setattr__ function
 
+  /** @name Basic methods */
+  //@{
+  /// Retrieves the workbench name
   PYFUNCDEF_D(WorkbenchPy,Name)
+  /// Activates the workbench object
   PYFUNCDEF_D(WorkbenchPy,Activate)
+  //@}
 
 protected:
   Workbench *_pcWorkbench;
 };
 
 /** 
- * The workbench Python class.
+ * The workbench Python class provides additional methods for manipulation of python worbench
+ * objects. 
+ * From the view of Python PythonWorkbenchPy is also derived from WorkbenchPy as in C++.
+ * @see Workbench
+ * @see WorkbenchPy
+ * @see PythonWorkbench
  * @author Werner Mayer
  */
 class GuiExport PythonWorkbenchPy : public WorkbenchPy
@@ -84,24 +99,38 @@ public:
   PyObject *_getattr(char *attr);               // __getattr__ function
   int _setattr(char *attr, PyObject *value);    // __setattr__ function
 
+  /** @name Manipulation methods */
+  //@{
   // menu stuff
+  /// Appends a new menu
   PYFUNCDEF_D(PythonWorkbenchPy,AppendMenu)
+  /// Removes a menu
   PYFUNCDEF_D(PythonWorkbenchPy,RemoveMenu)
+  //// Shows a list of all menus
   PYFUNCDEF_D(PythonWorkbenchPy,ListMenus)
 
   // context menu stuff
+  /// Appends new context menu items
   PYFUNCDEF_D(PythonWorkbenchPy,AppendContextMenu)
+  /// Removes a context menu
   PYFUNCDEF_D(PythonWorkbenchPy,RemoveContextMenu)
 
   // toolbar stuff
+  /// Appends a new toolbar
   PYFUNCDEF_D(PythonWorkbenchPy,AppendToolbar)
+  /// Removes a toolbar
   PYFUNCDEF_D(PythonWorkbenchPy,RemoveToolbar)
+  //// Shows a list of all toolbars
   PYFUNCDEF_D(PythonWorkbenchPy,ListToolbars)
 
   // commandbar stuff
+  /// Appends a new command bar
   PYFUNCDEF_D(PythonWorkbenchPy,AppendCommandbar)
+  /// Removes a command bar
   PYFUNCDEF_D(PythonWorkbenchPy,RemoveCommandbar)
+  //// Shows a list of all command bars
   PYFUNCDEF_D(PythonWorkbenchPy,ListCommandbars)
+  //@}
 
 protected:
   PythonWorkbench *_pcWorkbench;

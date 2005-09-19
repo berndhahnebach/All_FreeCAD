@@ -22,7 +22,7 @@
 
 
 #include "PreCompiled.h"
-//#undef NEW_WB_FRAMEWORK
+
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qeventloop.h>
@@ -51,14 +51,10 @@
 #include "Application.h"
 #include "Document.h"
 #include "View.h"
-//#include "CommandStd.h"
-//#include "CommandView.h"
-#include "../Base/Documentation.h"
 
 #include "Icons/developers.h"
 #include "Icons/FCIcon.xpm"
 #include "WidgetFactory.h"
-#include "CustomWidgets.h"
 #include "Command.h"
 #include "Tree.h"
 #include "PropertyView.h"
@@ -68,7 +64,6 @@
 #include "WorkbenchFactory.h"
 
 #include "CommandLine.h"
-//#include "DlgDocTemplatesImp.h"
 #include "DlgTipOfTheDayImp.h"
 #include "DlgUndoRedo.h"
 #include "DlgOnlineHelpImp.h"
@@ -84,14 +79,8 @@
 #include "SoFCSelection.h"
 
 #include "Inventor/Qt/SoQt.h"
-
 #include "Language/Translator.h"
-
 #include "GuiInitScript.h"
-
-
-#include <locale>
-
 
 
 using Base::Console;
@@ -114,16 +103,10 @@ struct ApplicationWindowP
   {
     // create the macro manager
     _pcMacroMngr = new MacroManager();
-#ifdef NEW_WB_FRAMEWORK
-//    _cActiveWorkbench = 0;
-#endif
   }
 
   ~ApplicationWindowP()
   {
-#ifndef NEW_WB_FRAMEWORK
-    delete _pcWidgetMgr;
-#endif
     delete _pcMacroMngr;
   }
 
@@ -132,21 +115,10 @@ struct ApplicationWindowP
   list<Gui::Document*>         lpcDocuments;
   /// Active document
   Gui::Document*   _pcActiveDocument;
-#ifndef NEW_WB_FRAMEWORK
-  Gui::CustomWidgetManager*		 _pcWidgetMgr;
-#endif
   Gui::DockWindowManager* _pcDockMgr;
   MacroManager*  _pcMacroMngr;
   QLabel *         _pclSizeLabel, *_pclActionLabel;
   ToolBox*        _pcStackBar;
-  /// workbench python dictionary
-  PyObject*		 _pcWorkbenchDictionary;
-#ifdef NEW_WB_FRAMEWORK
-//  Workbench*	 _cActiveWorkbench;
-  QString	 _cActiveWorkbenchName;
-#else
-  QString	 _cActiveWorkbenchName;
-#endif
   QTimer *		 _pcActivityTimer; 
   /// List of all registered views
   list<Gui::BaseView*>					_LpcViews;
@@ -197,24 +169,7 @@ ApplicationWindow::ApplicationWindow()
   Instance = this;
 
   // instanciate the workbench dictionary
-  d->_pcWorkbenchDictionary = PyDict_New();
-
-#ifndef NEW_WB_FRAMEWORK
-  d->_cActiveWorkbenchName = "<none>";
-#else
-//  d->_cActiveWorkbench = WorkbenchManager::instance()->getWorkbench("<none>");
-#endif
-
-/*
-  QDir dir(GetApplication().GetHomePath()); 
-  QString root = dir.path();
-  GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/"          ,(root + "/Doc/Online\\"   ).latin1()));
-  GetDocumentationManager().AddProvider(new FCDocProviderDirectory("FCDoc:/Framework/",(root + "/Doc/FrameWork\\").latin1()));
-
-  string test =  GetDocumentationManager().Retrive("FCDoc:/index", Html );
-
-  test =  GetDocumentationManager().Retrive("FCDoc:/Framework/index", Html );
-*/
+  _pcWorkbenchDictionary = PyDict_New();
 
   // labels and progressbar
   d->_pclActionLabel = new QLabel("", statusBar(), "Action");
@@ -240,9 +195,6 @@ ApplicationWindow::ApplicationWindow()
   // Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
   d->_pcStackBar = new ToolBox(this,"Cmd_Group");
   CommandBarManager::getInstance()->setToolBox( d->_pcStackBar );
-#ifndef NEW_WB_FRAMEWORK
-  d->_pcWidgetMgr = new Gui::CustomWidgetManager( d->_pcStackBar );
-#endif
   d->_pcDockMgr = new Gui::DockWindowManager();
   d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
@@ -297,28 +249,6 @@ ApplicationWindow::~ApplicationWindow()
 
 void ApplicationWindow::open(const char* FileName)
 {
-/*  // get registered endings
-  const map<string,string> &EndingMap = App::GetApplication().getOpenType();
-  // File infos
-  Base::FileInfo File(FileName);
-
-  string te= File.extension();
-
-  locale loc;
-  // Get a reference to the ctype<char> facet
-#ifdef FC_OS_LINUX
-  const ctype<char>& ct = use_facet<ctype<char> >(loc);
-#else
-  const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
-#endif
-
-  ct.tolower(te.begin(),te.end());
-
-  if(EndingMap.find(te) != EndingMap.end())
-  {
-    // geting the module name
-    const string &Mod = EndingMap.find(te)->second;
-*/
  Base::FileInfo File(FileName);
  string te = File.extension();
  const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
@@ -327,20 +257,20 @@ void ApplicationWindow::open(const char* FileName)
  {
     // issue module loading
     string Cmd = "import ";
-    Cmd += Mod/*.c_str()*/;
+    Cmd += Mod;
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
 
     // issue gui module loading
     Cmd =  "import ";
-    Cmd += Mod/*.c_str()*/;
+    Cmd += Mod;
     Cmd += "Gui";
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
     // load the file with the module
-    Cmd = Mod; //EndingMap.find(te)->second.c_str();
+    Cmd = Mod;
     Cmd += ".open(\"";
     Cmd += File.filePath().c_str();
     Cmd += "\")";
@@ -359,23 +289,6 @@ void ApplicationWindow::open(const char* FileName)
 
 void ApplicationWindow::import(const char* FileName)
 {
-/*
-  // get registered endings
-  const map<string,string> &EndingMap = App::GetApplication().getOpenType();
-  // File infos
-  Base::FileInfo File(FileName);
-
-  string te= File.extension();
-  locale loc;
-  // Get a reference to the ctype<char> facet
-  const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
-  ct.tolower(te.begin(),te.end());
-
-  if(EndingMap.find(te) != EndingMap.end())
-  {
-    // geting the module name
-    const string &Mod = EndingMap.find(te)->second;
-*/
  Base::FileInfo File(FileName);
  string te = File.extension();
  const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
@@ -384,20 +297,20 @@ void ApplicationWindow::import(const char* FileName)
  {
     // issue module loading
     string Cmd = "import ";
-    Cmd += Mod/*.c_str()*/;
+    Cmd += Mod;
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
 
     // issue gui module loading
     Cmd =  "import ";
-    Cmd += Mod/*.c_str()*/;
+    Cmd += Mod;
     Cmd += "Gui";
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
 
     // load the file with the module
-    Cmd = Mod; //EndingMap.find(te)->second.c_str();
+    Cmd = Mod;
     Cmd += ".insert(\"";
     Cmd += File.filePath().c_str();
     Cmd += "\")";
@@ -413,14 +326,6 @@ void ApplicationWindow::import(const char* FileName)
   // the original file name is required
   appendRecentFile( File.filePath().c_str() );
 }
-
-
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// creating std commands
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
 
 void ApplicationWindow::createStandardOperations()
 {
@@ -497,10 +402,6 @@ void ApplicationWindow::activatePrevWindow ()
 {
   d->_pWorkspace->activatePrevWindow();
 }
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// document observers
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void ApplicationWindow::OnDocNew(App::Document* pcDoc)
 {
@@ -713,14 +614,6 @@ void ApplicationWindow::setPaneText(int i, QString text)
     d->_pclSizeLabel->setText(text);
 }
 
-
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// view handling
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
 /// send Messages to the active view
 bool ApplicationWindow::sendMsgToActiveView(const char* pMsg, const char** ppReturn)
 {
@@ -741,7 +634,6 @@ bool ApplicationWindow::sendHasMsgToActiveView(const char* pMsg)
   }else
     return false;
 }
-
 
 MDIView* ApplicationWindow::activeView(void)
 {
@@ -769,7 +661,6 @@ MDIView* ApplicationWindow::activeView(void)
 
   return pView;
 }
-
 
 /// Geter for the Active View
 Gui::Document* ApplicationWindow::activeDocument(void)
@@ -802,7 +693,6 @@ void ApplicationWindow::attachView(Gui::BaseView* pcView)
 {
   d->_LpcViews.push_back(pcView);
 }
-
 
 void ApplicationWindow::detachView(Gui::BaseView* pcView)
 {
@@ -909,9 +799,6 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
 
     d->_pcActivityTimer->stop();
 
-#ifndef NEW_WB_FRAMEWORK
-    activateWorkbench("<none>");
-#endif
     QMainWindow::closeEvent( e );
   }
 }
@@ -921,39 +808,42 @@ void ApplicationWindow::closeEvent ( QCloseEvent * e )
  * The old workbench gets deactivated before. If \a name is already
  * active or if the switch fails false is returned. 
  */
-#ifdef NEW_WB_FRAMEWORK
 bool ApplicationWindow::activateWorkbench( const char* name )
 {
-  if ( d->_cActiveWorkbenchName == name )
+  Workbench* oldWb = WorkbenchManager::instance()->active();
+  if ( oldWb && oldWb->name() == name )
     return false; // already active
   // net buffer because of char* <-> const char*
   Base::PyBuf Name(name);
   // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
+  PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, Name.str);
   // test if the workbench exists
   if ( !pcWorkbench )
     return false;
 
   try{
     // import the matching module first
-    Interpreter().runMethodVoid(pcWorkbench, "Import");
+    Interpreter().runMethodVoid(pcWorkbench, "Activate");
   } catch (const Base::Exception&)
   {
     // do nothing here
   }
 
+  Workbench* newWb = WorkbenchManager::instance()->active();
+
+  // the Python workbench handler has changed the workbench
+  bool ok = false;
+  if ( newWb && newWb->name() == name )
+    ok = true; // already active
   // now try to create and activate the matching workbench object
-  bool ok = WorkbenchManager::instance()->activate( name );
-  if ( ok )
-  {
-    d->_cActiveWorkbenchName = name;
-  }
+  else if ( WorkbenchManager::instance()->activate( name ) )
+    ok = true;
 
   // update the Std_Workbench command and its action object
   StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
   if ( pCmd && pCmd->getAction(false) )
   {
-    pCmd->notify( d->_cActiveWorkbenchName );
+    pCmd->notify( name );
   }
 
   return ok;
@@ -966,14 +856,16 @@ void ApplicationWindow::refreshWorkbenchList()
   if ( pCmd && pCmd->getAction(false) )
   {
     pCmd->refresh();
-    PyObject* wb = PyDict_GetItemString(d->_pcWorkbenchDictionary,d->_cActiveWorkbenchName.latin1()); 
+    Workbench* curWb = WorkbenchManager::instance()->active();
+    QString curWbName = curWb ? curWb->name() : "<none>";
+    PyObject* wb = PyDict_GetItemString(_pcWorkbenchDictionary,curWbName.latin1()); 
     if ( !wb ) // this workbench has been removed
     {
       // then just load the last workbench
-      int ct = PyDict_Size( d->_pcWorkbenchDictionary );
+      int ct = PyDict_Size( _pcWorkbenchDictionary );
       if ( ct > 0 )
       {
-        PyObject* list = PyDict_Keys( d->_pcWorkbenchDictionary ); 
+        PyObject* list = PyDict_Keys( _pcWorkbenchDictionary ); 
         PyObject* str = PyList_GetItem( list, ct-1 );
         Py_DECREF(list); // frees the list
         const char* name = PyString_AsString( str );
@@ -981,92 +873,16 @@ void ApplicationWindow::refreshWorkbenchList()
       }
     }
     else
-      pCmd->notify( d->_cActiveWorkbenchName );
+      pCmd->notify( curWbName );
   }
 }
 
-#else
-/**
- *  Activate the named workbench by calling the methodes in the 
- *  python workbench object. If the workbench is allready active
- *  nothing get called!
- */
-void ApplicationWindow::activateWorkbench(const char* name)
-{
-  // net buffer because of char* <-> const char*
-  Base::PyBuf Name(name);
-
-  // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
-
-  // test if the workbench exists
-  if ( !pcWorkbench )
-  {
-    QString exc = tr("Workbench '%1' does not exist").arg( name );
-    Console().Error("%s\n", exc.latin1());
-    return;
-  }
-
-  try{
-    // close old workbench
-    if(d->_cActiveWorkbenchName != "")
-    {
-      Base::PyBuf OldName ( d->_cActiveWorkbenchName.latin1());
-      PyObject* pcOldWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, OldName.str);
-      assert(pcOldWorkbench);
-      customWidgetManager()->hideToolBox();
-      Interpreter().runMethodVoid(pcOldWorkbench, "Stop");
-    }
-
-    // rename with new workbench before(!!!) calling "Start"
-    d->_cActiveWorkbenchName = name;
-
-    // running the start of the workbench object
-    Interpreter().runMethodVoid(pcWorkbench, "Start");
-    d->_pcWidgetMgr->update(name);
-    customWidgetManager()->showToolBox();
-
-    // update the Std_Workbench command and its action object
-    StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
-    if ( pCmd && pCmd->getAction(false) )
-    {
-      pCmd->notify( name );
-    }
-
-    show();
-  }
-  catch (const Base::Exception&)
-  {
-    // do nothing here
-  }
-}
-
-void ApplicationWindow::appendWorkbench(const char* name)
-{
-  StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
-
-  if ( pCmd && pCmd->getAction(false) )
-  {
-    pCmd->refresh();
-  }
-}
-
-void ApplicationWindow::removeWorkbench(const char* name)
-{
-  StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
-
-  if ( pCmd && pCmd->getAction(false) )
-  {
-    pCmd->refresh();
-  }
-}
-#endif
 QPixmap ApplicationWindow::workbenchIcon( const QString& wb ) const
 {
   // net buffer because of char* <-> const char*
   Base::PyBuf Name(wb.latin1());
   // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(d->_pcWorkbenchDictionary, Name.str);
+  PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, Name.str);
   // test if the workbench exists
   if ( pcWorkbench )
   {
@@ -1109,7 +925,7 @@ QStringList ApplicationWindow::workbenches(void)
   int pos = 0;
   QStringList wb;
   // insert all items
-  while (PyDict_Next(d->_pcWorkbenchDictionary, &pos, &key, &value)) {
+  while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
     /* do something interesting with the values... */
     wb.push_back(PyString_AsString(key));
   }
@@ -1310,17 +1126,6 @@ bool ApplicationWindow::isClosing(void)
   return d->_bIsClosing;
 }
 
-#ifndef NEW_WB_FRAMEWORK
-Gui::CustomWidgetManager* ApplicationWindow::customWidgetManager(void) 
-{ 
-  return d->_pcWidgetMgr; 
-}
-#endif
-QString ApplicationWindow::activeWorkbench(void)
-{
-  return d->_cActiveWorkbenchName;
-}
-
 MacroManager *ApplicationWindow::macroManager(void)
 {
   return d->_pcMacroMngr;
@@ -1339,21 +1144,7 @@ void ApplicationWindow::languageChange()
   {
     (*it)->languageChange();
   }
-/*
-  // and finally update the menu bar since QMenuBar owns no "text" property
-  Gui::CustomWidgetManager* cw = customWidgetManager();
-  const QMap<int, QString>& mi = cw->menuBarItems();
- 
-  QMenuBar* mb = menuBar();
-  uint cnt = mb->count();
-  for ( uint i=0; i<cnt; i++ )
-  {
-    int id = mb->idAt( i );
-    QMap<int, QString>::ConstIterator it = mi.find( id );
-    if ( it != mi.end() )
-      mb->changeItem( id, tr( it.data() ) );
-  }
-*/
+
   MenuManager::getInstance()->languageChange();
 }
 
@@ -1367,12 +1158,7 @@ QSplashScreen *ApplicationWindow::_splash = NULL;
 
 void ApplicationWindow::initApplication(void)
 {
-//	map<string,string> &Config = GetApplication().Config();
-
-
   new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
-
-
 }
 
 void messageHandler( QtMsgType type, const char *msg )
@@ -1511,8 +1297,6 @@ void ApplicationWindow::startSplasher(void)
 #endif
     if (hGrp->GetBool("AllowSplasher", splash))
     {
-//      QPixmap pixmap(( const char** ) splash_screen );
-//      _splash = new SplashScreen( pixmap );
       _splash = new SplashScreen( Gui::BitmapFactory().pixmap(App::Application::Config()["SplashPicture"].c_str()) );
       _splash->show();
     }
@@ -1580,8 +1364,6 @@ void ApplicationWindow::dropEvent ( QDropEvent      * e )
 
 void ApplicationWindow::dragEnterEvent ( QDragEnterEvent * e )
 {
-//  const map<string,string> &EndingMap = App::GetApplication().getOpenType();
-
   if ( QUriDrag::canDecode(e) )
   {
     QStringList fn;
@@ -1589,730 +1371,11 @@ void ApplicationWindow::dragEnterEvent ( QDragEnterEvent * e )
     QString f = fn.first();
 
     string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
-/*
-    locale loc;
-    // Get a reference to the ctype<char> facet
-    const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
-
-    ct.tolower(Ending.begin(),Ending.end());
-
-    if(EndingMap.find(Ending) != EndingMap.end())
-*/
     if ( App::GetApplication().hasOpenType( Ending.c_str() ) )
       e->accept();
   }else
     e->ignore();
 }
-
-//**************************************************************************
-// Python stuff
-
-// FCApplication Methods						// Methods structure
-PyMethodDef ApplicationWindow::Methods[] = {
-#ifdef NEW_WB_FRAMEWORK
-  {"WorkbenchAdd",          (PyCFunction) ApplicationWindow::sWorkbenchAdd,            1},
-  {"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
-  {"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
-  {"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},
-  {"MenuDelete",            (PyCFunction) ApplicationWindow::sMenuDelete,              1},
-  {"ToolbarAppendItems",    (PyCFunction) ApplicationWindow::sToolbarAppendItems,      1},
-  {"ToolbarRemoveItems",    (PyCFunction) ApplicationWindow::sToolbarRemoveItems,      1},
-  {"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,           1},
-  {"CommandbarAppendItems", (PyCFunction) ApplicationWindow::sCommandbarAppendItems,   1},
-  {"CommandbarRemoveItems", (PyCFunction) ApplicationWindow::sCommandbarRemoveItems,   1},
-  {"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
-
-  {"AddWorkbench",          (PyCFunction) ApplicationWindow::sAddWorkbench,            1},
-  {"CreateWorkbench",       (PyCFunction) ApplicationWindow::sCreateWorkbench,         1},
-  {"RemoveWorkbench",       (PyCFunction) ApplicationWindow::sRemoveWorkbench,         1},
-  {"ActiveWorkbench",       (PyCFunction) ApplicationWindow::sActiveWorkbench,         1},
-  {"ActivateWorkbench",     (PyCFunction) ApplicationWindow::sActivateWorkbench,       1},
-  {"ListWorkbenches",       (PyCFunction) ApplicationWindow::sListWorkbenches,         1},
-  {"GetWorkbench",          (PyCFunction) ApplicationWindow::sGetWorkbench,            1},
-  {"HasWorkbench",          (PyCFunction) ApplicationWindow::sHasWorkbench,            1},
-  {"WorkbenchModule",       (PyCFunction) ApplicationWindow::sWorkbenchModule,         1},
-#else
-  {"MenuAppendItems",       (PyCFunction) ApplicationWindow::sMenuAppendItems,         1},
-  {"MenuRemoveItems",       (PyCFunction) ApplicationWindow::sMenuRemoveItems,         1},
-  {"MenuDelete",            (PyCFunction) ApplicationWindow::sMenuDelete,              1},
-  {"ToolbarAppendItems",    (PyCFunction) ApplicationWindow::sToolbarAppendItems,      1},
-  {"ToolbarRemoveItems",    (PyCFunction) ApplicationWindow::sToolbarRemoveItems,      1},
-  {"ToolbarDelete",         (PyCFunction) ApplicationWindow::sToolbarDelete,           1},
-  {"CommandbarAppendItems", (PyCFunction) ApplicationWindow::sCommandbarAppendItems,   1},
-  {"CommandbarRemoveItems", (PyCFunction) ApplicationWindow::sCommandbarRemoveItems,   1},
-  {"CommandbarDelete",      (PyCFunction) ApplicationWindow::sCommandbarDelete,        1},
-  {"WorkbenchAdd",          (PyCFunction) ApplicationWindow::sWorkbenchAdd,            1},
-  {"WorkbenchDelete",       (PyCFunction) ApplicationWindow::sWorkbenchDelete,         1},
-  {"WorkbenchActivate",     (PyCFunction) ApplicationWindow::sWorkbenchActivate,       1},
-  {"WorkbenchGet",          (PyCFunction) ApplicationWindow::sWorkbenchGet,            1},
-#endif
-  {"UpdateGui",             (PyCFunction) ApplicationWindow::sUpdateGui,               1},
-  {"CreateDialog",          (PyCFunction) ApplicationWindow::sCreateDialog,            1},
-  {"CommandAdd",            (PyCFunction) ApplicationWindow::sCommandAdd,              1},
-  {"RunCommand",            (PyCFunction) ApplicationWindow::sRunCommand,              1},
-  {"SendMsgToActiveView",   (PyCFunction) ApplicationWindow::sSendActiveView,          1},
-  {"hide",                  (PyCFunction) ApplicationWindow::shide,                    1},
-  {"show",                  (PyCFunction) ApplicationWindow::sshow,                    1},
-
-  {NULL, NULL}		/* Sentinel */
-};
-
-PYFUNCIMP_S(ApplicationWindow,shide)
-{
-  char *psFeatStr;
-  if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
-
-  Document *pcDoc =  Instance->activeDocument();
-
-  if(pcDoc)
-  {
-    App::Feature *pcFeat = pcDoc->getDocument()->getFeature(psFeatStr);
-
-    if(pcFeat)
-    {
-      pcDoc->setHide(pcFeat);  
-    }
-  }
-    
-   Py_Return;
-} 
-PYFUNCIMP_S(ApplicationWindow,sshow)
-{
-  char *psFeatStr;
-  if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
-
-  Document *pcDoc =  Instance->activeDocument();
-
-  if(pcDoc)
-  {
-    App::Feature *pcFeat = pcDoc->getDocument()->getFeature(psFeatStr);
-
-    if(pcFeat)
-    {
-      pcDoc->setShow(pcFeat);  
-    }
-  }
-    
-   Py_Return;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sSendActiveView)
-{
-  char *psCommandStr;
-  if (!PyArg_ParseTuple(args, "s",&psCommandStr))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
-
-  if(!Instance->sendMsgToActiveView(psCommandStr))
-    Base::Console().Warning("Unknown view command: %s\n",psCommandStr);
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sUpdateGui)
-{
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
-
-  qApp->processEvents();
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sCreateDialog)
-{
-  char* fn = 0;
-  if (!PyArg_ParseTuple(args, "s", &fn))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
-
-  PyObject* pPyResource=0L;
-  try{
-    pPyResource = new PyResource();
-    ((PyResource*)pPyResource)->load(fn);
-  } catch (const Base::Exception& e)
-  {
-    PyErr_SetString(PyExc_AssertionError, e.what());
-  }
-
-  return pPyResource;
-} 
-
-#ifdef NEW_WB_FRAMEWORK
-PYFUNCIMP_S(ApplicationWindow,sListWorkbenches)
-{
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-      return NULL;                             // NULL triggers exception 
-  QStringList wb = WorkbenchFactory().workbenches();
-  PyObject* pyList = PyList_New(wb.count()); 
-  int i=0;
-  for ( QStringList::Iterator it = wb.begin(); it != wb.end(); ++it )
-  {
-    PyObject* str = PyString_FromString((*it).latin1());
-    PyList_SetItem(pyList, i++, str);
-  }
-
-//  return Instance->d->_pcWorkbenchDictionary;
-  return pyList;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sAddWorkbench)
-{
-  char*       psKey;
-  PyObject*   pcObject;
-  if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  PyObject* wb = PyDict_GetItemString(Instance->d->_pcWorkbenchDictionary,psKey); 
-  if ( wb )
-  {
-    PyErr_Format(PyExc_KeyError, "'%s' already exists.", psKey);
-    return NULL;
-  }
-
-  PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
-
-  Instance->refreshWorkbenchList();
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
-{
-  char*       psKey;
-  PyObject*   pcObject;
-  if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  //Py_INCREF(pcObject);
-
-  PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
-
-  Instance->refreshWorkbenchList();
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sWorkbenchActivate)
-{
-  return Py_None;
-}
-PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
-{
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sMenuRemoveItems)
-{
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sMenuDelete)
-{
-  return Py_None;
-}
-
-PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
-{
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
-{
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
-{
-    return Py_None;
-}
-
-PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
-{
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
-{
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
-{
-  return Py_None;
-}
-
-PYFUNCIMP_S(ApplicationWindow,sCreateWorkbench)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  if ( WorkbenchFactory().CanProduce(psKey) )
-  {
-    PyErr_Format(PyExc_KeyError, "Workbench '%s' already exists", psKey);
-    return NULL;
-  }
-
-  WorkbenchFactory().AddProducer(psKey, new WorkbenchProducer<PythonWorkbench>);
-  Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
-  
-  Base::PyObjectBase* pyObj = wb->GetPyObject();
-  return pyObj;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sRemoveWorkbench)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  PyObject* wb = PyDict_GetItemString(Instance->d->_pcWorkbenchDictionary,psKey); 
-  if ( !wb )
-  {
-    PyErr_Format(PyExc_KeyError, "No such workbench '%s'", psKey);
-    return NULL;
-  }
-
-
-  PyDict_DelItemString(Instance->d->_pcWorkbenchDictionary,psKey);
-
-  Instance->refreshWorkbenchList();
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sWorkbenchModule)
-{
-  char* psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                                // NULL triggers exception 
-
-  Base::PyBuf Name(psKey);
-  
-  // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(Instance->d->_pcWorkbenchDictionary, Name.str);
-  if ( !pcWorkbench )
-  {
-    PyErr_SetString(PyExc_AssertionError, "No such module\n");		
-    return NULL;
-  }
-
-  return pcWorkbench;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sActiveWorkbench)
-{
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
-
-  Workbench* actWb = WorkbenchManager::instance()->getWorkbench(Instance->d->_cActiveWorkbenchName);
-  if ( !actWb )
-  {
-    PyErr_SetString(PyExc_AssertionError, "No active workbench\n");		
-    return NULL;
-  }
-
-  Base::PyObjectBase* pyObj = actWb->GetPyObject();
-//  pyObj->_INCREF();
-  return pyObj;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sActivateWorkbench)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  Instance->activateWorkbench(psKey);
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sGetWorkbench)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
-  if ( !wb )
-  {
-    PyErr_SetString(PyExc_AssertionError, "No such workbench\n");		
-    return NULL;
-  }
-
-  Base::PyObjectBase* pyObj = wb->GetPyObject();
-//  pyObj->_INCREF();
-  return pyObj ? pyObj : Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sHasWorkbench)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
-  return wb ? Py_True : Py_False;
-} 
-#endif
-#ifndef NEW_WB_FRAMEWORK
-PYFUNCIMP_S(ApplicationWindow,sMenuAppendItems)
-{
-  PyObject* pObject;
-  char* psMenuName;
-  char* parent = 0;
-  int bModify=1;
-  int bRemovable=1;
-  // convert args: Python->C 
-  if (!PyArg_ParseTuple(args, "sO|iis", &psMenuName, &pObject, &bModify,
-                                        &bRemovable, &parent ))     
-    return NULL;                             // NULL triggers exception 
-  if (!PyList_Check(pObject))
-  {
-    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-    return NULL;                             // NULL triggers exception 
-  }
-
-  QStringList items;
-  int nSize = PyList_Size(pObject);
-  for (int i=0; i<nSize;++i)
-  {
-    PyObject* item = PyList_GetItem(pObject, i);
-    if (!PyString_Check(item))
-      continue;
-
-    char* pItem = PyString_AsString(item);
-
-    items.push_back(pItem);
-  }
-
-  try{
-    Instance->d->_pcWidgetMgr->addPopupMenu(psMenuName, items, parent);
-    Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setCanModify(bModify!=0);
-    Instance->d->_pcWidgetMgr->getPopupMenu(psMenuName)->setRemovable(bRemovable!=0);
-  }catch(const Base::Exception& e) {
-    PyErr_SetString(PyExc_AssertionError, e.what());		
-    return NULL;
-  }catch(...){
-    PyErr_SetString(PyExc_RuntimeError, "unknown error");
-    return NULL;
-  }
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sMenuRemoveItems)
-{
-  PyObject* pObject;
-  char* psMenuName;
-  if (!PyArg_ParseTuple(args, "sO", &psMenuName, 
-                                     &pObject))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-  if (!PyList_Check(pObject))
-  {
-    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-    return NULL;                             // NULL triggers exception 
-  }
-
-  QStringList items;
-  int nSize = PyList_Size(pObject);
-  for (int i=0; i<nSize;++i)
-  {
-    PyObject* item = PyList_GetItem(pObject, i);
-    if (!PyString_Check(item))
-      continue;
-
-    char* pItem = PyString_AsString(item);
-
-    items.push_back(pItem);
-  }
-
-  Instance->d->_pcWidgetMgr->removeMenuItems( psMenuName, items );
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sMenuDelete)
-{
-    char *psMenuName;
-    if (!PyArg_ParseTuple(args, "s", &psMenuName))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-  Instance->customWidgetManager()->removePopupMenuFromSettings(psMenuName);
-
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-
-PYFUNCIMP_S(ApplicationWindow,sToolbarAppendItems)
-{
-  PyObject* pObject;
-  char* psToolbarName;
-  int bModify=1;
-  int bVisible=1;
-  int bRemovable=1;
-  // convert args: Python->C 
-  if (!PyArg_ParseTuple(args, "sO|iii", &psToolbarName, &pObject, &bModify,
-                                        &bRemovable, &bVisible ))     
-    return NULL;                             // NULL triggers exception 
-  if (!PyList_Check(pObject))
-  {
-    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-    return NULL;                                      // NULL triggers exception 
-  }
-
-  QStringList items;
-  int nSize = PyList_Size(pObject);
-  for (int i=0; i<nSize;++i)
-  {
-    PyObject* item = PyList_GetItem(pObject, i);
-    if (!PyString_Check(item))
-      continue;
-
-    char* pItem = PyString_AsString(item);
-
-    items.push_back(pItem);
-  }
-
-  try{
-    Instance->d->_pcWidgetMgr->addToolBar( psToolbarName, items );
-    if (!bVisible)
-      Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->hide();
-    Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->setCanModify(bModify!=0);
-    Instance->d->_pcWidgetMgr->getToolBar(psToolbarName)->setRemovable(bRemovable!=0);
-  }catch(const Base::Exception& e) {
-    PyErr_SetString(PyExc_AssertionError, e.what());		
-    return NULL;
-  }catch(...){
-    PyErr_SetString(PyExc_RuntimeError, "unknown error");
-    return NULL;
-  }
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sToolbarRemoveItems)
-{
-  PyObject* pObject;
-  char* psToolbarName;
-  if (!PyArg_ParseTuple(args, "sO", &psToolbarName, 
-                                     &pObject))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-  if (!PyList_Check(pObject))
-  {
-    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-    return NULL;                             // NULL triggers exception 
-  }
-
-  QStringList items;
-  int nSize = PyList_Size(pObject);
-  for (int i=0; i<nSize;++i)
-  {
-    PyObject* item = PyList_GetItem(pObject, i);
-    if (!PyString_Check(item))
-      continue;
-
-    char* pItem = PyString_AsString(item);
-
-    items.push_back(pItem);
-  }
-
-  Instance->d->_pcWidgetMgr->removeToolBarItems( psToolbarName, items );
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sToolbarDelete)
-{
-    char *psToolbarName;
-    if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-  Instance->customWidgetManager()->removeToolBar(psToolbarName);
-
-  Py_INCREF(Py_None);
-    return Py_None;
-}
-
-PYFUNCIMP_S(ApplicationWindow,sCommandbarAppendItems)
-{
-  PyObject* pObject;
-  char* psToolbarName;
-  int bModify=1;
-  int bRemovable=1;
-  // convert args: Python->C 
-  if (!PyArg_ParseTuple(args, "sO|ii", &psToolbarName, &pObject,
-                                      &bModify, &bRemovable))
-    return NULL;                             // NULL triggers exception 
-  if (!PyList_Check(pObject))
-  {
-    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-    return NULL;                                      // NULL triggers exception 
-  }
-
-  QStringList items;
-  int nSize = PyList_Size(pObject);
-  for (int i=0; i<nSize;++i)
-  {
-    PyObject* item = PyList_GetItem(pObject, i);
-    if (!PyString_Check(item))
-      continue;
-
-    char* pItem = PyString_AsString(item);
-
-    items.push_back(pItem);
-  }
-
-  try{
-    Instance->d->_pcWidgetMgr->addCommandBar(psToolbarName, items);
-    Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName)->setCanModify(bModify!=0);
-    Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName)->setRemovable(bRemovable!=0);
-    // Do not append this toolbar to the customDockWindows menu
-    Instance->setAppropriate(Instance->d->_pcWidgetMgr->getCommandBar(psToolbarName), false);
-  }catch(const Base::Exception& e) {
-    PyErr_SetString(PyExc_AssertionError, e.what());		
-    return NULL;
-  }catch(...){
-    PyErr_SetString(PyExc_RuntimeError, "unknown error");
-    return NULL;
-  }
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sCommandbarRemoveItems)
-{
-  PyObject* pObject;
-  char* psToolbarName;
-  if (!PyArg_ParseTuple(args, "sO", &psToolbarName, 
-                                     &pObject))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-  if (!PyList_Check(pObject))
-  {
-    PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
-    return NULL;                             // NULL triggers exception 
-  }
-
-  QStringList items;
-  int nSize = PyList_Size(pObject);
-  for (int i=0; i<nSize;++i)
-  {
-    PyObject* item = PyList_GetItem(pObject, i);
-    if (!PyString_Check(item))
-      continue;
-
-    char* pItem = PyString_AsString(item);
-
-    items.push_back(pItem);
-  }
-
-  Instance->d->_pcWidgetMgr->removeCommandBarItems( psToolbarName, items );
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sCommandbarDelete)
-{
-    char *psToolbarName;
-    if (!PyArg_ParseTuple(args, "s", &psToolbarName))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-
-  Instance->customWidgetManager()->removeCommandBar(psToolbarName);
-  
-  Py_INCREF(Py_None);
-  return Py_None;
-}
-
-
-PYFUNCIMP_S(ApplicationWindow,sWorkbenchAdd)
-{
-  char*       psKey;
-  PyObject*   pcObject;
-  if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  //Py_INCREF(pcObject);
-
-  PyDict_SetItemString(Instance->d->_pcWorkbenchDictionary,psKey,pcObject);
-
-  Instance->appendWorkbench(psKey);
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sWorkbenchDelete)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  PyDict_DelItemString(Instance->d->_pcWorkbenchDictionary,psKey);
-
-  Instance->removeWorkbench(psKey);
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sWorkbenchActivate)
-{
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  Instance->activateWorkbench(psKey);
-
-  Py_INCREF(Py_None);
-    return Py_None;
-}
-
-PYFUNCIMP_S(ApplicationWindow,sWorkbenchGet)
-{
-    if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-
-  return Instance->d->_pcWorkbenchDictionary;
-}
-#endif
-PYFUNCIMP_S(ApplicationWindow,sCommandAdd)
-{
-  char*       pName;
-  PyObject*   pcCmdObj;
-  if (!PyArg_ParseTuple(args, "sO", &pName,&pcCmdObj))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  //Py_INCREF(pcObject);
-
-  ApplicationWindow::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj));
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
-
-PYFUNCIMP_S(ApplicationWindow,sRunCommand)
-{
-  char*       pName;
-  if (!PyArg_ParseTuple(args, "s", &pName))     // convert args: Python->C 
-    return NULL;                    // NULL triggers exception 
-
-  ApplicationWindow::Instance->commandManager().runCommandByName(pName);
-
-  Py_INCREF(Py_None);
-  return Py_None;
-} 
 
 // -------------------------------------------------------------
 

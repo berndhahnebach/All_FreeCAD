@@ -6,7 +6,7 @@
 # runs when the gui is up
 
 #***************************************************************************
-#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *   
+#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
@@ -17,12 +17,12 @@
 #*   for detail see the LICENCE text file.                                 *
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
 #*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
 #*   GNU Library General Public License for more details.                  *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
-#*   License along with FreeCAD; if not, write to the Free Software        * 
+#*   License along with FreeCAD; if not, write to the Free Software        *
 #*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
 #*   USA                                                                   *
 #*                                                                         *
@@ -33,7 +33,7 @@
 
 class ImportWorkbench ( Workbench ):
 	"Import workbench object"
-	def Import(self):
+	def Activate(self):
 		# load the module
 		try:
 			Log ('Loading ImportGui module')
@@ -42,31 +42,28 @@ class ImportWorkbench ( Workbench ):
 		except:
 			Err('Cannot load ImportGui')
 			raise
-	def Start(self):
-		# load the module
-		try:
-			Log ('Loading ImportGui module')
-			import Import
-			import ImportGui
-		except:
-			Err('   can not load ImportGui')
-			raise
-		else:	
-			Log ('   Set up Import toolbar...\n')
-			#list = ["Import_ReadBREP"]
-			#Gui.ToolbarAppendItems("ImportTools", list, 0)
+	def GetIcon(self):
+		# returns an icon for the workbench
+		return ["/* XPM */\n"
+			"static const char *fileopen[] = {\n"
+			"\"16 13 5 1\",\n"
+			"\". c #040404\",\n"
+			"\"# c #808304\",\n"
+			"\"a c None\",\n"
+			"\"b c #f3f704\",\n"
+			"\"c c #f3f7f3\",\n"
+			"\"aaaaaaaaa...aaaa\",\n"
+			"\"aaaaaaaa.aaa.a.a\",\n"
+			"\"aaaaaaaaaaaaa..a\",\n"
+			"\"a...aaaaaaaa...a\",\n"
+			"\".bcb.......aaaaa\",\n"
+			"\".cbcbcbcbc.aaaaa\",\n"
+			"\".bcbcbcbcb.aaaaa\",\n"
+			"\".cbcb...........\",\n"
+			"\".bcb.#########.a\",\n"
+			"\".cb.#########.aa\",\n"
+			"\".b.#########.aaa\",\n"
+			"\"..#########.aaaa\",\n"
+			"\"...........aaaaa\"};\n"]
 
-			Log ('   Set up Import commandbar...\n')
-			#list = ["Import_ReadBREP"]
-			#Gui.CommandbarAppendItems("ImportTools", list, 0)
-			
-			Log ('   Set up Import menues...\n')
-
-	def Stop(self):
-		Log ('   Stoping Import workbench...\n')
-		Gui.CommandbarDelete("ImportTools")
-		Gui.ToolbarDelete("ImportTools")
-
-
-#Gui.WorkbenchAdd("Import design",ImportWorkbench())
-Gui.WorkbenchAdd("Import",ImportWorkbench())
+Gui.AddWorkbenchHandler("Import",ImportWorkbench())

@@ -45,6 +45,8 @@ public:
   ConsoleHistory();
   ~ConsoleHistory();
 
+  void first();
+  bool more();
   bool next();
   bool prev();
   bool isEmpty() const;
@@ -79,6 +81,9 @@ public:
 
   bool printCommand( const QString& cmd );
 
+public slots:
+  void onSaveHistoryAs();
+
 protected:
   void keyPressEvent          ( QKeyEvent         * e );
   void showEvent              ( QShowEvent        * e );
@@ -89,6 +94,9 @@ protected:
   void overwriteParagraph( int para, const QString& txt );
   bool isComment( const QString& ) const;
   bool isBlockComment( const QString& ) const;
+
+  /** Pops up the context menu with some extensions */
+  QPopupMenu * createPopupMenu ( const QPoint & pos );
 
   PYFUNCDEF_S(sStdoutPy);
   PYFUNCDEF_S(sStderrPy);

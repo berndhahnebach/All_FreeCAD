@@ -42,19 +42,28 @@ class ToolBox;
 }
 
 /**
+ * The CommandBarManager class is responsible for the creation of command bars and appending them
+ * to the toolbox window.
+ * @see ToolBarManager
+ * @see MenuManager 
  * @author Werner Mayer
  */
 class GuiExport CommandBarManager
 {
 public:
+  /// The one and only instance.
   static CommandBarManager* getInstance();
+  /** Sets up the command bars of a given workbench. */
   void setup( ToolBarItem* ) const;
+  /** Sets up the custom command bars defined by the user of a given workbench. */
   void customSetup( ToolBarItem* ) const;
   void setToolBox( DockWnd::ToolBox* );
-  QPtrList<QToolBar> commandBars() const;
-  QToolBar* getOrCreateCommandBar( const QString& name, bool activate=false, bool modify=false ) const;
 
 protected:
+  /// Returns a list of all currently existing command bars.
+  QPtrList<QToolBar> commandBars() const;
+  /// Returns the command bar with \a name and creates it if necessary.
+  QToolBar* getOrCreateCommandBar( const QString& name, bool activate=false, bool modify=false ) const;
   CommandBarManager();
   ~CommandBarManager();
 

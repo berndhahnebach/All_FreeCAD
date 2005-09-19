@@ -62,18 +62,27 @@ private:
 };
 
 /**
+ * The ToolBarManager class is responsible for the creation of toolbars and appending them
+ * to the main window.
+ * @see CommandBarManager
+ * @see MenuManager 
  * @author Werner Mayer
  */
 class GuiExport ToolBarManager
 {
 public:
+  /// The one and only instance.
   static ToolBarManager* getInstance();
+  /** Sets up the toolbars of a given workbench. */
   void setup( ToolBarItem* ) const;
+  /** Sets up the custom toolbars defined by the user of a given workbench. */
   void customSetup( ToolBarItem* ) const;
-  QPtrList<QToolBar> toolBars() const;
-  QToolBar* getOrCreateToolBar( const QString& name, bool modify=false ) const;
 
 protected:
+  /// Returns a list of all currently existing toolbars.
+  QPtrList<QToolBar> toolBars() const;
+  /// Returns the toolbar with \a name and creates it if necessary.
+  QToolBar* getOrCreateToolBar( const QString& name, bool modify=false ) const;
   ToolBarManager();
   ~ToolBarManager();
 

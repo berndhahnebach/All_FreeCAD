@@ -49,10 +49,7 @@ using namespace Gui::Dialog;
  *  TRUE to construct a modal dialog.
  */
 DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags fl )
-: DlgCustomToolbarsBase(parent, name, fl)
-#ifdef NEW_WB_FRAMEWORK
-  , _toolBars(0) 
-#endif
+: DlgCustomToolbarsBase(parent, name, fl), _toolBars(0) 
 {
   AvailableActions->setSorting( -1 );
   ToolbarActions->setSorting( -1 );
@@ -85,14 +82,11 @@ DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags 
 /** Destroys the object and frees any allocated resources */
 DlgCustomToolbars::~DlgCustomToolbars()
 {
-#ifdef NEW_WB_FRAMEWORK
   delete _toolBars; 
-#endif
 }
 
 void DlgCustomToolbars::refreshActionList()
 {
-#ifdef NEW_WB_FRAMEWORK
   if ( !_toolBars ) return; // no valid pointer
   QString text = ComboToolbars->currentText();
   ToolBarItem* bar = _toolBars->findItem( text );
@@ -116,7 +110,6 @@ void DlgCustomToolbars::refreshActionList()
       }
     }
   }
-#endif
 }
 
 void DlgCustomToolbars::cancel()
@@ -125,7 +118,6 @@ void DlgCustomToolbars::cancel()
 
 void DlgCustomToolbars::refreshToolBarList()
 {
-#ifdef NEW_WB_FRAMEWORK
   if ( !_toolBars ) return;
   ComboToolbars->clear();
   ToolbarActions->clear();
@@ -146,7 +138,6 @@ void DlgCustomToolbars::refreshToolBarList()
     ToolbarActions->setEnabled(false);
     ComboToolbars->setEnabled (false);
   }
-#endif
 }
 
 /** Enables/disables buttons for change */
@@ -190,37 +181,6 @@ void DlgCustomToolbars::onNewActionChanged( QListViewItem *i )
 /** Shows all buttons of the toolbar */
 void DlgCustomToolbars::onItemActivated(const QString & name)
 {
-#ifndef NEW_WB_FRAMEWORK
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
-
-  ToolbarActions->clear();
-  Gui::CustomToolBar* it;
-  for ( it = _aclToolbars.first(); it; it = _aclToolbars.next() )
-  {
-    if (it->name() == name)
-    {
-      QStringList items = it->getCustomItems();
-      for ( QStringList::Iterator it2 = items.begin(); it2 != items.end(); ++it2 )
-      {
-        if (*it2 == "Separator")
-        {
-          ToolbarActions->insertItem(new QListViewItem(ToolbarActions,ToolbarActions->lastItem(), "<Separator>"));
-        }
-        else
-        {
-          Command* pCom = cCmdMgr.getCommandByName( (*it2).latin1() );
-          if (pCom)
-          {
-            QListViewItem* item = new QListViewItem(ToolbarActions,ToolbarActions->lastItem(), pCom->getAction()->menuText());
-            QPixmap pix = pCom->getAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
-            item->setPixmap(0, Tools::fillUp(24,24,pix));
-            ToolbarActions->insertItem(item);
-          }
-        }
-      }
-    }
-  }
-#else
   if ( !_toolBars ) return;
   CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
 
@@ -252,7 +212,6 @@ void DlgCustomToolbars::onItemActivated(const QString & name)
       break;
     }
   }
-#endif
 }
 
 /** Adds a new action */
@@ -392,7 +351,6 @@ void DlgCustomToolbars::onDoubleClickedAction(QListViewItem* item)
     onAddAction();
 }
 
-#ifdef NEW_WB_FRAMEWORK
 void DlgCustomToolbars::onCreateToolbar()
 {
   if ( !_toolBars ) return;
@@ -460,7 +418,7 @@ void DlgCustomToolbars::onDeleteToolbar()
     refreshToolBarList();
   }
 }
-#endif
+
 // -------------------------------------------------------------
 
 /* TRANSLATOR Gui::Dialog::DlgCustomToolbarsImp */
@@ -475,150 +433,26 @@ void DlgCustomToolbars::onDeleteToolbar()
 DlgCustomToolbarsImp::DlgCustomToolbarsImp( QWidget* parent, const char* name, WFlags fl )
   : DlgCustomToolbars(parent, name, fl)
 {
-#ifdef NEW_WB_FRAMEWORK
   if ( WorkbenchManager::instance()->active() )
     _toolBars = WorkbenchManager::instance()->active()->importCustomBars("Toolbars"); 
-#endif
   refreshToolBarList();
 }
 
 /** Destroys the object and frees any allocated resources */
 DlgCustomToolbarsImp::~DlgCustomToolbarsImp()
 {
-#ifdef NEW_WB_FRAMEWORK
   if ( _toolBars )
   {
     ToolBarManager::getInstance()->customSetup(_toolBars);
     WorkbenchManager::instance()->active()->exportCustomBars(_toolBars, "Toolbars");
   }
-#endif
 }
 
-/** Adds created or removes deleted toolbars */
-#ifndef NEW_WB_FRAMEWORK
-void DlgCustomToolbarsImp::refreshActionList()
-{
-  QString text = ComboToolbars->currentText();
-  Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->customWidgetManager()->getToolBar( text );
-  toolbar->clear();
-
-  const QObjectList* children = toolbar->children ();
-
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
-
-  QStringList items;
-  QListViewItem* item = ToolbarActions->firstChild();
-  for (int i=0; i < ToolbarActions->childCount(); item = item->itemBelow(), i++)
-  {
-    if (item->text(0) == "<Separator>")
-    {
-      toolbar->addSeparator ();
-      items.push_back("Separator");
-      continue;
-    }
-
-    bool found = false;
-    Command* pCom = cCmdMgr.getCommandByActionText(item->text(0).latin1());
-    if (pCom != NULL)
-    {
-      found = true;
-      if (pCom->addTo(toolbar))
-        items.push_back(pCom->getName());
-    }
-
-    if (!found)
-    {
-      for (QObjectListIt it2(*children); it2.current(); ++it2)
-      {
-        if (it2.current()->isWidgetType())
-        {
-          QWidget* w = (QWidget*)it2.current();
-          w->reparent(toolbar,QPoint(0,0));
-          break;
-        }
-      }
-    }
-  }
-
-  toolbar->setCustomItems( items );
-  toolbar->saveXML();
-}
-#endif
 /** Discards all changes */
 void DlgCustomToolbarsImp::cancel()
 {
 }
 
-/** Shows all actions from the last specified commandbar */
-#ifndef NEW_WB_FRAMEWORK
-void DlgCustomToolbarsImp::refreshToolBarList()
-{
-  ComboToolbars->clear();
-  ToolbarActions->clear();
-  _aclToolbars = ApplicationWindow::Instance->customWidgetManager()->getToolBars();
-  Gui::CustomToolBar* it;
-  for ( it = _aclToolbars.first(); it; it = _aclToolbars.next() )
-  {
-    if ( it->canModify())
-      ComboToolbars->insertItem( it->name() );
-  }
-
-  if (ComboToolbars->count() > 0)
-  {
-    onItemActivated(ComboToolbars->text(0));
-  }
-  else
-  {
-    ToolbarActions->setEnabled(false);
-    ComboToolbars->setEnabled (false);
-  }
-}
-#endif
-/** Creates new toolbar */
-#ifndef NEW_WB_FRAMEWORK
-void DlgCustomToolbarsImp::onCreateToolbar()
-{
-  QString def = QString("toolbar%1").arg(ApplicationWindow::Instance->customWidgetManager()->countToolBars());
-  QString text = QInputDialog::getText( tr("New toolbar"), tr("Specify the name of the new toolbar, please."),
-                                      QLineEdit::Normal, def, 0, this );
-
-  if (!text.isNull() && !text.isEmpty())
-  {
-    Gui::CustomToolBar* toolbar = ApplicationWindow::Instance->customWidgetManager()->getToolBar( text );
-    toolbar->show();
-    _aclToolbars.append( toolbar );
-    ComboToolbars->insertItem( text );
-
-    // enable the widgets
-    ToolbarActions->setEnabled(true);
-    ComboToolbars->setEnabled (true);
-  }
-}
-
-/** Deletes a toolbar */
-void DlgCustomToolbarsImp::onDeleteToolbar()
-{
-  QValueList<CheckListItem> items;
-  QPtrList<Gui::CustomToolBar> tb = ApplicationWindow::Instance->customWidgetManager()->getToolBars();
-  Gui::CustomToolBar* it;
-  for ( it = tb.first(); it; it = tb.next() )
-    items.append( qMakePair( QString(it->name()), it->canModify() ) );
-
-  CheckListDialog checklists(this, "", true) ;
-  checklists.setCaption( tr("Delete selected toolbars") );
-  checklists.setCheckableItems( items );
-  if (checklists.exec())
-  {
-    QStringList checked = checklists.getCheckedItems();
-    for ( QStringList::Iterator it = checked.begin(); it!=checked.end(); ++it )
-    {
-      ApplicationWindow::Instance->customWidgetManager()->removeToolBarFromSettings( (*it).latin1() );
-    }
-
-    refreshToolBarList();
-  }
-}
-#endif
 
 #include "DlgToolbars.cpp"
 #include "moc_DlgToolbars.cpp"

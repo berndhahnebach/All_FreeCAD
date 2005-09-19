@@ -35,6 +35,8 @@
 #include "PrefWidgets.h"
 #include "Language/LanguageFactory.h"
 #include "Language/Translator.h"
+#include "Workbench.h"
+#include "WorkbenchManager.h"
 
 using namespace Gui::Dialog;
 
@@ -58,7 +60,9 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
   AutoloadModuleCombo->insertStringList( work );
   // set the current workbench as default, AutoloadModuleCombo->onRestore() will change
   // it, if it is set in the preferences
-  AutoloadModuleCombo->setCurrentText( ApplicationWindow::Instance->activeWorkbench() );
+  Workbench* curWb = WorkbenchManager::instance()->active();
+  QString curWbName = curWb ? curWb->name() : "<none>";
+  AutoloadModuleCombo->setCurrentText( curWbName );
 }
 
 /** 

@@ -34,6 +34,7 @@ class QMenuData;
 namespace Gui {
 
 class ApplicationWindow;
+class MainWindow;
 
 class GuiExport MenuItem
 {
@@ -65,15 +66,21 @@ private:
 };
 
 /**
+ * The MenuManager class is responsible for the creation of menus and context menus and appending them
+ * to the main window.
+ * @see CommandBarManager
+ * @see ToolBarManager 
  * @author Werner Mayer
  */
 class GuiExport MenuManager
 {
 public:
+  /** Sets up the menus of a given workbench. */
   void setup( MenuItem* ) const;
   /// sets up a context menu out of item
   void setupContextMenu( MenuItem* item, QPopupMenu &menu ) const;
 
+  /// The one and only instance.
   static MenuManager* getInstance();
 
 protected:
@@ -89,6 +96,7 @@ private:
   static MenuManager* _instance;
 
   friend class ApplicationWindow;
+  friend class MainWindow;
 };
 
 } // namespace Gui

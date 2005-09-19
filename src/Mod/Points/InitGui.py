@@ -6,7 +6,7 @@
 # runs when the gui is up
 
 #***************************************************************************
-#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                        *
+#*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                        
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
@@ -17,12 +17,12 @@
 #*   for detail see the LICENCE text file.                                 *
 #*                                                                         *
 #*   FreeCAD is distributed in the hope that it will be useful,            *
-#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+#*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
 #*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
 #*   GNU Library General Public License for more details.                  *
 #*                                                                         *
 #*   You should have received a copy of the GNU Library General Public     *
-#*   License along with FreeCAD; if not, write to the Free Software        * 
+#*   License along with FreeCAD; if not, write to the Free Software        *
 #*   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
 #*   USA                                                                   *
 #*                                                                         *
@@ -33,7 +33,7 @@
 
 class PointsWorkbench ( Workbench ):
 	"Points workbench object"
-	def Import(self):
+	def Activate(self):
 		# load the module
 		try:
 			Log ('Loading PointsGui module')
@@ -41,30 +41,28 @@ class PointsWorkbench ( Workbench ):
 		except:
 			Err('Cannot load PointsGui')
 			raise
-	def Start(self):
-		# load the module
-		try:
-			Log ('Loading PointsGui module')
-			import PointsGui
-		except:
-			Err('   can not load PointsGui')
-			raise
-		else:	
-			Log ('   Set up Points toolbar...\n')
-			list = ["Points_Test"]
-			Gui.ToolbarAppendItems("PointsTools", list, 0)
+	def GetIcon(self):
+		# returns an icon for the workbench
+		return ["/* XPM */\n"
+			"static const char *test_icon[]={\n"
+			"\"16 16 2 1\",\n"
+			"\"a c #000000\",\n"
+			"\". c None\",\n"
+			"\"......##......##\",\n"
+			"\"............##..\",\n"
+			"\"..##....##......\",\n"
+			"\"......##.....##.\",\n"
+			"\"....##....##....\",\n"
+			"\"##..............\",\n"
+			"\"....##....##....\",\n"
+			"\".......##.......\",\n"
+			"\"...##......##...\",\n"
+			"\".....##.........\",\n"
+			"\".........##.....\",\n"
+			"\"...##........##.\",\n"
+			"\".....##.........\",\n"
+			"\".........##.....\",\n"
+			"\"...##......##...\",\n"
+			"\"................\"};\n"]
 
-			Log ('   Set up Points commandbar...\n')
-			list = ["Points_Test"]
-			Gui.CommandbarAppendItems("PointsTools", list, 0)
-
-			Log ('   Set up Points menues...\n')
-
-	def Stop(self):
-		Log ('   Stoping Points workbench...\n')
-		Gui.CommandbarDelete("PointsTools")
-		Gui.ToolbarDelete("PointsTools")
-
-
-#Gui.WorkbenchAdd("Points design",PointsWorkbench())
-Gui.WorkbenchAdd("Points design",PointsWorkbench())
+Gui.AddWorkbenchHandler("Points design",PointsWorkbench())

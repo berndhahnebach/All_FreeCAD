@@ -69,18 +69,11 @@ protected slots:
   void onMoveDownAction();
   void onNewActionChanged( QListViewItem *i );
   void onAllActionsChanged( QListViewItem *i );
-#ifdef NEW_WB_FRAMEWORK
   void onCreateToolbar();
   void onDeleteToolbar();
-#endif
 protected:
   /** List of all toolbars */
-
-#ifndef NEW_WB_FRAMEWORK
-  QPtrList<Gui::CustomToolBar>                _aclToolbars;
-#else
   ToolBarItem* _toolBars;
-#endif
 };
 
 /** This class implements the creation of user defined toolbars.
@@ -97,17 +90,7 @@ public:
   ~DlgCustomToolbarsImp();
 
 protected:
-#ifndef NEW_WB_FRAMEWORK
-  void refreshActionList();
-  void refreshToolBarList();
-#endif
   void cancel();
-
-protected slots:
-#ifndef NEW_WB_FRAMEWORK
-  void onCreateToolbar();
-  void onDeleteToolbar();
-#endif
 };
 
 } // namespace Dialog

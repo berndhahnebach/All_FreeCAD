@@ -46,16 +46,16 @@ using namespace Gui;
  * 
  * \section stepbystep Step by step
  * To integrate a new language into FreeCAD or one of its application modules
- * you have to do the following steps:
+ * you have to perform the following steps:
  *
- * \subsection tsfile Create your .ts file
- * You have to generate a .ts file for the language to be translated first. This you can
- * do by running the \a lupdate tool in the \a bin path of your Qt installation. As argument
+ * \subsection tsfile Creation of a .ts file
+ * First you have to generate a .ts file for the language to be translated. You can do this
+ * by running the \a lupdate tool in the \a bin path of your Qt installation. As argument
  * you can specify either all related source files and the .ts output file or a Qt project 
  * file (.pro) which contains all relevant source files.
  *
- * \subsection translate Translation to your language
- * To translate the english string literals into your language you can open your
+ * \subsection translate Translation into your language
+ * To translate the english string literals into the language you want to support you can open your
  * .ts file with \a QtLinguist and translate all literals by hand. Another way
  * for translation is to use the tool \a tsauto from Sebastien Fricker.This tool uses the 
  * engine from Google web page (www.google.com). tsauto supports the languages
@@ -69,16 +69,21 @@ using namespace Gui;
  * \remark To get most of the literals translated you should have removed all
  * special characters (like &, !, ?, ...). Otherwise the translation could fail.
  *
- * \subsection usets Integrate your .ts file
+ * \subsection usets Integration of the .ts file
  * The .ts file should now be integrated into the GUI library (either of FreeCAD
  * itself or its application module). The .ts file will be embedded into the
  * resulting binary file. So, at runtime you don't need any .ts or .qm files any
  * more. Indeed you will have a bigger binary file but you haven't any troubles
  * concerning missing .ts or .qm files.
  *
- * Therefore you just have to add the .ts file into you project specifying
- * python ..\Tools\tstocpp.py "$(InputDir)\$(InputName).ts" "$(InputDir)\$(InputName).h" "$(InputName)" 
- * as custom build. And you have to add a few lines to resource.cpp.
+ * To integrate the .ts file into the Visual Studio project file you have to add the
+ * file to the project and define the following as custom build:
+ *
+ * python ..\\Tools\\tstocpp.py "$(InputDir)\$(InputName).ts" "$(InputDir)\$(InputName).h" "$(InputName)" 
+ * For the gcc build system you just have to add the line <Outputofyourtsfile>.h to the BUILT_SOURCES
+ * sources section of the Makefile.am, run automake and configure (or ./confog.status) afterwards.
+ *
+ * Finally, you have to add a few lines to resource.cpp.
  * \code
  * 
  * #include "Language/<Outputofyourtsfile>.h"
