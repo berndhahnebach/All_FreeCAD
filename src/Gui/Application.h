@@ -130,6 +130,7 @@ public:
   PYFUNCDEF_S(sAddWorkbenchHandler);     // adds a new workbench handler to a list
   PYFUNCDEF_S(sRemoveWorkbenchHandler);  // removes a workbench handler from the list
   PYFUNCDEF_S(sGetWorkbenchHandler);     // retrieves the workbench handler
+  PYFUNCDEF_S(sListWorkbenchHandlers);   // retrieves a list of all workbench handlers
   PYFUNCDEF_S(sCreateWorkbench);         // creates a new workbench object
   PYFUNCDEF_S(sActiveWorkbench);         // retrieves the active workbench object
   PYFUNCDEF_S(sActivateWorkbench);       // activates a workbench object

@@ -94,8 +94,8 @@ Gui.AddWorkbenchHandler("<none>",StandardWorkbench())
 # init modules
 InitApplications()
 
-# set standard workbench
-#Gui.ActivateWorkbench("<none>")
+# set standard workbench (needed as fallback)
+Gui.ActivateWorkbench("<none>")
 
 
 Log ('Init: Gui::FreeCADGuiInit.py done\n')

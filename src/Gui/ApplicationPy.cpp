@@ -47,6 +47,7 @@ PyMethodDef Application::Methods[] = {
   {"AddWorkbenchHandler",     (PyCFunction) Application::sAddWorkbenchHandler,     1},
   {"RemoveWorkbenchHandler",  (PyCFunction) Application::sRemoveWorkbenchHandler,  1},
   {"GetWorkbenchHandler",     (PyCFunction) Application::sGetWorkbenchHandler,     1},
+  {"ListWorkbenchHandlers",   (PyCFunction) Application::sListWorkbenchHandlers,   1},
   {"CreateWorkbench",         (PyCFunction) Application::sCreateWorkbench,         1},
   {"ActiveWorkbench",         (PyCFunction) Application::sActiveWorkbench,         1},
   {"ActivateWorkbench",       (PyCFunction) Application::sActivateWorkbench,       1},
@@ -209,6 +210,11 @@ PYFUNCIMP_S(Application,sGetWorkbenchHandler)
   }
 
   return pcWorkbench;
+} 
+
+PYFUNCIMP_S(Application,sListWorkbenchHandlers)
+{
+  return Instance->_pcWorkbenchDictionary;
 } 
 
 PYFUNCIMP_S(Application,sListWorkbenches)

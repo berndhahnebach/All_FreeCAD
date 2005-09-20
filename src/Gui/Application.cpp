@@ -436,7 +436,9 @@ bool Application::activateWorkbench( const char* name )
     Interpreter().runMethodVoid(pcWorkbench, "Activate");
   } catch (const Base::Exception&)
   {
-    // do nothing here
+    // clears the error flag if needed (coming from a Python file)
+    if ( PyErr_Occurred() )
+      PyErr_Clear();
   }
 
   Workbench* newWb = WorkbenchManager::instance()->active();
@@ -453,7 +455,9 @@ bool Application::activateWorkbench( const char* name )
   StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
   if ( pCmd && pCmd->getAction(false) )
   {
-    pCmd->notify( name );
+    Workbench* curWb = WorkbenchManager::instance()->active();
+    QString curName = curWb ? curWb->name() : name;
+    pCmd->notify( curName );
   }
 
   return ok;
