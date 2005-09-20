@@ -33,7 +33,6 @@ class QMenuData;
 
 namespace Gui {
 
-class ApplicationWindow;
 class MainWindow;
 
 class GuiExport MenuItem
@@ -95,7 +94,6 @@ private:
 private:
   static MenuManager* _instance;
 
-  friend class ApplicationWindow;
   friend class MainWindow;
 };
 

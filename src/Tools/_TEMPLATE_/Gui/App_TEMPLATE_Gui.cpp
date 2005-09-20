@@ -61,7 +61,7 @@ static struct PyMethodDef hello_methods[] = {
 /* Python entry */
 extern "C" {
 void _TEMPLATE_GuiExport init_TEMPLATE_Gui() {
-  if ( !Gui::ApplicationWindow::Instance )
+  if ( !Gui::Application::Instance )
   {
     PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
     return;
@@ -70,9 +70,6 @@ void _TEMPLATE_GuiExport init_TEMPLATE_Gui() {
   (void) Py_InitModule("_TEMPLATE_Gui", hello_methods);   /* mod name, table ptr */
 
   Base::Console().Log("App_TEMPLATE_Gui loaded\n");
-
-  App::GetApplication();
-  Gui::ApplicationWindow::Instance;
 
   // instanciating the commands
   Create_TEMPLATE_Commands();

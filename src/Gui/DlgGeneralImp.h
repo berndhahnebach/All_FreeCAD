@@ -31,7 +31,6 @@ namespace Dialog {
 
 /** This class implements the settings for the application.
  *  You can change window style, size of pixmaps, size of recent file list and so on
- *  @see class ApplicationWindow
  *  \author Werner Mayer
  */
 class DlgGeneralImp : public DlgGeneralBase
