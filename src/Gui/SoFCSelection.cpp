@@ -39,7 +39,7 @@
 #include <Inventor/SoPickedPoint.h>
 
 #include "SoFCSelection.h"
-#include "Application.h"
+#include "MainWindow.h"
 
 using namespace Gui;
 
@@ -146,7 +146,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
                                                         ,pp->getPoint()[1]
                                                         ,pp->getPoint()[2]);
 
-          Gui::ApplicationWindow::Instance->statusBar()->message(buf,3000);
+          getMainWindow()->statusBar()->message(buf,3000);
           this->touch(); // force scene redraw
           this->redrawHighlighted(action, TRUE);
         }

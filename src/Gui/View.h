@@ -52,7 +52,7 @@ class ViewProvider;
  *  belongs sometimes to no document at all!
  *  @see TreeView
  *  @see Gui::Document
- *  @see ApplicationWindow
+ *  @see Application
  *  @author Jürgen Riegel
  */
 class GuiExport BaseView
@@ -73,7 +73,7 @@ public:
   /** @name methodes used by the Application and the GuiDocument 
    */
   //@{
-  /// sets the view to an oter document (called by ApplicationWindow)
+  /// sets the view to an oter document (called by Application)
   void setDocument(Gui::Document* pcDocument);
   /// is send from the document in oder to close the document
   void onClose(void);
@@ -131,7 +131,7 @@ protected:
  *  belongs sometimes to no document at all!
  *  @see TreeView
  *  @see Gui::Document
- *  @see ApplicationWindow
+ *  @see Application
  *  @author Jürgen Riegel, Werner Mayer
  */
 class GuiExport MDIView : public QMainWindow,public BaseView

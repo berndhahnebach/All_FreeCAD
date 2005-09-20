@@ -114,7 +114,7 @@ ToolBarItem* Workbench::importCustomBars( const char* node ) const
   
   ToolBarItem* root = new ToolBarItem;
   std::vector<FCHandle<ParameterGrp> > hGrps = hGrp->GetGroups();
-  CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager& rMgr = Application::Instance->commandManager();
   for ( std::vector<FCHandle<ParameterGrp> >::iterator it = hGrps.begin(); it != hGrps.end(); ++it )
   {
     ToolBarItem* bar = new ToolBarItem( root );
@@ -150,7 +150,7 @@ ToolBarItem* Workbench::importCustomBars( const char* node ) const
 void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
 {
   const char* szName = this->name().latin1();
-  CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager& rMgr = Application::Instance->commandManager();
 
   ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup( node );
   hGrp->Clear();

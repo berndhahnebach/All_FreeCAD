@@ -93,7 +93,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
      _toolBox->removeItem( w );
   }
 
-  CommandManager& mgr = ApplicationWindow::Instance->commandManager();
+  CommandManager& mgr = Application::Instance->commandManager();
   QPtrList<ToolBarItem> items = toolBar->getItems();
 
   ToolBarItem* item;
@@ -149,7 +149,7 @@ void CommandBarManager::customSetup( ToolBarItem* toolBar ) const
     }
   }
 
-  CommandManager& mgr = ApplicationWindow::Instance->commandManager();
+  CommandManager& mgr = Application::Instance->commandManager();
   QPtrList<ToolBarItem> items = toolBar->getItems();
 
   ToolBarItem* item;

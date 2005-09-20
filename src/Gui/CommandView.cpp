@@ -29,6 +29,7 @@
 
 #include "Command.h"
 #include "Application.h"
+#include "MainWindow.h"
 #include "View.h"
 #include "Document.h"
 #include "Macro.h"
@@ -151,7 +152,7 @@ StdCmdSetMaterial::StdCmdSetMaterial()
 
 void StdCmdSetMaterial::activated(int iMsg)
 {
-  Gui::Dialog::DlgDisplayPropertiesImp dlg(this, getAppWnd()->activeView(), "Display", true );
+  Gui::Dialog::DlgDisplayPropertiesImp dlg(this, getMainWindow()->activeWindow(), "Display", true );
   dlg.exec();
 }
 
@@ -338,7 +339,7 @@ void StdCmdViewFitAll::activated(int iMsg)
 
 bool StdCmdViewFitAll::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("ViewFit");
+  return getGuiApplication()->sendHasMsgToActiveView("ViewFit");
 }
 
 
@@ -451,7 +452,7 @@ void StdCmdViewExample1::activated(int iMsg)
 
 bool StdCmdViewExample1::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("Example1");
+  return getGuiApplication()->sendHasMsgToActiveView("Example1");
 }
 //===========================================================================
 // Std_ViewExample2
@@ -477,7 +478,7 @@ void StdCmdViewExample2::activated(int iMsg)
 
 bool StdCmdViewExample2::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("Example2");
+  return getGuiApplication()->sendHasMsgToActiveView("Example2");
 }
 
 //===========================================================================
@@ -504,7 +505,7 @@ void StdCmdViewExample3::activated(int iMsg)
 
 bool StdCmdViewExample3::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("Example3");
+  return getGuiApplication()->sendHasMsgToActiveView("Example3");
 }
 
 //===========================================================================
@@ -531,7 +532,7 @@ void StdCmdViewIvDecorationOn::activated(int iMsg)
 
 bool StdCmdViewIvDecorationOn::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("SetDecorationOn");
+  return getGuiApplication()->sendHasMsgToActiveView("SetDecorationOn");
 }
 
 //===========================================================================
@@ -558,7 +559,7 @@ void StdCmdViewIvDecorationOff::activated(int iMsg)
 
 bool StdCmdViewIvDecorationOff::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("SetDecorationOff");
+  return getGuiApplication()->sendHasMsgToActiveView("SetDecorationOff");
 }
 
 
@@ -586,7 +587,7 @@ void StdCmdViewIvStereoOff::activated(int iMsg)
 
 bool StdCmdViewIvStereoOff::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("SetStereoOff");
+  return getGuiApplication()->sendHasMsgToActiveView("SetStereoOff");
 }
 
 
@@ -614,7 +615,7 @@ void StdCmdViewIvStereoOn::activated(int iMsg)
 
 bool StdCmdViewIvStereoOn::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("SetStereoOn");
+  return getGuiApplication()->sendHasMsgToActiveView("SetStereoOn");
 }
 
 
@@ -641,7 +642,7 @@ void StdCmdViewIvIssueCamPos::activated(int iMsg)
   unsigned int pos;
 
   const char* ppReturn=0;
-  getAppWnd()->sendMsgToActiveView("GetCamera",&ppReturn);
+  getGuiApplication()->sendMsgToActiveView("GetCamera",&ppReturn);
 
   // remove the #inventor line...
   Temp2 = ppReturn;
@@ -659,14 +660,14 @@ void StdCmdViewIvIssueCamPos::activated(int iMsg)
 
   Base::Console().Message("%s",Temp.c_str());
 
-  getAppWnd()->macroManager()->addLine(MacroManager::Gui,"FreeCAD.DocGet().Recompute()");
-  getAppWnd()->macroManager()->addLine(MacroManager::Gui,Temp.c_str());
+  getGuiApplication()->macroManager()->addLine(MacroManager::Gui,"FreeCAD.DocGet().Recompute()");
+  getGuiApplication()->macroManager()->addLine(MacroManager::Gui,Temp.c_str());
   //doCommand(Command::Gui,Temp.c_str());
 }
 
 bool StdCmdViewIvIssueCamPos::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("SetStereoOn");
+  return getGuiApplication()->sendHasMsgToActiveView("SetStereoOn");
 }
 
 
@@ -681,7 +682,7 @@ namespace Gui {
 
 void CreateViewStdCommands(void)
 {
-  CommandManager &rcCmdMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
   // views
   rcCmdMgr.addCommand(new StdCmdViewBottom());

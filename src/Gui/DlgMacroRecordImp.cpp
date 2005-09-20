@@ -32,7 +32,9 @@
 
 #include "Macro.h"
 #include "Application.h"
+#include "MainWindow.h"
 #include "DlgMacroRecordImp.h"
+
 
 using namespace Gui::Dialog;
 
@@ -57,7 +59,7 @@ DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool m
     _cMacroPath += PATHSEP;
 
   // get a pointer to the macro manager
-  _pcMacroMngr = ApplicationWindow::Instance->macroManager();
+  _pcMacroMngr = Application::Instance->macroManager();
 
   // check if a macro recording is in progress
   if(_pcMacroMngr->isOpen())
@@ -123,7 +125,7 @@ void DlgMacroRecordImp::start()
   // test if the path already set
   if(LineEditPath->text().isEmpty())
   {
-    QMessageBox::information( ApplicationWindow::Instance, tr("FreeCAD - Macro recorder"),
+    QMessageBox::information( getMainWindow(), tr("FreeCAD - Macro recorder"),
                                          tr("Specify first a place to save."));
     reject();
   }
@@ -153,7 +155,7 @@ void DlgMacroRecordImp::stop()
  */
 void DlgMacroRecordImp::onSaveMacro()
 {
-  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD script (*.FCScript)", ApplicationWindow::Instance);
+  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD script (*.FCScript)", getMainWindow());
 
   if (!fn.isEmpty())
   {

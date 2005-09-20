@@ -33,7 +33,7 @@
 #endif
 
 #include "../../../Gui/FileDialog.h"
-#include "../../../Gui/Application.h"
+#include "../../../Gui/MainWindow.h"
 
 #include "DlgPartImportIgesImp.h"
 
@@ -69,8 +69,7 @@ void DlgPartImportIgesImp::OnApply()
 
 void DlgPartImportIgesImp::onChooseFileName()
 {
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", Gui::MainWindow::instance );
 	if (! fn.isEmpty() )
 	{
     FileName->setText(fn);

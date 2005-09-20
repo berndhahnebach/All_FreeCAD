@@ -26,7 +26,7 @@
 #endif
 
 #include "DockWindow.h"
-#include "Application.h"
+#include "MainWindow.h"
 
 using namespace Gui;
 
@@ -114,7 +114,7 @@ DockWindowManager::~DockWindowManager()
 void DockWindowManager::addDockWindow( const QString& name, DockWindow *pcDocWindow, Qt::Dock pos, 
                                        bool stretch, int extWidth, int extHeight )
 {
-  ApplicationWindow* pApp = ApplicationWindow::Instance;
+  MainWindow* pApp = getMainWindow();
   d->_clDocWindows[ name ] = pcDocWindow;
 
   QDockWindow* dw = new QDockWindow(pApp);

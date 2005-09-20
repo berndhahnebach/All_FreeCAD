@@ -103,7 +103,7 @@ int main( int argc, char ** argv )
  
   Gui::BitmapFactory().addXPM("FreeCADSplasher", ( const char** ) splash_screen);
 
-  Gui::ApplicationWindow::initApplication();
+  Gui::Application::initApplication();
 
 
 	// Run phase ===========================================================
@@ -111,9 +111,9 @@ int main( int argc, char ** argv )
   if(App::Application::Config()["RunMode"] == "Gui")
 	{
 	// run GUI
-    Gui::ApplicationWindow::runApplication();
+    Gui::Application::runApplication();
 
-    Gui::ApplicationWindow::destruct();
+    Gui::Application::destruct();
 
 	} else {
 

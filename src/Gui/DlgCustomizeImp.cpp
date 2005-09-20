@@ -30,7 +30,7 @@
 #endif
 
 #include "DlgCustomizeImp.h"
-#include "Application.h"
+#include "MainWindow.h"
 #include "WidgetFactory.h"
 
 using namespace Gui::Dialog;
@@ -95,7 +95,7 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal
 
   // connections
   //
-  connect( buttonHelp,  SIGNAL ( clicked() ), ApplicationWindow::Instance, SLOT ( whatsThis() ));
+  connect( buttonHelp,  SIGNAL ( clicked() ), getMainWindow(), SLOT ( whatsThis() ));
   connect( buttonClose, SIGNAL ( clicked() ), this, SLOT ( reject() ) );
 }
 

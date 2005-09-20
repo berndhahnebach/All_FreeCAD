@@ -38,6 +38,7 @@
 #include "../App/Function.h"
 
 #include "Application.h"
+#include "MainWindow.h"
 #include "Document.h"
 #include "Command.h"
 
@@ -87,7 +88,7 @@ void FCCmdTest1::activated(int iMsg)
     SoSeparator * root = SoDB::readAll(&in);
 #else
 	// get open file name
-	QString fn = FileDialog::getOpenFileName( QString::null, "Inventor (*.brep)", getAppWnd() );
+	QString fn = FileDialog::getOpenFileName( QString::null, "Inventor (*.brep)", getMainWindow() );
 	if ( fn.isEmpty() ) return;
 
     // Open the argument file..
@@ -461,7 +462,7 @@ namespace Gui {
 
 void CreateTestCommands(void)
 {
-	CommandManager &rcCmdMgr = ApplicationWindow::Instance->commandManager();
+	CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
 	rcCmdMgr.addCommand(new FCCmdTest1());
 	rcCmdMgr.addCommand(new FCCmdTest2());

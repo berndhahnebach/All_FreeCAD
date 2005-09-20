@@ -43,7 +43,7 @@ class QAction;
 
 namespace Gui {
 
-class ApplicationWindow;
+class Application;
 class CommandManager;
 class Command;
 class ActionGroup;
@@ -98,7 +98,7 @@ public:
   /** @name Helper methodes to get importand classes */
   //@{
   /// Get pointer to the Application Window
-  ApplicationWindow*  getAppWnd(void);   
+  Application*  getGuiApplication(void);   
   /// Get a referenc to the selection 
   Gui::SelectionSingelton&  getSelection(void);
   /// Get pointer to the active gui document
@@ -602,7 +602,7 @@ public:\
   virtual void activated(int iMsg);\
   virtual bool isActive(void)\
   {\
-    return ( getAppWnd()->activeView() && QString( getAppWnd()->activeView()->getName()).contains( "View3DInventor" )  > 0)?true:false;\
+    return ( getMainWindow()->activeWindow() && QString( getMainWindow()->activeWindow()->getName()).contains( "View3DInventor" )  > 0)?true:false;\
   }\
 };
 

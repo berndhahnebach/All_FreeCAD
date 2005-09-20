@@ -34,8 +34,10 @@
 #endif
 
 #include "ProgressBar.h"
-#include "Application.h"
+#include "MainWindow.h"
 #include "WaitCursor.h"
+
+#include <Base/Console.h>
 
 using namespace Gui;
 
@@ -62,7 +64,7 @@ ProgressBar* ProgressBar::instance()
   // not initialized?
   if ( !_pclSingleton )
   {
-    _pclSingleton = new ProgressBar(ApplicationWindow::Instance->statusBar(), "Sequencer");
+    _pclSingleton = new ProgressBar(getMainWindow()->statusBar(), "Sequencer");
   }
 
   return _pclSingleton;
@@ -187,7 +189,7 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
       {
         // avoid to exit while app is working
         // note: all other widget types are allowed to be closed anyway
-        if ( o == ApplicationWindow::Instance )
+        if ( o == getMainWindow() )
           return true; 
       } break;
 
@@ -267,7 +269,7 @@ void ProgressBar::nextStep(bool canAbort)
     // restore cursor
     pause();
 
-    int ret = QMessageBox::question(ApplicationWindow::Instance,tr("Aborting"),
+    int ret = QMessageBox::question(getMainWindow(),tr("Aborting"),
                 tr("Do you really want to abort the operation?"),  QMessageBox::Yes, 
                 QMessageBox::No|QMessageBox::Default);
     // continue and show up wait cursor if needed
@@ -320,7 +322,7 @@ void ProgressBar::resetData()
   d->cWaitCursor = 0L;
   d->forceTimer->stop();
   leaveControlEvents();
-  ApplicationWindow::Instance->setPaneText( 1, "" );
+  getMainWindow()->setPaneText( 1, "" );
 
   SequencerBase::resetData();
 }
@@ -341,7 +343,7 @@ void ProgressBar::setText ( const char* pszTxt )
 {
   // print message to the statusbar
   QString txt = pszTxt ? pszTxt : "";
-  ApplicationWindow::Instance->statusBar()->message(txt);
+  getMainWindow()->statusBar()->message(txt);
 }
 
 bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSteps )
@@ -374,7 +376,7 @@ bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSte
   }
 
   if ( isVisible() )
-    ApplicationWindow::Instance->setPaneText( 1, txt );
+    getMainWindow()->setPaneText( 1, txt );
 
   return QProgressBar::setIndicator ( indicator, progress, totalSteps );
 }

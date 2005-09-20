@@ -26,7 +26,6 @@
 #endif
 
 #include "Window.h"
-#include "Application.h"
 
 #include "../Base/Console.h"
 #include "../App/Application.h"
@@ -85,9 +84,4 @@ ParameterGrp::handle  WindowParameter::getWindowParameter(void)
 ParameterGrp::handle  WindowParameter::getParameter(void)
 {
   return App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
-}
-
-ApplicationWindow* WindowParameter::applicationWindow(void)
-{
-  return ApplicationWindow::Instance;
 }

@@ -33,7 +33,7 @@
 #endif
 
 #include "NetworkRetriever.h"
-#include "Application.h"
+#include "MainWindow.h"
 #include "DlgAuthorization.h"
 
 #include "../App/Application.h"
@@ -139,7 +139,7 @@ void NetworkRetriever::OnChange (Base::Subject<Gui::Process::MessageType> &rCall
       if (!d->fail)
       {
         Base::Console().Message( tr("Download finished.\n") );
-        QMessageBox::information(ApplicationWindow::Instance, tr("Download Online help"), tr("Download finished."));
+        QMessageBox::information(getMainWindow(), tr("Download Online help"), tr("Download finished."));
       }
       else
       {
@@ -460,7 +460,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
 
       if ( bAuthor )
       {
-        DlgAuthorization dlg( getAppWnd() );
+        DlgAuthorization dlg( getMainWindow() );
 
         if ( dlg.exec() == QDialog::Accepted )
         {

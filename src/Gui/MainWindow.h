@@ -67,14 +67,13 @@ public:
   MainWindow( QWidget * parent = 0, const char * name = 0, WFlags f = WType_TopLevel );
   /** Destroys the object and frees any allocated resources. */
   ~MainWindow();
-
   /** 
    * Adds an MDI window \a view to the main window's workspace and adds a new tab
    * to the tab bar.
    */
   void addWindow( MDIView* view );
   /**
-   * Removes an MDI window from the main window's workspace and its associated tab with
+   * Removes an MDI window from the main window's workspace and its associated tab without
    * deleting the widget.
    */
   void removeWindow( MDIView* view );
@@ -83,9 +82,90 @@ public:
    */
   QWidgetList windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;
   /**
-   * Returns the active MDI window active or 0 if there is none.
+   * Returns the active MDI window or 0 if there is none.
    */
-  MDIView* activeView();
+  MDIView* activeWindow();
+  /** Calls update to the pixmaps' size.
+   */
+  void updatePixmapsSize(void);
+  /** Calls update to style.
+   */
+  void updateStyle(void);
+  /**
+   * Sets text to the pane in the status bar.
+   */
+  void setPaneText(int i, QString text);
+  /**
+   * MRU: Appends \a file to the list of recent files.
+   */
+  void appendRecentFile(const char* file);
+  /**
+   * Returns true that the context menu contains the 'Customize...' menu item.
+   */
+  bool isCustomizable () const;
+  /**
+   * Opens a dialog to customize the main window.
+   */
+  void customize ();
+
+  /** @name Splasher and access methods */
+  //@{
+  /** Gets the one and only instance. */
+  static MainWindow* getInstance();
+  /** Destroys the main window and frees any allocated resources. */
+  static void destruct();
+  /** Starts the splasher at startup. */
+  static void startSplasher(void);
+  /** Stops the splasher after startup. */
+  static void stopSplasher(void);
+  /** Shows the Tip-of-the-day dialog after startup. */
+  static void showTipOfTheDay(bool force=false);
+  //@}
+
+public slots:
+  /**
+   * Arranges all child windows in a horizontal tile pattern.
+   */
+  void tileHorizontal();
+  /**
+   * Arranges all child windows in a tile pattern.
+   */
+  void tile();
+  /**
+   * Arranges all the child windows in a cascade pattern.
+   */
+  void cascade();
+  /**
+   * Closes the child window that is currently active.
+   */
+  void closeActiveWindow ();
+  /**
+   * Closes all child windows. 
+   * The windows are closed in random order. The operation stops if a window does not accept the close event.
+   */
+  void closeAllWindows ();
+  /**
+   * Activates the next window in the child window chain.
+   */
+  void activateNextWindow ();
+  /**
+   * Activates the previous window in the child window chain.
+   */
+  void activatePrevWindow ();
+  /** 
+   * This method gets frequently activated and test the commands if they are still active.
+   */
+  void updateCmdActivity();
+ 
+  /** @name Methods for the undo/redo handling 
+   *  This methods are usally used by the GUI document! Its not intended
+   *  to use them directly. If the GUI is not up, there is usaly no undo/redo 
+   *  necessary.
+   */
+  //@{
+  void onUndo();
+  void onRedo();
+  //@}
 
 protected slots:
   /**
@@ -93,154 +173,72 @@ protected slots:
    * QTranslator object has been installed. This allows to translate all
    * relevant user visible text.
    */
-  virtual void languageChange();
+  void languageChange();
 
-
-
-
-
-
-
-
-
-private:
-  void createStandardOperations();
-
-private slots:
-  void onWindowActivated( QWidget* );
-  void onWindowsMenuAboutToShow();
-  void onWindowsMenuActivated( int id );
-  void onWindowDestroyed();
-  void onTabSelected( int i);
-
-private:
-  struct MainWindowP* d;
-
-
-
-
-
-
-
-
-
-  /// some kind of singelton
-  static MainWindow* Instance;
-  /// open a file
-  void open(const char* FileName);
-  /// import a file in the active document
-  void import(const char* FileName);
-
-
-
-  /// message when a GuiDocument is about to vanish
-  void onLastWindowClosed(Gui::Document* pcDoc);
-
-
-  /** @name methodes for View handling */
-  //@{
-  /// send Messages to the active view
-  bool sendMsgToActiveView(const char* pMsg, const char** ppReturn=0);
-  /// send Messages test to the active view
-  bool sendHasMsgToActiveView(const char* pMsg);
-  /// Geter for the Active View
-  Gui::Document* activeDocument(void);
-  /// Attach a view (get called by the FCView constructor)
-  void attachView(Gui::BaseView* pcView);
-  /// Detach a view (get called by the FCView destructor)
-  void detachView(Gui::BaseView* pcView);
-  /// get called if a view gets activated, this manage the whole activation scheme
-  void viewActivated(Gui::MDIView* pcView);
-  /// call update to all docuemnts an all views (costly!)
-  void onUpdate(void);
-  /// call update to all views of the active document
-  void updateActive(void);
-  /// call update to the pixmaps' size
-  void updatePixmapsSize(void);
-  /// call update to style
-  void updateStyle(void);
-  //@}
-
-  /// Set the active document
-  void setActiveDocument(Gui::Document* pcDocument);
-
-  /// true when the application shuting down
-  bool isClosing(void);
-
-  /// Reference to the command manager
-  Gui::CommandManager &commandManager(void);
-  /** @name status bar handling */
-  //@{	
-  /// set text to the pane
-  void setPaneText(int i, QString text);
-  //@}
-
-
-  /// MRU: recent files
-  void appendRecentFile(const char* file);
-
-  /// Get macro manager
-  Gui::MacroManager *macroManager(void);
-
-  /** @name Init, Destruct an Access methodes */
-  //@{
-  static void initApplication(void);
-  static void startSplasher(void);
-  static void stopSplasher(void);
-  static void showTipOfTheDay(bool force=false);
-  static void destruct(void);
-
-  //@}
-
-private:
-  static  QApplication* _pcQApp ;
-  static  QSplashScreen *_splash;
-
-
-signals:
-  void sendQuit();
-  void timeEvent();
-
-public:
-  bool isCustomizable () const;
-  void customize ();
-
-public slots:
-  void tileHorizontal();
-  void tile();
-  void cascade();
-  void closeActiveWindow ();
-  void closeAllWindows ();
-  void activateNextWindow ();
-  void activatePrevWindow ();
-
-protected: // Protected methods
-  virtual void closeEvent ( QCloseEvent * e );
-  /// waiting cursor stuff 
+protected:
+  /**
+   * This method checks if the main window can be closed by checking all open documents and views.
+   */
+  void closeEvent ( QCloseEvent * e );
   void timerEvent( QTimerEvent * e){emit timeEvent();}
+  /**
+   * Try to interpret dropped elements.
+   */
   void dropEvent        ( QDropEvent        * e );
+  /**
+   * Checks if a mime source object can be interpreted.
+   */
   void dragEnterEvent   ( QDragEnterEvent   * e );
 
-  // windows stuff
-  void loadWindowSettings();
-  void saveWindowSettings();
-  void loadDockWndSettings();
-  void saveDockWndSettings();
-
-public slots:
-  /// this slot get frequently activatet and test the commands if they are still active
-  void updateCmdActivity();
-  /** @name methodes for the UNDO REDO handling 
-   *  this methodes are usaly used by the GUI document! Its not intended
-   *  to use them directly. If the GUI is not up, there is usaly no UNDO / REDO 
-   *  nececary.
+  /** @name Layout Methods 
    */
   //@{
-  void onUndo();
-  void onRedo();
+  /// Loads the main window settings.
+  void loadWindowSettings();
+  /// Saves the main window settings.
+  void saveWindowSettings();
+  /// Loads the dock windows settings.
+  void loadDockWndSettings();
+  /// Saves the dock windows settings.
+  void saveDockWndSettings();
   //@}
+
+private slots:
+  /**
+   * Activates the associated tab to this widget.
+   */
+  void onWindowActivated( QWidget* );
+  /**
+   * Fills up the menu with the current windows in the workspace.
+   */
+  void onWindowsMenuAboutToShow();
+  /**
+   * Activates the window with \a id.
+   */
+  void onWindowsMenuActivated( int id );
+  /**
+   * Removes the associated tab to the window when it gets destroyed from outside.
+   */
+  void onWindowDestroyed();
+  /**
+   * Activates the associated window to the tab with \a id.
+   */
+  void onTabSelected( int i);
+
+signals:
+  void timeEvent();
+
+private:
+  /// some kind of singleton
+  static MainWindow* instance;
+  struct MainWindowP* d;
+  static QSplashScreen *_splash;
 };
 
+inline GuiExport MainWindow* getMainWindow()
+{
+  return MainWindow::getInstance();
+}
 
 } // namespace Gui
 

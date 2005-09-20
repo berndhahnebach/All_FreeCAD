@@ -30,6 +30,7 @@
 
 #include "MenuManager.h"
 #include "Application.h"
+#include "MainWindow.h"
 #include "Command.h"
 #include "CustomWidgets.h"
 
@@ -185,8 +186,8 @@ void MenuManager::setup( MenuItem* menuBar ) const
   if ( !menuBar )
     return; // empty menu bar
 
-  CommandManager& mgr = ApplicationWindow::Instance->commandManager();
-  QMenuBar* bar = ApplicationWindow::Instance->menuBar();
+  CommandManager& mgr = Application::Instance->commandManager();
+  QMenuBar* bar = getMainWindow()->menuBar();
   bar->clear();
   QPtrList<MenuItem> items = menuBar->getItems();
 
@@ -204,12 +205,12 @@ void MenuManager::setup( MenuItem* menuBar ) const
 
 void MenuManager::setup( MenuItem* item, QMenuData* data ) const
 {
-  CommandManager& mgr = ApplicationWindow::Instance->commandManager();
+  CommandManager& mgr = Application::Instance->commandManager();
 
   QPopupMenu* menu = findMenu( data, item->command() );
   if ( !menu )
   {
-    menu = new CustomPopupMenu( ApplicationWindow::Instance, item->command() );
+    menu = new CustomPopupMenu( getMainWindow(), item->command() );
     int id = data->insertItem(item->command(), menu);
   }
   else
@@ -237,7 +238,7 @@ void MenuManager::setup( MenuItem* item, QMenuData* data ) const
 
 void MenuManager::setupContextMenu( MenuItem* item, QPopupMenu &menu ) const
 {
-  CommandManager& mgr = ApplicationWindow::Instance->commandManager();
+  CommandManager& mgr = Application::Instance->commandManager();
 
   QPtrList<MenuItem> items = item->getItems();
   MenuItem* subitem;
@@ -278,7 +279,7 @@ QPopupMenu* MenuManager::findMenu( QMenuData* menu, const QString& name ) const
 
 void MenuManager::languageChange() const
 {
-  QMenuBar* mb = ApplicationWindow::Instance->menuBar();
+  QMenuBar* mb = getMainWindow()->menuBar();
   uint ct = mb->count();
   for ( uint i=0; i<ct; i++ )
   {
@@ -286,7 +287,7 @@ void MenuManager::languageChange() const
     QMenuItem* item = mb->findItem( id );
     if ( item && item->popup() )
     {
-      mb->changeItem( id, ApplicationWindow::tr( item->popup()->name() ) );
+      mb->changeItem( id, MainWindow::tr( item->popup()->name() ) );
     }
   }
 }

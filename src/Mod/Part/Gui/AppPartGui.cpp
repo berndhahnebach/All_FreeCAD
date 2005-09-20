@@ -88,7 +88,7 @@ void ModuleExport initPartGui() {
 
 	Base::Console().Log("AppPartGui loaded\n");
 
-  Gui::ApplicationWindow::Instance->macroManager()->setModule("Part");
+  Gui::Application::Instance->macroManager()->setModule("Part");
 
   // Register view provider
   Gui::ViewProviderInventorFeatureFactory().AddProducer("PartBox"       ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);

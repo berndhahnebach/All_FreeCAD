@@ -36,6 +36,7 @@
 #include <App/Document.h>
 #include <App/Feature.h>
 #include <Gui/Application.h>
+#include <Gui/MainWindow.h>
 #include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/FileDialog.h>
@@ -224,7 +225,7 @@ CmdMeshImport::CmdMeshImport()
 void CmdMeshImport::activated(int iMsg)
 {
   QString filter = "All STL Files (*.stl *.ast);;Binary STL (*.stl);;ASCII STL (*.ast);;All Files (*.*)";
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, filter, Gui::ApplicationWindow::Instance );
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, filter, Gui::getMainWindow() );
   if (! fn.isEmpty() )
   {
     openCommand("Mesh ImportSTL Create");
@@ -305,7 +306,7 @@ bool CmdMeshVertexCurvature::isActive(void)
 
 void CreateMeshCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdMeshImport());
   rcCmdMgr.addCommand(new CmdMeshVertexCurvature());
   rcCmdMgr.addCommand(new CmdMeshExMakeMesh());

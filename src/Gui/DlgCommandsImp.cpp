@@ -55,7 +55,7 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, W
   connect(IconView1, SIGNAL(emitSelectionChanged(const QString &)), this, SLOT(onDescription(const QString &)));
   connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(onGroupSelected(const QString &)));
 
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
   std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
   QMap<QString, int> cmdGroups;
@@ -88,7 +88,7 @@ void DlgCustomCommandsImp::onGroupSelected(const QString & group)
 {
   IconView1->clear();
  
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
   std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( group.latin1() );
   for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
   {
@@ -103,7 +103,7 @@ void DlgCustomCommandsImp::showEvent( QShowEvent* e )
   // try to update the command view
   if ( !ComboBoxCategory->findItem("Macros", 0) )
   {
-    CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
+    CommandManager& rclMan = Application::Instance->commandManager();
     std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
     if ( aclCurMacros.size() > 0)
     {

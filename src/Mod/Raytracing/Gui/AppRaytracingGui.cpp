@@ -84,7 +84,7 @@ void ModuleExport initRaytracingGui() {
   Base::Console().Log("AppRaytracingGui loaded\n");
 
   App::GetApplication();
-  Gui::ApplicationWindow::Instance;
+  Gui::Application::Instance;
 
   // instanciating the commands
   CreateRaytracingCommands();

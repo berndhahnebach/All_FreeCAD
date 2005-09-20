@@ -33,18 +33,8 @@
 
 #define  putpix()
 
-#include <qmainwindow.h>
-#include <qworkspace.h>
-
 #include "../Base/Console.h"
 #include "../App/Application.h"
-
-
-class QComboBox;
-class QToolBar;
-class QPopupMenu;
-class QToolBar;
-class QSplashScreen;
 
 namespace Gui{
 class BaseView;
@@ -52,43 +42,31 @@ class CommandManager;
 class Document;
 class MacroManager;
 class MDIView;
-namespace DockWnd {
-class HelpView;
-} //namespace DockWnd
+class MainWindow;
 
 /** The Applcation main class
  * This is the central class of the GUI 
  * @author Jürgen Riegel, Werner Mayer
  */
-class GuiExport ApplicationWindow: public QMainWindow, public App::ApplicationObserver
+class GuiExport Application : public App::ApplicationObserver
 {
-    Q_OBJECT
- 
 public:
   /// construction
-  ApplicationWindow();
+  Application();
   /// destruction
-  ~ApplicationWindow();
+  ~Application();
 
   /// open a file
   void open(const char* FileName);
   /// import a file in the active document
   void import(const char* FileName);
 
-
   // Observer
-  virtual void OnDocNew(App::Document* pcDoc);
-  virtual void OnDocDelete(App::Document* pcDoc);
-
-  void addWindow( Gui::MDIView* view );
-  void removeWindow( Gui::MDIView* view );
-  QWidgetList windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;
+  void OnDocNew(App::Document* pcDoc);
+  void OnDocDelete(App::Document* pcDoc);
 
   /// message when a GuiDocument is about to vanish
   void onLastWindowClosed(Gui::Document* pcDoc);
-
-  /// some kind of singelton
-  static ApplicationWindow* Instance;
 
   /** @name methodes for View handling */
   //@{
@@ -96,9 +74,7 @@ public:
   bool sendMsgToActiveView(const char* pMsg, const char** ppReturn=0);
   /// send Messages test to the active view
   bool sendHasMsgToActiveView(const char* pMsg);
-  /// returns the active view or NULL
-  Gui::MDIView* activeView(void);
-  /// Geter for the Active View
+  /// Getter for the active document
   Gui::Document* activeDocument(void);
   /// Attach a view (get called by the FCView constructor)
   void attachView(Gui::BaseView* pcView);
@@ -110,10 +86,6 @@ public:
   void onUpdate(void);
   /// call update to all views of the active document
   void updateActive(void);
-  /// call update to the pixmaps' size
-  void updatePixmapsSize(void);
-  /// call update to style
-  void updateStyle(void);
   //@}
 
   /// Set the active document
@@ -124,11 +96,6 @@ public:
 
   /// Reference to the command manager
   Gui::CommandManager &commandManager(void);
-  /** @name status bar handling */
-  //@{	
-  /// set text to the pane
-  void setPaneText(int i, QString text);
-  //@}
 
   /** @name workbench handling */
   //@{	
@@ -139,9 +106,6 @@ public:
   QStringList workbenches(void);
   //@}
 
-  /// MRU: recent files
-  void appendRecentFile(const char* file);
-
   /// Get macro manager
   Gui::MacroManager *macroManager(void);
 
@@ -150,25 +114,18 @@ public:
 
   /** @name Init, Destruct an Access methodes */
   //@{
+  /// some kind of singelton
+  static Application* Instance;
   static void initApplication(void);
   static void runApplication(void);
-  static void startSplasher(void);
-  static void stopSplasher(void);
-  static void showTipOfTheDay(bool force=false);
   static void destruct(void);
-
+  void tryClose( QCloseEvent * e );
   //@}
-
-private:
-  static  QApplication* _pcQApp ;
-  static  QSplashScreen *_splash;
-
 
 public:
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
   //---------------------------------------------------------------------
-
   // static python wrapper of the exported functions
   PYFUNCDEF_S(sAddWorkbenchHandler);     // adds a new workbench handler to a list
   PYFUNCDEF_S(sRemoveWorkbenchHandler);  // removes a workbench handler from the list
@@ -192,62 +149,10 @@ public:
   PYFUNCDEF_S(sshow);
 
   static PyMethodDef    Methods[]; 
- 
-
-signals:
-  void sendQuit();
-  void timeEvent();
-
-public:
-  bool isCustomizable () const;
-  void customize ();
-
-public slots:
-  void tileHorizontal();
-  void tile();
-  void cascade();
-  void closeActiveWindow ();
-  void closeAllWindows ();
-  void activateNextWindow ();
-  void activatePrevWindow ();
-
-protected: // Protected methods
-  virtual void closeEvent ( QCloseEvent * e );
-  /// waiting cursor stuff 
-  void timerEvent( QTimerEvent * e){emit timeEvent();}
-  void dropEvent        ( QDropEvent        * e );
-  void dragEnterEvent   ( QDragEnterEvent   * e );
-
-  // windows stuff
-  void loadWindowSettings();
-  void saveWindowSettings();
-  void loadDockWndSettings();
-  void saveDockWndSettings();
-
-public slots:
-  /// this slot get frequently activatet and test the commands if they are still active
-  void updateCmdActivity();
-  /** @name methodes for the UNDO REDO handling 
-   *  this methodes are usaly used by the GUI document! Its not intended
-   *  to use them directly. If the GUI is not up, there is usaly no UNDO / REDO 
-   *  nececary.
-   */
-  //@{
-  void onUndo();
-  void onRedo();
-  //@}
-protected slots:
-  virtual void languageChange();
-
-private slots:
-  void onWindowActivated( QWidget* );
-  void onWindowsMenuAboutToShow();
-  void onWindowsMenuActivated( int id );
-  void onWindowDestroyed();
-  void onTabSelected( int i);
 
 private:
-  struct ApplicationWindowP* d;
+  struct ApplicationP* d;
+  static  QApplication* _pcQApp ;
   /// workbench python dictionary
   PyObject*		 _pcWorkbenchDictionary;
 };
@@ -264,7 +169,7 @@ private:
 class MessageBoxObserver: public Base::ConsoleObserver
 {
 public:
-  MessageBoxObserver(ApplicationWindow *pcAppWnd);
+  MessageBoxObserver(MainWindow *pcAppWnd);
 
   /// get calles when a Warning is issued
   virtual void Warning(const char *m);
@@ -278,7 +183,7 @@ public:
   virtual const char *Name(void){return "MessageBox";}
 
 protected:
-  ApplicationWindow* _pcAppWnd;
+  MainWindow* _pcAppWnd;
 };
 
 } //namespace Gui

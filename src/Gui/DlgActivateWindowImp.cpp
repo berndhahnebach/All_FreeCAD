@@ -28,7 +28,7 @@
 #endif
 
 #include "DlgActivateWindowImp.h"
-#include "Application.h"
+#include "MainWindow.h"
 
 using namespace Gui::Dialog;
 
@@ -42,8 +42,8 @@ using namespace Gui::Dialog;
 DlgActivateWindowImp::DlgActivateWindowImp( QWidget* parent, const char* name, bool modal, WFlags fl )
   : DlgActivateWindowBase( parent, name, modal, fl )
 {
-  QWidgetList windows = ApplicationWindow::Instance->windows();
-  QWidget* activeWnd = ApplicationWindow::Instance->windows( QWorkspace::StackingOrder ).last();
+  QWidgetList windows = getMainWindow()->windows();
+  QWidget* activeWnd = getMainWindow()->windows( QWorkspace::StackingOrder ).last();
 
   int active = -1;
   for ( int i=0; i<(int)windows.count(); i++ )
@@ -74,7 +74,7 @@ void DlgActivateWindowImp::accept()
 {
   QString activated = listBox2->currentText();
 
-  QWidgetList windows = ApplicationWindow::Instance->windows();
+  QWidgetList windows = getMainWindow()->windows();
   for ( int i=0; i<(int)windows.count(); i++ )
   {
     if( windows.at(i)->caption() == activated )

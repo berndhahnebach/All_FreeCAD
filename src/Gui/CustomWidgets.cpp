@@ -127,7 +127,7 @@ void CustomToolBar::setCanModify(bool b)
 void CustomToolBar::dropEvent ( QDropEvent * e)
 {
   // append the dropped items
-  CommandManager& rMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager& rMgr = Application::Instance->commandManager();
   if (!canModify())
     return; // no need to read again
   QStringList actions = ActionDrag::actions;
@@ -184,7 +184,7 @@ void CustomPopupMenu::OnChange(Base::Subject<const char*> &rCaller, const char *
 void CustomPopupMenu::dropEvent ( QDropEvent * e)
 {
   // create a new button
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
   Command* pCom = NULL;
 
   QStringList actions = ActionDrag::actions;
@@ -232,7 +232,7 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     QString txt = text(id);
 
     // find the corresponding command to this item
-    const std::map<std::string, Command*>& rclCmds = ApplicationWindow::Instance->commandManager().getCommands();
+    const std::map<std::string, Command*>& rclCmds = Application::Instance->commandManager().getCommands();
 
     // search item with same text first
     for (std::map<std::string, Command*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)

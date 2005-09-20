@@ -83,7 +83,7 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
 {
   const char* ppReturn=0;
 
-  getAppWnd()->sendMsgToActiveView("GetCamera",&ppReturn);
+  getGuiApplication()->sendMsgToActiveView("GetCamera",&ppReturn);
 
   Base::Console().Log("GetCamera MSG send:\n%s",ppReturn);
 
@@ -143,7 +143,7 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
 
 bool CmdRaytracingWriteCamera::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("GetCamera");
+  return getGuiApplication()->sendHasMsgToActiveView("GetCamera");
 }
 
 //===========================================================================
@@ -412,7 +412,7 @@ bool CmdRaytracingQuickRender::isActive(void)
 
 void CreateRaytracingCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdRaytracingWriteCamera());
   rcCmdMgr.addCommand(new CmdRaytracingWritePart());
   rcCmdMgr.addCommand(new CmdRaytracingNewProject());

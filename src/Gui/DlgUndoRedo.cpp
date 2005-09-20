@@ -29,6 +29,7 @@
 
 #include "DlgUndoRedo.h"
 #include "Application.h"
+#include "MainWindow.h"
 #include "Document.h"
 #include "PythonEditor.h"
 
@@ -157,7 +158,7 @@ void UndoRedoDialog::onFetchInfo()
   pListBox->clear();
 
   std::vector<std::string> vecReUndos;
-  Gui::Document* pcDoc = ApplicationWindow::Instance->activeDocument();
+  Gui::Document* pcDoc = Application::Instance->activeDocument();
 
   if ( pcDoc )
   {
@@ -170,7 +171,7 @@ void UndoRedoDialog::onFetchInfo()
       pListBox->insertItem((*i).c_str());
     pTextLabel->setProperty( "text", tr( "Cancel" ) );
   }
-  else if ( dynamic_cast<PythonEditView*>(ApplicationWindow::Instance->activeView()) )
+  else if ( dynamic_cast<PythonEditView*>(getMainWindow()->activeWindow()) )
   {
     pTextLabel->setText( tr( "No info" ) );
   }

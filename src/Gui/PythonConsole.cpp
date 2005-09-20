@@ -562,7 +562,7 @@ void PythonConsole::contentsDropEvent ( QDropEvent * e )
     if (!action.isEmpty())
     {
       ActionDrag::actions.clear();
-      CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
+      CommandManager& rclMan = Application::Instance->commandManager();
       Command* pCmd = rclMan.getCommandByName(action.latin1());
 
       if (pCmd)

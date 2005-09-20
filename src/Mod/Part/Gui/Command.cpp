@@ -36,6 +36,7 @@
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/FileDialog.h>
+#include <Gui/MainWindow.h>
 #include <Gui/Selection.h>
 
 #include <BRepPrimAPI_MakeBox.hxx>
@@ -100,7 +101,7 @@ FCCmdPartTest1::FCCmdPartTest1()
 void FCCmdPartTest1::activated(int iMsg)
 {
 
-  PartGui::DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
+  PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow(),"Part Box",true);
 	cDlg.exec();
 
 
@@ -184,7 +185,7 @@ FCCmdPartBox::FCCmdPartBox()
 void FCCmdPartBox::activated(int iMsg)
 {
 
-  PartGui::DlgPartBoxImp cDlg(getAppWnd(),"Part Box",true);
+  PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow(),"Part Box",true);
 	if ( cDlg.exec()== QDialog::Accepted )
   {
     openCommand("Part Box Create");
@@ -371,8 +372,7 @@ void PartImportStep::activated(int iMsg)
 //  DlgPartImportStepImp cDlg(getAppWnd(),"Part import STEP",true);
 //  if ( cDlg.exec() == QDialog::Accepted )
 
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", Gui::getMainWindow() );
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportSTEP Create");
@@ -422,8 +422,7 @@ void PartImportIges::activated(int iMsg)
 //  if ( cDlg.exec() == QDialog::Accepted )
 
   
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", Gui::getMainWindow() );
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportIGES Create");
@@ -472,8 +471,7 @@ void PartImportBrep::activated(int iMsg)
 //  if ( cDlg.exec() == QDialog::Accepted )
 
   
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "BREP (*.brp *.brep *.BREP);;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "BREP (*.brp *.brep *.BREP);;All Files (*.*)", Gui::getMainWindow() );
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportIGES Create");
@@ -522,7 +520,7 @@ void PartImportCurveNet::activated(int iMsg)
 
 
   QString fn = Gui::FileDialog::getOpenFileName( QString::null, "All CAD (*.stp *. step *.igs *.iges *.brp *.brep );;STEP (*.stp *. step);;IGES (*.igs *.iges);;BREP (*.brp *.brep );;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
+                                                 Gui::getMainWindow() );
 	if (! fn.isEmpty() )
   {
     openCommand("Part Import Curve Net");
@@ -551,7 +549,7 @@ bool PartImportCurveNet::isActive(void)
 
 void CreatePartCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
 	rcCmdMgr.addCommand(new FCCmdPartTest1());
 	rcCmdMgr.addCommand(new FCCmdPartTest2());

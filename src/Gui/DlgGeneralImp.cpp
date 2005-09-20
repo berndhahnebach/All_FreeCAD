@@ -32,6 +32,7 @@
 #include "Application.h"
 #include "Command.h"
 #include "CommandLine.h"
+#include "MainWindow.h"
 #include "PrefWidgets.h"
 #include "Language/LanguageFactory.h"
 #include "Language/Translator.h"
@@ -53,7 +54,7 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgGeneralBase( parent, name, fl )
 {
   // fills the combo box with all available workbenches
-  QStringList work = ApplicationWindow::Instance->workbenches();
+  QStringList work = Application::Instance->workbenches();
   work.sort();
   // do not save the content but the current item only
   AutoloadModuleCombo->setKeepPreference( true );
@@ -79,7 +80,7 @@ DlgGeneralImp::~DlgGeneralImp()
  */
 void DlgGeneralImp::setMRUSize()
 {
-  CommandManager& rclMan = ApplicationWindow::Instance->commandManager();
+  CommandManager& rclMan = Application::Instance->commandManager();
   Command* pCmd = rclMan.getCommandByName("Std_MRU");
   if (pCmd)
   {
@@ -114,8 +115,8 @@ void DlgGeneralImp::saveSettings()
   ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
   hGrp->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
 
-  ApplicationWindow::Instance->updateStyle();
-  ApplicationWindow::Instance->updatePixmapsSize();
+  getMainWindow()->updateStyle();
+  getMainWindow()->updatePixmapsSize();
   setMRUSize();
   CommandLine().show();
 

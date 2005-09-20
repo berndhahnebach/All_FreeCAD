@@ -33,8 +33,6 @@
 
 namespace Gui {
 
-class ApplicationWindow;
-
 /** Adapter class to the parameter of FreeCAD for all windows
  * Retrieve the parameter group of the specific window by the windowname.
  * @author Jürgen Riegel
@@ -52,8 +50,6 @@ public:
   static ParameterGrp::handle getParameter(void);
   /// return the parameter group of this window
   ParameterGrp::handle getWindowParameter(void);
-
-  ApplicationWindow* applicationWindow(void);
 
 private:
   ParameterGrp::handle _handle;

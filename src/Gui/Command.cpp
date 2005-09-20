@@ -34,6 +34,7 @@
 #include "ToolBoxBar.h"
 #include "HelpView.h"
 #include "Macro.h"
+#include "MainWindow.h"
 #include "DlgUndoRedo.h"
 #include "BitmapFactory.h"
 #include "WhatsThis.h"
@@ -81,15 +82,14 @@ bool Command::removeFrom(QWidget *pcWidget)
   return _pcAction->removeFrom(pcWidget);
 }
 
- 
-ApplicationWindow *Command::getAppWnd(void)
+Application *Command::getGuiApplication(void)
 {
-  return ApplicationWindow::Instance;
+  return Application::Instance;
 }
 
 Gui::Document* Command::getActiveGuiDocument(void)
 {
-  return getAppWnd()->activeDocument();
+  return getGuiApplication()->activeDocument();
 }
 
 App::Document* Command::getDocument(const char* Name)
@@ -98,7 +98,7 @@ App::Document* Command::getDocument(const char* Name)
     return App::GetApplication().getDocument(Name);
   else
   {
-    Gui::Document * pcDoc = getAppWnd()->activeDocument();
+    Gui::Document * pcDoc = getGuiApplication()->activeDocument();
     if(pcDoc)
       return pcDoc->getDocument();
     else
@@ -136,7 +136,7 @@ void Command::activated ()
     // Do not query _pcAction since it isn't created necessarily
     Base::Console().Log("CmdG: %s\n",sName.c_str());
     // set the application module type for the macro
-    getAppWnd()->macroManager()->setModule(sAppModule.c_str());
+    getGuiApplication()->macroManager()->setModule(sAppModule.c_str());
     try{
       activated(0);
     }catch(Base::PyException &e){
@@ -235,22 +235,22 @@ std::string Command::getUniqueFeatureName(const char *BaseName)
 void Command::openCommand(const char* sCmdName)
 {
   // Using OpenCommand with no active document !
-  assert(getAppWnd()->activeDocument());
+  assert(getGuiApplication()->activeDocument());
 
   if(sCmdName)
-    getAppWnd()->activeDocument()->openCommand(sCmdName);
+    getGuiApplication()->activeDocument()->openCommand(sCmdName);
   else
-    getAppWnd()->activeDocument()->openCommand(sName.c_str());
+    getGuiApplication()->activeDocument()->openCommand(sName.c_str());
 }
 
 void Command::commitCommand(void)
 {
-  getAppWnd()->activeDocument()->commitCommand();
+  getGuiApplication()->activeDocument()->commitCommand();
 }
 
 void Command::abortCommand(void)
 {
-  getAppWnd()->activeDocument()->abortCommand();
+  getGuiApplication()->activeDocument()->abortCommand();
 }
 
 /// Run a App level Action 
@@ -264,9 +264,9 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
   va_end(namelessVars);
 
   if(eType == Gui)
-    getAppWnd()->macroManager()->addLine(MacroManager::Gui,format);
+    getGuiApplication()->macroManager()->addLine(MacroManager::Gui,format);
   else
-    getAppWnd()->macroManager()->addLine(MacroManager::Base,format);
+    getGuiApplication()->macroManager()->addLine(MacroManager::Base,format);
   Interpreter().runString(format);
 
   //Base::Console().Log("#(%s): %s\n",sName.c_str(),format);
@@ -285,7 +285,7 @@ const std::string Command::strToPython(const char* Str)
 /// Activate an other Commands
 void Command::activateCommand(const char* sCmdName)
 {
-  Command* pcCmd = getAppWnd()->commandManager().getCommandByName(sCmdName);
+  Command* pcCmd = getGuiApplication()->commandManager().getCommandByName(sCmdName);
   if(pcCmd)
   {
     assert(!(pcCmd->isToggle()));
@@ -296,7 +296,7 @@ void Command::activateCommand(const char* sCmdName)
 /// Toggles other Commands
 void Command::toggleCommand(const char* sCmdName,bool bToggle)
 {
-  Command* pcCmd = getAppWnd()->commandManager().getCommandByName(sCmdName);
+  Command* pcCmd = getGuiApplication()->commandManager().getCommandByName(sCmdName);
   if(pcCmd)
   {
     assert(pcCmd->isToggle());
@@ -311,8 +311,8 @@ void Command::updateActive(void)
 {
   WaitCursor wc;
 
-  getAppWnd()->activeDocument()->getDocument()->Recompute();
-  //GetAppWnd()->UpdateActive();
+  getGuiApplication()->activeDocument()->getDocument()->Recompute();
+  //getGuiApplication()->UpdateActive();
 }
 
 /// Updates the (all or listed) documents (propagate changes)
@@ -323,7 +323,7 @@ void Command::updateAll(std::list<Gui::Document*> cList)
     for(std::list<Gui::Document*>::iterator It= cList.begin();It!=cList.end();It++)
       (*It)->onUpdate();
   }else{
-    getAppWnd()->onUpdate();
+    getGuiApplication()->onUpdate();
   }
 }
 
@@ -373,7 +373,7 @@ QAction * CppCommand::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction = new Action(this,getMainWindow(),sName.c_str(),(_eType&Cmd_Toggle) != 0);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -422,7 +422,7 @@ void MacroCommand::activated(int iMsg)
 
   QDir d( cMacroPath.c_str() );
   QFileInfo fi( d, scriptName );
-  ApplicationWindow::Instance->macroManager()->run(MacroManager::File,( fi.filePath() ).latin1());
+  Application::Instance->macroManager()->run(MacroManager::File,( fi.filePath() ).latin1());
 }
 
 void MacroCommand::setScriptName ( const QString& s )
@@ -499,7 +499,7 @@ void MacroCommand::load()
       if ((*it)->GetASCII("Pixmap", "nix") != "nix")
         macro->setPixmap    ( (*it)->GetASCII( "Pixmap"     ).c_str() );
       macro->setAccel       ( (*it)->GetInt  ( "Accel",0    )         );
-      ApplicationWindow::Instance->commandManager().addCommand( macro );
+      Application::Instance->commandManager().addCommand( macro );
     }
   }
 }
@@ -509,7 +509,7 @@ void MacroCommand::save()
   ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Macro")->GetGroup("Macros");
   hGrp->Clear();
 
-  std::vector<Command*> macros = ApplicationWindow::Instance->commandManager().getGroupCommands("Macros");
+  std::vector<Command*> macros = Application::Instance->commandManager().getGroupCommands("Macros");
   if ( macros.size() > 0 )
   {
     for (std::vector<Command*>::iterator it = macros.begin(); it!=macros.end(); ++it )
@@ -608,7 +608,7 @@ QAction * PythonCommand::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new Action(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction = new Action(this,getMainWindow(),sName.c_str(),(_eType&Cmd_Toggle) != 0);
   pcAction->setText(sName.c_str());
   pcAction->setMenuText(getResource("MenuText").c_str());
   pcAction->setToolTip(getResource("ToolTip").c_str());

@@ -42,35 +42,29 @@ using Base::Console;
 using Base::Interpreter;
 using namespace Gui;
 
-namespace Gui {
-
-} // namespace Gui
-
-/* TRANSLATOR Gui::ApplicationWindow */
-
 // FCApplication Methods						// Methods structure
-PyMethodDef ApplicationWindow::Methods[] = {
-  {"AddWorkbenchHandler",     (PyCFunction) ApplicationWindow::sAddWorkbenchHandler,     1},
-  {"RemoveWorkbenchHandler",  (PyCFunction) ApplicationWindow::sRemoveWorkbenchHandler,  1},
-  {"GetWorkbenchHandler",     (PyCFunction) ApplicationWindow::sGetWorkbenchHandler,     1},
-  {"CreateWorkbench",         (PyCFunction) ApplicationWindow::sCreateWorkbench,         1},
-  {"ActiveWorkbench",         (PyCFunction) ApplicationWindow::sActiveWorkbench,         1},
-  {"ActivateWorkbench",       (PyCFunction) ApplicationWindow::sActivateWorkbench,       1},
-  {"ListWorkbenches",         (PyCFunction) ApplicationWindow::sListWorkbenches,         1},
-  {"GetWorkbench",            (PyCFunction) ApplicationWindow::sGetWorkbench,            1},
-  {"HasWorkbench",            (PyCFunction) ApplicationWindow::sHasWorkbench,            1},
-  {"UpdateGui",               (PyCFunction) ApplicationWindow::sUpdateGui,               1},
-  {"CreateDialog",            (PyCFunction) ApplicationWindow::sCreateDialog,            1},
-  {"AddCommand",              (PyCFunction) ApplicationWindow::sAddCommand,              1},
-  {"RunCommand",              (PyCFunction) ApplicationWindow::sRunCommand,              1},
-  {"SendMsgToActiveView",     (PyCFunction) ApplicationWindow::sSendActiveView,          1},
-  {"hide",                    (PyCFunction) ApplicationWindow::shide,                    1},
-  {"show",                    (PyCFunction) ApplicationWindow::sshow,                    1},
+PyMethodDef Application::Methods[] = {
+  {"AddWorkbenchHandler",     (PyCFunction) Application::sAddWorkbenchHandler,     1},
+  {"RemoveWorkbenchHandler",  (PyCFunction) Application::sRemoveWorkbenchHandler,  1},
+  {"GetWorkbenchHandler",     (PyCFunction) Application::sGetWorkbenchHandler,     1},
+  {"CreateWorkbench",         (PyCFunction) Application::sCreateWorkbench,         1},
+  {"ActiveWorkbench",         (PyCFunction) Application::sActiveWorkbench,         1},
+  {"ActivateWorkbench",       (PyCFunction) Application::sActivateWorkbench,       1},
+  {"ListWorkbenches",         (PyCFunction) Application::sListWorkbenches,         1},
+  {"GetWorkbench",            (PyCFunction) Application::sGetWorkbench,            1},
+  {"HasWorkbench",            (PyCFunction) Application::sHasWorkbench,            1},
+  {"UpdateGui",               (PyCFunction) Application::sUpdateGui,               1},
+  {"CreateDialog",            (PyCFunction) Application::sCreateDialog,            1},
+  {"AddCommand",              (PyCFunction) Application::sAddCommand,              1},
+  {"RunCommand",              (PyCFunction) Application::sRunCommand,              1},
+  {"SendMsgToActiveView",     (PyCFunction) Application::sSendActiveView,          1},
+  {"hide",                    (PyCFunction) Application::shide,                    1},
+  {"show",                    (PyCFunction) Application::sshow,                    1},
 
   {NULL, NULL}		/* Sentinel */
 };
 
-PYFUNCIMP_S(ApplicationWindow,shide)
+PYFUNCIMP_S(Application,shide)
 {
   char *psFeatStr;
   if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
@@ -91,7 +85,7 @@ PYFUNCIMP_S(ApplicationWindow,shide)
    Py_Return;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sshow)
+PYFUNCIMP_S(Application,sshow)
 {
   char *psFeatStr;
   if (!PyArg_ParseTuple(args, "s;Name of the Feature to hide have to be given!",&psFeatStr))     // convert args: Python->C 
@@ -112,7 +106,7 @@ PYFUNCIMP_S(ApplicationWindow,sshow)
    Py_Return;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sSendActiveView)
+PYFUNCIMP_S(Application,sSendActiveView)
 {
   char *psCommandStr;
   if (!PyArg_ParseTuple(args, "s",&psCommandStr))     // convert args: Python->C 
@@ -125,7 +119,7 @@ PYFUNCIMP_S(ApplicationWindow,sSendActiveView)
   return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sUpdateGui)
+PYFUNCIMP_S(Application,sUpdateGui)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                                      // NULL triggers exception 
@@ -136,7 +130,7 @@ PYFUNCIMP_S(ApplicationWindow,sUpdateGui)
   return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sCreateDialog)
+PYFUNCIMP_S(Application,sCreateDialog)
 {
   char* fn = 0;
   if (!PyArg_ParseTuple(args, "s", &fn))     // convert args: Python->C 
@@ -154,7 +148,7 @@ PYFUNCIMP_S(ApplicationWindow,sCreateDialog)
   return pPyResource;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sAddWorkbenchHandler)
+PYFUNCIMP_S(Application,sAddWorkbenchHandler)
 {
   char*       psKey;
   PyObject*   pcObject;
@@ -176,7 +170,7 @@ PYFUNCIMP_S(ApplicationWindow,sAddWorkbenchHandler)
   return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sRemoveWorkbenchHandler)
+PYFUNCIMP_S(Application,sRemoveWorkbenchHandler)
 {
   char*       psKey;
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
@@ -198,7 +192,7 @@ PYFUNCIMP_S(ApplicationWindow,sRemoveWorkbenchHandler)
   return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sGetWorkbenchHandler)
+PYFUNCIMP_S(Application,sGetWorkbenchHandler)
 {
   char* psKey;
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
@@ -217,7 +211,7 @@ PYFUNCIMP_S(ApplicationWindow,sGetWorkbenchHandler)
   return pcWorkbench;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sListWorkbenches)
+PYFUNCIMP_S(Application,sListWorkbenches)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
       return NULL;                             // NULL triggers exception 
@@ -233,7 +227,7 @@ PYFUNCIMP_S(ApplicationWindow,sListWorkbenches)
   return pyList;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sCreateWorkbench)
+PYFUNCIMP_S(Application,sCreateWorkbench)
 {
   char*       psKey;
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
@@ -252,7 +246,7 @@ PYFUNCIMP_S(ApplicationWindow,sCreateWorkbench)
   return pyObj;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sActiveWorkbench)
+PYFUNCIMP_S(Application,sActiveWorkbench)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                       // NULL triggers exception 
@@ -269,7 +263,7 @@ PYFUNCIMP_S(ApplicationWindow,sActiveWorkbench)
   return pyObj;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sActivateWorkbench)
+PYFUNCIMP_S(Application,sActivateWorkbench)
 {
   char*       psKey;
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
@@ -289,7 +283,7 @@ PYFUNCIMP_S(ApplicationWindow,sActivateWorkbench)
   return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sGetWorkbench)
+PYFUNCIMP_S(Application,sGetWorkbench)
 {
   char*       psKey;
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
@@ -307,7 +301,7 @@ PYFUNCIMP_S(ApplicationWindow,sGetWorkbench)
   return pyObj ? pyObj : Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sHasWorkbench)
+PYFUNCIMP_S(Application,sHasWorkbench)
 {
   char*       psKey;
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
@@ -317,7 +311,7 @@ PYFUNCIMP_S(ApplicationWindow,sHasWorkbench)
   return wb ? Py_True : Py_False;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sAddCommand)
+PYFUNCIMP_S(Application,sAddCommand)
 {
   char*       pName;
   PyObject*   pcCmdObj;
@@ -326,19 +320,19 @@ PYFUNCIMP_S(ApplicationWindow,sAddCommand)
 
   //Py_INCREF(pcObject);
 
-  ApplicationWindow::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj));
+  Application::Instance->commandManager().addCommand(new PythonCommand(pName,pcCmdObj));
 
   Py_INCREF(Py_None);
   return Py_None;
 } 
 
-PYFUNCIMP_S(ApplicationWindow,sRunCommand)
+PYFUNCIMP_S(Application,sRunCommand)
 {
   char*       pName;
   if (!PyArg_ParseTuple(args, "s", &pName))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
-  ApplicationWindow::Instance->commandManager().runCommandByName(pName);
+  Application::Instance->commandManager().runCommandByName(pName);
 
   Py_INCREF(Py_None);
   return Py_None;

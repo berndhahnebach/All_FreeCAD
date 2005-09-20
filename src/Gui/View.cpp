@@ -31,7 +31,7 @@
 #include "Command.h"
 #include "Document.h"
 #include "Application.h"
-
+#include "MainWindow.h"
 
 using namespace Gui;
 
@@ -49,7 +49,7 @@ BaseView::BaseView( Gui::Document* pcDocument)
     pcDocument->attachView(this);
     bIsPassiv = false;
   }else{
-    ApplicationWindow::Instance->attachView(this);
+    Application::Instance->attachView(this);
     bIsPassiv = true;
   }
 }
@@ -57,7 +57,7 @@ BaseView::BaseView( Gui::Document* pcDocument)
 BaseView::~BaseView()
 {
 //  assert (bIsDetached);
-  if(!bIsDetached && !ApplicationWindow::Instance->isClosing() )
+  if(!bIsDetached && !Application::Instance->isClosing() )
   {
     onClose();
   }
@@ -68,7 +68,7 @@ void BaseView::onClose(void)
   if(bIsDetached) return;
 
   if(bIsPassiv){
-    ApplicationWindow::Instance->detachView(this);
+    Application::Instance->detachView(this);
     if(_pcDocument)
       _pcDocument->detachView(this, true);
   }else{
@@ -82,7 +82,7 @@ void BaseView::onClose(void)
   if(_pcDocument)
     _pcDocument->DetachView(this);
   else
-    ApplicationWindow::Instance->DetachView(this);
+    Application::Instance->DetachView(this);
 */
 }
 
@@ -165,7 +165,7 @@ void MDIView::closeEvent(QCloseEvent *e)
 
 void MDIView::setActive(void)
 {
-  ApplicationWindow::Instance->viewActivated(this);
+  Application::Instance->viewActivated(this);
 }
 
 void MDIView::print( QPrinter* printer )
@@ -194,7 +194,7 @@ void MDIView::setFullScreenMode( bool b )
   {
     showNormal();
     clearWFlags ( WType_TopLevel );
-    ApplicationWindow::Instance->addWindow( this );
+    getMainWindow()->addWindow( this );
 
     releaseKeyboard();
   }
@@ -210,7 +210,7 @@ void MDIView::keyPressEvent ( QKeyEvent* e )
     // use Command's API to hold toogled state consistent
     if ( e->key() == Key_F || e->key() == Key_Escape )
     {
-      Command* pcCmd = ApplicationWindow::Instance->commandManager().getCommandByName( "Std_ViewFullScreen" );
+      Command* pcCmd = Application::Instance->commandManager().getCommandByName( "Std_ViewFullScreen" );
       if( pcCmd )
       {
         pcCmd->toggleCommand( "Std_ViewFullScreen", false);

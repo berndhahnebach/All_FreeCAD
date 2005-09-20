@@ -23,6 +23,7 @@
 #include <Base/Exception.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
+#include <Gui/MainWindow.h>
 #include <Gui/Command.h>
 #include <Gui/BitmapFactory.h>
 
@@ -79,18 +80,18 @@ void CmdImageOpen::activated(int iMsg)
       }
 
       // Displaying the image in a view
-      ImageView* iView = new ImageView(Gui::ApplicationWindow::Instance, "Image");
+      ImageView* iView = new ImageView(Gui::getMainWindow(), "Image");
       iView->setIcon( Gui::BitmapFactory().pixmap("colors") );
       iView->setCaption(QObject::tr("Image viewer"));
       iView->resize( 400, 300 );
-      Gui::ApplicationWindow::Instance->addWindow( iView );
+      Gui::getMainWindow()->addWindow( iView );
       iView->createImageCopy((void *)(imageq.bits()), (unsigned long)imageq.width(), (unsigned long)imageq.height(), format, 0);
   }
 }
 
 void CreateImageCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
 	rcCmdMgr.addCommand(new CmdImageOpen());
 }

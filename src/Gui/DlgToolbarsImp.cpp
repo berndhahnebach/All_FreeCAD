@@ -54,7 +54,7 @@ DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags 
   AvailableActions->setSorting( -1 );
   ToolbarActions->setSorting( -1 );
 
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
   std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
   std::map<std::string, std::vector<Command*> > alCmdGroups;
   for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
@@ -92,7 +92,7 @@ void DlgCustomToolbars::refreshActionList()
   ToolBarItem* bar = _toolBars->findItem( text );
   bar->clear();
 
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
 
   QListViewItem* item = ToolbarActions->firstChild();
   for (int i=0; i < ToolbarActions->childCount(); item = item->itemBelow(), i++)
@@ -182,7 +182,7 @@ void DlgCustomToolbars::onNewActionChanged( QListViewItem *i )
 void DlgCustomToolbars::onItemActivated(const QString & name)
 {
   if ( !_toolBars ) return;
-  CommandManager & cCmdMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
 
   ToolbarActions->clear();
   ToolBarItem* bar;

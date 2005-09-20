@@ -27,7 +27,8 @@
 
 #include "../../../Base/Exception.h"
 #include "../../../App/Document.h"
-#include "../../../Gui/Application.h"
+#include <Gui/Application.h>
+#include <Gui/MainWindow.h>
 #include "../../../Gui/Command.h"
 #include "../../../Gui/FileDialog.h"
 
@@ -58,7 +59,7 @@ void FCCmdImportReadBREP::activated(int iMsg)
 
 	openCommand("Read BREP");
 
-	QString fn = FileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", getAppWnd() );
+  QString fn = FileDialog::getOpenFileName( QString::null, "BREP (*.brep *.rle)", Gui::getMainWindow() );
 	if ( fn.isEmpty() )
 	{
 		abortCommand();
@@ -74,7 +75,7 @@ void FCCmdImportReadBREP::activated(int iMsg)
 
 bool FCCmdImportReadBREP::isActive(void)
 {
-	return getAppWnd()->activeDocument() != 0;
+	return getGuiApplication()->activeDocument() != 0;
 }
 
 //===========================================================================
@@ -103,8 +104,7 @@ void ImportStep::activated(int iMsg)
 //  DlgPartImportStepImp cDlg(getAppWnd(),"Part import STEP",true);
 //  if ( cDlg.exec() == QDialog::Accepted )
 
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", Gui::getMainWindow() );
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportSTEP Create");
@@ -153,8 +153,7 @@ void ImportIges::activated(int iMsg)
 //  if ( cDlg.exec() == QDialog::Accepted )
 
   
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", Gui::getMainWindow() );
 	if (! fn.isEmpty() )
   {
     openCommand("ImportIGES Create");
@@ -181,7 +180,7 @@ bool ImportIges::isActive(void)
 
 void CreateImportCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
 
 	rcCmdMgr.addCommand(new FCCmdImportReadBREP());
 }

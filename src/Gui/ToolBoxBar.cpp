@@ -40,10 +40,10 @@ using namespace Gui::DockWnd;
  * Constructs an empty vertical toolbar.
  */
 CommandBar::CommandBar ( const QString & label, QWidget *w, const char * name, WFlags f )
-: CustomToolBar(label, /*ApplicationWindow::Instance*/0, w, false, name, f, "Commandbars")
+: CustomToolBar(label, /*getMainWindow()*/0, w, false, name, f, "Commandbars")
 {
   // remove immediately from main window again
-//  ApplicationWindow::Instance->removeToolBar(this);
+//  getMainWindow()->removeToolBar(this);
   QWidget* widget = qApp->mainWidget();
   QMainWindow* mw = widget ? (QMainWindow*)widget->qt_cast("QMainWindow") : 0;
   if ( mw ) // avoid to show in dock menu

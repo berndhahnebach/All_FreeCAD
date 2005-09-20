@@ -71,7 +71,7 @@
         </message>
     </context>
     <context>
-        <name>Gui::ApplicationWindow</name>
+        <name>Gui::MainWindow</name>
         <message>
             <source>Ready</source>
             <translation>Bereit</translation>

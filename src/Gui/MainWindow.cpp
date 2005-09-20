@@ -49,6 +49,7 @@
 #include "../App/Document.h"
 
 #include "MainWindow.h"
+#include "Application.h"
 #include "Document.h"
 #include "View.h"
 
@@ -91,40 +92,18 @@ using Gui::Dialog::DlgOnlineHelpImp;
 using namespace std;
 
 
-MainWindow* MainWindow::Instance = 0L;
+MainWindow* MainWindow::instance = 0L;
 
 namespace Gui {
 
 // Pimpl class
 struct MainWindowP
 {
-  MainWindowP()
-    : _pcActiveDocument(0L), _bIsClosing(false)
-  {
-    // create the macro manager
-//    _pcMacroMngr = new MacroManager();
-  }
-
-  ~MainWindowP()
-  {
-//    delete _pcMacroMngr;
-  }
-
   QValueList<int> wndIDs;
-  /// list of all handled documents
-  list<Gui::Document*>         lpcDocuments;
-  /// Active document
-  Gui::Document*   _pcActiveDocument;
   Gui::DockWindowManager* _pcDockMgr;
-  MacroManager*  _pcMacroMngr;
   QLabel *         _pclSizeLabel, *_pclActionLabel;
   ToolBox*        _pcStackBar;
   QTimer *		 _pcActivityTimer; 
-  /// List of all registered views
-  list<Gui::BaseView*>					_LpcViews;
-  bool _bIsClosing;
-  /// Handels all commands 
-  CommandManager _cCommandManager;
   QWorkspace* _pWorkspace;
   QTabBar* _tabs;
   QMap<int, MDIView*> _mdiIds;
@@ -138,14 +117,14 @@ struct MainWindowP
 MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
     : QMainWindow( parent, "Main window", f/*WDestructiveClose*/ )
 {
-  Gui::Translator::installLanguage();
-  GetWidgetFactorySupplier();
+  d = new MainWindowP;
+  // global access 
+  instance = this;
 
   // init the Inventor subsystem
   SoQt::init(this);
   SoDB::init();
 
-  d = new MainWindowP;
   QVBox* vb = new QVBox( this );
   vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
   d->_pWorkspace = new QWorkspace( vb, "workspace" );
@@ -162,9 +141,6 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   // caption and icon of the main window
   setCaption( App::Application::Config()["ExeName"].c_str() );
   setIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
-
-  // global access 
-  Instance = this;
 
   // labels and progressbar
   d->_pclActionLabel = new QLabel("", statusBar(), "Action");
@@ -215,8 +191,6 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
   d->_pcDockMgr->addDockWindow("Report View", pcOutput, Qt::DockBottom );
 
-  createStandardOperations();
-  MacroCommand::load();
 
   // accept drops on the window, get handled in dropEvent, dragEnterEvent   
   setAcceptDrops(true);
@@ -227,109 +201,28 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
 
 MainWindow::~MainWindow()
 {
-  // save macros
-  MacroCommand::save();
-
   // save recent file list
   // Note: the recent files are restored in StdCmdMRU::createAction(), because we need
-  //       an valid instance of StdCmdMRU to do this
+  //       a valid instance of StdCmdMRU to do this
   StdCmdMRU::save();
   saveWindowSettings();
 }
 
+MainWindow* MainWindow::getInstance()
+{
+  // MainWindow has a public constructor
+  return instance;
+}
+
+void MainWindow::destruct()
+{
+  delete instance;
+  instance = 0;
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // creating std commands
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-void MainWindow::open(const char* FileName)
-{
- Base::FileInfo File(FileName);
- string te = File.extension();
- const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
-
- if ( Mod != 0 )
- {
-    // issue module loading
-    string Cmd = "import ";
-    Cmd += Mod;
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
-
-    // issue gui module loading
-    Cmd =  "import ";
-    Cmd += Mod;
-    Cmd += "Gui";
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
-    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
-
-    // load the file with the module
-    Cmd = Mod;
-    Cmd += ".open(\"";
-    Cmd += File.filePath().c_str();
-    Cmd += "\")";
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
-    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
-    sendMsgToActiveView("ViewFit");
-  }else{
-    Base::Console().Error("MainWindow::open() try to open unknown file type .%s\n",te.c_str());
-    return;
-  }
-
-  // the original file name is required
-  appendRecentFile( File.filePath().c_str() );
-}
-
-void MainWindow::import(const char* FileName)
-{
- Base::FileInfo File(FileName);
- string te = File.extension();
- const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
-
- if ( Mod != 0 )
- {
-    // issue module loading
-    string Cmd = "import ";
-    Cmd += Mod;
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
-
-    // issue gui module loading
-    Cmd =  "import ";
-    Cmd += Mod;
-    Cmd += "Gui";
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
-    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
-
-    // load the file with the module
-    Cmd = Mod;
-    Cmd += ".insert(\"";
-    Cmd += File.filePath().c_str();
-    Cmd += "\")";
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
-    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
-
-  }else{
-    Base::Console().Error("MainWindow::import() try to open unknowne file type .%s\n",te.c_str());
-    return;
-  }
-
-  // the original file name is required
-  appendRecentFile( File.filePath().c_str() );
-}
-
-void MainWindow::createStandardOperations()
-{
-  // register the application Standard commands from CommandStd.cpp
-  Gui::CreateStdCommands();
-  Gui::CreateViewStdCommands();
-  Gui::CreateWindowStdCommands();
-  Gui::CreateTestCommands();
-}
 
 bool MainWindow::isCustomizable () const
 {
@@ -338,7 +231,7 @@ bool MainWindow::isCustomizable () const
 
 void MainWindow::customize ()
 {
-  commandManager().runCommandByName("Std_DlgCustomize");
+  Application::Instance->commandManager().runCommandByName("Std_DlgCustomize");
 }
 
 void MainWindow::tileHorizontal()
@@ -509,7 +402,6 @@ void MainWindow::onTabSelected( int i)
 
 void MainWindow::onWindowsMenuAboutToShow()
 {
-//  QPopupMenu* windowsMenu = d->windows;
   QPopupMenu* windowsMenu = (QPopupMenu*)sender();
   QWidgetList windows = d->_pWorkspace->windowList( QWorkspace::CreationOrder );
 
@@ -561,24 +453,6 @@ QWidgetList MainWindow::windows( QWorkspace::WindowOrder order ) const
   return d->_pWorkspace->windowList( order );
 }
 
-void MainWindow::onLastWindowClosed(Gui::Document* pcDoc)
-{
-  if(!d->_bIsClosing)
-  {
-    // GuiDocument has closed the last window and get destructed
-    d->lpcDocuments.remove(pcDoc);
-    //lpcDocuments.erase(pcDoc);
-    delete pcDoc;
-
-    // last document closed?
-    if(d->lpcDocuments.size() == 0 )
-      // reset active document
-      setActiveDocument(0);
-    else
-      setActiveDocument(d->lpcDocuments.front());
-  }
-}
-
 // set text to the pane
 void MainWindow::setPaneText(int i, QString text)
 {
@@ -588,28 +462,7 @@ void MainWindow::setPaneText(int i, QString text)
     d->_pclSizeLabel->setText(text);
 }
 
-/// send Messages to the active view
-bool MainWindow::sendMsgToActiveView(const char* pMsg, const char** ppReturn)
-{
-  MDIView* pView = activeView();
-
-  if(pView){
-    return pView->onMsg(pMsg,ppReturn);
-  }else
-    return false;
-}
-
-bool MainWindow::sendHasMsgToActiveView(const char* pMsg)
-{
-  MDIView* pView = activeView();
-
-  if(pView){
-    return pView->onHasMsg(pMsg);
-  }else
-    return false;
-}
-
-MDIView* MainWindow::activeView(void)
+MDIView* MainWindow::activeWindow(void)
 {
   // redirect all meesages to the view in fullscreen mode, if so
   MDIView* pView = 0;
@@ -636,77 +489,6 @@ MDIView* MainWindow::activeView(void)
   return pView;
 }
 
-/// Geter for the Active View
-Gui::Document* MainWindow::activeDocument(void)
-{
-  return d->_pcActiveDocument;
-  /*
-  MDIView* pView = GetActiveView();
-
-  if(pView)
-    return pView->GetGuiDocument();
-  else
-    return 0l;*/
-}
-
-void MainWindow::setActiveDocument(Gui::Document* pcDocument)
-{
-  d->_pcActiveDocument=pcDocument;
-  App::GetApplication().setActiveDocument( pcDocument ? pcDocument->getDocument() : 0 );
-
-#ifdef FC_LOGUPDATECHAIN
-  Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);
-#endif
-
-  // notify all views attached to the application (not views belong to a special document)
-  for(list<Gui::BaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
-    (*It)->setDocument(pcDocument);
-}
-
-void MainWindow::attachView(Gui::BaseView* pcView)
-{
-  d->_LpcViews.push_back(pcView);
-}
-
-void MainWindow::detachView(Gui::BaseView* pcView)
-{
-  d->_LpcViews.remove(pcView);
-}
-
-void MainWindow::onUpdate(void)
-{
-  // update all documents
-  for(list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
-  {
-    (*It)->onUpdate();
-  }
-  // update all the independed views
-  for(list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
-  {
-    (*It2)->onUpdate();
-  }
-}
-
-/// get calld if a view gets activated, this manage the whole activation scheme
-void MainWindow::viewActivated(MDIView* pcView)
-{
-#ifdef FC_LOGUPDATECHAIN
-  Console().Log("Acti: %s,%p\n",pcView->getName(),pcView);
-#endif
-
-  // set the new active document
-  if(pcView->isPassiv())
-    setActiveDocument(0);
-  else
-    setActiveDocument(pcView->getGuiDocument());
-}
-
-
-void MainWindow::updateActive(void)
-{
-  activeDocument()->onUpdate();
-}
-
 void MainWindow::onUndo()
 {
   puts("MainWindow::slotUndo()");
@@ -719,67 +501,17 @@ void MainWindow::onRedo()
 
 void MainWindow::closeEvent ( QCloseEvent * e )
 {
-  if(d->lpcDocuments.size() == 0)
-  {
-    e->accept();
-  }else{
-    // ask all documents if closable
-    for (list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
-    {
-      (*It)->canClose ( e );
-  //			if(! e->isAccepted() ) break;
-      if(! e->isAccepted() ) return;
-    }
-  }
-
-  // ask all passiv views if closable
-  for (list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++)
-  {
-    if((*It2)->canClose() )
-      e->accept();
-    else 
-      e->ignore();
-
-//		if(! e->isAccepted() ) break;
-    if(! e->isAccepted() ) return;
-  }
-
+  Application::Instance->tryClose( e );
   if( e->isAccepted() )
   {
-    d->_bIsClosing = true;
-
-    list<Gui::Document*>::iterator It;
-
-    // close all views belonging to a document
-    for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
-    {
-      (*It)->closeAllViews();
-    }
-
-    //detache the passiv views
-    //SetActiveDocument(0);
-    list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();
-    while (It2!=d->_LpcViews.end())
-    {
-      (*It2)->onClose();
-      It2 = d->_LpcViews.begin();
-    }
-
-    // remove all documents
-    for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
-    {
-      delete(*It);
-    }
-
     d->_pcActivityTimer->stop();
-
     QMainWindow::closeEvent( e );
   }
 }
 
 void MainWindow::appendRecentFile(const char* file)
 {
-  StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(d->_cCommandManager.getCommandByName("Std_MRU"));
+  StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(Application::Instance->commandManager().getCommandByName("Std_MRU"));
   if (pCmd)
   {
     pCmd->addRecentFile( file );
@@ -794,7 +526,7 @@ void MainWindow::updateCmdActivity()
   if(cLastCall.elapsed() > 250 && isVisible () )
   {
     //puts("testActive");
-    d->_cCommandManager.testActive();
+    Application::Instance->commandManager().testActive();
     // remember last call
     cLastCall.start();
   }
@@ -966,24 +698,9 @@ void MainWindow::saveDockWndSettings()
   delete (datafile);*/
 }
 
-bool MainWindow::isClosing(void)
-{
-  return d->_bIsClosing;
-}
-
-MacroManager *MainWindow::macroManager(void)
-{
-  return d->_pcMacroMngr;
-}
-
-CommandManager &MainWindow::commandManager(void)
-{
-  return d->_cCommandManager;
-}
-
 void MainWindow::languageChange()
 {
-  CommandManager& rclMan = commandManager();
+  CommandManager& rclMan = Application::Instance->commandManager();
   vector<Command*> cmd = rclMan.getAllCommands();
   for ( vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
   {
@@ -996,15 +713,9 @@ void MainWindow::languageChange()
 //**************************************************************************
 // Init, Destruct and singelton
 
-QApplication* MainWindow::_pcQApp = NULL ;
-
 QSplashScreen *MainWindow::_splash = NULL;
 
 
-void MainWindow::initApplication(void)
-{
-  new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
-}
 /*
 void messageHandler( QtMsgType type, const char *msg )
 {
@@ -1087,7 +798,7 @@ void MainWindow::stopSplasher(void)
 {
   if ( _splash )
   {
-    _splash->finish( Instance );
+    _splash->finish( instance );
     delete _splash;
     _splash = 0L;
   }
@@ -1108,16 +819,9 @@ void MainWindow::showTipOfTheDay( bool force )
   tip = hGrp->GetBool("Tipoftheday", tip);
   if ( tip || force)
   {
-    Gui::Dialog::DlgTipOfTheDayImp dlg(Instance, "Tipofday");
+    Gui::Dialog::DlgTipOfTheDayImp dlg(instance, "Tipofday");
     dlg.exec();
   }
-}
-
-void MainWindow::destruct(void)
-{
-  Console().Log("Destruct GuiApplication\n");
-
-  delete _pcQApp;
 }
 
 /**
@@ -1135,7 +839,7 @@ void MainWindow::dropEvent ( QDropEvent      * e )
       QFileInfo info(*it);
       if ( info.exists() && info.isFile() )
       {
-          open(info.absFilePath().latin1());
+        Application::Instance->open(info.absFilePath().latin1());
       }
     }
   }else

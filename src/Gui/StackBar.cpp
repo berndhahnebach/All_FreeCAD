@@ -32,6 +32,7 @@
 
 #include "StackBar.h"
 #include "Application.h"
+#include "MainWindow.h"
 
 #include "../Base/Exception.h"
 
@@ -201,7 +202,7 @@ StackBar::StackBar( QWidget *parent, const char *name )
   }
   catch(const Base::Exception& rclE)
   {
-    QMessageBox::warning(ApplicationWindow::Instance, "Wrong parameter", rclE.what());
+    QMessageBox::warning(getMainWindow(), "Wrong parameter", rclE.what());
   }
 }
 

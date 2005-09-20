@@ -33,7 +33,7 @@
 
 
 namespace Gui {
-struct ApplicationWindowP;
+struct ApplicationP;
 
 /** Macro recording and play back management
  * The purpos of this class is to handle record 
@@ -104,7 +104,7 @@ public:
 
   void run(MacroType eType,const char *sName);
 
-  friend struct ApplicationWindowP;
+  friend struct ApplicationP;
 
 protected:
 #ifdef _MSC_VER

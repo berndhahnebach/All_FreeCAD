@@ -35,7 +35,7 @@
 
 namespace Gui {
 
-class ApplicationWindow;
+class Application;
 class DockWindow;
 
 /** Father of all dockable windows.
@@ -85,7 +85,7 @@ private:
  *  belongs sometimes to no document at all!
  *  @see TreeView
  *  @see Gui::Document
- *  @see ApplicationWindow
+ *  @see Application
  *  @author Jürgen Riegel
  */
 class GuiExport DockView : public DockWindow

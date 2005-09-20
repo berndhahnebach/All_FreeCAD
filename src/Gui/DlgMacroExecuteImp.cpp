@@ -39,6 +39,7 @@
 #include "../App/Application.h"
 #include "../App/Document.h"
 #include "Application.h"
+#include "MainWindow.h"
 #include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "Macro.h"
@@ -122,10 +123,10 @@ void DlgMacroExecuteImp::onExecute()
 
     QDir d( _cMacroPath.c_str() );
     QFileInfo fi( d, LineEditMacroName->text() );
-    ApplicationWindow::Instance->macroManager()->run(Gui::MacroManager::File,( fi.filePath() ).latin1());
+    Application::Instance->macroManager()->run(Gui::MacroManager::File,( fi.filePath() ).latin1());
     // after macro run recalculate the document
-    if ( ApplicationWindow::Instance->activeDocument() )
-      ApplicationWindow::Instance->activeDocument()->getDocument()->Recompute();
+    if ( Application::Instance->activeDocument() )
+      Application::Instance->activeDocument()->getDocument()->Recompute();
   }
 }
 
@@ -134,7 +135,7 @@ void DlgMacroExecuteImp::onExecute()
  */
 void DlgMacroExecuteImp::onNewFolder()
 {
-  QString fn = FileDialog::getExistingDirectory (_cMacroPath.c_str(), ApplicationWindow::Instance);
+  QString fn = FileDialog::getExistingDirectory (_cMacroPath.c_str(), getMainWindow());
   if (!fn.isEmpty())
   {
     _cMacroPath = fn.latin1();
@@ -158,11 +159,11 @@ void DlgMacroExecuteImp::onEdit()
 
   QDir dir(_cMacroPath.c_str());
   QString file = QString("%1/%2").arg(dir.absPath()).arg(item->text(0));
-  PythonEditView* edit = new PythonEditView(ApplicationWindow::Instance, "Editor");
+  PythonEditView* edit = new PythonEditView(getMainWindow(), "Editor");
   edit->setIcon( Gui::BitmapFactory().pixmap("MacroEditor") );
   edit->setCaption( file );
   edit->resize( 400, 300 );
-  ApplicationWindow::Instance->addWindow( edit );
+  getMainWindow()->addWindow( edit );
   edit->openFile(file);
   
   accept();
@@ -187,11 +188,11 @@ void DlgMacroExecuteImp::onCreate()
     else
     {
       QString file = QString("%1/%2").arg(dir.absPath()).arg( fn );
-      PythonEditView* edit = new PythonEditView(ApplicationWindow::Instance, "Editor");
+      PythonEditView* edit = new PythonEditView(getMainWindow(), "Editor");
       edit->setIcon( Gui::BitmapFactory().pixmap("MacroEditor") );
       edit->setCaption( file );
       edit->resize( 400, 300 );
-      ApplicationWindow::Instance->addWindow( edit );
+      getMainWindow()->addWindow( edit );
       edit->openFile(file);
   
       accept();

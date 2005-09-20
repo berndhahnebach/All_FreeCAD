@@ -31,6 +31,7 @@
 #include "Command.h"
 #include "Action.h"
 #include "Application.h"
+#include "MainWindow.h"
 #include "View.h"
 #include "Document.h"
 #include "DlgActivateWindowImp.h"
@@ -61,12 +62,12 @@ StdCmdTileHor::StdCmdTileHor()
 
 void StdCmdTileHor::activated(int iMsg)
 {
-  getAppWnd()->tileHorizontal ();
+  getMainWindow()->tileHorizontal ();
 }
 
 bool StdCmdTileHor::isActive(void)
 {
-  return !( getAppWnd()->windows().isEmpty() );
+  return !( getMainWindow()->windows().isEmpty() );
 }
 
 //===========================================================================
@@ -88,12 +89,12 @@ StdCmdTileVer::StdCmdTileVer()
 
 void StdCmdTileVer::activated(int iMsg)
 {
-  getAppWnd()->tile();
+  getMainWindow()->tile();
 }
 
 bool StdCmdTileVer::isActive(void)
 {
-  return !( getAppWnd()->windows().isEmpty() );
+  return !( getMainWindow()->windows().isEmpty() );
 }
 
 //===========================================================================
@@ -115,12 +116,12 @@ StdCmdTilePra::StdCmdTilePra()
 
 void StdCmdTilePra::activated(int iMsg)
 {
-  getAppWnd()->cascade();
+  getMainWindow()->cascade();
 }
 
 bool StdCmdTilePra::isActive(void)
 {
-  return !( getAppWnd()->windows().isEmpty() );
+  return !( getMainWindow()->windows().isEmpty() );
 }
 
 //===========================================================================
@@ -141,12 +142,12 @@ StdCmdCloseActiveWindow::StdCmdCloseActiveWindow()
 
 void StdCmdCloseActiveWindow::activated(int iMsg)
 {
-  getAppWnd()->closeActiveWindow();
+  getMainWindow()->closeActiveWindow();
 }
 
 bool StdCmdCloseActiveWindow::isActive(void)
 {
-  return !( getAppWnd()->windows().isEmpty() );
+  return !( getMainWindow()->windows().isEmpty() );
 }
 
 //===========================================================================
@@ -167,12 +168,12 @@ StdCmdCloseAllWindows::StdCmdCloseAllWindows()
 
 void StdCmdCloseAllWindows::activated(int iMsg)
 {
-  getAppWnd()->closeAllWindows();
+  getMainWindow()->closeAllWindows();
 }
 
 bool StdCmdCloseAllWindows::isActive(void)
 {
-  return !( getAppWnd()->windows().isEmpty() );
+  return !( getMainWindow()->windows().isEmpty() );
 }
 
 //===========================================================================
@@ -194,12 +195,12 @@ StdCmdActivateNextWindow::StdCmdActivateNextWindow()
 
 void StdCmdActivateNextWindow::activated(int iMsg)
 {
-  getAppWnd()->activateNextWindow();
+  getMainWindow()->activateNextWindow();
 }
 
 bool StdCmdActivateNextWindow::isActive(void)
 {
-  return !( getAppWnd()->windows().isEmpty() );
+  return !( getMainWindow()->windows().isEmpty() );
 }
 
 //===========================================================================
@@ -221,12 +222,12 @@ StdCmdActivatePrevWindow::StdCmdActivatePrevWindow()
 
 void StdCmdActivatePrevWindow::activated(int iMsg)
 {
-  getAppWnd()->activatePrevWindow();
+  getMainWindow()->activatePrevWindow();
 }
 
 bool StdCmdActivatePrevWindow::isActive(void)
 {
-  return !( getAppWnd()->windows().isEmpty() );
+  return !( getMainWindow()->windows().isEmpty() );
 }
 
 //===========================================================================
@@ -248,7 +249,7 @@ StdCmdWindows::StdCmdWindows()
 
 void StdCmdWindows::activated(int iMsg)
 {
-  Gui::Dialog::DlgActivateWindowImp dlg( getAppWnd(), "Windows", true );
+  Gui::Dialog::DlgActivateWindowImp dlg( getMainWindow(), "Windows", true );
   dlg.exec();
 }
 
@@ -361,7 +362,7 @@ bool StdCmdViewMenu::isActive(void)
 
 QAction * StdCmdViewMenu::createAction(void)
 {
-  return new ViewAction(ApplicationWindow::Instance);
+  return new ViewAction(getMainWindow());
 }
 
 //===========================================================================
@@ -392,7 +393,7 @@ QAction * StdCmdStatusBar::createAction(void)
 
 void StdCmdStatusBar::activated(int iMsg)
 {
-  QWidget* w = getAppWnd()->statusBar();
+  QWidget* w = getMainWindow()->statusBar();
   w->isVisible() ? w->hide() : w->show();
 }
 
@@ -429,7 +430,7 @@ bool StdCmdWindowsMenu::isActive(void)
 
 QAction * StdCmdWindowsMenu::createAction(void)
 {
-  return new WindowAction(ApplicationWindow::Instance);
+  return new WindowAction(getMainWindow());
 }
 
 
@@ -443,7 +444,7 @@ namespace Gui {
 
 void CreateWindowStdCommands(void)
 {
-  CommandManager &rcCmdMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
   //rcCmdMgr.addCommand(new StdCmdMDINormal());
   rcCmdMgr.addCommand(new StdCmdMDIToplevel());

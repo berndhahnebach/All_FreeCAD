@@ -50,6 +50,7 @@
 #include "Document.h"
 #include "Splashscreen.h"
 #include "Command.h"
+#include "MainWindow.h"
 #include "WhatsThis.h"
 #include "DlgUndoRedo.h"
 #include "BitmapFactory.h"
@@ -114,10 +115,10 @@ void StdCmdOpen::activated(int iMsg)
   EndingList += "All files (*.*)";
   
 
-  QStringList FileList = QFileDialog::getOpenFileNames( EndingList.c_str(),QString::null, getAppWnd() );
+  QStringList FileList = QFileDialog::getOpenFileNames( EndingList.c_str(),QString::null, getMainWindow() );
 
   for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
-     getAppWnd()->open((*it).latin1());
+     getGuiApplication()->open((*it).latin1());
   }
 }
 
@@ -142,9 +143,6 @@ StdCmdNew::StdCmdNew()
 
 void StdCmdNew::activated(int iMsg)
 {
-//  DlgDocTemplatesImp cDlg(this,getAppWnd(),"Template Dialog",true);
-//  cDlg.exec();
-
   doCommand(Command::Doc,"App.New()");
 }
 
@@ -172,7 +170,7 @@ void StdCmdSave::activated(int iMsg)
     getActiveGuiDocument()->save();
   else
     doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Save\")");
-//    getAppWnd()->SendMsgToActiveView("Save");
+//    getGuiApplication()->SendMsgToActiveView("Save");
 }
 
 bool StdCmdSave::isActive(void)
@@ -180,7 +178,7 @@ bool StdCmdSave::isActive(void)
   if( getActiveGuiDocument() )
     return true;
   else
-    return getAppWnd()->sendHasMsgToActiveView("Save");
+    return getGuiApplication()->sendHasMsgToActiveView("Save");
 }
 
 //===========================================================================
@@ -212,7 +210,7 @@ bool StdCmdSaveAs::isActive(void)
   if( getActiveGuiDocument() )
     return true;
   else
-    return getAppWnd()->sendHasMsgToActiveView("SaveAs");
+    return getGuiApplication()->sendHasMsgToActiveView("SaveAs");
 }
 
 //===========================================================================
@@ -234,17 +232,17 @@ StdCmdPrint::StdCmdPrint()
 
 void StdCmdPrint::activated(int iMsg)
 {
-  if ( getAppWnd()->activeView() )
+  if ( getMainWindow()->activeWindow() )
   {
-    getAppWnd()->statusBar()->message("Printing...");
+    getMainWindow()->statusBar()->message("Printing...");
     QPrinter printer( QPrinter::HighResolution );
-    getAppWnd()->activeView()->print( &printer );
+    getMainWindow()->activeWindow()->print( &printer );
   }
 }
 
 bool StdCmdPrint::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("Print");
+  return getGuiApplication()->sendHasMsgToActiveView("Print");
 }
 
 //===========================================================================
@@ -266,7 +264,7 @@ StdCmdQuit::StdCmdQuit()
 
 void StdCmdQuit::activated(int iMsg)
 {
-  ApplicationWindow::Instance->close();
+  getMainWindow()->close();
 }
 
 //===========================================================================
@@ -289,20 +287,20 @@ StdCmdUndo::StdCmdUndo()
 
 void StdCmdUndo::activated(int iMsg)
 {
-//  ApplicationWindow::Instance->slotUndo();
-  getAppWnd()->sendMsgToActiveView("Undo");
+//  Application::Instance->slotUndo();
+  getGuiApplication()->sendMsgToActiveView("Undo");
 }
 
 bool StdCmdUndo::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("Undo");
+  return getGuiApplication()->sendHasMsgToActiveView("Undo");
 }
 
 QAction * StdCmdUndo::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new UndoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction = new UndoAction(this,getMainWindow(),sName.c_str(),(_eType&Cmd_Toggle) != 0);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -335,20 +333,20 @@ StdCmdRedo::StdCmdRedo()
 
 void StdCmdRedo::activated(int iMsg)
 {
-//  ApplicationWindow::Instance->slotRedo();
-  getAppWnd()->sendMsgToActiveView("Redo");
+//  Application::Instance->slotRedo();
+  getGuiApplication()->sendMsgToActiveView("Redo");
 }
 
 bool StdCmdRedo::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("Redo");
+  return getGuiApplication()->sendHasMsgToActiveView("Redo");
 }
 
 QAction * StdCmdRedo::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new RedoAction(this,ApplicationWindow::Instance,sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction = new RedoAction(this,getMainWindow(),sName.c_str(),(_eType&Cmd_Toggle) != 0);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -382,7 +380,7 @@ StdCmdWorkbench::StdCmdWorkbench()
  */
 void StdCmdWorkbench::activated( int pos )
 {
-  QStringList wb = ApplicationWindow::Instance->workbenches();
+  QStringList wb = Application::Instance->workbenches();
   if (pos >= 0 && pos < int(wb.size()))
     activate( wb[pos] );
 }
@@ -412,7 +410,7 @@ void StdCmdWorkbench::notify( const QString& item )
  */
 QAction * StdCmdWorkbench::createAction(void)
 {
-  pcAction = new WorkbenchGroup( ApplicationWindow::Instance, sName.c_str(), true );
+  pcAction = new WorkbenchGroup( getMainWindow(), sName.c_str(), true );
   pcAction->setExclusive( true );
   pcAction->setUsesDropDown( true );
   pcAction->setText(QObject::tr(sMenuText));
@@ -441,7 +439,7 @@ void StdCmdWorkbench::addWorkbench ( const QString& item )
     action->setText(QObject::tr(item));
     action->setMenuText(QObject::tr(item));
     action->setToggleAction( true );
-    QPixmap px = ApplicationWindow::Instance->workbenchIcon( item );
+    QPixmap px = Application::Instance->workbenchIcon( item );
     if ( px.isNull() )
       action->setIconSet(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
     else
@@ -471,7 +469,7 @@ void StdCmdWorkbench::refresh ()
     delete childs; // delete the list, not the objects  
 
     // sort the workbenches
-    QStringList items = ApplicationWindow::Instance->workbenches();
+    QStringList items = Application::Instance->workbenches();
     items.sort();
     for (QStringList::Iterator item = items.begin(); item!=items.end(); ++item)
       addWorkbench( *item );
@@ -490,7 +488,7 @@ bool StdCmdWorkbench::addTo(QWidget *w)
 #ifdef FC_DEBUG
     char szBuf[200];
     sprintf(szBuf, "Adding the command \"%s\" to this widget is not permitted!", getName());
-    QMessageBox::information(ApplicationWindow::Instance, "Warning", szBuf);
+    QMessageBox::information(getMainWindow(), "Warning", szBuf);
 #else
     Base::Console().Log("Cannot add '%s' to this widget.\n", sName.c_str());
 #endif
@@ -537,7 +535,7 @@ void StdCmdMRU::activated(int iMsg)
   }
   else
   {
-    getAppWnd()->open( f.latin1() );
+    getGuiApplication()->open( f.latin1() );
   }
 }
 
@@ -546,7 +544,7 @@ void StdCmdMRU::activated(int iMsg)
  */
 QAction * StdCmdMRU::createAction(void)
 {
-  pcAction = new MRUActionGroup( this, ApplicationWindow::Instance,sName.c_str(), false );
+  pcAction = new MRUActionGroup( this, getMainWindow(),sName.c_str(), false );
   pcAction->setUsesDropDown( true );
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
@@ -617,7 +615,7 @@ void StdCmdMRU::load()
   if (hGrp->HasGroup("RecentFiles"))
   {
     hGrp = hGrp->GetGroup("RecentFiles");
-    StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(ApplicationWindow::Instance->commandManager().getCommandByName("Std_MRU"));
+    StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(Application::Instance->commandManager().getCommandByName("Std_MRU"));
     if (pCmd)
     {
       int maxCnt = hGrp->GetInt("RecentFiles", 4);
@@ -636,7 +634,7 @@ void StdCmdMRU::load()
 void StdCmdMRU::save()
 {
   // save recent file list
-  Command* pCmd = ApplicationWindow::Instance->commandManager().getCommandByName("Std_MRU");
+  Command* pCmd = Application::Instance->commandManager().getCommandByName("Std_MRU");
   if (pCmd)
   {
     char szBuf[200];
@@ -676,12 +674,12 @@ StdCmdCut::StdCmdCut()
 
 void StdCmdCut::activated(int iMsg)
 {
-  getAppWnd()->sendMsgToActiveView("Cut");
+  getGuiApplication()->sendMsgToActiveView("Cut");
 }
 
 bool StdCmdCut::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("Cut");
+  return getGuiApplication()->sendHasMsgToActiveView("Cut");
 }
 
 //===========================================================================
@@ -703,12 +701,12 @@ StdCmdCopy::StdCmdCopy()
 
 void StdCmdCopy::activated(int iMsg)
 {
-  getAppWnd()->sendMsgToActiveView("Copy");
+  getGuiApplication()->sendMsgToActiveView("Copy");
 }
 
 bool StdCmdCopy::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("Copy");
+  return getGuiApplication()->sendHasMsgToActiveView("Copy");
 }
 
 //===========================================================================
@@ -730,12 +728,12 @@ StdCmdPaste::StdCmdPaste()
 
 void StdCmdPaste::activated(int iMsg)
 {
-  getAppWnd()->sendMsgToActiveView("Paste");
+  getGuiApplication()->sendMsgToActiveView("Paste");
 }
 
 bool StdCmdPaste::isActive(void)
 {
-  return getAppWnd()->sendHasMsgToActiveView("Paste");
+  return getGuiApplication()->sendHasMsgToActiveView("Paste");
 }
 
 //===========================================================================
@@ -756,7 +754,7 @@ StdCmdAbout::StdCmdAbout()
 
 void StdCmdAbout::activated(int iMsg)
 {
-  AboutDialog dlg( getAppWnd() );
+  AboutDialog dlg( getMainWindow() );
   dlg.exec();
 }
 
@@ -798,7 +796,7 @@ StdCmdTipOfTheDay::StdCmdTipOfTheDay()
 
 void StdCmdTipOfTheDay::activated(int iMsg)
 {
-  getAppWnd()->showTipOfTheDay( true );
+  getMainWindow()->showTipOfTheDay( true );
 }
 
 //===========================================================================
@@ -843,7 +841,7 @@ StdCmdDlgParameter::StdCmdDlgParameter()
 
 void StdCmdDlgParameter::activated(int iMsg)
 {
-  Gui::Dialog::DlgParameterImp cDlg(getAppWnd(),"ParameterDialog",true);
+  Gui::Dialog::DlgParameterImp cDlg(getMainWindow(),"ParameterDialog",true);
   cDlg.exec();
 }
 
@@ -866,7 +864,7 @@ StdCmdDlgPreferences::StdCmdDlgPreferences()
 
 void StdCmdDlgPreferences::activated(int iMsg)
 {
-  Gui::Dialog::DlgPreferencesImp cDlg(getAppWnd(),"Preferences Dialog",true);
+  Gui::Dialog::DlgPreferencesImp cDlg(getMainWindow(),"Preferences Dialog",true);
   cDlg.exec();
 }
 
@@ -889,13 +887,13 @@ StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
 
 void StdCmdDlgMacroRecord::activated(int iMsg)
 {
-  Gui::Dialog::DlgMacroRecordImp cDlg(getAppWnd(),"ParameterDialog",true);
+  Gui::Dialog::DlgMacroRecordImp cDlg(getMainWindow(),"ParameterDialog",true);
   cDlg.exec();
 }
 
 bool StdCmdDlgMacroRecord::isActive(void)
 {
-  return ! (getAppWnd()->macroManager()->isOpen());
+  return ! (getGuiApplication()->macroManager()->isOpen());
 }
 
 //===========================================================================
@@ -917,13 +915,13 @@ StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
 
 void StdCmdDlgMacroExecute::activated(int iMsg)
 {
-  Gui::Dialog::DlgMacroExecuteImp cDlg(getAppWnd(),"Macro Execute",true);
+  Gui::Dialog::DlgMacroExecuteImp cDlg(getMainWindow(),"Macro Execute",true);
   cDlg.exec();
 }
 
 bool StdCmdDlgMacroExecute::isActive(void)
 {
-  return ! (getAppWnd()->macroManager()->isOpen());
+  return ! (getGuiApplication()->macroManager()->isOpen());
 }
 
 //===========================================================================
@@ -945,12 +943,12 @@ StdCmdMacroStop::StdCmdMacroStop()
 
 void StdCmdMacroStop::activated(int iMsg)
 {
-  getAppWnd()->macroManager()->commit();
+  getGuiApplication()->macroManager()->commit();
 }
 
 bool StdCmdMacroStop::isActive(void)
 {
-  return getAppWnd()->macroManager()->isOpen();
+  return getGuiApplication()->macroManager()->isOpen();
 }
 
 //===========================================================================
@@ -972,7 +970,7 @@ StdCmdDlgCustomize::StdCmdDlgCustomize()
 
 void StdCmdDlgCustomize::activated(int iMsg)
 {
-  Gui::Dialog::DlgCustomizeImp cDlg(getAppWnd(),"CustomizeDialog",true);
+  Gui::Dialog::DlgCustomizeImp cDlg(getMainWindow(),"CustomizeDialog",true);
   cDlg.exec();
 }
 
@@ -995,14 +993,14 @@ StdCmdCommandLine::StdCmdCommandLine()
 
 void StdCmdCommandLine::activated(int iMsg)
 {
-  bool show = getAppWnd()->isMaximized ();
+  bool show = getMainWindow()->isMaximized ();
   ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
                                                                        ConsoleMsgType::MsgType_Err, false);
 
   // pop up the Gui command window
   GUIConsole Wnd;
 
-  getAppWnd()->showMinimized () ;
+  getMainWindow()->showMinimized () ;
   qApp->processEvents();
 
   // create temporary console sequencer
@@ -1014,12 +1012,12 @@ void StdCmdCommandLine::activated(int iMsg)
   // On X11 this may not work. For further information see QWidget::showMaximized
   //
   // workaround for X11
-  getAppWnd()->hide();
-  getAppWnd()->show();
+  getGuiApplication()->hide();
+  getGuiApplication()->show();
 #endif
 
   // pop up the main window
-  show ? getAppWnd()->showMaximized () : getAppWnd()->showNormal () ;
+  show ? getMainWindow()->showMaximized () : getMainWindow()->showNormal () ;
   qApp->processEvents();
   Base::Console().SetEnabledMsgType("MessageBox", ret, true);
 }
@@ -1052,23 +1050,23 @@ void StdCmdOCAFBrowse::activated(int iMsg)
 # endif
 
   DebugBrowser cBrowser;
-  cBrowser.DFBrowser(getAppWnd()->activeDocument()->getDocument()->GetOCCDoc());
+  cBrowser.DFBrowser(getGuiApplication()->activeDocument()->getDocument()->GetOCCDoc());
 #else
-  QMessageBox::information(getAppWnd(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"
+  QMessageBox::information(getGuiApplication(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"
                                         "this feature is disabled.");
 #endif
 }
 
 bool StdCmdOCAFBrowse::isActive(void)
 {
-  return getAppWnd()->activeDocument() != 0;
+  return getGuiApplication()->activeDocument() != 0;
 }
 
 namespace Gui {
 
 void CreateStdCommands(void)
 {
-  CommandManager &rcCmdMgr = ApplicationWindow::Instance->commandManager();
+  CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
   rcCmdMgr.addCommand(new StdCmdNew());
   rcCmdMgr.addCommand(new StdCmdOpen());

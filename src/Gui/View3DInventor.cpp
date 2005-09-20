@@ -197,7 +197,7 @@ void View3DInventor::onUpdate(void)
 }
 void View3DInventor::hideEvent ( QHideEvent * cEvent )
 {
- // ApplicationWindow::Instance->setPaneText(2, QString(" Dimension"));
+ // Application::Instance->setPaneText(2, QString(" Dimension"));
 }
 
 void View3DInventor::showDimension (void) const
@@ -241,7 +241,7 @@ void View3DInventor::showDimension (void) const
   char szSize[100];
   sprintf(szSize, " %.2f x %.2f %s", fWidth / fFactor, fHeight / fFactor, szDim);
 
-  ApplicationWindow::Instance->setPaneText(2, QString(szSize));
+  Application::Instance->setPaneText(2, QString(szSize));
   */
 }
 
@@ -496,7 +496,7 @@ void View3DInventor::dropEvent ( QDropEvent      * e )
       QFileInfo info(*it);
       if ( info.exists() && info.isFile() )
       {
-          ApplicationWindow::Instance->import(info.absFilePath().latin1());
+          Application::Instance->import(info.absFilePath().latin1());
       }
     }
   }else

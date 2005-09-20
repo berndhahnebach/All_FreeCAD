@@ -39,6 +39,7 @@
 #include <App/Document.h>
 #include <App/Feature.h>
 #include "Application.h"
+#include "MainWindow.h"
 #include "Document.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
@@ -52,7 +53,7 @@ using namespace Gui;
 
 int Document::_iDocCount = 0;
 
-Document::Document(App::Document* pcDocument,ApplicationWindow * app, const char * name)
+Document::Document(App::Document* pcDocument,Application * app, const char * name)
   :_iWinCount(1), _pcAppWnd(app), _pcDocument(pcDocument)
 {
   // new instance
@@ -106,7 +107,6 @@ Document::~Document()
   // remove the reverence from the object
   _pcDocument->DecRef();
 }
-
 
 ViewProviderInventor* Document::getViewProvider(App::Feature* Feat)
 {
@@ -263,8 +263,8 @@ bool Document::save(void)
 /// Save the document under a new file name
 bool Document::saveAs(void)
 {
-  getAppWnd()->statusBar()->message(tr("Saving file under new filename..."));
-  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", getAppWnd());
+  getMainWindow()->statusBar()->message(tr("Saving file under new filename..."));
+  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", getMainWindow());
   if (!fn.isEmpty())
   {
     getDocument()->saveAs(fn.latin1());
@@ -272,7 +272,7 @@ bool Document::saveAs(void)
   }
   else
   {
-    getAppWnd()->statusBar()->message(tr("Saving aborted"), 2000);
+    getMainWindow()->statusBar()->message(tr("Saving aborted"), 2000);
     return false;
   }
 }
@@ -283,7 +283,7 @@ void Document::createView(const char* sType)
   MDIView* pcView3D;
   if(strcmp(sType,"View3DIv") == 0){
 //    pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");
-    pcView3D = new Gui::View3DInventor(this,_pcAppWnd,"View3DIv");
+    pcView3D = new Gui::View3DInventor(this,getMainWindow(),"View3DIv");
   }else /* if(strcmp(sType,"View3DOCC") == 0){
     pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
   }else*/
@@ -297,7 +297,7 @@ void Document::createView(const char* sType)
   pcView3D->setCaption(aName);
   pcView3D->setIcon( FCIcon );
   pcView3D->resize( 400, 300 );
-  _pcAppWnd->addWindow(pcView3D);
+  getMainWindow()->addWindow(pcView3D);
 }
 
 void Document::attachView(Gui::BaseView* pcView, bool bPassiv)
@@ -453,7 +453,7 @@ bool Document::sendMsgToActiveView(const char* pMsg,const char** pReturn)
 /// Geter for the Active View
 MDIView* Document::getActiveView(void)
 {
-  return _pcAppWnd->activeView();
+  return getMainWindow()->activeWindow();
 }
 
 

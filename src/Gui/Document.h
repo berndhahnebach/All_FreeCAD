@@ -50,7 +50,7 @@ namespace App
 namespace Gui {
 
 class ViewProviderInventor;
-class ApplicationWindow;
+class Application;
 
 /** The Gui Document
  *  This is the document on GUI level. Its main responsibility is 
@@ -66,7 +66,7 @@ class GuiExport Document :public QObject, public App::Document::ObserverType
   Q_OBJECT
 
 public:
-  Document(App::Document* pcDocument, ApplicationWindow * app, const char * name=0);
+  Document(App::Document* pcDocument, Application * app, const char * name=0);
   ~Document();
 
 
@@ -80,7 +80,7 @@ public:
   virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
 
   /// Geter for the Application 
-  ApplicationWindow*    getAppWnd(){return _pcAppWnd;}	
+  Application*    getAppWnd(){return _pcAppWnd;}	
 
   /// Gerer for the App Document 
   App::Document*  getDocument(void){return _pcDocument;}
@@ -167,7 +167,7 @@ private:
   static int _iDocCount;
   int        _iWinCount;
   int        _iDocId;
-  ApplicationWindow*    _pcAppWnd;
+  Application*    _pcAppWnd;
   /// List of all registered views
   std::list<Gui::BaseView*> _LpcViews;
   /// List of all registered views

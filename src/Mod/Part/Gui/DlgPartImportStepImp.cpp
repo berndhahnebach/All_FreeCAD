@@ -33,7 +33,7 @@
 #endif
 
 #include "../../../Gui/FileDialog.h"
-#include "../../../Gui/Application.h"
+#include "../../../Gui/MainWindow.h"
 #include "DlgPartImportStepImp.h"
 
 using namespace PartGui;
@@ -69,8 +69,7 @@ void DlgPartImportStepImp::OnApply()
 
 void DlgPartImportStepImp::onChooseFileName()
 {
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", 
-                                                 Gui::ApplicationWindow::Instance );
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", Gui::MainWindow::instance );
 	if (! fn.isEmpty() )
 	{
     FileName->setText(fn);

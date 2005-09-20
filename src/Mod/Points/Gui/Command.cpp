@@ -32,6 +32,7 @@
 #include <Base/Exception.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
+#include <Gui/MainWindow.h>
 #include <Gui/Command.h>
 #include <Gui/FileDialog.h>
 
@@ -61,7 +62,7 @@ CmdPointsTest::CmdPointsTest()
 void CmdPointsTest::activated(int iMsg)
 {
 
-	QString fn = Gui::FileDialog::getOpenFileName( QString::null, "Ascii Points (*.asc);;All Files (*.*)", getAppWnd() );
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "Ascii Points (*.asc);;All Files (*.*)", Gui::getMainWindow() );
 	if ( fn.isEmpty() )
 		return;
 
@@ -91,6 +92,6 @@ bool CmdPointsTest::isActive(void)
 
 void CreatePointsCommands(void)
 {
-  Gui::CommandManager &rcCmdMgr = Gui::ApplicationWindow::Instance->commandManager();
+  Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdPointsTest());
 }

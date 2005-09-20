@@ -65,7 +65,7 @@ static struct PyMethodDef hello_methods[] = {
 /* Python entry */
 extern "C" {
 void PointsGuiExport initPointsGui() {
-  if ( !Gui::ApplicationWindow::Instance )
+  if ( !Gui::Application::Instance )
   {
     PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
     return;
