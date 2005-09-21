@@ -177,8 +177,32 @@ void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
   }
 }
 
+void Workbench::showOrHideToolBars( bool read ) const
+{
+  QPtrList<QToolBar> bars = ToolBarManager::getInstance()->toolBars();
+	QToolBar* bar;
+  if ( read )
+  {
+	  for ( bar=bars.first(); bar; bar=bars.next() )
+	  {
+	    if ( !App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetBool( bar->name(), true) )
+	  	  bar->hide();
+	  }
+  }
+  else // write
+  {
+	  for ( bar=bars.first(); bar; bar=bars.next() )
+	  {
+	    App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->SetBool( bar->name(), !bar->isHidden() );
+	  }
+  }
+}
+
 bool Workbench::activate()
 {
+  // just checks the toolbars if they must be hidden
+  showOrHideToolBars( false );
+
   MenuItem* mb = setupMenuBar();
   MenuManager::getInstance()->setup( mb );
   delete mb;
@@ -196,6 +220,9 @@ bool Workbench::activate()
   ToolBarItem* cc = importCustomBars("Commandbars");
   CommandBarManager::getInstance()->customSetup(cc);
   delete cc;
+  
+  // just checks the toolbars if they must be hidden
+  showOrHideToolBars( true );
 
   return true;
 }

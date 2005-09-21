@@ -77,10 +77,10 @@ public:
   void setup( ToolBarItem* ) const;
   /** Sets up the custom toolbars defined by the user of a given workbench. */
   void customSetup( ToolBarItem* ) const;
+  /** Returns a list of all currently existing toolbars. */
+  QPtrList<QToolBar> toolBars() const;
 
 protected:
-  /// Returns a list of all currently existing toolbars.
-  QPtrList<QToolBar> toolBars() const;
   /// Returns the toolbar with \a name and creates it if necessary.
   QToolBar* getOrCreateToolBar( const QString& name, bool modify=false ) const;
   ToolBarManager();

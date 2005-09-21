@@ -86,9 +86,12 @@ protected:
   /** Rreturns a ToolBarItem tree structure of command bars for the this workbench. */
   virtual ToolBarItem* setupCommandBars() const=0;
   /**
-   * Activates the workbench and adds/remove GUI elements.
+   * Activates the workbench and adds/removes GUI elements.
    */
   bool activate();
+
+private:
+  void showOrHideToolBars(bool read) const;
 
 private:
   QString _name;

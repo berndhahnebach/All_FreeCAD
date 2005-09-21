@@ -354,7 +354,9 @@ void DlgCustomToolbars::onDoubleClickedAction(QListViewItem* item)
 void DlgCustomToolbars::onCreateToolbar()
 {
   if ( !_toolBars ) return;
-  QString def = QString("custom bar%1").arg(_toolBars->count()+1);
+  Workbench* cur = WorkbenchManager::instance()->active();
+  QString baseName = cur ? cur->name() : "Base"; 
+  QString def = QString("%1_custom_bar_%2").arg(baseName).arg(_toolBars->count()+1);
   QString text = QInputDialog::getText(tr("New custom bar"), tr("Specify the name of the new custom bar, please."),
                                       QLineEdit::Normal, def, 0, this);
 
