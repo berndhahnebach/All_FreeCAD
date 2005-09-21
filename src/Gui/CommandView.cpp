@@ -363,10 +363,29 @@ StdViewFullScreen::StdViewFullScreen()
 void StdViewFullScreen::activated(int iMsg)
 {
   MDIView* view = getActiveGuiDocument()->getActiveView();
-  if ( view && view->isFullScreen() )
+  if ( !view ) return; // no active view
+  if ( view->isFullScreen() )
     view->setFullScreenMode( false );
   else
-    view->setFullScreenMode( true );
+  {
+    QDesktopWidget* root = QApplication::desktop();
+    int w = root->width();
+    int h = root->height();
+    if ( w > 1600 )
+    {
+      // Have performance problems with high resolutions
+      switch ( QMessageBox::warning( getMainWindow(), QObject::tr("Fullscreen mode"), 
+               QObject::tr("You have a resolution of %1x%2 pixels which could lead to performance problems.\n Do you really want to continue?").arg(w).arg(h), 
+               QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape ) )
+      {
+        case QMessageBox::Yes:
+          view->setFullScreenMode( true );
+        case QMessageBox::No:
+        default:
+          break;
+      }
+    }
+  }
 }
 
 bool StdViewFullScreen::isActive(void)

@@ -614,5 +614,5 @@ Version: V0.3B1 Date: Thu Aug 11 06:20:13 2005 +++++++++++++++++++++++++++++++
 + BUG 1216922 fixed (Bug with active document)
 
 Version: V0.3B2 Date: Tue Sep 20 11:42:39 2005 +++++++++++++++++++++++++++++++
-+ Workbench redesign finished
++ Workbench redesign finished (RFE 1110586)
 + ApplicationWindow splitted in Application and MainWindow
