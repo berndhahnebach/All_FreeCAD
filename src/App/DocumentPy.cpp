@@ -339,7 +339,11 @@ PYFUNCIMP_D(DocumentPy,AddFeature)
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
-		  Py_Error(PyExc_Exception,"No Feature with this name!");
+    {
+      char szBuf[200];
+      sprintf(szBuf, "No feature found of type '%s'", sType);
+		  Py_Error(PyExc_Exception,szBuf);
+    }
 }
 
 
@@ -370,7 +374,11 @@ PYFUNCIMP_D(DocumentPy,GetFeature)
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
-		  Py_Error(PyExc_Exception,"No Feature with this name!");
+    {
+      char szBuf[200];
+      sprintf(szBuf, "No feature found with name '%s'", sName);
+		  Py_Error(PyExc_Exception,szBuf);
+    }
   } PY_CATCH;
 }
 
