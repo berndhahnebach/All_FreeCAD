@@ -287,6 +287,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
         if (pcProv)
         {
           pcProv->setMode("Max. curvature"); // use name not the type
+          pGuiDoc->setHide(mesh);
           pGuiDoc->onUpdate();
         }
         break;

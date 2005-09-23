@@ -97,7 +97,8 @@ Feature::Feature(void)
 
 Feature::~Feature(void)
 {
-  pcFeaturePy->DecRef();
+  if (pcFeaturePy)
+    pcFeaturePy->DecRef();
 }
 
 

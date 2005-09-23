@@ -49,7 +49,6 @@ void FeatureMeshCurvature::initFeature(void)
 
 int FeatureMeshCurvature::execute(TFunction_Logbook& log)
 {
-
   MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
   if(!pcFeat || pcFeat->getStatus() != Valid)
     return 1;
@@ -65,7 +64,6 @@ int FeatureMeshCurvature::execute(TFunction_Logbook& log)
     modi[MeshPropertyCurvature::MinCurvature] = "Min. curvature";
     modi[MeshPropertyCurvature::AvgCurvature] = "Avg. curvature";
     modi[MeshPropertyCurvature::GaussCurvature] = "Gaussian curvature";
-
 
     for ( std::map<MeshPropertyCurvature::Mode, std::string>::iterator mI = modi.begin(); mI != modi.end(); ++mI)
     {

@@ -44,6 +44,76 @@ using namespace Gui;
 
 /** \defgroup workbench Workbench concept
  *
+ * FreeCAD provides the possibility to have workbenches for each module. A workbench changes the appearance of the main window
+ * in that way that it defines toolbars, command bars or menus (later on dockable windows, ...) that are shown to the user.
+ *
+ * The idea behind this concept is keep the main window as simple as possible and to show to the user only the important and not dozens of
+ * functions. 
+ *
+ * \section stepbystep Step by step
+ * Here is a short description how you can add its own workbench to a module.
+ *
+ * \subsection newClass Inherit either from Workbench or StdWorkbench
+ * First you have to subclass either Workbench or StdWorkbench and reimplement the methods setupMenuBar(), setupToolBars() and setupCommandBars().
+ * The difference between both classes is that these methods of Workbench are pure virtual while StdWorkbench already defines the most important
+ * functions, such as the 'File', 'Edit', ..., 'Help' menus with their common functions.
+ * If your class derives from Workbench then you have to define your menus, toolbars and command bars from scratch while deriving from StdWorkbench
+ * you have the possibility to add your preferred functions or even remove some unneeded functions.
+ * \code
+ * 
+ * class MyWorkbench : public StdWorkbench
+ * {
+ *  ...
+ * protected:
+ *   MenuItem* setupMenuBar() const
+ *   {
+ *     MenuItem* root = StdWorkbench::setupMenuBar();
+ *     // your changes
+ *     return root;
+ *   }
+ *   ToolBarItem* setupToolBars() const
+ *   {
+ *     ToolBarItem* root = StdWorkbench::setupToolBars();
+ *     // your changes
+ *     return root;
+ *   }
+ *   ToolBarItem* setupCommandBars() const
+ *   {
+ *     ToolBarItem* root = StdWorkbench::setupCommandBars();
+ *     // your changes
+ *     return root;
+ *   }
+ * };
+ * 
+ * \endcode
+ * \code
+ * 
+ * class MyWorkbench : public Workbench
+ * {
+ *  ...
+ * protected:
+ *   MenuItem* setupMenuBar() const
+ *   {
+ *     MenuItem* root = new MenuItem;
+ *     // setup from scratch
+ *     return root;
+ *   }
+ *   ToolBarItem* setupToolBars() const
+ *   {
+ *     ToolBarItem* root = new ToolBarItem;
+ *     // setup from scratch
+ *     return root;
+ *   }
+ *   ToolBarItem* setupCommandBars() const
+ *   {
+ *     ToolBarItem* root = new ToolBarItem;
+ *     // setup from scratch
+ *     return root;
+ *   }
+ * };
+ * 
+ * \endcode
+ *
  * + Default & Custom toolbars
  * + dock windows
  * + Python workbench loader InitGui.py
@@ -62,30 +132,6 @@ using namespace Gui;
  * StdWorkbench
  * PythonWorkbench
  * 
- * \code
- * 
- * class MyWorkbench : public StdWorkbench
- * {
- *  ...
- * protected:
- *   MenuItem* setupMenuBar() const
- *   {
- *     MenuItem* root = StdWorkbench::setupMenuBar();
- *     return root;
- *   }
- *   ToolBarItem* setupToolBars() const
- *   {
- *     ToolBarItem* root = StdWorkbench::setupToolBars();
- *     return root;
- *   }
- *   ToolBarItem* setupCommandBars() const
- *   {
- *     ToolBarItem* root = StdWorkbench::setupCommandBars();
- *     return root;
- *   }
- * };
- * 
- * \endcode
  */
 
 Workbench::Workbench()

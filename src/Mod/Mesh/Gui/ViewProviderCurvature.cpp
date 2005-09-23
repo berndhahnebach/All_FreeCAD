@@ -61,7 +61,6 @@ using MeshCore::MeshKernel;
 using MeshCore::MeshFacetIterator;
 using Base::Vector3D;
     
-
  
 ViewProviderInventorMeshCurvature::ViewProviderInventorMeshCurvature()
 {
@@ -70,7 +69,6 @@ ViewProviderInventorMeshCurvature::ViewProviderInventorMeshCurvature()
 ViewProviderInventorMeshCurvature::~ViewProviderInventorMeshCurvature()
 {
 }
-
 
 void ViewProviderInventorMeshCurvature::attache(App::Feature *pcFeat)
 {
@@ -107,11 +105,9 @@ void ViewProviderInventorMeshCurvature::updateData(void)
   ViewProviderInventorMesh::updateData();
 }
 
-
 void ViewProviderInventorMeshCurvature::setMode(const char* ModeName)
 {
   ViewProviderInventorMesh::setMode(ModeName);
-
 
   Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
   App::PropertyBag *pcProp = 0;
@@ -120,12 +116,8 @@ void ViewProviderInventorMeshCurvature::setMode(const char* ModeName)
   if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
   {
     SetVertexColorMode(dynamic_cast<Mesh::MeshPropertyColor*>(pcProp));
-    pcModeSwitch->whichChild = 4;
-
   } 
-
 }
-
 
 std::vector<std::string> ViewProviderInventorMeshCurvature::getModes(void)
 {
@@ -141,7 +133,6 @@ std::vector<std::string> ViewProviderInventorMeshCurvature::getModes(void)
   return StrList;
 //  return ViewProviderInventorMesh::getModes().push_back("Transform");
 }
-
 
 void ViewProviderInventorMeshCurvature::SetVertexColorMode(Mesh::MeshPropertyColor* pcProp)
 {

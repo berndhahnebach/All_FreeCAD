@@ -44,6 +44,8 @@ using namespace Points;
 
 PointsFeature::PointsFeature()
 {
+  // set default display mode
+  _showMode = "Point";
 }
 
 PointsFeature::~PointsFeature()
