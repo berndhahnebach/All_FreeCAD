@@ -1,15 +1,15 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>DlgDisplayProperties</class>
+<class>Gui::Dialog::DlgDisplayProperties</class>
 <widget class="QDialog">
     <property name="name">
-        <cstring>DlgDisplayProperties</cstring>
+        <cstring>Gui::Dialog::DlgDisplayProperties</cstring>
     </property>
     <property name="geometry">
         <rect>
             <x>0</x>
             <y>0</y>
             <width>248</width>
-            <height>266</height>
+            <height>279</height>
         </rect>
     </property>
     <property name="caption">
@@ -211,23 +211,25 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>MaterialCombo</sender>
         <signal>activated(const QString&amp;)</signal>
-        <receiver>DlgDisplayProperties</receiver>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
         <slot>onChangeMaterial(const QString&amp;)</slot>
     </connection>
     <connection>
         <sender>ModeBox</sender>
         <signal>activated(const QString&amp;)</signal>
-        <receiver>DlgDisplayProperties</receiver>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
         <slot>onChangeMode(const QString&amp;)</slot>
     </connection>
     <connection>
         <sender>PlotCombo</sender>
         <signal>activated(const QString&amp;)</signal>
-        <receiver>DlgDisplayProperties</receiver>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
         <slot>onChangePlot(const QString&amp;)</slot>
     </connection>
     <connection>
@@ -245,25 +247,25 @@
     <connection>
         <sender>OkButton</sender>
         <signal>clicked()</signal>
-        <receiver>DlgDisplayProperties</receiver>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
         <slot>onOK()</slot>
     </connection>
     <connection>
         <sender>CancelButton</sender>
         <signal>clicked()</signal>
-        <receiver>DlgDisplayProperties</receiver>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
         <slot>onCancel()</slot>
     </connection>
     <connection>
         <sender>ColorButton</sender>
         <signal>changed()</signal>
-        <receiver>DlgDisplayProperties</receiver>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
         <slot>onColorChange()</slot>
     </connection>
     <connection>
         <sender>TransBar</sender>
         <signal>valueChanged(int)</signal>
-        <receiver>DlgDisplayProperties</receiver>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
         <slot>onChangeTrans(int)</slot>
     </connection>
 </connections>
@@ -278,6 +280,6 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/Widgets.h</includehint>
 </includehints>
 </UI>

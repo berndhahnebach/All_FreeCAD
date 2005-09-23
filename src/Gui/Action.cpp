@@ -357,6 +357,8 @@ RedoAction::~RedoAction()
 
 // --------------------------------------------------------------------
 
+/* TRANSLATOR Gui::ViewAction */
+
 ViewAction::ViewAction ( QObject * parent, const char * name )
   :QAction(parent, name)
 {

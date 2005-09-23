@@ -127,7 +127,7 @@
                         <cstring>groupBox4</cstring>
                     </property>
                     <property name="title">
-                        <string>groupBox4</string>
+                        <string>Logging Commands</string>
                     </property>
                     <vbox>
                         <property name="name">
@@ -184,6 +184,8 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <slots>
     <slot access="protected">loadSettings()</slot>
     <slot access="protected">saveSettings()</slot>

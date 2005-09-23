@@ -10,13 +10,13 @@ msgstr ""
 "Last-Translator: FULLNAME <EMAIL@ADDRESS>\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 
-#: PrefWidgets.cpp:
-QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&File" )
-QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&Edit" )
-QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&View" )
-QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&Tools" )
-QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&Windows" )
-QT_TRANSLATE_NOOP( "Gui::CustomWidgetManager", "&Help" )
+#: MenuManager.cpp:
+QT_TRANSLATE_NOOP( "Gui::MenuManager", "&File" )
+QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Edit" )
+QT_TRANSLATE_NOOP( "Gui::MenuManager", "&View" )
+QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Tools" )
+QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Windows" )
+QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Help" )
 
 #: CustomWidgets.cpp
 QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Macro recording" )

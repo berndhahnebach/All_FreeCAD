@@ -52,6 +52,8 @@ PyObject      * PythonConsole::_stdout   = 0;
 PyObject      * PythonConsole::_stderr   = 0;
 PyObject      * PythonConsole::_stdin    = 0;
 
+/* TRANSLATOR Gui::PythonConsole */
+
 /**
  *  Constructs a PythonConsole which is a child of 'parent', with the
  *  name 'name'. 

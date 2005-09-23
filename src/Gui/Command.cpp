@@ -54,6 +54,7 @@ using namespace Gui::DockWnd;
 // Command
 //===========================================================================
 
+/* TRANSLATOR Gui::Command */
 
 Command::Command(const char* name,CMD_Type eType)
   : sName(name),_pcAction(0),_eType(eType)
@@ -402,6 +403,8 @@ void CppCommand::languageChange()
 //===========================================================================
 // MacroCommand 
 //===========================================================================
+
+/* TRANSLATOR Gui::MacroCommand */
 
 MacroCommand::MacroCommand(const char* name)
   :CppCommand(name,Cmd_Normal)

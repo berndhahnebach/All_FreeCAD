@@ -31,6 +31,7 @@
 
 #include "../Base/PyExport.h"
 #include "DockWindow.h"
+#include <App/Document.h>
 
 /// Forwards
 class FCLabel; 
@@ -44,24 +45,22 @@ struct GUIDDefs {
     char  *Name;
 };
 
-
-/** The link between the Tree and the shown Label.
- *  Every (shown) Label in the FCDocument class get it 
- *  associated TreeLabel which controls the visibility 
- *  and the functions of the Label.
+/** The link between the Tree and a document.
+ *  Every (shown) document in the Application get it 
+ *  associated DocItem which controls the visibility 
+ *  and the functions of the Document.
  *  \author Jürgen Riegel
- *//*
-class DocItem : public QListViewItem
+ */
+class FeatItem : public QListViewItem
 {
 public:
   /// Constructor
-  DocItem( TreeLabel * parent, TDF_Label &hcLabel );
-  DocItem( TreeView * parent);
+  FeatItem( QListViewItem* parent,App::Feature* pcFeat);
 
   /// Opens the Leafs and generate them.
-  virtual void setOpen( bool );
+  void setOpen( bool );
   /// Im not realy sure whats this method do ;-).
-  //virtual void setup();
+  void setup();
 
   /// Delivers the pixmap that is shown.
 //    const QPixmap *pixmap( int i ) const;
@@ -72,35 +71,30 @@ public:
 
   void buildUp(void);
 
+
 protected:
   void activate (); 
-  TDF_Label _hcTDFLabel;
-  //FCPyHandle<FCLabel> _hcLabel;
 
-  TreeLabel * _pcParent;
-  Gui::Document*  _pcDocument;
-
-//  bool _bOpend;
+  App::Feature*  _pcFeature;
 };
-*/
 
-/** The link between the Tree and the shown Label.
- *  Every (shown) Label in the FCDocument class get it 
- *  associated TreeLabel which controls the visibility 
- *  and the functions of the Label.
+
+/** The link between the Tree and a document.
+ *  Every (shown) document in the Application get it 
+ *  associated DocItem which controls the visibility 
+ *  and the functions of the Document.
  *  \author Jürgen Riegel
- *//*
-class FeatureItem : public QListViewItem
+ */
+class DocItem : public QListViewItem, public App::Document::ObserverType
 {
 public:
   /// Constructor
-  FeatureItem( TreeLabel * parent, TDF_Label &hcLabel );
-  FeatureItem( TreeView * parent);
+  DocItem( QListViewItem* parent,Gui::Document* doc);
 
   /// Opens the Leafs and generate them.
-  virtual void setOpen( bool );
+  void setOpen( bool );
   /// Im not realy sure whats this method do ;-).
-  //virtual void setup();
+  void setup();
 
   /// Delivers the pixmap that is shown.
 //    const QPixmap *pixmap( int i ) const;
@@ -111,18 +105,22 @@ public:
 
   void buildUp(void);
 
+  /// Observer message from the App doc
+  virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
+
+
 protected:
   void activate (); 
-  TDF_Label _hcTDFLabel;
-  //FCPyHandle<FCLabel> _hcLabel;
 
-  TreeLabel * _pcParent;
+
   Gui::Document*  _pcDocument;
+  std::map<App::Feature*,FeatItem*> FeatMap;
 
-//  bool _bOpend;
 };
+ 
 
-*/
+ 
+
 
 /** 
  *  \author Jürgen Riegel
@@ -141,7 +139,8 @@ public:
 
 
   //void InitCascade(Handle(TDocStd_Document) hDoc);
-  friend class TreeLabel;
+  friend class DocItem;
+  friend class FeatItem;
 
   /// is called when the above function is called to handle document change stuff
   virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument);
@@ -154,6 +153,8 @@ protected:
   QListViewItem*  _pcMainItem;
 
   static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
+
+  std::map<Gui::Document*,DocItem*> DocMap;
 };
 
 } // namespace Gui

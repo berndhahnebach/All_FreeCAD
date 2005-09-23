@@ -46,6 +46,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgParameterImp */
+
 /**
  *  Constructs a DlgParameterImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f' 
@@ -168,6 +170,8 @@ void DlgParameterImp::onParameterSetChange(const QString& rcString)
 }
 
 // --------------------------------------------------------------------
+
+/* TRANSLATOR Gui::Dialog::ParameterGroup */
 
 ParameterGroup::ParameterGroup( QWidget * parent, const char * name, WFlags f )
   : QListView(parent, name, f)
@@ -376,6 +380,8 @@ void ParameterGroup::onRenameSelectedItem()
 }
 
 // --------------------------------------------------------------------
+
+/* TRANSLATOR Gui::Dialog::ParameterValue */
 
 ParameterValue::ParameterValue( QWidget * parent, const char * name, WFlags f )
   : QListView(parent, name, f)

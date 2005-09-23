@@ -363,6 +363,8 @@ QAction * StdCmdRedo::createAction(void)
 // Std_Workbench
 //===========================================================================
 
+/* TRANSLATOR Gui::StdCmdWorkbench */
+
 StdCmdWorkbench::StdCmdWorkbench()
   :CppCommand("Std_Workbench"), pcAction(NULL)
 {
@@ -502,6 +504,8 @@ bool StdCmdWorkbench::addTo(QWidget *w)
 //===========================================================================
 // Std_MRU
 //===========================================================================
+
+/* TRANSLATOR Gui::StdCmdMRU */
 
 StdCmdMRU::StdCmdMRU()
   :CppCommand("Std_MRU"), pcAction(0), _nMaxItems(4)

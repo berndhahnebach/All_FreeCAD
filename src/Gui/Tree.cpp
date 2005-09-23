@@ -37,113 +37,152 @@
 
 #include "../App/Document.h"
 #include "../App/Label.h"
+#include "../App/Feature.h"
 
 #include "../Base/Console.h"
-
+using Base::Console;
 
 using namespace Gui;
 
-GUIDDefs AttrNames[] = {
-  {0,0}
-};
-/*
 
-TreeLabel::TreeLabel( TreeView * parent)
-  :QListViewItem(parent->_pcListView), _pcDocument(parent->_pcDocument)
-{
-  if(_pcDocument){
-    setText(0,QObject::tr("Main Label"));
-    setPixmap(0,*TreeView::pcLabelOpen);
-  //  _hcLabel = parent->_pcDocument->GetDocument()->Main();
-    _hcTDFLabel = parent->_pcDocument->getDocument()->Main();
-    buildUp();
-    setOpen(true);
-  }else{
-    setPixmap(0,*TreeView::pcLabelClosed);
-    //setPixmap(new QPixmap(px));
-    setText(0,QObject::tr("No Active Document"));
-  }
-}
-*/
 /** Constructor
  *  Instanciate the class with his parent (in the tree) and the
  *  acociated FCLabel.
  *  @return Const string with the date/time
- *//*
-TreeLabel::TreeLabel( TreeLabel * parent, TDF_Label &hcLabel )
+ */
+DocItem::DocItem( QListViewItem* parent,Gui::Document* doc)
     : QListViewItem( parent ),
-  _hcTDFLabel(hcLabel),
-  _pcDocument(parent->_pcDocument)
+  _pcDocument(doc)
 {
-  QString cString;
+  setPixmap(0,*TreeView::pcLabelOpen);
+  setText(0,QString(_pcDocument->getDocument()->getName()));
 
-  cString.sprintf("Tag:%d",_hcTDFLabel.Tag());
-  setPixmap(0,*TreeView::pcLabelClosed);
-  setText(0,cString);
+  _pcDocument->getDocument()->Attach(this);
 
   buildUp();
 }
 
-void TreeLabel::update(void)
+void DocItem::update(void)
 {
   //puts("Updtate");
 
-
-  
-  // quieck an dirty
-  if(_pcDocument && _hcLabel->GetOCCLabel().HasChild() && !isOpen())
-  {
-    //for(QListViewItem* pItem = firstChild (); pItem!=0 ; pItem = pItem->nextSibling () )
-    //  delete pItem;
-
-    std::vector<FCPyHandle<FCLabel> > vpcLabels = _hcLabel->GetLabels();
-
-    for(std::vector<FCPyHandle<FCLabel> >::iterator It=vpcLabels.begin();It != vpcLabels.end(); It++)
-    {
-      new TreeLabel(this,*It);
-    }
-
-    setPixmap(0,*FCTree::pcLabelOpen);
-
-  }
-
-
 }
 
-void TreeLabel::buildUp(void)
+void DocItem::buildUp(void)
 {
 
 }
 
-void TreeLabel::setOpen( bool o )
+void DocItem::setOpen( bool o )
 {
   //puts("setOpen");
 
   if( o )
-  {
     setPixmap(0,*TreeView::pcLabelOpen);
-
-    update();
-
-  }else{
+  else
     setPixmap(0,*TreeView::pcLabelClosed);
-  }
+ 
+  update();
 
   QListViewItem::setOpen ( o );
 }
 
 
-void TreeLabel::setup()
+void DocItem::setup()
 {
   //setExpandable( TRUE );
   QListViewItem::setup();
 }
 
-void TreeLabel::activate ()
+void DocItem::activate ()
 {
   //puts("Activated");
 }
-*/
+
+void DocItem::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
+{
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::DocItem::OnChange)");
+#endif
+
+  // remove the representation of Features no longer exist
+  std::set<App::Feature*>::iterator It;
+  for(It=Reason.DeletedFeatures.begin();It!=Reason.DeletedFeatures.end();It++)
+  {
+    std::map<App::Feature*,FeatItem*>::iterator pos;
+    pos = FeatMap.find(*It);
+  
+    if(pos == FeatMap.end())
+      delete FeatMap[*It];
+  }
+
+  // set up new providers
+  for(It=Reason.NewFeatures.begin();It!=Reason.NewFeatures.end();It++)
+  {
+    FeatItem *item = new FeatItem(this,*It);
+    FeatMap[*It] = item;
+  }
+
+  // update recalculated features
+  for(It=Reason.UpdatedFeatures.begin();It!=Reason.UpdatedFeatures.end();It++)
+  {
+  }
+
+}
+
+/** Constructor
+ *  Instanciate the class with his parent (in the tree) and the
+ *  acociated FCLabel.
+ *  @return Const string with the date/time
+ */
+FeatItem::FeatItem( QListViewItem* parent,App::Feature* pcFeat)
+    : QListViewItem( parent ),
+  _pcFeature(pcFeat)
+{
+  setPixmap(0,*TreeView::pcLabelOpen);
+  setText(0,QString(pcFeat->getName()));
+
+  buildUp();
+}
+
+void FeatItem::update(void)
+{
+  //puts("Updtate");
+
+}
+
+void FeatItem::buildUp(void)
+{
+
+}
+
+void FeatItem::setOpen( bool o )
+{
+
+  if( o )
+    setPixmap(0,*TreeView::pcLabelOpen);
+  else
+    setPixmap(0,*TreeView::pcLabelClosed);
+ 
+  update();
+
+  QListViewItem::setOpen ( o );
+}
+
+
+void FeatItem::setup()
+{
+  //setExpandable( TRUE );
+  QListViewItem::setup();
+}
+
+void FeatItem::activate ()
+{
+  //puts("Activated");
+}
+
+
+
 
 QPixmap* TreeView::pcLabelOpen=0;
 QPixmap* TreeView::pcLabelClosed=0;
@@ -161,6 +200,7 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
   _pcListView->setSorting(-1,false);
   _pcListView->addColumn(tr("Labels & Attributes"));
   _pcListView->setColumnWidthMode(0,QListView::Maximum);
+  _pcListView->setSorting(0,true);
 //  _pcListView->addColumn(tr("Value"));
 //  _pcListView->setColumnWidthMode(1,QListView::Manual );
 
@@ -172,6 +212,7 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 
   // Add the first main label
   _pcMainItem = new QListViewItem(_pcListView,"Application");
+  _pcMainItem->setOpen(true);
 
   //_pcListView->setRootIsDecorated(true);
 
@@ -189,21 +230,32 @@ void TreeView::onUpdate(void)
 #endif
 
   // quick and dirty so far
-  //delete _pcMainItem;
-  //_pcMainItem = new TreeLabel(this);
+//  delete _pcMainItem;
+//  _pcMainItem = new TreeLabel(this);
 }
 
 void TreeView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument)
 {
-//  Console().Log("Tree doc activated %p\n",pcNewDocument);
+  Console().Log("TreeView::onNewDocument() activated %p\n",pcNewDocument);
 
-  /*
-  if(pcOldDocument != pcNewDocument)
+  std::map<Gui::Document*,DocItem*>::iterator pos;
+
+  if(pcNewDocument)
   {
-    delete _pcMainItem;
-    _pcMainItem = new TreeLabel(this);
+    pos = DocMap.find(pcNewDocument);
+  
+    if(pos == DocMap.end())
+    {
+      DocItem *item = new DocItem(_pcMainItem,pcNewDocument);
+      DocMap[pcNewDocument] = item;
+    }
   }
-  */
+
+  if(pcOldDocument)
+    DocMap[pcOldDocument]->setOpen(false);
+  if(pcNewDocument)
+    DocMap[pcNewDocument]->setOpen(true);
+  
 }
 
 bool TreeView::onMsg(const char* pMsg)

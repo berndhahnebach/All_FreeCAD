@@ -109,6 +109,8 @@ void WhatsThis::setHelpView( QTextBrowser* browser )
 // --------------------------------------------------------------------
 
 
+/* TRANSLATOR Gui::StdCmdDescription */
+
 
 bool StdCmdDescription::_descrMode = false;
 

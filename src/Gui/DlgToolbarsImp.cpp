@@ -41,6 +41,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgCustomToolbars */
+
 /**
  *  Constructs a DlgCustomToolbars which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'

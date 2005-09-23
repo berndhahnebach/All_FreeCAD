@@ -104,10 +104,10 @@ StdCmdToggleVisibility::StdCmdToggleVisibility()
   :CppCommand("Std_ToggleVisibility")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Toggle Visibility");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
-  sStatusTip    = sMenuText;
+  sMenuText     = QT_TR_NOOP("Toggle visibility");
+  sToolTipText  = QT_TR_NOOP("Toggles visibility");
+  sWhatsThis    = QT_TR_NOOP("Toggles visibility");
+  sStatusTip    = QT_TR_NOOP("Toggles visibility");
   sPixmap       = "Std_Tool1";
   iAccel        = Qt::Key_Space;
 }
