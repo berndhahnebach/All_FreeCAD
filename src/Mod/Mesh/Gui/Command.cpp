@@ -273,16 +273,26 @@ void CmdMeshVertexCurvature::activated(int iMsg)
     if ( strcmp( (*it)->type(), "MeshImport") == 0 )
     {
       mesh = dynamic_cast<MeshFeature*>(*it);
-      break;
+      App::Document *pcDoc = App::GetApplication().getActiveDocument();
+      if ( mesh && pcDoc )
+      {
+        App::Feature *pcFeature = pcDoc->getFeature("VertexCurvature");
+        if ( !pcFeature )
+          pcFeature = pcDoc->addFeature("MeshCurvature", "VertexCurvature");
+        pcFeature->setPropertyLink(mesh, "Source");
+        pcFeature->TouchProperty("Source");
+        pcDoc->Recompute();
+        Gui::Document* pGuiDoc = getActiveGuiDocument();
+        Gui::ViewProviderInventor *pcProv = pGuiDoc->getViewProvider(pcFeature);
+        if (pcProv)
+        {
+          pcProv->setMode("Max. curvature"); // use name not the type
+          pGuiDoc->onUpdate();
+        }
+        break;
+      }
     }
   }
-
-
-
-  
-  //  App::Feature* fea = getActiveDocument()->getDocument()->GetActiveFeature();
-//  MeshFeature* mesh = dynamic_cast<MeshFeature*>(fea);
-
 }
 
 bool CmdMeshVertexCurvature::isActive(void)
