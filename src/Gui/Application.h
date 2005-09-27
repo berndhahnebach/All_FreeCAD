@@ -36,6 +36,8 @@
 #include "../Base/Console.h"
 #include "../App/Application.h"
 
+class QCloseEvent;
+
 namespace Gui{
 class BaseView;
 class CommandManager;
