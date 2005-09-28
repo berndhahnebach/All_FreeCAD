@@ -144,12 +144,12 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
 
   // labels and progressbar
   d->_pclActionLabel = new QLabel("", statusBar(), "Action");
-  d->_pclActionLabel->setFixedWidth(120);
+  d->_pclActionLabel->setMinimumWidth(120);
   statusBar()->addWidget(d->_pclActionLabel,0,true);
   statusBar()->addWidget(ProgressBar::instance(),0,true);
   //ProgressBar::Instance().setFixedWidth(200);
   d->_pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
-  d->_pclSizeLabel->setFixedWidth(120);
+  d->_pclSizeLabel->setMinimumWidth(120);
   statusBar()->addWidget(d->_pclSizeLabel,0,true);
 
   // update gui timer

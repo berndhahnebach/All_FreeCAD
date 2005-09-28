@@ -79,6 +79,7 @@ protected:
   void zoom(SoCamera * cam, const float diffvalue);
   void spin(const SbVec2f & pointerpos);
   void panToCenter(const SbPlane & panningplane, const SbVec2f & currpos);
+  void printDimension();
 
   SbVec2f lastmouseposition;
   SbPlane panningplane;

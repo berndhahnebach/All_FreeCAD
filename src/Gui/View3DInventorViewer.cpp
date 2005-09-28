@@ -63,6 +63,7 @@
 #include <qcursor.h>
 #include "SoFCSelection.h"
 #include "Selection.h"
+#include "MainWindow.h"
 
 #include "ViewProvider.h"
 
@@ -252,6 +253,7 @@ View3DInventorViewer::~View3DInventorViewer()
 {
   this->bckgroundroot->unref();
   this->foregroundroot->unref();
+  getMainWindow()->setPaneText(2, "");
 }
 
 SoSeparator* View3DInventorViewer::createColorLegend() const
@@ -382,9 +384,68 @@ void View3DInventorViewer::actualRedraw(void)
   drawAxisCross();
   
   if (_bSpining)
-    scheduleRedraw(); 
-  
+    scheduleRedraw();  
+  printDimension();
 } 
+
+void View3DInventorViewer::printDimension()
+{
+  SoCamera* cam = getCamera();
+  if ( !cam ) return; // no camera there
+  SoType t = getCamera()->getTypeId();
+  if (t.isDerivedFrom(SoOrthographicCamera::getClassTypeId())) 
+  {
+    const SbViewportRegion& vp = getViewportRegion();
+    const SbVec2s& size = vp.getWindowSize();
+    short dimX, dimY; size.getValue(dimX, dimY);
+
+    float fHeight = reinterpret_cast<SoOrthographicCamera*>(getCamera())->height.getValue();
+    float fWidth = fHeight;
+    if ( dimX > dimY )
+    {
+      fWidth *= ((float)dimX)/((float)dimY);
+    }
+    else if ( dimX < dimY )
+    {
+      fHeight *= ((float)dimY)/((float)dimX);
+    }
+
+    float fLog = float(log10(fWidth)), fFac;
+    int   nExp = int(fLog);
+    char  szUnit[20];
+  
+    if (nExp >= 6)
+    {
+      fFac = 1.0e+6f;
+      strcpy(szUnit, "km");
+    }
+    else if (nExp >= 3)
+    {
+      fFac = 1.0e+3f;
+      strcpy(szUnit, "m");
+    }
+    else if ((nExp >= 0) && (fLog > 0.0f))
+    {
+      fFac = 1.0e+0f;
+      strcpy(szUnit, "mm");
+    }
+    else if (nExp >= -3)
+    {
+      fFac = 1.0e-3f;
+      strcpy(szUnit, "um");
+    }
+    else 
+    {
+      fFac = 1.0e-6f;
+      strcpy(szUnit, "nm");
+    }
+  
+    QString dim; dim.sprintf("%.2f x %.2f %s", fWidth / fFac, fHeight / fFac, szUnit);
+    getMainWindow()->setPaneText(2, dim);
+  }
+  else
+    getMainWindow()->setPaneText(2, "");
+}
 
 SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
