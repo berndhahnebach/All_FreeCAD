@@ -385,6 +385,8 @@ void StdViewFullScreen::activated(int iMsg)
           break;
       }
     }
+    else
+      view->setFullScreenMode( true );
   }
 }
 

@@ -60,10 +60,19 @@ int FeatureMeshImport::execute(TFunction_Logbook& log)
 
   // read file
   FileStream str( FileName.c_str(), std::ios::in);
-  if ( !aReader.Load( str ) )
-  {
-    setError("FeatureMeshImport::Execute() not able import %s!\n",FileName.c_str());
-    return 1;
+
+  // catches the abort exception to set a more detailed description
+  try{
+    if ( !aReader.Load( str ) )
+    {
+      setError("FeatureMeshImport::Execute() not able import %s!\n",FileName.c_str());
+      return 1;
+    }
+  }catch ( Base::AbortException& e ){
+    char szBuf[200];
+    sprintf(szBuf, "Loading of STL file '%s' aborted.", FileName.c_str());
+    e.SetMessage( szBuf );
+    throw e;
   }
 
   return 0;

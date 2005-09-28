@@ -99,6 +99,9 @@
                             <property name="text">
                                 <string>Recording gui commands</string>
                             </property>
+                            <property name="checked">
+                                <bool>true</bool>
+                            </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>RecordGui</cstring>
                             </property>
@@ -112,6 +115,9 @@
                             </property>
                             <property name="text">
                                 <string>Record as comment</string>
+                            </property>
+                            <property name="checked">
+                                <bool>true</bool>
                             </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>GuiAsComment</cstring>
@@ -186,6 +192,14 @@
 </widget>
 <customwidgets>
 </customwidgets>
+<connections>
+    <connection>
+        <sender>PrefCheckBox_RecordGui</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>PrefCheckBox_GuiAsComment</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+</connections>
 <slots>
     <slot access="protected">loadSettings()</slot>
     <slot access="protected">saveSettings()</slot>

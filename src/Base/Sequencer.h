@@ -268,25 +268,6 @@ private:
   void resetData();
 };
 
-/**
- * The AbortException is thrown if a pending operation was aborted.
- * @author Werner Mayer
- */
-class BaseExport AbortException : public Exception
-{
-public:
-  /// Construction
-	AbortException(const char * sMessage);
-  /// Construction
-  AbortException();
-  /// Construction
-  AbortException(const AbortException &inst);
-  /// Destruction
-  virtual ~AbortException() throw() {}
-  /// Description of the exception
-  virtual const char* what() const throw();
-};
-
 /** Access to the only SequencerBase instance */
 inline SequencerBase& Sequencer ()
 {

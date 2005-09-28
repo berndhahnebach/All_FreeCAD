@@ -81,18 +81,24 @@ bool MeshSTL::Load (FileStream &rstrIn)
   if (rstrIn.Read(szBuf, 80) == false)
     return false;
   szBuf[80] = 0; 
-
   upper(szBuf);
-  if ((strstr(szBuf, "SOLID") == NULL)  && (strstr(szBuf, "FACET") == NULL)    && (strstr(szBuf, "NORMAL") == NULL) &&
-      (strstr(szBuf, "VERTEX") == NULL) && (strstr(szBuf, "ENDFACET") == NULL) && (strstr(szBuf, "ENDLOOP") == NULL))
-  {  // wahrscheinlich stl binaer
-    rstrIn.SetPosition(0);
-    return LoadBinary(rstrIn);
+
+  try{
+    if ((strstr(szBuf, "SOLID") == NULL)  && (strstr(szBuf, "FACET") == NULL)    && (strstr(szBuf, "NORMAL") == NULL) &&
+        (strstr(szBuf, "VERTEX") == NULL) && (strstr(szBuf, "ENDFACET") == NULL) && (strstr(szBuf, "ENDLOOP") == NULL))
+    {  // wahrscheinlich stl binaer
+      rstrIn.SetPosition(0);
+      return LoadBinary(rstrIn);
+    }
+    else
+    {  // stl ascii
+      rstrIn.SetPosition(0);
+      return LoadAscii(rstrIn);
+    }
   }
-  else
-  {  // stl ascii
-    rstrIn.SetPosition(0);
-    return LoadAscii(rstrIn);
+  catch( const Base::AbortException& e ){
+    _rclMesh.Clear();
+    throw e;
   }
 
   return true;

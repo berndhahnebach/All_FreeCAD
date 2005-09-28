@@ -58,22 +58,33 @@ using namespace Points;
        
 ViewProviderInventorPoints::ViewProviderInventorPoints()
 {
-//  pcSwitch = new SoSwitch;
   pcPointsCoord = new SoCoordinate3();
+  pcPointsCoord->ref();
   pcPoints = new SoPointSet();
+  pcPoints->ref();
   pcPointsNormal = new SoNormal();  
+  pcPointsNormal->ref();
   pcHighlight = new Gui::SoFCSelection();
+  pcHighlight->ref();
   pcColorMat = new SoMaterial;
+  pcColorMat->ref();
 }
 
 ViewProviderInventorPoints::~ViewProviderInventorPoints()
 {
+  pcPointsCoord->unref();
+  pcPoints->unref();
+  pcPointsNormal->unref();
+  pcHighlight->unref();
+  pcColorMat->unref();
 }
 
 void ViewProviderInventorPoints::createPoints(App::Feature *pcFeature)
 {
   PointsFeature* PtFea = dynamic_cast<PointsFeature*>(pcFeature);
   if ( !PtFea ) return;
+
+  pcPointsCoord->point.deleteValues(0);
 
   // get all points
   const PointKernel& cPts = PtFea->getPoints().getKernel();
@@ -98,10 +109,10 @@ void ViewProviderInventorPoints::setVertexColorMode(Points::PointsPropertyColor*
 
 void ViewProviderInventorPoints::setVertexGreyvalueMode(Points::PointsPropertyGreyvalue* pcProp)
 {
-  std::vector<float> greyvalue = pcProp->aGreyvalue;
-  for (unsigned long i = 0; i < greyvalue.size(); i++)
+  //std::vector<float> greyvalue& = pcProp->aGreyvalue;
+  for (unsigned long i = 0; i < pcProp->aGreyvalue.size(); i++)
   {
-    float& grey = greyvalue[i];
+    float& grey = pcProp->aGreyvalue[i];
     pcColorMat->diffuseColor.set1Value(i, SbColor(grey, grey, grey));
   }
 }
@@ -109,9 +120,9 @@ void ViewProviderInventorPoints::setVertexGreyvalueMode(Points::PointsPropertyGr
 void ViewProviderInventorPoints::setVertexNormalMode(Points::PointsPropertyNormal* pcProp)
 {
   if ( !pcProp->isValid() ) return; // no valid data
-  std::vector<Vector3D> normal = pcProp->aVertexNormal;
+  //std::vector<Vector3D> normal& = pcProp->aVertexNormal;
   int i=0;
-  for ( std::vector<Vector3D>::iterator it = normal.begin(); it != normal.end(); ++it, i++ )
+  for ( std::vector<Vector3D>::iterator it = pcProp->aVertexNormal.begin(); it != pcProp->aVertexNormal.end(); ++it, i++ )
   {
     pcPointsNormal->vector.set1Value(i, it->x, it->y, it->z);
   }
@@ -238,10 +249,7 @@ std::vector<std::string> ViewProviderInventorPoints::getModes(void)
   return StrList;
 }
 
-void ViewProviderInventorPoints::update(const ChangeType&)
+void ViewProviderInventorPoints::updateData()
 {
-  // set new view modes
-  setMode(pcFeature->getShowMode());
-  // copy the material properties of the feature
-  setMatFromFeature();
+  createPoints(pcFeature);
 }

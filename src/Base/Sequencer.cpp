@@ -256,27 +256,3 @@ void ConsoleSequencer::resetData()
   SequencerBase::resetData();
   printf("\t\t\t\t\t\t\t\t\r");
 }
-
-// ---------------------------------------------------------
-
-AbortException::AbortException(const char * sMessage)
-  : Exception( sMessage )
-{
-}
-
-AbortException::AbortException()
-{
-  _sErrMsg = "Aborted operation";
-}
-
-AbortException::AbortException(const AbortException &inst)
-{
-	SetMessage(inst._sErrMsg.c_str());
-}
-
-const char* AbortException::what() const throw()
-{
-  return Exception::what();
-}
-
-

@@ -131,7 +131,19 @@ void DlgMacroRecordImp::start()
   }
   else
   {
+    // search in the macro path first for an already existing macro
+    QString fn = (_cMacroPath + LineEditPath->text().latin1()).c_str();
+    if ( !fn.endsWith(".FCMacro") ) fn += ".FCMacro";
+    QFileInfo fi(fn);
+    if ( fi.isFile() && fi.exists() )
+    {
+      if ( QMessageBox::question( this, tr("Existing macro"), tr("The macro '%1' already exists. Do you want to overwrite?").arg(fn),
+                                  QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape ) == QMessageBox::No )
+      return;
+    }
+
     // open the macro recording
+    _pcMacroMngr->setRecordGuiCommands(getWindowParameter()->GetBool("RecordGui", true), getWindowParameter()->GetBool("GuiAsComment", true) );
     _pcMacroMngr->open(MacroManager::File,(_cMacroPath + LineEditPath->text().latin1()).c_str());
     accept();
   }

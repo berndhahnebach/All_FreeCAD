@@ -83,10 +83,13 @@ public:
    */
   void open(MacroType eType,const char *sName);
 
-  /// close (and save) the recording sassion
+  /// Sets how to handle Gui commands
+  void setRecordGuiCommands(bool bRecord, bool bAsComment);
+
+  /// close (and save) the recording session
   void commit(void);
 
-  /// cancels the recording sassion
+  /// cancels the recording session
   void cancel(void);
 
   /// indicates if a macro recording in in progress
@@ -116,6 +119,8 @@ protected:
   std::string _sName;
   std::set <std::string> _sModuleSet;
   bool _bIsOpen;
+  bool _bRecordGui;
+  bool _bGuiAsComment;
 };
 
 } // namespace Gui

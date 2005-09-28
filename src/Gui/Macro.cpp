@@ -44,7 +44,7 @@ using namespace Gui;
 
 // here the implemataion! description should take place in the header file!
 MacroManager::MacroManager()
-:_bIsOpen(false)
+:_bIsOpen(false), _bRecordGui(true), _bGuiAsComment(true)
 {
 }
 
@@ -77,6 +77,12 @@ void MacroManager::open(MacroType eType,const char *sName)
 
   Base::Console().Log("CmdM: Open macro: %s\n",_sName.c_str());
 
+}
+
+void MacroManager::setRecordGuiCommands(bool bRecord, bool bAsComment)
+{
+  _bRecordGui = bRecord;
+  _bGuiAsComment = bAsComment;
 }
 
 /// close (and save) the recording sassion
@@ -116,8 +122,14 @@ void MacroManager::addLine(LineType Type,const char* sLine)
   if(_bIsOpen)
   {
     //sMacroInProgress += "\t" + sLine + "\n";
-    if(Type == Gui) 
-      _sMacroInProgress += "#";
+    if(Type == Gui)
+    {
+      if (_bRecordGui&&_bGuiAsComment)
+        _sMacroInProgress += "#";
+      else if (!_bRecordGui)
+        return; // ignore Gui commands
+    }
+
     _sMacroInProgress += sLine;
     _sMacroInProgress += "\n";
   }

@@ -261,58 +261,27 @@ CmdMeshVertexCurvature::CmdMeshVertexCurvature()
 
 void CmdMeshVertexCurvature::activated(int iMsg)
 {
-//  openCommand("Mesh VertexCurvature Create");
-//  doCommand(Doc,"f = App.DocGet().GetActiveFeature().getMesh().calcVertexCurvature()");
-//  commitCommand();
-//  updateActive();
+  unsigned int n = getSelection().getNbrOfType("Mesh");
+  if ( n!=1 ) return;
 
-  MeshFeature* mesh;
-  std::vector<App::Feature*> sel = Gui::Selection().getSelectedFeatures();
-  for ( std::vector<App::Feature*>::iterator it = sel.begin(); it != sel.end(); ++it )
-  {
-    if ( strcmp( (*it)->type(), "MeshImport") == 0 )
-    {
-      mesh = dynamic_cast<MeshFeature*>(*it);
-      App::Document *pcDoc = App::GetApplication().getActiveDocument();
-      if ( mesh && pcDoc )
-      {
-        App::Feature *pcFeature = pcDoc->getFeature("VertexCurvature");
-        if ( !pcFeature )
-          pcFeature = pcDoc->addFeature("MeshCurvature", "VertexCurvature");
-        pcFeature->setPropertyLink(mesh, "Source");
-        pcFeature->TouchProperty("Source");
-        pcDoc->Recompute();
-        Gui::Document* pGuiDoc = getActiveGuiDocument();
-        Gui::ViewProviderInventor *pcProv = pGuiDoc->getViewProvider(pcFeature);
-        if (pcProv)
-        {
-          pcProv->setMode("Max. curvature"); // use name not the type
-          pGuiDoc->setHide(mesh);
-          pGuiDoc->onUpdate();
-        }
-        break;
-      }
-    }
-  }
+  std::string fName = getUniqueFeatureName("Vertex_Curvature");
+  std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
+
+  openCommand("Mesh VertexCurvature");
+  doCommand(Doc,"App.DocGet().AddFeature(\"MeshCurvature\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.DocGet().%s.Source = App.DocGet().%s",fName.c_str(),cSel[0].FeatName);
+  const char* sMode = "Max. curvature";
+  doCommand(Doc,"App.DocGet().%s.showMode=\"%s\"",fName.c_str(), sMode);
+  commitCommand();
+  updateActive();
+  doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
+  getSelection().clearSelection();
 }
 
 bool CmdMeshVertexCurvature::isActive(void)
 {
-  // Check for the selected mesh feature
-  std::vector<App::Feature*> sel = Gui::Selection().getSelectedFeatures();
-  for ( std::vector<App::Feature*>::iterator it = sel.begin(); it != sel.end(); ++it )
-  {
-    if ( strcmp( (*it)->type(), "MeshImport") == 0 )
-  	  return true; // MeshFeature found
-  }
-
-  return false;
-//  if( getActiveDocument() ){
-//    App::Feature* fea = getActiveDocument()->getDocument()->GetActiveFeature();
-//    if ( fea && strcmp(fea->Type(), "MeshImport")==0)
-//      return true;
-//  }
-//  return false;
+  // Check for the selected mesh feature (all Mesh types)
+  return (getSelection().getNbrOfType("Mesh")==1);
 }
 
 void CreateMeshCommands(void)

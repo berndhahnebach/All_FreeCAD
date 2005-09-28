@@ -66,7 +66,7 @@ public:
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
   /// Update the point representation
-  virtual void update(const ChangeType&);
+  virtual void updateData();
 
 protected:
   void createPoints(App::Feature *pcFeature);

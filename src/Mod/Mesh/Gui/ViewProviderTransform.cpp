@@ -68,10 +68,13 @@ using Base::Vector3D;
  
 ViewProviderInventorMeshTransform::ViewProviderInventorMeshTransform()
 {
+  pcTransformerDragger = new SoTransformerManip();
+  pcTransformerDragger->ref();
 }
 
 ViewProviderInventorMeshTransform::~ViewProviderInventorMeshTransform()
 {
+  pcTransformerDragger->unref();
 }
 
 
@@ -81,7 +84,6 @@ void ViewProviderInventorMeshTransform::attache(App::Feature *pcFeat)
   ViewProviderInventorMesh::attache(pcFeat);
 
 //  SoTransformerDragger *pcTransformerDragger = new SoTransformerDragger();
-  pcTransformerDragger = new SoTransformerManip();
 
 
   SoSeparator* pcEditRoot = new SoSeparator();

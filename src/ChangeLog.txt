@@ -616,3 +616,12 @@ Version: V0.3B1 Date: Thu Aug 11 06:20:13 2005 +++++++++++++++++++++++++++++++
 Version: V0.3B2 Date: Tue Sep 20 11:42:39 2005 +++++++++++++++++++++++++++++++
 + Workbench redesign finished (RFE 1110586)
 + ApplicationWindow splitted in Application and MainWindow
++ Avoid to execute features twice (e.g. if AbortException was thrown)
++ disable catch(...)-block in Debug mode
++ bug fixed in Fullscreen command
++ add API to MacroManger to specify recording of Gui stuff
++ catch AbortException in MeshIO::Load and pass it through the calling instance
++ catch AbortException in MeshImportFeature
++ Mesh command to calc. curvature in Python
++ bugs fixed in MeshGui::ViewProviderMesh
++ bug fixed in MeshGui::ViewProviderCurvature

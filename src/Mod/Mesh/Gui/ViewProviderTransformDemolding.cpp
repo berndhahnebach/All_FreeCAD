@@ -65,10 +65,13 @@ using namespace MeshGui;
 
 ViewProviderInventorMeshTransformDemolding::ViewProviderInventorMeshTransformDemolding()
 {
+  pcTransformerDragger = new SoTransformerManip;
+  pcTransformerDragger->ref();
 }
 
 ViewProviderInventorMeshTransformDemolding::~ViewProviderInventorMeshTransformDemolding()
 {
+  pcTransformerDragger->unref();
 }
 
 

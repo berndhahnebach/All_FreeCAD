@@ -29,7 +29,7 @@
 
 #include "DlgSettingsMacroImp.h"
 #include "PrefWidgets.h"
-#include "../App/Application.h"
+#include "Application.h"
 
 using namespace Gui::Dialog;
 

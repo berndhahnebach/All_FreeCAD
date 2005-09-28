@@ -64,10 +64,13 @@ using Base::Vector3D;
  
 ViewProviderInventorMeshCurvature::ViewProviderInventorMeshCurvature()
 {
+  pcColorMat = new SoMaterial;
+  pcColorMat->ref();
 }
 
 ViewProviderInventorMeshCurvature::~ViewProviderInventorMeshCurvature()
 {
+  pcColorMat->unref();
 }
 
 void ViewProviderInventorMeshCurvature::attache(App::Feature *pcFeat)
@@ -86,7 +89,6 @@ void ViewProviderInventorMeshCurvature::attache(App::Feature *pcFeat)
 
   SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
   pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
-  pcColorMat = new SoMaterial;
   pcColorShadedRoot->addChild(pcColorMat);
   pcColorShadedRoot->addChild(pcMatBinding);
 //  pcColorShadedRoot->addChild(pcBinding);  

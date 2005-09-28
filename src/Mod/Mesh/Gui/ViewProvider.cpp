@@ -58,6 +58,7 @@ using namespace MeshGui;
 using Mesh::MeshFeature;
 
 using MeshCore::MeshKernel;
+using MeshCore::MeshPointIterator;
 using MeshCore::MeshFacetIterator;
 using MeshCore::MeshGeomFacet;
 using MeshCore::MeshFacet;
@@ -66,16 +67,28 @@ using Base::Vector3D;
        
 ViewProviderInventorMesh::ViewProviderInventorMesh()
 {
-//  pcSwitch = new SoSwitch;
+  // create the mesh core nodes
+  pcMeshCoord     = new SoCoordinate3();
+  pcMeshCoord->ref();
+//  pcMeshNormal    = new SoNormal();
+//  pcMeshNormal->ref();
+  pcMeshFaces     = new SoIndexedFaceSet();
+  pcMeshFaces->ref();
+  pcHighlight = new Gui::SoFCSelection();
+  pcHighlight->ref();
 }
 
 ViewProviderInventorMesh::~ViewProviderInventorMesh()
 {
+  pcMeshCoord->unref();
+//  pcMeshNormal->unref();
+  pcMeshFaces->unref();
+  pcHighlight->unref();
 }
-
 
 void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 {
+#if 1
   MeshKernel *cMesh = pcMesh->getKernel();
   SbVec3f* vertices = new SbVec3f[cMesh->CountPoints()];
   int* faces = new int [4*cMesh->CountFacets()];
@@ -108,11 +121,46 @@ void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
   delete [] faces;
 
   Base::Sequencer().stop();
+#else /// @todo This doesn't seem to work as expected (save tmp. memory and time). Don't know why!?
+  MeshKernel *cMesh = pcMesh->getKernel();
+  pcMeshCoord->point.setNum( cMesh->CountPoints() );
+  pcMeshFaces->coordIndex.setNum( 4*cMesh->CountFacets() );
+
+  Base::Sequencer().start( "Building View node...", cMesh->CountFacets() );
+
+  // set the point coordinates
+  MeshPointIterator cPIt(*cMesh);
+  for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
+  {
+    pcMeshCoord->point.set1Value( cPIt.Position(), cPIt->x, cPIt->y, cPIt->z );
+  }
+
+  // set the facets indices
+  unsigned long j=0;
+  MeshFacetIterator cFIt(*cMesh);
+  for ( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
+  {
+    MeshFacet aFace = cFIt.GetIndicies();
+
+    for ( int i=0; i<3; i++ )
+    {
+      pcMeshFaces->coordIndex.set1Value(4*j+i, aFace._aulPoints[i]);
+    }
+
+    pcMeshFaces->coordIndex.set1Value(4*j+3, SO_END_FACE_INDEX);
+    Base::Sequencer().next( false ); // don't allow to cancel
+  }
+
+  Base::Sequencer().stop();
+#endif
 }
 
 
 void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
 {
+  // standard viewing (flat) must be called before attach()
+  pcModeSwitch->whichChild = 0;
+
   // call father (set material and feature pointer)
   ViewProviderInventorFeature::attache(pcFeat);
 
@@ -121,11 +169,7 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   if ( !meshFea )
     throw "ViewProviderInventorMesh::attache(): wrong feature attached!";
 
-  // creat the mesh core nodes
-  pcMeshCoord     = new SoCoordinate3();
-  //  pcMeshNormal    = new SoNormal();
-  pcMeshFaces     = new SoIndexedFaceSet();
-  // and set them
+  // create the mesh core nodes
   createMesh(&(meshFea->getMesh()));
 
 
@@ -138,7 +182,6 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   SoGroup* pcColorShadedRoot = new SoGroup();
 
   // only one selection node for the mesh
-  pcHighlight = new Gui::SoFCSelection();
   pcHighlight->featureName = pcFeature->getName();
   pcHighlight->documentName = pcFeature->getDocument().getName();
   pcHighlight->subElementName = "Main";
@@ -218,10 +261,6 @@ void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
   pcModeSwitch->addChild(pcWireRoot);
   pcModeSwitch->addChild(pcPointRoot);
   pcModeSwitch->addChild(pcFlatWireRoot);
-
-  // standard viewing (flat)
-  pcModeSwitch->whichChild = 0; 
-
 }
 
 void ViewProviderInventorMesh::updateData(void)

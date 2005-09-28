@@ -396,6 +396,9 @@ void Document::_RecomputeFeature(Feature* Feat)
   int  succes;
   try{
     succes = Feat->execute(_LogBook);
+  }catch(Base::AbortException &e){
+    e.ReportException();
+    succes = 4;
   }catch(Base::Exception &e){
     e.ReportException();
     succes = 3;
@@ -416,11 +419,14 @@ void Document::_RecomputeFeature(Feature* Feat)
     succes = 3;
   }
 
-  if(succes > 0){
+  // special error code to avoid to execute a feature twice
+  if (succes == 4){
+    Feat->_eStatus = Feature::Inactive;
+  }else if(succes > 0){
     Feat->_eStatus = Feature::Error;
-  }else{
-    Feat->_eStatus = Feature::Valid;
+  }else {
     // set the time of change
+    Feat->_eStatus = Feature::Valid;
     OSD_Process pro;
     Feat->touchTime = pro.SystemDate ();
   }

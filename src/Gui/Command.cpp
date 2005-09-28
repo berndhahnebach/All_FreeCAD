@@ -158,9 +158,11 @@ void Command::activated ()
       str += "OCC exception thrown (";                         
       str += e->GetMessageString();                            
       str += ")\n";                                            
-      Base::Console().Error(str.c_str());                      
+      Base::Console().Error(str.c_str());  
+#ifndef FC_DEBUG
     }catch(...){                                                              
-    	Base::Console().Error("Unknown C++ exception in command thrown");       
+    	Base::Console().Error("Gui::Command::activated(): Unknown C++ exception in command thrown");       
+#endif
     }   
   }
 }
