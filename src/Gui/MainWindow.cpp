@@ -261,6 +261,48 @@ void MainWindow::tileHorizontal()
   }
 }
 
+void MainWindow::tileComplex()
+{
+  QWorkspace* ws=d->_pWorkspace;
+  QWidgetList windows = ws->windowList();
+  if ( windows.count() < 2 )
+  {
+    // primitive vetical tiling
+    getMainWindow()->tile();
+    return;
+  }
+
+  // we want all windows except of the last to put at the left side with same size
+  int ctWnds = windows.count() > 2 ? windows.count()-1 : 2;
+  int heightForEach = ws->height() / ctWnds;
+  int y = 0;
+  for ( int i = 0; i < int(windows.count()); ++i ) 
+  {
+    QWidget *window = windows.at(i);
+    if ( window->testWState( Qt::WState_Maximized ) ) 
+    {
+      // prevent flicker
+      window->hide();
+      window->showNormal();
+    }
+
+    int preferredHeight = window->minimumHeight()+window->parentWidget()->baseSize().height();
+    int actHeight = QMAX(heightForEach, preferredHeight);
+
+    if ( i<ctWnds )
+    {
+  
+      window->parentWidget()->setGeometry( 0, y, actHeight, actHeight );
+      y += actHeight;
+    }
+    else
+    {
+      // the last window then must fillup the remaining area
+      window->parentWidget()->setGeometry( actHeight, 0, ws->width()-actHeight, ws->height() );
+    }
+  }
+}
+
 void MainWindow::tile()
 {
   d->_pWorkspace->tile();

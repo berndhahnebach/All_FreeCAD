@@ -45,7 +45,7 @@ DEF_STD_CMD(Cmd_TEMPLATE_Test);
 Cmd_TEMPLATE_Test::Cmd_TEMPLATE_Test()
   :CppCommand("_TEMPLATE__Test")
 {
-  sAppModule    = QT_TR_NOOP("_TEMPLATE_");
+  sAppModule    = "_TEMPLATE_";
   sGroup        = QT_TR_NOOP("_TEMPLATE_");
   sMenuText     = QT_TR_NOOP("Test1");
   sToolTipText  = QT_TR_NOOP("_TEMPLATE_ Test function");

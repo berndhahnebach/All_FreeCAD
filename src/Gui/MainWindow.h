@@ -128,6 +128,10 @@ public slots:
    */
   void tileHorizontal();
   /**
+   * Arranges all child windows in a complex tile pattern.
+   */
+  void tileComplex();
+  /**
    * Arranges all child windows in a tile pattern.
    */
   void tile();

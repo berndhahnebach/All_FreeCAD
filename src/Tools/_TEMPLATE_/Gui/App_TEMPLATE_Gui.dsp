@@ -116,6 +116,10 @@ SOURCE=.\Libs.cpp
 SOURCE=.\PreCompiled.cpp
 # ADD CPP /Yc"PreCompiled.h"
 # End Source File
+# Begin Source File
+
+SOURCE=.\Workbench.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -123,6 +127,10 @@ SOURCE=.\PreCompiled.cpp
 # Begin Source File
 
 SOURCE=.\PreCompiled.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Workbench.h
 # End Source File
 # End Group
 # Begin Group "Dialogs"

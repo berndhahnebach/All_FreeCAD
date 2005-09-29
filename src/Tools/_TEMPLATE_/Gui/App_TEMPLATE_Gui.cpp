@@ -25,10 +25,12 @@
 #ifndef _PreComp_
 #endif
 
+#include "Workbench.h"
+
 #include <App/Application.h>
 #include <Base/Console.h>
-
 #include <Gui/Application.h>
+#include <Gui/WorkbenchFactory.h>
 
 // use a different name to CreateCommand()
 void Create_TEMPLATE_Commands(void);
@@ -73,6 +75,7 @@ void _TEMPLATE_GuiExport init_TEMPLATE_Gui() {
 
   // instanciating the commands
   Create_TEMPLATE_Commands();
+  Gui::WorkbenchFactory().AddProducer("_TEMPLATE_ design", new Gui::WorkbenchProducer<_TEMPLATE_Gui::Workbench>);
 
 
   return;
