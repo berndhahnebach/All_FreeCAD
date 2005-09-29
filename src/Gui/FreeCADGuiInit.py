@@ -97,5 +97,10 @@ InitApplications()
 # set standard workbench (needed as fallback)
 Gui.ActivateWorkbench("<none>")
 
+# Register .py, .FCScript and .FCMacro
+FreeCAD.EndingAdd("py","FreeCADGui")
+FreeCAD.EndingAdd("FCMacro","FreeCADGui")
+FreeCAD.EndingAdd("FCScript","FreeCADGui")
+
 
 Log ('Init: Gui::FreeCADGuiInit.py done\n')

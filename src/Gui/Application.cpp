@@ -154,12 +154,16 @@ void Application::open(const char* FileName)
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
 
     // issue gui module loading
-    Cmd =  "import ";
-    Cmd += Mod;
-    Cmd += "Gui";
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
-    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+    try{
+      Cmd =  "import ";
+      Cmd += Mod;
+      Cmd += "Gui";
+      Base::Interpreter().runString(Cmd.c_str());
+      macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
+      Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+    } catch (const Base::PyException&){
+      // ignore this type of exception (e.g. if Mod is already a Gui module)
+    }
 
     // load the file with the module
     Cmd = Mod;
@@ -194,12 +198,16 @@ void Application::import(const char* FileName)
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
 
     // issue gui module loading
-    Cmd =  "import ";
-    Cmd += Mod;
-    Cmd += "Gui";
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
-    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+    try{
+      Cmd =  "import ";
+      Cmd += Mod;
+      Cmd += "Gui";
+      Base::Interpreter().runString(Cmd.c_str());
+      macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
+      Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+    } catch (const Base::PyException&){
+      // ignore this type of exception (e.g. if Mod is already a Gui module)
+    }
 
     // load the file with the module
     Cmd = Mod;

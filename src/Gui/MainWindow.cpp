@@ -397,6 +397,24 @@ void MainWindow::removeWindow( Gui::MDIView* view )
   disconnect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );
 }
 
+void MainWindow::tabChanged( MDIView* view )
+{
+  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
+  {
+    if ( it.data() == view )
+    {
+      // extract file name if possible
+      QFileInfo fi( view->caption() );
+      QTab* tab = d->_tabs->tab( it.key() );
+      if ( fi.isFile() && fi.exists() )
+        tab->setText( fi.fileName() );
+      else
+        tab->setText( view->caption() );
+      break;
+    }
+  }
+}
+
 void MainWindow::onWindowDestroyed()
 {
   QObject* obj = (QObject*)sender();

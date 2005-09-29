@@ -39,6 +39,7 @@
 
 #include "PythonEditor.h"
 #include "Application.h"
+#include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "DlgEditorImp.h"
 
@@ -470,7 +471,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
  *  Constructs a PythonEditView which is a child of 'parent', with the
  *  name 'name'.
  */
-PythonEditView::PythonEditView( QWidget* parent, const char* name)
+PythonEditView::PythonEditView( const QString& file, QWidget* parent, const char* name)
     : MDIView(0,parent, name, WDestructiveClose), WindowParameter( "Editor" )
 {
   QHBox* hbox = new QHBox( this );
@@ -482,6 +483,7 @@ PythonEditView::PythonEditView( QWidget* parent, const char* name)
   _textEdit->reparent(hbox, QPoint());
   _lineMarker->show();
   _textEdit->setWordWrap( QTextEdit::NoWrap );
+  setIcon( Gui::BitmapFactory().pixmap("MacroEditor") );
 
 
   setFocusProxy( _textEdit );
@@ -490,11 +492,17 @@ PythonEditView::PythonEditView( QWidget* parent, const char* name)
   ParameterGrp::handle hPrefGrp = getWindowParameter();
   hPrefGrp->Attach( this );
   hPrefGrp->NotifyAll();
+
+  _pcActivityTimer = new QTimer(this);
+  connect( _pcActivityTimer, SIGNAL(timeout()),this, SLOT(checkTimestamp()) );
+  openFile( file );
 }
 
 /** Destroys the object and frees any allocated resources */
 PythonEditView::~PythonEditView()
 {
+  _pcActivityTimer->stop();
+  delete _pcActivityTimer;
   getWindowParameter()->Detach( this );
   delete _textEdit;
   delete _lineMarker;
@@ -511,6 +519,28 @@ void PythonEditView::OnChange( Base::Subject<const char*> &rCaller,const char* r
     else
       _lineMarker->hide();
   }
+}
+
+void PythonEditView::checkTimestamp()
+{
+  QFileInfo fi(_fileName);
+  uint timeStamp =  fi.lastModified().toTime_t();
+  if ( timeStamp != _timeStamp )
+  {
+    switch( QMessageBox::question( this, tr("Modified file"), tr("%1.\n\nThis has been modified outside of the source editor. Do you want to reload it?").arg( _fileName ),
+                                   QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape) )
+    {
+    case QMessageBox::Yes:
+      // updates time stamp and timer
+      openFile( _fileName );
+      return;
+    case QMessageBox::No:
+      _timeStamp = timeStamp;
+      break;
+    }
+  }
+
+  _pcActivityTimer->start( 3000, true );
 }
 
 /**
@@ -662,7 +692,6 @@ bool PythonEditView::open(void)
     return false;
 
   openFile(file);
-  setCaption(file);
 
   return true;
 }
@@ -684,8 +713,12 @@ void PythonEditView::openFile (const QString& fileName)
   _lineMarker->onRepaint();
 
   file.close();
+  QFileInfo fi(_fileName);
+  _timeStamp =  fi.lastModified().toTime_t();
+  _pcActivityTimer->start( 3000, true );	
 
   _textEdit->setModified(false);
+  setCaption(fileName);
 
   emit message( tr("Loaded document %1").arg( fileName ), 2000 );
 }
@@ -802,6 +835,10 @@ void PythonEditView::saveFile()
   file.close();
 
   _textEdit->setModified(false);
+  QFileInfo fi(_fileName);
+  _timeStamp =  fi.lastModified().toTime_t();
+
+  setCaption(_fileName);
 
   emit message( tr( "File %1 saved" ).arg( _fileName ), 2000 );
 

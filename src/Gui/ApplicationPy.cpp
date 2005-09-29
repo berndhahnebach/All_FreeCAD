@@ -31,6 +31,8 @@
 #include "Application.h"
 #include "Command.h"
 #include "Document.h"
+#include "MainWindow.h"
+#include "PythonEditor.h"
 #include "WidgetFactory.h"
 #include "Workbench.h"
 #include "WorkbenchFactory.h"
@@ -61,6 +63,8 @@ PyMethodDef Application::Methods[] = {
   {"SendMsgToActiveView",     (PyCFunction) Application::sSendActiveView,          1},
   {"hide",                    (PyCFunction) Application::shide,                    1},
   {"show",                    (PyCFunction) Application::sshow,                    1},
+  {"open",                    (PyCFunction) Application::sopen,                    1},
+  {"insert",                  (PyCFunction) Application::sinsert,                  1},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -105,6 +109,34 @@ PYFUNCIMP_S(Application,sshow)
   }
     
    Py_Return;
+} 
+
+PYFUNCIMP_S(Application,sopen)
+{
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+  PY_TRY {
+    PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
+    edit->resize( 400, 300 );
+    getMainWindow()->addWindow( edit );
+  } PY_CATCH;
+
+	Py_Return;    
+} 
+
+PYFUNCIMP_S(Application,sinsert)
+{
+  const char* Name;
+  if (! PyArg_ParseTuple(args, "s",&Name))			 
+    return NULL;                         
+  PY_TRY {
+    PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
+    edit->resize( 400, 300 );
+    getMainWindow()->addWindow( edit );
+  } PY_CATCH;
+
+	Py_Return;    
 } 
 
 PYFUNCIMP_S(Application,sSendActiveView)

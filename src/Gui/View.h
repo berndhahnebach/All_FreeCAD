@@ -167,6 +167,9 @@ public:
 
   QSize minimumSizeHint () const;
 
+  /// sets the caption and its appropriate tab of tab bar (if registered)
+  virtual void setCaption ( const QString & );
+
   /**
    * If \a b is true the MDIView is displayed in full screen mode, otherwise
    * in normal mode. For more hints refer to the Qt documentation to

@@ -150,6 +150,9 @@ public:
 
   PYFUNCDEF_S(shide);
   PYFUNCDEF_S(sshow);
+  
+  PYFUNCDEF_S(sopen);                     // open Python scripts
+  PYFUNCDEF_S(sinsert);                   // open Python scripts
 
   static PyMethodDef    Methods[]; 
 

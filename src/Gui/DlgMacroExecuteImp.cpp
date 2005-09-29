@@ -40,7 +40,6 @@
 #include "../App/Document.h"
 #include "Application.h"
 #include "MainWindow.h"
-#include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "Macro.h"
 #include "Document.h"
@@ -161,12 +160,9 @@ void DlgMacroExecuteImp::onEdit()
 
   QDir dir(_cMacroPath.c_str());
   QString file = QString("%1/%2").arg(dir.absPath()).arg(item->text(0));
-  PythonEditView* edit = new PythonEditView(getMainWindow(), "Editor");
-  edit->setIcon( Gui::BitmapFactory().pixmap("MacroEditor") );
-  edit->setCaption( file );
+  PythonEditView* edit = new PythonEditView( file, getMainWindow(), "Editor" );
   edit->resize( 400, 300 );
   getMainWindow()->addWindow( edit );
-  edit->openFile(file);
   
   accept();
 }
@@ -190,12 +186,10 @@ void DlgMacroExecuteImp::onCreate()
     else
     {
       QString file = QString("%1/%2").arg(dir.absPath()).arg( fn );
-      PythonEditView* edit = new PythonEditView(getMainWindow(), "Editor");
-      edit->setIcon( Gui::BitmapFactory().pixmap("MacroEditor") );
-      edit->setCaption( file );
+      PythonEditView* edit = new PythonEditView( file, getMainWindow(), "Editor" );
+      edit->setCaption( fn );
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
-      edit->openFile(file);
   
       accept();
     }

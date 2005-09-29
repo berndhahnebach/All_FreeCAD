@@ -78,6 +78,10 @@ public:
    */
   void removeWindow( MDIView* view );
   /**
+   * Can be called after the caption of an MDIView has changed to update the tab's caption.
+   */
+  void tabChanged( MDIView* view );
+  /**
    * Returns a list of all MDI windows in the worpspace.
    */
   QWidgetList windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;

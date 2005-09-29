@@ -113,7 +113,7 @@ class GuiExport PythonEditView : public MDIView, public WindowParameter
   Q_OBJECT
 
 public:
-  PythonEditView( QWidget* parent, const char* name);
+  PythonEditView( const QString& file, QWidget* parent, const char* name );
   ~PythonEditView();
 
   void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
@@ -146,6 +146,9 @@ public:
   QStringList undoActions() const;
   QStringList redoActions() const;
 
+private slots:
+  void checkTimestamp();
+
 private:
   void saveFile();
 
@@ -153,6 +156,8 @@ private:
   LineMarker* _lineMarker;
   QTextEdit* _textEdit;
   QString _fileName;
+  QTimer*  _pcActivityTimer;
+  uint _timeStamp;
 };
 
 } // namespace Gui

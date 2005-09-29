@@ -179,6 +179,12 @@ QSize MDIView::minimumSizeHint () const
   return QSize(100, 80);
 }
 
+void MDIView::setCaption ( const QString& cap )
+{
+  QMainWindow::setCaption( cap );
+  getMainWindow()->tabChanged( this );
+}
+
 void MDIView::setFullScreenMode( bool b )
 {
   // set fullscreen mode

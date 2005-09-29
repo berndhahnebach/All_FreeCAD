@@ -625,3 +625,5 @@ Version: V0.3B2 Date: Tue Sep 20 11:42:39 2005 +++++++++++++++++++++++++++++++
 + Mesh command to calc. curvature in Python
 + bugs fixed in MeshGui::ViewProviderMesh
 + bug fixed in MeshGui::ViewProviderCurvature
++ Load Python scripts and macros per File|Open
++ MDIView stuff (tabs renaming, layout)
