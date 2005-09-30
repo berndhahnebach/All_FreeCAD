@@ -1,0 +1,90 @@
+<?xml version='1.0'?>
+<!--
+    Copyright (c) Microsoft Corporation.  All rights reserved.
+
+    The use and distribution terms for this software are covered by the
+    Common Public License 1.0 (http://opensource.org/licenses/cpl.php)
+    which can be found in the file CPL.TXT at the root of this distribution.
+    By using this software in any fashion, you are agreeing to be bound by
+    the terms of this license.
+
+    You must not remove this notice, or any other, from this software.
+
+    Product_Module.MSI - example source code for Product with merged Module from "Getting Started" in help
+-->
+<Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
+   <Product Id='22345678-1234-1234-1234-123456789012' Name='FreeCAD' Language='1033'
+             Version='0.3.2.0' Manufacturer='Juergen Riegel'>
+      <Package Id='12345678-1234-1234-1234-123456789012' Description='My first Windows Installer package'
+               Comments='This is my first attempt at creating a Windows Installer database for FreeCAD'
+               InstallerVersion='200' Compressed='yes' />
+ 
+      <Media Id='1' Cabinet='product.cab' EmbedCab='yes' />
+ 
+      <Directory Id='TARGETDIR' Name='SourceDir'>
+         <Directory Id='ProgramFilesFolder' Name='PFiles'>
+            <Directory Id='ProgDir' Name='FreeCAD'>
+				<Directory Id='BinDir' Name='bin' src='../../bin/'>
+				   <Component Id='Base' Guid='12345678-1234-1234-1234-123456789012'>
+					  <File Id='Exe' Name='FreeCAD.exe' DiskId='1' >
+						<Shortcut Id='FCShortcut' Directory='ProgramMenuFolder' Name='FreeCAD' LongName='FreeCAD 0.3' Arguments='-l' Description='FreeCAD the one and only open source CAD package' Advertise='yes'/>
+					  </File>
+					  <File Id='CmdExe'   Name='FcCmd.exe'     LongName='FreeCADCmd.exe'  DiskId='1' />
+					  <File Id='PyModule' Name='FreeCAD.pyd'                            DiskId='1' />
+					  <File Id='AppDll'   Name='FCApp.dll'   LongName='FreeCADApp.dll'  DiskId='1' />
+					  <File Id='BaseDll'  Name='FCBase.dll'  LongName='FreeCADBase.dll' DiskId='1' />
+					  <File Id='GuiDll'   Name='FCGui.dll'   LongName='FreeCADGui.dll'  DiskId='1' />
+					  <?include LibPackDll.wxi ?>
+				   </Component>
+				</Directory>
+				<Directory Id='DocDir' Name='doc' src='../../doc/'>
+				   <Component Id='DocComp' Guid='12345678-1234-1234-1234-123456789019'>
+					  <File Id='DocPdf' Name='doc.pdf' LongName='FreeCAD-SpecsDesign.pdf' DiskId='1' >
+						<Shortcut Id='FCDocShortcut' Directory='ProgramMenuFolder' Name='Doc' LongName='FreeCAD Documentation' Description='FreeCAD the one and only open source CAD package' Advertise='yes'/>
+					  </File>
+				   </Component>
+				</Directory>  
+				<Directory Id='LibPackDir' Name='LibPack' >
+				  <Directory Id='resPackDir' Name='res' >
+					<Directory Id='OpenCascedeResPackDir' Name='OCC' LongName='OpenCascade'>
+					  <Component Id='resOCC' Guid='12345678-1234-1234-1234-123456789013'>
+						  <File Id='IGESus'       Name='IGES.us'       src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+						  <File Id='IGESfr'       Name='IGES.fr'       src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+						  <File Id='Lexi_Exprdat' Name='LexiExpr.dat'  LongName='Lexi_Expr.dat' src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+						  <File Id='SHAPEfr'      Name='SHAPE.fr'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+						  <File Id='SHAPEus'      Name='SHAPE.us'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+						  <File Id='Unitsdat'     Name='Units.dat'     src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+						  <File Id='XSTEPfr'      Name='XSTEP.fr'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+						  <File Id='XSTEPus'      Name='XSTEP.us'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+				      </Component>
+				  </Directory>
+				  <Directory Id='PythonResPackDir' Name='pylibs' >
+				   <Component Id='PyLibs' Guid='12345678-1234-1234-1234-123456789014'>
+					  <File Id='ospy'       Name='os.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+					  <File Id='sitepy'     Name='site.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+					  <File Id='stringpy'   Name='string.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+					  <File Id='repy'       Name='re.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+					  <File Id='dircachepy' Name='dircache.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+				   </Component>
+				  </Directory>
+				</Directory>
+		      </Directory>
+            </Directory>
+         </Directory>
+         <Directory Id='ProgramMenuFolder' Name='ProgMenu'/>
+     </Directory>
+	  
+<!--
+      <Directory Id='ProgramMenuFolder' Name='ProgMenu'>
+		<Directory Id='FreeCADMenuFolder' Name='FreeCAD'/>
+      </Directory>
+--> 
+
+      <Feature Id='MyFeature' Title='My 1st Feature' Level='1'>
+         <ComponentRef Id='Base' />
+         <ComponentRef Id='resOCC' />
+         <ComponentRef Id='PyLibs' />
+         <ComponentRef Id='DocComp' />
+      </Feature>
+   </Product>
+</Wix>
