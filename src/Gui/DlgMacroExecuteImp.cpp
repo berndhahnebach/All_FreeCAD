@@ -160,10 +160,8 @@ void DlgMacroExecuteImp::onEdit()
 
   QDir dir(_cMacroPath.c_str());
   QString file = QString("%1/%2").arg(dir.absPath()).arg(item->text(0));
-  PythonEditView* edit = new PythonEditView( file, getMainWindow(), "Editor" );
-  edit->resize( 400, 300 );
-  getMainWindow()->addWindow( edit );
-  
+
+  Application::Instance->open( file );
   accept();
 }
 

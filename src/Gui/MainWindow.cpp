@@ -415,6 +415,17 @@ void MainWindow::tabChanged( MDIView* view )
   }
 }
 
+MDIView* MainWindow::getWindowWithCaption( const QString& cap ) const
+{
+  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
+  {
+    if ( it.data()->caption() == cap )
+      return it.data();
+  }
+
+  return 0;
+}
+
 void MainWindow::onWindowDestroyed()
 {
   QObject* obj = (QObject*)sender();

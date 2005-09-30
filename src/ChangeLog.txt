@@ -627,3 +627,7 @@ Version: V0.3B2 Date: Tue Sep 20 11:42:39 2005 +++++++++++++++++++++++++++++++
 + bug fixed in MeshGui::ViewProviderCurvature
 + Load Python scripts and macros per File|Open
 + MDIView stuff (tabs renaming, layout)
++ Python icon for text files
++ check for already opened macros, scripts and Python files
++ template stuff
++ Bug fixed in MenuManager (remove each menu separately, do not call QMenuBar::clear() to prevent window buttons from being removed)

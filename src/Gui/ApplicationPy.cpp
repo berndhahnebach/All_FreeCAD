@@ -117,9 +117,17 @@ PYFUNCIMP_S(Application,sopen)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
   PY_TRY {
-    PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
-    edit->resize( 400, 300 );
-    getMainWindow()->addWindow( edit );
+    MDIView* view = getMainWindow()->getWindowWithCaption( Name );
+    if ( view )
+    {
+      view->setFocus();
+    }
+    else
+    {
+      PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
+      edit->resize( 400, 300 );
+      getMainWindow()->addWindow( edit );
+    }
   } PY_CATCH;
 
 	Py_Return;    
@@ -131,9 +139,17 @@ PYFUNCIMP_S(Application,sinsert)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
   PY_TRY {
-    PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
-    edit->resize( 400, 300 );
-    getMainWindow()->addWindow( edit );
+    MDIView* view = getMainWindow()->getWindowWithCaption( Name );
+    if ( view )
+    {
+      view->setActive();
+    }
+    else
+    {
+      PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
+      edit->resize( 400, 300 );
+      getMainWindow()->addWindow( edit );
+    }
   } PY_CATCH;
 
 	Py_Return;    

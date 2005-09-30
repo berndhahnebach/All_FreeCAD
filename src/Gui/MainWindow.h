@@ -82,6 +82,10 @@ public:
    */
   void tabChanged( MDIView* view );
   /**
+   * Returns the first window with the caption \a caption, if there is no window with this caption 0 is returned. 
+   */
+  MDIView* getWindowWithCaption( const QString& ) const;
+  /**
    * Returns a list of all MDI windows in the worpspace.
    */
   QWidgetList windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;

@@ -188,7 +188,28 @@ void MenuManager::setup( MenuItem* menuBar ) const
 
   CommandManager& mgr = Application::Instance->commandManager();
   QMenuBar* bar = getMainWindow()->menuBar();
-  bar->clear();
+  // Cannot call QMenuBar::clear() to prevent the icon and window buttons from being removed ( e.g if a window is in fullscreen mode )
+  bool ok = false;
+  do {
+    ok = false;
+    uint ct = bar->count();
+    for ( uint i=0; i<ct; i++ )
+    {
+      int id = bar->idAt( i );
+      QMenuItem* item = bar->findItem( id );
+      if ( !item )
+        continue;
+
+      QWidget* w = item->widget();
+      // remove all popup menus and (empty) separators
+      if ( item->popup() || (item->isSeparator() && !w) )
+      {
+        bar->removeItem( id );
+        ok = true;
+      }
+    }
+  } while ( ok );
+
   QPtrList<MenuItem> items = menuBar->getItems();
 
   MenuItem* item;

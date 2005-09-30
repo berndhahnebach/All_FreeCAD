@@ -50,7 +50,7 @@ namespace MeshGui {
 
 /** Like Mesh viewprovider but with manipulator
  */
-class ViewProviderInventorMeshCurvature: public ViewProviderInventorMesh
+class GuiMeshExport ViewProviderInventorMeshCurvature: public ViewProviderInventorMesh
 {
 public:
   ViewProviderInventorMeshCurvature();

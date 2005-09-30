@@ -36,28 +36,10 @@
 void Create_TEMPLATE_Commands(void);
 
 
-/* module functions */
-static PyObject *                                 /* returns object */
-message(PyObject *self, PyObject *args)           /* self unused in modules */
-{                                                 /* args from python call */
-    char *fromPython, result[64];
-    if (! PyArg_ParseTuple(args, "(s)", &fromPython))  /* convert Python -> C */
-        return NULL;                              /* null=raise exception */
-    else {
-        strcpy(result, "Hello, ");                /* build up C string */
-        strcat(result, fromPython);               /* add passed Python string */
-        return Py_BuildValue("s", result);        /* convert C -> Python */
-    }
-}
-
 /* registration table  */
-static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       /* method name, C func ptr, always-tuple */
+static struct PyMethodDef _TEMPLATE_Guimethods[] = {
     {NULL, NULL}                   /* end of table marker */
 };
-
-
-
 
 
 /* Python entry */
@@ -69,14 +51,16 @@ void _TEMPLATE_GuiExport init_TEMPLATE_Gui() {
     return;
   }
 
-  (void) Py_InitModule("_TEMPLATE_Gui", hello_methods);   /* mod name, table ptr */
-
-  Base::Console().Log("App_TEMPLATE_Gui loaded\n");
-
   // instanciating the commands
   Create_TEMPLATE_Commands();
   Gui::WorkbenchFactory().AddProducer("_TEMPLATE_ design", new Gui::WorkbenchProducer<_TEMPLATE_Gui::Workbench>);
 
+  // ADD YOUR CODE HERE
+  //
+  //
+
+  (void) Py_InitModule("_TEMPLATE_Gui", _TEMPLATE_Guimethods);   /* mod name, table ptr */
+  Base::Console().Log("App_TEMPLATE_Gui loaded\n");
 
   return;
 }
