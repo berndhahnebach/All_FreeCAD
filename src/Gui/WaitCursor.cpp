@@ -39,11 +39,14 @@ namespace Gui {
 struct WaitCursorP
 {
   bool wait;
+  static bool override;
   int minimumDuration;
   uint main_threadid;
   QTime measure;
 };
 } // namespace Gui
+
+bool WaitCursorP::override = false;
 
 /**
  * Constructs this object and starts the thread immediately.
@@ -75,6 +78,11 @@ WaitCursor::~WaitCursor()
  */
 void WaitCursor::run()
 {
+  if ( WaitCursorP::override )
+  {
+    d->wait = true;
+    return; // prevent application from setting wait cursor twice
+  }
 #ifdef FC_OS_WIN32
   AttachThreadInput(GetCurrentThreadId(), d->main_threadid, true);
 #endif
@@ -87,6 +95,7 @@ void WaitCursor::run()
     {
       QApplication::setOverrideCursor(Qt::waitCursor);
       d->wait = true;
+      WaitCursorP::override = true;
       break;
     }
   }
@@ -123,7 +132,12 @@ void WaitCursor::restoreCursor()
 
   // wait cursor already restored
   if ( !d->wait ) return;
-  QApplication::restoreOverrideCursor();
+  if ( WaitCursorP::override )
+  {
+    // do not restore twice
+    QApplication::restoreOverrideCursor();
+    WaitCursorP::override = false;
+  }
   d->wait = false;
 }
 
