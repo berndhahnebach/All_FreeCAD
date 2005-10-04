@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -24,11 +24,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qcombobox.h>
 # include <qlabel.h>
 # include <qlistbox.h>
+# include <qstringlist.h> 
 #endif
 
-#include "DlgCommandsImp.h"
+#include "DlgKeyboardImp.h"
 #include "Application.h"
 #include "Command.h"
 #include "Widgets.h"
@@ -36,25 +38,15 @@
 using namespace Gui::Dialog;
 
 /**
- *  Constructs a DlgCustomCommandsImp which is a child of 'parent', with the
+ *  Constructs a DlgCustomKeyboardImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  *
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, WFlags fl  )
-: DlgCustomCommandsBase(parent, name, fl)
+DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent, const char* name, WFlags fl  )
+: DlgCustomKeyboardBase(parent, name, fl)
 {
-  IconView1->setHScrollBarMode( QScrollView::AlwaysOff );
-
-  // paints for active and inactive the same color
-  QPalette pal = ComboBoxCategory->palette();
-  pal.setInactive( pal.active() );
-  ComboBoxCategory->setPalette( pal );
-
-  connect(IconView1, SIGNAL(emitSelectionChanged(const QString &)), this, SLOT(onDescription(const QString &)));
-  connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(onGroupSelected(const QString &)));
-
   CommandManager & cCmdMgr = Application::Instance->commandManager();
   std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
@@ -72,52 +64,111 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, W
       items << it2.key();
   }
 
-  ComboBoxCategory->insertStringList( items );
+  comboBoxCategory->insertStringList( items );
 
-  ComboBoxCategory->setCurrentItem( 0 );
+  onGroupSelected( comboBoxCategory->currentText() );
 }
 
 /** Destroys the object and frees any allocated resources */
-DlgCustomCommandsImp::~DlgCustomCommandsImp()
+DlgCustomKeyboardImp::~DlgCustomKeyboardImp()
 {
 }
 
 /** Shows the description for the corresponding command */
-void DlgCustomCommandsImp::onDescription(const QString& txt)
+void DlgCustomKeyboardImp::onDescription(const QString& txt)
 {
-  TextLabel->setText( txt );
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
+  Command* cmd = cCmdMgr.getCommandByName( txt.latin1() );
+  if ( cmd && cmd->getAction() )
+  {
+    QKeySequence ks = cmd->getAction()->accel();
+    if ( ks.isEmpty() )
+      accelLineEditShortcut->setText( tr("Not defined") );
+    else
+      accelLineEditShortcut->setText( ks );
+
+    textLabelDescription->setText( cmd->getAction()->toolTip() );
+  }
+  else
+    textLabelDescription->setText( tr("Not available") );
 }
 
 /** Shows all commands of this category */
-void DlgCustomCommandsImp::onGroupSelected(const QString & group)
+void DlgCustomKeyboardImp::onGroupSelected(const QString & group)
 {
-  IconView1->clear();
+  listBoxCommands->clear();
  
   CommandManager & cCmdMgr = Application::Instance->commandManager();
   std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( group.latin1() );
   for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
   {
-    (void) new Gui::CommandViewItem(IconView1, (*it)->getName(), (*it)->getAction());
+    listBoxCommands->insertItem( (*it)->getName() );
   }
 }
 
-void DlgCustomCommandsImp::showEvent( QShowEvent* e )
+void DlgCustomKeyboardImp::showEvent( QShowEvent* e )
 {
-  DlgCustomCommandsBase::showEvent( e );
+  DlgCustomKeyboardBase::showEvent( e );
 
   // try to update the command view
-  if ( !ComboBoxCategory->findItem("Macros", 0) )
+  if ( !comboBoxCategory->listBox()->findItem("Macros", 0) )
   {
     CommandManager& rclMan = Application::Instance->commandManager();
     std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
     if ( aclCurMacros.size() > 0)
     {
-      ComboBoxCategory->insertItem("Macros");
-      ComboBoxCategory->sort();
+      comboBoxCategory->insertItem("Macros");
     }
   }
 }
 
-#include "DlgCommands.cpp"
-#include "moc_DlgCommands.cpp"
-#include "moc_DlgCommandsImp.cpp"
+void DlgCustomKeyboardImp::onAssign()
+{
+}
+
+void DlgCustomKeyboardImp::onReset()
+{
+}
+
+void DlgCustomKeyboardImp::onResetAll()
+{
+}
+
+void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
+{
+  listBoxAssigned->clear();
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
+  std::vector<Command*> cmd = cCmdMgr.getAllCommands();
+
+  int i=0;
+  QString cmdName;
+  QKeySequence ks(sc);
+  if ( !ks.isEmpty() )
+  {
+    for ( std::vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
+    {
+      if ( (*it)->getAction() && (*it)->getAction()->accel() == ks )
+      {
+        i++;
+        cmdName = (*it)->getName(); // store the last one
+        listBoxAssigned->insertItem( (*it)->getName() );
+      }
+    }
+
+    if ( i > 1 )
+    {
+      QMessageBox::warning( this, tr("Multiple defined shortcut"), 
+                            tr("The shortcut '%1' is defined more than once. This could result into unexpected behaviour.").arg(sc) );
+      accelLineEdit1NewShortcut->setFocus();
+    }
+    else if ( i == 1 && cmdName != listBoxCommands->currentText() )
+    {
+      QMessageBox::warning( this, tr("Already defined shortcut"), 
+                            tr("The shortcut '%1' is already assigned to '%2'.\n\nPlease define another shortcut.").arg(sc).arg(cmdName) );
+      accelLineEdit1NewShortcut->setFocus();
+    }
+  }
+}
+
+#include "DlgKeyboard.cpp"
+#include "moc_DlgKeyboard.cpp"

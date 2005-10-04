@@ -410,7 +410,7 @@ bool NetworkRetriever::testWget()
 StdCmdOnlineHelp::StdCmdOnlineHelp( QObject * parent, const char * name )
   : QObject( parent, name ), CppCommand("Std_OnlineHelp")
 {
-  sGroup        = "Standard";
+  sGroup        = "Help";
   sMenuText     = "Download online help";
   sToolTipText  = "Download FreeCAD's online help";
   sWhatsThis    = sToolTipText;

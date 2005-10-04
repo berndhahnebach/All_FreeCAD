@@ -70,6 +70,7 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
 #include "DlgActionsImp.h"
 #include "DlgCmdbarsImp.h"
 #include "DlgCommandsImp.h"
+#include "DlgKeyboardImp.h"
 
 using namespace Gui;
 using namespace Gui::Dialog;
@@ -93,6 +94,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   //
   //
   new CustomPageProducer<DlgCustomCommandsImp>;
+  new CustomPageProducer<DlgCustomKeyboardImp>;
   new CustomPageProducer<DlgCustomToolbarsImp>;
   new CustomPageProducer<DlgCustomCmdbarsImp>;
   new CustomPageProducer<DlgCustomActionsImp>;
