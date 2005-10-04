@@ -1763,12 +1763,12 @@ Wollen Sie wirklich fortfahren?</translation>
             <translation>Standard</translation>
         </message>
         <message>
-            <source>&amp;About FreeCAD</source>
-            <translation>&amp;Über FreeCAD</translation>
+            <source>&amp;About</source>
+            <translation>&amp;Über</translation>
         </message>
         <message>
-            <source>About FreeCAD</source>
-            <translation>Über FreeCAD</translation>
+            <source>About</source>
+            <translation>Über</translation>
         </message>
     </context>
     <context>

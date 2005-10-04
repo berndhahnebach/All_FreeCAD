@@ -461,6 +461,22 @@ private:
   std::map<std::string,Command*> _sCommands;
 };
 
+/**
+ * Shows information about the application.
+ * @author Werner Mayer
+ */
+class StdCmdAbout : public CppCommand
+{
+public:
+  StdCmdAbout();
+
+  /** Creates the action object. */
+  QAction* createAction();
+  /** Invokes the about-dialog. */
+  void activated(int iMsg);
+  /** i18n stuff of the command. */
+  void languageChange();
+};
 
 /**
  *  The workbench command

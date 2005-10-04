@@ -194,6 +194,10 @@ AboutDialog::~AboutDialog()
  */
 void AboutDialog::languageChange()
 {
+  QString exeName = App::Application::Config()["ExeName"].c_str();
+  QString banner  = App::Application::Config()["ConsoleBanner"].c_str();
+  banner = banner.left( banner.find('\n') );
+
   pushButton1->setText( tr( "&Ok" ) );
   pushButton1->setAccel( QKeySequence( tr( "Alt+O" ) ) );
   QString SplasherText = QString(
@@ -205,15 +209,15 @@ void AboutDialog::languageChange()
                            "<tr>"
                            "<th bgcolor=#E5E5E5 width=33%>"
                            "<ul>"
-                           "<a href=""FreeCAD"">FreeCAD (c) 2001 Jürgen Riegel</a>\n"
+                           "<a href=""FreeCAD"">%1 %2</a>\n"
                            "</ul>"
                            "</th>"
                            "</tr>"
                            "<tr>"
                            "<td>"
-                           "<p>Version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>%1.%2 </b></p>"
-                           "<p>Build number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                             <b>%3</b></p>"
-                           "<p>Build date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>%4</b></p>"
+                           "<p>Version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>%3.%4 </b></p>"
+                           "<p>Build number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                             <b>%5</b></p>"
+                           "<p>Build date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>%6</b></p>"
                            "</td>"
                            "</tr>"
                            "<tr>"
@@ -223,7 +227,7 @@ void AboutDialog::languageChange()
                            "</td>"
                            "</tr>"
                            "</table>"
-                           "</body></html>").arg(FCVersionMajor).arg(FCVersionMinor).arg(FCVersionBuild).arg(FCVersionDisDa);
+                           "</body></html>").arg(exeName).arg(banner).arg(FCVersionMajor).arg(FCVersionMinor).arg(FCVersionBuild).arg(FCVersionDisDa);
   textLabel1->setText( SplasherText );
 
 }
