@@ -91,14 +91,12 @@ int ToolBox::insertItem ( int index, QWidget * item, const QIconSet & iconSet, c
 }
 
 /**
- * Removes the widget \a item from the toolbox. Note that the widget is \a deleted.
+ * Removes the widget \a item from the toolbox.
  * Returns the removed widget's index, or -1 if the widget was not in this tool box.
  */
 int ToolBox::removeItem ( QWidget * item )
 {
-  int id = _pToolBox->removeItem( item );
-  delete item;
-  return id;
+  return _pToolBox->removeItem( item );
 }
 
 /**
@@ -238,6 +236,5 @@ void ToolBox::languageChange()
     }
   }
 }
-
 
 #include "moc_ToolBox.cpp"

@@ -54,7 +54,7 @@ namespace DockWnd
  * which also deletes the item to be removed.
  * \author Werner Mayer
  */
-class ToolBox : public Gui::DockWindow
+class GuiExport ToolBox : public Gui::DockWindow
 {
   Q_OBJECT
 

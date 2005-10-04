@@ -78,11 +78,6 @@ WaitCursor::~WaitCursor()
  */
 void WaitCursor::run()
 {
-  if ( WaitCursorP::override )
-  {
-    d->wait = true;
-    return; // prevent application from setting wait cursor twice
-  }
 #ifdef FC_OS_WIN32
   AttachThreadInput(GetCurrentThreadId(), d->main_threadid, true);
 #endif
@@ -93,9 +88,13 @@ void WaitCursor::run()
     msleep(100);
     if ( d->measure.elapsed() > d->minimumDuration )
     {
-      QApplication::setOverrideCursor(Qt::waitCursor);
+      if ( !WaitCursorP::override )
+      {
+        // prevent application from setting wait cursor twice
+        WaitCursorP::override = true;
+        QApplication::setOverrideCursor(Qt::waitCursor);
+      }
       d->wait = true;
-      WaitCursorP::override = true;
       break;
     }
   }

@@ -91,6 +91,7 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
   for ( w = rem.first(); w; w = rem.next() )
   {
      _toolBox->removeItem( w );
+     delete w;
   }
 
   CommandManager& mgr = Application::Instance->commandManager();
@@ -145,6 +146,7 @@ void CommandBarManager::customSetup( ToolBarItem* toolBar ) const
       if ( cw && cw->canModify() )
       {
         _toolBox->removeItem( cw );
+        delete cw;
       }
     }
   }

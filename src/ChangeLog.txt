@@ -631,3 +631,10 @@ Version: V0.3B2 Date: Tue Sep 20 11:42:39 2005 +++++++++++++++++++++++++++++++
 + check for already opened macros, scripts and Python files
 + template stuff
 + Bug fixed in MenuManager (remove each menu separately, do not call QMenuBar::clear() to prevent window buttons from being removed)
+
+Version: V0.3B3 Date: Tue Oct  4 10:04:27 2005 +++++++++++++++++++++++++++++++
++ ability to hide workbenches in the combobox
++ added class DockConrainer to embed all kind of widgets
++ ability to define dock windows in main()
++ bug fixed in WaitCursor (override/restore waitcursor only once if several instances of WaitCursor exist at a time)
+

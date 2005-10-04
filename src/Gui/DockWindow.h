@@ -26,12 +26,14 @@
 
 
 #ifndef _PreComp_
-# include <qdockwindow.h>
 #endif
 
 #include "../Base/Parameter.h"
 #include "View.h"
 
+class QDockWindow;
+class QScrollView;
+class QStringList;
 
 namespace Gui {
 
@@ -66,7 +68,6 @@ public:
   virtual bool canClose(void){return true;}
   //@}
   void setCaption ( const QString & );
-  void setDockWindow( QDockWindow* w );
   QDockWindow* dockWindow() const;
 
 protected slots:
@@ -75,6 +76,8 @@ protected slots:
 private:
   QDockWindow* _dw;
   QString _caption;
+
+  friend class DockWindowManager;
 };
 
 /** Base class of all windows belonging to a document
@@ -121,6 +124,24 @@ signals:
   void sendCloseView(MDIView* theView);
 };
 
+/** The DockContainer class provides a dockable container window to embed a widget.
+ * \author Werner Mayer
+ */
+class GuiExport DockContainer : public DockWindow
+{
+  Q_OBJECT
+
+public:
+  DockContainer( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  ~DockContainer();
+
+  void setChild( QWidget* w );
+  void removeChild( QWidget* w );
+
+private:
+  QScrollView* sv;
+};
+
 /**
  * Class that manages the widgets inside a QDockWindow.
  * @see DockWindow
@@ -129,16 +150,21 @@ signals:
 class GuiExport DockWindowManager
 {
 public:
-  DockWindowManager();
-  ~DockWindowManager();
+  /** Creates the only instance of the WorkbenchManager. */
+  static DockWindowManager* instance();
 
   DockWindow* getDockWindow( const QString& name );
   QPtrList<DockWindow> getDockWindows();
   void removeDockWindow( const QString& name );
   void addDockWindow( const QString& name, DockWindow *pcDocWindow, Qt::Dock pos = Qt::DockUnmanaged,
                       bool stretch=false, int extWidth=0, int extHeight=0 );
+  void showDockWindows( const QStringList& );
+  void hideDockWindows( const QStringList& );
 
 private:
+  DockWindowManager();
+  ~DockWindowManager();
+  static DockWindowManager* _instance;
   struct DockWindowManagerP* d;
 };
 

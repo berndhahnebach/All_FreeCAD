@@ -220,8 +220,6 @@ void MenuManager::setup( MenuItem* menuBar ) const
     else
       setup( item, bar );
   }
-
-  languageChange();
 }
 
 void MenuManager::setup( MenuItem* item, QMenuData* data ) const
@@ -232,7 +230,7 @@ void MenuManager::setup( MenuItem* item, QMenuData* data ) const
   if ( !menu )
   {
     menu = new CustomPopupMenu( getMainWindow(), item->command() );
-    int id = data->insertItem(item->command(), menu);
+    int id = data->insertItem( QObject::tr(item->command()), menu);
   }
   else
   {

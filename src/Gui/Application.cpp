@@ -543,13 +543,18 @@ QPixmap Application::workbenchIcon( const QString& wb ) const
 
 QStringList Application::workbenches(void)
 {
+  std::string hidden = App::Application::Config()["HiddenWorkbench"];
+
   PyObject *key, *value;
   int pos = 0;
   QStringList wb;
   // insert all items
   while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
     /* do something interesting with the values... */
-    wb.push_back(PyString_AsString(key));
+    const char* wbName = PyString_AsString(key);
+    // add only allowed workbenches
+    if ( hidden.find( wbName ) == std::string::npos )
+      wb.push_back( wbName );
   }
   return wb;
 }

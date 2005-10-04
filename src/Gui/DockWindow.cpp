@@ -23,6 +23,8 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <qdockwindow.h>
+# include <qstringlist.h>
 #endif
 
 #include "DockWindow.h"
@@ -44,11 +46,6 @@ void DockWindow::setCaption ( const QString & s )
   if ( _dw )
     _dw->setCaption( s );
   _caption = s;
-}
-
-void DockWindow::setDockWindow( QDockWindow* w )
-{
-  _dw = w;
 }
 
 QDockWindow* DockWindow::dockWindow() const
@@ -90,12 +87,59 @@ bool DockView::onHasMsg(const char* pMsg)
 
 // --------------------------------------------------------------------
 
+DockContainer::DockContainer( QWidget* parent, const char* name, WFlags fl )
+  : DockWindow( 0L, parent, name, fl )
+{
+  sv = new QScrollView( this );
+  sv->setResizePolicy( QScrollView::AutoOneFit );
+  sv->setFrameStyle( QFrame::NoFrame );
+  QGridLayout* pGrid = new QGridLayout(this);
+  pGrid->addWidget(sv, 0, 0);
+}
+
+DockContainer::~DockContainer()
+{
+  delete sv;
+}
+
+/**
+ * Inserts the widget \a w to the container.
+ */
+void DockContainer::setChild( QWidget* w )
+{
+  if( !w ) return;
+  // prevent state of widget w from being changed by QScrollView::addChild()
+  w->reparent( sv->viewport(), QPoint(0,0) );
+  sv->addChild(w);
+}
+
+/**
+ * Removes the widget \a w from the container.
+ */
+void DockContainer::removeChild( QWidget* w )
+{
+  if( !w ) return;
+  w->reparent(0, QPoint());
+//  sv->viewport()->removeChild(w);
+}
+
+// --------------------------------------------------------------------
+
 namespace Gui {
 struct DockWindowManagerP
 {
   QMap <QString,DockWindow*> _clDocWindows;
 };
 } // namespace Gui
+
+DockWindowManager* DockWindowManager::_instance = 0;
+
+DockWindowManager* DockWindowManager::instance()
+{
+  if ( _instance == 0 )
+    _instance = new DockWindowManager;
+  return _instance;
+}
 
 DockWindowManager::DockWindowManager()
 {
@@ -119,7 +163,7 @@ void DockWindowManager::addDockWindow( const QString& name, DockWindow *pcDocWin
 
   QDockWindow* dw = new QDockWindow(pApp);
   dw->setCloseMode(QDockWindow::Always);
-  pcDocWindow->setDockWindow( dw );
+  pcDocWindow->_dw = dw;
   pcDocWindow->setCaption( name );
   pcDocWindow->reparent(dw, QPoint());
   dw->setWidget( pcDocWindow );
@@ -188,15 +232,43 @@ QPtrList<DockWindow> DockWindowManager::getDockWindows()
 }
 
 /**
- * Deletes the specified dock window if it exists.
+ * Removes the specified dock window with name \name without deleting it.
  */
 void DockWindowManager::removeDockWindow( const QString& name )
 {
   QMap <QString,DockWindow*>::Iterator It = d->_clDocWindows.find( name );
   if( It!=d->_clDocWindows.end() )
   {
-    delete It.data();
+    QDockWindow* dw = It.data()->dockWindow();
+    getMainWindow()->removeDockWindow( dw );
+    // avoid to destruct the DockWindow object
+    dw->removeChild( It.data() );
     d->_clDocWindows.erase(It);
+    delete dw; // destruct the QDockWindow
+  }
+}
+
+/**
+ * Forces to show all dock windows with the name specified in the list \a dw.
+ */
+void DockWindowManager::showDockWindows( const QStringList& dw )
+{
+  for ( QStringList::ConstIterator it = dw.begin(); it != dw.end(); ++it )
+  {
+    DockWindow* w = getDockWindow( *it );
+    if ( w && w->dockWindow() ) w->dockWindow()->show();
+  }
+}
+
+/**
+ * Forces to hide all dock windows with the name specified in the list \a dw.
+ */
+void DockWindowManager::hideDockWindows( const QStringList& dw )
+{
+  for ( QStringList::ConstIterator it = dw.begin(); it != dw.end(); ++it )
+  {
+    DockWindow* w = getDockWindow( *it );
+    if ( w && w->dockWindow() ) w->dockWindow()->hide();
   }
 }
 

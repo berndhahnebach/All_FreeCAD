@@ -100,7 +100,6 @@ namespace Gui {
 struct MainWindowP
 {
   QValueList<int> wndIDs;
-  Gui::DockWindowManager* _pcDockMgr;
   QLabel *         _pclSizeLabel, *_pclActionLabel;
   ToolBox*        _pcStackBar;
   QTimer *		 _pcActivityTimer; 
@@ -166,30 +165,27 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   // Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
   d->_pcStackBar = new ToolBox(this,"Cmd_Group");
   CommandBarManager::getInstance()->setToolBox( d->_pcStackBar );
-  d->_pcDockMgr = new Gui::DockWindowManager();
-  d->_pcDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
+  DockWindowManager* pDockMgr = DockWindowManager::instance();
+  pDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
 
   // Help View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
   QString home = DlgOnlineHelpImp::getStartpage();
   HelpView* pcHelpView = new HelpView( home, this, "HelpViewer" );
-  d->_pcDockMgr->addDockWindow("Help view", pcHelpView, Qt::DockRight );
+  pDockMgr->addDockWindow("Help view", pcHelpView, Qt::DockRight );
 
-#ifdef FC_DEBUG
   // Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
   TreeView* pcTree = new TreeView(0,this,"Raw_tree");
   pcTree->setMinimumWidth(210);
-  d->_pcDockMgr->addDockWindow("Tree view", pcTree, Qt::DockLeft );
+  pDockMgr->addDockWindow("Tree view", pcTree, Qt::DockLeft );
 
   // PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
   PropertyView* pcPropView = new PropertyView(0,0,"PropertyView");
   pcPropView->setMinimumWidth(210);
-  d->_pcDockMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
-
-#endif
+  pDockMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
 
   // Report View
   Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
-  d->_pcDockMgr->addDockWindow("Report View", pcOutput, Qt::DockBottom );
+  pDockMgr->addDockWindow("Report View", pcOutput, Qt::DockBottom );
 
 
   // accept drops on the window, get handled in dropEvent, dragEnterEvent   
@@ -679,6 +675,10 @@ void MainWindow::loadDockWndSettings()
     QTextStream ts( &str, IO_ReadOnly );
     ts >> *this;
   }
+
+  QString hidden = App::Application::Config()["HiddenDockWindow"].c_str();
+  QStringList hiddenDW = QStringList::split ( ';', hidden, false );
+  DockWindowManager::instance()->hideDockWindows( hiddenDW );
 /*
   // open file
   string FileName(GetApplication().GetHomePath());

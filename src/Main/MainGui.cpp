@@ -90,6 +90,9 @@ int main( int argc, char ** argv )
   App::Application::Config()["AppIcon"] = "FCIcon";
   App::Application::Config()["SplashPicture"] = "FreeCADSplasher";
   App::Application::Config()["StartWorkbench"] = "Part design";
+#ifndef FC_DEBUG
+  App::Application::Config()["HiddenDockWindow"] = "Property editor;Tree view";
+#endif
 
 
 

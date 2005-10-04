@@ -28,6 +28,7 @@
 #ifndef _PreComp_
 # include <string>
 # include <vector>
+# include <qpixmap.h>
 # include <qstringlist.h>
 #endif
 

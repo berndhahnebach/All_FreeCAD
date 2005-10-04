@@ -2420,41 +2420,6 @@ InputName=CustomWidgets
 # End Source File
 # Begin Source File
 
-SOURCE=.\DockWindow.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\DockWindow.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\DockWindow.h
-InputName=DockWindow
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\DockWindow.h
-InputName=DockWindow
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\FileDialog.cpp
 # End Source File
 # Begin Source File
@@ -2907,6 +2872,41 @@ SOURCE=.\CommandBarManager.cpp
 # Begin Source File
 
 SOURCE=.\CommandBarManager.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DockWindow.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DockWindow.h
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\DockWindow.h
+InputName=DockWindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\DockWindow.h
+InputName=DockWindow
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	%QTDIR%\bin\moc.exe "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
