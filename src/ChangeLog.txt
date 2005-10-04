@@ -637,4 +637,4 @@ Version: V0.3B3 Date: Tue Oct  4 10:04:27 2005 +++++++++++++++++++++++++++++++
 + added class DockConrainer to embed all kind of widgets
 + ability to define dock windows in main()
 + bug fixed in WaitCursor (override/restore waitcursor only once if several instances of WaitCursor exist at a time)
-
++ add new dialog to define own shortcuts

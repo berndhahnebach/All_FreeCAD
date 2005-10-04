@@ -334,6 +334,14 @@ BuildCmds= \
 # End Source File
 # Begin Source File
 
+SOURCE=.\DlgKeyboardImp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgKeyboardImp.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\DlgOnlineHelp.ui
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
