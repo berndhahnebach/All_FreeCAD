@@ -48,9 +48,12 @@
 #include "../Base/Exception.h"
 #include "../Base/Parameter.h"
 #include "../Base/Console.h"
-#include "../Base/EnvMacros.h"
 #include "../Base/Factory.h"
 #include "../Base/FileInfo.h"
+
+namespace EnvMacro {
+#include "../Base/EnvMacros.h"
+}
 
 using namespace App;
 
@@ -518,20 +521,20 @@ void Application::initConfig(int argc, char ** argv, const char * sHomePath )
 	// find the home path....
 	std::string HomePath;
 #	ifdef FC_OS_WIN32
-		HomePath = FindHomePathWin32(0);
+    HomePath = EnvMacro::FindHomePathWin32(0);
 #	else
-		HomePath = FindHomePathUnix(argv[0]);
+		HomePath = EnvMacro::FindHomePathUnix(argv[0]);
 #	endif
 
   // try to figure out if using FreeCADLib
-  std::string Temp = GetFreeCADLib(HomePath.c_str());
+  std::string Temp = EnvMacro::GetFreeCADLib(HomePath.c_str());
 
   // sets all needed varables if a FreeCAD LibPack is found
   if(Temp != "")
   {
-	  EnvPrint("MeinGui Set Python ++++++++++++++++++++++++++++++++++++++++++++++");
+	  EnvMacro::EnvPrint("MeinGui Set Python ++++++++++++++++++++++++++++++++++++++++++++++");
 	  // sets the python environment variables if the FREECADLIB variable is defined
-	  SetPythonToFreeCADLib(Temp.c_str());
+	  EnvMacro::SetPythonToFreeCADLib(Temp.c_str());
   }
 	
 	_argc = argc;
@@ -971,7 +974,7 @@ void Application::ExtractUser()
 	mConfig["DocPath"] = mConfig["HomePath"] + "doc" + PATHSEP;
 
 	// try to figure out if using FreeCADLib
-	mConfig["FreeCADLib"] = GetFreeCADLib(mConfig["HomePath"].c_str());
+	mConfig["FreeCADLib"] = EnvMacro::GetFreeCADLib(mConfig["HomePath"].c_str());
 
 	// try to figure out the user
 	char* user = getenv("USERNAME");
@@ -981,7 +984,7 @@ void Application::ExtractUser()
 		user = "Anonymous";
 	mConfig["UserName"] = user;
 
-	PrintPath();
+	EnvMacro::PrintPath();
 }
 
 const char sEnvErrorText1[] = \
@@ -1004,26 +1007,26 @@ const char sEnvErrorText2[] = \
 void Application::CheckEnv(void)
 {
 	// set the OpenCasCade plugin variables to the FreeCAD bin path.
-	SetPluginDefaults(mConfig["HomePath"].c_str());
+	EnvMacro::SetPluginDefaults(mConfig["HomePath"].c_str());
 
 	// sets all needed varables if a FreeCAD LibPack is found
 	if(mConfig["FreeCADLib"] != "")
 	{
 		// sets the python environment variables if the FREECADLIB variable is defined
-		SetPythonToFreeCADLib(mConfig["FreeCADLib"].c_str());
+		EnvMacro::SetPythonToFreeCADLib(mConfig["FreeCADLib"].c_str());
 
 		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-		SetCasCadeToFreeCADLib(mConfig["FreeCADLib"].c_str());
+		EnvMacro::SetCasCadeToFreeCADLib(mConfig["FreeCADLib"].c_str());
 	}
 
 	cout << flush;
 
 	bool bFailure=false;
 
-	TestEnvExists("CSF_MDTVFontDirectory",bFailure);
-	TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
-	TestEnvExists("CSF_UnitsDefinition",bFailure);
-	TestEnvExists("CSF_UnitsLexicon",bFailure);
+	EnvMacro::TestEnvExists("CSF_MDTVFontDirectory",bFailure);
+	EnvMacro::TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
+	EnvMacro::TestEnvExists("CSF_UnitsDefinition",bFailure);
+	EnvMacro::TestEnvExists("CSF_UnitsLexicon",bFailure);
 
 	if (bFailure) {
      		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;

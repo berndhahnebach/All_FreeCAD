@@ -41,7 +41,6 @@
 #include "../Base/Interpreter.h"
 #include "../Base/Parameter.h"
 #include "../Base/Exception.h"
-#include "../Base/EnvMacros.h"
 #include "../Base/Factory.h"
 #include "../Base/FileInfo.h"
 #include "../App/Application.h"

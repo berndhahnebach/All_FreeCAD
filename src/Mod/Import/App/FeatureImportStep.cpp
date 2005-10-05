@@ -79,7 +79,7 @@ Standard_Integer FeatureImportStep::Execute(TFunction_Logbook& log)
 	  {
 		  close(i);
 	  }else{
-      Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName.c_str());
+      setError("File not readable");
 		  return 1;
 	  }
 
@@ -90,7 +90,8 @@ Standard_Integer FeatureImportStep::Execute(TFunction_Logbook& log)
     Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
     if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
     {
-      throw;
+      setError("File not readable");
+      return 1;
     }
   
     // Root transfers

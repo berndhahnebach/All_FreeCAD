@@ -115,7 +115,7 @@ public:
 	  if (_ObserverSet.size() > 0)
 	  {
 		printf("Not detached all observers yet\n");
-		throw;
+		assert(0);
 	  }
 	//	for(std::set<FCObserver * >::iterator Iter=_ObserverSet.begin();Iter!=_ObserverSet.end();Iter++)
 	//  {

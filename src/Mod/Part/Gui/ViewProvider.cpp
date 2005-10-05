@@ -149,6 +149,10 @@ void ViewProviderInventorPart::updateData(void)
   bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
 
+  // if the Feature not valid, do nothing at all
+  if ( pcFeature->getStatus() !=  App::Feature::Valid )
+    return; // feature is invalid
+
   TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->getShape();
 
   // clear anchor nodes
@@ -156,9 +160,6 @@ void ViewProviderInventorPart::updateData(void)
   FaceRoot->removeAllChildren();
   VertexRoot->removeAllChildren();
 
-  // if the Feature not valid, do nothing at all
-  if ( pcFeature->getStatus() ==  App::Feature::Error )
-    return; // feature is invalid
 
   // creating the mesh on the data structure
   BRepMesh::Mesh(cShape,fMeshDeviation);

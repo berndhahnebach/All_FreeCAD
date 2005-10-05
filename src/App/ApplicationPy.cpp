@@ -44,7 +44,6 @@
 #include "../Base/Exception.h"
 #include "../Base/Parameter.h"
 #include "../Base/Console.h"
-#include "../Base/EnvMacros.h"
 #include "../Base/Factory.h"
 
 

@@ -143,7 +143,7 @@ Handle(TDF_Attribute) PropertyAttr::NewEmpty () const
 
 void PropertyAttr::Restore(const Handle(TDF_Attribute)& with) 
 {
-	throw;
+	assert(0);
   //myString2 = Handle(PropertyAttr)::DownCast (with)->Get();
 }
 
@@ -151,7 +151,7 @@ void PropertyAttr::Restore(const Handle(TDF_Attribute)& with)
 void PropertyAttr::Paste (const Handle(TDF_Attribute)& into,
 		           const Handle(TDF_RelocationTable)& RT) const
 {
-	throw;
+	assert(0);
   //Handle(PropertyAttr)::DownCast (into)->Set (myString2);
 }
 

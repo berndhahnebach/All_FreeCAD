@@ -121,7 +121,7 @@ bool MeshCurvaturePerVertex::Compute()
     {
       int idx = (int)it->_aulPoints[i];
       if ( idx < 0)
-        throw;
+        throw Base::Exception("MeshCurvaturePerVertex::Compute()");
       aIdx.push_back( (int)it->_aulPoints[i] );
     }
   }

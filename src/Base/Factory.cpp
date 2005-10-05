@@ -44,29 +44,13 @@ using namespace Base;
 
 Factory::~Factory ()
 {
-#ifdef _MSC_VER
-# if _MSC_VER >= 1300
-  for (std::map<std::string, AbstractProducer*>::iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
-# else
   for (std::map<const std::string, AbstractProducer*>::iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
-# endif
-#else
-  for (std::map<const std::string, AbstractProducer*>::iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
-#endif
     delete pI->second;
 }
 
 void* Factory::Produce (const char *sClassName) const
 {
-#ifdef _MSC_VER
-# if _MSC_VER >= 1300
-  std::map<std::string, AbstractProducer*>::const_iterator pProd;
-# else
   std::map<const std::string, AbstractProducer*>::const_iterator pProd;
-# endif
-#else
-  std::map<const std::string, AbstractProducer*>::const_iterator pProd;
-#endif
 
   pProd = _mpcProducers.find(sClassName);
   if (pProd != _mpcProducers.end())
@@ -89,15 +73,7 @@ std::list<std::string> Factory::CanProduce() const
 {
 	std::list<std::string> lObjects;
 
-#ifdef _MSC_VER
-# if _MSC_VER >= 1300
-  for (std::map<std::string, AbstractProducer*>::const_iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
-# else
   for (std::map<const std::string, AbstractProducer*>::const_iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
-# endif
-#else
-  for (std::map<const std::string, AbstractProducer*>::const_iterator pI = _mpcProducers.begin(); pI != _mpcProducers.end(); pI++)
-#endif
 	{
 		lObjects.push_back(pI->first);
 	}

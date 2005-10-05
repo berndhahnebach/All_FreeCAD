@@ -83,7 +83,8 @@ Standard_Integer FeaturePartImportStep::execute(TFunction_Logbook& log)
     Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
     if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
     {
-      throw;
+      setError("File not readable");
+      return 1;
     }
   
     // Root transfers

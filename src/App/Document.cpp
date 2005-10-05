@@ -414,10 +414,13 @@ void Document::_RecomputeFeature(Feature* Feat)
     Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),e.what());
     Feat->setError(e.what());
     succes = 3;
-  }catch(...){
-    Base::Console().Error("Unknown exception in Feature \"%s\" thrown\n",Feat->getName());
+  }
+#ifndef FC_DEBUG
+  catch(...){
+    Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->getName());
     succes = 3;
   }
+#endif
 
   // special error code to avoid to execute a feature twice
   if (succes == 4){

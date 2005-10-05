@@ -81,7 +81,7 @@ TopoDS_Shape PartFeature::getShape(void)
 {
   Handle(TNaming_NamedShape) ShapeToViewName;
   if (!( _cFeatureLabel.FindAttribute(TNaming_NamedShape::GetID(),ShapeToViewName) ))
-    throw;
+    throw Base::Exception("PartFeature::getShape(): Shape not valid check Feature::getStatus() first!");
 
   // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
   return ShapeToViewName->Get();
