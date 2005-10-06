@@ -335,34 +335,79 @@ void StdCmdMDITabbed::activated(int iMsg)
 
 
 //===========================================================================
-// Std_ViewMenu
+// Std_DockWindowMenu
 //===========================================================================
 
-DEF_STD_CMD_AC(StdCmdViewMenu);
+DEF_STD_CMD_AC(StdCmdDockViewMenu);
 
-StdCmdViewMenu::StdCmdViewMenu()
-  :CppCommand("Std_ViewMenu")
+StdCmdDockViewMenu::StdCmdDockViewMenu()
+  :CppCommand("Std_DockViewMenu")
 {
   sGroup        = QT_TR_NOOP("View");
-  sMenuText     = QT_TR_NOOP("Toggles this window");
+  sMenuText     = QT_TR_NOOP("Vie&ws");
   sToolTipText  = QT_TR_NOOP("Toggles this window");
   sWhatsThis    = QT_TR_NOOP("Toggles this window");
   sStatusTip    = QT_TR_NOOP("Toggles this window");
   iAccel        = 0;
 }
 
-void StdCmdViewMenu::activated(int iMsg)
+void StdCmdDockViewMenu::activated(int iMsg)
 {
 }
 
-bool StdCmdViewMenu::isActive(void)
+bool StdCmdDockViewMenu::isActive(void)
 {
   return true;
 }
 
-QAction * StdCmdViewMenu::createAction(void)
+QAction * StdCmdDockViewMenu::createAction(void)
 {
-  return new ViewAction(getMainWindow());
+  QAction *pcAction;
+  pcAction = new DockViewAction(getMainWindow());
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  return pcAction;
+}
+
+//===========================================================================
+// Std_ViewMenu
+//===========================================================================
+
+DEF_STD_CMD_AC(StdCmdToolBarMenu);
+
+StdCmdToolBarMenu::StdCmdToolBarMenu()
+  :CppCommand("Std_ToolBarMenu")
+{
+  sGroup        = QT_TR_NOOP("View");
+  sMenuText     = QT_TR_NOOP("Tool&bars");
+  sToolTipText  = QT_TR_NOOP("Toggles this window");
+  sWhatsThis    = QT_TR_NOOP("Toggles this window");
+  sStatusTip    = QT_TR_NOOP("Toggles this window");
+  iAccel        = 0;
+}
+
+void StdCmdToolBarMenu::activated(int iMsg)
+{
+}
+
+bool StdCmdToolBarMenu::isActive(void)
+{
+  return true;
+}
+
+QAction * StdCmdToolBarMenu::createAction(void)
+{
+  QAction *pcAction;
+  pcAction = new ToolBarAction(getMainWindow());
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  return pcAction;
 }
 
 //===========================================================================
@@ -457,7 +502,8 @@ void CreateWindowStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdActivateNextWindow());
   rcCmdMgr.addCommand(new StdCmdActivatePrevWindow());
   rcCmdMgr.addCommand(new StdCmdWindows());
-  rcCmdMgr.addCommand(new StdCmdViewMenu());
+  rcCmdMgr.addCommand(new StdCmdDockViewMenu());
+  rcCmdMgr.addCommand(new StdCmdToolBarMenu());
   rcCmdMgr.addCommand(new StdCmdWindowsMenu());
   rcCmdMgr.addCommand(new StdCmdStatusBar());
 }

@@ -30,10 +30,10 @@
 # include <qtooltip.h>
 #endif
 
-
 namespace Gui 
 {
 class Command;
+struct DockWindowActionP;
 
 /**
  * Class for drag and drop a 'QAction' object
@@ -238,18 +238,53 @@ public:
 // --------------------------------------------------------------------
 
 /**
+ * Special action to show dock windows in a popup menu.
  * @author Werner Mayer
  */
-class GuiExport ViewAction : public QAction
+class GuiExport DockWindowAction : public QAction
 {
   Q_OBJECT
 
 public:
-  ViewAction ( QObject * parent = 0, const char * name = 0 );
-  virtual ~ViewAction();
+  DockWindowAction ( QMainWindow::DockWindows, QObject * parent = 0, const char * name = 0 );
+  virtual ~DockWindowAction();
 
   bool addTo ( QWidget * w );
   bool removeFrom ( QWidget * w );
+  void setMenuText ( const QString & );
+
+private:
+  DockWindowActionP* d;
+};
+
+// --------------------------------------------------------------------
+
+/**
+ * Special action to show all dockable views -- except of toolbars -- in an own popup menu.
+ * @author Werner Mayer
+ */
+class GuiExport DockViewAction : public DockWindowAction
+{
+  Q_OBJECT
+
+public:
+  DockViewAction ( QObject * parent = 0, const char * name = 0 );
+  virtual ~DockViewAction();
+};
+
+// --------------------------------------------------------------------
+
+/**
+ * Special action to show all toolbars in an own popup menu.
+ * @author Werner Mayer
+ */
+class GuiExport ToolBarAction : public DockWindowAction
+{
+  Q_OBJECT
+
+public:
+  ToolBarAction ( QObject * parent = 0, const char * name = 0 );
+  virtual ~ToolBarAction();
 };
 
 // --------------------------------------------------------------------

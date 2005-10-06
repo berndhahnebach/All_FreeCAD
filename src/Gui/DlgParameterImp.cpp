@@ -216,9 +216,9 @@ void ParameterGroup::contentsContextMenuEvent ( QContextMenuEvent* event )
   {
     menuEdit->setItemEnabled( _id, selectedItem()->childCount() > 0 );
     if ( selectedItem()->isOpen() )
-      custom->setText("Collapse");
+      custom->setText( tr("Collapse") );
     else
-      custom->setText("Expand");
+      custom->setText( tr("Expand") );
     menuEdit->popup(event->globalPos());
   }
 }
@@ -304,7 +304,7 @@ void ParameterGroup::onExportToFile()
 {
   bool ok;
   QString file = FileDialog::getSaveFileName( QString::null, "XML (*.FCParam)", this, "Parameter",
-                                              tr("Export parameter to file"), 0, true, "Export", &ok);
+                                              tr("Export parameter to file"), 0, true, tr("Export"), &ok);
   if ( ok )
   {
     QListViewItem* item = selectedItem();
@@ -321,7 +321,7 @@ void ParameterGroup::onImportFromFile()
 {
   bool ok;
   QString file = FileDialog::getOpenFileName( QString::null, "XML (*.FCParam)", this, "Parameter",
-                                              tr("Import parameter from file"), 0, true, "Import", &ok);
+                                              tr("Import parameter from file"), 0, true, tr("Import"), &ok);
   if ( ok )
   {
     QFileInfo fi(file);

@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <qdockarea.h>
 # include <qdockwindow.h>
 # include <qstringlist.h>
 #endif
@@ -44,13 +45,79 @@ DockWindow::~DockWindow()
 void DockWindow::setCaption ( const QString & s )
 {
   if ( _dw )
-    _dw->setCaption( s );
+    _dw->setCaption( tr(s) );
   _caption = s;
 }
 
 QDockWindow* DockWindow::dockWindow() const
 {
   return _dw;
+}
+
+void DockWindow::setFixedExtentWidth(int w)
+{
+  if (!_dw||!_dw->area())
+    return; // not yet attached to a dock area
+  QDockArea* area = _dw->area();
+  QPtrList<QDockWindow> dws = area->dockWindowList();
+  QDockWindow* dw;
+  int ct=0;
+  int sum=0;
+  for (dw=dws.first(); dw; dw=dws.next())
+  {
+    if ( dw->isVisible() && dw != _dw )
+    {
+      ct++;
+      sum += dw->width();
+    }
+  }
+
+  if ( ct == 0 || sum <= w )
+    return; // sorry, cannot enlarge other windows
+
+  int lw = (sum - w)/ct;
+  for (dw=dws.first(); dw; dw=dws.next())
+  {
+    if ( dw->isVisible() && dw != _dw )
+      dw->setFixedExtentWidth( lw );
+  }
+
+  _dw->setFixedExtentWidth(w);
+  area->QWidget::layout()->invalidate();
+  area->QWidget::layout()->activate();
+}
+
+void DockWindow::setFixedExtentHeight(int h)
+{
+  if (!_dw||!_dw->area())
+    return; // not yet attached to a dock area
+  QDockArea* area = _dw->area();
+  QPtrList<QDockWindow> dws = area->dockWindowList();
+  QDockWindow* dw;
+  int ct=0;
+  int sum=0;
+  for (dw=dws.first(); dw; dw=dws.next())
+  {
+    if ( dw->isVisible() && dw != _dw )
+    {
+      ct++;
+      sum += dw->height();
+    }
+  }
+
+  if ( ct == 0 || sum <= h )
+    return; // sorry, cannot enlarge other windows
+
+  int lh = (sum - h)/ct;
+  for (dw=dws.first(); dw; dw=dws.next())
+  {
+    if ( dw->isVisible() && dw != _dw )
+      dw->setFixedExtentHeight( lh );
+  }
+
+  _dw->setFixedExtentHeight(h);
+  area->QWidget::layout()->invalidate();
+  area->QWidget::layout()->activate();
 }
 
 void DockWindow::languageChange()
@@ -93,6 +160,7 @@ DockContainer::DockContainer( QWidget* parent, const char* name, WFlags fl )
   sv = new QScrollView( this );
   sv->setResizePolicy( QScrollView::AutoOneFit );
   sv->setFrameStyle( QFrame::NoFrame );
+  sv->viewport()->setBackgroundMode( PaletteBase );
   QGridLayout* pGrid = new QGridLayout(this);
   pGrid->addWidget(sv, 0, 0);
 }

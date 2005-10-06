@@ -199,6 +199,8 @@
 #include <qcolordialog.h>
 #include <qcombobox.h>
 #include <qdatetimeedit.h>
+#include <qdockarea.h>
+#include <qdockwindow.h>
 #include <qdragobject.h>
 #include <qdrawutil.h>
 #include <qevent.h>

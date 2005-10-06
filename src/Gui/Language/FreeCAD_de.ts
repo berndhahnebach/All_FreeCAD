@@ -1130,6 +1130,14 @@ Diese Datei ist bereits vorhanden.</translation>
             <translation>Parameter importieren</translation>
         </message>
         <message>
+            <source>Expand</source>
+            <translation>Erweitern</translation>
+        </message>
+        <message>
+            <source>Collapse</source>
+            <translation>Reduzieren</translation>
+        </message>
+        <message>
             <source>Do really want to remove this parameter group?</source>
             <translation>Möchten Sie diese Gruppe wirklich entfernen?</translation>
         </message>
@@ -1146,8 +1154,16 @@ Diese Datei ist bereits vorhanden.</translation>
             <translation>Parameter in Datei schreiben</translation>
         </message>
         <message>
+            <source>Export</source>
+            <translation>Exportieren</translation>
+        </message>
+        <message>
             <source>Import parameter from file</source>
             <translation>Parameter aus Datei lesen</translation>
+        </message>
+        <message>
+            <source>Import</source>
+            <translation>Importieren</translation>
         </message>
         <message>
             <source>Import Error</source>
@@ -1634,17 +1650,6 @@ Möchten Sie die Datei überschreiben?</translation>
         <message>
             <source>Labels &amp; Attributes</source>
             <translation>Bezeichnungen &amp; Attribute</translation>
-        </message>
-    </context>
-    <context>
-        <name>Gui::ViewAction</name>
-        <message>
-            <source>Tool&amp;bars</source>
-            <translation>Werkzeug&amp;leisten</translation>
-        </message>
-        <message>
-            <source>Vie&amp;ws</source>
-            <translation>An&amp;sichten</translation>
         </message>
     </context>
     <context>
@@ -2521,10 +2526,29 @@ Wollen Sie wirklich fortfahren?</translation>
         </message>
     </context>
     <context>
-        <name>StdCmdViewMenu</name>
+        <name>StdCmdToolBarMenu</name>
         <message>
             <source>Standard</source>
             <translation>Standard</translation>
+        </message>
+        <message>
+            <source>Tool&amp;bars</source>
+            <translation>Werkzeug&amp;leisten</translation>
+        </message>
+        <message>
+            <source>Toggles this window</source>
+            <translation>Fenster ein-/ausblenden</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdCmdDockWindowMenu</name>
+        <message>
+            <source>Standard</source>
+            <translation>Standard</translation>
+        </message>
+        <message>
+            <source>Vie&amp;ws</source>
+            <translation>An&amp;sichten</translation>
         </message>
         <message>
             <source>Toggles this window</source>

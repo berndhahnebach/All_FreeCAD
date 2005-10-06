@@ -68,7 +68,23 @@ public:
   virtual bool canClose(void){return true;}
   //@}
   void setCaption ( const QString & );
+  /** Returns the associated QDockWindow object this widget. 
+   * @note A valid pointer is not returned before this widget has been docked with DockWindowManager::addDockWindow().
+   * Otherwise 0 is returned.
+   */
   QDockWindow* dockWindow() const;
+  /**
+   * Sets the dock window's preferred width for its fixed extent (size) to \a w.
+   * All other dock windows in the same dock arae get enlarged then. If there is 
+   * no other dock window then this method has no effect.
+   */
+  void setFixedExtentWidth(int w);
+  /**
+   * Sets the dock window's preferred height for its fixed extent (size) to \a h.
+   * All other dock windows in the same dock arae get enlarged then. If there is 
+   * no other dock window then this method has no effect.
+   */
+  void setFixedExtentHeight(int h);
 
 protected slots:
   virtual void languageChange();
