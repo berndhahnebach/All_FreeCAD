@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qguardedptr.h>
 # include <qobjectlist.h>
 #endif
 

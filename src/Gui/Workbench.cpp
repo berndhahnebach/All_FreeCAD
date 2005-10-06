@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qpopupmenu.h>
+# include <qtoolbar.h>
 #endif
 
 #include "Workbench.h"

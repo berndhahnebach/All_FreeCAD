@@ -28,6 +28,7 @@
 # include <qeventloop.h>
 # include <qlabel.h>
 # include <qmenubar.h>
+# include <qmessagebox.h>
 # include <qstatusbar.h>
 # include <qstyle.h>
 # include <qstylefactory.h>
@@ -463,7 +464,7 @@ bool Application::activateWorkbench( const char* name )
   if ( pCmd && pCmd->getAction(false) )
   {
     Workbench* curWb = WorkbenchManager::instance()->active();
-    QString curName = curWb ? curWb->name() : name;
+    QString curName = (curWb ? curWb->name() : QString(name));
     pCmd->notify( curName );
   }
 

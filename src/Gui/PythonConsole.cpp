@@ -27,6 +27,7 @@
 # include <qapplication.h>
 # include <qclipboard.h>
 # include <qmime.h>
+# include <qpopupmenu.h>
 # include <qregexp.h>
 #endif
 

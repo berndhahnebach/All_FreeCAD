@@ -34,6 +34,7 @@
 # include <qprinter.h>
 # include <qregexp.h>
 # include <qsimplerichtext.h>
+# include <qtimer.h>
 # include <private/qrichtext_p.h>
 #endif
 

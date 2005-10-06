@@ -2,7 +2,6 @@ lib_LTLIBRARIES=libFreeCADGui.la
 
 BUILT_SOURCES=\
 		moc_Action.cpp \
-		moc_Application.cpp \
 		moc_ButtonGroup.cpp \
 		moc_CommandLine.cpp \
 		moc_CustomWidgets.cpp \
@@ -20,6 +19,7 @@ BUILT_SOURCES=\
 		moc_DlgEditorImp.cpp \
 		moc_DlgGeneral.cpp \
 		moc_DlgGeneralImp.cpp \
+		moc_DlgKeyboard.cpp \
 		moc_DlgMacroExecute.cpp \
 		moc_DlgMacroExecuteImp.cpp \
 		moc_DlgMacroRecord.cpp \
@@ -75,6 +75,8 @@ BUILT_SOURCES=\
 		DlgDisplayProperties.h \
 		DlgEditor.cpp \
 		DlgEditor.h \
+		DlgKeyboard.cpp \
+		DlgKeyboard.h \
 		DlgGeneral.cpp \
 		DlgGeneral.h \
 		DlgMacroExecute.cpp \
@@ -141,6 +143,7 @@ libFreeCADGui_la_SOURCES=\
 		Action.cpp \
 		Action.h \
 		Application.cpp \
+		ApplicationPy.cpp \
 		Application.h \
 		BitmapFactory.cpp \
 		BitmapFactory.h \
@@ -174,6 +177,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgEditorImp.h \
 		DlgGeneralImp.cpp \
 		DlgGeneralImp.h \
+		DlgKeyboardImp.cpp \
+		DlgKeyboardImp.h \
 		DlgMacroExecuteImp.cpp \
 		DlgMacroExecuteImp.h \
 		DlgMacroRecordImp.cpp \

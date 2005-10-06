@@ -27,6 +27,7 @@
 #ifndef _PreComp_
 # include <qaction.h>
 # include <qdragobject.h>
+# include <qmainwindow.h>
 # include <qtooltip.h>
 #endif
 

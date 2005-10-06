@@ -25,7 +25,9 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qdragobject.h>
 # include <qeventloop.h>
+# include <qfileinfo.h>
 # include <qlabel.h>
 # include <qmenubar.h>
 # include <qstatusbar.h>

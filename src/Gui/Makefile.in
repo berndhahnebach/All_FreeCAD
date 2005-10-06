@@ -143,7 +143,6 @@ lib_LTLIBRARIES = libFreeCADGui.la
 
 BUILT_SOURCES = \
 		moc_Action.cpp \
-		moc_Application.cpp \
 		moc_ButtonGroup.cpp \
 		moc_CommandLine.cpp \
 		moc_CustomWidgets.cpp \
@@ -161,6 +160,7 @@ BUILT_SOURCES = \
 		moc_DlgEditorImp.cpp \
 		moc_DlgGeneral.cpp \
 		moc_DlgGeneralImp.cpp \
+		moc_DlgKeyboard.cpp \
 		moc_DlgMacroExecute.cpp \
 		moc_DlgMacroExecuteImp.cpp \
 		moc_DlgMacroRecord.cpp \
@@ -216,6 +216,8 @@ BUILT_SOURCES = \
 		DlgDisplayProperties.h \
 		DlgEditor.cpp \
 		DlgEditor.h \
+		DlgKeyboard.cpp \
+		DlgKeyboard.h \
 		DlgGeneral.cpp \
 		DlgGeneral.h \
 		DlgMacroExecute.cpp \
@@ -282,6 +284,7 @@ libFreeCADGui_la_SOURCES = \
 		Action.cpp \
 		Action.h \
 		Application.cpp \
+		ApplicationPy.cpp \
 		Application.h \
 		BitmapFactory.cpp \
 		BitmapFactory.h \
@@ -315,6 +318,8 @@ libFreeCADGui_la_SOURCES = \
 		DlgEditorImp.h \
 		DlgGeneralImp.cpp \
 		DlgGeneralImp.h \
+		DlgKeyboardImp.cpp \
+		DlgKeyboardImp.h \
 		DlgMacroExecuteImp.cpp \
 		DlgMacroExecuteImp.h \
 		DlgMacroRecordImp.cpp \
@@ -508,28 +513,28 @@ am_libFreeCADGui_la_OBJECTS = propertyeditor.lo propertyeditoritem.lo \
 	propertyeditorfont.lo propertyeditorinput.lo \
 	propertyeditorlist.lo knuminput.lo knumvalidator.lo \
 	SoBrepShape.lo LanguageFactory.lo Translator.lo Action.lo \
-	Application.lo BitmapFactory.lo ButtonGroup.lo CommandLine.lo \
-	Command.lo CommandBarManager.lo CommandStd.lo CommandWindow.lo \
-	CommandTest.lo CommandView.lo CustomWidgets.lo DlgActionsImp.lo \
-	DlgActivateWindowImp.lo DlgCmdbarsImp.lo DlgCommandsImp.lo \
-	DlgCustomizeImp.lo DlgDisplayPropertiesImp.lo DlgEditorImp.lo \
-	DlgGeneralImp.lo DlgMacroExecuteImp.lo DlgMacroRecordImp.lo \
-	DlgOnlineHelpImp.lo DlgParameterImp.lo DlgPreferencesImp.lo \
-	DlgReportViewImp.lo DlgSettings3DViewImp.lo \
-	DlgSettingsMacroImp.lo DlgTipOfTheDayImp.lo DlgToolbarsImp.lo \
-	DlgUndoRedo.lo DockWindow.lo Document.lo Doxygen.lo \
-	FileDialog.lo GuiConsole.lo HelpView.lo Macro.lo MainWindow.lo \
-	MenuManager.lo NetworkRetriever.lo PreCompiled.lo \
-	PrefWidgets.lo Process.lo ProgressBar.lo PropertyPage.lo \
-	PropertyView.lo PythonConsole.lo PythonConsolePy.lo \
-	PythonEditor.lo ReportView.lo resource.lo Selection.lo \
-	SoFCSelection.lo SpinBox.lo Splashscreen.lo StackBar.lo \
-	TextEdit.lo ToolBarManager.lo ToolBox.lo ToolBoxBar.lo Tools.lo \
-	Tree.lo View.lo View3DInventor.lo View3DInventorExamples.lo \
-	View3DInventorViewer.lo ViewProvider.lo ViewProviderFeature.lo \
-	WaitCursor.lo WhatsThis.lo WidgetFactory.lo Widgets.lo \
-	Window.lo Workbench.lo WorkbenchFactory.lo WorkbenchManager.lo \
-	WorkbenchPy.lo
+	Application.lo ApplicationPy.lo BitmapFactory.lo ButtonGroup.lo \
+	CommandLine.lo Command.lo CommandBarManager.lo CommandStd.lo \
+	CommandWindow.lo CommandTest.lo CommandView.lo CustomWidgets.lo \
+	DlgActionsImp.lo DlgActivateWindowImp.lo DlgCmdbarsImp.lo \
+	DlgCommandsImp.lo DlgCustomizeImp.lo DlgDisplayPropertiesImp.lo \
+	DlgEditorImp.lo DlgGeneralImp.lo DlgKeyboardImp.lo \
+	DlgMacroExecuteImp.lo DlgMacroRecordImp.lo DlgOnlineHelpImp.lo \
+	DlgParameterImp.lo DlgPreferencesImp.lo DlgReportViewImp.lo \
+	DlgSettings3DViewImp.lo DlgSettingsMacroImp.lo \
+	DlgTipOfTheDayImp.lo DlgToolbarsImp.lo DlgUndoRedo.lo \
+	DockWindow.lo Document.lo Doxygen.lo FileDialog.lo \
+	GuiConsole.lo HelpView.lo Macro.lo MainWindow.lo MenuManager.lo \
+	NetworkRetriever.lo PreCompiled.lo PrefWidgets.lo Process.lo \
+	ProgressBar.lo PropertyPage.lo PropertyView.lo PythonConsole.lo \
+	PythonConsolePy.lo PythonEditor.lo ReportView.lo resource.lo \
+	Selection.lo SoFCSelection.lo SpinBox.lo Splashscreen.lo \
+	StackBar.lo TextEdit.lo ToolBarManager.lo ToolBox.lo \
+	ToolBoxBar.lo Tools.lo Tree.lo View.lo View3DInventor.lo \
+	View3DInventorExamples.lo View3DInventorViewer.lo \
+	ViewProvider.lo ViewProviderFeature.lo WaitCursor.lo \
+	WhatsThis.lo WidgetFactory.lo Widgets.lo Window.lo Workbench.lo \
+	WorkbenchFactory.lo WorkbenchManager.lo WorkbenchPy.lo
 libFreeCADGui_la_OBJECTS = $(am_libFreeCADGui_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -537,6 +542,7 @@ depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/Action.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Application.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/ApplicationPy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/BitmapFactory.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/ButtonGroup.Plo ./$(DEPDIR)/Command.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/CommandBarManager.Plo \
@@ -554,6 +560,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/DlgDisplayPropertiesImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgEditorImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgGeneralImp.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/DlgKeyboardImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgMacroExecuteImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgMacroRecordImp.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/DlgOnlineHelpImp.Plo \
@@ -682,6 +689,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Action.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Application.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ApplicationPy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BitmapFactory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ButtonGroup.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Command.Plo@am__quote@
@@ -700,6 +708,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgDisplayPropertiesImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgEditorImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgGeneralImp.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgKeyboardImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgMacroExecuteImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgMacroRecordImp.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DlgOnlineHelpImp.Plo@am__quote@

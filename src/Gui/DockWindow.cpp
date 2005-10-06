@@ -25,6 +25,7 @@
 #ifndef _PreComp_
 # include <qdockarea.h>
 # include <qdockwindow.h>
+# include <qscrollview.h>
 # include <qstringlist.h>
 #endif
 

@@ -32,6 +32,7 @@
 # include <qstatusbar.h>
 # include <qfiledialog.h>
 # include <qobjectlist.h>
+# include <qmessagebox.h>
 # include <qprinter.h>
 # include <qtimer.h>
 #endif
@@ -438,8 +439,8 @@ void StdCmdWorkbench::addWorkbench ( const QString& item )
   if ( pcAction )
   {
     QAction* action = new WorkbenchAction( this, pcAction, item );
-    action->setText(QObject::tr(item));
-    action->setMenuText(QObject::tr(item));
+    action->setText( item ); // native literal
+    action->setMenuText( item );
     action->setToggleAction( true );
     QPixmap px = Application::Instance->workbenchIcon( item );
     if ( px.isNull() )
@@ -1046,8 +1047,8 @@ void StdCmdCommandLine::activated(int iMsg)
   // On X11 this may not work. For further information see QWidget::showMaximized
   //
   // workaround for X11
-  getGuiApplication()->hide();
-  getGuiApplication()->show();
+  getMainWindow()->hide();
+  getMainWindow()->show();
 #endif
 
   // pop up the main window
@@ -1076,18 +1077,15 @@ StdCmdOCAFBrowse::StdCmdOCAFBrowse()
 void StdCmdOCAFBrowse::activated(int iMsg)
 {
 #ifdef FC_USE_OCAFBROWSER
-
 # ifdef _MSC_VER
-
 #   pragma warning(disable: 4101)
-
 # endif
 
   DebugBrowser cBrowser;
   cBrowser.DFBrowser(getGuiApplication()->activeDocument()->getDocument()->GetOCCDoc());
 #else
-  QMessageBox::information(getGuiApplication(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"
-                                        "this feature is disabled.");
+  QMessageBox::information(getMainWindow(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"
+                                            "this feature is disabled.");
 #endif
 }
 
