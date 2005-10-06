@@ -1257,7 +1257,7 @@ void MeshRefPointToFacets::SearchNeighbours(MeshFacetArray::_TIterator pFIter, c
     MeshPointArray::_TIterator pPIter = _rclMesh._aclPointArray.begin() + pFIter->_aulPoints[i];
     const std::set<MeshFacetArray::_TIterator> &rclFacets = operator[](pPIter - pPBegin);
 
-    for (std::set<MeshFacetArray::_TIterator>::iterator j = rclFacets.begin(); j != rclFacets.end(); j++)
+    for (std::set<MeshFacetArray::_TIterator>::const_iterator j = rclFacets.begin(); j != rclFacets.end(); j++)
     {
       SearchNeighbours(*j, rclCenter, fMpxDist, rclNb);
     }

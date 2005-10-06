@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\../../lib"
+			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -22,6 +22,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -34,17 +35,18 @@
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"/>
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="TKPCAF.lib odbc32.lib odbccp32.lib"
-				OutputFile="../../bin/FreeCADApp.dll"
+				OutputFile="Release/FreeCADApp.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\../../lib/FreeCADApp.pdb"
-				ImportLibrary=".\../../lib/FreeCADApp.lib"
+				ProgramDatabaseFile=".\Release/FreeCADApp.pdb"
+				ImportLibrary=".\Release/FreeCADApp.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -52,10 +54,16 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../lib/FreeCADDoc.tlb"
+				TypeLibraryName=".\Release/FreeCADDoc.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+mkdir ..\..\Mod
+copy Release\FreeCADApp.dll ..\..\bin
+mkdir ..\..\lib
+copy Release\FreeCADApp.lib ..\..\lib
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -77,7 +85,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\../../lib"
+			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -86,6 +94,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				OptimizeForProcessor="2"
+				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -98,18 +107,20 @@
 				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"/>
+				Detect64BitPortabilityProblems="FALSE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="odbc32.lib odbccp32.lib"
-				OutputFile="../../bin/FreeCADAppD.dll"
+				OutputFile="Debug/FreeCADAppD.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\../../lib/FreeCADAppD.pdb"
-				ImportLibrary=".\../../lib/FreeCADAppD.lib"
+				ProgramDatabaseFile=".\Debug/FreeCADAppD.pdb"
+				ImportLibrary=".\Debug/FreeCADAppD.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -117,10 +128,16 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../lib/FreeCADDoc.tlb"
+				TypeLibraryName=".\Debug/FreeCADDoc.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+mkdir ..\..\Mod
+copy Debug\FreeCADAppD.dll ..\..\bin
+mkdir ..\..\lib
+copy Debug\FreeCADAppD.lib ..\..\lib
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -151,6 +168,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -158,6 +176,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -166,12 +185,13 @@
 			RelativePath="Application.h">
 		</File>
 		<File
-			RelativePath="Attribute.cpp">
+			RelativePath="ApplicationPy.cpp">
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -179,6 +199,27 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Attribute.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -187,12 +228,36 @@
 			RelativePath="Attribute.h">
 		</File>
 		<File
+			RelativePath="DataWithProperty.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="DataWithProperty.h">
+		</File>
+		<File
 			RelativePath="DllMain.cpp">
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
@@ -201,6 +266,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="0"/>
@@ -213,6 +279,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -220,6 +287,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -234,6 +302,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -241,6 +310,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -255,6 +325,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
@@ -263,6 +334,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="0"/>
@@ -275,6 +347,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -282,6 +355,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -296,6 +370,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -303,6 +378,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -311,13 +387,82 @@
 			RelativePath="FeatureAttr.h">
 		</File>
 		<File
+			RelativePath="FeatureDataProvider.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeatureDataProvider.h">
+		</File>
+		<File
+			RelativePath="FeatureDataProviderPy.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeatureDataProviderPy.h">
+		</File>
+		<File
+			RelativePath="FeaturePy.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeaturePy.h">
+		</File>
+		<File
 			RelativePath="FreeCADInit.py">
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building InitScript.h"
-					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)
 python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h
 "
 					Outputs="InitScript.h"/>
@@ -327,7 +472,7 @@ python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building InitScript.h"
-					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)
 python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h
 "
 					Outputs="InitScript.h"/>
@@ -340,7 +485,7 @@ python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building TestScript.h"
-					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)
 python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 "
 					Outputs="TestScript.h"/>
@@ -350,7 +495,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building TestScript.h"
-					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)
 python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 "
 					Outputs="TestScript.h"/>
@@ -363,6 +508,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -370,6 +516,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -385,6 +532,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -393,6 +541,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -420,6 +569,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -428,6 +578,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -454,6 +605,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -461,6 +613,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -475,6 +628,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
@@ -483,10 +637,57 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Material.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Material.h">
+		</File>
+		<File
+			RelativePath="MaterialPy.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="MaterialPy.h">
 		</File>
 		<File
 			RelativePath="Plugin">
@@ -495,7 +696,7 @@ python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building Plugin.h"
-					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)
 python ..\Tools\PythonToCPP.py Plugin Plugin.h
 "
 					Outputs="Plugin.h"/>
@@ -505,7 +706,7 @@ python ..\Tools\PythonToCPP.py Plugin Plugin.h
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building Plugin.h"
-					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)
 python ..\Tools\PythonToCPP.py Plugin Plugin.h
 "
 					Outputs="Plugin.h"/>
@@ -518,6 +719,7 @@ python ..\Tools\PythonToCPP.py Plugin Plugin.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"
 					UsePrecompiledHeader="1"/>
 			</FileConfiguration>
@@ -526,6 +728,7 @@ python ..\Tools\PythonToCPP.py Plugin Plugin.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="1"/>
@@ -541,6 +744,7 @@ python ..\Tools\PythonToCPP.py Plugin Plugin.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -548,6 +752,7 @@ python ..\Tools\PythonToCPP.py Plugin Plugin.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -562,6 +767,7 @@ python ..\Tools\PythonToCPP.py Plugin Plugin.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -569,6 +775,7 @@ python ..\Tools\PythonToCPP.py Plugin Plugin.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -577,13 +784,50 @@ python ..\Tools\PythonToCPP.py Plugin Plugin.h
 			RelativePath="PropertyAttr.h">
 		</File>
 		<File
+			RelativePath="Selection.cpp">
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="TRUE">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="TRUE">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Selection.h">
+			<FileConfiguration
+				Name="Release|Win32"
+				ExcludedFromBuild="TRUE">
+				<Tool
+					Name="VCCustomBuildTool"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				ExcludedFromBuild="TRUE">
+				<Tool
+					Name="VCCustomBuildTool"/>
+			</FileConfiguration>
+		</File>
+		<File
 			RelativePath="Standard">
 			<FileConfiguration
 				Name="Release|Win32">
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building Standard.h"
-					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)
 python ..\Tools\PythonToCPP.py Standard Standard.h
 "
 					Outputs="Standard.h"/>
@@ -593,7 +837,7 @@ python ..\Tools\PythonToCPP.py Standard Standard.h
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building Standard.h"
-					CommandLine="if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs)
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)
 python ..\Tools\PythonToCPP.py Standard Standard.h
 "
 					Outputs="Standard.h"/>
@@ -606,6 +850,7 @@ python ..\Tools\PythonToCPP.py Standard Standard.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -613,6 +858,7 @@ python ..\Tools\PythonToCPP.py Standard Standard.h
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCApp;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>

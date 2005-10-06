@@ -205,7 +205,7 @@ SOURCE=.\FreeCADInit.py
 InputPath=.\FreeCADInit.py
 
 "InitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h 
 	
 # End Custom Build
@@ -216,7 +216,7 @@ InputPath=.\FreeCADInit.py
 InputPath=.\FreeCADInit.py
 
 "InitScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h 
 	
 # End Custom Build
@@ -234,7 +234,7 @@ SOURCE=.\FreeCADTest.py
 InputPath=.\FreeCADTest.py
 
 "TestScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h 
 	
 # End Custom Build
@@ -245,7 +245,7 @@ InputPath=.\FreeCADTest.py
 InputPath=.\FreeCADTest.py
 
 "TestScript.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h 
 	
 # End Custom Build
@@ -321,7 +321,7 @@ SOURCE=.\Plugin
 InputPath=.\Plugin
 
 "Plugin.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\Tools\PythonToCPP.py Plugin Plugin.h 
 	
 # End Custom Build
@@ -332,7 +332,7 @@ InputPath=.\Plugin
 InputPath=.\Plugin
 
 "Plugin.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\Tools\PythonToCPP.py Plugin Plugin.h 
 	
 # End Custom Build
@@ -385,7 +385,7 @@ SOURCE=.\Standard
 InputPath=.\Standard
 
 "Standard.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\Tools\PythonToCPP.py Standard Standard.h 
 	
 # End Custom Build
@@ -396,7 +396,7 @@ InputPath=.\Standard
 InputPath=.\Standard
 
 "Standard.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\Tools\PythonToCPP.py Standard Standard.h 
 	
 # End Custom Build

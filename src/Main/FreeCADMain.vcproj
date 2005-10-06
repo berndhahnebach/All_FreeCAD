@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\../../bin"
+			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -39,18 +39,21 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/FreeCAD.exe"
+				OutputFile="Release/FreeCAD.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ProgramDatabaseFile="../../lib/FreeCAD.pdb"
-				SubSystem="1"
+				SubSystem="2"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\../../bin/FreeCADMain.tlb"
+				TypeLibraryName=".\Release/FreeCADMain.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+copy Release\FreeCAD.exe ..\..\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -72,7 +75,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\../../bin"
+			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -100,19 +103,22 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/FreeCADD.exe"
+				OutputFile="Debug/FreeCADD.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="../../lib/FreeCADD.pdb"
-				SubSystem="1"
+				ProgramDatabaseFile=".\Debug/FreeCADD.pdb"
+				SubSystem="2"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\../../bin/FreeCADMain.tlb"
+				TypeLibraryName=".\Debug/FreeCADMain.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+copy Debug\FreeCADD.exe ..\..\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

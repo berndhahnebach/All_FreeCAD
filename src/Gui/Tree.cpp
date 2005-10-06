@@ -106,7 +106,7 @@ void DocItem::OnChange(App::Document::SubjectType &rCaller,App::Document::Messag
 #endif
 
   // remove the representation of Features no longer exist
-  std::set<App::Feature*>::iterator It;
+  std::set<App::Feature*>::const_iterator It;
   for(It=Reason.DeletedFeatures.begin();It!=Reason.DeletedFeatures.end();It++)
   {
     std::map<App::Feature*,FeatItem*>::iterator pos;

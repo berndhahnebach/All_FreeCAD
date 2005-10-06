@@ -33,11 +33,6 @@
 #	include <vector>
 #endif
 
-#ifdef FC_OS_LINUX
-#	define ENV_INLINE inline
-#else
-#	define ENV_INLINE __forceinline
-#endif
 
 #undef FC_VERBOSE
 

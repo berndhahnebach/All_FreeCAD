@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\../../lib"
+			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -33,17 +33,18 @@
 				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
+				Detect64BitPortabilityProblems="FALSE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/FreeCADBaseD.dll"
+				OutputFile="Debug/FreeCADBaseD.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\../../lib/FreeCADBaseD.pdb"
-				ImportLibrary=".\../../lib/FreeCADBaseD.lib"
+				ProgramDatabaseFile=".\Debug/FreeCADBaseD.pdb"
+				ImportLibrary=".\Debug/FreeCADBaseD.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -51,10 +52,15 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../lib/FreeCADBase.tlb"
+				TypeLibraryName=".\Debug/FreeCADBase.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+copy Debug\FreeCADBaseD.dll ..\..\bin
+mkdir ..\..\lib
+copy Debug\FreeCADBaseD.lib ..\..\lib
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -76,7 +82,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\../../lib"
+			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -103,11 +109,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../../bin/FreeCADBase.dll"
+				OutputFile=".\Release/FreeCADBase.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\../../lib/FreeCADBase.pdb"
-				ImportLibrary=".\../../lib/FreeCADBase.lib"
+				ProgramDatabaseFile=".\Release/FreeCADBase.pdb"
+				ImportLibrary=".\Release/FreeCADBase.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -115,10 +121,15 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../lib/FreeCADBase.tlb"
+				TypeLibraryName=".\Release/FreeCADBase.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+copy Release\FreeCADBase.dll ..\..\bin
+mkdir ..\..\lib
+copy Release\FreeCADBase.lib ..\..\lib
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -142,6 +153,27 @@
 	<References>
 	</References>
 	<Files>
+		<File
+			RelativePath="BoundBox.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="BoundBox.h">
+		</File>
 		<File
 			RelativePath="Console.cpp">
 			<FileConfiguration
@@ -270,6 +302,27 @@
 			RelativePath="Factory.h">
 		</File>
 		<File
+			RelativePath="FileInfo.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FileInfo.h">
+		</File>
+		<File
 			RelativePath="FileTemplate.cpp">
 			<FileConfiguration
 				Name="Debug|Win32">
@@ -351,6 +404,27 @@
 					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Matrix.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Matrix.h">
 		</File>
 		<File
 			RelativePath="Observer.h">
@@ -502,6 +576,93 @@
 		</File>
 		<File
 			RelativePath="Sequencer.h">
+		</File>
+		<File
+			RelativePath="Stream.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Stream.h">
+		</File>
+		<File
+			RelativePath="Swap.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Swap.h">
+		</File>
+		<File
+			RelativePath="Tools2D.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Tools2D.h">
+		</File>
+		<File
+			RelativePath="Vector3D.cpp">
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					PreprocessorDefinitions="_USRDLL;FCBase;$(NoInherit)"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Vector3D.h">
+		</File>
+		<File
+			RelativePath="ViewProj.h">
 		</File>
 	</Files>
 	<Globals>

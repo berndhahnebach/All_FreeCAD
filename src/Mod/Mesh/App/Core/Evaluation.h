@@ -41,7 +41,7 @@ namespace MeshCore {
  * The class itself is abstract, hence the method Evaluate() must be implemented 
  * by subclasses.
  */
-class MeshEvaluation
+class AppMeshExport MeshEvaluation
 {
 public:
   enum State { Invalid, Fixed, Valid };

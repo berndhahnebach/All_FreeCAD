@@ -21,6 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../../"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImportGui"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -33,12 +34,13 @@
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"/>
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../ImportGui.pyd"
+				OutputFile="Release\ImportGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ProgramDatabaseFile=".\Release/ImportGui.pdb"
@@ -53,7 +55,11 @@
 				TypeLibraryName=".\Release/AppImportGui.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\..\..\Mod\Import
+copy Release\ImportGui.pyd ..\..\..\..\Mod\Import
+copy ..\InitGui.py ..\..\..\..\Mod\Import
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -83,6 +89,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="../../../"
 				PreprocessorDefinitions="_USRDLL;FCAppImportGui;FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -95,12 +102,13 @@
 				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="4"
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../ImportGui_d.pyd"
+				OutputFile="Debug\ImportGui_d.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
@@ -116,7 +124,11 @@
 				TypeLibraryName=".\Debug/AppImportGui.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\..\..\Mod\Import
+copy Debug\ImportGui_d.pyd ..\..\..\..\Mod\Import
+copy ..\InitGui.py ..\..\..\..\Mod\Import
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -147,6 +159,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImportGui;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -154,6 +167,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCAppImportGui;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -165,6 +179,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImportGui;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -172,6 +187,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCAppImportGui;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
@@ -183,6 +199,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImportGui;$(NoInherit)"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
@@ -191,6 +208,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCAppImportGui;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="0"/>
@@ -203,6 +221,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImportGui;$(NoInherit)"
 					UsePrecompiledHeader="1"/>
 			</FileConfiguration>
@@ -211,6 +230,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCAppImportGui;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="1"/>
@@ -218,6 +238,29 @@
 		</File>
 		<File
 			RelativePath="PreCompiled.h">
+		</File>
+		<File
+			RelativePath="Workbench.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImportGui;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCAppImportGui;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Workbench.h">
 		</File>
 	</Files>
 	<Globals>

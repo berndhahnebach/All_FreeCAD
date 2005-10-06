@@ -113,7 +113,7 @@ SOURCE=.\FreeCADpov
 InputPath=.\FreeCADpov
 
 "FreeCADpov.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\..\..\Tools\PythonToCPP.py FreeCADpov FreeCADpov.h 
 	
 # End Custom Build
@@ -124,7 +124,7 @@ InputPath=.\FreeCADpov
 InputPath=.\FreeCADpov
 
 "FreeCADpov.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist %FREECADLIB% (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
+	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
 	python ..\..\..\Tools\PythonToCPP.py FreeCADpov FreeCADpov.h 
 	
 # End Custom Build

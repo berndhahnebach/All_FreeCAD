@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\../../bin"
+			OutputDirectory=".\DebugPy"
 			IntermediateDirectory=".\DebugPy"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -37,12 +37,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
-				OutputFile="../../bin/FreeCAD_d.pyd"
+				OutputFile="DebugPy/FreeCAD_d.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="../../lib/FreeCADDCmdPy.pdb"
-				ImportLibrary=".\../../bin/FreeCAD_d.lib"
+				ProgramDatabaseFile="DebugPy/FreeCADDCmdPy.pdb"
+				ImportLibrary=".\DebugPy/FreeCAD_d.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -50,10 +50,13 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../bin/FreeCADMainPy.tlb"
+				TypeLibraryName=".\DebugPy/FreeCADMainPy.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+copy DebugPy\FreeCAD_d.pyd ..\..\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -75,7 +78,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\../../bin"
+			OutputDirectory=".\ReleasePy"
 			IntermediateDirectory=".\ReleasePy"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -101,11 +104,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="TRUE"
-				OutputFile="../../bin/FreeCAD.pyd"
+				OutputFile="ReleasePy/FreeCAD.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ProgramDatabaseFile="../../lib/FreeCADCmdPy.pdb"
-				ImportLibrary=".\../../bin/FreeCAD.lib"
+				ImportLibrary=".\ReleasePy/FreeCAD.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -113,10 +116,13 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../bin/FreeCADMainPy.tlb"
+				TypeLibraryName=".\ReleasePy/FreeCADMainPy.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+copy ReleasePy\FreeCAD.pyd ..\..\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool

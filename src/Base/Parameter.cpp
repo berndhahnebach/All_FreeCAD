@@ -1478,7 +1478,8 @@ StrX::StrX(const XMLCh* const toTranscode)
 
 StrX::~StrX()
 {
-    delete [] fLocalForm;
+    //delete [] fLocalForm; // dont work on VC7.1
+  XMLString::release(&fLocalForm);
 }
 
 

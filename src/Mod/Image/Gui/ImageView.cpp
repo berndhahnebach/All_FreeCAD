@@ -611,7 +611,7 @@ void ImageView::zoom(int prevX, int prevY, int currX, int currY)
     // Check we have more of a vertical shift than a hz one
     int dx = currX - prevX;
     int dy = currY - prevY;
-    if (fabs(dy) > fabs(dx))
+    if (abs(dy) > abs(dx))
     {
         // Get centrally displayed image point
         int ICx, ICy;

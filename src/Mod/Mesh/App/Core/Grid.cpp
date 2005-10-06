@@ -257,7 +257,7 @@ void MeshGrid::CalculateGridLength (unsigned long ulCtGrid, unsigned long ulMaxG
     fVolElem = (clBBMeshEnlarged.LengthX() * clBBMeshEnlarged.LengthY() * clBBMeshEnlarged.LengthZ()) / float(_ulCtElements);
 
   float fVol     = fVolElem * float(ulCtGrid);
-  float fGridLen = float(pow(fVol, 1.0 / 3.0));
+  float fGridLen = float(pow((float)fVol,(float) 1.0f / 3.0f));
 
   _ulCtGridsX = std::max<unsigned long>((unsigned long)(clBBMeshEnlarged.LengthX() / fGridLen), 1);
   _ulCtGridsY = std::max<unsigned long>((unsigned long)(clBBMeshEnlarged.LengthY() / fGridLen), 1);
@@ -324,7 +324,7 @@ void MeshGrid::CalculateGridLength (int iCtGridPerAxis)
       if ((fVolumenGrid * iMaxGrids) < fVolumen)
         fVolumenGrid = fVolumen / (float)iMaxGrids;
 
-      float fLengthGrid = float(pow(fVolumenGrid, 1.0 / 3.0));
+      float fLengthGrid = float(pow((float)fVolumenGrid,(float) 1.0f / 3.0f));
 
       _ulCtGridsX = std::max<unsigned long>((unsigned long)(fLenghtX / fLengthGrid), 1);
       _ulCtGridsY = std::max<unsigned long>((unsigned long)(fLenghtY / fLengthGrid), 1);

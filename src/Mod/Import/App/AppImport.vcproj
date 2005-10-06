@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\.."
+			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -21,6 +21,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../../"
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImport"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
@@ -33,16 +34,17 @@
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
-				SuppressStartupBanner="TRUE"/>
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../Import.pyd"
+				OutputFile="Release\Import.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\../Import.pdb"
-				ImportLibrary=".\../Import.lib"
+				ProgramDatabaseFile=".\Release/Import.pdb"
+				ImportLibrary=".\Release/Import.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -50,10 +52,14 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../AppImport.tlb"
+				TypeLibraryName=".\Release/AppImport.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\..\..\Mod\Import
+copy Release\Import.pyd ..\..\..\..\Mod\Import
+copy ..\Init.py ..\..\..\..\Mod\Import
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -75,7 +81,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\.."
+			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
 			UseOfMFC="0"
@@ -83,6 +89,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="../../../"
 				PreprocessorDefinitions="_USRDLL;FCAppImport;FC_DEBUG"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -95,17 +102,18 @@
 				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="4"
+				CompileAs="0"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="../Import_d.pyd"
+				OutputFile="Debug\Import_d.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\../Import_d.pdb"
-				ImportLibrary=".\../Import_d.lib"
+				ProgramDatabaseFile=".\Debug/Import_d.pdb"
+				ImportLibrary=".\Debug/Import_d.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"
@@ -113,10 +121,14 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../AppImport.tlb"
+				TypeLibraryName=".\Debug/AppImport.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\..\..\Mod\Import
+copy Debug\Import_d.pyd ..\..\..\..\Mod\Import
+copy ..\Init.py ..\..\..\..\Mod\Import
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -147,6 +159,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImport;$(NoInherit)"/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -154,9 +167,76 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCAppImport;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"/>
 			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="AppImportPy.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImport;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCAppImport;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeatureImportIges.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImport;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCAppImport;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeatureImportIges.h">
+		</File>
+		<File
+			RelativePath="FeatureImportStep.cpp">
+			<FileConfiguration
+				Name="Release|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="2"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImport;$(NoInherit)"/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32">
+				<Tool
+					Name="VCCLCompilerTool"
+					Optimization="0"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions="_USRDLL;FCAppImport;FC_DEBUG;$(NoInherit)"
+					BasicRuntimeChecks="3"/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeatureImportStep.h">
 		</File>
 		<File
 			RelativePath="Libs.cpp">
@@ -165,6 +245,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImport;$(NoInherit)"
 					UsePrecompiledHeader="0"/>
 			</FileConfiguration>
@@ -173,6 +254,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCAppImport;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="0"/>
@@ -185,6 +267,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="2"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImport;$(NoInherit)"
 					UsePrecompiledHeader="1"/>
 			</FileConfiguration>
@@ -193,6 +276,7 @@
 				<Tool
 					Name="VCCLCompilerTool"
 					Optimization="0"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions="_USRDLL;FCAppImport;FC_DEBUG;$(NoInherit)"
 					BasicRuntimeChecks="3"
 					UsePrecompiledHeader="1"/>

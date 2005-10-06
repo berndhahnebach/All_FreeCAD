@@ -12,7 +12,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\../../bin"
+			OutputDirectory=".\DebugCmd"
 			IntermediateDirectory=".\DebugCmd"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -36,11 +36,11 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\bin\FreeCADCmdD.exe"
+				OutputFile="DebugCmd\FreeCADCmdD.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="../../lib/FreeCADCmdD.pdb"
+				ProgramDatabaseFile=".\DebugCmd/FreeCADCmdD.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -49,10 +49,13 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../bin/FreeCADMainCmd.tlb"
+				TypeLibraryName=".\DebugCmd/FreeCADMainCmd.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+copy DebugCmd\FreeCADCmdD.exe ..\..\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
@@ -74,7 +77,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\../../bin"
+			OutputDirectory=".\ReleaseCmd"
 			IntermediateDirectory=".\ReleaseCmd"
 			ConfigurationType="1"
 			UseOfMFC="0"
@@ -99,7 +102,7 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="..\..\bin\FreeCADCmd.exe"
+				OutputFile="ReleaseCmd\FreeCADCmd.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				ProgramDatabaseFile="../../lib/FreeCADCmd.pdb"
@@ -111,10 +114,13 @@
 				MkTypLibCompatible="TRUE"
 				SuppressStartupBanner="TRUE"
 				TargetEnvironment="1"
-				TypeLibraryName=".\../../bin/FreeCADMainCmd.tlb"
+				TypeLibraryName=".\ReleaseCmd/FreeCADMainCmd.tlb"
 				HeaderFileName=""/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+				CommandLine="mkdir ..\..\bin
+copy ReleaseCmd\FreeCADCmd.exe ..\..\bin
+"/>
 			<Tool
 				Name="VCPreBuildEventTool"/>
 			<Tool
