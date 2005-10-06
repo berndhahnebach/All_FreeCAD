@@ -39,6 +39,11 @@ MTL=midl.exe
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
+# Begin Special Build Tool
+SOURCE="$(InputPath)"
+PostBuild_Desc=Light
+PostBuild_Cmds=light.exe *.wixobj
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "Install - Win32 Debug"
 
@@ -52,11 +57,6 @@ MTL=midl.exe
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# Begin Special Build Tool
-SOURCE="$(InputPath)"
-PostBuild_Desc=Light
-PostBuild_Cmds=light.exe *.wixobj
-# End Special Build Tool
 
 !ENDIF 
 
@@ -70,8 +70,6 @@ SOURCE=.\FreeCAD.wxs
 
 !IF  "$(CFG)" == "Install - Win32 Release"
 
-!ELSEIF  "$(CFG)" == "Install - Win32 Debug"
-
 # Begin Custom Build - Candle
 InputPath=.\FreeCAD.wxs
 
@@ -80,8 +78,18 @@ InputPath=.\FreeCAD.wxs
 
 # End Custom Build
 
+!ELSEIF  "$(CFG)" == "Install - Win32 Debug"
+
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\LibPackDll.wxi
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModMesh.wxi
 # End Source File
 # End Target
 # End Project

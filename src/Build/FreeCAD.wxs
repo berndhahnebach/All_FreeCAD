@@ -29,13 +29,16 @@
 					  <File Id='Exe' Name='FreeCAD.exe' DiskId='1' >
 						<Shortcut Id='FCShortcut' Directory='ProgramMenuFolder' Name='FreeCAD' LongName='FreeCAD 0.3' Arguments='-l' Description='FreeCAD the one and only open source CAD package' Advertise='yes'/>
 					  </File>
-					  <File Id='CmdExe'   Name='FcCmd.exe'     LongName='FreeCADCmd.exe'  DiskId='1' />
+					  <File Id='CmdExe'   Name='FcCmd.exe'   LongName='FreeCADCmd.exe'  DiskId='1' />
 					  <File Id='PyModule' Name='FreeCAD.pyd'                            DiskId='1' />
 					  <File Id='AppDll'   Name='FCApp.dll'   LongName='FreeCADApp.dll'  DiskId='1' />
 					  <File Id='BaseDll'  Name='FCBase.dll'  LongName='FreeCADBase.dll' DiskId='1' />
 					  <File Id='GuiDll'   Name='FCGui.dll'   LongName='FreeCADGui.dll'  DiskId='1' />
 					  <?include LibPackDll.wxi ?>
 				   </Component>
+				</Directory>
+				<Directory Id='ModDir' Name='Mod' src='../../Mod/'>
+					<?include ModMesh.wxi ?>
 				</Directory>
 				<Directory Id='DocDir' Name='doc' src='../../doc/'>
 				   <Component Id='DocComp' Guid='12345678-1234-1234-1234-123456789019'>
@@ -85,6 +88,7 @@
          <ComponentRef Id='resOCC' />
          <ComponentRef Id='PyLibs' />
          <ComponentRef Id='DocComp' />
+         <ComponentRef Id='CompModMesh' />
       </Feature>
    </Product>
 </Wix>

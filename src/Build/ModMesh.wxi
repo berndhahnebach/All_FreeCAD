@@ -1,0 +1,10 @@
+<Include>
+	<Directory Id='ModMesh' Name='Mesh' src='../../Mod/Mesh/'>
+	   <Component Id='CompModMesh' Guid='12345678-1234-1234-1234-123456789021'>
+		  <File Id='MeshInitPy'    Name='MeshInit.py'                            DiskId='1' />
+		  <File Id='MeshInitGuiPy' Name='MeshIniG.py' LongName='MeshInitGui.py'  DiskId='1' />
+		  <File Id='Meshpyd'       Name='Mesh.pyd'                               DiskId='1' />
+		  <File Id='MeshGuipyd'    Name='MeshGui.pyd'                            DiskId='1' />
+	   </Component>
+	</Directory>
+</Include>
