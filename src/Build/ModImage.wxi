@@ -22,12 +22,12 @@
    Juergen Riegel 2005                                                  
 -->
 <Include>
-	<Directory Id='ModMesh' Name='Mesh' src='..\..\Mod\Mesh'>
-	   <Component Id='CompModMesh' Guid='209D916B-10C6-445d-8973-F276E28E2A72'>
-		  <File Id='MeshInitPy'    Name='Init.py'     DiskId='1' />
-		  <File Id='MeshInitGuiPy' Name='InitGui.py'   DiskId='1' />
-		  <File Id='Meshpyd'       Name='Mesh.pyd'    DiskId='1' />
-		  <File Id='MeshGuipyd'    Name='MeshGui.pyd' DiskId='1' />
+	<Directory Id='ModImage' Name='Image' src='..\..\Mod\Image'>
+	   <Component Id='CompModImage' Guid='23FF207E-6D03-4273-8475-D0F675A3319C'>
+		  <File Id='ImageInitPy'    Name='Init.py'     DiskId='1' />
+		  <File Id='ImageInitGuiPy' Name='InitGui.py'   DiskId='1' />
+		  <File Id='Imagepyd'       Name='Image.pyd'    DiskId='1' />
+		  <File Id='ImageGuipyd'    Name='ImageGui.pyd' DiskId='1' />
 	   </Component>
 	</Directory>
 </Include>

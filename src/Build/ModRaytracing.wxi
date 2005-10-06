@@ -22,12 +22,12 @@
    Juergen Riegel 2005                                                  
 -->
 <Include>
-	<Directory Id='ModMesh' Name='Mesh' src='..\..\Mod\Mesh'>
-	   <Component Id='CompModMesh' Guid='209D916B-10C6-445d-8973-F276E28E2A72'>
-		  <File Id='MeshInitPy'    Name='Init.py'     DiskId='1' />
-		  <File Id='MeshInitGuiPy' Name='InitGui.py'   DiskId='1' />
-		  <File Id='Meshpyd'       Name='Mesh.pyd'    DiskId='1' />
-		  <File Id='MeshGuipyd'    Name='MeshGui.pyd' DiskId='1' />
+	<Directory Id='ModRaytracing' Name='Raytr' LongName='Raytracing' src='..\..\Mod\Raytracing'>
+	   <Component Id='CompModRaytracing' Guid='80A38BA9-B6BF-4909-94F8-221782DB7B4D'>
+		  <File Id='RaytracingInitPy'    Name='Init.py'                                  DiskId='1' />
+		  <File Id='RaytracingInitGuiPy' Name='InitGui.py'                               DiskId='1' />
+		  <File Id='Raytracingpyd'       Name='Raytra.pyd'  LongName='Raytracing.pyd'    DiskId='1' />
+		  <File Id='RaytracingGuipyd'    Name='RaytraG.pyd' LongName='RaytracingGui.pyd' DiskId='1' />
 	   </Component>
 	</Directory>
 </Include>

@@ -89,7 +89,23 @@ SOURCE=.\LibPackDll.wxi
 # End Source File
 # Begin Source File
 
+SOURCE=.\ModImage.wxi
+# End Source File
+# Begin Source File
+
 SOURCE=.\ModMesh.wxi
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModPart.wxi
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModPoints.wxi
+# End Source File
+# Begin Source File
+
+SOURCE=.\ModRaytracing.wxi
 # End Source File
 # End Target
 # End Project
