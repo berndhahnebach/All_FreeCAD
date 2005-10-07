@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>390</width>
-            <height>435</height>
+            <height>497</height>
         </rect>
     </property>
     <property name="caption">
@@ -32,7 +32,7 @@
             <property name="title">
                 <string>General</string>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -42,7 +42,7 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QGroupBox">
+                <widget class="QGroupBox" row="0" column="0">
                     <property name="name">
                         <cstring>GroupBox7</cstring>
                     </property>
@@ -84,7 +84,7 @@
                         </widget>
                     </grid>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="QGroupBox" row="1" column="0">
                     <property name="name">
                         <cstring>GroupBox3</cstring>
                     </property>
@@ -201,7 +201,7 @@
                         </widget>
                     </vbox>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="QGroupBox" row="2" column="0">
                     <property name="name">
                         <cstring>GroupBox4</cstring>
                     </property>
@@ -237,7 +237,7 @@
                         </widget>
                     </grid>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="QGroupBox" row="3" column="0">
                     <property name="name">
                         <cstring>GroupBox9</cstring>
                     </property>
@@ -322,14 +322,14 @@
                         </widget>
                     </grid>
                 </widget>
-                <widget class="QGroupBox">
+                <widget class="QGroupBox" row="4" column="0">
                     <property name="name">
                         <cstring>GroupBox10</cstring>
                     </property>
                     <property name="title">
                         <string></string>
                     </property>
-                    <vbox>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
@@ -339,36 +339,7 @@
                         <property name="spacing">
                             <number>6</number>
                         </property>
-                        <widget class="QLayoutWidget">
-                            <property name="name">
-                                <cstring>layout5</cstring>
-                            </property>
-                            <hbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QLabel">
-                                    <property name="name">
-                                        <cstring>textLabel1</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>Auto load module after startup:</string>
-                                    </property>
-                                </widget>
-                                <widget class="Gui::PrefComboBox">
-                                    <property name="name">
-                                        <cstring>AutoloadModuleCombo</cstring>
-                                    </property>
-                                    <property name="prefEntry" stdset="0">
-                                        <cstring>AutoloadModule</cstring>
-                                    </property>
-                                    <property name="prefPath" stdset="0">
-                                        <cstring>General</cstring>
-                                    </property>
-                                </widget>
-                            </hbox>
-                        </widget>
-                        <widget class="Gui::PrefCheckBox">
+                        <widget class="Gui::PrefCheckBox" row="1" column="0">
                             <property name="name">
                                 <cstring>SplashScreen</cstring>
                             </property>
@@ -385,9 +356,57 @@
                                 <cstring>General</cstring>
                             </property>
                         </widget>
-                    </vbox>
+                        <widget class="QLayoutWidget" row="0" column="0">
+                            <property name="name">
+                                <cstring>layout7</cstring>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel" row="1" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel1_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Switch to tab of report window:</string>
+                                    </property>
+                                </widget>
+                                <widget class="Gui::PrefComboBox" row="0" column="1">
+                                    <property name="name">
+                                        <cstring>AutoloadModuleCombo</cstring>
+                                    </property>
+                                    <property name="prefEntry" stdset="0">
+                                        <cstring>AutoloadModule</cstring>
+                                    </property>
+                                    <property name="prefPath" stdset="0">
+                                        <cstring>General</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="Gui::PrefComboBox" row="1" column="1">
+                                    <property name="name">
+                                        <cstring>AutoloadTabCombo</cstring>
+                                    </property>
+                                    <property name="prefEntry" stdset="0">
+                                        <cstring>AutoloadTab</cstring>
+                                    </property>
+                                    <property name="prefPath" stdset="0">
+                                        <cstring>General</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>textLabel1</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Auto load module after startup:</string>
+                                    </property>
+                                </widget>
+                            </grid>
+                        </widget>
+                    </grid>
                 </widget>
-            </vbox>
+            </grid>
         </widget>
     </grid>
 </widget>
@@ -409,6 +428,7 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

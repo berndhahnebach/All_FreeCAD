@@ -64,6 +64,17 @@ ReportView::ReportView( QWidget* parent,  const char* name, WFlags fl )
 
   pyc = new PythonConsole(tab, "PythonConsole");
   tab->insertTab(pyc, "Python");
+
+  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General")->GetGroup("AutoloadTab");
+  std::string txt = hGrp->GetASCII("currentText");
+  for (int i=0; i<tab->count(); i++)
+  {
+    if ( tab->label(i) == txt.c_str() )
+    {
+      tab->setCurrentPage( i );
+      break;
+    }
+  }
 }
 
 /**

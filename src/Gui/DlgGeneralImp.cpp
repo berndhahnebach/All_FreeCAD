@@ -32,6 +32,7 @@
 #include "Application.h"
 #include "Command.h"
 #include "CommandLine.h"
+#include "DockWindow.h"
 #include "MainWindow.h"
 #include "PrefWidgets.h"
 #include "Language/LanguageFactory.h"
@@ -71,6 +72,19 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
   Workbench* curWb = WorkbenchManager::instance()->active();
   QString curWbName = curWb ? curWb->name() : "<none>";
   AutoloadModuleCombo->setCurrentText( curWbName );
+
+  // do not save the content but the current item only
+  AutoloadTabCombo->setKeepPreference( true );
+  DockWindow* dw = DockWindowManager::instance()->getDockWindow("Report View");
+  if ( dw )
+  {
+    QTabWidget* tab = (QTabWidget*)(dw->child ( "TabWidget", "QTabWidget" ));
+    if ( tab )
+    {
+      for (int i=0; i<tab->count(); i++)
+        AutoloadTabCombo->insertItem( tab->label(i) );
+    }
+  }
 }
 
 /** 
@@ -112,6 +126,7 @@ void DlgGeneralImp::insertLanguages()
 void DlgGeneralImp::saveSettings()
 {
   AutoloadModuleCombo->onSave();
+  AutoloadTabCombo->onSave();
   RecentFiles->onSave();
   SplashScreen->onSave();
   ShowCmdLine->onSave();
@@ -143,6 +158,7 @@ void DlgGeneralImp::loadSettings()
   AutoloadModuleCombo->onRestore();
   if ( hidden.find( AutoloadModuleCombo->currentText().latin1() ) != std::string::npos )
     AutoloadModuleCombo->setCurrentText( curWbName );
+  AutoloadTabCombo->onRestore();
   RecentFiles->onRestore();
   SplashScreen->onRestore();
   ShowCmdLine->onRestore();
