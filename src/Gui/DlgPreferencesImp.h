@@ -113,6 +113,8 @@ public:
   DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
   ~DlgPreferencesImp();
 
+  void activatePageOfGroup( int pos, const char* groupName );
+
 protected:
   void accept();
   void apply();

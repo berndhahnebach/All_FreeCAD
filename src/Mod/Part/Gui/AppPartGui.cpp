@@ -104,7 +104,7 @@ void ModuleExport initPartGui() {
 	CreatePartCommands();
 
   // register preferences pages
-  new Gui::PrefPageProducer<DlgSettings3DViewPartImp> ( QObject::tr( "Part design" ) );
+  new Gui::PrefPageProducer<DlgSettings3DViewPartImp> ( "Part design" );
   new Gui::LanguageProducer("Deutsch", GetPart_de());
 
 

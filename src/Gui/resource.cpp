@@ -83,12 +83,12 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   // ADD YOUR PREFERENCFE PAGES HERE
   //
   //
-  new PrefPageProducer<DlgGeneralImp>         ( QObject::tr( "FreeCAD" ) );
-  new PrefPageProducer<DlgSettingsEditorImp>  ( QObject::tr( "FreeCAD" ) );
-  new PrefPageProducer<DlgReportViewImp>      ( QObject::tr( "FreeCAD" ) );
-  new PrefPageProducer<DlgSettingsMacroImp>   ( QObject::tr( "FreeCAD" ) );
-  new PrefPageProducer<DlgOnlineHelpImp>      ( QObject::tr( "FreeCAD" ) );
-  new PrefPageProducer<DlgSettings3DViewImp>  ( QObject::tr( "Viewer"  ) );
+  new PrefPageProducer<DlgGeneralImp>         ( "FreeCAD" );
+  new PrefPageProducer<DlgSettingsEditorImp>  ( "FreeCAD" );
+  new PrefPageProducer<DlgReportViewImp>      ( "FreeCAD" );
+  new PrefPageProducer<DlgSettingsMacroImp>   ( "FreeCAD" );
+  new PrefPageProducer<DlgOnlineHelpImp>      ( "FreeCAD" );
+  new PrefPageProducer<DlgSettings3DViewImp>  ( "Viewer"  );
 
   // ADD YOUR CUSTOMIZE PAGES HERE
   //

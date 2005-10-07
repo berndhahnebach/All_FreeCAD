@@ -167,6 +167,20 @@ void DlgPreferencesImp::addPage( const QString& className, const QString& group 
   _pages.push_back( s );
 }
 
+/**
+ * Activates the page at position \a pos of the group with name \a groupName.
+ */
+void DlgPreferencesImp::activatePageOfGroup( int pos, const char* groupName )
+{
+  QMap<QString, int>::ConstIterator it = _mGroupIDs.find( groupName );
+  if ( it != _mGroupIDs.end() )
+  {
+    QTabWidget* tab = getPreferenceGroup( it.data() );
+    listBox->setCurrentItem( it.data() );
+    tab->setCurrentPage( pos );
+  }
+}
+
 /** Adds a new preference group */
 void DlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2)
 {

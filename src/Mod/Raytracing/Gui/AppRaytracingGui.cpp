@@ -91,7 +91,7 @@ void ModuleExport initRaytracingGui() {
   Gui::WorkbenchFactory().AddProducer("Raytracing", new Gui::WorkbenchProducer<RayGui::Workbench>);
 
   // register preferences pages
-  new Gui::PrefPageProducer<DlgSettingsRayImp> ( QObject::tr( "Raytracing" ) );
+  new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );
   new Gui::LanguageProducer("Deutsch", GetRaytracing_de());
 
   return;

@@ -544,6 +544,7 @@ QPixmap Application::workbenchIcon( const QString& wb ) const
 QStringList Application::workbenches(void)
 {
   std::string hidden = App::Application::Config()["HiddenWorkbench"];
+  const char* start = App::Application::Config()["StartWorkbench"].c_str();
 
   PyObject *key, *value;
   int pos = 0;
@@ -554,6 +555,8 @@ QStringList Application::workbenches(void)
     const char* wbName = PyString_AsString(key);
     // add only allowed workbenches
     if ( hidden.find( wbName ) == std::string::npos )
+      wb.push_back( wbName );
+    else if ( strcmp(wbName, start) == 0 ) // also allow start workbench in case it is hidden
       wb.push_back( wbName );
   }
   return wb;
@@ -666,7 +669,16 @@ void Application::runApplication(void)
   _pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
 
   Console().Log("Init: Starting default Workbench\n");
-  app->activateWorkbench(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->GetASCII("currentText",App::Application::Config()["StartWorkbench"].c_str()).c_str() );
+  std::string hidden = App::Application::Config()["HiddenWorkbench"];
+  const char* start = App::Application::Config()["StartWorkbench"].c_str();
+  std::string defWb = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->
+                           GetASCII("currentText",App::Application::Config()["StartWorkbench"].c_str());
+
+  // in case the user defined workbench is hidden then we take the default StartWorkbench 
+  if ( hidden.find( defWb ) != std::string::npos )
+    defWb = start;
+
+  app->activateWorkbench( defWb.c_str() );
 
   Gui::SoFCSelection::initClass();
 

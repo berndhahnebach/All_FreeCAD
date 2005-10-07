@@ -109,6 +109,32 @@ struct MainWindowP
   QMap<int, MDIView*> _mdiIds;
 };
 
+class MDITabbar : public QTabBar
+{
+public:
+  MDITabbar( QWidget * parent = 0, const char * name = 0 ) : QTabBar(parent, name)
+  {
+    menu = new QPopupMenu(this);
+  }
+
+protected:
+  void contextMenuEvent ( QContextMenuEvent * e )
+  {
+    QTab* tab = selectTab(e->pos());
+    menu->clear();
+    CommandManager& cMgr = Application::Instance->commandManager();
+    cMgr.getCommandByName("Std_New")->addTo(menu);
+    menu->insertSeparator();
+    if ( tab == tabAt(currentTab()) )
+      cMgr.getCommandByName("Std_CloseActiveWindow")->addTo(menu);
+    cMgr.getCommandByName("Std_CloseAllWindows")->addTo(menu);
+    menu->popup(e->globalPos());
+  }
+
+private:
+  QPopupMenu* menu;
+};
+
 } // namespace Gui
 
 
@@ -131,7 +157,7 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
 
   QPixmap backgnd(( const char** ) background );
   d->_pWorkspace->setPaletteBackgroundPixmap( backgnd );
-  d->_tabs = new QTabBar( vb, "tabBar" );
+  d->_tabs = new MDITabbar( vb, "tabBar" );
   d->_tabs->setShape( QTabBar::RoundedBelow );
   d->_pWorkspace->setScrollBarsEnabled( true );
   setCentralWidget( vb );

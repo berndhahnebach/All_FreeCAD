@@ -113,7 +113,7 @@ public:
   /** 
    * Register a special type of preference page to the WidgetFactoryInst.
    */
-  PrefPageProducer (const QString& group)
+  PrefPageProducer (const char* group)
   {
     WidgetFactoryInst::instance().AddProducer( typeid(CLASS).name(), this );
     Gui::Dialog::DlgPreferencesImp::addPage( typeid(CLASS).name(), group );

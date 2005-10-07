@@ -58,7 +58,14 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
   work.sort();
   // do not save the content but the current item only
   AutoloadModuleCombo->setKeepPreference( true );
-  AutoloadModuleCombo->insertStringList( work );
+  for ( QStringList::Iterator it = work.begin(); it != work.end(); ++it )
+  {
+    QPixmap px = Application::Instance->workbenchIcon( *it );
+    if ( px.isNull() )
+      AutoloadModuleCombo->insertItem( *it );
+    else
+      AutoloadModuleCombo->insertItem( px, *it );
+  }
   // set the current workbench as default, AutoloadModuleCombo->onRestore() will change
   // it, if it is set in the preferences
   Workbench* curWb = WorkbenchManager::instance()->active();
@@ -130,7 +137,12 @@ void DlgGeneralImp::saveSettings()
 
 void DlgGeneralImp::loadSettings()
 {
+  // in case the user defined workbench is hidden
+  std::string hidden = App::Application::Config()["HiddenWorkbench"];
+  QString curWbName = AutoloadModuleCombo->currentText();
   AutoloadModuleCombo->onRestore();
+  if ( hidden.find( AutoloadModuleCombo->currentText().latin1() ) != std::string::npos )
+    AutoloadModuleCombo->setCurrentText( curWbName );
   RecentFiles->onRestore();
   SplashScreen->onRestore();
   ShowCmdLine->onRestore();
