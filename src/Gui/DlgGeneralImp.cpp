@@ -26,6 +26,7 @@
 # include <qapplication.h>
 # include <qstyle.h>
 # include <qstylefactory.h>
+# include <qtabwidget.h>
 #endif
 
 #include "DlgGeneralImp.h"
