@@ -43,7 +43,7 @@ namespace Dialog {
  * \author Werner Mayer
  */
 class DlgCustomCommandsImp : public DlgCustomCommandsBase
-{ 
+{
   Q_OBJECT
 
 public:
@@ -54,8 +54,8 @@ protected slots:
   void onDescription( const QString& );
   void onGroupSelected( const QString& );
 
-protected:
-  void showEvent( QShowEvent* );
+private:
+  QMap<QString, QString> _cmdGroups;
 };
 
 } // namespace Dialog

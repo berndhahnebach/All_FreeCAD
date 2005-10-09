@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>574</width>
-            <height>340</height>
+            <height>344</height>
         </rect>
     </property>
     <property name="caption">
@@ -141,7 +141,10 @@
                         <cstring>TextLabelCommands</cstring>
                     </property>
                     <property name="text">
-                        <string>Commands:</string>
+                        <string>C&amp;ommands:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>listBoxCommands</cstring>
                     </property>
                 </widget>
                 <widget class="QListBox">
@@ -195,10 +198,7 @@
                         <cstring>textLabelShortcut</cstring>
                     </property>
                     <property name="text">
-                        <string>C&amp;urrent shortcut:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>accelLineEditShortcut</cstring>
+                        <string>Current shortcut:</string>
                     </property>
                 </widget>
                 <widget class="Gui::AccelLineEdit">

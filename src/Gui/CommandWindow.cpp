@@ -475,7 +475,14 @@ bool StdCmdWindowsMenu::isActive(void)
 
 QAction * StdCmdWindowsMenu::createAction(void)
 {
-  return new WindowAction(getMainWindow());
+  QAction *pcAction;
+  pcAction = new WindowAction(getMainWindow());
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  return pcAction;
 }
 
 

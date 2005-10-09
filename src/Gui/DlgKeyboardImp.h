@@ -48,7 +48,7 @@ public:
   DlgCustomKeyboardImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgCustomKeyboardImp();
 
-protected slots:
+protected:
   void onDescription( const QString& );
   void onGroupSelected( const QString& );
   void onAssign();
@@ -56,11 +56,11 @@ protected slots:
   void onResetAll();
   void onShortcutPressed(const QString&);
 
-protected:
-  void showEvent( QShowEvent* );
+private:
+  QMap<QString, QString> _cmdGroups;
 };
 
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DLGKEYBOARD_IMP_H 
+#endif // DLGKEYBOARD_IMP_H

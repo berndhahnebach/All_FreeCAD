@@ -85,7 +85,7 @@
         <name>Gui::CheckMessageBox</name>
         <message>
             <source>Never show this message again.</source>
-            <translation>Meldung nicht mehr anzeigen.</translation>
+            <translation>Diese Meldung nicht mehr anzeigen.</translation>
         </message>
     </context>
     <context>
@@ -137,7 +137,7 @@
         </message>
         <message>
             <source>file operations</source>
-            <translation>Datei-Werkzeugleiste</translation>
+            <translation>Dateiwerkzeuge</translation>
         </message>
         <message>
             <source>Special Ops</source>
@@ -230,7 +230,7 @@
         </message>
         <message>
             <source>Macro:</source>
-            <translation>Macro:</translation>
+            <translation>Makro:</translation>
         </message>
         <message>
             <source>Macros</source>
@@ -322,15 +322,15 @@
         <name>Gui::Dialog::DlgCustomToolbars</name>
         <message>
             <source>New custom bar</source>
-            <translation>Neue Werkzeugleiste erstellen</translation>
+            <translation>Neue Symbolleiste erstellen</translation>
         </message>
         <message>
             <source>Specify the name of the new custom bar, please.</source>
-            <translation>Geben Sie bitte den Namen für die neue Werkzeugleiste an.</translation>
+            <translation>Geben Sie bitte den Namen für die neue Symbolleiste an.</translation>
         </message>
         <message>
             <source>Delete selected bars</source>
-            <translation>Ausgewählte Werkzeugleisten entfernen</translation>
+            <translation>Ausgewählte Symbolleisten entfernen</translation>
         </message>
     </context>
     <context>
@@ -385,11 +385,11 @@
         </message>
         <message>
             <source>Toolbars</source>
-            <translation>Werkzeugleisten</translation>
+            <translation>Symbolleisten</translation>
         </message>
         <message>
             <source>Setup Toolbar</source>
-            <translation>Werzeugleiste einstellen</translation>
+            <translation>Symbolleiste anpassen</translation>
         </message>
     </context>
     <context>
@@ -708,6 +708,94 @@ foo(0, 20)(new line)</translation>
             <source>Auto load module after startup:</source>
             <translation>Lade Modul automatisch nach Startvorgang:</translation>
         </message>
+        <message>
+            <source>Switch to tab of report window:</source>
+            <translation>Wechsle zu Reiter des Ausgabefensters:</translation>
+        </message>
+    </context>
+    <context>
+        <name>Gui::Dialog::DlgCustomKeyboardImp</name>
+        <message>
+            <source>Not defined</source>
+            <translation>Nicht definiert</translation>
+        </message>
+        <message>
+            <source>Not available</source>
+            <translation>Nicht verfügbar</translation>
+        </message>
+        <message>
+            <source>Multiple defined shortcut</source>
+            <translation>Mehrfach definierte Tastenbelegung</translation>
+        </message>
+        <message>
+            <source>The shortcut &apos;%1&apos; is defined more than once. This could result into unexpected behaviour.</source>
+            <translation>Die Tastenbelegung &apos;%1&apos; ist schon mehr als einmal definiert. Dies kann zu unerwartetem Verhalten führen.</translation>
+        </message>
+        <message>
+            <source>Already defined shortcut</source>
+            <translation>Bereits definierte Tastenbelegung</translation>
+        </message>
+        <message>
+            <source>The shortcut &apos;%1&apos; is already assigned to &apos;%2&apos;.
+Please define another shortcut.</source>
+            <translation>Die Tastenbelegung &apos;%1&apos; ist bereits an &apos;%2&apos;.
+Bitte definieren Sie eine andere Tastenbelegung.</translation>
+        </message>
+    </context>
+    <context>
+        <name>Gui::Dialog::DlgCustomKeyboardBase</name>
+        <message>
+            <source>Keyboard</source>
+            <translation>Tastatur</translation>
+        </message>
+        <message>
+            <source>&amp;Assign</source>
+            <translation>Zu&amp;weisen</translation>
+        </message>
+        <message>
+            <source>Alt+A</source>
+            <translation>Alt+A</translation>
+        </message>
+        <message>
+            <source>&amp;Reset</source>
+            <translation>Zu&amp;rücksetzen</translation>
+        </message>
+        <message>
+            <source>Alt+R</source>
+            <translation>Alt+R</translation>
+        </message>
+        <message>
+            <source>Re&amp;set All</source>
+            <translation>Alles zurück&amp;setzen</translation>
+        </message>
+        <message>
+            <source>Alt+S</source>
+            <translation>Alt+S</translation>
+        </message>
+        <message>
+            <source>Description:</source>
+            <translation>Beschreibung:</translation>
+        </message>
+        <message>
+            <source>&amp;Category:</source>
+            <translation>&amp;Kategorie</translation>
+        </message>
+        <message>
+            <source>C&amp;ommands:</source>
+            <translation>Be&amp;fehle:</translation>
+        </message>
+        <message>
+            <source>Current shortcut:</source>
+            <translation>Momentane Tastenkombination:</translation>
+        </message>
+        <message>
+            <source>Press &amp;new shortcut:</source>
+            <translation>&amp;Neue Tastenkombination drücken</translation>
+        </message>
+        <message>
+            <source>Currently assigned to:</source>
+            <translation>Momentan zugewiesen an:</translation>
+        </message>
     </context>
     <context>
         <name>Gui::Dialog::DlgMacroExecute</name>
@@ -805,7 +893,7 @@ Diese Datei ist bereits vorhanden.</translation>
         </message>
         <message>
             <source>Tool bar</source>
-            <translation>Werkzeugleiste</translation>
+            <translation>Symbolleiste</translation>
         </message>
         <message>
             <source>Command bar</source>
@@ -951,7 +1039,7 @@ Diese Datei ist bereits vorhanden.</translation>
         </message>
         <message>
             <source>Record log messages</source>
-            <translation>Log-Meldungen ausgeben</translation>
+            <translation>Protokoll-Meldungen ausgeben</translation>
         </message>
         <message>
             <source>Record warnings</source>
@@ -971,7 +1059,7 @@ Diese Datei ist bereits vorhanden.</translation>
         </message>
         <message>
             <source>Log messages:</source>
-            <translation>Log-Meldungen:</translation>
+            <translation>Protokoll-Meldungen:</translation>
         </message>
         <message>
             <source>Warnings:</source>
@@ -1029,7 +1117,7 @@ Diese Datei ist bereits vorhanden.</translation>
         <name>Gui::Dialog::DlgSettingsMacro</name>
         <message>
             <source>Macro recording settings</source>
-            <translation>Einstellugen Makroaufzeichnung</translation>
+            <translation>Einstellugen für Makroaufzeichnung</translation>
         </message>
         <message>
             <source>Macro path</source>
@@ -1037,11 +1125,11 @@ Diese Datei ist bereits vorhanden.</translation>
         </message>
         <message>
             <source>Gui commands</source>
-            <translation>GUI-Befehle</translation>
+            <translation>Gui-Befehle</translation>
         </message>
         <message>
             <source>Recording gui commands</source>
-            <translation>GUI-Befehle aufzeichnen</translation>
+            <translation>Gui-Befehle aufzeichnen</translation>
         </message>
         <message>
             <source>Record as comment</source>
@@ -1053,11 +1141,11 @@ Diese Datei ist bereits vorhanden.</translation>
         </message>
         <message>
             <source>Show script commands in python console</source>
-            <translation>Script-Befehle in Pythonkonsole anzeigen</translation>
+            <translation>Skript-Befehle in Pythonkonsole anzeigen</translation>
         </message>
         <message>
             <source>Log all commands issued by menus to file:</source>
-            <translation>Alle Menubefehle in Datei schreiben:</translation>
+            <translation>Alle Menübefehle in Datei protokollieren:</translation>
         </message>
         <message>
             <source>FullScript.FCScript</source>
@@ -1065,7 +1153,7 @@ Diese Datei ist bereits vorhanden.</translation>
         </message>
         <message>
             <source>Logging Commands</source>
-            <translation>Befehle aufzeichnen</translation>
+            <translation>Befehle protokollieren</translation>
         </message>
     </context>
     <context>
@@ -1340,7 +1428,7 @@ Diese Datei ist bereits vorhanden.</translation>
         </message>
         <message>
             <source>Logging</source>
-            <translation>Log-Meldungen</translation>
+            <translation>Protokoll-Meldungen</translation>
         </message>
         <message>
             <source>Warning</source>
@@ -1603,8 +1691,8 @@ Möchten Sie die Datei überschreiben?</translation>
     <context>
         <name>Gui::StdCmdDescription</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Help</source>
+            <translation>Hilfe</translation>
         </message>
         <message>
             <source>Des&amp;cription</source>
@@ -1618,8 +1706,8 @@ Möchten Sie die Datei überschreiben?</translation>
     <context>
         <name>Gui::StdCmdMRU</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>File</source>
+            <translation>Datei</translation>
         </message>
         <message>
             <source>Recent files</source>
@@ -1633,8 +1721,8 @@ Möchten Sie die Datei überschreiben?</translation>
     <context>
         <name>Gui::StdCmdWorkbench</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>View</source>
+            <translation>Ansicht</translation>
         </message>
         <message>
             <source>Workbench</source>
@@ -1764,8 +1852,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdAbout</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Help</source>
+            <translation>Hilfe</translation>
         </message>
         <message>
             <source>&amp;About</source>
@@ -1779,8 +1867,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdAboutQt</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Help</source>
+            <translation>Hilfe</translation>
         </message>
         <message>
             <source>About &amp;Qt</source>
@@ -1794,8 +1882,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdActivateNextWindow</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>Ne&amp;xt</source>
@@ -1809,8 +1897,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdActivatePrevWindow</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>fenster</translation>
         </message>
         <message>
             <source>Pre&amp;vious</source>
@@ -1824,8 +1912,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdCloseActiveWindow</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>Cl&amp;ose</source>
@@ -1839,8 +1927,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdCloseAllWindows</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>Close Al&amp;l</source>
@@ -1854,8 +1942,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdCommandLine</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Tools</source>
+            <translation>Werkzeuge</translation>
         </message>
         <message>
             <source>Start command &amp;line...</source>
@@ -1869,8 +1957,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdCopy</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Edit</source>
+            <translation>Bearbeiten</translation>
         </message>
         <message>
             <source>C&amp;opy</source>
@@ -1884,8 +1972,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdCut</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Edit</source>
+            <translation>Bearbeiten</translation>
         </message>
         <message>
             <source>&amp;Cut</source>
@@ -1899,8 +1987,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdDlgCustomize</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Tools</source>
+            <translation>Werkzeuge</translation>
         </message>
         <message>
             <source>Cu&amp;stomize...</source>
@@ -1908,14 +1996,14 @@ Wollen Sie wirklich fortfahren?</translation>
         </message>
         <message>
             <source>Customize toolbars and commandbars</source>
-            <translation>Benutzerdefinierte Einstellungen für Werkzeugleisten und Befehlsleisten</translation>
+            <translation>Benutzerdefinierte Einstellungen für Symbolleisten und Befehlsleisten</translation>
         </message>
     </context>
     <context>
         <name>StdCmdDlgMacroExecute</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Tools</source>
+            <translation>Werkzeuge</translation>
         </message>
         <message>
             <source>E&amp;xecute macro ...</source>
@@ -1929,8 +2017,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdDlgMacroRecord</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Tools</source>
+            <translation>Werkzeuge</translation>
         </message>
         <message>
             <source>&amp;Macro recording ...</source>
@@ -1944,8 +2032,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdDlgParameter</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Tools</source>
+            <translation>Werkzeuge</translation>
         </message>
         <message>
             <source>E&amp;dit parameters ...</source>
@@ -1959,8 +2047,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdDlgPreferences</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Tools</source>
+            <translation>Werkzeuge</translation>
         </message>
         <message>
             <source>&amp;Preferences ...</source>
@@ -1974,8 +2062,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdMDITabbed</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>MDI tabbed</source>
@@ -1989,8 +2077,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdMDIToplevel</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>MDI seperate windows</source>
@@ -2004,8 +2092,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdMacroStop</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Tools</source>
+            <translation>Werkzeuge</translation>
         </message>
         <message>
             <source>S&amp;top macro recording</source>
@@ -2019,8 +2107,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdNew</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>File</source>
+            <translation>Datei</translation>
         </message>
         <message>
             <source>&amp;New</source>
@@ -2034,8 +2122,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdOCAFBrowse</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Tools</source>
+            <translation>Werkzeuge</translation>
         </message>
         <message>
             <source>Start &amp;raw document browser...</source>
@@ -2056,8 +2144,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdOpen</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>File</source>
+            <translation>Datei</translation>
         </message>
         <message>
             <source>&amp;Open</source>
@@ -2082,8 +2170,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdPaste</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Edit</source>
+            <translation>Bearbeiten</translation>
         </message>
         <message>
             <source>&amp;Paste</source>
@@ -2108,8 +2196,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdPrint</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>File</source>
+            <translation>Datei</translation>
         </message>
         <message>
             <source>&amp;Print...</source>
@@ -2123,8 +2211,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdQuit</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>File</source>
+            <translation>Datei</translation>
         </message>
         <message>
             <source>E&amp;xit</source>
@@ -2138,8 +2226,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdRedo</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Edit</source>
+            <translation>Bearbeiten</translation>
         </message>
         <message>
             <source>&amp;Redo</source>
@@ -2153,8 +2241,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdSave</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>File</source>
+            <translation>Datei</translation>
         </message>
         <message>
             <source>&amp;Save</source>
@@ -2168,8 +2256,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdSaveAs</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>File</source>
+            <translation>Datei</translation>
         </message>
         <message>
             <source>Save &amp;As...</source>
@@ -2198,8 +2286,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdStatusBar</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>View</source>
+            <translation>Ansicht</translation>
         </message>
         <message>
             <source>Status bar</source>
@@ -2213,8 +2301,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdTileHor</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>Tile &amp;Horizontally</source>
@@ -2228,8 +2316,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdTilePra</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>&amp;Cascade</source>
@@ -2243,8 +2331,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdTileVer</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>&amp;Tile Vertically</source>
@@ -2258,8 +2346,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdTipOfTheDay</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Help</source>
+            <translation>Hilfe</translation>
         </message>
         <message>
             <source>&amp;Tip of the day...</source>
@@ -2288,8 +2376,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdUndo</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Edit</source>
+            <translation>Bearbeiten</translation>
         </message>
         <message>
             <source>&amp;Undo</source>
@@ -2528,12 +2616,12 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdToolBarMenu</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>View</source>
+            <translation>Ansicht</translation>
         </message>
         <message>
             <source>Tool&amp;bars</source>
-            <translation>Werkzeug&amp;leisten</translation>
+            <translation>Symbol&amp;leisten</translation>
         </message>
         <message>
             <source>Toggles this window</source>
@@ -2543,8 +2631,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdDockWindowMenu</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>View</source>
+            <translation>Ansicht</translation>
         </message>
         <message>
             <source>Vie&amp;ws</source>
@@ -2603,8 +2691,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdWhatsThis</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Help</source>
+            <translation>Hilfe</translation>
         </message>
         <message>
             <source>&amp;What's This?</source>
@@ -2618,8 +2706,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdWindows</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>&amp;Windows...</source>
@@ -2633,8 +2721,8 @@ Wollen Sie wirklich fortfahren?</translation>
     <context>
         <name>StdCmdWindowsMenu</name>
         <message>
-            <source>Standard</source>
-            <translation>Standard</translation>
+            <source>Window</source>
+            <translation>Fenster</translation>
         </message>
         <message>
             <source>Activates this window</source>

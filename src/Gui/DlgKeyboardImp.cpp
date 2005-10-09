@@ -50,15 +50,19 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent, const char* name, W
   CommandManager & cCmdMgr = Application::Instance->commandManager();
   std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
 
-  QMap<QString, int> cmdGroups;
   for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
-    cmdGroups[ it->second->getGroupName() ]++;
+    QString natv = it->second->getGroupName();
+    QString lang = QObject::tr(natv);
+    if ( _cmdGroups.find( lang ) == _cmdGroups.end() )
+      _cmdGroups[ lang ] = natv;
   }
 
   // do a special sort before adding to the combobox
-  QStringList items; items << "File" << "Edit" << "View" << "Tools" << "Window" << "Help" << "Macros";
-  for ( QMap<QString, int>::Iterator it2 = cmdGroups.begin(); it2 != cmdGroups.end(); ++it2)
+  QStringList items, tmp; tmp << "File" << "Edit" << "View" << "Standard-View" << "Tools" << "Window" << "Help" << "Macros";
+  for ( QStringList::Iterator It = tmp.begin(); It != tmp.end(); ++It )
+    items << QObject::tr( *It );
+  for ( QMap<QString, QString>::Iterator it2 = _cmdGroups.begin(); it2 != _cmdGroups.end(); ++it2)
   {
     if ( items.find( it2.key() ) == items.end() )
       items << it2.key();
@@ -97,27 +101,16 @@ void DlgCustomKeyboardImp::onDescription(const QString& txt)
 void DlgCustomKeyboardImp::onGroupSelected(const QString & group)
 {
   listBoxCommands->clear();
- 
-  CommandManager & cCmdMgr = Application::Instance->commandManager();
-  std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( group.latin1() );
-  for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
-  {
-    listBoxCommands->insertItem( (*it)->getName() );
-  }
-}
 
-void DlgCustomKeyboardImp::showEvent( QShowEvent* e )
-{
-  DlgCustomKeyboardBase::showEvent( e );
+  QMap<QString, QString>::ConstIterator It = _cmdGroups.find( group );
 
-  // try to update the command view
-  if ( !comboBoxCategory->listBox()->findItem("Macros", 0) )
+  if ( It != _cmdGroups.end() )
   {
-    CommandManager& rclMan = Application::Instance->commandManager();
-    std::vector<Command*> aclCurMacros = rclMan.getGroupCommands("Macros");
-    if ( aclCurMacros.size() > 0)
+    CommandManager & cCmdMgr = Application::Instance->commandManager();
+    std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( It.data().latin1() );
+    for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
-      comboBoxCategory->insertItem("Macros");
+      listBoxCommands->insertItem( (*it)->getName() );
     }
   }
 }
