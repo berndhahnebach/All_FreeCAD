@@ -82,7 +82,7 @@
                         <widget class="QListView">
                             <column>
                                 <property name="text">
-                                    <string>Available Actions</string>
+                                    <string>Available commands</string>
                                 </property>
                                 <property name="clickable">
                                     <bool>false</bool>
@@ -297,7 +297,7 @@
                         <widget class="QListView">
                             <column>
                                 <property name="text">
-                                    <string>Current Actions</string>
+                                    <string>Current commands</string>
                                 </property>
                                 <property name="clickable">
                                     <bool>false</bool>

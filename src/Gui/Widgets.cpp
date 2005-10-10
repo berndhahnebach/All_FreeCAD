@@ -249,7 +249,7 @@ public:
  * the action's text as the text and the actoin's icon as the icon.
  */
 CommandViewItem::CommandViewItem ( QIconView * parent, const QString& action, QAction* pAct )
-  : QIconViewItem(parent, pAct->menuText(), pAct->iconSet().pixmap())
+  : QIconViewItem(parent, action, pAct->iconSet().pixmap())
 {
   d = new CommandViewItemPrivate;
   d->sAction = action;

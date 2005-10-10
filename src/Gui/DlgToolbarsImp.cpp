@@ -25,9 +25,12 @@
 
 #ifndef _PreComp_
 # include <qinputdialog.h>
+# include <qmap.h>
 # include <qobjectlist.h>
 # include <qpushbutton.h>
+# include <qstringlist.h>
 # include <vector>
+# include <map>
 #endif
 
 #include "DlgToolbarsImp.h"
@@ -61,16 +64,26 @@ DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags 
   std::map<std::string, std::vector<Command*> > alCmdGroups;
   for (std::map<std::string,Command*>::iterator it = sCommands.begin(); it != sCommands.end(); ++it)
   {
-    alCmdGroups[it->second->getGroupName()].push_back(it->second);
+    alCmdGroups[ it->second->getGroupName() ].push_back(it->second);
   }
+
+  // force a special order
+  QStringList items; items << "Macros" << "Help" << "Window" << "Tools" << "Standard-View" << "View" << "Edit" << "File";
   for (std::map<std::string, std::vector<Command*> >::iterator it2 = alCmdGroups.begin(); it2 != alCmdGroups.end(); ++it2)
   {
-    QListViewItem* itemNode = new QListViewItem(AvailableActions, it2->first.c_str());
+    if ( items.find( it2->first.c_str() ) == items.end() )
+      items.prepend(it2->first.c_str());
+  }
+
+  for (QStringList::Iterator it3 = items.begin(); it3 != items.end(); ++it3)
+  {
+    QListViewItem* itemNode = new QListViewItem(AvailableActions, QObject::tr(*it3));
     itemNode->setOpen(true);
-    for (std::vector<Command*>::iterator it3 = it2->second.begin(); it3 != it2->second.end(); ++it3)
+    const std::vector<Command*>& rCmds = alCmdGroups[ (*it3).latin1() ];
+    for (std::vector<Command*>::const_iterator it4 = rCmds.begin(); it4 != rCmds.end(); ++it4)
     {
-      QListViewItem* item = new QListViewItem(itemNode,AvailableActions->lastItem(), (*it3)->getAction()->menuText());
-      QPixmap pix = (*it3)->getAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
+      QListViewItem* item = new QListViewItem(itemNode,AvailableActions->lastItem(), (*it4)->getName());
+      QPixmap pix = (*it4)->getAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
       item->setPixmap(0, Tools::fillUp(24,24,pix));
       itemNode->insertItem(item);
     }
@@ -105,11 +118,7 @@ void DlgCustomToolbars::refreshActionList()
     }
     else
     {
-      Command* pCom = cCmdMgr.getCommandByActionText(item->text(0).latin1());
-      if (pCom != 0)
-      {
-        *bar << pCom->getName();
-      }
+      *bar << item->text(0);
     }
   }
 }
@@ -204,7 +213,7 @@ void DlgCustomToolbars::onItemActivated(const QString & name)
           Command* pCom = cCmdMgr.getCommandByName( item->command().latin1() );
           if (pCom)
           {
-            QListViewItem* item = new QListViewItem(ToolbarActions,ToolbarActions->lastItem(), pCom->getAction()->menuText());
+            QListViewItem* item = new QListViewItem(ToolbarActions,ToolbarActions->lastItem(), pCom->getName());
             QPixmap pix = pCom->getAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
             item->setPixmap(0, Tools::fillUp(24,24,pix));
             ToolbarActions->insertItem(item);

@@ -222,7 +222,7 @@
         </message>
         <message>
             <source>Pixmap</source>
-            <translation>Pixmap</translation>
+            <translation>Symbol</translation>
         </message>
         <message>
             <source>Name:</source>
@@ -344,12 +344,12 @@
             <translation>Löschen</translation>
         </message>
         <message>
-            <source>Current Actions</source>
-            <translation>Verwendete Aktionen</translation>
+            <source>Current commands</source>
+            <translation>Verwendete Befehle</translation>
         </message>
         <message>
-            <source>Available Actions</source>
-            <translation>Verfügbare Aktionen</translation>
+            <source>Available commands</source>
+            <translation>Verfügbare Befehle</translation>
         </message>
         <message>
             <source>Move right</source>
@@ -725,21 +725,21 @@ foo(0, 20)(new line)</translation>
         </message>
         <message>
             <source>Multiple defined shortcut</source>
-            <translation>Mehrfach definierte Tastenbelegung</translation>
+            <translation>Mehrfach belegte Tastenkombination</translation>
         </message>
         <message>
-            <source>The shortcut &apos;%1&apos; is defined more than once. This could result into unexpected behaviour.</source>
-            <translation>Die Tastenbelegung &apos;%1&apos; ist schon mehr als einmal definiert. Dies kann zu unerwartetem Verhalten führen.</translation>
+            <source>The shortcut '%1' is defined more than once. This could result into unexpected behaviour.</source>
+            <translation>Die Tastenkombination '%1' ist mehr als einmal vergeben. Dies kann zu unerwartetem Verhalten führen.</translation>
         </message>
         <message>
             <source>Already defined shortcut</source>
-            <translation>Bereits definierte Tastenbelegung</translation>
+            <translation>Bereits belegte Tastenkombination</translation>
         </message>
         <message>
-            <source>The shortcut &apos;%1&apos; is already assigned to &apos;%2&apos;.
+            <source>The shortcut '%1' is already assigned to '%2'.
+
 Please define another shortcut.</source>
-            <translation>Die Tastenbelegung &apos;%1&apos; ist bereits an &apos;%2&apos;.
-Bitte definieren Sie eine andere Tastenbelegung.</translation>
+            <translation>Die Tastenkombination '%1' wird bereits von '%2' verwendet. Wählen Sie bitte eine andere Tastenkombination.</translation>
         </message>
     </context>
     <context>
@@ -754,7 +754,7 @@ Bitte definieren Sie eine andere Tastenbelegung.</translation>
         </message>
         <message>
             <source>Alt+A</source>
-            <translation>Alt+A</translation>
+            <translation>Alt+W</translation>
         </message>
         <message>
             <source>&amp;Reset</source>
@@ -766,11 +766,11 @@ Bitte definieren Sie eine andere Tastenbelegung.</translation>
         </message>
         <message>
             <source>Re&amp;set All</source>
-            <translation>Alles zurück&amp;setzen</translation>
+            <translation>&amp;Alles zurücksetzen</translation>
         </message>
         <message>
             <source>Alt+S</source>
-            <translation>Alt+S</translation>
+            <translation>Alt+A</translation>
         </message>
         <message>
             <source>Description:</source>
@@ -786,7 +786,7 @@ Bitte definieren Sie eine andere Tastenbelegung.</translation>
         </message>
         <message>
             <source>Current shortcut:</source>
-            <translation>Momentane Tastenkombination:</translation>
+            <translation>Aktuell verwendete Tastenkombination:</translation>
         </message>
         <message>
             <source>Press &amp;new shortcut:</source>
@@ -794,7 +794,7 @@ Bitte definieren Sie eine andere Tastenbelegung.</translation>
         </message>
         <message>
             <source>Currently assigned to:</source>
-            <translation>Momentan zugewiesen an:</translation>
+            <translation>Im Moment verwendet von:</translation>
         </message>
     </context>
     <context>

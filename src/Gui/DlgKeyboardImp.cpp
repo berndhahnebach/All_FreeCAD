@@ -37,6 +37,8 @@
 
 using namespace Gui::Dialog;
 
+/* TRANSLATOR Gui::Dialog::DlgCustomKeyboardImp */
+
 /**
  *  Constructs a DlgCustomKeyboardImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
@@ -110,7 +112,12 @@ void DlgCustomKeyboardImp::onGroupSelected(const QString & group)
     std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( It.data().latin1() );
     for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
-      listBoxCommands->insertItem( (*it)->getName() );
+      QAction* act = (*it)->getAction(false);
+      QPixmap px = (act ? act->iconSet().pixmap() : QPixmap() );
+      if ( px.isNull() )
+        listBoxCommands->insertItem( (*it)->getName() );
+      else
+        listBoxCommands->insertItem( px, (*it)->getName() );
     }
   }
 }

@@ -27,8 +27,6 @@
 #include "DlgToolbars.h"
 
 #ifndef _PreComp_
-# include <map>
-# include <vector>
 #endif
 
 
