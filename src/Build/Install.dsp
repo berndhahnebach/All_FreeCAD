@@ -107,5 +107,9 @@ SOURCE=.\ModPoints.wxi
 
 SOURCE=.\ModRaytracing.wxi
 # End Source File
+# Begin Source File
+
+SOURCE=.\ui.wxi
+# End Source File
 # End Target
 # End Project

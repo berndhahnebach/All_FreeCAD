@@ -653,8 +653,9 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
       processed = (*It)->handleEvent(ev,*this);
   }
 
-  //@todo actually should be inherited::processSoEvent(ev)
-  return processed || SoQtRenderArea::processSoEvent(ev);
+  return processed || inherited::processSoEvent(ev);
+  //return processed || SoQtRenderArea::processSoEvent(ev);
+
 }
 
 bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm)

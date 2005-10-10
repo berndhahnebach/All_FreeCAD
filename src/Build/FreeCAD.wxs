@@ -26,21 +26,46 @@
    <Product Id='A3E112BB-85D0-43f4-86CA-36A15774FD58' Name='FreeCAD' Language='1033'
              Version='0.3.2.0' Manufacturer='Juergen Riegel'>
       <Package Id='F5F1B436-F393-411d-9315-3C5EA2260BC0' Description='FreeCAD 0.3 Installer package'
-               Comments='This is my first attempt at creating a Windows Installer database for FreeCAD'
+               Comments='This is my first attempt at creating a
+			    Windows Installer database for FreeCAD'
                InstallerVersion='200' Compressed='yes' />
  
       <Media Id='1' Cabinet='product.cab' EmbedCab='yes' />
  
       <Directory Id='TARGETDIR' Name='SourceDir'>
          <Directory Id='ProgramFilesFolder' Name='PFiles'>
-            <Directory Id='ProgDir' Name='FreeCAD'>
+            <Directory Id='INSTALLDIR' Name='FreeCAD'>
 				<Directory Id='BinDir' Name='bin' src='../../bin/'>
 				   <Component Id='Base' Guid='0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7'>
 					  <File Id='Exe' Name='FreeCAD.exe' DiskId='1' >
-					    <Shortcut Id='FCShortcut' Directory='MenuDir' Name='FreeCAD' LongName='FreeCAD' Arguments='-l' Description='FreeCAD the one and only open source CAD package' WorkingDirectory="TARGETDIR" Advertise='yes'/>
+					    <Shortcut Id='FCShortcut' 
+						          Directory='MenuDir' 
+								  Name='FreeCAD' 
+								  LongName='FreeCAD' 
+								  Arguments='-l' 
+								  Description='FreeCAD the one and only open source CAD package' 
+								  Icon="FreeCAD.exe" IconIndex="0"
+								  WorkingDirectory="BinDir" 
+								  Advertise='yes'/>
+					    <Shortcut Id='FCShortcutDesk' 
+						          Directory='DesktopFolder' 
+								  Name='FreeCAD' 
+								  LongName='FreeCAD' 
+								  Arguments='-l' 
+								  Description='FreeCAD the one and only open source CAD package' 
+								  Icon="FreeCAD.exe" IconIndex="0"
+								  WorkingDirectory="BinDir" 
+								  Advertise='yes'/>
 					  </File>
 					  <File Id='CmdExe'   Name='FcCmd.exe'   LongName='FreeCADCmd.exe'  DiskId='1' >
-					    <Shortcut Id='FCCmdShortcut' Directory='MenuDir' Name='FreeCAD' LongName='FreeCAD (command line)' Arguments='-l' Description='FreeCAD the one and only open source CAD package' WorkingDirectory="TARGETDIR"/>
+					    <Shortcut Id='FCCmdShortcut' 
+						          Directory='MenuDir' 
+								  Name='FreeCAD' 
+								  LongName='FreeCAD (command line)' 
+								  Arguments='-l' 
+								  Icon="FreeCAD.exe" IconIndex="0"
+								  Description='FreeCAD the one and only open source CAD package' 
+								  WorkingDirectory="TARGETDIR"/>
 					  </File>
 					  <File Id='PyModule' Name='FreeCAD.pyd'                            DiskId='1' />
 					  <File Id='AppDll'   Name='FCApp.dll'   LongName='FreeCADApp.dll'  DiskId='1' />
@@ -59,7 +84,12 @@
 				<Directory Id='DocDir' Name='doc' src='../../doc/'>
 				   <Component Id='DocComp' Guid='8A17000C-47B0-46f7-9C17-10BC167580ED'>
 					  <File Id='DocPdf' Name='doc.pdf' LongName='FreeCAD-SpecsDesign.pdf' DiskId='1' >
-						<Shortcut Id='FCDocShortcut' Directory='MenuDir' Name='Doc' LongName='FreeCAD Documentation' Description='FreeCAD the one and only open source CAD package' Advertise='yes'/>
+						<Shortcut Id='FCDocShortcut' 
+						          Directory='MenuDir' 
+								  Name='Doc' 
+								  LongName='FreeCAD Documentation' 
+								  Description='FreeCAD the one and only open source CAD package' 
+								  Advertise='yes'/>
 					  </File>
 				   </Component>
 				</Directory>  
@@ -93,10 +123,15 @@
          <Directory Id="ProgramMenuFolder">
            <Directory Id="MenuDir" Name="FC03" LongName="FreeCAD 0.3" />
          </Directory>
+         <Directory Id="DesktopFolder" Name="Desktop" />
+
      </Directory>
+
 	  
 
-      <Feature Id='FreeCADFeature' Title='The one and only' Level='1'>
+    <Feature Id='Complete' Title='FreeCAD 0.3' Description='The complete package.'
+      Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
+      <Feature Id='MainProgram' Title='FreeCAD Base' Absent='disallow' Description='The main executable.' Level='1'>
          <ComponentRef Id='Base' />
          <ComponentRef Id='resOCC' />
          <ComponentRef Id='PyLibs' />
@@ -107,5 +142,14 @@
          <ComponentRef Id='CompModImage' />
          <ComponentRef Id='CompModRaytracing' />
       </Feature>
+
+      <Feature Id='Documentation' Title='Documentation' Description='The manuals.' Level='2'>
+         <ComponentRef Id='DocComp' />
+      </Feature>
+    </Feature>
+
+       <UIRef Id="WixUI" />
+	   <Icon Id="FreeCAD.exe" src="../../bin/FreeCAD.exe" />
+
    </Product>
 </Wix>
