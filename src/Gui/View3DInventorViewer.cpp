@@ -83,6 +83,11 @@ using namespace Gui;
  * \section overview Overview
  */
 
+// *************************************************************************
+
+SOQT_OBJECT_ABSTRACT_SOURCE(View3DInventorViewer);
+
+// *************************************************************************
 
 /// adds an ViewProvider to the view, e.g. from a feature
 void View3DInventorViewer::addViewProvider(ViewProviderInventor* pcProvider)
@@ -648,7 +653,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
       processed = (*It)->handleEvent(ev,*this);
   }
 
-  return processed || SoQtViewer::processSoEvent(ev);
+  return processed || inherited::processSoEvent(ev);
 }
 
 bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm)
