@@ -73,12 +73,13 @@ public:
   //@}
 
   /// handles the MeshPy object
-  virtual Base::PyObjectBase *MeshFeature::GetPyObject(void);
+  virtual Base::PyObjectBase* GetPyObject(void);
 
 
 protected:
   MeshWithProperty _cMesh;
 
+private:
   MeshFeaturePy *pcMeshFeaturePy;
 };
 
