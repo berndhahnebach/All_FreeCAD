@@ -553,28 +553,32 @@ bool PythonEditView::onMsg(const char* pMsg,const char** ppReturn)
     save();
     return true;
   }
-  if (strcmp(pMsg,"SaveAs")==0){
+  else if (strcmp(pMsg,"SaveAs")==0){
     saveAs();
     return true;
   }
-  if (strcmp(pMsg,"Cut")==0){
+  else if (strcmp(pMsg,"Cut")==0){
     cut();
     return true;
   }
-  if (strcmp(pMsg,"Copy")==0){
+  else if (strcmp(pMsg,"Copy")==0){
     copy();
     return true;
   }
-  if (strcmp(pMsg,"Paste")==0){
+  else if (strcmp(pMsg,"Paste")==0){
     paste();
     return true;
   }
-  if (strcmp(pMsg,"Undo")==0){
+  else if (strcmp(pMsg,"Undo")==0){
     undo();
     return true;
   }
-  if (strcmp(pMsg,"Redo")==0){
+  else if (strcmp(pMsg,"Redo")==0){
     redo();
+    return true;
+  }
+  else if (strcmp(pMsg,"ViewFit")==0){
+    // just ignore this
     return true;
   }
 

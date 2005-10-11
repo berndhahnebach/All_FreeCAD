@@ -173,7 +173,12 @@ void Application::open(const char* FileName)
     Base::Interpreter().runString(Cmd.c_str());
     macroManager()->addLine(MacroManager::Base,Cmd.c_str());
     Base::Console().Log("CmdO: %s\n",Cmd.c_str());
-    sendMsgToActiveView("ViewFit");
+
+    // ViewFit
+    Cmd = "FreeCADGui.SendMsgToActiveView(\"ViewFit\")";
+    Base::Interpreter().runString(Cmd.c_str());
+    macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
+    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
   }else{
     Base::Console().Error("Application::open() try to open unknown file type .%s\n",te.c_str());
     return;
