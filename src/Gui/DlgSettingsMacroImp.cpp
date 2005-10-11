@@ -60,6 +60,9 @@ void DlgSettingsMacroImp::saveSettings()
   MacroPath->onSave();
   PrefCheckBox_RecordGui->onSave();
   PrefCheckBox_GuiAsComment->onSave();
+  PConsoleCheckBox->onSave();
+  FileLogCheckBox->onSave();
+  MacroPath_2->onSave();
 }
 
 void DlgSettingsMacroImp::loadSettings()
@@ -67,6 +70,9 @@ void DlgSettingsMacroImp::loadSettings()
   MacroPath->onRestore();
   PrefCheckBox_RecordGui->onRestore();
   PrefCheckBox_GuiAsComment->onRestore();
+  PConsoleCheckBox->onRestore();
+  FileLogCheckBox->onRestore();
+  MacroPath_2->onRestore();
 }
 
 

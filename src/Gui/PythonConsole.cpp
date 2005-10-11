@@ -71,8 +71,6 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
   pythonSyntax = new PythonConsoleHighlighter(this);
   ParameterGrp::handle hPrefGrp = getWindowParameter();
   hPrefGrp->Attach( this );
-  // set colors and font
-  hPrefGrp->NotifyAll();
 
   zoomIn(2);
 #ifdef FC_OS_LINUX
@@ -81,6 +79,9 @@ PythonConsole::PythonConsole(QWidget *parent,const char *name)
   QFont serifFont( "Courier", 10, QFont::Normal );
 #endif
   setFont(serifFont);
+
+  // set colors and font
+  hPrefGrp->NotifyAll();
 
   setTabStopWidth(32);
   // disable undo/redo stuff
@@ -176,11 +177,19 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
   font.setBold( false ); // if current font is bold we must reset it first
   if (strcmp(sReason, "FontSize") == 0)
   {
-    QString txt = hPrefGrp->GetASCII( "FontSize", "9" ).c_str();
+#ifdef FC_OS_LINUX
+    QString txt = hPrefGrp->GetASCII( "FontSize", "15" ).c_str();
+#else
+    QString txt = hPrefGrp->GetASCII( "FontSize", "10" ).c_str();
+#endif
 
     bool ok;
     int size = txt.toInt(&ok);
-    if ( !ok ) size = 9; 
+#ifdef FC_OS_LINUX
+    if ( !ok ) size = 15; 
+#else
+    if ( !ok ) size = 10; 
+#endif
 
     font.setPointSize( size );
     setFont( font );
