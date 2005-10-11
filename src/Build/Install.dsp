@@ -42,7 +42,7 @@ MTL=midl.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=Light
-PostBuild_Cmds=light.exe *.wixobj
+PostBuild_Cmds=light.exe -out Release\FreeCAD.msi "D:\Develop\Libs\Wix_20\ui\wixui_mondo.wixlib" Release\*.wxobj	mkdir ..\..\Install	copy Release\FreeCAD.msi ..\..\Install
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "Install - Win32 Debug"
@@ -70,11 +70,13 @@ SOURCE=.\FreeCAD.wxs
 
 !IF  "$(CFG)" == "Install - Win32 Release"
 
-# Begin Custom Build - Candle
+# Begin Custom Build - Candle $(InputName)
+InputDir=.
 InputPath=.\FreeCAD.wxs
+InputName=FreeCAD
 
-"FreeCAD.wxobj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	candle.exe FreeCAD.wxs
+"$(InputName).wxobj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	candle.exe -out "$(InputDir)\Release\$(InputName).wxobj" "$(InputDir)\$(InputName).wxs"
 
 # End Custom Build
 
@@ -85,31 +87,66 @@ InputPath=.\FreeCAD.wxs
 # End Source File
 # Begin Source File
 
-SOURCE=.\LibPackDll.wxi
+SOURCE=.\FreeCADBase.wxs
+
+!IF  "$(CFG)" == "Install - Win32 Release"
+
+# Begin Custom Build - Candle $(InputName)
+InputDir=.
+InputPath=.\FreeCADBase.wxs
+InputName=FreeCADBase
+
+"$(InputName).wxobj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	candle.exe -out "$(InputDir)\Release\$(InputName).wxobj" "$(InputDir)\$(InputName).wxs"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Install - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=.\ModImage.wxi
+SOURCE=.\FreeCADDoc.wxs
+
+!IF  "$(CFG)" == "Install - Win32 Release"
+
+# Begin Custom Build - Candle $(InputName)
+InputDir=.
+InputPath=.\FreeCADDoc.wxs
+InputName=FreeCADDoc
+
+"$(InputName).wxobj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	candle.exe -out "$(InputDir)\Release\$(InputName).wxobj" "$(InputDir)\$(InputName).wxs"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Install - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
-SOURCE=.\ModMesh.wxi
-# End Source File
-# Begin Source File
+SOURCE=.\FreeCADModules.wxs
 
-SOURCE=.\ModPart.wxi
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "Install - Win32 Release"
 
-SOURCE=.\ModPoints.wxi
-# End Source File
-# Begin Source File
+# Begin Custom Build - Candle $(InputName)
+InputDir=.
+InputPath=.\FreeCADModules.wxs
+InputName=FreeCADModules
 
-SOURCE=.\ModRaytracing.wxi
-# End Source File
-# Begin Source File
+"$(InputName).wxobj" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	candle.exe -out "$(InputDir)\Release\$(InputName).wxobj" "$(InputDir)\$(InputName).wxs"
 
-SOURCE=.\ui.wxi
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "Install - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # End Target
 # End Project

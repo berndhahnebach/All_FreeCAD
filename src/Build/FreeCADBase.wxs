@@ -1,0 +1,98 @@
+<?xml version='1.0'?>
+<!--
+   (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
+                                                                        
+   This file is part of the FreeCAD CAx development system.             
+                                                                        
+   This program is free software; you can redistribute it and/or modify 
+   it under the terms of the GNU Library General Public License (LGPL)  
+   as published by the Free Software Foundation; either version 2 of    
+   the License, or (at your option) any later version.                  
+   for detail see the LICENCE text file.                                
+                                                                        
+   FreeCAD is distributed in the hope that it will be useful,           
+   but WITHOUT ANY WARRANTY; without even the implied warranty of       
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
+   GNU Library General Public License for more details.                 
+                                                                        
+   You should have received a copy of the GNU Library General Public    
+   License along with FreeCAD; if not, write to the Free Software       
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
+   USA                                                                  
+                                                                        
+   Juergen Riegel 2005                                                 
+-->
+<Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
+  <Fragment Id='FreeCADBase'>
+    <DirectoryRef Id='BinDir' src='../../bin/'>
+      <Component Id='Base' Guid='0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7'>
+        <File Id='Exe' Name='FreeCAD.exe' DiskId='1' >
+           <Shortcut  Id='FCShortcut' 
+                      Directory='MenuDir' 
+                      Name='FreeCAD' 
+                      LongName='FreeCAD' 
+                      Arguments='-l' 
+                      Description='FreeCAD the one and only open source CAD package' 
+                      Icon="FreeCADIcon" IconIndex="0"
+                      WorkingDirectory="BinDir" 
+                      Advertise='yes'/>
+           <Shortcut Id='FCShortcutDesk' 
+                              Directory='DesktopFolder' 
+                      Name='FreeCAD' 
+                      LongName='FreeCAD' 
+                      Arguments='-l' 
+                      Description='FreeCAD the one and only open source CAD package' 
+                      Icon="FreeCADIcon" IconIndex="0"
+                      WorkingDirectory="BinDir" 
+                      Advertise='yes'/>
+         </File>
+         <File Id='CmdExe'   Name='FcCmd.exe'   LongName='FreeCADCmd.exe'  DiskId='1' >
+           <Shortcut  Id='FCCmdShortcut' 
+                      Directory='MenuDir' 
+                       Name='FreeCAD' 
+                       LongName='command line' 
+                       Arguments='-l' 
+                       Icon="FreeCADIcon" IconIndex="0"
+                       Description='FreeCAD the one and only open source CAD package' 
+                       WorkingDirectory="TARGETDIR"/>
+         </File>
+         <File Id='PyModule' Name='FreeCAD.pyd'                            DiskId='1' />
+         <File Id='AppDll'   Name='FCApp.dll'   LongName='FreeCADApp.dll'  DiskId='1' />
+         <File Id='BaseDll'  Name='FCBase.dll'  LongName='FreeCADBase.dll' DiskId='1' />
+         <File Id='GuiDll'   Name='FCGui.dll'   LongName='FreeCADGui.dll'  DiskId='1' />
+         <?include LibPackDll.wxi ?>
+         <RemoveFile Id='LogFile' On='uninstall' Name='FreeCAD.log' />
+         <RemoveFile Id="RmvParams" Directory="INSTALLDIR" Name="*.FCParam" On="uninstall" />
+         <RemoveFile Id="RmvPlugin" Directory="INSTALLDIR" Name="Plugin" On="uninstall" />
+         <RemoveFile Id="RmvStandard" Directory="INSTALLDIR" Name="Standard" On="uninstall" />
+         <RemoveFile Id="RmvMacros" Directory="INSTALLDIR" Name="*.FCMacro" On="uninstall" />
+         <RemoveFile Id="RmvScripts" Directory="INSTALLDIR" Name="*.FCScript" On="uninstall" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id='LibPackDir'>
+      <Directory Id='resPackDir' Name='res' >
+        <Directory Id='OpenCascedeResPackDir' Name='OCC' LongName='OpenCascade'>
+          <Component Id='resOCC' Guid='D38BCB31-24B0-4129-9168-D286BD42EE4F'>
+            <File Id='IGESus'       Name='IGES.us'       src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+            <File Id='IGESfr'       Name='IGES.fr'       src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+            <File Id='Lexi_Exprdat' Name='LexiExpr.dat'  LongName='Lexi_Expr.dat' src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+            <File Id='SHAPEfr'      Name='SHAPE.fr'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+            <File Id='SHAPEus'      Name='SHAPE.us'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+            <File Id='Unitsdat'     Name='Units.dat'     src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+            <File Id='XSTEPfr'      Name='XSTEP.fr'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+            <File Id='XSTEPus'      Name='XSTEP.us'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
+          </Component>
+        </Directory>
+        <Directory Id='PythonResPackDir' Name='pylibs' >
+          <Component Id='PyLibs' Guid='9E9C03BC-54E6-4274-A1CA-FA362EB1CCB5'>
+            <File Id='ospy'       Name='os.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+            <File Id='sitepy'     Name='site.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+            <File Id='stringpy'   Name='string.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+            <File Id='repy'       Name='re.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+            <File Id='dircachepy' Name='dircache.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
+          </Component>
+        </Directory>
+      </Directory>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

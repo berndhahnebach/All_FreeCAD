@@ -23,133 +23,68 @@
    Juergen Riegel 2005                                                 
 -->
 <Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
-   <Product Id='A3E112BB-85D0-43f4-86CA-36A15774FD58' Name='FreeCAD' Language='1033'
-             Version='0.3.2.0' Manufacturer='Juergen Riegel'>
-      <Package Id='F5F1B436-F393-411d-9315-3C5EA2260BC0' Description='FreeCAD 0.3 Installer package'
-               Comments='This is my first attempt at creating a
-			    Windows Installer database for FreeCAD'
-               InstallerVersion='200' Compressed='yes' />
+   <Product Id='A3E112BB-85D0-43f4-86CA-36A15774FD58' 
+            Name='FreeCAD' Language='1033'
+            Version='0.3.2.0' 
+            Manufacturer='Juergen Riegel'>
+      <Package  Id='F5F1B436-F393-411d-9315-3C5EA2260BC0' 
+                Description='FreeCAD 0.3 Installer package'
+                Comments='This is my first attempt at creating a Windows Installer database for FreeCAD'
+                InstallerVersion='200' 
+                Compressed='yes' />
  
       <Media Id='1' Cabinet='product.cab' EmbedCab='yes' />
+
+      <Property Id='ARPCOMMENTS'>any comments</Property>
+      <Property Id='ARPCONTACT'>Juergen Riegel (juergen.riegel@web.de)</Property>
+      <Property Id='ARPHELPLINK'>http://sourceforge.net/forum/forum.php?forum_id=161659</Property>
+      <Property Id='ARPURLINFOABOUT'>http://free-cad.sourceforge.net/</Property>
+      <Property Id='ARPURLUPDATEINFO'>http://sourceforge.net/project/showfiles.php?group_id=49159</Property>
+      <Property Id='ALLUSERS'>1</Property>
+
+
  
       <Directory Id='TARGETDIR' Name='SourceDir'>
-         <Directory Id='ProgramFilesFolder' Name='PFiles'>
-            <Directory Id='INSTALLDIR' Name='FreeCAD'>
-				<Directory Id='BinDir' Name='bin' src='../../bin/'>
-				   <Component Id='Base' Guid='0EBBDFE7-9FD5-4b2c-BD12-6728D094C6F7'>
-					  <File Id='Exe' Name='FreeCAD.exe' DiskId='1' >
-					    <Shortcut Id='FCShortcut' 
-						          Directory='MenuDir' 
-								  Name='FreeCAD' 
-								  LongName='FreeCAD' 
-								  Arguments='-l' 
-								  Description='FreeCAD the one and only open source CAD package' 
-								  Icon="FreeCAD.exe" IconIndex="0"
-								  WorkingDirectory="BinDir" 
-								  Advertise='yes'/>
-					    <Shortcut Id='FCShortcutDesk' 
-						          Directory='DesktopFolder' 
-								  Name='FreeCAD' 
-								  LongName='FreeCAD' 
-								  Arguments='-l' 
-								  Description='FreeCAD the one and only open source CAD package' 
-								  Icon="FreeCAD.exe" IconIndex="0"
-								  WorkingDirectory="BinDir" 
-								  Advertise='yes'/>
-					  </File>
-					  <File Id='CmdExe'   Name='FcCmd.exe'   LongName='FreeCADCmd.exe'  DiskId='1' >
-					    <Shortcut Id='FCCmdShortcut' 
-						          Directory='MenuDir' 
-								  Name='FreeCAD' 
-								  LongName='FreeCAD (command line)' 
-								  Arguments='-l' 
-								  Icon="FreeCAD.exe" IconIndex="0"
-								  Description='FreeCAD the one and only open source CAD package' 
-								  WorkingDirectory="TARGETDIR"/>
-					  </File>
-					  <File Id='PyModule' Name='FreeCAD.pyd'                            DiskId='1' />
-					  <File Id='AppDll'   Name='FCApp.dll'   LongName='FreeCADApp.dll'  DiskId='1' />
-					  <File Id='BaseDll'  Name='FCBase.dll'  LongName='FreeCADBase.dll' DiskId='1' />
-					  <File Id='GuiDll'   Name='FCGui.dll'   LongName='FreeCADGui.dll'  DiskId='1' />
-					  <?include LibPackDll.wxi ?>
-				   </Component>
-				</Directory>
-				<Directory Id='ModDir' Name='Mod' >
-					<?include ModMesh.wxi ?>
-					<?include ModPart.wxi ?>
-					<?include ModPoints.wxi ?>
-					<?include ModImage.wxi ?>
-					<?include ModRaytracing.wxi ?>
-				</Directory>
-				<Directory Id='DocDir' Name='doc' src='../../doc/'>
-				   <Component Id='DocComp' Guid='8A17000C-47B0-46f7-9C17-10BC167580ED'>
-					  <File Id='DocPdf' Name='doc.pdf' LongName='FreeCAD-SpecsDesign.pdf' DiskId='1' >
-						<Shortcut Id='FCDocShortcut' 
-						          Directory='MenuDir' 
-								  Name='Doc' 
-								  LongName='FreeCAD Documentation' 
-								  Description='FreeCAD the one and only open source CAD package' 
-								  Advertise='yes'/>
-					  </File>
-				   </Component>
-				</Directory>  
-				<Directory Id='LibPackDir' Name='LibPack' >
-				  <Directory Id='resPackDir' Name='res' >
-					<Directory Id='OpenCascedeResPackDir' Name='OCC' LongName='OpenCascade'>
-					  <Component Id='resOCC' Guid='D38BCB31-24B0-4129-9168-D286BD42EE4F'>
-						  <File Id='IGESus'       Name='IGES.us'       src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-						  <File Id='IGESfr'       Name='IGES.fr'       src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-						  <File Id='Lexi_Exprdat' Name='LexiExpr.dat'  LongName='Lexi_Expr.dat' src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-						  <File Id='SHAPEfr'      Name='SHAPE.fr'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-						  <File Id='SHAPEus'      Name='SHAPE.us'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-						  <File Id='Unitsdat'     Name='Units.dat'     src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-						  <File Id='XSTEPfr'      Name='XSTEP.fr'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-						  <File Id='XSTEPus'      Name='XSTEP.us'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-				      </Component>
-				  </Directory>
-				  <Directory Id='PythonResPackDir' Name='pylibs' >
-				   <Component Id='PyLibs' Guid='9E9C03BC-54E6-4274-A1CA-FA362EB1CCB5'>
-					  <File Id='ospy'       Name='os.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
-					  <File Id='sitepy'     Name='site.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
-					  <File Id='stringpy'   Name='string.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
-					  <File Id='repy'       Name='re.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
-					  <File Id='dircachepy' Name='dircache.py'       src='$(env.FREECADLIB)\res\pylibs\' DiskId='1' />
-				   </Component>
-				  </Directory>
-				</Directory>
-		      </Directory>
+         <Directory Id='ProgramFilesFolder'  Name='PFiles'>
+            <Directory Id='INSTALLDIR'       Name='FreeCAD'>
+              <Directory Id='BinDir'         Name='bin' />
+              <Directory Id='ModDir'         Name='Mod' />
+              <Directory Id='DocDir'         Name='doc' />
+              <Directory Id='LibPackDir'     Name='LibPack'/>
             </Directory>
-         </Directory>
-         <Directory Id="ProgramMenuFolder">
-           <Directory Id="MenuDir" Name="FC03" LongName="FreeCAD 0.3" />
-         </Directory>
-         <Directory Id="DesktopFolder" Name="Desktop" />
-
-     </Directory>
-
-	  
-
-    <Feature Id='Complete' Title='FreeCAD 0.3' Description='The complete package.'
-      Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
-      <Feature Id='MainProgram' Title='FreeCAD Base' Absent='disallow' Description='The main executable.' Level='1'>
-         <ComponentRef Id='Base' />
-         <ComponentRef Id='resOCC' />
-         <ComponentRef Id='PyLibs' />
-         <ComponentRef Id='DocComp' />
-         <ComponentRef Id='CompModMesh' />
-         <ComponentRef Id='CompModPart' />
-         <ComponentRef Id='CompModPoints' />
+          </Directory>
+          <Directory Id="ProgramMenuFolder">
+            <Directory Id="MenuDir" Name="FC03" LongName="FreeCAD 0.3" />
+          </Directory>
+        <Directory Id="DesktopFolder" Name="Desktop" />
+      </Directory>
+      <Feature  Id='Complete' 
+                Title='FreeCAD 0.3' 
+                Description='The Base system and standard modules'
+                Display='expand' 
+                Level='1'
+                Absent='disallow' 
+                ConfigurableDirectory='INSTALLDIR'>
+        <ComponentRef Id='Base' />
+        <ComponentRef Id='resOCC' />
+        <ComponentRef Id='PyLibs' />
+        <ComponentRef Id='CompModMesh' />
+        <ComponentRef Id='CompModPart' />
+        <ComponentRef Id='CompModPoints' />
+        <Feature Id='FeatModImage' Title='The Image module' Description='Module to handle pictures' Level='1'>
          <ComponentRef Id='CompModImage' />
+        </Feature>
+        <Feature Id='FeatModRaytracing' Title='The Raytracing module' Description='Module to work with the Populat PovRay raytracer. (Experimental)' Level='1'>
          <ComponentRef Id='CompModRaytracing' />
+        </Feature>
+        <Feature Id='Documentation' Title='Documentation' Description='The manuals.' Level='1'>
+          <ComponentRef Id='DocComp' />
+        </Feature>
       </Feature>
 
-      <Feature Id='Documentation' Title='Documentation' Description='The manuals.' Level='2'>
-         <ComponentRef Id='DocComp' />
-      </Feature>
-    </Feature>
-
-       <UIRef Id="WixUI" />
-	   <Icon Id="FreeCAD.exe" src="../../bin/FreeCAD.exe" />
+      <Icon Id="FreeCADIcon" src="../../bin/FreeCAD.exe" />
+      <Property Id='ARPPRODUCTICON'>FreeCADIcon</Property>
+      <UIRef Id="WixUI" />
 
    </Product>
 </Wix>
