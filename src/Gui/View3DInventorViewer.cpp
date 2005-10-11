@@ -106,7 +106,7 @@ void View3DInventorViewer::removeViewProvider(ViewProviderInventor* pcProvider)
 
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
-  :SoQtViewer (parent, name, embed, type, build)
+  :inherited (parent, name, embed, type, build)
 {
   // Coin should not clear the pixel-buffer, so the background image
   // is not removed.
@@ -377,7 +377,7 @@ void View3DInventorViewer::actualRedraw(void)
   }
 
   // Render normal scenegraph.
-  SoQtViewer::actualRedraw();
+  inherited::actualRedraw();
 
 
   // Increase arrow angle with 1/1000 ° every frame.
@@ -456,6 +456,8 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
   //Base::Console().Log("Evnt: %s\n",ev->getTypeId().getName().getString());
   bool processed = false;
+  if ( !isSeekMode() )
+    setViewing( false ); // by default disable viewing mode to render the scene
 
   // Keybooard handling
   if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
@@ -467,6 +469,22 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     case SoKeyboardEvent::RIGHT_CONTROL:
     case SoKeyboardEvent::LEFT_SHIFT:
     case SoKeyboardEvent::RIGHT_SHIFT:
+      break;
+    case SoKeyboardEvent::H:
+      this->saveHomePosition();
+      processed = true;
+      break;
+    case SoKeyboardEvent::Q: // ignore 'Q' keys (to prevent app from being closed)
+      processed = true;
+      break;
+    case SoKeyboardEvent::S:
+      // processSoEvent() of the base class sets the seekMode() if needed
+    case SoKeyboardEvent::HOME:
+    case SoKeyboardEvent::LEFT_ARROW:
+    case SoKeyboardEvent::UP_ARROW:
+    case SoKeyboardEvent::RIGHT_ARROW:
+    case SoKeyboardEvent::DOWN_ARROW:
+      setViewing( true );
       break;
     default:
       break;
@@ -654,8 +672,6 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   return processed || inherited::processSoEvent(ev);
-  //return processed || SoQtRenderArea::processSoEvent(ev);
-
 }
 
 bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm)
