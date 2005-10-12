@@ -60,6 +60,11 @@ using Base::Console;
 
 using namespace App;
 
+using std::vector;
+using std::string;
+using std::map;
+
+
 //===========================================================================
 // Feature
 //===========================================================================
@@ -102,6 +107,14 @@ Feature::~Feature(void)
 }
 
 
+const vector<string> Feature::getAllPropertyNames(void)
+{
+  vector<string> temp(_PropertiesMap.size());
+  for(map<string,FeatEntry>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
+    temp.push_back(It->first);
+
+  return temp;
+}
 
 
 void Feature::addProperty(const char *Type, const char *Name)

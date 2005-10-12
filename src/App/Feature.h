@@ -178,6 +178,9 @@ public:
   std::string getPropertyString(const char *Name);
 	void setPropertyString(const char*, const char *Name);
 
+  /** returns all registert properties of this Feature */
+  const vector<string> getAllPropertyNames(void);
+
   /** Set the property touched -> changed, cause recomputation in Update()
 	 *  
 	 */
