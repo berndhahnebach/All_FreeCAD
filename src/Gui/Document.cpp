@@ -413,6 +413,17 @@ void Document::closeAllViews(void)
   assert(_LpcViews.size() == 0);
 }
 
+std::list<MDIView*> Document::getMDIViews() const
+{ 
+  std::list<MDIView*> views;
+  for ( std::list<BaseView*>::const_iterator it = _LpcViews.begin(); it != _LpcViews.end(); ++it )
+  {
+    MDIView* view = dynamic_cast<MDIView*>(*it);
+    if ( view ) views.push_back( view );
+  }
+
+  return views;
+}
 
 /// send Messages to the active view
 bool Document::sendMsgToViews(const char* pMsg)

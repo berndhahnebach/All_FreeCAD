@@ -113,6 +113,8 @@ public:
   void onUpdate(void);
   /// close all attached views in order to close the gui document
   void closeAllViews(void);
+  /// returns a list of all attached MDI views
+  std::list<MDIView*> getMDIViews() const;
   //@}
 
 

@@ -381,6 +381,15 @@ void Application::tryClose ( QCloseEvent * e )
     // ask all documents if closable
     for (list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
     {
+
+#ifndef FC_DEBUG
+      std::list<MDIView*> mdiViews = (*It)->getMDIViews();
+      if ( mdiViews.size() > 0 )
+      {
+        mdiViews.front()->setFocus();
+      }
+#endif
+
       (*It)->canClose ( e );
       if(! e->isAccepted() ) return;
     }

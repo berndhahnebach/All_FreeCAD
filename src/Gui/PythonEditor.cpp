@@ -630,7 +630,9 @@ bool PythonEditView::canClose(void)
 {
   if ( !_textEdit->isModified() )
     return true;
-
+#ifndef FC_DEBUG
+    setFocus();
+#endif
   switch( QMessageBox::question( this, tr("Unsaved document"), tr("Save changes to %1?").arg( caption() ),
                                  QMessageBox::Yes|QMessageBox::Default, QMessageBox::No, 
                                  QMessageBox::Cancel|QMessageBox::Escape))
