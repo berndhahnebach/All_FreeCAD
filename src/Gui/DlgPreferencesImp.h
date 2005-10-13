@@ -135,6 +135,7 @@ private:
   QMap<QString, int> _mGroupIDs; /**< Name of preference page with its ID */
   QTabWidget*        _pCurTab;   /**< Tab widget */
   static QStringList _pages; /**< Name of all registered preference pages */
+  bool               _invalidParameter;
 };
 
 } // namespace Dialog

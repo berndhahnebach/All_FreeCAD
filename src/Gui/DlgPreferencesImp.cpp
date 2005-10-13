@@ -42,6 +42,8 @@
 #include "WidgetFactory.h"
 #include "BitmapFactory.h"
 
+#include <Base/Exception.h>
+
 #ifdef FC_DEBUG
 # include "../Base/Console.h" 
 #endif
@@ -244,12 +246,42 @@ void DlgPreferencesImp::onPrefPageClicked(int item)
 
 void DlgPreferencesImp::accept()
 {
+  _invalidParameter = false;
   apply();
-  DlgPreferences::accept();
+  if ( _invalidParameter == false )
+    DlgPreferences::accept();
 }
 
 void DlgPreferencesImp::apply()
 {
+  try
+  {
+    // check for valid input first
+    for ( QMap<QString, int>::Iterator it = _mGroupIDs.begin(); it != _mGroupIDs.end(); ++it )
+    {
+      QTabWidget* tab = getPreferenceGroup( it.data() );
+      int ct = tab->count();
+
+      for ( int i=0; i<ct; i++ )
+      {
+        QWidget* page = tab->page( i );
+  		  int index = page->metaObject()->findSlot( "checkSettings()", TRUE );
+        try{
+	  	  if ( index >= 0 )
+		      page->qt_invoke( index, 0 );
+        } catch ( const Base::Exception& e ) {
+          listBox->setCurrentItem( it.data() );
+          tab->setCurrentPage( i );
+          QMessageBox::warning( this, tr("Wrong parameter"), e.what() );
+          throw e;
+        }
+      }
+    }
+  } catch ( const Base::Exception& ) {
+    _invalidParameter = true;
+    return;
+  }
+
   for ( QMap<QString, int>::Iterator it = _mGroupIDs.begin(); it != _mGroupIDs.end(); ++it )
   {
     QTabWidget* tab = getPreferenceGroup( it.data() );
