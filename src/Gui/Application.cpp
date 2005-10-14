@@ -302,7 +302,7 @@ bool Application::sendHasMsgToActiveView(const char* pMsg)
 }
 
 /// Geter for the Active View
-Gui::Document* Application::activeDocument(void)
+Gui::Document* Application::activeDocument(void) const
 {
   return d->_pcActiveDocument;
   /*
@@ -326,6 +326,36 @@ void Application::setActiveDocument(Gui::Document* pcDocument)
   // notify all views attached to the application (not views belong to a special document)
   for(list<Gui::BaseView*>::iterator It=d->_LpcViews.begin();It!=d->_LpcViews.end();It++)
     (*It)->setDocument(pcDocument);
+}
+
+Gui::Document* Application::getDocument( const char* name ) const
+{
+  Gui::Document* pDoc=0;
+  for ( list<Gui::Document*>::iterator it = d->lpcDocuments.begin(); it != d->lpcDocuments.end(); ++it )
+  {
+    if ( strcmp(name, (*it)->getDocument()->getName()) == 0 )
+    {
+      pDoc = *it;
+      break;
+    }
+  }
+
+  return pDoc;
+}
+
+Gui::Document* Application::getDocument(App::Document* pDoc) const
+{
+  Gui::Document* pGuiDoc=0;
+  for ( list<Gui::Document*>::iterator it = d->lpcDocuments.begin(); it != d->lpcDocuments.end(); ++it )
+  {
+    if ( (*it) && (*it)->getDocument() && (*it)->getDocument() == pDoc )
+    {
+      pGuiDoc = *it;
+      break;
+    }
+  }
+
+  return pGuiDoc;
 }
 
 void Application::attachView(Gui::BaseView* pcView)

@@ -59,26 +59,20 @@ public:
   /// destruction
   ~Application();
 
+  /** @name methods for support of files */
+  //@{
   /// open a file
   void open(const char* FileName);
   /// import a file in the active document
   void import(const char* FileName);
+  //@}
 
-  // Observer
-  void OnDocNew(App::Document* pcDoc);
-  void OnDocDelete(App::Document* pcDoc);
-
-  /// message when a GuiDocument is about to vanish
-  void onLastWindowClosed(Gui::Document* pcDoc);
-
-  /** @name methodes for View handling */
+  /** @name methods for View handling */
   //@{
   /// send Messages to the active view
   bool sendMsgToActiveView(const char* pMsg, const char** ppReturn=0);
   /// send Messages test to the active view
   bool sendHasMsgToActiveView(const char* pMsg);
-  /// Getter for the active document
-  Gui::Document* activeDocument(void);
   /// Attach a view (get called by the FCView constructor)
   void attachView(Gui::BaseView* pcView);
   /// Detach a view (get called by the FCView destructor)
@@ -91,8 +85,26 @@ public:
   void updateActive(void);
   //@}
 
+  /** @name methods for Document handling */
+  //@{
+  // Observer
+  void OnDocNew(App::Document* pcDoc);
+  void OnDocDelete(App::Document* pcDoc);
+  /// message when a GuiDocument is about to vanish
+  void onLastWindowClosed(Gui::Document* pcDoc);
+  /// Getter for the active document
+  Gui::Document* activeDocument(void) const;
   /// Set the active document
   void setActiveDocument(Gui::Document* pcDocument);
+  /** Retrieves a pointer to the Gui::Document whose App::Document has the name \a name.
+   * If no such document exists 0 is returned.
+   */
+  Gui::Document* getDocument(const char* name) const;
+  /** Retrieves a pointer to the Gui::Document whose App::Document matches to \a pDoc.
+   * If no such document exists 0 is returned.
+   */
+  Gui::Document* getDocument(App::Document* pDoc) const;
+  //@}
 
   /// true when the application shuting down
   bool isClosing(void);
