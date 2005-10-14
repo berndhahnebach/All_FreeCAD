@@ -104,7 +104,8 @@ class AbortException;
  * \note In case the operation was aborted Sequencer().stop() or Sequencer().halt() needs not to be 
  * called in the catch-block since SequencerBase cleans up internal data on its own. But if another 
  * type of exception is thrown and you want to stop your operations and hence the sequencer use 
- * Sequencer().halt() instead of Sequencer().stop(). This stops all running levels of the sequencer.  
+ * Sequencer().halt() instead of Sequencer().stop(). This stops all running levels of the sequencer. 
+ * @see SequencerLauncher
  *
  * \note In case several nested sequencers are used then no percentage progress is possible any more
  * because the number of total steps cannot be determined for sure. Then a busy indicator is shown 
@@ -266,6 +267,96 @@ private:
   void setText (const char* pszTxt);
   /** Resets the sequencer */
   void resetData();
+};
+
+/** The SequencerLauncher class is provided for convenience. It allows you to run an instance of the 
+ * sequencer by instanciating an object of this class -- most suitable on the stack. So this mechanism
+ * can be used for try-catch-blocks to destroy the object automatically if the C++ exception mechanism
+ * cleans up the stack.
+ *
+ * This class has been introduced to simplify the use with the sequencer. In the FreeCAD Gui layer there
+ * is a subclass of SequencerBase called ProgressBar that grabs the keyboard and filters most of the incoming
+ * events. If the programmer uses the API of SequencerBase directly to start an instance without due diligence
+ * with exceptions then a not handled exception could block the whole application -- the user has to kill the 
+ * application then.
+ *
+ * Below is an example of a not correctly used sequencer.
+ *
+ * \code
+ *
+ *  #include <Base/Sequencer.h>
+ *
+ *  void runOperation();
+ *
+ *  void myTest()
+ *  {
+ *    try{
+ *       runOperation();
+ *    } catch(...) {
+ *       // the programmer forgot to halt the sequencer here ( Base::Sequencer().halt() )
+ *       // Under circumstances the sequencer never gets stopped so the keyboard never gets ungrabbed and
+ *       // all Gui events still gets filtered.
+ *    }
+ *  }
+ *
+ *  void runOperation()
+ *  {
+ *    Base::Sequencer().start ("my text", 10);
+ *
+ *    for (int i=0; i<10; i++)
+ *    {
+ *      // do something (e.g. here can be thrown an exception)
+ *      ...
+ *      Base::Sequencer().next ();
+ *    }
+ *
+ *    Base::Sequencer().stop ();
+ *  }
+ * 
+ * \endcode
+ * 
+ * To avoid such problems the SequencerLauncher class can be used as follows:
+ *
+ * \code
+ *
+ *  #include <Base/Sequencer.h>
+ *
+ *  void runOperation();
+ *
+ *  void myTest()
+ *  {
+ *    try{
+ *       runOperation();
+ *    } catch(...) {
+ *       // the programmer forgot to halt the sequencer here ( Base::Sequencer().halt() )
+ *       // If SequencerLauncher leaves its scope the object gets destructed automatically and 
+ *       // stops the running sequencer.
+ *    }
+ *  }
+ *
+ *  void runOperation()
+ *  {
+ *    // create an instance on the stack (not on any terms on the heap)
+ *    SequencerLauncher seq("my text", 10);
+ *
+ *    for (int i=0; i<10; i++)
+ *    {
+ *      // do something (e.g. here can be thrown an exception)
+ *      ...
+ *      Base::Sequencer().next ();
+ *    }
+ *    // Base::Sequencer().stop() nneds not to be called, the destructor of SequencerLauncher does it for us.
+ *  }
+ * 
+ * \endcode
+ *
+ * @author Werner Mayer
+ */
+class BaseExport SequencerLauncher
+{
+public:
+  SequencerLauncher(const char* pszStr, unsigned long steps);
+  ~SequencerLauncher();
 };
 
 /** Access to the only SequencerBase instance */

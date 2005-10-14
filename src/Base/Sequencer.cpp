@@ -256,3 +256,15 @@ void ConsoleSequencer::resetData()
   SequencerBase::resetData();
   printf("\t\t\t\t\t\t\t\t\r");
 }
+
+// ---------------------------------------------------------
+
+SequencerLauncher::SequencerLauncher(const char* pszStr, unsigned long steps)
+{
+  SequencerBase::Instance().start( pszStr, steps );
+}
+
+SequencerLauncher::~SequencerLauncher()
+{
+  SequencerBase::Instance().stop();
+}
