@@ -345,7 +345,7 @@ private:
  *      ...
  *      Base::Sequencer().next ();
  *    }
- *    // Base::Sequencer().stop() nneds not to be called, the destructor of SequencerLauncher does it for us.
+ *    // Base::Sequencer().stop() needs not to be called, the destructor of SequencerLauncher does it for us.
  *  }
  * 
  * \endcode
