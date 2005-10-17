@@ -131,6 +131,8 @@ public:
 	//@{
 	/// Creates a new document 
   App::Document* newDocument(const char * Name=0l);
+  /// Deletes the document \a name
+  void deleteDocument(const char* name);
   /// find a unique docuement name
   std::string getUniqueDocumentName(const char *Name);
   /// renams a document

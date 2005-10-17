@@ -343,7 +343,19 @@ void MainWindow::closeActiveWindow ()
 
 void MainWindow::closeAllWindows ()
 {
+#ifdef FC_DEBUG
   d->_pWorkspace->closeAllWindows();
+#else
+  bool closed = true;
+  MDIView* p = 0;
+  MDIView* w = activeWindow();
+  while ( w && w != p && closed )
+  {
+    p = w;
+    closed = w->close();
+    w = activeWindow();
+  }
+#endif
 }
 
 void MainWindow::activateNextWindow ()
@@ -706,54 +718,6 @@ void MainWindow::loadDockWndSettings()
   QString hidden = App::Application::Config()["HiddenDockWindow"].c_str();
   QStringList hiddenDW = QStringList::split ( ';', hidden, false );
   DockWindowManager::instance()->hideDockWindows( hiddenDW );
-/*
-  // open file
-  string FileName(GetApplication().GetHomePath());
-  FileName += "FreeCAD.xml";
-  QFile* datafile = new QFile(FileName.c_str());
-  if (!datafile->open(IO_ReadOnly)) 
-  {
-    // error opening file
-    bool bMute = MessageBoxObserver::bMute;
-    MessageBoxObserver::bMute = true;
-    Console().Warning((tr("Error: Cannot open file '%1' "
-                             "(Maybe you're running FreeCAD the first time)\n").arg(FileName.c_str())));
-    MessageBoxObserver::bMute = bMute;
-    datafile->close();
-    delete (datafile);
-    return;
-  }
-
-  // open dom document
-  QDomDocument doc("DockWindows");
-  if (!doc.setContent(datafile)) 
-  {
-    Console().Warning("Error:  is not a valid file\n");
-    datafile->close();
-    delete (datafile);
-    return;
-  }
-
-  datafile->close();
-  delete (datafile);
-
-  // check the doc type and stuff
-  if (doc.doctype().name() != "DockWindows") 
-  {
-    // wrong file type
-    Console().Warning("Error: is not a valid file\n");
-    return;
-  }
-
-  QDomElement root = doc.documentElement();
-  if (root.attribute("application") != QString("FreeCAD")) 
-  {
-    // right file type, wrong application
-    Console().Warning("Error: wrong file\n");
-    return;
-  }
-
-  readDockConfig(root);*/
 }
 
 void MainWindow::saveDockWndSettings()
@@ -764,36 +728,6 @@ void MainWindow::saveDockWndSettings()
 
   ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   hGrp->SetASCII("Layout", str.latin1());
-/*
-  // save dock window settings
-  QDomDocument doc("DockWindows");
-
-  // create the root element
-  QDomElement root = doc.createElement(doc.doctype().name());
-  root.setAttribute("version", "0.1");
-  root.setAttribute("application", "FreeCAD");
-
-  writeDockConfig(root);
-  doc.appendChild(root);
-
-  // save into file
-  string FileName(GetApplication().GetHomePath());
-  FileName += "FreeCAD.xml";
-  QFile* datafile = new QFile (FileName.c_str());
-  if (!datafile->open(IO_WriteOnly)) 
-  {
-    // error opening file
-    Console().Warning("Error: Cannot open file\n");
-    datafile->close();
-    delete (datafile);
-    return;
-  }
-
-  // write it out
-  QTextStream textstream(datafile);
-  doc.save(textstream, 0);
-  datafile->close();
-  delete (datafile);*/
 }
 
 void MainWindow::languageChange()
@@ -812,65 +746,6 @@ void MainWindow::languageChange()
 // Init, Destruct and singelton
 
 QSplashScreen *MainWindow::_splash = NULL;
-
-
-/*
-void messageHandler( QtMsgType type, const char *msg )
-{
-  switch ( type )
-  {
-    case QtDebugMsg:
-      Base::Console().Message( msg );
-      break;
-    case QtWarningMsg:
-      Base::Console().Warning( msg );
-      break;
-    case QtFatalMsg:
-      Base::Console().Error( msg );
-      abort();                    // deliberately core dump
-  }
-}
-*/
-/**
- * A modal dialog has its own event loop and normally gets shown with QDialog::exec().
- * If an exception is thrown from within the dialog and this exception is caught in the calling
- * instance then the main event loop from the application gets terminated, because the implementation
- * of QDialog seems not be exception-safe..
- *
- * This class is an attempt to solve the problem with Qt's event loop. The trick is that the method
- * QEventLoop::exit() gets called when the application is about to being closed. But if the error above
- * occurs then QEventLoop::exit() is skipped. So this a possibility to determine if the application
- * should continue or not.
- * @author Werner Mayer
- */
-class MainEventLoop : public QEventLoop
-{
-public:
-  MainEventLoop ( QObject * parent = 0, const char * name = 0 )
-    : QEventLoop ( parent, name ), _exited(false)
-  {
-  }
-  virtual void exit ( int retcode = 0 )
-  {
-    _exited = true;
-    QEventLoop::exit(retcode);
-  }
-  virtual int exec ()
-  {
-    int ret = QEventLoop::exec();
-    // do we really want to exit?
-    if ( !_exited )
-    {
-#ifdef FC_DEBUG
-      Base::Console().Log("Error in event loop\n");
-#endif
-      exec(); // recursive call
-    }
-    return ret;
-  }
-private:
-  bool _exited;
-};
 
 void MainWindow::startSplasher(void)
 {

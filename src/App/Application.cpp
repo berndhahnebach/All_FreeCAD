@@ -245,6 +245,25 @@ Document* Application::newDocument(const char * Name)
 	return newDoc.pDoc;
 }
 
+void Application::deleteDocument(const char* name)
+{
+  /// @todo Remove the document properly from OCAF
+  DocEntry delDoc;
+  map<string,DocEntry>::iterator pos = DocMap.find( name );
+  if (pos == DocMap.end()) // no such document
+    return;
+
+  delDoc = pos->second;
+
+	// trigger observers
+  DocMap.erase( pos );
+  NotifyDocDelete(delDoc.pDoc);
+
+  if ( _pActiveDoc == delDoc.pDoc)
+    _pActiveDoc = 0;
+  delete delDoc.pDoc;
+}
+
 App::Document* Application::getDocument(const char *Name)
 {
   map<string,DocEntry>::iterator pos;

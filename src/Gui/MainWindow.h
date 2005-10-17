@@ -74,7 +74,7 @@ public:
   void addWindow( MDIView* view );
   /**
    * Removes an MDI window from the main window's workspace and its associated tab without
-   * deleting the widget.
+   * deleting the widget. If the main windows does not have such a window nothing happens.
    */
   void removeWindow( MDIView* view );
   /**

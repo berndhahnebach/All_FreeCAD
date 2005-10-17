@@ -132,7 +132,6 @@ MDIView::~MDIView()
 {
 }
 
-
 /// recife a message
 bool MDIView::onMsg(const char* pMsg,const char** ppReturn)
 {
@@ -149,6 +148,8 @@ void MDIView::closeEvent(QCloseEvent *e)
   if(bIsPassiv){
     if(canClose() ){
       e->accept();
+      // avoid flickering
+      getMainWindow()->removeWindow(this);
       QMainWindow::closeEvent(e);
     }
   }else{
@@ -157,7 +158,11 @@ void MDIView::closeEvent(QCloseEvent *e)
       getGuiDocument()->canClose(e);
 
       if(e->isAccepted ())
+      {
+        // avoid flickering
+        getMainWindow()->removeWindow(this);
         QMainWindow::closeEvent(e);
+      }
     }else
       e->accept();
   }
