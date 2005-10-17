@@ -293,9 +293,9 @@ std::string FindHomePathWin32(HANDLE hModule)
 	TempHomePath.assign(TempHomePath,0,pos+1);
 
   // switch to posix style
-  for(std::string::iterator i=TempHomePath.begin();i!=TempHomePath.end();++i)
-    if(*i == '\\')
-      *i = '/';
+  //for(std::string::iterator i=TempHomePath.begin();i!=TempHomePath.end();++i)
+  //  if(*i == '\\')
+  //    *i = '/';
 
 	EnvPrint(TempHomePath.c_str());
 //	return FindHomePath(szFileName);
@@ -376,12 +376,15 @@ void SetPythonToFreeCADLib(const char* sLib)
 		//sTempString2 += PATHSEP;
 		SetEnvironment ("TCL_LIBRARY", sTempString2.c_str());
 		EnvPrint("TCL_LIBRARY", sTempString2.c_str());
-		sTempString2.clear();
+    sTempString2.clear();
 
+    SetEnvironment ("PYTHONHOME", "");
+		EnvPrint("PYTHONHOME", "");
+ 
 		sTempString2 += sLib;
 		sTempString2 += "res";
-		//sTempString2 += PATHSEP;
-		//sTempString2 += "pylibs";
+		sTempString2 += PATHSEP;
+		sTempString2 += "pylibs";
 		//sTempString2 += PATHSEP;
 		SetEnvironment ("TCLLIBPATH", sTempString2.c_str());
 		EnvPrint("TCLLIBPATH", sTempString2.c_str());

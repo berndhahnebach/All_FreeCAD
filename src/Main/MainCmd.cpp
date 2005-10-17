@@ -70,7 +70,14 @@ const char sBanner[] = "(c) Juergen Riegel 2001-2005\n"\
 int main( int argc, char ** argv ) 
 {
 
-	// Init phase ===========================================================
+  // Name and Version of the Application
+  App::Application::Config()["ExeName"] = "FreeCAD";
+  App::Application::Config()["ExeVersion"] = "0.3";
+
+  // set the banner (for loging and console)
+  App::Application::Config()["ConsoleBanner"] = sBanner;
+
+  // Init phase ===========================================================
 	// sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
   App::Application::Config()["RunMode"] = "Cmd";
   // set the banner (for loging and console)

@@ -82,7 +82,7 @@ int main( int argc, char ** argv )
 
   // Name and Version of the Application
   App::Application::Config()["ExeName"] = "FreeCAD";
-  App::Application::Config()["ExeVersion"] = "0.1";
+  App::Application::Config()["ExeVersion"] = "0.3";
 
   // set the banner (for loging and console)
   App::Application::Config()["ConsoleBanner"] = sBanner;

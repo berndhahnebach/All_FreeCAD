@@ -123,7 +123,7 @@ public:
 	/** @name startup and singletons
 	 */
 	//@{
-	void setComLineArgs(int argc,char *argv[]);
+	void init(int argc,char *argv[]);
 	int  runCommandLine(char *prompt);
 	static InterpreterSingleton &Instance(void);
 	static void Destruct(void);

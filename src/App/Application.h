@@ -269,7 +269,7 @@ private:
 
 	/** @name  Private Init, Destruct an Access methodes */
 	//@{
-  static void initConfig(int argc, char ** argv, const char * sHomePath  );
+  static void initConfig(int argc, char ** argv);
 	static void initApplication(void);
 	static void logStatus(void);
 	// the one and only pointer to the application object

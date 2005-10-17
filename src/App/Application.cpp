@@ -524,21 +524,22 @@ void Application::init(int argc, char ** argv)
 {
   if(argc==0)
   {
-    char* buf = new char[100];
+    char* buf = new char[256];
     strncpy(buf,mConfig["ExeName"].c_str(),98);
-    initConfig(1,reinterpret_cast<char **>(&buf),"");
+    initConfig(1,reinterpret_cast<char **>(&buf));
     delete [] buf; buf = 0;
   }
   else
-    initConfig(argc,argv,"");
+    initConfig(argc,argv);
 
   initApplication();
 }
 
-void Application::initConfig(int argc, char ** argv, const char * sHomePath )
+void Application::initConfig(int argc, char ** argv)
 {
 	// find the home path....
 	std::string HomePath;
+
 #	ifdef FC_OS_WIN32
     HomePath = EnvMacro::FindHomePathWin32(0);
 #	else
@@ -560,8 +561,11 @@ void Application::initConfig(int argc, char ** argv, const char * sHomePath )
 	_argv = argv;
 
 	// use home path out of the main modules
+  //for(std::string::iterator i=HomePath.begin();i!=HomePath.end();++i)
+  //  if(*i == '\\')
+  //    *i = '/';
+
 	mConfig["HomePath"] = HomePath;
-//	mConfig["HomePath"] = sHomePath;
 
 	// extract home path
 	ExtractUser();
@@ -582,7 +586,7 @@ void Application::initConfig(int argc, char ** argv, const char * sHomePath )
 
 	DBG_TRY
 		// init python
-		Interpreter().setComLineArgs(argc,argv);
+		Interpreter().init(argc,argv);
 	DBG_CATCH(puts("Application::InitConfig() error init Python Interpreter\n");exit(1);)
 
 	DBG_TRY
@@ -623,6 +627,7 @@ void Application::initConfig(int argc, char ** argv, const char * sHomePath )
 
 	// capture python variables
 	SaveEnv("PYTHONPATH");
+	SaveEnv("PYTHONHOME");
 	SaveEnv("TCL_LIBRARY");
 	SaveEnv("TCLLIBPATH");
 

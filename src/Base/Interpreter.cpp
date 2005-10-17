@@ -59,7 +59,7 @@ PyException::PyException(void)
 
 InterpreterSingleton::InterpreterSingleton()
 {
-	Py_Initialize(); 
+	//Py_Initialize(); 
 }
 
 InterpreterSingleton::~InterpreterSingleton()
@@ -254,8 +254,10 @@ void InterpreterSingleton::Destruct(void)
 	delete _pcSingelton;
 }
 
-void InterpreterSingleton::setComLineArgs(int argc,char *argv[])
+void InterpreterSingleton::init(int argc,char *argv[])
 {
+  Py_SetProgramName(argv[0]);
+  Py_Initialize();
 	PySys_SetArgv(argc, argv);
 }
 
