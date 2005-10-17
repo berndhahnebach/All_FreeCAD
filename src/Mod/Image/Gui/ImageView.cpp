@@ -496,7 +496,7 @@ void ImageView::wheelEvent(QWheelEvent * cEvent)
     int numTicks = cEvent->delta() / 120;
     int ICx, ICy;
     _pGLImageBox->getCentrePoint(ICx, ICy);
-    _pGLImageBox->setZoomFactor(_pGLImageBox->getZoomFactor() * pow(2.0, (double)numTicks), true, ICx, ICy);
+    _pGLImageBox->setZoomFactor(_pGLImageBox->getZoomFactor() / pow(2.0, (double)numTicks), true, ICx, ICy);
     _pGLImageBox->redraw();
 
     _currX = box_x;
