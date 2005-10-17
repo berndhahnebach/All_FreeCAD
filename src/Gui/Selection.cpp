@@ -46,11 +46,12 @@ using namespace Gui;
 using namespace std;
 
 
-vector<App::Feature*> SelectionSingelton::getSelectedFeatures(const char* pDocName) const
+vector<App::Feature*> SelectionSingelton::getSelectedFeatures(const char *TypeName, const char* pDocName) const
 {
   vector<App::Feature*> temp;
   App::Document *pcDoc;
   string DocName;
+  string typeName = TypeName;
 
   if(pDocName)
     pcDoc =  App::GetApplication().getDocument(pDocName);
@@ -62,9 +63,9 @@ vector<App::Feature*> SelectionSingelton::getSelectedFeatures(const char* pDocNa
 
   for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
   {
-    if(It->pDoc == pcDoc)
+    if (It->pDoc == pcDoc && typeName.size() <= It->TypeName.size())
     {
-      if(It->pFeat)
+      if ( It->pFeat && (typeName.empty() || It->TypeName.substr(0, typeName.size()).compare(typeName) == 0) )
         temp.push_back(It->pFeat);
     }
   }
@@ -120,9 +121,20 @@ unsigned int SelectionSingelton::getNbrOfType(const char *TypeName, const char* 
   if(!pcDoc)
     return 0;
 
+  std::string typeName = TypeName;
   for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
-    if(It->pDoc == pcDoc && It->TypeName.find_first_of(TypeName) == 0)
-      iNbr++;
+  {
+    // find_first_of() kann unmöglich richtig sein, da nur die jeweils ersten Buchstaben gleich sein müssen  (Werner)
+//    if(It->pDoc == pcDoc && It->TypeName.find_first_of(TypeName) == 0)
+    // 'it->TypeName' starts with 'typeName'
+    if ( It->pDoc == pcDoc && typeName.size() <= It->TypeName.size() )
+    {
+      if ( It->TypeName.substr(0, typeName.size()).compare(typeName) == 0 )
+      {
+        iNbr++;
+      }
+    }
+  }
 
   return iNbr;
 }

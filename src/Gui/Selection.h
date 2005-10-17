@@ -98,12 +98,13 @@ public:
    */
   unsigned int getNbrOfType(const char *TypeName, const char* pDocName=0);
 
-  /** returns a vector of Features selected for the given Document name
-   * if no document name is given the features from the active document are returnd.
-   * If nothing for this Document is selected a empty vector is returnd.
-   * The vector reflects the sequence of selection!
+  /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
+   * If \a TypeName is 0 (the default) the feature type is ignored. If no document name is specified the features 
+   * from the active document are regarded.
+   * If no objects of this document are selected a empty vector is returned.
+   * @note The vector reflects the sequence of selection.
    */
-  std::vector<App::Feature*> getSelectedFeatures(const char* pDocName=0) const;
+  std::vector<App::Feature*> getSelectedFeatures(const char *TypeName=0, const char* pDocName=0) const;
 
   struct SelObj {
     const char* DocName;

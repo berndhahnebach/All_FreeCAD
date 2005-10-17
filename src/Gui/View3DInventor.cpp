@@ -473,7 +473,7 @@ void View3DInventor::onWindowActivated ()
 
 void View3DInventor::setCursor(const QCursor& aCursor)
 {
-  //_viewer->setCursor(aCursor);
+  _viewer->getGLWidget()->setCursor(aCursor);
 }
 
 void View3DInventor::dump()
