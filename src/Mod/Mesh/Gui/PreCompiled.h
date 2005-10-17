@@ -118,6 +118,11 @@
 #include <Inventor/draggers/SoTransformerDragger.h>
 #include <Inventor/manips/SoTransformerManip.h> 
 #include <Inventor/nodes/SoTranslation.h>
+#include <Inventor/draggers/SoTrackballDragger.h>
+#include <Inventor/nodes/SoAntiSquish.h>
+#include <Inventor/nodes/SoSurroundScale.h>
+#include <Inventor/nodes/SoRotation.h>
+#include <Inventor/nodes/SoTranslation.h>
 
 #endif  //_PreComp_
 

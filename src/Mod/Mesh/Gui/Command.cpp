@@ -50,6 +50,46 @@ using namespace Mesh;
 //===========================================================================
 // Example MakeMesh
 //===========================================================================
+DEF_STD_CMD_A(CmdMeshDemoding);
+
+CmdMeshDemoding::CmdMeshDemoding()
+  :CppCommand("Mesh_Demoding")
+{
+  sAppModule    = "Mesh";
+  sGroup        = "Mesh";
+  sMenuText     = QT_TR_NOOP("Interactive dmolding direction");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  sPixmap       = "Std_Tool1";
+  iAccel        = 0;
+}
+
+void CmdMeshDemoding::activated(int iMsg)
+{
+  unsigned int n = getSelection().getNbrOfType("Mesh");
+  if ( n!=1 ) return;
+
+  std::string fName = getUniqueFeatureName("Demolding");
+  std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
+
+  openCommand("Mesh Mesh Create");
+  doCommand(Doc,"App.DocGet().AddFeature(\"MeshTransformDemolding\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.DocGet().%s.Source = App.DocGet().%s",fName.c_str(),cSel[0].FeatName);
+  doCommand(Doc,"App.DocGet().%s.showMode=\"%s\"",fName.c_str(), "Demold");
+  doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
+  commitCommand(); 
+ 
+  updateActive();
+}
+
+bool CmdMeshDemoding::isActive(void)
+{
+  return hasActiveDocument() && !hasFeature("MeshBox");
+}
+//===========================================================================
+// Example MakeMesh
+//===========================================================================
 DEF_STD_CMD_A(CmdMeshExMakeMesh);
 
 CmdMeshExMakeMesh::CmdMeshExMakeMesh()
@@ -270,8 +310,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
   openCommand("Mesh VertexCurvature");
   doCommand(Doc,"App.DocGet().AddFeature(\"MeshCurvature\",\"%s\")",fName.c_str());
   doCommand(Doc,"App.DocGet().%s.Source = App.DocGet().%s",fName.c_str(),cSel[0].FeatName);
-  const char* sMode = "Max. curvature";
-  doCommand(Doc,"App.DocGet().%s.showMode=\"%s\"",fName.c_str(), sMode);
+  doCommand(Doc,"App.DocGet().%s.showMode=\"%s\"",fName.c_str(), "Max. curvature");
   commitCommand();
   updateActive();
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
@@ -292,4 +331,5 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshExMakeMesh());
   rcCmdMgr.addCommand(new CmdMeshExMakeTool());
   rcCmdMgr.addCommand(new CmdMeshExMakeUnion());
+  rcCmdMgr.addCommand(new CmdMeshDemoding());
 }

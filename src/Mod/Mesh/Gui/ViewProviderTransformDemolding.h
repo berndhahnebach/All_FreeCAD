@@ -72,7 +72,10 @@ public:
 
 protected:
 
-  SoTransformerManip *pcTransformerDragger;
+  static void sValueChangedCallback(void *, SoDragger *);
+  void valueChangedCallback(void);
+
+  SoTrackballDragger *pcTrackballDragger;
 
 };
 

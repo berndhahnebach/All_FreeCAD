@@ -34,6 +34,13 @@ class QListViewItem;
 class SoSeparator;
 class SoEvent;
 class SoSwitch;
+class SoTransform;
+class SbMatrix;
+
+
+namespace Base {
+  class Matrix4D;
+}
 
 namespace Gui {
 
@@ -171,6 +178,10 @@ public:
   //@{
   /// Set the transparency
   virtual void setTransparency(float)=0;
+
+  /// set the viewing transformation of the provider
+  virtual void setTransformation(const Base::Matrix4D &rcMatrix);
+  virtual void setTransformation(const SbMatrix &rcMatrix);
   //@}
 
   /** event handlin if the feature is in edit mode
@@ -187,6 +198,9 @@ protected:
 
   /// this is the mode switch, all the different viewing modes are collected here
   SoSwitch    *pcModeSwitch;
+
+  /// this is the mode switch, all the different viewing modes are collected here
+  SoTransform *pcTransform;
 
 };
 

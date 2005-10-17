@@ -29,9 +29,13 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "../Base/Console.h"
+#include <Base/Console.h>
+#include <Base/Matrix.h>
+
 #include "ViewProvider.h"
 #include "Tree.h"
+
+
 
 # include <Inventor/nodes/SoSwitch.h>
 
@@ -108,7 +112,9 @@ ViewProviderInventor::ViewProviderInventor()
   pcRoot->ref();
   pcModeSwitch = new SoSwitch();
   pcModeSwitch->ref();
-  
+  pcTransform  = new SoTransform();
+  pcTransform->ref();
+  pcRoot->addChild(pcTransform);
   pcRoot->addChild(pcModeSwitch);
 
 
@@ -118,7 +124,27 @@ ViewProviderInventor::ViewProviderInventor()
 ViewProviderInventor::~ViewProviderInventor()
 {
   pcRoot->unref();
+  pcTransform->unref();
+  pcModeSwitch->unref();
+}
 
+
+void ViewProviderInventor::setTransformation(const Base::Matrix4D &rcMatrix)
+{
+
+  double dMtrx[16];
+  
+  rcMatrix.getGLMatrix(dMtrx);
+
+  pcTransform->setMatrix(SbMatrix(dMtrx[0], dMtrx[1], dMtrx[2],  dMtrx[3],
+                                  dMtrx[4], dMtrx[5], dMtrx[6],  dMtrx[7],
+                                  dMtrx[8], dMtrx[9], dMtrx[10], dMtrx[11],
+                                  dMtrx[12],dMtrx[13],dMtrx[14], dMtrx[15]));
+}
+
+void ViewProviderInventor::setTransformation(const SbMatrix &rcMatrix)
+{
+  pcTransform->setMatrix(rcMatrix);
 }
 
 

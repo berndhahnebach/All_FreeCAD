@@ -36,6 +36,11 @@
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoSwitch.h>
+# include <Inventor/draggers/SoTrackballDragger.h>
+# include <Inventor/nodes/SoAntiSquish.h>
+# include <Inventor/nodes/SoSurroundScale.h>
+# include <Inventor/nodes/SoRotation.h>
+# include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/manips/SoTransformerManip.h>
 #endif
 
@@ -65,13 +70,13 @@ using namespace MeshGui;
 
 ViewProviderInventorMeshTransformDemolding::ViewProviderInventorMeshTransformDemolding()
 {
-  pcTransformerDragger = new SoTransformerManip;
-  pcTransformerDragger->ref();
+  pcTrackballDragger = new SoTrackballDragger;
+  pcTrackballDragger->ref();
 }
 
 ViewProviderInventorMeshTransformDemolding::~ViewProviderInventorMeshTransformDemolding()
 {
-  pcTransformerDragger->unref();
+  pcTrackballDragger->unref();
 }
 
 
@@ -89,12 +94,28 @@ void ViewProviderInventorMeshTransformDemolding::attache(App::Feature *pcFeat)
   pcFlatStyle->style = SoDrawStyle::FILLED;
   pcColorShadedRoot->addChild(pcFlatStyle);
 
+  // dragger
+  SoSeparator * surroundsep = new SoSeparator;
+
+  SoSurroundScale * ss = new SoSurroundScale;
+  ss->numNodesUpToReset = 1;
+  ss->numNodesUpToContainer = 2;
+  surroundsep->addChild(ss);
+
+  SoAntiSquish * antisquish = new SoAntiSquish;
+  antisquish->sizing = SoAntiSquish::AVERAGE_DIMENSION ;
+  surroundsep->addChild(antisquish);
+
+  pcTrackballDragger->addValueChangedCallback(sValueChangedCallback,this); 
+  surroundsep->addChild(pcTrackballDragger);
+
+
   SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
   pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
   SoMaterial* pcColorMat = new SoMaterial;
   pcColorShadedRoot->addChild(pcColorMat);
   pcColorShadedRoot->addChild(pcMatBinding);
-//  pcColorShadedRoot->addChild(pcBinding);  
+  pcColorShadedRoot->addChild(surroundsep);
   pcColorShadedRoot->addChild(pcHighlight);
 
   // adding to the switch
@@ -102,7 +123,17 @@ void ViewProviderInventorMeshTransformDemolding::attache(App::Feature *pcFeat)
 
 }
 
+void ViewProviderInventorMeshTransformDemolding::sValueChangedCallback(void *This, SoDragger *)
+{
+  static_cast<ViewProviderInventorMeshTransformDemolding*>(This)->valueChangedCallback();
+}
 
+void ViewProviderInventorMeshTransformDemolding::valueChangedCallback(void)
+{
+  //Base::Console().Log("Value change Callback\n");
+  //setTransformation(pcTrackballDragger->getMotionMatrix());
+  pcTransform->rotation = pcTrackballDragger->rotation;
+}
 
 
 std::vector<std::string> ViewProviderInventorMeshTransformDemolding::getModes(void)

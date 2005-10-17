@@ -65,9 +65,16 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
   // Mesh tools
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
-  Gui::ToolBarItem* mesh = new Gui::ToolBarItem( root );
+  Gui::ToolBarItem* mesh;
+
+  mesh = new Gui::ToolBarItem( root );
   mesh->setCommand( "Mesh Tools" );
   *mesh << "Std_New" << "Mesh_Import" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
+
+  mesh = new Gui::ToolBarItem( root );
+  mesh->setCommand( "Mesh test site" );
+  *mesh << "Mesh_Demoding" << "Separator" ;
+
   return root;
 }
 

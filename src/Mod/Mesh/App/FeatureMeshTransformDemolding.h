@@ -47,7 +47,6 @@ public:
   virtual const char *type(void){return "MeshTransformDemolding";};
   //@}
 
-  Matrix4D Rotation;
 };
 
 }

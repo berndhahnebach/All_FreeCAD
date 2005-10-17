@@ -43,6 +43,11 @@ Matrix4D::Matrix4D (const Matrix4D& rclMtrx)
   (*this) = rclMtrx;
 }
 
+Matrix4D::Matrix4D (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle)
+{
+  SetRotLine(rclBase,rclDir,fAngle);
+}
+
 void Matrix4D::unity (void)
 {
   short iz, is;

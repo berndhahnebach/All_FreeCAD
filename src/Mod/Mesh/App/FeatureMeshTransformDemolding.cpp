@@ -31,6 +31,9 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
+#include <Base/Matrix.h>
+#include <Base/Vector3D.h>
+
 #include "FeatureMeshTransformDemolding.h"
 
 #include "Core/MeshIO.h"
@@ -42,19 +45,26 @@ using namespace MeshCore;
 void FeatureMeshTransformDemolding::initFeature(void)
 {
   Base::Console().Log("FeatureMeshImport::InitLabel()\n");
-  addProperty("Link","Base");
+  addProperty("Link","Source");
   addProperty("Float","Rotation");
+  addProperty("Float","AxisX");
+  addProperty("Float","AxisY");
+  addProperty("Float","AxisZ");
 }
 
 int FeatureMeshTransformDemolding::execute(TFunction_Logbook& log)
 {
-  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(getPropertyLink("Base"));
+  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
   if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
 
   setMesh(pcFirst->getMesh());
-  getMesh().transform(Rotation);
-  
+ /*
+  getMesh().transform(Matrix4D(Vector3D(0,0,0),
+                               Vector3D(getPropertyFloat("AxisX"),
+                                       getPropertyFloat("AxisX"),
+                                       getPropertyFloat("AxisX")),getPropertyFloat("Rotation")  ));
+  */
   return 0;
 }
 

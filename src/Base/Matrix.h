@@ -47,6 +47,8 @@ public:
   Matrix4D (void);
   /// Construction
   Matrix4D (const Matrix4D& rclMtrx);
+  /// Construction with an Axis
+  Matrix4D (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle);
   /// Destruction
   virtual ~Matrix4D () {};
 
