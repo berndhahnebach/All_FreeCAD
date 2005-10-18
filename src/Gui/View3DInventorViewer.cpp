@@ -663,7 +663,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     }
   }
 
-  // give the viewprovider the change to handle the event
+  // give the viewprovider the chance to handle the event
   if(!processed)
   {
     std::set<ViewProviderInventor*>::iterator It;
@@ -1177,6 +1177,76 @@ void View3DInventorViewer::addToLog(const SbVec2s pos, const SbTime time)
     this->log.historysize += 1;
 }
 
+// Draw routines
+void View3DInventorViewer::drawRect( int x, int y, int w, int h, QPainter* p )
+{
+  if (p)
+    p->drawRect( QRect( QPoint( QMIN( x, w ), QMIN( y, h ) ),
+         QPoint( QMAX( x, w ), QMAX( y, h ) ) ) );
+  else
+  {
+    QPainter p(getGLWidget());
+    p.setPen( Qt::white );
+    p.setRasterOp( QPainter::XorROP );
+    drawRect( x, y, w, h, &p );
+  }
+}
+
+void View3DInventorViewer::drawNode ( int x, int y, int w, int h, QPainter* p )
+{
+  if (p)
+    p->drawEllipse( x, y, w, h );
+  else
+  {
+    QPainter p(getGLWidget());
+    p.setPen( Qt::white );
+    p.setBrush(QBrush::white);
+    p.setRasterOp( QPainter::XorROP );
+    drawNode( x, y, w, h, &p );
+  }
+}
+
+void View3DInventorViewer::drawLine ( int x1, int y1, int x2, int y2, QPainter* p )
+{
+  if (p)
+    p->drawLine( x1, y1, x2, y2 );
+  else
+  {
+    QPainter p(getGLWidget());
+    p.setPen( Qt::white );
+    p.setRasterOp( QPainter::XorROP );
+    drawLine( x1, y1, x2, y2, &p );
+  }
+}
+
+void View3DInventorViewer::drawCircle ( int x, int y, int r, QPainter* p )
+{
+  if (p)
+  {
+    QPoint center(x-r/2, y-r/2);
+    p->drawEllipse( center.x(), center.y(), r, r );
+  }
+  else
+  {
+    QPainter p(getGLWidget());
+    p.setPen( Qt::green );
+    p.setRasterOp( QPainter::XorROP );
+    drawCircle( x, y, r, &p );
+  }
+}
+
+void View3DInventorViewer::drawText ( int x, int y, const QString & str, QPainter* p )
+{
+  if (p)
+    p->drawText( x, y, str);
+  else
+  {
+    QPainter p(getGLWidget());
+    p.setPen( Qt::white );
+    p.setRasterOp( QPainter::XorROP );
+    drawText( x, y, str, &p );
+  }
+}
 
 
 #if 0

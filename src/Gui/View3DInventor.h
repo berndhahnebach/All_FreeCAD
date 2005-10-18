@@ -48,7 +48,6 @@ class View3DInventor;
 class View3DInventorViewer;
 class MyView3DInventor;
 class ViewProviderInventorFeature;
-class MouseModel;
 
 
 /** The 3D View Window

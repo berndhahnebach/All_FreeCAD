@@ -59,6 +59,15 @@ public:
     
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
 
+  /** @name Draw routines */
+  //@{
+  void drawRect ( int x, int y, int w, int h, QPainter* p = 0 );
+  void drawNode ( int x, int y, int w, int h, QPainter* p = 0 );
+  void drawLine ( int x1, int y1, int x2, int y2, QPainter* p = 0 );
+  void drawCircle ( int x, int y, int r, QPainter* p = 0 );
+  void drawText ( int x, int y, const QString & str, QPainter* p = 0 );
+  //@}
+
 protected:
   static void sFinishSelectionCallback(void *,SoSelection *);
   virtual void finishSelectionCallback(SoSelection *);

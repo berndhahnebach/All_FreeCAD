@@ -51,7 +51,7 @@ vector<App::Feature*> SelectionSingelton::getSelectedFeatures(const char *TypeNa
   vector<App::Feature*> temp;
   App::Document *pcDoc;
   string DocName;
-  string typeName = TypeName;
+  string typeName = TypeName ? TypeName : "";
 
   if(pDocName)
     pcDoc =  App::GetApplication().getDocument(pDocName);
@@ -121,7 +121,7 @@ unsigned int SelectionSingelton::getNbrOfType(const char *TypeName, const char* 
   if(!pcDoc)
     return 0;
 
-  std::string typeName = TypeName;
+  string typeName = TypeName ? TypeName : "";
   for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
   {
     // find_first_of() kann unmöglich richtig sein, da nur die jeweils ersten Buchstaben gleich sein müssen  (Werner)
