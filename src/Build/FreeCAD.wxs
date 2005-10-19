@@ -68,6 +68,7 @@
         <ComponentRef Id='Base' />
         <ComponentRef Id='resOCC' />
         <ComponentRef Id='PyLibs' />
+        <ComponentRef Id='PyLibsEnc' />
         <ComponentRef Id='CompModMesh' />
         <ComponentRef Id='CompModPart' />
         <ComponentRef Id='CompModPoints' />
