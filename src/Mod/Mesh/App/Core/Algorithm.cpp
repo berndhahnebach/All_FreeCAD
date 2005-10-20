@@ -29,6 +29,8 @@
 # include <BRepMesh_Triangle.hxx>
 # include <BRepMesh_Edge.hxx>
 # include <TopoDS_Shape.hxx>
+# include <Wm3Matrix3.h>
+# include <Wm3Vector3.h>
 #endif
 
 #include "Algorithm.h"
@@ -470,6 +472,57 @@ void MeshAlgorithm::CutFacets(const MeshFacetGrid& rclGrid, const ViewProjMethod
     _rclMesh.DeletePoints(aulPoints);
   }
 */
+}
+
+void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Vector3D& rcDir, std::vector<unsigned long> &raclCutted ) const
+{
+  MeshFacetIterator cFIt(_rclMesh);
+  MeshFacetIterator cTIt(rToolMesh);
+
+  BoundBox3D cBB = rToolMesh.GetBoundBox();
+
+  Base::Sequencer().start("Check facets...", _rclMesh.CountFacets());
+
+  // check all facets
+  Vector3D tmp;
+  for ( cFIt.Init(); cFIt.More(); cFIt.Next() )
+  {
+    // check each point of each facet
+    for ( int i=0; i<3; i++ )
+    {
+      // at least the point must be inside the bounding box of the tool mesh
+      if ( cBB.IsInBox( cFIt->_aclPoints[i] ) )
+      {
+        // should not cause runtime problems since the tool mesh is usually rather lightweigt
+        int ct=0;
+        for ( cTIt.Init(); cTIt.More(); cTIt.Next() )
+        {
+          if ( cTIt->IsPointOfFace( cFIt->_aclPoints[i], FLOAT_EPS ) )
+          {
+            ct=1;
+            break; // the point lies on the tool mesh
+          }
+          else if ( cTIt->Foraminate( cFIt->_aclPoints[i], rcDir, tmp ) )
+          {
+            // check if the intersection point lies in direction rcDir of the considered point
+            if ( (tmp - cFIt->_aclPoints[i]) * rcDir > 0 )
+              ct++;
+          }
+        }
+
+        // odd number => point is inside the tool mesh
+        if ( ct % 2 == 1 )
+        {
+          raclCutted.push_back( cFIt.Position() );
+          break;
+        }
+      }
+    }
+
+    Base::Sequencer().next();
+  }
+
+  Base::Sequencer().stop();
 }
 
 void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const ViewProjMethod* pclProj, const Polygon2D& rclPoly, 
@@ -1306,4 +1359,241 @@ void MeshRefPointToPoints::Rebuild (void)
     operator[](ulP2).insert(pBegin + ulP0);
     operator[](ulP2).insert(pBegin + ulP1);
   }
+}
+
+//----------------------------------------------------------------------------
+
+float MeshPolygonTriangulation::Triangulate::Area(const std::vector<Vector3D> &contour)
+{
+  int n = contour.size();
+
+  float A=0.0f;
+
+  for(int p=n-1,q=0; q<n; p=q++)
+  {
+    A+= contour[p].x*contour[q].y - contour[q].x*contour[p].y;
+  }
+  return A*0.5f;
+}
+
+/*
+  InsideTriangle decides if a point P is Inside of the triangle
+  defined by A, B, C.
+*/
+bool MeshPolygonTriangulation::Triangulate::InsideTriangle(float Ax, float Ay, float Bx, float By, float Cx, float Cy, float Px, float Py)
+{
+  float ax, ay, bx, by, cx, cy, apx, apy, bpx, bpy, cpx, cpy;
+  float cCROSSap, bCROSScp, aCROSSbp;
+
+  ax = Cx - Bx;  ay = Cy - By;
+  bx = Ax - Cx;  by = Ay - Cy;
+  cx = Bx - Ax;  cy = By - Ay;
+  apx= Px - Ax;  apy= Py - Ay;
+  bpx= Px - Bx;  bpy= Py - By;
+  cpx= Px - Cx;  cpy= Py - Cy;
+
+  aCROSSbp = ax*bpy - ay*bpx;
+  cCROSSap = cx*apy - cy*apx;
+  bCROSScp = bx*cpy - by*cpx;
+
+  return ((aCROSSbp >= FLOAT_EPS) && (bCROSScp >= FLOAT_EPS) && (cCROSSap >= FLOAT_EPS));
+}
+
+bool MeshPolygonTriangulation::Triangulate::Snip(const std::vector<Vector3D> &contour,int u,int v,int w,int n,int *V)
+{
+  int p;
+  float Ax, Ay, Bx, By, Cx, Cy, Px, Py;
+
+  Ax = contour[V[u]].x;
+  Ay = contour[V[u]].y;
+
+  Bx = contour[V[v]].x;
+  By = contour[V[v]].y;
+
+  Cx = contour[V[w]].x;
+  Cy = contour[V[w]].y;
+
+  if ( FLOAT_EPS > (((Bx-Ax)*(Cy-Ay)) - ((By-Ay)*(Cx-Ax))) ) return false;
+
+  for (p=0;p<n;p++)
+  {
+    if( (p == u) || (p == v) || (p == w) ) continue;
+    Px = contour[V[p]].x;
+    Py = contour[V[p]].y;
+    if (InsideTriangle(Ax,Ay,Bx,By,Cx,Cy,Px,Py)) return false;
+  }
+
+  return true;
+}
+
+bool MeshPolygonTriangulation::Triangulate::_invert = false;
+
+bool MeshPolygonTriangulation::Triangulate::Process(const std::vector<Vector3D> &contour, std::vector<unsigned long> &result)
+{
+  /* allocate and initialize list of Vertices in polygon */
+
+  int n = contour.size();
+  if ( n < 3 ) return false;
+
+  int *V = new int[n];
+
+  /* we want a counter-clockwise polygon in V */
+
+  if ( 0.0f < Area(contour) )
+  {
+    for (int v=0; v<n; v++) V[v] = v;
+    _invert = true;
+  }
+//    for(int v=0; v<n; v++) V[v] = (n-1)-v;
+  else
+  {
+    for(int v=0; v<n; v++) V[v] = (n-1)-v;
+    _invert = false;
+  }
+
+  int nv = n;
+
+  /*  remove nv-2 Vertices, creating 1 triangle every time */
+  int count = 2*nv;   /* error detection */
+
+  for(int m=0, v=nv-1; nv>2; )
+  {
+    /* if we loop, it is probably a non-simple polygon */
+    if (0 >= (count--))
+    {
+      //** Triangulate: ERROR - probable bad polygon!
+      return false;
+    }
+
+    /* three consecutive vertices in current polygon, <u,v,w> */
+    int u = v  ; if (nv <= u) u = 0;     /* previous */
+    v = u+1; if (nv <= v) v = 0;     /* new v    */
+    int w = v+1; if (nv <= w) w = 0;     /* next     */
+
+    if ( Snip(contour,u,v,w,nv,V) )
+    {
+      int a,b,c,s,t;
+
+      /* true names of the vertices */
+      a = V[u]; b = V[v]; c = V[w];
+
+      /* output Triangle */
+      result.push_back( a );
+      result.push_back( b );
+      result.push_back( c );
+
+      m++;
+
+      /* remove v from remaining polygon */
+      for(s=v,t=v+1;t<nv;s++,t++) V[s] = V[t]; nv--;
+
+      /* resest error detection counter */
+      count = 2*nv;
+    }
+  }
+
+  delete V;
+
+  return true;
+}
+
+MeshPolygonTriangulation::MeshPolygonTriangulation()
+{
+}
+
+MeshPolygonTriangulation::MeshPolygonTriangulation(const std::vector<Vector3D>& raclPoints)
+	: _aclPoints(raclPoints)
+{
+}
+
+MeshPolygonTriangulation::~MeshPolygonTriangulation()
+{
+}
+
+bool MeshPolygonTriangulation::compute()
+{
+	_aclFacets.clear();
+/*
+  float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
+  sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
+
+  for ( std::vector<Vector3D>::iterator it = _aclPoints.begin(); it!=_aclPoints.end(); ++it)
+  {
+    sxx += it->x * it->x; sxy += it->x * it->y;
+    sxz += it->x * it->z; syy += it->y * it->y;
+    syz += it->y * it->z; szz += it->z * it->z;
+    mx += it->x; my += it->y; mz += it->z;
+  }
+
+  unsigned nSize = _aclPoints.size();
+  sxx = sxx - mx*mx/((float)nSize);
+  sxy = sxy - mx*my/((float)nSize);
+  sxz = sxz - mx*mz/((float)nSize);
+  syy = syy - my*my/((float)nSize);
+  syz = syz - my*mz/((float)nSize);
+  szz = szz - mz*mz/((float)nSize);
+
+  // Kovarianzmatrix
+  Wm3::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
+
+  Wm3::Matrix3<float> rkRot, rkDiag;
+  akMat.EigenDecomposition(rkRot, rkDiag);
+
+  Wm3::Vector3<float> U = rkRot.GetColumn(0);
+  Wm3::Vector3<float> V = rkRot.GetColumn(1);
+  Wm3::Vector3<float> W = rkRot.GetColumn(2);
+
+  Matrix4D clTMat;
+  clTMat[0][0] = U.X(); clTMat[0][1] = U.Y(); clTMat[0][2] = U.Z(); clTMat[0][3] = mx/(float)nSize;
+  clTMat[1][0] = V.X(); clTMat[1][1] = V.Y(); clTMat[1][2] = V.Z(); clTMat[1][3] = my/(float)nSize;
+  clTMat[2][0] = W.X(); clTMat[2][1] = W.Y(); clTMat[2][2] = W.Z(); clTMat[2][3] = mz/(float)nSize;
+  clTMat[3][0] = 0.0f;  clTMat[3][1] = 0.0f;  clTMat[3][2] = 0.0f;  clTMat[3][3] = 1.0f;
+*/
+  std::vector<Vector3D> pts;
+  std::vector<unsigned long> result;
+	for ( std::vector<Vector3D>::iterator it = _aclPoints.begin(); it != _aclPoints.end(); ++it)
+	{
+		pts.push_back(/*clTMat **/ (*it));
+	}
+
+  //  Invoke the triangulator to triangulate this polygon.
+  Triangulate::Process(pts,result);
+
+  // print out the results.
+  unsigned long tcount = result.size()/3;
+
+  bool ok = tcount+2 == _aclPoints.size();
+  if  ( tcount > _aclPoints.size() )
+		return false; // no valid triangulation
+
+	MeshGeomFacet clFacet;
+  for (unsigned long i=0; i<tcount; i++)
+  {
+    if ( Triangulate::_invert )
+    {
+      clFacet._aclPoints[0] = _aclPoints[result[i*3+0]];
+      clFacet._aclPoints[2] = _aclPoints[result[i*3+1]];
+      clFacet._aclPoints[1] = _aclPoints[result[i*3+2]];
+    }
+    else
+    {
+      clFacet._aclPoints[0] = _aclPoints[result[i*3+0]];
+      clFacet._aclPoints[1] = _aclPoints[result[i*3+1]];
+      clFacet._aclPoints[2] = _aclPoints[result[i*3+2]];
+    }
+
+		_aclFacets.push_back(clFacet);
+  }
+
+	return ok;
+}
+
+void MeshPolygonTriangulation::setPolygon(const std::vector<Vector3D>& raclPoints)
+{
+	_aclPoints = raclPoints;
+	if (_aclPoints.size() > 0)
+	{
+		if (_aclPoints.front() == _aclPoints.back())
+			_aclPoints.pop_back();
+	}
 }

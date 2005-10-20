@@ -173,6 +173,14 @@ public:
   void CutFacets (const MeshFacetGrid& rclGrid, const ViewProjMethod* pclP, const Polygon2D& rclPoly, 
                   bool bCutInner, std::vector<unsigned long> &raclCutted) const;
   /**
+   * Returns the indices of all facets that have at least one point that lies inside the tool mesh. The direction
+   * \a dir is used to try to foraminate the facets of the tool mesh and counts the number of formainated facets.
+   * If this number is odd the considered point lies inside otherwise outside.
+   * @note The tool mesh must be a valid solid.
+   * @note It's not tested if \a rToolMesh is a valid solid. In case it is not the result is undefined.
+   */
+  void GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Vector3D& rcDir, std::vector<unsigned long> &raclCutted ) const;
+  /**
    * Projects the determined facets through projection with \a pclProj into the 2D plane and checks for
    * intersection with the polygon.
    * If \a bInner is \a true than all facets with at least one corner inside the polygon get deleted. If \a
@@ -341,6 +349,41 @@ public:
 
 protected:
   MeshKernel  &_rclMesh; /**< The mesh kernel. */
+};
+
+class AppMeshExport MeshPolygonTriangulation
+{
+public:
+  MeshPolygonTriangulation();
+  MeshPolygonTriangulation(const std::vector<Vector3D>& raclPoints);
+  virtual ~MeshPolygonTriangulation();
+
+	bool compute();
+  void setPolygon(const std::vector<Vector3D>& raclPoints);
+  std::vector<MeshGeomFacet> getFacets(){ return _aclFacets;};
+
+private:
+  std::vector<Vector3D>        _aclPoints;
+  std::vector<MeshGeomFacet> _aclFacets;
+
+	class Triangulate
+	{
+	public:
+		// triangulate a contour/polygon, places results in STL vector
+		// as series of triangles.indicating the points
+    static bool Process(const std::vector<Vector3D> &contour, std::vector<unsigned long> &result);
+
+		// compute area of a contour/polygon
+    static float Area(const std::vector<Vector3D> &contour);
+
+		// decide if point Px/Py is inside triangle defined by
+		// (Ax,Ay) (Bx,By) (Cx,Cy)
+		static bool InsideTriangle(float Ax, float Ay, float Bx, float By, float Cx, float Cy, float Px, float Py);
+
+    static bool _invert;
+	private:
+    static bool Snip(const std::vector<Vector3D> &contour,int u,int v,int w,int n,int *V);
+	};
 };
 
 

@@ -370,8 +370,8 @@ public:
 public:
   /**
    * Checks if the point is part of the facet. A point is regarded as part
-   * of a facet if the distance is lower \s fDistance and the point is inside
-   * the triangle.
+   * of a facet if the distance is lower \s fDistance and the projected point
+   * in the facet normal direction is inside the triangle.
    */
   bool IsPointOf (const Vector3D &rclPoint, float fDistance) const;
   /** Checks whether the given point is inside the facet with tolerance \a fDistance. 
