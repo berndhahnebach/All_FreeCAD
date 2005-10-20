@@ -323,6 +323,36 @@ bool CmdMeshVertexCurvature::isActive(void)
   return (getSelection().getNbrOfType("Mesh")==1);
 }
 
+DEF_STD_CMD_A(CmdMeshPolyPick);
+
+CmdMeshPolyPick::CmdMeshPolyPick()
+  :CppCommand("Mesh_PolyPick")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Surface info");
+  sToolTipText  = QT_TR_NOOP("Creates a segmentfrom a picked polygon");
+  sWhatsThis    = QT_TR_NOOP("Creates a segmentfrom a picked polygon");
+  sStatusTip    = QT_TR_NOOP("Creates a segmentfrom a picked polygon");
+  sPixmap       = "PolygonPick";
+}
+
+void CmdMeshPolyPick::activated(int iMsg)
+{
+  std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
+  if ( fea.size() == 1 )
+  {
+    Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
+    pVP->setEdit();
+  }
+}
+
+bool CmdMeshPolyPick::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return (getSelection().getNbrOfType("Mesh")==1);
+}
+
 void CreateMeshCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -332,4 +362,5 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshExMakeTool());
   rcCmdMgr.addCommand(new CmdMeshExMakeUnion());
   rcCmdMgr.addCommand(new CmdMeshDemoding());
+  rcCmdMgr.addCommand(new CmdMeshPolyPick());
 }

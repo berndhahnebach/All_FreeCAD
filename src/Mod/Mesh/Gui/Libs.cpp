@@ -26,6 +26,8 @@
   // QT extension
 # pragma comment(lib,QTLIBNAME)
 # pragma comment(lib,INVENTORLIBNAME)
+# pragma comment(lib,SOQTLIBNAME)
+
 # ifdef FC_DEBUG
 #   pragma comment(lib,"FreeCADBaseD.lib")
 #   pragma comment(lib,"FreeCADAppD.lib")

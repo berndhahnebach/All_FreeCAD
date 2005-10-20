@@ -100,4 +100,5 @@ void RegisterIcons()
   rclBmpFactory.addXPM("colors", colors);
   rclBmpFactory.addXPM("temperature_mapping", temperature_mapping);
   rclBmpFactory.addXPM("python", python);
+  rclBmpFactory.addXPM("PolygonPick", PolygonPick);
 }

@@ -59,29 +59,36 @@
 // Qt Toolkit
 #include <qaction.h>
 #include <qapplication.h>
+#include <qcursor.h>
 #include <qfiledialog.h>
 #include <qmainwindow.h>
+#include <qmessagebox.h>
+#include <qpainter.h>
 #include <qscrollview.h>
 #include <qthread.h>
 #include <qworkspace.h>
 
-// Open Inventor
 // Open Inventor
 #include <GL/gl.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 #include <Inventor/SbClip.h>
 #include <Inventor/SbColor.h>
 #include <Inventor/SoInput.h>
+#include <Inventor/SoPickedPoint.h>
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/draggers/SoTransformerDragger.h>
 #include <Inventor/events/SoEvent.h>
+#include <Inventor/events/SoKeyboardEvent.h>
+#include <Inventor/events/SoLocation2Event.h>
+#include <Inventor/events/SoMouseButtonEvent.h>
 #include <Inventor/fields/SoMFColor.h>
 #include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/manips/SoTransformerManip.h> 
 #include <Inventor/nodes/SoBaseColor.h>
+#include <Inventor/nodes/SoEventCallback.h>
 #include <Inventor/nodes/SoComplexity.h>
 #include <Inventor/nodes/SoCone.h>
 #include <Inventor/nodes/SoCoordinate3.h>
