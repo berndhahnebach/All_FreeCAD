@@ -44,6 +44,7 @@ public:
 protected:
   void saveSettings();
   void loadSettings();
+  void languageChange();
 
 private:
   void setMRUSize();

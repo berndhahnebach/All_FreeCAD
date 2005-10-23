@@ -49,7 +49,7 @@ WindowParameter::WindowParameter(const char *name)
 
   // if string is empty do not create group
   if ( strcmp(name, "") != 0 )
-    _handle = getParameter()->GetGroup( name );
+    _handle = getDefaultParameter()->GetGroup( name );
 }
 
 WindowParameter::~WindowParameter()
@@ -63,7 +63,11 @@ bool WindowParameter::setGroupName( const char* name )
     return false; // cannot change parameter group
 
   assert(name);
-  _handle = getParameter()->GetGroup( name );
+  QString prefGroup = name;
+  if ( prefGroup.startsWith("User parameter:") || prefGroup.startsWith("System parameter:") )
+    _handle = App::GetApplication().GetParameterGroupByPath( name );
+  else
+    _handle = getDefaultParameter()->GetGroup( name );
   return true;
 }
 
@@ -81,7 +85,7 @@ ParameterGrp::handle  WindowParameter::getWindowParameter(void)
  * Returns a handle to the parameter group to the user parameter 
  * under BaseApp/Preferences.
  */
-ParameterGrp::handle  WindowParameter::getParameter(void)
+ParameterGrp::handle  WindowParameter::getDefaultParameter(void)
 {
   return App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
 }

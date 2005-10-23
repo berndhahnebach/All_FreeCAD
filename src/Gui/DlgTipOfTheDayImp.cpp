@@ -79,7 +79,7 @@ void DlgTipOfTheDayImp::reload()
 {
   // search for the Wiki Tip-of-the-day site
   QString home = App::GetApplication().GetHomePath();
-  QString path = getParameter()->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
+  QString path = getDefaultParameter()->GetASCII("OnlineDocDir", "/doc/free-cad.sourceforge.net/").c_str();
   QString file = home + path + "index.php@TipOfTheDay.html";
 
   QFile f ( file );

@@ -161,14 +161,14 @@ void CustomToolBar::dragMoveEvent ( QDragMoveEvent * )
 CustomPopupMenu::CustomPopupMenu(QWidget * parent, const char * name, const char* menu )
   : QPopupMenu(parent, name), _bAllowDrag(false)
 {
-  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
   hGrp->Attach(this);
   _bAllowDrag = hGrp->GetBool("AllowDrag", _bAllowDrag);
 }
 
 CustomPopupMenu::~CustomPopupMenu()
 {
-  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
   hGrp->Detach(this);
 }
 

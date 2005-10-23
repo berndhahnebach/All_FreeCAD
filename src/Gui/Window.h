@@ -47,7 +47,7 @@ public:
   void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
 
   /// get the parameters
-  static ParameterGrp::handle getParameter(void);
+  static ParameterGrp::handle getDefaultParameter(void);
   /// return the parameter group of this window
   ParameterGrp::handle getWindowParameter(void);
 

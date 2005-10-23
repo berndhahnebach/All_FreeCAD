@@ -701,7 +701,7 @@ void PrefFileChooser::setParamGrpPath ( const QCString& name )
 // --------------------------------------------------------------------
 
 PrefComboBox::PrefComboBox ( QWidget * parent, const char * name )
-  : QComboBox(parent, name)
+  : QComboBox(false, parent, name)
 {
 }
 

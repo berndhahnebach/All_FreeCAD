@@ -1038,6 +1038,10 @@ Diese Datei ist bereits vorhanden.</translation>
             <translation>Ausgabe</translation>
         </message>
         <message>
+            <source>Python console</source>
+            <translation>Python-Konsole</translation>
+        </message>
+        <message>
             <source>Record log messages</source>
             <translation>Protokoll-Meldungen ausgeben</translation>
         </message>

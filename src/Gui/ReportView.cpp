@@ -63,9 +63,9 @@ ReportView::ReportView( QWidget* parent,  const char* name, WFlags fl )
   tab->insertTab( mle, tr( "Output" ) );
 
   pyc = new PythonConsole(tab, "PythonConsole");
-  tab->insertTab(pyc, "Python");
+  tab->insertTab(pyc, tr("Python console") );
 
-  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General")->GetGroup("AutoloadTab");
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General")->GetGroup("AutoloadTab");
   std::string txt = hGrp->GetASCII("currentText");
   for (int i=0; i<tab->count(); i++)
   {
@@ -83,6 +83,13 @@ ReportView::ReportView( QWidget* parent,  const char* name, WFlags fl )
 ReportView::~ReportView()
 {
   // no need to delete child widgets, Qt does it all for us
+}
+
+void ReportView::languageChange()
+{
+  DockWindow::languageChange();
+  tab->changeTab( mle, tr( "Output" ) );
+  tab->changeTab( pyc, tr("Python console") );
 }
 
 // ----------------------------------------------------------

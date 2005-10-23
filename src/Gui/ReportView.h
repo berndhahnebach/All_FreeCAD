@@ -55,6 +55,9 @@ public:
   ReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~ReportView();
 
+protected:
+  void languageChange();
+
 private:
   QTabWidget* tab;
   ReportOutput* mle; /**< Output window */

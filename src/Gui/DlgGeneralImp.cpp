@@ -106,7 +106,7 @@ void DlgGeneralImp::setMRUSize()
   Command* pCmd = rclMan.getCommandByName("Std_MRU");
   if (pCmd)
   {
-    ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("RecentFiles");
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("RecentFiles");
     ((StdCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
   }
 }
@@ -135,7 +135,7 @@ void DlgGeneralImp::saveSettings()
   AllowDragMenu->onSave();
   UsesBigPixmaps->onSave();
 
-  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
   hGrp->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
 
   getMainWindow()->updateStyle();
@@ -175,10 +175,30 @@ void DlgGeneralImp::loadSettings()
   WindowStyle->setCurrentText( style );
 
   // search for the language files
-  ParameterGrp::handle hGrp = WindowParameter::getParameter()->GetGroup("General");
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
   QString language = hGrp->GetASCII("Language", "English").c_str();
   insertLanguages();
   Languages->setCurrentText( language );
+}
+
+void DlgGeneralImp::languageChange()
+{
+  DlgGeneralBase::languageChange();
+
+  // do not save the content but the current item only
+  int pos = AutoloadTabCombo->currentItem();
+  AutoloadTabCombo->clear();
+  DockWindow* dw = DockWindowManager::instance()->getDockWindow("Report View");
+  if ( dw )
+  {
+    QTabWidget* tab = (QTabWidget*)(dw->child ( "TabWidget", "QTabWidget" ));
+    if ( tab )
+    {
+      for (int i=0; i<tab->count(); i++)
+        AutoloadTabCombo->insertItem( tab->label(i) );
+      AutoloadTabCombo->setCurrentItem( pos );
+    }
+  }
 }
 
 #include "DlgGeneral.cpp"

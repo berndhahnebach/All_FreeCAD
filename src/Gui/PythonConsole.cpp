@@ -771,7 +771,7 @@ QPopupMenu * PythonConsole::createPopupMenu ( const QPoint & pos )
 
 void PythonConsole::onSaveHistoryAs()
 {
-  QString cMacroPath = getParameter()->GetGroup( "Macro" )->GetASCII("MacroPath",App::GetApplication().GetHomePath()).c_str();
+  QString cMacroPath = getDefaultParameter()->GetGroup( "Macro" )->GetASCII("MacroPath",App::GetApplication().GetHomePath()).c_str();
   QString fn = FileDialog::getSaveFileName(cMacroPath,"Macro Files (*.FCMacro *.py)", this, tr("Save History"));
   if (!fn.isEmpty())
   {

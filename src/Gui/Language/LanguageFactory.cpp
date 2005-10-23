@@ -152,11 +152,39 @@ bool LanguageFactoryInst::installTranslator ( const QString& lang ) const
   if ( !tv )
     return false; // no data
 
+  QDir path = QDir::current();
+  QFileInfo fi( path.absPath() );
+  bool canDo = fi.permission( QFileInfo::WriteUser );
+#ifdef FC_OS_WIN32
+  const char* tmp = getenv("TMP");
+  if ( canDo==false && tmp )
+  {
+    path.setPath( tmp );
+    fi.setFile( path.absPath() );
+    canDo = fi.permission( QFileInfo::WriteUser );
+  }
+#endif
+  if ( canDo==false )
+  {
+    path = QDir::home();
+    fi.setFile( path.absPath() );
+    canDo = fi.permission( QFileInfo::WriteUser );
+  }
+
+  if ( canDo==false )
+    return false; // give up
+
   // create temporary files
   QString ts = "Language.ts";
+  fi.setFile( path, ts );
+  ts = fi.absFilePath();
   QString qm = "Language.qm";
+  fi.setFile( path, qm );
+  qm = fi.absFilePath();
   QFile file( ts );
-  file.open( IO_WriteOnly );
+  if ( !file.open( IO_WriteOnly ) )
+    return false;
+
   QTextStream out( &file );
 
   RCharVector text = *tv;
@@ -190,10 +218,36 @@ QValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lan
 {
   QValueList<QTranslatorMessage> msgs;
 
+  QDir path = QDir::current();
+  QFileInfo fi( path.absPath() );
+  bool canDo = fi.permission( QFileInfo::WriteUser );
+#ifdef FC_OS_WIN32
+  const char* tmp = getenv("TMP");
+  if ( canDo==false && tmp )
+  {
+    path.setPath( tmp );
+    fi.setFile( path.absPath() );
+    canDo = fi.permission( QFileInfo::WriteUser );
+  }
+#endif
+  if ( canDo==false )
+  {
+    path = QDir::home();
+    fi.setFile( path.absPath() );
+    canDo = fi.permission( QFileInfo::WriteUser );
+  }
+
+  if ( canDo==false )
+    return msgs; // give up
+
   // create temporary files
   QString fn = "Language.ts";
+  fi.setFile( path, fn );
+  fn = fi.absFilePath();
+
   QFile file( fn );
-  file.open( IO_WriteOnly );
+  if (!file.open( IO_WriteOnly ) )
+    return msgs;
   QTextStream out( &file );
 
   try
