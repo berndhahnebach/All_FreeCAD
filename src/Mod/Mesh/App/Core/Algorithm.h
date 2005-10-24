@@ -181,6 +181,10 @@ public:
    */
   void GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Vector3D& rcDir, std::vector<unsigned long> &raclCutted ) const;
   /**
+   * Does basically the same as method above except it uses a mesh grid to speed up the computation.
+   */
+  void GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Vector3D& rcDir, const MeshFacetGrid& rGrid, std::vector<unsigned long> &raclCutted ) const;
+  /**
    * Projects the determined facets through projection with \a pclProj into the 2D plane and checks for
    * intersection with the polygon.
    * If \a bInner is \a true than all facets with at least one corner inside the polygon get deleted. If \a

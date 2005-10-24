@@ -75,6 +75,7 @@ using MeshCore::MeshPointIterator;
 using MeshCore::MeshFacetIterator;
 using MeshCore::MeshGeomFacet;
 using MeshCore::MeshFacet;
+using MeshCore::MeshFacetGrid;
 using MeshCore::MeshPolygonTriangulation;
 using MeshCore::MeshSTL;
 using MeshCore::MeshTopFacetVisitor;
@@ -389,7 +390,7 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
 {
   if ( m_bEdit && !_mouseModel )
   {
-    _mouseModel = new MouseModelPolyPicker(Viewer.getGLWidget());
+    _mouseModel = new MouseModelPolyPicker(&Viewer);
     _mouseModel->initMouseModel();
     _clPoly.clear();
   }
@@ -544,7 +545,7 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
           cToolMesh = aFaces;
 
           if ( !ok )
-            QMessageBox::warning(Viewer.getGLWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
+            QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
 
 #ifdef FC_DEBUG
           {
@@ -632,7 +633,7 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
             }
             else
             {
-              QMessageBox::warning( Viewer.getGLWidget(), "No facets found", "Sorry, couldn't find any facets inside the picked polygon area." );
+              QMessageBox::warning( Viewer.getWidget(), "No facets found", "Sorry, couldn't find any facets inside the picked polygon area." );
             }
           }
 
@@ -865,14 +866,14 @@ void ViewProviderInventorMesh::eventCallback(void * ud, SoEventCallback * n)
 
 using namespace Gui; 
 
-MouseModel::MouseModel(QWidget* w)
+MouseModel::MouseModel(Gui::View3DInventorViewer* w)
 {
   _pcView3D=w;
 }
 
 void MouseModel::initMouseModel()
 {
-  m_cPrevCursor = _pcView3D->cursor();
+  m_cPrevCursor = _pcView3D->getWidget()->cursor();
 
   // do initialization of your mousemodel
   initialize();
@@ -883,7 +884,7 @@ void MouseModel::releaseMouseModel()
   // do termination of your mousemodel
   terminate();
 
-  _pcView3D->setCursor(m_cPrevCursor);
+  _pcView3D->getWidget()->setCursor(m_cPrevCursor);
 }
 
 void MouseModel::moveMouseEvent (QMouseEvent *cEvent)
@@ -950,7 +951,7 @@ void MouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
   };
 }
 
-QWidget* MouseModel::getView() const 
+Gui::View3DInventorViewer* MouseModel::getView() const 
 { 
   // first init the MouseModel -> initMouseModel(View3D &View3D)
   assert (_pcView3D);
@@ -964,7 +965,7 @@ void MouseModel::drawRect( int x, int y, int w, int h, QPainter* p )
          QPoint( QMAX( x, w ), QMAX( y, h ) ) ) );
   else
   {
-    QPainter p(_pcView3D);
+    QPainter p(_pcView3D->getGLWidget());
     p.setPen( Qt::white );
     p.setRasterOp( QPainter::XorROP );
     drawRect( x, y, w, h, &p );
@@ -977,7 +978,7 @@ void MouseModel::drawNode ( int x, int y, int w, int h, QPainter* p )
     p->drawEllipse( x, y, w, h );
   else
   {
-    QPainter p(_pcView3D);
+    QPainter p(_pcView3D->getGLWidget());
     p.setPen( Qt::white );
     p.setBrush(QBrush::white);
     p.setRasterOp( QPainter::XorROP );
@@ -991,7 +992,7 @@ void MouseModel::drawLine ( int x1, int y1, int x2, int y2, QPainter* p )
     p->drawLine( x1, y1, x2, y2 );
   else
   {
-    QPainter p(_pcView3D);
+    QPainter p(_pcView3D->getGLWidget());
     p.setPen( Qt::white );
     p.setRasterOp( QPainter::XorROP );
     drawLine( x1, y1, x2, y2, &p );
@@ -1007,7 +1008,7 @@ void MouseModel::drawCircle ( int x, int y, int r, QPainter* p )
   }
   else
   {
-    QPainter p(_pcView3D);
+    QPainter p(_pcView3D->getGLWidget());
     p.setPen( Qt::green );
     p.setRasterOp( QPainter::XorROP );
     drawCircle( x, y, r, &p );
@@ -1020,7 +1021,7 @@ void MouseModel::drawText ( int x, int y, const QString & str, QPainter* p )
     p->drawText( x, y, str);
   else
   {
-    QPainter p(_pcView3D);
+    QPainter p(_pcView3D->getGLWidget());
     p.setPen( Qt::white );
     p.setRasterOp( QPainter::XorROP );
     drawText( x, y, str, &p );
@@ -1029,7 +1030,7 @@ void MouseModel::drawText ( int x, int y, const QString & str, QPainter* p )
 
 // **** MouseModelStd ********************************************************
 
-MouseModelStd::MouseModelStd(QWidget* w)
+MouseModelStd::MouseModelStd(Gui::View3DInventorViewer* w)
   :MouseModel(w), mode(nothing)
 {
 };
@@ -1206,7 +1207,7 @@ void MouseModelStd::keyReleaseEvent ( QKeyEvent * )
 
 // -----------------------------------------------------------------------------------
 
-MouseModelPolyPicker::MouseModelPolyPicker(QWidget* w) 
+MouseModelPolyPicker::MouseModelPolyPicker(Gui::View3DInventorViewer* w) 
 : MouseModelStd(w)
 {
   m_iRadius    = 2;
@@ -1217,7 +1218,7 @@ MouseModelPolyPicker::MouseModelPolyPicker(QWidget* w)
 
 void MouseModelPolyPicker::initialize()
 {
-  _pcView3D->setCursor(QCursor(QCursor::CrossCursor));
+  _pcView3D->getWidget()->setCursor(QCursor(QCursor::CrossCursor));
 }
 
 void MouseModelPolyPicker::terminate()
@@ -1258,7 +1259,7 @@ void MouseModelPolyPicker::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
     m_bWorking = true;
     // clear the old polygon
     _cNodeVector.clear();
-    _pcView3D->update();
+    _pcView3D->getGLWidget()->update();
   }
 
   _cNodeVector.push_back(point);
@@ -1312,7 +1313,7 @@ void MouseModelPolyPicker::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
 
 // -----------------------------------------------------------------------------------
 
-MouseModelSelection::MouseModelSelection(QWidget* w)
+MouseModelSelection::MouseModelSelection(Gui::View3DInventorViewer* w)
 : MouseModelStd(w)
 {
   m_bWorking = false;
@@ -1389,7 +1390,7 @@ static const char *xpm_cursor[]={
 "................................",
 "................................"};
 
-MouseModelCirclePicker::MouseModelCirclePicker(QWidget* w)
+MouseModelCirclePicker::MouseModelCirclePicker(Gui::View3DInventorViewer* w)
 : MouseModelStd(w), _nRadius(50)
 {
   QPoint p = QCursor::pos();
@@ -1405,7 +1406,7 @@ void MouseModelCirclePicker::initialize()
 {
   QPixmap p(xpm_cursor);
   QCursor cursor( p );
-  _pcView3D->setCursor(cursor);
+  _pcView3D->getWidget()->setCursor(cursor);
 }
 
 void MouseModelCirclePicker::terminate()

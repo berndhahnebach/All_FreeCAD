@@ -128,7 +128,7 @@ private:
 class MouseModel
 {
 public:
-  MouseModel(QWidget*);
+  MouseModel(Gui::View3DInventorViewer*);
   virtual ~MouseModel(void){}
   /// implement this in derived classes
   virtual void initialize() = 0;
@@ -157,7 +157,7 @@ public:
   virtual void paintEvent         ( QPaintEvent * ){ draw(); } ;
   virtual void resizeEvent        ( QResizeEvent * ){ draw(); };
 
-  QWidget* getView() const;
+  Gui::View3DInventorViewer* getView() const;
 
 protected:
   /// drawing stuff
@@ -169,7 +169,7 @@ protected:
   void drawText ( int x, int y, const QString & str, QPainter* p = NULL );
 
 protected:
-  QWidget*_pcView3D;
+  Gui::View3DInventorViewer*_pcView3D;
   QCursor m_cPrevCursor;
   int  m_iXold, m_iYold;
   int  m_iXnew, m_iYnew;
@@ -184,7 +184,7 @@ protected:
 class MouseModelStd :public MouseModel
 {
 public:
-  MouseModelStd(QWidget*);
+  MouseModelStd(Gui::View3DInventorViewer*);
   virtual ~MouseModelStd(){}
 
   /// do nothing
@@ -228,7 +228,7 @@ protected:
 class MouseModelPolyPicker : public MouseModelStd
 {
 public:
-  MouseModelPolyPicker(QWidget*);
+  MouseModelPolyPicker(Gui::View3DInventorViewer*);
   virtual ~MouseModelPolyPicker();
 
   /// set the new mouse cursor
@@ -260,7 +260,7 @@ protected:
 class MouseModelSelection : public MouseModelStd 
 {
 public:
-  MouseModelSelection(QWidget*);
+  MouseModelSelection(Gui::View3DInventorViewer*);
   virtual ~MouseModelSelection();
 
   /// do nothing
@@ -287,7 +287,7 @@ private:
 class MouseModelCirclePicker : public MouseModelStd 
 {
 public:
-  MouseModelCirclePicker(QWidget*);
+  MouseModelCirclePicker(Gui::View3DInventorViewer*);
   virtual ~MouseModelCirclePicker();
 
   /// set the new mouse cursor

@@ -525,6 +525,75 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ve
   Base::Sequencer().stop();
 }
 
+void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Vector3D& rcDir, const MeshFacetGrid& rGrid, std::vector<unsigned long> &raclCutted ) const
+{
+  // iterator over grid structure
+  MeshGridIterator clGridIter(rGrid);
+  BoundBox3D cBB = rToolMesh.GetBoundBox();
+
+  std::vector<unsigned long> aulInds;
+  for (clGridIter.Init(); clGridIter.More(); clGridIter.Next())
+  {
+    if ( cBB && clGridIter.GetBoundBox() )
+    {
+      // collect all indices
+      clGridIter.GetElements(aulInds);
+    }
+  }
+
+  // remove duplicates
+  std::sort(aulInds.begin(), aulInds.end());
+  aulInds.erase(std::unique(aulInds.begin(), aulInds.end()), aulInds.end());
+
+  MeshFacetIterator cFIt(_rclMesh);
+  MeshFacetIterator cTIt(rToolMesh);
+
+  Base::Sequencer().start("Check facets...", aulInds.size());
+
+  // check all facets
+  Vector3D tmp;
+  for ( std::vector<unsigned long>::iterator it = aulInds.begin(); it != aulInds.end(); ++it )
+  {
+    cFIt.Set( *it );
+
+    // check each point of each facet
+    for ( int i=0; i<3; i++ )
+    {
+      // at least the point must be inside the bounding box of the tool mesh
+      if ( cBB.IsInBox( cFIt->_aclPoints[i] ) )
+      {
+        // should not cause runtime problems since the tool mesh is usually rather lightweigt
+        int ct=0;
+        for ( cTIt.Init(); cTIt.More(); cTIt.Next() )
+        {
+          if ( cTIt->IsPointOfFace( cFIt->_aclPoints[i], FLOAT_EPS ) )
+          {
+            ct=1;
+            break; // the point lies on the tool mesh
+          }
+          else if ( cTIt->Foraminate( cFIt->_aclPoints[i], rcDir, tmp ) )
+          {
+            // check if the intersection point lies in direction rcDir of the considered point
+            if ( (tmp - cFIt->_aclPoints[i]) * rcDir > 0 )
+              ct++;
+          }
+        }
+
+        // odd number => point is inside the tool mesh
+        if ( ct % 2 == 1 )
+        {
+          raclCutted.push_back( cFIt.Position() );
+          break;
+        }
+      }
+    }
+
+    Base::Sequencer().next();
+  }
+
+  Base::Sequencer().stop();
+}
+
 void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const ViewProjMethod* pclProj, const Polygon2D& rclPoly, 
                                 bool bInner, std::vector<unsigned long> &raulFacets) const
 {
