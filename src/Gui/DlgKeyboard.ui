@@ -307,11 +307,11 @@
     <tabstop>pushButtonResetAll</tabstop>
 </tabstops>
 <slots>
-    <slot>onGroupSelected( const QString &amp; )</slot>
-    <slot>onDescription( const QString &amp; )</slot>
-    <slot>onAssign()</slot>
-    <slot>onReset()</slot>
-    <slot>onResetAll()</slot>
+    <slot access="protected">onGroupSelected( const QString &amp; )</slot>
+    <slot access="protected">onDescription( const QString &amp; )</slot>
+    <slot access="protected">onAssign()</slot>
+    <slot access="protected">onReset()</slot>
+    <slot access="protected">onResetAll()</slot>
     <slot access="protected">onShortcutPressed(const QString&amp;)</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>

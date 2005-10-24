@@ -35,6 +35,7 @@
 #include "Application.h"
 #include "Command.h"
 #include "CommandBarManager.h"
+#include "Window.h"
 
 #include <App/Application.h>
 
@@ -247,6 +248,25 @@ void Workbench::showOrHideToolBars( bool read ) const
 
 bool Workbench::activate()
 {
+	// Assigns user defined accelerators
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter();
+  if ( hGrp->HasGroup("Shortcut") )
+  {
+  	hGrp = hGrp->GetGroup("Shortcut");
+  	std::map<std::string,std::string> items = hGrp->GetASCIIMap();
+	  CommandManager & cCmdMgr = Application::Instance->commandManager();
+	  
+	  for ( std::map<std::string, std::string>::iterator it = items.begin(); it != items.end(); ++it )
+	  {
+	  	Command* cmd = cCmdMgr.getCommandByName( it->first.c_str() );
+	  	if ( cmd && cmd->getAction() )
+	  	{
+	  		QKeySequence shortcut = it->second.c_str();
+	  		cmd->getAction()->setAccel( shortcut );
+	  	}
+	  }
+  }
+	
   // just checks the toolbars if they must be hidden
   showOrHideToolBars( false );
 

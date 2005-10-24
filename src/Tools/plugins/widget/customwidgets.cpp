@@ -136,25 +136,30 @@ void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
   QString txt;
   setText(tr("none"));
 
-  if (e->ascii() == 0)
-    return; // only meta key pressed
-
   int key = e->key();
+  int state = e->state();
 
-  // I hope this works for every keyboard
-  if ( key == Key_mu )
-    key = Key_M;
-  else if ( key == Key_At )
-    key = Key_Q;
+  if ( key == Key_Control )
+    return;
+  else if ( key == Key_Shift )
+    return;
+  else if ( key == Key_Alt )
+    return;
+  else if ( state == NoButton && key == Key_Backspace )
+    return; // clears the edit field
 
-  // ignore these keys
-  if ( key < Key_0 || key > Key_Z )
-     return;
-
-  switch(e->state())
+  switch( state )
   {
   case ControlButton:
     txt += QAccel::keyToString(CTRL+key);
+    setText(txt);
+    break;
+  case AltButton:
+    txt += QAccel::keyToString(ALT+key);
+    setText(txt);
+    break;
+  case ShiftButton:
+    txt += QAccel::keyToString(SHIFT+key);
     setText(txt);
     break;
   case ControlButton+AltButton:
@@ -165,19 +170,19 @@ void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
     txt += QAccel::keyToString(CTRL+SHIFT+key);
     setText(txt);
     break;
+  case ShiftButton+AltButton:
+    txt += QAccel::keyToString(SHIFT+ALT+key);
+    setText(txt);
+    break;
   case ControlButton+AltButton+ShiftButton:
     txt += QAccel::keyToString(CTRL+ALT+SHIFT+key);
     setText(txt);
     break;
-  case AltButton:
-  case ShiftButton:
-    break;
-  default:// CTRL
-    if ( key != Key_Backspace && key != Key_Delete)
-    {
-      txt += QAccel::keyToString(CTRL+key);
-      setText(txt);
-    }
+  default:
+    if ( e->stateAfter()&(ControlButton+AltButton+ShiftButton) )
+      return; // if only the meta keys CTRL,ALT or SHIFT are pressed
+    txt += QAccel::keyToString(key);
+    setText(txt);
     break;
   }
 }

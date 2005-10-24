@@ -30,10 +30,13 @@
 # include <qstringlist.h> 
 #endif
 
+#include <Base/Parameter.h>
+
 #include "DlgKeyboardImp.h"
 #include "Application.h"
 #include "Command.h"
 #include "Widgets.h"
+#include "Window.h"
 
 using namespace Gui::Dialog;
 
@@ -88,21 +91,31 @@ void DlgCustomKeyboardImp::onDescription(const QString& txt)
   if ( cmd && cmd->getAction() )
   {
     QKeySequence ks = cmd->getAction()->accel();
+    QKeySequence ks2 = cmd->getAccel();
+    QKeySequence ks3 = accelLineEdit1NewShortcut->text();
+
     if ( ks.isEmpty() )
       accelLineEditShortcut->setText( tr("Not defined") );
     else
       accelLineEditShortcut->setText( ks );
 
     textLabelDescription->setText( cmd->getAction()->toolTip() );
+    pushButtonAssign->setEnabled( !ks3.isEmpty() && ( ks != ks3 ) );
+    pushButtonReset->setEnabled( (ks != ks) );
   }
   else
+  {
     textLabelDescription->setText( tr("Not available") );
+    pushButtonReset->setEnabled( false );
+  }
 }
 
 /** Shows all commands of this category */
 void DlgCustomKeyboardImp::onGroupSelected(const QString & group)
 {
   listBoxCommands->clear();
+  pushButtonAssign->setEnabled( false );
+  pushButtonReset->setEnabled( false );
 
   QMap<QString, QString>::ConstIterator It = _cmdGroups.find( group );
 
@@ -122,16 +135,62 @@ void DlgCustomKeyboardImp::onGroupSelected(const QString & group)
   }
 }
 
+/** Assigns a new accelerator to the selected command. */
 void DlgCustomKeyboardImp::onAssign()
 {
+  if ( listBoxCommands->currentText().isEmpty() )
+    return;
+  const char* curText = listBoxCommands->currentText().latin1();
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
+  Command* cmd = cCmdMgr.getCommandByName( curText );
+  if ( cmd && cmd->getAction() )
+  {
+    QKeySequence shortcut = accelLineEdit1NewShortcut->text();
+    cmd->getAction()->setAccel( shortcut );
+    accelLineEditShortcut->setText( accelLineEdit1NewShortcut->text() );
+
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Shortcut");
+    hGrp->SetASCII( curText, accelLineEdit1NewShortcut->text().latin1() );
+
+    pushButtonReset->setEnabled( true );
+  }
 }
 
+/** Resets the accelerator of the selected command to the default. */
 void DlgCustomKeyboardImp::onReset()
 {
+  if ( listBoxCommands->currentText().isEmpty() )
+    return;
+  const char* curText = listBoxCommands->currentText().latin1();
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
+  Command* cmd = cCmdMgr.getCommandByName( curText );
+  if ( cmd && cmd->getAction() )
+  {
+    cmd->getAction()->setAccel( cmd->getAccel() );
+    QString txt = cmd->getAction()->accel();
+    accelLineEditShortcut->setText( (txt.isEmpty() ? tr("Not defined") : txt) );
+    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Shortcut");
+    hGrp->RemoveASCII( curText );
+  }
+
+  pushButtonReset->setEnabled( false );
 }
 
+/** Resets the accelerator of all commands to the default. */
 void DlgCustomKeyboardImp::onResetAll()
 {
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
+  std::vector<Command*> cmds = cCmdMgr.getAllCommands();
+  for ( std::vector<Command*>::iterator it = cmds.begin(); it != cmds.end(); ++it )
+  {
+    if ( (*it)->getAction() )
+    {
+      (*it)->getAction()->setAccel( (*it)->getAccel() );
+    }
+  }
+
+  WindowParameter::getDefaultParameter()->RemoveGrp("Shortcut");
+  pushButtonReset->setEnabled( false );
 }
 
 void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
@@ -145,6 +204,8 @@ void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
   QKeySequence ks(sc);
   if ( !ks.isEmpty() )
   {
+    pushButtonAssign->setEnabled( true );
+
     for ( std::vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
     {
       if ( (*it)->getAction() && (*it)->getAction()->accel() == ks )
@@ -160,14 +221,18 @@ void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
       QMessageBox::warning( this, tr("Multiple defined shortcut"), 
                             tr("The shortcut '%1' is defined more than once. This could result into unexpected behaviour.").arg(sc) );
       accelLineEdit1NewShortcut->setFocus();
+      pushButtonAssign->setEnabled( false );
     }
     else if ( i == 1 && cmdName != listBoxCommands->currentText() )
     {
       QMessageBox::warning( this, tr("Already defined shortcut"), 
                             tr("The shortcut '%1' is already assigned to '%2'.\n\nPlease define another shortcut.").arg(sc).arg(cmdName) );
       accelLineEdit1NewShortcut->setFocus();
+      pushButtonAssign->setEnabled( false );
     }
   }
+  else
+    pushButtonAssign->setEnabled( false );
 }
 
 #include "DlgKeyboard.cpp"

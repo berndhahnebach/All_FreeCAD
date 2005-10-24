@@ -205,6 +205,16 @@ public:
   virtual bool removeFrom(QWidget *pcWidget);
   //@}
 
+  /** @name Methods to get the properties of the command */
+  //@{
+  virtual QString getWhatsThis  () const = 0;
+  virtual QString getMenuText   () const = 0;
+  virtual QString getToolTipText() const = 0;
+  virtual QString getStatusTip  () const = 0;
+  virtual QString getPixmap     () const = 0;
+  virtual int     getAccel      () const = 0;
+  //@}
+
 protected:
   /** @name Attributes 
    *  set by the inherited constructor to set up the most important propertys 
@@ -255,7 +265,16 @@ public:
   virtual std::string getResource(const char* sName) const;
   /// Reassign QAction stuff
   virtual void languageChange();
+  //@}
 
+  /** @name Methods to get the properties of the command */
+  //@{
+  QString getWhatsThis  () const { return sWhatsThis;   }
+  QString getMenuText   () const { return sMenuText;    }
+  QString getToolTipText() const { return sToolTipText; }
+  QString getStatusTip  () const { return sStatusTip;   }
+  QString getPixmap     () const { return sPixmap;      }
+  int     getAccel      () const { return iAccel;       }
   //@}
 
 protected:
@@ -308,6 +327,16 @@ public:
   virtual std::string getResource(const char* sName) const;
   //@}
 
+  /** @name Methods to get the properties of the command */
+  //@{
+  QString getWhatsThis  () const;
+  QString getMenuText   () const;
+  QString getToolTipText() const;
+  QString getStatusTip  () const;
+  QString getPixmap     () const;
+  int     getAccel      () const;
+  //@}
+
 
 protected:
   /// a reference to the python coammnd object
@@ -340,18 +369,9 @@ public:
   virtual void activated(int iMsg);
   //@}
 
-  /** @name Methods to get the properties of the Script Command */
-  //@{
-  QString getScriptName () const { return scriptName;   }
-  QString getWhatsThis  () const { return sWhatsThis;   }
-  QString getMenuText   () const { return sMenuText;    }
-  QString getToolTipText() const { return sToolTipText; }
-  QString getStatusTip  () const { return sStatusTip;   }
-  QString getPixmap     () const { return sPixmap;      }
-  int     getAccel      () const { return iAccel;       }
-  //@}
   /** @name Methodes to set the propertys of the Script Command */
   //@{
+  QString getScriptName () const { return scriptName;   }
   void setScriptName ( const QString& );
   void setWhatsThis  ( const QString& );
   void setMenuText   ( const QString& );

@@ -625,7 +625,35 @@ QAction * PythonCommand::createAction(void)
   return pcAction;
 }
 
+QString PythonCommand::getWhatsThis() const
+{
+  return getResource("WhatsThis").c_str();
+}
 
+QString PythonCommand::getMenuText() const
+{
+  return getResource("MenuText").c_str();
+}
+
+QString PythonCommand::getToolTipText() const
+{
+  return getResource("ToolTip").c_str();
+}
+
+QString PythonCommand::getStatusTip() const
+{
+  return getResource("StatusTip").c_str();
+}
+
+QString PythonCommand::getPixmap() const
+{
+  return getResource("Pixmap").c_str();
+}
+
+int PythonCommand::getAccel() const
+{
+  return 0;
+}
 
 //===========================================================================
 // CommandManager 
