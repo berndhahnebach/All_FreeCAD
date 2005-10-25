@@ -101,7 +101,7 @@ void DlgCustomKeyboardImp::onDescription(const QString& txt)
 
     textLabelDescription->setText( cmd->getAction()->toolTip() );
     pushButtonAssign->setEnabled( !ks3.isEmpty() && ( ks != ks3 ) );
-    pushButtonReset->setEnabled( (ks != ks) );
+    pushButtonReset->setEnabled( (ks != ks2) );
   }
   else
   {
