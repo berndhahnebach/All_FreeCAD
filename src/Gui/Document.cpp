@@ -54,7 +54,7 @@ using namespace Gui;
 int Document::_iDocCount = 0;
 
 Document::Document(App::Document* pcDocument,Application * app, const char * name)
-  :_iWinCount(1), _pcAppWnd(app), _pcDocument(pcDocument)
+  :_iWinCount(1), _pcAppWnd(app), _pcDocument(pcDocument), _isClosing(false)
 {
   // new instance
   _iDocId = (++_iDocCount);
@@ -99,8 +99,12 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
 
 Document::~Document()
 {
-//	for(std::list<MDIView*>::iterator It = _LpcViews.begin();It != _LpcViews.end() ;It++) 
-//		delete *It;
+  // e.g. if document gets closed from within a Python command
+  _isClosing = true;
+  while ( _LpcViews.size() > 0 )
+  {
+    delete _LpcViews.front();
+  }
 
   _pcDocument->Detach(this);
 
@@ -329,7 +333,9 @@ void Document::detachView(Gui::BaseView* pcView, bool bPassiv)
       It = _LpcPassivViews.begin();
     }
 
-    _pcAppWnd->onLastWindowClosed(this);
+    // is already  closing the document
+    if ( _isClosing == false )
+      _pcAppWnd->onLastWindowClosed(this);
     }
   }
 }

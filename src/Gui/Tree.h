@@ -32,6 +32,7 @@
 #include "../Base/PyExport.h"
 #include "DockWindow.h"
 #include <App/Document.h>
+#include <App/Application.h>
 
 /// Forwards
 class FCLabel; 
@@ -89,7 +90,8 @@ class DocItem : public QListViewItem, public App::Document::ObserverType
 {
 public:
   /// Constructor
-  DocItem( QListViewItem* parent,Gui::Document* doc);
+  DocItem( QListViewItem* parent,App::Document* doc);
+  virtual ~DocItem();
 
   /// Opens the Leafs and generate them.
   void setOpen( bool );
@@ -113,7 +115,7 @@ protected:
   void activate (); 
 
 
-  Gui::Document*  _pcDocument;
+  App::Document*  _pcDocument;
   std::map<App::Feature*,FeatItem*> FeatMap;
 
 };
@@ -125,7 +127,7 @@ protected:
 /** 
  *  \author Jürgen Riegel
  */
-class TreeView :public Gui::DockView
+class TreeView :public Gui::DockView, public App::ApplicationObserver
 {
   Q_OBJECT
 
@@ -147,6 +149,10 @@ public:
   /// get called when the document is changed or updated
   virtual void onUpdate(void);
 
+	/// This method get called when a new doc appears
+	virtual void OnDocNew(App::Document*);
+	/// This method get called when a new doc will be deleted
+	virtual void OnDocDelete(App::Document*);
 
 protected:
   QListView*  _pcListView;
@@ -154,7 +160,7 @@ protected:
 
   static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
-  std::map<Gui::Document*,DocItem*> DocMap;
+  std::map<App::Document*,DocItem*> DocMap;
 };
 
 } // namespace Gui

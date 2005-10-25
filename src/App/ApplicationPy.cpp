@@ -60,6 +60,7 @@ using namespace App;
 PyMethodDef Application::Methods[] = {
 	{"New",            (PyCFunction) Application::sNew,            1},
 	{"Open",           (PyCFunction) Application::sOpen,           1},
+	{"Close",          (PyCFunction) Application::sClose,          1},
 	{"Import"  ,       (PyCFunction) Application::sImport,         1},
 	{"DocSave"  ,      (PyCFunction) Application::sSave,           1},
 	{"DocSaveAs",      (PyCFunction) Application::sSaveAs,         1},
@@ -130,6 +131,21 @@ PYFUNCIMP_S(Application,sNew)
 			return NULL;
 		}
 	}PY_CATCH;
+}
+
+PYFUNCIMP_S(Application,sClose)
+{
+  char *pstr = 0;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+      return NULL;                             // NULL triggers exception 
+
+	if ( GetApplication().closeDocument(pstr) == false )
+  {
+		PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
+		return NULL;
+  }
+
+  Py_Return;
 }
 
 

@@ -31,3 +31,4 @@ Version: V0.3B3 Date: Tue Oct  4 10:04:27 2005 +++++++++++++++++++++++++++++++
 + bug with start workbench fixed (in case if user defined start workbench is hidden)
 + Allow to open a determined page from preferences dialog
 + add context menu to tabs
++ start closing documents 

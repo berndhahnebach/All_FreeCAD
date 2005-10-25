@@ -50,16 +50,20 @@ using namespace Gui;
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-DocItem::DocItem( QListViewItem* parent,Gui::Document* doc)
-    : QListViewItem( parent ),
-  _pcDocument(doc)
+DocItem::DocItem( QListViewItem* parent,App::Document* doc)
+    : QListViewItem( parent ), _pcDocument(doc)
 {
   setPixmap(0,*TreeView::pcLabelOpen);
-  setText(0,QString(_pcDocument->getDocument()->getName()));
+  setText(0,QString(_pcDocument->getName()));
 
-  _pcDocument->getDocument()->Attach(this);
+  _pcDocument->Attach(this);
 
   buildUp();
+}
+
+DocItem::~DocItem()
+{
+  _pcDocument->Detach(this);
 }
 
 void DocItem::update(void)
@@ -238,24 +242,10 @@ void TreeView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDo
 {
   Console().Log("TreeView::onNewDocument() activated %p\n",pcNewDocument);
 
-  std::map<Gui::Document*,DocItem*>::iterator pos;
-
-  if(pcNewDocument)
-  {
-    pos = DocMap.find(pcNewDocument);
-  
-    if(pos == DocMap.end())
-    {
-      DocItem *item = new DocItem(_pcMainItem,pcNewDocument);
-      DocMap[pcNewDocument] = item;
-    }
-  }
-
-  if(pcOldDocument)
-    DocMap[pcOldDocument]->setOpen(false);
-  if(pcNewDocument)
-    DocMap[pcNewDocument]->setOpen(true);
-  
+  if(pcOldDocument && DocMap.find(pcOldDocument->getDocument()) != DocMap.end())
+    DocMap[pcOldDocument->getDocument()]->setOpen(false);
+  if(pcNewDocument && DocMap.find(pcNewDocument->getDocument()) != DocMap.end())
+    DocMap[pcNewDocument->getDocument()]->setOpen(true);
 }
 
 bool TreeView::onMsg(const char* pMsg)
@@ -264,6 +254,19 @@ bool TreeView::onMsg(const char* pMsg)
 
   // no messages yet
   return false;
+}
+
+void TreeView::OnDocNew( App::Document* pDoc )
+{
+  DocItem *item = new DocItem(_pcMainItem,pDoc);
+  DocMap[ pDoc ] = item;
+}
+
+void TreeView::OnDocDelete( App::Document* pDoc )
+{
+  std::map<App::Document*, DocItem*>::iterator it = DocMap.find( pDoc );
+  DocMap.erase( it );
+  delete it->second;
 }
 
 

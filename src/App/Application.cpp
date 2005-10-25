@@ -245,13 +245,15 @@ Document* Application::newDocument(const char * Name)
 	return newDoc.pDoc;
 }
 
-void Application::deleteDocument(const char* name)
+bool Application::closeDocument(const char* name)
 {
+  int oldDoc = _hApp->NbDocuments();
+
   /// @todo Remove the document properly from OCAF
   DocEntry delDoc;
   map<string,DocEntry>::iterator pos = DocMap.find( name );
   if (pos == DocMap.end()) // no such document
-    return;
+    return false;
 
   delDoc = pos->second;
 
@@ -262,6 +264,13 @@ void Application::deleteDocument(const char* name)
   if ( _pActiveDoc == delDoc.pDoc)
     _pActiveDoc = 0;
   delete delDoc.pDoc;
+
+  int newDoc = _hApp->NbDocuments();
+
+  if ( newDoc >= oldDoc)
+    Base::Console().Warning("OCC Document of '%s' couldn't be closed.", name );
+
+  return true;
 }
 
 App::Document* Application::getDocument(const char *Name)

@@ -169,6 +169,7 @@ private:
   static int _iDocCount;
   int        _iWinCount;
   int        _iDocId;
+  bool _isClosing;
   Application*    _pcAppWnd;
   /// List of all registered views
   std::list<Gui::BaseView*> _LpcViews;

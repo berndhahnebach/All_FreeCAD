@@ -257,19 +257,20 @@ void Application::OnDocDelete(App::Document* pcDoc)
       pcGDoc = *It;
       d->lpcDocuments.erase(It);
       delete pcGDoc;
+      break;
     }
   }
-
 }
 
 void Application::onLastWindowClosed(Gui::Document* pcDoc)
 {
-  if(!d->_bIsClosing)
+  if(!d->_bIsClosing && pcDoc)
   {
+    Base::Interpreter().runStringArg("App.Close(\"%s\")", pcDoc->getDocument()->getName());
     // GuiDocument has closed the last window and get destructed
-    d->lpcDocuments.remove(pcDoc);
+//    d->lpcDocuments.remove(pcDoc);
     //lpcDocuments.erase(pcDoc);
-    delete pcDoc;
+//    delete pcDoc;
 
     // last document closed?
     if(d->lpcDocuments.size() == 0 )

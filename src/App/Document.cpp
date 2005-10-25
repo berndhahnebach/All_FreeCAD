@@ -70,8 +70,10 @@ Document::Document(const Handle_TDocStd_Document &hDoc, const char* Name)
 
 Document::~Document()
 {
-	_hDoc.Nullify();
-	Console().Log("-App::Document %p\n",this);
+  // close the OCAF document
+  GetApplication().GetOCCApp()->Close(_hDoc);
+  _hDoc.Nullify();
+  Console().Log("-App::Document %p\n",this);
 }
 
 

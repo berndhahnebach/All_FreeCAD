@@ -131,8 +131,8 @@ public:
 	//@{
 	/// Creates a new document 
   App::Document* newDocument(const char * Name=0l);
-  /// Deletes the document \a name
-  void deleteDocument(const char* name);
+  /// Closes the document \a name and removes it from the application.
+  bool closeDocument(const char* name);
   /// find a unique docuement name
   std::string getUniqueDocumentName(const char *Name);
   /// renams a document
@@ -247,6 +247,7 @@ private:
 	// static python wrapper of the exported functions
 	PYFUNCDEF_S(sOpen);
 	PYFUNCDEF_S(sNew);
+	PYFUNCDEF_S(sClose);
 	PYFUNCDEF_S(sImport);
 	PYFUNCDEF_S(sSave);
 	PYFUNCDEF_S(sSaveAs);

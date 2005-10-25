@@ -214,7 +214,9 @@ public:
   void Dump(void);
 
 	/// Get the OCC Document Handle
-	Handle_TDocStd_Document GetOCCDoc(void){return _hDoc;}
+	Handle_TDocStd_Document GetOCCDoc(void){
+    return _hDoc;
+  }
 
 
 	virtual Base::PyObjectBase *GetPyObject(void);
