@@ -40,8 +40,6 @@ using namespace Part;
 
 void FeaturePartImportStep::initFeature(void)
 {
-	Base::Console().Log("FeaturePartImportStep::InitLabel()\n");
-
 	addProperty("String","FileName");
 
 }

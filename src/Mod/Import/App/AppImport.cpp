@@ -38,7 +38,7 @@
 #include <Base/Interpreter.h>
 
 #include <App/Application.h>
-#include <App/Topology.h>
+#include <Mod/Part/App/TopologyPy.h>
 
 #include "FeatureImportStep.h"
 #include "FeatureImportIges.h"

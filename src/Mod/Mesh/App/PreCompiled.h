@@ -17,8 +17,10 @@
 
 #ifdef FC_OS_WIN32
 # define AppMeshExport __declspec(dllexport)
+# define AppPartExport __declspec(dllimport)
 #else // for Linux
 # define AppMeshExport
+# define AppPartExport
 #endif
 
 

@@ -37,11 +37,11 @@
 
 #include <Base/Exception.h>
 #include <Base/Console.h>
-#include "Topology.h"
+#include "TopologyPy.h"
 
 using Base::Console;
 
-using namespace App;
+using namespace Part;
 
 
 //===========================================================================

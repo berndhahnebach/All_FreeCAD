@@ -41,7 +41,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 using Base::Console;
-#include <App/Topology.h>
+#include "TopologyPy.h"
 
 
 #include "PartFeature.h"
@@ -190,18 +190,18 @@ int PartFeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ functio
 PYFUNCIMP_D(PartFeaturePy,getShape)
 {
   PY_TRY {
-    return new App::TopoShapePy(_pcFeature->getShape());
+    return new TopoShapePy(_pcFeature->getShape());
   } PY_CATCH;
 }
 
 PYFUNCIMP_D(PartFeaturePy,setShape)
 {
-  App::TopoShapePy   *pcObject;
+  TopoShapePy   *pcObject;
   PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!", &(App::TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "O!", &(TopoShapePy::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
-  pcObject = (App::TopoShapePy*)pcObj;
+  pcObject = (TopoShapePy*)pcObj;
   PY_TRY {
 
     // copy in the Feature Mesh

@@ -34,9 +34,9 @@
 #include <Base/FileInfo.h>
 #include <App/Application.h>
 #include <App/Document.h>
-#include <App/Topology.h>
 
 //#include "PartDocType.h"
+#include "TopologyPy.h"
 #include "FeaturePartBox.h"
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
@@ -188,7 +188,7 @@ read(PyObject *self, PyObject *args)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
   PY_TRY {
-    return new App::TopoShapePy(PartAlgos::Load(Name)); 
+    return new TopoShapePy(PartAlgos::Load(Name)); 
   } PY_CATCH;
 }
 

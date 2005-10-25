@@ -112,12 +112,18 @@ Document::~Document()
   _pcDocument->DecRef();
 }
 
+//*****************************************************************************************************
+// 3D viewer handling
+//*****************************************************************************************************
+
+
 ViewProviderInventor* Document::getViewProvider(App::Feature* Feat)
 {
   std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
   return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
 }
 
+/*
 /// test if the feature is in show
 bool Document::isShow(App::Feature *Feat)
 {
@@ -181,7 +187,47 @@ ViewProviderInventor * Document::setHide(App::Feature *Feat)
     return _ViewProviderMapNoShow[Feat];
   }
 }
+*/
 
+bool Document::isShow(App::Feature *Feat)
+{
+  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
+
+  if(it != _ViewProviderMap.end())
+    return it->second->getMode() != -1;
+  else 
+    return false;
+}
+
+/// put the feature in show
+ViewProviderInventor * Document::setShow(App::Feature * Feat)
+{
+  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
+  if(it != _ViewProviderMap.end())
+  {
+    it->second->setMode(Feat->getShowMode());
+    return it->second;
+  }else{
+    return 0;
+  }
+}
+
+/// set the feature in Noshow
+ViewProviderInventor * Document::setHide(App::Feature *Feat)
+{
+  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
+  if(it != _ViewProviderMap.end())
+  {
+    it->second->setMode(-1);
+    return it->second;
+  }else{
+    return 0;
+  }
+}
+
+//*****************************************************************************************************
+// Document
+//*****************************************************************************************************
 
 void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
 {

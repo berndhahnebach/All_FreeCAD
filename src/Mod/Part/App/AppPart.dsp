@@ -190,5 +190,13 @@ SOURCE=.\PreCompiled.cpp
 
 SOURCE=.\PreCompiled.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\TopologyPy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\TopologyPy.h
+# End Source File
 # End Target
 # End Project

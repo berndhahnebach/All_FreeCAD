@@ -33,7 +33,6 @@
 #include "PointsPy.h"
 #include "Points.h"
 #include "PointsAlgos.h"
-#include <App/Topology.h>
 
 using Base::Console;
 using namespace Points;

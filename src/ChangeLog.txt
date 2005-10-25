@@ -32,3 +32,5 @@ Version: V0.3B3 Date: Tue Oct  4 10:04:27 2005 +++++++++++++++++++++++++++++++
 + Allow to open a determined page from preferences dialog
 + add context menu to tabs
 + start closing documents 
++ fixing toogle visibility
++ reimplement hide show

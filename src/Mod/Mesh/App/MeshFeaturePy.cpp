@@ -40,7 +40,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
-#include <App/Topology.h>
+#include <Mod/Part/App/TopologyPy.h>
 
 
 #include "MeshPy.h"

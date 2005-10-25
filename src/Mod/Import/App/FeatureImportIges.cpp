@@ -41,8 +41,6 @@ using namespace Import;
 
 void FeatureImportIges::InitLabel(const TDF_Label &rcLabel)
 {
-	Base::Console().Log("FeaturePartImportStep::InitLabel()\n");
-
 	addProperty("String","FileName");
 
 }

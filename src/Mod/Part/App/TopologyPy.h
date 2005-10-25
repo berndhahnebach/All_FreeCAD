@@ -37,12 +37,12 @@
 
 // Std. configurations
 
-#include "../Base/PyExportImp.h"
+#include <Base/PyExportImp.h>
 
 
 #include <TopoDS_Shape.hxx>
 
-namespace App
+namespace Part
 {
 
 /** The TopoDSShape wrapper class
@@ -50,7 +50,7 @@ namespace App
  *  strictly after the OCC rules. It includes also a lot algorithems from oter
  *  packages like BRepTools and BRepBuilder. Also iterators and so on.
  */
-class AppExport TopoShapePy :public Base::PyObjectBase
+class AppPartExport TopoShapePy :public Base::PyObjectBase
 {
 	/** always start with Py_Header */
 	Py_Header;

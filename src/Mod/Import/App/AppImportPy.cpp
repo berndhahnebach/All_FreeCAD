@@ -41,7 +41,7 @@
 #include <App/Document.h>
 #include <App/Feature.h>
 #include <App/Property.h>
-#include <App/Topology.h>
+#include <Mod/Part/App/TopologyPy.h>
 
 
 
@@ -103,7 +103,7 @@ save(PyObject *self, PyObject *args)
 
 	BRepTools::Read(ResultShape,(const Standard_CString)str,aBuilder);
 
-  return new App::TopoShapePy(ResultShape);		  /* convert C -> Python */
+  return new Part::TopoShapePy(ResultShape);		  /* convert C -> Python */
     
 }
 

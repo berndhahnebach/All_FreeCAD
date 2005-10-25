@@ -39,7 +39,7 @@
 #include <App/Document.h>
 #include <App/Feature.h>
 #include <App/Property.h>
-#include <App/Topology.h>
+#include <Mod/Part/App/TopologyPy.h>
 
 #include "MeshPy.h"
 #include "Mesh.h"
@@ -176,15 +176,15 @@ static PyObject *
 loftOnCurve(PyObject *self, PyObject *args)
 
 {
-  App::TopoShapePy   *pcObject;
+  Part::TopoShapePy   *pcObject;
   PyObject *pcTopoObj,*pcListObj;
   float x=0,y=0,z=1,size = 0.1;
 
-  if (!PyArg_ParseTuple(args, "O!O(fff)f", &(App::TopoShapePy::Type), &pcTopoObj,&pcListObj,&x,&y,&z,&size))     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "O!O(fff)f", &(Part::TopoShapePy::Type), &pcTopoObj,&pcListObj,&x,&y,&z,&size))     // convert args: Python->C 
 //  if (!PyArg_ParseTuple(args, "O!O!", &(App::TopoShapePy::Type), &pcTopoObj,&PyList_Type,&pcListObj,x,y,z,size))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
-  pcObject = (App::TopoShapePy*)pcTopoObj;
+  pcObject = (Part::TopoShapePy*)pcTopoObj;
   MeshWithProperty *M = new MeshWithProperty();
 
   std::vector<Vector3D> poly;

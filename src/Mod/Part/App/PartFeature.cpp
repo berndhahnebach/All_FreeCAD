@@ -41,8 +41,8 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 using Base::Console;
-#include <App/Topology.h>
 
+#include "TopologyPy.h"
 
 #include "PartFeature.h"
 #include "PartFeaturePy.h"

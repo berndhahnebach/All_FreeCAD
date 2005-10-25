@@ -41,7 +41,6 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 using Base::Console;
-#include <App/Topology.h>
 
 #include "PointsPy.h"
 #include "PointsFeature.h"

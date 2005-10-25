@@ -119,7 +119,8 @@ void StdCmdToggleVisibility::activated(int iMsg)
 {
   if( getActiveGuiDocument() )
   {
-    for(std::vector<App::Feature*>::const_iterator It=Gui::Selection().getSelectedFeatures().begin();It!=Gui::Selection().getSelectedFeatures().end();It++)
+    std::vector<App::Feature*> sel = Gui::Selection().getSelectedFeatures();
+    for(std::vector<App::Feature*>::const_iterator It=sel.begin();It!=sel.end();It++)
     {
       if(getActiveGuiDocument()->isShow(*It))
         getActiveGuiDocument()->setHide(*It);
@@ -127,7 +128,7 @@ void StdCmdToggleVisibility::activated(int iMsg)
         getActiveGuiDocument()->setShow(*It);
 
     }
-    Gui::Selection().clearSelection();
+    //Gui::Selection().clearSelection();
   }
 }
 

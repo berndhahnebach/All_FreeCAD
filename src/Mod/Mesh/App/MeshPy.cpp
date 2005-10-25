@@ -44,7 +44,7 @@ using Base::Console;
 #include "Core/Info.h"
 #include "Core/Evaluation.h"
 #include "Core/Iterator.h"
-#include <App/Topology.h>
+#include <Mod/Part/App/TopologyPy.h>
 
 using namespace Mesh;
 using namespace MeshCore;
@@ -220,12 +220,12 @@ MeshWithProperty *MeshPy::getMesh(void)
 
 PYFUNCIMP_D(MeshPy,makeCutToolFromShape)
 {
-  App::TopoShapePy   *pcObject;
+  Part::TopoShapePy   *pcObject;
   PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!", &(App::TopoShapePy::Type), &pcObj))     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
-  pcObject = (App::TopoShapePy*)pcObj;
+  pcObject = (Part::TopoShapePy*)pcObj;
 
   MeshWithProperty *M = new MeshWithProperty();
   PY_TRY {

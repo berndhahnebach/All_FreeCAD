@@ -40,7 +40,6 @@
 #include <App/Document.h>
 #include <App/Feature.h>
 #include <App/Property.h>
-#include <App/Topology.h>
 
 #include "Points.h"
 #include "PointsPy.h"

@@ -404,14 +404,5 @@ InputPath=.\Standard
 !ENDIF 
 
 # End Source File
-# Begin Source File
-
-SOURCE=.\Topology.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\Topology.h
-# End Source File
 # End Target
 # End Project

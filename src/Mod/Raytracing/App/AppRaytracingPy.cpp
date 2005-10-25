@@ -32,7 +32,7 @@
 // automatecly generated.....
 #include "FreeCADpov.h"
 
-#include <App/Topology.h>
+#include <Mod/Part/App/TopologyPy.h>
 #include <App/Application.h>
 
 using namespace Raytracing;
@@ -71,10 +71,10 @@ writePartFile(PyObject *self, PyObject *args)
 {      
     PyObject *ShapeObject;
     const char *FileName,*PartName;
-    if (! PyArg_ParseTuple(args, "ssO!",&FileName,&PartName,&(App::TopoShapePy::Type), &ShapeObject)) 
+    if (! PyArg_ParseTuple(args, "ssO!",&FileName,&PartName,&(Part::TopoShapePy::Type), &ShapeObject)) 
         return NULL;                             
 
-    TopoDS_Shape &aShape = ((App::TopoShapePy *)ShapeObject)->getShape();
+    TopoDS_Shape &aShape = ((Part::TopoShapePy *)ShapeObject)->getShape();
     
     PovTools::writeShape(FileName,PartName,aShape,(float)0.1);
 
