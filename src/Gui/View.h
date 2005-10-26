@@ -175,7 +175,7 @@ public:
    * in normal mode. For more hints refer to the Qt documentation to
    * QWidget::showFullScreen ().
    */
-  void setFullScreenMode( bool b );
+  virtual void setFullScreenMode( bool b );
 
 signals:
   /// sends a message to the document

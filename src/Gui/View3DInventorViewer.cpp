@@ -43,6 +43,7 @@
 # include <Inventor/nodes/SoRotationXYZ.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoShapeHints.h>
+# include <Inventor/nodes/SoSwitch.h>
 # include <Inventor/nodes/SoTransform.h>
 # include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/nodes/SoSelection.h>
@@ -141,8 +142,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 
   // Set up background scenegraph with image in it.
 
-  bckgroundroot = new SoSeparator;
-  bckgroundroot->ref();
+  backgroundroot = new SoSeparator;
+  backgroundroot->ref();
+  backgroundmode = new SoSwitch;
+  backgroundmode->ref();
 
   SoOrthographicCamera * cam = new SoOrthographicCamera;
   cam->position = SbVec3f(0, 0, 1);
@@ -151,12 +154,15 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   cam->nearDistance = 0.5;
   cam->farDistance = 1.5;
 
-  this->bckgroundroot->addChild(cam);
+  this->backgroundroot->addChild(cam);
 
 
   SoImage * img = new SoImage;
   img->vertAlignment = SoImage::HALF;
   img->horAlignment = SoImage::CENTER;
+
+  // set blue as background color
+  setBackgroundColor(SbColor(0.5f, 0.5f, 0.7f));
 
 //  if ( filename )
 //  {
@@ -173,7 +179,9 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
     Tools::convert( image.smoothScale(w, h), img->image );
   }
 
-  this->bckgroundroot->addChild(img);
+  this->backgroundmode->addChild(img);
+  this->backgroundmode->whichChild = 0;
+  this->backgroundroot->addChild(backgroundmode);
 
 
 
@@ -256,9 +264,20 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 
 View3DInventorViewer::~View3DInventorViewer()
 {
-  this->bckgroundroot->unref();
+  this->backgroundmode->unref();
+  this->backgroundroot->unref();
   this->foregroundroot->unref();
   getMainWindow()->setPaneText(2, "");
+}
+
+void View3DInventorViewer::setEnableBackgroundImage( bool ok )
+{
+  backgroundmode->whichChild = ok ? 0 : -1;
+}
+
+bool View3DInventorViewer::isEnabledBackgroundImage() const
+{
+  return (backgroundmode->whichChild.getValue() != -1);
 }
 
 SoSeparator* View3DInventorViewer::createColorLegend() const
@@ -364,7 +383,7 @@ void View3DInventorViewer::actualRedraw(void)
 
   // Render our scenegraph with the image.
   SoGLRenderAction * glra = this->getGLRenderAction();
-  glra->apply(this->bckgroundroot);
+  glra->apply(this->backgroundroot);
 
   SbTime now = SbTime::getTimeOfDay();
   double secs = now.getValue() -  prevRedrawTime.getValue();

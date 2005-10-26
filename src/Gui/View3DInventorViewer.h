@@ -56,6 +56,9 @@ public:
   void addViewProvider(ViewProviderInventor*);
   /// remove a ViewProvider
   void removeViewProvider(ViewProviderInventor*);
+
+  void setEnableBackgroundImage( bool );
+  bool isEnabledBackgroundImage() const;
     
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
 
@@ -126,7 +129,8 @@ private:
   SoSeparator* createColorLegend() const;
   SoSeparator* setMarkerLabel(float x, float y, float z, const char* text) const;
 
-  SoSeparator * bckgroundroot;
+  SoSeparator * backgroundroot;
+  SoSwitch    * backgroundmode;
   SoSeparator * foregroundroot;
   SoRotationXYZ * arrowrotation;
 

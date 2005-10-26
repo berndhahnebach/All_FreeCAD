@@ -372,6 +372,7 @@ void StdViewFullScreen::activated(int iMsg)
     view->setFullScreenMode( false );
   else
   {
+#if 0 // we must not use an image as background in fullscreen mode
     QDesktopWidget* root = QApplication::desktop();
     int w = root->width();
     int h = root->height();
@@ -390,6 +391,7 @@ void StdViewFullScreen::activated(int iMsg)
       }
     }
     else
+#endif
       view->setFullScreenMode( true );
   }
 }

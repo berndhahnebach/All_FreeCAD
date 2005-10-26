@@ -156,6 +156,7 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoShape.h>
 #include <Inventor/nodes/SoShapeHints.h>
+#include <Inventor/nodes/SoSwitch.h>
 #include <Inventor/nodes/SoTexture2.h>
 #include <Inventor/nodes/SoTexture3.h>
 #include <Inventor/nodes/SoTextureCoordinate3.h>

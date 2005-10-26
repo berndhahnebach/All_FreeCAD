@@ -34,3 +34,4 @@ Version: V0.3B3 Date: Tue Oct  4 10:04:27 2005 +++++++++++++++++++++++++++++++
 + start closing documents 
 + fixing toogle visibility
 + reimplement hide show
++ solved the performance problems to display objects in fullscreen mode (by disabling the background image)
