@@ -65,8 +65,8 @@ public:
 
   /** Line type enumeration  */
   enum LineType { 
-    Base,  /**< The line effects the Gui (FreeCADGui) */  
-    Gui,   /**< The line effects only the document and Application (FreeCAD) */    
+    Base,  /**< The line effects only the document and Application (FreeCAD) */  
+    Gui,   /**< The line effects the Gui (FreeCADGui) */
    }; 
 
 

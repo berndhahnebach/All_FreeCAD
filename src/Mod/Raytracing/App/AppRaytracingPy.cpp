@@ -69,6 +69,7 @@ getProjectFile(PyObject *self, PyObject *args)
 static PyObject *                                
 writePartFile(PyObject *self, PyObject *args)          
 {      
+#if 0
     PyObject *ShapeObject;
     const char *FileName,*PartName;
     if (! PyArg_ParseTuple(args, "ssO!",&FileName,&PartName,&(Part::TopoShapePy::Type), &ShapeObject)) 
@@ -77,6 +78,9 @@ writePartFile(PyObject *self, PyObject *args)
     TopoDS_Shape &aShape = ((Part::TopoShapePy *)ShapeObject)->getShape();
     
     PovTools::writeShape(FileName,PartName,aShape,(float)0.1);
+#else
+    Base::Console().Error("Linker error: Part::TopoShapePy\n");
+#endif
 
     Py_Return;       
 }

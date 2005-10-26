@@ -176,6 +176,7 @@ static PyObject *
 loftOnCurve(PyObject *self, PyObject *args)
 
 {
+#if 0
   Part::TopoShapePy   *pcObject;
   PyObject *pcTopoObj,*pcListObj;
   float x=0,y=0,z=1,size = 0.1;
@@ -222,6 +223,10 @@ loftOnCurve(PyObject *self, PyObject *args)
   } PY_CATCH;
 
   return new MeshPy(M);
+#else
+  Base::Console().Error("Linker error: Part::TopoShapePy\n");
+  Py_Return;
+#endif
 }
 
 /* registration table  */

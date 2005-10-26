@@ -260,24 +260,36 @@ void Application::OnDocDelete(App::Document* pcDoc)
       break;
     }
   }
+
+  // check if the last document has been closed?
+  // Note: in case there were further existing documents then we needn't worry about it 
+  //       because the active view at this moment does this for us
+  if (d->lpcDocuments.size() == 0 )
+  {
+    // there is no active document any more
+    setActiveDocument(0);
+  }
 }
 
 void Application::onLastWindowClosed(Gui::Document* pcDoc)
 {
   if(!d->_bIsClosing && pcDoc)
   {
-    Base::Interpreter().runStringArg("App.Close(\"%s\")", pcDoc->getDocument()->getName());
-    // GuiDocument has closed the last window and get destructed
-//    d->lpcDocuments.remove(pcDoc);
-    //lpcDocuments.erase(pcDoc);
-//    delete pcDoc;
+    // call the closing mechanism from Python
+    string cmd = "App.Close(\"";
+    cmd += pcDoc->getDocument()->getName();
+    cmd += "\")";
+    Base::Interpreter().runString( cmd.c_str() );
+    macroManager()->addLine(MacroManager::Base,cmd.c_str());
 
-    // last document closed?
-    if(d->lpcDocuments.size() == 0 )
-      // reset active document
+    // check if the last document has been closed?
+    // Note: in case there were further existing documents then we needn't worry about it 
+    //       because the active view at this moment does this for us
+    if (d->lpcDocuments.size() == 0 )
+    {
+      // there is no active document any more
       setActiveDocument(0);
-    else
-      setActiveDocument(d->lpcDocuments.front());
+    }
   }
 }
 

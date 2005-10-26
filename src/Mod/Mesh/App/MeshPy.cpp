@@ -220,6 +220,7 @@ MeshWithProperty *MeshPy::getMesh(void)
 
 PYFUNCIMP_D(MeshPy,makeCutToolFromShape)
 {
+#if 0
   Part::TopoShapePy   *pcObject;
   PyObject *pcObj;
   if (!PyArg_ParseTuple(args, "O!", &(Part::TopoShapePy::Type), &pcObj))     // convert args: Python->C 
@@ -237,6 +238,10 @@ PYFUNCIMP_D(MeshPy,makeCutToolFromShape)
   } PY_CATCH;
 
   return new MeshPy(M);
+#else
+  Base::Console().Error("Linker error: Part::TopoShapePy\n");
+  Py_Return;
+#endif
 }
 
 PYFUNCIMP_D(MeshPy,pointCount)
