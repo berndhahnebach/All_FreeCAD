@@ -67,7 +67,7 @@ ViewProviderInventorFeature::~ViewProviderInventorFeature()
 }
 
 
-void ViewProviderInventorFeature::attache(App::Feature *pcFeat)
+void ViewProviderInventorFeature::attach(App::Feature *pcFeat)
 {
   // save feature pointer
   pcFeature = pcFeat;
@@ -82,14 +82,14 @@ void ViewProviderInventorFeature::attache(App::Feature *pcFeat)
 
 bool ViewProviderInventorFeature::ifDataNewer(void)
 {
-  // first do attache
+  // first do attach
   assert(pcFeature);
   return pcFeature->getTouchTime() > calcData || pcFeature->getTouchTime() == calcData; 
 }
 
 bool ViewProviderInventorFeature::ifMaterialNewer(void)
 {
-  // first do attache
+  // first do attach
   assert(pcFeature);
   return pcFeature->getTouchViewTime() > calcMaterial || pcFeature->getTouchViewTime() == calcMaterial; 
 

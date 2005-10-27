@@ -69,7 +69,7 @@ public:
    * Extracts the mesh data from the feature \a pcFeature and creates
    * an Inventor node \a SoNode with these data. 
    */
-  virtual void attache(App::Feature *);
+  virtual void attach(App::Feature *);
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
   /// Update the Mesh representation

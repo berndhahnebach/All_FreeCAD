@@ -255,13 +255,13 @@ const char* ConsoleSingelton::Time(void)
 //**************************************************************************
 // Observer stuff
 
-/** Attach an Observer to Console
- *  Use this method to attache a ConsoleObserver derived class to 
- *  the Console. After the observer is attached all Messages will also
+/** Attaches an Observer to Console
+ *  Use this method to attach a ConsoleObserver derived class to 
+ *  the Console. After the observer is attached all messages will also
  *  forwardet to it.
  *  @see ConsoleObserver
  */
-void ConsoleSingelton::AttacheObserver(ConsoleObserver *pcObserver)
+void ConsoleSingelton::AttachObserver(ConsoleObserver *pcObserver)
 {
 	// double insert !!
 	assert(_aclObservers.find(pcObserver) == _aclObservers.end() );
@@ -269,12 +269,12 @@ void ConsoleSingelton::AttacheObserver(ConsoleObserver *pcObserver)
 	_aclObservers.insert(pcObserver);
 }
 
-/** Detache an Observer to Console
- *  Use this method to detache a ConsoleObserver derived class.
- *  After detache you can destruct the Observer or reinsert it later.
+/** Detaches an Observer from Console
+ *  Use this method to detach a ConsoleObserver derived class.
+ *  After detaching you can destruct the Observer or reinsert it later.
  *  @see ConsoleObserver
  */
-void ConsoleSingelton::DetacheObserver(ConsoleObserver *pcObserver)
+void ConsoleSingelton::DetachObserver(ConsoleObserver *pcObserver)
 {
 	_aclObservers.erase(pcObserver);
 }

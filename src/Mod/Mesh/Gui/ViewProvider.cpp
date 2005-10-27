@@ -184,18 +184,18 @@ void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 #endif
 }
 
-void ViewProviderInventorMesh::attache(App::Feature *pcFeat)
+void ViewProviderInventorMesh::attach(App::Feature *pcFeat)
 {
   // standard viewing (flat) must be called before attach()
   pcModeSwitch->whichChild = 0;
 
   // call father (set material and feature pointer)
-  ViewProviderInventorFeature::attache(pcFeat);
+  ViewProviderInventorFeature::attach(pcFeat);
 
   // get and save the feature
   MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
   if ( !meshFea )
-    throw "ViewProviderInventorMesh::attache(): wrong feature attached!";
+    throw "ViewProviderInventorMesh::attach(): wrong feature attached!";
 
   // create the mesh core nodes
   createMesh(&(meshFea->getMesh()));

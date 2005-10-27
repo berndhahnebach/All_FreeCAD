@@ -80,10 +80,10 @@ ViewProviderInventorMeshTransformDemolding::~ViewProviderInventorMeshTransformDe
 }
 
 
-void ViewProviderInventorMeshTransformDemolding::attache(App::Feature *pcFeat)
+void ViewProviderInventorMeshTransformDemolding::attach(App::Feature *pcFeat)
 {
   // creats the satandard viewing modes
-  ViewProviderInventorMesh::attache(pcFeat);
+  ViewProviderInventorMesh::attach(pcFeat);
 
 
   SoGroup* pcColorShadedRoot = new SoGroup();

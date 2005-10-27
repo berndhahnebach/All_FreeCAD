@@ -128,10 +128,10 @@ void ViewProviderInventorPoints::setVertexNormalMode(Points::PointsPropertyNorma
   }
 }
 
-void ViewProviderInventorPoints::attache(App::Feature* pcFeat)
+void ViewProviderInventorPoints::attach(App::Feature* pcFeat)
 {
   // call father (set material and feature pointer)
-  ViewProviderInventorFeature::attache(pcFeat);
+  ViewProviderInventorFeature::attach(pcFeat);
 
   // get and save the feature
   PointsFeature* ptFea = dynamic_cast<PointsFeature*>(pcFeature);

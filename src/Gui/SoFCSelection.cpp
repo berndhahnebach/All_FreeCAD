@@ -173,11 +173,12 @@ SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
   inherited::GLRenderBelowPath(action);
   state->pop();
 }
-
+#include <Base/Console.h>
 // doc from parent
 void
 SoFCSelection::GLRenderInPath(SoGLRenderAction * action)
 {
+  Base::Console().Message("GLRenderInPath\n");
   SoState * state = action->getState();
   state->push();
   if (highlighted || this->mode.getValue() == ON || this->selected.getValue() == SELECTED) {

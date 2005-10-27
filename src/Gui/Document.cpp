@@ -268,7 +268,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
     if(pcProvider)
     {
       // if succesfully created set the right name an calculate the view
-      pcProvider->attache(*It);
+      pcProvider->attach(*It);
 
       // cycling to all views of the document
       for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)

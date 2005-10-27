@@ -73,12 +73,12 @@ FCHandled::~FCHandled()
 
 
 
-void  FCHandled::AttacheRef(void* pHandle)
+void  FCHandled::AttachRef(void* pHandle)
 {
 	_lRefCount++;
 }
 
-void  FCHandled::DettachRef(void* pHandle)
+void  FCHandled::DetachRef(void* pHandle)
 {
 	assert(_lRefCount > 0); 
 	if (--_lRefCount == 0)

@@ -61,7 +61,7 @@ public:
    * Extracts the mesh data from the feature \a pcFeature and creates
    * an Inventor node \a SoNode with these data. 
    */
-  virtual void attache(App::Feature *);
+  virtual void attach(App::Feature *);
 
   /// set the viewing mode
 //  virtual void setMode(const char* ModeName);

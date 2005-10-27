@@ -346,11 +346,11 @@ void Init(int argc, char ** argv )
 	Interpreter();
 
 	// Init console ===========================================================
-	Console().AttacheObserver(new FCCmdConsoleObserver());
+	Console().AttachObserver(new FCCmdConsoleObserver());
 	if(mConfig["Verbose"] == "Strict") Console().SetMode(FCConsole::Verbose);
 	// file logging fcility
 #	ifdef FC_DEBUG
-		Console().AttacheObserver(new FCLoggingConsoleObserver("FreeCAD.log"));
+		Console().AttachObserver(new FCLoggingConsoleObserver("FreeCAD.log"));
 #	endif
 
 	// Banner ===========================================================

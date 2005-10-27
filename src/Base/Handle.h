@@ -63,7 +63,7 @@ public:
 		:_pHandels(ToHandel)
 	{
 		if(_pHandels)
-			ToHandel->AttacheRef(this);
+			ToHandel->AttachRef(this);
 	}
 
 	/// Copy constructor 
@@ -71,7 +71,7 @@ public:
 		:_pHandels(ToHandel._pHandels)
 	{
 		if(_pHandels)
-			ToHandel->AttacheRef(this);
+			ToHandel->AttachRef(this);
 	}
 
 	/** destructor
@@ -82,7 +82,7 @@ public:
 	~FCHandle()
 	{
 		if(_pHandels)
-			_pHandels->DettachRef(this);
+			_pHandels->DetachRef(this);
 	}
 
 	//**************************************************************************
@@ -95,7 +95,7 @@ public:
 			_pHandels->DettachRef(this);
 		_pHandels = other->_pHandels;
 		if(_pHandels)
-			ToHandel->AttacheRef(this);
+			ToHandel->AttachRef(this);
 		return *this;
 	}
 
@@ -110,7 +110,7 @@ public:
 			// invalid handle
 			_pHandels = 0L;
 		if(_pHandels)
-			_pHandels->AttacheRef(this);
+			_pHandels->AttachRef(this);
 		return *this;
 	}
 
@@ -118,10 +118,10 @@ public:
 	FCHandle <HandledType>  &operator=(const FCHandle <HandledType> &other)
 	{
 		if(_pHandels)
-			_pHandels->DettachRef(this);
+			_pHandels->DetachRef(this);
 		_pHandels = other._pHandels;
 		if(_pHandels)
-			_pHandels->AttacheRef(this);
+			_pHandels->AttachRef(this);
 		return *this;
 	}
 
@@ -223,9 +223,9 @@ public:
 	FCHandled();
 	virtual ~FCHandled();
 
-	void  AttacheRef(void* pHandle);
+	void  AttachRef(void* pHandle);
 
-	void  DettachRef(void* pHandle);
+	void  DetachRef(void* pHandle);
 
 	virtual void  OnLastRef(){}
 

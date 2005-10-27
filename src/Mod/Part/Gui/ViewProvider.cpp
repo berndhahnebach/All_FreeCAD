@@ -176,10 +176,10 @@ void ViewProviderInventorPart::updateData(void)
 
 }
 
-void ViewProviderInventorPart::attache(App::Feature *pcFeat)
+void ViewProviderInventorPart::attach(App::Feature *pcFeat)
 {
   // call father (set material and feature pointer)
-  ViewProviderInventorFeature::attache(pcFeat);
+  ViewProviderInventorFeature::attach(pcFeat);
 
   // Build up the view represetation from the shape
   updateData();

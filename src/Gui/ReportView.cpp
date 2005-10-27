@@ -183,7 +183,7 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
   setHScrollBarMode(QScrollView::AlwaysOff);
 
 //  insert("FreeCAD output.\n");
-  Base::Console().AttacheObserver(this);
+  Base::Console().AttachObserver(this);
   getWindowParameter()->Attach( this );
 
   getWindowParameter()->NotifyAll();
@@ -198,7 +198,7 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
 ReportOutput::~ReportOutput()
 {
   getWindowParameter()->Detach( this );
-  Base::Console().DetacheObserver(this);
+  Base::Console().DetachObserver(this);
   delete reportHl;
 }
 

@@ -73,10 +73,10 @@ ViewProviderInventorMeshCurvature::~ViewProviderInventorMeshCurvature()
   pcColorMat->unref();
 }
 
-void ViewProviderInventorMeshCurvature::attache(App::Feature *pcFeat)
+void ViewProviderInventorMeshCurvature::attach(App::Feature *pcFeat)
 {
   // creats the satandard viewing modes
-  ViewProviderInventorMesh::attache(pcFeat);
+  ViewProviderInventorMesh::attach(pcFeat);
 
 
   SoGroup* pcColorShadedRoot = new SoGroup();

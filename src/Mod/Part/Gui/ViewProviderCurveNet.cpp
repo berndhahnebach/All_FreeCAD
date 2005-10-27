@@ -110,7 +110,7 @@ ViewProviderCurveNet::~ViewProviderCurveNet()
 
 }
 
-void ViewProviderCurveNet::attache(App::Feature *pcFeat)
+void ViewProviderCurveNet::attach(App::Feature *pcFeat)
 {
   pcFeature = pcFeat;
 

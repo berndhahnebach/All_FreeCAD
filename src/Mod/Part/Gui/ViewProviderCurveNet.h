@@ -50,7 +50,7 @@ public:
   virtual ~ViewProviderCurveNet();
 
 
-  virtual void attache(App::Feature *);
+  virtual void attach(App::Feature *);
 
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void){return std::vector<std::string>();}

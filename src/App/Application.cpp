@@ -522,7 +522,7 @@ void Application::destruct(void)
   // We must detach from console and delete the observer to save our file
   if ( _pConsoleObserverFile )
   {
-    Console().DetacheObserver(_pConsoleObserverFile);
+    Console().DetachObserver(_pConsoleObserverFile);
     delete _pConsoleObserverFile; _pConsoleObserverFile = 0;
   }
 
@@ -602,14 +602,14 @@ void Application::initConfig(int argc, char ** argv)
 		
     // Init console ===========================================================
     _pConsoleObserverStd = new ConsoleObserverStd();
-		Console().AttacheObserver(_pConsoleObserverStd);
+		Console().AttachObserver(_pConsoleObserverStd);
 		if(mConfig["Verbose"] == "Strict") 
       Console().SetMode(ConsoleSingelton::Verbose);
 
     // file logging Init ===========================================================
     if(mConfig["LoggingFile"] == "1"){
 		  _pConsoleObserverFile = new ConsoleObserverFile(mConfig["LoggingFileName"].c_str());
-		  Console().AttacheObserver(_pConsoleObserverFile);
+		  Console().AttachObserver(_pConsoleObserverFile);
     }else
       _pConsoleObserverFile = 0;
 
@@ -1065,13 +1065,12 @@ void Application::CheckEnv(void)
      		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
 		exit(1);
 	}
-
 }
+
 //**************************************************************************
 // Observer stuff
 
-
-void Application::AttacheObserver(ApplicationObserver *pcObserver)
+void Application::AttachObserver(ApplicationObserver *pcObserver)
 {
 	// double insert !!
 	assert(_aclObservers.find(pcObserver) == _aclObservers.end() );
@@ -1079,17 +1078,17 @@ void Application::AttacheObserver(ApplicationObserver *pcObserver)
 	_aclObservers.insert(pcObserver);
 }
 
-void Application::DetacheObserver(ApplicationObserver *pcObserver)
+void Application::DetachObserver(ApplicationObserver *pcObserver)
 {
 	_aclObservers.erase(pcObserver);
 }
-
 
 void Application::NotifyDocNew(Document* pcDoc)
 {
 	for(std::set<ApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->OnDocNew(pcDoc);   // send doc to the listener
 }
+
 void Application::NotifyDocDelete(Document* pcDoc)
 {
 	for(std::set<ApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)

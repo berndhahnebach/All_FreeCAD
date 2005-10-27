@@ -78,10 +78,10 @@ ViewProviderInventorMeshTransform::~ViewProviderInventorMeshTransform()
 }
 
 
-void ViewProviderInventorMeshTransform::attache(App::Feature *pcFeat)
+void ViewProviderInventorMeshTransform::attach(App::Feature *pcFeat)
 {
   // creats the satandard viewing modes
-  ViewProviderInventorMesh::attache(pcFeat);
+  ViewProviderInventorMesh::attach(pcFeat);
 
 //  SoTransformerDragger *pcTransformerDragger = new SoTransformerDragger();
 

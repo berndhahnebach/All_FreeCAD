@@ -770,9 +770,9 @@ void Application::runApplication(void)
   Console().Log("Init: Entering event loop\n");
   // attach the console observer
   MessageBoxObserver* msgbox = new MessageBoxObserver(mw);
-  Base::Console().AttacheObserver( msgbox );
+  Base::Console().AttachObserver( msgbox );
   _pcQApp->exec();
-  Base::Console().DetacheObserver( msgbox );
+  Base::Console().DetachObserver( msgbox );
   Console().Log("Init: event loop left\n");
 }
 

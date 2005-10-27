@@ -295,10 +295,10 @@ private:
 
 	/** @name Singelton functions */
 	//@{
-	/// Attach an Observer to monitor the Application
-	void AttacheObserver(ApplicationObserver *pcObserver);
-	/// Detache an monitoring Observer
-	void DetacheObserver(ApplicationObserver *pcObserver);
+	/// Attaches an Observer to monitor the Application
+	void AttachObserver(ApplicationObserver *pcObserver);
+	/// Detaches an monitoring Observer
+	void DetachObserver(ApplicationObserver *pcObserver);
 	/// Notify the Obervers on a new Doc
 	void NotifyDocNew(App::Document* pcDoc);
 	/// Notify the Obervers on a deleted Doc
@@ -343,7 +343,7 @@ inline App::Application &GetApplication(void){
 
 /** The Application Observer
  *  Derive from this class if you need to get norified by a 
- *  change in the Application. The Observer attache and detache
+ *  change in the Application. The Observer attaches and detaches
  *  automaticly.
  *  @see Application
  */
@@ -351,9 +351,9 @@ class AppExport ApplicationObserver
 {
 public:
 	/// Construction and attachment
-	ApplicationObserver(){GetApplication().AttacheObserver(this);}
+	ApplicationObserver(){GetApplication().AttachObserver(this);}
 	/// Destruction and detachment
-	virtual ~ApplicationObserver(){GetApplication().DetacheObserver(this);}
+	virtual ~ApplicationObserver(){GetApplication().DetachObserver(this);}
 
 	/// This method get called when a new doc appears
 	virtual void OnDocNew(App::Document*){};

@@ -53,12 +53,12 @@ public:
   SplashObserver(QSplashScreen* splasher=0, const char* name=0)
       : splash(splasher)
   {
-    Base::Console().AttacheObserver(this);
+    Base::Console().AttachObserver(this);
   }
 
   virtual ~SplashObserver()
   {
-    Base::Console().DetacheObserver(this);
+    Base::Console().DetachObserver(this);
   }
 
   void Warning(const char * s)

@@ -42,8 +42,7 @@ using namespace Gui;
 std::vector<Gui::ViewProvider*> BaseView::_vpcViewProvider;
 
 BaseView::BaseView( Gui::Document* pcDocument)
-:_pcDocument(pcDocument),
- bIsDetached(false)
+  :_pcDocument(pcDocument), bIsDetached(false)
 {
   if(pcDocument){
     pcDocument->attachView(this);
@@ -89,7 +88,7 @@ void BaseView::onClose(void)
 void BaseView::setDocument(Gui::Document* pcDocument)
 {
   Gui::Document* pcOldDocument;
-  // detach and attache the observer
+  // detaches and attaches the observer
   if(_pcDocument)
     _pcDocument->detachView(this, true);
   if(pcDocument)

@@ -120,10 +120,10 @@ public:
 
 	/// Delivers a time/date string 
 	const char* Time(void);
-	/// Attach an Observer to FCConsole
-	void AttacheObserver(ConsoleObserver *pcObserver);
-	/// Detache an Observer from FCConsole
-	void DetacheObserver(ConsoleObserver *pcObserver);
+	/// Attaches an Observer to FCConsole
+	void AttachObserver(ConsoleObserver *pcObserver);
+	/// Detaches an Observer from FCConsole
+	void DetachObserver(ConsoleObserver *pcObserver);
 	/// enumaration for the console modes
 	enum ConsoleMode{
 		Verbose = 1,	// supress Log messages
