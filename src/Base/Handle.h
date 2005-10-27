@@ -1,12 +1,3 @@
-/** \file Handle.h
- *  \brief Handle header
- *  \author jriegel 
- *  \version $Revision$
- *  \date    $Date$
- *  Here a example of a file layout for FreeCAD.
- *  @see Parameter.cpp
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *

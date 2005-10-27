@@ -1,12 +1,3 @@
-/** \file Handle.cpp
- *  \brief Handle implementation
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Handle pattern with referenc counting.
- *  @see Handle.h 
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
