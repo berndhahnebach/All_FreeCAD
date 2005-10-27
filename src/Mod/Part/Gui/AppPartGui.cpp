@@ -81,12 +81,12 @@ static struct PyMethodDef hello_methods[] = {
 extern "C" {
 void ModuleExport initPartGui() {
 
+  Base::Console().Log("Mod : Load AppPartGui\n");
 	(void) Py_InitModule("PartGui", hello_methods);   /* mod name, table ptr */
 
   // load needed modules
   Base::Interpreter().loadModule("Part");
 
-	Base::Console().Log("AppPartGui loaded\n");
 
   Gui::Application::Instance->macroManager()->setModule("Part");
 

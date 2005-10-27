@@ -178,7 +178,7 @@ private:
   /// Active view
   Gui::MDIView* _pcActiveView;
   Handle(V3d_Viewer)  _hViewer;
-  Handle(AIS_InteractiveContext)  _hContext;
+  //Handle(AIS_InteractiveContext)  _hContext;
   // the doc/Document
   App::Document*  _pcDocument;
   Base::PyHandle<App::Document>    _hcDocument;
@@ -187,7 +187,7 @@ private:
 
 
   std::map<App::Feature*,ViewProviderInventor*> _ViewProviderMap;
-  std::map<App::Feature*,ViewProviderInventor*> _ViewProviderMapNoShow;
+  //std::map<App::Feature*,ViewProviderInventor*> _ViewProviderMapNoShow;
 
   /** @name attributes for the UNDO REDO facility
    */

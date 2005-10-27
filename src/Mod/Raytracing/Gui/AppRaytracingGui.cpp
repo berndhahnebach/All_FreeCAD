@@ -79,9 +79,8 @@ static struct PyMethodDef hello_methods[] = {
 extern "C" {
 void ModuleExport initRaytracingGui() {
 
+  Base::Console().Log("Mod : Load AppRaytracingGui\n");
   (void) Py_InitModule("RaytracingGui", hello_methods);   /* mod name, table ptr */
-
-  Base::Console().Log("AppRaytracingGui loaded\n");
 
   App::GetApplication();
   Gui::Application::Instance;

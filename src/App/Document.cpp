@@ -70,10 +70,22 @@ Document::Document(const Handle_TDocStd_Document &hDoc, const char* Name)
 
 Document::~Document()
 {
+  Console().Log("-App::Document: %s %p\n",getName(), this);
+
+  std::map<std::string,FeatEntry>::iterator it;
+
+
+  Console().Log("-Delete Features of %s \n",getName());
+
+  for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
+  {
+    delete(it->second.F);
+    it->second.L.Nullify();
+  }
+
   // close the OCAF document
   GetApplication().GetOCCApp()->Close(_hDoc);
   _hDoc.Nullify();
-  Console().Log("-App::Document %p\n",this);
 }
 
 
@@ -243,68 +255,6 @@ int Document::GetAvailableRedos() const
   return _hDoc->GetAvailableRedos(); 
 }
 
-/*
-/// Recompute if the document was  not valid and propagate the reccorded modification.
-void Document::Recompute()
-{  
-  DocChanges DocChange;
-  
-  TDF_MapIteratorOfLabelMap It;
-
-  for(It.Initialize(_LogBook.GetTouched());It.More();It.Next())
-  {
-    // Get the Feature of this label
-    Feature *Feat = Feature::GetFeature(It.Key());
-    if(!Feat) continue;
-
-    // find the name of this label
-    Handle(TDataStd_Name) hName;
-    if(! It.Key().FindAttribute(TDataStd_Name::GetID(),hName))
-      throw Base::Exception("DocTypeStd::UpdateDoc() internal error, feature label with no name\n");
-
-    // map the new features
-    if (Feat->_eStatus == Feature::New)
-      DocChange.NewFeatures.push_back(Feat);
-
-		if (Feat->MustExecute())
-		{
-			//_LogBook.SetTouched(It.Key());
-      Base::Console().Log("Executing Feature: %s\n",Feat->getName());
-
-      Feat->_eStatus = Feature::Recompute;
-      int  succes = 1;
-      try{
-        succes = Feat->execute(_LogBook);
-      }catch(Base::Exception &e){
-        e.ReportException();
-        succes = 3;
-      }catch(...){
-        succes = 3;
-        Base::Console().Warning("exception in Feature::execute(thrown)\n");
-      }
-
-      if(succes > 0){
-        Feat->_eStatus = Feature::Error;
-        Base::Console().Message("Recompute of Feature %s failed (%s)\n",Feat->getName(),Feat->getErrorString());
-        DocChange.ErrorFeatures.push_back(Feat);
-      }else{
-        DocChange.UpdatedFeatures.push_back(Feat);
-        Feat->_eStatus = Feature::Valid;
-        // set the time of change
-        time(&Feat->touchTime);
-      }
-		}
-
-  }
-
-  _LogBook.Clear();
-
-  _hDoc->Recompute(); 
-
-  Notify(DocChange);
-
-}
-*/
 
 /// Recompute if the document was  not valid and propagate the reccorded modification.
 void Document::Recompute()
@@ -316,6 +266,7 @@ void Document::Recompute()
   std::set<Feature*> tempErr;
   
 //  TDF_MapIteratorOfLabelMap It;
+  Base::Console().Log("Solv: Start recomputation of \"%s\"\n",getName());
 
   do{
     goOn = false;
@@ -365,7 +316,7 @@ void Document::Recompute()
   for(i = DocChange.ErrorFeatures.begin();i!=DocChange.ErrorFeatures.end();++i)
     Base::Console().Log("Error in Feature \"%s\": %s\n",(*i)->getName(),(*i)->getErrorString());
 
-  Base::Console().Log("Recomputation of Document \"%s\" with %d new, %d Updated and %d errors finished\n",
+  Base::Console().Log("Solv: Recomputation of Document \"%s\" with %d new, %d Updated and %d errors finished\n",
                       getName(),
                       DocChange.NewFeatures.size(),
                       DocChange.UpdatedFeatures.size(),
@@ -392,7 +343,7 @@ void Document::RecomputeFeature(Feature* Feat)
 // call the recompute of the Feature and handle the exceptions and errors.
 void Document::_RecomputeFeature(Feature* Feat)
 {
-  Base::Console().Log("Executing Feature: %s\n",Feat->getName());
+  Base::Console().Log("Solv:Executing Feature: %s\n",Feat->getName());
 
   Feat->_eStatus = Feature::Recompute;
   int  succes;

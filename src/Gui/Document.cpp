@@ -106,6 +106,10 @@ Document::~Document()
     delete _LpcViews.front();
   }
 
+  std::map<App::Feature*,ViewProviderInventor*>::iterator it;
+  for(it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
+    delete it->second;
+
   _pcDocument->Detach(this);
 
   // remove the reverence from the object

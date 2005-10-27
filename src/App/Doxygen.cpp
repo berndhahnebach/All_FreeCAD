@@ -7,8 +7,8 @@
     \brief The namespace of the FreeCAD Aplication layer library
 
     This namespace includes Aplication services of FreeCAD like:
-	- The application class 
-	- The document class
+	- The Application class 
+	- The Document class
 
 
   and so on......

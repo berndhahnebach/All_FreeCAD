@@ -57,6 +57,7 @@ extern "C" {
 
 void ModuleExport initPart() {
 
+  Base::Console().Log("Mod : Load AppPart\n");
 	(void) Py_InitModule("Part", Part_methods);   /* mod name, table ptr */
 
   App::GetApplication();

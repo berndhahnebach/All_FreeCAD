@@ -45,9 +45,8 @@ extern struct PyMethodDef Points_Import_methods[];
 extern "C" {
 void PointsAppExport initPoints() {
 
+  Base::Console().Log("Mod : Load AppPoints\n");
   (void) Py_InitModule("Points", Points_Import_methods);   /* mod name, table ptr */
-
-  Base::Console().Log("AppPoints loaded\n");
 
 
  	App::FeatureFactory().AddProducer("Points",new App::FeatureProducer<Points::PointsFeature>);

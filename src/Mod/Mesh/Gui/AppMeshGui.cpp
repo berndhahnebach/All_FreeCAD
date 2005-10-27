@@ -78,8 +78,8 @@ void GuiMeshExport initMeshGui() {
   (void) Py_InitModule("MeshGui", hello_methods);   /* mod name, table ptr */
 
   // load needed modules
+  Base::Console().Log("Mod : Load AppMeshGui\n");
   Base::Interpreter().loadModule("Mesh");
-  Base::Console().Log("AppMeshGui loaded\n");
 
   // Register icons
   Gui::BitmapFactory().addXPM("curv_info", curv_info);

@@ -46,6 +46,8 @@ extern struct PyMethodDef Mesh_Import_methods[];
 extern "C" {
 void AppMeshExport initMesh() {
 
+  Base::Console().Log("Mod : Load AppMesh\n");
+
   (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
 
   
