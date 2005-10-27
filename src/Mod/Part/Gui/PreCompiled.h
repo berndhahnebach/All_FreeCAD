@@ -41,6 +41,9 @@
 #include <map>
 #include <string>
 #include <set>
+#include <algorithm>
+#include <stack>
+#include <queue>
 
 #include <Python.h>
 

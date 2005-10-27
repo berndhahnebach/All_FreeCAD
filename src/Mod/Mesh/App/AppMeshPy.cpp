@@ -58,7 +58,7 @@ open(PyObject *self, PyObject *args)
     
   PY_TRY {
 
-    Base::Console().Log("Open in Mesh with %s",Name);
+    //Base::Console().Log("Open in Mesh with %s",Name);
     Base::FileInfo file(Name);
 
     // extract ending
@@ -98,7 +98,7 @@ insert(PyObject *self, PyObject *args)
     
   PY_TRY {
 
-    Base::Console().Log("Insert in Mesh with %s",Name);
+//    Base::Console().Log("Insert in Mesh with %s",Name);
     Base::FileInfo file(Name);
 
     // extract ending

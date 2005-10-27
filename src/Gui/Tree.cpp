@@ -240,7 +240,6 @@ void TreeView::onUpdate(void)
 
 void TreeView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument)
 {
-  Console().Log("TreeView::onNewDocument() activated %p\n",pcNewDocument);
 
   if(pcOldDocument && DocMap.find(pcOldDocument->getDocument()) != DocMap.end())
     DocMap[pcOldDocument->getDocument()]->setOpen(false);

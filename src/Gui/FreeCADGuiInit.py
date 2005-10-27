@@ -48,7 +48,7 @@ class StandardWorkbench ( Workbench ):
 	"Standard workbench object"
 	def Activate(self):
 		# load the module
-		Log ('Loading FreeCADGui module')
+		Log ('Mod : Loading FreeCADGui')
 	def GetIcon(self):
 		Log("Workbench.GetIcon() not implemented!")
 
@@ -64,11 +64,11 @@ def InitApplications():
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs
-	Log('   Searching modules...\n')
+	Log('Init:   Searching modules...\n')
 	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
-			Log('      Initializing: ' + Dir + '... ')
+			Log('Init:      Initializing: ' + Dir + '...')
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"InitGui.py")
 			if ( os.path.exists(InstallFile) ):
 				try:
@@ -76,7 +76,7 @@ def InitApplications():
 				except:
 					Err(" Unexpected error in " + InstallFile + " not initialized!\n")
 				else:
-					Log('done\n')
+					Log('Init:        done\n')
 			else:
 				Wrn("InitGui.py not found! "+Dir+" not initialized!\n")
  

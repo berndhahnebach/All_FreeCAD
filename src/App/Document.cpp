@@ -266,7 +266,7 @@ void Document::Recompute()
   std::set<Feature*> tempErr;
   
 //  TDF_MapIteratorOfLabelMap It;
-  Base::Console().Log("Solv: Start recomputation of \"%s\"\n",getName());
+  Base::Console().Log("Solv: Start recomputation of document: \"%s\"\n",getName());
 
   do{
     goOn = false;
@@ -343,7 +343,7 @@ void Document::RecomputeFeature(Feature* Feat)
 // call the recompute of the Feature and handle the exceptions and errors.
 void Document::_RecomputeFeature(Feature* Feat)
 {
-  Base::Console().Log("Solv:Executing Feature: %s\n",Feat->getName());
+  Base::Console().Log("Solv: Executing Feature: %s\n",Feat->getName());
 
   Feat->_eStatus = Feature::Recompute;
   int  succes;
@@ -353,7 +353,7 @@ void Document::_RecomputeFeature(Feature* Feat)
     e.ReportException();
     succes = 4;
   }catch(Base::Exception &e){
-    e.ReportException();
+    e.ReportException(); 
     succes = 3;
   }catch(Standard_Failure e){
 		Handle(Standard_Failure) E = Standard_Failure::Caught();

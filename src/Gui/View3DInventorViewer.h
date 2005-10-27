@@ -59,8 +59,27 @@ public:
 
   void setEnableBackgroundImage( bool );
   bool isEnabledBackgroundImage() const;
-    
+ 
+  // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
+
+  /** @name Modus handling of the viewer
+    * Here the you can switch on/off several features
+    * and modies of the Viewer
+    */
+  //@{
+
+  enum ViewerMod {
+      ShowCoord=1,       /**< Enables the Coordinate system in the corner. */  
+      ShowFPS  =2,       /**< Enables the Frams per Second counter. */  
+      SimpleBackround=4, /**< switch to a simple background. */  
+      DisallowRotation=8,/**< switch of the rotation. */  
+      DisallowPaning=16, /**< switch of the rotation. */  
+      DisallowZooming=32,/**< switch of the rotation. */  
+     }; 
+
+  //@{
+
 
   /** @name Draw routines */
   //@{
@@ -72,6 +91,11 @@ public:
   //@}
 
 protected:
+
+  unsigned long             currMod;
+  std::stack<unsigned long> ModStack;
+
+
   static void sFinishSelectionCallback(void *,SoSelection *);
   virtual void finishSelectionCallback(SoSelection *);
   static void sMadeSelection(void *,SoPath *);
