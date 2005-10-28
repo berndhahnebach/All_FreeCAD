@@ -59,5 +59,42 @@ MTL=midl.exe
 
 # Name "All - Win32 Release"
 # Name "All - Win32 Debug"
+# Begin Source File
+
+SOURCE=.\Gui\moc_View3DInventorViewer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Gui\View3DInventorViewer.h
+
+!IF  "$(CFG)" == "All - Win32 Release"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing View3DInventorViewer.h...
+InputDir=.\Gui
+InputPath=.\Gui\View3DInventorViewer.h
+InputName=View3DInventorViewer
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "All - Win32 Debug"
+
+# PROP Ignore_Default_Tool 1
+# Begin Custom Build - MOCing View3DInventorViewer.h...
+InputDir=.\Gui
+InputPath=.\Gui\View3DInventorViewer.h
+InputName=View3DInventorViewer
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project

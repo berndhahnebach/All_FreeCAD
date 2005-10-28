@@ -39,9 +39,9 @@ Gui = FreeCADGui
 # Important definitions
 class Workbench:
 	def Activate(self):
-		Wrn(str(self) + ": Workbench.Activate() not implemented!")
+		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
 	def GetIcon(self):
-		Log(str(self) + ": Workbench.GetIcon() not implemented!")
+		Log("Init: "+ str(self) + ": Workbench.GetIcon() not implemented!")
 
 
 class StandardWorkbench ( Workbench ):

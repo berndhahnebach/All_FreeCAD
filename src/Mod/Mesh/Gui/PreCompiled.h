@@ -130,6 +130,8 @@
 #include <Inventor/nodes/SoSurroundScale.h>
 #include <Inventor/nodes/SoRotation.h>
 #include <Inventor/nodes/SoTranslation.h>
+#include <Inventor/actions/SoGetBoundingBoxAction.h> 
+
 
 #endif  //_PreComp_
 

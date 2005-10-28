@@ -45,6 +45,7 @@ namespace Mesh {
 }
 
 #include "ViewProvider.h"
+#include <Base/Vector3D.h>
 
 namespace MeshGui {
 
@@ -71,11 +72,17 @@ public:
   //virtual void updateData(void);
 
 protected:
+  void calcMaterialIndex(const SbRotation &rot);
+  void calcNormalVector(void);
 
   static void sValueChangedCallback(void *, SoDragger *);
   void valueChangedCallback(void);
 
   SoTrackballDragger *pcTrackballDragger;
+  SoTransform        *pcTransformDrag;
+  SoMaterial         *pcColorMat;
+  std::vector<SbVec3f> normalVector;
+  Base::Vector3D            center;
 
 };
 

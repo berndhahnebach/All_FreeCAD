@@ -85,7 +85,8 @@ void CmdMeshDemoding::activated(int iMsg)
 
 bool CmdMeshDemoding::isActive(void)
 {
-  return hasActiveDocument() && !hasFeature("MeshBox");
+  //return true;
+  return getSelection().getNbrOfType("Mesh") == 1;
 }
 //===========================================================================
 // Example MakeMesh

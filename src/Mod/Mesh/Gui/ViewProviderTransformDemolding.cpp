@@ -61,6 +61,7 @@
 using Mesh::MeshFeature;
 using MeshCore::MeshKernel;
 using MeshCore::MeshFacetIterator;
+using MeshCore::MeshGeomFacet;
 using Base::Vector3D;
 
 #include "ViewProviderTransformDemolding.h"
@@ -109,17 +110,72 @@ void ViewProviderInventorMeshTransformDemolding::attach(App::Feature *pcFeat)
   pcTrackballDragger->addValueChangedCallback(sValueChangedCallback,this); 
   surroundsep->addChild(pcTrackballDragger);
 
+  pcTransformDrag = new SoTransform();
+
 
   SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
-  pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
-  SoMaterial* pcColorMat = new SoMaterial;
+  //pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
+  pcMatBinding->value = SoMaterialBinding::PER_FACE_INDEXED;
+  pcColorMat = new SoMaterial;
+  pcColorMat->diffuseColor.set1Value(0, 1,1,0);
+  pcColorMat->diffuseColor.set1Value(1, 1,0,0);
+  pcColorMat->diffuseColor.set1Value(2, 0,1,0);
+  calcNormalVector();
+  calcMaterialIndex(SbRotation());
+  
+  pcColorShadedRoot->addChild(surroundsep);
+  pcColorShadedRoot->addChild(pcTransformDrag);
   pcColorShadedRoot->addChild(pcColorMat);
   pcColorShadedRoot->addChild(pcMatBinding);
-  pcColorShadedRoot->addChild(surroundsep);
   pcColorShadedRoot->addChild(pcHighlight);
 
   // adding to the switch
   pcModeSwitch->addChild(pcColorShadedRoot);
+
+  // geting center point
+  center = dynamic_cast<MeshFeature*>(pcFeature)->getMesh().getKernel()->GetBoundBox().CalcCenter();
+
+  //SoGetBoundingBoxAction  boxAction;
+  //pcHighlight->getBoundingBox(&boxAction);
+  //SbVector3f Center = boxAction->getCenter();
+
+}
+
+void ViewProviderInventorMeshTransformDemolding::calcNormalVector(void)
+{
+  MeshKernel *cMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh().getKernel();
+
+  MeshFacetIterator cFIt(*cMesh);
+  for( cFIt.Init(); cFIt.More(); cFIt.Next())
+  {
+    const MeshGeomFacet& rFace = *cFIt;
+
+    Vector3D norm(rFace.GetNormal());
+    normalVector.push_back(SbVec3f(norm.x,norm.y,norm.z));
+  }
+
+}
+void ViewProviderInventorMeshTransformDemolding::calcMaterialIndex(const SbRotation &rot)
+{
+  // 3.1415926535897932384626433832795
+  SbVec3f Up(0,0,1),result;
+
+  unsigned long i=0;
+  for( std::vector<SbVec3f>::const_iterator it=normalVector.begin();it != normalVector.end(); ++it,i++)
+  {
+    rot.multVec(*it,result);
+
+    float Angle = acos( (result.dot(Up)) / (result.length() * Up.length()) ) * (180/3.1415926535);
+
+    if(Angle < 87.0){
+      pcMeshFaces->materialIndex .set1Value(i, 2);
+    }else if(Angle > 90.0){
+      pcMeshFaces->materialIndex .set1Value(i, 1 );
+    }else{
+      pcMeshFaces->materialIndex .set1Value(i, 0 );
+    }
+
+  }
 
 }
 
@@ -132,7 +188,18 @@ void ViewProviderInventorMeshTransformDemolding::valueChangedCallback(void)
 {
   //Base::Console().Log("Value change Callback\n");
   //setTransformation(pcTrackballDragger->getMotionMatrix());
-  pcTransform->rotation = pcTrackballDragger->rotation;
+  //pcTransform->rotation = pcTrackballDragger->rotation;
+  SbMatrix temp;
+  SbRotation rot = pcTrackballDragger->rotation.getValue();
+
+  calcMaterialIndex(rot);
+
+  temp.setTransform( SbVec3f(0,0,0),    // no transformation
+                     rot,               // rotation from the dragger
+                     SbVec3f(1,1,1),    // no scaling
+                     SbRotation() ,     // no scaling oriantation
+                     SbVec3f(center.x,center.y,center.z)); // center of rotaion
+  pcTransformDrag->setMatrix( temp );
 }
 
 
