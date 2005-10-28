@@ -110,7 +110,7 @@ private:
   SoCoordinate3 * _pickpoints;
   SoLineSet * _polylines;
 #endif
-  class MouseModel* _mouseModel;
+  class AbstractMouseModel* _mouseModel;
   bool m_bEdit;
   QTime _timer;
   std::vector<SbVec2f> _clPoly;
@@ -125,30 +125,33 @@ private:
  * In general you need not to do anything else.
  * \author Werner Mayer and Jürgen Riegel
  */
-class MouseModel
+class AbstractMouseModel
 {
 public:
-  MouseModel(Gui::View3DInventorViewer*);
-  virtual ~MouseModel(void){}
+  AbstractMouseModel();
+  virtual ~AbstractMouseModel(void){}
   /// implement this in derived classes
   virtual void initialize() = 0;
   /// implement this in derived classes
   virtual void terminate () = 0;
-  void initMouseModel();
+  void grabMouseModel(Gui::View3DInventorViewer*);
   void releaseMouseModel(void);
-  void moveMouseEvent (QMouseEvent *cEvent);
-  void wheelMouseEvent (QWheelEvent *cEvent);
 
-  void mousePressEvent    ( QMouseEvent *cEvent );
-  void mouseReleaseEvent  ( QMouseEvent *cEvent );
-  
+  /** @name Mouse events*/
+  //@{
+  void mouseMoveEvent    ( QMouseEvent *cEvent );
+  void mousePressEvent   ( QMouseEvent *cEvent );
+  void mouseReleaseEvent ( QMouseEvent *cEvent );
+  void wheelMouseEvent   ( QWheelEvent *cEvent );
+  //@}
+
+protected:
   virtual void mouseLeftPressEvent     ( QMouseEvent *cEvent ){};
   virtual void mouseMiddlePressEvent   ( QMouseEvent *cEvent ){};
   virtual void mouseRightPressEvent    ( QMouseEvent *cEvent ){};
   virtual void mouseLeftReleaseEvent   ( QMouseEvent *cEvent ){};
   virtual void mouseMiddleReleaseEvent ( QMouseEvent *cEvent ){};
   virtual void mouseRightReleaseEvent  ( QMouseEvent *cEvent ){};
-  virtual void mouseMoveEvent          ( QMouseEvent *cEvent ){};
   virtual void mouseDoubleClickEvent   ( QMouseEvent *cEvent ){};
 
   virtual void wheelEvent         ( QWheelEvent * ){};
@@ -157,16 +160,9 @@ public:
   virtual void paintEvent         ( QPaintEvent * ){ draw(); } ;
   virtual void resizeEvent        ( QResizeEvent * ){ draw(); };
 
-  Gui::View3DInventorViewer* getView() const;
-
 protected:
   /// drawing stuff
   virtual void draw (){};
-  void drawRect ( int x, int y, int w, int h, QPainter* p = NULL );
-  void drawNode ( int x, int y, int w, int h, QPainter* p = NULL );
-  void drawLine ( int x1, int y1, int x2, int y2, QPainter* p = NULL );
-  void drawCircle ( int x, int y, int r, QPainter* p = NULL );
-  void drawText ( int x, int y, const QString & str, QPainter* p = NULL );
 
 protected:
   Gui::View3DInventorViewer*_pcView3D;
@@ -181,41 +177,11 @@ protected:
  * The standard model class
  * \author Jürgen Riegel
  */
-class MouseModelStd :public MouseModel
+class BaseMouseModel : public AbstractMouseModel
 {
 public:
-  MouseModelStd(Gui::View3DInventorViewer*);
-  virtual ~MouseModelStd(){}
-
-  /// do nothing
-  virtual void initialize();
-  /// do nothing
-  virtual void terminate();
-  virtual void mousePressEvent        ( QMouseEvent *cEvent);
-  virtual void mouseReleaseEvent      ( QMouseEvent *cEvent);
-  virtual void mouseLeftPressEvent    ( QMouseEvent *cEvent);
-  virtual void mouseMiddlePressEvent  ( QMouseEvent *cEvent);
-  virtual void mouseRightPressEvent   ( QMouseEvent *cEvent);
-  virtual void mouseLeftReleaseEvent  ( QMouseEvent *cEvent);
-  virtual void mouseMiddleReleaseEvent( QMouseEvent *cEvent);
-  virtual void mouseRightReleaseEvent ( QMouseEvent *cEvent);
-  virtual void mouseMoveEvent         ( QMouseEvent *cEvent);
-  virtual void mouseDoubleClickEvent  ( QMouseEvent * );
-  virtual void keyPressEvent          ( QKeyEvent * );
-  virtual void keyReleaseEvent        ( QKeyEvent * );
-  virtual void wheelEvent             ( QWheelEvent * );
-
-protected:
-  enum {
-    nothing = 0,
-    rotation,
-    panning,
-    zooming,
-    selection,
-    addselection
-  } mode;
-
-  int iX,iY;
+  BaseMouseModel();
+  virtual ~BaseMouseModel(){}
 };
 
 // -----------------------------------------------------------------------------------
@@ -225,16 +191,18 @@ protected:
  * Create a polygon
  * \author Werner Mayer
  */
-class MouseModelPolyPicker : public MouseModelStd
+class PolyPickerMouseModel : public BaseMouseModel
 {
 public:
-  MouseModelPolyPicker(Gui::View3DInventorViewer*);
-  virtual ~MouseModelPolyPicker();
+  PolyPickerMouseModel();
+  virtual ~PolyPickerMouseModel();
 
   /// set the new mouse cursor
   virtual void initialize();
   /// do nothing
   virtual void terminate();
+
+protected:
   virtual void mouseLeftPressEvent     ( QMouseEvent *cEvent );
   virtual void mouseMiddlePressEvent   ( QMouseEvent *cEvent );
   virtual void mouseRightPressEvent    ( QMouseEvent *cEvent );
@@ -257,16 +225,18 @@ protected:
  * Draws a rectangle for selection
  * \author Werner Mayer
  */
-class MouseModelSelection : public MouseModelStd 
+class SelectionMouseModel : public BaseMouseModel 
 {
 public:
-  MouseModelSelection(Gui::View3DInventorViewer*);
-  virtual ~MouseModelSelection();
+  SelectionMouseModel();
+  virtual ~SelectionMouseModel();
 
   /// do nothing
   virtual void initialize();
   /// do nothing
   virtual void terminate();
+
+protected:
   virtual void mouseLeftPressEvent    ( QMouseEvent *cEvent );
   virtual void mouseLeftReleaseEvent  ( QMouseEvent *cEvent );
 
@@ -284,11 +254,11 @@ private:
  * The picker mouse model class
  * \author Werner Mayer
  */
-class MouseModelCirclePicker : public MouseModelStd 
+class CirclePickerMouseModel : public BaseMouseModel 
 {
 public:
-  MouseModelCirclePicker(Gui::View3DInventorViewer*);
-  virtual ~MouseModelCirclePicker();
+  CirclePickerMouseModel();
+  virtual ~CirclePickerMouseModel();
 
   /// set the new mouse cursor
   virtual void initialize();

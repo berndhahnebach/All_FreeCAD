@@ -390,8 +390,8 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
 {
   if ( m_bEdit && !_mouseModel )
   {
-    _mouseModel = new MouseModelPolyPicker(&Viewer);
-    _mouseModel->initMouseModel();
+    _mouseModel = new PolyPickerMouseModel();
+    _mouseModel->grabMouseModel(&Viewer);
     _clPoly.clear();
   }
 
@@ -715,7 +715,7 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
                               Qt::ControlButton : Qt::NoButton)|(ev->wasAltDown() ? Qt::AltButton : Qt::NoButton));
       
       QMouseEvent e( QEvent::MouseMove, QPoint(x,y), Qt::NoButton, state );
-     _mouseModel->moveMouseEvent(&e);
+     _mouseModel->mouseMoveEvent(&e);
     }
     else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) 
     {
@@ -866,39 +866,39 @@ void ViewProviderInventorMesh::eventCallback(void * ud, SoEventCallback * n)
 
 using namespace Gui; 
 
-MouseModel::MouseModel(Gui::View3DInventorViewer* w)
+AbstractMouseModel::AbstractMouseModel() : _pcView3D(0)
 {
-  _pcView3D=w;
 }
 
-void MouseModel::initMouseModel()
+void AbstractMouseModel::grabMouseModel(Gui::View3DInventorViewer* viewer)
 {
+  _pcView3D=viewer;
   m_cPrevCursor = _pcView3D->getWidget()->cursor();
 
   // do initialization of your mousemodel
   initialize();
 }
 
-void MouseModel::releaseMouseModel()
+void AbstractMouseModel::releaseMouseModel()
 {
   // do termination of your mousemodel
   terminate();
 
   _pcView3D->getWidget()->setCursor(m_cPrevCursor);
+  _pcView3D = 0;
 }
 
-void MouseModel::moveMouseEvent (QMouseEvent *cEvent)
+void AbstractMouseModel::mouseMoveEvent (QMouseEvent *cEvent)
 {
   // do all the drawing stuff for us
   QPoint clPoint = cEvent->pos();
   draw();
   m_iXnew = clPoint.x(); 
   m_iYnew = clPoint.y();
-  mouseMoveEvent(cEvent);
   draw();
 }
 
-void MouseModel::wheelMouseEvent (QWheelEvent *cEvent)
+void AbstractMouseModel::wheelMouseEvent (QWheelEvent *cEvent)
 {
   // do all the drawing stuff for us
   //QPoint clPoint = cEvent->pos();
@@ -907,7 +907,7 @@ void MouseModel::wheelMouseEvent (QWheelEvent *cEvent)
   draw();
 }
 
-void MouseModel::mousePressEvent(QMouseEvent* cEvent)
+void AbstractMouseModel::mousePressEvent(QMouseEvent* cEvent)
 {
   if ( cEvent->type() == QEvent::MouseButtonDblClick )
   {
@@ -932,7 +932,7 @@ void MouseModel::mousePressEvent(QMouseEvent* cEvent)
   };
 }
 
-void MouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
+void AbstractMouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
 {
   switch (cEvent->button())
   {
@@ -951,264 +951,16 @@ void MouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
   };
 }
 
-Gui::View3DInventorViewer* MouseModel::getView() const 
-{ 
-  // first init the MouseModel -> initMouseModel(View3D &View3D)
-  assert (_pcView3D);
-  return _pcView3D;
-}
+// **** BaseMouseModel ********************************************************
 
-void MouseModel::drawRect( int x, int y, int w, int h, QPainter* p )
+BaseMouseModel::BaseMouseModel()
+  :AbstractMouseModel()
 {
-  if (p)
-    p->drawRect( QRect( QPoint( QMIN( x, w ), QMIN( y, h ) ),
-         QPoint( QMAX( x, w ), QMAX( y, h ) ) ) );
-  else
-  {
-    QPainter p(_pcView3D->getGLWidget());
-    p.setPen( Qt::white );
-    p.setRasterOp( QPainter::XorROP );
-    drawRect( x, y, w, h, &p );
-  }
-}
-
-void MouseModel::drawNode ( int x, int y, int w, int h, QPainter* p )
-{
-  if (p)
-    p->drawEllipse( x, y, w, h );
-  else
-  {
-    QPainter p(_pcView3D->getGLWidget());
-    p.setPen( Qt::white );
-    p.setBrush(QBrush::white);
-    p.setRasterOp( QPainter::XorROP );
-    drawNode( x, y, w, h, &p );
-  }
-}
-
-void MouseModel::drawLine ( int x1, int y1, int x2, int y2, QPainter* p )
-{
-  if (p)
-    p->drawLine( x1, y1, x2, y2 );
-  else
-  {
-    QPainter p(_pcView3D->getGLWidget());
-    p.setPen( Qt::white );
-    p.setRasterOp( QPainter::XorROP );
-    drawLine( x1, y1, x2, y2, &p );
-  }
-}
-
-void MouseModel::drawCircle ( int x, int y, int r, QPainter* p )
-{
-  if (p)
-  {
-    QPoint center(x-r/2, y-r/2);
-    p->drawEllipse( center.x(), center.y(), r, r );
-  }
-  else
-  {
-    QPainter p(_pcView3D->getGLWidget());
-    p.setPen( Qt::green );
-    p.setRasterOp( QPainter::XorROP );
-    drawCircle( x, y, r, &p );
-  }
-}
-
-void MouseModel::drawText ( int x, int y, const QString & str, QPainter* p )
-{
-  if (p)
-    p->drawText( x, y, str);
-  else
-  {
-    QPainter p(_pcView3D->getGLWidget());
-    p.setPen( Qt::white );
-    p.setRasterOp( QPainter::XorROP );
-    drawText( x, y, str, &p );
-  }
-}
-
-// **** MouseModelStd ********************************************************
-
-MouseModelStd::MouseModelStd(Gui::View3DInventorViewer* w)
-  :MouseModel(w), mode(nothing)
-{
-};
-
-void MouseModelStd::initialize()
-{
-}
-
-void MouseModelStd::terminate()
-{
-}
-
-// Buttons to use
-#define OCC_ROTATION    5   // MidButton & LeftButton
-#define OCC_PANNING     4   // MidButton
-#define OCC_ZOOM        6   // MidButton & RightButton
-#define OCC_SELECTION   1   // LeftButton
-//#define OCC_ADDSELECTION  9 // LeftButton & ShiftButton
-#define OCC_ADDSELECTION  17  // LeftButton & CtrlButton
-#define OCC_SHOWPOPUP       2 // RightButton
-
-void MouseModelStd::mouseLeftPressEvent ( QMouseEvent *cEvent)
-{
-  mousePressEvent(cEvent);
-}
-
-void MouseModelStd::mouseMiddlePressEvent ( QMouseEvent *cEvent)
-{
-  mousePressEvent(cEvent);
-}
-
-void MouseModelStd::mouseRightPressEvent ( QMouseEvent *cEvent)
-{
-  mousePressEvent(cEvent);
-}
-
-void MouseModelStd::mouseLeftReleaseEvent ( QMouseEvent *cEvent)
-{
-  mouseReleaseEvent(cEvent);
-}
-
-void MouseModelStd::mouseMiddleReleaseEvent ( QMouseEvent *cEvent)
-{
-  mouseReleaseEvent(cEvent);
-}
-
-void MouseModelStd::mouseRightReleaseEvent ( QMouseEvent *cEvent)
-{
-  mouseReleaseEvent(cEvent);
-}
-
-void MouseModelStd::mousePressEvent( QMouseEvent *cEvent)
-{
-  iX = cEvent->x();
-  iY = cEvent->y();
-  //cout << "View3D: MousePress:"<< cEvent->state() +  cEvent->button()<<endl;
-  switch(cEvent->state() + cEvent->button())
-  {
-    case OCC_ROTATION:
-//      getView()->StartRotation(iX,iY);
-      mode = rotation;
-      break;
-    case OCC_PANNING:
-      mode = panning;
-      break;
-    case OCC_ZOOM:
-      mode = zooming;
-      break;
-    case OCC_SELECTION:
-      mode = selection;
-      break;
-    case OCC_ADDSELECTION:
-      mode = addselection;
-      break;
-    case OCC_SHOWPOPUP:
-      {
-//        QContextMenuEvent ce( QContextMenuEvent::Mouse, cEvent->pos(), cEvent->globalPos(), Qt::NoButton );
-//        QApplication::sendEvent( getView3D(), &ce );
-      }
-      break;
-    default:
-      mode = nothing;
-  }
-  //cout << "View3D: Mode:"<< (int) mode <<endl;
-}
-
-void MouseModelStd::mouseReleaseEvent( QMouseEvent *cEvent)
-{
-  //cout << "View3D: MouseRelease" <<endl;
-  switch(mode)
-  {
-    case selection:
-//      getContext()->MoveTo(cEvent->x(),cEvent->x(),getView());
-//      getContext()->Select();
-      break;
-    case addselection:
-//      getContext()->MoveTo(cEvent->x(),cEvent->x(),getView());
-//      getContext()->ShiftSelect();
-      break;
-    default:
-  ;
-  }
-  mode = nothing;
-}
-
-void MouseModelStd::mouseMoveEvent( QMouseEvent *cEvent)
-{
-#ifndef FC_OS_WIN32
-  QApplication::flushX();
-#endif
-
-  //cout << "View3D: MouseMove" <<endl;
-  switch(mode)
-  {
-    case nothing:
-      break;
-    case rotation:
-//      getView()->Rotation(cEvent->x(),cEvent->y());
-      break;
-    case panning:
-//      getView()->Pan(cEvent->x()-iX,iY-cEvent->y()); // Use "Pan(...)" instead of "Panning(...)" !!!
-      break;
-    case zooming:
-//      getView()->Zoom(iY,iX,cEvent->y(),cEvent->x());
-      break;
-    default:
-      break;
-  }
-//  getContext()->MoveTo(cEvent->x(),cEvent->y(),getView());
-
-  iX = cEvent->x();
-  iY = cEvent->y();
-}
-
-void MouseModelStd::wheelEvent ( QWheelEvent * cEvent)
-{
-  int zDelta = cEvent->delta()/3;
-  //Console().Log("Wheel Delta=%d\n",zDelta);
-//  Quantity_Length fWidth, fHeight;
-//  getView()->Size(fWidth, fHeight);
-/*  float fLog = float(log10(fWidth));
-  int   nExp = int(fLog);
-
-  // Zoom begrenzen
-  if ((nExp > -6 && zDelta > 0) || (nExp < 8 && zDelta < 0))
-  {
-//    getView()->Zoom(0,0,zDelta,0);
-//    getView3D().showDimension();
-  }
-  else if (zDelta > 0)
-  {
-    Base::Console().Message(QObject::tr("Cannot zoom in any more\n").latin1());
-  }
-  else
-  {
-    Base::Console().Message(QObject::tr("Cannot zoom out any more\n").latin1());
-  }*/
-}
-
-void MouseModelStd::mouseDoubleClickEvent ( QMouseEvent * )
-{
-
-}
-
-void MouseModelStd::keyPressEvent ( QKeyEvent * )
-{
-
-}
-
-void MouseModelStd::keyReleaseEvent ( QKeyEvent * )
-{
-
 }
 
 // -----------------------------------------------------------------------------------
 
-MouseModelPolyPicker::MouseModelPolyPicker(Gui::View3DInventorViewer* w) 
-: MouseModelStd(w)
+PolyPickerMouseModel::PolyPickerMouseModel() 
 {
   m_iRadius    = 2;
   m_iNodes     = 0;
@@ -1216,16 +968,16 @@ MouseModelPolyPicker::MouseModelPolyPicker(Gui::View3DInventorViewer* w)
   m_bDrawNodes = true;
 }
 
-void MouseModelPolyPicker::initialize()
+void PolyPickerMouseModel::initialize()
 {
   _pcView3D->getWidget()->setCursor(QCursor(QCursor::CrossCursor));
 }
 
-void MouseModelPolyPicker::terminate()
+void PolyPickerMouseModel::terminate()
 {
 }
 
-void MouseModelPolyPicker::draw ()
+void PolyPickerMouseModel::draw ()
 {
   if ( m_bWorking )
   {
@@ -1235,21 +987,32 @@ void MouseModelPolyPicker::draw ()
       // drawing the point
       if (m_bDrawNodes == true)
       {
-        drawNode(m_iXnew-m_iRadius,m_iYnew-m_iRadius,2*m_iRadius,2*m_iRadius);
+        _pcView3D->drawNode(m_iXnew-m_iRadius,m_iYnew-m_iRadius,2*m_iRadius,2*m_iRadius);
+      }
+
+      if ( _cNodeVector.size() > 2 )
+      {
+        QPoint start = _cNodeVector.front();
+        _pcView3D->drawLine(m_iXnew,m_iYnew,start.x(), start.y() );
       }
     }
     else
     {
-      drawLine(m_iXnew,m_iYnew,m_iXold,m_iYold );
+      _pcView3D->drawLine(m_iXnew,m_iYnew,m_iXold,m_iYold );
+      if ( _cNodeVector.size() > 1 )
+      {
+        QPoint start = _cNodeVector.front();
+        _pcView3D->drawLine(m_iXnew,m_iYnew,start.x(), start.y() );
+      }
     }
   }
 }
 
-MouseModelPolyPicker::~MouseModelPolyPicker()
+PolyPickerMouseModel::~PolyPickerMouseModel()
 {
 }
 
-void MouseModelPolyPicker::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
+void PolyPickerMouseModel::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
 {
   QPoint point = cEvent->pos();
 
@@ -1268,20 +1031,20 @@ void MouseModelPolyPicker::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
   m_iXold = point.x();  m_iYold = point.y();
 }
 
-void MouseModelPolyPicker::mouseMiddlePressEvent	 ( QMouseEvent *cEvent)
+void PolyPickerMouseModel::mouseMiddlePressEvent	 ( QMouseEvent *cEvent)
 {
 }
 
-void MouseModelPolyPicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
+void PolyPickerMouseModel::mouseRightPressEvent		 ( QMouseEvent *cEvent)
 {
 }
 
-void MouseModelPolyPicker::wheelEvent ( QWheelEvent * e)
+void PolyPickerMouseModel::wheelEvent ( QWheelEvent * e)
 {
   // do nothing
 }
 
-void MouseModelPolyPicker::keyPressEvent ( QKeyEvent * e)
+void PolyPickerMouseModel::keyPressEvent ( QKeyEvent * e)
 {
   switch (e->key())
   {
@@ -1289,22 +1052,15 @@ void MouseModelPolyPicker::keyPressEvent ( QKeyEvent * e)
 //      _pcView3D->popMouseModel();
       break;
     default:
-      MouseModelStd::keyPressEvent(e);
+      BaseMouseModel::keyPressEvent(e);
       break;
   }
 }
 
-void MouseModelPolyPicker::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
+void PolyPickerMouseModel::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
 {
-  //QPoint point = cEvent->pos();
-
   if( m_bWorking )
   {
-    if (_cNodeVector.size() == 0) return; // no node
-    draw();
-    m_iXold = _cNodeVector[0].x();
-    m_iYold = _cNodeVector[0].y();
-    draw();
     m_bWorking = false;
   }
 
@@ -1313,31 +1069,30 @@ void MouseModelPolyPicker::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
 
 // -----------------------------------------------------------------------------------
 
-MouseModelSelection::MouseModelSelection(Gui::View3DInventorViewer* w)
-: MouseModelStd(w)
+SelectionMouseModel::SelectionMouseModel()
 {
   m_bWorking = false;
 }
 
-MouseModelSelection::~MouseModelSelection()
+SelectionMouseModel::~SelectionMouseModel()
 {
 }
 
-void MouseModelSelection::initialize()
+void SelectionMouseModel::initialize()
 {
 }
 
-void MouseModelSelection::terminate()
+void SelectionMouseModel::terminate()
 {
 }
 
-void MouseModelSelection::draw ()
+void SelectionMouseModel::draw ()
 {
   if (m_bWorking)
-    drawRect( m_iXold, m_iYold, m_iXnew, m_iYnew );
+    _pcView3D->drawRect( m_iXold, m_iYold, m_iXnew, m_iYnew );
 }
 
-void MouseModelSelection::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
+void SelectionMouseModel::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
 {
   m_bWorking = true;
   QPoint p = cEvent->pos();
@@ -1345,7 +1100,7 @@ void MouseModelSelection::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
   m_iYold = m_iYnew = p.y();
 }
 
-void MouseModelSelection::mouseLeftReleaseEvent	 ( QMouseEvent *cEvent)
+void SelectionMouseModel::mouseLeftReleaseEvent	 ( QMouseEvent *cEvent)
 {
   m_bWorking = false;
 }
@@ -1390,47 +1145,46 @@ static const char *xpm_cursor[]={
 "................................",
 "................................"};
 
-MouseModelCirclePicker::MouseModelCirclePicker(Gui::View3DInventorViewer* w)
-: MouseModelStd(w), _nRadius(50)
+CirclePickerMouseModel::CirclePickerMouseModel()
+: _nRadius(50)
 {
   QPoint p = QCursor::pos();
   m_iXnew = p.x(); 
   m_iYnew = p.y();
 }
 
-MouseModelCirclePicker::~MouseModelCirclePicker()
+CirclePickerMouseModel::~CirclePickerMouseModel()
 {
 }
 
-void MouseModelCirclePicker::initialize()
+void CirclePickerMouseModel::initialize()
 {
   QPixmap p(xpm_cursor);
   QCursor cursor( p );
   _pcView3D->getWidget()->setCursor(cursor);
 }
 
-void MouseModelCirclePicker::terminate()
+void CirclePickerMouseModel::terminate()
 {
   draw();
 }
 
-void MouseModelCirclePicker::draw ()
+void CirclePickerMouseModel::draw ()
 {
   char szBuf[20];
   float fRad = 0.0f;//float(getView()->Convert(Standard_Integer(_nRadius)));
 
   sprintf(szBuf, "%.2f", fRad);
-  drawCircle(m_iXnew, m_iYnew, _nRadius);
-  drawText(m_iXnew+9, m_iYnew-9, szBuf);
+  _pcView3D->drawCircle(m_iXnew, m_iYnew, _nRadius);
+  _pcView3D->drawText(m_iXnew+9, m_iYnew-9, szBuf);
 }
 
-void MouseModelCirclePicker::mouseRightPressEvent		 ( QMouseEvent *cEvent)
+void CirclePickerMouseModel::mouseRightPressEvent		 ( QMouseEvent *cEvent)
 {
 //  _pcView3D->popMouseModel();
 }
 
-
-void MouseModelCirclePicker::wheelEvent			    ( QWheelEvent  * cEvent )
+void CirclePickerMouseModel::wheelEvent			    ( QWheelEvent  * cEvent )
 {
   int delta = cEvent->delta();
   _nRadius = 5>(_nRadius + delta / 10)?5:(_nRadius + delta / 10);

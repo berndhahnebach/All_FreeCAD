@@ -1205,7 +1205,12 @@ void View3DInventorViewer::drawRect( int x, int y, int w, int h, QPainter* p )
   else
   {
     QPainter p(getGLWidget());
-    p.setPen( Qt::white );
+//    p.setPen( Qt::white );
+    QPen pen = p.pen();
+    pen.setColor( Qt::white );
+    pen.setStyle( Qt::DashLine );
+    pen.setWidth( 3 );
+    p.setPen( pen );
     p.setRasterOp( QPainter::XorROP );
     drawRect( x, y, w, h, &p );
   }
@@ -1218,8 +1223,12 @@ void View3DInventorViewer::drawNode ( int x, int y, int w, int h, QPainter* p )
   else
   {
     QPainter p(getGLWidget());
-    p.setPen( Qt::white );
-    p.setBrush(QBrush::white);
+//    p.setPen( Qt::white );
+    QPen pen = p.pen();
+    pen.setColor( Qt::white );
+    pen.setWidth( 3 );
+    p.setPen( pen );
+    p.setBrush( Qt::white );
     p.setRasterOp( QPainter::XorROP );
     drawNode( x, y, w, h, &p );
   }
@@ -1232,7 +1241,12 @@ void View3DInventorViewer::drawLine ( int x1, int y1, int x2, int y2, QPainter* 
   else
   {
     QPainter p(getGLWidget());
-    p.setPen( Qt::white );
+//    p.setPen( Qt::white );
+    QPen pen = p.pen();
+    pen.setColor( Qt::white );
+    pen.setStyle( Qt::DashLine );
+    pen.setWidth( 3 );
+    p.setPen( pen );
     p.setRasterOp( QPainter::XorROP );
     drawLine( x1, y1, x2, y2, &p );
   }
