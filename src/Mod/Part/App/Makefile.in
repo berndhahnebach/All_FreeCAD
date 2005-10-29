@@ -164,7 +164,8 @@ libPart_la_SOURCES = \
 		PartFeaturePy.cpp \
 		PartFeaturePy.h \
 		PreCompiled.cpp \
-		PreCompiled.h
+		PreCompiled.h \
+		TopologyPy.cpp
 
 
 # the library search path.
@@ -196,7 +197,7 @@ am_libPart_la_OBJECTS = libPart_la-AppPart.lo libPart_la-AppPartPy.lo \
 	libPart_la-FeaturePartImportIges.lo \
 	libPart_la-FeaturePartImportStep.lo libPart_la-PartAlgos.lo \
 	libPart_la-PartFeature.lo libPart_la-PartFeaturePy.lo \
-	libPart_la-PreCompiled.lo
+	libPart_la-PreCompiled.lo libPart_la-TopologyPy.lo
 libPart_la_OBJECTS = $(am_libPart_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir)
@@ -213,7 +214,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libPart_la-PartAlgos.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libPart_la-PartFeature.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libPart_la-PartFeaturePy.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-PreCompiled.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-PreCompiled.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libPart_la-TopologyPy.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -291,6 +293,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-PartFeature.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-PartFeaturePy.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-PreCompiled.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libPart_la-TopologyPy.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)
@@ -724,6 +727,39 @@ libPart_la-PreCompiled.lo: PreCompiled.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-PreCompiled.lo `test -f 'PreCompiled.cpp' || echo '$(srcdir)/'`PreCompiled.cpp
 
+libPart_la-TopologyPy.o: TopologyPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-TopologyPy.o -MD -MP -MF "$(DEPDIR)/libPart_la-TopologyPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-TopologyPy.o `test -f 'TopologyPy.cpp' || echo '$(srcdir)/'`TopologyPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-TopologyPy.Tpo" "$(DEPDIR)/libPart_la-TopologyPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-TopologyPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TopologyPy.cpp' object='libPart_la-TopologyPy.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-TopologyPy.Po' tmpdepfile='$(DEPDIR)/libPart_la-TopologyPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-TopologyPy.o `test -f 'TopologyPy.cpp' || echo '$(srcdir)/'`TopologyPy.cpp
+
+libPart_la-TopologyPy.obj: TopologyPy.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-TopologyPy.obj -MD -MP -MF "$(DEPDIR)/libPart_la-TopologyPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-TopologyPy.obj `if test -f 'TopologyPy.cpp'; then $(CYGPATH_W) 'TopologyPy.cpp'; else $(CYGPATH_W) '$(srcdir)/TopologyPy.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-TopologyPy.Tpo" "$(DEPDIR)/libPart_la-TopologyPy.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-TopologyPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TopologyPy.cpp' object='libPart_la-TopologyPy.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-TopologyPy.Po' tmpdepfile='$(DEPDIR)/libPart_la-TopologyPy.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-TopologyPy.obj `if test -f 'TopologyPy.cpp'; then $(CYGPATH_W) 'TopologyPy.cpp'; else $(CYGPATH_W) '$(srcdir)/TopologyPy.cpp'; fi`
+
+libPart_la-TopologyPy.lo: TopologyPy.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT libPart_la-TopologyPy.lo -MD -MP -MF "$(DEPDIR)/libPart_la-TopologyPy.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libPart_la-TopologyPy.lo `test -f 'TopologyPy.cpp' || echo '$(srcdir)/'`TopologyPy.cpp; \
+@am__fastdepCXX_TRUE@	then mv "$(DEPDIR)/libPart_la-TopologyPy.Tpo" "$(DEPDIR)/libPart_la-TopologyPy.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libPart_la-TopologyPy.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='TopologyPy.cpp' object='libPart_la-TopologyPy.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libPart_la-TopologyPy.Plo' tmpdepfile='$(DEPDIR)/libPart_la-TopologyPy.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(libPart_la_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o libPart_la-TopologyPy.lo `test -f 'TopologyPy.cpp' || echo '$(srcdir)/'`TopologyPy.cpp
+
 mostlyclean-libtool:
 	-rm -f *.lo
 
@@ -910,6 +946,7 @@ uninstall-am: uninstall-info-am uninstall-libLTLIBRARIES
 	pdf-am ps ps-am tags uninstall uninstall-am uninstall-info-am \
 	uninstall-libLTLIBRARIES
 
+		TopologyPy.h
 
 # We need this softlink for Python to load
 install-data-local:

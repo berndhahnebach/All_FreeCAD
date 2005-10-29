@@ -452,7 +452,6 @@ void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Vector3D& rP1
     cP2 = rP1;
   }
 
-  MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
   if (IsFlag(ulFacetPos)) return; // already marked as INVALID
   SetFlag(ulFacetPos); // mark for deletion
 

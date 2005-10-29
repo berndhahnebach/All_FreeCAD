@@ -23,15 +23,21 @@
 #ifndef __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
 #define __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
 
+#ifndef _PreComp_
+# include <Inventor/nodes/SoRotation.h>
+#endif
+
 class SoSeparator;
 class SbVec3f;
 class SoSwitch;
 class SoCoordinate3;
+class SoDragger;
 class SoNormal;
 class SoIndexedFaceSet;
 class SoFaceSet;
 class SoPath;
 class SoLocateHighlight;
+class SoTrackballDragger;
 class SoTransformerManip;
 
 namespace Gui {

@@ -119,7 +119,7 @@ void ViewProviderInventorMeshTransform::setMode(const char* ModeName)
 {
   ViewProviderInventorMesh::setMode(ModeName);
 
-  int i = getMode();
+  //int i = getMode();
 }
 
 

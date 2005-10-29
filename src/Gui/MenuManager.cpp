@@ -186,7 +186,6 @@ void MenuManager::setup( MenuItem* menuBar ) const
   if ( !menuBar )
     return; // empty menu bar
 
-  CommandManager& mgr = Application::Instance->commandManager();
   QMenuBar* bar = getMainWindow()->menuBar();
   // Cannot call QMenuBar::clear() to prevent the icon and window buttons from being removed ( e.g if a window is in fullscreen mode )
   bool ok = false;
@@ -230,7 +229,7 @@ void MenuManager::setup( MenuItem* item, QMenuData* data ) const
   if ( !menu )
   {
     menu = new CustomPopupMenu( getMainWindow(), item->command() );
-    int id = data->insertItem( QObject::tr(item->command()), menu);
+    data->insertItem( QObject::tr(item->command()), menu);
   }
   else
   {

@@ -25,6 +25,9 @@
 
 #ifndef _PreComp_
 # include <qcursor.h>
+# include <qdatetime.h>
+# include <vector>
+# include <Inventor/fields/SoSFVec2f.h>
 #endif
 
 #include <Gui/ViewProviderFeature.h>
@@ -40,6 +43,11 @@ class SoFaceSet;
 class SoPath;
 class SoLocateHighlight;
 class SoEventCallback;
+class QMouseEvent;
+class QWheelEvent;
+class QKeyEvent;
+class QPaintEvent;
+class QResizeEvent;
 
 namespace Gui {
   class View3DInventorViewer;

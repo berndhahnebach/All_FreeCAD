@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qkeysequence.h>
 # include <qpopupmenu.h>
 # include <qtoolbar.h>
 #endif
@@ -261,7 +262,8 @@ bool Workbench::activate()
 	  	Command* cmd = cCmdMgr.getCommandByName( it->first.c_str() );
 	  	if ( cmd && cmd->getAction() )
 	  	{
-	  		QKeySequence shortcut = it->second.c_str();
+        QString str = it->second.c_str();
+	  		QKeySequence shortcut = str;
 	  		cmd->getAction()->setAccel( shortcut );
 	  	}
 	  }

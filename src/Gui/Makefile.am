@@ -60,7 +60,6 @@ BUILT_SOURCES=\
 		moc_Tree.cpp \
 		moc_View.cpp\
 		moc_View3DInventor.cpp \
-		moc_WhatsThis.cpp \
 		moc_WidgetFactory.cpp \
 		moc_Widgets.cpp \
 		DlgActions.cpp \

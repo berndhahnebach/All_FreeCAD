@@ -35,6 +35,7 @@
 # include <qwidgetstack.h>
 # include <qtabwidget.h>
 # include <qpainter.h>
+# include <qmessagebox.h>
 # include <qmetaobject.h>
 #endif
 

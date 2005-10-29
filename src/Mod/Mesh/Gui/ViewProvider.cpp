@@ -24,8 +24,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qlistview.h>
+# include <qmessagebox.h>
 # include <qpainter.h>
+# include <Inventor/events/SoEvent.h>
+# include <Inventor/events/SoKeyboardEvent.h>
+# include <Inventor/events/SoLocation2Event.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoDrawStyle.h>
@@ -34,6 +40,8 @@
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoNormal.h>
 # include <Inventor/nodes/SoNormalBinding.h>
+# include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoPerspectiveCamera.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoSwitch.h>
 #endif
@@ -203,11 +211,11 @@ void ViewProviderInventorMesh::attach(App::Feature *pcFeat)
 
   // some helper Separators
   SoGroup* pcFlatRoot = new SoGroup();
-  SoGroup* pcFlatNormRoot = new SoGroup();
+//  SoGroup* pcFlatNormRoot = new SoGroup();
   SoGroup* pcWireRoot = new SoGroup();
   SoGroup* pcPointRoot = new SoGroup();
   SoGroup* pcFlatWireRoot = new SoGroup();
-  SoGroup* pcColorShadedRoot = new SoGroup();
+//  SoGroup* pcColorShadedRoot = new SoGroup();
 
   // only one selection node for the mesh
   pcHighlight->featureName = pcFeature->getName();
@@ -724,6 +732,8 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
       {
       case SoKeyboardEvent::ESCAPE:
         unsetEdit();
+        break;
+      default:
         break;
       }
     }

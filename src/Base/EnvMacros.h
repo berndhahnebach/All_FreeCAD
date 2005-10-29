@@ -178,8 +178,19 @@ std::string FindHomePathUnix(const char* sCall)
 		}
 	}
 
+  // neither an absolute path in the specified call nor a relative path nor a call in PATH (maybe called from within Python)
+  if ( absPath.empty() )
+  {
+  	// get the current working directory
+    absPath = cwd;
+		std::string::size_type pos = absPath.find_last_of(PATHSEP);
+		homePath.assign(absPath,0,pos);
+    homePath += PATHSEP;
+
+    EnvPrint(homePath.c_str());
+  }
 	// should be an absolute path now
-	if (absPath[0] == PATHSEP)
+	else if (absPath[0] == PATHSEP)
 	{
 		EnvPrint("FindHomePath -----------------");
 

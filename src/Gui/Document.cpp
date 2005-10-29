@@ -54,7 +54,7 @@ using namespace Gui;
 int Document::_iDocCount = 0;
 
 Document::Document(App::Document* pcDocument,Application * app, const char * name)
-  :_iWinCount(1), _pcAppWnd(app), _pcDocument(pcDocument), _isClosing(false)
+  :_iWinCount(1), _isClosing(false), _pcAppWnd(app), _pcDocument(pcDocument)
 {
   // new instance
   _iDocId = (++_iDocCount);

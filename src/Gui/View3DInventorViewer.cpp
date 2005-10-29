@@ -27,6 +27,8 @@
 # include <float.h>
 # include <qapplication.h>
 # include <qimage.h>
+# include <qpainter.h>
+# include <qpen.h>
 # include <GL/gl.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCoordinate3.h>
@@ -214,7 +216,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   offset->translation = SbVec3f(ARROWSIZE/2.0, 0, 0);
 
   // simple color bar
-  SoSeparator* bar = createColorLegend();
+//  SoSeparator* bar = createColorLegend();
   //
 //  SoCube * cube = new SoCube;
 //  cube->width = ARROWSIZE;
@@ -475,7 +477,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
   //Base::Console().Log("Evnt: %s\n",ev->getTypeId().getName().getString());
   bool processed = false;
-  if ( !isSeekMode() )
+  if ( !isSeekMode() && isViewing() )
     setViewing( false ); // by default disable viewing mode to render the scene
 
   // Keybooard handling

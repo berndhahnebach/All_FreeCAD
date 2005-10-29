@@ -45,9 +45,7 @@ libFreeCADApp_la_SOURCES=\
 		Property.cpp \
 		Property.h \
 		PropertyAttr.cpp \
-		PropertyAttr.h \
-		Topology.cpp \
-		Topology.h
+		PropertyAttr.h
 
 %Script.h: FreeCAD%.py
 	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@

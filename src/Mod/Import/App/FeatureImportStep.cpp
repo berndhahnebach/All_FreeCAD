@@ -98,7 +98,7 @@ Standard_Integer FeatureImportStep::Execute(TFunction_Logbook& log)
     for ( Standard_Integer n = 1; n<= nbr; n++)
     {
       printf("STEP: Transfering Root %d\n",n);
-      Standard_Boolean ok = aReader.TransferRoot(n);
+      aReader.TransferRoot(n);
       // Collecting resulting entities
       Standard_Integer nbs = aReader.NbShapes();
       if (nbs == 0) {

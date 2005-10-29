@@ -287,11 +287,7 @@ MeshWithProperty* MeshAlgos::boolean(MeshWithProperty* pMesh1, MeshWithProperty*
   GtsSurface * s1, * s2, * s3;
   GtsSurfaceInter * si;
   GNode * tree1, * tree2;
-  int c = 0;
-  gboolean verbose = TRUE;
-  gboolean inter = FALSE;
   gboolean check_self_intersection = FALSE;
-  gchar * operation, * file1, * file2;
   gboolean closed = TRUE, is_open1, is_open2;
 
 

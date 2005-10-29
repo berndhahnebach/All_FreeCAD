@@ -23,7 +23,9 @@ libPart_la_SOURCES=\
 		PartFeaturePy.cpp \
 		PartFeaturePy.h \
 		PreCompiled.cpp \
-		PreCompiled.h
+		PreCompiled.h \
+		TopologyPy.cpp
+		TopologyPy.h
 
 # the library search path.
 libPart_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

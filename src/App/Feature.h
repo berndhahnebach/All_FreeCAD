@@ -28,6 +28,8 @@
 
 #ifndef _PreComp_
 # include <TDF_Label.hxx>
+# include <string>
+# include <vector>
 #endif
 
 #include <Base/Factory.h>
@@ -179,7 +181,7 @@ public:
 	void setPropertyString(const char*, const char *Name);
 
   /** returns the names of all registert properties of this Feature */
-  const vector<string> getAllPropertyNames(void);
+  const std::vector<std::string> getAllPropertyNames(void);
 
   /** Set the property touched -> changed, cause recomputation in Update()
 	 *  

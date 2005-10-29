@@ -233,7 +233,7 @@ buffer_realloc(void * bufptr, size_t size)
   buffer_size = size;
   return buffer;
 }
-
+/*
 static const std::string&
 buffer_writeaction(SoNode * root)
 {
@@ -249,7 +249,7 @@ buffer_writeaction(SoNode * root)
   free(buffer);
   return cReturnString;
 }
-
+*/
 // **********************************************************************************
 
 Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* EdgeRoot, const TopoDS_Shape &myShape)
@@ -366,16 +366,17 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* EdgeRoot
 
 Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* VertexRoot, const TopoDS_Shape &myShape)
 {
+/*
   TopExp_Explorer ex;
 
 
   for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
 
-    // get the shape 
+    // get the shape
 		const TopoDS_Vertex& aVertex = TopoDS::Vertex(ex.Current());
 
   }
-
+*/
   return true;
 }
 

@@ -107,8 +107,6 @@ void DlgCustomToolbars::refreshActionList()
   ToolBarItem* bar = _toolBars->findItem( text );
   bar->clear();
 
-  CommandManager & cCmdMgr = Application::Instance->commandManager();
-
   QListViewItem* item = ToolbarActions->firstChild();
   for (int i=0; i < ToolbarActions->childCount(); item = item->itemBelow(), i++)
   {

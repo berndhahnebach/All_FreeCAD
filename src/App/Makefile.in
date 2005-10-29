@@ -187,9 +187,7 @@ libFreeCADApp_la_SOURCES = \
 		Property.cpp \
 		Property.h \
 		PropertyAttr.cpp \
-		PropertyAttr.h \
-		Topology.cpp \
-		Topology.h
+		PropertyAttr.h
 
 
 # the library search path.
@@ -233,7 +231,7 @@ am_libFreeCADApp_la_OBJECTS = Application.lo ApplicationPy.lo \
 	DocumentPy.lo Doxygen.lo Feature.lo FeatureAttr.lo \
 	FeatureDataProvider.lo FeatureDataProviderPy.lo FeaturePy.lo \
 	Function.lo Label.lo Material.lo MaterialPy.lo PreCompiled.lo \
-	Property.lo PropertyAttr.lo Topology.lo
+	Property.lo PropertyAttr.lo
 libFreeCADApp_la_OBJECTS = $(am_libFreeCADApp_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -254,8 +252,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/MaterialPy.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/PreCompiled.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/Property.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/PropertyAttr.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/Topology.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/PropertyAttr.Plo
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
@@ -342,7 +339,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PreCompiled.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Property.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PropertyAttr.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Topology.Plo@am__quote@
 
 distclean-depend:
 	-rm -rf ./$(DEPDIR)

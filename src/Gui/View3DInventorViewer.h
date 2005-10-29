@@ -26,6 +26,7 @@
 
 #ifndef _PreComp_
 # include <set>
+# include <stack>
 #endif
 
 #include "Inventor/Qt/viewers/SoQtViewer.h"

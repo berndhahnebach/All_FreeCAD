@@ -140,7 +140,7 @@ sharedstatedir = @sharedstatedir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 bin_PROGRAMS = FreeCAD FreeCADCmd
-lib_LTLIBRARIES = libFreeCADCmdPy.la
+lib_LTLIBRARIES = libFreeCADPy.la
 
 #--------------------------------------------------------------------------------------
 FreeCAD_SOURCES = \
@@ -170,17 +170,19 @@ FreeCADCmd_LDADD = \
 
 
 #--------------------------------------------------------------------------------------
-libFreeCADCmdPy_la_SOURCES = \
+libFreeCADPy_la_SOURCES = \
 	MainPy.cpp
 
 
 # the library search path.
-libFreeCADCmdPy_la_LDFLAGS = -L../Base -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libFreeCADPy_la_LDFLAGS = -L../Base -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
-libFreeCADCmdPy_la_LIBADD = \
+libFreeCADPy_la_LIBADD = \
 	-lFreeCADBase \
 	-lFreeCADApp
 
+
+#--------------------------------------------------------------------------------------
 
 # set the include path found by configure
 INCLUDES = $(all_includes) $(QT_CXXFLAGS)
@@ -190,9 +192,9 @@ CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 LTLIBRARIES = $(lib_LTLIBRARIES)
 
-libFreeCADCmdPy_la_DEPENDENCIES =
-am_libFreeCADCmdPy_la_OBJECTS = MainPy.lo
-libFreeCADCmdPy_la_OBJECTS = $(am_libFreeCADCmdPy_la_OBJECTS)
+libFreeCADPy_la_DEPENDENCIES =
+am_libFreeCADPy_la_OBJECTS = MainPy.lo
+libFreeCADPy_la_OBJECTS = $(am_libFreeCADPy_la_OBJECTS)
 bin_PROGRAMS = FreeCAD$(EXEEXT) FreeCADCmd$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
@@ -216,10 +218,10 @@ LTCXXCOMPILE = $(LIBTOOL) --mode=compile $(CXX) $(DEFS) \
 CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libFreeCADCmdPy_la_SOURCES) $(FreeCAD_SOURCES) \
+DIST_SOURCES = $(libFreeCADPy_la_SOURCES) $(FreeCAD_SOURCES) \
 	$(FreeCADCmd_SOURCES)
 DIST_COMMON = Makefile.am Makefile.in
-SOURCES = $(libFreeCADCmdPy_la_SOURCES) $(FreeCAD_SOURCES) $(FreeCADCmd_SOURCES)
+SOURCES = $(libFreeCADPy_la_SOURCES) $(FreeCAD_SOURCES) $(FreeCADCmd_SOURCES)
 
 all: all-am
 
@@ -258,8 +260,8 @@ clean-libLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-libFreeCADCmdPy.la: $(libFreeCADCmdPy_la_OBJECTS) $(libFreeCADCmdPy_la_DEPENDENCIES) 
-	$(CXXLINK) -rpath $(libdir) $(libFreeCADCmdPy_la_LDFLAGS) $(libFreeCADCmdPy_la_OBJECTS) $(libFreeCADCmdPy_la_LIBADD) $(LIBS)
+libFreeCADPy.la: $(libFreeCADPy_la_OBJECTS) $(libFreeCADPy_la_DEPENDENCIES) 
+	$(CXXLINK) -rpath $(libdir) $(libFreeCADPy_la_LDFLAGS) $(libFreeCADPy_la_OBJECTS) $(libFreeCADPy_la_LIBADD) $(LIBS)
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)
