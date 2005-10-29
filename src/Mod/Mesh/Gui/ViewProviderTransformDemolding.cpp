@@ -107,6 +107,7 @@ void ViewProviderInventorMeshTransformDemolding::attach(App::Feature *pcFeat)
   surroundsep->addChild(antisquish);
 
   pcTrackballDragger->addValueChangedCallback(sValueChangedCallback,this); 
+  pcTrackballDragger->addFinishCallback (sDragEndCallback,this); 
   surroundsep->addChild(pcTrackballDragger);
 
   pcTransformDrag = new SoTransform();
@@ -175,12 +176,24 @@ void ViewProviderInventorMeshTransformDemolding::calcMaterialIndex(const SbRotat
     }
 
   }
-
 }
 
 void ViewProviderInventorMeshTransformDemolding::sValueChangedCallback(void *This, SoDragger *)
 {
   static_cast<ViewProviderInventorMeshTransformDemolding*>(This)->valueChangedCallback();
+}
+void ViewProviderInventorMeshTransformDemolding::sDragEndCallback(void *This, SoDragger *)
+{
+  static_cast<ViewProviderInventorMeshTransformDemolding*>(This)->DragEndCallback();
+}
+
+void ViewProviderInventorMeshTransformDemolding::DragEndCallback(void)
+{
+  SbRotation rot = pcTrackballDragger->rotation.getValue();
+  calcMaterialIndex(rot);
+
+  Base::Console().Log("View: Finish draging\n");
+
 }
 
 void ViewProviderInventorMeshTransformDemolding::valueChangedCallback(void)
@@ -191,7 +204,7 @@ void ViewProviderInventorMeshTransformDemolding::valueChangedCallback(void)
   SbMatrix temp;
   SbRotation rot = pcTrackballDragger->rotation.getValue();
 
-  calcMaterialIndex(rot);
+  //calcMaterialIndex(rot);
 
   temp.setTransform( SbVec3f(0,0,0),    // no transformation
                      rot,               // rotation from the dragger

@@ -84,6 +84,9 @@ protected:
   static void sValueChangedCallback(void *, SoDragger *);
   void valueChangedCallback(void);
 
+  static void sDragEndCallback(void *, SoDragger *);
+  void DragEndCallback(void);
+
   SoTrackballDragger *pcTrackballDragger;
   SoTransform        *pcTransformDrag;
   SoMaterial         *pcColorMat;
