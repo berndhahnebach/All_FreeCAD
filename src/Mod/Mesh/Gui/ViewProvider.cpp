@@ -615,13 +615,10 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
               // append also the start facet
               faces.push_back(uIdx);
    
-              float fArea = 0.0f;
-              // Calculate the area of the facets inside the picked polygon
               aFaces.clear();
               for ( std::vector<unsigned long>::iterator it = faces.begin(); it != faces.end(); ++it )
               {
                 cFIt.Set(*it);
-                fArea += cFIt->Area();
                 aFaces.push_back( *cFIt );
               }
 
@@ -637,8 +634,6 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
                 fea->TouchProperty("Segment");
                 pDoc->Recompute();
               }
-
-              Base::Console().Message("Area of surface: %.2fmm²", fArea);
             }
             else
             {

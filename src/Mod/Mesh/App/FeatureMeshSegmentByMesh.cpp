@@ -34,6 +34,9 @@
 
 #include "Core/Algorithm.h"
 #include "Core/Evaluation.h"
+#include "Core/Iterator.h"
+#include "Core/Visitor.h"
+
 #include "FeatureMeshSegmentByMesh.h"
 
 
@@ -44,12 +47,28 @@ void FeatureMeshSegmentByMesh::initFeature(void)
 {
   addProperty("Link","Source");
   addProperty("Link","Tool");
+  addProperty("Float", "BaseX");
+  addProperty("Float", "BaseY");
+  addProperty("Float", "BaseZ");
+  addProperty("Float", "NormalX");
+  addProperty("Float", "NormalY");
+  addProperty("Float", "NormalZ");
 }
 
 int FeatureMeshSegmentByMesh::execute(TFunction_Logbook& log)
 {
   MeshFeature *pcMesh  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
   MeshFeature *pcTool  = dynamic_cast<MeshFeature*>(getPropertyLink("Tool"));
+
+  // the clipping plane
+  Vector3D cBase, cNormal;
+  cBase.x = (float)getPropertyFloat("BaseX");
+  cBase.y = (float)getPropertyFloat("BaseY");
+  cBase.z = (float)getPropertyFloat("BaseZ");
+  cNormal.x = (float)getPropertyFloat("NormalX");
+  cNormal.y = (float)getPropertyFloat("NormalY");
+  cNormal.z = (float)getPropertyFloat("NormalZ");
+
   if(!pcMesh || pcMesh->getStatus() != Valid || !pcTool || pcTool->getStatus() != Valid)
     return 1;
 
@@ -64,14 +83,55 @@ int FeatureMeshSegmentByMesh::execute(TFunction_Logbook& log)
     return 1; // no solid
 
   std::vector<unsigned long> faces;
+  std::vector<MeshGeomFacet> aFaces;
 
   MeshAlgorithm cAlg(rMeshKernel);
-  cAlg.GetFacetsFromToolMesh(rToolMesh, Vector3D(0.0, 1.0f, 0.0f), faces);
+  if ( cNormal.Length() > 0.1f ) // not a null vector
+    cAlg.GetFacetsFromToolMesh(rToolMesh, cNormal, faces);
+  else
+    cAlg.GetFacetsFromToolMesh(rToolMesh, Vector3D(0.0, 1.0f, 0.0f), faces);
 
-  std::vector<MeshGeomFacet> tria;
+  // if the clipping plane was set then we want only the visible facets
+  if ( cNormal.Length() > 0.1f ) // not a null vector
+  {
+    // now we have too many facets since we have (invisible) facets near to the back clipping plane, 
+    // so we need the nearest facet to the front clipping plane
+    //
+    float fDist = FLOAT_MAX;
+    unsigned long uIdx=ULONG_MAX;
+    MeshFacetIterator cFIt(rMeshKernel);
+
+    // get the nearest facet to the user (front clipping plane)
+    for ( std::vector<unsigned long>::iterator it = faces.begin(); it != faces.end(); ++it )
+    {
+      cFIt.Set(*it);
+      float dist = fabs(cFIt->GetGravityPoint().DistanceToPlane( cBase, cNormal ));
+      if ( dist < fDist )
+      {
+        fDist = dist;
+        uIdx = *it;
+      }
+    }
+
+    // succeeded
+    if ( uIdx != ULONG_MAX )
+    {
+      // set VISIT-Flag to all outer facets
+      cAlg.SetFacetFlag( MeshFacet::VISIT );
+      cAlg.ResetFacetsFlag(faces, MeshFacet::VISIT);
+
+      faces.clear();
+      MeshTopFacetVisitor clVisitor(faces);
+      rMeshKernel.VisitNeighbourFacets(clVisitor, uIdx);
+    
+      // append also the start facet
+      faces.push_back(uIdx);
+    }
+  }
+
   for ( std::vector<unsigned long>::iterator it = faces.begin(); it != faces.end(); ++it )
-    tria.push_back( rMeshKernel.GetFacet(*it) );
-  getMesh().getKernel()->operator = ( tria );
+    aFaces.push_back( rMeshKernel.GetFacet(*it) );
+  getMesh().getKernel()->operator = ( aFaces );
 
   return 0;
 }
