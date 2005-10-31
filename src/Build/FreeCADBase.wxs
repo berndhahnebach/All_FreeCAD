@@ -34,8 +34,7 @@
                       Arguments='-l' 
                       Description='FreeCAD the one and only open source CAD package' 
                       Icon="FreeCADIcon" IconIndex="0"
-                      WorkingDirectory="BinDir" 
-                      Advertise='yes'/>
+                      WorkingDirectory="BinDir"/>
            <Shortcut Id='FCShortcutDesk' 
                               Directory='DesktopFolder' 
                       Name='FreeCAD' 
@@ -43,8 +42,7 @@
                       Arguments='-l' 
                       Description='FreeCAD the one and only open source CAD package' 
                       Icon="FreeCADIcon" IconIndex="0"
-                      WorkingDirectory="BinDir" 
-                      Advertise='yes'/>
+                      WorkingDirectory="BinDir"/>
          </File>
          <File Id='CmdExe'   Name='FcCmd.exe'   LongName='FreeCADCmd.exe'  DiskId='1' >
            <Shortcut  Id='FCCmdShortcut' 
