@@ -695,6 +695,55 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   return processed || inherited::processSoEvent(ev);
 }
 
+Base::Vector3D View3DInventorViewer::getViewDirection() const
+{
+  SoCamera* pCam = getCamera();  
+  SbViewVolume  vol = pCam->getViewVolume (); 
+
+  // get the normal of the front clipping plane
+  SbPlane nearPlane = vol.getPlane( vol.nearDist );
+  SbVec3f n = nearPlane.getNormal();
+  float nx, ny, nz; n.getValue(nx, ny, nz);
+  float d = nearPlane.getDistanceFromOrigin();
+
+  Base::Vector3D viewDir(nx, ny, nz);
+  viewDir.Normalize();
+
+  return viewDir;
+}
+
+void View3DInventorViewer::getFrontClippingPlane( Base::Vector3D& rcPt, Base::Vector3D& rcNormal ) const
+{
+  SoCamera* pCam = getCamera();  
+  SbViewVolume  vol = pCam->getViewVolume (); 
+
+  // get the normal of the front clipping plane
+  SbPlane nearPlane = vol.getPlane( vol.nearDist );
+  SbVec3f n = nearPlane.getNormal();
+  float nx, ny, nz; n.getValue(nx, ny, nz);
+  float d = nearPlane.getDistanceFromOrigin();
+
+  rcNormal.Set(nx, ny, nz);
+  rcNormal.Normalize();
+  rcPt.Set(d*rcNormal.x, d*rcNormal.y, d*rcNormal.z);
+}
+
+void View3DInventorViewer::getBackClippingPlane( Base::Vector3D& rcPt, Base::Vector3D& rcNormal ) const
+{
+  SoCamera* pCam = getCamera();  
+  SbViewVolume  vol = pCam->getViewVolume (); 
+
+  // get the normal of the back clipping plane
+  SbPlane farPlane = vol.getPlane( vol.nearDist+vol.nearToFar );
+  SbVec3f n = farPlane.getNormal();
+  float nx, ny, nz; n.getValue(nx, ny, nz);
+  float d = farPlane.getDistanceFromOrigin();
+
+  rcNormal.Set(nx, ny, nz);
+  rcNormal.Normalize();
+  rcPt.Set(d*rcNormal.x, d*rcNormal.y, d*rcNormal.z);
+}
+
 bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm)
 {
  // attempting raypick in the event_cb() callback method

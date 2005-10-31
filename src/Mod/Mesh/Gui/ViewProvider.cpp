@@ -394,6 +394,90 @@ const char* ViewProviderInventorMesh::getEditModeName(void)
   return "Polygon picking";
 }
 
+bool ViewProviderInventorMesh::createToolMesh( const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces) const
+{
+  float fX, fY, fZ;
+  SbVec3f pt1, pt2, pt3, pt4;
+  MeshGeomFacet face;
+  std::vector<Vector3D> top, bottom;
+
+  for ( std::vector<SbVec2f>::const_iterator it = _clPoly.begin(); it != _clPoly.end(); ++it )
+  {
+    // the following element
+    std::vector<SbVec2f>::const_iterator nt = it + 1;
+    if ( nt == _clPoly.end() )
+      nt = _clPoly.begin();
+
+    vol.projectPointToLine( *it, pt1, pt2 );
+    vol.projectPointToLine( *nt, pt3, pt4 );
+
+    // 1st facet
+    pt1.getValue(fX, fY, fZ);
+    face._aclPoints[0].Set(fX, fY, fZ);
+    pt4.getValue(fX, fY, fZ);
+    face._aclPoints[1].Set(fX, fY, fZ);
+    pt3.getValue(fX, fY, fZ);
+    face._aclPoints[2].Set(fX, fY, fZ);
+    if ( face.Area() > 0 )
+      aFaces.push_back( face );
+
+    // 2nd facet
+    pt1.getValue(fX, fY, fZ);
+    face._aclPoints[0].Set(fX, fY, fZ);
+    pt2.getValue(fX, fY, fZ);
+    face._aclPoints[1].Set(fX, fY, fZ);
+    pt4.getValue(fX, fY, fZ);
+    face._aclPoints[2].Set(fX, fY, fZ);
+    if ( face.Area() > 0 )
+      aFaces.push_back( face );
+
+    if ( it+1 < _clPoly.end() )
+    {
+      pt1.getValue(fX, fY, fZ);
+      top.push_back( Vector3D(fX, fY, fZ) );
+      pt2.getValue(fX, fY, fZ);
+      bottom.push_back( Vector3D(fX, fY, fZ) );
+    }
+  }
+
+  bool ok=true;
+
+  // now create the lids
+  std::vector<MeshGeomFacet> aLid;
+  MeshPolygonTriangulation cTria;
+  cTria.setPolygon( top );
+  ok &= cTria.compute();
+  aLid = cTria.getFacets();
+
+  // front lid
+  for ( std::vector<MeshGeomFacet>::iterator itF1 = aLid.begin(); itF1 != aLid.end(); ++itF1 )
+  {
+    if ( itF1->GetNormal() * rcNormal < 0 )
+    {
+      std::swap( itF1->_aclPoints[1], itF1->_aclPoints[2]);
+      itF1->CalcNormal();
+    }
+    aFaces.push_back( *itF1 );
+  }
+
+  cTria.setPolygon( bottom );
+  ok &= cTria.compute();
+  aLid = cTria.getFacets();
+
+  // back lid
+  for ( std::vector<MeshGeomFacet>::iterator itF2 = aLid.begin(); itF2 != aLid.end(); ++itF2 )
+  {
+    if ( itF2->GetNormal() * rcNormal > 0 )
+    {
+      std::swap( itF2->_aclPoints[1], itF2->_aclPoints[2]);
+      itF2->CalcNormal();
+    }
+    aFaces.push_back( *itF2 );
+  }
+
+  return ok;
+}
+
 bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
 {
   if ( m_bEdit && !_mouseModel )
@@ -455,99 +539,15 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
           QMouseEvent e(QEvent::MouseButtonDblClick, QPoint(x,y), Qt::LeftButton, state);
           _mouseModel->mousePressEvent(&e);
 
+          // get the normal of the front clipping plane
+          Vector3D cPoint, cNormal;
+          Viewer.getFrontClippingPlane(cPoint, cNormal);
           SoCamera* pCam = Viewer.getCamera();  
           SbViewVolume  vol = pCam->getViewVolume (); 
 
-          // get the normal of the front clipping plane
-          SbPlane nearPlane = vol.getPlane( vol.nearDist );
-          SbVec3f n = nearPlane.getNormal();
-          float nx, ny, nz; n.getValue(nx, ny, nz);
-          float d = nearPlane.getDistanceFromOrigin();
-
-          Vector3D cNormal(nx, ny, nz);
-          cNormal.Normalize();
-          Vector3D cPoint(d*cNormal.x, d*cNormal.y, d*cNormal.z);
-
           // create a tool shape from these points
-          float fX, fY, fZ;
-          SbVec3f pt1, pt2, pt3, pt4;
-          MeshGeomFacet face;
           std::vector<MeshGeomFacet> aFaces;
-
-          std::vector<Vector3D> top, bottom;
-          for ( std::vector<SbVec2f>::iterator it = _clPoly.begin(); it != _clPoly.end(); ++it )
-          {
-            // the following element
-            std::vector<SbVec2f>::iterator nt = it + 1;
-            if ( nt == _clPoly.end() )
-              nt = _clPoly.begin();
-
-            vol.projectPointToLine( *it, pt1, pt2 );
-            vol.projectPointToLine( *nt, pt3, pt4 );
-
-            // 1st facet
-            pt1.getValue(fX, fY, fZ);
-            face._aclPoints[0].Set(fX, fY, fZ);
-            pt4.getValue(fX, fY, fZ);
-            face._aclPoints[1].Set(fX, fY, fZ);
-            pt3.getValue(fX, fY, fZ);
-            face._aclPoints[2].Set(fX, fY, fZ);
-            if ( face.Area() > 0 )
-              aFaces.push_back( face );
-
-            // 2nd facet
-            pt1.getValue(fX, fY, fZ);
-            face._aclPoints[0].Set(fX, fY, fZ);
-            pt2.getValue(fX, fY, fZ);
-            face._aclPoints[1].Set(fX, fY, fZ);
-            pt4.getValue(fX, fY, fZ);
-            face._aclPoints[2].Set(fX, fY, fZ);
-            if ( face.Area() > 0 )
-              aFaces.push_back( face );
-
-            if ( it+1 < _clPoly.end() )
-            {
-              pt1.getValue(fX, fY, fZ);
-              top.push_back( Vector3D(fX, fY, fZ) );
-              pt2.getValue(fX, fY, fZ);
-              bottom.push_back( Vector3D(fX, fY, fZ) );
-            }
-          }
-
-          bool ok=true;
-
-          // now create the lids
-          std::vector<MeshGeomFacet> aLid;
-          MeshPolygonTriangulation cTria;
-          cTria.setPolygon( top );
-          ok &= cTria.compute();
-          aLid = cTria.getFacets();
-
-          // front lid
-          for ( std::vector<MeshGeomFacet>::iterator itF1 = aLid.begin(); itF1 != aLid.end(); ++itF1 )
-          {
-            if ( itF1->GetNormal() * cNormal < 0 )
-            {
-              std::swap( itF1->_aclPoints[1], itF1->_aclPoints[2]);
-              itF1->CalcNormal();
-            }
-            aFaces.push_back( *itF1 );
-          }
-
-          cTria.setPolygon( bottom );
-          ok &= cTria.compute();
-          aLid = cTria.getFacets();
-
-          // back lid
-          for ( std::vector<MeshGeomFacet>::iterator itF2 = aLid.begin(); itF2 != aLid.end(); ++itF2 )
-          {
-            if ( itF2->GetNormal() * cNormal > 0 )
-            {
-              std::swap( itF2->_aclPoints[1], itF2->_aclPoints[2]);
-              itF2->CalcNormal();
-            }
-            aFaces.push_back( *itF2 );
-          }
+          bool ok = createToolMesh( vol, cNormal, aFaces );
 
           MeshKernel cToolMesh;
           cToolMesh = aFaces;
@@ -564,6 +564,7 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
           if ( fea )
           {
             // replace the mesh from feature
+            fea->setSolidTransparency( 0.5f );
             fea->addProperty("String", "Toolmesh");
             fea->getMesh().getKernel()->MeshKernel::operator =( aFaces );
             fea->TouchProperty("Toolmesh");

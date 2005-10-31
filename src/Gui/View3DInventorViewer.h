@@ -29,7 +29,8 @@
 # include <stack>
 #endif
 
-#include "Inventor/Qt/viewers/SoQtViewer.h"
+#include <Base/Vector3D.h>
+#include <Inventor/Qt/viewers/SoQtViewer.h>
 
 
 class SoSeparator;
@@ -63,6 +64,19 @@ public:
  
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
+
+  /** @name Clipping plane
+   */
+  //@{
+  /** Returns the view direction from the viewport in direction to the user's eye point which is actually the normal of the front clipping plane. The vector
+   * is normalized to length of 1.
+   */
+  Base::Vector3D getViewDirection() const;
+  /** Returns the front clipping plane represented by its normal and base point. */
+  void getFrontClippingPlane( Base::Vector3D& rcPt, Base::Vector3D& rcNormal ) const;
+  /** Returns the back clipping plane represented by its normal and base point. */
+  void getBackClippingPlane( Base::Vector3D& rcPt, Base::Vector3D& rcNormal ) const;
+  //@}
 
   /** @name Modus handling of the viewer
     * Here the you can switch on/off several features

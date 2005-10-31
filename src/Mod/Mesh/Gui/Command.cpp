@@ -132,7 +132,7 @@ void CmdMeshExMakeMesh::activated(int iMsg)
 
   doCommand(Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFit\")");
   commitCommand();
- 
+
   updateActive();
 }
 
@@ -332,9 +332,9 @@ CmdMeshPolyPick::CmdMeshPolyPick()
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Surface info");
-  sToolTipText  = QT_TR_NOOP("Creates a segmentfrom a picked polygon");
-  sWhatsThis    = QT_TR_NOOP("Creates a segmentfrom a picked polygon");
-  sStatusTip    = QT_TR_NOOP("Creates a segmentfrom a picked polygon");
+  sToolTipText  = QT_TR_NOOP("Creates a segment from a picked polygon");
+  sWhatsThis    = QT_TR_NOOP("Creates a segment from a picked polygon");
+  sStatusTip    = QT_TR_NOOP("Creates a segment from a picked polygon");
   sPixmap       = "PolygonPick";
 }
 
@@ -354,6 +354,58 @@ bool CmdMeshPolyPick::isActive(void)
   return (getSelection().getNbrOfType("Mesh")==1);
 }
 
+DEF_STD_CMD_A(CmdMeshToolMesh);
+
+CmdMeshToolMesh::CmdMeshToolMesh()
+  :CppCommand("Mesh_ToolMesh")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Segment by tool mesh");
+  sToolTipText  = QT_TR_NOOP("Creates a segment from a given tool mesh");
+  sWhatsThis    = QT_TR_NOOP("Creates a segment from a given tool mesh");
+  sStatusTip    = QT_TR_NOOP("Creates a segment from a given tool mesh");
+  sPixmap       = "Std_Tool4";
+}
+
+void CmdMeshToolMesh::activated(int iMsg)
+{
+  std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
+  if ( fea.size() == 2 )
+  {
+    std::string fName = getUniqueFeatureName("MeshSegment");
+    App::Feature* mesh = fea.front();
+    App::Feature* tool = fea.back();
+
+    openCommand("Segment by tool mesh");
+    doCommand(Doc,
+      "import Mesh,MeshGui\n"
+      "App.DocGet().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
+      "App.DocGet().%s.Source = App.DocGet().%s\n"
+      "App.DocGet().%s.Tool = App.DocGet().%s\n",
+      fName.c_str(), fName.c_str(),  mesh->getName(), fName.c_str(), tool->getName() );
+
+    commitCommand();
+    updateActive();
+
+    App::Document* pDoc = getDocument();
+    App::Feature * pFea = pDoc->getFeature( fName.c_str() );
+
+    if ( pFea && pFea->isValid() )
+    {
+      doCommand(Gui,"Gui.hide(\"%s\")", mesh->getName());
+      doCommand(Gui,"Gui.hide(\"%s\")", tool->getName());
+      getSelection().clearSelection();
+    }
+  }
+}
+
+bool CmdMeshToolMesh::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return (getSelection().getNbrOfType("Mesh")==2);
+}
+
 void CreateMeshCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -364,4 +416,5 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshExMakeUnion());
   rcCmdMgr.addCommand(new CmdMeshDemoding());
   rcCmdMgr.addCommand(new CmdMeshPolyPick());
+  rcCmdMgr.addCommand(new CmdMeshToolMesh());
 }

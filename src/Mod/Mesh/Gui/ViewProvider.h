@@ -30,6 +30,7 @@
 # include <Inventor/fields/SoSFVec2f.h>
 #endif
 
+#include "../App/Core/Elements.h"
 #include <Gui/ViewProviderFeature.h>
 
 
@@ -43,6 +44,7 @@ class SoFaceSet;
 class SoPath;
 class SoLocateHighlight;
 class SoEventCallback;
+class SbViewVolume;
 class QMouseEvent;
 class QWheelEvent;
 class QKeyEvent;
@@ -59,6 +61,7 @@ namespace Mesh {
   class MeshWithProperty;
   class MeshPropertyColor;
 }
+
 
 namespace MeshGui {
 
@@ -98,6 +101,8 @@ public:
 protected:
   /// helper methode to build up the FaceSet
   void createMesh(Mesh::MeshWithProperty *pcMesh);
+  /// Creates a tool mesh from the previous picked polygon on the viewer
+  bool createToolMesh( const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& ) const;
 
 protected:
   SoCoordinate3     *pcMeshCoord;

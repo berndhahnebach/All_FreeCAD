@@ -253,6 +253,11 @@ public:
    */ 
   void SearchForComponents(TMode tMode, std::vector<std::vector<unsigned long> >& aclT) const;
 
+  /**
+   * Does basically the same as the method above escept that only the faces in \a aSegment are regarded.
+   */
+  void SearchForComponents(TMode tMode, const std::vector<unsigned long>& aSegment, std::vector<std::vector<unsigned long> >& aclT) const;
+
 protected:
   // for sorting of elements
   struct CNofFacetsCompare : public std::binary_function<const std::vector<unsigned long>&, 

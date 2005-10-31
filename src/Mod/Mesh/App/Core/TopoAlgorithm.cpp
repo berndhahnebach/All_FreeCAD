@@ -1027,14 +1027,23 @@ MeshComponents::~MeshComponents()
 
 void MeshComponents::SearchForComponents(TMode tMode, std::vector<std::vector<unsigned long> >& aclT) const
 {
-  // reset flag
-  MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
-
   // all facets
   std::vector<unsigned long> aulAllFacets(_rclMesh.CountFacets());
   unsigned long k = 0;
   for (std::vector<unsigned long>::iterator pI = aulAllFacets.begin(); pI != aulAllFacets.end(); pI++)
     *pI = k++;
+
+  SearchForComponents( tMode, aulAllFacets, aclT );
+}
+
+void MeshComponents::SearchForComponents(TMode tMode, const std::vector<unsigned long>& aSegment, std::vector<std::vector<unsigned long> >& aclT) const
+{
+  // reset flag
+  MeshAlgorithm(_rclMesh).SetFacetFlag(MeshFacet::VISIT);
+  MeshAlgorithm(_rclMesh).ResetFacetsFlag(aSegment, MeshFacet::VISIT);
+
+  // all facets
+  std::vector<unsigned long> aulAllFacets = aSegment;
 
   std::vector<std::vector<unsigned long> > aclConnectComp;
   while (aulAllFacets.size() > 0)

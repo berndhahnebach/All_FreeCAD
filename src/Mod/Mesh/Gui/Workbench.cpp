@@ -48,7 +48,8 @@ Gui::MenuItem* Workbench::setupMenuBar() const
   Gui::MenuItem* mesh = new Gui::MenuItem;
   root->insertItem( item, mesh );
   mesh->setCommand( "&Mesh" );
-  *mesh << "Mesh_Import" << "Mesh_PolyPick" << "Mesh_VertexCurvature" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion"; 
+  *mesh << "Mesh_Import" << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature" << "Separator" 
+        << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion"; 
   return root;
 }
 
