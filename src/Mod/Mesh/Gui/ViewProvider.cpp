@@ -56,9 +56,11 @@
 #include <App/Document.h>
 
 #include <Gui/Application.h>
+#include <Gui/Command.h>
 #include <Gui/Document.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/MainWindow.h>
+#include <Gui/MouseModel.h>
 #include <Gui/Selection.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
@@ -101,14 +103,6 @@ ViewProviderInventorMesh::ViewProviderInventorMesh() : _mouseModel(0), m_bEdit(f
   pcMeshFaces->ref();
   pcHighlight = new Gui::SoFCSelection();
   pcHighlight->ref();
-
-#ifdef _PICKTEST_
-  _pickpoints = new SoCoordinate3;
-  _pickpoints->ref();
-  _pickpoints->point.deleteValues(0);
-  _polylines = new SoLineSet;
-  _polylines->ref();
-#endif
 }
 
 ViewProviderInventorMesh::~ViewProviderInventorMesh()
@@ -117,10 +111,6 @@ ViewProviderInventorMesh::~ViewProviderInventorMesh()
 //  pcMeshNormal->unref();
   pcMeshFaces->unref();
   pcHighlight->unref();
-#ifdef _PICKTEST_
-  _pickpoints->unref();
-  _polylines->unref();
-#endif
 }
 
 void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
@@ -297,54 +287,6 @@ void ViewProviderInventorMesh::attach(App::Feature *pcFeat)
   pcModeSwitch->addChild(pcWireRoot);
   pcModeSwitch->addChild(pcPointRoot);
   pcModeSwitch->addChild(pcFlatWireRoot);
-
-#ifdef _PICKTEST_
-  // color shaded  ------------------------------------------
-  SoDrawStyle *pcFlatStyle = new SoDrawStyle();
-  pcFlatStyle->style = SoDrawStyle::FILLED;
-
-  SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
-  pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
-
-  SoGroup* pcColorShadedRoot = new SoGroup();
-  pcColorShadedRoot->addChild(pcFlatStyle);
-  pcColorShadedRoot->addChild(pcColorMat);
-  pcColorShadedRoot->addChild(pcMatBinding);
-  pcColorShadedRoot->addChild(pcHighlight);
-
-#if 0
-  SoSeparator * picksep = new SoSeparator;
-  SoPickStyle * pickstyle = new SoPickStyle;
-  pickstyle->style = SoPickStyle::UNPICKABLE;
-  picksep->addChild(pickstyle);
-
-  SoDrawStyle * drawstyle = new SoDrawStyle;
-  drawstyle->pointSize = 3;
-  drawstyle->lineWidth = 3;
-  picksep->addChild(drawstyle);
-
-  // container for picked points
-  picksep->addChild(_pickpoints);
-
-  SoMaterial* pMaterial = new SoMaterial();
-//  pcSoMat->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
-  pMaterial->diffuseColor.setValue(1.0f,1.0f,1.0f);
-//  pcSoMat->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
-//  pcSoMat->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
-//  pcSoMat->shininess.setValue(Mat.shininess);
-//  pcSoMat->transparency.setValue(Mat.transparency);
-  picksep->addChild(pMaterial);
-  picksep->addChild(new SoPointSet);
-  picksep->addChild(_polylines);
-  pcColorShadedRoot->addChild(picksep);
-
-  SoEventCallback * ecb = new SoEventCallback;
-  ecb->addEventCallback(SoMouseButtonEvent::getClassTypeId(), eventCallback, this);
-  pcColorShadedRoot->addChild(ecb);
-#endif
-
-  pcModeSwitch->addChild(pcColorShadedRoot);
-#endif // _PICKTEST_
 }
 
 void ViewProviderInventorMesh::updateData(void)
@@ -353,7 +295,6 @@ void ViewProviderInventorMesh::updateData(void)
   MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
   createMesh(&(meshFea->getMesh()));
 }
-
 
 vector<string> ViewProviderInventorMesh::getModes(void)
 {
@@ -365,9 +306,6 @@ vector<string> ViewProviderInventorMesh::getModes(void)
   StrList.push_back("Wire");
   StrList.push_back("Point");
   StrList.push_back("FlatWire");
-#ifdef _PICKTEST_
-  StrList.push_back("Polygon picking");
-#endif
 
   return StrList;
 }
@@ -482,7 +420,7 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
 {
   if ( m_bEdit && !_mouseModel )
   {
-    _mouseModel = new PolyPickerMouseModel();
+    _mouseModel = new Gui::PolyPickerMouseModel();
     _mouseModel->grabMouseModel(&Viewer);
     _clPoly.clear();
   }
@@ -549,99 +487,68 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
           std::vector<MeshGeomFacet> aFaces;
           bool ok = createToolMesh( vol, cNormal, aFaces );
 
-          MeshKernel cToolMesh;
-          cToolMesh = aFaces;
-
-          if ( !ok )
-            QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
-
-#ifdef FC_DEBUG
-          {
-          // create a mesh feature and append it to the document
           Gui::Document* pGDoc = Gui::Application::Instance->activeDocument();
           App::Document* pDoc = pGDoc->getDocument();
-          Mesh::MeshFeature* fea = dynamic_cast<Mesh::MeshFeature*>(pDoc->addFeature("Mesh", "Toolmesh"));
-          if ( fea )
-          {
-            // replace the mesh from feature
-            fea->setSolidTransparency( 0.5f );
-            fea->addProperty("String", "Toolmesh");
-            fea->getMesh().getKernel()->MeshKernel::operator =( aFaces );
-            fea->TouchProperty("Toolmesh");
-            pDoc->Recompute();
-          }
-          }
+
+          pGDoc->openCommand("Poly pick");
+          Gui::Command::doCommand(Gui::Command::Doc, "import Mesh\n");
+          Gui::Command::doCommand(Gui::Command::Gui, "import MeshGui\n");
+
+          // create a mesh feature and append it to the document
+          std::string fTool = pDoc->getUniqueFeatureName("Toolmesh");
+          Gui::Command::doCommand(Gui::Command::Doc, "App.DocGet().AddFeature(\"Mesh\", \"%s\")\n", fTool.c_str());
+
+          // replace the mesh from feature
+#ifdef FC_DEBUG
+          Gui::Command::doCommand(Gui::Command::Gui, "App.DocGet().%s.shadedMaterial.transparency = 0.7\n", fTool.c_str());
 #endif
-          std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
-          if ( fea.size() == 1 && dynamic_cast<MeshFeature*>(fea.front()))
+          Gui::Command::doCommand(Gui::Command::Doc, "m=App.DocGet().GetFeature(\"%s\").getMesh()\n", fTool.c_str());
+          for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
           {
-            std::vector<unsigned long> faces;
-            MeshKernel* rcMesh = dynamic_cast<MeshFeature*>(fea.front())->getMesh().getKernel();
-
-            // get all facets inside the tool mesh
-            MeshAlgorithm cAlgo(*rcMesh);
-            cAlgo.GetFacetsFromToolMesh( cToolMesh, cNormal, faces );
-
-            // now we have too many facets since we have (invisible) facets near to the back clipping plane, 
-            // so we need the nearest facet to the front clipping plane
-            //
-            float fDist = FLOAT_MAX;
-            unsigned long uIdx=ULONG_MAX;
-            MeshFacetIterator cFIt(*rcMesh);
-
-            // get the nearest facet to the user (front clipping plane)
-            for ( std::vector<unsigned long>::iterator it = faces.begin(); it != faces.end(); ++it )
-            {
-              cFIt.Set(*it);
-              float dist = fabs(cFIt->GetGravityPoint().DistanceToPlane( cPoint, cNormal ));
-              if ( dist < fDist )
-              {
-                fDist = dist;
-                uIdx = *it;
-              }
-            }
-
-            // succeeded
-            if ( uIdx != ULONG_MAX )
-            {
-              // set VISIT-Flag to all outer facets
-              cAlgo.SetFacetFlag( MeshFacet::VISIT );
-              cAlgo.ResetFacetsFlag(faces, MeshFacet::VISIT);
-
-              faces.clear();
-              MeshTopFacetVisitor clVisitor(faces);
-              rcMesh->VisitNeighbourFacets(clVisitor, uIdx);
-              
-              // append also the start facet
-              faces.push_back(uIdx);
-   
-              aFaces.clear();
-              for ( std::vector<unsigned long>::iterator it = faces.begin(); it != faces.end(); ++it )
-              {
-                cFIt.Set(*it);
-                aFaces.push_back( *cFIt );
-              }
-
-              // create a mesh feature and append it to the document
-              Gui::Document* pGDoc = Gui::Application::Instance->activeDocument();
-              App::Document* pDoc = pGDoc->getDocument();
-              Mesh::MeshFeature* fea = dynamic_cast<Mesh::MeshFeature*>(pDoc->addFeature("Mesh", "Segment"));
-              if ( fea )
-              {
-                // replace the mesh from feature
-                fea->addProperty("String", "Segment");
-                fea->getMesh().getKernel()->MeshKernel::operator =( aFaces );
-                fea->TouchProperty("Segment");
-                pDoc->Recompute();
-              }
-            }
-            else
-            {
-              QMessageBox::warning( Viewer.getWidget(), "No facets found", "Sorry, couldn't find any facets inside the picked polygon area." );
-            }
+            Gui::Command::doCommand(Gui::Command::Doc, "m.addFacet(%.6f,%.6f,%.6f, %.6f,%.6f,%.6f, %.6f,%.6f,%.6f)",
+              itF->_aclPoints[0].x, itF->_aclPoints[0].y, itF->_aclPoints[0].z,
+              itF->_aclPoints[1].x, itF->_aclPoints[1].y, itF->_aclPoints[1].z,
+              itF->_aclPoints[2].x, itF->_aclPoints[2].y, itF->_aclPoints[2].z);
           }
+
+          Gui::Command::doCommand(Gui::Command::Doc, "App.DocGet().Recompute()\n");
+
+#ifndef FC_DEBUG
+          Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
+#endif
+
+          // now intersect with each selected mesh feature
+          std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
+
+          for ( std::vector<App::Feature*>::iterator it = fea.begin(); it != fea.end(); ++it )
+          {
+            // check type
+            std::string fName = pDoc->getUniqueFeatureName("MeshSegment");
+            MeshFeature* meshFeature = dynamic_cast<MeshFeature*>(*it);
+            if ( !meshFeature ) continue; // no mesh
+
+            Gui::Command::doCommand(Gui::Command::Doc,
+                "f = App.DocGet().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
+                "f.Source   = App.DocGet().%s\n"
+                "f.Tool     = App.DocGet().%s\n"
+                "f.BaseX    = %.6f\n"
+                "f.BaseY    = %.6f\n"
+                "f.BaseZ    = %.6f\n"
+                "f.NormalX  = %.6f\n"
+                "f.NormalY  = %.6f\n"
+                "f.NormalZ  = %.6f\n"
+                , fName.c_str(),  meshFeature->getName(), fTool.c_str(), 
+                  cPoint.x, cPoint.y, cPoint.z, cNormal.x, cNormal.y, cNormal.z );
+          }
+
+          pGDoc->commitCommand();
+          pDoc->Recompute();
 
           unsetEdit();
+
+          if ( !ok ) // note: the mouse grabbing needs to be released
+            QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
+
           return true;
         }
 
@@ -738,460 +645,4 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
   }
 
   return false;
-}
-
-#ifdef _PICKTEST_
-// Calculates azimuth angle for the "directionvec" input argument. An
-// azimuth angle is the angle of a vector versus the direction of
-// compass north, where 0° means the input vector points straight
-// north, 90° is east, 180° south and 270° is west.
-float ViewProviderInventorMesh::calcAzimuthAngle(SbVec3f north, SbVec3f east, SbVec3f directionvec)
-{
-  // Make compass plane.
-  SbPlane compassplane(SbVec3f(0, 0, 0), north, east);
-
-  // Project input vector into the compass plane.
-  float dist2plane = directionvec.dot(compassplane.getNormal()) - compassplane.getDistanceFromOrigin();
-  directionvec = directionvec - (compassplane.getNormal() * dist2plane);
-
-  // Find absolute angle in the [0, PI] range versus the north vector.
-  directionvec.normalize();
-  north.normalize();
-  float angle = acos(north.dot(directionvec));
-
-  // Check if the input argument vector is pointing to the "west side"
-  // of the north-south axis, and if so, correct the absolute angle.
-  if (directionvec.dot(east) < 0.0f) { angle = M_PI + (M_PI - angle); }
-
-  return angle;
-}
-
-// Calculates elevation angle of the "directionvec" argument versus
-// the given ground plane. The angle returned is in the range [0,PI/2]
-// for a vector pointing "up" versus the plane, and in the range
-// <0,-PI/2] for a vector pointing into the ground (ie in the opposite
-// direction of the ground plane's normal vector).
-float ViewProviderInventorMesh::calcElevationAngle(SbPlane groundplane, SbVec3f directionvec)
-{
-  // Project input vector into a mirrored vector in the ground plane.
-  float dist2plane = directionvec.dot(groundplane.getNormal()) - groundplane.getDistanceFromOrigin();
-  SbVec3f groundvec = directionvec - (groundplane.getNormal() * dist2plane);
-
-  // Find absolute angle in the [0, PI/2] range versus the projected
-  // groundplane vector.
-  directionvec.normalize();
-  groundvec.normalize();
-  float angle = acos(groundvec.dot(directionvec));
-
-  // Check if the input argument vector is pointing into the ground,
-  // and if so, correct the absolute angle.
-  SbVec3f n = groundplane.getNormal();
-  n.normalize();
-  if (directionvec.dot(n) < 0.0f) { angle = -angle; }
-
-  return angle;
-}
-
-void ViewProviderInventorMesh::eventCallback(void * ud, SoEventCallback * n)
-{
-  const SoMouseButtonEvent * mbe = (SoMouseButtonEvent *)n->getEvent();
-
-  if (mbe->getButton() == SoMouseButtonEvent::BUTTON1 &&
-      mbe->getState() == SoButtonEvent::DOWN) {
-    SoQtViewer* viewer = 0;
-    Gui::View3DInventor* viewIv = dynamic_cast<Gui::View3DInventor*>(Gui::getMainWindow()->activeWindow());
-    if ( viewIv )
-      viewer = viewIv->getViewer();
-    else
-      return; // not a viewer
-
-    ViewProviderInventorMesh* that = reinterpret_cast<ViewProviderInventorMesh*>(ud);
-
-    SoRayPickAction rp(viewer->getViewportRegion());
-    rp.setPoint(mbe->getPosition());
-    rp.apply(viewer->getSceneManager()->getSceneGraph());
-
-    SoPickedPoint * point = rp.getPickedPoint();
-    if (point == NULL) {
-//      Base::Console().Log("\n** miss! **\n\n");
-      return;
-    }
-
-    n->setHandled();
-
-    Base::Console().Message("\n");
-
-    SbVec3f v = point->getPoint();
-    SbVec3f nv = point->getNormal();
-
-    // Adds a point marker to the picked point.
-    const int idx = that->_pickpoints->point.getNum();
-    that->_pickpoints->point.set1Value(idx, v);
-    that->_polylines->numVertices.set1Value(0,idx+1);
-
-    Base::Console().Message("point (%d)=<%f, %f, %f>, normvec=<%f, %f, %f>\n", idx, v[0], v[1], v[2], nv[0], nv[1], nv[2]);
-
-    const SoCamera * camera = viewer->getCamera();
-    SbVec3f camerapos = viewer->getCamera()->position.getValue();
-    SbVec3f hitvec = v - camerapos;
-    Base::Console().Message("hitvec=<%f, %f, %f>\n", hitvec[0], hitvec[1], hitvec[2]);
-
-    // Find and print the azimuth angle of the vector from the camera
-    // position to the point that was picked.
-    const SbVec3f NORTH(0, 0, -1);
-    const SbVec3f EAST(1, 0, 0);
-    float azimuth = calcAzimuthAngle(NORTH, EAST, hitvec);
-    Base::Console().Message("Azimuth angle: %f\n", azimuth * 180.0f / M_PI);
-
-    // Find and print the elevation angle of the vector from the
-    // camera position to the point that was picked.
-    const SbPlane GROUNDPLANE(SbVec3f(0, 1, 0), 0);
-    float elevation = calcElevationAngle(GROUNDPLANE, hitvec);
-    Base::Console().Message("Elevation angle: %f\n", elevation * 180.0f / M_PI);
-  }
-}
-#endif // _PICKTEST_
-
-// ----------------------------------------------------------------------------
-
-#ifndef _PreComp_
-# include <assert.h>
-# include <stack>
-# include <vector>
-# include <qapplication.h>
-# include <qcursor.h>
-# include <qevent.h>
-# include <qpainter.h>
-# include <qpixmap.h>
-# include <qvbox.h>
-#endif
-
-#include <Base/Console.h>
-#include <Gui/View3DInventor.h>
-#include <Gui/View3DInventorViewer.h>
-
-using namespace Gui; 
-
-AbstractMouseModel::AbstractMouseModel() : _pcView3D(0)
-{
-}
-
-void AbstractMouseModel::grabMouseModel(Gui::View3DInventorViewer* viewer)
-{
-  _pcView3D=viewer;
-  m_cPrevCursor = _pcView3D->getWidget()->cursor();
-
-  // do initialization of your mousemodel
-  initialize();
-}
-
-void AbstractMouseModel::releaseMouseModel()
-{
-  // do termination of your mousemodel
-  terminate();
-
-  _pcView3D->getWidget()->setCursor(m_cPrevCursor);
-  _pcView3D = 0;
-}
-
-void AbstractMouseModel::mouseMoveEvent (QMouseEvent *cEvent)
-{
-  // do all the drawing stuff for us
-  QPoint clPoint = cEvent->pos();
-  draw();
-  m_iXnew = clPoint.x(); 
-  m_iYnew = clPoint.y();
-  draw();
-}
-
-void AbstractMouseModel::wheelMouseEvent (QWheelEvent *cEvent)
-{
-  // do all the drawing stuff for us
-  //QPoint clPoint = cEvent->pos();
-  draw();
-  wheelEvent(cEvent);
-  draw();
-}
-
-void AbstractMouseModel::mousePressEvent(QMouseEvent* cEvent)
-{
-  if ( cEvent->type() == QEvent::MouseButtonDblClick )
-  {
-    mouseDoubleClickEvent(cEvent);
-    return;
-  }
-
-  switch (cEvent->button())
-  {
-    case Qt::LeftButton:
-      mouseLeftPressEvent(cEvent);
-      draw();
-      break;
-    case Qt::MidButton:
-      mouseMiddlePressEvent(cEvent);
-      break;
-    case Qt::RightButton:
-      mouseRightPressEvent(cEvent);
-      break;
-    default:
-      break;
-  };
-}
-
-void AbstractMouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
-{
-  switch (cEvent->button())
-  {
-    case Qt::LeftButton:
-      draw();
-      mouseLeftReleaseEvent(cEvent);
-      break;
-    case Qt::MidButton:
-      mouseMiddleReleaseEvent(cEvent);
-      break;
-    case Qt::RightButton:
-      mouseRightReleaseEvent(cEvent);
-      break;
-    default:
-      break;
-  };
-}
-
-// **** BaseMouseModel ********************************************************
-
-BaseMouseModel::BaseMouseModel()
-  :AbstractMouseModel()
-{
-}
-
-// -----------------------------------------------------------------------------------
-
-PolyPickerMouseModel::PolyPickerMouseModel() 
-{
-  m_iRadius    = 2;
-  m_iNodes     = 0;
-  m_bWorking   = false;
-  m_bDrawNodes = true;
-}
-
-void PolyPickerMouseModel::initialize()
-{
-  _pcView3D->getWidget()->setCursor(QCursor(QCursor::CrossCursor));
-}
-
-void PolyPickerMouseModel::terminate()
-{
-}
-
-void PolyPickerMouseModel::draw ()
-{
-  if ( m_bWorking )
-  {
-    if (m_iNodes < int(_cNodeVector.size()))
-    {
-      m_iNodes = int(_cNodeVector.size());
-      // drawing the point
-      if (m_bDrawNodes == true)
-      {
-        _pcView3D->drawNode(m_iXnew-m_iRadius,m_iYnew-m_iRadius,2*m_iRadius,2*m_iRadius);
-      }
-
-      if ( _cNodeVector.size() > 2 )
-      {
-        QPoint start = _cNodeVector.front();
-        _pcView3D->drawLine(m_iXnew,m_iYnew,start.x(), start.y() );
-      }
-    }
-    else
-    {
-      _pcView3D->drawLine(m_iXnew,m_iYnew,m_iXold,m_iYold );
-      if ( _cNodeVector.size() > 1 )
-      {
-        QPoint start = _cNodeVector.front();
-        _pcView3D->drawLine(m_iXnew,m_iYnew,start.x(), start.y() );
-      }
-    }
-  }
-}
-
-PolyPickerMouseModel::~PolyPickerMouseModel()
-{
-}
-
-void PolyPickerMouseModel::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
-{
-  QPoint point = cEvent->pos();
-
-  // start working from now on
-  if ( !m_bWorking )    
-  {
-    m_bWorking = true;
-    // clear the old polygon
-    _cNodeVector.clear();
-    _pcView3D->getGLWidget()->update();
-  }
-
-  _cNodeVector.push_back(point);
-
-  m_iXnew = point.x();  m_iYnew = point.y();
-  m_iXold = point.x();  m_iYold = point.y();
-}
-
-void PolyPickerMouseModel::mouseMiddlePressEvent	 ( QMouseEvent *cEvent)
-{
-}
-
-void PolyPickerMouseModel::mouseRightPressEvent		 ( QMouseEvent *cEvent)
-{
-}
-
-void PolyPickerMouseModel::wheelEvent ( QWheelEvent * e)
-{
-  // do nothing
-}
-
-void PolyPickerMouseModel::keyPressEvent ( QKeyEvent * e)
-{
-  switch (e->key())
-  {
-    case Qt::Key_Escape:
-//      _pcView3D->popMouseModel();
-      break;
-    default:
-      BaseMouseModel::keyPressEvent(e);
-      break;
-  }
-}
-
-void PolyPickerMouseModel::mouseDoubleClickEvent	 ( QMouseEvent *cEvent)
-{
-  if( m_bWorking )
-  {
-    m_bWorking = false;
-  }
-
-//  _pcView3D->popMouseModel();
-}
-
-// -----------------------------------------------------------------------------------
-
-SelectionMouseModel::SelectionMouseModel()
-{
-  m_bWorking = false;
-}
-
-SelectionMouseModel::~SelectionMouseModel()
-{
-}
-
-void SelectionMouseModel::initialize()
-{
-}
-
-void SelectionMouseModel::terminate()
-{
-}
-
-void SelectionMouseModel::draw ()
-{
-  if (m_bWorking)
-    _pcView3D->drawRect( m_iXold, m_iYold, m_iXnew, m_iYnew );
-}
-
-void SelectionMouseModel::mouseLeftPressEvent		 ( QMouseEvent *cEvent)
-{
-  m_bWorking = true;
-  QPoint p = cEvent->pos();
-  m_iXold = m_iXnew = p.x(); 
-  m_iYold = m_iYnew = p.y();
-}
-
-void SelectionMouseModel::mouseLeftReleaseEvent	 ( QMouseEvent *cEvent)
-{
-  m_bWorking = false;
-}
-
-// -----------------------------------------------------------------------------------
-
-/* XPM */
-static const char *xpm_cursor[]={
-"32 32 2 1",
-". c None",
-"# c #ffffff",
-"................................",
-"................................",
-"................................",
-"................................",
-".............######.............",
-"..........###......###..........",
-".........#............#.........",
-".......##..............##.......",
-"......#..................#......",
-".....#....................#.....",
-".....#....................#.....",
-"....#......................#....",
-"....#......................#....",
-"....#......................#....",
-"...#........................#...",
-"...#...........##...........#...",
-"...#...........##...........#...",
-"...#........................#...",
-"....#......................#....",
-"....#......................#....",
-"....#......................#....",
-".....#....................#.....",
-".....#....................#.....",
-"......#..................#......",
-".......##..............##.......",
-".........#............#.........",
-"..........###......###..........",
-".............######.............",
-"................................",
-"................................",
-"................................",
-"................................"};
-
-CirclePickerMouseModel::CirclePickerMouseModel()
-: _nRadius(50)
-{
-  QPoint p = QCursor::pos();
-  m_iXnew = p.x(); 
-  m_iYnew = p.y();
-}
-
-CirclePickerMouseModel::~CirclePickerMouseModel()
-{
-}
-
-void CirclePickerMouseModel::initialize()
-{
-  QPixmap p(xpm_cursor);
-  QCursor cursor( p );
-  _pcView3D->getWidget()->setCursor(cursor);
-}
-
-void CirclePickerMouseModel::terminate()
-{
-  draw();
-}
-
-void CirclePickerMouseModel::draw ()
-{
-  char szBuf[20];
-  float fRad = 0.0f;//float(getView()->Convert(Standard_Integer(_nRadius)));
-
-  sprintf(szBuf, "%.2f", fRad);
-  _pcView3D->drawCircle(m_iXnew, m_iYnew, _nRadius);
-  _pcView3D->drawText(m_iXnew+9, m_iYnew-9, szBuf);
-}
-
-void CirclePickerMouseModel::mouseRightPressEvent		 ( QMouseEvent *cEvent)
-{
-//  _pcView3D->popMouseModel();
-}
-
-void CirclePickerMouseModel::wheelEvent			    ( QWheelEvent  * cEvent )
-{
-  int delta = cEvent->delta();
-  _nRadius = 5>(_nRadius + delta / 10)?5:(_nRadius + delta / 10);
 }

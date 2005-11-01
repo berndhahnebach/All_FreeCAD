@@ -2848,6 +2848,14 @@ SOURCE=.\Window.h
 # PROP Default_Filter ""
 # Begin Source File
 
+SOURCE=.\MouseModel.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MouseModel.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\SoFCSelection.cpp
 # End Source File
 # Begin Source File

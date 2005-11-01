@@ -24,7 +24,6 @@
 #define __VIEWPROVIDERMESH_H__
 
 #ifndef _PreComp_
-# include <qcursor.h>
 # include <qdatetime.h>
 # include <vector>
 # include <Inventor/fields/SoSFVec2f.h>
@@ -45,15 +44,11 @@ class SoPath;
 class SoLocateHighlight;
 class SoEventCallback;
 class SbViewVolume;
-class QMouseEvent;
-class QWheelEvent;
-class QKeyEvent;
-class QPaintEvent;
-class QResizeEvent;
 
 namespace Gui {
   class View3DInventorViewer;
   class SoFCSelection;
+  class AbstractMouseModel;
 }
 
 
@@ -111,181 +106,11 @@ protected:
   //SoFaceSet         *pcMeshFaces;
   Gui::SoFCSelection *pcHighlight;
 
-#ifdef _PICKTEST_
 private:
-  static float calcAzimuthAngle(SbVec3f north, SbVec3f east, SbVec3f directionvec);
-  static float calcElevationAngle(SbPlane groundplane, SbVec3f directionvec);
-  static void eventCallback(void * ud, SoEventCallback * n);
-#endif
-
-private:
-#ifdef _PICKTEST_
-  SoCoordinate3 * _pickpoints;
-  SoLineSet * _polylines;
-#endif
-  class AbstractMouseModel* _mouseModel;
+  Gui::AbstractMouseModel* _mouseModel;
   bool m_bEdit;
   QTime _timer;
   std::vector<SbVec2f> _clPoly;
-};
-
-// --------------------------------------------------------------------------------------------
-
-/**
- * The mouse model base class
- * In derived classes you must implement the methods @ref initialize() and @ref terminate()
- * For all drawing stuff you just have to reimplement the @ref draw() method. 
- * In general you need not to do anything else.
- * \author Werner Mayer and Jürgen Riegel
- */
-class AbstractMouseModel
-{
-public:
-  AbstractMouseModel();
-  virtual ~AbstractMouseModel(void){}
-  /// implement this in derived classes
-  virtual void initialize() = 0;
-  /// implement this in derived classes
-  virtual void terminate () = 0;
-  void grabMouseModel(Gui::View3DInventorViewer*);
-  void releaseMouseModel(void);
-
-  /** @name Mouse events*/
-  //@{
-  void mouseMoveEvent    ( QMouseEvent *cEvent );
-  void mousePressEvent   ( QMouseEvent *cEvent );
-  void mouseReleaseEvent ( QMouseEvent *cEvent );
-  void wheelMouseEvent   ( QWheelEvent *cEvent );
-  //@}
-
-protected:
-  virtual void mouseLeftPressEvent     ( QMouseEvent *cEvent ){};
-  virtual void mouseMiddlePressEvent   ( QMouseEvent *cEvent ){};
-  virtual void mouseRightPressEvent    ( QMouseEvent *cEvent ){};
-  virtual void mouseLeftReleaseEvent   ( QMouseEvent *cEvent ){};
-  virtual void mouseMiddleReleaseEvent ( QMouseEvent *cEvent ){};
-  virtual void mouseRightReleaseEvent  ( QMouseEvent *cEvent ){};
-  virtual void mouseDoubleClickEvent   ( QMouseEvent *cEvent ){};
-
-  virtual void wheelEvent         ( QWheelEvent * ){};
-  virtual void keyPressEvent      ( QKeyEvent * ){};
-  virtual void keyReleaseEvent    ( QKeyEvent * ){}; 
-  virtual void paintEvent         ( QPaintEvent * ){ draw(); } ;
-  virtual void resizeEvent        ( QResizeEvent * ){ draw(); };
-
-protected:
-  /// drawing stuff
-  virtual void draw (){};
-
-protected:
-  Gui::View3DInventorViewer*_pcView3D;
-  QCursor m_cPrevCursor;
-  int  m_iXold, m_iYold;
-  int  m_iXnew, m_iYnew;
-};
-
-// -----------------------------------------------------------------------------------
-
-/**
- * The standard model class
- * \author Jürgen Riegel
- */
-class BaseMouseModel : public AbstractMouseModel
-{
-public:
-  BaseMouseModel();
-  virtual ~BaseMouseModel(){}
-};
-
-// -----------------------------------------------------------------------------------
-
-/**
- * The poly picker mouse model class
- * Create a polygon
- * \author Werner Mayer
- */
-class PolyPickerMouseModel : public BaseMouseModel
-{
-public:
-  PolyPickerMouseModel();
-  virtual ~PolyPickerMouseModel();
-
-  /// set the new mouse cursor
-  virtual void initialize();
-  /// do nothing
-  virtual void terminate();
-
-protected:
-  virtual void mouseLeftPressEvent     ( QMouseEvent *cEvent );
-  virtual void mouseMiddlePressEvent   ( QMouseEvent *cEvent );
-  virtual void mouseRightPressEvent    ( QMouseEvent *cEvent );
-  virtual void mouseDoubleClickEvent   ( QMouseEvent *cEvent );
-  virtual void wheelEvent              ( QWheelEvent *cEvent );
-  virtual void keyPressEvent           ( QKeyEvent   *cEvent );
-
-protected:
-  /// draw the polygon
-  virtual void draw ();
-  std::vector<QPoint> _cNodeVector;
-  int  m_iRadius, m_iNodes;
-  bool m_bWorking, m_bDrawNodes;
-};
-
-// -----------------------------------------------------------------------------------
-
-/**
- * The selection mouse model class
- * Draws a rectangle for selection
- * \author Werner Mayer
- */
-class SelectionMouseModel : public BaseMouseModel 
-{
-public:
-  SelectionMouseModel();
-  virtual ~SelectionMouseModel();
-
-  /// do nothing
-  virtual void initialize();
-  /// do nothing
-  virtual void terminate();
-
-protected:
-  virtual void mouseLeftPressEvent    ( QMouseEvent *cEvent );
-  virtual void mouseLeftReleaseEvent  ( QMouseEvent *cEvent );
-
-protected:
-  /// draw the rectangle
-  virtual void draw ();
-
-private:
-  bool m_bWorking;
-};
-
-// -----------------------------------------------------------------------------------
-
-/**
- * The picker mouse model class
- * \author Werner Mayer
- */
-class CirclePickerMouseModel : public BaseMouseModel 
-{
-public:
-  CirclePickerMouseModel();
-  virtual ~CirclePickerMouseModel();
-
-  /// set the new mouse cursor
-  virtual void initialize();
-  /// call the @ref draw() method to clear the view
-  virtual void terminate();
-  virtual void mouseRightPressEvent  ( QMouseEvent  *cEvent );
-  virtual void wheelEvent            ( QWheelEvent  *cEvent );
-
-protected:
-  /// draw circle and text
-  virtual void draw ();
-
-private:
-  int    _nRadius;
 };
 
 } // namespace MeshGui

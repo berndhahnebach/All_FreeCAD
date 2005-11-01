@@ -110,7 +110,6 @@ public slots:
   void dump();
 
 protected:
-
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
 

@@ -25,7 +25,6 @@
 
 #ifndef _PreComp_
 # include <assert.h>
-# include <string>
 # include <stdio.h>
 # include <qglobal.h>
 #endif
@@ -62,21 +61,14 @@ void MacroManager::open(MacroType eType,const char *sName)
   assert(!_bIsOpen);
   assert(eType == File);
 
-  _sModuleSet.clear();
+  _sMacroInProgress = "";
   _sName = sName;
-
   if(_sName.find(".FCMacro") == std::string::npos)
     _sName += ".FCMacro";
 
-  _sMacroInProgress = "# Macro Begin: ";
-  _sMacroInProgress += _sName;
-  _sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
-  _sMacroInProgress += "import FreeCAD\n";
-
   _bIsOpen = true;
 
-  Base::Console().Log("CmdM: Open macro: %s\n",_sName.c_str());
-
+  Base::Console().Log("CmdM: Open macro: %s\n",_sName.latin1());
 }
 
 void MacroManager::setRecordGuiCommands(bool bRecord, bool bAsComment)
@@ -88,32 +80,56 @@ void MacroManager::setRecordGuiCommands(bool bRecord, bool bAsComment)
 /// close (and save) the recording sassion
 void MacroManager::commit(void)
 {
-  _sMacroInProgress += "# Macro End: ";
-  _sMacroInProgress += _sName;
-  _sMacroInProgress += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+  std::ofstream file(_sName.latin1());
 
-  std::ofstream file(_sName.c_str());
+  // sort import lines and avoid duplicates
+  QStringList lines = QStringList::split('\n', _sMacroInProgress);
+  QStringList import; import << "import FreeCAD\n";
+  QStringList body;
 
-  file << 	_sMacroInProgress.c_str();
+  QStringList::Iterator it;
+  for ( it = lines.begin(); it != lines.end(); ++it )
+  {
+    if ( (*it).startsWith("import ") || (*it).startsWith("#import ") )
+    {
+      if ( import.find( *it + '\n' ) == import.end() )
+        import.push_back( *it + '\n' );
+    }
+    else
+    {
+      body.push_back( *it + '\n' );
+    }
+  }
 
-  Base::Console().Log("CmdM: Commit macro: %s\n",_sName.c_str());
+  QString header = "# Macro Begin: ";
+  header += _sName;
+  header += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+
+  QString footer = "# Macro End: ";
+  footer += _sName;
+  footer += " +++++++++++++++++++++++++++++++++++++++++++++++++\n";
+
+  file << header.latin1();
+  for ( it = import.begin(); it != import.end(); ++it )
+    file << (*it).latin1();
+  file << '\n';
+  for ( it = body.begin(); it != body.end(); ++it )
+    file << (*it).latin1();
+  file << footer.latin1();
+
+  Base::Console().Log("CmdM: Commit macro: %s\n",_sName.latin1());
 
   _sMacroInProgress = "";
   _sName = "";
-  _sModuleSet.clear();
   _bIsOpen = false;
 }
-
 
 /// cancels the recording sassion
 void MacroManager::cancel(void)
 {
+  Base::Console().Log("CmdM: Cancel macro: %s\n",_sName.latin1());
   _sMacroInProgress = "";
   _sName = "";
-  _sModuleSet.clear();
-
-  Base::Console().Log("CmdM: Candel macro: %s\n",_sName.c_str());
-
   _bIsOpen = false;
 }
 
@@ -137,15 +153,13 @@ void MacroManager::addLine(LineType Type,const char* sLine)
 
 void MacroManager::setModule(const char* sModule)
 {
-  if(_bIsOpen && sModule && *sModule != '\0' && _sModuleSet.find(sModule) == _sModuleSet.end())
+  if(_bIsOpen && sModule && *sModule != '\0')
   {
     _sMacroInProgress += "import ";
     _sMacroInProgress += sModule;
     _sMacroInProgress += "\n";
-    _sModuleSet.insert(sModule);
   }
 }
-
 
 void MacroManager::run(MacroType eType,const char *sName)
 {
@@ -158,14 +172,3 @@ void MacroManager::run(MacroType eType,const char *sName)
     qWarning( e.what() );
   }
 }
-
-
-//**************************************************************************
-//**************************************************************************
-// Seperator for additional classes
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
-

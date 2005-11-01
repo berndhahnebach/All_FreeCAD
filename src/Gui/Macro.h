@@ -27,8 +27,7 @@
 // Std. configurations
 
 #ifndef _PreComp_
-# include <string>
-# include <set>
+# include <qstring.h>
 #endif
 
 
@@ -110,14 +109,10 @@ public:
   friend struct ApplicationP;
 
 protected:
-#ifdef _MSC_VER
-# pragma warning( disable : 4251 )
-#endif
   /** Container for the macro */
-  std::string _sMacroInProgress;
+  QString _sMacroInProgress;
   /// name of the macro
-  std::string _sName;
-  std::set <std::string> _sModuleSet;
+  QString _sName;
   bool _bIsOpen;
   bool _bRecordGui;
   bool _bGuiAsComment;

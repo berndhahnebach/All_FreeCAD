@@ -80,7 +80,10 @@ int FeatureMeshSegmentByMesh::execute(TFunction_Logbook& log)
 
   // check if the toolmesh is a solid
   if ( MeshEvalSolid(rToolMesh).Validate(false) != MeshEvalSolid::Valid )
+  {
+    Base::Console().Log("'%s' isn't a solid.\n", pcTool->getName());
     return 1; // no solid
+  }
 
   std::vector<unsigned long> faces;
   std::vector<MeshGeomFacet> aFaces;

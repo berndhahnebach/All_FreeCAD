@@ -378,8 +378,9 @@ void CmdMeshToolMesh::activated(int iMsg)
     App::Feature* tool = fea.back();
 
     openCommand("Segment by tool mesh");
+    doCommand(Doc, "import Mesh");
+    doCommand(Gui, "import MeshGui");
     doCommand(Doc,
-      "import Mesh,MeshGui\n"
       "App.DocGet().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
       "App.DocGet().%s.Source = App.DocGet().%s\n"
       "App.DocGet().%s.Tool = App.DocGet().%s\n",

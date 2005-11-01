@@ -98,7 +98,7 @@ public:
   /** @name Helper methodes to get importand classes */
   //@{
   /// Get pointer to the Application Window
-  Application*  getGuiApplication(void);   
+  static Application*  getGuiApplication(void);   
   /// Get a referenc to the selection 
   Gui::SelectionSingelton&  getSelection(void);
   /// Get pointer to the active gui document
@@ -152,7 +152,7 @@ public:
     Gui
   };
   /// Run a App level Action 
-  void doCommand(DoCmd_Type eType,const char* sCmd,...);
+  static void doCommand(DoCmd_Type eType,const char* sCmd,...);
   /// translate a string to a python string literal (needed e.g. in file names for windows...)
   const std::string strToPython(const char* Str);
   const std::string strToPython(const std::string &Str){return strToPython(Str.c_str());};
