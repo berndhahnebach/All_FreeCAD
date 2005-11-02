@@ -127,7 +127,6 @@ void View3DInventor::contextMenuEvent ( QContextMenuEvent * e)
 
 void View3DInventor::setFullScreenMode( bool b )
 {
-  _viewer->setEnableBackgroundImage( !b );
   MDIView::setFullScreenMode( b );
 }
 

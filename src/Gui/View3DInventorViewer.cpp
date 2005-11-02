@@ -33,6 +33,7 @@
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoCube.h>
+# include <Inventor/nodes/SoDirectionalLight.h>
 # include <Inventor/nodes/SoFaceSet.h>
 # include <Inventor/nodes/SoImage.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
@@ -103,10 +104,7 @@ void View3DInventorViewer::removeViewProvider(ViewProviderInventor* pcProvider)
 {
   pcViewProviderRoot->removeChild(pcProvider->getRoot());
   _ViewProviderSet.erase(pcProvider);
-
 }
-    
-
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
   :inherited (parent, name, embed, type, build)
@@ -114,7 +112,6 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   // Coin should not clear the pixel-buffer, so the background image
   // is not removed.
   this->setClearBeforeRender(FALSE);
-
   
   // seting up the defaults for the spin roatation
   prevRedrawTime = SbTime::getTimeOfDay();
@@ -140,15 +137,6 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   log.time = new SbTime [ 16 ];
   log.historysize = 0;
 
-
-
-  // Set up background scenegraph with image in it.
-
-  backgroundroot = new SoSeparator;
-  backgroundroot->ref();
-  backgroundmode = new SoSwitch;
-  backgroundmode->ref();
-
   SoOrthographicCamera * cam = new SoOrthographicCamera;
   cam->position = SbVec3f(0, 0, 1);
   cam->height = 1;
@@ -156,39 +144,16 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   cam->nearDistance = 0.5;
   cam->farDistance = 1.5;
 
+  // Set up background scenegraph with image in it.
+  backgroundroot = new SoSeparator;
+  backgroundroot->ref();
   this->backgroundroot->addChild(cam);
 
-
-  SoImage * img = new SoImage;
-  img->vertAlignment = SoImage::HALF;
-  img->horAlignment = SoImage::CENTER;
-
-  // set blue as background color
+  // set blue as default background color
   setBackgroundColor(SbColor(0.5f, 0.5f, 0.7f));
-
-//  if ( filename )
-//  {
-    // if file specified load this file
-//    img->filename = filename;
-//  }
-//  else
-  {
-    // otherwise take the default image and scale it up to desktop size
-    QImage image( default_background );
-
-    int w = QApplication::desktop()->width() + 20;
-    int h = QApplication::desktop()->height() + 20;
-    Tools::convert( image.smoothScale(w, h), img->image );
-  }
-
-  this->backgroundmode->addChild(img);
-  this->backgroundmode->whichChild = 0;
-  this->backgroundroot->addChild(backgroundmode);
-
-
+  this->backgroundroot->addChild(setBackgroundGradient());
 
   // Set up foreground, overlayed scenegraph.
-
   this->foregroundroot = new SoSeparator;
   this->foregroundroot->ref();
 
@@ -261,25 +226,13 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   setSeekTime(0.5);
   setSeekValueAsPercentage(true);
   setSeekDistance(50);
-
  }
 
 View3DInventorViewer::~View3DInventorViewer()
 {
-  this->backgroundmode->unref();
   this->backgroundroot->unref();
   this->foregroundroot->unref();
   getMainWindow()->setPaneText(2, "");
-}
-
-void View3DInventorViewer::setEnableBackgroundImage( bool ok )
-{
-  backgroundmode->whichChild = ok ? 0 : -1;
-}
-
-bool View3DInventorViewer::isEnabledBackgroundImage() const
-{
-  return (backgroundmode->whichChild.getValue() != -1);
 }
 
 SoSeparator* View3DInventorViewer::createColorLegend() const
@@ -349,6 +302,110 @@ SoSeparator* View3DInventorViewer::createColorLegend() const
   delete [] vertices;
 
   return root;
+}
+
+SoSeparator* View3DInventorViewer::setBackgroundGradient() const
+{
+  // points
+  SbVec3f* vertices = new SbVec3f[9];
+  float fMinX= -0.5f, fMaxX=0.5f, fAvgX=0.0f;
+  float fMinY= -0.5f, fMaxY=0.5f, fAvgY=0.0f;
+  vertices[0].setValue( fMinX, fMaxY, 0.0f);
+  vertices[1].setValue( fAvgX, fMaxY, 0.0f);
+  vertices[2].setValue( fMaxX, fMaxY, 0.0f);
+  vertices[3].setValue( fMinX, fAvgY, 0.0f);
+  vertices[4].setValue( fAvgX, fAvgY, 0.0f);
+  vertices[5].setValue( fMaxX, fAvgY, 0.0f);
+  vertices[6].setValue( fMinX, fMinY, 0.0f);
+  vertices[7].setValue( fAvgX, fMinY, 0.0f);
+  vertices[8].setValue( fMaxX, fMinY, 0.0f);
+
+  SoCoordinate3* coords = new SoCoordinate3;
+	coords->point.setValues(0,9, vertices);
+
+  float colors[9][3] =
+  {  
+    { 0.5f, 0.5f, 0.8f}, { 0.5f, 0.5f, 0.8f}, { 0.5f, 0.5f, 0.8f}, 
+    { 0.7f, 0.7f, 0.9f}, { 0.7f, 0.7f, 0.9f}, { 0.7f, 0.7f, 0.9f}, 
+    { 1.0f, 1.0f, 1.0f}, { 1.0f, 1.0f, 1.0f}, { 1.0f, 1.0f, 1.0f}, 
+  };
+
+  SoMaterial* mat = new SoMaterial;
+  mat->diffuseColor.setValues(0, 9, colors);
+  mat->transparency = 0.0f;
+
+  SoMaterialBinding* matBinding = new SoMaterialBinding;
+  matBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
+
+  // face indices
+  int32_t face_idx[32]=
+  {
+    0,3,1,SO_END_FACE_INDEX, 4,1,3,SO_END_FACE_INDEX,
+    1,4,2,SO_END_FACE_INDEX, 5,2,4,SO_END_FACE_INDEX,
+    3,6,4,SO_END_FACE_INDEX, 7,4,6,SO_END_FACE_INDEX,
+    4,7,5,SO_END_FACE_INDEX, 8,5,7,SO_END_FACE_INDEX,
+  };
+
+  SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
+	faceset->coordIndex.setValues(0,32,(const int*) face_idx);
+
+  SoSeparator* root = new SoSeparator();
+	root->addChild(new SoDirectionalLight);
+	root->addChild(coords);
+  root->addChild(mat);
+  root->addChild(matBinding);
+	root->addChild(faceset);
+
+  delete [] vertices;
+
+  return root;
+}
+
+void View3DInventorViewer::sizeChanged( const SbVec2s& size )
+{
+  // searching for the background node
+  SoNode* child = this->backgroundroot->getChild(1);
+  if ( child && child->getTypeId() == SoSeparator::getClassTypeId() )
+  {
+    // search for the coordinates
+    child = reinterpret_cast<SoSeparator*>(child)->getChild(1);
+    if ( child && child->getTypeId() == SoCoordinate3::getClassTypeId() ) 
+    {
+      SoCoordinate3* coord = reinterpret_cast<SoCoordinate3*>(child);
+
+      const SbViewportRegion& vp = getViewportRegion();
+      float fRatio = vp.getViewportAspectRatio();
+      float fMinX= -0.5f, fMaxX=0.5f, fAvgX=0.0f;
+      float fMinY= -0.5f, fMaxY=0.5f, fAvgY=0.0f;
+
+      if ( fRatio > 1.0f )
+      {
+        fMinX = - 0.5f * fRatio;
+        fMaxX =   0.5f * fRatio;
+      }
+      else if ( fRatio < 1.0f )
+      {
+        fMinX = - 0.5f / fRatio;
+        fMaxX =   0.5f / fRatio;
+        fMinY = - 0.5f / fRatio;
+        fMaxY =   0.5f / fRatio;
+      }
+
+      SbVec3f* vertices = new SbVec3f[9];
+      vertices[0].setValue( fMinX, fMaxY, 0.0f);
+      vertices[1].setValue( fAvgX, fMaxY, 0.0f);
+      vertices[2].setValue( fMaxX, fMaxY, 0.0f);
+      vertices[3].setValue( fMinX, fAvgY, 0.0f);
+      vertices[4].setValue( fAvgX, fAvgY, 0.0f);
+      vertices[5].setValue( fMaxX, fAvgY, 0.0f);
+      vertices[6].setValue( fMinX, fMinY, 0.0f);
+      vertices[7].setValue( fAvgX, fMinY, 0.0f);
+      vertices[8].setValue( fMaxX, fMinY, 0.0f);
+	    coord->point.setValues(0,9, vertices);
+    }
+  }
+
+  inherited::sizeChanged( size );
 }
 
 SoSeparator* View3DInventorViewer::setMarkerLabel(float x, float y, float z, const char* text) const

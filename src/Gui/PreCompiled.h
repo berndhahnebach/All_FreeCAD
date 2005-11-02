@@ -134,6 +134,7 @@
 #include <Inventor/nodes/SoCoordinate4.h>
 #include <Inventor/nodes/SoCube.h>
 #include <Inventor/nodes/SoCylinder.h>
+#include <Inventor/nodes/SoDirectionalLight.h>
 #include <Inventor/nodes/SoDrawStyle.h>
 #include <Inventor/nodes/SoEnvironment.h>
 #include <Inventor/nodes/SoExtSelection.h>

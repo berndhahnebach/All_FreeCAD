@@ -106,8 +106,15 @@ void DlgDisplayPropertiesImp::onChangeMaterial(const QString&s)
 void DlgDisplayPropertiesImp::onChangeMode(const QString&s)
 {
   Base::Console().Log("Mode = %s\n",s.latin1());
-  for( std::vector<ViewProviderInventor*>::iterator It= Provider.begin();It!=Provider.end();It++)
-    (*It)->setMode(s.latin1()); 
+//  for( std::vector<ViewProviderInventor*>::iterator It= Provider.begin();It!=Provider.end();It++)
+//    (*It)->setMode(s.latin1()); 
+  for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  {
+    ViewProviderInventor* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
+    (*It)->setShowMode( s.latin1() );
+    pcProv->setMode( (*It)->getShowMode() );
+  }
+
   _pcCmd->getActiveGuiDocument()->onUpdate();
 }
 

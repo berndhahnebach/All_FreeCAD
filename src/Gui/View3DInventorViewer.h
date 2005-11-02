@@ -58,9 +58,6 @@ public:
   void addViewProvider(ViewProviderInventor*);
   /// remove a ViewProvider
   void removeViewProvider(ViewProviderInventor*);
-
-  void setEnableBackgroundImage( bool );
-  bool isEnabledBackgroundImage() const;
  
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
@@ -106,10 +103,8 @@ public:
   //@}
 
 protected:
-
   unsigned long             currMod;
   std::stack<unsigned long> ModStack;
-
 
   static void sFinishSelectionCallback(void *,SoSelection *);
   virtual void finishSelectionCallback(SoSelection *);
@@ -123,8 +118,8 @@ protected:
 
   virtual void actualRedraw(void);
   virtual SbBool processSoEvent(const SoEvent * const ev);
-
-  
+  /// gets called when the container widget's size  has changed
+  virtual void sizeChanged  ( const SbVec2s& );
 
   void reorientCamera(const SbRotation & rotation);
   void pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);
@@ -166,17 +161,15 @@ protected:
 
 private:
   SoSeparator* createColorLegend() const;
+  SoSeparator* setBackgroundGradient() const;
   SoSeparator* setMarkerLabel(float x, float y, float z, const char* text) const;
 
   SoSeparator * backgroundroot;
-  SoSwitch    * backgroundmode;
   SoSeparator * foregroundroot;
   SoRotationXYZ * arrowrotation;
 
   SoSeparator * pcViewProviderRoot;
   SoSelection * pcSelection;
-
-
 };
 
 } // namespace Gui
