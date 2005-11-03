@@ -189,15 +189,15 @@ ParameterGroup::ParameterGroup( QWidget * parent, const char * name, WFlags f )
   QFont font = menuEdit->font();
   font.setBold( true );
   custom = new CustomMenuItem( tr("Expand"), font );
-  _id = menuEdit->insertItem( custom );
-  menuEdit->connectItem( _id, this, SLOT( onToggleSelectedItem() ) );
+  _expandId = menuEdit->insertItem( custom );
+  menuEdit->connectItem( _expandId, this, SLOT( onToggleSelectedItem() ) );
   menuEdit->insertSeparator();
   menuEdit->insertItem( tr("Add sub-group"), this, SLOT( onCreateSubgroup() ) );
   menuEdit->insertItem( tr("Remove group"), this, SLOT( onDeleteSelectedItem() ) );
   menuEdit->insertItem( tr("Rename group"), this, SLOT( onRenameSelectedItem() ) );
   menuEdit->insertSeparator();
   menuEdit->insertItem( tr("Export parameter"), this, SLOT( onExportToFile() ) );
-  menuEdit->insertItem( tr("Import parameter"), this, SLOT( onImportFromFile() ) );
+  _importId = menuEdit->insertItem( tr("Import parameter"), this, SLOT( onImportFromFile() ) );
 }
 
 ParameterGroup::~ParameterGroup()
@@ -214,7 +214,10 @@ void ParameterGroup::contentsContextMenuEvent ( QContextMenuEvent* event )
 {
   if ( selectedItem () )
   {
-    menuEdit->setItemEnabled( _id, selectedItem()->childCount() > 0 );
+    menuEdit->setItemEnabled( _expandId, selectedItem()->childCount() > 0 );
+    // do not allow to import parameters from a non-empty parameter group
+    menuEdit->setItemEnabled( _importId, selectedItem()->childCount() == 0 );
+
     if ( selectedItem()->isOpen() )
       custom->setText( tr("Collapse") );
     else
@@ -600,6 +603,10 @@ ParameterGroupItem::ParameterGroupItem( QListView* parent, const FCHandle<Parame
 
 ParameterGroupItem::~ParameterGroupItem()
 {
+  // if the group has already been removed from the parameters then clear the observer list
+  // as we cannot notify the attached observers here
+  if ( _hcGrp.IsLastRef() )
+    _hcGrp->ClearObserver();
 }
 
 void ParameterGroupItem::fillUp(void)

@@ -92,6 +92,7 @@ Feature::Feature(void)
   _pointMaterial.specularColor.set(0.0f,0.0f,0.0f);
   _pointMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
   _pointMaterial.shininess = 0.3f;
+  _pointMaterial.transparency = 0.0f;
   _pointSize = 2.0;
   _showMode = "Flat";
 

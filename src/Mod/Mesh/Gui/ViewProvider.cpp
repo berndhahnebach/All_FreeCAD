@@ -499,9 +499,7 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
           Gui::Command::doCommand(Gui::Command::Doc, "App.DocGet().AddFeature(\"Mesh\", \"%s\")\n", fTool.c_str());
 
           // replace the mesh from feature
-#ifdef FC_DEBUG
           Gui::Command::doCommand(Gui::Command::Gui, "App.DocGet().%s.shadedMaterial.transparency = 0.7\n", fTool.c_str());
-#endif
           Gui::Command::doCommand(Gui::Command::Doc, "m=App.DocGet().GetFeature(\"%s\").getMesh()\n", fTool.c_str());
           for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
           {

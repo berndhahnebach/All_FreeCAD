@@ -41,6 +41,7 @@
 
 #include <Base/Exception.h>
 #include <App/Document.h>
+#include <App/Feature.h>
 
 using namespace Gui;
 
@@ -123,11 +124,14 @@ void StdCmdToggleVisibility::activated(int iMsg)
     for(std::vector<App::Feature*>::const_iterator It=sel.begin();It!=sel.end();It++)
     {
       if(getActiveGuiDocument()->isShow(*It))
-        getActiveGuiDocument()->setHide(*It);
+        doCommand(Gui,"Gui.hide(\"%s\")", (*It)->getName());
+//        getActiveGuiDocument()->setHide(*It);
       else
-        getActiveGuiDocument()->setShow(*It);
+        doCommand(Gui,"Gui.show(\"%s\")", (*It)->getName());
+//        getActiveGuiDocument()->setShow(*It);
 
     }
+
     //Gui::Selection().clearSelection();
   }
 }

@@ -112,7 +112,7 @@ protected slots:
 private:
   QPopupMenu* menuEdit;
   CustomMenuItem* custom;
-  int _id;
+  int _expandId, _importId;
 };
 
 // --------------------------------------------------------------------

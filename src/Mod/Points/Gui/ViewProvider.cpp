@@ -79,15 +79,14 @@ ViewProviderInventorPoints::~ViewProviderInventorPoints()
   pcColorMat->unref();
 }
 
-void ViewProviderInventorPoints::createPoints(App::Feature *pcFeature)
+void ViewProviderInventorPoints::createPoints(PointsFeature *pFeature)
 {
-  PointsFeature* PtFea = dynamic_cast<PointsFeature*>(pcFeature);
-  if ( !PtFea ) return;
+  if ( !pFeature ) return;
 
   pcPointsCoord->point.deleteValues(0);
 
   // get all points
-  const PointKernel& cPts = PtFea->getPoints().getKernel();
+  const PointKernel& cPts = pFeature->getPoints().getKernel();
   int idx=0;
   for ( PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++ )
   {
@@ -137,11 +136,6 @@ void ViewProviderInventorPoints::attach(App::Feature* pcFeat)
   PointsFeature* ptFea = dynamic_cast<PointsFeature*>(pcFeature);
   if ( !ptFea )
     throw "ViewProviderInventorPoints::attach(): wrong feature attached!";
-
-
-//  pcPointsCoord = new SoCoordinate3();
-//  pcPoints = new SoPointSet();
-//  pcPointsNormal = new SoNormal();  
   createPoints( ptFea );
 
   SoGroup* pcPointRoot = new SoGroup();
@@ -149,7 +143,6 @@ void ViewProviderInventorPoints::attach(App::Feature* pcFeat)
   SoGroup* pcColorShadedRoot = new SoGroup();
 
   // Hilight for selection
-//  pcHighlight = new Gui::SoFCSelection();
   pcHighlight->featureName = pcFeature->getName();
   pcHighlight->documentName = pcFeature->getDocument().getName();
   pcHighlight->subElementName = "Main";
@@ -162,22 +155,18 @@ void ViewProviderInventorPoints::attach(App::Feature* pcFeat)
   pcPointStyle->pointSize = fPointSize;
   pcPointRoot->addChild(pcPointStyle);
   pcPointRoot->addChild(pcPointMaterial);
-//  pcHighlight->addChild(pcPointsCoord);
-//  pcHighlight->addChild(pcPoints);
   pcPointRoot->addChild(pcHighlight);
 
   // points shaded ---------------------------------------------
-//  SoLightModel* pcLightModel = new SoLightModel();
-//  pcLightModel->model = SoLightModel::PHONG;
-//  pcPointStyle = new SoDrawStyle();
-  pcPointStyle->style = SoDrawStyle::POINTS;
-  pcPointStyle->pointSize = 2*fPointSize;
-  pcPointShadedRoot->addChild(pcPointStyle);
+  //SoLightModel* pcLightModel = new SoLightModel();
+  //pcLightModel->model = SoLightModel::PHONG;
+  SoDrawStyle* pcPointShadedStyle = new SoDrawStyle();
+  pcPointShadedStyle->style = SoDrawStyle::POINTS;
+  pcPointShadedStyle->pointSize = 2*fPointSize;
+  pcPointShadedRoot->addChild(pcPointShadedStyle);
 //  pcHighlight->addChild(pcLightModel);
   pcPointShadedRoot->addChild(pcPointMaterial);
-//  pcPointShadedRoot->addChild(pcPointsCoord);
   pcPointShadedRoot->addChild(pcPointsNormal);
-//  pcPointShadedRoot->addChild(pcPoints);
   pcPointShadedRoot->addChild(pcHighlight);
 
   // color shaded  ------------------------------------------
@@ -187,19 +176,14 @@ void ViewProviderInventorPoints::attach(App::Feature* pcFeat)
 
   SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
   pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
-//  pcColorMat = new SoMaterial;
   pcColorShadedRoot->addChild(pcColorMat);
   pcColorShadedRoot->addChild(pcMatBinding);
-//  pcColorShadedRoot->addChild(pcPointsCoord);
-//  pcColorShadedRoot->addChild(pcPoints);
   pcColorShadedRoot->addChild(pcHighlight);
 
   // putting all together with a switch
   pcModeSwitch->addChild(pcPointRoot);
   pcModeSwitch->addChild(pcColorShadedRoot);
   pcModeSwitch->addChild(pcPointShadedRoot);
-  pcModeSwitch->whichChild = 0; 
-//  pcRoot->addChild(pcSwitch);
 
   setMode(pcFeat->getShowMode());
 }
@@ -251,5 +235,5 @@ std::vector<std::string> ViewProviderInventorPoints::getModes(void)
 
 void ViewProviderInventorPoints::updateData()
 {
-  createPoints(pcFeature);
+  createPoints(dynamic_cast<PointsFeature*>(pcFeature));
 }

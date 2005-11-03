@@ -41,6 +41,7 @@ namespace Points {
   class PointsPropertyColor;
   class PointsPropertyGreyvalue;
   class PointsPropertyNormal;
+  class PointsFeature;
 }
 
 namespace PointsGui {
@@ -69,7 +70,7 @@ public:
   virtual void updateData();
 
 protected:
-  void createPoints(App::Feature *pcFeature);
+  void createPoints(Points::PointsFeature *pcFeature);
   void setVertexColorMode(Points::PointsPropertyColor*);
   void setVertexGreyvalueMode(Points::PointsPropertyGreyvalue*);
   void setVertexNormalMode(Points::PointsPropertyNormal*);

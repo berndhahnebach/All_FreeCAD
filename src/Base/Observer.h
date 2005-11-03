@@ -174,6 +174,15 @@ public:
     return 0L;
 	}
 
+  /** Clears the list of all registered observers. 
+   * @note Using this function in your code may be an indication of design problems.
+   */
+  void ClearObserver()
+  {
+    _ObserverSet.clear();
+  }
+
+
 protected:
 	/// Vector of attached observers
 	std::set<Observer <_MessageType> *> _ObserverSet;

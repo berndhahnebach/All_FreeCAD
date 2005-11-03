@@ -83,7 +83,7 @@ public:
 	FCHandle <HandledType>  &operator=(const HandledType* other)
 	{		
 		if(_pHandels)
-			_pHandels->DettachRef(this);
+			_pHandels->DetachRef(this);
 		_pHandels = other->_pHandels;
 		if(_pHandels)
 			ToHandel->AttachRef(this);
@@ -94,7 +94,7 @@ public:
 	FCHandle <HandledType>  &operator=(const void* other)
 	{		
 		if(_pHandels)
-			_pHandels->DettachRef(this);
+			_pHandels->DetachRef(this);
 		if( PointsOn(other) )
 			_pHandels = other->_pHandels;
 		else
