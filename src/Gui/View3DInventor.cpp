@@ -56,9 +56,6 @@
 #include <locale>
 
 
-
-#include "Icons/default_background.xpm"
-
 using namespace Gui;
 
 

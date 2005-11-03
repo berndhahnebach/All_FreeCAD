@@ -73,8 +73,6 @@
 
 // build in Inventor
 
-#include "Icons/default_background.xpm"
-
 #include <Inventor/nodes/SoText2.h>
 
 using namespace Gui;
@@ -761,7 +759,6 @@ Base::Vector3D View3DInventorViewer::getViewDirection() const
   SbPlane nearPlane = vol.getPlane( vol.nearDist );
   SbVec3f n = nearPlane.getNormal();
   float nx, ny, nz; n.getValue(nx, ny, nz);
-  float d = nearPlane.getDistanceFromOrigin();
 
   Base::Vector3D viewDir(nx, ny, nz);
   viewDir.Normalize();

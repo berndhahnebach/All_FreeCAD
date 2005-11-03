@@ -43,6 +43,8 @@ libMesh_la_SOURCES=\
 		FeatureMeshExport.h \
 		FeatureMeshImport.cpp \
 		FeatureMeshImport.h \
+		FeatureMeshSegmentByMesh.cpp \
+		FeatureMeshSegmentByMesh.h \
 		FeatureMeshTransform.cpp \
 		FeatureMeshTransform.h \
 		FeatureMeshTransformDemolding.cpp \
