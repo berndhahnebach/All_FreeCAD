@@ -45,10 +45,18 @@ moc_%.cpp: %.h
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
+libdir = $(prefix)/Mod/Points
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f PointsGui.so && \
-		$(LN_S) lib/libPointsGui.so PointsGui.so
+		$(LN_S) libPointsGui.so PointsGui.so
 
 CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = \
+		DlgPointsRead.ui \
+		AppPointsGui.dsp \
+		AppPointsGui.vcproj \
+		Libs.cpp

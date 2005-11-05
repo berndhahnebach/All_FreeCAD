@@ -16,11 +16,11 @@ libRaytracing_la_SOURCES=\
 
 
 FreeCADpov.h: FreeCADpov
-	$(PYTHON) $(top_srcdir)/../../Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
 
 
 # the library search path.
-libRaytracing_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libRaytracing_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRaytracing_la_CPPFLAGS = -DAppPartExport= -DFeatureRayExportPov=
 
 libRaytracing_la_LIBADD   = \
@@ -31,8 +31,20 @@ libRaytracing_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
+libdir = $(prefix)/Mod/Raytracing
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f Raytracing.so && \
-		$(LN_S) lib/libRaytracing.so Raytracing.so
+		$(LN_S) libRaytracing.so Raytracing.so
+
+EXTRA_DIST = \
+		resources/FCAnimation.inc \
+		resources/FCAnimation.ini \
+		resources/FCAnimation.pov \
+		resources/FCSimple.pov \
+		AppRaytracing.dsp \
+		AppRaytracing.vcproj \
+		FreeCADpov \
+		Libs.cpp

@@ -4,7 +4,7 @@
 ## Init stuff
 # **************************************************************************
 AC_PREREQ(2.57)
-AC_INIT(FreeCAD,0.184,[Juergen Riegel],FreeCAD)
+AC_INIT(FreeCAD,0.33,[Juergen Riegel],FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER([config.h])
 #AC_CANONICAL_HOST
@@ -46,6 +46,7 @@ AC_PROG_CC
 AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(no)
 AC_PROG_LIBTOOL
+AC_PROG_LN_S
 
 #AC_ARG_VAR(DOXYGEN, Doxygen)
 #AC_PATH_PROG(DOXYGEN, doxygen, no)
@@ -159,6 +160,38 @@ AC_CHECK_FILE($fc_occ_libs/libTKernel.so,,
 all_includes="$all_includes -I$fc_occ_incs"
 all_libraries="$all_libraries -L$fc_occ_libs"
 AC_MSG_RESULT([OpenCascade $fc_occ_incs : $fc_occ_libs])
+
+# checking for WildMagic3
+# **************************************************************************
+
+AC_CHECKING([WildMagic3])
+AC_ARG_WITH(wildmagic-includes,
+	AC_HELP_STRING([--with-wildmagic-includes], [Path of the header files of your WildMagic3 installation]),
+	[fc_mgc_incs=$withval],
+	[fc_mgc_incs=/usr/include/WildMagic3/Include])
+
+AC_CHECK_FILE($fc_mgc_incs/WildMagic3.h,,
+	[AC_MSG_ERROR([
+	**** Could not find WildMagic3 header files.
+	 Please check your installation. ****
+	 ])])
+
+AC_ARG_WITH(wildmagic-libs,
+	AC_HELP_STRING([--with-wildmagic-libs], [Path of the library files of your WildMagic3 installation]),
+	[fc_mgc_libs=$withval],
+	[fc_mgc_libs=/usr/lib])
+
+all_includes="$all_includes -I$fc_mgc_incs"
+all_libraries="$all_libraries -L$fc_mgc_libs"
+AC_MSG_RESULT([WildMagic3 $fc_mgc_incs : $fc_mgc_libs])
+
+# checking for GTS
+# **************************************************************************
+
+fc_gts_incs=`gts-config --cflags`
+fc_gts_libs=`gts-config --libs`
+all_includes="$all_includes $fc_gts_incs"
+all_libraries="$all_libraries $fc_gts_libs"
 
 # checking for xerces-c
 # **************************************************************************
@@ -380,7 +413,33 @@ LDFLAGS="-L$all_libraries"
 AC_SUBST([PYTHON],[python])
 AC_SUBST([fc_py_ver])
 
-AC_CONFIG_FILES([Makefile App/Makefile Base/Makefile Gui/Makefile Main/Makefile])
+AC_CONFIG_FILES([Makefile App/Makefile Base/Makefile Gui/Makefile Main/Makefile
+Mod/Makefile
+Mod/Part/Makefile
+Mod/Part/App/Makefile
+Mod/Part/Gui/Makefile
+Mod/Import/Makefile
+Mod/Import/App/Makefile
+Mod/Import/Gui/Makefile
+Mod/Raytracing/Makefile
+Mod/Raytracing/App/Makefile
+Mod/Raytracing/Gui/Makefile
+Mod/Mesh/Makefile
+Mod/Mesh/App/Makefile
+Mod/Mesh/Gui/Makefile
+Mod/Points/Makefile
+Mod/Points/App/Makefile
+Mod/Points/Gui/Makefile
+Mod/Image/Makefile
+Mod/Image/App/Makefile
+Mod/Image/Gui/Makefile
+Mod/Test/Makefile
+Tools/Makefile
+Tools/_TEMPLATE_/Makefile
+Tools/_TEMPLATE_/App/Makefile
+Tools/_TEMPLATE_/Gui/Makefile
+])
+
 AC_OUTPUT
 
 # Show a configuration report

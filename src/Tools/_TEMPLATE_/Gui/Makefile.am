@@ -7,7 +7,9 @@ lib_TEMPLATE_Gui_la_SOURCES=\
 		App_TEMPLATE_Gui.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
-		PreCompiled.h
+		PreCompiled.h \
+		Workbench.cpp \
+		Workbench.h
 
 # the library search path.
 lib_TEMPLATE_Gui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
@@ -35,10 +37,16 @@ moc_%.cpp: %.h
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
+libdir = $(prefix)/Mod/_TEMPLATE_
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f _TEMPLATE_Gui.so && \
-		$(LN_S) lib/lib_TEMPLATE_Gui.so _TEMPLATE_Gui.so
+		$(LN_S) lib_TEMPLATE_Gui.so _TEMPLATE_Gui.so
 
 CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = \
+		App_TEMPLATE_Gui.dsp \
+		Libs.cpp

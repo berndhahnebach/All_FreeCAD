@@ -79,6 +79,10 @@ INCLUDES= $(all_includes)
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		DllMain.cpp \
+		Libs.cpp \
+		FreeCADDoc.dsp \
+		FreeCADDoc.vcproj \
 		FreeCADInit.py \
 		FreeCADTest.py \
 		Plugin \

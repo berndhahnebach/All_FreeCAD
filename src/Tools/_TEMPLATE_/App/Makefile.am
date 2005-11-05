@@ -18,8 +18,14 @@ lib_TEMPLATE__la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
+libdir = $(prefix)/Mod/_TEMPLATE_
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f _TEMPLATE_.so && \
-		$(LN_S) lib/lib_TEMPLATE_.so _TEMPLATE_.so
+		$(LN_S) lib_TEMPLATE_.so _TEMPLATE_.so
+
+EXTRA_DIST = \
+		App_TEMPLATE_.dsp \
+		Libs.cpp

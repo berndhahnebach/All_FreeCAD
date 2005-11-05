@@ -52,10 +52,20 @@ FreeCADpov.h: FreeCADpov
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
+libdir = $(prefix)/Mod/Raytracing
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f RaytracingGui.so && \
-		$(LN_S) lib/libRaytracingGui.so RaytracingGui.so
+		$(LN_S) libRaytracingGui.so RaytracingGui.so
 
 CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = \
+		DlgSettingsRay.ui \
+		FreeCADpov \
+		Raytracing_de.ts \
+		AppRaytracingGui.dsp \
+		AppRaytracingGui.vcproj \
+		Libs.cpp

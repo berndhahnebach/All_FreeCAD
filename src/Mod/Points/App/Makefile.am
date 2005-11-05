@@ -31,8 +31,15 @@ libPoints_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
+libdir = $(prefix)/Mod/Points
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f Points.so && \
-		$(LN_S) lib/libPoints.so Points.so
+		$(LN_S) libPoints.so Points.so
+
+EXTRA_DIST = \
+		AppPoints.dsp \
+		AppPoints.vcproj \
+		Libs.cpp

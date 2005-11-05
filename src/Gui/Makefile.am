@@ -310,12 +310,16 @@ EXTRA_DIST = \
 		Language/FreeCAD_de.ts \
 		Language/FreeCAD_fr.ts \
 		Language/qt_de.ts \
+		DllMain.cpp \
+		Libs.cpp \
 		DlgActions.ui \
 		DlgActivateWindow.ui \
 		DlgAuthorization.ui \
 		DlgCommands.ui \
+		DlgDisplayProperties.ui \
 		DlgEditor.ui \
 		DlgGeneral.ui \
+		DlgKeyboard.ui \
 		DlgMacroExecute.ui \
 		DlgMacroRecord.ui \
 		DlgMacros.ui \
@@ -328,7 +332,9 @@ EXTRA_DIST = \
 		DlgSplasher.ui \
 		DlgTipOfTheDay.ui \
 		DlgToolbars.ui \
-		FreeCADGuiInit.py
+		FreeCADGuiInit.py \
+		FreeCADGui.dsp \
+		FreeCADGui.vcproj
 
 # the library search path.
 libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

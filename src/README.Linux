@@ -12,19 +12,24 @@ o Python (http://www.python.org), I have 2.3
 o Qt (http://www.trolltech.no), >= 3.2.x, I have 3.2.1
 o Coin3D (http://www.coin3d.org), >= 2.x, I have 2.2.1
 o SoQt (http://www.coin3d.org), >= 1.x, I have 1.0.2
-o OpenCascade (http://www.opencascade.org), you need >=5.1 here
+o OpenCascade (http://www.opencascade.org), you need >=5.1 here, I have 5.2
 o Xerces-c (downloads http://xml.apache.org/dist/xerces-c/), mine is 2.4
 
-To avoid any linker problems during the build process it would be a good idea to have 
+And for the Mesh module of FreeCAD the additional libraries
+o GTS Library (http://gts.sourceforge.net), I have 0.7.3
+o Wild Magic (http://www.geometrictools.com), I have 3.3
+are required.
+
+To avoid any linker problems during the build process it would be a good idea to have
 the library paths either in your LD_LIBRARY_PATH variable or in your ld.so.conf file.
 
-During the compilation some Python scripts get executed. So the Python interpreter has 
+During the compilation some Python scripts get executed. So the Python interpreter has
 to work properly.
 
-First of all you should build the Qt plugin that provides all custom widgets of FreeCAD 
-we need for the Qt Designer. The sources are located under src/Tools/plugins/widget. 
-So far we don't provide a makefile but calling 'qmake plugin.pro' creates it. 
-Calling 'make' will create the library libFreeCAD_widgets.so. To make known this library 
+First of all you should build the Qt plugin that provides all custom widgets of FreeCAD
+we need for the Qt Designer. The sources are located under Tools/plugins/widget.
+So far we don't provide a makefile but calling 'qmake plugin.pro' creates it.
+Calling 'make' will create the library libFreeCAD_widgets.so. To make known this library
 to your Qt Designer you have to copy the file to $QTDIR/plugin/designer.
 
 
@@ -39,7 +44,7 @@ not any options at all. Unless you have installed any library into a
 non-standard path, then make use of the --with-XXX-includes or --with-XXX-libs
 options, please. (XXX stands for the corresponding library.)
 
-Note: To specify FreeCAD's root directory it is recommended to use only the '--prefix' 
+Note: To specify FreeCAD's root directory it is recommended to use only the '--prefix'
 option from the configure script but not the --bindir, --libdir, ... options, because
 at startup FreeCAD makes assumptions where its lib-, doc-, .. directories reside.
 The default root directory is located in ~/FreeCAD.
@@ -51,29 +56,36 @@ to our configuration scripts --- that would be great.
 Installation
 ------------
 
-Once you have built the sources successfully using 'make' you can with 'make install'
+Once you have built the sources successfully using 'make' with 'make install' you can
 install FreeCAD onto your machine whereever you want. Go to the directory FreeCAD/bin
-and just type in ./FreeCAD. 
-FreeCAD's default root directory resides under ~/FreeCAD, so you don't need root privileges 
+and just type in ./FreeCAD.
+FreeCAD's default root directory resides under ~/FreeCAD, so you don't need root privileges
 therefore.
 
 
 Modules
 -------
 
-To build the modules (located in src/Mod) for FreeCAD you have to repeat the same procedure 
-for each of them. The 'make install' creates the libraries in ~/FreeCAD/Mod/<module>/lib - 
-as default directory, creates some symbolic links that Python needs and copy the Init.py and 
+The modules that we provide with the source package get created automatically during the build
+procedure.
+
+The 'make install' creates the libraries under ~/FreeCAD/Mod/<module> -
+as default directory, creates some symbolic links that Python needs and copy the Init.py and
 InitGui.py files to the right location.
 
-We need these symbolic links because Python expects them to load the libraries. The .py files 
+We need these symbolic links because Python expects them to load the libraries. The .py files
 are needed by FreeCAD to initialize the workbenches.
 
-Note: The Test and the Sketcher modules are pure Python modules, so you need not build them. 
-Just copy the directories to their desired locations.
+If you want to create own modules for FreeCAD we provide a Python script therefore under Tools/fcbt.py.
+Start the script and choose the 'CM' option. Then specify a name for your module. The script
+then creates a minimum of required files under Mod/<module name> you need to build an empty module.
 
-After having built and installed the core and module libraries, go to FreeCAD/bin and try 
-./FreeCAD invoking the main window. 
+
+Running FreeCAD
+---------------
+
+After having built and installed the core and module libraries, go to FreeCAD/bin and try
+./FreeCAD invoking the main window.
 
 Note: Since OpenCASCADE requires a lot of environment variables for initialization stuff and
 you don't want to burst your ~/.bashrc (or the rc-file of your preferred shell) you can use
@@ -96,23 +108,23 @@ Installation of Coin/SoQt could fail if the configure script searches
 for QGLWidget either in libqgl or libqt-gl.
 
 Solution:
-QGLWidget now resides in libqt-mt, so create links called libqgl.so and libqt-gl.so, 
+QGLWidget now resides in libqt-mt, so create links called libqgl.so and libqt-gl.so,
 linking to libqt-mt.so.
 [ as root ]
 > ln -s /usr/lib/qt3/lib/libqt-mt.so ./libqgl.so
 > ln -s /usr/lib/qt3/lib/libqt-mt.so ./libqt-gl.so
 
 
-Worth noting up front that OpenCascade requires at least 500Mb of swap space 
+Worth noting up front that OpenCascade requires at least 500Mb of swap space
 ( according to their documentation ). Linux uses a separate partition for
-the swap space, so you might have to re-partition the hard drive to achieve this 
+the swap space, so you might have to re-partition the hard drive to achieve this
 ( I did! ) and it is worth doing that before the rest of the install!
 
 Problem:
 OCC install wizard doesn't work - just prints a few lines of dots and then stops.
 
-Solution: 
-Export the display so that root can connect to it, and then run the java script 
+Solution:
+Export the display so that root can connect to it, and then run the java script
 manually as root:
 > xhost +      // Allow root to access our display
 > su           // Change user to root
@@ -140,15 +152,98 @@ templates:
 
 
 Problem:
-After running configure, couldn't execute libtool (which is created by configure ). 
-If I viewed the libtool file in an editor ( e.g. vi ) I could see ^M at the end of 
+After running configure, couldn't execute libtool (which is created by configure ).
+If I viewed the libtool file in an editor ( e.g. vi ) I could see ^M at the end of
 every line - which is the Windows EOL character, but not the Unix/Linux EOL character.
 
 Solution:
-Open libtool in a 'smart' text editor, such as Kate, save it and close it again - all 
+Open libtool in a 'smart' text editor, such as Kate, save it and close it again - all
 of the Windows ^M 's are converted into Linux ^L ( or whatever ).
+BTW: Maybe you have downloaded one of the .zip files. But the .zip are created under Windows
+you should download the corresponding .ta.gz file instead.
 
 
-Vaclav Smilauer <smilauer@volny.cz>
+Problem:
+My unix configure script runs with the following error:
+configure: checking Python...
+checking for /usr/include/python2.2/Python.h... yes
+checking for /usr/lib/libpython2.2.so... no
+checking for /usr/local/lib/libpython2.2.so... no
+configure: error:
+        **** Could not find Python library files.
+         Please check your installation. ****
 
-(updated by Werner Mayer)
+Now my system does contain a libpython2.2.a but NOT libpython2.2.so
+
+Solution:
+To run the configure script successfully you have to rebuild Python creating also dynamic libraries.
+FreeCAD is designed to have a core system consisting of FreeCADBase, FreeCADApp, FreeCADGui and the main program
+FreeCAD for the Gui part or FreeCADCmd for the commandline version respectively and modules for further funcionality.
+These modules are written as plugin and gets loaded at runtime. To avoid linker errors at build time for the modules we
+strongly need dynamic libraries only.
+
+
+Problem:
+If I don't set the CASROOT environment variable then configure fails.
+e.g. export CASROOT=/opt/OpenCASCADE5.2/ros
+
+Solution:
+That's not really true. Usually if you install OpenCASCAE (OCC) on your system you have to set several environment variables
+under it CASROOT. But it's also possible to split the OCC library and put its header files e.g. to /usr/local/incude put and the
+libraries to /usr/local/lib. This is mainly common under Debian based systems.
+In order to run the configure script successfully in this case you have to specify the --with-OCC-includes and --with-OCC-libs
+options. The configure scripts then checks for the file Standard.hxx.
+
+
+Problem:
+OCC was not found.
+The message is
+   configure: checking OpenCascade...
+   checking for /usr/include/OCC/Standard.hxx... no
+   configure: error:
+        **** Could not find OpenCascade header files.
+         Please check your installation. ****
+
+OCC was automatically intalled in
+        /opt/OpenCASCADE5.2/
+     and I don't find any Standard.hxx
+     (the installer was perfectly working)
+
+Solution:
+If --with-OCC-includes was not set then the configure scripts checks for $CASROOT/inc/Standard.hxx. If CASROOT isn't set too,
+then configure checks for /use/include/Standard.hxx. To solve the problem either set CASROOT (see also the problem above)
+or use the --with-OCC-includes (and --with-OCC-libs) options of configure.
+
+
+Problem:
+The configure script fails when it checks for the Qt installation. The ouput of configure is:
+checking for Qt... yes:
+    QT_CXXFLAGS=-I/usr/lib/qt-1.45/include
+    QT_DIR=/usr/lib/qt-1.45
+    QT_LIBS=-L/usr/lib/qt-1.45/lib -lqt  -lSM -lICE  -L/usr/X11R6/lib -lX11
+-lXext -lXmu -lXt -lXi
+    QT_UIC=
+    QT_MOC=/usr/lib/qt-1.45/bin/moc
+checking correct functioning of Qt installation... failure
+configure: error: Failed to find matching components of a complete
+                  Qt installation. Try using more options,
+                  see ./configure --help.
+
+Solution:
+Your Qt version is simply too old. You need at least version 3.2.x to run configure successfully.
+
+
+Problem:
+The ./configure can't find a file named "Python.h" but I don't have any file named
+like that and Python is perfectly running on the computer
+
+Solution:
+You need to have installed the devel package of Python, too. The Python interpreter (or any other application)
+doesn't need header files at runtime, but to build an application using Python then you need the header files.
+
+
+
+
+
+Werner Mayer <werner.wm.mayer@gmx.de>
+November 2005

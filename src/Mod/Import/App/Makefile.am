@@ -26,8 +26,15 @@ libImport_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
+libdir = $(prefix)/Mod/Import
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f Import.so && \
-		$(LN_S) lib/libImport.so Import.so
+		$(LN_S) libImport.so Import.so
+
+EXTRA_DIST = \
+		AppImport.dsp \
+		AppImport.vcproj \
+		Libs.cpp

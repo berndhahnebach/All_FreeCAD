@@ -77,8 +77,15 @@ libMesh_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
+libdir = $(prefix)/Mod/Mesh
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f Mesh.so && \
-		$(LN_S) lib/libMesh.so Mesh.so
+		$(LN_S) libMesh.so Mesh.so
+
+EXTRA_DIST = \
+		AppMesh.dsp \
+		AppMesh.vcproj \
+		Libs.cpp

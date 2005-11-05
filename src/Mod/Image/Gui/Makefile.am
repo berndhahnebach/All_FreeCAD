@@ -19,7 +19,7 @@ libImageGui_la_SOURCES=\
 
 # the library search path.
 libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport= 
+libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport=
 
 libImageGui_la_LIBADD   = \
 		-lFreeCADGui \
@@ -43,10 +43,18 @@ moc_%.cpp: %.h
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
+libdir = $(prefix)/Mod/Image
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f ImageGui.so && \
-		$(LN_S) lib/libImageGui.so ImageGui.so
+		$(LN_S) libImageGui.so ImageGui.so
 
 CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = \
+		AppImageGui.dsp \
+		AppImageGui.vcproj \
+		Libs.cpp \
+		XpmImages.h

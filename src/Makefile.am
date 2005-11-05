@@ -1,13 +1,14 @@
-SUBDIRS=Base App Gui Main
+SUBDIRS=Base App Gui Main Mod Tools
 
 
 EXTRA_DIST = \
+		All.dsp \
+		All.vcproj \
+		FreeCAD.dsw \
+		FreeCAD.sln \
 		ChangeLog.txt \
-		FCConfig.h \
 		copying.lib \
+		fc.sh \
 		README.Linux \
-		Version.h \
-		Mod \
-		Tools
-
-
+		FCConfig.h \
+		Version.h

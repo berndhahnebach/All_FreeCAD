@@ -48,8 +48,15 @@ moc_%.cpp: %.h
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
+libdir = $(prefix)/Mod/Import
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f ImportGui.so && \
-		$(LN_S) lib/libImportGui.so ImportGui.so
+		$(LN_S) libImportGui.so ImportGui.so
+
+EXTRA_DIST = \
+		AppImportGui.dsp \
+		AppImportGui.vcproj \
+		Libs.cpp

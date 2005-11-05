@@ -39,3 +39,13 @@ libFreeCADPy_la_LIBADD=\
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS)
+
+EXTRA_DIST = \
+		freecad.rc \
+		FreeCADMain.dsp \
+		FreeCADMain.vcproj \
+		FreeCADMainCmd.dsp \
+		FreeCADMainCmd.vcproj \
+		FreeCADMainPy.dsp \
+		FreeCADMainPy.vcproj \
+		icon.ico

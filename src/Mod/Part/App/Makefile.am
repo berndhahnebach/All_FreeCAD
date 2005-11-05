@@ -24,7 +24,7 @@ libPart_la_SOURCES=\
 		PartFeaturePy.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
-		TopologyPy.cpp
+		TopologyPy.cpp \
 		TopologyPy.h
 
 # the library search path.
@@ -43,8 +43,15 @@ libPart_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
+libdir = $(prefix)/Mod/Part
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f Part.so && \
-		$(LN_S) lib/libPart.so Part.so
+		$(LN_S) libPart.so Part.so
+
+EXTRA_DIST = \
+		AppPart.dsp \
+		AppPart.vcproj \
+		Libs.cpp

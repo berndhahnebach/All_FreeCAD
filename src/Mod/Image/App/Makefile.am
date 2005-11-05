@@ -20,8 +20,15 @@ libImage_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
+libdir = $(prefix)/Mod/Image
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f Image.so && \
-		$(LN_S) lib/libImage.so Image.so
+		$(LN_S) libImage.so Image.so
+
+EXTRA_DIST = \
+		AppImage.dsp \
+		AppImage.vcproj \
+		Libs.cpp

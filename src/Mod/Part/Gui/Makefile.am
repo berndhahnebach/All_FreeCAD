@@ -70,10 +70,22 @@ moc_%.cpp: %.h
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
+libdir = $(prefix)/Mod/Part
+
 # We need this softlink for Python to load
 install-data-local:
-		cd $(prefix) && \
+		cd $(libdir) && \
 		rm -f PartGui.so && \
-		$(LN_S) lib/libPartGui.so PartGui.so
+		$(LN_S) libPartGui.so PartGui.so
 
 CLEANFILES = $(BUILT_SOURCES)
+
+EXTRA_DIST = \
+		DlgPartBox.ui \
+		DlgPartImportIges.ui \
+		DlgPartImportStep.ui \
+		DlgSettings3DViewPart.ui \
+		Part_de.ts \
+		AppPartGui.dsp \
+		AppPartGui.vcproj \
+		Libs.cpp
