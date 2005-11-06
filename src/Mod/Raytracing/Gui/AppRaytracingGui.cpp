@@ -82,9 +82,6 @@ void ModuleExport initRaytracingGui() {
   Base::Console().Log("Mod : Load AppRaytracingGui\n");
   (void) Py_InitModule("RaytracingGui", hello_methods);   /* mod name, table ptr */
 
-  App::GetApplication();
-  Gui::Application::Instance;
-
   // instanciating the commands
   CreateRaytracingCommands();
   Gui::WorkbenchFactory().AddProducer("Raytracing", new Gui::WorkbenchProducer<RayGui::Workbench>);
