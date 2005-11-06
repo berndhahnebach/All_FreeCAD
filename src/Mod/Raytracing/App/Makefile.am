@@ -39,6 +39,8 @@ install-data-local:
 		rm -f Raytracing.so && \
 		$(LN_S) libRaytracing.so Raytracing.so
 
+CLEANFILES = $(BUILT_SOURCES)
+
 EXTRA_DIST = \
 		resources/FCAnimation.inc \
 		resources/FCAnimation.ini \
