@@ -37,3 +37,7 @@ Version: V0.3B3 Date: Tue Oct  4 10:04:27 2005 +++++++++++++++++++++++++++++++
 + solved the performance problems to display objects in fullscreen mode (by disabling the background image)
 + freeing the resourcec on document close
 + performance critical bug fixed rendering points in Iv scenegraph (due to uninitialised transparency in Feature constructor)
+
+Version: V0.3B4 Date: Sun Nov  6 01:20:57 2005 +++++++++++++++++++++++++++++++
++ reorganisation of Linux build system
+  removed all configure scripts from module and use only the basic one
