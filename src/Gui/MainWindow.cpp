@@ -55,7 +55,6 @@
 #include "View.h"
 
 #include "Icons/developers.h"
-#include "Icons/FCIcon.xpm"
 #include "WidgetFactory.h"
 #include "Command.h"
 #include "Tree.h"

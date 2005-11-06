@@ -64,7 +64,8 @@ void MacroManager::open(MacroType eType,const char *sName)
 
   _sMacroInProgress = "";
   _sName = sName;
-  if(_sName.find(".FCMacro") == std::string::npos)
+  unsigned int pos = _sName.find(".FCMacro");
+  if(pos == std::string::npos)
     _sName += ".FCMacro";
 
   _bIsOpen = true;
