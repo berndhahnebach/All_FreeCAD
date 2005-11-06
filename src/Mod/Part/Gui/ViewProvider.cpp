@@ -222,17 +222,17 @@ void ViewProviderInventorPart::attach(App::Feature *pcFeat)
 
 
 // buffer acrobatics for inventor ****************************************************
-static char * buffer;
-static size_t buffer_size = 0;
-static std::string cReturnString;
-
+//static char * buffer;
+//static size_t buffer_size = 0;
+//static std::string cReturnString;
+/*
 static void *
 buffer_realloc(void * bufptr, size_t size)
 {
   buffer = (char *)realloc(bufptr, size);
   buffer_size = size;
   return buffer;
-}
+}*/
 /*
 static const std::string&
 buffer_writeaction(SoNode * root)
