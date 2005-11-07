@@ -329,10 +329,16 @@ MenuItem* StdWorkbench::setupMenuBar() const
   *edit << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo"
         << "Separator" << "Std_DlgPreferences";
 
+/*
+  // stereo
+  MenuItem* view3d = new MenuItem( menuBar );
+  view3d->setCommand( "&3D View" );
+  *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3";
+*/  
   // View
   MenuItem* view = new MenuItem( menuBar );
   view->setCommand( "&View" );
-  *view << "Std_ViewCreateInventor" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" << "Std_ToggleVisibility" << "Std_ViewFullScreen" 
+  *view << "Std_ViewCreateInventor" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoOff" << "Separator" << "Std_ToggleVisibility" << "Std_ViewFullScreen" 
         << "Separator" << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
   
   // Tools

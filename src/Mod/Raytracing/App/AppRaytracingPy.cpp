@@ -69,7 +69,7 @@ getProjectFile(PyObject *self, PyObject *args)
 static PyObject *                                
 writePartFile(PyObject *self, PyObject *args)          
 {      
-#if 0
+#if 1
     PyObject *ShapeObject;
     const char *FileName,*PartName;
     if (! PyArg_ParseTuple(args, "ssO!",&FileName,&PartName,&(Part::TopoShapePy::Type), &ShapeObject)) 
@@ -81,6 +81,23 @@ writePartFile(PyObject *self, PyObject *args)
 #else
     Base::Console().Error("Linker error: Part::TopoShapePy\n");
 #endif
+
+    Py_Return;       
+}
+
+/// write project file
+static PyObject *                                
+writePartFileCSV(PyObject *self, PyObject *args)          
+{      
+    PyObject *ShapeObject;
+    const char *FileName;
+    float Acur,Length;
+    if (! PyArg_ParseTuple(args, "O!sff",&(Part::TopoShapePy::Type), &ShapeObject,&FileName,&Acur,&Length  )) 
+        return NULL;                             
+
+    TopoDS_Shape &aShape = ((Part::TopoShapePy *)ShapeObject)->getShape();
+    
+    PovTools::writeShapeCSV(FileName,aShape,Acur,Length );
 
     Py_Return;       
 }
@@ -163,8 +180,9 @@ struct PyMethodDef Raytracing_methodes[] = {
     {"writeProjectFile", writeProjectFile, 1},       
     {"getProjectFile",   getProjectFile  , 1},       
     {"writePartFile",    writePartFile   , 1},       
-    {"writeCameraFile",  writeCameraFile   , 1},       
-    {"copyResource",     copyResource   , 1},       
+    {"writePartFileCSV", writePartFileCSV, 1},       
+    {"writeCameraFile",  writeCameraFile , 1},       
+    {"copyResource",     copyResource    , 1},       
     {NULL, NULL}                   
 };
 

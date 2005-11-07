@@ -291,13 +291,29 @@ const std::string &View3DInventor::writeNodesToString(SoNode * root)
 
 bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
 {
-  if(strcmp("SetStereoOn",pMsg) == 0 ){
-    _viewer->setStereoViewing(true);
+  if(strcmp("ViewFit",pMsg) == 0 ){
+    _viewer->viewAll();
+    return true;
+// comment out on older Inventor
+#if 1
+  }else if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
+    _viewer->setStereoType(SoQtViewer::STEREO_ANAGLYPH);
     _viewer->setStereoOffset(10);
     return true;
-  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
-    _viewer->setStereoViewing(false);
+  }else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ){
+    _viewer->setStereoType(SoQtViewer::STEREO_QUADBUFFER );
+    _viewer->setStereoOffset(10);
     return true;
+  }else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ){
+    _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_ROWS );
+    return true;
+  }else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ){
+    _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_COLUMNS  );
+    return true;
+  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
+    _viewer->setStereoType(SoQtViewer::STEREO_NONE );
+    return true;
+#endif
   }else if(strcmp("Example1",pMsg) == 0 ){
     SoSeparator * root = new SoSeparator;;
     Texture3D(root);
@@ -319,9 +335,6 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     return true;
   }else if(strncmp("SetCamera",pMsg,9) == 0 ){
     return setCamera(pMsg+10);
-  }else if(strcmp("ViewFit",pMsg) == 0 ){
-    _viewer->viewAll();
-    return true;
   }else if(strcmp("ViewBottom",pMsg) == 0 ){
     SoCamera* cam = _viewer->getCamera();
     cam->orientation.setValue(-1, 0, 0, 0);

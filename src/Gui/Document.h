@@ -51,6 +51,7 @@ namespace Gui {
 
 class ViewProviderInventor;
 class Application;
+class DocumentPy;
 
 /** The Gui Document
  *  This is the document on GUI level. Its main responsibility is 
@@ -157,8 +158,15 @@ public:
   /// 
   bool isLastView(void);
 
+ 	virtual Base::PyObjectBase *getPyObject(void);
+
+
 public slots:
 //	void slotCloseView(MDIView* theView);
+
+protected:
+  	// pointer to the python class
+  Gui::DocumentPy *_pcDocPy;
 
 
 private:

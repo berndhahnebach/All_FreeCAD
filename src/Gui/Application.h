@@ -167,6 +167,8 @@ public:
   PYFUNCDEF_S(sopen);                     // open Python scripts
   PYFUNCDEF_S(sinsert);                   // open Python scripts
 
+  PYFUNCDEF_S(sdocument);  
+
   static PyMethodDef    Methods[]; 
 
 private:

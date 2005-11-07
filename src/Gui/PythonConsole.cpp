@@ -38,6 +38,8 @@
 #include "Command.h"
 #include "DlgEditorImp.h"
 #include "FileDialog.h"
+#include "MainWindow.h"
+
 
 #include <Base/Interpreter.h>
 #include <Base/Exception.h>
@@ -766,6 +768,7 @@ QPopupMenu * PythonConsole::createPopupMenu ( const QPoint & pos )
 {
   QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
   menu->insertItem( tr("Save history as..."), this, SLOT(onSaveHistoryAs()));
+  menu->insertItem( tr("Insert file name..."), this, SLOT(onInsertFileName()));
   return menu;
 }
 
@@ -788,6 +791,17 @@ void PythonConsole::onSaveHistoryAs()
       }
     }
   }
+}
+
+void PythonConsole::onInsertFileName()
+{
+  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "All Files (*.*)", Gui::getMainWindow() );
+	if ( fn.isEmpty() )
+		return;
+
+  //fn.replace('\\',"/");
+  insert( fn );
+
 }
 
 // ---------------------------------------------------------------------

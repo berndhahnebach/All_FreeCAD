@@ -47,7 +47,9 @@ class ViewProviderInventor;
 /** The Inventor viewer
  *  
  */
-class GuiExport View3DInventorViewer: public SoQtViewer{
+class GuiExport View3DInventorViewer: public SoQtViewer
+{
+
   SOQT_OBJECT_ABSTRACT_HEADER(View3DInventorViewer, SoQtViewer);
 
 public:

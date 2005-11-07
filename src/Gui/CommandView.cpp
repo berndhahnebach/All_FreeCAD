@@ -623,35 +623,62 @@ bool StdCmdViewIvStereoOff::isActive(void)
 
 
 //===========================================================================
-// Std_ViewIvStereoOn
+// Std_ViewIvStereoRedGreen
 //===========================================================================
-DEF_STD_CMD_A(StdCmdViewIvStereoOn);
+DEF_STD_CMD_A(StdCmdViewIvStereoRedGreen);
 
-StdCmdViewIvStereoOn::StdCmdViewIvStereoOn()
-  :CppCommand("Std_ViewIvStereoOn")
+StdCmdViewIvStereoRedGreen::StdCmdViewIvStereoRedGreen()
+  :CppCommand("Std_ViewIvStereoRedGreen")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Stereo On");
-  sToolTipText  = QT_TR_NOOP("Switch stereo viewing on");
-  sWhatsThis    = QT_TR_NOOP("Switch stereo viewing on");
-  sStatusTip    = QT_TR_NOOP("Switch stereo viewing on");
+  sMenuText     = QT_TR_NOOP("Stereo red/green");
+  sToolTipText  = QT_TR_NOOP("Switch stereo viewing to red/green");
+  sWhatsThis    = QT_TR_NOOP("Switch stereo viewing to red/green");
+  sStatusTip    = QT_TR_NOOP("Switch stereo viewing to red/green");
   sPixmap       = "Std_Tool7";
   iAccel        = 0;
 }
 
-void StdCmdViewIvStereoOn::activated(int iMsg)
+void StdCmdViewIvStereoRedGreen::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoOn\")");
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoRedGreen\")");
 }
 
-bool StdCmdViewIvStereoOn::isActive(void)
+bool StdCmdViewIvStereoRedGreen::isActive(void)
+{
+  return getGuiApplication()->sendHasMsgToActiveView("SetStereoOn");
+}
+
+//===========================================================================
+// Std_ViewIvStereoQuadBuff
+//===========================================================================
+DEF_STD_CMD_A(StdCmdViewIvStereoQuadBuff);
+
+StdCmdViewIvStereoQuadBuff::StdCmdViewIvStereoQuadBuff()
+  :CppCommand("Std_ViewIvStereoQuadBuff")
+{
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Stereo quad buffer");
+  sToolTipText  = QT_TR_NOOP("Switch stereo viewing to quad buffer");
+  sWhatsThis    = QT_TR_NOOP("Switch stereo viewing to quad buffer");
+  sStatusTip    = QT_TR_NOOP("Switch stereo viewing to quad buffer");
+  sPixmap       = "Std_Tool7";
+  iAccel        = 0;
+}
+
+void StdCmdViewIvStereoQuadBuff::activated(int iMsg)
+{
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoQuadBuff\")");
+}
+
+bool StdCmdViewIvStereoQuadBuff::isActive(void)
 {
   return getGuiApplication()->sendHasMsgToActiveView("SetStereoOn");
 }
 
 
 //===========================================================================
-// Std_ViewIvStereoOn
+// Std_ViewIvIssueCamPos
 //===========================================================================
 DEF_STD_CMD_A(StdCmdViewIvIssueCamPos);
 
@@ -732,7 +759,8 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdViewIvDecorationOff());
   rcCmdMgr.addCommand(new StdCmdViewIvDecorationOn());
 
-  rcCmdMgr.addCommand(new StdCmdViewIvStereoOn());
+  rcCmdMgr.addCommand(new StdCmdViewIvStereoQuadBuff());
+  rcCmdMgr.addCommand(new StdCmdViewIvStereoRedGreen());
   rcCmdMgr.addCommand(new StdCmdViewIvStereoOff());
 
   rcCmdMgr.addCommand(new StdCmdViewIvIssueCamPos());

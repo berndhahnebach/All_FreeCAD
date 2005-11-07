@@ -60,11 +60,7 @@ void ModuleExport initPart() {
   Base::Console().Log("Mod : Load AppPart\n");
 	(void) Py_InitModule("Part", Part_methods);   /* mod name, table ptr */
 
-  App::GetApplication();
-
-	Console().Log("AppPart loaded\n");
-
-	//new App::FeatureProducer<Part::PartBoxFeature>;
+  //new App::FeatureProducer<Part::PartBoxFeature>;
   App::FeatureFactory().AddProducer("Part"          ,new App::FeatureProducer<Part::PartFeature>);
   App::FeatureFactory().AddProducer("PartBox"       ,new App::FeatureProducer<Part::PartBoxFeature>);
 	App::FeatureFactory().AddProducer("PartCut"       ,new App::FeatureProducer<Part::PartCutFeature>);

@@ -41,6 +41,7 @@
 #include "Application.h"
 #include "MainWindow.h"
 #include "Document.h"
+#include "DocumentPy.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 #include "BitmapFactory.h"
@@ -65,6 +66,10 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
 
   _pcDocument->Attach(this);
+
+  	// pointer to the python class
+  _pcDocPy = new Gui::DocumentPy(this);
+
 
   /*
   // seting up a new Viewer +++++++++++++++++++++++++++++++++++++++++++++++
@@ -626,6 +631,10 @@ Handle(V3d_Viewer) Document::Viewer(const Standard_CString aDisplay,
 # endif  // FC_OS_WIN32
 }
 
+Base::PyObjectBase * Document::getPyObject(void)
+{
+	return _pcDocPy;
+}
 
 
 #include "moc_Document.cpp"

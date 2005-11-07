@@ -215,6 +215,72 @@ void PovTools::writeShape(const char *FileName,
 
 }
 
+void PovTools::writeShapeCSV(const char *FileName,
+           const TopoDS_Shape& Shape,
+           float fMeshDeviation,
+           float fLength)
+{
+  const char cSeperator = ',';
+
+  Base::Sequencer().start("Meshing Shape", 0);
+  Base::Console().Log("Meshing with Deviation: %f\n",fMeshDeviation);
+
+  TopExp_Explorer ex;
+	BRepMesh_IncrementalMesh MESH(Shape,fMeshDeviation);
+
+  Base::Sequencer().stop();
+
+  // open the file and write
+  std::ofstream fout(FileName);
+
+  // counting faces and start sequencer
+  int l = 1;
+  for (ex.Init(Shape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
+  Base::Sequencer().start("Writing file", l);
+
+  // write the file
+  l = 1;
+  for (ex.Init(Shape, TopAbs_FACE); ex.More(); ex.Next(),l++) {
+
+    // get the shape and mesh it
+		const TopoDS_Face& aFace = TopoDS::Face(ex.Current());
+
+
+    // this block mesh the face and transfers it in a C array of vertices and face indexes
+		Standard_Integer nbNodesInFace,nbTriInFace;
+		gp_Vec* vertices=0;
+		gp_Vec* vertexnormals=0;
+		long* cons=0;
+    
+    transferToArray(aFace,&vertices,&vertexnormals,&cons,nbNodesInFace,nbTriInFace);
+
+    if(!vertices) break;
+    // writing per face header 
+    // writing vertices
+    for(int i=0;i < nbNodesInFace;i++) {
+      fout << vertices[i].X() << cSeperator
+           << vertices[i].Z() << cSeperator
+           << vertices[i].Y() << cSeperator 
+           << vertexnormals[i].X() * fLength <<cSeperator
+           << vertexnormals[i].Z() * fLength <<cSeperator
+           << vertexnormals[i].Y() * fLength <<cSeperator
+           << endl;
+    }
+
+		delete [] vertexnormals;
+		delete [] vertices;
+		delete [] cons;
+
+    Base::Sequencer().next();
+
+  } // end of face loop
+
+  Base::Sequencer().stop();
+
+  fout.close();
+
+}
+
 
 
 void PovTools::transferToArray(const TopoDS_Face& aFace,gp_Vec** vertices,gp_Vec** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace )

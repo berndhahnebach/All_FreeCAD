@@ -65,9 +65,29 @@ PyMethodDef Application::Methods[] = {
   {"show",                    (PyCFunction) Application::sshow,                    1},
   {"open",                    (PyCFunction) Application::sopen,                    1},
   {"insert",                  (PyCFunction) Application::sinsert,                  1},
+  {"document",                (PyCFunction) Application::sdocument,                1},
 
   {NULL, NULL}		/* Sentinel */
 };
+
+PYFUNCIMP_S(Application,sdocument)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                                      // NULL triggers exception 
+
+  Document *pcDoc =  Instance->activeDocument();
+
+  if(pcDoc)
+  {
+    return pcDoc->getPyObject();
+  }
+    
+   Py_Return;
+} 
+
+
+
+
 
 PYFUNCIMP_S(Application,shide)
 {

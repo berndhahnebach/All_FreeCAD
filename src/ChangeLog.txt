@@ -41,3 +41,6 @@ Version: V0.3B3 Date: Tue Oct  4 10:04:27 2005 +++++++++++++++++++++++++++++++
 Version: V0.3B4 Date: Sun Nov  6 01:20:57 2005 +++++++++++++++++++++++++++++++
 + reorganisation of Linux build system
   removed all configure scripts from module and use only the basic one
++ Python GuiDocument and View
++ Addition Stereo modes
+

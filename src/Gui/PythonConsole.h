@@ -83,6 +83,7 @@ public:
 
 public slots:
   void onSaveHistoryAs();
+  void onInsertFileName();
 
 protected:
   void keyPressEvent          ( QKeyEvent         * e );

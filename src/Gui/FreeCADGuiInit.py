@@ -41,7 +41,7 @@ class Workbench:
 	def Activate(self):
 		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
 	def GetIcon(self):
-		Log("Init: "+ str(self) + ": Workbench.GetIcon() not implemented!")
+		Wrn("Init: "+ str(self) + ": Workbench.GetIcon() not implemented!")
 
 
 class StandardWorkbench ( Workbench ):
@@ -50,7 +50,7 @@ class StandardWorkbench ( Workbench ):
 		# load the module
 		Log ('Mod : Loading FreeCADGui')
 	def GetIcon(self):
-		Log("Workbench.GetIcon() not implemented!")
+		Wrn("Init: Workbench.GetIcon() not implemented!")
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
