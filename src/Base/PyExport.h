@@ -79,7 +79,7 @@ public:
 		:_pHandels(ToHandel)
 	{
 		if(_pHandels)
-			ToHandel->IncRef();
+			_pHandels->IncRef();
 	}
 
 	/// Copy constructor 
@@ -87,7 +87,7 @@ public:
 		:_pHandels(ToHandel._pHandels)
 	{
 		if(_pHandels)
-			ToHandel->IncRef();
+			_pHandels->IncRef();
 	}
 
 	/** destructor
@@ -111,7 +111,7 @@ public:
 			_pHandels->DecRef();
 		_pHandels = other->_pHandels;
 		if(_pHandels)
-			ToHandel->IncRef();
+			_pHandels->IncRef();
 		return *this;
 	}
 

@@ -63,6 +63,7 @@ public:
 
   /** @name Mouse events*/
   //@{
+  bool handleEvent( const SoEvent * const ev, const SbViewportRegion& vp );
   virtual void mouseMoveEvent    ( QMouseEvent *cEvent );
   void mousePressEvent   ( QMouseEvent *cEvent );
   void mouseReleaseEvent ( QMouseEvent *cEvent );
@@ -93,6 +94,9 @@ protected:
   QCursor m_cPrevCursor;
   int  m_iXold, m_iYold;
   int  m_iXnew, m_iYnew;
+
+private:
+  QTime _timer;
 };
 
 // -----------------------------------------------------------------------------------

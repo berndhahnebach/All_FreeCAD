@@ -45,7 +45,8 @@ void AbstractMouseModel::grabMouseModel( Gui::View3DInventorViewer* viewer )
 {
   _pcView3D=viewer;
   m_cPrevCursor = _pcView3D->getWidget()->cursor();
-
+  _timer.start();
+  
   // do initialization of your mousemodel
   initialize();
 }
@@ -57,6 +58,194 @@ void AbstractMouseModel::releaseMouseModel()
 
   _pcView3D->getWidget()->setCursor(m_cPrevCursor);
   _pcView3D = 0;
+}
+
+bool AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRegion& vp)
+{/*
+  // check for all kinds of button events
+  if (ev->getTypeId().isDerivedFrom(SoButtonEvent::getClassTypeId())) 
+  {
+    if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) 
+    {
+    }
+    else if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId()))
+    {
+      const SoMouseButtonEvent * const mb = (const SoMouseButtonEvent *) ev;
+      const int button = mb->getButton();
+      const SbBool press = mb->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+      
+      // button down
+      if ( press )
+      {
+      }
+      // button up
+      else
+      {
+      }
+    }
+//    else if (ev->getTypeId().isDerivedFrom(SoSpaceballButtonEvent::getClassTypeId()))
+//    {
+//      return true;
+//    }
+    else
+    {
+      return true;
+    }
+  }
+  // mouse move events
+  else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) 
+  {
+  }
+  // 3D movements
+  else if (ev->getTypeId().isDerivedFrom(SoMotion3Event::getClassTypeId())) 
+  {
+    return true;
+  }
+  // all other events 
+  else
+  {
+    return true;
+  }*/
+
+  const SbVec2s& sz = vp.getWindowSize(); 
+  short w,h; sz.getValue(w,h);
+
+  SbVec2s loc = ev->getPosition();
+  short x,y; loc.getValue(x,y);
+  y = h-y; // the origin is at the left bottom corner (instead of left top corner)
+
+  if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) 
+  {
+    const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
+    const int button = event->getButton();
+    const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+
+    Qt::ButtonState state = Qt::ButtonState((ev->wasShiftDown() ? Qt::ShiftButton : Qt::NoButton)|(ev->wasCtrlDown () ? 
+                            Qt::ControlButton : Qt::NoButton)|(ev->wasAltDown() ? Qt::AltButton : Qt::NoButton));
+
+    if ( press )
+    {
+      float fRatio = vp.getViewportAspectRatio();
+      SbVec2f pos = ev->getNormalizedPosition(vp);
+      float pX,pY; pos.getValue(pX,pY);
+
+      SbVec2f org = vp.getViewportOrigin();
+      float Ox, Oy; org.getValue( Ox, Oy );
+
+      SbVec2f siz = vp.getViewportSize();
+      float dX, dY; siz.getValue( dX, dY );
+
+      // now calculate the real points respecting aspect ratio information
+      //
+      if ( fRatio > 1.0f )
+      {
+        pX = ( pX - 0.5f*dX ) * fRatio + 0.5f*dX;
+        pos.setValue(pX,pY);
+      }
+      else if ( fRatio < 1.0f )
+      {
+        pY = ( pY - 0.5f*dY ) / fRatio + 0.5f*dY;
+        pos.setValue(pX,pY);
+      }
+
+      // double click event
+      if ( _timer.restart() < QApplication::doubleClickInterval() )
+      {
+        QMouseEvent e(QEvent::MouseButtonDblClick, QPoint(x,y), Qt::LeftButton, state);
+        mousePressEvent(&e);
+      }
+
+      switch ( button )
+      {
+      case SoMouseButtonEvent::BUTTON1:
+        {
+          QMouseEvent e(QEvent::MouseButtonPress, QPoint(x,y), Qt::LeftButton, state);
+          mousePressEvent(&e);
+        } break;
+      case SoMouseButtonEvent::BUTTON2:
+        {
+          QMouseEvent e(QEvent::MouseButtonPress, QPoint(x,y), Qt::RightButton, state);
+          mousePressEvent(&e);
+        } break;
+      case SoMouseButtonEvent::BUTTON3:
+        {
+          QMouseEvent e(QEvent::MouseButtonPress, QPoint(x,y), Qt::MidButton, state);
+          mousePressEvent(&e);
+        } break;
+      case SoMouseButtonEvent::BUTTON4:
+        {
+          QWheelEvent e(QPoint(x,y), QCursor::pos(), 120, state);
+          wheelMouseEvent(&e);
+        } break;
+      case SoMouseButtonEvent::BUTTON5:
+        {
+          QWheelEvent e(QPoint(x,y), QCursor::pos(), -120, state);
+          wheelMouseEvent(&e);
+        } break;
+      default:
+        {
+        } break;
+      }
+    }
+    else
+    {
+      QMouseEvent e(QEvent::MouseButtonRelease, QPoint(), button, 0);
+      switch ( button )
+      {
+      case SoMouseButtonEvent::BUTTON1:
+        {
+          QMouseEvent e(QEvent::MouseButtonRelease, QPoint(x,y), Qt::LeftButton, Qt::LeftButton|state);
+          mouseReleaseEvent(&e);
+        } break;
+      case SoMouseButtonEvent::BUTTON2:
+        {
+          QMouseEvent e(QEvent::MouseButtonRelease, QPoint(x,y), Qt::RightButton, Qt::RightButton|state);
+          mouseReleaseEvent(&e);
+        } break;
+      case SoMouseButtonEvent::BUTTON3:
+        {
+          QMouseEvent e(QEvent::MouseButtonRelease, QPoint(x,y), Qt::MidButton, Qt::MidButton|state);
+          mouseReleaseEvent(&e);
+        } break;
+      case SoMouseButtonEvent::BUTTON4:
+        {
+          QWheelEvent e(QPoint(x,y), QCursor::pos(), 120, state);
+          wheelMouseEvent(&e);
+        } break;
+      case SoMouseButtonEvent::BUTTON5:
+        {
+          QWheelEvent e(QPoint(x,y), QCursor::pos(), -120, state);
+          wheelMouseEvent(&e);
+        } break;
+      default:
+        {
+        } break;
+      }
+    }
+  }
+  else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) 
+  {
+    Qt::ButtonState state = Qt::ButtonState((ev->wasShiftDown() ? Qt::ShiftButton : Qt::NoButton)|(ev->wasCtrlDown () ? 
+                            Qt::ControlButton : Qt::NoButton)|(ev->wasAltDown() ? Qt::AltButton : Qt::NoButton));
+    
+    QMouseEvent e( QEvent::MouseMove, QPoint(x,y), Qt::NoButton, state );
+    mouseMoveEvent(&e);
+  }
+  else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) 
+  {
+    SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
+    switch (ke->getKey()) 
+    {
+    case SoKeyboardEvent::ESCAPE:
+      break;
+    default:
+      break;
+    }
+  }
+
+  return true;
+
+  return false;
 }
 
 void AbstractMouseModel::mouseMoveEvent( QMouseEvent *cEvent )

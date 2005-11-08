@@ -65,6 +65,8 @@
 #include "../Base/Console.h"
 #include "Tools.h"
 #include <qcursor.h>
+#include "SoFCColorLegend.h"
+#include "SoFCOffScreenRenderer.h"
 #include "SoFCSelection.h"
 #include "Selection.h"
 #include "MainWindow.h"
@@ -73,7 +75,6 @@
 
 // build in Inventor
 
-#include <Inventor/nodes/SoText2.h>
 
 using namespace Gui;
 
@@ -178,8 +179,19 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   SoTranslation * offset = new SoTranslation;
   offset->translation = SbVec3f(ARROWSIZE/2.0, 0, 0);
 
-  // simple color bar
-//  SoSeparator* bar = createColorLegend();
+/* // simple color bar
+  SoFCColorLegend* bar = new SoFCColorLegend;//createColorLegend();
+  SoMFString label;
+  label.set1Value(0, "+1.00");
+  label.set1Value(1, "+0.75");
+  label.set1Value(2, "+0.50");
+  label.set1Value(3, "+0.25");
+  label.set1Value(4, " 0.00");
+  label.set1Value(5, "-0.25");
+  label.set1Value(6, "-0.50");
+  label.set1Value(7, "-0.75");
+  label.set1Value(8, "-1.00");
+  bar->setMarkerLabel( label );*/
   //
 //  SoCube * cube = new SoCube;
 //  cube->width = ARROWSIZE;
@@ -224,7 +236,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   setSeekTime(0.5);
   setSeekValueAsPercentage(true);
   setSeekDistance(50);
- }
+}
 
 View3DInventorViewer::~View3DInventorViewer()
 {
@@ -233,73 +245,32 @@ View3DInventorViewer::~View3DInventorViewer()
   getMainWindow()->setPaneText(2, "");
 }
 
-SoSeparator* View3DInventorViewer::createColorLegend() const
+QImage View3DInventorViewer::makeScreenShot( float fScale ) const
 {
-  // points
-  // FIXME: use points in range [-1,+1] W.Mayer 2005
-  SbVec3f* vertices = new SbVec3f[10];
-  vertices[0].setValue(-2.0f, 1.0f, 0.0f);
-  vertices[1].setValue(-1.5f, 1.0f, 0.0f);
-  vertices[2].setValue(-2.0f,-1.0f, 0.0f);
-  vertices[3].setValue(-1.5f,-1.0f, 0.0f);
-  vertices[4].setValue(-2.0f,-3.0f, 0.0f);
-  vertices[5].setValue(-1.5f,-3.0f, 0.0f);
-  vertices[6].setValue(-2.0f,-5.0f, 0.0f);
-  vertices[7].setValue(-1.5f,-5.0f, 0.0f);
-  vertices[8].setValue(-2.0f,-7.0f, 0.0f);
-  vertices[9].setValue(-1.5f,-7.0f, 0.0f);
-  // face indices
-  int32_t idx2[32]=
-  {
-    0,3,1,SO_END_FACE_INDEX,
-    0,2,3,SO_END_FACE_INDEX,
-    2,5,3,SO_END_FACE_INDEX,
-    2,4,5,SO_END_FACE_INDEX,
-    4,7,5,SO_END_FACE_INDEX,
-    4,6,7,SO_END_FACE_INDEX,
-    6,9,7,SO_END_FACE_INDEX,
-    6,8,9,SO_END_FACE_INDEX,
-  };
+  SbViewportRegion vp(getViewportRegion());
+  SbVec2s sz = vp.getWindowSize();
+  vp.setWindowSize( (short)(sz[0]*fScale), (short)(sz[1]*fScale) );
+  SoFCOffscreenRenderer renderer(vp);
+  renderer.setBackgroundColor(getBackgroundColor());
+  renderer.setComponents(SoOffscreenRenderer::RGB);
 
-  SoCoordinate3 * coords = new SoCoordinate3;
-	coords->point.setValues(0,10, vertices);
+  SoSeparator* root = new SoSeparator;
+  root->ref();
 
-  float colors[10][3] =
-  {  
-    { 1, 0, 0}, { 1, 0, 0}, // red
-    { 1, 1, 0}, { 1, 1, 0}, // yellow
-    { 0, 1, 0}, { 0, 1 ,0}, // green
-    { 0, 1 ,1}, { 0 ,1, 1}, // cyan
-    { 0 ,0, 1}, { 0 ,0, 1}, // blue
-  };
+  SoCamera* camera = getCamera();
+  // if backgroundroot is added there seems to be a frustum problem
+//  root->addChild(backgroundroot);
+  root->addChild(getHeadlight());
+  root->addChild(camera);
+  root->addChild(pcSelection);
+  root->addChild(foregroundroot);
 
-  SoMaterial* mat = new SoMaterial;
-  mat->diffuseColor.setValues(0, 10, colors);
-  mat->transparency = 0.3f;
+  QImage img;
+  renderer.render( root );
+  renderer.writeToImage(img);
+  root->unref();
 
-  SoMaterialBinding* matBinding = new SoMaterialBinding;
-  matBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
-
-  SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
-	faceset->coordIndex.setValues(0,32,(const int*) idx2);
-
-  SoSeparator* root = new SoSeparator();
-  root->addChild(setMarkerLabel(-1.4f,  1.0f, 0.0f, "+1.00"));
-  root->addChild(setMarkerLabel(-1.4f,  0.0f, 0.0f, "+0.75"));
-  root->addChild(setMarkerLabel(-1.4f, -1.0f, 0.0f, "+0.50"));
-  root->addChild(setMarkerLabel(-1.4f, -2.0f, 0.0f, "+0.25"));
-  root->addChild(setMarkerLabel(-1.4f, -3.0f, 0.0f, " 0.00"));
-  root->addChild(setMarkerLabel(-1.4f, -4.0f, 0.0f, "-0.25"));
-  root->addChild(setMarkerLabel(-1.4f, -5.0f, 0.0f, "-0.50"));
-  root->addChild(setMarkerLabel(-1.4f, -6.0f, 0.0f, "-0.75"));
-  root->addChild(setMarkerLabel(-1.4f, -7.0f, 0.0f, "-1.00"));
-	root->addChild(coords);
-  root->addChild(mat);
-  root->addChild(matBinding);
-	root->addChild(faceset);
-  delete [] vertices;
-
-  return root;
+  return img;
 }
 
 SoSeparator* View3DInventorViewer::setBackgroundGradient() const
@@ -361,7 +332,7 @@ SoSeparator* View3DInventorViewer::setBackgroundGradient() const
 
 void View3DInventorViewer::sizeChanged( const SbVec2s& size )
 {
-  // searching for the background node
+  // searching in the background node
   SoNode* child = this->backgroundroot->getChild(1);
   if ( child && child->getTypeId() == SoSeparator::getClassTypeId() )
   {
@@ -400,27 +371,22 @@ void View3DInventorViewer::sizeChanged( const SbVec2s& size )
       vertices[7].setValue( fAvgX, fMinY, 0.0f);
       vertices[8].setValue( fMaxX, fMinY, 0.0f);
 	    coord->point.setValues(0,9, vertices);
+      delete [] vertices;
+    }
+  }
+  
+  // searching in the foreground node
+  for ( int i=0; i<this->foregroundroot->getNumChildren(); i++ )
+  {
+    child = this->foregroundroot->getChild(i);
+    if ( child && child->getTypeId() == SoFCColorLegend::getClassTypeId() )
+    {
+      reinterpret_cast<SoFCColorLegend*>(child)->setViewerSize( size );
+      break;
     }
   }
 
   inherited::sizeChanged( size );
-}
-
-SoSeparator* View3DInventorViewer::setMarkerLabel(float x, float y, float z, const char* text) const
-{
-  SoSeparator* label = new SoSeparator;
-  SoTransform* trans = new SoTransform;
-  SoBaseColor* color = new SoBaseColor;
-  SoText2    * text2 = new SoText2;
-
-  trans->translation.setValue(x,y,z);
-  color->rgb.setValue(1,1,1);
-  text2->string.setValue( text );
-  label->addChild(trans);
-  label->addChild(color);
-  label->addChild(text2);
-
-  return label;
 }
 
 void View3DInventorViewer::actualRedraw(void)

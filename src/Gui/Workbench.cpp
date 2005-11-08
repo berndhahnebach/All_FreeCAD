@@ -45,21 +45,21 @@
 
 using namespace Gui;
 
-/** \defgroup workbench Workbench concept
+/** \defgroup workbench The Workbench Framework
  *
- * FreeCAD provides the possibility to have workbenches for each module. A workbench changes the appearance of the main window
+ * FreeCAD provides the possibility to have one or more workbenches for a module. A workbench changes the appearance of the main window
  * in that way that it defines toolbars, command bars or menus (later on dockable windows, ...) that are shown to the user.
  *
- * The idea behind this concept is keep the main window as simple as possible and to show to the user only the important and not dozens of
- * functions. 
+ * The idea behind this concept is that the user should see only the functions that are required for the task that he is doing at this
+ * moment and not to show dozens of unneeded functions which the user never uses.
  *
  * \section stepbystep Step by step
- * Here is a short description how you can add its own workbench to a module.
+ * Here follows a short description of how an own workbench can be added to a module.
  *
  * \subsection newClass Inherit either from Workbench or StdWorkbench
  * First you have to subclass either Workbench or StdWorkbench and reimplement the methods setupMenuBar(), setupToolBars() and setupCommandBars().
- * The difference between both classes is that these methods of Workbench are pure virtual while StdWorkbench already defines the most important
- * functions, such as the 'File', 'Edit', ..., 'Help' menus with their common functions.
+ * The difference between both classes is that these methods of Workbench are pure virtual while StdWorkbench defines already the standard menus and 
+ * toolbars, such as the 'File', 'Edit', ..., 'Help' menus with their common functions.
  * If your class derives from Workbench then you have to define your menus, toolbars and command bars from scratch while deriving from StdWorkbench
  * you have the possibility to add your preferred functions or even remove some unneeded functions.
  * \code
@@ -89,6 +89,7 @@ using namespace Gui;
  * };
  * 
  * \endcode
+ * or
  * \code
  * 
  * class MyWorkbench : public Workbench
@@ -117,24 +118,59 @@ using namespace Gui;
  * 
  * \endcode
  *
- * + Default & Custom toolbars
- * + dock windows
- * + Python workbench loader InitGui.py
- * + FreeCADGui.AddWorkbench
- * + Limitations (name, file operations, mod. of default stuff n.p.)
- * + GetIcon
- * + register wb in C++
- * + register wb in Python
- * This is the base class for the workbench facility. Each FreeCAD module can provide its own 
- * workbench implementation. The workbench defines which GUI elements (such as toolbars, menus, 
- * dockable windows, ...) are added to the mainwindow and which gets removed or hidden. 
- * When a workbench object gets activated the first time the module - it stands for - gets 
- * loaded into RAM.
+ * \subsection regWorkbench Register your workbench
+ * Once you have implemented your workbench class you have to register it to make it known to the FreeCAD core system. You must make sure that the step 
+ * of registration is performed only once. A good place to do it is e.g. in the global function initMODULEGui in AppMODULEGui.cpp where MODULE stands
+ * for the name of your module. Just add the line
+ * \code
+ * Gui::WorkbenchFactory().AddProducer("My workbench", new Gui::WorkbenchProducer<MyWorkbench>);
+ * \endcode
+ * somewhere there.
+ * \note You must make sure to choose a unique name for your workbench (in this example "My workbench"). Since FreeCAD doesn't provide a mechanism for
+ * this you have to care on your own.
+ *
+ * \subsection itemWorkbench Create an item for your workbench
+ * Though your workbench has been registered now,  at this stage you still cannot invoke it yet. Therefore you must create an item in the list of all visible 
+ * workbenches. To perform this step you must open your InitGui.py (a Python file) and do some adjustments. The file contains already a Python class
+ * MODULEWorkbench that implements the Activate() method (it imports the needed library). You can also implement the GetIcon() method to set your own icon for
+ * your workbench, if not, the default FreeCAD icon is taken.
+ * At the end you have to change the line from
+ * \code
+ * Gui.AddWorkbenchHandler("MODULE design",MODULEWorkbench())
+ * \endcode
+ * to 
+ * \code
+ * Gui.AddWorkbenchHandler("My workbench",MODULEWorkbench())
+ * \endcode
+ *
+ * \note You have to specify the same name for the Python workbench handler as for the registered C++ workbench class.
+ *
+ * \section moredetails More details and limitations
+ * One of the key concepts of the workbench framework is to load a module at runtime when the user needs some function that it
+ * provides. So, if the user doesn't need a module it never gets loaded into RAM. This speeds up the startup procedure of 
+ * FreeCAD and saves memory.
+ * At startup FreeCAD scans all module directories and invokes InitGui.py. So an item for a workbench gets created. If the user
+ * clicks on such an item the matching module gets loaded, the C++ workbench gets registered and activated. 
+ *
+ * The user is able to modify a workbench (Edit|Customize). E.g. he can add new toolbars or command bars and add his preferred 
+ * functions to them. But he has only full control over "his" toolbars, the default workbench items cannot be modified or even removed. 
+ *
+ * At the moment only toolbars, command bars and menus are handled by a workbench. In later versions it is also planned to make dock windows,
+ * the context menu and showing special widgets workbench-dependent. 
  * 
- * Workbench
- * StdWorkbench
- * PythonWorkbench
- * 
+ * FreeCAD provides also the possibility to define pure Python workbenches. Such workbenches are temporarily only and are lost after exiting
+ * the FreeCAD session. But if you want to keep your Pyhton workbench you can write a macro and attach it with a user defined button or just 
+ * perform the macro during the next FreeCAD session.
+ * Here follows a short example of how to create and embed a workbench in Python
+ * \code
+ * w=FreeCADGui.CreateWorkbench("My workbench")               # creates a standard workbench (the same as StdWorkbench in C++)
+ * dir(w)                                                     # lists all available function of the object
+ * list = ["Std_Test1", "Std_Test2", "Std_Test3"]             # creates a list of new functions
+ * w.AppendMenu("Test functions", list)                       # creates a new menu with these functions
+ * w.AppendToolbar("Test", list)                              # ... and also a new toolbar
+ * FreeCADGui.AddWorkbenchHandler("My workbench", 0)          # Creates an item for our workbenmch now, the second argument can be 0 as we don't 
+ *                                                            # need our own workbench handler.
+ * \endcode
  */
 
 Workbench::Workbench()
@@ -329,17 +365,18 @@ MenuItem* StdWorkbench::setupMenuBar() const
   *edit << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo"
         << "Separator" << "Std_DlgPreferences";
 
-/*
+
   // stereo
-  MenuItem* view3d = new MenuItem( menuBar );
+  MenuItem* view3d = new MenuItem;
   view3d->setCommand( "&3D View" );
   *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3";
-*/  
+
   // View
   MenuItem* view = new MenuItem( menuBar );
   view->setCommand( "&View" );
-  *view << "Std_ViewCreateInventor" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoOff" << "Separator" << "Std_ToggleVisibility" << "Std_ViewFullScreen" 
-        << "Separator" << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
+  *view << "Std_ViewCreateInventor" << "Separator" << view3d << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" << "Std_ViewIvStereoRedGreen" 
+        << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoOff" << "Separator" << "Std_ToggleVisibility" << "Std_ViewFullScreen" 
+        << "Std_ViewScreenShot" << "Separator" << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
   
   // Tools
   MenuItem* tool = new MenuItem( menuBar );

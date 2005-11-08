@@ -32,12 +32,15 @@
 
 #include "Command.h"
 #include "Application.h"
+#include "FileDialog.h"
 #include "MainWindow.h"
 #include "View.h"
 #include "Document.h"
 #include "Macro.h"
 #include "DlgDisplayPropertiesImp.h"
 #include "Selection.h"
+#include "View3DInventor.h"
+#include "View3DInventorViewer.h"
 
 #include <Base/Exception.h>
 #include <App/Document.h>
@@ -406,6 +409,52 @@ bool StdViewFullScreen::isActive(void)
 }
 
 //===========================================================================
+// Std_ViewScreenShot
+//===========================================================================
+DEF_STD_CMD_A(StdViewScreenShot);
+
+StdViewScreenShot::StdViewScreenShot()
+  :CppCommand("Std_ViewScreenShot")
+{
+  sGroup      = QT_TR_NOOP("Standard-View");
+  sMenuText   = QT_TR_NOOP("Save picture...");
+  sToolTipText= QT_TR_NOOP("Creates a screenshot of the active view");
+  sWhatsThis  = QT_TR_NOOP("Creates a screenshot of the active view");
+  sStatusTip  = QT_TR_NOOP("Creates a screenshot of the active view");
+  iAccel      = 0;
+}
+
+void StdViewScreenShot::activated(int iMsg)
+{
+  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()); 
+  if ( view )
+  {
+    QStringList formats = QImage::outputFormatList();
+
+    QString filter;
+    for( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
+    {
+      filter += QString("%1 %2 (*.%2);;").arg( *it ).arg( QObject::tr("files") ).arg( (*it).lower() );
+    }
+
+    QString fn = FileDialog::getSaveFileName(QString::null, filter, getMainWindow(), 0, QObject::tr("Save picture"));
+    if ( !fn.isEmpty() )
+    {
+      QApplication::setOverrideCursor( Qt::WaitCursor );
+      QImage img = view->getViewer()->makeScreenShot();
+      QFileInfo fi(fn);
+      img.save( fn, fi.extension().upper() );
+      QApplication::restoreOverrideCursor();
+    }
+  }
+}
+
+bool StdViewScreenShot::isActive(void)
+{
+  return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()) != 0);
+}
+
+//===========================================================================
 // Std_ViewCreateOCC
 //===========================================================================
 DEF_STD_CMD_A(StdCmdViewCreateOCC);
@@ -767,6 +816,7 @@ void CreateViewStdCommands(void)
 
   rcCmdMgr.addCommand(new StdCmdViewCreateOCC());
   rcCmdMgr.addCommand(new StdCmdViewCreateInventor());
+  rcCmdMgr.addCommand(new StdViewScreenShot());
 
   rcCmdMgr.addCommand(new StdViewFullScreen());
   rcCmdMgr.addCommand(new StdCmdSetMaterial());

@@ -2856,6 +2856,22 @@ SOURCE=.\MouseModel.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\SoFCColorLegend.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SoFCColorLegend.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SoFCOffscreenRenderer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SoFCOffscreenRenderer.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\SoFCSelection.cpp
 # End Source File
 # Begin Source File
@@ -3042,33 +3058,6 @@ SOURCE=.\Application.cpp
 # Begin Source File
 
 SOURCE=.\Application.h
-
-!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\Application.h
-InputName=Application
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
-
-# Begin Custom Build - Moc'ing $(InputName).h ...
-InputDir=.
-InputPath=.\Application.h
-InputName=Application
-
-"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

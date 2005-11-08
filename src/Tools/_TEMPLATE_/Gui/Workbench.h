@@ -31,9 +31,6 @@
 
 namespace _TEMPLATE_Gui {
 
-/**
- * @author Werner Mayer
- */
 class Workbench : public Gui::StdWorkbench
 {
 public:
@@ -41,6 +38,7 @@ public:
   virtual ~Workbench();
 
 protected:
+  Gui::MenuItem* setupMenuBar() const;
   Gui::ToolBarItem* setupToolBars() const;
   Gui::ToolBarItem* setupCommandBars() const;
 };
@@ -48,4 +46,4 @@ protected:
 } // namespace _TEMPLATE_Gui
 
 
-#endif // _TEMPLATE__WORKBENCH_H
+#endif // _TEMPLATE__WORKBENCH_H 

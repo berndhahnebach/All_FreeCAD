@@ -1852,6 +1852,14 @@ Wollen Sie wirklich fortfahren?</translation>
             <source>Standard views</source>
             <translation>Standardansichten</translation>
         </message>
+        <message>
+            <source>files</source>
+            <translation>Dateien</translation>
+        </message>
+        <message>
+            <source>Save picture</source>
+            <translation>Bildinhalt speichern</translation>
+        </message>
     </context>
     <context>
         <name>StdCmdAbout</name>
@@ -2746,6 +2754,21 @@ Wollen Sie wirklich fortfahren?</translation>
         <message>
             <source>Display the active view in fullscreen</source>
             <translation>Aktives Fenster im Vollbild-Modus anzeigen</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdViewScreenShot</name>
+        <message>
+            <source>Standard-View</source>
+            <translation>Standardansicht</translation>
+        </message>
+        <message>
+            <source>Save picture...</source>
+            <translation>Bildinhalt speichern...</translation>
+        </message>
+        <message>
+            <source>Creates a screenshot of the active view</source>
+            <translation>Erzeugt einen Schnappschuss der aktiven Ansicht</translation>
         </message>
     </context>
 </TS>

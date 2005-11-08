@@ -60,6 +60,10 @@ public:
   void addViewProvider(ViewProviderInventor*);
   /// remove a ViewProvider
   void removeViewProvider(ViewProviderInventor*);
+  /**
+   * Creates an image of the current scene graph. \a fScale (default 1.0) specifies the factor to scale the image.
+   */
+  QImage makeScreenShot(float fScale = 1.0f ) const;
  
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
@@ -162,9 +166,7 @@ protected:
   SbTime CenterTime;
 
 private:
-  SoSeparator* createColorLegend() const;
   SoSeparator* setBackgroundGradient() const;
-  SoSeparator* setMarkerLabel(float x, float y, float z, const char* text) const;
 
   SoSeparator * backgroundroot;
   SoSeparator * foregroundroot;

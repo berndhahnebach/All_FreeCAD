@@ -77,6 +77,7 @@
 #include "Workbench.h"
 #include "WorkbenchManager.h"
 #include "CommandBarManager.h"
+#include "SoFCColorLegend.h"
 #include "SoFCSelection.h"
 
 #include "Inventor/Qt/SoQt.h"
@@ -149,6 +150,7 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   // init the Inventor subsystem
   SoQt::init(this);
   SoDB::init();
+  SoFCColorLegend::initClass();
 
   QVBox* vb = new QVBox( this );
   vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
