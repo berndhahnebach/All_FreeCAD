@@ -369,14 +369,16 @@ MenuItem* StdWorkbench::setupMenuBar() const
   // stereo
   MenuItem* view3d = new MenuItem;
   view3d->setCommand( "&3D View" );
-  *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3";
+  *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoInterleavedRows" << "Std_ViewIvStereoInterleavedColumns" << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3";
+  
 
   // View
   MenuItem* view = new MenuItem( menuBar );
   view->setCommand( "&View" );
-  *view << "Std_ViewCreateInventor" << "Separator" << view3d << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" << "Std_ViewIvStereoRedGreen" 
-        << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoOff" << "Separator" << "Std_ToggleVisibility" << "Std_ViewFullScreen" 
-        << "Std_ViewScreenShot" << "Separator" << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
+  *view << "Std_ViewCreateInventor" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
+	      << view3d
+        << "Std_ToggleVisibility" << "Std_ViewFullScreen" << "Separator" 
+        << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
   
   // Tools
   MenuItem* tool = new MenuItem( menuBar );

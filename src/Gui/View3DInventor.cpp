@@ -306,9 +306,11 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     return true;
   }else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ){
     _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_ROWS );
+    _viewer->setStereoOffset(10);
     return true;
   }else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ){
     _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_COLUMNS  );
+    _viewer->setStereoOffset(10);
     return true;
   }else if(strcmp("SetStereoOff",pMsg) == 0 ){
     _viewer->setStereoType(SoQtViewer::STEREO_NONE );
@@ -387,9 +389,13 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
 
 bool View3DInventor::onHasMsg(const char* pMsg)
 {
-  if(strcmp("SetStereoOn",pMsg) == 0 ){
+  if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
     return true;
-  }else if(strcmp("SetStereoOff",pMsg) == 0 ){
+  }else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ){
+    return true;
+  }else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ){
     return true;
   }else if(strcmp("SetStereoOff",pMsg) == 0 ){
     return true;

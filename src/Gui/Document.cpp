@@ -69,6 +69,7 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
 
   	// pointer to the python class
   _pcDocPy = new Gui::DocumentPy(this);
+  _pcDocPy->IncRef();
 
 
   /*

@@ -695,7 +695,7 @@ void StdCmdViewIvStereoRedGreen::activated(int iMsg)
 
 bool StdCmdViewIvStereoRedGreen::isActive(void)
 {
-  return getGuiApplication()->sendHasMsgToActiveView("SetStereoOn");
+  return getGuiApplication()->sendHasMsgToActiveView("SetStereoRedGreen");
 }
 
 //===========================================================================
@@ -722,7 +722,61 @@ void StdCmdViewIvStereoQuadBuff::activated(int iMsg)
 
 bool StdCmdViewIvStereoQuadBuff::isActive(void)
 {
-  return getGuiApplication()->sendHasMsgToActiveView("SetStereoOn");
+  return getGuiApplication()->sendHasMsgToActiveView("SetStereoQuadBuff");
+}
+
+//===========================================================================
+// Std_ViewIvStereoInterleavedRows
+//===========================================================================
+DEF_STD_CMD_A(StdCmdViewIvStereoInterleavedRows);
+
+StdCmdViewIvStereoInterleavedRows::StdCmdViewIvStereoInterleavedRows()
+  :CppCommand("Std_ViewIvStereoInterleavedRows")
+{
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Stereo Interleaved Rows");
+  sToolTipText  = QT_TR_NOOP("Switch stereo viewing to Interleaved Rows");
+  sWhatsThis    = QT_TR_NOOP("Switch stereo viewing to Interleaved Rows");
+  sStatusTip    = QT_TR_NOOP("Switch stereo viewing to Interleaved Rows");
+  sPixmap       = "Std_Tool7";
+  iAccel        = 0;
+}
+
+void StdCmdViewIvStereoInterleavedRows::activated(int iMsg)
+{
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoInterleavedRows\")");
+}
+
+bool StdCmdViewIvStereoInterleavedRows::isActive(void)
+{
+  return getGuiApplication()->sendHasMsgToActiveView("SetStereoInterleavedRows");
+}
+
+//===========================================================================
+// Std_ViewIvStereoQuadBuff
+//===========================================================================
+DEF_STD_CMD_A(StdCmdViewIvStereoInterleavedColumns);
+
+StdCmdViewIvStereoInterleavedColumns::StdCmdViewIvStereoInterleavedColumns()
+  :CppCommand("Std_ViewIvStereoInterleavedColumns")
+{
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Stereo Interleaved Columns");
+  sToolTipText  = QT_TR_NOOP("Switch stereo viewing to Interleaved Columns");
+  sWhatsThis    = QT_TR_NOOP("Switch stereo viewing to Interleaved Columns");
+  sStatusTip    = QT_TR_NOOP("Switch stereo viewing to Interleaved Columns");
+  sPixmap       = "Std_Tool7";
+  iAccel        = 0;
+}
+
+void StdCmdViewIvStereoInterleavedColumns::activated(int iMsg)
+{
+  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoInterleavedColumns\")");
+}
+
+bool StdCmdViewIvStereoInterleavedColumns::isActive(void)
+{
+  return getGuiApplication()->sendHasMsgToActiveView("SetStereoInterleavedColumns");
 }
 
 
@@ -810,6 +864,8 @@ void CreateViewStdCommands(void)
 
   rcCmdMgr.addCommand(new StdCmdViewIvStereoQuadBuff());
   rcCmdMgr.addCommand(new StdCmdViewIvStereoRedGreen());
+  rcCmdMgr.addCommand(new StdCmdViewIvStereoInterleavedColumns());
+  rcCmdMgr.addCommand(new StdCmdViewIvStereoInterleavedRows());
   rcCmdMgr.addCommand(new StdCmdViewIvStereoOff());
 
   rcCmdMgr.addCommand(new StdCmdViewIvIssueCamPos());
