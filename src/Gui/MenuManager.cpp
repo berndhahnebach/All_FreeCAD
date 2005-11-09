@@ -305,7 +305,7 @@ void MenuManager::languageChange() const
     QMenuItem* item = mb->findItem( id );
     if ( item && item->popup() )
     {
-      mb->changeItem( id, MainWindow::tr( item->popup()->name() ) );
+      mb->changeItem( id, QObject::tr( item->popup()->name() ) );
     }
   }
 }

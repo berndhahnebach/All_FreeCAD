@@ -1860,6 +1860,10 @@ Wollen Sie wirklich fortfahren?</translation>
             <source>Save picture</source>
             <translation>Bildinhalt speichern</translation>
         </message>
+        <message>
+            <source>&amp;3D View</source>
+            <translation>&amp;3D Ansicht</translation>
+        </message>
     </context>
     <context>
         <name>StdCmdAbout</name>
@@ -2307,7 +2311,7 @@ Wollen Sie wirklich fortfahren?</translation>
         </message>
         <message>
             <source>Toggles the status bar</source>
-            <translation>Statuszeile ein-/ausschalten</translation>
+            <translation>Statuszeile ein-/ausblenden</translation>
         </message>
     </context>
     <context>
@@ -2578,6 +2582,66 @@ Wollen Sie wirklich fortfahren?</translation>
         <message>
             <source>Issue the camera posiotion to the console and to a macro, to easily recall this position</source>
             <translation>Kameraposition</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdCmdViewIvStereoRedGreen</name>
+        <message>
+            <source>Standard-View</source>
+            <translation>Standardansicht</translation>
+        </message>
+        <message>
+            <source>Stereo red/green</source>
+            <translation>Stereo rot/grün</translation>
+        </message>
+        <message>
+            <source>Switch stereo viewing to red/green</source>
+            <translation>Wechsle in Stereo-Rot-Grün-Ansicht</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdCmdViewIvStereoQuadBuff</name>
+        <message>
+            <source>Standard-View</source>
+            <translation>Standardansicht</translation>
+        </message>
+        <message>
+            <source>Stereo quad buffer</source>
+            <translation>Stereo 4-fach Puffer</translation>
+        </message>
+        <message>
+            <source>Switch stereo viewing to quad buffer</source>
+            <translation>Wechsle in Stereo-Ansicht mit 4-fach Puffer</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdCmdViewIvStereoInterleavedRows</name>
+        <message>
+            <source>Standard-View</source>
+            <translation>Standardansicht</translation>
+        </message>
+        <message>
+            <source>Stereo Interleaved Rows</source>
+            <translation>Horizontales Interlacing</translation>
+        </message>
+        <message>
+            <source>Switch stereo viewing to Interleaved Rows</source>
+            <translation>Wechsle in horizontale Interlacing-Stereo-Ansicht</translation>
+        </message>
+    </context>
+    <context>
+        <name>StdCmdViewIvStereoInterleavedColumns</name>
+        <message>
+            <source>Standard-View</source>
+            <translation>Standardansicht</translation>
+        </message>
+        <message>
+            <source>Stereo Interleaved Columns</source>
+            <translation>Vertikales Interlacing</translation>
+        </message>
+        <message>
+            <source>Switch stereo viewing to Interleaved Columns</source>
+            <translation>Wechsle in vertikale Interlacing-Stereo-Ansicht</translation>
         </message>
     </context>
     <context>

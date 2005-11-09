@@ -753,7 +753,7 @@ bool StdCmdViewIvStereoInterleavedRows::isActive(void)
 }
 
 //===========================================================================
-// Std_ViewIvStereoQuadBuff
+// Std_ViewIvStereoInterleavedColumns
 //===========================================================================
 DEF_STD_CMD_A(StdCmdViewIvStereoInterleavedColumns);
 
