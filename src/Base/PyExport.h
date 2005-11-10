@@ -54,14 +54,14 @@ public:
 
 /** Python Object handle class
  *  Using pointers on classes derived from PyObjectBase would
- *  be potentionaly dangerous because you would have to take 
+ *  be potentionaly dangerous because you would have to take
  *  care of the referenc counting of python by your self. There
- *  fore this class was designd. It takes care of references and 
+ *  fore this class was designd. It takes care of references and
  *  as long as a object of this class exists the handled class get
  *  not destructed. That means a PyObjectBase derived object you can
- *  only destruct by destructing all FCPyHandle and all python 
+ *  only destruct by destructing all FCPyHandle and all python
  *  references on it!
- *  @see PyObjectBase,FCDocument 
+ *  @see PyObjectBase,FCDocument
  */
 template <class HandledType>
 class PyHandle
@@ -82,7 +82,7 @@ public:
 			_pHandels->IncRef();
 	}
 
-	/// Copy constructor 
+	/// Copy constructor
 	PyHandle(const PyHandle <HandledType> &ToHandel)
 		:_pHandels(ToHandel._pHandels)
 	{
@@ -92,8 +92,8 @@ public:
 
 	/** destructor
 	 *  Release the referenc count which cause,
-	 *  if was the last one, the referenced object to 
-	 *  destruct! 
+	 *  if was the last one, the referenced object to
+	 *  destruct!
 	 */
 	~PyHandle()
 	{
@@ -105,23 +105,26 @@ public:
 	// operator implementation
 
 	// assign operator from a pointer
-	PyHandle <HandledType>  &operator=(const HandledType* other)
-	{		
+	PyHandle <HandledType>  &operator=(/*const*/ HandledType* other)
+	{
 		if(_pHandels)
 			_pHandels->DecRef();
-		_pHandels = other->_pHandels;
+    // FIXME: Should be without "->_pHandels", shouldn't it? (Werner)
+		_pHandels = other;//_pHandels = other->_pHandels;
 		if(_pHandels)
 			_pHandels->IncRef();
 		return *this;
 	}
-
+/*
+  // FIXME: Does this method make sense? I don't think so. (Werner)
 	// assign operator from a unknown pointer
-	PyHandle <HandledType>  &operator=(const void* other)
-	{		
+	PyHandle <HandledType>  &operator=(void* other)
+	{
 		if(_pHandels)
 			_pHandels->DecRef();
 		if( PointsOn(other) )
-			_pHandels = other->_pHandels;
+    // FIXME: Should be without "->_pHandels", shouldn't it? (Werner)
+		_pHandels = reinterpret_cast<HandledType*>(other);//_pHandels = other->_pHandels;
 		else
 			// invalid handle
 			_pHandels = 0L;
@@ -129,7 +132,7 @@ public:
 			_pHandels->IncRef();
 		return *this;
 	}
-
+*/
 	// assign operator from a handle
 	PyHandle <HandledType>  &operator=(const PyHandle <HandledType> &other)
 	{
@@ -154,13 +157,13 @@ public:
 	}
 
 	/// derefrence operators
-	HandledType &operator*() const
+	const HandledType &operator*() const
 	{
 		return _pHandels;
 	}
 
 	/// derefrence operators
-	HandledType *operator->() const
+	const HandledType *operator->() const
 	{
 		return _pHandels;
 	}
@@ -170,19 +173,25 @@ public:
 	 */
 	bool operator<(const PyHandle<HandledType> &other) const
 	{
-		return _pHandels<&other;
+		//return _pHandels<&other;
+    // FIXME: Shouldn't we compare both pointers?. (Werner)
+		return _pHandels<other._pHandels;
 	}
 
 	/// equal operator
 	bool operator==(const PyHandle<HandledType> &other) const
 	{
-		return _pHandels==&other;
+		//return _pHandels==&other;
+    // FIXME: Shouldn't we compare both pointers?. (Werner)
+		return _pHandels==other._pHandels;
 	}
 
 	/// returns the type as PyObject
 	PyObject* GetPyObject(void)
 	{
-		return (PyObject*) _pHandels;
+		// return (PyObject*) _pHandels;
+    // FIXME: Shouldn't we return the pointer's object?. (Werner)
+		return _pHandels->GetPyObject();
 	}
 	//**************************************************************************
 	// checking on the state
@@ -219,6 +228,8 @@ public:
 	 *  test for a point if its the right type for handling
 	 *  with this concrete handle object
 	 */
+  // FIXME: Does this method make sense? I don't think so. (Werner)
+  /*
 	bool PointsOn(const void* other) const
 	{
 		if(!_pHandels)
@@ -227,7 +238,7 @@ public:
 			else
 				return true;
 		return typeid(*other) == typeid(HandledType) ;
-	}
+	}*/
 
 private:
 	/// the pointer on the handled object
