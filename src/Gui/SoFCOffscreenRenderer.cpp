@@ -21,6 +21,12 @@
  ***************************************************************************/
 
 #include "PreCompiled.h"
+
+#ifndef _PreComp_
+# include <qimage.h>
+# include <qstrlist.h>
+#endif
+
 #include "SoFCOffscreenRenderer.h"
 
 using namespace Gui;

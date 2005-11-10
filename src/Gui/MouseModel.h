@@ -26,6 +26,7 @@
 
 #ifndef _PreComp_
 # include <qcursor.h>
+# include <qdatetime.h>
 # include <vector>
 #endif
 
@@ -35,6 +36,8 @@ class QWheelEvent;
 class QKeyEvent;
 class QPaintEvent;
 class QResizeEvent;
+class SoEvent;
+class SbViewportRegion;
 
 namespace Gui {
   class View3DInventorViewer;

@@ -204,6 +204,8 @@ libFreeCADGui_la_SOURCES=\
 		DockWindow.h \
 		Document.cpp \
 		Document.h \
+		DocumentPy.cpp \
+		DocumentPy.h \
 		Doxygen.cpp \
 		FileDialog.cpp \
 		FileDialog.h \
@@ -244,6 +246,10 @@ libFreeCADGui_la_SOURCES=\
 		resource.cpp \
 		Selection.cpp \
 		Selection.h \
+		SoFCColorLegend.cpp \
+		SoFCColorLegend.h \
+		SoFCOffscreenRenderer.cpp \
+		SoFCOffscreenRenderer.h \
 		SoFCSelection.cpp \
 		SoFCSelection.h \
 		SpinBox.cpp \
@@ -272,6 +278,8 @@ libFreeCADGui_la_SOURCES=\
 		View3DInventorExamples.h \
 		View3DInventorViewer.cpp \
 		View3DInventorViewer.h \
+		View3DPy.cpp \
+		View3DPy.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
 		ViewProviderFeature.cpp \

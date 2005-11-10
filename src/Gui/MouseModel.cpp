@@ -24,9 +24,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qevent.h>
 # include <qpainter.h>
 # include <qpixmap.h>
+# include <Inventor/events/SoEvent.h>
+# include <Inventor/events/SoKeyboardEvent.h>
+# include <Inventor/events/SoLocation2Event.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 #endif
 
 #include <Base/Console.h>

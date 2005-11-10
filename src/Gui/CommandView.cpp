@@ -25,7 +25,9 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qcursor.h>
 # include <qdesktopwidget.h>
+# include <qimage.h>
 # include <qmessagebox.h>
 #endif
 

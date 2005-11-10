@@ -58,6 +58,7 @@
 # include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/actions/SoRayPickAction.h>
 # include <Inventor/projectors/SbSphereSheetProjector.h>
+# include <Inventor/SoOffscreenRenderer.h>
 # include <Inventor/SoPickedPoint.h>
 #endif
 
@@ -66,7 +67,7 @@
 #include "Tools.h"
 #include <qcursor.h>
 #include "SoFCColorLegend.h"
-#include "SoFCOffScreenRenderer.h"
+#include "SoFCOffscreenRenderer.h"
 #include "SoFCSelection.h"
 #include "Selection.h"
 #include "MainWindow.h"
