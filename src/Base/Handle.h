@@ -54,21 +54,21 @@ public:
 		:_pHandels(ToHandel)
 	{
 		if(_pHandels)
-			ToHandel->AttachRef(this);
+			_pHandels->AttachRef(this);
 	}
 
-	/// Copy constructor 
+	/// Copy constructor
 	FCHandle(const FCHandle <HandledType> &ToHandel)
 		:_pHandels(ToHandel._pHandels)
 	{
 		if(_pHandels)
-			ToHandel->AttachRef(this);
+			_pHandels->AttachRef(this);
 	}
 
 	/** destructor
 	 *  Release the referenc count which cause,
-	 *  if was the last one, the referenced object to 
-	 *  destruct! 
+	 *  if was the last one, the referenced object to
+	 *  destruct!
 	 */
 	~FCHandle()
 	{
@@ -80,19 +80,21 @@ public:
 	// operator implementation
 
 	// assign operator from a pointer
-	FCHandle <HandledType>  &operator=(const HandledType* other)
-	{		
+	FCHandle <HandledType>  &operator=(/*const*/ HandledType* other)
+	{
 		if(_pHandels)
 			_pHandels->DetachRef(this);
-		_pHandels = other->_pHandels;
+    // FIXME: Should be without "->_pHandels", shouldn't it? (Werner)
+		_pHandels = other;//_pHandels = other->_pHandels;
 		if(_pHandels)
-			ToHandel->AttachRef(this);
+			_pHandels->AttachRef(this);
 		return *this;
 	}
-
+/*
+  // FIXME: Does this method make sense? I don't think so. (Werner)
 	// assign operator from a unknown pointer
 	FCHandle <HandledType>  &operator=(const void* other)
-	{		
+	{
 		if(_pHandels)
 			_pHandels->DetachRef(this);
 		if( PointsOn(other) )
@@ -104,7 +106,7 @@ public:
 			_pHandels->AttachRef(this);
 		return *this;
 	}
-
+*/
 	// assign operator from a handle
 	FCHandle <HandledType>  &operator=(const FCHandle <HandledType> &other)
 	{
@@ -129,13 +131,13 @@ public:
 	}
 
 	/// derefrence operators
-	HandledType &operator*() const
+	const HandledType &operator*() const
 	{
 		return _pHandels;
 	}
 
 	/// derefrence operators
-	HandledType *operator->() const
+	const HandledType *operator->() const
 	{
 		return _pHandels;
 	}
@@ -182,14 +184,15 @@ public:
 	long GetReferenceCount(void) const
 	{
 		if(_pHandels)
-			return _pHadels->GetReferenceCount();
+			return _pHandels->GetReferenceCount();
 		return 0;
 	}
 
+  // FIXME: Does this method make sense? I don't think so. (Werner)
 	/** Type checking
 	 *  test for a point if its the right type for handling
 	 *  with this concrete handle object
-	 */
+	 *//*
 	bool PointsOn(const void* other) const
 	{
 		if(!_pHandels)
@@ -197,13 +200,12 @@ public:
 				return false;
 			else
 				return true;
-		return typeid(*other) == typeid(HandledType) ; 
-	}                                     
-
+		return typeid(*other) == typeid(HandledType) ;
+	}
+*/
 private:
 	/// the pointer on the handled object
 	HandledType *_pHandels;
-
 };
 
 
@@ -215,26 +217,17 @@ public:
 	virtual ~FCHandled();
 
 	void  AttachRef(void* pHandle);
-
 	void  DetachRef(void* pHandle);
-
 	virtual void  OnLastRef(){}
 
-  	long GetReferenceCount(void) const 
-	{ 
-		return _lRefCount; 
+  long GetReferenceCount(void) const
+	{
+		return _lRefCount;
 	}
 
-
 private:
-
 	long _lRefCount;
-
 };
-
-
-
-
 
 
 #endif // __HANDLE_H__
