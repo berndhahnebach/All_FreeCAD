@@ -55,7 +55,8 @@ class TestWorkbench ( Workbench ):
 				w.AppendMenu("Test &Commands",list)
 
 				list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3", "Std_ViewIvDecorationOn", "Std_ViewIvDecorationOff", 
-				"Std_ViewIvStereoOn", "Std_ViewIvStereoOff", "Std_ViewIvIssueCamPos"]
+				"Separator", "Std_ViewIvStereoRedGreen", "Std_ViewIvStereoQuadBuff", "Std_ViewIvStereoInterleavedRows", 
+				"Std_ViewIvStereoInterleavedColumns", "Std_ViewIvStereoOff", "Std_ViewIvIssueCamPos"]
 				w.AppendMenu("Inventor View",list)
 
 				Log ('   Set up Test menues...\n')

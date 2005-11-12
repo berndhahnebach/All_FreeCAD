@@ -41,7 +41,30 @@ class Workbench:
 	def Activate(self):
 		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
 	def GetIcon(self):
-		Wrn("Init: "+ str(self) + ": Workbench.GetIcon() not implemented!")
+		# returns an icon for the workbench
+		return ["/* XPM */\n"
+			"static const char *FCIcon[]={\n"
+			"\"16 16 4 1\",\n"
+			"\". c None\",\n"
+			"\"# c #000000\",\n"
+			"\"a c #848284\",\n"
+			"\"b c #ff0000\",\n"
+			"\"........#.......\",\n"
+			"\".......##aaaaaa.\",\n"
+			"\"........#.....a.\",\n"
+			"\".#######......a.\",\n"
+			"\".##...........a.\",\n"
+			"\".##...bbbb....a.\",\n"
+			"\".##..bb..bb...a.\",\n"
+			"\".###bb#...b..###\",\n"
+			"\".##.bb........#.\",\n"
+			"\".##.bb..........\",\n"
+			"\".##.bb..........\",\n"
+			"\".##.bb..........\",\n"
+			"\".##.bb....b.....\",\n"
+			"\".....bb..bb.....\",\n"
+			"\"......bbbb......\",\n"
+			"\"................\"};\n"]
 
 
 class StandardWorkbench ( Workbench ):
@@ -49,8 +72,6 @@ class StandardWorkbench ( Workbench ):
 	def Activate(self):
 		# load the module
 		Log ('Mod : Loading FreeCADGui')
-	def GetIcon(self):
-		Wrn("Init: Workbench.GetIcon() not implemented!")
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
