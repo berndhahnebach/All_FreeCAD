@@ -71,10 +71,6 @@ public:
 
   virtual const char *getName(void);
 
-  virtual void resizeEvent ( QResizeEvent * e);
-
-  virtual void contextMenuEvent ( QContextMenuEvent * e);
-
   virtual void onUpdate(void);
 
   void updatePrefs(void);
@@ -85,26 +81,14 @@ public:
   /// helper to apply a SoWriteAction to a node and write it to a string
   static const std::string &View3DInventor::writeNodesToString(SoNode * root);
 
-  void showDimension (void) const;
-
-  virtual void hideEvent             ( QHideEvent  * );
-
   View3DInventorViewer *getViewer(void) {return _viewer;}
 
-  /**
-   * If \a b is true the Inventor view is displayed in full screen mode, otherwise
-   * in normal mode. For more hints refer to the Qt documentation to
-   * QWidget::showFullScreen ().
-   * If the view has a background image ihen this image gets disabled in full screen
-   * mode and gets restored in normal mode.
-   */
-  virtual void setFullScreenMode( bool b );
 
 //signals:
   //void message(const QString&, int );
 
 public slots:
-//  void closeEvent(QCloseEvent* e);        
+//  void closeEvent(QCloseEvent* e);
   void onWindowActivated ();
   void setCursor(const QCursor&);
   void dump();
@@ -112,6 +96,7 @@ public slots:
 protected:
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
+  void contextMenuEvent ( QContextMenuEvent * e);
 
   SoSeparator *createAxis(void);
 

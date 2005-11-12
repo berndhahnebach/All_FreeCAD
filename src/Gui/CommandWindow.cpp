@@ -137,7 +137,7 @@ StdCmdCloseActiveWindow::StdCmdCloseActiveWindow()
   sToolTipText  = QT_TR_NOOP("Close active window");
   sWhatsThis    = QT_TR_NOOP("Close active window");
   sStatusTip    = QT_TR_NOOP("Close active window");
-  iAccel        = 0;
+  iAccel        = Qt::CTRL+Qt::Key_F4;
 }
 
 void StdCmdCloseActiveWindow::activated(int iMsg)

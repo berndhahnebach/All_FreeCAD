@@ -120,14 +120,20 @@ public:
 protected:
   void contextMenuEvent ( QContextMenuEvent * e )
   {
-    QTab* tab = selectTab(e->pos());
+    QTab* sel = selectTab(e->pos());
     menu->clear();
     CommandManager& cMgr = Application::Instance->commandManager();
     cMgr.getCommandByName("Std_New")->addTo(menu);
     menu->insertSeparator();
-    if ( tab == tabAt(currentTab()) )
+    if ( sel == tab(currentTab()) )
       cMgr.getCommandByName("Std_CloseActiveWindow")->addTo(menu);
     cMgr.getCommandByName("Std_CloseAllWindows")->addTo(menu);
+    menu->insertSeparator();
+    cMgr.getCommandByName("Std_TilePragmatic")->addTo(menu);
+    cMgr.getCommandByName("Std_TileHoricontal")->addTo(menu);
+    cMgr.getCommandByName("Std_TileVertical")->addTo(menu);
+    menu->insertSeparator();
+    cMgr.getCommandByName("Std_Windows")->addTo(menu);
     menu->popup(e->globalPos());
   }
 

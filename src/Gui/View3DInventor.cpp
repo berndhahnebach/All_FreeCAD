@@ -122,11 +122,6 @@ void View3DInventor::contextMenuEvent ( QContextMenuEvent * e)
 
 }
 
-void View3DInventor::setFullScreenMode( bool b )
-{
-  MDIView::setFullScreenMode( b );
-}
-
 void View3DInventor::setViewerDefaults(void)
 {
 
@@ -196,63 +191,6 @@ void View3DInventor::onUpdate(void)
 #endif
   update();  
 }
-void View3DInventor::hideEvent ( QHideEvent * cEvent )
-{
- // Application::Instance->setPaneText(2, QString(" Dimension"));
-}
-
-void View3DInventor::showDimension (void) const
-{
-/*  if ( _hView.IsNull() )
-    return; // no valid view
-
-  Quantity_Length fWidth, fHeight;
-  _hView->Size(fWidth, fHeight);
-
-  float fLog = float(log10(fWidth)), fFactor;
-  int   nExp = int(fLog);
-  char  szDim[20];
-
-  if (nExp >= 6)
-  {
-    fFactor = 1.0e+6f;
-    strcpy(szDim, "km");
-  }
-  else if (nExp >= 3)
-  {
-    fFactor = 1.0e+3f;
-    strcpy(szDim, "m");
-  }
-  else if ((nExp >= 0) && (fLog > 0.0f))
-  {
-    fFactor = 1.0e+0f;
-    strcpy(szDim, "mm");
-  }
-  else if (nExp >= -3)
-  {
-    fFactor = 1.0e-3f;
-    strcpy(szDim, "um");
-  }
-  else 
-  {
-    fFactor = 1.0e-6f;
-    strcpy(szDim, "nm");
-  }
-
-  char szSize[100];
-  sprintf(szSize, " %.2f x %.2f %s", fWidth / fFactor, fHeight / fFactor, szDim);
-
-  Application::Instance->setPaneText(2, QString(szSize));
-  */
-}
-
-
-
-void View3DInventor::resizeEvent ( QResizeEvent * e)
-{
-  MDIView::resizeEvent(e);
-//  _pcFrame->resize(e->size());
-}
 
 const char *View3DInventor::getName(void)
 {
@@ -271,7 +209,7 @@ buffer_realloc(void * bufptr, size_t size)
   buffer_size = size;
   return buffer;
 }
- 
+
 const std::string &View3DInventor::writeNodesToString(SoNode * root)
 {
   SoOutput out;
@@ -501,7 +439,6 @@ bool View3DInventor::setCamera(const char* pCamera)
   return true;
 }
 
-
 void View3DInventor::onWindowActivated ()
 {
   //myOperations->onSelectionChanged();
@@ -509,7 +446,7 @@ void View3DInventor::onWindowActivated ()
 
 void View3DInventor::setCursor(const QCursor& aCursor)
 {
-  _viewer->getGLWidget()->setCursor(aCursor);
+  _viewer->getWidget()->setCursor(aCursor);
 }
 
 void View3DInventor::dump()
@@ -541,8 +478,6 @@ void View3DInventor::dropEvent ( QDropEvent      * e )
 
 void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
 {
-//  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
-
   if ( QUriDrag::canDecode(e) )
   {
     QStringList fn;
@@ -550,15 +485,6 @@ void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
     QString f = fn.first();
 
     std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
-/*
-    locale loc;
-    // Get a reference to the ctype<char> facet
-    const ctype<char>& ct = use_facet(loc,(ctype<char>*)0,true);
-
-    ct.tolower(Ending.begin(),Ending.end());
-
-    if(EndingMap.find(Ending) != EndingMap.end())
-*/
     if ( App::GetApplication().hasOpenType( Ending.c_str() ) )
       e->accept();
   }else
