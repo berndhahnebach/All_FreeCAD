@@ -313,6 +313,14 @@ SOURCE=.\MaterialPy.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\MatrixPy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MatrixPy.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Plugin
 
 !IF  "$(CFG)" == "FreeCADApp - Win32 Release"
@@ -403,6 +411,14 @@ InputPath=.\Standard
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\VectorPy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\VectorPy.h
 # End Source File
 # End Target
 # End Project

@@ -21,6 +21,10 @@ libFreeCADApp_la_SOURCES=\
 		Document.h \
 		DocumentPy.cpp \
 		DocumentPy.h \
+		MatrixPy.cpp \
+		MatrixPy.h \
+		VectorPy.cpp \
+		VectorPy.h \
 		Doxygen.cpp \
 		Feature.cpp \
 		Feature.h \

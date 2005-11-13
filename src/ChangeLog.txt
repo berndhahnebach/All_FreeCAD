@@ -44,3 +44,5 @@ Version: V0.3B4 Date: Sun Nov  6 01:20:57 2005 +++++++++++++++++++++++++++++++
 + added Inventor node SoFCColorLegend representing a colorbar
 + Python GuiDocument and View
 + Addition Stereo modes
++ Add Python objects for Matrix and Vector
+

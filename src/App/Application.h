@@ -266,6 +266,9 @@ private:
 
 	static PyMethodDef    Methods[]; 
 
+  /// pointer to the Python module of App...
+  PyObject* _pcAppModule;
+
 	friend class ApplicationObserver;
 
 	/** @name  Private Init, Destruct an Access methodes */
