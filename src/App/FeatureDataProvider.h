@@ -104,7 +104,7 @@ private:
 	~FeatureDataProviderFactorySingleton(){}
 };
 
-inline AppExport FeatureDataProviderFactorySingleton& FeatureFactory(void)
+inline AppExport FeatureDataProviderFactorySingleton& FeatureDataProviderFactory(void)
 {
 	return FeatureDataProviderFactorySingleton::Instance();
 }
@@ -118,14 +118,14 @@ class FeatureDataProviderProducer: public Base::AbstractProducer
 		/// Constructor
 		FeatureDataProviderProducer ()
 		{
-			App::FeatureDataProviderFactory().AddProducer(typeid(CLASS).name(), this);
+			FeatureDataProviderFactory().AddProducer(typeid(CLASS).name(), this);
 		}
 
 		virtual ~FeatureDataProviderProducer (void){}
 
 		/// Produce an instance
 		virtual void* Produce (void) const
-		{ 
+		{
 			return (void*)(new CLASS);
 		}
 };
