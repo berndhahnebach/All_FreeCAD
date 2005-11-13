@@ -96,7 +96,6 @@ public slots:
 protected:
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
-  void contextMenuEvent ( QContextMenuEvent * e);
 
   SoSeparator *createAxis(void);
 

@@ -119,6 +119,9 @@ protected:
   static void sUnmadeSelection(void *,SoPath *);
   virtual void unmadeSelection(SoPath *);
 
+  virtual void openPopupMenu(const SbVec2s& position);
+  void setPopupMenuEnabled(const SbBool on);
+  SbBool isPopupMenuEnabled(void) const;
 
   std::set<ViewProviderInventor*> _ViewProviderSet;
 
@@ -162,6 +165,7 @@ protected:
 
   bool _bSpining;
   bool _bRejectSelection;
+  SbBool MenuEnabled;
   SbTime MoveTime;
   SbTime CenterTime;
 

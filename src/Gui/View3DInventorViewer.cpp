@@ -29,6 +29,7 @@
 # include <qimage.h>
 # include <qpainter.h>
 # include <qpen.h>
+# include <qpopupmenu.h>
 # include <GL/gl.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCoordinate3.h>
@@ -71,6 +72,7 @@
 #include "SoFCSelection.h"
 #include "Selection.h"
 #include "MainWindow.h"
+#include "MenuManager.h"
 
 #include "ViewProvider.h"
 
@@ -107,7 +109,7 @@ void View3DInventorViewer::removeViewProvider(ViewProviderInventor* pcProvider)
 }
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
-  :inherited (parent, name, embed, type, build)
+  :inherited (parent, name, embed, type, build), MenuEnabled(TRUE)
 {
   // Coin should not clear the pixel-buffer, so the background image
   // is not removed.
@@ -714,7 +716,52 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
       processed = (*It)->handleEvent(ev,*this);
   }
 
+  // right mouse button pressed
+  if (!processed)
+  {
+    if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+      SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
+      if ((e->getButton() == SoMouseButtonEvent::BUTTON2)) {
+        if (this->isPopupMenuEnabled()) {
+          if (e->getState() == SoButtonEvent::DOWN) {
+            this->openPopupMenu(e->getPosition());
+          }
+
+          // Steal all RMB-events if the viewer uses the popup-menu.
+          processed = TRUE;
+        }
+      }
+    }
+  }
+
   return processed || inherited::processSoEvent(ev);
+}
+
+void View3DInventorViewer::setPopupMenuEnabled(const SbBool on)
+{
+  this->MenuEnabled = on;
+}
+
+SbBool View3DInventorViewer::isPopupMenuEnabled(void) const
+{
+  return this->MenuEnabled;
+}
+
+void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
+{
+  MenuItem* StdViews = new MenuItem;
+  StdViews->setCommand( "Standard views" );
+
+  *StdViews<< "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewTop" << "Std_ViewRight"
+           << "Std_ViewRear" << "Std_ViewBottom" << "Std_ViewLeft";
+
+  MenuItem* view = new MenuItem;
+  *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewFullScreen" ;
+
+  QPopupMenu ContextMenu(this->getGLWidget());
+  MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
+  delete view;
+  ContextMenu.exec( QCursor::pos() );
 }
 
 Base::Vector3D View3DInventorViewer::getViewDirection() const

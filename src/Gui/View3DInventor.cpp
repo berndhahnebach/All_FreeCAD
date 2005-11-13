@@ -26,7 +26,6 @@
 #ifndef _PreComp_
 # include <qdragobject.h>
 # include <qfileinfo.h>
-# include <qpopupmenu.h>
 # include <qvbox.h>
 # include <TopoDS_Shape.hxx>
 # include <Inventor/actions/SoWriteAction.h>
@@ -96,31 +95,6 @@ void View3DInventor::updatePrefs(void)
 
 #include <Inventor/nodes/SoCylinder.h>
 #include <Inventor/nodes/SoTransform.h>
-
-void View3DInventor::contextMenuEvent ( QContextMenuEvent * e)
-{
-  MenuItem* StdViews = new MenuItem;
-  StdViews->setCommand( "Standard views" );
-
-  *StdViews<< "Std_ViewAxo"
-           << "Separator"
-           << "Std_ViewFront"
-           << "Std_ViewTop"
-           << "Std_ViewRight"
-           << "Std_ViewRear"
-           << "Std_ViewBottom"
-           << "Std_ViewLeft";
-
-
-  MenuItem* view = new MenuItem;
-  *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewFullScreen" ;
-
-  QPopupMenu ContextMenu(this);
-  MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
-  delete view;
-  ContextMenu.exec(e->globalPos());
-
-}
 
 void View3DInventor::setViewerDefaults(void)
 {
