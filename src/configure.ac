@@ -167,10 +167,10 @@ AC_MSG_RESULT([OpenCascade $fc_occ_incs : $fc_occ_libs])
 AC_CHECKING([WildMagic3])
 AC_ARG_WITH(wildmagic-includes,
 	AC_HELP_STRING([--with-wildmagic-includes], [Path of the header files of your WildMagic3 installation]),
-	[fc_mgc_incs=$withval],
-	[fc_mgc_incs=/usr/include/WildMagic3/Include])
+	[fc_wm3_incs=$withval],
+	[fc_wm3_incs=/usr/include/WildMagic3/Include])
 
-AC_CHECK_FILE($fc_mgc_incs/WildMagic3.h,,
+AC_CHECK_FILE($fc_wm3_incs/WildMagic3.h,,
 	[AC_MSG_ERROR([
 	**** Could not find WildMagic3 header files.
 	 Please check your installation. ****
@@ -178,20 +178,26 @@ AC_CHECK_FILE($fc_mgc_incs/WildMagic3.h,,
 
 AC_ARG_WITH(wildmagic-libs,
 	AC_HELP_STRING([--with-wildmagic-libs], [Path of the library files of your WildMagic3 installation]),
-	[fc_mgc_libs=$withval],
-	[fc_mgc_libs=/usr/lib])
+	[fc_wm3_libs=$withval],
+	[fc_wm3_libs=/usr/lib])
 
-all_includes="$all_includes -I$fc_mgc_incs"
-all_libraries="$all_libraries -L$fc_mgc_libs"
-AC_MSG_RESULT([WildMagic3 $fc_mgc_incs : $fc_mgc_libs])
+AC_SUBST([WM3_CFLAGS], [-I$fc_wm3_incs])
+AC_SUBST([WM3_LIBS], [-L$fc_wm3_libs])
+
+AC_MSG_RESULT([WildMagic3 $WM3_CFLAGS : $WM3_LIBS])
 
 # checking for GTS
 # **************************************************************************
 
 fc_gts_incs=`gts-config --cflags`
 fc_gts_libs=`gts-config --libs`
-all_includes="$all_includes $fc_gts_incs"
-all_libraries="$all_libraries $fc_gts_libs"
+
+AC_SUBST([GTS_CFLAGS], [$fc_gts_incs])
+AC_SUBST([GTS_LIBS], [$fc_gts_libs])
+
+#AM_PATH_GLIB_2_0(2.4.0, , AC_MSG_ERROR([GLib not found]), gthread gmodule)
+#AM_PATH_GTS(,AC_MSG_ERROR([GTS not found]))
+AC_MSG_RESULT([GTS Library $GTS_CFLAGS : $GTS_LIBS])
 
 # checking for xerces-c
 # **************************************************************************

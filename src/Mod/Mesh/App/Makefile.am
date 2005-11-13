@@ -66,16 +66,17 @@ libMesh_la_SOURCES=\
 
 
 # the library search path.
-libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) $(WM3_LIBS) $(GTS_LIBS) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libMesh_la_CPPFLAGS = -DAppMeshExport=
 
 libMesh_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
-		-lFoundation
+		-lFoundation \
+		-lgts
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I../../../
+INCLUDES= $(all_includes) $(WM3_CFLAGS) $(GTS_CFLAGS) -I../../../
 
 libdir = $(prefix)/Mod/Mesh
 
