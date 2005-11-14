@@ -320,21 +320,19 @@ fi;
 AC_SUBST(all_includes)
 AC_SUBST(all_libraries)
 
-# Check if you want to have debug info, or not
+# Check if you want to have log info, or not
 # **************************************************************************
 
-AC_ARG_ENABLE([debug],
-  AC_HELP_STRING([--enable-debug], [Enable debug information]),
+AC_ARG_ENABLE([loginfo],
+  AC_HELP_STRING([--enable-loginfo], [Enable log information (disabled by default)]),
   [case $enableval in
-    no | false) fc_set_debug=false ;;
-    *)          fc_set_debug=true ;;
+    no | false) fc_set_loginfo=false ;;
+    *)          fc_set_loginfo=true ;;
   esac],
-  [fc_set_debug=true])
+  [fc_set_loginfo=false])
 
-if $fc_set_debug; then
-	CPPFLAGS="$CPPFLAGS -g -D__DEBUG__ -DFC_DEBUG"
-else
-	CPPFLAGS="$CPPFLAGS -DNDEBUG"
+if $fc_set_loginfo; then
+	CPPFLAGS="$CPPFLAGS -DFC_DEBUG"
 fi
 
 # Check if you want thread support, or not (currently disabled, thread support is forced)
@@ -372,7 +370,7 @@ fc_set_thread=true
 # **************************************************************************
 
 AC_ARG_ENABLE([warnings],
-  AC_HELP_STRING([--enable-warnings], [Enable compiler warnings]),
+  AC_HELP_STRING([--enable-warnings], [Enable compiler warnings (enabled by default)]),
   [case $enableval in
     no | false) fc_set_warn=false ;;
     *)          fc_set_warn=true ;;
@@ -459,7 +457,7 @@ AC_MSG_NOTICE([
 
   C++ compiler:              $CXX
   Python version:            $fc_py_ver
-  Debug info enabled:        $fc_set_debug
+  Log info enabled:          $fc_set_loginfo
   Thread enabled (forced):   $fc_set_thread
   RTTI enabled (forced):     true
   Compiler warnings enabled: $fc_set_warn
