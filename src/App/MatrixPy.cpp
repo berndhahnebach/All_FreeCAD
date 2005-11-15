@@ -124,8 +124,8 @@ App::MatrixPy::MatrixPy(const Base::Matrix4D &rcMatrix, PyTypeObject *T)
 
 PyObject *MatrixPy::PyMake(PyTypeObject *ignored, PyObject *args, PyObject *kwds)	// Python wrapper
 {
-	float x=0.0,y=0.0,z=0.0;
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+	//float x=0.0,y=0.0,z=0.0;
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
     return NULL;                       // NULL triggers exception 
 
   Base::Console().Log("Constructor MatrixPy\n");

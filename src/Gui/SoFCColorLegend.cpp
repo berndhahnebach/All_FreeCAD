@@ -172,8 +172,7 @@ void SoFCColorLegend::setViewerSize( const SbVec2s& size )
   float fHigY = 0.75f*fMaxY+0.25f*fMinY;
   float fAvgY = 0.50f*fMaxY+0.50f*fMinY;
   float fLowY = 0.25f*fMaxY+0.75f*fMinY;
-  float fLabel = fMaxX+0.1f;
-  
+
   // search for the labels
   int num=0;
   for ( int i=0; i<labels->getNumChildren(); i++ )
