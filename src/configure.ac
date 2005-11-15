@@ -335,6 +335,22 @@ if $fc_set_loginfo; then
 	CPPFLAGS="$CPPFLAGS -DFC_DEBUG"
 fi
 
+# Check if you want debug information enabled, or not
+# **************************************************************************
+
+AC_ARG_ENABLE([debug],
+  AC_HELP_STRING([--enable-debug], [Enable debug information (enabled by default)]),
+  [case $enableval in
+    no | false) fc_set_debug=false ;;
+    *)          fc_set_debug=true ;;
+  esac],
+  [fc_set_debug=true])
+if $fc_set_debug; then
+	CPPFLAGS="$CPPFLAGS -g -DDEBUG"
+else
+	CPPFLAGS="$CPPFLAGS -DNDEBUG"
+fi
+
 # Check if you want thread support, or not (currently disabled, thread support is forced)
 # **************************************************************************
 
@@ -458,6 +474,7 @@ AC_MSG_NOTICE([
   C++ compiler:              $CXX
   Python version:            $fc_py_ver
   Log info enabled:          $fc_set_loginfo
+  Debug info enabled:        $fc_set_debug
   Thread enabled (forced):   $fc_set_thread
   RTTI enabled (forced):     true
   Compiler warnings enabled: $fc_set_warn
