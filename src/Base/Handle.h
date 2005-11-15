@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -10,12 +10,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -35,8 +35,8 @@
 
 /** Handle class
  *  Implementation of the referenc counting pattern
- *  Only able to instatiate with a class inhereting 
- *  FCHandled! 
+ *  Only able to instatiate with a class inhereting
+ *  FCHandled!
  */
 template <class HandledType>
 class FCHandle
@@ -50,7 +50,7 @@ public:
 	 *  instead using a overwriten new operator in the
 	 *  HandledType class! But is not easy to inforce!
 	 */
-	FCHandle(HandledType *ToHandel=0L)
+	FCHandle(HandledType* ToHandel=0L)
 		:_pHandels(ToHandel)
 	{
 		if(_pHandels)
@@ -58,7 +58,7 @@ public:
 	}
 
 	/// Copy constructor
-	FCHandle(const FCHandle <HandledType> &ToHandel)
+	FCHandle(const FCHandle<HandledType>& ToHandel)
 		:_pHandels(ToHandel._pHandels)
 	{
 		if(_pHandels)
@@ -80,35 +80,18 @@ public:
 	// operator implementation
 
 	// assign operator from a pointer
-	FCHandle <HandledType>  &operator=(/*const*/ HandledType* other)
+	FCHandle <HandledType>& operator=(HandledType* other)
 	{
 		if(_pHandels)
 			_pHandels->DetachRef(this);
-    // FIXME: Should be without "->_pHandels", shouldn't it? (Werner)
-		_pHandels = other;//_pHandels = other->_pHandels;
+		_pHandels = other;
 		if(_pHandels)
 			_pHandels->AttachRef(this);
 		return *this;
 	}
-/*
-  // FIXME: Does this method make sense? I don't think so. (Werner)
-	// assign operator from a unknown pointer
-	FCHandle <HandledType>  &operator=(const void* other)
-	{
-		if(_pHandels)
-			_pHandels->DetachRef(this);
-		if( PointsOn(other) )
-			_pHandels = other->_pHandels;
-		else
-			// invalid handle
-			_pHandels = 0L;
-		if(_pHandels)
-			_pHandels->AttachRef(this);
-		return *this;
-	}
-*/
+
 	// assign operator from a handle
-	FCHandle <HandledType>  &operator=(const FCHandle <HandledType> &other)
+	FCHandle <HandledType>& operator=(const FCHandle<HandledType>& other)
 	{
 		if(_pHandels)
 			_pHandels->DetachRef(this);
@@ -119,25 +102,13 @@ public:
 	}
 
 	/// derefrence operators
-	HandledType &operator*()
+	HandledType& operator*() const
 	{
 		return *_pHandels;
 	}
 
 	/// derefrence operators
-	HandledType *operator->()
-	{
-		return _pHandels;
-	}
-
-	/// derefrence operators
-	const HandledType &operator*() const
-	{
-		return _pHandels;
-	}
-
-	/// derefrence operators
-	const HandledType *operator->() const
+	HandledType* operator->() const
 	{
 		return _pHandels;
 	}
@@ -145,13 +116,13 @@ public:
 	/** lower operator
 	 *  needed for sorting in maps and sets
 	 */
-	bool operator<(const FCHandle<HandledType> &other) const
+	bool operator<(const FCHandle<HandledType>& other) const
 	{
 		return _pHandels<other._pHandels;
 	}
 
 	/// equal operator
-	bool operator==(const FCHandle<HandledType> &other) const
+	bool operator==(const FCHandle<HandledType>& other) const
 	{
 		return _pHandels==other._pHandels;
 	}
@@ -188,21 +159,6 @@ public:
 		return 0;
 	}
 
-  // FIXME: Does this method make sense? I don't think so. (Werner)
-	/** Type checking
-	 *  test for a point if its the right type for handling
-	 *  with this concrete handle object
-	 *//*
-	bool PointsOn(const void* other) const
-	{
-		if(!_pHandels)
-			if(other)
-				return false;
-			else
-				return true;
-		return typeid(*other) == typeid(HandledType) ;
-	}
-*/
 private:
 	/// the pointer on the handled object
 	HandledType *_pHandels;
