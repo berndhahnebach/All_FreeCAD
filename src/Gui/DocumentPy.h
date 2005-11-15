@@ -49,6 +49,8 @@ public:
 //	static PyObject *sPyDocType(PyObject *self, PyObject *args, PyObject *kwd){return ((DocumentPy*)self)->PyDocType(args);};
 	PYFUNCDEF_D(DocumentPy,hide)
 	PYFUNCDEF_D(DocumentPy,show)
+	PYFUNCDEF_D(DocumentPy,setPos)
+	PYFUNCDEF_D(DocumentPy,addAnnotation)
 
 private:
   Gui::Document *_pcDoc;

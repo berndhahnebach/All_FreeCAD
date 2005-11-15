@@ -284,6 +284,8 @@ libFreeCADGui_la_SOURCES=\
 		ViewProvider.h \
 		ViewProviderFeature.cpp \
 		ViewProviderFeature.h \
+		ViewProviderExtern.cpp \
+		ViewProviderExtern.h \
 		WaitCursor.cpp \
 		WaitCursor.h \
 		WhatsThis.cpp \

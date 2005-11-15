@@ -70,7 +70,7 @@ PyMethodDef PointsPy::Methods[] = {
   PYMETHODEDEF(read)
   PYMETHODEDEF(write)
   PYMETHODEDEF(translate)
-  PYMETHODEDEF(rotate)
+//  PYMETHODEDEF(rotate)
   PYMETHODEDEF(scale)
   PYMETHODEDEF(addPoint)
   PYMETHODEDEF(clear)
@@ -185,49 +185,45 @@ PYFUNCIMP_D(PointsPy,read)
 
 PYFUNCIMP_D(PointsPy,translate)
 {
-  double x,y,z;
-  if (! PyArg_ParseTuple(args, "ddd",&x,&y,&z))			 
+  float x,y,z;
+  if (! PyArg_ParseTuple(args, "fff",&x,&y,&z))			 
     return NULL;                         
 
   PY_TRY {
     Matrix4D m;
-    m.SetMoveX((float)x);
-    m.SetMoveY((float)y);
-    m.SetMoveZ((float)z);
+    m.move(x,y,z);
     _pcPoints->transform(m);  
   } PY_CATCH;
 
   Py_Return;
 }
-
+/*
 PYFUNCIMP_D(PointsPy,rotate)
 {
-  double x,y,z;
-  if (! PyArg_ParseTuple(args, "ddd",&x,&y,&z))			 
+  float x,y,z;
+  if (! PyArg_ParseTuple(args, "fff",&x,&y,&z))			 
     return NULL;                         
 
   PY_TRY {
     Matrix4D m;
-    m.SetRotX((float)x);
-    m.SetRotY((float)y);
-    m.SetRotZ((float)z);
+    m.rotX(x);
+    m.rotY(y);
+    m.rotZ(z);
     _pcPoints->transform(m);  
   } PY_CATCH;
 
   Py_Return;
 }
-
+*/
 PYFUNCIMP_D(PointsPy,scale)
 {
-  double s;
-  if (! PyArg_ParseTuple(args, "d",&s))			 
+  float s;
+  if (! PyArg_ParseTuple(args, "f",&s))			 
     return NULL;                         
 
   PY_TRY {
     Matrix4D m;
-    m.SetScaleX((float)s);
-    m.SetScaleY((float)s);
-    m.SetScaleZ((float)s);
+    m.scale(s,s,s);
     _pcPoints->transform(m);  
   } PY_CATCH;
 
@@ -236,12 +232,12 @@ PYFUNCIMP_D(PointsPy,scale)
 
 PYFUNCIMP_D(PointsPy,addPoint)
 {
-  double x,y,z;
-  if (! PyArg_ParseTuple(args, "ddd",&x,&y,&z))			 
+  float x,y,z;
+  if (! PyArg_ParseTuple(args, "fff",&x,&y,&z))			 
     return NULL;                         
 
   PY_TRY {
-    _pcPoints->getKernel().push_back(Vector3D((float)x,(float)y,(float)z));
+    _pcPoints->getKernel().push_back(Vector3D(x,y,z));
   } PY_CATCH;
 
   Py_Return;

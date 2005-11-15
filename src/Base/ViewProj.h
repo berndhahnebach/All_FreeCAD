@@ -57,7 +57,7 @@ protected:
 class BaseExport ViewProjMatrix : public ViewProjMethod
 {
 public:
-  ViewProjMatrix (const Matrix4D &rclMtx) : _clMtx(rclMtx) {  _clMtxInv = _clMtx; _clMtxInv.Inverse(); };
+  ViewProjMatrix (const Matrix4D &rclMtx) : _clMtx(rclMtx) {  _clMtxInv = _clMtx; _clMtxInv.inverse(); };
   virtual ~ViewProjMatrix(){};
 
   inline Vector3D operator()(const Vector3D &rclPt) const;

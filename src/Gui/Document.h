@@ -32,8 +32,11 @@
 # include <TPrsStd_AISPresentation.hxx>
 #endif
 
-#include "../Base/PyExport.h"
-#include "../App/Document.h"
+#include <Base/PyExport.h>
+#include <Base/Matrix.h>
+using Base::Matrix4D;
+
+#include <App/Document.h>
 
 #ifdef _MSC_VER
 # pragma warning( disable : 4251 )
@@ -42,6 +45,12 @@
 # pragma warning( disable : 4290 )  // not implemented throw specification
 # pragma warning( disable : 4275 )  
 #endif
+
+namespace Base
+{
+  class Matrix4D;
+}
+
 namespace App
 {
   class Feature;
@@ -123,12 +132,21 @@ public:
   //@{
   /// Get the view provider for that Feature
   ViewProviderInventor * getViewProvider(App::Feature *);
+  /// set an anotation view provider
+  void setAnotationViewProvider(const char* name, ViewProviderInventor *pcProvider);
+  /// get an anotation view provider
+  ViewProviderInventor * getAnotationViewProvider(const char* name);
+  /// remove an anotation view provider
+  void rmvAnotationViewProvider(const char* name);
   /// test if the feature is in show
   bool isShow(App::Feature *);
   /// put the feature in show
   ViewProviderInventor * setShow(App::Feature *);
   /// set the feature in Noshow
   ViewProviderInventor * setHide(App::Feature *);
+  /// set the feature transformation (only viewing)
+  ViewProviderInventor * setPos(App::Feature *, const Matrix4D& rclMtrx);
+
   //@}
 
 
@@ -195,7 +213,7 @@ private:
 
 
   std::map<App::Feature*,ViewProviderInventor*> _ViewProviderMap;
-  //std::map<App::Feature*,ViewProviderInventor*> _ViewProviderMapNoShow;
+  std::map<std::string,ViewProviderInventor*> _ViewProviderMapAnotation;
 
   /** @name attributes for the UNDO REDO facility
    */

@@ -26,13 +26,15 @@
 #ifndef _PreComp_
 #endif
 
-#include "../Base/PyExportImp.h"
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
+#include <Base/PyExportImp.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
+#include <Base/Vector3D.h>
+using Base::Vector3D;
 using Base::Console;
 
 #include "MatrixPy.h"
-
+#include "VectorPy.h"
 using Base::Matrix4D;
 
 
@@ -87,7 +89,7 @@ PyTypeObject App::MatrixPy::Type = {
   0,                                                /*tp_dictoffset */
   0,                                                /*tp_init */
   0,                                                /*tp_alloc */
-  PyMake,                                           /*tp_new */
+  MatrixPy::PyMake,                                 /*tp_new */
   0,                                                /*tp_free   Low-level free-memory routine */
   0,                                                /*tp_is_gc  For PyObject_IS_GC */
   0,                                                /*tp_bases */
@@ -103,7 +105,14 @@ PyTypeObject App::MatrixPy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef App::MatrixPy::Methods[] = {
 
-  PYMETHODEDEF(set)
+//  PYMETHODEDEF(set)
+  PYMETHODEDEF(move)
+  PYMETHODEDEF(rotateX)
+  PYMETHODEDEF(rotateY)
+  PYMETHODEDEF(rotateZ)
+  PYMETHODEDEF(scale)
+  PYMETHODEDEF(transform)
+  PYMETHODEDEF(unity)
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -124,12 +133,22 @@ App::MatrixPy::MatrixPy(const Base::Matrix4D &rcMatrix, PyTypeObject *T)
 
 PyObject *MatrixPy::PyMake(PyTypeObject *ignored, PyObject *args, PyObject *kwds)	// Python wrapper
 {
-	//float x=0.0,y=0.0,z=0.0;
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C
+  float a11=1.0, a21=0.0, a31=0.0, a41=0.0;
+  float a12=0.0, a22=1.0, a32=0.0, a42=0.0;
+  float a13=0.0, a23=0.0, a33=1.0, a43=0.0;
+  float a14=0.0, a24=0.0, a34=0.0, a44=1.0; 
+
+  if (!PyArg_ParseTuple(args, "|ffffffffffffffff",&a11,&a21,&a31,&a41,
+                                                  &a12,&a22,&a32,&a42,
+                                                  &a13,&a23,&a33,&a43,
+                                                  &a14,&a24,&a43,&a44))     // convert args: Python->C 
     return NULL;                       // NULL triggers exception 
 
   Base::Console().Log("Constructor MatrixPy\n");
-	return new MatrixPy();
+	return new MatrixPy( Matrix4D (a11,a21,a31,a41,
+                                 a12,a22,a32,a42,
+                                 a13,a23,a33,a43,
+                                 a14,a24,a43,a44) );
 }
 
 
@@ -183,7 +202,7 @@ int MatrixPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: no
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-
+/*
 PYFUNCIMP_D(MatrixPy,set)
 {
 	char *pstr;
@@ -191,6 +210,138 @@ PYFUNCIMP_D(MatrixPy,set)
     return NULL;                             // NULL triggers exception 
 
   PY_TRY{
+
+  }PY_CATCH;
+
+	Py_Return;
+}
+*/
+
+PYFUNCIMP_D(MatrixPy,move)
+{
+	float x,y,z;
+  Vector3D vec;
+  PyObject *pcVecObj;
+
+  if (PyArg_ParseTuple(args, "fff", &x,&y,&z))     // convert args: Python->C 
+  {
+    vec.x = x;
+    vec.y = y;
+    vec.z = z;
+  }else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj))     // convert args: Python->C 
+  {
+    vec = ((VectorPy*)pcVecObj)->_cVector;
+    // clears the error from the first PyArg_ParseTuple()6
+    PyErr_Clear();
+  }else
+    return NULL;                                 // NULL triggers exception 
+
+  PY_TRY{
+    _cMatrix.move(vec);
+
+  }PY_CATCH;
+
+	Py_Return;
+}
+
+PYFUNCIMP_D(MatrixPy,scale)
+{
+	float x,y,z;
+  Vector3D vec;
+  PyObject *pcVecObj;
+
+  if (PyArg_ParseTuple(args, "fff", &x,&y,&z))     // convert args: Python->C 
+  {
+    vec.x = x;
+    vec.y = y;
+    vec.z = z;
+  }else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj))     // convert args: Python->C 
+  {
+    vec = ((VectorPy*)pcVecObj)->_cVector;
+    // clears the error from the first PyArg_ParseTuple()6
+    PyErr_Clear();
+  }else
+    return NULL;                                 // NULL triggers exception 
+
+  PY_TRY{
+    _cMatrix.scale(vec);
+
+  }PY_CATCH;
+
+	Py_Return;
+}
+
+PYFUNCIMP_D(MatrixPy,unity)
+{
+  PY_TRY{
+    _cMatrix.unity();
+  }PY_CATCH;
+
+	Py_Return;
+}
+
+PYFUNCIMP_D(MatrixPy,transform)
+{
+  Vector3D vec;
+  Matrix4D mat;
+  PyObject *pcVecObj,*pcMatObj;
+
+  if (PyArg_ParseTuple(args, "O!O!: a transform point (Vector) and a transform matrix (Matrix) is needed",
+                       &(VectorPy::Type), &pcVecObj,
+                       &(MatrixPy::Type), &pcMatObj) )     // convert args: Python->C 
+  {
+    vec = ((VectorPy*)pcVecObj)->_cVector;
+    mat = ((MatrixPy*)pcMatObj)->_cMatrix;
+    // clears the error from the first PyArg_ParseTuple()6
+    PyErr_Clear();
+  }else
+    return NULL;                                 // NULL triggers exception 
+
+  PY_TRY{
+    _cMatrix.transform(vec,mat);
+
+  }PY_CATCH;
+
+	Py_Return;
+}
+
+PYFUNCIMP_D(MatrixPy,rotateX)
+{
+	float a;
+
+  if (!PyArg_ParseTuple(args, "f: angle to rotate (float) needed", &a))     // convert args: Python->C 
+    return NULL;                                 // NULL triggers exception 
+
+  PY_TRY{
+    _cMatrix.rotX(a);
+
+  }PY_CATCH;
+
+	Py_Return;
+}
+PYFUNCIMP_D(MatrixPy,rotateY)
+{
+	float a;
+
+  if (!PyArg_ParseTuple(args, "f: angle to rotate (float) needed", &a))     // convert args: Python->C 
+    return NULL;                                 // NULL triggers exception 
+
+  PY_TRY{
+    _cMatrix.rotY(a);
+
+  }PY_CATCH;
+
+	Py_Return;
+}
+PYFUNCIMP_D(MatrixPy,rotateZ)
+{
+	float a;
+
+  if (!PyArg_ParseTuple(args, "f: angle to rotate (float) needed", &a))     // convert args: Python->C 
+    return NULL;                                 // NULL triggers exception 
+
+  PY_TRY{
+    _cMatrix.rotZ(a);
 
   }PY_CATCH;
 

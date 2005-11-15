@@ -44,7 +44,10 @@ class BaseExport Matrix4D
 {
 public:
   /// Construction
-  Matrix4D (void);
+  Matrix4D (float a11=1.0, float a21=0.0, float a31=0.0, float a41=0.0, 
+            float a12=0.0, float a22=1.0, float a32=0.0, float a42=0.0,
+            float a13=0.0, float a23=0.0, float a33=1.0, float a43=0.0,
+            float a14=0.0, float a24=0.0, float a34=0.0, float a44=1.0 );
   /// Construction
   Matrix4D (const Matrix4D& rclMtrx);
   /// Construction with an Axis
@@ -87,30 +90,35 @@ public:
   /// set the matrix in OpenGL style
   void   setGLMatrix (const double dMtrx[16]);
 
-  virtual unsigned long GetMemSpace (void);
+  virtual unsigned long getMemSpace (void);
 
   /** @name Manipulation */
   //@{
   /// Makes unity matrix
   void unity        (void);
-  void SetMoveX     (float fMove);
-  void SetMoveY     (float fMove);
-  void SetMoveZ     (float fMove);
-  void SetMove      (const Vector3D& rclVct);
-  void SetScaleX    (float fScale);
-  void SetScaleY    (float fScale);
-  void SetScaleZ    (float fScale);
-  void SetScale     (const Vector3D& rclVct);
-  void SetRotX      (float fAngle);
-  void SetRotY      (float fAngle);
-  void SetRotZ      (float fAngle);
+  /// moves the coordinatesystem for the x,y,z value
+  void move         (float x, float y, float z){move(Vector3D(x,y,z));}
+  /// moves the coordinatesystem for the vector
+  void move         (const Vector3D& rclVct);
+  /// scale for the vector
+  void scale        (float x, float y, float z){scale(Vector3D(x,y,z));}
+  /// scale for the x,y,z value
+  void scale        (const Vector3D& rclVct);
+  /// rotate around the X axis for the given value
+  void rotX         (float fAngle);
+  /// rotate around the Y axis for the given value
+  void rotY         (float fAngle);
+  /// rotate around the Z axis for the given value
+  void rotZ         (float fAngle);
   /// Rotation around an arbitrary axis passing the origin.
-  void SetRotLine   (const Vector3D& rclVct, float fAngle);
+  void rotLine   (const Vector3D& rclVct, float fAngle);
   /// Rotation around an arbitrary axis that needn't necessarily pass the origin.
-  void SetRotLine   (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle);
-  void Inverse      (void);
-  void InverseGauss (void);
-  void Transpose    (void);
+  void rotLine   (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle);
+  /// transform (move,scale,rotate) around a point
+  void transform    (const Vector3D& rclVct, const Matrix4D& rclMtrx); 
+  void inverse      (void);
+  void inverseGauss (void);
+  void transpose    (void);
   //@}
 
   void Print        (void) const;

@@ -33,7 +33,10 @@
 #include <Base/PyExport.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/Matrix.h>
+#include <App/MatrixPy.h>
 #include "Application.h"
+#include "ViewProviderExtern.h"
 
 using Base::Console;
 using Base::streq;
@@ -103,6 +106,8 @@ PyMethodDef DocumentPy::Methods[] = {
 //  {"DocType",      (PyCFunction) sPyDocType,         Py_NEWARGS},
   PYMETHODEDEF(hide)
   PYMETHODEDEF(show)
+  PYMETHODEDEF(setPos)
+  PYMETHODEDEF(addAnnotation)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -165,6 +170,25 @@ PyObject *DocumentPy::PyDocType(PyObject *args)
 	return _pcDoc->GetDocType()->GetPyObject();
 }
  */
+PYFUNCIMP_D(DocumentPy,addAnnotation)
+{ 
+  char *psAnnoName,*psFileName;
+  if (!PyArg_ParseTuple(args, "ss;Name of the Annotation and a file name have to be given!",&psAnnoName,&psFileName))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+
+    ViewProviderInventorExtern *pcExt = new ViewProviderInventorExtern();
+
+    pcExt->setModeByFile(psAnnoName,psFileName);
+
+    _pcDoc->setAnotationViewProvider(psAnnoName,pcExt);
+
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
 PYFUNCIMP_D(DocumentPy,hide)
 { 
   char *psFeatStr;
@@ -197,6 +221,31 @@ PYFUNCIMP_D(DocumentPy,show)
     if(pcFeat)
     {
       _pcDoc->setShow(pcFeat);  
+    }
+    
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(DocumentPy,setPos)
+{ 
+  char *psFeatStr;
+  Matrix4D mat;
+  PyObject *pcMatObj;
+  if (!PyArg_ParseTuple(args, "sO!;Name of the Feature and the transformation matrix have to be given!",
+                        &psFeatStr,
+                        &(App::MatrixPy::Type), &pcMatObj))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  mat = ((App::MatrixPy*)pcMatObj)->_cMatrix;
+
+  PY_TRY {
+    App::Feature *pcFeat = _pcDoc->getDocument()->getFeature(psFeatStr);
+
+    if(pcFeat)
+    {
+      _pcDoc->setPos(pcFeat,mat);  
     }
     
     Py_Return;

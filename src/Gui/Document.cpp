@@ -126,6 +126,52 @@ Document::~Document()
 // 3D viewer handling
 //*****************************************************************************************************
 
+void Document::setAnotationViewProvider(const char* name, ViewProviderInventor *pcProvider)
+{
+  std::list<Gui::BaseView*>::iterator VIt;
+
+  // already in ?
+  std::map<std::string,ViewProviderInventor*>::iterator it = _ViewProviderMapAnotation.find( name );
+  if(it != _ViewProviderMap.end())
+    rmvAnotationViewProvider(name);
+
+  // add 
+  _ViewProviderMapAnotation[name] = pcProvider;
+
+  // cycling to all views of the document
+  for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
+  {
+    View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+    if(pcIvView)
+      pcIvView->getViewer()->addViewProvider(pcProvider);
+  }
+
+}
+
+ViewProviderInventor * Document::getAnotationViewProvider(const char* name)
+{
+  std::map<std::string,ViewProviderInventor*>::iterator it = _ViewProviderMapAnotation.find( name );
+  return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
+
+}
+
+void Document::rmvAnotationViewProvider(const char* name)
+{
+  std::map<std::string,ViewProviderInventor*>::iterator it = _ViewProviderMapAnotation.find( name );
+  std::list<Gui::BaseView*>::iterator VIt;
+
+  // cycling to all views of the document
+  for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
+  {
+    View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
+    if(pcIvView)
+      pcIvView->getViewer()->removeViewProvider(it->second);
+  }
+
+  delete it->second;
+  _ViewProviderMapAnotation.erase(it); 
+}
+
 
 ViewProviderInventor* Document::getViewProvider(App::Feature* Feat)
 {
@@ -229,6 +275,19 @@ ViewProviderInventor * Document::setHide(App::Feature *Feat)
   if(it != _ViewProviderMap.end())
   {
     it->second->setMode(-1);
+    return it->second;
+  }else{
+    return 0;
+  }
+}
+
+/// set the feature in Noshow
+ViewProviderInventor * Document::setPos(App::Feature *Feat, const Matrix4D& rclMtrx)
+{
+  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
+  if(it != _ViewProviderMap.end())
+  {
+    it->second->setTransformation(rclMtrx);
     return it->second;
   }else{
     return 0;
@@ -344,6 +403,13 @@ void Document::createView(const char* sType)
   if(strcmp(sType,"View3DIv") == 0){
 //    pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");
     pcView3D = new Gui::View3DInventor(this,getMainWindow(),"View3DIv");
+    
+    // attach the viewprovider
+    for(std::map<App::Feature*,ViewProviderInventor*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+      ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It1->second);
+    for(std::map<std::string,ViewProviderInventor*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
+      ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It2->second);
+
   }else /* if(strcmp(sType,"View3DOCC") == 0){
     pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
   }else*/

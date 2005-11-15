@@ -74,7 +74,7 @@ public:
   PYFUNCDEF_D(MeshPy,diff)
   PYFUNCDEF_D(MeshPy,coarsen)
   PYFUNCDEF_D(MeshPy,translate)
-  PYFUNCDEF_D(MeshPy,rotate)
+//  PYFUNCDEF_D(MeshPy,rotate)
   PYFUNCDEF_D(MeshPy,transformToEigen)
   PYFUNCDEF_D(MeshPy,scale)
   PYFUNCDEF_D(MeshPy,addFacet)

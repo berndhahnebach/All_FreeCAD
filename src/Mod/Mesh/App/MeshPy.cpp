@@ -124,7 +124,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(diff)
   PYMETHODEDEF(coarsen)
   PYMETHODEDEF(translate)
-  PYMETHODEDEF(rotate)
+//  PYMETHODEDEF(rotate)
   PYMETHODEDEF(transformToEigen)
   PYMETHODEDEF(scale)
   PYMETHODEDEF(addFacet)
@@ -449,38 +449,37 @@ PYFUNCIMP_D(MeshPy,cutInner)
 
 PYFUNCIMP_D(MeshPy,translate)
 {
-  double x,y,z;
-  if (! PyArg_ParseTuple(args, "ddd",&x,&y,&z))			 
+  float x,y,z;
+  if (! PyArg_ParseTuple(args, "fff",&x,&y,&z))			 
     return NULL;                         
 
   PY_TRY {
     Matrix4D m;
-    m.SetMoveX(x);
-    m.SetMoveY(y);
-    m.SetMoveZ(z);
+    m.move(x,y,z);
     _pcMesh->transform(m);  
   } PY_CATCH;
 
   Py_Return;
 }
 
+/*
 PYFUNCIMP_D(MeshPy,rotate)
 {
-  double x,y,z;
-  if (! PyArg_ParseTuple(args, "ddd",&x,&y,&z))			 
+  float x,y,z;
+  if (! PyArg_ParseTuple(args, "fff",&x,&y,&z))			 
     return NULL;                         
 
   PY_TRY {
     Matrix4D m;
-    m.SetRotX(x);
-    m.SetRotY(y);
-    m.SetRotZ(z);
+    m.rotX(x);
+    m.rotY(y);
+    m.rotZ(z);
     _pcMesh->transform(m);  
   } PY_CATCH;
 
   Py_Return;
 }
-
+*/
 PYFUNCIMP_D(MeshPy,transformToEigen)
 {
   PyObject* pcBool;
@@ -512,9 +511,7 @@ PYFUNCIMP_D(MeshPy,scale)
 
   PY_TRY {
     Matrix4D m;
-    m.SetScaleX(s);
-    m.SetScaleY(s);
-    m.SetScaleZ(s);
+    m.scale(s,s,s);
     _pcMesh->transform(m);  
   } PY_CATCH;
 

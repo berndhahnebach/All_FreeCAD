@@ -165,6 +165,8 @@ public:
   virtual int getMode(void);
   /// get the viewing mode as int
   virtual std::string getModeName(void);
+  /// returns a vector of all possible modes
+  virtual std::vector<std::string> getModes(void)=0;
 
   //@}
 

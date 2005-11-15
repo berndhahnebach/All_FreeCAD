@@ -2948,6 +2948,14 @@ SOURCE=.\ViewProvider.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ViewProviderExtern.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderExtern.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ViewProviderFeature.cpp
 # End Source File
 # Begin Source File

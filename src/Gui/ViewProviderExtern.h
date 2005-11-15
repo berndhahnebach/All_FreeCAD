@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,63 +21,56 @@
  ***************************************************************************/
 
 
-#ifndef POINTS_PY_H
-#define POINTS_PY_H
+#ifndef __ViewProviderInventorExtern_H__
+#define __ViewProviderInventorExtern_H__
 
-#include <Base/PyExportImp.h>
+#include "ViewProvider.h"
 
 
-namespace Points
+class SoMaterial;
+
+namespace App
 {
+  class Material;
+}
 
-class PointsWithProperty;
 
-//===========================================================================
-// PointsPy - Python wrapper 
-//===========================================================================
+namespace Gui {
 
-// The DocTypeStd python class 
-class PointsAppExport PointsPy :public Base::PyObjectBase
+
+class GuiExport ViewProviderInventorExtern:public ViewProviderInventor
 {
-  /// always start with Py_Header
-  Py_Header;
-
 public:
-  PointsPy(PointsWithProperty *pcPoints,bool Referenced=false, PyTypeObject *T = &Type);
-  static PyObject *PyMake(PyObject *, PyObject *);
+  /// constructor.
+  ViewProviderInventorExtern();
 
-  ~PointsPy();
+  /// destructor.
+  virtual ~ViewProviderInventorExtern();
 
-  void setPoints(PointsWithProperty *pcPoints);
-  PointsWithProperty *getPoints(void);
-
-  //---------------------------------------------------------------------
-  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-  //---------------------------------------------------------------------
-
-  virtual PyObject *_repr(void);  				// the representation
-  PyObject *_getattr(char *attr);					// __getattr__ function
-  int _setattr(char *attr, PyObject *value);		// __setattr__ function
+  void setModeByString(const char* name, const char* ivFragment);
+  void setModeByFile(const char* name, const char* ivFileName);
+  void setModeBySoInput(const char* name, SoInput &ivFileInput);
 
   
-  PYFUNCDEF_D(PointsPy,count)
-  PYFUNCDEF_D(PointsPy,read)
-  PYFUNCDEF_D(PointsPy,write)
-  PYFUNCDEF_D(PointsPy,translate)
-//  PYFUNCDEF_D(PointsPy,rotate)
-  PYFUNCDEF_D(PointsPy,scale)
-  PYFUNCDEF_D(PointsPy,addPoint)
-  PYFUNCDEF_D(PointsPy,clear)
-  PYFUNCDEF_D(PointsPy,copy)
+  virtual std::vector<std::string> getModes(void);
+
+  virtual void update(const ChangeType&){}
+
+  /// Set the transparency
+  virtual void setTransparency(float);
 
 protected:
 
-  PointsWithProperty *_pcPoints;
-  bool _bReferenced;
+  std::vector<std::string> modes;
+
 };
 
-} //namespace Points
 
- 
 
-#endif // POINTS_PY_H 
+
+
+
+} // namespace Gui
+
+#endif // __ViewProviderInventorExtern_H__
+

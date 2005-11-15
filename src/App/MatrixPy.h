@@ -70,7 +70,15 @@ public:
 	virtual PyObject *_repr(void);  				// the representation
 	PyObject *_getattr(char *attr);					// __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-	PYFUNCDEF_D(MatrixPy,set)
+
+  PYFUNCDEF_D(MatrixPy,move)
+  PYFUNCDEF_D(MatrixPy,rotateX)
+  PYFUNCDEF_D(MatrixPy,rotateY)
+  PYFUNCDEF_D(MatrixPy,rotateZ)
+  PYFUNCDEF_D(MatrixPy,scale)
+  PYFUNCDEF_D(MatrixPy,transform)
+  PYFUNCDEF_D(MatrixPy,unity)
+
 
 
 	//---------------------------------------------------------------------
