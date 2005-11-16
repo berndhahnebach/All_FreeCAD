@@ -126,6 +126,16 @@ Document::~Document()
 // 3D viewer handling
 //*****************************************************************************************************
 
+void Document::update(void)
+{
+  for(std::map<App::Feature*,ViewProviderInventor*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+    It1->second->update(ViewProvider::All);
+  for(std::map<std::string,ViewProviderInventor*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
+    It2->second->update(ViewProvider::All);
+
+  onUpdate();
+}
+
 void Document::setAnotationViewProvider(const char* name, ViewProviderInventor *pcProvider)
 {
   std::list<Gui::BaseView*>::iterator VIt;
@@ -700,6 +710,7 @@ Handle(V3d_Viewer) Document::Viewer(const Standard_CString aDisplay,
 
 Base::PyObjectBase * Document::getPyObject(void)
 {
+  _pcDocPy->IncRef();
 	return _pcDocPy;
 }
 

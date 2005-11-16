@@ -305,8 +305,8 @@ void CmdRaytracingWritePart::activated(int iMsg)
   std::string cFullName = cDir+cPartName;
 
   std::stringstream out;
-  //Raytracing.writePartFile(App.DocGet().GetActiveFeature().getShape())
-  out << "Raytracing.writePartFile(\"" << strToPython(cFullName) << "\",\"" << Name << "\",App.DocGet().GetActiveFeature().getShape())";
+  //Raytracing.writePartFile(App.document().GetActiveFeature().getShape())
+  out << "Raytracing.writePartFile(\"" << strToPython(cFullName) << "\",\"" << Name << "\",App.document().GetActiveFeature().getShape())";
 
  	doCommand(Doc,out.str().c_str());
 

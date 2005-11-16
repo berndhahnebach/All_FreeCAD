@@ -146,7 +146,8 @@ public:
   ViewProviderInventor * setHide(App::Feature *);
   /// set the feature transformation (only viewing)
   ViewProviderInventor * setPos(App::Feature *, const Matrix4D& rclMtrx);
-
+  /// updates the view property of all view provider
+  void update(void);
   //@}
 
 

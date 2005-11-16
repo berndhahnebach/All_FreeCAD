@@ -46,5 +46,6 @@ Version: V0.3B4 Date: Sun Nov  6 01:20:57 2005 +++++++++++++++++++++++++++++++
 + Addition Stereo modes
 + Add Python objects for Matrix and Vector
 + Annotation view provider
++ Fixing python viewproperty handling
 
 

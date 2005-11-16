@@ -55,6 +55,6 @@ void Material::set(const char* MatName)
     shininess = .4f;
     transparency = .0f;
   }else{
-    throw "Unknown material";
+    throw Base::Exception("Unknown material");
   }
 }

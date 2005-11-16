@@ -150,9 +150,6 @@ void ViewProviderInventorPoints::attach(App::Feature* pcFeat)
   pcHighlight->addChild(pcPoints);
 
   // points part ---------------------------------------------
-  SoDrawStyle *pcPointStyle = new SoDrawStyle();
-  pcPointStyle->style = SoDrawStyle::POINTS;
-  pcPointStyle->pointSize = fPointSize;
   pcPointRoot->addChild(pcPointStyle);
   pcPointRoot->addChild(pcPointMaterial);
   pcPointRoot->addChild(pcHighlight);
@@ -162,7 +159,7 @@ void ViewProviderInventorPoints::attach(App::Feature* pcFeat)
   //pcLightModel->model = SoLightModel::PHONG;
   SoDrawStyle* pcPointShadedStyle = new SoDrawStyle();
   pcPointShadedStyle->style = SoDrawStyle::POINTS;
-  pcPointShadedStyle->pointSize = 2*fPointSize;
+  pcPointShadedStyle->pointSize = 2*pcPointStyle->pointSize.getValue();
   pcPointShadedRoot->addChild(pcPointShadedStyle);
 //  pcHighlight->addChild(pcLightModel);
   pcPointShadedRoot->addChild(pcPointMaterial);

@@ -64,7 +64,7 @@ PyMethodDef Application::Methods[] = {
 	{"Import"  ,       (PyCFunction) Application::sImport,         1},
 	{"DocSave"  ,      (PyCFunction) Application::sSave,           1},
 	{"DocSaveAs",      (PyCFunction) Application::sSaveAs,         1},
-	{"DocGet",         (PyCFunction) Application::sGet,            1},
+	{"document",       (PyCFunction) Application::sDocument,       1},
 	{"ParamGet",       (PyCFunction) Application::sGetParam,       1},
 	{"Version",        (PyCFunction) Application::sGetVersion,     1},
 	{"ConfigGet",      (PyCFunction) Application::sGetConfig,      1},
@@ -172,7 +172,7 @@ PYFUNCIMP_S(Application,sSaveAs)
 	return Py_None;                              // None: no errors 
 }
 
-PYFUNCIMP_S(Application,sGet)
+PYFUNCIMP_S(Application,sDocument)
 {
   char *pstr=0;
   if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 

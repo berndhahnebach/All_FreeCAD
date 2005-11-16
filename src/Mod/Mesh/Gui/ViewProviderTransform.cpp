@@ -97,7 +97,7 @@ void ViewProviderInventorMeshTransform::attach(App::Feature *pcFeat)
 
   pcEditRoot->addChild(pcTransformerDragger);
   pcEditRoot->addChild(pcFlatStyle);
-  pcEditRoot->addChild(pcShadedMaterial);
+  pcEditRoot->addChild(pcSolidMaterial);
   pcEditRoot->addChild(pcBinding);
   pcEditRoot->addChild(pcHighlight);
 

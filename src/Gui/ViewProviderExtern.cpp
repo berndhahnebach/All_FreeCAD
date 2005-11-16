@@ -108,7 +108,7 @@ std::vector<std::string> ViewProviderInventorExtern::getModes(void)
 
 void ViewProviderInventorExtern::setTransparency(float trans)
 {
-//  pcShadedMaterial->transparency = trans;
+//  pcSolidMaterial->transparency = trans;
 }
 
 

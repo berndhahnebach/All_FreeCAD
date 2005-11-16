@@ -47,23 +47,32 @@ using namespace Gui;
 ViewProviderInventorFeature::ViewProviderInventorFeature()
 :pcFeature(0)
 {
-  pcShadedMaterial = new SoMaterial;
-  pcShadedMaterial->ref();
+  pcSolidMaterial = new SoMaterial;
+  pcSolidMaterial->ref();
   pcLineMaterial   = new SoMaterial;
   pcLineMaterial->ref();
   pcPointMaterial  = new SoMaterial;
   pcPointMaterial->ref();
-  fLineSize        = 0.0;
-  fPointSize       = 0.0;
+  pcLineStyle = new SoDrawStyle();
+
+  pcLineStyle->ref();
+  pcLineStyle->style = SoDrawStyle::LINES;
+  pcLineStyle->lineWidth = 1;
+
+  pcPointStyle = new SoDrawStyle();
+  pcPointStyle->style = SoDrawStyle::POINTS;
+  pcPointStyle->pointSize = 1;
+
 
 }
 
 
 ViewProviderInventorFeature::~ViewProviderInventorFeature()
 {
-  pcShadedMaterial->unref();
+  pcSolidMaterial->unref();
   pcLineMaterial->unref();
   pcPointMaterial->unref();
+  pcLineStyle->unref();
 }
 
 
@@ -77,6 +86,10 @@ void ViewProviderInventorFeature::attach(App::Feature *pcFeat)
 
   // set viewing mode
   setMode(pcFeature->getShowMode());
+
+
+  calcMaterial = pcFeature->getTouchViewTime();
+  calcData = pcFeature->getTouchTime();
 
 }
 
@@ -99,12 +112,18 @@ bool ViewProviderInventorFeature::ifMaterialNewer(void)
 void ViewProviderInventorFeature::update(const ChangeType&)
 {
   if(ifDataNewer())
+  {
     updateData();
+    OSD_Process pro;
+    calcData = pro.SystemDate();
+  }
 
   if(ifMaterialNewer())
   {
     setMatFromFeature();
     setMode(pcFeature->getShowMode());
+    OSD_Process pro;
+    calcMaterial = pro.SystemDate();
   }
 
 }
@@ -130,11 +149,11 @@ void ViewProviderInventorFeature::copy(const App::Material &Mat, SoMaterial* pcS
 
 void ViewProviderInventorFeature::setMatFromFeature(void)
 {
-  copy(pcFeature->getSolidMaterial(),pcShadedMaterial);
+  copy(pcFeature->getSolidMaterial(),pcSolidMaterial);
   copy(pcFeature->getLineMaterial(),pcLineMaterial);
   copy(pcFeature->getPointMaterial(),pcPointMaterial);
-  fLineSize        = pcFeature->getLineSize();
-  fPointSize       = pcFeature->getPointSize();
+  pcLineStyle->lineWidth  = pcFeature->getLineSize();
+  pcPointStyle->pointSize = pcFeature->getPointSize();
 
   // touch the material time
   OSD_Process pro;
@@ -143,7 +162,7 @@ void ViewProviderInventorFeature::setMatFromFeature(void)
 
 void ViewProviderInventorFeature::setTransparency(float trans)
 {
-  pcShadedMaterial->transparency = trans;
+  pcSolidMaterial->transparency = trans;
 }
 
 //===========================================================================

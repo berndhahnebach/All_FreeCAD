@@ -823,7 +823,7 @@ void StdCmdViewIvIssueCamPos::activated(int iMsg)
 
   Base::Console().Message("%s",Temp.c_str());
 
-  getGuiApplication()->macroManager()->addLine(MacroManager::Gui,"FreeCAD.DocGet().Recompute()");
+  getGuiApplication()->macroManager()->addLine(MacroManager::Gui,"FreeCAD.document().Recompute()");
   getGuiApplication()->macroManager()->addLine(MacroManager::Gui,Temp.c_str());
   //doCommand(Command::Gui,Temp.c_str());
 }

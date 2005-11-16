@@ -251,7 +251,7 @@ private:
 	PYFUNCDEF_S(sImport);
 	PYFUNCDEF_S(sSave);
 	PYFUNCDEF_S(sSaveAs);
-	PYFUNCDEF_S(sGet);
+	PYFUNCDEF_S(sDocument);
 	PYFUNCDEF_S(sGetParam);
 	PYFUNCDEF_S(sGetVersion);
 	PYFUNCDEF_S(sGetConfig);

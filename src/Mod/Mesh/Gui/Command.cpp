@@ -74,9 +74,9 @@ void CmdMeshDemoding::activated(int iMsg)
   std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh Mesh Create");
-  doCommand(Doc,"App.DocGet().AddFeature(\"MeshTransformDemolding\",\"%s\")",fName.c_str());
-  doCommand(Doc,"App.DocGet().%s.Source = App.DocGet().%s",fName.c_str(),cSel[0].FeatName);
-  doCommand(Doc,"App.DocGet().%s.showMode=\"%s\"",fName.c_str(), "Demold");
+  doCommand(Doc,"App.document().AddFeature(\"MeshTransformDemolding\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
+  doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Demold");
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
   commitCommand(); 
  
@@ -125,10 +125,10 @@ void CmdMeshExMakeMesh::activated(int iMsg)
     "mb.addFacet(1.0,1.0,0.0, 1.0,1.0,1.0, 1.0,0.0,1.0)\n"
     "mb.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
     "mb.scale(100.0)\n"
-    "App.DocGet().AddFeature(\"Mesh\",\"MeshBox\")\n"
-    "App.DocGet().MeshBox.setMesh(mb)\n"
-    "App.DocGet().MeshBox.showMode = \"FlatWire\"\n" 
-    "App.DocGet().Recompute()" );
+    "App.document().AddFeature(\"Mesh\",\"MeshBox\")\n"
+    "App.document().MeshBox.setMesh(mb)\n"
+    "App.document().MeshBox.showMode = \"FlatWire\"\n" 
+    "App.document().Recompute()" );
 
   doCommand(Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFit\")");
   commitCommand();
@@ -179,10 +179,10 @@ void CmdMeshExMakeTool::activated(int iMsg)
     "mt.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
     "mt.scale(100.0)\n"
     "mt.translate(50.0,50.0,50.0)\n"
-    "App.DocGet().AddFeature(\"Mesh\",\"MeshTool\")\n"
-    "App.DocGet().MeshTool.setMesh(mt)\n"
-    "App.DocGet().MeshTool.shadedMaterial.diffuseColor = (0.5,0.2,0.2)\n"
-    "App.DocGet().MeshTool.showMode = \"FlatWire\"" );
+    "App.document().AddFeature(\"Mesh\",\"MeshTool\")\n"
+    "App.document().MeshTool.setMesh(mt)\n"
+    "App.document().MeshTool.solidMaterial.diffuseColor = (0.5,0.2,0.2)\n"
+    "App.document().MeshTool.showMode = \"FlatWire\"" );
 
   commitCommand();
  
@@ -218,17 +218,17 @@ void CmdMeshExMakeUnion::activated(int iMsg)
   openCommand("Mesh Mesh Create");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "m1 = App.DocGet().MeshBox.getMesh()\n"
-    "m2 = App.DocGet().MeshTool.getMesh()\n"
+    "m1 = App.document().MeshBox.getMesh()\n"
+    "m2 = App.document().MeshTool.getMesh()\n"
     "m3 = m1.copy()\n"
     "m3.Union(m2)\n"
-    "App.DocGet().AddFeature(\"Mesh\",\"MeshUnion\")\n"
-    "App.DocGet().MeshUnion.setMesh(m3)\n"
-    "App.DocGet().MeshUnion.shadedMaterial.ambientColor = (0.1,1,0)\n"
-    "App.DocGet().MeshUnion.shadedMaterial.transparency = 0.5\n"
-    "App.DocGet().MeshUnion.lineMaterial.ambientColor = (0.1,0.11,0.1)\n"
-    "App.DocGet().MeshUnion.lineSize = 2\n"
-    "App.DocGet().MeshUnion.showMode = \"FlatWire\"" );
+    "App.document().AddFeature(\"Mesh\",\"MeshUnion\")\n"
+    "App.document().MeshUnion.setMesh(m3)\n"
+    "App.document().MeshUnion.solidMaterial.ambientColor = (0.1,1,0)\n"
+    "App.document().MeshUnion.solidMaterial.transparency = 0.5\n"
+    "App.document().MeshUnion.lineMaterial.ambientColor = (0.1,0.11,0.1)\n"
+    "App.document().MeshUnion.lineSize = 2\n"
+    "App.document().MeshUnion.showMode = \"FlatWire\"" );
 
   doCommand(Gui,"Gui.hide(\"MeshBox\")");
   doCommand(Gui,"Gui.hide(\"MeshTool\")");
@@ -270,7 +270,7 @@ void CmdMeshImport::activated(int iMsg)
   if (! fn.isEmpty() )
   {
     openCommand("Mesh ImportSTL Create");
-    doCommand(Doc,"f = App.DocGet().AddFeature(\"MeshImport\",\"MeshImport\")");
+    doCommand(Doc,"f = App.document().AddFeature(\"MeshImport\",\"MeshImport\")");
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
  
@@ -309,9 +309,9 @@ void CmdMeshVertexCurvature::activated(int iMsg)
   std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh VertexCurvature");
-  doCommand(Doc,"App.DocGet().AddFeature(\"MeshCurvature\",\"%s\")",fName.c_str());
-  doCommand(Doc,"App.DocGet().%s.Source = App.DocGet().%s",fName.c_str(),cSel[0].FeatName);
-  doCommand(Doc,"App.DocGet().%s.showMode=\"%s\"",fName.c_str(), "Max. curvature");
+  doCommand(Doc,"App.document().AddFeature(\"MeshCurvature\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
+  doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Max. curvature");
   commitCommand();
   updateActive();
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
@@ -381,9 +381,9 @@ void CmdMeshToolMesh::activated(int iMsg)
     doCommand(Doc, "import Mesh");
     doCommand(Gui, "import MeshGui");
     doCommand(Doc,
-      "App.DocGet().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
-      "App.DocGet().%s.Source = App.DocGet().%s\n"
-      "App.DocGet().%s.Tool = App.DocGet().%s\n",
+      "App.document().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
+      "App.document().%s.Source = App.document().%s\n"
+      "App.document().%s.Tool = App.document().%s\n",
       fName.c_str(), fName.c_str(),  mesh->getName(), fName.c_str(), tool->getName() );
 
     commitCommand();

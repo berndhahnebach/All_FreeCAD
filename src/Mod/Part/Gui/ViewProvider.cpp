@@ -257,10 +257,7 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* EdgeRoot
   TopExp_Explorer ex;
 
   EdgeRoot->addChild(pcLineMaterial);  
-  SoDrawStyle *pcWireStyle = new SoDrawStyle();
-  pcWireStyle->style = SoDrawStyle::LINES;
-  pcWireStyle->lineWidth = fLineSize;
-  EdgeRoot->addChild(pcWireStyle);
+  EdgeRoot->addChild(pcLineStyle);
 
   // build up map edge->face
   TopTools_IndexedDataMapOfShapeListOfShape edge2Face;
@@ -387,7 +384,7 @@ Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* FaceRoot, c
 {
   TopExp_Explorer ex;
 
-  FaceRoot->addChild(pcShadedMaterial);
+  FaceRoot->addChild(pcSolidMaterial);
 
 //  BRepMesh::Mesh(myShape,1.0);
 //	BRepMesh_Discret MESH(1.0,myShape,20.0);

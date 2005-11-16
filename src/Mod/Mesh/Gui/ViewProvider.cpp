@@ -221,7 +221,7 @@ void ViewProviderInventorMesh::attach(App::Feature *pcFeat)
 	pcBinding->value=SoNormalBinding::PER_FACE;
 
   pcFlatRoot->addChild(pcFlatStyle);
-  pcFlatRoot->addChild(pcShadedMaterial);
+  pcFlatRoot->addChild(pcSolidMaterial);
   pcFlatRoot->addChild(pcBinding);
   pcFlatRoot->addChild(pcHighlight);
 
@@ -238,24 +238,24 @@ void ViewProviderInventorMesh::attach(App::Feature *pcFeat)
   h->addChild(pcMeshNormal);
   h->addChild(pcMeshFaces);
   pcFlatNormRoot->addChild(pcFlatStyle);
-  pcFlatNormRoot->addChild(pcShadedMaterial);
+  pcFlatNormRoot->addChild(pcSolidMaterial);
   pcFlatNormRoot->addChild(h); */
 
   // wire part ----------------------------------------------
-  SoDrawStyle *pcWireStyle = new SoDrawStyle();
-  pcWireStyle->style = SoDrawStyle::LINES;
-  pcWireStyle->lineWidth = fLineSize;
+  //SoDrawStyle *pcWireStyle = new SoDrawStyle();
+  //pcWireStyle->style = SoDrawStyle::LINES;
+  //pcWireStyle->lineWidth = fLineSize;
   SoLightModel *pcLightModel = new SoLightModel();
   pcLightModel->model = SoLightModel::BASE_COLOR;
-  pcWireRoot->addChild(pcWireStyle);
+  pcWireRoot->addChild(pcLineStyle);
   pcWireRoot->addChild(pcLightModel);
   pcWireRoot->addChild(pcLineMaterial);
   pcWireRoot->addChild(pcHighlight);
 
   // points part ---------------------------------------------
-  SoDrawStyle *pcPointStyle = new SoDrawStyle();
-  pcPointStyle->style = SoDrawStyle::POINTS;
-  pcPointStyle->pointSize = fPointSize;
+  //SoDrawStyle *pcPointStyle = new SoDrawStyle();
+  //pcPointStyle->style = SoDrawStyle::POINTS;
+  //pcPointStyle->pointSize = fPointSize;
   pcPointRoot->addChild(pcPointStyle);
   pcPointRoot->addChild(pcPointMaterial);
   pcPointRoot->addChild(pcHighlight);
@@ -267,14 +267,11 @@ void ViewProviderInventorMesh::attach(App::Feature *pcFeat)
 	pcBinding->value=SoNormalBinding::PER_FACE;
   pcFlatWireRoot->addChild(pcBinding);
   pcFlatWireRoot->addChild(pcFlatStyle);
-  pcFlatWireRoot->addChild(pcShadedMaterial);
+  pcFlatWireRoot->addChild(pcSolidMaterial);
   pcFlatWireRoot->addChild(pcHighlight);
-  pcWireStyle = new SoDrawStyle();
-  pcWireStyle->style = SoDrawStyle::LINES;
-  pcWireStyle->lineWidth = 2.0;
   pcLightModel = new SoLightModel();
   pcLightModel->model = SoLightModel::BASE_COLOR;
-  pcFlatWireRoot->addChild(pcWireStyle);
+  pcFlatWireRoot->addChild(pcLineStyle);
   pcFlatWireRoot->addChild(pcLightModel);
   pcFlatWireRoot->addChild(pcLineMaterial);
   pcFlatWireRoot->addChild(pcMeshCoord);
@@ -496,11 +493,11 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
 
           // create a mesh feature and append it to the document
           std::string fTool = pDoc->getUniqueFeatureName("Toolmesh");
-          Gui::Command::doCommand(Gui::Command::Doc, "App.DocGet().AddFeature(\"Mesh\", \"%s\")\n", fTool.c_str());
+          Gui::Command::doCommand(Gui::Command::Doc, "App.document().AddFeature(\"Mesh\", \"%s\")\n", fTool.c_str());
 
           // replace the mesh from feature
-          Gui::Command::doCommand(Gui::Command::Gui, "App.DocGet().%s.shadedMaterial.transparency = 0.7\n", fTool.c_str());
-          Gui::Command::doCommand(Gui::Command::Doc, "m=App.DocGet().GetFeature(\"%s\").getMesh()\n", fTool.c_str());
+          Gui::Command::doCommand(Gui::Command::Gui, "App.document().%s.solidMaterial.transparency = 0.7\n", fTool.c_str());
+          Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().GetFeature(\"%s\").getMesh()\n", fTool.c_str());
           for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
           {
             Gui::Command::doCommand(Gui::Command::Doc, "m.addFacet(%.6f,%.6f,%.6f, %.6f,%.6f,%.6f, %.6f,%.6f,%.6f)",
@@ -509,7 +506,7 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
               itF->_aclPoints[2].x, itF->_aclPoints[2].y, itF->_aclPoints[2].z);
           }
 
-          Gui::Command::doCommand(Gui::Command::Doc, "App.DocGet().Recompute()\n");
+          Gui::Command::doCommand(Gui::Command::Doc, "App.document().Recompute()\n");
 
 #ifndef FC_DEBUG
           Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
@@ -526,9 +523,9 @@ bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DI
             if ( !meshFeature ) continue; // no mesh
 
             Gui::Command::doCommand(Gui::Command::Doc,
-                "f = App.DocGet().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
-                "f.Source   = App.DocGet().%s\n"
-                "f.Tool     = App.DocGet().%s\n"
+                "f = App.document().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
+                "f.Source   = App.document().%s\n"
+                "f.Tool     = App.document().%s\n"
                 "f.BaseX    = %.6f\n"
                 "f.BaseY    = %.6f\n"
                 "f.BaseZ    = %.6f\n"

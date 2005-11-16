@@ -203,7 +203,7 @@ PYFUNCIMP_D(MeshFeaturePy,getMesh)
     /* We must NOT instanciating the object only one time without incrementing it every 
        time we return it. Otherwise this leads to an error in the following cases:
 
-       1. f=App.DocGet().GetActiveFeature()
+       1. f=App.document().GetActiveFeature()
           f.getMesh().calculateVertexCurvature() # Creates the object and increments it. 
                                                  # By using it temporarily Python decrements
                                                  # it again

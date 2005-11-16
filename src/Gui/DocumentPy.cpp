@@ -108,6 +108,7 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(show)
   PYMETHODEDEF(setPos)
   PYMETHODEDEF(addAnnotation)
+  PYMETHODEDEF(update)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -123,6 +124,7 @@ PyParentObject DocumentPy::Parents[] = {&PyObjectBase::Type, NULL};
 DocumentPy::DocumentPy(Document *pcDoc, PyTypeObject *T)
  : PyObjectBase( T), _pcDoc(pcDoc)
 {
+  Base::Console().Log("Create DocumentPy: %p \n",this);
 }
 
 PyObject *DocumentPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
@@ -136,6 +138,7 @@ PyObject *DocumentPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrappe
 //--------------------------------------------------------------------------
 DocumentPy::~DocumentPy()						// Everything handled in parent
 {
+	Base::Console().Log("Destroy DocumentPy: %p \n",this);
 } 
 
 
@@ -248,6 +251,19 @@ PYFUNCIMP_D(DocumentPy,setPos)
       _pcDoc->setPos(pcFeat,mat);  
     }
     
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(DocumentPy,update)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+
+  PY_TRY {
+    _pcDoc->update();
+
     Py_Return;
 
   }PY_CATCH;

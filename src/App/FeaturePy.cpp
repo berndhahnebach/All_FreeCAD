@@ -134,7 +134,7 @@ PyParentObject App::FeaturePy::Parents[] = { &FeaturePy::Type, &PyObjectBase::Ty
 //t constructor
 //--------------------------------------------------------------------------
 App::FeaturePy::FeaturePy(Feature *pcFeature, PyTypeObject *T)
-: PyObjectBase( T), _pcFeature(pcFeature),shadedMaterialPy(0),lineMaterialPy(0),pointMaterialPy(0)
+: PyObjectBase( T), _pcFeature(pcFeature),solidMaterialPy(0),lineMaterialPy(0),pointMaterialPy(0)
 {
 //	Base::Console().Log("Create FeaturePy: %p \n",this);
 }
@@ -163,7 +163,7 @@ FeaturePy::~FeaturePy()						// Everything handled in parent
 {
 //	Base::Console().Log("Destroy FeaturePy: %p \n",this);
 
-  if(shadedMaterialPy) shadedMaterialPy->DecRef();
+  if(solidMaterialPy) solidMaterialPy->DecRef();
   if(lineMaterialPy) lineMaterialPy->DecRef();
   if(pointMaterialPy) pointMaterialPy->DecRef();
 }
@@ -188,14 +188,14 @@ PyObject *FeaturePy::_repr(void)
 PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	PY_TRY{
-		if (Base::streq(attr, "shadedMaterial"))
+		if (Base::streq(attr, "solidMaterial"))
     {
-      if(shadedMaterialPy==0){
-        shadedMaterialPy = new MaterialPy(&(_pcFeature->_solidMaterial));
-//        shadedMaterialPy->IncRef();
+      if(solidMaterialPy==0){
+        solidMaterialPy = new MaterialPy(&(_pcFeature->_solidMaterial));
+//        solidMaterialPy->IncRef();
       }
-      shadedMaterialPy->IncRef();
-			return shadedMaterialPy; 
+      solidMaterialPy->IncRef();
+			return solidMaterialPy; 
     }
     else if (Base::streq(attr, "lineMaterial"))
     {
@@ -254,33 +254,55 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
 
 int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	if (Base::streq(attr, "shadedMaterial")){						// settable new state
+	if (Base::streq(attr, "solidMaterial")){						// settable new state
     if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
     {
       _pcFeature->_solidMaterial = *((MaterialPy*)value)->_pcMaterial;
+      _pcFeature->TouchView();
     }else if( PyString_Check( value ))
     {
       _pcFeature->_solidMaterial = Material(PyString_AsString(value));
+      _pcFeature->TouchView();
+    }else if( PyTuple_Check( value ))
+    {
+      _pcFeature->_solidMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
+      _pcFeature->TouchView();
     }else
       throw "material expected for that attribute";
   }else	if (Base::streq(attr, "lineMaterial")){	
     if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
     {
       _pcFeature->_lineMaterial = *((MaterialPy*)value)->_pcMaterial;
+      _pcFeature->TouchView();
+    }else if( PyTuple_Check( value ))
+    {
+      _pcFeature->_lineMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
+      _pcFeature->TouchView();
     }else
       throw "material expected for that attribute";
   }else	if (Base::streq(attr, "pointMaterial")){	
     if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
     {
       _pcFeature->_pointMaterial = *((MaterialPy*)value)->_pcMaterial;
+      _pcFeature->TouchView();
+    }else if( PyTuple_Check( value ))
+    {
+      _pcFeature->_pointMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
+      _pcFeature->TouchView();
     }else
       throw "material expected for that attribute";
   }else	if (Base::streq(attr, "lineSize")){	
     _pcFeature->_lineSize = getFloatFromPy(value);
+    _pcFeature->TouchView();
   }else	if (Base::streq(attr, "pointSize")){	
     _pcFeature->_pointSize = getFloatFromPy(value);
+    _pcFeature->TouchView();
+  }else	if (Base::streq(attr, "transparency")){	
+    _pcFeature->_solidMaterial.transparency = getFloatFromPy(value);
+    _pcFeature->TouchView();
   }else	if (Base::streq(attr, "showMode")){	
     _pcFeature->_showMode = PyString_AsString(value);
+    _pcFeature->TouchView();
   }else{
       // search in PropertyList
       if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end()){

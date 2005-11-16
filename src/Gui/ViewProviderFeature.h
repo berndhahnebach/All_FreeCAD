@@ -30,6 +30,7 @@
 
 
 class SoMaterial;
+class SoDrawStyle;
 
 namespace App
 {
@@ -74,11 +75,11 @@ public:
   virtual void setTransparency(float);
 
 protected:
-  SoMaterial  *pcShadedMaterial;
+  SoMaterial  *pcSolidMaterial;
   SoMaterial  *pcLineMaterial;
   SoMaterial  *pcPointMaterial;
-  float fLineSize;
-  float fPointSize;
+  SoDrawStyle *pcLineStyle;
+  SoDrawStyle *pcPointStyle;
 
   App::Feature *pcFeature;
 

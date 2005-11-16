@@ -166,7 +166,7 @@ Color MaterialPy::getColorFromPy(PyObject *value)
     int size = PyTuple_Size( value);
 
     if( size != 4 && size != 3)
-      throw "wrong Tuple size. Only Tuple with 3 (r,g,b) or 4 (r,g,b,a) floats are allowed...";
+      throw Base::Exception("wrong Tuple size. Only Tuple with 3 (r,g,b) or 4 (r,g,b,a) floats are allowed...");
 
     c.r = getFloatFromPy(PyTuple_GetItem( value, 0));
     c.g = getFloatFromPy(PyTuple_GetItem( value, 1));
@@ -175,7 +175,7 @@ Color MaterialPy::getColorFromPy(PyObject *value)
       c.a = getFloatFromPy(PyTuple_GetItem( value, 3));
 
   }else
-    throw "wrong type for color. Only Tuple with 3 (r,g,b) or 4 (r,g,b,a) floats are allowed...";
+    throw Base::Exception("wrong type for color. Only Tuple with 3 (r,g,b) or 4 (r,g,b,a) floats are allowed...");
 
 
   return c;

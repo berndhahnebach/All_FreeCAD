@@ -134,10 +134,7 @@ void ViewProviderCurveNet::attach(App::Feature *pcFeat)
   // setup the root and material for the edges
   EdgeRoot = new SoSeparator();
   pcRoot->addChild(EdgeRoot);
-  SoDrawStyle *pcWireStyle = new SoDrawStyle();
-  pcWireStyle->style = SoDrawStyle::LINES;
-  pcWireStyle->lineWidth = fLineSize;
-  EdgeRoot->addChild(pcWireStyle);  
+  EdgeRoot->addChild(pcLineStyle);  
   EdgeRoot->addChild(pcLineMaterial);  
 
 
@@ -238,7 +235,7 @@ bool ViewProviderCurveNet::handleEvent(const SoEvent * const ev, Gui::View3DInve
           n.pcTransform->translation.setValue(point);
           n.pcHighlight          = new Gui::SoFCSelection();
           SoSphere * sphere      = new SoSphere;
-          sphere->radius = (float)fPointSize;
+          sphere->radius = (float)pcLineStyle->pointSize.getValue();
           n.pcHighlight->addChild(sphere);
           TransRoot->addChild(n.pcHighlight);
           VertexRoot->addChild(TransRoot);
@@ -288,11 +285,7 @@ Standard_Boolean ViewProviderCurveNet::computeEdges   (SoSeparator* root, const 
   SoSeparator *EdgeRoot = new SoSeparator();
   root->addChild(EdgeRoot);
 
-  SoDrawStyle *pcWireStyle = new SoDrawStyle();
-  pcWireStyle->style = SoDrawStyle::LINES;
-  pcWireStyle->lineWidth = fLineSize;
-
-  EdgeRoot->addChild(pcWireStyle);  
+  EdgeRoot->addChild(pcLineStyle);  
   EdgeRoot->addChild(pcLineMaterial);  
 
   for (ex.Init(myShape, TopAbs_EDGE); ex.More(); ex.Next())
@@ -359,7 +352,7 @@ Standard_Boolean ViewProviderCurveNet::computeVertices(SoSeparator* root, const 
     h->color.setValue((float)0.2,(float)0.5,(float)0.2);
 
     SoSphere * sphere = new SoSphere;
-    sphere->radius = (float)fPointSize;
+    sphere->radius = (float)pcPointStyle->pointSize.getValue();
 
     h->addChild(sphere);
     TransRoot->addChild(h);

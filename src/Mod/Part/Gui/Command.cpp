@@ -189,7 +189,7 @@ void FCCmdPartBox::activated(int iMsg)
 	if ( cDlg.exec()== QDialog::Accepted )
   {
     openCommand("Part Box Create");
-	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\",\"PartBox\")");
+	  doCommand(Doc,"f = App.document().AddFeature(\"PartBox\",\"PartBox\")");
 	  doCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
 	  doCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
 	  doCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
@@ -237,7 +237,7 @@ void FCCmdPartBox2::activated(int iMsg)
 {
   openCommand("PartBox Create");
 
-	doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\",\"PartBox\")");
+	doCommand(Doc,"f = App.document().AddFeature(\"PartBox\",\"PartBox\")");
 	doCommand(Doc,"f.x = 0.0");
 	doCommand(Doc,"f.y = 0.0");
 	doCommand(Doc,"f.z = 0.0");
@@ -281,7 +281,7 @@ void FCCmdPartBox3::activated(int iMsg)
 {
   openCommand("PartBox Create");
 
-	doCommand(Doc,"f = App.DocGet().AddFeature(\"PartBox\",\"PartBox\")");
+	doCommand(Doc,"f = App.document().AddFeature(\"PartBox\",\"PartBox\")");
 	doCommand(Doc,"f.x = 50.0");
 	doCommand(Doc,"f.y = 50.0");
 	doCommand(Doc,"f.z = 50.0");
@@ -338,9 +338,9 @@ void FCCmdPartCut::activated(int iMsg)
   vector<Gui::SelectionSingelton::SelObj> Sel = getSelection().getSelection();
 
   openCommand("Part Cut");
-	doCommand(Doc,"App.DocGet().AddFeature(\"PartCut\",\"%s\")",FeatName.c_str());
-	doCommand(Doc,"App.DocGet().%s.Base = App.DocGet().%s",FeatName.c_str(),Sel[0].FeatName);
-	doCommand(Doc,"App.DocGet().%s.Tool = App.DocGet().%s",FeatName.c_str(),Sel[1].FeatName);
+	doCommand(Doc,"App.document().AddFeature(\"PartCut\",\"%s\")",FeatName.c_str());
+	doCommand(Doc,"App.document().%s.Base = App.document().%s",FeatName.c_str(),Sel[0].FeatName);
+	doCommand(Doc,"App.document().%s.Tool = App.document().%s",FeatName.c_str(),Sel[1].FeatName);
   commitCommand();
   
 
@@ -376,7 +376,7 @@ void PartImportStep::activated(int iMsg)
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportSTEP Create");
-	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportStep\",\"PartImportStep\")");
+	  doCommand(Doc,"f = App.document().AddFeature(\"PartImportStep\",\"PartImportStep\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
   
@@ -426,7 +426,7 @@ void PartImportIges::activated(int iMsg)
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportIGES Create");
-	  doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportIges\",\"PartImportIges\")");
+	  doCommand(Doc,"f = App.document().AddFeature(\"PartImportIges\",\"PartImportIges\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
   
@@ -476,7 +476,7 @@ void PartImportBrep::activated(int iMsg)
   {
     openCommand("Part ImportIGES Create");
 	  
-    doCommand(Doc,"f = App.DocGet().AddFeature(\"PartImportBrep\",\"PartImportBrep\")");
+    doCommand(Doc,"f = App.document().AddFeature(\"PartImportBrep\",\"PartImportBrep\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
 
     commitCommand();
@@ -525,7 +525,7 @@ void PartImportCurveNet::activated(int iMsg)
   {
     openCommand("Part Import Curve Net");
 	  
-    doCommand(Doc,"f = App.DocGet().AddFeature(\"PartCurveNet\",\"PartCurveNet\")");
+    doCommand(Doc,"f = App.document().AddFeature(\"PartCurveNet\",\"PartCurveNet\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
 
     commitCommand();

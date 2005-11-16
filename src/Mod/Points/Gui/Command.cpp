@@ -72,7 +72,7 @@ void CmdPointsTest::activated(int iMsg)
   if (! fn.isEmpty() )
   {
     openCommand("Points Import Create");
-    doCommand(Doc,"f = App.DocGet().AddFeature(\"PointsImport\",\"PointsImport\")");
+    doCommand(Doc,"f = App.document().AddFeature(\"PointsImport\",\"PointsImport\")");
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
  

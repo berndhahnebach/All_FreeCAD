@@ -81,7 +81,7 @@ public:
 private:
   Feature *_pcFeature;
 
-  MaterialPy* shadedMaterialPy;
+  MaterialPy* solidMaterialPy;
   MaterialPy* lineMaterialPy;
   MaterialPy* pointMaterialPy;
 
