@@ -19,7 +19,7 @@
  *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
- 
+
 
 #include "PreCompiled.h"
 
@@ -142,7 +142,7 @@ void Document::setAnotationViewProvider(const char* name, ViewProviderInventor *
 
   // already in ?
   std::map<std::string,ViewProviderInventor*>::iterator it = _ViewProviderMapAnotation.find( name );
-  if(it != _ViewProviderMap.end())
+  if(it != _ViewProviderMapAnotation.end())
     rmvAnotationViewProvider(name);
 
   // add 
@@ -161,7 +161,7 @@ void Document::setAnotationViewProvider(const char* name, ViewProviderInventor *
 ViewProviderInventor * Document::getAnotationViewProvider(const char* name)
 {
   std::map<std::string,ViewProviderInventor*>::iterator it = _ViewProviderMapAnotation.find( name );
-  return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
+  return ( (it != _ViewProviderMapAnotation.end()) ? it->second : 0 );
 
 }
 

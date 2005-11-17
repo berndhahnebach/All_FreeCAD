@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 # include <qlistview.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoSwitch.h>
 # include <OSD_Process.hxx>
 #endif
 

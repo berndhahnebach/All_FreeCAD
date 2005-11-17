@@ -282,10 +282,10 @@ libFreeCADGui_la_SOURCES=\
 		View3DPy.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
-		ViewProviderFeature.cpp \
-		ViewProviderFeature.h \
 		ViewProviderExtern.cpp \
 		ViewProviderExtern.h \
+		ViewProviderFeature.cpp \
+		ViewProviderFeature.h \
 		WaitCursor.cpp \
 		WaitCursor.h \
 		WhatsThis.cpp \

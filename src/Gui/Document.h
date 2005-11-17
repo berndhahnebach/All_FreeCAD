@@ -30,6 +30,8 @@
 # include <AIS_InteractiveContext.hxx>
 # include <V3d_Viewer.hxx>
 # include <TPrsStd_AISPresentation.hxx>
+# include <map>
+# include <string>
 #endif
 
 #include <Base/PyExport.h>
