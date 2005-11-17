@@ -208,8 +208,15 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
 	_pcAppModule = Py_InitModule("FreeCAD", Application::Methods);
 
   // introducing additional classes
-  PyModule_AddObject(_pcAppModule, "Vector", (PyObject *)&App::VectorPy::Type);
-  PyModule_AddObject(_pcAppModule, "Matrix", (PyObject *)&App::MatrixPy::Type);
+  // NOTE: As the Python docu says that PyModule_AddObject() steals
+  //       a reference to its last argument we must increment it, otherwise
+  //       we run into a segmentation fault, later on.
+  PyObject* pyVecType = (PyObject *)&App::VectorPy::Type;
+  Py_INCREF(pyVecType);
+  PyModule_AddObject(_pcAppModule, "Vector", pyVecType);
+  PyObject* pyMatType = (PyObject *)&App::MatrixPy::Type;
+  Py_INCREF(pyMatType);
+  PyModule_AddObject(_pcAppModule, "Matrix", pyMatType);
 
 
 }
