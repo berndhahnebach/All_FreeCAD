@@ -84,12 +84,14 @@ void GuiMeshExport initMeshGui() {
   // Register icons
   Gui::BitmapFactory().addXPM("curv_info", curv_info);
   Gui::BitmapFactory().addXPM("import_mesh", import_mesh);
+  Gui::BitmapFactory().addXPM("export_mesh", export_mesh);
 
   // instanciating the commands
   CreateMeshCommands();
 
   // Register view provider
   Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImport",             new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
+  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshExport",             new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"      ,             new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshSegmentByMesh",      new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
   Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshCurvature",          new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshCurvature>);

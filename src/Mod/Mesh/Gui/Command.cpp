@@ -50,10 +50,10 @@ using namespace Mesh;
 //===========================================================================
 // Example MakeMesh
 //===========================================================================
-DEF_STD_CMD_A(CmdMeshDemoding);
+DEF_STD_CMD_A(CmdMeshDemolding);
 
-CmdMeshDemoding::CmdMeshDemoding()
-  :CppCommand("Mesh_Demoding")
+CmdMeshDemolding::CmdMeshDemolding()
+  :CppCommand("Mesh_Demolding")
 {
   sAppModule    = "Mesh";
   sGroup        = "Mesh";
@@ -65,7 +65,7 @@ CmdMeshDemoding::CmdMeshDemoding()
   iAccel        = 0;
 }
 
-void CmdMeshDemoding::activated(int iMsg)
+void CmdMeshDemolding::activated(int iMsg)
 {
   unsigned int n = getSelection().getNbrOfType("Mesh");
   if ( n!=1 ) return;
@@ -83,7 +83,7 @@ void CmdMeshDemoding::activated(int iMsg)
   updateActive();
 }
 
-bool CmdMeshDemoding::isActive(void)
+bool CmdMeshDemolding::isActive(void)
 {
   //return true;
   return getSelection().getNbrOfType("Mesh") == 1;
@@ -246,7 +246,7 @@ bool CmdMeshExMakeUnion::isActive(void)
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //===========================================================================
-// CmdMeshImport 
+// CmdMeshImport
 //===========================================================================
 DEF_STD_CMD_A(CmdMeshImport);
 
@@ -273,7 +273,7 @@ void CmdMeshImport::activated(int iMsg)
     doCommand(Doc,"f = App.document().AddFeature(\"MeshImport\",\"MeshImport\")");
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
- 
+
     updateActive();
   }
 }
@@ -284,6 +284,54 @@ bool CmdMeshImport::isActive(void)
     return true;
   else
     return false;
+}
+
+//===========================================================================
+// CmdMeshExport
+//===========================================================================
+DEF_STD_CMD_A(CmdMeshExport);
+
+CmdMeshExport::CmdMeshExport()
+  :CppCommand("Mesh_Export")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Export Mesh");
+  sToolTipText  = QT_TR_NOOP("Exports a mesh to file");
+  sWhatsThis    = QT_TR_NOOP("Exports a mesh to file");
+  sStatusTip    = QT_TR_NOOP("Exports a mesh to file");
+  sPixmap       = "export_mesh";
+  iAccel        = 0;
+}
+
+void CmdMeshExport::activated(int iMsg)
+{
+  QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;All Files (*.*)";
+  QString format;
+  QString fn = Gui::FileDialog::getSaveFileName( QString::null, filter, Gui::getMainWindow(), 0,
+                                                 QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );
+  std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
+
+  if (! fn.isEmpty() )
+  {
+    if ( format.startsWith("Binary STL") )
+      format = "Binary STL";
+    else if ( format.startsWith("ASCII STL") )
+      format = "ASCII STL";
+    openCommand("Mesh ExportSTL Create");
+    doCommand(Doc,"f = App.document().AddFeature(\"MeshExport\",\"MeshExport\")");
+    doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+    doCommand(Doc,"f.Format = \"%s\"",format.ascii());
+    doCommand(Doc,"f.Source = App.document().%s",fea.front()->getName());
+    commitCommand();
+
+    updateActive();
+  }
+}
+
+bool CmdMeshExport::isActive(void)
+{
+  return getSelection().getNbrOfType("Mesh") == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshVertexCurvature);
@@ -411,11 +459,12 @@ void CreateMeshCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdMeshImport());
+  rcCmdMgr.addCommand(new CmdMeshExport());
   rcCmdMgr.addCommand(new CmdMeshVertexCurvature());
   rcCmdMgr.addCommand(new CmdMeshExMakeMesh());
   rcCmdMgr.addCommand(new CmdMeshExMakeTool());
   rcCmdMgr.addCommand(new CmdMeshExMakeUnion());
-  rcCmdMgr.addCommand(new CmdMeshDemoding());
+  rcCmdMgr.addCommand(new CmdMeshDemolding());
   rcCmdMgr.addCommand(new CmdMeshPolyPick());
   rcCmdMgr.addCommand(new CmdMeshToolMesh());
 }

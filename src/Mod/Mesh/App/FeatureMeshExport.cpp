@@ -43,6 +43,7 @@ void FeatureMeshExport::initFeature(void)
 {
   addProperty("Link"  ,"Source");
   addProperty("String","FileName");
+  addProperty("String","Format");
 }
 
 int FeatureMeshExport::execute(TFunction_Logbook& log)
@@ -56,6 +57,7 @@ int FeatureMeshExport::execute(TFunction_Logbook& log)
   }
 
   std::string FileName =getPropertyString("FileName");
+  std::string Format   =getPropertyString("Format");
 
 /*  // ask for read permisson
 	if ( access(FileName.c_str(), 2) != 0 )
@@ -67,8 +69,15 @@ int FeatureMeshExport::execute(TFunction_Logbook& log)
   MeshSTL aReader(*(pcFeat->getMesh().getKernel()) );
 
   // write file
+  bool ok = false;
   FileStream str( FileName.c_str(), std::ios::out);
-  if ( !aReader.SaveBinary( str ) )
+
+  if ( Format == "ASCII STL" )
+    ok = aReader.SaveAscii( str );
+  else // "Binary STL"
+    ok = aReader.SaveBinary( str );
+
+  if ( !ok )
   {
     setError("FeatureMeshExport::Execute() not able to export %s\n",FileName.c_str());
     return 1;
