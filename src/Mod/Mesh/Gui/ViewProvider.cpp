@@ -120,7 +120,7 @@ void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
   SbVec3f* vertices = new SbVec3f[cMesh->CountPoints()];
   int* faces = new int [4*cMesh->CountFacets()];
 
-  Base::Sequencer().start( "Building View node...", cMesh->CountFacets() );
+  Base::SequencerLauncher seq( "Building View node...", cMesh->CountFacets() );
 
   unsigned long j=0;
   MeshFacetIterator cFIt(*cMesh);
@@ -147,13 +147,12 @@ void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
   delete [] vertices;
   delete [] faces;
 
-  Base::Sequencer().stop();
 #else /// @todo This doesn't seem to work as expected (save tmp. memory and time). Don't know why!?
   MeshKernel *cMesh = pcMesh->getKernel();
   pcMeshCoord->point.setNum( cMesh->CountPoints() );
   pcMeshFaces->coordIndex.setNum( 4*cMesh->CountFacets() );
 
-  Base::Sequencer().start( "Building View node...", cMesh->CountFacets() );
+  Base::SequencerLauncher seq( "Building View node...", cMesh->CountFacets() );
 
   // set the point coordinates
   MeshPointIterator cPIt(*cMesh);
@@ -178,7 +177,6 @@ void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
     Base::Sequencer().next( false ); // don't allow to cancel
   }
 
-  Base::Sequencer().stop();
 #endif
 }
 

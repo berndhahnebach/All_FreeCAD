@@ -116,7 +116,7 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
     return false;
 
   ulCt = rstrIn.FileSize();
-  Base::Sequencer().start("loading...", ulCt+1);  
+  Base::SequencerLauncher seq("loading...", ulCt+1);  
 
   ulVertexCt = 0;
   while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false))
@@ -144,7 +144,6 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
     Base::Sequencer().next( true ); // allow to cancel
   }
 
-  Base::Sequencer().stop();
   _rclMesh = clFacetAry;  
 
   return true;
@@ -177,9 +176,9 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
     return false;// not a valid STL file
 
 #ifdef Use_EdgeList
-  Base::Sequencer().start("create mesh structure...", ulCt * 4 + 1);
+  Base::SequencerLauncher seq("create mesh structure...", ulCt * 4 + 1);
 #else
-  Base::Sequencer().start("create mesh structure...", ulCt * 3 / 2);
+  Base::SequencerLauncher seq("create mesh structure...", ulCt * 3 / 2);
 #endif
 
   MeshPointBuilder  clMap;
@@ -218,8 +217,7 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
 
   _rclMesh.Assign(clMap);
 
-  Base::Sequencer().stop();
- 
+
   return true;
 }
 
@@ -236,7 +234,7 @@ bool MeshSTL::SaveAscii (FileStream &rstrOut) const
     return false;
   }
 
-  Base::Sequencer().start("saving...", _rclMesh.CountFacets() + 1);  
+  Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  
 
   strcpy(szBuf, "solid MESH\n");
   rstrOut.Write(szBuf, strlen(szBuf));
@@ -276,8 +274,7 @@ bool MeshSTL::SaveAscii (FileStream &rstrOut) const
   strcpy(szBuf, "endsolid MESH\n");
   rstrOut.Write(szBuf, strlen(szBuf));
 
-  Base::Sequencer().stop();
-  
+ 
   return true;
 }
 
@@ -294,7 +291,7 @@ bool MeshSTL::SaveBinary (FileStream &rstrOut) const
     return false;
   }
 
-  Base::Sequencer().start("saving...", _rclMesh.CountFacets() + 1);  
+  Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  
  
   strcpy(szInfo, "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH\n");
   rstrOut.Write(szInfo, strlen(szInfo));
@@ -327,7 +324,6 @@ bool MeshSTL::SaveBinary (FileStream &rstrOut) const
     Base::Sequencer().next( true ); // allow to cancel
   }
 
-  Base::Sequencer().stop();
 
   return true;
 }
@@ -349,7 +345,7 @@ bool MeshInventor::Load (FileStream &rstrIn)
     return false;
 
   ulCt = rstrIn.FileSize();
-  Base::Sequencer().start("loading...", ulCt+1);  
+  Base::SequencerLauncher seq("loading...", ulCt+1);  
 ///*
   bFlag = true;
   while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false) && bFlag)
@@ -432,7 +428,6 @@ bool MeshInventor::Load (FileStream &rstrIn)
   }
 
 
-  Base::Sequencer().stop();
   _rclMesh = clFacetAry;
   return true;
 }
@@ -452,7 +447,7 @@ bool MeshInventor::Save (FileStream &rstrOut) const
     return false;
   }
 
-  Base::Sequencer().start("saving...", _rclMesh.CountFacets() + 1);  
+  Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  
 
   // Einleitung
   strcpy(szBuf, "#Inventor V2.1 ascii\n\n");
@@ -554,7 +549,6 @@ bool MeshInventor::Save (FileStream &rstrOut) const
   strcpy(szBuf, "#End of Triangulation Data \n  }\n\n");
   rstrOut.Write(szBuf, strlen(szBuf));
 
-  Base::Sequencer().stop();
 
   return true;
 }

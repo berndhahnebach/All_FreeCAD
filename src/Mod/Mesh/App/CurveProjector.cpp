@@ -313,7 +313,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   
   MeshFacetIterator It(MeshK);
 
-  Base::Sequencer().start("Building up projection map...", ulNbOfPoints+1);  
+  Base::SequencerLauncher seq("Building up projection map...", ulNbOfPoints+1);  
   FILE* file = fopen("projected.asc", "w");
 
   std::map<unsigned long,std::vector<Vector3D> > FaceProjctMap;
@@ -344,7 +344,6 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   }
 
   fclose(file);
-  Base::Sequencer().stop();
   Base::Console().Log("Projection map [%d facets with %d points]\n",FaceProjctMap.size(),PointCount);
 
   // estimate the first face
@@ -603,7 +602,7 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
 
   MeshFacetIterator It(MeshK);
 
-  Base::Sequencer().start("Building up tool mesh...", ulNbOfPoints+1);  
+  Base::SequencerLauncher seq("Building up tool mesh...", ulNbOfPoints+1);  
 
   std::map<unsigned long,std::vector<Vector3D> > FaceProjctMap;
  
@@ -631,7 +630,6 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
     LineSegs.push_back(s);
   }
 
-  Base::Sequencer().stop();
   Base::Console().Log("Projection map [%d facets with %d points]\n",FaceProjctMap.size(),PointCount);
 
 

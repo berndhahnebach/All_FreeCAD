@@ -235,7 +235,7 @@ MeshKernel& MeshKernel::operator = (std::vector<MeshGeomFacet> &rclVAry)
   clMap.resize(rclVAry.size() * 3);
 
   // Sequencer starten
-  Base::Sequencer().start("create mesh structure...", rclVAry.size() * 8 + 1);
+  Base::SequencerLauncher seq("create mesh structure...", rclVAry.size() * 8 + 1);
 
   unsigned long k = 0;
   unsigned long i = 0;
@@ -249,8 +249,6 @@ MeshKernel& MeshKernel::operator = (std::vector<MeshGeomFacet> &rclVAry)
   }
 
   Assign(clMap);
-
-  Base::Sequencer().stop();
 
   return *this;
 }

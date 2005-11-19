@@ -47,49 +47,39 @@ void FeaturePartImportIges::initFeature(void)
 
 Standard_Integer FeaturePartImportIges::execute(TFunction_Logbook& log)
 {
-	Base::Console().Log("FeaturePartImportIges::Execute()\n");
 
-  try{
+  IGESControl_Reader aReader;
+  TopoDS_Shape aShape;
 
-    IGESControl_Reader aReader;
-    TopoDS_Shape aShape;
+  std::string FileName = getPropertyString("FileName");
 
-    std::string FileName = getPropertyString("FileName");
+  int i=open(FileName.c_str(),O_RDONLY);
+	if( i != -1)
+	{
+	  close(i);
+	}else{
+    Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.c_str());
+	  return 1;
+	}
 
-    int i=open(FileName.c_str(),O_RDONLY);
-	  if( i != -1)
-	  {
-		  close(i);
-	  }else{
-      Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.c_str());
-		  return 1;
-	  }
+  // just do show the wait cursor when the Gui is up
+  Base::SequencerLauncher seq("Load IGES", 1);
+  Base::Sequencer().next();
 
-    // just do show the wait cursor when the Gui is up
-    Base::Sequencer().start("Load IGES", 1);
-    Base::Sequencer().next();
-
-      // read iges-file
-    if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
-      throw Base::Exception("IGES read failed (load file)");
+    // read iges-file
+  if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
+    throw Base::Exception("IGES read failed (load file)");
   
-    // check iges-file (memory)
-    //if (!aReader.Check(Standard_True))
-    //  Base::Console().Warning( "IGES model contains errors! try loading anyway....\n" );
+  // check iges-file (memory)
+  //if (!aReader.Check(Standard_True))
+  //  Base::Console().Warning( "IGES model contains errors! try loading anyway....\n" );
   
-    // make brep
-    aReader.TransferRoots();
-    // one shape, who contain's all subshapes
-    aShape = aReader.OneShape();
+  // make brep
+  aReader.TransferRoots();
+  // one shape, who contain's all subshapes
+  aShape = aReader.OneShape();
 
-	  setShape(aShape);
-    Base::Sequencer().stop();
-  }
-  catch(...){
-    Base::Sequencer().halt();
-    Base::Console().Error("FeaturePartImportIges::Execute() failed!");
-    return 1;
-  }
+	setShape(aShape);
 
   return 0;
 }

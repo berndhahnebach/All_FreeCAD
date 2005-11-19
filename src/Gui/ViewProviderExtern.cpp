@@ -33,6 +33,7 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
+#include <Base/Exception.h>
 #include <App/Material.h>
 #include <App/Feature.h>
 #include "Selection.h"
@@ -96,7 +97,8 @@ void ViewProviderInventorExtern::setModeBySoInput(const char* name, SoInput &ivF
       assert(0);
       root->unref();
     }
-  }
+  }else
+    throw Base::Exception("nothing read");
   return;
 }
 

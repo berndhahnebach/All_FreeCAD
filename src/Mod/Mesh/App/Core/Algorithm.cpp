@@ -481,7 +481,7 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ve
 
   BoundBox3D cBB = rToolMesh.GetBoundBox();
 
-  Base::Sequencer().start("Check facets...", _rclMesh.CountFacets());
+  Base::SequencerLauncher seq("Check facets...", _rclMesh.CountFacets());
 
   // check all facets
   Vector3D tmp;
@@ -522,7 +522,6 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ve
     Base::Sequencer().next();
   }
 
-  Base::Sequencer().stop();
 }
 
 void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Vector3D& rcDir, const MeshFacetGrid& rGrid, std::vector<unsigned long> &raclCutted ) const
@@ -548,7 +547,7 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ve
   MeshFacetIterator cFIt(_rclMesh);
   MeshFacetIterator cTIt(rToolMesh);
 
-  Base::Sequencer().start("Check facets...", aulInds.size());
+  Base::SequencerLauncher seq("Check facets...", aulInds.size());
 
   // check all facets
   Vector3D tmp;
@@ -591,7 +590,6 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ve
     Base::Sequencer().next();
   }
 
-  Base::Sequencer().stop();
 }
 
 void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const ViewProjMethod* pclProj, const Polygon2D& rclPoly, 

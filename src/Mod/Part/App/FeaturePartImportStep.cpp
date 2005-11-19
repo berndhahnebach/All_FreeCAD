@@ -46,75 +46,57 @@ void FeaturePartImportStep::initFeature(void)
 
 Standard_Integer FeaturePartImportStep::execute(TFunction_Logbook& log)
 {
-	Base::Console().Log("FeaturePartImportStep::Execute()\n");
+  STEPControl_Reader aReader;
+  TopoDS_Shape aShape;
 
-/*  cout << GetFloatProperty("x") << endl;
-  cout << GetFloatProperty("y") << endl;
-  cout << GetFloatProperty("z") << endl;
-  cout << GetFloatProperty("l") << endl;
-  cout << GetFloatProperty("h") << endl;
-  cout << GetFloatProperty("w") << endl;*/
+  std::string FileName = getPropertyString("FileName");
 
-  try{
+  if( FileName == "") 
+    return 1;
 
-    STEPControl_Reader aReader;
-    TopoDS_Shape aShape;
+  int i=open(FileName.c_str(),O_RDONLY);
+	if( i != -1)
+	{
+	  close(i);
+	}else{
+    Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName.c_str());
+	  return 1;
+	}
 
-    std::string FileName = getPropertyString("FileName");
-
-    if( FileName == "") 
-      return 1;
-
-    int i=open(FileName.c_str(),O_RDONLY);
-	  if( i != -1)
-	  {
-		  close(i);
-	  }else{
-      Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName.c_str());
-		  return 1;
-	  }
-
-    // just do show the wait cursor when the Gui is up
-    Base::Sequencer().start("Load IGES", 1);
-    Base::Sequencer().next();
-    
-    Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
-    if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
-    {
-      setError("File not readable");
-      return 1;
-    }
+  // just do show the wait cursor when the Gui is up
+  Base::SequencerLauncher seq("Load STEP", 1);
+  Base::Sequencer().next();
   
-    // Root transfers
-    Standard_Integer nbr = aReader.NbRootsForTransfer();
-    //aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
-    for ( Standard_Integer n = 1; n<= nbr; n++)
-    {
-      printf("STEP: Transfering Root %d\n",n);
-      /*Standard_Boolean ok =*/ aReader.TransferRoot(n);
-      // Collecting resulting entities
-      Standard_Integer nbs = aReader.NbShapes();
-      if (nbs == 0) {
-        aHSequenceOfShape.Nullify();
-        return 1;
-      } else {
-        for (Standard_Integer i =1; i<=nbs; i++) 
-        {
-          printf("STEP:   Transfering Shape %d\n",n);
-          aShape=aReader.Shape(i);
-          aHSequenceOfShape->Append(aShape);
-        }
-      }
-    }
-
-	  setShape(aShape);
-    Base::Sequencer().stop();
-  }
-  catch(...){
-    Base::Sequencer().halt();
-    Base::Console().Error("FeaturePartImportStep::Execute() failed!");
+  Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
+  if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
+  {
+    setError("File not readable");
     return 1;
   }
+  
+  // Root transfers
+  Standard_Integer nbr = aReader.NbRootsForTransfer();
+  //aReader.PrintCheckTransfer (failsonly, IFSelect_ItemsByEntity);
+  for ( Standard_Integer n = 1; n<= nbr; n++)
+  {
+    printf("STEP: Transfering Root %d\n",n);
+    /*Standard_Boolean ok =*/ aReader.TransferRoot(n);
+    // Collecting resulting entities
+    Standard_Integer nbs = aReader.NbShapes();
+    if (nbs == 0) {
+      aHSequenceOfShape.Nullify();
+      return 1;
+    } else {
+      for (Standard_Integer i =1; i<=nbs; i++) 
+      {
+        printf("STEP:   Transfering Shape %d\n",n);
+        aShape=aReader.Shape(i);
+        aHSequenceOfShape->Append(aShape);
+      }
+    }
+  }
+
+	setShape(aShape);
 
   return 0;
 }

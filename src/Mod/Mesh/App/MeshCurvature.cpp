@@ -233,7 +233,7 @@ bool MeshCurvaturePerFace::Compute()
   unsigned long uCntFaces = pMesh->CountFacets();
   MeshFacetIterator cIt( *pMesh );
 
-  Base::Sequencer().start("Calc curvature...", uCntFaces);
+  Base::SequencerLauncher seq("Calc curvature...", uCntFaces);
 
   for ( unsigned long i=0; i<uCntFaces; i++ )
   {
@@ -250,7 +250,6 @@ bool MeshCurvaturePerFace::Compute()
     Base::Sequencer().next();
   }
 
-  Base::Sequencer().stop();
 
   return true;
 }

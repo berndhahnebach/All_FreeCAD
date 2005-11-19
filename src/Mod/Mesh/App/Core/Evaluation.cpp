@@ -397,7 +397,7 @@ bool MeshEvalSelfIntersection::Evaluate ()
   }
   
   //Calculates the intersections
-  Base::Sequencer().start("calculating self intersections...", ulGridX*ulGridY*ulGridZ );
+  Base::SequencerLauncher seq("calculating self intersections...", ulGridX*ulGridY*ulGridZ );
   for (clGridIter.Init(); clGridIter.More(); clGridIter.Next())
   {
     //Get the facet indicies, belonging to the current grid unit
@@ -452,7 +452,6 @@ bool MeshEvalSelfIntersection::Evaluate ()
     Base::Sequencer().next();
   }
 
-  Base::Sequencer().stop();
 */
   return ulsSelfIntersectFacets.size() == 0;
 }

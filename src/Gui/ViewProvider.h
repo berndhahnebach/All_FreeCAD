@@ -186,7 +186,7 @@ public:
   virtual void setTransformation(const SbMatrix &rcMatrix);
   //@}
 
-  /** event handlin if the feature is in edit mode
+  /** event handling if the feature is in edit mode
     * The Viewer will cast all left and right mouse 
     * events to that methode. If return true it will
     * also handled by the viewer (selection & context menue)
