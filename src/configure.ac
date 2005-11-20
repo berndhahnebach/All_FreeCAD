@@ -348,7 +348,7 @@ AC_ARG_ENABLE([debug],
 if $fc_set_debug; then
 	CPPFLAGS="$CPPFLAGS -g -DDEBUG"
 else
-	CPPFLAGS="$CPPFLAGS -DNDEBUG"
+	CPPFLAGS="$CPPFLAGS -O2 -DNDEBUG"
 fi
 
 # Check if you want thread support, or not (currently disabled, thread support is forced)
@@ -393,7 +393,7 @@ AC_ARG_ENABLE([warnings],
   esac],
   [fc_set_warn=true])
 if $fc_set_warn; then
-	CPPFLAGS="$CPPFLAGS -Wall"
+	CPPFLAGS="$CPPFLAGS -Wall -W"
 else
 	CPPFLAGS="$CPPFLAGS -w"
 fi

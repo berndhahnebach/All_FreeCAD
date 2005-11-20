@@ -21,7 +21,7 @@ libMeshGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) $(WM3_LIBS) $(GTS_LIBS) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libMeshGui_la_CPPFLAGS = -DAppMeshExport= -DGuiMeshExport=
 
 libMeshGui_la_LIBADD   = \
