@@ -64,6 +64,11 @@ public:
    * Creates an image of the current scene graph. \a fScale (default 1.0) specifies the factor to scale the image.
    */
   QImage makeScreenShot(float fScale = 1.0f ) const;
+  /**
+   * An overloaded method that does basically the same as the method above unless it exports the rendered scenegraph directly
+   * to the PostScript file \a filename.
+   */
+  bool makePostScriptScreenShot(const QString & filename, float fScale = 1.0f ) const;
  
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);

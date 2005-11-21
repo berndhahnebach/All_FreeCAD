@@ -276,6 +276,33 @@ QImage View3DInventorViewer::makeScreenShot( float fScale ) const
   return img;
 }
 
+bool View3DInventorViewer::makePostScriptScreenShot(const QString & filename, float fScale ) const
+{
+  SbViewportRegion vp(getViewportRegion());
+  SbVec2s sz = vp.getWindowSize();
+  vp.setWindowSize( (short)(sz[0]*fScale), (short)(sz[1]*fScale) );
+  SoFCOffscreenRenderer renderer(vp);
+  renderer.setBackgroundColor(getBackgroundColor());
+  renderer.setComponents(SoOffscreenRenderer::RGB);
+
+  SoSeparator* root = new SoSeparator;
+  root->ref();
+
+  SoCamera* camera = getCamera();
+  // if backgroundroot is added there seems to be a frustum problem
+//  root->addChild(backgroundroot);
+  root->addChild(getHeadlight());
+  root->addChild(camera);
+  root->addChild(pcSelection);
+  root->addChild(foregroundroot);
+
+  renderer.render( root );
+  bool ok = renderer.writeToPostScript( filename.latin1() );
+  root->unref();
+
+  return ok;
+}
+
 SoSeparator* View3DInventorViewer::setBackgroundGradient() const
 {
   // points

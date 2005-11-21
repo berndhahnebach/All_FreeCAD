@@ -43,6 +43,7 @@
 #include "Selection.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
+#include "SpinBox.h"
 
 #include <Base/Exception.h>
 #include <App/Document.h>
@@ -433,20 +434,54 @@ void StdViewScreenShot::activated(int iMsg)
   {
     QStringList formats = QImage::outputFormatList();
 
-    QString filter;
+    QString filter, selFilter;
+    filter = QString("PostScript %1 (*.eps);;").arg( QObject::tr("files") );
     for( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
     {
-      filter += QString("%1 %2 (*.%2);;").arg( *it ).arg( QObject::tr("files") ).arg( (*it).lower() );
+      filter += QString("%1 %2 (*.%3);;").arg( *it ).arg( QObject::tr("files") ).arg( (*it).lower() );
     }
 
-    QString fn = FileDialog::getSaveFileName(QString::null, filter, getMainWindow(), 0, QObject::tr("Save picture"));
-    if ( !fn.isEmpty() )
+    FileOptionsDialog fd( QString::null, filter, getMainWindow(), 0, true );
+    fd.setMode( QFileDialog::AnyFile );
+    fd.setCaption( QObject::tr("Save picture") );
+    fd.setFilter( selFilter );
+
+    FloatSpinBox* spin = new FloatSpinBox( 0.1, 10.0, 0.1, 1.0, 1, &fd );
+    spin->setSuffix(" %");
+    fd.addOptionsWidget("Image scale factor:", spin);
+
+    if ( fd.exec() == QDialog::Accepted )
     {
+      selFilter = fd.selectedFilter();
+      QString fn = fd.selectedFile();
       QApplication::setOverrideCursor( Qt::WaitCursor );
-      QImage img = view->getViewer()->makeScreenShot();
-      QFileInfo fi(fn);
-      img.save( fn, fi.extension().upper() );
+      
+      bool ok = false;
+      if ( !selFilter.startsWith("PostScript") )
+      {
+        QImage img = view->getViewer()->makeScreenShot( (float)spin->value() );
+
+        // search for the matching format
+        QString format = formats.front(); // take the first as default
+        for ( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
+        {
+          if ( selFilter.startsWith( *it ) )
+          {
+            format = *it;
+            break;
+          }
+        }
+
+        ok = img.save( fn, format );
+      }
+      else // PostScript
+      {
+        ok = view->getViewer()->makePostScriptScreenShot( fn, (float)spin->value() );
+      }
+
       QApplication::restoreOverrideCursor();
+      if ( !ok )
+        QMessageBox::warning(getMainWindow(), QObject::tr("Save picture"), QObject::tr("Couldn't create the screenshot '%1'").arg(fn));
     }
   }
 }

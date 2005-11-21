@@ -61,16 +61,34 @@ public:
                                         QString * selectedFilter = 0, bool resolveSymlinks = true, 
                                         const QString& buttonText = QString::null, bool * ok = 0 );
 
-protected:
+public:
   FileDialog ( QWidget* parent = 0, const char* name = 0, bool modal = false );
   FileDialog ( const QString& dirName, const QString& filter = QString::null, 
                QWidget* parent = 0, const char* name = 0, bool modal = false );
   virtual ~FileDialog();
 
+protected:
   QString selectedFileName();
 
 protected slots:
   virtual void accept();
+};
+
+// ======================================================================
+
+/**
+ * The FileDialog class provides dialogs that allow users to select files or directories.
+ * \author Werner Mayer
+ */
+class GuiExport FileOptionsDialog : public FileDialog
+{
+public:
+  FileOptionsDialog ( QWidget* parent = 0, const char* name = 0, bool modal = false );
+  FileOptionsDialog ( const QString& dirName, const QString& filter = QString::null, 
+               QWidget* parent = 0, const char* name = 0, bool modal = false );
+  virtual ~FileOptionsDialog();
+
+  void addOptionsWidget( const QString& , QWidget* );
 };
 
 // ======================================================================

@@ -27,6 +27,7 @@
 # include <qcheckbox.h>
 # include <qdir.h>
 # include <qfileinfo.h>
+# include <qlabel.h>
 # include <qlayout.h>
 # include <qlineedit.h>
 # include <qmessagebox.h>
@@ -252,6 +253,29 @@ QString FileDialog::selectedFileName()
   }
 
   return fn;
+}
+
+// ======================================================================
+
+FileOptionsDialog::FileOptionsDialog( QWidget* parent, const char* name , bool modal )
+  : FileDialog( parent, name, modal)
+{
+}
+
+FileOptionsDialog::FileOptionsDialog ( const QString& dirName, const QString& filter, QWidget* parent, const char* name, bool modal )
+  : FileDialog( dirName, filter, parent, name, modal )
+{
+}
+
+FileOptionsDialog::~FileOptionsDialog()
+{
+}
+
+void FileOptionsDialog::addOptionsWidget( const QString& txt, QWidget* w )
+{
+  QLabel* label = new QLabel( this );
+  label->setText( txt );
+  addWidgets( label, w, 0 );
 }
 
 // ======================================================================
