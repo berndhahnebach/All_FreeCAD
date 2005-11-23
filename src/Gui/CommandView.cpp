@@ -363,7 +363,7 @@ bool StdCmdViewFitAll::isActive(void)
 DEF_STD_CMD_A(StdViewFullScreen);
 
 StdViewFullScreen::StdViewFullScreen()
-  :CppCommand("Std_ViewFullScreen", Cmd_Toggle)
+  :CppCommand("Std_ViewFullScreen")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Fullscreen");
@@ -378,37 +378,71 @@ void StdViewFullScreen::activated(int iMsg)
 {
   MDIView* view = getActiveGuiDocument()->getActiveView();
   if ( !view ) return; // no active view
-  if ( view->isFullScreen() )
-    view->setFullScreenMode( false );
-  else
-  {
-#if 0 // we must not use an image as background in fullscreen mode
-    QDesktopWidget* root = QApplication::desktop();
-    int w = root->width();
-    int h = root->height();
-    if ( w > 1600 )
-    {
-      // Have performance problems with high resolutions
-      switch ( QMessageBox::warning( getMainWindow(), QObject::tr("Fullscreen mode"), 
-               QObject::tr("You have a resolution of %1x%2 pixels which could lead to performance problems.\n Do you really want to continue?").arg(w).arg(h), 
-               QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape ) )
-      {
-        case QMessageBox::Yes:
-          view->setFullScreenMode( true );
-        case QMessageBox::No:
-        default:
-          break;
-      }
-    }
-    else
-#endif
-      view->setFullScreenMode( true );
-  }
+
+  view->setFullScreenMode( MDIView::FullScreen );
 }
 
 bool StdViewFullScreen::isActive(void)
 {
-  return (getActiveGuiDocument()!=NULL);
+  return (getActiveGuiDocument()->getActiveView() != NULL);
+}
+//===========================================================================
+// Std_ViewTopLevel
+//===========================================================================
+DEF_STD_CMD_A(StdViewTopLevel);
+
+StdViewTopLevel::StdViewTopLevel()
+  :CppCommand("Std_ViewTopLevel")
+{
+  sGroup      = QT_TR_NOOP("Standard-View");
+  sMenuText   = QT_TR_NOOP("Undock view");
+  sToolTipText= QT_TR_NOOP("Display the active view in fullscreen");
+  sWhatsThis  = QT_TR_NOOP("Display the active view in fullscreen");
+  sStatusTip  = QT_TR_NOOP("Display the active view in fullscreen");
+//  sPixmap     = "view_fitall";
+  iAccel      = Qt::Key_F;
+}
+
+void StdViewTopLevel::activated(int iMsg)
+{
+  MDIView* view = getActiveGuiDocument()->getActiveView();
+  if ( !view ) return; // no active view
+
+  view->setFullScreenMode( MDIView::TopLevel );
+}
+
+bool StdViewTopLevel::isActive(void)
+{
+  return (getActiveGuiDocument()->getActiveView() != NULL);
+}
+//===========================================================================
+// Std_ViewDock
+//===========================================================================
+DEF_STD_CMD_A(StdViewDock);
+
+StdViewDock::StdViewDock()
+  :CppCommand("Std_ViewDock")
+{
+  sGroup      = QT_TR_NOOP("Standard-View");
+  sMenuText   = QT_TR_NOOP("Dock view");
+  sToolTipText= QT_TR_NOOP("Display the active view in fullscreen");
+  sWhatsThis  = QT_TR_NOOP("Display the active view in fullscreen");
+  sStatusTip  = QT_TR_NOOP("Display the active view in fullscreen");
+//  sPixmap     = "view_fitall";
+  iAccel      = Qt::Key_F;
+}
+
+void StdViewDock::activated(int iMsg)
+{
+  MDIView* view = getActiveGuiDocument()->getActiveView();
+  if ( !view ) return; // no active view
+
+  view->setFullScreenMode( MDIView::Normal );
+}
+
+bool StdViewDock::isActive(void)
+{
+  return (getActiveGuiDocument()->getActiveView() != NULL);
 }
 
 //===========================================================================
@@ -447,7 +481,7 @@ void StdViewScreenShot::activated(int iMsg)
     fd.setFilter( selFilter );
 
     FloatSpinBox* spin = new FloatSpinBox( 0.1, 10.0, 0.1, 1.0, 1, &fd );
-    spin->setSuffix(" %");
+    spin->setSuffix(" x");
     fd.addOptionsWidget("Image scale factor:", spin);
 
     if ( fd.exec() == QDialog::Accepted )
@@ -491,56 +525,30 @@ bool StdViewScreenShot::isActive(void)
   return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()) != 0);
 }
 
-//===========================================================================
-// Std_ViewCreateOCC
-//===========================================================================
-DEF_STD_CMD_A(StdCmdViewCreateOCC);
 
-StdCmdViewCreateOCC::StdCmdViewCreateOCC()
-  :CppCommand("Std_ViewCreateOCC")
+//===========================================================================
+// Std_ViewCreate
+//===========================================================================
+DEF_STD_CMD_A(StdCmdViewCreate);
+
+StdCmdViewCreate::StdCmdViewCreate()
+  :CppCommand("Std_ViewCreate")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
-  sMenuText   = QT_TR_NOOP("Create new OCC View");
-  sToolTipText= QT_TR_NOOP("Creates a new OpenCasCade view window for the active document");
-  sWhatsThis  = QT_TR_NOOP("Creates a new OpenCasCade view window for the active document");
-  sStatusTip  = QT_TR_NOOP("Creates a new OpenCasCade view window for the active document");
+  sMenuText   = QT_TR_NOOP("Create new  View");
+  sToolTipText= QT_TR_NOOP("Creates a new  view window for the active document");
+  sWhatsThis  = QT_TR_NOOP("Creates a new  view window for the active document");
+  sStatusTip  = QT_TR_NOOP("Creates a new  view window for the active document");
   sPixmap     = "view_fitall";
   iAccel      = 0;
 }
 
-void StdCmdViewCreateOCC::activated(int iMsg)
-{
-  getActiveGuiDocument()->createView("View3DOCC");
-}
-
-bool StdCmdViewCreateOCC::isActive(void)
-{
-  return (getActiveGuiDocument()!=NULL);
-}
-
-//===========================================================================
-// Std_ViewCreateInventor
-//===========================================================================
-DEF_STD_CMD_A(StdCmdViewCreateInventor);
-
-StdCmdViewCreateInventor::StdCmdViewCreateInventor()
-  :CppCommand("Std_ViewCreateInventor")
-{
-  sGroup      = QT_TR_NOOP("Standard-View");
-  sMenuText   = QT_TR_NOOP("Create new Inventor View");
-  sToolTipText= QT_TR_NOOP("Creates a new Inventor view window for the active document");
-  sWhatsThis  = QT_TR_NOOP("Creates a new Inventor view window for the active document");
-  sStatusTip  = QT_TR_NOOP("Creates a new Inventor view window for the active document");
-  sPixmap     = "view_fitall";
-  iAccel      = 0;
-}
-
-void StdCmdViewCreateInventor::activated(int iMsg)
+void StdCmdViewCreate::activated(int iMsg)
 {
   getActiveGuiDocument()->createView("View3DIv");
 }
 
-bool StdCmdViewCreateInventor::isActive(void)
+bool StdCmdViewCreate::isActive(void)
 {
   return (getActiveGuiDocument()!=NULL);
 }
@@ -623,60 +631,6 @@ void StdCmdViewExample3::activated(int iMsg)
 bool StdCmdViewExample3::isActive(void)
 {
   return getGuiApplication()->sendHasMsgToActiveView("Example3");
-}
-
-//===========================================================================
-// Std_ViewIvDecorationOn
-//===========================================================================
-DEF_STD_CMD_A(StdCmdViewIvDecorationOn);
-
-StdCmdViewIvDecorationOn::StdCmdViewIvDecorationOn()
-  :CppCommand("Std_ViewIvDecorationOn")
-{
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Decoration on");
-  sToolTipText  = QT_TR_NOOP("Examiner viewer decoration on");
-  sWhatsThis    = QT_TR_NOOP("Examiner viewer decoration on");
-  sStatusTip    = QT_TR_NOOP("Examiner viewer decoration on");
-  sPixmap       = "Std_Tool4";
-  iAccel        = 0;
-}
-
-void StdCmdViewIvDecorationOn::activated(int iMsg)
-{
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetDecorationOn\")");
-}
-
-bool StdCmdViewIvDecorationOn::isActive(void)
-{
-  return getGuiApplication()->sendHasMsgToActiveView("SetDecorationOn");
-}
-
-//===========================================================================
-// Std_ViewIvDecorationOff
-//===========================================================================
-DEF_STD_CMD_A(StdCmdViewIvDecorationOff);
-
-StdCmdViewIvDecorationOff::StdCmdViewIvDecorationOff()
-  :CppCommand("Std_ViewIvDecorationOff")
-{
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Decoration Off");
-  sToolTipText  = QT_TR_NOOP("Examiner viewer decoration Off");
-  sWhatsThis    = QT_TR_NOOP("Examiner viewer decoration Off");
-  sStatusTip    = QT_TR_NOOP("Examiner viewer decoration Off");
-  sPixmap       = "Std_Tool5";
-  iAccel        = 0;
-}
-
-void StdCmdViewIvDecorationOff::activated(int iMsg)
-{
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetDecorationOff\")");
-}
-
-bool StdCmdViewIvDecorationOff::isActive(void)
-{
-  return getGuiApplication()->sendHasMsgToActiveView("SetDecorationOff");
 }
 
 
@@ -896,9 +850,6 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdViewExample2());
   rcCmdMgr.addCommand(new StdCmdViewExample3());
 
-  rcCmdMgr.addCommand(new StdCmdViewIvDecorationOff());
-  rcCmdMgr.addCommand(new StdCmdViewIvDecorationOn());
-
   rcCmdMgr.addCommand(new StdCmdViewIvStereoQuadBuff());
   rcCmdMgr.addCommand(new StdCmdViewIvStereoRedGreen());
   rcCmdMgr.addCommand(new StdCmdViewIvStereoInterleavedColumns());
@@ -907,11 +858,12 @@ void CreateViewStdCommands(void)
 
   rcCmdMgr.addCommand(new StdCmdViewIvIssueCamPos());
 
-  rcCmdMgr.addCommand(new StdCmdViewCreateOCC());
-  rcCmdMgr.addCommand(new StdCmdViewCreateInventor());
+  rcCmdMgr.addCommand(new StdCmdViewCreate());
   rcCmdMgr.addCommand(new StdViewScreenShot());
 
   rcCmdMgr.addCommand(new StdViewFullScreen());
+  rcCmdMgr.addCommand(new StdViewTopLevel());
+  rcCmdMgr.addCommand(new StdViewDock());
   rcCmdMgr.addCommand(new StdCmdSetMaterial());
   rcCmdMgr.addCommand(new StdCmdToggleVisibility());
   rcCmdMgr.addCommand(new StdCmdPerspectiveCamera());

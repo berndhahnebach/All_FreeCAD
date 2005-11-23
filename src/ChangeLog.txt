@@ -50,4 +50,5 @@ Version: V0.3B4 Date: Sun Nov  6 01:20:57 2005 +++++++++++++++++++++++++++++++
 + changin App.DocGet() to App.document()
 + Scale options for screenshots in file dialog
 + insert Gui.addAnnotation()
++ Undock view feature
 

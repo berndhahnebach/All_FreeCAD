@@ -170,12 +170,18 @@ public:
   /// sets the caption and its appropriate tab of tab bar (if registered)
   virtual void setCaption ( const QString & );
 
+  /// MDI view mode enum
+  enum ViewMode {
+    Normal,     /**< Normal viewing, view is docked inside the MDI application window */  
+    TopLevel,   /**< The view becomes a top level window and can moved outsinde the Application windwo */  
+    FullScreen  /**< the view go to full screen viewing */
+  };
   /**
    * If \a b is true the MDIView is displayed in full screen mode, otherwise
    * in normal mode. For more hints refer to the Qt documentation to
    * QWidget::showFullScreen ().
    */
-  virtual void setFullScreenMode( bool b );
+  virtual void setFullScreenMode( ViewMode b );
 
 signals:
   /// sends a message to the document
@@ -189,6 +195,8 @@ public slots:
 protected:
   void closeEvent    ( QCloseEvent *e );
   void keyPressEvent ( QKeyEvent   *e );
+
+  ViewMode _actualMode;
 };
 
 

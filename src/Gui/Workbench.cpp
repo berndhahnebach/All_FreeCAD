@@ -375,9 +375,9 @@ MenuItem* StdWorkbench::setupMenuBar() const
   // View
   MenuItem* view = new MenuItem( menuBar );
   view->setCommand( "&View" );
-  *view << "Std_ViewCreateInventor" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
+  *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
 	      << view3d
-        << "Std_ToggleVisibility" << "Std_ViewFullScreen" << "Std_ViewScreenShot" << "Separator" 
+        << "Std_ToggleVisibility" << "Std_ViewFullScreen" << "Std_ViewTopLevel" << "Std_ViewDock" << "Std_ViewScreenShot" << "Separator" 
         << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
   
   // Tools

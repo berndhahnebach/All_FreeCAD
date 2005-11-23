@@ -123,7 +123,7 @@ void BaseView::addViewProvider(Gui::ViewProvider* pcProvider)
 
 
 MDIView::MDIView( Gui::Document* pcDocument,QWidget* parent, const char* name, int wflags )
-  :QMainWindow(parent, name, wflags), BaseView(pcDocument)
+  :QMainWindow(parent, name, wflags), BaseView(pcDocument),_actualMode(Normal)
 {
 }
 
@@ -189,10 +189,51 @@ void MDIView::setCaption ( const QString& cap )
   getMainWindow()->tabChanged( this );
 }
 
-void MDIView::setFullScreenMode( bool b )
+void MDIView::setFullScreenMode( ViewMode b )
 {
   // set fullscreen mode
-  if ( b )
+  if ( b == Normal )
+  {
+    if(_actualMode == FullScreen)
+    {
+      showNormal();
+      clearWFlags ( WType_TopLevel );
+      getMainWindow()->addWindow( this );
+      releaseKeyboard();
+    }else if(_actualMode == TopLevel)
+    {
+      clearWFlags ( WType_TopLevel );
+      getMainWindow()->addWindow( this );
+    }
+    _actualMode = Normal;
+  }else if ( b == FullScreen ){
+    if(_actualMode == Normal)
+    {
+      WFlags f = getWFlags();
+      setWFlags( f | WType_TopLevel );
+      showFullScreen();
+      grabKeyboard();
+    }else if(_actualMode == TopLevel)
+    {
+      showFullScreen();
+      grabKeyboard();
+    }
+    _actualMode = FullScreen;
+  }else if ( b == TopLevel ){
+    if(_actualMode == FullScreen)
+    {
+      showNormal();
+      releaseKeyboard();
+    }else if(_actualMode == Normal)
+    {
+      WFlags f = getWFlags();
+      setWFlags( f | WType_TopLevel );
+    }
+    _actualMode = TopLevel;
+  }
+
+  /*
+  if ( b = Normal )
   {
     WFlags f = getWFlags();
     setWFlags( f | WType_TopLevel );
@@ -208,6 +249,7 @@ void MDIView::setFullScreenMode( bool b )
 
     releaseKeyboard();
   }
+  */
 }
 
 void MDIView::keyPressEvent ( QKeyEvent* e )
@@ -215,6 +257,16 @@ void MDIView::keyPressEvent ( QKeyEvent* e )
   // Note: if the widget is in fullscreen mode then we can return to normal mode either
   // by pressing F or ESC. Since keyboard is grabbed accelerators don't work any more
   // (propably accelerators don't work at all - even without having grabbed the keyboard!?)
+
+  if ( _actualMode != Normal )
+  {
+    // use Command's API to hold toogled state consistent
+    if ( e->key() == Key_F || e->key() == Key_Escape )
+    {
+      setFullScreenMode(Normal);
+    }
+  }
+  /*
   if ( isFullScreen() )
   {
     // use Command's API to hold toogled state consistent
@@ -226,7 +278,7 @@ void MDIView::keyPressEvent ( QKeyEvent* e )
         pcCmd->toggleCommand( "Std_ViewFullScreen", false);
       }
     }
-  }
+  }*/
   else
   {
     QMainWindow::keyPressEvent( e );
