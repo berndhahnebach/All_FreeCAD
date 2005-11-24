@@ -1,0 +1,297 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>Gui::Dialog::DlgSettingsImage</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>Gui::Dialog::DlgSettingsImage</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>363</width>
+            <height>254</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Image settings</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>groupBoxDim</cstring>
+            </property>
+            <property name="title">
+                <string>Image dimensions</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="3">
+                    <property name="name">
+                        <cstring>textLabelPixelWidth</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Pixel</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="3">
+                    <property name="name">
+                        <cstring>textLabelPixelHeight</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Pixel</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="3">
+                    <property name="name">
+                        <cstring>textLabelPixelPerInch</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Pixel/Inch</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabelWidth</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Width:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>spinWidth</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabelHeight</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Height:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>spinHeight</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>textLabelResolution</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Resolution:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>spinResolution</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="0" column="2">
+                    <property name="name">
+                        <cstring>spinWidth</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>32767</number>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="1" column="2">
+                    <property name="name">
+                        <cstring>spinHeight</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>32767</number>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                </widget>
+                <widget class="Gui::FloatSpinBox" row="2" column="2">
+                    <property name="name">
+                        <cstring>spinResolution</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>2540</number>
+                    </property>
+                    <property name="minValue">
+                        <number>1</number>
+                    </property>
+                    <property name="value">
+                        <number>72</number>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="3" column="0">
+                    <property name="name">
+                        <cstring>pushAdjustSize</cstring>
+                    </property>
+                    <property name="text">
+                        <string>A&amp;djust size</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+D</string>
+                    </property>
+                </widget>
+                <spacer row="3" column="1" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>191</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="1" column="0">
+            <property name="name">
+                <cstring>groupBoxProp</cstring>
+            </property>
+            <property name="title">
+                <string>Image properties</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox" row="1" column="1">
+                    <item>
+                        <property name="text">
+                            <string>Grayscale Image</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Grayscale with Transparency</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>RGB Image</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>RGB with Transparency</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>comboImageType</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabelImageType</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Image format:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>comboImageType</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="0" column="1">
+                    <item>
+                        <property name="text">
+                            <string>Current</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>White</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Black</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Red</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Green</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Blue</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Cyan</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Magenta</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Yellow</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Gray</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>comboColor</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabelColor</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Back&amp;ground color:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>comboColor</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>pushAdjustSize</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onAdjustImageSize()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>spinWidth</tabstop>
+    <tabstop>spinHeight</tabstop>
+    <tabstop>spinResolution</tabstop>
+    <tabstop>comboColor</tabstop>
+    <tabstop>comboImageType</tabstop>
+</tabstops>
+<slots>
+    <slot access="protected">onAdjustImageSize()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>Gui/SpinBox.h</includehint>
+</includehints>
+</UI>
