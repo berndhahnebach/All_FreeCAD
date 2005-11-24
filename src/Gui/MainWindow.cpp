@@ -79,6 +79,7 @@
 #include "CommandBarManager.h"
 #include "SoFCColorLegend.h"
 #include "SoFCSelection.h"
+#include "SoFCBackgroundGradient.h"
 
 #include "Inventor/Qt/SoQt.h"
 #include "Language/Translator.h"
@@ -157,6 +158,7 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   SoQt::init(this);
   SoDB::init();
   SoFCColorLegend::initClass();
+  SoFCBackgroundGradient::initClass();
 
   QVBox* vb = new QVBox( this );
   vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );

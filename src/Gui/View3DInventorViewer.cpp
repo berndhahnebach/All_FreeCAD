@@ -32,6 +32,7 @@
 # include <qpopupmenu.h>
 # include <GL/gl.h>
 # include <Inventor/nodes/SoBaseColor.h>
+# include <Inventor/nodes/SoCallback.h> 
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoCube.h>
 # include <Inventor/nodes/SoDirectionalLight.h>
@@ -67,6 +68,7 @@
 #include "../Base/Console.h"
 #include "Tools.h"
 #include <qcursor.h>
+#include "SoFCBackgroundGradient.h"
 #include "SoFCColorLegend.h"
 #include "SoFCOffscreenRenderer.h"
 #include "SoFCSelection.h"
@@ -153,7 +155,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 
   // set blue as default background color
   setBackgroundColor(SbColor(0.5f, 0.5f, 0.7f));
-  this->backgroundroot->addChild(setBackgroundGradient());
+  this->backgroundroot->addChild( new SoFCBackgroundGradient );
 
   // Set up foreground, overlayed scenegraph.
   this->foregroundroot = new SoSeparator;
@@ -248,24 +250,50 @@ View3DInventorViewer::~View3DInventorViewer()
   getMainWindow()->setPaneText(2, "");
 }
 
-QImage View3DInventorViewer::makeScreenShot( float fScale ) const
+void View3DInventorViewer::clearBuffer(void * userdata, SoAction * action)
 {
+  if (action->isOfType(SoGLRenderAction::getClassTypeId())) {
+    // do stuff specific for GL rendering here.
+    glClear(GL_DEPTH_BUFFER_BIT);
+  }
+}
+
+QImage View3DInventorViewer::makeScreenShot( int w, int h, float r, int c, const QColor& col ) const
+{
+  // if no valid color use the current background
+  bool useBackground = !col.isValid();
   SbViewportRegion vp(getViewportRegion());
-  SbVec2s sz = vp.getWindowSize();
-  vp.setWindowSize( (short)(sz[0]*fScale), (short)(sz[1]*fScale) );
+  vp.setWindowSize( (short)w, (short)h );
+  vp.setPixelsPerInch( r );
+
   SoFCOffscreenRenderer renderer(vp);
-  renderer.setBackgroundColor(getBackgroundColor());
-  renderer.setComponents(SoOffscreenRenderer::RGB);
+  if ( useBackground )
+    renderer.setBackgroundColor(getBackgroundColor());
+  else
+    renderer.setBackgroundColor( SbColor((float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f) );
+  renderer.setComponents(SoOffscreenRenderer::Components(c));
+
+  SoCallback* cb = 0;
+  if ( useBackground )
+  {
+    cb = new SoCallback;
+    cb->setCallback(clearBuffer);
+  }
 
   SoSeparator* root = new SoSeparator;
   root->ref();
 
   SoCamera* camera = getCamera();
-  // if backgroundroot is added there seems to be a frustum problem
-//  root->addChild(backgroundroot);
+  if ( useBackground )
+  {
+    root->addChild(backgroundroot);
+    root->addChild(cb);
+  }
   root->addChild(getHeadlight());
   root->addChild(camera);
   root->addChild(pcSelection);
+  if ( useBackground )
+    root->addChild(cb);
   root->addChild(foregroundroot);
 
   QImage img;
@@ -276,133 +304,58 @@ QImage View3DInventorViewer::makeScreenShot( float fScale ) const
   return img;
 }
 
-bool View3DInventorViewer::makePostScriptScreenShot(const QString & filename, float fScale ) const
+bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& col ) const
 {
+  // if no valid color use the current background
+  bool useBackground = !col.isValid();
   SbViewportRegion vp(getViewportRegion());
-  SbVec2s sz = vp.getWindowSize();
-  vp.setWindowSize( (short)(sz[0]*fScale), (short)(sz[1]*fScale) );
+  vp.setWindowSize( (short)w, (short)h );
+  vp.setPixelsPerInch( r );
+
   SoFCOffscreenRenderer renderer(vp);
-  renderer.setBackgroundColor(getBackgroundColor());
-  renderer.setComponents(SoOffscreenRenderer::RGB);
+  if ( useBackground )
+    renderer.setBackgroundColor(getBackgroundColor());
+  else
+    renderer.setBackgroundColor( SbColor((float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f) );
+  renderer.setComponents(SoOffscreenRenderer::Components(c));
+
+  SoCallback* cb = 0;
+  if ( useBackground )
+  {
+    cb = new SoCallback;
+    cb->setCallback(clearBuffer);
+  }
 
   SoSeparator* root = new SoSeparator;
   root->ref();
 
   SoCamera* camera = getCamera();
-  // if backgroundroot is added there seems to be a frustum problem
-//  root->addChild(backgroundroot);
+  if ( useBackground )
+  {
+    root->addChild(backgroundroot);
+    root->addChild(cb);
+  }
   root->addChild(getHeadlight());
   root->addChild(camera);
   root->addChild(pcSelection);
+  if ( useBackground )
+    root->addChild(cb);
   root->addChild(foregroundroot);
 
   renderer.render( root );
-  bool ok = renderer.writeToPostScript( filename.latin1() );
+  bool ok = renderer.writeToImageFile( filename, filetypeextension );
   root->unref();
 
   return ok;
-}
-
-SoSeparator* View3DInventorViewer::setBackgroundGradient() const
-{
-  // points
-  SbVec3f* vertices = new SbVec3f[9];
-  float fMinX= -0.5f, fMaxX=0.5f, fAvgX=0.0f;
-  float fMinY= -0.5f, fMaxY=0.5f, fAvgY=0.0f;
-  vertices[0].setValue( fMinX, fMaxY, 0.0f);
-  vertices[1].setValue( fAvgX, fMaxY, 0.0f);
-  vertices[2].setValue( fMaxX, fMaxY, 0.0f);
-  vertices[3].setValue( fMinX, fAvgY, 0.0f);
-  vertices[4].setValue( fAvgX, fAvgY, 0.0f);
-  vertices[5].setValue( fMaxX, fAvgY, 0.0f);
-  vertices[6].setValue( fMinX, fMinY, 0.0f);
-  vertices[7].setValue( fAvgX, fMinY, 0.0f);
-  vertices[8].setValue( fMaxX, fMinY, 0.0f);
-
-  SoCoordinate3* coords = new SoCoordinate3;
-	coords->point.setValues(0,9, vertices);
-
-  float colors[9][3] =
-  {  
-    { 0.5f, 0.5f, 0.8f}, { 0.5f, 0.5f, 0.8f}, { 0.5f, 0.5f, 0.8f}, 
-    { 0.7f, 0.7f, 0.9f}, { 0.7f, 0.7f, 0.9f}, { 0.7f, 0.7f, 0.9f}, 
-    { 1.0f, 1.0f, 1.0f}, { 1.0f, 1.0f, 1.0f}, { 1.0f, 1.0f, 1.0f}, 
-  };
-
-  SoMaterial* mat = new SoMaterial;
-  mat->diffuseColor.setValues(0, 9, colors);
-  mat->transparency = 0.0f;
-
-  SoMaterialBinding* matBinding = new SoMaterialBinding;
-  matBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
-
-  // face indices
-  int32_t face_idx[32]=
-  {
-    0,3,1,SO_END_FACE_INDEX, 4,1,3,SO_END_FACE_INDEX,
-    1,4,2,SO_END_FACE_INDEX, 5,2,4,SO_END_FACE_INDEX,
-    3,6,4,SO_END_FACE_INDEX, 7,4,6,SO_END_FACE_INDEX,
-    4,7,5,SO_END_FACE_INDEX, 8,5,7,SO_END_FACE_INDEX,
-  };
-
-  SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
-	faceset->coordIndex.setValues(0,32,(const int*) face_idx);
-
-  SoSeparator* root = new SoSeparator();
-	root->addChild(new SoDirectionalLight);
-	root->addChild(coords);
-  root->addChild(mat);
-  root->addChild(matBinding);
-	root->addChild(faceset);
-
-  delete [] vertices;
-
-  return root;
 }
 
 void View3DInventorViewer::sizeChanged( const SbVec2s& size )
 {
   // searching in the background node
   SoNode* child = this->backgroundroot->getChild(1);
-  if ( child && child->getTypeId() == SoSeparator::getClassTypeId() )
+  if ( child && child->getTypeId() == SoFCBackgroundGradient::getClassTypeId() )
   {
-    // search for the coordinates
-    child = reinterpret_cast<SoSeparator*>(child)->getChild(1);
-    if ( child && child->getTypeId() == SoCoordinate3::getClassTypeId() ) 
-    {
-      SoCoordinate3* coord = reinterpret_cast<SoCoordinate3*>(child);
-
-      const SbViewportRegion& vp = getViewportRegion();
-      float fRatio = vp.getViewportAspectRatio();
-      float fMinX= -0.5f, fMaxX=0.5f, fAvgX=0.0f;
-      float fMinY= -0.5f, fMaxY=0.5f, fAvgY=0.0f;
-
-      if ( fRatio > 1.0f )
-      {
-        fMinX = - 0.5f * fRatio;
-        fMaxX =   0.5f * fRatio;
-      }
-      else if ( fRatio < 1.0f )
-      {
-        fMinX = - 0.5f / fRatio;
-        fMaxX =   0.5f / fRatio;
-        fMinY = - 0.5f / fRatio;
-        fMaxY =   0.5f / fRatio;
-      }
-
-      SbVec3f* vertices = new SbVec3f[9];
-      vertices[0].setValue( fMinX, fMaxY, 0.0f);
-      vertices[1].setValue( fAvgX, fMaxY, 0.0f);
-      vertices[2].setValue( fMaxX, fMaxY, 0.0f);
-      vertices[3].setValue( fMinX, fAvgY, 0.0f);
-      vertices[4].setValue( fAvgX, fAvgY, 0.0f);
-      vertices[5].setValue( fMaxX, fAvgY, 0.0f);
-      vertices[6].setValue( fMinX, fMinY, 0.0f);
-      vertices[7].setValue( fAvgX, fMinY, 0.0f);
-      vertices[8].setValue( fMaxX, fMinY, 0.0f);
-	    coord->point.setValues(0,9, vertices);
-      delete [] vertices;
-    }
+    reinterpret_cast<SoFCBackgroundGradient*>(child)->setViewerSize( size );
   }
   
   // searching in the foreground node

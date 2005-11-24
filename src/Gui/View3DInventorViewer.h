@@ -61,14 +61,14 @@ public:
   /// remove a ViewProvider
   void removeViewProvider(ViewProviderInventor*);
   /**
-   * Creates an image of the current scene graph. \a fScale (default 1.0) specifies the factor to scale the image.
+   * Creates an image with width \a w and height \a h of the current scene graph. Pixels per inch is set to \a r.
    */
-  QImage makeScreenShot(float fScale = 1.0f ) const;
+  QImage makeScreenShot( int w, int h, float r, int c, const QColor& ) const;
   /**
    * An overloaded method that does basically the same as the method above unless it exports the rendered scenegraph directly
-   * to the PostScript file \a filename.
+   * to file \a filename with the extension \a filetypeextension.
    */
-  bool makePostScriptScreenShot(const QString & filename, float fScale = 1.0f ) const;
+  bool makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& ) const;
  
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
@@ -142,6 +142,8 @@ protected:
   void panToCenter(const SbPlane & panningplane, const SbVec2f & currpos);
   void printDimension();
 
+  static void clearBuffer(void * userdata, SoAction * action);
+
   SbVec2f lastmouseposition;
   SbPlane panningplane;
 
@@ -175,8 +177,6 @@ protected:
   SbTime CenterTime;
 
 private:
-  SoSeparator* setBackgroundGradient() const;
-
   SoSeparator * backgroundroot;
   SoSeparator * foregroundroot;
   SoRotationXYZ * arrowrotation;

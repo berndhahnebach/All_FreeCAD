@@ -77,18 +77,32 @@ protected slots:
 // ======================================================================
 
 /**
- * The FileDialog class provides dialogs that allow users to select files or directories.
- * \author Werner Mayer
+ * The FileOptionsDialog class provides an extensible file dialog with an additonal withat either at the right 
+ * or at the bottom, that can be shown or hidden with the option button.
+ * @author Werner Mayer
  */
 class GuiExport FileOptionsDialog : public FileDialog
 {
+  Q_OBJECT
+
 public:
+  enum Place { Right, Bottom };
+
   FileOptionsDialog ( QWidget* parent = 0, const char* name = 0, bool modal = false );
   FileOptionsDialog ( const QString& dirName, const QString& filter = QString::null, 
                QWidget* parent = 0, const char* name = 0, bool modal = false );
   virtual ~FileOptionsDialog();
 
-  void addOptionsWidget( const QString& , QWidget* );
+  void setOptionsWidget( Place pos , QWidget*, bool show = false );
+  QWidget* getOptionsWidget() const;
+
+protected slots:
+  void toggleExtension();
+
+private:
+  void init();
+  QPushButton* optionsButton;
+  bool _extensionShown;
 };
 
 // ======================================================================

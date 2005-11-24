@@ -47,7 +47,7 @@ SoFCColorLegend::SoFCColorLegend()
 {
   SO_NODE_CONSTRUCTOR(SoFCColorLegend);
 
-  // don't know why the parameter range is between [-1,+1]
+  // don't know why the parameter range isn't between [-1,+1]
   SbVec3f* vertices = new SbVec3f[10];
   float fMinX=  4.0f, fMaxX=4.5f;
   float fMinY= -4.0f, fMaxY=4.0f;

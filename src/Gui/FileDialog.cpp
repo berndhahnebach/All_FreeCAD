@@ -257,25 +257,71 @@ QString FileDialog::selectedFileName()
 
 // ======================================================================
 
+/* TRANSLATOR Gui::FileOptionsDialog */
+
 FileOptionsDialog::FileOptionsDialog( QWidget* parent, const char* name , bool modal )
-  : FileDialog( parent, name, modal)
+  : FileDialog( parent, name, modal), _extensionShown(false)
 {
+  init();
 }
 
 FileOptionsDialog::FileOptionsDialog ( const QString& dirName, const QString& filter, QWidget* parent, const char* name, bool modal )
-  : FileDialog( dirName, filter, parent, name, modal )
+  : FileDialog( dirName, filter, parent, name, modal ), _extensionShown(false)
 {
+  init();
 }
 
 FileOptionsDialog::~FileOptionsDialog()
 {
 }
 
-void FileOptionsDialog::addOptionsWidget( const QString& txt, QWidget* w )
+void FileOptionsDialog::init()
 {
-  QLabel* label = new QLabel( this );
-  label->setText( txt );
-  addWidgets( label, w, 0 );
+  // search for the OK button
+  QObject* btn = child( "OK", "QPushButton", true );
+  optionsButton = new QPushButton( this );
+  
+  if ( btn )
+  {
+    optionsButton->setFixedWidth( static_cast<QPushButton*>(btn)->width() );
+  }
+
+  QString text = tr( "&Options " );
+  text += ">>>";
+  optionsButton->setText( text );
+  addWidgets(0, 0, optionsButton);
+  connect(optionsButton, SIGNAL(clicked()), this, SLOT(toggleExtension()));
+}
+
+void FileOptionsDialog::toggleExtension()
+{
+  _extensionShown = !_extensionShown;
+  showExtension( _extensionShown );
+  QString text = tr( "&Options " );
+  text += _extensionShown ? "<<<" : ">>>";
+  optionsButton->setText( text );
+}
+
+void FileOptionsDialog::setOptionsWidget( FileOptionsDialog::Place pos, QWidget* w, bool show )
+{
+  if ( pos == Right )
+  {
+    setExtension( w );
+    setOrientation( Horizontal );
+  }
+  else if ( pos == Bottom )
+  {
+    setExtension( w );
+    setOrientation( Vertical );
+  }
+
+  if ( show )
+    toggleExtension();
+}
+
+QWidget* FileOptionsDialog::getOptionsWidget() const
+{
+  return this->extension();
 }
 
 // ======================================================================

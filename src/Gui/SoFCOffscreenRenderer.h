@@ -25,6 +25,7 @@
 #define COIN_SOFCOFFSCREENRENDERER_H
 
 #include <Inventor/SoOffscreenRenderer.h> 
+#include <qstringlist.h>
 
 class QImage;
 
@@ -56,6 +57,21 @@ public:
 	 * instead of an image file.
 	 */
 	SbBool writeToImage (QImage&, const char * filetypeext="PNG") const;
+	/** 
+   * Saves the buffer to \a filename, in the filetype specified by \a filetypeextensions.
+   *
+   * Note that you must still specify the full filename for the first argument, i.e. the second argument will 
+   * not automatically be attached to the filename -- it is only used to decide the filetype.
+   * 
+   * This does basically the same as writeToFile() unless that all QImage file formats are supported if not
+   * directly supported by Coin3D.
+   */
+	SbBool writeToImageFile (const SbString &  filename, const SbName &  filetypeextension ) const;
+  /**
+   * This method returns all image file formats supported by Coin3D (see getWriteFiletypeInfo()) with all QImage file formats that are 
+   * not directly supported by Coin3D, if so.
+   */
+  QStringList getWriteImageFiletypeInfo();
 };
 
 } // namespace Gui

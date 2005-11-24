@@ -128,6 +128,7 @@
 #include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/manips/SoTransformerManip.h> 
 #include <Inventor/nodes/SoBaseColor.h>
+#include <Inventor/nodes/SoCallback.h> 
 #include <Inventor/nodes/SoComplexity.h>
 #include <Inventor/nodes/SoCone.h>
 #include <Inventor/nodes/SoCoordinate3.h>

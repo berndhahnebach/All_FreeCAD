@@ -122,3 +122,65 @@ SbBool 	SoFCOffscreenRenderer::writeToImage (QImage& img, const char * filetypee
 
   return true;
 }
+
+SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const SbName &  filetypeextension ) const
+{
+  if ( isWriteSupported( filetypeextension ) )
+  {
+    return writeToFile( filename, filetypeextension );
+  }
+  else if ( strcmp(filetypeextension.getString(), "EPS") == 0 || strcmp(filetypeextension.getString(), "PS") == 0 )
+  {
+    return writeToPostScript( filename.getString() );
+  }
+  else if ( strcmp(filetypeextension.getString(), "RGB") == 0 || strcmp(filetypeextension.getString(), "SGI") == 0 )
+  {
+    return writeToRGB( filename.getString() );
+  }
+  else // try to convert into a QImage and save then
+  {
+    QImage img;
+    if ( writeToImage ( img, filetypeextension.getString() ) )
+    {
+      return img.save( filename.getString(), filetypeextension.getString() );
+    }
+  }
+
+  return false;
+}
+
+QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
+{
+  QStringList formats;
+
+  // get all supported formats by Coin3D
+  int num = getNumWriteFiletypes();
+  for (int i=0; i < num; i++) 
+  {
+    SbPList extlist;
+    SbString fullname, description;
+    getWriteFiletypeInfo(i, extlist, fullname, description);
+
+    for (int j=0; j < extlist.getLength(); j++) 
+    {
+      QString ext = (const char*) extlist[j];
+      formats << ext.upper();
+    }
+  }
+
+  // add now all further QImage formats
+  QStringList qtformats = QImage::outputFormatList(); 
+  for ( QStringList::Iterator it = qtformats.begin(); it != qtformats.end(); ++it )
+  {
+    // not supported? then append
+    if ( isWriteSupported( (*it).latin1() ) == false )
+      formats << *it;
+  }
+
+  // now add PostScript and SGI RGB
+  formats << "EPS" << "SGI";
+
+  formats.sort();
+
+  return formats;
+}

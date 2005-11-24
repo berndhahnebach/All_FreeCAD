@@ -40,16 +40,18 @@
 #include "Document.h"
 #include "Macro.h"
 #include "DlgDisplayPropertiesImp.h"
+#include "DlgSettingsImageImp.h"
 #include "Selection.h"
+#include "SoFCOffscreenRenderer.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
-#include "SpinBox.h"
 
 #include <Base/Exception.h>
 #include <App/Document.h>
 #include <App/Feature.h>
 
 using namespace Gui;
+using Gui::Dialog::DlgSettingsImageImp;
 
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -378,7 +380,6 @@ void StdViewFullScreen::activated(int iMsg)
 {
   MDIView* view = getActiveGuiDocument()->getActiveView();
   if ( !view ) return; // no active view
-
   view->setFullScreenMode( MDIView::FullScreen );
 }
 
@@ -396,11 +397,9 @@ StdViewTopLevel::StdViewTopLevel()
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Undock view");
-  sToolTipText= QT_TR_NOOP("Display the active view in fullscreen");
-  sWhatsThis  = QT_TR_NOOP("Display the active view in fullscreen");
-  sStatusTip  = QT_TR_NOOP("Display the active view in fullscreen");
-//  sPixmap     = "view_fitall";
-  iAccel      = Qt::Key_F;
+  sToolTipText= QT_TR_NOOP("Display the active view in toplevel mode");
+  sWhatsThis  = QT_TR_NOOP("Display the active view in toplevel mode");
+  sStatusTip  = QT_TR_NOOP("Display the active view in toplevel mode");
 }
 
 void StdViewTopLevel::activated(int iMsg)
@@ -428,8 +427,6 @@ StdViewDock::StdViewDock()
   sToolTipText= QT_TR_NOOP("Display the active view in fullscreen");
   sWhatsThis  = QT_TR_NOOP("Display the active view in fullscreen");
   sStatusTip  = QT_TR_NOOP("Display the active view in fullscreen");
-//  sPixmap     = "view_fitall";
-  iAccel      = Qt::Key_F;
 }
 
 void StdViewDock::activated(int iMsg)
@@ -466,10 +463,11 @@ void StdViewScreenShot::activated(int iMsg)
   View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()); 
   if ( view )
   {
-    QStringList formats = QImage::outputFormatList();
+    SbViewportRegion vp(view->getViewer()->getViewportRegion());
+    SoFCOffscreenRenderer rd(vp);
+    QStringList formats = rd.getWriteImageFiletypeInfo();
 
     QString filter, selFilter;
-    filter = QString("PostScript %1 (*.eps);;").arg( QObject::tr("files") );
     for( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
     {
       filter += QString("%1 %2 (*.%3);;").arg( *it ).arg( QObject::tr("files") ).arg( (*it).lower() );
@@ -480,42 +478,42 @@ void StdViewScreenShot::activated(int iMsg)
     fd.setCaption( QObject::tr("Save picture") );
     fd.setFilter( selFilter );
 
-    FloatSpinBox* spin = new FloatSpinBox( 0.1, 10.0, 0.1, 1.0, 1, &fd );
-    spin->setSuffix(" x");
-    fd.addOptionsWidget("Image scale factor:", spin);
+    // create the image options widget
+    DlgSettingsImageImp* opt = new DlgSettingsImageImp(&fd);
+    SbVec2s sz = vp.getWindowSize();
+    opt->setImageSize((int)sz[0], (int)sz[1]);
+    opt->setPixelsPerInch( vp.getPixelsPerInch() );
+    opt->setImageFormat( SoFCOffscreenRenderer::RGB );
 
+    fd.setOptionsWidget(FileOptionsDialog::Right, opt);
     if ( fd.exec() == QDialog::Accepted )
     {
       selFilter = fd.selectedFilter();
       QString fn = fd.selectedFile();
       QApplication::setOverrideCursor( Qt::WaitCursor );
+
+      // get the defined values
+      int w = opt->imageWidth();
+      int h = opt->imageHeight();
+      float r = opt->pixelsPerInch();
       
+      // search for the matching format
       bool ok = false;
-      if ( !selFilter.startsWith("PostScript") )
+      QString format = formats.front(); // take the first as default
+      for ( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
       {
-        QImage img = view->getViewer()->makeScreenShot( (float)spin->value() );
-
-        // search for the matching format
-        QString format = formats.front(); // take the first as default
-        for ( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
+        if ( selFilter.startsWith( *it ) )
         {
-          if ( selFilter.startsWith( *it ) )
-          {
-            format = *it;
-            break;
-          }
+          format = *it;
+          break;
         }
-
-        ok = img.save( fn, format );
-      }
-      else // PostScript
-      {
-        ok = view->getViewer()->makePostScriptScreenShot( fn, (float)spin->value() );
       }
 
+      ok = view->getViewer()->makeScreenShot( fn.latin1(), format.latin1(), w, h, r, (int)opt->imageFormat(), opt->imageBackgroundColor() );
       QApplication::restoreOverrideCursor();
+
       if ( !ok )
-        QMessageBox::warning(getMainWindow(), QObject::tr("Save picture"), QObject::tr("Couldn't create the screenshot '%1'").arg(fn));
+        QMessageBox::warning(getMainWindow(), QObject::tr("Save picture"), QObject::tr("Couldn't save the screenshot '%1'").arg(fn));
     }
   }
 }
