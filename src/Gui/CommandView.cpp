@@ -378,14 +378,14 @@ StdViewFullScreen::StdViewFullScreen()
 
 void StdViewFullScreen::activated(int iMsg)
 {
-  MDIView* view = getActiveGuiDocument()->getActiveView();
+  MDIView* view = getMainWindow()->activeWindow();
   if ( !view ) return; // no active view
   view->setFullScreenMode( MDIView::FullScreen );
 }
 
 bool StdViewFullScreen::isActive(void)
 {
-  return (getActiveGuiDocument()->getActiveView() != NULL);
+  return (getMainWindow()->activeWindow() != 0);
 }
 //===========================================================================
 // Std_ViewTopLevel
@@ -404,7 +404,7 @@ StdViewTopLevel::StdViewTopLevel()
 
 void StdViewTopLevel::activated(int iMsg)
 {
-  MDIView* view = getActiveGuiDocument()->getActiveView();
+  MDIView* view = getMainWindow()->activeWindow();
   if ( !view ) return; // no active view
 
   view->setFullScreenMode( MDIView::TopLevel );
@@ -412,7 +412,7 @@ void StdViewTopLevel::activated(int iMsg)
 
 bool StdViewTopLevel::isActive(void)
 {
-  return (getActiveGuiDocument()->getActiveView() != NULL);
+  return (getMainWindow()->activeWindow() != 0);
 }
 //===========================================================================
 // Std_ViewDock
@@ -431,7 +431,7 @@ StdViewDock::StdViewDock()
 
 void StdViewDock::activated(int iMsg)
 {
-  MDIView* view = getActiveGuiDocument()->getActiveView();
+  MDIView* view = getMainWindow()->activeWindow();
   if ( !view ) return; // no active view
 
   view->setFullScreenMode( MDIView::Normal );
@@ -439,7 +439,7 @@ void StdViewDock::activated(int iMsg)
 
 bool StdViewDock::isActive(void)
 {
-  return (getActiveGuiDocument()->getActiveView() != NULL);
+  return (getMainWindow()->activeWindow() != 0);
 }
 
 //===========================================================================

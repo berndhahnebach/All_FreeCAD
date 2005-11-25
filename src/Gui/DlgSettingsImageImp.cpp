@@ -165,10 +165,10 @@ QColor DlgSettingsImageImp::imageBackgroundColor() const
   colormap[8] = Qt::yellow;
   colormap[9] = Qt::gray;
 
-  if ( colormap.find( comboColor->currentItem() ) != colormap.end() )
+  if ( !checkTransparent->isChecked() && colormap.find( comboColor->currentItem() ) != colormap.end() )
     return colormap[comboColor->currentItem()];
 
-  // default viewer background
+  // either default viewer background or transparent background
   return QColor();
 }
 
@@ -177,7 +177,27 @@ QColor DlgSettingsImageImp::imageBackgroundColor() const
  */
 void DlgSettingsImageImp::setImageFormat( SoOffscreenRenderer::Components f )
 {
-  comboImageType->setCurrentItem(((int)f)-1);
+  switch ( f )
+  {
+  case SoOffscreenRenderer::LUMINANCE:
+    comboImageType->setCurrentItem(0);
+    checkTransparent->setChecked(false);
+    break;
+  case SoOffscreenRenderer::RGB:
+    comboImageType->setCurrentItem(1);
+    checkTransparent->setChecked(false);
+    break;
+  case SoOffscreenRenderer::LUMINANCE_TRANSPARENCY:
+    comboImageType->setCurrentItem(0);
+    checkTransparent->setChecked(true);
+    break;
+  case SoOffscreenRenderer::RGB_TRANSPARENCY:
+    comboImageType->setCurrentItem(1);
+    checkTransparent->setChecked(true);
+    break;
+  default:
+    break;
+  }
 }
 
 /**
@@ -185,7 +205,20 @@ void DlgSettingsImageImp::setImageFormat( SoOffscreenRenderer::Components f )
  */
 SoOffscreenRenderer::Components DlgSettingsImageImp::imageFormat() const
 {
-  return SoOffscreenRenderer::Components(comboImageType->currentItem()+1);
+  if ( !checkTransparent->isChecked() )
+  {
+    if ( comboImageType->currentItem() == 0 )
+      return SoOffscreenRenderer::LUMINANCE;
+    else
+      return SoOffscreenRenderer::RGB;
+  }
+  else // transparent background
+  {
+    if ( comboImageType->currentItem() == 0 )
+      return SoOffscreenRenderer::LUMINANCE_TRANSPARENCY;
+    else
+      return SoOffscreenRenderer::RGB_TRANSPARENCY;
+  }
 }
 
 void DlgSettingsImageImp::onAdjustImageSize()

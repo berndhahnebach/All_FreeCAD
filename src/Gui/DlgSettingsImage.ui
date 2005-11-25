@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>363</width>
-            <height>254</height>
+            <height>282</height>
         </rect>
     </property>
     <property name="caption">
@@ -164,32 +164,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QComboBox" row="1" column="1">
-                    <item>
-                        <property name="text">
-                            <string>Grayscale Image</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Grayscale with Transparency</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>RGB Image</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>RGB with Transparency</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>comboImageType</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
+                <widget class="QLabel" row="0" column="0">
                     <property name="name">
                         <cstring>textLabelImageType</cstring>
                     </property>
@@ -200,7 +175,18 @@
                         <cstring>comboImageType</cstring>
                     </property>
                 </widget>
-                <widget class="QComboBox" row="0" column="1">
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabelColor</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Back&amp;ground color:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>comboColor</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="1" column="1">
                     <item>
                         <property name="text">
                             <string>Current</string>
@@ -255,15 +241,44 @@
                         <cstring>comboColor</cstring>
                     </property>
                 </widget>
-                <widget class="QLabel" row="0" column="0">
+                <widget class="QComboBox" row="0" column="1">
+                    <item>
+                        <property name="text">
+                            <string>Grayscale Image</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>RGB Image</string>
+                        </property>
+                    </item>
                     <property name="name">
-                        <cstring>textLabelColor</cstring>
+                        <cstring>comboImageType</cstring>
+                    </property>
+                </widget>
+                <spacer row="2" column="0">
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>121</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox" row="2" column="1">
+                    <property name="name">
+                        <cstring>checkTransparent</cstring>
                     </property>
                     <property name="text">
-                        <string>Back&amp;ground color:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>comboColor</cstring>
+                        <string>Transparent background</string>
                     </property>
                 </widget>
             </grid>
@@ -279,13 +294,21 @@
         <receiver>Gui::Dialog::DlgSettingsImage</receiver>
         <slot>onAdjustImageSize()</slot>
     </connection>
+    <connection>
+        <sender>checkTransparent</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>comboColor</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>spinWidth</tabstop>
     <tabstop>spinHeight</tabstop>
     <tabstop>spinResolution</tabstop>
-    <tabstop>comboColor</tabstop>
+    <tabstop>pushAdjustSize</tabstop>
     <tabstop>comboImageType</tabstop>
+    <tabstop>comboColor</tabstop>
+    <tabstop>checkTransparent</tabstop>
 </tabstops>
 <slots>
     <slot access="protected">onAdjustImageSize()</slot>

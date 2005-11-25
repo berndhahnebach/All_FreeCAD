@@ -578,7 +578,7 @@ void MainWindow::setPaneText(int i, QString text)
 }
 
 MDIView* MainWindow::activeWindow(void)
-{
+{/*
   // redirect all meesages to the view in fullscreen mode, if so
   MDIView* pView = 0;
   MDIView* pTmp = 0;
@@ -601,6 +601,14 @@ MDIView* MainWindow::activeWindow(void)
       pView = pTmp;
   }
 
+  return pView;*/
+
+  // the corresponding window to the current tab is active
+  MDIView* pView = 0;
+  int id = d->_tabs->currentTab();
+  QMap<int, MDIView*>::Iterator it = d->_mdiIds.find( id );
+  if ( it != d->_mdiIds.end() )
+    pView = it.data();
   return pView;
 }
 

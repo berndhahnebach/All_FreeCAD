@@ -201,7 +201,26 @@ void MDIView::setFullScreenMode( ViewMode b )
       getMainWindow()->addWindow( this );
       releaseKeyboard();
     }else if(_actualMode == TopLevel)
-    {
+    {/*
+      WFlags f = getWFlags();
+      setWFlags( f | WType_TopLevel );
+    reparent( 0, WType_TopLevel | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu | WStyle_Minimize | WStyle_Maximize |
+	      // preserve some widget flags
+	      (getWFlags() & 0xffff0000),
+	      mapToGlobal( QPoint( 0, 0) ));
+    const QRect screen = qApp->desktop()->screenGeometry( qApp->desktop()->screenNumber( this ) );
+    //move( screen.topLeft() );
+    //resize( screen.size() );
+    raise();
+    show();
+    QEvent e( QEvent::ShowNormal );
+    QApplication::sendEvent( this, &e );
+#if defined(Q_WS_X11)
+    extern void qt_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
+    qt_wait_for_window_manager( this );
+#endif
+
+    setActiveWindow();*/
       clearWFlags ( WType_TopLevel );
       getMainWindow()->addWindow( this );
     }
@@ -228,6 +247,23 @@ void MDIView::setFullScreenMode( ViewMode b )
     {
       WFlags f = getWFlags();
       setWFlags( f | WType_TopLevel );
+    reparent( 0, WType_TopLevel | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu | WStyle_Minimize | WStyle_Maximize |
+	      // preserve some widget flags
+	      (getWFlags() & 0xffff0000),
+	      mapToGlobal( QPoint( 0, 0) ));
+    const QRect screen = qApp->desktop()->screenGeometry( qApp->desktop()->screenNumber( this ) );
+    //move( screen.topLeft() );
+    //resize( screen.size() );
+    raise();
+    show();
+    QEvent e( QEvent::ShowNormal );
+    QApplication::sendEvent( this, &e );
+#if defined(Q_WS_X11)
+    extern void qt_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
+    qt_wait_for_window_manager( this );
+#endif
+
+    setActiveWindow();
     }
     _actualMode = TopLevel;
   }

@@ -267,11 +267,17 @@ QImage View3DInventorViewer::makeScreenShot( int w, int h, float r, int c, const
   vp.setPixelsPerInch( r );
 
   SoFCOffscreenRenderer renderer(vp);
-  if ( useBackground )
-    renderer.setBackgroundColor(getBackgroundColor());
-  else
-    renderer.setBackgroundColor( SbColor((float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f) );
+  // if we use transparency then we must not set a background color
   renderer.setComponents(SoOffscreenRenderer::Components(c));
+  if ( c != (int)SoOffscreenRenderer::RGB_TRANSPARENCY && c != (int)SoOffscreenRenderer::LUMINANCE_TRANSPARENCY )
+  {
+    if ( useBackground )
+      renderer.setBackgroundColor(getBackgroundColor());
+    else
+      renderer.setBackgroundColor( SbColor((float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f) );
+  }
+  else // we want a transparent background
+    useBackground = false;
 
   SoCallback* cb = 0;
   if ( useBackground )
@@ -313,11 +319,17 @@ bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbNam
   vp.setPixelsPerInch( r );
 
   SoFCOffscreenRenderer renderer(vp);
-  if ( useBackground )
-    renderer.setBackgroundColor(getBackgroundColor());
-  else
-    renderer.setBackgroundColor( SbColor((float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f) );
+  // if we use transparency then we must not set a background color
   renderer.setComponents(SoOffscreenRenderer::Components(c));
+  if ( c != (int)SoOffscreenRenderer::RGB_TRANSPARENCY && c != (int)SoOffscreenRenderer::LUMINANCE_TRANSPARENCY )
+  {
+    if ( useBackground )
+      renderer.setBackgroundColor(getBackgroundColor());
+    else
+      renderer.setBackgroundColor( SbColor((float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f) );
+  }
+  else // we want a transparent background
+    useBackground = false;
 
   SoCallback* cb = 0;
   if ( useBackground )
