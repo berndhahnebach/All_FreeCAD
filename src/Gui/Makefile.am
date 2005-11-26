@@ -33,6 +33,7 @@ BUILT_SOURCES=\
 		moc_DlgReportView.cpp \
 		moc_DlgSettings3DView.cpp \
 		moc_DlgSettings3DViewImp.cpp \
+		moc_DlgSettingsImage.cpp \
 		moc_DlgSettingsMacro.cpp \
 		moc_DlgSettingsMacroImp.cpp \
 		moc_DlgTipOfTheDay.cpp \
@@ -92,6 +93,8 @@ BUILT_SOURCES=\
 		DlgReportView.h \
 		DlgSettings3DView.cpp \
 		DlgSettings3DView.h \
+		DlgSettingsImage.cpp \
+		DlgSettingsImage.h \
 		DlgSettingsMacro.cpp \
 		DlgSettingsMacro.h \
 		DlgTipOfTheDay.cpp \
@@ -192,6 +195,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgReportViewImp.h \
 		DlgSettings3DViewImp.cpp \
 		DlgSettings3DViewImp.h \
+		DlgSettingsImageImp.cpp \
+		DlgSettingsImageImp.h \
 		DlgSettingsMacroImp.cpp \
 		DlgSettingsMacroImp.h \
 		DlgTipOfTheDayImp.cpp \
@@ -246,6 +251,8 @@ libFreeCADGui_la_SOURCES=\
 		resource.cpp \
 		Selection.cpp \
 		Selection.h \
+		SoFCBackgroundGradient.cpp \
+		SoFCBackgroundGradient.h \
 		SoFCColorLegend.cpp \
 		SoFCColorLegend.h \
 		SoFCOffscreenRenderer.cpp \

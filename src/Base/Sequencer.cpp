@@ -133,7 +133,7 @@ bool SequencerBase::next(bool canAbort)
   return nProgress < nTotalSteps;
 }
 
-void SequencerBase::nextStep( bool canAbort )
+void SequencerBase::nextStep( bool )
 {
 }
 
@@ -245,7 +245,7 @@ void ConsoleSequencer::startStep()
 {
 }
 
-void ConsoleSequencer::nextStep( bool canAbort )
+void ConsoleSequencer::nextStep( bool )
 {
   if ( nTotalSteps != 0 )
     printf("\t\t\t\t\t\t(%2.1f %%)\t\r", (float)progressInPercent());

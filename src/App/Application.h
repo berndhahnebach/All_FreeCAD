@@ -227,17 +227,17 @@ private:
 	/** @name static members for build time information, will be set bei the preprocesor. */
 	//@{
 	/// Major version nummber
-	const static unsigned int VersionMajor;
+	static const unsigned int VersionMajor;
 	/// Minor version nummber
-	const static unsigned int VersionMinor;
+	static const unsigned int VersionMinor;
 	/// Build nummber
-	const static unsigned int VersionBuild;
+	static const unsigned int VersionBuild;
 	/// Build date
-	const static char *       VersionDate;
+	static const char *       VersionDate;
 	/// Build time
-	const static char *    	  VersionTime;
+	static const char *    	  VersionTime;
 	/// Build time
-	const static char *    	  VersionDisDa;
+	static const char *    	  VersionDisDa;
 	//@}
 	
 	//---------------------------------------------------------------------

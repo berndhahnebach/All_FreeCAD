@@ -393,7 +393,8 @@ AC_ARG_ENABLE([warnings],
   esac],
   [fc_set_warn=true])
 if $fc_set_warn; then
-	CPPFLAGS="$CPPFLAGS -Wall -W"
+#	CPPFLAGS="$CPPFLAGS -Wall -W"
+	CPPFLAGS="$CPPFLAGS -Wall"
 else
 	CPPFLAGS="$CPPFLAGS -w"
 fi

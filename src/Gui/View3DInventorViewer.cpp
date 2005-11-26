@@ -758,7 +758,7 @@ void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
 
 Base::Vector3D View3DInventorViewer::getViewDirection() const
 {
-  SoCamera* pCam = getCamera();  
+  SoCamera* pCam = getCamera();
   SbViewVolume  vol = pCam->getViewVolume (); 
 
   // get the normal of the front clipping plane

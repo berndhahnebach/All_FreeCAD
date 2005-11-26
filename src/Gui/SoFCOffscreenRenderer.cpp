@@ -25,6 +25,9 @@
 #ifndef _PreComp_
 # include <qimage.h>
 # include <qstrlist.h>
+# include <Inventor/lists/SbList.h>
+# include <Inventor/lists/SbPList.h>
+# include <Inventor/SbString.h>
 #endif
 
 #include "SoFCOffscreenRenderer.h"
@@ -155,30 +158,38 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
 
   // get all supported formats by Coin3D
   int num = getNumWriteFiletypes();
-  for (int i=0; i < num; i++) 
+  for (int i=0; i < num; i++)
   {
+#ifdef FC_OS_LINUX
+    SbList<SbName> extlist;
+#else
     SbPList extlist;
+#endif
     SbString fullname, description;
     getWriteFiletypeInfo(i, extlist, fullname, description);
 
-    for (int j=0; j < extlist.getLength(); j++) 
+    for (int j=0; j < extlist.getLength(); j++)
     {
       QString ext = (const char*) extlist[j];
-      formats << ext.upper();
+      if ( formats.findIndex( ext.upper() ) == -1 )
+        formats << ext.upper();
     }
   }
 
   // add now all further QImage formats
-  QStringList qtformats = QImage::outputFormatList(); 
+  QStringList qtformats = QImage::outputFormatList();
   for ( QStringList::Iterator it = qtformats.begin(); it != qtformats.end(); ++it )
   {
     // not supported? then append
-    if ( isWriteSupported( (*it).latin1() ) == false )
+    if ( isWriteSupported( (*it).latin1() ) == false && formats.findIndex(*it) == -1 )
       formats << *it;
   }
 
   // now add PostScript and SGI RGB
-  formats << "EPS" << "SGI";
+  if ( formats.findIndex("EPS") == -1 )
+    formats << "EPS";
+  if ( formats.findIndex("EPS") == -1 )
+    formats << "SGI";
 
   formats.sort();
 

@@ -44,21 +44,20 @@ Exception::Exception(void)
 }
 
 Exception::Exception(const Exception &inst)
+ : exception(inst), _sErrMsg(inst._sErrMsg)
 {
-	SetMessage(inst._sErrMsg.c_str());
 }
 
 
 Exception::Exception(const char * sMessage)
+ : _sErrMsg(sMessage)
 {
-  SetMessage(sMessage);
-//  ReportException();
 }
 
 
 Exception &Exception::operator=(const Exception &inst)
 {
-  SetMessage(inst._sErrMsg.c_str());
+  _sErrMsg = inst._sErrMsg;
   return *this;
 }
 
@@ -85,8 +84,8 @@ AbortException::AbortException()
 }
 
 AbortException::AbortException(const AbortException &inst)
+ : Exception(inst)
 {
-	SetMessage(inst._sErrMsg.c_str());
 }
 
 const char* AbortException::what() const throw()

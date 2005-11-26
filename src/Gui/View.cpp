@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 #endif
 
 
@@ -251,7 +252,7 @@ void MDIView::setFullScreenMode( ViewMode b )
 	      // preserve some widget flags
 	      (getWFlags() & 0xffff0000),
 	      mapToGlobal( QPoint( 0, 0) ));
-    const QRect screen = qApp->desktop()->screenGeometry( qApp->desktop()->screenNumber( this ) );
+    //const QRect screen = qApp->desktop()->screenGeometry( qApp->desktop()->screenNumber( this ) );
     //move( screen.topLeft() );
     //resize( screen.size() );
     raise();
