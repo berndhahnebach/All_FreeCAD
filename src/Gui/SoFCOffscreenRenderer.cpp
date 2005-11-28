@@ -30,6 +30,7 @@
 # include <Inventor/SbString.h>
 #endif
 
+#include <Inventor/C/basic.h>
 #include "SoFCOffscreenRenderer.h"
 
 using namespace Gui;
@@ -160,11 +161,18 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
   int num = getNumWriteFiletypes();
   for (int i=0; i < num; i++)
   {
-#ifdef FC_OS_LINUX
+#if   (COIN_MAJOR_VERSION < 2) // Coin3D <= 1.x
     SbList<SbName> extlist;
-#else
+#elif (COIN_MAJOR_VERSION < 3) // Coin3D <= 2.x
+# if  (COIN_MINOR_VERSION < 3) // Coin3D <= 2.2.x
+    SbList<SbName> extlist;
+# else                         // Coin3D >= 2.3.x
+    SbPList extlist;
+# endif                        
+#else                          // Coin3D >= 3.x
     SbPList extlist;
 #endif
+
     SbString fullname, description;
     getWriteFiletypeInfo(i, extlist, fullname, description);
 
@@ -188,7 +196,7 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
   // now add PostScript and SGI RGB
   if ( formats.findIndex("EPS") == -1 )
     formats << "EPS";
-  if ( formats.findIndex("EPS") == -1 )
+  if ( formats.findIndex("SGI") == -1 )
     formats << "SGI";
 
   formats.sort();

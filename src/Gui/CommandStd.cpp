@@ -301,7 +301,7 @@ QAction * StdCmdUndo::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new UndoAction(this,getMainWindow(),sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction = new UndoAction(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -347,7 +347,7 @@ QAction * StdCmdRedo::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new RedoAction(this,getMainWindow(),sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction = new RedoAction(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -413,7 +413,7 @@ void StdCmdWorkbench::notify( const QString& item )
  */
 QAction * StdCmdWorkbench::createAction(void)
 {
-  pcAction = new WorkbenchGroup( getMainWindow(), sName.c_str(), true );
+  pcAction = new WorkbenchGroup( getMainWindow(), sName, true );
   pcAction->setExclusive( true );
   pcAction->setUsesDropDown( true );
   pcAction->setText(QObject::tr(sMenuText));
@@ -493,7 +493,7 @@ bool StdCmdWorkbench::addTo(QWidget *w)
     sprintf(szBuf, "Adding the command \"%s\" to this widget is not permitted!", getName());
     QMessageBox::information(getMainWindow(), "Warning", szBuf);
 #else
-    Base::Console().Log("Cannot add '%s' to this widget.\n", sName.c_str());
+    Base::Console().Log("Cannot add '%s' to this widget.\n", sName);
 #endif
     return false;
   }
@@ -549,7 +549,7 @@ void StdCmdMRU::activated(int iMsg)
  */
 QAction * StdCmdMRU::createAction(void)
 {
-  pcAction = new MRUActionGroup( this, getMainWindow(),sName.c_str(), false );
+  pcAction = new MRUActionGroup( this, getMainWindow(),sName, false );
   pcAction->setUsesDropDown( true );
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
@@ -749,10 +749,10 @@ StdCmdAbout::StdCmdAbout()
   :CppCommand("Std_About")
 {
   sGroup        = QT_TR_NOOP("Help");
-  sMenuText     = QT_TR_NOOP("&About");
-  sToolTipText  = QT_TR_NOOP("About");
-  sWhatsThis    = QT_TR_NOOP("About");
-  sStatusTip    = QT_TR_NOOP("About");
+  sMenuText     = QT_TR_NOOP("&About %1");
+  sToolTipText  = QT_TR_NOOP("About %1");
+  sWhatsThis    = QT_TR_NOOP("About %1");
+  sStatusTip    = QT_TR_NOOP("About %1");
   sPixmap       = App::Application::Config()["AppIcon"].c_str();
 }
 
@@ -760,13 +760,13 @@ QAction * StdCmdAbout::createAction(void)
 {
   QAction *pcAction;
 
-  QString exe = QString(" %1").arg(App::Application::Config()["ExeName"].c_str());
-  pcAction = new Action(this,getMainWindow(),sName.c_str(),(_eType&Cmd_Toggle) != 0);
-  pcAction->setText( QObject::tr(sMenuText) + exe );
-  pcAction->setMenuText( QObject::tr(sMenuText) + exe );
-  pcAction->setToolTip( QObject::tr(sToolTipText) + exe );
-  pcAction->setStatusTip( QObject::tr(sStatusTip) + exe );
-  pcAction->setWhatsThis( QObject::tr(sWhatsThis) + exe );
+  QString exe = App::Application::Config()["ExeName"].c_str();
+  pcAction = new Action(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction->setText( QObject::tr(sMenuText).arg(exe) );
+  pcAction->setMenuText( QObject::tr(sMenuText).arg(exe) );
+  pcAction->setToolTip( QObject::tr(sToolTipText).arg(exe) );
+  pcAction->setStatusTip( QObject::tr(sStatusTip).arg(exe) );
+  pcAction->setWhatsThis( QObject::tr(sWhatsThis).arg(exe) );
   if(sPixmap)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
   pcAction->setAccel(iAccel);
@@ -784,12 +784,12 @@ void StdCmdAbout::languageChange()
 {
   if ( _pcAction )
   {
-    QString exe = QString(" %1").arg(App::Application::Config()["ExeName"].c_str());
-    _pcAction->setText( QObject::tr(sMenuText) + exe );
-    _pcAction->setMenuText( QObject::tr(sMenuText) + exe );
-    _pcAction->setToolTip( QObject::tr(sToolTipText) + exe );
-    _pcAction->setStatusTip( QObject::tr(sStatusTip) + exe );
-    _pcAction->setWhatsThis( QObject::tr(sWhatsThis) + exe );
+    QString exe = App::Application::Config()["ExeName"].c_str();
+    _pcAction->setText( QObject::tr(sMenuText).arg(exe) );
+    _pcAction->setMenuText( QObject::tr(sMenuText).arg(exe) );
+    _pcAction->setToolTip( QObject::tr(sToolTipText).arg(exe) );
+    _pcAction->setStatusTip( QObject::tr(sStatusTip).arg(exe) );
+    _pcAction->setWhatsThis( QObject::tr(sWhatsThis).arg(exe) );
   }
 }
 

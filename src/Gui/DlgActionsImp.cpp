@@ -157,7 +157,7 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
     actionStatus    -> setText( pScript->getStatusTip() );
     actionAccel     -> setText( QAccel::keyToString(pScript->getAccel()) );
     PixmapLabel->clear();
-    if ( pScript->getPixmap().length() > 2)
+    if ( strlen(pScript->getPixmap()) > 2)
     {
       QPixmap p = Gui::BitmapFactory().pixmap( pScript->getPixmap() );
       PixmapLabel->setPixmap(p);

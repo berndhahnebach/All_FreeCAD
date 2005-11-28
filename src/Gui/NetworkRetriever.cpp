@@ -33,6 +33,8 @@
 #endif
 
 #include "NetworkRetriever.h"
+#include "Action.h"
+#include "BitmapFactory.h"
 #include "MainWindow.h"
 #include "DlgAuthorization.h"
 
@@ -407,14 +409,16 @@ bool NetworkRetriever::testWget()
 
 // --------------------------------------------------------------------
 
+/* TRANSLATOR Gui::StdCmdOnlineHelp */
+
 StdCmdOnlineHelp::StdCmdOnlineHelp( QObject * parent, const char * name )
   : QObject( parent, name ), CppCommand("Std_OnlineHelp")
 {
-  sGroup        = "Help";
-  sMenuText     = "Download online help";
-  sToolTipText  = "Download FreeCAD's online help";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
+  sGroup        = QT_TR_NOOP("Help");
+  sMenuText     = QT_TR_NOOP("Download online help");
+  sToolTipText  = QT_TR_NOOP("Download %1's online help");
+  sWhatsThis    = QT_TR_NOOP("Download %1's online help");
+  sStatusTip    = QT_TR_NOOP("Download %1's online help");
   sPixmap       = "help";
 
   wget = new NetworkRetriever( this );
@@ -440,6 +444,36 @@ StdCmdOnlineHelp::StdCmdOnlineHelp( QObject * parent, const char * name )
 StdCmdOnlineHelp::~StdCmdOnlineHelp()
 {
   delete wget;
+}
+
+QAction * StdCmdOnlineHelp::createAction(void)
+{
+  QAction *pcAction;
+
+  QString exe = App::Application::Config()["ExeName"].c_str();
+  pcAction = new Action(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction->setText      ( tr(sMenuText) );
+  pcAction->setMenuText  ( tr(sMenuText) );
+  pcAction->setToolTip   ( tr(sToolTipText).arg(exe) );
+  pcAction->setStatusTip ( tr(sStatusTip).arg(exe)   );
+  pcAction->setWhatsThis ( tr(sWhatsThis).arg(exe)   );
+  pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setAccel(iAccel);
+
+  return pcAction;
+}
+
+void StdCmdOnlineHelp::languageChange()
+{
+  if ( _pcAction )
+  {
+    QString exe = App::Application::Config()["ExeName"].c_str();
+    _pcAction->setText      ( tr(sMenuText) );
+    _pcAction->setMenuText  ( tr(sMenuText) );
+    _pcAction->setToolTip   ( tr(sToolTipText).arg(exe) );
+    _pcAction->setStatusTip ( tr(sStatusTip).arg(exe)   );
+    _pcAction->setWhatsThis ( tr(sWhatsThis).arg(exe)   );
+  }
 }
 
 void StdCmdOnlineHelp::activated(int iMsg)
@@ -476,7 +510,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
     if ( ok == false )
       Base::Console().Error("The tool 'wget' couldn't be found. Please check your installation.");
     else if ( wget->isDownloading() )
-      getAction()->setMenuText(tr("Stop %1").arg(sMenuText));
+      getAction()->setMenuText(tr("Stop downloading"));
   }
   else // kill the process now
   {
@@ -486,7 +520,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
 
 void StdCmdOnlineHelp::wgetExit()
 {
-  getAction()->setMenuText( sMenuText );
+  getAction()->setMenuText( tr( sMenuText ) );
 }
 
 #include "moc_NetworkRetriever.cpp"

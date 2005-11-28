@@ -190,7 +190,7 @@ void MDIView::setCaption ( const QString& cap )
   getMainWindow()->tabChanged( this );
 }
 
-void MDIView::setFullScreenMode( ViewMode b )
+void MDIView::setCurrentViewMode( ViewMode b )
 {
   // set fullscreen mode
   if ( b == Normal )
@@ -300,7 +300,7 @@ void MDIView::keyPressEvent ( QKeyEvent* e )
     // use Command's API to hold toogled state consistent
     if ( e->key() == Key_F || e->key() == Key_Escape )
     {
-      setFullScreenMode(Normal);
+      setCurrentViewMode(Normal);
     }
   }
   /*

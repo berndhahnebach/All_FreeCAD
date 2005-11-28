@@ -94,8 +94,8 @@ def InitApplications():
 			if ( os.path.exists(InstallFile) ):
 				try:
 					execfile(InstallFile)
-				except:
-					Err(" Unexpected error in " + InstallFile + " not initialized!\n")
+				except Exception, inst:
+					Err("During initialization the error " + str(inst) + " occurred in " + InstallFile + "\n")
 				else:
 					Log('Init:        done\n')
 			else:

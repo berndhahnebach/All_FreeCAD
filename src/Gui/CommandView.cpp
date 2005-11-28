@@ -33,6 +33,7 @@
 
 
 #include "Command.h"
+#include "Action.h"
 #include "Application.h"
 #include "FileDialog.h"
 #include "MainWindow.h"
@@ -380,7 +381,7 @@ void StdViewFullScreen::activated(int iMsg)
 {
   MDIView* view = getMainWindow()->activeWindow();
   if ( !view ) return; // no active view
-  view->setFullScreenMode( MDIView::FullScreen );
+  view->setCurrentViewMode( MDIView::FullScreen );
 }
 
 bool StdViewFullScreen::isActive(void)
@@ -407,7 +408,7 @@ void StdViewTopLevel::activated(int iMsg)
   MDIView* view = getMainWindow()->activeWindow();
   if ( !view ) return; // no active view
 
-  view->setFullScreenMode( MDIView::TopLevel );
+  view->setCurrentViewMode( MDIView::TopLevel );
 }
 
 bool StdViewTopLevel::isActive(void)
@@ -434,13 +435,78 @@ void StdViewDock::activated(int iMsg)
   MDIView* view = getMainWindow()->activeWindow();
   if ( !view ) return; // no active view
 
-  view->setFullScreenMode( MDIView::Normal );
+  view->setCurrentViewMode( MDIView::Normal );
 }
 
 bool StdViewDock::isActive(void)
 {
   return (getMainWindow()->activeWindow() != 0);
 }
+
+//===========================================================================
+// Std_ViewDockUndockFullscreen
+//===========================================================================
+// Test class for command groups
+class StdViewDockUndockFullscreen : public CommandGroup
+{
+public:
+  StdViewDockUndockFullscreen()
+    : CommandGroup("Std_ViewDockUndockFullscreen", true)
+  {
+    sGroup      = QT_TR_NOOP("Standard-View");
+    sMenuText   = QT_TR_NOOP("Display mode");
+    sToolTipText= QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
+    sWhatsThis  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
+    sStatusTip  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
+    
+    _aCommands.push_back( new CommandBase("Docked",0,0,0,0,Qt::Key_D));
+    _aCommands.push_back( new CommandBase("Undocked",0,0,0,0,Qt::Key_U));
+    _aCommands.push_back( new CommandBase("Fullscreen",0,0,0,0,Qt::Key_F));
+  }
+
+  void activated(int iMsg)
+  {
+    MDIView* view = getMainWindow()->activeWindow();
+    if ( !view ) return; // no active view
+
+    if (iMsg==0)
+    {
+      view->setCurrentViewMode( MDIView::Normal );
+    }
+    else if (iMsg==1)
+    {
+      view->setCurrentViewMode( MDIView::TopLevel );
+    }
+    else if (iMsg==2)
+    {
+      view->setCurrentViewMode( MDIView::FullScreen );
+    }
+  }
+
+  bool isActive(void)
+  {
+    MDIView* view = getMainWindow()->activeWindow();
+    if ( view )
+    {
+      // update the action group if needed
+      ActionGroup* pActGrp = reinterpret_cast<ActionGroup*>(_pcAction->qt_cast("Gui::ActionGroup"));
+      if ( pActGrp )
+      {
+        int index = pActGrp->currentActive();
+        int mode = (int)(view->currentViewMode());
+        if ( index != -1 && index != mode )
+        {
+          // active window has changed with another view mode
+          pActGrp->setCurrentActive( mode );
+        }
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+};
 
 //===========================================================================
 // Std_ViewScreenShot
@@ -862,6 +928,7 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdViewFullScreen());
   rcCmdMgr.addCommand(new StdViewTopLevel());
   rcCmdMgr.addCommand(new StdViewDock());
+  rcCmdMgr.addCommand(new StdViewDockUndockFullscreen());
   rcCmdMgr.addCommand(new StdCmdSetMaterial());
   rcCmdMgr.addCommand(new StdCmdToggleVisibility());
   rcCmdMgr.addCommand(new StdCmdPerspectiveCamera());

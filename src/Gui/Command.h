@@ -21,12 +21,13 @@
  ***************************************************************************/
 
 
-#ifndef __COMMAND_H__
-#define __COMMAND_H__
+#ifndef GUI_COMMAND_H
+#define GUI_COMMAND_H
 
 #ifndef _PreComp_
 # include <qaction.h>
 # include <qstringlist.h>
+# include <pair>
 # include <string>
 # include <vector>
 #endif
@@ -58,8 +59,59 @@ void CreateWindowStdCommands(void);
 void CreateTestCommands(void);
 
 
+/** The CommandBase class
+ * This lightweigt class is the base class of all commands in FreeCAD. It represents the link between the FreeCAD
+ * command framework and the QAction world of Qt.
+ * @author Werner Mayer
+ */
+class GuiExport CommandBase 
+{
+public:
+  CommandBase( const char* sMenu, const char* sToolTip=0, const char* sWhat=0, 
+               const char* sStatus=0, const char* sPixmap=0, int accel=0);
+  virtual ~CommandBase();
 
+  /**
+   * Returns the QAction object of this command. If \a create is set to true (the default) the action gets created in case
+   * it's not already created.
+   */
+  QAction*  getAction(bool create=true);
 
+  /** @name Methods to override when creating a new command */
+  //@{
+  /// Creates the used QAction. The default implementation does nothing.
+  virtual QAction * createAction(void);
+  /// Reassign QAction stuff
+  virtual void languageChange();
+  //@}
+
+  /** @name Methods to get the properties of the command */
+  //@{
+  virtual const char* getMenuText   () const { return sMenuText;    }
+  virtual const char* getToolTipText() const { return sToolTipText; }
+  virtual const char* getStatusTip  () const { return sStatusTip;   }
+  virtual const char* getWhatsThis  () const { return sWhatsThis;   }
+  virtual const char* getPixmap     () const { return sPixmap;      }
+  virtual int         getAccel      () const { return iAccel;       }
+  //@}
+
+protected:
+  /** @name Attributes 
+   *  Set by the inherited constructor to set up the most important properties 
+   *  of the command. In the Command constructor are set default values. 
+   *  The real values should be set in the constructor of the inheriting class.
+   */
+  //@{
+  const char* sMenuText;
+  const char* sToolTipText;
+  const char* sWhatsThis;
+  const char* sStatusTip;
+  const char* sPixmap;
+  int         iAccel;
+  //@}
+protected:
+  QAction *_pcAction; /**< The QAction item. */
+};
 
 /** The Command class
  *  This is the base class of all commands in FreeCAD. It is the single point where 
@@ -68,7 +120,7 @@ void CreateTestCommands(void);
  *  @see CommandManager
  * \author Jürgen Riegel
  */
-class GuiExport Command 
+class GuiExport Command : public CommandBase
 {
 public:
   /// Type of Commands
@@ -79,10 +131,10 @@ public:
   Command(const char* name,CMD_Type eType=Cmd_Normal);
   virtual ~Command();
 
-  /** @name Methods to override when create a new command
+  /** @name Methods to override when creating a new command
    */
   //@{
-  /// Method which get called when activated, needs to be reimplemented!
+  /// Methods which get called when activated, needs to be reimplemented!
   virtual void activated(int iMsg){assert((_eType&Cmd_Toggle) == 0);}
   /// Overite this methode if your Cmd is not always active
   virtual bool isActive(void){return true;} 
@@ -90,12 +142,10 @@ public:
   virtual QAction * createAction(void)=0;
   /// returns the resource values
   virtual std::string getResource(const char* sName) const=0;
-  /// Reassign QAction stuff
-  virtual void languageChange(){}
   //@}
 
 
-  /** @name Helper methodes to get importand classes */
+  /** @name Helper methods to get important classes */
   //@{
   /// Get pointer to the Application Window
   static Application*  getGuiApplication(void);   
@@ -113,16 +163,9 @@ public:
   App::Feature* getFeature(const char* Name=0);
   /// Get unique Feature name from the active document 
   std::string getUniqueFeatureName(const char *BaseName);
-  /// Get the FCAxtion object of this command
-  QAction*  getAction(bool create=true);
   //@}
 
-  /** @name Helper methodes for activation */
-  //@{
-
-  //@}
-
-  /** @name Helper methodes for the UNDO REDO  and Update handling */
+  /** @name Helper methods for the Undo/Redo and Update handling */
   //@{
   /// Open a new Undo transaction on the active document
   void openCommand(const char* sName=0);
@@ -140,7 +183,7 @@ public:
   void updateAll(std::list<Gui::Document*> cList);
   //@}
 
-  /** @name Helper methodes for isuing commands to the Python interpreter */
+  /** @name Helper methods for issuing commands to the Python interpreter */
   //@{
   /// types of application level actions for DoCommand()
   enum DoCmd_Type {
@@ -158,7 +201,7 @@ public:
   const std::string strToPython(const std::string &Str){return strToPython(Str.c_str());};
   //@}
 
-  /** @name Helper methodes to generate help pages */
+  /** @name Helper methods to generate help pages */
   //@{
   /// returns the begin of a online help page
   const char * beginCmdHelp(void);
@@ -166,7 +209,7 @@ public:
   const char * endCmdHelp(void);
   //@}
 
-  /** @name Helper methodes for the Active tests */
+  /** @name Helper methods for the Active tests */
   //@{
   /// true when there is a document
   bool hasActiveDocument(void);
@@ -180,24 +223,24 @@ public:
   /// is it a toggle cmd
   bool isToggle(void) const;
   /// returns the name to which the command belongs
-  const char* getAppModuleName(void) const {return sAppModule.c_str();}	
+  const char* getAppModuleName(void) const {return sAppModule;}	
   /// Get the command name
-  const char* getName() const { return sName.c_str(); }
+  const char* getName() const { return sName; }
   /// Get the name of the grouping of the command
-  const char* getGroupName() const { return sGroup.c_str(); }
+  const char* getGroupName() const { return sGroup; }
   /// Get the help URL
-  const char* getHelpUrl(void) const { return sHelpUrl.c_str(); }
+  const char* getHelpUrl(void) const { return sHelpUrl; }
   //@}
 
-  /** @name interface used by the CommandManager and the FCAction */
+  /** @name interface used by the CommandManager and the QAction */
   //@{
   /// CommandManager is a friend
   friend class CommandManager;
   /// Get somtile called to check the state of the command
   void testActive(void);
-  /// get called by the FCAction
+  /// get called by the QAction
   virtual void activated (); 
-  /// get called by the FCAction
+  /// get called by the QAction
   virtual void toggled ( bool ); 
   /// adds this command to arbitrary widgets
   virtual bool addTo(QWidget *);
@@ -205,32 +248,20 @@ public:
   virtual bool removeFrom(QWidget *pcWidget);
   //@}
 
-  /** @name Methods to get the properties of the command */
-  //@{
-  virtual QString getWhatsThis  () const = 0;
-  virtual QString getMenuText   () const = 0;
-  virtual QString getToolTipText() const = 0;
-  virtual QString getStatusTip  () const = 0;
-  virtual QString getPixmap     () const = 0;
-  virtual int     getAccel      () const = 0;
-  //@}
-
 protected:
   /** @name Attributes 
-   *  set by the inherited constructor to set up the most important propertys 
+   *  Set by the inherited constructor to set up the most important properties 
    *  of the command. In the Command constructor are set default values! 
    *  The real values should be set in the constructor of the inhereting class.
    */
   //@{
-  std::string sAppModule;
-  std::string sGroup;
-  std::string sName;
-  std::string sHelpUrl;
-  QAction *_pcAction;
+  const char* sAppModule;
+  const char* sGroup;
+  const char* sName;
+  const char* sHelpUrl;
   CMD_Type _eType;
   //@}
 };
-
 
 /** The cpp Command class
  *  This class is mostly used for commands implemented in C++. The resources are saved 
@@ -245,7 +276,7 @@ protected:
  *  @see CommandManager
  * \author Jürgen Riegel
  */
-class GuiExport CppCommand :public Command
+class GuiExport CppCommand : public Command
 {
 public:
   CppCommand(const char* name,CMD_Type eType=Cmd_Normal);
@@ -259,38 +290,61 @@ public:
   virtual void activated(int iMsg)=0;
   /// Overite this methode if your Cmd is not always active
   virtual bool isActive(void){return true;}
-  /// Creates the used FCAction
+  /// Creates the used QAction
   virtual QAction * createAction(void);
   /// returns the resource values
   virtual std::string getResource(const char* sName) const;
-  /// Reassign QAction stuff
-  virtual void languageChange();
   //@}
+};
 
-  /** @name Methods to get the properties of the command */
+class GuiExport ToggleCommand : public CppCommand
+{
+public:
+  ToggleCommand(const char* name,CMD_Type eType=Cmd_Normal);
+  virtual ~ToggleCommand() {}
+
+  /** @name Methodes to override when create a new command
+   *  Description  
+   */
   //@{
-  QString getWhatsThis  () const { return sWhatsThis;   }
-  QString getMenuText   () const { return sMenuText;    }
-  QString getToolTipText() const { return sToolTipText; }
-  QString getStatusTip  () const { return sStatusTip;   }
-  QString getPixmap     () const { return sPixmap;      }
-  int     getAccel      () const { return iAccel;       }
+  /// Creates the used QAction
+  virtual QAction* createAction(void);
+  //@}
+};
+
+/**
+ * The CommandGroup class groups command items together. 
+ * In some situations it is useful to group command items together. For example, if you have a 
+ * command to set the resolution of a geometry object with several predefined values, such as 
+ * 10%, 20%, ..., 100%, only one of these resolutions should be active at any one time, and one 
+ * simple way of achieving this is to group the command items together in one command group. 
+ *
+ * A command group can also be added to a menu or a toolbar as a single unit, with all the command items 
+ * within the command group appearing as separate menu options and toolbar buttons.
+ * @author Werner Mayer
+ */
+class GuiExport CommandGroup : public CppCommand
+{
+public:
+  CommandGroup(const char* name, bool dropdown=false,CMD_Type eType=Cmd_Normal);
+  virtual ~CommandGroup();
+
+  /** @name Methodes to override when creating a new command
+   *  Description  
+   */
+  //@{
+  /// Creates the used QAction
+  virtual QAction* createAction(void);
   //@}
 
 protected:
-  /** @name Attributes 
-   *  set by the inherited constructor to set up the most important propertys 
-   *  of the command. In the Command constructor are set default values! 
-   *  The real values should be set in the constructor of the inhereting class.
+  /**
+   * A list of subcommands where the first parameter is the menu text
+   * and the second parameter defines the pixmap.
    */
-  //@{
-  QString sMenuText;
-  QString sToolTipText;
-  QString sWhatsThis;
-  QString sStatusTip;
-  QString sPixmap;
-  int     iAccel;
-  //@}
+  std::vector<CommandBase*> _aCommands;
+  /** Does the command items appear in a subwidget or in the same widget as the command itself. */
+  bool _dropdown; 
 };
 
 
@@ -321,7 +375,7 @@ public:
   virtual std::string cmdHelpURL(void);
   /// Get the help page
   virtual void cmdHelpPage(std::string &rcHelpPage);
-  /// Creates the used FCAction
+  /// Creates the used QAction
   virtual QAction * createAction(void);
   /// returns the resource values
   virtual std::string getResource(const char* sName) const;
@@ -329,12 +383,12 @@ public:
 
   /** @name Methods to get the properties of the command */
   //@{
-  QString getWhatsThis  () const;
-  QString getMenuText   () const;
-  QString getToolTipText() const;
-  QString getStatusTip  () const;
-  QString getPixmap     () const;
-  int     getAccel      () const;
+  const char* getWhatsThis  () const;
+  const char* getMenuText   () const;
+  const char* getToolTipText() const;
+  const char* getStatusTip  () const;
+  const char* getPixmap     () const;
+  int         getAccel      () const;
   //@}
 
 
@@ -406,7 +460,7 @@ protected:
  *  Commands will registered here, also commands from Application
  *  modules. Also activation / deactivation, Icons Tooltips and so
  *  on are handles here. Further the Building of Toolbars and (Context) 
- *  menus (conecting to a FCAction) is done here.
+ *  menus (connecting to a QAction) is done here.
  *  @see Command
  *  @author Jürgen Riegel
  */
@@ -642,4 +696,4 @@ public:\
   }\
 };
 
-#endif // __COMMAND_H__
+#endif // GUI_COMMAND_H

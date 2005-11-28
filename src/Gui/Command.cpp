@@ -50,6 +50,44 @@ using namespace Gui;
 using namespace Gui::Dialog;
 using namespace Gui::DockWnd;
 
+CommandBase::CommandBase( const char* sMenu, const char* sToolTip, const char* sWhat, 
+                          const char* sStatus, const char* sPixmap, int iAcc)
+ : sMenuText(sMenu), sToolTipText(sToolTip), sWhatsThis(sWhat), sStatusTip(sStatus), 
+   sPixmap(sPixmap), iAccel(iAcc), _pcAction(0)
+{
+  if (sToolTipText && !sWhatsThis) sWhatsThis = sToolTipText;
+  if (sToolTipText && !sStatusTip) sStatusTip = sToolTipText;
+}
+
+CommandBase::~CommandBase()
+{
+}
+
+QAction* CommandBase::getAction( bool create ) 
+{ 
+  if (!_pcAction && create)
+    _pcAction = createAction();
+  return _pcAction; 
+}
+
+QAction * CommandBase::createAction()
+{
+  // does nothing
+  return 0;
+}
+
+void CommandBase::languageChange()
+{
+  if ( _pcAction )
+  {
+    _pcAction->setText      ( QObject::tr( sMenuText    ) );
+    _pcAction->setMenuText  ( QObject::tr( sMenuText    ) );
+    _pcAction->setToolTip   ( QObject::tr( sToolTipText ) );
+    _pcAction->setStatusTip ( QObject::tr( sStatusTip   ) );
+    _pcAction->setWhatsThis ( QObject::tr( sWhatsThis   ) );
+  }
+}
+
 //===========================================================================
 // Command
 //===========================================================================
@@ -57,7 +95,7 @@ using namespace Gui::DockWnd;
 /* TRANSLATOR Gui::Command */
 
 Command::Command(const char* name,CMD_Type eType)
-  : sName(name),_pcAction(0),_eType(eType)
+  : CommandBase(0), sName(name), sHelpUrl(0),_eType(eType)
 {
   sAppModule  = "FreeCAD";
   sGroup      = QT_TR_NOOP("Standard");
@@ -116,15 +154,6 @@ App::Feature* Command::getFeature(const char* Name)
     return 0;
 }
 
-
-QAction* Command::getAction( bool create ) 
-{ 
-  if (!_pcAction && create)
-    _pcAction = createAction();
-
-  return _pcAction; 
-}
-
 bool Command::isToggle(void) const
 {
   return (_eType&Cmd_Toggle) != 0; 
@@ -135,9 +164,9 @@ void Command::activated ()
   if(_eType == Cmd_Normal)
   {
     // Do not query _pcAction since it isn't created necessarily
-    Base::Console().Log("CmdG: %s\n",sName.c_str());
+    Base::Console().Log("CmdG: %s\n",sName);
     // set the application module type for the macro
-    getGuiApplication()->macroManager()->setModule(sAppModule.c_str());
+    getGuiApplication()->macroManager()->setModule(sAppModule);
     try{
       activated(0);
     }catch(Base::PyException &e){
@@ -175,7 +204,7 @@ void Command::toggled (bool b)
   if(_eType == Cmd_Toggle)
   {
     // Do not query _pcAction since it isn't created necessarily
-    Base::Console().Log("CmdG: Toggled %s\n",sName.c_str());
+    Base::Console().Log("CmdG: Toggled %s\n",sName);
     if(b)
       activated(1);
     else
@@ -243,7 +272,7 @@ void Command::openCommand(const char* sCmdName)
   if(sCmdName)
     getGuiApplication()->activeDocument()->openCommand(sCmdName);
   else
-    getGuiApplication()->activeDocument()->openCommand(sName.c_str());
+    getGuiApplication()->activeDocument()->openCommand(sName);
 }
 
 void Command::commitCommand(void)
@@ -371,12 +400,41 @@ std::string CppCommand::getResource(const char* sName) const
   return "";
 }
 
-
 QAction * CppCommand::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new Action(this,getMainWindow(),sName.c_str(),(_eType&Cmd_Toggle) != 0);
+  pcAction = new Action(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  if ( sStatusTip )
+    pcAction->setStatusTip(QObject::tr(sStatusTip));
+  else
+    pcAction->setStatusTip(QObject::tr(sToolTipText));
+  if ( sWhatsThis )
+    pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  else
+    pcAction->setWhatsThis(QObject::tr(sToolTipText));
+  if(sPixmap)
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setAccel(iAccel);
+
+  return pcAction;
+}
+
+// -------------------------------------------------------------------------
+
+ToggleCommand::ToggleCommand(const char* name,CMD_Type eType)
+  :CppCommand(name,eType)
+{
+}
+
+QAction * ToggleCommand::createAction(void)
+{
+  QAction *pcAction;
+  pcAction = new Action(this,getMainWindow(),sName);
+  pcAction->setToggleAction( true );
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -389,18 +447,76 @@ QAction * CppCommand::createAction(void)
   return pcAction;
 }
 
-void CppCommand::languageChange()
+// -------------------------------------------------------------------------
+
+CommandGroup::CommandGroup(const char* name, bool dropdown,CMD_Type eType)
+  :CppCommand(name,eType), _dropdown(dropdown)
 {
-  if ( _pcAction )
-  {
-    _pcAction->setText(QObject::tr(sMenuText));
-    _pcAction->setMenuText(QObject::tr(sMenuText));
-    _pcAction->setToolTip(QObject::tr(sToolTipText));
-    _pcAction->setStatusTip(QObject::tr(sStatusTip));
-    _pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  }
 }
 
+CommandGroup::~CommandGroup()
+{
+  _aCommands.clear();
+}
+
+QAction * CommandGroup::createAction(void)
+{
+  QActionGroup *pcAction;
+  pcAction = new ActionGroup( this, getMainWindow(), sName );
+  pcAction->setExclusive( true );
+  pcAction->setUsesDropDown( _dropdown );
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  if(sPixmap)
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setAccel(iAccel);
+
+  for ( std::vector<CommandBase*>::iterator it = _aCommands.begin(); it != _aCommands.end(); ++it )
+  {
+    if ( strcmp((*it)->getMenuText(), "Separator") == 0)
+    {
+      pcAction->addSeparator();
+    }
+    else
+    {
+      QAction* pSubAction = new QAction( pcAction );
+      pSubAction->setText      ( QObject::tr( (*it)->getMenuText() ) );
+      pSubAction->setMenuText  ( QObject::tr( (*it)->getMenuText() ) );
+
+      // use the tooltip, status tip and what's this text of the parent group if not set
+      // 
+      // set tool tip
+      if ( (*it)->getToolTipText() )
+        pSubAction->setToolTip ( QObject::tr( (*it)->getToolTipText() ) );
+      else
+        pSubAction->setToolTip ( QObject::tr( getToolTipText() ) );
+      // set status tip
+      if ( (*it)->getStatusTip() )
+        pSubAction->setStatusTip ( QObject::tr( (*it)->getStatusTip() ) );
+      else if ( (*it)->getToolTipText() )
+        pSubAction->setStatusTip ( QObject::tr( (*it)->getToolTipText() ) );
+      else
+        pSubAction->setStatusTip ( QObject::tr( getStatusTip() ) );
+      // set what's this
+      if ( (*it)->getWhatsThis() )
+        pSubAction->setWhatsThis ( QObject::tr( (*it)->getWhatsThis() ) );
+      else if ( (*it)->getToolTipText() )
+        pSubAction->setWhatsThis ( QObject::tr( (*it)->getToolTipText() ) );
+      else
+        pSubAction->setWhatsThis ( QObject::tr( getWhatsThis() ) );
+      if( sPixmap )
+        pSubAction->setIconSet( Gui::BitmapFactory().pixmap( sPixmap ) );
+      pSubAction->setAccel( (*it)->getAccel() );
+
+      pSubAction->setToggleAction( true );
+    }
+  }
+
+  return pcAction;
+}
 
 //===========================================================================
 // MacroCommand 
@@ -572,7 +688,7 @@ void PythonCommand::activated(int iMsg)
   try{
     Interpreter().runMethodVoid(_pcPyCommand, "Activated");
   }catch (Base::Exception e){
-    Base::Console().Error("Running the python command %s failed,try to resume",sName.c_str());
+    Base::Console().Error("Running the python command %s failed,try to resume",sName);
   }
 }
 
@@ -613,8 +729,8 @@ QAction * PythonCommand::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new Action(this,getMainWindow(),sName.c_str(),(_eType&Cmd_Toggle) != 0);
-  pcAction->setText(sName.c_str());
+  pcAction = new Action(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction->setText(sName);
   pcAction->setMenuText(getResource("MenuText").c_str());
   pcAction->setToolTip(getResource("ToolTip").c_str());
   pcAction->setStatusTip(getResource("StatusTip").c_str());
@@ -625,27 +741,27 @@ QAction * PythonCommand::createAction(void)
   return pcAction;
 }
 
-QString PythonCommand::getWhatsThis() const
+const char* PythonCommand::getWhatsThis() const
 {
   return getResource("WhatsThis").c_str();
 }
 
-QString PythonCommand::getMenuText() const
+const char* PythonCommand::getMenuText() const
 {
   return getResource("MenuText").c_str();
 }
 
-QString PythonCommand::getToolTipText() const
+const char* PythonCommand::getToolTipText() const
 {
   return getResource("ToolTip").c_str();
 }
 
-QString PythonCommand::getStatusTip() const
+const char* PythonCommand::getStatusTip() const
 {
   return getResource("StatusTip").c_str();
 }
 
-QString PythonCommand::getPixmap() const
+const char* PythonCommand::getPixmap() const
 {
   return getResource("Pixmap").c_str();
 }

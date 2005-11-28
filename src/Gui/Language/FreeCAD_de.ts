@@ -1872,12 +1872,12 @@ Wollen Sie wirklich fortfahren?</translation>
             <translation>Hilfe</translation>
         </message>
         <message>
-            <source>&amp;About</source>
-            <translation>&amp;Über</translation>
+            <source>&amp;About %1</source>
+            <translation>&amp;Über %1</translation>
         </message>
         <message>
-            <source>About</source>
-            <translation>Über</translation>
+            <source>About %1</source>
+            <translation>Über %1</translation>
         </message>
     </context>
     <context>
@@ -2151,10 +2151,22 @@ Wollen Sie wirklich fortfahren?</translation>
         </message>
     </context>
     <context>
-        <name>StdCmdOnlineHelp</name>
+        <name>Gui::StdCmdOnlineHelp</name>
         <message>
-            <source>Stop %1</source>
-            <translation>%1 anhalten</translation>
+            <source>Help</source>
+            <translation>Hilfe</translation>
+        </message>
+        <message>
+            <source>Download online help</source>
+            <translation>Online-Hilfe herunterladen</translation>
+        </message>
+        <message>
+            <source>Download %1's online help</source>
+            <translation>Online-Hilfe von %1 herunterladen</translation>
+        </message>
+        <message>
+            <source>Stop downloading</source>
+            <translation>Herunterladevorgang abbrechen</translation>
         </message>
     </context>
     <context>

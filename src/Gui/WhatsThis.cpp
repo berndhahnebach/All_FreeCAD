@@ -136,7 +136,7 @@ QAction * StdCmdDescription::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new Action(this,qApp->mainWidget(),sName.c_str(),true);
+  pcAction = new Action(this,qApp->mainWidget(),sName,true);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));

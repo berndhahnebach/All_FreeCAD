@@ -89,6 +89,35 @@ private:
 // --------------------------------------------------------------------
 
 /**
+ * The ActionGroup class is the link between Qt's QActionGroup class and 
+ * FreeCAD's command group classes (@ref CommandGroup). So, it is possible to 
+ * have all actions (from toolbars, menus, ...) implemented in classes instead of 
+ * slots of the main window. 
+ * @author Werner Mayer
+ */
+class GuiExport ActionGroup : public QActionGroup
+{
+  Q_OBJECT
+
+public:
+  ActionGroup ( Command* pcCmd, QObject * parent, const char * name = 0 );
+  virtual ~ActionGroup();
+
+  Command* command() { return _pcCmd; }
+
+  int currentActive() const;
+  void setCurrentActive(int);
+
+public slots:
+  void onActivated ( QAction* );
+
+private:
+  Command *_pcCmd;
+};
+
+// --------------------------------------------------------------------
+
+/**
  * The WorkbenchAction class represents a workbench. When this action gets 
  * activated the workbench - it represents - gets loaded.
  * @see WorkbenchGroup

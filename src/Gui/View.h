@@ -177,11 +177,13 @@ public:
     FullScreen  /**< the view go to full screen viewing */
   };
   /**
-   * If \a b is true the MDIView is displayed in full screen mode, otherwise
-   * in normal mode. For more hints refer to the Qt documentation to
+   * If \a b is set to \a FullScreen the MDI view is displayed in full screen mode, if \a b
+   * is set to \a TopLevel then it is displayed as an own top-level window, otherwise (\a Normal)
+   * as tabbed window. For more hints refer to the Qt documentation to
    * QWidget::showFullScreen ().
    */
-  virtual void setFullScreenMode( ViewMode b );
+  virtual void setCurrentViewMode( ViewMode b );
+  ViewMode currentViewMode() const { return _actualMode; }
 
 signals:
   /// sends a message to the document

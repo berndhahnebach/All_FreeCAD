@@ -143,6 +143,101 @@ void Action::setEnabled ( bool b)
 
 // --------------------------------------------------------------------
 
+/**
+ * Constructs an action called \a name with parent \a parent. It also stores a pointer
+ * to the command object.
+ */
+ActionGroup::ActionGroup ( Command* pcCmd,QObject * parent, const char * name )
+  : QActionGroup(parent, name),_pcCmd(pcCmd)
+{
+  connect( this, SIGNAL ( selected ( QAction * ) ), this, SLOT ( onActivated( QAction * ) ) );
+}
+
+ActionGroup::~ActionGroup()
+{ 
+}
+
+/**
+ * Returns the index of the currently active action, or -1 of no such action can be found.
+ * This function is only useful if the action group is in exclusive mode.
+ */
+int ActionGroup::currentActive() const
+{
+  int id=-1;
+  if ( children() ) {
+    int index=0;
+    const QObjectList *l = children();
+    QObjectListIt it(*l);
+    QObject* obj;
+    while ( (obj=it.current()) != 0 ) {
+      QAction* act = (QAction*)obj->qt_cast("QAction");
+      if ( act ) {
+        if ( act->isOn() ) {
+          id = index;
+          break;
+        }
+        index++;
+      }
+      ++it;
+    }
+  }
+
+  return id;
+}
+
+/**
+ * Sets the current active action to \a index.
+ * This function is only useful if the action group is in exclusive mode.
+ */
+void ActionGroup::setCurrentActive(int index)
+{
+  if ( children() ) {
+    int id=0;
+    const QObjectList *l = children();
+    QObjectListIt it(*l);
+    QObject* obj;
+    while ( (obj=it.current()) != 0 ) {
+      QAction* act = (QAction*)obj->qt_cast("QAction");
+      if ( act ) {
+        if ( id == index ) {
+          act->setOn( true );
+          break;
+        }
+        id++;
+      }
+      ++it;
+    }
+  }
+}
+
+/**
+ * Activates the command.
+ */
+void ActionGroup::onActivated ( QAction* action ) 
+{
+  if ( StdCmdDescription::inDescriptionMode () )
+    StdCmdDescription::setSource( _pcCmd->getHelpUrl() );
+  else if ( children() ) {
+    int id=0;
+    const QObjectList *l = children();
+    QObjectListIt it(*l);
+    QObject* obj;
+    while ( (obj=it.current()) != 0 ) {
+      QAction* act = (QAction*)obj->qt_cast("QAction");
+      if ( act ) {
+        if ( act == action ) {
+          _pcCmd->activated( id );
+          break;
+        }
+        id++;
+      }
+      ++it;
+    }
+  }
+}
+
+// --------------------------------------------------------------------
+
 WorkbenchAction::WorkbenchAction (  StdCmdWorkbench* pcCmd, QObject * parent, const char * name )
   : QAction( parent, name, false ), _pcCmd(pcCmd)
 {

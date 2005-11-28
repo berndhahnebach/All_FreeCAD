@@ -84,6 +84,11 @@ public:
   virtual ~StdCmdOnlineHelp();
   virtual void activated(int iMsg);
 
+  /** Creates the action object. */
+  virtual QAction* createAction();
+  /** i18n stuff of the command. */
+  virtual void languageChange();
+
 private slots:
   void wgetExit();
 
