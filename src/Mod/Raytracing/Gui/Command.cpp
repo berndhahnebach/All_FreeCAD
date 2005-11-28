@@ -67,7 +67,7 @@
 DEF_STD_CMD_A(CmdRaytracingWriteCamera);
 
 CmdRaytracingWriteCamera::CmdRaytracingWriteCamera()
-  :CppCommand("Raytracing_WriteCamera")
+  :Command("Raytracing_WriteCamera")
 {
   sAppModule    = "Raytracing";
   sGroup        = "Raytracing";
@@ -274,7 +274,7 @@ void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** verte
 DEF_STD_CMD_A(CmdRaytracingWritePart);
 
 CmdRaytracingWritePart::CmdRaytracingWritePart()
-  :CppCommand("Raytracing_WritePart")
+  :Command("Raytracing_WritePart")
 {
   sAppModule    = "Raytracing";
   sGroup        = "Raytracing";
@@ -329,7 +329,7 @@ bool CmdRaytracingWritePart::isActive(void)
 DEF_STD_CMD_A(CmdRaytracingNewProject);
 
 CmdRaytracingNewProject::CmdRaytracingNewProject()
-  :CppCommand("Raytracing_NewProject")
+  :Command("Raytracing_NewProject")
 {
   sAppModule    = "Raytracing";
   sGroup        = "Raytracing";
@@ -364,7 +364,7 @@ bool CmdRaytracingNewProject::isActive(void)
 DEF_STD_CMD_A(CmdRaytracingQuickRender);
 
 CmdRaytracingQuickRender::CmdRaytracingQuickRender()
-  :CppCommand("Raytracing_QuickRender")
+  :Command("Raytracing_QuickRender")
 {
   sAppModule    = "Raytracing";
   sGroup        = "Raytracing";

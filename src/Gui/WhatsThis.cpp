@@ -118,7 +118,7 @@ QTextBrowser* StdCmdDescription::_helpViewer = 0L;
 
 
 StdCmdDescription::StdCmdDescription()
-  :CppCommand("Std_DescriptionMode", Cmd_Toggle)
+  :Command("Std_DescriptionMode", Cmd_Toggle)
 {
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("Des&cription");

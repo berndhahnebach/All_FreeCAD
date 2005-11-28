@@ -43,7 +43,7 @@
 DEF_STD_CMD(Cmd_TEMPLATE_Test);
 
 Cmd_TEMPLATE_Test::Cmd_TEMPLATE_Test()
-  :CppCommand("_TEMPLATE__Test")
+  :Command("_TEMPLATE__Test")
 {
   sAppModule    = "_TEMPLATE_";
   sGroup        = QT_TR_NOOP("_TEMPLATE_");

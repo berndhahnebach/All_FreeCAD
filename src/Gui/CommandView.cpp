@@ -62,7 +62,7 @@ using Gui::Dialog::DlgSettingsImageImp;
 DEF_STD_CMD_A(StdCmdOrthographicCamera);
 
 StdCmdOrthographicCamera::StdCmdOrthographicCamera()
-  :CppCommand("Std_OrthographicCamera")
+  :Command("Std_OrthographicCamera")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Orthographic view");
@@ -88,7 +88,7 @@ bool StdCmdOrthographicCamera::isActive(void)
 DEF_STD_CMD_A(StdCmdPerspectiveCamera);
 
 StdCmdPerspectiveCamera::StdCmdPerspectiveCamera()
-  :CppCommand("Std_PerspectiveCamera")
+  :Command("Std_PerspectiveCamera")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Perspective view");
@@ -114,7 +114,7 @@ bool StdCmdPerspectiveCamera::isActive(void)
 DEF_STD_CMD_A(StdCmdToggleVisibility);
 
 StdCmdToggleVisibility::StdCmdToggleVisibility()
-  :CppCommand("Std_ToggleVisibility")
+  :Command("Std_ToggleVisibility")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Toggle visibility");
@@ -156,7 +156,7 @@ bool StdCmdToggleVisibility::isActive(void)
 DEF_STD_CMD_A(StdCmdSetMaterial);
 
 StdCmdSetMaterial::StdCmdSetMaterial()
-  :CppCommand("Std_SetMaterial")
+  :Command("Std_SetMaterial")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Material");
@@ -184,7 +184,7 @@ bool StdCmdSetMaterial::isActive(void)
 DEF_3DV_CMD(StdCmdViewBottom)
 
 StdCmdViewBottom::StdCmdViewBottom()
-  :CppCommand("Std_ViewBottom")
+  :Command("Std_ViewBottom")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Bottom");
@@ -206,7 +206,7 @@ void StdCmdViewBottom::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewFront);
 
 StdCmdViewFront::StdCmdViewFront()
-  :CppCommand("Std_ViewFront")
+  :Command("Std_ViewFront")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Front");
@@ -228,7 +228,7 @@ void StdCmdViewFront::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewLeft);
 
 StdCmdViewLeft::StdCmdViewLeft()
-  :CppCommand("Std_ViewLeft")
+  :Command("Std_ViewLeft")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Left");
@@ -250,7 +250,7 @@ void StdCmdViewLeft::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewRear);
 
 StdCmdViewRear::StdCmdViewRear()
-  :CppCommand("Std_ViewRear")
+  :Command("Std_ViewRear")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Rear");
@@ -272,7 +272,7 @@ void StdCmdViewRear::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewRight);
 
 StdCmdViewRight::StdCmdViewRight()
-  :CppCommand("Std_ViewRight")
+  :Command("Std_ViewRight")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Right");
@@ -294,7 +294,7 @@ void StdCmdViewRight::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewTop);
 
 StdCmdViewTop::StdCmdViewTop()
-  :CppCommand("Std_ViewTop")
+  :Command("Std_ViewTop")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Top");
@@ -316,7 +316,7 @@ void StdCmdViewTop::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewAxo);
 
 StdCmdViewAxo::StdCmdViewAxo()
-  :CppCommand("Std_ViewAxo")
+  :Command("Std_ViewAxo")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Axometric");
@@ -338,7 +338,7 @@ void StdCmdViewAxo::activated(int iMsg)
 DEF_STD_CMD_A(StdCmdViewFitAll);
 
 StdCmdViewFitAll::StdCmdViewFitAll()
-  :CppCommand("Std_ViewFitAll")
+  :Command("Std_ViewFitAll")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Fit all");
@@ -366,7 +366,7 @@ bool StdCmdViewFitAll::isActive(void)
 DEF_STD_CMD_A(StdViewFullScreen);
 
 StdViewFullScreen::StdViewFullScreen()
-  :CppCommand("Std_ViewFullScreen")
+  :Command("Std_ViewFullScreen")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Fullscreen");
@@ -394,7 +394,7 @@ bool StdViewFullScreen::isActive(void)
 DEF_STD_CMD_A(StdViewTopLevel);
 
 StdViewTopLevel::StdViewTopLevel()
-  :CppCommand("Std_ViewTopLevel")
+  :Command("Std_ViewTopLevel")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Undock view");
@@ -421,7 +421,7 @@ bool StdViewTopLevel::isActive(void)
 DEF_STD_CMD_A(StdViewDock);
 
 StdViewDock::StdViewDock()
-  :CppCommand("Std_ViewDock")
+  :Command("Std_ViewDock")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Dock view");
@@ -494,7 +494,7 @@ public:
       {
         int index = pActGrp->currentActive();
         int mode = (int)(view->currentViewMode());
-        if ( index != -1 && index != mode )
+        if ( index != mode )
         {
           // active window has changed with another view mode
           pActGrp->setCurrentActive( mode );
@@ -514,7 +514,7 @@ public:
 DEF_STD_CMD_A(StdViewScreenShot);
 
 StdViewScreenShot::StdViewScreenShot()
-  :CppCommand("Std_ViewScreenShot")
+  :Command("Std_ViewScreenShot")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Save picture...");
@@ -596,7 +596,7 @@ bool StdViewScreenShot::isActive(void)
 DEF_STD_CMD_A(StdCmdViewCreate);
 
 StdCmdViewCreate::StdCmdViewCreate()
-  :CppCommand("Std_ViewCreate")
+  :Command("Std_ViewCreate")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Create new  View");
@@ -623,7 +623,7 @@ bool StdCmdViewCreate::isActive(void)
 DEF_STD_CMD_A(StdCmdViewExample1);
 
 StdCmdViewExample1::StdCmdViewExample1()
-  :CppCommand("Std_ViewExample1")
+  :Command("Std_ViewExample1")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Inventor example #1");
@@ -649,7 +649,7 @@ bool StdCmdViewExample1::isActive(void)
 DEF_STD_CMD_A(StdCmdViewExample2);
 
 StdCmdViewExample2::StdCmdViewExample2()
-  :CppCommand("Std_ViewExample2")
+  :Command("Std_ViewExample2")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Inventor example #2");
@@ -676,7 +676,7 @@ bool StdCmdViewExample2::isActive(void)
 DEF_STD_CMD_A(StdCmdViewExample3);
 
 StdCmdViewExample3::StdCmdViewExample3()
-  :CppCommand("Std_ViewExample3")
+  :Command("Std_ViewExample3")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Inventor example #3");
@@ -704,7 +704,7 @@ bool StdCmdViewExample3::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoOff);
 
 StdCmdViewIvStereoOff::StdCmdViewIvStereoOff()
-  :CppCommand("Std_ViewIvStereoOff")
+  :Command("Std_ViewIvStereoOff")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo Off");
@@ -732,7 +732,7 @@ bool StdCmdViewIvStereoOff::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoRedGreen);
 
 StdCmdViewIvStereoRedGreen::StdCmdViewIvStereoRedGreen()
-  :CppCommand("Std_ViewIvStereoRedGreen")
+  :Command("Std_ViewIvStereoRedGreen")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo red/green");
@@ -759,7 +759,7 @@ bool StdCmdViewIvStereoRedGreen::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoQuadBuff);
 
 StdCmdViewIvStereoQuadBuff::StdCmdViewIvStereoQuadBuff()
-  :CppCommand("Std_ViewIvStereoQuadBuff")
+  :Command("Std_ViewIvStereoQuadBuff")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo quad buffer");
@@ -786,7 +786,7 @@ bool StdCmdViewIvStereoQuadBuff::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoInterleavedRows);
 
 StdCmdViewIvStereoInterleavedRows::StdCmdViewIvStereoInterleavedRows()
-  :CppCommand("Std_ViewIvStereoInterleavedRows")
+  :Command("Std_ViewIvStereoInterleavedRows")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo Interleaved Rows");
@@ -813,7 +813,7 @@ bool StdCmdViewIvStereoInterleavedRows::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoInterleavedColumns);
 
 StdCmdViewIvStereoInterleavedColumns::StdCmdViewIvStereoInterleavedColumns()
-  :CppCommand("Std_ViewIvStereoInterleavedColumns")
+  :Command("Std_ViewIvStereoInterleavedColumns")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo Interleaved Columns");
@@ -841,7 +841,7 @@ bool StdCmdViewIvStereoInterleavedColumns::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvIssueCamPos);
 
 StdCmdViewIvIssueCamPos::StdCmdViewIvIssueCamPos()
-  :CppCommand("Std_ViewIvIssueCamPos")
+  :Command("Std_ViewIvIssueCamPos")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Issue camera position");

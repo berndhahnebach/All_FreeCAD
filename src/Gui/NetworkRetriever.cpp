@@ -412,7 +412,7 @@ bool NetworkRetriever::testWget()
 /* TRANSLATOR Gui::StdCmdOnlineHelp */
 
 StdCmdOnlineHelp::StdCmdOnlineHelp( QObject * parent, const char * name )
-  : QObject( parent, name ), CppCommand("Std_OnlineHelp")
+  : QObject( parent, name ), Command("Std_OnlineHelp")
 {
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("Download online help");

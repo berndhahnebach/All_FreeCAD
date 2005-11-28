@@ -75,7 +75,7 @@ private:
 
 // --------------------------------------------------------------------
 
-class StdCmdOnlineHelp : public QObject, public CppCommand
+class StdCmdOnlineHelp : public QObject, public Command
 {
   Q_OBJECT
 

@@ -36,7 +36,7 @@ using namespace ImageGui;
 DEF_STD_CMD(CmdImageOpen);
 
 CmdImageOpen::CmdImageOpen()
-	:CppCommand("Image_Open")
+	:Command("Image_Open")
 {
 	sAppModule		= "Image";
 	sGroup			  = QT_TR_NOOP("Image");

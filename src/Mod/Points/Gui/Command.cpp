@@ -47,7 +47,7 @@
 DEF_STD_CMD_A(CmdPointsTest);
 
 CmdPointsTest::CmdPointsTest()
-  :CppCommand("Points_Test")
+  :Command("Points_Test")
 {
   sAppModule    = "Points";
   sGroup        = QT_TR_NOOP("Points");

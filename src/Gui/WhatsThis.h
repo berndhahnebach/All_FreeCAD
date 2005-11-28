@@ -66,7 +66,7 @@ private:
 /**
  * @author Werner Mayer
  */
-class StdCmdDescription : public CppCommand
+class StdCmdDescription : public Command
 {
 public:
   StdCmdDescription();

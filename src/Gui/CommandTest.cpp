@@ -61,7 +61,7 @@ using namespace Gui;
 DEF_STD_CMD_A(FCCmdTest1);
 
 FCCmdTest1::FCCmdTest1()
-  :CppCommand("Std_Test1")
+  :Command("Std_Test1")
 {
   sGroup        = "Standard-Test";
   sMenuText     = "Test1";
@@ -172,7 +172,7 @@ bool FCCmdTest1::isActive(void)
 DEF_STD_CMD_A(FCCmdTest2);
 
 FCCmdTest2::FCCmdTest2()
-	:CppCommand("Std_Test2")
+	:Command("Std_Test2")
 {
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test2";
@@ -220,7 +220,7 @@ bool FCCmdTest2::isActive(void)
 DEF_STD_CMD_A(FCCmdTest3);
 
 FCCmdTest3::FCCmdTest3()
-	:CppCommand("Std_Test3")
+	:Command("Std_Test3")
 {
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test3";
@@ -252,7 +252,7 @@ bool FCCmdTest3::isActive(void)
 DEF_STD_CMD_A(FCCmdTest4);
 
 FCCmdTest4::FCCmdTest4()
-	:CppCommand("Std_Test4")
+	:Command("Std_Test4")
 {
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test4";
@@ -283,7 +283,7 @@ bool FCCmdTest4::isActive(void)
 DEF_STD_CMD_A(FCCmdTest5);
 
 FCCmdTest5::FCCmdTest5()
-	:CppCommand("Std_Test5")
+	:Command("Std_Test5")
 {
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test5";
@@ -315,7 +315,7 @@ bool FCCmdTest5::isActive(void)
 DEF_STD_CMD_A(FCCmdTest6);
 
 FCCmdTest6::FCCmdTest6()
-	:CppCommand("Std_Test6")
+	:Command("Std_Test6")
 {
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test6";
@@ -347,7 +347,7 @@ bool FCCmdTest6::isActive(void)
 DEF_STD_CMD_A(FCCmdTest7);
 
 FCCmdTest7::FCCmdTest7()
-	:CppCommand("Std_Test7")
+	:Command("Std_Test7")
 {
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test progress bar";
@@ -391,7 +391,7 @@ bool FCCmdTest7::isActive(void)
 DEF_STD_CMD_A(FCCmdTest8);
 
 FCCmdTest8::FCCmdTest8()
-	:CppCommand("Std_Test8")
+	:Command("Std_Test8")
 {
 	sGroup			= "Standard-Test";
 	sMenuText		= "Test progress bar";

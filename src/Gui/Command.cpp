@@ -380,27 +380,12 @@ const char * Command::endCmdHelp(void)
   return "</body></html>\n\n";
 }
 
-//===========================================================================
-// FCCppCommand 
-//===========================================================================
-
-CppCommand::CppCommand(const char* name,CMD_Type eType)
-  :Command(name,eType)
-{
-  sMenuText     = "";
-  sToolTipText  = "";
-  sWhatsThis    = "";
-  sStatusTip    = "";
-  sPixmap       = QString::null;
-  iAccel        = 0;
-}
-
-std::string CppCommand::getResource(const char* sName) const
+std::string Command::getResource(const char* sName) const
 {
   return "";
 }
 
-QAction * CppCommand::createAction(void)
+QAction * Command::createAction(void)
 {
   QAction *pcAction;
 
@@ -426,7 +411,7 @@ QAction * CppCommand::createAction(void)
 // -------------------------------------------------------------------------
 
 ToggleCommand::ToggleCommand(const char* name,CMD_Type eType)
-  :CppCommand(name,eType)
+  :Command(name,eType)
 {
 }
 
@@ -450,7 +435,7 @@ QAction * ToggleCommand::createAction(void)
 // -------------------------------------------------------------------------
 
 CommandGroup::CommandGroup(const char* name, bool dropdown,CMD_Type eType)
-  :CppCommand(name,eType), _dropdown(dropdown)
+  :Command(name,eType), _dropdown(dropdown)
 {
 }
 
@@ -525,7 +510,7 @@ QAction * CommandGroup::createAction(void)
 /* TRANSLATOR Gui::MacroCommand */
 
 MacroCommand::MacroCommand(const char* name)
-  :CppCommand(name,Cmd_Normal)
+  :Command(name,Cmd_Normal)
 {
   sGroup        = QT_TR_NOOP("Macros");
 }

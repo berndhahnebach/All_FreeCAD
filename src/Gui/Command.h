@@ -113,6 +113,20 @@ protected:
   QAction *_pcAction; /**< The QAction item. */
 };
 
+/** The cpp Command class
+ *  This class is mostly used for commands implemented in C++. The resources are saved 
+ *  as const char.
+ *  Note!
+ *  \par
+ *  This class is intendet to handle the gui interaction like:
+ *  - starting a dialog
+ *  - doing View and Window stuff
+ *  enithing else, especialy altering the document must be done on Application level!
+ *  see DoCommand() for details.
+ *  @see CommandManager
+ * \author Jürgen Riegel
+ */
+
 /** The Command class
  *  This is the base class of all commands in FreeCAD. It is the single point where 
  *  new commands get implemented. It also contains a lot of helper methods to make 
@@ -134,14 +148,14 @@ public:
   /** @name Methods to override when creating a new command
    */
   //@{
-  /// Methods which get called when activated, needs to be reimplemented!
-  virtual void activated(int iMsg){assert((_eType&Cmd_Toggle) == 0);}
+  /// Methods which gets called when activated, needs to be reimplemented!
+  virtual void activated(int iMsg)=0;
   /// Overite this methode if your Cmd is not always active
   virtual bool isActive(void){return true;} 
   /// Creates the used QAction
-  virtual QAction * createAction(void)=0;
+  virtual QAction * createAction(void);
   /// returns the resource values
-  virtual std::string getResource(const char* sName) const=0;
+  virtual std::string getResource(const char* sName) const;
   //@}
 
 
@@ -263,41 +277,7 @@ protected:
   //@}
 };
 
-/** The cpp Command class
- *  This class is mostly used for commands implemented in C++. The resources are saved 
- *  as const char.
- *  Note!
- *  \par
- *  This class is intendet to handle the gui interaction like:
- *  - starting a dialog
- *  - doing View and Window stuff
- *  enithing else, especialy altering the document must be done on Application level!
- *  see DoCommand() for details.
- *  @see CommandManager
- * \author Jürgen Riegel
- */
-class GuiExport CppCommand : public Command
-{
-public:
-  CppCommand(const char* name,CMD_Type eType=Cmd_Normal);
-  virtual ~CppCommand() {}
-
-  /** @name Methodes to override when create a new command
-   *  Description  
-   */
-  //@{
-  /// Method which get called when activated, needs to be reimplemented!
-  virtual void activated(int iMsg)=0;
-  /// Overite this methode if your Cmd is not always active
-  virtual bool isActive(void){return true;}
-  /// Creates the used QAction
-  virtual QAction * createAction(void);
-  /// returns the resource values
-  virtual std::string getResource(const char* sName) const;
-  //@}
-};
-
-class GuiExport ToggleCommand : public CppCommand
+class GuiExport ToggleCommand : public Command
 {
 public:
   ToggleCommand(const char* name,CMD_Type eType=Cmd_Normal);
@@ -323,7 +303,7 @@ public:
  * within the command group appearing as separate menu options and toolbar buttons.
  * @author Werner Mayer
  */
-class GuiExport CommandGroup : public CppCommand
+class GuiExport CommandGroup : public Command
 {
 public:
   CommandGroup(const char* name, bool dropdown=false,CMD_Type eType=Cmd_Normal);
@@ -411,7 +391,7 @@ protected:
  *  @see CommandManager
  *  @author Werner Mayer
  */
-class MacroCommand: public CppCommand
+class MacroCommand: public Command
 {
 public:
   MacroCommand(const char* name);
@@ -539,7 +519,7 @@ private:
  * Shows information about the application.
  * @author Werner Mayer
  */
-class StdCmdAbout : public CppCommand
+class StdCmdAbout : public Command
 {
 public:
   StdCmdAbout();
@@ -556,7 +536,7 @@ public:
  *  The workbench command
  *  @author Werner Mayer
  */
-class StdCmdWorkbench : public CppCommand
+class StdCmdWorkbench : public Command
 {
 public:
   StdCmdWorkbench();
@@ -593,7 +573,7 @@ private:
  *  The MRU command which does the handling of recent files.
  *  @author Werner Mayer
  */
-class StdCmdMRU : public CppCommand
+class StdCmdMRU : public Command
 {
 public:
   StdCmdMRU();
@@ -642,7 +622,7 @@ private:
  *  The parameters are the class name.
  *  @author Jürgen Riegel
  */
-#define DEF_STD_CMD(X) class X : public Gui::CppCommand \
+#define DEF_STD_CMD(X) class X : public Gui::Command \
 {\
 public:\
   X();\
@@ -654,7 +634,7 @@ public:\
  *  The parameters are the class name
  *  @author Jürgen Riegel
  */
-#define DEF_STD_CMD_A(X) class X : public Gui::CppCommand \
+#define DEF_STD_CMD_A(X) class X : public Gui::Command \
 {\
 public:\
   X();\
@@ -668,7 +648,7 @@ public:\
  *  The parameters are the class name
  *  @author Werner Mayer
  */
-#define DEF_STD_CMD_AC(X) class X : public Gui::CppCommand \
+#define DEF_STD_CMD_AC(X) class X : public Gui::Command \
 {\
 public:\
   X();\
@@ -684,7 +664,7 @@ public:\
  *  The parameters are the class name
  *  @author Jürgen Riegel
  */
-#define DEF_3DV_CMD(X) class X : public Gui::CppCommand \
+#define DEF_3DV_CMD(X) class X : public Gui::Command \
 {\
 public:\
   X();\

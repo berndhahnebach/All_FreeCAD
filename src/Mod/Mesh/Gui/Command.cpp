@@ -53,7 +53,7 @@ using namespace Mesh;
 DEF_STD_CMD_A(CmdMeshDemolding);
 
 CmdMeshDemolding::CmdMeshDemolding()
-  :CppCommand("Mesh_Demolding")
+  :Command("Mesh_Demolding")
 {
   sAppModule    = "Mesh";
   sGroup        = "Mesh";
@@ -94,7 +94,7 @@ bool CmdMeshDemolding::isActive(void)
 DEF_STD_CMD_A(CmdMeshExMakeMesh);
 
 CmdMeshExMakeMesh::CmdMeshExMakeMesh()
-  :CppCommand("Mesh_ExMakeMesh")
+  :Command("Mesh_ExMakeMesh")
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
@@ -147,7 +147,7 @@ bool CmdMeshExMakeMesh::isActive(void)
 DEF_STD_CMD_A(CmdMeshExMakeTool);
 
 CmdMeshExMakeTool::CmdMeshExMakeTool()
-  :CppCommand("Mesh_ExMakeTool")
+  :Command("Mesh_ExMakeTool")
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
@@ -201,7 +201,7 @@ bool CmdMeshExMakeTool::isActive(void)
 DEF_STD_CMD_A(CmdMeshExMakeUnion);
 
 CmdMeshExMakeUnion::CmdMeshExMakeUnion()
-  :CppCommand("Mesh_ExMakeUnion")
+  :Command("Mesh_ExMakeUnion")
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
@@ -251,7 +251,7 @@ bool CmdMeshExMakeUnion::isActive(void)
 DEF_STD_CMD_A(CmdMeshImport);
 
 CmdMeshImport::CmdMeshImport()
-  :CppCommand("Mesh_Import")
+  :Command("Mesh_Import")
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
@@ -292,7 +292,7 @@ bool CmdMeshImport::isActive(void)
 DEF_STD_CMD_A(CmdMeshExport);
 
 CmdMeshExport::CmdMeshExport()
-  :CppCommand("Mesh_Export")
+  :Command("Mesh_Export")
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
@@ -337,7 +337,7 @@ bool CmdMeshExport::isActive(void)
 DEF_STD_CMD_A(CmdMeshVertexCurvature);
 
 CmdMeshVertexCurvature::CmdMeshVertexCurvature()
-  :CppCommand("Mesh_VertexCurvature")
+  :Command("Mesh_VertexCurvature")
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
@@ -375,7 +375,7 @@ bool CmdMeshVertexCurvature::isActive(void)
 DEF_STD_CMD_A(CmdMeshPolyPick);
 
 CmdMeshPolyPick::CmdMeshPolyPick()
-  :CppCommand("Mesh_PolyPick")
+  :Command("Mesh_PolyPick")
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
@@ -405,7 +405,7 @@ bool CmdMeshPolyPick::isActive(void)
 DEF_STD_CMD_A(CmdMeshToolMesh);
 
 CmdMeshToolMesh::CmdMeshToolMesh()
-  :CppCommand("Mesh_ToolMesh")
+  :Command("Mesh_ToolMesh")
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");

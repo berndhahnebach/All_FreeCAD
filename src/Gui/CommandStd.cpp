@@ -81,7 +81,7 @@ using namespace Gui;
 DEF_STD_CMD(StdCmdOpen);
 
 StdCmdOpen::StdCmdOpen()
-  :CppCommand("Std_Open")
+  :Command("Std_Open")
 {
   // seting the
   sGroup        = QT_TR_NOOP("File");
@@ -130,7 +130,7 @@ void StdCmdOpen::activated(int iMsg)
 DEF_STD_CMD(StdCmdNew);
 
 StdCmdNew::StdCmdNew()
-  :CppCommand("Std_New")
+  :Command("Std_New")
 {
   // seting the 
   sGroup        = QT_TR_NOOP("File");
@@ -153,7 +153,7 @@ void StdCmdNew::activated(int iMsg)
 DEF_STD_CMD_A(StdCmdSave);
 
 StdCmdSave::StdCmdSave()
-  :CppCommand("Std_Save")
+  :Command("Std_Save")
 {
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("&Save");
@@ -188,7 +188,7 @@ bool StdCmdSave::isActive(void)
 DEF_STD_CMD_A(StdCmdSaveAs);
 
 StdCmdSaveAs::StdCmdSaveAs()
-  :CppCommand("Std_SaveAs")
+  :Command("Std_SaveAs")
 {
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("Save &As...");
@@ -220,7 +220,7 @@ bool StdCmdSaveAs::isActive(void)
 DEF_STD_CMD_A(StdCmdPrint );
 
 StdCmdPrint::StdCmdPrint()
-  :CppCommand("Std_Print")
+  :Command("Std_Print")
 {
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("&Print...");
@@ -253,7 +253,7 @@ bool StdCmdPrint::isActive(void)
 DEF_STD_CMD(StdCmdQuit );
 
 StdCmdQuit::StdCmdQuit()
-  :CppCommand("Std_Quit")
+  :Command("Std_Quit")
 {
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("E&xit");
@@ -275,7 +275,7 @@ void StdCmdQuit::activated(int iMsg)
 DEF_STD_CMD_AC(StdCmdUndo);
 
 StdCmdUndo::StdCmdUndo()
-  :CppCommand("Std_Undo")
+  :Command("Std_Undo")
 {
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Undo");
@@ -321,7 +321,7 @@ QAction * StdCmdUndo::createAction(void)
 DEF_STD_CMD_AC(StdCmdRedo );
 
 StdCmdRedo::StdCmdRedo()
-  :CppCommand("Std_Redo")
+  :Command("Std_Redo")
 {
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Redo");
@@ -367,7 +367,7 @@ QAction * StdCmdRedo::createAction(void)
 /* TRANSLATOR Gui::StdCmdWorkbench */
 
 StdCmdWorkbench::StdCmdWorkbench()
-  :CppCommand("Std_Workbench"), pcAction(NULL)
+  :Command("Std_Workbench"), pcAction(NULL)
 {
   sGroup        = QT_TR_NOOP("View");
   sMenuText     = QT_TR_NOOP("Workbench");
@@ -509,7 +509,7 @@ bool StdCmdWorkbench::addTo(QWidget *w)
 /* TRANSLATOR Gui::StdCmdMRU */
 
 StdCmdMRU::StdCmdMRU()
-  :CppCommand("Std_MRU"), pcAction(0), _nMaxItems(4)
+  :Command("Std_MRU"), pcAction(0), _nMaxItems(4)
 {
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("Recent files");
@@ -666,7 +666,7 @@ void StdCmdMRU::save()
 DEF_STD_CMD_A(StdCmdCut);
 
 StdCmdCut::StdCmdCut()
-  :CppCommand("Std_Cut")
+  :Command("Std_Cut")
 {
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Cut");
@@ -693,7 +693,7 @@ bool StdCmdCut::isActive(void)
 DEF_STD_CMD_A(StdCmdCopy);
 
 StdCmdCopy::StdCmdCopy()
-  :CppCommand("Std_Copy")
+  :Command("Std_Copy")
 {
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("C&opy");
@@ -720,7 +720,7 @@ bool StdCmdCopy::isActive(void)
 DEF_STD_CMD_A(StdCmdPaste);
 
 StdCmdPaste::StdCmdPaste()
-  :CppCommand("Std_Paste")
+  :Command("Std_Paste")
 {
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Paste");
@@ -746,7 +746,7 @@ bool StdCmdPaste::isActive(void)
 //===========================================================================
 
 StdCmdAbout::StdCmdAbout()
-  :CppCommand("Std_About")
+  :Command("Std_About")
 {
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("&About %1");
@@ -799,7 +799,7 @@ void StdCmdAbout::languageChange()
 DEF_STD_CMD(StdCmdAboutQt);
 
 StdCmdAboutQt::StdCmdAboutQt()
-  :CppCommand("Std_AboutQt")
+  :Command("Std_AboutQt")
 {
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("About &Qt");
@@ -819,7 +819,7 @@ void StdCmdAboutQt::activated(int iMsg)
 DEF_STD_CMD(StdCmdTipOfTheDay);
 
 StdCmdTipOfTheDay::StdCmdTipOfTheDay()
-  :CppCommand("Std_TipOfTheDay")
+  :Command("Std_TipOfTheDay")
 {
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("&Tip of the day...");
@@ -840,7 +840,7 @@ void StdCmdTipOfTheDay::activated(int iMsg)
 DEF_STD_CMD(StdCmdWhatsThis);
 
 StdCmdWhatsThis::StdCmdWhatsThis()
-  :CppCommand("Std_WhatsThis")
+  :Command("Std_WhatsThis")
 {
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("&What's This?");
@@ -863,7 +863,7 @@ void StdCmdWhatsThis::activated(int iMsg)
 DEF_STD_CMD(StdCmdDlgParameter);
 
 StdCmdDlgParameter::StdCmdDlgParameter()
-  :CppCommand("Std_DlgParameter")
+  :Command("Std_DlgParameter")
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("E&dit parameters ...");
@@ -886,7 +886,7 @@ void StdCmdDlgParameter::activated(int iMsg)
 DEF_STD_CMD(StdCmdDlgPreferences);
 
 StdCmdDlgPreferences::StdCmdDlgPreferences()
-  :CppCommand("Std_DlgPreferences")
+  :Command("Std_DlgPreferences")
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("&Preferences ...");
@@ -909,7 +909,7 @@ void StdCmdDlgPreferences::activated(int iMsg)
 DEF_STD_CMD_A(StdCmdDlgMacroRecord);
 
 StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
-  :CppCommand("Std_DlgMacroRecord")
+  :Command("Std_DlgMacroRecord")
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("&Macro recording ...");
@@ -937,7 +937,7 @@ bool StdCmdDlgMacroRecord::isActive(void)
 DEF_STD_CMD_A(StdCmdDlgMacroExecute);
 
 StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
-  :CppCommand("Std_DlgMacroExecute")
+  :Command("Std_DlgMacroExecute")
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("E&xecute macro ...");
@@ -965,7 +965,7 @@ bool StdCmdDlgMacroExecute::isActive(void)
 DEF_STD_CMD_A(StdCmdMacroStop);
 
 StdCmdMacroStop::StdCmdMacroStop()
-  :CppCommand("Std_DlgMacroStop")
+  :Command("Std_DlgMacroStop")
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("S&top macro recording");
@@ -992,7 +992,7 @@ bool StdCmdMacroStop::isActive(void)
 DEF_STD_CMD(StdCmdDlgCustomize);
 
 StdCmdDlgCustomize::StdCmdDlgCustomize()
-  :CppCommand("Std_DlgCustomize")
+  :Command("Std_DlgCustomize")
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("Cu&stomize...");
@@ -1015,7 +1015,7 @@ void StdCmdDlgCustomize::activated(int iMsg)
 DEF_STD_CMD(StdCmdCommandLine);
 
 StdCmdCommandLine::StdCmdCommandLine()
-  :CppCommand("Std_CommandLine")
+  :Command("Std_CommandLine")
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("Start command &line...");
@@ -1063,7 +1063,7 @@ void StdCmdCommandLine::activated(int iMsg)
 DEF_STD_CMD_A(StdCmdOCAFBrowse);
 
 StdCmdOCAFBrowse::StdCmdOCAFBrowse()
-  :CppCommand("Std_OCAFBrowser")
+  :Command("Std_OCAFBrowser")
 {
   sGroup        = QT_TR_NOOP("Tools");
   sMenuText     = QT_TR_NOOP("Start &raw document browser...");

@@ -41,7 +41,7 @@ using Gui::FileDialog;
 DEF_STD_CMD_A(FCCmdImportReadBREP);
 
 FCCmdImportReadBREP::FCCmdImportReadBREP()
-	:CppCommand("Import_ReadBREP")
+	:Command("Import_ReadBREP")
 {
 	sAppModule		= "Import";
 	sGroup			= "Import";
@@ -84,7 +84,7 @@ bool FCCmdImportReadBREP::isActive(void)
 DEF_STD_CMD_A(ImportStep);
 
 ImportStep::ImportStep()
-	:CppCommand("Part_ImportStep")
+	:Command("Part_ImportStep")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -133,7 +133,7 @@ bool ImportStep::isActive(void)
 DEF_STD_CMD_A(ImportIges);
 
 ImportIges::ImportIges()
-	:CppCommand("Import_Iges")
+	:Command("Import_Iges")
 {
 	sAppModule		= "Import";
 	sGroup			= "Part";

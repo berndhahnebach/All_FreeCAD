@@ -58,7 +58,7 @@ using Gui::FileDialog;
 DEF_STD_CMD(CmdPartPickCurveNet);
 
 CmdPartPickCurveNet::CmdPartPickCurveNet()
-	:CppCommand("Part_PickCurveNet")
+	:Command("Part_PickCurveNet")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -85,7 +85,7 @@ void CmdPartPickCurveNet::activated(int iMsg)
 DEF_STD_CMD(FCCmdPartTest1);
 
 FCCmdPartTest1::FCCmdPartTest1()
-	:CppCommand("Part_Test1")
+	:Command("Part_Test1")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -113,7 +113,7 @@ void FCCmdPartTest1::activated(int iMsg)
 DEF_STD_CMD(FCCmdPartTest2);
 
 FCCmdPartTest2::FCCmdPartTest2()
-	:CppCommand("Part_Test2")
+	:Command("Part_Test2")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -143,7 +143,7 @@ void FCCmdPartTest2::activated(int iMsg)
 DEF_STD_CMD(CmdPartNewDoc);
 
 CmdPartNewDoc::CmdPartNewDoc()
-	:CppCommand("Part_NewDoc")
+	:Command("Part_NewDoc")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -169,7 +169,7 @@ void CmdPartNewDoc::activated(int iMsg)
 DEF_STD_CMD_A(FCCmdPartBox);
 
 FCCmdPartBox::FCCmdPartBox()
-	:CppCommand("Part_Box")
+	:Command("Part_Box")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -220,7 +220,7 @@ bool FCCmdPartBox::isActive(void)
 DEF_STD_CMD_A(FCCmdPartBox2);
 
 FCCmdPartBox2::FCCmdPartBox2()
-	:CppCommand("Part_Box2")
+	:Command("Part_Box2")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -264,7 +264,7 @@ bool FCCmdPartBox2::isActive(void)
 DEF_STD_CMD_A(FCCmdPartBox3);
 
 FCCmdPartBox3::FCCmdPartBox3()
-	:CppCommand("Part_Box3")
+	:Command("Part_Box3")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -309,7 +309,7 @@ bool FCCmdPartBox3::isActive(void)
 DEF_STD_CMD(FCCmdPartCut);
 
 FCCmdPartCut::FCCmdPartCut()
-	:CppCommand("Part_Cut")
+	:Command("Part_Cut")
 {
 	sAppModule    = "Part";
 	sGroup			  = "Part";
@@ -352,7 +352,7 @@ void FCCmdPartCut::activated(int iMsg)
 DEF_STD_CMD_A(PartImportStep);
 
 PartImportStep::PartImportStep()
-	:CppCommand("Part_ImportStep")
+	:Command("Part_ImportStep")
 {
 	sAppModule		= "Part";
 	sGroup			  = "Part";
@@ -402,7 +402,7 @@ bool PartImportStep::isActive(void)
 DEF_STD_CMD_A(PartImportIges);
 
 PartImportIges::PartImportIges()
-	:CppCommand("Part_ImportIges")
+	:Command("Part_ImportIges")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -451,7 +451,7 @@ bool PartImportIges::isActive(void)
 DEF_STD_CMD_A(PartImportBrep);
 
 PartImportBrep::PartImportBrep()
-	:CppCommand("Part_ImportBrep")
+	:Command("Part_ImportBrep")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
@@ -502,7 +502,7 @@ bool PartImportBrep::isActive(void)
 DEF_STD_CMD_A(PartImportCurveNet);
 
 PartImportCurveNet::PartImportCurveNet()
-	:CppCommand("Part_ImportCurveNet")
+	:Command("Part_ImportCurveNet")
 {
 	sAppModule		= "Part";
 	sGroup			= "Part";
