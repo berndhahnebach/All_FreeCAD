@@ -121,8 +121,8 @@ void Action::onActivated ()
 {
   if ( StdCmdDescription::inDescriptionMode () )
     StdCmdDescription::setSource( _pcCmd->getHelpUrl() );
-  else
-    _pcCmd->activated();
+  else if ( !isToggleAction() ) // no toggle action
+    _pcCmd->invoke(0);
 }
 
 /**
@@ -130,7 +130,7 @@ void Action::onActivated ()
  */
 void Action::onToggled ( bool b)
 {
-  _pcCmd->toggled(b);
+  _pcCmd->invoke( b ? 1 : 0 );
 } 
 
 /**
@@ -226,7 +226,7 @@ void ActionGroup::onActivated ( QAction* action )
       QAction* act = (QAction*)obj->qt_cast("QAction");
       if ( act ) {
         if ( act == action ) {
-          _pcCmd->activated( id );
+          _pcCmd->invoke( id );
           break;
         }
         id++;
@@ -399,7 +399,7 @@ void MRUActionGroup::onActivated ()
   {
     MRUAction* act = (MRUAction*)o;
     if ( act )
-      _pcCmd->activated( act->index() );
+      _pcCmd->invoke( act->index() );
   }
 }
 

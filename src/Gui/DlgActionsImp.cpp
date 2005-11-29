@@ -95,9 +95,9 @@ void DlgCustomActionsImp::showActions()
   for (std::vector<Command*>::iterator it = aclCurMacros.begin(); it != aclCurMacros.end(); ++it)
   {
     QListViewItem* item = new QListViewItem(CustomActions,CustomActions->lastItem(), (*it)->getName());
-    if (!(*it)->getAction()->iconSet().isNull())
+    if ( (*it)->getPixmap() )
     {
-      QPixmap p = (*it)->getAction()->iconSet().pixmap();
+      QPixmap p = BitmapFactory().pixmap( (*it)->getPixmap() );
       item->setPixmap(0, Tools::fillUp(24,24,p));
     }
   }

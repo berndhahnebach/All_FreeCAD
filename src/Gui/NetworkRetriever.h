@@ -82,12 +82,14 @@ class StdCmdOnlineHelp : public QObject, public Command
 public:
   StdCmdOnlineHelp( QObject * parent = 0, const char * name = 0 );
   virtual ~StdCmdOnlineHelp();
+  /** i18n stuff of the command. */
+  virtual void languageChange();
+
+protected:
   virtual void activated(int iMsg);
 
   /** Creates the action object. */
   virtual QAction* createAction();
-  /** i18n stuff of the command. */
-  virtual void languageChange();
 
 private slots:
   void wgetExit();

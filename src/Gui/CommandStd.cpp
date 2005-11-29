@@ -301,7 +301,7 @@ QAction * StdCmdUndo::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new UndoAction(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction = new UndoAction(this,getMainWindow(),sName);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -347,7 +347,7 @@ QAction * StdCmdRedo::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new RedoAction(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction = new RedoAction(this,getMainWindow(),sName);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -761,7 +761,7 @@ QAction * StdCmdAbout::createAction(void)
   QAction *pcAction;
 
   QString exe = App::Application::Config()["ExeName"].c_str();
-  pcAction = new Action(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction = new Action(this,getMainWindow(),sName);
   pcAction->setText( QObject::tr(sMenuText).arg(exe) );
   pcAction->setMenuText( QObject::tr(sMenuText).arg(exe) );
   pcAction->setToolTip( QObject::tr(sToolTipText).arg(exe) );

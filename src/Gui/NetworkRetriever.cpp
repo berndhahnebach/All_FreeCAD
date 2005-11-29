@@ -451,7 +451,7 @@ QAction * StdCmdOnlineHelp::createAction(void)
   QAction *pcAction;
 
   QString exe = App::Application::Config()["ExeName"].c_str();
-  pcAction = new Action(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction = new Action(this,getMainWindow(),sName);
   pcAction->setText      ( tr(sMenuText) );
   pcAction->setMenuText  ( tr(sMenuText) );
   pcAction->setToolTip   ( tr(sToolTipText).arg(exe) );
@@ -509,8 +509,8 @@ void StdCmdOnlineHelp::activated(int iMsg)
     bool ok = wget->startDownload( url.c_str() );
     if ( ok == false )
       Base::Console().Error("The tool 'wget' couldn't be found. Please check your installation.");
-    else if ( wget->isDownloading() )
-      getAction()->setMenuText(tr("Stop downloading"));
+    else if ( wget->isDownloading() && _pcAction )
+      _pcAction->setMenuText(tr("Stop downloading"));
   }
   else // kill the process now
   {
@@ -520,7 +520,8 @@ void StdCmdOnlineHelp::activated(int iMsg)
 
 void StdCmdOnlineHelp::wgetExit()
 {
-  getAction()->setMenuText( tr( sMenuText ) );
+  if ( _pcAction )
+    _pcAction->setMenuText( tr( sMenuText ) );
 }
 
 #include "moc_NetworkRetriever.cpp"

@@ -72,16 +72,15 @@ public:
   virtual ~CommandBase();
 
   /**
-   * Returns the QAction object of this command. If \a create is set to true (the default) the action gets created in case
-   * it's not already created.
+   * Returns the QAction object of this command, or 0 if it doesn't exist.
    */
-  QAction*  getAction(bool create=true);
+  QAction*  getAction();
 
   /** @name Methods to override when creating a new command */
   //@{
-  /// Creates the used QAction. The default implementation does nothing.
+  /// Creates the used QAction when adding to a widget. The default implementation does nothing.
   virtual QAction * createAction(void);
-  /// Reassign QAction stuff
+  /// Reassigns QAction stuff after the language has changed. 
   virtual void languageChange();
   //@}
 
@@ -98,7 +97,7 @@ public:
 protected:
   /** @name Attributes 
    *  Set by the inherited constructor to set up the most important properties 
-   *  of the command. In the Command constructor are set default values. 
+   *  of the command. In the constructor are set default values. 
    *  The real values should be set in the constructor of the inheriting class.
    */
   //@{
@@ -113,38 +112,25 @@ protected:
   QAction *_pcAction; /**< The QAction item. */
 };
 
-/** The cpp Command class
- *  This class is mostly used for commands implemented in C++. The resources are saved 
- *  as const char.
- *  Note!
- *  \par
- *  This class is intendet to handle the gui interaction like:
- *  - starting a dialog
- *  - doing View and Window stuff
- *  enithing else, especialy altering the document must be done on Application level!
- *  see DoCommand() for details.
- *  @see CommandManager
- * \author Jürgen Riegel
- */
-
 /** The Command class
- *  This is the base class of all commands in FreeCAD. It is the single point where 
- *  new commands get implemented. It also contains a lot of helper methods to make 
- *  implementing commands for FreeCAD as easy as possible.
- *  @see CommandManager
- * \author Jürgen Riegel
+ * This class is mostly used for commands implemented directly in C++ (@see PythonCommand).
+ * It contains also a lot of helper methods to make implementing commands for FreeCAD as easy as possible.
+ *
+ * @note This class is intended to handle the GUI interaction like:
+ * - starting a dialog
+ * - doing view and window stuff
+ * - anything else, especially altering the document must be done on application level @see doCommand() for details.
+ *
+ * @see CommandManager
+ * @author Jürgen Riegel
  */
 class GuiExport Command : public CommandBase
 {
 public:
-  /// Type of Commands
-  enum CMD_Type { 
-    Cmd_Normal=0, /** Normal command */
-    Cmd_Toggle=1  /** A toogle command */
-  };
-  Command(const char* name,CMD_Type eType=Cmd_Normal);
+  Command( const char* name );
   virtual ~Command();
 
+protected:
   /** @name Methods to override when creating a new command
    */
   //@{
@@ -154,8 +140,21 @@ public:
   virtual bool isActive(void){return true;} 
   /// Creates the used QAction
   virtual QAction * createAction(void);
-  /// returns the resource values
-  virtual std::string getResource(const char* sName) const;
+  //@}
+
+public:
+  /** @name interface used by the CommandManager and the QAction */
+  //@{
+  /// CommandManager is a friend
+  friend class CommandManager;
+  /// Get somtile called to check the state of the command
+  void testActive(void);
+  /// get called by the QAction
+  void invoke (int); 
+  /// adds this command to arbitrary widgets
+  virtual bool addTo(QWidget *);
+  /// removes this command from arbitrary widgets
+  virtual bool removeFrom(QWidget *pcWidget);
   //@}
 
 
@@ -170,7 +169,7 @@ public:
   /** Get pointer to the named or active App document
    *  Returns a pointer to the named docuement or the active
    *  document when no name is given. NULL is returnd
-   *  when the name not exist or no document is active!
+   *  when the name does not exist or no document is active!
    */
   App::Document*  getDocument(const char* Name=0);
   /// returns the named feature or the active one from the active document or NULL
@@ -187,10 +186,6 @@ public:
   void commitCommand(void);
   /// Abort the Undo transaction on the active document
   void abortCommand(void);
-  /// Activate an other Commands
-  void activateCommand(const char* sCmdName);
-  /// Toggles other Commands
-  void toggleCommand(const char* sCmdName,bool bToggle);
   /// Updates the (active) document (propagate changes)
   void updateActive(void);
   /// Updates the (all or listed) documents (propagate changes)
@@ -221,6 +216,8 @@ public:
   const char * beginCmdHelp(void);
   /// returns the end of a online help page
   const char * endCmdHelp(void);
+  /// Get the help URL
+  virtual const char* getHelpUrl(void) const { return sHelpUrl; }
   //@}
 
   /** @name Helper methods for the Active tests */
@@ -234,32 +231,12 @@ public:
 
   /** @name checking of internal state */
   //@{
-  /// is it a toggle cmd
-  bool isToggle(void) const;
   /// returns the name to which the command belongs
   const char* getAppModuleName(void) const {return sAppModule;}	
   /// Get the command name
   const char* getName() const { return sName; }
   /// Get the name of the grouping of the command
   const char* getGroupName() const { return sGroup; }
-  /// Get the help URL
-  const char* getHelpUrl(void) const { return sHelpUrl; }
-  //@}
-
-  /** @name interface used by the CommandManager and the QAction */
-  //@{
-  /// CommandManager is a friend
-  friend class CommandManager;
-  /// Get somtile called to check the state of the command
-  void testActive(void);
-  /// get called by the QAction
-  virtual void activated (); 
-  /// get called by the QAction
-  virtual void toggled ( bool ); 
-  /// adds this command to arbitrary widgets
-  virtual bool addTo(QWidget *);
-  /// removes this command from arbitrary widgets
-  virtual bool removeFrom(QWidget *pcWidget);
   //@}
 
 protected:
@@ -273,19 +250,23 @@ protected:
   const char* sGroup;
   const char* sName;
   const char* sHelpUrl;
-  CMD_Type _eType;
   //@}
 };
 
+/** The ToggleCommand class
+ * This class does basically the same as its base class Command unless that it is intended to perform toggle actions.
+ * E.g. the command to hide or show the status bar of an application is done by a toggle action. If such a command is
+ * added to a popup menu then the menu item is checked if the status bar is visible, otherwise the item is unchecked.
+ * @author Werner Mayer
+ */
 class GuiExport ToggleCommand : public Command
 {
 public:
-  ToggleCommand(const char* name,CMD_Type eType=Cmd_Normal);
+  ToggleCommand(const char* name);
   virtual ~ToggleCommand() {}
 
-  /** @name Methodes to override when create a new command
-   *  Description  
-   */
+protected:
+  /** @name Methodes to override when creating a new command  */
   //@{
   /// Creates the used QAction
   virtual QAction* createAction(void);
@@ -306,12 +287,11 @@ public:
 class GuiExport CommandGroup : public Command
 {
 public:
-  CommandGroup(const char* name, bool dropdown=false,CMD_Type eType=Cmd_Normal);
+  CommandGroup( const char* name, bool dropdown=false );
   virtual ~CommandGroup();
 
-  /** @name Methodes to override when creating a new command
-   *  Description  
-   */
+protected:
+  /** @name Methodes to override when creating a new command */
   //@{
   /// Creates the used QAction
   virtual QAction* createAction(void);
@@ -328,16 +308,14 @@ protected:
 };
 
 
-/** The python command class
- *  This is a special type of command class. Its used to bind
- *  a python command class into the FC command framework.
- *  A object of this class gets a reference to the python 
- *  command object and manage all the passing between the 
- *  C++ and the python world. This includes everithing like
- *  seting resources like bitmaps, aktivation or bindings 
- *  to the user interface.
- *  @see CommandManager
- * \author Jürgen Riegel
+/** The Python command class
+ * This is a special type of command class. It's used to bind a Python command class into the 
+ * FreeCAD command framework.
+ * An object of this class gets a reference to the Python command object and manages all the 
+ * passing between the C++ and the Python world. This includes everything like setting resources such as
+ * bitmaps, activation or bindings to the user interface.
+ * @see CommandManager
+ * @author Jürgen Riegel
  */
 class PythonCommand: public Command
 {
@@ -345,22 +323,20 @@ public:
   PythonCommand(const char* name,PyObject * pcPyCommand);
   virtual ~PythonCommand() {}
 
-  /** @name Methodes reimplemented for Command Framework */
+protected:
+  /** @name Methods reimplemented for Command Framework */
   //@{
-  /// Method which get called when activated
+  /// Method which gets called when activated
   virtual void activated(int iMsg);
-  /// if your Cmd is not always active
+  /// if the command is not always active
   virtual bool isActive(void);
   /// Get the help URL
-  virtual std::string cmdHelpURL(void);
-  /// Get the help page
-  virtual void cmdHelpPage(std::string &rcHelpPage);
+  const char* getHelpUrl(void);
   /// Creates the used QAction
   virtual QAction * createAction(void);
-  /// returns the resource values
-  virtual std::string getResource(const char* sName) const;
   //@}
 
+public:
   /** @name Methods to get the properties of the command */
   //@{
   const char* getWhatsThis  () const;
@@ -371,9 +347,10 @@ public:
   int         getAccel      () const;
   //@}
 
-
 protected:
-  /// a reference to the python coammnd object
+  /// Returns the resource values
+  const char* getResource(const char* sName) const;
+  /// a pointer to the Python command object
   PyObject * _pcPyCommand;
   /// the command object resource dictionary
   PyObject * _pcPyResourceDict;
@@ -381,15 +358,13 @@ protected:
 
 
 /** The script command class
- *  This is a special type of command class. Its used to bind
- *  a macro or python script into the FC command framework.
- *  A object of this class gets a string to the place where the 
- *  script is in the file system and manage all the passing between the 
- *  C++ and the python world. Unlike the other commands the resources can
- *  be set by methodes.
- *  @see Command
- *  @see CommandManager
- *  @author Werner Mayer
+ * This is a special type of command class. Its used to bind a macro or Python script to the 
+ * FreeCAD command framework.
+ * An object of this class gets a string to the place where the script is in the file system.
+ * Unlike the other commands the resources can be set by several methods.
+ * @see Command
+ * @see CommandManager
+ * @author Werner Mayer
  */
 class MacroCommand: public Command
 {
@@ -397,22 +372,31 @@ public:
   MacroCommand(const char* name);
   virtual ~MacroCommand() {}
 
+protected:
   /** @name Methodes reimplemented for Command Framework */
   //@{
   /// Method which get called when activated
-  virtual void activated(int iMsg);
+  void activated(int iMsg);
+  /// Creates the used QAction
+  QAction * createAction(void);
   //@}
 
-  /** @name Methodes to set the propertys of the Script Command */
-  //@{
+public:
+  /// Returns the script name
   QString getScriptName () const { return scriptName;   }
-  void setScriptName ( const QString& );
-  void setWhatsThis  ( const QString& );
-  void setMenuText   ( const QString& );
-  void setToolTipText( const QString& );
-  void setStatusTip  ( const QString& );
-  void setPixmap     ( const QString& );
-  void setAccel      ( int   i        );
+  /// Sets the script name
+  void setScriptName ( const QString& s ) { scriptName = s; }
+  /// Ignore when language has changed. 
+  void languageChange() {}
+ 
+  /** @name Methods to set the properties of the Script Command */
+  //@{
+  void setWhatsThis  ( const char* );
+  void setMenuText   ( const char* );
+  void setToolTipText( const char* );
+  void setStatusTip  ( const char* );
+  void setPixmap     ( const char* );
+  void setAccel      ( int         );
   //@}
 
   /** @name Methods to load and save macro commands. */
@@ -423,7 +407,6 @@ public:
   static void save();
   //@}
 
-
 protected:
   /** @name Attributes 
    *  set by the inherited constructor to set up the most important propertys 
@@ -433,6 +416,8 @@ protected:
   //@{
   QString scriptName;
   //@}
+private:
+  const char* createStringCopy( const char* ) const;
 };
 
 /** The CommandManager class
@@ -494,14 +479,6 @@ public:
    */
   Command* getCommandByName(const char* sName);
 
-  /** Returns the command registered in the manager with the 
-   *  action text sName (not its name! for this 
-   *  @see GetCommandByName(const char*))
-   *  If nothing is found it returns a null pointer 
-   *  @see Command
-   */
-  Command* getCommandByActionText(const char* sName);
-
   /**  
    * Runs the command
    */
@@ -524,12 +501,14 @@ class StdCmdAbout : public Command
 public:
   StdCmdAbout();
 
+  /** i18n stuff of the command. */
+  void languageChange();
+
+protected:
   /** Creates the action object. */
   QAction* createAction();
   /** Invokes the about-dialog. */
   void activated(int iMsg);
-  /** i18n stuff of the command. */
-  void languageChange();
 };
 
 /**
@@ -540,12 +519,6 @@ class StdCmdWorkbench : public Command
 {
 public:
   StdCmdWorkbench();
-
-  /** The item at position \a iMsg is activated. */
-  void activated(int iMsg);
-
-  /** Creates the accompanying QAction object to the command. */
-  QAction * createAction(void);
 
   /** Refreshes the list of available workbenches. */
   void refresh ();
@@ -560,6 +533,13 @@ public:
   
   /** Adds the workbench command to a widget. */
   bool addTo(QWidget *);
+
+protected:
+  /** The item at position \a iMsg is activated. */
+  void activated(int iMsg);
+
+  /** Creates the accompanying QAction object to the command. */
+  QAction * createAction(void);
 
 private:
   /** Appends a new workbench \a item. */
@@ -577,13 +557,6 @@ class StdCmdMRU : public Command
 {
 public:
   StdCmdMRU();
-  bool isActive(void){return true;}
-
-  /** The item at position \a iMsg is activated. */
-  void activated(int iMsg);
-
-  /** Creates the accompanying QAction object to the command. */
-  QAction * createAction(void);
   
   /** Adds the new item to the recent files. */
   void addRecentFile ( const QString& item );
@@ -597,7 +570,6 @@ public:
   void setMaxCount (int i) { _nMaxItems = i;    }
 
   QStringList recentFiles() const;
-  std::string getResource(const char* sName) const { return ""; }
 
   /** @name Methods to load or save from preferences */
   //@{
@@ -606,6 +578,15 @@ public:
   /** Saves all recent files to the preferences. */
   static void save();
   //@}
+
+protected:
+  bool isActive(void){return true;}
+
+  /** The item at position \a iMsg is activated. */
+  void activated(int iMsg);
+
+  /** Creates the accompanying QAction object to the command. */
+  QAction * createAction(void);
 
 private:
   QStringList _vMRU;
@@ -626,10 +607,11 @@ private:
 {\
 public:\
   X();\
+protected: \
   virtual void activated(int iMsg);\
 };
 
-/** The Command Macro Standard + IsActive()
+/** The Command Macro Standard + isActive()
  *  This macro makes it easier to define a new command.
  *  The parameters are the class name
  *  @author Jürgen Riegel
@@ -639,11 +621,27 @@ public:\
 public:\
   X();\
   virtual ~X(){}\
+protected: \
   virtual void activated(int iMsg);\
   virtual bool isActive(void);\
 };
 
-/** The Command Macro Standard + IsActive() + CreateAction()
+/** The Command Macro Standard + createAction()
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name
+ *  @author Jürgen Riegel
+ */
+#define DEF_STD_CMD_C(X) class X : public Gui::Command \
+{\
+public:\
+  X();\
+  virtual ~X(){}\
+protected: \
+  virtual void activated(int iMsg);\
+  virtual QAction * createAction(void);\
+};
+
+/** The Command Macro Standard + isActive() + createAction()
  *  This macro makes it easier to define a new command.
  *  The parameters are the class name
  *  @author Werner Mayer
@@ -653,6 +651,125 @@ public:\
 public:\
   X();\
   virtual ~X(){}\
+protected: \
+  virtual void activated(int iMsg);\
+  virtual bool isActive(void);\
+  virtual QAction * createAction(void);\
+};
+
+/** The Command Macro Standard for toggle commands.
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name.
+ *  @author Werner Mayer
+ */
+#define DEF_STD_CMD_TOGGLE(X) class X : public Gui::ToggleCommand \
+{\
+public:\
+  X();\
+protected: \
+  virtual void activated(int iMsg);\
+};
+
+/** The Command Macro Standard for toggle commands + isActive()
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name
+ *  @author Werner Mayer
+ */
+#define DEF_STD_CMD_TOGGLE_A(X) class X : public Gui::ToggleCommand \
+{\
+public:\
+  X();\
+  virtual ~X(){}\
+protected: \
+  virtual void activated(int iMsg);\
+  virtual bool isActive(void);\
+};
+
+/** The Command Macro Standard for toggle commands + createAction()
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name
+ *  @author Werner Mayer
+ */
+#define DEF_STD_CMD_TOGGLE_C(X) class X : public Gui::ToggleCommand \
+{\
+public:\
+  X();\
+  virtual ~X(){}\
+protected: \
+  virtual void activated(int iMsg);\
+  virtual QAction * createAction(void);\
+};
+
+/** The Command Macro Standard for toggle commands + isActive() + createAction()
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name
+ *  @author Werner Mayer
+ */
+#define DEF_STD_CMD_TOGGLE_AC(X) class X : public Gui::ToggleCommand \
+{\
+public:\
+  X();\
+  virtual ~X(){}\
+protected: \
+  virtual void activated(int iMsg);\
+  virtual bool isActive(void);\
+  virtual QAction * createAction(void);\
+};
+
+/** The Command Macro Standard for group commands.
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name.
+ *  @author Werner Mayer
+ */
+#define DEF_STD_CMD_GROUP(X) class X : public Gui::CommandGroup \
+{\
+public:\
+  X();\
+protected: \
+  virtual void activated(int iMsg);\
+};
+
+/** The Command Macro Standard for group commands + isActive()
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name
+ *  @author Werner Mayer
+ */
+#define DEF_STD_CMD_GROUP_A(X) class X : public Gui::CommandGroup \
+{\
+public:\
+  X();\
+  virtual ~X(){}\
+protected: \
+  virtual void activated(int iMsg);\
+  virtual bool isActive(void);\
+};
+
+/** The Command Macro Standard for group commands + createAction()
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name
+ *  @author Werner Mayer
+ */
+#define DEF_STD_CMD_GROUP_C(X) class X : public Gui::CommandGroup \
+{\
+public:\
+  X();\
+  virtual ~X(){}\
+protected: \
+  virtual void activated(int iMsg);\
+  virtual QAction * createAction(void);\
+};
+
+/** The Command Macro Standard for group commands + isActive() + createAction()
+ *  This macro makes it easier to define a new command.
+ *  The parameters are the class name
+ *  @author Werner Mayer
+ */
+#define DEF_STD_CMD_GROUP_AC(X) class X : public Gui::CommandGroup \
+{\
+public:\
+  X();\
+  virtual ~X(){}\
+protected: \
   virtual void activated(int iMsg);\
   virtual bool isActive(void);\
   virtual QAction * createAction(void);\
@@ -669,6 +786,7 @@ public:\
 public:\
   X();\
   virtual ~X(){}\
+protected: \
   virtual void activated(int iMsg);\
   virtual bool isActive(void)\
   {\

@@ -34,7 +34,9 @@
 
 #include "DlgKeyboardImp.h"
 #include "Application.h"
+#include "BitmapFactory.h"
 #include "Command.h"
+#include "Tools.h"
 #include "Widgets.h"
 #include "Window.h"
 
@@ -88,7 +90,10 @@ void DlgCustomKeyboardImp::onDescription(const QString& txt)
 {
   CommandManager & cCmdMgr = Application::Instance->commandManager();
   Command* cmd = cCmdMgr.getCommandByName( txt.latin1() );
-  if ( cmd && cmd->getAction() )
+  if ( !cmd ) return; // not found
+
+  // is QAction already created?
+  if ( cmd->getAction() ) 
   {
     QKeySequence ks = cmd->getAction()->accel();
     QKeySequence ks2 = cmd->getAccel();
@@ -99,15 +104,21 @@ void DlgCustomKeyboardImp::onDescription(const QString& txt)
     else
       accelLineEditShortcut->setText( ks );
 
-    textLabelDescription->setText( cmd->getAction()->toolTip() );
     pushButtonAssign->setEnabled( !ks3.isEmpty() && ( ks != ks3 ) );
     pushButtonReset->setEnabled( (ks != ks2) );
   }
   else
   {
-    textLabelDescription->setText( tr("Not available") );
+    QKeySequence ks = cmd->getAccel();
+    if ( ks.isEmpty() )
+      accelLineEditShortcut->setText( tr("Not defined") );
+    else
+      accelLineEditShortcut->setText( ks );
+    pushButtonAssign->setEnabled( false );
     pushButtonReset->setEnabled( false );
   }
+
+  textLabelDescription->setText( QObject::tr( cmd->getToolTipText() ) );
 }
 
 /** Shows all commands of this category */
@@ -125,12 +136,8 @@ void DlgCustomKeyboardImp::onGroupSelected(const QString & group)
     std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( It.data().latin1() );
     for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
-      QAction* act = (*it)->getAction(false);
-      QPixmap px = (act ? act->iconSet().pixmap() : QPixmap() );
-      if ( px.isNull() )
-        listBoxCommands->insertItem( (*it)->getName() );
-      else
-        listBoxCommands->insertItem( px, (*it)->getName() );
+      QPixmap px = ((*it)->getPixmap() ? BitmapFactory().pixmap( (*it)->getPixmap() ) : QPixmap() );
+      listBoxCommands->insertItem( Tools::fillUp(24,24,px), (*it)->getName() );
     }
   }
 }

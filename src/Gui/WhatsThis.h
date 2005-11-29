@@ -66,15 +66,11 @@ private:
 /**
  * @author Werner Mayer
  */
-class StdCmdDescription : public Command
+class StdCmdDescription : public ToggleCommand
 {
 public:
   StdCmdDescription();
   ~StdCmdDescription();
-  
-  QAction * createAction(void);
-  void toggled ( bool ); 
-  void activated(int iMsg);
 
   static bool inDescriptionMode();
   static void enterDescriptionMode();
@@ -82,6 +78,9 @@ public:
 
   static void setHelpView( QTextBrowser* );
   static void setSource( const QString& );
+
+protected:
+  void activated(int iMsg);
 
 private:
   static bool _descrMode;

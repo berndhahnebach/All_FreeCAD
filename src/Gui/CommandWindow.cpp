@@ -253,38 +253,13 @@ void StdCmdWindows::activated(int iMsg)
   dlg.exec();
 }
 
-/*
-//===========================================================================
-// Std_MDINormal
-//===========================================================================
-DEF_STD_CMD(StdCmdMDINormal);
-
-StdCmdMDINormal::StdCmdMDINormal()
-  :Command("Std_MDINormal")
-{
-  sGroup        = "Standard";
-  sMenuText     = "MDI Normal";
-  sToolTipText  = "Set the standard MDI mode";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "Paste";
-  iAccel        = 0;
-}
-
-
-void StdCmdMDINormal::Activated(int iMsg)
-{
-  getAppWnd()->switchToChildframeMode();
-}
-*/
-
 //===========================================================================
 // Std_MDIToplevel
 //===========================================================================
-DEF_STD_CMD(StdCmdMDIToplevel);
+DEF_STD_CMD_TOGGLE(StdCmdMDIToplevel);
 
 StdCmdMDIToplevel::StdCmdMDIToplevel()
-  :Command("Std_MDIToplevel",Cmd_Toggle)
+  : ToggleCommand("Std_MDIToplevel")
 {
   sGroup        = QT_TR_NOOP("Window");
   sMenuText     = QT_TR_NOOP("MDI seperate windows");
@@ -297,22 +272,16 @@ StdCmdMDIToplevel::StdCmdMDIToplevel()
 
 void StdCmdMDIToplevel::activated(int iMsg)
 {
-  if(iMsg){
-    // switches Tab mode off 
-    toggleCommand("Std_MDIToplevel",false);
-//    getAppWnd()->switchToToplevelMode();
-  }//else
-    //getAppWnd()->finishToplevelMode();
-//    getAppWnd()->switchToChildframeMode();
+  Base::Console().Warning("Not yet implemented.");
 }
 
 //===========================================================================
 // Std_MDITabed
 //===========================================================================
-DEF_STD_CMD(StdCmdMDITabbed);
+DEF_STD_CMD_TOGGLE(StdCmdMDITabbed);
 
 StdCmdMDITabbed::StdCmdMDITabbed()
-  :Command("Std_MDITabbed",Cmd_Toggle)
+  : ToggleCommand("Std_MDITabbed")
 {
   sGroup        = QT_TR_NOOP("Window");
   sMenuText     = QT_TR_NOOP("MDI tabbed");
@@ -325,12 +294,7 @@ StdCmdMDITabbed::StdCmdMDITabbed()
 
 void StdCmdMDITabbed::activated(int iMsg)
 {
-  if(iMsg){
-    // switches Toplevel off 
-    toggleCommand("Std_MDIToplevel",false);
-//    getAppWnd()->switchToTabPageMode();
-  }//else
-//    getAppWnd()->switchToChildframeMode();
+  Base::Console().Warning("Not yet implemented.");
 }
 
 
@@ -414,10 +378,10 @@ QAction * StdCmdToolBarMenu::createAction(void)
 // Std_ViewStatusBar
 //===========================================================================
 
-DEF_STD_CMD_AC(StdCmdStatusBar);
+DEF_STD_CMD_TOGGLE_C(StdCmdStatusBar);
 
 StdCmdStatusBar::StdCmdStatusBar()
-  :Command("Std_ViewStatusBar", Cmd_Toggle)
+  : ToggleCommand("Std_ViewStatusBar")
 {
   sGroup        = QT_TR_NOOP("View");
   sMenuText     = QT_TR_NOOP("Status bar");
@@ -430,6 +394,7 @@ StdCmdStatusBar::StdCmdStatusBar()
 QAction * StdCmdStatusBar::createAction(void)
 {
   QAction *pcAction = Command::createAction();
+  pcAction->setToggleAction( true );
   activated(0); // hide status bar
   pcAction->setOn(true); // and show it again invoking the toggle action
 
@@ -440,11 +405,6 @@ void StdCmdStatusBar::activated(int iMsg)
 {
   QWidget* w = getMainWindow()->statusBar();
   w->isVisible() ? w->hide() : w->show();
-}
-
-bool StdCmdStatusBar::isActive(void)
-{
-  return true;
 }
 
 //===========================================================================

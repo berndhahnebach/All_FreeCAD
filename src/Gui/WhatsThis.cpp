@@ -118,7 +118,7 @@ QTextBrowser* StdCmdDescription::_helpViewer = 0L;
 
 
 StdCmdDescription::StdCmdDescription()
-  :Command("Std_DescriptionMode", Cmd_Toggle)
+  : ToggleCommand("Std_DescriptionMode")
 {
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("Des&cription");
@@ -132,28 +132,9 @@ StdCmdDescription::~StdCmdDescription()
 {
 }
 
-QAction * StdCmdDescription::createAction(void)
-{
-  QAction *pcAction;
-
-  pcAction = new Action(this,qApp->mainWidget(),sName,true);
-  pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setMenuText(QObject::tr(sMenuText));
-  pcAction->setToolTip(QObject::tr(sToolTipText));
-  pcAction->setStatusTip(QObject::tr(sStatusTip));
-  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  pcAction->setAccel(iAccel);
-
-  return pcAction;
-}
-
 void StdCmdDescription::activated(int iMsg)
 {
-}
-
-void StdCmdDescription::toggled ( bool b )
-{
-  if ( b )
+  if ( !inDescriptionMode() )
     enterDescriptionMode();
   else
     leaveDescriptionMode();

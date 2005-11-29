@@ -63,10 +63,8 @@ CommandBase::~CommandBase()
 {
 }
 
-QAction* CommandBase::getAction( bool create ) 
+QAction* CommandBase::getAction() 
 { 
-  if (!_pcAction && create)
-    _pcAction = createAction();
   return _pcAction; 
 }
 
@@ -94,8 +92,8 @@ void CommandBase::languageChange()
 
 /* TRANSLATOR Gui::Command */
 
-Command::Command(const char* name,CMD_Type eType)
-  : CommandBase(0), sName(name), sHelpUrl(0),_eType(eType)
+Command::Command(const char* name)
+  : CommandBase(0), sName(name), sHelpUrl(0)
 {
   sAppModule  = "FreeCAD";
   sGroup      = QT_TR_NOOP("Standard");
@@ -154,62 +152,38 @@ App::Feature* Command::getFeature(const char* Name)
     return 0;
 }
 
-bool Command::isToggle(void) const
+void Command::invoke (int i)
 {
-  return (_eType&Cmd_Toggle) != 0; 
-}
-
-void Command::activated ()
-{
-  if(_eType == Cmd_Normal)
-  {
-    // Do not query _pcAction since it isn't created necessarily
-    Base::Console().Log("CmdG: %s\n",sName);
-    // set the application module type for the macro
-    getGuiApplication()->macroManager()->setModule(sAppModule);
-    try{
-      activated(0);
-    }catch(Base::PyException &e){
-      e.ReportException();
-      Base::Console().Error("Stack Trace: %s\n",e.getStackTrace().c_str());
-    }catch(Base::AbortException&){
-    }catch(Base::Exception &e){
-      e.ReportException();
-    }catch(std::exception &e){
-      std::string str;
-      str += "C++ exception thrown (";
-      str += e.what();
-      str += ")";
-      Base::Console().Error(str.c_str());
-    }catch(Standard_Failure){                                                              
-		  Handle(Standard_Failure) e = Standard_Failure::Caught(); 
-      std::string str;                                         
-      str += "OCC exception thrown (";                         
-      str += e->GetMessageString();                            
-      str += ")\n";                                            
-      Base::Console().Error(str.c_str());  
+  // Do not query _pcAction since it isn't created necessarily
+  Base::Console().Log("CmdG: %s\n",sName);
+  // set the application module type for the macro
+  getGuiApplication()->macroManager()->setModule(sAppModule);
+  try{
+    activated( i );
+  }catch(Base::PyException &e){
+    e.ReportException();
+    Base::Console().Error("Stack Trace: %s\n",e.getStackTrace().c_str());
+  }catch(Base::AbortException&){
+  }catch(Base::Exception &e){
+    e.ReportException();
+  }catch(std::exception &e){
+    std::string str;
+    str += "C++ exception thrown (";
+    str += e.what();
+    str += ")";
+    Base::Console().Error(str.c_str());
+  }catch(Standard_Failure){                                                              
+		Handle(Standard_Failure) e = Standard_Failure::Caught(); 
+    std::string str;                                         
+    str += "OCC exception thrown (";                         
+    str += e->GetMessageString();                            
+    str += ")\n";                                            
+    Base::Console().Error(str.c_str());  
 #ifndef FC_DEBUG
-    }catch(...){                                                              
-    	Base::Console().Error("Gui::Command::activated(): Unknown C++ exception in command thrown");       
+  }catch(...){                                                              
+    Base::Console().Error("Gui::Command::activated(%d): Unknown C++ exception in command thrown". i);       
 #endif
-    }   
-  }
-}
-
-void Command::toggled (bool b)
-{
-  // if the app is busy do not allow to drop new commands
-  if ( Base::Sequencer().isRunning() )
-    return; 
-  if(_eType == Cmd_Toggle)
-  {
-    // Do not query _pcAction since it isn't created necessarily
-    Base::Console().Log("CmdG: Toggled %s\n",sName);
-    if(b)
-      activated(1);
-    else
-      activated(0);
-  }
+  }   
 }
 
 void Command::testActive(void)
@@ -313,31 +287,6 @@ const std::string Command::strToPython(const char* Str)
   return Base::InterpreterSingleton::strToPython(Str);
 }
 
-
-/// Activate an other Commands
-void Command::activateCommand(const char* sCmdName)
-{
-  Command* pcCmd = getGuiApplication()->commandManager().getCommandByName(sCmdName);
-  if(pcCmd)
-  {
-    assert(!(pcCmd->isToggle()));
-    pcCmd->activated(0);
-  }
-}
-
-/// Toggles other Commands
-void Command::toggleCommand(const char* sCmdName,bool bToggle)
-{
-  Command* pcCmd = getGuiApplication()->commandManager().getCommandByName(sCmdName);
-  if(pcCmd)
-  {
-    assert(pcCmd->isToggle());
-    // check if the QAction is already created
-    if ( pcCmd->_pcAction )
-      pcCmd->_pcAction->setOn(bToggle?1:0);
-  }
-}
-
 /// Updates the (active) document (propagate changes)
 void Command::updateActive(void)
 {
@@ -380,16 +329,11 @@ const char * Command::endCmdHelp(void)
   return "</body></html>\n\n";
 }
 
-std::string Command::getResource(const char* sName) const
-{
-  return "";
-}
-
 QAction * Command::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new Action(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction = new Action(this,getMainWindow(),sName);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
@@ -410,32 +354,22 @@ QAction * Command::createAction(void)
 
 // -------------------------------------------------------------------------
 
-ToggleCommand::ToggleCommand(const char* name,CMD_Type eType)
-  :Command(name,eType)
+ToggleCommand::ToggleCommand(const char* name)
+  : Command(name)
 {
 }
 
 QAction * ToggleCommand::createAction(void)
 {
-  QAction *pcAction;
-  pcAction = new Action(this,getMainWindow(),sName);
-  pcAction->setToggleAction( true );
-  pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setMenuText(QObject::tr(sMenuText));
-  pcAction->setToolTip(QObject::tr(sToolTipText));
-  pcAction->setStatusTip(QObject::tr(sStatusTip));
-  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  if(sPixmap)
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setAccel(iAccel);
-
+  QAction *pcAction = Command::createAction();
+  pcAction->setToggleAction ( true );
   return pcAction;
 }
 
 // -------------------------------------------------------------------------
 
-CommandGroup::CommandGroup(const char* name, bool dropdown,CMD_Type eType)
-  :Command(name,eType), _dropdown(dropdown)
+CommandGroup::CommandGroup(const char* name, bool dropdown)
+  :Command(name), _dropdown(dropdown)
 {
 }
 
@@ -510,18 +444,26 @@ QAction * CommandGroup::createAction(void)
 /* TRANSLATOR Gui::MacroCommand */
 
 MacroCommand::MacroCommand(const char* name)
-  :Command(name,Cmd_Normal)
+  : Command( createStringCopy(name) )
 {
-  sGroup        = QT_TR_NOOP("Macros");
+  sGroup = QT_TR_NOOP("Macros");
+}
+
+const char* MacroCommand::createStringCopy( const char* s) const
+{
+  int len = strlen(s);
+  if ( len > 0 )
+  {
+    char* copy = new char [len];
+    strcpy(copy, s);
+    return copy;
+  }
+  else
+    return "";
 }
 
 void MacroCommand::activated(int iMsg)
 {
-//  OpenCommand("Excecute Macro");
-//
-//  DoCommand(Doc,"execfile(%s)",_sScriptName.c_str());
-//
-//  void CommitCommand(void);
   std::string cMacroPath = App::GetApplication().GetParameterGroupByPath
     ("User parameter:BaseApp/Preferences/Macro")->GetASCII("MacroPath",
     App::GetApplication().GetHomePath());
@@ -531,59 +473,49 @@ void MacroCommand::activated(int iMsg)
   Application::Instance->macroManager()->run(MacroManager::File,( fi.filePath() ).latin1());
 }
 
-void MacroCommand::setScriptName ( const QString& s )
+QAction * MacroCommand::createAction(void)
 {
-  scriptName = s;
+  QAction *pcAction;
+  pcAction = new Action(this,getMainWindow(),sName);
+  pcAction->setText     ( sMenuText    );
+  pcAction->setMenuText ( sMenuText    );
+  pcAction->setToolTip  ( sToolTipText );
+  pcAction->setStatusTip( sStatusTip   );
+  pcAction->setWhatsThis( sWhatsThis   );
+  if( sPixmap )
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setAccel(iAccel);
+  return pcAction;
 }
 
-void MacroCommand::setWhatsThis( const QString& s )
+void MacroCommand::setMenuText( const char* s )
 {
-  sWhatsThis = s;
-  if ( _pcAction )
-    _pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  this->sMenuText = createStringCopy( s );
 }
 
-void MacroCommand::setMenuText( const QString& s )
+void MacroCommand::setToolTipText( const char* s )
 {
-  sMenuText = s;
-  if ( _pcAction )
-  {
-    _pcAction->setText    (QObject::tr(sMenuText));
-    _pcAction->setMenuText(QObject::tr(sMenuText));
-  }
+  this->sToolTipText = createStringCopy( s );
 }
 
-void MacroCommand::setToolTipText( const QString& s )
+void MacroCommand::setStatusTip( const char* s )
 {
-  sToolTipText = s;
-  if ( _pcAction )
-    _pcAction->setToolTip(QObject::tr(sToolTipText));
+  this->sStatusTip = createStringCopy( s );
 }
 
-void MacroCommand::setStatusTip( const QString& s )
+void MacroCommand::setWhatsThis( const char* s )
 {
-  sStatusTip = s;
-  if ( _pcAction )
-    _pcAction->setStatusTip(QObject::tr(sStatusTip));
+  this->sWhatsThis = createStringCopy( s );
 }
 
-void MacroCommand::setPixmap( const QString& s )
+void MacroCommand::setPixmap( const char* s )
 {
-  sPixmap = s;
-  if ( _pcAction )
-  {
-    if ( sPixmap )
-      _pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-    else
-      _pcAction->setIconSet(QPixmap());
-  }
+  this->sPixmap = createStringCopy( s );
 }
 
 void MacroCommand::setAccel(int i)
 {
   iAccel = i;
-  if ( _pcAction )
-    _pcAction->setAccel(iAccel);
 }
 
 void MacroCommand::load()
@@ -634,9 +566,8 @@ void MacroCommand::save()
 }
 
 //===========================================================================
-// FCPythonCommand
+// PythonCommand
 //===========================================================================
-
 
 PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand)
   :Command(name),_pcPyCommand(pcPyCommand)
@@ -644,36 +575,34 @@ PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand)
   sGroup = "Python";
   Py_INCREF(_pcPyCommand);
 
-  // call the methode "GetResources()" of the command object
+  // call the method "GetResources()" of the command object
   _pcPyResourceDict = Interpreter().runMethodObject(_pcPyCommand, "GetResources");
   // check if the "GetResources()" methode returns a Dict object
   if(! PyDict_Check(_pcPyResourceDict) )
-    throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns the wrong type (has to be Py Dictonary)");
+    throw Base::Exception("PythonCommand::PythonCommand(): Method GetResources() of the Python command object returns the wrong type (has to be Py Dictonary)");
 }
 
-std::string PythonCommand::getResource(const char* sName) const
+const char* PythonCommand::getResource(const char* sName) const
 {
   PyObject* pcTemp;
   Base::PyBuf ResName(sName);
 
-
   // get the "MenuText" resource string
   pcTemp = PyDict_GetItemString(_pcPyResourceDict,ResName.str);
   if(! pcTemp )
-    return std::string();
+    return "";
   if(! PyString_Check(pcTemp) )
-    throw Base::Exception("FCPythonCommand::FCPythonCommand(): Methode GetResources() of the python command object returns a dictionary which holds not only strings");
+    throw Base::Exception("PythonCommand::getResource(): Method GetResources() of the Python command object returns a dictionary which holds not only strings");
 
-  return std::string(PyString_AsString(pcTemp) );
+  return PyString_AsString(pcTemp);
 }
-
 
 void PythonCommand::activated(int iMsg)
 {
   try{
     Interpreter().runMethodVoid(_pcPyCommand, "Activated");
   }catch (Base::Exception e){
-    Base::Console().Error("Running the python command %s failed,try to resume",sName);
+    Base::Console().Error("Running the Python command '%s' failed, try to resume",sName);
   }
 }
 
@@ -682,73 +611,56 @@ bool PythonCommand::isActive(void)
   return true;
 }
 
-std::string PythonCommand::cmdHelpURL(void)
+const char* PythonCommand::getHelpUrl(void)
 {
   PyObject* pcTemp;
-
   pcTemp = Interpreter().runMethodObject(_pcPyCommand, "CmdHelpURL"); 
-
   if(! pcTemp ) 
-    return std::string();
+    return "";
   if(! PyString_Check(pcTemp) ) 
-    throw Base::Exception("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
-  
-  return std::string( PyString_AsString(pcTemp) );
-}
-
-void PythonCommand::cmdHelpPage(std::string &rcHelpPage)
-{
-  PyObject* pcTemp;
-
-  pcTemp = Interpreter().runMethodObject(_pcPyCommand, "CmdHelpPage"); 
-
-  if(! pcTemp ) 
-    return ;
-  if(! PyString_Check(pcTemp) ) 
-    throw Base::Exception("FCPythonCommand::CmdHelpURL(): Methode CmdHelpURL() of the python command object returns no string");
-
-  rcHelpPage = PyString_AsString(pcTemp) ;
+    throw Base::Exception("PythonCommand::CmdHelpURL(): Method CmdHelpURL() of the Python command object returns no string");
+  return PyString_AsString(pcTemp);
 }
 
 QAction * PythonCommand::createAction(void)
 {
   QAction *pcAction;
 
-  pcAction = new Action(this,getMainWindow(),sName,(_eType&Cmd_Toggle) != 0);
+  pcAction = new Action(this,getMainWindow(),sName);
   pcAction->setText(sName);
-  pcAction->setMenuText(getResource("MenuText").c_str());
-  pcAction->setToolTip(getResource("ToolTip").c_str());
-  pcAction->setStatusTip(getResource("StatusTip").c_str());
-  pcAction->setWhatsThis(getResource("WhatsThis").c_str());
+  pcAction->setMenuText(getResource("MenuText"));
+  pcAction->setToolTip(getResource("ToolTip"));
+  pcAction->setStatusTip(getResource("StatusTip"));
+  pcAction->setWhatsThis(getResource("WhatsThis"));
   if(getResource("Pixmap") != "")
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(getResource("Pixmap").c_str()));
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
 
   return pcAction;
 }
 
 const char* PythonCommand::getWhatsThis() const
 {
-  return getResource("WhatsThis").c_str();
+  return getResource("WhatsThis");
 }
 
 const char* PythonCommand::getMenuText() const
 {
-  return getResource("MenuText").c_str();
+  return getResource("MenuText");
 }
 
 const char* PythonCommand::getToolTipText() const
 {
-  return getResource("ToolTip").c_str();
+  return getResource("ToolTip");
 }
 
 const char* PythonCommand::getStatusTip() const
 {
-  return getResource("StatusTip").c_str();
+  return getResource("StatusTip");
 }
 
 const char* PythonCommand::getPixmap() const
 {
-  return getResource("Pixmap").c_str();
+  return getResource("Pixmap");
 }
 
 int PythonCommand::getAccel() const
@@ -815,7 +727,7 @@ std::string CommandManager::getAppModuleName(QAction* pAction)
 {
   for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();++It)
   {
-    if ( It->second->getAction() == pAction )
+    if ( pAction && It->second->getAction() == pAction )
       return It->second->getAppModuleName();
   }
 
@@ -869,28 +781,12 @@ Command* CommandManager::getCommandByName(const char* sName)
   return pCom;
 }
 
-Command* CommandManager::getCommandByActionText(const char* sName)
-{
-  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
-  {
-    if (It->second->getAction())
-    {
-      if (It->second->getAction()->text() == sName)
-      {
-        return It->second;
-      }
-    }
-  }
-
-  return NULL;
-}
-
 void CommandManager::runCommandByName (const char* sName)
 {
   Command* pCmd = getCommandByName(sName);
 
   if (pCmd)
-    pCmd->activated();
+    pCmd->invoke(0);
 }
 
 void CommandManager::testActive(void)

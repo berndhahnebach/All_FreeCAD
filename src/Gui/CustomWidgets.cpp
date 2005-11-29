@@ -238,7 +238,7 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     for (std::map<std::string, Command*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
     {
       QAction* a = it->second->getAction();
-      if (a != NULL)
+      if (a != 0)
       {
         if ( a->menuText() == txt )
         {
@@ -260,7 +260,7 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
 #endif
     {
       QAction* a = it->second->getAction();
-      if (a != NULL)
+      if (a != 0)
       {
         // check if menu item starts with txt
         // both strings need not to be equal (because of accelarators)

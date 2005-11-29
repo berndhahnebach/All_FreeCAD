@@ -31,6 +31,7 @@
 #include "DlgCommandsImp.h"
 #include "Application.h"
 #include "Command.h"
+#include "BitmapFactory.h"
 #include "Widgets.h"
 
 using namespace Gui::Dialog;
@@ -105,7 +106,10 @@ void DlgCustomCommandsImp::onGroupSelected(const QString & group)
     std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( It.data().latin1() );
     for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
     {
-      (void) new Gui::CommandViewItem(IconView1, (*it)->getName(), (*it)->getAction());
+      QPixmap pix;
+      if ( (*it)->getPixmap() )
+        pix = BitmapFactory().pixmap( (*it)->getPixmap() );
+      (void) new Gui::CommandViewItem(IconView1, (*it)->getName(), QObject::tr( (*it)->getToolTipText() ), pix);
     }
   }
 }

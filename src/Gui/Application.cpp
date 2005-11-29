@@ -517,7 +517,7 @@ bool Application::activateWorkbench( const char* name )
 
   // update the Std_Workbench command and its action object
   StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
-  if ( pCmd && pCmd->getAction(false) )
+  if ( pCmd && pCmd->getAction() )
   {
     Workbench* curWb = WorkbenchManager::instance()->active();
     QString curName = (curWb ? curWb->name() : QString(name));
@@ -531,7 +531,7 @@ void Application::refreshWorkbenchList()
 {
   StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
 
-  if ( pCmd && pCmd->getAction(false) )
+  if ( pCmd && pCmd->getAction() )
   {
     pCmd->refresh();
     Workbench* curWb = WorkbenchManager::instance()->active();

@@ -248,12 +248,12 @@ public:
  * Constructs a command view item and inserts it into the icon view \a parent using 
  * the action's text as the text and the actoin's icon as the icon.
  */
-CommandViewItem::CommandViewItem ( QIconView * parent, const QString& action, QAction* pAct )
-  : QIconViewItem(parent, action, pAct->iconSet().pixmap())
+CommandViewItem::CommandViewItem ( QIconView * parent, const QString& action, const QString& toolTip, const QPixmap& pPixmap )
+  : QIconViewItem(parent, action, pPixmap)
 {
   d = new CommandViewItemPrivate;
   d->sAction = action;
-  d->description = pAct->toolTip();
+  d->description = toolTip;
 }
 
 /**

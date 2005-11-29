@@ -35,6 +35,7 @@
 
 #include "DlgToolbarsImp.h"
 #include "Application.h"
+#include "BitmapFactory.h"
 #include "Tools.h"
 #include "Command.h"
 #include "CustomWidgets.h"
@@ -83,7 +84,9 @@ DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags 
     for (std::vector<Command*>::const_iterator it4 = rCmds.begin(); it4 != rCmds.end(); ++it4)
     {
       QListViewItem* item = new QListViewItem(itemNode,AvailableActions->lastItem(), (*it4)->getName());
-      QPixmap pix = (*it4)->getAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
+      QPixmap pix;
+      if ( (*it4)->getPixmap() )
+        pix = BitmapFactory().pixmap((*it4)->getPixmap());
       item->setPixmap(0, Tools::fillUp(24,24,pix));
       itemNode->insertItem(item);
     }
@@ -212,7 +215,9 @@ void DlgCustomToolbars::onItemActivated(const QString & name)
           if (pCom)
           {
             QListViewItem* item = new QListViewItem(ToolbarActions,ToolbarActions->lastItem(), pCom->getName());
-            QPixmap pix = pCom->getAction()->iconSet().pixmap(/*QIconSet::Large,true*/);
+            QPixmap pix;
+            if ( pCom->getPixmap() )
+              pix = BitmapFactory().pixmap(pCom->getPixmap());
             item->setPixmap(0, Tools::fillUp(24,24,pix));
             ToolbarActions->insertItem(item);
           }

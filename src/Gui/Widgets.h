@@ -102,7 +102,7 @@ private:
 class GuiExport CommandViewItem : public QIconViewItem
 {
 public:
-  CommandViewItem ( QIconView * parent, const QString& action, QAction* pAct );
+  CommandViewItem ( QIconView * parent, const QString& action, const QString& toolTip, const QPixmap& pPixmap );
   virtual ~CommandViewItem ();
 
   QString text() const;
