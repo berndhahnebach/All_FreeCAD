@@ -31,6 +31,8 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
+#include <Base/Matrix.h>
+using Base::Matrix4D;
 #include "FeatureMeshTransform.h"
 
 #include "Core/MeshIO.h"
@@ -42,28 +44,22 @@ using namespace MeshCore;
 void FeatureMeshTransform::initFeature(void)
 {
   Base::Console().Log("FeatureMeshImport::InitLabel()\n");
-  addProperty("String","FileName");
+  addProperty("Link","Source");
+  addProperty("Matrix","Position");
 }
 
 int FeatureMeshTransform::execute(TFunction_Logbook& log)
 {
 
-
-  std::string FileName =getPropertyString("FileName");
-
-  // ask for read permisson
-	if ( access(FileName.c_str(), 4) != 0 )
-  {
-    setError("FeatureMeshTransform::Execute() not able to open %s!\n",FileName.c_str());
+  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
+  if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
-  }
 
-  MeshSTL aReader(*(_cMesh.getKernel()) );
+  Matrix4D Matrix =getPropertyMatrix("Position");
 
-  // read file
-  FileStream str( FileName.c_str(), std::ios::in);
-  if ( !aReader.Load( str ) )
-    throw Base::Exception("Import failed (load file)");
+ 
+  getMesh() = pcFirst->getMesh();
+  getMesh().transform(Matrix);
 
   return 0;
 }

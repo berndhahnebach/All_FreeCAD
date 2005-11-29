@@ -230,7 +230,7 @@ PYFUNCIMP_D(MatrixPy,move)
     vec.z = z;
   }else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj))     // convert args: Python->C 
   {
-    vec = ((VectorPy*)pcVecObj)->_cVector;
+    vec = ((VectorPy*)pcVecObj)->value();
     // clears the error from the first PyArg_ParseTuple()6
     PyErr_Clear();
   }else
@@ -257,7 +257,7 @@ PYFUNCIMP_D(MatrixPy,scale)
     vec.z = z;
   }else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj))     // convert args: Python->C 
   {
-    vec = ((VectorPy*)pcVecObj)->_cVector;
+    vec = ((VectorPy*)pcVecObj)->value();
     // clears the error from the first PyArg_ParseTuple()6
     PyErr_Clear();
   }else
@@ -290,8 +290,8 @@ PYFUNCIMP_D(MatrixPy,transform)
                        &(VectorPy::Type), &pcVecObj,
                        &(MatrixPy::Type), &pcMatObj) )     // convert args: Python->C 
   {
-    vec = ((VectorPy*)pcVecObj)->_cVector;
-    mat = ((MatrixPy*)pcMatObj)->_cMatrix;
+    vec = ((VectorPy*)pcVecObj)->value();
+    mat = ((MatrixPy*)pcMatObj)->value();
     // clears the error from the first PyArg_ParseTuple()6
     PyErr_Clear();
   }else

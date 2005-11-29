@@ -49,6 +49,8 @@ using Base::Console;
 #include "Property.h"
 #include "PropertyAttr.h"
 #include "FeaturePy.h"
+#include "MatrixPy.h"
+#include "VectorPy.h"
 
 using namespace App;
 
@@ -239,6 +241,15 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
             return Py_BuildValue("i", _pcFeature->getPropertyInt(attr));
           else if(strcmp(type,"String")==0)
             return Py_BuildValue("s", _pcFeature->getPropertyString(attr).c_str());
+          else if(strcmp(type,"Vector")==0)
+            return new VectorPy( _pcFeature->getPropertyVector(attr));
+          else if(strcmp(type,"Plane")==0){
+            Vector3D pos,dir;
+            _pcFeature->getPropertyPlane(pos,dir,attr);
+            return new VectorPy(pos);
+          }
+          else if(strcmp(type,"Matrix")==0)
+            return new MatrixPy( _pcFeature->getPropertyMatrix(attr));
           else if(strcmp(type,"Link")==0)
             return _pcFeature->getPropertyLink(attr)->GetPyObject();
           else
@@ -332,6 +343,16 @@ int FeaturePy::setProperty(const char *attr, PyObject *value)
   {
    	FeaturePy  *pcObject = (FeaturePy*)value;
     _pcFeature->setPropertyLink(pcObject->_pcFeature,attr);
+  }
+  else if( PyObject_TypeCheck(value, &(VectorPy::Type)) )
+  {
+   	VectorPy  *pcObject = (VectorPy*)value;
+    _pcFeature->setPropertyVector(pcObject->value(),attr);
+  }
+  else if( PyObject_TypeCheck(value, &(MatrixPy::Type)) )
+  {
+   	MatrixPy  *pcObject = (MatrixPy*)value;
+    _pcFeature->setPropertyMatrix(pcObject->value(),attr);
   }
   else
     return 0;

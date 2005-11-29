@@ -55,6 +55,9 @@ public:
 
 	~VectorPy();
 
+  Base::Vector3D value(void){return _cVector;}
+  void set(const Base::Vector3D &cVec){_cVector = cVec;}
+
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
@@ -69,7 +72,7 @@ public:
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
-
+protected:
 
   Base::Vector3D  _cVector;
 

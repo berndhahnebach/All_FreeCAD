@@ -55,5 +55,6 @@ Version: V0.3B4 Date: Sun Nov  6 01:20:57 2005 +++++++++++++++++++++++++++++++
 + new file dialog with options
 + options page for saving image files
 + create screenshots with transparent background (if checked)
++ new Feature properties, plane, Matrix and Vector (Plane partial implemented)...
 + start redesign of the Command framework
 + added the Template module to the project workspace

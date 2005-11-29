@@ -242,7 +242,7 @@ PYFUNCIMP_D(DocumentPy,setPos)
                         &(App::MatrixPy::Type), &pcMatObj))     // convert args: Python->C 
     return NULL;  // NULL triggers exception 
 
-  mat = ((App::MatrixPy*)pcMatObj)->_cMatrix;
+  mat = ((App::MatrixPy*)pcMatObj)->value();
 
   PY_TRY {
     App::Feature *pcFeat = _pcDoc->getDocument()->getFeature(psFeatStr);

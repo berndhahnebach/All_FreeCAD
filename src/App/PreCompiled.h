@@ -152,6 +152,7 @@
 #include <gp_Vec.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
 
 
 //#include <TDataStd_Reference.hxx>

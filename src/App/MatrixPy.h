@@ -63,6 +63,9 @@ public:
 
 	~MatrixPy();
 
+  Base::Matrix4D value(void){return _cMatrix;}
+  void set(const Base::Matrix4D &cMat){_cMatrix = cMat;}
+
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
@@ -85,7 +88,7 @@ public:
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
-
+protected:
 
   Base::Matrix4D _cMatrix;
 

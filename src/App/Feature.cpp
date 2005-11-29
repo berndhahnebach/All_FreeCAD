@@ -128,6 +128,12 @@ void Feature::addProperty(const char *Type, const char *Name)
    	TDataStd_Name::Set(L,"");
   else if(	Base::streq(Type, "Int") )
    	TDataStd_Integer::Set(L,0);
+  else if(	Base::streq(Type, "Vector") )
+   	TDataStd_Point::Set(L);
+  else if(	Base::streq(Type, "Matrix") )
+   	TDataStd_RealArray::Set(L,0,15);
+  else if(	Base::streq(Type, "Plane") )
+   	TDataStd_Plane::Set(L);
   else if(	Base::streq(Type, "Link") )
    	TDF_Reference::Set(L,TDF_Label());
 	
@@ -153,6 +159,9 @@ const char *Feature::getPropertyType(const char *Name)
   if( L.IsAttribute(TDataStd_Real::GetID()) ) return "Float";
   if( L.IsAttribute(TDataStd_Name::GetID()) ) return "String";
   if( L.IsAttribute(TDataStd_Integer::GetID()) ) return "Int";
+  if( L.IsAttribute(TDataStd_Point::GetID()) ) return "Vector";
+  if( L.IsAttribute(TDataStd_RealArray::GetID()) ) return "Matrix";
+  if( L.IsAttribute(TDataStd_Plane::GetID()) ) return "Plane";
   if( L.IsAttribute(TDF_Reference::GetID()) ) return "Link";
 
   return "";
@@ -161,28 +170,28 @@ const char *Feature::getPropertyType(const char *Name)
 
 
 void Feature::setPropertyVector(const Vector3D& p, const char *Name)
-{  /*
+{  
   std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
-    throw Base::Exception("Feature::setPropertyFloat() unknown property name");
+    throw Base::Exception("Feature::setPropertyVector() unknown property name");
 
   TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
 
   Handle(TDataStd_Point) PointAttr;
 
  	if (!L.FindAttribute(TDataStd_Point::GetID(), PointAttr )) 
-    throw Base::Exception("Type mismatch, no Float attribute!");
+    throw Base::Exception("Feature::setPropertyVector(): Type mismatch, no Point attribute!");
 
-  PointAttr->Set(gp_Pnt(p.x,p.y,p.z));
+  PointAttr->Set( L,gp_Pnt(p.x,p.y,p.z));
 
   OSD_Process pro;
   It->second.Time = pro.SystemDate();
-*/
+
 }
 
 Vector3D Feature::getPropertyVector(const char *Name)
-{/*
+{
   std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
 
   if(It == _PropertiesMap.end())
@@ -195,29 +204,111 @@ Vector3D Feature::getPropertyVector(const char *Name)
  	if (!L.FindAttribute(TDataStd_Point::GetID(), PointAttr )) 
     throw Base::Exception("Feature::getPropertyVector(): Type mismatch, no Point attribute!");
 
-  gp_Pnt p = PointAttr->Get();
-  return Vector3D(p.X(),p.Y(),p.Z());*/
-  return Vector3D();
+  gp_Pnt p;
+  TDataStd_Geometry::Point(L,p);
+  return Vector3D((float)p.X(),(float)p.Y(),(float)p.Z());
 }
 
-void Feature::setPropertyMatrix(const Matrix4D&, const char *Name)
+void Feature::setPropertyMatrix(const Matrix4D &clMat, const char *Name)
 {
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::setPropertyMatrix() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
+
+  Handle(TDataStd_RealArray) ArrayAttr;
+
+ 	if (!L.FindAttribute(TDataStd_RealArray::GetID(), ArrayAttr )) 
+    throw Base::Exception("Feature::setPropertyMatrix(): Type mismatch, no Matrix attribute!");
+
+  short iz, is,i=0;
+  for (iz = 0; iz < 4; iz++)
+    for (is = 0; is < 4; is++) 
+    {
+      ArrayAttr->SetValue(i,(float)clMat[iz][is]);
+      i++;
+    }
+
+  OSD_Process pro;
+  It->second.Time = pro.SystemDate();
+
 
 }
 
 
 Matrix4D Feature::getPropertyMatrix(const char *Name)
 {
-  return Matrix4D();
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::getPropertyMatrix() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
+
+  Handle(TDataStd_RealArray) ArrayAttr;
+
+ 	if (!L.FindAttribute(TDataStd_RealArray::GetID(), ArrayAttr )) 
+    throw Base::Exception("Feature::getPropertyMatrix(): Type mismatch, no Matrix attribute!");
+
+  Matrix4D m;
+
+  short iz, is,i=0;
+  for (iz = 0; iz < 4; iz++)
+    for (is = 0; is < 4; is++) 
+    {
+      m[iz][is] = ArrayAttr->Value(i);
+      i++;
+    }
+
+  return m;
 }
 
-void setPropertyPlane(const Vector3D& Base, const Vector3D& Norm, const char *Name)
+void  Feature::setPropertyPlane(const Vector3D& Base, const Vector3D& Norm, const char *Name)
 {
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::setPropertyPlane() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
+
+  Handle(TDataStd_Plane) PlaneAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Plane::GetID(), PlaneAttr )) 
+    throw Base::Exception("Feature::setPropertyPlane(): Type mismatch, no Plane attribute!");
+
+  PlaneAttr->Set( L,gp_Pln(gp_Pnt(Base.x,Base.y,Base.z),gp_Dir(Norm.x,Norm.y,Norm.z)));
+
+  OSD_Process pro;
+  It->second.Time = pro.SystemDate();
 
 }
 
-void getPropertyPlane(Vector3D& Base, Vector3D& Norm, const char *Name)
-{
+void  Feature::getPropertyPlane(Vector3D& Base, Vector3D& Norm, const char *Name)
+{  
+  std::map<std::string,FeatEntry>::iterator It = _PropertiesMap.find(Name);
+
+  if(It == _PropertiesMap.end())
+    throw Base::Exception("Feature::getPropertyPlane() unknown property name");
+
+  TDF_Label L = _cFeatureLabel.FindChild(It->second.Label);
+
+  Handle(TDataStd_Plane) PlaneAttr;
+
+ 	if (!L.FindAttribute(TDataStd_Plane::GetID(), PlaneAttr )) 
+    throw Base::Exception("Feature::getPropertyPlane(): Type mismatch, no Plane attribute!");
+
+  gp_Pln pn;
+  TDataStd_Geometry::Plane(L,pn);
+
+  gp_Ax1 a = pn.Axis();
+  gp_Dir d = a.Direction();
+  gp_Pnt p = a.Location();
+
+  Base.Set(p.X(),p.Y(),p.Z());
+  Norm.Set(d.X(),d.Y(),d.Z());
 
 }
 
