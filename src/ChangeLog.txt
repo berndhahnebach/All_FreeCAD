@@ -58,3 +58,8 @@ Version: V0.3B4 Date: Sun Nov  6 01:20:57 2005 +++++++++++++++++++++++++++++++
 + new Feature properties, plane, Matrix and Vector (Plane partial implemented)...
 + start redesign of the Command framework
 + added the Template module to the project workspace
+
+Version: V0.3B5 Date: Wed Nov 30 15:56:28 2005 +++++++++++++++++++++++++++++++
++ redesign of Command framework finished
++ download URL adjusted
++ allow to download documentation from SourceForge into another directory

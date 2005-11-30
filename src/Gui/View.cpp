@@ -292,31 +292,26 @@ void MDIView::setCurrentViewMode( ViewMode b )
 void MDIView::keyPressEvent ( QKeyEvent* e )
 {
   // Note: if the widget is in fullscreen mode then we can return to normal mode either
-  // by pressing F or ESC. Since keyboard is grabbed accelerators don't work any more
+  // by pressing D or ESC. Since keyboard is grabbed accelerators don't work any more
   // (propably accelerators don't work at all - even without having grabbed the keyboard!?)
 
   if ( _actualMode != Normal )
   {
     // use Command's API to hold toogled state consistent
-    if ( e->key() == Key_F || e->key() == Key_Escape )
+    if ( e->key() == Key_D || e->key() == Key_Escape )
     {
       setCurrentViewMode(Normal);
     }
-  }
-  /*
-  if ( isFullScreen() )
-  {
-    // use Command's API to hold toogled state consistent
-    if ( e->key() == Key_F || e->key() == Key_Escape )
+    else if ( e->key() == Key_U )
     {
-      Command* pcCmd = Application::Instance->commandManager().getCommandByName( "Std_ViewFullScreen" );
-      if( pcCmd )
-      {
-        pcCmd->toggleCommand( "Std_ViewFullScreen", false);
-      }
+      setCurrentViewMode(TopLevel);
     }
-  }*/
-  else
+    else if ( e->key() == Key_F )
+    {
+      setCurrentViewMode(FullScreen);
+    }
+  }
+  else // the occupied key events F,D and U are are "eaten" by the main window
   {
     QMainWindow::keyPressEvent( e );
   }

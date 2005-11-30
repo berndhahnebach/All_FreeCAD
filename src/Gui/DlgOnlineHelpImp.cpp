@@ -23,7 +23,9 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <fileinfo.h>
 # include <qdir.h>
+# include <qmessagebox.h>
 #endif
 
 #include "DlgOnlineHelpImp.h"
@@ -49,6 +51,15 @@ DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl
   {
     prefStartPage->setFileName( getStartpage() );
   }
+
+  if ( DownloadLoc->fileName().isEmpty() )
+  {
+    // set output directory
+    QString path = App::GetApplication().GetHomePath();
+    path += "/doc/";
+    QDir dir(path);
+    DownloadLoc->setFileName( dir.absPath() );
+  }
 }
 
 /** 
@@ -60,7 +71,7 @@ DlgOnlineHelpImp::~DlgOnlineHelpImp()
 
 /**
  * Returns the start page for the HelpView. If none is defined the default 
- * start page "<FreeCADHome>/doc/free-cad.sourceforge.net/index.php.html" 
+ * start page "<FreeCADHome>/doc/free-cad.sourceforge.net/wiki/index.php.html" 
  * is returned.
  * \remark It is not checked if the returned page really exists.
  */
@@ -79,7 +90,7 @@ QString DlgOnlineHelpImp::getStartpage()
   if ( home.isEmpty() )
   {
     QString hm = App::GetApplication().GetHomePath();
-    hm += "/doc/free-cad.sourceforge.net";
+    hm += "/doc/free-cad.sourceforge.net/wiki";
     QDir d(hm);
     home = d.path();
     home += "/index.php.html";
@@ -96,6 +107,7 @@ void DlgOnlineHelpImp::saveSettings()
   prefExtBrowser->onSave();
   prefStartPage->onSave();
   prefAuthorize->onSave();
+  DownloadLoc->onSave();
 }
 
 void DlgOnlineHelpImp::loadSettings()
@@ -106,6 +118,17 @@ void DlgOnlineHelpImp::loadSettings()
   prefExtBrowser->onRestore();
   prefStartPage->onRestore();
   prefAuthorize->onRestore();
+  DownloadLoc->onRestore();
+}
+
+void DlgOnlineHelpImp::onCheckLocation( const QString& url )
+{
+  QFileInfo fi( url );
+  if ( !fi.permission( QFileInfo::WriteUser ) )
+  {
+    QMessageBox::critical(this, tr("Missing permission"), tr("You don't have write permission to '%1'\n\n"
+      "Specify another directory, please.").arg(url));
+  }
 }
 
 #include "DlgOnlineHelp.cpp"

@@ -522,7 +522,7 @@ void FileChooser::chooseFile()
   if ( !fn.isEmpty() ) 
   {
   	lineEdit->setText( fn );
-	  emit fileNameChanged( fn );
+	  emit fileNameSelected( fn );
   }
 }
 

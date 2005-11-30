@@ -962,8 +962,12 @@ Diese Datei ist bereits vorhanden.</translation>
             <translation>Proxy-Server:</translation>
         </message>
         <message>
-            <source>Download online help</source>
-            <translation>Online-Hilfe herunterladen</translation>
+            <source>Download online help from:</source>
+            <translation>Online-Hilfe herunterladen von:</translation>
+        </message>
+        <message>
+            <source>To:</source>
+            <translation>Nach:</translation>
         </message>
         <message>
             <source>Enable user authorization</source>

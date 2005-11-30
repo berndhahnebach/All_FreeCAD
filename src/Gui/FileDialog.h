@@ -210,6 +210,7 @@ public slots:
 
 signals:
   void fileNameChanged( const QString & );
+  void fileNameSelected( const QString & );
 
 private slots:
   void chooseFile();

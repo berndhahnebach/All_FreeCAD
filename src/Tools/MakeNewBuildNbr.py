@@ -30,7 +30,7 @@
 import time
 
 # reading the last Version information
-[FCVersionMajor,FCVersionMinor,FCVersionBuild,FCVersionDisDa] = open("../Version.h",'r').readlines()
+[FCVersionMajor,FCVersionMinor,FCVersionBuild,FCVersionDisDa,dummy] = open("../Version.h",'r').readlines()
 
 # increasing build number
 BuildNumber = int(FCVersionBuild[23:-1]) +1

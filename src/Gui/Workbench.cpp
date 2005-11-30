@@ -45,7 +45,7 @@
 
 using namespace Gui;
 
-/** \defgroup workbench The Workbench Framework
+/** \defgroup workbench Workbench Framework
  *
  * FreeCAD provides the possibility to have one or more workbenches for a module. A workbench changes the appearance of the main window
  * in that way that it defines toolbars, command bars or menus (later on dockable windows, ...) that are shown to the user.
@@ -117,6 +117,29 @@ using namespace Gui;
  * };
  * 
  * \endcode
+ *
+ * \subsection customizeWorkbench Customizing the workbench
+ * If you want to customize your workbench by adding or removing items you can use the ToolBarItem class for customizing toolbars and the MenuItem class
+ * for menus. Both classes behave basically the same.
+ * To add a new menu item you can do it as follows
+ * \code
+ *   MenuItem* setupMenuBar() const
+ *   {
+ *     MenuItem* root = StdWorkbench::setupMenuBar();
+ *     // create a sub menu
+ *     MenuItem* mySub = new MenuItem; // note: no parent is given
+ *     mySub->setCommand( "My &Submenu" );
+ *     *mySub << "Std_Undo" << "Std_Redo";
+ *     
+ *     // My menu
+ *     MenuItem* myMenu = new MenuItem( root );
+ *     myMenu->setCommand( "&My Menu" );
+ *     // fill up the menu with some command items
+ *     *myMenu << mySub << "Separator" << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo";
+ *   }
+ * \endcode
+ *
+ * Toolbars can be cutomized the same way unless that you shouldn't create subitems (there are no subtoolbars).
  *
  * \subsection regWorkbench Register your workbench
  * Once you have implemented your workbench class you have to register it to make it known to the FreeCAD core system. You must make sure that the step 
@@ -375,8 +398,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
   // View
   MenuItem* view = new MenuItem( menuBar );
   view->setCommand( "&View" );
-  *view << "Std_ViewCreate" << "Std_OrthographicCamera" << "Std_PerspectiveCamera" << "Separator" 
-	      << view3d
+  *view << "Std_ViewCreate" << "Std_CameraType" << "Separator" << view3d
         << "Std_ToggleVisibility" << "Std_ViewDockUndockFullscreen" << "Std_ViewScreenShot" << "Separator" 
         << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
   
@@ -425,7 +447,7 @@ ToolBarItem* StdWorkbench::setupToolBars() const
   // View
   ToolBarItem* view = new ToolBarItem( root );
   view->setCommand( "Standard views" );
-  *view << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
+  *view << "Separator" << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
         << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
 
   return root;

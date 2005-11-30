@@ -108,6 +108,53 @@ bool StdCmdPerspectiveCamera::isActive(void)
 {
   return true;
 }
+
+//===========================================================================
+// Std_CameraType
+//===========================================================================
+DEF_STD_CMD_GROUP_A(StdCameraType);
+
+StdCameraType::StdCameraType()
+ : CommandGroup("Std_CameraType")
+{
+  sGroup        = QT_TR_NOOP("Standard-View");
+
+  const char* sMenuText1  = QT_TR_NOOP("Orthographic view");
+  const char* sMenuText2  = QT_TR_NOOP("Perspective view");
+  
+  _aCommands.push_back( new CommandBase(sMenuText1,sMenuText1,sMenuText1,sMenuText1/*,"ortho_xpm"*/));
+  _aCommands.push_back( new CommandBase(sMenuText2,sMenuText2,sMenuText2,sMenuText2/*,"perspective_xpm"*/));
+}
+
+void StdCameraType::activated(int iMsg)
+{
+  if (iMsg == 0)
+    doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"OrthographicCamera\")");
+  else if (iMsg == 1)
+    doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"PerspectiveCamera\")");
+}
+
+bool StdCameraType::isActive(void)
+{
+  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  if ( view )
+  {
+    // update the action group if needed
+    ActionGroup* pActGrp = reinterpret_cast<ActionGroup*>(_pcAction->qt_cast("Gui::ActionGroup"));
+    if ( pActGrp )
+    {
+      int index = pActGrp->currentActive();
+      int type = (view->getViewer()->getCameraType() == SoOrthographicCamera::getClassTypeId() ? 0 : 1);
+      if ( type != index )
+        pActGrp->setCurrentActive( type );
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
 //===========================================================================
 // Std_ToggleVisibility
 //===========================================================================
@@ -365,7 +412,7 @@ bool StdCmdViewFitAll::isActive(void)
 DEF_STD_CMD_GROUP_A(StdViewDockUndockFullscreen);
 
 StdViewDockUndockFullscreen::StdViewDockUndockFullscreen()
-    : CommandGroup("Std_ViewDockUndockFullscreen", true)
+    : CommandGroup("Std_ViewDockUndockFullscreen", true, true)
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Display mode");
@@ -845,6 +892,7 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdToggleVisibility());
   rcCmdMgr.addCommand(new StdCmdPerspectiveCamera());
   rcCmdMgr.addCommand(new StdCmdOrthographicCamera());
+  rcCmdMgr.addCommand(new StdCameraType());
 }
 
 } // namespace Gui

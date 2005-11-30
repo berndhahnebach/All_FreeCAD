@@ -47,6 +47,7 @@ public:
 protected:
   void saveSettings();
   void loadSettings();
+  void onCheckLocation(const QString&);
 };
 
 } // namespace Dialog

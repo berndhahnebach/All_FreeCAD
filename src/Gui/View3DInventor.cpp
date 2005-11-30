@@ -381,7 +381,7 @@ bool View3DInventor::setCamera(const char* pCamera)
   SoDB::read(&in,(SoNode*&)Cam);
 
   if (!Cam){
-    Base::Console().Error("setCamera faild to read: %s\n",pCamera);
+    Base::Console().Error("setCamera failed to read: %s\n",pCamera);
     return true;
   }
 

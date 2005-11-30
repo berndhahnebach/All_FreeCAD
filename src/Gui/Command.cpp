@@ -52,11 +52,10 @@ using namespace Gui::DockWnd;
 
 CommandBase::CommandBase( const char* sMenu, const char* sToolTip, const char* sWhat, 
                           const char* sStatus, const char* sPixmap, int iAcc)
- : sMenuText(sMenu), sToolTipText(sToolTip), sWhatsThis(sWhat), sStatusTip(sStatus), 
-   sPixmap(sPixmap), iAccel(iAcc), _pcAction(0)
+  : sMenuText(sMenu), sToolTipText(sToolTip), sWhatsThis(sWhat?sWhat:sToolTip), 
+    sStatusTip(sStatus?sStatus:sToolTip), 
+    sPixmap(sPixmap), iAccel(iAcc), _pcAction(0)
 {
-  if (sToolTipText && !sWhatsThis) sWhatsThis = sToolTipText;
-  if (sToolTipText && !sStatusTip) sStatusTip = sToolTipText;
 }
 
 CommandBase::~CommandBase()
@@ -368,8 +367,8 @@ QAction * ToggleCommand::createAction(void)
 
 // -------------------------------------------------------------------------
 
-CommandGroup::CommandGroup(const char* name, bool dropdown)
-  :Command(name), _dropdown(dropdown)
+CommandGroup::CommandGroup(const char* name, bool exclusive, bool dropdown)
+  :Command(name), _exclusive(exclusive), _dropdown(dropdown)
 {
 }
 
@@ -382,7 +381,7 @@ QAction * CommandGroup::createAction(void)
 {
   QActionGroup *pcAction;
   pcAction = new ActionGroup( this, getMainWindow(), sName );
-  pcAction->setExclusive( true );
+  pcAction->setExclusive( _exclusive );
   pcAction->setUsesDropDown( _dropdown );
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setMenuText(QObject::tr(sMenuText));
@@ -426,8 +425,8 @@ QAction * CommandGroup::createAction(void)
         pSubAction->setWhatsThis ( QObject::tr( (*it)->getToolTipText() ) );
       else
         pSubAction->setWhatsThis ( QObject::tr( getWhatsThis() ) );
-      if( sPixmap )
-        pSubAction->setIconSet( Gui::BitmapFactory().pixmap( sPixmap ) );
+      if( (*it)->getPixmap() )
+        pSubAction->setIconSet( Gui::BitmapFactory().pixmap( (*it)->getPixmap() ) );
       pSubAction->setAccel( (*it)->getAccel() );
 
       pSubAction->setToggleAction( true );

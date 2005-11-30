@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qdir.h>
+# include <qfiledialog.h>
+# include <qfileinfo.h>
 # include <qlineedit.h>
 # include <qmessagebox.h>
 # include <qtimer.h>
@@ -432,12 +434,6 @@ StdCmdOnlineHelp::StdCmdOnlineHelp( QObject * parent, const char * name )
   wget->setFetchImages( true );
   wget->setFollowRelative( false );
 
-  // set output directory
-  QString path = App::GetApplication().GetHomePath();
-  path += "/doc/";
-  wget->setOutputDirectory( path );
-
-
   connect( wget, SIGNAL( wgetExited() ), this, SLOT( wgetExit() ) );
 }
 
@@ -506,11 +502,51 @@ void StdCmdOnlineHelp::activated(int iMsg)
       wget->setProxy( prx.c_str(), username, password );
     }
 
-    bool ok = wget->startDownload( url.c_str() );
-    if ( ok == false )
-      Base::Console().Error("The tool 'wget' couldn't be found. Please check your installation.");
-    else if ( wget->isDownloading() && _pcAction )
-      _pcAction->setMenuText(tr("Stop downloading"));
+    int loop=3;
+    bool canStart = false;
+
+    // set output directory
+    QString path = App::GetApplication().GetHomePath();
+    path += "/doc/";
+    ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
+    path = QString(hURLGrp->GetASCII( "DownloadLocation", path.latin1() ).c_str());
+
+    while ( loop > 0 )
+    {
+      loop--;
+      QFileInfo fi( path );
+      if ( !fi.permission( QFileInfo::WriteUser ) )
+      {
+        if ( QMessageBox::critical(getMainWindow(), tr("Missing permission"), tr("You don't have write permission to '%1'\n\n"
+                                                       "Do you want to specify another directory?").arg( fi.filePath() ), 
+             QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape) != QMessageBox::Yes )
+        {
+          // exit the command
+          return;
+        }
+        else 
+        {
+          path = QFileDialog::getExistingDirectory();
+          if ( path.isEmpty() )
+            return;
+        }
+      }
+      else
+      {
+        wget->setOutputDirectory( path );
+        canStart = true;
+        break;
+      }
+    }
+
+    if ( canStart )
+    {
+      bool ok = wget->startDownload( url.c_str() );
+      if ( ok == false )
+        Base::Console().Error("The tool 'wget' couldn't be found. Please check your installation.");
+      else if ( wget->isDownloading() && _pcAction )
+        _pcAction->setMenuText(tr("Stop downloading"));
+    }
   }
   else // kill the process now
   {

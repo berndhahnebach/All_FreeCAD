@@ -273,21 +273,32 @@ protected:
   //@}
 };
 
-/**
- * The CommandGroup class groups command items together. 
+/** \brief The CommandGroup class groups command items together. 
+ *
  * In some situations it is useful to group command items together. For example, if you have a 
  * command to set the resolution of a geometry object with several predefined values, such as 
  * 10%, 20%, ..., 100%, only one of these resolutions should be active at any one time, and one 
  * simple way of achieving this is to group the command items together in one command group. 
  *
- * A command group can also be added to a menu or a toolbar as a single unit, with all the command items 
+ * @note The different states must be known at creation time of the action group (@ref createAction()) to create 
+ * the correct number of command items. Later on it is not possible to append or remove items to this group.
+ *
+ * @note The corresponding actions to the command items are always toggle actions. If you want to group non-toogle 
+ * commands together then you should use the Command class instead of the CommandGroup class by adding the wanted
+ * number of Command objects to a sub-widget. for more details refer to the @ref workbench.
+ *
+ * A command group can be added to a menu or a toolbar as a single unit, with all the command items 
  * within the command group appearing as separate menu options and toolbar buttons.
  * @author Werner Mayer
  */
 class GuiExport CommandGroup : public Command
 {
 public:
-  CommandGroup( const char* name, bool dropdown=false );
+  /** If \a exclusive is true only one action be active at any one time, otherwise several actions can be active.
+  /* If \a dropdown is true then a subwidget for the command items gets created, otherwise they will be added 
+   * to the same widget the action group is added to.
+   */
+  CommandGroup( const char* name, bool exclusive=true, bool dropdown=false );
   virtual ~CommandGroup();
 
 protected:
@@ -303,7 +314,8 @@ protected:
    * and the second parameter defines the pixmap.
    */
   std::vector<CommandBase*> _aCommands;
-  /** Does the command items appear in a subwidget or in the same widget as the command itself. */
+  bool _exclusive; /**< This property holds whether the action group does exclusive toggling. */
+  /** This property holds whether the group's actions are displayed in a subwidget of the widgets the action group is added to. */
   bool _dropdown; 
 };
 
