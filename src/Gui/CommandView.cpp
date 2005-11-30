@@ -29,6 +29,8 @@
 # include <qdesktopwidget.h>
 # include <qimage.h>
 # include <qmessagebox.h>
+# include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoPerspectiveCamera.h>
 #endif
 
 

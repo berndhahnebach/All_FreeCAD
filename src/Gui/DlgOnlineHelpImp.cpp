@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <fileinfo.h>
+# include <qfileinfo.h>
 # include <qdir.h>
 # include <qmessagebox.h>
 #endif

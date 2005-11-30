@@ -24,13 +24,20 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <gp_Ax1.hxx>
+# include <gp_Pln.hxx>
+# include <gp_Pnt.hxx>
 # include <OSD_Process.hxx>
 # include <TDF_ChildIterator.hxx>
 # include <TDF_Tool.hxx>
 # include <TCollection_AsciiString.hxx>
 # include <TDataStd_Comment.hxx>
+# include <TDataStd_Geometry.hxx>
 # include <TDataStd_Integer.hxx>
+# include <TDataStd_Plane.hxx>
+# include <TDataStd_Point.hxx>
 # include <TDataStd_Real.hxx>
+# include <TDataStd_RealArray.hxx>
 # include <TDF_ListIteratorOfAttributeList.hxx>
 # include <TDF_Label.hxx>
 # include <TDF_Reference.hxx>

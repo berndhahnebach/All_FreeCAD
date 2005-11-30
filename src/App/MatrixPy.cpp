@@ -133,22 +133,22 @@ App::MatrixPy::MatrixPy(const Base::Matrix4D &rcMatrix, PyTypeObject *T)
 
 PyObject *MatrixPy::PyMake(PyTypeObject *ignored, PyObject *args, PyObject *kwds)	// Python wrapper
 {
-  float a11=1.0, a21=0.0, a31=0.0, a41=0.0;
-  float a12=0.0, a22=1.0, a32=0.0, a42=0.0;
-  float a13=0.0, a23=0.0, a33=1.0, a43=0.0;
-  float a14=0.0, a24=0.0, a34=0.0, a44=1.0; 
+  float a11=1.0, a12=0.0, a13=0.0, a14=0.0;
+  float a21=0.0, a22=1.0, a23=0.0, a24=0.0;
+  float a31=0.0, a32=0.0, a33=1.0, a34=0.0;
+  float a41=0.0, a42=0.0, a43=0.0, a44=1.0;
 
-  if (!PyArg_ParseTuple(args, "|ffffffffffffffff",&a11,&a21,&a31,&a41,
-                                                  &a12,&a22,&a32,&a42,
-                                                  &a13,&a23,&a33,&a43,
-                                                  &a14,&a24,&a43,&a44))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
+  if (!PyArg_ParseTuple(args, "|ffffffffffffffff",&a11,&a12,&a13,&a14,
+                                                  &a21,&a22,&a23,&a24,
+                                                  &a31,&a32,&a33,&a34,
+                                                  &a41,&a42,&a43,&a44))     // convert args: Python->C
+    return NULL;                       // NULL triggers exception
 
   Base::Console().Log("Constructor MatrixPy\n");
-	return new MatrixPy( Matrix4D (a11,a21,a31,a41,
-                                 a12,a22,a32,a42,
-                                 a13,a23,a33,a43,
-                                 a14,a24,a43,a44) );
+	return new MatrixPy( Matrix4D (a11,a12,a13,a14,
+                                 a21,a22,a23,a24,
+                                 a31,a32,a33,a34,
+                                 a41,a42,a43,a44) );
 }
 
 
@@ -168,10 +168,10 @@ PyObject *MatrixPy::_repr(void)
 {
   std::stringstream a;
   a << "App.Matrix ( ";
-  a << "(" << _cMatrix[0][0] << ","<< _cMatrix[1][0] << ","<< _cMatrix[2][0] << ","<< _cMatrix[3][0] << ")" << ",";
-  a << "(" << _cMatrix[0][1] << ","<< _cMatrix[1][1] << ","<< _cMatrix[2][1] << ","<< _cMatrix[3][1] << ")"<< ",";
-  a << "(" << _cMatrix[0][2] << ","<< _cMatrix[1][2] << ","<< _cMatrix[2][2] << ","<< _cMatrix[3][2] << ")"<< ",";
-  a << "(" << _cMatrix[0][3] << ","<< _cMatrix[1][3] << ","<< _cMatrix[2][3] << ","<< _cMatrix[3][3] << ")";
+  a << "(" << _cMatrix[0][0] << ","<< _cMatrix[0][1] << ","<< _cMatrix[0][2] << ","<< _cMatrix[0][3] << ")" << ",";
+  a << "(" << _cMatrix[1][0] << ","<< _cMatrix[1][1] << ","<< _cMatrix[1][2] << ","<< _cMatrix[1][3] << ")"<< ",";
+  a << "(" << _cMatrix[2][0] << ","<< _cMatrix[2][1] << ","<< _cMatrix[2][2] << ","<< _cMatrix[2][3] << ")"<< ",";
+  a << "(" << _cMatrix[3][0] << ","<< _cMatrix[3][1] << ","<< _cMatrix[3][2] << ","<< _cMatrix[3][3] << ")";
   a << ")" << std::endl;
 	return Py_BuildValue("s", a.str().c_str());
 }
