@@ -346,7 +346,7 @@ AC_ARG_ENABLE([debug],
   esac],
   [fc_set_debug=true])
 if $fc_set_debug; then
-	CPPFLAGS="$CPPFLAGS -g -DDEBUG"
+	CPPFLAGS="$CPPFLAGS -g -D_DEBUG"
 else
 	CPPFLAGS="$CPPFLAGS -O2 -DNDEBUG"
 fi

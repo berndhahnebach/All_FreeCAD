@@ -279,7 +279,7 @@ private:
 	// the one and only pointer to the application object
 	static Application *_pcSingelton;
 	/// argument helper function
-	static void ParsOptions(int argc, char ** argv);
+	static void ParseOptions(int argc, char ** argv);
 	/// checks if the environment is allreight
 	static void CheckEnv(void);
 	/// print the help massage

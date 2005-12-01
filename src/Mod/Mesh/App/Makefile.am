@@ -72,8 +72,7 @@ libMesh_la_CPPFLAGS = -DAppMeshExport=
 libMesh_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp \
-		-lFoundation \
-		-lgts
+		-lWm3Foundation
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(WM3_CFLAGS) $(GTS_CFLAGS) -I../../../

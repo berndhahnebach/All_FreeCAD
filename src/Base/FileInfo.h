@@ -47,7 +47,7 @@ class BaseExport FileInfo
     void setFile(const char* name);
     /// set a new file name
     void setFile(const std::string &name){setFile(name.c_str());}
-    /// exists the file?
+    /// Does the file exist?
     bool exists () const;
     /// Returns the file name, including the path (which may be absolute or relative).
     std::string filePath () const;
@@ -77,6 +77,11 @@ class BaseExport FileInfo
     bool isFile () const;
     bool isDir () const;
     unsigned int size () const;
+
+    /**
+     * Creates a directory. Returns TRUE if successful; otherwise returns FALSE.
+     */
+    bool createDirectory( const char* ) const;
 
   protected:
     std::string FileName;

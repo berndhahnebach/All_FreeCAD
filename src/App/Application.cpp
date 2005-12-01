@@ -603,8 +603,8 @@ void Application::initConfig(int argc, char ** argv)
 		mConfig["Debug"] = "0";
 #	endif
 
-	// Pars the options which have impact to the init process
-	ParsOptions(argc,argv);
+	// Parse the options which have impact to the init process
+	ParseOptions(argc,argv);
 
 
 	DBG_TRY
@@ -817,16 +817,44 @@ void Application::logStatus()
 	}
 }
 
-
 void Application::LoadParameters(void)
 {
 	// create standard parameter sets
 	_pcSysParamMngr = new ParameterManager();
 	_pcUserParamMngr = new ParameterManager();
 
-		// Init parameter sets ===========================================================
-	mConfig["UserParameter"]  += mConfig["HomePath"] + "Config_" + mConfig["UserName"] + ".FCParam";
-	mConfig["SystemParameter"] = mConfig["HomePath"] + "AppParam.FCParam";
+	// Init parameter sets ===========================================================
+  //
+  // Default path
+  std::string appData = mConfig["HomePath"];
+
+#if defined (FC_OS_WIN32)
+  const char* APPDATA = 0;//getenv("APPDATA");
+  const char* FreeCADDir = "/FreeCAD/";
+#elif defined(FC_OS_LINUX)
+  const char* APPDATA = getenv("HOME");
+  const char* FreeCADDir = "/.FreeCAD/";
+#else
+  const char* APPDATA = getenv("HOME");
+  const char* FreeCADDir = "/FreeCAD/";
+#endif
+  if ( APPDATA )
+  {
+    std::string newDir = APPDATA; newDir += FreeCADDir;
+    Base::FileInfo fi(newDir.c_str());
+    if ( fi.exists() )
+      appData = newDir;
+		else if ( fi.createDirectory( newDir.c_str() ) )
+      appData = newDir;
+  }
+
+#if defined(FC_OS_LINUX)
+  mConfig["UserParameter"]   = appData + "user.cfg";
+	mConfig["SystemParameter"] = appData + "system.cfg";
+#else
+  mConfig["UserParameter"]   = appData + "Config_" + mConfig["UserName"] + ".FCParam";
+	mConfig["SystemParameter"] = appData + "AppParam.FCParam";
+#endif
 
 	//puts(mConfig["HomePath"].c_str());
 	//puts(mConfig["UserParameter"].c_str());
@@ -851,7 +879,7 @@ void Application::LoadParameters(void)
 }
 
 
-void Application::ParsOptions(int argc, char ** argv)
+void Application::ParseOptions(int argc, char ** argv)
 {
 	static const char Usage[] = \
 	" [Options] files..."\
@@ -1002,7 +1030,7 @@ void Application::ParsOptions(int argc, char ** argv)
         mConfig[temp.str()] = argv[i];
         OpenFileCount++;
       }else{
-        std::cerr << "\nTo many arguments! All arguments above 56534 will be ignored!!";
+        std::cerr << "\nToo many arguments! All arguments above 56534 will be ignored!!";
       }
 
     }

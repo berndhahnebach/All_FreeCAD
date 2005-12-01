@@ -164,3 +164,17 @@ unsigned int FileInfo::size () const
   return 0;
 }
 
+bool FileInfo::createDirectory( const char* directory ) const
+{
+#if defined (FC_OS_WIN32)
+  SECURITY_ATTRIBUTES attr;
+  attr.nLength = sizeof(SECURITY_ATTRIBUTES);
+  attr.lpSecurityDescriptor = NULL;
+  attr.bInheritHandle = FALSE;
+  return CreateDirectory(directory, &attr) ? true : false;
+#elif defined(FC_OS_LINUX)
+  return mkdir( directory ) == 0;
+#else
+# error "FileInfo::createDirectory() not implemented for this platform!"
+#endif
+}
