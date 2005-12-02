@@ -101,12 +101,24 @@ SOQT_OBJECT_ABSTRACT_SOURCE(View3DInventorViewer);
 void View3DInventorViewer::addViewProvider(ViewProviderInventor* pcProvider)
 {
   pcViewProviderRoot->addChild(pcProvider->getRoot());
+
+  SoSeparator* fore = pcProvider->getFrontRoot();
+  if ( fore ) foregroundroot->addChild( fore );
+  SoSeparator* back = pcProvider->getBackRoot ();
+  if ( back ) backgroundroot->addChild( back );
+  
   _ViewProviderSet.insert(pcProvider);
 }
 
 void View3DInventorViewer::removeViewProvider(ViewProviderInventor* pcProvider)
 {
   pcViewProviderRoot->removeChild(pcProvider->getRoot());
+ 
+  SoSeparator* fore = pcProvider->getFrontRoot();
+  if ( fore ) foregroundroot->removeChild( fore );
+  SoSeparator* back = pcProvider->getBackRoot ();
+  if ( back ) backgroundroot->removeChild( back );
+  
   _ViewProviderSet.erase(pcProvider);
 }
 
