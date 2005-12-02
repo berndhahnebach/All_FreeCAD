@@ -50,11 +50,73 @@ using namespace Gui;
 using namespace Gui::Dialog;
 using namespace Gui::DockWnd;
 
+/** \defgroup commands Command Framework
+ * \section Overview
+ * In GUI applications many commands can be invoked via a menu item, a toolbar button or an accelerator key. The answer of Qt to this
+ * challenge is the class \a QAction. A QAction object can be added to a popup menu or a toolbar and keep the state of the menu item and 
+ * the toolbar button synchronized. 
+ *
+ * For example, if the user clicks the menu item of a toggle action then the toolbar button gets also pressed
+ * and vice versa. For more details refer to your Qt documentation.
+ *
+ * \section Drawbacks
+ * Since QAction inherits QObject and emits the \a activated() signal or \a toggled() signal for toggle actions it is very convenient to connect
+ * these signals e.g. with slots of your MainWindow class. But this means that for every action an appropriate slot of MainWindow is necessary
+ * and lead to an inflated MainWindow class. Furthermore, it's simply impossible to provide plugins that may also need special slots -- without
+ * changing the MainWindow class. 
+ *
+ * \section wayout Way out
+ * To solve these problems we have introduced the command framework to decouple QAction and MainWindow. The base class of the framework is
+ * \a CommandBase that represents the link between Qt's QAction world and the FreeCAD's command  world. CommandBase holds a pointer to 
+ * QAction -- and to save memory -- that gets created (@ref CommandBase::createAction()) not before it is added (@ref Command::addTo()) 
+ * to a menu or tollbar.
+ *
+ * \a Action that inherits \a QAction holds a pointer to \a Command that it is created by. So, whenever an action is invoked,
+ * then \a Command::activated() gets called.
+ *
+ * Now, the implementation of the slots of MainWindow can be done in the method \a activated() of subclasses of Command.
+ *
+ * For example, the implementation of the "Open file" command can be done as follows.
+ * \code
+ * class OpenCommand : public Command
+ * {
+ * public:
+ *   OpenCommand() : Command("Std_Open") 
+ *   {
+ *     // set up menu text, status tip, ...
+ *     sMenuText     = "&Open";
+ *     sToolTipText  = "Open a file";
+ *     sWhatsThis    = "Open a file";
+ *     sStatusTip    = "Open a file";
+ *     sPixmap       = "Open"; // name of a registered pixmap
+ *     iAccel        = Qt::CTRL+Qt::Key_O;
+ *   }
+ * protected:
+ *   void activated(int)
+ *   {
+ *     QString filter ... // make a filter of all supported file formats
+ *     QStringList FileList = QFileDialog::getOpenFileNames( filter,QString::null, getMainWindow() );
+ *     for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
+ *       getGuiApplication()->open((*it).latin1());
+ *     }  
+ *   }
+ * };
+ * \endcode
+ * An instance of \a OpenCommand must be created and added to the \a CommandManager to make the class known to FreeCAD. To see how menus and toolbars can be built
+ * go to the @ref workbench.
+ * \subsection commandtype Command types
+ * FreeCAD distinguishes between three kind of commands:
+ * \li Normal (non-toggle) commands represented by \a Command
+ * \li Toggle commands represented by \a ToggleCommand and
+ * \li Groups of commands represented by \ref CommandGroup
+ *
+ * For convenience several predefined macros are provided in \file Command.h.
+ */
+
 CommandBase::CommandBase( const char* sMenu, const char* sToolTip, const char* sWhat, 
                           const char* sStatus, const char* sPixmap, int iAcc)
   : sMenuText(sMenu), sToolTipText(sToolTip), sWhatsThis(sWhat?sWhat:sToolTip), 
-    sStatusTip(sStatus?sStatus:sToolTip), 
-    sPixmap(sPixmap), iAccel(iAcc), _pcAction(0)
+    sStatusTip(sStatus?sStatus:sToolTip), sPixmap(sPixmap), iAccel(iAcc), _pcAction(0)
 {
 }
 
@@ -77,11 +139,17 @@ void CommandBase::languageChange()
 {
   if ( _pcAction )
   {
-    _pcAction->setText      ( QObject::tr( sMenuText    ) );
-    _pcAction->setMenuText  ( QObject::tr( sMenuText    ) );
-    _pcAction->setToolTip   ( QObject::tr( sToolTipText ) );
-    _pcAction->setStatusTip ( QObject::tr( sStatusTip   ) );
-    _pcAction->setWhatsThis ( QObject::tr( sWhatsThis   ) );
+    _pcAction->setText       ( QObject::tr( sMenuText    ) );
+    _pcAction->setMenuText   ( QObject::tr( sMenuText    ) );
+    _pcAction->setToolTip    ( QObject::tr( sToolTipText ) );
+    if ( sStatusTip )
+     _pcAction->setStatusTip ( QObject::tr( sStatusTip   ) );
+    else
+     _pcAction->setStatusTip ( QObject::tr( sToolTipText ) );
+    if ( sWhatsThis )
+      _pcAction->setWhatsThis( QObject::tr( sWhatsThis   ) );
+    else
+      _pcAction->setWhatsThis( QObject::tr( sToolTipText ) );
   }
 }
 
@@ -367,6 +435,86 @@ QAction * ToggleCommand::createAction(void)
 
 // -------------------------------------------------------------------------
 
+CommandItem::CommandItem( CommandGroup* parent, const char* sMenu, const char* sToolTip, const char* sWhat, 
+                          const char* sStatus, const char* sPixmap, int iAcc)
+  : CommandBase( sMenu, sToolTip, sWhat, sStatus, sPixmap, iAcc ), _parent(parent)
+{
+}
+
+CommandItem::~CommandItem()
+{
+}
+
+QAction * CommandItem::createAction()
+{
+  // use the QActionGroup of the parent CommandGroup as parent for the QAction
+  QAction *pcAction;
+  pcAction = new QAction( _parent->getAction() );
+  pcAction->setToggleAction( true );
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+
+  // use the tooltip, status tip and what's this text of the parent group if not set
+  // 
+  // set tool tip
+  if ( sToolTipText )
+    pcAction->setToolTip   ( QObject::tr( sToolTipText ) );
+  else
+    pcAction->setToolTip   ( QObject::tr( _parent->getToolTipText() ) );
+  // set status tip
+  if ( sStatusTip )
+    pcAction->setStatusTip ( QObject::tr( sStatusTip ) );
+  else if ( sToolTipText )
+    pcAction->setStatusTip ( QObject::tr( sToolTipText ) );
+  else
+    pcAction->setStatusTip ( QObject::tr( _parent->getStatusTip() ) );
+  // set what's this
+  if ( sWhatsThis )
+    pcAction->setWhatsThis ( QObject::tr( sWhatsThis ) );
+  else if ( sToolTipText )
+    pcAction->setWhatsThis ( QObject::tr( sToolTipText ) );
+  else
+    pcAction->setWhatsThis ( QObject::tr( _parent->getWhatsThis() ) );
+  if( sPixmap )
+    pcAction->setIconSet( Gui::BitmapFactory().pixmap( sPixmap ) );
+  pcAction->setAccel( iAccel );
+
+  return pcAction;
+}
+
+void CommandItem::languageChange()
+{
+  if ( _pcAction )
+  {
+    _pcAction->setText       ( QObject::tr( sMenuText ) );
+    _pcAction->setMenuText   ( QObject::tr( sMenuText ) );
+
+    // use the tooltip, status tip and what's this text of the parent group if not set
+    // 
+    // set tool tip
+    if ( sToolTipText )
+      _pcAction->setToolTip  ( QObject::tr( sToolTipText ) );
+    else
+      _pcAction->setToolTip  ( QObject::tr( _parent->getToolTipText() ) );
+    // set status tip
+    if ( sStatusTip )
+      _pcAction->setStatusTip( QObject::tr( sStatusTip ) );
+    else if ( sToolTipText )
+      _pcAction->setStatusTip( QObject::tr( sToolTipText ) );
+    else
+      _pcAction->setStatusTip( QObject::tr( _parent->getStatusTip() ) );
+    // set what's this
+    if ( sWhatsThis )
+      _pcAction->setWhatsThis( QObject::tr( sWhatsThis ) );
+    else if ( sToolTipText )
+      _pcAction->setWhatsThis( QObject::tr( sToolTipText ) );
+    else
+      _pcAction->setWhatsThis( QObject::tr( _parent->getWhatsThis() ) );
+  }
+}
+
+// -------------------------------------------------------------------------
+
 CommandGroup::CommandGroup(const char* name, bool exclusive, bool dropdown)
   :Command(name), _exclusive(exclusive), _dropdown(dropdown)
 {
@@ -375,6 +523,43 @@ CommandGroup::CommandGroup(const char* name, bool exclusive, bool dropdown)
 CommandGroup::~CommandGroup()
 {
   _aCommands.clear();
+}
+
+void CommandGroup::languageChange()
+{
+  Command::languageChange();
+  for ( std::vector<CommandItem*>::iterator it = _aCommands.begin(); it != _aCommands.end(); ++it )
+    (*it)->languageChange();
+}
+
+bool CommandGroup::addTo(QWidget* w)
+{
+  // first create the QActionGroup assign to _pcAction and then create the QActions.
+  if (!_pcAction)
+  {
+    _pcAction = createAction();
+    QActionGroup* pcAction = reinterpret_cast<QActionGroup*>(_pcAction);
+    for ( std::vector<CommandItem*>::iterator it = _aCommands.begin(); it != _aCommands.end(); ++it )
+    {
+      if ( strcmp((*it)->getMenuText(), "Separator") == 0)
+      {
+        pcAction->addSeparator();
+      }
+      else if ( !(*it)->_pcAction )
+      {
+        (*it)->_pcAction = (*it)->createAction();
+      }
+    }
+  }
+
+  return _pcAction->addTo( w );
+}
+
+bool CommandGroup::removeFrom(QWidget* w)
+{
+  if (!_pcAction)
+    return false;
+  return _pcAction->removeFrom( w );
 }
 
 QAction * CommandGroup::createAction(void)
@@ -391,47 +576,6 @@ QAction * CommandGroup::createAction(void)
   if(sPixmap)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
   pcAction->setAccel(iAccel);
-
-  for ( std::vector<CommandBase*>::iterator it = _aCommands.begin(); it != _aCommands.end(); ++it )
-  {
-    if ( strcmp((*it)->getMenuText(), "Separator") == 0)
-    {
-      pcAction->addSeparator();
-    }
-    else
-    {
-      QAction* pSubAction = new QAction( pcAction );
-      pSubAction->setText      ( QObject::tr( (*it)->getMenuText() ) );
-      pSubAction->setMenuText  ( QObject::tr( (*it)->getMenuText() ) );
-
-      // use the tooltip, status tip and what's this text of the parent group if not set
-      // 
-      // set tool tip
-      if ( (*it)->getToolTipText() )
-        pSubAction->setToolTip ( QObject::tr( (*it)->getToolTipText() ) );
-      else
-        pSubAction->setToolTip ( QObject::tr( getToolTipText() ) );
-      // set status tip
-      if ( (*it)->getStatusTip() )
-        pSubAction->setStatusTip ( QObject::tr( (*it)->getStatusTip() ) );
-      else if ( (*it)->getToolTipText() )
-        pSubAction->setStatusTip ( QObject::tr( (*it)->getToolTipText() ) );
-      else
-        pSubAction->setStatusTip ( QObject::tr( getStatusTip() ) );
-      // set what's this
-      if ( (*it)->getWhatsThis() )
-        pSubAction->setWhatsThis ( QObject::tr( (*it)->getWhatsThis() ) );
-      else if ( (*it)->getToolTipText() )
-        pSubAction->setWhatsThis ( QObject::tr( (*it)->getToolTipText() ) );
-      else
-        pSubAction->setWhatsThis ( QObject::tr( getWhatsThis() ) );
-      if( (*it)->getPixmap() )
-        pSubAction->setIconSet( Gui::BitmapFactory().pixmap( (*it)->getPixmap() ) );
-      pSubAction->setAccel( (*it)->getAccel() );
-
-      pSubAction->setToggleAction( true );
-    }
-  }
 
   return pcAction;
 }

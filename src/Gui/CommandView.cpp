@@ -124,8 +124,8 @@ StdCameraType::StdCameraType()
   const char* sMenuText1  = QT_TR_NOOP("Orthographic view");
   const char* sMenuText2  = QT_TR_NOOP("Perspective view");
   
-  _aCommands.push_back( new CommandBase(sMenuText1,sMenuText1,sMenuText1,sMenuText1/*,"ortho_xpm"*/));
-  _aCommands.push_back( new CommandBase(sMenuText2,sMenuText2,sMenuText2,sMenuText2/*,"perspective_xpm"*/));
+  _aCommands.push_back( new CommandItem(this, sMenuText1,sMenuText1,sMenuText1,sMenuText1/*,"ortho_xpm"*/,      0,Qt::Key_O) );
+  _aCommands.push_back( new CommandItem(this, sMenuText2,sMenuText2,sMenuText2,sMenuText2/*,"perspective_xpm"*/,0,Qt::Key_P) );
 }
 
 void StdCameraType::activated(int iMsg)
@@ -422,9 +422,9 @@ StdViewDockUndockFullscreen::StdViewDockUndockFullscreen()
   sWhatsThis  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
   sStatusTip  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
   
-  _aCommands.push_back( new CommandBase("Docked",0,0,0,0,Qt::Key_D));
-  _aCommands.push_back( new CommandBase("Undocked",0,0,0,0,Qt::Key_U));
-  _aCommands.push_back( new CommandBase("Fullscreen",0,0,0,0,Qt::Key_F));
+  _aCommands.push_back( new CommandItem(this, "Docked",    0,0,0,0,Qt::Key_D) );
+  _aCommands.push_back( new CommandItem(this, "Undocked",  0,0,0,0,Qt::Key_U) );
+  _aCommands.push_back( new CommandItem(this, "Fullscreen",0,0,0,0,Qt::Key_F) );
 }
 
 void StdViewDockUndockFullscreen::activated(int iMsg)

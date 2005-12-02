@@ -2822,18 +2822,30 @@ Wollen Sie wirklich fortfahren?</translation>
         </message>
     </context>
     <context>
-        <name>StdViewFullScreen</name>
+        <name>StdViewDockUndockFullscreen</name>
         <message>
             <source>Standard-View</source>
             <translation>Standardansicht</translation>
+        </message>
+        <message>
+            <source>Display mode</source>
+            <translation>Anzeige-Modus</translation>
+        </message>
+        <message>
+            <source>Docked</source>
+            <translation>Andocken</translation>
+        </message>
+        <message>
+            <source>Undocked</source>
+            <translation>Abdocken</translation>
         </message>
         <message>
             <source>Fullscreen</source>
             <translation>Vollbild</translation>
         </message>
         <message>
-            <source>Display the active view in fullscreen</source>
-            <translation>Aktives Fenster im Vollbild-Modus anzeigen</translation>
+            <source>Display the active view either in fullscreen, in undocked or docked mode</source>
+            <translation>Aktives Fenster im Vollbild-Modus, im abgedockten oder angedockten Modus anzeigen</translation>
         </message>
     </context>
     <context>

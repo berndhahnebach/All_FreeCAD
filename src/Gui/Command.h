@@ -77,8 +77,10 @@ public:
 
   /** @name Methods to override when creating a new command */
   //@{
+protected:
   /// Creates the used QAction when adding to a widget. The default implementation does nothing.
   virtual QAction * createAction(void);
+public:
   /// Reassigns QAction stuff after the language has changed. 
   virtual void languageChange();
   //@}
@@ -225,7 +227,6 @@ public:
   bool hasActiveDocument(void);
   /// true when there is a document and a Feature with Name
   bool hasFeature(const char* Name);
-
   //@}
 
   /** @name checking of internal state */
@@ -272,6 +273,34 @@ protected:
   //@}
 };
 
+/** The CommandItem class represents an item of a group of commands and is used therefore in
+ * @ref CommandGroup.
+ * @author Werner Mayer
+ */
+class CommandGroup;
+class GuiExport CommandItem : public CommandBase 
+{
+public:
+  CommandItem( CommandGroup* parent, const char* sMenu, const char* sToolTip=0, const char* sWhat=0, 
+               const char* sStatus=0, const char* sPixmap=0, int accel=0 );
+  virtual ~CommandItem();
+
+  /** @name Methods to override when creating a new command */
+  //@{
+protected:
+  /// Creates the used toggle QAction object for the QActionGroup.
+  QAction * createAction(void);
+public:
+  /// Reassigns QAction stuff after the language has changed. 
+  void languageChange();
+  //@}
+
+private:
+  CommandGroup* _parent;
+  // friends
+  friend class CommandGroup;
+};
+
 /** \brief The CommandGroup class groups command items together.
  *
  * In some situations it is useful to group command items together. For example, if you have a
@@ -300,6 +329,13 @@ public:
   CommandGroup( const char* name, bool exclusive=true, bool dropdown=false );
   virtual ~CommandGroup();
 
+  /// Reassigns QActionGroup stuff after the language has changed. 
+  void languageChange();
+  /// adds this command to arbitrary widgets
+  bool addTo(QWidget *);
+  /// removes this command from arbitrary widgets
+  bool removeFrom(QWidget *pcWidget);
+
 protected:
   /** @name Methodes to override when creating a new command */
   //@{
@@ -312,7 +348,7 @@ protected:
    * A list of subcommands where the first parameter is the menu text
    * and the second parameter defines the pixmap.
    */
-  std::vector<CommandBase*> _aCommands;
+  std::vector<CommandItem*> _aCommands;
   bool _exclusive; /**< This property holds whether the action group does exclusive toggling. */
   /** This property holds whether the group's actions are displayed in a subwidget of the widgets the action group is added to. */
   bool _dropdown; 
