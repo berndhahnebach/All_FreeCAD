@@ -25,6 +25,7 @@
 #define MATRIX_H
 
 //#include "Definitions.h"
+#include <assert.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -169,7 +170,11 @@ inline Matrix4D& Matrix4D::operator= (const Matrix4D& rclMtrx)
     for (is = 0; is < 4; is++) 
   {
 #if _DEBUG
+# if defined (_MSC_VER)
     assert( ! _isnan(rclMtrx.dMtrx4D[iz][is]) );
+# elif defined(__GNUC__)
+    assert( !  isnan(rclMtrx.dMtrx4D[iz][is]) );
+# endif
 #endif
     dMtrx4D[iz][is] = rclMtrx.dMtrx4D[iz][is];
   }

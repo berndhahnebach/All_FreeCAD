@@ -32,9 +32,6 @@
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 
-using Base::Console;
-
-
 #include "MeshPy.h"
 #include "Mesh.h"
 #include "MeshAlgos.h"
@@ -46,6 +43,12 @@ using Base::Console;
 #include "Core/Iterator.h"
 #include <Mod/Part/App/TopologyPy.h>
 
+// if not defined then set to current version of LibPack
+#ifndef WM3_VERSION
+# define WM3_VERSION 33
+#endif
+
+using Base::Console;
 using namespace Mesh;
 using namespace MeshCore;
 
@@ -625,7 +628,11 @@ PYFUNCIMP_D(MeshPy,testDelaunay)
       aPnts.push_back( cP );
     }
 
+#if WM3_VERSION <= 33
     Wm3::Delaunay3<float> triaDel(aPnts.size(), &(aPnts[0]), MESH_MIN_PT_DIST, false);
+#else
+    Wm3::Delaunay3<float> triaDel(aPnts.size(), &(aPnts[0]), MESH_MIN_PT_DIST, false, Wm3::Query::QT_INTEGER);
+#endif
     int cnt; int* idx;
 
     if ( triaDel.GetHull(cnt, idx) )

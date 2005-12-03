@@ -6,6 +6,8 @@
 AC_PREREQ(2.57)
 AC_INIT(FreeCAD,0.33,[Juergen Riegel],FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
+#AC_INIT(Main/Main.cpp)
+#AM_INIT_AUTOMAKE(FreeCAD, 0.33)
 AM_CONFIG_HEADER([config.h])
 #AC_CANONICAL_HOST
 AC_LANG_CPLUSPLUS
@@ -37,6 +39,7 @@ AC_CHECK_HEADERS(siginfo.h bits/sigset.h bstring.h sys/types.h sys/select.h)
 #AC_CHECK_HEADERS(X11/extensions/multibuf.h)
 AC_CHECK_HEADERS(sys/filio.h sys/mman.h libc.h)
 AC_CHECK_HEADERS([sstream],,[AC_MSG_ERROR([This header is needed. Bye.])])
+#AC_STDC_HEADERS
 
 
 ## Check for programs
@@ -181,8 +184,11 @@ AC_ARG_WITH(wildmagic-libs,
 	[fc_wm3_libs=$withval],
 	[fc_wm3_libs=/usr/lib])
 
+AC_CHECK_FILE($fc_wm3_incs/Wm3Query.h,fc_wm3_ver=34,fc_wm3_ver=33)
+
 AC_SUBST([WM3_CFLAGS], [-I$fc_wm3_incs])
 AC_SUBST([WM3_LIBS], [-L$fc_wm3_libs])
+AC_SUBST([WM3_VERSION], [$fc_wm3_ver])
 
 AC_MSG_RESULT([WildMagic3 $WM3_CFLAGS : $WM3_LIBS])
 
@@ -263,6 +269,25 @@ all_includes="$all_includes -I$fc_coin_incs"
 all_libraries="$all_libraries -L$fc_coin_libs"
 AC_MSG_RESULT([Coin $fc_coin_incs : $fc_coin_libs])
 
+#AC_PATH_PROG(COINCONFIG, [coin-config])
+#
+#if test "x$COINCONFIG" = x; then
+#	AC_ERROR([Could not find coin-config])
+#fi
+#
+#coin_cxxflags=`$COINCONFIG --cxxflags`
+#coin_cppflags=`$COINCONFIG --cppflags`
+#dnl Strip away any optimization
+#coin_cxxflags=`echo \$coin_cxxflags | sed 's/-O[[[:digit:]]]//g'`
+#coin_cppflags=`echo \$coin_cppflags | sed 's/-O[[[:digit:]]]//g'`
+#coin_ldflags=`$COINCONFIG --ldflags`
+#coin_libs=`$COINCONFIG --libs`
+#
+#AC_SUBST(coin_cxxflags)
+#AC_SUBST(coin_cppflags)
+#AC_SUBST(coin_ldflags)
+#AC_SUBST(coin_libs)
+
 # Alternative from Coin3D, will use this soon
 #SIM_AC_HAVE_COIN_IFELSE(,AC_MSG_ERROR([Coin3D not found]))
 
@@ -297,6 +322,52 @@ AC_CHECK_FILE($fc_soqt_libs/libSoQt.so,,
 all_includes="$all_includes -I$fc_soqt_incs"
 all_libraries="$all_libraries -L$fc_soqt_libs"
 AC_MSG_RESULT([SoQt $fc_soqt_incs : $fc_soqt_libs])
+
+#AC_PATH_PROG(SOQTCONFIG, [soqt-config])
+#
+# if test "x$SOQTCONFIG" = x; then
+# 	AC_ERROR([Could not find soqt-config])
+# fi
+# soqt_cxxflags=`$SOQTCONFIG --cxxflags`
+# soqt_cppflags=`$SOQTCONFIG --cppflags`
+# dnl Strip away any opti.
+# soqt_cxxflags=`echo \$soqt_cxxflags | sed 's/-O[[[:digit:]]]//g'`
+# soqt_cppflags=`echo \$soqt_cppflags | sed 's/-O[[[:digit:]]]//g'`
+# soqt_ldflags=`$SOQTCONFIG --ldflags`
+# soqt_libs=`$SOQTCONFIG --libs`
+#
+# AC_SUBST(soqt_cxxflags)
+# AC_SUBST(soqt_cppflags)
+# AC_SUBST(soqt_ldflags)
+# AC_SUBST(soqt_libs)
+#
+# if test x"${with_inventor+set}" = x"set" &&
+#    test x"${with_inventor}" != x"no"; then
+#   SIM_AC_HAVE_INVENTOR_IFELSE([
+#     CPPFLAGS="$sim_ac_inventor_cppflags $CPPFLAGS"
+#     LDFLAGS="$sim_ac_inventor_ldflags $LDFLAGS"
+#     LIBS="$sim_ac_inventor_libs $LIBS"
+#   ], [AC_MSG_ERROR(couldn't compile and link against Open Inventor)])
+#   SIM_AC_CONFIGURATION_SETTING([Open Inventor brand], [SGI/TGS Inventor])
+# else
+#   SIM_AC_HAVE_COIN_IFELSE([
+#     CPPFLAGS="$CPPFLAGS $sim_ac_coin_cppflags"
+#     LDFLAGS="$LDFLAGS $sim_ac_coin_ldflags"
+#     LIBS="$sim_ac_coin_libs $LIBS"
+#   ], [AC_MSG_ERROR(couldn't compile and link against Coin)])
+#   SIM_AC_CONFIGURATION_SETTING([Open Inventor brand], [Coin])
+# fi
+#
+# Check for SoQt
+#
+# SIM_AC_HAVE_SOQT_IFELSE([
+#     CPPFLAGS="$CPPFLAGS $sim_ac_soqt_cppflags"
+#     LDFLAGS="$LDFLAGS $sim_ac_soqt_ldflags"
+#
+#     LIBS="$sim_ac_coin_libs $LIBS"
+#   ], [AC_MSG_ERROR(couldn't compile and link against SoQt)])
+#   SIM_AC_CONFIGURATION_SETTING([Open Inventor brand], [SoQt])
+#
 
 # Alternative from Coin3D, will use this soon
 #SIM_AC_HAVE_SOQT_IFELSE(,AC_MSG_ERROR([SoQt not found]))
@@ -427,6 +498,11 @@ CPPFLAGS="$CPPFLAGS -DBaseExport= -DGuiExport= -DAppExport= -DDocExport=  -DFC_O
 CXX=g++
 CXXFLAGS="-Wno-deprecated -frtti"
 LDFLAGS="-L$all_libraries"
+
+#AC_SUBST(CXXFLAGS)
+#AC_SUBST(LDFLAGS)
+#AC_SUBST(CFLAGS)
+#AC_SUBST(FFLAGS)
 
 # Qt tools already defined in Qt test
 #AC_SUBST([MOC],[moc])

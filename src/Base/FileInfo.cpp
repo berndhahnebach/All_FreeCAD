@@ -33,9 +33,10 @@
 
 #ifndef _PreComp_
 # include <assert.h>
-#	include <string>
+# include <string>
 # ifdef FC_OS_LINUX
-#	  include <unistd.h>
+# include <unistd.h>
+# include <sys/stat.h>
 # endif
 #endif
 
@@ -166,15 +167,16 @@ unsigned int FileInfo::size () const
 
 bool FileInfo::createDirectory( const char* directory ) const
 {
-#if defined (FC_OS_WIN32)
+#if defined (_MSC_VER)
   SECURITY_ATTRIBUTES attr;
   attr.nLength = sizeof(SECURITY_ATTRIBUTES);
   attr.lpSecurityDescriptor = NULL;
   attr.bInheritHandle = FALSE;
   return CreateDirectory(directory, &attr) ? true : false;
-#elif defined(FC_OS_LINUX)
-  return mkdir( directory ) == 0;
+#elif defined(__GNUC__)
+  return mkdir( directory, 0777 ) == 0;
 #else
 # error "FileInfo::createDirectory() not implemented for this platform!"
 #endif
 }
+

@@ -221,6 +221,24 @@ void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
         cmdName = (*it)->getName(); // store the last one
         listBoxAssigned->insertItem( (*it)->getName() );
       }
+
+      // check also CommandGroup items
+      CommandGroup* cmdgrp = dynamic_cast<CommandGroup*>(*it);
+      if ( cmdgrp )
+      {
+        const std::vector<CommandItem*>& items = cmdgrp->getItems();
+        for ( std::vector<CommandItem*>::const_iterator it2 = items.begin(); it2 != items.end(); ++it2 )
+        {
+          if ( (*it2)->getAction() && (*it2)->getAction()->accel() == ks )
+          {
+            // use the name of the CommandGroup
+            i++;
+            cmdName = (*it)->getName(); // store the last one
+            listBoxAssigned->insertItem( (*it)->getName() );
+            break;
+          }
+        }
+      }
     }
 
     if ( i > 1 )

@@ -67,7 +67,7 @@ libMesh_la_SOURCES=\
 
 # the library search path.
 libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) $(WM3_LIBS) $(GTS_LIBS) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libMesh_la_CPPFLAGS = -DAppMeshExport=
+libMesh_la_CPPFLAGS = -DAppMeshExport= -DWM3_VERSION=$(WM3_VERSION)
 
 libMesh_la_LIBADD   = \
 		-lFreeCADBase \

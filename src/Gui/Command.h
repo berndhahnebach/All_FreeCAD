@@ -335,6 +335,8 @@ public:
   bool addTo(QWidget *);
   /// removes this command from arbitrary widgets
   bool removeFrom(QWidget *pcWidget);
+  /// returns an array of items
+  std::vector<CommandItem*> getItems() const { return _aCommands; }
 
 protected:
   /** @name Methodes to override when creating a new command */
