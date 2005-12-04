@@ -33,6 +33,7 @@
 
 namespace Gui {
 class Command;
+class CommandBase;
 namespace Dialog {
 
 /** Shows an overview of all available commands of all groups and modules.
@@ -58,6 +59,7 @@ protected:
 
 private:
   QMap<QString, QString> _cmdGroups;
+  QMap<QString, QMap<QString, CommandBase*> > _groupCommands;
 };
 
 } // namespace Dialog

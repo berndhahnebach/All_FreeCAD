@@ -288,46 +288,68 @@ void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
 void Workbench::showOrHideToolBars( bool read ) const
 {
   QPtrList<QToolBar> bars = ToolBarManager::getInstance()->toolBars();
-	QToolBar* bar;
+  QToolBar* bar;
   if ( read )
   {
-	  for ( bar=bars.first(); bar; bar=bars.next() )
-	  {
-	    if ( !App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetBool( bar->name(), true) )
-	  	  bar->hide();
-	  }
+    for ( bar=bars.first(); bar; bar=bars.next() )
+    {
+      if ( !App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetBool( bar->name(), true) )
+        bar->hide();
+    }
   }
   else // write
   {
-	  for ( bar=bars.first(); bar; bar=bars.next() )
-	  {
-	    App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->SetBool( bar->name(), !bar->isHidden() );
-	  }
+    for ( bar=bars.first(); bar; bar=bars.next() )
+    {
+      App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->SetBool( bar->name(), !bar->isHidden() );
+    }
   }
 }
 
 bool Workbench::activate()
 {
-	// Assigns user defined accelerators
+  // Assigns user defined accelerators
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter();
   if ( hGrp->HasGroup("Shortcut") )
   {
-  	hGrp = hGrp->GetGroup("Shortcut");
-  	std::map<std::string,std::string> items = hGrp->GetASCIIMap();
-	  CommandManager & cCmdMgr = Application::Instance->commandManager();
-	  
-	  for ( std::map<std::string, std::string>::iterator it = items.begin(); it != items.end(); ++it )
-	  {
-	  	Command* cmd = cCmdMgr.getCommandByName( it->first.c_str() );
-	  	if ( cmd && cmd->getAction() )
-	  	{
+    hGrp = hGrp->GetGroup("Shortcut");
+    std::map<std::string,std::string> items = hGrp->GetASCIIMap();
+
+    QMap<QString, CommandBase*> nameCommands;
+    const CommandManager& cCmdMgr = Application::Instance->commandManager();
+    const std::map<std::string,Command*>& sCommands = cCmdMgr.getCommands();
+
+    for (std::map<std::string,Command*>::const_iterator ci = sCommands.begin(); ci != sCommands.end(); ++ci)
+    {
+      CommandGroup* cmdGrp = dynamic_cast<CommandGroup*>(ci->second);
+      if ( cmdGrp )
+      {
+        int i=0;
+        std::vector<CommandItem*> items = cmdGrp->getItems();
+        for ( std::vector<CommandItem*>::const_iterator e = items.begin(); e != items.end(); ++e )
+        {
+          QString sName = QString("%1_%2").arg(ci->second->getName()).arg(i++);
+          nameCommands[sName] = *e;
+        }
+      }
+      else
+      {
+        nameCommands[ci->second->getName()] = ci->second;
+      }
+    }
+
+    for ( std::map<std::string, std::string>::iterator it = items.begin(); it != items.end(); ++it )
+    {
+      CommandBase* cmd = nameCommands[ it->first.c_str() ];
+      if ( cmd && cmd->getAction() )
+      {
         QString str = it->second.c_str();
-	  		QKeySequence shortcut = str;
-	  		cmd->getAction()->setAccel( shortcut );
-	  	}
-	  }
+        QKeySequence shortcut = str;
+        cmd->getAction()->setAccel( shortcut );
+      }
+    }
   }
-	
+
   // just checks the toolbars if they must be hidden
   showOrHideToolBars( false );
 
@@ -628,12 +650,12 @@ void PythonWorkbench::removeMenu( const QString& menu ) const
 
 QStringList PythonWorkbench::listMenus() const
 {
-	QStringList menus;
-	QPtrList<MenuItem> items = _menuBar->getItems();
-	MenuItem* item;
-	for ( item=items.first(); item; item=items.next() )
-		menus << item->command();
-	return menus;
+  QStringList menus;
+  QPtrList<MenuItem> items = _menuBar->getItems();
+  MenuItem* item;
+  for ( item=items.first(); item; item=items.next() )
+    menus << item->command();
+  return menus;
 }
 
 void PythonWorkbench::appendContextMenu( const QString& menu, const QStringList& items ) const
@@ -666,12 +688,12 @@ void PythonWorkbench::removeToolbar( const QString& bar) const
 
 QStringList PythonWorkbench::listToolbars() const
 {
-	QStringList bars;
-	QPtrList<ToolBarItem> items = _toolBar->getItems();
-	ToolBarItem* item;
-	for ( item=items.first(); item; item=items.next() )
-		bars << item->command();
-	return bars;
+  QStringList bars;
+  QPtrList<ToolBarItem> items = _toolBar->getItems();
+  ToolBarItem* item;
+  for ( item=items.first(); item; item=items.next() )
+    bars << item->command();
+  return bars;
 }
 
 void PythonWorkbench::appendCommandbar( const QString& bar, const QStringList& items ) const
@@ -696,10 +718,10 @@ void PythonWorkbench::removeCommandbar( const QString& bar ) const
 
 QStringList PythonWorkbench::listCommandbars() const
 {
-	QStringList bars;
-	QPtrList<ToolBarItem> items = _commandBar->getItems();
-	ToolBarItem* item;
-	for ( item=items.first(); item; item=items.next() )
-		bars << item->command();
-	return bars;
+  QStringList bars;
+  QPtrList<ToolBarItem> items = _commandBar->getItems();
+  ToolBarItem* item;
+  for ( item=items.first(); item; item=items.next() )
+    bars << item->command();
+  return bars;
 }

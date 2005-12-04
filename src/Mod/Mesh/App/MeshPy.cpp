@@ -628,7 +628,7 @@ PYFUNCIMP_D(MeshPy,testDelaunay)
       aPnts.push_back( cP );
     }
 
-#if WM3_VERSION <= 33
+#if WM3_VERSION <= 330
     Wm3::Delaunay3<float> triaDel(aPnts.size(), &(aPnts[0]), MESH_MIN_PT_DIST, false);
 #else
     Wm3::Delaunay3<float> triaDel(aPnts.size(), &(aPnts[0]), MESH_MIN_PT_DIST, false, Wm3::Query::QT_INTEGER);

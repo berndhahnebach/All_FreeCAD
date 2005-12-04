@@ -184,13 +184,23 @@ AC_ARG_WITH(wildmagic-libs,
 	[fc_wm3_libs=$withval],
 	[fc_wm3_libs=/usr/lib])
 
-AC_CHECK_FILE($fc_wm3_incs/Wm3Query.h,fc_wm3_ver=34,fc_wm3_ver=33)
+AC_CHECK_FILE($fc_wm3_incs/Wm3Query.h,fc_wm3_ver=340,fc_wm3_ver=330)
+
+# Set the appropriate library name
+AC_MSG_RESULT(["Test Wm3 version"])
+if test x"$fc_wm3_ver" = x"330"; then
+	fc_wm3_libs="-L$fc_wm3_libs -lWildMagic3"
+	fc_wm3_text="Version <= 3.3.0"
+else
+	fc_wm3_libs="-L$fc_wm3_libs -lWm3Foundation"
+	fc_wm3_text="Version >= 3.4.0"
+fi
 
 AC_SUBST([WM3_CFLAGS], [-I$fc_wm3_incs])
-AC_SUBST([WM3_LIBS], [-L$fc_wm3_libs])
+AC_SUBST([WM3_LIBS], [$fc_wm3_libs])
 AC_SUBST([WM3_VERSION], [$fc_wm3_ver])
 
-AC_MSG_RESULT([WildMagic3 $WM3_CFLAGS : $WM3_LIBS])
+AC_MSG_RESULT([WildMagic3 ($fc_wm3_text) $WM3_CFLAGS : $WM3_LIBS])
 
 # checking for GTS
 # **************************************************************************

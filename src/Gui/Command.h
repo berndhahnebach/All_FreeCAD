@@ -496,47 +496,35 @@ public:
    *  name is given the standard commands (build in ) are returned.
    *  @see Command
    */
-  std::vector <Command*> getModuleCommands(const char *sModName);
-
-  /** Returns the module name of the corresponding Command
-   * object. If the command cannot be found the message 'Not found'
-   * is returned.
-   */
-  std::string getAppModuleName(QAction* pActions);
-
-  /** Returns the module name of the corresponding Command
-   * object. If the command cannot be found the message 'Not found'
-   * is returned.
-   */
-  std::string getAppModuleNameByName(const char* sName);
+  std::vector <Command*> getModuleCommands(const char *sModName) const;
 
   /** Returns all commands registered in the manager
-   *  delivers a vector of all comands. If you intereted in commands of 
+   *  delivers a vector of all comands. If you intereted in commands of
    *  of a special app module use GetModuleCommands()
    *  @see Command
    */
-  std::vector <Command*> getAllCommands(void);
+  std::vector <Command*> getAllCommands(void) const;
 
   /** Returns all commands of a group
-   *  delivers a vector of all comands in the given group. 
+   *  delivers a vector of all comands in the given group.
    */
-  std::vector <Command*> getGroupCommands(const char *sGrpName);
+  std::vector <Command*> getGroupCommands(const char *sGrpName) const;
 
   /** Returns the command registered in the manager with the name sName
-   *  If nothing is found it returns a null pointer 
+   *  If nothing is found it returns a null pointer
    *  @see Command
    */
-  Command* getCommandByName(const char* sName);
+  Command* getCommandByName(const char* sName) const;
 
-  /**  
+  /**
    * Runs the command
    */
   void runCommandByName (const char* sName);
 
-  /// method is OBSOLET use GetModuleCommands() or GetAllCommands() 
-  const std::map<std::string, Command*>& getCommands() { return _sCommands; }
+  /// method is OBSOLET use GetModuleCommands() or GetAllCommands()
+  const std::map<std::string, Command*>& getCommands() const { return _sCommands; }
   /// get frequently called by the AppWnd to check the commands are active
-  void testActive(void); 
+  void testActive(void);
 private:
   std::map<std::string,Command*> _sCommands;
 };

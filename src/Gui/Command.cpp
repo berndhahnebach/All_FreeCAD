@@ -853,11 +853,11 @@ void CommandManager::removeFrom(const char* Name,QWidget *pcWidget)
   }
 }
 
-std::vector <Command*> CommandManager::getModuleCommands(const char *sModName)
+std::vector <Command*> CommandManager::getModuleCommands(const char *sModName) const
 {
   std::vector <Command*> vCmds;
 
-  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+  for( std::map<std::string, Command*>::const_iterator It= _sCommands.begin();It!=_sCommands.end();It++)
   {
     if( strcmp(It->second->getAppModuleName(),sModName) == 0)
       vCmds.push_back(It->second);
@@ -866,33 +866,11 @@ std::vector <Command*> CommandManager::getModuleCommands(const char *sModName)
   return vCmds;
 }
 
-std::string CommandManager::getAppModuleName(QAction* pAction)
-{
-  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();++It)
-  {
-    if ( pAction && It->second->getAction() == pAction )
-      return It->second->getAppModuleName();
-  }
-
-  return "Not found";
-}
-
-std::string CommandManager::getAppModuleNameByName(const char* sName)
-{
-  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();++It)
-  {
-    if ( strcmp(It->second->getName(), sName) == 0 )
-      return It->second->getAppModuleName();
-  }
-
-  return "Not found";
-}
-
-std::vector <Command*> CommandManager::getAllCommands(void)
+std::vector <Command*> CommandManager::getAllCommands(void) const
 {
   std::vector <Command*> vCmds;
 
-  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+  for( std::map<std::string, Command*>::const_iterator It= _sCommands.begin();It!=_sCommands.end();It++)
   {
     vCmds.push_back(It->second);
   }
@@ -900,11 +878,11 @@ std::vector <Command*> CommandManager::getAllCommands(void)
   return vCmds;
 }
 
-std::vector <Command*> CommandManager::getGroupCommands(const char *sGrpName)
+std::vector <Command*> CommandManager::getGroupCommands(const char *sGrpName) const
 {
   std::vector <Command*> vCmds;
 
-  for( std::map<std::string, Command*>::iterator It= _sCommands.begin();It!=_sCommands.end();It++)
+  for( std::map<std::string, Command*>::const_iterator It= _sCommands.begin();It!=_sCommands.end();It++)
   {
     if( strcmp(It->second->getGroupName(),sGrpName) == 0)
       vCmds.push_back(It->second);
@@ -913,15 +891,10 @@ std::vector <Command*> CommandManager::getGroupCommands(const char *sGrpName)
   return vCmds;
 }
 
-Command* CommandManager::getCommandByName(const char* sName)
+Command* CommandManager::getCommandByName(const char* sName) const
 {
-  Command* pCom = NULL;
-  if (_sCommands.find(sName) != _sCommands.end())
-  {
-    pCom = _sCommands[sName];
-  }
-
-  return pCom;
+  std::map<std::string,Command*>::const_iterator it = _sCommands.find( sName );
+  return ( it != _sCommands.end() ) ? it->second : 0;
 }
 
 void CommandManager::runCommandByName (const char* sName)
