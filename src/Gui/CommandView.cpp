@@ -181,7 +181,7 @@ void StdCmdToggleVisibility::activated(int iMsg)
     std::vector<App::Feature*> sel = Gui::Selection().getSelectedFeatures();
     for(std::vector<App::Feature*>::const_iterator It=sel.begin();It!=sel.end();It++)
     {
-      if(getActiveGuiDocument()->isShow(*It))
+      if(getActiveGuiDocument()->isShow((*It)->getName()))
         doCommand(Gui,"Gui.hide(\"%s\")", (*It)->getName());
 //        getActiveGuiDocument()->setHide(*It);
       else

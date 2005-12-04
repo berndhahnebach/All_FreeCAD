@@ -68,41 +68,58 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
 
   pcActViewProvider = 0l;
   
+  // attache Parameter Observer
+  hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
+  hGrp->Attach(this);
+
+  // create the inventor widget and set the defaults
   _viewer = new View3DInventorViewer(this);
-
-
-
   setViewerDefaults();
+  _viewer->show();
+
+
 }
 
 View3DInventor::~View3DInventor()
 {
+  hGrp->Detach(this);
+
   delete _viewer;
 //  pcSepRoot->unref();
 }
 
-void View3DInventor::updatePrefs(void)
-{
-
-    // Importing the User special ++++++++++++++++++++++++++++++++++++++++++++++++
-/*    SoInput in;
-    SbBool ok = in.openFile(fn.latin1());
-    if (!ok) throw FCException("FCView3DInventor::SetViewerDefaults() wrong file name for user special!");
-    SoSeparator * pcSepUserSpecial = SoDB::readAll(&in);
-  pcSepRoot->addChild(pcSepUserSpecial);
-*/
-}
 
 #include <Inventor/nodes/SoCylinder.h>
 #include <Inventor/nodes/SoTransform.h>
 
 void View3DInventor::setViewerDefaults(void)
 {
+  Base::Console().Log("Acti: View3DInventor::setViewerDefaults()\n");
 
-//  _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
-  _viewer->show();
+  _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance"      ,65.0));
+  _viewer->bDrawAxisCross = hGrp->GetBool("CornerCoordSystem",true);
+  _viewer->bAllowSpining =  hGrp->GetBool("UseAutoRotation"  ,true);
+  _viewer->setGradientBackgroud( ! (hGrp->GetBool("UseSimpleBackground"  ,false)));
+  long col = hGrp->GetInt("BackgroundColor",0);
+  float r,g,b;
+  r = (col & 0xff) / 255.0;
+  g = ((col >> 8) & 0xff) / 255.0;
+  b = ((col >> 16) & 0xff) / 255.0;
+  _viewer->setBackgroundColor(SbColor(r, g, b));
+
+  if(hGrp->GetBool("UseAntialiasing"  ,false))
+    _viewer->getGLRenderAction()->setSmoothing(true);
+  else
+    _viewer->getGLRenderAction()->setSmoothing(false);
+
+
 }
 
+  /// Observer message from the ParameterGrp
+void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason)
+{
+  setViewerDefaults();
+}
 
 SoSeparator *View3DInventor::createAxis(void)
 {
@@ -210,19 +227,15 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
 #if (SOQT_MAJOR_VERSION >= 1 && SOQT_MINOR_VERSION >= 2)
   }else if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
     _viewer->setStereoType(SoQtViewer::STEREO_ANAGLYPH);
-    _viewer->setStereoOffset(10);
     return true;
   }else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ){
     _viewer->setStereoType(SoQtViewer::STEREO_QUADBUFFER );
-    _viewer->setStereoOffset(10);
     return true;
   }else if(strcmp("SetStereoInterleavedRows",pMsg) == 0 ){
     _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_ROWS );
-    _viewer->setStereoOffset(10);
     return true;
   }else if(strcmp("SetStereoInterleavedColumns",pMsg) == 0 ){
     _viewer->setStereoType(SoQtViewer::STEREO_INTERLEAVED_COLUMNS  );
-    _viewer->setStereoOffset(10);
     return true;
   }else if(strcmp("SetStereoOff",pMsg) == 0 ){
     _viewer->setStereoType(SoQtViewer::STEREO_NONE );

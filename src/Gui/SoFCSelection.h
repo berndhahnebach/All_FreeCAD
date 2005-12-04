@@ -77,6 +77,8 @@ public:
   SoSFString subElementName;
 
 
+//  virtual void doAction( SoAction *action);
+
 
   virtual void handleEvent(SoHandleEventAction * action);
   virtual void GLRenderBelowPath(SoGLRenderAction * action);
@@ -96,6 +98,9 @@ private:
 //  SoFCSelectionP * pimpl;
   SbBool highlighted;
   SoColorPacker colorpacker;
+
+  bool bShift;
+  bool bCtrl;
 
 };
 

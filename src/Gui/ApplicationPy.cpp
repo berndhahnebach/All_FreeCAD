@@ -99,12 +99,7 @@ PYFUNCIMP_S(Application,shide)
 
   if(pcDoc)
   {
-    App::Feature *pcFeat = pcDoc->getDocument()->getFeature(psFeatStr);
-
-    if(pcFeat)
-    {
-      pcDoc->setHide(pcFeat);  
-    }
+    pcDoc->setHide(psFeatStr);  
   }
     
    Py_Return;
@@ -120,12 +115,7 @@ PYFUNCIMP_S(Application,sshow)
 
   if(pcDoc)
   {
-    App::Feature *pcFeat = pcDoc->getDocument()->getFeature(psFeatStr);
-
-    if(pcFeat)
-    {
-      pcDoc->setShow(pcFeat);  
-    }
+    pcDoc->setShow(psFeatStr);  
   }
     
    Py_Return;

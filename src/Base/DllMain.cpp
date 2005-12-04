@@ -31,7 +31,9 @@
 #endif
 
 #include <iostream>
-#include <windows.h>
+#if _MSC_VER < 1400
+# include <windows.h>
+#endif
 #include <direct.h>
 #include <stdio.h>
 #include <string>

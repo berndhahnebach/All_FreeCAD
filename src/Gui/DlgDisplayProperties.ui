@@ -9,7 +9,7 @@
             <x>0</x>
             <y>0</y>
             <width>248</width>
-            <height>279</height>
+            <height>266</height>
         </rect>
     </property>
     <property name="caption">
@@ -64,6 +64,9 @@
                         <widget class="QLabel">
                             <property name="name">
                                 <cstring>textLabel1_3</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
                             </property>
                             <property name="text">
                                 <string>Plot mode:</string>
@@ -211,8 +214,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>MaterialCombo</sender>
@@ -280,6 +281,6 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>Gui/Widgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
 </includehints>
 </UI>

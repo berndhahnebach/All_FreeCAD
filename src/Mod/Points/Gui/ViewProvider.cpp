@@ -234,3 +234,13 @@ void ViewProviderInventorPoints::updateData()
 {
   createPoints(dynamic_cast<PointsFeature*>(pcFeature));
 }
+
+void ViewProviderInventorPoints::setTransparency(float trans)
+{
+  pcPointMaterial->transparency = trans;
+}
+
+void ViewProviderInventorPoints::setColor(const App::Color &c)
+{
+  pcPointMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+}

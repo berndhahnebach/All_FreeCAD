@@ -58,6 +58,22 @@ namespace Gui
 class GuiExport SelectionChanges
 {
 public:
+  enum MsgType {
+    AddSelection,
+    RmvSelection,
+    ClearSelection,
+    SetPreselect,
+    RmvPreselect
+  };
+
+  MsgType Type;
+
+  const char* pDocName;
+  const char* pFeatName;
+  const char* pSubName;
+  float x;
+  float y;
+  float z;
 };
 
 
@@ -66,29 +82,26 @@ public:
 // C++ Language Reference/General Rules and Limitations on MSDN for more details.)
 template class GuiExport Base::Subject<const SelectionChanges&>;
 
-/** The Selction class 
+/** The Selcetion singleton class
+ 
  */
 class GuiExport SelectionSingelton :public Base::Subject<const SelectionChanges&>
 {
 public:
-  /// Construction
-  SelectionSingelton();
-  /// Destruction
-  virtual ~SelectionSingelton();
 
-  static SelectionSingelton& instance(void);
-  static void destruct (void);
-
-
- // std::string getSelectionAsString(void);
-
-//  void addFeature(App::Feature*);
-//  void removeFeature(App::Feature*);
-
-  /// Add a selection (for internal use)
-  void addSelection(const char* pDocName, const char* pFeatName, const char* pSubName);
+  /// Add a selection 
+  bool addSelection(const char* pDocName, const char* pFeatName, const char* pSubName, float x=0, float y=0, float z=0);
   /// Remove a selection (for internal use)
   void rmvSelection(const char* pDocName, const char* pFeatName, const char* pSubName);
+  /// clears the selection
+  void clearSelection(void);
+  /// checks if selected
+  bool isSelected(const char* pDocName, const char* pFeatName, const char* pSubName);
+
+  bool setPreselect(const char* pDocName, const char* pFeatName, const char* pSubName, float x=0, float y=0, float z=0);
+  void rmvPreselect();
+
+
 
   /** returns the number of selected objects with an special feature type
    *  Its the conviniant way to check if the right features selected to do 
@@ -122,13 +135,20 @@ public:
    */
   std::vector<SelObj> getSelection(const char* pDocName=0);
 
-  /// clears the selection
-  void clearSelection(void);
 
   /// size of selcted enteties for all docuements
   unsigned int size(void){return _SelList.size();}
 
+  static SelectionSingelton& instance(void);
+  static void destruct (void);
+
 protected:
+
+  /// Construction
+  SelectionSingelton();
+  /// Destruction
+  virtual ~SelectionSingelton();
+
 
   /// helper to retrive document by name
   App::Document* getDocument(const char* pDocName=0);
@@ -141,10 +161,16 @@ protected:
     std::string TypeName;
     App::Document* pDoc;
     App::Feature*  pFeat;
+    float x,y,z;
   };
   std::list<_SelObj> _SelList;
 
   static SelectionSingelton* _pcSingleton;
+
+  std::string DocName;
+  std::string FeatName;
+  std::string SubName;
+  float hx,hy,hz;
 
 };
 

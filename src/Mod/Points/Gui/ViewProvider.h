@@ -69,6 +69,13 @@ public:
   /// Update the point representation
   virtual void updateData();
 
+  /// Set the transparency
+  virtual void setTransparency(float);
+  /// Set the color
+  virtual void setColor(const App::Color &c);
+
+
+
 protected:
   void createPoints(Points::PointsFeature *pcFeature);
   void setVertexColorMode(Points::PointsPropertyColor*);

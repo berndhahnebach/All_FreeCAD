@@ -47,6 +47,7 @@
 #include "BitmapFactory.h"
 #include "ViewProviderFeature.h"
 #include "Selection.h"
+#include "SoFCSelection.h"
 
 using namespace Gui;
 
@@ -72,33 +73,13 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   _pcDocPy->IncRef();
 
 
-  /*
-  // seting up a new Viewer +++++++++++++++++++++++++++++++++++++++++++++++
-  TCollection_ExtendedString a3DName("Visu3D");
-  _hViewer = Viewer(getenv("DISPLAY"),
-                  a3DName.ToExtString(),
-            "",
-            1000.0,
-            V3d_XposYnegZpos,
-            Standard_True,
-            Standard_True);
-  TPrsStd_AISViewer::New(hcOcafDoc->Main(),_hViewer);
+  // set the ViewProvider root
+  pcSelection        = new SoSelection();
+  pcSelection->ref();
+  pcSelection->addFinishCallback(Document::sFinishSelectionCallback,this);
+  pcSelection->addSelectionCallback( Document::sMadeSelection, this );
+  pcSelection->addDeselectionCallback( Document::sUnmadeSelection, this );
 
-  _hViewer->Init();
-  _hViewer->SetDefaultLights();
-  _hViewer->SetLightOn();
-
-  // seting up a new interactive context +++++++++++++++++++++++++++++++++++++++++++++++
-  //_hContext =new AIS_InteractiveContext(_hViewer);
-  TPrsStd_AISViewer::Find(hcOcafDoc->Main(), _hContext);
-  _hContext->SetDisplayMode(AIS_Shaded);
-
-  // World coordinate system
-  Handle(AIS_Trihedron) hTrihedron;
-  hTrihedron = new AIS_Trihedron(new Geom_Axis2Placement(gp::XOY()));
-  _hContext->Display(hTrihedron);
-  _hContext->Deactivate(hTrihedron);
-*/
   // open at least one viewer
   createView("View3DIv");
 }
@@ -115,6 +96,8 @@ Document::~Document()
   std::map<App::Feature*,ViewProviderInventor*>::iterator it;
   for(it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
     delete it->second;
+
+  pcSelection->unref();
 
   _pcDocument->Detach(this);
 
@@ -257,53 +240,65 @@ ViewProviderInventor * Document::setHide(App::Feature *Feat)
 }
 */
 
-bool Document::isShow(App::Feature *Feat)
+ViewProviderInventor *Document::getViewProviderByName(const char* name)
 {
-  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
+  // first check on feature name
+  App::Feature *pcFeat = getDocument()->getFeature(name);
 
-  if(it != _ViewProviderMap.end())
-    return it->second->getMode() != -1;
+  if(pcFeat)
+  {
+    std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( pcFeat );
+
+    if(it != _ViewProviderMap.end())
+      return it->second;
+  }else {
+    // then try annotation name
+    std::map<std::string,ViewProviderInventor*>::iterator it2 = _ViewProviderMapAnotation.find( name );
+
+    if(it2 != _ViewProviderMapAnotation.end())
+      return it2->second;
+  }
+
+  return 0;
+}
+
+
+bool Document::isShow(const char* name)
+{
+  ViewProviderInventor* pcProv = getViewProviderByName(name);
+
+  if(pcProv)
+    return pcProv->isShow();
   else 
     return false;
 }
 
 /// put the feature in show
-ViewProviderInventor * Document::setShow(App::Feature * Feat)
+void Document::setShow(const char* name)
 {
-  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
-  if(it != _ViewProviderMap.end())
-  {
-    it->second->setMode(Feat->getShowMode());
-    return it->second;
-  }else{
-    return 0;
-  }
+  ViewProviderInventor* pcProv = getViewProviderByName(name);
+
+  if(pcProv)
+    pcProv->show();
 }
 
 /// set the feature in Noshow
-ViewProviderInventor * Document::setHide(App::Feature *Feat)
+void Document::setHide(const char* name)
 {
-  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
-  if(it != _ViewProviderMap.end())
-  {
-    it->second->setMode(-1);
-    return it->second;
-  }else{
-    return 0;
-  }
+  ViewProviderInventor* pcProv = getViewProviderByName(name);
+
+  if(pcProv)
+    pcProv->hide();
 }
 
 /// set the feature in Noshow
-ViewProviderInventor * Document::setPos(App::Feature *Feat, const Matrix4D& rclMtrx)
+void Document::setPos(const char* name, const Matrix4D& rclMtrx)
 {
-  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
-  if(it != _ViewProviderMap.end())
-  {
-    it->second->setTransformation(rclMtrx);
-    return it->second;
-  }else{
-    return 0;
-  }
+  ViewProviderInventor* pcProv = getViewProviderByName(name);
+
+  if(pcProv)
+    pcProv->setTransformation(rclMtrx);
+
 }
 
 //*****************************************************************************************************
@@ -415,6 +410,9 @@ void Document::createView(const char* sType)
   if(strcmp(sType,"View3DIv") == 0){
 //    pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");
     pcView3D = new Gui::View3DInventor(this,getMainWindow(),"View3DIv");
+
+    // add the selction node of the document
+    //((View3DInventor*)pcView3D)->getViewer()->addSelectionNode(pcSelection);
     
     // attach the viewprovider
     for(std::map<App::Feature*,ViewProviderInventor*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
@@ -683,7 +681,7 @@ void Document::redo(int iSteps)
 }
 
 
-
+/*
 
 Handle(V3d_Viewer) Document::Viewer(const Standard_CString aDisplay,
                      const Standard_ExtString aName,
@@ -710,11 +708,99 @@ Handle(V3d_Viewer) Document::Viewer(const Standard_CString aDisplay,
 # endif  // FC_OS_WIN32
 }
 
+  */
+
 Base::PyObjectBase * Document::getPyObject(void)
 {
   _pcDocPy->IncRef();
 	return _pcDocPy;
 }
+
+
+void Document::sFinishSelectionCallback(void *pcDocument,SoSelection *path)
+{
+  static_cast<Document*>(pcDocument)->finishSelectionCallback(path);
+}
+
+void Document::finishSelectionCallback(SoSelection *)
+{
+  Base::Console().Log("SelectionCallback\n");
+}
+
+
+void Document::sMadeSelection(void *pcDocument,SoPath *path)
+{
+  static_cast<Document*>(pcDocument)->madeSelection(path);
+}
+
+// Callback function triggered for selection / deselection.
+void Document::madeSelection(  SoPath * path )
+{
+  for(int i = 0; i<path->getLength();i++)
+  {
+    SoNode *node = path->getNodeFromTail(i);
+    if (node->getTypeId() == SoFCSelection::getClassTypeId()) 
+    {
+      SoFCSelection * SelNode = (SoFCSelection *)node;  // safe downward cast, knows the type
+      Base::Console().Log("Select:%s.%s.%s \n",SelNode->documentName.getValue().getString(),
+                                               SelNode->featureName.getValue().getString(),
+                                               SelNode->subElementName.getValue().getString());
+
+      SelNode->selected = SoFCSelection::SELECTED;
+
+      Gui::Selection().addSelection(SelNode->documentName.getValue().getString(),
+                                    SelNode->featureName.getValue().getString(),
+                                    SelNode->subElementName.getValue().getString());
+    
+    }
+
+  }
+
+
+
+/*
+  for(std::set<ViewProviderInventor*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
+    for(int i = 0; i<path->getLength();i++)
+      if((*It)->getRoot() == path->getNodeFromTail(i))
+      {
+        (*It)->selected(this,path);
+        return;
+      }
+*/
+
+}
+
+void Document::sUnmadeSelection(void *pcDocument,SoPath *path)
+{
+  static_cast<Document*>(pcDocument)->unmadeSelection(path);
+}
+
+// Callback function triggered for deselection.
+void Document::unmadeSelection(  SoPath * path )
+{
+  for(int i = 0; i<path->getLength();i++)
+  {
+    SoNode *node = path->getNodeFromTail(i);
+    if (node->getTypeId() == SoFCSelection::getClassTypeId()) 
+    {
+      SoFCSelection * SelNode = (SoFCSelection *)node;  // safe downward cast, knows the type
+      Base::Console().Log("Unselect:%s.%s.%s \n",SelNode->documentName.getValue().getString(),
+                                               SelNode->featureName.getValue().getString(),
+                                               SelNode->subElementName.getValue().getString());
+      SelNode->selected = SoFCSelection::NOTSELECTED;
+
+      Gui::Selection().rmvSelection(SelNode->documentName.getValue().getString(),
+                                    SelNode->featureName.getValue().getString(),
+                                    SelNode->subElementName.getValue().getString());
+    
+
+
+    }
+
+  }
+}
+
+
 
 
 #include "moc_Document.cpp"

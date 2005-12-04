@@ -176,15 +176,15 @@ PyObject *DocumentPy::PyDocType(PyObject *args)
  */
 PYFUNCIMP_D(DocumentPy,addAnnotation)
 { 
-  char *psAnnoName,*psFileName;
-  if (!PyArg_ParseTuple(args, "ss;Name of the Annotation and a file name have to be given!",&psAnnoName,&psFileName))     // convert args: Python->C 
+  char *psAnnoName,*psFileName,*psModName=0;
+  if (!PyArg_ParseTuple(args, "ss|s;Name of the Annotation and a file name have to be given!",&psAnnoName,&psFileName,&psModName))     // convert args: Python->C 
     return NULL;  // NULL triggers exception 
 
   PY_TRY {
 
     ViewProviderInventorExtern *pcExt = new ViewProviderInventorExtern();
 
-    pcExt->setModeByFile(psAnnoName,psFileName);
+    pcExt->setModeByFile(psModName?psModName:"Main",psFileName);
 
     _pcDoc->setAnotationViewProvider(psAnnoName,pcExt);
 
@@ -201,12 +201,7 @@ PYFUNCIMP_D(DocumentPy,hide)
 
   PY_TRY {
 
-    App::Feature *pcFeat = _pcDoc->getDocument()->getFeature(psFeatStr);
-
-    if(pcFeat)
-    {
-      _pcDoc->setHide(pcFeat);  
-    }
+    _pcDoc->setHide(psFeatStr);  
     
     Py_Return;
 
@@ -220,12 +215,7 @@ PYFUNCIMP_D(DocumentPy,show)
     return NULL;  // NULL triggers exception 
 
   PY_TRY {
-    App::Feature *pcFeat = _pcDoc->getDocument()->getFeature(psFeatStr);
-
-    if(pcFeat)
-    {
-      _pcDoc->setShow(pcFeat);  
-    }
+    _pcDoc->setShow(psFeatStr);  
     
     Py_Return;
 
@@ -245,12 +235,7 @@ PYFUNCIMP_D(DocumentPy,setPos)
   mat = ((App::MatrixPy*)pcMatObj)->value();
 
   PY_TRY {
-    App::Feature *pcFeat = _pcDoc->getDocument()->getFeature(psFeatStr);
-
-    if(pcFeat)
-    {
-      _pcDoc->setPos(pcFeat,mat);  
-    }
+    _pcDoc->setPos(psFeatStr,mat);  
     
     Py_Return;
 

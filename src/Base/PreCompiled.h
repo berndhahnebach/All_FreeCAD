@@ -26,7 +26,9 @@
 #include <time.h>
 #include "fcntl.h"
 #ifdef FC_OS_WIN32
-#	include <windows.h>
+# if _MSC_VER < 1400
+#	  include <windows.h>
+# endif
 #endif
 
 // STL 

@@ -167,6 +167,7 @@ void ViewProviderInventor::setMode(const char* ModeName)
 void ViewProviderInventor::setMode(int Mode)
 {
   pcModeSwitch->whichChild = Mode;
+  _iActualMode = Mode;
 }
 
 
@@ -179,6 +180,24 @@ int ViewProviderInventor::getMode(void)
 std::string ViewProviderInventor::getModeName(void)
 {
   return getModes()[getMode()];
+}
+
+void ViewProviderInventor::hide(void)
+{
+  _iActualMode = pcModeSwitch->whichChild.getValue();
+  pcModeSwitch->whichChild = -1;
+}
+
+void ViewProviderInventor::show(void)
+{
+  pcModeSwitch->whichChild = _iActualMode;
+
+}
+
+bool ViewProviderInventor::isShow(void)
+{
+  return pcModeSwitch->whichChild.getValue() != -1;
+
 }
 
 

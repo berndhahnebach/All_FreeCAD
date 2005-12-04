@@ -73,6 +73,7 @@
 #include "SoFCOffscreenRenderer.h"
 #include "SoFCSelection.h"
 #include "Selection.h"
+#include "SoFCSelectionAction.h"
 #include "MainWindow.h"
 #include "MenuManager.h"
 
@@ -96,6 +97,18 @@ using namespace Gui;
 SOQT_OBJECT_ABSTRACT_SOURCE(View3DInventorViewer);
 
 // *************************************************************************
+
+
+
+void View3DInventorViewer::OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason)
+{
+  SoFCSelectionAction cAct(Reason);
+
+  if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection || Reason.Type == SelectionChanges::ClearSelection)
+    cAct.apply(pcViewProviderRoot);
+}
+
+
 
 /// adds an ViewProvider to the view, e.g. from a feature
 void View3DInventorViewer::addViewProvider(ViewProviderInventor* pcProvider)
@@ -125,6 +138,8 @@ void View3DInventorViewer::removeViewProvider(ViewProviderInventor* pcProvider)
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
   :inherited (parent, name, embed, type, build), MenuEnabled(TRUE)
 {
+  Gui::Selection().Attach(this);
+
   // Coin should not clear the pixel-buffer, so the background image
   // is not removed.
   this->setClearBeforeRender(FALSE);
@@ -165,9 +180,11 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   backgroundroot->ref();
   this->backgroundroot->addChild(cam);
 
-  // set blue as default background color
-  setBackgroundColor(SbColor(0.5f, 0.5f, 0.7f));
-  this->backgroundroot->addChild( new SoFCBackgroundGradient );
+  // Background stuff
+  setBackgroundColor(SbColor(0.1f, 0.1f, 0.1f));
+  pcBackGround = new SoFCBackgroundGradient;
+  pcBackGround->ref();
+  setGradientBackgroud(true);
 
   // Set up foreground, overlayed scenegraph.
   this->foregroundroot = new SoSeparator;
@@ -185,18 +202,11 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   cam->nearDistance = 0;
   cam->farDistance = 10;
 
-  const double ARROWSIZE = 2.0;
+  bDrawAxisCross = true;
+  bAllowSpining  = true;
 
-  SoTranslation * posit = new SoTranslation;
-  posit->translation = SbVec3f(-2.5 * ARROWSIZE, 1.5 * ARROWSIZE, 0);
-
-  arrowrotation = new SoRotationXYZ;
-  arrowrotation->axis = SoRotationXYZ::Z;
-
-  SoTranslation * offset = new SoTranslation;
-  offset->translation = SbVec3f(ARROWSIZE/2.0, 0, 0);
-
-/* // simple color bar
+/*
+ // simple color bar
   SoFCColorLegend* bar = new SoFCColorLegend;//createColorLegend();
   SoMFString label;
   label.set1Value(0, "+1.00");
@@ -208,42 +218,26 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   label.set1Value(6, "-0.50");
   label.set1Value(7, "-0.75");
   label.set1Value(8, "-1.00");
-  bar->setMarkerLabel( label );*/
+  bar->setMarkerLabel( label );
   //
-//  SoCube * cube = new SoCube;
-//  cube->width = ARROWSIZE;
-//  cube->height = ARROWSIZE/15.0;
-
+*/
   this->foregroundroot->addChild(cam);
   this->foregroundroot->addChild(lm);
   this->foregroundroot->addChild(bc);
-//  this->foregroundroot->addChild(posit);
-//  this->foregroundroot->addChild(arrowrotation);
-//  this->foregroundroot->addChild(offset);
 //  this->foregroundroot->addChild(bar);
 
   // set the ViewProvider root
+  /*
   pcSelection        = new SoSelection();
   pcSelection->addFinishCallback(View3DInventorViewer::sFinishSelectionCallback,this);
   pcSelection->addSelectionCallback( View3DInventorViewer::sMadeSelection, this );
   pcSelection->addDeselectionCallback( View3DInventorViewer::sUnmadeSelection, this );
-
+*/
   pcViewProviderRoot = new SoSeparator();
-  pcSelection->addChild(pcViewProviderRoot);
-  redrawOnSelectionChange(pcSelection);
   // is not realy working with Coin3D. 
 //  redrawOverlayOnSelectionChange(pcSelection);
-  setSceneGraph(pcSelection);
+  setSceneGraph(pcViewProviderRoot);
 
-/* // Higlighthing of the Selection with Inventor stuff
-  SoBoxHighlightRenderAction *pcRenderAction = new SoBoxHighlightRenderAction();
-//  SoLineHighlightRenderAction *pcRenderAction = new SoLineHighlightRenderAction();
-  pcRenderAction->setLineWidth(4);
-  pcRenderAction->setColor(SbColor(1,1,0));
-  pcRenderAction->setLinePattern(3);
-
-  setGLRenderAction(pcRenderAction); 
-  */
 
   // set the transperency and antialiasing settings
 //  getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
@@ -255,12 +249,26 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   setSeekDistance(50);
 }
 
+void View3DInventorViewer::setGradientBackgroud(bool b)
+{
+  if(b && backgroundroot->findChild(pcBackGround) == -1)
+    backgroundroot->addChild( pcBackGround );
+  else if(!b && backgroundroot->findChild(pcBackGround) != -1)
+    backgroundroot->removeChild( pcBackGround );
+}
+
 View3DInventorViewer::~View3DInventorViewer()
 {
   this->backgroundroot->unref();
   this->foregroundroot->unref();
+  pcBackGround->unref();
+
   getMainWindow()->setPaneText(2, "");
+
+  Gui::Selection().Attach(this);
+
 }
+
 
 void View3DInventorViewer::clearBuffer(void * userdata, SoAction * action)
 {
@@ -429,13 +437,12 @@ void View3DInventorViewer::actualRedraw(void)
   inherited::actualRedraw();
 
 
-  // Increase arrow angle with 1/1000 ° every frame.
-  //arrowrotation->angle = arrowrotation->angle.getValue() + (0.001 / M_PI * 180);
   // Render overlay front scenegraph.
   glClear(GL_DEPTH_BUFFER_BIT);
   glra->apply(this->foregroundroot);
 
-  drawAxisCross();
+  if(bDrawAxisCross)
+    drawAxisCross();
   
   if (_bSpining)
     scheduleRedraw();  
@@ -607,7 +614,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
        
             // check on start spining
             SbTime stoptime = (ev->getTime() - log.time[0]);
-            if (stoptime.getValue() < 0.100) {
+            if (bAllowSpining && stoptime.getValue() < 0.100) {
               const SbVec2s glsize(this->getGLSize());
               SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
                                                             float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
@@ -695,6 +702,8 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
       pan(getCamera(),getGLAspectRatio(),panningplane, posn, prevnormalized);
       processed = true;
 
+    }else if(_bSpining) {
+      processed = true;
     }
   }
 
@@ -713,12 +722,12 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   // give the viewprovider the chance to handle the event
-  if(!processed)
-  {
-    std::set<ViewProviderInventor*>::iterator It;
-    for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
-      processed = (*It)->handleEvent(ev,*this);
-  }
+//  if(!processed)
+//  {
+//    std::set<ViewProviderInventor*>::iterator It;
+//    for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
+//      processed = (*It)->handleEvent(ev,*this);
+//  }
 
   // right mouse button pressed
   if (!processed)
@@ -727,7 +736,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
       SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
       if ((e->getButton() == SoMouseButtonEvent::BUTTON2)) {
         if (this->isPopupMenuEnabled()) {
-          if (e->getState() == SoButtonEvent::DOWN) {
+          if (e->getState() == SoButtonEvent::UP) {
             this->openPopupMenu(e->getPosition());
           }
 
@@ -738,7 +747,30 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     }
   }
 
-  return processed || inherited::processSoEvent(ev);
+
+  bool baseProcessed;
+  if(!processed)
+    baseProcessed = inherited::processSoEvent(ev);
+  else 
+    return true;
+
+
+  // check for left click without selecting something
+  if (!baseProcessed)
+  {
+    if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+      SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
+      if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
+        //Base::Console().Log("unhandled left button click!");
+        Gui::Selection().clearSelection();
+      }
+      
+    }
+    
+  }
+  
+
+  return false;
 }
 
 void View3DInventorViewer::setPopupMenuEnabled(const SbBool on)
@@ -976,6 +1008,8 @@ void View3DInventorViewer::spin(const SbVec2f & pointerpos)
   
 }
 
+
+#if 0
 void View3DInventorViewer::sFinishSelectionCallback(void *viewer,SoSelection *path)
 {
   static_cast<View3DInventorViewer*>(viewer)->finishSelectionCallback(path);
@@ -1059,7 +1093,7 @@ void View3DInventorViewer::unmadeSelection(  SoPath * path )
   }
 }
 
-
+#endif
 
 
 

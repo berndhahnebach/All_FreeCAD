@@ -24,7 +24,9 @@
 
 #ifdef FC_OS_WIN32
 #	include <direct.h>
-#	include <windows.h>
+# if _MSC_VER < 1400
+#   include <windows.h>
+# endif
 #endif
 #ifdef FC_OS_LINUX
 #	include <unistd.h>

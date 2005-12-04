@@ -1,59 +1,70 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="8,00"
 	Name="All Cmd Files"
-	SccProjectName=""
-	SccLocalPath=""
-	Keyword="MakeFileProj">
+	ProjectGUID="{BCCBF434-92A9-4272-9FA3-A936847049B8}"
+	Keyword="MakeFileProj"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="10"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
 			<Tool
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Debug/All Cmd Files.tlb"
-				HeaderFileName=""/>
+				HeaderFileName=""
+			/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy"
-				CommandLine="mkdir ..\Mod\Test
-copy Mod\Test\*.py ..\Mod\Test
-"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
+				CommandLine="mkdir ..\Mod\Test&#x0D;&#x0A;copy Mod\Test\*.py ..\Mod\Test&#x0D;&#x0A;"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="10"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
 			<Tool
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Release/All Cmd Files.tlb"
-				HeaderFileName=""/>
+				HeaderFileName=""
+			/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="copy"
-				CommandLine="mkdir ..\Mod\Test
-copy Mod\Test\*.py ..\Mod\Test
-"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
+				CommandLine="mkdir ..\Mod\Test&#x0D;&#x0A;copy Mod\Test\*.py ..\Mod\Test&#x0D;&#x0A;"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>

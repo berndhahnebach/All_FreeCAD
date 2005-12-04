@@ -72,6 +72,8 @@ void DlgSettings3DViewImp::saveSettings()
 //  CheckBox_UseSimpleBackground->onSave();
   CheckBox_ShowViewerDecoration->onSave();
   CheckBox_UseAutoRotation->onSave();
+  FloatSpinBox_EyeDistance->onSave();
+  SelectionColor_Background->onSave();
 }
 
 void DlgSettings3DViewImp::loadSettings()
@@ -82,6 +84,8 @@ void DlgSettings3DViewImp::loadSettings()
 //  CheckBox_UseSimpleBackground->onRestore();
   CheckBox_ShowViewerDecoration->onRestore();
   CheckBox_UseAutoRotation->onRestore();
+  FloatSpinBox_EyeDistance->onRestore();
+  SelectionColor_Background->onRestore();
 }
 
 #include "DlgSettings3DView.cpp"

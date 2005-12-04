@@ -62,6 +62,7 @@
 #include "WorkbenchManager.h"
 #include "CommandBarManager.h"
 #include "SoFCSelection.h"
+#include "SoFCSelectionAction.h"
 
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
@@ -736,7 +737,9 @@ void Application::runApplication(void)
 
   app->activateWorkbench( defWb.c_str() );
 
+  SoInteraction::init();
   Gui::SoFCSelection::initClass();
+  Gui::SoFCSelectionAction::initClass();
 
   
   Console().Log("Init: Processing command line files\n");

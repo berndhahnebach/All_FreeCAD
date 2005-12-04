@@ -31,6 +31,7 @@
 
 #include <Base/Vector3D.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>
+#include "Selection.h"
 
 
 class SoSeparator;
@@ -42,12 +43,13 @@ class SbSphereSheetProjector;
 namespace Gui {
 
 class ViewProviderInventor;
+class SoFCBackgroundGradient;
 
 
 /** The Inventor viewer
  *  
  */
-class GuiExport View3DInventorViewer: public SoQtViewer
+class GuiExport View3DInventorViewer: public SoQtViewer, public Gui::SelectionSingelton::ObserverType
 {
 
   SOQT_OBJECT_ABSTRACT_HEADER(View3DInventorViewer, SoQtViewer);
@@ -55,6 +57,10 @@ class GuiExport View3DInventorViewer: public SoQtViewer
 public:
   View3DInventorViewer (QWidget *parent, const char *name=NULL, SbBool embed=true, Type type= SoQtViewer::BROWSER, SbBool build=true);
   ~View3DInventorViewer();
+
+  /// Observer message from the Selection
+  virtual void OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason);
+
 
   /// adds an ViewProvider to the view, e.g. from a feature
   void addViewProvider(ViewProviderInventor*);
@@ -72,6 +78,7 @@ public:
  
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
+
 
   /** @name Clipping plane
    */
@@ -113,17 +120,23 @@ public:
   void drawText ( int x, int y, const QString & str, QPainter* p = 0 );
   //@}
 
+  bool bDrawAxisCross;
+  bool bAllowSpining;
+
+  void setGradientBackgroud(bool b);
+
 protected:
   unsigned long             currMod;
   std::stack<unsigned long> ModStack;
 
+  /*
   static void sFinishSelectionCallback(void *,SoSelection *);
   virtual void finishSelectionCallback(SoSelection *);
   static void sMadeSelection(void *,SoPath *);
   virtual void madeSelection(SoPath *);
   static void sUnmadeSelection(void *,SoPath *);
   virtual void unmadeSelection(SoPath *);
-
+*/
   virtual void openPopupMenu(const SbVec2s& position);
   void setPopupMenuEnabled(const SbBool on);
   SbBool isPopupMenuEnabled(void) const;
@@ -175,6 +188,8 @@ protected:
   SbBool MenuEnabled;
   SbTime MoveTime;
   SbTime CenterTime;
+
+  SoFCBackgroundGradient *pcBackGround;
 
 private:
   SoSeparator * backgroundroot;

@@ -37,6 +37,7 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Selection.h"
 #include <Base/Exception.h>
+#include <Base/Console.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <App/Feature.h>
@@ -139,9 +140,65 @@ unsigned int SelectionSingelton::getNbrOfType(const char *TypeName, const char* 
   return iNbr;
 }
 
-
-void SelectionSingelton::addSelection(const char* pDocName, const char* pFeatName, const char* pSubName)
+bool SelectionSingelton::setPreselect(const char* pDocName, const char* pFeatName, const char* pSubName, float x, float y, float z)
 {
+  if(DocName != "")
+    rmvPreselect();
+
+  DocName = pDocName;
+  FeatName= pFeatName;
+  SubName = pSubName;
+  hx = x;
+  hy = y;
+  hz = z;
+
+  SelectionChanges Chng;
+
+  Chng.pDocName  = DocName.c_str();
+  Chng.pFeatName = FeatName.c_str();
+  Chng.pSubName  = SubName.c_str();
+  Chng.x = x;
+  Chng.y = y;
+  Chng.z = z;
+  Chng.Type = SelectionChanges::SetPreselect;
+
+
+  Notify(Chng);
+
+  //Base::Console().Log("Sel : Add preselect %s \n",pFeatName);
+
+  // allows the preselection
+  return true;
+}
+
+void SelectionSingelton::rmvPreselect(void)
+{
+  if(DocName == "")
+    return;
+
+  DocName = "";
+  FeatName= "";
+  SubName = "";
+  hx = 0;
+  hy = 0;
+  hz = 0;
+
+  SelectionChanges Chng;
+  Chng.Type = SelectionChanges::RmvPreselect;
+  Notify(Chng);
+
+  //Base::Console().Log("Sel : Rmv preselect \n");
+
+}
+
+
+
+bool SelectionSingelton::addSelection(const char* pDocName, const char* pFeatName, const char* pSubName, float x, float y, float z)
+{
+  // already in ?
+  if(isSelected(pDocName, pFeatName, pSubName))
+    return true;
+
   _SelObj temp;
 
   if(pDocName)
@@ -152,14 +209,36 @@ void SelectionSingelton::addSelection(const char* pDocName, const char* pFeatNam
   temp.pFeat = temp.pDoc->getFeature(pFeatName);
 
 
-  temp.DocName = pDocName;
+  temp.DocName  = pDocName;
   temp.FeatName = pFeatName;
-  temp.SubName = pSubName;
+  temp.SubName  = pSubName;
+  temp.x        = x;
+  temp.y        = y;
+  temp.z        = z;
 
   if(temp.pFeat)
     temp.TypeName = temp.pFeat->type();
 
   _SelList.push_back(temp);
+
+  SelectionChanges Chng;
+
+  Chng.pDocName  = pDocName;
+  Chng.pFeatName = pFeatName;
+  Chng.pSubName  = pSubName;
+  Chng.x         = x;
+  Chng.y         = y;
+  Chng.z         = z;
+  Chng.Type      = SelectionChanges::AddSelection;
+
+
+  Notify(Chng);
+
+  Base::Console().Log("Sel : Add Selection \"%s.%s.%s(%f,%f,%f)\"\n",pDocName,pFeatName,pSubName,x,y,z);
+
+  // allow selection
+  return true;
+
 }
 
 void SelectionSingelton::rmvSelection(const char* pDocName, const char* pFeatName, const char* pSubName)
@@ -172,12 +251,43 @@ void SelectionSingelton::rmvSelection(const char* pDocName, const char* pFeatNam
       break;
     }
   }
+
+  SelectionChanges Chng;
+
+  Chng.pDocName  = pDocName;
+  Chng.pFeatName = pFeatName;
+  Chng.pSubName  = pSubName;
+  Chng.Type      = SelectionChanges::RmvSelection;
+
+
+  Notify(Chng);
+
+  Base::Console().Log("Sel : Rmv Selection \"%s.%s.%s\"\n",pDocName,pFeatName,pSubName);
+
 }
 
 void SelectionSingelton::clearSelection(void)
 {
   _SelList.clear();
+
+  SelectionChanges Chng;
+  Chng.Type = SelectionChanges::ClearSelection;
+
+
+  Notify(Chng);
+
+  Base::Console().Log("Sel : Clear selection\n");
+
 }
+
+bool SelectionSingelton::isSelected(const char* pDocName, const char* pFeatName, const char* pSubName)
+{
+  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+    if(It->DocName == pDocName && It->FeatName == pFeatName && It->SubName == pSubName )
+      return true;
+  return false;
+}
+
 
 //**************************************************************************
 // Construction/Destruction

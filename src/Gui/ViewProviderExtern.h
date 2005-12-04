@@ -58,6 +58,8 @@ public:
 
   /// Set the transparency
   virtual void setTransparency(float);
+  /// Set the color
+  virtual void setColor(const App::Color &c);
 
 protected:
 

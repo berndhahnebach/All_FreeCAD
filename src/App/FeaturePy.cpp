@@ -309,7 +309,10 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
     _pcFeature->_pointSize = getFloatFromPy(value);
     _pcFeature->TouchView();
   }else	if (Base::streq(attr, "transparency")){	
-    _pcFeature->_solidMaterial.transparency = getFloatFromPy(value);
+    _pcFeature->setTransparency(getFloatFromPy(value));
+    _pcFeature->TouchView();
+  }else	if (Base::streq(attr, "color")){	
+    _pcFeature->setColor(MaterialPy::getColorFromPy(value));
     _pcFeature->TouchView();
   }else	if (Base::streq(attr, "showMode")){	
     _pcFeature->_showMode = PyString_AsString(value);

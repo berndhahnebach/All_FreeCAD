@@ -41,6 +41,9 @@ class SbMatrix;
 namespace Base {
   class Matrix4D;
 }
+namespace App {
+  class Color;
+}
 
 namespace Gui {
 
@@ -106,6 +109,11 @@ public:
     * @param bOn true when switch on, false when switch of
     * @ret   false if the provider whants not go edit, or can not
     */
+
+  virtual void hide(void){};
+  virtual void show(void){};
+  virtual bool isShow(void){return false;};
+
   virtual void setEdit(void);
   virtual void unsetEdit(void);
   virtual const char* getEditModeName(void){return 0;}
@@ -168,6 +176,12 @@ public:
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void)=0;
 
+  virtual void hide(void);
+  virtual void show(void);
+  virtual bool isShow(void);
+
+
+
   //@}
 
   
@@ -180,6 +194,9 @@ public:
   //@{
   /// Set the transparency
   virtual void setTransparency(float)=0;
+
+  /// Set the color
+  virtual void setColor(const App::Color &c)=0;
 
   /// set the viewing transformation of the provider
   virtual void setTransformation(const Base::Matrix4D &rcMatrix);
@@ -203,6 +220,8 @@ protected:
 
   /// this is the mode switch, all the different viewing modes are collected here
   SoTransform *pcTransform;
+
+  int _iActualMode;
 
 };
 

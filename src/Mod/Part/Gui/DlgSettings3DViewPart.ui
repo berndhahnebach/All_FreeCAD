@@ -194,99 +194,6 @@
                         <cstring>Mod/Part</cstring>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout14_2</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1_3_3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>View accuracy / Performance</string>
-                            </property>
-                        </widget>
-                        <widget class="Line">
-                            <property name="name">
-                                <cstring>line2_2</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="frameShape">
-                                <enum>HLine</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>prefCheckBox9</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show view mesh vertexes</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>MeshVertex</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>Mod/Part</cstring>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout2</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Hilight color</string>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefColorButton">
-                            <property name="name">
-                                <cstring>prefColorButton1</cstring>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                            <property name="color">
-                                <color>
-                                    <red>119</red>
-                                    <green>182</green>
-                                    <blue>131</blue>
-                                </color>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>HilightColor</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Mod/Part</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
             </vbox>
         </widget>
     </vbox>
@@ -298,8 +205,6 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

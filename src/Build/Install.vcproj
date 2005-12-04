@@ -1,90 +1,128 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="8,00"
 	Name="Install"
-	SccProjectName=""
-	SccLocalPath=""
-	Keyword="MakeFileProj">
+	ProjectGUID="{A6C06A9A-76F8-41CA-9031-6FDBDCFF80F1}"
+	Keyword="MakeFileProj"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="10"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
 			<Tool
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Debug/Install.tlb"
-				HeaderFileName=""/>
+				HeaderFileName=""
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="10"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="FALSE">
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
 			<Tool
 				Name="VCMIDLTool"
 				TypeLibraryName=".\Release/Install.tlb"
-				HeaderFileName=""/>
+				HeaderFileName=""
+			/>
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Light"
-				CommandLine="light.exe *.wixobj"/>
-			<Tool
-				Name="VCPreBuildEventTool"/>
+				CommandLine="light.exe -out Release\FreeCAD.msi &quot;C:\Documents and Settings\jriegel\My Documents\Projects\Wix_2.0\ui\wixui_mondo.wixlib&quot; Release\*.wxobj&#x0D;&#x0A;mkdir ..\..\Install&#x0D;&#x0A;copy Release\FreeCAD.msi ..\..\Install&#x0D;&#x0A;"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
 	</References>
 	<Files>
 		<File
-			RelativePath="FreeCAD.wxs">
+			RelativePath="FreeCAD.wxs"
+			>
 			<FileConfiguration
-				Name="Release|Win32">
+				Name="Release|Win32"
+				>
 				<Tool
 					Name="VCCustomBuildTool"
-					Description="Candle"
-					CommandLine="candle.exe FreeCAD.wxs
-"
-					Outputs="FreeCAD.wxobj"/>
+					Description="Candle $(InputName)"
+					CommandLine="candle.exe -out &quot;$(InputDir)Release\$(InputName).wxobj&quot; &quot;$(InputDir)$(InputName).wxs&quot;&#x0D;&#x0A;"
+					Outputs="$(InputName).wxobj"
+				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="LibPackDll.wxi">
+			RelativePath="FreeCADBase.wxs"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Candle $(InputName)"
+					CommandLine="candle.exe -out &quot;$(InputDir)Release\$(InputName).wxobj&quot; &quot;$(InputDir)$(InputName).wxs&quot;&#x0D;&#x0A;"
+					Outputs="$(InputName).wxobj"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="ModImage.wxi">
+			RelativePath="FreeCADDoc.wxs"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Candle $(InputName)"
+					CommandLine="candle.exe -out &quot;$(InputDir)Release\$(InputName).wxobj&quot; &quot;$(InputDir)$(InputName).wxs&quot;&#x0D;&#x0A;"
+					Outputs="$(InputName).wxobj"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="ModMesh.wxi">
-		</File>
-		<File
-			RelativePath="ModPart.wxi">
-		</File>
-		<File
-			RelativePath="ModPoints.wxi">
-		</File>
-		<File
-			RelativePath="ModRaytracing.wxi">
-		</File>
-		<File
-			RelativePath="ui.wxi">
+			RelativePath="FreeCADModules.wxs"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Candle $(InputName)"
+					CommandLine="candle.exe -out &quot;$(InputDir)Release\$(InputName).wxobj&quot; &quot;$(InputDir)$(InputName).wxs&quot;&#x0D;&#x0A;"
+					Outputs="$(InputName).wxobj"
+				/>
+			</FileConfiguration>
 		</File>
 	</Files>
 	<Globals>

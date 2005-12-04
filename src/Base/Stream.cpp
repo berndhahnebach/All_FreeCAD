@@ -479,7 +479,7 @@ unsigned long FileBuffer::FileSize (void)
 BlobStream::BlobStream (void)
 {
   pBuf = (char*) malloc (BLOB_DEFSIZE);
-  pszName = strdup (BLOB_DEFNAME);
+  pszName = _strdup (BLOB_DEFNAME);
   ulBufSize = pBuf ? BLOB_DEFSIZE : 0;
   ulCursor = 0;
 }

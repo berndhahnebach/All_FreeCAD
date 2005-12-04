@@ -45,14 +45,17 @@ class AppExport Color
 {
 public:
 
-  Color()
-    :r(0),g(0),b(0),a(0){}
+  Color(float R=0.0,float G=0.0, float B=0.0, float A=0.0)
+    :r(R),g(G),b(B),a(A){}
   Color(const Color& c)
     :r(c.r),g(c.g),b(c.b),a(c.a){}
   bool operator==(const Color& c)
   {
     return (c.r==r && c.g==g && c.b==b && c.a==a); 
   }
+  
+  bool operator!=(const Color& c){return !operator==(c);}
+
   void set(float R,float G, float B, float A=0.0)
   {
     r=R;g=G;b=B;a=A;

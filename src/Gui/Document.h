@@ -48,6 +48,9 @@ using Base::Matrix4D;
 # pragma warning( disable : 4275 )  
 #endif
 
+class SoSelection;
+class SoPath;
+
 namespace Base
 {
   class Matrix4D;
@@ -141,15 +144,16 @@ public:
   /// remove an anotation view provider
   void rmvAnotationViewProvider(const char* name);
   /// test if the feature is in show
-  bool isShow(App::Feature *);
+  bool isShow(const char* name);
   /// put the feature in show
-  ViewProviderInventor * setShow(App::Feature *);
+  void setShow(const char* name);
   /// set the feature in Noshow
-  ViewProviderInventor * setHide(App::Feature *);
+  void setHide(const char* name);
   /// set the feature transformation (only viewing)
-  ViewProviderInventor * setPos(App::Feature *, const Matrix4D& rclMtrx);
+  void setPos(const char* name, const Matrix4D& rclMtrx);
   /// updates the view property of all view provider
   void update(void);
+  ViewProviderInventor *getViewProviderByName(const char* name);
   //@}
 
 
@@ -226,6 +230,16 @@ private:
   /// redo names list
   std::list<std::string> listRedoNames;
   //@}
+
+  // selection stuff
+  SoSelection *pcSelection;
+  static void sFinishSelectionCallback(void *,SoSelection *);
+  virtual void finishSelectionCallback(SoSelection *);
+  static void sMadeSelection(void *,SoPath *);
+  virtual void madeSelection(SoPath *);
+  static void sUnmadeSelection(void *,SoPath *);
+  virtual void unmadeSelection(SoPath *);
+
 };
 
 } // namespace Gui

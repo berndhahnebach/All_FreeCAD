@@ -38,26 +38,17 @@
 #include <Inventor/events/SoLocation2Event.h>
 #include <Inventor/SoPickedPoint.h>
 
+#include <Base/Console.h>
 #include "SoFCSelection.h"
 #include "MainWindow.h"
+#include "Selection.h"
+#include "SoFCSelectionAction.h"
+
 
 using namespace Gui;
 
 SoFullPath * Gui::SoFCSelection::currenthighlight = NULL;
 
-
-/*
-namespace Gui {
-class SoFCSelectionP {
-public:
-  SbBool highlighted;
-  SoColorPacker colorpacker;
-};
-}
-*/
-
-//#undef THIS
-//#define THIS this->pimpl
 
 // *************************************************************************
 
@@ -68,8 +59,6 @@ SO_NODE_SOURCE(SoFCSelection);
 */
 SoFCSelection::SoFCSelection()
 {
-//  THIS = new SoFCSelectionP;
-//  SO_NODE_INTERNAL_CONSTRUCTOR(SoFCSelection);
 
   SO_NODE_CONSTRUCTOR(SoFCSelection);
 
@@ -96,6 +85,8 @@ SoFCSelection::SoFCSelection()
   SO_NODE_SET_SF_ENUM_TYPE(selected, Selected);
 
   highlighted = FALSE;
+  bShift      = false;
+  bCtrl       = false;
 }
 
 /*!
@@ -122,6 +113,14 @@ SoFCSelection::turnOffCurrentHighlight(SoGLRenderAction * action)
   SoFCSelection::turnoffcurrent(action);
 }
 
+/*
+void SoFCSelection::doAction( SoAction *action)
+{
+
+
+}
+*/
+
 // doc from parent
 void
 SoFCSelection::handleEvent(SoHandleEventAction * action)
@@ -134,27 +133,93 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
       const SoPickedPoint * pp = action->getPickedPoint();
       if (pp && pp->getPath()->containsPath(action->getCurPath())) {
         if (!highlighted) {
-          SoFCSelection::turnoffcurrent(action);
-          SoFCSelection::currenthighlight = (SoFullPath*)
-            action->getCurPath()->copy();
-          SoFCSelection::currenthighlight->ref();
-          highlighted = TRUE;
-          sprintf(buf,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+          if(Gui::Selection().setPreselect(documentName.getValue().getString()
+                                           ,featureName.getValue().getString()
+                                           ,subElementName.getValue().getString()
+                                           ,pp->getPoint()[0]
+                                           ,pp->getPoint()[1]
+                                           ,pp->getPoint()[2])){
+            SoFCSelection::turnoffcurrent(action);
+            SoFCSelection::currenthighlight = (SoFullPath*)
+              action->getCurPath()->copy();
+            SoFCSelection::currenthighlight->ref();
+            highlighted = TRUE;
+            this->touch(); // force scene redraw
+            this->redrawHighlighted(action, TRUE);
+          }
+
+        }
+        sprintf(buf,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
                                                         ,featureName.getValue().getString()
                                                         ,subElementName.getValue().getString()
                                                         ,pp->getPoint()[0]
                                                         ,pp->getPoint()[1]
                                                         ,pp->getPoint()[2]);
 
-          getMainWindow()->statusBar()->message(buf,3000);
-          this->touch(); // force scene redraw
-          this->redrawHighlighted(action, TRUE);
-        }
+        getMainWindow()->statusBar()->message(buf,3000);
       }
       else {
         if (highlighted) {
           SoFCSelection::turnoffcurrent(action);
+          Gui::Selection().rmvPreselect();
         }
+      }
+    }else if (event->isOfType(SoKeyboardEvent ::getClassTypeId())) {
+      const SoPickedPoint * pp = action->getPickedPoint();
+      SoKeyboardEvent  * const e = (SoKeyboardEvent  *) event;
+
+      if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_SHIFT) ||
+          SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
+          bShift = true;
+      if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_SHIFT) ||
+          SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
+          bShift = false;
+
+      if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
+          SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
+          bCtrl = true;
+      if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
+          SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
+          bCtrl = false;
+
+       
+    }else if (event->isOfType(SoMouseButtonEvent::getClassTypeId())) {
+      const SoPickedPoint * pp = action->getPickedPoint();
+      SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
+
+      if (pp && pp->getPath()->containsPath(action->getCurPath())) {
+        if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
+          if(bCtrl)
+          {
+            if(Gui::Selection().isSelected(documentName.getValue().getString()
+                                           ,featureName.getValue().getString()
+                                           ,subElementName.getValue().getString()))
+            {
+              Gui::Selection().rmvSelection(documentName.getValue().getString()
+                                            ,featureName.getValue().getString()
+                                            ,subElementName.getValue().getString());
+            }else{
+              Gui::Selection().addSelection(documentName.getValue().getString()
+                                            ,featureName.getValue().getString()
+                                            ,subElementName.getValue().getString()
+                                            ,pp->getPoint()[0]
+                                            ,pp->getPoint()[1]
+                                            ,pp->getPoint()[2]);
+            }
+          }else{
+            Gui::Selection().clearSelection();
+            Gui::Selection().addSelection(documentName.getValue().getString()
+                                            ,featureName.getValue().getString()
+                                            ,subElementName.getValue().getString()
+                                            ,pp->getPoint()[0]
+                                            ,pp->getPoint()[1]
+                                            ,pp->getPoint()[2]);
+          }
+
+
+          action->setHandled(); 
+        }
+      
       }
     }
   }

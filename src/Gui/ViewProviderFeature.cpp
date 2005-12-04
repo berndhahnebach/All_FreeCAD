@@ -166,6 +166,11 @@ void ViewProviderInventorFeature::setTransparency(float trans)
   pcSolidMaterial->transparency = trans;
 }
 
+void ViewProviderInventorFeature::setColor(const App::Color &c)
+{
+  pcSolidMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+}
+
 //===========================================================================
 // FeatureFactorySingleton - Factory for Features
 //===========================================================================

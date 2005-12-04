@@ -44,20 +44,6 @@
                 </property>
                 <widget class="Gui::PrefCheckBox">
                     <property name="name">
-                        <cstring>CheckBox_ShowViewerDecoration</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Use simple background (sometimes faster)</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>ShowViewerDecoration</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>View</cstring>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
                         <cstring>CheckBox_CornerCoordSystem</cstring>
                     </property>
                     <property name="text">
@@ -118,11 +104,49 @@
                         <string>Enable antialiasing (slower)</string>
                     </property>
                     <property name="prefEntry" stdset="0">
-                        <cstring>Antialiasing</cstring>
+                        <cstring>UseAntialiasing</cstring>
                     </property>
                     <property name="prefPath" stdset="0">
                         <cstring>View</cstring>
                     </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout3</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="Gui::PrefCheckBox">
+                            <property name="name">
+                                <cstring>CheckBox_ShowViewerDecoration</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Use simple background. Color:</string>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>UseSimpleBackground</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>View</cstring>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>SelectionColor_Background</cstring>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>BackgroundColor</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>View</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
                 <widget class="Line">
                     <property name="name">
@@ -138,23 +162,9 @@
                         <enum>Horizontal</enum>
                     </property>
                 </widget>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>prefCheckBox11</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Don't use highlighting</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>DontHighlight</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>View</cstring>
-                    </property>
-                </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>layout1</cstring>
+                        <cstring>layout4</cstring>
                     </property>
                     <hbox>
                         <property name="name">
@@ -162,53 +172,30 @@
                         </property>
                         <widget class="QLabel">
                             <property name="name">
-                                <cstring>textLabel2_2</cstring>
+                                <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Selection color:</string>
+                                <string>Eye to eye distance for stereo modes:</string>
                             </property>
                         </widget>
-                        <widget class="Gui::PrefColorButton">
+                        <widget class="Gui::PrefFloatSpinBox">
                             <property name="name">
-                                <cstring>SelectionColor</cstring>
+                                <cstring>FloatSpinBox_EyeDistance</cstring>
                             </property>
-                            <property name="text">
-                                <string></string>
+                            <property name="maxValue">
+                                <number>1000</number>
+                            </property>
+                            <property name="minValue">
+                                <number>0.1</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>2</number>
+                            </property>
+                            <property name="value">
+                                <number>65</number>
                             </property>
                             <property name="prefEntry" stdset="0">
-                                <cstring>SelectionColor</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout2</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Highlight color:</string>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefColorButton">
-                            <property name="name">
-                                <cstring>HighlightColor</cstring>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>HighlightColor</cstring>
+                                <cstring>EyeDistance</cstring>
                             </property>
                             <property name="prefPath" stdset="0">
                                 <cstring>View</cstring>
@@ -230,6 +217,110 @@
                         <enum>Horizontal</enum>
                     </property>
                 </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>prefCheckBox11</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Don't use preselection highlighting</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>DontHighlight</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="text">
+                                <string>Highlight color:</string>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>HighlightColor</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="color">
+                                <color>
+                                    <red>25</red>
+                                    <green>25</green>
+                                    <blue>200</blue>
+                                </color>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>HighlightColor</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>View</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout1</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2_2</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="text">
+                                <string>Selection color:</string>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefColorButton">
+                            <property name="name">
+                                <cstring>SelectionColor</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="text">
+                                <string></string>
+                            </property>
+                            <property name="color">
+                                <color>
+                                    <red>25</red>
+                                    <green>125</green>
+                                    <blue>25</blue>
+                                </color>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>SelectionColor</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>View</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
             </vbox>
         </widget>
     </grid>
@@ -247,6 +338,8 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

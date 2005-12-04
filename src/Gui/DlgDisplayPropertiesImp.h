@@ -30,6 +30,7 @@
 #endif
 
 #include "DlgDisplayProperties.h"
+#include <App/Material.h>
 
 namespace App
 {
@@ -69,6 +70,15 @@ protected:
   Gui::Command* _pcCmd;
   std::vector<App::Feature*> Sel;
   std::vector<ViewProviderInventor*> Provider;
+
+  bool bModeChange;
+  string sModeChangeName;
+
+  bool bTranspChange;
+  float fTranspChange;
+
+  bool bColorChange;
+  App::Color cColorChange;
 
 
 };

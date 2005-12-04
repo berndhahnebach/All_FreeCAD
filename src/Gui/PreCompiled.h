@@ -164,6 +164,10 @@
 #include <Inventor/nodes/SoTextureCoordinate3.h>
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
+#include <Inventor/nodes/SoFont.h>
+#include <Inventor/nodes/SoProfile.h>
+#include <Inventor/nodes/SoProfileCoordinate2.h>
+#include <Inventor/nodes/SoProfileCoordinate3.h>
 #include <Inventor/events/SoMotion3Event.h>
 #include <Inventor/events/SoLocation2Event.h>
 #include <Inventor/events/SoMouseButtonEvent.h>
@@ -172,6 +176,7 @@
 #include <Inventor/projectors/SbSpherePlaneProjector.h>
 #include <Inventor/actions/SoRayPickAction.h> 
 #include <Inventor/SoPickedPoint.h> 
+#include <Inventor/SoInteraction.h> 
 
 #include <float.h>
 

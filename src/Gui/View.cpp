@@ -226,6 +226,7 @@ void MDIView::setCurrentViewMode( ViewMode b )
       getMainWindow()->addWindow( this );
     }
     _actualMode = Normal;
+    update();
   }else if ( b == FullScreen ){
     if(_actualMode == Normal)
     {
@@ -239,6 +240,7 @@ void MDIView::setCurrentViewMode( ViewMode b )
       grabKeyboard();
     }
     _actualMode = FullScreen;
+    update();
   }else if ( b == TopLevel ){
     if(_actualMode == FullScreen)
     {
@@ -267,6 +269,7 @@ void MDIView::setCurrentViewMode( ViewMode b )
     setActiveWindow();
     }
     _actualMode = TopLevel;
+    update();
   }
 
   /*

@@ -28,6 +28,8 @@
 
 #include "Inventor/Qt/viewers/SoQtViewer.h"
 
+#include <Base/Parameter.h>
+
 class QMouseEvent;
 class QSplitter;
 class QWidget;
@@ -54,7 +56,7 @@ class ViewProviderInventorFeature;
  *  It consist out of the 3DView and the tree
  *  \author Jürgen Riegel
  */
-class GuiExport View3DInventor: public MDIView
+class GuiExport View3DInventor: public MDIView,public ParameterGrp::ObserverType
 {
   Q_OBJECT
 
@@ -65,6 +67,10 @@ public:
   /// Mesage handler
   virtual bool onMsg(const char* pMsg, const char** ppReturn);
   virtual bool onHasMsg(const char* pMsg);
+
+  /// Observer message from the ParameterGrp
+  virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
+
 
   /// handle dropt files on this document
   void import(const char* FileName);
@@ -96,6 +102,9 @@ public slots:
 protected:
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
+
+  /// handle to the viewer parameter group
+  ParameterGrp::handle hGrp;
 
   SoSeparator *createAxis(void);
 

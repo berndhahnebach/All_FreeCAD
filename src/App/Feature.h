@@ -37,7 +37,8 @@
 
 #include <App/Material.h>
 
-# include <Quantity_Date.hxx>
+#include <Quantity_Date.hxx>
+
 
 class TFunction_Logbook;
 class PyObjectBase;
@@ -216,9 +217,13 @@ public:
   /// get the solid material
   const Material &getSolidMaterial(void) const {return _solidMaterial;}
   /// set line size
-  void setSolidTransparency(float trans) {_solidMaterial.transparency = trans;}
+  virtual void setTransparency(float trans) {_solidMaterial.transparency = trans;}
   /// get line Size
-  float getSolidTransparency(void) const {return _solidMaterial.transparency;}
+  virtual float getTransparency(void) const {return _solidMaterial.transparency;}
+  /// set color
+  virtual void setColor(const Color &c) {_solidMaterial.diffuseColor = c;}
+  /// get color
+  virtual const Color &getColor(void) const {return _solidMaterial.diffuseColor;}
   /// set the line material
   void setLineMaterial(const Material &Mat) {_lineMaterial = Mat;}
   /// get the line material

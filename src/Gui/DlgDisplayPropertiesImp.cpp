@@ -41,8 +41,11 @@
 
 #include "../App/Application.h"
 #include "../App/Feature.h"
+#include "../App/Material.h"
 
 using namespace Gui::Dialog;
+using namespace std;
+
 
 /* TRANSLATOR Gui::Dialog::DlgDisplayPropertiesImp */
 
@@ -56,37 +59,78 @@ using namespace Gui::Dialog;
 DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),Sel(Gui::Selection().getSelectedFeatures())
 {
-  ViewProviderInventor *pcProv;
-  std::set<std::string> ModeList;
 
-  for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  ViewProviderInventor *pcProv;
+  set<string> ModeList;
+
+  bool bSameMode= true;
+  string sModeName;
+
+  bool bSameTransp= true;
+  float fTransp;
+
+  bool bSameColor= true;
+  App::Color cColor;
+
+  for(vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
     pcProv = pcCmd->getActiveGuiDocument()->getViewProvider(*It);
 
     if ( pcProv )
     {
-      std::vector<std::string> Modes = pcProv->getModes();
+      vector<std::string> Modes = pcProv->getModes();
 
-      for(std::vector<std::string>::iterator It2= Modes.begin();It2!=Modes.end();It2++)
+      for(vector<string>::iterator It2= Modes.begin();It2!=Modes.end();It2++)
         ModeList.insert(*It2);
+
+      if(It==Sel.begin())
+        sModeName = pcProv->getModeName();
+      else
+        if(sModeName != pcProv->getModeName())
+          bSameMode = false;
+
+      if(It==Sel.begin())
+        fTransp = (*It)->getTransparency();
+      else
+        if(fTransp != (*It)->getTransparency())
+          bSameMode = bSameTransp;
+
+      if(It==Sel.begin())
+        cColor = (*It)->getColor();
+      else
+        if(cColor != (*It)->getColor())
+          bSameMode = bSameTransp;
+
 
       Provider.push_back(pcProv);
     }
   }
 
 
-  for(std::set<std::string>::iterator It3= ModeList.begin();It3!=ModeList.end();It3++)
+  for(set<string>::iterator It3= ModeList.begin();It3!=ModeList.end();It3++)
     ModeBox->insertItem(It3->c_str()); 
 
-  if(Sel.size() == 1){
-    ModeBox->setCurrentText((*(Sel.begin()))->getShowMode());
-    TransBar->setValue((int) ((*(Sel.begin()))->getSolidTransparency() * 100));
-    TransSpin->setValue((int) ((*(Sel.begin()))->getSolidTransparency() * 100));
+  if(bSameMode){
+    ModeBox->setCurrentText(sModeName.c_str());
   }else{
     ModeBox->insertItem("");
     ModeBox->setCurrentText("");
   }
 
+  if(bSameTransp){
+    TransBar->setValue((int) (fTransp * 100.0));
+    TransSpin->setValue((int) (fTransp * 100.0));
+  }
+
+  if(bSameColor){
+    ColorButton->setColor(QColor(cColor.r,cColor.g,cColor.b));
+  }else{
+    ColorButton->setColor(QColor(0.5,0.5,0.5));
+  }
+
+  bModeChange = false;
+  bTranspChange = false;
+  bColorChange = false;
 
 }
 
@@ -115,6 +159,9 @@ void DlgDisplayPropertiesImp::onChangeMode(const QString&s)
     pcProv->setMode( (*It)->getShowMode() );
   }
 
+  bModeChange = true;
+  sModeChangeName = s.latin1();
+
   _pcCmd->getActiveGuiDocument()->onUpdate();
 }
 
@@ -125,17 +172,70 @@ void DlgDisplayPropertiesImp::onChangePlot(const QString&s)
 
 void DlgDisplayPropertiesImp::onOK(void)
 {
+
+  if(bModeChange)
+  {
+    for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+    {
+      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
+      {
+        _pcCmd->doCommand(Command::Doc,"App.document().%s.showMode = \"%s\"",(*It)->getName(),sModeChangeName.c_str());
+      }
+    }
+  }
+
+  if(bTranspChange)
+  {
+    for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+    {
+      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
+      {
+        _pcCmd->doCommand(Command::Doc,"App.document().%s.transparency = %f",(*It)->getName(),fTranspChange);
+      }
+    }
+  }
+
+  if(bColorChange)
+  {
+    for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+    {
+      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
+      {
+        _pcCmd->doCommand(Command::Doc,"App.document().%s.color = (%f,%f,%f)",(*It)->getName(),cColorChange.r,cColorChange.r,cColorChange.b);
+      }
+    }
+  }
+
   accept();
 }
 
 void DlgDisplayPropertiesImp::onColorChange()
 {
-  Base::Console().Log("Color");
+  QColor s = ColorButton->color();
+  bColorChange = true;
+  cColorChange = App::Color(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
+
+  for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  {
+    ViewProviderInventor* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
+    pcProv->setColor(cColorChange);
+  }
+
+
+  _pcCmd->getActiveGuiDocument()->onUpdate();
 
 }
 
 void DlgDisplayPropertiesImp::onCancel()
 {
+  for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  {
+    if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
+    {
+      (*It)->TouchView();
+    }
+  }
+
   reject();
 }
 
@@ -143,46 +243,12 @@ void DlgDisplayPropertiesImp::onChangeTrans(int i)
 {
   for( std::vector<ViewProviderInventor*>::iterator It= Provider.begin();It!=Provider.end();It++)
     (*It)->setTransparency( i/100.0); 
+
+  bTranspChange = true;
+  fTranspChange = i/100.0;
+
   _pcCmd->getActiveGuiDocument()->onUpdate();
 }
-
-
-
-/*void DlgDisplayPropertiesImp::onChooseFile()
-{
-  QString s ( QFileDialog::getOpenFileName( QString::null, "FreeCAD Templates (*.FCTempl)", this ) );
-  if ( s.isEmpty() )
-    return;
-  puts(s);
-}
-void DlgDisplayPropertiesImp::onValidate()
-{
-  QString sTemplate = LineEdit1->text();
-
-  if (sTemplate.isEmpty())
-    _pcCmd->doCommand(Gui::Command::Doc,"FreeCAD.New()");		
-  else
-    _pcCmd->doCommand(Gui::Command::Doc,"FreeCAD.New(\"%s\")",LineEdit1->text().latin1());
-
-  accept();
-}
-
-void DlgDisplayPropertiesImp::onIconDoubleClicked( QIconViewItem* Item )
-{
-  LineEdit1->setText(Item->text());
-  onValidate();
-}
-
-void DlgDisplayPropertiesImp::onViewChanged( QIconViewItem* Item )
-{
-  LineEdit1->setText(Item->text());
-}
-
-void DlgDisplayPropertiesImp::onEditFile()
-{
-  qWarning( "DlgDisplayPropertiesImp::EditFile() not yet implemented!" ); 
-}
-*/
 
 
 #include "DlgDisplayProperties.cpp"
