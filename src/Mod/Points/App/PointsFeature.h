@@ -66,7 +66,7 @@ public:
   /** @name methods for convenient handling of parameter (properties) */
   //@{
   /** Get the actual result Points. */
-  PointsWithProperty &getPoints(void){return _Points;}
+  virtual PointsWithProperty &getPoints(void){return _Points;}
   /// sets the points 
   void setPoints(const PointsWithProperty&);
   //@}
