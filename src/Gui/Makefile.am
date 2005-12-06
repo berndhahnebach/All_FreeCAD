@@ -259,6 +259,8 @@ libFreeCADGui_la_SOURCES=\
 		SoFCOffscreenRenderer.h \
 		SoFCSelection.cpp \
 		SoFCSelection.h \
+		SoFCSelectionAction.cpp \
+		SoFCSelectionAction.h \
 		SpinBox.cpp \
 		SpinBox.h \
 		Splashscreen.cpp \

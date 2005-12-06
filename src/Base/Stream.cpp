@@ -479,7 +479,11 @@ unsigned long FileBuffer::FileSize (void)
 BlobStream::BlobStream (void)
 {
   pBuf = (char*) malloc (BLOB_DEFSIZE);
+#if defined (_MSC_VER)
   pszName = _strdup (BLOB_DEFNAME);
+#elif defined(__GNUC__)
+  pszName =  strdup (BLOB_DEFNAME);
+#endif
   ulBufSize = pBuf ? BLOB_DEFSIZE : 0;
   ulCursor = 0;
 }
@@ -495,7 +499,11 @@ BlobStream::~BlobStream (void)
 void BlobStream::SetName (const char *pszBlobName)
 {
   if (pszName) free (pszName);
-  pszName = strdup (pszBlobName);
+#if defined(_MSC_VER)
+  pszName = _strdup (pszBlobName);
+#elif defined(__GNUC__)
+  pszName =  strdup (pszBlobName);
+#endif
 }
 
 /** Returns the name of the stream. */

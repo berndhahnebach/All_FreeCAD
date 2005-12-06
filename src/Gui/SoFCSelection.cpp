@@ -33,6 +33,8 @@
 #include <Inventor/SoFullPath.h>
 #include <Inventor/actions/SoGLRenderAction.h>
 #include <Inventor/actions/SoHandleEventAction.h>
+#include <Inventor/events/SoKeyboardEvent.h>
+#include <Inventor/events/SoMouseButtonEvent.h>
 #include <Inventor/misc/SoState.h>
 #include <Inventor/misc/SoChildList.h>
 #include <Inventor/events/SoLocation2Event.h>
@@ -165,7 +167,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
         }
       }
     }else if (event->isOfType(SoKeyboardEvent ::getClassTypeId())) {
-      const SoPickedPoint * pp = action->getPickedPoint();
+      //const SoPickedPoint * pp = action->getPickedPoint();
       SoKeyboardEvent  * const e = (SoKeyboardEvent  *) event;
 
       if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_SHIFT) ||

@@ -35,6 +35,7 @@
 # include <qtabbar.h>
 # include <qtimer.h>
 # include <qvbox.h>
+# include <Inventor/SoInteraction.h>
 #endif
 
 // FreeCAD Base header

@@ -123,9 +123,9 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   }
 
   if(bSameColor){
-    ColorButton->setColor(QColor(cColor.r,cColor.g,cColor.b));
+    ColorButton->setColor(QColor((int)(255.0f*cColor.r),(int)(255.0f*cColor.g),(int)(255.0f*cColor.b)));
   }else{
-    ColorButton->setColor(QColor(0.5,0.5,0.5));
+    ColorButton->setColor(QColor(127,127,127));
   }
 
   bModeChange = false;

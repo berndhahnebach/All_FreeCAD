@@ -33,6 +33,7 @@
 # include <TPrsStd_AISViewer.hxx>
 # include <Xw_Window.hxx>
 # include <Graphic3d_GraphicDevice.hxx>
+# include <Inventor/nodes/SoSelection.h>
 #endif
 
 

@@ -1,4 +1,5 @@
 /***************************************************************************
+ * 
  *   Copyright (c) 2005 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
@@ -23,10 +24,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#  include <Inventor/nodes/SoComplexity.h>
+#  include <Inventor/nodes/SoCoordinate3.h>
+#  include <Inventor/nodes/SoCoordinate4.h>
 #  include <Inventor/nodes/SoFont.h>
 #  include <Inventor/nodes/SoProfile.h>
 #  include <Inventor/nodes/SoProfileCoordinate2.h>
 #  include <Inventor/nodes/SoProfileCoordinate3.h>
+#  include <Inventor/nodes/SoSwitch.h>
+#  include <Inventor/nodes/SoTransformation.h>
 #endif
 
 #include <Base/Console.h>
