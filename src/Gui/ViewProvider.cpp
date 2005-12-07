@@ -184,7 +184,8 @@ std::string ViewProviderInventor::getModeName(void)
 
 void ViewProviderInventor::hide(void)
 {
-  _iActualMode = pcModeSwitch->whichChild.getValue();
+  if(pcModeSwitch->whichChild.getValue() != -1)
+    _iActualMode = pcModeSwitch->whichChild.getValue();
   pcModeSwitch->whichChild = -1;
 }
 
