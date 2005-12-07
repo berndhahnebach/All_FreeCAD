@@ -230,7 +230,7 @@ private:
   /// redo names list
   std::list<std::string> listRedoNames;
   //@}
-
+/*
   // selection stuff
   SoSelection *pcSelection;
   static void sFinishSelectionCallback(void *,SoSelection *);
@@ -239,7 +239,7 @@ private:
   virtual void madeSelection(SoPath *);
   static void sUnmadeSelection(void *,SoPath *);
   virtual void unmadeSelection(SoPath *);
-
+*/
 };
 
 } // namespace Gui

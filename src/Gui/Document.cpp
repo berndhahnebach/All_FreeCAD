@@ -41,6 +41,7 @@
 #include <App/Feature.h>
 #include "Application.h"
 #include "MainWindow.h"
+#include "Tree.h"
 #include "Document.h"
 #include "DocumentPy.h"
 #include "View3DInventor.h"
@@ -73,14 +74,14 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   _pcDocPy = new Gui::DocumentPy(this);
   _pcDocPy->IncRef();
 
-
-  // set the ViewProvider root
+/*  // set the ViewProvider root
   pcSelection        = new SoSelection();
   pcSelection->ref();
   pcSelection->addFinishCallback(Document::sFinishSelectionCallback,this);
   pcSelection->addSelectionCallback( Document::sMadeSelection, this );
   pcSelection->addDeselectionCallback( Document::sUnmadeSelection, this );
-
+*/
+  Gui::getMainWindow()->getTreeView()->NewDoc(this);
   // open at least one viewer
   createView("View3DIv");
 }
@@ -98,7 +99,9 @@ Document::~Document()
   for(it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
     delete it->second;
 
-  pcSelection->unref();
+//  pcSelection->unref();
+    Gui::getMainWindow()->getTreeView()->DeleteDoc(this);
+
 
   _pcDocument->Detach(this);
 
@@ -717,7 +720,7 @@ Base::PyObjectBase * Document::getPyObject(void)
 	return _pcDocPy;
 }
 
-
+#if 0
 void Document::sFinishSelectionCallback(void *pcDocument,SoSelection *path)
 {
   static_cast<Document*>(pcDocument)->finishSelectionCallback(path);
@@ -802,6 +805,6 @@ void Document::unmadeSelection(  SoPath * path )
 }
 
 
-
+#endif
 
 #include "moc_Document.cpp"

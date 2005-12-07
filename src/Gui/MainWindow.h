@@ -40,13 +40,16 @@ class QToolBar;
 class QSplashScreen;
 
 namespace Gui {
+
+class TreeView;
 class BaseView;
 class CommandManager;
 class Document;
 class MacroManager;
 class MDIView;
+
 namespace DockWnd {
-class HelpView;
+  class HelpView;
 } //namespace DockWnd
 
 
@@ -129,6 +132,8 @@ public:
   /** Shows the Tip-of-the-day dialog after startup. */
   static void showTipOfTheDay(bool force=false);
   //@}
+
+  TreeView* getTreeView(void){return pcTree;}
 
 public slots:
   /**
@@ -245,6 +250,7 @@ private:
   static MainWindow* instance;
   struct MainWindowP* d;
   static QSplashScreen *_splash;
+  TreeView* pcTree;
 };
 
 inline GuiExport MainWindow* getMainWindow()

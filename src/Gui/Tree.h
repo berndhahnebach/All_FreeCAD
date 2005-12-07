@@ -86,11 +86,11 @@ protected:
  *  and the functions of the Document.
  *  \author Jürgen Riegel
  */
-class DocItem : public QListViewItem, public App::Document::ObserverType
+class DocItem : public QListViewItem//, public App::Document::ObserverType
 {
 public:
   /// Constructor
-  DocItem( QListViewItem* parent,App::Document* doc);
+  DocItem( QListViewItem* parent,Gui::Document* doc);
   virtual ~DocItem();
 
   /// Opens the Leafs and generate them.
@@ -115,7 +115,7 @@ protected:
   void activate (); 
 
 
-  App::Document*  _pcDocument;
+  Gui::Document*  _pcDocument;
   std::map<App::Feature*,FeatItem*> FeatMap;
 
 };
@@ -127,7 +127,7 @@ protected:
 /** 
  *  \author Jürgen Riegel
  */
-class TreeView :public Gui::DockView, public App::ApplicationObserver
+class TreeView :public Gui::DockView//, public App::ApplicationObserver
 {
   Q_OBJECT
 
@@ -150,9 +150,9 @@ public:
   virtual void onUpdate(void);
 
 	/// This method get called when a new doc appears
-	virtual void OnDocNew(App::Document*);
+	void NewDoc(Gui::Document*);
 	/// This method get called when a new doc will be deleted
-	virtual void OnDocDelete(App::Document*);
+  void DeleteDoc(Gui::Document*);
 
 protected:
   QListView*  _pcListView;
@@ -160,7 +160,7 @@ protected:
 
   static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
-  std::map<App::Document*,DocItem*> DocMap;
+  std::map<Gui::Document*,DocItem*> DocMap;
 };
 
 } // namespace Gui

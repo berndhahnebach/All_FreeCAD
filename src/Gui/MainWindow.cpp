@@ -210,7 +210,7 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   pDockMgr->addDockWindow("Help view", pcHelpView, Qt::DockRight );
 
   // Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
-  TreeView* pcTree = new TreeView(0,this,"Raw_tree");
+  pcTree = new TreeView(0,this,"TreeView");
   pcTree->setMinimumWidth(210);
   pDockMgr->addDockWindow("Tree view", pcTree, Qt::DockLeft );
 

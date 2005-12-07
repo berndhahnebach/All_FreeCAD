@@ -50,20 +50,20 @@ using namespace Gui;
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-DocItem::DocItem( QListViewItem* parent,App::Document* doc)
+DocItem::DocItem( QListViewItem* parent,Gui::Document* doc)
     : QListViewItem( parent ), _pcDocument(doc)
 {
   setPixmap(0,*TreeView::pcLabelOpen);
-  setText(0,QString(_pcDocument->getName()));
+  setText(0,QString(_pcDocument->getDocument()->getName()));
 
-  _pcDocument->Attach(this);
+//  _pcDocument->Attach(this);
 
   buildUp();
 }
 
 DocItem::~DocItem()
 {
-  _pcDocument->Detach(this);
+  //_pcDocument->Detach(this);
 }
 
 void DocItem::update(void)
@@ -201,10 +201,10 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
   layout->addWidget( _pcListView, 0, 0 );
 
   // set defaults and the colums
-  _pcListView->setSorting(-1,false);
+  //_pcListView->setSorting(-1,false);
   _pcListView->addColumn(tr("Labels & Attributes"));
   _pcListView->setColumnWidthMode(0,QListView::Maximum);
-  _pcListView->setSorting(0,true);
+  //_pcListView->setSorting(0,true);
 //  _pcListView->addColumn(tr("Value"));
 //  _pcListView->setColumnWidthMode(1,QListView::Manual );
 
@@ -241,10 +241,10 @@ void TreeView::onUpdate(void)
 void TreeView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument)
 {
 
-  if(pcOldDocument && DocMap.find(pcOldDocument->getDocument()) != DocMap.end())
-    DocMap[pcOldDocument->getDocument()]->setOpen(false);
-  if(pcNewDocument && DocMap.find(pcNewDocument->getDocument()) != DocMap.end())
-    DocMap[pcNewDocument->getDocument()]->setOpen(true);
+//  if(pcOldDocument && DocMap.find(pcOldDocument->getDocument()) != DocMap.end())
+//    DocMap[pcOldDocument->getDocument()]->setOpen(false);
+//  if(pcNewDocument && DocMap.find(pcNewDocument->getDocument()) != DocMap.end())
+//    DocMap[pcNewDocument->getDocument()]->setOpen(true);
 }
 
 bool TreeView::onMsg(const char* pMsg)
@@ -255,15 +255,15 @@ bool TreeView::onMsg(const char* pMsg)
   return false;
 }
 
-void TreeView::OnDocNew( App::Document* pDoc )
+void TreeView::NewDoc( Gui::Document* pDoc )
 {
   DocItem *item = new DocItem(_pcMainItem,pDoc);
   DocMap[ pDoc ] = item;
 }
 
-void TreeView::OnDocDelete( App::Document* pDoc )
+void TreeView::DeleteDoc( Gui::Document* pDoc )
 {
-  std::map<App::Document*, DocItem*>::iterator it = DocMap.find( pDoc );
+  std::map<Gui::Document*, DocItem*>::iterator it = DocMap.find( pDoc );
   DocMap.erase( it );
   delete it->second;
 }

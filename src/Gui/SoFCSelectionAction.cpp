@@ -41,7 +41,7 @@
 #include "SoFCSelection.h"
 #  include <Inventor/bundles/SoMaterialBundle.h>
 #  include <Inventor/elements/SoSwitchElement.h>
-
+#include "Selection.h"
 using namespace Gui;
 
 
@@ -94,6 +94,28 @@ void SoFCSelectionAction::selNode(SoAction *action,SoNode *node)
 }
 void SoFCSelectionAction::callDoAction(SoAction *action,SoNode *node)
 {
+  SoFCSelectionAction *selaction = (SoFCSelectionAction *)action;
+
+  if (node->getTypeId() == SoFCSelection::getClassTypeId()) {
+    SoFCSelection * selection = (SoFCSelection *)node;  // safe downward cast, knows the type
+    if(selaction->SelChange.Type == SelectionChanges::AddSelection || selaction->SelChange.Type == SelectionChanges::RmvSelection )
+    {
+      if( selection->documentName.getValue() == selaction->SelChange.pDocName &&
+          selection->featureName.getValue() == selaction->SelChange.pFeatName &&
+          selection->subElementName.getValue() == selaction->SelChange.pSubName ){
+        if(selaction->SelChange.Type == SelectionChanges::AddSelection)
+        {
+          selection->selected = SoFCSelection::SELECTED;
+        }else{
+          selection->selected = SoFCSelection::NOTSELECTED;
+        }
+
+      }
+    }else if(selaction->SelChange.Type == SelectionChanges::ClearSelection){
+      selection->selected = SoFCSelection::NOTSELECTED;
+    }
+  }
+
   node->doAction(action);
 }
 
