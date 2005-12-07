@@ -317,7 +317,7 @@ QImage View3DInventorViewer::makeScreenShot( int w, int h, float r, int c, const
   }
   root->addChild(getHeadlight());
   root->addChild(camera);
-  root->addChild(pcSelection);
+  root->addChild(pcViewProviderRoot);
   if ( useBackground )
     root->addChild(cb);
   root->addChild(foregroundroot);
@@ -369,7 +369,7 @@ bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbNam
   }
   root->addChild(getHeadlight());
   root->addChild(camera);
-  root->addChild(pcSelection);
+  root->addChild(pcViewProviderRoot);
   if ( useBackground )
     root->addChild(cb);
   root->addChild(foregroundroot);

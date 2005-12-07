@@ -197,7 +197,6 @@ private:
   SoRotationXYZ * arrowrotation;
 
   SoSeparator * pcViewProviderRoot;
-  SoSelection * pcSelection;
 };
 
 } // namespace Gui

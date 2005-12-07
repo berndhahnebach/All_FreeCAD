@@ -50,7 +50,7 @@ public:
 
 
 protected:
-  virtual void beginTraversel(SoNode *node);
+  virtual void beginTraversal(SoNode *node);
 
 
 private:

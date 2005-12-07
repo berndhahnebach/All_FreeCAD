@@ -53,9 +53,9 @@ void SoFCSelectionAction::initClass()
 
   SO_ENABLE(SoFCSelectionAction, SoSwitchElement);
 
+  SO_ACTION_ADD_METHOD(SoNode,nullAction);
   SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
 
-  SO_ACTION_ADD_METHOD(SoNode,nullAction);
 
   SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
   SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
@@ -83,7 +83,7 @@ SoFCSelectionAction::~SoFCSelectionAction()
 }
 
  
-void SoFCSelectionAction::beginTraversel(SoNode *node)
+void SoFCSelectionAction::beginTraversal(SoNode *node)
 {
   traverse(node);
 }
