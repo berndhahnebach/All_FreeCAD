@@ -116,6 +116,60 @@ void PointsPropertyNormal::transform(const Matrix4D &mat)
   }
 }
 
+// ----------------------------------------------------------------------------
+
+PointsPropertyCurvature::PointsPropertyCurvature(int size)
+{
+  Curvature.resize(size);
+}
+
+PointsPropertyCurvature::~PointsPropertyCurvature()
+{
+}
+
+void PointsPropertyCurvature::resizePoints() 
+{
+  setInvalid();
+  Curvature.clear();
+}
+
+std::vector<float> PointsPropertyCurvature::getCurvature( PointsPropertyCurvature::Mode tMode) const
+{
+  std::vector<float> aCurvatures;
+  if ( tMode == MaxCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->fMaxCurvature );
+    }
+  }
+  else if ( tMode == MinCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->fMinCurvature );
+    }
+  }
+  else if ( tMode == AvgCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( 0.5f * ( it->fMaxCurvature + it->fMinCurvature ) );
+    }
+  }
+  else if ( tMode == GaussCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->fMaxCurvature * it->fMinCurvature );
+    }
+  }
+
+  return aCurvatures;
+}
+
+// ----------------------------------------------------------------------------
+
 void PointsWithProperty::transform(const Matrix4D &rclMat)
 {
   DataWithPropertyBag::transform(rclMat);

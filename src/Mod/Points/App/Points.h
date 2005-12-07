@@ -122,6 +122,43 @@ public:
 
 };
 
+/**
+ * The PointsPropertyCurvature class holds curvature information for each point.
+ * @author Werner Mayer
+ */
+class PointsAppExport PointsPropertyCurvature: public App::PropertyBag
+{
+public:
+  /** Helper class. */
+  struct fCurvature
+  {
+    float fMaxCurvature, fMinCurvature;
+//    Vector3D cMaxCurvDir, cMinCurvDir;
+  };
+
+  enum Mode { 
+    MaxCurvature,  /**< Maximum curvature */ 
+    MinCurvature,  /**< Minimum curvature */
+    AvgCurvature,  /**< Average curvature */
+    GaussCurvature /**< Gaussian curvature */
+  };
+
+public:
+	PointsPropertyCurvature(int size=0);
+  virtual ~PointsPropertyCurvature();
+
+  const char* GetType() {return "VertexCurvature";}
+
+  void resizePoints();
+
+  std::vector<float> getCurvature( Mode tMode) const;
+  void setValue(unsigned long pos, const fCurvature& val)
+  { Curvature[pos] = val; }
+
+private:
+  std::vector<fCurvature> Curvature;
+};
+
 /** A single Point
  *  This is a single Point of the point datastructure. Note:
  *  No additional data will be attached to this basic point. 

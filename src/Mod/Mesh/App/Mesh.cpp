@@ -112,14 +112,14 @@ std::vector<float> MeshPropertyCurvature::getCurvature( MeshPropertyCurvature::M
   {
     for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
     {
-      aCurvatures.push_back( 0.5f * ( it->fMaxCurvature + it->fMinCurvature ) );
+      aCurvatures.push_back( it->fMinCurvature );
     }
   }
   else if ( tMode == AvgCurvature )
   {
     for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
     {
-      aCurvatures.push_back( it->fMaxCurvature );
+      aCurvatures.push_back( 0.5f * ( it->fMaxCurvature + it->fMinCurvature ) );
     }
   }
   else if ( tMode == GaussCurvature )
