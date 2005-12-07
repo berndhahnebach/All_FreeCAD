@@ -465,8 +465,6 @@ protected:
   //@{
   QString scriptName;
   //@}
-private:
-  const char* createStringCopy( const char* ) const;
 };
 
 /** The CommandManager class

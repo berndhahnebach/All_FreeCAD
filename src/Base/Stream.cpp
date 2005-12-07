@@ -481,7 +481,7 @@ BlobStream::BlobStream (void)
   pBuf = (char*) malloc (BLOB_DEFSIZE);
 #if defined (_MSC_VER)
   pszName = _strdup (BLOB_DEFNAME);
-#elif defined(__GNUC__)
+#else
   pszName =  strdup (BLOB_DEFNAME);
 #endif
   ulBufSize = pBuf ? BLOB_DEFSIZE : 0;
@@ -501,7 +501,7 @@ void BlobStream::SetName (const char *pszBlobName)
   if (pszName) free (pszName);
 #if defined(_MSC_VER)
   pszName = _strdup (pszBlobName);
-#elif defined(__GNUC__)
+#else
   pszName =  strdup (pszBlobName);
 #endif
 }

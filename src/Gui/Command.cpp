@@ -589,22 +589,13 @@ QAction * CommandGroup::createAction(void)
 /* TRANSLATOR Gui::MacroCommand */
 
 MacroCommand::MacroCommand(const char* name)
-  : Command( createStringCopy(name) )
+#if defined (_MSC_VER)
+  : Command( _strdup(name) )
+#else
+  : Command( strdup(name) )
+#endif
 {
   sGroup = QT_TR_NOOP("Macros");
-}
-
-const char* MacroCommand::createStringCopy( const char* s) const
-{
-  int len = strlen(s);
-  if ( len > 0 )
-  {
-    char* copy = new char [len];
-    strcpy(copy, s);
-    return copy;
-  }
-  else
-    return "";
 }
 
 void MacroCommand::activated(int iMsg)
@@ -635,27 +626,47 @@ QAction * MacroCommand::createAction(void)
 
 void MacroCommand::setMenuText( const char* s )
 {
-  this->sMenuText = createStringCopy( s );
+#if defined (_MSC_VER)
+  this->sMenuText = _strdup( s );
+#else
+  this->sMenuText = strdup( s );
+#endif
 }
 
 void MacroCommand::setToolTipText( const char* s )
 {
-  this->sToolTipText = createStringCopy( s );
+#if defined (_MSC_VER)
+  this->sToolTipText = _strdup( s );
+#else
+  this->sToolTipText = strdup( s );
+#endif
 }
 
 void MacroCommand::setStatusTip( const char* s )
 {
-  this->sStatusTip = createStringCopy( s );
+#if defined (_MSC_VER)
+  this->sStatusTip = _strdup( s );
+#else
+  this->sStatusTip = strdup( s );
+#endif
 }
 
 void MacroCommand::setWhatsThis( const char* s )
 {
-  this->sWhatsThis = createStringCopy( s );
+#if defined (_MSC_VER)
+  this->sWhatsThis = _strdup( s );
+#else
+  this->sWhatsThis = strdup( s );
+#endif
 }
 
 void MacroCommand::setPixmap( const char* s )
 {
-  this->sPixmap = createStringCopy( s );
+#if defined (_MSC_VER)
+  this->sPixmap = _strdup( s );
+#else
+  this->sPixmap = strdup( s );
+#endif
 }
 
 void MacroCommand::setAccel(int i)
