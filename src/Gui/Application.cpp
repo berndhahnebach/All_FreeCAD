@@ -38,6 +38,9 @@
 # include <Inventor/SoInteraction.h>
 #endif
 
+#include <Inventor/errors/SoDebugError.h> 
+#include <Inventor/Qt/SoQt.h> 
+
 // FreeCAD Base header
 #include "../Base/Console.h"
 #include "../Base/Interpreter.h"
@@ -661,6 +664,39 @@ void messageHandler( QtMsgType type, const char *msg )
   }
 }
 
+#ifdef FC_DEBUG // redirect Coin messages to FreeCAD
+void messageHandlerCoin( const SoError * error, void * userdata )
+{
+  if ( error && error->getTypeId() == SoDebugError::getClassTypeId() )
+  {
+    const SoDebugError* dbg = reinterpret_cast<const SoDebugError*>(error);
+    const char* msg = error->getDebugString().getString();
+    switch ( dbg->getSeverity() )
+    {
+    case SoDebugError::INFO:
+      Base::Console().Message( msg );
+      break;
+    case SoDebugError::WARNING:
+      Base::Console().Warning( msg );
+      break;
+    default: // error
+      Base::Console().Error( msg );
+      break;
+    }
+  }
+  else if ( error )
+  {
+    const char* msg = error->getDebugString().getString();
+    Base::Console().Log( msg );
+  }
+}
+
+void messageHandlerSoQt( const SbString errmsg, SoQt::FatalErrors errcode, void *userdata )
+{
+  Base::Console().Error( errmsg.getString() );
+}
+#endif
+
 /**
  * A modal dialog has its own event loop and normally gets shown with QDialog::exec().
  * If an exception is thrown from within the dialog and this exception is caught in the calling
@@ -741,6 +777,11 @@ void Application::runApplication(void)
   SoInteraction::init();
   Gui::SoFCSelection::initClass();
   Gui::SoFCSelectionAction::initClass();
+
+#ifdef FC_DEBUG // redirect Coin messages to FreeCAD
+  SoDebugError::setHandlerCallback( messageHandlerCoin, 0 );
+  SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
+#endif
 
   
   Console().Log("Init: Processing command line files\n");

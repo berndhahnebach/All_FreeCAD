@@ -67,4 +67,7 @@ Version: V0.3B5 Date: Wed Nov 30 15:56:28 2005 +++++++++++++++++++++++++++++++
 + languageChange für CommandGroup and its items
 + connect and implement Viewer Preferences and updates
 + fixing Display Dialog
-
++ increment reference count of root element before adding to the scenegraph (fixes also the bug with IV examples)
+  and decrement counter when viewer gets destructed
++ bug fixed in destruction of viewer
++ moved code from SoFCSelectionAction::callDoAction() to SoFCSelection::doAction() as the selection object must decide what to do, not the action

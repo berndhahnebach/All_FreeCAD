@@ -115,13 +115,30 @@ SoFCSelection::turnOffCurrentHighlight(SoGLRenderAction * action)
   SoFCSelection::turnoffcurrent(action);
 }
 
-/*
 void SoFCSelection::doAction( SoAction *action)
 {
+  if ( action->getTypeId() == SoFCSelectionAction::getClassTypeId() ) {
+    SoFCSelectionAction *selaction = reinterpret_cast<SoFCSelectionAction*>(action);
 
+    if ( selaction->SelChange.Type == SelectionChanges::AddSelection || selaction->SelChange.Type == SelectionChanges::RmvSelection ) {
+      if ( documentName.getValue() == selaction->SelChange.pDocName &&
+           featureName.getValue() == selaction->SelChange.pFeatName &&
+           subElementName.getValue() == selaction->SelChange.pSubName ) {
+        if ( selaction->SelChange.Type == SelectionChanges::AddSelection )
+        {
+          selected = SELECTED;
+        }else{
+          selected = NOTSELECTED;
+        }
+      }
+    }else if ( selaction->SelChange.Type == SelectionChanges::ClearSelection ){
+      selected = NOTSELECTED;
+    }
+  }
 
+  inherited::doAction( action );
 }
-*/
+
 
 // doc from parent
 void

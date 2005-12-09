@@ -170,12 +170,21 @@
 #ifndef COIN_DLL
 #	define COIN_DLL
 #endif
-#define INVENTORLIBNAME "coin2.lib"
+
+#ifdef FC_DEBUG
+#	define INVENTORLIBNAME "coin2.lib" // should be "coin2d.lib"
+#else
+#	define INVENTORLIBNAME "coin2.lib"
+#endif
 
 //**************************************************************************
 // SoQt
 
-#define SOQTLIBNAME     "soqt1.lib"
+#ifdef FC_DEBUG
+#	define SOQTLIBNAME "soqt1.lib" // should be soqt1d.lib
+#else
+#	define SOQTLIBNAME "soqt1.lib"
+#endif
 
 #ifdef FC_OS_WIN32
 

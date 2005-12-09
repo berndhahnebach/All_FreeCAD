@@ -121,6 +121,8 @@ void View3DInventorViewer::addViewProvider(ViewProviderInventor* pcProvider)
   if ( back ) backgroundroot->addChild( back );
   
   _ViewProviderSet.insert(pcProvider);
+
+  sizeChanged( getSize() );
 }
 
 void View3DInventorViewer::removeViewProvider(ViewProviderInventor* pcProvider)
@@ -205,26 +207,9 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   bDrawAxisCross = true;
   bAllowSpining  = true;
 
-/*
- // simple color bar
-  SoFCColorLegend* bar = new SoFCColorLegend;//createColorLegend();
-  SoMFString label;
-  label.set1Value(0, "+1.00");
-  label.set1Value(1, "+0.75");
-  label.set1Value(2, "+0.50");
-  label.set1Value(3, "+0.25");
-  label.set1Value(4, " 0.00");
-  label.set1Value(5, "-0.25");
-  label.set1Value(6, "-0.50");
-  label.set1Value(7, "-0.75");
-  label.set1Value(8, "-1.00");
-  bar->setMarkerLabel( label );
-  //
-*/
   this->foregroundroot->addChild(cam);
   this->foregroundroot->addChild(lm);
   this->foregroundroot->addChild(bc);
-//  this->foregroundroot->addChild(bar);
 
   // set the ViewProvider root
   /*
@@ -234,6 +219,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   pcSelection->addDeselectionCallback( View3DInventorViewer::sUnmadeSelection, this );
 */
   pcViewProviderRoot = new SoSeparator();
+
+  // increase refcount before passing it to setScenegraph(), to avoid
+  // premature destruction
+  pcViewProviderRoot->ref();
   // is not realy working with Coin3D. 
 //  redrawOverlayOnSelectionChange(pcSelection);
   setSceneGraph(pcViewProviderRoot);
@@ -260,13 +249,19 @@ void View3DInventorViewer::setGradientBackgroud(bool b)
 View3DInventorViewer::~View3DInventorViewer()
 {
   this->backgroundroot->unref();
+  this->backgroundroot = 0;
   this->foregroundroot->unref();
-  pcBackGround->unref();
+  this->foregroundroot = 0;
+  this->pcBackGround->unref();
+  this->pcBackGround = 0;
+
+  setSceneGraph(0);
+  this->pcViewProviderRoot->unref();
+  this->pcViewProviderRoot = 0;
 
   getMainWindow()->setPaneText(2, "");
 
-  Gui::Selection().Attach(this);
-
+  Gui::Selection().Detach(this);
 }
 
 

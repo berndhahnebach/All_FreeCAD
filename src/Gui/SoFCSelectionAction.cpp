@@ -47,6 +47,14 @@ using namespace Gui;
 
 SO_ACTION_SOURCE(SoFCSelectionAction);
 
+/**
+ * The order of the defined SO_ACTION_ADD_METHOD statements is very important. First the base 
+ * classes and afterwards subclasses of them must be listed, otherwise the registered methods 
+ * of subclasses will be overridden. For more details see the thread in the Coin3d forum 
+ * https://www.coin3d.org/pipermail/coin-discuss/2004-May/004346.html.
+ * This means that \c SoSwitch must be listed after \c SoGroup and \c SoFCSelection after 
+ * \c SoSeparator because both classes inherits the others.
+ */
 void SoFCSelectionAction::initClass()
 {
   SO_ACTION_INIT_CLASS(SoFCSelectionAction,SoAction);
@@ -54,7 +62,6 @@ void SoFCSelectionAction::initClass()
   SO_ENABLE(SoFCSelectionAction, SoSwitchElement);
 
   SO_ACTION_ADD_METHOD(SoNode,nullAction);
-  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
 
 
   SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
@@ -66,8 +73,10 @@ void SoFCSelectionAction::initClass()
   SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
   SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
   SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
-  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
 }
 
 
@@ -90,32 +99,12 @@ void SoFCSelectionAction::beginTraversal(SoNode *node)
 
 void SoFCSelectionAction::selNode(SoAction *action,SoNode *node)
 {
+  node->doAction(action);
   Base::Console().Log("SoFCSelectionAction::selNode()");
 }
+
 void SoFCSelectionAction::callDoAction(SoAction *action,SoNode *node)
 {
-  SoFCSelectionAction *selaction = (SoFCSelectionAction *)action;
-
-  if (node->getTypeId() == SoFCSelection::getClassTypeId()) {
-    SoFCSelection * selection = (SoFCSelection *)node;  // safe downward cast, knows the type
-    if(selaction->SelChange.Type == SelectionChanges::AddSelection || selaction->SelChange.Type == SelectionChanges::RmvSelection )
-    {
-      if( selection->documentName.getValue() == selaction->SelChange.pDocName &&
-          selection->featureName.getValue() == selaction->SelChange.pFeatName &&
-          selection->subElementName.getValue() == selaction->SelChange.pSubName ){
-        if(selaction->SelChange.Type == SelectionChanges::AddSelection)
-        {
-          selection->selected = SoFCSelection::SELECTED;
-        }else{
-          selection->selected = SoFCSelection::NOTSELECTED;
-        }
-
-      }
-    }else if(selaction->SelChange.Type == SelectionChanges::ClearSelection){
-      selection->selected = SoFCSelection::NOTSELECTED;
-    }
-  }
-
   node->doAction(action);
 }
 

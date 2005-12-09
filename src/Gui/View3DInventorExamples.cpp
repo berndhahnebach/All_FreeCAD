@@ -447,6 +447,8 @@ void AnimationTexture(SoSeparator * root)
   texturetimer->schedule();
 
   // Scene graph
+  if ( root == NULL ) exit( 1 ); // Shouldn't happen.
+  root->ref(); // prevent from being deleted because of the still running timer sensor
 //  SoSeparator * root = new SoSeparator;
 //  root->ref();
 

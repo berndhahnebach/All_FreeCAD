@@ -77,7 +77,7 @@ public:
   SoSFString subElementName;
 
 
-//  virtual void doAction( SoAction *action);
+  virtual void doAction( SoAction *action);
 
 
   virtual void handleEvent(SoHandleEventAction * action);

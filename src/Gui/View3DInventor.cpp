@@ -258,17 +258,17 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     return true;
 #endif
   }else if(strcmp("Example1",pMsg) == 0 ){
-    SoSeparator * root = new SoSeparator;;
+    SoSeparator * root = new SoSeparator;
     Texture3D(root);
     _viewer->setSceneGraph(root);
     return true;
   }else if(strcmp("Example2",pMsg) == 0 ){
-    SoSeparator * root = new SoSeparator;;
+    SoSeparator * root = new SoSeparator;
     LightManip(root);
     _viewer->setSceneGraph(root);
     return true;
   }else if(strcmp("Example3",pMsg) == 0 ){
-    SoSeparator * root = new SoSeparator;;
+    SoSeparator * root = new SoSeparator;
     AnimationTexture(root);
     _viewer->setSceneGraph(root);
     return true;
