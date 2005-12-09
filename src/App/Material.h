@@ -44,18 +44,21 @@ namespace App
 class AppExport Color
 {
 public:
-
-  Color(float R=0.0,float G=0.0, float B=0.0, float A=0.0)
+  explicit Color(float R=0.0,float G=0.0, float B=0.0, float A=0.0)
     :r(R),g(G),b(B),a(A){}
+  Color(unsigned long rgba)
+  { setPackedValue( rgba ); }
   Color(const Color& c)
     :r(c.r),g(c.g),b(c.b),a(c.a){}
-  bool operator==(const Color& c)
+
+  bool operator==(const Color& c) const
   {
     return (c.r==r && c.g==g && c.b==b && c.a==a); 
   }
-  
-  bool operator!=(const Color& c){return !operator==(c);}
-
+  bool operator!=(const Color& c) const 
+  {
+    return !operator==(c);
+  }
   void set(float R,float G, float B, float A=0.0)
   {
     r=R;g=G;b=B;a=A;
@@ -64,6 +67,32 @@ public:
   {
     r=c.r;g=c.g;b=c.b;a=c.a;
     return *this;
+  }
+
+  /**
+   * Sets the color value as a 32 bit combined red/green/blue/alpha value.
+   * Each component is 8 bit wide (i.e. from 0x00 to 0xff), and the red
+   * value should be stored leftmost, like this: 0xRRGGBBAA.
+   *
+   * \sa getPackedValue().
+   */
+  Color& setPackedValue( unsigned long rgba)
+  {
+    this->set( (rgba >> 24)/255.0f, ((rgba >> 16)&0xff)/255.0f, ((rgba >> 8)&0xff)/255.0f, (rgba&0xff)/255.0f );
+    return *this;
+  }
+
+  /**
+   * Returns color as a 32 bit packed unsigned long in the form 0xRRGGBBAA.
+   *
+   *  \sa setPackedValue().
+   */
+  unsigned long getPackedValue() const
+  {
+    return ((unsigned long)(r*255.0f + 0.5f) << 24 |
+            (unsigned long)(g*255.0f + 0.5f) << 16 |
+            (unsigned long)(b*255.0f + 0.5f) << 8  |
+            (unsigned long)(a*255.0f + 0.5f));
   }
 
   /// color values, public accesible
