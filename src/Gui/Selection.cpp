@@ -261,10 +261,12 @@ void SelectionSingelton::rmvSelection(const char* pDocName, const char* pFeatNam
     {
       SelectionChanges Chng;
 
-      Chng.pDocName  = pDocName;
-      Chng.pFeatName = pFeatName?pFeatName:"";
-      Chng.pSubName  = pSubName ?pSubName :"";
+      Chng.pDocName  = It->DocName.c_str();
+      Chng.pFeatName = It->FeatName.c_str();
+      Chng.pSubName  = It->SubName.c_str();
       Chng.Type      = SelectionChanges::RmvSelection;
+
+      Notify(Chng);
 
       It = _SelList.erase(It);
       
@@ -274,8 +276,6 @@ void SelectionSingelton::rmvSelection(const char* pDocName, const char* pFeatNam
       ++It;
   }
 
-  for(vector<SelectionChanges>::iterator It2=rmvList.begin();It2!=rmvList.end();++It2)
-    Notify(*It2);
 
 
 }
