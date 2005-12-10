@@ -61,15 +61,15 @@ namespace Mesh {
 namespace MeshGui {
 
 /**
- * The ViewProviderInventorMesh class creates
+ * The ViewProviderMesh class creates
  * a node representing the mesh data structure.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderInventorMesh : public Gui::ViewProviderInventorFeature
+class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderFeature
 {
 public:
-  ViewProviderInventorMesh();
-  virtual ~ViewProviderInventorMesh();
+  ViewProviderMesh();
+  virtual ~ViewProviderMesh();
 
   /** 
    * Extracts the mesh data from the feature \a pcFeature and creates

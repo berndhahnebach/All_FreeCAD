@@ -57,11 +57,11 @@ namespace MeshGui {
 
 /** Like Mesh viewprovider but with manipulator
  */
-class ViewProviderInventorMeshTransformDemolding : public ViewProviderInventorMesh
+class ViewProviderMeshTransformDemolding : public ViewProviderMesh
 {
 public:
-  ViewProviderInventorMeshTransformDemolding();
-  virtual ~ViewProviderInventorMeshTransformDemolding();
+  ViewProviderMeshTransformDemolding();
+  virtual ~ViewProviderMeshTransformDemolding();
 
 
   /** 

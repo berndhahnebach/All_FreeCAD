@@ -34,6 +34,7 @@
 #include <Base/Matrix.h>
 
 #include "ViewProvider.h"
+#include "BitmapFactory.h"
 #include "Tree.h"
 
 
@@ -45,69 +46,15 @@ using namespace std;
 using namespace Gui;
 
 
+
 //**************************************************************************
-// Construction/Destruction
+//**************************************************************************
+// ViewProvider
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
        
 ViewProvider::ViewProvider()
-{
-}
-
-ViewProvider::~ViewProvider()
-{
-
-}
-
-void ViewProvider::setEdit(void)
-{
-  if(getEditModeName())
-    setMode(getEditModeName());
-}
-
-void ViewProvider::unsetEdit(void)
-{
-  setMode(0);
-}
-
-
-
-
-//**************************************************************************
-//**************************************************************************
-// Seperator for additional classes
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-       
-ViewProviderTree::ViewProviderTree()
-{
-
-}
-
-
-ViewProviderTree::~ViewProviderTree()
-{
-
-}
-
-
-//**************************************************************************
-// provider methodes
-
-QListViewItem* ViewProviderTree::create()
-{
-  return 0;//new QListViewItem();
-}
-
-
-//**************************************************************************
-//**************************************************************************
-// Seperator for additional classes
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-       
-ViewProviderInventor::ViewProviderInventor()
 {
   pcRoot = new SoSeparator();
   pcRoot->ref();
@@ -117,20 +64,26 @@ ViewProviderInventor::ViewProviderInventor()
   pcTransform->ref();
   pcRoot->addChild(pcTransform);
   pcRoot->addChild(pcModeSwitch);
-
+  sPixmap = "px";
 
 }
 
 
-ViewProviderInventor::~ViewProviderInventor()
+ViewProvider::~ViewProvider()
 {
   pcRoot->unref();
   pcTransform->unref();
   pcModeSwitch->unref();
 }
 
+QPixmap ViewProvider::getIcon(void)
+{
+  return Gui::BitmapFactory().pixmap(sPixmap);
+}
 
-void ViewProviderInventor::setTransformation(const Base::Matrix4D &rcMatrix)
+
+
+void ViewProvider::setTransformation(const Base::Matrix4D &rcMatrix)
 {
 
   double dMtrx[16];
@@ -143,13 +96,13 @@ void ViewProviderInventor::setTransformation(const Base::Matrix4D &rcMatrix)
                                   dMtrx[12],dMtrx[13],dMtrx[14], dMtrx[15]));
 }
 
-void ViewProviderInventor::setTransformation(const SbMatrix &rcMatrix)
+void ViewProvider::setTransformation(const SbMatrix &rcMatrix)
 {
   pcTransform->setMatrix(rcMatrix);
 }
 
 
-void ViewProviderInventor::setMode(const char* ModeName)
+void ViewProvider::setMode(const char* ModeName)
 {
   // collect all modes (with subclasses)
   vector<string> modes = getModes();
@@ -160,42 +113,42 @@ void ViewProviderInventor::setMode(const char* ModeName)
   if(p!=modes.end())
     setMode(p-modes.begin());
   else
-    Base::Console().Warning("Unknown mode '%s' in ViewProviderInventor::setMode(), ignored\n", ModeName);
+    Base::Console().Warning("Unknown mode '%s' in ViewProvider::setMode(), ignored\n", ModeName);
 
 }
 
-void ViewProviderInventor::setMode(int Mode)
+void ViewProvider::setMode(int Mode)
 {
   pcModeSwitch->whichChild = Mode;
   _iActualMode = Mode;
 }
 
 
-int ViewProviderInventor::getMode(void)
+int ViewProvider::getMode(void)
 {
  return pcModeSwitch->whichChild.getValue();
 }
 
 
-std::string ViewProviderInventor::getModeName(void)
+std::string ViewProvider::getModeName(void)
 {
   return getModes()[getMode()];
 }
 
-void ViewProviderInventor::hide(void)
+void ViewProvider::hide(void)
 {
   if(pcModeSwitch->whichChild.getValue() != -1)
     _iActualMode = pcModeSwitch->whichChild.getValue();
   pcModeSwitch->whichChild = -1;
 }
 
-void ViewProviderInventor::show(void)
+void ViewProvider::show(void)
 {
   pcModeSwitch->whichChild = _iActualMode;
 
 }
 
-bool ViewProviderInventor::isShow(void)
+bool ViewProvider::isShow(void)
 {
   return pcModeSwitch->whichChild.getValue() != -1;
 

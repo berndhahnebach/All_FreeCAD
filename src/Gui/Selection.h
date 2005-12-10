@@ -90,13 +90,13 @@ class GuiExport SelectionSingelton :public Base::Subject<const SelectionChanges&
 public:
 
   /// Add a selection 
-  bool addSelection(const char* pDocName, const char* pFeatName, const char* pSubName, float x=0, float y=0, float z=0);
+  bool addSelection(const char* pDocName, const char* pFeatName=0, const char* pSubName=0, float x=0, float y=0, float z=0);
   /// Remove a selection (for internal use)
-  void rmvSelection(const char* pDocName, const char* pFeatName, const char* pSubName);
+  void rmvSelection(const char* pDocName, const char* pFeatName=0, const char* pSubName=0);
   /// clears the selection
   void clearSelection(void);
   /// checks if selected
-  bool isSelected(const char* pDocName, const char* pFeatName, const char* pSubName);
+  bool isSelected(const char* pDocName, const char* pFeatName=0, const char* pSubName=0);
 
   bool setPreselect(const char* pDocName, const char* pFeatName, const char* pSubName, float x=0, float y=0, float z=0);
   void rmvPreselect();

@@ -34,6 +34,7 @@
 #include "Tree.h"
 #include "Document.h"
 #include "BitmapFactory.h"
+#include "ViewProviderFeature.h"
 
 #include "../App/Document.h"
 #include "../App/Label.h"
@@ -43,6 +44,11 @@
 using Base::Console;
 
 using namespace Gui;
+
+
+//**************************************************************************
+// DocItem
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 /** Constructor
@@ -56,7 +62,8 @@ DocItem::DocItem( QListViewItem* parent,Gui::Document* doc)
   setPixmap(0,*TreeView::pcLabelOpen);
   setText(0,QString(_pcDocument->getDocument()->getName()));
 
-//  _pcDocument->Attach(this);
+  bHighlight = false;
+  bSelected = false;
 
   buildUp();
 }
@@ -65,6 +72,96 @@ DocItem::~DocItem()
 {
   //_pcDocument->Detach(this);
 }
+
+void DocItem::highlightFeature(const char* name, bool bOn)
+{
+  std::map<string,FeatItem*>::iterator pos;
+  pos = FeatMap.find(name);
+  
+  if(pos != FeatMap.end())
+    pos->second->highlightFeature(bOn);
+
+  bHighlight = bOn;
+  if (!isOpen() )
+    repaint();
+
+}
+
+void DocItem::selectFeature(const char* name, bool bOn)
+{
+  std::map<string,FeatItem*>::iterator pos;
+  pos = FeatMap.find(name);
+  
+  if(pos != FeatMap.end())
+    pos->second->selectFeature(bOn);
+
+
+}
+void DocItem::clearSelection(void)
+{
+  for (std::map<string,FeatItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
+  {
+    pos->second->bSelected = false;
+    pos->second->setSelected(false);
+    pos->second->repaint();
+  }
+}
+
+void DocItem::isSelectionUptodate(void)
+{
+  for (std::map<string,FeatItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
+  {
+    if(pos->second->bSelected != pos->second->isSelected())
+    {
+      if(pos->second->bSelected)
+      {
+        Base::Console().Log("Sel : Rmv tree selection (%s,%s)\n",_pcDocument->getDocument()->getName(),pos->first.c_str());
+        Gui::Selection().rmvSelection(_pcDocument->getDocument()->getName(),pos->first.c_str());
+        //pos->second->bSelected = false;
+      }else{
+
+        Base::Console().Log("Sel : Add tree selection (%s,%s)\n",_pcDocument->getDocument()->getName(),pos->first.c_str());
+        Gui::Selection().addSelection(_pcDocument->getDocument()->getName(),pos->first.c_str());
+        pos->second->bSelected = true;
+
+      }
+    }
+    
+  }
+
+
+
+}
+
+
+void DocItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align )
+{
+   QColorGroup _cg( cg );
+   QColor c = _cg.text();
+
+   if ( bHighlight && !isOpen() )
+       _cg.setColor( QColorGroup::Base , QColor (200,200,255));
+
+   QListViewItem::paintCell( p, _cg, column, width, align );
+
+   _cg.setColor( QColorGroup::Text, c );
+
+}
+
+
+
+void DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
+{
+  FeatMap[Provider->getFeature()->getName()] = dynamic_cast<FeatItem*>( Provider->getTreeItem(this) );
+}
+
+void DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
+{
+
+  // to implement
+  assert(0);
+}
+
 
 void DocItem::update(void)
 {
@@ -103,36 +200,11 @@ void DocItem::activate ()
   //puts("Activated");
 }
 
-void DocItem::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
-{
-#ifdef FC_LOGUPDATECHAIN
-  Base::Console().Log("Acti: Gui::DocItem::OnChange)");
-#endif
 
-  // remove the representation of Features no longer exist
-  std::set<App::Feature*>::const_iterator It;
-  for(It=Reason.DeletedFeatures.begin();It!=Reason.DeletedFeatures.end();It++)
-  {
-    std::map<App::Feature*,FeatItem*>::iterator pos;
-    pos = FeatMap.find(*It);
-  
-    if(pos == FeatMap.end())
-      delete FeatMap[*It];
-  }
+//**************************************************************************
+// FeatItem
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  // set up new providers
-  for(It=Reason.NewFeatures.begin();It!=Reason.NewFeatures.end();It++)
-  {
-    FeatItem *item = new FeatItem(this,*It);
-    FeatMap[*It] = item;
-  }
-
-  // update recalculated features
-  for(It=Reason.UpdatedFeatures.begin();It!=Reason.UpdatedFeatures.end();It++)
-  {
-  }
-
-}
 
 /** Constructor
  *  Instanciate the class with his parent (in the tree) and the
@@ -146,7 +218,37 @@ FeatItem::FeatItem( QListViewItem* parent,App::Feature* pcFeat)
   setPixmap(0,*TreeView::pcLabelOpen);
   setText(0,QString(pcFeat->getName()));
 
+  bHighlight = false;
+  bSelected = false;
+
   buildUp();
+}
+
+void FeatItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align )
+{
+   QColorGroup _cg( cg );
+   QColor c = _cg.text();
+
+   if ( bHighlight )
+       _cg.setColor( QColorGroup::Base , QColor (200,200,255));
+
+   QListViewItem::paintCell( p, _cg, column, width, align );
+
+   _cg.setColor( QColorGroup::Text, c );
+
+}
+
+void FeatItem::highlightFeature(bool bOn)
+{
+  bHighlight = bOn;
+  repaint();
+}
+
+void FeatItem::selectFeature(bool bOn)
+{
+  setSelected(bOn);
+  bSelected =bOn;
+  repaint();
 }
 
 void FeatItem::update(void)
@@ -194,7 +296,7 @@ QPixmap* TreeView::pcAttribute=0;
 
 /* TRANSLATOR Gui::TreeView */
 TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
-  :DockView(pcDocument,parent,name)
+  :DockView(pcDocument,parent,name),bFromOutside(false)
 {
   QGridLayout* layout = new QGridLayout( this );
   _pcListView = new QListView(this,name);
@@ -220,10 +322,73 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 
   //_pcListView->setRootIsDecorated(true);
 
+  _pcListView->setSelectionMode(QListView::Extended );
+  connect( _pcListView, SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
+
+
+  QPalette pal = _pcListView->palette();
+  pal.setInactive( pal.active() );
+  _pcListView->setPalette( pal );
 
 
   //_pcListView->setSize(200,400);
   resize( 200, 400 );
+
+  Gui::Selection().Attach(this);
+
+
+}
+
+TreeView::~TreeView()
+{
+  Gui::Selection().Detach(this);
+}
+
+// Observer message from the Selection
+void TreeView::OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason)
+{
+  bFromOutside = true;
+  if(Reason.Type != SelectionChanges::ClearSelection)
+  {
+    map<string, DocItem*>::iterator it = DocMap.find( Reason.pDocName );
+
+    if(it!= DocMap.end())
+    {
+  
+      if(Reason.Type == SelectionChanges::SetPreselect)
+       it->second->highlightFeature(Reason.pFeatName,true);
+      else  if(Reason.Type == SelectionChanges::RmvPreselect)
+       it->second->highlightFeature(Reason.pFeatName,false);
+      else if(Reason.Type == SelectionChanges::AddSelection)
+       it->second->selectFeature(Reason.pFeatName,true);
+      else  if(Reason.Type == SelectionChanges::RmvSelection)
+       it->second->selectFeature(Reason.pFeatName,false);
+    }
+  }else{
+    for (std::map<string,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
+    {
+      pos->second->clearSelection();
+    }
+
+    _pcListView->clearSelection ();
+    _pcListView->update();
+  }
+
+  bFromOutside = false;
+}
+
+
+
+void TreeView::selectionChanged ()
+{
+  if(bFromOutside) return;
+
+  Base::Console().Log("Sel : QListView::selectionChanged()");
+
+  for (std::map<string,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
+  {
+    pos->second->isSelectionUptodate();
+  }
 
 }
 
@@ -255,17 +420,21 @@ bool TreeView::onMsg(const char* pMsg)
   return false;
 }
 
-void TreeView::NewDoc( Gui::Document* pDoc )
+ DocItem * TreeView::NewDoc( Gui::Document* pDoc )
 {
   DocItem *item = new DocItem(_pcMainItem,pDoc);
-  DocMap[ pDoc ] = item;
+  DocMap[ pDoc->getDocument()->getName() ] = item;
+  return item;
 }
 
 void TreeView::DeleteDoc( Gui::Document* pDoc )
 {
-  std::map<Gui::Document*, DocItem*>::iterator it = DocMap.find( pDoc );
-  DocMap.erase( it );
-  delete it->second;
+  map<string, DocItem*>::iterator it = DocMap.find( pDoc->getDocument()->getName() );
+  if(it!= DocMap.end())
+  {
+    DocMap.erase( it );
+    delete it->second;
+  }
 }
 
 

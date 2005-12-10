@@ -182,7 +182,7 @@ PYFUNCIMP_D(DocumentPy,addAnnotation)
 
   PY_TRY {
 
-    ViewProviderInventorExtern *pcExt = new ViewProviderInventorExtern();
+    ViewProviderExtern *pcExt = new ViewProviderExtern();
 
     pcExt->setModeByFile(psModName?psModName:"Main",psFileName);
 

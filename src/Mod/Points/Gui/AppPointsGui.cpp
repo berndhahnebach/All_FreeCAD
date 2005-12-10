@@ -80,10 +80,10 @@ void PointsGuiExport initPointsGui() {
   CreatePointsCommands();
 
   // Register view provider
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("Points",       
-    new Gui::ViewProviderInventorFeatureProducer<PointsGui::ViewProviderInventorPoints>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PointsImport", 
-    new Gui::ViewProviderInventorFeatureProducer<PointsGui::ViewProviderInventorPoints>);
+  Gui::ViewProviderFeatureFactory().AddProducer("Points",       
+    new Gui::ViewProviderFeatureProducer<PointsGui::ViewProviderPoints>);
+  Gui::ViewProviderFeatureFactory().AddProducer("PointsImport", 
+    new Gui::ViewProviderFeatureProducer<PointsGui::ViewProviderPoints>);
   Gui::WorkbenchFactory().AddProducer("Points design", new Gui::WorkbenchProducer<PointsGui::Workbench>);
 
   return;

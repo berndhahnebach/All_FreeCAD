@@ -41,16 +41,19 @@ namespace App
 
 namespace Gui {
 
+class FeatItem;
 
-class GuiExport ViewProviderInventorFeature:public ViewProviderInventor
+class GuiExport ViewProviderFeature:public ViewProvider
 {
 public:
   /// constructor.
-  ViewProviderInventorFeature();
+  ViewProviderFeature();
 
   /// destructor.
-  virtual ~ViewProviderInventorFeature();
+  virtual ~ViewProviderFeature();
 
+  // returns the TreeLabel
+  virtual QListViewItem* getTreeItem(QListViewItem* parent);
 
   virtual void attach(App::Feature *pcFeature);
   /// returns a vector of all possible modes
@@ -59,9 +62,9 @@ public:
   /// check if the Data has to be recalculated
   bool ifDataNewer(void);
   /// check if the matrial has to be recalculated
-  bool ifMaterialNewer(void);
+  bool ifMaterialNewer(void); 
 
-  virtual void update(const ChangeType&);
+  virtual void update(void);
 
   virtual void updateData(void){};
   
@@ -77,6 +80,8 @@ public:
   virtual void setColor(const App::Color &c);
 
 
+  App::Feature *getFeature(void){return pcFeature;}
+
 protected:
   SoMaterial  *pcSolidMaterial;
   SoMaterial  *pcLineMaterial;
@@ -85,6 +90,8 @@ protected:
   SoDrawStyle *pcPointStyle;
 
   App::Feature *pcFeature;
+
+  FeatItem *pcFeatItem;
 
   Quantity_Date calcMaterial,calcData;
 
@@ -96,40 +103,40 @@ protected:
 
 /** The FeatureFactory singleton
   */
-class GuiExport ViewProviderInventorFeatureFactorySingleton : public Base::Factory
+class GuiExport ViewProviderFeatureFactorySingleton : public Base::Factory
 {
 public:
-	static ViewProviderInventorFeatureFactorySingleton& Instance(void);
+	static ViewProviderFeatureFactorySingleton& Instance(void);
 	static void Destruct (void);
 
     /// produce the ViewProvider using the factory
-	ViewProviderInventorFeature *Produce (const char* sName) const;
+	ViewProviderFeature *Produce (const char* sName) const;
 
 private:
-	static ViewProviderInventorFeatureFactorySingleton* _pcSingleton;
+	static ViewProviderFeatureFactorySingleton* _pcSingleton;
 
-	ViewProviderInventorFeatureFactorySingleton(){}
-	~ViewProviderInventorFeatureFactorySingleton(){}
+	ViewProviderFeatureFactorySingleton(){}
+	~ViewProviderFeatureFactorySingleton(){}
 };
 
-inline GuiExport ViewProviderInventorFeatureFactorySingleton& ViewProviderInventorFeatureFactory(void)
+inline GuiExport ViewProviderFeatureFactorySingleton& ViewProviderFeatureFactory(void)
 {
-	return ViewProviderInventorFeatureFactorySingleton::Instance();
+	return ViewProviderFeatureFactorySingleton::Instance();
 }
 
 // --------------------------------------------------------------------
 
 template <class CLASS>
-class ViewProviderInventorFeatureProducer: public Base::AbstractProducer
+class ViewProviderFeatureProducer: public Base::AbstractProducer
 {
 	public:
 		/// Constructor
-		ViewProviderInventorFeatureProducer ()
+		ViewProviderFeatureProducer ()
 		{
-			Gui::ViewProviderInventorFeatureFactory().AddProducer(typeid(CLASS).name(), this);
+			Gui::ViewProviderFeatureFactory().AddProducer(typeid(CLASS).name(), this);
 		}
 
-		virtual ~ViewProviderInventorFeatureProducer (void){}
+		virtual ~ViewProviderFeatureProducer (void){}
 
 		/// Produce an instance
 		virtual void* Produce (void) const

@@ -66,22 +66,22 @@ using Base::Vector3D;
     
 
  
-ViewProviderInventorMeshTransform::ViewProviderInventorMeshTransform()
+ViewProviderMeshTransform::ViewProviderMeshTransform()
 {
   pcTransformerDragger = new SoTransformerManip();
   pcTransformerDragger->ref();
 }
 
-ViewProviderInventorMeshTransform::~ViewProviderInventorMeshTransform()
+ViewProviderMeshTransform::~ViewProviderMeshTransform()
 {
   pcTransformerDragger->unref();
 }
 
 
-void ViewProviderInventorMeshTransform::attach(App::Feature *pcFeat)
+void ViewProviderMeshTransform::attach(App::Feature *pcFeat)
 {
   // creats the satandard viewing modes
-  ViewProviderInventorMesh::attach(pcFeat);
+  ViewProviderMesh::attach(pcFeat);
 
 //  SoTransformerDragger *pcTransformerDragger = new SoTransformerDragger();
 
@@ -109,28 +109,28 @@ void ViewProviderInventorMeshTransform::attach(App::Feature *pcFeat)
 //  setMode(pcFeat->getShowMode());
 }
 
-void ViewProviderInventorMeshTransform::updateData(void)
+void ViewProviderMeshTransform::updateData(void)
 {
-  ViewProviderInventorMesh::updateData();
+  ViewProviderMesh::updateData();
 }
 
 
-void ViewProviderInventorMeshTransform::setMode(const char* ModeName)
+void ViewProviderMeshTransform::setMode(const char* ModeName)
 {
-  ViewProviderInventorMesh::setMode(ModeName);
+  ViewProviderMesh::setMode(ModeName);
 
   //int i = getMode();
 }
 
 
-std::vector<std::string> ViewProviderInventorMeshTransform::getModes(void)
+std::vector<std::string> ViewProviderMeshTransform::getModes(void)
 {
-  std::vector<std::string> StrList = ViewProviderInventorMesh::getModes();
+  std::vector<std::string> StrList = ViewProviderMesh::getModes();
 
   StrList.push_back("Transform");
 
   return StrList;
-//  return ViewProviderInventorMesh::getModes().push_back("Transform");
+//  return ViewProviderMesh::getModes().push_back("Transform");
 }
 
 

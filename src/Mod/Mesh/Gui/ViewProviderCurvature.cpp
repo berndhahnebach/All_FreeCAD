@@ -62,21 +62,21 @@ using MeshCore::MeshFacetIterator;
 using Base::Vector3D;
     
  
-ViewProviderInventorMeshCurvature::ViewProviderInventorMeshCurvature()
+ViewProviderMeshCurvature::ViewProviderMeshCurvature()
 {
   pcColorMat = new SoMaterial;
   pcColorMat->ref();
 }
 
-ViewProviderInventorMeshCurvature::~ViewProviderInventorMeshCurvature()
+ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
 {
   pcColorMat->unref();
 }
 
-void ViewProviderInventorMeshCurvature::attach(App::Feature *pcFeat)
+void ViewProviderMeshCurvature::attach(App::Feature *pcFeat)
 {
   // creats the satandard viewing modes
-  ViewProviderInventorMesh::attach(pcFeat);
+  ViewProviderMesh::attach(pcFeat);
 
 
   SoGroup* pcColorShadedRoot = new SoGroup();
@@ -102,14 +102,14 @@ void ViewProviderInventorMeshCurvature::attach(App::Feature *pcFeat)
 
 }
 
-void ViewProviderInventorMeshCurvature::updateData(void)
+void ViewProviderMeshCurvature::updateData(void)
 {
-  ViewProviderInventorMesh::updateData();
+  ViewProviderMesh::updateData();
 }
 
-void ViewProviderInventorMeshCurvature::setMode(const char* ModeName)
+void ViewProviderMeshCurvature::setMode(const char* ModeName)
 {
-  ViewProviderInventorMesh::setMode(ModeName);
+  ViewProviderMesh::setMode(ModeName);
 
   Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
   App::PropertyBag *pcProp = 0;
@@ -121,9 +121,9 @@ void ViewProviderInventorMeshCurvature::setMode(const char* ModeName)
   } 
 }
 
-std::vector<std::string> ViewProviderInventorMeshCurvature::getModes(void)
+std::vector<std::string> ViewProviderMeshCurvature::getModes(void)
 {
-  std::vector<std::string> StrList = ViewProviderInventorMesh::getModes();
+  std::vector<std::string> StrList = ViewProviderMesh::getModes();
 
   // add the dynamic modes (depends on which properties are added to the mesh..)
   Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
@@ -133,10 +133,10 @@ std::vector<std::string> ViewProviderInventorMeshCurvature::getModes(void)
     StrList.push_back(*It);
 
   return StrList;
-//  return ViewProviderInventorMesh::getModes().push_back("Transform");
+//  return ViewProviderMesh::getModes().push_back("Transform");
 }
 
-void ViewProviderInventorMeshCurvature::SetVertexColorMode(Mesh::MeshPropertyColor* pcProp)
+void ViewProviderMeshCurvature::SetVertexColorMode(Mesh::MeshPropertyColor* pcProp)
 {
   vector<Mesh::MeshPropertyColor::fColor> color = pcProp->Color;
   for (unsigned long i=0; i<color.size();i++)

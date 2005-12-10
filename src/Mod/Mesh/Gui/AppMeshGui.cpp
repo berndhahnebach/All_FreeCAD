@@ -90,13 +90,13 @@ void GuiMeshExport initMeshGui() {
   CreateMeshCommands();
 
   // Register view provider
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshImport",             new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshExport",             new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("Mesh"      ,             new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshSegmentByMesh",      new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMesh>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshCurvature",          new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshCurvature>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshTransform",          new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshTransform>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("MeshTransformDemolding", new Gui::ViewProviderInventorFeatureProducer<MeshGui::ViewProviderInventorMeshTransformDemolding>);
+  Gui::ViewProviderFeatureFactory().AddProducer("MeshImport",             new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMesh>);
+  Gui::ViewProviderFeatureFactory().AddProducer("MeshExport",             new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMesh>);
+  Gui::ViewProviderFeatureFactory().AddProducer("Mesh"      ,             new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMesh>);
+  Gui::ViewProviderFeatureFactory().AddProducer("MeshSegmentByMesh",      new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMesh>);
+  Gui::ViewProviderFeatureFactory().AddProducer("MeshCurvature",          new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMeshCurvature>);
+  Gui::ViewProviderFeatureFactory().AddProducer("MeshTransform",          new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMeshTransform>);
+  Gui::ViewProviderFeatureFactory().AddProducer("MeshTransformDemolding", new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMeshTransformDemolding>);
   Gui::WorkbenchFactory().AddProducer("Mesh design", new Gui::WorkbenchProducer<MeshGui::Workbench>);
 
   return;

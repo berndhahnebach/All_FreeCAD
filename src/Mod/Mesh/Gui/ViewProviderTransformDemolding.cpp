@@ -68,22 +68,22 @@ using namespace MeshGui;
 
 
 
-ViewProviderInventorMeshTransformDemolding::ViewProviderInventorMeshTransformDemolding()
+ViewProviderMeshTransformDemolding::ViewProviderMeshTransformDemolding()
 {
   pcTrackballDragger = new SoTrackballDragger;
   pcTrackballDragger->ref();
 }
 
-ViewProviderInventorMeshTransformDemolding::~ViewProviderInventorMeshTransformDemolding()
+ViewProviderMeshTransformDemolding::~ViewProviderMeshTransformDemolding()
 {
   pcTrackballDragger->unref();
 }
 
 
-void ViewProviderInventorMeshTransformDemolding::attach(App::Feature *pcFeat)
+void ViewProviderMeshTransformDemolding::attach(App::Feature *pcFeat)
 {
   // creats the satandard viewing modes
-  ViewProviderInventorMesh::attach(pcFeat);
+  ViewProviderMesh::attach(pcFeat);
 
 
   SoGroup* pcColorShadedRoot = new SoGroup();
@@ -141,7 +141,7 @@ void ViewProviderInventorMeshTransformDemolding::attach(App::Feature *pcFeat)
 
 }
 
-void ViewProviderInventorMeshTransformDemolding::calcNormalVector(void)
+void ViewProviderMeshTransformDemolding::calcNormalVector(void)
 {
   MeshKernel *cMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh().getKernel();
 
@@ -155,7 +155,7 @@ void ViewProviderInventorMeshTransformDemolding::calcNormalVector(void)
   }
 
 }
-void ViewProviderInventorMeshTransformDemolding::calcMaterialIndex(const SbRotation &rot)
+void ViewProviderMeshTransformDemolding::calcMaterialIndex(const SbRotation &rot)
 {
   // 3.1415926535897932384626433832795
   SbVec3f Up(0,0,1),result;
@@ -178,16 +178,16 @@ void ViewProviderInventorMeshTransformDemolding::calcMaterialIndex(const SbRotat
   }
 }
 
-void ViewProviderInventorMeshTransformDemolding::sValueChangedCallback(void *This, SoDragger *)
+void ViewProviderMeshTransformDemolding::sValueChangedCallback(void *This, SoDragger *)
 {
-  static_cast<ViewProviderInventorMeshTransformDemolding*>(This)->valueChangedCallback();
+  static_cast<ViewProviderMeshTransformDemolding*>(This)->valueChangedCallback();
 }
-void ViewProviderInventorMeshTransformDemolding::sDragEndCallback(void *This, SoDragger *)
+void ViewProviderMeshTransformDemolding::sDragEndCallback(void *This, SoDragger *)
 {
-  static_cast<ViewProviderInventorMeshTransformDemolding*>(This)->DragEndCallback();
+  static_cast<ViewProviderMeshTransformDemolding*>(This)->DragEndCallback();
 }
 
-void ViewProviderInventorMeshTransformDemolding::DragEndCallback(void)
+void ViewProviderMeshTransformDemolding::DragEndCallback(void)
 {
   SbRotation rot = pcTrackballDragger->rotation.getValue();
   calcMaterialIndex(rot);
@@ -196,7 +196,7 @@ void ViewProviderInventorMeshTransformDemolding::DragEndCallback(void)
 
 }
 
-void ViewProviderInventorMeshTransformDemolding::valueChangedCallback(void)
+void ViewProviderMeshTransformDemolding::valueChangedCallback(void)
 {
   //Base::Console().Log("Value change Callback\n");
   //setTransformation(pcTrackballDragger->getMotionMatrix());
@@ -215,9 +215,9 @@ void ViewProviderInventorMeshTransformDemolding::valueChangedCallback(void)
 }
 
 
-std::vector<std::string> ViewProviderInventorMeshTransformDemolding::getModes(void)
+std::vector<std::string> ViewProviderMeshTransformDemolding::getModes(void)
 {
-  std::vector<std::string> StrList = ViewProviderInventorMesh::getModes();
+  std::vector<std::string> StrList = ViewProviderMesh::getModes();
 
   StrList.push_back("Demold");
 
@@ -227,14 +227,14 @@ std::vector<std::string> ViewProviderInventorMeshTransformDemolding::getModes(vo
 
 
 /*
-void ViewProviderInventorMeshTransformDemolding::updateData(void)
+void ViewProviderMeshTransformDemolding::updateData(void)
 {
-  ViewProviderInventorMesh::updateData();
+  ViewProviderMesh::updateData();
 }
 
-void ViewProviderInventorMeshTransformDemolding::setMode(const char* ModeName)
+void ViewProviderMeshTransformDemolding::setMode(const char* ModeName)
 {
-  ViewProviderInventorMesh::setMode(ModeName);
+  ViewProviderMesh::setMode(ModeName);
 
   int i = getMode();
 }

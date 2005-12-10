@@ -31,6 +31,7 @@
 #include "Tools.h"
 #include "../Base/Console.h"
 #include "Icons/images.cpp"
+#include "Icons/Feature.xpm"
 #include "Icons/Icons.h"
 #include "Icons/BmpFactoryIcons.cpp"
 

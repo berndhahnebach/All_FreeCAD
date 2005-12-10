@@ -31,6 +31,7 @@
 #include <Gui/ViewProvider.h>
 #include <Gui/Macro.h>
 #include <Gui/WorkbenchFactory.h>
+#include <Gui/BitmapFactory.h>
 
 #include <Gui/WidgetFactory.h>
 
@@ -41,6 +42,8 @@
 
 #include "Part_de.h"
 #include <Gui/Language/LanguageFactory.h>
+
+#include "Icons/PartFeature.xpm"
 
 using namespace PartGui;
 
@@ -91,12 +94,12 @@ void ModuleExport initPartGui() {
   Gui::Application::Instance->macroManager()->setModule("Part");
 
   // Register view provider
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartBox"       ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartCut"       ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportStep",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportIges",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartImportBrep",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("PartCurveNet"  ,new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderCurveNet>);
+  Gui::ViewProviderFeatureFactory().AddProducer("PartBox"       ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
+  Gui::ViewProviderFeatureFactory().AddProducer("PartCut"       ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
+  Gui::ViewProviderFeatureFactory().AddProducer("PartImportStep",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
+  Gui::ViewProviderFeatureFactory().AddProducer("PartImportIges",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
+  Gui::ViewProviderFeatureFactory().AddProducer("PartImportBrep",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
+  Gui::ViewProviderFeatureFactory().AddProducer("PartCurveNet"  ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderCurveNet>);
 
   Gui::WorkbenchFactory().AddProducer("Part design", new Gui::WorkbenchProducer<PartGui::Workbench>);
 
@@ -107,6 +110,9 @@ void ModuleExport initPartGui() {
   new Gui::PrefPageProducer<DlgSettings3DViewPartImp> ( "Part design" );
   new Gui::LanguageProducer("Deutsch", GetPart_de());
 
+  // register bitmaps
+  Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();
+  rclBmpFactory.addXPM("PartFeature",(const char**) PartFeature_xpm);
 
 	return;
 }

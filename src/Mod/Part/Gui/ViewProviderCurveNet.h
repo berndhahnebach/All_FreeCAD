@@ -41,7 +41,7 @@ namespace Gui {
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderCurveNet:public ViewProviderInventorPart
+class AppPartGuiExport ViewProviderCurveNet:public ViewProviderPart
 {
 public:
   /// constructor
@@ -55,7 +55,7 @@ public:
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void){return std::vector<std::string>();}
   /// Update the Part representation
-  virtual void update(const ChangeType&){}
+  virtual void update(void){}
 
   virtual void setEdit(void);
   virtual void unsetEdit(void);

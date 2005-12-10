@@ -65,6 +65,7 @@
 #include <App/Document.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/Selection.h>
+#include <Gui/Tree.h>
 
 
 #include "ViewProvider.h"
@@ -74,6 +75,7 @@
 #include <Poly_Polygon3D.hxx>
 #include <BRepMesh.hxx>
 
+#include "Icons/PartFeature.xpm"
 
 //#include "Tree.h"
 
@@ -86,7 +88,7 @@ using namespace PartGui;
 // Construction/Destruction
 
        
-ViewProviderInventorPart::ViewProviderInventorPart()
+ViewProviderPart::ViewProviderPart()
 {
   EdgeRoot = new SoSeparator();
   EdgeRoot->ref();
@@ -105,7 +107,7 @@ ViewProviderInventorPart::ViewProviderInventorPart()
 
 }
 
-ViewProviderInventorPart::~ViewProviderInventorPart()
+ViewProviderPart::~ViewProviderPart()
 {
   EdgeRoot->unref();
   FaceRoot->unref();
@@ -113,10 +115,10 @@ ViewProviderInventorPart::~ViewProviderInventorPart()
 
 }
 
-std::vector<std::string> ViewProviderInventorPart::getModes(void)
+std::vector<std::string> ViewProviderPart::getModes(void)
 {
   // get the modes of the father
-  vector<string> StrList = ViewProviderInventorFeature::getModes();
+  vector<string> StrList = ViewProviderFeature::getModes();
 
   // add your own modes
   StrList.push_back("Normal");
@@ -128,7 +130,7 @@ std::vector<std::string> ViewProviderInventorPart::getModes(void)
 }
 
 /*
-void ViewProviderInventorPart::update(const ChangeType& Reason)
+void ViewProviderPart::update(const ChangeType& Reason)
 {
   Reason;
   // set new view modes
@@ -138,9 +140,9 @@ void ViewProviderInventorPart::update(const ChangeType& Reason)
 
 }
 */
-void ViewProviderInventorPart::updateData(void)
+void ViewProviderPart::updateData(void)
 {
-  Base::Console().Log("ViewProviderInventorPart::updateData() for %s called\n",pcFeature->getName()); 
+  Base::Console().Log("ViewProviderPart::updateData() for %s called\n",pcFeature->getName()); 
 
   // geting actual setting values...
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
@@ -171,15 +173,15 @@ void ViewProviderInventorPart::updateData(void)
     computeEdges   (EdgeRoot,cShape);
     computeVertices(VertexRoot,cShape);
   } catch (...){
-    Base::Console().Error("ViewProviderInventorPart::create() Cannot compute Inventor representation for the actual shape");
+    Base::Console().Error("ViewProviderPart::create() Cannot compute Inventor representation for the actual shape");
   }
 
 }
 
-void ViewProviderInventorPart::attach(App::Feature *pcFeat)
+void ViewProviderPart::attach(App::Feature *pcFeat)
 {
   // call father (set material and feature pointer)
-  ViewProviderInventorFeature::attach(pcFeat);
+  ViewProviderFeature::attach(pcFeat);
 
   // Build up the view represetation from the shape
   updateData();
@@ -213,6 +215,9 @@ void ViewProviderInventorPart::attach(App::Feature *pcFeat)
 
   // standard viewing (flat)
   pcModeSwitch->whichChild = 0; 
+
+  sPixmap = "PartFeature";
+  //pcFeatItem->setPixmap(0,QPixmap(PartFeature_xpm));
 
 }
 
@@ -252,7 +257,7 @@ buffer_writeaction(SoNode * root)
 */
 // **********************************************************************************
 
-Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* EdgeRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPart::computeEdges   (SoSeparator* EdgeRoot, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
 
@@ -361,7 +366,7 @@ Standard_Boolean ViewProviderInventorPart::computeEdges   (SoSeparator* EdgeRoot
 }
 
 
-Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* VertexRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, const TopoDS_Shape &myShape)
 {
 /*
   TopExp_Explorer ex;
@@ -380,7 +385,7 @@ Standard_Boolean ViewProviderInventorPart::computeVertices(SoSeparator* VertexRo
 
 
 
-Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* FaceRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
 
@@ -474,7 +479,7 @@ Standard_Boolean ViewProviderInventorPart::computeFaces(SoSeparator* FaceRoot, c
   return true;
 }
 
-void ViewProviderInventorPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace )
+void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** vertexnormals, long** cons,int &nbNodesInFace,int &nbTriInFace )
 {
 	TopLoc_Location aLoc;
 

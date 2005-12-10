@@ -42,7 +42,7 @@ class SbSphereSheetProjector;
 
 namespace Gui {
 
-class ViewProviderInventor;
+class ViewProvider;
 class SoFCBackgroundGradient;
 
 
@@ -63,9 +63,9 @@ public:
 
 
   /// adds an ViewProvider to the view, e.g. from a feature
-  void addViewProvider(ViewProviderInventor*);
+  void addViewProvider(ViewProvider*);
   /// remove a ViewProvider
-  void removeViewProvider(ViewProviderInventor*);
+  void removeViewProvider(ViewProvider*);
   /**
    * Creates an image with width \a w and height \a h of the current scene graph. Pixels per inch is set to \a r.
    */
@@ -104,8 +104,8 @@ public:
       ShowFPS  =2,       /**< Enables the Frams per Second counter. */  
       SimpleBackround=4, /**< switch to a simple background. */  
       DisallowRotation=8,/**< switch of the rotation. */  
-      DisallowPaning=16, /**< switch of the rotation. */  
-      DisallowZooming=32,/**< switch of the rotation. */  
+      DisallowPaning=16, /**< switch of the paning. */  
+      DisallowZooming=32,/**< switch of the zooming. */  
      }; 
 
   //@{
@@ -141,7 +141,7 @@ protected:
   void setPopupMenuEnabled(const SbBool on);
   SbBool isPopupMenuEnabled(void) const;
 
-  std::set<ViewProviderInventor*> _ViewProviderSet;
+  std::set<ViewProvider*> _ViewProviderSet;
 
   virtual void actualRedraw(void);
   virtual SbBool processSoEvent(const SoEvent * const ev);

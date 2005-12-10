@@ -29,17 +29,22 @@
 # include <TDF_Label.hxx>
 #endif
 
-#include "../Base/PyExport.h"
-#include "DockWindow.h"
+#include <Base/PyExport.h>
 #include <App/Document.h>
 #include <App/Application.h>
+
+#include "Selection.h"
+#include "DockWindow.h"
 
 /// Forwards
 class FCLabel; 
 
+using namespace std;
+
 namespace Gui {
 class Document;
 class TreeView;
+class ViewProviderFeature;
 
 struct GUIDDefs {
     char  *Guid;
@@ -63,6 +68,12 @@ public:
   /// Im not realy sure whats this method do ;-).
   void setup();
 
+  void highlightFeature(bool);
+
+  void selectFeature(bool);
+
+  void paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align );
+
   /// Delivers the pixmap that is shown.
 //    const QPixmap *pixmap( int i ) const;
   /// Sets the pixmap that will be shown.
@@ -72,9 +83,13 @@ public:
 
   void buildUp(void);
 
+  friend class DocItem;
 
 protected:
   void activate (); 
+
+  bool bHighlight;
+  bool bSelected;
 
   App::Feature*  _pcFeature;
 };
@@ -103,20 +118,35 @@ public:
   /// Sets the pixmap that will be shown.
 //    void setPixmap( QPixmap *p );
 
+  /// adds an ViewProvider to the view, e.g. from a feature
+  void addViewProviderFeature(ViewProviderFeature*);
+  /// remove a ViewProvider
+  void removeViewProviderFeature(ViewProviderFeature*);
+
+  void highlightFeature(const char*, bool);
+
+  void selectFeature(const char*, bool);
+  void clearSelection(void);
+  void isSelectionUptodate(void);
+
   void update(void);
 
   void buildUp(void);
 
   /// Observer message from the App doc
-  virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
+//  virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
+  void paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align );
 
 
 protected:
   void activate (); 
 
+  bool bHighlight;
+  bool bSelected;
+
 
   Gui::Document*  _pcDocument;
-  std::map<App::Feature*,FeatItem*> FeatMap;
+  std::map<std::string,FeatItem*> FeatMap;
 
 };
  
@@ -127,7 +157,7 @@ protected:
 /** 
  *  \author Jürgen Riegel
  */
-class TreeView :public Gui::DockView//, public App::ApplicationObserver
+class TreeView :public Gui::DockView, public Gui::SelectionSingelton::ObserverType
 {
   Q_OBJECT
 
@@ -135,9 +165,14 @@ public:
   TreeView(Gui::Document*  pcDocument,QWidget *parent=0,const char *name=0);
   // App_Tree();
 
+  ~TreeView();
+
   bool onMsg(const char* pMsg);
 
-  virtual const char *getName(void){return "Raw Tree";}
+  virtual const char *getName(void){return "TreeView";}
+
+    /// Observer message from the Selection
+  virtual void OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason);
 
 
   //void InitCascade(Handle(TDocStd_Document) hDoc);
@@ -150,9 +185,17 @@ public:
   virtual void onUpdate(void);
 
 	/// This method get called when a new doc appears
-	void NewDoc(Gui::Document*);
+	DocItem *  NewDoc(Gui::Document*);
 	/// This method get called when a new doc will be deleted
   void DeleteDoc(Gui::Document*);
+
+  QListViewItem* getMainItem(void){return _pcMainItem;}
+
+  void testStatus(void){};
+
+public slots:
+
+  void selectionChanged(void);
 
 protected:
   QListView*  _pcListView;
@@ -160,7 +203,10 @@ protected:
 
   static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
-  std::map<Gui::Document*,DocItem*> DocMap;
+  map<string,DocItem*> DocMap;
+
+  bool bFromOutside;
+
 };
 
 } // namespace Gui

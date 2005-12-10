@@ -81,7 +81,8 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   pcSelection->addSelectionCallback( Document::sMadeSelection, this );
   pcSelection->addDeselectionCallback( Document::sUnmadeSelection, this );
 */
-  Gui::getMainWindow()->getTreeView()->NewDoc(this);
+  //pcTreeItem = new DocItem(Gui::getMainWindow()->getTreeView()->getMainItem(),this);
+  pcTreeItem = Gui::getMainWindow()->getTreeView()->NewDoc(this);
   // open at least one viewer
   createView("View3DIv");
 }
@@ -95,14 +96,17 @@ Document::~Document()
     delete _LpcViews.front();
   }
 
-  std::map<App::Feature*,ViewProviderInventor*>::iterator it;
+  std::map<App::Feature*,ViewProvider*>::iterator it;
   for(it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
     delete it->second;
 
 //  pcSelection->unref();
     Gui::getMainWindow()->getTreeView()->DeleteDoc(this);
+    pcTreeItem = 0;
 
+  // remove from the tree
 
+  //delete (pcTreeItem);
   _pcDocument->Detach(this);
 
   // remove the reverence from the object
@@ -115,20 +119,20 @@ Document::~Document()
 
 void Document::update(void)
 {
-  for(std::map<App::Feature*,ViewProviderInventor*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
-    It1->second->update(ViewProvider::All);
-  for(std::map<std::string,ViewProviderInventor*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
-    It2->second->update(ViewProvider::All);
+  for(std::map<App::Feature*,ViewProvider*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+    It1->second->update();
+  for(std::map<std::string,ViewProvider*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
+    It2->second->update();
 
   onUpdate();
 }
 
-void Document::setAnotationViewProvider(const char* name, ViewProviderInventor *pcProvider)
+void Document::setAnotationViewProvider(const char* name, ViewProvider *pcProvider)
 {
   std::list<Gui::BaseView*>::iterator VIt;
 
   // already in ?
-  std::map<std::string,ViewProviderInventor*>::iterator it = _ViewProviderMapAnotation.find( name );
+  std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnotation.find( name );
   if(it != _ViewProviderMapAnotation.end())
     rmvAnotationViewProvider(name);
 
@@ -147,16 +151,16 @@ void Document::setAnotationViewProvider(const char* name, ViewProviderInventor *
 
 }
 
-ViewProviderInventor * Document::getAnotationViewProvider(const char* name)
+ViewProvider * Document::getAnotationViewProvider(const char* name)
 {
-  std::map<std::string,ViewProviderInventor*>::iterator it = _ViewProviderMapAnotation.find( name );
+  std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnotation.find( name );
   return ( (it != _ViewProviderMapAnotation.end()) ? it->second : 0 );
 
 }
 
 void Document::rmvAnotationViewProvider(const char* name)
 {
-  std::map<std::string,ViewProviderInventor*>::iterator it = _ViewProviderMapAnotation.find( name );
+  std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnotation.find( name );
   std::list<Gui::BaseView*>::iterator VIt;
 
   // cycling to all views of the document
@@ -172,92 +176,27 @@ void Document::rmvAnotationViewProvider(const char* name)
 }
 
 
-ViewProviderInventor* Document::getViewProvider(App::Feature* Feat)
+ViewProvider* Document::getViewProvider(App::Feature* Feat)
 {
-  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
+  std::map<App::Feature*,ViewProvider*>::iterator it = _ViewProviderMap.find( Feat );
   return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
 }
 
-/*
-/// test if the feature is in show
-bool Document::isShow(App::Feature *Feat)
-{
-  return _ViewProviderMap.find( Feat ) != _ViewProviderMap.end();
-}
 
-/// put the feature in show
-ViewProviderInventor * Document::setShow(App::Feature * Feat)
-{
-  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMapNoShow.find( Feat );
-  if(it != _ViewProviderMapNoShow.end())
-  {
-    ViewProviderInventor *P = it->second;
-
-    _ViewProviderMap[it->first] = P;
-
-    // go through all views and add the view providor
-    std::list<Gui::BaseView*>::iterator VIt;
-    for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
-    {
-      View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
-      if(pcIvView && P)
-      {
-        pcIvView->getViewer()->addViewProvider( P );
-      }
-    }
-
-    _ViewProviderMapNoShow.erase(it);
-    return P;
-  }else{
-    return _ViewProviderMap[Feat];
-   }
-}
-
-/// set the feature in Noshow
-ViewProviderInventor * Document::setHide(App::Feature *Feat)
-{
-  std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( Feat );
-  if(it != _ViewProviderMap.end())
-  {
-    ViewProviderInventor *P = it->second;
-
-    _ViewProviderMapNoShow[it->first] = P;
-
-    // go through all views and remove
-    std::list<Gui::BaseView*>::iterator VIt;
-    for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
-    {
-      View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
-      if(pcIvView && P)
-      {
-        pcIvView->getViewer()->removeViewProvider( P );
-      }
-    }
-
-    // remove it from the visible map
-    _ViewProviderMap.erase(it);
-
-    return P;
-  }else{
-    return _ViewProviderMapNoShow[Feat];
-  }
-}
-*/
-
-ViewProviderInventor *Document::getViewProviderByName(const char* name)
+ViewProvider *Document::getViewProviderByName(const char* name)
 {
   // first check on feature name
   App::Feature *pcFeat = getDocument()->getFeature(name);
 
   if(pcFeat)
   {
-    std::map<App::Feature*,ViewProviderInventor*>::iterator it = _ViewProviderMap.find( pcFeat );
+    std::map<App::Feature*,ViewProvider*>::iterator it = _ViewProviderMap.find( pcFeat );
 
     if(it != _ViewProviderMap.end())
       return it->second;
   }else {
     // then try annotation name
-    std::map<std::string,ViewProviderInventor*>::iterator it2 = _ViewProviderMapAnotation.find( name );
+    std::map<std::string,ViewProvider*>::iterator it2 = _ViewProviderMapAnotation.find( name );
 
     if(it2 != _ViewProviderMapAnotation.end())
       return it2->second;
@@ -269,7 +208,7 @@ ViewProviderInventor *Document::getViewProviderByName(const char* name)
 
 bool Document::isShow(const char* name)
 {
-  ViewProviderInventor* pcProv = getViewProviderByName(name);
+  ViewProvider* pcProv = getViewProviderByName(name);
 
   if(pcProv)
     return pcProv->isShow();
@@ -280,7 +219,7 @@ bool Document::isShow(const char* name)
 /// put the feature in show
 void Document::setShow(const char* name)
 {
-  ViewProviderInventor* pcProv = getViewProviderByName(name);
+  ViewProvider* pcProv = getViewProviderByName(name);
 
   if(pcProv)
     pcProv->show();
@@ -289,7 +228,7 @@ void Document::setShow(const char* name)
 /// set the feature in Noshow
 void Document::setHide(const char* name)
 {
-  ViewProviderInventor* pcProv = getViewProviderByName(name);
+  ViewProvider* pcProv = getViewProviderByName(name);
 
   if(pcProv)
     pcProv->hide();
@@ -298,7 +237,7 @@ void Document::setHide(const char* name)
 /// set the feature in Noshow
 void Document::setPos(const char* name, const Matrix4D& rclMtrx)
 {
-  ViewProviderInventor* pcProv = getViewProviderByName(name);
+  ViewProvider* pcProv = getViewProviderByName(name);
 
   if(pcProv)
     pcProv->setTransformation(rclMtrx);
@@ -321,7 +260,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   for(It=Reason.DeletedFeatures.begin();It!=Reason.DeletedFeatures.end();It++)
   {
     // cycling to all views of the document
-    ViewProviderInventor* vpInv = getViewProvider( *It );
+    ViewProvider* vpInv = getViewProvider( *It );
     for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
     {
       View3DInventor *pcIvView = dynamic_cast<View3DInventor *>(*VIt);
@@ -330,6 +269,11 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
         pcIvView->getViewer()->removeViewProvider( vpInv );
       }
     }
+
+    // removing from tree
+    pcTreeItem->removeViewProviderFeature(dynamic_cast<ViewProviderFeature*>( vpInv ));
+
+
 
     if ( vpInv )
     {
@@ -343,7 +287,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   {
     std::string cName = (*It)->type();
     // check if still the same ViewProvider
-    ViewProviderInventorFeature *pcProvider = ViewProviderInventorFeatureFactory().Produce((*It)->type());
+    ViewProviderFeature *pcProvider = ViewProviderFeatureFactory().Produce((*It)->type());
     _ViewProviderMap[*It] = pcProvider;
     if(pcProvider)
     {
@@ -357,6 +301,10 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
         if(pcIvView)
           pcIvView->getViewer()->addViewProvider(pcProvider);
       }
+
+      // adding to the tree
+      pcTreeItem->addViewProviderFeature(pcProvider);
+
     }else{
       Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",(*It)->type());
     }
@@ -365,9 +313,9 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   // update recalculated features
   for(It=Reason.UpdatedFeatures.begin();It!=Reason.UpdatedFeatures.end();It++)
   {
-    ViewProviderInventor* vpInv = getViewProvider( *It );
+    ViewProvider* vpInv = getViewProvider( *It );
     if ( vpInv )
-      vpInv->update(ViewProvider::All);
+      vpInv->update();
   }
 
   //getViewer()->addViewProvider()
@@ -419,9 +367,9 @@ void Document::createView(const char* sType)
     //((View3DInventor*)pcView3D)->getViewer()->addSelectionNode(pcSelection);
     
     // attach the viewprovider
-    for(std::map<App::Feature*,ViewProviderInventor*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+    for(std::map<App::Feature*,ViewProvider*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
       ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It1->second);
-    for(std::map<std::string,ViewProviderInventor*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
+    for(std::map<std::string,ViewProvider*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
       ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It2->second);
 
   }else /* if(strcmp(sType,"View3DOCC") == 0){
@@ -763,7 +711,7 @@ void Document::madeSelection(  SoPath * path )
 
 
 /*
-  for(std::set<ViewProviderInventor*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
+  for(std::set<ViewProvider*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
     for(int i = 0; i<path->getLength();i++)
       if((*It)->getRoot() == path->getNodeFromTail(i))
       {

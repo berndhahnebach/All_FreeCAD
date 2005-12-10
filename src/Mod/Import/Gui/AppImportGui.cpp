@@ -88,8 +88,8 @@ void ModuleExport initImportGui() {
 
 	Base::Console().Log("ImportGui loaded\n");
 
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("ImportStep",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
-  Gui::ViewProviderInventorFeatureFactory().AddProducer("ImportIges",new Gui::ViewProviderInventorFeatureProducer<PartGui::ViewProviderInventorPart>);
+  Gui::ViewProviderFeatureFactory().AddProducer("ImportStep",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
+  Gui::ViewProviderFeatureFactory().AddProducer("ImportIges",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
 
 
 	// instanciating the commands

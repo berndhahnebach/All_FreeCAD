@@ -50,106 +50,15 @@ namespace Gui {
 class View3DInventorViewer;
 
 
-/** Base class of all view provider
- *  \author Jürgen Riegel
- */
+
 class GuiExport ViewProvider
 {
 public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
+  /// constructor.
   ViewProvider();
 
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProvider();
-
-	/** @name status methodes of the feature */
-	//@{
-  /// set the viewing mode
-  virtual void setMode(const char* ModeName)=0;
-  /// set the viewing mode as int
-  virtual void setMode(int Mode)=0;
-  /// get the viewing mode as int
-  virtual int getMode(void)=0;
-  /// get the viewing mode as int
-  virtual std::string getModeName(void)=0;
-
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void)=0;
-  /// change types
-  enum ChangeType 
-  {
-    All,
-    View
-  };
-
-  /** update the content of the ViewProvider
-    * this methode have to implement the recalcualtion
-    * of the ViewProvider. There are different reasons to 
-    * update. E.g. only the view attribute has changed, or
-    * the data has manipulated.
-    */
-  virtual void update(const ChangeType&)=0;
-
-	/** @name editing interface 
-    * this methodes handling the edition of a 
-    * viewprovider. Better the underlaing data.
-    * This means also to handle Events of the viewer
-    * in a special way.
-    */
-	//@{
-  /** set the ViewProvider in edit mode
-    * that means it get all left and right mouse down and 
-    * mouse move events first and can handle it.
-    * @param bOn true when switch on, false when switch of
-    * @ret   false if the provider whants not go edit, or can not
-    */
-
-  virtual void hide(void){};
-  virtual void show(void){};
-  virtual bool isShow(void){return false;};
-
-  virtual void setEdit(void);
-  virtual void unsetEdit(void);
-  virtual const char* getEditModeName(void){return 0;}
-
-  //@}
-
-};
-
-
-class GuiExport ViewProviderTree:public ViewProvider
-{
-public:
-  /**
-   * A constructor.
-   * A more elaborate description of the constructor.
-   */
-  ViewProviderTree();
-
-  /**
-   * A destructor.
-   * A more elaborate description of the destructor.
-   */
-  virtual ~ViewProviderTree();
-
-  QListViewItem* create();
-};
-
-
-class GuiExport ViewProviderInventor:public ViewProvider
-{
-public:
-  /// constructor.
-  ViewProviderInventor();
-
   /// destructor.
-  virtual ~ViewProviderInventor();
+  virtual ~ViewProvider();
 
   // returns the root node of the Provider (3D)
   virtual SoSeparator* getRoot(void){return pcRoot;}
@@ -157,10 +66,23 @@ public:
   virtual SoSeparator* getFrontRoot(void){return 0;}
   // returns the root node of the Provider (3D)
   virtual SoSeparator* getBackRoot(void){return 0;}
+  // returns the TreeLabel
+  virtual QListViewItem* getTreeItem(QListViewItem* parent){return 0;}
+  // returns the TreeLabel
+  virtual QPixmap getIcon(void);
+
+
+  /** update the content of the ViewProvider
+    * this methode have to implement the recalcualtion
+    * of the ViewProvider. There are different reasons to 
+    * update. E.g. only the view attribute has changed, or
+    * the data has manipulated.
+    */
+  virtual void update(void)=0;
 
 
 	/** @name mode methodes of the feature 
-    * manly stiar a SoSwitch (pcModeSwitch) which select the 
+    * manly stire a SoSwitch (pcModeSwitch) which select the 
     * viewing mode.
     * @see pcModeSwitch
     */
@@ -180,6 +102,9 @@ public:
   virtual void show(void);
   virtual bool isShow(void);
 
+  virtual void setEdit(void){};
+  virtual void unsetEdit(void){};
+  virtual const char* getEditModeName(void){return 0;}
 
 
   //@}
@@ -218,8 +143,10 @@ protected:
   /// this is the mode switch, all the different viewing modes are collected here
   SoSwitch    *pcModeSwitch;
 
-  /// this is the mode switch, all the different viewing modes are collected here
+  /// this is transformation for the provider
   SoTransform *pcTransform;
+
+  const char* sPixmap;
 
   int _iActualMode;
 

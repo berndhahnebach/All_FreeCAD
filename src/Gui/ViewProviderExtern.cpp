@@ -48,19 +48,19 @@ using namespace Gui;
 
 
       
-ViewProviderInventorExtern::ViewProviderInventorExtern()
+ViewProviderExtern::ViewProviderExtern()
 {
 
 }
 
 
-ViewProviderInventorExtern::~ViewProviderInventorExtern()
+ViewProviderExtern::~ViewProviderExtern()
 {
 
 }
 
 
-void ViewProviderInventorExtern::setModeByString(const char* name, const char* ivFragment)
+void ViewProviderExtern::setModeByString(const char* name, const char* ivFragment)
 {
   SoInput in;
   in.setBuffer((void*)ivFragment,strlen(ivFragment));
@@ -70,7 +70,7 @@ void ViewProviderInventorExtern::setModeByString(const char* name, const char* i
 }
 
 
-void ViewProviderInventorExtern::setModeByFile(const char* name, const char* ivFileName)
+void ViewProviderExtern::setModeByFile(const char* name, const char* ivFileName)
 {
   SoInput in;
   if (in.openFile(ivFileName)) 
@@ -80,7 +80,7 @@ void ViewProviderInventorExtern::setModeByFile(const char* name, const char* ivF
 }
 
 
-void ViewProviderInventorExtern::setModeBySoInput(const char* name, SoInput &ivFileInput)
+void ViewProviderExtern::setModeBySoInput(const char* name, SoInput &ivFileInput)
 {
   SoSeparator * root = SoDB::readAll(&ivFileInput);
   if (root) {
@@ -104,18 +104,18 @@ void ViewProviderInventorExtern::setModeBySoInput(const char* name, SoInput &ivF
 
 
 
-std::vector<std::string> ViewProviderInventorExtern::getModes(void)
+std::vector<std::string> ViewProviderExtern::getModes(void)
 {
   // empty
   return modes;
 }
 
-void ViewProviderInventorExtern::setTransparency(float trans)
+void ViewProviderExtern::setTransparency(float trans)
 {
 
 }
 
-void ViewProviderInventorExtern::setColor(const App::Color &c)
+void ViewProviderExtern::setColor(const App::Color &c)
 {
   
 }

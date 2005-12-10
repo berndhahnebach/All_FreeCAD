@@ -127,7 +127,7 @@ void ViewProviderCurveNet::attach(App::Feature *pcFeat)
     computeEdges   (pcRoot,cShape);
     computeVertices(pcRoot,cShape);
   } catch (...){
-    Base::Console().Error("ViewProviderInventorPart::create() Cannot compute Inventor representation for the actual shape");
+    Base::Console().Error("ViewProviderPart::create() Cannot compute Inventor representation for the actual shape");
   }
 */
 

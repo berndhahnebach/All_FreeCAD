@@ -35,13 +35,13 @@ class SbVec3f;
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderInventorPart:public Gui::ViewProviderInventorFeature
+class AppPartGuiExport ViewProviderPart:public Gui::ViewProviderFeature
 {
 public:
   /// constructor
-  ViewProviderInventorPart();
+  ViewProviderPart();
   /// destructor
-  virtual ~ViewProviderInventorPart();
+  virtual ~ViewProviderPart();
 
 
   virtual void attach(App::Feature *);

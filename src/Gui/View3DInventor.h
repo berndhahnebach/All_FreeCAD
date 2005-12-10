@@ -49,7 +49,7 @@ class TreeView;
 class View3DInventor;
 class View3DInventorViewer;
 class MyView3DInventor;
-class ViewProviderInventorFeature;
+class ViewProviderFeature;
 
 
 /** The 3D View Window
@@ -117,7 +117,7 @@ protected:
   SoMaterial	* pcShapeMaterial;
 
   std::string            cViewProviderName;
-  ViewProviderInventorFeature * pcActViewProvider;
+  ViewProviderFeature * pcActViewProvider;
 
 private:
 

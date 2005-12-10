@@ -47,15 +47,15 @@ namespace Points {
 namespace PointsGui {
 
 /**
- * The ViewProviderInventorPoints class creates
+ * The ViewProviderPoints class creates
  * a node representing the point data structure.
  * @author Werner Mayer
  */
-class PointsGuiExport ViewProviderInventorPoints : public Gui::ViewProviderInventorFeature
+class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderFeature
 {
 public:
-  ViewProviderInventorPoints();
-  virtual ~ViewProviderInventorPoints();
+  ViewProviderPoints();
+  virtual ~ViewProviderPoints();
 
   /** 
    * Extracts the point data from the feature \a pcFeature and creates

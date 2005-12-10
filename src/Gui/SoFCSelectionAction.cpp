@@ -100,7 +100,7 @@ void SoFCSelectionAction::beginTraversal(SoNode *node)
 void SoFCSelectionAction::selNode(SoAction *action,SoNode *node)
 {
   node->doAction(action);
-  Base::Console().Log("SoFCSelectionAction::selNode()");
+  //Base::Console().Log("SoFCSelectionAction::selNode()");
 }
 
 void SoFCSelectionAction::callDoAction(SoAction *action,SoNode *node)

@@ -171,10 +171,19 @@ bool SelectionSingelton::setPreselect(const char* pDocName, const char* pFeatNam
   return true;
 }
 
-void SelectionSingelton::rmvPreselect(void)
+void SelectionSingelton::rmvPreselect()
 {
   if(DocName == "")
     return;
+
+
+  SelectionChanges Chng;
+  Chng.pDocName  = DocName.c_str();
+  Chng.pFeatName = FeatName.c_str();
+  Chng.pSubName  = SubName.c_str();
+  Chng.Type = SelectionChanges::RmvPreselect;
+
+  Notify(Chng);
 
   DocName = "";
   FeatName= "";
@@ -182,11 +191,7 @@ void SelectionSingelton::rmvPreselect(void)
   hx = 0;
   hy = 0;
   hz = 0;
-
-  SelectionChanges Chng;
-  Chng.Type = SelectionChanges::RmvPreselect;
-  Notify(Chng);
-
+ 
   //Base::Console().Log("Sel : Rmv preselect \n");
 
 }
@@ -206,12 +211,15 @@ bool SelectionSingelton::addSelection(const char* pDocName, const char* pFeatNam
   else
     temp.pDoc = App::GetApplication().getActiveDocument();
 
-  temp.pFeat = temp.pDoc->getFeature(pFeatName);
+  if(pFeatName)
+    temp.pFeat = temp.pDoc->getFeature(pFeatName);
+  else
+    temp.pFeat = 0;
 
 
   temp.DocName  = pDocName;
-  temp.FeatName = pFeatName;
-  temp.SubName  = pSubName;
+  temp.FeatName = pFeatName?pFeatName:"";
+  temp.SubName  = pSubName ?pSubName :"";
   temp.x        = x;
   temp.y        = y;
   temp.z        = z;
@@ -224,8 +232,8 @@ bool SelectionSingelton::addSelection(const char* pDocName, const char* pFeatNam
   SelectionChanges Chng;
 
   Chng.pDocName  = pDocName;
-  Chng.pFeatName = pFeatName;
-  Chng.pSubName  = pSubName;
+  Chng.pFeatName = pFeatName?pFeatName:"";
+  Chng.pSubName  = pSubName ?pSubName :"";
   Chng.x         = x;
   Chng.y         = y;
   Chng.z         = z;
@@ -243,26 +251,32 @@ bool SelectionSingelton::addSelection(const char* pDocName, const char* pFeatNam
 
 void SelectionSingelton::rmvSelection(const char* pDocName, const char* pFeatName, const char* pSubName)
 {
-  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+  vector<SelectionChanges> rmvList;
+
+  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();)
   {
-    if(It->DocName == pDocName && It->FeatName == pFeatName && It->SubName == pSubName )
+    if( ( It->DocName == pDocName && !pFeatName ) ||
+        ( It->DocName == pDocName && pFeatName && It->FeatName == pFeatName && !pSubName ) ||
+        ( It->DocName == pDocName && pFeatName && It->FeatName == pFeatName && pSubName && It->SubName == pSubName ))
     {
-      _SelList.erase(It);
-      break;
-    }
+      SelectionChanges Chng;
+
+      Chng.pDocName  = pDocName;
+      Chng.pFeatName = pFeatName?pFeatName:"";
+      Chng.pSubName  = pSubName ?pSubName :"";
+      Chng.Type      = SelectionChanges::RmvSelection;
+
+      It = _SelList.erase(It);
+      
+      rmvList.push_back(Chng);
+      Base::Console().Log("Sel : Rmv Selection \"%s.%s.%s\"\n",pDocName,pFeatName,pSubName);
+    } else 
+      ++It;
   }
 
-  SelectionChanges Chng;
+  for(vector<SelectionChanges>::iterator It2=rmvList.begin();It2!=rmvList.end();++It2)
+    Notify(*It2);
 
-  Chng.pDocName  = pDocName;
-  Chng.pFeatName = pFeatName;
-  Chng.pSubName  = pSubName;
-  Chng.Type      = SelectionChanges::RmvSelection;
-
-
-  Notify(Chng);
-
-  Base::Console().Log("Sel : Rmv Selection \"%s.%s.%s\"\n",pDocName,pFeatName,pSubName);
 
 }
 

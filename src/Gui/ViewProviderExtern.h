@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProviderInventorExtern_H__
-#define __ViewProviderInventorExtern_H__
+#ifndef __ViewProviderExtern_H__
+#define __ViewProviderExtern_H__
 
 #include "ViewProvider.h"
 
@@ -38,14 +38,14 @@ namespace App
 namespace Gui {
 
 
-class GuiExport ViewProviderInventorExtern:public ViewProviderInventor
+class GuiExport ViewProviderExtern:public ViewProvider
 {
 public:
   /// constructor.
-  ViewProviderInventorExtern();
+  ViewProviderExtern();
 
   /// destructor.
-  virtual ~ViewProviderInventorExtern();
+  virtual ~ViewProviderExtern();
 
   void setModeByString(const char* name, const char* ivFragment);
   void setModeByFile(const char* name, const char* ivFileName);
@@ -54,7 +54,7 @@ public:
   
   virtual std::vector<std::string> getModes(void);
 
-  virtual void update(const ChangeType&){}
+  virtual void update(void){}
 
   /// Set the transparency
   virtual void setTransparency(float);
@@ -74,5 +74,5 @@ protected:
 
 } // namespace Gui
 
-#endif // __ViewProviderInventorExtern_H__
+#endif // __ViewProviderExtern_H__
 

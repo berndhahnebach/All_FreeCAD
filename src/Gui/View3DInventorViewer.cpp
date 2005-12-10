@@ -111,7 +111,7 @@ void View3DInventorViewer::OnChange(Gui::SelectionSingelton::SubjectType &rCalle
 
 
 /// adds an ViewProvider to the view, e.g. from a feature
-void View3DInventorViewer::addViewProvider(ViewProviderInventor* pcProvider)
+void View3DInventorViewer::addViewProvider(ViewProvider* pcProvider)
 {
   pcViewProviderRoot->addChild(pcProvider->getRoot());
 
@@ -125,7 +125,7 @@ void View3DInventorViewer::addViewProvider(ViewProviderInventor* pcProvider)
   sizeChanged( getSize() );
 }
 
-void View3DInventorViewer::removeViewProvider(ViewProviderInventor* pcProvider)
+void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 {
   pcViewProviderRoot->removeChild(pcProvider->getRoot());
  
@@ -719,7 +719,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   // give the viewprovider the chance to handle the event
 //  if(!processed)
 //  {
-//    std::set<ViewProviderInventor*>::iterator It;
+//    std::set<ViewProvider*>::iterator It;
 //    for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
 //      processed = (*It)->handleEvent(ev,*this);
 //  }
@@ -1047,7 +1047,7 @@ void View3DInventorViewer::madeSelection(  SoPath * path )
 
 
 /*
-  for(std::set<ViewProviderInventor*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
+  for(std::set<ViewProvider*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
     for(int i = 0; i<path->getLength();i++)
       if((*It)->getRoot() == path->getNodeFromTail(i))
       {

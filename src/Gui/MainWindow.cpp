@@ -650,6 +650,9 @@ void MainWindow::updateCmdActivity()
   {
     //puts("testActive");
     Application::Instance->commandManager().testActive();
+
+    pcTree->testStatus();
+
     // remember last call
     cLastCall.start();
   }

@@ -45,7 +45,7 @@ using namespace Gui;
 
 
       
-ViewProviderInventorFeature::ViewProviderInventorFeature()
+ViewProviderFeature::ViewProviderFeature()
 :pcFeature(0)
 {
   pcSolidMaterial = new SoMaterial;
@@ -64,11 +64,12 @@ ViewProviderInventorFeature::ViewProviderInventorFeature()
   pcPointStyle->style = SoDrawStyle::POINTS;
   pcPointStyle->pointSize = 1;
 
+  sPixmap = "Feature";
 
 }
 
 
-ViewProviderInventorFeature::~ViewProviderInventorFeature()
+ViewProviderFeature::~ViewProviderFeature()
 {
   pcSolidMaterial->unref();
   pcLineMaterial->unref();
@@ -77,7 +78,7 @@ ViewProviderInventorFeature::~ViewProviderInventorFeature()
 }
 
 
-void ViewProviderInventorFeature::attach(App::Feature *pcFeat)
+void ViewProviderFeature::attach(App::Feature *pcFeat)
 {
   // save feature pointer
   pcFeature = pcFeat;
@@ -94,14 +95,23 @@ void ViewProviderInventorFeature::attach(App::Feature *pcFeat)
 
 }
 
-bool ViewProviderInventorFeature::ifDataNewer(void)
+
+QListViewItem* ViewProviderFeature::getTreeItem(QListViewItem* parent)
+{
+  pcFeatItem = new FeatItem(parent,pcFeature);
+  pcFeatItem->setPixmap(0,ViewProvider::getIcon());
+  return pcFeatItem;
+}
+
+
+bool ViewProviderFeature::ifDataNewer(void)
 {
   // first do attach
   assert(pcFeature);
   return pcFeature->getTouchTime() > calcData || pcFeature->getTouchTime() == calcData; 
 }
 
-bool ViewProviderInventorFeature::ifMaterialNewer(void)
+bool ViewProviderFeature::ifMaterialNewer(void)
 {
   // first do attach
   assert(pcFeature);
@@ -110,7 +120,7 @@ bool ViewProviderInventorFeature::ifMaterialNewer(void)
 }
 
 
-void ViewProviderInventorFeature::update(const ChangeType&)
+void ViewProviderFeature::update(void)
 {
   if(ifDataNewer())
   {
@@ -130,14 +140,14 @@ void ViewProviderInventorFeature::update(const ChangeType&)
 }
 
 
-std::vector<std::string> ViewProviderInventorFeature::getModes(void)
+std::vector<std::string> ViewProviderFeature::getModes(void)
 {
   // empty
   return std::vector<std::string>();
 }
 
 
-void ViewProviderInventorFeature::copy(const App::Material &Mat, SoMaterial* pcSoMat)
+void ViewProviderFeature::copy(const App::Material &Mat, SoMaterial* pcSoMat)
 {
   pcSoMat->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
   pcSoMat->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
@@ -148,7 +158,7 @@ void ViewProviderInventorFeature::copy(const App::Material &Mat, SoMaterial* pcS
 
 }
 
-void ViewProviderInventorFeature::setMatFromFeature(void)
+void ViewProviderFeature::setMatFromFeature(void)
 {
   copy(pcFeature->getSolidMaterial(),pcSolidMaterial);
   copy(pcFeature->getLineMaterial(),pcLineMaterial);
@@ -161,12 +171,12 @@ void ViewProviderInventorFeature::setMatFromFeature(void)
   calcMaterial = pro.SystemDate ();
 }
 
-void ViewProviderInventorFeature::setTransparency(float trans)
+void ViewProviderFeature::setTransparency(float trans)
 {
   pcSolidMaterial->transparency = trans;
 }
 
-void ViewProviderInventorFeature::setColor(const App::Color &c)
+void ViewProviderFeature::setColor(const App::Color &c)
 {
   pcSolidMaterial->diffuseColor.setValue(c.r,c.g,c.b);
 }
@@ -177,24 +187,24 @@ void ViewProviderInventorFeature::setColor(const App::Color &c)
 
 
 
-ViewProviderInventorFeatureFactorySingleton* ViewProviderInventorFeatureFactorySingleton::_pcSingleton = NULL;
+ViewProviderFeatureFactorySingleton* ViewProviderFeatureFactorySingleton::_pcSingleton = NULL;
 
-ViewProviderInventorFeatureFactorySingleton& ViewProviderInventorFeatureFactorySingleton::Instance(void)
+ViewProviderFeatureFactorySingleton& ViewProviderFeatureFactorySingleton::Instance(void)
 {
   if (_pcSingleton == NULL)
-    _pcSingleton = new ViewProviderInventorFeatureFactorySingleton;
+    _pcSingleton = new ViewProviderFeatureFactorySingleton;
   return *_pcSingleton;
 }
 
-void ViewProviderInventorFeatureFactorySingleton::Destruct (void)
+void ViewProviderFeatureFactorySingleton::Destruct (void)
 {
   if (_pcSingleton != NULL)
     delete _pcSingleton;
 }
 
-ViewProviderInventorFeature* ViewProviderInventorFeatureFactorySingleton::Produce (const char* sName) const
+ViewProviderFeature* ViewProviderFeatureFactorySingleton::Produce (const char* sName) const
 {
-	ViewProviderInventorFeature* w = (ViewProviderInventorFeature*)Factory::Produce(sName);
+	ViewProviderFeature* w = (ViewProviderFeature*)Factory::Produce(sName);
 
   // this Feature class is not registered
   if (!w)

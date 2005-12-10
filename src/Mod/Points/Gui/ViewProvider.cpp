@@ -56,7 +56,7 @@ using namespace PointsGui;
 using namespace Points;
 
        
-ViewProviderInventorPoints::ViewProviderInventorPoints()
+ViewProviderPoints::ViewProviderPoints()
 {
   pcPointsCoord = new SoCoordinate3();
   pcPointsCoord->ref();
@@ -70,7 +70,7 @@ ViewProviderInventorPoints::ViewProviderInventorPoints()
   pcColorMat->ref();
 }
 
-ViewProviderInventorPoints::~ViewProviderInventorPoints()
+ViewProviderPoints::~ViewProviderPoints()
 {
   pcPointsCoord->unref();
   pcPoints->unref();
@@ -79,7 +79,7 @@ ViewProviderInventorPoints::~ViewProviderInventorPoints()
   pcColorMat->unref();
 }
 
-void ViewProviderInventorPoints::createPoints(PointsFeature *pFeature)
+void ViewProviderPoints::createPoints(PointsFeature *pFeature)
 {
   if ( !pFeature ) return;
 
@@ -96,7 +96,7 @@ void ViewProviderInventorPoints::createPoints(PointsFeature *pFeature)
   pcPoints->numPoints = cPts.size();
 }
 
-void ViewProviderInventorPoints::setVertexColorMode(Points::PointsPropertyColor* pcProp)
+void ViewProviderPoints::setVertexColorMode(Points::PointsPropertyColor* pcProp)
 {
   const std::vector<Points::PointsPropertyColor::fColor>& color = pcProp->Color;
   unsigned long i=0;
@@ -106,7 +106,7 @@ void ViewProviderInventorPoints::setVertexColorMode(Points::PointsPropertyColor*
   }
 }
 
-void ViewProviderInventorPoints::setVertexGreyvalueMode(Points::PointsPropertyGreyvalue* pcProp)
+void ViewProviderPoints::setVertexGreyvalueMode(Points::PointsPropertyGreyvalue* pcProp)
 {
   //std::vector<float> greyvalue& = pcProp->aGreyvalue;
   for (unsigned long i = 0; i < pcProp->aGreyvalue.size(); i++)
@@ -116,7 +116,7 @@ void ViewProviderInventorPoints::setVertexGreyvalueMode(Points::PointsPropertyGr
   }
 }
 
-void ViewProviderInventorPoints::setVertexNormalMode(Points::PointsPropertyNormal* pcProp)
+void ViewProviderPoints::setVertexNormalMode(Points::PointsPropertyNormal* pcProp)
 {
   if ( !pcProp->isValid() ) return; // no valid data
   //std::vector<Vector3D> normal& = pcProp->aVertexNormal;
@@ -127,15 +127,15 @@ void ViewProviderInventorPoints::setVertexNormalMode(Points::PointsPropertyNorma
   }
 }
 
-void ViewProviderInventorPoints::attach(App::Feature* pcFeat)
+void ViewProviderPoints::attach(App::Feature* pcFeat)
 {
   // call father (set material and feature pointer)
-  ViewProviderInventorFeature::attach(pcFeat);
+  ViewProviderFeature::attach(pcFeat);
 
   // get and save the feature
   PointsFeature* ptFea = dynamic_cast<PointsFeature*>(pcFeature);
   if ( !ptFea )
-    throw "ViewProviderInventorPoints::attach(): wrong feature attached!";
+    throw "ViewProviderPoints::attach(): wrong feature attached!";
   createPoints( ptFea );
 
   SoGroup* pcPointRoot = new SoGroup();
@@ -185,9 +185,9 @@ void ViewProviderInventorPoints::attach(App::Feature* pcFeat)
   setMode(pcFeat->getShowMode());
 }
 
-void ViewProviderInventorPoints::setMode(const char* ModeName)
+void ViewProviderPoints::setMode(const char* ModeName)
 {
-  ViewProviderInventorFeature::setMode(ModeName);
+  ViewProviderFeature::setMode(ModeName);
 
   Points::PointsWithProperty &rcPoints = dynamic_cast<PointsFeature*>(pcFeature)->getPoints();
   App::PropertyBag *pcProp = 0;
@@ -207,7 +207,7 @@ void ViewProviderInventorPoints::setMode(const char* ModeName)
   }
 }
 
-std::vector<std::string> ViewProviderInventorPoints::getModes(void)
+std::vector<std::string> ViewProviderPoints::getModes(void)
 {
   std::vector<std::string> StrList;
   StrList.push_back("Point");
@@ -230,17 +230,17 @@ std::vector<std::string> ViewProviderInventorPoints::getModes(void)
   return StrList;
 }
 
-void ViewProviderInventorPoints::updateData()
+void ViewProviderPoints::updateData()
 {
   createPoints(dynamic_cast<PointsFeature*>(pcFeature));
 }
 
-void ViewProviderInventorPoints::setTransparency(float trans)
+void ViewProviderPoints::setTransparency(float trans)
 {
   pcPointMaterial->transparency = trans;
 }
 
-void ViewProviderInventorPoints::setColor(const App::Color &c)
+void ViewProviderPoints::setColor(const App::Color &c)
 {
   pcPointMaterial->diffuseColor.setValue(c.r,c.g,c.b);
 }

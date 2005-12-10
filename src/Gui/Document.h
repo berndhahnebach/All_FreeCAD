@@ -63,9 +63,10 @@ namespace App
 
 namespace Gui {
 
-class ViewProviderInventor;
+class ViewProvider;
 class Application;
 class DocumentPy;
+class DocItem;
 
 /** The Gui Document
  *  This is the document on GUI level. Its main responsibility is 
@@ -136,11 +137,11 @@ public:
   /** @name View provider handling  */
   //@{
   /// Get the view provider for that Feature
-  ViewProviderInventor * getViewProvider(App::Feature *);
+  ViewProvider * getViewProvider(App::Feature *);
   /// set an anotation view provider
-  void setAnotationViewProvider(const char* name, ViewProviderInventor *pcProvider);
+  void setAnotationViewProvider(const char* name, ViewProvider *pcProvider);
   /// get an anotation view provider
-  ViewProviderInventor * getAnotationViewProvider(const char* name);
+  ViewProvider * getAnotationViewProvider(const char* name);
   /// remove an anotation view provider
   void rmvAnotationViewProvider(const char* name);
   /// test if the feature is in show
@@ -153,7 +154,7 @@ public:
   void setPos(const char* name, const Matrix4D& rclMtrx);
   /// updates the view property of all view provider
   void update(void);
-  ViewProviderInventor *getViewProviderByName(const char* name);
+  ViewProvider *getViewProviderByName(const char* name);
   //@}
 
 
@@ -210,17 +211,21 @@ private:
   std::list<Gui::BaseView*> _LpcPassivViews;
   /// Active view
   Gui::MDIView* _pcActiveView;
-  Handle(V3d_Viewer)  _hViewer;
+  /// root of the document in the tree
+  DocItem *pcTreeItem;
+
+  //Handle(V3d_Viewer)  _hViewer;
   //Handle(AIS_InteractiveContext)  _hContext;
+
   // the doc/Document
   App::Document*  _pcDocument;
-  Base::PyHandle<App::Document>    _hcDocument;
+  //Base::PyHandle<App::Document>    _hcDocument;
 
   Handle(TPrsStd_AISPresentation) _ActivePresentation;
 
 
-  std::map<App::Feature*,ViewProviderInventor*> _ViewProviderMap;
-  std::map<std::string,ViewProviderInventor*> _ViewProviderMapAnotation;
+  std::map<App::Feature*,ViewProvider*> _ViewProviderMap;
+  std::map<std::string,ViewProvider*> _ViewProviderMapAnotation;
 
   /** @name attributes for the UNDO REDO facility
    */

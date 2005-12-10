@@ -39,7 +39,7 @@ namespace App
 
 namespace Gui {
 
-  class ViewProviderInventor;
+  class ViewProvider;
   class Command;
 
 namespace Dialog {
@@ -69,7 +69,7 @@ public slots:
 protected:
   Gui::Command* _pcCmd;
   std::vector<App::Feature*> Sel;
-  std::vector<ViewProviderInventor*> Provider;
+  std::vector<ViewProvider*> Provider;
 
   bool bModeChange;
   string sModeChangeName;

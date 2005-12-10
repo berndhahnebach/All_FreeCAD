@@ -60,7 +60,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
     : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),Sel(Gui::Selection().getSelectedFeatures())
 {
 
-  ViewProviderInventor *pcProv;
+  ViewProvider *pcProv;
   set<string> ModeList;
 
   bool bSameMode= true;
@@ -150,11 +150,11 @@ void DlgDisplayPropertiesImp::onChangeMaterial(const QString&s)
 void DlgDisplayPropertiesImp::onChangeMode(const QString&s)
 {
   Base::Console().Log("Mode = %s\n",s.latin1());
-//  for( std::vector<ViewProviderInventor*>::iterator It= Provider.begin();It!=Provider.end();It++)
+//  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
 //    (*It)->setMode(s.latin1()); 
   for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
-    ViewProviderInventor* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
+    ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
     (*It)->setShowMode( s.latin1() );
     pcProv->setMode( (*It)->getShowMode() );
   }
@@ -217,7 +217,7 @@ void DlgDisplayPropertiesImp::onColorChange()
 
   for(std::vector<App::Feature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
-    ViewProviderInventor* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
+    ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
     pcProv->setColor(cColorChange);
   }
 
@@ -241,7 +241,7 @@ void DlgDisplayPropertiesImp::onCancel()
 
 void DlgDisplayPropertiesImp::onChangeTrans(int i)
 {
-  for( std::vector<ViewProviderInventor*>::iterator It= Provider.begin();It!=Provider.end();It++)
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
     (*It)->setTransparency( i/100.0); 
 
   bTranspChange = true;

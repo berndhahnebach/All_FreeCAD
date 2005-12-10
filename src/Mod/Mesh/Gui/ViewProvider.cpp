@@ -92,7 +92,7 @@ using MeshCore::MeshTopFacetVisitor;
 
 using Base::Vector3D;
        
-ViewProviderInventorMesh::ViewProviderInventorMesh() : _mouseModel(0), m_bEdit(false)
+ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
 {
   // create the mesh core nodes
   pcMeshCoord     = new SoCoordinate3();
@@ -105,7 +105,7 @@ ViewProviderInventorMesh::ViewProviderInventorMesh() : _mouseModel(0), m_bEdit(f
   pcHighlight->ref();
 }
 
-ViewProviderInventorMesh::~ViewProviderInventorMesh()
+ViewProviderMesh::~ViewProviderMesh()
 {
   pcMeshCoord->unref();
 //  pcMeshNormal->unref();
@@ -113,7 +113,7 @@ ViewProviderInventorMesh::~ViewProviderInventorMesh()
   pcHighlight->unref();
 }
 
-void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
+void ViewProviderMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 {
 #if 1
   MeshKernel *cMesh = pcMesh->getKernel();
@@ -180,18 +180,18 @@ void ViewProviderInventorMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 #endif
 }
 
-void ViewProviderInventorMesh::attach(App::Feature *pcFeat)
+void ViewProviderMesh::attach(App::Feature *pcFeat)
 {
   // standard viewing (flat) must be called before attach()
   pcModeSwitch->whichChild = 0;
 
   // call father (set material and feature pointer)
-  ViewProviderInventorFeature::attach(pcFeat);
+  ViewProviderFeature::attach(pcFeat);
 
   // get and save the feature
   MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
   if ( !meshFea )
-    throw "ViewProviderInventorMesh::attach(): wrong feature attached!";
+    throw "ViewProviderMesh::attach(): wrong feature attached!";
 
   // create the mesh core nodes
   createMesh(&(meshFea->getMesh()));
@@ -284,17 +284,17 @@ void ViewProviderInventorMesh::attach(App::Feature *pcFeat)
   pcModeSwitch->addChild(pcFlatWireRoot);
 }
 
-void ViewProviderInventorMesh::updateData(void)
+void ViewProviderMesh::updateData(void)
 {
   // get the mesh
   MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
   createMesh(&(meshFea->getMesh()));
 }
 
-vector<string> ViewProviderInventorMesh::getModes(void)
+vector<string> ViewProviderMesh::getModes(void)
 {
   // get the modes of the father
-  vector<string> StrList = ViewProviderInventorFeature::getModes();
+  vector<string> StrList = ViewProviderFeature::getModes();
 
   // add your own modes
   StrList.push_back("Flat");
@@ -305,29 +305,29 @@ vector<string> ViewProviderInventorMesh::getModes(void)
   return StrList;
 }
 
-void ViewProviderInventorMesh::setEdit(void)
+void ViewProviderMesh::setEdit(void)
 {
   if ( m_bEdit ) return;
-//  ViewProviderInventorFeature::setEdit();
+//  ViewProviderFeature::setEdit();
   m_bEdit = true;
   _timer.start();
 }
 
-void ViewProviderInventorMesh::unsetEdit(void)
+void ViewProviderMesh::unsetEdit(void)
 {
-//  ViewProviderInventorFeature::unsetEdit();
+//  ViewProviderFeature::unsetEdit();
   m_bEdit = false;
   _mouseModel->releaseMouseModel();
   delete _mouseModel;
   _mouseModel = 0;
 }
 
-const char* ViewProviderInventorMesh::getEditModeName(void)
+const char* ViewProviderMesh::getEditModeName(void)
 {
   return "Polygon picking";
 }
 
-bool ViewProviderInventorMesh::createToolMesh( const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces) const
+bool ViewProviderMesh::createToolMesh( const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces) const
 {
   float fX, fY, fZ;
   SbVec3f pt1, pt2, pt3, pt4;
@@ -411,7 +411,7 @@ bool ViewProviderInventorMesh::createToolMesh( const SbViewVolume& vol, const Ba
   return ok;
 }
 
-bool ViewProviderInventorMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
+bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
 {
   if ( m_bEdit && !_mouseModel )
   {

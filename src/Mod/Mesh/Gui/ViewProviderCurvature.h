@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __ViewProviderInventorMeshCurvature_H__
-#define __ViewProviderInventorMeshCurvature_H__
+#ifndef __ViewProviderMeshCurvature_H__
+#define __ViewProviderMeshCurvature_H__
 
 class SoSeparator;
 class SbVec3f;
@@ -50,11 +50,11 @@ namespace MeshGui {
 
 /** Like Mesh viewprovider but with manipulator
  */
-class GuiMeshExport ViewProviderInventorMeshCurvature: public ViewProviderInventorMesh
+class GuiMeshExport ViewProviderMeshCurvature: public ViewProviderMesh
 {
 public:
-  ViewProviderInventorMeshCurvature();
-  virtual ~ViewProviderInventorMeshCurvature();
+  ViewProviderMeshCurvature();
+  virtual ~ViewProviderMeshCurvature();
 
 
   /** 
@@ -83,5 +83,5 @@ protected:
 } // namespace MeshGui
 
 
-#endif // __ViewProviderInventorMeshCurvature_H__
+#endif // __ViewProviderMeshCurvature_H__
 
