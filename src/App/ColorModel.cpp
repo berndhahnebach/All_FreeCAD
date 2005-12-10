@@ -109,7 +109,6 @@ void ColorField::setColorModel (const ColorModel &rclModel)
 void ColorField::rebuild (void)
 {
   unsigned short usInd1, usInd2, usStep, i;
-  Color  clCol1, clCol2;
 
   _aclField.resize(_usCtColors);
 
@@ -158,10 +157,10 @@ void ColorField::interpolate (Color clCol1, unsigned short usInd1, Color clCol2,
 
 ColorRamp::ColorRamp (void)
 :  _tColorModel(TRIA),
+   _bOutsideGrayed(false),
    _clTotal(ColorModelTria()),
    _clTop(ColorModelTriaTop()),
-   _clBottom(ColorModelTriaBottom()),
-   _bOutsideGrayed(false)
+   _clBottom(ColorModelTriaBottom())
 {
   setColorModel();
   set(-1.0f, 1.0f, 13, ZERO_BASED, false);
@@ -169,10 +168,10 @@ ColorRamp::ColorRamp (void)
 
 ColorRamp::ColorRamp (float fMin, float fMax, unsigned short usCtColors, TStyle tS, bool bOG)
 :  _tColorModel(TRIA),
+   _bOutsideGrayed(false),
    _clTotal(ColorModelTria()),
    _clTop(ColorModelTriaTop()),
-   _clBottom(ColorModelTriaBottom()),
-   _bOutsideGrayed(false)
+   _clBottom(ColorModelTriaBottom())
 {
   setColorModel();
   set(fMin, fMax, usCtColors, tS, bOG);
@@ -488,9 +487,9 @@ bool ColorLegend::setColor (unsigned long ulPos, float ucRed, float ucGreen, flo
 // color as 0x00rrggbb
 bool ColorLegend::setColor (unsigned long ulPos, unsigned long ulColor)
 {
-  unsigned char ucRed   = unsigned char((ulColor & 0x00ff0000) >> 16);
-  unsigned char ucGreen = unsigned char((ulColor & 0x0000ff00) >> 8);
-  unsigned char ucBlue  = unsigned char(ulColor & 0x000000ff);
+  unsigned char ucRed   = (unsigned char)((ulColor & 0x00ff0000) >> 16);
+  unsigned char ucGreen = (unsigned char)((ulColor & 0x0000ff00) >> 8);
+  unsigned char ucBlue  = (unsigned char)(ulColor & 0x000000ff);
   return setColor(ulPos, ucRed, ucGreen, ucBlue);
 }
 

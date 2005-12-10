@@ -26,6 +26,9 @@
 
 #include "Material.h"
 
+#include <deque>
+#include <vector>
+
 #define CCR_EPS  1.0e-5f
 
 namespace App
@@ -198,7 +201,7 @@ inline Color ColorField::getColor (float fVal) const
 
 inline unsigned short ColorField::getColorIndex (float fVal) const
 {
-  return unsigned short(std::min<int>(std::max<int>(int(_fConstant + _fAscent * fVal), 0), int(_usCtColors-1)));
+  return (unsigned short)(std::min<int>(std::max<int>(int(_fConstant + _fAscent * fVal), 0), int(_usCtColors-1)));
 }
 
 
@@ -290,7 +293,8 @@ protected:
 
 inline Color ColorLegend::getColor (float fVal) const
 {
-  for (std::deque<float>::const_iterator pI = _aclValues.begin(); pI != _aclValues.end(); pI++)
+  std::deque<float>::const_iterator pI;
+  for (pI = _aclValues.begin(); pI != _aclValues.end(); pI++)
   {
     if (fVal < *pI)
       break;
@@ -314,7 +318,8 @@ inline Color ColorLegend::getColor (float fVal) const
 
 inline unsigned short ColorLegend::getColorIndex (float fVal) const
 {
-  for (std::deque<float>::const_iterator pI = _aclValues.begin(); pI != _aclValues.end(); pI++)
+  std::deque<float>::const_iterator pI;
+  for (pI = _aclValues.begin(); pI != _aclValues.end(); pI++)
   {
     if (fVal < *pI)
       break;
@@ -381,7 +386,7 @@ inline unsigned short ColorRamp::getColorIndex (float fVal) const
         if (fVal < 0.0f)
           return _clColFld1.getColorIndex(fVal);
         else
-          return unsigned short(_clColFld1.getCountColors() + _clColFld2.getColorIndex(fVal));
+          return (unsigned short)(_clColFld1.getCountColors() + _clColFld2.getColorIndex(fVal));
       }
       else 
         return _clColFld1.getColorIndex(fVal);

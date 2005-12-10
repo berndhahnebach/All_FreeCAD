@@ -13,6 +13,8 @@ libFreeCADApp_la_SOURCES=\
 		ApplicationPy.cpp \
 		Attribute.cpp \
 		Attribute.h \
+		ColorModel.cpp \
+		ColorModel.h \
 		DataWithProperty.cpp \
 		DataWithProperty.h \
 		DocTypeAttr.cpp \
