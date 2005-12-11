@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qlistview.h>
+# include <qpixmap.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <OSD_Process.hxx>
