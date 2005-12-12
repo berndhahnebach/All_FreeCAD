@@ -123,7 +123,7 @@ void SoFCSelection::doAction( SoAction *action)
     if ( selaction->SelChange.Type == SelectionChanges::AddSelection || selaction->SelChange.Type == SelectionChanges::RmvSelection ) {
       if ( documentName.getValue() == selaction->SelChange.pDocName &&
            featureName.getValue() == selaction->SelChange.pFeatName &&
-           subElementName.getValue() == selaction->SelChange.pSubName || selaction->SelChange.pSubName == "" ) {
+           (subElementName.getValue() == selaction->SelChange.pSubName || *(selaction->SelChange.pSubName) == '\0') ) {
         if ( selaction->SelChange.Type == SelectionChanges::AddSelection )
         {
           selected = SELECTED;
