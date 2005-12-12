@@ -102,9 +102,9 @@ public:
   enum ViewerMod {
       ShowCoord=1,       /**< Enables the Coordinate system in the corner. */  
       ShowFPS  =2,       /**< Enables the Frams per Second counter. */  
-      SimpleBackround=4, /**< switch to a simple background. */  
+      SimpleBackground=4,/**< switch to a simple background. */  
       DisallowRotation=8,/**< switch of the rotation. */  
-      DisallowPaning=16, /**< switch of the paning. */  
+      DisallowPanning=16,/**< switch of the panning. */  
       DisallowZooming=32,/**< switch of the zooming. */  
      }; 
 
