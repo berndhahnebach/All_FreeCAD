@@ -121,7 +121,7 @@ public:
   enum Mode { 
     MaxCurvature,  /**< Maximum curvature */ 
     MinCurvature,  /**< Minimum curvature */
-    AvgCurvature,  /**< Average curvature */
+    MeanCurvature, /**< Mean curvature */
     GaussCurvature /**< Gaussian curvature */
   };
 

@@ -62,7 +62,7 @@ int FeatureMeshCurvature::execute(TFunction_Logbook& log)
     std::map<MeshPropertyCurvature::Mode, std::string> modi;
     modi[MeshPropertyCurvature::MaxCurvature] = "Max. curvature";
     modi[MeshPropertyCurvature::MinCurvature] = "Min. curvature";
-    modi[MeshPropertyCurvature::AvgCurvature] = "Avg. curvature";
+    modi[MeshPropertyCurvature::MeanCurvature] = "Mean curvature";
     modi[MeshPropertyCurvature::GaussCurvature] = "Gaussian curvature";
 
     for ( std::map<MeshPropertyCurvature::Mode, std::string>::iterator mI = modi.begin(); mI != modi.end(); ++mI)

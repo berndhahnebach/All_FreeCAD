@@ -139,7 +139,7 @@ public:
   enum Mode { 
     MaxCurvature,  /**< Maximum curvature */ 
     MinCurvature,  /**< Minimum curvature */
-    AvgCurvature,  /**< Average curvature */
+    MeanCurvature, /**< Mean curvature */
     GaussCurvature /**< Gaussian curvature */
   };
 
@@ -153,11 +153,11 @@ public:
 
   std::vector<float> getCurvature( Mode tMode) const;
   /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
-   * for \c AvgCurvature or \c GaussCurvature an empty list is returned.
+   * for \c MeanCurvature or \c GaussCurvature an empty list is returned.
    */
   std::vector<Vector3D> getCurvatureDir( Mode tMode) const;
   /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
-   * for \c AvgCurvature or \c GaussCurvature an empty list is returned.
+   * for \c MeanCurvature or \c GaussCurvature an empty list is returned.
    */
   std::vector<Vector3D> getAbsCurvatureDir( Mode tMode) const;
   void setValue(unsigned long pos, const fCurvature& val)

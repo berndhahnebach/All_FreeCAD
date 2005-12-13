@@ -150,7 +150,7 @@ std::vector<float> PointsPropertyCurvature::getCurvature( PointsPropertyCurvatur
       aCurvatures.push_back( it->fMinCurvature );
     }
   }
-  else if ( tMode == AvgCurvature )
+  else if ( tMode == MeanCurvature )
   {
     for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
     {

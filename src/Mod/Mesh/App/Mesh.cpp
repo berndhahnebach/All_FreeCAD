@@ -115,7 +115,7 @@ std::vector<float> MeshPropertyCurvature::getCurvature( MeshPropertyCurvature::M
       aCurvatures.push_back( it->fMinCurvature );
     }
   }
-  else if ( tMode == AvgCurvature )
+  else if ( tMode == MeanCurvature )
   {
     for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
     {
