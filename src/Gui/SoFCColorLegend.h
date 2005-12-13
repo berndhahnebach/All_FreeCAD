@@ -54,6 +54,9 @@ protected:
 
   SoCoordinate3* coords;
   SoSeparator* labels;
+
+private:
+  float _fMaxX, _fMaxY;
 };
 
 } // namespace Gui

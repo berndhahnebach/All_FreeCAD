@@ -168,6 +168,54 @@ std::vector<float> PointsPropertyCurvature::getCurvature( PointsPropertyCurvatur
   return aCurvatures;
 }
 
+std::vector<Vector3D> PointsPropertyCurvature::getCurvatureDir( Mode tMode) const
+{
+  std::vector<Vector3D> aCurvatures;
+  if ( tMode == MaxCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->cMaxCurvDir );
+    }
+  }
+  else if ( tMode == MinCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->cMinCurvDir );
+    }
+  }
+
+  return aCurvatures;
+}
+
+std::vector<Vector3D> PointsPropertyCurvature::getAbsCurvatureDir( Mode tMode) const
+{
+  std::vector<Vector3D> aCurvatures;
+  if ( tMode == MaxCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      if ( fabs(it->fMaxCurvature) > fabs(it->fMinCurvature) )
+        aCurvatures.push_back( it->cMaxCurvDir );
+      else
+        aCurvatures.push_back( it->cMinCurvDir );
+    }
+  }
+  else if ( tMode == MinCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      if ( fabs(it->fMaxCurvature) > fabs(it->fMinCurvature) )
+        aCurvatures.push_back( it->cMinCurvDir );
+      else
+        aCurvatures.push_back( it->cMaxCurvDir );
+    }
+  }
+
+  return aCurvatures;
+}
+
 // ----------------------------------------------------------------------------
 
 void PointsWithProperty::transform(const Matrix4D &rclMat)

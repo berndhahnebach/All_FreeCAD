@@ -133,7 +133,7 @@ public:
   struct fCurvature
   {
     float fMaxCurvature, fMinCurvature;
-//    Vector3D cMaxCurvDir, cMinCurvDir;
+    Vector3D cMaxCurvDir, cMinCurvDir;
   };
 
   enum Mode { 
@@ -152,6 +152,14 @@ public:
   void resizePoints();
 
   std::vector<float> getCurvature( Mode tMode) const;
+  /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
+   * for \c AvgCurvature or \c GaussCurvature an empty list is returned.
+   */
+  std::vector<Vector3D> getCurvatureDir( Mode tMode) const;
+  /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
+   * for \c AvgCurvature or \c GaussCurvature an empty list is returned.
+   */
+  std::vector<Vector3D> getAbsCurvatureDir( Mode tMode) const;
   void setValue(unsigned long pos, const fCurvature& val)
   { Curvature[pos] = val; }
 

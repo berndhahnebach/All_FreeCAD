@@ -43,7 +43,7 @@ SO_NODE_SOURCE(SoFCColorLegend);
 /*!
   Constructor.
 */
-SoFCColorLegend::SoFCColorLegend()
+SoFCColorLegend::SoFCColorLegend() : _fMaxX(4.0f), _fMaxY(4.0f)
 {
   SO_NODE_CONSTRUCTOR(SoFCColorLegend);
 
@@ -133,7 +133,7 @@ void SoFCColorLegend::setMarkerLabel( const SoMFString& label )
   {
     float fStep = 8.0f / ((float)num-1);
     SoTransform* trans = new SoTransform;
-    trans->translation.setValue(4.6f,3.95f+fStep,0.0f);
+    trans->translation.setValue(_fMaxX+0.1f,_fMaxY-0.05f+fStep,0.0f);
     labels->addChild(trans);
 
     for ( int i=0; i<num; i++ )
@@ -168,6 +168,9 @@ void SoFCColorLegend::setViewerSize( const SbVec2s& size )
     fMinY =  -4.0f / fRatio;
     fMaxY =   4.0f / fRatio;
   }
+
+  _fMaxX = fMaxX;
+  _fMaxY = fMaxY;
 
   float fHigY = 0.75f*fMaxY+0.25f*fMinY;
   float fAvgY = 0.50f*fMaxY+0.50f*fMinY;
