@@ -1785,6 +1785,21 @@ SOURCE=.\Command.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\CommandDoc.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\CommandFeat.cpp
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
 SOURCE=.\CommandStd.cpp
 # ADD CPP /Yu"PreCompiled.h"
 # End Source File

@@ -374,16 +374,6 @@ void TreeView::contextMenuEvent ( QContextMenuEvent * e )
   delete view;
   ContextMenu.exec( QCursor::pos() );
 
-  /*
-  // context menu
-  QPopupMenu popup;
-  int iOpen  = popup.insertItem (tr( "Open Console" ), this,  SLOT(onShowHistory ())); 
-  int iClear = popup.insertItem (tr( "Clear Console" ), this, SLOT(onClearHistory())); 
-  popup.setItemEnabled(iOpen,  count() > 0);
-  popup.setItemEnabled(iClear, count() > 0);
-
-  popup.exec(QCursor::pos());
-*/
 }
 
 void TreeView::testStatus(void)

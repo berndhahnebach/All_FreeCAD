@@ -240,6 +240,8 @@ void Application::createStandardOperations()
 {
   // register the application Standard commands from CommandStd.cpp
   Gui::CreateStdCommands();
+  Gui::CreateDocCommands();
+  Gui::CreateFeatCommands();
   Gui::CreateViewStdCommands();
   Gui::CreateWindowStdCommands();
   Gui::CreateTestCommands();
