@@ -265,17 +265,18 @@ public:
   friend class FeaturePy;
   friend class Document;
 
-protected:
-	/** @name methodes used for recalculation and document handling
-    *  this methodes are only called/used by the document
-    */
-	//@{
 	/** MustExecute
 	 *  We call this method to check if the object was modified to
 	 *  be invoked. If the object label or an argument is modified.
 	 *  If we must recompute the object - to call the method Execute().
 	 */
 	virtual bool MustExecute(void);
+
+protected:
+	/** @name methodes used for recalculation and document handling
+    *  this methodes are only called/used by the document
+    */
+	//@{
 
   // remove all modifikations from the property labels
   void removeModifications(void);

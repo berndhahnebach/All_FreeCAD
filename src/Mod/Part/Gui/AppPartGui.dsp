@@ -522,6 +522,14 @@ SOURCE=.\ViewProviderCurveNet.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ViewProviderImport.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderImport.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Workbench.cpp
 # End Source File
 # Begin Source File

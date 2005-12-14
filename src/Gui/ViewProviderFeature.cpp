@@ -99,10 +99,52 @@ void ViewProviderFeature::attach(App::Feature *pcFeat)
 
 QListViewItem* ViewProviderFeature::getTreeItem(QListViewItem* parent)
 {
-  pcFeatItem = new FeatItem(parent,pcFeature);
+  pcFeatItem = new FeatItem(parent,this);
   pcFeatItem->setPixmap(0,ViewProvider::getIcon());
+  pcFeatItem->setText(0,QString(pcFeature->getName()));
   return pcFeatItem;
 }
+
+bool ViewProviderFeature::testStatus(void)
+{
+  switch(pcFeature->getStatus())
+  {
+  case App::Feature::Valid:
+    if(pcFeature->MustExecute())
+    {
+      pcFeatItem->BaseColor =Qt::yellow;
+      pcFeatItem->TextColor =Qt::black;
+    }else{
+      pcFeatItem->BaseColor =Qt::white;
+      pcFeatItem->TextColor =Qt::black;
+    }
+    break;
+  case App::Feature::New:
+    pcFeatItem->BaseColor =Qt::white;
+    pcFeatItem->TextColor =Qt::gray;
+    break;
+  case App::Feature::Inactive:
+    pcFeatItem->BaseColor =Qt::white;
+    pcFeatItem->TextColor =Qt::gray;
+    break;
+  case App::Feature::Recompute:
+    pcFeatItem->BaseColor =Qt::white;
+    pcFeatItem->TextColor =Qt::black;
+    break;
+  case App::Feature::Error:
+    pcFeatItem->BaseColor =Qt::white;
+    pcFeatItem->TextColor =Qt::red;
+  }
+
+  if(!isShow())
+  {
+    pcFeatItem->BaseColor =Qt::white;
+    pcFeatItem->TextColor =Qt::gray;
+  }
+
+  return true;
+}
+
 
 
 bool ViewProviderFeature::ifDataNewer(void)

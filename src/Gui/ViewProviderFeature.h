@@ -79,6 +79,10 @@ public:
   /// Set the color
   virtual void setColor(const App::Color &c);
 
+    /// freqently called by the framework to check status changes in the data
+  virtual bool testStatus(void);
+
+
 
   App::Feature *getFeature(void){return pcFeature;}
 

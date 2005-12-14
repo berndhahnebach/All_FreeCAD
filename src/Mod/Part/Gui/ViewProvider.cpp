@@ -104,6 +104,7 @@ ViewProviderPart::ViewProviderPart()
 //  lHilightColor       = hGrp->GetInt ("HilightColor",0);
   bQualityNormals     = hGrp->GetBool("QualityNormals",false);
 
+  sPixmap = "PartFeature";
 
 }
 
@@ -216,8 +217,6 @@ void ViewProviderPart::attach(App::Feature *pcFeat)
   // standard viewing (flat)
   pcModeSwitch->whichChild = 0; 
 
-  sPixmap = "PartFeature";
-  //pcFeatItem->setPixmap(0,QPixmap(PartFeature_xpm));
 
 }
 

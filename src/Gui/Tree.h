@@ -61,7 +61,7 @@ class FeatItem : public QListViewItem
 {
 public:
   /// Constructor
-  FeatItem( QListViewItem* parent,App::Feature* pcFeat);
+  FeatItem( QListViewItem* parent,Gui::ViewProviderFeature* pcViewProvider);
 
   /// Opens the Leafs and generate them.
   void setOpen( bool );
@@ -83,6 +83,10 @@ public:
 
   void buildUp(void);
 
+  bool testStatus(void);
+
+  QColor BaseColor, TextColor, HighlightColor;
+
   friend class DocItem;
 
 protected:
@@ -91,7 +95,10 @@ protected:
   bool bHighlight;
   bool bSelected;
 
-  App::Feature*  _pcFeature;
+  int FeatStatus;
+
+
+  Gui::ViewProviderFeature*  _pcViewProvider;
 };
 
 
@@ -132,6 +139,9 @@ public:
   void update(void);
 
   void buildUp(void);
+
+  bool testStatus(void);
+
 
   /// Observer message from the App doc
 //  virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
@@ -191,17 +201,20 @@ public:
 
   QListViewItem* getMainItem(void){return _pcMainItem;}
 
-  void testStatus(void){};
+  void testStatus(void);
 
 public slots:
 
   void selectionChanged(void);
 
 protected:
+
+  void contextMenuEvent ( QContextMenuEvent * e );
+
   QListView*  _pcListView;
   QListViewItem*  _pcMainItem;
 
-  static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
+  static QPixmap *pcDocumentPixmap;
 
   map<string,DocItem*> DocMap;
 

@@ -3,6 +3,7 @@ void RegisterIcons()
 {
   Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();
   rclBmpFactory.addXPM("Feature", (const char**)Feature_xpm);
+  rclBmpFactory.addXPM("Document", (const char**)Document_xpm);
   rclBmpFactory.addXPM("px", px);
   rclBmpFactory.addXPM("image_xpm", image_xpm);
   rclBmpFactory.addXPM("App_Parameter", App_Parameter);

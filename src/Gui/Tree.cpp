@@ -35,6 +35,8 @@
 #include "Document.h"
 #include "BitmapFactory.h"
 #include "ViewProviderFeature.h"
+#include "MenuManager.h"
+
 
 #include "../App/Document.h"
 #include "../App/Label.h"
@@ -59,7 +61,7 @@ using namespace Gui;
 DocItem::DocItem( QListViewItem* parent,Gui::Document* doc)
     : QListViewItem( parent ), _pcDocument(doc)
 {
-  setPixmap(0,*TreeView::pcLabelOpen);
+  setPixmap(0,*TreeView::pcDocumentPixmap);
   setText(0,QString(_pcDocument->getDocument()->getName()));
 
   bHighlight = false;
@@ -71,6 +73,21 @@ DocItem::DocItem( QListViewItem* parent,Gui::Document* doc)
 DocItem::~DocItem()
 {
   //_pcDocument->Detach(this);
+}
+
+
+
+bool DocItem::testStatus(void)
+{
+  bool bChanged = false;
+
+  for (std::map<string,FeatItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
+  {
+    if(pos->second->testStatus())
+      bChanged = true;
+  }
+  return bChanged;
+
 }
 
 void DocItem::highlightFeature(const char* name, bool bOn)
@@ -115,12 +132,12 @@ void DocItem::isSelectionUptodate(void)
     {
       if(pos->second->bSelected)
       {
-        Base::Console().Log("Sel : Rmv tree selection (%s,%s)\n",_pcDocument->getDocument()->getName(),pos->first.c_str());
+        //Base::Console().Log("Sel : Rmv tree selection (%s,%s)\n",_pcDocument->getDocument()->getName(),pos->first.c_str());
         Gui::Selection().rmvSelection(_pcDocument->getDocument()->getName(),pos->first.c_str());
         //pos->second->bSelected = false;
       }else{
 
-        Base::Console().Log("Sel : Add tree selection (%s,%s)\n",_pcDocument->getDocument()->getName(),pos->first.c_str());
+        //Base::Console().Log("Sel : Add tree selection (%s,%s)\n",_pcDocument->getDocument()->getName(),pos->first.c_str());
         Gui::Selection().addSelection(_pcDocument->getDocument()->getName(),pos->first.c_str());
         pos->second->bSelected = true;
 
@@ -176,15 +193,6 @@ void DocItem::buildUp(void)
 
 void DocItem::setOpen( bool o )
 {
-  //puts("setOpen");
-
-  if( o )
-    setPixmap(0,*TreeView::pcLabelOpen);
-  else
-    setPixmap(0,*TreeView::pcLabelClosed);
- 
-  update();
-
   QListViewItem::setOpen ( o );
 }
 
@@ -211,17 +219,28 @@ void DocItem::activate ()
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-FeatItem::FeatItem( QListViewItem* parent,App::Feature* pcFeat)
+FeatItem::FeatItem( QListViewItem* parent,Gui::ViewProviderFeature* pcViewProvider)
     : QListViewItem( parent ),
-  _pcFeature(pcFeat)
+  _pcViewProvider(pcViewProvider)
 {
-  setPixmap(0,*TreeView::pcLabelOpen);
-  setText(0,QString(pcFeat->getName()));
+  BaseColor = Qt::white;
+  TextColor = Qt::black;
+  HighlightColor = QColor (200,200,255);
+
+  setPixmap(0,pcViewProvider->getIcon());
+  setText(0,QString(pcViewProvider->getFeature()->getName()));
+
 
   bHighlight = false;
   bSelected = false;
 
   buildUp();
+}
+
+
+bool FeatItem::testStatus(void)
+{
+  return _pcViewProvider->testStatus();
 }
 
 void FeatItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align )
@@ -230,8 +249,12 @@ void FeatItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int
    QColor c = _cg.text();
 
    if ( bHighlight )
-       _cg.setColor( QColorGroup::Base , QColor (200,200,255));
+     _cg.setColor( QColorGroup::Base , HighlightColor);
+   else 
+     _cg.setColor( QColorGroup::Base , BaseColor);
 
+   _cg.setColor( QColorGroup::Text , TextColor);
+   
    QListViewItem::paintCell( p, _cg, column, width, align );
 
    _cg.setColor( QColorGroup::Text, c );
@@ -265,13 +288,6 @@ void FeatItem::buildUp(void)
 void FeatItem::setOpen( bool o )
 {
 
-  if( o )
-    setPixmap(0,*TreeView::pcLabelOpen);
-  else
-    setPixmap(0,*TreeView::pcLabelClosed);
- 
-  update();
-
   QListViewItem::setOpen ( o );
 }
 
@@ -290,9 +306,7 @@ void FeatItem::activate ()
 
 
 
-QPixmap* TreeView::pcLabelOpen=0;
-QPixmap* TreeView::pcLabelClosed=0;
-QPixmap* TreeView::pcAttribute=0;
+QPixmap* TreeView::pcDocumentPixmap=0;
 
 /* TRANSLATOR Gui::TreeView */
 TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
@@ -311,9 +325,9 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 //  _pcListView->setColumnWidthMode(1,QListView::Manual );
 
   // retreive the Pixmaps
-  pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
-  pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
-  pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
+  pcDocumentPixmap   = new QPixmap(Gui::BitmapFactory().pixmap("Document"));
+  //pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
+  //pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
 
 
   // Add the first main label
@@ -342,6 +356,47 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 TreeView::~TreeView()
 {
   Gui::Selection().Detach(this);
+}
+
+void TreeView::contextMenuEvent ( QContextMenuEvent * e )
+{
+  MenuItem* StdViews = new MenuItem;
+  StdViews->setCommand( "Standard views" );
+
+  *StdViews<< "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewTop" << "Std_ViewRight"
+           << "Std_ViewRear" << "Std_ViewBottom" << "Std_ViewLeft";
+
+  MenuItem* view = new MenuItem;
+  *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
+
+  QPopupMenu ContextMenu;
+  MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
+  delete view;
+  ContextMenu.exec( QCursor::pos() );
+
+  /*
+  // context menu
+  QPopupMenu popup;
+  int iOpen  = popup.insertItem (tr( "Open Console" ), this,  SLOT(onShowHistory ())); 
+  int iClear = popup.insertItem (tr( "Clear Console" ), this, SLOT(onClearHistory())); 
+  popup.setItemEnabled(iOpen,  count() > 0);
+  popup.setItemEnabled(iClear, count() > 0);
+
+  popup.exec(QCursor::pos());
+*/
+}
+
+void TreeView::testStatus(void)
+{
+  bool bChanged = false;
+
+  for (std::map<string,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
+  {
+    if(pos->second->testStatus())
+      bChanged = true;
+  }
+
+  repaint();
 }
 
 // Observer message from the Selection
@@ -383,7 +438,7 @@ void TreeView::selectionChanged ()
 {
   if(bFromOutside) return;
 
-  Base::Console().Log("Sel : QListView::selectionChanged()");
+  //Base::Console().Log("Sel : QListView::selectionChanged()");
 
   for (std::map<string,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
   {

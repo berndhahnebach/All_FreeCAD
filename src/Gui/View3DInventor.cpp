@@ -147,33 +147,6 @@ SoSeparator *View3DInventor::createAxis(void)
   return pcSepAxis;
 }
 
-/*
-void View3DInventor::setShape(void)
-{
-  TopoDS_Shape cShape;
-    SoBrepShape cShapeConverter;
-
-
-  assert(getAppDocument());
-
-
-    //TDF_Label L = GetAppDocument()->Main()->GetOCCLabel();
-
-
-
-
-  // Open the argument file..
-    //cShapeConverter.SetFile(fn.latin1());
-
-  bool nurbs_enable = false;
-  bool selection = false;
-  bool strip_enable = false;
-  bool strip_color = false;
-
-  cShapeConverter.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
-  cShapeConverter.Compute(pcSepShapeRoot);
-}
-*/
 
 void View3DInventor::onUpdate(void)
 {

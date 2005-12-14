@@ -135,7 +135,8 @@ public:
     */
   virtual bool handleEvent(const SoEvent * const ev,View3DInventorViewer &Viewer){return false;}
 
-
+  /// freqently called by the framework to check status changes in the data
+  virtual bool testStatus(void){return false;}
 
 protected:
   SoSeparator *pcRoot;
