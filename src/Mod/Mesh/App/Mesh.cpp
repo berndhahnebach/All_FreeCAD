@@ -98,6 +98,34 @@ void MeshPropertyCurvature::resizeFaces()
   Curvature.clear();
 }
 
+void MeshPropertyCurvature::transform(const Matrix4D &mat)
+{
+  // The principal direction is only a vector with unit length, so we only need to rotate it
+  // (no translations or scaling)
+
+  // Extract scale factors (assumes an orthogonal rotation matrix)
+  // Use the fact that the length of the row vectors of R are all equal to 1
+  // And that scaling is applied after rotating
+  double s[3];
+  s[0] = sqrt(mat[0][0] * mat[0][0] + mat[0][1] * mat[0][1] + mat[0][2] * mat[0][2]);
+  s[1] = sqrt(mat[1][0] * mat[1][0] + mat[1][1] * mat[1][1] + mat[1][2] * mat[1][2]);
+  s[2] = sqrt(mat[2][0] * mat[2][0] + mat[2][1] * mat[2][1] + mat[2][2] * mat[2][2]);
+
+  // Set up the rotation matrix: zero the translations and make the scale factors = 1
+  Matrix4D rot;
+  rot.unity();
+  for (unsigned short i = 0; i < 3; i++)
+    for (unsigned short j = 0; j < 3; j++)
+      rot[i][j] = mat[i][j] / s[i];
+
+  // Rotate the principal directions
+  for (std::vector<fCurvature>::iterator it = Curvature.begin(); it != Curvature.end(); ++it)
+  {
+    it->cMaxCurvDir = rot * it->cMaxCurvDir;
+    it->cMinCurvDir = rot * it->cMinCurvDir;
+  }
+}
+
 std::vector<float> MeshPropertyCurvature::getCurvature( MeshPropertyCurvature::Mode tMode) const
 {
   std::vector<float> aCurvatures;
@@ -127,6 +155,54 @@ std::vector<float> MeshPropertyCurvature::getCurvature( MeshPropertyCurvature::M
     for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
     {
       aCurvatures.push_back( it->fMaxCurvature * it->fMinCurvature );
+    }
+  }
+
+  return aCurvatures;
+}
+
+std::vector<Vector3D> MeshPropertyCurvature::getCurvatureDir( Mode tMode) const
+{
+  std::vector<Vector3D> aCurvatures;
+  if ( tMode == MaxCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->cMaxCurvDir );
+    }
+  }
+  else if ( tMode == MinCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      aCurvatures.push_back( it->cMinCurvDir );
+    }
+  }
+
+  return aCurvatures;
+}
+
+std::vector<Vector3D> MeshPropertyCurvature::getAbsCurvatureDir( Mode tMode) const
+{
+  std::vector<Vector3D> aCurvatures;
+  if ( tMode == MaxCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      if ( fabs(it->fMaxCurvature) > fabs(it->fMinCurvature) )
+        aCurvatures.push_back( it->cMaxCurvDir );
+      else
+        aCurvatures.push_back( it->cMinCurvDir );
+    }
+  }
+  else if ( tMode == MinCurvature )
+  {
+    for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
+    {
+      if ( fabs(it->fMaxCurvature) > fabs(it->fMinCurvature) )
+        aCurvatures.push_back( it->cMinCurvDir );
+      else
+        aCurvatures.push_back( it->cMaxCurvDir );
     }
   }
 

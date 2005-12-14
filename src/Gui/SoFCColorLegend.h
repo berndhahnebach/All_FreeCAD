@@ -25,6 +25,7 @@
 #define COIN_SOFCCOLORLEGEND_H
 
 #include <Inventor/nodes/SoSeparator.h>
+#include <App/ColorModel.h>
 
 class SoCoordinate3;
 class SoMFString;
@@ -44,6 +45,18 @@ public:
   void setMarkerLabel( const SoMFString& label );
   void setViewerSize( const SbVec2s& size );
 
+  /**
+   * Sets the range of the colorbar from the maximum \a fMax to the minimum \a fMin.
+   * \a prec indicates the post decimal positions, \a prec should be in between 0 and 6.
+   */
+  void setRange( float fMin, float fMax, int prec=3 );
+
+  unsigned short getColorIndex (float fVal) const { return _cColRamp.getColorIndex(fVal);  }
+  App::Color getColor (float fVal) const { return _cColRamp.getColor(fVal); }
+  float getMinValue (void) const { return _cColRamp.getMinValue(); }
+  float getMaxValue (void) const { return _cColRamp.getMaxValue(); }
+  unsigned long countColors (void) const { return _cColRamp.getCtColors(); }
+
 //  virtual void handleEvent(SoHandleEventAction * action);
 //  virtual void GLRenderBelowPath(SoGLRenderAction * action);
 //  virtual void GLRenderInPath(SoGLRenderAction * action);
@@ -57,6 +70,7 @@ protected:
 
 private:
   float _fMaxX, _fMaxY;
+  App::ColorRamp _cColRamp;
 };
 
 } // namespace Gui

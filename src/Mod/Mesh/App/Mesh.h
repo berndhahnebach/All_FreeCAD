@@ -129,12 +129,21 @@ public:
 	MeshPropertyCurvature(int size=0);
   virtual ~MeshPropertyCurvature();
 
-  const char* GetType() {return "Curvature";}
+  const char* GetType() {return "VertexCurvature";}
 
   void resizePoints();
   void resizeFaces();
+  void transform(const Matrix4D &rclMat);
 
   std::vector<float> getCurvature( Mode tMode) const;
+  /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
+   * for \c MeanCurvature or \c GaussCurvature an empty list is returned.
+   */
+  std::vector<Vector3D> getCurvatureDir( Mode tMode) const;
+  /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
+   * for \c MeanCurvature or \c GaussCurvature an empty list is returned.
+   */
+  std::vector<Vector3D> getAbsCurvatureDir( Mode tMode) const;
   void setValue(unsigned long pos, const fCurvature& val)
   { Curvature[pos] = val; }
 

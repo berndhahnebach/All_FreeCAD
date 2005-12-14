@@ -30,6 +30,7 @@
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoTransform.h>
+# include <qstring.h>
 #endif
 
 #include "SoFCColorLegend.h"
@@ -225,4 +226,19 @@ void SoFCColorLegend::setViewerSize( const SbVec2s& size )
 	  coord->point.setValues(0,10, vertices);
     delete [] vertices;
   }
+}
+
+void SoFCColorLegend::setRange( float fMin, float fMax, int prec )
+{
+  SoMFString label;
+  QString s;
+  for (int j=0; j<9; j++)
+  {
+    float fValue = (1.0f-0.125f*(float)j)*fMax + (0.125f*(float)j)*fMin;
+    label.set1Value(j, s.setNum(fValue, 'f', prec).latin1() );
+  }
+
+  setMarkerLabel( label );
+
+  _cColRamp.setBorders(fMin, fMax);
 }

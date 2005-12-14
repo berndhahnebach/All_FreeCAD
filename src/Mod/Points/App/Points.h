@@ -150,6 +150,7 @@ public:
   const char* GetType() {return "VertexCurvature";}
 
   void resizePoints();
+  void transform(const Matrix4D &rclMat);
 
   std::vector<float> getCurvature( Mode tMode) const;
   /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
