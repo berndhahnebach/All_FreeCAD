@@ -38,10 +38,11 @@
 #include "Selection.h"
 #include "Document.h"
 #include "ViewProvider.h"
+#include "WaitCursor.h"
 
-#include "../App/Application.h"
-#include "../App/Feature.h"
-#include "../App/Material.h"
+#include <App/Application.h>
+#include <App/Feature.h>
+#include <App/Material.h>
 
 using namespace Gui::Dialog;
 using namespace std;
@@ -149,6 +150,7 @@ void DlgDisplayPropertiesImp::onChangeMaterial(const QString&s)
 }
 void DlgDisplayPropertiesImp::onChangeMode(const QString&s)
 {
+  Gui::WaitCursor wc;
   Base::Console().Log("Mode = %s\n",s.latin1());
 //  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
 //    (*It)->setMode(s.latin1()); 

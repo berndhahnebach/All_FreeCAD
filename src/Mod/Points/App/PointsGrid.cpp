@@ -311,6 +311,8 @@ void PointsGrid::CalculateGridLength (int iCtGridPerAxis)
   // pro Grid sollen ca. 10 (?!?!) Facets liegen
   // bzw. max Grids sollten 10000 nicht ueberschreiten
   BoundBox3D clBBPts;// = _pclPoints->GetBoundBox();
+  for (PointKernel::const_iterator it = _pclPoints->begin(); it != _pclPoints->end(); ++it )
+    clBBPts &= (*it);
 
   float fLenghtX = clBBPts.LengthX();
   float fLenghtY = clBBPts.LengthY();

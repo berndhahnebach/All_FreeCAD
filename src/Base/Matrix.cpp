@@ -34,31 +34,15 @@
 using namespace Base;
 
 
-Matrix4D::Matrix4D (float a11, float a21, float a31, float a41, 
-                    float a12, float a22, float a32, float a42,
-                    float a13, float a23, float a33, float a43,
-                    float a14, float a24, float a34, float a44 )
+Matrix4D::Matrix4D (float a11, float a12, float a13, float a14, 
+                    float a21, float a22, float a23, float a24,
+                    float a31, float a32, float a33, float a34,
+                    float a41, float a42, float a43, float a44 )
 {
-  dMtrx4D[0][0] = a11;
-  dMtrx4D[1][0] = a21;
-  dMtrx4D[2][0] = a31;
-  dMtrx4D[3][0] = a41;
-
-  dMtrx4D[0][1] = a12;
-  dMtrx4D[1][1] = a22;
-  dMtrx4D[2][1] = a32;
-  dMtrx4D[3][1] = a42;
-
-  dMtrx4D[0][2] = a13;
-  dMtrx4D[1][2] = a23;
-  dMtrx4D[2][2] = a33;
-  dMtrx4D[3][2] = a43;
-
-  dMtrx4D[0][3] = a14;
-  dMtrx4D[1][3] = a24;
-  dMtrx4D[2][3] = a34;
-  dMtrx4D[3][3] = a44;
-
+  dMtrx4D[0][0] = a11; dMtrx4D[0][1] = a12; dMtrx4D[0][2] = a13; dMtrx4D[0][3] = a14;
+  dMtrx4D[1][0] = a21; dMtrx4D[1][1] = a22; dMtrx4D[1][2] = a23; dMtrx4D[1][3] = a24;
+  dMtrx4D[2][0] = a31; dMtrx4D[2][1] = a32; dMtrx4D[2][2] = a33; dMtrx4D[2][3] = a34;
+  dMtrx4D[3][0] = a41; dMtrx4D[3][1] = a42; dMtrx4D[3][2] = a43; dMtrx4D[3][3] = a44;
 }
 
 
@@ -74,25 +58,10 @@ Matrix4D::Matrix4D (const Vector3D& rclBase, const Vector3D& rclDir, float fAngl
 
 void Matrix4D::unity (void)
 {
-  dMtrx4D[0][0] = 1.0;
-  dMtrx4D[1][0] = 0.0;
-  dMtrx4D[2][0] = 0.0;
-  dMtrx4D[3][0] = 0.0;
-
-  dMtrx4D[0][1] = 0.0;
-  dMtrx4D[1][1] = 1.0;
-  dMtrx4D[2][1] = 0.0;
-  dMtrx4D[3][1] = 0.0;
-
-  dMtrx4D[0][2] = 0.0;
-  dMtrx4D[1][2] = 0.0;
-  dMtrx4D[2][2] = 1.0;
-  dMtrx4D[3][2] = 0.0;
-
-  dMtrx4D[0][3] = 0.0;
-  dMtrx4D[1][3] = 0.0;
-  dMtrx4D[2][3] = 0.0;
-  dMtrx4D[3][3] = 1.0;
+  dMtrx4D[0][0] = 1.0; dMtrx4D[0][1] = 0.0; dMtrx4D[0][2] = 0.0; dMtrx4D[0][3] = 0.0;
+  dMtrx4D[1][0] = 0.0; dMtrx4D[1][1] = 1.0; dMtrx4D[1][2] = 0.0; dMtrx4D[1][3] = 0.0;
+  dMtrx4D[2][0] = 0.0; dMtrx4D[2][1] = 0.0; dMtrx4D[2][2] = 1.0; dMtrx4D[2][3] = 0.0;
+  dMtrx4D[3][0] = 0.0; dMtrx4D[3][1] = 0.0; dMtrx4D[3][2] = 0.0; dMtrx4D[3][3] = 1.0;
 }
 
 /*
