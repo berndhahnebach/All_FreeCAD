@@ -68,6 +68,7 @@ public:
   virtual std::vector<std::string> getModes(void);
   /// Update the point representation
   virtual void updateData();
+  virtual QPixmap getIcon() const;
 
   /// Set the transparency
   virtual void setTransparency(float);

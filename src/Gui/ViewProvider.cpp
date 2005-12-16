@@ -76,7 +76,7 @@ ViewProvider::~ViewProvider()
   pcModeSwitch->unref();
 }
 
-QPixmap ViewProvider::getIcon(void)
+QPixmap ViewProvider::getIcon(void) const
 {
   return Gui::BitmapFactory().pixmap(sPixmap);
 }

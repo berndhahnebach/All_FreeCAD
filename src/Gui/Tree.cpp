@@ -227,8 +227,8 @@ FeatItem::FeatItem( QListViewItem* parent,Gui::ViewProviderFeature* pcViewProvid
   TextColor = Qt::black;
   HighlightColor = QColor (200,200,255);
 
-  setPixmap(0,pcViewProvider->getIcon());
-  setText(0,QString(pcViewProvider->getFeature()->getName()));
+//  setPixmap(0,pcViewProvider->getIcon());
+//  setText(0,QString(pcViewProvider->getFeature()->getName()));
 
 
   bHighlight = false;
@@ -360,6 +360,16 @@ TreeView::~TreeView()
 
 void TreeView::contextMenuEvent ( QContextMenuEvent * e )
 {
+  // check for selected feature items
+  bool selected = false;
+  QListViewItem* item;
+  for ( QListViewItemIterator it = _pcListView->firstChild(); (item=it.current())!=0; it++ ) {
+    if ( item->isSelected() && item->rtti() == 3100 ) {
+      selected = true;
+      break;
+    }
+  }
+
   MenuItem* StdViews = new MenuItem;
   StdViews->setCommand( "Standard views" );
 
@@ -367,7 +377,10 @@ void TreeView::contextMenuEvent ( QContextMenuEvent * e )
            << "Std_ViewRear" << "Std_ViewBottom" << "Std_ViewLeft";
 
   MenuItem* view = new MenuItem;
-  *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
+  if ( selected )
+    *view << "Std_ToggleVisibility" << "Separator" << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
+  else
+    *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
 
   QPopupMenu ContextMenu;
   MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
@@ -386,7 +399,8 @@ void TreeView::testStatus(void)
       bChanged = true;
   }
 
-  repaint();
+  if ( bChanged )
+    repaint();
 }
 
 // Observer message from the Selection

@@ -63,6 +63,8 @@ public:
   /// Constructor
   FeatItem( QListViewItem* parent,Gui::ViewProviderFeature* pcViewProvider);
 
+  /// This is the class Id to distinguish from QListViewItem itself or from other QListViewItem-subclasses. 
+  int rtti () const { return 3100; }
   /// Opens the Leafs and generate them.
   void setOpen( bool );
   /// Im not realy sure whats this method do ;-).
@@ -115,6 +117,8 @@ public:
   DocItem( QListViewItem* parent,Gui::Document* doc);
   virtual ~DocItem();
 
+  /// This is the class Id to distinguish from QListViewItem itself or from other QListViewItem-subclasses. 
+  int rtti () const { return 3000; }
   /// Opens the Leafs and generate them.
   void setOpen( bool );
   /// Im not realy sure whats this method do ;-).

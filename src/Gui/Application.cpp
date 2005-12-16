@@ -67,6 +67,7 @@
 #include "CommandBarManager.h"
 #include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
+#include "WaitCursor.h"
 
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
@@ -145,12 +146,13 @@ Application::~Application()
 
 void Application::open(const char* FileName)
 {
- Base::FileInfo File(FileName);
- string te = File.extension();
- const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
+  WaitCursor wc;
+  Base::FileInfo File(FileName);
+  string te = File.extension();
+  const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
 
- if ( Mod != 0 )
- {
+  if ( Mod != 0 )
+  {
     // issue module loading
     string Cmd = "import ";
     Cmd += Mod;
@@ -194,12 +196,13 @@ void Application::open(const char* FileName)
 
 void Application::import(const char* FileName)
 {
- Base::FileInfo File(FileName);
- string te = File.extension();
- const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
+  WaitCursor wc;
+  Base::FileInfo File(FileName);
+  string te = File.extension();
+  const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
 
- if ( Mod != 0 )
- {
+  if ( Mod != 0 )
+  {
     // issue module loading
     string Cmd = "import ";
     Cmd += Mod;

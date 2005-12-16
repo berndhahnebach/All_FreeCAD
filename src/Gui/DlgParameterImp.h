@@ -215,7 +215,7 @@ public:
   /** This is the class Id to distinguish from QListViewItem itself or 
    * from other QListViewItem-subclasses. 
    */
-  int rtti () const { return 3000; }
+  int rtti () const { return 2100; }
   /** Opens an input dialog to change the value. */
   virtual void changeValue() = 0;
   /** Append this item as leaf to the parameter group. */

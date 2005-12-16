@@ -100,7 +100,7 @@ void ViewProviderFeature::attach(App::Feature *pcFeat)
 QListViewItem* ViewProviderFeature::getTreeItem(QListViewItem* parent)
 {
   pcFeatItem = new FeatItem(parent,this);
-  pcFeatItem->setPixmap(0,ViewProvider::getIcon());
+  pcFeatItem->setPixmap(0,/*ViewProvider::*/getIcon());
   pcFeatItem->setText(0,QString(pcFeature->getName()));
   return pcFeatItem;
 }

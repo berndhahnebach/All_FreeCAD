@@ -417,7 +417,7 @@ void ParameterValue::setCurrentGroup( const FCHandle<ParameterGrp>& hGrp )
 
 void ParameterValue::takeItem ( QListViewItem * i )
 {
-  if ( i && i->rtti() == 3000 )
+  if ( i && i->rtti() == 2100 )
   {
     reinterpret_cast<ParameterValueItem*>(i)->removeFromGroup();
   }
@@ -449,7 +449,7 @@ void ParameterValue::keyPressEvent (QKeyEvent* event)
 void ParameterValue::onChangeSelectedItem()
 {
   QListViewItem* sel = selectedItem();
-  if ( sel && sel->rtti() == 3000 )
+  if ( sel && sel->rtti() == 2100 )
   {
     reinterpret_cast<ParameterValueItem*>(sel)->changeValue();
   }

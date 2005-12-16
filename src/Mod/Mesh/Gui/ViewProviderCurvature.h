@@ -68,7 +68,8 @@ public:
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
   /// Update the Mesh representation
-  virtual void updateData(void);
+  virtual void updateData();
+  virtual QPixmap getIcon() const;
 
 protected:
 

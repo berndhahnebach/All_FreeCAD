@@ -244,3 +244,31 @@ void ViewProviderPoints::setColor(const App::Color &c)
 {
   pcPointMaterial->diffuseColor.setValue(c.r,c.g,c.b);
 }
+
+QPixmap ViewProviderPoints::getIcon() const
+{
+  const char * Points_Feature_xpm[] = {
+    "16 16 4 1",
+    ".	c none",
+    "s	c #000000",
+    "b	c #FFFF00",
+    "r	c #FF0000",
+    "ss.....ss.....bb",
+    "ss..ss.ss.....bb",
+    "....ss..........",
+    "...........bb...",
+    ".ss..ss....bb...",
+    ".ss..ss.........",
+    "........bb....bb",
+    "ss......bb....bb",
+    "ss..rr......bb..",
+    "....rr......bb..",
+    "........bb......",
+    "..rr....bb..bb..",
+    "..rr........bb..",
+    ".....rr.........",
+    "rr...rr..rr..rr.",
+    "rr.......rr..rr."};
+  QPixmap px(Points_Feature_xpm);
+  return px;
+}

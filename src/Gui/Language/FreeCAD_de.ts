@@ -2398,7 +2398,7 @@ Wollen Sie wirklich fortfahren?</translation>
         </message>
         <message>
             <source>Toggle visibility</source>
-            <translation>(Un)sichtbar schalten</translation>
+            <translation>Sichtbarkeit umschalten</translation>
         </message>
         <message>
             <source>Toggles visibility</source>

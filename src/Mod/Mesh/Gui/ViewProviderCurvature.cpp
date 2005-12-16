@@ -107,6 +107,37 @@ void ViewProviderMeshCurvature::updateData(void)
   ViewProviderMesh::updateData();
 }
 
+QPixmap ViewProviderMeshCurvature::getIcon() const
+{
+  const char * Mesh_Feature_xpm[] = {
+    "16 16 7 1",
+    ".	c None",
+    "#	c #000000",
+    "s	c #BEC2FC",
+    "g	c #00FF00",
+    "y	c #FFFF00",
+    "b	c #0000FF",
+    "r	c #FF0000",
+    ".......##.......",
+    "....#######.....",
+    "..##ggg#yyy#....",
+    "##ggggg#yyyy##..",
+    "#b#ggg#yyyyyy##.",
+    "#bb#gg#yyyy###s.",
+    "#bb#gg#yy##yy#s.",
+    "#bbb#####rrr#ss.",
+    "#bbbb##rrrr#ss..",
+    ".#b##b#rrrr#s...",
+    ".##bbb#rrr#ss...",
+    ".##bbb#r#ss....",
+    "..s#####r#s.....",
+    "....sss##ss.....",
+    "........ss......",
+    "................"};
+  QPixmap px(Mesh_Feature_xpm);
+  return px;
+}
+
 void ViewProviderMeshCurvature::setMode(const char* ModeName)
 {
   ViewProviderMesh::setMode(ModeName);

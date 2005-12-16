@@ -69,7 +69,7 @@ public:
   // returns the TreeLabel
   virtual QListViewItem* getTreeItem(QListViewItem* parent){return 0;}
   // returns the TreeLabel
-  virtual QPixmap getIcon(void);
+  virtual QPixmap getIcon(void) const;
 
 
   /** update the content of the ViewProvider
