@@ -37,6 +37,8 @@ libPartGui_la_SOURCES=\
 		ViewProvider.h \
 		ViewProviderCurveNet.cpp \
 		ViewProviderCurveNet.h \
+		ViewProviderImport.cpp \
+		ViewProviderImport.h \
 		Workbench.cpp \
 		Workbench.h
 

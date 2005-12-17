@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qlistview.h>
+# include <qpixmap.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoPointSet.h>

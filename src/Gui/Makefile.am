@@ -157,6 +157,8 @@ libFreeCADGui_la_SOURCES=\
 		Command.h \
 		CommandBarManager.cpp \
 		CommandBarManager.h \
+		CommandDoc.cpp  \
+		CommandFeat.cpp  \
 		CommandStd.cpp  \
 		CommandWindow.cpp  \
 		CommandTest.cpp \

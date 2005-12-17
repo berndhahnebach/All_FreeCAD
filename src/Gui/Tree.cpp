@@ -27,8 +27,10 @@
 #	include <TDataStd_Integer.hxx>
 #	include <TDataStd_Name.hxx>
 #	include <TNaming_NamedShape.hxx>
+# include <qcursor.h>
 #	include <qheader.h>
 # include <qlayout.h>
+# include <qpopupmenu.h>
 #endif
 
 #include "Tree.h"
