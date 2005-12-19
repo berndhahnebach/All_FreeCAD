@@ -155,6 +155,7 @@ QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
 
   QPixmap res( width, height );
   QBitmap mask( width, height );
+  mask.fill( Qt::color0 );
 
   bitBlt( &res,  0, 0, &p1 );
   bitBlt( &mask, 0, 0, p1.mask() );
@@ -163,6 +164,44 @@ QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
   bitBlt( &mask, x, y, p2.mask() );
 
   res.setMask( mask );
+  return res;
+}
+
+QPixmap Tools::disabled( const QPixmap& p )
+{
+  QBitmap mask;
+  QImage img = p.convertToImage();
+
+  // create the mask if needed
+  if ( p.isNull() )
+    return QPixmap();
+
+  if ( p.mask() ) {
+    mask = *p.mask();
+  } else {
+    mask.convertFromImage( img.createHeuristicMask(), Qt::MonoOnly | Qt::ThresholdDither );
+  }
+
+  // copy the opaque part of the pixmap
+  QPixmap res( p.width(), p.height() );
+  bitBlt( &res,  0, 0, &p );
+
+  // replace each RGB color by a 65% brighter color
+  QPainter painter;
+  painter.begin(&res);
+  for (int y = 0; y < img.height(); y++) {
+    for (int x = 0; x < img.width(); x++) {
+      QRgb rgb = img.pixel(x,y);
+      QColor col(rgb);
+      painter.setPen(col.light( 165 ));
+      painter.drawPoint(x,y);
+    }
+  }
+
+  painter.end();
+
+  res.setMask( mask );
+
   return res;
 }
 

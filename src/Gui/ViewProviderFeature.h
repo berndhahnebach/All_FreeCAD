@@ -97,8 +97,8 @@ protected:
 
   FeatItem *pcFeatItem;
 
+  int _cLastStatus;
   Quantity_Date calcMaterial,calcData;
-
 };
 
 

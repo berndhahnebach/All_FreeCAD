@@ -73,6 +73,11 @@ public:
    */
   static QPixmap merge( const QPixmap& p1, const QPixmap& p2, bool vertical );
 
+  /** Creates a disabled pixmap of the given pixmap \a p by changing the brightness 
+   * of all opaque pixels to a higher value.
+   */
+  static QPixmap disabled( const QPixmap& p );
+
   /** Converts a QImage into a SoSFImage to use it inside a SoImage node.
    */
   static void convert( const QImage& img, SoSFImage& out );

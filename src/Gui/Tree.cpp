@@ -242,7 +242,10 @@ FeatItem::FeatItem( QListViewItem* parent,Gui::ViewProviderFeature* pcViewProvid
 
 bool FeatItem::testStatus(void)
 {
-  return _pcViewProvider->testStatus();
+  bool ret = _pcViewProvider->testStatus();
+  if ( ret )
+    repaint();
+  return ret;
 }
 
 void FeatItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align )

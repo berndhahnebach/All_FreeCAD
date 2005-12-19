@@ -38,6 +38,7 @@
 #include "Selection.h"
 #include "ViewProviderFeature.h"
 #include "Tree.h"
+#include "Tools.h"
 
 
 
@@ -47,7 +48,7 @@ using namespace Gui;
 
       
 ViewProviderFeature::ViewProviderFeature()
-:pcFeature(0)
+  : pcFeature(0), _cLastStatus(0)
 {
   pcSolidMaterial = new SoMaterial;
   pcSolidMaterial->ref();
@@ -107,40 +108,108 @@ QListViewItem* ViewProviderFeature::getTreeItem(QListViewItem* parent)
 
 bool ViewProviderFeature::testStatus(void)
 {
+  assert(pcFeature);
+
+  // if status has changed then continue
+  int newStatus = (((int)(pcFeature->getStatus())) << 2) | ((pcFeature->MustExecute()?1:0) << 1) | (isShow()?1:0);
+  if ( _cLastStatus == newStatus )
+    return false;
+  _cLastStatus = newStatus;
+
+  QPixmap *px=0;
   switch(pcFeature->getStatus())
   {
   case App::Feature::Valid:
     if(pcFeature->MustExecute())
     {
-      pcFeatItem->BaseColor =Qt::yellow;
+      const char *feature_warning_xpm[]={
+        "7 7 3 1",
+        ". c None",
+        "a c #000000",
+        "# c #c8c800",
+        "...#...",
+        "..#a...",
+        "..#a#..",
+        ".##a#..",
+        ".##a##.",
+        "######.",
+        "###a###"};
+      px = new QPixmap(feature_warning_xpm);
+      pcFeatItem->BaseColor =Qt::yellow.light();
       pcFeatItem->TextColor =Qt::black;
     }else{
       pcFeatItem->BaseColor =Qt::white;
       pcFeatItem->TextColor =Qt::black;
-    }
-    break;
+    } break;
   case App::Feature::New:
-    pcFeatItem->BaseColor =Qt::white;
-    pcFeatItem->TextColor =Qt::gray;
-    break;
+    {
+      pcFeatItem->BaseColor =Qt::white;
+      pcFeatItem->TextColor =Qt::gray;
+    } break;
   case App::Feature::Inactive:
-    pcFeatItem->BaseColor =Qt::white;
-    pcFeatItem->TextColor =Qt::gray;
-    break;
+    {
+      pcFeatItem->BaseColor =Qt::white;
+      pcFeatItem->TextColor =Qt::gray;
+    } break;
   case App::Feature::Recompute:
-    pcFeatItem->BaseColor =Qt::white;
-    pcFeatItem->TextColor =Qt::black;
-    break;
+    {
+      const char *feature_recompute_xpm[]={
+        "7 7 3 1",
+        ". c None",
+        "# c #ffffff",
+        "a c #0000ff",
+        "..#aa..",
+        ".##aa#.",
+        "###aa##",
+        "###aa##",
+        "#######",
+        ".##aa#.",
+        "..#aa.."};
+      px = new QPixmap(feature_recompute_xpm);
+      pcFeatItem->BaseColor =Qt::white;
+      pcFeatItem->TextColor =Qt::black;
+    } break;
   case App::Feature::Error:
-    pcFeatItem->BaseColor =Qt::white;
-    pcFeatItem->TextColor =Qt::red;
+    {
+      const char *feature_error_xpm[]={
+        "7 7 3 1",
+        ". c None",
+        "# c #ff0000",
+        "a c #ffffff",
+        "..#aa..",
+        ".##aa#.",
+        "###aa##",
+        "###aa##",
+        "#######",
+        ".##aa#.",
+        "..#aa.."};
+      px = new QPixmap(feature_error_xpm);
+      pcFeatItem->BaseColor =Qt::white;
+      pcFeatItem->TextColor =Qt::red;
+    } break;
   }
 
-  if(!isShow())
+  if( !isShow() )
   {
     pcFeatItem->BaseColor =Qt::white;
     pcFeatItem->TextColor =Qt::gray;
+    QPixmap hidden = Tools::disabled( getIcon() );
+    if ( px ) {
+      pcFeatItem->setPixmap(0,Tools::merge(hidden,*px,false));
+    } else {
+      pcFeatItem->setPixmap(0,hidden);
+    }
   }
+  else // visible
+  {
+    if ( px ) {
+      pcFeatItem->setPixmap(0,Tools::merge(getIcon(),*px,false));
+    } else {
+      pcFeatItem->setPixmap(0,getIcon());
+    }
+  }
+
+  if (px) delete px;
 
   return true;
 }
