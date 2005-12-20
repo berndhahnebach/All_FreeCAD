@@ -48,7 +48,7 @@ using namespace Gui;
 
       
 ViewProviderFeature::ViewProviderFeature()
-  : pcFeature(0), _cLastStatus(0)
+  : pcFeature(0), _cLastStatus(-1)
 {
   pcSolidMaterial = new SoMaterial;
   pcSolidMaterial->ref();
