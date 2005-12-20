@@ -75,8 +75,6 @@
 #include <Poly_Polygon3D.hxx>
 #include <BRepMesh.hxx>
 
-#include "Icons/PartFeature.xpm"
-
 //#include "Tree.h"
 
 
