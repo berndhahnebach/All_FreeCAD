@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppImageGui"
-	ProjectGUID="{EC3048B5-156D-4E48-AE41-F0CE4CE0B015}"
+	ProjectGUID="{2095B61C-F958-47EE-86DA-EFB0275292C9}"
 	>
 	<Platforms>
 		<Platform
@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="opengl32.lib glu32.lib"
 				OutputFile="Debug/ImageGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -176,7 +176,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="opengl32.lib glu32.lib"
 				OutputFile="Release/ImageGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

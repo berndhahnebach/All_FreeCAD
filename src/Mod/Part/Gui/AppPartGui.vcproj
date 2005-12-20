@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPartGui"
-	ProjectGUID="{6FA670DE-90F1-41F8-B9EB-BB3A9C09C632}"
+	ProjectGUID="{27AF5171-A2DA-4F99-B34B-D49B3F101740}"
 	>
 	<Platforms>
 		<Platform
@@ -75,7 +75,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Release/PartGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -173,7 +172,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug/PartGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -664,6 +662,32 @@
 		</File>
 		<File
 			RelativePath="ViewProviderCurveNet.h"
+			>
+		</File>
+		<File
+			RelativePath="ViewProviderImport.cpp"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="ViewProviderImport.h"
 			>
 		</File>
 		<File

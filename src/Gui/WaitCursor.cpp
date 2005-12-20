@@ -78,7 +78,7 @@ WaitCursor::~WaitCursor()
  */
 void WaitCursor::run()
 {
-#ifdef FC_OS_WIN32
+#if defined(_MSC_VER) && _MSC_VER < 1400
   AttachThreadInput(GetCurrentThreadId(), d->main_threadid, true);
 #endif
 
@@ -99,7 +99,7 @@ void WaitCursor::run()
     }
   }
 
-#ifdef FC_OS_WIN32
+#if defined(_MSC_VER) && _MSC_VER < 1400
   AttachThreadInput(GetCurrentThreadId(), d->main_threadid, false);
 #endif
 }

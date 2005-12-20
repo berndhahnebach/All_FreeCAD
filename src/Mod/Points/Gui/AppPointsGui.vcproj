@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPointsGui"
-	ProjectGUID="{FE1C3BFD-CFAA-470C-98DA-1443805FAAF5}"
+	ProjectGUID="{24EA5CBA-671E-448B-A08B-F21350126875}"
 	>
 	<Platforms>
 		<Platform
@@ -76,7 +76,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug\PointsGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -175,7 +174,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Release\PointsGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

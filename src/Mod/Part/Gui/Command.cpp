@@ -25,9 +25,7 @@
 #	include <qaction.h>
 # include <qlineedit.h>
 #	include <BRepTools.hxx>
-#	include <Handle_TPrsStd_AISPresentation.hxx>
 #	include <TNaming_NamedShape.hxx>
-#	include <TPrsStd_AISPresentation.hxx>
 #endif
 
 #include <Base/Exception.h>

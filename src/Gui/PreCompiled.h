@@ -43,8 +43,6 @@
 #include <Standard_Failure.hxx>
 
 // OpenCascade View
-#include <AIS_InteractiveContext.hxx>
-#include <AIS_Trihedron.hxx>
 #include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
 #include <Bnd_Box.hxx>
@@ -66,18 +64,12 @@
 #include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Trsf.hxx>
-#include <Handle_TPrsStd_AISPresentation.hxx>
-//#include <IGESControl_Controller.hxx>
-//#include <IGESControl_Reader.hxx>
-//#include <IGESControl_Writer.hxx>
 #include <OSD_FileIterator.hxx>
 #include <OSD_Timer.hxx>
 #include <Poly_Array1OfTriangle.hxx>
 #include <Poly_Connect.hxx>
 #include <Poly_Triangulation.hxx>
 #include <Standard.hxx>
-//#include <STEPControl_Reader.hxx>
-//#include <STEPControl_Writer.hxx>
 #include <TColgp_Array1OfPnt.hxx>
 #include <TColgp_Array1OfPnt2d.hxx>
 #include <TColgp_Array2OfPnt.hxx>
@@ -103,11 +95,6 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
-#include <TPrsStd_AISPresentation.hxx>
-#include <TPrsStd_AISViewer.hxx>
-#include <V3d_OrthographicView.hxx>
-#include <V3d_Viewer.hxx>
-#include <V3d_View.hxx>
 #include <OSD_Process.hxx>
 
 #include <Quantity_Date.hxx>
@@ -180,15 +167,6 @@
 
 #include <float.h>
 
-
-
-#ifndef FC_OS_WIN32
-# include <Xw_Window.hxx>
-# include <Graphic3d_GraphicDevice.hxx>
-#else
-# include <WNT_Window.hxx>
-# include <Graphic3d_WNTGraphicDevice.hxx>
-#endif
 
 #include <Python.h>
 #ifdef FC_OS_WIN32

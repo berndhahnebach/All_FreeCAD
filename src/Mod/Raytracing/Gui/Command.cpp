@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <qaction.h>
-# include <AIS_InteractiveContext.hxx>
 # include <BRep_Tool.hxx>
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <BRepPrimAPI_MakeBox.hxx>

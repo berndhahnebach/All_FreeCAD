@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMeshGui"
-	ProjectGUID="{76CEBFD2-1571-4B6D-89E3-06B2DF95ACE7}"
+	ProjectGUID="{CA508E14-83BF-43DC-9892-D257F5721F0A}"
 	>
 	<Platforms>
 		<Platform
@@ -75,7 +75,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Release\MeshGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -175,7 +174,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug\MeshGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

@@ -49,12 +49,7 @@
 #endif
 
 // OCC
-#include <AIS_InteractiveContext.hxx>
 #include <TDF_Label.hxx>
-#include <TPrsStd_AISPresentation.hxx>
-#include <V3d_OrthographicView.hxx>
-#include <V3d_Viewer.hxx>
-#include <V3d_View.hxx>
 
 // Qt Toolkit
 #include <qaction.h>

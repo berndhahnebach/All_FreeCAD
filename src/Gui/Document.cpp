@@ -27,10 +27,8 @@
 # include <qfiledialog.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
-# include <AIS_Trihedron.hxx>
 # include <Geom_Axis2Placement.hxx>
 # include <TNaming_NamedShape.hxx>
-# include <TPrsStd_AISViewer.hxx>
 # include <Xw_Window.hxx>
 # include <Graphic3d_GraphicDevice.hxx>
 # include <Inventor/nodes/SoSelection.h>

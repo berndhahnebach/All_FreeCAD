@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADApp"
-	ProjectGUID="{DF978952-1C51-42AC-8F46-5F7DF54C9DE9}"
+	ProjectGUID="{457E855F-1F6D-421B-A51E-EFB1BF99275D}"
 	>
 	<Platforms>
 		<Platform
@@ -75,7 +75,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="TKPCAF.lib odbc32.lib odbccp32.lib"
 				OutputFile="Release/FreeCADApp.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -173,7 +172,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug/FreeCADAppD.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -286,6 +284,32 @@
 		</File>
 		<File
 			RelativePath="Attribute.h"
+			>
+		</File>
+		<File
+			RelativePath="ColorModel.cpp"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="ColorModel.h"
 			>
 		</File>
 		<File

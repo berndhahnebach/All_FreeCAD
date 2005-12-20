@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppImport"
-	ProjectGUID="{BD0C497E-9FAB-41A8-8CF3-AD715FE0B85E}"
+	ProjectGUID="{D8C41B65-4593-4540-BFC2-E96BF1155885}"
 	>
 	<Platforms>
 		<Platform
@@ -75,7 +75,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Release\Import.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -173,7 +172,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug\Import_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

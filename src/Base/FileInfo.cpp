@@ -167,7 +167,9 @@ unsigned int FileInfo::size () const
 
 bool FileInfo::createDirectory( const char* directory ) const
 {
-#if defined (_MSC_VER)
+#if _MSC_VER >= 1400
+  return _mkdir( directory ) == 0;
+#elif defined (_MSC_VER)
   SECURITY_ATTRIBUTES attr;
   attr.nLength = sizeof(SECURITY_ATTRIBUTES);
   attr.lpSecurityDescriptor = NULL;

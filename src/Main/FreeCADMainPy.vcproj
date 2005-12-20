@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADMainPy"
-	ProjectGUID="{30CB7807-569E-4771-8C35-DD9E3B3B4A0A}"
+	ProjectGUID="{ED660400-64D5-4EF5-B220-D4FDF1C70E76}"
 	>
 	<Platforms>
 		<Platform
@@ -73,7 +73,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="DebugPy/FreeCAD_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -170,7 +169,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="ReleasePy/FreeCAD.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

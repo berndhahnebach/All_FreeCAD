@@ -215,6 +215,8 @@ void CustomPopupMenu::dragMoveEvent ( QDragMoveEvent * )
 
 void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
 {
+  std::map<std::string, Command*>::const_iterator it;
+  
   if ( e->state() == LeftButton && _bAllowDrag)
   {
     // try to find out the correct menu item
@@ -235,7 +237,7 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     const std::map<std::string, Command*>& rclCmds = Application::Instance->commandManager().getCommands();
 
     // search item with same text first
-    for (std::map<std::string, Command*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
+    for (it = rclCmds.begin(); it != rclCmds.end(); ++it)
     {
       QAction* a = it->second->getAction();
       if (a != 0)
@@ -253,11 +255,7 @@ void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
     }
 
     // if nothing found search item with similar text
-#ifdef FC_OS_LINUX
-    for (std::map<std::string, Command*>::const_iterator it = rclCmds.begin(); it != rclCmds.end(); ++it)
-#else
     for (it = rclCmds.begin(); it != rclCmds.end(); ++it)
-#endif
     {
       QAction* a = it->second->getAction();
       if (a != 0)

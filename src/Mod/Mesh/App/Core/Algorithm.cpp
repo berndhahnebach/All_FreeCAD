@@ -1138,8 +1138,9 @@ bool MeshAlgorithm::ConnectLines (std::list<std::pair<Vector3D, Vector3D> > &rcl
     {
       float  fFrontMin = fMinEps, fEndMin = fMinEps;
       bool   bFrontFirst, bEndFirst;
-      pFront = NULL;
-      pEnd   = NULL;
+
+      pFront = rclLines.end();
+      pEnd   = rclLines.end();
       for (pF = rclLines.begin(); pF != rclLines.end(); pF++)
       {
         if (Base::DistanceP2(clFront, pF->first) < fFrontMin) 
@@ -1168,7 +1169,7 @@ bool MeshAlgorithm::ConnectLines (std::list<std::pair<Vector3D, Vector3D> > &rcl
         }        
       }
 
-      if (pFront != NULL)
+      if (pFront != rclLines.end())
       {
         if (bFrontFirst == true)
         {
@@ -1183,7 +1184,7 @@ bool MeshAlgorithm::ConnectLines (std::list<std::pair<Vector3D, Vector3D> > &rcl
         rclLines.erase(pFront);
       }
 
-      if (pEnd != NULL)
+      if (pEnd != rclLines.end())
       {
         if (bEndFirst == true)
         {
@@ -1198,7 +1199,7 @@ bool MeshAlgorithm::ConnectLines (std::list<std::pair<Vector3D, Vector3D> > &rcl
         rclLines.erase(pEnd);
       }
     }
-    while ((pFront != NULL) || (pEnd != NULL));
+    while ((pFront != rclLines.end()) || (pEnd != rclLines.end()));
 
     rclPolylines.push_back(std::vector<Vector3D>(clPoly.begin(), clPoly.end()));
   }  

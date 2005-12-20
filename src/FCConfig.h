@@ -95,7 +95,7 @@
 #	define _STLP_USE_ABBREVS
 // switch on StlPort debuging, need the libs build!
 //#	define __STL_DEBUG
-
+#define _CRT_SECURE_NO_DEPRECATE 
 #endif //FC_OS_WIN32
 
 
@@ -277,6 +277,7 @@
 #	pragma warning( disable : 4503 )
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #	pragma warning( disable : 4290 )  // not implemented throw specification
+#	pragma warning( disable : 4996 )  // supress depricated warning for e.g. open()...
 // use precompiled header
 #	define _PreComp_
 #endif

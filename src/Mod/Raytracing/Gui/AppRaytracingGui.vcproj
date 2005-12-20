@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppRaytracingGui"
-	ProjectGUID="{89DE90DA-8C42-4D15-8A7F-4AD74A4FCA42}"
+	ProjectGUID="{980BDEC7-D4B7-4BB3-A6AB-8E4A5618EB8B}"
 	>
 	<Platforms>
 		<Platform
@@ -76,7 +76,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug\RaytracingGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -175,7 +174,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Release\RaytracingGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

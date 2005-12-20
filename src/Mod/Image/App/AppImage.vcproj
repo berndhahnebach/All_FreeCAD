@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppImage"
-	ProjectGUID="{DF869108-EBC0-46B4-BE4F-D2AEAD82C794}"
+	ProjectGUID="{6156A4AD-EF93-4E8F-A477-E770DEC4F267}"
 	>
 	<Platforms>
 		<Platform
@@ -76,7 +76,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug/Image_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -175,7 +174,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Release/Image.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPoints"
-	ProjectGUID="{CB910E9C-2D1C-4E65-A8D7-3A355201BF94}"
+	ProjectGUID="{EA25280A-9603-4D95-82BD-0AB0F98B2FEF}"
 	>
 	<Platforms>
 		<Platform
@@ -75,7 +75,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Release\Points.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -174,7 +173,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug\Points_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -463,6 +461,32 @@
 		</File>
 		<File
 			RelativePath="PointsFeaturePy.h"
+			>
+		</File>
+		<File
+			RelativePath="PointsGrid.cpp"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="PointsGrid.h"
 			>
 		</File>
 		<File

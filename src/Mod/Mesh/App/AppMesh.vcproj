@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMesh"
-	ProjectGUID="{F4A35B8B-D0C0-486C-8136-9D63020F7878}"
+	ProjectGUID="{ADC96018-3EC4-462C-AC68-4D41EA5679D0}"
 	>
 	<Platforms>
 		<Platform
@@ -75,7 +75,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Release\Mesh.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -175,7 +174,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug\Mesh_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

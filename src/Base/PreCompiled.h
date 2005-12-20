@@ -24,11 +24,10 @@
 #include <FCNTL.H>
 #include <assert.h>
 #include <time.h>
+#include <direct.h>
 #include "fcntl.h"
 #ifdef FC_OS_WIN32
-# if _MSC_VER < 1400
-#	  include <windows.h>
-# endif
+#  include <windows.h>
 #endif
 
 // STL 

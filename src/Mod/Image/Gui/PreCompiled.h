@@ -43,17 +43,11 @@
 #include <Standard_Failure.hxx>
 
 // OpenCascade View
-#include <V3d_Viewer.hxx>
-#include <V3d_View.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <AIS_Trihedron.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_TagSource.hxx>
 #include <TDataStd_Real.hxx>
 #include <TDataStd_Name.hxx>
-#include <TPrsStd_AISViewer.hxx>
-#include <TPrsStd_AISPresentation.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_TagSource.hxx>
 #include <TDF_ChildIterator.hxx>
@@ -72,8 +66,6 @@
 #include <BRep_Tool.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom_SphericalSurface.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <TPrsStd_AISViewer.hxx>
 #include <TNaming_NamedShape.hxx>
 #include <BRepTools.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>

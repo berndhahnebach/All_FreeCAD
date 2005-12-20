@@ -27,9 +27,6 @@
 #include "View.h"
 
 #ifndef _PreComp_
-# include <AIS_InteractiveContext.hxx>
-# include <V3d_Viewer.hxx>
-# include <TPrsStd_AISPresentation.hxx>
 # include <map>
 # include <string>
 #endif
@@ -196,9 +193,9 @@ protected:
 
 
 private:
-  Handle(V3d_Viewer) Viewer(const Standard_CString aDisplay,const Standard_ExtString aName,
-    const Standard_CString aDomain,const Standard_Real ViewSize , const V3d_TypeOfOrientation ViewProj,
-    const Standard_Boolean ComputedMode,const Standard_Boolean aDefaultComputedMode );
+//  Handle(V3d_Viewer) Viewer(const Standard_CString aDisplay,const Standard_ExtString aName,
+//    const Standard_CString aDomain,const Standard_Real ViewSize , const V3d_TypeOfOrientation ViewProj,
+//    const Standard_Boolean ComputedMode,const Standard_Boolean aDefaultComputedMode );
 private:
   static int _iDocCount;
   int        _iWinCount;
@@ -214,16 +211,9 @@ private:
   /// root of the document in the tree
   DocItem *pcTreeItem;
 
-  //Handle(V3d_Viewer)  _hViewer;
-  //Handle(AIS_InteractiveContext)  _hContext;
-
   // the doc/Document
   App::Document*  _pcDocument;
-  //Base::PyHandle<App::Document>    _hcDocument;
-
-  Handle(TPrsStd_AISPresentation) _ActivePresentation;
-
-
+ 
   std::map<App::Feature*,ViewProvider*> _ViewProviderMap;
   std::map<std::string,ViewProvider*> _ViewProviderMapAnotation;
 
