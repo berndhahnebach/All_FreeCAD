@@ -108,6 +108,11 @@ void Document::saveAs (const char* Name)
   GetApplication().renameDocument(_Name.c_str(),TCollection_AsciiString(_hDoc->GetName()).ToCString());
   _Name = TCollection_AsciiString(_hDoc->GetName()).ToCString();
 
+  DocChanges DocChange;
+  DocChange.Why = DocChanges::Rename;
+
+  Notify(DocChange);
+
 }
 // Save the document under the name its been opened
 void Document::save (void)
@@ -262,6 +267,8 @@ void Document::Recompute()
   int iSentinel = 20;
   bool goOn;
   DocChanges DocChange;
+  DocChange.Why = DocChanges::Recompute;
+
   std::set<Feature*>::iterator i;
   std::set<Feature*> tempErr;
   
@@ -327,6 +334,7 @@ void Document::Recompute()
 void Document::RecomputeFeature(Feature* Feat)
 {
   DocChanges DocChange;
+  DocChange.Why = DocChanges::Recompute;
 
   _RecomputeFeature(Feat);
 
@@ -440,6 +448,7 @@ Feature *Document::addFeature(const char* sType, const char* pFeatName)
 void Document::remFeature(const char* sName)
 {
   DocChanges DocChange;
+  DocChange.Why = DocChanges::Recompute;
 
   std::map<std::string,FeatEntry>::iterator pos;
   

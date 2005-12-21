@@ -92,6 +92,8 @@ public:
   //@{
   /// get called when the document is updated
   virtual void onUpdate(void)=0;
+  /// get called when the document is updated
+  virtual void onRename(Gui::Document *pDoc){};
   /// returns the name of the view (important for messages)
   virtual const char *getName(void)=0;
   /// Mesage handler
@@ -152,6 +154,9 @@ public:
 
   /// get called when the document is updated
   virtual void onUpdate(void)=0;
+  /// get called when the document is updated
+  virtual void onRename(Gui::Document *pDoc);
+
 
   /// returns the name of the view (important for messages)
   virtual const char *getName(void)=0;

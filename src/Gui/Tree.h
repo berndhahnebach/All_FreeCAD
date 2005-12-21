@@ -146,6 +146,9 @@ public:
 
   bool testStatus(void);
 
+  Gui::Document*  getDocument(void){return _pcDocument;}
+
+  void rename(void);
 
   /// Observer message from the App doc
 //  virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
@@ -197,6 +200,9 @@ public:
   virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument);
   /// get called when the document is changed or updated
   virtual void onUpdate(void);
+  /// get called when the document is renamed
+  virtual void onRename(Gui::Document *);
+
 
 	/// This method get called when a new doc appears
 	DocItem *  NewDoc(Gui::Document*);

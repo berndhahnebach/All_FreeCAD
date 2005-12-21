@@ -51,7 +51,7 @@ class MainWindow;
  * This is the central class of the GUI 
  * @author Jürgen Riegel, Werner Mayer
  */
-class GuiExport Application : public App::ApplicationObserver
+class GuiExport Application :public App::Application::ObserverType
 {
 public:
   /// construction
@@ -66,6 +66,7 @@ public:
   /// import a file in the active document
   void import(const char* FileName);
   //@}
+
 
   /** @name methods for View handling */
   //@{
@@ -87,7 +88,8 @@ public:
 
   /** @name methods for Document handling */
   //@{
-  // Observer
+  /// Observer message from the Application
+  virtual void OnChange(App::Application::SubjectType &rCaller,App::Application::MessageType Reason);
   void OnDocNew(App::Document* pcDoc);
   void OnDocDelete(App::Document* pcDoc);
   /// message when a GuiDocument is about to vanish

@@ -229,6 +229,25 @@ Application::~Application()
 //**************************************************************************
 // Interface
 
+/// get called by the document when the name is changing
+void Application::renameDocument(const char *OldName, const char *NewName)
+{
+  std::map<std::string,DocEntry>::iterator pos;
+  pos = DocMap.find(OldName);
+
+  if(pos != DocMap.end())
+  {
+    DocEntry temp;
+    temp.hDoc = pos->second.hDoc; 
+    temp.pDoc = pos->second.pDoc; 
+    DocMap.erase(pos);
+    DocMap[NewName] = temp;
+  } else 
+    Base::Exception("Application::renameDocument(): no document with this name to raname!");
+
+}
+
+
 Document* Application::newDocument(const char * Name)
 {
 
@@ -254,7 +273,12 @@ Document* Application::newDocument(const char * Name)
 
 	newDoc.pDoc->Init();
 	// trigger Observers (open windows and so on)
-	NotifyDocNew(newDoc.pDoc);
+
+  AppChanges Reason;
+  Reason.Doc = newDoc.pDoc;
+  Reason.Why = AppChanges::New;
+  Notify(Reason);
+	//NotifyDocNew(newDoc.pDoc);
 
 	return newDoc.pDoc;
 }
@@ -271,9 +295,14 @@ bool Application::closeDocument(const char* name)
 
   delDoc = pos->second;
 
-	// trigger observers
   DocMap.erase( pos );
-  NotifyDocDelete(delDoc.pDoc);
+
+	// trigger observers
+  AppChanges Reason;
+  Reason.Doc = delDoc.pDoc;
+  Reason.Why = AppChanges::Del;
+  Notify(Reason);
+  //NotifyDocDelete(delDoc.pDoc);
 
   if ( _pActiveDoc == delDoc.pDoc)
     _pActiveDoc = 0;
@@ -377,7 +406,11 @@ Document* Application::openDocument(const char * FileName)
 
 
 	  // trigger Observers (open windows and so on)
-	  NotifyDocNew(newDoc.pDoc);
+    AppChanges Reason;
+    Reason.Doc = newDoc.pDoc;
+    Reason.Why = AppChanges::New;
+    Notify(Reason);
+	  //NotifyDocNew(newDoc.pDoc);
   }else{
     throw Base::Exception("Unknown file extension");
   }
@@ -1112,6 +1145,7 @@ void Application::CheckEnv(void)
 //**************************************************************************
 // Observer stuff
 
+/*
 void Application::AttachObserver(ApplicationObserver *pcObserver)
 {
 	// double insert !!
@@ -1136,3 +1170,4 @@ void Application::NotifyDocDelete(Document* pcDoc)
 	for(std::set<ApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->OnDocDelete(pcDoc);   // send doc to the listener
 }
+*/

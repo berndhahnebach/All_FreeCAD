@@ -71,3 +71,5 @@ Version: V0.3B5 Date: Wed Nov 30 15:56:28 2005 +++++++++++++++++++++++++++++++
   and decrement counter when viewer gets destructed
 + bug fixed in destruction of viewer
 + moved code from SoFCSelectionAction::callDoAction() to SoFCSelection::doAction() as the selection object must decide what to do, not the action
++ Implementing save document (parial)
+

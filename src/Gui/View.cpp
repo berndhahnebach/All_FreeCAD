@@ -132,6 +132,14 @@ MDIView::~MDIView()
 {
 }
 
+void MDIView::onRename(Gui::Document *pDoc)
+{
+  if(!bIsPassiv)
+    setCaption(QString(pDoc->getDocument()->getName()));
+
+}
+
+
 /// recife a message
 bool MDIView::onMsg(const char* pMsg,const char** ppReturn)
 {

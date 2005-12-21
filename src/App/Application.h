@@ -24,8 +24,10 @@
 
 #ifndef _Application_
 #define _Application_
-#include "../Base/PyExportImp.h"
-#include "../Base/Parameter.h"
+
+#include <Base/PyExportImp.h>
+#include <Base/Parameter.h>
+#include <Base/Observer.h>
 
 
 
@@ -112,12 +114,28 @@ protected:
 };
 
 
+/** transport the changes of the Application
+ *  This class transport closer information what was changed in the
+ *  application. 
+ *@see Application
+ *@see Observer
+*/
+class AppExport AppChanges
+{
+public:
+  enum {
+    New,
+    Del
+  } Why;
+  App::Document* Doc;
+};
+
 
 /** The Application
  *  The root of the whole application
  *  @see App::Document
  */
-class AppExport Application //: public PythonExport
+class AppExport Application : public Base::Subject<const AppChanges&>
 {
 
 public:
@@ -135,8 +153,6 @@ public:
   bool closeDocument(const char* name);
   /// find a unique docuement name
   std::string getUniqueDocumentName(const char *Name);
-  /// renams a document
-  void renameDocument(const char *OldName, const char *NewName){};
 	/// Open an existing document from a file
 	App::Document* openDocument(const char * FileName=0l);
 	/// Retrive the active document
@@ -208,6 +224,11 @@ public:
 
  	const char* GetHomePath(void);
 
+  friend App::Document;
+
+protected:
+  /// get called by the document when the name is changing
+  void renameDocument(const char *OldName, const char *NewName);
 
 
 private:
@@ -298,6 +319,7 @@ private:
 
 	/** @name Singelton functions */
 	//@{
+  /*
 	/// Attaches an Observer to monitor the Application
 	void AttachObserver(ApplicationObserver *pcObserver);
 	/// Detaches an monitoring Observer
@@ -310,7 +332,7 @@ private:
 	/// The container of all attached Obervers
 	std::set<ApplicationObserver * > _aclObservers;
 	//@}
-
+*/
 
   /// open ending information
   std::map<std::string,std::string> _mEndings;
@@ -350,6 +372,8 @@ inline App::Application &GetApplication(void){
  *  automaticly.
  *  @see Application
  */
+
+/*
 class AppExport ApplicationObserver
 {
 public:
@@ -363,7 +387,7 @@ public:
 	/// This method get called when a new doc will be deleted
 	virtual void OnDocDelete(App::Document*){};
 };
-
+*/
 
 } // namespace App
 

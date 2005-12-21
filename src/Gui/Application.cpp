@@ -115,6 +115,8 @@ struct ApplicationP
 
 Application::Application()
 {
+  App::GetApplication().Attach(this);
+
   Gui::Translator::installLanguage();
   GetWidgetFactorySupplier();
 
@@ -137,6 +139,8 @@ Application::~Application()
 {
   // save macros
   MacroCommand::save();
+
+  App::GetApplication().Detach(this);
 }
 
 
@@ -249,6 +253,20 @@ void Application::createStandardOperations()
   Gui::CreateWindowStdCommands();
   Gui::CreateTestCommands();
 }
+
+void Application::OnChange(App::Application::SubjectType &rCaller,App::Application::MessageType Reason)
+{
+  switch(Reason.Why){
+  case App::AppChanges::New:
+    OnDocNew(Reason.Doc);
+    break;
+  case App::AppChanges::Del:
+    OnDocDelete(Reason.Doc);
+    break;
+  }
+}
+
+
 
 void Application::OnDocNew(App::Document* pcDoc)
 {

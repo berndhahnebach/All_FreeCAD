@@ -53,7 +53,7 @@ class ViewProviderFeature;
 
 
 /** The 3D View Window
- *  It consist out of the 3DView and the tree
+ *  It consist out of the 3DView 
  *  \author Jürgen Riegel
  */
 class GuiExport View3DInventor: public MDIView,public ParameterGrp::ObserverType

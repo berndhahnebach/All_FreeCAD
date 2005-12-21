@@ -141,7 +141,7 @@ void ViewProviderPart::update(const ChangeType& Reason)
 */
 void ViewProviderPart::updateData(void)
 {
-  Base::Console().Log("ViewProviderPart::updateData() for %s called\n",pcFeature->getName()); 
+//  Base::Console().Log("ViewProviderPart::updateData() for %s called\n",pcFeature->getName()); 
 
   // geting actual setting values...
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);

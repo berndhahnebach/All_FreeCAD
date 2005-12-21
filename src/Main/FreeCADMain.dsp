@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 1
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /D "_CONSOLE" /D "_FC_GUI_ENABLED_" /Yu"PreCompiled.h" /FD /c
+# ADD CPP /nologo /G6 /MD /W3 /GR /GX /O2 /I ".." /D "_CONSOLE" /D "_FC_GUI_ENABLED_" /Yu"PreCompiled.h" /FD /c
 # SUBTRACT CPP /Fr
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
@@ -72,7 +72,7 @@ PostBuild_Cmds=mkdir ..\..\bin	copy Release\FreeCAD.exe ..\..\bin
 # PROP Ignore_Export_Lib 1
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /D "_CONSOLE" /D "_FC_GUI_ENABLED_" /D "FC_DEBUG" /Fr /Yu"PreCompiled.h" /FD /GZ /c
+# ADD CPP /nologo /G6 /MDd /W3 /Gm /GR /GX /ZI /Od /I ".." /D "_CONSOLE" /D "_FC_GUI_ENABLED_" /D "FC_DEBUG" /Fr /Yu"PreCompiled.h" /FD /GZ /c
 # ADD BASE RSC /l 0x407 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe

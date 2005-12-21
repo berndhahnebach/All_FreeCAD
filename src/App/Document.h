@@ -71,7 +71,12 @@ namespace App
 */
 class AppExport DocChanges
 {
-public:
+public:  
+  enum {
+    Recompute,
+    Rename
+  } Why;
+
   std::set<Feature*> NewFeatures;
   std::set<Feature*> UpdatedFeatures;
   std::set<Feature*> ErrorFeatures;

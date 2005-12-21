@@ -211,6 +211,12 @@ void DocItem::activate ()
 }
 
 
+void DocItem::rename(void)
+{
+  setText(0,QString(_pcDocument->getDocument()->getName()));
+
+}
+
 //**************************************************************************
 // FeatItem
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -465,6 +471,23 @@ void TreeView::onUpdate(void)
   // quick and dirty so far
 //  delete _pcMainItem;
 //  _pcMainItem = new TreeLabel(this);
+}
+
+void TreeView::onRename(Gui::Document *pDoc)
+{
+  std::map<string,DocItem*>::iterator pos;
+
+  for ( pos = DocMap.begin();pos!=DocMap.end();++pos)
+  {
+    if(pos->second->getDocument() == pDoc)
+    {
+      pos->second->rename();
+      DocMap[ pDoc->getDocument()->getName() ]  = pos->second;
+      DocMap.erase(pos);
+      break;
+    }
+  }
+  
 }
 
 void TreeView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument)

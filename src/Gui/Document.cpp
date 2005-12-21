@@ -251,6 +251,13 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
 #ifdef FC_LOGUPDATECHAIN
   Base::Console().Log("Acti: Gui::Document::OnChange()");
 #endif
+
+  if(Reason.Why == App::DocChanges::Rename)
+  {
+    onRename();
+    return;
+  }
+
   std::list<Gui::BaseView*>::iterator VIt;
 
   // remove the representation of Features no longer exist
@@ -438,6 +445,26 @@ void Document::onUpdate(void)
   for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
   {
     (*It)->onUpdate();
+  }
+}
+
+void Document::onRename(void)
+{
+#ifdef FC_LOGUPDATECHAIN
+  Base::Console().Log("Acti: Gui::Document::onRename()");
+#endif
+  Gui::Selection().clearSelection();
+
+  std::list<Gui::BaseView*>::iterator It;
+
+  for(It = _LpcViews.begin();It != _LpcViews.end();It++)
+  {
+    (*It)->onRename(this);
+  }
+
+  for(It = _LpcPassivViews.begin();It != _LpcPassivViews.end();It++)
+  {
+    (*It)->onRename(this);
   }
 }
 
