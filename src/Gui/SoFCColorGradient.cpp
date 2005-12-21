@@ -33,22 +33,21 @@
 # include <qstring.h>
 #endif
 
-#include "SoFCColorLegend.h"
+#include "SoFCColorGradient.h"
 
 #include <Inventor/nodes/SoText2.h>
 
 using namespace Gui;
 
-SO_NODE_SOURCE(SoFCColorLegend);
+SO_NODE_SOURCE(SoFCColorGradient);
 
 /*!
   Constructor.
 */
-SoFCColorLegend::SoFCColorLegend() : _fPosX(4.0f), _fPosY(4.0f)
+SoFCColorGradient::SoFCColorGradient() : _fPosX(4.0f), _fPosY(4.0f), _bOutInvisible(false)
 {
-  SO_NODE_CONSTRUCTOR(SoFCColorLegend);
-  _cColRamp.setStyle(App::ColorGradient::FLOW);
-
+  SO_NODE_CONSTRUCTOR(SoFCColorGradient);
+  _cColGrad.setStyle(App::ColorGradient::FLOW);
   coords = new SoCoordinate3;
   coords->ref();
   labels = new SoSeparator;
@@ -60,7 +59,7 @@ SoFCColorLegend::SoFCColorLegend() : _fPosX(4.0f), _fPosY(4.0f)
 /*!
   Destructor.
 */
-SoFCColorLegend::~SoFCColorLegend()
+SoFCColorGradient::~SoFCColorGradient()
 {
   //delete THIS;
   coords->unref();
@@ -68,12 +67,12 @@ SoFCColorLegend::~SoFCColorLegend()
 }
 
 // doc from parent
-void SoFCColorLegend::initClass(void)
+void SoFCColorGradient::initClass(void)
 {
-  SO_NODE_INIT_CLASS(SoFCColorLegend,SoSeparator,"Separator");
+  SO_NODE_INIT_CLASS(SoFCColorGradient,SoSeparator,"Separator");
 }
 
-void SoFCColorLegend::setMarkerLabel( const SoMFString& label )
+void SoFCColorGradient::setMarkerLabel( const SoMFString& label )
 {
   labels->removeAllChildren();
 
@@ -101,7 +100,7 @@ void SoFCColorLegend::setMarkerLabel( const SoMFString& label )
   }
 }
 
-void SoFCColorLegend::setViewerSize( const SbVec2s& size )
+void SoFCColorGradient::setViewerSize( const SbVec2s& size )
 {
   float fRatio = ((float)size[0])/((float)size[1]);
   float fMinX=  4.0f, fMaxX=4.5f;
@@ -162,24 +161,60 @@ void SoFCColorLegend::setViewerSize( const SbVec2s& size )
   }
 }
 
-void SoFCColorLegend::setRange( float fMin, float fMax, int prec )
+void SoFCColorGradient::setRange( float fMin, float fMax, int prec )
 {
+  _cColGrad.setRange(fMin, fMax);
+
   SoMFString label;
   QString s;
-  for (int j=0; j<9; j++)
+  int ticks = 9;
+
+  // the middle of the bar is zero
+  if ( fMin < 0.0f && fMax > 0.0f && _cColGrad.getStyle() == App::ColorGradient::ZERO_BASED )
   {
-    float fValue = (1.0f-0.125f*(float)j)*fMax + (0.125f*(float)j)*fMin;
-    label.set1Value(j, s.setNum(fValue, 'f', prec).latin1() );
+    if ( ticks % 2 == 0) ticks++;
+    int half = ticks / 2;
+    for (int j=0; j<half+1; j++)
+    {
+      float w = (float)j/((float)half);
+      float fValue = (1.0f-w)*fMax;
+      label.set1Value(j, s.setNum(fValue, 'f', prec).latin1() );
+    }
+    for (int k=half+1; k<ticks; k++)
+    {
+      float w = (float)(k-half+1)/((float)(ticks-half));
+      float fValue = w*fMin;
+      label.set1Value(k, s.setNum(fValue, 'f', prec).latin1() );
+    }
+  }
+  else // either not zero based or 0 is not in between [fMin,fMax]
+  {
+    for (int j=0; j<ticks; j++)
+    {
+      float w = (float)j/((float)ticks-1.0f);
+      float fValue = (1.0f-w)*fMax+w*fMin;
+      label.set1Value(j, s.setNum(fValue, 'f', prec).latin1() );
+    }
   }
 
   setMarkerLabel( label );
-  _cColRamp.setRange(fMin, fMax);
 }
 
-void SoFCColorLegend::setColorModel( App::ColorGradient::TColorModel tModel )
+void SoFCColorGradient::setColorModel( App::ColorGradient::TColorModel tModel )
 {
-  _cColRamp.setColorModel( tModel );
-  App::ColorModel model = _cColRamp.getColorModel();
+  _cColGrad.setColorModel( tModel );
+  rebuild();
+}
+
+void SoFCColorGradient::setColorStyle (App::ColorGradient::TStyle tStyle)
+{
+  _cColGrad.setStyle( tStyle );
+  rebuild();
+}
+
+void SoFCColorGradient::rebuild()
+{
+  App::ColorModel model = _cColGrad.getColorModel();
   int uCtColors = (int)model._usColors;
 
   // don't know why the parameter range isn't between [-1,+1]
@@ -231,4 +266,19 @@ void SoFCColorLegend::setColorModel( App::ColorGradient::TColorModel tModel )
   addChild(mat);
   addChild(matBinding);
 	addChild(faceset);
+}
+
+bool SoFCColorGradient::isVisible (float fVal) const
+{
+  if (_bOutInvisible == true)
+  {
+    float fMin, fMax;
+    _cColGrad.getRange(fMin, fMax);
+    if ((fVal > fMax) || (fVal < fMin))
+      return false;
+    else
+      return true;
+  }
+
+  return true;
 }

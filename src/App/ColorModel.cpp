@@ -48,6 +48,10 @@ ColorModel::~ColorModel ()
 
 ColorModel& ColorModel::operator = (const ColorModel &rclM)
 {
+  // first check if both objects are identical
+  if ( this->_pclColors && this->_pclColors == rclM._pclColors )
+    return *this;
+
   if (_pclColors != 0)
     delete [] _pclColors;
 
@@ -86,7 +90,6 @@ ColorField::ColorField (const ColorField &rclCF)
 
 ColorField& ColorField::operator = (const ColorField &rclCF)
 {
-  _aclField.clear();
   _aclField = rclCF._aclField;
   return *this;
 }
@@ -155,7 +158,7 @@ void ColorField::interpolate (Color clCol1, unsigned short usInd1, Color clCol2,
 }
 
 
-ColorRamp::ColorRamp (void)
+ColorGradient::ColorGradient (void)
 :  _tColorModel(TRIA),
    _bOutsideGrayed(false),
    _clTotal(ColorModelTria()),
@@ -166,7 +169,7 @@ ColorRamp::ColorRamp (void)
   set(-1.0f, 1.0f, 13, ZERO_BASED, false);
 }
 
-ColorRamp::ColorRamp (float fMin, float fMax, unsigned short usCtColors, TStyle tS, bool bOG)
+ColorGradient::ColorGradient (float fMin, float fMax, unsigned short usCtColors, TStyle tS, bool bOG)
 :  _tColorModel(TRIA),
    _bOutsideGrayed(false),
    _clTotal(ColorModelTria()),
@@ -177,7 +180,7 @@ ColorRamp::ColorRamp (float fMin, float fMax, unsigned short usCtColors, TStyle 
   set(fMin, fMax, usCtColors, tS, bOG);
 }
 
-ColorRamp::ColorRamp (const ColorRamp &rclCR)
+ColorGradient::ColorGradient (const ColorGradient &rclCR)
 :  _tColorModel(TRIA),
    _clTotal(ColorModelTria()),
    _clTop(ColorModelTriaTop()),
@@ -186,7 +189,7 @@ ColorRamp::ColorRamp (const ColorRamp &rclCR)
   *this = rclCR;
 }
 
-ColorRamp& ColorRamp::operator = (const ColorRamp &rclCR)
+ColorGradient& ColorGradient::operator = (const ColorGradient &rclCR)
 {
   _tColorModel    = rclCR._tColorModel;
   _clTotal        = rclCR._clTotal;
@@ -203,7 +206,7 @@ ColorRamp& ColorRamp::operator = (const ColorRamp &rclCR)
   return *this;
 }
 
-void ColorRamp::set (float fMin, float fMax, unsigned short usCt, TStyle tS, bool bOG)
+void ColorGradient::set (float fMin, float fMax, unsigned short usCt, TStyle tS, bool bOG)
 {
   _fMin = std::min<float>(fMin, fMax);
   _fMax = std::max<float>(_fMin + CCR_EPS, fMax);
@@ -213,7 +216,7 @@ void ColorRamp::set (float fMin, float fMax, unsigned short usCt, TStyle tS, boo
   rebuild();
 }
 
-void ColorRamp::rebuild (void)
+void ColorGradient::rebuild (void)
 {
   switch (_tStyle)
   {
@@ -239,7 +242,7 @@ void ColorRamp::rebuild (void)
   }
 }
 
-unsigned short ColorRamp::getMinColors (void) const
+unsigned short ColorGradient::getMinColors (void) const
 {
   switch (_tStyle)
   {
@@ -256,14 +259,14 @@ unsigned short ColorRamp::getMinColors (void) const
   return 2;
 }
 
-void ColorRamp::setColorModel (TColorModel tModel)
+void ColorGradient::setColorModel (TColorModel tModel)
 {
   _tColorModel = tModel;
   setColorModel();
   rebuild();
 }
 
-void ColorRamp::setColorModel (void)
+void ColorGradient::setColorModel (void)
 {
   switch (_tColorModel)
   {

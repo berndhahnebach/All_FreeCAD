@@ -70,6 +70,7 @@
 #include <qcursor.h>
 #include "SoFCBackgroundGradient.h"
 #include "SoFCColorLegend.h"
+#include "SoFCColorGradient.h"
 #include "SoFCOffscreenRenderer.h"
 #include "SoFCSelection.h"
 #include "Selection.h"
@@ -392,7 +393,10 @@ void View3DInventorViewer::sizeChanged( const SbVec2s& size )
     if ( child && child->getTypeId() == SoFCColorLegend::getClassTypeId() )
     {
       reinterpret_cast<SoFCColorLegend*>(child)->setViewerSize( size );
-      break;
+    }
+    else if ( child && child->getTypeId() == SoFCColorGradient::getClassTypeId() )
+    {
+      reinterpret_cast<SoFCColorGradient*>(child)->setViewerSize( size );
     }
   }
 
@@ -717,12 +721,12 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   // give the viewprovider the chance to handle the event
-//  if(!processed)
-//  {
-//    std::set<ViewProvider*>::iterator It;
-//    for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
-//      processed = (*It)->handleEvent(ev,*this);
-//  }
+  if(!processed)
+  {
+    std::set<ViewProvider*>::iterator It;
+    for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
+      processed = (*It)->handleEvent(ev,*this);
+  }
 
   // right mouse button pressed
   if (!processed)

@@ -171,12 +171,15 @@ public:
 
   unsigned short getCountColors (void) const { return _usCtColors; }
   void set (const ColorModel &rclModel, float fMin, float fMax, unsigned short usCt);
-  void setCtColors (unsigned short usCt) { set(_clModel, _fMin, _fMax, usCt); }
-  void setBorders (float fMin, float fMax) { set(_clModel, fMin, fMax, _usCtColors); }
-  void getBorders (float &rfMin, float &rfMax) { rfMin = _fMin; rfMax = _fMax; }
+  void setCountColors (unsigned short usCt) { set(_clModel, _fMin, _fMax, usCt); }
+  void setRange (float fMin, float fMax) { set(_clModel, fMin, fMax, _usCtColors); }
+  void getRange (float &rfMin, float &rfMax) { rfMin = _fMin; rfMax = _fMax; }
   unsigned short getMinColors (void) const { return _clModel._usColors; }
   void setColorModel (const ColorModel &rclModel);
+  const ColorModel& getColorModel (void) const { return _clModel; }
   void setDirect (unsigned short usInd, Color clCol) { _aclField[usInd] = clCol; }
+  float getMinValue (void) const { return _fMin; }
+  float getMaxValue (void) const { return _fMax; }
   
   Color getColor (unsigned short usIndex) const { return _aclField[usIndex]; }
   inline Color  getColor (float fVal) const;
@@ -205,30 +208,31 @@ inline unsigned short ColorField::getColorIndex (float fVal) const
 }
 
 
-class AppExport ColorRamp
+class AppExport ColorGradient
 {
 public:
   enum TStyle { FLOW, ZERO_BASED };
   enum TColorModel { TRIA, INVERSE_TRIA, GRAY };
 
-  ColorRamp (void);
-  ColorRamp (float fMin, float fMax, unsigned short usCtColors, TStyle tS, bool bOG = false);
-  ColorRamp (const ColorRamp &rclCR);
+  ColorGradient (void);
+  ColorGradient (float fMin, float fMax, unsigned short usCtColors, TStyle tS, bool bOG = false);
+  ColorGradient (const ColorGradient &rclCR);
 
-  ColorRamp& operator = (const ColorRamp &rclCR);
+  ColorGradient& operator = (const ColorGradient &rclCR);
 
   void set (float fMin, float fMax, unsigned short usCt, TStyle tS, bool bOG); 
-  void setBorders (float fMin, float fMax) { set(fMin, fMax, _usCtColors, _tStyle, _bOutsideGrayed); }
-  void getBorders (float &rfMin, float &rfMax) const { rfMin = _fMin; rfMax = _fMax; }
-  unsigned short getCtColors (void) const { return _usCtColors; }
-  void setCtColors (unsigned short usCt) { set(_fMin, _fMax, usCt, _tStyle, _bOutsideGrayed); }
+  void setRange (float fMin, float fMax) { set(fMin, fMax, _usCtColors, _tStyle, _bOutsideGrayed); }
+  void getRange (float &rfMin, float &rfMax) const { rfMin = _fMin; rfMax = _fMax; }
+  unsigned short getCountColors (void) const { return _usCtColors; }
+  void setCountColors (unsigned short usCt) { set(_fMin, _fMax, usCt, _tStyle, _bOutsideGrayed); }
   void setStyle (TStyle tS) { set(_fMin, _fMax, _usCtColors, tS, _bOutsideGrayed); }
   unsigned short getMinColors (void) const;
   TStyle getStyle (void) const { return _tStyle; }
   void setOutsideGrayed (bool bGrayed) { _bOutsideGrayed = bGrayed; }
   bool isOutsideGrayed (void) const { return _bOutsideGrayed; }
   void setColorModel (TColorModel tModel);
-  TColorModel getColorModel (void) const { return _tColorModel; }
+  TColorModel getColorModelType (void) const { return _tColorModel; }
+  const ColorModel& getColorModel (void) const { return _clTotal; }
   float getMinValue (void) const { return _fMin; }
   float getMaxValue (void) const { return _fMax; }
 
@@ -343,7 +347,7 @@ inline float ColorLegend::getMaxValue (void) const
   return *(_aclValues.end()-1);
 }
 
-inline Color ColorRamp::getColor (float fVal) const
+inline Color ColorGradient::getColor (float fVal) const
 {
   if (_bOutsideGrayed == true)
   {
@@ -375,7 +379,7 @@ inline Color ColorRamp::getColor (float fVal) const
   }
 }
 
-inline unsigned short ColorRamp::getColorIndex (float fVal) const
+inline unsigned short ColorGradient::getColorIndex (float fVal) const
 {
   switch (_tStyle)
   {

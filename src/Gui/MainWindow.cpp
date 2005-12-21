@@ -78,6 +78,7 @@
 #include "WorkbenchManager.h"
 #include "CommandBarManager.h"
 #include "SoFCColorLegend.h"
+#include "SoFCColorGradient.h"
 #include "SoFCSelection.h"
 #include "SoFCBackgroundGradient.h"
 
@@ -158,6 +159,7 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   SoQt::init(this);
   SoDB::init();
   SoFCColorLegend::initClass();
+  SoFCColorGradient::initClass();
   SoFCBackgroundGradient::initClass();
 
   QVBox* vb = new QVBox( this );

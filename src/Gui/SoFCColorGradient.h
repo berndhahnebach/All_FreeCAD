@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COIN_SOFCCOLORLEGEND_H
-#define COIN_SOFCCOLORLEGEND_H
+#ifndef COIN_SOFCCOLORGRADIENT_H
+#define COIN_SOFCCOLORGRADIENT_H
 
 #include <Inventor/nodes/SoSeparator.h>
 #include <App/ColorModel.h>
@@ -33,16 +33,15 @@ class SbVec2s;
 
 namespace Gui {
 
-class GuiExport SoFCColorLegend : public SoSeparator {
+class GuiExport SoFCColorGradient : public SoSeparator {
   typedef SoSeparator inherited;
 
-  SO_NODE_HEADER(Gui::SoFCColorLegend);
+  SO_NODE_HEADER(Gui::SoFCColorGradient);
 
 public:
   static void initClass(void);
-  SoFCColorLegend(void);
+  SoFCColorGradient(void);
 
-  void setMarkerLabel( const SoMFString& label );
   void setViewerSize( const SbVec2s& size );
 
   /**
@@ -51,23 +50,31 @@ public:
    */
   void setRange( float fMin, float fMax, int prec=3 );
   /**
-   * Sets the color model of the underlying color ramp to \a tModel. \a tModel either can
+   * Sets the color model of the underlying color gradient to \a tModel. \a tModel either can
    * be \c TRIA, \c INVERSE_TRIA or \c GRAY
    */
   void setColorModel (App::ColorGradient::TColorModel tModel);
+  /**
+   * Sets the color style of the underlying color gradient to \a tStyle. \a tStyle either can
+   * be \c FLOW or \c ZERO_BASED
+   */
+  void setColorStyle (App::ColorGradient::TStyle tStyle);
 
-  unsigned short getColorIndex (float fVal) const { return _cColRamp.getColorIndex(fVal);  }
-  App::Color getColor (float fVal) const { return _cColRamp.getColor(fVal); }
-  float getMinValue (void) const { return _cColRamp.getMinValue(); }
-  float getMaxValue (void) const { return _cColRamp.getMaxValue(); }
-  unsigned long countColors (void) const { return _cColRamp.getCountColors(); }
+  unsigned short getColorIndex (float fVal) const { return _cColGrad.getColorIndex(fVal);  }
+  App::Color getColor (float fVal) const { return _cColGrad.getColor(fVal); }
+  bool isVisible (float fVal) const;
+  float getMinValue (void) const { return _cColGrad.getMinValue(); }
+  float getMaxValue (void) const { return _cColGrad.getMaxValue(); }
+  unsigned long countColors (void) const { return _cColGrad.getCountColors(); }
 
 //  virtual void handleEvent(SoHandleEventAction * action);
 //  virtual void GLRenderBelowPath(SoGLRenderAction * action);
 //  virtual void GLRenderInPath(SoGLRenderAction * action);
 
 protected:
-  virtual ~SoFCColorLegend();
+  virtual ~SoFCColorGradient();
+  void setMarkerLabel( const SoMFString& label );
+  void rebuild();
 //  virtual void redrawHighlighted(SoAction * act, SbBool  flag);
 
   SoCoordinate3* coords;
@@ -75,11 +82,12 @@ protected:
 
 private:
   float _fPosX, _fPosY;
-  App::ColorGradient _cColRamp;
+  bool  _bOutInvisible;
+  App::ColorGradient _cColGrad;
 };
 
 } // namespace Gui
 
 
-#endif // COIN_SOFCCOLORLEGEND_H
+#endif // COIN_SOFCCOLORGRADIENT_H
 
