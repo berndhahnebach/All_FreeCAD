@@ -35,24 +35,19 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "Property.h"
+#include "PropertyContainer.h"
 
 using namespace App;
 
-
-//**************************************************************************
-//**************************************************************************
-// Property
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 //**************************************************************************
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
-Property::Property(){}
+PropertyContainer::PropertyContainer(){}
 
-Property::~Property(){}
+PropertyContainer::~PropertyContainer(){}
 
 
 

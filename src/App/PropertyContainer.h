@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2005     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,38 +21,40 @@
  ***************************************************************************/
 
 
-/** Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
- *  Precompiled.h. For systems without precompilation the header needed are
- *  included in the else fork.
+#ifndef __PropteryContainer_H__
+#define __PropteryContainer_H__
+
+
+namespace App
+{
+
+
+
+/** Base class of all classes with propteries
  */
-#include "PreCompiled.h"
+class AppExport PropertyContainer
+{
+public:
 
-#ifndef _PreComp_
-#	include <assert.h>
-#	include <Standard_ConstructionError.hxx>
-#endif
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyContainer();
 
-/// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "Property.h"
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	virtual ~PropertyContainer();
+	
 
-using namespace App;
-
-
-//**************************************************************************
-//**************************************************************************
-// Property
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-//**************************************************************************
-// Construction/Destruction
-
-// here the implemataion! description should take place in the header file!
-Property::Property(){}
-
-Property::~Property(){}
+};
 
 
 
+
+} // namespace App
+
+#endif // __PropteryContainer_H__

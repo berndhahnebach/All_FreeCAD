@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
+ *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,38 +21,45 @@
  ***************************************************************************/
 
 
-/** Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
- *  Precompiled.h. For systems without precompilation the header needed are
- *  included in the else fork.
- */
-#include "PreCompiled.h"
+#ifndef __ViewProviderBox_H__
+#define __ViewProviderBox_H__
 
-#ifndef _PreComp_
-#	include <assert.h>
-#	include <Standard_ConstructionError.hxx>
-#endif
-
-/// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "Property.h"
-
-using namespace App;
+#include "ViewProvider.h"
 
 
-//**************************************************************************
-//**************************************************************************
-// Property
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+class TopoDS_Shape;
+class TopoDS_Face;
+class SoSeparator;
+class SbVec3f;
+class SoTransform;
+
+namespace Gui {
+  class View3DInventorViewer;
+  class SoFCSelection;
+}
+
+namespace PartGui {
 
 
-//**************************************************************************
-// Construction/Destruction
+class AppPartGuiExport ViewProviderBox:public ViewProviderPart
+{
+public:
+  /// constructor
+  ViewProviderBox();
+  /// destructor
+  virtual ~ViewProviderBox();
 
-// here the implemataion! description should take place in the header file!
-Property::Property(){}
 
-Property::~Property(){}
+  virtual void setEdit(void);
+  virtual void unsetEdit(void);
 
 
+protected:
+
+};
+
+} // namespace PartGui
+
+
+#endif // __VIEWPROVIDERPART_H__
 

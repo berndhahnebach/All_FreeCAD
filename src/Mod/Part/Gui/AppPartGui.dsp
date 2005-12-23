@@ -514,6 +514,14 @@ SOURCE=.\ViewProvider.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ViewProviderBox.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderBox.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ViewProviderCurveNet.cpp
 # End Source File
 # Begin Source File

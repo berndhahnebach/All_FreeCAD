@@ -97,6 +97,42 @@ PostBuild_Cmds=mkdir ..\..\bin	mkdir ..\..\Mod	copy Debug\FreeCADAppD.dll ..\..\
 
 # Name "FreeCADApp - Win32 Release"
 # Name "FreeCADApp - Win32 Debug"
+# Begin Group "Properties"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Property.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Property.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyAttr.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyAttr.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyContainer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyContainer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyStandard.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyStandard.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\Application.cpp
@@ -364,32 +400,6 @@ SOURCE=.\PreCompiled.cpp
 # Begin Source File
 
 SOURCE=.\PreCompiled.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Property.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Property.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\PropertyAttr.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\PropertyAttr.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Selection.cpp
-# PROP Exclude_From_Build 1
-# End Source File
-# Begin Source File
-
-SOURCE=.\Selection.h
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
