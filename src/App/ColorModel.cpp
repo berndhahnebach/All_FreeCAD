@@ -291,6 +291,13 @@ void ColorGradient::setColorModel (void)
       _clBottom = ColorModelGrayBottom();
       break;
     }
+    case INVERSE_GRAY:
+    {
+      _clTotal  = ColorModelInverseGray();
+      _clTop    = ColorModelInverseGrayTop();
+      _clBottom = ColorModelInverseGrayBottom();
+      break;
+    }
   }
 
   switch (_tStyle)

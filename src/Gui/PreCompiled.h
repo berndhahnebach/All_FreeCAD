@@ -105,6 +105,7 @@
 #include <Inventor/SbClip.h>
 #include <Inventor/SbColor.h>
 #include <Inventor/SoInput.h>
+#include <Inventor/actions/SoHandleEventAction.h> 
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
@@ -184,6 +185,7 @@
 #include <qclipboard.h>
 #include <qcolordialog.h>
 #include <qcombobox.h>
+#include <qcursor.h>
 #include <qdatetimeedit.h>
 #include <qdockarea.h>
 #include <qdockwindow.h>

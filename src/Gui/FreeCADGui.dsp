@@ -608,6 +608,67 @@ InputName=DlgSettings3DViewImp
 # End Source File
 # Begin Source File
 
+SOURCE=.\DlgSettingsColorGradient.ui
+
+!IF  "$(CFG)" == "FreeCADGui - Win32 Release"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgSettingsColorGradient.ui
+InputName=DlgSettingsColorGradient
+
+BuildCmds= \
+	"%qtdir%\bin\uic.exe" "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	"%qtdir%\bin\uic.exe" "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgSettingsColorGradient.ui
+InputName=DlgSettingsColorGradient
+
+BuildCmds= \
+	"%qtdir%\bin\uic.exe" "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	"%qtdir%\bin\uic.exe" "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgSettingsColorGradientImp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgSettingsColorGradientImp.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\DlgSettingsImage.ui
 
 !IF  "$(CFG)" == "FreeCADGui - Win32 Release"
@@ -2105,6 +2166,14 @@ SOURCE=.\SoFCBackgroundGradient.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\SoFCColorBar.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SoFCColorBar.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\SoFCColorGradient.cpp
 # End Source File
 # Begin Source File
@@ -2118,6 +2187,14 @@ SOURCE=.\SoFCColorLegend.cpp
 # Begin Source File
 
 SOURCE=.\SoFCColorLegend.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SoFCDB.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SoFCDB.h
 # End Source File
 # Begin Source File
 

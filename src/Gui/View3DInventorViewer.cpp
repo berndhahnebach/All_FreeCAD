@@ -31,6 +31,7 @@
 # include <qpen.h>
 # include <qpopupmenu.h>
 # include <GL/gl.h>
+# include <Inventor/actions/SoHandleEventAction.h> 
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCallback.h> 
 # include <Inventor/nodes/SoCoordinate3.h>
@@ -67,8 +68,8 @@
 #include "View3DInventorViewer.h"
 #include "../Base/Console.h"
 #include "Tools.h"
-#include <qcursor.h>
 #include "SoFCBackgroundGradient.h"
+#include "SoFCColorBar.h"
 #include "SoFCColorLegend.h"
 #include "SoFCColorGradient.h"
 #include "SoFCOffscreenRenderer.h"
@@ -79,7 +80,6 @@
 #include "MenuManager.h"
 
 #include "ViewProvider.h"
-
 // build in Inventor
 
 
@@ -397,6 +397,10 @@ void View3DInventorViewer::sizeChanged( const SbVec2s& size )
     else if ( child && child->getTypeId() == SoFCColorGradient::getClassTypeId() )
     {
       reinterpret_cast<SoFCColorGradient*>(child)->setViewerSize( size );
+    }
+    else if ( child && child->getTypeId() == SoFCColorBar::getClassTypeId() )
+    {
+      reinterpret_cast<SoFCColorBar*>(child)->setViewerSize( size );
     }
   }
 
@@ -726,6 +730,16 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     std::set<ViewProvider*>::iterator It;
     for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
       processed = (*It)->handleEvent(ev,*this);
+  }
+
+  // give the nodes in the foreground root the chance to handle events (e.g color bar)
+  // Note: this must be done _before_ ceding to the viewer  
+  if ( !processed )
+  {
+    SoHandleEventAction action(getViewportRegion());
+    action.setEvent(ev);
+    action.apply(foregroundroot);
+    processed = action.isHandled();
   }
 
   // right mouse button pressed

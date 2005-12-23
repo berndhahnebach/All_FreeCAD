@@ -40,7 +40,7 @@ namespace App
 class AppExport ValueFloatToRGB
 {
 public:
-  virtual Color operator () (float fVal) const = 0;
+  virtual Color getColor(float fVal) const = 0;
 
 protected:
   ValueFloatToRGB (void) {}
@@ -83,7 +83,7 @@ public:
   }
 };
 
-struct AppExport ColorModelTriaTop : public ColorModel
+class AppExport ColorModelTriaTop : public ColorModel
 {
 public:
   ColorModelTriaTop (void) : ColorModel(3)
@@ -118,7 +118,7 @@ public:
   }
 };
 
-struct AppExport ColorModelInverseTriaBottom : public ColorModel
+class AppExport ColorModelInverseTriaBottom : public ColorModel
 {
 public:
   ColorModelInverseTriaBottom (void) : ColorModel(3)
@@ -149,13 +149,43 @@ public:
   }
 };
 
-struct AppExport ColorModelGrayTop : public ColorModel
+class AppExport ColorModelGrayTop : public ColorModel
 {
 public:
   ColorModelGrayTop (void) : ColorModel(2)
   {
     _pclColors[0] = Color( 0.5f, 0.5f, 0.5f);
     _pclColors[1] = Color( 1.0f, 1.0f, 1.0f);
+  }
+};
+
+class AppExport ColorModelInverseGray : public ColorModel
+{
+public:
+  ColorModelInverseGray (void) : ColorModel(2)
+  {
+    _pclColors[0] = Color( 1, 1, 1);
+    _pclColors[1] = Color( 0, 0, 0);
+  }
+};
+
+class AppExport ColorModelInverseGrayBottom : public ColorModel
+{
+public:
+  ColorModelInverseGrayBottom (void) : ColorModel(2)
+  {
+    _pclColors[0] = Color( 1.0f, 1.0f, 1.0f);
+    _pclColors[1] = Color( 0.5f, 0.5f, 0.5f);
+  }
+};
+
+class AppExport ColorModelInverseGrayTop : public ColorModel
+{
+public:
+  ColorModelInverseGrayTop (void) : ColorModel(2)
+  {
+    _pclColors[0] = Color( 0.5f, 0.5f, 0.5f);
+    _pclColors[1] = Color( 0.0f, 0.0f, 0.0f);
   }
 };
 
@@ -212,7 +242,7 @@ class AppExport ColorGradient
 {
 public:
   enum TStyle { FLOW, ZERO_BASED };
-  enum TColorModel { TRIA, INVERSE_TRIA, GRAY };
+  enum TColorModel { TRIA, INVERSE_TRIA, GRAY, INVERSE_GRAY };
 
   ColorGradient (void);
   ColorGradient (float fMin, float fMax, unsigned short usCtColors, TStyle tS, bool bOG = false);
@@ -232,7 +262,7 @@ public:
   bool isOutsideGrayed (void) const { return _bOutsideGrayed; }
   void setColorModel (TColorModel tModel);
   TColorModel getColorModelType (void) const { return _tColorModel; }
-  const ColorModel& getColorModel (void) const { return _clTotal; }
+  inline const ColorModel& getColorModel (void) const;
   float getMinValue (void) const { return _fMin; }
   float getMaxValue (void) const { return _fMax; }
 
@@ -354,7 +384,52 @@ inline Color ColorGradient::getColor (float fVal) const
     if ((fVal < _fMin) || (fVal > _fMax))
       return Color(0.5f, 0.5f, 0.5f);
   }
-
+#if 0
+  float lambda = (_fMax-fVal) / (_fMax-_fMin);
+  if ( lambda >= 1)
+    return Color(0,0,1);
+  else if ( lambda <=0 )
+    return Color(1,0,0);
+  else
+  {
+    if ( lambda < 0.25f )
+    {
+      lambda = (_fMax-fVal) / (_fMax-0.25f*_fMin-0.75f*_fMax);
+      Color col;
+      col.r=1.0f;
+      col.g=lambda;
+      col.b=0.0f;
+      return col;
+    }
+    else if ( lambda < 0.5f )
+    {
+      lambda = (0.75f*_fMax+0.25f*_fMin-fVal) / (0.75f*_fMax+0.25f*_fMin-0.5f*_fMin-0.5f*_fMax);
+      Color col;
+      col.r=1.0f-lambda;
+      col.g=1.0f;
+      col.b=0.0f;
+      return col;
+    }
+    else if ( lambda < 0.75f )
+    {
+      lambda = (0.5f*_fMax+0.5f*_fMin-fVal) / (0.5f*_fMax+0.5f*_fMin-0.25f*_fMax-0.75f*_fMin);
+      Color col;
+      col.r=0.0f;
+      col.g=1.0f;
+      col.b=lambda;
+      return col;
+    }
+    else
+    {
+      lambda = (0.25f*_fMax+0.75f*_fMin-fVal) / (0.25f*_fMax+0.75f*_fMin-_fMin);
+      Color col;
+      col.r=0.0f;
+      col.g=1.0f-lambda;
+      col.b=1.0f;
+      return col;
+    }
+  }
+#else
   switch (_tStyle)
   {
     case ZERO_BASED:
@@ -377,6 +452,7 @@ inline Color ColorGradient::getColor (float fVal) const
     }
 
   }
+#endif
 }
 
 inline unsigned short ColorGradient::getColorIndex (float fVal) const
@@ -401,6 +477,23 @@ inline unsigned short ColorGradient::getColorIndex (float fVal) const
     {
       return _clColFld1.getColorIndex(fVal);
     }
+  }
+}
+
+inline const ColorModel& ColorGradient::getColorModel (void) const
+{ 
+  if ( _tStyle == ZERO_BASED )
+  {
+    if ( _fMax <= 0.0f )
+      return _clBottom;
+    else if ( _fMin >= 0.0f )
+      return _clTop;
+    else
+      return _clTotal;
+  }
+  else
+  {
+    return _clTotal;
   }
 }
 

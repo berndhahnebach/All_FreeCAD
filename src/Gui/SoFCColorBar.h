@@ -21,70 +21,76 @@
  ***************************************************************************/
 
 
-#ifndef COIN_SOFCCOLORLEGEND_H
-#define COIN_SOFCCOLORLEGEND_H
+#ifndef COIN_SOFCCOLORBAR_H
+#define COIN_SOFCCOLORBAR_H
 
 #include <Inventor/nodes/SoSeparator.h>
-#include "SoFCColorBar.h"
+#include <Base/Observer.h>
 #include <App/ColorModel.h>
+#include <qdatetime.h>
+#include <vector>
 
-class SoCoordinate3;
-class SoMFString;
+class SoSwitch;
+class SoEventCallback;
 class SbVec2s;
+class SoHandleEventAction;
 
 namespace Gui {
+class SoFCColorGradient;
 
-class GuiExport SoFCColorLegend : public SoFCColorBarBase {
-  typedef SoFCColorBarBase inherited;
+// abstract colorbar class
+class SoFCColorBarBase : public SoSeparator, public App::ValueFloatToRGB {
+  typedef SoSeparator inherited;
 
-  SO_NODE_HEADER(Gui::SoFCColorLegend);
+  SO_NODE_HEADER(Gui::SoFCColorBarBase);
 
 public:
   static void initClass(void);
-  SoFCColorLegend(void);
 
-  void setMarkerLabel( const SoMFString& label );
-  void setViewerSize( const SbVec2s& size );
-
-  /**
-   * Sets the range of the colorbar from the maximum \a fMax to the minimum \a fMin.
-   * \a prec indicates the post decimal positions, \a prec should be in between 0 and 6.
-   */
-  void setRange( float fMin, float fMax, int prec=3 );
-  /**
-   * Sets the color model of the underlying color ramp to \a tModel. \a tModel either can
-   * be \c TRIA, \c INVERSE_TRIA or \c GRAY
-   */
-  void setColorModel (App::ColorGradient::TColorModel tModel);
-
-  unsigned short getColorIndex (float fVal) const { return _cColRamp.getColorIndex(fVal);  }
-  App::Color getColor (float fVal) const { return _cColRamp.getColor(fVal); }
-  bool isVisible (float fVal) const { return false; }
-  float getMinValue (void) const { return _cColRamp.getMinValue(); }
-  float getMaxValue (void) const { return _cColRamp.getMaxValue(); }
-  unsigned long countColors (void) const { return _cColRamp.getCountColors(); }
-
-  bool customize() { return false; }
-  const char* getColorBarName() const { return "Color Legend"; }
-
-//  virtual void handleEvent(SoHandleEventAction * action);
-//  virtual void GLRenderBelowPath(SoGLRenderAction * action);
-//  virtual void GLRenderInPath(SoGLRenderAction * action);
+  virtual bool isVisible (float fVal) const { return false; };
+  virtual float getMinValue (void) const { return 0.0f; };
+  virtual float getMaxValue (void) const { return 0.0f; };
+  virtual bool customize(){ return false; };
+  virtual App::Color getColor(float) const { return App::Color(); }
+  virtual const char* getColorBarName() const { return ""; };
 
 protected:
-  virtual ~SoFCColorLegend();
-//  virtual void redrawHighlighted(SoAction * act, SbBool  flag);
+  SoFCColorBarBase (void);
+  virtual ~SoFCColorBarBase ();
+};
 
-  SoCoordinate3* coords;
-  SoSeparator* labels;
+class GuiExport SoFCColorBar : public SoSeparator, public Base::Subject<int> {
+  typedef SoSeparator inherited;
+
+  SO_NODE_HEADER(Gui::SoFCColorBar);
+
+public:
+  static void initClass(void);
+  SoFCColorBar(void);
+
+  void setViewerSize( const SbVec2s& size );
+  SoFCColorBarBase* getActiveBar() const;
+  SoFCColorGradient* getGradient() const { return pGradient; }
+
+  void  handleEvent (SoHandleEventAction *action);
+
+protected:
+  virtual ~SoFCColorBar();
 
 private:
-  float _fPosX, _fPosY;
-  App::ColorGradient _cColRamp;
+  static void eventCallback(void * userdata, SoEventCallback * node);
+
+private:
+  float _fMaxX, _fMinX, _fMaxY, _fMinY;
+  QTime _timer;
+
+  SoSwitch* pColorMode; 
+  std::vector<SoFCColorBarBase*> _colorBars;
+  SoFCColorGradient* pGradient;
 };
 
 } // namespace Gui
 
 
-#endif // COIN_SOFCCOLORLEGEND_H
+#endif // COIN_SOFCCOLORBAR_H
 

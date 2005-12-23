@@ -70,7 +70,7 @@ SoFCColorLegend::~SoFCColorLegend()
 // doc from parent
 void SoFCColorLegend::initClass(void)
 {
-  SO_NODE_INIT_CLASS(SoFCColorLegend,SoSeparator,"Separator");
+  SO_NODE_INIT_CLASS(SoFCColorLegend,SoFCColorBarBase,"Separator");
 }
 
 void SoFCColorLegend::setMarkerLabel( const SoMFString& label )

@@ -104,6 +104,7 @@ void ViewProvider::setTransformation(const SbMatrix &rcMatrix)
 
 void ViewProvider::setMode(const char* ModeName)
 {
+  _sCurrentMode = ModeName;
   // collect all modes (with subclasses)
   vector<string> modes = getModes();
   vector<string>::iterator p;
@@ -132,7 +133,9 @@ int ViewProvider::getMode(void)
 
 std::string ViewProvider::getModeName(void)
 {
-  return getModes()[getMode()];
+  // this doesn't really work as expected
+//  return getModes()[getMode()];
+  return _sCurrentMode;
 }
 
 void ViewProvider::hide(void)

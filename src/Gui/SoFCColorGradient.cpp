@@ -30,12 +30,17 @@
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoTransform.h>
+# include <qcursor.h>
 # include <qstring.h>
+# include <math.h>
 #endif
 
-#include "SoFCColorGradient.h"
-
 #include <Inventor/nodes/SoText2.h>
+
+#include "SoFCColorGradient.h"
+#include "DlgSettingsColorGradientImp.h"
+#include "MainWindow.h"
+#include "View.h"
 
 using namespace Gui;
 
@@ -44,15 +49,15 @@ SO_NODE_SOURCE(SoFCColorGradient);
 /*!
   Constructor.
 */
-SoFCColorGradient::SoFCColorGradient() : _fPosX(4.0f), _fPosY(4.0f), _bOutInvisible(false)
+SoFCColorGradient::SoFCColorGradient() : _fMaxX(4.5f), _fMinX(4.0f), _fMaxY(4.0f), _fMinY(-4.0f), _bOutInvisible(false)
 {
   SO_NODE_CONSTRUCTOR(SoFCColorGradient);
-  _cColGrad.setStyle(App::ColorGradient::FLOW);
   coords = new SoCoordinate3;
   coords->ref();
   labels = new SoSeparator;
   labels->ref();
 
+  _cColGrad.setStyle(App::ColorGradient::FLOW);
   setColorModel( App::ColorGradient::TRIA );
 }
 
@@ -69,19 +74,20 @@ SoFCColorGradient::~SoFCColorGradient()
 // doc from parent
 void SoFCColorGradient::initClass(void)
 {
-  SO_NODE_INIT_CLASS(SoFCColorGradient,SoSeparator,"Separator");
+  SO_NODE_INIT_CLASS(SoFCColorGradient,SoFCColorBarBase,"Separator");
 }
 
 void SoFCColorGradient::setMarkerLabel( const SoMFString& label )
 {
   labels->removeAllChildren();
 
+  float fH=8.0f;
   int num = label.getNum();
   if ( num > 1 )
   {
-    float fStep = 8.0f / ((float)num-1);
+    float fStep = fH / ((float)num-1);
     SoTransform* trans = new SoTransform;
-    trans->translation.setValue(_fPosX+0.1f,_fPosY-0.05f+fStep,0.0f);
+    trans->translation.setValue(_fMaxX+0.1f,_fMaxY-0.05f+fStep,0.0f);
     labels->addChild(trans);
 
     for ( int i=0; i<num; i++ )
@@ -102,6 +108,7 @@ void SoFCColorGradient::setMarkerLabel( const SoMFString& label )
 
 void SoFCColorGradient::setViewerSize( const SbVec2s& size )
 {
+  // don't know why the parameter range isn't between [-1,+1]
   float fRatio = ((float)size[0])/((float)size[1]);
   float fMinX=  4.0f, fMaxX=4.5f;
   float fMinY= -4.0f, fMaxY=4.0f;
@@ -117,8 +124,10 @@ void SoFCColorGradient::setViewerSize( const SbVec2s& size )
     fMaxY =   4.0f / fRatio;
   }
 
-  _fPosX = fMaxX;
-  _fPosY = fMaxY;
+  _fMaxX = fMaxX;
+  _fMinX = fMinX;
+  _fMaxY = fMaxY;
+  _fMinY = fMinY;
 
   // search for the labels
   int num=0;
@@ -155,9 +164,9 @@ void SoFCColorGradient::setViewerSize( const SbVec2s& size )
   for ( int j=0; j<ct; j++ )
   {
     float w = (float)j/(float)(ct-1);
-    float fPosY = (1.0f-w)*fMaxY + w*fMinY;
-  	coords->point.set1Value(2*j, fMinX, fPosY, 0.0f);
-  	coords->point.set1Value(2*j+1, fMaxX, fPosY, 0.0f);
+    float fPosY = (1.0f-w)*_fMaxY + w*_fMinY;
+  	coords->point.set1Value(2*j, _fMinX, fPosY, 0.0f);
+  	coords->point.set1Value(2*j+1, _fMaxX, fPosY, 0.0f);
   }
 }
 
@@ -167,66 +176,82 @@ void SoFCColorGradient::setRange( float fMin, float fMax, int prec )
 
   SoMFString label;
   QString s;
-  int ticks = 9;
 
-  // the middle of the bar is zero
-  if ( fMin < 0.0f && fMax > 0.0f && _cColGrad.getStyle() == App::ColorGradient::ZERO_BASED )
+  int marker = _cColGrad.getCountColors();
+  float fFac = (float)pow(10.0, (double)prec);
+
+  int i=0;
+  std::vector<float> marks = getMarkerValues(fMin, fMax, _cColGrad.getCountColors());
+  for ( std::vector<float>::iterator it = marks.begin(); it != marks.end(); ++it )
   {
-    if ( ticks % 2 == 0) ticks++;
-    int half = ticks / 2;
-    for (int j=0; j<half+1; j++)
-    {
-      float w = (float)j/((float)half);
-      float fValue = (1.0f-w)*fMax;
-      label.set1Value(j, s.setNum(fValue, 'f', prec).latin1() );
-    }
-    for (int k=half+1; k<ticks; k++)
-    {
-      float w = (float)(k-half+1)/((float)(ticks-half));
-      float fValue = w*fMin;
-      label.set1Value(k, s.setNum(fValue, 'f', prec).latin1() );
-    }
-  }
-  else // either not zero based or 0 is not in between [fMin,fMax]
-  {
-    for (int j=0; j<ticks; j++)
-    {
-      float w = (float)j/((float)ticks-1.0f);
-      float fValue = (1.0f-w)*fMax+w*fMin;
-      label.set1Value(j, s.setNum(fValue, 'f', prec).latin1() );
-    }
+    float fValue = *it;
+    if ( fabs(fValue*fFac) < 1.0 )
+      fValue = 0.0f;
+    label.set1Value(i++, s.setNum(fValue, 'f', prec).latin1() );
   }
 
   setMarkerLabel( label );
 }
 
+std::vector<float> SoFCColorGradient::getMarkerValues(float fMin, float fMax, int count) const
+{
+  std::vector<float> labels;
+
+  // the middle of the bar is zero
+  if ( fMin < 0.0f && fMax > 0.0f && _cColGrad.getStyle() == App::ColorGradient::ZERO_BASED )
+  {
+    if ( count % 2 == 0) count++;
+    int half = count / 2;
+    for (int j=0; j<half+1; j++)
+    {
+      float w = (float)j/((float)half);
+      float fValue = (1.0f-w)*fMax;
+      labels.push_back( fValue );
+    }
+    for (int k=half+1; k<count; k++)
+    {
+      float w = (float)(k-half+1)/((float)(count-half));
+      float fValue = w*fMin;
+      labels.push_back( fValue );
+    }
+  }
+  else // either not zero based or 0 is not in between [fMin,fMax]
+  {
+    for (int j=0; j<count; j++)
+    {
+      float w = (float)j/((float)count-1.0f);
+      float fValue = (1.0f-w)*fMax+w*fMin;
+      labels.push_back( fValue );
+    }
+  }
+
+  return labels;
+}
+
 void SoFCColorGradient::setColorModel( App::ColorGradient::TColorModel tModel )
 {
   _cColGrad.setColorModel( tModel );
-  rebuild();
+  rebuildGradient();
 }
 
 void SoFCColorGradient::setColorStyle (App::ColorGradient::TStyle tStyle)
 {
   _cColGrad.setStyle( tStyle );
-  rebuild();
+  rebuildGradient();
 }
 
-void SoFCColorGradient::rebuild()
+void SoFCColorGradient::rebuildGradient()
 {
   App::ColorModel model = _cColGrad.getColorModel();
   int uCtColors = (int)model._usColors;
 
-  // don't know why the parameter range isn't between [-1,+1]
-  float fMinX=  4.0f, fMaxX=4.5f;
-  float fMinY= -4.0f, fMaxY=4.0f;
   coords->point.setNum(2*uCtColors);
   for ( int i=0; i<uCtColors; i++ )
   {
     float w = (float)i/(float)(uCtColors-1);
-    float fPosY = (1.0f-w)*fMaxY + w*fMinY;
-  	coords->point.set1Value(2*i, fMinX, fPosY, 0.0f);
-  	coords->point.set1Value(2*i+1, fMaxX, fPosY, 0.0f);
+    float fPosY = (1.0f-w)*_fMaxY + w*_fMinY;
+  	coords->point.set1Value(2*i, _fMinX, fPosY, 0.0f);
+  	coords->point.set1Value(2*i+1, _fMaxX, fPosY, 0.0f);
   }
 
   // for uCtColors colors we need 2*(uCtColors-1) facets and therefore an array with
@@ -281,4 +306,39 @@ bool SoFCColorGradient::isVisible (float fVal) const
   }
 
   return true;
+}
+
+bool SoFCColorGradient::customize()
+{
+  QWidget* parent = Gui::getMainWindow()->activeWindow();
+  Gui::Dialog::DlgSettingsColorGradientImp dlg(parent, "ColorGradient", true);
+
+  dlg.setColorModel( _cColGrad.getColorModelType() );
+  dlg.setColorStyle( _cColGrad.getStyle() );
+  dlg.setOutGrayed( _cColGrad.isOutsideGrayed() );
+  dlg.setOutInvisible( _bOutInvisible );
+  dlg.setNumberOfLabels( _cColGrad.getCountColors() );
+  float fMin, fMax;
+  _cColGrad.getRange(fMin, fMax);
+  dlg.setRange(fMin, fMax);
+ 
+  QPoint pos(QCursor::pos());
+  pos += QPoint((int)(-1.1*dlg.width()),(int)(-0.1*dlg.height()));
+  dlg.move( pos );
+
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    _cColGrad.setColorModel( dlg.colorModel() );
+    _cColGrad.setStyle( dlg.colorStyle() );
+    _cColGrad.setOutsideGrayed( dlg.isOutGrayed() );
+    _bOutInvisible = dlg.isOutInvisible();
+    _cColGrad.setCountColors( dlg.numberOfLabels() );
+    dlg.getRange( fMin, fMax );
+    setRange( fMin, fMax );
+    rebuildGradient();
+    
+    return true;
+  }
+
+  return false;
 }

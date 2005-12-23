@@ -150,7 +150,7 @@ protected:
   const char* sPixmap;
 
   int _iActualMode;
-
+  std::string _sCurrentMode;
 };
 
 } // namespace Gui

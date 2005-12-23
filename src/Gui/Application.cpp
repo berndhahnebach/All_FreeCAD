@@ -35,7 +35,6 @@
 # include <qtabbar.h>
 # include <qtimer.h>
 # include <qvbox.h>
-# include <Inventor/SoInteraction.h>
 #endif
 
 #include <Inventor/errors/SoDebugError.h> 
@@ -65,8 +64,6 @@
 #include "WorkbenchFactory.h"
 #include "WorkbenchManager.h"
 #include "CommandBarManager.h"
-#include "SoFCSelection.h"
-#include "SoFCSelectionAction.h"
 #include "WaitCursor.h"
 
 #include "Language/Translator.h"
@@ -796,10 +793,6 @@ void Application::runApplication(void)
     defWb = start;
 
   app->activateWorkbench( defWb.c_str() );
-
-  SoInteraction::init();
-  Gui::SoFCSelection::initClass();
-  Gui::SoFCSelectionAction::initClass();
 
 #ifdef FC_DEBUG // redirect Coin messages to FreeCAD
   SoDebugError::setHandlerCallback( messageHandlerCoin, 0 );
