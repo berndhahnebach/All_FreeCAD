@@ -184,9 +184,9 @@ void SoFCColorBar::handleEvent (SoHandleEventAction *action)
     if ((e->getButton() == SoMouseButtonEvent::BUTTON1)) {
       if (e->getState() == SoButtonEvent::DOWN) {
         // double click event
+        action->setHandled();
         if ( _timer.restart() < QApplication::doubleClickInterval() )
         {
-          action->setHandled();
           if ( getActiveBar()->customize() )
             Notify(0);
         }

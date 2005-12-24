@@ -125,8 +125,12 @@ bool DlgSettingsColorGradientImp::isOutInvisible() const
 
 void DlgSettingsColorGradientImp::setRange( float fMin, float fMax )
 {
+  floatSpinBoxMax->blockSignals(true);
   floatSpinBoxMax->setValue( fMax );
+  floatSpinBoxMax->blockSignals(false);
+  floatSpinBoxMin->blockSignals(true);
   floatSpinBoxMin->setValue( fMin );
+  floatSpinBoxMin->blockSignals(false);
 }
 
 void DlgSettingsColorGradientImp::getRange( float& fMin, float& fMax) const

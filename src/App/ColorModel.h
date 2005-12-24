@@ -226,10 +226,39 @@ protected:
   void interpolate (Color clCol1, unsigned short usPos1, Color clCol2, unsigned short usPos2);
 };
 
-
 inline Color ColorField::getColor (float fVal) const
 {
+#if 1
+  // if the value is outside or at the border of the range
+  unsigned short ct = _clModel._usColors-1;
+  if ( fVal <= _fMin )
+    return _clModel._pclColors[0];
+  else if ( fVal >= _fMax )
+    return _clModel._pclColors[ct];
+
+  // get the color field position (with 0 < t < 1)
+  float t = (fVal-_fMin) / (_fMax-_fMin);
+  Color col(1.0f, 1.0f, 1.0f); // white as default
+  for ( unsigned short i=0; i<ct; i++ )
+  {
+    float r = (float)(i+1)/(float)ct;
+    if ( t < r )
+    {
+      // calculate the exact position in the subrange
+      float s = t*(float)ct-(float)i;
+      Color c1 = _clModel._pclColors[i];
+      Color c2 = _clModel._pclColors[i+1];
+      col.r = (1.0f-s) * c1.r + s * c2.r;
+      col.g = (1.0f-s) * c1.g + s * c2.g;
+      col.b = (1.0f-s) * c1.b + s * c2.b;
+      break;
+    }
+  }
+
+  return col;
+#else
   return _aclField[getColorIndex(fVal)];
+#endif
 }
 
 inline unsigned short ColorField::getColorIndex (float fVal) const
@@ -384,52 +413,6 @@ inline Color ColorGradient::getColor (float fVal) const
     if ((fVal < _fMin) || (fVal > _fMax))
       return Color(0.5f, 0.5f, 0.5f);
   }
-#if 0
-  float lambda = (_fMax-fVal) / (_fMax-_fMin);
-  if ( lambda >= 1)
-    return Color(0,0,1);
-  else if ( lambda <=0 )
-    return Color(1,0,0);
-  else
-  {
-    if ( lambda < 0.25f )
-    {
-      lambda = (_fMax-fVal) / (_fMax-0.25f*_fMin-0.75f*_fMax);
-      Color col;
-      col.r=1.0f;
-      col.g=lambda;
-      col.b=0.0f;
-      return col;
-    }
-    else if ( lambda < 0.5f )
-    {
-      lambda = (0.75f*_fMax+0.25f*_fMin-fVal) / (0.75f*_fMax+0.25f*_fMin-0.5f*_fMin-0.5f*_fMax);
-      Color col;
-      col.r=1.0f-lambda;
-      col.g=1.0f;
-      col.b=0.0f;
-      return col;
-    }
-    else if ( lambda < 0.75f )
-    {
-      lambda = (0.5f*_fMax+0.5f*_fMin-fVal) / (0.5f*_fMax+0.5f*_fMin-0.25f*_fMax-0.75f*_fMin);
-      Color col;
-      col.r=0.0f;
-      col.g=1.0f;
-      col.b=lambda;
-      return col;
-    }
-    else
-    {
-      lambda = (0.25f*_fMax+0.75f*_fMin-fVal) / (0.25f*_fMax+0.75f*_fMin-_fMin);
-      Color col;
-      col.r=0.0f;
-      col.g=1.0f-lambda;
-      col.b=1.0f;
-      return col;
-    }
-  }
-#else
   switch (_tStyle)
   {
     case ZERO_BASED:
@@ -450,9 +433,7 @@ inline Color ColorGradient::getColor (float fVal) const
     {
       return _clColFld1.getColor(fVal);
     }
-
   }
-#endif
 }
 
 inline unsigned short ColorGradient::getColorIndex (float fVal) const
