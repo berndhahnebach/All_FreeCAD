@@ -224,7 +224,7 @@ public:
 
  	const char* GetHomePath(void);
 
-  friend App::Document;
+  friend class App::Document;
 
 protected:
   /// get called by the document when the name is changing

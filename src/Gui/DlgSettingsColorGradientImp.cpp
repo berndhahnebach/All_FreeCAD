@@ -24,6 +24,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qbuttongroup.h>
+# include <qcheckbox.h>
+# include <qcombobox.h>
 # include <qmessagebox.h>
 #endif
 

@@ -23,10 +23,6 @@ libFreeCADApp_la_SOURCES=\
 		Document.h \
 		DocumentPy.cpp \
 		DocumentPy.h \
-		MatrixPy.cpp \
-		MatrixPy.h \
-		VectorPy.cpp \
-		VectorPy.h \
 		Doxygen.cpp \
 		Feature.cpp \
 		Feature.h \
@@ -46,12 +42,20 @@ libFreeCADApp_la_SOURCES=\
 		Material.h \
 		MaterialPy.cpp \
 		MaterialPy.h \
+		MatrixPy.cpp \
+		MatrixPy.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Property.cpp \
 		Property.h \
 		PropertyAttr.cpp \
-		PropertyAttr.h
+		PropertyAttr.h \
+		PropertyContainer.cpp \
+		PropertyContainer.h \
+		PropertyStandard.cpp \
+		PropertyStandard.h \
+		VectorPy.cpp \
+		VectorPy.h
 
 %Script.h: FreeCAD%.py
 	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@

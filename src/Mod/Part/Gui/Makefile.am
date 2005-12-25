@@ -35,6 +35,8 @@ libPartGui_la_SOURCES=\
 		PreCompiled.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
+		ViewProviderBox.cpp \
+		ViewProviderBox.h \
 		ViewProviderCurveNet.cpp \
 		ViewProviderCurveNet.h \
 		ViewProviderImport.cpp \

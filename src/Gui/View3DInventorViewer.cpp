@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <float.h>
 # include <qapplication.h>
+# include <qcursor.h>
 # include <qimage.h>
 # include <qpainter.h>
 # include <qpen.h>

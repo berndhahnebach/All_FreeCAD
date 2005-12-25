@@ -177,7 +177,6 @@ void SoFCColorGradient::setRange( float fMin, float fMax, int prec )
   SoMFString label;
   QString s;
 
-  int marker = _cColGrad.getCountColors();
   float fFac = (float)pow(10.0, (double)prec);
 
   int i=0;
