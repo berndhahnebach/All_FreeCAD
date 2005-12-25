@@ -20,8 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __ViewProviderMeshCurvature_H__
-#define __ViewProviderMeshCurvature_H__
+#ifndef MESHGUI_VIEWPROVIDER_MESH_CURVATURE_H
+#define MESHGUI_VIEWPROVIDER_MESH_CURVATURE_H
+
+#include <Base/Observer.h>
+#include "ViewProvider.h"
 
 class SoSeparator;
 class SbVec3f;
@@ -35,54 +38,59 @@ class SoLocateHighlight;
 class SoTransformerManip;
 
 namespace Gui {
+  class SoFCColorBar;
   class View3DInventorViewer;
 }
-
 
 namespace Mesh {
   class MeshWithProperty;
   class MeshPropertyColor;
+  class MeshPropertyCurvature;
 }
-
-#include "ViewProvider.h"
 
 namespace MeshGui {
 
-/** Like Mesh viewprovider but with manipulator
+/** The ViewProviderMeshCurvature class is associated to the mesh curvature feature. It allows to display the most known types of
+ * curvatures, such as Gaussian curvature, mean curvature, minimum and maximum curvature.
+ * Moreover a color bar is also added to the scene.
+ *
+ * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshCurvature: public ViewProviderMesh
+class GuiMeshExport ViewProviderMeshCurvature : public ViewProviderMesh, public Base::Observer<int>
 {
 public:
   ViewProviderMeshCurvature();
   virtual ~ViewProviderMeshCurvature();
 
-
-  /** 
-   * Extracts the mesh data from the feature \a pcFeature and creates
-   * an Inventor node \a SoNode with these data. 
-   */
-  virtual void attach(App::Feature *);
-
-  /// set the viewing mode
-  virtual void setMode(const char* ModeName);
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void);
-  /// Update the Mesh representation
-  virtual void updateData();
-  virtual QPixmap getIcon() const;
+  /// Extracts the mesh data from the feature \a pcFeature and creates an Inventor node \a SoNode with these data. 
+  void attach(App::Feature* pcFeature);
+  /// Sets the viewing mode
+  void setMode(const char* ModeName);
+  /// Returns a vector of all possible modes
+  std::vector<std::string> getModes(void);
+  /// Updates the mesh feature representation
+  void updateData();
+  /// Returns a pixmap for the associated feature type
+  QPixmap getIcon() const;
+  /// Once the color bar settinhs has been changed this method gets called to update the feature's representation
+  void OnChange(Base::Subject<int> &rCaller,int rcReason);
+  /// Returns a color bar
+  SoSeparator* getFrontRoot(void);
 
 protected:
+  void setVertexAbsCurvatureMode(Mesh::MeshPropertyCurvature* pcProp);
+  void setVertexCurvatureMode(Mesh::MeshPropertyCurvature* pcProp, int mode);
 
-  /// helper
-  void SetVertexColorMode(Mesh::MeshPropertyColor* pcProp);
+private:
+  void init(App::Feature *pcFeat);
 
-  SoMaterial        *pcColorMat;
-
-
+protected:
+  SoMaterial       * pcColorMat;
+  Gui::SoFCColorBar* pcColorBar;
 };
 
 } // namespace MeshGui
 
 
-#endif // __ViewProviderMeshCurvature_H__
+#endif // MESHGUI_VIEWPROVIDER_MESH_CURVATURE_H
 

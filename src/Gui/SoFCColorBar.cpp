@@ -44,7 +44,7 @@
 
 using namespace Gui;
 
-SO_NODE_SOURCE(SoFCColorBarBase);
+SO_NODE_ABSTRACT_SOURCE(SoFCColorBarBase);
 
 /*!
   Constructor.
@@ -65,7 +65,7 @@ SoFCColorBarBase::~SoFCColorBarBase()
 // doc from parent
 void SoFCColorBarBase::initClass(void)
 {
-  SO_NODE_INIT_CLASS(SoFCColorBarBase,SoSeparator,"Separator");
+  SO_NODE_INIT_ABSTRACT_CLASS(SoFCColorBarBase,SoSeparator,"Separator");
 }
 
 // --------------------------------------------------------------------------
@@ -86,8 +86,7 @@ SoFCColorBar::SoFCColorBar()
   pColorMode = new SoSwitch;
   addChild(pColorMode);
 
-  pGradient = new SoFCColorGradient;
-  _colorBars.push_back( pGradient );
+  _colorBars.push_back( new SoFCColorGradient );
   _colorBars.push_back( new SoFCColorLegend );
 
   for ( std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it )
@@ -106,7 +105,7 @@ SoFCColorBar::~SoFCColorBar()
 // doc from parent
 void SoFCColorBar::initClass(void)
 {
-  SO_NODE_INIT_CLASS(SoFCColorBar,SoSeparator,"Separator");
+  SO_NODE_INIT_CLASS(SoFCColorBar,SoFCColorBarBase,"Separator");
 }
 
 SoFCColorBarBase* SoFCColorBar::getActiveBar() const
@@ -132,7 +131,39 @@ void SoFCColorBar::setViewerSize( const SbVec2s& size )
     _fMaxY =   4.0f / fRatio;
   }
 
-  pGradient->setViewerSize( size );
+  for ( std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it )
+    (*it)->setViewerSize( size );
+}
+
+void SoFCColorBar::setRange( float fMin, float fMax, int prec )
+{
+  for ( std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it )
+    (*it)->setRange( fMin, fMax, prec );
+}
+
+bool SoFCColorBar::isVisible ( float fVal ) const
+{
+  return this->getActiveBar()->isVisible( fVal );
+}
+
+float SoFCColorBar::getMinValue (void) const
+{
+  return this->getActiveBar()->getMinValue();
+}
+
+float SoFCColorBar::getMaxValue (void) const
+{
+  return this->getActiveBar()->getMaxValue();
+}
+
+bool SoFCColorBar::customize()
+{
+  return this->getActiveBar()->customize();
+}
+
+App::Color SoFCColorBar::getColor( float fVal ) const
+{
+  return this->getActiveBar()->getColor( fVal );
 }
 
 void SoFCColorBar::eventCallback(void * userdata, SoEventCallback * node)
@@ -215,7 +246,7 @@ void SoFCColorBar::handleEvent (SoHandleEventAction *action)
           pColorMode->whichChild = id;
         else if ( id == opt )
         {
-          if ( getActiveBar()->customize() )
+          if ( customize() )
             Notify(0);
         }
       }

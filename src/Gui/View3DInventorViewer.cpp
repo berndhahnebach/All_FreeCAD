@@ -390,17 +390,9 @@ void View3DInventorViewer::sizeChanged( const SbVec2s& size )
   for ( int i=0; i<this->foregroundroot->getNumChildren(); i++ )
   {
     child = this->foregroundroot->getChild(i);
-    if ( child && child->getTypeId() == SoFCColorLegend::getClassTypeId() )
+    if ( child && child->getTypeId().isDerivedFrom( SoFCColorBarBase::getClassTypeId() ) )
     {
-      reinterpret_cast<SoFCColorLegend*>(child)->setViewerSize( size );
-    }
-    else if ( child && child->getTypeId() == SoFCColorGradient::getClassTypeId() )
-    {
-      reinterpret_cast<SoFCColorGradient*>(child)->setViewerSize( size );
-    }
-    else if ( child && child->getTypeId() == SoFCColorBar::getClassTypeId() )
-    {
-      reinterpret_cast<SoFCColorBar*>(child)->setViewerSize( size );
+      reinterpret_cast<SoFCColorBarBase*>(child)->setViewerSize( size );
     }
   }
 

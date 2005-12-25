@@ -359,7 +359,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
   openCommand("Mesh VertexCurvature");
   doCommand(Doc,"App.document().AddFeature(\"MeshCurvature\",\"%s\")",fName.c_str());
   doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
-  doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Max. curvature");
+  doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Absolute curvature");
   commitCommand();
   updateActive();
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);

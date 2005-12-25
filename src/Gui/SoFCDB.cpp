@@ -40,8 +40,8 @@ using namespace Gui;
 
 void Gui::SoFCDB::init()
 {
-  SoFCColorBar::initClass();
   SoFCColorBarBase::initClass();
+  SoFCColorBar::initClass();
   SoFCColorLegend::initClass();
   SoFCColorGradient::initClass();
   SoFCBackgroundGradient::initClass();

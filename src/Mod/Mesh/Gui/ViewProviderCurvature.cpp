@@ -43,45 +43,122 @@
 #include <Base/Console.h>
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
+#include <Base/Sequencer.h>
 #include <App/Application.h>
 #include <Gui/Selection.h>
 #include <Gui/SoFCSelection.h>
-#include <Base/Sequencer.h>
-
-#include "ViewProvider.h"
-#include "ViewProviderCurvature.h"
+#include <Gui/SoFCColorBar.h>
 
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
 
+#include "ViewProvider.h"
+#include "ViewProviderCurvature.h"
+
+using namespace Mesh;
 using namespace MeshGui;
 using namespace std;
-using Mesh::MeshFeature;
 using MeshCore::MeshKernel;
 using MeshCore::MeshFacetIterator;
 using Base::Vector3D;
-    
- 
+
+
 ViewProviderMeshCurvature::ViewProviderMeshCurvature()
 {
   pcColorMat = new SoMaterial;
   pcColorMat->ref();
+  // simple color bar
+  pcColorBar = new Gui::SoFCColorBar;
+  pcColorBar->Attach(this);
+  pcColorBar->ref();
+  pcColorBar->setRange( -0.1f, 0.1f, 3 );
 }
 
 ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
 {
   pcColorMat->unref();
+  pcColorBar->Detach(this);
+  pcColorBar->unref();
+}
+
+void ViewProviderMeshCurvature::init(App::Feature *pcFeat)
+{
+  MeshWithProperty& rMesh = dynamic_cast<MeshFeature*>(pcFeat)->getMesh();
+  MeshPropertyCurvature *prop = dynamic_cast<MeshPropertyCurvature*>(rMesh.Get("VertexCurvature") );
+  if( prop && prop->isValid() )
+  {
+    std::vector<float> aMinValues = prop->getCurvature( MeshPropertyCurvature::MinCurvature );
+    std::vector<float> aMaxValues = prop->getCurvature( MeshPropertyCurvature::MaxCurvature );
+    if ( aMinValues.empty() || aMaxValues.empty() ) 
+      return; // no values inside
+
+    float fMin = *std::min_element( aMinValues.begin(), aMinValues.end() );
+    float fMax = *std::max_element( aMinValues.begin(), aMinValues.end() );
+
+    // histogram over all values
+    std::map<int, int> aHistogram;
+    for ( std::vector<float>::iterator it = aMinValues.begin(); it != aMinValues.end(); ++it )
+    {
+      int grp = (int)(10.0f*( *it - fMin )/( fMax - fMin ));
+      aHistogram[grp]++;
+    }
+
+    float fRMin=-1.0f;
+    for ( std::map<int, int>::iterator mIt = aHistogram.begin(); mIt != aHistogram.end(); ++mIt )
+    {
+      if ( (float)mIt->second / (float)aMinValues.size() > 0.15f )
+      {
+        fRMin = mIt->first * ( fMax - fMin )/10.0f + fMin;
+        break;
+      }
+    }
+
+    fMin = *std::min_element( aMaxValues.begin(), aMaxValues.end() );
+    fMax = *std::max_element( aMaxValues.begin(), aMaxValues.end() );
+
+    // histogram over all values
+    aHistogram.clear();
+    for ( std::vector<float>::iterator it2 = aMaxValues.begin(); it2 != aMaxValues.end(); ++it2 )
+    {
+      int grp = (int)(10.0f*( *it2 - fMin )/( fMax - fMin ));
+      aHistogram[grp]++;
+    }
+
+    float fRMax=1.0f;
+    for ( std::map<int, int>::reverse_iterator rIt2 = aHistogram.rbegin(); rIt2 != aHistogram.rend(); ++rIt2 )
+    {
+      if ( (float)rIt2->second / (float)aMaxValues.size() > 0.15f )
+      {
+        fRMax = rIt2->first * ( fMax - fMin )/10.0f + fMin;
+        break;
+      }
+    }
+
+    float fAbs = std::max<float>(fabs(fRMin), fabs(fRMax));
+    fRMin = -fAbs;
+    fRMax =  fAbs;
+    fMin = fRMin; fMax = fRMax;
+    pcColorBar->setRange( fMin, fMax, 3 );
+  }
+  else if ( prop )
+  {
+    Base::Console().Warning("Invalid property 'VertexCurvature' found.\n");
+  }
+  else
+  {
+    Base::Console().Warning("Property 'VertexCurvature' not found.\n");
+  }
 }
 
 void ViewProviderMeshCurvature::attach(App::Feature *pcFeat)
 {
+  init( pcFeat ); // init color bar
+
   // creats the satandard viewing modes
   ViewProviderMesh::attach(pcFeat);
 
-
   SoGroup* pcColorShadedRoot = new SoGroup();
-
 
   // color shaded  ------------------------------------------
   SoDrawStyle *pcFlatStyle = new SoDrawStyle();
@@ -92,20 +169,60 @@ void ViewProviderMeshCurvature::attach(App::Feature *pcFeat)
   pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
   pcColorShadedRoot->addChild(pcColorMat);
   pcColorShadedRoot->addChild(pcMatBinding);
-//  pcColorShadedRoot->addChild(pcBinding);  
   pcColorShadedRoot->addChild(pcHighlight);
 
-  Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
-  list<App::PropertyBag*> s = rcMesh.GetAllOfType("VertexColor");
-  
-  for(unsigned int i = 0 ;i<s.size();i++)
-    pcModeSwitch->addChild(pcColorShadedRoot);
-
+  pcModeSwitch->addChild(pcColorShadedRoot);
 }
 
 void ViewProviderMeshCurvature::updateData(void)
 {
   ViewProviderMesh::updateData();
+}
+
+SoSeparator* ViewProviderMeshCurvature::getFrontRoot(void)
+{
+  return pcColorBar;
+}
+
+void ViewProviderMeshCurvature::setVertexCurvatureMode(MeshPropertyCurvature* pcProp, int mode)
+{
+  if ( !pcProp->isValid() ) return; // no valid data
+  std::vector<float> fCurvature = pcProp->getCurvature(MeshPropertyCurvature::Mode(mode));
+
+  // @todo set to color mode
+  ViewProvider::setMode(4);
+  
+  unsigned long i=0;
+  for ( std::vector<float>::const_iterator it = fCurvature.begin(); it != fCurvature.end(); ++it )
+  {
+    App::Color col = pcColorBar->getColor( *it );
+    pcColorMat->diffuseColor.set1Value(i++, SbColor(col.r, col.g, col.b));
+  }
+}
+
+void ViewProviderMeshCurvature::setVertexAbsCurvatureMode(MeshPropertyCurvature* pcProp)
+{
+  if ( !pcProp->isValid() ) return; // no valid data
+  std::vector<float> fMaxCurvature = pcProp->getCurvature(MeshPropertyCurvature::MaxCurvature);
+  std::vector<float> fMinCurvature = pcProp->getCurvature(MeshPropertyCurvature::MinCurvature);
+
+  // @todo set to color mode
+  ViewProvider::setMode(4);
+  
+  unsigned long i=0;
+  for ( std::vector<float>::const_iterator it = fMaxCurvature.begin(),jt = fMinCurvature.begin(); it != fMaxCurvature.end(); ++it,++jt )
+  {
+    if ( fabs(*it) > fabs(*jt) )
+    {
+      App::Color col = pcColorBar->getColor( *it );
+      pcColorMat->diffuseColor.set1Value(i++, SbColor(col.r, col.g, col.b));
+    }
+    else
+    {
+      App::Color col = pcColorBar->getColor( *jt );
+      pcColorMat->diffuseColor.set1Value(i++, SbColor(col.r, col.g, col.b));
+    }
+  }
 }
 
 QPixmap ViewProviderMeshCurvature::getIcon() const
@@ -143,37 +260,51 @@ void ViewProviderMeshCurvature::setMode(const char* ModeName)
 {
   ViewProviderMesh::setMode(ModeName);
 
-  Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
+  MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
   App::PropertyBag *pcProp = 0;
+  pcProp = rcMesh.GetFirstOfType("VertexCurvature");
 
-  pcProp = rcMesh.Get(ModeName);
-  if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
+  if ( pcProp && strcmp("Mean curvature",ModeName)==0 )
   {
-    SetVertexColorMode(dynamic_cast<Mesh::MeshPropertyColor*>(pcProp));
-  } 
+    setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::MeanCurvature);
+  }
+  else if ( pcProp && strcmp("Gaussian curvature",ModeName)==0  )
+  {
+    setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::GaussCurvature);
+  }
+  else if ( pcProp && strcmp("Maximum curvature",ModeName)==0  )
+  {
+    setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::MaxCurvature);
+  }
+  else if ( pcProp && strcmp("Minimum curvature",ModeName)==0  )
+  {
+    setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::MinCurvature);
+  }
+  else if ( pcProp && strcmp("Absolute curvature",ModeName)==0  )
+  {
+    setVertexAbsCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp));
+  }
 }
 
 std::vector<std::string> ViewProviderMeshCurvature::getModes(void)
 {
   std::vector<std::string> StrList = ViewProviderMesh::getModes();
 
-  // add the dynamic modes (depends on which properties are added to the mesh..)
-  Mesh::MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
-  list<string> List = rcMesh.GetAllNamesOfType("VertexColor");
-
-  for(list<string>::iterator It=List.begin();It!=List.end();It++)
-    StrList.push_back(*It);
+  // add modes
+  MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
+  if ( rcMesh.GetFirstOfType("VertexCurvature") )
+  {
+    StrList.push_back("Absolute curvature");
+    StrList.push_back("Mean curvature");
+    StrList.push_back("Gaussian curvature");
+    StrList.push_back("Maximum curvature");
+    StrList.push_back("Minimum curvature");
+  }
 
   return StrList;
-//  return ViewProviderMesh::getModes().push_back("Transform");
 }
 
-void ViewProviderMeshCurvature::SetVertexColorMode(Mesh::MeshPropertyColor* pcProp)
+void ViewProviderMeshCurvature::OnChange(Base::Subject<int> &rCaller,int rcReason)
 {
-  vector<Mesh::MeshPropertyColor::fColor> color = pcProp->Color;
-  for (unsigned long i=0; i<color.size();i++)
-  {
-    Mesh::MeshPropertyColor::fColor& col = color[i];
-    pcColorMat->diffuseColor.set1Value(i, SbColor(col.r, col.g, col.b));
-  }
+  setMode(this->getModeName().c_str());
 }
