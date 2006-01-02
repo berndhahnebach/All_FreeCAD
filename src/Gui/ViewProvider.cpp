@@ -54,7 +54,7 @@ using namespace Gui;
 
 
        
-ViewProvider::ViewProvider()
+ViewProvider::ViewProvider() : _iActualMode(0)
 {
   pcRoot = new SoSeparator();
   pcRoot->ref();
@@ -65,7 +65,7 @@ ViewProvider::ViewProvider()
   pcRoot->addChild(pcTransform);
   pcRoot->addChild(pcModeSwitch);
   sPixmap = "px";
-
+  pcModeSwitch->whichChild = -1;
 }
 
 
@@ -101,12 +101,38 @@ void ViewProvider::setTransformation(const SbMatrix &rcMatrix)
   pcTransform->setMatrix(rcMatrix);
 }
 
+void ViewProvider::addDisplayMode( SoNode *node, const char* type )
+{
+  _sDisplayModes[ type ] = pcModeSwitch->getNumChildren();
+  pcModeSwitch->addChild( node );
+}
 
+void ViewProvider::setDisplayMode( const char* type )
+{
+  std::map<std::string, int>::const_iterator it = _sDisplayModes.find( type );
+  if ( it != _sDisplayModes.end() )
+    pcModeSwitch->whichChild = it->second;
+  else
+    pcModeSwitch->whichChild = -1;
+}
+
+std::vector<std::string> ViewProvider::getDisplayModes() const
+{
+  std::vector<std::string> types;
+  for ( std::map<std::string, int>::const_iterator it = _sDisplayModes.begin(); it != _sDisplayModes.end(); ++it )
+    types.push_back( it->first );
+  return types;
+}
+
+/**
+ * If you add new viewing modes in @ref getModes() then you need to reimplement also setMode() to handle these
+ * new modes by setting the appropriate display mode.
+ */
 void ViewProvider::setMode(const char* ModeName)
 {
   _sCurrentMode = ModeName;
   // collect all modes (with subclasses)
-  vector<string> modes = getModes();
+/*  vector<string> modes = getModes();
   vector<string>::iterator p;
 
   p = find(modes.begin(),modes.end(),ModeName);
@@ -115,23 +141,10 @@ void ViewProvider::setMode(const char* ModeName)
     setMode(p-modes.begin());
   else
     Base::Console().Warning("Unknown mode '%s' in ViewProvider::setMode(), ignored\n", ModeName);
-
+*/
 }
 
-void ViewProvider::setMode(int Mode)
-{
-  pcModeSwitch->whichChild = Mode;
-  _iActualMode = Mode;
-}
-
-
-int ViewProvider::getMode(void)
-{
- return pcModeSwitch->whichChild.getValue();
-}
-
-
-std::string ViewProvider::getModeName(void)
+std::string ViewProvider::getModeName(void) const
 {
   // this doesn't really work as expected
 //  return getModes()[getMode()];
@@ -148,7 +161,6 @@ void ViewProvider::hide(void)
 void ViewProvider::show(void)
 {
   pcModeSwitch->whichChild = _iActualMode;
-
 }
 
 bool ViewProvider::isShow(void)

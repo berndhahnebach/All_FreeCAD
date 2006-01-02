@@ -29,6 +29,7 @@
 class SoCoordinate3;
 class SoMFString;
 class SbVec2s;
+class SbColor;
 
 namespace Gui {
 
@@ -42,6 +43,7 @@ public:
   SoFCBackgroundGradient(void);
 
   void setViewerSize( const SbVec2s& size );
+  void setColorGradient( const SbColor& fromColor, const SbColor& toColor );
 
 protected:
   virtual ~SoFCBackgroundGradient();

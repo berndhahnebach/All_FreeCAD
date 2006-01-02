@@ -114,6 +114,55 @@ ViewProviderPart::~ViewProviderPart()
 
 }
 
+void ViewProviderPart::attach(App::Feature *pcFeat)
+{
+  SoGroup* pcNormalRoot = new SoGroup();
+  SoGroup* pcFlatRoot = new SoGroup();
+  SoGroup* pcWireframeRoot = new SoGroup();
+  SoGroup* pcPointsRoot = new SoGroup();
+
+  // normal viewing with edges and points
+  pcNormalRoot->addChild(FaceRoot);
+  pcNormalRoot->addChild(EdgeRoot);
+//  pcNormalRoot->addChild(VertexRoot);
+
+  // just faces with no edges or points
+  pcFlatRoot->addChild(FaceRoot);
+
+  // only edges
+  pcWireframeRoot->addChild(EdgeRoot);
+//  pcWireframeRoot->addChild(VertexRoot);
+
+  // normal viewing with edges and points
+  pcPointsRoot->addChild(VertexRoot);
+
+   // putting all together with the switch
+  addDisplayMode(pcNormalRoot, "Normal");
+  addDisplayMode(pcFlatRoot, "Flat");
+  addDisplayMode(pcWireframeRoot, "Wireframe");
+  addDisplayMode(pcPointsRoot, "Point");
+
+  // call father (set material and feature pointer)
+  ViewProviderFeature::attach(pcFeat);
+
+  // Build up the view represetation from the shape
+  updateData();
+}
+
+void ViewProviderPart::setMode(const char* ModeName)
+{
+  if ( strcmp("Normal",ModeName)==0 )
+    setDisplayMode("Normal");
+  else if ( strcmp("Flat",ModeName)==0 )
+    setDisplayMode("Flat");
+  else if ( strcmp("Wireframe",ModeName)==0 )
+    setDisplayMode("Wireframe");
+  else if ( strcmp("Points",ModeName)==0 )
+    setDisplayMode("Point");
+
+  ViewProviderFeature::setMode( ModeName );
+}
+
 std::vector<std::string> ViewProviderPart::getModes(void)
 {
   // get the modes of the father
@@ -128,22 +177,11 @@ std::vector<std::string> ViewProviderPart::getModes(void)
   return StrList;
 }
 
-/*
-void ViewProviderPart::update(const ChangeType& Reason)
-{
-  Reason;
-  // set new view modes
-  setMode(pcFeature->getShowMode());
-  // copy the material properties of the feature
-  setMatFromFeature();
-
-}
-*/
 void ViewProviderPart::updateData(void)
 {
 //  Base::Console().Log("ViewProviderPart::updateData() for %s called\n",pcFeature->getName()); 
 
-  // geting actual setting values...
+  // getting current setting values...
   fMeshDeviation      = hGrp->GetFloat("MeshDeviation",0.2);
   bNoPerVertexNormals = hGrp->GetBool("NoPerVertexNormals",false);
 //  lHilightColor       = hGrp->GetInt ("HilightColor",0);
@@ -161,7 +199,6 @@ void ViewProviderPart::updateData(void)
   FaceRoot->removeAllChildren();
   VertexRoot->removeAllChildren();
 
-
   // creating the mesh on the data structure
   BRepMesh::Mesh(cShape,fMeshDeviation);
   //	BRepMesh_Discret MESH(fMeshDeviation,cShape,20.0,false,true,true);
@@ -174,48 +211,6 @@ void ViewProviderPart::updateData(void)
   } catch (...){
     Base::Console().Error("ViewProviderPart::create() Cannot compute Inventor representation for the actual shape");
   }
-
-}
-
-void ViewProviderPart::attach(App::Feature *pcFeat)
-{
-  // call father (set material and feature pointer)
-  ViewProviderFeature::attach(pcFeat);
-
-  // Build up the view represetation from the shape
-  updateData();
-
-  SoGroup* pcNormalRoot = new SoGroup();
-  SoGroup* pcFlatRoot = new SoGroup();
-  SoGroup* pcWireframeRoot = new SoGroup();
-  SoGroup* pcPointsRoot = new SoGroup();
-
-
-  // normal viewing with edges and points
-  pcNormalRoot->addChild(FaceRoot);
-  pcNormalRoot->addChild(EdgeRoot);
-  pcNormalRoot->addChild(VertexRoot);
-
-  // just faces with no edges or points
-  pcFlatRoot->addChild(FaceRoot);
-
-  // only edges
-  pcWireframeRoot->addChild(EdgeRoot);
-//  pcWireframeRoot->addChild(VertexRoot);
-
-  // normal viewing with edges and points
-  pcPointsRoot->addChild(VertexRoot);
-
-   // puting all togetern with the switch
-  pcModeSwitch->addChild(pcNormalRoot);
-  pcModeSwitch->addChild(pcFlatRoot);
-  pcModeSwitch->addChild(pcWireframeRoot);
-  pcModeSwitch->addChild(pcPointsRoot);
-
-  // standard viewing (flat)
-  pcModeSwitch->whichChild = 0; 
-
-
 }
 
 
@@ -254,7 +249,7 @@ buffer_writeaction(SoNode * root)
 */
 // **********************************************************************************
 
-Standard_Boolean ViewProviderPart::computeEdges   (SoSeparator* EdgeRoot, const TopoDS_Shape &myShape)
+Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const TopoDS_Shape &myShape)
 {
   TopExp_Explorer ex;
 
@@ -276,11 +271,6 @@ Standard_Boolean ViewProviderPart::computeEdges   (SoSeparator* EdgeRoot, const 
     Standard_Boolean identity = true;
     TopLoc_Location aLoc;
 
-    if(!aLoc.IsIdentity())  {
-      identity = false;
-      myTransf = aLoc.Transformation();
-    }
-
     // try to triangulate the edge
     Handle(Poly_Polygon3D) aPoly = BRep_Tool::Polygon3D(aEdge, aLoc);
 
@@ -290,6 +280,10 @@ Standard_Boolean ViewProviderPart::computeEdges   (SoSeparator* EdgeRoot, const 
     // triangulation succeeded?
     if( !aPoly.IsNull() )
     {
+      if(!aLoc.IsIdentity())  {
+        identity = false;
+        myTransf = aLoc.Transformation();
+      }
       // take the edge's triangulation
       //
       // getting size and create the array
@@ -315,6 +309,10 @@ Standard_Boolean ViewProviderPart::computeEdges   (SoSeparator* EdgeRoot, const 
 
       // take the face's triangulation instead
 	    Handle(Poly_Triangulation) aPolyTria = BRep_Tool::Triangulation(aFace,aLoc);
+      if(!aLoc.IsIdentity())  {
+        identity = false;
+        myTransf = aLoc.Transformation();
+      }
 
       if(aPolyTria.IsNull()) // actually this shouldn't happen at all
         throw Base::Exception("Empty face trianglutaion\n");
@@ -339,10 +337,10 @@ Standard_Boolean ViewProviderPart::computeEdges   (SoSeparator* EdgeRoot, const 
       }
     }
 
-
     // define vertices
     SoCoordinate3 * coords = new SoCoordinate3;
     coords->point.setValues(0,nbNodesInFace, vertices);
+    delete [] vertices;
     EdgeRoot->addChild(coords);
 
     // define the indexed face set
@@ -356,31 +354,50 @@ Standard_Boolean ViewProviderPart::computeEdges   (SoSeparator* EdgeRoot, const 
     SoLineSet * lineset = new SoLineSet;
     h->addChild(lineset);
     EdgeRoot->addChild(h);
-
   }
 
   return true;
 }
-
 
 Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, const TopoDS_Shape &myShape)
 {
-/*
+  VertexRoot->addChild(pcPointMaterial);  
+  VertexRoot->addChild(pcPointStyle);
+
+  // define vertices
+  SoCoordinate3 * coords = new SoCoordinate3;
+  VertexRoot->addChild(coords);
+
   TopExp_Explorer ex;
-
-
+  int iCnt=0;
   for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
+    iCnt++;
+  }
+ 
+  coords->point.setNum(iCnt);
 
+  int i=0;
+  for (ex.Init(myShape, TopAbs_VERTEX); ex.More(); ex.Next()) {
     // get the shape
 		const TopoDS_Vertex& aVertex = TopoDS::Vertex(ex.Current());
-
+    gp_Pnt pnt = BRep_Tool::Pnt(aVertex);
+    coords->point.set1Value(i++, (float)pnt.X(), (float)pnt.Y(), (float)pnt.Z());
   }
-*/
+
+  // use only one selection node otherwise the Inventor tree becomes too slow
+  Gui::SoFCSelection* h = new Gui::SoFCSelection();
+  SbString name("Point");
+  name += SbString(i);
+  h->featureName = pcFeature->getName();
+  h->documentName = pcFeature->getDocument().getName();
+  h->subElementName = name;
+
+  SoPointSet * pointset = new SoPointSet;
+  h->addChild(pointset);
+  VertexRoot->addChild(h);
+
   return true;
 }
-
-
-
 
 Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const TopoDS_Shape &myShape)
 {
@@ -493,7 +510,6 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
 		myTransf = aLoc.Transformation();
   }
 
-
   Standard_Integer i;
   // geting size and create the array
 	nbNodesInFace = aPoly->NbNodes();
@@ -589,4 +605,3 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
     }
   }
 }
-

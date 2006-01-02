@@ -124,6 +124,7 @@ public:
   bool bAllowSpining;
 
   void setGradientBackgroud(bool b);
+  void setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor );
 
 protected:
   unsigned long             currMod;

@@ -77,17 +77,9 @@ ViewProviderMeshTransform::~ViewProviderMeshTransform()
   pcTransformerDragger->unref();
 }
 
-
 void ViewProviderMeshTransform::attach(App::Feature *pcFeat)
 {
-  // creats the satandard viewing modes
-  ViewProviderMesh::attach(pcFeat);
-
-//  SoTransformerDragger *pcTransformerDragger = new SoTransformerDragger();
-
-
   SoSeparator* pcEditRoot = new SoSeparator();
-
 
   // flat shaded (Normal) ------------------------------------------
   SoDrawStyle *pcFlatStyle = new SoDrawStyle();
@@ -101,12 +93,11 @@ void ViewProviderMeshTransform::attach(App::Feature *pcFeat)
   pcEditRoot->addChild(pcBinding);
   pcEditRoot->addChild(pcHighlight);
 
-
-
   // adding to the switch
-  pcModeSwitch->addChild(pcEditRoot);
+  addDisplayMode(pcEditRoot, "Edit");
 
-//  setMode(pcFeat->getShowMode());
+  // creats the standard viewing modes
+  ViewProviderMesh::attach(pcFeat);
 }
 
 void ViewProviderMeshTransform::updateData(void)
@@ -114,23 +105,18 @@ void ViewProviderMeshTransform::updateData(void)
   ViewProviderMesh::updateData();
 }
 
-
 void ViewProviderMeshTransform::setMode(const char* ModeName)
 {
+  if ( strcmp("Transform",ModeName) == 0 )
+    setDisplayMode("Edit");
   ViewProviderMesh::setMode(ModeName);
-
-  //int i = getMode();
 }
-
 
 std::vector<std::string> ViewProviderMeshTransform::getModes(void)
 {
   std::vector<std::string> StrList = ViewProviderMesh::getModes();
-
   StrList.push_back("Transform");
-
   return StrList;
-//  return ViewProviderMesh::getModes().push_back("Transform");
 }
 
 

@@ -349,6 +349,48 @@ static char *colorbutton_pixmap[]={
 "c#cccccccccccccccc##.",
 ".cccccccccccccccccc.."};
 
+/* XPM */
+static char *buttongroup_pixmap[]={
+"22 22 16 1",
+"# c #000000",
+"i c #10a44a",
+"n c #292929",
+"a c #3d3d3d",
+"b c #4a4a4a",
+"j c #626262",
+"g c #838383",
+"f c #a0a0a0",
+"e c #b9b9b9",
+"h c #cacaca",
+"c c #d6d6d6",
+"m c #dedede",
+"l c #e7e7e7",
+"k c #efefef",
+"d c #f7f7f7",
+". c #ffffff",
+"......................",
+"....###########.......",
+".#####################",
+"#aabbbbbbbbbbbbbbbbaa#",
+"#ac................ca#",
+"#bddeefgdd##hdddddddb#",
+"#bddeiijdddg#dddddddb#",
+"#bkkfiijkk#k#kkkkkkkb#",
+"#bkkgjjbkkj##gkgkgkkb#",
+"#bllllllllllllllllllb#",
+"#blleffgll#lllllllllb#",
+"#bmmfiijmm##gmmmmmmmb#",
+"#bmmfiibmm#m#mmmmmmmb#",
+"#bccgjbbcc##gcgcgcgcb#",
+"#bccccccccccccccccccb#",
+"#bhhfffjhhf#ghhhhhhhb#",
+"#bhhfiibhh#hhhhhhhhhb#",
+"#bhhgiibhh#hhhhhhhhhb#",
+"#beejbbbeef#jejejejeb#",
+"#afeeeeeeeeeeeeeeeefa#",
+"#aabbbbbbbbbbbbbbbban#",
+"######################"};
+
 CustomWidgetPlugin::CustomWidgetPlugin()
 {
 }
@@ -365,7 +407,7 @@ QStringList CustomWidgetPlugin::keys() const
        << "Gui::PrefComboBox"
        << "Gui::PrefListBox"
        << "Gui::PrefCheckBox"
-       << "Gui::PrefRadioButton"
+       << "Gui::PrefRadioButton" << "Gui::PrefButtonGroup"
        << "Gui::PrefSlider"
        << "Gui::ColorButton" << "Gui::PrefColorButton";
   return list;
@@ -399,6 +441,8 @@ QWidget* CustomWidgetPlugin::create( const QString &key, QWidget* parent, const 
     return new Gui::PrefCheckBox( parent, name );
   else if ( key == "Gui::PrefRadioButton" )
     return new Gui::PrefRadioButton( parent, name );
+  else if ( key == "Gui::PrefButtonGroup" )
+    return new Gui::PrefButtonGroup( parent, name );
   else if ( key == "Gui::PrefSlider" )
     return new Gui::PrefSlider( parent, name );
   else if ( key == "Gui::ColorButton" )
@@ -457,6 +501,8 @@ QIconSet CustomWidgetPlugin::iconSet( const QString& feature ) const
     return QIconSet( QPixmap( checkbox_pixmap ) );
   else if ( feature == "Gui::PrefRadioButton" )
     return QIconSet( QPixmap( radiobutton_pixmap ) );
+  else if ( feature == "Gui::PrefButtonGroup" )
+    return QIconSet( QPixmap( buttongroup_pixmap ) );
   else if ( feature == "Gui::PrefSlider" )
     return QIconSet( QPixmap( slider_pixmap ) );
   else if ( feature == "Gui::ColorButton" )
@@ -515,6 +561,8 @@ QString CustomWidgetPlugin::toolTip( const QString& feature ) const
   	return "Check Box";
   else if ( feature == "Gui::PrefRadioButton" )
   	return "Radio Button";
+  else if ( feature == "Gui::PrefButtonGroup" )
+  	return "Button Group";
   else if ( feature == "Gui::PrefSlider" )
   	return "Slider";
   else if ( feature == "Gui::ColorButton" )
@@ -553,6 +601,8 @@ QString CustomWidgetPlugin::whatsThis( const QString& feature ) const
   	return "Checkbox with a text label.";
   else if ( feature == "Gui::PrefRadioButton" )
   	return "Radio button with a text or pixmap label.";
+  else if ( feature == "Gui::PrefButtonGroup" )
+  	return "Organizes QButton widgets in a group.";
   else if ( feature == "Gui::PrefSlider" )
   	return "Vertical or horizontal slider.";
   else if ( feature == "Gui::ColorButton" )
@@ -563,8 +613,10 @@ QString CustomWidgetPlugin::whatsThis( const QString& feature ) const
   return QString::null;
 }
 
-bool CustomWidgetPlugin::isContainer( const QString& ) const
+bool CustomWidgetPlugin::isContainer( const QString& feature ) const
 {
+  if ( feature == "Gui::PrefButtonGroup" )
+  	return TRUE;
   return FALSE;
 }
 

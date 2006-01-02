@@ -99,7 +99,7 @@ void View3DInventor::setViewerDefaults(void)
   _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance"      ,65.0));
   _viewer->bDrawAxisCross = hGrp->GetBool("CornerCoordSystem",true);
   _viewer->bAllowSpining =  hGrp->GetBool("UseAutoRotation"  ,true);
-  _viewer->setGradientBackgroud( ! (hGrp->GetBool("UseSimpleBackground"  ,false)));
+  _viewer->setGradientBackgroud( (hGrp->GetInt("BackgroundColorGroup",1)) > 0 );
   long col = hGrp->GetInt("BackgroundColor",0);
   float r,g,b;
   r = (col & 0xff) / 255.0;
@@ -107,15 +107,20 @@ void View3DInventor::setViewerDefaults(void)
   b = ((col >> 16) & 0xff) / 255.0;
   _viewer->setBackgroundColor(SbColor(r, g, b));
 
+  long col2 = hGrp->GetInt("BackgroundColor2",13467519); // default color (lila)
+  long col3 = hGrp->GetInt("BackgroundColor3",16777215); // default color (white)
+  float r2,g2,b2,r3,g3,b3;
+  r2 = (col2 & 0xff) / 255.0; g2 = ((col2 >> 8) & 0xff) / 255.0; b2 = ((col2 >> 16) & 0xff) / 255.0;
+  r3 = (col3 & 0xff) / 255.0; g3 = ((col3 >> 8) & 0xff) / 255.0; b3 = ((col3 >> 16) & 0xff) / 255.0;
+  _viewer->setGradientBackgroudColor( SbColor(r2, g2, b2), SbColor(r3, g3, b3) );
+
   if(hGrp->GetBool("UseAntialiasing"  ,false))
     _viewer->getGLRenderAction()->setSmoothing(true);
   else
     _viewer->getGLRenderAction()->setSmoothing(false);
-
-
 }
 
-  /// Observer message from the ParameterGrp
+/// Observer message from the ParameterGrp
 void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason)
 {
   setViewerDefaults();

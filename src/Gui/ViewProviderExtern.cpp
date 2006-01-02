@@ -90,7 +90,8 @@ void ViewProviderExtern::setModeBySoInput(const char* name, SoInput &ivFileInput
     if(pos == modes.end())
     { // new mode
       modes.push_back(name);
-      pcModeSwitch->addChild(root);
+      addDisplayMode(root, name);
+      setDisplayMode(name);
     }else
     { // existing mode
       // not implemented yet

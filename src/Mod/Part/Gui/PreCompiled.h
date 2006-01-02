@@ -239,6 +239,7 @@
 #include <Inventor/nodes/SoNormal.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
 #include <Inventor/nodes/SoPerspectiveCamera.h>
+#include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/nodes/SoQuadMesh.h>
 #include <Inventor/nodes/SoRotationXYZ.h>
 #include <Inventor/nodes/SoSelection.h>

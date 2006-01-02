@@ -638,6 +638,61 @@ void PrefRadioButton::setParamGrpPath ( const QCString& name )
 
 // --------------------------------------------------------------------
 
+PrefButtonGroup::PrefButtonGroup ( QWidget * parent, const char * name )
+  : QButtonGroup(parent, name), PrefWidget()
+{
+  setTitle( name );
+}
+
+PrefButtonGroup::~PrefButtonGroup()
+{
+}
+
+void PrefButtonGroup::restorePreferences()
+{
+  if (getWindowParameter().IsNull())
+  {
+    Console().Warning("Cannot restore!\n");
+    return;
+  }
+
+  int id = getWindowParameter()->GetInt( entryName(), selectedId() );
+  setButton( id );
+}
+
+void PrefButtonGroup::savePreferences()
+{
+  if (getWindowParameter().IsNull())
+  {
+    Console().Warning("Cannot save!\n");
+    return;
+  }
+
+  getWindowParameter()->SetInt ( entryName(), selectedId() );
+}
+
+QCString PrefButtonGroup::entryName () const
+{
+  return PrefWidget::entryName();
+}
+
+QCString PrefButtonGroup::paramGrpPath () const
+{
+  return PrefWidget::paramGrpPath();
+}
+
+void PrefButtonGroup::setEntryName ( const QCString& name )
+{
+  PrefWidget::setEntryName(name);
+}
+
+void PrefButtonGroup::setParamGrpPath ( const QCString& name )
+{
+  PrefWidget::setParamGrpPath(name);
+}
+
+// --------------------------------------------------------------------
+
 PrefSlider::PrefSlider ( QWidget * parent, const char * name )
   : QSlider(parent, name), PrefWidget()
 {

@@ -155,9 +155,6 @@ void ViewProviderMeshCurvature::attach(App::Feature *pcFeat)
 {
   init( pcFeat ); // init color bar
 
-  // creats the satandard viewing modes
-  ViewProviderMesh::attach(pcFeat);
-
   SoGroup* pcColorShadedRoot = new SoGroup();
 
   // color shaded  ------------------------------------------
@@ -171,7 +168,10 @@ void ViewProviderMeshCurvature::attach(App::Feature *pcFeat)
   pcColorShadedRoot->addChild(pcMatBinding);
   pcColorShadedRoot->addChild(pcHighlight);
 
-  pcModeSwitch->addChild(pcColorShadedRoot);
+  addDisplayMode(pcColorShadedRoot, "ColorShaded");
+
+  // creats the satandard viewing modes
+  ViewProviderMesh::attach(pcFeat);
 }
 
 void ViewProviderMeshCurvature::updateData(void)
@@ -189,9 +189,6 @@ void ViewProviderMeshCurvature::setVertexCurvatureMode(MeshPropertyCurvature* pc
   if ( !pcProp->isValid() ) return; // no valid data
   std::vector<float> fCurvature = pcProp->getCurvature(MeshPropertyCurvature::Mode(mode));
 
-  // @todo set to color mode
-  ViewProvider::setMode(4);
-  
   unsigned long i=0;
   for ( std::vector<float>::const_iterator it = fCurvature.begin(); it != fCurvature.end(); ++it )
   {
@@ -205,9 +202,6 @@ void ViewProviderMeshCurvature::setVertexAbsCurvatureMode(MeshPropertyCurvature*
   if ( !pcProp->isValid() ) return; // no valid data
   std::vector<float> fMaxCurvature = pcProp->getCurvature(MeshPropertyCurvature::MaxCurvature);
   std::vector<float> fMinCurvature = pcProp->getCurvature(MeshPropertyCurvature::MinCurvature);
-
-  // @todo set to color mode
-  ViewProvider::setMode(4);
   
   unsigned long i=0;
   for ( std::vector<float>::const_iterator it = fMaxCurvature.begin(),jt = fMinCurvature.begin(); it != fMaxCurvature.end(); ++it,++jt )
@@ -258,8 +252,6 @@ QPixmap ViewProviderMeshCurvature::getIcon() const
 
 void ViewProviderMeshCurvature::setMode(const char* ModeName)
 {
-  ViewProviderMesh::setMode(ModeName);
-
   MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
   App::PropertyBag *pcProp = 0;
   pcProp = rcMesh.GetFirstOfType("VertexCurvature");
@@ -267,23 +259,30 @@ void ViewProviderMeshCurvature::setMode(const char* ModeName)
   if ( pcProp && strcmp("Mean curvature",ModeName)==0 )
   {
     setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::MeanCurvature);
+    setDisplayMode("ColorShaded");
   }
   else if ( pcProp && strcmp("Gaussian curvature",ModeName)==0  )
   {
     setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::GaussCurvature);
+    setDisplayMode("ColorShaded");
   }
   else if ( pcProp && strcmp("Maximum curvature",ModeName)==0  )
   {
     setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::MaxCurvature);
+    setDisplayMode("ColorShaded");
   }
   else if ( pcProp && strcmp("Minimum curvature",ModeName)==0  )
   {
     setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::MinCurvature);
+    setDisplayMode("ColorShaded");
   }
   else if ( pcProp && strcmp("Absolute curvature",ModeName)==0  )
   {
     setVertexAbsCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp));
+    setDisplayMode("ColorShaded");
   }
+
+  ViewProviderMesh::setMode(ModeName);
 }
 
 std::vector<std::string> ViewProviderMeshCurvature::getModes(void)

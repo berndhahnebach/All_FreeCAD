@@ -31,6 +31,7 @@
 #include "FileDialog.h"
 
 #ifndef _PreComp_
+# include <qbuttongroup.h>
 # include <qcheckbox.h>
 # include <qcombobox.h>
 # include <qlineedit.h>
@@ -315,6 +316,35 @@ class GuiExport PrefRadioButton : public QRadioButton, public PrefWidget
 public:
   PrefRadioButton ( QWidget * parent = 0, const char * name = 0 );
   virtual ~PrefRadioButton();
+
+  // PROPERTIES
+  // getters
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
+  // setters
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
+
+protected:
+  // restore from/save to parameters
+  void restorePreferences();
+  void savePreferences();
+};
+
+/**
+ * The PrefButtonGroup class.
+ * \author Werner Mayer
+ */
+class GuiExport PrefButtonGroup : public QButtonGroup, public PrefWidget
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefButtonGroup ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefButtonGroup();
 
   // PROPERTIES
   // getters

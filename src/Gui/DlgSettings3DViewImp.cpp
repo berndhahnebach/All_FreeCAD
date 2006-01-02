@@ -69,11 +69,12 @@ void DlgSettings3DViewImp::saveSettings()
   prefCheckBox8->onSave();
   CheckBox_CornerCoordSystem->onSave();
   CheckBox_ShowFPS->onSave();
-//  CheckBox_UseSimpleBackground->onSave();
-  CheckBox_ShowViewerDecoration->onSave();
   CheckBox_UseAutoRotation->onSave();
   FloatSpinBox_EyeDistance->onSave();
   SelectionColor_Background->onSave();
+  backgroundColorGroup->onSave();
+  backgroundColorFrom->onSave();
+  backgroundColorTo->onSave();
 }
 
 void DlgSettings3DViewImp::loadSettings()
@@ -81,11 +82,12 @@ void DlgSettings3DViewImp::loadSettings()
   prefCheckBox8->onRestore();
   CheckBox_CornerCoordSystem->onRestore();
   CheckBox_ShowFPS->onRestore();
-//  CheckBox_UseSimpleBackground->onRestore();
-  CheckBox_ShowViewerDecoration->onRestore();
   CheckBox_UseAutoRotation->onRestore();
   FloatSpinBox_EyeDistance->onRestore();
   SelectionColor_Background->onRestore();
+  backgroundColorGroup->onRestore();
+  backgroundColorFrom->onRestore();
+  backgroundColorTo->onRestore();
 }
 
 #include "DlgSettings3DView.cpp"

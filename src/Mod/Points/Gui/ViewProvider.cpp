@@ -130,22 +130,13 @@ void ViewProviderPoints::setVertexNormalMode(Points::PointsPropertyNormal* pcPro
 
 void ViewProviderPoints::attach(App::Feature* pcFeat)
 {
-  // call father (set material and feature pointer)
-  ViewProviderFeature::attach(pcFeat);
-
-  // get and save the feature
-  PointsFeature* ptFea = dynamic_cast<PointsFeature*>(pcFeature);
-  if ( !ptFea )
-    throw "ViewProviderPoints::attach(): wrong feature attached!";
-  createPoints( ptFea );
-
   SoGroup* pcPointRoot = new SoGroup();
   SoGroup* pcPointShadedRoot = new SoGroup();
   SoGroup* pcColorShadedRoot = new SoGroup();
 
   // Hilight for selection
-  pcHighlight->featureName = pcFeature->getName();
-  pcHighlight->documentName = pcFeature->getDocument().getName();
+  pcHighlight->featureName = pcFeat->getName();
+  pcHighlight->documentName = pcFeat->getDocument().getName();
   pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcPointsCoord);
   pcHighlight->addChild(pcPoints);
@@ -179,17 +170,20 @@ void ViewProviderPoints::attach(App::Feature* pcFeat)
   pcColorShadedRoot->addChild(pcHighlight);
 
   // putting all together with a switch
-  pcModeSwitch->addChild(pcPointRoot);
-  pcModeSwitch->addChild(pcColorShadedRoot);
-  pcModeSwitch->addChild(pcPointShadedRoot);
+  addDisplayMode(pcPointRoot, "Point");
+  addDisplayMode(pcColorShadedRoot, "Color");
+  addDisplayMode(pcPointShadedRoot, "Shaded");
 
-  setMode(pcFeat->getShowMode());
+  // call father (set material and feature pointer)
+  ViewProviderFeature::attach(pcFeat);
+
+  // get and save the feature
+  PointsFeature* ptFea = dynamic_cast<PointsFeature*>(pcFeat);
+  createPoints( ptFea );
 }
 
 void ViewProviderPoints::setMode(const char* ModeName)
 {
-  ViewProviderFeature::setMode(ModeName);
-
   Points::PointsWithProperty &rcPoints = dynamic_cast<PointsFeature*>(pcFeature)->getPoints();
   App::PropertyBag *pcProp = 0;
   pcProp = rcPoints.Get(ModeName);
@@ -197,15 +191,24 @@ void ViewProviderPoints::setMode(const char* ModeName)
   if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
   {
     setVertexColorMode(dynamic_cast<Points::PointsPropertyColor*>(pcProp));
+    setDisplayMode("Color");
   }
   else if ( pcProp && stricmp("VertexGreyvalue",pcProp->GetType())==0 )
   {
     setVertexGreyvalueMode(dynamic_cast<Points::PointsPropertyGreyvalue*>(pcProp));
+    setDisplayMode("Color");
   }
   else if ( pcProp && strcmp("VertexNormal",pcProp->GetType())==0 )
   {
     setVertexNormalMode(dynamic_cast<Points::PointsPropertyNormal*>(pcProp));
+    setDisplayMode("Shaded");
   }
+  else if ( stricmp("Point",ModeName)==0 )
+  {
+    setDisplayMode("Point");
+  }
+
+  ViewProviderFeature::setMode(ModeName);
 }
 
 std::vector<std::string> ViewProviderPoints::getModes(void)

@@ -135,15 +135,36 @@ void SoFCBackgroundGradient::setViewerSize( const SbVec2s& size )
   }
 
   SbVec3f* vertices = new SbVec3f[9];
-  vertices[0].setValue( fMinX, fMaxY, 0.0f);
-  vertices[1].setValue( fAvgX, fMaxY, 0.0f);
-  vertices[2].setValue( fMaxX, fMaxY, 0.0f);
-  vertices[3].setValue( fMinX, fAvgY, 0.0f);
-  vertices[4].setValue( fAvgX, fAvgY, 0.0f);
-  vertices[5].setValue( fMaxX, fAvgY, 0.0f);
-  vertices[6].setValue( fMinX, fMinY, 0.0f);
-  vertices[7].setValue( fAvgX, fMinY, 0.0f);
-  vertices[8].setValue( fMaxX, fMinY, 0.0f);
+  vertices[0].setValue( fMinX, fMaxY, 0.0f );
+  vertices[1].setValue( fAvgX, fMaxY, 0.0f );
+  vertices[2].setValue( fMaxX, fMaxY, 0.0f );
+  vertices[3].setValue( fMinX, fAvgY, 0.0f );
+  vertices[4].setValue( fAvgX, fAvgY, 0.0f );
+  vertices[5].setValue( fMaxX, fAvgY, 0.0f );
+  vertices[6].setValue( fMinX, fMinY, 0.0f );
+  vertices[7].setValue( fAvgX, fMinY, 0.0f );
+  vertices[8].setValue( fMaxX, fMinY, 0.0f );
 	coords->point.setValues(0,9, vertices);
   delete [] vertices;
+}
+
+void SoFCBackgroundGradient::setColorGradient( const SbColor& fromColor, const SbColor& toColor )
+{
+  SoNode* child = getChild( 2 );
+  if ( child->getTypeId() == SoMaterial::getClassTypeId() )
+  {
+    const float* rgb1 = fromColor.getValue();
+    const float* rgb2 = toColor.getValue();
+    SbColor mid( 0.5f*(rgb1[0]+rgb2[0]), 0.5f*(rgb1[1]+rgb2[1]), 0.5f*(rgb1[2]+rgb2[2]) );
+    SoMaterial* mat = reinterpret_cast<SoMaterial*>(child);
+    mat->diffuseColor.set1Value( 0, fromColor );
+    mat->diffuseColor.set1Value( 1, fromColor );
+    mat->diffuseColor.set1Value( 2, fromColor );
+    mat->diffuseColor.set1Value( 3, mid );
+    mat->diffuseColor.set1Value( 4, mid );
+    mat->diffuseColor.set1Value( 5, mid );
+    mat->diffuseColor.set1Value( 6, toColor );
+    mat->diffuseColor.set1Value( 7, toColor );
+    mat->diffuseColor.set1Value( 8, toColor );
+  }
 }

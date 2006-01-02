@@ -91,7 +91,7 @@ using MeshCore::MeshSTL;
 using MeshCore::MeshTopFacetVisitor;
 
 using Base::Vector3D;
-       
+
 ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
 {
   // create the mesh core nodes
@@ -182,21 +182,6 @@ void ViewProviderMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 
 void ViewProviderMesh::attach(App::Feature *pcFeat)
 {
-  // standard viewing (flat) must be called before attach()
-  pcModeSwitch->whichChild = 0;
-
-  // call father (set material and feature pointer)
-  ViewProviderFeature::attach(pcFeat);
-
-  // get and save the feature
-  MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
-  if ( !meshFea )
-    throw "ViewProviderMesh::attach(): wrong feature attached!";
-
-  // create the mesh core nodes
-  createMesh(&(meshFea->getMesh()));
-
-
   // some helper Separators
   SoGroup* pcFlatRoot = new SoGroup();
 //  SoGroup* pcFlatNormRoot = new SoGroup();
@@ -206,8 +191,8 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
 //  SoGroup* pcColorShadedRoot = new SoGroup();
 
   // only one selection node for the mesh
-  pcHighlight->featureName = pcFeature->getName();
-  pcHighlight->documentName = pcFeature->getDocument().getName();
+  pcHighlight->featureName = pcFeat->getName();
+  pcHighlight->documentName = pcFeat->getDocument().getName();
   pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcMeshCoord);
   pcHighlight->addChild(pcMeshFaces);
@@ -275,13 +260,20 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
   pcFlatWireRoot->addChild(pcMeshCoord);
   pcFlatWireRoot->addChild(pcMeshFaces);
 
+  // putting all together with a switch
+  addDisplayMode(pcFlatRoot, "Flat");
+//  addDisplayMode(pcFlatNormRoot, "Normal");
+  addDisplayMode(pcWireRoot, "Wireframe");
+  addDisplayMode(pcPointRoot, "Point");
+  addDisplayMode(pcFlatWireRoot, "FlatWireframe");
 
-  // puting all togetern with a switch
-  pcModeSwitch->addChild(pcFlatRoot);
-//  pcSwitch->addChild(pcFlatNormRoot);
-  pcModeSwitch->addChild(pcWireRoot);
-  pcModeSwitch->addChild(pcPointRoot);
-  pcModeSwitch->addChild(pcFlatWireRoot);
+  // call father (set material and feature pointer)
+  ViewProviderFeature::attach(pcFeat);
+
+  // get and save the feature
+  MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
+  // create the mesh core nodes
+  createMesh(&(meshFea->getMesh()));
 }
 
 void ViewProviderMesh::updateData(void)
@@ -317,6 +309,20 @@ QPixmap ViewProviderMesh::getIcon() const
     "................"};
   QPixmap px(Mesh_Feature_xpm);
   return px;
+}
+
+void ViewProviderMesh::setMode(const char* ModeName)
+{
+  if ( strcmp("Flat",ModeName)==0 )
+    setDisplayMode("Flat");
+  else if ( strcmp("Wire",ModeName)==0 )
+    setDisplayMode("Wireframe");
+  else if ( strcmp("Point",ModeName)==0 )
+    setDisplayMode("Point");
+  else if ( strcmp("FlatWire",ModeName)==0 )
+    setDisplayMode("FlatWireframe");
+
+  ViewProviderFeature::setMode( ModeName );
 }
 
 vector<string> ViewProviderMesh::getModes(void)

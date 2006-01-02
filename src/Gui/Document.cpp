@@ -137,8 +137,6 @@ void Document::setAnotationViewProvider(const char* name, ViewProvider *pcProvid
   // add 
   _ViewProviderMapAnotation[name] = pcProvider;
 
-  pcProvider->setMode(0);
-
   // cycling to all views of the document
   for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)
   {

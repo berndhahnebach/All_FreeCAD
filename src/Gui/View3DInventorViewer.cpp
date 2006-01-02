@@ -248,6 +248,11 @@ void View3DInventorViewer::setGradientBackgroud(bool b)
     backgroundroot->removeChild( pcBackGround );
 }
 
+void View3DInventorViewer::setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor )
+{
+  pcBackGround->setColorGradient( fromColor, toColor );
+}
+
 View3DInventorViewer::~View3DInventorViewer()
 {
   this->backgroundroot->unref();

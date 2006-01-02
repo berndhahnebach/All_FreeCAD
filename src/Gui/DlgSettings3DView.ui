@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>395</width>
-            <height>365</height>
+            <width>344</width>
+            <height>479</height>
         </rect>
     </property>
     <property name="caption">
@@ -19,12 +19,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <property name="margin">
-            <number>11</number>
-        </property>
-        <property name="spacing">
-            <number>6</number>
-        </property>
         <widget class="QGroupBox" row="0" column="0">
             <property name="name">
                 <cstring>GroupBox12</cstring>
@@ -32,34 +26,11 @@
             <property name="title">
                 <string>3DView settings</string>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>CheckBox_CornerCoordSystem</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Show coordinate system in the corner</string>
-                    </property>
-                    <property name="checked">
-                        <bool>true</bool>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>CornerCoordSystem</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>View</cstring>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox">
+                <widget class="Gui::PrefCheckBox" row="1" column="0">
                     <property name="name">
                         <cstring>CheckBox_ShowFPS</cstring>
                     </property>
@@ -76,27 +47,7 @@
                         <cstring>View</cstring>
                     </property>
                 </widget>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>CheckBox_UseAutoRotation</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>true</bool>
-                    </property>
-                    <property name="text">
-                        <string>Use spin rotation</string>
-                    </property>
-                    <property name="checked">
-                        <bool>true</bool>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>UseAutoRotation</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>View</cstring>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox">
+                <widget class="Gui::PrefCheckBox" row="3" column="0">
                     <property name="name">
                         <cstring>prefCheckBox8</cstring>
                     </property>
@@ -110,45 +61,7 @@
                         <cstring>View</cstring>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout3</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="Gui::PrefCheckBox">
-                            <property name="name">
-                                <cstring>CheckBox_ShowViewerDecoration</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Use simple background. Color:</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>UseSimpleBackground</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefColorButton">
-                            <property name="name">
-                                <cstring>SelectionColor_Background</cstring>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>BackgroundColor</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>View</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="Line">
+                <widget class="Line" row="4" column="0">
                     <property name="name">
                         <cstring>line1</cstring>
                     </property>
@@ -162,7 +75,7 @@
                         <enum>Horizontal</enum>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget">
+                <widget class="QLayoutWidget" row="5" column="0">
                     <property name="name">
                         <cstring>layout4</cstring>
                     </property>
@@ -203,7 +116,7 @@
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="Line">
+                <widget class="Line" row="6" column="0">
                     <property name="name">
                         <cstring>line1_2</cstring>
                     </property>
@@ -217,7 +130,7 @@
                         <enum>Horizontal</enum>
                     </property>
                 </widget>
-                <widget class="Gui::PrefCheckBox">
+                <widget class="Gui::PrefCheckBox" row="7" column="0">
                     <property name="name">
                         <cstring>prefCheckBox11</cstring>
                     </property>
@@ -231,7 +144,7 @@
                         <cstring>View</cstring>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget">
+                <widget class="QLayoutWidget" row="8" column="0">
                     <property name="name">
                         <cstring>layout2</cstring>
                     </property>
@@ -276,7 +189,7 @@
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="QLayoutWidget">
+                <widget class="QLayoutWidget" row="9" column="0">
                     <property name="name">
                         <cstring>layout1</cstring>
                     </property>
@@ -321,15 +234,192 @@
                         </widget>
                     </hbox>
                 </widget>
-            </vbox>
+                <widget class="Gui::PrefCheckBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>CheckBox_CornerCoordSystem</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Show coordinate system in the corner</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>CornerCoordSystem</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox" row="2" column="0">
+                    <property name="name">
+                        <cstring>CheckBox_UseAutoRotation</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="text">
+                        <string>Use spin rotation</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>UseAutoRotation</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="Gui::PrefButtonGroup" row="1" column="0">
+            <property name="name">
+                <cstring>backgroundColorGroup</cstring>
+            </property>
+            <property name="title">
+                <string>Background color</string>
+            </property>
+            <property name="prefEntry" stdset="0">
+                <cstring>BackgroundColorGroup</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+                <cstring>View</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QRadioButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>radioButtonSimple</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Simple color</string>
+                    </property>
+                    <property name="buttonGroupId">
+                        <number>0</number>
+                    </property>
+                </widget>
+                <widget class="QRadioButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>radioButtonGradient</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Color gradient</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                    <property name="buttonGroupId">
+                        <number>1</number>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefColorButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>SelectionColor_Background</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>BackgroundColor</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefColorButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>backgroundColorFrom</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="color">
+                        <color>
+                            <red>127</red>
+                            <green>127</green>
+                            <blue>205</blue>
+                        </color>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>BackgroundColor2</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefColorButton" row="2" column="1">
+                    <property name="name">
+                        <cstring>backgroundColorTo</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                    <property name="color">
+                        <color>
+                            <red>255</red>
+                            <green>255</green>
+                            <blue>255</blue>
+                        </color>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>BackgroundColor3</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                </widget>
+            </grid>
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>radioButtonSimple</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SelectionColor_Background</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>radioButtonGradient</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>backgroundColorFrom</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>radioButtonGradient</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>backgroundColorTo</receiver>
+        <slot>setEnabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>radioButtonGradient</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>SelectionColor_Background</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+</connections>
 <tabstops>
     <tabstop>CheckBox_CornerCoordSystem</tabstop>
     <tabstop>CheckBox_ShowFPS</tabstop>
-    <tabstop>CheckBox_ShowViewerDecoration</tabstop>
     <tabstop>CheckBox_UseAutoRotation</tabstop>
+    <tabstop>prefCheckBox8</tabstop>
+    <tabstop>FloatSpinBox_EyeDistance</tabstop>
+    <tabstop>prefCheckBox11</tabstop>
+    <tabstop>HighlightColor</tabstop>
+    <tabstop>SelectionColor</tabstop>
+    <tabstop>radioButtonSimple</tabstop>
+    <tabstop>SelectionColor_Background</tabstop>
+    <tabstop>radioButtonGradient</tabstop>
+    <tabstop>backgroundColorFrom</tabstop>
+    <tabstop>backgroundColorTo</tabstop>
 </tabstops>
 <slots>
     <slot>warnInventor(bool)</slot>
@@ -338,6 +428,8 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

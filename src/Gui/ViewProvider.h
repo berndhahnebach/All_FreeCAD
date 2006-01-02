@@ -25,6 +25,7 @@
 #define __VIEWPROVIDER_H__
 
 #ifndef _PreComp_
+# include <map>
 # include <vector>
 #endif
 
@@ -80,33 +81,40 @@ public:
     */
   virtual void update(void)=0;
 
+protected:
+	/** @name Display modes
+   * Mainly controls a SoSwitch which selects the display modes.
+   * The number of display modes doesn't necessarily match with the number of view modes.
+   * E.g. various modes like Gaussian curvature, mean curvature or gray values are displayed
+   * by one display mode that handles color values.
+   */
+	//@{
+  /// Adds a new display mode 
+  void addDisplayMode( SoNode *node, const char* type );
+  /// Activates the display mode \a type
+  void setDisplayMode( const char* type );
+  /// Returns a list of added display modes
+  std::vector<std::string> getDisplayModes() const;
+  //@}
 
-	/** @name mode methodes of the feature 
-    * manly stire a SoSwitch (pcModeSwitch) which select the 
-    * viewing mode.
-    * @see pcModeSwitch
+public:
+	/** @name mode methods of the feature 
     */
 	//@{
   /// set the viewing mode
   virtual void setMode(const char* ModeName);
-  /// set the viewing mode as int
-  virtual void setMode(int Mode);
-  /// get the viewing mode as int
-  virtual int getMode(void);
-  /// get the viewing mode as int
-  virtual std::string getModeName(void);
+  /// get the viewing mode name
+  std::string getModeName(void) const;
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void)=0;
-
-  virtual void hide(void);
-  virtual void show(void);
-  virtual bool isShow(void);
 
   virtual void setEdit(void){};
   virtual void unsetEdit(void){};
   virtual const char* getEditModeName(void){return 0;}
 
-
+  virtual void hide(void);
+  virtual void show(void);
+  virtual bool isShow(void);
   //@}
 
   
@@ -141,16 +149,17 @@ public:
 protected:
   SoSeparator *pcRoot;
 
-  /// this is the mode switch, all the different viewing modes are collected here
-  SoSwitch    *pcModeSwitch;
-
   /// this is transformation for the provider
   SoTransform *pcTransform;
 
   const char* sPixmap;
 
+private:
+  /// this is the mode switch, all the different viewing modes are collected here
+  SoSwitch    *pcModeSwitch;
   int _iActualMode;
   std::string _sCurrentMode;
+  std::map<std::string, int> _sDisplayModes;
 };
 
 } // namespace Gui

@@ -76,6 +76,8 @@ public:
    * an Inventor node \a SoNode with these data. 
    */
   virtual void attach(App::Feature *);
+  /// Sets the correct display mode
+  virtual void setMode(const char* ModeName);
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
   /// Update the Mesh representation

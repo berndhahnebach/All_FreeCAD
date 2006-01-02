@@ -831,6 +831,38 @@ void PrefRadioButton::setParamGrpPath ( const QCString& name )
 
 // --------------------------------------------------------------------
 
+PrefButtonGroup::PrefButtonGroup ( QWidget * parent, const char * name )
+  : QButtonGroup(parent, name)
+{
+  setTitle( name );
+}
+
+PrefButtonGroup::~PrefButtonGroup()
+{
+}
+
+QCString PrefButtonGroup::entryName () const
+{
+  return m_sPrefName;
+}
+
+QCString PrefButtonGroup::paramGrpPath () const
+{
+  return m_sPrefGrp;
+}
+
+void PrefButtonGroup::setEntryName ( const QCString& name )
+{
+  m_sPrefName = name;
+}
+
+void PrefButtonGroup::setParamGrpPath ( const QCString& name )
+{
+  m_sPrefGrp = name;
+}
+
+// --------------------------------------------------------------------
+
 PrefSlider::PrefSlider ( QWidget * parent, const char * name )
   : QSlider(parent, name)
 {

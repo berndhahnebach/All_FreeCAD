@@ -24,6 +24,7 @@
 #ifndef FILECHOOSER_H
 #define FILECHOOSER_H
 
+#include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <qcombobox.h>
 #include <qiconview.h>
@@ -361,6 +362,29 @@ class QT_WIDGET_PLUGIN_EXPORT PrefRadioButton : public QRadioButton
 public:
   PrefRadioButton ( QWidget * parent = 0, const char * name = 0 );
   virtual ~PrefRadioButton();
+
+  QCString entryName    () const;
+  QCString paramGrpPath () const;
+  void  setEntryName     ( const QCString& name );
+  void  setParamGrpPath  ( const QCString& name );
+
+private:
+  QCString m_sPrefName;
+  QCString m_sPrefGrp;
+};
+
+// ------------------------------------------------------------------------------
+
+class QT_WIDGET_PLUGIN_EXPORT PrefButtonGroup : public QButtonGroup
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefButtonGroup ( QWidget * parent = 0, const char * name = 0 );
+  virtual ~PrefButtonGroup();
 
   QCString entryName    () const;
   QCString paramGrpPath () const;

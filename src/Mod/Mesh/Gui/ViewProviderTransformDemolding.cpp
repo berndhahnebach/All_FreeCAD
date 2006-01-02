@@ -43,6 +43,8 @@
 # include <Inventor/manips/SoTransformerManip.h>
 #endif
 
+#include "ViewProviderTransformDemolding.h"
+
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
 #include <Base/Parameter.h>
@@ -62,8 +64,6 @@ using MeshCore::MeshKernel;
 using MeshCore::MeshFacetIterator;
 using MeshCore::MeshGeomFacet;
 using Base::Vector3D;
-
-#include "ViewProviderTransformDemolding.h"
 using namespace MeshGui;
 
 
@@ -79,20 +79,14 @@ ViewProviderMeshTransformDemolding::~ViewProviderMeshTransformDemolding()
   pcTrackballDragger->unref();
 }
 
-
 void ViewProviderMeshTransformDemolding::attach(App::Feature *pcFeat)
 {
-  // creats the satandard viewing modes
-  ViewProviderMesh::attach(pcFeat);
+  SoGroup* pcDemoldRoot = new SoGroup();
 
 
-  SoGroup* pcColorShadedRoot = new SoGroup();
-
-
-  // color shaded  ------------------------------------------
   SoDrawStyle *pcFlatStyle = new SoDrawStyle();
   pcFlatStyle->style = SoDrawStyle::FILLED;
-  pcColorShadedRoot->addChild(pcFlatStyle);
+  pcDemoldRoot->addChild(pcFlatStyle);
 
   // dragger
   SoSeparator * surroundsep = new SoSeparator;
@@ -120,25 +114,27 @@ void ViewProviderMeshTransformDemolding::attach(App::Feature *pcFeat)
   pcColorMat->diffuseColor.set1Value(0, 1,1,0);
   pcColorMat->diffuseColor.set1Value(1, 1,0,0);
   pcColorMat->diffuseColor.set1Value(2, 0,1,0);
-  calcNormalVector();
-  calcMaterialIndex(SbRotation());
   
-  pcColorShadedRoot->addChild(surroundsep);
-  pcColorShadedRoot->addChild(pcTransformDrag);
-  pcColorShadedRoot->addChild(pcColorMat);
-  pcColorShadedRoot->addChild(pcMatBinding);
-  pcColorShadedRoot->addChild(pcHighlight);
+  pcDemoldRoot->addChild(surroundsep);
+  pcDemoldRoot->addChild(pcTransformDrag);
+  pcDemoldRoot->addChild(pcColorMat);
+  pcDemoldRoot->addChild(pcMatBinding);
+  pcDemoldRoot->addChild(pcHighlight);
 
   // adding to the switch
-  pcModeSwitch->addChild(pcColorShadedRoot);
+  addDisplayMode(pcDemoldRoot, "Demold");
 
+  // creats the satandard viewing modes
+  ViewProviderMesh::attach(pcFeat);
+
+  calcNormalVector();
+  calcMaterialIndex(SbRotation());
   // geting center point
   center = dynamic_cast<MeshFeature*>(pcFeature)->getMesh().getKernel()->GetBoundBox().CalcCenter();
 
   //SoGetBoundingBoxAction  boxAction;
   //pcHighlight->getBoundingBox(&boxAction);
   //SbVector3f Center = boxAction->getCenter();
-
 }
 
 void ViewProviderMeshTransformDemolding::calcNormalVector(void)
@@ -153,8 +149,8 @@ void ViewProviderMeshTransformDemolding::calcNormalVector(void)
     Vector3D norm(rFace.GetNormal());
     normalVector.push_back(SbVec3f(norm.x,norm.y,norm.z));
   }
-
 }
+
 void ViewProviderMeshTransformDemolding::calcMaterialIndex(const SbRotation &rot)
 {
   // 3.1415926535897932384626433832795
@@ -182,6 +178,7 @@ void ViewProviderMeshTransformDemolding::sValueChangedCallback(void *This, SoDra
 {
   static_cast<ViewProviderMeshTransformDemolding*>(This)->valueChangedCallback();
 }
+
 void ViewProviderMeshTransformDemolding::sDragEndCallback(void *This, SoDragger *)
 {
   static_cast<ViewProviderMeshTransformDemolding*>(This)->DragEndCallback();
@@ -214,30 +211,16 @@ void ViewProviderMeshTransformDemolding::valueChangedCallback(void)
   pcTransformDrag->setMatrix( temp );
 }
 
+void ViewProviderMeshTransformDemolding::setMode(const char* ModeName)
+{
+  if ( strcmp("Demold",ModeName) == 0 )
+    setDisplayMode("Demold");
+  ViewProviderMesh::setMode(ModeName);
+}
 
 std::vector<std::string> ViewProviderMeshTransformDemolding::getModes(void)
 {
   std::vector<std::string> StrList = ViewProviderMesh::getModes();
-
   StrList.push_back("Demold");
-
   return StrList;
 }
-
-
-
-/*
-void ViewProviderMeshTransformDemolding::updateData(void)
-{
-  ViewProviderMesh::updateData();
-}
-
-void ViewProviderMeshTransformDemolding::setMode(const char* ModeName)
-{
-  ViewProviderMesh::setMode(ModeName);
-
-  int i = getMode();
-}
-*/
-
-
