@@ -120,6 +120,7 @@ PyMethodDef DocumentPy::Methods[] = {
 	PYMETHODEDEF(AddFeature)
 	PYMETHODEDEF(GetActiveFeature)
 	PYMETHODEDEF(GetFeature)
+	PYMETHODEDEF(listFeatures)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -379,6 +380,27 @@ PYFUNCIMP_D(DocumentPy,GetFeature)
       sprintf(szBuf, "No feature found with name '%s'", sName);
 		  Py_Error(PyExc_Exception,szBuf);
     }
+  } PY_CATCH;
+}
+
+PYFUNCIMP_D(DocumentPy,listFeatures)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+
+  PY_TRY {
+    std::map<std::string,Document::FeatEntry> features = _pcDoc->FeatMap;
+    PyObject *pDict = PyDict_New();
+    PyObject *pKey,*pValue;
+    
+    for (std::map<std::string,Document::FeatEntry>::const_iterator It = features.begin();It != features.end();++It)
+    {
+      pKey   = PyString_FromString(It->first.c_str());
+      pValue = It->second.F->GetPyObject();
+      PyDict_SetItem(pDict, pKey, pValue); 
+    }
+
+    return pDict;
   } PY_CATCH;
 }
 
