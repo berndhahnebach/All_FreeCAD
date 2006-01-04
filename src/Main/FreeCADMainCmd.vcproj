@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADMainCmd"
-	ProjectGUID="{7D765AE5-CB4C-4CB5-B09D-7C66D91F944E}"
+	ProjectGUID="{3EEFD24F-E81D-4F63-B52C-AD37F365EA92}"
 	>
 	<Platforms>
 		<Platform
@@ -46,6 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="_CONSOLE;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -143,6 +144,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="NDEBUG;_CONSOLE"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -216,6 +218,7 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions=""
 				/>
 			</FileConfiguration>
@@ -224,6 +227,7 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions=""
 				/>
 			</FileConfiguration>

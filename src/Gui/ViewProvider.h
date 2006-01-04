@@ -154,9 +154,10 @@ protected:
 
   const char* sPixmap;
 
-private:
   /// this is the mode switch, all the different viewing modes are collected here
   SoSwitch    *pcModeSwitch;
+
+private:
   int _iActualMode;
   std::string _sCurrentMode;
   std::map<std::string, int> _sDisplayModes;

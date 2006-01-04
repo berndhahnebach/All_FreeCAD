@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppImport"
-	ProjectGUID="{D8C41B65-4593-4540-BFC2-E96BF1155885}"
+	ProjectGUID="{9CD61997-5D6F-4E04-BD73-3FB85F54038A}"
 	>
 	<Platforms>
 		<Platform

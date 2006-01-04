@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppImageGui"
-	ProjectGUID="{2095B61C-F958-47EE-86DA-EFB0275292C9}"
+	ProjectGUID="{2B07BCF1-AFF5-473D-B6E8-2B08F61595ED}"
 	>
 	<Platforms>
 		<Platform

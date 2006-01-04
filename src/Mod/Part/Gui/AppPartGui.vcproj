@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPartGui"
-	ProjectGUID="{27AF5171-A2DA-4F99-B34B-D49B3F101740}"
+	ProjectGUID="{99DD5FCE-14C9-409C-ADC8-6875807351FC}"
 	>
 	<Platforms>
 		<Platform
@@ -636,6 +636,32 @@
 		</File>
 		<File
 			RelativePath="ViewProvider.h"
+			>
+		</File>
+		<File
+			RelativePath="ViewProviderBox.cpp"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="ViewProviderBox.h"
 			>
 		</File>
 		<File

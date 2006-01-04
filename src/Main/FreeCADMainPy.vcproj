@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADMainPy"
-	ProjectGUID="{ED660400-64D5-4EF5-B220-D4FDF1C70E76}"
+	ProjectGUID="{F366FEF5-2A07-444A-994E-87839E0632FC}"
 	>
 	<Platforms>
 		<Platform
@@ -46,6 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="_USRDLL;FREECADMAINPY;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -143,6 +144,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="NDEBUG;_USRDLL;FREECADMAINPY"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -216,6 +218,7 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions=""
 				/>
 			</FileConfiguration>
@@ -224,6 +227,7 @@
 				>
 				<Tool
 					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions=""
 				/>
 			</FileConfiguration>

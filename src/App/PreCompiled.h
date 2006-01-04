@@ -111,11 +111,15 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
+
+#include <PCollection_HExtendedString.hxx>
+
 // OCAF
 #include <TDF_Label.hxx>
 #include <TDF_LabelMap.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_MapIteratorOfLabelMap.hxx>
+#include <TDF_Reference.hxx>
 #include <TDF_Tool.hxx>
 #include <TDF_ListIteratorOfAttributeList.hxx>
 #include <TDocStd_Application.hxx>
@@ -142,7 +146,9 @@
 #include <TFunction_DriverTable.hxx>
 #include <TFunction_Function.hxx>
 
-#include <TDF_Reference.hxx>
+#include <CDM_MessageDriver.hxx>
+#include <MDF_ASDriver.hxx>
+#include <PDF_Attribute.hxx>
 
 #include <OSD_Process.hxx>
 

@@ -59,7 +59,7 @@ using namespace App;
 // Application Methods						// Methods structure
 PyMethodDef Application::Methods[] = {
 	{"New",            (PyCFunction) Application::sNew,            1},
-	{"Open",           (PyCFunction) Application::sOpen,           1},
+	{"open",           (PyCFunction) Application::sOpen,           1},
 	{"Close",          (PyCFunction) Application::sClose,          1},
 	{"Import"  ,       (PyCFunction) Application::sImport,         1},
 	{"DocSave"  ,      (PyCFunction) Application::sSave,           1},
