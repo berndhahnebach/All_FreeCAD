@@ -24,6 +24,9 @@
 
 
 #include "Attribute.h"
+#include <MDF_ASDriver.hxx>
+#include <PDF_Attribute.hxx>
+#include <PCollection_HExtendedString.hxx>
 
 
 class Standard_Transient;

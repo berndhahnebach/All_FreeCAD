@@ -8,6 +8,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#	include <TDataStd_Name.hxx>
 #	include <TDF_Label.hxx>
 #	include <TDF_ChildIterator.hxx>
 #	include <TDF_Tool.hxx>

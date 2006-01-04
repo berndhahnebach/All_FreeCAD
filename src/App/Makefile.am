@@ -81,6 +81,9 @@ libFreeCADApp_la_LIBADD   = \
 		-lTKTopAlgo \
 		-lTKCAF \
 		-lTKCDF \
+		-lPAppStdPlugin \
+		-lPTKernel \
+		-lTKPCAF \
 		-lFreeCADBase
 
 # set the include path found by configure

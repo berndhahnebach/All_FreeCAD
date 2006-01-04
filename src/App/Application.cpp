@@ -1170,4 +1170,5 @@ void Application::NotifyDocDelete(Document* pcDoc)
 	for(std::set<ApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
         (*Iter)->OnDocDelete(pcDoc);   // send doc to the listener
 }
-*/
+*/ 
+
