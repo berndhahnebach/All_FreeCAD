@@ -22,7 +22,7 @@ libdir = $(prefix)/Mod/_TEMPLATE_
 
 # We need this softlink for Python to load
 install-data-local:
-		cd $(libdir) && \
+		cd $(DESTDIR)$(libdir) && \
 		rm -f _TEMPLATE_.so && \
 		$(LN_S) lib_TEMPLATE_.so _TEMPLATE_.so
 

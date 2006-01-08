@@ -80,7 +80,7 @@ libdir = $(prefix)/Mod/Mesh
 
 # We need this softlink for Python to load
 install-data-local:
-		cd $(libdir) && \
+		cd $(DESTDIR)$(libdir) && \
 		rm -f Mesh.so && \
 		$(LN_S) libMesh.so Mesh.so
 

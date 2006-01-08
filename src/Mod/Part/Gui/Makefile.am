@@ -78,7 +78,7 @@ libdir = $(prefix)/Mod/Part
 
 # We need this softlink for Python to load
 install-data-local:
-		cd $(libdir) && \
+		cd $(DESTDIR)$(libdir) && \
 		rm -f PartGui.so && \
 		$(LN_S) libPartGui.so PartGui.so
 

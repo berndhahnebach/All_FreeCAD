@@ -30,7 +30,7 @@ libdir = $(prefix)/Mod/Import
 
 # We need this softlink for Python to load
 install-data-local:
-		cd $(libdir) && \
+		cd $(DESTDIR)$(libdir) && \
 		rm -f Import.so && \
 		$(LN_S) libImport.so Import.so
 

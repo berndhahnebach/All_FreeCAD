@@ -56,7 +56,7 @@ libdir = $(prefix)/Mod/Raytracing
 
 # We need this softlink for Python to load
 install-data-local:
-		cd $(libdir) && \
+		cd $(DESTDIR)$(libdir) && \
 		rm -f RaytracingGui.so && \
 		$(LN_S) libRaytracingGui.so RaytracingGui.so
 

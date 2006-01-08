@@ -24,7 +24,7 @@ libdir = $(prefix)/Mod/Image
 
 # We need this softlink for Python to load
 install-data-local:
-		cd $(libdir) && \
+		cd $(DESTDIR)$(libdir) && \
 		rm -f Image.so && \
 		$(LN_S) libImage.so Image.so
 

@@ -49,7 +49,7 @@ libdir = $(prefix)/Mod/Points
 
 # We need this softlink for Python to load
 install-data-local:
-		cd $(libdir) && \
+		cd $(DESTDIR)$(libdir) && \
 		rm -f PointsGui.so && \
 		$(LN_S) libPointsGui.so PointsGui.so
 

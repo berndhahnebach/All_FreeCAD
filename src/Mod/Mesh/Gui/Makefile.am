@@ -50,7 +50,7 @@ libdir = $(prefix)/Mod/Mesh
 
 # We need this softlink for Python to load
 install-data-local:
-		cd $(libdir) && \
+		cd $(DESTDIR)$(libdir) && \
 		rm -f MeshGui.so && \
 		$(LN_S) libMeshGui.so MeshGui.so
 
