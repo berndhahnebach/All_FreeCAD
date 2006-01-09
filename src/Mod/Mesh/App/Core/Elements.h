@@ -129,89 +129,6 @@ public:
 };
 
 /**
- * The MeshEdge class represents an edge in the mesh data-structure. Each edge
- * indexes to exactly one facet in the facet array. Additionally the number of edge order
- * of the indexed facet is stored (@ref MeshFacet).
- * Both values are stored in an "unsigned long" through binary concatenation. The first 2
- * bits represent the number of edge order and the other 30 bits represent the facet index.
- * See following example for illustration:
- * An edge indexes the facet with index 3 with the number of edge order 1:
- * The resulting value is calculated by
- * 3 << 2 | 1 ===> 0,1 Bit (number of edge order) 2-31 Bit (facet index).
- * This class provides several methods to set or get the index or number of edge order.
- * Moreover the class provides methods to modify/read the flag state of an edge.
- */
-class MeshEdge
-{
-public:
-  enum TFlagType {INVALID=1, VISIT=2, SEGMENT=4, MARKED=8, REV1=16, REV2=32, TMP0=64, TMP1=128};
-
-  /** @name Construction */
-  //@{
-  MeshEdge (void) : _ulIndex(0) { }
-  MeshEdge (const MeshEdge &rclE) : _ulIndex(rclE._ulIndex), _ucFlag(rclE._ucFlag) { }
-  MeshEdge (unsigned long ulI) : _ulIndex(ulI) { } 
-  MeshEdge (unsigned long ulFInd, unsigned long ulSide) : _ulIndex((ulFInd << 2) | (ulSide & 3)), _ucFlag(0) { }
-  //@}
-
-public:
-  /** @name Flag state */
-  //@{
-  void SetFlag (TFlagType tF)
-  { _ucFlag |= (unsigned char)(tF); }
-  void ResetFlag (TFlagType tF)
-  { _ucFlag &= ~(unsigned char)(tF); }
-  bool IsFlag (TFlagType tF) const
-  { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
-  void ResetInvalid (void)
-  { ResetFlag(INVALID); }
-  void  SetInvalid (void)
-  { SetFlag(INVALID); }
-  bool IsValid (void) const
-  { return !IsFlag(INVALID); }
-  //@}
- 
-  // Assignment
-  inline MeshEdge& operator = (const MeshEdge &rclE);
-
-  // operators
-  unsigned long operator () (void)
-  { return _ulIndex; }
-  bool operator < (const MeshEdge &rclM) const
-  { return _ulIndex < rclM._ulIndex; }
-  bool operator > (const MeshEdge &rclM) const
-  { return _ulIndex > rclM._ulIndex; }
-  bool operator == (const MeshEdge &rclM) const
-  { return _ulIndex == rclM._ulIndex; }
-  
-  friend DataStream& operator << (DataStream &rclOut, const MeshEdge &rclE)
-  {
-    return rclOut << rclE._ulIndex;
-  }
-  friend DataStream& operator >> (DataStream &rclIn, MeshEdge &rclE)
-  {
-    return rclIn >> rclE._ulIndex;
-  }
-
-  /** @name Setters/Getters */
-  //@{
-  /// Sets index and edge-number
-  void Set (unsigned long ulFInd, unsigned long ulSide)
-  { _ulIndex = (ulFInd << 2) | (ulSide & 3); }
-  /// Returns the facet index
-  unsigned long  Index (void) const
-  { return _ulIndex >> 2; }
-  /// Returns the edge-number of the facet
-  unsigned long  Side (void) const
-  { return _ulIndex & 3; }
-  //@}
-
-public:
-  unsigned long  _ulIndex;/**< Index and edge-number */
-  unsigned char _ucFlag;/**< Flag member */
-};
-
-/**
  * The MeshGeomEdge class is geometric counterpart to MeshEdge that holds the 
  * geometric data points of an edge.
  */
@@ -219,9 +136,6 @@ class AppMeshExport MeshGeomEdge
 {
 public:
   MeshGeomEdge (void) : _bBorder(false) {}
-
-  bool IsFlag (MeshEdge::TFlagType tF) const
-  { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
 
   /** Checks if the edge is inside the bounding box or intersects with it. */
   bool ContainedByOrIntersectBoundingBox (const BoundBox3D &rclBB ) const;
@@ -233,7 +147,6 @@ public:
 public:
   Vector3D _aclPoints[2];  /**< Corner points */
   bool     _bBorder;       /**< Set to true if border edge */
-  unsigned char _ucFlag; /**<  Flag member */
 };
 
 /**
@@ -530,61 +443,6 @@ public:
   unsigned long GetOrAddIndex (const MeshPoint &rclPoint);
 };
 
-typedef std::vector<MeshEdge> TMeshEdgeArray;
-
-/**
- * Stores all edges of the mesh data-structure.
- */
-class MeshEdgeArray: public TMeshEdgeArray
-{
-public:
-  // Iterator interface
-  typedef std::vector<MeshEdge>::iterator        _TIterator;
-  typedef std::vector<MeshEdge>::const_iterator  _TConstIterator;
-  
-public:
-  /** @name Construction */
-  //@{
-  /// constructor
-  MeshEdgeArray (void) { }
-  /// constructor
-  MeshEdgeArray (unsigned long ulSize) : TMeshEdgeArray(ulSize) { }
-  /// destructor
-  ~MeshEdgeArray (void) { }
-  //@}
-
-  /** @name Flag state */
-  //@{
-  /// Sets the flag for all edges. 
-  void SetFlag (MeshEdge::TFlagType tF);
-  /// Resets the flag for all edges. 
-  void ResetFlag (MeshEdge::TFlagType tF);
-  //@}
-
-  // Asignment
-  MeshEdgeArray& operator = (const MeshEdgeArray &rclEAry);
-
-  /**
-   * Adds a new edge to the array. The facet index is defined by \a ulFacetIndex
-   * and the edge-number is defined by ulSide.
-   */
-  inline void Add (unsigned long ulFacetIndex, unsigned long ulSide);
-
-  /**
-   * Searches for the index of edge with facet index \a ulIndex and edge-number \a ulSide.
-   * If nothing is found ULONG_MAX is returned.
-   */
-  inline unsigned long Find (unsigned long ulIndex, unsigned long ulSide) const;
-  /**
-   * Adjusts the facet indices of edges of a removed facet. Therefore
-   * all following indices are decremened by 1.
-   */
-  void AdjustIndex (unsigned long ulIndex);
-
-  // friend
-  friend class MeshEdgeIterator;
-};
-
 typedef std::vector<MeshFacet>  TMeshFacetArray;
 
 /**
@@ -686,19 +544,6 @@ inline bool MeshPoint::operator < (const MeshPoint &rclPt) const
   }
   else
     return x < rclPt.x;
-}
-
-inline MeshEdge& MeshEdge::operator = (const MeshEdge &rclE)
-{
-  _ulIndex = rclE._ulIndex;
-  _ucFlag  = rclE._ucFlag;
-  return *this;
-}
-
-inline bool MeshHelpEdge::operator == (const MeshHelpEdge &rclEdge) const
-{
-  return (((_ulIndex[0] == rclEdge._ulIndex[0]) && (_ulIndex[1] == rclEdge._ulIndex[1])) ||
-          ((_ulIndex[0] == rclEdge._ulIndex[1]) && (_ulIndex[1] == rclEdge._ulIndex[0])));
 }
 
 inline float MeshGeomFacet::Distance (const Vector3D &rclPoint) const
@@ -900,26 +745,6 @@ inline unsigned short MeshFacet::Side (unsigned long ulP0, unsigned long ulP1) c
   }
   
   return USHRT_MAX;
-}
-
-inline void MeshEdgeArray::Add (unsigned long ulFacetIndex, unsigned long ulSide)
-{
-  MeshEdge  clEdge(ulFacetIndex, ulSide);
-  insert(std::lower_bound(begin(), end(), clEdge), clEdge);  
-}
-
-inline unsigned long MeshEdgeArray::Find (unsigned long ulIndex, unsigned long ulSide) const
-{
-  std::vector<MeshEdge>::const_iterator pIter;
-  unsigned long ulInd = (ulIndex << 2) | (ulSide & 3);
-  pIter = begin();
-  pIter = std::upper_bound(begin(), end(), MeshEdge(ulInd));
-  if (pIter > begin())
-    pIter--;
-  if (pIter->_ulIndex == ulInd)
-    return pIter - begin();
-  else
-    return ULONG_MAX;
 }
 
 /**

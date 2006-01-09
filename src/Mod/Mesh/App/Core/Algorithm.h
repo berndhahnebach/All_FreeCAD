@@ -117,34 +117,18 @@ public:
   void GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<Vector3D> > &rclBorders);
   /** Sets to all facets the flag \a tF. */
   virtual void SetFacetFlag (MeshFacet::TFlagType tF);
-#ifdef Use_EdgeList
-  /** Sets to all edges the flag \a tF. */
-  virtual void SetEdgeFlag (MeshEdge::TFlagType tF);
-#endif
   /** Sets to all points the flag \a tF. */
   virtual void SetPointFlag (MeshPoint::TFlagType tF);
   /** Resets of all facets the flag \a tF. */
   virtual void ResetFacetFlag (MeshFacet::TFlagType tF);
-#ifdef Use_EdgeList
-  /** Resets of all edges the flag \a tF. */
-  virtual void ResetEdgeFlag (MeshEdge::TFlagType tF);
-#endif
   /** Resets of all points the flag \a tF. */
   virtual void ResetPointFlag (MeshPoint::TFlagType tF);
   /** Sets to all facets in \a raulInds the flag \a tF. */
   void SetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF);
-#ifdef Use_EdgeList
-  /** Sets to all edges in \a raulInds the flag \a tF. */
-  void SetEdgesFlag (const std::vector<unsigned long> &raulInds, MeshEdge::TFlagType tF);
-#endif
   /** Sets to all points in \a raulInds the flag \a tF. */
   void SetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF);
   /** Resets from all facets in \a raulInds the flag \a tF. */
   void ResetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF);
-#ifdef Use_EdgeList
-  /** Resets from all edges in \a raulInds the flag \a tF. */
-  void ResetEdgesFlag (const std::vector<unsigned long> &raulInds, MeshEdge::TFlagType tF);
-#endif
   /** Resets from all points in \a raulInds the flag \a tF. */
   void ResetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF);
   /** Sets to all facets in \a raulInds the properties in raulProps. 
@@ -153,8 +137,6 @@ public:
   void SetFacetsProperty(const std::vector<unsigned long> &raulInds, const std::vector<unsigned long> &raulProps);
   /** Count all facets with the flag \a tF. */
   unsigned long CountFacetFlag (MeshFacet::TFlagType tF) const;
-  /** Count all edges with the flag \a tF. */
-  unsigned long CountEdgeFlag (MeshEdge::TFlagType tF) const;
   /** Count all points with the flag \a tF. */
   unsigned long CountPointFlag (MeshPoint::TFlagType tF) const;
   /** Returns all geometric points from the facets in \a rvecIndices. */

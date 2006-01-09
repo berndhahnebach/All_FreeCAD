@@ -46,7 +46,6 @@ namespace MeshCore {
 
 // forward declarations
 class MeshFacetIterator;
-class MeshEdgeIterator;
 class MeshPointIterator;
 class MeshGeomFacet;
 class MeshFacet;
@@ -56,7 +55,6 @@ class MeshSTL;
 class MeshFacetVisitor;
 class MeshPointVisitor;
 
-#define Use_EdgeList
 
 /** 
  * The MeshKernel class is the basic class that holds the data points,
@@ -93,12 +91,6 @@ public:
   unsigned long CountFacets (void) const
   { return (unsigned long)(_aclFacetArray.size()); }
 
-#ifdef Use_EdgeList
-  /// Returns the number of edges
-  unsigned long CountEdges (void) const
-  { return (unsigned long)(_aclEdgeArray.size()); }
-#endif
-
   // Returns the number of points
   unsigned long CountPoints (void) const
   { return (unsigned long)(_aclPointArray.size()); }
@@ -117,13 +109,6 @@ public:
    */
   inline MeshPoint GetPoint (unsigned long ulIndex) const;
 
-#ifdef Use_EdgeList
-  /** Returns the edge at the given index. This method is rather slow and should be
-   * called occassionally only.
-   */
-  inline MeshGeomEdge GetEdge (unsigned long ulPos) const;
-#endif
-
   /** Returns the facet at the given index. This method is rather slow and should be
    * called occassionally only.
    */
@@ -136,11 +121,6 @@ public:
   /** Returns the indices of the neighbour facets of the given facet index. */
   inline void GetFacetNeighbours ( unsigned long ulIndex, unsigned long &rulNIdx0, 
                                    unsigned long &rulNIdx1, unsigned long &rulNIdx2) const;
-
-#ifdef Use_EdgeList
-  /** Returns true if the edge the iterator points to is a border edge. */
-  inline bool IsBorder (const MeshEdgeArray::_TIterator pPEdge) const;
-#endif
 
   /** Determines all facets that are associated to this point. This method is rather
    * slow and should be called occassionally only.
@@ -156,6 +136,12 @@ public:
 
   /** Returns the array of all facets */
   std::vector<MeshFacet>& GetFacets (void) { return _aclFacetArray; }
+
+  /** Returns the array of all edges.
+   *  Notice: The Edgelist will be temporary generated. Changes on the mesh structure does not affect the Edgelist
+   */
+  std::vector<MeshGeomEdge>& GetEdges (void) const;
+
   //@}
 
   /** @name Evaluation */
@@ -256,8 +242,6 @@ public:
   MeshFacetIterator FacetIterator() const;
   /** Returns an iterator object to go over all points. */
   MeshPointIterator PointIterator() const;
-  /** Returns an iterator object to go over all edges. */
-  MeshEdgeIterator  EdgeIterator () const;
   //@}
 
   /** @name Modification */
@@ -279,11 +263,6 @@ public:
   bool DeleteFacet (const MeshFacetIterator &rclIter);
   /** Removes several facets from the data structure. */
   virtual void DeleteFacets (const std::vector<unsigned long> &raulFacets);
-  /** Deletes the edge the iterator points to. The deletion of an edge requires the following step:
-   * \li Delete the facet(s) associated to this edge.
-   * True is returned if the edge could be deleted.
-   */
-  bool DeleteEdge (const MeshEdgeIterator &rclIter);
   /** Deletes the point the iterator points to. The deletion of a point requires the following step:
    * \li Find all associated facets to this point.
    * \li Delete these facets.
@@ -312,21 +291,6 @@ protected:
    * a new edge gets added. The new edges get inserted into the array in accordance
    * to their index. The neighbour indices of the facets get resetted accordingly.
    */
-#ifdef Use_EdgeList
-  void AddEdge (MeshFacet &rclFacet, unsigned long ulFacetIndex);
-  /** Deletes and resets respectively all edges indexing the given facet.
-   * If there is no neighbour facet then the edge gets deleted.
-   * Resetting in this case means to make edges that index this facet indexing
-   * the neighbour facet instead.
-   */
-  MeshEdgeArray::_TConstIterator FindEdge (unsigned long ulFacet, unsigned short usSide) const ;
-  inline unsigned long FindEdge (const MeshHelpEdge &rclEdge) const;
-
-  void CheckAndCorrectEdge (unsigned long ulFacetIndex);
-  /** Deletes all points and facets that are marked as invalid and corrects the point and
-   * neighbour indices at the same time.
-   */
-#endif
   
   void RemoveInvalids (bool bWithEdgeCorrect = true, bool bWithEdgeDelete = false);
   /** Checks if this point is associated to no other facet and deletes if so.
@@ -337,18 +301,8 @@ protected:
    */
   void ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex, bool bOnlySetInvalid = false);
 
-#ifdef Use_EdgeList
-  /// Rebuilds the edge array.
-  void RebuildEdgeArray (void);
-#endif
-
   /// Rebuilds the neighbour indices for all facets.
   void RebuildNeighbours (void);
-
-  /** Builds up the mesh data-structure. MeshPointBuilder is already created and gets deleted then.
-   * The Map is not sorted.
-   */
-  void Assign (MeshPointBuilder &rclMap);
 
   /** Adjusts the facet's orierntation to the given normal direction. */
   inline void AdjustNormal (MeshFacet &rclFacet, const Vector3D &rclNormal);
@@ -357,9 +311,6 @@ protected:
   inline Vector3D GetNormal (const MeshFacet &rclFacet) const;
 
   MeshPointArray  _aclPointArray; /**< Holds the array of geometric points. */
-#ifdef Use_EdgeList
-  MeshEdgeArray   _aclEdgeArray; /**< Holds the array of edges. */
-#endif
   MeshFacetArray  _aclFacetArray; /**< Holds the array of facets. */
   BoundBox3D      _clBoundBox; /**< The current calculated bounding box. */
   bool             _bValid; /**< Current state of validality. */
@@ -380,50 +331,14 @@ protected:
   friend class MeshInfo;
   friend class MeshEvalTopology;
   friend class MeshDegenerations;
+  friend class MeshBuilder;
 };
-
-#ifdef Use_EdgeList
-inline unsigned long MeshKernel::FindEdge (const MeshHelpEdge &rclEdge) const
-{
-  unsigned long i, ulCt  = _aclEdgeArray.size();
-  MeshHelpEdge    clEdge;
-  const MeshEdge *pclEdge;
-
-  for (i = 0; i < ulCt; i++)
-  {
-    pclEdge = &_aclEdgeArray[i];
-    _aclFacetArray[pclEdge->Index()].GetEdge((unsigned short)(pclEdge->Side()), clEdge);
-    if (clEdge == rclEdge)
-      return i;
-  }
-
-  return ULONG_MAX;
-}
-#endif
 
 inline MeshPoint MeshKernel::GetPoint (unsigned long ulIndex) const
 {
   assert(ulIndex < _aclPointArray.size());
   return _aclPointArray[ulIndex];
 }
-
-#ifdef Use_EdgeList
-inline MeshGeomEdge MeshKernel::GetEdge (unsigned long ulPos) const
-{
-  assert(ulPos < _aclEdgeArray.size());
-
-  MeshHelpEdge   clH;
-  MeshGeomEdge clEdge;
-  unsigned short usSide  = (unsigned short)(_aclEdgeArray[ulPos].Side());
-  unsigned long ulIndex = _aclEdgeArray[ulPos].Index();
-
-  _aclFacetArray[ulIndex].GetEdge(usSide, clH);
-  clEdge._aclPoints[0] = _aclPointArray[clH._ulIndex[0]];
-  clEdge._aclPoints[1] = _aclPointArray[clH._ulIndex[1]];
-  clEdge._bBorder = _aclFacetArray[ulIndex]._aulNeighbours[usSide] == ULONG_MAX;
-  return clEdge;
-}
-#endif
 
 inline MeshGeomFacet MeshKernel::GetFacet (unsigned long ulIndex) const
 {
@@ -497,13 +412,6 @@ inline void MeshKernel::GetFacetPoints (unsigned long ulFaIndex, unsigned long &
   rclP1 = rclFacet._aulPoints[1];  
   rclP2 = rclFacet._aulPoints[2];  
 }
-
-#ifdef Use_EdgeList
-inline bool MeshKernel::IsBorder (const MeshEdgeArray::_TIterator pPEdge) const
-{
-  return _aclFacetArray[pPEdge->Index()]._aulNeighbours[pPEdge->Side()] == ULONG_MAX;
-}
-#endif
 
 
 } // namespace MeshCore

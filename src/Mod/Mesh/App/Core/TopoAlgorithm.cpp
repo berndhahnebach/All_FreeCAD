@@ -116,115 +116,117 @@ void MeshTopoAlgorithm::InsertNode(unsigned long ulFacetPos, const Vector3D&  rc
   _aclNewFacets.push_back(clFacet);
 }
 
-#ifdef Use_EdgeList
 void MeshTopoAlgorithm::OptimizeTopology()
 {
-  std::vector<std::set<unsigned long> > clNPoints;
-  clNPoints.resize(_rclMesh._aclPointArray.size());
-  unsigned long ulPt0, ulPt1;
+  //TODO: Implement without EdgeList
+  throw new exception("sorry, not yet implemented");
 
-  // get all current edges
-  //
-  for (MeshFacetArray::_TIterator pFIter = _rclMesh._aclFacetArray.begin(); pFIter != _rclMesh._aclFacetArray.end(); pFIter++)
-  {
-    unsigned long ulP0 = pFIter->_aulPoints[0];
-    unsigned long ulP1 = pFIter->_aulPoints[1];
-    unsigned long ulP2 = pFIter->_aulPoints[2];
+  //std::vector<std::set<unsigned long> > clNPoints;
+  //clNPoints.resize(_rclMesh._aclPointArray.size());
+  //unsigned long ulPt0, ulPt1;
 
-    clNPoints[ulP0].insert(ulP1);
-    clNPoints[ulP0].insert(ulP2);
-    clNPoints[ulP1].insert(ulP0);
-    clNPoints[ulP1].insert(ulP2);
-    clNPoints[ulP2].insert(ulP0);
-    clNPoints[ulP2].insert(ulP1);
-  }
+  //// get all current edges
+  ////
+  //for (MeshFacetArray::_TIterator pFIter = _rclMesh._aclFacetArray.begin(); pFIter != _rclMesh._aclFacetArray.end(); pFIter++)
+  //{
+  //  unsigned long ulP0 = pFIter->_aulPoints[0];
+  //  unsigned long ulP1 = pFIter->_aulPoints[1];
+  //  unsigned long ulP2 = pFIter->_aulPoints[2];
 
-  MeshFacetIterator clFIter1(_rclMesh);
-  MeshFacetIterator clFIter2(_rclMesh);
-  // first reset VISITed flag
-  MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
+  //  clNPoints[ulP0].insert(ulP1);
+  //  clNPoints[ulP0].insert(ulP2);
+  //  clNPoints[ulP1].insert(ulP0);
+  //  clNPoints[ulP1].insert(ulP2);
+  //  clNPoints[ulP2].insert(ulP0);
+  //  clNPoints[ulP2].insert(ulP1);
+  //}
 
-  Vector3D p0, p1, q0, q1;
-  MeshFacet clF, clN;
-  for (MeshEdgeArray::_TIterator it = _rclMesh._aclEdgeArray.begin(); it != _rclMesh._aclEdgeArray.end(); ++it)
-  {
-    Base::Sequencer().next();
+  //MeshFacetIterator clFIter1(_rclMesh);
+  //MeshFacetIterator clFIter2(_rclMesh);
+  //// first reset VISITed flag
+  //MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
 
-    clF = _rclMesh._aclFacetArray[it->Index()];
-    if (clF._aulNeighbours[it->Side()] == ULONG_MAX)
-      continue;
+  //Vector3D p0, p1, q0, q1;
+  //MeshFacet clF, clN;
+  //for (MeshEdgeArray::_TIterator it = _rclMesh._aclEdgeArray.begin(); it != _rclMesh._aclEdgeArray.end(); ++it)
+  //{
+  //  Base::Sequencer().next();
 
-    clN = _rclMesh._aclFacetArray[clF._aulNeighbours[it->Side()]];
+  //  clF = _rclMesh._aclFacetArray[it->Index()];
+  //  if (clF._aulNeighbours[it->Side()] == ULONG_MAX)
+  //    continue;
 
-    if (clF.IsFlag(MeshFacet::VISIT) || clN.IsFlag(MeshFacet::VISIT))
-      continue;
+  //  clN = _rclMesh._aclFacetArray[clF._aulNeighbours[it->Side()]];
 
-    clFIter1.Set(it->Index());
-    const MeshGeomFacet& rclF = *clFIter1;
-    clFIter2.Set(clF._aulNeighbours[it->Side()]);
-    const MeshGeomFacet& rclN = *clFIter2;
+  //  if (clF.IsFlag(MeshFacet::VISIT) || clN.IsFlag(MeshFacet::VISIT))
+  //    continue;
 
-    if (rclF.GetNormal() * rclN.GetNormal() < 0.95f)
-      continue;
+  //  clFIter1.Set(it->Index());
+  //  const MeshGeomFacet& rclF = *clFIter1;
+  //  clFIter2.Set(clF._aulNeighbours[it->Side()]);
+  //  const MeshGeomFacet& rclN = *clFIter2;
 
-    // makes it sense to swap?
-    //
-    // Current length of the edge
-    p0 = _rclMesh._aclPointArray[clF._aulPoints[it->Side()]];
-    p1 = _rclMesh._aclPointArray[clF._aulPoints[(it->Side()+1)%3]];
+  //  if (rclF.GetNormal() * rclN.GetNormal() < 0.95f)
+  //    continue;
 
-    ulPt0 = clF._aulPoints[(it->Side()+2)%3];
-    q0 = _rclMesh._aclPointArray[ulPt0];
-    for (int i=0; i<3; ++i)
-    {
-      if (clN._aulNeighbours[i] == it->Index())
-      {
-        ulPt1 = clN._aulPoints[(i+2)%3];
-        q1 = _rclMesh._aclPointArray[ulPt1];
-        break;
-      }
-    }
+  //  // makes it sense to swap?
+  //  //
+  //  // Current length of the edge
+  //  p0 = _rclMesh._aclPointArray[clF._aulPoints[it->Side()]];
+  //  p1 = _rclMesh._aclPointArray[clF._aulPoints[(it->Side()+1)%3]];
 
-    // get all neighbour points (to check the edges)
-    if (clNPoints[ulPt0].find(ulPt1) != clNPoints[ulPt0].end())
-      continue;
-    if (clNPoints[ulPt1].find(ulPt0) != clNPoints[ulPt1].end())
-      continue;
+  //  ulPt0 = clF._aulPoints[(it->Side()+2)%3];
+  //  q0 = _rclMesh._aclPointArray[ulPt0];
+  //  for (int i=0; i<3; ++i)
+  //  {
+  //    if (clN._aulNeighbours[i] == it->Index())
+  //    {
+  //      ulPt1 = clN._aulPoints[(i+2)%3];
+  //      q1 = _rclMesh._aclPointArray[ulPt1];
+  //      break;
+  //    }
+  //  }
 
-    if ((q1-q0).Length() < (p1-p0).Length())
-    {
-      // is polygon convex ?
-      //
-      float a0 = (q0-p0).GetAngle(p1-p0);
-      float a1 = (p1-p0).GetAngle(q1-p0);
+  //  // get all neighbour points (to check the edges)
+  //  if (clNPoints[ulPt0].find(ulPt1) != clNPoints[ulPt0].end())
+  //    continue;
+  //  if (clNPoints[ulPt1].find(ulPt0) != clNPoints[ulPt1].end())
+  //    continue;
 
-      float b0 = (q0-p1).GetAngle(p0-p1);
-      float b1 = (p0-p1).GetAngle(q1-p1);
+  //  if ((q1-q0).Length() < (p1-p0).Length())
+  //  {
+  //    // is polygon convex ?
+  //    //
+  //    float a0 = (q0-p0).GetAngle(p1-p0);
+  //    float a1 = (p1-p0).GetAngle(q1-p0);
 
-      if ((a0+a1<3.0f) && (b0+b1<3.0f))
-      {
-        if (((q1-p0)%(q0-p0))*rclF.GetNormal() < FLOAT_EPS)
-        {
-          continue;
-        }
-        if (((q1-p0)%(q0-p0))*rclN.GetNormal() < FLOAT_EPS)
-        {
-          continue;
-        }
+  //    float b0 = (q0-p1).GetAngle(p0-p1);
+  //    float b1 = (p0-p1).GetAngle(q1-p1);
 
-        SwapEdge(it->Index(), it->Side());
-      
-        clF.SetFlag(MeshFacet::VISIT);
-        clN.SetFlag(MeshFacet::VISIT);
+  //    if ((a0+a1<3.0f) && (b0+b1<3.0f))
+  //    {
+  //      if (((q1-p0)%(q0-p0))*rclF.GetNormal() < FLOAT_EPS)
+  //      {
+  //        continue;
+  //      }
+  //      if (((q1-p0)%(q0-p0))*rclN.GetNormal() < FLOAT_EPS)
+  //      {
+  //        continue;
+  //      }
 
-        // append the new edge to the point neighbourhood
-        clNPoints[ulPt0].insert(ulPt1);
-        clNPoints[ulPt1].insert(ulPt0);
-      }
-    }
-  }
+  //      SwapEdge(it->Index(), it->Side());
+  //    
+  //      clF.SetFlag(MeshFacet::VISIT);
+  //      clN.SetFlag(MeshFacet::VISIT);
+
+  //      // append the new edge to the point neighbourhood
+  //      clNPoints[ulPt0].insert(ulPt1);
+  //      clNPoints[ulPt1].insert(ulPt0);
+  //    }
+  //  }
+  //}
 }
-#endif
+
 
 void MeshTopoAlgorithm::SwapEdge(unsigned long ulFacetPos, int iSide)
 {
@@ -704,90 +706,6 @@ struct TVertexEval
 
 bool MeshTopoAlgorithm::TriangulatePolygon(const std::vector<unsigned long>& raulPoly, std::vector<MeshGeomFacet>& raclFacets)
 {
-#if 0
-  RSlist<TVertexEval> alVertices;
-
-  std::vector<unsigned long> aulPolygon = raulPoly;
-  unsigned long ulCnt = aulPolygon.size();
-
-  MeshGeomFacet clFacet;
-  Vector3D u,v;
-  for (unsigned long i=0; i<ulCnt; ++i)
-  {
-    TVertexEval vertex;
-    unsigned long ulInd1 = aulPolygon[i];
-    unsigned long ulInd2 = aulPolygon[(i+1)%ulCnt];
-    unsigned long ulInd3 = aulPolygon[(i-1+ulCnt)%ulCnt];
-
-    vertex.ulVertex = ulInd1;
-    vertex.ulNext = ulInd2;
-    vertex.ulPrev = ulInd3;
-
-    clFacet._aclPoints[0] = _rclMesh._aclPointArray[ulInd1];
-    clFacet._aclPoints[1] = _rclMesh._aclPointArray[ulInd2];
-    clFacet._aclPoints[2] = _rclMesh._aclPointArray[ulInd3];
-    clFacet.CalcNormal();
-
-    u = clFacet._aclPoints[1] - clFacet._aclPoints[0];
-    v = clFacet._aclPoints[2] - clFacet._aclPoints[0];
-    float fAngle = u.GetAngle(v);
-    if (rclNormal * clFacet.GetNormal() < 0)
-      fAngle = 2*F_PI-fAngle;
-    vertex.fEval = fAngle;
-
-    alVertices.push_back(vertex);
-  }
-
-  alVertices.sort();
-
-  TVertexEval vertex;
-  while (alVertices.size() >= 3)
-  {
-    vertex = alVertices.front();
-    alVertices.pop_front();
-
-    clFacet._aclPoints[0] = _rclMesh._aclPointArray[vertex.ulVertex];
-    clFacet._aclPoints[1] = _rclMesh._aclPointArray[vertex.ulNext];
-    clFacet._aclPoints[2] = _rclMesh._aclPointArray[vertex.ulPrev];
-    clFacet.CalcNormal();
-    raclFacets.push_back(clFacet);
-
-    // recalculate the angles of vertices prev and next
-    for (RSlist<TVertexEval>::iterator it = alVertices.begin(); it != alVertices.end(); ++it)
-    {
-      bool found = false;
-      if (it->ulVertex == vertex.ulPrev)
-      {
-        it->ulNext = vertex.ulNext;
-        found = true;
-      }
-      else if (it->ulVertex == vertex.ulNext)
-      {
-        it->ulPrev = vertex.ulPrev;
-        found = true;
-      }
-
-      if (found)
-      {
-        clFacet._aclPoints[0] = _rclMesh._aclPointArray[it->ulVertex];
-        clFacet._aclPoints[1] = _rclMesh._aclPointArray[it->ulNext];
-        clFacet._aclPoints[2] = _rclMesh._aclPointArray[it->ulPrev];
-        clFacet.CalcNormal();
-
-        u = clFacet._aclPoints[1] - clFacet._aclPoints[0];
-        v = clFacet._aclPoints[2] - clFacet._aclPoints[0];
-        float fAngle = u.GetAngle(v);
-        if (rclNormal * clFacet.GetNormal() < 0)
-          fAngle = 2*F_PI-fAngle;
-        it->fEval = fAngle;
-      }
-    }
-
-    alVertices.sort();
-  }
-
-#else
-
   std::vector<MeshGeomFacet> aclFacets;
   std::vector<unsigned long> aulPolygon = raulPoly;
   unsigned long ulCnt = aulPolygon.size();
@@ -806,8 +724,6 @@ bool MeshTopoAlgorithm::TriangulatePolygon(const std::vector<unsigned long>& rau
     }
     raclFacets.push_back(clFacet);
   }
-#endif
-
   return true;
 }
 
@@ -857,9 +773,7 @@ void MeshTopoAlgorithm::HarmonizeNormals (void)
 
     ulVisited += _rclMesh.VisitNeighbourFacets(clHarmonizer, ulStartFacet);
     // nach noch freien Facets (auf Inseln) suchen
-    clFIter = std::find_if(_rclMesh._aclFacetArray.begin(),
-                        _rclMesh._aclFacetArray.end(),
-                        std::bind2nd(MeshIsNotFlag<MeshFacet>(), MeshFacet::VISIT));
+    clFIter = std::find_if(_rclMesh._aclFacetArray.begin(), _rclMesh._aclFacetArray.end(), std::bind2nd(MeshIsNotFlag<MeshFacet>(), MeshFacet::VISIT));
 
     if (clFIter < _rclMesh._aclFacetArray.end())
     {
@@ -871,9 +785,6 @@ void MeshTopoAlgorithm::HarmonizeNormals (void)
       ulStartFacet = ULONG_MAX;
   }
  
-#ifdef Use_EdgeList
-  _rclMesh.RebuildEdgeArray();
-#endif
   Base::Sequencer().stop(); 
 }
 
@@ -881,74 +792,11 @@ void MeshTopoAlgorithm::FlipNormals (void)
 {
   for (MeshFacetArray::_TIterator i = _rclMesh._aclFacetArray.begin(); i < _rclMesh._aclFacetArray.end(); i++)
     i->FlipNormal();
-#ifdef Use_EdgeList
-  _rclMesh.RebuildEdgeArray();
-#endif
 }
 
 //
 // OBSOLETE
 //
-
-#ifdef Use_EdgeList
-void MeshTopoAlgorithm::DeleteEdges(unsigned long ulFacetPos)
-{
-  unsigned long i, j, k, ulEdgeInd;
-
-  if (ulFacetPos >= _rclMesh.CountFacets())
-    return;
-  
-  for (i=0;i<3;i++)
-  {
-    ulEdgeInd = _rclMesh._aclEdgeArray.Find(ulFacetPos, i);
-    if(ulEdgeInd != ULONG_MAX)
-      _rclMesh._aclEdgeArray.erase(_rclMesh._aclEdgeArray.begin() + ulEdgeInd);
-
-    k = _rclMesh._aclFacetArray[ulFacetPos]._aulNeighbours[i];
-    if (k != ULONG_MAX)
-    {
-      for (j=0;j<3;j++)
-      {
-        if (_rclMesh._aclFacetArray[k]._aulNeighbours[j] == ulFacetPos)
-        {
-          ulEdgeInd = _rclMesh._aclEdgeArray.Find(k, j);
-          
-          if (ulEdgeInd != ULONG_MAX)
-           _rclMesh._aclEdgeArray.erase(_rclMesh._aclEdgeArray.begin() + ulEdgeInd);
-        }
-      }
-    }
-  }
-
-}
-
-void MeshTopoAlgorithm::InsertEdges(unsigned long ulFacetPos)
-{
-  unsigned long i, j, k, ulEdgeInd;
-
-  if (ulFacetPos >= _rclMesh.CountFacets())
-    return;
-
-  for (i=0;i<3;i++)
-  {
-    ulEdgeInd = _rclMesh._aclEdgeArray.Find(ulFacetPos, i);
-    if (ulEdgeInd == ULONG_MAX){
-      k = _rclMesh._aclFacetArray[ulFacetPos]._aulNeighbours[i];
-      if (k!=ULONG_MAX){
-        for (j=0;j<3;j++){
-          if (_rclMesh._aclFacetArray[k]._aulNeighbours[j] == ulFacetPos)
-          {
-            ulEdgeInd = _rclMesh._aclEdgeArray.Find(k,j);
-            if (ulEdgeInd == ULONG_MAX)
-              _rclMesh._aclEdgeArray.Add(ulFacetPos,i);
-          }
-        }
-      }
-      else _rclMesh._aclEdgeArray.Add(ulFacetPos, i);
-    }
-  }
-}
-#endif
 
 
 void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
@@ -957,9 +805,6 @@ void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
   MeshFacet clFacet = _rclMesh._aclFacetArray[ulFacetPos];
 
   if (iInd == 1){
-#ifdef Use_EdgeList
-    DeleteEdges(ulFacetPos);
-#endif
     ulTmpInd = clFacet._aulPoints[0];
     clFacet._aulPoints[0] = clFacet._aulPoints[1];
     clFacet._aulPoints[1] = clFacet._aulPoints[2];
@@ -969,15 +814,9 @@ void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
     clFacet._aulNeighbours[1] = clFacet._aulNeighbours[2];
     clFacet._aulNeighbours[2] = ulTmpInd;
     _rclMesh._aclFacetArray[ulFacetPos] = clFacet;
-#ifdef Use_EdgeList
-    InsertEdges(ulFacetPos);
-#endif
   }
   else if (iInd == 2)
   {
-#ifdef Use_EdgeList
-    DeleteEdges(ulFacetPos);
-#endif
     ulTmpInd = clFacet._aulPoints[0];
     clFacet._aulPoints[0] = clFacet._aulPoints[2];
     clFacet._aulPoints[2] = clFacet._aulPoints[1];
@@ -987,9 +826,6 @@ void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
     clFacet._aulNeighbours[2] = clFacet._aulNeighbours[1];
     clFacet._aulNeighbours[1] = ulTmpInd;
     _rclMesh._aclFacetArray[ulFacetPos] = clFacet;
-#ifdef Use_EdgeList
-    InsertEdges(ulFacetPos);
-#endif
   }
 }
 

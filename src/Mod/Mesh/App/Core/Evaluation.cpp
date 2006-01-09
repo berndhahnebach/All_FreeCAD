@@ -172,20 +172,14 @@ MeshEvalSolid::~MeshEvalSolid()
 
 bool MeshEvalSolid::Evaluate ()
 {
-  int iOpenEdges = 0;
-  MeshEdgeIterator clEIter(_rclMesh);
-
-  clEIter.Begin();
-  while ( clEIter.EndReached() == false)
+  vector<MeshGeomEdge>& edges = _rclMesh.GetEdges();
+  for (vector<MeshGeomEdge>::iterator it = edges.begin(); it != edges.end(); it++)
   {
-    if (clEIter->_bBorder != false)
-    {
-      iOpenEdges++;
-    }
-    ++clEIter;
+    if (it->_bBorder)
+      return false;
   }
 
-  return (iOpenEdges == 0);
+  return true;
 }
 
 bool MeshEvalSolid::Fixup()
@@ -230,30 +224,6 @@ bool MeshEvalTopology::Evaluate ()
     return false;
   else
     return true;
-}
-
-// generate indexed edge list which tangents non-manifolds
-void MeshEvalTopology::GetEdgeManifolds (std::vector<unsigned long> &raclEdgeIndList) const
-{
-  std::set<unsigned long> aclIndices;
-  const MeshEdgeArray &rclEAry = _rclMesh._aclEdgeArray;
-
-  for (std::vector<std::list<unsigned long> >::const_iterator pMF = _aclManifoldList.begin(); pMF != _aclManifoldList.end(); pMF++)
-  {
-    for (std::list<unsigned long>::const_iterator pE = pMF->begin(); pE != pMF->end(); pE++)
-    {
-      // search edges from facet index
-      aclIndices.insert(rclEAry.Find(*pE, 0));
-      aclIndices.insert(rclEAry.Find(*pE, 1));
-      aclIndices.insert(rclEAry.Find(*pE, 2));
-    }
-  }
-
-  // erase not invalid edge index
-  aclIndices.erase(ULONG_MAX);
-
-  raclEdgeIndList.clear();
-  raclEdgeIndList.insert(raclEdgeIndList.begin(), aclIndices.begin(), aclIndices.end());
 }
 
 // generate indexed edge list which tangents non-manifolds

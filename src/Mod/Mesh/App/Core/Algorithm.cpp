@@ -332,14 +332,6 @@ void MeshAlgorithm::SetFacetsFlag (const std::vector<unsigned long> &raulInds, M
     _rclMesh._aclFacetArray[*i].SetFlag(tF);
 }
 
-#ifdef Use_EdgeList
-void MeshAlgorithm::SetEdgesFlag (const std::vector<unsigned long> &raulInds, MeshEdge::TFlagType tF)
-{
-  for (std::vector<unsigned long>::const_iterator i = raulInds.begin(); i != raulInds.end(); i++)
-    _rclMesh._aclEdgeArray[*i].SetFlag(tF);
-}
-#endif
-
 void MeshAlgorithm::SetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF)
 {
   for (std::vector<unsigned long>::const_iterator i = raulInds.begin(); i != raulInds.end(); i++)
@@ -351,14 +343,6 @@ void MeshAlgorithm::ResetFacetsFlag (const std::vector<unsigned long> &raulInds,
   for (std::vector<unsigned long>::const_iterator i = raulInds.begin(); i != raulInds.end(); i++)
     _rclMesh._aclFacetArray[*i].ResetFlag(tF);
 }
-
-#ifdef Use_EdgeList
-void MeshAlgorithm::ResetEdgesFlag (const std::vector<unsigned long> &raulInds, MeshEdge::TFlagType tF)
-{
-  for (std::vector<unsigned long>::const_iterator i = raulInds.begin(); i != raulInds.end(); i++)
-    _rclMesh._aclEdgeArray[*i].ResetFlag(tF);
-}
-#endif
 
 void MeshAlgorithm::ResetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF)
 {
@@ -380,13 +364,6 @@ void MeshAlgorithm::SetFacetFlag (MeshFacet::TFlagType tF)
   _rclMesh._aclFacetArray.SetFlag(tF);
 }
 
-#ifdef Use_EdgeList
-void MeshAlgorithm::SetEdgeFlag (MeshEdge::TFlagType tF)
-{
-  _rclMesh._aclEdgeArray.SetFlag(tF);
-}
-#endif
-
 void MeshAlgorithm::SetPointFlag (MeshPoint::TFlagType tF)
 {
   _rclMesh._aclPointArray.SetFlag(tF);
@@ -396,13 +373,6 @@ void MeshAlgorithm::ResetFacetFlag (MeshFacet::TFlagType tF)
 {
   _rclMesh._aclFacetArray.ResetFlag(tF);
 }
-
-#ifdef Use_EdgeList
-void MeshAlgorithm::ResetEdgeFlag (MeshEdge::TFlagType tF)
-{
-  _rclMesh._aclEdgeArray.ResetFlag(tF);
-}
-#endif
 
 void MeshAlgorithm::ResetPointFlag (MeshPoint::TFlagType tF)
 {
@@ -414,14 +384,6 @@ unsigned long MeshAlgorithm::CountFacetFlag (MeshFacet::TFlagType tF) const
   return std::count_if(_rclMesh._aclFacetArray.begin(), _rclMesh._aclFacetArray.end(),
                     std::bind2nd(MeshIsFlag<MeshFacet>(), tF));
 }
-
-#ifdef Use_EdgeList
-unsigned long MeshAlgorithm::CountEdgeFlag (MeshEdge::TFlagType tF) const
-{
-  return std::count_if(_rclMesh._aclEdgeArray.begin(), _rclMesh._aclEdgeArray.end(),
-                    std::bind2nd(MeshIsFlag<MeshEdge>(), tF));
-}
-#endif
 
 unsigned long MeshAlgorithm::CountPointFlag (MeshPoint::TFlagType tF) const
 {

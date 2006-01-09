@@ -414,7 +414,6 @@ unsigned long MeshDegenerations::RemoveEdgeTooSmall (float fMinEdgeLength, float
   }
   while (ulCtLastLoop > _rclMesh.CountFacets());
 
-  _rclMesh.RebuildEdgeArray();
   _rclMesh.RebuildNeighbours();
 
   return ulCtFacets - _rclMesh.CountFacets();
@@ -426,7 +425,6 @@ bool MeshDegenerations::Evaluate ()
   ResetErrorModes();
 
   MeshFacetArray::_TIterator  pFIter;
-  MeshEdgeArray::_TIterator   pEIter;
   MeshPointArray::_TIterator  pPIter;
   unsigned long                       ulCtPoints, ulCtFacets, i, j, k, l;
 
@@ -491,20 +489,6 @@ bool MeshDegenerations::Evaluate ()
     }
   }
 
-  // Kanten-Array muss sortiert sein
-  // @todo gcc macht Probleme
-  /**if (std::is_sorted(_rclMesh._aclEdgeArray.begin(), _rclMesh._aclEdgeArray.end()) == false)
-  {
-    // Kanten-Array nicht sortiert
-    AddErrorMode( Undefined );
-  }*/
-
-  if (std::adjacent_find(_rclMesh._aclEdgeArray.begin(), _rclMesh._aclEdgeArray.end()) < _rclMesh._aclEdgeArray.end())
-  {
-    // zwei gleiche Kanten (gleiches Dreieck & gleiche Seite) s.u.
-    AddErrorMode( DuplicatedEdges );
-  }
-
   // Ueberpruefung auf doppelte Dreiecke
   std::set<TMeshFacetInds> FIndsSet;
   for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++)
@@ -516,34 +500,6 @@ bool MeshDegenerations::Evaluate ()
   {
     // zwei gleiche Dreiecke
     AddErrorMode( DuplicatedFacets );
-  }
-
-  // Ueberpruefung auf doppelte Kanten und ungueltige Indizies
-  for (pEIter = _rclMesh._aclEdgeArray.begin(); pEIter < _rclMesh._aclEdgeArray.end(); pEIter++)
-  {
-    i = pEIter->Index();
-    j = pEIter->Side();
-    if ((i >= ulCtFacets) || (j > 2))
-    {
-      // ungueltige Indizies
-      AddErrorMode( OutOfRangeEdge );
-    }
-
-    k = _rclMesh._aclFacetArray[i]._aulNeighbours[j];
-    l = _rclMesh._aclFacetArray[k].Side(i);
-    if (_rclMesh._aclEdgeArray.Find(k, l) != ULONG_MAX)
-    {
-      // doppelte Kante (beide Dreiecke besitzen jeweils die gleiche Kante) s.o
-      AddErrorMode( DuplicatedEdges );
-    }
-
-    for (pEIter = _rclMesh._aclEdgeArray.begin(); pEIter < _rclMesh._aclEdgeArray.end(); pEIter++)
-    {
-      if (pEIter->IsValid() == false)
-      {
-        AddErrorMode( InvalidEdge );
-      }
-    }
   }
 
   // keine doppelte Punkte
@@ -576,7 +532,6 @@ std::vector<unsigned long> MeshDegenerations::GetIndices(MeshDegenerations::TErr
   unsigned long i=0;
   std::vector<unsigned long> ulInds;
   MeshFacetArray::_TIterator  pFIter;
-  MeshEdgeArray::_TIterator   pEIter;
   MeshPointArray::_TIterator  pPIter;
 
   switch (error)
@@ -588,16 +543,6 @@ std::vector<unsigned long> MeshDegenerations::GetIndices(MeshDegenerations::TErr
         if (pFIter->IsValid() == false)
         {
           ulInds.push_back(i);
-        }
-      } break;
-    }
-    case InvalidEdge:
-    {
-      for (pEIter = _rclMesh._aclEdgeArray.begin(); pEIter < _rclMesh._aclEdgeArray.end(); pEIter++, i++)
-      {
-        if (pEIter->IsValid() == false)
-        {
-          ulInds.push_back(pEIter->Index());
         }
       } break;
     }
@@ -634,22 +579,6 @@ std::vector<unsigned long> MeshDegenerations::GetIndices(MeshDegenerations::TErr
       std::sort(ulInds.begin(), ulInds.end());
       ulInds.erase(std::unique(ulInds.begin(), ulInds.end()), ulInds.end());
       break;
-    }
-    case DuplicatedEdges:
-    {
-      unsigned long i,j,k,l;
-      for (pEIter = _rclMesh._aclEdgeArray.begin(); pEIter < _rclMesh._aclEdgeArray.end(); pEIter++)
-      {
-        i = pEIter->Index();
-        j = pEIter->Side();
-        k = _rclMesh._aclFacetArray[i]._aulNeighbours[j];
-        l = _rclMesh._aclFacetArray[k].Side(i);
-        if (_rclMesh._aclEdgeArray.Find(k, l) != ULONG_MAX)
-        {
-          ulInds.push_back(i);
-          ulInds.push_back(k);
-        }
-      } break;
     }
     case DuplicatedFacets:
     {
@@ -714,19 +643,6 @@ std::vector<unsigned long> MeshDegenerations::GetIndices(MeshDegenerations::TErr
 
         std::sort(ulInds.begin(), ulInds.end());
         ulInds.erase(std::unique(ulInds.begin(), ulInds.end()), ulInds.end());
-      } break;
-    }
-    case OutOfRangeEdge:
-    {
-      unsigned long ii, jj;
-      for (pEIter = _rclMesh._aclEdgeArray.begin(); pEIter < _rclMesh._aclEdgeArray.end(); pEIter++, i++)
-      {
-        ii = pEIter->Index();
-        jj = pEIter->Side();
-        if ((ii >= ulCtFacets) || (jj > 2))
-        {
-          ulInds.push_back(ii);
-        }
       } break;
     }
     case OutOfRangePoint:

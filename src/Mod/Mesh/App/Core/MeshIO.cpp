@@ -27,6 +27,7 @@
 
 #include "MeshKernel.h"
 #include "MeshIO.h"
+#include "Builder.h"
 
 #include <Base/Sequencer.h>
 #include <Base/Stream.h>
@@ -110,13 +111,14 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
   unsigned long ulVertexCt, ulCt;
   float fX, fY, fZ;
   MeshGeomFacet clFacet;
-  std::vector<MeshGeomFacet>  clFacetAry;
 
   if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
     return false;
 
   ulCt = rstrIn.FileSize();
-  Base::SequencerLauncher seq("loading...", ulCt+1);  
+
+  MeshBuilder builder(this->_rclMesh);
+  builder.Initialize(ulCt);
 
   ulVertexCt = 0;
   while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false))
@@ -136,15 +138,13 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
         if (ulVertexCt == 3)
         {
           ulVertexCt = 0;
-          clFacetAry.push_back(clFacet);
+          builder.AddFacet(clFacet);
         }
       }
     }
-
-    Base::Sequencer().next( true ); // allow to cancel
   }
 
-  _rclMesh = clFacetAry;  
+  builder.Finish();
 
   return true;
 }
@@ -169,54 +169,28 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
 
   // get file size and calculate the number of facets
   unsigned long ulSize = rstrIn.FileSize(); 
-  unsigned long ulFac = (ulSize - (80 + sizeof(unsigned long)))/50;
+  unsigned long ulFac = (ulSize - (80 + sizeof(unsigned long))) / 50;
 
   // compare the calculated with the read value
   if (ulCt > ulFac)
     return false;// not a valid STL file
+ 
+  MeshBuilder builder(this->_rclMesh);
+  builder.Initialize(ulCt);
 
-#ifdef Use_EdgeList
-  Base::SequencerLauncher seq("create mesh structure...", ulCt * 4 + 1);
-#else
-  Base::SequencerLauncher seq("create mesh structure...", ulCt * 3 / 2);
-#endif
-
-  MeshPointBuilder  clMap;
-  clMap.resize(ulCt*3);
-
-  unsigned long k = 0;
-
-  // n-Facets einlesen
   for (unsigned long i = 0; i < ulCt; i++)
   {
-    // Normale, Eckpunkte
+    // read normal, points
     rstrIn.Read((char*)&clVects, sizeof(clVects));
 
-    if (rstrIn.IsBad() == true)
-      return false;
+	std::swap(clVects[0], clVects[3]);
+	builder.AddFacet(clVects);
 
-    // Umlaufrichtung an Normale anpassen
-    if ((((clVects[2] - clVects[1]) % (clVects[3] - clVects[1])) * clVects[0]) >= 0.0f)
-    {
-      clMap[k++].Set(0, i, clVects[1]);
-      clMap[k++].Set(1, i, clVects[2]);
-      clMap[k++].Set(2, i, clVects[3]);
-    }
-    else
-    {
-      clMap[k++].Set(0, i, clVects[1]);
-      clMap[k++].Set(1, i, clVects[3]);
-      clMap[k++].Set(2, i, clVects[2]);
-    }
-
-    // ueberlesen Attribut
+	// overread 2 bytes attribute
     rstrIn.Read((char*)&usAtt, sizeof(usAtt));
+  }
 
-    Base::Sequencer().next( true ); // allow to cancel
-  } 
-
-  _rclMesh.Assign(clMap);
-
+  builder.Finish();
 
   return true;
 }
@@ -284,7 +258,7 @@ bool MeshSTL::SaveBinary (FileStream &rstrOut) const
   const MeshGeomFacet *pclFacet;
   unsigned long i, ulCtFacet;
   unsigned short usAtt;
-  char szInfo[80];
+  char szInfo[81];
 
   if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) || (_rclMesh.CountFacets() == 0))
   {

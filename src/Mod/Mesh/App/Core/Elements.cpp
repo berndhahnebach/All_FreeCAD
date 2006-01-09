@@ -91,41 +91,6 @@ MeshPointArray& MeshPointArray::operator = (const MeshPointArray &rclPAry)
   return *this;
 }
 
-// -----------------------------------------------------------------
-
-void MeshEdgeArray::AdjustIndex (unsigned long ulIndex)
-{
-  _TIterator  pIter, pEnd;
-  unsigned long      k;
-
-  pIter = std::upper_bound(begin(), end(), MeshEdge(ulIndex, 0));
-  pEnd = end();
-  while (pIter < pEnd)
-  {
-    k = pIter->_ulIndex;
-    pIter->_ulIndex = (((k >> 2) - 1) << 2) | (k & 3);
-    pIter++;  
-  }
-}
-
-void MeshEdgeArray::SetFlag (MeshEdge::TFlagType tF)
-{
-  for (MeshEdgeArray::_TIterator i = begin(); i < end(); i++) i->SetFlag(tF);
-}
-
-void MeshEdgeArray::ResetFlag (MeshEdge::TFlagType tF)
-{
-  for (MeshEdgeArray::_TIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
-}
-
-MeshEdgeArray& MeshEdgeArray::operator = (const MeshEdgeArray &rclEAry)
-{
-  TMeshEdgeArray::operator=(rclEAry);
-  return *this;
-}
-
-// -----------------------------------------------------------------
-
 void MeshFacetArray::Erase (_TIterator pIter)
 {
   unsigned long i, *pulN;
