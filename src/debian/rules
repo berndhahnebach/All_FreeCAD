@@ -1,5 +1,4 @@
 #!/usr/bin/make -f
-# -*- makefile -*-
 # Sample debian/rules that uses debhelper.
 # GNU copyright 1997 to 1999 by Joey Hess.
 
@@ -11,28 +10,27 @@ export DH_COMPAT=4
 
 # CFLAGS = -Wall -g
 DEBIAN = $(shell pwd)/debian
-FREECADDIR = $(DEBIAN)/FreeCAD
-PROJECTS=/home/werner
+FREECADDIR = $(DEBIAN)/freecad
 
-FreeCAD-stamp:
+freecad-stamp:
 	dh_testdir
-#	sh cvsbuild.sh
-#	./configure --prefix=/usr/local/FreeCAD --with-wildmagic-includes=$(PROJECTS)/Projekte/GeometricTools/WildMagic3/Include --with-wildmagic-libs=$(PROJECTS)/Projekte/GeometricTools/WildMagic3/Library --with-Qt-lib=qt-mt32
-#	$(MAKE) clean
-#	$(MAKE)
+	sh cvsbuild.sh
+	./configure --prefix=/opt/freecad --with-wildmagic-includes=/home/werner/Projekte/GeometricTools/WildMagic3/Include --with-wildmagic-libs=/home/werner/Projekte/GeometricTools/WildMagic3/Library --with-Qt-lib=qt-mt32
+	$(MAKE) clean
+	$(MAKE)
 	$(MAKE) DESTDIR=$(FREECADDIR) install
-	touch FreeCAD-stamp
+	touch freecad-stamp
 
-build: FreeCAD-stamp
+build: freecad-stamp
 
 clean:
 	dh_testdir
 	dh_testroot
-	rm -f FreeCAD-stamp
+	rm -f freecad-stamp
 	# Add here commands to clean up after the build process.
 	rm -rf $(FREECADDIR)
 
-#	-$(MAKE) clean
+	-$(MAKE) clean
 	dh_clean
 
 install: build
@@ -43,7 +41,7 @@ install: build
 	#dh_installdirs
 	# we should already be installed by now.
 
-	# Add here commands to install the package into debian/FreeCAD.
+	# Add here commands to install the package into debian/freecad.
 	#dh_install --sourcedir=$(FREECADDIR)
 
 
@@ -58,9 +56,9 @@ binary-arch: build install
 	dh_installdirs -a
 	dh_installchangelogs ChangeLog.txt
 	dh_installdocs
-#	dh_installexamples
+	dh_installexamples
 #	dh_install --sourcedir=$(FREECADDIR)
-#	dh_installmenu
+	dh_installmenu
 #	dh_installdebconf
 #	dh_installlogrotate
 #	dh_installemacsen
