@@ -27,6 +27,7 @@
 # include <Wm3IntrSegment3Plane3.h>
 # include <Wm3Matrix3.h>
 # include <Wm3Vector3.h>
+# include <vector>
 #endif
 
 #include "Evaluation.h"
@@ -172,8 +173,8 @@ MeshEvalSolid::~MeshEvalSolid()
 
 bool MeshEvalSolid::Evaluate ()
 {
-  vector<MeshGeomEdge>& edges = _rclMesh.GetEdges();
-  for (vector<MeshGeomEdge>::iterator it = edges.begin(); it != edges.end(); it++)
+  std::vector<MeshGeomEdge>& edges = _rclMesh.GetEdges();
+  for (std::vector<MeshGeomEdge>::iterator it = edges.begin(); it != edges.end(); it++)
   {
     if (it->_bBorder)
       return false;

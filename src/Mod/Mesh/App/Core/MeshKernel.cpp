@@ -197,7 +197,7 @@ MeshKernel& MeshKernel::operator = (std::vector<MeshGeomFacet> &rclVAry)
 
 bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
 {
-  unsigned long i, j, ulNFacet, ulInd, ulEdge;
+  unsigned long i, j, ulNFacet, ulInd;
 
   if (rclIter._clIter >= _aclFacetArray.end())
     return false;
@@ -327,7 +327,7 @@ void MeshKernel::RemoveInvalids (bool bWithEdgeCorrect, bool bWithEdgeDelete)
 {
   std::vector<unsigned long> aulDecrements;
   std::vector<unsigned long>::iterator       pDIter;
-  unsigned long ulDec, i, j, k, ulSteps;
+  unsigned long ulDec, i, k, ulSteps;
   MeshPointArray::_TIterator pPIter, pPEnd;
   MeshFacetArray::_TIterator pFIter, pFEnd;
 
@@ -685,22 +685,21 @@ MeshPointIterator MeshKernel::PointIterator() const
   it.Begin(); return it;
 }
 
-vector<MeshGeomEdge>& MeshKernel::GetEdges (void) const
-{ 
-  set<MeshBuilder::Edge> tmp;
+std::vector<MeshGeomEdge>& MeshKernel::GetEdges (void) const
+{
+  std::set<MeshBuilder::Edge> tmp;
 
   for (MeshFacetArray::_TConstIterator it = _aclFacetArray.begin(); it != _aclFacetArray.end(); it++)
   {
     for (int i = 0; i < 3; i++)
     {
-      long nb = it->_aulNeighbours[i];
       tmp.insert(MeshBuilder::Edge(it->_aulPoints[i], it->_aulPoints[(i+1)%3], it->_aulNeighbours[i]));
     }
   }
 
-  vector<MeshGeomEdge>* edges = new vector<MeshGeomEdge>();
+  std::vector<MeshGeomEdge>* edges = new std::vector<MeshGeomEdge>();
 
-  for (set<MeshBuilder::Edge>::iterator it2 = tmp.begin(); it2 != tmp.end(); it2++)
+  for (std::set<MeshBuilder::Edge>::iterator it2 = tmp.begin(); it2 != tmp.end(); it2++)
   {
     MeshGeomEdge edge;
     edge._aclPoints[0] = this->_aclPointArray[it2->pt1];

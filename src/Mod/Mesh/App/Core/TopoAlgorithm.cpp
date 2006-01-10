@@ -119,7 +119,7 @@ void MeshTopoAlgorithm::InsertNode(unsigned long ulFacetPos, const Vector3D&  rc
 void MeshTopoAlgorithm::OptimizeTopology()
 {
   //TODO: Implement without EdgeList
-  throw new exception("sorry, not yet implemented");
+  throw "sorry, not yet implemented";
 
   //std::vector<std::set<unsigned long> > clNPoints;
   //clNPoints.resize(_rclMesh._aclPointArray.size());

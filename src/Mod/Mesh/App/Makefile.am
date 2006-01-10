@@ -6,6 +6,8 @@ libMesh_la_SOURCES=\
 		Core/Algorithm.h \
 		Core/Approximation.cpp \
 		Core/Approximation.h \
+		Core/Builder.cpp \
+		Core/Builder.h \
 		Core/Definitions.cpp \
 		Core/Definitions.h \
 		Core/Degeneration.cpp \

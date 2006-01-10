@@ -331,7 +331,9 @@ EXTRA_DIST = \
 		Icons/BmpFactoryIcons.cpp \
 		Icons/default_background.xpm \
 		Icons/developers.h \
+		Icons/Document.xpm \
 		Icons/FCIcon.xpm \
+		Icons/Feature.xpm \
 		Icons/images.cpp \
 		Icons/Icons.h \
 		Icons/ParamDlgImgs.h \
@@ -360,13 +362,17 @@ EXTRA_DIST = \
 		DlgPreferences.ui \
 		DlgReportView.ui \
 		DlgSettings3DView.ui \
+		DlgSettingsImage.ui \
 		DlgSettingsMacro.ui \
+		DlgSettingsColorGradient.ui \
 		DlgSplasher.ui \
 		DlgTipOfTheDay.ui \
 		DlgToolbars.ui \
 		FreeCADGuiInit.py \
 		FreeCADGui.dsp \
 		FreeCADGui.vcproj
+
+data_DATA = Icons/FCIcon.xpm
 
 # the library search path.
 libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

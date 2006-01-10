@@ -50,21 +50,18 @@ public:
   enum TErrorTable 
   {
     InvalidFacet       =  0,    /**< as invalid marked facet */
-    InvalidEdge        =  1,    /**< as invalid marked edge */
-    InvalidPoint       =  2,    /**< as invalid marked point */
-    DuplicatedFacets   =  3,    /**< duplicated facets */
-    DuplicatedEdges    =  4,    /**< duplicated edges */
-    DuplicatedPoints   =  5,    /**< duplicated points */
-    OutOfRangeFacet    =  6,    /**< */
-    OutOfRangeEdge     =  7,    /**< */
-    OutOfRangePoint    =  8,    /**< */
-    CorruptedFacets    =  9,    /**< */
-    DegeneratedFacets  = 10,    /**< */
-    Undefined          = 11,    /**< unknown error type */
+    InvalidPoint       =  1,    /**< as invalid marked point */
+    DuplicatedFacets   =  2,    /**< duplicated facets */
+    DuplicatedPoints   =  3,    /**< duplicated points */
+    OutOfRangeFacet    =  4,    /**< */
+    OutOfRangePoint    =  5,    /**< */
+    CorruptedFacets    =  6,    /**< */
+    DegeneratedFacets  =  7,    /**< */
+    Undefined          =  8,    /**< unknown error type */
   };
 
 public:
-  /** 
+  /**
    * Construction.
    */
   MeshDegenerations (MeshKernel &rclM) : MeshEvaluation( rclM ) { }

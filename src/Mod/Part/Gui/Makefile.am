@@ -85,6 +85,8 @@ install-data-local:
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		Icons/PartFeature.xpm \
+		Icons/PartFeatureImport.xpm \
 		DlgPartBox.ui \
 		DlgPartImportIges.ui \
 		DlgPartImportStep.ui \

@@ -8,6 +8,7 @@ EXTRA_DIST = \
 		FreeCAD.sln \
 		ChangeLog.txt \
 		copying.lib \
+		cvsbuild.sh \
 		fc.sh \
 		README.Linux \
 		FCConfig.h \

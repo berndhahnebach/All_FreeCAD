@@ -426,7 +426,7 @@ bool MeshDegenerations::Evaluate ()
 
   MeshFacetArray::_TIterator  pFIter;
   MeshPointArray::_TIterator  pPIter;
-  unsigned long                       ulCtPoints, ulCtFacets, i, j, k, l;
+  unsigned long ulCtPoints, ulCtFacets, i;
 
   ulCtPoints = _rclMesh.CountPoints();
   ulCtFacets = _rclMesh.CountFacets();
