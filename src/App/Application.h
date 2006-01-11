@@ -284,6 +284,7 @@ private:
 	PYFUNCDEF_S(sEndingAdd);
 	PYFUNCDEF_S(sEndingDelete);
 	PYFUNCDEF_S(sEndingGet);
+	PYFUNCDEF_S(sListDocuments);
 
 	static PyMethodDef    Methods[]; 
 
@@ -341,7 +342,7 @@ private:
 	/// Handles the App::Document (and python) objects;
 //	std::vector<App::Document*> _DocVector;
 
-  /// map of all docuements
+  /// map of all documents
   struct DocEntry {
     Handle_TDocStd_Document hDoc;
     Document*  pDoc;

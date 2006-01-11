@@ -97,6 +97,11 @@ bool MeshSTL::Load (FileStream &rstrIn)
       return LoadAscii(rstrIn);
     }
   }
+  catch( const std::bad_alloc& e ){
+    _rclMesh.Clear();
+    Base::Sequencer().halt();
+    throw e;
+  }
   catch( const Base::AbortException& e ){
     _rclMesh.Clear();
     throw e;

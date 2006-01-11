@@ -36,18 +36,16 @@
 
 
 #include "Document.h"
+#include "DocumentPy.h"
+#include "Application.h"
+#include "Attribute.h"
 #include "Feature.h"
 #include "FeatureAttr.h"
 #include "Label.h"
 
-#include "../Base/PyExport.h"
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
-#include "Application.h"
-#include "Attribute.h"
-//#include "DocType.h"
-//#include "DocTypeAttr.h"
-#include "DocumentPy.h"
+#include <Base/PyExport.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
 
 using Base::Console;
 using Base::streq;
@@ -63,7 +61,9 @@ using namespace std;
 Document::Document(const Handle_TDocStd_Document &hDoc, const char* Name)
  : _hDoc(hDoc),_Name(Name)
 {
-	_pcDocPy = new DocumentPy(this);
+  // Note: Increment the reference counting, otherwise Python could delete it
+  _pcDocPy = new DocumentPy(this);
+  _pcDocPy->IncRef();
 	Console().Log("+App::Document: %p\n",this,_pcDocPy);
 
 }
@@ -71,6 +71,7 @@ Document::Document(const Handle_TDocStd_Document &hDoc, const char* Name)
 Document::~Document()
 {
   Console().Log("-App::Document: %s %p\n",getName(), this);
+  _pcDocPy->DecRef(); // decrement by one
 
   std::map<std::string,FeatEntry>::iterator it;
 
@@ -371,7 +372,11 @@ void Document::_RecomputeFeature(Feature* Feat)
     Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),strm.str().c_str());
     Feat->setError(strm.str().c_str());
     succes = 3;
-  }catch(std::exception &e){                                           
+  }catch(const std::bad_alloc& e){   
+    Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getName(),e.what());
+    Feat->setError(e.what());
+    succes = 4;
+  }catch(const std::exception &e){                                           
     Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),e.what());
     Feat->setError(e.what());
     succes = 3;

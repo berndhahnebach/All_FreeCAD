@@ -108,6 +108,7 @@ Document::~Document()
   _pcDocument->Detach(this);
 
   // remove the reverence from the object
+  _pcDocPy->DecRef();
   _pcDocument->DecRef();
 }
 

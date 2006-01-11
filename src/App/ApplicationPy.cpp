@@ -73,6 +73,7 @@ PyMethodDef Application::Methods[] = {
 	{"EndingAdd",      (PyCFunction) Application::sEndingAdd,      1},
 	{"EndingDelete",   (PyCFunction) Application::sEndingDelete   ,1},
 	{"EndingGet",      (PyCFunction) Application::sEndingGet      ,1},
+	{"listDocuments",  (PyCFunction) Application::sListDocuments  ,1},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -326,3 +327,21 @@ PYFUNCIMP_S(Application,sEndingGet)
 
 }
 
+PYFUNCIMP_S(Application,sListDocuments)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+  PY_TRY {
+    PyObject *pDict = PyDict_New();
+    PyObject *pKey,*pValue;
+    
+    for (std::map<std::string,DocEntry>::const_iterator It = GetApplication().DocMap.begin();It != GetApplication().DocMap.end();++It)
+    {
+      pKey   = PyString_FromString(It->first.c_str());
+      pValue = It->second.pDoc->GetPyObject();
+      PyDict_SetItem(pDict, pKey, pValue); 
+    }
+
+    return pDict;
+  } PY_CATCH;
+}

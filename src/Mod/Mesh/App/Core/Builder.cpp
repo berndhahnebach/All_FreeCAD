@@ -79,8 +79,8 @@ void MeshBuilder::AddFacet (Vector3D* facetPoints)
 
 
 	MeshFacet mf;
-  int i=0;
-	for ( i = 0; i < 3; i++)
+  int i = 0;
+	for (i = 0; i < 3; i++)
 	{
 		MeshPoint pt(facetPoints[i]);			
 		std::set<MeshPoint>::iterator p = _points.find(pt);
@@ -94,8 +94,12 @@ void MeshBuilder::AddFacet (Vector3D* facetPoints)
 		else
 			mf._aulPoints[i] = p->_ulProp;
 	}		
-	
-	for ( i = 0; i < 3; i++)
+
+  // check for degenerated facet (one edge has lenght 0)
+  if ((mf._aulPoints[0] == mf._aulPoints[1]) || (mf._aulPoints[0] == mf._aulPoints[2]) || (mf._aulPoints[1] == mf._aulPoints[2]))
+    return;
+
+	for (i = 0; i < 3; i++)
 	{
 		Edge edge(mf._aulPoints[i], mf._aulPoints[(i+1)%3], _facetIdx);
 
@@ -127,7 +131,6 @@ void MeshBuilder::AddFacet (Vector3D* facetPoints)
 		{  // new edge
 			_edges.insert(edge);
 		}
-
 	}
 
   _meshKernel._aclFacetArray.push_back(mf);

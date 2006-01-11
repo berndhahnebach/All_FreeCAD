@@ -121,6 +121,7 @@ PyMethodDef DocumentPy::Methods[] = {
 	PYMETHODEDEF(GetActiveFeature)
 	PYMETHODEDEF(GetFeature)
 	PYMETHODEDEF(listFeatures)
+	PYMETHODEDEF(getName)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -404,4 +405,12 @@ PYFUNCIMP_D(DocumentPy,listFeatures)
   } PY_CATCH;
 }
 
+PYFUNCIMP_D(DocumentPy,getName)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+  PY_TRY {
+    return PyString_FromString(_pcDoc->getName());
+  } PY_CATCH;
+}
 

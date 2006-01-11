@@ -67,6 +67,7 @@ public:
 	PYFUNCDEF_D(DocumentPy,GetActiveFeature)
 	PYFUNCDEF_D(DocumentPy,GetFeature)
 	PYFUNCDEF_D(DocumentPy,listFeatures)
+	PYFUNCDEF_D(DocumentPy,getName)
 
 private:
 	Document *_pcDoc;

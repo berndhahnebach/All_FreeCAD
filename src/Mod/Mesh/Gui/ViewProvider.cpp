@@ -142,9 +142,8 @@ void ViewProviderMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
   }
 
 	pcMeshCoord->point.setValues(0,cMesh->CountPoints(), vertices);
-	pcMeshFaces->coordIndex.setValues(0,4*cMesh->CountFacets(),(const int*) faces);
-
   delete [] vertices;
+	pcMeshFaces->coordIndex.setValues(0,4*cMesh->CountFacets(),(const int*) faces);
   delete [] faces;
 
 #else /// @todo This doesn't seem to work as expected (save tmp. memory and time). Don't know why!?
