@@ -545,6 +545,7 @@ Tools/Makefile
 Tools/_TEMPLATE_/Makefile
 Tools/_TEMPLATE_/App/Makefile
 Tools/_TEMPLATE_/Gui/Makefile
+debian/Makefile
 ])
 
 AC_OUTPUT

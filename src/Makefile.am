@@ -1,4 +1,4 @@
-SUBDIRS=Base App Gui Main Mod Tools
+SUBDIRS=Base App Gui Main Mod Tools debian
 
 
 EXTRA_DIST = \
