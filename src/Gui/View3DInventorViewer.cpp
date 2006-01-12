@@ -79,6 +79,7 @@
 #include "SoFCSelectionAction.h"
 #include "MainWindow.h"
 #include "MenuManager.h"
+#include "Application.h"
 
 #include "ViewProvider.h"
 // build in Inventor
@@ -804,6 +805,9 @@ void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
 
   MenuItem* view = new MenuItem;
   *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
+
+  // ask workbenches and view provider, ...
+  Gui::Application::Instance->setupContextMenu("View", view);
 
   QPopupMenu ContextMenu(this->getGLWidget());
   MenuManager::getInstance()->setupContextMenu(view,ContextMenu);

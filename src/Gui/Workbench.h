@@ -77,13 +77,17 @@ public:
    * settings.
    */
   void exportCustomBars( ToolBarItem*, const char* node ) const;
+  /** Sets up the contextmenu for the this workbench. 
+   * The default implementation does nothing.
+   */
+  virtual void setupContextMenu(const char* recipient,MenuItem*) const;
 
 protected:
-  /** Rreturns a MenuItem tree structure of menus for the this workbench. */
+  /** Returns a MenuItem tree structure of menus for the this workbench. */
   virtual MenuItem* setupMenuBar() const=0;
-  /** Rreturns a ToolBarItem tree structure of toolbars for the this workbench. */
+  /** Returns a ToolBarItem tree structure of toolbars for the this workbench. */
   virtual ToolBarItem* setupToolBars() const=0;
-  /** Rreturns a ToolBarItem tree structure of command bars for the this workbench. */
+  /** Returns a ToolBarItem tree structure of command bars for the this workbench. */
   virtual ToolBarItem* setupCommandBars() const=0;
   /**
    * Activates the workbench and adds/removes GUI elements.

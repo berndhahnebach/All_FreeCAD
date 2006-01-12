@@ -40,6 +40,8 @@ public:
   Workbench();
   virtual ~Workbench();
 
+  void setupContextMenu(const char* recipient, Gui::MenuItem*) const;
+
 protected:
   Gui::MenuItem* setupMenuBar() const;
   Gui::ToolBarItem* setupToolBars() const;

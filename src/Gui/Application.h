@@ -46,6 +46,7 @@ class Document;
 class MacroManager;
 class MDIView;
 class MainWindow;
+class MenuItem;
 
 /** The Applcation main class
  * This is the central class of the GUI 
@@ -121,6 +122,7 @@ public:
   void refreshWorkbenchList();
   QPixmap workbenchIcon( const QString& ) const;
   QStringList workbenches(void);
+  void setupContextMenu(const char* recipient, MenuItem*) const;
   //@}
 
   /// Get macro manager

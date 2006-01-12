@@ -38,6 +38,7 @@
 #include "BitmapFactory.h"
 #include "ViewProviderFeature.h"
 #include "MenuManager.h"
+#include "Application.h"
 
 
 #include "../App/Document.h"
@@ -392,6 +393,9 @@ void TreeView::contextMenuEvent ( QContextMenuEvent * e )
     *view << "Std_ToggleVisibility" << "Separator" << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
   else
     *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
+
+  // ask workbenches and view provider, ...
+  Gui::Application::Instance->setupContextMenu("Tree", view);
 
   QPopupMenu ContextMenu;
   MenuManager::getInstance()->setupContextMenu(view,ContextMenu);

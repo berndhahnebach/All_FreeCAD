@@ -306,6 +306,10 @@ void Workbench::showOrHideToolBars( bool read ) const
   }
 }
 
+void Workbench::setupContextMenu(const char* recipient,MenuItem*) const
+{
+}
+
 bool Workbench::activate()
 {
   // Assigns user defined accelerators

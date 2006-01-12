@@ -65,6 +65,7 @@
 #include "WorkbenchManager.h"
 #include "CommandBarManager.h"
 #include "WaitCursor.h"
+#include "MenuManager.h"
 
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
@@ -641,6 +642,15 @@ QStringList Application::workbenches(void)
       wb.push_back( wbName );
   }
   return wb;
+}
+
+void Application::setupContextMenu(const char* recipient, MenuItem* items) const
+{
+  Workbench* actWb = WorkbenchManager::instance()->active();
+  if ( actWb )
+  {
+    actWb->setupContextMenu( recipient, items );
+  }
 }
 
 bool Application::isClosing(void)

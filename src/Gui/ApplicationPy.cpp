@@ -76,13 +76,14 @@ PYFUNCIMP_S(Application,sdocument)
     return NULL;                                      // NULL triggers exception 
 
   Document *pcDoc =  Instance->activeDocument();
-
-  if(pcDoc)
+  if (pcDoc)
   {
-    return pcDoc->getPyObject();
+    Base::PyObjectBase* pcDocPy = pcDoc->getPyObject();
+    pcDocPy->IncRef();
+    return pcDocPy;
   }
     
-   Py_Return;
+  Py_Return;
 } 
 
 

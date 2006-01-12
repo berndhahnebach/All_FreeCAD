@@ -61,9 +61,11 @@ using namespace std;
 Document::Document(const Handle_TDocStd_Document &hDoc, const char* Name)
  : _hDoc(hDoc),_Name(Name)
 {
-  // Note: Increment the reference counting, otherwise Python could delete it
+  // Remark: In a constructor we should never increment a Python object as we cannot be sure
+  // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't 
+  // get a reference then the object wouldn't get deleted in the destructor.
+  // So, we must increment only if the interpreter gets a reference.
   _pcDocPy = new DocumentPy(this);
-  _pcDocPy->IncRef();
 	Console().Log("+App::Document: %p\n",this,_pcDocPy);
 
 }

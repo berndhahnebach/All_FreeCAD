@@ -68,9 +68,9 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
 
   _pcDocument->Attach(this);
 
-  	// pointer to the python class
+  // pointer to the python class
+  // NOTE: As this Python object doesn't get returned to the interpreter we mustn't increment it (Werner Jan-12-2006) 
   _pcDocPy = new Gui::DocumentPy(this);
-  _pcDocPy->IncRef();
 
 /*  // set the ViewProvider root
   pcSelection        = new SoSelection();
@@ -107,7 +107,7 @@ Document::~Document()
   //delete (pcTreeItem);
   _pcDocument->Detach(this);
 
-  // remove the reverence from the object
+  // remove the reference from the object
   _pcDocPy->DecRef();
   _pcDocument->DecRef();
 }
@@ -688,7 +688,6 @@ Handle(V3d_Viewer) Document::Viewer(const Standard_CString aDisplay,
 
 Base::PyObjectBase * Document::getPyObject(void)
 {
-  _pcDocPy->IncRef();
 	return _pcDocPy;
 }
 

@@ -41,6 +41,12 @@ Workbench::~Workbench()
 {
 }
 
+void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) const
+{
+	StdWorkbench::setupContextMenu( recipient, item );
+	*item << "Separator" << "Mesh_VertexCurvature";
+}
+
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
   Gui::MenuItem* root = StdWorkbench::setupMenuBar();

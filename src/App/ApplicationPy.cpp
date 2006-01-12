@@ -85,24 +85,27 @@ PYFUNCIMP_S(Application,sOpen)
         return NULL;                             // NULL triggers exception
 
 
-	try {
-		// return new document
-		return (GetApplication().openDocument(pstr)->GetPyObject());
-	}
-	catch(Base::Exception e) {
-		PyErr_SetString(PyExc_IOError, e.what());
-		return 0L;
-	}
-	catch(Standard_Failure e)
-	{
-		Handle(Standard_Failure) E = Standard_Failure::Caught();
-		std::stringstream strm;
+  try {
+    // return new document
+    // Note: Increment the reference counting, otherwise Python could delete it
+    Base::PyObjectBase* pyDoc = GetApplication().openDocument(pstr)->GetPyObject();
+    pyDoc->IncRef();
+    return pyDoc;
+  }
+  catch(Base::Exception e) {
+    PyErr_SetString(PyExc_IOError, e.what());
+    return 0L;
+  }
+  catch(Standard_Failure e)
+  {
+    Handle(Standard_Failure) E = Standard_Failure::Caught();
+    std::stringstream strm;
 
-		strm << E << endl;
-		//strm.freeze();
-		PyErr_SetString(PyExc_IOError, strm.str().c_str());
-		return 0L;
-	}
+    strm << E << endl;
+    //strm.freeze();
+    PyErr_SetString(PyExc_IOError, strm.str().c_str());
+    return 0L;
+  }
 
 }
 
@@ -113,7 +116,6 @@ PYFUNCIMP_S(Application,sImport)
         return NULL;                             // NULL triggers exception
 
     Py_Return;
-	
 }
 
 PYFUNCIMP_S(Application,sNew)
@@ -124,8 +126,13 @@ PYFUNCIMP_S(Application,sNew)
 
 	PY_TRY{
 		Document*	pDoc = GetApplication().newDocument(pstr);
+    // Note: Increment the reference counting, otherwise Python could delete it
 		if (pDoc)
-			return pDoc->GetPyObject();
+    {
+      Base::PyObjectBase* pyDoc = pDoc->GetPyObject();
+      pyDoc->IncRef();
+      return pyDoc;
+    }
 		else
 		{
 			PyErr_SetString(PyExc_IOError, "Unknown Template");
