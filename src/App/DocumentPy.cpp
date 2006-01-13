@@ -392,13 +392,16 @@ PYFUNCIMP_D(DocumentPy,listFeatures)
   PY_TRY {
     std::map<std::string,Document::FeatEntry> features = _pcDoc->FeatMap;
     PyObject *pDict = PyDict_New();
-    PyObject *pKey,*pValue;
+    PyObject *pKey; Base::PyObjectBase* pValue;
     
     for (std::map<std::string,Document::FeatEntry>::const_iterator It = features.begin();It != features.end();++It)
     {
       pKey   = PyString_FromString(It->first.c_str());
+      // GetPyObject() increments
       pValue = It->second.F->GetPyObject();
       PyDict_SetItem(pDict, pKey, pValue); 
+      // now we can decrement again as PyDict_SetItem also has incremented
+      pValue->DecRef();
     }
 
     return pDict;

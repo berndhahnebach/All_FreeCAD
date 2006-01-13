@@ -114,6 +114,15 @@ Feature::~Feature(void)
     pcFeaturePy->DecRef();
 }
 
+Base::PyObjectBase *Feature::GetPyObject(void)
+{
+  if(!pcFeaturePy){
+    // ref counter is set to 1
+    pcFeaturePy = new FeaturePy(this);
+  }
+  pcFeaturePy->IncRef();
+	return pcFeaturePy; 
+}
 
 const vector<string> Feature::getAllPropertyNames(void)
 {

@@ -78,9 +78,7 @@ PYFUNCIMP_S(Application,sdocument)
   Document *pcDoc =  Instance->activeDocument();
   if (pcDoc)
   {
-    Base::PyObjectBase* pcDocPy = pcDoc->getPyObject();
-    pcDocPy->IncRef();
-    return pcDocPy;
+    return pcDoc->getPyObject();
   }
     
   Py_Return;
@@ -307,6 +305,7 @@ PYFUNCIMP_S(Application,sCreateWorkbench)
   WorkbenchFactory().AddProducer(psKey, new WorkbenchProducer<PythonWorkbench>);
   Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
   
+  // object get incremented
   Base::PyObjectBase* pyObj = wb->GetPyObject();
   return pyObj;
 } 
@@ -323,8 +322,8 @@ PYFUNCIMP_S(Application,sActiveWorkbench)
     return NULL;
   }
 
+  // object get incremented
   Base::PyObjectBase* pyObj = actWb->GetPyObject();
-//  pyObj->_INCREF();
   return pyObj;
 } 
 
@@ -361,8 +360,8 @@ PYFUNCIMP_S(Application,sGetWorkbench)
     return NULL;
   }
 
+  // object get incremented
   Base::PyObjectBase* pyObj = wb->GetPyObject();
-//  pyObj->_INCREF();
   return pyObj ? pyObj : Py_None;
 } 
 

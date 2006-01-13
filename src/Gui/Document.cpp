@@ -688,7 +688,8 @@ Handle(V3d_Viewer) Document::Viewer(const Standard_CString aDisplay,
 
 Base::PyObjectBase * Document::getPyObject(void)
 {
-	return _pcDocPy;
+  _pcDocPy->IncRef();
+  return _pcDocPy;
 }
 
 #if 0

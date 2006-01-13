@@ -619,7 +619,8 @@ void Document::Dump(void)
 
 Base::PyObjectBase * Document::GetPyObject(void)
 {
-	return _pcDocPy;
+  _pcDocPy->IncRef();
+  return _pcDocPy;
 }
 
 

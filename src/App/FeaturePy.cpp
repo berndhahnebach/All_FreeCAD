@@ -147,17 +147,6 @@ PyObject *FeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 	return 0;
 }
 
-Base::PyObjectBase *Feature::GetPyObject(void)
-{
-  if(!pcFeaturePy){
-    pcFeaturePy = new FeaturePy(this);
-//    pcFeaturePy->IncRef();
-  }
-  pcFeaturePy->IncRef();
-	return pcFeaturePy; 
-}
-
-
 //--------------------------------------------------------------------------
 // destructor
 //--------------------------------------------------------------------------

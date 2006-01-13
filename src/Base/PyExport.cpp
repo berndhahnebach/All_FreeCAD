@@ -50,11 +50,15 @@ using namespace Base;
 
 void PyHandler::IncRef(void)
 {
-	GetPyObject()->IncRef();
+  // GetPyObject() increments already by one
+  GetPyObject();
 }
 
 void PyHandler::DecRef(void)
 {
-	GetPyObject()->DecRef();
+  // GetPyObject() increments already by one
+  PyObjectBase* pyObj = GetPyObject();
+  pyObj->DecRef(); // restore old counter
+  pyObj->DecRef(); // decrement now
 }
 

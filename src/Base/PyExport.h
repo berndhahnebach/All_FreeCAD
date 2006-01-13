@@ -37,8 +37,34 @@ class PyObjectBase;
 
 /** The PyHandler class
  *  This class is the base class of all FreeCAD classes
- *  which export into the python space. This class handles the 
+ *  which exports into the python space. This class handles the 
  *  creation referencing of the python export object.
+ *
+ *  @remark GetPyObject() returns the associated Python object to any C++ subclasses. As we cannot 
+ *  determine for sure if we can increment the returned Python object from outside of GetPyObject()
+ *  we have specified that GetPyObject() does already the increment of the reference counter
+ *  if needed. 
+ *
+ *  E.g. if GetPyObject() always returns a new Python object then no increment is necessary,
+ *  because at construction time the reference counter is already set to 1. If the Python
+ *  interpreter stores this object pointer into a local variable and destroys this variable
+ *  then the reference counter gets decremented (to 0) and the object gets destroyed automatically.
+ *  In case we didn't make this specification and increment the Python object from outside once again then
+ *  the reference counter would be set to 2 and there would be no chance to destroy the object again.
+ *
+ *  The other case is that we have a member variable in our C++ class that holds the Python object
+ *  then we either can create this Python in the constructor or create it the first  time when GetPyObject()
+ *  gets called. In the destructor then we must decrement the Python object to avoid a memory leak while
+ *  GetPyObject() then increments the Python object everytime it gets called.
+ *
+ *  @remark One big consequence of this specification is that the programmer must know whether the Python interpreter
+ *  gets the Python object or not. If the interpreter gets the object then it decrements the counter later on when
+ *  the internal variable is freed. In case the interpreter doesn't get this object then the programmer must do the
+ *  decrement on his own.
+ *
+ *  @note To not to undermine this specification the programmer must make sure to get the Python object always via 
+ *  GetPyObject().
+ *
  *  @see PyHandle
  *  @
  */

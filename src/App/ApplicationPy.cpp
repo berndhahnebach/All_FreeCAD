@@ -87,10 +87,7 @@ PYFUNCIMP_S(Application,sOpen)
 
   try {
     // return new document
-    // Note: Increment the reference counting, otherwise Python could delete it
-    Base::PyObjectBase* pyDoc = GetApplication().openDocument(pstr)->GetPyObject();
-    pyDoc->IncRef();
-    return pyDoc;
+    return GetApplication().openDocument(pstr)->GetPyObject();
   }
   catch(Base::Exception e) {
     PyErr_SetString(PyExc_IOError, e.what());
@@ -125,19 +122,7 @@ PYFUNCIMP_S(Application,sNew)
         return NULL;                             // NULL triggers exception 
 
 	PY_TRY{
-		Document*	pDoc = GetApplication().newDocument(pstr);
-    // Note: Increment the reference counting, otherwise Python could delete it
-		if (pDoc)
-    {
-      Base::PyObjectBase* pyDoc = pDoc->GetPyObject();
-      pyDoc->IncRef();
-      return pyDoc;
-    }
-		else
-		{
-			PyErr_SetString(PyExc_IOError, "Unknown Template");
-			return NULL;
-		}
+		return GetApplication().newDocument(pstr)->GetPyObject();
 	}PY_CATCH;
 }
 
@@ -191,7 +176,6 @@ PYFUNCIMP_S(Application,sDocument)
     Base::PyObjectBase *p = doc ? doc->GetPyObject() : 0;
     if(p)
     {
-      p->IncRef();
 	    return p;
     }else{
   		PyErr_SetString(PyExc_Exception, "No active document");
@@ -340,13 +324,16 @@ PYFUNCIMP_S(Application,sListDocuments)
     return NULL;                       // NULL triggers exception 
   PY_TRY {
     PyObject *pDict = PyDict_New();
-    PyObject *pKey,*pValue;
+    PyObject *pKey; Base::PyObjectBase* pValue;
     
     for (std::map<std::string,DocEntry>::const_iterator It = GetApplication().DocMap.begin();It != GetApplication().DocMap.end();++It)
     {
       pKey   = PyString_FromString(It->first.c_str());
+      // GetPyObject() increments
       pValue = It->second.pDoc->GetPyObject();
       PyDict_SetItem(pDict, pKey, pValue); 
+      // now we can decrement again as PyDict_SetItem also has incremented
+      pValue->DecRef();
     }
 
     return pDict;
