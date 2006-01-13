@@ -32,6 +32,10 @@ class FCPyAttribute :public Base::PyObjectBase
 	/** always start with Py_Header */
 	Py_Header;
 
+protected:
+	/// Destruction 
+	~FCPyAttribute();
+
 public:
  
 	//---------------------------------------------------------------------
@@ -42,8 +46,6 @@ public:
 	FCPyAttribute (const Handle(FCAttribute) &hAttribute, PyTypeObject *T = &Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
-	/// Destruction 
-	~FCPyAttribute();
 
 	//---------------------------------------------------------------------
 	// python exports  ++++++++++++++++++++++++++++++++++++++++++++++++++++	

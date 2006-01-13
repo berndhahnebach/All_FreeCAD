@@ -142,6 +142,10 @@ class AppExport LabelPy :public Base::PyObjectBase
 	/** always start with Py_Header */
 	Py_Header;
 
+protected:
+	/// Destruction 
+	~LabelPy();
+
 public:
 
 
@@ -153,8 +157,6 @@ public:
 	LabelPy(TDF_Label cLabel, PyTypeObject *T = &Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
-	/// Destruction 
-	~LabelPy();
 
 
 	//---------------------------------------------------------------------

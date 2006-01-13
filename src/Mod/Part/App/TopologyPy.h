@@ -55,14 +55,16 @@ class AppPartExport TopoShapePy :public Base::PyObjectBase
 	/** always start with Py_Header */
 	Py_Header;
 
+protected:
+	/// Destruction 
+	~TopoShapePy();
+
 public:
 
 	/// Constructer 
   TopoShapePy(const TopoDS_Shape &cShape, PyTypeObject *T = &TopoShapePy::Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
-	/// Destruction 
-	~TopoShapePy();
 
 
 	//---------------------------------------------------------------------

@@ -49,11 +49,12 @@ class AppPartExport PartFeaturePy :public App::FeaturePy
 	/// always start with Py_Header
 	Py_Header;
 
+protected:
+	~PartFeaturePy();
+
 public:
 	PartFeaturePy(PartFeature *pcFeature, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~PartFeaturePy();
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	

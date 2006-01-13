@@ -178,16 +178,18 @@ class BaseExport PyObjectBase : public PyObject
 	 *  Every PyObjectBase object is also a python object. So you can use
 	 *  every Python C-Library function also on a PyObjectBase object
 	 */
-	Py_Header;
+  Py_Header;
 
- public:  
+protected:
+	/// destructor
+	virtual ~PyObjectBase();
+
+public:  
  	/** Constructor
  	 *  Sets the Type of the object (for inherintance) and decrease the
  	 *  the reference count of the PyObject.
  	 */
 	PyObjectBase(PyTypeObject *T);
-	/// destructor
-	virtual ~PyObjectBase();
 	/// Wrapper for the Python destructor
 	static void PyDestructor(PyObject *P)				// python wrapper
 		{  delete ((PyObjectBase *) P);  };

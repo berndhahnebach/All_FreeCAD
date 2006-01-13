@@ -55,11 +55,12 @@ class AppExport FeaturePy :public Base::PyObjectBase
 	/// always start with Py_Header
 	Py_Header;
 
+protected:
+	~FeaturePy();
+
 public:
 	FeaturePy(Feature *pcFeature, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~FeaturePy();
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++

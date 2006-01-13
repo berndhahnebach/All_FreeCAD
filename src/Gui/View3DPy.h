@@ -35,11 +35,12 @@ class GuiExport View3DPy :public Base::PyObjectBase
 	/// always start with Py_Header
 	Py_Header;
 
+protected:
+	~View3DPy();
+
 public:
   View3DPy(View3DInventor *pcView, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~View3DPy();
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	

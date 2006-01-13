@@ -49,11 +49,12 @@ class AppExport VectorPy :public Base::PyObjectBase
 	/// always start with Py_Header
 	Py_Header;
 
+protected:
+	~VectorPy();
+
 public:
   VectorPy(const Base::Vector3D &rcVector = Vector3D(), PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyTypeObject  *, PyObject *, PyObject *);
-
-	~VectorPy();
 
   Base::Vector3D value(void){return _cVector;}
   void set(const Base::Vector3D &cVec){_cVector = cVec;}

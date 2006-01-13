@@ -47,11 +47,12 @@ class GuiExport WorkbenchPy : public Base::PyObjectBase
   /// always start with Py_Header
   Py_Header;
 
+protected:
+  ~WorkbenchPy();
+
 public:
   WorkbenchPy(Workbench* pcWb, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
-
-  ~WorkbenchPy();
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -86,11 +87,12 @@ class GuiExport PythonWorkbenchPy : public WorkbenchPy
   /// always start with Py_Header
   Py_Header;
 
+protected:
+  ~PythonWorkbenchPy();
+
 public:
   PythonWorkbenchPy(PythonWorkbench *pcWb, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
-
-  ~PythonWorkbenchPy();
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	

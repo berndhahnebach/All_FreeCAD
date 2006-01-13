@@ -44,9 +44,11 @@ class GuiExport PythonStdoutPy : public Base::PyObjectBase
   /// always start with Py_Header
   Py_Header;
 
+protected:
+  ~PythonStdoutPy();
+
 public:
   PythonStdoutPy(PythonConsole *pcWb, PyTypeObject *T = &Type);
-  ~PythonStdoutPy();
 
   static PyObject *PyMake(PyObject *, PyObject *);
 
@@ -77,9 +79,11 @@ class GuiExport PythonStderrPy : public Base::PyObjectBase
   /// always start with Py_Header
   Py_Header;
 
+protected:
+  ~PythonStderrPy();
+
 public:
   PythonStderrPy(PythonConsole *pcWb, PyTypeObject *T = &Type);
-  ~PythonStderrPy();
 
   static PyObject *PyMake(PyObject *, PyObject *);
 
@@ -106,9 +110,11 @@ class GuiExport PythonStdinPy : public Base::PyObjectBase
   /// always start with Py_Header
   Py_Header;
 
+protected:
+  ~PythonStdinPy();
+
 public:
   PythonStdinPy(PythonConsole *pcWb, PyTypeObject *T = &Type);
-  ~PythonStdinPy();
 
   static PyObject *PyMake(PyObject *, PyObject *);
 

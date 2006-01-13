@@ -42,11 +42,12 @@ class PointsAppExport PointsPy :public Base::PyObjectBase
   /// always start with Py_Header
   Py_Header;
 
+protected:
+  ~PointsPy();
+
 public:
   PointsPy(PointsWithProperty *pcPoints,bool Referenced=false, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
-
-  ~PointsPy();
 
   void setPoints(PointsWithProperty *pcPoints);
   PointsWithProperty *getPoints(void);

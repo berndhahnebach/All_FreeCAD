@@ -57,11 +57,12 @@ class AppExport MatrixPy :public Base::PyObjectBase
 	/// always start with Py_Header
 	Py_Header;
 
+protected:
+	~MatrixPy();
+
 public:
   MatrixPy(const Base::Matrix4D &rcMatrix = Base::Matrix4D(), PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyTypeObject *, PyObject *, PyObject *);
-
-	~MatrixPy();
 
   Base::Matrix4D value(void){return _cMatrix;}
   void set(const Base::Matrix4D &cMat){_cMatrix = cMat;}

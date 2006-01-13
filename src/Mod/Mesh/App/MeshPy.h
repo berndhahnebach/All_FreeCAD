@@ -42,11 +42,12 @@ class AppMeshExport MeshPy :public Base::PyObjectBase
   /// always start with Py_Header
   Py_Header;
 
+protected:
+  ~MeshPy();
+
 public:
   MeshPy(MeshWithProperty *pcMesh,bool ReferencedMesh=false, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
-
-  ~MeshPy();
 
   void setMesh(MeshWithProperty *pcMesh);
   MeshWithProperty *getMesh(void);

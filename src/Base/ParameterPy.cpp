@@ -72,6 +72,10 @@ class ParameterGrpPy :public Base::PyObjectBase
 	/** always start with Py_Header */
 	Py_Header;
 
+protected:
+	/// Destruction 
+	~ParameterGrpPy();
+
 public:
 
 
@@ -83,8 +87,6 @@ public:
 	ParameterGrpPy(const FCHandle<ParameterGrp> &rcParamGrp, PyTypeObject *T = &Type);
 	/// for Construction in python 
 	static PyObject *PyMake(PyObject *, PyObject *);
-	/// Destruction 
-	~ParameterGrpPy();
 
 	//---------------------------------------------------------------------
 	// python exports  ++++++++++++++++++++++++++++++++++++++++++++++++++++	

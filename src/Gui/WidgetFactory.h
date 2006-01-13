@@ -267,9 +267,11 @@ class PyResource : public Base::PyObjectBase
   // always start with Py_Header
   Py_Header;
 
+protected:
+  ~PyResource();
+
 public:
   PyResource(PyTypeObject *T = &Type);
-  ~PyResource();
 
   void load(const char* name);
   bool connect(const char* sender, const char* signal, PyObject* cb);

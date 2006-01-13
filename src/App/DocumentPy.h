@@ -32,11 +32,12 @@ class AppExport DocumentPy :public Base::PyObjectBase
 	/// always start with Py_Header
 	Py_Header;
 
+protected:
+	~DocumentPy();
+
 public:
 	DocumentPy(Document *pcDoc, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~DocumentPy();
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	

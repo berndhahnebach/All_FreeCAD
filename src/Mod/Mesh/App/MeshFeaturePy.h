@@ -47,11 +47,12 @@ class AppMeshExport MeshFeaturePy :public App::FeaturePy
   /// always start with Py_Header
   Py_Header;
 
+protected:
+  ~MeshFeaturePy();
+
 public:
   MeshFeaturePy(MeshFeature *pcFeature, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
-
-  ~MeshFeaturePy();
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	

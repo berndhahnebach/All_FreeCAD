@@ -47,11 +47,12 @@ class PointsAppExport PointsFeaturePy :public App::FeaturePy
   /// always start with Py_Header
   Py_Header;
 
+protected:
+  ~PointsFeaturePy();
+
 public:
   PointsFeaturePy(PointsFeature *pcFeature, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
-
-  ~PointsFeaturePy();
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	

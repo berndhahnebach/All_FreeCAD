@@ -54,11 +54,12 @@ class AppExport MaterialPy :public Base::PyObjectBase
 	/// always start with Py_Header
 	Py_Header;
 
+protected:
+	~MaterialPy();
+
 public:
 	MaterialPy(Material *pcMaterial, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
-
-	~MaterialPy();
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
