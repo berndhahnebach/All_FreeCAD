@@ -143,6 +143,7 @@ void MeshBuilder::Finish ()
   // release some memory
   _meshKernel._aclFacetArray.swap(_meshKernel._aclFacetArray);
   _meshKernel._aclPointArray.swap(_meshKernel._aclPointArray);
+  _meshKernel.RecalcBoundBox();
 
 	Base::Sequencer().stop();
 }
