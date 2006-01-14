@@ -363,8 +363,12 @@ void Document::_RecomputeFeature(Feature* Feat)
   }catch(Base::AbortException &e){
     e.ReportException();
     succes = 4;
+  }catch(const Base::MemoryException& e){
+    Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getName(),e.what());
+    Feat->setError(e.what());
+    succes = 4;
   }catch(Base::Exception &e){
-    e.ReportException(); 
+    e.ReportException();
     succes = 3;
   }catch(Standard_Failure e){
 		Handle(Standard_Failure) E = Standard_Failure::Caught();
@@ -374,11 +378,7 @@ void Document::_RecomputeFeature(Feature* Feat)
     Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),strm.str().c_str());
     Feat->setError(strm.str().c_str());
     succes = 3;
-  }catch(const std::bad_alloc& e){   
-    Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getName(),e.what());
-    Feat->setError(e.what());
-    succes = 4;
-  }catch(const std::exception &e){                                           
+  }catch(const std::exception &e){
     Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),e.what());
     Feat->setError(e.what());
     succes = 3;

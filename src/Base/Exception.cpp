@@ -93,4 +93,15 @@ const char* AbortException::what() const throw()
   return Exception::what();
 }
 
+// ---------------------------------------------------------
+
+MemoryException::MemoryException()
+{
+  _sErrMsg = "Not enough memory available";
+}
+
+MemoryException::MemoryException(const MemoryException &inst)
+ : Exception(inst)
+{
+}
 

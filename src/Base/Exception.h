@@ -40,7 +40,7 @@ public:
   virtual ~Exception() throw() {}
 
 	Exception &operator=(const Exception &inst);
-  
+
     virtual const char* what(void) const throw();
   
     void ReportException (void) const;
@@ -53,7 +53,7 @@ protected:
 #endif
 	std::string _sErrMsg;
 };
-   
+
 
 /**
  * The AbortException is thrown if a pending operation was aborted.
@@ -74,10 +74,25 @@ public:
   virtual const char* what() const throw();
 };
 
+/**
+ * The MemoryException is thrown if not enough memory can be allocated.
+ * @author Werner Mayer
+ */
+class BaseExport MemoryException : public Exception
+{
+public:
+  /// Construction
+  MemoryException();
+  /// Construction
+  MemoryException(const MemoryException &inst);
+  /// Destruction
+  virtual ~MemoryException() throw() {}
+};
+
 
 inline void Exception::SetMessage(const char * sMessage)
 {
-  _sErrMsg = sMessage;  
+  _sErrMsg = sMessage;
 }
 
 

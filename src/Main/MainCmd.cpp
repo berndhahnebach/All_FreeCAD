@@ -74,18 +74,19 @@ const char sBanner[] = "(c) Juergen Riegel 2001-2005\n"\
 int __cdecl freecadNewHandler(size_t size )
 {
   // throw an exception
-  throw std::bad_alloc("Not enough memory available");
+  throw Base::MemoryException();
   return 0;
 }
 #else // Ansi C/C++ new handler
+#include <new>
 static void freecadNewHandler ()
 {
   // throw an exception
-  throw std::bad_alloc("Not enough memory available");
+  throw Base::MemoryException();
 }
 #endif
 
-int main( int argc, char ** argv ) 
+int main( int argc, char ** argv )
 {
   // install our own new handler
 #ifdef _MSC_VER // Microsoft compiler

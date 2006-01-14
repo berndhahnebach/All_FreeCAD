@@ -29,6 +29,7 @@
 #include "MeshIO.h"
 #include "Builder.h"
 
+#include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <Base/Stream.h>
 
@@ -97,7 +98,7 @@ bool MeshSTL::Load (FileStream &rstrIn)
       return LoadAscii(rstrIn);
     }
   }
-  catch( const std::bad_alloc& e ){
+  catch( const Base::MemoryException& e ){
     _rclMesh.Clear();
     Base::Sequencer().halt();
     throw e;
