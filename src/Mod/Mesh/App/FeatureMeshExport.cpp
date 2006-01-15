@@ -39,47 +39,48 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-void FeatureMeshExport::initFeature(void)
+PROPERTY_SOURCE(Mesh::FeatureMeshExport, Mesh::MeshFeature)
+
+FeatureMeshExport::FeatureMeshExport(void)
 {
-  addProperty("Link"  ,"Source");
-  addProperty("String","FileName");
-  addProperty("String","Format");
+  ADD_PROPERTY(Source  ,(0));
+  ADD_PROPERTY(FileName,(""));
+  ADD_PROPERTY(Format  ,(""));
+
 }
 
-int FeatureMeshExport::execute(TFunction_Logbook& log)
+int FeatureMeshExport::execute(void)
 {
 
-  MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
+  MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
   {
     setError("not valid link \"Source\"");
     return 1;
   }
 
-  std::string FileName =getPropertyString("FileName");
-  std::string Format   =getPropertyString("Format");
 
-/*  // ask for read permisson
-	if ( access(FileName.c_str(), 2) != 0 )
+  // ask for read permisson
+	if ( access(FileName.getValue(), 2) != 0 )
   {
-    setError("FeatureMeshExport::Execute() not able to open %s for write!\n",FileName.c_str());
+    setError("FeatureMeshExport::Execute() not able to open %s for write!\n",FileName.getValue());
     return 1;
-  }*/
+  }
 
   MeshSTL aReader(*(pcFeat->getMesh().getKernel()) );
 
   // write file
   bool ok = false;
-  FileStream str( FileName.c_str(), std::ios::out);
+  FileStream str( FileName.getValue(), std::ios::out);
 
-  if ( Format == "ASCII STL" )
+  if ( std::string(Format.getValue()) == "ASCII STL" )
     ok = aReader.SaveAscii( str );
   else // "Binary STL"
     ok = aReader.SaveBinary( str );
 
   if ( !ok )
   {
-    setError("FeatureMeshExport::Execute() not able to export %s\n",FileName.c_str());
+    setError("FeatureMeshExport::Execute() not able to export %s\n",FileName.getValue());
     return 1;
   }
 

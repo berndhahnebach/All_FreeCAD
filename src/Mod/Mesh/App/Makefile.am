@@ -72,8 +72,15 @@ libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) $(WM3_LIBS)
 libMesh_la_CPPFLAGS = -DAppMeshExport= -DWM3_VERSION=$(WM3_VERSION)
 
 libMesh_la_LIBADD   = \
+		-lTKernel \
+		-lTKMath \
+		-lTKService \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
+		-lTKBRep \
+		-lTKTopAlgo \
 		-lFreeCADBase \
-		-lFreeCADApp 
+		-lFreeCADApp
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(WM3_CFLAGS) $(GTS_CFLAGS) -I../../../

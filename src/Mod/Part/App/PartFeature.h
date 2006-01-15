@@ -28,6 +28,7 @@
 
 //#include <Base/Factory.h>
 //#include <Base/PyExport.h>
+#include <TopoDS_Shape.hxx>
 #include <App/Feature.h>
 
 class TFunction_Logbook;
@@ -47,6 +48,8 @@ class Property;
  */
 class AppPartExport PartFeature: public App::Feature
 {
+  PROPERTY_HEADER(Part::PartFeature);
+
 public:
 	/// Constructor
 	PartFeature(void);
@@ -56,7 +59,7 @@ public:
   /// Initialize Feature structure
   virtual void initFeature(void);
   /// recalculate the Feature
-  virtual int execute(TFunction_Logbook& log);
+  virtual int execute(void);
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "Part";};
   //@}
@@ -65,19 +68,22 @@ public:
 	/** @name methodes for handling the result shape */
 	//@{
 	/** Set the result shape
-	 *  
+	 *
 	 */
   void setShape(const TopoDS_Shape &Shape);
-  
+
 	/** Get the actual result shape
-	 *  
+	 *
 	 */
   TopoDS_Shape getShape(void);
-  
+
 	//@}
 
 
   virtual Base::PyObjectBase *PartFeature::GetPyObject(void);
+
+private:
+  TopoDS_Shape _Shape;
 
 };
 

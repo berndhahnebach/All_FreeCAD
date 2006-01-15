@@ -99,6 +99,14 @@ PostBuild_Cmds=mkdir ..\..\bin	copy Debug\FreeCADBaseD.dll ..\..\bin	mkdir ..\..
 # Name "FreeCADBase - Win32 Debug"
 # Begin Source File
 
+SOURCE=.\Base.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Base.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\BoundBox.cpp
 # End Source File
 # Begin Source File
@@ -117,14 +125,6 @@ SOURCE=.\Console.h
 
 SOURCE=.\DllMain.cpp
 # SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\Documentation.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Documentation.h
 # End Source File
 # Begin Source File
 
@@ -214,6 +214,14 @@ SOURCE=.\ParameterPy.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\Persistance.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Persistance.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\PreCompiled.cpp
 # ADD CPP /Yc"PreCompiled.h"
 # End Source File
@@ -248,6 +256,14 @@ SOURCE=.\PyTools.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Reader.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Reader.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Sequencer.cpp
 # End Source File
 # Begin Source File
@@ -272,11 +288,27 @@ SOURCE=.\Swap.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Time.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Time.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Tools2D.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\Tools2D.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Type.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Type.h
 # End Source File
 # Begin Source File
 

@@ -35,6 +35,7 @@
 # include <qtabbar.h>
 # include <qtimer.h>
 # include <qvbox.h>
+# include <strstream>
 #endif
 
 #include <Inventor/errors/SoDebugError.h> 
@@ -817,7 +818,7 @@ void Application::runApplication(void)
   for (unsigned short i=0; i<count; i++)
   {
     // getting file name
-    ostringstream temp;
+    std::strstream temp;
     temp << "OpenFile" << i;
 
     File = App::Application::Config()[temp.str()];

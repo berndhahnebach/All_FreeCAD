@@ -28,7 +28,6 @@
 # include <qpixmap.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
-# include <OSD_Process.hxx>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -237,16 +236,16 @@ void ViewProviderFeature::update(void)
   if(ifDataNewer())
   {
     updateData();
-    OSD_Process pro;
-    calcData = pro.SystemDate();
+    
+    calcData.setToActual();
   }
 
   if(ifMaterialNewer())
   {
     setMatFromFeature();
     setMode(pcFeature->getShowMode());
-    OSD_Process pro;
-    calcMaterial = pro.SystemDate();
+
+    calcMaterial.setToActual();
   }
 
 }
@@ -279,8 +278,7 @@ void ViewProviderFeature::setMatFromFeature(void)
   pcPointStyle->pointSize = pcFeature->getPointSize();
 
   // touch the material time
-  OSD_Process pro;
-  calcMaterial = pro.SystemDate ();
+  calcMaterial.setToActual();
 }
 
 void ViewProviderFeature::setTransparency(float trans)

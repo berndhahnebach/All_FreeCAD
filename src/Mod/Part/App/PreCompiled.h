@@ -32,6 +32,7 @@
 #include <vector>
 #include <list>
 #include <set>
+#include <map>
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
@@ -117,18 +118,6 @@
 #include <TCollection_ExtendedString.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
-// OCAF
-#include <TDF_Label.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_Tool.hxx>
-#include <TDF_ListIteratorOfAttributeList.hxx>
-#include <TDocStd_Application.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDataStd_RealArray.hxx>
-#include <TDataStd_IntegerArray.hxx>
-#include <TDataStd_Comment.hxx>
 
 #include <BRepBuilderAPI.hxx>
 
@@ -157,7 +146,6 @@
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <MMgt_TShared.hxx>
-#include <OSD_Environment.hxx>
 #include <Precision.hxx>
 #include <Quantity_Factor.hxx>
 #include <Quantity_Length.hxx>
@@ -165,7 +153,6 @@
 #include <Quantity_PhysicalQuantity.hxx>
 #include <Quantity_PlaneAngle.hxx>
 #include <Quantity_TypeOfColor.hxx>
-#include <ShapeSchema.hxx> 
 #include <Standard_Boolean.hxx>
 #include <Standard_CString.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -196,31 +183,12 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 
-// OCAF
-#include <TDocStd_Document.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_Reference.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Builder.hxx>
-#include <TDataStd_Real.hxx>
-#include <TFunction_Logbook.hxx>
-#include <TDataStd_Name.hxx>
-#include <TFunction_DriverTable.hxx>
-#include <TFunction_Function.hxx>
-#include <TDataStd_Integer.hxx>
-
-
 // Import
 #include <STEPControl_Writer.hxx>
 #include <STEPControl_Reader.hxx>
 #include <IGESControl_Controller.hxx>
 #include <IGESControl_Writer.hxx>
 #include <IGESControl_Reader.hxx>
-
-#include <OSD_Process.hxx>
-
-#include <Quantity_Date.hxx>
 
 
 #endif //_PreComp_

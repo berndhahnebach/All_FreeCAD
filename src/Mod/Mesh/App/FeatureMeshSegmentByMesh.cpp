@@ -43,31 +43,27 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-void FeatureMeshSegmentByMesh::initFeature(void)
+PROPERTY_SOURCE(Mesh::FeatureMeshSegmentByMesh, Mesh::MeshFeature)
+
+
+FeatureMeshSegmentByMesh::FeatureMeshSegmentByMesh(void)
 {
-  addProperty("Link","Source");
-  addProperty("Link","Tool");
-  addProperty("Float", "BaseX");
-  addProperty("Float", "BaseY");
-  addProperty("Float", "BaseZ");
-  addProperty("Float", "NormalX");
-  addProperty("Float", "NormalY");
-  addProperty("Float", "NormalZ");
+  ADD_PROPERTY(Source  ,(0));
+  ADD_PROPERTY(Tool    ,(0));
+  ADD_PROPERTY(Base    ,(0.0,0.0,0.0));
+  ADD_PROPERTY(Normal  ,(0.0,0.0,1.0));
+
 }
 
-int FeatureMeshSegmentByMesh::execute(TFunction_Logbook& log)
+int FeatureMeshSegmentByMesh::execute(void)
 {
-  MeshFeature *pcMesh  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
-  MeshFeature *pcTool  = dynamic_cast<MeshFeature*>(getPropertyLink("Tool"));
+  MeshFeature *pcMesh  = dynamic_cast<MeshFeature*>(Source.getValue());
+  MeshFeature *pcTool  = dynamic_cast<MeshFeature*>(Tool.getValue());
 
   // the clipping plane
   Vector3D cBase, cNormal;
-  cBase.x = (float)getPropertyFloat("BaseX");
-  cBase.y = (float)getPropertyFloat("BaseY");
-  cBase.z = (float)getPropertyFloat("BaseZ");
-  cNormal.x = (float)getPropertyFloat("NormalX");
-  cNormal.y = (float)getPropertyFloat("NormalY");
-  cNormal.z = (float)getPropertyFloat("NormalZ");
+  cBase =   Base.getValue();
+  cNormal = Normal.getValue();
 
   if(!pcMesh || pcMesh->getStatus() != Valid || !pcTool || pcTool->getStatus() != Valid)
     return 1;

@@ -30,7 +30,6 @@
 
 #include <Base/Exception.h>
 #include <App/Document.h>
-#include <App/Label.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
 #include <Gui/FileDialog.h>
@@ -339,6 +338,7 @@ void FCCmdPartCut::activated(int iMsg)
 	doCommand(Doc,"App.document().AddFeature(\"PartCut\",\"%s\")",FeatName.c_str());
 	doCommand(Doc,"App.document().%s.Base = App.document().%s",FeatName.c_str(),Sel[0].FeatName);
 	doCommand(Doc,"App.document().%s.Tool = App.document().%s",FeatName.c_str(),Sel[1].FeatName);
+  updateActive();
   commitCommand();
   
 

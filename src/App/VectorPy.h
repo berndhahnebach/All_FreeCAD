@@ -20,14 +20,13 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 
 
 #ifndef _VectorPy_h_
 #define _VectorPy_h_
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 #endif
 
 #include <Base/PyExportImp.h>

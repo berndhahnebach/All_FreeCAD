@@ -30,6 +30,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <vector>
+#include <map>
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>

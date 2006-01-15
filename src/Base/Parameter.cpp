@@ -75,6 +75,9 @@
 XERCES_CPP_NAMESPACE_USE
 using namespace Base;
 
+
+#include "XMLTools.h"
+
 //**************************************************************************
 //**************************************************************************
 // privat classes declaration:
@@ -126,40 +129,6 @@ public:
     bool    fSawErrors;
 };
 
-// ---------------------------------------------------------------------------
-//  This is a simple class that lets us do easy (though not terribly efficient)
-//  trancoding of XMLCh data to local code page for display.
-// ---------------------------------------------------------------------------
-class StrX
-{
-public :
-    // -----------------------------------------------------------------------
-    //  Constructors and Destructor
-    // -----------------------------------------------------------------------
-    StrX(const XMLCh* const toTranscode);
-
-    ~StrX();
-
-    // -----------------------------------------------------------------------
-    //  Getter methods
-    // -----------------------------------------------------------------------
-    const char* c_str() const;
-
-private :
-    // -----------------------------------------------------------------------
-    //  Private data members
-    //
-    //  fLocalForm
-    //      This is the local code page form of the string.
-    // -----------------------------------------------------------------------
-    char*   fLocalForm;
-};
-
-inline std::ostream& operator<<(std::ostream& target, const StrX& toDump)
-{
-    target << toDump.c_str();
-    return target;
-}
 
 
 class DOMPrintFilter : public DOMWriterFilter {
@@ -206,38 +175,6 @@ private :
     DOMPrintErrorHandler(const DOMErrorHandler&);
     void operator=(const DOMErrorHandler&);
     
-};
-
-
-
-// ---------------------------------------------------------------------------
-//  This is a simple class that lets us do easy (though not terribly efficient)
-//  trancoding of char* data to XMLCh data.
-// ---------------------------------------------------------------------------
-class XStr
-{
-public :
-    // -----------------------------------------------------------------------
-    //  Constructors and Destructor
-    // -----------------------------------------------------------------------
-    XStr(const char* const toTranscode);
-
-    ~XStr();
-
-
-    // -----------------------------------------------------------------------
-    //  Getter methods
-    // -----------------------------------------------------------------------
-    const XMLCh* unicodeForm() const;
-
-private :
-    // -----------------------------------------------------------------------
-    //  Private data members
-    //
-    //  fUnicodeForm
-    //      This is the Unicode XMLCh format of the string.
-    // -----------------------------------------------------------------------
-    XMLCh*   fUnicodeForm;
 };
 
 
@@ -1462,61 +1399,6 @@ bool DOMPrintErrorHandler::handleError(const DOMError &domError)
 }
 
 
-
-//**************************************************************************
-//**************************************************************************
-// StrX
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-StrX::StrX(const XMLCh* const toTranscode)
-{
-    // Call the private transcoding method
-    fLocalForm = XMLString::transcode(toTranscode);
-}
-
-StrX::~StrX()
-{
-    //delete [] fLocalForm; // dont work on VC7.1
-  XMLString::release(&fLocalForm);
-}
-
-
-// -----------------------------------------------------------------------
-//  Getter methods
-// -----------------------------------------------------------------------
-const char* StrX::c_str() const
-{
-    return fLocalForm;
-}
-
-
-//**************************************************************************
-//**************************************************************************
-// XStr
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-XStr::XStr(const char* const toTranscode)
-{
-    // Call the private transcoding method
-    fUnicodeForm = XMLString::transcode(toTranscode);
-}
-
-XStr::~XStr()
-{
-    //delete [] fUnicodeForm;
-}
-
-
-// -----------------------------------------------------------------------
-//  Getter methods
-// -----------------------------------------------------------------------
-const XMLCh* XStr::unicodeForm() const
-{
-    return fUnicodeForm;
-}
 
 
 //**************************************************************************

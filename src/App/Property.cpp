@@ -22,8 +22,8 @@
 
 
 /** Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
+ *  on some compilers the precompiled header option gain significant compile
+ *  time! So every external header (libs and system) should included in
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
@@ -31,11 +31,11 @@
 
 #ifndef _PreComp_
 #	include <assert.h>
-#	include <Standard_ConstructionError.hxx>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Property.h"
+#include "PropertyContainer.h"
 
 using namespace App;
 
@@ -45,14 +45,36 @@ using namespace App;
 // Property
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+TYPESYSTEM_SOURCE(App::Property , Base::Persistance);
 
 //**************************************************************************
 // Construction/Destruction
 
 // here the implemataion! description should take place in the header file!
-Property::Property(){}
+Property::Property()
+:father(0)
+{
 
-Property::~Property(){}
+}
+
+Property::~Property()
+{
+
+}
+
+const char* Property::getName(void)
+{
+  return father->getName(this);
+}
 
 
+void Property::setContainer(PropertyContainer *Father)
+{
+  father = Father;
+}
 
+void Property::hasSetValue(void)
+{
+  if(father)
+    father->onChanged(this);
+}

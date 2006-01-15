@@ -20,25 +20,24 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 
 
 #ifndef _Feature_h_
 #define _Feature_h_
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 # include <string>
 # include <vector>
 #endif
 
 #include <Base/Factory.h>
 #include <Base/PyExport.h>
+#include <Base/Time.h>
 
+#include <App/DocumentObject.h>
 #include <App/Material.h>
-
-#include <Quantity_Date.hxx>
-
+#include <App/PropertyStandard.h>
 
 class TFunction_Logbook;
 class PyObjectBase;
@@ -66,12 +65,21 @@ class FeaturePy;
 
 /** Base class of all Feature classes in FreeCAD
  */
-class AppExport Feature: public Base::PyHandler
+class AppExport Feature: public App::DocumentObject
 {
+    PROPERTY_HEADER(App::Feature);
+
 public:
+
+
+  PropertyString name;
+
 	/// Constructor
 	Feature(void);
   virtual ~Feature();
+
+  virtual void onChanged(Property* prop);
+
 
 	/** @name methodes to overide with a new feature type */
 	//@{
@@ -80,7 +88,7 @@ public:
 	 *  to a Label in the document. It need to be overwriten in 
 	 *  every Feature
 	 */
-	virtual void initFeature(void)=0;
+	//virtual void initFeature(void)=0;
 
 	/** Validate
 	 *  We compute the object and topologically name it.
@@ -90,7 +98,7 @@ public:
 	 *  2 - algorithm failed
 	 *  0 - no mistakes were found.
 	 */
-	virtual int execute(TFunction_Logbook& log)=0;
+	virtual int execute(void)=0;
 
   /// Returns the Name/Type of the feature
   virtual const char *type(void)=0;
@@ -132,7 +140,7 @@ public:
   /** Insert Property
 	 *  Call this method to add a Property to the Feature
 	 */
-	void addProperty(const char *Type, const char *Name);
+	//void addProperty(const char *Type, const char *Name);
 
   /** get Property string representation
  	 *  
@@ -142,60 +150,60 @@ public:
   /** get Property type
  	 *  
 	 */
-  const char *getPropertyType(const char *Name);
+  //const char *getPropertyType(const char *Name);
 
 	/** Get a Property of this Feature
 	 *  Call this method to get a Property of this Feature
 	 */
 	//Property &GetProperty(const char *Name);
-
+/*
 	void setPropertyVector(const Vector3D&, const char *Name);
 	Vector3D getPropertyVector(const char *Name);
 	void setPropertyMatrix(const Matrix4D&, const char *Name);
 	Matrix4D getPropertyMatrix(const char *Name);
 	void setPropertyPlane(const Vector3D& Base, const Vector3D& Norm, const char *Name);
 	void getPropertyPlane(Vector3D& Base, Vector3D& Norm, const char *Name);
-
+*/
   /** Insert a Link Property
 	 *  Call this method to add a Link to an other Feature to that Feature
 	 */
-	void setPropertyLink(Feature *pcToLink, const char *Name);
+	//void setPropertyLink(Feature *pcToLink, const char *Name);
 
 	/** get a Link Property
 	 *  Call this method to get a Link to an other Feature 
 	 */
-	Feature *getPropertyLink(const char *Name);
+	//Feature *getPropertyLink(const char *Name);
 
   /** Get a Property and put it to float
 	 *  This works with all Properties inhereting from Float and Int Properties..
 	 */
-	double getPropertyFloat(const char *Name);
+	//double getPropertyFloat(const char *Name);
 
   /** set a float Property 
 	 *  ..
 	 */
-	void setPropertyFloat(double, const char *Name);
- 
+	//void setPropertyFloat(double, const char *Name);
+ /*
  	long getPropertyInt(const char *Name);
 	void setPropertyInt(long, const char *Name);
   std::string getPropertyString(const char *Name);
 	void setPropertyString(const char*, const char *Name);
-
+*/
   /** returns the names of all registert properties of this Feature */
-  const std::vector<std::string> getAllPropertyNames(void);
+  //const std::vector<std::string> getAllPropertyNames(void);
 
   /** Set the property touched -> changed, cause recomputation in Update()
 	 *  
 	 */
-	void TouchProperty(const char *Name);
+	//void TouchProperty(const char *Name);
   /// set this feature touched (cause recomputation on depndend features)
 	void Touch(void);
   /// set the view parameter of this feature touched (cause recomputation of representation)
 	void TouchView(void);
   /// get the touch time
-  Quantity_Date getTouchTime(void){return touchTime;}
+  Base::Time getTouchTime(void){return touchTime;}
   /// get the view touch time
-  Quantity_Date getTouchViewTime(void){return touchViewTime;}
+  Base::Time getTouchViewTime(void){return touchViewTime;}
 	//@}
 
 
@@ -249,18 +257,18 @@ public:
 
 
   /// Retrive the Feature from a Document label
-  static Feature *GetFeature(const TDF_Label &l);
+  //static Feature *GetFeature(const TDF_Label &l);
 
   const char *getName(void){return _Name.c_str();}
 
 	virtual Base::PyObjectBase *GetPyObject(void);
 
+  /*
   TDF_Label Label(void)
   {
     return _cFeatureLabel;
   }
-
-  App::Document &getDocument(void){return *_pDoc;}
+*/
 
   friend class FeaturePy;
   friend class Document;
@@ -297,19 +305,17 @@ protected:
   std::string _showMode;
 	//@}
 
-  Quantity_Date touchTime,touchViewTime;
+  Base::Time touchTime,touchViewTime,touchPropertyTime;
 
-	TDF_Label            _cFeatureLabel;
+	//TDF_Label            _cFeatureLabel;
 	int                  _nextFreeLabel;
 
   struct FeatEntry {
     int Label;
-    Quantity_Date Time;
+    Base::Time T;
   };
   
   std::map<std::string,FeatEntry> _PropertiesMap;
-
-  App::Document* _pDoc;
 
   FeaturePy* pcFeaturePy;
 

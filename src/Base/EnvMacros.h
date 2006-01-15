@@ -34,7 +34,7 @@
 #endif
 
 
-#undef FC_VERBOSE
+#define FC_VERBOSE
 
 void EnvPrint(const char* sVar, const char* sVal)
 {

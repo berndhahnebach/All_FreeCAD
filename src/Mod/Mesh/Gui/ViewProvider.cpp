@@ -324,10 +324,10 @@ void ViewProviderMesh::setMode(const char* ModeName)
   ViewProviderFeature::setMode( ModeName );
 }
 
-vector<string> ViewProviderMesh::getModes(void)
+std::vector<std::string> ViewProviderMesh::getModes(void)
 {
   // get the modes of the father
-  vector<string> StrList = ViewProviderFeature::getModes();
+  std::vector<std::string> StrList = ViewProviderFeature::getModes();
 
   // add your own modes
   StrList.push_back("Flat");

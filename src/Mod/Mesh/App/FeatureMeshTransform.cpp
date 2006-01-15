@@ -35,27 +35,29 @@
 using Base::Matrix4D;
 #include "FeatureMeshTransform.h"
 
-#include "Core/MeshIO.h"
-
+#include <App/PropertyLinks.h>
+#include <App/PropertyGeo.h>
 
 using namespace Mesh;
 using namespace MeshCore;
 
-void FeatureMeshTransform::initFeature(void)
+PROPERTY_SOURCE(Mesh::FeatureMeshTransform, Mesh::MeshFeature)
+
+
+FeatureMeshTransform::FeatureMeshTransform(void)
 {
-  Base::Console().Log("FeatureMeshImport::InitLabel()\n");
-  addProperty("Link","Source");
-  addProperty("Matrix","Position");
+  ADD_PROPERTY(Source  ,(0));
+  ADD_PROPERTY(Position,(0));
 }
 
-int FeatureMeshTransform::execute(TFunction_Logbook& log)
+int FeatureMeshTransform::execute(void)
 {
 
-  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
+  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(Source.getValue());
   if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
 
-  Matrix4D Matrix =getPropertyMatrix("Position");
+  Matrix4D Matrix =Position.getValue();
 
  
   getMesh() = pcFirst->getMesh();

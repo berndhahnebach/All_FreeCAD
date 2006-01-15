@@ -54,6 +54,9 @@ using namespace Part;
 // Feature
 //===========================================================================
 
+PROPERTY_SOURCE(Part::PartFeature, App::Feature)
+
+
 PartFeature::PartFeature(void)
 {
   _showMode = "Normal";
@@ -65,7 +68,7 @@ void PartFeature::initFeature(void)
 {
 }
 
-Standard_Integer PartFeature::execute(TFunction_Logbook& log)
+Standard_Integer PartFeature::execute(void)
 {
   return 0;
 }
@@ -73,19 +76,12 @@ Standard_Integer PartFeature::execute(TFunction_Logbook& log)
 
 void PartFeature::setShape(const TopoDS_Shape &Shape)
 {
- 	TNaming_Builder B(_cFeatureLabel);
-	B.Generated(Shape);
+  _Shape = Shape;
 }
 
 TopoDS_Shape PartFeature::getShape(void)
 {
-  Handle(TNaming_NamedShape) ShapeToViewName;
-  if (!( _cFeatureLabel.FindAttribute(TNaming_NamedShape::GetID(),ShapeToViewName) ))
-    throw Base::Exception("PartFeature::getShape(): Shape not valid check Feature::getStatus() first!");
-
-  // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
-  return ShapeToViewName->Get();
-
+  return _Shape;
 }
 
 

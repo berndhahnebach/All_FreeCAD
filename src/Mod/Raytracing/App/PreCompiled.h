@@ -87,26 +87,11 @@
 #include <TColStd_ListIteratorOfListOfReal.hxx>
 #include <TColStd_ListOfReal.hxx>
 #include <TColStd_SequenceOfInteger.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDataStd_ChildNodeIterator.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_TagSource.hxx>
-#include <TFunction_Logbook.hxx>
-#include <TNaming_Builder.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_Tool.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Face.hxx>
-#include <V3d_OrthographicView.hxx>
-#include <V3d_Viewer.hxx>
-#include <V3d_View.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
 #include <BRep_Tool.hxx>
@@ -118,7 +103,6 @@
 #include <TopoDS_Edge.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <GCPnts_UniformDeflection.hxx>
-#include <Quantity_Date.hxx>
 
 
 #endif //_PreComp_

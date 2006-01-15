@@ -58,7 +58,7 @@ void MeshFeature::initFeature(void)
 {
 }
 
-Standard_Integer MeshFeature::execute(TFunction_Logbook& log)
+Standard_Integer MeshFeature::execute(void)
 {
   return 0;
 }

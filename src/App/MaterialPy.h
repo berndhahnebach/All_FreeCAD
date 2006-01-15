@@ -20,14 +20,13 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 
 
 #ifndef _MaterialPy_h_
 #define _MaterialPy_h_
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 #endif
 
 #include <Base/PyExportImp.h>

@@ -27,6 +27,7 @@
 #include "Material.h"
 
 #include <deque>
+#include <string>
 #include <vector>
 
 #define CCR_EPS  1.0e-5f

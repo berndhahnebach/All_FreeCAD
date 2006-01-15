@@ -30,7 +30,6 @@
 #include "Document.h"
 #include "DocumentPy.h"
 #include "Feature.h"
-#include "Label.h"
 
 #include "../Base/PyExport.h"
 #include "../Base/Console.h"
@@ -175,18 +174,18 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 			return Py_BuildValue("u", _pcDoc->getName()); 
 		else if (streq(attr, "Path"))						
 			return Py_BuildValue("u", _pcDoc->getPath()); 
-		else if (streq(attr, "Main")){
-			//_pcDoc->Main()->IncRef();
-			return new LabelPy(_pcDoc->_hDoc->Main()); 
-		}
-		else if (streq(attr, "IsEmpty"))					
-			return Py_BuildValue("u", _pcDoc->IsEmpty()?1:0); 
-		else if (streq(attr, "IsValid"))					
-			return Py_BuildValue("u", _pcDoc->IsValid()?1:0); 
+//		else if (streq(attr, "Main")){
+//			//_pcDoc->Main()->IncRef();
+//			return new LabelPy(_pcDoc->_hDoc->Main()); 
+//		}
+//		else if (streq(attr, "IsEmpty"))					
+//			return Py_BuildValue("u", _pcDoc->IsEmpty()?1:0); 
+//		else if (streq(attr, "IsValid"))					
+//			return Py_BuildValue("u", _pcDoc->IsValid()?1:0); 
 		else if (streq(attr, "HasOpenCommand"))				
 			return Py_BuildValue("u", _pcDoc->HasOpenCommand()?1:0);
-		else if (streq(attr, "StorageFormat"))						
-			return Py_BuildValue("u", _pcDoc->storageFormat()); 
+//		else if (streq(attr, "StorageFormat"))						
+//			return Py_BuildValue("u", _pcDoc->storageFormat()); 
     else{
       Feature *pFeat = _pcDoc->getFeature(attr);
       if(pFeat)
@@ -201,9 +200,9 @@ int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: 
 	if (streq(attr, "UndoLimit")){						// settable new state
 		_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
 		return 1;
-	}else if (streq(attr, "StorageFormat")){						// settable new state
-		_pcDoc->changeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
-		return 1;
+//	}else if (streq(attr, "StorageFormat")){						// settable new state
+//		_pcDoc->changeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
+//		return 1;
 	}else  
 		return PyObjectBase::_setattr(attr, value); 	// send up to parent
 } 
@@ -222,7 +221,7 @@ PyObject *DocumentPy::PyDocType(PyObject *args)
 PYFUNCIMP_D(DocumentPy,Dump)
 { 
   PY_TRY {
-	  _pcDoc->Dump();
+	  //_pcDoc->Dump();
 	  Py_Return; 
   }PY_CATCH;
 } 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -10,12 +10,12 @@
  *   for detail see the LICENCE text file.                                 *
  *                                                                         *
  *   FreeCAD is distributed in the hope that it will be useful,            *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        * 
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
  *   GNU Library General Public License for more details.                  *
  *                                                                         *
  *   You should have received a copy of the GNU Library General Public     *
- *   License along with FreeCAD; if not, write to the Free Software        * 
+ *   License along with FreeCAD; if not, write to the Free Software        *
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  *
  *   USA                                                                   *
  *                                                                         *
@@ -27,17 +27,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <TColStd_SequenceOfExtendedString.hxx>
-#	include <TCollection_ExtendedString.hxx>
 # include <sstream>
 #endif
 
 
 #include "Application.h"
 #include "Document.h"
-#include "Function.h"
-//#include "DocTypeAttr.h"
-//#include "DocType.h"
 
 // FreeCAD Base header
 #include "../Base/Interpreter.h"
@@ -85,24 +80,14 @@ PYFUNCIMP_S(Application,sOpen)
         return NULL;                             // NULL triggers exception
 
 
-  try {
-    // return new document
-    return GetApplication().openDocument(pstr)->GetPyObject();
-  }
-  catch(Base::Exception e) {
-    PyErr_SetString(PyExc_IOError, e.what());
-    return 0L;
-  }
-  catch(Standard_Failure e)
-  {
-    Handle(Standard_Failure) E = Standard_Failure::Caught();
-    std::stringstream strm;
-
-    strm << E << endl;
-    //strm.freeze();
-    PyErr_SetString(PyExc_IOError, strm.str().c_str());
-    return 0L;
-  }
+	try {
+		// return new document
+		return (GetApplication().openDocument(pstr)->GetPyObject());
+	}
+	catch(Base::Exception e) {
+		PyErr_SetString(PyExc_IOError, e.what());
+		return 0L;
+	}
 
 }
 

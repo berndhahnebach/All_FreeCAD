@@ -1,5 +1,5 @@
 Microsoft Developer Studio Workspace File, Format Version 6.00
-# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GELÖSCHT WERDEN!
 
 ###############################################################################
 
@@ -16,9 +16,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name AppPartGui
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name AppImportGui
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name AppMeshGui
@@ -50,9 +47,6 @@ Package=<5>
 
 Package=<4>
 {{{
-    Begin Project Dependency
-    Project_Dep_Name AppImport
-    End Project Dependency
     Begin Project Dependency
     Project_Dep_Name AppPart
     End Project Dependency
@@ -121,57 +115,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name FreeCADGui
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "AppImport"=.\Mod\Import\App\AppImport.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name FreeCADApp
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name FreeCADBase
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name AppPart
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name FreeCADMainCmd
-    End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "AppImportGui"=.\Mod\Import\Gui\AppImportGui.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name AppImport
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name FreeCADGui
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name FreeCADApp
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name FreeCADBase
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name AppPartGui
     End Project Dependency
 }}}
 

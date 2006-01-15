@@ -24,16 +24,35 @@
 #ifndef __PropteryContainer_H__
 #define __PropteryContainer_H__
 
+#include <Base/Persistance.h>
+
+
 
 namespace App
 {
+  class Property;
+  class PropertyContainer;
 
+struct AppExport PropertyData
+{
+  std::map<std::string,int> propertyData;
+  const PropertyData *parentPropertyData;
+
+  void addProperty(PropertyContainer *container,const char* PropName, Property *Prop);
+  const char* getName(const PropertyContainer *container,const Property* prop) const;
+  Property *getPropertyByName(PropertyContainer *container,const char* name) const;
+  void getPropertyMap(PropertyContainer *container,std::map<std::string,Property*> &Map) const;
+
+};
 
 
 /** Base class of all classes with propteries
  */
-class AppExport PropertyContainer
+class AppExport PropertyContainer: public Base::Persistance
 {
+
+  TYPESYSTEM_HEADER();
+
 public:
 
        
@@ -48,10 +67,59 @@ public:
 	 * A more elaborate description of the destructor.
 	 */
 	virtual ~PropertyContainer();
+
+  /// get called by the container when a Proptery was changed
+  virtual void onChanged(Property* prop){};
+
+
+  Property *getPropertyByName(const char* name);
+  const char* getName(Property* prop) const;
+  void getPropertyMap(std::map<std::string,Property*> &Map);
+
+  virtual void Save (short indent,std::ostream &str);
+  virtual void Restore(Base::Reader &reader);
+
+
+  friend class Property;
+
 	
+protected: 
+  //void hasChanged(Propterty* prop);
+  static const  PropertyData * getPropertyDataPtr(void); 
+  virtual const PropertyData& getPropertyData(void) const; 
+private: 
+  static PropertyData propertyData; 
 
 };
 
+
+#define ADD_PROPERTY(_prop_, _defaultval_) \
+  do { \
+    this->_prop_.setValue _defaultval_;\
+    this->_prop_.setContainer(this); \
+    propertyData.addProperty(this, #_prop_, &this->_prop_); \
+  } while (0)
+
+
+
+#define PROPERTY_HEADER(_class_) \
+  TYPESYSTEM_HEADER(); \
+protected: \
+  static const App::PropertyData * getPropertyDataPtr(void); \
+  virtual const App::PropertyData &getPropertyData(void) const; \
+private: \
+  static App::PropertyData propertyData 
+
+/// 
+#define PROPERTY_SOURCE(_class_, _parentclass_) \
+TYPESYSTEM_SOURCE_P(_class_);\
+const App::PropertyData * _class_::getPropertyDataPtr(void){return &propertyData;} \
+const App::PropertyData & _class_::getPropertyData(void) const{return propertyData;} \
+App::PropertyData _class_::propertyData; \
+void _class_::init(void){\
+  initSubclass(_class_::classTypeId, #_class_ , #_parentclass_ ); \
+  _class_::propertyData.parentPropertyData = _parentclass_::getPropertyDataPtr();\
+}
 
 
 

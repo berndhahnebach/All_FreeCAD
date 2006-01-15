@@ -26,12 +26,14 @@
 
 #include <exception>
 #include <string>
+#include "Base.h"
 
 namespace Base
 {
 
-class BaseExport Exception: public std::exception
+class BaseExport Exception: public BaseClass
 {
+  TYPESYSTEM_HEADER();
 
 public:
 	Exception(const char * sMessage);

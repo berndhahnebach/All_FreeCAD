@@ -24,16 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <TDF_ChildIterator.hxx>
-# include <TDF_Tool.hxx>
-# include <TCollection_AsciiString.hxx>
-# include <TDF_ListIteratorOfAttributeList.hxx>
-# include <TFunction_Logbook.hxx>
-# include <TFunction_DriverTable.hxx>
-# include <TFunction_Function.hxx>
-# include <Standard_GUID.hxx>
-# include <TNaming_Builder.hxx>
-# include <TDataStd_Name.hxx>
 # include <sstream>
 #endif
 

@@ -27,10 +27,6 @@
 # include <qfiledialog.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
-# include <Geom_Axis2Placement.hxx>
-# include <TNaming_NamedShape.hxx>
-# include <Xw_Window.hxx>
-# include <Graphic3d_GraphicDevice.hxx>
 # include <Inventor/nodes/SoSelection.h>
 #endif
 
@@ -62,9 +58,9 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   _iDocId = (++_iDocCount);
 
   // keeping an Instance of this document as long as at least one window lives
-  _pcDocument->IncRef();
+//  _pcDocument->IncRef();
 
-  Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
+  //Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
 
   _pcDocument->Attach(this);
 
@@ -109,7 +105,7 @@ Document::~Document()
 
   // remove the reference from the object
   _pcDocPy->DecRef();
-  _pcDocument->DecRef();
+  //_pcDocument->DecRef();
 }
 
 //*****************************************************************************************************
@@ -482,8 +478,9 @@ bool Document::isLastView(void)
 void Document::canClose ( QCloseEvent * e )
 {
   if(! _pcDocument->isSaved()
-    && _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
-    && _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK)
+    //&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
+    //&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK
+      )
   {
 #   ifndef FC_DEBUG
       switch(QMessageBox::question( getActiveView(), tr("Unsaved document"),tr("Save document before close?"),

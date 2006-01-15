@@ -27,9 +27,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <TColStd_SequenceOfExtendedString.hxx>
-#	include <TCollection_ExtendedString.hxx>
-# include <TFunction_DriverTable.hxx>
 # include <iostream>
 # ifdef FC_OS_LINUX
 # include <time.h>
@@ -39,9 +36,6 @@
 
 #include "Application.h"
 #include "Document.h"
-#include "Function.h"
-//#include "DocTypeAttr.h"
-//#include "DocType.h"
 
 // FreeCAD Base header
 #include <Base/Interpreter.h>
@@ -50,9 +44,19 @@
 #include <Base/Console.h>
 #include <Base/Factory.h>
 #include <Base/FileInfo.h>
+#include <Base/Type.h>
+#include <Base/Base.h>
+#include <Base/Persistance.h>
+#include <Base/Reader.h>
 
 #include "VectorPy.h"
 #include "MatrixPy.h"
+#include "Feature.h"
+#include "Property.h"
+#include "PropertyContainer.h"
+#include "PropertyStandard.h"
+#include "PropertyLinks.h"
+#include "Document.h"
 
 namespace EnvMacro {
 #include <Base/EnvMacros.h>
@@ -76,11 +80,6 @@ const char *       Application::VersionDate  = __DATE__;
 /// Build date
 const char *       Application::VersionTime  = __TIME__;
 
-
-// the standard and plugin file of FreeCAD
-#include "Standard.h"
-#include "Plugin.h"
-
 // scriptings (scripts are build in but can be overriden by command line option)
 #include "InitScript.h"
 #include "TestScript.h"
@@ -95,7 +94,7 @@ using namespace App;
 using namespace std;
 
 
-
+/*
 Standard_CString ApplicationOCC::ResourcesName()
 {
 	//return Standard_CString ("Resources");
@@ -176,7 +175,7 @@ Standard_Boolean ApplicationOCC::IsKind(const Handle(Standard_Type)& AType) cons
 }
 Handle_ApplicationOCC::~Handle_ApplicationOCC() {}
 
-
+*/
 //==========================================================================
 // Application
 //==========================================================================
@@ -199,7 +198,7 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
 	 _pActiveDoc(0)
 {
 
-	_hApp = new ApplicationOCC;
+	//_hApp = new ApplicationOCC;
 	mpcPramManager["System parameter"] = _pcSysParamMngr;
 	mpcPramManager["User parameter"] = _pcUserParamMngr;
 
@@ -238,7 +237,6 @@ void Application::renameDocument(const char *OldName, const char *NewName)
   if(pos != DocMap.end())
   {
     DocEntry temp;
-    temp.hDoc = pos->second.hDoc; 
     temp.pDoc = pos->second.pDoc; 
     DocMap.erase(pos);
     DocMap[NewName] = temp;
@@ -258,20 +256,16 @@ Document* Application::newDocument(const char * Name)
     Name = "Unnamed";
   string name = getUniqueDocumentName(Name);
 
-  // OCC Document schema
-	_hApp->NewDocument("FreeCad-Std",newDoc.hDoc);
-	//_hApp->NewDocument("MDTV-Standard",hDoc);
-	//_hApp->NewDocument("Standard",hDoc);
-
   // create the FreeCAD document
-  newDoc.pDoc = new Document(newDoc.hDoc,name.c_str());
+  newDoc.pDoc = new Document();
+  newDoc.pDoc->Name.setValue(name);
 
 	// add the document to the internal list
 	DocMap[name] = newDoc;
 	_pActiveDoc = newDoc.pDoc;
 
 
-	newDoc.pDoc->Init();
+	//newDoc.pDoc->Init();
 	// trigger Observers (open windows and so on)
 
   AppChanges Reason;
@@ -285,7 +279,7 @@ Document* Application::newDocument(const char * Name)
 
 bool Application::closeDocument(const char* name)
 {
-  int oldDoc = _hApp->NbDocuments();
+  //int oldDoc = _hApp->NbDocuments();
 
   /// @todo Remove the document properly from OCAF
   DocEntry delDoc;
@@ -308,11 +302,12 @@ bool Application::closeDocument(const char* name)
     _pActiveDoc = 0;
   delete delDoc.pDoc;
 
+  /*
   int newDoc = _hApp->NbDocuments();
 
   if ( newDoc >= oldDoc)
     Base::Console().Warning("OCC Document of '%s' couldn't be closed.", name );
-
+*/
   return true;
 }
 
@@ -372,44 +367,26 @@ Document* Application::openDocument(const char * FileName)
   // checking on the extension
   if(Ext == "FCStd" || Ext == "std")
   {
-    switch(_hApp->Open(TCollection_ExtendedString((Standard_CString) FileName),newDoc.hDoc) )
-	  {
-		  case CDF_RS_OK:
-			  break;
-		  case CDF_RS_UnknownDocument:
-        throw Base::Exception("Unknown Document");
-		  case CDF_RS_AlreadyRetrieved:
-			  throw Base::Exception("Already Retrieved");
-		  case CDF_RS_AlreadyRetrievedAndModified:
-			  throw Base::Exception("AlreadyRetrievedAndModified");
-		  case CDF_RS_NoDriver:
-			  throw Base::Exception("NoDriver");
-		  case CDF_RS_NoVersion:
-			  throw Base::Exception("NoVersion");
-		  case CDF_RS_NoModel:
-			  throw Base::Exception("NoModel");
-		  case CDF_RS_TypeNotFoundInSchema:
-			  throw Base::Exception("TypeNotFoundInSchema");
-		  case CDF_RS_UnrecognizedFileFormat:
-			  throw Base::Exception("UnrecognizedFileFormat");
-		  case CDF_RS_PermissionDenied:
-			  throw Base::Exception("PermissionDenied");
-		  default:
-			  throw Base::Exception("Unknown open error");
-	  }
-	  
+  
 	  // Creating a FreeCAD Document
-    string name = TCollection_AsciiString(newDoc.hDoc->GetName()).ToCString();
-	  newDoc.pDoc = new Document(newDoc.hDoc,name.c_str());
+    string name = File.fileNamePure();
+	  newDoc.pDoc = new Document();
+    newDoc.pDoc->Name.setValue(name);
+    newDoc.pDoc->FileName.setValue(File.filePath());
 	  DocMap[name] = newDoc;
 	  _pActiveDoc = newDoc.pDoc;
-
 
 	  // trigger Observers (open windows and so on)
     AppChanges Reason;
     Reason.Doc = newDoc.pDoc;
     Reason.Why = AppChanges::New;
     Notify(Reason);
+
+    // read the document
+    Base::Reader reader(File.filePath().c_str());
+    newDoc.pDoc->Restore(reader);
+
+
 	  //NotifyDocNew(newDoc.pDoc);
   }else{
     throw Base::Exception("Unknown file extension");
@@ -578,6 +555,9 @@ void Application::destruct(void)
 
 void Application::init(int argc, char ** argv)
 {
+
+  initTypes();
+
   if(argc==0)
   {
     char* buf = new char[256];
@@ -590,6 +570,41 @@ void Application::init(int argc, char ** argv)
 
   initApplication();
 }
+
+void Application::initTypes(void)
+{
+  // Base types
+  Base::Type             ::init();
+  Base::BaseClass        ::init();
+  Base::Exception        ::init();
+  Base::Persistance      ::init();
+  // Properties
+  App ::Property         ::init();
+  App ::PropertyContainer::init();
+  App ::PropertyFloat    ::init();
+  App ::PropertyInteger  ::init();
+  App ::PropertyString   ::init();
+  App ::PropertyLink     ::init();
+  // Document classes
+  App ::DocumentObject   ::init();
+  App ::Feature          ::init();
+  App ::Document         ::init();
+
+  // test code
+  /*
+  const char * name;
+  name = Base::BaseClass::getClassTypeId().getName();
+  name = App::Property::getClassTypeId().getName();
+  name = App::Property::getClassTypeId().getParent().getName();
+
+  bool b;
+  b = App::Property::getClassTypeId().isDerivedFrom(Base::BaseClass::getClassTypeId());
+  b = App::Property::getClassTypeId().isDerivedFrom(Base::Persistance::getClassTypeId());
+  b = Base::Exception::getClassTypeId().isDerivedFrom(Base::Persistance::getClassTypeId());
+*/
+
+}
+
 
 void Application::initConfig(int argc, char ** argv)
 {
@@ -720,16 +735,6 @@ void Application::SaveEnv(const char* s)
 void Application::initApplication(void)
 {
 
-	// checking on the plugin files of OpenCasCade
-	std::fstream cTempStream;
-	cTempStream.open((mConfig["HomePath"]+PATHSEP+"Plugin").c_str(),ios::out);
-	cTempStream << Plu ;
-	cTempStream.close();
-	cTempStream.open((mConfig["HomePath"]+PATHSEP+"Standard").c_str(),ios::out);
-	cTempStream << Stand ;
-	cTempStream.close();
-
-
 	// interpreter and Init script ==========================================================
 	// register scripts
 	new ScriptProducer( "FreeCADInit",    FreeCADInit    );
@@ -751,8 +756,8 @@ void Application::initApplication(void)
   }
 
 	// Add the one and only FreeCAD FunctionDriver to the driver Tabel 
-	Handle(TFunction_Driver) myDriver = new Function();
-	TFunction_DriverTable::Get()->AddDriver(Function::GetID(),myDriver);
+	//Handle(TFunction_Driver) myDriver = new Function();
+	//TFunction_DriverTable::Get()->AddDriver(Function::GetID(),myDriver);
 
 
 }
@@ -832,17 +837,17 @@ void Application::runApplication()
 
 void Application::logStatus()
 {
-#if defined(FC_OS_WIN32)
-  SYSTEMTIME time;
+//#if defined(FC_OS_WIN32)
+//  SYSTEMTIME time;
 
-  GetSystemTime(&time);
+//  GetSystemTime(&time);
 
-  Console().Log("Init: Time: %d-%d-%d %d:%d,%d\n",time.wYear,time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond);
-#elif defined(FC_OS_LINUX)
+//  Console().Log("Init: Time: %d-%d-%d %d:%d,%d\n",time.wYear,time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond);
+//#elif defined(FC_OS_LINUX)
   time_t now;
   time(&now);
   Console().Log("Init: Time: %s\n", ctime(&now));
-#endif
+//#endif
 
   for(std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++)
 	{

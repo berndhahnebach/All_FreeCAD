@@ -21,6 +21,7 @@
 
 // standard
 #include <stdio.h>
+#include <iostream>
 #include <assert.h>
 
 // STL

@@ -24,10 +24,9 @@
 #ifndef __VIEWPROVIDERFEATURE_H__
 #define __VIEWPROVIDERFEATURE_H__
 
-#include "../Base/Factory.h"
+#include <Base/Factory.h>
+#include <Base/Time.h>
 #include "ViewProvider.h"
-#include "Quantity_Date.hxx"
-
 
 class SoMaterial;
 class SoDrawStyle;
@@ -98,7 +97,7 @@ protected:
   FeatItem *pcFeatItem;
 
   int _cLastStatus;
-  Quantity_Date calcMaterial,calcData;
+  Base::Time calcMaterial,calcData;
 };
 
 

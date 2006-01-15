@@ -31,6 +31,7 @@
 // STL
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <map>
 #include <queue>
@@ -47,9 +48,6 @@
 #ifdef FC_OS_WIN32
 # include <windows.h>
 #endif
-
-// OCC
-#include <TDF_Label.hxx>
 
 // Qt Toolkit
 #include <qaction.h>

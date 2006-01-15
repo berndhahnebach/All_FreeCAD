@@ -72,7 +72,7 @@ protected:
   std::vector<ViewProvider*> Provider;
 
   bool bModeChange;
-  string sModeChangeName;
+  std::string sModeChangeName;
 
   bool bTranspChange;
   float fTranspChange;

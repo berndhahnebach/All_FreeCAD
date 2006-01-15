@@ -47,6 +47,8 @@ namespace App
  */
 class AppExport PropertyInteger: public Property
 {
+  TYPESYSTEM_HEADER();
+
 public:
 
        
@@ -54,66 +56,32 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	PropertyInteger(long lValue=0, long lMax=LONG_MAX, long lMin=LONG_MIN, long lStep=1);
+	PropertyInteger();
 
 	/**
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	virtual ~PropertyInteger();
+	~PropertyInteger();
 
-	/** Sets the property throug a init string
+	/** Sets the property 
 	 */
-	virtual void Set(const char* Str);
+	void setValue(long);
 
 	/** This method returns a string representation of the property
-	 * This representation can be simple in case of strings or numbers
-	 * or more comples in cas of e.g. color
 	 */
-	virtual const char* GetAsString(void);
+	long getValue(void);
 
-	/** Gets the type of the concrete Property
-	 * Properties inherit from this class reports
-	 * its type through this methode.
-	 */
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
 
-	virtual const char* GetType(void);
+  virtual void Save (short indent,std::ostream &str);
+  virtual void Restore(Base::Reader &reader);
 
-	/** Returns the value of a sub property
-	 * This method is mainly for scripting and allow setting  
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue);
-
-	/** sets the value of a sub property
-	 * This method is mainly for scripting and allow geting 
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* GetSubProperty(const char* sSubPropName);
-
-	/** gets all possible subproperty names
-	 * return a line feed seperated list of all sub property
-	 * names.
-	 */
-	virtual const char* GetSubPropertyNames(void);
-
-	void SetValue(long lValue);
-	long GetValue(void);
-
-	void SetMin(long lMin);
-	long GetMin(void);
-
-	void SetMax(long lMax);
-	long GetMax(void);
-
-	void SetStep(long lStep);
-	long GetStep(void);
 
 private:
 
 	long _lValue;
-
-	long _lMax, _lMin, _lStep;
 
 };
 
@@ -123,13 +91,15 @@ private:
  */
 class AppExport PropertyFloat: public Property
 {
+  TYPESYSTEM_HEADER();
+
 public:
 
        
 	/** Value Constructor
 	 *  Construct with explicite Values
 	 */
-	PropertyFloat(double dValue = 0.0, double dMax=DBL_MAX, double dMin=DBL_MIN, double dStep=1);
+	PropertyFloat(void);
 
 	/**
 	 * A destructor.
@@ -137,58 +107,19 @@ public:
 	 */
 	virtual ~PropertyFloat();
 
-	/** Sets the property throug a init string
-	 */
-	virtual void Set(const char* Str);
 
-	/** This method returns a string representation of the property
-	 * This representation can be simple in case of strings or numbers
-	 * or more comples in cas of e.g. color
-	 */
-	virtual const char* GetAsString(void);
+	void setValue(double lValue);
+	double getValue(void);
 
-	/** Gets the type of the concrete Property
-	 * Properties inherit from this class reports
-	 * its type through this methode.
-	 */
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
 
-	virtual const char* GetType(void);
-
-	/** Returns the value of a sub property
-	 * This method is mainly for scripting and allow setting  
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue);
-
-	/** sets the value of a sub property
-	 * This method is mainly for scripting and allow geting 
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* GetSubProperty(const char* sSubPropName);
-
-	/** gets all possible subproperty names
-	 * return a line feed seperated list of all sub property
-	 * names.
-	 */
-	virtual const char* GetSubPropertyNames(void);
-
-	void SetValue(double lValue);
-	double GetValue(void);
-
-	void SetMin(double lMin);
-	double GetMin(void);
-
-	void SetMax(double lMax);
-	double GetMax(void);
-
-	void SetStep(double lStep);
-	double GetStep(void);
+  virtual void Save (short indent,std::ostream &str);
+  virtual void Restore(Base::Reader &reader);
 
 private:
 
 	double _dValue;
-
-	double _dMax, _dMin, _dStep;
 
 };
 
@@ -198,6 +129,8 @@ private:
  */
 class AppExport PropertyString: public Property
 {
+  TYPESYSTEM_HEADER();
+
 public:
 
        
@@ -205,7 +138,7 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	PropertyString(const char* sValue="", const char* sConstraint="");
+	PropertyString(void);
 
 	/**
 	 * A destructor.
@@ -213,52 +146,22 @@ public:
 	 */
 	virtual ~PropertyString();
 
-	/** Sets the property throug a init string
-	 */
 
-	virtual void Set(const char* Str);
-	/** This method returns a string representation of the property
-	 * This representation can be simple in case of strings or numbers
-	 * or more complex in cas of e.g. color
-	 */
-	virtual const char* GetAsString(void);
+	void setValue(const char* sString);
+  void setValue(const std::string &sString);
+	const char* getValue(void) const;
 
-	/** Gets the type of the concrete Property
-	 * Properties inherit from this class reports
-	 * its type through this methode.
-	 */
+  bool isEmpty(void){return _cValue == "";}
 
-	virtual const char* GetType(void);
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
 
-	/** Returns the value of a sub property
-	 * This method is mainly for scripting and allow setting  
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue);
-
-	/** sets the value of a sub property
-	 * This method is mainly for scripting and allow geting 
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* GetSubProperty(const char* sSubPropName);
-
-	/** gets all possible subproperty names
-	 * return a line feed seperated list of all sub property
-	 * names.
-	 */
-	virtual const char* GetSubPropertyNames(void);
-
-	void SetString(const char* sString);
-	const char* GetString(void);
-
-	void SetConstrain(const char* sConstrains);
-	const char* GetConstrain(void);
+  virtual void Save (short indent,std::ostream &str);
+  virtual void Restore(Base::Reader &reader);
 
 private:
 
 	std::string _cValue;
-
-	std::string _cConstrain;
 
 };
 
@@ -267,6 +170,8 @@ private:
  */
 class AppExport PropertyBool : public Property
 {
+  TYPESYSTEM_HEADER();
+
 public:
 
        
@@ -274,7 +179,7 @@ public:
 	 * A constructor.
 	 * A more elaborate description of the constructor.
 	 */
-	PropertyBool(bool lValue=false);
+	PropertyBool(void);
 
 	/**
 	 * A destructor.
@@ -282,48 +187,21 @@ public:
 	 */
 	virtual ~PropertyBool();
 
-	/** Sets the property throug a init string
-	 */
-	virtual void Set(const char* Str);
+	void setValue(bool lValue);
+	bool getValue(void);
 
-	/** This method returns a string representation of the property
-	 * This representation can be simple in case of strings or numbers
-	 * or more comples in case of e.g. color
-	 */
-	virtual const char* GetAsString(void);
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
 
-	/** Gets the type of the concrete Property
-	 * Properties inherit from this class reports
-	 * its type through this methode.
-	 */
-
-	virtual const char* GetType(void);
-
-	/** Returns the value of a sub property
-	 * This method is mainly for scripting and allow setting  
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue);
-
-	/** sets the value of a sub property
-	 * This method is mainly for scripting and allow geting 
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* GetSubProperty(const char* sSubPropName);
-
-	/** gets all possible subproperty names
-	 * return a line feed seperated list of all sub property
-	 * names.
-	 */
-	virtual const char* GetSubPropertyNames(void);
-
-	void SetValue(bool lValue);
-	bool GetValue(void);
+  virtual void Save (short indent,std::ostream &str);
+  virtual void Restore(Base::Reader &reader);
 
 private:
 
 	bool _lValue;
 };
+
+#if 0
 
 /** Color properties
  * This is the father of all properties handling colors.
@@ -459,7 +337,7 @@ private:
   std::vector<std::string> _lValue;
   long _lCurrent;
 };
-
+#endif
 
 } // namespace App
 

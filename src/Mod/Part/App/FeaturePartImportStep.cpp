@@ -38,28 +38,29 @@
 
 using namespace Part;
 
-void FeaturePartImportStep::initFeature(void)
-{
-	addProperty("String","FileName");
+PROPERTY_SOURCE(Part::FeaturePartImportStep, Part::PartFeature)
 
+
+FeaturePartImportStep::FeaturePartImportStep(void)
+{
+	ADD_PROPERTY(FileName,(""));
 }
 
-Standard_Integer FeaturePartImportStep::execute(TFunction_Logbook& log)
+Standard_Integer FeaturePartImportStep::execute(void)
 {
   STEPControl_Reader aReader;
   TopoDS_Shape aShape;
 
-  std::string FileName = getPropertyString("FileName");
 
-  if( FileName == "") 
+  if( FileName.isEmpty()) 
     return 1;
 
-  int i=open(FileName.c_str(),O_RDONLY);
+  int i=open(FileName.getValue(),O_RDONLY);
 	if( i != -1)
 	{
 	  close(i);
 	}else{
-    Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName.c_str());
+    Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName.getValue());
 	  return 1;
 	}
 
@@ -68,7 +69,7 @@ Standard_Integer FeaturePartImportStep::execute(TFunction_Logbook& log)
   Base::Sequencer().next();
   
   Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
-  if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
+  if (aReader.ReadFile((const Standard_CString)FileName.getValue()) != IFSelect_RetDone)
   {
     setError("File not readable");
     return 1;

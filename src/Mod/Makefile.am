@@ -1,4 +1,4 @@
-SUBDIRS=Part Import Mesh Points Raytracing Image Test
+SUBDIRS=Part Mesh Points Raytracing Image Test
 
 
 EXTRA_DIST = \

@@ -61,17 +61,6 @@
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Poly_Triangulation.hxx>
 #include <BRepBndLib.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_TagSource.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDF_Label.hxx>
-#include <TDF_TagSource.hxx>
-#include <TDF_ChildIterator.hxx>
-#include <TDataStd_Real.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <TDataStd_ChildNodeIterator.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
 #include <gp_Trsf.hxx>
@@ -84,7 +73,6 @@
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Bnd_Box.hxx>
-#include <TNaming_NamedShape.hxx>
 #include <BRepTools.hxx>
 #include <BRepMesh_Discret.hxx>
 #include <BRepBuilderAPI_MakeFace.hxx>
@@ -102,11 +90,6 @@
 #include <TColStd_Array1OfInteger.hxx>
 
 
-#ifndef FC_OS_WIN32
-#include <Graphic3d_GraphicDevice.hxx>
-#else
-#include <Graphic3d_WNTGraphicDevice.hxx>
-#endif
  
 // Qt Toolkit
 #include <qaccel.h>

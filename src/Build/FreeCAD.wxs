@@ -25,10 +25,10 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
    <Product Id='A3E112BB-85D0-43f4-86CA-36A15774FD58' 
             Name='FreeCAD' Language='1033'
-            Version='0.3.3.0' 
+            Version='0.5.1.0' 
             Manufacturer='Juergen Riegel'>
-      <Package  Id='F5F1B436-F393-411d-9315-3C5EA2260BC0' 
-                Description='FreeCAD 0.3 Installer package'
+      <Package  Id='F5F1B436-F393-411d-9315-3C5EA2260BC2' 
+                Description='FreeCAD 0.5 Installer package'
                 Comments='This is my first attempt at creating a Windows Installer database for FreeCAD'
                 InstallerVersion='200' 
                 Compressed='yes' />

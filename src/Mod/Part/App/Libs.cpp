@@ -39,9 +39,6 @@
 #	pragma comment(lib,"TKTopAlgo.lib")
 #	pragma comment(lib,"TKPrim.lib")
 #	pragma comment(lib,"TKXSBase.lib")
-	// Application Framwork OCAF
-#	pragma comment(lib,"TKCAF.lib")
-#	pragma comment(lib,"TKCDF.lib")
 
 // OpenCasCade Std IO
 #	pragma comment(lib,"TKIGES.lib")

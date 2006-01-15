@@ -13,9 +13,6 @@
 # pragma comment(lib,"TKBRep.lib")
 # pragma comment(lib,"TKTopAlgo.lib")
 # pragma comment(lib,"TKPrim.lib")
-  // Application Framwork OCAF
-# pragma comment(lib,"TKCAF.lib")
-# pragma comment(lib,"TKCDF.lib")
 
 #endif
 

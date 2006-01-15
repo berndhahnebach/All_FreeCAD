@@ -26,6 +26,7 @@
 // STL
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <map>
 #include <queue>
@@ -35,11 +36,9 @@
 #include <string>
 #include <vector>
 
-// OpenCASCADE
-
-#include <TDF_Label.hxx>
-#include <Quantity_Date.hxx>
-
+#include <float.h>
+#include <math.h>
+#include <stdlib.h>
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>

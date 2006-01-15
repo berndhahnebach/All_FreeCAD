@@ -46,9 +46,7 @@ using Base::Console;
 
 #include "PartFeature.h"
 #include "PartFeaturePy.h"
-//#include "Function.h"
 //#include "Property.h"
-//#include "PropertyAttr.h"
 
 using namespace Part;
 

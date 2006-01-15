@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <TopoDS_Shape.hxx>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <qwaitcondition.h>
@@ -33,9 +32,7 @@
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
 #include "../App/Document.h"
-#include "../App/Label.h"
 #include "../App/Feature.h"
-#include "../App/Function.h"
 
 #include "Application.h"
 #include "MainWindow.h"
@@ -44,7 +41,6 @@
 
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
 #include "Inventor/Qt/SoQt.h"
-#include "Inventor/OCC/SoBrepShape.h"
 
 #include "FileDialog.h"
 #include "ProgressBar.h"
@@ -74,89 +70,6 @@ FCCmdTest1::FCCmdTest1()
 
 void FCCmdTest1::activated(int iMsg)
 {
-#if 0
-	// get open file name
-	QString fn = FCFileDialog::getOpenFileName( QString::null, "Inventor (*.iv)", getAppWnd() );
-	if ( fn.isEmpty() ) return;
-
-    // Open the argument file..
-    SoInput in;
-    SbBool ok = in.openFile(fn.latin1());
-    if (!ok) { return; }
-
-    // ..and import it.
-    SoSeparator * root = SoDB::readAll(&in);
-#else
-	// get open file name
-	QString fn = FileDialog::getOpenFileName( QString::null, "Inventor (*.brep)", getMainWindow() );
-	if ( fn.isEmpty() ) return;
-
-    // Open the argument file..
-    SoBrepShape in;
-    in.SetFile(fn.latin1());
-
-	SoSeparator * root = new SoSeparator();
-	SoShapeHints * hints = new SoShapeHints;
-	hints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE; 
-
-	// color management
-	QColor Col1(236,212,156);
-	QColor Col(128,128,128);
-
-	QColor DifCol=Col1;
-	QColor AmbCol=Col1;
-	QColor SpeCol=Col;
-	QColor EmCol(0,0,0);
-
-	SoMaterial *aMat = new SoMaterial;
-	aMat->diffuseColor.setValue(((float)DifCol.red())/256,((float)DifCol.green())/256,((float)DifCol.blue())/256);
-	aMat->ambientColor.setValue(((float)AmbCol.red())/256,((float)AmbCol.green())/256,((float)AmbCol.blue())/256);
-	aMat->specularColor.setValue(((float)SpeCol.red())/256,((float)SpeCol.green())/256,((float)SpeCol.blue())/256);
-	aMat->emissiveColor.setValue(((float)EmCol.red())/256,((float)EmCol.green())/256,((float)EmCol.blue())/256); 
-	root->addChild(aMat);
-
-	root->renderCaching = SoSeparator::ON;
-	root->addChild(hints);
-
-	putenv( "COIN_SHOW_FPS_COUNTER=1" );
-
-	bool nurbs_enable = false;
-	bool selection = false;
-	bool strip_enable = false;
-	bool strip_color = false;
-
-	in.SetRenderOptions(strip_enable,strip_color,nurbs_enable,selection);
-	in.Compute(root);
-	
-#endif
-
-    if (root == NULL) { return ; }
-    root->ref();
-  
-    // Use the ExaminerViewer, for a nice interface for 3D model
-    // inspection.
-    SoQtExaminerViewer * viewer = new SoQtExaminerViewer();
-    viewer->setSceneGraph(root);
-	viewer->setFeedbackVisibility(true);
-	viewer->setFeedbackSize(20);
-	viewer->setBackgroundColor(SbColor(0.2f,0.2f,0.2f));
-
-    viewer->show();
-  
-    // Pop up the main window.
-//    SoQt::show(mainwin);
-    // Loop until exit.
-//   SoQt::mainLoop();
-  
-    // Clean up resources.
-    //delete viewer;
-    //root->unref();
-
-
-
-    //CommitCommand();
-
-	//UpdateActive();
 
 }
 
@@ -183,29 +96,10 @@ FCCmdTest2::FCCmdTest2()
 	iAccel			= 0;
 }
 
-#include <TFunction_Function.hxx>
 
 void FCCmdTest2::activated(int iMsg)
 {
 
-  App::Document *pcDoc = getDocument();
-	if(!pcDoc) return;
-
-	Base::Console().Log("Trac: Using Doc: %p\n",pcDoc);
-
-    TDF_Label L = pcDoc->Main();
-
-	L = L.FindChild(1);
-
-//	Handle(FCFeature) Feat = new FCFeature();
-//	Handle(FCParameter) Param = new FCParameter();
-//	Handle(FCFunction) Func = new FCFunction();
-//	Feat->Set("Test");
-
-//	L.AddAttribute( Feat);
-//	L.AddAttribute( Param);
-
-	Handle(TFunction_Function) myFunction = TFunction_Function::Set(L, App::Function::GetID());
 
 }
 

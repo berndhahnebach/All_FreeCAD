@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <fcntl.h>
-# include <TFunction_Logbook.hxx>
 # include <ios>
 #endif
 
@@ -41,15 +40,18 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-void FeatureMeshCurvature::initFeature(void)
+PROPERTY_SOURCE(Mesh::FeatureMeshCurvature, Mesh::MeshFeature)
+
+
+
+FeatureMeshCurvature::FeatureMeshCurvature(void)
 {
-  Base::Console().Log("FeatureMeshImport::InitLabel()\n");
-  addProperty("Link","Source");
+  ADD_PROPERTY(Source,(0));
 }
 
-int FeatureMeshCurvature::execute(TFunction_Logbook& log)
+int FeatureMeshCurvature::execute(void)
 {
-  MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
+  MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
     return 1;
 
@@ -61,7 +63,7 @@ int FeatureMeshCurvature::execute(TFunction_Logbook& log)
 
 MeshWithProperty& FeatureMeshCurvature::getMesh()
 {
-  MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
+  MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
     return MeshFeature::getMesh();
 

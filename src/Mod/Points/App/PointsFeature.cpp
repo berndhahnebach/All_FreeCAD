@@ -25,7 +25,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 #endif
 
 #include <Base/Console.h>
@@ -56,7 +55,7 @@ void PointsFeature::initFeature(void)
 {
 }
 
-int PointsFeature::execute(TFunction_Logbook& log)
+int PointsFeature::execute(void)
 {
   return 0;
 }

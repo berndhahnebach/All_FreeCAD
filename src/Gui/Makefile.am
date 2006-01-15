@@ -137,9 +137,6 @@ libFreeCADGui_la_SOURCES=\
 		propertyeditor/knumvalidator.cpp \
 		propertyeditor/knumvalidator.h \
 		\
-		Inventor/OCC/SoBrepShape.cpp \
-		Inventor/OCC/SoBrepShape.h \
-		\
 		Language/LanguageFactory.cpp \
 		Language/LanguageFactory.h \
 		Language/Translator.cpp \
@@ -379,20 +376,6 @@ libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(all_libraries) -versi
 
 libFreeCADGui_la_LIBADD   =\
 		-lqui\
-		-lTKernel \
-		-lTKMath \
-		-lTKService \
-		-lTKGeomAlgo \
-		-lTKGeomBase \
-		-lTKG2d \
-		-lTKG3d \
-		-lTKBRep \
-		-lTKTopAlgo \
-		-lTKPrim \
-		-lTKV2d \
-		-lTKV3d \
-		-lTKCAF \
-		-lTKCDF \
 		-lCoin \
 		-lSoQt \
 		-lFreeCADBase \

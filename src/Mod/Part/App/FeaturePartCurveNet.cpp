@@ -40,6 +40,7 @@
 
 using namespace Part;
 
+PROPERTY_SOURCE(Part::FeaturePartCurveNet, Part::PartFeature)
 
 FeaturePartCurveNet::FeaturePartCurveNet()
 {
@@ -66,7 +67,7 @@ void FeaturePartCurveNet::initFeature(void)
 //	addProperty("String","FileName");
 }
 
-int FeaturePartCurveNet::execute(TFunction_Logbook& log)
+int FeaturePartCurveNet::execute(void)
 {
   /*
   try{

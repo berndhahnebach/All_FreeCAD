@@ -525,9 +525,6 @@ Mod/Makefile
 Mod/Part/Makefile
 Mod/Part/App/Makefile
 Mod/Part/Gui/Makefile
-Mod/Import/Makefile
-Mod/Import/App/Makefile
-Mod/Import/Gui/Makefile
 Mod/Raytracing/Makefile
 Mod/Raytracing/App/Makefile
 Mod/Raytracing/Gui/Makefile

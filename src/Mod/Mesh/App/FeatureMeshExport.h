@@ -26,6 +26,9 @@
 
 #include "MeshFeature.h"
 
+#include <App/PropertyStandard.h>
+#include <App/PropertyLinks.h>
+
 namespace Mesh
 {
 
@@ -36,13 +39,19 @@ namespace Mesh
  */
 class FeatureMeshExport : public MeshFeature
 {
+  PROPERTY_HEADER(Mesh::FeatureMeshExport);
+
 public:
+  FeatureMeshExport();
+
+  App::PropertyLink   Source;
+  App::PropertyString FileName;
+  App::PropertyString Format;
+
   /** @name methods override Feature */
   //@{
-  /// Initialize Feature structure
-  virtual void initFeature(void);
   /// recalculate the Feature
-  virtual int execute(TFunction_Logbook& log);
+  virtual int execute(void);
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "MeshExport";};
   //@}

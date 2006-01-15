@@ -74,12 +74,12 @@ public:
 	 *  2 - algorithm failed
 	 *  0 - no mistakes were found.
 	 */
-	virtual Standard_Integer Execute(TFunction_Logbook& log)=0;
+	virtual Standard_Integer Execute(void)=0;
 
 	/** Validate
 	 * Validation of the object label, its arguments and its results.
 	 */
-	virtual void Validate(TFunction_Logbook& log)=0;
+	virtual void Validate(void)=0;
 	//@}
 
 

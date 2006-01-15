@@ -37,9 +37,6 @@
 # include <qtimer.h>
 #endif
 
-#ifdef FC_USE_OCAFBROWSER
-# include <DebugBrowser.hxx>
-#endif
 
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"

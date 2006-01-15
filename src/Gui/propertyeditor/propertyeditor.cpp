@@ -56,10 +56,17 @@ EditableListView::EditableListView( QWidget* parent, const char* name )
 
 void EditableListView::setOpen ( QListViewItem * item, bool open )
 {
-  if ( _editingItem )
-    _editingItem->stopEdit();
+  stopEdit();
   QListView::setOpen( item, open );
 }
+
+void EditableListView::stopEdit()
+{
+  if ( _editingItem )
+    _editingItem->stopEdit();
+  _editingItem = 0;
+}
+
 /*
 void EditableListView::drawContentsOffset ( QPainter * p, int ox, int oy, int cx, int cy, int cw, int ch )
 {

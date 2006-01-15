@@ -28,8 +28,6 @@
 #   undef  _POSIX_C_SOURCE
 # endif // (re-)defined in pyconfig.h
 #	include <Python.h>
-# include <BRep_Builder.hxx>
-# include <BRepTools.hxx>
 #endif
 
 #include <Base/Console.h>
@@ -44,6 +42,7 @@
 #include "Points.h"
 #include "PointsPy.h"
 #include "PointsAlgos.h"
+#include "FeaturePointsImportAscii.h"
 
 using namespace Points;
 
@@ -68,9 +67,8 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      App::Feature *pcFeature = pcDoc->addFeature("PointsImport", "PointsOpen");
-      pcFeature->setPropertyString(Name, "FileName");
-      pcFeature->TouchProperty("FileName");
+      Points::FeaturePointsImportAscii *pcFeature = (Points::FeaturePointsImportAscii *)pcDoc->addFeature("PointsImport", "PointsOpen");
+      pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
     }
     else
@@ -103,9 +101,8 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->addFeature("PointsImport", "PointsOpen");
-      pcFeature->setPropertyString(Name, "FileName");
-      pcFeature->TouchProperty("FileName");
+      Points::FeaturePointsImportAscii *pcFeature = (Points::FeaturePointsImportAscii *)pcDoc->addFeature("PointsImport", "PointsOpen");
+      pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
     }
     else

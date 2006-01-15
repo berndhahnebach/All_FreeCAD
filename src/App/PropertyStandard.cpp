@@ -22,8 +22,8 @@
 
 
 /** Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
+ *  on some compilers the precompiled header option gain significant compile
+ *  time! So every external header (libs and system) should included in
  *  Precompiled.h. For systems without precompilation the header needed are
  *  included in the else fork.
  */
@@ -31,13 +31,18 @@
 
 #ifndef _PreComp_
 #	include <assert.h>
-#	include <Standard_ConstructionError.hxx>
+# include <iostream>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
+
+#include <Base/Exception.h>
+#include <Base/Reader.h>
+
 #include "PropertyStandard.h"
 
 using namespace App;
+using namespace std;
 
 
 
@@ -47,13 +52,13 @@ using namespace App;
 // PropertyInteger
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+TYPESYSTEM_SOURCE(App::PropertyInteger , App::Property);
 
 //**************************************************************************
 // Construction/Destruction
 
 
-PropertyInteger::PropertyInteger(long lValue, long lMax, long lMin, long lStep)
-	:_lValue(lValue),_lMax(lMax), _lMin(lMin), _lStep(lStep)
+PropertyInteger::PropertyInteger()
 {
 
 }
@@ -67,122 +72,60 @@ PropertyInteger::~PropertyInteger()
 //**************************************************************************
 // Base class implementer
 
-void PropertyInteger::Set(const char* Str)
-{
 
-}
-
-
-const char* PropertyInteger::GetAsString(void)
-{
-	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"%ld",_lValue);
-	return sBuf;
-}
-
-
-
-const char* PropertyInteger::GetType(void)
-{
-	return "Int";
-}
-
-const char* PropertyInteger::SetSubProperty(const char* sSubPropName,const char* sNewValue)
-{
-
-	if(strcmp(sSubPropName,"Value")==0)
-		_lValue = atol(sNewValue);
-	else if(strcmp(sSubPropName,"Max")==0)
-		_lMax = atol(sNewValue);
-	else if(strcmp(sSubPropName,"Min")==0)
-		_lMin = atol(sNewValue);
-	else if(strcmp(sSubPropName,"Step")==0)
-		_lStep = atol(sNewValue);
-	else return "";
-
-	return GetSubProperty(sSubPropName);
-}
-
-
-const char* PropertyInteger::GetSubProperty(const char* sSubPropName)
-{
-	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"%ld",_lValue);
-
-	if(strcmp(sSubPropName,"Value")==0)
-		sprintf(sBuf,"%ld",_lValue);
-	else if(strcmp(sSubPropName,"Max")==0)
-		sprintf(sBuf,"%ld",_lMax);
-	else if(strcmp(sSubPropName,"Min")==0)
-		sprintf(sBuf,"%ld",_lMin);
-	else if(strcmp(sSubPropName,"Step")==0)
-		sprintf(sBuf,"%ld",_lStep);
-	else return "";
-
-	return sBuf;
-}
-
-
-const char* PropertyInteger::GetSubPropertyNames(void)
-{
-	return "Value;Max;Min;Step";
-}
-
-//**************************************************************************
-// Seter getter for the property
-
-void PropertyInteger::SetMin(long lMin)
-{
-	_lMin=lMin;
-}
-
-long PropertyInteger::GetMin(void)
-{
-	return _lMin;
-}
-
-void PropertyInteger::SetMax(long lMax)
-{
-	_lMax=lMax;
-}
-
-long PropertyInteger::GetMax(void)
-{
-	return _lMax;
-}
-
-void PropertyInteger::SetStep(long lStep)
-{
-	_lStep=lStep;
-}
-
-long PropertyInteger::GetStep(void)
-{
-	return _lStep;
-}
-
-void PropertyInteger::SetValue(long lValue)
+void PropertyInteger::setValue(long lValue)
 {
 	_lValue=lValue;
+  hasSetValue();
 }
 
-long PropertyInteger::GetValue(void)
+long PropertyInteger::getValue(void)
 {
 	return _lValue;
 }
+
+PyObject *PropertyInteger::getPyObject(void)
+{
+  return Py_BuildValue("l", _lValue);
+}
+
+void PropertyInteger::setPyObject(PyObject *value)
+{ 
+  if(PyInt_Check( value) )
+  {
+    _lValue = PyInt_AsLong(value);
+    hasSetValue();
+  }else
+    throw Base::Exception("Not allowed type used (float or int expected)...");
+
+}
+
+void PropertyInteger::Save (short indent,std::ostream &str)
+{
+  str << "<Integer value=\"" <<  _lValue <<"\"/>" ;
+}
+
+void PropertyInteger::Restore(Base::Reader &reader)
+{
+  // read my Element
+  reader.readElement("Integer");
+  // get the value of my Attribute
+  _lValue = reader.getAttributeAsInteger("value");
+}
+
 
 //**************************************************************************
 //**************************************************************************
 // PropertyFloat
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+TYPESYSTEM_SOURCE(App::PropertyFloat , App::Property);
 
 //**************************************************************************
 // Construction/Destruction
 
 
-PropertyFloat::PropertyFloat(double dValue, double dMax, double dMin, double dStep)
-	:_dValue(dValue),_dMax(dMax), _dMin(dMin), _dStep(dStep)
+PropertyFloat::PropertyFloat()
 {
 
 }
@@ -196,121 +139,66 @@ PropertyFloat::~PropertyFloat()
 //**************************************************************************
 // Base class implementer
 
-void PropertyFloat::Set(const char* Str)
-{
-  SetValue(atof(Str));
-}
 
-const char* PropertyFloat::GetAsString(void)
-{
-	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"%e",_dValue);
-	return sBuf;
-}
-
-
-
-const char* PropertyFloat::GetType(void)
-{
-	return "Float";
-}
-
-const char* PropertyFloat::SetSubProperty(const char* sSubPropName,const char* sNewValue)
-{
-
-	if(strcmp(sSubPropName,"Value")==0)
-		_dValue = atof(sNewValue);
-	else if(strcmp(sSubPropName,"Max")==0)
-		_dMax = atof(sNewValue);
-	else if(strcmp(sSubPropName,"Min")==0)
-		_dMin = atof(sNewValue);
-	else if(strcmp(sSubPropName,"Step")==0)
-		_dStep = atof(sNewValue);
-	else return "";
-
-	return GetSubProperty(sSubPropName);
-}
-
-
-const char* PropertyFloat::GetSubProperty(const char* sSubPropName)
-{
-	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"%e",_dValue);
-
-	if(strcmp(sSubPropName,"Value")==0)
-		sprintf(sBuf,"%e",_dValue);
-	else if(strcmp(sSubPropName,"Max")==0)
-		sprintf(sBuf,"%e",_dMax);
-	else if(strcmp(sSubPropName,"Min")==0)
-		sprintf(sBuf,"%e",_dMin);
-	else if(strcmp(sSubPropName,"Step")==0)
-		sprintf(sBuf,"%e",_dStep);
-	else return "";
-
-	return sBuf;
-}
-
-
-const char* PropertyFloat::GetSubPropertyNames(void)
-{
-	return "Value;Max;Min;Step";
-}
-
-//**************************************************************************
-// Seter getter for the property
-
-void PropertyFloat::SetMin(double dMin)
-{
-	_dMin=dMin;
-}
-
-double PropertyFloat::GetMin(void)
-{
-	return _dMin;
-}
-
-void PropertyFloat::SetMax(double dMax)
-{
-	_dMax=dMax;
-}
-
-double PropertyFloat::GetMax(void)
-{
-	return _dMax;
-}
-
-void PropertyFloat::SetStep(double dStep)
-{
-	_dStep=dStep;
-}
-
-double PropertyFloat::GetStep(void)
-{
-	return _dStep;
-}
-
-void PropertyFloat::SetValue(double lValue)
+void PropertyFloat::setValue(double lValue)
 {
 	_dValue=lValue;
+  hasSetValue();
+
 }
 
-double PropertyFloat::GetValue(void)
+double PropertyFloat::getValue(void)
 {
 	return _dValue;
 }
+
+PyObject *PropertyFloat::getPyObject(void)
+{
+  return Py_BuildValue("d", _dValue);
+}
+
+void PropertyFloat::setPyObject(PyObject *value)
+{
+  if(PyFloat_Check( value) )
+  {
+    _dValue = (double) PyFloat_AsDouble(value);
+    hasSetValue();
+
+  }else if(PyInt_Check( value) )
+  {
+    _dValue = (double) PyInt_AsLong(value);
+    hasSetValue();
+  }else
+    throw "Not allowed type used (float or int expected)...";
+
+}
+
+void PropertyFloat::Save (short indent,std::ostream &str)
+{
+  str <<  "<Float value=\"" <<  _dValue <<"\"/>" ;
+}
+
+void PropertyFloat::Restore(Base::Reader &reader)
+{
+  // read my Element
+  reader.readElement("Float");
+  // get the value of my Attribute
+  _dValue = reader.getAttributeAsFloat("value");
+}
+
 
 //**************************************************************************
 //**************************************************************************
 // PropertyString
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+TYPESYSTEM_SOURCE(App::PropertyString , App::Property);
 
 //**************************************************************************
 // Construction/Destruction
 
        
-PropertyString::PropertyString(const char* sValue, const char* sConstraint)
-	:_cValue(sValue),_cConstrain(sConstraint)
+PropertyString::PropertyString()
 {
 
 }
@@ -321,81 +209,65 @@ PropertyString::~PropertyString()
 
 }
 
+
+
 //**************************************************************************
 // Base class implementer
 
-void PropertyString::Set(const char* Str)
-{
-  _cValue = Str;
-}
-
-const char* PropertyString::GetAsString(void)
-{
-	return _cValue.c_str();
-}
-
-
-
-const char* PropertyString::GetType(void)
-{
-	return "String";
-}
-
-const char* PropertyString::SetSubProperty(const char* sSubPropName,const char* sNewValue)
-{
-
-	if(strcmp(sSubPropName,"Value")==0)
-		_cValue = sNewValue;
-	else if(strcmp(sSubPropName,"Constrain")==0)
-		_cConstrain = sNewValue;
-	else 
-		return "";
-
-	return GetSubProperty(sSubPropName);
-}
-
-
-const char* PropertyString::GetSubProperty(const char* sSubPropName)
-{
-	if(strcmp(sSubPropName,"Value")==0)
-		return _cValue.c_str();
-	else if(strcmp(sSubPropName,"Constrain")==0)
-		return _cConstrain.c_str();
-	else 
-		return "";
-}
-
-
-const char* PropertyString::GetSubPropertyNames(void)
-{
-	return "Value;Constrain";
-}
 
 //**************************************************************************
 // Seter getter for the property
 
 
-void PropertyString::SetString(const char* sString)
+void PropertyString::setValue(const char* sString)
 {
 	_cValue = sString;
+  hasSetValue();
+
 }
 
-const char* PropertyString::GetString(void)
+void PropertyString::setValue(const std::string &sString)
+{
+	_cValue = sString;
+  hasSetValue();
+
+}
+
+const char* PropertyString::getValue(void) const
 {
 	return _cValue.c_str();
 }
 
-void PropertyString::SetConstrain(const char* sConstrains)
+PyObject *PropertyString::getPyObject(void)
 {
-	_cConstrain = sConstrains;
+  return Py_BuildValue("s", _cValue.c_str());
+
 }
 
-const char* PropertyString::GetConstrain(void)
+void PropertyString::setPyObject(PyObject *value)
 {
-	return _cConstrain.c_str();
+  if(PyString_Check( value) )
+  {
+    _cValue = PyString_AsString(value);
+    hasSetValue();
+
+  }else
+    throw "Not allowed type used (float or int expected)...";
+
 }
 
+void PropertyString::Save (short indent,std::ostream &str)
+{
+  str << "<String value=\"" <<  _cValue.c_str() <<"\"/>" ;
+}
 
+void PropertyString::Restore(Base::Reader &reader)
+{
+  // read my Element
+  reader.readElement("String");
+  // get the value of my Attribute
+  _cValue = reader.getAttribute("value");
+}
 
 
 //**************************************************************************
@@ -403,13 +275,13 @@ const char* PropertyString::GetConstrain(void)
 // PropertyBool
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+TYPESYSTEM_SOURCE(App::PropertyBool , App::Property);
 
 //**************************************************************************
 // Construction/Destruction
 
        
-PropertyBool::PropertyBool(bool lValue)
-	:_lValue(lValue)
+PropertyBool::PropertyBool()
 {
 
 }
@@ -420,70 +292,66 @@ PropertyBool::~PropertyBool()
 
 }
 
-//**************************************************************************
-// Base class implementer
 
-void PropertyBool::Set(const char* Str)
-{
-
-}
-
-const char* PropertyBool::GetAsString(void)
-{
-	static char sBuf[DBL_DIG+10];
-  sprintf(sBuf,"%s",(_lValue ? "True" : "False"));
-	return sBuf;
-}
-
-
-
-const char* PropertyBool::GetType(void)
-{
-	return "Bool";
-}
-
-const char* PropertyBool::SetSubProperty(const char* sSubPropName,const char* sNewValue)
-{
-
-	if(strcmp(sSubPropName,"Value")==0)
-    _lValue = atol(sNewValue) > 0 ? true : false;
-	else return "";
-
-	return GetSubProperty(sSubPropName);
-}
-
-
-const char* PropertyBool::GetSubProperty(const char* sSubPropName)
-{
-	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"%d",_lValue);
-
-	if(strcmp(sSubPropName,"Value")==0)
-    sprintf(sBuf,"%s",(_lValue ? "True" : "False"));
-	else return "";
-
-	return sBuf;
-}
-
-
-const char* PropertyBool::GetSubPropertyNames(void)
-{
-	return "Value";
-}
 
 //**************************************************************************
 // Seter getter for the property
 
-void PropertyBool::SetValue(bool lValue)
+void PropertyBool::setValue(bool lValue)
 {
 	_lValue=lValue;
+  hasSetValue();
+
 }
 
-bool PropertyBool::GetValue(void)
+bool PropertyBool::getValue(void)
 {
 	return _lValue;
 }
 
+PyObject *PropertyBool::getPyObject(void)
+{
+  if(_lValue)
+    {Py_INCREF(Py_True); return Py_True;}
+  else
+    {Py_INCREF(Py_False); return Py_False;};
+
+}
+
+void PropertyBool::setPyObject(PyObject *value)
+{
+  if(PyInt_Check( value) )
+  {
+    _lValue = PyInt_AsLong(value)!=0;
+    hasSetValue();
+  }else
+    throw Base::Exception("Not allowed type used (bool expected)...");
+}
+
+void PropertyBool::Save (short indent,std::ostream &str)
+{
+  str << "<Bool value=\"" ;
+  if(_lValue)
+    str << "true" <<"\"/>" ;
+  else
+    str << "false" <<"\"/>" ;
+
+}
+
+void PropertyBool::Restore(Base::Reader &reader)
+{
+  // read my Element
+  reader.readElement("String");
+  // get the value of my Attribute
+  string b = reader.getAttribute("value");
+  if(b == "true")
+    _lValue = true;
+  else
+    _lValue = false;
+}
+
+
+/*
 //**************************************************************************
 //**************************************************************************
 // PropertyColor
@@ -493,7 +361,7 @@ bool PropertyBool::GetValue(void)
 //**************************************************************************
 // Construction/Destruction
 
-       
+
 PropertyColor::PropertyColor(long lRed, long lGreen, long lBlue)
 	:_lRed(lRed),_lGreen(lGreen), _lBlue(lBlue)
 {
@@ -719,3 +587,4 @@ long PropertyList::GetCurrentItem (void)
 {
   return _lCurrent;
 }
+*/

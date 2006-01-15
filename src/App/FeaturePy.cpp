@@ -24,16 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <TDF_ChildIterator.hxx>
-# include <TDF_Tool.hxx>
-# include <TCollection_AsciiString.hxx>
-# include <TDF_ListIteratorOfAttributeList.hxx>
-# include <TFunction_Logbook.hxx>
-# include <TFunction_DriverTable.hxx>
-# include <TFunction_Function.hxx>
-# include <Standard_GUID.hxx>
-# include <TNaming_Builder.hxx>
-# include <TDataStd_Name.hxx>
 # include <sstream>
 #endif
 
@@ -44,11 +34,9 @@ using Base::Console;
 
 #include "Document.h"
 #include "Feature.h"
-#include "FeatureAttr.h"
-#include "Function.h"
 #include "Property.h"
-#include "PropertyAttr.h"
 #include "FeaturePy.h"
+#include "MaterialPy.h"
 #include "MatrixPy.h"
 #include "VectorPy.h"
 
@@ -220,29 +208,10 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
     }
     else{
       // search in PropertyList
-      if(_pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end())
+      Property *prop = _pcFeature->getPropertyByName(attr);
+      if(prop)
       {
-        const char* type = _pcFeature->getPropertyType(attr);   
-        if( type != '\0')
-          if(strcmp(type,"Float")==0)
-            return Py_BuildValue("d", _pcFeature->getPropertyFloat(attr));
-          else if(strcmp(type,"Int")==0)
-            return Py_BuildValue("i", _pcFeature->getPropertyInt(attr));
-          else if(strcmp(type,"String")==0)
-            return Py_BuildValue("s", _pcFeature->getPropertyString(attr).c_str());
-          else if(strcmp(type,"Vector")==0)
-            return new VectorPy( _pcFeature->getPropertyVector(attr));
-          else if(strcmp(type,"Plane")==0){
-            Vector3D pos,dir;
-            _pcFeature->getPropertyPlane(pos,dir,attr);
-            return new VectorPy(pos);
-          }
-          else if(strcmp(type,"Matrix")==0)
-            return new MatrixPy( _pcFeature->getPropertyMatrix(attr));
-          else if(strcmp(type,"Link")==0)
-            return _pcFeature->getPropertyLink(attr)->GetPyObject();
-          else
-            return Py_None;
+        return prop->getPyObject();
       }
       else
 			  _getattr_up(PyObjectBase); 						
@@ -307,19 +276,18 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
     _pcFeature->_showMode = PyString_AsString(value);
     _pcFeature->TouchView();
   }else{
-      // search in PropertyList
-      if( _pcFeature->_PropertiesMap.find(attr) != _pcFeature->_PropertiesMap.end()){
-        try{
-          setProperty(attr,value);
-        }catch(...){
-          return 1;
-        }
+       // search in PropertyList
+      Property *prop = _pcFeature->getPropertyByName(attr);
+      if(prop)
+      {
+        prop->setPyObject(value);
       }else
 			  return PyObjectBase::_setattr(attr, value); 						
   }
   return 0;
 } 
 
+/*
 int FeaturePy::setProperty(const char *attr, PyObject *value)
 {
   //char sBuf[256];
@@ -352,7 +320,7 @@ int FeaturePy::setProperty(const char *attr, PyObject *value)
   _pcFeature->TouchProperty(attr);
   return 1;
 }
-
+*/
 
 //--------------------------------------------------------------------------
 // Python wrappers
@@ -377,7 +345,7 @@ PYFUNCIMP_D(FeaturePy,isValid)
   if(_pcFeature->isValid() && !_pcFeature->MustExecute())
     {Py_INCREF(Py_True); return Py_True;}
   else
-    {Py_INCREF(Py_False); return Py_False;};
+    {Py_INCREF(Py_False); return Py_False;}
 
 }
 

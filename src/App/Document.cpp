@@ -24,28 +24,21 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <OSD_Process.hxx>
-#	include <TDocStd_Application.hxx>
-#	include <TDataStd_Real.hxx>
-#	include <TDataStd_Name.hxx>
-#	include <Handle_TDataStd_Name.hxx>
-#	include <TDataStd_Integer.hxx>
-#	include <Handle_TDataStd_Integer.hxx>
-# include <TDF_MapIteratorOfLabelMap.hxx>
 #endif
 
 
 #include "Document.h"
 #include "DocumentPy.h"
 #include "Application.h"
-#include "Attribute.h"
 #include "Feature.h"
-#include "FeatureAttr.h"
-#include "Label.h"
 
 #include <Base/PyExport.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/FileInfo.h>
+#include <Base/Reader.h>
+
+#include "Application.h"
 
 using Base::Console;
 using Base::streq;
@@ -53,20 +46,27 @@ using namespace App;
 using namespace std;
 
 
-
+PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-Document::Document(const Handle_TDocStd_Document &hDoc, const char* Name)
- : _hDoc(hDoc),_Name(Name)
+Document::Document(void)
+: pActiveFeature(0)
 {
   // Remark: In a constructor we should never increment a Python object as we cannot be sure
   // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't 
   // get a reference then the object wouldn't get deleted in the destructor.
   // So, we must increment only if the interpreter gets a reference.
-  _pcDocPy = new DocumentPy(this);
-	Console().Log("+App::Document: %p\n",this,_pcDocPy);
+	_pcDocPy = new DocumentPy(this);
+  _pcDocPy->IncRef();
+
+  Console().Log("+App::Document: %p\n",this,_pcDocPy);
+
+
+  ADD_PROPERTY(Name,("Unnamed"));
+  ADD_PROPERTY(FileName,(""));
+
 
 }
 
@@ -83,12 +83,10 @@ Document::~Document()
   for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
   {
     delete(it->second.F);
-    it->second.L.Nullify();
   }
 
-  // close the OCAF document
-  GetApplication().GetOCCApp()->Close(_hDoc);
-  _hDoc.Nullify();
+   _pcDocPy->DecRef();
+
 }
 
 
@@ -99,17 +97,18 @@ Document::~Document()
 //--------------------------------------------------------------------------
 
 // Save the Document under a new Name
-void Document::saveAs (const char* Name)
+void Document::saveAs (const char* name)
 {
-	// creat a non const buffer
-	Base::PyBuf name(Name);
+  Base::FileInfo File(name);
 
-	Handle(ApplicationOCC) hApp = GetApplication().GetOCCApp();
-	if(hApp->SaveAs(_hDoc,(Standard_CString)name.str)==CDF_SS_Failure) 
-		throw Base::Exception("SaveAs failed");
+  ofstream file(File.filePath().c_str());
 
-  GetApplication().renameDocument(_Name.c_str(),TCollection_AsciiString(_hDoc->GetName()).ToCString());
-  _Name = TCollection_AsciiString(_hDoc->GetName()).ToCString();
+  Name.setValue(File.fileNamePure());
+  FileName.setValue(File.filePath());
+
+  Document::Save(0,file);
+
+
 
   DocChanges DocChange;
   DocChange.Why = DocChanges::Rename;
@@ -117,38 +116,130 @@ void Document::saveAs (const char* Name)
   Notify(DocChange);
 
 }
+
+
+void Document::Save (short indent,std::ostream &str)
+{
+  str << "<?xml version='1.0' encoding='utf-8'?>" << endl
+      << "<!--" << endl
+      << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
+      << "-->" << endl;
+
+  str << "<Document SchemaVersion=\"1\">" << endl;
+
+  PropertyContainer::Save(indent+1,str);
+
+  // writing the features types
+  str << ind(indent+1) << "<Features Count=\"" << FeatMap.size() <<"\">" << endl;
+
+  std::map<std::string,FeatEntry>::iterator it;
+  for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
+  {
+    Feature* feat = it->second.F;
+    str << ind(indent+2) << "<Feature " 
+                         << "type=\"" << feat->getTypeId().getName() << "\" "
+                         << "name=\"" << feat->getName()             << "\" "
+                         << "typeOld=\"" << feat->type()             << "\" "
+                         << "/>" << endl;    
+  }
+
+  str << ind(indent+1) << "</Features>" << endl;
+  
+  // writing the features itself
+  str << ind(indent+1) << "<FeatureData Count=\"" << FeatMap.size() <<"\">" << endl;
+
+  for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
+  {
+    Feature* feat = it->second.F;
+    str << ind(indent+2) << "<Feature name=\"" << feat->getName() << "\">" << endl;    
+    feat->Save(indent+3,str);
+    str << ind(indent+2) << "</Feature>" << endl;
+  }
+
+  str << ind(indent+1) << "</FeatureData>" << endl;
+  str << "</Document>" << endl;
+
+}
+
+void Document::Restore(Base::Reader &reader)
+{
+  int i,Cnt;
+
+  reader.readElement("Document");
+
+  // read the Document Properties
+  PropertyContainer::Restore(reader);
+
+  // read the feature types
+  reader.readElement("Features");
+  Cnt = reader.getAttributeAsInteger("Count");
+  for(i=0 ;i<Cnt ;i++)
+  {
+    reader.readElement("Feature");
+    string type = reader.getAttribute("type");
+    string name = reader.getAttribute("name");
+    string typeOld = reader.getAttribute("typeOld");
+    addFeature(typeOld.c_str(),name.c_str());
+  }
+  reader.readEndElement("Features");
+
+  // read the features itself
+  reader.readElement("FeatureData");
+  Cnt = reader.getAttributeAsInteger("Count");
+  for(i=0 ;i<Cnt ;i++)
+  {
+    reader.readElement("Feature");
+    string name = reader.getAttribute("name");
+    getFeature(name.c_str())->Restore(reader);
+    reader.readEndElement("Feature");
+  }
+  reader.readEndElement("FeatureData");
+
+  reader.readEndElement("Document");
+
+  Recompute();
+
+}
+
 // Save the document under the name its been opened
 void Document::save (void)
 {
-	Handle(TDocStd_Application)::DownCast(_hDoc->Application())->Save(_hDoc);
+  if(*(FileName.getValue()) != '\0')
+  {
+    ofstream file(FileName.getValue());
+
+    Document::Save(0,file);
+  }
+
+    
 }
 
 bool Document::isSaved() const
 {
-	return _hDoc->IsSaved() != 0;
+	return false;//_hDoc->IsSaved() != 0;
 }
 
 
 /// Get the document name of a saved document
 const char* Document::getName() const
 {
-  return _Name.c_str();
+  return Name.getValue();
 }
 
 /// Get the path of a saved document
-const short* Document::getPath() const
+const char* Document::getPath() const
 {
-  return _hDoc->GetPath().ToExtString();
+  return FileName.getValue();//_hDoc->GetPath().ToExtString();
 }
 
 bool Document::Undo(void)					
 {
-  return _hDoc->Undo() != 0; 
+  return false;//_hDoc->Undo() != 0; 
 }
 
 bool Document::Redo(void)
 {
-  return _hDoc->Redo() != 0; 
+  return false;//_hDoc->Redo() != 0; 
 }
 
 
@@ -163,48 +254,36 @@ FCPyHandle<FCLabel> Document::Main()
 	}
 	return  FCPyHandle<FCLabel>(_pcMain);
 }
-*/
-/// Get the Main Label of the document
-TDF_Label Document::Main() 
-{
-	return  _hDoc->Main();
-}
 
 /// Test if the document is empty
 bool Document::IsEmpty() const
 {
-  return _hDoc->IsEmpty() != 0; 
+  return false;//_hDoc->IsEmpty() != 0; 
 }
 
 /// Returns False if the  document  contains notified modifications.
 bool Document::IsValid() const
 {
-  return _hDoc->IsValid() != 0;
-}
-
-/*
-/// Set a special Label as modified
-void Document::SetModified(FCLabel* L)
-{
-  _hDoc->SetModified(L->GetOCCLabel()); 
+  return true;//_hDoc->IsValid() != 0;
 }
 */
+
 /// Remove all modifications. After this call The document becomesagain Valid.
 void Document::PurgeModified()
 {
-  _hDoc->PurgeModified(); 
+  //_hDoc->PurgeModified(); 
 }
 
 /// New Command (Short cut for Commit and Open transaction)
 void Document::NewCommand() 
 {
-  _hDoc->NewCommand(); 
+  //_hDoc->NewCommand(); 
 }
 
 /// returns True if a Command transaction is open
 bool Document::HasOpenCommand() const
 {
-  return _hDoc->HasOpenCommand() != 0; 
+  return false;//hDoc->HasOpenCommand() != 0; 
 }
 
 /** Open a new command transaction.
@@ -213,25 +292,25 @@ bool Document::HasOpenCommand() const
  */
 void Document::OpenCommand()
 {
-  _hDoc->OpenCommand(); 
+  //_hDoc->OpenCommand(); 
 }
 
 /// Commit the Command transaction. Do nothing If there is no Command transaction open.
 void Document::CommitCommand()
 {
-  _hDoc->CommitCommand();
+  //_hDoc->CommitCommand();
 }
 
 /// Abort the  Command  transaction. Do nothing If there is no Command transaction open.
 void Document::AbortCommand()
 {
-  _hDoc->AbortCommand(); 
+  //_hDoc->AbortCommand(); 
 }
 
 /// The current limit on the number of undos
 int Document::GetUndoLimit() const
 {
-  return _hDoc->GetUndoLimit(); 
+  return 1000;//_hDoc->GetUndoLimit(); 
 }
 
 /** Set the limit on the number of Undo Deltas stored.
@@ -242,25 +321,25 @@ int Document::GetUndoLimit() const
  */
 void Document::SetUndoLimit(const int L)
 {
-  _hDoc->SetUndoLimit(L); 
+  //_hDoc->SetUndoLimit(L); 
 }
 
 /// Remove all stored Undos and Redos
 void Document::ClearUndos()
 {
-  _hDoc->ClearUndos(); 
+  //_hDoc->ClearUndos(); 
 }
 
 /// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
 int Document::GetAvailableUndos() const
 {
-  return _hDoc->GetAvailableUndos(); 
+  return 0;//_hDoc->GetAvailableUndos(); 
 }
 
 /// Returns the number   of stored Redos. If greater than 0 Redo will be effective.
 int Document::GetAvailableRedos() const
 {
-  return _hDoc->GetAvailableRedos(); 
+  return 0;//_hDoc->GetAvailableRedos(); 
 }
 
 
@@ -319,7 +398,7 @@ void Document::Recompute()
   for(i = DocChange.NewFeatures.begin();i!=DocChange.NewFeatures.end();++i)
     DocChange.UpdatedFeatures.erase(*i);
 
-  _hDoc->Recompute(); 
+  //_hDoc->Recompute(); 
 
   Notify(DocChange);
 
@@ -359,7 +438,7 @@ void Document::_RecomputeFeature(Feature* Feat)
   Feat->_eStatus = Feature::Recompute;
   int  succes;
   try{
-    succes = Feat->execute(_LogBook);
+    succes = Feat->execute();
   }catch(Base::AbortException &e){
     e.ReportException();
     succes = 4;
@@ -370,15 +449,7 @@ void Document::_RecomputeFeature(Feature* Feat)
   }catch(Base::Exception &e){
     e.ReportException();
     succes = 3;
-  }catch(Standard_Failure e){
-		Handle(Standard_Failure) E = Standard_Failure::Caught();
-		std::stringstream strm;
-		strm << E << endl;
-
-    Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),strm.str().c_str());
-    Feat->setError(strm.str().c_str());
-    succes = 3;
-  }catch(const std::exception &e){
+  }catch(std::exception &e){                                           
     Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),e.what());
     Feat->setError(e.what());
     succes = 3;
@@ -398,8 +469,8 @@ void Document::_RecomputeFeature(Feature* Feat)
   }else {
     // set the time of change
     Feat->_eStatus = Feature::Valid;
-    OSD_Process pro;
-    Feat->touchTime = pro.SystemDate ();
+
+    Feat->touchTime.setToActual();
   }
 }
 
@@ -412,6 +483,7 @@ Feature *Document::addFeature(const char* sType, const char* pFeatName)
 
 	if(pcFeature)
 	{
+    pcFeature->setDocument(this);
     // get Unique name
     if(pFeatName)
       FeatName = getUniqueFeatureName(pFeatName);
@@ -419,26 +491,26 @@ Feature *Document::addFeature(const char* sType, const char* pFeatName)
       FeatName = getUniqueFeatureName(sType);
 
 		// next free label
-		TDF_Label FeatureLabel = _lFeature.FindChild(_iNextFreeFeature++);
+		//TDF_Label FeatureLabel = _lFeature.FindChild(_iNextFreeFeature++);
 		// mount the feature on its place
-		FeatureAttr::Set(FeatureLabel,pcFeature);
+		//FeatureAttr::Set(FeatureLabel,pcFeature);
 		// name
-		TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) FeatName.c_str() ));
+		//TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) FeatName.c_str() ));
 		// the rest of the setup do the feature itself
-		pcFeature->AttachLabel(FeatureLabel,this);
+		//pcFeature->AttachLabel(FeatureLabel,this);
 
     // set the status of the feature to New
     pcFeature->_eStatus = Feature::New;
 
-    _LogBook.SetTouched(FeatureLabel);
+    //_LogBook.SetTouched(FeatureLabel);
     //TouchState(FeatureLabel);
 		// update the pointer
-		_lActiveFeature = FeatureLabel;
+		pActiveFeature = pcFeature;
 
     // remember name (for faster search)
     FeatEntry e;
     e.F = pcFeature;
-    e.L = FeatureLabel;
+//    e.L = FeatureLabel;
     FeatMap[FeatName] = FeatEntry(e);
 
     pcFeature->_Name = FeatName;
@@ -472,7 +544,7 @@ void Document::remFeature(const char* sName)
   Notify(DocChange);
 
   // remove Feature Attribute
-  e.L.ForgetAttribute (FeatureAttr::GetID()); 
+  //e.L.ForgetAttribute (FeatureAttr::GetID()); 
 
   // finely delete the Feature
   delete e.F;
@@ -481,11 +553,8 @@ void Document::remFeature(const char* sName)
 
 Feature *Document::getActiveFeature(void)
 {
-  // checks if there is no active Feature
-  if(_lActiveFeature.IsNull()) 
-    return 0;
   
-  return Feature::GetFeature(_lActiveFeature);
+  return pActiveFeature;
 }
 
 Feature *Document::getFeature(const char *Name)
@@ -543,7 +612,7 @@ string Document::getUniqueFeatureName(const char *Name)
   }
 	
 }
-
+/*
 void Document::Init (void)
 {
 	TDF_Label lMain = Main();
@@ -560,7 +629,6 @@ void Document::Init (void)
 	_iNextFreeFeature = 1;
 //	_lActiveFeature; 
 }
-
 /// Returns the storage string of the document.
 const short* Document::storageFormat() const
 {
@@ -572,6 +640,7 @@ void Document::changeStorageFormat(const short* sStorageFormat)
 {
   _hDoc->ChangeStorageFormat((Standard_ExtString)sStorageFormat); 
 }
+*/
 
 /*
 void Document::TouchState(const TDF_Label &l)
@@ -610,12 +679,12 @@ FCLabel *Document::HasLabel(TDF_Label cLabel)
 
 }
 
-*/
 
 void Document::Dump(void)
 {
   _hDoc->Main().Dump(std::cout);
 }
+*/
 
 Base::PyObjectBase * Document::GetPyObject(void)
 {

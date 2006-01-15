@@ -30,8 +30,6 @@
 #   undef  _POSIX_C_SOURCE
 # endif // (re-)defined in pyconfig.h
 #	include <Python.h>
-# include <BRep_Builder.hxx>
-# include <BRepTools.hxx>
 #endif
 
 #include <Base/Console.h>

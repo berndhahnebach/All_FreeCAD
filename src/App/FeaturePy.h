@@ -27,22 +27,15 @@
 #define _FeaturePy_h_
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 #endif
 
 #include <Base/PyExportImp.h>
 
-#include "MaterialPy.h"
-/*
-class TFunction_Logbook;
-class PyObjectBase;
-class FeaturePy;
-class TopoDS_Shape;
-*/
 namespace App
 {
 
 class Feature;
+class MaterialPy;
 
 //===========================================================================
 // FeaturePy - Python wrapper
@@ -77,7 +70,8 @@ public:
 	//---------------------------------------------------------------------
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
-  int setProperty(const char *attr, PyObject *value);
+  Feature *getFeature(void){return _pcFeature;}
+  
 
 private:
   Feature *_pcFeature;

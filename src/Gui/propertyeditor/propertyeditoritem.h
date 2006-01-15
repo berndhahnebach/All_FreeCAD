@@ -61,6 +61,11 @@ public:
   /** Gets the override value. */
   const QVariant& overrideValue() const;
 
+  /** This is the class Id to distinguish from QListViewItem itself or 
+   * from other QListViewItem-subclasses. 
+   */
+  int rtti () const { return 4000; }
+
 public slots:
   /** Undoes the all setOverrideValue(). */
   void restoreOverrideValue();

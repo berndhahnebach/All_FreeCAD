@@ -110,19 +110,27 @@ SOURCE=.\Property.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\PropertyAttr.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\PropertyAttr.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\PropertyContainer.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\PropertyContainer.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyGeo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyGeo.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyLinks.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyLinks.h
 # End Source File
 # Begin Source File
 
@@ -145,15 +153,6 @@ SOURCE=.\Application.h
 # Begin Source File
 
 SOURCE=.\ApplicationPy.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Attribute.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\Attribute.h
 # End Source File
 # Begin Source File
 
@@ -187,6 +186,14 @@ SOURCE=.\Document.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\DocumentObject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DocumentObject.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\DocumentPy.cpp
 # End Source File
 # Begin Source File
@@ -206,30 +213,6 @@ SOURCE=.\Feature.cpp
 # Begin Source File
 
 SOURCE=.\Feature.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeatureAttr.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeatureAttr.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeatureDataProvider.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeatureDataProvider.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeatureDataProviderPy.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeatureDataProviderPy.h
 # End Source File
 # Begin Source File
 
@@ -299,15 +282,6 @@ InputPath=.\FreeCADTest.py
 # End Source File
 # Begin Source File
 
-SOURCE=.\Function.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\Function.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Geometry2D.cpp
 # PROP Exclude_From_Build 1
 # End Source File
@@ -325,14 +299,6 @@ SOURCE=.\Geometry3D.cpp
 
 SOURCE=.\Geometry3D.h
 # PROP Exclude_From_Build 1
-# End Source File
-# Begin Source File
-
-SOURCE=.\Label.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Label.h
 # End Source File
 # Begin Source File
 
@@ -365,70 +331,12 @@ SOURCE=.\MatrixPy.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Plugin
-
-!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
-
-# Begin Custom Build - Building Plugin.h
-InputPath=.\Plugin
-
-"Plugin.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py Plugin Plugin.h 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
-
-# Begin Custom Build - Building Plugin.h
-InputPath=.\Plugin
-
-"Plugin.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py Plugin Plugin.h 
-	
-# End Custom Build
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=.\PreCompiled.cpp
 # ADD CPP /Yc"PreCompiled.h"
 # End Source File
 # Begin Source File
 
 SOURCE=.\PreCompiled.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Standard
-
-!IF  "$(CFG)" == "FreeCADApp - Win32 Release"
-
-# Begin Custom Build - Building Standard.h
-InputPath=.\Standard
-
-"Standard.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py Standard Standard.h 
-	
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
-
-# Begin Custom Build - Building Standard.h
-InputPath=.\Standard
-
-"Standard.h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	if exist "%FREECADLIB%" (set PYTHONPATH=%FREECADLIB%\res\pylibs) 
-	python ..\Tools\PythonToCPP.py Standard Standard.h 
-	
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

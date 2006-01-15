@@ -28,8 +28,9 @@
 
 //#include "PyExport.h"
 
-#include <string>
-#include <vector>
+#include <Base/Persistance.h>
+
+
 
 #ifdef _MSC_VER
 # pragma warning( disable : 4251 )
@@ -38,7 +39,7 @@
 namespace App
 {
 
-
+class PropertyContainer;
 
 /** Base class of all Properties
  *  This is the father of all properties. Properties are
@@ -50,57 +51,33 @@ namespace App
  *  possible properties. Its also possible to define user properties
  *  and use them in the frame work....
  */
-class AppExport Property
+class AppExport Property: public Base::Persistance
 {
+  TYPESYSTEM_HEADER();
+
 public:
 
        
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
 	Property();
-
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
 	virtual ~Property();
-	
-	/** Sets the property throug a init string
-	 */
-	virtual void Set(const char* Str)=0;
 
-	/** This method returns a string representation of the property
-	 * This representation can be simple in case of strings or numbers
-	 * or more comples in cas of e.g. color
-	 */
-	virtual const char* GetAsString(void)=0;
+  /// get the name of this property in the belonging Container
+  const char* getName(void);
 
-	/** Gets the type of the concrete Property
-	 * Properties inherit from this class reports
-	 * its type through this methode.
-	 */
+  /// is called by the framework to set the Father (Container)
+  void setContainer(PropertyContainer *Father);
 
-	virtual const char* GetType(void)=0;
+  /// get a pointer to the PropertyContainer derived class the property belonging to
+  PropertyContainer *getContainer(void){return father;}
+  
+  friend class PropertyContainer;
 
-	/** Returns the value of a sub property
-	 * This method is mainly for scripting and allow setting  
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue)=0;
+protected:
+  void hasSetValue(void);
 
-	/** sets the value of a sub property
-	 * This method is mainly for scripting and allow geting 
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* GetSubProperty(const char* sSubPropName)=0;
+private:
 
-	/** gets all possible subproperty names
-	 * return a line feed seperated list of all sub property
-	 * names.
-	 */
-	virtual const char* GetSubPropertyNames(void)=0;
+  PropertyContainer *father;
 
 };
 

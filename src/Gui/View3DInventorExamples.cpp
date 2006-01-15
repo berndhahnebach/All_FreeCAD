@@ -25,7 +25,6 @@
 
 #ifndef _PreComp_
 # include <qvbox.h>
-# include <TopoDS_Shape.hxx>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/SbClip.h>

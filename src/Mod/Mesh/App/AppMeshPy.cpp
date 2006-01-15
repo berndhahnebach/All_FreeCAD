@@ -44,6 +44,7 @@
 #include "MeshPy.h"
 #include "Mesh.h"
 #include "MeshAlgos.h"
+#include "FeatureMeshImport.h"
 
 using namespace Mesh;
 
@@ -69,9 +70,8 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      App::Feature *pcFeature = pcDoc->addFeature("MeshImport","MeshOpen");
-      pcFeature->setPropertyString(Name,"FileName");
-      pcFeature->TouchProperty("FileName");
+      Mesh::FeatureMeshImport *pcFeature = (Mesh::FeatureMeshImport*)pcDoc->addFeature("MeshImport","MeshOpen");
+      pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
 
     }
@@ -111,9 +111,8 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->addFeature("MeshImport", "MeshImport");
-      pcFeature->setPropertyString(Name,"FileName");
-      pcFeature->TouchProperty("FileName");
+      Mesh::FeatureMeshImport *pcFeature = (Mesh::FeatureMeshImport *)pcDoc->addFeature("MeshImport", "MeshImport");
+      pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
 
     }

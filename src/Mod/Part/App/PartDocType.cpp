@@ -46,7 +46,6 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/PyExport.h>
 
-#include <App/Label.h>
 #include <App/Document.h>
 
 

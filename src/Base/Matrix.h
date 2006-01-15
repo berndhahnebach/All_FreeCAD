@@ -31,7 +31,7 @@
 
 #include "Vector3D.h"
 //#include "Stream.h"
-
+#include <float.h>
 namespace Base {
 
 class   Matrix4D;

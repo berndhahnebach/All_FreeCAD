@@ -37,9 +37,6 @@
 # include <qtimer.h>
 #endif
 
-#ifdef FC_USE_OCAFBROWSER
-# include <DebugBrowser.hxx>
-#endif
 
 #include "../Base/Exception.h"
 #include "../Base/Interpreter.h"
@@ -711,17 +708,7 @@ StdCmdOCAFBrowse::StdCmdOCAFBrowse()
 
 void StdCmdOCAFBrowse::activated(int iMsg)
 {
-#ifdef FC_USE_OCAFBROWSER
-# ifdef _MSC_VER
-#   pragma warning(disable: 4101)
-# endif
-
-  DebugBrowser cBrowser;
-  cBrowser.DFBrowser(getGuiApplication()->activeDocument()->getDocument()->GetOCCDoc());
-#else
-  QMessageBox::information(getMainWindow(), "OCAFBrowser", "Because FreeCAD has been compiled without set the 'FC_USE_OCAFBROWSER' flag\n"
-                                            "this feature is disabled.");
-#endif
+  QMessageBox::information(getMainWindow(), "OCAFBrowser", "FreeCAD is not OCAF based any more!' flag\n");
 }
 
 bool StdCmdOCAFBrowse::isActive(void)

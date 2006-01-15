@@ -30,10 +30,6 @@
 #include <Base/Observer.h>
 
 
-
-#include <TDocStd_Application.hxx>
-#include <TDataStd_Name.hxx>
-
 namespace Base 
 {
   class ConsoleObserverStd; 
@@ -45,16 +41,18 @@ namespace App
 
   
 class Document;
-class ApplicationOCC;
+//class ApplicationOCC;
 class ApplicationObserver;
 
-Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(ApplicationOCC);
+
+
+//Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(ApplicationOCC);
 
 /**	Handle_ApplicationOCC provides the handle for the ApplicationOCC class.
   *
 	* To learn more about the OpenCasCade handle mechanismus see the CasCade manual.
   */
-
+/*
 class  Handle_ApplicationOCC : public Handle(TDocStd_Application) {
   public:
    Standard_EXPORT Handle_ApplicationOCC():Handle(TDocStd_Application)() {}
@@ -80,7 +78,7 @@ class  Handle_ApplicationOCC : public Handle(TDocStd_Application) {
    Standard_EXPORT static const Handle_ApplicationOCC DownCast(const Handle(Standard_Transient)& AnObject);
 };
 
-
+*/
 /**	ApplicationOCC provides the OpenCasCade Application functionality.
   *
   * ApplicationOCC inherits from TDocStd_Application and redefines some pure
@@ -89,7 +87,7 @@ class  Handle_ApplicationOCC : public Handle(TDocStd_Application) {
   * ResourcesName() : Dont know much about what this function is doing ;-)
   */
 
-
+/*
 class ApplicationOCC : public TDocStd_Application
 {
 public:
@@ -97,22 +95,16 @@ public:
 	virtual ~ApplicationOCC();
 
 	// OpenCasCade application Stuff goes here +++++++++++++++++++++++++++++++++++
-	/** gives information about the types of formates */
 	virtual  Standard_CString ResourcesName();
-	/** Dont know much about what this function is doing ;-) */
 	virtual  void Formats(TColStd_SequenceOfExtendedString& Formats);
-	/** OCAF Typing information functions (see OpenCasCade doc) */
 	friend Handle_Standard_Type&   ApplicationOCC_Type_();
-	/** OCAF Typing information functions (see OpenCasCade doc) */
 	const Handle(Standard_Type)&   DynamicType() const;
-	/** OCAF Typing information functions (see OpenCasCade doc) */
 	Standard_Boolean	           IsKind(const Handle(Standard_Type)&) const;
 protected:
-	/** This function can do some init stuff on a a new Viewer (not neccesary) */
 	virtual  void InitViewer(const Handle(TDocStd_Document)& aDoc) const;
 
 };
-
+*/
 
 /** transport the changes of the Application
  *  This class transport closer information what was changed in the
@@ -163,7 +155,7 @@ public:
 	void setActiveDocument(App::Document* pDoc);
 	void setActiveDocument(const char *Name);
 	/// Geter for the OCC Aplication
-	Handle_ApplicationOCC GetOCCApp(void) {return _hApp;}
+//	Handle_ApplicationOCC GetOCCApp(void) {return _hApp;}
 	//@}
 	
 
@@ -214,6 +206,7 @@ public:
 	/** @name Init, Destruct an Access methodes */
 	//@{
   static void init(int argc, char ** argv);
+  static void initTypes(void);
 	static void destruct(void);
 	static void runApplication(void);
 	friend Application &GetApplication(void);
@@ -318,33 +311,17 @@ private:
 	static char ** _argv;
 	//@}
 
-	/** @name Singelton functions */
-	//@{
-  /*
-	/// Attaches an Observer to monitor the Application
-	void AttachObserver(ApplicationObserver *pcObserver);
-	/// Detaches an monitoring Observer
-	void DetachObserver(ApplicationObserver *pcObserver);
-	/// Notify the Obervers on a new Doc
-	void NotifyDocNew(App::Document* pcDoc);
-	/// Notify the Obervers on a deleted Doc
-	void NotifyDocDelete(App::Document* pcDoc);
-	/// The Observer is a friend of the Application
-	/// The container of all attached Obervers
-	std::set<ApplicationObserver * > _aclObservers;
-	//@}
-*/
 
   /// open ending information
   std::map<std::string,std::string> _mEndings;
 	/// Handle to the OCC Application
-	Handle_ApplicationOCC _hApp;
+	//Handle_ApplicationOCC _hApp;
 	/// Handles the App::Document (and python) objects;
 //	std::vector<App::Document*> _DocVector;
 
   /// map of all documents
   struct DocEntry {
-    Handle_TDocStd_Document hDoc;
+//    Handle_TDocStd_Document hDoc;
     Document*  pDoc;
   };
   std::map<std::string,DocEntry> DocMap;
@@ -367,28 +344,6 @@ inline App::Application &GetApplication(void){
 }
 
 
-/** The Application Observer
- *  Derive from this class if you need to get norified by a 
- *  change in the Application. The Observer attaches and detaches
- *  automaticly.
- *  @see Application
- */
-
-/*
-class AppExport ApplicationObserver
-{
-public:
-	/// Construction and attachment
-	ApplicationObserver(){GetApplication().AttachObserver(this);}
-	/// Destruction and detachment
-	virtual ~ApplicationObserver(){GetApplication().DetachObserver(this);}
-
-	/// This method get called when a new doc appears
-	virtual void OnDocNew(App::Document*){};
-	/// This method get called when a new doc will be deleted
-	virtual void OnDocDelete(App::Document*){};
-};
-*/
 
 } // namespace App
 

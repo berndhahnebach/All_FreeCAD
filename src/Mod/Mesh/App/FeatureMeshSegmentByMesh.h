@@ -24,7 +24,13 @@
 #ifndef FEATURE_MESH_SEGMENT_H
 #define FEATURE_MESH_SEGMENT_H
 
+#include <App/PropertyStandard.h>
+
 #include "MeshFeature.h"
+
+#include <App/PropertyLinks.h>
+#include <App/PropertyGeo.h>
+
 
 namespace Mesh
 {
@@ -36,13 +42,21 @@ namespace Mesh
  */
 class FeatureMeshSegmentByMesh : public MeshFeature
 {
+  PROPERTY_HEADER(Mesh::FeatureMeshSegmentByMesh);
+
 public:
+  FeatureMeshSegmentByMesh();
+
+  App::PropertyLink Source;
+  App::PropertyLink Tool;
+  App::PropertyVector Base;
+  App::PropertyVector Normal;
+
+
   /** @name methods overide Feature */
   //@{
-  /// Initialize Feature structure
-  virtual void initFeature(void);
   /// recalculate the Feature
-  virtual int execute(TFunction_Logbook& log);
+  virtual int execute(void);
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "MeshSegmentByMesh";};
   //@}

@@ -24,9 +24,6 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <qaction.h>
-# include <BRepPrimAPI_MakeBox.hxx>
-# include <TopoDS_Shape.hxx>
-# include <TNaming_Builder.hxx>
 #endif
 
 #include <Base/Exception.h>

@@ -37,11 +37,6 @@
 #include <string>
 #include <vector>
 
-
-// OpenCASCADE
-
-#include <TDF_Label.hxx>
-
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
 

@@ -75,14 +75,10 @@
 #include <gp_Pln.hxx>
 #include <math_Gauss.hxx>
 #include <math_Matrix.hxx>
-#include <TDF_Label.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
-#include <OSD_Process.hxx>
-
-#include <Quantity_Date.hxx>
 
 // WildMagic (MagicSoftware)
 #include <Wm3ApprPlaneFit3.h>

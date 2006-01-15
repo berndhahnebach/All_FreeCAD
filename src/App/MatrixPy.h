@@ -20,14 +20,13 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 
 
 #ifndef _MatrixPy_h_
 #define _MatrixPy_h_
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 #endif
 
 #include <Base/PyExportImp.h>

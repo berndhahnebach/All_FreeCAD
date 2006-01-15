@@ -39,26 +39,27 @@
 
 using namespace Part;
 
-void FeaturePartImportIges::initFeature(void)
+PROPERTY_SOURCE(Part::FeaturePartImportIges, Part::PartFeature)
+
+
+FeaturePartImportIges::FeaturePartImportIges(void)
 {
-	addProperty("String","FileName");
+	ADD_PROPERTY(FileName,(""));
 
 }
 
-Standard_Integer FeaturePartImportIges::execute(TFunction_Logbook& log)
+Standard_Integer FeaturePartImportIges::execute(void)
 {
 
   IGESControl_Reader aReader;
   TopoDS_Shape aShape;
 
-  std::string FileName = getPropertyString("FileName");
-
-  int i=open(FileName.c_str(),O_RDONLY);
+  int i=open(FileName.getValue(),O_RDONLY);
 	if( i != -1)
 	{
 	  close(i);
 	}else{
-    Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.c_str());
+    Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.getValue());
 	  return 1;
 	}
 
@@ -67,7 +68,7 @@ Standard_Integer FeaturePartImportIges::execute(TFunction_Logbook& log)
   Base::Sequencer().next();
 
     // read iges-file
-  if (aReader.ReadFile((const Standard_CString)FileName.c_str()) != IFSelect_RetDone)
+  if (aReader.ReadFile((const Standard_CString)FileName.getValue()) != IFSelect_RetDone)
     throw Base::Exception("IGES read failed (load file)");
   
   // check iges-file (memory)

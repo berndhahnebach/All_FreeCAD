@@ -24,7 +24,9 @@
 #include <FCNTL.H>
 #include <assert.h>
 #include <time.h>
+#include <sys/timeb.h>
 #include <direct.h>
+#include <float.h>
 #include "fcntl.h"
 #ifdef FC_OS_WIN32
 #  include <windows.h>
@@ -64,11 +66,15 @@
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/sax/SAXParseException.hpp>
 #include <xercesc/sax/ErrorHandler.hpp>
+#include <xercesc/sax/SAXParseException.hpp>
+#include <xercesc/sax/SAXException.hpp>
+#include <xercesc/sax2/Attributes.hpp>
+#include <xercesc/sax2/DefaultHandler.hpp>
+#include <xercesc/sax2/Attributes.hpp>
+#include <xercesc/sax2/SAX2XMLReader.hpp>
+#include <xercesc/sax2/XMLReaderFactory.hpp>
 
 
-
-// OpenCasCade
-#include <Standard_Failure.hxx>
 
 
 #endif //_PreComp_

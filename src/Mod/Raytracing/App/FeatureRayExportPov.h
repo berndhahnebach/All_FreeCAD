@@ -40,9 +40,9 @@ public:
 
 //	virtual bool MustExecute(const TFunction_Logbook& log);
 
-	virtual Standard_Integer Execute(TFunction_Logbook& log);
+	virtual Standard_Integer Execute(void);
 
-	virtual void Validate(TFunction_Logbook& log);
+	virtual void Validate(void);
 
 };
 

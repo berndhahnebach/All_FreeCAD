@@ -41,25 +41,26 @@
 
 using namespace Part;
 
-void FeaturePartImportBrep::initFeature(void)
+PROPERTY_SOURCE(Part::FeaturePartImportBrep, Part::PartFeature)
+
+
+FeaturePartImportBrep::FeaturePartImportBrep(void)
 {
-	addProperty("String","FileName");
+	ADD_PROPERTY(FileName,(""));
 }
 
-Standard_Integer FeaturePartImportBrep::execute(TFunction_Logbook& log)
+Standard_Integer FeaturePartImportBrep::execute(void)
 {
 
   IGESControl_Reader aReader;
   TopoDS_Shape aShape;
 
-  std::string FileName = getPropertyString("FileName");
-
-  int i=open(FileName.c_str(),O_RDONLY);
+  int i=open(FileName.getValue(),O_RDONLY);
 	if( i != -1)
 	{
 	  close(i);
 	}else{
-    Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.c_str());
+    Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.getValue());
 	  return 1;
 	}
 
@@ -70,7 +71,7 @@ Standard_Integer FeaturePartImportBrep::execute(TFunction_Logbook& log)
   BRep_Builder aBuilder;
 
   // read brep-file
-  BRepTools::Read(aShape,(const Standard_CString)FileName.c_str(),aBuilder);
+  BRepTools::Read(aShape,(const Standard_CString)FileName.getValue(),aBuilder);
 
 	setShape(aShape);
 

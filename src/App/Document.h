@@ -25,11 +25,12 @@
 
 
 
-#include "../Base/PyExport.h"
-#include "../Base/Observer.h"
-#include <TDocStd_Document.hxx>
-#include <TFunction_Logbook.hxx>
-//#include <TDF_ChildIterator.hxx>
+#include <Base/PyExport.h>
+#include <Base/Observer.h>
+
+#include "PropertyContainer.h"
+#include "PropertyStandard.h"
+
 
 #include <map>
 #include <vector>
@@ -97,12 +98,19 @@ public:
  *  module. The custom document can handle different application specific behavior.
  *  @see Label
  */
-class AppExport Document :public Base::PyHandler, public Base::Subject<const DocChanges&>
+class AppExport Document :public App::PropertyContainer, public Base::Subject<const DocChanges&>
 {
+  PROPERTY_HEADER(App::Document);
 
 public:
+
+
+  PropertyString Name;
+  PropertyString FileName;
+
+
   /// init with an OpenCasCade Document (done by App::Application)
-	Document(const Handle_TDocStd_Document &hDoc, const char* Name);
+	Document(void);
   /// Destruction
 	virtual ~Document();
 
@@ -128,12 +136,12 @@ public:
 	/// Get the document name of a saved document 
 	const char* getName() const;
 	/// Get the path of a saved document 
-	const short* getPath() const;
-	/// Returns the storage string of the document.
-	const short* storageFormat() const;
-	/// Change the storage format of the document.
-	void changeStorageFormat(const short* sStorageFormat) ;
+	const char* getPath() const;
   //@}
+
+  virtual void Save (short indent,std::ostream &str);
+  virtual void Restore(Base::Reader &reader);
+
 
 	/** @name Feature handling  */
 	//@{
@@ -151,20 +159,16 @@ public:
   std::string getUniqueFeatureName(const char *Name);
 	//@}
 
-  /** sets up the document
-	 *  Get called when the 
-	 */
-  virtual void Init (void);
 
 	/** @name methodes for modification and state handling
 	 */
 	//@{
 	/// Get the Main Label of the document
-	TDF_Label Main();
+	//TDF_Label Main();
 	/// Test if the document is empty
-	bool IsEmpty() const;
+	//bool IsEmpty() const;
 	/// Returns False if the  document  contains notified modifications.
-	bool IsValid() const;
+	//bool IsValid() const;
 
 	/// Remove all modifications. After this call The document becomes again Valid.
 	void PurgeModified();
@@ -215,30 +219,8 @@ public:
 	//@}
 
 
-  /// Dumps the Document to stdout
-  void Dump(void);
-
-	/// Get the OCC Document Handle
-	Handle_TDocStd_Document GetOCCDoc(void){
-    return _hDoc;
-  }
-
-
 	virtual Base::PyObjectBase *GetPyObject(void);
 
-
-
-	/* Not mapped so far:
-virtual  void Update(const Handle(CDM_Document)& aToDocument,const Standard_Integer aReferenceIdentifier,const Standard_Address aModifContext) ;
-  void SetData(const Handle(TDF_Data)& data) ;
-  Handle_TDF_Data GetData() const;
- const TDF_LabelMap& GetModified() const;
- const TDF_DeltaList& GetUndos() const;
- const TDF_DeltaList& GetRedos() const;
-  Standard_Boolean InitDeltaCompaction() ;
-  Standard_Boolean PerformDeltaCompaction() ;
-  void UpdateReferences(const TCollection_AsciiString& aDocEntry) ;
-*/
 
 	friend class DocumentPy;
 	friend class LabelPy;
@@ -250,38 +232,17 @@ protected:
   /// helper which Recompute only this feature
   void _RecomputeFeature(Feature* Feat);
 
-
-  TFunction_Logbook &getLogBook(void){return _LogBook;}
-
-
   struct FeatEntry {
-    TDF_Label L;
     Feature*  F;
   };
 
+  Feature* pActiveFeature;
   std::map<std::string,FeatEntry> FeatMap;
 
 	/// handle to the OCC document
-	Handle_TDocStd_Document _hDoc;
-  std::string _Name;
 
 	// pointer to the python class
 	DocumentPy *_pcDocPy;
-
-  /// Base label 
-	TDF_Label _lBase;
-  /// label for the position of the document
-	TDF_Label _lPos;
-  /// label where the features goes 
-	TDF_Label _lFeature;
-  /// next free label for features 
-	int       _iNextFreeFeature;
-  /// Label of the Active Feature
-	TDF_Label _lActiveFeature;
-
-  /// The Logbook for this document
-  TFunction_Logbook _LogBook;
-
 
 };
 

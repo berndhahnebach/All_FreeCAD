@@ -39,38 +39,40 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-void FeatureMeshImport::initFeature(void)
+PROPERTY_SOURCE(Mesh::FeatureMeshImport, Mesh::MeshFeature)
+
+
+FeatureMeshImport::FeatureMeshImport(void)
 {
-  addProperty("String","FileName");
+  ADD_PROPERTY(FileName,(""));
+
 }
 
-int FeatureMeshImport::execute(TFunction_Logbook& log)
+int FeatureMeshImport::execute(void)
 {
 
-  std::string FileName =getPropertyString("FileName");
-
   // ask for read permisson
-	if ( access(FileName.c_str(), 4) != 0 )
+	if ( access(FileName.getValue(), 4) != 0 )
   {
-    setError("FeatureMeshImport::Execute() not able to open %s!\n",FileName.c_str());
+    setError("FeatureMeshImport::Execute() not able to open %s!\n",FileName.getValue());
     return 1;
   }
 
   MeshSTL aReader(*(_cMesh.getKernel()) );
 
   // read file
-  FileStream str( FileName.c_str(), std::ios::in);
+  FileStream str( FileName.getValue(), std::ios::in);
 
   // catches the abort exception to set a more detailed description
   try{
     if ( !aReader.Load( str ) )
     {
-      setError("FeatureMeshImport::Execute() not able import %s!\n",FileName.c_str());
+      setError("FeatureMeshImport::Execute() not able import %s!\n",FileName.getValue());
       return 1;
     }
   }catch ( Base::AbortException& e ){
     char szBuf[200];
-    sprintf(szBuf, "Loading of STL file '%s' aborted.", FileName.c_str());
+    sprintf(szBuf, "Loading of STL file '%s' aborted.", FileName.getValue());
     e.SetMessage( szBuf );
     throw e;
   }

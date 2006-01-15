@@ -24,29 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <gp_Ax1.hxx>
-# include <gp_Pln.hxx>
-# include <gp_Pnt.hxx>
-# include <OSD_Process.hxx>
-# include <TDF_ChildIterator.hxx>
-# include <TDF_Tool.hxx>
-# include <TCollection_AsciiString.hxx>
-# include <TDataStd_Comment.hxx>
-# include <TDataStd_Geometry.hxx>
-# include <TDataStd_Integer.hxx>
-# include <TDataStd_Plane.hxx>
-# include <TDataStd_Point.hxx>
-# include <TDataStd_Real.hxx>
-# include <TDataStd_RealArray.hxx>
-# include <TDF_ListIteratorOfAttributeList.hxx>
-# include <TDF_Label.hxx>
-# include <TDF_Reference.hxx>
-# include <TFunction_Logbook.hxx>
-# include <TFunction_DriverTable.hxx>
-# include <TFunction_Function.hxx>
-# include <Standard_GUID.hxx>
-# include <TNaming_Builder.hxx>
-# include <TDataStd_Name.hxx>
 # include <sstream>
 #endif
 
@@ -60,16 +37,15 @@ using Base::Console;
 #include "Document.h"
 #include "Feature.h"
 #include "FeaturePy.h"
-#include "FeatureAttr.h"
-#include "Function.h"
 #include "Property.h"
-#include "PropertyAttr.h"
 
 using namespace App;
 
 using std::vector;
 using std::string;
 using std::map;
+
+PROPERTY_SOURCE(App::Feature, App::DocumentObject)
 
 
 //===========================================================================
@@ -103,9 +79,11 @@ Feature::Feature(void)
   _pointSize = 2.0;
   _showMode = "Flat";
 
-  OSD_Process pro;
-  touchTime = pro.SystemDate();
-  touchViewTime = pro.SystemDate();
+  touchTime.setToActual();
+  touchViewTime.setToActual();
+
+  ADD_PROPERTY(name,("Unnamed"));
+
 }
 
 Feature::~Feature(void)
@@ -124,6 +102,13 @@ Base::PyObjectBase *Feature::GetPyObject(void)
 	return pcFeaturePy; 
 }
 
+void Feature::onChanged(Property* prop)
+{
+  touchPropertyTime.setToActual();
+};
+
+
+/*
 const vector<string> Feature::getAllPropertyNames(void)
 {
   vector<string> temp(_PropertiesMap.size());
@@ -496,25 +481,22 @@ void Feature::TouchProperty(const char *Name)
   std::map<std::string,FeatEntry>::iterator it = _PropertiesMap.find( Name );
   if ( it != _PropertiesMap.end() )
   {
-    _pDoc->getLogBook().SetTouched( _cFeatureLabel.FindChild( it->second.Label ) );
+    //_pDoc->getLogBook().SetTouched( _cFeatureLabel.FindChild( it->second.Label ) );
     OSD_Process pro;
     it->second.Time = pro.SystemDate();
   }
 }
-
+*/
 void Feature::Touch(void)
 {
-  _pDoc->getLogBook().SetTouched( _cFeatureLabel );
-  OSD_Process pro;
-  touchTime = pro.SystemDate();
+  touchTime.setToActual();
 }
 
 void Feature::TouchView(void)
 {
-  OSD_Process pro;
-  touchViewTime = pro.SystemDate();
+  touchViewTime.setToActual();
 }
-
+/*
 void Feature::AttachLabel(const TDF_Label &rcLabel,Document* dt)
 {
   // remember the document and the Feature label
@@ -526,6 +508,7 @@ void Feature::AttachLabel(const TDF_Label &rcLabel,Document* dt)
 
 
 }
+*/
 /* Old version (logbook)
 bool Feature::MustExecute(void)
 {
@@ -560,12 +543,15 @@ bool Feature::MustExecute(void)
 */
 bool Feature::MustExecute(void)
 {
-  Handle(TDF_Reference) RefAttr;
-  TDF_Label L;
+  //Handle(TDF_Reference) RefAttr;
+  //TDF_Label L;
 
   // If the object's label is modified:
   if (getStatus() != Valid && getStatus()!= Inactive) 
     return true;
+
+  if(touchTime<touchPropertyTime || touchTime==touchPropertyTime) return true;
+  /*
 
   // checks if a known property has changed
   for(std::map<std::string,FeatEntry>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
@@ -591,7 +577,7 @@ bool Feature::MustExecute(void)
       return true;
 
   }
-
+*/
   return false;
 
 }
@@ -613,11 +599,13 @@ void Feature::recompute(void)
 
 void Feature::removeModifications(void)
 {
+  /*
   // checks if a known property has changed
   for(std::map<std::string,FeatEntry>::const_iterator It = _PropertiesMap.begin();It!=_PropertiesMap.end();It++)
   {
     _pDoc->getLogBook().IsModified( _cFeatureLabel.FindChild(It->second.Label) );
   }
+  */
 }
 
 const char* Feature::getStatusString(void) const
@@ -654,6 +642,7 @@ void Feature::setError(const char* pMsg,...)
 }
 
 
+/*
 Feature *Feature::GetFeature(const TDF_Label &l)
 {
   Handle(FeatureAttr) hFeat;
@@ -664,7 +653,7 @@ Feature *Feature::GetFeature(const TDF_Label &l)
   
   return hFeat->Get();
 }
-
+*/
 
 
 

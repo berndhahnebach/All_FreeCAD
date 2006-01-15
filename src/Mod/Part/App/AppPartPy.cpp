@@ -41,6 +41,7 @@
 #include "FeaturePartCut.h"
 #include "FeaturePartImportStep.h"
 #include "FeaturePartImportIges.h"
+#include "FeaturePartImportBrep.h"
 #include "PartAlgos.h"
 
 using Base::Console;
@@ -85,27 +86,24 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportStep","StepOpen");
-      pcFeature->setPropertyString(Name,"FileName");
-      pcFeature->TouchProperty("FileName");
+      Part::FeaturePartImportStep *pcFeature = (Part::FeaturePartImportStep *)pcDoc->addFeature("PartImportStep","StepOpen");
+      pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
     }else if(file.hasExtension("igs") || file.hasExtension("iges"))
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportIges","IgesOpen");
-      pcFeature->setPropertyString(Name,"FileName");
-      pcFeature->TouchProperty("FileName");
+      Part::FeaturePartImportIges *pcFeature = (Part::FeaturePartImportIges*) pcDoc->addFeature("PartImportIges","IgesOpen");
+      pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
     }else if(file.hasExtension("brp") || file.hasExtension("brep"))
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportBrep","BrepOpen");
-      pcFeature->setPropertyString(Name,"FileName");
-      pcFeature->TouchProperty("FileName");
+      Part::FeaturePartImportBrep *pcFeature = (Part::FeaturePartImportBrep *)pcDoc->addFeature("PartImportBrep","BrepOpen");
+      pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
     }
@@ -143,9 +141,8 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportStep","StepImport");
-      pcFeature->setPropertyString(Name,"FileName");
-      pcFeature->TouchProperty("FileName");
+      Part::FeaturePartImportStep *pcFeature = (Part::FeaturePartImportStep *)pcDoc->addFeature("PartImportStep","StepImport");
+      pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
     }else if(file.hasExtension("igs") || file.hasExtension("iges"))
@@ -153,9 +150,8 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportIges","IgesImport");
-      pcFeature->setPropertyString(Name,"FileName");
-      pcFeature->TouchProperty("FileName");
+      Part::FeaturePartImportIges *pcFeature = (Part::FeaturePartImportIges *)pcDoc->addFeature("PartImportIges","IgesImport");
+      pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
     }else if(file.hasExtension("brp") || file.hasExtension("brep"))
@@ -163,9 +159,8 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      App::Feature *pcFeature = pcDoc->addFeature("PartImportBrep","BrepImport");
-      pcFeature->setPropertyString(Name,"FileName");
-      pcFeature->TouchProperty("FileName");
+      Part::FeaturePartImportBrep *pcFeature = (Part::FeaturePartImportBrep *) pcDoc->addFeature("PartImportBrep","BrepImport");
+      pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
     }
     else

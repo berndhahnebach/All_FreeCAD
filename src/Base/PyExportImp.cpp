@@ -30,6 +30,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
 #	include <stdlib.h>
 #endif
 
@@ -139,7 +140,7 @@ PyObject *PyObjectBase::_getattr(char *attr)
 
 int PyObjectBase::_setattr(char *attr, PyObject *value)
 {
-	string err = "Unknown attribute: ";
+  std::string err = "Unknown attribute: ";
   err += attr;
   PyErr_SetString(PyExc_AttributeError,err.c_str());
   return -1;

@@ -16,9 +16,6 @@
 # pragma comment(lib,"TKPrim.lib")
 #	pragma comment(lib,"TKXSBase.lib")
 
-// Application Framwork OCAF
-# pragma comment(lib,"TKCAF.lib")
-# pragma comment(lib,"TKCDF.lib")
 
 // wild magic library (succesor of MGC)
 #	pragma comment(lib,"Wm3Foundation60.lib")

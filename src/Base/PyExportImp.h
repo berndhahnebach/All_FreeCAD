@@ -38,9 +38,6 @@
 
 #include<typeinfo>
 
-#ifndef _PreComp_
-# include <Standard_Failure.hxx>
-#endif
 
 
 /** Python static class macro for definition
@@ -394,16 +391,6 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
           Base::Console().Error(str.c_str());                         \
     		  Py_Error(PyExc_Exception,str.c_str());                      \
     }                                                                 \
-    catch(Standard_Failure)                                           \
-    {                                                                 \
-		      Handle(Standard_Failure) e = Standard_Failure::Caught();    \
-          std::string str;                                            \
-          str += "OCC exception thrown (";                            \
-          str += e->GetMessageString();                               \
-          str += ")\n";                                               \
-          Base::Console().Error(str.c_str());                         \
-    		  Py_Error(PyExc_Exception,str.c_str());                      \
-    }                                                                 \
     catch(...)                                                        \
     {                                                                 \
     		  Py_Error(PyExc_Exception,"Unknown C++ exception");          \
@@ -419,17 +406,7 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
           str += ")";                                                 \
           e.ReportException();                                        \
     		  Py_Error(PyExc_Exception,str.c_str());                      \
-    }                                                                 \
-    catch(Standard_Failure)                                           \
-    {                                                                 \
-		      Handle(Standard_Failure) e = Standard_Failure::Caught();    \
-          std::string str;                                            \
-          str += "OCC exception thrown (";                            \
-          str += e->GetMessageString();                               \
-          str += ")\n";                                               \
-          Base::Console().Error(str.c_str());                         \
-    		  Py_Error(PyExc_Exception,str.c_str());                      \
-	  }  
+    }                                                                 
                                                              
 #endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
 

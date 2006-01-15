@@ -46,13 +46,13 @@
 
 
 /* module functions */
-static PyObject *                        
-open(PyObject *self, PyObject *args)     
-{                                        
+static PyObject *
+open(PyObject *self, PyObject *args)
+{
   const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-    
+  if (! PyArg_ParseTuple(args, "s",&Name))
+    return NULL;
+
   Base::Console().Log("Open in Import with %s",Name);
 
   // extract ending
@@ -86,25 +86,25 @@ assert(0);
     Py_Error(PyExc_Exception,"unknown file ending");
 
 
-	Py_Return;    
+	Py_Return;
 }
 
 /* module functions */
-static PyObject *                        
-save(PyObject *self, PyObject *args)     
-{                                        
+static PyObject *
+save(PyObject *self, PyObject *args)
+{
 	char* str;
 
-    if (! PyArg_ParseTuple(args, "s",&str))		
-        return NULL;                          
-  
+    if (! PyArg_ParseTuple(args, "s",&str))
+        return NULL;
+
 	TopoDS_Shape ResultShape;
 	BRep_Builder aBuilder;
 
 	BRepTools::Read(ResultShape,(const Standard_CString)str,aBuilder);
 
   return new Part::TopoShapePy(ResultShape);		  /* convert C -> Python */
-    
+
 }
 
 

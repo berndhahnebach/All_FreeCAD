@@ -31,9 +31,15 @@
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
+
+#include <App/PropertyStandard.h>
+#include <App/PropertyGeo.h>
+#include <App/PropertyLinks.h>
+#include <App/PropertyContainer.h>
+#include <App/Feature.h>
+
 #include "PropertyView.h"
 #include "BitmapFactory.h"
-//#include "../App/Property.h"
 
 #include "propertyeditor/propertyeditor.h"
 #include "propertyeditor/propertyeditorlist.h"
@@ -42,6 +48,8 @@
 #include "propertyeditor/propertyeditorinput.h"
 #include "propertyeditor/propertyeditordate.h"
 
+
+using namespace std;
 using namespace Gui;
 using namespace Gui::DockWnd;
 using namespace Gui::PropertyEditor;
@@ -81,19 +89,68 @@ PropertyView::PropertyView(Gui::Document* pcDocument,QWidget *parent,const char 
   resize( 200, 400 );
 
   onUpdate();
+
+  Gui::Selection().Attach(this);
+
 }
 
 PropertyView::~PropertyView()
 {
+  Gui::Selection().Detach(this);
 }
+
+
+void PropertyView::OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason)
+{
+  if(Reason.Type == SelectionChanges::ClearSelection)
+  {
+    tearDown();
+  }else if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection){
+    vector<SelectionSingelton::SelObj> list = Gui::Selection().getSelection();
+    if(list.size() == 1)
+      if(list.begin()->pFeat)
+        buildUp(list.begin()->pFeat);
+      else if(list.begin()->pDoc)
+        buildUp(reinterpret_cast<App::PropertyContainer*>(list.begin()->pDoc));
+    else
+      tearDown();
+  }
+}
+
+void PropertyView::buildUp(App::PropertyContainer *cont)
+{
+
+  tearDown();
+  
+  std::map<std::string,App::Property*> Map;
+  cont->getPropertyMap(Map);
+
+  std::map<std::string,App::Property*>::iterator it;
+  for(it = Map.begin(); it != Map.end(); ++it)
+  {
+    it->first;    
+    Base::Type t = it->second->getTypeId();
+    if(t==App::PropertyString::getClassTypeId())
+      new TextEditorItem( _pPropEditor, QString(it->first.c_str()), QString(((App::PropertyString*)it->second)->getValue()) ); 
+    else if(t==App::PropertyFloat::getClassTypeId())
+      new FloatEditorItem( _pPropEditor, QString(it->first.c_str()), ((App::PropertyFloat*)it->second)->getValue() ); 
+    else if(t==App::PropertyInteger::getClassTypeId())
+      new IntEditorItem( _pPropEditor, QString(it->first.c_str()), ((App::PropertyInteger*)it->second)->getValue() ); 
+  }
+}
+
+
+void PropertyView::tearDown(void)
+{
+
+  _pPropEditor->stopEdit();
+
+  _pPropEditor->clear();
+}
+
 
 void PropertyView::onUpdate(void)
 {
-
-#ifdef FC_LOGUPDATECHAIN
-  Base::Console().Log("Acti: Gui::PropertyView::onUpdate()");
-#endif
-
 
 /*
   PropertyBuffer* buf = new PropertyBuffer(_pPropEditor, "Test");
@@ -114,7 +171,6 @@ void PropertyView::onUpdate(void)
   QStringList l; l << "Hallo" << "Hallo2";
   buf->add(new Property("List", "Test", l, l, "Descr."));
   _pPropEditor->setBuffer(buf);
-*/
   if ( _pPropEditor->childCount() > 0)
     return;
   QStringList lst; lst << QString("This") << QString("is") << QString("my") << QString("first") << QString("list") << QString("first");
@@ -132,6 +188,7 @@ void PropertyView::onUpdate(void)
   new TextEditorItem( _pPropEditor, QString("Text"), QString("Example text") );
   new IntEditorItem( _pPropEditor, QString("Integer"), 2 );
   new BoolEditorItem( _pPropEditor, QString("Boolean"), QVariant(true, 0) );
+*/
 //  Base::Console().Log("Property Updated\n");
 }
 

@@ -24,8 +24,8 @@
 #ifndef __VIEWPROVIDERPART_H__
 #define __VIEWPROVIDERPART_H__
 
-#include "../../../Gui/ViewProviderFeature.h"
-
+#include <Gui/ViewProviderFeature.h>
+#include <Standard_Boolean.hxx>
 
 class TopoDS_Shape;
 class TopoDS_Face;

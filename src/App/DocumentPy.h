@@ -20,6 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef __DocumentPy_H__
+#define __DocumentPy_H__
 
 #include "../Base/PyExportImp.h"
 
@@ -77,3 +79,4 @@ private:
 
 } // namespace App
 
+#endif

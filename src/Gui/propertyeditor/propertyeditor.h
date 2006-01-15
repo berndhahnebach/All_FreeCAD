@@ -51,6 +51,10 @@ public:
    * repaints accordingly.
    */
   void setOpen ( QListViewItem * item, bool open );
+  /** Stops the editor of the current active item. If no editor is open nothing
+   * happens.
+   */
+  void stopEdit();
 
 protected slots:
   /** This slot is connected with the clicked signal and calls itemChanged(). */

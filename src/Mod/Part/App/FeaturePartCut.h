@@ -25,6 +25,7 @@
 #ifndef __FEATUREPARTCUT_H__
 #define __FEATUREPARTCUT_H__
 
+#include <App/PropertyLinks.h>
 
 #include "PartFeature.h"
 
@@ -34,14 +35,19 @@ namespace Part
 
 class PartCutFeature :public PartFeature
 {
+  PROPERTY_HEADER(Part::PartCutFeature);
+
 public:
+  PartCutFeature();
+
+  App::PropertyLink Base;
+  App::PropertyLink Tool;
+
 
   /** @name methods overide Feature */
   //@{
-  /// Initialize Feature structure
-  virtual void initFeature(void);
   /// recalculate the Feature
-  virtual int execute(TFunction_Logbook& log);
+  virtual int execute(void);
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "PartCut";};
   //@}

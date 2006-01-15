@@ -42,29 +42,28 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-void FeatureMeshTransformDemolding::initFeature(void)
+PROPERTY_SOURCE(Mesh::FeatureMeshTransformDemolding, Mesh::FeatureMeshTransform)
+
+
+FeatureMeshTransformDemolding::FeatureMeshTransformDemolding(void)
 {
-  Base::Console().Log("FeatureMeshImport::InitLabel()\n");
-  addProperty("Link","Source");
-  addProperty("Float","Rotation");
-  addProperty("Float","AxisX");
-  addProperty("Float","AxisY");
-  addProperty("Float","AxisZ");
+  ADD_PROPERTY(Source,(0));
+  ADD_PROPERTY(Rotation,(0.0));
+  ADD_PROPERTY(Axis,(0.0,0.0,1.0));
 }
 
-int FeatureMeshTransformDemolding::execute(TFunction_Logbook& log)
+int FeatureMeshTransformDemolding::execute(void)
 {
-  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(getPropertyLink("Source"));
+  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(Source.getValue());
   if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
 
   setMesh(pcFirst->getMesh());
- /*
+ 
   getMesh().transform(Matrix4D(Vector3D(0,0,0),
-                               Vector3D(getPropertyFloat("AxisX"),
-                                       getPropertyFloat("AxisX"),
-                                       getPropertyFloat("AxisX")),getPropertyFloat("Rotation")  ));
-  */
+                               Axis.getValue(),
+                               Rotation.getValue()  ));
+ 
   return 0;
 }
 

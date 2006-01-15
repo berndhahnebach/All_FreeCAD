@@ -25,6 +25,7 @@
 #ifndef __FEATUREPARTBOX_H__
 #define __FEATUREPARTBOX_H__
 
+#include <App/PropertyStandard.h>
 
 #include "PartFeature.h"
 
@@ -34,14 +35,20 @@ namespace Part
 
 class PartBoxFeature :public PartFeature
 {
+  PROPERTY_HEADER(Part::PartBoxFeature);
+
 public:
+  PartBoxFeature();
+
+  App::PropertyFloat x,y,z,l,h,w;
+
 
   /** @name methods overide Feature */
   //@{
   /// Initialize Feature structure
   virtual void initFeature(void);
   /// recalculate the Feature
-  virtual int execute(TFunction_Logbook& log);
+  virtual int execute(void);
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "PartBox";};
   //@}

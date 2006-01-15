@@ -26,6 +26,11 @@
 
 #include "FeatureMeshTransform.h"
 
+#include <App/PropertyLinks.h>
+#include <App/PropertyGeo.h>
+#include <App/PropertyStandard.h>
+
+
 namespace Mesh
 {
 
@@ -36,13 +41,21 @@ namespace Mesh
  */
 class FeatureMeshTransformDemolding : public FeatureMeshTransform
 {
+  
+  PROPERTY_HEADER(Mesh::FeatureMeshTransformDemolding);
+
 public:
+  FeatureMeshTransformDemolding();
+
+
+  App::PropertyLink Source;
+  App::PropertyFloat Rotation;
+  App::PropertyVector Axis;
+
   /** @name methods overide Feature */
   //@{
-  /// Initialize Feature structure
-  virtual void initFeature(void);
   /// recalculate the Feature
-  virtual int execute(TFunction_Logbook& log);
+  virtual int execute(void);
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "MeshTransformDemolding";};
   //@}

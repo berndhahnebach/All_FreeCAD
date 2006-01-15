@@ -38,13 +38,16 @@
 using namespace Base;
 
 
+TYPESYSTEM_SOURCE(Base::Exception,Base::BaseClass);
+
+
 Exception::Exception(void)
 {
   _sErrMsg = "FreeCAD Exception";
 }
 
 Exception::Exception(const Exception &inst)
- : exception(inst), _sErrMsg(inst._sErrMsg)
+ : _sErrMsg(inst._sErrMsg)
 {
 }
 

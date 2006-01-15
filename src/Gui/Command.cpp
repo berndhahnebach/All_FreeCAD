@@ -241,13 +241,6 @@ void Command::invoke (int i)
     str += e.what();
     str += ")";
     Base::Console().Error(str.c_str());
-  }catch(Standard_Failure){                                                              
-		Handle(Standard_Failure) e = Standard_Failure::Caught(); 
-    std::string str;                                         
-    str += "OCC exception thrown (";                         
-    str += e->GetMessageString();                            
-    str += ")\n";                                            
-    Base::Console().Error(str.c_str());  
 #ifndef FC_DEBUG
   }catch(...){                                                              
     Base::Console().Error("Gui::Command::activated(%d): Unknown C++ exception in command thrown", i);       

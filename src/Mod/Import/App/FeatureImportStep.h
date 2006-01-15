@@ -38,11 +38,9 @@ public:
 
 	virtual void InitLabel(const TDF_Label &rcLabel);
 
-//	virtual bool MustExecute(const TFunction_Logbook& log);
+	virtual Standard_Integer Execute(void);
 
-	virtual Standard_Integer Execute(TFunction_Logbook& log);
-
-	virtual void Validate(TFunction_Logbook& log);
+//	virtual void Validate(void);
 
   /// Returns the Name/Type of the feature
   virtual const char *Type(void){return "PartImportStep";};

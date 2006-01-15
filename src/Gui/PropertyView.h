@@ -25,19 +25,25 @@
 #ifndef __PROPTERYVIEW_H__
 #define __PROPTERYVIEW_H__
 
-#include "DockWindow.h"
 
 #ifndef _PreComp_
 # include <qptrlist.h>
 #endif
 
+#include "DockWindow.h"
+#include "Selection.h"
+
 class QPixmap;
-class FCProperty;
+
+namespace App {
+  class PropertyContainer;
+}
 
 namespace Gui {
 namespace PropertyEditor {
 
 class EditableListView;
+class EditableItem;
 
 } // namespace PropertyEditor
 } // namespace Gui
@@ -47,7 +53,7 @@ namespace DockWnd {
 
 /** A test class. A more elaborate class description.
  */
-class PropertyView :public Gui::DockView
+class PropertyView :public Gui::DockView, public Gui::SelectionSingelton::ObserverType
 {
 public:
   /**
@@ -62,6 +68,10 @@ public:
    */
   virtual ~PropertyView();
 
+  /// Observer message from the Selection
+  virtual void OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason);
+
+
   bool onMsg(const char* pMsg);
 
   virtual const char *getName(void){return "PropertyView";}
@@ -74,7 +84,11 @@ public:
   static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
 private:
-  Gui::PropertyEditor::EditableListView * _pPropEditor;;
+  void buildUp(App::PropertyContainer *cont);
+  void tearDown(void);
+
+
+  Gui::PropertyEditor::EditableListView * _pPropEditor;
 };
 
 } // namespace DockWnd

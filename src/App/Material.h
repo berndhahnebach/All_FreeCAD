@@ -20,14 +20,13 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 
 
 #ifndef _Material_h_
 #define _Material_h_
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 #endif
 
 namespace Base

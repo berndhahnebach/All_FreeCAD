@@ -26,7 +26,11 @@
 #define __FeaturePartImportStep_H__
 
 
+#include <App/PropertyStandard.h>
+
 #include "PartFeature.h"
+
+
 
 namespace Part
 {
@@ -34,14 +38,17 @@ namespace Part
 
 class FeaturePartImportStep :public PartFeature
 {
+  PROPERTY_HEADER(Part::FeaturePartImportStep);
+
 public:
+  FeaturePartImportStep();
+
+  App::PropertyString FileName;
 
   /** @name methods overide Feature */
   //@{
-  /// Initialize Feature structure
-  virtual void initFeature(void);
   /// recalculate the Feature
-  virtual int execute(TFunction_Logbook& log);
+  virtual int execute(void);
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "PartImportStep";};
   //@}

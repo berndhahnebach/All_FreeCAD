@@ -27,11 +27,11 @@
 # include <qdragobject.h>
 # include <qfileinfo.h>
 # include <qvbox.h>
-# include <TopoDS_Shape.hxx>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
+# include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/events/SoEvent.h>
 #endif
@@ -41,13 +41,11 @@
 #include "Document.h"
 #include "Application.h"
 #include "MenuManager.h"
-#include <App/Label.h>
 #include <App/Feature.h>
 #include <Base/Console.h>
 
 // build in Inventor
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
-#include "Inventor/OCC/SoBrepShape.h"
 
 #include "View3DInventorExamples.h"
 #include "ViewProviderFeature.h"

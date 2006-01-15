@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <fcntl.h>
-# include <TFunction_Logbook.hxx>
 # include <ios>
 #endif
 
@@ -37,31 +36,25 @@
 
 using namespace Points;
 
-void FeaturePointsImportAscii::initFeature(void)
+PROPERTY_SOURCE(Points::FeaturePointsImportAscii, Points::PointsFeature)
+
+FeaturePointsImportAscii::FeaturePointsImportAscii(void)
 {
-  addProperty("String","FileName");
+  ADD_PROPERTY(FileName,(""));
 }
 
-int FeaturePointsImportAscii::execute(TFunction_Logbook& log)
+int FeaturePointsImportAscii::execute(void)
 {
-  try{
 
-    std::string FileName = getPropertyString("FileName");
-
-    // ask for read permisson
-		if ( access(FileName.c_str(), 4) != 0 )
-    {
-      Base::Console().Log("FeaturePointsImportAscii::Execute() not able to open %s!\n",FileName.c_str());
-      return 1;
-    }
-
-     PointsAlgos::Load(getPoints(),FileName.c_str());
-
+  // ask for read permisson
+	if ( access(FileName.getValue(), 4) != 0 )
+  {
+    Base::Console().Log("FeaturePointsImportAscii::Execute() not able to open %s!\n",FileName.getValue());
+    return 1;
   }
-  catch(...){
-    Base::Console().Error("FeaturePointsImportAscii::Execute() failed!");
-    return 2;
-  }
+
+   PointsAlgos::Load(getPoints(),FileName.getValue());
+
 
   return 0;
 }

@@ -12,9 +12,6 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #	include <qaction.h>
-#	include <BRepPrimAPI_MakeBox.hxx>
-#	include <TopoDS_Shape.hxx>
-#	include <TNaming_Builder.hxx>
 # include <qfiledialog.h>
 # include <qimage.h>
 # include <qmessagebox.h>

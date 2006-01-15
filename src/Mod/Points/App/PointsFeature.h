@@ -57,7 +57,7 @@ public:
   /// Initialize Feature structure
   virtual void initFeature(void);
   /// recalculate the Feature
-  virtual int execute(TFunction_Logbook& log);
+  virtual int execute(void);
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "Points";}
   //@}
