@@ -39,7 +39,7 @@ namespace Points
  */
 class FeaturePointsImportAscii : public PointsFeature
 {
-  PROPERTY_HEADER(Mesh::FeatureMeshTransform);
+  PROPERTY_HEADER(PointsFeature);
 
 public:
   FeaturePointsImportAscii();

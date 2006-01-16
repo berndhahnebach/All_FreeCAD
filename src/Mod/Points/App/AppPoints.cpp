@@ -48,6 +48,9 @@ void PointsAppExport initPoints() {
   Base::Console().Log("Mod : Load AppPoints\n");
   (void) Py_InitModule("Points", Points_Import_methods);   /* mod name, table ptr */
 
+  // add data types
+  Points::PointsFeature::init();
+  Points::FeaturePointsImportAscii::init();
 
  	App::FeatureFactory().AddProducer("Points",new App::FeatureProducer<Points::PointsFeature>);
  	App::FeatureFactory().AddProducer("PointsImport",new App::FeatureProducer<Points::FeaturePointsImportAscii>);

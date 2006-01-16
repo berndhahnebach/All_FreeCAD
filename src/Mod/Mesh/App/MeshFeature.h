@@ -48,6 +48,8 @@ class MeshFeaturePy;
  */
 class AppMeshExport MeshFeature : public App::Feature
 {
+  PROPERTY_HEADER(Mesh::MeshFeature);
+
 public:
   /// Constructor
   MeshFeature(void);

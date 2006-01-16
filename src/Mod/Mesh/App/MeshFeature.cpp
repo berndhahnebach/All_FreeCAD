@@ -43,6 +43,8 @@ using namespace Mesh;
 // Feature
 //===========================================================================
 
+PROPERTY_SOURCE(Mesh::MeshFeature, App::Feature)
+
 MeshFeature::MeshFeature()
 :pcMeshFeaturePy(0)
 {

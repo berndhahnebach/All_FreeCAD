@@ -41,6 +41,8 @@ using namespace Points;
 // Feature
 //===========================================================================
 
+PROPERTY_SOURCE(Points::PointsFeature, App::Feature)
+
 PointsFeature::PointsFeature()
 {
   // set default display mode

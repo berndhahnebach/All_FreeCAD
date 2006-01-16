@@ -47,6 +47,8 @@ class Property;
  */
 class PointsAppExport PointsFeature : public App::Feature
 {
+  PROPERTY_HEADER(Points::PointsFeature);
+
 public:
   /// Constructor
   PointsFeature(void);
