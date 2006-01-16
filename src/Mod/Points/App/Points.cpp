@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <math.h>
+# include <iostream>
 #endif
 
 #include "Points.h"
@@ -259,7 +260,7 @@ void PointsWithProperty::transform(const Matrix4D &rclMat)
 
 void PointsWithProperty::Save (short indent, std::ostream &str)
 {
-  str << Base::Persistance::ind(indent) << "<Points Count=\"" << _Points.size() << "\">" << endl;
+  str << Base::Persistance::ind(indent) << "<Points Count=\"" << _Points.size() << "\">" << std::endl;
 
   for (PointKernel::const_iterator itp = _Points.begin(); itp != _Points.end(); ++itp)
   {
@@ -267,9 +268,9 @@ void PointsWithProperty::Save (short indent, std::ostream &str)
                                << "x=\"" <<  itp->x << "\" "
                                << "y=\"" <<  itp->y << "\" "
                                << "z=\"" <<  itp->z << "\"/>" 
-                         << endl;
+                               << std::endl;
   }
-  str << Base::Persistance::ind(indent) << "</Points>" << endl; 
+  str << Base::Persistance::ind(indent) << "</Points>" << std::endl;
 
 }
 

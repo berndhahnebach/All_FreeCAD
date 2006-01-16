@@ -20,6 +20,8 @@ libFreeCADBase_la_SOURCES=\
 		FileInfo.h \
 		FileTemplate.cpp \
 		FileTemplate.h \
+		gzstream.cpp \
+		gzstream.h \
 		Handle.cpp \
 		Handle.h \
 		Interpreter.cpp \
