@@ -133,9 +133,9 @@ void PropertyView::buildUp(App::PropertyContainer *cont)
     if(t==App::PropertyString::getClassTypeId())
       new TextEditorItem( _pPropEditor, QString(it->first.c_str()), QString(((App::PropertyString*)it->second)->getValue()) ); 
     else if(t==App::PropertyFloat::getClassTypeId())
-      new FloatEditorItem( _pPropEditor, QString(it->first.c_str()), ((App::PropertyFloat*)it->second)->getValue() ); 
+      new FloatEditorItem( _pPropEditor, QString(it->first.c_str()), ((App::PropertyFloat*)it->second)->getValue() );
     else if(t==App::PropertyInteger::getClassTypeId())
-      new IntEditorItem( _pPropEditor, QString(it->first.c_str()), ((App::PropertyInteger*)it->second)->getValue() ); 
+      new IntEditorItem( _pPropEditor, QString(it->first.c_str()), (int)((App::PropertyInteger*)it->second)->getValue() );
   }
 }
 

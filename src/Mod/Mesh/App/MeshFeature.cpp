@@ -34,7 +34,7 @@
 
 #include <Mod/Part/App/TopologyPy.h>
 
-#include "core/MeshIO.h"
+#include "Core/MeshIO.h"
 
 #include "MeshFeature.h"
 #include "MeshFeaturePy.h"

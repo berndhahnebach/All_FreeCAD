@@ -539,22 +539,22 @@ bool MeshInventor::Save (FileStream &rstrOut) const
 
 void MeshDocXML::Save (short indent, std::ostream &str)
 {
-  str << Base::Persistance::ind(indent) << "<Mesh>" << endl;
+  str << Base::Persistance::ind(indent) << "<Mesh>" << std::endl;
 
-  str << Base::Persistance::ind(indent+1) << "<Points Count=\"" << _rclMesh.CountPoints() << "\">" << endl;
+  str << Base::Persistance::ind(indent+1) << "<Points Count=\"" << _rclMesh.CountPoints() << "\">" << std::endl;
 
   for (MeshPointArray::_TConstIterator itp = _rclMesh._aclPointArray.begin(); itp != _rclMesh._aclPointArray.end(); itp++)
   {
     str << Base::Persistance::ind(indent+2) << "<P "
                                << "x=\"" <<  itp->x << "\" "
                                << "y=\"" <<  itp->y << "\" "
-                               << "z=\"" <<  itp->z << "\"/>" 
-                         << endl;
+                               << "z=\"" <<  itp->z << "\"/>"
+                         << std::endl;
   }
-  str << Base::Persistance::ind(indent+1) << "</Points>" << endl; 
+  str << Base::Persistance::ind(indent+1) << "</Points>" << std::endl;
 
   // write the faces....
-  str << Base::Persistance::ind(indent+1) << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << endl;
+  str << Base::Persistance::ind(indent+1) << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << std::endl;
 
   for (MeshFacetArray::_TConstIterator it = _rclMesh._aclFacetArray.begin(); it != _rclMesh._aclFacetArray.end(); it++)
   {
@@ -566,11 +566,11 @@ void MeshDocXML::Save (short indent, std::ostream &str)
                                << "n0=\"" <<  it->_aulNeighbours[0] << "\" "
                                << "n1=\"" <<  it->_aulNeighbours[1] << "\" "
                                << "n2=\"" <<  it->_aulNeighbours[2] << "\"/>" 
-                         << endl;   
+                               << std::endl;
   } 
-  str << Base::Persistance::ind(indent+1) << "</Faces>" << endl; 
+  str << Base::Persistance::ind(indent+1) << "</Faces>" << std::endl;
 
-  str << Base::Persistance::ind(indent+1) << "</Mesh>" << endl; 
+  str << Base::Persistance::ind(indent+1) << "</Mesh>" << std::endl;
 
 
 }

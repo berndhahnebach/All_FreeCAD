@@ -3,9 +3,7 @@ lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
 		InitScript.h \
-		TestScript.h \
-		Plugin.h \
-		Standard.h
+		TestScript.h
 
 libFreeCADApp_la_SOURCES=\
 		Application.cpp \
@@ -17,6 +15,8 @@ libFreeCADApp_la_SOURCES=\
 		DataWithProperty.h \
 		Document.cpp \
 		Document.h \
+		DocumentObject.cpp \
+		DocumentObject.h \
 		DocumentPy.cpp \
 		DocumentPy.h \
 		Doxygen.cpp \
@@ -46,12 +46,6 @@ libFreeCADApp_la_SOURCES=\
 		VectorPy.h
 
 %Script.h: FreeCAD%.py
-	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
-
-Standard.h: Standard
-	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
-
-Plugin.h: Plugin
 	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
 
 # the library search path.
