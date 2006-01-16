@@ -345,7 +345,7 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
   //_pcListView->setRootIsDecorated(true);
 
   _pcListView->setSelectionMode(QListView::Extended );
-  connect( _pcListView, SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );
+  connect( _pcListView, SIGNAL( selectionChanged() ), this, SLOT( onSelectionChanged() ) );
 
 
   QPalette pal = _pcListView->palette();
@@ -449,7 +449,7 @@ void TreeView::OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::Selec
 
 
 
-void TreeView::selectionChanged ()
+void TreeView::onSelectionChanged ()
 {
   if(bFromOutside) return;
 

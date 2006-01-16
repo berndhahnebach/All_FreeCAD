@@ -107,12 +107,12 @@ void PropertyView::OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::S
     tearDown();
   }else if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection){
     vector<SelectionSingelton::SelObj> list = Gui::Selection().getSelection();
-    if(list.size() == 1)
+    if(list.size() == 1){
       if(list.begin()->pFeat)
         buildUp(list.begin()->pFeat);
       else if(list.begin()->pDoc)
         buildUp(reinterpret_cast<App::PropertyContainer*>(list.begin()->pDoc));
-    else
+    }else
       tearDown();
   }
 }

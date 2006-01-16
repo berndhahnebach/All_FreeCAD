@@ -214,7 +214,7 @@ public:
 
 public slots:
 
-  void selectionChanged(void);
+  void onSelectionChanged(void);
 
 protected:
 

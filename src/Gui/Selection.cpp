@@ -259,16 +259,21 @@ void SelectionSingelton::rmvSelection(const char* pDocName, const char* pFeatNam
         ( It->DocName == pDocName && pFeatName && It->FeatName == pFeatName && !pSubName ) ||
         ( It->DocName == pDocName && pFeatName && It->FeatName == pFeatName && pSubName && It->SubName == pSubName ))
     {
-      SelectionChanges Chng;
+      // save in tmp. string vars
+      std::string tmpDocName = It->DocName;
+      std::string tmpFeaName = It->FeatName;
+      std::string tmpSubName = It->SubName;
 
-      Chng.pDocName  = It->DocName.c_str();
-      Chng.pFeatName = It->FeatName.c_str();
-      Chng.pSubName  = It->SubName.c_str();
+      // destroy the _SelObj item
+      It = _SelList.erase(It);
+
+      SelectionChanges Chng;
+      Chng.pDocName  = tmpDocName.c_str();
+      Chng.pFeatName = tmpFeaName.c_str();
+      Chng.pSubName  = tmpSubName.c_str();
       Chng.Type      = SelectionChanges::RmvSelection;
 
       Notify(Chng);
-
-      It = _SelList.erase(It);
       
       rmvList.push_back(Chng);
       Base::Console().Log("Sel : Rmv Selection \"%s.%s.%s\"\n",pDocName,pFeatName,pSubName);
