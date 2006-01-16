@@ -1,0 +1,20 @@
+[Desktop Entry]
+Comment=
+Comment[de]=
+Encoding=UTF-8
+Exec='/opt/freecad/bin/freecad'
+GenericName=CAD Application
+GenericName[de]=CAD-Anwendung
+Icon=/opt/freecad/share/FCIcon.xpm
+MimeType=
+Name=FreeCAD
+Name[de]=FreeCAD
+Path=
+ServiceTypes=
+SwallowExec=
+SwallowTitle=
+Terminal=true
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

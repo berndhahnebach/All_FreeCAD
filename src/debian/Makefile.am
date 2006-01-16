@@ -4,5 +4,14 @@ EXTRA_DIST = \
 		control \
 		copyright \
 		docs \
+		freecad.desktop \
+		freecad.doc-base \
+		freecad.links \
+		manpage.1 \
 		menu \
-		rules 
+		postinst \
+		postrm \
+		preinst \
+		prerm \
+		README.Debian \
+		rules
