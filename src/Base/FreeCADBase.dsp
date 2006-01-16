@@ -170,7 +170,6 @@ SOURCE=.\FileTemplate.h
 # Begin Source File
 
 SOURCE=.\gzstream.cpp
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 

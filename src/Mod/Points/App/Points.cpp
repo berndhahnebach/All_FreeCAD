@@ -28,7 +28,9 @@
 
 #include "Points.h"
 #include <Base/Matrix.h>
+#include <Base/Persistance.h>
 using namespace Points;
+using namespace std;
 
 /*
 
@@ -254,3 +256,41 @@ void PointsWithProperty::transform(const Matrix4D &rclMat)
     *it = rclMat * (*it);
   }
 }
+
+void PointsWithProperty::Save (short indent, std::ostream &str)
+{
+  str << Base::Persistance::ind(indent) << "<Points Count=\"" << _Points.size() << "\">" << endl;
+
+  for (PointKernel::const_iterator itp = _Points.begin(); itp != _Points.end(); ++itp)
+  {
+    str << Base::Persistance::ind(indent+1) << "<P "
+                               << "x=\"" <<  itp->x << "\" "
+                               << "y=\"" <<  itp->y << "\" "
+                               << "z=\"" <<  itp->z << "\"/>" 
+                         << endl;
+  }
+  str << Base::Persistance::ind(indent) << "</Points>" << endl; 
+
+}
+
+void PointsWithProperty::Restore(Base::Reader &reader)
+{ 
+  int Cnt,i;
+ 
+  reader.readElement("Points");
+  Cnt = reader.getAttributeAsInteger("Count");
+
+  _Points.resize(Cnt);
+  for(i=0 ;i<Cnt ;i++)
+  {
+    reader.readElement("P");
+    _Points[i].x = (float) reader.getAttributeAsFloat("x");
+    _Points[i].y = (float) reader.getAttributeAsFloat("y");
+    _Points[i].z = (float) reader.getAttributeAsFloat("z");
+     
+
+  }
+  reader.readEndElement("Points");
+
+}
+

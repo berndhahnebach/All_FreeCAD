@@ -1,16 +1,5 @@
-/** \file Libs.cpp
- *  \brief Include all needed libs on Windows
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- *  Here all the libs get includet by a #pragma dirctive.
- *  Unfortunatly there is nothin comperable on UNIX, so there
- *  you have to use compiler -l staments, which are somwere deep
- *  in the Makefile.
- */
-
 /***************************************************************************
- *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
+ *   (c) Jürgen Riegel (juergen.riegel@web.de)                             * 
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -40,6 +29,7 @@
 
 #ifdef FC_OS_WIN32
 #	pragma comment(lib,DOMLIBNAME)
+#	pragma comment(lib,"zdll.lib")
 #else
 #	error "Dont compile that file on UNIX!"
 #endif

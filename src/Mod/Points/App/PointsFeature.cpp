@@ -53,8 +53,24 @@ PointsFeature::~PointsFeature()
 {
 }
 
-void PointsFeature::initFeature(void)
+void PointsFeature::Save (short indent, std::ostream &str)
 {
+  // save parent
+  Feature::Save(indent,str);
+  //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
+
+  _Points.Save(indent,str);
+
+}
+
+void PointsFeature::Restore(Base::Reader &reader)
+{
+  // save parent
+  Feature::Restore(reader);
+
+  _Points.Restore(reader);
+
+
 }
 
 int PointsFeature::execute(void)

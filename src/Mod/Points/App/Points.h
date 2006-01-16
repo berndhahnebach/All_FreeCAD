@@ -30,6 +30,7 @@
 
 #include <Base/Vector3D.h>
 #include <Base/Matrix.h>
+#include <Base/Reader.h>
 using Base::Vector3D;
 using Base::Matrix4D;
 
@@ -210,6 +211,9 @@ public:
   void transform(const Matrix4D &rclMat);
 
   PointKernel &getKernel(void){return _Points;}
+
+  virtual void Save (short indent, std::ostream &str);
+  virtual void Restore(Base::Reader &reader);
 
 private:
   PointKernel _Points;
