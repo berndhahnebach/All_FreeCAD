@@ -59,7 +59,6 @@ Document::Document(void)
   // get a reference then the object wouldn't get deleted in the destructor.
   // So, we must increment only if the interpreter gets a reference.
 	_pcDocPy = new DocumentPy(this);
-  _pcDocPy->IncRef();
 
   Console().Log("+App::Document: %p\n",this,_pcDocPy);
 
@@ -84,9 +83,6 @@ Document::~Document()
   {
     delete(it->second.F);
   }
-
-   _pcDocPy->DecRef();
-
 }
 
 

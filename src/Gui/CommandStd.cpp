@@ -689,33 +689,6 @@ void StdCmdCommandLine::activated(int iMsg)
   Base::Console().SetEnabledMsgType("MessageBox", ret, true);
 }
 
-//===========================================================================
-// Std_OCAFBrowser
-//===========================================================================
-DEF_STD_CMD_A(StdCmdOCAFBrowse);
-
-StdCmdOCAFBrowse::StdCmdOCAFBrowse()
-  :Command("Std_OCAFBrowser")
-{
-  sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("Start &raw document browser...");
-  sToolTipText  = QT_TR_NOOP("Starts a new window to deeply examine the document structure");
-  sWhatsThis    = QT_TR_NOOP("Starts a new window to deeply examine the document structure");
-  sStatusTip    = QT_TR_NOOP("Starts a new window to deeply examine the document structure");
-  sPixmap       = "Copy";
-  iAccel        = Qt::CTRL+Qt::Key_B;
-}
-
-void StdCmdOCAFBrowse::activated(int iMsg)
-{
-  QMessageBox::information(getMainWindow(), "OCAFBrowser", "FreeCAD is not OCAF based any more!' flag\n");
-}
-
-bool StdCmdOCAFBrowse::isActive(void)
-{
-  return getGuiApplication()->activeDocument() != 0;
-}
-
 namespace Gui {
 
 void CreateStdCommands(void)
@@ -736,7 +709,6 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdMRU());
   rcCmdMgr.addCommand(new StdCmdWhatsThis());
   rcCmdMgr.addCommand(new StdCmdOnlineHelp());
-  rcCmdMgr.addCommand(new StdCmdOCAFBrowse());
   rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
   rcCmdMgr.addCommand(new StdCmdDescription());
 }

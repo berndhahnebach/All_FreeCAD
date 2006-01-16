@@ -431,7 +431,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
   // Tools
   MenuItem* tool = new MenuItem( menuBar );
   tool->setCommand( "&Tools" );
-  *tool << "Std_CommandLine" << "Std_DlgParameter" << "Std_OCAFBrowser" << "Separator" << "Std_DlgMacroRecord" 
+  *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord" 
         << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Separator" << "Std_DlgCustomize";
 
   // Windows
