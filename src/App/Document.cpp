@@ -72,7 +72,6 @@ Document::Document(void)
 Document::~Document()
 {
   Console().Log("-App::Document: %s %p\n",getName(), this);
-  _pcDocPy->DecRef(); // decrement by one
 
   std::map<std::string,FeatEntry>::iterator it;
 
@@ -83,6 +82,8 @@ Document::~Document()
   {
     delete(it->second.F);
   }
+
+  _pcDocPy->DecRef(); // decrement by one
 }
 
 
