@@ -332,6 +332,7 @@ protected:
   friend class MeshEvalTopology;
   friend class MeshDegenerations;
   friend class MeshBuilder;
+  friend class MeshDocXML;
 };
 
 inline MeshPoint MeshKernel::GetPoint (unsigned long ulIndex) const

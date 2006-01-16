@@ -52,8 +52,7 @@ public:
     assert(0);
   } 
 
-protected:
-  const char* ind(short indent);
+  static const char* ind(short indent);
 
 };
 

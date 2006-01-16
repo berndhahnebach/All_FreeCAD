@@ -169,6 +169,15 @@ SOURCE=.\FileTemplate.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\gzstream.cpp
+# PROP Exclude_From_Build 1
+# End Source File
+# Begin Source File
+
+SOURCE=.\gzstream.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Handle.cpp
 # End Source File
 # Begin Source File

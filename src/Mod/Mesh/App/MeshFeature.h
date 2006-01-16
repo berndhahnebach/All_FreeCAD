@@ -34,6 +34,7 @@ class FeaturePy;
 
 namespace Base{
   class PyObjectBase;
+  class Reader;
 }
 
 namespace Mesh
@@ -57,13 +58,14 @@ public:
 
   /** @name methods overide Feature */
   //@{
-  /// Initialize Feature structure
-  virtual void initFeature(void);
   /// recalculate the Feature
   virtual int execute(void);
   /// Returns the Name/Type of the feature
   virtual const char *type(void){return "Mesh";};
   //@}
+
+  virtual void Save (short indent, std::ostream &str);
+  virtual void Restore(Base::Reader &reader);
 
 
   /** @name methods for mesh handling */

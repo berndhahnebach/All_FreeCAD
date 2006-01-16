@@ -30,11 +30,15 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/Reader.h>
+
 #include <Mod/Part/App/TopologyPy.h>
 
+#include "core/MeshIO.h"
 
 #include "MeshFeature.h"
 #include "MeshFeaturePy.h"
+#include <App/Feature.h>
 
 using namespace Mesh;
 
@@ -56,9 +60,6 @@ MeshFeature::~MeshFeature()
     pcMeshFeaturePy->DecRef();
 }
 
-void MeshFeature::initFeature(void)
-{
-}
 
 Standard_Integer MeshFeature::execute(void)
 {
@@ -88,3 +89,26 @@ Base::PyObjectBase *MeshFeature::GetPyObject(void)
   return pcMeshFeaturePy; 
 }
 
+void MeshFeature::Save (short indent, std::ostream &str)
+{
+  // save parent
+  Feature::Save(indent,str);
+  //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
+
+  MeshCore::MeshDocXML writer(*_cMesh.getKernel());
+
+  writer.Save(indent,str);
+
+}
+
+void MeshFeature::Restore(Base::Reader &reader)
+{
+  // save parent
+  Feature::Restore(reader);
+
+  MeshCore::MeshDocXML geter(*_cMesh.getKernel());
+
+  geter.Restore(reader);
+
+
+}

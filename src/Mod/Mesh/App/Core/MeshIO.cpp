@@ -32,6 +32,8 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <Base/Stream.h>
+#include <Base/Reader.h>
+#include <Base/Persistance.h>
 
 #include <math.h>
 
@@ -532,3 +534,88 @@ bool MeshInventor::Save (FileStream &rstrOut) const
 
   return true;
 }
+
+
+
+void MeshDocXML::Save (short indent, std::ostream &str)
+{
+  str << Base::Persistance::ind(indent) << "<Mesh>" << endl;
+
+  str << Base::Persistance::ind(indent+1) << "<Points Count=\"" << _rclMesh.CountPoints() << "\">" << endl;
+
+  for (MeshPointArray::_TConstIterator itp = _rclMesh._aclPointArray.begin(); itp != _rclMesh._aclPointArray.end(); itp++)
+  {
+    str << Base::Persistance::ind(indent+2) << "<P "
+                               << "x=\"" <<  itp->x << "\" "
+                               << "y=\"" <<  itp->y << "\" "
+                               << "z=\"" <<  itp->z << "\"/>" 
+                         << endl;
+  }
+  str << Base::Persistance::ind(indent+1) << "</Points>" << endl; 
+
+  // write the faces....
+  str << Base::Persistance::ind(indent+1) << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << endl;
+
+  for (MeshFacetArray::_TConstIterator it = _rclMesh._aclFacetArray.begin(); it != _rclMesh._aclFacetArray.end(); it++)
+  {
+
+    str << Base::Persistance::ind(indent+2) << "<F "
+                               << "p0=\"" <<  it->_aulPoints[0] << "\" "
+                               << "p1=\"" <<  it->_aulPoints[1] << "\" "
+                               << "p2=\"" <<  it->_aulPoints[2] << "\" " 
+                               << "n0=\"" <<  it->_aulNeighbours[0] << "\" "
+                               << "n1=\"" <<  it->_aulNeighbours[1] << "\" "
+                               << "n2=\"" <<  it->_aulNeighbours[2] << "\"/>" 
+                         << endl;   
+  } 
+  str << Base::Persistance::ind(indent+1) << "</Faces>" << endl; 
+
+  str << Base::Persistance::ind(indent+1) << "</Mesh>" << endl; 
+
+
+}
+
+void MeshDocXML::Restore(Base::Reader &reader)
+{ 
+  int Cnt,i;
+ 
+  reader.readElement("Mesh");
+
+  reader.readElement("Points");
+  Cnt = reader.getAttributeAsInteger("Count");
+
+  _rclMesh._aclPointArray.resize(Cnt);
+  for(i=0 ;i<Cnt ;i++)
+  {
+    reader.readElement("P");
+    _rclMesh._aclPointArray[i].x = reader.getAttributeAsFloat("x");
+    _rclMesh._aclPointArray[i].y = reader.getAttributeAsFloat("y");
+    _rclMesh._aclPointArray[i].z = reader.getAttributeAsFloat("z");
+     
+
+  }
+  reader.readEndElement("Points");
+
+  reader.readElement("Faces");
+  Cnt = reader.getAttributeAsInteger("Count");
+
+  _rclMesh._aclFacetArray.resize(Cnt);
+  for(i=0 ;i<Cnt ;i++)
+  {
+    reader.readElement("F");
+     
+    _rclMesh._aclFacetArray[i]._aulPoints[0] = reader.getAttributeAsInteger("p0");
+    _rclMesh._aclFacetArray[i]._aulPoints[1] = reader.getAttributeAsInteger("p1");
+    _rclMesh._aclFacetArray[i]._aulPoints[2] = reader.getAttributeAsInteger("p2");
+    _rclMesh._aclFacetArray[i]._aulNeighbours[0] = reader.getAttributeAsInteger("n0");
+    _rclMesh._aclFacetArray[i]._aulNeighbours[1] = reader.getAttributeAsInteger("n1");
+    _rclMesh._aclFacetArray[i]._aulNeighbours[2] = reader.getAttributeAsInteger("n2");
+
+  }
+  reader.readEndElement("Faces");
+
+  reader.readEndElement("Mesh");
+
+  _rclMesh.RecalcBoundBox();
+}
+

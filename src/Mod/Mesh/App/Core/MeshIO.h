@@ -28,6 +28,7 @@
 
 namespace Base {
   class FileStream;
+  class Reader;
 }
 
 using Base::FileStream;
@@ -78,6 +79,23 @@ public:
   bool Load (FileStream &rstrIn);
   /** Writes an OpenInventor file. */
   bool Save (FileStream &rstrOut) const;
+
+protected:
+  MeshKernel &_rclMesh; /**< reference to mesh data structure */
+};
+
+/**
+ * The MeshInventor class is able to read or write mesh object in 
+ * OpenInventor format.
+ */
+class AppMeshExport MeshDocXML
+{
+public:
+  MeshDocXML (MeshKernel &rclM) : _rclMesh(rclM) { }
+  virtual ~MeshDocXML (void) { }
+
+  void Save (short indent, std::ostream &str);
+  void Restore(Base::Reader &reader);
 
 protected:
   MeshKernel &_rclMesh; /**< reference to mesh data structure */
