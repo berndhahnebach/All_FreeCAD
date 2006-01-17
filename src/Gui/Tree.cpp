@@ -57,8 +57,8 @@ using namespace Gui;
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-DocItem::DocItem( QListViewItem* parent,Gui::Document* doc)
-    : QListViewItem( parent ), _pcDocument(doc)
+DocItem::DocItem( QListViewItem* parent,QListViewItem * after,Gui::Document* doc)
+    : QListViewItem( parent, after ), _pcDocument(doc), _lastFeaItem(0)
 {
   setPixmap(0,*TreeView::pcDocumentPixmap);
   setText(0,QString(_pcDocument->getDocument()->getName()));
@@ -168,7 +168,11 @@ void DocItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int 
 
 void DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
 {
-  FeatMap[Provider->getFeature()->getName()] = dynamic_cast<FeatItem*>( Provider->getTreeItem(this) );
+  FeatItem* item = dynamic_cast<FeatItem*>( Provider->getTreeItem(this) );
+  // set the new ctreated item at the end
+  item->moveItem(_lastFeaItem);
+  _lastFeaItem = item;
+  FeatMap[Provider->getFeature()->getName()] = item;
 }
 
 void DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
@@ -318,14 +322,14 @@ QPixmap* TreeView::pcDocumentPixmap=0;
 
 /* TRANSLATOR Gui::TreeView */
 TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
-  :DockView(pcDocument,parent,name),bFromOutside(false)
+  :DockView(pcDocument,parent,name),bFromOutside(false), _lastDocItem(0)
 {
   QGridLayout* layout = new QGridLayout( this );
   _pcListView = new QListView(this,name);
   layout->addWidget( _pcListView, 0, 0 );
 
   // set defaults and the colums
-  //_pcListView->setSorting(-1,false);
+  _pcListView->setSortColumn(-1);
   _pcListView->addColumn(tr("Labels & Attributes"));
   _pcListView->setColumnWidthMode(0,QListView::Maximum);
   //_pcListView->setSorting(0,true);
@@ -507,9 +511,11 @@ bool TreeView::onMsg(const char* pMsg)
   return false;
 }
 
- DocItem * TreeView::NewDoc( Gui::Document* pDoc )
+DocItem * TreeView::NewDoc( Gui::Document* pDoc )
 {
-  DocItem *item = new DocItem(_pcMainItem,pDoc);
+  // set the new ctreated item at the end
+  DocItem *item = new DocItem(_pcMainItem,_lastDocItem,pDoc);
+  _lastDocItem = item;
   DocMap[ pDoc->getDocument()->getName() ] = item;
   return item;
 }

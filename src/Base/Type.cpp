@@ -144,9 +144,9 @@ bool Type::isDerivedFrom(const Type type) const
   
   Type temp(*this);
   do {
-    temp = temp.getParent();
     if(temp == type)
       return true;
+    temp = temp.getParent();
   } while (temp != badType());
 
   return false;

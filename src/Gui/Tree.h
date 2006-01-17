@@ -113,7 +113,7 @@ class DocItem : public QListViewItem//, public App::Document::ObserverType
 {
 public:
   /// Constructor
-  DocItem( QListViewItem* parent,Gui::Document* doc);
+  DocItem( QListViewItem* parent,QListViewItem * after,Gui::Document* doc);
   virtual ~DocItem();
 
   /// This is the class Id to distinguish from QListViewItem itself or from other QListViewItem-subclasses. 
@@ -164,6 +164,8 @@ protected:
   Gui::Document*  _pcDocument;
   std::map<std::string,FeatItem*> FeatMap;
 
+private:
+  QListViewItem* _lastFeaItem;
 };
  
 
@@ -229,6 +231,8 @@ protected:
 
   bool bFromOutside;
 
+private:
+  QListViewItem* _lastDocItem;
 };
 
 } // namespace Gui
