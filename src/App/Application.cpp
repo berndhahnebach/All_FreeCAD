@@ -385,6 +385,7 @@ Document* Application::openDocument(const char * FileName)
     // read the document
     Base::Reader reader(File.filePath().c_str());
     newDoc.pDoc->Restore(reader);
+    newDoc.pDoc->setSaved();
 
 
 	  //NotifyDocNew(newDoc.pDoc);

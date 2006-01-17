@@ -52,7 +52,7 @@ PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 // constructor
 //--------------------------------------------------------------------------
 Document::Document(void)
-: pActiveFeature(0)
+: pActiveFeature(0), _isSavedAs(false)
 {
   // Remark: In a constructor we should never increment a Python object as we cannot be sure
   // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't 
@@ -100,12 +100,14 @@ void Document::saveAs (const char* name)
 
   ofstream file(File.filePath().c_str());
 
+  std::string oldName = Name.getValue();
   Name.setValue(File.fileNamePure());
   FileName.setValue(File.filePath());
 
   Document::Save(0,file);
+  setSaved();
 
-
+  GetApplication().renameDocument(oldName.c_str(), Name.getValue());
 
   DocChanges DocChange;
   DocChange.Why = DocChanges::Rename;
@@ -187,7 +189,9 @@ void Document::Restore(Base::Reader &reader)
   {
     reader.readElement("Feature");
     string name = reader.getAttribute("name");
-    getFeature(name.c_str())->Restore(reader);
+    Feature* pFeat = getFeature(name.c_str());
+    if(pFeat) // check if this feature has been registered
+      pFeat->Restore(reader);
     reader.readEndElement("Feature");
   }
   reader.readEndElement("FeatureData");
@@ -213,7 +217,16 @@ void Document::save (void)
 
 bool Document::isSaved() const
 {
-	return false;//_hDoc->IsSaved() != 0;
+	return _isSavedAs;//_hDoc->IsSaved() != 0;
+}
+
+/**
+ * If we have loaded the document from a file, modified it and want to save the changes then
+ * we force the invokation of Document::save() (instead of Document::saveAs()).
+ */
+void Document::setSaved()
+{
+	_isSavedAs = true;
 }
 
 

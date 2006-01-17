@@ -44,6 +44,7 @@
 #include "ViewProviderFeature.h"
 #include "Selection.h"
 #include "SoFCSelection.h"
+#include "WaitCursor.h"
 
 using namespace Gui;
 
@@ -329,6 +330,7 @@ bool Document::save(void)
 {
   if(_pcDocument->isSaved())
   {
+    Gui::WaitCursor wc;
     getDocument()->save();
     return true;
   }
@@ -345,6 +347,7 @@ bool Document::saveAs(void)
   QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", getMainWindow());
   if (!fn.isEmpty())
   {
+    Gui::WaitCursor wc;
     getDocument()->saveAs(fn.latin1());
     return true;
   }

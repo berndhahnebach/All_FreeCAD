@@ -133,6 +133,8 @@ public:
 	void save (void);
 	/// Is the document already saved to a file
 	bool isSaved() const;
+	/// If the document gets restored from a file it must be marked as "saved"
+	void setSaved();
 	/// Get the document name of a saved document 
 	const char* getName() const;
 	/// Get the path of a saved document 
@@ -243,7 +245,7 @@ protected:
 
 	// pointer to the python class
 	DocumentPy *_pcDocPy;
-
+  bool _isSavedAs;
 };
 
 
