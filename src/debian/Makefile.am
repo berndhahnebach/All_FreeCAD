@@ -7,7 +7,7 @@ EXTRA_DIST = \
 		freecad.desktop \
 		freecad.doc-base \
 		freecad.links \
-		manpage.1 \
+		freecad.1 \
 		menu \
 		postinst \
 		postrm \

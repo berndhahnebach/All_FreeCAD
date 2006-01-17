@@ -65,9 +65,7 @@ EXTRA_DIST = \
 		FreeCADDoc.dsp \
 		FreeCADDoc.vcproj \
 		FreeCADInit.py \
-		FreeCADTest.py \
-		Plugin \
-		Standard
+		FreeCADTest.py
 
 
 

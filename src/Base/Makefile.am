@@ -62,7 +62,7 @@ libFreeCADBase_la_SOURCES=\
 		ViewProj.h \
 		XMLTools.h 
 
-libFreeCADBase_la_LIBADD   =  -lpython@fc_py_ver@ -lxerces-c
+libFreeCADBase_la_LIBADD   =  -lpython@fc_py_ver@ -lxerces-c -lz
 
 # set the include path found by configure
 INCLUDES= $(all_includes)
