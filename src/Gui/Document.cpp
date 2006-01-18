@@ -344,10 +344,13 @@ bool Document::save(void)
 bool Document::saveAs(void)
 {
   getMainWindow()->statusBar()->message(tr("Saving file under new filename..."));
-  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", getMainWindow());
+//  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", getMainWindow());
+  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd)", getMainWindow());
   if (!fn.isEmpty())
   {
     Gui::WaitCursor wc;
+    if ( !fn.endsWith(".FCStd") && !fn.endsWith(".FCPart"))
+      fn += ".FCStd";
     getDocument()->saveAs(fn.latin1());
     return true;
   }
