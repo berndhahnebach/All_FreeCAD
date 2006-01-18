@@ -301,8 +301,11 @@ void SelectionSingelton::clearSelection(void)
 
 bool SelectionSingelton::isSelected(const char* pDocName, const char* pFeatName, const char* pSubName)
 {
+  const char* tmpDocName = pDocName ? pDocName : "";
+  const char* tmpFeaName = pFeatName ? pFeatName : "";
+  const char* tmpSubName = pSubName ? pSubName : "";
   for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
-    if(It->DocName == pDocName && It->FeatName == pFeatName && It->SubName == pSubName )
+    if(It->DocName == tmpDocName && It->FeatName == tmpFeaName && It->SubName == tmpSubName )
       return true;
   return false;
 }
