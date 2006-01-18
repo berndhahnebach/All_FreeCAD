@@ -566,6 +566,11 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
           pGDoc->commitCommand();
           pDoc->Recompute();
 
+#ifndef FC_DEBUG
+          // make sure that toolmesh is still hidden
+          Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
+#endif
+
           unsetEdit();
 
           if ( !ok ) // note: the mouse grabbing needs to be released
