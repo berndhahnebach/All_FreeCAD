@@ -557,12 +557,8 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
                 "f = App.document().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
                 "f.Source   = App.document().%s\n"
                 "f.Tool     = App.document().%s\n"
-                "f.BaseX    = %.6f\n"
-                "f.BaseY    = %.6f\n"
-                "f.BaseZ    = %.6f\n"
-                "f.NormalX  = %.6f\n"
-                "f.NormalY  = %.6f\n"
-                "f.NormalZ  = %.6f\n"
+                "f.Base     = (%.6f,%.6f,%.6f)\n"
+                "f.Normal   = (%.6f,%.6f,%.6f)\n"
                 , fName.c_str(),  meshFeature->getName(), fTool.c_str(), 
                   cPoint.x, cPoint.y, cPoint.z, cNormal.x, cNormal.y, cNormal.z );
           }
