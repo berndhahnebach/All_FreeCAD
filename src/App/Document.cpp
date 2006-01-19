@@ -36,6 +36,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/Interpreter.h>
 #include <Base/Reader.h>
 
 #include "Application.h"
@@ -178,6 +179,24 @@ void Document::Restore(Base::Reader &reader)
     string type = reader.getAttribute("type");
     string name = reader.getAttribute("name");
     string typeOld = reader.getAttribute("typeOld");
+
+    // reproduce the module name and load it first
+    string::size_type pos = type.find("::");
+    if ( pos != string::npos )
+    {
+      string module = type.substr(0,pos);
+      pos = module.find("App",module.length()-3);
+      if ( pos != string::npos )
+        module = module.substr(0,pos);
+      if ( !module.empty() )
+      {
+        Base::Interpreter().loadModule(module.c_str());
+        // @todo THIS MUST BE CHANGED !!!
+        module += "Gui";
+        Base::Interpreter().loadModule(module.c_str());
+      }
+    }
+
     addFeature(typeOld.c_str(),name.c_str());
   }
   reader.readEndElement("Features");
