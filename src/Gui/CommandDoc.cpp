@@ -29,8 +29,10 @@
 # endif // (re-)defined in pyconfig.h
 # include <Python.h>
 # include <qapplication.h>
+# include <qdir.h>
 # include <qstatusbar.h>
 # include <qfiledialog.h>
+# include <qfileinfo.h>
 # include <qobjectlist.h>
 # include <qmessagebox.h>
 # include <qprinter.h>
@@ -38,32 +40,17 @@
 #endif
 
 
-#include "../Base/Exception.h"
-#include "../Base/Interpreter.h"
-#include "../Base/Sequencer.h"
-#include "../App/Document.h"
+#include <Base/Exception.h>
+#include <Base/Interpreter.h>
+#include <Base/Sequencer.h>
+#include <App/Document.h>
+
 #include "Action.h"
-#include "Process.h"
 #include "Application.h"
 #include "Document.h"
-#include "Splashscreen.h"
 #include "Command.h"
 #include "MainWindow.h"
-#include "WhatsThis.h"
-#include "DlgUndoRedo.h"
 #include "BitmapFactory.h"
-#include "View.h"
-
-//#include "DlgDocTemplatesImp.h"
-#include "DlgParameterImp.h"
-#include "DlgMacroExecuteImp.h"
-#include "DlgMacroRecordImp.h"
-#include "Macro.h"
-#include "DlgPreferencesImp.h"
-#include "DlgCustomizeImp.h"
-#include "Widgets.h"
-#include "NetworkRetriever.h"
-#include "GuiConsole.h"
 
 using Base::Console;
 using Base::Sequencer;
@@ -112,11 +99,22 @@ void StdCmdOpen::activated(int iMsg)
   }
   EndingList += "All files (*.*)";
   
+  // use current path as default
+  std::string path = QDir::currentDirPath().latin1();
+  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
+	QString dir = path.c_str();
+  QStringList FileList = QFileDialog::getOpenFileNames( EndingList.c_str(),dir, getMainWindow() );
 
-  QStringList FileList = QFileDialog::getOpenFileNames( EndingList.c_str(),QString::null, getMainWindow() );
-
+  int n=0;
   for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
-     getGuiApplication()->open((*it).latin1());
+    getGuiApplication()->open((*it).latin1());
+		if (n == 0) {
+      QFileInfo fi;
+			fi.setFile(*it);
+      hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+			n++;
+		}
   }
 }
 
