@@ -24,12 +24,12 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <fcntl.h>
-# include <TFunction_Logbook.hxx>
 # include <ios>
 #endif
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/FileInfo.h>
 #include <Base/Sequencer.h>
 #include "FeatureMeshImport.h"
 
@@ -45,14 +45,13 @@ PROPERTY_SOURCE(Mesh::FeatureMeshImport, Mesh::MeshFeature)
 FeatureMeshImport::FeatureMeshImport(void)
 {
   ADD_PROPERTY(FileName,(""));
-
 }
 
 int FeatureMeshImport::execute(void)
 {
-
-  // ask for read permisson
-	if ( access(FileName.getValue(), 4) != 0 )
+  // ask for read permission
+  Base::FileInfo fi(FileName.getValue());
+	if ( fi.exists() && fi.isReadable() == false || fi.isFile() == false )
   {
     setError("FeatureMeshImport::Execute() not able to open %s!\n",FileName.getValue());
     return 1;

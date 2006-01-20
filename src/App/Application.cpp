@@ -362,10 +362,9 @@ Document* Application::openDocument(const char * FileName)
 {
   DocEntry newDoc;
   FileInfo File(FileName);
-  std::string Ext = File.extension();
 
   // checking on the extension
-  if(Ext == "FCStd" || Ext == "std")
+  if(File.hasExtension("FCStd") || File.hasExtension("std") )
   {
   
 	  // Creating a FreeCAD Document
@@ -385,7 +384,6 @@ Document* Application::openDocument(const char * FileName)
     // read the document
     Base::Reader reader(File.filePath().c_str());
     newDoc.pDoc->Restore(reader);
-    newDoc.pDoc->setSaved();
 
 
 	  //NotifyDocNew(newDoc.pDoc);

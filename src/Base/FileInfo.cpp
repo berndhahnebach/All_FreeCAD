@@ -34,6 +34,7 @@
 #ifndef _PreComp_
 # include <assert.h>
 # include <string>
+# include <stdio.h>
 # ifdef FC_OS_LINUX
 # include <unistd.h>
 # include <sys/stat.h>
@@ -45,9 +46,6 @@
 
 using namespace Base;
 using namespace std;
-
-
-
 
 
 FileInfo::FileInfo (const char* FileName)
@@ -64,6 +62,7 @@ void FileInfo::makeTemp(const char* Template)
 
   setFile(tmp);
 }
+
 void FileInfo::setFile(const char* name)
 {
   string result;
@@ -91,7 +90,6 @@ void FileInfo::setFile(const char* name)
   FileName = result;
 }
 
-
 string FileInfo::filePath () const
 {
   return FileName;
@@ -100,6 +98,11 @@ string FileInfo::filePath () const
 string FileInfo::fileName () const
 {
   return FileName.substr(FileName.find_last_of('/')+1);
+}
+
+std::string FileInfo::dirPath () const
+{
+  return FileName.substr(0,FileName.find_last_of('/'));
 }
 
 string FileInfo::fileNamePure () const
@@ -129,7 +132,6 @@ bool FileInfo::hasExtension ( const char* Ext) const
 #endif
 }
 
-
 bool FileInfo::exists () const
 {
   return access(FileName.c_str(),0) == 0;
@@ -147,15 +149,41 @@ bool FileInfo::isWritable () const
 
 bool FileInfo::isFile () const
 {
-  return exists();
+  if ( exists() )
+  {
+    FILE* file = fopen(FileName.c_str(), "r");
+    if ( file )
+    {
+      // okay, it's an existing file
+      fclose(file);
+      return true;
+    }
+    else
+      // must be a directory
+      return false;
+  }
+
+  // TODO: Check for valid file name
+  return true;
 }
 
 bool FileInfo::isDir () const
 {
-  // not implemented
-  assert(0);
-  return false;
+  if ( exists() )
+  {
+    // if we can chdir then it must be a directory
+    char cwd[1000];
+    if ( getcwd(cwd,1000) != 0 && chdir(FileName.c_str()) == 0 )
+    {
+      chdir(cwd);
+      return true;
+    }
+    else
+      return false;
+  }
 
+  // TODO: Check for valid path name
+  return true;
 }
 
 unsigned int FileInfo::size () const
@@ -167,14 +195,8 @@ unsigned int FileInfo::size () const
 
 bool FileInfo::createDirectory( const char* directory ) const
 {
-#if _MSC_VER >= 1400
+#if defined (_MSC_VER)
   return _mkdir( directory ) == 0;
-#elif defined (_MSC_VER)
-  SECURITY_ATTRIBUTES attr;
-  attr.nLength = sizeof(SECURITY_ATTRIBUTES);
-  attr.lpSecurityDescriptor = NULL;
-  attr.bInheritHandle = FALSE;
-  return CreateDirectory(directory, &attr) ? true : false;
 #elif defined(__GNUC__)
   return mkdir( directory, 0777 ) == 0;
 #else

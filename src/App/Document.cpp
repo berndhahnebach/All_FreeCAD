@@ -53,7 +53,7 @@ PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 // constructor
 //--------------------------------------------------------------------------
 Document::Document(void)
-: pActiveFeature(0), _isSavedAs(false)
+: pActiveFeature(0)
 {
   // Remark: In a constructor we should never increment a Python object as we cannot be sure
   // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't 
@@ -106,7 +106,6 @@ void Document::saveAs (const char* name)
   FileName.setValue(File.filePath());
 
   Document::Save(0,file);
-  setSaved();
 
   GetApplication().renameDocument(oldName.c_str(), Name.getValue());
 
@@ -236,18 +235,9 @@ void Document::save (void)
 
 bool Document::isSaved() const
 {
-	return _isSavedAs;//_hDoc->IsSaved() != 0;
+  std::string name = FileName.getValue();
+	return !name.empty();
 }
-
-/**
- * If we have loaded the document from a file, modified it and want to save the changes then
- * we force the invokation of Document::save() (instead of Document::saveAs()).
- */
-void Document::setSaved()
-{
-	_isSavedAs = true;
-}
-
 
 /// Get the document name of a saved document
 const char* Document::getName() const

@@ -51,6 +51,8 @@ class BaseExport FileInfo
     bool exists () const;
     /// Returns the file name, including the path (which may be absolute or relative).
     std::string filePath () const;
+    /// Returns the dir path name (which may be absolute or relative).
+    std::string dirPath () const;
     /// Returns the name of the file, excluding the path, including the extension.
     std::string fileName () const;
     /// Returns the name of the file, excluding the path and the extension.

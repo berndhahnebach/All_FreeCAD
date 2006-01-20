@@ -30,6 +30,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/FileInfo.h>
 #include <Base/Sequencer.h>
 #include "FeatureMeshExport.h"
 
@@ -51,7 +52,6 @@ FeatureMeshExport::FeatureMeshExport(void)
 
 int FeatureMeshExport::execute(void)
 {
-
   MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
   {
@@ -59,9 +59,10 @@ int FeatureMeshExport::execute(void)
     return 1;
   }
 
-
-  // ask for read permisson
-	if ( access(FileName.getValue(), 2) != 0 )
+  // ask for write permission
+  Base::FileInfo fi(FileName.getValue());
+  Base::FileInfo di(fi.dirPath().c_str());
+	if ( fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false )
   {
     setError("FeatureMeshExport::Execute() not able to open %s for write!\n",FileName.getValue());
     return 1;

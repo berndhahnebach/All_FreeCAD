@@ -24,7 +24,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qdir.h>
 # include <qfiledialog.h>
+# include <qfileinfo.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
 # include <Inventor/nodes/SoSelection.h>
@@ -345,13 +347,22 @@ bool Document::saveAs(void)
 {
   getMainWindow()->statusBar()->message(tr("Saving file under new filename..."));
 //  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", getMainWindow());
-  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd)", getMainWindow());
+
+  // use current path as default
+  std::string path = QDir::currentDirPath().latin1();
+  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
+	QString dir = path.c_str();
+  QString fn = QFileDialog::getSaveFileName(dir, "FreeCAD (*.FCStd)", getMainWindow());
   if (!fn.isEmpty())
   {
     Gui::WaitCursor wc;
     if ( !fn.endsWith(".FCStd") && !fn.endsWith(".FCPart"))
       fn += ".FCStd";
     getDocument()->saveAs(fn.latin1());
+    QFileInfo fi;
+		fi.setFile(fn);
+    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
     return true;
   }
   else
