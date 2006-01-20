@@ -29,7 +29,7 @@
 
 #include "gzstream.h"
 #include <iostream>
-#include <string.h>  // for memcpy
+#include <string>  // for memcpy
 
 
 namespace Base {

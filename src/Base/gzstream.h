@@ -36,6 +36,11 @@
 #include <ios>
 #include <zlib.h>
 
+#ifdef _MSC_VER
+using std::ostream;
+using std::istream;
+#endif
+
 
 namespace Base {
 
@@ -48,7 +53,7 @@ namespace Base {
 // Internal classes to implement gzstream. See below for user classes.
 // ----------------------------------------------------------------------------
 
-class gzstreambuf : public std::streambuf {
+class BaseExport gzstreambuf : public std::streambuf {
 private:
     static const int bufferSize;    // size of data buff
     // totals 512 bytes under g++ for igzstream at the end.
@@ -77,7 +82,7 @@ public:
     virtual int     sync();
 };
 
-class gzstreambase : virtual public std::ios {
+class BaseExport gzstreambase : virtual public std::ios {
 protected:
     gzstreambuf buf;
 public:
@@ -95,24 +100,40 @@ public:
 // function interface of the zlib. Files are compatible with gzip compression.
 // ----------------------------------------------------------------------------
 
-class igzstream : public gzstreambase, public std::istream {
+class BaseExport igzstream : public gzstreambase, public std::istream {
 public:
-    igzstream(); 
-//      : istream( &buf) {} 
-    igzstream( const char* name, int open_mode = std::ios_base::in);
-//        : gzstreambase( name, open_mode), std::istream( &buf) {}  
+    igzstream()
+#ifdef _MSC_VER
+      : istream( &buf) {} 
+#else
+      : std::istream( &buf) {} 
+#endif
+    igzstream( const char* name, int open_mode = std::ios_base::in)
+#ifdef _MSC_VER
+      : gzstreambase( name, open_mode), istream( &buf) {}  
+#else
+      : gzstreambase( name, open_mode), std::istream( &buf) {}  
+#endif
     gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
     void open( const char* name, int open_mode = std::ios_base::in) {
         gzstreambase::open( name, open_mode);
     }
 };
 
-class ogzstream : public gzstreambase, public std::ostream {
+class BaseExport ogzstream : public gzstreambase, public std::ostream {
 public:
-    ogzstream(); 
-      //: std::ostream( &buf) {}
-    ogzstream( const char* name, int mode = std::ios_base::out);
-       // : gzstreambase( name, mode), std::ostream( &buf) {}  
+    ogzstream()
+#ifdef _MSC_VER
+      : ostream( &buf) {}
+#else
+      : std::ostream( &buf) {}
+#endif
+    ogzstream( const char* name, int mode = std::ios_base::out)
+#ifdef _MSC_VER
+      : gzstreambase( name, mode), ostream( &buf) {}  
+#else
+      : gzstreambase( name, mode), std::ostream( &buf) {}  
+#endif
     gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
     void open( const char* name, int open_mode = std::ios_base::out) {
         gzstreambase::open( name, open_mode);
