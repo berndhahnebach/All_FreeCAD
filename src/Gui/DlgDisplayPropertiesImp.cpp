@@ -68,7 +68,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   string sModeName;
 
   bool bSameTransp= true;
-  float fTransp;
+  float fTransp=0.0f;
 
   bool bSameColor= true;
   App::Color cColor;

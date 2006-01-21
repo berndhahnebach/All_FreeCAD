@@ -1099,7 +1099,7 @@ bool MeshAlgorithm::ConnectLines (std::list<std::pair<Vector3D, Vector3D> > &rcl
     do
     {
       float  fFrontMin = fMinEps, fEndMin = fMinEps;
-      bool   bFrontFirst, bEndFirst;
+      bool   bFrontFirst=false, bEndFirst=false;
 
       pFront = rclLines.end();
       pEnd   = rclLines.end();

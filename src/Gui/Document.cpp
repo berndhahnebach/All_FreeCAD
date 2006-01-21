@@ -375,7 +375,7 @@ bool Document::saveAs(void)
 void Document::createView(const char* sType) 
 {
   QPixmap FCIcon = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
-  MDIView* pcView3D;
+  MDIView* pcView3D=0;
   if(strcmp(sType,"View3DIv") == 0){
 //    pcView3D = new Gui::View3DInventorEx(this,_pcAppWnd,"View3DIv");
     pcView3D = new Gui::View3DInventor(this,getMainWindow(),"View3DIv");
@@ -392,7 +392,10 @@ void Document::createView(const char* sType)
   }else /* if(strcmp(sType,"View3DOCC") == 0){
     pcView3D = new MDIView3D(this,_pcAppWnd,"View3DOCC");
   }else*/
+  {
     Base::Console().Error("Document::createView(): Unknown view type: %s\n",sType);
+    return;
+  }
 
   const char* name = getDocument()->getName();
 

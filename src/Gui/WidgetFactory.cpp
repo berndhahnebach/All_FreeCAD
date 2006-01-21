@@ -495,7 +495,7 @@ PyObject *PyResource::value(PyObject *args)
       qWarning( "'%s' not found.\n", psName );
   }
 
-  PyObject *pItem;
+  PyObject *pItem=0;
   switch (v.type())
   {
   case QVariant::StringList:

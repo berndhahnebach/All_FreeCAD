@@ -134,7 +134,7 @@ void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
     Vector3D PointOnEdge[3];
 
     GoOn = false;
-    int NbrOfHits = 0,HitIdx;
+    int NbrOfHits = 0,HitIdx=0;
     
     for(int i=0; i<3; i++)
     {
