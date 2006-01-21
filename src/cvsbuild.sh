@@ -2,6 +2,9 @@
 # cvsbuild.sh
 # Run this to generate all initial makefiles.
 
+# Make executable due to Debian package policy
+chmod u+x Mod/Test/unittestgui.py
+
 #aclocal
 #autoheader
 #automake --add-missing

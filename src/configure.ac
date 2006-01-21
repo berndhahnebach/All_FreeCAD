@@ -4,10 +4,10 @@
 ## Init stuff
 # **************************************************************************
 AC_PREREQ(2.57)
-AC_INIT(FreeCAD,0.33,[Juergen Riegel],FreeCAD)
+AC_INIT(FreeCAD,0.52,[Juergen Riegel],FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
 #AC_INIT(Main/Main.cpp)
-#AM_INIT_AUTOMAKE(FreeCAD, 0.33)
+#AM_INIT_AUTOMAKE(FreeCAD, 0.52)
 AM_CONFIG_HEADER([config.h])
 #AC_CANONICAL_HOST
 AC_LANG_CPLUSPLUS
@@ -19,8 +19,21 @@ AC_PREFIX_DEFAULT($HOME/FreeCAD)
 
 ## Version number
 # **************************************************************************
-# We begin with 0:0:0
-LIB_CURRENT=0
+# Shared library versioning
+# GENERIC_LIBRARY_VERSION=1:2:0
+#                         | | |
+#                  +------+ | +---+
+#                  |        |     |
+#               current:revision:age
+#                  |        |     |
+#                  |        |     +- increment if interfaces have been added
+#                  |        |        set to zero if interfaces have been removed
+#                                    or changed
+#                  |        +- increment if source code has changed
+#                  |           set to zero if current is incremented
+#                  +- increment if interfaces have been removed or changed
+
+LIB_CURRENT=2
 LIB_REVISION=0
 LIB_AGE=0
 AC_SUBST(LIB_CURRENT)
