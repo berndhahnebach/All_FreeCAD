@@ -20,7 +20,6 @@ freecad-stamp:
 	./configure --prefix=/opt/freecad --with-wildmagic-includes=/home/werner/Projekte/GeometricTools/WildMagic3/Include --with-wildmagic-libs=/home/werner/Projekte/GeometricTools/WildMagic3/Library --with-Qt-lib=qt-mt32
 	$(MAKE) clean
 	$(MAKE)
-	$(MAKE) DESTDIR=$(FREECADDIR) install
 	touch freecad-stamp
 
 build: freecad-stamp
@@ -28,21 +27,26 @@ build: freecad-stamp
 clean:
 	dh_testdir
 	dh_testroot
+
 	rm -f freecad-stamp
-	# Add here commands to clean up after the build process.
 	rm -rf $(FREECADDIR)
 
-	-$(MAKE) clean
+	# Add here commands to clean up after the build process.
+	# if Makefile exists run distclean
+	if test -f Makefile; then \
+		$(MAKE) distclean; \
+	fi
+
 	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	#dh_clean -k
-	#dh_installdirs
+	dh_clean -k
+	dh_installdirs
 
 	# Add here commands to install the package into debian/freecad.
-	#$(MAKE) DESTDIR=$(FREECADDIR) install
+	$(MAKE) DESTDIR=$(FREECADDIR) install
 
 
 # Build architecture-independent files here.
@@ -75,7 +79,7 @@ binary-arch: build install
 	install -m777 /usr/local/lib/libCoin.so.40.2.1 $(FREECADDIR)/opt/freecad/lib/
 	install -m777 /usr/local/lib/libSoQt.so.20.0.2 $(FREECADDIR)/opt/freecad/lib/
 	dh_link
-	dh_makeshlibs
+#	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
   # Part module

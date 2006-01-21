@@ -1,5 +1,5 @@
-?package(freecad):needs=X11\
-  section=Apps/Science\
+?package(freecad):needs="X11"\
+  section="Apps/Science"\
   title="FreeCAD"\
   command="/opt/freecad/bin/FreeCAD" \
   icon="/opt/freecad/share/FCIcon.xpm"
