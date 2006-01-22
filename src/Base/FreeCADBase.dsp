@@ -185,6 +185,14 @@ SOURCE=.\Handle.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\InputSource.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\InputSource.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Interpreter.cpp
 # End Source File
 # Begin Source File

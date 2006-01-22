@@ -1,0 +1,136 @@
+/***************************************************************************
+ *   Copyright (c) Riegel         <juergen.riegel@web.de>                  *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
+
+/*  Precompiled header stuff
+ *  on some compilers the precompiled header option gain significant compile 
+ *  time! So every external header (libs and system) should included in 
+ *  Precompiled.h. For systems without precompilation the header needed are
+ *  included in the else fork.
+ */
+#include "PreCompiled.h"
+
+#ifndef _PreComp_
+# include <xercesc/sax2/Attributes.hpp>
+# include <xercesc/sax/SAXParseException.hpp>
+# include <xercesc/sax/SAXException.hpp>
+# include <xercesc/sax2/XMLReaderFactory.hpp>
+#endif
+
+/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "InputSource.h"
+#include "Exception.h"
+
+
+using namespace Base;
+using namespace std;
+
+
+// ---------------------------------------------------------------------------
+//  Includes
+// ---------------------------------------------------------------------------
+#include <xercesc/util/Janitor.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/XMLExceptMsgs.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/PlatformUtils.hpp>
+#include <xercesc/util/XMLString.hpp>
+#include <xercesc/util/XMLUniDefs.hpp>
+
+
+using namespace Base;
+using namespace std;
+
+
+
+
+// ---------------------------------------------------------------------------
+//  StdInputStream: Constructors and Destructor
+// ---------------------------------------------------------------------------
+StdInputStream::StdInputStream(     std::istream Stream
+                                       , MemoryManager* const manager) 
+: stream(Stream)
+  , fMemoryManager(manager)
+{
+    // Try to open the file
+    //fSource = XMLPlatformUtils::openFile(fileName, manager);
+}
+
+
+StdInputStream::~StdInputStream()
+{
+}
+
+
+// ---------------------------------------------------------------------------
+//  StdInputStream: Implementation of the input stream interface
+// ---------------------------------------------------------------------------
+unsigned int StdInputStream::curPos() const
+{
+  return stream.tellg();
+    //return XMLPlatformUtils::curFilePos(fSource, fMemoryManager);
+}
+
+unsigned int
+StdInputStream::readBytes(          XMLByte* const  toFill
+                                , const unsigned int    maxToRead)
+{
+    //
+    //  Read up to the maximum bytes requested. We return the number
+    //  actually read.
+    //
+  
+  stream.get((char *)toFill,maxToRead);
+  return stream.gcount();
+
+    //return XMLPlatformUtils::readFileBuffer(fSource, maxToRead, toFill, fMemoryManager);
+}
+
+
+
+// ---------------------------------------------------------------------------
+//  StdInputSource: Constructors and Destructor
+// ---------------------------------------------------------------------------
+StdInputSource::StdInputSource ( std::istream Stream
+                                 , MemoryManager* const manager )
+
+    : InputSource(manager),stream(Stream)
+{
+
+}
+
+
+StdInputSource::~StdInputSource()
+{
+}
+
+
+// ---------------------------------------------------------------------------
+//  StdInputSource: InputSource interface implementation
+// ---------------------------------------------------------------------------
+BinInputStream* StdInputSource::makeStream() const
+{
+    StdInputStream* retStrm = new StdInputStream(stream /*, getMemoryManager()*/);
+    return retStrm;
+}
+
+

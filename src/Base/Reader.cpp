@@ -39,6 +39,8 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Reader.h"
 #include "Exception.h"
+#include "gzstream.h"
+#include "InputSource.h"
 
 #include "XMLTools.h"
 
@@ -70,7 +72,13 @@ Reader::Reader(const char* FileName)
 
   try
   {
-      parser->parseFirst( (char*)buf.c_str(),token);
+#if 0
+    igzstream str((char*)buf.c_str());
+    StdInputSource file(str);
+    parser->parseFirst( file,token);
+#else
+    parser->parseFirst( (char*)buf.c_str(),token);
+#endif
   }
   catch (const XMLException& toCatch) {
       char* message = XMLString::transcode(toCatch.getMessage());
@@ -84,10 +92,12 @@ Reader::Reader(const char* FileName)
            << message << "\n";
       XMLString::release(&message);
   }
+#ifndef FC_DEBUG
   catch (...) {
-      cout << "Unexpected Exception \n" ;
+      cout << "Unexpected Exception \n";
+      Base::Exception("Unknown Exception in Reader::Reader()");
   }
-
+#endif
 }
 
 Reader::~Reader()

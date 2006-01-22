@@ -59,6 +59,7 @@ gzstreambuf* gzstreambuf::open( const char* name, int open_mode) {
         *fmodeptr++ = 'r';
     else if ( mode & std::ios::out)
         *fmodeptr++ = 'w';
+    *fmodeptr++ = '9';
     *fmodeptr++ = 'b';
     *fmodeptr = '\0';
     file = gzopen( name, fmode);
