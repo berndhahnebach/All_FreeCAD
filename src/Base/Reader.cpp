@@ -74,10 +74,10 @@ Reader::Reader(const char* FileName)
   {
 #if 0
     igzstream str((char*)buf.c_str());
-    StdInputSource file(str);
-    parser->parseFirst( file,token);
+    StdInputSource file(str, buf.c_str());
+    _valid = parser->parseFirst( file,token);
 #else
-    parser->parseFirst( (char*)buf.c_str(),token);
+    _valid = parser->parseFirst( (char*)buf.c_str(),token);
 #endif
   }
   catch (const XMLException& toCatch) {
@@ -273,7 +273,7 @@ void Reader::error(const SAXParseException& e)
 		 << ", char " << e.getColumnNumber()
          << "\n  Message: " << StrX(e.getMessage()) <<  endl;
 
-  }
+}
 
 void Reader::fatalError(const SAXParseException& e)
 {
@@ -283,7 +283,7 @@ void Reader::fatalError(const SAXParseException& e)
 		 << ", char " << e.getColumnNumber()
          << "\n  Message: " << StrX(e.getMessage()) <<  endl;
 
-  }
+}
 
 void Reader::warning(const SAXParseException& e)
 {

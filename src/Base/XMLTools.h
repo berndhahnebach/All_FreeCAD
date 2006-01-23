@@ -128,6 +128,7 @@ inline XStr::XStr(const char* const toTranscode)
 inline XStr::~XStr()
 {
     //delete [] fUnicodeForm;
+  XMLString::release(&fUnicodeForm);
 }
 
 

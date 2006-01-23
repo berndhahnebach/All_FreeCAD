@@ -51,6 +51,7 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "InputSource.h"
 #include "Exception.h"
+#include "XMLTools.h"
 
 
 using namespace Base;
@@ -93,7 +94,8 @@ StdInputStream::readBytes(          XMLByte* const  toFill
     //  actually read.
     //
   
-  stream.get((char *)toFill,maxToRead);
+  stream.get((char *)toFill,maxToRead);   // geht irgendwie nicht: es wird nur die erste Zeile gelesen -> Abbruch
+//  stream.read((char *)toFill,maxToRead);// liest zumindest mehr als nur die erste Zeile und erkennt auch die enthaltenen Features, führt aber später zu einer Endlosschleife beim Reader
   return stream.gcount();
 
     //return XMLPlatformUtils::readFileBuffer(fSource, maxToRead, toFill, fMemoryManager);
@@ -105,11 +107,13 @@ StdInputStream::readBytes(          XMLByte* const  toFill
 //  StdInputSource: Constructors and Destructor
 // ---------------------------------------------------------------------------
 StdInputSource::StdInputSource ( std::istream& Stream
-                                 , MemoryManager* const manager )
+                                 , const char* filePath, MemoryManager* const manager )
 
     : InputSource(manager),stream(Stream)
 {
-
+  // we have to set the file name in case an error occurs
+  XStr tmpBuf(filePath);
+  setSystemId(tmpBuf.unicodeForm());
 }
 
 

@@ -383,7 +383,10 @@ Document* Application::openDocument(const char * FileName)
 
     // read the document
     Base::Reader reader(File.filePath().c_str());
-    newDoc.pDoc->Restore(reader);
+    if ( reader.isValid() )
+      newDoc.pDoc->Restore(reader);
+    else
+      throw Base::Exception("Invalid document structure");
 
 
 	  //NotifyDocNew(newDoc.pDoc);

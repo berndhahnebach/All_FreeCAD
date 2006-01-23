@@ -114,6 +114,8 @@ public:
   Reader(const char* FileName);
   ~Reader();
 
+  bool isValid() const { return _valid; }
+
   /** @name Parser handling */
 	//@{
   // read the next element
@@ -182,7 +184,7 @@ private:
   FileInfo _File;
   SAX2XMLReader* parser;
   XMLPScanToken token;
-
+  bool _valid;
 };
 
 }

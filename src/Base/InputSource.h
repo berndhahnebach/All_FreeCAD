@@ -90,7 +90,7 @@ public :
     StdInputSource
       (
         std::istream& Stream
-        , MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager
+        , const char* filePath, MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager
       );
 
      ~StdInputSource();
