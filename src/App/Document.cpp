@@ -633,6 +633,15 @@ string Document::getUniqueFeatureName(const char *Name)
   }
 	
 }
+
+std::vector<Feature*> Document::getFeatures() const
+{
+  std::vector<Feature*> features;
+  for( std::map<std::string,FeatEntry>::const_iterator it = FeatMap.begin(); it != FeatMap.end(); ++it )
+    features.push_back( it->second.F );
+  return features;
+}
+
 /*
 void Document::Init (void)
 {

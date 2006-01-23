@@ -157,6 +157,8 @@ public:
 	const char *getFeatureName(Feature *pFeat);
   /// Returns a Name of an Feature or 0
   std::string getUniqueFeatureName(const char *Name);
+  /// Returns a list of all features
+  std::vector<Feature*> getFeatures() const;
 	//@}
 
 
