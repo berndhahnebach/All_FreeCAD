@@ -24,6 +24,8 @@ libFreeCADBase_la_SOURCES=\
 		gzstream.h \
 		Handle.cpp \
 		Handle.h \
+		InputSource.cpp \
+		InputSource.h \
 		Interpreter.cpp \
 		Interpreter.h \
 		Matrix.cpp \

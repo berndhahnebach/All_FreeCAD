@@ -34,6 +34,8 @@
 #include "Algorithm.h"
 #include "Iterator.h"
 
+#include <Base/Exception.h>
+
 using namespace MeshCore;
 
 MeshInfo::MeshInfo (MeshKernel &rclM)
@@ -43,35 +45,69 @@ MeshInfo::MeshInfo (MeshKernel &rclM)
 
 std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const
 {
-  unsigned long ulCtPt, ulCtEd, ulCtFc;
-
-  ulCtPt = _rclMesh.CountPoints();
-  std::set<std::pair<unsigned long, unsigned long> > lEdges;
-  MeshFacetArray::_TConstIterator pFIter;
-  pFIter = _rclMesh._aclFacetArray.begin();
   unsigned long i = 0;
-  while (pFIter < _rclMesh._aclFacetArray.end())
-  {
-    const MeshFacet& rFacet = *pFIter;
-    for ( int j=0; j<3; j++ )
-    {
-      unsigned long ulPt0 = std::min<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
-      unsigned long ulPt1 = std::max<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
-      std::pair<unsigned long, unsigned long> cEdge(ulPt0, ulPt1); 
-      lEdges.insert( cEdge );
+  unsigned long ulCtPt, ulCtEd, ulCtFc;
+  ulCtPt = _rclMesh.CountPoints();
+  ulCtFc = _rclMesh.CountFacets();
+  ulCtEd = 0;
+
+  try {
+    // try first the 50% faster algorithm that needs double tmp. memory compared
+    // to the second algorithm (needs ~65% of the memory of the mesh structure)
+    std::vector<std::pair<unsigned long, unsigned long> > lEdges;
+    // allocate memory
+    lEdges.resize(ulCtFc * 3);
+    MeshFacetArray::_TConstIterator pFIter = _rclMesh._aclFacetArray.begin();
+    // take all three edges of each facet
+    while (pFIter < _rclMesh._aclFacetArray.end()) {
+      const MeshFacet& rFacet = *pFIter;
+      for ( int j=0; j<3; j++ ) {
+        unsigned long ulPt0 = std::min<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+        unsigned long ulPt1 = std::max<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+        std::pair<unsigned long, unsigned long> cEdge(ulPt0, ulPt1); 
+        lEdges[i++]=cEdge;
+      }
+
+      pFIter++;
     }
 
-    pFIter++;
-    i++;
+    // remove duplicates
+    std::sort(lEdges.begin(), lEdges.end());
+    lEdges.erase(std::unique(lEdges.begin(), lEdges.end()), lEdges.end());
+    ulCtEd = lEdges.size();
+  } catch (const Base::MemoryException&) {
+    try {
+      // the second slower algorithm needs ~33% of the memory of the mesh structure
+      std::set<std::pair<unsigned long, unsigned long> > lEdges;
+      MeshFacetArray::_TConstIterator pFIter = _rclMesh._aclFacetArray.begin();
+      unsigned long i = 0;
+      while (pFIter < _rclMesh._aclFacetArray.end()) {
+        const MeshFacet& rFacet = *pFIter;
+        for ( int j=0; j<3; j++ ) {
+          unsigned long ulPt0 = std::min<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+          unsigned long ulPt1 = std::max<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
+          std::pair<unsigned long, unsigned long> cEdge(ulPt0, ulPt1); 
+          lEdges.insert( cEdge );
+        }
+
+        pFIter++;
+        i++;
+      }
+
+      ulCtEd = lEdges.size();
+    } catch (const Base::MemoryException&) {
+      // Sorry, cannot determine number of edges
+      ulCtEd = ULONG_MAX;
+    }
   }
 
-  ulCtEd = lEdges.size();
-  ulCtFc = _rclMesh.CountFacets();
-
   rclStream << "Mesh: ["
-            << ulCtFc << " Faces, "
-            << ulCtEd << " Edges, "
-            << ulCtPt << " Points"
+            << ulCtFc << " Faces, ";
+          if (ulCtEd!=ULONG_MAX)
+  rclStream << ulCtEd << " Edges, ";
+          else
+  rclStream << "Cannot determine number of edges, ";
+  rclStream << ulCtPt << " Points"
             << "]" << std::endl;
 
   return rclStream;
@@ -104,12 +140,10 @@ std::ostream& MeshInfo::DetailedPointInfo (std::ostream& rclStream) const
 std::ostream& MeshInfo::DetailedEdgeInfo (std::ostream& rclStream) const
 {
   // print edges
-  unsigned long i;
   // get edges from facets
   std::map<std::pair<unsigned long, unsigned long>, int > lEdges;
   MeshFacetArray::_TConstIterator pFIter;
   pFIter = _rclMesh._aclFacetArray.begin();
-  i = 0;
   while (pFIter < _rclMesh._aclFacetArray.end())
   {
     const MeshFacet& rFacet = *pFIter;
@@ -122,17 +156,16 @@ std::ostream& MeshInfo::DetailedEdgeInfo (std::ostream& rclStream) const
     }
 
     pFIter++;
-    i++;
   }
 
   // print edges
   rclStream << lEdges.size() << " Edges:" << std::endl;
   std::map<std::pair<unsigned long, unsigned long>, int >::const_iterator  pEIter;
   pEIter = lEdges.begin();
-  i = 0;
 
   rclStream.precision(3);
   rclStream.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
+  unsigned long i=0;
   while (pEIter != lEdges.end())
   {
     int ct = pEIter->second;
@@ -218,13 +251,6 @@ std::ostream& MeshInfo::InternalPointInfo (std::ostream& rclStream) const
 
   return rclStream;
 }
-
-//std::ostream& MeshInfo::InternalEdgeInfo (std::ostream& rclStream) const
-//{
-//  unsigned long i;
-//
-//  return rclStream;
-//}
 
 std::ostream& MeshInfo::InternalFacetInfo (std::ostream& rclStream) const
 {

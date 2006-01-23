@@ -18,6 +18,16 @@ freecad-stamp:
 	#Add here commands to configure the package.
 	sh cvsbuild.sh
 	./configure --prefix=/opt/freecad --with-wildmagic-includes=/home/werner/Projekte/GeometricTools/WildMagic3/Include --with-wildmagic-libs=/home/werner/Projekte/GeometricTools/WildMagic3/Library --with-Qt-lib=qt-mt32
+
+#	# Patch the generated libtool to avoid passing -rpath when linking,
+#	# and to explicitly link libraries against the libraries they
+#	# depend on.
+#	sed < libtool > libtool-2 \
+#	-e 's/^hardcode_libdir_flag_spec.*$$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/' \
+#	-e '/^archive_cmds="/s/"$$/ \\$$deplibs"/'
+#	mv libtool-2 libtool
+#	chmod 755 libtool
+
 	$(MAKE) clean
 	$(MAKE)
 	touch freecad-stamp

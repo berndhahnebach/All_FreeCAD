@@ -45,7 +45,7 @@ class BaseExport StdInputStream : public BinInputStream
 public :
     StdInputStream 
       (
-        std::istream Stream
+        std::istream& Stream
         , MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager
       );
 
@@ -89,7 +89,7 @@ class BaseExport StdInputSource : public InputSource
 public :
     StdInputSource
       (
-        std::istream Stream
+        std::istream& Stream
         , MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager
       );
 

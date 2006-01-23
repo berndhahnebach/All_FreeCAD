@@ -30,20 +30,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <iostream>
 # include <xercesc/sax2/Attributes.hpp>
 # include <xercesc/sax/SAXParseException.hpp>
 # include <xercesc/sax/SAXException.hpp>
 # include <xercesc/sax2/XMLReaderFactory.hpp>
 #endif
-
-/// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "InputSource.h"
-#include "Exception.h"
-
-
-using namespace Base;
-using namespace std;
-
 
 // ---------------------------------------------------------------------------
 //  Includes
@@ -56,17 +48,19 @@ using namespace std;
 #include <xercesc/util/XMLString.hpp>
 #include <xercesc/util/XMLUniDefs.hpp>
 
+/// Here the FreeCAD includes sorted by Base,App,Gui......
+#include "InputSource.h"
+#include "Exception.h"
+
 
 using namespace Base;
 using namespace std;
 
 
-
-
 // ---------------------------------------------------------------------------
 //  StdInputStream: Constructors and Destructor
 // ---------------------------------------------------------------------------
-StdInputStream::StdInputStream(     std::istream Stream
+StdInputStream::StdInputStream(     std::istream& Stream
                                        , MemoryManager* const manager) 
 : stream(Stream)
   , fMemoryManager(manager)
@@ -110,7 +104,7 @@ StdInputStream::readBytes(          XMLByte* const  toFill
 // ---------------------------------------------------------------------------
 //  StdInputSource: Constructors and Destructor
 // ---------------------------------------------------------------------------
-StdInputSource::StdInputSource ( std::istream Stream
+StdInputSource::StdInputSource ( std::istream& Stream
                                  , MemoryManager* const manager )
 
     : InputSource(manager),stream(Stream)
