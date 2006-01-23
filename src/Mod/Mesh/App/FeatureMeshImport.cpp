@@ -49,11 +49,6 @@ FeatureMeshImport::FeatureMeshImport(void)
 
 int FeatureMeshImport::execute(void)
 {
-  std::set<std::pair<unsigned long, unsigned long> > lEdges;
-  for ( int i=0; i<5000000;i++ )
-    lEdges.insert(std::make_pair<int,int>(i,i));
-  lEdges.clear();
-
   // ask for read permission
   Base::FileInfo fi(FileName.getValue());
 	if ( !fi.exists() || !fi.isFile() || !fi.isReadable() )
