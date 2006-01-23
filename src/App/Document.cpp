@@ -100,8 +100,8 @@ void Document::saveAs (const char* name)
 {
   Base::FileInfo File(name);
 
-  Base::ogzstream file(File.filePath().c_str());
-  //ofstream file(File.filePath().c_str());
+  //Base::ogzstream file(File.filePath().c_str());
+  ofstream file(File.filePath().c_str());
 
   std::string oldName = Name.getValue();
   Name.setValue(File.fileNamePure());
