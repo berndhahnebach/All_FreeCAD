@@ -73,7 +73,7 @@ public:
         // ASSERT: both input & output capabilities will not be used together
     }
     int is_open() { return opened; }
-    gzstreambuf* open( const char* name, int open_mode);
+    gzstreambuf* open( const char* name, int open_mode, int comp);
     gzstreambuf* close();
     ~gzstreambuf() { close(); }
     
@@ -87,9 +87,9 @@ protected:
     gzstreambuf buf;
 public:
     gzstreambase() { init(&buf); }
-    gzstreambase( const char* name, int open_mode);
+    gzstreambase( const char* name, int open_mode, int comp);
     ~gzstreambase();
-    void open( const char* name, int open_mode);
+    void open( const char* name, int open_mode, int comp);
     void close();
     gzstreambuf* rdbuf() { return &buf; }
 };
@@ -108,15 +108,15 @@ public:
 #else
       : std::istream( &buf) {} 
 #endif
-    igzstream( const char* name, int open_mode = std::ios_base::in)
+    igzstream( const char* name, int open_mode = std::ios_base::in, int comp = 1)
 #ifdef _MSC_VER
-      : gzstreambase( name, open_mode), istream( &buf) {}  
+      : gzstreambase( name, open_mode, comp ), istream( &buf) {}  
 #else
-      : gzstreambase( name, open_mode), std::istream( &buf) {}  
+      : gzstreambase( name, open_mode, comp), std::istream( &buf) {}  
 #endif
     gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
-    void open( const char* name, int open_mode = std::ios_base::in) {
-        gzstreambase::open( name, open_mode);
+    void open( const char* name, int open_mode = std::ios_base::in, int comp = 1) {
+        gzstreambase::open( name, open_mode, comp);
     }
 };
 
@@ -128,15 +128,15 @@ public:
 #else
       : std::ostream( &buf) {}
 #endif
-    ogzstream( const char* name, int mode = std::ios_base::out)
+    ogzstream( const char* name, int mode = std::ios_base::out, int comp = 1)
 #ifdef _MSC_VER
-      : gzstreambase( name, mode), ostream( &buf) {}  
+      : gzstreambase( name, mode, comp), ostream( &buf) {}  
 #else
-      : gzstreambase( name, mode), std::ostream( &buf) {}  
+      : gzstreambase( name, mode, comp), std::ostream( &buf) {}  
 #endif
     gzstreambuf* rdbuf() { return gzstreambase::rdbuf(); }
-    void open( const char* name, int open_mode = std::ios_base::out) {
-        gzstreambase::open( name, open_mode);
+    void open( const char* name, int open_mode = std::ios_base::out, int comp = 1) {
+        gzstreambase::open( name, open_mode, comp);
     }
 };
 

@@ -7,3 +7,5 @@ Version: V0.5B2 Date: Sun Jan 15 20:09:22 2006 +++++++++++++++++++++++++++++++
 + implementing Mesh save and restore
 + implementing Points save and restore
 + Save/Open of compressed XML documents
++ Preference page for document
++ Setting of document compression level

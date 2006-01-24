@@ -64,13 +64,8 @@ Reader::Reader(const char* FileName, std::istream& str) : _File(FileName)
 
   try
   {
-#if 1
     StdInputSource file(str, _File.filePath().c_str());
     _valid = parser->parseFirst( file,token);
-#else
-    std::string file(FileName);
-    _valid = parser->parseFirst( (char*)file.c_str(),token);
-#endif
   }
   catch (const XMLException& toCatch) {
       char* message = XMLString::transcode(toCatch.getMessage());

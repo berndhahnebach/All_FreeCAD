@@ -203,14 +203,14 @@ void Document::saveAs (const char* name)
 {
   Base::FileInfo File(name);
 
-  Base::ogzstream file(File.filePath().c_str());
+  //Base::ogzstream file(File.filePath().c_str());
   //ofstream file(File.filePath().c_str());
 
   std::string oldName = Name.getValue();
   Name.setValue(File.fileNamePure());
   FileName.setValue(File.filePath());
 
-  Document::Save(0,file);
+  Document::save();
 
   GetApplication().renameDocument(oldName.c_str(), Name.getValue());
 
@@ -223,12 +223,14 @@ void Document::saveAs (const char* name)
 // Save the document under the name its been opened
 void Document::save (void)
 {
+  int compression = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Document")->GetInt("CompressionLevel",1);
+
   if(*(FileName.getValue()) != '\0')
   {
-    Base::ogzstream file(FileName.getValue());
-    //ofstream file(FileName.getValue());
-
-    Document::Save(0,file);
+    if(compression != 0)
+      Document::Save(0,Base::ogzstream(FileName.getValue(),std::ios_base::out,compression));
+    else
+      Document::Save(0,ofstream(FileName.getValue()));
   }
 }
 

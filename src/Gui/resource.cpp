@@ -63,6 +63,7 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
 #include "DlgGeneralImp.h"
 #include "DlgEditorImp.h"
 #include "DlgSettingsMacroImp.h"
+#include "DlgSettingsDocumentImp.h"
 #include "DlgOnlineHelpImp.h"
 #include "DlgReportViewImp.h"
 
@@ -84,6 +85,7 @@ WidgetFactorySupplier::WidgetFactorySupplier()
   //
   //
   new PrefPageProducer<DlgGeneralImp>         ( "FreeCAD" );
+  new PrefPageProducer<DlgSettingsDocumentImp>( "FreeCAD" );
   new PrefPageProducer<DlgSettingsEditorImp>  ( "FreeCAD" );
   new PrefPageProducer<DlgReportViewImp>      ( "FreeCAD" );
   new PrefPageProducer<DlgSettingsMacroImp>   ( "FreeCAD" );

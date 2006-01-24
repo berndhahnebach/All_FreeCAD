@@ -45,7 +45,8 @@ const int gzstreambuf::bufferSize = BUFFERSIZE;
 // class gzstreambuf:
 // --------------------------------------
 
-gzstreambuf* gzstreambuf::open( const char* name, int open_mode) {
+gzstreambuf* gzstreambuf::open( const char* name, int open_mode, int comp) 
+{
     if ( is_open())
         return (gzstreambuf*)0;
     mode = open_mode;
@@ -56,10 +57,12 @@ gzstreambuf* gzstreambuf::open( const char* name, int open_mode) {
     char  fmode[10];
     char* fmodeptr = fmode;
     if ( mode & std::ios::in)
-        *fmodeptr++ = 'r';
-    else if ( mode & std::ios::out)
-        *fmodeptr++ = 'w';
-    *fmodeptr++ = '9';
+      *fmodeptr++ = 'r';
+    else if ( mode & std::ios::out) {
+      assert( comp >= 1 && comp <= 9);
+      *fmodeptr++ = 'w';
+      *fmodeptr++ = '1' + comp - 1 ;
+    }
     *fmodeptr++ = 'b';
     *fmodeptr = '\0';
     file = gzopen( name, fmode);
@@ -141,17 +144,17 @@ int gzstreambuf::sync() {
 // class gzstreambase:
 // --------------------------------------
 
-gzstreambase::gzstreambase( const char* name, int mode) {
+gzstreambase::gzstreambase( const char* name, int mode,int comp) {
     init( &buf);
-    open( name, mode);
+    open( name, mode, comp);
 }
 
 gzstreambase::~gzstreambase() {
     buf.close();
 }
 
-void gzstreambase::open( const char* name, int open_mode) {
-    if ( ! buf.open( name, open_mode))
+void gzstreambase::open( const char* name, int open_mode, int comp) {
+    if ( ! buf.open( name, open_mode, comp))
         clear( rdstate() | std::ios::badbit);
 }
 
