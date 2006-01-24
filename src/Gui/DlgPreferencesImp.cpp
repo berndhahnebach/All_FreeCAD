@@ -21,12 +21,6 @@
  ***************************************************************************/
 
 
-/*  Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile
- *  time! So every external header (libs and system) should included in
- *  Precompiled.h. For systems without precompilation the header needed are
- *  included in the else fork.
- */
 #include "PreCompiled.h"
 
 #ifndef _PreComp_

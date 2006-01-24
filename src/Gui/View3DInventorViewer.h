@@ -145,6 +145,7 @@ protected:
   std::set<ViewProvider*> _ViewProviderSet;
 
   virtual void actualRedraw(void);
+  virtual void processEvent(QEvent * event);
   virtual SbBool processSoEvent(const SoEvent * const ev);
   /// gets called when the container widget's size  has changed
   virtual void sizeChanged  ( const SbVec2s& );

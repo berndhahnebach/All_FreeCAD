@@ -66,8 +66,10 @@
 # include <Inventor/SoPickedPoint.h>
 #endif
 
+#include <Base/Console.h>
+#include <Base/Sequencer.h>
+
 #include "View3DInventorViewer.h"
-#include "../Base/Console.h"
 #include "Tools.h"
 #include "SoFCBackgroundGradient.h"
 #include "SoFCColorBar.h"
@@ -508,6 +510,17 @@ void View3DInventorViewer::printDimension()
   }
   else
     getMainWindow()->setPaneText(2, "");
+}
+
+/*!
+  As ProgressBar has no chance to control the incoming Qt events of SoQt we need to override
+  SoQtViewer::processEvent() to prevent the scenegraph from being selected or deselected
+  while the progress bar is running.
+ */
+void View3DInventorViewer::processEvent(QEvent * event)
+{
+  if ( !Base::Sequencer().isRunning() )
+    inherited::processEvent(event);
 }
 
 SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
