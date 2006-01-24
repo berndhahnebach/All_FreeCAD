@@ -95,30 +95,6 @@ Document::~Document()
 // Exported functions
 //--------------------------------------------------------------------------
 
-// Save the Document under a new Name
-void Document::saveAs (const char* name)
-{
-  Base::FileInfo File(name);
-
-  //Base::ogzstream file(File.filePath().c_str());
-  ofstream file(File.filePath().c_str());
-
-  std::string oldName = Name.getValue();
-  Name.setValue(File.fileNamePure());
-  FileName.setValue(File.filePath());
-
-  Document::Save(0,file);
-
-  GetApplication().renameDocument(oldName.c_str(), Name.getValue());
-
-  DocChanges DocChange;
-  DocChange.Why = DocChanges::Rename;
-
-  Notify(DocChange);
-
-}
-
-
 void Document::Save (short indent,std::ostream &str)
 {
   str << "<?xml version='1.0' encoding='utf-8'?>" << endl
@@ -222,17 +198,54 @@ void Document::Restore(Base::Reader &reader)
 
 }
 
+// Save the Document under a new Name
+void Document::saveAs (const char* name)
+{
+  Base::FileInfo File(name);
+
+  Base::ogzstream file(File.filePath().c_str());
+  //ofstream file(File.filePath().c_str());
+
+  std::string oldName = Name.getValue();
+  Name.setValue(File.fileNamePure());
+  FileName.setValue(File.filePath());
+
+  Document::Save(0,file);
+
+  GetApplication().renameDocument(oldName.c_str(), Name.getValue());
+
+  DocChanges DocChange;
+  DocChange.Why = DocChanges::Rename;
+
+  Notify(DocChange);
+}
+
 // Save the document under the name its been opened
 void Document::save (void)
 {
   if(*(FileName.getValue()) != '\0')
   {
-    ofstream file(FileName.getValue());
+    Base::ogzstream file(FileName.getValue());
+    //ofstream file(FileName.getValue());
 
     Document::Save(0,file);
   }
+}
 
-    
+// Open the document
+bool Document::open (void)
+{
+  Base::FileInfo File(FileName.getValue());
+
+  Base::igzstream file(File.filePath().c_str());
+  //ifstream file(File.filePath().c_str());
+
+  Base::Reader reader(File.filePath().c_str(), file);
+  if ( reader.isValid() )
+    Restore(reader);
+  else
+    return false;
+  return true;
 }
 
 bool Document::isSaved() const

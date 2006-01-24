@@ -43,66 +43,47 @@ namespace Base
 class BaseExport StdInputStream : public BinInputStream
 {
 public :
-    StdInputStream 
-      (
-        std::istream& Stream
-        , MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager
-      );
+  StdInputStream ( std::istream& Stream, MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager );
+  virtual ~StdInputStream();
 
-    virtual ~StdInputStream();
-
-
-    // -----------------------------------------------------------------------
-    //  Implementation of the input stream interface
-    // -----------------------------------------------------------------------
-    virtual unsigned int curPos() const;
-
-    virtual unsigned int readBytes
-    (
-                XMLByte* const      toFill
-        , const unsigned int        maxToRead
-    );
-
+  // -----------------------------------------------------------------------
+  //  Implementation of the input stream interface
+  // -----------------------------------------------------------------------
+  virtual unsigned int curPos() const;
+  virtual unsigned int readBytes( XMLByte* const toFill, const unsigned int maxToRead );
 
 private :
-    // -----------------------------------------------------------------------
-    //  Unimplemented constructors and operators
-    // -----------------------------------------------------------------------
-    StdInputStream(const StdInputStream&);
-    StdInputStream& operator=(const StdInputStream&);   
+  // -----------------------------------------------------------------------
+  //  Unimplemented constructors and operators
+  // -----------------------------------------------------------------------
+  StdInputStream(const StdInputStream&);
+  StdInputStream& operator=(const StdInputStream&);   
 
-    // -----------------------------------------------------------------------
-    //  Private data members
-    //
-    //  fSource
-    //      The source file that we represent. The FileHandle type is defined
-    //      per platform.
-    // -----------------------------------------------------------------------
-    std::istream            &stream;
-    MemoryManager* const    fMemoryManager;
+  // -----------------------------------------------------------------------
+  //  Private data members
+  //
+  //  fSource
+  //      The source file that we represent. The FileHandle type is defined
+  //      per platform.
+  // -----------------------------------------------------------------------
+  std::istream            &stream;
+  MemoryManager* const    fMemoryManager;
 };
-
 
 
 class BaseExport StdInputSource : public InputSource
 {
 public :
-    StdInputSource
-      (
-        std::istream& Stream
-        , const char* filePath, MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager
-      );
+  StdInputSource ( std::istream& Stream, const char* filePath, MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager );
+   ~StdInputSource();
 
-     ~StdInputSource();
- 
-     virtual BinInputStream* makeStream() const;
+   virtual BinInputStream* makeStream() const;
 
 private:
-    StdInputSource(const StdInputSource&);
-    StdInputSource& operator=(const StdInputSource&);
+  StdInputSource(const StdInputSource&);
+  StdInputSource& operator=(const StdInputSource&);
 
-    std::istream            &stream;
-
+  std::istream   &stream;
 };
 
 }

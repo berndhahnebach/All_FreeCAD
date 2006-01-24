@@ -21,12 +21,6 @@
  ***************************************************************************/
 
 
-/*  Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
- *  Precompiled.h. For systems without precompilation the header needed are
- *  included in the else fork.
- */
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
@@ -52,8 +46,8 @@ using namespace std;
 // ---------------------------------------------------------------------------
 //  Reader: Constructors and Destructor
 // ---------------------------------------------------------------------------
-Reader::Reader(const char* FileName)
-:_File(FileName) 
+
+Reader::Reader(const char* FileName, std::istream& str) : _File(FileName) 
 {
   // create the parser
   parser = XMLReaderFactory::createXMLReader();
@@ -68,16 +62,14 @@ Reader::Reader(const char* FileName)
   parser->setContentHandler(this);
   parser->setErrorHandler(this);
 
-  std::string buf(_File.filePath());
-
   try
   {
-#if 0
-    igzstream str((char*)buf.c_str());
-    StdInputSource file(str, buf.c_str());
+#if 1
+    StdInputSource file(str, _File.filePath().c_str());
     _valid = parser->parseFirst( file,token);
 #else
-    _valid = parser->parseFirst( (char*)buf.c_str(),token);
+    std::string file(FileName);
+    _valid = parser->parseFirst( (char*)file.c_str(),token);
 #endif
   }
   catch (const XMLException& toCatch) {
@@ -106,7 +98,6 @@ Reader::~Reader()
   delete parser;
 }
 
-
 const char* Reader::localName(void)
 {
   return LocalName.c_str();
@@ -117,7 +108,7 @@ unsigned int Reader::getAttributeCount(void)
   return AttrMap.size();
 }
 
-long         Reader::getAttributeAsInteger(const char* AttrName)
+long Reader::getAttributeAsInteger(const char* AttrName)
 {
   AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
@@ -130,7 +121,7 @@ long         Reader::getAttributeAsInteger(const char* AttrName)
   return 0;
 }
 
-double       Reader::getAttributeAsFloat  (const char* AttrName)
+double Reader::getAttributeAsFloat  (const char* AttrName)
 {
   AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
@@ -144,7 +135,7 @@ double       Reader::getAttributeAsFloat  (const char* AttrName)
 
 }
 
-const char*  Reader::getAttribute         (const char* AttrName)
+const char*  Reader::getAttribute (const char* AttrName)
 {
   AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
@@ -157,7 +148,7 @@ const char*  Reader::getAttribute         (const char* AttrName)
   return ""; 
 }
 
-bool         Reader::hasAttribute         (const char* AttrName)
+bool Reader::hasAttribute (const char* AttrName)
 {
   return AttrMap.find(AttrName) != AttrMap.end();
 }
@@ -213,10 +204,7 @@ void Reader::readCharacters(void)
 // ---------------------------------------------------------------------------
 //  Reader: Implementation of the SAX DocumentHandler interface
 // ---------------------------------------------------------------------------
-void Reader::startElement(const XMLCh* const uri
-                                   , const XMLCh* const localname
-                                   , const XMLCh* const qname
-                                   , const Attributes& attrs)
+void Reader::startElement(const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname, const Attributes& attrs)
 {
   LocalName = StrX(localname).c_str();
 
@@ -239,17 +227,14 @@ void Reader::endElement  (const XMLCh* const uri, const XMLCh *const localname, 
 }
 
 
-void Reader::characters(const   XMLCh* const    chars,
-								        const unsigned int    length)
+void Reader::characters(const   XMLCh* const    chars, const unsigned int    length)
 {
-
   Characters = StrX(chars).c_str();
   ReadType = Chars;
   CharacterCount += length;
 }
 
-void Reader::ignorableWhitespace( const   XMLCh* const chars
-										    , const unsigned int length)
+void Reader::ignorableWhitespace( const   XMLCh* const chars, const unsigned int length)
 {
     //fSpaceCount += length;
 }
@@ -268,31 +253,26 @@ void Reader::resetDocument()
 // ---------------------------------------------------------------------------
 void Reader::error(const SAXParseException& e)
 {
-     cerr << "\nError at file " << StrX(e.getSystemId())
-		 << ", line " << e.getLineNumber()
-		 << ", char " << e.getColumnNumber()
-         << "\n  Message: " << StrX(e.getMessage()) <<  endl;
-
+   cerr << "\nError at file " << StrX(e.getSystemId())
+	 << ", line " << e.getLineNumber()
+	 << ", char " << e.getColumnNumber()
+       << "\n  Message: " << StrX(e.getMessage()) <<  endl;
 }
 
 void Reader::fatalError(const SAXParseException& e)
 {
-  
-     cerr << "\nFatal Error at file " << StrX(e.getSystemId())
-		 << ", line " << e.getLineNumber()
-		 << ", char " << e.getColumnNumber()
-         << "\n  Message: " << StrX(e.getMessage()) <<  endl;
-
+   cerr << "\nFatal Error at file " << StrX(e.getSystemId())
+	 << ", line " << e.getLineNumber()
+	 << ", char " << e.getColumnNumber()
+       << "\n  Message: " << StrX(e.getMessage()) <<  endl;
 }
 
 void Reader::warning(const SAXParseException& e)
 {
-  
-     cerr << "\nWarning at file " << StrX(e.getSystemId())
-		 << ", line " << e.getLineNumber()
-		 << ", char " << e.getColumnNumber()
-         << "\n  Message: " << StrX(e.getMessage()) <<  endl;
-         
+   cerr << "\nWarning at file " << StrX(e.getSystemId())
+	 << ", line " << e.getLineNumber()
+	 << ", char " << e.getColumnNumber()
+       << "\n  Message: " << StrX(e.getMessage()) <<  endl;         
 }
 
 void Reader::resetErrors()

@@ -111,7 +111,7 @@ class BaseExport Reader : public DefaultHandler
 {
 public:
     /// opens the file and read the first element
-  Reader(const char* FileName);
+  Reader(const char* FileName, std::istream&);
   ~Reader();
 
   bool isValid() const { return _valid; }

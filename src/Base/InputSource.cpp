@@ -21,12 +21,6 @@
  ***************************************************************************/
 
 
-/*  Precompiled header stuff
- *  on some compilers the precompiled header option gain significant compile 
- *  time! So every external header (libs and system) should included in 
- *  Precompiled.h. For systems without precompilation the header needed are
- *  included in the else fork.
- */
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
@@ -61,13 +55,9 @@ using namespace std;
 // ---------------------------------------------------------------------------
 //  StdInputStream: Constructors and Destructor
 // ---------------------------------------------------------------------------
-StdInputStream::StdInputStream(     std::istream& Stream
-                                       , MemoryManager* const manager) 
-: stream(Stream)
-  , fMemoryManager(manager)
+StdInputStream::StdInputStream( std::istream& Stream, MemoryManager* const manager ) 
+  : stream(Stream), fMemoryManager(manager)
 {
-    // Try to open the file
-    //fSource = XMLPlatformUtils::openFile(fileName, manager);
 }
 
 
@@ -82,23 +72,17 @@ StdInputStream::~StdInputStream()
 unsigned int StdInputStream::curPos() const
 {
   return stream.tellg();
-    //return XMLPlatformUtils::curFilePos(fSource, fMemoryManager);
 }
 
-unsigned int
-StdInputStream::readBytes(          XMLByte* const  toFill
-                                , const unsigned int    maxToRead)
+unsigned int StdInputStream::readBytes( XMLByte* const  toFill, const unsigned int maxToRead )
 {
-    //
-    //  Read up to the maximum bytes requested. We return the number
-    //  actually read.
-    //
+  //
+  //  Read up to the maximum bytes requested. We return the number
+  //  actually read.
+  //
   
-  stream.get((char *)toFill,maxToRead);   // geht irgendwie nicht: es wird nur die erste Zeile gelesen -> Abbruch
-//  stream.read((char *)toFill,maxToRead);// liest zumindest mehr als nur die erste Zeile und erkennt auch die enthaltenen Features, führt aber später zu einer Endlosschleife beim Reader
+  stream.read((char *)toFill,maxToRead);
   return stream.gcount();
-
-    //return XMLPlatformUtils::readFileBuffer(fSource, maxToRead, toFill, fMemoryManager);
 }
 
 
@@ -106,10 +90,8 @@ StdInputStream::readBytes(          XMLByte* const  toFill
 // ---------------------------------------------------------------------------
 //  StdInputSource: Constructors and Destructor
 // ---------------------------------------------------------------------------
-StdInputSource::StdInputSource ( std::istream& Stream
-                                 , const char* filePath, MemoryManager* const manager )
-
-    : InputSource(manager),stream(Stream)
+StdInputSource::StdInputSource ( std::istream& Stream, const char* filePath, MemoryManager* const manager )
+  : InputSource(manager),stream(Stream)
 {
   // we have to set the file name in case an error occurs
   XStr tmpBuf(filePath);
@@ -127,8 +109,7 @@ StdInputSource::~StdInputSource()
 // ---------------------------------------------------------------------------
 BinInputStream* StdInputSource::makeStream() const
 {
-    StdInputStream* retStrm = new StdInputStream(stream /*, getMemoryManager()*/);
-    return retStrm;
+  StdInputStream* retStrm = new StdInputStream(stream /*, getMemoryManager()*/);
+  return retStrm;
 }
-
 

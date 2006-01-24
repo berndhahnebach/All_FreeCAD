@@ -382,10 +382,7 @@ Document* Application::openDocument(const char * FileName)
     Notify(Reason);
 
     // read the document
-    Base::Reader reader(File.filePath().c_str());
-    if ( reader.isValid() )
-      newDoc.pDoc->Restore(reader);
-    else
+    if ( !newDoc.pDoc->open() )
       throw Base::Exception("Invalid document structure");
 
 
