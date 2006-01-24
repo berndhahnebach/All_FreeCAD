@@ -228,9 +228,15 @@ void Document::save (void)
   if(*(FileName.getValue()) != '\0')
   {
     if(compression != 0)
-      Document::Save(0,Base::ogzstream(FileName.getValue(),std::ios_base::out,compression));
+    {
+      Base::ogzstream file(FileName.getValue(),std::ios_base::out,compression);
+      Document::Save(0,file);
+    }
     else
-      Document::Save(0,ofstream(FileName.getValue()));
+    {
+      ofstream file(FileName.getValue());
+      Document::Save(0,file);
+    }
   }
 }
 

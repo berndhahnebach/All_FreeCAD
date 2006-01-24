@@ -345,7 +345,7 @@ void PropertyBool::Restore(Base::Reader &reader)
 }
 
 
-/*
+#if 0
 //**************************************************************************
 //**************************************************************************
 // PropertyColor
@@ -581,4 +581,5 @@ long PropertyList::GetCurrentItem (void)
 {
   return _lCurrent;
 }
-*/
+#endif
+

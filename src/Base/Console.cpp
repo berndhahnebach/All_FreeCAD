@@ -429,7 +429,7 @@ PyObject *ConsoleSingelton::sPyGetStatus(PyObject *self,			// static python wrap
         return NULL;                             // NULL triggers exception 
 
 	PY_TRY{
-    bool b;
+    bool b=false;
     ConsoleObserver *pObs = Instance().Get(pstr1);
     if(!pObs)
     {
