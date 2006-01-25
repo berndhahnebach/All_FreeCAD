@@ -57,8 +57,9 @@ PyMethodDef Application::Methods[] = {
 	{"open",           (PyCFunction) Application::sOpen,           1},
 	{"Close",          (PyCFunction) Application::sClose,          1},
 	{"Import"  ,       (PyCFunction) Application::sImport,         1},
-	{"DocSave"  ,      (PyCFunction) Application::sSave,           1},
-	{"DocSaveAs",      (PyCFunction) Application::sSaveAs,         1},
+	{"save",           (PyCFunction) Application::sSave,           1},
+	{"saveAs",         (PyCFunction) Application::sSaveAs,         1},
+	{"activeDocument", (PyCFunction) Application::sActiveDocument, 1},
 	{"document",       (PyCFunction) Application::sDocument,       1},
 	{"ParamGet",       (PyCFunction) Application::sGetParam,       1},
 	{"Version",        (PyCFunction) Application::sGetVersion,     1},
@@ -126,28 +127,62 @@ PYFUNCIMP_S(Application,sClose)
   Py_Return;
 }
 
-
 PYFUNCIMP_S(Application,sSave)
 {
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+  char *pDoc;
+  if (!PyArg_ParseTuple(args, "s", &pDoc))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
 
-	//Instance().Message("%s",pstr);				 // process massage 
-	Py_INCREF(Py_None);
-	return Py_None;                              // None: no errors
+  Document* doc = GetApplication().getDocument(pDoc);
+	if ( doc )
+  {
+    if ( doc->save() == false )
+    {
+  		PyErr_Format(PyExc_Exception, "Cannot save document '%s'", pDoc);
+	  	return 0L;
+    }
+  }
+  else
+  {
+		PyErr_Format(PyExc_NameError, "Unknown document '%s'", pDoc);
+		return NULL;
+  }
+
+  Py_Return;
 }
-
 
 PYFUNCIMP_S(Application,sSaveAs)
 {
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
+  char *pDoc, *pFileName;
+  if (!PyArg_ParseTuple(args, "ss", &pDoc, &pFileName))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
 
-	//Instance().Message("%s",pstr);				 // process massage 
-	Py_INCREF(Py_None);
-	return Py_None;                              // None: no errors 
+  Document* doc = GetApplication().getDocument(pDoc);
+	if ( doc )
+  {
+    doc->saveAs( pFileName );
+  }
+  else
+  {
+		PyErr_Format(PyExc_NameError, "Unknown document '%s'", pDoc);
+		return NULL;
+  }
+
+  Py_Return;
+}
+
+PYFUNCIMP_S(Application,sActiveDocument)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+
+  Document* doc = GetApplication().getActiveDocument();
+  if (doc) {
+	  return doc->GetPyObject();
+  }else{
+  	PyErr_SetString(PyExc_Exception, "No active document");
+	  return 0L;
+  }
 }
 
 PYFUNCIMP_S(Application,sDocument)
@@ -156,21 +191,27 @@ PYFUNCIMP_S(Application,sDocument)
   if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
 
-  if(pstr == 0){
-    Document* doc = GetApplication().getActiveDocument();
-    Base::PyObjectBase *p = doc ? doc->GetPyObject() : 0;
-    if(p)
+  Document* doc=0;
+  if(pstr == 0)
+  {
+    doc = GetApplication().getActiveDocument();
+    if ( !doc )
     {
-	    return p;
-    }else{
-  		PyErr_SetString(PyExc_Exception, "No active document");
-	  	return 0L;
+  	  PyErr_SetString(PyExc_Exception, "No active document");
+	    return 0L;
     }
-
+  }
+  else
+  {
+    doc = GetApplication().getDocument(pstr);
+    if ( !doc )
+    {
+  		PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
+	    return 0L;
+    }
   }
 
-	Py_INCREF(Py_None);
-	return Py_None;                              // None: no errors 
+  return doc->GetPyObject();
 }
 
 PYFUNCIMP_S(Application,sGetParam)

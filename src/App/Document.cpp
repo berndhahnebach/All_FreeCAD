@@ -221,7 +221,7 @@ void Document::saveAs (const char* name)
 }
 
 // Save the document under the name its been opened
-void Document::save (void)
+bool Document::save (void)
 {
   int compression = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Document")->GetInt("CompressionLevel",1);
 
@@ -237,7 +237,11 @@ void Document::save (void)
       ofstream file(FileName.getValue());
       Document::Save(0,file);
     }
+
+    return true;
   }
+
+  return false;
 }
 
 // Open the document

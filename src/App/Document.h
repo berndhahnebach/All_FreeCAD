@@ -130,7 +130,7 @@ public:
 	/// Save the Document under a new Name
 	void saveAs (const char* Name);
 	/// Save the document under the name its been opened
-	void save (void);
+	bool save (void);
 	/// Opens the document from its file name
 	bool open (void);
 	/// Is the document already saved to a file

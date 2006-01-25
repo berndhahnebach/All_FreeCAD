@@ -96,6 +96,10 @@
 // switch on StlPort debuging, need the libs build!
 //#	define __STL_DEBUG
 #define _CRT_SECURE_NO_DEPRECATE 
+// Uncomment _STLP_USE_NEWALLOC to force allocator<T> to use plain "new"
+// instead of STLport optimized node allocator engine.
+// Note: This is needed to free memory used e.g. in std::set
+# define   _STLP_USE_NEWALLOC   1
 #endif //FC_OS_WIN32
 
 

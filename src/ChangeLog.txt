@@ -9,3 +9,5 @@ Version: V0.5B2 Date: Sun Jan 15 20:09:22 2006 +++++++++++++++++++++++++++++++
 + Save/Open of compressed XML documents
 + Preference page for document
 + Setting of document compression level
++ set _STLP_USE_NEWALLOC to free memory allocated in associative containers
++ implement Open/Save/SaveAs for use from Python

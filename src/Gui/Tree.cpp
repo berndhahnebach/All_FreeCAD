@@ -525,8 +525,8 @@ void TreeView::DeleteDoc( Gui::Document* pDoc )
   map<string, DocItem*>::iterator it = DocMap.find( pDoc->getDocument()->getName() );
   if(it!= DocMap.end())
   {
-    DocMap.erase( it );
     delete it->second;
+    DocMap.erase( it );
   }
 }
 

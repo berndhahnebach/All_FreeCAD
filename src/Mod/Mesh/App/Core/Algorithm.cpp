@@ -24,13 +24,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <gp_Pln.hxx>
-# include <BRepMesh_Discret.hxx>
-# include <BRepMesh_Triangle.hxx>
-# include <BRepMesh_Edge.hxx>
-# include <TopoDS_Shape.hxx>
+//# include <gp_Pln.hxx>
+//# include <BRepMesh_Discret.hxx>
+//# include <BRepMesh_Triangle.hxx>
+//# include <BRepMesh_Edge.hxx>
+//# include <TopoDS_Shape.hxx>
 # include <Wm3Matrix3.h>
-# include <Wm3Vector3.h>
 #endif
 
 #include "Algorithm.h"
@@ -735,7 +734,7 @@ void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, 
     }
   }
 }
-
+#if 0
 bool MeshAlgorithm::MeshTopoShape(TopoDS_Shape aShape, float fAccuracy, float fAngle) const
 {
   Standard_Integer e1,e2,e3,i1,i2,i3;
@@ -787,7 +786,7 @@ bool MeshAlgorithm::MeshTopoShape(TopoDS_Shape aShape, float fAccuracy, float fA
 
   return true;
 }
-
+#endif
 float MeshAlgorithm::Surface (void) const
 {
   float              fTotal = 0.0f;
@@ -996,13 +995,13 @@ bool MeshAlgorithm::NearestPointFromPoint (const Vector3D &rclPt, const MeshFace
   return true;
 }
 
-bool MeshAlgorithm::CutWithPlane (const gp_Pln &rclPlane, const MeshFacetGrid &rclGrid, 
+bool MeshAlgorithm::CutWithPlane (const Wm3::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid, 
                                   std::list<std::vector<Vector3D> > &rclResult, float fMinEps)
 {
   Vector3D  clBase, clNormal; // Schnittebene
 
-  gp_Pnt clPos  = rclPlane.Axis().Location();
-  gp_Dir clDir  = rclPlane.Axis().Direction();
+  Wm3::Vector3<float> clPos = rclPlane.Normal * rclPlane.Constant;
+  Wm3::Vector3<float> clDir = rclPlane.Normal;
   clBase.Set(clPos.X(), clPos.Y(), clPos.Z());
   clNormal.Set(clDir.X(), clDir.Y(), clDir.Z());
 
@@ -1217,13 +1216,13 @@ bool MeshAlgorithm::ConnectPolygons(std::list<std::vector<Vector3D> > &clPolyLis
   return true;
 }
 
-void MeshAlgorithm::GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const gp_Pln clPlane, const Vector3D &rclLeft, 
+void MeshAlgorithm::GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Wm3::Plane3<float>& clPlane, const Vector3D &rclLeft, 
                                         const Vector3D &rclRight, std::vector<unsigned long> &rclRes) const
 {
   std::vector<unsigned long> aulFacets;
  
-  gp_Pnt clPos  = clPlane.Position().Location();
-  gp_Dir clDir  = clPlane.Position().Direction();
+  Wm3::Vector3<float> clPos = clPlane.Normal * clPlane.Constant;
+  Wm3::Vector3<float> clDir = clPlane.Normal;
 
   Vector3D clBase(float(clPos.X()), float(clPos.Y()), float(clPos.Z()));
   Vector3D clNormal(float(clDir.X()), float(clDir.Y()), float(clDir.Z()));

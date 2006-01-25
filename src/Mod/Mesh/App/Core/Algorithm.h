@@ -29,12 +29,12 @@
 # include <Wm3Vector3.h>
 #endif
 
+#include <Wm3Plane3.h>
+
 #include "MeshKernel.h"
 #include "Elements.h"
 
 // forward declarations
-class TopoDS_Shape;
-class gp_Pln;
 
 namespace Base{
   class Vector2D;
@@ -194,7 +194,9 @@ public:
    */
   void GetBorderPoints (const std::vector<unsigned long> &raclFacetIndices, std::set<unsigned long> &raclResultPointsIndices);
   /** Tessellates the shape \a aShape and replaces the mesh structure with the created facets. */
+#if 0 // move to a module that uses Part and Mesh
   bool MeshTopoShape(TopoDS_Shape aShape, float fAccuracy, float fAngle) const;
+#endif
   /** Computes the surface of the mesh. */
   float Surface (void) const;
   /** Subsamples the mesh with point distance \a fDist and stores the points in \a rclPoints. */
@@ -220,11 +222,11 @@ public:
   bool NearestPointFromPoint (const Vector3D &rclPt, const MeshFacetGrid& rclGrid, float fMaxSearchArea, 
                               unsigned long &rclResFacetIndex, Vector3D &rclResPoint) const;
   /** Cuts the mesh with a plane. The result is a list of polylines. */
-  bool CutWithPlane (const gp_Pln &rclPlane, const MeshFacetGrid &rclGrid, std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f); 
+  bool CutWithPlane (const Wm3::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid, std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f); 
   bool CutWithPlane (const Vector3D &clBase, const Vector3D &clNormal, const MeshFacetGrid &rclGrid, 
                      std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f, bool bConnectPolygons = false); 
   /** Gets all facets that cut the plane and lying between the the two points. */
-  void GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const gp_Pln clPlane, const Vector3D &rclLeft, const Vector3D &rclRight, std::vector<unsigned long> &rclRes) const;
+  void GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Wm3::Plane3<float>& clPlane, const Vector3D &rclLeft, const Vector3D &rclRight, std::vector<unsigned long> &rclRes) const;
   /** Returns true if the distance from the \a rclPt to the facet \a ulFacetIdx is less than \a fMaxDistance.
    * If this restriction is met \a rfDistance is set to the actual distance, otherwise false is returned.
    */
