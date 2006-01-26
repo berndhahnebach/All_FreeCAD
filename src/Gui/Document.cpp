@@ -36,10 +36,12 @@
 #include <App/Document.h>
 #include <App/Feature.h>
 #include "Application.h"
+
 #include "MainWindow.h"
 #include "Tree.h"
 #include "Document.h"
 #include "DocumentPy.h"
+#include "Command.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 #include "BitmapFactory.h"
@@ -333,7 +335,7 @@ bool Document::save(void)
   if(_pcDocument->isSaved())
   {
     Gui::WaitCursor wc;
-    getDocument()->save();
+    Command::doCommand(Command::Doc,"App.save(\"%s\")", _pcDocument->getName());
     return true;
   }
   else
@@ -346,7 +348,6 @@ bool Document::save(void)
 bool Document::saveAs(void)
 {
   getMainWindow()->statusBar()->message(tr("Saving file under new filename..."));
-//  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD (*.FCStd *.FCPart)", getMainWindow());
 
   // use current path as default
   std::string path = QDir::currentDirPath().latin1();
@@ -356,18 +357,22 @@ bool Document::saveAs(void)
   QString fn = QFileDialog::getSaveFileName(dir, "FreeCAD (*.FCStd)", getMainWindow());
   if (!fn.isEmpty())
   {
-    Gui::WaitCursor wc;
-    if ( !fn.endsWith(".FCStd") && !fn.endsWith(".FCPart"))
+    if ( !fn.endsWith(".FCStd"))
       fn += ".FCStd";
-    getDocument()->saveAs(fn.latin1());
+
+    // save as new file name
+    Gui::WaitCursor wc;
+    Command::doCommand(Command::Doc,"App.saveAs(\"%s\",\"%s\")", _pcDocument->getName(), fn.latin1());
+
     QFileInfo fi;
 		fi.setFile(fn);
     hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+    getMainWindow()->appendRecentFile( fi.filePath().latin1() );
     return true;
   }
   else
   {
-    getMainWindow()->statusBar()->message(tr("Saving aborted"), 2000);
+    getMainWindow()->statusBar()->message(QObject::tr("Saving aborted"), 2000);
     return false;
   }
 }
@@ -497,7 +502,7 @@ bool Document::isLastView(void)
  */
 void Document::canClose ( QCloseEvent * e )
 {
-  if(! _pcDocument->isSaved()
+  if(! _pcDocument->isSaved() || true // at the moment we cannot determine if a saved document has been modified
     //&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
     //&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK
       )

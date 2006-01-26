@@ -77,7 +77,7 @@ StdCmdOrthographicCamera::StdCmdOrthographicCamera()
 
 void StdCmdOrthographicCamera::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"OrthographicCamera\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"OrthographicCamera\")");
 }
 
 bool StdCmdOrthographicCamera::isActive(void)
@@ -103,7 +103,7 @@ StdCmdPerspectiveCamera::StdCmdPerspectiveCamera()
 
 void StdCmdPerspectiveCamera::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"PerspectiveCamera\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"PerspectiveCamera\")");
 }
 
 bool StdCmdPerspectiveCamera::isActive(void)
@@ -131,9 +131,9 @@ StdCameraType::StdCameraType()
 void StdCameraType::activated(int iMsg)
 {
   if (iMsg == 0)
-    doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"OrthographicCamera\")");
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"OrthographicCamera\")");
   else if (iMsg == 1)
-    doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"PerspectiveCamera\")");
+    doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"PerspectiveCamera\")");
 }
 
 bool StdCameraType::isActive(void)
@@ -246,7 +246,7 @@ StdCmdViewBottom::StdCmdViewBottom()
 
 void StdCmdViewBottom::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewBottom\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewBottom\")");
 }
 
 //===========================================================================
@@ -268,7 +268,7 @@ StdCmdViewFront::StdCmdViewFront()
 
 void StdCmdViewFront::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFront\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewFront\")");
 }
 
 //===========================================================================
@@ -290,7 +290,7 @@ StdCmdViewLeft::StdCmdViewLeft()
 
 void StdCmdViewLeft::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewLeft\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewLeft\")");
 }
 
 //===========================================================================
@@ -312,7 +312,7 @@ StdCmdViewRear::StdCmdViewRear()
 
 void StdCmdViewRear::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewRear\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewRear\")");
 }
 
 //===========================================================================
@@ -334,7 +334,7 @@ StdCmdViewRight::StdCmdViewRight()
 
 void StdCmdViewRight::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewRight\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewRight\")");
 }
 
 //===========================================================================
@@ -356,7 +356,7 @@ StdCmdViewTop::StdCmdViewTop()
 
 void StdCmdViewTop::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewTop\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewTop\")");
 }
 
 //===========================================================================
@@ -378,7 +378,7 @@ StdCmdViewAxo::StdCmdViewAxo()
 
 void StdCmdViewAxo::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewAxo\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewAxo\")");
 }
 
 //===========================================================================
@@ -400,7 +400,7 @@ StdCmdViewFitAll::StdCmdViewFitAll()
 
 void StdCmdViewFitAll::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFit\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewFit\")");
 }
 
 bool StdCmdViewFitAll::isActive(void)
@@ -600,7 +600,7 @@ StdCmdViewExample1::StdCmdViewExample1()
 
 void StdCmdViewExample1::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Example1\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"Example1\")");
 }
 
 bool StdCmdViewExample1::isActive(void)
@@ -626,7 +626,7 @@ StdCmdViewExample2::StdCmdViewExample2()
 
 void StdCmdViewExample2::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Example2\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"Example2\")");
 }
 
 bool StdCmdViewExample2::isActive(void)
@@ -653,7 +653,7 @@ StdCmdViewExample3::StdCmdViewExample3()
 
 void StdCmdViewExample3::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"Example3\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"Example3\")");
 }
 
 bool StdCmdViewExample3::isActive(void)
@@ -681,7 +681,7 @@ StdCmdViewIvStereoOff::StdCmdViewIvStereoOff()
 
 void StdCmdViewIvStereoOff::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoOff\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoOff\")");
 }
 
 bool StdCmdViewIvStereoOff::isActive(void)
@@ -709,7 +709,7 @@ StdCmdViewIvStereoRedGreen::StdCmdViewIvStereoRedGreen()
 
 void StdCmdViewIvStereoRedGreen::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoRedGreen\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoRedGreen\")");
 }
 
 bool StdCmdViewIvStereoRedGreen::isActive(void)
@@ -736,7 +736,7 @@ StdCmdViewIvStereoQuadBuff::StdCmdViewIvStereoQuadBuff()
 
 void StdCmdViewIvStereoQuadBuff::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoQuadBuff\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoQuadBuff\")");
 }
 
 bool StdCmdViewIvStereoQuadBuff::isActive(void)
@@ -763,7 +763,7 @@ StdCmdViewIvStereoInterleavedRows::StdCmdViewIvStereoInterleavedRows()
 
 void StdCmdViewIvStereoInterleavedRows::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoInterleavedRows\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoInterleavedRows\")");
 }
 
 bool StdCmdViewIvStereoInterleavedRows::isActive(void)
@@ -790,7 +790,7 @@ StdCmdViewIvStereoInterleavedColumns::StdCmdViewIvStereoInterleavedColumns()
 
 void StdCmdViewIvStereoInterleavedColumns::activated(int iMsg)
 {
-  doCommand(Command::Gui,"FreeCADGui.SendMsgToActiveView(\"SetStereoInterleavedColumns\")");
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoInterleavedColumns\")");
 }
 
 bool StdCmdViewIvStereoInterleavedColumns::isActive(void)
@@ -834,7 +834,7 @@ void StdCmdViewIvIssueCamPos::activated(int iMsg)
     Temp2.replace(pos,1," ");
 
   // build up the command string
-  Temp += "FreeCADGui.SendMsgToActiveView(\"SetCamera ";
+  Temp += "Gui.SendMsgToActiveView(\"SetCamera ";
   Temp += Temp2;
   Temp += "\")";
 

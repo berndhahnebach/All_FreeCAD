@@ -157,37 +157,20 @@ void Application::open(const char* FileName)
   if ( Mod != 0 )
   {
     // issue module loading
-    string Cmd = "import ";
-    Cmd += Mod;
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
+    Command::doCommand(Command::App, "import %s", Mod);
 
     // issue gui module loading
     try{
-      Cmd =  "import ";
-      Cmd += Mod;
-      Cmd += "Gui";
-      Base::Interpreter().runString(Cmd.c_str());
-      macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
-      Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+      Command::doCommand(Command::Gui, "import %sGui", Mod);
     } catch (const Base::PyException&){
       // ignore this type of exception (e.g. if Mod is already a Gui module)
     }
 
     // load the file with the module
-    Cmd = Mod;
-    Cmd += ".open(\"";
-    Cmd += File.filePath().c_str();
-    Cmd += "\")";
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
-    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+    Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
 
     // ViewFit
-    Cmd = "FreeCADGui.SendMsgToActiveView(\"ViewFit\")";
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
-    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+    Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
   }else{
     Base::Console().Error("Application::open() try to open unknown file type .%s\n",te.c_str());
     return;
@@ -207,32 +190,17 @@ void Application::import(const char* FileName)
   if ( Mod != 0 )
   {
     // issue module loading
-    string Cmd = "import ";
-    Cmd += Mod;
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
+    Command::doCommand(Command::App, "import %s", Mod);
 
     // issue gui module loading
     try{
-      Cmd =  "import ";
-      Cmd += Mod;
-      Cmd += "Gui";
-      Base::Interpreter().runString(Cmd.c_str());
-      macroManager()->addLine(MacroManager::Gui,Cmd.c_str());
-      Base::Console().Log("CmdO: %s\n",Cmd.c_str());
+      Command::doCommand(Command::Gui, "import %sGui", Mod);
     } catch (const Base::PyException&){
       // ignore this type of exception (e.g. if Mod is already a Gui module)
     }
 
     // load the file with the module
-    Cmd = Mod;
-    Cmd += ".insert(\"";
-    Cmd += File.filePath().c_str();
-    Cmd += "\")";
-    Base::Interpreter().runString(Cmd.c_str());
-    macroManager()->addLine(MacroManager::Base,Cmd.c_str());
-    Base::Console().Log("CmdO: %s\n",Cmd.c_str());
-
+    Command::doCommand(Command::App, "%s.insert(\"%s\")", Mod, File.filePath().c_str());
   }else{
     Base::Console().Error("Application::import() try to open unknowne file type .%s\n",te.c_str());
     return;
@@ -302,11 +270,7 @@ void Application::onLastWindowClosed(Gui::Document* pcDoc)
   if(!d->_bIsClosing && pcDoc)
   {
     // call the closing mechanism from Python
-    string cmd = "App.Close(\"";
-    cmd += pcDoc->getDocument()->getName();
-    cmd += "\")";
-    Base::Interpreter().runString( cmd.c_str() );
-    macroManager()->addLine(MacroManager::Base,cmd.c_str());
+    Command::doCommand(Command::Doc, "App.Close(\"%s\")", pcDoc->getDocument()->getName());
 
     // check if the last document has been closed?
     // Note: in case there were further existing documents then we needn't worry about it 

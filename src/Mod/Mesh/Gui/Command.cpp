@@ -130,7 +130,7 @@ void CmdMeshExMakeMesh::activated(int iMsg)
     "App.document().MeshBox.showMode = \"FlatWire\"\n" 
     "App.document().Recompute()" );
 
-  doCommand(Gui,"FreeCADGui.SendMsgToActiveView(\"ViewFit\")");
+  doCommand(Gui,"Gui.SendMsgToActiveView(\"ViewFit\")");
   commitCommand();
 
   updateActive();
