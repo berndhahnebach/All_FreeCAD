@@ -52,8 +52,12 @@ std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const
   ulCtEd = 0;
 
   try {
-    // try first the 50% faster algorithm that needs double tmp. memory compared
-    // to the second algorithm (needs ~65% of the memory of the mesh structure)
+    // First try the 50% faster algorithm compared to the fallback solution. If n is the number of facets then we need 
+    // 4*2*3*n Bytes memory that complies ~65% of the mesh data structure.
+    // | | |
+    // | | \ 3 edges per facet
+    // | \ a pair of two unsigned long
+    // \ 4 Byte for an unsigned long
     std::vector<std::pair<unsigned long, unsigned long> > lEdges;
     // allocate memory
     lEdges.resize(ulCtFc * 3);
@@ -77,7 +81,9 @@ std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const
     ulCtEd = lEdges.size();
   } catch (const Base::MemoryException&) {
     try {
-      // the second slower algorithm needs ~33% of the memory of the mesh structure
+      // This is the fallback solution. Therefore we need only ~1.5*n elements (instead of 3*n) compared to the first solution.
+      // But as we're using a set we need additional 8 Bytes for internal pointers, so that we need quite the same amount of memory. 
+      // But in contrast to the first solution we don't need the memory in one block, so that this algorithm could succeed.
       std::set<std::pair<unsigned long, unsigned long> > lEdges;
       MeshFacetArray::_TConstIterator pFIter = _rclMesh._aclFacetArray.begin();
       unsigned long i = 0;
