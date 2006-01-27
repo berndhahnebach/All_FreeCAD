@@ -122,6 +122,14 @@ public:
   {
     return rclIn >> rclPt.x >> rclPt.y >> rclPt.z;
   }
+  friend std::ostream& operator << (std::ostream &rclOut, const MeshPoint &rclPt)
+  {
+    return rclOut << rclPt.x << rclPt.y << rclPt.z;
+  }
+  friend std::istream& operator >> (std::istream &rclIn, MeshPoint &rclPt)
+  {
+    return rclIn >> rclPt.x >> rclPt.y >> rclPt.z;
+  }
 
 public:
   unsigned char _ucFlag; /**< Flag member */
@@ -204,6 +212,18 @@ public:
                      rclF._ucFlag;
   }
   friend DataStream& operator >> (DataStream &rclIn, MeshFacet &rclF)
+  {
+    return rclIn >> rclF._aulNeighbours[0] >> rclF._aulNeighbours[1] >> rclF._aulNeighbours[2] >>
+                    rclF._aulPoints[0]     >> rclF._aulPoints[1]     >> rclF._aulPoints[2] >>
+                    rclF._ucFlag;
+  }
+  friend std::ostream& operator << (std::ostream &rclOut, const MeshFacet &rclF)
+  {
+    return rclOut << rclF._aulNeighbours[0] << rclF._aulNeighbours[1] << rclF._aulNeighbours[2] <<
+                     rclF._aulPoints[0]     << rclF._aulPoints[1]     << rclF._aulPoints[2] <<
+                     rclF._ucFlag;
+  }
+  friend std::istream& operator >> (std::istream &rclIn, MeshFacet &rclF)
   {
     return rclIn >> rclF._aulNeighbours[0] >> rclF._aulNeighbours[1] >> rclF._aulNeighbours[2] >>
                     rclF._aulPoints[0]     >> rclF._aulPoints[1]     >> rclF._aulPoints[2] >>
