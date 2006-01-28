@@ -48,6 +48,9 @@
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
+/* define if the compiler implements namespaces */
+#undef HAVE_NAMESPACES
+
 /* Define to 1 if you have the <ostream> header file. */
 #undef HAVE_OSTREAM
 
@@ -77,6 +80,9 @@
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #undef HAVE_STDLIB_H
+
+/* define if the compiler has std compliant iostream library */
+#undef HAVE_STD_IOSTREAM
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
@@ -125,6 +131,9 @@
 
 /* Define to 1 if you have the ANSI C header files. */
 #undef STDC_HEADERS
+
+/* Define to 1 to build zipios++ sources with iostream. */
+#undef USE_STD_IOSTREAM
 
 /* Version number of package */
 #undef VERSION

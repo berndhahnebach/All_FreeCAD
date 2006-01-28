@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="FreeCADBase" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=FreeCADBase - Win32 Debug
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADBase.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADBase.mak" CFG="FreeCADBase - Win32 Debug"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "FreeCADBase - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "FreeCADBase - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADBase - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADBase - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -97,6 +97,213 @@ PostBuild_Cmds=mkdir ..\..\bin	copy Debug\FreeCADBaseD.dll ..\..\bin	mkdir ..\..
 
 # Name "FreeCADBase - Win32 Release"
 # Name "FreeCADBase - Win32 Debug"
+# Begin Group "zipios"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=".\zipios\backbuffer.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\basicentry.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\basicentry.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\collcoll.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\collcoll.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\deflateoutputstreambuf.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\deflateoutputstreambuf.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\dircoll.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\dircoll.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\directory.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\directory.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\fcoll.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\fcoll.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\fcollexceptions.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\fcollexceptions.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\fileentry.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\fileentry.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\filepath.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\filepath.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\filterinputstreambuf.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\filterinputstreambuf.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\filteroutputstreambuf.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\filteroutputstreambuf.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\inflateinputstreambuf.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\inflateinputstreambuf.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\meta-iostreams.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\outputstringstream.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\simplesmartptr.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\virtualseeker.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipfile.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipfile.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\ziphead.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\ziphead.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipheadio.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipheadio.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipinputstream.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipinputstream.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipinputstreambuf.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipinputstreambuf.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipios-config.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipios_common.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipios_defs.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipoutputstream.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipoutputstream.h"
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipoutputstreambuf.cpp"
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=".\zipios\zipoutputstreambuf.h"
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\Base.cpp

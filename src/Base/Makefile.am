@@ -2,6 +2,52 @@
 lib_LTLIBRARIES=libFreeCADBase.la
 
 libFreeCADBase_la_SOURCES=\
+		zipios/backbuffer.h \
+		zipios/basicentry.cpp \
+		zipios/basicentry.h \
+		zipios/collcoll.cpp \
+		zipios/collcoll.h \
+		zipios/deflateoutputstreambuf.cpp \
+		zipios/deflateoutputstreambuf.h \
+		zipios/dircoll.cpp \
+		zipios/dircoll.h \
+		zipios/directory.cpp \
+		zipios/directory.h \
+		zipios/fcoll.cpp \
+		zipios/fcoll.h \
+		zipios/fcollexceptions.cpp \
+		zipios/fcollexceptions.h \
+		zipios/fileentry.cpp \
+		zipios/fileentry.h \
+		zipios/filepath.cpp \
+		zipios/filepath.h \
+		zipios/filterinputstreambuf.cpp \
+		zipios/filterinputstreambuf.h \
+		zipios/filteroutputstreambuf.cpp \
+		zipios/filteroutputstreambuf.h \
+		zipios/inflateinputstreambuf.cpp \
+		zipios/inflateinputstreambuf.h \
+		zipios/meta-iostreams.h \
+		zipios/outputstringstream.h \
+		zipios/simplesmartptr.h \
+		zipios/virtualseeker.h \
+		zipios/zipfile.cpp \
+		zipios/zipfile.h \
+		zipios/ziphead.cpp \
+		zipios/ziphead.h \
+		zipios/zipheadio.cpp \
+		zipios/zipheadio.h \
+		zipios/zipinputstream.cpp \
+		zipios/zipinputstream.h \
+		zipios/zipinputstreambuf.cpp \
+		zipios/zipinputstreambuf.h \
+		zipios/zipios_common.h \
+		zipios/zipios-config.h \
+		zipios/zipios_defs.h \
+		zipios/zipoutputstreambuf.cpp \
+		zipios/zipoutputstreambuf.h \
+		zipios/zipoutputstream.cpp \
+		zipios/zipoutputstream.h \
 		Base.cpp \
 		Base.h \
 		BoundBox.cpp \
