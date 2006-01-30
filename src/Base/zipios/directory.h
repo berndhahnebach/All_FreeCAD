@@ -356,9 +356,9 @@ namespace std
 	{
 	public:
 		typedef ptrdiff_t          difference_type;
-		typedef string             value_type;
-		typedef string             *pointer;
-		typedef string             &reference;
+		typedef std::string             value_type;
+		typedef std::string             *pointer;
+		typedef std::string             &reference;
 		typedef input_iterator_tag iterator_category;
 	};
 } // namespace std
