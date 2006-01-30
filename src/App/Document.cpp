@@ -249,8 +249,7 @@ bool Document::save (void)
     file.setComment("FreeCAD Document");
     file.setLevel( compression );
 
-    ZipCDirEntry entry("meta.xml");
-    file.putNextEntry(entry);
+    file.putNextEntry("meta.xml");
 
     Document::Save(0,file);
 
@@ -258,8 +257,7 @@ bool Document::save (void)
     for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
     {
       Feature* feat = it->second.F;
-      ZipCDirEntry entry(string(feat->getName())+".dat");
-      file.putNextEntry(entry);
+      file.putNextEntry(string(feat->getName())+".dat");
       feat->SaveData( file );
     }
 

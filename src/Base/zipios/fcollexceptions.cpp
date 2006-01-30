@@ -18,7 +18,7 @@ IOException::IOException( const string &msg ) throw ()
   : _what( msg ) {}
 
 IOException::IOException( const IOException &src ) throw () 
-  : _what( src._what ) {}
+  : std::exception(), _what( src._what ) {}
 
 
 IOException &IOException::operator= ( const IOException &src ) throw () {
@@ -45,7 +45,7 @@ FCollException::FCollException( const string &msg ) throw ()
   : _what( msg ) {}
 
 FCollException::FCollException( const FCollException &src ) throw () 
-  : _what( src._what ) {}
+  : std::exception(),_what( src._what ) {}
 
 
 FCollException &FCollException::operator= ( const FCollException &src ) throw () {
@@ -73,7 +73,7 @@ InvalidStateException::InvalidStateException( const string &msg ) throw ()
 
 InvalidStateException::
 InvalidStateException( const InvalidStateException &src ) throw () 
-  : _what( src._what ) {}
+  : std::exception(), _what( src._what ) {}
 
 
 InvalidStateException &InvalidStateException::
@@ -101,7 +101,7 @@ Exception::Exception( const string &msg ) throw ()
 
 Exception::
 Exception( const Exception &src ) throw () 
-  : _what( src._what ) {}
+  : std::exception(),_what( src._what ) {}
 
 
 Exception &Exception::

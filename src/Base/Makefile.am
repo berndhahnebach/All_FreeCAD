@@ -25,6 +25,10 @@ libFreeCADBase_la_SOURCES=\
 		zipios/filterinputstreambuf.h \
 		zipios/filteroutputstreambuf.cpp \
 		zipios/filteroutputstreambuf.h \
+		zipios/gzipoutputstream.cpp \
+		zipios/gzipoutputstream.h \
+		zipios/gzipoutputstreambuf.cpp \
+		zipios/gzipoutputstreambuf.h \
 		zipios/inflateinputstreambuf.cpp \
 		zipios/inflateinputstreambuf.h \
 		zipios/meta-iostreams.h \

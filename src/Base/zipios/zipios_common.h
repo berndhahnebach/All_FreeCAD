@@ -14,7 +14,7 @@ static const char separator = '/' ;
 template< class Type >
 void operator += ( vector< Type > &v1, const vector< Type > &v2 ) {
   typename std::vector<Type>::const_iterator cit ;
-  for ( cit = v2.begin() ; cit != v2.end() ; cit++ )
+  for ( cit = v2.begin() ; cit != v2.end() ; ++cit )
     v1.push_back( *cit ) ;
 }
 

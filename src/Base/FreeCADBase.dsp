@@ -205,6 +205,24 @@ SOURCE=".\zipios\filteroutputstreambuf.h"
 # End Source File
 # Begin Source File
 
+SOURCE=.\zipios\gzipoutputstream.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=.\zipios\gzipoutputstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\zipios\gzipoutputstreambuf.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=.\zipios\gzipoutputstreambuf.h
+# End Source File
+# Begin Source File
+
 SOURCE=".\zipios\inflateinputstreambuf.cpp"
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File

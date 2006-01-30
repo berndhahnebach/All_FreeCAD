@@ -112,6 +112,21 @@ protected:
 // Inline methods
 //
 
+inline ostream & operator<< (ostream &os, const FileCollection& collection) {
+	os << "collection '" << collection.getName() << "' {" ;
+	ConstEntries entries = collection.entries();
+	ConstEntries::const_iterator it;
+	bool isFirst=true;
+	for (it=entries.begin(); it != entries.end(); ++it) {
+		if(! isFirst)
+			os << ", ";
+		isFirst = false;
+		os << (*it)->getName();
+	}
+	os << "}";
+	return os;
+}
+
 } // namespace
 
 #endif
@@ -125,25 +140,26 @@ protected:
    
    \section intro Introduction
    
-   Zipios++ is a java.util.zip-like C++ library for reading Zip
-   files. Access to individual entries is provided through standard
-   C++ iostreams. A simple read-only virtual file system that mounts
-   regular directories and zip files is also provided.
+   Zipios++ is a java.util.zip-like C++ library for reading and
+   writing Zip files. Access to individual entries is provided through
+   standard C++ iostreams. A simple read-only virtual file system that
+   mounts regular directories and zip files is also provided.
    
    The source code is released under the <A
    HREF="http://www.gnu.org/copyleft/lesser.html">GNU Lesser General Public
    License</A>.
    
    \section status Status
-   Writing is not supported yet
-   
+
    Spanned archives are not supported, and support is not planned.
    
 
    The library has been tested and appears to be working with
    <UL>
-   <LI>Linux Mandrake release 7.0 (Air) / gcc 2.95.2</LI>
+   <LI><A HREF="http://www.freebsd.org/ports/archivers.html#zipios++-0.1.5">FreeBSD stable and current / gcc 2.95.3</A></LI>
+   <LI>Red Hat Linux release 7.0  / gcc 2.96</LI>
    <LI>Red Hat Linux release 6.2 (Zoot) / egcs-2.91.66</LI>
+   <LI>Linux Mandrake release 7.0 (Air) / gcc 2.95.2</LI>
    <LI>SGI IRIX64 6.5 / gcc 2.95.2</LI>
    <LI>SGI IRIX64 6.5 / MIPSpro Compilers: Version 7.30</LI>
    </UL>

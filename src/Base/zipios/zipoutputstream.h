@@ -12,23 +12,20 @@
 
 namespace zipios {
 
-using std::ifstream ;
-
 /** \anchor ZipOutputStream_anchor
     ZipOutputStream is an ostream that writes the output to a zip file. The
     interface approximates the interface of the Java ZipOutputStream. */
-class BaseExport ZipOutputStream : public ostream {
+class BaseExport ZipOutputStream : public std::ostream {
 public:
 
   /** ZipOutputStream constructor.
       @param os ostream to which the compressed zip archive is written.
       @param pos position to reposition the ostream to before reading.  */
-  explicit ZipOutputStream( ostream &os, streampos pos = 0 ) ;
+  explicit ZipOutputStream( std::ostream &os ) ;
 
   /** ZipOutputStream constructor.
-      @filename filename to write the zip archive to.
-      @param pos position to reposition the ostream to before writing. */
-  explicit ZipOutputStream( const string &filename, streampos pos = 0 ) ;
+      @filename filename to write the zip archive to. */
+  explicit ZipOutputStream( const std::string &filename ) ;
   
   /** Closes the current entry updates its header with the relevant
       size information and positions the stream write pointer for the
@@ -50,14 +47,16 @@ public:
 
   /** \anchor ZipOutputStream_putnextentry_anchor
       Begins writing the next entry.
-      Opens the next entry in the zip archive and returns a const pointer to a 
-      FileEntry object for the entry.
-      @return a const FileEntry * containing information about the (now) current 
-      entry. */
+  */
   void putNextEntry( const ZipCDirEntry &entry ) ;
 
+  /** \anchor ZipOutputStream_putnextentry2_anchor
+      Begins writing the next entry.
+  */
+  void putNextEntry(const std::string& entryName);
+
   /** Sets the global comment for the Zip archive. */
-  void setComment( const string &comment ) ;
+  void setComment( const std::string& comment ) ;
 
   /** Sets the compression level to be used for subsequent entries. */
   void setLevel( int level ) ;
@@ -70,7 +69,7 @@ public:
   virtual ~ZipOutputStream() ;
 
 private:
-  ofstream *ofs ;
+  std::ofstream *ofs ;
   ZipOutputStreambuf *ozf ;
 };
  

@@ -105,7 +105,18 @@ class ReferenceCount {
       unref() methods, in case Type doesn't want to inherit
       ReferenceCount and thus needs to invoke ref() and unref()
       through forwarding member functions. */
-  // friend class Type ; // This doesn't work for gcc3.2, so make ref() and unref() public (Werner)
+  //
+  //  Originally the following template parameter was made a friend.
+  //  This is not allowed by the standard so comment it out:
+  //
+  // friend Type ;
+  //
+  //  Initially hack things by making the necessary classes friends
+  //  even though we don't know really which they are.  This is an
+  //  Hideous Hack.
+  friend class FileEntry ;
+  friend class Bogus ;
+  
 public:
   /** Constructor intializes count to zero. */
   ReferenceCount() : _ref_count( 0 ) {}
@@ -116,9 +127,8 @@ public:
 
   /** The assignment operator doesn't copy the reference count, it
       leaves it unchanged.  */
-  const ReferenceCount &operator= ( const ReferenceCount &src ) {return *this;}
-//private:
-public: // Werner
+  const ReferenceCount &operator= ( const ReferenceCount &src ) { return *this; }
+private:
 
   /** Increases the reference count. */
   void ref() const           { ++_ref_count ;        }
@@ -129,7 +139,6 @@ public: // Werner
   /** Returns the reference count - For debugging purposes. */
   unsigned int getReferenceCount() const { return _ref_count; }
 
-private: // Werner
   /** Holds the actual reference count */
   mutable unsigned short _ref_count ;
 };
