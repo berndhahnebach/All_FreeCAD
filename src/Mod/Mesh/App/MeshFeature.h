@@ -35,6 +35,7 @@ class FeaturePy;
 namespace Base{
   class PyObjectBase;
   class Reader;
+  class Writer;
 }
 
 namespace Mesh
@@ -64,7 +65,7 @@ public:
   virtual const char *type(void){return "Mesh";};
   //@}
 
-  virtual void Save (short indent, std::ostream &str);
+  virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::Reader &reader);
 
   virtual void SaveData (std::ostream &str);

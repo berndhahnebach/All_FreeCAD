@@ -31,6 +31,7 @@
 
 #include <Base/Exception.h>
 #include <Base/Reader.h>
+#include <Base/Writer.h>
 
 #include "FeaturePy.h"
 #include "Feature.h"
@@ -39,6 +40,7 @@
 #include "PropertyLinks.h"
 
 using namespace App;
+using namespace Base;
 using namespace std;
 
 
@@ -101,9 +103,9 @@ void PropertyLink::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (Feature expected)...");
 }
 
-void PropertyLink::Save (short indent,std::ostream &str)
+void PropertyLink::Save (Writer &writer)
 {
-  str << "<Link value=\"" <<  _pcLink->getName() <<"\"/>" ;
+  writer << "<Link value=\"" <<  _pcLink->getName() <<"\"/>" ;
 }
 
 void PropertyLink::Restore(Base::Reader &reader)

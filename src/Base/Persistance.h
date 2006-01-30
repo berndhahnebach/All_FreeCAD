@@ -37,6 +37,7 @@
 namespace Base
 {
   class Reader;
+  class Writer;
 
 /// Persistance class and root of the type system
 class BaseExport Persistance : public BaseClass
@@ -45,14 +46,12 @@ class BaseExport Persistance : public BaseClass
   TYPESYSTEM_HEADER();
 
 public: 
-  virtual void Save (short indent, std::ostream &str){
+  virtual void Save (Writer &writer){
     assert(0);
   } 
   virtual void Restore(Reader &reader){
     assert(0);
   } 
-
-  static const char* ind(short indent);
 
 };
 

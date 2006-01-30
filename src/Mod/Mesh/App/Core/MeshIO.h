@@ -29,6 +29,7 @@
 namespace Base {
   class FileStream;
   class Reader;
+  class Writer;
 }
 
 using Base::FileStream;
@@ -94,7 +95,7 @@ public:
   MeshDocXML (MeshKernel &rclM) : _rclMesh(rclM) { }
   virtual ~MeshDocXML (void) { }
 
-  void Save (short indent, std::ostream &str);
+  void Save (Base::Writer &writer);
   void Restore(Base::Reader &reader);
 
 protected:

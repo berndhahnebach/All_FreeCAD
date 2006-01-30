@@ -32,10 +32,12 @@
 
 #include <Base/Exception.h>
 #include <Base/Reader.h>
+#include <Base/Writer.h>
 
 #include "PropertyStandard.h"
 
 using namespace App;
+using namespace Base;
 using namespace std;
 
 
@@ -94,9 +96,9 @@ void PropertyInteger::setPyObject(PyObject *value)
 
 }
 
-void PropertyInteger::Save (short indent,std::ostream &str)
+void PropertyInteger::Save (Writer &writer)
 {
-  str << "<Integer value=\"" <<  _lValue <<"\"/>" ;
+  writer << "<Integer value=\"" <<  _lValue <<"\"/>" ;
 }
 
 void PropertyInteger::Restore(Base::Reader &reader)
@@ -167,9 +169,9 @@ void PropertyFloat::setPyObject(PyObject *value)
 
 }
 
-void PropertyFloat::Save (short indent,std::ostream &str)
+void PropertyFloat::Save (Writer &writer)
 {
-  str <<  "<Float value=\"" <<  _dValue <<"\"/>" ;
+  writer <<  "<Float value=\"" <<  _dValue <<"\"/>" ;
 }
 
 void PropertyFloat::Restore(Base::Reader &reader)
@@ -250,9 +252,9 @@ void PropertyString::setPyObject(PyObject *value)
 
 }
 
-void PropertyString::Save (short indent,std::ostream &str)
+void PropertyString::Save (Writer &writer)
 {
-  str << "<String value=\"" <<  _cValue.c_str() <<"\"/>" ;
+  writer << "<String value=\"" <<  _cValue.c_str() <<"\"/>" ;
 }
 
 void PropertyString::Restore(Base::Reader &reader)
@@ -322,13 +324,13 @@ void PropertyBool::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (bool expected)...");
 }
 
-void PropertyBool::Save (short indent,std::ostream &str)
+void PropertyBool::Save (Writer &writer)
 {
-  str << "<Bool value=\"" ;
+  writer << "<Bool value=\"" ;
   if(_lValue)
-    str << "true" <<"\"/>" ;
+    writer << "true" <<"\"/>" ;
   else
-    str << "false" <<"\"/>" ;
+    writer << "false" <<"\"/>" ;
 
 }
 

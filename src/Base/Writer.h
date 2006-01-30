@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Riegel         <juergen.riegel@web.de>                  *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de)          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,27 +20,62 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef __Writer_H__
+#define __Writer_H__
 
-#include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <assert.h>
 # include <string>
+# include <map>
 #endif
 
-/// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "Persistance.h"
+#include "zipios/zipios-config.h"
+#include "zipios/zipfile.h"
+#include "zipios/zipinputstream.h"
+#include "zipios/zipoutputstream.h"
+#include "zipios/meta-iostreams.h"
 
-using namespace Base;
-
-TYPESYSTEM_SOURCE(Base::Persistance,Base::BaseClass);
-
-
-//**************************************************************************
-// Construction/Destruction
+#include "FileInfo.h"
 
 
 
-//**************************************************************************
-// separator for other implemetation aspects
+namespace Base
+{
 
+class Persistance;
+
+
+/** The Writer class 
+ * This is a important helper class for the store and retrivel system
+ * of objects in FreeCAD. 
+ * \see App::Persistance
+ * \author Juergen Riegel
+ */
+class BaseExport Writer: public zipios::ZipOutputStream
+{
+public:
+    /// opens the file and read the first element
+  Writer(const char* FileName);
+  ~Writer();
+
+  void addFile(const char* Name, Base::Persistance *Object);
+
+  const char* ind(void);
+  void incInd(void);
+  void decInd(void);
+
+
+private:
+  struct FileEntry {
+    std::string FileName;
+    Base::Persistance *Object;
+  };
+  std::vector<FileEntry> FileList;
+
+  short indent;
+};
+
+}
+
+
+#endif

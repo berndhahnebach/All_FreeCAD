@@ -30,11 +30,13 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Reader.h>
+#include <Base/Writer.h>
 
 #include "PropertyContainer.h"
 #include "Property.h"
 
 using namespace App;
+using namespace Base;
 using namespace std;
  
 TYPESYSTEM_SOURCE(App::PropertyContainer,Base::Persistance);
@@ -75,20 +77,22 @@ const PropertyData & PropertyContainer::getPropertyData(void) const{return prope
 
 PropertyData PropertyContainer::propertyData;
 
-void PropertyContainer::Save (short indent,std::ostream &str)
+void PropertyContainer::Save (Writer &writer)
 {
   std::map<std::string,Property*> Map;
   getPropertyMap(Map);
 
-  str << ind(indent) << "<Properties Count=\"" << Map.size() << "\">" << endl;
+  writer << writer.ind() << "<Properties Count=\"" << Map.size() << "\">" << endl;
   std::map<std::string,Property*>::iterator it;
   for(it = Map.begin(); it != Map.end(); ++it)
   {
-    str << ind(indent+1) << "<Property name=\"" << it->first << "\" type=\"" << it->second->getTypeId().getName() << "\">" ;    
-    it->second->Save(indent+2,str);
-    str << "</Property>" << endl;    
+    writer << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" << it->second->getTypeId().getName() << "\">" ;    
+    writer.incInd();
+    it->second->Save(writer);
+    writer.decInd();
+    writer << "</Property>" << endl;    
   }
-  str << ind(indent) << "</Properties>" << endl;
+  writer << writer.ind() << "</Properties>" << endl;
 }
 
 void PropertyContainer::Restore(Base::Reader &reader)

@@ -29,6 +29,11 @@
 
 #include "Property.h"
 
+namespace Base
+{
+  class Writer;
+}
+
 namespace App
 {
 class Feature;
@@ -67,7 +72,7 @@ public:
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
-  virtual void Save (short indent,std::ostream &str);
+  virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::Reader &reader);
 
 

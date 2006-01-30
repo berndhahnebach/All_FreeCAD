@@ -24,23 +24,64 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <assert.h>
-# include <string>
+# include <xercesc/sax2/Attributes.hpp>
+# include <xercesc/sax/SAXParseException.hpp>
+# include <xercesc/sax/SAXException.hpp>
+# include <xercesc/sax2/XMLReaderFactory.hpp>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-#include "Persistance.h"
+#include "Writer.h"
+#include "Exception.h"
 
 using namespace Base;
-
-TYPESYSTEM_SOURCE(Base::Persistance,Base::BaseClass);
-
-
-//**************************************************************************
-// Construction/Destruction
+using namespace std;
+using namespace zipios ;
 
 
 
-//**************************************************************************
-// separator for other implemetation aspects
+// ---------------------------------------------------------------------------
+//  Writer: Constructors and Destructor
+// ---------------------------------------------------------------------------
 
+Writer::Writer(const char* FileName) 
+: ZipOutputStream(FileName),indent(0)
+{
+}
+
+Writer::~Writer()
+{
+}
+
+void Writer::addFile(const char* Name, Base::Persistance *Object)
+{
+  FileEntry temp;
+  temp.FileName = Name;
+  temp.Object = Object;
+  
+  FileList.push_back(temp);
+
+}
+
+const char* Writer::ind(void)
+{
+  static char buf[256];
+  short i;
+  for(i=0;i<indent;i++)
+    buf[i] = '\t';
+  buf[i] = '\0';
+
+  return buf;
+}
+
+void Writer::incInd(void)
+{
+  // because of buffer in ::ind()
+  assert(indent < 255);
+  indent++;
+}
+
+void Writer::decInd(void)
+{
+  indent--;
+}

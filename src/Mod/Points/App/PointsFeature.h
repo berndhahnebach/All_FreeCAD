@@ -31,6 +31,7 @@
 
 namespace Base{
   class PyObjectBase;
+  class Writer;
 }
 
 namespace App{
@@ -54,7 +55,7 @@ public:
   PointsFeature(void);
   virtual ~PointsFeature(void);
 
-  virtual void Save (short indent, std::ostream &str);
+  virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::Reader &reader);
 
   /** @name methods overide Feature */

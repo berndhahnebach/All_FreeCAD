@@ -29,6 +29,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
+#include <Base/Writer.h>
 
 
 #include "PointsFeature.h"
@@ -53,13 +54,13 @@ PointsFeature::~PointsFeature()
 {
 }
 
-void PointsFeature::Save (short indent, std::ostream &str)
+void PointsFeature::Save (Base::Writer &writer)
 {
   // save parent
-  Feature::Save(indent,str);
+  Feature::Save(writer);
   //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
 
-  _Points.Save(indent,str);
+  _Points.Save(writer);
 
 }
 

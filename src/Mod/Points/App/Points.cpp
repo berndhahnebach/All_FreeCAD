@@ -30,6 +30,7 @@
 #include "Points.h"
 #include <Base/Matrix.h>
 #include <Base/Persistance.h>
+#include <Base/Writer.h>
 using namespace Points;
 using namespace std;
 
@@ -258,19 +259,21 @@ void PointsWithProperty::transform(const Matrix4D &rclMat)
   }
 }
 
-void PointsWithProperty::Save (short indent, std::ostream &str)
+void PointsWithProperty::Save (Base::Writer &writer)
 {
-  str << Base::Persistance::ind(indent) << "<Points Count=\"" << _Points.size() << "\">" << std::endl;
+  writer << writer.ind() << "<Points Count=\"" << _Points.size() << "\">" << std::endl;
 
+  writer.incInd();
   for (PointKernel::const_iterator itp = _Points.begin(); itp != _Points.end(); ++itp)
   {
-    str << Base::Persistance::ind(indent+1) << "<P "
-                               << "x=\"" <<  itp->x << "\" "
-                               << "y=\"" <<  itp->y << "\" "
-                               << "z=\"" <<  itp->z << "\"/>" 
-                               << std::endl;
+    writer << writer.ind() << "<P "
+                            << "x=\"" <<  itp->x << "\" "
+                            << "y=\"" <<  itp->y << "\" "
+                            << "z=\"" <<  itp->z << "\"/>" 
+                            << std::endl;
   }
-  str << Base::Persistance::ind(indent) << "</Points>" << std::endl;
+  writer.decInd();
+  writer << writer.ind() << "</Points>" << std::endl;
 
 }
 

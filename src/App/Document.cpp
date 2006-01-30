@@ -38,7 +38,7 @@
 #include <Base/FileInfo.h>
 #include <Base/Interpreter.h>
 #include <Base/Reader.h>
-#include <Base/gzstream.h>
+#include <Base/Writer.h>
 
 #include <Base/zipios/zipios-config.h>
 #include <Base/zipios/zipfile.h>
@@ -50,6 +50,7 @@
 
 using Base::Console;
 using Base::streq;
+using Base::Writer;
 using namespace App;
 using namespace std;
 
@@ -103,46 +104,46 @@ Document::~Document()
 // Exported functions
 //--------------------------------------------------------------------------
 
-void Document::Save (short indent,std::ostream &str)
+void Document::Save (Writer &writer)
 {
-  str << "<?xml version='1.0' encoding='utf-8'?>" << endl
+  writer << "<?xml version='1.0' encoding='utf-8'?>" << endl
       << "<!--" << endl
       << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
       << "-->" << endl;
 
-  str << "<Document SchemaVersion=\"1\">" << endl;
+  writer << "<Document SchemaVersion=\"1\">" << endl;
 
-  PropertyContainer::Save(indent+1,str);
+  PropertyContainer::Save(writer);
 
   // writing the features types
-  str << ind(indent+1) << "<Features Count=\"" << FeatMap.size() <<"\">" << endl;
+  writer << writer.ind() << "<Features Count=\"" << FeatMap.size() <<"\">" << endl;
 
   std::map<std::string,FeatEntry>::iterator it;
   for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
   {
     Feature* feat = it->second.F;
-    str << ind(indent+2) << "<Feature " 
+    writer << writer.ind() << "<Feature " 
                          << "type=\"" << feat->getTypeId().getName() << "\" "
                          << "name=\"" << feat->getName()             << "\" "
                          << "typeOld=\"" << feat->type()             << "\" "
                          << "/>" << endl;    
   }
 
-  str << ind(indent+1) << "</Features>" << endl;
+  writer << writer.ind() << "</Features>" << endl;
   
   // writing the features itself
-  str << ind(indent+1) << "<FeatureData Count=\"" << FeatMap.size() <<"\">" << endl;
+  writer << writer.ind() << "<FeatureData Count=\"" << FeatMap.size() <<"\">" << endl;
 
   for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
   {
     Feature* feat = it->second.F;
-    str << ind(indent+2) << "<Feature name=\"" << feat->getName() << "\">" << endl;    
-    feat->Save(indent+3,str);
-    str << ind(indent+2) << "</Feature>" << endl;
+    writer << writer.ind() << "<Feature name=\"" << feat->getName() << "\">" << endl;    
+    feat->Save(writer);
+    writer << writer.ind() << "</Feature>" << endl;
   }
 
-  str << ind(indent+1) << "</FeatureData>" << endl;
-  str << "</Document>" << endl;
+  writer << writer.ind() << "</FeatureData>" << endl;
+  writer << "</Document>" << endl;
 
 }
 
@@ -245,13 +246,13 @@ bool Document::save (void)
 //      ofstream file(FileName.getValue());
 //      Document::Save(0,file);
 //    }
-    ZipOutputStream file(FileName.getValue());
+    Base::Writer file(FileName.getValue());
     file.setComment("FreeCAD Document");
     file.setLevel( compression );
 
-    file.putNextEntry("meta.xml");
+    file.putNextEntry("Document.xml");
 
-    Document::Save(0,file);
+    Document::Save(file);
 
     std::map<std::string,FeatEntry>::iterator it;
     for(it = FeatMap.begin(); it != FeatMap.end(); ++it)

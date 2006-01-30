@@ -30,6 +30,7 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 
 #include <Base/Exception.h>
+#include <Base/Writer.h>
 
 #include "VectorPy.h"
 #include "MatrixPy.h"
@@ -37,6 +38,7 @@
 #include "PropertyGeo.h"
 
 using namespace App;
+using namespace Base;
 using namespace std;
 
 
@@ -125,9 +127,9 @@ void PropertyVector::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (Vector expected)...");
 }
 
-void PropertyVector::Save (short indent,std::ostream &str)
+void PropertyVector::Save (Writer &writer)
 {
-  str << ind(indent) << "<PropertyLink valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
+  writer << writer.ind() << "<PropertyLink valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
 }
 
 void PropertyVector::Restore(Base::Reader &reader)

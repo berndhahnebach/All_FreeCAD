@@ -43,6 +43,9 @@
 #	pragma warning( disable : 4275 )
 #endif
 
+namespace Base {
+  class Writer;
+}
 
 //class FCLabel;
 namespace App
@@ -141,7 +144,7 @@ public:
 	const char* getPath() const;
   //@}
 
-  virtual void Save (short indent,std::ostream &str);
+  virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::Reader &reader);
 
 

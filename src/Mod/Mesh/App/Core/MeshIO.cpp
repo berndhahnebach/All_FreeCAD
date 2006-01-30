@@ -33,6 +33,7 @@
 #include <Base/Sequencer.h>
 #include <Base/Stream.h>
 #include <Base/Reader.h>
+#include <Base/Writer.h>
 #include <Base/Persistance.h>
 
 #include <math.h>
@@ -537,29 +538,33 @@ bool MeshInventor::Save (FileStream &rstrOut) const
 
 
 
-void MeshDocXML::Save (short indent, std::ostream &str)
+void MeshDocXML::Save (Base::Writer &writer)
 {
-  str << Base::Persistance::ind(indent) << "<Mesh>" << std::endl;
+  writer << writer.ind() << "<Mesh>" << std::endl;
 
-  str << Base::Persistance::ind(indent+1) << "<Points Count=\"" << _rclMesh.CountPoints() << "\">" << std::endl;
+  writer.incInd();
+  writer << writer.ind() << "<Points Count=\"" << _rclMesh.CountPoints() << "\">" << std::endl;
 
+  writer.incInd();
   for (MeshPointArray::_TConstIterator itp = _rclMesh._aclPointArray.begin(); itp != _rclMesh._aclPointArray.end(); itp++)
   {
-    str << Base::Persistance::ind(indent+2) << "<P "
+    writer <<  writer.ind() << "<P "
                                << "x=\"" <<  itp->x << "\" "
                                << "y=\"" <<  itp->y << "\" "
                                << "z=\"" <<  itp->z << "\"/>"
                          << std::endl;
   }
-  str << Base::Persistance::ind(indent+1) << "</Points>" << std::endl;
+  writer.decInd();
+  writer << writer.ind() << "</Points>" << std::endl;
 
   // write the faces....
-  str << Base::Persistance::ind(indent+1) << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << std::endl;
+  writer <<writer.ind() << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << std::endl;
 
+  writer.incInd();
   for (MeshFacetArray::_TConstIterator it = _rclMesh._aclFacetArray.begin(); it != _rclMesh._aclFacetArray.end(); it++)
   {
 
-    str << Base::Persistance::ind(indent+2) << "<F "
+    writer << writer.ind() << "<F "
                                << "p0=\"" <<  it->_aulPoints[0] << "\" "
                                << "p1=\"" <<  it->_aulPoints[1] << "\" "
                                << "p2=\"" <<  it->_aulPoints[2] << "\" " 
@@ -568,9 +573,11 @@ void MeshDocXML::Save (short indent, std::ostream &str)
                                << "n2=\"" <<  it->_aulNeighbours[2] << "\"/>" 
                                << std::endl;
   } 
-  str << Base::Persistance::ind(indent+1) << "</Faces>" << std::endl;
+  writer.decInd();
+  writer << writer.ind() << "</Faces>" << std::endl;
 
-  str << Base::Persistance::ind(indent+1) << "</Mesh>" << std::endl;
+  writer << writer.ind() << "</Mesh>" << std::endl;
+  writer.decInd();
 
 
 }

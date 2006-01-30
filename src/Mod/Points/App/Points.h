@@ -31,7 +31,9 @@
 #include <Base/Vector3D.h>
 #include <Base/Matrix.h>
 #include <Base/Reader.h>
+#include <Base/Writer.h>
 using Base::Vector3D;
+using Base::Matrix4D;
 using Base::Matrix4D;
 
 #include <App/DataWithProperty.h>
@@ -212,7 +214,7 @@ public:
 
   PointKernel &getKernel(void){return _Points;}
 
-  virtual void Save (short indent, std::ostream &str);
+  virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::Reader &reader);
 
 private:

@@ -35,6 +35,10 @@ public:
   /** Closes the FileCollection. */
   virtual void close() = 0 ;
 
+  enum MatchPath { 
+    IGN, 
+    MATCH 
+  } ;
   /** \anchor fcoll_entries_anchor
       Returns a vector of const pointers to the entries in the
       FileCollection.  
@@ -43,7 +47,6 @@ public:
       @throw InvalidStateException Thrown if the collection is invalid. */
   virtual ConstEntries entries() const ;
 
-  enum MatchPath { IGNORE, MATCH } ;
 
   /** \anchor fcoll_getentry_anchor
       Returns a ConstEntryPointer to a FileEntry object for the entry 

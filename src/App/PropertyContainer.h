@@ -26,6 +26,9 @@
 
 #include <Base/Persistance.h>
 
+namespace Base {
+  class Writer;
+}
 
 
 namespace App
@@ -76,7 +79,7 @@ public:
   const char* getName(Property* prop) const;
   void getPropertyMap(std::map<std::string,Property*> &Map);
 
-  virtual void Save (short indent,std::ostream &str);
+  virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::Reader &reader);
 
 

@@ -31,6 +31,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Reader.h>
+#include <Base/Writer.h>
 
 #include <Mod/Part/App/TopologyPy.h>
 
@@ -89,10 +90,10 @@ Base::PyObjectBase *MeshFeature::GetPyObject(void)
   return pcMeshFeaturePy; 
 }
 
-void MeshFeature::Save (short indent, std::ostream &str)
+void MeshFeature::Save (Base::Writer &writer)
 {
   // save parent
-  Feature::Save(indent,str);
+  Feature::Save(writer);
   //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
 
 //  MeshCore::MeshDocXML writer(*_cMesh.getKernel());
