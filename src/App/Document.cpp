@@ -40,12 +40,20 @@
 #include <Base/Reader.h>
 #include <Base/gzstream.h>
 
+#include <Base/zipios/zipios-config.h>
+#include <Base/zipios/zipfile.h>
+#include <Base/zipios/zipinputstream.h>
+#include <Base/zipios/zipoutputstream.h>
+#include <Base/zipios/meta-iostreams.h>
+
 #include "Application.h"
 
 using Base::Console;
 using Base::streq;
 using namespace App;
 using namespace std;
+
+using namespace zipios ;
 
 
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
@@ -194,7 +202,7 @@ void Document::Restore(Base::Reader &reader)
 
   reader.readEndElement("Document");
 
-  Recompute();
+//  Recompute(); // see Document::open()
 
 }
 
@@ -227,16 +235,35 @@ bool Document::save (void)
 
   if(*(FileName.getValue()) != '\0')
   {
-    if(compression != 0)
+//    if(compression != 0)
+//    {
+//      Base::ogzstream file(FileName.getValue(),std::ios_base::out,compression);
+//      Document::Save(0,file);
+//    }
+//    else
+//    {
+//      ofstream file(FileName.getValue());
+//      Document::Save(0,file);
+//    }
+    ZipOutputStream file(FileName.getValue());
+    file.setComment("FreeCAD Document");
+    file.setLevel( compression );
+
+    ZipCDirEntry entry("meta.xml");
+    file.putNextEntry(entry);
+
+    Document::Save(0,file);
+
+    std::map<std::string,FeatEntry>::iterator it;
+    for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
     {
-      Base::ogzstream file(FileName.getValue(),std::ios_base::out,compression);
-      Document::Save(0,file);
+      Feature* feat = it->second.F;
+      ZipCDirEntry entry(string(feat->getName())+".dat");
+      file.putNextEntry(entry);
+      feat->SaveData( file );
     }
-    else
-    {
-      ofstream file(FileName.getValue());
-      Document::Save(0,file);
-    }
+
+    file.close();
 
     return true;
   }
@@ -249,15 +276,40 @@ bool Document::open (void)
 {
   Base::FileInfo File(FileName.getValue());
 
-  Base::igzstream file(File.filePath().c_str());
+  ZipInputStream file(File.filePath().c_str());
+  //Base::igzstream file(File.filePath().c_str());
   //ifstream file(File.filePath().c_str());
 
   Base::Reader reader(File.filePath().c_str(), file);
   if ( reader.isValid() )
+  {
     Restore(reader);
-  else
-    return false;
-  return true;
+    ConstEntryPointer entry = file.getNextEntry();
+    while ( entry->isValid() )
+    {
+      std::string name = entry->getName();
+      // remove ".dat" extension
+      name = name.substr(0,name.length()-4);
+      Feature* feat = getFeature( name.c_str() );
+      if ( feat )
+      {
+        feat->RestoreData(file);
+      }
+      entry = file.getNextEntry();
+    }
+
+    file.close();
+
+    //FIXME: Actually we mustn't call Recompute() after restoring a document, otherwise execute() gets invoked for every feature
+    //       which can take a long time, e.g. loading a huge mesh. But the data get already reloaded by RestoreData().
+    //       So the complete internal state of a feature must be made persistent.
+    Recompute();
+
+    return true;
+  }
+
+  file.close();
+  return false;
 }
 
 bool Document::isSaved() const

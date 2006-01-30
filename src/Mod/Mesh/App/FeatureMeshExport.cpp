@@ -68,16 +68,16 @@ int FeatureMeshExport::execute(void)
     return 1;
   }
 
-  MeshSTL aReader(*(pcFeat->getMesh().getKernel()) );
+  MeshSTL aWriter(*(pcFeat->getMesh().getKernel()) );
 
   // write file
   bool ok = false;
   FileStream str( FileName.getValue(), std::ios::out);
 
   if ( std::string(Format.getValue()) == "ASCII STL" )
-    ok = aReader.SaveAscii( str );
+    ok = aWriter.SaveAscii( str );
   else // "Binary STL"
-    ok = aReader.SaveBinary( str );
+    ok = aWriter.SaveBinary( str );
 
   if ( !ok )
   {

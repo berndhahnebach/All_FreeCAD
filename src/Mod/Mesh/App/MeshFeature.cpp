@@ -95,9 +95,9 @@ void MeshFeature::Save (short indent, std::ostream &str)
   Feature::Save(indent,str);
   //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
 
-  MeshCore::MeshDocXML writer(*_cMesh.getKernel());
+//  MeshCore::MeshDocXML writer(*_cMesh.getKernel());
 
-  writer.Save(indent,str);
+//  writer.Save(indent,str);
 
 }
 
@@ -106,9 +106,20 @@ void MeshFeature::Restore(Base::Reader &reader)
   // save parent
   Feature::Restore(reader);
 
-  MeshCore::MeshDocXML geter(*_cMesh.getKernel());
+//  MeshCore::MeshDocXML geter(*_cMesh.getKernel());
 
-  geter.Restore(reader);
+//  geter.Restore(reader);
 
 
 }
+
+void MeshFeature::SaveData (std::ostream &str)
+{
+  _cMesh.getKernel()->SaveStream(str);
+}
+
+void MeshFeature::RestoreData(std::istream &str)
+{
+  _cMesh.getKernel()->RestoreStream(str);
+}
+

@@ -12,13 +12,14 @@ o Python (http://www.python.org), I have 2.3
 o Qt (http://www.trolltech.no), >= 3.2.x, I have 3.2.1
 o Coin3D (http://www.coin3d.org), >= 2.x, I have 2.2.1
 o SoQt (http://www.coin3d.org), >= 1.x, I have 1.0.2
-o OpenCascade (http://www.opencascade.org), you need >=5.1 here, I have 5.2
-o Xerces-c (downloads http://xml.apache.org/dist/xerces-c/), mine is 2.4
+o Xerces-c (http://xml.apache.org/dist/xerces-c/), mine is 2.4
+o zlib (http://www.zlib.net/)
 
 And for the Mesh module of FreeCAD the additional libraries
 o GTS Library (http://gts.sourceforge.net), I have 0.7.3
 o Wild Magic (http://www.geometrictools.com), I have 3.3
-are required.
+o OpenCascade (http://www.opencascade.org), you need >=5.1 here, I have 5.2
+are required. OpenCascade is also needed by the Part module.
 
 Note: All libraries listed above must be built as shared library. Refer to their
       documentation to see how to do.
@@ -26,6 +27,9 @@ Note: All libraries listed above must be built as shared library. Refer to their
 Note: If possible you should enable thread support for the libraries. At least for
       Qt thread support is strongly recommended, otherwise you will run into linker
       errors at build time of FreeCAD.
+
+Note: zlib might be already on your system, as this is a library that is used 
+      from a lot of other libraries.
 
 To avoid any linker problems during the build process it would be a good idea to have
 the library paths either in your LD_LIBRARY_PATH variable or in your ld.so.conf file.

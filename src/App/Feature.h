@@ -104,6 +104,9 @@ public:
   virtual const char *type(void)=0;
   //@}
 
+  virtual void SaveData (std::ostream &str) {}
+  virtual void RestoreData(std::istream &str) {}
+
 
 	/** @name status methodes of the feature */
 	//@{

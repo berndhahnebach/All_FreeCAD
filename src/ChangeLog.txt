@@ -11,3 +11,6 @@ Version: V0.5B2 Date: Sun Jan 15 20:09:22 2006 +++++++++++++++++++++++++++++++
 + Setting of document compression level
 + set _STLP_USE_NEWALLOC to free memory allocated in associative containers
 + implement Open/Save/SaveAs for use from Python
+
+Version: V0.5B3 Date: Mon Jan 30 13:54:25 2006 +++++++++++++++++++++++++++++++
++ use the zipios++ library for reading from/writing into compressed archives

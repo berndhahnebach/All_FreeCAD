@@ -67,6 +67,9 @@ public:
   virtual void Save (short indent, std::ostream &str);
   virtual void Restore(Base::Reader &reader);
 
+  virtual void SaveData (std::ostream &str);
+  virtual void RestoreData(std::istream &str);
+
 
   /** @name methods for mesh handling */
   //@{
