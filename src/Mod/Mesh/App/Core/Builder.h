@@ -106,19 +106,30 @@ private:
 	MeshKernel& _meshKernel;
 
 	std::set<MeshPoint>	_points;
-	std::set<Edge>			_edges;
-	unsigned long				_ptIdx, _facetIdx;
+	unsigned long				_ptIdx; 
+
+  void SetNeighbourhood  ();
 
 public:
 	MeshBuilder(MeshKernel &rclM);
 	~MeshBuilder(void);
 
-  /** Initialize the class. Must be done before adding facets */
-	void Initialize (long ctFacets);
+  /** Initialize the class. Must be do before adding facets 
+   * @param ctFacets count of facets (only revelant for the progress bar
+   * @param c2 if true the mesh-kernel will be cleared else you can add new facets on an existing mesh-kernel
+   */
+	void Initialize (long ctFacets, bool deletion = true);
 
   /** adding facets */
+  /** Add new facet
+   */
 	void AddFacet (const MeshGeomFacet& facet);
+  /** Add new facet
+   */
 	void AddFacet (const Vector3D& pt1, const Vector3D& pt2, const Vector3D& pt3, const Vector3D& normal);
+  /** Add new facet
+   * @param facetPoints Array of vectors (size 4) in order of vec1, vec2, vec3, normal
+   */
 	void AddFacet (Vector3D* facetPoints);
 
   /** finish building the mesh structure. Must be done after adding facets */

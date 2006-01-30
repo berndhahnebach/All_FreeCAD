@@ -44,15 +44,25 @@ MeshBuilder::~MeshBuilder (void)
 {
 }
 
-void MeshBuilder::Initialize (long ctFacets)
+void MeshBuilder::Initialize (long ctFacets, bool deletion)
 {
-	this->_meshKernel._aclFacetArray.clear();
-	this->_meshKernel._aclPointArray.clear();
-	this->_ptIdx = 0;
-	this->_facetIdx = 0;
+  if (deletion)
+  {
+	  _meshKernel._aclFacetArray.clear();
+	  _meshKernel._aclPointArray.clear();
+	  _ptIdx = 0;
+  }
+  else
+  {
+    for (MeshPointArray::_TConstIterator it1 = _meshKernel._aclPointArray.begin(); it1 != _meshKernel._aclPointArray.end(); it1++)
+    {
+      _points.insert(*it1);
+    }
+    _ptIdx = _meshKernel._aclPointArray.size();
+  }
 
 	// Base::SequencerLauncher seq("create mesh structure...", ctFacets);
-	Base::Sequencer().start("create mesh structure...", ctFacets);
+	Base::Sequencer().start("create mesh structure...", ctFacets * 2);
 }
 
 void MeshBuilder::AddFacet (const MeshGeomFacet& facet)
@@ -95,51 +105,70 @@ void MeshBuilder::AddFacet (Vector3D* facetPoints)
 			mf._aulPoints[i] = p->_ulProp;
 	}		
 
-  // check for degenerated facet (one edge has lenght 0)
+  // check for degenerated facet (one edge has length 0)
   if ((mf._aulPoints[0] == mf._aulPoints[1]) || (mf._aulPoints[0] == mf._aulPoints[2]) || (mf._aulPoints[1] == mf._aulPoints[2]))
     return;
 
-	for (i = 0; i < 3; i++)
-	{
-		Edge edge(mf._aulPoints[i], mf._aulPoints[(i+1)%3], _facetIdx);
-
-		std::set<Edge>::iterator e = _edges.find(edge);
-		if (e != _edges.end())
-		{ // edge exists, set neighbourhood
-      MeshFacet& mf1 = _meshKernel._aclFacetArray[e->facetIdx];
-
-      if (mf1._aulPoints[0] == edge.pt1)
-      {
-        if (mf1._aulPoints[1] == edge.pt2)
-          mf1._aulNeighbours[0] = _facetIdx;
-        else
-          mf1._aulNeighbours[2] = _facetIdx;
-      }
-      else if (mf1._aulPoints[0] == edge.pt2)
-      {
-        if (mf1._aulPoints[1] == edge.pt1)
-          mf1._aulNeighbours[0] = _facetIdx;
-        else
-          mf1._aulNeighbours[2] = _facetIdx;
-      }
-      else
-        mf1._aulNeighbours[1] = _facetIdx;
-
-      mf._aulNeighbours[i] = e->facetIdx;
-		}
-    else
-		{  // new edge
-			_edges.insert(edge);
-		}
-	}
-
   _meshKernel._aclFacetArray.push_back(mf);
+}
 
-	_facetIdx++;
+void MeshBuilder::SetNeighbourhood ()
+{
+  std::set<Edge> edges;
+
+  int facetIdx = 0;
+
+  for (MeshFacetArray::_TIterator it = _meshKernel._aclFacetArray.begin(); it != _meshKernel._aclFacetArray.end(); it++)
+  {
+  	Base::Sequencer().next(true); // allow to cancel
+
+    MeshFacet& mf = *it;
+
+	  for (int i = 0; i < 3; i++)
+	  {
+		  Edge edge(mf._aulPoints[i], mf._aulPoints[(i+1)%3], facetIdx);
+
+		  std::set<Edge>::iterator e = edges.find(edge);
+		  if (e != edges.end())
+		  { // edge exists, set neighbourhood
+        MeshFacet& mf1 = _meshKernel._aclFacetArray[e->facetIdx];
+
+        if (mf1._aulPoints[0] == edge.pt1)
+        {
+          if (mf1._aulPoints[1] == edge.pt2)
+            mf1._aulNeighbours[0] = facetIdx;
+          else
+            mf1._aulNeighbours[2] = facetIdx;
+        }
+        else if (mf1._aulPoints[0] == edge.pt2)
+        {
+          if (mf1._aulPoints[1] == edge.pt1)
+            mf1._aulNeighbours[0] = facetIdx;
+          else
+            mf1._aulNeighbours[2] = facetIdx;
+        }
+        else
+          mf1._aulNeighbours[1] = facetIdx;
+
+        mf._aulNeighbours[i] = e->facetIdx;
+		  }
+      else
+		  {  // new edge
+			  edges.insert(edge);
+		  }
+	  }
+
+    facetIdx++;
+  }
 }
 
 void MeshBuilder::Finish ()
 {
+  _points.clear();
+  _points.swap(_points);
+
+  SetNeighbourhood();
+
   // release some memory
   _meshKernel._aclFacetArray.swap(_meshKernel._aclFacetArray);
   _meshKernel._aclPointArray.swap(_meshKernel._aclPointArray);

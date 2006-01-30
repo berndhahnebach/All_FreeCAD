@@ -178,19 +178,13 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
 
 void InterpreterSingleton::runFile(const char*pxFileName)
 {
-	PyBuf FileName(pxFileName);
-	
-	FILE *fp = fopen(FileName.str,"r");
-	if(fp == NULL) 
-  {
-    char szBuf[200];
-    sprintf( szBuf, "File '%s' not found.", pxFileName );
-		throw Exception( szBuf );
-  }
-
-
-	PyRun_SimpleFile(fp,FileName.str);
-
+  std::ifstream file;
+  file.open(pxFileName);
+  std::stringbuf buf;
+  file >> &buf;
+  file.close();
+  
+  runString(buf.str().c_str());
 }
 
 bool InterpreterSingleton::loadModule(const char* psModName)

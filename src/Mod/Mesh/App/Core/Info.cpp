@@ -50,62 +50,19 @@ std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const
   ulCtPt = _rclMesh.CountPoints();
   ulCtFc = _rclMesh.CountFacets();
   ulCtEd = 0;
-
-  try {
-    // First try the 50% faster algorithm compared to the fallback solution. If n is the number of facets then we need 
-    // 4*2*3*n Bytes memory that complies ~65% of the mesh data structure.
-    // | | |
-    // | | \ 3 edges per facet
-    // | \ a pair of two unsigned long
-    // \ 4 Byte for an unsigned long
-    std::vector<std::pair<unsigned long, unsigned long> > lEdges;
-    // allocate memory
-    lEdges.resize(ulCtFc * 3);
-    MeshFacetArray::_TConstIterator pFIter = _rclMesh._aclFacetArray.begin();
-    // take all three edges of each facet
-    while (pFIter < _rclMesh._aclFacetArray.end()) {
-      const MeshFacet& rFacet = *pFIter;
-      for ( int j=0; j<3; j++ ) {
-        unsigned long ulPt0 = std::min<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
-        unsigned long ulPt1 = std::max<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
-        std::pair<unsigned long, unsigned long> cEdge(ulPt0, ulPt1); 
-        lEdges[i++]=cEdge;
-      }
-
-      pFIter++;
-    }
-
-    // remove duplicates
-    std::sort(lEdges.begin(), lEdges.end());
-    lEdges.erase(std::unique(lEdges.begin(), lEdges.end()), lEdges.end());
-    ulCtEd = lEdges.size();
-  } catch (const Base::MemoryException&) {
-    try {
-      // This is the fallback solution. Therefore we need only ~1.5*n elements (instead of 3*n) compared to the first solution.
-      // But as we're using a set we need additional 8 Bytes for internal pointers, so that we need quite the same amount of memory. 
-      // But in contrast to the first solution we don't need the memory in one block, so that this algorithm could succeed.
-      std::set<std::pair<unsigned long, unsigned long> > lEdges;
-      MeshFacetArray::_TConstIterator pFIter = _rclMesh._aclFacetArray.begin();
-      unsigned long i = 0;
-      while (pFIter < _rclMesh._aclFacetArray.end()) {
-        const MeshFacet& rFacet = *pFIter;
-        for ( int j=0; j<3; j++ ) {
-          unsigned long ulPt0 = std::min<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
-          unsigned long ulPt1 = std::max<unsigned long>(rFacet._aulPoints[j],  rFacet._aulPoints[(j+1)%3]);
-          std::pair<unsigned long, unsigned long> cEdge(ulPt0, ulPt1); 
-          lEdges.insert( cEdge );
-        }
-
-        pFIter++;
-        i++;
-      }
-
-      ulCtEd = lEdges.size();
-    } catch (const Base::MemoryException&) {
-      // Sorry, cannot determine number of edges
-      ulCtEd = ULONG_MAX;
+  unsigned long openEdges = 0, closedEdges = 0;
+  for (MeshFacetArray::_TConstIterator it = _rclMesh._aclFacetArray.begin(); it != _rclMesh._aclFacetArray.end(); it++)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      if (it->_aulNeighbours[i] == ULONG_MAX)
+        openEdges++;
+      else
+        closedEdges++;
     }
   }
+
+  ulCtEd = openEdges + (closedEdges / 2);
 
   rclStream << "Mesh: ["
             << ulCtFc << " Faces, ";
