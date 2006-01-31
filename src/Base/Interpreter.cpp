@@ -27,6 +27,7 @@
 
 #ifndef _PreComp_
 #	include <Python.h>
+# include <sstream>
 #endif
 
 #include "Console.h"
