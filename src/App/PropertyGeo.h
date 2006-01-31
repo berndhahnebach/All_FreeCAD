@@ -75,7 +75,7 @@ public:
   virtual void setPyObject(PyObject *);
 
   virtual void Save (Base::Writer &writer);
-  virtual void Restore(Base::Reader &reader);
+  virtual void Restore(Base::XMLReader &reader);
 
 
 private:
@@ -118,7 +118,7 @@ public:
   virtual void setPyObject(PyObject *);
 
   virtual void Save (short indent,std::ostream &str);
-  virtual void Restore(Base::Reader &reader);
+  virtual void Restore(Base::XMLReader &reader);
 
 
 private:

@@ -57,23 +57,31 @@ int FeatureMeshImport::execute(void)
     return 1;
   }
 
-  MeshSTL aReader(*(_cMesh.getKernel()) );
+  if ( fi.extension() == "bms" )
+  {
+    std::ifstream cIn( FileName.getValue(), std::ios::in | std::ios::binary );
+    _cMesh.getKernel()->RestoreStream( cIn );
+  }
+  else
+  {
+    MeshSTL aReader(*(_cMesh.getKernel()) );
 
-  // read file
-  FileStream str( FileName.getValue(), std::ios::in);
+    // read file
+    FileStream str( FileName.getValue(), std::ios::in);
 
-  // catches the abort exception to set a more detailed description
-  try{
-    if ( !aReader.Load( str ) )
-    {
-      setError("FeatureMeshImport::Execute() not able import %s!\n",FileName.getValue());
-      return 1;
+    // catches the abort exception to set a more detailed description
+    try{
+      if ( !aReader.Load( str ) )
+      {
+        setError("FeatureMeshImport::Execute() not able import %s!\n",FileName.getValue());
+        return 1;
+      }
+    }catch ( Base::AbortException& e ){
+      char szBuf[200];
+      sprintf(szBuf, "Loading of STL file '%s' aborted.", FileName.getValue());
+      e.SetMessage( szBuf );
+      throw e;
     }
-  }catch ( Base::AbortException& e ){
-    char szBuf[200];
-    sprintf(szBuf, "Loading of STL file '%s' aborted.", FileName.getValue());
-    e.SetMessage( szBuf );
-    throw e;
   }
 
   return 0;

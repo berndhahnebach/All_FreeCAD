@@ -108,7 +108,7 @@ void PropertyLink::Save (Writer &writer)
   writer << "<Link value=\"" <<  _pcLink->getName() <<"\"/>" ;
 }
 
-void PropertyLink::Restore(Base::Reader &reader)
+void PropertyLink::Restore(Base::XMLReader &reader)
 {
   // read my Element
   reader.readElement("Link");

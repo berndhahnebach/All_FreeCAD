@@ -60,26 +60,47 @@ void PointsFeature::Save (Base::Writer &writer)
   Feature::Save(writer);
   //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
 
-  _Points.Save(writer);
+  std::string fn = getName(); fn += ".bin";
+  writer.addFile(fn.c_str(), this);
+
+  //_Points.Save(writer);
 
 }
 
-void PointsFeature::Restore(Base::Reader &reader)
+void PointsFeature::Restore(Base::XMLReader &reader)
 {
   // save parent
   Feature::Restore(reader);
 
-  _Points.Restore(reader);
+  //_Points.Restore(reader);
 
 
 }
+
+void PointsFeature::SaveDocFile (Base::Writer &writer)
+{
+  const PointKernel& kernel = _Points.getKernel();
+  unsigned long uCtPts = kernel.size();
+  writer.write((const char*)&uCtPts, sizeof(unsigned long));
+  writer.write((const char*)&(kernel[0]), uCtPts*sizeof(Base::Vector3D));
+}
+
+void PointsFeature::RestoreDocFile(Base::Reader &reader)
+{
+  PointKernel& kernel = _Points.getKernel();
+  kernel.clear();
+
+  unsigned long uCtPts;
+  reader.read((char*)&uCtPts, sizeof(unsigned long));
+  kernel.resize(uCtPts);
+  reader.read((char*)&(kernel[0]), uCtPts*sizeof(Base::Vector3D));
+}
+
 
 int PointsFeature::execute(void)
 {
   return 0;
 }
-
-
 
 void PointsFeature::setPoints(const PointsWithProperty& New)
 {

@@ -68,21 +68,29 @@ int FeatureMeshExport::execute(void)
     return 1;
   }
 
-  MeshSTL aWriter(*(pcFeat->getMesh().getKernel()) );
-
-  // write file
-  bool ok = false;
-  FileStream str( FileName.getValue(), std::ios::out);
-
-  if ( std::string(Format.getValue()) == "ASCII STL" )
-    ok = aWriter.SaveAscii( str );
-  else // "Binary STL"
-    ok = aWriter.SaveBinary( str );
-
-  if ( !ok )
+  if ( fi.extension() == "bms" )
   {
-    setError("FeatureMeshExport::Execute() not able to export %s\n",FileName.getValue());
-    return 1;
+    std::ofstream cOut( FileName.getValue(), std::ios::out | std::ios::binary );
+    _cMesh.getKernel()->SaveStream( cOut );
+  }
+  else
+  {
+    MeshSTL aWriter(*(pcFeat->getMesh().getKernel()) );
+
+    // write file
+    bool ok = false;
+    FileStream str( FileName.getValue(), std::ios::out);
+
+    if ( std::string(Format.getValue()) == "ASCII STL" )
+      ok = aWriter.SaveAscii( str );
+    else // "Binary STL"
+      ok = aWriter.SaveBinary( str );
+
+    if ( !ok )
+    {
+      setError("FeatureMeshExport::Execute() not able to export %s\n",FileName.getValue());
+      return 1;
+    }
   }
 
   return 0;

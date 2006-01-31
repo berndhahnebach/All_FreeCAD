@@ -145,7 +145,7 @@ public:
   //@}
 
   virtual void Save (Base::Writer &writer);
-  virtual void Restore(Base::Reader &reader);
+  virtual void Restore(Base::XMLReader &reader);
 
 
 	/** @name Feature handling  */

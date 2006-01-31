@@ -34,6 +34,7 @@
 #include <xercesc/sax2/DefaultHandler.hpp>
 
 #include "FileInfo.h"
+#include "Writer.h"
 
 
 XERCES_CPP_NAMESPACE_USE
@@ -107,12 +108,12 @@ void PropertyContainer::Restore(Base::Reader &reader)
  * \see App::Persistance
  * \author Juergen Riegel
  */
-class BaseExport Reader : public DefaultHandler
+class BaseExport XMLReader : public DefaultHandler
 {
 public:
     /// opens the file and read the first element
-  Reader(const char* FileName, std::istream&);
-  ~Reader();
+  XMLReader(const char* FileName, std::istream&);
+  ~XMLReader();
 
   bool isValid() const { return _valid; }
 
@@ -135,7 +136,7 @@ public:
   /// get the numbers of attributes of the current Element
   unsigned int getAttributeCount    (void);
   /// check if the read element has a special attribute
-  bool         Reader::hasAttribute (const char* AttrName);
+  bool         hasAttribute (const char* AttrName);
   /// returns the named attribute as an interer (does type checking)
   long         getAttributeAsInteger(const char* AttrName);
   /// returns the named attribute as an double floating point (does type checking)
@@ -185,6 +186,32 @@ private:
   SAX2XMLReader* parser;
   XMLPScanToken token;
   bool _valid;
+};
+
+/**
+ * Extended XML reader class the collects also the attached data files in a zip file.
+ * @author Werner Mayer
+ */
+class BaseExport XMLZipReader : public XMLReader
+{
+public:
+    /// opens the file and read the first element
+  XMLZipReader(const char* FileName, Reader& reader)
+    : XMLReader(FileName, reader), _reader(reader)
+  {
+  }
+
+  ~XMLZipReader()
+  {
+  }
+
+  void addFile(const char* FileName, const char* FeatName)
+  {
+    _reader.addFile(FileName,FeatName);
+  }
+
+private:
+  Reader& _reader;
 };
 
 }

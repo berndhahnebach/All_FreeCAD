@@ -61,6 +61,17 @@ void Writer::addFile(const char* Name, Base::Persistance *Object)
   
   FileList.push_back(temp);
 
+  FileNames.push_back( temp.FileName );
+}
+
+void Writer::unsetFilenames()
+{
+  FileNames.clear();
+}
+
+const std::vector<std::string>& Writer::getFilenames() const
+{
+  return FileNames;
 }
 
 const char* Writer::ind(void)
@@ -85,3 +96,26 @@ void Writer::decInd(void)
 {
   indent--;
 }
+
+// ---------------------------------------------------------------------------
+//  Reader: Constructors and Destructor
+// ---------------------------------------------------------------------------
+
+Reader::Reader(const char* FileName) 
+: ZipInputStream(FileName)
+{
+}
+
+Reader::~Reader()
+{
+}
+
+void Reader::addFile(const char* FileName, const char* FeatName)
+{
+  FileEntry temp;
+  temp.FileName = FileName;
+  temp.FeatName = FeatName;
+  
+  FileList.push_back(temp);
+}
+

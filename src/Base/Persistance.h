@@ -33,11 +33,13 @@
 #endif
 
 #include "Base.h"
+#include "zipios/zipinputstream.h"
 
 namespace Base
 {
   class Reader;
   class Writer;
+  class XMLReader;
 
 /// Persistance class and root of the type system
 class BaseExport Persistance : public BaseClass
@@ -46,10 +48,20 @@ class BaseExport Persistance : public BaseClass
   TYPESYSTEM_HEADER();
 
 public: 
+  /// This method is used to save properties or very small amounts of data to an XML document.
   virtual void Save (Writer &writer){
     assert(0);
   } 
-  virtual void Restore(Reader &reader){
+  /// This method is used to restore properties from an XML document.
+  virtual void Restore(XMLReader &reader){
+    assert(0);
+  } 
+  /// This method is used to save large amounts of data to a binary file.
+  virtual void SaveDocFile (Writer &writer){
+    assert(0);
+  } 
+  /// This method is used to restore large amounts of data from a binary file.
+  virtual void RestoreDocFile(Reader &reader){
     assert(0);
   } 
 

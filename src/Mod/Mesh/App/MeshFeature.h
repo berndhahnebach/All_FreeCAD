@@ -34,7 +34,7 @@ class FeaturePy;
 
 namespace Base{
   class PyObjectBase;
-  class Reader;
+  class XMLReader;
   class Writer;
 }
 
@@ -66,10 +66,10 @@ public:
   //@}
 
   virtual void Save (Base::Writer &writer);
-  virtual void Restore(Base::Reader &reader);
+  virtual void Restore(Base::XMLReader &reader);
 
-  virtual void SaveData (std::ostream &str);
-  virtual void RestoreData(std::istream &str);
+  virtual void SaveDocFile (Base::Writer &writer);
+  virtual void RestoreDocFile(Base::Reader &reader);
 
 
   /** @name methods for mesh handling */

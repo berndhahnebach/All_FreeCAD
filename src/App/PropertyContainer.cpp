@@ -95,7 +95,7 @@ void PropertyContainer::Save (Writer &writer)
   writer << writer.ind() << "</Properties>" << endl;
 }
 
-void PropertyContainer::Restore(Base::Reader &reader)
+void PropertyContainer::Restore(Base::XMLReader &reader)
 {
   reader.readElement("Properties");
   int Cnt = reader.getAttributeAsInteger("Count");

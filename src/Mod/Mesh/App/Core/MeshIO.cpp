@@ -582,7 +582,7 @@ void MeshDocXML::Save (Base::Writer &writer)
 
 }
 
-void MeshDocXML::Restore(Base::Reader &reader)
+void MeshDocXML::Restore(Base::XMLReader &reader)
 { 
   int Cnt,i;
  

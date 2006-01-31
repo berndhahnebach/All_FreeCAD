@@ -457,51 +457,6 @@ void MeshKernel::SaveStream (DataStream &rclOut)
             _clBoundBox.MaxX << _clBoundBox.MaxY << _clBoundBox.MaxZ;
 }
 
-void MeshKernel::SaveStream (std::ostream &rclOut)
-{/*
-  MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
-  MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
-
-  rclOut << CountPoints() << CountFacets();
-  while (clPIter < clPEIter) rclOut << *(clPIter++);
-  while (clFIter < clFEIter) rclOut << *(clFIter++);
-
-  rclOut << _clBoundBox.MinX << _clBoundBox.MinY << _clBoundBox.MinZ <<
-            _clBoundBox.MaxX << _clBoundBox.MaxY << _clBoundBox.MaxZ;*/
-
-  MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
-  MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
-
-  unsigned long uCtPts = CountPoints();
-  unsigned long uCtFts = CountFacets();
-  rclOut.write((const char*)&uCtPts, sizeof(unsigned long));
-  rclOut.write((const char*)&uCtFts, sizeof(unsigned long));
-
-  while (clPIter < clPEIter) {
-    rclOut.write((const char*)&(clPIter->x), sizeof(float));
-    rclOut.write((const char*)&(clPIter->y), sizeof(float));
-    rclOut.write((const char*)&(clPIter->z), sizeof(float));
-    clPIter++;
-  }
-  while (clFIter < clFEIter) {
-    rclOut.write((const char*)&(clFIter->_aulNeighbours[0]), sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulNeighbours[1]), sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulNeighbours[2]), sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulPoints[0]),     sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulPoints[1]),     sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulPoints[2]),     sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_ucFlag),           sizeof(unsigned char));
-    clFIter++;
-  }
-
-  rclOut.write((const char*)&_clBoundBox.MinX, sizeof(float));
-  rclOut.write((const char*)&_clBoundBox.MinY, sizeof(float));
-  rclOut.write((const char*)&_clBoundBox.MinZ, sizeof(float));
-  rclOut.write((const char*)&_clBoundBox.MaxX, sizeof(float));
-  rclOut.write((const char*)&_clBoundBox.MaxY, sizeof(float));
-  rclOut.write((const char*)&_clBoundBox.MaxZ, sizeof(float));
-}
-
 void MeshKernel::RestoreStream (DataStream &rclIn)
 {
   unsigned long  ulCtPt, ulCtFc;
@@ -521,24 +476,39 @@ void MeshKernel::RestoreStream (DataStream &rclIn)
            _clBoundBox.MaxX >> _clBoundBox.MaxY >> _clBoundBox.MaxZ;
 }
 
-void MeshKernel::RestoreStream (std::istream &rclIn)
-{/*
-  unsigned long  ulCtPt, ulCtFc;
-
-  Clear();
-  rclIn >> ulCtPt >> ulCtFc; 
-  _aclPointArray.resize(ulCtPt);  
-  _aclFacetArray.resize(ulCtFc);
-
+void MeshKernel::SaveStream (std::ostream &rclOut)
+{
+  unsigned long uCtPts = CountPoints();
+  unsigned long uCtFts = CountFacets();
+  rclOut.write((const char*)&uCtPts, sizeof(unsigned long));
+  rclOut.write((const char*)&uCtFts, sizeof(unsigned long));
+/*
   MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
   MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
 
-  while (clPIter < clPEIter) rclIn >> *(clPIter++); 
-  while (clFIter < clFEIter) rclIn >> *(clFIter++);
+  while (clPIter < clPEIter) {
+    rclOut.write((const char*)&(clPIter->x), sizeof(float));
+    rclOut.write((const char*)&(clPIter->y), sizeof(float));
+    rclOut.write((const char*)&(clPIter->z), sizeof(float));
+    clPIter++;
+  }*/
+/*  while (clFIter < clFEIter) {
+    rclOut.write((const char*)&(clFIter->_aulNeighbours[0]), sizeof(unsigned long));
+    rclOut.write((const char*)&(clFIter->_aulNeighbours[1]), sizeof(unsigned long));
+    rclOut.write((const char*)&(clFIter->_aulNeighbours[2]), sizeof(unsigned long));
+    rclOut.write((const char*)&(clFIter->_aulPoints[0]),     sizeof(unsigned long));
+    rclOut.write((const char*)&(clFIter->_aulPoints[1]),     sizeof(unsigned long));
+    rclOut.write((const char*)&(clFIter->_aulPoints[2]),     sizeof(unsigned long));
+    rclOut.write((const char*)&(clFIter->_ucFlag),           sizeof(unsigned char));
+    clFIter++;
+  }*/
+  rclOut.write((const char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
+  rclOut.write((const char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
+  rclOut.write((const char*)&_clBoundBox, sizeof(Base::BoundBox3D));
+}
 
-  rclIn >> _clBoundBox.MinX >> _clBoundBox.MinY >> _clBoundBox.MinZ >>
-           _clBoundBox.MaxX >> _clBoundBox.MaxY >> _clBoundBox.MaxZ;*/
-
+void MeshKernel::RestoreStream (std::istream &rclIn)
+{
   Clear();
 
   unsigned long uCtPts, uCtFts;
@@ -546,7 +516,7 @@ void MeshKernel::RestoreStream (std::istream &rclIn)
   rclIn.read((char*)&uCtFts, sizeof(unsigned long));
   _aclPointArray.resize(uCtPts);  
   _aclFacetArray.resize(uCtFts);
-
+/*
   MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
   MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
 
@@ -563,16 +533,11 @@ void MeshKernel::RestoreStream (std::istream &rclIn)
     rclIn.read((char*)&(clFIter->_aulPoints[0]),     sizeof(unsigned long));
     rclIn.read((char*)&(clFIter->_aulPoints[1]),     sizeof(unsigned long));
     rclIn.read((char*)&(clFIter->_aulPoints[2]),     sizeof(unsigned long));
-    rclIn.read((char*)&(clFIter->_ucFlag),           sizeof(unsigned char));
     clFIter++;
-  }
-
-  rclIn.read((char*)&_clBoundBox.MinX, sizeof(float));
-  rclIn.read((char*)&_clBoundBox.MinY, sizeof(float));
-  rclIn.read((char*)&_clBoundBox.MinZ, sizeof(float));
-  rclIn.read((char*)&_clBoundBox.MaxX, sizeof(float));
-  rclIn.read((char*)&_clBoundBox.MaxY, sizeof(float));
-  rclIn.read((char*)&_clBoundBox.MaxZ, sizeof(float));
+  }*/
+  rclIn.read((char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
+  rclIn.read((char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
+  rclIn.read((char*)&_clBoundBox, sizeof(Base::BoundBox3D));
 }
 
 void MeshKernel::operator *= (const Matrix4D &rclMat)

@@ -56,7 +56,9 @@ public:
   virtual ~PointsFeature(void);
 
   virtual void Save (Base::Writer &writer);
-  virtual void Restore(Base::Reader &reader);
+  virtual void Restore(Base::XMLReader &reader);
+  virtual void SaveDocFile (Base::Writer &writer);
+  virtual void RestoreDocFile(Base::Reader &reader);
 
   /** @name methods overide Feature */
   //@{

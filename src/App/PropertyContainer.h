@@ -80,7 +80,7 @@ public:
   void getPropertyMap(std::map<std::string,Property*> &Map);
 
   virtual void Save (Base::Writer &writer);
-  virtual void Restore(Base::Reader &reader);
+  virtual void Restore(Base::XMLReader &reader);
 
 
   friend class Property;

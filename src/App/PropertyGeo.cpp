@@ -129,10 +129,10 @@ void PropertyVector::setPyObject(PyObject *value)
 
 void PropertyVector::Save (Writer &writer)
 {
-  writer << writer.ind() << "<PropertyLink valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
+  writer << writer.ind() << "<PropertyVector valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
 }
 
-void PropertyVector::Restore(Base::Reader &reader)
+void PropertyVector::Restore(Base::XMLReader &reader)
 {
 
 
@@ -197,7 +197,7 @@ void PropertyMatrix::Save (short indent,std::ostream &str)
   //str << ind(indent) << "<PropertyLink valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
 }
 
-void PropertyMatrix::Restore(Base::Reader &reader)
+void PropertyMatrix::Restore(Base::XMLReader &reader)
 {
 
 

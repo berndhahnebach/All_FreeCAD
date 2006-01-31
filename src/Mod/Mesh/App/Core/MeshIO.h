@@ -28,7 +28,7 @@
 
 namespace Base {
   class FileStream;
-  class Reader;
+  class XMLReader;
   class Writer;
 }
 
@@ -96,7 +96,7 @@ public:
   virtual ~MeshDocXML (void) { }
 
   void Save (Base::Writer &writer);
-  void Restore(Base::Reader &reader);
+  void Restore(Base::XMLReader &reader);
 
 protected:
   MeshKernel &_rclMesh; /**< reference to mesh data structure */

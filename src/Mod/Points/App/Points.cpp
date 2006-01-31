@@ -277,7 +277,7 @@ void PointsWithProperty::Save (Base::Writer &writer)
 
 }
 
-void PointsWithProperty::Restore(Base::Reader &reader)
+void PointsWithProperty::Restore(Base::XMLReader &reader)
 { 
   int Cnt,i;
  

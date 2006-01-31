@@ -56,7 +56,7 @@
                             </property>
                             <property name="text">
                                 <string>Document save compression level
-(0 = none, 9 = highest, 1 = normal)</string>
+(0 = none, 9 = highest, 3 = default)</string>
                             </property>
                         </widget>
                         <widget class="Gui::PrefSpinBox">
@@ -67,7 +67,7 @@
                                 <number>9</number>
                             </property>
                             <property name="value">
-                                <number>1</number>
+                                <number>3</number>
                             </property>
                             <property name="prefEntry" stdset="0">
                                 <cstring>CompressionLevel</cstring>
@@ -82,8 +82,8 @@
         </widget>
     </grid>
 </widget>
-<tabstops>
-</tabstops>
+<customwidgets>
+</customwidgets>
 <slots>
     <slot access="protected">saveSettings()</slot>
     <slot access="protected">loadSettings()</slot>

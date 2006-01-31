@@ -53,12 +53,26 @@ class Persistance;
  */
 class BaseExport Writer: public zipios::ZipOutputStream
 {
+private:
+  struct FileEntry {
+    std::string FileName;
+    Base::Persistance *Object;
+  };
+
 public:
-    /// opens the file and read the first element
+  typedef std::vector<FileEntry>::const_iterator  ConstIterator;
+
+  ConstIterator begin (void) const { return FileList.begin(); }
+  ConstIterator end (void) const { return FileList.end(); }
+
+  /// opens the file and write the first file
   Writer(const char* FileName);
   ~Writer();
 
   void addFile(const char* Name, Base::Persistance *Object);
+
+  void unsetFilenames();
+  const std::vector<std::string>& getFilenames() const;
 
   const char* ind(void);
   void incInd(void);
@@ -66,13 +80,40 @@ public:
 
 
 private:
-  struct FileEntry {
-    std::string FileName;
-    Base::Persistance *Object;
-  };
   std::vector<FileEntry> FileList;
+  std::vector<std::string> FileNames;
 
   short indent;
+};
+
+
+/** The Reader class 
+ * This is a important helper class for the restore of objects in FreeCAD. 
+ * @see App::Persistance
+ * @author Werner Mayer
+ */
+class BaseExport Reader: public zipios::ZipInputStream
+{
+private:
+  struct FileEntry {
+    std::string FileName;
+    std::string FeatName;
+  };
+
+public:
+  typedef std::vector<FileEntry>::const_iterator  ConstIterator;
+
+  ConstIterator begin (void) const { return FileList.begin(); }
+  ConstIterator end (void) const { return FileList.end(); }
+
+  /// opens the file and read the first file
+  Reader(const char* FileName);
+  ~Reader();
+
+  void addFile(const char* FileName, const char* FeatName);
+
+private:
+  std::vector<FileEntry> FileList;
 };
 
 }

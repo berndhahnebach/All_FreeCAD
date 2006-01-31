@@ -112,6 +112,8 @@ libFreeCADBase_la_SOURCES=\
 		Vector3D.cpp \
 		Vector3D.h \
 		ViewProj.h \
+		Writer.cpp \
+		Writer.h \
 		XMLTools.h 
 
 libFreeCADBase_la_LIBADD   =  -lpython@fc_py_ver@ -lxerces-c -lz

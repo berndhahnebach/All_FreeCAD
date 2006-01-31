@@ -265,7 +265,7 @@ CmdMeshImport::CmdMeshImport()
 
 void CmdMeshImport::activated(int iMsg)
 {
-  QString filter = "All STL Files (*.stl *.ast);;Binary STL (*.stl);;ASCII STL (*.ast);;All Files (*.*)";
+  QString filter = "All STL Files (*.stl *.ast);;Binary STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
   QString fn = Gui::FileDialog::getOpenFileName( QString::null, filter, Gui::getMainWindow() );
   if (! fn.isEmpty() )
   {
@@ -306,7 +306,7 @@ CmdMeshExport::CmdMeshExport()
 
 void CmdMeshExport::activated(int iMsg)
 {
-  QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;All Files (*.*)";
+  QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
   QString format;
   QString fn = Gui::FileDialog::getSaveFileName( QString::null, filter, Gui::getMainWindow(), 0,
                                                  QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );

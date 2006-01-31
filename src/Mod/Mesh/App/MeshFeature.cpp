@@ -94,6 +94,9 @@ void MeshFeature::Save (Base::Writer &writer)
 {
   // save parent
   Feature::Save(writer);
+
+  std::string fn = getName(); fn += ".bms";
+  writer.addFile(fn.c_str(), this);
   //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
 
 //  MeshCore::MeshDocXML writer(*_cMesh.getKernel());
@@ -102,7 +105,7 @@ void MeshFeature::Save (Base::Writer &writer)
 
 }
 
-void MeshFeature::Restore(Base::Reader &reader)
+void MeshFeature::Restore(Base::XMLReader &reader)
 {
   // save parent
   Feature::Restore(reader);
@@ -114,13 +117,13 @@ void MeshFeature::Restore(Base::Reader &reader)
 
 }
 
-void MeshFeature::SaveData (std::ostream &str)
+void MeshFeature::SaveDocFile (Base::Writer &writer)
 {
-  _cMesh.getKernel()->SaveStream(str);
+  _cMesh.getKernel()->SaveStream(writer);
 }
 
-void MeshFeature::RestoreData(std::istream &str)
+void MeshFeature::RestoreDocFile(Base::Reader &reader)
 {
-  _cMesh.getKernel()->RestoreStream(str);
+  _cMesh.getKernel()->RestoreStream(reader);
 }
 

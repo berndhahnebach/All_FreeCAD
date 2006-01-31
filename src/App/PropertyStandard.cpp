@@ -101,7 +101,7 @@ void PropertyInteger::Save (Writer &writer)
   writer << "<Integer value=\"" <<  _lValue <<"\"/>" ;
 }
 
-void PropertyInteger::Restore(Base::Reader &reader)
+void PropertyInteger::Restore(Base::XMLReader &reader)
 {
   // read my Element
   reader.readElement("Integer");
@@ -174,7 +174,7 @@ void PropertyFloat::Save (Writer &writer)
   writer <<  "<Float value=\"" <<  _dValue <<"\"/>" ;
 }
 
-void PropertyFloat::Restore(Base::Reader &reader)
+void PropertyFloat::Restore(Base::XMLReader &reader)
 {
   // read my Element
   reader.readElement("Float");
@@ -257,7 +257,7 @@ void PropertyString::Save (Writer &writer)
   writer << "<String value=\"" <<  _cValue.c_str() <<"\"/>" ;
 }
 
-void PropertyString::Restore(Base::Reader &reader)
+void PropertyString::Restore(Base::XMLReader &reader)
 {
   // read my Element
   reader.readElement("String");
@@ -334,7 +334,7 @@ void PropertyBool::Save (Writer &writer)
 
 }
 
-void PropertyBool::Restore(Base::Reader &reader)
+void PropertyBool::Restore(Base::XMLReader &reader)
 {
   // read my Element
   reader.readElement("String");

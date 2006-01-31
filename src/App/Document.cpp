@@ -137,8 +137,16 @@ void Document::Save (Writer &writer)
   for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
   {
     Feature* feat = it->second.F;
-    writer << writer.ind() << "<Feature name=\"" << feat->getName() << "\">" << endl;    
+    writer << writer.ind() << "<Feature name=\"" << feat->getName() << "\">" << endl;   
+    writer.unsetFilenames();
     feat->Save(writer);
+    const std::vector<std::string>& fn = writer.getFilenames();
+    writer << writer.ind() << "<Files Count=\"" << fn.size() <<"\">" << endl;
+    for ( std::vector<std::string>::const_iterator iF = fn.begin(); iF != fn.end(); ++iF)
+    {
+      writer << writer.ind() << "<File name=\"" << (*iF) << "\" ></File>" << endl;
+    }
+    writer << writer.ind() << "</Files>" << endl;
     writer << writer.ind() << "</Feature>" << endl;
   }
 
@@ -147,7 +155,7 @@ void Document::Save (Writer &writer)
 
 }
 
-void Document::Restore(Base::Reader &reader)
+void Document::Restore(Base::XMLReader &reader)
 {
   int i,Cnt;
 
@@ -196,7 +204,20 @@ void Document::Restore(Base::Reader &reader)
     string name = reader.getAttribute("name");
     Feature* pFeat = getFeature(name.c_str());
     if(pFeat) // check if this feature has been registered
+    {
       pFeat->Restore(reader);
+
+      // restore the attached files to this feature
+      reader.readElement("Files");
+      int ctFiles = reader.getAttributeAsInteger("Count");
+      for ( int iFiles = 0; iFiles < ctFiles; ++iFiles )
+      {
+        reader.readElement("File");
+        string fn = reader.getAttribute("name");
+        reinterpret_cast<Base::XMLZipReader&>(reader).addFile(fn.c_str(), name.c_str());
+      }
+      reader.readEndElement("Files");
+    }
     reader.readEndElement("Feature");
   }
   reader.readEndElement("FeatureData");
@@ -232,20 +253,10 @@ void Document::saveAs (const char* name)
 // Save the document under the name its been opened
 bool Document::save (void)
 {
-  int compression = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Document")->GetInt("CompressionLevel",1);
+  int compression = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Document")->GetInt("CompressionLevel",3);
 
   if(*(FileName.getValue()) != '\0')
   {
-//    if(compression != 0)
-//    {
-//      Base::ogzstream file(FileName.getValue(),std::ios_base::out,compression);
-//      Document::Save(0,file);
-//    }
-//    else
-//    {
-//      ofstream file(FileName.getValue());
-//      Document::Save(0,file);
-//    }
     Base::Writer file(FileName.getValue());
     file.setComment("FreeCAD Document");
     file.setLevel( compression );
@@ -254,12 +265,10 @@ bool Document::save (void)
 
     Document::Save(file);
 
-    std::map<std::string,FeatEntry>::iterator it;
-    for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
+    for ( Base::Writer::ConstIterator it = file.begin(); it != file.end(); ++it )
     {
-      Feature* feat = it->second.F;
-      file.putNextEntry(string(feat->getName())+".dat");
-      feat->SaveData( file );
+      file.putNextEntry(it->FileName);
+      it->Object->SaveDocFile( file );
     }
 
     file.close();
@@ -273,34 +282,30 @@ bool Document::save (void)
 // Open the document
 bool Document::open (void)
 {
-  Base::FileInfo File(FileName.getValue());
+  Base::Reader file(FileName.getValue());
 
-  ZipInputStream file(File.filePath().c_str());
-  //Base::igzstream file(File.filePath().c_str());
-  //ifstream file(File.filePath().c_str());
-
-  Base::Reader reader(File.filePath().c_str(), file);
+  Base::XMLZipReader reader(FileName.getValue(), file);
   if ( reader.isValid() )
   {
-    Restore(reader);
-    ConstEntryPointer entry = file.getNextEntry();
-    while ( entry->isValid() )
+    Document::Restore(reader);
+
+    for ( Base::Reader::ConstIterator it = file.begin(); it != file.end(); ++it )
     {
-      std::string name = entry->getName();
-      // remove ".dat" extension
-      name = name.substr(0,name.length()-4);
-      Feature* feat = getFeature( name.c_str() );
-      if ( feat )
+      ConstEntryPointer entry = file.getNextEntry();
+      if ( entry->isValid() && entry->getName() == it->FileName )
       {
-        feat->RestoreData(file);
+        Feature* feat = getFeature( it->FeatName.c_str() );
+        if ( feat )
+        {
+          feat->RestoreDocFile( file );
+        }
       }
-      entry = file.getNextEntry();
     }
 
     file.close();
 
     //FIXME: Actually we mustn't call Recompute() after restoring a document, otherwise execute() gets invoked for every feature
-    //       which can take a long time, e.g. loading a huge mesh. But the data get already reloaded by RestoreData().
+    //       which can take a long time, e.g. loading a huge mesh. But the data get already reloaded by RestoreDocFile().
     //       So the complete internal state of a feature must be made persistent.
     Recompute();
 
