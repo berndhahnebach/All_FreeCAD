@@ -48,6 +48,7 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
+#include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <Base/Stream.h>
 #include <Base/Tools2D.h>
@@ -116,35 +117,47 @@ ViewProviderMesh::~ViewProviderMesh()
 void ViewProviderMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 {
 #if 1
-  MeshKernel *cMesh = pcMesh->getKernel();
-  SbVec3f* vertices = new SbVec3f[cMesh->CountPoints()];
-  int* faces = new int [4*cMesh->CountFacets()];
 
-  Base::SequencerLauncher seq( "Building View node...", cMesh->CountFacets() );
+  SbVec3f* vertices = 0;
+  int* faces = 0;
 
-  unsigned long j=0;
-  MeshFacetIterator cFIt(*cMesh);
-  for( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
-  {
-    const MeshGeomFacet& rFace = *cFIt;
-    MeshFacet aFace = cFIt.GetIndicies();
+  try {
+    MeshKernel *cMesh = pcMesh->getKernel();
+    vertices = new SbVec3f[cMesh->CountPoints()];
+    faces = new int [4*cMesh->CountFacets()];
 
-    for ( int i=0; i<3; i++ )
+    Base::SequencerLauncher seq( "Building View node...", cMesh->CountFacets() );
+
+    unsigned long j=0;
+    MeshFacetIterator cFIt(*cMesh);
+    for( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
     {
-      vertices[aFace._aulPoints[i]].setValue(rFace._aclPoints[i].x,
-                                             rFace._aclPoints[i].y,
-                                             rFace._aclPoints[i].z);
-      faces[4*j+i] = aFace._aulPoints[i];
+      const MeshGeomFacet& rFace = *cFIt;
+      MeshFacet aFace = cFIt.GetIndicies();
+
+      for ( int i=0; i<3; i++ )
+      {
+        vertices[aFace._aulPoints[i]].setValue(rFace._aclPoints[i].x,
+                                               rFace._aclPoints[i].y,
+                                               rFace._aclPoints[i].z);
+        faces[4*j+i] = aFace._aulPoints[i];
+      }
+
+      faces[4*j+3] = SO_END_FACE_INDEX;
+      Base::Sequencer().next( false ); // don't allow to cancel
     }
 
-    faces[4*j+3] = SO_END_FACE_INDEX;
-    Base::Sequencer().next( false ); // don't allow to cancel
+	  pcMeshCoord->point.setValues(0,cMesh->CountPoints(), vertices);
+    delete [] vertices;
+	  pcMeshFaces->coordIndex.setValues(0,4*cMesh->CountFacets(),(const int*) faces);
+    delete [] faces;
+  } catch (const Base::MemoryException& e) {
+    pcMeshCoord->point.deleteValues(0);
+    pcMeshFaces->coordIndex.deleteValues(0);
+    delete [] vertices;
+    delete [] faces;
+    throw e;
   }
-
-	pcMeshCoord->point.setValues(0,cMesh->CountPoints(), vertices);
-  delete [] vertices;
-	pcMeshFaces->coordIndex.setValues(0,4*cMesh->CountFacets(),(const int*) faces);
-  delete [] faces;
 
 #else /// @todo This doesn't seem to work as expected (save tmp. memory and time). Don't know why!?
   MeshKernel *cMesh = pcMesh->getKernel();

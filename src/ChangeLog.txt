@@ -19,3 +19,5 @@ Version: V0.5B3 Date: Mon Jan 30 13:54:25 2006 +++++++++++++++++++++++++++++++
 + a fast algorithm to count edges (2 manifold) without additional memory (patch from bgrupp)
 + resolve problems for running macros from file with Microsoft Visual Studio 8.0 (patch from bgrupp)
 + I/O of points and meshes in document container file
++ fixes memory exception in view provider for meshes
++ fixes memory exception when rendering a huge Inventor node

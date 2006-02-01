@@ -33,10 +33,12 @@
 #endif
 
 
+#include <Base/Exception.h>
+
 #include <App/Document.h>
 #include <App/Feature.h>
-#include "Application.h"
 
+#include "Application.h"
 #include "MainWindow.h"
 #include "Tree.h"
 #include "Document.h"
@@ -296,8 +298,20 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
     _ViewProviderMap[*It] = pcProvider;
     if(pcProvider)
     {
-      // if succesfully created set the right name an calculate the view
-      pcProvider->attach(*It);
+      try{
+        // if succesfully created set the right name an calculate the view
+        pcProvider->attach(*It);
+      }catch(const Base::MemoryException& e){
+        Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*It)->getName(),e.what());
+        (*It)->setError(e.what());
+      }catch(Base::Exception &e){
+        e.ReportException();
+      }
+#ifndef FC_DEBUG
+      catch(...){
+        Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",(*It)->getName());
+      }
+#endif
 
       // cycling to all views of the document
       for(VIt = _LpcViews.begin();VIt != _LpcViews.end();VIt++)

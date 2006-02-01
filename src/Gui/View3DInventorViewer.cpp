@@ -28,6 +28,7 @@
 # include <qapplication.h>
 # include <qcursor.h>
 # include <qimage.h>
+# include <qmessagebox.h>
 # include <qpainter.h>
 # include <qpen.h>
 # include <qpopupmenu.h>
@@ -437,8 +438,16 @@ void View3DInventorViewer::actualRedraw(void)
     reorientCamera(deltaRotation);
   }
 
-  // Render normal scenegraph.
-  inherited::actualRedraw();
+  try {
+    // Render normal scenegraph.
+    inherited::actualRedraw();
+  } catch ( const Base::MemoryException& e ) {
+    // FIXME: If this exception appears then the background and camera position get broken somehow. (Werner 2006-02-01) 
+    for ( std::set<ViewProvider*>::iterator it = _ViewProviderSet.begin(); it != _ViewProviderSet.end(); ++it )
+      (*it)->hide();
+    inherited::actualRedraw();
+    QMessageBox::warning(getParentWidget(), e.what(), QObject::tr("Not enough memory available to display the data."));
+  }
 
 
   // Render overlay front scenegraph.
