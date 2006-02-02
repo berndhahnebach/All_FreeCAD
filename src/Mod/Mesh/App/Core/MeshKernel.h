@@ -80,11 +80,8 @@ public:
   /** @name I/O methods */
   //@{
   /// Binary streaming of data
-  virtual void SaveStream (DataStream &rclOut);
-  virtual void SaveStream (std::ostream &rclOut);
-  /// Binary streaming of data
-  virtual void RestoreStream (DataStream &rclIn);
-  virtual void RestoreStream (std::istream &rclIn);
+  virtual void Write (std::ostream &rclOut);
+  virtual void Read (std::istream &rclIn);
   //@}
 
   /** @name Querying */

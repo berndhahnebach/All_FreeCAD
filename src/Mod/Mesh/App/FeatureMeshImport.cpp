@@ -60,7 +60,7 @@ int FeatureMeshImport::execute(void)
   if ( fi.extension() == "bms" )
   {
     std::ifstream cIn( FileName.getValue(), std::ios::in | std::ios::binary );
-    _cMesh.getKernel()->RestoreStream( cIn );
+    _cMesh.getKernel()->Read( cIn );
   }
   else
   {

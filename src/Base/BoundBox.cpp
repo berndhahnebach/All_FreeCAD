@@ -519,26 +519,6 @@ void BoundBox3D::Print (void)
   printf ("X2 : %5.2f   Y2 : %5.2f   Z2 : %5.2f\n", MaxX, MaxY, MaxZ);
 }
 
-DataStream& operator<< (DataStream& ors, RBoundBox3D rclBound)
-{
-  return rclBound.SaveData (ors);
-}
-
-DataStream& operator>> (DataStream& irs, RBoundBox3D rclBound)
-{
-  return rclBound.LoadData (irs);
-}
-
-DataStream & BoundBox3D::SaveData (DataStream &ofs)
-{
-  return ofs << MinX << MaxX << MinY << MaxY << MinZ << MaxZ;
-}
-
-DataStream & BoundBox3D::LoadData (DataStream &ifs)
-{
-  return ifs >> MinX >> MaxX >> MinY >> MaxY >> MinZ >> MaxZ;
-}
-
 BoundBox2D BoundBox3D::ProjectBox(const ViewProjMethod *pclP) const
 {
   BoundBox2D  clBB2D;

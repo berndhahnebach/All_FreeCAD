@@ -24,11 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <set>
-# include <vector>
 #endif
 
 #include <Base/Sequencer.h>
+#include <Base/Exception.h>
 
 #include "Builder.h"
 #include "MeshKernel.h"
@@ -44,24 +43,46 @@ MeshBuilder::~MeshBuilder (void)
 {
 }
 
-void MeshBuilder::Initialize (long ctFacets, bool deletion)
+void MeshBuilder::Initialize (unsigned long ctFacets, bool deletion)
 {
   if (deletion)
   {
-	  _meshKernel._aclFacetArray.clear();
-	  _meshKernel._aclPointArray.clear();
+    // Clear the mesh structure and free all memory
+    _meshKernel.Clear();
+    
+    // Allocate new memory that is needed later on. If AddFacet() gets called exactly ctFacets times there is no wastage of memory
+    // otherwise the vector reallocates ~50% of its future memory usage.
+    // Note: A feature of the std::vector implementation is that it can hold more memory (capacity) than it actually needs (size).
+    //       This usually happens if its elements are added without specifying its final size. Later on it's a bit tricky to free the wasted 
+    //       memory. So we're strived to avoid the wastage of memory.
+    _meshKernel._aclFacetArray.reserve(ctFacets);
+
+    // Usually the number of vertices is the half of the number of facets. So we reserve this memory with 10% surcharge
+    // To save memory we hold an array with iterators that point to the right vertex (insertion order) in the set, instead of
+    // holding the vertex array twice.
+    unsigned long ctPoints = ctFacets / 2;
+    _pointsIterator.reserve((unsigned long)(float(ctPoints)*1.10f));
 	  _ptIdx = 0;
   }
   else
   {
     for (MeshPointArray::_TConstIterator it1 = _meshKernel._aclPointArray.begin(); it1 != _meshKernel._aclPointArray.end(); it1++)
     {
-      _points.insert(*it1);
+			MeshPointIterator pit = _points.insert(*it1);			
+      _pointsIterator.push_back(pit);
     }
-    _ptIdx = _meshKernel._aclPointArray.size();
+    _ptIdx = _points.size();
+
+    // As we have a copy of our vertices in the set we must clear them from our array now  But we can keep its
+    // memory as we reuse it later on anyway.
+    _meshKernel._aclPointArray.clear();
+    // additional memory
+    unsigned long newCtFacets = _meshKernel._aclFacetArray.size()+ctFacets;
+    _meshKernel._aclFacetArray.reserve(newCtFacets);
+    unsigned long ctPoints = newCtFacets / 2;
+    _pointsIterator.reserve((unsigned long)(float(ctPoints)*1.10f));
   }
 
-	// Base::SequencerLauncher seq("create mesh structure...", ctFacets);
 	Base::Sequencer().start("create mesh structure...", ctFacets * 2);
 }
 
@@ -76,7 +97,6 @@ void MeshBuilder::AddFacet (const Vector3D& pt1, const Vector3D& pt2, const Vect
 	AddFacet(facetPoints);
 }
 
-
 void MeshBuilder::AddFacet (Vector3D* facetPoints)
 {
 	Base::Sequencer().next(true); // allow to cancel
@@ -87,7 +107,6 @@ void MeshBuilder::AddFacet (Vector3D* facetPoints)
 		std::swap(facetPoints[1], facetPoints[2]);
 	}
 
-
 	MeshFacet mf;
   int i = 0;
 	for (i = 0; i < 3; i++)
@@ -97,9 +116,10 @@ void MeshBuilder::AddFacet (Vector3D* facetPoints)
 		if (p == _points.end())
 		{
 			mf._aulPoints[i] = _ptIdx;
-			_meshKernel._aclPointArray.push_back(pt);
       pt._ulProp = _ptIdx++;
-			_points.insert(pt);			
+      // keep an iterator to the right vertex
+			MeshPointIterator it = _points.insert(pt);			
+      _pointsIterator.push_back(it);
 		}
 		else
 			mf._aulPoints[i] = p->_ulProp;
@@ -162,16 +182,47 @@ void MeshBuilder::SetNeighbourhood ()
   }
 }
 
-void MeshBuilder::Finish ()
+void MeshBuilder::Finish (bool freeMemory)
 {
+  // now we can resize the vertex array to the exact size and copy the vertices with their correct positions in the array
+  unsigned long i=0;
+  _meshKernel._aclPointArray.resize(_pointsIterator.size());
+  for ( std::vector<MeshPointIterator>::iterator it = _pointsIterator.begin(); it != _pointsIterator.end(); ++it)
+    _meshKernel._aclPointArray[i++] = *(it->first);
+
+  // free all memory of the internal structures
+  // Note: this scope is needed to free memory immediately
+  { std::vector<MeshPointIterator>().swap(_pointsIterator); }
   _points.clear();
-  _points.swap(_points);
+//  _points.swap(_points);
 
   SetNeighbourhood();
 
+  // if AddFacet() has been called more often (or even less) as specified in Initialize() we have a wastage of memory
+  if ( freeMemory )
+  {
+    unsigned long cap = _meshKernel._aclFacetArray.capacity();
+    unsigned long siz = _meshKernel._aclFacetArray.size();
+    // wastage of more than 5%
+    if ( cap > siz+siz/20 )
+    {
+      try {
+        unsigned long i=0;
+        MeshFacetArray faces(siz);
+        for ( MeshFacetArray::_TIterator it = _meshKernel._aclFacetArray.begin(); it != _meshKernel._aclFacetArray.end(); ++it )
+          faces[i++]=*it;
+        _meshKernel._aclFacetArray.swap(faces);
+      } catch ( const Base::MemoryException&) {
+        // sorry, we cannot reduce the memory
+      }
+    }
+  }
+
+  // FIXME: Does this work for MS compiler version 8 or higher? At least, with version 6 and STLport this has no effect.
   // release some memory
-  _meshKernel._aclFacetArray.swap(_meshKernel._aclFacetArray);
-  _meshKernel._aclPointArray.swap(_meshKernel._aclPointArray);
+//  _meshKernel._aclFacetArray.swap(_meshKernel._aclFacetArray);
+//  _meshKernel._aclPointArray.swap(_meshKernel._aclPointArray);
+
   _meshKernel.RecalcBoundBox();
 
 	Base::Sequencer().stop();

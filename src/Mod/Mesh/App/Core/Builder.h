@@ -106,6 +106,10 @@ private:
 	MeshKernel& _meshKernel;
 
 	std::set<MeshPoint>	_points;
+
+  // keep an array of iterators pointing to the vertex inside the set to save memory
+  typedef std::pair<std::set<MeshPoint>::iterator, bool> MeshPointIterator;
+  std::vector<MeshPointIterator> _pointsIterator;
 	unsigned long				_ptIdx; 
 
   void SetNeighbourhood  ();
@@ -114,11 +118,13 @@ public:
 	MeshBuilder(MeshKernel &rclM);
 	~MeshBuilder(void);
 
-  /** Initialize the class. Must be do before adding facets 
-   * @param ctFacets count of facets (only revelant for the progress bar
-   * @param c2 if true the mesh-kernel will be cleared else you can add new facets on an existing mesh-kernel
+  /** Initializes the class. Must be done before adding facets 
+   * @param \a ctFacets count of facets. 
+   * @param \a deletion if true (default) the mesh-kernel will be cleared otherwise you can add new facets on an existing mesh-kernel
+   * @remark To be efficient you should add exactly \a ctFacets with AddFacet(), otherwise you'll possibly run into wastage of memory
+   * and performance problems.
    */
-	void Initialize (long ctFacets, bool deletion = true);
+	void Initialize (unsigned long ctFacets, bool deletion = true);
 
   /** adding facets */
   /** Add new facet
@@ -132,8 +138,13 @@ public:
    */
 	void AddFacet (Vector3D* facetPoints);
 
-  /** finish building the mesh structure. Must be done after adding facets */
-	void Finish ();
+  /** Finishes building up the mesh structure. Must be done after adding facets.
+   * @param \a freeMemory if false (default) only the memory of internal structures gets freed, otherwise 
+   * additional unneeded memory in the mesh structure is tried to be freed.
+   * @remark If you have called AddFacet() as many times as specified in Initialize() then absolutely no memory is wasted
+   * and you can leave the default value.
+   */
+	void Finish (bool freeMemory=false);
 
   friend class MeshKernel;
 };

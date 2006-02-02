@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <qaction.h>
+# include <qdir.h>
+# include <qfileinfo.h>
 # include <gts.h>
 # include <map>
 #endif
@@ -265,16 +267,25 @@ CmdMeshImport::CmdMeshImport()
 
 void CmdMeshImport::activated(int iMsg)
 {
-  QString filter = "All STL Files (*.stl *.ast);;Binary STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, filter, Gui::getMainWindow() );
+  // use current path as default
+  std::string path = QDir::currentDirPath().latin1();
+  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
+	QString dir = path.c_str();
+
+  QString filter = "All Mesh Files (*.stl *.ast *.bms);;Binary STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
+  QString fn = Gui::FileDialog::getOpenFileName( dir, filter, Gui::getMainWindow() );
   if (! fn.isEmpty() )
   {
     openCommand("Mesh ImportSTL Create");
     doCommand(Doc,"f = App.document().AddFeature(\"MeshImport\",\"MeshImport\")");
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
-
     updateActive();
+
+    QFileInfo fi;
+		fi.setFile(fn);
+    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
   }
 }
 
@@ -306,9 +317,15 @@ CmdMeshExport::CmdMeshExport()
 
 void CmdMeshExport::activated(int iMsg)
 {
+  // use current path as default
+  std::string path = QDir::currentDirPath().latin1();
+  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
+	QString dir = path.c_str();
+
   QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
   QString format;
-  QString fn = Gui::FileDialog::getSaveFileName( QString::null, filter, Gui::getMainWindow(), 0,
+  QString fn = Gui::FileDialog::getSaveFileName( dir, filter, Gui::getMainWindow(), 0,
                                                  QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );
   std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
 
@@ -324,8 +341,11 @@ void CmdMeshExport::activated(int iMsg)
     doCommand(Doc,"f.Format = \"%s\"",format.ascii());
     doCommand(Doc,"f.Source = App.document().%s",fea.front()->getName());
     commitCommand();
-
     updateActive();
+
+    QFileInfo fi;
+		fi.setFile(fn);
+    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
   }
 }
 

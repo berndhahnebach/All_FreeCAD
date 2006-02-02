@@ -547,7 +547,7 @@ void Document::_RecomputeFeature(Feature* Feat)
   }catch(const Base::MemoryException& e){
     Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getName(),e.what());
     Feat->setError(e.what());
-    succes = 4;
+    succes = 3;
   }catch(Base::Exception &e){
     e.ReportException();
     succes = 3;

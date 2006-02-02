@@ -443,40 +443,7 @@ std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIt
   return aulBelongs;
 }
 
-void MeshKernel::SaveStream (DataStream &rclOut)
-{
-  MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
-  MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
-
-  rclOut << CountPoints() 
-         << CountFacets();
-  while (clPIter < clPEIter) rclOut << *(clPIter++);
-  while (clFIter < clFEIter) rclOut << *(clFIter++);
-
-  rclOut << _clBoundBox.MinX << _clBoundBox.MinY << _clBoundBox.MinZ <<
-            _clBoundBox.MaxX << _clBoundBox.MaxY << _clBoundBox.MaxZ;
-}
-
-void MeshKernel::RestoreStream (DataStream &rclIn)
-{
-  unsigned long  ulCtPt, ulCtFc;
-
-  Clear();
-  rclIn >> ulCtPt >> ulCtFc; 
-  _aclPointArray.resize(ulCtPt);  
-  _aclFacetArray.resize(ulCtFc);
-
-  MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
-  MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
-
-  while (clPIter < clPEIter) rclIn >> *(clPIter++); 
-  while (clFIter < clFEIter) rclIn >> *(clFIter++);
-
-  rclIn >> _clBoundBox.MinX >> _clBoundBox.MinY >> _clBoundBox.MinZ >>
-           _clBoundBox.MaxX >> _clBoundBox.MaxY >> _clBoundBox.MaxZ;
-}
-
-void MeshKernel::SaveStream (std::ostream &rclOut)
+void MeshKernel::Write (std::ostream &rclOut)
 {
   unsigned long uCtPts = CountPoints();
   unsigned long uCtFts = CountFacets();
@@ -507,7 +474,7 @@ void MeshKernel::SaveStream (std::ostream &rclOut)
   rclOut.write((const char*)&_clBoundBox, sizeof(Base::BoundBox3D));
 }
 
-void MeshKernel::RestoreStream (std::istream &rclIn)
+void MeshKernel::Read (std::istream &rclIn)
 {
   Clear();
 

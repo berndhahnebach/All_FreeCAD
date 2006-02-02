@@ -186,13 +186,6 @@ public:
  
   /** Prints the values to stdout. */
   void Print (void);
-
-  friend DataStream& operator<< (DataStream& ors, RBoundBox3D rclBound);
-  friend DataStream& operator>> (DataStream& irs, RBoundBox3D rclBound);
-  /** Writes the box to the stream. */
-  DataStream& SaveData (DataStream &ofs);
-  /** Reads the box from the stream. */
-  DataStream& LoadData (DataStream &ifs);
 };
 
 

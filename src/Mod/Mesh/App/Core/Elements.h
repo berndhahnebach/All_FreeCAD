@@ -114,23 +114,6 @@ public:
   inline bool operator == (const Vector3D &rclV) const;
   inline bool operator < (const MeshPoint &rclPt) const;
 
-  friend DataStream& operator << (DataStream &rclOut, const MeshPoint &rclPt)
-  {
-    return rclOut << rclPt.x << rclPt.y << rclPt.z;
-  }
-  friend DataStream& operator >> (DataStream &rclIn, MeshPoint &rclPt)
-  {
-    return rclIn >> rclPt.x >> rclPt.y >> rclPt.z;
-  }
-  friend std::ostream& operator << (std::ostream &rclOut, const MeshPoint &rclPt)
-  {
-    return rclOut << rclPt.x << rclPt.y << rclPt.z;
-  }
-  friend std::istream& operator >> (std::istream &rclIn, MeshPoint &rclPt)
-  {
-    return rclIn >> rclPt.x >> rclPt.y >> rclPt.z;
-  }
-
 public:
   unsigned char _ucFlag; /**< Flag member */
   unsigned long   _ulProp; /**< Free usable property */
@@ -204,31 +187,6 @@ public:
 
   // Assignment
   inline MeshFacet& operator = (const MeshFacet &rclF);
-
-  friend DataStream& operator << (DataStream &rclOut, const MeshFacet &rclF)
-  {
-    return rclOut << rclF._aulNeighbours[0] << rclF._aulNeighbours[1] << rclF._aulNeighbours[2] <<
-                     rclF._aulPoints[0]     << rclF._aulPoints[1]     << rclF._aulPoints[2] <<
-                     rclF._ucFlag;
-  }
-  friend DataStream& operator >> (DataStream &rclIn, MeshFacet &rclF)
-  {
-    return rclIn >> rclF._aulNeighbours[0] >> rclF._aulNeighbours[1] >> rclF._aulNeighbours[2] >>
-                    rclF._aulPoints[0]     >> rclF._aulPoints[1]     >> rclF._aulPoints[2] >>
-                    rclF._ucFlag;
-  }
-  friend std::ostream& operator << (std::ostream &rclOut, const MeshFacet &rclF)
-  {
-    return rclOut << rclF._aulNeighbours[0] << rclF._aulNeighbours[1] << rclF._aulNeighbours[2] <<
-                     rclF._aulPoints[0]     << rclF._aulPoints[1]     << rclF._aulPoints[2] <<
-                     rclF._ucFlag;
-  }
-  friend std::istream& operator >> (std::istream &rclIn, MeshFacet &rclF)
-  {
-    return rclIn >> rclF._aulNeighbours[0] >> rclF._aulNeighbours[1] >> rclF._aulNeighbours[2] >>
-                    rclF._aulPoints[0]     >> rclF._aulPoints[1]     >> rclF._aulPoints[2] >>
-                    rclF._ucFlag;
-  }
 
   /**
    * Returns the indices of the corner points of the given edge number. 

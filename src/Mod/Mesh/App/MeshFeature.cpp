@@ -119,11 +119,11 @@ void MeshFeature::Restore(Base::XMLReader &reader)
 
 void MeshFeature::SaveDocFile (Base::Writer &writer)
 {
-  _cMesh.getKernel()->SaveStream(writer);
+  _cMesh.getKernel()->Write(writer);
 }
 
 void MeshFeature::RestoreDocFile(Base::Reader &reader)
 {
-  _cMesh.getKernel()->RestoreStream(reader);
+  _cMesh.getKernel()->Read(reader);
 }
 

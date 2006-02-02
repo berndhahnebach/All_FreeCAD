@@ -71,7 +71,7 @@ int FeatureMeshExport::execute(void)
   if ( fi.extension() == "bms" )
   {
     std::ofstream cOut( FileName.getValue(), std::ios::out | std::ios::binary );
-    pcFeat->getMesh().getKernel()->SaveStream( cOut );
+    pcFeat->getMesh().getKernel()->Write( cOut );
   }
   else
   {

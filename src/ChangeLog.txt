@@ -21,3 +21,4 @@ Version: V0.5B3 Date: Mon Jan 30 13:54:25 2006 +++++++++++++++++++++++++++++++
 + I/O of points and meshes in document container file
 + fixes memory exception in view provider for meshes
 + fixes memory exception when rendering a huge Inventor node
++ more efficient loading of huge meshes
