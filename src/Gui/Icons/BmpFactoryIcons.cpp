@@ -100,7 +100,6 @@ void RegisterIcons()
   rclBmpFactory.addXPM("help", help);
   rclBmpFactory.addXPM("helpopen", helpopen);
   rclBmpFactory.addXPM("colors", colors);
-  rclBmpFactory.addXPM("temperature_mapping", temperature_mapping);
   rclBmpFactory.addXPM("python", python);
   rclBmpFactory.addXPM("PolygonPick", PolygonPick);
   rclBmpFactory.addXPM("perspective_xpm", perspective_xpm);

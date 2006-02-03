@@ -608,7 +608,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
           //interactiveCountInc();
           clearLog();
         
-          getWidget()->setCursor( QCursor( 13 /*ArrowCursor*/) );
+          getWidget()->setCursor( QCursor( Qt::PointingHandCursor ) );
           processed = true;
         } 
       }
@@ -627,11 +627,11 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
           if (tmp.getValue() < 0.300) 
           {
             ZoomMode = true;
-            getWidget()->setCursor( QCursor( 8 /*CrossCursor*/) );
+            getWidget()->setCursor( QCursor( Qt::SizeVerCursor ) );
           }else{
        
             ZoomMode = false;
-            getWidget()->setCursor( QCursor( 9 /*ArrowCursor*/) );
+            getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
 
             SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
             panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
@@ -657,7 +657,8 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
                 _bSpining = true;
                 spinRotation = rot;
                 MoveMode = false;
-                getWidget()->setCursor( QCursor( 0 /*CrossCursor*/) );
+                // restore the previous cursor
+                getWidget()->setCursor( _oldCursor /*QCursor( Qt::ArrowCursor )*/);
               }
             }
           }
@@ -682,13 +683,16 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
           _bSpining = false;
           SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
           panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
-          getWidget()->setCursor( QCursor( 9 /*ArrowCursor*/) );
+          // save the current cursor before overriding
+          _oldCursor = getWidget()->cursor();
+          getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
         }
       }else{
         MoveMode = false;
         RotMode = false;
         ZoomMode = false;
-        getWidget()->setCursor( QCursor( 0 /*CrossCursor*/) );
+        // restore the previous cursor
+        getWidget()->setCursor( _oldCursor /*QCursor( Qt::ArrowCursor )*/);
         _bRejectSelection = true;
       }
       processed = true;
@@ -768,7 +772,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   {
     if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
       SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
-      if ((e->getButton() == SoMouseButtonEvent::BUTTON2)) {
+      if ((e->getButton() == SoMouseButtonEvent::BUTTON2) && e->getState() == SoButtonEvent::UP) {
         if (this->isPopupMenuEnabled()) {
           if (e->getState() == SoButtonEvent::UP) {
             this->openPopupMenu(e->getPosition());

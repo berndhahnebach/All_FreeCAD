@@ -270,6 +270,16 @@ public:
    * is done more effective through comparison of normals.
    */
   bool IsPointOfFace (const Vector3D& rclP, float fDistance) const;
+  /** Calculates the weights \a w1, ...,  \a w3 of the corners to get the point \a rclP, i.e.
+   * rclP = w0*v0 + w1*v1 + w2*v2 (v0-v2 are the corners corners).
+   * If w0+w1+w2==1.0 then the point rclP lies on the plane that is spanned by the facet, otherwise
+   * the point doesn't lie on the plane. 
+   * If the sum of wi is 1 and if each wi is between [0,1] than the point lies inside
+   * the facet or on the border, respectively.
+   *
+   * If the point doesn't lie on the plane false is returned, true otherwise.
+   */
+  bool Weights(const Vector3D& rclP, float& w0, float& w1, float& w2) const;
   /**
    * Calculates the distance of a point to the triangle.
    */

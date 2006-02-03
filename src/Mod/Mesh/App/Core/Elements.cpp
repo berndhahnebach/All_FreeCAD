@@ -332,6 +332,20 @@ bool MeshGeomFacet::IsPointOfFace (const Vector3D& rclP, float fDistance) const
   return true;
 }
 
+bool MeshGeomFacet::Weights(const Vector3D& rclP, float& w0, float& w1, float& w2) const
+{
+  float fAreaABC = Area();
+  float fAreaPBC = MeshGeomFacet(rclP,_aclPoints[1],_aclPoints[2]).Area();
+  float fAreaPCA = MeshGeomFacet(rclP,_aclPoints[2],_aclPoints[0]).Area();
+  float fAreaPAB = MeshGeomFacet(rclP,_aclPoints[0],_aclPoints[1]).Area();
+
+  w0=fAreaPBC/fAreaABC;
+  w1=fAreaPCA/fAreaABC;
+  w2=fAreaPAB/fAreaABC;
+
+  return fabs(w0+w1+w2-1.0f)<0.001f;
+}
+
 void MeshGeomFacet::Enlarge (float fDist)
 {
   Vector3D  clM, clU, clV, clPNew[3];

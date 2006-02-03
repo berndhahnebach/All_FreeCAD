@@ -25,6 +25,7 @@
 #define __VIEW3DINVENTORVIEWER__
 
 #ifndef _PreComp_
+# include <qcursor.h>
 # include <set>
 # include <stack>
 #endif
@@ -199,6 +200,7 @@ private:
   SoRotationXYZ * arrowrotation;
 
   SoSeparator * pcViewProviderRoot;
+  QCursor _oldCursor;
 };
 
 } // namespace Gui
