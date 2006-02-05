@@ -59,7 +59,7 @@
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
 
-using Mesh::MeshFeature;
+using Mesh::Feature;
 using MeshCore::MeshKernel;
 using MeshCore::MeshFacetIterator;
 using MeshCore::MeshGeomFacet;
@@ -130,7 +130,7 @@ void ViewProviderMeshTransformDemolding::attach(App::Feature *pcFeat)
   calcNormalVector();
   calcMaterialIndex(SbRotation());
   // geting center point
-  center = dynamic_cast<MeshFeature*>(pcFeature)->getMesh().getKernel()->GetBoundBox().CalcCenter();
+  center = dynamic_cast<Feature*>(pcFeature)->getMesh().getKernel()->GetBoundBox().CalcCenter();
 
   //SoGetBoundingBoxAction  boxAction;
   //pcHighlight->getBoundingBox(&boxAction);
@@ -139,7 +139,7 @@ void ViewProviderMeshTransformDemolding::attach(App::Feature *pcFeat)
 
 void ViewProviderMeshTransformDemolding::calcNormalVector(void)
 {
-  MeshKernel *cMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh().getKernel();
+  MeshKernel *cMesh = dynamic_cast<Feature*>(pcFeature)->getMesh().getKernel();
 
   MeshFacetIterator cFIt(*cMesh);
   for( cFIt.Init(); cFIt.More(); cFIt.Next())

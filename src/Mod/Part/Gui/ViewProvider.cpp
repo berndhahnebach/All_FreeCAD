@@ -81,6 +81,8 @@
 
 using namespace PartGui;
 
+PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProvider)
+
 
 //**************************************************************************
 // Construction/Destruction
@@ -192,7 +194,7 @@ void ViewProviderPart::updateData(void)
   if ( pcFeature->getStatus() !=  App::Feature::Valid )
     return; // feature is invalid
 
-  TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->getShape();
+  TopoDS_Shape cShape = (dynamic_cast<Part::Feature*>(pcFeature))->getShape();
 
   // clear anchor nodes
   EdgeRoot->removeAllChildren();

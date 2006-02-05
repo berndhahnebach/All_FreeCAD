@@ -42,19 +42,19 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-PROPERTY_SOURCE(Mesh::FeatureMeshTransformDemolding, Mesh::FeatureMeshTransform)
+PROPERTY_SOURCE(Mesh::TransformDemolding, Mesh::Transform)
 
 
-FeatureMeshTransformDemolding::FeatureMeshTransformDemolding(void)
+TransformDemolding::TransformDemolding(void)
 {
   ADD_PROPERTY(Source,(0));
   ADD_PROPERTY(Rotation,(0.0));
   ADD_PROPERTY(Axis,(0.0,0.0,1.0));
 }
 
-int FeatureMeshTransformDemolding::execute(void)
+int TransformDemolding::execute(void)
 {
-  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(Source.getValue());
+  Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
 

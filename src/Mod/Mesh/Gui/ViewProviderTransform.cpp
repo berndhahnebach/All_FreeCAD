@@ -59,7 +59,7 @@
 #include <Inventor/manips/SoTransformerManip.h> 
 
 using namespace MeshGui;
-using Mesh::MeshFeature;
+using Mesh::Feature;
 using MeshCore::MeshKernel;
 using MeshCore::MeshFacetIterator;
 using Base::Vector3D;

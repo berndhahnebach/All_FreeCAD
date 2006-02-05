@@ -36,12 +36,12 @@ namespace Part
 {
 
 
-class FeaturePartImportStep :public PartFeature
+class ImportStep :public Part::Feature
 {
   PROPERTY_HEADER(Part::FeaturePartImportStep);
 
 public:
-  FeaturePartImportStep();
+  ImportStep();
 
   App::PropertyString FileName;
 
@@ -49,8 +49,6 @@ public:
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "PartImportStep";};
   //@}
 };
 

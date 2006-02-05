@@ -42,24 +42,35 @@ public: \
   static Base::Type getClassTypeId(void); \
   virtual Base::Type getTypeId(void) const; \
   static void init(void);\
+  static void *create(void);\
 private: \
   static Base::Type classTypeId
 
 
 
 
-/// define to implement a subclass of Base::BaseClass
+/// define to implement a  subclass of Base::BaseClass
 #define TYPESYSTEM_SOURCE_P(_class_) \
 Base::Type _class_::getClassTypeId(void) { return _class_::classTypeId; } \
 Base::Type _class_::getTypeId(void) const { return _class_::classTypeId; } \
-Base::Type _class_::classTypeId = Base::Type::badType()
+Base::Type _class_::classTypeId = Base::Type::badType();  \
+void * _class_::create(void){\
+   return new _class_ ();\
+}
+
+/// define to implement a  subclass of Base::BaseClass
+#define TYPESYSTEM_SOURCE_ABSTRACT_P(_class_) \
+Base::Type _class_::getClassTypeId(void) { return _class_::classTypeId; } \
+Base::Type _class_::getTypeId(void) const { return _class_::classTypeId; } \
+Base::Type _class_::classTypeId = Base::Type::badType();  \
+void * _class_::create(void){return 0;}
 
 
 /// define to implement a subclass of Base::BaseClass
 #define TYPESYSTEM_SOURCE(_class_, _parentclass_) \
 TYPESYSTEM_SOURCE_P(_class_);\
 void _class_::init(void){\
-    initSubclass(_class_::classTypeId, #_class_ , #_parentclass_ ); \
+  initSubclass(_class_::classTypeId, #_class_ , #_parentclass_, &(_class_::create) ); \
 }
 
 
@@ -79,10 +90,11 @@ public:
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
+  static void *create(void){return 0;}
 private: 
   static Type classTypeId;
 protected:
-  static void initSubclass(Base::Type &toInit,const char* ClassName, const char *ParentName);
+  static void initSubclass(Base::Type &toInit,const char* ClassName, const char *ParentName, Type::instantiationMethod method=0);
 
 public:
   /// Construction

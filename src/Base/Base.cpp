@@ -88,7 +88,7 @@ Type BaseClass::getTypeId(void) const
 } 
 
 
-void BaseClass::initSubclass(Base::Type &toInit,const char* ClassName, const char *ParentName)
+void BaseClass::initSubclass(Base::Type &toInit,const char* ClassName, const char *ParentName, Type::instantiationMethod method)
 {
   // dont't init twice!
   assert(toInit == Base::Type::badType());
@@ -98,7 +98,7 @@ void BaseClass::initSubclass(Base::Type &toInit,const char* ClassName, const cha
   assert(parentType != Base::Type::badType() ); 
 
   // create the new type
-  toInit = Base::Type::createType(parentType, ClassName);
+  toInit = Base::Type::createType(parentType, ClassName, method);
 
 }
 

@@ -39,13 +39,13 @@ namespace Mesh
  * into the FreeCAD workspace.
  * @author Werner Mayer
  */
-class FeatureMeshTransformDemolding : public FeatureMeshTransform
+class TransformDemolding : public Transform
 {
   
-  PROPERTY_HEADER(Mesh::FeatureMeshTransformDemolding);
+  PROPERTY_HEADER(Mesh::TransformDemolding);
 
 public:
-  FeatureMeshTransformDemolding();
+  TransformDemolding();
 
 
   App::PropertyLink Source;

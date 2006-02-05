@@ -83,12 +83,6 @@ public:
 
 	/** @name methodes to overide with a new feature type */
 	//@{
-	/** Init the Label the Feature is attached to
-	 *  This methode will be called when the Feature is mounted 
-	 *  to a Label in the document. It need to be overwriten in 
-	 *  every Feature
-	 */
-	//virtual void initFeature(void)=0;
 
 	/** Validate
 	 *  We compute the object and topologically name it.
@@ -100,8 +94,9 @@ public:
 	 */
 	virtual int execute(void)=0;
 
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void)=0;
+  /// returns the type name of the ViewProvider
+  virtual const char* getViewProviderName(void){return "";}
+
   //@}
 
 	/** @name status methodes of the feature */
@@ -328,6 +323,8 @@ protected:
 
 /** The FeatureFactory singleton
   */
+
+  /*
 class AppExport FeatureFactorySingleton : public Base::Factory
 {
 public:
@@ -371,7 +368,7 @@ class FeatureProducer: public Base::AbstractProducer
 };
 
 
-
+*/
 
 } //namespace App
 

@@ -77,7 +77,7 @@
 
 
 using namespace MeshGui;
-using Mesh::MeshFeature;
+using Mesh::Feature;
 
 using MeshCore::MeshAlgorithm;
 using MeshCore::MeshKernel;
@@ -91,6 +91,11 @@ using MeshCore::MeshSTL;
 using MeshCore::MeshTopFacetVisitor;
 
 using Base::Vector3D;
+
+
+PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProvider)
+
+
 
 ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
 {
@@ -282,7 +287,7 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
   ViewProviderFeature::attach(pcFeat);
 
   // get and save the feature
-  MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
+  Feature* meshFea = dynamic_cast<Feature*>(pcFeature);
   // create the mesh core nodes
   createMesh(&(meshFea->getMesh()));
 }
@@ -290,7 +295,7 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
 void ViewProviderMesh::updateData(void)
 {
   // get the mesh
-  MeshFeature* meshFea = dynamic_cast<MeshFeature*>(pcFeature);
+  Feature* meshFea = dynamic_cast<Feature*>(pcFeature);
   createMesh(&(meshFea->getMesh()));
 }
 
@@ -556,13 +561,13 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 #endif
 
           // now intersect with each selected mesh feature
-          std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(MeshFeature::getClassTypeId());
+          std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
 
           for ( std::vector<App::Feature*>::iterator it = fea.begin(); it != fea.end(); ++it )
           {
             // check type
             std::string fName = pDoc->getUniqueFeatureName("MeshSegment");
-            MeshFeature* meshFeature = dynamic_cast<MeshFeature*>(*it);
+            Feature* meshFeature = dynamic_cast<Feature*>(*it);
             if ( !meshFeature ) continue; // no mesh
 
             Gui::Command::doCommand(Gui::Command::Doc,

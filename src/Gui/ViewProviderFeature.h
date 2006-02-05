@@ -44,6 +44,8 @@ class FeatItem;
 
 class GuiExport ViewProviderFeature:public ViewProvider
 {
+  PROPERTY_HEADER(Gui::ViewProviderFeature);
+
 public:
   /// constructor.
   ViewProviderFeature();
@@ -106,6 +108,8 @@ protected:
 
 /** The FeatureFactory singleton
   */
+
+/*
 class GuiExport ViewProviderFeatureFactorySingleton : public Base::Factory
 {
 public:
@@ -149,7 +153,7 @@ class ViewProviderFeatureProducer: public Base::AbstractProducer
 };
 
 
-
+*/
 
 } // namespace Gui
 

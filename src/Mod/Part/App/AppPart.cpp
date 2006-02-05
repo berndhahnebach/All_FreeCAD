@@ -60,15 +60,16 @@ void ModuleExport initPart() {
   Base::Console().Log("Mod : Load AppPart\n");
 	(void) Py_InitModule("Part", Part_methods);   /* mod name, table ptr */
 
-  Part::PartFeature::init();
-  Part::PartBoxFeature::init();
-  Part::PartCutFeature::init();
-  Part::FeaturePartImportStep::init();
-  Part::FeaturePartImportIges::init();
-  Part::FeaturePartImportBrep::init();
-  Part::FeaturePartCurveNet::init();
+  Part::Feature   ::init();
+  Part::Box       ::init();
+  Part::Cut       ::init();
+  Part::ImportStep::init();
+  Part::ImportIges::init();
+  Part::ImportBrep::init();
+  Part::CurveNet  ::init();
 
  //new App::FeatureProducer<Part::PartBoxFeature>;
+  /*
   App::FeatureFactory().AddProducer("Part"          ,new App::FeatureProducer<Part::PartFeature>);
   App::FeatureFactory().AddProducer("PartBox"       ,new App::FeatureProducer<Part::PartBoxFeature>);
 	App::FeatureFactory().AddProducer("PartCut"       ,new App::FeatureProducer<Part::PartCutFeature>);
@@ -76,7 +77,7 @@ void ModuleExport initPart() {
 	App::FeatureFactory().AddProducer("PartImportIges",new App::FeatureProducer<Part::FeaturePartImportIges>);
 	App::FeatureFactory().AddProducer("PartImportBrep",new App::FeatureProducer<Part::FeaturePartImportBrep>);
 	App::FeatureFactory().AddProducer("PartCurveNet"  ,new App::FeatureProducer<Part::FeaturePartCurveNet>);
-
+*/
 	return;
 }
 

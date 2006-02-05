@@ -35,10 +35,10 @@
 using namespace Part;
 
 
-PROPERTY_SOURCE(Part::PartBoxFeature, Part::PartFeature)
+PROPERTY_SOURCE(Part::Box, Part::Feature)
 
 
-PartBoxFeature::PartBoxFeature()
+Box::Box()
 {
   ADD_PROPERTY(x,(0.0));
   ADD_PROPERTY(y,(0.0));
@@ -49,21 +49,7 @@ PartBoxFeature::PartBoxFeature()
 }
 
 
-void PartBoxFeature::initFeature(void)
-{
-//	Base::Console().Log("PartBoxFeature::InitLabel()\n");
-/*
-	addProperty("Float","x");
-	addProperty("Float","y");
-	addProperty("Float","z");
-	addProperty("Float","l");
-	addProperty("Float","h");
-	addProperty("Float","w");
-*/
-}
-
-
-int PartBoxFeature::execute(void)
+int Box::execute(void)
 {
 
   double X = x.getValue();

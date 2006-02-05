@@ -131,7 +131,7 @@ PyParentObject PartFeaturePy::Parents[] = {&PartFeaturePy::Type ,&App::FeaturePy
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-PartFeaturePy::PartFeaturePy(PartFeature *pcFeature, PyTypeObject *T)
+PartFeaturePy::PartFeaturePy(Part::Feature *pcFeature, PyTypeObject *T)
 : App::FeaturePy(pcFeature, T), _pcFeature(pcFeature)
 {
 //	Base::Console().Log("Create PartFeaturePy: %p \n",this);

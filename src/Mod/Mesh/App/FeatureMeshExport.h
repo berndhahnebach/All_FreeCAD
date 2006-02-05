@@ -33,16 +33,16 @@ namespace Mesh
 {
 
 /**
- * The FeatureMeshExport class reads the any supported mesh format
+ * The Export class reads the any supported mesh format
  * into the FreeCAD workspace.
  * @author Werner Mayer
  */
-class FeatureMeshExport : public MeshFeature
+class Export : public Mesh::Feature
 {
-  PROPERTY_HEADER(Mesh::FeatureMeshExport);
+  PROPERTY_HEADER(Mesh::Export);
 
 public:
-  FeatureMeshExport();
+  Export();
 
   App::PropertyLink   Source;
   App::PropertyString FileName;
@@ -52,8 +52,6 @@ public:
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "MeshExport";};
   //@}
 };
 

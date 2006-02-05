@@ -132,7 +132,7 @@ PyParentObject MeshFeaturePy::Parents[] = {&PyObjectBase::Type,&App::FeaturePy::
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-MeshFeaturePy::MeshFeaturePy(MeshFeature *pcFeature, PyTypeObject *T)
+MeshFeaturePy::MeshFeaturePy(Feature *pcFeature, PyTypeObject *T)
   : App::FeaturePy(pcFeature, T),
     _pcFeature(pcFeature),
     _pcMeshPy(0)
@@ -163,7 +163,7 @@ MeshFeaturePy::~MeshFeaturePy()           // Everything handled in parent
 PyObject *MeshFeaturePy::_repr(void)
 {
   std::stringstream a;
-  a << _pcFeature->type() << " feature: [ ";
+  a << _pcFeature->getTypeId().getName() << " feature: [ ";
   a << "]" << std::endl;
   return Py_BuildValue("s", a.str().c_str());
 }

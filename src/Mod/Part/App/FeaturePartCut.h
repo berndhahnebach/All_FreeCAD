@@ -33,12 +33,12 @@ namespace Part
 {
 
 
-class PartCutFeature :public PartFeature
+class Cut :public Part::Feature
 {
-  PROPERTY_HEADER(Part::PartCutFeature);
+  PROPERTY_HEADER(Part::Cut);
 
 public:
-  PartCutFeature();
+  Cut();
 
   App::PropertyLink Base;
   App::PropertyLink Tool;
@@ -48,8 +48,6 @@ public:
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "PartCut";};
   //@}
 };
 

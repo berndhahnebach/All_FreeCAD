@@ -86,7 +86,7 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      Part::FeaturePartImportStep *pcFeature = (Part::FeaturePartImportStep *)pcDoc->addFeature("PartImportStep","StepOpen");
+      Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addFeature("Part::ImportStep","StepOpen");
       pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
@@ -94,7 +94,7 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      Part::FeaturePartImportIges *pcFeature = (Part::FeaturePartImportIges*) pcDoc->addFeature("PartImportIges","IgesOpen");
+      Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addFeature("Part::ImportIges","IgesOpen");
       pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
@@ -102,7 +102,7 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      Part::FeaturePartImportBrep *pcFeature = (Part::FeaturePartImportBrep *)pcDoc->addFeature("PartImportBrep","BrepOpen");
+      Part::ImportBrep *pcFeature = (Part::ImportBrep *)pcDoc->addFeature("Part::ImportBrep","BrepOpen");
       pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
@@ -141,7 +141,7 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      Part::FeaturePartImportStep *pcFeature = (Part::FeaturePartImportStep *)pcDoc->addFeature("PartImportStep","StepImport");
+      Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addFeature("Part::ImportStep","StepImport");
       pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
@@ -150,7 +150,7 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      Part::FeaturePartImportIges *pcFeature = (Part::FeaturePartImportIges *)pcDoc->addFeature("PartImportIges","IgesImport");
+      Part::ImportIges *pcFeature = (Part::ImportIges *)pcDoc->addFeature("Part::ImportIges","IgesImport");
       pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
 
@@ -159,7 +159,7 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      Part::FeaturePartImportBrep *pcFeature = (Part::FeaturePartImportBrep *) pcDoc->addFeature("PartImportBrep","BrepImport");
+      Part::ImportBrep *pcFeature = (Part::ImportBrep *) pcDoc->addFeature("Part::ImportBrep","BrepImport");
       pcFeature->FileName.setValue(Name);
       pcDoc->Recompute();
     }

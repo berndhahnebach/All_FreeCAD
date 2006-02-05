@@ -45,7 +45,7 @@ using std::vector;
 using std::string;
 using std::map;
 
-PROPERTY_SOURCE(App::Feature, App::DocumentObject)
+PROPERTY_SOURCE_ABSTRACT(App::Feature, App::DocumentObject)
 
 
 //===========================================================================
@@ -660,7 +660,7 @@ Feature *Feature::GetFeature(const TDF_Label &l)
 //===========================================================================
 // FeatureFactorySingleton - Factory for Features
 //===========================================================================
-
+/*
 
 
 FeatureFactorySingleton* FeatureFactorySingleton::_pcSingleton = NULL;
@@ -696,3 +696,4 @@ Feature* FeatureFactorySingleton::Produce (const char* sName) const
   return w;
 }
 
+*/

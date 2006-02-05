@@ -51,21 +51,22 @@ void AppMeshExport initMesh() {
 
   (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
 
-  Mesh::MeshFeature::init();
-  Mesh::FeatureMeshImport::init();
-  Mesh::FeatureMeshExport::init();
-  Mesh::FeatureMeshTransform::init();
-  Mesh::FeatureMeshTransformDemolding::init();
-  Mesh::FeatureMeshCurvature::init();
-  Mesh::FeatureMeshSegmentByMesh::init();
-	App::FeatureFactory().AddProducer("MeshImport",            new App::FeatureProducer<Mesh::FeatureMeshImport>);
+  Mesh::Feature           ::init();
+  Mesh::Import            ::init();
+  Mesh::Export            ::init();
+  Mesh::Transform         ::init();
+  Mesh::TransformDemolding::init();
+  Mesh::Curvature         ::init();
+  Mesh::SegmentByMesh     ::init();
+/*
+  App::FeatureFactory().AddProducer("MeshImport",            new App::FeatureProducer<Mesh::FeatureMeshImport>);
 	App::FeatureFactory().AddProducer("MeshExport",            new App::FeatureProducer<Mesh::FeatureMeshExport>);
 	App::FeatureFactory().AddProducer("Mesh",                  new App::FeatureProducer<Mesh::MeshFeature>      );
 	App::FeatureFactory().AddProducer("MeshTransform"         ,new App::FeatureProducer<Mesh::FeatureMeshTransform>      );
 	App::FeatureFactory().AddProducer("MeshTransformDemolding",new App::FeatureProducer<Mesh::FeatureMeshTransformDemolding>      );
 	App::FeatureFactory().AddProducer("MeshCurvature"         ,new App::FeatureProducer<Mesh::FeatureMeshCurvature>      );
 	App::FeatureFactory().AddProducer("MeshSegmentByMesh"     ,new App::FeatureProducer<Mesh::FeatureMeshSegmentByMesh>  );
-
+*/
   return;
 }
 

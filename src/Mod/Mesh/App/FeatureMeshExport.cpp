@@ -40,9 +40,9 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-PROPERTY_SOURCE(Mesh::FeatureMeshExport, Mesh::MeshFeature)
+PROPERTY_SOURCE(Mesh::Export, Mesh::Feature)
 
-FeatureMeshExport::FeatureMeshExport(void)
+Export::Export(void)
 {
   ADD_PROPERTY(Source  ,(0));
   ADD_PROPERTY(FileName,(""));
@@ -50,9 +50,9 @@ FeatureMeshExport::FeatureMeshExport(void)
 
 }
 
-int FeatureMeshExport::execute(void)
+int Export::execute(void)
 {
-  MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(Source.getValue());
+  Feature *pcFeat  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
   {
     setError("not valid link \"Source\"");
@@ -64,7 +64,7 @@ int FeatureMeshExport::execute(void)
   Base::FileInfo di(fi.dirPath().c_str());
 	if ( fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false )
   {
-    setError("FeatureMeshExport::Execute() not able to open %s for write!\n",FileName.getValue());
+    setError("Export::Execute() not able to open %s for write!\n",FileName.getValue());
     return 1;
   }
 
@@ -89,7 +89,7 @@ int FeatureMeshExport::execute(void)
 
     if ( !ok )
     {
-      setError("FeatureMeshExport::Execute() not able to export %s\n",FileName.getValue());
+      setError("Export::Execute() not able to export %s\n",FileName.getValue());
       return 1;
     }
   }

@@ -40,9 +40,9 @@
 
 using namespace Part;
 
-PROPERTY_SOURCE(Part::FeaturePartCurveNet, Part::PartFeature)
+PROPERTY_SOURCE(Part::CurveNet, Part::Feature)
 
-FeaturePartCurveNet::FeaturePartCurveNet()
+CurveNet::CurveNet()
 {
   _lineMaterial.ambientColor.set(0.2f,0.8f,0.2f);
   _lineMaterial.diffuseColor.set(0.1f,0.8f,0.1f);
@@ -62,12 +62,8 @@ FeaturePartCurveNet::FeaturePartCurveNet()
 }
 
 
-void FeaturePartCurveNet::initFeature(void)
-{
-//	addProperty("String","FileName");
-}
 
-int FeaturePartCurveNet::execute(void)
+int CurveNet::execute(void)
 {
   /*
   try{

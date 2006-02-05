@@ -54,38 +54,34 @@ using namespace Part;
 // Feature
 //===========================================================================
 
-PROPERTY_SOURCE(Part::PartFeature, App::Feature)
+PROPERTY_SOURCE(Part::Feature, App::Feature)
 
 
-PartFeature::PartFeature(void)
+Feature::Feature(void)
 {
   _showMode = "Normal";
 
 
 }
 
-void PartFeature::initFeature(void)
-{
-}
-
-Standard_Integer PartFeature::execute(void)
+Standard_Integer Feature::execute(void)
 {
   return 0;
 }
 
 
-void PartFeature::setShape(const TopoDS_Shape &Shape)
+void Feature::setShape(const TopoDS_Shape &Shape)
 {
   _Shape = Shape;
 }
 
-TopoDS_Shape PartFeature::getShape(void)
+TopoDS_Shape Feature::getShape(void)
 {
   return _Shape;
 }
 
 
-Base::PyObjectBase *PartFeature::GetPyObject(void)
+Base::PyObjectBase *Feature::GetPyObject(void)
 {
   return new PartFeaturePy(this);
 }

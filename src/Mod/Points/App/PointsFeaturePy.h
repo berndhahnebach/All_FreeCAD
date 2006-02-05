@@ -51,7 +51,7 @@ protected:
   ~PointsFeaturePy();
 
 public:
-  PointsFeaturePy(PointsFeature *pcFeature, PyTypeObject *T = &Type);
+  PointsFeaturePy(Points::Feature *pcFeature, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
 
   //---------------------------------------------------------------------
@@ -65,8 +65,8 @@ public:
   PYFUNCDEF_D(PointsFeaturePy,setPoints)
 
 private:
-  PointsFeature *_pcFeature;
-  PointsPy      *_pcPointsPy;
+  Points::Feature *_pcFeature;
+  PointsPy        *_pcPointsPy;
 };
 
 } //namespace Points

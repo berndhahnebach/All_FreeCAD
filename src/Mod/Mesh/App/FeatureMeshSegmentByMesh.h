@@ -36,16 +36,16 @@ namespace Mesh
 {
 
 /**
- * The FeatureMeshSegmentByMesh class creates a mesh segment from two meshes whereat 
+ * The SegmentByMesh class creates a mesh segment from two meshes whereat 
  * the facets of the first mesh that lie inside the second mesh build up the segment.  
  * @author Werner Mayer
  */
-class FeatureMeshSegmentByMesh : public MeshFeature
+class SegmentByMesh : public Mesh::Feature
 {
-  PROPERTY_HEADER(Mesh::FeatureMeshSegmentByMesh);
+  PROPERTY_HEADER(Mesh::SegmentByMesh);
 
 public:
-  FeatureMeshSegmentByMesh();
+  SegmentByMesh();
 
   App::PropertyLink Source;
   App::PropertyLink Tool;

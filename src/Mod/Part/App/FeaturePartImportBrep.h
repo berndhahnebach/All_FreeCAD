@@ -32,12 +32,12 @@ namespace Part
 {
 
 
-class FeaturePartImportBrep :public PartFeature
+class ImportBrep :public Part::Feature
 {
-  PROPERTY_HEADER(Part::FeaturePartImportBrep);
+  PROPERTY_HEADER(Part::ImportBrep);
 
 public:
-  FeaturePartImportBrep();
+  ImportBrep();
 
   App::PropertyString FileName;
 
@@ -45,8 +45,6 @@ public:
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "PartImportBrep";};
   //@}
 };
 

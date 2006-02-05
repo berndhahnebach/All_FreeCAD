@@ -33,16 +33,16 @@ namespace Mesh
 {
 
 /**
- * The FeatureMeshImport class reads the any supported mesh format
+ * The Import class reads the any supported mesh format
  * into the FreeCAD workspace.
  * @author Werner Mayer
  */
-class FeatureMeshCurvature : public MeshFeature
+class Curvature : public Mesh::Feature
 {
-  PROPERTY_HEADER(Mesh::FeatureMeshCurvature);
+  PROPERTY_HEADER(Mesh::Curvature);
 
 public:
-  FeatureMeshCurvature();
+  Curvature();
 
   App::PropertyLink Source;
 
@@ -61,4 +61,4 @@ public:
 
 }
 
-#endif // FeatureMeshCurvature_H 
+#endif // Curvature_H 

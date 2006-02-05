@@ -51,7 +51,7 @@ protected:
   ~MeshFeaturePy();
 
 public:
-  MeshFeaturePy(MeshFeature *pcFeature, PyTypeObject *T = &Type);
+  MeshFeaturePy(Feature *pcFeature, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
 
   //---------------------------------------------------------------------
@@ -66,7 +66,7 @@ public:
   PYFUNCDEF_D(MeshFeaturePy,setMesh)
 
 private:
-  MeshFeature *_pcFeature;
+  Feature     *_pcFeature;
   MeshPy      *_pcMeshPy;
 };
 

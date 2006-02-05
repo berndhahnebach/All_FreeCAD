@@ -39,16 +39,16 @@
 
 using namespace Part;
 
-PROPERTY_SOURCE(Part::FeaturePartImportIges, Part::PartFeature)
+PROPERTY_SOURCE(Part::ImportIges, Part::Feature)
 
 
-FeaturePartImportIges::FeaturePartImportIges(void)
+ImportIges::ImportIges(void)
 {
 	ADD_PROPERTY(FileName,(""));
 
 }
 
-Standard_Integer FeaturePartImportIges::execute(void)
+Standard_Integer ImportIges::execute(void)
 {
 
   IGESControl_Reader aReader;

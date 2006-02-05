@@ -41,15 +41,15 @@
 
 using namespace Part;
 
-PROPERTY_SOURCE(Part::FeaturePartImportBrep, Part::PartFeature)
+PROPERTY_SOURCE(Part::ImportBrep, Part::Feature)
 
 
-FeaturePartImportBrep::FeaturePartImportBrep(void)
+ImportBrep::ImportBrep(void)
 {
 	ADD_PROPERTY(FileName,(""));
 }
 
-Standard_Integer FeaturePartImportBrep::execute(void)
+Standard_Integer ImportBrep::execute(void)
 {
 
   IGESControl_Reader aReader;

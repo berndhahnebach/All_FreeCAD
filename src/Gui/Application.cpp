@@ -72,6 +72,10 @@
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
 
+#include "ViewProvider.h"
+#include "ViewProviderExtern.h"
+#include "ViewProviderFeature.h"
+
 
 using Base::Console;
 using Base::Interpreter;
@@ -630,7 +634,16 @@ QApplication* Application::_pcQApp = NULL ;
 
 void Application::initApplication(void)
 {
+  initTypes();
   new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
+}
+
+void Application::initTypes(void)
+{
+  // View Provider
+  Gui::ViewProvider        ::init();
+  Gui::ViewProviderExtern  ::init();
+  Gui::ViewProviderFeature ::init();
 }
 
 void messageHandler( QtMsgType type, const char *msg )

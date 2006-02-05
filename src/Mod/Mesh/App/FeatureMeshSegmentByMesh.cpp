@@ -43,10 +43,10 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-PROPERTY_SOURCE(Mesh::FeatureMeshSegmentByMesh, Mesh::MeshFeature)
+PROPERTY_SOURCE(Mesh::SegmentByMesh, Mesh::Feature)
 
 
-FeatureMeshSegmentByMesh::FeatureMeshSegmentByMesh(void)
+SegmentByMesh::SegmentByMesh(void)
 {
   ADD_PROPERTY(Source  ,(0));
   ADD_PROPERTY(Tool    ,(0));
@@ -55,10 +55,10 @@ FeatureMeshSegmentByMesh::FeatureMeshSegmentByMesh(void)
 
 }
 
-int FeatureMeshSegmentByMesh::execute(void)
+int SegmentByMesh::execute(void)
 {
-  MeshFeature *pcMesh  = dynamic_cast<MeshFeature*>(Source.getValue());
-  MeshFeature *pcTool  = dynamic_cast<MeshFeature*>(Tool.getValue());
+  Feature *pcMesh  = dynamic_cast<Feature*>(Source.getValue());
+  Feature *pcTool  = dynamic_cast<Feature*>(Tool.getValue());
 
   // the clipping plane
   Vector3D cBase, cNormal;

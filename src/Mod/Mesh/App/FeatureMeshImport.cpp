@@ -39,15 +39,15 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-PROPERTY_SOURCE(Mesh::FeatureMeshImport, Mesh::MeshFeature)
+PROPERTY_SOURCE(Mesh::Import, Mesh::Feature)
 
 
-FeatureMeshImport::FeatureMeshImport(void)
+Import::Import(void)
 {
   ADD_PROPERTY(FileName,(""));
 }
 
-int FeatureMeshImport::execute(void)
+int Import::execute(void)
 {
   // ask for read permission
   Base::FileInfo fi(FileName.getValue());

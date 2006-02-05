@@ -52,6 +52,8 @@ using namespace Gui;
 // ViewProvider
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+PROPERTY_SOURCE_ABSTRACT(Gui::ViewProvider, App::PropertyContainer)
+
 
        
 ViewProvider::ViewProvider() : _iActualMode(0)

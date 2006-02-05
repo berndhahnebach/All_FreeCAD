@@ -37,12 +37,12 @@ namespace Points
  * into the FreeCAD workspace.
  * @author Werner Mayer
  */
-class FeaturePointsImportAscii : public PointsFeature
+class ImportAscii : public Points::Feature
 {
-  PROPERTY_HEADER(PointsFeature);
+  PROPERTY_HEADER(Points::ImportAscii);
 
 public:
-  FeaturePointsImportAscii();
+  ImportAscii();
 
   App::PropertyString FileName;
 
@@ -50,8 +50,6 @@ public:
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "PointsImport";};
   //@}
 };
 

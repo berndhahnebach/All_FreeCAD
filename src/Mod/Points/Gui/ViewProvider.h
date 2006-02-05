@@ -41,7 +41,7 @@ namespace Points {
   class PointsPropertyColor;
   class PointsPropertyGreyvalue;
   class PointsPropertyNormal;
-  class PointsFeature;
+  class Feature;
 }
 
 namespace PointsGui {
@@ -53,6 +53,8 @@ namespace PointsGui {
  */
 class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderFeature
 {
+  PROPERTY_HEADER(PointsGui::ViewProviderPart);
+
 public:
   ViewProviderPoints();
   virtual ~ViewProviderPoints();
@@ -78,7 +80,7 @@ public:
 
 
 protected:
-  void createPoints(Points::PointsFeature *pcFeature);
+  void createPoints(Points::Feature *pcFeature);
   void setVertexColorMode(Points::PointsPropertyColor*);
   void setVertexGreyvalueMode(Points::PointsPropertyGreyvalue*);
   void setVertexNormalMode(Points::PointsPropertyNormal*);

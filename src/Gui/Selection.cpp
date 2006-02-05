@@ -267,7 +267,7 @@ bool SelectionSingelton::addSelection(const char* pDocName, const char* pFeatNam
   temp.z        = z;
 
   if(temp.pFeat)
-    temp.TypeName = temp.pFeat->type();
+    temp.TypeName = temp.pFeat->getTypeId().getName();
 
   _SelList.push_back(temp);
 

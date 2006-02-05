@@ -56,6 +56,9 @@
 using namespace PointsGui;
 using namespace Points;
 
+
+PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProvider)
+
        
 ViewProviderPoints::ViewProviderPoints()
 {
@@ -80,7 +83,7 @@ ViewProviderPoints::~ViewProviderPoints()
   pcColorMat->unref();
 }
 
-void ViewProviderPoints::createPoints(PointsFeature *pFeature)
+void ViewProviderPoints::createPoints(Points::Feature *pFeature)
 {
   if ( !pFeature ) return;
 
@@ -178,13 +181,13 @@ void ViewProviderPoints::attach(App::Feature* pcFeat)
   ViewProviderFeature::attach(pcFeat);
 
   // get and save the feature
-  PointsFeature* ptFea = dynamic_cast<PointsFeature*>(pcFeat);
+  Points::Feature* ptFea = dynamic_cast<Points::Feature*>(pcFeat);
   createPoints( ptFea );
 }
 
 void ViewProviderPoints::setMode(const char* ModeName)
 {
-  Points::PointsWithProperty &rcPoints = dynamic_cast<PointsFeature*>(pcFeature)->getPoints();
+  Points::PointsWithProperty &rcPoints = dynamic_cast<Points::Feature*>(pcFeature)->getPoints();
   App::PropertyBag *pcProp = 0;
   pcProp = rcPoints.Get(ModeName);
 
@@ -216,7 +219,7 @@ std::vector<std::string> ViewProviderPoints::getModes(void)
   std::vector<std::string> StrList;
   StrList.push_back("Point");
 
-  Points::PointsWithProperty &rcPoints = dynamic_cast<PointsFeature*>(pcFeature)->getPoints();
+  Points::PointsWithProperty &rcPoints = dynamic_cast<Points::Feature*>(pcFeature)->getPoints();
   std::list<std::string>::iterator It;
 
   std::list<std::string> list = rcPoints.GetAllNamesOfType("VertexColor");
@@ -236,7 +239,7 @@ std::vector<std::string> ViewProviderPoints::getModes(void)
 
 void ViewProviderPoints::updateData()
 {
-  createPoints(dynamic_cast<PointsFeature*>(pcFeature));
+  createPoints(dynamic_cast<Points::Feature*>(pcFeature));
 }
 
 void ViewProviderPoints::setTransparency(float trans)

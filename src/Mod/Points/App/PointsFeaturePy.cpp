@@ -117,7 +117,7 @@ PyParentObject PointsFeaturePy::Parents[] = {&PyObjectBase::Type,&App::FeaturePy
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-PointsFeaturePy::PointsFeaturePy(PointsFeature *pcFeature, PyTypeObject *T)
+PointsFeaturePy::PointsFeaturePy(Points::Feature *pcFeature, PyTypeObject *T)
 : App::FeaturePy(pcFeature, T), _pcFeature(pcFeature), _pcPointsPy(0)
 {
   Base::Console().Log("Create PointsFeaturePy: %p \n",this);

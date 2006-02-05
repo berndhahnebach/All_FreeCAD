@@ -36,23 +36,23 @@
 
 using namespace Part;
 
-PROPERTY_SOURCE(Part::PartCutFeature, Part::PartFeature)
+PROPERTY_SOURCE(Part::Cut, Part::Feature)
 
 
-PartCutFeature::PartCutFeature(void)
+Cut::Cut(void)
 {
 
   ADD_PROPERTY(Base,(0));
   ADD_PROPERTY(Tool,(0));
 }
 
-Standard_Integer PartCutFeature::execute(void)
+Standard_Integer Cut::execute(void)
 {
  
-  PartFeature *pcFirst  = dynamic_cast<PartFeature*>(Base.getValue());
+  Part::Feature *pcFirst  = dynamic_cast<Part::Feature*>(Base.getValue());
   if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
-  PartFeature *pcSecond = dynamic_cast<PartFeature*>(Tool.getValue());
+  Part::Feature *pcSecond = dynamic_cast<Part::Feature*>(Tool.getValue());
   if(!pcSecond || pcSecond->getStatus() != Valid)
     return 1;
 

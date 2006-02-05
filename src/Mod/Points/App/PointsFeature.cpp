@@ -42,22 +42,24 @@ using namespace Points;
 // Feature
 //===========================================================================
 
-PROPERTY_SOURCE(Points::PointsFeature, App::Feature)
+PROPERTY_SOURCE(Points::Feature, App::Feature)
 
-PointsFeature::PointsFeature()
+Feature::Feature()
 {
   // set default display mode
   _showMode = "Point";
 }
 
-PointsFeature::~PointsFeature()
+Feature::~Feature()
 {
 }
 
-void PointsFeature::Save (Base::Writer &writer)
+typedef App::PropertyContainer Parent;
+
+void Feature::Save (Base::Writer &writer)
 {
   // save parent
-  Feature::Save(writer);
+  Parent::Save(writer);
   //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
 
   std::string fn = getName(); fn += ".bin";
@@ -67,17 +69,17 @@ void PointsFeature::Save (Base::Writer &writer)
 
 }
 
-void PointsFeature::Restore(Base::XMLReader &reader)
+void Feature::Restore(Base::XMLReader &reader)
 {
   // save parent
-  Feature::Restore(reader);
+  Parent::Restore(reader);
 
   //_Points.Restore(reader);
 
 
 }
 
-void PointsFeature::SaveDocFile (Base::Writer &writer)
+void Feature::SaveDocFile (Base::Writer &writer)
 {
   const PointKernel& kernel = _Points.getKernel();
   unsigned long uCtPts = kernel.size();
@@ -85,7 +87,7 @@ void PointsFeature::SaveDocFile (Base::Writer &writer)
   writer.write((const char*)&(kernel[0]), uCtPts*sizeof(Base::Vector3D));
 }
 
-void PointsFeature::RestoreDocFile(Base::Reader &reader)
+void Feature::RestoreDocFile(Base::Reader &reader)
 {
   PointKernel& kernel = _Points.getKernel();
   kernel.clear();
@@ -97,18 +99,18 @@ void PointsFeature::RestoreDocFile(Base::Reader &reader)
 }
 
 
-int PointsFeature::execute(void)
+int Feature::execute(void)
 {
   return 0;
 }
 
-void PointsFeature::setPoints(const PointsWithProperty& New)
+void Feature::setPoints(const PointsWithProperty& New)
 {
   _Points = New;
   Touch();
 }
 
-Base::PyObjectBase *PointsFeature::GetPyObject(void)
+Base::PyObjectBase *Feature::GetPyObject(void)
 {
   return new PointsFeaturePy(this);
 }

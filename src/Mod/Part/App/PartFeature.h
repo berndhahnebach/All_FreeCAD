@@ -46,23 +46,22 @@ class Property;
 
 /** Base class of all Feature classes in FreeCAD
  */
-class AppPartExport PartFeature: public App::Feature
+class AppPartExport Feature: public App::Feature
 {
-  PROPERTY_HEADER(Part::PartFeature);
+  PROPERTY_HEADER(Part::Feature);
 
 public:
 	/// Constructor
-	PartFeature(void);
+	Feature(void);
 
   /** @name methods overide Feature */
   //@{
-  /// Initialize Feature structure
-  virtual void initFeature(void);
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "Part";};
   //@}
+
+  /// returns the type name of the ViewProvider
+  virtual const char* getViewProviderName(void){return "PartGui::ViewProviderPart";}
 
 
 	/** @name methodes for handling the result shape */
@@ -80,7 +79,7 @@ public:
 	//@}
 
 
-  virtual Base::PyObjectBase *PartFeature::GetPyObject(void);
+  virtual Base::PyObjectBase *Feature::GetPyObject(void);
 
 private:
   TopoDS_Shape _Shape;

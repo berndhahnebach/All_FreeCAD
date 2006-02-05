@@ -125,7 +125,7 @@ void Document::Save (Writer &writer)
     writer << writer.ind() << "<Feature " 
                          << "type=\"" << feat->getTypeId().getName() << "\" "
                          << "name=\"" << feat->getName()             << "\" "
-                         << "typeOld=\"" << feat->type()             << "\" "
+//                         << "typeOld=\"" << feat->type()             << "\" "
                          << "/>" << endl;    
   }
 
@@ -172,26 +172,8 @@ void Document::Restore(Base::XMLReader &reader)
     reader.readElement("Feature");
     string type = reader.getAttribute("type");
     string name = reader.getAttribute("name");
-    string typeOld = reader.getAttribute("typeOld");
 
-    // reproduce the module name and load it first
-    string::size_type pos = type.find("::");
-    if ( pos != string::npos )
-    {
-      string module = type.substr(0,pos);
-      pos = module.find("App",module.length()-3);
-      if ( pos != string::npos )
-        module = module.substr(0,pos);
-      if ( !module.empty() )
-      {
-        Base::Interpreter().loadModule(module.c_str());
-        // @todo THIS MUST BE CHANGED !!!
-        module += "Gui";
-        Base::Interpreter().loadModule(module.c_str());
-      }
-    }
-
-    addFeature(typeOld.c_str(),name.c_str());
+    addFeature(type.c_str(),name.c_str());
   }
   reader.readEndElement("Features");
 
@@ -304,10 +286,12 @@ bool Document::open (void)
 
     file.close();
 
-    //FIXME: Actually we mustn't call Recompute() after restoring a document, otherwise execute() gets invoked for every feature
-    //       which can take a long time, e.g. loading a huge mesh. But the data get already reloaded by RestoreDocFile().
-    //       So the complete internal state of a feature must be made persistent.
-    Recompute();
+    // notify all as new
+    DocChanges DocChange;
+    for(std::map<std::string,FeatEntry>::iterator It = FeatMap.begin();It != FeatMap.end();++It)
+      DocChange.NewFeatures.insert(It->second.F);
+    Notify(DocChange);
+
 
     return true;
   }
@@ -579,7 +563,9 @@ void Document::_RecomputeFeature(Feature* Feat)
 
 Feature *Document::addFeature(const char* sType, const char* pFeatName)
 {
-	Feature *pcFeature = FeatureFactory().Produce(sType);
+  App::Feature* pcFeature = (App::Feature*) Base::Type::createInstanceByName(sType,true);
+  assert(pcFeature->getTypeId().isDerivedFrom(App::Feature::getClassTypeId()));
+
 
   string FeatName;
 
@@ -591,15 +577,6 @@ Feature *Document::addFeature(const char* sType, const char* pFeatName)
       FeatName = getUniqueFeatureName(pFeatName);
     else
       FeatName = getUniqueFeatureName(sType);
-
-		// next free label
-		//TDF_Label FeatureLabel = _lFeature.FindChild(_iNextFreeFeature++);
-		// mount the feature on its place
-		//FeatureAttr::Set(FeatureLabel,pcFeature);
-		// name
-		//TDataStd_Name::Set(FeatureLabel,TCollection_ExtendedString((Standard_CString) FeatName.c_str() ));
-		// the rest of the setup do the feature itself
-		//pcFeature->AttachLabel(FeatureLabel,this);
 
     // set the status of the feature to New
     pcFeature->_eStatus = Feature::New;

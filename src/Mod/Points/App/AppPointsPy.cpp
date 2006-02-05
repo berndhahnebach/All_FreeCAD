@@ -67,7 +67,7 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      Points::FeaturePointsImportAscii *pcFeature = (Points::FeaturePointsImportAscii *)pcDoc->addFeature("PointsImport", "PointsOpen");
+      Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addFeature("Points::ImportAscii", "PointsOpen");
       pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
     }
@@ -101,7 +101,7 @@ insert(PyObject *self, PyObject *args)
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      Points::FeaturePointsImportAscii *pcFeature = (Points::FeaturePointsImportAscii *)pcDoc->addFeature("PointsImport", "PointsOpen");
+      Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addFeature("Points::ImportAscii", "PointsOpen");
       pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
     }

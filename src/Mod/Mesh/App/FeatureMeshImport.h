@@ -32,16 +32,16 @@ namespace Mesh
 {
 
 /**
- * The FeatureMeshImport class reads the any supported mesh format
+ * The Import class reads the any supported mesh format
  * into the FreeCAD workspace.
  * @author Werner Mayer
  */
-class FeatureMeshImport : public MeshFeature
+class Import : public Mesh::Feature
 {
-  PROPERTY_HEADER(Mesh::FeatureMeshImport);
+  PROPERTY_HEADER(Mesh::Import);
 
 public:
-  FeatureMeshImport();
+  Import();
 
   App::PropertyString FileName;
 
@@ -49,8 +49,6 @@ public:
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "MeshImport";};
   //@}
 };
 

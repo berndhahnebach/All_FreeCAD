@@ -76,15 +76,10 @@ void PointsGuiExport initPointsGui() {
 
   Base::Interpreter().loadModule("Points");
 
+  PointsGui::ViewProviderPoints::init();
+
   // instanciating the commands
   CreatePointsCommands();
-
-  // Register view provider
-  Gui::ViewProviderFeatureFactory().AddProducer("Points",       
-    new Gui::ViewProviderFeatureProducer<PointsGui::ViewProviderPoints>);
-  Gui::ViewProviderFeatureFactory().AddProducer("PointsImport", 
-    new Gui::ViewProviderFeatureProducer<PointsGui::ViewProviderPoints>);
-  Gui::WorkbenchFactory().AddProducer("Points design", new Gui::WorkbenchProducer<PointsGui::Workbench>);
 
   return;
 }

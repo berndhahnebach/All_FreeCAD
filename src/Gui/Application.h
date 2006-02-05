@@ -136,6 +136,7 @@ public:
   /// some kind of singelton
   static Application* Instance;
   static void initApplication(void);
+  static void initTypes(void);
   static void runApplication(void);
   static void destruct(void);
   void tryClose( QCloseEvent * e );

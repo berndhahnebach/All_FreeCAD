@@ -120,7 +120,17 @@ const App::PropertyData * _class_::getPropertyDataPtr(void){return &propertyData
 const App::PropertyData & _class_::getPropertyData(void) const{return propertyData;} \
 App::PropertyData _class_::propertyData; \
 void _class_::init(void){\
-  initSubclass(_class_::classTypeId, #_class_ , #_parentclass_ ); \
+  initSubclass(_class_::classTypeId, #_class_ , #_parentclass_, &(_class_::create) ); \
+  _class_::propertyData.parentPropertyData = _parentclass_::getPropertyDataPtr();\
+}
+
+#define PROPERTY_SOURCE_ABSTRACT(_class_, _parentclass_) \
+TYPESYSTEM_SOURCE_ABSTRACT_P(_class_);\
+const App::PropertyData * _class_::getPropertyDataPtr(void){return &propertyData;} \
+const App::PropertyData & _class_::getPropertyData(void) const{return propertyData;} \
+App::PropertyData _class_::propertyData; \
+void _class_::init(void){\
+  initSubclass(_class_::classTypeId, #_class_ , #_parentclass_, &(_class_::create) ); \
   _class_::propertyData.parentPropertyData = _parentclass_::getPropertyDataPtr();\
 }
 

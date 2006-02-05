@@ -95,6 +95,8 @@ void ModuleExport initPartGui() {
 
   Gui::Application::Instance->macroManager()->setModule("Part");
 
+  PartGui::ViewProviderPart::init();
+/*
   // Register view provider
   Gui::ViewProviderFeatureFactory().AddProducer("PartBox"       ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
   Gui::ViewProviderFeatureFactory().AddProducer("PartCut"       ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
@@ -102,6 +104,7 @@ void ModuleExport initPartGui() {
   Gui::ViewProviderFeatureFactory().AddProducer("PartImportIges",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderImport>);
   Gui::ViewProviderFeatureFactory().AddProducer("PartImportBrep",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderImport>);
   Gui::ViewProviderFeatureFactory().AddProducer("PartCurveNet"  ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderCurveNet>);
+*/
 
   Gui::WorkbenchFactory().AddProducer("Part design", new Gui::WorkbenchProducer<PartGui::Workbench>);
 

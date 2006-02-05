@@ -53,7 +53,7 @@ protected:
 	~PartFeaturePy();
 
 public:
-	PartFeaturePy(PartFeature *pcFeature, PyTypeObject *T = &Type);
+  PartFeaturePy(Part::Feature *pcFeature, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
 
 	//---------------------------------------------------------------------
@@ -69,7 +69,7 @@ public:
 
 
 private:
-  PartFeature *_pcFeature;
+  Part::Feature *_pcFeature;
 
 };
 

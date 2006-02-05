@@ -46,14 +46,14 @@ class Property;
 /** Base class of all Points feature classes in FreeCAD.
  * This class holds an PointsKernel object.
  */
-class PointsAppExport PointsFeature : public App::Feature
+class PointsAppExport Feature : public App::Feature
 {
-  PROPERTY_HEADER(Points::PointsFeature);
+  PROPERTY_HEADER(Points::Feature);
 
 public:
   /// Constructor
-  PointsFeature(void);
-  virtual ~PointsFeature(void);
+  Feature(void);
+  virtual ~Feature(void);
 
   virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::XMLReader &reader);
@@ -64,9 +64,10 @@ public:
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "Points";}
   //@}
+
+  /// returns the type name of the ViewProvider
+  virtual const char* getViewProviderName(void){return "PointsGui::ViewProviderPoints";}
 
 
   /** @name methods for convenient handling of parameter (properties) */
@@ -87,7 +88,7 @@ public:
   virtual const App::Color &getColor(void) const {return _pointMaterial.diffuseColor;}
 
   // handling the PointsPy object
-  virtual Base::PyObjectBase *PointsFeature::GetPyObject(void);
+  virtual Base::PyObjectBase *Feature::GetPyObject(void);
 
 protected:
   PointsWithProperty _Points;

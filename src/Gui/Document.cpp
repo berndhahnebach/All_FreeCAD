@@ -292,9 +292,14 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   // set up new providers
   for(It=Reason.NewFeatures.begin();It!=Reason.NewFeatures.end();It++)
   {
-    std::string cName = (*It)->type();
-    // check if still the same ViewProvider
-    ViewProviderFeature *pcProvider = ViewProviderFeatureFactory().Produce((*It)->type());
+    std::string cName = (*It)->getViewProviderName();
+
+    ViewProviderFeature *pcProvider = (ViewProviderFeature*) Base::Type::createInstanceByName(cName.c_str(),true);
+    
+    // type not derived from ViewProviderFeature!!!
+    assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
+
+
     _ViewProviderMap[*It] = pcProvider;
     if(pcProvider)
     {
@@ -325,7 +330,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
       pcTreeItem->addViewProviderFeature(pcProvider);
 
     }else{
-      Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",(*It)->type());
+      Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",(*It)->getViewProviderName());
     }
   }
 

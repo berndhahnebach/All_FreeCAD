@@ -69,14 +69,14 @@ CmdMeshDemolding::CmdMeshDemolding()
 
 void CmdMeshDemolding::activated(int iMsg)
 {
-  unsigned int n = getSelection().countFeaturesOfType(MeshFeature::getClassTypeId());
+  unsigned int n = getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId());
   if ( n!=1 ) return;
 
   std::string fName = getUniqueFeatureName("Demolding");
   std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh Mesh Create");
-  doCommand(Doc,"App.document().AddFeature(\"MeshTransformDemolding\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.document().AddFeature(\"Mesh::TransformDemolding\",\"%s\")",fName.c_str());
   doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
   doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Demold");
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
@@ -88,7 +88,7 @@ void CmdMeshDemolding::activated(int iMsg)
 bool CmdMeshDemolding::isActive(void)
 {
   //return true;
-  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 1;
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 //===========================================================================
 // Example MakeMesh
@@ -127,7 +127,7 @@ void CmdMeshExMakeMesh::activated(int iMsg)
     "mb.addFacet(1.0,1.0,0.0, 1.0,1.0,1.0, 1.0,0.0,1.0)\n"
     "mb.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
     "mb.scale(100.0)\n"
-    "App.document().AddFeature(\"Mesh\",\"MeshBox\")\n"
+    "App.document().AddFeature(\"Mesh::Feature\",\"MeshBox\")\n"
     "App.document().MeshBox.setMesh(mb)\n"
     "App.document().MeshBox.showMode = \"FlatWire\"\n" 
     "App.document().Recompute()" );
@@ -181,7 +181,7 @@ void CmdMeshExMakeTool::activated(int iMsg)
     "mt.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
     "mt.scale(100.0)\n"
     "mt.translate(50.0,50.0,50.0)\n"
-    "App.document().AddFeature(\"Mesh\",\"MeshTool\")\n"
+    "App.document().AddFeature(\"Mesh::Feature\",\"MeshTool\")\n"
     "App.document().MeshTool.setMesh(mt)\n"
     "App.document().MeshTool.solidMaterial.diffuseColor = (0.5,0.2,0.2)\n"
     "App.document().MeshTool.showMode = \"FlatWire\"" );
@@ -224,7 +224,7 @@ void CmdMeshExMakeUnion::activated(int iMsg)
     "m2 = App.document().MeshTool.getMesh()\n"
     "m3 = m1.copy()\n"
     "m3.Union(m2)\n"
-    "App.document().AddFeature(\"Mesh\",\"MeshUnion\")\n"
+    "App.document().AddFeature(\"Mesh::Feature\",\"MeshUnion\")\n"
     "App.document().MeshUnion.setMesh(m3)\n"
     "App.document().MeshUnion.solidMaterial.ambientColor = (0.1,1,0)\n"
     "App.document().MeshUnion.solidMaterial.transparency = 0.5\n"
@@ -278,7 +278,7 @@ void CmdMeshImport::activated(int iMsg)
   if (! fn.isEmpty() )
   {
     openCommand("Mesh ImportSTL Create");
-    doCommand(Doc,"f = App.document().AddFeature(\"MeshImport\",\"MeshImport\")");
+    doCommand(Doc,"f = App.document().AddFeature(\"Mesh::Import\",\"MeshImport\")");
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
     updateActive();
@@ -327,7 +327,7 @@ void CmdMeshExport::activated(int iMsg)
   QString format;
   QString fn = Gui::FileDialog::getSaveFileName( dir, filter, Gui::getMainWindow(), 0,
                                                  QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );
-  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(MeshFeature::getClassTypeId());
+  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
 
   if (! fn.isEmpty() )
   {
@@ -336,7 +336,7 @@ void CmdMeshExport::activated(int iMsg)
     else if ( format.startsWith("ASCII STL") )
       format = "ASCII STL";
     openCommand("Mesh ExportSTL Create");
-    doCommand(Doc,"f = App.document().AddFeature(\"MeshExport\",\"MeshExport\")");
+    doCommand(Doc,"f = App.document().AddFeature(\"Mesh::Export\",\"MeshExport\")");
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     doCommand(Doc,"f.Format = \"%s\"",format.ascii());
     doCommand(Doc,"f.Source = App.document().%s",fea.front()->getName());
@@ -351,7 +351,7 @@ void CmdMeshExport::activated(int iMsg)
 
 bool CmdMeshExport::isActive(void)
 {
-  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 1;
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshVertexCurvature);
@@ -370,14 +370,14 @@ CmdMeshVertexCurvature::CmdMeshVertexCurvature()
 
 void CmdMeshVertexCurvature::activated(int iMsg)
 {
-  unsigned int n = getSelection().countFeaturesOfType(MeshFeature::getClassTypeId());
+  unsigned int n = getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId());
   if ( n!=1 ) return;
 
   std::string fName = getUniqueFeatureName("Vertex_Curvature");
   std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh VertexCurvature");
-  doCommand(Doc,"App.document().AddFeature(\"MeshCurvature\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.document().AddFeature(\"Mesh::Curvature\",\"%s\")",fName.c_str());
   doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
   doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Absolute curvature");
   commitCommand();
@@ -389,7 +389,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
 bool CmdMeshVertexCurvature::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 1;
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshPolyPick);
@@ -408,7 +408,7 @@ CmdMeshPolyPick::CmdMeshPolyPick()
 
 void CmdMeshPolyPick::activated(int iMsg)
 {
-  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(MeshFeature::getClassTypeId());
+  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
   if ( fea.size() == 1 )
   {
     Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
@@ -419,7 +419,7 @@ void CmdMeshPolyPick::activated(int iMsg)
 bool CmdMeshPolyPick::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 1;
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshToolMesh);
@@ -438,7 +438,7 @@ CmdMeshToolMesh::CmdMeshToolMesh()
 
 void CmdMeshToolMesh::activated(int iMsg)
 {
-  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(MeshFeature::getClassTypeId());
+  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
   if ( fea.size() == 2 )
   {
     std::string fName = getUniqueFeatureName("MeshSegment");
@@ -449,7 +449,7 @@ void CmdMeshToolMesh::activated(int iMsg)
     doCommand(Doc, "import Mesh");
     doCommand(Gui, "import MeshGui");
     doCommand(Doc,
-      "App.document().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
+      "App.document().AddFeature(\"Mesh::SegmentByMesh\",\"%s\")\n"
       "App.document().%s.Source = App.document().%s\n"
       "App.document().%s.Tool = App.document().%s\n",
       fName.c_str(), fName.c_str(),  mesh->getName(), fName.c_str(), tool->getName() );
@@ -472,7 +472,7 @@ void CmdMeshToolMesh::activated(int iMsg)
 bool CmdMeshToolMesh::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 2;
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 2;
 }
 
 void CreateMeshCommands(void)

@@ -45,6 +45,9 @@
 using namespace Gui;
 
 
+PROPERTY_SOURCE_ABSTRACT(Gui::ViewProviderFeature, Gui::ViewProvider)
+
+
       
 ViewProviderFeature::ViewProviderFeature()
   : pcFeature(0), _cLastStatus(-1)
@@ -295,7 +298,7 @@ void ViewProviderFeature::setColor(const App::Color &c)
 // FeatureFactorySingleton - Factory for Features
 //===========================================================================
 
-
+/*
 
 ViewProviderFeatureFactorySingleton* ViewProviderFeatureFactorySingleton::_pcSingleton = NULL;
 
@@ -330,3 +333,4 @@ ViewProviderFeature* ViewProviderFeatureFactorySingleton::Produce (const char* s
   return w;
 }
 
+*/

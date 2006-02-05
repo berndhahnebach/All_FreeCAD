@@ -48,22 +48,23 @@ class MeshFeaturePy;
  * This class holds a MeshKernel object.
  * \author Werner Mayer
  */
-class AppMeshExport MeshFeature : public App::Feature
+class AppMeshExport Feature : public App::Feature
 {
-  PROPERTY_HEADER(Mesh::MeshFeature);
+  PROPERTY_HEADER(Mesh::Feature);
 
 public:
   /// Constructor
-  MeshFeature(void);
-  virtual ~MeshFeature();
+  Feature(void);
+  virtual ~Feature();
 
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "Mesh";};
   //@}
+
+  /// returns the type name of the ViewProvider
+  virtual const char* getViewProviderName(void){return "MeshGui::ViewProviderMesh";}
 
   virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::XMLReader &reader);

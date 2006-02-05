@@ -36,14 +36,14 @@
 
 using namespace Points;
 
-PROPERTY_SOURCE(Points::FeaturePointsImportAscii, Points::PointsFeature)
+PROPERTY_SOURCE(Points::ImportAscii, Points::Feature)
 
-FeaturePointsImportAscii::FeaturePointsImportAscii(void)
+ImportAscii::ImportAscii(void)
 {
   ADD_PROPERTY(FileName,(""));
 }
 
-int FeaturePointsImportAscii::execute(void)
+int ImportAscii::execute(void)
 {
 
   // ask for read permisson

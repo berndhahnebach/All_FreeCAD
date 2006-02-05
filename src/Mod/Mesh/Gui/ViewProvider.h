@@ -67,6 +67,8 @@ namespace MeshGui {
  */
 class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderFeature
 {
+  PROPERTY_HEADER(MeshGui::ViewProviderMesh);
+
 public:
   ViewProviderMesh();
   virtual ~ViewProviderMesh();

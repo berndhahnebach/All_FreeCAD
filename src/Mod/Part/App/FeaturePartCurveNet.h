@@ -32,22 +32,18 @@ namespace Part
 {
 
 
-class FeaturePartCurveNet :public PartFeature
+class CurveNet :public Part::Feature
 {
   PROPERTY_HEADER(Part::FeaturePartCurveNet);
 
 public:
 
-  FeaturePartCurveNet::FeaturePartCurveNet();
+  CurveNet::CurveNet();
 
   /** @name methods overide Feature */
   //@{
-  /// Initialize Feature structure
-  virtual void initFeature(void);
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "PartCurveNet";};
   //@}
 };
 

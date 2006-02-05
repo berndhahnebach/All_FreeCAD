@@ -40,18 +40,18 @@
 using namespace Mesh;
 using namespace MeshCore;
 
-PROPERTY_SOURCE(Mesh::FeatureMeshCurvature, Mesh::MeshFeature)
+PROPERTY_SOURCE(Mesh::Curvature, Mesh::Feature)
 
 
 
-FeatureMeshCurvature::FeatureMeshCurvature(void)
+Curvature::Curvature(void)
 {
   ADD_PROPERTY(Source,(0));
 }
 
-int FeatureMeshCurvature::execute(void)
+int Curvature::execute(void)
 {
-  MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(Source.getValue());
+  Feature *pcFeat  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
     return 1;
 
@@ -61,11 +61,11 @@ int FeatureMeshCurvature::execute(void)
   return 0;
 }
 
-MeshWithProperty& FeatureMeshCurvature::getMesh()
+MeshWithProperty& Curvature::getMesh()
 {
-  MeshFeature *pcFeat  = dynamic_cast<MeshFeature*>(Source.getValue());
+  Feature *pcFeat  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
-    return MeshFeature::getMesh();
+    return Feature::getMesh();
 
   return pcFeat->getMesh();
 }

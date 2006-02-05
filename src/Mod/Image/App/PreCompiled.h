@@ -19,6 +19,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <set>
 
 // Exporting of App classes
 #ifdef FC_OS_WIN32

@@ -33,24 +33,20 @@ namespace Part
 {
 
 
-class PartBoxFeature :public PartFeature
+class Box :public Part::Feature
 {
-  PROPERTY_HEADER(Part::PartBoxFeature);
+  PROPERTY_HEADER(Part::Box);
 
 public:
-  PartBoxFeature();
+  Box();
 
   App::PropertyFloat x,y,z,l,h,w;
 
 
   /** @name methods overide Feature */
   //@{
-  /// Initialize Feature structure
-  virtual void initFeature(void);
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "PartBox";};
   //@}
 };
 

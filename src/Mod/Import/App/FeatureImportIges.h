@@ -32,7 +32,7 @@ namespace Import
 {
 
 
-class FeatureImportIges :public Part::PartFeature
+class FeatureImportIges :public Part::Feature
 {
 public:
 

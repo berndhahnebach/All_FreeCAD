@@ -38,15 +38,15 @@
 
 using namespace Part;
 
-PROPERTY_SOURCE(Part::FeaturePartImportStep, Part::PartFeature)
+PROPERTY_SOURCE(Part::ImportStep, Part::Feature)
 
 
-FeaturePartImportStep::FeaturePartImportStep(void)
+ImportStep::ImportStep(void)
 {
 	ADD_PROPERTY(FileName,(""));
 }
 
-Standard_Integer FeaturePartImportStep::execute(void)
+Standard_Integer ImportStep::execute(void)
 {
   STEPControl_Reader aReader;
   TopoDS_Shape aShape;

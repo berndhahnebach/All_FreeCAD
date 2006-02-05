@@ -34,16 +34,16 @@ namespace Mesh
 {
 
 /**
- * The FeatureMeshImport class reads the any supported mesh format
+ * The Import class reads the any supported mesh format
  * into the FreeCAD workspace.
  * @author Werner Mayer
  */
-class FeatureMeshTransform : public MeshFeature
+class Transform : public Mesh::Feature
 {
-  PROPERTY_HEADER(Mesh::FeatureMeshTransform);
+  PROPERTY_HEADER(Mesh::Transform);
 
 public:
-  FeatureMeshTransform();
+  Transform();
 
   App::PropertyLink   Source;
   App::PropertyMatrix Position;

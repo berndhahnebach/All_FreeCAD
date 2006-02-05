@@ -45,6 +45,7 @@ using std::string;
 
 using namespace Gui;
 
+PROPERTY_SOURCE(Gui::ViewProviderExtern, Gui::ViewProvider)
 
       
 ViewProviderExtern::ViewProviderExtern()

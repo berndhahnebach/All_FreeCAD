@@ -84,7 +84,7 @@ ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
 
 void ViewProviderMeshCurvature::init(App::Feature *pcFeat)
 {
-  MeshWithProperty& rMesh = dynamic_cast<MeshFeature*>(pcFeat)->getMesh();
+  MeshWithProperty& rMesh = dynamic_cast<Feature*>(pcFeat)->getMesh();
   MeshPropertyCurvature *prop = dynamic_cast<MeshPropertyCurvature*>(rMesh.Get("VertexCurvature") );
   if( prop && prop->isValid() )
   {
@@ -252,7 +252,7 @@ QPixmap ViewProviderMeshCurvature::getIcon() const
 
 void ViewProviderMeshCurvature::setMode(const char* ModeName)
 {
-  MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
+  MeshWithProperty &rcMesh = dynamic_cast<Feature*>(pcFeature)->getMesh();
   App::PropertyBag *pcProp = 0;
   pcProp = rcMesh.GetFirstOfType("VertexCurvature");
 
@@ -290,7 +290,7 @@ std::vector<std::string> ViewProviderMeshCurvature::getModes(void)
   std::vector<std::string> StrList = ViewProviderMesh::getModes();
 
   // add modes
-  MeshWithProperty &rcMesh = dynamic_cast<MeshFeature*>(pcFeature)->getMesh();
+  MeshWithProperty &rcMesh = dynamic_cast<Feature*>(pcFeature)->getMesh();
   if ( rcMesh.GetFirstOfType("VertexCurvature") )
   {
     StrList.push_back("Absolute curvature");

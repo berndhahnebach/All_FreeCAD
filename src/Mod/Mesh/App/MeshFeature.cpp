@@ -48,38 +48,38 @@ using namespace Mesh;
 // Feature
 //===========================================================================
 
-PROPERTY_SOURCE(Mesh::MeshFeature, App::Feature)
+PROPERTY_SOURCE(Mesh::Feature, App::Feature)
 
-MeshFeature::MeshFeature()
+Feature::Feature()
 :pcMeshFeaturePy(0)
 {
 }
 
-MeshFeature::~MeshFeature()
+Feature::~Feature()
 {
   if ( pcMeshFeaturePy )
     pcMeshFeaturePy->DecRef();
 }
 
 
-Standard_Integer MeshFeature::execute(void)
+Standard_Integer Feature::execute(void)
 {
   return 0;
 }
 
 
-MeshWithProperty& MeshFeature::getMesh()
+MeshWithProperty& Feature::getMesh()
 {
   return _cMesh;
 }
 
-void MeshFeature::setMesh(const MeshWithProperty& New)
+void Feature::setMesh(const MeshWithProperty& New)
 {
   _cMesh = New;
   Touch();
 }
 
-Base::PyObjectBase *MeshFeature::GetPyObject(void)
+Base::PyObjectBase *Feature::GetPyObject(void)
 {
   if(!pcMeshFeaturePy){
     pcMeshFeaturePy = new MeshFeaturePy(this);
@@ -90,10 +90,13 @@ Base::PyObjectBase *MeshFeature::GetPyObject(void)
   return pcMeshFeaturePy; 
 }
 
-void MeshFeature::Save (Base::Writer &writer)
+typedef App::PropertyContainer Parent;
+
+void Feature::Save (Base::Writer &writer)
 {
+  //typedef App::Feature Parent;
   // save parent
-  Feature::Save(writer);
+  Parent::Save(writer);
 
   std::string fn = getName(); fn += ".bms";
   writer.addFile(fn.c_str(), this);
@@ -105,10 +108,10 @@ void MeshFeature::Save (Base::Writer &writer)
 
 }
 
-void MeshFeature::Restore(Base::XMLReader &reader)
+void Feature::Restore(Base::XMLReader &reader)
 {
   // save parent
-  Feature::Restore(reader);
+  Parent::Restore(reader);
 
 //  MeshCore::MeshDocXML geter(*_cMesh.getKernel());
 
@@ -117,12 +120,12 @@ void MeshFeature::Restore(Base::XMLReader &reader)
 
 }
 
-void MeshFeature::SaveDocFile (Base::Writer &writer)
+void Feature::SaveDocFile (Base::Writer &writer)
 {
   _cMesh.getKernel()->Write(writer);
 }
 
-void MeshFeature::RestoreDocFile(Base::Reader &reader)
+void Feature::RestoreDocFile(Base::Reader &reader)
 {
   _cMesh.getKernel()->Read(reader);
 }

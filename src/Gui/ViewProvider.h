@@ -46,14 +46,18 @@ namespace App {
   class Color;
 }
 
+#include <App/PropertyContainer.h>
+
 namespace Gui {
 
 class View3DInventorViewer;
 
 
 
-class GuiExport ViewProvider
+class GuiExport ViewProvider: public App::PropertyContainer
 {
+    PROPERTY_HEADER(Gui::ViewProvider);
+
 public:
   /// constructor.
   ViewProvider();

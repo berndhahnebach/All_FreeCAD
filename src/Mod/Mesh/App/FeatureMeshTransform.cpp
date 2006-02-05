@@ -41,19 +41,19 @@ using Base::Matrix4D;
 using namespace Mesh;
 using namespace MeshCore;
 
-PROPERTY_SOURCE(Mesh::FeatureMeshTransform, Mesh::MeshFeature)
+PROPERTY_SOURCE(Mesh::Transform, Mesh::Feature)
 
 
-FeatureMeshTransform::FeatureMeshTransform(void)
+Transform::Transform(void)
 {
   ADD_PROPERTY(Source  ,(0));
   ADD_PROPERTY(Position,(0));
 }
 
-int FeatureMeshTransform::execute(void)
+int Transform::execute(void)
 {
 
-  MeshFeature *pcFirst  = dynamic_cast<MeshFeature*>(Source.getValue());
+  Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
 

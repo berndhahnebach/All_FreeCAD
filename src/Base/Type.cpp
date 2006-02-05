@@ -20,7 +20,6 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
@@ -31,25 +30,31 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Type.h"
 #include "Exception.h"
+#include "Interpreter.h"
+#include "Console.h"
 
 
 using namespace Base;
+using namespace std;
 
 
 struct Base::TypeData 
 {
   TypeData(const char *theName,
            const Type type = Type::badType(),
-           const Type theParent = Type::badType()
-          ):name(theName),parent(theParent),type(type) { }
+           const Type theParent = Type::badType(),
+           Type::instantiationMethod method = 0
+          ):name(theName),parent(theParent),type(type),instMethod(method) { }
 
   std::string name;
   Type parent;
   Type type;
+  Type::instantiationMethod instMethod;
 };
 
-std::map<std::string,unsigned int> Type::typemap;
-std::vector<TypeData*>             Type::typedata;
+map<string,unsigned int> Type::typemap;
+vector<TypeData*>        Type::typedata;
+set<string>              Type::loadModuleSet;
 
 //**************************************************************************
 // Construction/Destruction
@@ -78,6 +83,46 @@ Type::~Type()
 {
 }
 
+void *Type::createInstance(void)
+{
+  return (typedata[index]->instMethod)();
+}
+
+
+void *Type::createInstanceByName(const char* TypeName, bool bLoadModule)
+{
+  // if not allready, load the module
+  if(bLoadModule)
+  {
+    string Mod = getModuleName(TypeName);
+    set<string>::const_iterator pos = loadModuleSet.find(Mod);
+    if(pos == loadModuleSet.end())
+    {
+      Interpreter().loadModule(Mod.c_str());
+      Console().Log("Act : Module %s loaded throug class %s \n",Mod.c_str(),TypeName);
+      loadModuleSet.insert(Mod);
+    }
+  }
+
+  // now the type shut be in the type map
+  Type t = fromName(TypeName);
+  if(t == badType())
+    return 0;
+
+  return t.createInstance();
+
+}
+
+string Type::getModuleName(const char* ClassName)
+{
+  string temp(ClassName);
+  unsigned int pos = temp.find_first_of("::");
+
+  if(pos != std::string::npos)
+    return string(temp,0,pos);
+  else
+    return string();
+}
 
 Type Type::badType(void)
 {
@@ -87,11 +132,11 @@ Type Type::badType(void)
 }
 
 
-const Type Type::createType(const Type parent, const char *name)
+const Type Type::createType(const Type parent, const char *name, instantiationMethod method)
 {
   Type newType;
   newType.index = Type::typedata.size();
-  TypeData * typeData = new TypeData(name, newType, parent);
+  TypeData * typeData = new TypeData(name, newType, parent,method);
   Type::typedata.push_back(typeData);
 
   // add to dictionary for fast lookup

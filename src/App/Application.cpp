@@ -381,6 +381,12 @@ Document* Application::openDocument(const char * FileName)
     newDoc.pDoc->Name.setValue(name);
     newDoc.pDoc->FileName.setValue(File.filePath());
 
+    // trigger Observers (open windows and so on)
+    AppChanges Reason;
+    Reason.Doc = newDoc.pDoc;
+    Reason.Why = AppChanges::New;
+    Notify(Reason);
+
     // read the document
     if ( !newDoc.pDoc->open() )
     {
@@ -394,11 +400,11 @@ Document* Application::openDocument(const char * FileName)
     _pActiveDoc = newDoc.pDoc;
 
     // trigger Observers (open windows and so on)
-    AppChanges Reason;
+/*    AppChanges Reason;
     Reason.Doc = newDoc.pDoc;
     Reason.Why = AppChanges::New;
     Notify(Reason);
-
+*/
     //NotifyDocNew(newDoc.pDoc);
   }else{
     throw Base::Exception("Unknown file extension");
