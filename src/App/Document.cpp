@@ -723,6 +723,29 @@ std::vector<Feature*> Document::getFeatures() const
   return features;
 }
 
+std::vector<Feature*> Document::getFeaturesOfType(const Base::Type& typeId) const
+{
+  std::vector<Feature*> features;
+  for( std::map<std::string,FeatEntry>::const_iterator it = FeatMap.begin(); it != FeatMap.end(); ++it )
+  {
+    if ( it->second.F->getTypeId().isDerivedFrom( typeId ) )
+      features.push_back( it->second.F );
+  }
+  return features;
+}
+
+int Document::countFeaturesOfType(const Base::Type& typeId) const
+{
+  int ct=0;
+  for( std::map<std::string,FeatEntry>::const_iterator it = FeatMap.begin(); it != FeatMap.end(); ++it )
+  {
+    if ( it->second.F->getTypeId().isDerivedFrom( typeId ) )
+      ct++;
+  }
+
+  return ct;
+}
+
 /*
 void Document::Init (void)
 {

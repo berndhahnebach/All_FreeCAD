@@ -311,9 +311,9 @@ bool Application::closeDocument(const char* name)
   return true;
 }
 
-App::Document* Application::getDocument(const char *Name)
+App::Document* Application::getDocument(const char *Name) const
 {
-  map<string,DocEntry>::iterator pos;
+  map<string,DocEntry>::const_iterator pos;
 
   pos = DocMap.find(Name);
 
@@ -323,6 +323,13 @@ App::Document* Application::getDocument(const char *Name)
   return pos->second.pDoc;
 }
 
+std::vector<App::Document*> Application::getDocuments() const
+{
+  std::vector<App::Document*> docs;
+  for ( map<string,DocEntry>::const_iterator it = DocMap.begin(); it != DocMap.end(); ++it )
+    docs.push_back( it->second.pDoc );
+  return docs;
+}
 
 string Application::getUniqueDocumentName(const char *Name)
 {

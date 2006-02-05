@@ -45,7 +45,6 @@ MeshInfo::MeshInfo (MeshKernel &rclM)
 
 std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const
 {
-  unsigned long i = 0;
   unsigned long ulCtPt, ulCtEd, ulCtFc;
   ulCtPt = _rclMesh.CountPoints();
   ulCtFc = _rclMesh.CountFacets();

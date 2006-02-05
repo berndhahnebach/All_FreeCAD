@@ -30,7 +30,6 @@
 #include <stdio.h>
 
 #include "Vector3D.h"
-//#include "Stream.h"
 #include <float.h>
 namespace Base {
 
@@ -79,13 +78,6 @@ public:
   inline friend Vector3D& operator*= (Vector3D& rclVect, const Matrix4D& rclMtrx);
   //@}
 
-  /** @name I/O methods 
-  //@{
-  /// Binary streaming of data
-  DataStream& SaveData (DataStream& ofs);
-  /// Binary streaming of data
-  DataStream& LoadData (DataStream& ifs);
-  //@}*/
   /// get the matrix in OpenGL style
   void   getGLMatrix (double dMtrx[16]) const;
   /// set the matrix in OpenGL style

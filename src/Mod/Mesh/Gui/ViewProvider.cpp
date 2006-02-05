@@ -50,7 +50,6 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
-#include <Base/Stream.h>
 #include <Base/Tools2D.h>
 #include <Base/ViewProj.h>
 
@@ -557,7 +556,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 #endif
 
           // now intersect with each selected mesh feature
-          std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
+          std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(MeshFeature::getClassTypeId());
 
           for ( std::vector<App::Feature*>::iterator it = fea.begin(); it != fea.end(); ++it )
           {

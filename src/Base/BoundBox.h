@@ -31,7 +31,6 @@
 #include "Vector3D.h"
 #include "Matrix.h"
 #include "ViewProj.h"
-#include "Stream.h"
 #include "Tools2D.h"
 
 // Checks if point K lies on the ray [A,B[

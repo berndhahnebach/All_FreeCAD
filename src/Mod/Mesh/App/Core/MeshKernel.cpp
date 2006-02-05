@@ -29,15 +29,12 @@
 #endif
 
 #include <Base/Sequencer.h>
-#include <Base/Stream.h>
 
 #include "Helpers.h"
 #include "MeshKernel.h"
 #include "Iterator.h"
 #include "Evaluation.h"
 #include "Builder.h"
-
-using Base::DataStream;
 
 using namespace MeshCore;
 

@@ -31,7 +31,6 @@
 
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
-#include <Base/Stream.h>
 #include <Base/Reader.h>
 #include <Base/Writer.h>
 #include <Base/Persistance.h>
@@ -73,7 +72,7 @@ MeshSTL::MeshSTL (MeshKernel &rclM)
 : _rclMesh(rclM)
 {
 }
-
+/*
 bool MeshSTL::Load (FileStream &rstrIn)
 {
   char szBuf[200];
@@ -112,19 +111,19 @@ bool MeshSTL::Load (FileStream &rstrIn)
   }
 
   return true;
-}
+}*/
 
 bool MeshSTL::Load (std::istream &rstrIn)
 {
   char szBuf[200];
-/*
+
   if ( !rstrIn || rstrIn.bad() == true )
     return false;
 
   //  80 Zeichen ab Position 80 einlesen und auf Key-Woerter solid,facet,normal,vertex,endfacet,endloop testen
-  std::filebuf* buf = rstrIn.rdbuf();
+  std::streambuf* buf = rstrIn.rdbuf();
   if (!buf) return false;
-  buf->seekoff(80, std::ios::beg, std::ios::in);
+  buf->pubseekoff(80, std::ios::beg, std::ios::in);
   if ( rstrIn.read(szBuf, 80) == false )
     return false;
   szBuf[80] = 0; 
@@ -134,12 +133,12 @@ bool MeshSTL::Load (std::istream &rstrIn)
     if ((strstr(szBuf, "SOLID") == NULL)  && (strstr(szBuf, "FACET") == NULL)    && (strstr(szBuf, "NORMAL") == NULL) &&
         (strstr(szBuf, "VERTEX") == NULL) && (strstr(szBuf, "ENDFACET") == NULL) && (strstr(szBuf, "ENDLOOP") == NULL))
     {  // wahrscheinlich stl binaer
-      buf->seekoff(0, std::ios::beg, std::ios::in);
+      buf->pubseekoff(0, std::ios::beg, std::ios::in);
       return LoadBinary(rstrIn);
     }
     else
     {  // stl ascii
-      buf->seekoff(0, std::ios::beg, std::ios::in);
+      buf->pubseekoff(0, std::ios::beg, std::ios::in);
       return LoadAscii(rstrIn);
     }
   }
@@ -152,10 +151,10 @@ bool MeshSTL::Load (std::istream &rstrIn)
     _rclMesh.Clear();
     throw e;
   }
-*/
+
   return true;
 }
-
+/*
 bool MeshSTL::LoadAscii (FileStream &rstrIn)
 {
   char szLine[200], szKey1[200], szKey2[200];
@@ -198,27 +197,51 @@ bool MeshSTL::LoadAscii (FileStream &rstrIn)
   builder.Finish();
 
   return true;
-}
+}*/
 
 bool MeshSTL::LoadAscii (std::istream &rstrIn)
-{/*
+{
   char szLine[200], szKey1[200], szKey2[200];
-  unsigned long ulVertexCt, ulCt;
+  unsigned long ulVertexCt, ulFacetCt=0;
   float fX, fY, fZ;
   MeshGeomFacet clFacet;
 
-  if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
+  if ( !rstrIn || rstrIn.bad() == true )
     return false;
 
-  ulCt = rstrIn.FileSize();
+  long ulSize=ULONG_MAX;
+  std::streambuf* buf = rstrIn.rdbuf();
+  if ( !buf )
+    return false;
+
+  ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
+  buf->pubseekoff(0, std::ios::beg, std::ios::in);
+  ulSize -= 20;
+
+  // count facets
+  while ((rstrIn.eof() == false) && (rstrIn.bad() == false))
+  {
+    rstrIn.getline(szLine, 200);
+    upper(ltrim(szLine));
+    if (strncmp(szLine, "FACET", 5) == 0)
+      ulFacetCt++;
+    // prevent from reading EOF (as I don't know how to reread the file then)
+    else if (rstrIn.tellg() > ulSize)
+      break;
+    else if (strncmp(szLine, "ENDSOLID", 8) == 0)
+      break;
+  }
+
+  // restart from the beginning
+  buf->pubseekoff(0, std::ios::beg, std::ios::in);
 
   MeshBuilder builder(this->_rclMesh);
-  builder.Initialize(ulCt);
+  builder.Initialize(ulFacetCt);
 
   ulVertexCt = 0;
-  while ((rstrIn.IsEof() == false) && (rstrIn.IsBad() == false))
+  while ((rstrIn.eof() == false) && (rstrIn.bad() == false))
   {
-    rstrIn.ReadLine(szLine, 200);
+    rstrIn.getline(szLine, 200);
     upper(ltrim(szLine));
     if (strncmp(szLine, "FACET", 5) == 0)  // normale
     {
@@ -240,10 +263,10 @@ bool MeshSTL::LoadAscii (std::istream &rstrIn)
   }
 
   builder.Finish();
-*/
+
   return true;
 }
-
+/*
 bool MeshSTL::LoadBinary (FileStream &rstrIn)
 {
   char szInfo[80];
@@ -278,38 +301,47 @@ bool MeshSTL::LoadBinary (FileStream &rstrIn)
     // read normal, points
     rstrIn.Read((char*)&clVects, sizeof(clVects));
 
-	std::swap(clVects[0], clVects[3]);
-	builder.AddFacet(clVects);
+    std::swap(clVects[0], clVects[3]);
+    builder.AddFacet(clVects);
 
-	// overread 2 bytes attribute
+    // overread 2 bytes attribute
     rstrIn.Read((char*)&usAtt, sizeof(usAtt));
   }
 
   builder.Finish();
 
   return true;
-}
+}*/
 
 bool MeshSTL::LoadBinary (std::istream &rstrIn)
-{/*
+{
   char szInfo[80];
   Vector3D clVects[4];
   unsigned short usAtt; 
   unsigned long ulCt;
 
-  if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
+  if ( !rstrIn || rstrIn.bad() == true )
     return false;
 
   // Header-Info ueberlesen
-  rstrIn.Read(szInfo, sizeof(szInfo));
+  rstrIn.read(szInfo, sizeof(szInfo));
  
   // Anzahl Facets
-  rstrIn.Read((char*)&ulCt, sizeof(ulCt));
-  if (rstrIn.IsBad() == true)
+  rstrIn.read((char*)&ulCt, sizeof(ulCt));
+  if (rstrIn.bad() == true)
     return false;
 
   // get file size and calculate the number of facets
-  unsigned long ulSize = rstrIn.FileSize(); 
+  unsigned long ulSize = 0; 
+  std::streambuf* buf = rstrIn.rdbuf();
+  if ( buf )
+  {
+    unsigned long ulCurr;
+    ulCurr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
+    ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
+    buf->pubseekoff(ulCurr, std::ios::beg, std::ios::in);
+  }
+
   unsigned long ulFac = (ulSize - (80 + sizeof(unsigned long))) / 50;
 
   // compare the calculated with the read value
@@ -322,20 +354,20 @@ bool MeshSTL::LoadBinary (std::istream &rstrIn)
   for (unsigned long i = 0; i < ulCt; i++)
   {
     // read normal, points
-    rstrIn.Read((char*)&clVects, sizeof(clVects));
+    rstrIn.read((char*)&clVects, sizeof(clVects));
 
-	std::swap(clVects[0], clVects[3]);
-	builder.AddFacet(clVects);
+    std::swap(clVects[0], clVects[3]);
+    builder.AddFacet(clVects);
 
-	// overread 2 bytes attribute
-    rstrIn.Read((char*)&usAtt, sizeof(usAtt));
+    // overread 2 bytes attribute
+    rstrIn.read((char*)&usAtt, sizeof(usAtt));
   }
 
   builder.Finish();
-*/
+
   return true;
 }
-
+/*
 bool MeshSTL::SaveAscii (FileStream &rstrOut) const
 {
   MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
@@ -388,28 +420,24 @@ bool MeshSTL::SaveAscii (FileStream &rstrOut) const
 
   strcpy(szBuf, "endsolid MESH\n");
   rstrOut.Write(szBuf, strlen(szBuf));
-
  
   return true;
-}
+}*/
 
 bool MeshSTL::SaveAscii (std::ostream &rstrOut) const
-{/*
+{
   MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
   const MeshGeomFacet *pclFacet;
   unsigned long i, ulCtFacet;
   char szBuf[200]; 
 
-  if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) ||
-      (_rclMesh.CountFacets() == 0))
-  {
+  if ( !rstrOut || rstrOut.bad() == true || _rclMesh.CountFacets() == 0 )
     return false;
-  }
 
   Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  
 
   strcpy(szBuf, "solid MESH\n");
-  rstrOut.Write(szBuf, strlen(szBuf));
+  rstrOut.write(szBuf, strlen(szBuf));
 
   clIter.Begin();
   clEnd.End();
@@ -421,35 +449,35 @@ bool MeshSTL::SaveAscii (std::ostream &rstrOut) const
     // normale
     sprintf(szBuf, "  facet normal %.4f %.4f %.4f\n", pclFacet->GetNormal().x,
              pclFacet->GetNormal().y,  pclFacet->GetNormal().z);
-    rstrOut.Write(szBuf, strlen(szBuf));
+    rstrOut.write(szBuf, strlen(szBuf));
 
     strcpy(szBuf, "    outer loop\n");
-    rstrOut.Write(szBuf, strlen(szBuf));
+    rstrOut.write(szBuf, strlen(szBuf));
 
     for (i = 0; i < 3; i++)
     {
       sprintf(szBuf, "      vertex %.4f %.4f %.4f\n", pclFacet->_aclPoints[i].x,
               pclFacet->_aclPoints[i].y, pclFacet->_aclPoints[i].z);
-      rstrOut.Write(szBuf, strlen(szBuf));
+      rstrOut.write(szBuf, strlen(szBuf));
     }
 
     strcpy(szBuf, "    endloop\n");
-    rstrOut.Write(szBuf, strlen(szBuf));
+    rstrOut.write(szBuf, strlen(szBuf));
 
     strcpy(szBuf, "  endfacet\n");
-    rstrOut.Write(szBuf, strlen(szBuf));
+    rstrOut.write(szBuf, strlen(szBuf));
 
     ++clIter; 
     Base::Sequencer().next( true );// allow to cancel
   } 
 
   strcpy(szBuf, "endsolid MESH\n");
-  rstrOut.Write(szBuf, strlen(szBuf));
-*/
+  rstrOut.write(szBuf, strlen(szBuf));
+
  
   return true;
 }
-
+/*
 bool MeshSTL::SaveBinary (FileStream &rstrOut) const
 {
   MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
@@ -498,26 +526,26 @@ bool MeshSTL::SaveBinary (FileStream &rstrOut) const
 
 
   return true;
-}
+}*/
 
 bool MeshSTL::SaveBinary (std::ostream &rstrOut) const
-{/*
+{
   MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
   const MeshGeomFacet *pclFacet;
   unsigned long i, ulCtFacet;
   unsigned short usAtt;
   char szInfo[81];
 
-  if ((rstrOut.IsOpen() == false) || (rstrOut.IsBad() == true) || (_rclMesh.CountFacets() == 0))
-  {
+  if ( !rstrOut || rstrOut.bad() == true || _rclMesh.CountFacets() == 0 )
     return false;
-  }
 
   Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  
  
   strcpy(szInfo, "MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH-MESH\n");
-  rstrOut.Write(szInfo, strlen(szInfo));
-  rstrOut << (unsigned long)(_rclMesh.CountFacets());
+  rstrOut.write(szInfo, strlen(szInfo));
+
+  unsigned long uCtFts = _rclMesh.CountFacets();
+  rstrOut.write((const char*)&uCtFts, sizeof(unsigned long));
 
   usAtt = 0;
   clIter.Begin();
@@ -527,25 +555,24 @@ bool MeshSTL::SaveBinary (std::ostream &rstrOut) const
   {
     pclFacet = &(*clIter);
     // Normale
-    rstrOut << float(pclFacet->GetNormal().x) <<
-               float(pclFacet->GetNormal().y) <<
-               float(pclFacet->GetNormal().z);
+    rstrOut.write((const char*)&(pclFacet->GetNormal().x), sizeof(float));
+    rstrOut.write((const char*)&(pclFacet->GetNormal().y), sizeof(float));
+    rstrOut.write((const char*)&(pclFacet->GetNormal().z), sizeof(float));
 
     // Eckpunkte
     for (i = 0; i < 3; i++)
     {
-      rstrOut << float(pclFacet->_aclPoints[i].x) <<
-                 float(pclFacet->_aclPoints[i].y) <<
-                 float(pclFacet->_aclPoints[i].z);
+      rstrOut.write((const char*)&(pclFacet->_aclPoints[i].x), sizeof(float));
+      rstrOut.write((const char*)&(pclFacet->_aclPoints[i].y), sizeof(float));
+      rstrOut.write((const char*)&(pclFacet->_aclPoints[i].z), sizeof(float));
     }
 
     // Attribut 
-    rstrOut << usAtt;
+    rstrOut.write((const char*)&usAtt, sizeof(unsigned short));
 
     ++clIter;
     Base::Sequencer().next( true ); // allow to cancel
   }
-*/
 
   return true;
 }

@@ -27,6 +27,7 @@
 
 #include <Base/PyExport.h>
 #include <Base/Observer.h>
+#include <Base/Type.h>
 
 #include "PropertyContainer.h"
 #include "PropertyStandard.h"
@@ -164,6 +165,8 @@ public:
   std::string getUniqueFeatureName(const char *Name);
   /// Returns a list of all features
   std::vector<Feature*> getFeatures() const;
+  std::vector<Feature*> getFeaturesOfType(const Base::Type& typeId) const;
+  int countFeaturesOfType(const Base::Type& typeId) const;
 	//@}
 
 

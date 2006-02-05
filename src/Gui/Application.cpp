@@ -36,6 +36,7 @@
 # include <qtimer.h>
 # include <qvbox.h>
 # include <strstream>
+# include <map>
 #endif
 
 #include <Inventor/errors/SoDebugError.h> 
@@ -99,7 +100,7 @@ struct ApplicationP
   }
 
   /// list of all handled documents
-  list<Gui::Document*>         lpcDocuments;
+  map<App::Document*, Gui::Document*> lpcDocuments;
   /// Active document
   Gui::Document*   _pcActiveDocument;
   MacroManager*  _pcMacroMngr;
@@ -237,26 +238,24 @@ void Application::OnChange(App::Application::SubjectType &rCaller,App::Applicati
 
 void Application::OnDocNew(App::Document* pcDoc)
 {
-  d->lpcDocuments.push_back( new Gui::Document(pcDoc,this) );
+#ifdef FC_DEBUG
+  std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pcDoc);
+  assert(it==d->lpcDocuments.end());
+#endif
+  d->lpcDocuments[pcDoc] = new Gui::Document(pcDoc,this);
 }
 
 void Application::OnDocDelete(App::Document* pcDoc)
 {
-  Gui::Document* pcGDoc;
-
-  for(list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
-  {
-    if( ((*It)->getDocument()) == pcDoc)
-    {
-      pcGDoc = *It;
-      d->lpcDocuments.erase(It);
-      delete pcGDoc;
-      break;
-    }
-  }
+  std::map<App::Document*, Gui::Document*>::iterator doc = d->lpcDocuments.find(pcDoc);
+#ifdef FC_DEBUG
+  assert(doc!=d->lpcDocuments.end());
+#endif
+  delete doc->second; // destroy the Gui document
+  d->lpcDocuments.erase(doc);
 
   // check if the last document has been closed?
-  // Note: in case there were further existing documents then we needn't worry about it 
+  // Note: in case there were further existing documents then we needn't worry about it
   //       because the active view at this moment does this for us
   if (d->lpcDocuments.size() == 0 )
   {
@@ -273,7 +272,7 @@ void Application::onLastWindowClosed(Gui::Document* pcDoc)
     Command::doCommand(Command::Doc, "App.Close(\"%s\")", pcDoc->getDocument()->getName());
 
     // check if the last document has been closed?
-    // Note: in case there were further existing documents then we needn't worry about it 
+    // Note: in case there were further existing documents then we needn't worry about it
     //       because the active view at this moment does this for us
     if (d->lpcDocuments.size() == 0 )
     {
@@ -333,32 +332,21 @@ void Application::setActiveDocument(Gui::Document* pcDocument)
 
 Gui::Document* Application::getDocument( const char* name ) const
 {
-  Gui::Document* pDoc=0;
-  for ( list<Gui::Document*>::iterator it = d->lpcDocuments.begin(); it != d->lpcDocuments.end(); ++it )
-  {
-    if ( strcmp(name, (*it)->getDocument()->getName()) == 0 )
-    {
-      pDoc = *it;
-      break;
-    }
-  }
-
-  return pDoc;
+  App::Document* pDoc = App::GetApplication().getDocument( name );
+  std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
+  if ( it!=d->lpcDocuments.end() )
+    return it->second;
+  else
+    return 0;
 }
 
 Gui::Document* Application::getDocument(App::Document* pDoc) const
 {
-  Gui::Document* pGuiDoc=0;
-  for ( list<Gui::Document*>::iterator it = d->lpcDocuments.begin(); it != d->lpcDocuments.end(); ++it )
-  {
-    if ( (*it) && (*it)->getDocument() && (*it)->getDocument() == pDoc )
-    {
-      pGuiDoc = *it;
-      break;
-    }
-  }
-
-  return pGuiDoc;
+  std::map<App::Document*, Gui::Document*>::const_iterator it = d->lpcDocuments.find(pDoc);
+  if ( it!=d->lpcDocuments.end() )
+    return it->second;
+  else
+    return 0;
 }
 
 void Application::attachView(Gui::BaseView* pcView)
@@ -374,9 +362,9 @@ void Application::detachView(Gui::BaseView* pcView)
 void Application::onUpdate(void)
 {
   // update all documents
-  for(list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
+  for(map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It != d->lpcDocuments.end();It++)
   {
-    (*It)->onUpdate();
+    It->second->onUpdate();
   }
   // update all the independed views
   for(list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2 != d->_LpcViews.end();It2++)
@@ -412,18 +400,17 @@ void Application::tryClose ( QCloseEvent * e )
     e->accept();
   }else{
     // ask all documents if closable
-    for (list<Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
+    for (map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
     {
-
 #ifndef FC_DEBUG
-      std::list<MDIView*> mdiViews = (*It)->getMDIViews();
+      std::list<MDIView*> mdiViews = It->second->getMDIViews();
       if ( mdiViews.size() > 0 )
       {
         mdiViews.front()->setFocus();
       }
 #endif
 
-      (*It)->canClose ( e );
+      It->second->canClose ( e );
       if(! e->isAccepted() ) return;
     }
   }
@@ -443,12 +430,12 @@ void Application::tryClose ( QCloseEvent * e )
   {
     d->_bIsClosing = true;
 
-    list<Gui::Document*>::iterator It;
+    map<App::Document*, Gui::Document*>::iterator It;
 
     // close all views belonging to a document
     for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
     {
-      (*It)->closeAllViews();
+      It->second->closeAllViews();
     }
 
     //detach the passive views
@@ -463,7 +450,7 @@ void Application::tryClose ( QCloseEvent * e )
     // remove all documents
     for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
     {
-      delete(*It);
+      delete It->second;
     }
   }
 }

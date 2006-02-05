@@ -27,12 +27,9 @@
 #include "MeshKernel.h"
 
 namespace Base {
-  class FileStream;
   class XMLReader;
   class Writer;
 }
-
-using Base::FileStream;
 
 namespace MeshCore {
 
@@ -51,20 +48,20 @@ public:
    * Therefore the file header gets checked to decide if
    * the file is binary or not.
    */
-  bool Load (FileStream &rstrIn);
+  //bool Load (FileStream &rstrIn);
   bool Load (std::istream &rstrIn);
   /** Loads an ASCII STL file. */
-  bool LoadAscii (FileStream &rstrIn);
+  //bool LoadAscii (FileStream &rstrIn);
   bool LoadAscii (std::istream &rstrIn);
   /** Loads a binary STL file. */
-  bool LoadBinary (FileStream &rstrIn);
+  //bool LoadBinary (FileStream &rstrIn);
   bool LoadBinary (std::istream &rstrIn);
 
   /** Saves the mesh object into an ASCII file. */
-  bool SaveAscii (FileStream &rstrOut) const;
+  //bool SaveAscii (FileStream &rstrOut) const;
   bool SaveAscii (std::ostream &rstrOut) const;
   /** Saves the mesh object into a binary file. */
-  bool SaveBinary (FileStream &rstrOut) const;
+  //bool SaveBinary (FileStream &rstrOut) const;
   bool SaveBinary (std::ostream &rstrOut) const;
 
 protected:

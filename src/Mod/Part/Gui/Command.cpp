@@ -40,6 +40,7 @@
 #include <TopoDS_Shape.hxx>
 #include <TNaming_Builder.hxx>
 
+#include "../App/PartFeature.h"
 #include "DlgPartBoxImp.h"
 #include "DlgPartImportStepImp.h"
 #include "DlgPartImportIgesImp.h"
@@ -322,7 +323,7 @@ FCCmdPartCut::FCCmdPartCut()
 void FCCmdPartCut::activated(int iMsg)
 {
 
-  unsigned int n = getSelection().getNbrOfType("Part");
+  unsigned int n = getSelection().countFeaturesOfType(Part::PartFeature::getClassTypeId());
 
   if(n != 2)
   {

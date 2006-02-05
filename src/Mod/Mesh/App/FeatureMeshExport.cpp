@@ -79,7 +79,8 @@ int FeatureMeshExport::execute(void)
 
     // write file
     bool ok = false;
-    FileStream str( FileName.getValue(), std::ios::out);
+    //FileStream str( FileName.getValue(), std::ios::out);
+    std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
 
     if ( std::string(Format.getValue()) == "ASCII STL" )
       ok = aWriter.SaveAscii( str );

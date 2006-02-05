@@ -384,34 +384,7 @@ void Matrix4D::inverseGauss (void)
 
   setGLMatrix(inversematrix);
 }
-/*
-DataStream & Matrix4D::SaveData (DataStream& ofs)
-{
-  ofs << dMtrx4D[0][0] << dMtrx4D[0][1]
-      << dMtrx4D[0][2] << dMtrx4D[0][3]
-      << dMtrx4D[1][0] << dMtrx4D[1][1]
-      << dMtrx4D[1][2] << dMtrx4D[1][3]
-      << dMtrx4D[2][0] << dMtrx4D[2][1]
-      << dMtrx4D[2][2] << dMtrx4D[2][3]
-      << dMtrx4D[3][0] << dMtrx4D[3][1]
-      << dMtrx4D[3][2] << dMtrx4D[3][3];
-  return ofs;
-}
 
-DataStream & Matrix4D::LoadData (DataStream& ifs)
-{
-  ifs >> dMtrx4D[0][0] >> dMtrx4D[0][1]
-      >> dMtrx4D[0][2] >> dMtrx4D[0][3]
-      >> dMtrx4D[1][0] >> dMtrx4D[1][1]
-      >> dMtrx4D[1][2] >> dMtrx4D[1][3]
-      >> dMtrx4D[2][0] >> dMtrx4D[2][1]
-      >> dMtrx4D[2][2] >> dMtrx4D[2][3]
-      >> dMtrx4D[3][0] >> dMtrx4D[3][1]
-      >> dMtrx4D[3][2] >> dMtrx4D[3][3];
- 
-  return ifs;
-}
-*/
 void Matrix4D::getGLMatrix (double dMtrx[16]) const
 {
   short iz, is;

@@ -69,7 +69,7 @@ CmdMeshDemolding::CmdMeshDemolding()
 
 void CmdMeshDemolding::activated(int iMsg)
 {
-  unsigned int n = getSelection().getNbrOfType("Mesh");
+  unsigned int n = getSelection().countFeaturesOfType(MeshFeature::getClassTypeId());
   if ( n!=1 ) return;
 
   std::string fName = getUniqueFeatureName("Demolding");
@@ -88,7 +88,7 @@ void CmdMeshDemolding::activated(int iMsg)
 bool CmdMeshDemolding::isActive(void)
 {
   //return true;
-  return getSelection().getNbrOfType("Mesh") == 1;
+  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 1;
 }
 //===========================================================================
 // Example MakeMesh
@@ -327,7 +327,7 @@ void CmdMeshExport::activated(int iMsg)
   QString format;
   QString fn = Gui::FileDialog::getSaveFileName( dir, filter, Gui::getMainWindow(), 0,
                                                  QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );
-  std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
+  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(MeshFeature::getClassTypeId());
 
   if (! fn.isEmpty() )
   {
@@ -351,7 +351,7 @@ void CmdMeshExport::activated(int iMsg)
 
 bool CmdMeshExport::isActive(void)
 {
-  return getSelection().getNbrOfType("Mesh") == 1;
+  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshVertexCurvature);
@@ -370,7 +370,7 @@ CmdMeshVertexCurvature::CmdMeshVertexCurvature()
 
 void CmdMeshVertexCurvature::activated(int iMsg)
 {
-  unsigned int n = getSelection().getNbrOfType("Mesh");
+  unsigned int n = getSelection().countFeaturesOfType(MeshFeature::getClassTypeId());
   if ( n!=1 ) return;
 
   std::string fName = getUniqueFeatureName("Vertex_Curvature");
@@ -389,7 +389,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
 bool CmdMeshVertexCurvature::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return (getSelection().getNbrOfType("Mesh")==1);
+  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshPolyPick);
@@ -408,7 +408,7 @@ CmdMeshPolyPick::CmdMeshPolyPick()
 
 void CmdMeshPolyPick::activated(int iMsg)
 {
-  std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
+  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(MeshFeature::getClassTypeId());
   if ( fea.size() == 1 )
   {
     Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
@@ -419,7 +419,7 @@ void CmdMeshPolyPick::activated(int iMsg)
 bool CmdMeshPolyPick::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return (getSelection().getNbrOfType("Mesh")==1);
+  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshToolMesh);
@@ -438,7 +438,7 @@ CmdMeshToolMesh::CmdMeshToolMesh()
 
 void CmdMeshToolMesh::activated(int iMsg)
 {
-  std::vector<App::Feature*> fea = Gui::Selection().getSelectedFeatures("Mesh");
+  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(MeshFeature::getClassTypeId());
   if ( fea.size() == 2 )
   {
     std::string fName = getUniqueFeatureName("MeshSegment");
@@ -472,7 +472,7 @@ void CmdMeshToolMesh::activated(int iMsg)
 bool CmdMeshToolMesh::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return (getSelection().getNbrOfType("Mesh")==2);
+  return getSelection().countFeaturesOfType(MeshFeature::getClassTypeId()) == 2;
 }
 
 void CreateMeshCommands(void)

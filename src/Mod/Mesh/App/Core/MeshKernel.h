@@ -26,6 +26,7 @@
 
 #ifndef _PreComp_
 # include <assert.h>
+# include <iostream>
 #endif
 
 #include "Elements.h"
@@ -36,11 +37,9 @@
 namespace Base{
   class Vector3D;
   class Matrix4D;
-  class DataStream;
 }
 using Base::Vector3D;
 using Base::Matrix4D;
-using Base::DataStream;
 
 namespace MeshCore {
 

@@ -67,7 +67,8 @@ int FeatureMeshImport::execute(void)
     MeshSTL aReader(*(_cMesh.getKernel()) );
 
     // read file
-    FileStream str( FileName.getValue(), std::ios::in);
+    //FileStream str( FileName.getValue(), std::ios::in);
+    std::ifstream str( FileName.getValue(), std::ios::in | std::ios::binary );
 
     // catches the abort exception to set a more detailed description
     try{

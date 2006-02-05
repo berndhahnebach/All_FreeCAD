@@ -25,6 +25,10 @@
 #ifndef _Application_
 #define _Application_
 
+#ifndef _PreComp_
+# include <vector>
+#endif
+
 #include <Base/PyExportImp.h>
 #include <Base/Parameter.h>
 #include <Base/Observer.h>
@@ -134,30 +138,30 @@ public:
 
 
   //---------------------------------------------------------------------
-	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
+  // exported functions goes here +++++++++++++++++++++++++++++++++++++++
+  //---------------------------------------------------------------------
 
-	/** @name methodes for document handling */
-	//@{
-	/// Creates a new document 
+  /** @name methodes for document handling */
+  //@{
+  /// Creates a new document
   App::Document* newDocument(const char * Name=0l);
   /// Closes the document \a name and removes it from the application.
   bool closeDocument(const char* name);
   /// find a unique docuement name
   std::string getUniqueDocumentName(const char *Name);
-	/// Open an existing document from a file
-	App::Document* openDocument(const char * FileName=0l);
-	/// Retrive the active document
-	App::Document* getActiveDocument(void);
-	/// Retrive a named document
-	App::Document* getDocument(const char *Name);
-	/// Set the active document
-	void setActiveDocument(App::Document* pDoc);
-	void setActiveDocument(const char *Name);
-	/// Geter for the OCC Aplication
+  /// Open an existing document from a file
+  App::Document* openDocument(const char * FileName=0l);
+  /// Retrive the active document
+  App::Document* getActiveDocument(void);
+  /// Retrive a named document
+  App::Document* getDocument(const char *Name) const;
+  std::vector<App::Document*> getDocuments() const;
+  /// Set the active document
+  void setActiveDocument(App::Document* pDoc);
+  void setActiveDocument(const char *Name);
+  /// Geter for the OCC Aplication
 //	Handle_ApplicationOCC GetOCCApp(void) {return _hApp;}
-	//@}
-	
+  //@}
 
 
 	/** @name methodes for parameter handling */
@@ -254,33 +258,40 @@ private:
 	static const char *    	  VersionDisDa;
 	//@}
 	
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-	//---------------------------------------------------------------------
+  //---------------------------------------------------------------------
+  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+  //---------------------------------------------------------------------
 
-	// static python wrapper of the exported functions
-	PYFUNCDEF_S(sOpen);
-	PYFUNCDEF_S(sNew);
-	PYFUNCDEF_S(sClose);
-	PYFUNCDEF_S(sImport);
-	PYFUNCDEF_S(sSave);
-	PYFUNCDEF_S(sSaveAs);
-	PYFUNCDEF_S(sActiveDocument);
-	PYFUNCDEF_S(sDocument);
-	PYFUNCDEF_S(sGetParam);
-	PYFUNCDEF_S(sGetVersion);
-	PYFUNCDEF_S(sGetConfig);
-	PYFUNCDEF_S(sSetConfig);
-	PYFUNCDEF_S(sDumpConfig);
-	PYFUNCDEF_S(sTemplateAdd);
-	PYFUNCDEF_S(sTemplateDelete);
-	PYFUNCDEF_S(sTemplateGet);
-	PYFUNCDEF_S(sEndingAdd);
-	PYFUNCDEF_S(sEndingDelete);
-	PYFUNCDEF_S(sEndingGet);
-	PYFUNCDEF_S(sListDocuments);
+  // static python wrapper of the exported functions
+  PYFUNCDEF_S(sOpen);             // deprecated
+  PYFUNCDEF_S(sNew);              // deprecated
+  PYFUNCDEF_S(sClose);            // deprecated
+  PYFUNCDEF_S(sImport);           // deprecated (not implemented)
+  PYFUNCDEF_S(sSave);             // deprecated
+  PYFUNCDEF_S(sSaveAs);           // deprecated
+  PYFUNCDEF_S(sDocument);         // deprecated
+  PYFUNCDEF_S(sGetParam);
+  PYFUNCDEF_S(sGetVersion);
+  PYFUNCDEF_S(sGetConfig);
+  PYFUNCDEF_S(sSetConfig);
+  PYFUNCDEF_S(sDumpConfig);
+  PYFUNCDEF_S(sTemplateAdd);
+  PYFUNCDEF_S(sTemplateDelete);
+  PYFUNCDEF_S(sTemplateGet);
+  PYFUNCDEF_S(sEndingAdd);
+  PYFUNCDEF_S(sEndingDelete);
+  PYFUNCDEF_S(sEndingGet);
 
-	static PyMethodDef    Methods[]; 
+  PYFUNCDEF_S(sOpenDocument);
+  PYFUNCDEF_S(sSaveDocument);
+  PYFUNCDEF_S(sSaveDocumentAs);
+  PYFUNCDEF_S(sNewDocument);
+  PYFUNCDEF_S(sCloseDocument);
+  PYFUNCDEF_S(sActiveDocument);
+  PYFUNCDEF_S(sGetDocument);
+  PYFUNCDEF_S(sListDocuments);
+
+  static PyMethodDef    Methods[]; 
 
   /// pointer to the Python module of App...
   PyObject* _pcAppModule;

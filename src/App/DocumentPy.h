@@ -27,7 +27,7 @@
 
 
 namespace App {
-/** The Document python class 
+/** The Document python class
  */
 class AppExport DocumentPy :public Base::PyObjectBase
 {
@@ -42,7 +42,7 @@ public:
 	static PyObject *PyMake(PyObject *, PyObject *);
 
 	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
 	virtual PyObject *_repr(void);  				// the representation
@@ -58,19 +58,24 @@ public:
 //	PYFUNCDEF_D(DocumentPy,SetModified)
 	PYFUNCDEF_D(DocumentPy,PurgeModified)
 
-  PYFUNCDEF_D(DocumentPy,NewCommand)
+	PYFUNCDEF_D(DocumentPy,NewCommand)
 	PYFUNCDEF_D(DocumentPy,OpenCommand)
 	PYFUNCDEF_D(DocumentPy,CommitCommand)
 	PYFUNCDEF_D(DocumentPy,AbortCommand)
 	PYFUNCDEF_D(DocumentPy,Recompute)
 
-  PYFUNCDEF_D(DocumentPy,Dump)
-  
-  PYFUNCDEF_D(DocumentPy,AddFeature)
-	PYFUNCDEF_D(DocumentPy,GetActiveFeature)
-	PYFUNCDEF_D(DocumentPy,GetFeature)
+	PYFUNCDEF_D(DocumentPy,Dump)
+
+	PYFUNCDEF_D(DocumentPy,activeFeature)
+	PYFUNCDEF_D(DocumentPy,addFeature)
+	PYFUNCDEF_D(DocumentPy,getFeature)
 	PYFUNCDEF_D(DocumentPy,listFeatures)
 	PYFUNCDEF_D(DocumentPy,getName)
+
+   // deprecated methods
+	PYFUNCDEF_D(DocumentPy,AddFeature)
+	PYFUNCDEF_D(DocumentPy,GetActiveFeature)
+	PYFUNCDEF_D(DocumentPy,GetFeature)
 
 private:
 	Document *_pcDoc;

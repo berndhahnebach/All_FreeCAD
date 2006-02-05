@@ -22,3 +22,6 @@ Version: V0.5B3 Date: Mon Jan 30 13:54:25 2006 +++++++++++++++++++++++++++++++
 + fixes memory exception in view provider for meshes
 + fixes memory exception when rendering a huge Inventor node
 + more efficient loading of huge meshes
++ use type system in selection class
++ replace DataStream classes by i/ostream classes
++ start standardization of API of exported Python classes

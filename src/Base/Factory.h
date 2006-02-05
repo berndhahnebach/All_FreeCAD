@@ -65,19 +65,7 @@ class BaseExport Factory
 	protected:
 		/// produce a class with the given name
 		void* Produce (const char* sClassName) const;
-
-//#ifdef _MSC_VER
-//#	pragma warning( disable : 4251 )
-//#endif
-//#ifdef _MSC_VER
-//# if _MSC_VER >= 1300
-//	   std::map<std::string, AbstractProducer*> _mpcProducers;
-//# else
-//		 std::map<const std::string, AbstractProducer*> _mpcProducers;
-//# endif
-//#else
-		 std::map<const std::string, AbstractProducer*> _mpcProducers;
-//#endif
+		std::map<const std::string, AbstractProducer*> _mpcProducers;
    
 		/// construction
 		Factory (void){}

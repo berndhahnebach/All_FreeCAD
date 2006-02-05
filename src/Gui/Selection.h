@@ -35,6 +35,7 @@
 
 #include <Base/Observer.h>
 #include <Base/PyExport.h>
+#include <Base/Type.h>
 
 namespace App
 {
@@ -108,16 +109,31 @@ public:
    *  an operation (GuiCommand). The checking also detect base type. E.g. 
    *  "Part" also fits on "PartImport" or "PartTransform types.
    *  If no document name is given the active document is asumed.
+   *  @deprecated Use countFeaturesOfType instead.
    */
   unsigned int getNbrOfType(const char *TypeName, const char* pDocName=0);
+  /** Returns the number of selected objects with an special feature type
+   * Its the convenient way to check if the right features are selected to 
+   * perform an operation (GuiCommand). The checking also detect base type. 
+   * E.g. "Part" also fits on "PartImport" or "PartTransform types.
+   * If no document name is given the active document is assumed.
+   */
+  unsigned int countFeaturesOfType(const Base::Type& typeId, const char* pDocName=0) const;
 
   /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
    * If \a TypeName is 0 (the default) the feature type is ignored. If no document name is specified the features 
    * from the active document are regarded.
    * If no objects of this document are selected a empty vector is returned.
    * @note The vector reflects the sequence of selection.
+   * @deprecated Use getFeaturesOfType instead.
    */
   std::vector<App::Feature*> getSelectedFeatures(const char *TypeName=0, const char* pDocName=0) const;
+  /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
+   * If no document name is specified the features from the active document are regarded.
+   * If no objects of this document are selected a empty vector is returned.
+   * @note The vector reflects the sequence of selection.
+   */
+  std::vector<App::Feature*> getFeaturesOfType(const Base::Type& typeId, const char* pDocName=0) const;
 
   struct SelObj {
     const char* DocName;

@@ -34,10 +34,8 @@
 
 namespace Base{
   class Vector3D;
-  class DataStream;
 }
 using Base::Vector3D;
-using Base::DataStream;
 using Base::BoundBox3D;
 
 

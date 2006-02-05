@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
 # include <Wm3Delaunay3.h>
 # include <Wm3Vector3.h>
 #endif

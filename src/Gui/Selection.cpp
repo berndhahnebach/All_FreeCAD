@@ -134,6 +134,54 @@ unsigned int SelectionSingelton::getNbrOfType(const char *TypeName, const char* 
   return iNbr;
 }
 
+vector<App::Feature*> SelectionSingelton::getFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
+{
+  vector<App::Feature*> temp;
+  App::Document *pcDoc;
+
+  if(pDocName)
+    pcDoc =  App::GetApplication().getDocument(pDocName);
+  else
+    pcDoc = App::GetApplication().getActiveDocument();
+
+  if(!pcDoc)
+    return temp;
+
+  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
+  {
+    if ( It->pDoc == pcDoc && It->pFeat && It->pFeat->getTypeId().isDerivedFrom( typeId ) )
+    {
+      temp.push_back(It->pFeat);
+    }
+  }
+
+  return temp;
+}
+
+unsigned int SelectionSingelton::countFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
+{
+  unsigned int iNbr=0;
+  App::Document *pcDoc;
+
+  if(pDocName)
+    pcDoc =  App::GetApplication().getDocument(pDocName);
+  else
+    pcDoc = App::GetApplication().getActiveDocument();
+
+  if(!pcDoc)
+    return 0;
+
+  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
+  {
+    if ( It->pDoc == pcDoc && It->pFeat && It->pFeat->getTypeId().isDerivedFrom( typeId ) )
+    {
+      iNbr++;
+    }
+  }
+
+  return iNbr;
+}
+
 bool SelectionSingelton::setPreselect(const char* pDocName, const char* pFeatName, const char* pSubName, float x, float y, float z)
 {
   if(DocName != "")

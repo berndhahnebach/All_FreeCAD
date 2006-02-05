@@ -58,7 +58,8 @@ using namespace std;
  *  TRUE to construct a modal dialog.
  */
 DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),Sel(Gui::Selection().getSelectedFeatures())
+  : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),
+    Sel(Gui::Selection().getFeaturesOfType(App::Feature::getClassTypeId()))
 {
 
   ViewProvider *pcProv;

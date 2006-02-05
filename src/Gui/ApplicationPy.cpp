@@ -63,6 +63,8 @@ PyMethodDef Application::Methods[] = {
   {"SendMsgToActiveView",     (PyCFunction) Application::sSendActiveView,          1},
   {"hide",                    (PyCFunction) Application::shide,                    1},
   {"show",                    (PyCFunction) Application::sshow,                    1},
+  {"hideFeature",             (PyCFunction) Application::sHideFeature,             1},
+  {"showFeature",             (PyCFunction) Application::sShowFeature,             1},
   {"open",                    (PyCFunction) Application::sopen,                    1},
   {"insert",                  (PyCFunction) Application::sinsert,                  1},
   {"document",                (PyCFunction) Application::sdocument,                1},
@@ -118,6 +120,36 @@ PYFUNCIMP_S(Application,sshow)
   }
     
    Py_Return;
+} 
+
+PYFUNCIMP_S(Application,sHideFeature)
+{
+  char *psFeatName, *psDocName;
+  if (!PyArg_ParseTuple(args, "ss",&psDocName, &psFeatName))     // convert args: Python->C 
+    return NULL;                                      // NULL triggers exception 
+
+  Document *pcDoc = Instance->getDocument(psDocName);
+  if(pcDoc)
+  {
+    pcDoc->setHide(psFeatName);  
+  }
+    
+  Py_Return;
+}
+
+PYFUNCIMP_S(Application,sShowFeature)
+{
+  char *psFeatName, *psDocName;
+  if (!PyArg_ParseTuple(args, "ss",&psDocName, &psFeatName))     // convert args: Python->C 
+    return NULL;                                      // NULL triggers exception 
+
+  Document *pcDoc = Instance->getDocument(psDocName);
+  if(pcDoc)
+  {
+    pcDoc->setShow(psFeatName);  
+  }
+    
+  Py_Return;
 } 
 
 PYFUNCIMP_S(Application,sopen)

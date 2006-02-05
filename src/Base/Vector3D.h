@@ -30,7 +30,6 @@
 #endif
 
 //#include "Definitions.h"
-//#include "Stream.h"
 #define FLOAT_EPS   1.0e-4f 
 
 #ifndef  F_PI
@@ -108,10 +107,6 @@ public:
   /// Comparing for equality
   inline bool operator == (const Vector3D& rcVct) const;
   //@}
-
-  // I/O streaming
-  //DataStream & SaveData (DataStream & ofs);
-  //DataStream & LoadData (DataStream & ifs);
 
   /** @name Modification */
   //@{

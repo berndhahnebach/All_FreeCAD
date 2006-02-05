@@ -116,11 +116,14 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(CommitCommand)
   PYMETHODEDEF(Recompute)
   PYMETHODEDEF(Dump)
-	PYMETHODEDEF(AddFeature)
-	PYMETHODEDEF(GetActiveFeature)
-	PYMETHODEDEF(GetFeature)
-	PYMETHODEDEF(listFeatures)
-	PYMETHODEDEF(getName)
+  PYMETHODEDEF(AddFeature)
+  PYMETHODEDEF(GetActiveFeature)
+  PYMETHODEDEF(GetFeature)
+  PYMETHODEDEF(addFeature)
+  PYMETHODEDEF(activeFeature)
+  PYMETHODEDEF(getFeature)
+  PYMETHODEDEF(listFeatures)
+  PYMETHODEDEF(getName)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -325,11 +328,11 @@ PYFUNCIMP_D(DocumentPy,Recompute)
 	  Py_Return; 
   }PY_CATCH;
 } 
-		
+
 PYFUNCIMP_D(DocumentPy,AddFeature)
 {
 	char *sType,*sName=0;
-  if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
     return NULL;                             // NULL triggers exception 
  
   Feature *pcFtr;
@@ -347,8 +350,44 @@ PYFUNCIMP_D(DocumentPy,AddFeature)
     }
 }
 
+PYFUNCIMP_D(DocumentPy,addFeature)
+{
+  char *sType,*sName=0;
+  if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
+    return NULL;                             // NULL triggers exception
+
+  Feature *pcFtr;
+
+  PY_TRY {
+    pcFtr = _pcDoc->addFeature(sType,sName);
+  }PY_CATCH;
+
+  if(pcFtr)
+    return pcFtr->GetPyObject();
+  else
+  {
+    char szBuf[200];
+    sprintf(szBuf, "No feature found of type '%s'", sType);
+    Py_Error(PyExc_Exception,szBuf);
+  }
+}
 
 PYFUNCIMP_D(DocumentPy,GetActiveFeature)
+{
+	
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+
+  PY_TRY {
+	  Feature *pcFtr = _pcDoc->getActiveFeature();
+	  if(pcFtr)
+		  return pcFtr->GetPyObject();
+	  else
+		  Py_Error(PyExc_Exception,"No active Feature");
+  } PY_CATCH;
+}
+
+PYFUNCIMP_D(DocumentPy,activeFeature)
 {
 	
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
@@ -379,6 +418,24 @@ PYFUNCIMP_D(DocumentPy,GetFeature)
       char szBuf[200];
       sprintf(szBuf, "No feature found with name '%s'", sName);
 		  Py_Error(PyExc_Exception,szBuf);
+    }
+  } PY_CATCH;
+}
+
+PYFUNCIMP_D(DocumentPy,getFeature)
+{
+  char *sName;
+  if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C
+    return NULL;                             // NULL triggers exception
+
+  PY_TRY {
+    Feature *pcFtr = _pcDoc->getFeature(sName);
+    if(pcFtr)
+      return pcFtr->GetPyObject();
+    else {
+      char szBuf[200];
+      sprintf(szBuf, "No feature found with name '%s'", sName);
+      Py_Error(PyExc_Exception,szBuf);
     }
   } PY_CATCH;
 }

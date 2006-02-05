@@ -53,43 +53,61 @@ using namespace App;
 
 // Application Methods						// Methods structure
 PyMethodDef Application::Methods[] = {
-	{"New",            (PyCFunction) Application::sNew,            1},
-	{"open",           (PyCFunction) Application::sOpen,           1},
-	{"Close",          (PyCFunction) Application::sClose,          1},
-	{"Import"  ,       (PyCFunction) Application::sImport,         1},
-	{"save",           (PyCFunction) Application::sSave,           1},
-	{"saveAs",         (PyCFunction) Application::sSaveAs,         1},
-	{"activeDocument", (PyCFunction) Application::sActiveDocument, 1},
-	{"document",       (PyCFunction) Application::sDocument,       1},
-	{"ParamGet",       (PyCFunction) Application::sGetParam,       1},
-	{"Version",        (PyCFunction) Application::sGetVersion,     1},
-	{"ConfigGet",      (PyCFunction) Application::sGetConfig,      1},
-	{"ConfigSet",      (PyCFunction) Application::sSetConfig,      1},
-	{"ConfigDump",     (PyCFunction) Application::sDumpConfig,     1},
-	{"EndingAdd",      (PyCFunction) Application::sEndingAdd,      1},
-	{"EndingDelete",   (PyCFunction) Application::sEndingDelete   ,1},
-	{"EndingGet",      (PyCFunction) Application::sEndingGet      ,1},
-	{"listDocuments",  (PyCFunction) Application::sListDocuments  ,1},
+  {"New",            (PyCFunction) Application::sNew,            1},
+  {"open",           (PyCFunction) Application::sOpen,           1},
+  {"Close",          (PyCFunction) Application::sClose,          1},
+  {"Import"  ,       (PyCFunction) Application::sImport,         1},
+  {"save",           (PyCFunction) Application::sSave,           1},
+  {"saveAs",         (PyCFunction) Application::sSaveAs,         1},
+  {"document",       (PyCFunction) Application::sDocument,       1},
+  {"ParamGet",       (PyCFunction) Application::sGetParam,       1},
+  {"Version",        (PyCFunction) Application::sGetVersion,     1},
+  {"ConfigGet",      (PyCFunction) Application::sGetConfig,      1},
+  {"ConfigSet",      (PyCFunction) Application::sSetConfig,      1},
+  {"ConfigDump",     (PyCFunction) Application::sDumpConfig,     1},
+  {"EndingAdd",      (PyCFunction) Application::sEndingAdd,      1},
+  {"EndingDelete",   (PyCFunction) Application::sEndingDelete   ,1},
+  {"EndingGet",      (PyCFunction) Application::sEndingGet      ,1},
+
+  {"openDocument",   (PyCFunction) Application::sOpenDocument,   1},
+  {"saveDocument",   (PyCFunction) Application::sSaveDocument,   1},
+  {"saveDocumentAs", (PyCFunction) Application::sSaveDocumentAs, 1},
+  {"newDocument",    (PyCFunction) Application::sNewDocument,    1},
+  {"closeDocument",  (PyCFunction) Application::sCloseDocument,  1},
+  {"activeDocument", (PyCFunction) Application::sActiveDocument, 1},
+  {"getDocument",    (PyCFunction) Application::sGetDocument,    1},
+  {"listDocuments",  (PyCFunction) Application::sListDocuments  ,1},
 
   {NULL, NULL}		/* Sentinel */
 };
 
 PYFUNCIMP_S(Application,sOpen)
 {
-    char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
-        return NULL;                             // NULL triggers exception
+  char *pstr;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
+    return NULL;                             // NULL triggers exception
 
+  try {
+    // return new document
+    return (GetApplication().openDocument(pstr)->GetPyObject());
+  } catch(Base::Exception e) {
+    PyErr_SetString(PyExc_IOError, e.what());
+    return 0L;
+  }
+}
 
-	try {
-		// return new document
-		return (GetApplication().openDocument(pstr)->GetPyObject());
-	}
-	catch(Base::Exception e) {
-		PyErr_SetString(PyExc_IOError, e.what());
-		return 0L;
-	}
-
+PYFUNCIMP_S(Application,sOpenDocument)
+{
+  char *pstr;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
+    return NULL;                             // NULL triggers exception
+  try {
+    // return new document
+    return (GetApplication().openDocument(pstr)->GetPyObject());
+  } catch(Base::Exception e) {
+    PyErr_SetString(PyExc_IOError, e.what());
+    return 0L;
+  }
 }
 
 PYFUNCIMP_S(Application,sImport)
@@ -112,6 +130,17 @@ PYFUNCIMP_S(Application,sNew)
 	}PY_CATCH;
 }
 
+PYFUNCIMP_S(Application,sNewDocument)
+{
+  char *pstr = 0;
+  if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C
+    return NULL;                             // NULL triggers exception
+
+  PY_TRY{
+    return GetApplication().newDocument(pstr)->GetPyObject();
+  }PY_CATCH;
+}
+
 PYFUNCIMP_S(Application,sClose)
 {
   char *pstr = 0;
@@ -122,6 +151,21 @@ PYFUNCIMP_S(Application,sClose)
   {
 		PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
 		return NULL;
+  }
+
+  Py_Return;
+}
+
+PYFUNCIMP_S(Application,sCloseDocument)
+{
+  char *pstr = 0;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C
+      return NULL;                             // NULL triggers exception
+
+  if ( GetApplication().closeDocument(pstr) == false )
+  {
+    PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
+    return NULL;
   }
 
   Py_Return;
@@ -151,6 +195,30 @@ PYFUNCIMP_S(Application,sSave)
   Py_Return;
 }
 
+PYFUNCIMP_S(Application,sSaveDocument)
+{
+  char *pDoc;
+  if (!PyArg_ParseTuple(args, "s", &pDoc))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  Document* doc = GetApplication().getDocument(pDoc);
+  if ( doc )
+  {
+    if ( doc->save() == false )
+    {
+      PyErr_Format(PyExc_Exception, "Cannot save document '%s'", pDoc);
+      return 0L;
+    }
+  }
+  else
+  {
+    PyErr_Format(PyExc_NameError, "Unknown document '%s'", pDoc);
+    return NULL;
+  }
+
+  Py_Return;
+}
+
 PYFUNCIMP_S(Application,sSaveAs)
 {
   char *pDoc, *pFileName;
@@ -171,6 +239,26 @@ PYFUNCIMP_S(Application,sSaveAs)
   Py_Return;
 }
 
+PYFUNCIMP_S(Application,sSaveDocumentAs)
+{
+  char *pDoc, *pFileName;
+  if (!PyArg_ParseTuple(args, "ss", &pDoc, &pFileName))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  Document* doc = GetApplication().getDocument(pDoc);
+  if ( doc )
+  {
+    doc->saveAs( pFileName );
+  }
+  else
+  {
+    PyErr_Format(PyExc_NameError, "Unknown document '%s'", pDoc);
+    return NULL;
+  }
+
+  Py_Return;
+}
+
 PYFUNCIMP_S(Application,sActiveDocument)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
@@ -183,6 +271,22 @@ PYFUNCIMP_S(Application,sActiveDocument)
   	PyErr_SetString(PyExc_Exception, "No active document");
 	  return 0L;
   }
+}
+
+PYFUNCIMP_S(Application,sGetDocument)
+{
+  char *pstr=0;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception
+
+  Document* doc = GetApplication().getDocument(pstr);
+  if ( !doc )
+  {
+    PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
+    return 0L;
+  }
+
+  return doc->GetPyObject();
 }
 
 PYFUNCIMP_S(Application,sDocument)

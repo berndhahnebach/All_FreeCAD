@@ -110,7 +110,7 @@ public:
 	 * A destructor.
 	 * No special function so far.
 	 */
-	~Subject()
+	virtual ~Subject()
 	{
 	  if (_ObserverSet.size() > 0)
 	  {
