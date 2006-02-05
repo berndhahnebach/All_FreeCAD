@@ -167,18 +167,21 @@ void Application::open(const char* FileName)
       // ignore this type of exception (e.g. if Mod is already a Gui module)
     }
 
-    // load the file with the module
-    Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
-
-    // ViewFit
-    Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+    try{
+      // load the file with the module
+      Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
+      // ViewFit
+      Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+      // the original file name is required
+      getMainWindow()->appendRecentFile( File.filePath().c_str() );
+    } catch (const Base::PyException& e){
+      // Usually thrown if the file is invalid somehow
+      e.ReportException();
+    }
   }else{
     Base::Console().Error("Application::open() try to open unknown file type .%s\n",te.c_str());
     return;
   }
-
-  // the original file name is required
-  getMainWindow()->appendRecentFile( File.filePath().c_str() );
 }
 
 void Application::import(const char* FileName)

@@ -524,7 +524,7 @@ void Document::RecomputeFeature(Feature* Feat)
 
   if(Feat->getStatus() == Feature::Error)
     DocChange.ErrorFeatures.insert(Feat);
-  
+
   if(Feat->getStatus() == Feature::Valid)
     DocChange.UpdatedFeatures.insert(Feat);
 
@@ -551,7 +551,7 @@ void Document::_RecomputeFeature(Feature* Feat)
   }catch(Base::Exception &e){
     e.ReportException();
     succes = 3;
-  }catch(std::exception &e){                                           
+  }catch(std::exception &e){
     Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),e.what());
     Feat->setError(e.what());
     succes = 3;

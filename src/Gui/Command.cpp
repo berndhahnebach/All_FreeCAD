@@ -242,10 +242,10 @@ void Command::invoke (int i)
     str += ")";
     Base::Console().Error(str.c_str());
 #ifndef FC_DEBUG
-  }catch(...){                                                              
-    Base::Console().Error("Gui::Command::activated(%d): Unknown C++ exception in command thrown", i);       
+  }catch(...){
+    Base::Console().Error("Gui::Command::activated(%d): Unknown C++ exception in command thrown", i);
 #endif
-  }   
+  }
 }
 
 void Command::testActive(void)

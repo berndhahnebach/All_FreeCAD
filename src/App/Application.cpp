@@ -28,6 +28,7 @@
 
 #ifndef _PreComp_
 # include <iostream>
+# include <sstream>
 # ifdef FC_OS_LINUX
 # include <time.h>
 # endif
@@ -373,27 +374,32 @@ Document* Application::openDocument(const char * FileName)
   // checking on the extension
   if(File.hasExtension("FCStd") || File.hasExtension("std") )
   {
-  
-	  // Creating a FreeCAD Document
+
+    // Creating a FreeCAD Document
     string name = File.fileNamePure();
-	  newDoc.pDoc = new Document();
+    newDoc.pDoc = new Document();
     newDoc.pDoc->Name.setValue(name);
     newDoc.pDoc->FileName.setValue(File.filePath());
-	  DocMap[name] = newDoc;
-	  _pActiveDoc = newDoc.pDoc;
 
-	  // trigger Observers (open windows and so on)
+    // read the document
+    if ( !newDoc.pDoc->open() )
+    {
+      delete newDoc.pDoc;
+      std::stringstream str;
+      str << "Invalid document structure in file '" << FileName << "'";
+      throw Base::Exception(str.str().c_str());
+    }
+
+    DocMap[name] = newDoc;
+    _pActiveDoc = newDoc.pDoc;
+
+    // trigger Observers (open windows and so on)
     AppChanges Reason;
     Reason.Doc = newDoc.pDoc;
     Reason.Why = AppChanges::New;
     Notify(Reason);
 
-    // read the document
-    if ( !newDoc.pDoc->open() )
-      throw Base::Exception("Invalid document structure");
-
-
-	  //NotifyDocNew(newDoc.pDoc);
+    //NotifyDocNew(newDoc.pDoc);
   }else{
     throw Base::Exception("Unknown file extension");
   }
