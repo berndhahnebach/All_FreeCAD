@@ -86,10 +86,6 @@ PYFUNCIMP_S(Application,sdocument)
   Py_Return;
 } 
 
-
-
-
-
 PYFUNCIMP_S(Application,shide)
 {
   char *psFeatStr;
