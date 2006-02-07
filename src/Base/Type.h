@@ -31,6 +31,7 @@
 #ifndef _PreComp_
 # include <string>
 # include <map>
+# include <set>
 # include <vector>
 #endif
 
