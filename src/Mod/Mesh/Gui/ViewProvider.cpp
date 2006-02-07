@@ -541,7 +541,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 
           // create a mesh feature and append it to the document
           std::string fTool = pDoc->getUniqueFeatureName("Toolmesh");
-          Gui::Command::doCommand(Gui::Command::Doc, "App.document().AddFeature(\"Mesh\", \"%s\")\n", fTool.c_str());
+          Gui::Command::doCommand(Gui::Command::Doc, "App.document().AddFeature(\"Mesh::Feature\", \"%s\")\n", fTool.c_str());
 
           // replace the mesh from feature
           Gui::Command::doCommand(Gui::Command::Gui, "App.document().%s.solidMaterial.transparency = 0.7\n", fTool.c_str());
@@ -571,7 +571,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
             if ( !meshFeature ) continue; // no mesh
 
             Gui::Command::doCommand(Gui::Command::Doc,
-                "f = App.document().AddFeature(\"MeshSegmentByMesh\",\"%s\")\n"
+                "f = App.document().AddFeature(\"Mesh::SegmentByMesh\",\"%s\")\n"
                 "f.Source   = App.document().%s\n"
                 "f.Tool     = App.document().%s\n"
                 "f.Base     = (%.6f,%.6f,%.6f)\n"

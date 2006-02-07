@@ -78,6 +78,8 @@ void PointsGuiExport initPointsGui() {
 
   PointsGui::ViewProviderPoints::init();
 
+  Gui::WorkbenchFactory().AddProducer("Points design", new Gui::WorkbenchProducer<PointsGui::Workbench>);
+
   // instanciating the commands
   CreatePointsCommands();
 
