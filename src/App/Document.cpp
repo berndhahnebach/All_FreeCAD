@@ -187,6 +187,7 @@ void Document::Restore(Base::XMLReader &reader)
     Feature* pFeat = getFeature(name.c_str());
     if(pFeat) // check if this feature has been registered
     {
+      //FIXME: We must save/restore that state of a feature
       pFeat->Restore(reader);
 
       // restore the attached files to this feature
@@ -205,9 +206,6 @@ void Document::Restore(Base::XMLReader &reader)
   reader.readEndElement("FeatureData");
 
   reader.readEndElement("Document");
-
-//  Recompute(); // see Document::open()
-
 }
 
 // Save the Document under a new Name
@@ -279,7 +277,14 @@ bool Document::open (void)
         Feature* feat = getFeature( it->FeatName.c_str() );
         if ( feat )
         {
-          feat->RestoreDocFile( file );
+          try {
+            feat->RestoreDocFile( file );
+            feat->_eStatus = Feature::Valid;
+            feat->touchTime.setToActual();
+          } catch ( const Base::Exception& e) {
+            feat->setError( e.what() );
+            Base::Console().Log( e.what() );
+          }
         }
       }
     }
@@ -291,7 +296,6 @@ bool Document::open (void)
     for(std::map<std::string,FeatEntry>::iterator It = FeatMap.begin();It != FeatMap.end();++It)
       DocChange.NewFeatures.insert(It->second.F);
     Notify(DocChange);
-
 
     return true;
   }

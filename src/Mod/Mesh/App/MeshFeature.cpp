@@ -122,11 +122,21 @@ void Feature::Restore(Base::XMLReader &reader)
 
 void Feature::SaveDocFile (Base::Writer &writer)
 {
-  _cMesh.getKernel()->Write(writer);
+  try {
+    _cMesh.getKernel()->Write(writer);
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
 }
 
 void Feature::RestoreDocFile(Base::Reader &reader)
 {
-  _cMesh.getKernel()->Read(reader);
+  try {
+    _cMesh.getKernel()->Read(reader);
+  } catch( const Base::MemoryException&) {
+    throw Base::Exception("Invlaid mesh file");
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
 }
 

@@ -36,6 +36,7 @@
 #include <Gui/WidgetFactory.h>
 
 #include "ViewProvider.h"
+#include "ViewProviderBox.h"
 #include "ViewProviderCurveNet.h"
 #include "ViewProviderImport.h"
 #include "DlgSettings3DViewPartImp.h"
@@ -95,7 +96,10 @@ void ModuleExport initPartGui() {
 
   Gui::Application::Instance->macroManager()->setModule("Part");
 
-  PartGui::ViewProviderPart::init();
+  PartGui::ViewProviderPart    ::init();
+  PartGui::ViewProviderBox     ::init();
+  PartGui::ViewProviderImport  ::init();
+  PartGui::ViewProviderCurveNet::init();
 /*
   // Register view provider
   Gui::ViewProviderFeatureFactory().AddProducer("PartBox"       ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);

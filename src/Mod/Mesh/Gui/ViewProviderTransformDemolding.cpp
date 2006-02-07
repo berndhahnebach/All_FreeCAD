@@ -67,6 +67,8 @@ using Base::Vector3D;
 using namespace MeshGui;
 
 
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshTransformDemolding, MeshGui::ViewProviderMesh)
+
 
 ViewProviderMeshTransformDemolding::ViewProviderMeshTransformDemolding()
 {

@@ -43,6 +43,8 @@ namespace PartGui {
 
 class AppPartGuiExport ViewProviderBox:public ViewProviderPart
 {
+  PROPERTY_HEADER(PartGui::ViewProviderBox);
+
 public:
   /// constructor
   ViewProviderBox();

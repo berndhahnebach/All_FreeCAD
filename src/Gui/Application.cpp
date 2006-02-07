@@ -207,15 +207,29 @@ void Application::import(const char* FileName)
       // ignore this type of exception (e.g. if Mod is already a Gui module)
     }
 
-    // load the file with the module
-    Command::doCommand(Command::App, "%s.insert(\"%s\")", Mod, File.filePath().c_str());
+    try{
+      // load the file with the module
+      if ( File.hasExtension("FCStd") )
+      {
+        Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
+        Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+      }
+      else
+      {
+        Command::doCommand(Command::App, "%s.insert(\"%s\")", Mod, File.filePath().c_str());
+      }
+
+      // the original file name is required
+      getMainWindow()->appendRecentFile( File.filePath().c_str() );
+    } catch (const Base::PyException& e){
+      // Usually thrown if the file is invalid somehow
+      e.ReportException();
+    }
+
   }else{
     Base::Console().Error("Application::import() try to open unknowne file type .%s\n",te.c_str());
     return;
   }
-
-  // the original file name is required
-  getMainWindow()->appendRecentFile( File.filePath().c_str() );
 }
 
 void Application::createStandardOperations()
@@ -275,8 +289,12 @@ void Application::onLastWindowClosed(Gui::Document* pcDoc)
 {
   if(!d->_bIsClosing && pcDoc)
   {
-    // call the closing mechanism from Python
-    Command::doCommand(Command::Doc, "App.Close(\"%s\")", pcDoc->getDocument()->getName());
+    try {
+      // call the closing mechanism from Python
+      Command::doCommand(Command::Doc, "App.Close(\"%s\")", pcDoc->getDocument()->getName());
+    } catch (const Base::PyException& e) {
+      e.ReportException();
+    }
 
     // check if the last document has been closed?
     // Note: in case there were further existing documents then we needn't worry about it

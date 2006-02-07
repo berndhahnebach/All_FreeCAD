@@ -91,6 +91,8 @@ using namespace PartGui;
 //**************************************************************************
 // Construction/Destruction
 
+PROPERTY_SOURCE(PartGui::ViewProviderCurveNet,PartGui::ViewProviderPart)
+
        
 ViewProviderCurveNet::ViewProviderCurveNet()
 :bInEdit(false),bMovePointMode(false)

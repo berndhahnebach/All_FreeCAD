@@ -58,6 +58,8 @@ namespace MeshGui {
  */
 class GuiMeshExport ViewProviderMeshCurvature : public ViewProviderMesh, public Base::Observer<int>
 {
+  PROPERTY_HEADER(MeshGui::ViewProviderMeshCurvature);
+
 public:
   ViewProviderMeshCurvature();
   virtual ~ViewProviderMeshCurvature();

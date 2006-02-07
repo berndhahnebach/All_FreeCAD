@@ -86,6 +86,8 @@ using namespace PartGui;
 //**************************************************************************
 // Construction/Destruction
 
+PROPERTY_SOURCE(PartGui::ViewProviderBox, PartGui::ViewProviderPart)
+
        
 ViewProviderBox::ViewProviderBox()
 {

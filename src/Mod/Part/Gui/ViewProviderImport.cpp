@@ -91,6 +91,8 @@ using namespace PartGui;
 //**************************************************************************
 // Construction/Destruction
 
+PROPERTY_SOURCE(PartGui::ViewProviderImport,PartGui::ViewProviderPart)
+
        
 ViewProviderImport::ViewProviderImport()
 {

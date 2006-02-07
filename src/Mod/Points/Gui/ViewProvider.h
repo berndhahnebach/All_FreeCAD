@@ -53,7 +53,7 @@ namespace PointsGui {
  */
 class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderFeature
 {
-  PROPERTY_HEADER(PointsGui::ViewProviderPart);
+  PROPERTY_HEADER(PointsGui::ViewProviderPoints);
 
 public:
   ViewProviderPoints();

@@ -446,26 +446,7 @@ void MeshKernel::Write (std::ostream &rclOut)
   unsigned long uCtFts = CountFacets();
   rclOut.write((const char*)&uCtPts, sizeof(unsigned long));
   rclOut.write((const char*)&uCtFts, sizeof(unsigned long));
-/*
-  MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
-  MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
 
-  while (clPIter < clPEIter) {
-    rclOut.write((const char*)&(clPIter->x), sizeof(float));
-    rclOut.write((const char*)&(clPIter->y), sizeof(float));
-    rclOut.write((const char*)&(clPIter->z), sizeof(float));
-    clPIter++;
-  }*/
-/*  while (clFIter < clFEIter) {
-    rclOut.write((const char*)&(clFIter->_aulNeighbours[0]), sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulNeighbours[1]), sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulNeighbours[2]), sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulPoints[0]),     sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulPoints[1]),     sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_aulPoints[2]),     sizeof(unsigned long));
-    rclOut.write((const char*)&(clFIter->_ucFlag),           sizeof(unsigned char));
-    clFIter++;
-  }*/
   rclOut.write((const char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
   rclOut.write((const char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
   rclOut.write((const char*)&_clBoundBox, sizeof(Base::BoundBox3D));
@@ -480,25 +461,7 @@ void MeshKernel::Read (std::istream &rclIn)
   rclIn.read((char*)&uCtFts, sizeof(unsigned long));
   _aclPointArray.resize(uCtPts);  
   _aclFacetArray.resize(uCtFts);
-/*
-  MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
-  MeshFacetArray::_TIterator  clFIter = _aclFacetArray.begin(), clFEIter = _aclFacetArray.end();
 
-  while (clPIter < clPEIter) {
-    rclIn.read((char*)&(clPIter->x), sizeof(float));
-    rclIn.read((char*)&(clPIter->y), sizeof(float));
-    rclIn.read((char*)&(clPIter->z), sizeof(float));
-    clPIter++;
-  }
-  while (clFIter < clFEIter) {
-    rclIn.read((char*)&(clFIter->_aulNeighbours[0]), sizeof(unsigned long));
-    rclIn.read((char*)&(clFIter->_aulNeighbours[1]), sizeof(unsigned long));
-    rclIn.read((char*)&(clFIter->_aulNeighbours[2]), sizeof(unsigned long));
-    rclIn.read((char*)&(clFIter->_aulPoints[0]),     sizeof(unsigned long));
-    rclIn.read((char*)&(clFIter->_aulPoints[1]),     sizeof(unsigned long));
-    rclIn.read((char*)&(clFIter->_aulPoints[2]),     sizeof(unsigned long));
-    clFIter++;
-  }*/
   rclIn.read((char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
   rclIn.read((char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
   rclIn.read((char*)&_clBoundBox, sizeof(Base::BoundBox3D));

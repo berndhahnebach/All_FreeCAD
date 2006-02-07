@@ -64,6 +64,8 @@ using MeshCore::MeshFacetIterator;
 using Base::Vector3D;
 
 
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshCurvature, MeshGui::ViewProviderMesh)
+
 ViewProviderMeshCurvature::ViewProviderMeshCurvature()
 {
   pcColorMat = new SoMaterial;

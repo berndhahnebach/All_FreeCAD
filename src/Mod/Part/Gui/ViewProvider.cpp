@@ -81,7 +81,7 @@
 
 using namespace PartGui;
 
-PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProvider)
+PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderFeature)
 
 
 //**************************************************************************

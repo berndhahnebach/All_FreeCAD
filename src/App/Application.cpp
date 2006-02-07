@@ -376,9 +376,8 @@ Document* Application::openDocument(const char * FileName)
   {
 
     // Creating a FreeCAD Document
-    string name = File.fileNamePure();
     newDoc.pDoc = new Document();
-    newDoc.pDoc->Name.setValue(name);
+    newDoc.pDoc->Name.setValue(File.fileNamePure());
     newDoc.pDoc->FileName.setValue(File.filePath());
 
     // trigger Observers (open windows and so on)
@@ -390,22 +389,16 @@ Document* Application::openDocument(const char * FileName)
     // read the document
     if ( !newDoc.pDoc->open() )
     {
-      delete newDoc.pDoc;
       std::stringstream str;
       str << "Invalid document structure in file '" << FileName << "'";
       throw Base::Exception(str.str().c_str());
     }
 
-    DocMap[name] = newDoc;
+    // FIXME: The document XML file can contain a name different from the file name.
+    //        But we must make sure that this name is unique.
+    // use the document's name, not the file name
+    DocMap[newDoc.pDoc->getName()] = newDoc;
     _pActiveDoc = newDoc.pDoc;
-
-    // trigger Observers (open windows and so on)
-/*    AppChanges Reason;
-    Reason.Doc = newDoc.pDoc;
-    Reason.Why = AppChanges::New;
-    Notify(Reason);
-*/
-    //NotifyDocNew(newDoc.pDoc);
   }else{
     throw Base::Exception("Unknown file extension");
   }

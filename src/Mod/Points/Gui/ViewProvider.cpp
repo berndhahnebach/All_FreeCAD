@@ -57,7 +57,7 @@ using namespace PointsGui;
 using namespace Points;
 
 
-PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProvider)
+PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProviderFeature)
 
        
 ViewProviderPoints::ViewProviderPoints()

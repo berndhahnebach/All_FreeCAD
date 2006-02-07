@@ -93,7 +93,7 @@ using MeshCore::MeshTopFacetVisitor;
 using Base::Vector3D;
 
 
-PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProvider)
+PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderFeature)
 
 
 

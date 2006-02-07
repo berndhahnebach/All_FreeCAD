@@ -65,6 +65,8 @@ using MeshCore::MeshFacetIterator;
 using Base::Vector3D;
     
 
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshTransform, MeshGui::ViewProviderMesh)
+
  
 ViewProviderMeshTransform::ViewProviderMeshTransform()
 {

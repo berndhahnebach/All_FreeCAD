@@ -90,7 +90,10 @@ void GuiMeshExport initMeshGui() {
   CreateMeshCommands();
 
 
-  MeshGui::ViewProviderMesh::init();
+  MeshGui::ViewProviderMesh                  ::init();
+  MeshGui::ViewProviderMeshCurvature         ::init();
+  MeshGui::ViewProviderMeshTransform         ::init();
+  MeshGui::ViewProviderMeshTransformDemolding::init();
 
   // Register view provider
 /*  Gui::ViewProviderFeatureFactory().AddProducer("MeshImport",             new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMesh>);
