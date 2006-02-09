@@ -52,6 +52,7 @@ struct ProgressBarPrivate
   int minimumDuration;
   bool oneStep;
   WaitCursor* cWaitCursor;
+  int observeEventFilter;
 };
 }
 
@@ -167,6 +168,17 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
         QKeyEvent* ke = (QKeyEvent*)e;
         if (ke->key() == Qt::Key_Escape)
         {
+          // eventFilter() was called from the application 50 times without performing a new step (app could hang)
+          if ( d->observeEventFilter > 50 )
+          {
+            // tries to unlock the application if it hangs (propably due to incorrect usage of Base::Sequencer)
+            if (ke->state() & ( ControlButton | AltButton ) )
+            {
+              resetData();
+              return true;
+            }
+          }
+
           // cancel the operation
           tryToCancel();
         }
@@ -204,6 +216,8 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
       {
       }  break;
     }
+
+    d->observeEventFilter++;
   }
 
   return QProgressBar::eventFilter(o, e);
@@ -308,6 +322,7 @@ void ProgressBar::nextStep(bool canAbort)
   }
   else
   {
+    d->observeEventFilter = 0;
     qApp->processEvents();
   }
 }
