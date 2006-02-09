@@ -50,7 +50,6 @@ void AbstractMouseModel::grabMouseModel( Gui::View3DInventorViewer* viewer )
 {
   _pcView3D=viewer;
   m_cPrevCursor = _pcView3D->getWidget()->cursor();
-  _timer.start();
   
   // do initialization of your mousemodel
   initialize();
@@ -65,52 +64,9 @@ void AbstractMouseModel::releaseMouseModel()
   _pcView3D = 0;
 }
 
-bool AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRegion& vp)
-{/*
-  // check for all kinds of button events
-  if (ev->getTypeId().isDerivedFrom(SoButtonEvent::getClassTypeId())) 
-  {
-    if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) 
-    {
-    }
-    else if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId()))
-    {
-      const SoMouseButtonEvent * const mb = (const SoMouseButtonEvent *) ev;
-      const int button = mb->getButton();
-      const SbBool press = mb->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
-      
-      // button down
-      if ( press )
-      {
-      }
-      // button up
-      else
-      {
-      }
-    }
-//    else if (ev->getTypeId().isDerivedFrom(SoSpaceballButtonEvent::getClassTypeId()))
-//    {
-//      return true;
-//    }
-    else
-    {
-      return true;
-    }
-  }
-  // mouse move events
-  else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) 
-  {
-  }
-  // 3D movements
-  else if (ev->getTypeId().isDerivedFrom(SoMotion3Event::getClassTypeId())) 
-  {
-    return true;
-  }
-  // all other events 
-  else
-  {
-    return true;
-  }*/
+int AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRegion& vp)
+{
+  int ret=Continue;
 
   const SbVec2s& sz = vp.getWindowSize(); 
   short w,h; sz.getValue(w,h);
@@ -124,9 +80,6 @@ bool AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportR
     const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
     const int button = event->getButton();
     const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
-
-    Qt::ButtonState state = Qt::ButtonState((ev->wasShiftDown() ? Qt::ShiftButton : Qt::NoButton)|(ev->wasCtrlDown () ? 
-                            Qt::ControlButton : Qt::NoButton)|(ev->wasAltDown() ? Qt::AltButton : Qt::NoButton));
 
     if ( press )
     {
@@ -153,88 +106,18 @@ bool AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportR
         pos.setValue(pX,pY);
       }
 
-      // double click event
-      if ( _timer.restart() < QApplication::doubleClickInterval() )
-      {
-        QMouseEvent e(QEvent::MouseButtonDblClick, QPoint(x,y), Qt::LeftButton, state);
-        mousePressEvent(&e);
-      }
+      _clPoly.push_back( pos );
 
-      switch ( button )
-      {
-      case SoMouseButtonEvent::BUTTON1:
-        {
-          QMouseEvent e(QEvent::MouseButtonPress, QPoint(x,y), Qt::LeftButton, state);
-          mousePressEvent(&e);
-        } break;
-      case SoMouseButtonEvent::BUTTON2:
-        {
-          QMouseEvent e(QEvent::MouseButtonPress, QPoint(x,y), Qt::RightButton, state);
-          mousePressEvent(&e);
-        } break;
-      case SoMouseButtonEvent::BUTTON3:
-        {
-          QMouseEvent e(QEvent::MouseButtonPress, QPoint(x,y), Qt::MidButton, state);
-          mousePressEvent(&e);
-        } break;
-      case SoMouseButtonEvent::BUTTON4:
-        {
-          QWheelEvent e(QPoint(x,y), QCursor::pos(), 120, state);
-          wheelMouseEvent(&e);
-        } break;
-      case SoMouseButtonEvent::BUTTON5:
-        {
-          QWheelEvent e(QPoint(x,y), QCursor::pos(), -120, state);
-          wheelMouseEvent(&e);
-        } break;
-      default:
-        {
-        } break;
-      }
+      ret = mouseButtonEvent(reinterpret_cast<const SoMouseButtonEvent*>(ev), QPoint(x,y));
     }
     else
     {
-      QMouseEvent e(QEvent::MouseButtonRelease, QPoint(), button, 0);
-      switch ( button )
-      {
-      case SoMouseButtonEvent::BUTTON1:
-        {
-          QMouseEvent e(QEvent::MouseButtonRelease, QPoint(x,y), Qt::LeftButton, Qt::LeftButton|state);
-          mouseReleaseEvent(&e);
-        } break;
-      case SoMouseButtonEvent::BUTTON2:
-        {
-          QMouseEvent e(QEvent::MouseButtonRelease, QPoint(x,y), Qt::RightButton, Qt::RightButton|state);
-          mouseReleaseEvent(&e);
-        } break;
-      case SoMouseButtonEvent::BUTTON3:
-        {
-          QMouseEvent e(QEvent::MouseButtonRelease, QPoint(x,y), Qt::MidButton, Qt::MidButton|state);
-          mouseReleaseEvent(&e);
-        } break;
-      case SoMouseButtonEvent::BUTTON4:
-        {
-          QWheelEvent e(QPoint(x,y), QCursor::pos(), 120, state);
-          wheelMouseEvent(&e);
-        } break;
-      case SoMouseButtonEvent::BUTTON5:
-        {
-          QWheelEvent e(QPoint(x,y), QCursor::pos(), -120, state);
-          wheelMouseEvent(&e);
-        } break;
-      default:
-        {
-        } break;
-      }
+      ret = mouseButtonEvent(reinterpret_cast<const SoMouseButtonEvent*>(ev), QPoint(x,y));
     }
   }
   else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) 
   {
-    Qt::ButtonState state = Qt::ButtonState((ev->wasShiftDown() ? Qt::ShiftButton : Qt::NoButton)|(ev->wasCtrlDown () ? 
-                            Qt::ControlButton : Qt::NoButton)|(ev->wasAltDown() ? Qt::AltButton : Qt::NoButton));
-    
-    QMouseEvent e( QEvent::MouseMove, QPoint(x,y), Qt::NoButton, state );
-    mouseMoveEvent(&e);
+    ret = locationEvent(reinterpret_cast<const SoLocation2Event*>(ev), QPoint(x,y));
   }
   else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) 
   {
@@ -242,76 +125,19 @@ bool AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportR
     switch (ke->getKey()) 
     {
     case SoKeyboardEvent::ESCAPE:
+      releaseMouseModel();
+      ret = Cancel;
       break;
     default:
+      ret = keyboardEvent(reinterpret_cast<const SoKeyboardEvent*>(ev));
       break;
     }
   }
 
-  return true;
+  if ( ret == Restart )
+    _clPoly.clear();
 
-  return false;
-}
-
-void AbstractMouseModel::mouseMoveEvent( QMouseEvent *cEvent )
-{
-  // do all the drawing stuff for us
-  QPoint clPoint = cEvent->pos();
-  draw();
-  m_iXnew = clPoint.x(); 
-  m_iYnew = clPoint.y();
-  draw();
-}
-
-void AbstractMouseModel::wheelMouseEvent( QWheelEvent *cEvent )
-{
-  // do all the drawing stuff for us
-  //QPoint clPoint = cEvent->pos();
-  draw();
-  wheelEvent(cEvent);
-  draw();
-}
-
-void AbstractMouseModel::mousePressEvent(QMouseEvent* cEvent)
-{
-  if ( cEvent->type() == QEvent::MouseButtonDblClick )
-  {
-    mouseDoubleClickEvent(cEvent);
-    return;
-  }
-
-  switch (cEvent->button())
-  {
-    case Qt::LeftButton:
-      mouseLeftPressEvent(cEvent);
-      break;
-    case Qt::MidButton:
-      mouseMiddlePressEvent(cEvent);
-      break;
-    case Qt::RightButton:
-      mouseRightPressEvent(cEvent);
-      break;
-    default:
-      break;
-  };
-}
-
-void AbstractMouseModel::mouseReleaseEvent(QMouseEvent* cEvent)
-{
-  switch (cEvent->button())
-  {
-    case Qt::LeftButton:
-      mouseLeftReleaseEvent(cEvent);
-      break;
-    case Qt::MidButton:
-      mouseMiddleReleaseEvent(cEvent);
-      break;
-    case Qt::RightButton:
-      mouseRightReleaseEvent(cEvent);
-      break;
-    default:
-      break;
-  };
+  return ret;
 }
 
 // -----------------------------------------------------------------------------------
@@ -323,6 +149,44 @@ BaseMouseModel::BaseMouseModel()
 
 // -----------------------------------------------------------------------------------
 
+/* XPM */
+static const char *cursor_polypick[]={
+"32 32 2 1",
+"# c #646464",
+". c None",
+"................................",
+"................................",
+".......#........................",
+".......#........................",
+".......#........................",
+"................................",
+".......#........................",
+"..###.###.###...................",
+".......#...............#........",
+"......................##........",
+".......#..............#.#.......",
+".......#.............#..#.......",
+".......#............#...#.......",
+"....................#....#......",
+"...................#.....#......",
+"..................#......#......",
+"............#.....#.......#.....",
+"...........#.##..#........#.....",
+"..........#....##.........#.....",
+".........#...............#......",
+"........#................#......",
+".......#................#.......",
+"......#.................#.......",
+".....#.................#........",
+"....#####..............#........",
+".........#########....#.........",
+"..................#####.........",
+"................................",
+"................................",
+"................................",
+"................................",
+"................................"};
+
 PolyPickerMouseModel::PolyPickerMouseModel() 
 {
   m_iRadius    = 2;
@@ -333,12 +197,14 @@ PolyPickerMouseModel::PolyPickerMouseModel()
 
 void PolyPickerMouseModel::initialize()
 {
-  _pcView3D->getWidget()->setCursor(QCursor(QCursor::CrossCursor));
+  QPixmap p(cursor_polypick);
+  QCursor cursor( p, 7, 7 );
+  _pcView3D->getWidget()->setCursor(cursor);
 }
 
 void PolyPickerMouseModel::terminate()
 {
-  _pcView3D->getGLWidget()->releaseMouse();
+//  _pcView3D->getGLWidget()->releaseMouse();
 }
 
 void PolyPickerMouseModel::draw ()
@@ -376,10 +242,84 @@ PolyPickerMouseModel::~PolyPickerMouseModel()
 {
 }
 
-void PolyPickerMouseModel::mouseMoveEvent( QMouseEvent *cEvent )
+int PolyPickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos )
+{
+  const int button = e->getButton();
+  const SbBool press = e->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+
+  if ( press )
+  {
+    switch ( button )
+    {
+    case SoMouseButtonEvent::BUTTON1:
+      {
+        // start working from now on
+        if ( !m_bWorking )    
+        {
+          m_bWorking = true;
+          // clear the old polygon
+          _cNodeVector.clear();
+          _pcView3D->getGLWidget()->update();
+//          _pcView3D->getGLWidget()->grabMouse();
+        }
+
+        _cNodeVector.push_back(pos);
+
+        m_iXnew = pos.x();  m_iYnew = pos.y();
+        m_iXold = pos.x();  m_iYold = pos.y();
+      } break;
+    case SoMouseButtonEvent::BUTTON2:
+      {
+        if ( _cNodeVector.size() > 0 )
+        {
+          if ( _cNodeVector.back() != pos )
+            _cNodeVector.push_back(pos);
+          m_iXnew = pos.x();  m_iYnew = pos.y();
+          m_iXold = pos.x();  m_iYold = pos.y();
+        }
+
+        QCursor cur = _pcView3D->getWidget()->cursor();
+        _pcView3D->getWidget()->setCursor(m_cPrevCursor);
+//        _pcView3D->getGLWidget()->releaseMouse();
+      
+        QPopupMenu menu;
+        int fi = menu.insertItem("Finish");
+        int ca = menu.insertItem("Cancel");
+        int id = menu.exec(QCursor::pos());
+        
+//        _pcView3D->getGLWidget()->grabMouse();
+    
+        if ( id == fi )
+        {
+          releaseMouseModel();
+          return Finish;
+        }
+        else if ( id == ca )
+        {
+          releaseMouseModel();
+          return Cancel;
+        }
+        else
+        {
+          m_bWorking = false;
+          m_iNodes = 0;
+          _pcView3D->getWidget()->setCursor(cur);
+          return Restart;
+        }
+      } break;
+    default:
+      {
+      } break;
+    }
+  }
+
+  return Continue;
+}
+
+int PolyPickerMouseModel::locationEvent( const SoLocation2Event * const e, const QPoint& pos )
 {
   // do all the drawing stuff for us
-  QPoint clPoint = cEvent->pos();
+  QPoint clPoint = pos;
 
   if ( m_bWorking )    
   {
@@ -405,62 +345,13 @@ void PolyPickerMouseModel::mouseMoveEvent( QMouseEvent *cEvent )
   m_iXnew = clPoint.x(); 
   m_iYnew = clPoint.y();
   draw();
+
+  return Continue;
 }
 
-void PolyPickerMouseModel::mouseLeftPressEvent( QMouseEvent *cEvent)
+int PolyPickerMouseModel::keyboardEvent( const SoKeyboardEvent * const e )
 {
-  QPoint point = cEvent->pos();
-
-  // start working from now on
-  if ( !m_bWorking )    
-  {
-    m_bWorking = true;
-    // clear the old polygon
-    _cNodeVector.clear();
-    _pcView3D->getGLWidget()->update();
-    _pcView3D->getGLWidget()->grabMouse();
-  }
-
-  _cNodeVector.push_back(point);
-
-  m_iXnew = point.x();  m_iYnew = point.y();
-  m_iXold = point.x();  m_iYold = point.y();
-}
-
-void PolyPickerMouseModel::mouseMiddlePressEvent( QMouseEvent *cEvent)
-{
-}
-
-void PolyPickerMouseModel::mouseRightPressEvent( QMouseEvent *cEvent)
-{
-}
-
-void PolyPickerMouseModel::wheelEvent ( QWheelEvent * e)
-{
-  // do nothing
-}
-
-void PolyPickerMouseModel::keyPressEvent( QKeyEvent * e)
-{
-  switch (e->key())
-  {
-    case Qt::Key_Escape:
-//      _pcView3D->popMouseModel();
-      break;
-    default:
-      BaseMouseModel::keyPressEvent(e);
-      break;
-  }
-}
-
-void PolyPickerMouseModel::mouseDoubleClickEvent( QMouseEvent *cEvent)
-{
-  if( m_bWorking )
-  {
-    m_bWorking = false;
-  }
-
-//  _pcView3D->popMouseModel();
+  return Continue;
 }
 
 // -----------------------------------------------------------------------------------
@@ -488,17 +379,58 @@ void SelectionMouseModel::draw ()
     _pcView3D->drawRect( m_iXold, m_iYold, m_iXnew, m_iYnew );
 }
 
-void SelectionMouseModel::mouseLeftPressEvent( QMouseEvent *cEvent)
+int SelectionMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos )
 {
-  m_bWorking = true;
-  QPoint p = cEvent->pos();
-  m_iXold = m_iXnew = p.x(); 
-  m_iYold = m_iYnew = p.y();
+  const int button = e->getButton();
+  const SbBool press = e->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+
+  int ret = Continue;
+
+  if ( press )
+  {
+    switch ( button )
+    {
+    case SoMouseButtonEvent::BUTTON1:
+      {
+        m_bWorking = true;
+        m_iXold = m_iXnew = pos.x(); 
+        m_iYold = m_iYnew = pos.y();
+      } break;
+    default:
+      {
+      } break;
+    }
+  }
+  else
+  {
+    switch ( button )
+    {
+    case SoMouseButtonEvent::BUTTON1:
+      {
+        m_bWorking = false;
+        ret = Finish;
+      } break;
+    default:
+      {
+      } break;
+    }
+  }
+
+  return ret;
 }
 
-void SelectionMouseModel::mouseLeftReleaseEvent( QMouseEvent *cEvent)
+int SelectionMouseModel::locationEvent( const SoLocation2Event * const e, const QPoint& pos )
 {
-  m_bWorking = false;
+  draw();
+  m_iXnew = pos.x(); 
+  m_iYnew = pos.y();
+  draw();
+  return Continue;
+}
+
+int SelectionMouseModel::keyboardEvent( const SoKeyboardEvent * const e )
+{
+  return Continue;
 }
 
 // -----------------------------------------------------------------------------------
@@ -542,7 +474,7 @@ static const char *xpm_cursor[]={
 "................................"};
 
 CirclePickerMouseModel::CirclePickerMouseModel()
-: _nRadius(50)
+: _nRadius(50), _bWorking(false)
 {
   QPoint p = QCursor::pos();
   m_iXnew = p.x(); 
@@ -568,20 +500,106 @@ void CirclePickerMouseModel::terminate()
 void CirclePickerMouseModel::draw ()
 {
   char szBuf[20];
-  float fRad = 0.0f;//float(getView()->Convert(Standard_Integer(_nRadius)));
+  float fRad = float(_nRadius)/10.0f;//float(getView()->Convert(Standard_Integer(_nRadius)));
 
   sprintf(szBuf, "%.2f", fRad);
   _pcView3D->drawCircle(m_iXnew, m_iYnew, _nRadius);
   _pcView3D->drawText(m_iXnew+9, m_iYnew-9, szBuf);
 }
 
-void CirclePickerMouseModel::mouseRightPressEvent( QMouseEvent *cEvent)
+int CirclePickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos )
 {
-//  _pcView3D->popMouseModel();
+  const int button = e->getButton();
+  const SbBool press = e->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+
+  int ret = Continue;
+
+  if ( press )
+  {
+    int delta = 120 / QApplication::wheelScrollLines();
+
+    switch ( button )
+    {
+    case SoMouseButtonEvent::BUTTON4:
+      {
+        draw();
+        if ( _nRadius < 20 )
+          delta /= 2;
+        _nRadius = 5>(_nRadius + delta / 10)?5:(_nRadius + delta / 10);
+        draw();
+      } break;
+    case SoMouseButtonEvent::BUTTON5:
+      {
+        draw();
+        delta = -delta;
+        if ( _nRadius < 20 )
+          delta /= 2;
+        _nRadius = 5>(_nRadius + delta / 10)?5:(_nRadius + delta / 10);
+        draw();
+      } break;
+    default:
+      {
+      } break;
+    }
+  }
+  else
+  {
+    switch ( button )
+    {
+    case SoMouseButtonEvent::BUTTON2:
+      {
+        QCursor cur = _pcView3D->getWidget()->cursor();
+        _pcView3D->getWidget()->setCursor(m_cPrevCursor);
+      
+        QPopupMenu menu;
+        int fi = menu.insertItem("Finish");
+        int ca = menu.insertItem("Cancel");
+        int id = menu.exec(QCursor::pos());
+    
+        if ( id == fi )
+        {
+          releaseMouseModel();
+          return Finish;
+        }
+        else if ( id == ca )
+        {
+          releaseMouseModel();
+          return Cancel;
+        }
+        else
+        {
+          _pcView3D->getWidget()->setCursor(cur);
+        }
+      } break;
+    default:
+      {
+      } break;
+    }
+  }
+
+  return ret;
 }
 
-void CirclePickerMouseModel::wheelEvent( QWheelEvent  * cEvent )
+int CirclePickerMouseModel::locationEvent( const SoLocation2Event * const e, const QPoint& pos )
 {
-  int delta = cEvent->delta();
-  _nRadius = 5>(_nRadius + delta / 10)?5:(_nRadius + delta / 10);
+  if ( !_bWorking )
+  {
+    _bWorking = true;
+    m_iXnew = pos.x(); 
+    m_iYnew = pos.y();
+    draw();
+  }
+  else
+  {
+    draw();
+    m_iXnew = pos.x(); 
+    m_iYnew = pos.y();
+    draw();
+  }
+  return Continue;
+}
+
+int CirclePickerMouseModel::keyboardEvent( const SoKeyboardEvent * const e )
+{
+  return Continue;
 }

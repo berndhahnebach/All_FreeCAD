@@ -26,8 +26,8 @@
 
 #ifndef _PreComp_
 # include <qcursor.h>
-# include <qdatetime.h>
 # include <vector>
+# include <Inventor/SbLinear.h>
 #endif
 
 // forwards
@@ -55,6 +55,8 @@ namespace Gui {
 class GuiExport AbstractMouseModel
 {
 public:
+  enum { Continue=0, Restart=1, Finish=2, Cancel=3 };
+
   AbstractMouseModel();
   virtual ~AbstractMouseModel(void){}
   /// implement this in derived classes
@@ -63,32 +65,18 @@ public:
   virtual void terminate () = 0;
   void grabMouseModel(Gui::View3DInventorViewer*);
   void releaseMouseModel(void);
+  const std::vector<SbVec2f>& getPolygon() const { return _clPoly; }
 
   /** @name Mouse events*/
   //@{
-  bool handleEvent( const SoEvent * const ev, const SbViewportRegion& vp );
-  virtual void mouseMoveEvent    ( QMouseEvent *cEvent );
-  void mousePressEvent   ( QMouseEvent *cEvent );
-  void mouseReleaseEvent ( QMouseEvent *cEvent );
-  void wheelMouseEvent   ( QWheelEvent *cEvent );
+  int handleEvent( const SoEvent * const ev, const SbViewportRegion& vp );
   //@}
 
 protected:
-  virtual void mouseLeftPressEvent     ( QMouseEvent *cEvent ){};
-  virtual void mouseMiddlePressEvent   ( QMouseEvent *cEvent ){};
-  virtual void mouseRightPressEvent    ( QMouseEvent *cEvent ){};
-  virtual void mouseLeftReleaseEvent   ( QMouseEvent *cEvent ){};
-  virtual void mouseMiddleReleaseEvent ( QMouseEvent *cEvent ){};
-  virtual void mouseRightReleaseEvent  ( QMouseEvent *cEvent ){};
-  virtual void mouseDoubleClickEvent   ( QMouseEvent *cEvent ){};
+  virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos ){ return 0; };
+  virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos ){ return 0; };
+  virtual int keyboardEvent   ( const SoKeyboardEvent    * const e )                   { return 0; };
 
-  virtual void wheelEvent         ( QWheelEvent * ){};
-  virtual void keyPressEvent      ( QKeyEvent * ){};
-  virtual void keyReleaseEvent    ( QKeyEvent * ){}; 
-  virtual void paintEvent         ( QPaintEvent * ){ draw(); } ;
-  virtual void resizeEvent        ( QResizeEvent * ){ draw(); };
-
-protected:
   /// drawing stuff
   virtual void draw (){};
 
@@ -99,7 +87,7 @@ protected:
   int  m_iXnew, m_iYnew;
 
 private:
-  QTime _timer;
+  std::vector<SbVec2f> _clPoly;
 };
 
 // -----------------------------------------------------------------------------------
@@ -132,20 +120,16 @@ public:
   virtual void initialize();
   /// do nothing
   virtual void terminate();
-  
-  void mouseMoveEvent    ( QMouseEvent *cEvent );
 
 protected:
-  virtual void mouseLeftPressEvent     ( QMouseEvent *cEvent );
-  virtual void mouseMiddlePressEvent   ( QMouseEvent *cEvent );
-  virtual void mouseRightPressEvent    ( QMouseEvent *cEvent );
-  virtual void mouseDoubleClickEvent   ( QMouseEvent *cEvent );
-  virtual void wheelEvent              ( QWheelEvent *cEvent );
-  virtual void keyPressEvent           ( QKeyEvent   *cEvent );
+  virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
+  virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos );
+  virtual int keyboardEvent   ( const SoKeyboardEvent    * const e );
 
-protected:
   /// draw the polygon
   virtual void draw ();
+
+protected:
   std::vector<QPoint> _cNodeVector;
   int  m_iRadius, m_iNodes;
   bool m_bWorking, m_bDrawNodes;
@@ -170,10 +154,10 @@ public:
   virtual void terminate();
 
 protected:
-  virtual void mouseLeftPressEvent    ( QMouseEvent *cEvent );
-  virtual void mouseLeftReleaseEvent  ( QMouseEvent *cEvent );
+  virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
+  virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos );
+  virtual int keyboardEvent   ( const SoKeyboardEvent    * const e );
 
-protected:
   /// draw the rectangle
   virtual void draw ();
 
@@ -197,15 +181,17 @@ public:
   virtual void initialize();
   /// call the @ref draw() method to clear the view
   virtual void terminate();
-  virtual void mouseRightPressEvent  ( QMouseEvent  *cEvent );
-  virtual void wheelEvent            ( QWheelEvent  *cEvent );
 
 protected:
+  virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
+  virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos );
+  virtual int keyboardEvent   ( const SoKeyboardEvent    * const e );
   /// draw circle and text
   virtual void draw ();
 
 private:
   int    _nRadius;
+  bool   _bWorking;
 };
 
 } // namespace Gui

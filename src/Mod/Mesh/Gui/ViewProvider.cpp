@@ -367,7 +367,7 @@ void ViewProviderMesh::unsetEdit(void)
 {
 //  ViewProviderFeature::unsetEdit();
   m_bEdit = false;
-  _mouseModel->releaseMouseModel();
+  //_mouseModel->releaseMouseModel();
   delete _mouseModel;
   _mouseModel = 0;
 }
@@ -472,217 +472,92 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 
   if ( m_bEdit && _mouseModel )
   {
-    const SbViewportRegion& vp = Viewer.getViewportRegion();
-    const SbVec2s& sz = vp.getWindowSize(); 
-    short w,h; sz.getValue(w,h);
-
-    SbVec2s loc = ev->getPosition();
-    short x,y; loc.getValue(x,y);
-    y = h-y; // the origin is at the left bottom corner (instead of left top corner)
-
-    if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) 
+    // double click event
+    int hd = _mouseModel->handleEvent(ev, Viewer.getViewportRegion());
+    if ( hd == Gui::AbstractMouseModel::Finish )
     {
-      const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
-      const int button = event->getButton();
-      const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+      _clPoly = _mouseModel->getPolygon();
+      if ( _clPoly.size() < 3 )
+        return true;
+      if ( _clPoly.front() != _clPoly.back() )
+        _clPoly.push_back(_clPoly.back());
 
-      Qt::ButtonState state = Qt::ButtonState((ev->wasShiftDown() ? Qt::ShiftButton : Qt::NoButton)|(ev->wasCtrlDown () ? 
-                              Qt::ControlButton : Qt::NoButton)|(ev->wasAltDown() ? Qt::AltButton : Qt::NoButton));
+      // get the normal of the front clipping plane
+      Vector3D cPoint, cNormal;
+      Viewer.getFrontClippingPlane(cPoint, cNormal);
+      SoCamera* pCam = Viewer.getCamera();  
+      SbViewVolume  vol = pCam->getViewVolume (); 
 
-      if ( press )
+      // create a tool shape from these points
+      std::vector<MeshGeomFacet> aFaces;
+      bool ok = createToolMesh( vol, cNormal, aFaces );
+
+      Gui::Document* pGDoc = Gui::Application::Instance->activeDocument();
+      App::Document* pDoc = pGDoc->getDocument();
+
+      pGDoc->openCommand("Poly pick");
+      Gui::Command::doCommand(Gui::Command::Doc, "import Mesh\n");
+      Gui::Command::doCommand(Gui::Command::Gui, "import MeshGui\n");
+
+      // create a mesh feature and append it to the document
+      std::string fTool = pDoc->getUniqueFeatureName("Toolmesh");
+      Gui::Command::doCommand(Gui::Command::Doc, "App.document().AddFeature(\"Mesh::Feature\", \"%s\")\n", fTool.c_str());
+
+      // replace the mesh from feature
+      Gui::Command::doCommand(Gui::Command::Gui, "App.document().%s.solidMaterial.transparency = 0.7\n", fTool.c_str());
+      Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().GetFeature(\"%s\").getMesh()\n", fTool.c_str());
+      for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
       {
-        float fRatio = vp.getViewportAspectRatio();
-        SbVec2f pos = ev->getNormalizedPosition(vp);
-        float pX,pY; pos.getValue(pX,pY);
+        Gui::Command::doCommand(Gui::Command::Doc, "m.addFacet(%.6f,%.6f,%.6f, %.6f,%.6f,%.6f, %.6f,%.6f,%.6f)",
+          itF->_aclPoints[0].x, itF->_aclPoints[0].y, itF->_aclPoints[0].z,
+          itF->_aclPoints[1].x, itF->_aclPoints[1].y, itF->_aclPoints[1].z,
+          itF->_aclPoints[2].x, itF->_aclPoints[2].y, itF->_aclPoints[2].z);
+      }
 
-        SbVec2f org = vp.getViewportOrigin();
-        float Ox, Oy; org.getValue( Ox, Oy );
-
-        SbVec2f siz = vp.getViewportSize();
-        float dX, dY; siz.getValue( dX, dY );
-
-        // now calculate the real points respecting aspect ratio information
-        //
-        if ( fRatio > 1.0f )
-        {
-          pX = ( pX - 0.5f*dX ) * fRatio + 0.5f*dX;
-          pos.setValue(pX,pY);
-        }
-        else if ( fRatio < 1.0f )
-        {
-          pY = ( pY - 0.5f*dY ) / fRatio + 0.5f*dY;
-          pos.setValue(pX,pY);
-        }
-
-        _clPoly.push_back( pos );
-
-        // double click event
-        if ( _timer.restart() < QApplication::doubleClickInterval() )
-        {
-          QMouseEvent e(QEvent::MouseButtonDblClick, QPoint(x,y), Qt::LeftButton, state);
-          _mouseModel->mousePressEvent(&e);
-
-          // get the normal of the front clipping plane
-          Vector3D cPoint, cNormal;
-          Viewer.getFrontClippingPlane(cPoint, cNormal);
-          SoCamera* pCam = Viewer.getCamera();  
-          SbViewVolume  vol = pCam->getViewVolume (); 
-
-          // create a tool shape from these points
-          std::vector<MeshGeomFacet> aFaces;
-          bool ok = createToolMesh( vol, cNormal, aFaces );
-
-          Gui::Document* pGDoc = Gui::Application::Instance->activeDocument();
-          App::Document* pDoc = pGDoc->getDocument();
-
-          pGDoc->openCommand("Poly pick");
-          Gui::Command::doCommand(Gui::Command::Doc, "import Mesh\n");
-          Gui::Command::doCommand(Gui::Command::Gui, "import MeshGui\n");
-
-          // create a mesh feature and append it to the document
-          std::string fTool = pDoc->getUniqueFeatureName("Toolmesh");
-          Gui::Command::doCommand(Gui::Command::Doc, "App.document().AddFeature(\"Mesh::Feature\", \"%s\")\n", fTool.c_str());
-
-          // replace the mesh from feature
-          Gui::Command::doCommand(Gui::Command::Gui, "App.document().%s.solidMaterial.transparency = 0.7\n", fTool.c_str());
-          Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().GetFeature(\"%s\").getMesh()\n", fTool.c_str());
-          for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
-          {
-            Gui::Command::doCommand(Gui::Command::Doc, "m.addFacet(%.6f,%.6f,%.6f, %.6f,%.6f,%.6f, %.6f,%.6f,%.6f)",
-              itF->_aclPoints[0].x, itF->_aclPoints[0].y, itF->_aclPoints[0].z,
-              itF->_aclPoints[1].x, itF->_aclPoints[1].y, itF->_aclPoints[1].z,
-              itF->_aclPoints[2].x, itF->_aclPoints[2].y, itF->_aclPoints[2].z);
-          }
-
-          Gui::Command::doCommand(Gui::Command::Doc, "App.document().Recompute()\n");
+      Gui::Command::doCommand(Gui::Command::Doc, "App.document().Recompute()\n");
 
 #ifndef FC_DEBUG
-          Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
+      Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
 #endif
 
-          // now intersect with each selected mesh feature
-          std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+      // now intersect with each selected mesh feature
+      std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
 
-          for ( std::vector<App::Feature*>::iterator it = fea.begin(); it != fea.end(); ++it )
-          {
-            // check type
-            std::string fName = pDoc->getUniqueFeatureName("MeshSegment");
-            Feature* meshFeature = dynamic_cast<Feature*>(*it);
-            if ( !meshFeature ) continue; // no mesh
+      for ( std::vector<App::Feature*>::iterator it = fea.begin(); it != fea.end(); ++it )
+      {
+        // check type
+        std::string fName = pDoc->getUniqueFeatureName("MeshSegment");
+        Feature* meshFeature = dynamic_cast<Feature*>(*it);
+        if ( !meshFeature ) continue; // no mesh
 
-            Gui::Command::doCommand(Gui::Command::Doc,
-                "f = App.document().AddFeature(\"Mesh::SegmentByMesh\",\"%s\")\n"
-                "f.Source   = App.document().%s\n"
-                "f.Tool     = App.document().%s\n"
-                "f.Base     = (%.6f,%.6f,%.6f)\n"
-                "f.Normal   = (%.6f,%.6f,%.6f)\n"
-                , fName.c_str(),  meshFeature->getName(), fTool.c_str(), 
-                  cPoint.x, cPoint.y, cPoint.z, cNormal.x, cNormal.y, cNormal.z );
-          }
+        Gui::Command::doCommand(Gui::Command::Doc,
+            "f = App.document().AddFeature(\"Mesh::SegmentByMesh\",\"%s\")\n"
+            "f.Source   = App.document().%s\n"
+            "f.Tool     = App.document().%s\n"
+            "f.Base     = (%.6f,%.6f,%.6f)\n"
+            "f.Normal   = (%.6f,%.6f,%.6f)\n"
+            , fName.c_str(),  meshFeature->getName(), fTool.c_str(), 
+              cPoint.x, cPoint.y, cPoint.z, cNormal.x, cNormal.y, cNormal.z );
+      }
 
-          pGDoc->commitCommand();
-          pDoc->Recompute();
+      pGDoc->commitCommand();
+      pDoc->Recompute();
 
 #ifndef FC_DEBUG
-          // make sure that toolmesh is still hidden
-          Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
+      // make sure that toolmesh is still hidden
+      Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
 #endif
 
-          unsetEdit();
+      unsetEdit();
 
-          if ( !ok ) // note: the mouse grabbing needs to be released
-            QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
+      if ( !ok ) // note: the mouse grabbing needs to be released
+        QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
 
-          return true;
-        }
-
-        switch ( button )
-        {
-        case SoMouseButtonEvent::BUTTON1:
-          {
-            QMouseEvent e(QEvent::MouseButtonPress, QPoint(x,y), Qt::LeftButton, state);
-            _mouseModel->mousePressEvent(&e);
-          } break;
-        case SoMouseButtonEvent::BUTTON2:
-          {
-            QMouseEvent e(QEvent::MouseButtonPress, QPoint(x,y), Qt::RightButton, state);
-            _mouseModel->mousePressEvent(&e);
-          } break;
-        case SoMouseButtonEvent::BUTTON3:
-          {
-            QMouseEvent e(QEvent::MouseButtonPress, QPoint(x,y), Qt::MidButton, state);
-            _mouseModel->mousePressEvent(&e);
-          } break;
-        case SoMouseButtonEvent::BUTTON4:
-          {
-            QWheelEvent e(QPoint(x,y), QCursor::pos(), 120, state);
-            _mouseModel->wheelMouseEvent(&e);
-          } break;
-        case SoMouseButtonEvent::BUTTON5:
-          {
-            QWheelEvent e(QPoint(x,y), QCursor::pos(), -120, state);
-            _mouseModel->wheelMouseEvent(&e);
-          } break;
-        default:
-          {
-          } break;
-        }
-      }
-      else
-      {
-        QMouseEvent e(QEvent::MouseButtonRelease, QPoint(), button, 0);
-        switch ( button )
-        {
-        case SoMouseButtonEvent::BUTTON1:
-          {
-            QMouseEvent e(QEvent::MouseButtonRelease, QPoint(x,y), Qt::LeftButton, Qt::LeftButton|state);
-            _mouseModel->mouseReleaseEvent(&e);
-          } break;
-        case SoMouseButtonEvent::BUTTON2:
-          {
-            QMouseEvent e(QEvent::MouseButtonRelease, QPoint(x,y), Qt::RightButton, Qt::RightButton|state);
-            _mouseModel->mouseReleaseEvent(&e);
-          } break;
-        case SoMouseButtonEvent::BUTTON3:
-          {
-            QMouseEvent e(QEvent::MouseButtonRelease, QPoint(x,y), Qt::MidButton, Qt::MidButton|state);
-            _mouseModel->mouseReleaseEvent(&e);
-          } break;
-        case SoMouseButtonEvent::BUTTON4:
-          {
-            QWheelEvent e(QPoint(x,y), QCursor::pos(), 120, state);
-            _mouseModel->wheelMouseEvent(&e);
-          } break;
-        case SoMouseButtonEvent::BUTTON5:
-          {
-            QWheelEvent e(QPoint(x,y), QCursor::pos(), -120, state);
-            _mouseModel->wheelMouseEvent(&e);
-          } break;
-        default:
-          {
-          } break;
-        }
-      }
+      return true;
     }
-    else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) 
+    else if ( hd == Gui::AbstractMouseModel::Cancel )
     {
-      Qt::ButtonState state = Qt::ButtonState((ev->wasShiftDown() ? Qt::ShiftButton : Qt::NoButton)|(ev->wasCtrlDown () ? 
-                              Qt::ControlButton : Qt::NoButton)|(ev->wasAltDown() ? Qt::AltButton : Qt::NoButton));
-      
-      QMouseEvent e( QEvent::MouseMove, QPoint(x,y), Qt::NoButton, state );
-     _mouseModel->mouseMoveEvent(&e);
-    }
-    else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) 
-    {
-      SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
-      switch (ke->getKey()) 
-      {
-      case SoKeyboardEvent::ESCAPE:
-        unsetEdit();
-        break;
-      default:
-        break;
-      }
+      unsetEdit();
     }
 
     return true;

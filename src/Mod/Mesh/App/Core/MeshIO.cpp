@@ -151,6 +151,17 @@ bool MeshSTL::Load (std::istream &rstrIn)
     _rclMesh.Clear();
     throw e;
   }
+  catch ( const Base::Exception& e ){
+    _rclMesh.Clear();
+    Base::Sequencer().halt();
+    throw e;
+  }
+  catch (...)
+  {
+    _rclMesh.Clear();
+    Base::Sequencer().halt();
+    throw;
+  }
 
   return true;
 }
