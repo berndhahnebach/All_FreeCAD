@@ -18,7 +18,6 @@
 #include <Base/Console.h>
 
 #include <Gui/Application.h>
-#include <Gui/WorkbenchFactory.h>
 
 #include "Workbench.h"
 
@@ -60,8 +59,8 @@ void ImageGuiExport initImageGui() {
 
 	// instanciating the commands
 	CreateImageCommands();
-  Gui::WorkbenchFactory().AddProducer("Image", new Gui::WorkbenchProducer<ImageGui::Workbench>);
-
+  ImageGui::Workbench::init();
+  //Gui::WorkbenchFactory().AddProducer("Image", new Gui::WorkbenchProducer<ImageGui::Workbench>);
 
 	return;
 }

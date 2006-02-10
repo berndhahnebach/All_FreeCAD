@@ -41,6 +41,8 @@ class ImageWorkbench ( Workbench ):
 		except:
 			Err('Cannot load ImageGui')
 			raise
+	def GetClassName(self):
+		return "ImageGui::Workbench"
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"

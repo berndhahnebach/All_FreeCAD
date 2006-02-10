@@ -29,7 +29,6 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
-#include <Gui/WorkbenchFactory.h>
 
 #include "ViewProvider.h"
 #include "Workbench.h"
@@ -78,7 +77,8 @@ void PointsGuiExport initPointsGui() {
 
   PointsGui::ViewProviderPoints::init();
 
-  Gui::WorkbenchFactory().AddProducer("Points design", new Gui::WorkbenchProducer<PointsGui::Workbench>);
+  PointsGui::Workbench::init();
+  //Gui::WorkbenchFactory().AddProducer("Points design", new Gui::WorkbenchProducer<PointsGui::Workbench>);
 
   // instanciating the commands
   CreatePointsCommands();

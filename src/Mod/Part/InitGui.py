@@ -41,6 +41,8 @@ class PartWorkbench ( Workbench ):
 		except:
 			Err('Cannot load PartGui')
 			raise
+	def GetClassName(self):
+		return "PartGui::Workbench"
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"

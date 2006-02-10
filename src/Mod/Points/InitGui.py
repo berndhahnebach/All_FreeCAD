@@ -41,6 +41,8 @@ class PointsWorkbench ( Workbench ):
 		except:
 			Err('Cannot load PointsGui')
 			raise
+	def GetClassName(self):
+		return "PointsGui::Workbench"
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"

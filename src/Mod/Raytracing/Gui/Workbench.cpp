@@ -30,7 +30,9 @@
 #include "Workbench.h"
 #include <Gui/ToolBarManager.h>
 
-using namespace RayGui;
+using namespace RaytracingGui;
+
+TYPESYSTEM_SOURCE(RaytracingGui::Workbench, Gui::StdWorkbench)
 
 Workbench::Workbench()
 {

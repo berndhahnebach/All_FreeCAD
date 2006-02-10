@@ -26,7 +26,7 @@
 
 #include "DlgSettingsRay.h"
 
-namespace RayGui {
+namespace RaytracingGui {
 
 /**
  * The DlgSettings3DViewImp class implements a preference page to change settings
@@ -46,6 +46,6 @@ protected:
   void loadSettings();
 };
 
-} // namespace GuiRaytracing
+} // namespace RaytracingGui
 
 #endif // __DlgSettingsRayImp_H

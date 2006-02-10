@@ -30,7 +30,6 @@
 #include <Gui/Application.h>
 #include <Gui/ViewProvider.h>
 #include <Gui/Macro.h>
-#include <Gui/WorkbenchFactory.h>
 #include <Gui/BitmapFactory.h>
 
 #include <Gui/WidgetFactory.h>
@@ -110,7 +109,8 @@ void ModuleExport initPartGui() {
   Gui::ViewProviderFeatureFactory().AddProducer("PartCurveNet"  ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderCurveNet>);
 */
 
-  Gui::WorkbenchFactory().AddProducer("Part design", new Gui::WorkbenchProducer<PartGui::Workbench>);
+  PartGui::Workbench::init();
+  //Gui::WorkbenchFactory().AddProducer("Part design", new Gui::WorkbenchProducer<PartGui::Workbench>);
 
   // instanciating the commands
 	CreatePartCommands();

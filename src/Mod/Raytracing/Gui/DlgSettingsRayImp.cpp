@@ -30,7 +30,7 @@
 #include <Gui/PrefWidgets.h>
 #include <Base/Console.h>
 
-using namespace RayGui;
+using namespace RaytracingGui;
 
 /**
  *  Constructs a DlgSettings3DViewImp which is a child of 'parent', with the 

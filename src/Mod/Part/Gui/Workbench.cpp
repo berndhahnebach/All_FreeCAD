@@ -33,6 +33,8 @@
 
 using namespace PartGui;
 
+TYPESYSTEM_SOURCE(PartGui::Workbench, Gui::StdWorkbench)
+
 Workbench::Workbench()
 {
 }

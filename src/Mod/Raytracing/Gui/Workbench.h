@@ -29,13 +29,15 @@
 
 #include <Gui/Workbench.h>
 
-namespace RayGui {
+namespace RaytracingGui {
 
 /**
  * @author Werner Mayer
  */
 class Workbench : public Gui::StdWorkbench
 {
+    TYPESYSTEM_HEADER();
+
 public:
   Workbench();
   virtual ~Workbench();
@@ -45,7 +47,7 @@ protected:
   Gui::ToolBarItem* setupCommandBars() const;
 };
 
-} // namespace RayGui
+} // namespace RaytracingGui
 
 
 #endif // RAY_WORKBENCH_H 

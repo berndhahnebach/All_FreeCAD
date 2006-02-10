@@ -36,6 +36,8 @@ namespace ImageGui {
  */
 class ImageGuiExport Workbench : public Gui::StdWorkbench
 {
+    TYPESYSTEM_HEADER();
+
 public:
   Workbench();
   virtual ~Workbench();

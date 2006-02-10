@@ -33,6 +33,8 @@
 
 using namespace _TEMPLATE_Gui;
 
+TYPESYSTEM_SOURCE(_TEMPLATE_Gui::Workbench, Gui::StdWorkbench)
+
 Workbench::Workbench()
 {
 }

@@ -9,7 +9,7 @@
         </message>
     </context>
     <context>
-        <name>RayGui::DlgSettingsRay</name>
+        <name>RaytracingGui::DlgSettingsRay</name>
         <message>
             <source>Raytracing</source>
             <translation>Raytracing</translation>

@@ -33,6 +33,8 @@
 
 using namespace MeshGui;
 
+TYPESYSTEM_SOURCE(MeshGui::Workbench, Gui::StdWorkbench)
+
 Workbench::Workbench()
 {
 }

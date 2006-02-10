@@ -32,6 +32,8 @@
 
 using namespace PointsGui;
 
+TYPESYSTEM_SOURCE(PointsGui::Workbench, Gui::StdWorkbench)
+
 Workbench::Workbench()
 {
 }

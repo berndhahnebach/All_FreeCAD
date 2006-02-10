@@ -40,6 +40,8 @@ class MeshWorkbench ( Workbench ):
 		except:
 			Err('Cannot load MeshGui')
 			raise
+	def GetClassName(self):
+		return "MeshGui::Workbench"
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"

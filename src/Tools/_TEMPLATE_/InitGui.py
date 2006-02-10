@@ -41,5 +41,7 @@ class _TEMPLATE_Workbench ( Workbench ):
 		except:
 			Err('Cannot load _TEMPLATE_Gui')
 			raise
+	def GetClassName(self):
+		return "_TEMPLATE_Gui::Workbench"
 
 Gui.AddWorkbenchHandler("_TEMPLATE_ design",_TEMPLATE_Workbench())

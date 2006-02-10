@@ -36,6 +36,8 @@ namespace PartGui {
  */
 class AppPartGuiExport Workbench : public Gui::StdWorkbench
 {
+    TYPESYSTEM_HEADER();
+
 public:
   Workbench();
   virtual ~Workbench();

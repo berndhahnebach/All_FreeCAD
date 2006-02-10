@@ -36,6 +36,8 @@ namespace PointsGui {
  */
 class PointsGuiExport Workbench : public Gui::StdWorkbench
 {
+    TYPESYSTEM_HEADER();
+
 public:
   Workbench();
   virtual ~Workbench();

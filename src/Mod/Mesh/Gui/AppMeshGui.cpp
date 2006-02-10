@@ -33,7 +33,6 @@
 
 #include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
-#include <Gui/WorkbenchFactory.h>
 
 #include "images.h"
 #include "ViewProvider.h"
@@ -104,7 +103,8 @@ void GuiMeshExport initMeshGui() {
   Gui::ViewProviderFeatureFactory().AddProducer("MeshTransform",          new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMeshTransform>);
   Gui::ViewProviderFeatureFactory().AddProducer("MeshTransformDemolding", new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMeshTransformDemolding>);
 */
-  Gui::WorkbenchFactory().AddProducer("Mesh design", new Gui::WorkbenchProducer<MeshGui::Workbench>);
+  MeshGui::Workbench::init();
+  //Gui::WorkbenchFactory().AddProducer("Mesh design", new Gui::WorkbenchProducer<MeshGui::Workbench>);
 
   return;
 }

@@ -28,7 +28,6 @@
 #include <App/Application.h>
 #include <Base/Console.h>
 #include <Gui/WidgetFactory.h>
-#include <Gui/WorkbenchFactory.h>
 
 
 #include <Gui/Application.h>
@@ -43,7 +42,7 @@
 // use a different name to CreateCommand()
 void CreateRaytracingCommands(void);
 
-using namespace RayGui;
+using namespace RaytracingGui;
 
 
 /* module functions */
@@ -84,7 +83,8 @@ void ModuleExport initRaytracingGui() {
 
   // instanciating the commands
   CreateRaytracingCommands();
-  Gui::WorkbenchFactory().AddProducer("Raytracing", new Gui::WorkbenchProducer<RayGui::Workbench>);
+  RaytracingGui::Workbench::init();
+  //Gui::WorkbenchFactory().AddProducer("Raytracing", new Gui::WorkbenchProducer<RaytracingGui::Workbench>);
 
   // register preferences pages
   new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );

@@ -32,6 +32,8 @@
 
 using namespace ImageGui;
 
+TYPESYSTEM_SOURCE(ImageGui::Workbench, Gui::StdWorkbench)
+
 Workbench::Workbench()
 {
 }

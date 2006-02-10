@@ -1,8 +1,8 @@
 <!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>RayGui::DlgSettingsRay</class>
+<class>RaytracingGui::DlgSettingsRay</class>
 <widget class="QWidget">
     <property name="name">
-        <cstring>RayGui::DlgSettingsRay</cstring>
+        <cstring>RaytracingGui::DlgSettingsRay</cstring>
     </property>
     <property name="geometry">
         <rect>
@@ -246,6 +246,8 @@
         </widget>
     </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <slots>
     <slot>warnInventor(bool)</slot>
     <slot access="protected">loadSettings()</slot>
