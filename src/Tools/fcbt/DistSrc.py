@@ -15,18 +15,14 @@ ds = os.sep
 
 DistName = DistTools.BuildDistName()
 
-#DistSrc  = DistName + "_src"
-#DistSrc  = DistName + "_src_bin_win"
-#DistBin  = DistName + "_src_bin_win"
-DistSrc  = DistName 
-DistBin  = DistName 
+DistSrc  = DistName + "_src"
 DistDir  = "../../DistTemp/"
 
 #====================================================================
 # script asume to run in src/Tools
 
 DistTools.EnsureDir(DistDir)
-if (DistTools.EnsureDir(DistDir+DistBin) == 1):
+if (DistTools.EnsureDir(DistDir+DistSrc) == 1):
     raise "Dist path already there!!"
 
 #====================================================================
@@ -46,7 +42,7 @@ FileTools.cpallWithFilter('../../src',DistDir+DistSrc+'/src',FileTools.SetUpFilt
 
 #====================================================================
 # ziping a archiv
-#os.popen("rar.exe a "+DistDir+DistBin+".rar "+ DistDir+DistBin)
+os.popen("7z a -tzip "+ DistDir+DistSrc+".zip "+ DistDir+DistSrc + " -mx9")
 
-#FileTools.rmall(DistDir+DistBin)
+FileTools.rmall(DistDir+DistSrc)
 

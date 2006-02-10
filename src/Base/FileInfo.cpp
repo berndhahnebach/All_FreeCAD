@@ -47,6 +47,38 @@ FileInfo::FileInfo (const char* FileName)
   setFile(FileName);
 }
 
+const char *FileInfo::getTempPath(void)
+{
+  static string tempPath;
+
+  if(tempPath == "")
+  {
+    char buf[MAX_PATH + 2];
+#ifdef FC_OS_WIN32
+    GetTempPath(MAX_PATH + 1,buf);
+#else
+    // implement for LINUX!!!
+    assert(0);
+#endif
+    tempPath = buf;
+  }
+
+  return tempPath.c_str();
+}
+
+string FileInfo::getTempFileName(void)
+{
+
+  char buf[MAX_PATH + 2];
+#ifdef FC_OS_WIN32
+  GetTempFileName(getTempPath(),"FCTempFile",0,buf);
+#else
+  // implement for LINUX!!!
+  assert(0);
+#endif
+  return string(buf);
+}
+
 void FileInfo::makeTemp(const char* Template)
 {
   char tmp[256];

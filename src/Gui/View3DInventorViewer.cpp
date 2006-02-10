@@ -337,7 +337,7 @@ QImage View3DInventorViewer::makeScreenShot( int w, int h, float r, int c, const
   return img;
 }
 
-bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& col ) const
+bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& col, SbMatrix &Matrix ) const
 {
   // if no valid color use the current background
   bool useBackground = !col.isValid();
@@ -346,6 +346,7 @@ bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbNam
   vp.setPixelsPerInch( r );
 
   SoFCOffscreenRenderer renderer(vp);
+
   // if we use transparency then we must not set a background color
   renderer.setComponents(SoOffscreenRenderer::Components(c));
   if ( c != (int)SoOffscreenRenderer::RGB_TRANSPARENCY && c != (int)SoOffscreenRenderer::LUMINANCE_TRANSPARENCY )

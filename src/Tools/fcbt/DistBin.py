@@ -15,11 +15,7 @@ ds = os.sep
 
 DistName = DistTools.BuildDistName()
 
-#DistSrc  = DistName + "_src"
-#DistSrc  = DistName + "_src_bin_win"
-#DistBin  = DistName + "_src_bin_win"
-DistSrc  = DistName + "Bin"
-DistBin  = DistName + "Bin"
+DistBin  = DistName + "_binary_WinX86"
 DistDir  = "../../DistTemp/"
 
 #====================================================================
@@ -32,8 +28,8 @@ if (DistTools.EnsureDir(DistDir+DistBin) == 1):
 #====================================================================
 # copy src 
 sys.stdout.write( 'Copy src Tree ...\n')
-DistTools.EnsureDir(DistDir+DistSrc+'/src')
-FileTools.cpallWithFilter('../../src',DistDir+DistSrc+'/src',FileTools.SetUpFilter(DistTools.SrcFilter))
+DistTools.EnsureDir(DistDir+DistBin+'/src')
+FileTools.cpallWithFilter('../../src',DistDir+DistBin+'/src',FileTools.SetUpFilter(DistTools.SrcFilter))
 
 #====================================================================
 # copy bin and lib 
@@ -61,5 +57,6 @@ FileTools.cpallWithFilter('../../src/Mod',DistDir+DistBin+'/Mod',FileTools.SetUp
 #====================================================================
 # ziping a archiv
 #os.popen("rar.exe a "+DistDir+DistBin+".rar "+ DistDir+DistBin)
+os.popen("7z a -tzip "+DistDir+DistBin+".zip "+ DistDir+DistBin+ " -mx9")
 
-#FileTools.rmall(DistDir+DistBin)
+FileTools.rmall(DistDir+DistBin)

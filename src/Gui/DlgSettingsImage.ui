@@ -8,18 +8,18 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>363</width>
-            <height>282</height>
+            <width>312</width>
+            <height>434</height>
         </rect>
     </property>
     <property name="caption">
         <string>Image settings</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QGroupBox" row="0" column="0">
+        <widget class="QGroupBox">
             <property name="name">
                 <cstring>groupBoxDim</cstring>
             </property>
@@ -128,7 +128,7 @@
                         <cstring>pushAdjustSize</cstring>
                     </property>
                     <property name="text">
-                        <string>A&amp;djust size</string>
+                        <string>A&amp;djust aspect ratio</string>
                     </property>
                     <property name="accel">
                         <string>Alt+D</string>
@@ -153,7 +153,7 @@
                 </spacer>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="1" column="0">
+        <widget class="QGroupBox">
             <property name="name">
                 <cstring>groupBoxProp</cstring>
             </property>
@@ -283,10 +283,81 @@
                 </widget>
             </grid>
         </widget>
-    </grid>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBoxComment</cstring>
+            </property>
+            <property name="title">
+                <string>Picture comment</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QTextEdit">
+                    <property name="name">
+                        <cstring>textEditComment</cstring>
+                    </property>
+                    <property name="vScrollBarMode">
+                        <enum>Auto</enum>
+                    </property>
+                    <property name="hScrollBarMode">
+                        <enum>Auto</enum>
+                    </property>
+                    <property name="textFormat">
+                        <enum>PlainText</enum>
+                    </property>
+                    <property name="wordWrap">
+                        <enum>NoWrap</enum>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButtonInsertTimeDate</cstring>
+                            </property>
+                            <property name="text">
+                                <string>insert Time Date</string>
+                            </property>
+                            <property name="accel">
+                                <string></string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButtonInsertMatrix</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;insert view Matrix</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+I</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButtonInsertMIBA</cstring>
+                            </property>
+                            <property name="text">
+                                <string>insert &amp;MIBA </string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+M</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>pushAdjustSize</sender>
@@ -300,6 +371,18 @@
         <receiver>comboColor</receiver>
         <slot>setDisabled(bool)</slot>
     </connection>
+    <connection>
+        <sender>pushButtonInsertMIBA</sender>
+        <signal>pressed()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>insertMIBA()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonInsertMatrix</sender>
+        <signal>pressed()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>insertViewMatrix()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>spinWidth</tabstop>
@@ -312,9 +395,11 @@
 </tabstops>
 <slots>
     <slot access="protected">onAdjustImageSize()</slot>
+    <slot>insertMIBA()</slot>
+    <slot>insertViewMatrix()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>Gui/SpinBox.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
 </includehints>
 </UI>

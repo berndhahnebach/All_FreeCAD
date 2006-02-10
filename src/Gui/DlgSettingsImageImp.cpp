@@ -33,6 +33,7 @@
 #include "SpinBox.h"
 
 using namespace Gui::Dialog;
+using namespace std;
 
 /**
  *  Constructs a DlgSettingsImageImp as a child of 'parent', with the
@@ -57,6 +58,62 @@ DlgSettingsImageImp::~DlgSettingsImageImp()
 {
     // no need to delete child widgets, Qt does it all for us
 }
+
+
+void DlgSettingsImageImp::insertMIBA()
+{
+  std::stringstream com;
+  
+//	SbVec2s size = this->getGLSize();	
+//	float aspect = float(size[0]) / float(size[1]);	
+	float aspect = float(_width) / float(_height);	
+	float ax = 1.0f, ay = 1.0f;
+
+	if (aspect > 1.0f)
+	{
+	  ax = 1.0f / aspect;
+	}
+	else
+	{
+	  ay = aspect;
+	}
+	  
+	_Matrix[0][0] *= ay;
+	_Matrix[1][1] *= ax;
+
+  com << setw(7) << setfill(' ') << fixed;
+  com << "<MIBA xmlns:xsl=\"http://www.w3.org/2001/XMLSchema-instance\" xsl:noNameSpaceSchemaLocation=\"MIBA.xsd\"> \n" ;
+  com << " <View>\n"; 
+  com << "  <Matrix \n"; 
+  com << "     a11=" << _Matrix[0][0] <<" a12=" << _Matrix[0][1] <<" a13=" << _Matrix[0][2] <<" a14=" << _Matrix[0][3] << "\n";
+  com << "     a21=" << _Matrix[1][0] <<" a22=" << _Matrix[1][1] <<" a23=" << _Matrix[1][2] <<" a24=" << _Matrix[1][3] << "\n";
+  com << "     a31=" << _Matrix[2][0] <<" a32=" << _Matrix[2][1] <<" a33=" << _Matrix[2][2] <<" a34=" << _Matrix[2][3] << "\n";
+  com << "     a41=" << _Matrix[3][0] <<" a42=" << _Matrix[3][1] <<" a43=" << _Matrix[3][2] <<" a44=" << _Matrix[3][3] << "\n";
+  com << "   />\n" ; 
+  com << " </View>\n" ; 
+  com << " <CAD>\n" ; 
+  com << "  <Erzeugendes_System> FreeCAD </Erzeugendes_System>\n" ;
+  com << "  <Datum> 1968-12-17T04:00:00 </Datum>\n";
+  com << "  <Bearbeiter> riegel </Bearbeiter>\n" ;
+  com << " </CAD>\n" ;
+  com << "</MIBA>\n" ;
+
+  textEditComment->setText(QString(com.str().c_str()));
+
+}
+
+
+void DlgSettingsImageImp::insertViewMatrix()
+{
+  std::stringstream com;
+  com << "Matrix=[" << _Matrix[0][0] <<"," << _Matrix[0][1] <<"," << _Matrix[0][2] <<"," << _Matrix[0][3] << ",";
+  com << _Matrix[1][0] <<"," << _Matrix[1][1] <<"," << _Matrix[1][2] <<"," << _Matrix[1][3] << ",";
+  com << _Matrix[2][0] <<"," << _Matrix[2][1] <<"," << _Matrix[2][2] <<"," << _Matrix[2][3] << ",";
+  com << _Matrix[3][0] <<"," << _Matrix[3][1] <<"," << _Matrix[3][2] <<"," << _Matrix[3][3] << "]";
+
+  textEditComment->setText(QString(com.str().c_str()));
+}
+
 
 /**
  * Sets the image size to (\a w, \a h).

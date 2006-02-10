@@ -61,12 +61,21 @@ public:
   SoOffscreenRenderer::Components imageFormat() const;
   //@}
 
+  /** @name Matrix handling (MIBA) */
+  //@{
+  void setMatrix(const SbMatrix &Matrix){_Matrix = Matrix;}
+  virtual void insertMIBA();
+  virtual void insertViewMatrix();
+  //@}
+
+
 protected:
   void onAdjustImageSize();
 
 private:
   float _fRatio;
   int _width, _height;
+  SbMatrix _Matrix;
 };
 
 } // namespace Dialog

@@ -85,6 +85,11 @@ class BaseExport FileInfo
      */
     bool createDirectory( const char* ) const;
 
+    /// get the path to the dir which is designeded to temp files
+    static const char *getTempPath(void);
+    /// get a unique File Name in the temp path
+    static std::string getTempFileName(void);
+
   protected:
     std::string FileName;
 };

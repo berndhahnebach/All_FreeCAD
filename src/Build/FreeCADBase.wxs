@@ -60,11 +60,9 @@
          <File Id='GuiDll'   Name='FCGui.dll'   LongName='FreeCADGui.dll'  DiskId='1' />
          <?include LibPackDll.wxi ?>
          <RemoveFile Id='LogFile' On='uninstall' Name='FreeCAD.log' />
-         <RemoveFile Id="RmvParams" Directory="INSTALLDIR" Name="*.FCParam" On="uninstall" />
-         <RemoveFile Id="RmvPlugin" Directory="INSTALLDIR" Name="Plugin" On="uninstall" />
-         <RemoveFile Id="RmvStandard" Directory="INSTALLDIR" Name="Standard" On="uninstall" />
-         <RemoveFile Id="RmvMacros" Directory="INSTALLDIR" Name="*.FCMacro" On="uninstall" />
-         <RemoveFile Id="RmvScripts" Directory="INSTALLDIR" Name="*.FCScript" On="uninstall" />
+         <RemoveFile Id="RmvParams"  Directory="INSTALLDIR"  Name="nix*.fcp" LongName="*.FCParam"  On="uninstall" />
+         <RemoveFile Id="RmvMacros"  Directory="INSTALLDIR"  Name="nix*.fcp" LongName="*.FCMacro"  On="uninstall" />
+         <RemoveFile Id="RmvScripts" Directory="INSTALLDIR"  Name="nix*.fcp" LongName="*.FCScript" On="uninstall" />
       </Component>
     </DirectoryRef>
     <DirectoryRef Id='LibPackDir'>

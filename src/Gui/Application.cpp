@@ -803,7 +803,7 @@ void Application::runApplication(void)
   for (unsigned short i=0; i<count; i++)
   {
     // getting file name
-    std::strstream temp;
+    std::stringstream temp;
     temp << "OpenFile" << i;
 
     File = App::Application::Config()[temp.str()];

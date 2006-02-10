@@ -23,14 +23,16 @@
    Juergen Riegel 2005                                                 
 -->
 <Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
-   <Product Id='A3E112BB-85D0-43f4-86CA-36A15774FD58' 
-            Name='FreeCAD' Language='1033'
-            Version='0.5.1.0' 
-            Manufacturer='Juergen Riegel'>
-      <Package  Id='F5F1B436-F393-411d-9315-3C5EA2260BC2' 
-                Description='FreeCAD 0.5 Installer package'
-                Comments='This is my first attempt at creating a Windows Installer database for FreeCAD'
-                InstallerVersion='200' 
+   <?include ../Version.wxi ?>
+   <Product Id           ='0C6EC504-2794-4992-BE14-2F57378C1183' 
+            UpgradeCode  ='D898BEFD-CFFA-4163-A624-AB36B2C7A719'
+            Name         ='FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)' Language='1033'
+            Version      ='$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionBuild)' 
+            Manufacturer ='Juergen Riegel (juergen.riegel@web.de)'>
+      <Package  Id='????????-????-????-????-????????????' 
+                Description='FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor) Installer package'
+                Comments='for details about FreeCAD see http://free-cad.sourceforge.net'
+                InstallerVersion='100' 
                 Compressed='yes' />
  
       <Media Id='1' Cabinet='product.cab' EmbedCab='yes' />
@@ -46,7 +48,7 @@
  
       <Directory Id='TARGETDIR' Name='SourceDir'>
          <Directory Id='ProgramFilesFolder'  Name='PFiles'>
-            <Directory Id='INSTALLDIR'       Name='FreeCAD'>
+            <Directory Id='INSTALLDIR'       Name='FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)'>
               <Directory Id='BinDir'         Name='bin' />
               <Directory Id='ModDir'         Name='Mod' />
               <Directory Id='DocDir'         Name='doc' />
@@ -54,12 +56,12 @@
             </Directory>
           </Directory>
           <Directory Id="ProgramMenuFolder">
-            <Directory Id="MenuDir" Name="FC03" LongName="FreeCAD 0.3" />
+            <Directory Id="MenuDir" Name="FC03" LongName="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" />
           </Directory>
         <Directory Id="DesktopFolder" Name="Desktop" />
       </Directory>
       <Feature  Id='Complete' 
-                Title='FreeCAD 0.3' 
+                Title='FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)' 
                 Description='The Base system and standard modules'
                 Display='expand' 
                 Level='1'

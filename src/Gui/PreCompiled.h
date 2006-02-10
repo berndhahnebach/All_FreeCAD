@@ -16,6 +16,7 @@
 
 // standard
 #include <iostream>
+#include <iomanip>
 #include <stdio.h>
 #include <assert.h>
 #ifdef FC_OS_WIN32
@@ -34,7 +35,7 @@
 #include <algorithm>
 #include <stack>
 #include <queue>
-#include <strstream>
+#include <sstream>
 
 
 // Xerces

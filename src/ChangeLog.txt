@@ -31,4 +31,8 @@ Version: V0.5B4 Date: Sat Feb 04 13:14:55 2006 +++++++++++++++++++++++++++++++
 + remove Feature and ViewProvider Factory, use Standard
 + using update instead of recompute after load document 
 + using c++ name in addFeature()
++ updating the installer files
++ fixing the build Dist scripts
++ implementing Comment for Save picture
++ implement MIBA
 
