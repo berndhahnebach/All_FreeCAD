@@ -29,6 +29,7 @@
 # include <qdesktopwidget.h>
 # include <qimage.h>
 # include <qmessagebox.h>
+# include <qtextedit.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
 #endif
@@ -1270,8 +1271,8 @@ scan_JPEG_header (int keep_COM)
 }
 
 
+#ifdef _MSC_VER
 /* Command line parsing code */
-
 static const char * progname;	/* program name for error messages */
 
 static int
@@ -1297,7 +1298,7 @@ keymatch (char * arg, const char * keyword, int minchars)
     return 0;
   return 1;			/* A-OK */
 }
-
+#endif
 
 void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comment)
 {

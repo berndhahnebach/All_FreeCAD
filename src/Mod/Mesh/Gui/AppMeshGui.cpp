@@ -26,10 +26,7 @@
 #endif
 
 #include <Base/Interpreter.h>
-#include <Base/Parameter.h>
 #include <Base/Console.h>
-
-#include <App/Application.h>
 
 #include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
@@ -45,23 +42,8 @@
 // use a different name to CreateCommand()
 void CreateMeshCommands(void);
 
-/* module functions */
-static PyObject *                                 /* returns object */
-message(PyObject *self, PyObject *args)           /* self unused in modules */
-{                                                 /* args from python call */
-    char *fromPython, result[64];
-    if (! PyArg_ParseTuple(args, "(s)", &fromPython))  /* convert Python -> C */
-        return NULL;                              /* null=raise exception */
-    else {
-        strcpy(result, "Hello, ");                /* build up C string */
-        strcat(result, fromPython);               /* add passed Python string */
-        return Py_BuildValue("s", result);        /* convert C -> Python */
-    }
-}
-
 /* registration table  */
-static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       /* method name, C func ptr, always-tuple */
+static struct PyMethodDef MeshGui_methods[] = {
     {NULL, NULL}                   /* end of table marker */
 };
 
@@ -74,7 +56,7 @@ void GuiMeshExport initMeshGui() {
     return;
   }
 
-  (void) Py_InitModule("MeshGui", hello_methods);   /* mod name, table ptr */
+  (void) Py_InitModule("MeshGui", MeshGui_methods);   /* mod name, table ptr */
 
   // load needed modules
   Base::Console().Log("Mod : Load AppMeshGui\n");
@@ -88,23 +70,12 @@ void GuiMeshExport initMeshGui() {
   // instanciating the commands
   CreateMeshCommands();
 
-
   MeshGui::ViewProviderMesh                  ::init();
   MeshGui::ViewProviderMeshCurvature         ::init();
   MeshGui::ViewProviderMeshTransform         ::init();
   MeshGui::ViewProviderMeshTransformDemolding::init();
 
-  // Register view provider
-/*  Gui::ViewProviderFeatureFactory().AddProducer("MeshImport",             new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMesh>);
-  Gui::ViewProviderFeatureFactory().AddProducer("MeshExport",             new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMesh>);
-  Gui::ViewProviderFeatureFactory().AddProducer("Mesh"      ,             new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMesh>);
-  Gui::ViewProviderFeatureFactory().AddProducer("MeshSegmentByMesh",      new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMesh>);
-  Gui::ViewProviderFeatureFactory().AddProducer("MeshCurvature",          new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMeshCurvature>);
-  Gui::ViewProviderFeatureFactory().AddProducer("MeshTransform",          new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMeshTransform>);
-  Gui::ViewProviderFeatureFactory().AddProducer("MeshTransformDemolding", new Gui::ViewProviderFeatureProducer<MeshGui::ViewProviderMeshTransformDemolding>);
-*/
-  MeshGui::Workbench::init();
-  //Gui::WorkbenchFactory().AddProducer("Mesh design", new Gui::WorkbenchProducer<MeshGui::Workbench>);
+  MeshGui::Workbench                         ::init();
 
   return;
 }

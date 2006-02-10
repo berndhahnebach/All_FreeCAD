@@ -27,6 +27,9 @@
 # include <qcheckbox.h>
 # include <qcombobox.h>
 # include <qmap.h>
+# include <qtextedit.h>
+# include <iomanip>
+# include <sstream>
 #endif
 
 #include "DlgSettingsImageImp.h"
@@ -81,7 +84,7 @@ void DlgSettingsImageImp::insertMIBA()
 	_Matrix[0][0] *= ay;
 	_Matrix[1][1] *= ax;
 
-  com << setw(7) << setfill(' ') << fixed;
+  com << std::setw(7) << std::setfill(' ') << std::fixed;
   com << "<MIBA xmlns:xsl=\"http://www.w3.org/2001/XMLSchema-instance\" xsl:noNameSpaceSchemaLocation=\"MIBA.xsd\"> \n" ;
   com << " <View>\n"; 
   com << "  <Matrix \n"; 

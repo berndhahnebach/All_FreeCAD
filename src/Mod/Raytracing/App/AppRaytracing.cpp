@@ -23,33 +23,17 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Python.h>
 #endif
-
-
-#include <stdio.h>
-#if defined (_POSIX_C_SOURCE)
-# undef  _POSIX_C_SOURCE
-#endif // (re-)defined in pyconfig.h
-#include <Python.h>
 
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 
-#include <App/Application.h>
-
-
 extern struct PyMethodDef Raytracing_methodes[];
 
 
-
-// python entry
-#ifdef FC_OS_WIN32
-# define ModuleExport __declspec(dllexport)
-#else
-# define ModuleExport
-#endif
 extern "C" {
-void ModuleExport initRaytracing() {
+void AppRaytracingExport initRaytracing() {
 
   Base::Console().Log("Mod : Load AppRaytracing\n");
   (void) Py_InitModule("Raytracing", Raytracing_methodes);   /* mod name, table ptr */

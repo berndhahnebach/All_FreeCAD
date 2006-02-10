@@ -28,6 +28,7 @@
 # define ImageAppExport
 #endif
 
+#include <Python.h>
 #include <xercesc/util/XercesDefs.hpp>
 
 #endif

@@ -23,14 +23,10 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Python.h>
 #endif
 
-#include <App/Application.h>
 #include <Base/Console.h>
-
-#include <stdio.h>
-#include <Python.h>
-
 
 #include "FeaturePointsImportAscii.h"
 
@@ -56,4 +52,4 @@ void PointsAppExport initPoints() {
 }
 
 
-} // extern "C" {
+} // extern "C"

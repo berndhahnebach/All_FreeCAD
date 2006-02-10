@@ -23,13 +23,10 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Python.h>
 #endif
 
-#include <App/Application.h>
 #include <Base/Console.h>
-
-#include <stdio.h>
-#include <Python.h>
 
 #include "FeatureMeshImport.h"
 #include "FeatureMeshExport.h"
@@ -58,15 +55,7 @@ void AppMeshExport initMesh() {
   Mesh::TransformDemolding::init();
   Mesh::Curvature         ::init();
   Mesh::SegmentByMesh     ::init();
-/*
-  App::FeatureFactory().AddProducer("MeshImport",            new App::FeatureProducer<Mesh::FeatureMeshImport>);
-	App::FeatureFactory().AddProducer("MeshExport",            new App::FeatureProducer<Mesh::FeatureMeshExport>);
-	App::FeatureFactory().AddProducer("Mesh",                  new App::FeatureProducer<Mesh::MeshFeature>      );
-	App::FeatureFactory().AddProducer("MeshTransform"         ,new App::FeatureProducer<Mesh::FeatureMeshTransform>      );
-	App::FeatureFactory().AddProducer("MeshTransformDemolding",new App::FeatureProducer<Mesh::FeatureMeshTransformDemolding>      );
-	App::FeatureFactory().AddProducer("MeshCurvature"         ,new App::FeatureProducer<Mesh::FeatureMeshCurvature>      );
-	App::FeatureFactory().AddProducer("MeshSegmentByMesh"     ,new App::FeatureProducer<Mesh::FeatureMeshSegmentByMesh>  );
-*/
+
   return;
 }
 

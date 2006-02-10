@@ -35,7 +35,6 @@
 #include "PythonEditor.h"
 #include "WidgetFactory.h"
 #include "Workbench.h"
-#include "WorkbenchFactory.h"
 #include "WorkbenchManager.h"
 
 #include <Base/Interpreter.h>
@@ -324,7 +323,7 @@ PYFUNCIMP_S(Application,sCreateWorkbench)
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
-  if ( WorkbenchFactory().CanProduce(psKey) )
+  if ( WorkbenchManager::instance()->getWorkbench(psKey) )
   {
     PyErr_Format(PyExc_KeyError, "Workbench '%s' already exists", psKey);
     return NULL;

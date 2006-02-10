@@ -11,52 +11,24 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Python.h>
 #endif
 
-#include <App/Application.h>
-
-#include <stdio.h>
-#include <Python.h>
 #include <Base/Console.h>
 
 
-/* module functions */
-static PyObject *                                 /* returns object */
-message(PyObject *self, PyObject *args)           /* self unused in modules */
-{                                                 /* args from python call */
-    char *fromPython, result[64];
-    if (! PyArg_Parse(args, "(s)", &fromPython))  /* convert Python -> C */
-        return NULL;                              /* null=raise exception */
-    else {
-        strcpy(result, "Hello, ");                /* build up C string */
-        strcat(result, fromPython);               /* add passed Python string */
-        return Py_BuildValue("s", result);        /* convert C -> Python */
-    }
-}
-
 /* registration table  */
-static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       /* method name, C func ptr, always-tuple */
+static struct PyMethodDef Image_methods[] = {
     {NULL, NULL}                   /* end of table marker */
 };
-
-
-
-
-
 
 /* Python entry */
 extern "C" {
 void ImageAppExport initImage() {
-
-	(void) Py_InitModule("Image", hello_methods);   /* mod name, table ptr */
-
-	App::GetApplication();
-
-	Base::Console().Log("AppImage loaded\n");
-
-	return;
+  (void) Py_InitModule("Image", Image_methods);   /* mod name, table ptr */
+  Base::Console().Log("AppImage loaded\n");
+  return;
 }
 
 
-} // extern "C" {
+} // extern "C"

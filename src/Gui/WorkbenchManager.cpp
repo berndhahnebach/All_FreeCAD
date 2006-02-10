@@ -29,7 +29,6 @@
 
 #include "WorkbenchManager.h"
 #include "Workbench.h"
-#include "WorkbenchFactory.h"
 
 using namespace Gui;
 

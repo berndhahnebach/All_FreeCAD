@@ -1,11 +1,3 @@
-/** \file AppPartGui.cpp
- *  \brief 
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
- */
-
-
 /***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,7 +9,7 @@
  *                                                                         *
  ***************************************************************************/
 
- 
+
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #endif
@@ -25,13 +17,8 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 
-#include <App/Application.h>
-
 #include <Gui/Application.h>
-#include <Gui/ViewProvider.h>
-#include <Gui/Macro.h>
 #include <Gui/BitmapFactory.h>
-
 #include <Gui/WidgetFactory.h>
 
 #include "ViewProvider.h"
@@ -47,76 +34,35 @@
 #include "Icons/PartFeature.xpm"
 #include "Icons/PartFeatureImport.xpm"
 
-using namespace PartGui;
-
 // use a different name to CreateCommand()
 void CreatePartCommands(void);
 
-
-/* module functions */
-static PyObject *                                 /* returns object */
-message(PyObject *self, PyObject *args)           /* self unused in modules */
-{                                                 /* args from python call */
-    char *fromPython, result[64];
-    if (! PyArg_ParseTuple(args, "(s)", &fromPython))  /* convert Python -> C */
-        return NULL;                              /* null=raise exception */
-    else {
-        strcpy(result, "Hello, ");                /* build up C string */
-        strcat(result, fromPython);               /* add passed Python string */
-        return Py_BuildValue("s", result);        /* convert C -> Python */
-    }
-}
-
 /* registration table  */
-static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       /* method name, C func ptr, always-tuple */
+static struct PyMethodDef PartGui_methods[] = {
     {NULL, NULL}                   /* end of table marker */
 };
 
-
-
-
-
-// python entry
-#ifdef FC_OS_WIN32
-#	define ModuleExport __declspec(dllexport)
-#else
-#	define ModuleExport
-#endif
 extern "C" {
-void ModuleExport initPartGui() {
+void AppPartGuiExport initPartGui() {
 
   Base::Console().Log("Mod : Load AppPartGui\n");
-	(void) Py_InitModule("PartGui", hello_methods);   /* mod name, table ptr */
+	(void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */
 
   // load needed modules
   Base::Interpreter().loadModule("Part");
-
-
-  Gui::Application::Instance->macroManager()->setModule("Part");
 
   PartGui::ViewProviderPart    ::init();
   PartGui::ViewProviderBox     ::init();
   PartGui::ViewProviderImport  ::init();
   PartGui::ViewProviderCurveNet::init();
-/*
-  // Register view provider
-  Gui::ViewProviderFeatureFactory().AddProducer("PartBox"       ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
-  Gui::ViewProviderFeatureFactory().AddProducer("PartCut"       ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderPart>);
-  Gui::ViewProviderFeatureFactory().AddProducer("PartImportStep",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderImport>);
-  Gui::ViewProviderFeatureFactory().AddProducer("PartImportIges",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderImport>);
-  Gui::ViewProviderFeatureFactory().AddProducer("PartImportBrep",new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderImport>);
-  Gui::ViewProviderFeatureFactory().AddProducer("PartCurveNet"  ,new Gui::ViewProviderFeatureProducer<PartGui::ViewProviderCurveNet>);
-*/
 
-  PartGui::Workbench::init();
-  //Gui::WorkbenchFactory().AddProducer("Part design", new Gui::WorkbenchProducer<PartGui::Workbench>);
+  PartGui::Workbench           ::init();
 
   // instanciating the commands
 	CreatePartCommands();
 
   // register preferences pages
-  new Gui::PrefPageProducer<DlgSettings3DViewPartImp> ( "Part design" );
+  new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ( "Part design" );
   new Gui::LanguageProducer("Deutsch", GetPart_de());
 
   // register bitmaps
@@ -126,24 +72,4 @@ void ModuleExport initPartGui() {
 
 	return;
 }
-} // extern "C" {
-
-
-
-/*
-#include <boost/python/class_builder.hpp>
-namespace python = boost::python;
-
-std::string info() { return "hello, world"; }
-
-
-BOOST_PYTHON_MODULE_INIT(getting_started1)
-{
-    // Create an object representing this extension module.
-    python::module_builder this_module("getting_started1");
-
-    // Add regular functions to the module.
-    this_module.def(info, "Info");
-    //this_module.def(square, "square");
-}
-*/
+} // extern "C"

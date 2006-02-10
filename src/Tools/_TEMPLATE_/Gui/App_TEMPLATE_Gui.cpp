@@ -23,20 +23,20 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Python.h>
 #endif
 
-#include "Workbench.h"
-
-#include <App/Application.h>
 #include <Base/Console.h>
 #include <Gui/Application.h>
+
+#include "Workbench.h"
 
 // use a different name to CreateCommand()
 void Create_TEMPLATE_Commands(void);
 
 
 /* registration table  */
-static struct PyMethodDef _TEMPLATE_Guimethods[] = {
+static struct PyMethodDef _TEMPLATE_Gui_methods[] = {
     {NULL, NULL}                   /* end of table marker */
 };
 
@@ -53,15 +53,15 @@ void _TEMPLATE_GuiExport init_TEMPLATE_Gui() {
   // instanciating the commands
   Create_TEMPLATE_Commands();
   _TEMPLATE_Gui::Workbench::init();
-  //Gui::WorkbenchFactory().AddProducer("_TEMPLATE_ design", new Gui::WorkbenchProducer<_TEMPLATE_Gui::Workbench>);
 
   // ADD YOUR CODE HERE
   //
   //
 
-  (void) Py_InitModule("_TEMPLATE_Gui", _TEMPLATE_Guimethods);   /* mod name, table ptr */
+  (void) Py_InitModule("_TEMPLATE_Gui", _TEMPLATE_Gui_methods);   /* mod name, table ptr */
   Base::Console().Log("App_TEMPLATE_Gui loaded\n");
 
   return;
 }
-} // extern "C" {
+
+} // extern "C"

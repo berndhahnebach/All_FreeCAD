@@ -25,7 +25,6 @@
 #ifndef _PreComp_
 #endif
 
-#include <App/Application.h>
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
@@ -37,29 +36,10 @@
 void CreatePointsCommands(void);
 
 
-/* module functions */
-static PyObject *                                 /* returns object */
-message(PyObject *self, PyObject *args)           /* self unused in modules */
-{                                                 /* args from python call */
-    char *fromPython, result[64];
-    if (! PyArg_ParseTuple(args, "(s)", &fromPython))  /* convert Python -> C */
-        return NULL;                              /* null=raise exception */
-    else {
-        strcpy(result, "Hello, ");                /* build up C string */
-        strcat(result, fromPython);               /* add passed Python string */
-        return Py_BuildValue("s", result);        /* convert C -> Python */
-    }
-}
-
 /* registration table  */
-static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       /* method name, C func ptr, always-tuple */
+static struct PyMethodDef PointsGui_methods[] = {
     {NULL, NULL}                   /* end of table marker */
 };
-
-
-
-
 
 /* Python entry */
 extern "C" {
@@ -71,18 +51,17 @@ void PointsGuiExport initPointsGui() {
   }
 
   Base::Console().Log("Mod : Load AppPointsGui\n");
-  (void) Py_InitModule("PointsGui", hello_methods);   /* mod name, table ptr */
+  (void) Py_InitModule("PointsGui", PointsGui_methods);   /* mod name, table ptr */
 
   Base::Interpreter().loadModule("Points");
-
-  PointsGui::ViewProviderPoints::init();
-
-  PointsGui::Workbench::init();
-  //Gui::WorkbenchFactory().AddProducer("Points design", new Gui::WorkbenchProducer<PointsGui::Workbench>);
 
   // instanciating the commands
   CreatePointsCommands();
 
+  PointsGui::ViewProviderPoints::init();
+
+  PointsGui::Workbench         ::init();
+
   return;
 }
-} // extern "C" {
+} // extern "C"

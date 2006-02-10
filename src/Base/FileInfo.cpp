@@ -53,10 +53,11 @@ const char *FileInfo::getTempPath(void)
 
   if(tempPath == "")
   {
-    char buf[MAX_PATH + 2];
 #ifdef FC_OS_WIN32
+    char buf[MAX_PATH + 2];
     GetTempPath(MAX_PATH + 1,buf);
 #else
+    char buf[256];
     // implement for LINUX!!!
     assert(0);
 #endif
@@ -68,11 +69,11 @@ const char *FileInfo::getTempPath(void)
 
 string FileInfo::getTempFileName(void)
 {
-
-  char buf[MAX_PATH + 2];
 #ifdef FC_OS_WIN32
+  char buf[MAX_PATH + 2];
   GetTempFileName(getTempPath(),"FCTempFile",0,buf);
 #else
+    char buf[256];
   // implement for LINUX!!!
   assert(0);
 #endif

@@ -21,7 +21,7 @@ libRaytracingGui_la_SOURCES=\
 
 # the library search path.
 libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libRaytracingGui_la_CPPFLAGS = -DAppPartExport= -DFeatureRayExportPov=
+libRaytracingGui_la_CPPFLAGS = -DAppPartExport= -DAppRaytracingGuiExport= -DFeatureRayExportPov=
 
 libRaytracingGui_la_LIBADD   = \
 		-lFreeCADGui \

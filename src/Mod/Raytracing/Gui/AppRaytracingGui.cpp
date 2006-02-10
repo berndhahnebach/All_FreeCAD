@@ -25,19 +25,16 @@
 #ifndef _PreComp_
 #endif
 
-#include <App/Application.h>
 #include <Base/Console.h>
-#include <Gui/WidgetFactory.h>
-
-
 #include <Gui/Application.h>
+#include <Gui/WidgetFactory.h>
+#include <Gui/Language/LanguageFactory.h>
 
 
 #include "DlgSettingsRayImp.h"
 #include "Workbench.h"
 
 #include "Raytracing_de.h"
-#include <Gui/Language/LanguageFactory.h>
 
 // use a different name to CreateCommand()
 void CreateRaytracingCommands(void);
@@ -45,41 +42,16 @@ void CreateRaytracingCommands(void);
 using namespace RaytracingGui;
 
 
-/* module functions */
-static PyObject *                                 /* returns object */
-message(PyObject *self, PyObject *args)           /* self unused in modules */
-{                                                 /* args from python call */
-    char *fromPython, result[64];
-    if (! PyArg_ParseTuple(args, "(s)", &fromPython))  /* convert Python -> C */
-        return NULL;                              /* null=raise exception */
-    else {
-        strcpy(result, "Hello, ");                /* build up C string */
-        strcat(result, fromPython);               /* add passed Python string */
-        return Py_BuildValue("s", result);        /* convert C -> Python */
-    }
-}
-
 /* registration table  */
-static struct PyMethodDef hello_methods[] = {
-    {"message", message, 1},       /* method name, C func ptr, always-tuple */
+static struct PyMethodDef RaytracingGui_methods[] = {
     {NULL, NULL}                   /* end of table marker */
 };
 
-
-
-
-
-// python entry
-#ifdef FC_OS_WIN32
-# define ModuleExport __declspec(dllexport)
-#else
-# define ModuleExport
-#endif
 extern "C" {
-void ModuleExport initRaytracingGui() {
+void AppRaytracingGuiExport initRaytracingGui() {
 
   Base::Console().Log("Mod : Load AppRaytracingGui\n");
-  (void) Py_InitModule("RaytracingGui", hello_methods);   /* mod name, table ptr */
+  (void) Py_InitModule("RaytracingGui", RaytracingGui_methods);   /* mod name, table ptr */
 
   // instanciating the commands
   CreateRaytracingCommands();

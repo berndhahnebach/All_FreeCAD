@@ -58,6 +58,8 @@
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
 
+// Python
+#include <Python.h>
 
 // OpenCASCADE
 #include <Bnd_Box.hxx>

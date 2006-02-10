@@ -76,7 +76,7 @@ public:
    * to file \a filename with the extension \a filetypeextension.
    * Creates also a XML stream regarding MIBA standard. To embed in a picture comment field (e.g. JPEG).
    */
-  bool makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor&, SbMatrix &Matrix = SbMatrix() ) const;
+  bool makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor&, const SbMatrix &Matrix = SbMatrix() ) const;
  
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);

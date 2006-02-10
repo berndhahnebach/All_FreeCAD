@@ -24,9 +24,11 @@
 #ifndef GUI_DIALOG_DLGSETTINGSIMAGE_IMP_H
 #define GUI_DIALOG_DLGSETTINGSIMAGE_IMP_H
 
-#include "DlgSettingsImage.h"
-#include <Inventor/SoOffscreenRenderer.h> 
+#include <Inventor/SoOffscreenRenderer.h>
+#include <Inventor/SbMatrix.h>
 #include <qcolor.h>
+
+#include "DlgSettingsImage.h"
 
 namespace Gui {
 namespace Dialog {

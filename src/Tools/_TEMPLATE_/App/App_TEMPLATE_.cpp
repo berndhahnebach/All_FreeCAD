@@ -23,17 +23,14 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <Python.h>
 #endif
 
-#include <App/Application.h>
 #include <Base/Console.h>
-
-#include <stdio.h>
-#include <Python.h>
 
 
 /* registration table  */
-static struct PyMethodDef _TEMPLATE_methods[] = {
+static struct PyMethodDef _TEMPLATE__methods[] = {
     {NULL, NULL}                   /* end of table marker */
 };
 
@@ -45,11 +42,12 @@ void _TEMPLATE_AppExport init_TEMPLATE_() {
   // ADD YOUR CODE HERE
   //
   //
-  (void) Py_InitModule("_TEMPLATE_", _TEMPLATE_methods);   /* mod name, table ptr */
+
+  (void) Py_InitModule("_TEMPLATE_", _TEMPLATE__methods);   /* mod name, table ptr */
   Base::Console().Log("App_TEMPLATE_ loaded\n");
 
   return;
 }
 
 
-} // extern "C" {
+} // extern "C"

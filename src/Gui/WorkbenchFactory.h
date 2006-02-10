@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef WORK_BENCH_FACTORY_H
-#define WORK_BENCH_FACTORY_H
+#ifndef WORKBENCH_FACTORY_H
+#define WORKBENCH_FACTORY_H
 
 #ifndef _PreComp_
 # include <qstringlist.h>
@@ -92,4 +92,4 @@ public:
 
 } // namespace Gui 
 
-#endif // WORK_BENCH_FACTORY_H 
+#endif // WORKBENCH_FACTORY_H 

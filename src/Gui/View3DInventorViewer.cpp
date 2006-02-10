@@ -337,7 +337,7 @@ QImage View3DInventorViewer::makeScreenShot( int w, int h, float r, int c, const
   return img;
 }
 
-bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& col, SbMatrix &Matrix ) const
+bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& col, const SbMatrix &Matrix ) const
 {
   // if no valid color use the current background
   bool useBackground = !col.isValid();
