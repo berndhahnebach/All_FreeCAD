@@ -63,7 +63,6 @@
 #include "Macro.h"
 #include "ProgressBar.h"
 #include "Workbench.h"
-#include "WorkbenchFactory.h"
 #include "WorkbenchManager.h"
 #include "CommandBarManager.h"
 #include "WaitCursor.h"
@@ -510,12 +509,23 @@ bool Application::activateWorkbench( const char* name )
 
   Workbench* newWb = WorkbenchManager::instance()->active();
 
+  // call its GetClassName method if possible
+  QString className;
+  try{
+    PyObject* res = Interpreter().runMethodObject(pcWorkbench, "GetClassName");
+    if ( PyString_Check( res) )
+     className = PyString_AsString(res);
+  } catch ( const Base::Exception& e ) {
+    Base::Console().Log("%s\n", e.what() );
+    return false;
+  }
+
   // the Python workbench handler has changed the workbench
   bool ok = false;
   if ( newWb && newWb->name() == name )
     ok = true; // already active
   // now try to create and activate the matching workbench object
-  else if ( WorkbenchManager::instance()->activate( name ) )
+  else if ( WorkbenchManager::instance()->activate( name, className ) )
     ok = true;
 
   // update the Std_Workbench command and its action object
@@ -662,6 +672,12 @@ void Application::initTypes(void)
   Gui::ViewProvider        ::init();
   Gui::ViewProviderExtern  ::init();
   Gui::ViewProviderFeature ::init();
+
+  // Workbench
+  Gui::Workbench           ::init();
+  Gui::StdWorkbench        ::init();
+  Gui::TestWorkbench       ::init();
+  Gui::PythonWorkbench     ::init();
 }
 
 void messageHandler( QtMsgType type, const char *msg )
