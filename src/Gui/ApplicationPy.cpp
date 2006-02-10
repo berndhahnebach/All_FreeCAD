@@ -306,7 +306,7 @@ PYFUNCIMP_S(Application,sListWorkbenches)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
       return NULL;                             // NULL triggers exception 
-  QStringList wb = WorkbenchFactory().workbenches();
+  QStringList wb = WorkbenchManager::instance()->workbenches();
   PyObject* pyList = PyList_New(wb.count()); 
   int i=0;
   for ( QStringList::Iterator it = wb.begin(); it != wb.end(); ++it )
@@ -330,8 +330,8 @@ PYFUNCIMP_S(Application,sCreateWorkbench)
     return NULL;
   }
 
-  WorkbenchFactory().AddProducer(psKey, new WorkbenchProducer<PythonWorkbench>);
-  Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
+  //WorkbenchFactory().AddProducer(psKey, new WorkbenchProducer<PythonWorkbench>);
+  Workbench* wb = WorkbenchManager::instance()->createWorkbench( psKey, PythonWorkbench::getClassTypeId().getName() );
   
   // object get incremented
   Base::PyObjectBase* pyObj = wb->GetPyObject();

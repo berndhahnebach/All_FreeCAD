@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qstringlist.h>
 #endif
 
 #include "WorkbenchManager.h"
@@ -49,6 +50,24 @@ WorkbenchManager::~WorkbenchManager()
 {
 }
 
+Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QString& className )
+{
+  Workbench* wb = getWorkbench( name );
+
+  if ( !wb )
+  {
+    // try to create an instance now
+    wb = (Workbench*) Base::Type::createInstanceByName(className.latin1(),false);
+    if ( wb )
+    {
+      wb->setName( name );
+      _workbenches[ name ] = wb;
+    }
+  }
+  
+  return wb;
+}
+
 Workbench* WorkbenchManager::getWorkbench ( const QString& name )
 {
   Workbench* wb=0;
@@ -59,22 +78,13 @@ Workbench* WorkbenchManager::getWorkbench ( const QString& name )
     // returns the already created object
     wb = it.data();
   }
-  else
-  {
-    // try to create an instance now
-    wb = WorkbenchFactory().createWorkbench( name.latin1() );
-    if ( wb )
-    {
-      _workbenches[ name ] = wb;
-    }
-  }
   
   return wb;
 }
 
-bool WorkbenchManager::activate( const QString& name )
+bool WorkbenchManager::activate( const QString& name, const QString& className )
 {
-  Workbench* wb = getWorkbench( name );
+  Workbench* wb = createWorkbench( name, className );
   if ( wb ) 
   {
     _activeWorkbench = wb;
@@ -86,4 +96,12 @@ bool WorkbenchManager::activate( const QString& name )
 Workbench* WorkbenchManager::active() const
 {
   return _activeWorkbench;
+}
+
+QStringList WorkbenchManager::workbenches() const
+{
+  QStringList wb;
+  for ( QMap<QString, Workbench*>::ConstIterator it = _workbenches.begin(); it != _workbenches.end(); ++it )
+    wb << it.key();
+  return wb;
 }

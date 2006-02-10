@@ -40,6 +40,8 @@ Gui = FreeCADGui
 class Workbench:
 	def Activate(self):
 		Wrn("Init: "+ str(self) + ": Workbench.Activate() not implemented!")
+	def GetClassName(self):
+		Wrn("Init: "+ str(self) + ": Workbench.GetClassName() not implemented!")
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"
@@ -72,6 +74,8 @@ class StandardWorkbench ( Workbench ):
 	def Activate(self):
 		# load the module
 		Log ('Mod : Loading FreeCADGui')
+	def GetClassName(self):
+		return "Gui::StdWorkbench"
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++

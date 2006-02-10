@@ -29,7 +29,8 @@
 # include <qstringlist.h>
 #endif
 
-#include "../Base/PyExport.h"
+#include <Base/PyExport.h>
+#include <Base/Base.h>
 
 namespace Base {
 class PyObjectBase;
@@ -49,8 +50,10 @@ class WorkbenchManager;
  * loaded into RAM.
  * @author Werner Mayer
  */
-class GuiExport Workbench : public Base::PyHandler
+class GuiExport Workbench : public Base::BaseClass, public Base::PyHandler
 {
+    TYPESYSTEM_HEADER();
+
 public:
   /** Constructs a workbench object. */
   Workbench();
@@ -111,6 +114,8 @@ private:
  */
 class GuiExport StdWorkbench : public Workbench
 {
+    TYPESYSTEM_HEADER();
+
 public:
   StdWorkbench();
   virtual ~StdWorkbench();
@@ -126,6 +131,8 @@ protected:
 
 class GuiExport TestWorkbench : public StdWorkbench
 {
+    TYPESYSTEM_HEADER();
+
 public:
   TestWorkbench();
   ~TestWorkbench();
@@ -143,6 +150,8 @@ protected:
  */
 class GuiExport PythonWorkbench : public StdWorkbench
 {
+    TYPESYSTEM_HEADER();
+
 public:
   PythonWorkbench();
   ~PythonWorkbench();

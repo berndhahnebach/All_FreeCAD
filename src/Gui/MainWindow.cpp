@@ -62,7 +62,6 @@
 #include "BitmapFactory.h"
 #include "Splashscreen.h"
 #include "MenuManager.h"
-#include "WorkbenchFactory.h"
 
 #include "CommandLine.h"
 #include "DlgTipOfTheDayImp.h"

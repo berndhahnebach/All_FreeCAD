@@ -43,15 +43,21 @@ public:
   /** Creates the only instance of the WorkbenchManager. */
   static WorkbenchManager* instance();
 
-  /** Creates and returns an instance of the workbench with name \a name. If there is
-   * no such workbench 0 is returned. If a workbench with \a name has already been created
-   * then no new instance gets created but the already existing instance is returned.
+  /** Searches for and returns an existing workbench object with name \a name. If no
+   * such workbench exists then a workbench of class \a className gets created, if possible.
+   * If the workbench cannot be created 0 is returned.
+   */
+  Workbench* createWorkbench ( const QString& name, const QString& className );
+  /** Returns an instance of the workbench with name \a name. If there is
+   * no such workbench 0 is returned. 
    */
   Workbench* getWorkbench ( const QString& name );
   /** Activates the workbench with name \a name. */
-  bool activate( const QString& name );
+  bool activate( const QString& name, const QString& className );
   /** Returns the active workbench. */
   Workbench* active() const;
+  /** Returns a list of all created workbench objects. */
+  QStringList workbenches() const;
 
 protected:
 	WorkbenchManager();

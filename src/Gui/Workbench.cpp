@@ -196,6 +196,8 @@ using namespace Gui;
  * \endcode
  */
 
+TYPESYSTEM_SOURCE_ABSTRACT(Gui::Workbench, Base::BaseClass)
+
 Workbench::Workbench()
   : _name(QString::null)
 {
@@ -388,6 +390,8 @@ Base::PyObjectBase* Workbench::GetPyObject()
 
 // --------------------------------------------------------------------
 
+TYPESYSTEM_SOURCE(Gui::StdWorkbench, Gui::Workbench)
+
 StdWorkbench::StdWorkbench()
   : Workbench()
 {
@@ -500,6 +504,8 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
 
 // --------------------------------------------------------------------
 
+TYPESYSTEM_SOURCE(Gui::TestWorkbench, Gui::Workbench)
+
 TestWorkbench::TestWorkbench()
   : StdWorkbench()
 {
@@ -545,6 +551,8 @@ ToolBarItem* TestWorkbench::setupCommandBars() const
 }
 
 // -----------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PythonWorkbench, Gui::Workbench)
 
 PythonWorkbench::PythonWorkbench() : _workbenchPy(0)
 {

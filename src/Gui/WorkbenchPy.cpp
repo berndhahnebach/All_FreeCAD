@@ -131,7 +131,7 @@ PYFUNCIMP_D(WorkbenchPy,Activate)
 {
   PY_TRY {
     QString name = _pcWorkbench->name(); 
-    WorkbenchManager::instance()->activate( name );
+    WorkbenchManager::instance()->activate( name, _pcWorkbench->getTypeId().getName() );
     Py_Return; 
   }PY_CATCH;
 } 
