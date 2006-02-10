@@ -28,6 +28,7 @@
 # include <qevent.h>
 # include <qpainter.h>
 # include <qpixmap.h>
+# include <qpopupmenu.h>
 # include <Inventor/events/SoEvent.h>
 # include <Inventor/events/SoKeyboardEvent.h>
 # include <Inventor/events/SoLocation2Event.h>
