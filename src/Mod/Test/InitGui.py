@@ -63,6 +63,8 @@ class TestWorkbench ( Workbench ):
 		except:
 			Err('Activating of workbench "Test framework" failed\n')
 			raise
+	def GetClassName(self):
+		return "Gui::PythonWorkbench"
 	def GetIcon(self):
 		# returns an icon for the workbench
 		return ["/* XPM */\n"
