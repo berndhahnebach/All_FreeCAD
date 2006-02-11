@@ -337,7 +337,7 @@ QImage View3DInventorViewer::makeScreenShot( int w, int h, float r, int c, const
   return img;
 }
 
-bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& col, const SbMatrix &Matrix ) const
+bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& col ) const
 {
   // if no valid color use the current background
   bool useBackground = !col.isValid();
@@ -609,10 +609,10 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
           spinprojector->project(lastmouseposition);
           //interactiveCountInc();
           clearLog();
-        
+
           getWidget()->setCursor( QCursor( Qt::PointingHandCursor ) );
           processed = true;
-        } 
+        }
       }
       else
       {
@@ -624,9 +624,10 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
         }
         if(MoveMode){
           RotMode = false; 
-        
+
           SbTime tmp = (ev->getTime() - MoveTime);
-          if (tmp.getValue() < 0.300) 
+          float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+          if (tmp.getValue() < dci/*0.300*/)
           {
             ZoomMode = true;
             getWidget()->setCursor( QCursor( Qt::SizeVerCursor ) );
@@ -655,7 +656,8 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
               SbVec3f axis;
               float radians;
               rot.getValue(axis, radians);
-              if ((radians > 0.01f) && (deltatime < 0.300)) {
+              float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+              if ((radians > 0.01f) && (deltatime < dci/*0.300*/)) {
                 _bSpining = true;
                 spinRotation = rot;
                 MoveMode = false;
@@ -675,7 +677,8 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
       {
         // check on double click
         SbTime tmp = (ev->getTime() - CenterTime);
-        if (tmp.getValue() < 0.300) 
+        float dci = (float)QApplication::doubleClickInterval()/1000.0f;
+        if (tmp.getValue() < dci/*0.300*/)
         {
           if(!seekToPoint(pos))
             panToCenter(panningplane, posn);
@@ -752,7 +755,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   // give the viewprovider the chance to handle the event
-  if(!processed)
+  if(!processed && !MoveMode && !RotMode)
   {
     std::set<ViewProvider*>::iterator It;
     for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
@@ -770,7 +773,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   // right mouse button pressed
-  if (!processed)
+  if (!processed && !MoveMode && !RotMode)
   {
     if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
       SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;

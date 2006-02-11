@@ -133,7 +133,7 @@ public:
 
     /** @name Destructors */
 	~DOMPrintFilter(){};
-    //@{
+    //@}
 
 	/** @ interface from DOMWriterFilter */
 	virtual short acceptNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode*) const;

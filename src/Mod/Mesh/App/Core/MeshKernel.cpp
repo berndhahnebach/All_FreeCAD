@@ -459,7 +459,7 @@ void MeshKernel::Read (std::istream &rclIn)
   unsigned long uCtPts, uCtFts;
   rclIn.read((char*)&uCtPts, sizeof(unsigned long));
   rclIn.read((char*)&uCtFts, sizeof(unsigned long));
-  _aclPointArray.resize(uCtPts);  
+  _aclPointArray.resize(uCtPts);
   _aclFacetArray.resize(uCtFts);
 
   rclIn.read((char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));

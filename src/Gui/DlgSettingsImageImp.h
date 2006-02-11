@@ -61,15 +61,16 @@ public:
   QColor imageBackgroundColor() const;
   void setImageFormat( SoOffscreenRenderer::Components  );
   SoOffscreenRenderer::Components imageFormat() const;
+  void onSelectedFilter( const QString& );
   //@}
 
   /** @name Matrix handling (MIBA) */
   //@{
   void setMatrix(const SbMatrix &Matrix){_Matrix = Matrix;}
-  virtual void insertMIBA();
-  virtual void insertViewMatrix();
+  virtual void onInsertDateTime();
+  virtual void onInsertMIBA();
+  virtual void onInsertViewMatrix();
   //@}
-
 
 protected:
   void onAdjustImageSize();

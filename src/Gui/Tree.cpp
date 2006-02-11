@@ -28,7 +28,12 @@
 #	include <qheader.h>
 # include <qlayout.h>
 # include <qpopupmenu.h>
+# include <qstatusbar.h>
 #endif
+
+#include <Base/Console.h>
+#include <App/Document.h>
+#include <App/Feature.h>
 
 #include "Tree.h"
 #include "Document.h"
@@ -36,12 +41,9 @@
 #include "ViewProviderFeature.h"
 #include "MenuManager.h"
 #include "Application.h"
+#include "MainWindow.h"
 
 
-#include "../App/Document.h"
-#include "../App/Feature.h"
-
-#include "../Base/Console.h"
 using Base::Console;
 
 using namespace Gui;
@@ -255,6 +257,15 @@ bool FeatItem::testStatus(void)
   return ret;
 }
 
+void FeatItem::displayStatusInfo()
+{
+  App::Feature* feat = _pcViewProvider->getFeature();
+  QString info = feat->getStatusString();
+  if ( feat->getStatus() == App::Feature::Error )
+    info += QString(" (%1)").arg(feat->getErrorString());
+  getMainWindow()->statusBar()->message( info );
+}
+
 void FeatItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
    QColorGroup _cg( cg );
@@ -350,6 +361,7 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 
   _pcListView->setSelectionMode(QListView::Extended );
   connect( _pcListView, SIGNAL( selectionChanged() ), this, SLOT( onSelectionChanged() ) );
+  connect( _pcListView, SIGNAL( onItem(QListViewItem*) ), this, SLOT( onItem(QListViewItem*) ) );
 
 
   QPalette pal = _pcListView->palette();
@@ -464,6 +476,16 @@ void TreeView::onSelectionChanged ()
     pos->second->isSelectionUptodate();
   }
 
+}
+
+void TreeView::onItem(QListViewItem* item)
+{
+  // feature item selected
+  if ( item && item->rtti() == 3100 )
+  {
+    FeatItem* feat = reinterpret_cast<FeatItem*>(item);
+    feat->displayStatusInfo();
+  }
 }
 
 void TreeView::onUpdate(void)

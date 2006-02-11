@@ -186,6 +186,7 @@ public:
 	void Recompute();
   /// Recompute only this feature
   void RecomputeFeature(Feature* Feat);
+	//@}
 
 
 	/** @name methodes for the UNDO REDO handling

@@ -85,6 +85,7 @@ public:
   void buildUp(void);
 
   bool testStatus(void);
+  void displayStatusInfo();
 
   QColor BaseColor, TextColor, HighlightColor;
 
@@ -217,6 +218,7 @@ public:
 public slots:
 
   void onSelectionChanged(void);
+  void onItem(QListViewItem*);
 
 protected:
 

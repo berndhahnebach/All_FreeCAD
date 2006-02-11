@@ -26,7 +26,9 @@
 #ifndef _PreComp_
 # include <qcheckbox.h>
 # include <qcombobox.h>
+# include <qdatetime.h>
 # include <qmap.h>
+# include <qpushbutton.h>
 # include <qtextedit.h>
 # include <iomanip>
 # include <sstream>
@@ -63,7 +65,7 @@ DlgSettingsImageImp::~DlgSettingsImageImp()
 }
 
 
-void DlgSettingsImageImp::insertMIBA()
+void DlgSettingsImageImp::onInsertMIBA()
 {
   std::stringstream com;
   
@@ -80,21 +82,21 @@ void DlgSettingsImageImp::insertMIBA()
 	{
 	  ay = aspect;
 	}
-	  
+
 	_Matrix[0][0] *= ay;
 	_Matrix[1][1] *= ax;
 
   com << std::setw(7) << std::setfill(' ') << std::fixed;
   com << "<MIBA xmlns:xsl=\"http://www.w3.org/2001/XMLSchema-instance\" xsl:noNameSpaceSchemaLocation=\"MIBA.xsd\"> \n" ;
-  com << " <View>\n"; 
-  com << "  <Matrix \n"; 
+  com << " <View>\n";
+  com << "  <Matrix \n";
   com << "     a11=" << _Matrix[0][0] <<" a12=" << _Matrix[0][1] <<" a13=" << _Matrix[0][2] <<" a14=" << _Matrix[0][3] << "\n";
   com << "     a21=" << _Matrix[1][0] <<" a22=" << _Matrix[1][1] <<" a23=" << _Matrix[1][2] <<" a24=" << _Matrix[1][3] << "\n";
   com << "     a31=" << _Matrix[2][0] <<" a32=" << _Matrix[2][1] <<" a33=" << _Matrix[2][2] <<" a34=" << _Matrix[2][3] << "\n";
   com << "     a41=" << _Matrix[3][0] <<" a42=" << _Matrix[3][1] <<" a43=" << _Matrix[3][2] <<" a44=" << _Matrix[3][3] << "\n";
-  com << "   />\n" ; 
-  com << " </View>\n" ; 
-  com << " <CAD>\n" ; 
+  com << "   />\n" ;
+  com << " </View>\n" ;
+  com << " <CAD>\n" ;
   com << "  <Erzeugendes_System> FreeCAD </Erzeugendes_System>\n" ;
   com << "  <Datum> 1968-12-17T04:00:00 </Datum>\n";
   com << "  <Bearbeiter> riegel </Bearbeiter>\n" ;
@@ -105,8 +107,7 @@ void DlgSettingsImageImp::insertMIBA()
 
 }
 
-
-void DlgSettingsImageImp::insertViewMatrix()
+void DlgSettingsImageImp::onInsertViewMatrix()
 {
   std::stringstream com;
   com << "Matrix=[" << _Matrix[0][0] <<"," << _Matrix[0][1] <<"," << _Matrix[0][2] <<"," << _Matrix[0][3] << ",";
@@ -117,6 +118,10 @@ void DlgSettingsImageImp::insertViewMatrix()
   textEditComment->setText(QString(com.str().c_str()));
 }
 
+void DlgSettingsImageImp::onInsertDateTime()
+{
+  textEditComment->setText( QDateTime::currentDateTime().toString( "dddd MMMM dd yyyy hh:mm:ss" ) );
+}
 
 /**
  * Sets the image size to (\a w, \a h).
@@ -281,6 +286,15 @@ SoOffscreenRenderer::Components DlgSettingsImageImp::imageFormat() const
     else
       return SoOffscreenRenderer::RGB_TRANSPARENCY;
   }
+}
+
+void DlgSettingsImageImp::onSelectedFilter( const QString& filter )
+{
+  bool ok = ( filter.startsWith("JPG") || filter.startsWith("JPEG") || filter.startsWith("PNG") );
+  textEditComment->setEnabled( ok );
+  pushButtonInsertTimeDate->setEnabled( ok );
+  pushButtonInsertMatrix->setEnabled( ok );
+  pushButtonInsertMIBA->setEnabled( ok );
 }
 
 void DlgSettingsImageImp::onAdjustImageSize()

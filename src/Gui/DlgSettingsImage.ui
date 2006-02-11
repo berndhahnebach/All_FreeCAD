@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>312</width>
-            <height>434</height>
+            <width>429</width>
+            <height>436</height>
         </rect>
     </property>
     <property name="caption">
@@ -324,10 +324,10 @@
                                 <cstring>pushButtonInsertTimeDate</cstring>
                             </property>
                             <property name="text">
-                                <string>insert Time Date</string>
+                                <string>Insert &amp;datetime</string>
                             </property>
                             <property name="accel">
-                                <string></string>
+                                <string>Alt+D</string>
                             </property>
                         </widget>
                         <widget class="QPushButton">
@@ -335,10 +335,10 @@
                                 <cstring>pushButtonInsertMatrix</cstring>
                             </property>
                             <property name="text">
-                                <string>&amp;insert view Matrix</string>
+                                <string>Insert &amp;view matrix</string>
                             </property>
                             <property name="accel">
-                                <string>Alt+I</string>
+                                <string>Alt+V</string>
                             </property>
                         </widget>
                         <widget class="QPushButton">
@@ -346,7 +346,7 @@
                                 <cstring>pushButtonInsertMIBA</cstring>
                             </property>
                             <property name="text">
-                                <string>insert &amp;MIBA </string>
+                                <string>Insert &amp;MIBA</string>
                             </property>
                             <property name="accel">
                                 <string>Alt+M</string>
@@ -358,6 +358,8 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>pushAdjustSize</sender>
@@ -373,15 +375,21 @@
     </connection>
     <connection>
         <sender>pushButtonInsertMIBA</sender>
-        <signal>pressed()</signal>
+        <signal>clicked()</signal>
         <receiver>Gui::Dialog::DlgSettingsImage</receiver>
-        <slot>insertMIBA()</slot>
+        <slot>onInsertMIBA()</slot>
     </connection>
     <connection>
         <sender>pushButtonInsertMatrix</sender>
-        <signal>pressed()</signal>
+        <signal>clicked()</signal>
         <receiver>Gui::Dialog::DlgSettingsImage</receiver>
-        <slot>insertViewMatrix()</slot>
+        <slot>onInsertViewMatrix()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonInsertTimeDate</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onInsertDateTime()</slot>
     </connection>
 </connections>
 <tabstops>
@@ -395,11 +403,13 @@
 </tabstops>
 <slots>
     <slot access="protected">onAdjustImageSize()</slot>
-    <slot>insertMIBA()</slot>
-    <slot>insertViewMatrix()</slot>
+    <slot>onInsertMIBA()</slot>
+    <slot>onInsertViewMatrix()</slot>
+    <slot>onInsertDateTime()</slot>
+    <slot>onSelectedFilter( const QString&amp; )</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/SpinBox.h</includehint>
 </includehints>
 </UI>

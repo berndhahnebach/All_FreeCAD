@@ -59,8 +59,13 @@ int Import::execute(void)
 
   if ( fi.extension() == "bms" )
   {
-    std::ifstream cIn( FileName.getValue(), std::ios::in | std::ios::binary );
-    _cMesh.getKernel()->Read( cIn );
+    try {
+      std::ifstream cIn( FileName.getValue(), std::ios::in | std::ios::binary );
+      _cMesh.getKernel()->Read( cIn );
+    } catch( const Base::MemoryException&) {
+      setError("Invalid mesh file");
+      return 1;
+    }
   }
   else
   {

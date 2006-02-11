@@ -27,12 +27,13 @@
 #define LOW_ENDIAN	(unsigned short) 0x4949 
 #define HIGH_ENDIAN	(unsigned short) 0x4D4D 
 
-/**
- * Definition of functions that allow swapping of data types
- * dependent on the architecture.
- */
 
 namespace Base {
+
+/**
+ * \brief Definition of functions that allow swapping of data types
+ * dependent on the architecture.
+ */
 
 /** Returns machine type (low endian, high endian ) */
 unsigned short SwapOrder (void);

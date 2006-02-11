@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qcursor.h>
+# include <qdatetime.h>
 # include <qdesktopwidget.h>
 # include <qimage.h>
 # include <qmessagebox.h>
@@ -505,16 +506,30 @@ void writePicFileComment(const char* FileName,const char* Comment)
 {
   Base::FileInfo file(FileName);
 
-  if(file.extension() == "jpg" || file.extension() == "jpeg")
+  if (file.extension() == "jpg" || file.extension() == "jpeg")
   {
-    writeJPEGComment(FileName,(file.filePath()+file.fileNamePure() + "MIBA." + file.extension()).c_str() ,Comment);   
+    if ( Comment )
+      writeJPEGComment(FileName,(file.filePath()+file.fileNamePure() + "MIBA." + file.extension()).c_str() ,Comment);
   }
-
+  else if ( file.hasExtension("png") )
+  {
+    QImage img;
+    img.load( FileName, "PNG" );
+    img.setText("Title", 0, file.fileNamePure());
+    img.setText("Author", 0, "FreeCAD (http://free-cad.sourceforge.net)");
+    if ( Comment )
+      img.setText("Description", 0, Comment);
+    else
+      img.setText("Description", 0, "Screenshot created by FreeCAD");
+    img.setText("Creation Time", 0, QDateTime::currentDateTime().toString( "dddd MMMM dd yyyy hh:mm:ss" ));
+    img.setText("Software", 0, App::Application::Config()["ExeName"].c_str());
+    img.save( FileName, "PNG" );
+  }
 }
 
 void StdViewScreenShot::activated(int iMsg)
 {
-  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()); 
+  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
   if ( view )
   {
     QStringList formats;
@@ -544,6 +559,8 @@ void StdViewScreenShot::activated(int iMsg)
     opt->setMatrix(view->getViewer()->getCamera()->getViewVolume().getMatrix());
 
     fd.setOptionsWidget(FileOptionsDialog::Right, opt);
+    opt->onSelectedFilter(fd.selectedFilter());
+    QObject::connect(&fd, SIGNAL(filterSelected ( const QString & )), opt, SLOT(onSelectedFilter ( const QString & )));
     if ( fd.exec() == QDialog::Accepted )
     {
       selFilter = fd.selectedFilter();
@@ -554,7 +571,7 @@ void StdViewScreenShot::activated(int iMsg)
       int w = opt->imageWidth();
       int h = opt->imageHeight();
       float r = opt->pixelsPerInch();
-      
+
       // search for the matching format
       bool ok = false;
       QString format = formats.front(); // take the first as default
@@ -569,8 +586,7 @@ void StdViewScreenShot::activated(int iMsg)
 
       ok = view->getViewer()->makeScreenShot( fn.latin1(), format.latin1(), w, h, r, (int)opt->imageFormat(), opt->imageBackgroundColor() );
 
-      if(opt->textEditComment->text() != "")
-        writePicFileComment(fn.latin1(),opt->textEditComment->text());
+      writePicFileComment(fn.latin1(),opt->textEditComment->text());
 
       QApplication::restoreOverrideCursor();
 

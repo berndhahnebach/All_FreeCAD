@@ -48,7 +48,7 @@ class SoFCBackgroundGradient;
 
 
 /** The Inventor viewer
- *  
+ *
  */
 class GuiExport View3DInventorViewer: public SoQtViewer, public Gui::SelectionSingelton::ObserverType
 {
@@ -76,8 +76,8 @@ public:
    * to file \a filename with the extension \a filetypeextension.
    * Creates also a XML stream regarding MIBA standard. To embed in a picture comment field (e.g. JPEG).
    */
-  bool makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor&, const SbMatrix &Matrix = SbMatrix() ) const;
- 
+  bool makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& ) const;
+
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
 
@@ -102,15 +102,14 @@ public:
   //@{
 
   enum ViewerMod {
-      ShowCoord=1,       /**< Enables the Coordinate system in the corner. */  
-      ShowFPS  =2,       /**< Enables the Frams per Second counter. */  
-      SimpleBackground=4,/**< switch to a simple background. */  
-      DisallowRotation=8,/**< switch of the rotation. */  
-      DisallowPanning=16,/**< switch of the panning. */  
-      DisallowZooming=32,/**< switch of the zooming. */  
-     }; 
-
-  //@{
+      ShowCoord=1,       /**< Enables the Coordinate system in the corner. */
+      ShowFPS  =2,       /**< Enables the Frams per Second counter. */
+      SimpleBackground=4,/**< switch to a simple background. */
+      DisallowRotation=8,/**< switch of the rotation. */
+      DisallowPanning=16,/**< switch of the panning. */
+      DisallowZooming=32,/**< switch of the zooming. */
+     };
+  //@}
 
 
   /** @name Draw routines */
