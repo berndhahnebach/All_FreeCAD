@@ -55,7 +55,7 @@ int Export::execute(void)
   Feature *pcFeat  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
   {
-    setError("not valid link \"Source\"");
+    setError("Cannot export invalid mesh feature '%s'", pcFeat->getName());
     return 1;
   }
 
@@ -64,7 +64,7 @@ int Export::execute(void)
   Base::FileInfo di(fi.dirPath().c_str());
 	if ( fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false )
   {
-    setError("Export::Execute() not able to open %s for write!\n",FileName.getValue());
+    setError("No write permission for file '%s'",FileName.getValue());
     return 1;
   }
 
@@ -73,7 +73,7 @@ int Export::execute(void)
     std::ofstream cOut( FileName.getValue(), std::ios::out | std::ios::binary );
     pcFeat->getMesh().getKernel()->Write( cOut );
   }
-  else
+  else if ( fi.extension() == "stl" || fi.extension() == "ast" )
   {
     MeshSTL aWriter(*(pcFeat->getMesh().getKernel()) );
 
@@ -89,9 +89,14 @@ int Export::execute(void)
 
     if ( !ok )
     {
-      setError("Export::Execute() not able to export %s\n",FileName.getValue());
+      setError("Export of mesh to file '%s' failed",FileName.getValue());
       return 1;
     }
+  }
+  else
+  {
+    setError("File format '%s' not supported", fi.extension().c_str());
+    return 1;
   }
 
   return 0;

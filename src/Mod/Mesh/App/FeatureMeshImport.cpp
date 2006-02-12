@@ -53,7 +53,7 @@ int Import::execute(void)
   Base::FileInfo fi(FileName.getValue());
 	if ( !fi.exists() || !fi.isFile() || !fi.isReadable() )
   {
-    setError("FeatureMeshImport::Execute() not able to open %s!\n",FileName.getValue());
+    setError("No read permission for file '%s'",FileName.getValue());
     return 1;
   }
 
@@ -67,7 +67,7 @@ int Import::execute(void)
       return 1;
     }
   }
-  else
+  else if ( fi.extension() == "stl" || fi.extension() == "ast" )
   {
     MeshSTL aReader(*(_cMesh.getKernel()) );
 
@@ -79,7 +79,7 @@ int Import::execute(void)
     try{
       if ( !aReader.Load( str ) )
       {
-        setError("FeatureMeshImport::Execute() not able import %s!\n",FileName.getValue());
+        setError("Import of mesh to file '%s' failed",FileName.getValue());
         return 1;
       }
     }catch ( Base::AbortException& e ){
@@ -88,6 +88,11 @@ int Import::execute(void)
       e.SetMessage( szBuf );
       throw e;
     }
+  }
+  else
+  {
+    setError("File format '%s' not supported", fi.extension().c_str());
+    return 1;
   }
 
   return 0;

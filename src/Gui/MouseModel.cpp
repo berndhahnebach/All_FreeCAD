@@ -79,7 +79,6 @@ int AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRe
   if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) 
   {
     const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
-    const int button = event->getButton();
     const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
 
     if ( press )
@@ -116,14 +115,14 @@ int AbstractMouseModel::handleEvent(const SoEvent * const ev, const SbViewportRe
       ret = mouseButtonEvent(reinterpret_cast<const SoMouseButtonEvent*>(ev), QPoint(x,y));
     }
   }
-  else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) 
+  else if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId()))
   {
     ret = locationEvent(reinterpret_cast<const SoLocation2Event*>(ev), QPoint(x,y));
   }
-  else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) 
+  else if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId()))
   {
     SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
-    switch (ke->getKey()) 
+    switch (ke->getKey())
     {
     case SoKeyboardEvent::ESCAPE:
       releaseMouseModel();
@@ -322,7 +321,7 @@ int PolyPickerMouseModel::locationEvent( const SoLocation2Event * const e, const
   // do all the drawing stuff for us
   QPoint clPoint = pos;
 
-  if ( m_bWorking )    
+  if ( m_bWorking )
   {
     // check the position
     QRect r = _pcView3D->getGLWidget()->rect();
@@ -337,13 +336,15 @@ int PolyPickerMouseModel::locationEvent( const SoLocation2Event * const e, const
       if( clPoint.y() > r.bottom() )
           clPoint.setY( r.bottom() );
 
+#ifdef FC_OS_WINDOWS
       QPoint newPos = _pcView3D->getGLWidget()->mapToGlobal( clPoint );
       QCursor::setPos( newPos );
+#endif
     }
   }
 
   draw();
-  m_iXnew = clPoint.x(); 
+  m_iXnew = clPoint.x();
   m_iYnew = clPoint.y();
   draw();
 

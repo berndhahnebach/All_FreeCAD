@@ -515,7 +515,7 @@ void writePicFileComment(const char* FileName,const char* Comment)
   {
     QImage img;
     img.load( FileName, "PNG" );
-    img.setText("Title", 0, file.fileNamePure());
+    img.setText("Title", 0, file.fileNamePure().c_str());
     img.setText("Author", 0, "FreeCAD (http://free-cad.sourceforge.net)");
     if ( Comment )
       img.setText("Description", 0, Comment);
