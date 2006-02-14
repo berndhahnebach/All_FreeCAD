@@ -80,7 +80,12 @@ public:
  * The MemoryException is thrown if not enough memory can be allocated.
  * @author Werner Mayer
  */
+#if defined (__GNUC__)
+// It seems that the calling instance of our new handler expects a bad_alloc exception
+class BaseExport MemoryException : public Exception, virtual public std::bad_alloc
+#else
 class BaseExport MemoryException : public Exception
+#endif
 {
 public:
   /// Construction
@@ -89,6 +94,10 @@ public:
   MemoryException(const MemoryException &inst);
   /// Destruction
   virtual ~MemoryException() throw() {}
+#if defined (__GNUC__)
+  /// Description of the exception
+  virtual const char* what() const throw();
+#endif
 };
 
 

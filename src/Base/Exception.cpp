@@ -102,3 +102,10 @@ MemoryException::MemoryException(const MemoryException &inst)
 {
 }
 
+#if defined (__GNUC__)
+const char* MemoryException::what() const throw()
+{
+  // call what() of Exception, not of std::bad_alloc
+  return Exception::what();
+}
+#endif
