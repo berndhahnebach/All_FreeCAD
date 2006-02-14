@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>429</width>
+            <width>435</width>
             <height>436</height>
         </rect>
     </property>
@@ -26,132 +26,164 @@
             <property name="title">
                 <string>Image dimensions</string>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel" row="0" column="3">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>textLabelPixelWidth</cstring>
+                        <cstring>layout4</cstring>
                     </property>
-                    <property name="text">
-                        <string>Pixel</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabelWidth</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Width:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>spinWidth</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>spinWidth</cstring>
+                            </property>
+                            <property name="suffix">
+                                <string> Pixel</string>
+                            </property>
+                            <property name="maxValue">
+                                <number>32767</number>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QLabel" row="1" column="3">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>textLabelPixelHeight</cstring>
+                        <cstring>layout5</cstring>
                     </property>
-                    <property name="text">
-                        <string>Pixel</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabelHeight</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Height:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>spinHeight</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>spinHeight</cstring>
+                            </property>
+                            <property name="suffix">
+                                <string> Pixel</string>
+                            </property>
+                            <property name="maxValue">
+                                <number>32767</number>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QLabel" row="2" column="3">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>textLabelPixelPerInch</cstring>
+                        <cstring>layout6</cstring>
                     </property>
-                    <property name="text">
-                        <string>Pixel/Inch</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabelResolution</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Resolution:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>spinResolution</cstring>
+                            </property>
+                        </widget>
+                        <widget class="Gui::FloatSpinBox">
+                            <property name="name">
+                                <cstring>spinResolution</cstring>
+                            </property>
+                            <property name="suffix">
+                                <string> Pixel/Inch</string>
+                            </property>
+                            <property name="maxValue">
+                                <number>2540</number>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                            <property name="value">
+                                <number>72</number>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QLabel" row="0" column="0" rowspan="1" colspan="2">
+                <widget class="QLayoutWidget">
                     <property name="name">
-                        <cstring>textLabelWidth</cstring>
+                        <cstring>layout3</cstring>
                     </property>
-                    <property name="text">
-                        <string>&amp;Width:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>spinWidth</cstring>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushAdjustSize</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Aspect ratio to Screen</string>
+                            </property>
+                            <property name="accel">
+                                <string></string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButtonRatio4</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Aspect ratio 4/3</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButtonRatio16</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Aspect ratio 16/9</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButtonRatio1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Aspect ratio 1/1</string>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-                <widget class="QLabel" row="1" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>textLabelHeight</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Height:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>spinHeight</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>textLabelResolution</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Resolution:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>spinResolution</cstring>
-                    </property>
-                </widget>
-                <widget class="QSpinBox" row="0" column="2">
-                    <property name="name">
-                        <cstring>spinWidth</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>32767</number>
-                    </property>
-                    <property name="minValue">
-                        <number>1</number>
-                    </property>
-                </widget>
-                <widget class="QSpinBox" row="1" column="2">
-                    <property name="name">
-                        <cstring>spinHeight</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>32767</number>
-                    </property>
-                    <property name="minValue">
-                        <number>1</number>
-                    </property>
-                </widget>
-                <widget class="Gui::FloatSpinBox" row="2" column="2">
-                    <property name="name">
-                        <cstring>spinResolution</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>2540</number>
-                    </property>
-                    <property name="minValue">
-                        <number>1</number>
-                    </property>
-                    <property name="value">
-                        <number>72</number>
-                    </property>
-                </widget>
-                <widget class="QPushButton" row="3" column="0">
-                    <property name="name">
-                        <cstring>pushAdjustSize</cstring>
-                    </property>
-                    <property name="text">
-                        <string>A&amp;djust aspect ratio</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+D</string>
-                    </property>
-                </widget>
-                <spacer row="3" column="1" rowspan="1" colspan="3">
-                    <property name="name">
-                        <cstring>spacer1</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>191</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-            </grid>
+            </vbox>
         </widget>
         <widget class="QGroupBox">
             <property name="name">
@@ -358,8 +390,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>pushAdjustSize</sender>
@@ -391,6 +421,24 @@
         <receiver>Gui::Dialog::DlgSettingsImage</receiver>
         <slot>onInsertDateTime()</slot>
     </connection>
+    <connection>
+        <sender>pushButtonRatio4</sender>
+        <signal>pressed()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onRatio4()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonRatio16</sender>
+        <signal>pressed()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onRatio16()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonRatio1</sender>
+        <signal>pressed()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onRatio1()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>spinWidth</tabstop>
@@ -407,9 +455,12 @@
     <slot>onInsertViewMatrix()</slot>
     <slot>onInsertDateTime()</slot>
     <slot>onSelectedFilter( const QString&amp; )</slot>
+    <slot access="protected">onRatio4()</slot>
+    <slot access="protected">onRatio16()</slot>
+    <slot access="protected">onRatio1()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>Gui/SpinBox.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
 </includehints>
 </UI>

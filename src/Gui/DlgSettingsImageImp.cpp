@@ -26,12 +26,7 @@
 #ifndef _PreComp_
 # include <qcheckbox.h>
 # include <qcombobox.h>
-# include <qdatetime.h>
 # include <qmap.h>
-# include <qpushbutton.h>
-# include <qtextedit.h>
-# include <iomanip>
-# include <sstream>
 #endif
 
 #include "DlgSettingsImageImp.h"
@@ -68,38 +63,29 @@ DlgSettingsImageImp::~DlgSettingsImageImp()
 void DlgSettingsImageImp::onInsertMIBA()
 {
   std::stringstream com;
-  
-//	SbVec2s size = this->getGLSize();	
-//	float aspect = float(size[0]) / float(size[1]);	
-	float aspect = float(_width) / float(_height);	
-	float ax = 1.0f, ay = 1.0f;
-
-	if (aspect > 1.0f)
-	{
-	  ax = 1.0f / aspect;
-	}
+/*  
+	float aspect;
+  if( (aspect = _height/_width) > 1.0f)
+	  _Matrix[1][1] *= 1.0f / (aspect);
 	else
-	{
-	  ay = aspect;
-	}
-
-	_Matrix[0][0] *= ay;
-	_Matrix[1][1] *= ax;
-
-  com << std::setw(7) << std::setfill(' ') << std::fixed;
-  com << "<MIBA xmlns:xsl=\"http://www.w3.org/2001/XMLSchema-instance\" xsl:noNameSpaceSchemaLocation=\"MIBA.xsd\"> \n" ;
-  com << " <View>\n";
-  com << "  <Matrix \n";
-  com << "     a11=" << _Matrix[0][0] <<" a12=" << _Matrix[0][1] <<" a13=" << _Matrix[0][2] <<" a14=" << _Matrix[0][3] << "\n";
-  com << "     a21=" << _Matrix[1][0] <<" a22=" << _Matrix[1][1] <<" a23=" << _Matrix[1][2] <<" a24=" << _Matrix[1][3] << "\n";
-  com << "     a31=" << _Matrix[2][0] <<" a32=" << _Matrix[2][1] <<" a33=" << _Matrix[2][2] <<" a34=" << _Matrix[2][3] << "\n";
-  com << "     a41=" << _Matrix[3][0] <<" a42=" << _Matrix[3][1] <<" a43=" << _Matrix[3][2] <<" a44=" << _Matrix[3][3] << "\n";
-  com << "   />\n" ;
-  com << " </View>\n" ;
-  com << " <CAD>\n" ;
-  com << "  <Erzeugendes_System> FreeCAD </Erzeugendes_System>\n" ;
-  com << "  <Datum> 1968-12-17T04:00:00 </Datum>\n";
-  com << "  <Bearbeiter> riegel </Bearbeiter>\n" ;
+	  _Matrix[0][0] *= (aspect); 
+*/
+ 
+  com << setw(7) << setfill(' ') << fixed;
+  com << "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n" ;
+  com << "<MIBA xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MIBA.xsd\"> \n" ;
+  com << " <View>\n"; 
+  com << "  <Matrix \n"; 
+  com << "     a11=\"" << _Matrix[0][0] <<"\" a12=\"" << _Matrix[1][0] <<"\" a13=\"" << _Matrix[2][0] <<"\" a14=\"" << _Matrix[3][0] << "\"\n";
+  com << "     a21=\"" << _Matrix[0][1] <<"\" a22=\"" << _Matrix[1][1] <<"\" a23=\"" << _Matrix[2][1] <<"\" a24=\"" << _Matrix[3][1] << "\"\n";
+  com << "     a31=\"" << _Matrix[0][2] <<"\" a32=\"" << _Matrix[1][2] <<"\" a33=\"" << _Matrix[2][2] <<"\" a34=\"" << _Matrix[3][2] << "\"\n";
+  com << "     a41=\"" << _Matrix[0][3] <<"\" a42=\"" << _Matrix[1][3] <<"\" a43=\"" << _Matrix[2][3] <<"\" a44=\"" << _Matrix[3][3] << "\"\n";
+  com << "   />\n" ; 
+  com << " </View>\n" ; 
+  com << " <CAD>\n" ; 
+  com << "  <Erzeugendes_System>FreeCAD 0.5</Erzeugendes_System>\n" ;
+  com << "  <Datum>1968-12-17T04:00:00.000</Datum>\n";
+  com << "  <Bearbeiter>riegel</Bearbeiter>\n" ;
   com << " </CAD>\n" ;
   com << "</MIBA>\n" ;
 
@@ -107,7 +93,8 @@ void DlgSettingsImageImp::onInsertMIBA()
 
 }
 
-void DlgSettingsImageImp::onInsertViewMatrix()
+
+void DlgSettingsImageImp::insertViewMatrix()
 {
   std::stringstream com;
   com << "Matrix=[" << _Matrix[0][0] <<"," << _Matrix[0][1] <<"," << _Matrix[0][2] <<"," << _Matrix[0][3] << ",";
@@ -118,10 +105,6 @@ void DlgSettingsImageImp::onInsertViewMatrix()
   textEditComment->setText(QString(com.str().c_str()));
 }
 
-void DlgSettingsImageImp::onInsertDateTime()
-{
-  textEditComment->setText( QDateTime::currentDateTime().toString( "dddd MMMM dd yyyy hh:mm:ss" ) );
-}
 
 /**
  * Sets the image size to (\a w, \a h).
@@ -131,10 +114,11 @@ void DlgSettingsImageImp::setImageSize( int w, int h )
   spinWidth->setValue( w );
   spinHeight->setValue( h );
 
-  _width = w;
-  _height = h;
-  _fRatio = (float)_width/(float)_height;
+  _width = (float)w;
+  _height = (float)h;
+  _fRatio = _width/_height;
 }
+
 
 /**
  * Sets the image size to \a s.
@@ -144,9 +128,9 @@ void DlgSettingsImageImp::setImageSize( const QSize& s )
   spinWidth->setValue( s.width() );
   spinHeight->setValue( s.height() );
 
-  _width = s.width();
-  _height = s.height();
-  _fRatio = (float)_width/(float)_height;
+  _width = (float)s.width();
+  _height = (float)s.height();
+  _fRatio = _width/_height;
 }
 
 /**
@@ -288,31 +272,43 @@ SoOffscreenRenderer::Components DlgSettingsImageImp::imageFormat() const
   }
 }
 
-void DlgSettingsImageImp::onSelectedFilter( const QString& filter )
+void DlgSettingsImageImp::adjustImageSize(float fRatio)
 {
-  bool ok = ( filter.startsWith("JPG") || filter.startsWith("JPEG") || filter.startsWith("PNG") );
-  textEditComment->setEnabled( ok );
-  pushButtonInsertTimeDate->setEnabled( ok );
-  pushButtonInsertMatrix->setEnabled( ok );
-  pushButtonInsertMIBA->setEnabled( ok );
+  // if width has changed then adjust height and vice versa, if both has changed the adjust height
+  if ( _height != spinHeight->value() )
+  {
+    _height = spinHeight->value();
+    _width = (int)((float)_height*fRatio);
+    spinWidth->setValue( _width );
+  } else // if( _width != spinWidth->value() )
+  {
+    _width = spinWidth->value();
+    _height = (int)((float)_width/fRatio);
+    spinHeight->setValue( _height );
+  }
+
 }
 
 void DlgSettingsImageImp::onAdjustImageSize()
 {
-  // if width has changed then adjust height and vice versa, if both has changed the adjust height
-  if ( _width != spinWidth->value() )
-  {
-    _width = spinWidth->value();
-    _height = (int)((float)_width/_fRatio);
-    spinHeight->setValue( _height );
-  }
-  else if ( _height != spinHeight->value() )
-  {
-    _height = spinHeight->value();
-    _width = (int)((float)_height*_fRatio);
-    spinWidth->setValue( _width );
-  }
+  adjustImageSize(_fRatio);
 }
+
+void DlgSettingsImageImp::onRatio4()
+{
+  adjustImageSize(4.0f/3.0f);
+}
+ 
+void DlgSettingsImageImp::onRatio16()
+{
+  adjustImageSize(16.0f/9.0f);
+}
+
+void DlgSettingsImageImp::onRatio1()
+{
+  adjustImageSize(1.0f);
+}
+
 
 #include "DlgSettingsImage.cpp"
 #include "moc_DlgSettingsImage.cpp"

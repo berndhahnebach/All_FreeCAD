@@ -584,9 +584,20 @@ void StdViewScreenShot::activated(int iMsg)
         }
       }
 
-      ok = view->getViewer()->makeScreenShot( fn.latin1(), format.latin1(), w, h, r, (int)opt->imageFormat(), opt->imageBackgroundColor() );
+      Base::FileInfo file(fn.latin1());
 
-      writePicFileComment(fn.latin1(),opt->textEditComment->text());
+      if(opt->textEditComment->text() != "" && (file.extension() == "jpg" || file.extension() == "jpeg"|| file.extension() == "png"))
+      {
+        std::string tempFileName = Base::FileInfo::getTempFileName();
+
+        ok = view->getViewer()->makeScreenShot( tempFileName.c_str(), format.latin1(), w, h, r, (int)opt->imageFormat(), opt->imageBackgroundColor() );
+
+        writeJPEGComment(tempFileName.c_str(),fn.latin1() ,opt->textEditComment->text());   
+
+        //writePicFileComment(fn.latin1(),opt->textEditComment->text());
+      }else{
+        ok = view->getViewer()->makeScreenShot( fn.latin1(), format.latin1(), w, h, r, (int)opt->imageFormat(), opt->imageBackgroundColor() );
+      }
 
       QApplication::restoreOverrideCursor();
 
