@@ -43,8 +43,10 @@
 #	include <fcntl.h>
 #	include <sys/types.h>
 #	include <sys/stat.h>
-#	ifdef FC_OS_WIN32
+#	if defined (FC_OS_WIN32)
 #		include <io.h>
+#   include <sstream>
+# elif defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 #   include <sstream>
 #	endif
 #	include <stdio.h>

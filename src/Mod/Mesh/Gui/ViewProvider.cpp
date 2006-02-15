@@ -153,7 +153,7 @@ void ViewProviderMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 
 	  pcMeshCoord->point.setValues(0,cMesh->CountPoints(), vertices);
     delete [] vertices;
-	  pcMeshFaces->coordIndex.setValues(0,4*cMesh->CountFacets(),(const int*) faces);
+	  pcMeshFaces->coordIndex.setValues(0,4*cMesh->CountFacets(),(const int32_t*) faces);
     delete [] faces;
   } catch (const Base::MemoryException& e) {
     pcMeshCoord->point.deleteValues(0);

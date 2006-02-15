@@ -233,7 +233,7 @@ bool Process::appendToPath (const QString& path)
   {
 #ifdef FC_OS_WIN32
     sprintf(szPath, "%s;%s", env["PATH"].latin1(), path.latin1());
-#elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
+#elif defined (FC_OS_LINUX) || defined (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", env["PATH"].latin1(), path.latin1());
 #else
     Base::Console().Warning("Not yet implemented!\n");
@@ -244,7 +244,7 @@ bool Process::appendToPath (const QString& path)
   {
 #ifdef FC_OS_WIN32
     sprintf(szPath, "%s;%s", getenv("PATH"), path.latin1());
-#elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
+#elif defined (FC_OS_LINUX) || defined (FC_OS_CYGWIN)
     sprintf(szPath, "%s:%s", getenv("PATH"), path.latin1());
 #else
     Base::Console().Warning("Not yet implemented!\n");
@@ -277,7 +277,7 @@ void Process::setupEnvironment()
   {
 #ifdef FC_OS_WIN32
     ::SetEnvironmentVariable (it.key().latin1(), it.data().latin1());
-#elif defined (FC_OS_LINUX) || (FC_OS_CYGWIN)
+#elif defined (FC_OS_LINUX) || defined (FC_OS_CYGWIN)
     setenv(it.key().latin1(), it.data().latin1(), 1);
 #else
     Base::Console().Warning("Not yet implemented!\n");

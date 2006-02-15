@@ -90,7 +90,7 @@ SoFCBackgroundGradient::SoFCBackgroundGradient()
   };
 
   SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
-	faceset->coordIndex.setValues(0,32,(const int*) face_idx);
+	faceset->coordIndex.setValues(0,32,(const int32_t*) face_idx);
 
 	addChild(new SoDirectionalLight);
 	addChild(coords);

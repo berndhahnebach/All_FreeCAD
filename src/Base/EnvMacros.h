@@ -26,7 +26,7 @@
 #	include <direct.h>
 # include <windows.h>
 #endif
-#ifdef FC_OS_LINUX
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 #	include <unistd.h>
 #	include <stdlib.h>
 #	include <string>
@@ -52,7 +52,7 @@ void EnvPrint(const char* sMsg)
 
 void SetEnvironment(const char* sVar, const char* sVal)
 {
-#if defined (FC_OS_LINUX)
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 	setenv(sVar, sVal, 1);
 //#elif defined (FC_OS_WIN32) // Seems not to work properly!
 //	SetEnvironmentVariable(sVar,sVal);
@@ -97,7 +97,7 @@ void SimplifyPath(std::string& sPath)
 	}
 }
 
-#ifdef FC_OS_LINUX
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 std::string FindHomePathUnix(const char* sCall)
 {
 	std::string argv = sCall;
@@ -454,7 +454,7 @@ void SetCasCadeToFreeCADLib(const char* sLib)
 		sTempString3 += "dll";
 		sTempString3 += PATHSEP;
 		sTempString3 += "TKOpenGl.dll";
-#elif defined(FC_OS_LINUX)
+#elif defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 		sTempString3 += sLib;
 		sTempString3 += "lib";
 		sTempString3 += PATHSEP;

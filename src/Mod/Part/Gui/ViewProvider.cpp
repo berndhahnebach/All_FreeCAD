@@ -475,7 +475,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
     h->subElementName = name;
 
     SoIndexedFaceSet * faceset = new SoIndexedFaceSet;
-		faceset->coordIndex.setValues(0,4*nbTriInFace,(const int*) cons);
+		faceset->coordIndex.setValues(0,4*nbTriInFace,(const int32_t*) cons);
 		h->addChild(faceset);
 		FaceRoot->addChild(h);
 

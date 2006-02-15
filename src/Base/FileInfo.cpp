@@ -29,7 +29,7 @@
 # include <assert.h>
 # include <string>
 # include <stdio.h>
-# ifdef FC_OS_LINUX
+# if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 # include <unistd.h>
 # include <sys/stat.h>
 # endif
