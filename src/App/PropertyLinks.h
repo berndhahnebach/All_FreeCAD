@@ -67,7 +67,7 @@ public:
 
 	/** This method returns a string representation of the property
 	 */
-	App::Feature * getValue(void);
+	App::Feature * getValue(void) const;
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);

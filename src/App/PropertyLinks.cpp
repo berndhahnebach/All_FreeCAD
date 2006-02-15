@@ -79,7 +79,7 @@ void PropertyLink::setValue(App::Feature * lValue)
   hasSetValue();
 }
 
-App::Feature * PropertyLink::getValue(void)
+App::Feature * PropertyLink::getValue(void) const
 {
 	return _pcLink;
 }

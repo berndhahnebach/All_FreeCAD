@@ -75,7 +75,7 @@ public:
 
 	/** This method returns a string representation of the property
 	 */
-	long getValue(void);
+	long getValue(void) const;
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -114,7 +114,7 @@ public:
 
 
 	void setValue(double lValue);
-	double getValue(void);
+	double getValue(void) const;
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -193,7 +193,7 @@ public:
 	virtual ~PropertyBool();
 
 	void setValue(bool lValue);
-	bool getValue(void);
+	bool getValue(void) const;
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);

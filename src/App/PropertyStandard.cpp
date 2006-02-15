@@ -75,7 +75,7 @@ void PropertyInteger::setValue(long lValue)
   hasSetValue();
 }
 
-long PropertyInteger::getValue(void)
+long PropertyInteger::getValue(void) const
 {
 	return _lValue;
 }
@@ -143,7 +143,7 @@ void PropertyFloat::setValue(double lValue)
 
 }
 
-double PropertyFloat::getValue(void)
+double PropertyFloat::getValue(void) const
 {
 	return _dValue;
 }
@@ -300,7 +300,7 @@ void PropertyBool::setValue(bool lValue)
 
 }
 
-bool PropertyBool::getValue(void)
+bool PropertyBool::getValue(void) const
 {
 	return _lValue;
 }
