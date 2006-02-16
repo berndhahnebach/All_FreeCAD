@@ -262,6 +262,7 @@ void GLImageBox::getPixFormat(GLenum &pixFormat, GLenum &pixType)
             pixFormat = GL_RGB;
             pixType = GL_UNSIGNED_BYTE;
             break;
+#ifndef FC_OS_CYGWIN
         case IB_CF_BGR24:
             pixFormat = GL_BGR_EXT;
             pixType = GL_UNSIGNED_BYTE;
@@ -274,6 +275,7 @@ void GLImageBox::getPixFormat(GLenum &pixFormat, GLenum &pixType)
             pixFormat = GL_BGR_EXT;
             pixType = GL_UNSIGNED_SHORT;
             break;
+#endif
         case IB_CF_RGBA32:
             pixFormat = GL_RGBA;
             pixType = GL_UNSIGNED_BYTE;
@@ -282,6 +284,7 @@ void GLImageBox::getPixFormat(GLenum &pixFormat, GLenum &pixType)
             pixFormat = GL_RGBA;
             pixType = GL_UNSIGNED_SHORT;
             break;
+#ifndef FC_OS_CYGWIN
         case IB_CF_BGRA32:
             pixFormat = GL_BGRA_EXT;
             pixType = GL_UNSIGNED_BYTE;
@@ -290,6 +293,7 @@ void GLImageBox::getPixFormat(GLenum &pixFormat, GLenum &pixType)
             pixFormat = GL_BGRA_EXT;
             pixType = GL_UNSIGNED_SHORT;
             break;
+#endif
         default:
             // Should never happen
             pixFormat = GL_LUMINANCE;

@@ -33,7 +33,7 @@
 
 #include <Base/Factory.h>
 #include <Base/PyExport.h>
-#include <Base/Time.h>
+#include <Base/TimeInfo.h>
 
 #include <App/DocumentObject.h>
 #include <App/Material.h>
@@ -195,9 +195,9 @@ public:
   /// set the view parameter of this feature touched (cause recomputation of representation)
 	void TouchView(void);
   /// get the touch time
-  Base::Time getTouchTime(void){return touchTime;}
+  Base::TimeInfo getTouchTime(void){return touchTime;}
   /// get the view touch time
-  Base::Time getTouchViewTime(void){return touchViewTime;}
+  Base::TimeInfo getTouchViewTime(void){return touchViewTime;}
 	//@}
 
 
@@ -299,14 +299,14 @@ protected:
   std::string _showMode;
 	//@}
 
-  Base::Time touchTime,touchViewTime,touchPropertyTime;
+  Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;
 
 	//TDF_Label            _cFeatureLabel;
 	int                  _nextFreeLabel;
 
   struct FeatEntry {
     int Label;
-    Base::Time T;
+    Base::TimeInfo T;
   };
   
   std::map<std::string,FeatEntry> _PropertiesMap;

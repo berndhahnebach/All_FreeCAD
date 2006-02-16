@@ -25,7 +25,7 @@
 #define __VIEWPROVIDERFEATURE_H__
 
 #include <Base/Factory.h>
-#include <Base/Time.h>
+#include <Base/TimeInfo.h>
 #include "ViewProvider.h"
 
 class SoMaterial;
@@ -99,7 +99,7 @@ protected:
   FeatItem *pcFeatItem;
 
   int _cLastStatus;
-  Base::Time calcMaterial,calcData;
+  Base::TimeInfo calcMaterial,calcData;
 };
 
 
