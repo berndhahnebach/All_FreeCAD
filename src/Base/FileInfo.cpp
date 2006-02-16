@@ -56,12 +56,13 @@ const char *FileInfo::getTempPath(void)
 #ifdef FC_OS_WIN32
     char buf[MAX_PATH + 2];
     GetTempPath(MAX_PATH + 1,buf);
-#else
-    char buf[256];
-    // implement for LINUX!!!
-    assert(0);
-#endif
     tempPath = buf;
+#else
+  const char* tmp = getenv("TEMP");
+  if ( !tmp ) tmp = getenv("TMP");
+  if ( tmp )
+    tempPath = tmp;
+#endif
   }
 
   return tempPath.c_str();
@@ -72,12 +73,18 @@ string FileInfo::getTempFileName(void)
 #ifdef FC_OS_WIN32
   char buf[MAX_PATH + 2];
   GetTempFileName(getTempPath(),"FCTempFile",0,buf);
-#else
-    char buf[256];
-  // implement for LINUX!!!
-  assert(0);
-#endif
   return string(buf);
+#else
+  const char* tmp = getenv("TEMP");
+  if ( !tmp ) tmp = getenv("TMP");
+  std::string buf;
+  if ( tmp ) { 
+    buf = tmp;
+    buf += "/";
+  }
+  buf += "FCT_tmpfile.tmp";
+  return buf;
+#endif
 }
 
 void FileInfo::makeTemp(const char* Template)

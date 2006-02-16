@@ -24,11 +24,11 @@
 #ifndef GUI_DIALOG_DLGSETTINGSIMAGE_IMP_H
 #define GUI_DIALOG_DLGSETTINGSIMAGE_IMP_H
 
-#include "DlgSettingsImage.h"
-
 #include <Inventor/SoOffscreenRenderer.h> 
 #include <Inventor/SbMatrix.h> 
 #include <qcolor.h>
+
+#include "DlgSettingsImage.h"
 
 namespace Gui {
 namespace Dialog {
@@ -61,29 +61,31 @@ public:
   QColor imageBackgroundColor() const;
   void setImageFormat( SoOffscreenRenderer::Components  );
   SoOffscreenRenderer::Components imageFormat() const;
+  void onSelectedFilter( const QString& );
   //@}
 
   /** @name Matrix handling (MIBA) */
   //@{
   void setMatrix(const SbMatrix &Matrix){_Matrix = Matrix;}
+  virtual void onInsertDateTime();
   virtual void onInsertMIBA();
-  virtual void insertViewMatrix();
+  virtual void onInsertViewMatrix();
   //@}
 
 
 protected:
-  virtual void onAdjustImageSize();
-  virtual void onRatio4();
-  virtual void onRatio16();
-  virtual void onRatio1();
+  virtual void onRatioScreen();
+  virtual void onRatio4x3();
+  virtual void onRatio16x9();
+  virtual void onRatio1x1();
 
-  // helper to force a aspect ratio
+  // helper to force an aspect ratio
   void adjustImageSize(float fRatio);
 
 
 private:
   float _fRatio;
-  float _width, _height;
+  int _width, _height;
   SbMatrix _Matrix;
 };
 

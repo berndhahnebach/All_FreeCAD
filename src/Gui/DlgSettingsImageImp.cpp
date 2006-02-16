@@ -26,8 +26,10 @@
 #ifndef _PreComp_
 # include <qcheckbox.h>
 # include <qcombobox.h>
-# include <qtextedit.h>
+# include <qdatetime.h>
 # include <qmap.h>
+# include <qpushbutton.h>
+# include <qtextedit.h>
 # include <iomanip>
 # include <sstream>
 #endif
@@ -62,7 +64,6 @@ DlgSettingsImageImp::~DlgSettingsImageImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
-
 void DlgSettingsImageImp::onInsertMIBA()
 {
   std::stringstream com;
@@ -96,8 +97,7 @@ void DlgSettingsImageImp::onInsertMIBA()
 
 }
 
-
-void DlgSettingsImageImp::insertViewMatrix()
+void DlgSettingsImageImp::onInsertViewMatrix()
 {
   std::stringstream com;
   com << "Matrix=[" << _Matrix[0][0] <<"," << _Matrix[0][1] <<"," << _Matrix[0][2] <<"," << _Matrix[0][3] << ",";
@@ -108,6 +108,10 @@ void DlgSettingsImageImp::insertViewMatrix()
   textEditComment->setText(QString(com.str().c_str()));
 }
 
+void DlgSettingsImageImp::onInsertDateTime()
+{
+  textEditComment->setText( QDateTime::currentDateTime().toString() );
+}
 
 /**
  * Sets the image size to (\a w, \a h).
@@ -117,11 +121,11 @@ void DlgSettingsImageImp::setImageSize( int w, int h )
   spinWidth->setValue( w );
   spinHeight->setValue( h );
 
-  _width = (float)w;
-  _height = (float)h;
-  _fRatio = _width/_height;
+  // As the image size is in pixel why shouldn't _width and _height be integers?
+  _width  = w;
+  _height = h;
+  _fRatio = (float)_width/(float)_height;
 }
-
 
 /**
  * Sets the image size to \a s.
@@ -131,9 +135,10 @@ void DlgSettingsImageImp::setImageSize( const QSize& s )
   spinWidth->setValue( s.width() );
   spinHeight->setValue( s.height() );
 
-  _width = (float)s.width();
-  _height = (float)s.height();
-  _fRatio = _width/_height;
+  // As the image size is in pixel why shouldn't _width and _height be integers?
+  _width  = s.width();
+  _height = s.height();
+  _fRatio = (float)_width/(float)_height;
 }
 
 /**
@@ -275,9 +280,18 @@ SoOffscreenRenderer::Components DlgSettingsImageImp::imageFormat() const
   }
 }
 
+void DlgSettingsImageImp::onSelectedFilter( const QString& filter )
+{
+  bool ok = ( filter.startsWith("JPG") || filter.startsWith("JPEG") || filter.startsWith("PNG") );	
+  textEditComment->setEnabled( ok );
+  pushButtonInsertTimeDate->setEnabled( ok );
+  pushButtonInsertMatrix->setEnabled( ok );
+  pushButtonInsertMIBA->setEnabled( ok );
+}
+
 void DlgSettingsImageImp::adjustImageSize(float fRatio)
 {
-  // if width has changed then adjust height and vice versa, if both has changed the adjust height
+  // if width has changed then adjust height and vice versa, if both has changed then adjust width
   if ( _height != spinHeight->value() )
   {
     _height = spinHeight->value();
@@ -289,25 +303,24 @@ void DlgSettingsImageImp::adjustImageSize(float fRatio)
     _height = (int)((float)_width/fRatio);
     spinHeight->setValue( (int)_height );
   }
-
 }
 
-void DlgSettingsImageImp::onAdjustImageSize()
+void DlgSettingsImageImp::onRatioScreen()
 {
   adjustImageSize(_fRatio);
 }
 
-void DlgSettingsImageImp::onRatio4()
+void DlgSettingsImageImp::onRatio4x3()
 {
   adjustImageSize(4.0f/3.0f);
 }
- 
-void DlgSettingsImageImp::onRatio16()
+
+void DlgSettingsImageImp::onRatio16x9()
 {
   adjustImageSize(16.0f/9.0f);
 }
 
-void DlgSettingsImageImp::onRatio1()
+void DlgSettingsImageImp::onRatio1x1()
 {
   adjustImageSize(1.0f);
 }

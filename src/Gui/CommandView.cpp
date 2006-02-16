@@ -28,6 +28,7 @@
 # include <qcursor.h>
 # include <qdatetime.h>
 # include <qdesktopwidget.h>
+# include <qfileinfo.h>
 # include <qimage.h>
 # include <qmessagebox.h>
 # include <qtextedit.h>
@@ -502,31 +503,6 @@ StdViewScreenShot::StdViewScreenShot()
   iAccel      = 0;
 }
 
-void writePicFileComment(const char* FileName,const char* Comment)
-{
-  Base::FileInfo file(FileName);
-
-  if (file.extension() == "jpg" || file.extension() == "jpeg")
-  {
-    if ( Comment )
-      writeJPEGComment(FileName,(file.filePath()+file.fileNamePure() + "MIBA." + file.extension()).c_str() ,Comment);
-  }
-  else if ( file.hasExtension("png") )
-  {
-    QImage img;
-    img.load( FileName, "PNG" );
-    img.setText("Title", 0, file.fileNamePure().c_str());
-    img.setText("Author", 0, "FreeCAD (http://free-cad.sourceforge.net)");
-    if ( Comment )
-      img.setText("Description", 0, Comment);
-    else
-      img.setText("Description", 0, "Screenshot created by FreeCAD");
-    img.setText("Creation Time", 0, QDateTime::currentDateTime().toString( "dddd MMMM dd yyyy hh:mm:ss" ));
-    img.setText("Software", 0, App::Application::Config()["ExeName"].c_str());
-    img.save( FileName, "PNG" );
-  }
-}
-
 void StdViewScreenShot::activated(int iMsg)
 {
   View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
@@ -584,19 +560,29 @@ void StdViewScreenShot::activated(int iMsg)
         }
       }
 
-      Base::FileInfo file(fn.latin1());
-
-      if(opt->textEditComment->text() != "" && (file.extension() == "jpg" || file.extension() == "jpeg"|| file.extension() == "png"))
+      if ( !opt->textEditComment->text().isEmpty() && (format == "JPG" || format == "JPEG") )
       {
         std::string tempFileName = Base::FileInfo::getTempFileName();
-
         ok = view->getViewer()->makeScreenShot( tempFileName.c_str(), format.latin1(), w, h, r, (int)opt->imageFormat(), opt->imageBackgroundColor() );
-
         writeJPEGComment(tempFileName.c_str(),fn.latin1() ,opt->textEditComment->text());   
-
-        //writePicFileComment(fn.latin1(),opt->textEditComment->text());
       }else{
         ok = view->getViewer()->makeScreenShot( fn.latin1(), format.latin1(), w, h, r, (int)opt->imageFormat(), opt->imageBackgroundColor() );
+        // Reopen PNG images and embed information into
+        if ( ok && format == "PNG" )
+        {
+          QFileInfo fi(fn);
+          QImage img;
+          img.load( fn, "PNG" );
+          img.setText("Title", 0, fi.baseName() );
+          img.setText("Author", 0, "FreeCAD (http://free-cad.sourceforge.net)");
+          if ( opt->textEditComment->text().isEmpty() )
+            img.setText("Description", 0, "Screenshot created by FreeCAD");
+          else
+            img.setText("Description", 0, opt->textEditComment->text() );
+          img.setText("Creation Time", 0, QDateTime::currentDateTime().toString());
+          img.setText("Software", 0, App::Application::Config()["ExeName"].c_str());
+          img.save( fn, "PNG" );
+        }
       }
 
       QApplication::restoreOverrideCursor();
