@@ -25,7 +25,9 @@
 #define GUI_DIALOG_DLGSETTINGSIMAGE_IMP_H
 
 #include "DlgSettingsImage.h"
+
 #include <Inventor/SoOffscreenRenderer.h> 
+#include <Inventor/SbMatrix.h> 
 #include <qcolor.h>
 
 namespace Gui {

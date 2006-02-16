@@ -22,18 +22,18 @@
 /** \file FCConfig.h
  *  \brief Include all needed defines and macros
  *  Here all defines and macro switching is done for FreeCAD.
- *  Every used Library has its section to define the congiguration.
- *  This file keeps the makefiles and Project files cleaner.
+ *  Every used library has its own section to define the configuration.
+ *  This file keeps the makefiles and project files cleaner.
  */
 
 
-#ifndef __FCCONFIG_H__
-#define __FCCONFIG_H__
+#ifndef FC_CONFIG_H
+#define FC_CONFIG_H
 
 
 
 //**************************************************************************
-// switching the Opterating systems
+// switching the operating systems
 
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)
@@ -48,9 +48,20 @@
 #	ifndef FC_OS_LINUX
 #	define FC_OS_LINUX
 #	endif
-#elif defined(CYGWIN)
+#elif defined(__CYGWIN__)
 #	ifndef FC_OS_CYGWIN
 #	define FC_OS_CYGWIN
+// Avoid conflicts with Inventor
+#	define HAVE_INT8_T
+#	define HAVE_UINT8_T
+#	define HAVE_INT16_T
+#	define HAVE_UINT16_T
+#	define HAVE_INT32_T
+#	define HAVE_UINT32_T
+#	define HAVE_INT64_T
+#	define HAVE_UINT64_T
+#	define HAVE_INTPTR_T
+#	define HAVE_UINTPTR_T
 #	endif
 //#elif defined(sun) || defined(__sun) || defined(__sun__)
 //#	if defined(__SVR4)
@@ -73,14 +84,14 @@
 //#elif defined(__GNU__)
 //#	define FC_OS_GNU
 #else
-#	error "FreeCAD was not ported to this os yet. For help see free-cad.sourceforge.net"
+#	error "FreeCAD is not ported to this OS yet. For help see free-cad.sourceforge.net"
 #endif
 
-#	ifdef FC_OS_WIN32
-#		define PATHSEP '\\'
-#	else
-#		define PATHSEP '/'
-#	endif
+#ifdef FC_OS_WIN32
+#	define PATHSEP '\\'
+#else
+#	define PATHSEP '/'
+#endif
 
 
 //**************************************************************************
@@ -95,7 +106,7 @@
 #	define _STLP_USE_ABBREVS
 // switch on StlPort debuging, need the libs build!
 //#	define __STL_DEBUG
-#define _CRT_SECURE_NO_DEPRECATE 
+#	define _CRT_SECURE_NO_DEPRECATE 
 // Uncomment _STLP_USE_NEWALLOC to force allocator<T> to use plain "new"
 // instead of STLport optimized node allocator engine.
 // Note: This is needed to free memory used e.g. in std::set
@@ -106,15 +117,17 @@
 //**************************************************************************
 // Xerces
 
-#ifdef FC_DEBUG
-#	define DOMLIBNAME "xerces-c_2D.lib"
-#else
-#	define DOMLIBNAME "xerces-c_2.lib"
+#ifdef _MSC_VER
+#	ifdef FC_DEBUG
+#		define DOMLIBNAME "xerces-c_2D.lib"
+#	else
+#		define DOMLIBNAME "xerces-c_2.lib"
+#	endif
 #endif
 
 
 
-
+//FIXME: Move to modules where OCC is needed
 //**************************************************************************
 // Open CasCade
 
@@ -151,13 +164,12 @@
 
 
 //**************************************************************************
-// QT
-#define QTLIBNAME "qt-mtnc321.lib"
-//#define QTLIBNAME "qt-mt.lib"
+// Qt
 
-
-#ifndef QT_DLL
-# define QT_DLL
+#if defined (FC_OS_WIN32) || defined(FC_OS_CYGWIN)
+# ifndef QT_DLL
+#  define QT_DLL
+# endif
 #endif
 
 #ifndef QT_THREAD_SUPPORT
@@ -168,84 +180,64 @@
 # define QT_ALTERNATE_QTSMANIP
 #endif
 
-//**************************************************************************
-// Coin3D
-
-#ifndef COIN_DLL
-#	define COIN_DLL
+#ifdef _MSC_VER
+#	define QTLIBNAME "qt-mtnc321.lib"
+//#define QTLIBNAME "qt-mt.lib"
 #endif
 
-#ifdef FC_DEBUG
-#	define INVENTORLIBNAME "coin2.lib" // should be "coin2d.lib"
-#else
-#	define INVENTORLIBNAME "coin2.lib"
+//**************************************************************************
+// Coin3D
+#if defined (FC_OS_WIN32) || defined(FC_OS_CYGWIN)
+# ifndef COIN_DLL
+#	 define COIN_DLL
+# endif
+#endif
+
+#ifdef _MSC_VER
+#	ifdef FC_DEBUG
+#		define INVENTORLIBNAME "coin2.lib" // should be "coin2d.lib"
+#	else
+#		define INVENTORLIBNAME "coin2.lib"
+#	endif
 #endif
 
 //**************************************************************************
 // SoQt
 
-#ifdef FC_DEBUG
-#	define SOQTLIBNAME "soqt1.lib" // should be soqt1d.lib
-#else
-#	define SOQTLIBNAME "soqt1.lib"
+#if defined (FC_OS_WIN32) || defined(FC_OS_CYGWIN)
+# ifndef SOQT_DLL
+#   define SOQT_DLL
+# endif
 #endif
 
-#ifdef FC_OS_WIN32
-
-#ifndef SOQT_DLL
-# define SOQT_DLL
-#endif
-
-	/* Define to use GetEnvironmentVariable() instead of getenv() */
-//#	define HAVE_GETENVIRONMENTVARIABLE 1
-	/* define if the GL header should be included as GL/gl.h */
-//#	define HAVE_GL_GL_H 1
-	/* Define this to 1 if operator==(QGLFormat&, QGLFormat&) is available */
-//#	define HAVE_QGLFORMAT_EQ_OP 1
-	/* Define this to 1 if QGLFormat::setOverlay() is available */
-//#	define HAVE_QGLFORMAT_SETOVERLAY 1
-	/* Define this to 1 if QGLWidget::setAutoBufferSwap() is available */
-//#	define HAVE_QGLWIDGET_SETAUTOBUFFERSWAP 1
-	/* Define this if Qt::Keypad is available */
-//#	define HAVE_QT_KEYPAD_DEFINE 1
-	/* Define this if QWidget::showFullScreen() is available */
-//#	define HAVE_QWIDGET_SHOWFULLSCREEN 1
-	/* Define to enable use of Inventor feature */
-//#	define HAVE_SOCAMERA_SETSTEREOMODE 1
-	/* Define to enable use of Inventor feature */
-//#	define HAVE_SOKEYBOARDEVENT_DELETE 1
-	/* Define to enable use of Inventor feature */
-//#	define HAVE_SOMOUSEBUTTONEVENT_BUTTON5 1
-	/* Define to enable use of the Open Inventor SoPolygonOffset node */
-//#	define HAVE_SOPOLYGONOFFSET 1
-	/* Define to 1 if you have the <sys/types.h> header file. */
-//#	define HAVE_SYS_TYPES_H 1
-	/* Define to 1 if you have the <windows.h> header file. */
-//#	define HAVE_WINDOWS_H 1
-
-
+#ifdef _MSC_VER
+#	ifdef FC_DEBUG
+#		define SOQTLIBNAME "soqt1.lib" // should be soqt1d.lib
+#	else
+#		define SOQTLIBNAME "soqt1.lib"
+#	endif
 #endif
 
 
 //**************************************************************************
 // Exception handling
 
-// dont catch a c++ exception in DEBUG!
+// Don't catch C++ exceptions in DEBUG!
 #ifdef FC_DEBUG
-#  define DONT_CATCH_CXX_EXCEPTIONS 1
-#	 define DBG_TRY
-#	 define DBG_CATCH(X)  
+# define DONT_CATCH_CXX_EXCEPTIONS 1
+#	define DBG_TRY
+#	define DBG_CATCH(X)  
 #else
 /// used to switch a catch with the debug state
-#	 define DBG_TRY try	{
+#	define DBG_TRY try	{
 /// see docu DBGTRY
-#	 define DBG_CATCH(X) }catch(...) { X }
+#	define DBG_CATCH(X) }catch(...) { X }
 #endif
 
 
 //**************************************************************************
-// windows import export DLL defines
-#ifdef FC_OS_WIN32
+// Windows import export DLL defines
+#if defined (FC_OS_WIN32) || defined(FC_OS_CYGWIN)
 #	ifdef FCApp
 #		define AppExport  __declspec(dllexport)
 #	else
@@ -275,16 +267,15 @@
 
 
 //**************************************************************************
-// here get the warnings of to long specifieres disabled (needet for VC6)
+// here get the warnings of too long specifiers disabled (needed for VC6)
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
 #	pragma warning( disable : 4503 )
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #	pragma warning( disable : 4290 )  // not implemented throw specification
 #	pragma warning( disable : 4996 )  // supress depricated warning for e.g. open()...
-// use precompiled header
-#	define _PreComp_
+#	define _PreComp_                  // use precompiled header
 #endif
 
 
-#endif //__CONFIG_H__
+#endif //FC_CONFIG_H

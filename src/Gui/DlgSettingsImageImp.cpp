@@ -26,7 +26,10 @@
 #ifndef _PreComp_
 # include <qcheckbox.h>
 # include <qcombobox.h>
+# include <qtextedit.h>
 # include <qmap.h>
+# include <iomanip>
+# include <sstream>
 #endif
 
 #include "DlgSettingsImageImp.h"
@@ -279,12 +282,12 @@ void DlgSettingsImageImp::adjustImageSize(float fRatio)
   {
     _height = spinHeight->value();
     _width = (int)((float)_height*fRatio);
-    spinWidth->setValue( _width );
+    spinWidth->setValue( (int)_width );
   } else // if( _width != spinWidth->value() )
   {
     _width = spinWidth->value();
     _height = (int)((float)_width/fRatio);
-    spinHeight->setValue( _height );
+    spinHeight->setValue( (int)_height );
   }
 
 }
