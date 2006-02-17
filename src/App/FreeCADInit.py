@@ -36,7 +36,7 @@ import FreeCAD
 try:
 	import sys,os,dircache
 except:
-	FreeCAD.PrintError("\n\nSeams the python standard libs are not installed, bailing out!\n\n")
+	FreeCAD.PrintError("\n\nSeems the python standard libs are not installed, bailing out!\n\n")
 	raise
 
 def InitDocumentation():

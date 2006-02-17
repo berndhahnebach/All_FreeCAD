@@ -252,6 +252,12 @@ void Command::testActive(void)
 {
   if(!_pcAction) return;
 
+  if ( _blockCmd )
+  {
+    _pcAction->setEnabled ( false );
+    return;
+  }
+
   if ( StdCmdDescription::inDescriptionMode () )
   {
     _pcAction->setEnabled( true );
@@ -319,6 +325,13 @@ void Command::commitCommand(void)
 void Command::abortCommand(void)
 {
   getGuiApplication()->activeDocument()->abortCommand();
+}
+
+bool Command::_blockCmd = false;
+
+void Command::blockCommand(bool block)
+{
+  Command::_blockCmd = block;
 }
 
 /// Run a App level Action 
@@ -918,3 +931,4 @@ void CommandManager::testActive(void)
     It->second->testActive();
   }
 }
+

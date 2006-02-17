@@ -206,6 +206,8 @@ public:
     /// Action alters only the Gui
     Gui
   };
+  /// Blocks all command objects
+  static void blockCommand(bool);
   /// Run a App level Action 
   static void doCommand(DoCmd_Type eType,const char* sCmd,...);
   /// translate a string to a python string literal (needed e.g. in file names for windows...)
@@ -253,6 +255,8 @@ protected:
   const char* sName;
   const char* sHelpUrl;
   //@}
+private:
+  static bool _blockCmd;
 };
 
 /** The ToggleCommand class
