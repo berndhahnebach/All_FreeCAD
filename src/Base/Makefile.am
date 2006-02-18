@@ -103,8 +103,8 @@ libFreeCADBase_la_SOURCES=\
 		Stream.h \
 		Swap.cpp \
 		Swap.h \
-		Time.cpp \
-		Time.h \
+		TimeInfo.cpp \
+		TimeInfo.h \
 		Type.cpp \
 		Type.h \
 		Tools2D.cpp \
