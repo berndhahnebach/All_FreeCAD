@@ -20,7 +20,7 @@ FreeCADpov.h: FreeCADpov
 
 
 # the library search path.
-libRaytracing_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libRaytracing_la_LDFLAGS = -L../../../Base -L../../../App -L../../Part/App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRaytracing_la_CPPFLAGS = -DAppPartExport= -DAppRaytracingExport= -DFeatureRayExportPov=
 
 libRaytracing_la_LIBADD   = \
@@ -29,7 +29,7 @@ libRaytracing_la_LIBADD   = \
 		-lPart
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I../../../
+INCLUDES= $(all_includes) -I$(OCC_INC) -I../../../
 
 libdir = $(prefix)/Mod/Raytracing
 

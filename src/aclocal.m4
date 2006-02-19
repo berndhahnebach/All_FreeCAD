@@ -4615,7 +4615,266 @@ fi
 AC_MSG_RESULT([$SED])
 ])
 
-dnl @synopsis BNV_HAVE_QT [--with-Qt-dir=DIR] [--with-Qt-lib=LIB]
+# Usage:
+#   SIM_AC_HAVE_COIN_IFELSE( IF-FOUND, IF-NOT-FOUND )
+#
+# Description:
+#   This macro locates the Coin development system.  If it is found,
+#   the set of variables listed below are set up as described and made
+#   available to the configure script.
+#
+#   The $sim_ac_coin_desired variable can be set to false externally to
+#   make Coin default to be excluded.
+#
+# Autoconf Variables:
+# > $sim_ac_coin_desired     true | false (defaults to true)
+# < $sim_ac_coin_avail       true | false
+# < $sim_ac_coin_cppflags    (extra flags the preprocessor needs)
+# < $sim_ac_coin_cflags      (extra flags the C compiler needs)
+# < $sim_ac_coin_cxxflags    (extra flags the C++ compiler needs)
+# < $sim_ac_coin_ldflags     (extra flags the linker needs)
+# < $sim_ac_coin_libs        (link library flags the linker needs)
+# < $sim_ac_coin_datadir     (location of Coin data files)
+# < $sim_ac_coin_includedir  (location of Coin headers)
+# < $sim_ac_coin_version     (the libCoin version)
+# < $sim_ac_coin_msvcrt      (the MSVC++ C library Coin was built with)
+# < $sim_ac_coin_configcmd   (the path to coin-config or "false")
+#
+# Authors:
+#   Lars J. Aas, <larsa@sim.no>
+#   Morten Eriksen, <mortene@sim.no>
+#
+# TODO:
+#
+
+AC_DEFUN([SIM_AC_HAVE_COIN_IFELSE], [
+AC_PREREQ([2.14a])
+
+# official variables
+sim_ac_coin_avail=false
+sim_ac_coin_cppflags=
+sim_ac_coin_cflags=
+sim_ac_coin_cxxflags=
+sim_ac_coin_ldflags=
+sim_ac_coin_libs=
+sim_ac_coin_datadir=
+sim_ac_coin_includedir=
+sim_ac_coin_version=
+
+# internal variables
+: ${sim_ac_coin_desired=true}
+sim_ac_coin_extrapath=
+
+AC_ARG_WITH([coin],
+AC_HELP_STRING([--with-coin], [enable use of Coin [[default=yes]]])
+AC_HELP_STRING([--with-coin=DIR], [give prefix location of Coin]),
+  [ case $withval in
+    no)  sim_ac_coin_desired=false ;;
+    yes) sim_ac_coin_desired=true ;;
+    *)   sim_ac_coin_desired=true
+         sim_ac_coin_extrapath=$withval ;;
+    esac],
+  [])
+
+case $build in
+*-mks ) sim_ac_pathsep=";" ;;
+* )     sim_ac_pathsep="${PATH_SEPARATOR}" ;;
+esac
+
+if $sim_ac_coin_desired; then
+  sim_ac_path=$PATH
+  test -z "$sim_ac_coin_extrapath" || ## search in --with-coin path
+    sim_ac_path="$sim_ac_coin_extrapath/bin${sim_ac_pathsep}$sim_ac_path"
+  test x"$prefix" = xNONE ||          ## search in --prefix path
+    sim_ac_path="$sim_ac_path${sim_ac_pathsep}$prefix/bin"
+
+  AC_PATH_PROG(sim_ac_coin_configcmd, coin-config, false, $sim_ac_path)
+
+  if ! test "X$sim_ac_coin_configcmd" = "Xfalse"; then
+    test -n "$CONFIG" &&
+      $sim_ac_coin_configcmd --alternate=$CONFIG >/dev/null 2>/dev/null &&
+      sim_ac_coin_configcmd="$sim_ac_coin_configcmd --alternate=$CONFIG"
+  fi
+
+  if $sim_ac_coin_configcmd; then
+    sim_ac_coin_version=`$sim_ac_coin_configcmd --version`
+    sim_ac_coin_cppflags=`$sim_ac_coin_configcmd --cppflags`
+    sim_ac_coin_cflags=`$sim_ac_coin_configcmd --cflags 2>/dev/null`
+    sim_ac_coin_cxxflags=`$sim_ac_coin_configcmd --cxxflags`
+    sim_ac_coin_ldflags=`$sim_ac_coin_configcmd --ldflags`
+    sim_ac_coin_libs=`$sim_ac_coin_configcmd --libs`
+    sim_ac_coin_datadir=`$sim_ac_coin_configcmd --datadir`
+    # Hide stderr on the following, as ``--includedir'', ``--msvcrt''
+    # and ``--cflags'' options were added late to coin-config.
+    sim_ac_coin_includedir=`$sim_ac_coin_configcmd --includedir 2>/dev/null`
+    sim_ac_coin_msvcrt=`$sim_ac_coin_configcmd --msvcrt 2>/dev/null`
+    sim_ac_coin_cflags=`$sim_ac_coin_configcmd --cflags 2>/dev/null`
+    AC_CACHE_CHECK(
+      [if we can compile and link with the Coin library],
+      sim_cv_coin_avail,
+      [sim_ac_save_cppflags=$CPPFLAGS
+      sim_ac_save_cxxflags=$CXXFLAGS
+      sim_ac_save_ldflags=$LDFLAGS
+      sim_ac_save_libs=$LIBS
+      CPPFLAGS="$CPPFLAGS $sim_ac_coin_cppflags"
+      CXXFLAGS="$CXXFLAGS $sim_ac_coin_cxxflags"
+      LDFLAGS="$LDFLAGS $sim_ac_coin_ldflags"
+      LIBS="$sim_ac_coin_libs $LIBS"
+      AC_LANG_PUSH(C++)
+
+      AC_TRY_LINK(
+        [#include <Inventor/SoDB.h>],
+        [SoDB::init();],
+        [sim_cv_coin_avail=true],
+        [sim_cv_coin_avail=false])
+
+      AC_LANG_POP
+      CPPFLAGS=$sim_ac_save_cppflags
+      CXXFLAGS=$sim_ac_save_cxxflags
+      LDFLAGS=$sim_ac_save_ldflags
+      LIBS=$sim_ac_save_libs
+    ])
+    sim_ac_coin_avail=$sim_cv_coin_avail
+    if ! $sim_ac_coin_avail; then
+      AC_MSG_WARN([
+Compilation and/or linking with the Coin main library SDK failed, for
+unknown reason. If you are familiar with configure-based configuration
+and building, investigate the 'config.log' file for clues.
+
+If you can not figure out what went wrong, please forward the 'config.log'
+file to the email address <coin-support@coin3d.org> and ask for help by
+describing the situation where this failed.
+])
+    fi
+  else # no 'coin-config' found
+    locations=`IFS="${sim_ac_pathsep}"; for p in $sim_ac_path; do echo " -> $p/coin-config"; done`
+    AC_MSG_WARN([cannot find 'coin-config' at any of these locations:
+$locations])
+    AC_MSG_WARN([
+Need to be able to run 'coin-config' to figure out how to build and link
+against the Coin library. To rectify this problem, you most likely need
+to a) install Coin if it has not been installed, b) add the Coin install
+bin/ directory to your PATH environment variable.
+])
+  fi
+fi
+
+if $sim_ac_coin_avail; then
+  ifelse([$1], , :, [$1])
+else
+  ifelse([$2], , :, [$2])
+fi
+]) # SIM_AC_HAVE_COIN_IFELSE()
+
+
+# Usage:
+#   SIM_AC_HAVE_SOQT_IFELSE( IF-FOUND, IF-NOT-FOUND )
+#
+# Description:
+#   This macro locates the SoQt development system.  If it is found,
+#   the set of variables listed below are set up as described and made
+#   available to the configure script.
+#
+#   The $sim_ac_soqt_desired variable can be set to false externally to
+#   make SoQt default to be excluded.
+#
+# Autoconf Variables:
+# > $sim_ac_soqt_desired     true | false (defaults to true)
+# < $sim_ac_soqt_avail       true | false
+# < $sim_ac_soqt_cppflags    (extra flags the preprocessor needs)
+# < $sim_ac_soqt_ldflags     (extra flags the linker needs)
+# < $sim_ac_soqt_libs        (link library flags the linker needs)
+# < $sim_ac_soqt_datadir     (location of SoQt data files)
+# < $sim_ac_soqt_includedir  (location of SoQt headers)
+# < $sim_ac_soqt_version     (the libSoQt version)
+#
+# Authors:
+#   Lars J. Aas, <larsa@sim.no>
+#   Morten Eriksen, <mortene@sim.no>
+#
+# TODO:
+#
+
+AC_DEFUN([SIM_AC_HAVE_SOQT_IFELSE], [
+AC_PREREQ([2.14a])
+
+# official variables
+sim_ac_soqt_avail=false
+sim_ac_soqt_cppflags=
+sim_ac_soqt_ldflags=
+sim_ac_soqt_libs=
+sim_ac_soqt_datadir=
+sim_ac_soqt_includedir=
+sim_ac_soqt_version=
+
+# internal variables
+: ${sim_ac_soqt_desired=true}
+sim_ac_soqt_extrapath=
+
+AC_ARG_WITH([soqt], AC_HELP_STRING([--without-soqt], [disable use of SoQt]))
+AC_ARG_WITH([soqt], AC_HELP_STRING([--with-soqt], [enable use of SoQt]))
+AC_ARG_WITH([soqt],
+  AC_HELP_STRING([--with-soqt=DIR], [give prefix location of SoQt]),
+  [ case $withval in
+    no)  sim_ac_soqt_desired=false ;;
+    yes) sim_ac_soqt_desired=true ;;
+    *)   sim_ac_soqt_desired=true
+         sim_ac_soqt_extrapath=$withval ;;
+    esac],
+  [])
+
+if $sim_ac_soqt_desired; then
+  sim_ac_path=$PATH
+  test -z "$sim_ac_soqt_extrapath" ||   ## search in --with-soqt path
+    sim_ac_path=$sim_ac_soqt_extrapath/bin:$sim_ac_path
+  test x"$prefix" = xNONE ||          ## search in --prefix path
+    sim_ac_path=$sim_ac_path:$prefix/bin
+
+  AC_PATH_PROG(sim_ac_soqt_configcmd, soqt-config, false, $sim_ac_path)
+  if $sim_ac_soqt_configcmd; then
+    sim_ac_soqt_cppflags=`$sim_ac_soqt_configcmd --cppflags`
+    sim_ac_soqt_ldflags=`$sim_ac_soqt_configcmd --ldflags`
+    sim_ac_soqt_libs=`$sim_ac_soqt_configcmd --libs`
+    sim_ac_soqt_datadir=`$sim_ac_soqt_configcmd --datadir`
+    sim_ac_soqt_includedir=`$sim_ac_soqt_configcmd --includedir`
+    sim_ac_soqt_version=`$sim_ac_soqt_configcmd --version`
+    AC_CACHE_CHECK(
+      [whether libSoQt is available],
+      sim_cv_soqt_avail,
+      [sim_ac_save_cppflags=$CPPFLAGS
+      sim_ac_save_ldflags=$LDFLAGS
+      sim_ac_save_libs=$LIBS
+      CPPFLAGS="$CPPFLAGS $sim_ac_soqt_cppflags"
+      LDFLAGS="$LDFLAGS $sim_ac_soqt_ldflags"
+      LIBS="$sim_ac_soqt_libs $LIBS"
+      AC_LANG_PUSH(C++)
+      AC_TRY_LINK(
+        [#include <Inventor/Qt/SoQt.h>],
+        [(void)SoQt::init((const char *)0L);],
+        [sim_cv_soqt_avail=true],
+        [sim_cv_soqt_avail=false])
+      AC_LANG_POP
+      CPPFLAGS=$sim_ac_save_cppflags
+      LDFLAGS=$sim_ac_save_ldflags
+      LIBS=$sim_ac_save_libs
+    ])
+    sim_ac_soqt_avail=$sim_cv_soqt_avail
+  else
+    locations=`IFS=:; for p in $sim_ac_path; do echo " -> $p/soqt-config"; done`
+    AC_MSG_WARN([cannot find 'soqt-config' at any of these locations:
+$locations])
+  fi
+fi
+
+if $sim_ac_soqt_avail; then
+  ifelse([$1], , :, [$1])
+else
+  ifelse([$2], , :, [$2])
+fi
+]) # SIM_AC_HAVE_SOQT_IFELSE()
+
+
+dnl @synopsis BNV_HAVE_QT [--with-Qt-dir=DIR] [--with-Qt-lib-dir=DIR] [--with-Qt-lib=LIB]
 dnl @synopsis BNV_HAVE_QT [--with-Qt-include-dir=DIR] [--with-Qt-bin-dir=DIR] [--with-Qt-lib-dir=DIR] [--with-Qt-lib=LIB]
 dnl
 dnl @summary Search for Trolltech's Qt GUI framework.
@@ -4693,23 +4952,36 @@ dnl given in stead of a --with-Qt-*, "have_qt" is set to "no" and the
 dnl other variables are set to the empty string.
 dnl
 dnl @category InstalledPackages
-dnl @author Bastiaan Veelo <Bastiaan.N.Veelo@ntnu.no>
-dnl @version 2005-01-24
+dnl @author Bastiaan Veelo <Bastiaan@Veelo.net>
+dnl @version 2006-02-13
 dnl @license AllPermissive
 
-dnl Copyright (C) 2001, 2002, 2003, 2005, Bastiaan Veelo
-dnl Copying and distribution of this file, with or without modification,
-dnl are permitted in any medium without royalty provided the copyright
-dnl notice and this notice are preserved.
+dnl Copyright (C) 2001, 2002, 2003, 2005, 2006 Bastiaan Veelo
+
+dnl THANKS! This code includes bug fixes and contributions made by:
+dnl Tim McClarren,
+dnl Dennis R. Weilert,
+dnl Qingning Huo,
+dnl Brian Mingus,
+dnl Jens Hannemann,
+dnl Pavel Roskin.
+
+dnl ChangeLog
+dnl 2006-02-13  * Check compiler return value instead of parsing the error stream,
+dnl               which detected warnings as false negatives (due to Jens Hannemann).
+dnl 2006-02-02  * Spelling of "Success".
+dnl             * Fixed unsave test for $bnv_qt_lib without quotes.
+dnl             * Put dnl in front of all comments.
+dnl             * Changed -l$bnv_qt_lib_dir into -L$bnv_qt_lib_dir (all due to Pavel Roskin).
+dnl 2006-01-19  * Support for 64bit architectures.
+dnl             * Updated documentation.
+dnl 2006-01-18: * Fix "cat: bnv_qt_test.c: No such file or directory" (due to Jens Hannemann).
+dnl             * Hide output of failing ls.
+dnl 2006-01-11: * Check in /Developer on Mac OS X; Check in $QTDIR (due to Brian Mingus).
 
 dnl Calls BNV_PATH_QT_DIRECT (contained in this file) as a subroutine.
 AC_DEFUN([BNV_HAVE_QT],
 [
-  dnl THANKS! This code includes bug fixes and contributions made by:
-  dnl Tim McClarren,
-  dnl Dennis R. Weilert,
-  dnl Qingning Huo.
-
   AC_REQUIRE([AC_PROG_CXX])
   AC_REQUIRE([AC_PATH_X])
   AC_REQUIRE([AC_PATH_XTRA])
@@ -4717,10 +4989,11 @@ AC_DEFUN([BNV_HAVE_QT],
   AC_MSG_CHECKING(for Qt)
 
   AC_ARG_WITH([Qt-dir],
-    [  --with-Qt-dir=DIR       DIR is equal to \$QTDIR if you have followed the
+    [  --with-Qt-dir=DIR       DIR is equal to $QTDIR if you have followed the
                           installation instructions of Trolltech. Header
                           files are in DIR/include, binary utilities are
-                          in DIR/bin and the library is in DIR/lib])
+                          in DIR/bin. The library is in DIR/lib, unless
+			  --with-Qt-lib-dir is also set.])
   AC_ARG_WITH([Qt-include-dir],
     [  --with-Qt-include-dir=DIR
                           Qt header files are in DIR])
@@ -4806,7 +5079,7 @@ AC_DEFUN([BNV_HAVE_QT],
   fi   # $have_qt reflects the system status
   if test x"$have_qt" = xyes; then
     QT_CXXFLAGS="-I$bnv_qt_include_dir"
-    if test $bnv_qt_lib = "qt-mt"; then
+    if test x"$bnv_qt_lib" = xqt-mt; then
         QT_CXXFLAGS="$QT_CXXFLAGS -DQT_THREAD_SUPPORT"
     fi
     QT_DIR="$bnv_qt_dir"
@@ -4891,34 +5164,30 @@ int main( int argc, char **argv )
 EOF
 
       bnv_cv_qt_test_result="failure"
-      bnv_try_1="$QT_MOC bnv_qt_test.h -o moc_bnv_qt_test.$ac_ext >/dev/null 2>bnv_qt_test_1.out"
+      bnv_try_1="$QT_MOC bnv_qt_test.h -o moc_bnv_qt_test.$ac_ext >/dev/null 2>/dev/null"
       AC_TRY_EVAL(bnv_try_1)
-      bnv_err_1=`grep -v '^ *+' bnv_qt_test_1.out | grep -v "^bnv_qt_test.h\$"`
-      if test x"$bnv_err_1" != x; then
+      if test x"$ac_status" != x0; then
         echo "$bnv_err_1" >&AC_FD_CC
         echo "configure: could not run $QT_MOC on:" >&AC_FD_CC
         cat bnv_qt_test.h >&AC_FD_CC
       else
-        bnv_try_2="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o moc_bnv_qt_test.o moc_bnv_qt_test.$ac_ext >/dev/null 2>bnv_qt_test_2.out"
+        bnv_try_2="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o moc_bnv_qt_test.o moc_bnv_qt_test.$ac_ext >/dev/null 2>/dev/null"
         AC_TRY_EVAL(bnv_try_2)
-        bnv_err_2=`grep -v '^ *+' bnv_qt_test_2.out | grep -v "^bnv_qt_test.{$ac_ext}\$"`
-        if test x"$bnv_err_2" != x; then
+        if test x"$ac_status" != x0; then
           echo "$bnv_err_2" >&AC_FD_CC
           echo "configure: could not compile:" >&AC_FD_CC
-          cat bnv_qt_test.$ac_ext >&AC_FD_CC
+          cat moc_bnv_qt_test.$ac_ext >&AC_FD_CC
         else
-          bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o bnv_qt_main.o bnv_qt_main.$ac_ext >/dev/null 2>bnv_qt_test_3.out"
+          bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o bnv_qt_main.o bnv_qt_main.$ac_ext >/dev/null 2>/dev/null"
           AC_TRY_EVAL(bnv_try_3)
-          bnv_err_3=`grep -v '^ *+' bnv_qt_test_3.out | grep -v "^bnv_qt_main.{$ac_ext}\$"`
-          if test x"$bnv_err_3" != x; then
+          if test x"$ac_status" != x0; then
             echo "$bnv_err_3" >&AC_FD_CC
             echo "configure: could not compile:" >&AC_FD_CC
             cat bnv_qt_main.$ac_ext >&AC_FD_CC
           else
-            bnv_try_4="$CXX $QT_LIBS $LIBS -o bnv_qt_main bnv_qt_main.o moc_bnv_qt_test.o >/dev/null 2>bnv_qt_test_4.out"
+            bnv_try_4="$CXX $QT_LIBS $LIBS -o bnv_qt_main bnv_qt_main.o moc_bnv_qt_test.o >/dev/null 2>/dev/null"
             AC_TRY_EVAL(bnv_try_4)
-            bnv_err_4=`grep -v '^ *+' bnv_qt_test_4.out`
-            if test x"$bnv_err_4" != x; then
+            if test x"$ac_status" != x0; then
               echo "$bnv_err_4" >&AC_FD_CC
             else
               bnv_cv_qt_test_result="success"
@@ -4935,14 +5204,13 @@ EOF
     fi
 
     rm -f bnv_qt_test.h moc_bnv_qt_test.$ac_ext moc_bnv_qt_test.o \
-          bnv_qt_main.$ac_ext bnv_qt_main.o bnv_qt_main \
-          bnv_qt_test_1.out bnv_qt_test_2.out bnv_qt_test_3.out bnv_qt_test_4.out
+          bnv_qt_main.$ac_ext bnv_qt_main.o bnv_qt_main
   fi
 ])
 
 dnl Internal subroutine of BNV_HAVE_QT
 dnl Set bnv_qt_dir bnv_qt_include_dir bnv_qt_bin_dir bnv_qt_lib_dir bnv_qt_lib
-AC_DEFUN(BNV_PATH_QT_DIRECT,
+AC_DEFUN([BNV_PATH_QT_DIRECT],
 [
   ## Binary utilities ##
   if test x"$with_Qt_bin_dir" != x; then
@@ -4957,10 +5225,12 @@ AC_DEFUN(BNV_PATH_QT_DIRECT,
     # Look for the header file in a standard set of common directories.
     bnv_include_path_list="
       /usr/include
+      `ls -dr ${QTDIR}/include 2>/dev/null`
       `ls -dr /usr/include/qt* 2>/dev/null`
       `ls -dr /usr/lib/qt*/include 2>/dev/null`
       `ls -dr /usr/local/qt*/include 2>/dev/null`
       `ls -dr /opt/qt*/include 2>/dev/null`
+      `ls -dr /Developer/qt*/include 2>/dev/null`
     "
     for bnv_dir in $bnv_include_path_list; do
       if test -r "$bnv_dir/$qt_direct_test_header"; then
@@ -4981,19 +5251,21 @@ AC_DEFUN(BNV_PATH_QT_DIRECT,
   # Are these headers located in a traditional Trolltech installation?
   # That would be $bnv_qt_include_dir stripped from its last element:
   bnv_possible_qt_dir=`dirname $bnv_qt_include_dir`
-  if test -x $bnv_possible_qt_dir/bin/moc &&
-     ls $bnv_possible_qt_dir/lib/libqt* > /dev/null; then
+  if (test -x $bnv_possible_qt_dir/bin/moc) &&
+     ((ls $bnv_possible_qt_dir/lib/libqt* > /dev/null 2>/dev/null) ||
+      (ls $bnv_possible_qt_dir/lib64/libqt* > /dev/null 2>/dev/null)); then
     # Then the rest is a piece of cake
     bnv_qt_dir=$bnv_possible_qt_dir
     bnv_qt_bin_dir="$bnv_qt_dir/bin"
-    ### Start patch Dennis Weilert
-    #bnv_qt_lib_dir="$bnv_qt_dir/lib"
     if test x"$with_Qt_lib_dir" != x; then
       bnv_qt_lib_dir="$with_Qt_lib_dir"
     else
-      bnv_qt_lib_dir="$bnv_qt_dir/lib"
+      if (test -d $bnv_qt_dir/lib64); then
+	bnv_qt_lib_dir="$bnv_qt_dir/lib64"
+      else
+	bnv_qt_lib_dir="$bnv_qt_dir/lib"
+      fi
     fi
-    ### End patch Dennis Weilert
     # Only look for lib if the user did not supply it already
     if test x"$bnv_qt_lib" = xNO; then
       bnv_qt_lib="`ls $bnv_qt_lib_dir/libqt* | sed -n 1p |
@@ -5068,15 +5340,20 @@ AC_DEFUN(BNV_PATH_QT_DIRECT,
             bnv_dir_list="
               `echo $bnv_qt_includes | sed ss/includess`
               /lib
+	      /usr/lib64
               /usr/lib
+	      /usr/local/lib64
               /usr/local/lib
+	      /opt/lib64
               /opt/lib
+              `ls -dr /usr/lib64/qt* 2>/dev/null`
+              `ls -dr /usr/lib64/qt*/lib64 2>/dev/null`
               `ls -dr /usr/lib/qt* 2>/dev/null`
               `ls -dr /usr/local/qt* 2>/dev/null`
               `ls -dr /opt/qt* 2>/dev/null`
             "
             for bnv_dir in $bnv_dir_list; do
-              if ls $bnv_dir/libqt*; then
+              if ls $bnv_dir/libqt* 2>/dev/null; then
                 # Gamble that it's the first one...
                 bnv_qt_lib="`ls $bnv_dir/libqt* | sed -n 1p |
                             sed s@$bnv_dir/lib@@ | sed s/[.].*//`"
@@ -5099,7 +5376,7 @@ AC_DEFUN(BNV_PATH_QT_DIRECT,
         ])
       ])
       if test x"$bnv_qt_lib_dir" != x; then
-        bnv_qt_LIBS="-l$bnv_qt_lib_dir $LIBS"
+        bnv_qt_LIBS="-L$bnv_qt_lib_dir $LIBS"
       else
         bnv_qt_LIBS="$LIBS"
       fi

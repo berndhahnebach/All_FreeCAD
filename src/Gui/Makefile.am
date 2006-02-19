@@ -379,12 +379,10 @@ EXTRA_DIST = \
 data_DATA = Icons/FCIcon.xpm
 
 # the library search path.
-libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADGui_la_LIBADD   =\
 		-lqui\
-		-lCoin \
-		-lSoQt \
 		-lFreeCADBase \
 		-lFreeCADApp
 
@@ -412,6 +410,9 @@ moc_%.cpp: %.h
 
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS)
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
+
+# set additional defines (for cygwin only)
+AM_CPPFLAGS=-DFCGui
 
 CLEANFILES = $(BUILT_SOURCES)

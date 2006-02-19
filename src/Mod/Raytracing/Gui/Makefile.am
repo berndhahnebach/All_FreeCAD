@@ -20,7 +20,7 @@ libRaytracingGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libRaytracingGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libRaytracingGui_la_CPPFLAGS = -DAppPartExport= -DAppRaytracingGuiExport= -DFeatureRayExportPov=
 
 libRaytracingGui_la_LIBADD   = \
@@ -50,7 +50,7 @@ FreeCADpov.h: FreeCADpov
 	$(PYTHON) ../../../Tools/PythonToCPP.py $(<F) $@
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) -I../../../ -I../App
 
 libdir = $(prefix)/Mod/Raytracing
 

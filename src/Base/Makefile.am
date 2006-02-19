@@ -116,10 +116,13 @@ libFreeCADBase_la_SOURCES=\
 		Writer.h \
 		XMLTools.h 
 
-libFreeCADBase_la_LIBADD   =  -lpython@fc_py_ver@ -lxerces-c -lz
+libFreeCADBase_la_LIBADD   =  -l@PYTHON_LIB@ -lxerces-c -lz
 
 # set the include path found by configure
 INCLUDES= $(all_includes)
+
+# set additional defines (for cygwin only)
+AM_CPPFLAGS=-DFCBase
 
 # the library version number
 libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

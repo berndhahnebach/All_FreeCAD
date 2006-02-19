@@ -1,3 +1,4 @@
+if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMeshGui.la
 
@@ -21,7 +22,7 @@ libMeshGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libMeshGui_la_CPPFLAGS = -DAppMeshExport= -DGuiMeshExport=
 
 libMeshGui_la_LIBADD   = \
@@ -44,7 +45,9 @@ moc_%.cpp: %.h
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(WM3_CFLAGS) $(GTS_CFLAGS) -I../../../ -I../App
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(WM3_CFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I../../../ -I../App
+
+endif
 
 libdir = $(prefix)/Mod/Mesh
 

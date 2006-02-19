@@ -57,6 +57,9 @@ libFreeCADApp_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes)
 
+# set additional defines (for cygwin only)
+AM_CPPFLAGS=-DFCApp
+
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \

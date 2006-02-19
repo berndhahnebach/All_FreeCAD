@@ -28,7 +28,7 @@ libPart_la_SOURCES=\
 		TopologyPy.h
 
 # the library search path.
-libPart_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPart_la_LDFLAGS = -L../../../Base -L../../../App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPart_la_CPPFLAGS = -DAppPartExport=
 
 libPart_la_LIBADD   = \
@@ -41,7 +41,7 @@ libPart_la_LIBADD   = \
 		-lTKXSBase
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I../../../
+INCLUDES= $(all_includes) -I$(OCC_INC) -I../../../
 
 libdir = $(prefix)/Mod/Part
 

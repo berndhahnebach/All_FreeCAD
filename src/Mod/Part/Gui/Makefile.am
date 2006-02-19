@@ -45,7 +45,7 @@ libPartGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPartGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
 libPartGui_la_LIBADD   = \
@@ -72,7 +72,7 @@ moc_%.cpp: %.h
 	$(PYTHON) ../../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) -I../../../ -I../App
 
 libdir = $(prefix)/Mod/Part
 

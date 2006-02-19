@@ -423,20 +423,20 @@ MenuItem* StdWorkbench::setupMenuBar() const
   MenuItem* view3d = new MenuItem;
   view3d->setCommand( "&3D View" );
   *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoInterleavedRows" << "Std_ViewIvStereoInterleavedColumns" << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3";
-  
+
 
   // View
   MenuItem* view = new MenuItem( menuBar );
   view->setCommand( "&View" );
   *view << "Std_ViewCreate" << "Std_CameraType" << "Separator" << view3d
-        << "Std_ToggleVisibility" << "Std_ViewDockUndockFullscreen" << "Separator" << "Std_ViewScreenShot" << "Separator" 
+        << "Std_ToggleVisibility" << "Std_ViewDockUndockFullscreen" << "Separator"
         << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
-  
+
   // Tools
   MenuItem* tool = new MenuItem( menuBar );
   tool->setCommand( "&Tools" );
-  *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord" 
-        << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Separator" << "Std_DlgCustomize";
+  *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord"
+        << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
 
   // Windows
   MenuItem* wnd = new MenuItem( menuBar );
