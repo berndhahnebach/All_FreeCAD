@@ -1,3 +1,4 @@
+if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libPartGui.la
 
@@ -73,6 +74,8 @@ moc_%.cpp: %.h
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) -I../../../ -I../App
+
+endif
 
 libdir = $(prefix)/Mod/Part
 

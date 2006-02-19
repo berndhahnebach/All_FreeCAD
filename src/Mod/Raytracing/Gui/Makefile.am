@@ -1,3 +1,4 @@
+if OCC_LIBRARY_FILES
 
 lib_LTLIBRARIES=libRaytracingGui.la
 
@@ -51,6 +52,8 @@ FreeCADpov.h: FreeCADpov
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) -I../../../ -I../App
+
+endif
 
 libdir = $(prefix)/Mod/Raytracing
 

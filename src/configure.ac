@@ -3,8 +3,19 @@ dnl Process this file with autoconf to produce a configure script.
 
 dnl Init stuff
 dnl **************************************************************************
-AC_INIT(freecad,0.52,[werner.wm.mayer@gmx.de],FreeCAD)
+AC_INIT(freecad,0.5.4,[werner.wm.mayer@gmx.de],FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
+
+dnl FIXME: We should set the version number without using AM_INIT_AUTOMAKE
+dnl        as this macro with two arguments is marked as deprecated
+dnl Python is working so we can read in the current version from the file Version.h
+dnl **************************************************************************
+fc_maj_ver=`python -c "import sys; [Maj,Min,Bui,Dat]=open('Version.h','r').readlines(); print Maj[[23:]]"`;
+fc_min_ver=`python -c "import sys; [Maj,Min,Bui,Dat]=open('Version.h','r').readlines(); print Min[[23:]]"`;
+fc_bui_ver=`python -c "import sys; [Maj,Min,Bui,Dat]=open('Version.h','r').readlines(); print Bui[[23:]]"`;
+freecad_version=[$fc_maj_ver.$fc_min_ver.$fc_bui_ver]
+AM_INIT_AUTOMAKE([FreeCAD], $freecad_version)
+
 AM_CONFIG_HEADER([config.h])
 AC_LANG_CPLUSPLUS
 
@@ -48,7 +59,7 @@ AC_CHECK_HEADERS([sstream],,[AC_MSG_ERROR([This header is needed. Bye.])])
 
 AC_CXX_HAVE_STD_IOSTREAM
 
-dnl Check for programs
+dnl Checking for programs
 dnl **************************************************************************
 AC_PROG_CXX
 AC_PROG_CC
@@ -109,7 +120,7 @@ AC_CHECK_LIB(z, inflate, [cv_libz=yes], [cv_libz=no])
 
 if test "$cv_libz" != "yes"; then
   AC_MSG_ERROR([
-  **** Could not find the zlib library.
+  **** Cannot find the zlib library.
    Please check your installation. ****])
 fi
 
@@ -118,7 +129,10 @@ dnl **************************************************************************
 AC_CHECKING([Python])
 fc_py_ver=`python -c "import sys; print sys.version[[:3]]"`;
 if test x$fc_py_ver = x; then
-	AC_MSG_ERROR([cannot find python, bye...])
+	AC_MSG_ERROR([
+	**** Cannot find Python interpreter.
+	 Please check your installation. ****
+  ])
 fi;
 
 AC_ARG_WITH(python-includes,
@@ -128,7 +142,7 @@ AC_ARG_WITH(python-includes,
 
 AC_CHECK_FILE($fc_py_incs/Python.h,,
 	[AC_MSG_ERROR([
-	**** Could not find Python header files.
+	**** Cannot find Python header files.
 	 Please check your installation. ****
 	 ])])
 
@@ -137,12 +151,126 @@ AC_ARG_WITH(python-libs,
 	[fc_py_libs=$withval],
 	[fc_py_libs=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_config_var('LIBDIR')"`])
 
-all_includes="$all_includes -I$fc_py_incs"
-all_libraries="$all_libraries -L$fc_py_libs"
-AC_MSG_RESULT([Python $fc_py_ver : $fc_py_incs : $fc_py_libs])
+AC_CACHE_CHECK(
+	[whether libpython$fc_py_ver is available],
+	fc_cv_lib_py_avail,
+	[fc_py_ac_save_cppflags=$CPPFLAGS
+	CPPFLAGS="$CPPFLAGS -I$fc_py_incs"
+	fc_py_ac_save_ldflags=$LDFLAGS
+	LDFLAGS="$LDFLAGS -L$fc_py_libs -lpython$fc_py_ver"
+	AC_TRY_LINK([#include <Python.h>],
+							[Py_Initialize(); Py_Finalize();],
+							[fc_cv_lib_py_avail=yes],
+							[fc_cv_lib_py_avail=no])
 
-AC_SUBST([PYTHON],[python])
-AC_SUBST([PYTHON_LIB], [python$fc_py_ver])
+	CPPFLAGS=$fc_py_ac_save_cppflags
+	LDFLAGS=$fc_py_ac_save_ldflags
+])
+
+if test x"$fc_cv_lib_py_avail" = xyes; then
+	all_includes="$all_includes -I$fc_py_incs"
+	all_libraries="$all_libraries -L$fc_py_libs"
+
+	AC_SUBST([PYTHON],[python])
+	AC_SUBST([PYTHON_LIB], [python$fc_py_ver])
+else
+	AC_MSG_ERROR([
+	**** Cannot find Python library files.
+ 	Please check your installation. ****
+	])
+fi
+
+dnl checking for xerces-c
+dnl **************************************************************************
+
+AC_CHECKING([xerces-c])
+AC_ARG_WITH(xercesc-includes,
+	AC_HELP_STRING([--with-xercesc-includes], [Path of the header files of your xerces-c installation]),
+	[fc_xer_incs=$withval],
+	[fc_xer_incs=/usr/include])
+
+AC_CHECK_FILE($fc_xer_incs/xercesc,,
+	[AC_CHECK_FILE(/usr/local/include/xercesc,[fc_xer_incs=/usr/local/include],
+	[AC_MSG_ERROR([
+	**** Cannot find xerces-c header files.
+	 Please check your installation. ****
+	 ])])])
+
+AC_ARG_WITH(xercesc-libs,
+	AC_HELP_STRING([--with-xercesc-libs], [Path of the library files of your xerces-c installation]),
+	[fc_xer_libs=$withval],
+	[fc_xer_libs=/usr/lib])
+
+AC_CACHE_CHECK(
+	[whether xerces lib is available],
+	fc_cv_lib_xer_avail,
+	[fc_xer_ac_save_cppflags=$CPPFLAGS
+	CPPFLAGS="$CPPFLAGS -I$fc_xer_incs"
+	fc_xer_ac_save_ldflags=$LDFLAGS
+	LDFLAGS="$LDFLAGS -L$fc_xer_libs -lxerces-c"
+	AC_TRY_LINK([#include <xercesc/framework/XMLBuffer.hpp>],
+							[XERCES_CPP_NAMESPACE_USE
+							 XMLBuffer buf;],
+							[fc_cv_lib_xer_avail=yes],
+							[fc_cv_lib_xer_avail=no])
+
+	CPPFLAGS=$fc_xer_ac_save_cppflags
+	LDFLAGS=$fc_xer_ac_save_ldflags
+])
+
+if test x"$fc_cv_lib_xer_avail" = xyes; then
+	all_includes="$all_includes -I$fc_xer_incs"
+	all_libraries="$all_libraries -L$fc_xer_libs"
+else
+	AC_MSG_ERROR([
+	**** Cannot find xerces library files.
+	 Please check your installation. ****
+   ])
+fi
+
+dnl checking for Qt (written by Bastiaan Veelo <Bastiaan.N.Veelo@ntnu.no>)
+dnl **************************************************************************
+
+BNV_HAVE_QT
+
+dnl check QT_MOC
+if test x$QT_MOC = x; then
+	AC_MSG_ERROR([Cannot find Qt meta object compiler (moc), bye...])
+fi;
+dnl check QT_UIC
+if test x$QT_UIC = x; then
+	AC_MSG_ERROR([Cannot find Qt user interface compiler (uic), bye...])
+fi;
+
+dnl checking for Coin
+dnl **************************************************************************
+
+SIM_AC_HAVE_COIN_IFELSE(,AC_MSG_ERROR([
+	**** Cannot find Coin library files.
+	 Please check your installation. ****
+   ]))
+
+AC_SUBST([sim_ac_coin_includedir])
+AC_SUBST([sim_ac_coin_cppflags])
+AC_SUBST([sim_ac_coin_ldflags])
+AC_SUBST([sim_ac_coin_libs])
+
+dnl checking for SoQt
+dnl **************************************************************************
+
+SIM_AC_HAVE_SOQT_IFELSE(,AC_MSG_ERROR([
+	**** Cannot find SoQt library files.
+	 Please check your installation. ****
+   ]))
+
+AC_SUBST([sim_ac_soqt_includedir])
+AC_SUBST([sim_ac_soqt_cppflags])
+AC_SUBST([sim_ac_soqt_ldflags])
+AC_SUBST([sim_ac_soqt_libs])
+
+dnl **************************************************************************
+dnl checking for optional libraies
+dnl **************************************************************************
 
 dnl checking for OpenCascade
 dnl **************************************************************************
@@ -161,21 +289,39 @@ AC_ARG_WITH(OCC-includes,
 	[fc_occ_incs=$withval],
 	[fc_occ_incs=$fc_occ_incs_test])
 
-AC_CHECK_FILE($fc_occ_incs/Standard.hxx,,
-	[AC_MSG_ERROR([
-	**** Could not find OpenCascade header files.
-	 Please check your installation. ****
-	 ])])
-
 AC_ARG_WITH(OCC-libs,
 	AC_HELP_STRING([--with-OCC-libs], [Path of the library files of your OpenCascade installation]),
 	[fc_occ_libs=$withval],
 	[fc_occ_libs=$fc_occ_libs_test])
 
-AC_SUBST([OCC_INC], [$fc_occ_incs])
-AC_SUBST([OCC_LIB], [$fc_occ_libs])
+AC_CACHE_CHECK(
+	[whether OCC libs are available],
+	fc_cv_lib_occ_avail,
+	[fc_occ_ac_save_cppflags=$CPPFLAGS
+	CPPFLAGS="$CPPFLAGS -I$fc_occ_incs"
+	fc_occ_ac_save_ldflags=$LDFLAGS
+	LDFLAGS="$LDFLAGS -L$fc_occ_libs -lTKernel"
+	AC_TRY_LINK([#define HAVE_IOSTREAM 1
+							 #include <gp_Pnt.hxx>],
+							[gp_Pnt pt(0,0,0);],
+							[fc_cv_lib_occ_avail=yes],
+							[fc_cv_lib_occ_avail=no])
 
-AC_MSG_RESULT([OpenCascade $fc_occ_incs : $fc_occ_libs])
+	CPPFLAGS=$fc_occ_ac_save_cppflags
+	LDFLAGS=$fc_occ_ac_save_ldflags
+])
+
+if test x"$fc_cv_lib_occ_avail" = xyes; then
+	AC_SUBST([OCC_INC], [$fc_occ_incs])
+	AC_SUBST([OCC_LIB], [$fc_occ_libs])
+else
+	AC_MSG_WARN([
+	**** Cannot find OpenCASCADE library files.
+	Modules that depends on this library cannot be built. ****
+  ])
+fi
+
+AM_CONDITIONAL(OCC_LIBRARY_FILES, test x"$fc_cv_lib_occ_avail" = xyes)
 
 dnl checking for WildMagic3
 dnl **************************************************************************
@@ -186,12 +332,6 @@ AC_ARG_WITH(wildmagic-includes,
 	[fc_wm3_incs=$withval],
 	[fc_wm3_incs=/usr/include/WildMagic3/Include])
 
-AC_CHECK_FILE($fc_wm3_incs/WildMagic3.h,,
-	[AC_MSG_ERROR([
-	**** Could not find WildMagic3 header files.
-	 Please check your installation. ****
-	 ])])
-
 AC_ARG_WITH(wildmagic-libs,
 	AC_HELP_STRING([--with-wildmagic-libs], [Path of the library files of your WildMagic3 installation]),
 	[fc_wm3_libs=$withval],
@@ -200,7 +340,6 @@ AC_ARG_WITH(wildmagic-libs,
 AC_CHECK_FILE($fc_wm3_incs/Wm3Query.h,fc_wm3_ver=340,fc_wm3_ver=330)
 
 dnl Set the appropriate library name
-AC_MSG_RESULT(["Test Wm3 version"])
 if test x"$fc_wm3_ver" = x"330"; then
 	fc_wm3_libs="-L$fc_wm3_libs -lWildMagic3"
 	fc_wm3_text="Version <= 3.3.0"
@@ -209,11 +348,34 @@ else
 	fc_wm3_text="Version >= 3.4.0"
 fi
 
-AC_SUBST([WM3_CFLAGS], [-I$fc_wm3_incs])
-AC_SUBST([WM3_LIBS], [$fc_wm3_libs])
-AC_SUBST([WM3_VERSION], [$fc_wm3_ver])
+AC_CACHE_CHECK(
+	[whether WildMagic lib is available],
+	fc_cv_lib_wm3_avail,
+	[fc_wm3_ac_save_cppflags=$CPPFLAGS
+	CPPFLAGS="$CPPFLAGS -I$fc_wm3_incs"
+	fc_wm3_ac_save_ldflags=$LDFLAGS
+	LDFLAGS="$LDFLAGS $fc_wm3_libs"
+	AC_TRY_LINK([#include <Wm3Math.h>],
+							[double val = Wm3::Math<double>::Cos(0.0);],
+							[fc_cv_lib_wm3_avail=yes],
+							[fc_cv_lib_wm3_avail=no])
 
-AC_MSG_RESULT([WildMagic3 ($fc_wm3_text) $WM3_CFLAGS : $WM3_LIBS])
+	CPPFLAGS=$fc_wm3_ac_save_cppflags
+	LDFLAGS=$fc_wm3_ac_save_ldflags
+])
+
+if test x"$fc_cv_lib_wm3_avail" = xyes; then
+	AC_SUBST([WM3_CFLAGS], [-I$fc_wm3_incs])
+	AC_SUBST([WM3_LIBS], [$fc_wm3_libs])
+	AC_SUBST([WM3_VERSION], [$fc_wm3_ver])
+else
+	AC_MSG_WARN([
+	**** Cannot find WildMagic library files.
+	Modules that depends on this library cannot be built. ****
+  ])
+fi
+
+AM_CONDITIONAL(WM3_LIBRARY_FILES, test x"$fc_cv_lib_wm3_avail" = xyes)
 
 dnl checking for GTS
 dnl **************************************************************************
@@ -225,78 +387,14 @@ if test x"$GTSCONFIG" != xfalse; then
 
 	AC_SUBST([GTS_CFLAGS], [$fc_gts_incs])
 	AC_SUBST([GTS_LIBS], [$fc_gts_libs])
-
-	AC_MSG_RESULT([GTS Library $GTS_CFLAGS : $GTS_LIBS])
 else
-	AC_MSG_RESULT([Cannot find GTS library files])
+	AC_MSG_WARN([
+	**** Cannot find GTS library files.
+	Modules that depends on this library cannot be built. ****
+  ])
 fi
 
 AM_CONDITIONAL(GTS_LIBRARY_FILES, test x"$GTSCONFIG" != xfalse)
-
-dnl checking for xerces-c
-dnl **************************************************************************
-
-AC_CHECKING([xerces-c])
-AC_ARG_WITH(xercesc-includes,
-	AC_HELP_STRING([--with-xercesc-includes], [Path of the header files of your xerces-c installation]),
-	[fc_xer_incs=$withval],
-	[fc_xer_incs=/usr/include])
-
-AC_CHECK_FILE($fc_xer_incs/xercesc,,
-	[AC_CHECK_FILE(/usr/local/include/xercesc,[fc_xer_incs=/usr/local/include],
-	[AC_MSG_ERROR([
-	**** Could not find xerces-c header files.
-	 Please check your installation. ****
-	 ])])])
-
-AC_ARG_WITH(xercesc-libs,
-	AC_HELP_STRING([--with-xercesc-libs], [Path of the library files of your xerces-c installation]),
-	[fc_xer_libs=$withval],
-	[fc_xer_libs=/usr/lib])
-
-all_includes="$all_includes -I$fc_xer_incs"
-all_libraries="$all_libraries -L$fc_xer_libs"
-AC_MSG_RESULT([xerces-c $fc_xer_incs : $fc_xer_libs])
-
-dnl checking for Coin
-dnl **************************************************************************
-
-SIM_AC_HAVE_COIN_IFELSE(,AC_MSG_ERROR([
-	**** Could not find Coin library files.
-	 Please check your installation. ****
-   ]))
-
-AC_SUBST([sim_ac_coin_includedir])
-AC_SUBST([sim_ac_coin_cppflags])
-AC_SUBST([sim_ac_coin_ldflags])
-AC_SUBST([sim_ac_coin_libs])
-
-dnl checking for SoQt
-dnl **************************************************************************
-
-SIM_AC_HAVE_SOQT_IFELSE(,AC_MSG_ERROR([
-	**** Could not find SoQt library files.
-	 Please check your installation. ****
-   ]))
-
-AC_SUBST([sim_ac_soqt_includedir])
-AC_SUBST([sim_ac_soqt_cppflags])
-AC_SUBST([sim_ac_soqt_ldflags])
-AC_SUBST([sim_ac_soqt_libs])
-
-dnl checking for Qt (written by Bastiaan Veelo <Bastiaan.N.Veelo@ntnu.no>)
-dnl **************************************************************************
-
-BNV_HAVE_QT
-
-dnl check QT_MOC
-if test x$QT_MOC = x; then
-	AC_MSG_ERROR([Cannot find Qt meta object compiler (moc), bye...])
-fi;
-dnl check QT_UIC
-if test x$QT_UIC = x; then
-	AC_MSG_ERROR([Cannot find Qt user interface compiler (uic), bye...])
-fi;
 
 dnl **************************************************************************
 

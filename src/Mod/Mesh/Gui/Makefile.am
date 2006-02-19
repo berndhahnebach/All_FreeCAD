@@ -1,3 +1,5 @@
+if OCC_LIBRARY_FILES
+if WM3_LIBRARY_FILES
 if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMeshGui.la
@@ -47,6 +49,8 @@ moc_%.cpp: %.h
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(WM3_CFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I../../../ -I../App
 
+endif
+endif
 endif
 
 libdir = $(prefix)/Mod/Mesh

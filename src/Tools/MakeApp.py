@@ -55,7 +55,7 @@ sys.stdout.write("Ok\n")
 sys.stdout.write("Modifying files...\n")
 MakeAppTools.replaceTemplate("../Mod/" + Application,"_TEMPLATE_",Application)
 # make the congigure script executable
-os.chmod("../Mod/" + Application + "/configure", 0777);
+#os.chmod("../Mod/" + Application + "/configure", 0777);
 sys.stdout.write("Modifying files done.\n")
 
 sys.stdout.write(Application + " module created successfully.\n") 

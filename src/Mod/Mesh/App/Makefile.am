@@ -1,3 +1,5 @@
+if OCC_LIBRARY_FILES
+if WM3_LIBRARY_FILES
 if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMesh.la
@@ -86,6 +88,8 @@ libMesh_la_LIBADD   = \
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(OCC_INC) $(WM3_CFLAGS) $(GTS_CFLAGS) -I../../../
 
+endif
+endif
 endif
 
 libdir = $(prefix)/Mod/Mesh
