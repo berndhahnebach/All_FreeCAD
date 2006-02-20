@@ -472,10 +472,18 @@ void Application::tryClose ( QCloseEvent * e )
     }
 
     // remove all documents
-    for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
+    unsigned long cnt = d->lpcDocuments.size();
+    while ( d->lpcDocuments.size() > 0 && cnt > 0 )
     {
-      delete It->second;
+      // destroys also the Gui document
+      It = d->lpcDocuments.begin();
+      App::GetApplication().closeDocument(It->second->getDocument()->getName());
+      --cnt; // avoid infinite loop
     }
+//    for (It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
+//    {
+//      delete It->second;
+//    }
   }
 }
 
