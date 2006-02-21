@@ -105,7 +105,7 @@ insert(PyObject *self, PyObject *args)
     if(file.extension() == "")
       Py_Error(PyExc_Exception,"no file ending");
 
-    if(file.hasExtension("stl") || file.hasExtension("ast"))
+    if(file.hasExtension("stl") || file.hasExtension("ast") || file.hasExtension("bms"))
     {
       // add Import feature
       App::Document *pcDoc = App::GetApplication().getActiveDocument();

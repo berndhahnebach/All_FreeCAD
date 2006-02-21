@@ -68,12 +68,12 @@ int Export::execute(void)
     return 1;
   }
 
-  if ( fi.extension() == "bms" )
+  if ( fi.hasExtension("bms") )
   {
     std::ofstream cOut( FileName.getValue(), std::ios::out | std::ios::binary );
     pcFeat->getMesh().getKernel()->Write( cOut );
   }
-  else if ( fi.extension() == "stl" || fi.extension() == "ast" )
+  else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
   {
     MeshSTL aWriter(*(pcFeat->getMesh().getKernel()) );
 

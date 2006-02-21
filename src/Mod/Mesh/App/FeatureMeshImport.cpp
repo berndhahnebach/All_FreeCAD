@@ -57,7 +57,7 @@ int Import::execute(void)
     return 1;
   }
 
-  if ( fi.extension() == "bms" )
+  if ( fi.hasExtension("bms") )
   {
     try {
       std::ifstream cIn( FileName.getValue(), std::ios::in | std::ios::binary );
@@ -67,7 +67,7 @@ int Import::execute(void)
       return 1;
     }
   }
-  else if ( fi.extension() == "stl" || fi.extension() == "ast" )
+  else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
   {
     MeshSTL aReader(*(_cMesh.getKernel()) );
 
