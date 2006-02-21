@@ -3,19 +3,13 @@ dnl Process this file with autoconf to produce a configure script.
 
 dnl Init stuff
 dnl **************************************************************************
-AC_INIT(freecad,0.5.4,[werner.wm.mayer@gmx.de],FreeCAD)
+dnl release version number info
+m4_define([FREECAD_MAJOR], [0])
+m4_define([FREECAD_MINOR], [5])
+m4_define([FREECAD_MICRO], [4])
+
+AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[werner.wm.mayer@gmx.de], FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
-
-dnl FIXME: We should set the version number without using AM_INIT_AUTOMAKE
-dnl        as this macro with two arguments is marked as deprecated
-dnl Python is working so we can read in the current version from the file Version.h
-dnl **************************************************************************
-fc_maj_ver=`python -c "import sys; [Maj,Min,Bui,Dat]=open('Version.h','r').readlines(); print Maj[[23:]]"`;
-fc_min_ver=`python -c "import sys; [Maj,Min,Bui,Dat]=open('Version.h','r').readlines(); print Min[[23:]]"`;
-fc_bui_ver=`python -c "import sys; [Maj,Min,Bui,Dat]=open('Version.h','r').readlines(); print Bui[[23:]]"`;
-freecad_version=[$fc_maj_ver.$fc_min_ver.$fc_bui_ver]
-AM_INIT_AUTOMAKE([FreeCAD], $freecad_version)
-
 AM_CONFIG_HEADER([config.h])
 AC_LANG_CPLUSPLUS
 
