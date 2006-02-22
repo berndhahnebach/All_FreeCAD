@@ -64,8 +64,8 @@ public:
   //@{
   /// open a file
   void open(const char* FileName);
-  /// import a file in the active document
-  void import(const char* FileName);
+  /// import a file into the document DocName
+  void import(const char* FileName, const char* DocName);
   //@}
 
 
@@ -131,7 +131,7 @@ public:
   /// helper which create the commands
   void createStandardOperations();
 
-  /** @name Init, Destruct an Access methodes */
+  /** @name Init, Destruct an Access methods */
   //@{
   /// some kind of singelton
   static Application* Instance;

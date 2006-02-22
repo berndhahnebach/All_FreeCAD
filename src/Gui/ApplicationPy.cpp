@@ -149,17 +149,16 @@ PYFUNCIMP_S(Application,sShowFeature)
 
 PYFUNCIMP_S(Application,sopen)
 {
+  // only used to open Python files
   const char* Name;
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
   PY_TRY {
     MDIView* view = getMainWindow()->getWindowWithCaption( Name );
-    if ( view )
-    {
+    if ( view ) {
       view->setFocus();
     }
-    else
-    {
+    else {
       PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
@@ -171,24 +170,9 @@ PYFUNCIMP_S(Application,sopen)
 
 PYFUNCIMP_S(Application,sinsert)
 {
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-  PY_TRY {
-    MDIView* view = getMainWindow()->getWindowWithCaption( Name );
-    if ( view )
-    {
-      view->setActive();
-    }
-    else
-    {
-      PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
-      edit->resize( 400, 300 );
-      getMainWindow()->addWindow( edit );
-    }
-  } PY_CATCH;
-
-	Py_Return;    
+  // not supported to insert an Python file (by dropping on an Python view)
+  // hence do nothing
+  Py_Return;
 } 
 
 PYFUNCIMP_S(Application,sSendActiveView)

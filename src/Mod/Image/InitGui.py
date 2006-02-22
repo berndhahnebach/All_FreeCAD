@@ -200,3 +200,9 @@ class ImageWorkbench ( Workbench ):
 			"\"QtQtQtQtQtQtQtQtQtQtQtQtQtQtQtQt\"};\n"]
 
 Gui.AddWorkbenchHandler("Image",ImageWorkbench())
+
+# Append the open handler
+FreeCAD.EndingAdd("png","ImageGui")
+FreeCAD.EndingAdd("xpm","ImageGui")
+FreeCAD.EndingAdd("jpg","ImageGui")
+FreeCAD.EndingAdd("bmp","ImageGui")

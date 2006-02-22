@@ -64,7 +64,7 @@ public:
   virtual const char* getViewProviderName(void){return "PartGui::ViewProviderPart";}
 
 
-	/** @name methodes for handling the result shape */
+	/** @name methods for handling the result shape */
 	//@{
 	/** Set the result shape
 	 *

@@ -141,7 +141,7 @@ public:
   // exported functions goes here +++++++++++++++++++++++++++++++++++++++
   //---------------------------------------------------------------------
 
-  /** @name methodes for document handling */
+  /** @name methods for document handling */
   //@{
   /// Creates a new document
   App::Document* newDocument(const char * Name=0l);
@@ -164,7 +164,7 @@ public:
   //@}
 
 
-	/** @name methodes for parameter handling */
+	/** @name methods for parameter handling */
 	//@{
   /// returns the system parameter
 	ParameterManager &                                GetSystemParameter(void) ;
@@ -185,7 +185,7 @@ public:
 	const std::map<std::string,ParameterManager *> &  GetParameterSetList(void);
 	//@}
 
-	/** @name methodes for the open handler 
+	/** @name methods for the open handler 
    *  With this facility a Application module can register 
    *  a ending (file type) which he can handle to open. 
    *  The ending and the module name are stored and if the file
@@ -207,7 +207,7 @@ public:
   void rmvOpenType(const char* Type);
 	//@}
 
-	/** @name Init, Destruct an Access methodes */
+	/** @name Init, Destruct an Access methods */
 	//@{
   static void init(int argc, char ** argv);
   static void initTypes(void);
@@ -298,7 +298,7 @@ private:
 
 	friend class ApplicationObserver;
 
-	/** @name  Private Init, Destruct an Access methodes */
+	/** @name  Private Init, Destruct an Access methods */
 	//@{
   static void initConfig(int argc, char ** argv);
 	static void initApplication(void);

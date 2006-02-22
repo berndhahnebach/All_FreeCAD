@@ -73,9 +73,7 @@ open(PyObject *self, PyObject *args)
       Mesh::Import *pcFeature = (Mesh::Import*)pcDoc->addFeature("Mesh::Import","MeshOpen");
       pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
-
     }
-
     else
     {
       Py_Error(PyExc_Exception,"unknown file ending");
@@ -91,14 +89,14 @@ open(PyObject *self, PyObject *args)
 /* module functions */
 static PyObject *                        
 insert(PyObject *self, PyObject *args)     
-{                                        
+{
   const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))	 		 
+  const char* DocName;
+  if (! PyArg_ParseTuple(args, "ss",&Name,&DocName))	 		 
     return NULL;                         
     
   PY_TRY {
 
-//    Base::Console().Log("Insert in Mesh with %s",Name);
     Base::FileInfo file(Name);
 
     // extract ending
@@ -108,20 +106,22 @@ insert(PyObject *self, PyObject *args)
     if(file.hasExtension("stl") || file.hasExtension("ast") || file.hasExtension("bms"))
     {
       // add Import feature
-      App::Document *pcDoc = App::GetApplication().getActiveDocument();
+      App::Document *pcDoc = App::GetApplication().getDocument(DocName);
       if (!pcDoc)
-        throw "Import called without a active document??";
+      {
+        char szBuf[200];
+        sprintf(szBuf, "Import called to the non-existing document '%s'", DocName);
+        Py_Error(PyExc_Exception,szBuf);
+      }
+
       Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addFeature("Mesh::Import", "MeshImport");
       pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
-
     }
-
     else
     {
       Py_Error(PyExc_Exception,"unknown file ending");
     }
-
 
   } PY_CATCH;
 

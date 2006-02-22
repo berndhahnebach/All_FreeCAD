@@ -81,7 +81,7 @@ public:
   virtual void onChanged(Property* prop);
 
 
-	/** @name methodes to overide with a new feature type */
+	/** @name methods to overide with a new feature type */
 	//@{
 
 	/** Validate
@@ -99,7 +99,7 @@ public:
 
   //@}
 
-	/** @name status methodes of the feature */
+	/** @name status methods of the feature */
 	//@{
   /// status types
   enum Status 
@@ -128,7 +128,7 @@ public:
   //@}
 
 
-	/** @name methodes for conviniant handling of Parameter (Properties) */
+	/** @name methods for conviniant handling of Parameter (Properties) */
 	//@{
 
   /** Insert Property
@@ -201,7 +201,7 @@ public:
 	//@}
 
 
-	/** @name methodes for conviniant handling of DataProvider
+	/** @name methods for conviniant handling of DataProvider
     * This functionality is sceduled for 0.3
     * @see FeatureDataProvider
     */
@@ -211,7 +211,7 @@ public:
 
 	//@}
 
-	/** @name methodes to change the apperance of the shape
+	/** @name methods to change the apperance of the shape
     */
 	//@{
   /// set the solid material
@@ -275,8 +275,8 @@ public:
 	virtual bool MustExecute(void);
 
 protected:
-	/** @name methodes used for recalculation and document handling
-    *  this methodes are only called/used by the document
+	/** @name methods used for recalculation and document handling
+    *  this methods are only called/used by the document
     */
 	//@{
 

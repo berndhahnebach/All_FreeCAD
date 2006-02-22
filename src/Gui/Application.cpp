@@ -187,7 +187,7 @@ void Application::open(const char* FileName)
   }
 }
 
-void Application::import(const char* FileName)
+void Application::import(const char* FileName, const char* DocName)
 {
   WaitCursor wc;
   Base::FileInfo File(FileName);
@@ -215,7 +215,7 @@ void Application::import(const char* FileName)
       }
       else
       {
-        Command::doCommand(Command::App, "%s.insert(\"%s\")", Mod, File.filePath().c_str());
+        Command::doCommand(Command::App, "%s.insert(\"%s\",\"%s\")", Mod, File.filePath().c_str(), DocName);
       }
 
       // the original file name is required

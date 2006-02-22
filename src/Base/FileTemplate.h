@@ -115,7 +115,7 @@ public:
    */
   virtual void testMeToo(char c1,char c2) = 0;
 
-  /** @name a group of methodes */
+  /** @name a group of methods */
   //@{
   /// I am method one
   virtual void one(void)=0;

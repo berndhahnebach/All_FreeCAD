@@ -272,7 +272,7 @@ public:
   virtual ~ToggleCommand() {}
 
 protected:
-  /** @name Methodes to override when creating a new command  */
+  /** @name methods to override when creating a new command  */
   //@{
   /// Creates the used QAction
   virtual QAction* createAction(void);
@@ -345,7 +345,7 @@ public:
   std::vector<CommandItem*> getItems() const { return _aCommands; }
 
 protected:
-  /** @name Methodes to override when creating a new command */
+  /** @name methods to override when creating a new command */
   //@{
   /// Creates the used QAction
   virtual QAction* createAction(void);
@@ -428,7 +428,7 @@ public:
   virtual ~MacroCommand() {}
 
 protected:
-  /** @name Methodes reimplemented for Command Framework */
+  /** @name methods reimplemented for Command Framework */
   //@{
   /// Method which get called when activated
   void activated(int iMsg);

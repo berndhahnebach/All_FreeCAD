@@ -269,7 +269,7 @@ void Command::testActive(void)
 }
 
 //--------------------------------------------------------------------------
-// Helper methodes
+// Helper methods
 //--------------------------------------------------------------------------
 
 bool Command::hasActiveDocument(void)

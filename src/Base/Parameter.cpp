@@ -214,7 +214,7 @@ ParameterGrp::~ParameterGrp()
 }
 
 //**************************************************************************
-// Access methodes
+// Access methods
 
 
 void ParameterGrp::copyTo(FCHandle<ParameterGrp> Grp)
@@ -730,7 +730,7 @@ std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter
 }
 
 //**************************************************************************
-// Access methodes
+// Access methods
 
 void ParameterGrp::RemoveGrp(const char* Name)
 {
@@ -851,7 +851,7 @@ void ParameterGrp::Clear(void)
 
 
 //**************************************************************************
-// Access methodes
+// Access methods
 
 
 DOMElement *ParameterGrp::FindElement(DOMElement *Start, const char* Type, const char* Name)

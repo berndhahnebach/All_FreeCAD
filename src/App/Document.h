@@ -170,7 +170,7 @@ public:
 	//@}
 
 
-	/** @name methodes for modification and state handling
+	/** @name methods for modification and state handling
 	 */
 	//@{
 	/// Get the Main Label of the document
@@ -189,8 +189,8 @@ public:
 	//@}
 
 
-	/** @name methodes for the UNDO REDO handling
-	 *  this methodes are usaly used by the GUI document! Its not intended
+	/** @name methods for the UNDO REDO handling
+	 *  this methods are usaly used by the GUI document! Its not intended
 	 *  to use them directly. If the GUI is not up, there is usaly no UNDO / REDO
 	 *  nececary.
 	 */

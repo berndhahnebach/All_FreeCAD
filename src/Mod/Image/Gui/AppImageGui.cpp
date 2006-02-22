@@ -23,16 +23,14 @@
 void CreateImageCommands(void);
 
 /* registration table  */
-static struct PyMethodDef ImageGui_methods[] = {
-    {NULL, NULL}                   /* end of table marker */
-};
+extern struct PyMethodDef ImageGui_Import_methods[];
 
 
 /* Python entry */
 extern "C" {
 void ImageGuiExport initImageGui() {
 
-  (void) Py_InitModule("ImageGui", ImageGui_methods);   /* mod name, table ptr */
+  (void) Py_InitModule("ImageGui", ImageGui_Import_methods);   /* mod name, table ptr */
   Base::Console().Log("AppImageGui loaded\n");
 
   // instanciating the commands

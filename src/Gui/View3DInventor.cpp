@@ -420,7 +420,7 @@ void View3DInventor::dump()
 /**
  * Drops the event \a e and writes the right Python command.
  */
-void View3DInventor::dropEvent ( QDropEvent      * e )
+void View3DInventor::dropEvent ( QDropEvent * e )
 {
   if ( QUriDrag::canDecode(e) )
   {
@@ -432,7 +432,9 @@ void View3DInventor::dropEvent ( QDropEvent      * e )
       QFileInfo info(*it);
       if ( info.exists() && info.isFile() )
       {
-          Application::Instance->import(info.absFilePath().latin1());
+        App::Document* pDoc = getAppDocument();
+        if (pDoc)
+          Application::Instance->import(info.absFilePath().latin1(), pDoc->getName());
       }
     }
   }else

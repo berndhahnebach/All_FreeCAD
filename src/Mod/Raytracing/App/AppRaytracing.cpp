@@ -29,14 +29,14 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 
-extern struct PyMethodDef Raytracing_methodes[];
+extern struct PyMethodDef Raytracing_methods[];
 
 
 extern "C" {
 void AppRaytracingExport initRaytracing() {
 
   Base::Console().Log("Mod : Load AppRaytracing\n");
-  (void) Py_InitModule("Raytracing", Raytracing_methodes);   /* mod name, table ptr */
+  (void) Py_InitModule("Raytracing", Raytracing_methods);   /* mod name, table ptr */
 
     // load dependend module
   Base::Interpreter().loadModule("Part");

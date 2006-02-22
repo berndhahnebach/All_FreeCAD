@@ -99,7 +99,7 @@ public:
   void insert(const char* FileName);
 	//@}
   
-  /** @name methodes for group handling */
+  /** @name methods for group handling */
 	//@{
 	/// get a handle to a sub group or creat one
 	FCHandle<ParameterGrp> GetGroup(const char* Name);
@@ -117,7 +117,7 @@ public:
 	void Clear(void);
 	//@}
 
-	/** @name methodes for bool handling */
+	/** @name methods for bool handling */
 	//@{
 	/// read bool values or give default
 	bool GetBool(const char* Name, bool bPreset=false);
@@ -131,7 +131,7 @@ public:
 	void RemoveBool(const char* Name);
 	//@}
 
-	/** @name methodes for Int handling */
+	/** @name methods for Int handling */
 	//@{
 	/// read bool values or give default
 	long GetInt(const char* Name, long lPreset=0);
@@ -146,7 +146,7 @@ public:
 	//@}
 
 
-	/** @name methodes for Float handling */
+	/** @name methods for Float handling */
 	//@{
 	/// set a float value
 	double GetFloat(const char* Name, double dPreset=0.0);
@@ -161,7 +161,7 @@ public:
 	//@}
 
 
-	/** @name methodes for Blob handling (not implemented yet) */
+	/** @name methods for Blob handling (not implemented yet) */
 	//@{
 	/// set a blob value
 	void  SetBlob(const char* Name, void *pValue, long lLength);
@@ -173,7 +173,7 @@ public:
 
 
 
-	/** @name methodes for String handling */
+	/** @name methods for String handling */
 	//@{
 	/// set a string value
 	void  SetASCII(const char* Name, const char *sValue);

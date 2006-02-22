@@ -47,7 +47,7 @@ class PropertyContainer;
  *  e.g. features and ist grafical output. They also used to 
  *  gain acces from the scripting facility.
  *  /par
- *  This abstract base class defines all methodes shared by all
+ *  This abstract base class defines all methods shared by all
  *  possible properties. Its also possible to define user properties
  *  and use them in the frame work....
  */

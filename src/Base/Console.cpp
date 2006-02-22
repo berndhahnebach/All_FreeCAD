@@ -64,7 +64,7 @@ ConsoleSingelton::~ConsoleSingelton()
 
 
 //**************************************************************************
-// methodes
+// methods
 
 /**  
  *  sets the console in a special mode

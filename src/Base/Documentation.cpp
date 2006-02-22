@@ -113,7 +113,7 @@ FCDocProviderDirectory::~FCDocProviderDirectory(void)
 }
 
 //**************************************************************************
-// Exported methodes
+// Exported methods
 
 
 
@@ -292,7 +292,7 @@ FCDocumentationManager & FCDocumentationManager::Instance(void)
 FCDocumentationManager *FCDocumentationManager::_pcSingelton;
 
 //**************************************************************************
-// private helper methodes
+// private helper methods
 
 void FCDocumentationManager::_Translate(std::string &rcDoc, const char* sTransXSL)
 {

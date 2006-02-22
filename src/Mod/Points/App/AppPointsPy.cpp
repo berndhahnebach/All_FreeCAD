@@ -84,7 +84,8 @@ static PyObject *
 insert(PyObject *self, PyObject *args)     
 {                                        
   const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
+  const char* DocName;
+  if (! PyArg_ParseTuple(args, "ss",&Name,&DocName))	 		 
     return NULL;                         
 
   PY_TRY {
@@ -98,9 +99,15 @@ insert(PyObject *self, PyObject *args)
 
     if(file.hasExtension("asc"))
     {
-      App::Document *pcDoc = App::GetApplication().getActiveDocument();
+      // add Import feature
+      App::Document *pcDoc = App::GetApplication().getDocument(DocName);
       if (!pcDoc)
-        throw "Import called without a active document??";
+      {
+        char szBuf[200];
+        sprintf(szBuf, "Import called to the non-existing document '%s'", DocName);
+        Py_Error(PyExc_Exception,szBuf);
+      }
+
       Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addFeature("Points::ImportAscii", "PointsOpen");
       pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();

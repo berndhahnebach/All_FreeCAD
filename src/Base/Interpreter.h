@@ -73,7 +73,7 @@ public:
 	InterpreterSingleton();
 	~InterpreterSingleton();
 
-	/** @name execution methodes
+	/** @name execution methods
 	 */
 	//@{
 	/// Run a statement on the python interpreter and gives back a string with the retresentation of the result.
@@ -140,17 +140,17 @@ public:
 
 
 	/** @name object, mthode and attribute query
-	 *  This methodes are used for code completion facility
+	 *  This methods are used for code completion facility
 	 */
 	//@{
 	/// returns a list of methods providet by the specified object
-	vector<string> getMethodesList(const char *){return vector<string>(); }
+	vector<string> getmethodsList(const char *){return vector<string>(); }
 	/// returns a list of attributes providet by the specified object
 	vector<string> getAttributeList(const char *){return vector<string>(); }
 	//@}
 
 	
-	/** @name methodes for debuging facility
+	/** @name methods for debuging facility
 	 */
 	//@{
 	/// sets the file name which should be debuged

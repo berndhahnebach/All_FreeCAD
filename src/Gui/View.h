@@ -70,7 +70,7 @@ public:
   virtual ~BaseView();
 
 
-  /** @name methodes used by the Application and the GuiDocument 
+  /** @name methods used by the Application and the GuiDocument 
    */
   //@{
   /// sets the view to an oter document (called by Application)
@@ -87,7 +87,7 @@ public:
   bool isPassiv(void){return bIsPassiv;}
 
 
-  /** @name methodes to overrride 
+  /** @name methods to overrride 
    */
   //@{
   /// get called when the document is updated

@@ -99,7 +99,7 @@ public:
   App::Document*  getDocument(void){return _pcDocument;}
 
 
-  /** @name methodes for activation handling */
+  /** @name methods for activation handling */
   //@{
   /// Geter for the Active View
   Gui::MDIView* getActiveView(void);
@@ -107,7 +107,7 @@ public:
 
 
 
-  /** @name methodes for View handling */
+  /** @name methods for View handling */
   //@{
   /// Creat a new View
   void createView(const char* sType); 
@@ -158,7 +158,7 @@ public:
 
 
 
-  /** @name methodes for the UNDO REDO handling */
+  /** @name methods for the UNDO REDO handling */
   //@{
   /// Open a new Undo transaction on the document
   void openCommand(const char* sName=0);

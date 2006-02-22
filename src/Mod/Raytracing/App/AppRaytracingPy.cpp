@@ -176,7 +176,7 @@ copyResource(PyObject *self, PyObject *args)
 
 
 /* registration table  */
-struct PyMethodDef Raytracing_methodes[] = {
+struct PyMethodDef Raytracing_methods[] = {
     {"writeProjectFile", writeProjectFile, 1},       
     {"getProjectFile",   getProjectFile  , 1},       
     {"writePartFile",    writePartFile   , 1},       

@@ -387,17 +387,19 @@ Document* Application::openDocument(const char * FileName)
     Notify(Reason);
 
     // read the document
-    if ( !newDoc.pDoc->open() )
+    bool ok = newDoc.pDoc->open();
+    // FIXME: The document XML file can contain a name different from the file name.
+    //        But we must make sure that this name is unique.
+    // use the document's name, not the file name
+    DocMap[newDoc.pDoc->getName()] = newDoc;
+
+    if ( !ok )
     {
       std::stringstream str;
       str << "Invalid document structure in file '" << FileName << "'";
       throw Base::Exception(str.str().c_str());
     }
 
-    // FIXME: The document XML file can contain a name different from the file name.
-    //        But we must make sure that this name is unique.
-    // use the document's name, not the file name
-    DocMap[newDoc.pDoc->getName()] = newDoc;
     _pActiveDoc = newDoc.pDoc;
   }else{
     throw Base::Exception("Unknown file extension");

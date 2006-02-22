@@ -18,6 +18,7 @@
 #endif
 
 #include <Base/Exception.h>
+#include <Base/Interpreter.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
 #include <Gui/MainWindow.h>
@@ -49,40 +50,18 @@ CmdImageOpen::CmdImageOpen()
 void CmdImageOpen::activated(int iMsg)
 {
   // Reading an image
-    QString s = QFileDialog::getOpenFileName(QString::null, QObject::tr("Images (*.png *.xpm *.jpg *.bmp)"), 
-                                           0, QObject::tr("Open image file dialog"), 
-                                           QObject::tr("Choose an image file to open"));
+  QString s = QFileDialog::getOpenFileName(QString::null, QObject::tr("Images (*.png *.xpm *.jpg *.bmp)"), 
+                                           0, QObject::tr("Open image file dialog"), QObject::tr("Choose an image file to open"));
   if (s.isEmpty() == false)
   {
-      QImage imageq(s);
-      int format;
-      if (imageq.isNull() == false)
-      {
-        if ((imageq.depth() == 8) && (imageq.isGrayscale() == true))
-          format = IB_CF_GREY8;
-        else if ((imageq.depth() == 16) && (imageq.isGrayscale() == true))
-          format = IB_CF_GREY16;
-        else if ((imageq.depth() == 32) && (imageq.isGrayscale() == false))
-          format = IB_CF_BGRA32;
-        else
-        {
-            QMessageBox::warning(0, QObject::tr("Open"), QObject::tr("Unsupported image format"));
-            return;
-        }
-      }
-      else
-      {
-        QMessageBox::warning(0, QObject::tr("Open"), QObject::tr("Could not load image"));
-        return;
-      }
-
-      // Displaying the image in a view
-      ImageView* iView = new ImageView(Gui::getMainWindow(), "Image");
-      iView->setIcon( Gui::BitmapFactory().pixmap("colors") );
-      iView->setCaption(QObject::tr("Image viewer"));
-      iView->resize( 400, 300 );
-      Gui::getMainWindow()->addWindow( iView );
-      iView->createImageCopy((void *)(imageq.bits()), (unsigned long)imageq.width(), (unsigned long)imageq.height(), format, 0);
+    try{
+      // load the file with the module
+      Command::doCommand(Command::Gui, "import Image, ImageGui");
+      Command::doCommand(Command::Gui, "ImageGui.open(\"%s\")", s.latin1());
+    } catch (const Base::PyException& e){
+      // Usually thrown if the file is invalid somehow
+      e.ReportException();
+    }
   }
 }
 

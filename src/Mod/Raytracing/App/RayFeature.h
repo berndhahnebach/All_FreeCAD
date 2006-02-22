@@ -57,7 +57,7 @@ public:
 	virtual void InitLabel(const TDF_Label &rcLabel)=0;
 
 
-	/** @name methodes used for recalculation (update) */
+	/** @name methods used for recalculation (update) */
 	//@{
 	/** MustExecute
 	 *  We call this method to check if the object was modified to

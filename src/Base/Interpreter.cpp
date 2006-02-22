@@ -263,7 +263,7 @@ int InterpreterSingleton::runCommandLine(char *prompt)
 
 /**
  *  Runs a member methode of an object with no parameter and no return value
- *  void (void). There are other methodes to run with returns
+ *  void (void). There are other methods to run with returns
  */
 void InterpreterSingleton::runMethodVoid(PyObject *pobject, const char *method)
 {

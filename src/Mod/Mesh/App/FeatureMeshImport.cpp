@@ -79,7 +79,7 @@ int Import::execute(void)
     try{
       if ( !aReader.Load( str ) )
       {
-        setError("Import of mesh to file '%s' failed",FileName.getValue());
+        setError("Import of mesh from file '%s' failed",FileName.getValue());
         return 1;
       }
     }catch ( Base::AbortException& e ){

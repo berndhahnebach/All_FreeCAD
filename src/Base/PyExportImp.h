@@ -155,11 +155,11 @@ namespace Base
  *  are visible in python for Macro recording and Automation purpose.
  *  The FCDocument is a good expample for a exported class.
  *  There are some conviniance macros to makes it easear to inheriting
- *  from this class and defining new methodes exported to python.
+ *  from this class and defining new methods exported to python.
  *  PYFUNCDEF_D defines a new exported methode.
  *  PYFUNCIMP_D defines the implementation of the new exported methode.
  *  In the implementation you can use Py_Return, Py_Error, Py_Try and Py_Assert.
- *  PYMETHODEDEF makes the entry in the python methodes tabel.
+ *  PYMETHODEDEF makes the entry in the python methods tabel.
  *  @see FCDocument
  *  @see PYFUNCDEF_D
  *  @see PYFUNCIMP_D
@@ -202,7 +202,7 @@ public:
 	 *  You have to call the method of the base class.
 	 *  Note: if you reimplement _gettattr() in a inheriting class you
 	 *  need to call the method of the base class! Otherwise even the 
-	 *  methodes of the object will disapiear!
+	 *  methods of the object will disapiear!
 	 *  @see FCDocument
 	 */
 	virtual PyObject *_getattr(char *attr);	
@@ -243,7 +243,7 @@ public:
 	static  PyObject *__repr(PyObject *PyObj)		
 	  {return ((PyObjectBase*) PyObj)->_repr();};
 
-  /** @name helper methodes */
+  /** @name helper methods */
   //@{
   /// return a float from an int or flot object, or throw.
   static float getFloatFromPy(PyObject *value);
@@ -420,10 +420,10 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
 
 /** Python buffer helper class (const char* -> char*)
  *  This class has the only purpos to handle non const char* in
- *  python methodes. Unfortenatly python only use non const strings which
+ *  python methods. Unfortenatly python only use non const strings which
  *  makes some problems when got only const strings. This class create 
  *  a non const buffer from the const input and offer it outside. 
- *  This is used often in methodes which use python function calls....
+ *  This is used often in methods which use python function calls....
  */
 class PyBuf
 {

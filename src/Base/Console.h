@@ -62,7 +62,7 @@ namespace Base {
 /** The console observer class
  *  This class distribute the Messages issued to the FCConsole class. 
  *  If you need to catch some of the Messages you need to inherit from
- *  this class and implement some of the methodes.
+ *  this class and implement some of the methods.
  *  @see Console
   */
 class BaseExport ConsoleObserver

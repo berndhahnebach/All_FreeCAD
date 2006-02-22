@@ -98,7 +98,7 @@ FCSubject::~FCSubject()
 }
 
 // **************************************************************************
-// Subject methodes
+// Subject methods
 
 
 void FCSubject::Attach(FCObserver *ToObserv)
