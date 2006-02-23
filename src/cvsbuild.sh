@@ -11,18 +11,17 @@ chmod u+x Mod/Test/unittestgui.py
 #autoconf configure.ac > configure && chmod ug+x configure
 #./configure
 
-echo "calling libtoolize"
-libtoolize --force --copy
-
-
 echo "calling aclocal"
 aclocal
 
-echo "calling autoconf"
-autoconf
+echo "calling libtoolize"
+libtoolize --force --copy
 
 echo "calling automake"
-automake
+automake --add-missing
+
+echo "calling autoconf"
+autoconf
 
 echo "Done"
 echo "Please run configure."
