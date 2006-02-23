@@ -42,5 +42,6 @@ EXTRA_DIST = \
 		post_moc.py \
 		PythonToCPP.py \
 		tstocpp.py \
+		qembed.py \
 		WixFileTool.py
 
