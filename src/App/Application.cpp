@@ -1148,12 +1148,14 @@ void Application::CheckEnv(void)
 	cout << flush;
 
 	bool bFailure=false;
-
+/*
+  //TODO: Do we need this OCC stuff? (Werner)
+  //
 	EnvMacro::TestEnvExists("CSF_MDTVFontDirectory",bFailure);
 	EnvMacro::TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
 	EnvMacro::TestEnvExists("CSF_UnitsDefinition",bFailure);
 	EnvMacro::TestEnvExists("CSF_UnitsLexicon",bFailure);
-
+*/
 	if (bFailure) {
      		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
 		exit(1);

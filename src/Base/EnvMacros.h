@@ -319,10 +319,13 @@ std::string FindHomePathWin32(HANDLE hModule)
 std::string GetFreeCADLib(const char* sHomePath)
 {
 	EnvPrint("GetFreeCADLib ----------------");
+	const char* env = getenv("FREECADLIB");
+	std::string sEnv = env ? env : "";
 
-	if(getenv("FREECADLIB") )
+	// Make sure that 'env' is _not_ empty, otherwise we run into trouble on platforms using gcc
+	if ( !sEnv.empty() )
 	{
-		std::string TempLibPath = getenv("FREECADLIB");
+		std::string TempLibPath = sEnv;
 		if(*(TempLibPath.rbegin()) != PATHSEP )
 			TempLibPath += PATHSEP;
 		EnvPrint(TempLibPath.c_str());
