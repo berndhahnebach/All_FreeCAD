@@ -885,9 +885,11 @@ void Application::LoadParameters(void)
 #elif defined(FC_OS_LINUX)
   const char* APPDATA = getenv("HOME");
   const char* FreeCADDir = "/.FreeCAD/";
-#else
+#elif defined (FC_OS_CYGWIN)
   const char* APPDATA = getenv("HOME");
-  const char* FreeCADDir = "/FreeCAD/";
+  const char* FreeCADDir = "/.FreeCAD/";
+#else
+# error "Location of configuration files not implemented yet!"
 #endif
   if ( APPDATA )
   {
@@ -899,10 +901,13 @@ void Application::LoadParameters(void)
       appData = newDir;
   }
 
-#if defined(FC_OS_LINUX)
+#if defined (FC_OS_WIN32)
+  mConfig["UserParameter"]   = appData + "Config_" + mConfig["UserName"] + ".FCParam";
+	mConfig["SystemParameter"] = appData + "AppParam.FCParam";
+#elif defined (FC_OS_LINUX)
   mConfig["UserParameter"]   = appData + "user.cfg";
 	mConfig["SystemParameter"] = appData + "system.cfg";
-#else
+#elif defined (FC_OS_CYGWIN)
   mConfig["UserParameter"]   = appData + "Config_" + mConfig["UserName"] + ".FCParam";
 	mConfig["SystemParameter"] = appData + "AppParam.FCParam";
 #endif
