@@ -277,13 +277,11 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
       }
     }
 
-    // removing from tree
-    pcTreeItem->removeViewProviderFeature(dynamic_cast<ViewProviderFeature*>( vpInv ));
-
-
-
     if ( vpInv )
     {
+      // removing from tree
+      pcTreeItem->removeViewProviderFeature(dynamic_cast<ViewProviderFeature*>( vpInv ));
+
       delete vpInv;
       _ViewProviderMap.erase(*It);
     }
