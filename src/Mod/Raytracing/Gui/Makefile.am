@@ -45,7 +45,7 @@ moc_%.cpp: %.h
 
 # rule for translation files using python script :
 %.h: %.ts
-	$(PYTHON) ../../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
+	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
 
 FreeCADpov.h: FreeCADpov
 	$(PYTHON) ../../../Tools/PythonToCPP.py $(<F) $@

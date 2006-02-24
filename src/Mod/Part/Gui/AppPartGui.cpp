@@ -63,7 +63,7 @@ void AppPartGuiExport initPartGui() {
 
   // register preferences pages
   new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ( "Part design" );
-  new Gui::LanguageProducer("Deutsch", GetPart_de());
+  new Gui::LanguageProducer("Deutsch", Part_de_h_data, Part_de_h_len);
 
   // register bitmaps
   Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();

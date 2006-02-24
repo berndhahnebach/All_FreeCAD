@@ -79,7 +79,7 @@ using namespace Gui;
  * To integrate the .ts file into the Visual Studio project file you have to add the
  * file to the project and define the following as custom build:
  *
- * python ..\\Tools\\tstocpp.py "$(InputDir)\$(InputName).ts" "$(InputDir)\$(InputName).h" "$(InputName)" 
+ * python ..\\Tools\\qembed.py "$(InputDir)\$(InputName).ts" "$(InputDir)\$(InputName).h" "$(InputName)" 
  * For the gcc build system you just have to add the line <Outputofyourtsfile>.h to the BUILT_SOURCES
  * sources section of the Makefile.am, run automake and configure (or ./confog.status) afterwards.
  *

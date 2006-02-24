@@ -18,7 +18,7 @@ dnl
 dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
-AC_DEFUN(AC_CXX_HAVE_STL,
+AC_DEFUN([AC_CXX_HAVE_STL],
 [AC_CACHE_CHECK(whether the compiler supports Standard Template Library,
 ac_cv_cxx_have_stl,
 [AC_REQUIRE([AC_CXX_NAMESPACES])
@@ -45,7 +45,7 @@ dnl
 dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
-AC_DEFUN(AC_CXX_HAVE_STD,
+AC_DEFUN([AC_CXX_HAVE_STD],
 [AC_CACHE_CHECK(whether the compiler supports ISO C++ standard library,
 ac_cv_cxx_have_std,
 [AC_REQUIRE([AC_CXX_NAMESPACES])
@@ -73,7 +73,7 @@ dnl
 dnl @version $Id$
 dnl @author Luc Maisonobe
 dnl
-AC_DEFUN(AC_CXX_NAMESPACES,
+AC_DEFUN([AC_CXX_NAMESPACES],
 [AC_CACHE_CHECK(whether the compiler implements namespaces,
 ac_cv_cxx_namespaces,
 [AC_LANG_SAVE
@@ -95,7 +95,7 @@ dnl
 dnl @version ac_cxx_have_std.m4 Tue Mar 28 18:20:26 CEST 2000
 dnl @author Thomas Sondergaard thomass@deltadata.dk
 dnl
-AC_DEFUN(AC_CXX_HAVE_SSTREAM,
+AC_DEFUN([AC_CXX_HAVE_SSTREAM],
 [AC_CACHE_CHECK(for sstream,
 ac_cv_cxx_have_sstream,
 [AC_REQUIRE([AC_CXX_NAMESPACES])
@@ -120,7 +120,7 @@ dnl
 dnl @version ac_cxx_have_std.m4 Tue Mar 28 18:20:26 CEST 2000
 dnl @author Thomas Sondergaard thomass@deltadata.dk
 dnl
-AC_DEFUN(AC_CXX_HAVE_STD_IOSTREAM,
+AC_DEFUN([AC_CXX_HAVE_STD_IOSTREAM],
 [AC_CACHE_CHECK(for std iostream,
 ac_cv_cxx_have_std_iostream,
 [AC_REQUIRE([AC_CXX_NAMESPACES])

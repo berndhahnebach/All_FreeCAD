@@ -39,10 +39,6 @@
 #include "../Base/Parameter.h"
 #include "../App/Application.h"
 
-typedef std::vector<const char*>  TCharVector;
-typedef std::vector<const char*>* PCharVector;
-typedef const std::vector<const char*>& RCharVector;
-
 using namespace Gui;
 
 LanguageFactoryInst* LanguageFactoryInst::_pcSingleton = NULL;
@@ -63,66 +59,6 @@ void LanguageFactoryInst::Destruct (void)
   if (_pcSingleton != NULL)
     delete _pcSingleton;
 }
-/*
-bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
-{
-  bool ok = false;
-
-  // make sure that producers are created
-  LanguageFactorySupplier::Instance();
-
-  // create temporary files
-  QString ts = "Language.ts";
-  QString qm = "Language.qm";
-  QFile file( ts );
-  file.open( IO_WriteOnly );
-  QTextStream out( &file );
-
-  try
-  {
-    QStringList IDs = getUniqueIDs( lang );
-
-    for (QStringList::Iterator it = IDs.begin(); it!= IDs.end(); ++it)
-    {
-      PCharVector tv = (PCharVector) Produce((*it).latin1());
-
-      if ( !tv )
-      {
-        continue; // no data
-      }
-
-      RCharVector text = *tv;
-      for (std::vector<const char*>::const_iterator i = text.begin(); i!=text.end(); ++i)
-        out << (*i);
-    }
-
-    // all messages written
-    file.close();
-
-    // and delete the files again
-    QDir dir;
-    if ( file.size() > 0 )
-    {
-      // build the translator messages
-      MetaTranslator mt;
-      mt.load( ts );
-      mt.release( qm );
-      QTranslator* t = new Translator( lang );
-      t->load( qm, "." );
-      dir.remove( qm );
-
-      qApp->installTranslator( t );
-      ok = true;
-    }
-
-    dir.remove( ts );
-  }
-  catch (...)
-  {
-  }
-
-  return ok;
-}*/
 
 bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
 {
@@ -146,7 +82,7 @@ bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
 
 bool LanguageFactoryInst::installTranslator ( const QString& lang ) const
 {
-  PCharVector tv = (PCharVector) Produce(lang.latin1());
+  LanguageEmbed* tv = (LanguageEmbed*)Produce(lang.latin1());
 
   bool ok=false;
   if ( !tv )
@@ -186,10 +122,7 @@ bool LanguageFactoryInst::installTranslator ( const QString& lang ) const
     return false;
 
   QTextStream out( &file );
-
-  RCharVector text = *tv;
-  for (std::vector<const char*>::const_iterator i = text.begin(); i!=text.end(); ++i)
-    out << (*i);
+  out.writeRawBytes((const char*)tv->data, tv->size);
 
   // all messages written
   file.close();
@@ -256,16 +189,14 @@ QValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lan
 
     for (QStringList::Iterator it = IDs.begin(); it!= IDs.end(); ++it)
     {
-      PCharVector tv = (PCharVector) Produce((*it).latin1());
+      LanguageEmbed* tv = (LanguageEmbed*)((*it).latin1());
 
       if ( !tv )
       {
         continue; // no data
       }
 
-      RCharVector text = *tv;
-      for (std::vector<const char*>::const_iterator i = text.begin(); i!=text.end(); ++i)
-        out << (*i);
+      out.writeRawBytes((const char*)tv->data, tv->size);
     }
 
     // all messages written
@@ -338,9 +269,12 @@ QStringList LanguageFactoryInst::getRegisteredLanguages() const
 
 // ----------------------------------------------------
 
-LanguageProducer::LanguageProducer (const QString& language, const std::vector<const char*>& languageFile)
- : mLanguageFile(languageFile)
+LanguageProducer::LanguageProducer (const QString& language, const unsigned char* data, const unsigned int& len)
 {
+  mLanguageData.name = language.latin1();
+  mLanguageData.data = data;
+  mLanguageData.size = len;
+
   LanguageFactoryInst& f = LanguageFactoryInst::Instance();
   QString id = f.createUniqueID(language);
   f.AddProducer(id.latin1(), this);
@@ -357,7 +291,7 @@ LanguageProducer::LanguageProducer (const QString& language, const std::vector<c
 
 void* LanguageProducer::Produce (void) const
 {
-  return (void*)(&mLanguageFile);
+  return (void*)(&mLanguageData);
 }
 
 LanguageFactorySupplier* LanguageFactorySupplier::_pcSingleton = 0L;

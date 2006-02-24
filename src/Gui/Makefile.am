@@ -403,7 +403,7 @@ moc_%.cpp: %.h
 
 # rule for translation files using python script :
 %.h: %.ts
-	cd $(@D) && $(PYTHON) $(top_srcdir)/../Tools/tstocpp.py $(<F)  $(@F) $(*F)
+	cd $(@D) && $(PYTHON) $(top_srcdir)/../Tools/qembed.py $(<F)  $(@F) $(*F)
 
 %Script.h: FreeCAD%.py
 	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@

@@ -120,7 +120,7 @@ fi
 
 dnl checking for Python
 dnl **************************************************************************
-AC_CHECKING([Python])
+AC_MSG_CHECKING([for Python])
 fc_py_ver=`python -c "import sys; print sys.version[[:3]]"`;
 if test x$fc_py_ver = x; then
 	AC_MSG_ERROR([
@@ -134,32 +134,30 @@ AC_ARG_WITH(python-includes,
 	[fc_py_incs=$withval],
 	[fc_py_incs=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`])
 
-AC_CHECK_FILE($fc_py_incs/Python.h,,
-	[AC_MSG_ERROR([
-	**** Cannot find Python header files.
-	 Please check your installation. ****
-	 ])])
-
 AC_ARG_WITH(python-libs,
 	AC_HELP_STRING([--with-python-libs], [Path of the library files of your Python installation]),
 	[fc_py_libs=$withval],
 	[fc_py_libs=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_config_var('LIBDIR')"`])
 
-AC_CACHE_CHECK(
-	[whether libpython$fc_py_ver is available],
-	fc_cv_lib_py_avail,
-	[fc_py_ac_save_cppflags=$CPPFLAGS
-	CPPFLAGS="$CPPFLAGS -I$fc_py_incs"
-	fc_py_ac_save_ldflags=$LDFLAGS
-	LDFLAGS="$LDFLAGS -L$fc_py_libs -lpython$fc_py_ver"
-	AC_TRY_LINK([#include <Python.h>],
-							[Py_Initialize(); Py_Finalize();],
-							[fc_cv_lib_py_avail=yes],
-							[fc_cv_lib_py_avail=no])
+fc_py_ac_save_cppflags=$CPPFLAGS
+fc_py_ac_save_ldflags=$LDFLAGS
+fc_py_ac_save_libs=$LIBS
+CPPFLAGS="$CPPFLAGS -I$fc_py_incs"
+LDFLAGS="$LDFLAGS -L$fc_py_libs"
+LIBS="-lpython$fc_py_ver"
 
-	CPPFLAGS=$fc_py_ac_save_cppflags
-	LDFLAGS=$fc_py_ac_save_ldflags
-])
+fc_cv_lib_py_avail=no
+AC_CHECK_HEADER(Python.h,[
+AC_MSG_CHECKING([whether libpython$fc_py_ver is available])
+AC_TRY_LINK([#include "Python.h"],
+	[Py_Initialize(); Py_Finalize();],
+	[fc_cv_lib_py_avail=yes
+	AC_MSG_RESULT(yes)],
+	AC_MSG_RESULT(no))])
+
+CPPFLAGS=$fc_py_ac_save_cppflags
+LDFLAGS=$fc_py_ac_save_ldflags
+LIBS=$fc_py_ac_save_libs
 
 if test x"$fc_cv_lib_py_avail" = xyes; then
 	all_includes="$all_includes -I$fc_py_incs"
@@ -169,63 +167,125 @@ if test x"$fc_cv_lib_py_avail" = xyes; then
 	AC_SUBST([PYTHON_LIB], [python$fc_py_ver])
 else
 	AC_MSG_ERROR([
-	**** Cannot find Python library files.
- 	Please check your installation. ****
+	**** Cannot find Python devel files. ****
 	])
 fi
 
 dnl checking for xerces-c
 dnl **************************************************************************
-
-AC_CHECKING([xerces-c])
+AC_MSG_CHECKING([for xerces-c])
 AC_ARG_WITH(xercesc-includes,
 	AC_HELP_STRING([--with-xercesc-includes], [Path of the header files of your xerces-c installation]),
 	[fc_xer_incs=$withval],
 	[fc_xer_incs=/usr/include])
 
 AC_CHECK_FILE($fc_xer_incs/xercesc,,
-	[AC_CHECK_FILE(/usr/local/include/xercesc,[fc_xer_incs=/usr/local/include],
-	[AC_MSG_ERROR([
-	**** Cannot find xerces-c header files.
-	 Please check your installation. ****
-	 ])])])
+	[AC_CHECK_FILE(/usr/local/include/xercesc,[fc_xer_incs=/usr/local/include])])
 
 AC_ARG_WITH(xercesc-libs,
 	AC_HELP_STRING([--with-xercesc-libs], [Path of the library files of your xerces-c installation]),
 	[fc_xer_libs=$withval],
 	[fc_xer_libs=/usr/lib])
 
-AC_CACHE_CHECK(
-	[whether xerces lib is available],
-	fc_cv_lib_xer_avail,
-	[fc_xer_ac_save_cppflags=$CPPFLAGS
-	CPPFLAGS="$CPPFLAGS -I$fc_xer_incs"
-	fc_xer_ac_save_ldflags=$LDFLAGS
-	LDFLAGS="$LDFLAGS -L$fc_xer_libs -lxerces-c"
-	AC_TRY_LINK([#include <xercesc/framework/XMLBuffer.hpp>],
-							[XERCES_CPP_NAMESPACE_USE
-							 XMLBuffer buf;],
-							[fc_cv_lib_xer_avail=yes],
-							[fc_cv_lib_xer_avail=no])
+fc_xer_ac_save_cppflags=$CPPFLAGS
+fc_xer_ac_save_ldflags=$LDFLAGS
+fc_xer_ac_save_libs=$LIBS
+CPPFLAGS="$CPPFLAGS -I$fc_xer_incs"
+LDFLAGS="$LDFLAGS -L$fc_xer_libs"
+LIBS="-lxerces-c"
 
-	CPPFLAGS=$fc_xer_ac_save_cppflags
-	LDFLAGS=$fc_xer_ac_save_ldflags
-])
+fc_cv_lib_xer_avail=no
+AC_CHECK_HEADER(xercesc/framework/XMLBuffer.hpp,[
+AC_MSG_CHECKING([whether xerces lib is available])
+AC_TRY_LINK([#include <xercesc/framework/XMLBuffer.hpp>],
+	[XERCES_CPP_NAMESPACE_USE
+	 XMLBuffer buf;],
+	[fc_cv_lib_xer_avail=yes
+	AC_MSG_RESULT(yes)],
+	AC_MSG_RESULT(no))])
+
+CPPFLAGS=$fc_xer_ac_save_cppflags
+LDFLAGS=$fc_xer_ac_save_ldflags
+LIBS=$fc_xer_ac_save_libs
 
 if test x"$fc_cv_lib_xer_avail" = xyes; then
 	all_includes="$all_includes -I$fc_xer_incs"
 	all_libraries="$all_libraries -L$fc_xer_libs"
 else
 	AC_MSG_ERROR([
-	**** Cannot find xerces library files.
-	 Please check your installation. ****
+	**** Cannot find xerces devel files. ****
    ])
 fi
 
-dnl checking for Qt (written by Bastiaan Veelo <Bastiaan.N.Veelo@ntnu.no>)
+dnl checking for Qt (Linux part written by Bastiaan Veelo <Bastiaan.N.Veelo@ntnu.no>)
 dnl **************************************************************************
 
-BNV_HAVE_QT
+case `uname -s` in 
+CYGWIN*) 
+AC_MSG_CHECKING([for Qt])
+
+fc_qt_incs=""
+fc_qt_ldflags=""
+fc_qt_libs=""
+fc_qt_dir=""
+AC_PATH_PROG(PKGCONFIG, pkg-config)
+if test x"$PKGCONFIG" != x; then
+	fc_qt_incs=`$PKGCONFIG qt-mt --cflags-only-I`
+	fc_qt_ldflags=`$PKGCONFIG qt-mt --libs-only-L`
+	fc_qt_libs=-lqt-mt
+fi
+
+if test x"$fc_qt_incs" = x; then
+	if test x"$QTDIR" != x; then
+		fc_qt_incs=-I/usr/include/qt3
+		fc_qt_ldflags=-L$QTDIR/lib
+		fc_qt_libs=-lqt-mt
+	fi
+fi
+
+fc_qt_ac_save_cppflags=$CPPFLAGS
+fc_qt_ac_save_ldflags=$LDFLAGS
+fc_qt_ac_save_libs=$LIBS
+CPPFLAGS="$CPPFLAGS $fc_qt_incs"
+LDFLAGS="$LDFLAGS $fc_qt_ldflags"
+LIBS="$fc_qt_libs"
+
+fc_cv_lib_qt_avail=no
+AC_CHECK_HEADER(qapplication.h,[
+AC_MSG_CHECKING([whether Qt lib is available])
+AC_TRY_LINK([#include <qapplication.h>],
+	[
+	 qDebug("App is running...");],
+	[fc_cv_lib_qt_avail=yes
+	AC_MSG_RESULT(yes)],
+	AC_MSG_RESULT(no))])
+
+CPPFLAGS=$fc_qt_ac_save_cppflags
+LDFLAGS=$fc_qt_ac_save_ldflags
+LIBS=$fc_qt_ac_save_libs
+
+if test x"$fc_cv_lib_qt_avail" = xyes; then
+	all_includes="$all_includes $fc_qt_incs"
+	all_libraries="$all_libraries $fc_qt_libs"
+else
+	AC_MSG_ERROR([
+	**** Cannot find Qt devel files. ****
+   ])
+fi
+
+if test x"$QTDIR" != x; then
+	fc_ac_path=$QTDIR/bin:$PATH
+	AC_PATH_PROG(QT_UIC, uic, false, $fc_ac_path)
+	AC_PATH_PROG(QT_MOC, moc, false, $fc_ac_path)
+else
+if test x"$QT_UIC" != xfalse; then
+	AC_MSG_WARN([QTDIR environment variable not set -- this might be an indication of a problem])
+fi
+fi
+
+;;
+*) BNV_HAVE_QT ;;
+esac
 
 dnl check QT_MOC
 if test x$QT_MOC = x; then
@@ -288,30 +348,34 @@ AC_ARG_WITH(OCC-libs,
 	[fc_occ_libs=$withval],
 	[fc_occ_libs=$fc_occ_libs_test])
 
-AC_CACHE_CHECK(
-	[whether OCC libs are available],
-	fc_cv_lib_occ_avail,
-	[fc_occ_ac_save_cppflags=$CPPFLAGS
-	CPPFLAGS="$CPPFLAGS -I$fc_occ_incs"
-	fc_occ_ac_save_ldflags=$LDFLAGS
-	LDFLAGS="$LDFLAGS -L$fc_occ_libs -lTKernel"
-	AC_TRY_LINK([#define HAVE_IOSTREAM 1
-							 #include <gp_Pnt.hxx>],
-							[gp_Pnt pt(0,0,0);],
-							[fc_cv_lib_occ_avail=yes],
-							[fc_cv_lib_occ_avail=no])
+fc_occ_ac_save_cppflags=$CPPFLAGS
+fc_occ_ac_save_ldflags=$LDFLAGS
+fc_occ_ac_save_libs=$LIBS
+CPPFLAGS="$CPPFLAGS -I$fc_occ_incs"
+LDFLAGS="$LDFLAGS -L$fc_occ_libs"
+LIBS="-lTKernel"
 
-	CPPFLAGS=$fc_occ_ac_save_cppflags
-	LDFLAGS=$fc_occ_ac_save_ldflags
-])
+fc_cv_lib_occ_avail=no
+AC_CHECK_HEADER(Standard.hxx,[
+AC_MSG_CHECKING([whether OCC libs are available])
+AC_TRY_LINK([#define HAVE_IOSTREAM 1
+	#include <gp_Pnt.hxx>],
+	[gp_Pnt pt(0,0,0);],
+	[fc_cv_lib_occ_avail=yes
+	AC_MSG_RESULT(yes)],
+	AC_MSG_RESULT(no))])
+
+CPPFLAGS=$fc_occ_ac_save_cppflags
+LDFLAGS=$fc_occ_ac_save_ldflags
+LIBS=$fc_occ_ac_save_libs
 
 if test x"$fc_cv_lib_occ_avail" = xyes; then
 	AC_SUBST([OCC_INC], [$fc_occ_incs])
 	AC_SUBST([OCC_LIB], [$fc_occ_libs])
 else
 	AC_MSG_WARN([
-	**** Cannot find OpenCASCADE library files.
-	Modules that depends on this library cannot be built. ****
+	**** Cannot find OpenCASCADE devel files.
+	Modules that depend on this library cannot be built. ****
   ])
 fi
 
@@ -319,7 +383,6 @@ AM_CONDITIONAL(OCC_LIBRARY_FILES, test x"$fc_cv_lib_occ_avail" = xyes)
 
 dnl checking for WildMagic3
 dnl **************************************************************************
-
 AC_CHECKING([WildMagic3])
 AC_ARG_WITH(wildmagic-includes,
 	AC_HELP_STRING([--with-wildmagic-includes], [Path of the header files of your WildMagic3 installation]),
@@ -335,37 +398,42 @@ AC_CHECK_FILE($fc_wm3_incs/Wm3Query.h,fc_wm3_ver=340,fc_wm3_ver=330)
 
 dnl Set the appropriate library name
 if test x"$fc_wm3_ver" = x"330"; then
-	fc_wm3_libs="-L$fc_wm3_libs -lWildMagic3"
-	fc_wm3_text="Version <= 3.3.0"
+	fc_wm3_lib="WildMagic3"
+	fc_wm3_txt="Version <= 3.3.0"
 else
-	fc_wm3_libs="-L$fc_wm3_libs -lWm3Foundation"
-	fc_wm3_text="Version >= 3.4.0"
+	fc_wm3_lib="Wm3Foundation"
+	fc_wm3_txt="Version >= 3.4.0"
 fi
 
-AC_CACHE_CHECK(
-	[whether WildMagic lib is available],
-	fc_cv_lib_wm3_avail,
-	[fc_wm3_ac_save_cppflags=$CPPFLAGS
-	CPPFLAGS="$CPPFLAGS -I$fc_wm3_incs"
-	fc_wm3_ac_save_ldflags=$LDFLAGS
-	LDFLAGS="$LDFLAGS $fc_wm3_libs"
-	AC_TRY_LINK([#include <Wm3Math.h>],
-							[double val = Wm3::Math<double>::Cos(0.0);],
-							[fc_cv_lib_wm3_avail=yes],
-							[fc_cv_lib_wm3_avail=no])
+fc_wm3_ac_save_cppflags=$CPPFLAGS
+fc_wm3_ac_save_ldflags=$LDFLAGS
+fc_wm3_ac_save_libs=$LIBS
+CPPFLAGS="$CPPFLAGS -I$fc_wm3_incs"
+LDFLAGS="$LDFLAGS -L$fc_wm3_libs"
+LIBS="-l$fc_wm3_lib"
 
-	CPPFLAGS=$fc_wm3_ac_save_cppflags
-	LDFLAGS=$fc_wm3_ac_save_ldflags
-])
+fc_cv_lib_wm3_avail=no
+AC_CHECK_HEADER(Wm3Math.h,[
+AC_MSG_CHECKING([whether WildMagic lib is available])
+AC_TRY_LINK([#include <Wm3Math.h>],
+	[double val = Wm3::Math<double>::Cos(0.0);],
+	[fc_cv_lib_wm3_avail=yes
+	AC_MSG_RESULT(yes)],
+	AC_MSG_RESULT(no))])
+
+CPPFLAGS=$fc_wm3_ac_save_cppflags
+LDFLAGS=$fc_wm3_ac_save_ldflags
+LIBS=$fc_wm3_ac_save_libs
 
 if test x"$fc_cv_lib_wm3_avail" = xyes; then
 	AC_SUBST([WM3_CFLAGS], [-I$fc_wm3_incs])
-	AC_SUBST([WM3_LIBS], [$fc_wm3_libs])
+	AC_SUBST([WM3_LDFLAGS], [-L$fc_wm3_libs])
+	AC_SUBST([WM3_LIBS], [-l$fc_wm3_lib])
 	AC_SUBST([WM3_VERSION], [$fc_wm3_ver])
 else
 	AC_MSG_WARN([
-	**** Cannot find WildMagic library files.
-	Modules that depends on this library cannot be built. ****
+	**** Cannot find WildMagic devel files.
+	Modules that depend on this library cannot be built. ****
   ])
 fi
 
@@ -384,7 +452,7 @@ if test x"$GTSCONFIG" != xfalse; then
 else
 	AC_MSG_WARN([
 	**** Cannot find GTS library files.
-	Modules that depends on this library cannot be built. ****
+	Modules that depend on this library cannot be built. ****
   ])
 fi
 

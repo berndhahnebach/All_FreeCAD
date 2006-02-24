@@ -86,6 +86,12 @@ inline GuiExport LanguageFactoryInst& LanguageFactory(void)
 
 // --------------------------------------------------------------------
 
+struct LanguageEmbed {
+  const char *name;
+  const unsigned char *data;
+  unsigned int size;
+};
+
 /** Retrieves the translated literals to the specified language.
  * \author Werner Mayer
  */
@@ -96,7 +102,7 @@ public:
    * Appends itself to the language factory.
    * @see LanguageFactoryInst
    */
-  LanguageProducer (const QString& language, const std::vector<const char*>& languageFile);
+  LanguageProducer (const QString& language, const unsigned char* data, const unsigned int& len);
 
   virtual ~LanguageProducer (void){}
 
@@ -105,7 +111,7 @@ public:
 
 private:
   /// Contains all translations
-  const std::vector<const char*>& mLanguageFile;
+  LanguageEmbed mLanguageData;
 };
 
 // --------------------------------------------------------------------

@@ -70,7 +70,7 @@ moc_%.cpp: %.h
 
 # rule for translation files using python script :
 %.h: %.ts
-	$(PYTHON) ../../../Tools/tstocpp.py $(<F)  $(@F) $(*F)
+	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) -I../../../ -I../App
