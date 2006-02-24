@@ -7,6 +7,7 @@ BUILT_SOURCES=\
 
 libImageGui_la_SOURCES=\
 		AppImageGui.cpp \
+		AppImageGuiPy.cpp \
 		Command.cpp \
 		GLImageBox.cpp \
 		GLImageBox.h \

@@ -23,6 +23,7 @@
 
 class QSlider;
 class QAction;
+class QActionGroup;
 class QPopupMenu;
 class QToolBar;
 
