@@ -500,7 +500,8 @@ bool Application::activateWorkbench( const char* name )
   // net buffer because of char* <-> const char*
   Base::PyBuf Name(name);
   // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, Name.str);
+  PyObject* pcWorkbench = 0;
+  pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, Name.str);
   // test if the workbench exists
   if ( !pcWorkbench )
     return false;
@@ -821,7 +822,8 @@ void Application::runApplication(void)
 
   
   Console().Log("Init: Processing command line files\n");
-  unsigned short count = atoi(App::Application::Config()["OpenFileCount"].c_str());
+  unsigned short count = 0;
+  count = atoi(App::Application::Config()["OpenFileCount"].c_str());
 
   string File;
   for (unsigned short i=0; i<count; i++)

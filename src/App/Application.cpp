@@ -780,7 +780,8 @@ void Application::runApplication()
   const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
 
   // cycling through all the open files
-  unsigned short count = atoi(mConfig["OpenFileCount"].c_str());
+  unsigned short count = 0;
+  count = atoi(mConfig["OpenFileCount"].c_str());
   std::string File;
   for (unsigned short i=0; i<count; i++)
   {
