@@ -37,7 +37,9 @@
 #include "Writer.h"
 
 
-XERCES_CPP_NAMESPACE_USE
+XERCES_CPP_NAMESPACE_BEGIN
+	class DefaultHandler;
+XERCES_CPP_NAMESPACE_END
 
 namespace Base
 {
@@ -108,7 +110,7 @@ void PropertyContainer::Restore(Base::Reader &reader)
  * \see App::Persistance
  * \author Juergen Riegel
  */
-class BaseExport XMLReader : public DefaultHandler
+class BaseExport XMLReader : public XERCES_CPP_NAMESPACE_QUALIFIER DefaultHandler
 {
 public:
     /// opens the file and read the first element
@@ -150,7 +152,7 @@ private:
   // -----------------------------------------------------------------------
   //  Handlers for the SAX ContentHandler interface
   // -----------------------------------------------------------------------
-  virtual void startElement(const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname, const Attributes& attrs);
+  virtual void startElement(const XMLCh* const uri, const XMLCh* const localname, const XMLCh* const qname, const XERCES_CPP_NAMESPACE_QUALIFIER Attributes& attrs);
   virtual void endElement  (const XMLCh* const uri, const XMLCh *const localname, const XMLCh *const qname);
   virtual void characters  (const XMLCh* const chars, const unsigned int length);
   virtual void ignorableWhitespace(const XMLCh* const chars, const unsigned int length);
@@ -160,9 +162,9 @@ private:
   // -----------------------------------------------------------------------
   //  Handlers for the SAX ErrorHandler interface
   // -----------------------------------------------------------------------
-	void warning(const SAXParseException& exc);
-  void error(const SAXParseException& exc);
-  void fatalError(const SAXParseException& exc);
+	void warning(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
+  void error(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
+  void fatalError(const XERCES_CPP_NAMESPACE_QUALIFIER SAXParseException& exc);
   void resetErrors();
 
 
@@ -183,8 +185,8 @@ private:
 
 
   FileInfo _File;
-  SAX2XMLReader* parser;
-  XMLPScanToken token;
+  XERCES_CPP_NAMESPACE_QUALIFIER SAX2XMLReader* parser;
+  XERCES_CPP_NAMESPACE_QUALIFIER XMLPScanToken token;
   bool _valid;
 };
 

@@ -47,6 +47,7 @@
 #include "Exception.h"
 #include "XMLTools.h"
 
+XERCES_CPP_NAMESPACE_USE
 
 using namespace Base;
 using namespace std;

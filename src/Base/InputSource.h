@@ -34,16 +34,19 @@
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/sax/InputSource.hpp>
 
-XERCES_CPP_NAMESPACE_USE
+
+XERCES_CPP_NAMESPACE_BEGIN
+	class BinInputStream;
+XERCES_CPP_NAMESPACE_END
 
 namespace Base
 {
 
 
-class BaseExport StdInputStream : public BinInputStream
+class BaseExport StdInputStream : public XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream
 {
 public :
-  StdInputStream ( std::istream& Stream, MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager );
+  StdInputStream ( std::istream& Stream, XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* const manager = XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgMemoryManager );
   virtual ~StdInputStream();
 
   // -----------------------------------------------------------------------
@@ -67,17 +70,17 @@ private :
   //      per platform.
   // -----------------------------------------------------------------------
   std::istream            &stream;
-  MemoryManager* const    fMemoryManager;
+  XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* const    fMemoryManager;
 };
 
 
-class BaseExport StdInputSource : public InputSource
+class BaseExport StdInputSource : public XERCES_CPP_NAMESPACE_QUALIFIER InputSource
 {
 public :
-  StdInputSource ( std::istream& Stream, const char* filePath, MemoryManager* const manager = XMLPlatformUtils::fgMemoryManager );
+  StdInputSource ( std::istream& Stream, const char* filePath, XERCES_CPP_NAMESPACE_QUALIFIER MemoryManager* const manager = XERCES_CPP_NAMESPACE_QUALIFIER XMLPlatformUtils::fgMemoryManager );
    ~StdInputSource();
 
-   virtual BinInputStream* makeStream() const;
+   virtual XERCES_CPP_NAMESPACE_QUALIFIER BinInputStream* makeStream() const;
 
 private:
   StdInputSource(const StdInputSource&);

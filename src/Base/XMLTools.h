@@ -44,7 +44,6 @@ XERCES_CPP_NAMESPACE_BEGIN
 	class DOMDocument;
 XERCES_CPP_NAMESPACE_END
 
-XERCES_CPP_NAMESPACE_USE
 using namespace Base;
 
 
@@ -76,13 +75,13 @@ inline std::ostream& operator<<(std::ostream& target, const StrX& toDump)
 inline StrX::StrX(const XMLCh* const toTranscode)
 {
     // Call the private transcoding method
-    fLocalForm = XMLString::transcode(toTranscode);
+    fLocalForm = XERCES_CPP_NAMESPACE_QUALIFIER XMLString::transcode(toTranscode);
 }
 
 inline StrX::~StrX()
 {
     //delete [] fLocalForm; // dont work on VC7.1
-  XMLString::release(&fLocalForm);
+  XERCES_CPP_NAMESPACE_QUALIFIER XMLString::release(&fLocalForm);
 }
 
 
@@ -122,13 +121,13 @@ private :
 inline XStr::XStr(const char* const toTranscode)
 {
     // Call the private transcoding method
-    fUnicodeForm = XMLString::transcode(toTranscode);
+    fUnicodeForm = XERCES_CPP_NAMESPACE_QUALIFIER XMLString::transcode(toTranscode);
 }
 
 inline XStr::~XStr()
 {
     //delete [] fUnicodeForm;
-  XMLString::release(&fUnicodeForm);
+  XERCES_CPP_NAMESPACE_QUALIFIER XMLString::release(&fUnicodeForm);
 }
 
 
