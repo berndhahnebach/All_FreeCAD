@@ -12,6 +12,7 @@
 #	pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
 
+
 // standard
 #include <iostream>
 #include <sstream>

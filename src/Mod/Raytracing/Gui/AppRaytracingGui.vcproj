@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppRaytracingGui"
-	ProjectGUID="{6CB8C19A-28C1-4727-8284-83C9C1D9EAAF}"
+	ProjectGUID="{D1525013-09EC-478C-A68E-0EE92038ACFB}"
 	>
 	<Platforms>
 		<Platform
@@ -416,7 +416,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building $(InputName).h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
@@ -426,7 +426,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building $(InputName).h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>

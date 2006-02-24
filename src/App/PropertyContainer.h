@@ -73,10 +73,14 @@ public:
 
   /// get called by the container when a Proptery was changed
   virtual void onChanged(Property* prop){};
+  /// get called befor the value is changed
+  virtual void onBevorChange(Property* prop){};
 
-
+  /// find a property by his name
   Property *getPropertyByName(const char* name);
+  /// get the name of a property
   const char* getName(Property* prop) const;
+  /// get all properties of the class (including parent)
   void getPropertyMap(std::map<std::string,Property*> &Map);
 
   virtual void Save (Base::Writer &writer);

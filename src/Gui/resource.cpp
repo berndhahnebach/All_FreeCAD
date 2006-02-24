@@ -49,8 +49,10 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
   // ADD YOUR LANGUAGES HERE
   //
   //
-  new Gui::LanguageProducer("Deutsch", FreeCAD_de_h_data, FreeCAD_de_h_len);
-  new Gui::LanguageProducer("Deutsch", qt_de_h_data, qt_de_h_len);
+  //new Gui::LanguageProducer("Deutsch", FreeCAD_de,FreeCAD_de.size());
+  //new Gui::LanguageProducer("Deutsch", qt_de,qt_de.size());
+  //new Gui::LanguageProducer("Deutsch", FreeCAD_de_h_data, FreeCAD_de_h_len);
+  //new Gui::LanguageProducer("Deutsch", qt_de_h_data, qt_de_h_len);
 }
 
 // ----------------------------------------------------

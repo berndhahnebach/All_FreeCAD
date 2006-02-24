@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADMain"
-	ProjectGUID="{E47A0361-C171-4AEF-A69B-F5E1F73AE08B}"
+	ProjectGUID="{10B24220-09C6-43A1-A2D9-1EB82322ECA2}"
 	>
 	<Platforms>
 		<Platform
@@ -72,7 +72,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Release/FreeCAD.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -169,7 +168,6 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="Debug/FreeCADD.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

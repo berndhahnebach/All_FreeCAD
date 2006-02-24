@@ -59,6 +59,8 @@
 #include "PropertyLinks.h"
 #include "Document.h"
 
+
+
 namespace EnvMacro {
 #include <Base/EnvMacros.h>
 }
@@ -186,7 +188,7 @@ ParameterManager *App::Application::_pcUserParamMngr;
 Base::ConsoleObserverStd  *Application::_pConsoleObserverStd;
 Base::ConsoleObserverFile *Application::_pConsoleObserverFile;
 
-std::map<std::string,std::string> Application::mConfig;
+AppExport std::map<std::string,std::string> Application::mConfig;
 
 
 //**************************************************************************
@@ -1162,7 +1164,8 @@ void Application::CheckEnv(void)
 	EnvMacro::TestEnvExists("CSF_UnitsDefinition",bFailure);
 	EnvMacro::TestEnvExists("CSF_UnitsLexicon",bFailure);
 */
-	if (bFailure) {
+
+  if (bFailure) {
      		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
 		exit(1);
 	}

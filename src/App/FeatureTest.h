@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2006     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,47 +21,52 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
 
-#include <Base/Console.h>
-#include <Gui/Application.h>
-#include <Gui/WidgetFactory.h>
-#include <Gui/Language/LanguageFactory.h>
+#ifndef __FEATURETEST_H__
+#define __FEATURETEST_H__
 
 
-#include "DlgSettingsRayImp.h"
-#include "Workbench.h"
+#include "Feature.h"
+#include "PropertyStandard.h"
+#include "PropertyGeo.h"
+#include "PropertyLinks.h"
 
-#include "Raytracing_de.h"
-
-// use a different name to CreateCommand()
-void CreateRaytracingCommands(void);
-
-using namespace RaytracingGui;
+namespace App
+{
 
 
-/* registration table  */
-static struct PyMethodDef RaytracingGui_methods[] = {
-    {NULL, NULL}                   /* end of table marker */
+class FeatureTest :public Feature
+{
+  PROPERTY_HEADER(App::FeatureTest);
+
+public:
+  FeatureTest();
+
+  // Standard Properties (PorpertyStandard.h)
+  App::PropertyInteger Integer;
+  App::PropertyFloat   Float;
+  App::PropertyBool    Bool;
+  App::PropertyString  String;
+ 
+  // Standard Properties (PropertyLinks.h)
+  App::PropertyLink    Link;
+
+  // Standard Properties (PropertyGeo.h)
+  App::PropertyMatrix  Matrix;
+  App::PropertyVector  Vector;
+
+  App::PropertyString  ExecResult;
+  
+  
+  /** @name methods overide Feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
 };
 
-extern "C" {
-void AppRaytracingGuiExport initRaytracingGui() {
 
-  Base::Console().Log("Mod : Load AppRaytracingGui\n");
-  (void) Py_InitModule("RaytracingGui", RaytracingGui_methods);   /* mod name, table ptr */
 
-  // instanciating the commands
-  CreateRaytracingCommands();
-  RaytracingGui::Workbench::init();
-  //Gui::WorkbenchFactory().AddProducer("Raytracing", new Gui::WorkbenchProducer<RaytracingGui::Workbench>);
+} //namespace App
 
-  // register preferences pages
-//  new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );
-//  new Gui::LanguageProducer("Deutsch", Raytracing_de_h_data, Raytracing_de_h_len);
-
-  return;
-}
-} // extern "C" {
+#endif // __FEATURETEST_H__

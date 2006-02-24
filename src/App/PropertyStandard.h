@@ -90,6 +90,56 @@ private:
 
 };
 
+/** Integer list properties
+ * 
+ */
+class AppExport PropertyIntegerList: public PropertyLists
+{
+  TYPESYSTEM_HEADER();
+
+public:
+
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyIntegerList();
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	~PropertyIntegerList();
+
+  virtual void setSize(int newSize){_lValueList.resize(newSize);}   
+  virtual int getSize(void){return _lValueList.size();}   
+
+	/** Sets the property 
+	 */
+	void setValue(long);
+  
+  /// index operator
+  long operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+  
+  
+  void  set1Value (const int idx, long value){_lValueList.operator[] (idx) = value;}
+
+  const std::vector<long> &getValues(void) const{return _lValueList;}
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+  virtual void Save (Base::Writer &writer);
+  virtual void Restore(Base::XMLReader &reader);
+
+
+private:
+
+  std::vector<long> _lValueList;
+
+};
+
 
 /** Integer properties
  * This is the father of all properties handling Integers.
@@ -113,8 +163,8 @@ public:
 	virtual ~PropertyFloat();
 
 
-	void setValue(double lValue);
-	double getValue(void) const;
+	void setValue(float lValue);
+	float getValue(void) const;
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -124,7 +174,7 @@ public:
 
 private:
 
-	double _dValue;
+	float _dValue;
 
 };
 
@@ -206,143 +256,7 @@ private:
 	bool _lValue;
 };
 
-#if 0
 
-/** Color properties
- * This is the father of all properties handling colors.
- */
-class AppExport PropertyColor : public Property
-{
-public:
-
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyColor(long lRed=0, long lGreen=0, long lBlue=0);
-
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	virtual ~PropertyColor();
-
-	/** Sets the property throug a init string
-	 */
-	virtual void Set(const char* Str);
-
-	/** This method returns a string representation of the property
-	 * This representation can be simple in case of strings or numbers
-	 * or more comples in cas of e.g. color
-	 */
-	virtual const char* GetAsString(void);
-
-	/** Gets the type of the concrete Property
-	 * Properties inherit from this class reports
-	 * its type through this methode.
-	 */
-
-	virtual const char* GetType(void);
-
-	/** Returns the value of a sub property
-	 * This method is mainly for scripting and allow setting  
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue);
-
-	/** sets the value of a sub property
-	 * This method is mainly for scripting and allow geting 
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* GetSubProperty(const char* sSubPropName);
-
-	/** gets all possible subproperty names
-	 * return a line feed seperated list of all sub property
-	 * names.
-	 */
-	virtual const char* GetSubPropertyNames(void);
-
-	void SetRed(long lRed);
-	long GetRed(void);
-
-	void SetGreen(long lGreen);
-	long GetGreen(void);
-
-	void SetBlue(long lBlue);
-	long GetBlue(void);
-
-private:
-	long _lRed, _lGreen, _lBlue;
-
-};
-
-/** List properties
- * This is the father of all properties handling lists.
- */
-class AppExport PropertyList : public Property
-{
-public:
-
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
-	PropertyList(const std::vector<std::string>& lValue, long lCurrent=0);
-
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
-	virtual ~PropertyList();
-
-	/** Sets the property throug a init string
-	 */
-	virtual void Set(const char* Str="");
-
-	/** This method returns a string representation of the property
-	 * This representation can be simple in case of strings or numbers
-	 * or more comples in cas of e.g. color
-	 */
-	virtual const char* GetAsString(void);
-
-	/** Gets the type of the concrete Property
-	 * Properties inherit from this class reports
-	 * its type through this methode.
-	 */
-
-	virtual const char* GetType(void);
-
-	/** Returns the value of a sub property
-	 * This method is mainly for scripting and allow setting  
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* SetSubProperty(const char* sSubPropName,const char* sNewValue);
-
-	/** sets the value of a sub property
-	 * This method is mainly for scripting and allow geting 
-	 * of additional information, like e.g. limits. 
-	 */
-	virtual const char* GetSubProperty(const char* sSubPropName);
-
-	/** gets all possible subproperty names
-	 * return a line feed seperated list of all sub property
-	 * names.
-	 */
-	virtual const char* GetSubPropertyNames(void);
-
-	void SetValue(const std::vector<std::string>& lValue);
-	const std::vector<std::string>& GetValue(void);
-
-  void SetCurrentItem (long lCurrent);
-  long GetCurrentItem (void);
-
-private:
-  std::vector<std::string> _lValue;
-  long _lCurrent;
-};
-#endif
 
 } // namespace App
 

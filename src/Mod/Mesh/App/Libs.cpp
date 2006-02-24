@@ -18,8 +18,12 @@
 
 
 // wild magic library (succesor of MGC)
-#	pragma comment(lib,"Wm3Foundation60.lib")
 
+# if defined(_MSC_VER) && _MSC_VER >= 1400
+#   pragma comment(lib,"Wm3Foundation80.lib")
+# else
+#	  pragma comment(lib,"Wm3Foundation60.lib")
+# endif
 // GTS
 #	pragma comment(lib,"gts-0.7.lib")
 //#	pragma comment(lib,"gthread-1.3.lib")

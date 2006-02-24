@@ -22,10 +22,6 @@
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
 
-#ifdef FC_OS_WIN32
-#	include <direct.h>
-# include <windows.h>
-#endif
 #if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 #	include <unistd.h>
 #	include <stdlib.h>
@@ -33,6 +29,10 @@
 #	include <vector>
 #endif
 
+#ifdef FC_OS_WIN32
+#	include <direct.h>
+# include <windows.h>
+#endif
 
 #define FC_VERBOSE
 

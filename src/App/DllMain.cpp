@@ -36,6 +36,11 @@
 #include <stdio.h>
 #include <string>
 
+#ifdef FC_OS_WIN32
+#	include <direct.h>
+# include <windows.h>
+#endif
+
 #include "../Base/EnvMacros.h"
 
 /** DllMain

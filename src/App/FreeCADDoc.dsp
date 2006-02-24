@@ -224,6 +224,14 @@ SOURCE=.\FeaturePy.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\FeatureTest.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureTest.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\FreeCADInit.py
 
 !IF  "$(CFG)" == "FreeCADApp - Win32 Release"

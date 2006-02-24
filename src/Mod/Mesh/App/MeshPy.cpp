@@ -44,10 +44,6 @@
 #include "Core/Iterator.h"
 #include <Mod/Part/App/TopologyPy.h>
 
-// if not defined then set to current version of LibPack
-#ifndef WM3_VERSION
-# define WM3_VERSION 33
-#endif
 
 using Base::Console;
 using namespace Mesh;

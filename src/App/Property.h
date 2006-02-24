@@ -73,7 +73,10 @@ public:
   friend class PropertyContainer;
 
 protected:
+  /// is called by all setValue() methodes after the value was changed
   void hasSetValue(void);
+  /// is called by all setValue() methodes befor the value is changed
+  void aboutToSetValue(void);
 
 private:
 
@@ -81,6 +84,27 @@ private:
 
 };
 
+
+/** Base class of all Properties
+ *  This is the father of all properties. Properties are
+ *  are object which are used in the document tree to parametrize 
+ *  e.g. features and ist grafical output. They also used to 
+ *  gain acces from the scripting facility.
+ *  /par
+ *  This abstract base class defines all methodes shared by all
+ *  possible properties. Its also possible to define user properties
+ *  and use them in the frame work....
+ */
+class AppExport PropertyLists: public Property
+{
+  TYPESYSTEM_HEADER();
+
+public:
+
+  virtual void setSize(int newSize)=0;   
+  virtual int getSize(void)=0;   
+
+};
 
 } // namespace App
 

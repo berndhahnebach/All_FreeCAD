@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppImageGui"
-	ProjectGUID="{2B07BCF1-AFF5-473D-B6E8-2B08F61595ED}"
+	ProjectGUID="{73C01310-17E2-4545-8832-BD17DABC5122}"
 	>
 	<Platforms>
 		<Platform
@@ -222,6 +222,28 @@
 			>
 			<File
 				RelativePath="AppImageGui.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="AppImageGuiPy.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

@@ -29,7 +29,7 @@
 
 #ifdef FC_OS_WIN32
 #	pragma comment(lib,DOMLIBNAME)
-#	pragma comment(lib,"zlib1.lib")
+#	pragma comment(lib,"zdll.lib")
 #else
 #	error "Dont compile that file on UNIX!"
 #endif

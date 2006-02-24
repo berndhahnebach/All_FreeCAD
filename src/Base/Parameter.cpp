@@ -43,10 +43,8 @@
 #	include <fcntl.h>
 #	include <sys/types.h>
 #	include <sys/stat.h>
-#	if defined (FC_OS_WIN32)
+#	ifdef FC_OS_WIN32
 #		include <io.h>
-#   include <sstream>
-# elif defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 #   include <sstream>
 #	endif
 #	include <stdio.h>
@@ -135,7 +133,7 @@ public:
 
     /** @name Destructors */
 	~DOMPrintFilter(){};
-    //@}
+    //@{
 
 	/** @ interface from DOMWriterFilter */
 	virtual short acceptNode(const XERCES_CPP_NAMESPACE_QUALIFIER DOMNode*) const;
@@ -630,7 +628,7 @@ void  ParameterGrp::SetASCII(const char* Name, const char *sValue)
     DOMNode *pcElem2 = pcElem->getFirstChild();
     if (!pcElem2)
     {
-		XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
+      XERCES_CPP_NAMESPACE_QUALIFIER DOMDocument *pDocument = _pGroupNode->getOwnerDocument();
 		DOMText *pText = pDocument->createTextNode(XStr(sValue).unicodeForm());
 		pcElem->appendChild(pText);
 	}else{

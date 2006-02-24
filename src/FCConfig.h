@@ -218,6 +218,18 @@
 #	endif
 #endif
 
+//**************************************************************************
+// Wm3
+
+// if not defined then set to current version of LibPack
+#ifndef WM3_VERSION
+# if defined(_MSC_VER) && _MSC_VER >= 1400
+#   define WM3_VERSION 335
+# else
+#   define WM3_VERSION 330
+# endif
+#endif
+
 
 //**************************************************************************
 // Exception handling

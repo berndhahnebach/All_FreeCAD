@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADApp"
-	ProjectGUID="{BCD2D19F-1734-42E8-B9F1-AE7EFCDF31F2}"
+	ProjectGUID="{640CF4BF-7631-405C-BD9A-E441BA32A49C}"
 	>
 	<Platforms>
 		<Platform
@@ -242,32 +242,6 @@
 				>
 			</File>
 			<File
-				RelativePath="PropertyAttr.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="PropertyAttr.h"
-				>
-			</File>
-			<File
 				RelativePath="PropertyContainer.cpp"
 				>
 				<FileConfiguration
@@ -291,6 +265,58 @@
 			</File>
 			<File
 				RelativePath="PropertyContainer.h"
+				>
+			</File>
+			<File
+				RelativePath="PropertyGeo.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="PropertyGeo.h"
+				>
+			</File>
+			<File
+				RelativePath="PropertyLinks.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="PropertyLinks.h"
 				>
 			</File>
 			<File
@@ -367,32 +393,6 @@
 					PreprocessorDefinitions=""
 				/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Attribute.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Attribute.h"
-			>
 		</File>
 		<File
 			RelativePath="ColorModel.cpp"
@@ -497,6 +497,32 @@
 			>
 		</File>
 		<File
+			RelativePath="DocumentObject.cpp"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="DocumentObject.h"
+			>
+		</File>
+		<File
 			RelativePath="DocumentPy.cpp"
 			>
 			<FileConfiguration
@@ -573,84 +599,6 @@
 			>
 		</File>
 		<File
-			RelativePath="FeatureAttr.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="FeatureAttr.h"
-			>
-		</File>
-		<File
-			RelativePath="FeatureDataProvider.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="FeatureDataProvider.h"
-			>
-		</File>
-		<File
-			RelativePath="FeatureDataProviderPy.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="FeatureDataProviderPy.h"
-			>
-		</File>
-		<File
 			RelativePath="FeaturePy.cpp"
 			>
 			<FileConfiguration
@@ -674,6 +622,32 @@
 		</File>
 		<File
 			RelativePath="FeaturePy.h"
+			>
+		</File>
+		<File
+			RelativePath="FeatureTest.cpp"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeatureTest.h"
 			>
 		</File>
 		<File
@@ -723,32 +697,6 @@
 					Outputs="TestScript.h"
 				/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Function.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Function.h"
-			>
 		</File>
 		<File
 			RelativePath="Geometry2D.cpp"
@@ -837,32 +785,6 @@
 					Name="VCCustomBuildTool"
 				/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Label.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Label.h"
-			>
 		</File>
 		<File
 			RelativePath="Libs.cpp"
@@ -967,30 +889,6 @@
 			>
 		</File>
 		<File
-			RelativePath="Plugin"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Plugin.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py Plugin Plugin.h&#x0D;&#x0A;"
-					Outputs="Plugin.h"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Plugin.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py Plugin Plugin.h&#x0D;&#x0A;"
-					Outputs="Plugin.h"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration
@@ -1017,30 +915,6 @@
 		<File
 			RelativePath="PreCompiled.h"
 			>
-		</File>
-		<File
-			RelativePath="Standard"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Standard.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py Standard Standard.h&#x0D;&#x0A;"
-					Outputs="Standard.h"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Building Standard.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py Standard Standard.h&#x0D;&#x0A;"
-					Outputs="Standard.h"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="VectorPy.cpp"

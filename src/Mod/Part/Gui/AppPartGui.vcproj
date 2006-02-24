@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPartGui"
-	ProjectGUID="{99DD5FCE-14C9-409C-ADC8-6875807351FC}"
+	ProjectGUID="{F9C81EA6-F2A1-49AC-90ED-0BA6369D54A6}"
 	>
 	<Platforms>
 		<Platform
@@ -569,7 +569,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building $(InputName).h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
@@ -579,7 +579,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building $(InputName).h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
+					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>

@@ -72,3 +72,17 @@ void Property::hasSetValue(void)
   if(father)
     father->onChanged(this);
 }
+
+void Property::aboutToSetValue(void)
+{
+  if(father)
+    father->onBevorChange(this);
+}
+
+
+//**************************************************************************
+//**************************************************************************
+// Property
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE_ABSTRACT(App::PropertyLists , Base::Persistance);

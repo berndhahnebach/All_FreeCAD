@@ -71,6 +71,7 @@ PropertyInteger::~PropertyInteger()
 
 void PropertyInteger::setValue(long lValue)
 {
+  aboutToSetValue();
 	_lValue=lValue;
   hasSetValue();
 }
@@ -112,6 +113,93 @@ void PropertyInteger::Restore(Base::XMLReader &reader)
 
 //**************************************************************************
 //**************************************************************************
+// PropertyIntegerList
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyIntegerList , App::PropertyLists);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyIntegerList::PropertyIntegerList()
+{
+
+}
+
+
+PropertyIntegerList::~PropertyIntegerList()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+
+void PropertyIntegerList::setValue(long lValue)
+{
+  aboutToSetValue();
+  _lValueList.resize(1);
+	_lValueList[0]=lValue;
+  hasSetValue();
+}
+
+
+PyObject *PropertyIntegerList::getPyObject(void)
+{
+  PyObject* list = PyList_New(	getSize() );
+
+  for(int i = 0;i<getSize(); i++)
+     PyList_SetItem( list, i, PyInt_FromLong(	_lValueList[i]));
+
+  return list;
+}
+
+void PropertyIntegerList::setPyObject(PyObject *value)
+{ 
+  /*
+  if(PyInt_Check( value) )
+  {
+    _lValue = PyInt_AsLong(value);
+    hasSetValue();
+  }else
+    throw Base::Exception("Not allowed type used (float or int expected)...");
+*/
+}
+
+void PropertyIntegerList::Save (Writer &writer)
+{
+  writer << "<IntegerList count=\"" <<  getSize() <<"\"/>" << endl;
+  for(int i = 0;i<getSize(); i++)
+    writer << "<I v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+  writer << "</IntegerList>" << endl ;
+
+
+}
+
+void PropertyIntegerList::Restore(Base::XMLReader &reader)
+{
+  // read my Element
+  reader.readElement("IntegerList");
+  // get the value of my Attribute
+  int count = reader.getAttributeAsInteger("count");
+
+  setSize(count);
+
+  for(int i = 0;i<count; i++)
+  {
+    reader.readElement("I");
+    _lValueList[i] = reader.getAttributeAsInteger("v");
+  }
+
+  reader.readEndElement("IntegerList");
+
+}
+
+
+//**************************************************************************
+//**************************************************************************
 // PropertyFloat
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -136,14 +224,14 @@ PropertyFloat::~PropertyFloat()
 // Base class implementer
 
 
-void PropertyFloat::setValue(double lValue)
+void PropertyFloat::setValue(float lValue)
 {
+  aboutToSetValue();
 	_dValue=lValue;
   hasSetValue();
-
 }
 
-double PropertyFloat::getValue(void) const
+float PropertyFloat::getValue(void) const
 {
 	return _dValue;
 }
@@ -157,12 +245,12 @@ void PropertyFloat::setPyObject(PyObject *value)
 {
   if(PyFloat_Check( value) )
   {
-    _dValue = (double) PyFloat_AsDouble(value);
+    _dValue = (float) PyFloat_AsDouble(value);
     hasSetValue();
 
   }else if(PyInt_Check( value) )
   {
-    _dValue = (double) PyInt_AsLong(value);
+    _dValue = (float) PyInt_AsLong(value);
     hasSetValue();
   }else
     throw "Not allowed type used (float or int expected)...";
@@ -179,7 +267,7 @@ void PropertyFloat::Restore(Base::XMLReader &reader)
   // read my Element
   reader.readElement("Float");
   // get the value of my Attribute
-  _dValue = reader.getAttributeAsFloat("value");
+  _dValue = (float) reader.getAttributeAsFloat("value");
 }
 
 
@@ -217,6 +305,7 @@ PropertyString::~PropertyString()
 
 void PropertyString::setValue(const char* sString)
 {
+  aboutToSetValue();
 	_cValue = sString;
   hasSetValue();
 
@@ -295,6 +384,7 @@ PropertyBool::~PropertyBool()
 
 void PropertyBool::setValue(bool lValue)
 {
+  aboutToSetValue();
 	_lValue=lValue;
   hasSetValue();
 

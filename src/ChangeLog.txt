@@ -36,4 +36,8 @@ Version: V0.5B4 Date: Sat Feb 04 13:14:55 2006 +++++++++++++++++++++++++++++++
 + implementing Comment for Save picture
 + implement MIBA
 + use type system in workbench classes
++ VC8 Port
++ Property Pre Callback
++ Property Lists started
++ FeatureTest
 

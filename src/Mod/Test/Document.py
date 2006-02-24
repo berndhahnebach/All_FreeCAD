@@ -37,15 +37,11 @@ import FreeCAD, os, unittest
 #    return suite
 
 
-class DocumentCases(unittest.TestCase):
+class DocumentBasicCases(unittest.TestCase):
 
-    def setUp(self):
-        self.Doc = FreeCAD.New()
-
-    def testProperties(self):
-        i = self.Doc.UndoLimit
-        i = self.Doc.AvailableUndos
-        i = self.Doc.AvailableRedos
+    def testCreateDestroy(self):
+        self.Doc = FreeCAD.New("CreateTest")
+		self.failUnless(FreeCAD.document("CreateTest")!= none,"Create Document fails")
 
     def testLabels(self):
         Main = self.Doc.Main #getting the main label of the document 

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMesh"
-	ProjectGUID="{14603C65-A3BA-440C-BEEB-0AE89DA933C6}"
+	ProjectGUID="{DDD92411-D0EB-4C93-ACD6-F01C36110147}"
 	>
 	<Platforms>
 		<Platform
@@ -268,6 +268,32 @@
 			</File>
 			<File
 				RelativePath="Core\Approximation.h"
+				>
+			</File>
+			<File
+				RelativePath="Core\Builder.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="Core\Builder.h"
 				>
 			</File>
 			<File

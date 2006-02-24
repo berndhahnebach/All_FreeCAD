@@ -50,16 +50,11 @@
 # include <xercesc/util/XercesDefs.hpp>
 #endif
 
-
 XERCES_CPP_NAMESPACE_BEGIN
-	class DOMNode;
-	class DOMElement;
-	class DOMDocument;
+class DOMNode;
+class DOMElement;
+class DOMDocument;
 XERCES_CPP_NAMESPACE_END
-
-
-
-
 
 class ParameterManager;
 typedef struct _object PyObject;

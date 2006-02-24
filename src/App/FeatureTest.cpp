@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,48 +20,44 @@
  *                                                                         *
  ***************************************************************************/
 
-
+ 
 #include "PreCompiled.h"
 #ifndef _PreComp_
 #endif
 
+
 #include <Base/Console.h>
-#include <Gui/Application.h>
-#include <Gui/WidgetFactory.h>
-#include <Gui/Language/LanguageFactory.h>
+#include "FeatureTest.h"
 
 
-#include "DlgSettingsRayImp.h"
-#include "Workbench.h"
-
-#include "Raytracing_de.h"
-
-// use a different name to CreateCommand()
-void CreateRaytracingCommands(void);
-
-using namespace RaytracingGui;
+using namespace App;
 
 
-/* registration table  */
-static struct PyMethodDef RaytracingGui_methods[] = {
-    {NULL, NULL}                   /* end of table marker */
-};
+PROPERTY_SOURCE(App::FeatureTest, App::Feature)
 
-extern "C" {
-void AppRaytracingGuiExport initRaytracingGui() {
 
-  Base::Console().Log("Mod : Load AppRaytracingGui\n");
-  (void) Py_InitModule("RaytracingGui", RaytracingGui_methods);   /* mod name, table ptr */
+FeatureTest::FeatureTest()
+{
+  ADD_PROPERTY(Integer,(4711)  );
+  ADD_PROPERTY(Float  ,(47.11f) );
+  ADD_PROPERTY(Bool   ,(true)  );
+  ADD_PROPERTY(String ,("4711"));
 
-  // instanciating the commands
-  CreateRaytracingCommands();
-  RaytracingGui::Workbench::init();
-  //Gui::WorkbenchFactory().AddProducer("Raytracing", new Gui::WorkbenchProducer<RaytracingGui::Workbench>);
+  ADD_PROPERTY(Link   ,(0));
 
-  // register preferences pages
-//  new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );
-//  new Gui::LanguageProducer("Deutsch", Raytracing_de_h_data, Raytracing_de_h_len);
-
-  return;
+  ADD_PROPERTY(Vector ,(1.0,2.0,3.0));
+  ADD_PROPERTY(Matrix ,(Base::Matrix4D(1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0)));
+  
+  ADD_PROPERTY(String ,("empty"));
 }
-} // extern "C" {
+
+
+int FeatureTest::execute(void)
+{
+
+
+  return 0;
+}
+
+
+

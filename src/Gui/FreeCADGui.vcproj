@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADGui"
-	ProjectGUID="{3D7B3D98-196B-48DF-9A98-AD0DCFF353B2}"
+	ProjectGUID="{CEBEB123-CC23-4A37-8C03-32357957E38A}"
 	>
 	<Platforms>
 		<Platform
@@ -1145,6 +1145,76 @@
 				<File
 					RelativePath="DlgSettingsColorGradientImp.h"
 					>
+				</File>
+				<File
+					RelativePath="DlgSettingsDocument.ui"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Uic&apos;ing $(InputName).ui ..."
+							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="DlgSettingsDocumentImp.cpp"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCLCompilerTool"
+							AdditionalIncludeDirectories=""
+							PreprocessorDefinitions=""
+						/>
+					</FileConfiguration>
+				</File>
+				<File
+					RelativePath="DlgSettingsDocumentImp.h"
+					>
+					<FileConfiguration
+						Name="Debug|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)moc_$(InputName).cpp"
+						/>
+					</FileConfiguration>
+					<FileConfiguration
+						Name="Release|Win32"
+						>
+						<Tool
+							Name="VCCustomBuildTool"
+							Description="Moc&apos;ing $(InputName).h ..."
+							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							Outputs="$(InputDir)moc_$(InputName).cpp"
+						/>
+					</FileConfiguration>
 				</File>
 				<File
 					RelativePath="DlgSettingsImage.ui"
@@ -2369,36 +2439,6 @@
 				RelativePath="SoFCOffscreenRenderer.h"
 				>
 			</File>
-			<Filter
-				Name="OCC"
-				>
-				<File
-					RelativePath="Inventor\OCC\SoBrepShape.cpp"
-					>
-					<FileConfiguration
-						Name="Debug|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="Inventor\OCC\SoBrepShape.h"
-					>
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Language"
@@ -2412,7 +2452,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Building $(InputName).h"
-						CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
+						CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
@@ -2422,7 +2462,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Building $(InputName).h"
-						CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
+						CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
@@ -2462,7 +2502,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Building $(InputName).h"
-						CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
+						CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
@@ -2472,7 +2512,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Building $(InputName).h"
-						CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\tstocpp.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
+						CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h"
 					/>
 				</FileConfiguration>
