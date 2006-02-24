@@ -114,8 +114,8 @@ AC_CHECK_LIB(z, inflate, [cv_libz=yes], [cv_libz=no])
 
 if test "$cv_libz" != "yes"; then
   AC_MSG_ERROR([
-  **** Cannot find the zlib library.
-   Please check your installation. ****])
+  **** Cannot find the zlib library. ****
+  ])
 fi
 
 dnl checking for Python
@@ -124,8 +124,7 @@ AC_MSG_CHECKING([for Python])
 fc_py_ver=`python -c "import sys; print sys.version[[:3]]"`;
 if test x$fc_py_ver = x; then
 	AC_MSG_ERROR([
-	**** Cannot find Python interpreter.
-	 Please check your installation. ****
+	**** Cannot find Python interpreter. ****
   ])
 fi;
 
@@ -265,8 +264,8 @@ LDFLAGS=$fc_qt_ac_save_ldflags
 LIBS=$fc_qt_ac_save_libs
 
 if test x"$fc_cv_lib_qt_avail" = xyes; then
-	all_includes="$all_includes $fc_qt_incs"
-	all_libraries="$all_libraries $fc_qt_libs"
+  QT_CXXFLAGS="$fc_qt_incs"
+  QT_LIBS="$fc_qt_ldflags $fc_qt_libs"
 else
 	AC_MSG_ERROR([
 	**** Cannot find Qt devel files. ****
@@ -300,8 +299,7 @@ dnl checking for Coin
 dnl **************************************************************************
 
 SIM_AC_HAVE_COIN_IFELSE(,AC_MSG_ERROR([
-	**** Cannot find Coin library files.
-	 Please check your installation. ****
+	**** Cannot find Coin devel files. ****
    ]))
 
 AC_SUBST([sim_ac_coin_includedir])
@@ -313,8 +311,7 @@ dnl checking for SoQt
 dnl **************************************************************************
 
 SIM_AC_HAVE_SOQT_IFELSE(,AC_MSG_ERROR([
-	**** Cannot find SoQt library files.
-	 Please check your installation. ****
+	**** Cannot find SoQt devel files. ****
    ]))
 
 AC_SUBST([sim_ac_soqt_includedir])
@@ -498,7 +495,7 @@ dnl Check if you want thread support, or not (currently disabled, thread support
 dnl **************************************************************************
 
 CPPFLAGS="$CPPFLAGS -D_REENTRANT"
-LDFLAGS="-lpthread"
+LDFLAGS="$LDFLAGS -lpthread"
 fc_set_thread=true
 
 #AC_ARG_ENABLE([thread],
