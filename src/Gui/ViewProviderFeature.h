@@ -53,7 +53,7 @@ public:
   /// destructor.
   virtual ~ViewProviderFeature();
 
-  // returns the TreeLabel
+  // Returns the tree label
   virtual QListViewItem* getTreeItem(QListViewItem* parent);
 
   virtual void attach(App::Feature *pcFeature);

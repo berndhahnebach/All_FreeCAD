@@ -179,9 +179,29 @@ void DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
 
 void DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
 {
+  QString name = Provider->getFeature()->getName();
+  std::map<std::string,FeatItem*>::iterator it = FeatMap.find(name.latin1());
+  if ( it != FeatMap.end() )
+  {
+    // now we must search for the matching listview item
+    QListViewItem* item = firstChild();
+    QListViewItem* sibling=0;
+    while ( item ) {
+      // makesure that we have a FeatItem
+      if ( item == it->second )
+      {
+        // in case we remove the last item
+        if ( _lastFeaItem == item )
+          _lastFeaItem = sibling;
+        delete item;
+        FeatMap.erase(it);
+        break;
+      }
 
-  // to implement
-  assert(0);
+      sibling = item;
+      item = item->nextSibling();  
+    }
+  }
 }
 
 

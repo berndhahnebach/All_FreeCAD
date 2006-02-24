@@ -612,25 +612,19 @@ void Document::remFeature(const char* sName)
   DocChanges DocChange;
   DocChange.Why = DocChanges::Recompute;
 
-  std::map<std::string,FeatEntry>::iterator pos;
-  
-  pos = FeatMap.find(sName);
+  std::map<std::string,FeatEntry>::iterator pos = FeatMap.find(sName);
 
   // name not found?
   if(pos == FeatMap.end())
     return;
 
-  FeatEntry e = pos->second;
-
-  DocChange.DeletedFeatures.insert(e.F);
+  DocChange.DeletedFeatures.insert(pos->second.F);
 
   Notify(DocChange);
 
-  // remove Feature Attribute
-  //e.L.ForgetAttribute (FeatureAttr::GetID()); 
-
-  // finely delete the Feature
-  delete e.F;
+  // finally delete the feature
+  delete pos->second.F;
+  FeatMap.erase(pos);
 }
 
 
