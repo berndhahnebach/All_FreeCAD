@@ -40,4 +40,6 @@ Version: V0.5B4 Date: Sat Feb 04 13:14:55 2006 +++++++++++++++++++++++++++++++
 + Property Pre Callback
 + Property Lists started
 + FeatureTest
++ Run script from Editor
+
 

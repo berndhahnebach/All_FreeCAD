@@ -436,7 +436,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
   MenuItem* tool = new MenuItem( menuBar );
   tool->setCommand( "&Tools" );
   *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord"
-        << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
+        << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
 
   // Windows
   MenuItem* wnd = new MenuItem( menuBar );
@@ -472,7 +472,7 @@ ToolBarItem* StdWorkbench::setupToolBars() const
   // Macro
   ToolBarItem* macro = new ToolBarItem( root );
   macro->setCommand( "Macro recording" );
-  *macro << "Std_DlgMacroRecord" << "Std_DlgMacroStop" << "Std_DlgMacroExecute";
+  *macro << "Std_DlgMacroRecord" << "Std_DlgMacroStop" << "Std_DlgMacroExecute"<< "Std_DlgMacroExecuteDirect";
 
   // View
   ToolBarItem* view = new ToolBarItem( root );

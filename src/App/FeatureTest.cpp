@@ -43,6 +43,8 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(Bool   ,(true)  );
   ADD_PROPERTY(String ,("4711"));
 
+  ADD_PROPERTY(IntegerList,(4711)  );
+  
   ADD_PROPERTY(Link   ,(0));
 
   ADD_PROPERTY(Vector ,(1.0,2.0,3.0));

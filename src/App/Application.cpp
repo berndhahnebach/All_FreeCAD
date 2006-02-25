@@ -53,6 +53,7 @@
 #include "VectorPy.h"
 #include "MatrixPy.h"
 #include "Feature.h"
+#include "FeatureTest.h"
 #include "Property.h"
 #include "PropertyContainer.h"
 #include "PropertyStandard.h"
@@ -603,6 +604,7 @@ void Application::initTypes(void)
   // Document classes
   App ::DocumentObject   ::init();
   App ::Feature          ::init();
+  App ::FeatureTest      ::init();
   App ::Document         ::init();
 
   // test code

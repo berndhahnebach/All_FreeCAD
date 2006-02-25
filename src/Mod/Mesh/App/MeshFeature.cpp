@@ -90,6 +90,7 @@ Base::PyObjectBase *Feature::GetPyObject(void)
   return pcMeshFeaturePy; 
 }
 
+// VC 6 hack!!!
 typedef App::PropertyContainer Parent;
 
 void Feature::Save (Base::Writer &writer)

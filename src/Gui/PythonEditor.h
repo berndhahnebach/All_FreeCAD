@@ -139,6 +139,7 @@ public:
   void paste  (void);
   void undo   (void);
   void redo   (void);
+  void run    (void);
   //@}
 
   bool isSavedOnce();

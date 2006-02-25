@@ -158,14 +158,33 @@ PyObject *PropertyIntegerList::getPyObject(void)
 
 void PropertyIntegerList::setPyObject(PyObject *value)
 { 
-  /*
-  if(PyInt_Check( value) )
+  if(PyList_Check( value) )
   {
-    _lValue = PyInt_AsLong(value);
+    aboutToSetValue();
+
+    int nSize = PyList_Size(value);
+    _lValueList.resize(nSize);
+
+    for (int i=0; i<nSize;++i)
+    {
+      PyObject* item = PyList_GetItem(value, i);
+      if (!PyInt_Check(item))
+      {
+        _lValueList.resize(1);
+        _lValueList[0] = 0;
+        throw Base::Exception("Not allowed type in list (int expected)...");
+      }
+      long pItem = PyInt_AsLong(item);
+      _lValueList[i] = pItem;
+    }
+
     hasSetValue();
+  }else if(PyInt_Check( value) )
+  {
+    setValue(PyInt_AsLong(value));
   }else
-    throw Base::Exception("Not allowed type used (float or int expected)...");
-*/
+    throw Base::Exception("Not allowed type used (int expected)...");
+
 }
 
 void PropertyIntegerList::Save (Writer &writer)

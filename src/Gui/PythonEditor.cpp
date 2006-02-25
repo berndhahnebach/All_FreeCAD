@@ -43,6 +43,7 @@
 #include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "DlgEditorImp.h"
+#include "Macro.h"
 
 #include "../Base/Interpreter.h"
 #include "../Base/Exception.h"
@@ -553,6 +554,10 @@ bool PythonEditView::onMsg(const char* pMsg,const char** ppReturn)
     save();
     return true;
   }
+  else if (strcmp(pMsg,"Run")==0){
+    run();
+    return true;
+  }
   else if (strcmp(pMsg,"SaveAs")==0){
     saveAs();
     return true;
@@ -592,6 +597,7 @@ bool PythonEditView::onMsg(const char* pMsg,const char** ppReturn)
 bool PythonEditView::onHasMsg(const char* pMsg)
 {
   if (strcmp(pMsg,"Save")==0)  return true;
+  if (strcmp(pMsg,"Run")==0)  return true;
   if (strcmp(pMsg,"SaveAs")==0)  return true;
   if (strcmp(pMsg,"Print")==0) return true;
   if (strcmp(pMsg,"Cut")==0)
@@ -728,6 +734,14 @@ void PythonEditView::openFile (const QString& fileName)
   setCaption(fileName);
 
   emit message( tr("Loaded document %1").arg( fileName ), 2000 );
+}
+
+/**
+ * Runs the opened script in the macro manager.
+ */
+void PythonEditView::run(void)
+{
+  Application::Instance->macroManager()->run(Gui::MacroManager::File,_fileName.latin1());
 }
 
 /**

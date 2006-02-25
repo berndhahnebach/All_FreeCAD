@@ -592,6 +592,33 @@ bool StdCmdDlgMacroExecute::isActive(void)
 }
 
 //===========================================================================
+// Std_DlgMacroExecuteDirect
+//===========================================================================
+DEF_STD_CMD_A(StdCmdDlgMacroExecuteDirect);
+
+StdCmdDlgMacroExecuteDirect::StdCmdDlgMacroExecuteDirect()
+  :Command("Std_DlgMacroExecuteDirect")
+{
+  sGroup        = QT_TR_NOOP("Tools");
+  sMenuText     = QT_TR_NOOP("Execute &editor");
+  sToolTipText  = QT_TR_NOOP("Execute the macro/script in the editor");
+  sWhatsThis    = QT_TR_NOOP("Execute the macro/script in the editor");
+  sStatusTip    = QT_TR_NOOP("Execute the macro/script in the editor");
+  sPixmap       = "Std_MacroPlay";
+  iAccel        = 0;
+}
+
+void StdCmdDlgMacroExecuteDirect::activated(int iMsg)
+{
+  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"Run\")");
+}
+
+bool StdCmdDlgMacroExecuteDirect::isActive(void)
+{
+  return getGuiApplication()->sendHasMsgToActiveView("Run");
+}
+
+//===========================================================================
 // Std_MacroStop
 //===========================================================================
 DEF_STD_CMD_A(StdCmdMacroStop);
@@ -702,6 +729,7 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdDlgPreferences());
   rcCmdMgr.addCommand(new StdCmdDlgMacroRecord());
   rcCmdMgr.addCommand(new StdCmdDlgMacroExecute());
+  rcCmdMgr.addCommand(new StdCmdDlgMacroExecuteDirect());
   rcCmdMgr.addCommand(new StdCmdMacroStop());
   rcCmdMgr.addCommand(new StdCmdDlgCustomize());
   rcCmdMgr.addCommand(new StdCmdCommandLine());

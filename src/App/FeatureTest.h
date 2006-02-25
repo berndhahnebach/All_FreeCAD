@@ -48,6 +48,9 @@ public:
   App::PropertyBool    Bool;
   App::PropertyString  String;
  
+  // Standard Properties (PorpertyStandard.h)
+  App::PropertyIntegerList IntegerList;
+
   // Standard Properties (PropertyLinks.h)
   App::PropertyLink    Link;
 

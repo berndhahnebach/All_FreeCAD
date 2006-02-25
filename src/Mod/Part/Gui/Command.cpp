@@ -339,6 +339,8 @@ void FCCmdPartCut::activated(int iMsg)
 	doCommand(Doc,"App.document().AddFeature(\"Part::Cut\",\"%s\")",FeatName.c_str());
 	doCommand(Doc,"App.document().%s.Base = App.document().%s",FeatName.c_str(),Sel[0].FeatName);
 	doCommand(Doc,"App.document().%s.Tool = App.document().%s",FeatName.c_str(),Sel[1].FeatName);
+	doCommand(Gui,"Gui.document().hide(\"%s\")",Sel[0].FeatName);
+	doCommand(Gui,"Gui.document().hide(\"%s\")",Sel[1].FeatName);
   updateActive();
   commitCommand();
   
