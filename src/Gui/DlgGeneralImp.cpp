@@ -153,7 +153,7 @@ void DlgGeneralImp::saveSettings()
 
 void DlgGeneralImp::loadSettings()
 {
-  // in case the user defined workbench is hidden
+  // in case the user defined workbench as hidden
   std::string hidden = App::Application::Config()["HiddenWorkbench"];
   QString curWbName = AutoloadModuleCombo->currentText();
   AutoloadModuleCombo->onRestore();

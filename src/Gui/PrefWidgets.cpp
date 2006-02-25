@@ -398,8 +398,17 @@ void PrefComboBox::restorePreferences()
   }
   else
   {
+    // due to i18n we must make sure that 'txt' is an item of the combobox
+    // otherwise we'll override the text of the current item
     QString txt = hPGrp->GetASCII("currentText", currentText().latin1() ).c_str();
-    setCurrentText( txt );
+    for ( int i = 0; i < count(); i++ )
+    {
+  	  if ( text( i ) == txt )
+      {
+	      setCurrentItem( i );
+  	    break;
+      }
+    }
   }
 }
 

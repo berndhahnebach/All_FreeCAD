@@ -21,6 +21,7 @@
 #include <qstring.h>
 #include <qtranslator.h>
 #include <qvaluelist.h>
+#include <qiodevice.h>
 
 class MetaTranslatorMessage : public QTranslatorMessage
 {
@@ -67,6 +68,7 @@ public:
     MetaTranslator& operator=( const MetaTranslator& tor );
 
     bool load( const QString& filename );
+    bool load( QIODevice* dev );
     bool save( const QString& filename ) const;
     bool release( const QString& filename ) const;
 

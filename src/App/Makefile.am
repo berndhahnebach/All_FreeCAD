@@ -24,6 +24,8 @@ libFreeCADApp_la_SOURCES=\
 		Feature.h \
 		FeaturePy.cpp \
 		FeaturePy.h \
+		FeatureTest.cpp \
+		FeatureTest.h \
 		Material.cpp \
 		Material.h \
 		MaterialPy.cpp \

@@ -76,10 +76,7 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal
 
   for( std::map<std::string,ParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
   {
-    if(It->first == "User parameter")
-      SetNameComboBox->insertItem(It->first.c_str(),1);
-    else
-      SetNameComboBox->insertItem(It->first.c_str(),-1);
+    SetNameComboBox->insertItem(It->first.c_str());
   }
 
   QString cStr("User parameter");

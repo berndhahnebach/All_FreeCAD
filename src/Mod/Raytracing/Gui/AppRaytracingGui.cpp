@@ -59,8 +59,8 @@ void AppRaytracingGuiExport initRaytracingGui() {
   //Gui::WorkbenchFactory().AddProducer("Raytracing", new Gui::WorkbenchProducer<RaytracingGui::Workbench>);
 
   // register preferences pages
-//  new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );
-//  new Gui::LanguageProducer("Deutsch", Raytracing_de_h_data, Raytracing_de_h_len);
+  new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );
+  new Gui::LanguageProducer("Deutsch", Raytracing_de_h_data, Raytracing_de_h_len);
 
   return;
 }

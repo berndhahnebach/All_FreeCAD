@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qbuffer.h>
 # include <qstring.h>
 # include <qstringlist.h>
 # include <qfile.h>
@@ -60,6 +61,30 @@ void LanguageFactoryInst::Destruct (void)
     delete _pcSingleton;
 }
 
+LanguageProducer::LanguageProducer (const QString& language, const unsigned char* data, const unsigned int& len)
+{
+  mLanguageData.data = data;
+  mLanguageData.size = len;
+
+  LanguageFactoryInst& f = LanguageFactoryInst::Instance();
+  f.installProducer(language, this);
+}
+
+void LanguageFactoryInst::installProducer (const QString& language, Base::AbstractProducer *pcProducer)
+{
+  QString id = createUniqueID(language);
+  AddProducer(id.latin1(), pcProducer);
+
+  // install the registered module if it provides the current language
+  ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+  hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
+  QString lang = hPGrp->GetASCII("Language", "English").c_str();
+  if ( lang == language )
+  {
+    installTranslator( id );
+  }
+}
+
 bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
 {
   bool ok = false;
@@ -81,7 +106,7 @@ bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
 }
 
 bool LanguageFactoryInst::installTranslator ( const QString& lang ) const
-{
+{/*
   LanguageEmbed* tv = (LanguageEmbed*)Produce(lang.latin1());
 
   bool ok=false;
@@ -144,81 +169,49 @@ bool LanguageFactoryInst::installTranslator ( const QString& lang ) const
   }
 
   dir.remove( ts );
+  return ok;*/
+  QValueList<QTranslatorMessage> msgs = messages( lang );
+  bool ok=false;
+  if ( msgs.size() > 0 )
+  {
+    QTranslator* t = new Translator( lang );
+    for ( QValueList<QTranslatorMessage>::Iterator it = msgs.begin(); it != msgs.end(); it++ )
+	    t->insert( *it );
+    t->squeeze( QTranslator::Stripped );
+    qApp->installTranslator( t );
+    ok = true;
+  }
   return ok;
 }
 
 QValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lang ) const
 {
   QValueList<QTranslatorMessage> msgs;
+  LanguageEmbed* tv = (LanguageEmbed*)Produce(lang.latin1());
 
-  QDir path = QDir::current();
-  QFileInfo fi( path.absPath() );
-  bool canDo = fi.permission( QFileInfo::WriteUser );
-#ifdef FC_OS_WIN32
-  const char* tmp = getenv("TMP");
-  if ( canDo==false && tmp )
+  if ( tv )
   {
-    path.setPath( tmp );
-    fi.setFile( path.absPath() );
-    canDo = fi.permission( QFileInfo::WriteUser );
-  }
-#endif
-  if ( canDo==false )
-  {
-    path = QDir::home();
-    fi.setFile( path.absPath() );
-    canDo = fi.permission( QFileInfo::WriteUser );
-  }
+    QByteArray buf;
+    QBuffer out(buf);
 
-  if ( canDo==false )
-    return msgs; // give up
-
-  // create temporary files
-  QString fn = "Language.ts";
-  fi.setFile( path, fn );
-  fn = fi.absFilePath();
-
-  QFile file( fn );
-  if (!file.open( IO_WriteOnly ) )
-    return msgs;
-  QTextStream out( &file );
-
-  try
-  {
-    QStringList IDs = getUniqueIDs( lang );
-
-    for (QStringList::Iterator it = IDs.begin(); it!= IDs.end(); ++it)
+    if ( out.open( IO_WriteOnly ) )
     {
-      LanguageEmbed* tv = (LanguageEmbed*)((*it).latin1());
+      out.writeBlock((const char*)tv->data, tv->size);
 
-      if ( !tv )
+      // all messages written
+      out.close();
+
+      // build the translator messages
+      MetaTranslator mt;
+      if ( out.size() > 0 )
+        mt.load( &out );
+
+      QValueList<MetaTranslatorMessage> mtmsg = mt.messages();
+      for ( QValueList<MetaTranslatorMessage>::Iterator it2 = mtmsg.begin(); it2 != mtmsg.end(); it2++ )
       {
-        continue; // no data
+        msgs.append( *it2 );
       }
-
-      out.writeRawBytes((const char*)tv->data, tv->size);
     }
-
-    // all messages written
-    file.close();
-
-    // build the translator messages
-    MetaTranslator mt;
-    if ( file.size() > 0 )
-      mt.load( fn );
-
-    // and delete the files again
-    QDir dir;
-    dir.remove( fn );
-
-    QValueList<MetaTranslatorMessage> mtmsg = mt.messages();
-    for ( QValueList<MetaTranslatorMessage>::Iterator it2 = mtmsg.begin(); it2 != mtmsg.end(); it2++ )
-    {
-      msgs.append( *it2 );
-    }
-  }
-  catch (...)
-  {
   }
 
   return msgs;
@@ -268,26 +261,6 @@ QStringList LanguageFactoryInst::getRegisteredLanguages() const
 }
 
 // ----------------------------------------------------
-
-LanguageProducer::LanguageProducer (const QString& language, const unsigned char* data, const unsigned int& len)
-{
-  mLanguageData.name = language.latin1();
-  mLanguageData.data = data;
-  mLanguageData.size = len;
-
-  LanguageFactoryInst& f = LanguageFactoryInst::Instance();
-  QString id = f.createUniqueID(language);
-  f.AddProducer(id.latin1(), this);
-
-  // install the registered module if it provides the current language
-  ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
-  QString lang = hPGrp->GetASCII("Language", "English").c_str();
-  if ( lang == language )
-  {
-    f.installTranslator( id );
-  }
-}
 
 void* LanguageProducer::Produce (void) const
 {

@@ -252,6 +252,34 @@ bool MetaTranslator::load( const QString& filename )
     return ok;
 }
 
+bool MetaTranslator::load( QIODevice* dev )
+{
+    mm.clear();
+
+    if ( !dev || !dev->open(IO_ReadOnly) )
+	return FALSE;
+
+    QXmlInputSource in( dev );
+    QXmlSimpleReader reader;
+    // don't click on these!
+    reader.setFeature( "http://xml.org/sax/features/namespaces", FALSE );
+    reader.setFeature( "http://xml.org/sax/features/namespace-prefixes", TRUE );
+    reader.setFeature( "http://trolltech.com/xml/features/report-whitespace"
+		       "-only-CharData", FALSE );
+    QXmlDefaultHandler *hand = new TsHandler( this );
+    reader.setContentHandler( hand );
+    reader.setErrorHandler( hand );
+
+    bool ok = reader.parse( in );
+    reader.setContentHandler( 0 );
+    reader.setErrorHandler( 0 );
+    delete hand;
+    dev->close();
+    if ( !ok )
+	mm.clear();
+    return ok;
+}
+
 bool MetaTranslator::save( const QString& filename ) const
 {
     QFile f( filename );

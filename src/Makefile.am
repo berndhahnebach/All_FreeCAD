@@ -23,6 +23,7 @@ EXTRA_DIST = \
 		copying.lib \
 		cvsbuild.sh \
 		fc.sh \
+		README.Cygwin \
 		README.Linux \
 		FCConfig.h \
 		Version.h

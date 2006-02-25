@@ -255,6 +255,7 @@ void Translator::clear()
   {
     mf = _instances.first();
     qApp->removeTranslator( mf );
+    // remove also from the list
     delete mf;
   }
 }

@@ -48,6 +48,8 @@ public:
   static void Destruct (void);
   //@}
 
+  /** Installs a new producer for a language*/
+  void installProducer (const QString& language, Base::AbstractProducer *pcProducer);
   /** Installs the specified language \a lang if available */
   bool installLanguage ( const QString& lang ) const;
   /** Gets all translated messages to language \a lang. */
@@ -87,7 +89,6 @@ inline GuiExport LanguageFactoryInst& LanguageFactory(void)
 // --------------------------------------------------------------------
 
 struct LanguageEmbed {
-  const char *name;
   const unsigned char *data;
   unsigned int size;
 };
