@@ -30,7 +30,7 @@
 import time
 
 # reading the last Version information
-[FCVersionMajor,FCVersionMinor,FCVersionBuild,FCVersionDisDa,dummy] = open("../Version.h",'r').readlines()
+[FCVersionMajor,FCVersionMinor,FCVersionBuild,FCVersionDisDa] = open("../Version.h",'r').readlines()
 
 # increasing build number
 BuildNumber = int(FCVersionBuild[23:-1]) +1
@@ -40,8 +40,18 @@ print BuildNumber
 print "\n"
 
 # writing new Version.h File
-open("../Version.h",'w').writelines([FCVersionMajor,FCVersionMinor,FCVersionBuild[:23]+`BuildNumber`+'\n',FCVersionDisDa[:23]+ '"'+time.asctime()+'" \n\n'])
+open("../Version.h",'w').writelines([FCVersionMajor,
+                                     FCVersionMinor,
+                                     FCVersionBuild[:23]+`BuildNumber`+'\n',
+                                     FCVersionDisDa[:23]+ '"'+time.asctime()+'" \n\n'])
 
 # writing the ChangeLog.txt
 open("../ChangeLog.txt",'a').write("\nVersion: V"+FCVersionMajor[23:-1]+"."+FCVersionMinor[23:-1]+"B"+`BuildNumber`+" Date: "+time.asctime()+' +++++++++++++++++++++++++++++++\n')
+
+# writing new Version.wxi File
+open("../Version.wxi",'w').writelines(["<Include>\n",
+                                     "   <?define FCVersionMajor ="+FCVersionMajor[23:-1] + " ?>\n",
+                                     "   <?define FCVersionMinor ="+FCVersionMinor[23:-1] + " ?>\n",
+                                     "   <?define FCVersionBuild ="+ `BuildNumber`        + " ?>\n",
+                                     "</Include> \n"])
 

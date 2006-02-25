@@ -40,5 +40,5 @@
 <File Id='DLL61'    Name='ERR61' LongName='TKTopAlgo.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL72'    Name='ERR72' LongName='TKXSBase.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL75'    Name='ERR75' LongName='xerces-c_2_6.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL79'    Name='ERR79' LongName='zdll.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL79'    Name='ERR79' LongName='zlib1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 </Include>
