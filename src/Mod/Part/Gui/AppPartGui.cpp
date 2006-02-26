@@ -44,6 +44,11 @@ static struct PyMethodDef PartGui_methods[] = {
 
 extern "C" {
 void AppPartGuiExport initPartGui() {
+  if ( !Gui::Application::Instance )
+  {
+    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+    return;
+  }
 
   Base::Console().Log("Mod : Load AppPartGui\n");
 	(void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */

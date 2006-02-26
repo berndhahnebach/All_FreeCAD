@@ -49,6 +49,11 @@ static struct PyMethodDef RaytracingGui_methods[] = {
 
 extern "C" {
 void AppRaytracingGuiExport initRaytracingGui() {
+  if ( !Gui::Application::Instance )
+  {
+    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+    return;
+  }
 
   Base::Console().Log("Mod : Load AppRaytracingGui\n");
   (void) Py_InitModule("RaytracingGui", RaytracingGui_methods);   /* mod name, table ptr */

@@ -16,6 +16,7 @@
 #endif
 
 #include <Base/Console.h>
+#include <Gui/Application.h>
 
 #include "Workbench.h"
 
@@ -29,6 +30,11 @@ extern struct PyMethodDef ImageGui_Import_methods[];
 /* Python entry */
 extern "C" {
 void ImageGuiExport initImageGui() {
+  if ( !Gui::Application::Instance )
+  {
+    PyErr_SetString(PyExc_ImportError, "Cannot load Gui module in console application.");
+    return;
+  }
 
   (void) Py_InitModule("ImageGui", ImageGui_Import_methods);   /* mod name, table ptr */
   Base::Console().Log("AppImageGui loaded\n");
