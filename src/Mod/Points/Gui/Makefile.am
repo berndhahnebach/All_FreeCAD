@@ -1,5 +1,5 @@
 
-lib_LTLIBRARIES=libPointsGui.la
+lib_LTLIBRARIES=libPointsGui.la PointsGui.la
 
 BUILT_SOURCES=\
 		DlgPointsRead.cpp \
@@ -8,7 +8,6 @@ BUILT_SOURCES=\
 		moc_DlgPointsReadImp.cpp
 
 libPointsGui_la_SOURCES=\
-		AppPointsGui.cpp \
 		Command.cpp \
 		DlgPointsReadImp.cpp \
 		DlgPointsReadImp.h \
@@ -26,6 +25,21 @@ libPointsGui_la_CPPFLAGS = -DPointsAppExport= -DPointsGuiExport=
 libPointsGui_la_LIBADD   = \
 		-lFreeCADGui \
 		-lPoints
+
+#--------------------------------------------------------------------------------------
+# Loader of libPointsGui
+
+PointsGui_la_SOURCES=\
+		AppPointsGui.cpp
+
+# the library search path.
+PointsGui_la_LDFLAGS = $(libPointsGui_la_LDFLAGS) -module -avoid-version
+PointsGui_la_CPPFLAGS = $(libPointsGui_la_CPPFLAGS)
+
+PointsGui_la_LIBADD   = \
+		-lPointsGui
+
+#--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
@@ -46,12 +60,6 @@ moc_%.cpp: %.h
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
 libdir = $(prefix)/Mod/Points
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f PointsGui.so && \
-		$(LN_S) libPointsGui.so PointsGui.so
 
 CLEANFILES = $(BUILT_SOURCES)
 

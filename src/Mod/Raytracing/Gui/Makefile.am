@@ -1,6 +1,6 @@
 if OCC_LIBRARY_FILES
 
-lib_LTLIBRARIES=libRaytracingGui.la
+lib_LTLIBRARIES=libRaytracingGui.la RaytracingGui.la
 
 BUILT_SOURCES=\
 		DlgSettingsRay.cpp \
@@ -8,10 +8,9 @@ BUILT_SOURCES=\
 		moc_DlgSettingsRay.cpp \
 		moc_DlgSettingsRayImp.cpp \
 		FreeCADpov.h \
-		Raytracing_de.h 
+		Raytracing_de.h
 
 libRaytracingGui_la_SOURCES=\
-		AppRaytracingGui.cpp \
 		Command.cpp \
 		DlgSettingsRayImp.cpp \
 		DlgSettingsRayImp.h \
@@ -27,6 +26,21 @@ libRaytracingGui_la_CPPFLAGS = -DAppPartExport= -DAppRaytracingGuiExport= -DFeat
 libRaytracingGui_la_LIBADD   = \
 		-lFreeCADGui \
 		-lRaytracing
+
+#--------------------------------------------------------------------------------------
+# Loader of libRaytracingGui
+
+RaytracingGui_la_SOURCES=\
+		AppRaytracingGui.cpp
+
+# the library search path.
+RaytracingGui_la_LDFLAGS = $(libRaytracingGui_la_LDFLAGS) -module -avoid-version
+RaytracingGui_la_CPPFLAGS = $(libRaytracingGui_la_CPPFLAGS)
+
+RaytracingGui_la_LIBADD   = \
+		-lRaytracingGui
+
+#--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
@@ -56,12 +70,6 @@ INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) -I../../../ -I../App
 endif
 
 libdir = $(prefix)/Mod/Raytracing
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f RaytracingGui.so && \
-		$(LN_S) libRaytracingGui.so RaytracingGui.so
 
 CLEANFILES = $(BUILT_SOURCES)
 

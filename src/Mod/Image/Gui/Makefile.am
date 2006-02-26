@@ -1,12 +1,11 @@
 
-lib_LTLIBRARIES=libImageGui.la
+lib_LTLIBRARIES=libImageGui.la ImageGui.la
 
 BUILT_SOURCES=\
 		moc_GLImageBox.cpp \
 		moc_ImageView.cpp
 
 libImageGui_la_SOURCES=\
-		AppImageGui.cpp \
 		AppImageGuiPy.cpp \
 		Command.cpp \
 		GLImageBox.cpp \
@@ -25,6 +24,21 @@ libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport=
 libImageGui_la_LIBADD   = \
 		-lFreeCADGui \
 		-lImage
+
+#--------------------------------------------------------------------------------------
+# Loader of libImageGui
+
+ImageGui_la_SOURCES=\
+		AppImageGui.cpp
+
+# the library search path.
+ImageGui_la_LDFLAGS = $(libImageGui_la_LDFLAGS) -module -avoid-version
+ImageGui_la_CPPFLAGS = $(libImageGui_la_CPPFLAGS)
+
+ImageGui_la_LIBADD   = \
+		-lImageGui
+
+#--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
@@ -45,12 +59,6 @@ moc_%.cpp: %.h
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
 libdir = $(prefix)/Mod/Image
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f ImageGui.so && \
-		$(LN_S) libImageGui.so ImageGui.so
 
 CLEANFILES = $(BUILT_SOURCES)
 

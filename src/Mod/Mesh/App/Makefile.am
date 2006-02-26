@@ -2,7 +2,7 @@ if OCC_LIBRARY_FILES
 if WM3_LIBRARY_FILES
 if GTS_LIBRARY_FILES
 
-lib_LTLIBRARIES=libMesh.la
+lib_LTLIBRARIES=libMesh.la Mesh.la
 
 libMesh_la_SOURCES=\
 		Core/Algorithm.cpp \
@@ -37,7 +37,6 @@ libMesh_la_SOURCES=\
 		Core/TopoAlgorithm.h \
 		Core/Visitor.cpp \
 		Core/Visitor.h \
-		AppMesh.cpp \
 		AppMeshPy.cpp \
 		CurveProjector.cpp \
 		CurveProjector.h \
@@ -86,6 +85,21 @@ libMesh_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp
 
+#--------------------------------------------------------------------------------------
+# Loader of libMesh
+
+Mesh_la_SOURCES=\
+		AppMesh.cpp
+
+# the library search path.
+Mesh_la_LDFLAGS = $(libMesh_la_LDFLAGS) -module -avoid-version
+Mesh_la_CPPFLAGS = $(libMesh_la_CPPFLAGS)
+
+Mesh_la_LIBADD   = \
+		-lMesh
+
+#--------------------------------------------------------------------------------------
+
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(OCC_INC) $(WM3_CFLAGS) $(GTS_CFLAGS) -I../../../
 
@@ -94,12 +108,6 @@ endif
 endif
 
 libdir = $(prefix)/Mod/Mesh
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f Mesh.so && \
-		$(LN_S) libMesh.so Mesh.so
 
 EXTRA_DIST = \
 		AppMesh.dsp \

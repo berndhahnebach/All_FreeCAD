@@ -1,10 +1,9 @@
 
-lib_LTLIBRARIES=lib_TEMPLATE_Gui.la
+lib_LTLIBRARIES=lib_TEMPLATE_Gui.la _TEMPLATE_Gui.la
 
 # BUILT_SOURCES=\
 #
 lib_TEMPLATE_Gui_la_SOURCES=\
-		App_TEMPLATE_Gui.cpp \
 		Command.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
@@ -18,6 +17,21 @@ lib_TEMPLATE_Gui_la_CPPFLAGS = -D_TEMPLATE_AppExport= -D_TEMPLATE_GuiExport=
 lib_TEMPLATE_Gui_la_LIBADD   = \
 		-lFreeCADGui \
 		-l_TEMPLATE_
+
+#--------------------------------------------------------------------------------------
+# Loader of lib_TEMPLATE_Gui
+
+_TEMPLATE_Gui_la_SOURCES=\
+		App_TEMPLATE_Gui.cpp
+
+# the library search path.
+_TEMPLATE_Gui_la_LDFLAGS = $(lib_TEMPLATE_Gui_la_LDFLAGS) -module -avoid-version
+_TEMPLATE_Gui_la_CPPFLAGS = $(lib_TEMPLATE_Gui_la_CPPFLAGS)
+
+_TEMPLATE_Gui_la_LIBADD   = \
+		-l_TEMPLATE_Gui
+
+#--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
@@ -38,12 +52,6 @@ moc_%.cpp: %.h
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
 libdir = $(prefix)/Mod/_TEMPLATE_
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f _TEMPLATE_Gui.so && \
-		$(LN_S) lib_TEMPLATE_Gui.so _TEMPLATE_Gui.so
 
 CLEANFILES = $(BUILT_SOURCES)
 

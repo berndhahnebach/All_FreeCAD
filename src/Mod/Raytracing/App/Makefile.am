@@ -1,12 +1,11 @@
 if OCC_LIBRARY_FILES
 
-lib_LTLIBRARIES=libRaytracing.la
+lib_LTLIBRARIES=libRaytracing.la Raytracing.la
 
 BUILT_SOURCES=\
 		FreeCADpov.h
 
 libRaytracing_la_SOURCES=\
-		AppRaytracing.cpp \
 		AppRaytracingPy.cpp \
 		PovTools.cpp \
 		PovTools.h \
@@ -29,18 +28,27 @@ libRaytracing_la_LIBADD   = \
 		-lFreeCADApp \
 		-lPart
 
+#--------------------------------------------------------------------------------------
+# Loader of libRaytracing
+
+Raytracing_la_SOURCES=\
+		AppRaytracing.cpp
+
+# the library search path.
+Raytracing_la_LDFLAGS = $(libRaytracing_la_LDFLAGS) -module -avoid-version
+Raytracing_la_CPPFLAGS = $(libRaytracing_la_CPPFLAGS)
+
+Raytracing_la_LIBADD   = \
+		-lRaytracing
+
+#--------------------------------------------------------------------------------------
+
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(OCC_INC) -I../../../
 
 endif
 
 libdir = $(prefix)/Mod/Raytracing
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f Raytracing.so && \
-		$(LN_S) libRaytracing.so Raytracing.so
 
 CLEANFILES = $(BUILT_SOURCES)
 

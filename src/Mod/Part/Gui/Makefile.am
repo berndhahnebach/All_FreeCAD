@@ -1,6 +1,6 @@
 if OCC_LIBRARY_FILES
 
-lib_LTLIBRARIES=libPartGui.la
+lib_LTLIBRARIES=libPartGui.la PartGui.la
 
 BUILT_SOURCES=\
 		DlgPartBox.cpp \
@@ -22,7 +22,6 @@ BUILT_SOURCES=\
 		Part_de.h
 
 libPartGui_la_SOURCES=\
-		AppPartGui.cpp \
 		Command.cpp \
 		DlgPartBoxImp.cpp \
 		DlgPartBoxImp.h \
@@ -53,6 +52,21 @@ libPartGui_la_LIBADD   = \
 		-lFreeCADGui \
 		-lPart
 
+#--------------------------------------------------------------------------------------
+# Loader of libPartGui
+
+PartGui_la_SOURCES=\
+		AppPartGui.cpp
+
+# the library search path.
+PartGui_la_LDFLAGS = $(libPartGui_la_LDFLAGS) -module -avoid-version
+PartGui_la_CPPFLAGS = $(libPartGui_la_CPPFLAGS)
+
+PartGui_la_LIBADD   = \
+		-lPartGui
+
+#--------------------------------------------------------------------------------------
+
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
 	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
@@ -78,12 +92,6 @@ INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) -I../../../ -I../App
 endif
 
 libdir = $(prefix)/Mod/Part
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f PartGui.so && \
-		$(LN_S) libPartGui.so PartGui.so
 
 CLEANFILES = $(BUILT_SOURCES)
 

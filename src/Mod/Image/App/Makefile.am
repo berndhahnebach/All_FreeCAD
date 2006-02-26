@@ -1,8 +1,7 @@
 
-lib_LTLIBRARIES=libImage.la
+lib_LTLIBRARIES=libImage.la Image.la
 
 libImage_la_SOURCES=\
-		AppImage.cpp \
 		ImageBase.cpp \
 		ImageBase.h \
 		PreCompiled.cpp \
@@ -17,16 +16,25 @@ libImage_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp
 
+#--------------------------------------------------------------------------------------
+# Loader of libImage
+
+Image_la_SOURCES=\
+		AppImage.cpp
+
+# the library search path.
+Image_la_LDFLAGS = $(libImage_la_LDFLAGS) -module -avoid-version
+Image_la_CPPFLAGS = $(libImage_la_CPPFLAGS)
+
+Image_la_LIBADD   = \
+		-lImage
+
+#--------------------------------------------------------------------------------------
+
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
 libdir = $(prefix)/Mod/Image
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f Image.so && \
-		$(LN_S) libImage.so Image.so
 
 EXTRA_DIST = \
 		AppImage.dsp \

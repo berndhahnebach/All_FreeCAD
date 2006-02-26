@@ -28,10 +28,10 @@ dnl               current:revision:age
 dnl                  |        |     |
 dnl                  |        |     +- increment if interfaces have been added
 dnl                  |        |        set to zero if interfaces have been removed
-dnl                                    or changed
+dnl                  |        |        or changed
 dnl                  |        +- increment if source code has changed
 dnl                  |           set to zero if current is incremented
-dnl                  +- increment if interfaces have been removed or changed
+dnl                  +- increment if interfaces have been added, removed or changed
 
 LIB_CURRENT=2
 LIB_REVISION=0
@@ -59,6 +59,7 @@ AC_PROG_CXX
 AC_PROG_CC
 AC_ENABLE_SHARED(yes)
 AC_ENABLE_STATIC(no)
+AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
 AC_PROG_LN_S
 

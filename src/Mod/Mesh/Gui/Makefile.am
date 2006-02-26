@@ -2,12 +2,11 @@ if OCC_LIBRARY_FILES
 if WM3_LIBRARY_FILES
 if GTS_LIBRARY_FILES
 
-lib_LTLIBRARIES=libMeshGui.la
+lib_LTLIBRARIES=libMeshGui.la MeshGui.la
 
 # BUILT_SOURCES=\
 #
 libMeshGui_la_SOURCES=\
-		AppMeshGui.cpp \
 		Command.cpp \
 		Doxygen.cpp \
 		PreCompiled.cpp \
@@ -30,6 +29,21 @@ libMeshGui_la_CPPFLAGS = -DAppMeshExport= -DGuiMeshExport=
 libMeshGui_la_LIBADD   = \
 		-lFreeCADGui \
 		-lMesh
+
+#--------------------------------------------------------------------------------------
+# Loader of libMeshGui
+
+MeshGui_la_SOURCES=\
+		AppMeshGui.cpp
+
+# the library search path.
+MeshGui_la_LDFLAGS = $(libMeshGui_la_LDFLAGS) -module -avoid-version
+MeshGui_la_CPPFLAGS = $(libMeshGui_la_CPPFLAGS)
+
+MeshGui_la_LIBADD   = \
+		-lMeshGui
+
+#--------------------------------------------------------------------------------------
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
@@ -54,12 +68,6 @@ endif
 endif
 
 libdir = $(prefix)/Mod/Mesh
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f MeshGui.so && \
-		$(LN_S) libMeshGui.so MeshGui.so
 
 CLEANFILES = $(BUILT_SOURCES)
 

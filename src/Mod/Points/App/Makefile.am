@@ -1,8 +1,7 @@
 
-lib_LTLIBRARIES=libPoints.la
+lib_LTLIBRARIES=libPoints.la Points.la
 
 libPoints_la_SOURCES=\
-		AppPoints.cpp \
 		AppPointsPy.cpp \
 		FeaturePointsImportAscii.cpp \
 		FeaturePointsImportAscii.h \
@@ -30,16 +29,25 @@ libPoints_la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp
 
+#--------------------------------------------------------------------------------------
+# Loader of libPoints
+
+Points_la_SOURCES=\
+		AppPoints.cpp
+
+# the library search path.
+Points_la_LDFLAGS = $(libPoints_la_LDFLAGS) -module -avoid-version
+Points_la_CPPFLAGS = $(libPoints_la_CPPFLAGS)
+
+Points_la_LIBADD   = \
+		-lPoints
+
+#--------------------------------------------------------------------------------------
+
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
 libdir = $(prefix)/Mod/Points
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f Points.so && \
-		$(LN_S) libPoints.so Points.so
 
 EXTRA_DIST = \
 		AppPoints.dsp \

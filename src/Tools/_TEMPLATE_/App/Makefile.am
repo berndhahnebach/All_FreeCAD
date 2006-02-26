@@ -1,8 +1,7 @@
 
-lib_LTLIBRARIES=lib_TEMPLATE_.la
+lib_LTLIBRARIES=lib_TEMPLATE_.la _TEMPLATE_.la
 
 lib_TEMPLATE__la_SOURCES=\
-		App_TEMPLATE_.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h
 
@@ -15,16 +14,25 @@ lib_TEMPLATE__la_LIBADD   = \
 		-lFreeCADBase \
 		-lFreeCADApp
 
+#--------------------------------------------------------------------------------------
+# Loader of lib_TEMPLATE_
+
+_TEMPLATE__la_SOURCES=\
+		App_TEMPLATE_.cpp
+
+# the library search path.
+_TEMPLATE__la_LDFLAGS = $(lib_TEMPLATE__la_LDFLAGS) -module -avoid-version
+_TEMPLATE__la_CPPFLAGS = $(lib_TEMPLATE__la_CPPFLAGS)
+
+_TEMPLATE__la_LIBADD   = \
+		-l_TEMPLATE_
+
+#--------------------------------------------------------------------------------------
+
 # set the include path found by configure
 INCLUDES= $(all_includes) -I../../../
 
 libdir = $(prefix)/Mod/_TEMPLATE_
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f _TEMPLATE_.so && \
-		$(LN_S) lib_TEMPLATE_.so _TEMPLATE_.so
 
 EXTRA_DIST = \
 		App_TEMPLATE_.dsp \

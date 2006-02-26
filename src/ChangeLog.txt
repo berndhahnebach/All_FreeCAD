@@ -42,6 +42,8 @@ Version: V0.5B4 Date: Sat Feb 04 13:14:55 2006 +++++++++++++++++++++++++++++++
 + FeatureTest
 + Run script from Editor
 
-
-
 Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
++ Make use of AC_LIBTOOL_DLOPEN macro for Unix/Linux based systems to allow to
+  create modules.
++ Create a loader module (without 'lib' prefix ) for each shared library (with 'lib' prefix)
++ The dirty hack to create symlinks during installation has been removed.

@@ -1,9 +1,8 @@
 if OCC_LIBRARY_FILES
 
-lib_LTLIBRARIES=libPart.la
+lib_LTLIBRARIES=libPart.la Part.la
 
 libPart_la_SOURCES=\
-		AppPart.cpp \
 		AppPartPy.cpp \
 		FeaturePartBox.cpp \
 		FeaturePartBox.h \
@@ -41,18 +40,27 @@ libPart_la_LIBADD   = \
 		-lTKShHealing \
 		-lTKXSBase
 
+#--------------------------------------------------------------------------------------
+# Loader of libPart
+
+Part_la_SOURCES=\
+		AppPart.cpp
+
+# the library search path.
+Part_la_LDFLAGS = $(libPart_la_LDFLAGS) -module -avoid-version
+Part_la_CPPFLAGS = $(libPart_la_CPPFLAGS)
+
+Part_la_LIBADD   = \
+		-lPart
+
+#--------------------------------------------------------------------------------------
+
 # set the include path found by configure
 INCLUDES= $(all_includes) -I$(OCC_INC) -I../../../
 
 endif
 
 libdir = $(prefix)/Mod/Part
-
-# We need this softlink for Python to load
-install-data-local:
-		cd $(DESTDIR)$(libdir) && \
-		rm -f Part.so && \
-		$(LN_S) libPart.so Part.so
 
 EXTRA_DIST = \
 		AppPart.dsp \
