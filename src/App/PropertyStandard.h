@@ -178,6 +178,53 @@ private:
 
 };
 
+class AppExport PropertyFloatList: public PropertyLists
+{
+  TYPESYSTEM_HEADER();
+
+public:
+
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyFloatList();
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	~PropertyFloatList();
+
+  virtual void setSize(int newSize){_lValueList.resize(newSize);}   
+  virtual int getSize(void){return _lValueList.size();}   
+
+	/** Sets the property 
+	 */
+	void setValue(float);
+  
+  /// index operator
+  float operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+  
+  
+  void  set1Value (const int idx, float value){_lValueList.operator[] (idx) = value;}
+
+  const std::vector<float> &getValues(void) const{return _lValueList;}
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+  virtual void Save (Base::Writer &writer);
+  virtual void Restore(Base::XMLReader &reader);
+
+
+private:
+
+  std::vector<float> _lValueList;
+
+};
+
 
 /** String properties
  * This is the father of all properties handling Strings.

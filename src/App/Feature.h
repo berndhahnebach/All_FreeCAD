@@ -128,64 +128,6 @@ public:
   //@}
 
 
-	/** @name methods for conviniant handling of Parameter (Properties) */
-	//@{
-
-  /** Insert Property
-	 *  Call this method to add a Property to the Feature
-	 */
-	//void addProperty(const char *Type, const char *Name);
-
-  /** get Property string representation
- 	 *  
-	 */
-  //std::string getPropertyAsString(const char *Name){};
-
-  /** get Property type
- 	 *  
-	 */
-  //const char *getPropertyType(const char *Name);
-
-	/** Get a Property of this Feature
-	 *  Call this method to get a Property of this Feature
-	 */
-	//Property &GetProperty(const char *Name);
-/*
-	void setPropertyVector(const Vector3D&, const char *Name);
-	Vector3D getPropertyVector(const char *Name);
-	void setPropertyMatrix(const Matrix4D&, const char *Name);
-	Matrix4D getPropertyMatrix(const char *Name);
-	void setPropertyPlane(const Vector3D& Base, const Vector3D& Norm, const char *Name);
-	void getPropertyPlane(Vector3D& Base, Vector3D& Norm, const char *Name);
-*/
-  /** Insert a Link Property
-	 *  Call this method to add a Link to an other Feature to that Feature
-	 */
-	//void setPropertyLink(Feature *pcToLink, const char *Name);
-
-	/** get a Link Property
-	 *  Call this method to get a Link to an other Feature 
-	 */
-	//Feature *getPropertyLink(const char *Name);
-
-  /** Get a Property and put it to float
-	 *  This works with all Properties inhereting from Float and Int Properties..
-	 */
-	//double getPropertyFloat(const char *Name);
-
-  /** set a float Property 
-	 *  ..
-	 */
-	//void setPropertyFloat(double, const char *Name);
- /*
- 	long getPropertyInt(const char *Name);
-	void setPropertyInt(long, const char *Name);
-  std::string getPropertyString(const char *Name);
-	void setPropertyString(const char*, const char *Name);
-*/
-  /** returns the names of all registert properties of this Feature */
-  //const std::vector<std::string> getAllPropertyNames(void);
-
   /** Set the property touched -> changed, cause recomputation in Update()
 	 *  
 	 */
@@ -200,16 +142,6 @@ public:
   Base::TimeInfo getTouchViewTime(void){return touchViewTime;}
 	//@}
 
-
-	/** @name methods for conviniant handling of DataProvider
-    * This functionality is sceduled for 0.3
-    * @see FeatureDataProvider
-    */
-	//@{
-  /// Adds a new DataProvider
-  FeatureDataProvider *AddDataProvider(const char* Name);
-
-	//@}
 
 	/** @name methods to change the apperance of the shape
     */
@@ -250,19 +182,7 @@ public:
 	//@}
 
 
-  /// Retrive the Feature from a Document label
-  //static Feature *GetFeature(const TDF_Label &l);
-
-  const char *getName(void){return _Name.c_str();}
-
 	virtual Base::PyObjectBase *GetPyObject(void);
-
-  /*
-  TDF_Label Label(void)
-  {
-    return _cFeatureLabel;
-  }
-*/
 
   friend class FeaturePy;
   friend class Document;
@@ -313,7 +233,7 @@ protected:
 
   FeaturePy* pcFeaturePy;
 
-  std::string _Name;
+  //std::string _Name;
 
   Status _eStatus;
   std::string _cErrorMessage;

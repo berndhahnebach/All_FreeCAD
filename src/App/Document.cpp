@@ -124,8 +124,7 @@ void Document::Save (Writer &writer)
     Feature* feat = it->second.F;
     writer << writer.ind() << "<Feature " 
                          << "type=\"" << feat->getTypeId().getName() << "\" "
-                         << "name=\"" << feat->getName()             << "\" "
-//                         << "typeOld=\"" << feat->type()             << "\" "
+                         << "name=\"" << feat->name.getValue()       << "\" "
                          << "/>" << endl;    
   }
 
@@ -137,7 +136,7 @@ void Document::Save (Writer &writer)
   for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
   {
     Feature* feat = it->second.F;
-    writer << writer.ind() << "<Feature name=\"" << feat->getName() << "\">" << endl;   
+    writer << writer.ind() << "<Feature name=\"" << feat->name.getValue() << "\">" << endl;   
     writer.unsetFilenames();
     feat->Save(writer);
     const std::vector<std::string>& fn = writer.getFilenames();
@@ -493,7 +492,7 @@ void Document::Recompute()
   Notify(DocChange);
 
   for(i = DocChange.ErrorFeatures.begin();i!=DocChange.ErrorFeatures.end();++i)
-    Base::Console().Log("Error in Feature \"%s\": %s\n",(*i)->getName(),(*i)->getErrorString());
+    Base::Console().Log("Error in Feature \"%s\": %s\n",(*i)->name.getValue(),(*i)->getErrorString());
 
   Base::Console().Log("Solv: Recomputation of Document \"%s\" with %d new, %d Updated and %d errors finished\n",
                       getName(),
@@ -523,7 +522,7 @@ void Document::RecomputeFeature(Feature* Feat)
 // call the recompute of the Feature and handle the exceptions and errors.
 void Document::_RecomputeFeature(Feature* Feat)
 {
-  Base::Console().Log("Solv: Executing Feature: %s\n",Feat->getName());
+  Base::Console().Log("Solv: Executing Feature: %s\n",Feat->name.getValue());
 
   Feat->_eStatus = Feature::Recompute;
   int  succes;
@@ -533,14 +532,14 @@ void Document::_RecomputeFeature(Feature* Feat)
     e.ReportException();
     succes = 4;
   }catch(const Base::MemoryException& e){
-    Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->getName(),e.what());
+    Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
     Feat->setError(e.what());
     succes = 3;
   }catch(Base::Exception &e){
     e.ReportException();
     succes = 3;
   }catch(std::exception &e){
-    Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->getName(),e.what());
+    Base::Console().Warning("CasCade exception in Feature \"%s\" thrown: %s\n",Feat->name.getValue(),e.what());
     Feat->setError(e.what());
     succes = 3;
   }
@@ -596,7 +595,7 @@ Feature *Document::addFeature(const char* sType, const char* pFeatName)
 //    e.L = FeatureLabel;
     FeatMap[FeatName] = FeatEntry(e);
 
-    pcFeature->_Name = FeatName;
+    pcFeature->name.setValue( FeatName );
 	
     // return the feature
 		return pcFeature;

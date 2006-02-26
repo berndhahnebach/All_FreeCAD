@@ -44,6 +44,7 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(String ,("4711"));
 
   ADD_PROPERTY(IntegerList,(4711)  );
+  ADD_PROPERTY(FloatList  ,(47.11f) );
   
   ADD_PROPERTY(Link   ,(0));
 

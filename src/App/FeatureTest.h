@@ -50,6 +50,7 @@ public:
  
   // Standard Properties (PorpertyStandard.h)
   App::PropertyIntegerList IntegerList;
+  App::PropertyFloatList   FloatList;
 
   // Standard Properties (PropertyLinks.h)
   App::PropertyLink    Link;

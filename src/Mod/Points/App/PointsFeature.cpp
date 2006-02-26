@@ -62,7 +62,7 @@ void Feature::Save (Base::Writer &writer)
   Parent::Save(writer);
   //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
 
-  std::string fn = getName(); fn += ".bin";
+  std::string fn = name.getValue(); fn += ".bin";
   writer.addFile(fn.c_str(), this);
 
   //_Points.Save(writer);

@@ -182,7 +182,7 @@ void DlgDisplayPropertiesImp::onOK(void)
     {
       if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
       {
-        _pcCmd->doCommand(Command::Doc,"App.document().%s.showMode = \"%s\"",(*It)->getName(),sModeChangeName.c_str());
+        _pcCmd->doCommand(Command::Doc,"App.document().%s.showMode = \"%s\"",(*It)->name.getValue(),sModeChangeName.c_str());
       }
     }
   }
@@ -193,7 +193,7 @@ void DlgDisplayPropertiesImp::onOK(void)
     {
       if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
       {
-        _pcCmd->doCommand(Command::Doc,"App.document().%s.transparency = %f",(*It)->getName(),fTranspChange);
+        _pcCmd->doCommand(Command::Doc,"App.document().%s.transparency = %f",(*It)->name.getValue(),fTranspChange);
       }
     }
   }
@@ -204,7 +204,7 @@ void DlgDisplayPropertiesImp::onOK(void)
     {
       if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
       {
-        _pcCmd->doCommand(Command::Doc,"App.document().%s.color = (%f,%f,%f)",(*It)->getName(),cColorChange.r,cColorChange.r,cColorChange.b);
+        _pcCmd->doCommand(Command::Doc,"App.document().%s.color = (%f,%f,%f)",(*It)->name.getValue(),cColorChange.r,cColorChange.r,cColorChange.b);
       }
     }
   }

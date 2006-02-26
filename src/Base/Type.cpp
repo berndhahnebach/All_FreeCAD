@@ -94,13 +94,19 @@ void *Type::createInstanceByName(const char* TypeName, bool bLoadModule)
   // if not allready, load the module
   if(bLoadModule)
   {
+    // cut out the module name 
     string Mod = getModuleName(TypeName);
-    set<string>::const_iterator pos = loadModuleSet.find(Mod);
-    if(pos == loadModuleSet.end())
+    // ignore base modules
+    if(Mod != "App" && Mod != "Gui" && Mod == "Base")
     {
-      Interpreter().loadModule(Mod.c_str());
-      Console().Log("Act : Module %s loaded throug class %s \n",Mod.c_str(),TypeName);
-      loadModuleSet.insert(Mod);
+      // remember allready loaded modules
+      set<string>::const_iterator pos = loadModuleSet.find(Mod);
+      if(pos == loadModuleSet.end())
+      {
+        Interpreter().loadModule(Mod.c_str());
+        Console().Log("Act : Module %s loaded throug class %s \n",Mod.c_str(),TypeName);
+        loadModuleSet.insert(Mod);
+      }
     }
   }
 

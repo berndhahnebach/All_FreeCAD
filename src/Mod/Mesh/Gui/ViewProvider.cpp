@@ -207,7 +207,7 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
 //  SoGroup* pcColorShadedRoot = new SoGroup();
 
   // only one selection node for the mesh
-  pcHighlight->featureName = pcFeat->getName();
+  pcHighlight->featureName = pcFeat->name.getValue();
   pcHighlight->documentName = pcFeat->getDocument().getName();
   pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcMeshCoord);
@@ -536,7 +536,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
             "f.Tool     = App.document().%s\n"
             "f.Base     = (%.6f,%.6f,%.6f)\n"
             "f.Normal   = (%.6f,%.6f,%.6f)\n"
-            , fName.c_str(),  meshFeature->getName(), fTool.c_str(), 
+            , fName.c_str(),  meshFeature->name.getValue(), fTool.c_str(), 
               cPoint.x, cPoint.y, cPoint.z, cNormal.x, cNormal.y, cNormal.z );
       }
 

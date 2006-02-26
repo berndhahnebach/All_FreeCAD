@@ -174,12 +174,12 @@ void DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
   // set the new ctreated item at the end
   item->moveItem(_lastFeaItem);
   _lastFeaItem = item;
-  FeatMap[Provider->getFeature()->getName()] = item;
+  FeatMap[Provider->getFeature()->name.getValue()] = item;
 }
 
 void DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
 {
-  QString name = Provider->getFeature()->getName();
+  QString name = Provider->getFeature()->name.getValue();
   std::map<std::string,FeatItem*>::iterator it = FeatMap.find(name.latin1());
   if ( it != FeatMap.end() )
   {

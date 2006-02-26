@@ -77,7 +77,7 @@ int SegmentByMesh::execute(void)
   // check if the toolmesh is a solid
   if ( MeshEvalSolid(rToolMesh).Validate(false) != MeshEvalSolid::Valid )
   {
-    Base::Console().Log("'%s' isn't a solid.\n", pcTool->getName());
+    Base::Console().Log("'%s' isn't a solid.\n", pcTool->name.getValue());
     return 1; // no solid
   }
 

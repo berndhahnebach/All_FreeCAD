@@ -349,7 +349,7 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
     Gui::SoFCSelection* h = new Gui::SoFCSelection();
     SbString name("Edge");
     name += SbString(i);
-    h->featureName = pcFeature->getName();
+    h->featureName = pcFeature->name.getValue();
     h->documentName = pcFeature->getDocument().getName();
     h->subElementName = name;
 
@@ -390,7 +390,7 @@ Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, cons
   Gui::SoFCSelection* h = new Gui::SoFCSelection();
   SbString name("Point");
   name += SbString(i);
-  h->featureName = pcFeature->getName();
+  h->featureName = pcFeature->name.getValue();
   h->documentName = pcFeature->getDocument().getName();
   h->subElementName = name;
 
@@ -470,7 +470,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
 		Gui::SoFCSelection* h = new Gui::SoFCSelection();
     SbString name("Face");
     name += SbString(i);
-    h->featureName = pcFeature->getName();
+    h->featureName = pcFeature->name.getValue();
     h->documentName = pcFeature->getDocument().getName();
     h->subElementName = name;
 

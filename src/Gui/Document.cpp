@@ -305,7 +305,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
         // if succesfully created set the right name an calculate the view
         pcProvider->attach(*It);
       }catch(const Base::MemoryException& e){
-        Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*It)->getName(),e.what());
+        Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*It)->name.getValue(),e.what());
         (*It)->setError(e.what());
       }catch(Base::Exception &e){
         e.ReportException();

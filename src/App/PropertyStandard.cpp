@@ -289,6 +289,110 @@ void PropertyFloat::Restore(Base::XMLReader &reader)
   _dValue = (float) reader.getAttributeAsFloat("value");
 }
 
+//**************************************************************************
+// PropertyFloatList
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyFloatList , App::PropertyLists);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyFloatList::PropertyFloatList()
+{
+
+}
+
+
+PropertyFloatList::~PropertyFloatList()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+
+void PropertyFloatList::setValue(float lValue)
+{
+  aboutToSetValue();
+  _lValueList.resize(1);
+	_lValueList[0]=lValue;
+  hasSetValue();
+}
+
+
+PyObject *PropertyFloatList::getPyObject(void)
+{
+  PyObject* list = PyList_New(	getSize() );
+
+  for(int i = 0;i<getSize(); i++)
+     PyList_SetItem( list, i, PyFloat_FromDouble(	_lValueList[i]));
+
+  return list;
+}
+
+void PropertyFloatList::setPyObject(PyObject *value)
+{ 
+  if(PyList_Check( value) )
+  {
+    aboutToSetValue();
+
+    int nSize = PyList_Size(value);
+    _lValueList.resize(nSize);
+
+    for (int i=0; i<nSize;++i)
+    {
+      PyObject* item = PyList_GetItem(value, i);
+      if (!PyFloat_Check(item))
+      {
+        _lValueList.resize(1);
+        _lValueList[0] = 0;
+        throw Base::Exception("Not allowed type in list (float expected)...");
+      }
+      float pItem = (float) PyFloat_AsDouble(item);
+      _lValueList[i] = pItem;
+    }
+
+    hasSetValue();
+  }else if(PyFloat_Check( value) )
+  {
+    setValue((float) PyFloat_AsDouble(value));
+  }else
+    throw Base::Exception("Not allowed type used (float expected)...");
+
+}
+
+void PropertyFloatList::Save (Writer &writer)
+{
+  writer << "<FloatList count=\"" <<  getSize() <<"\"/>" << endl;
+  for(int i = 0;i<getSize(); i++)
+    writer << "<F v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+  writer << "</FloatList>" << endl ;
+
+
+}
+
+void PropertyFloatList::Restore(Base::XMLReader &reader)
+{
+  // read my Element
+  reader.readElement("FloatList");
+  // get the value of my Attribute
+  int count = reader.getAttributeAsInteger("count");
+
+  setSize(count);
+
+  for(int i = 0;i<count; i++)
+  {
+    reader.readElement("F");
+    _lValueList[i] = (float) reader.getAttributeAsFloat("v");
+  }
+
+  reader.readEndElement("FloatList");
+
+}
+
 
 //**************************************************************************
 //**************************************************************************
@@ -419,17 +523,17 @@ PyObject *PropertyBool::getPyObject(void)
   if(_lValue)
     {Py_INCREF(Py_True); return Py_True;}
   else
-    {Py_INCREF(Py_False); return Py_False;};
+    {Py_INCREF(Py_False); return Py_False;}
 
 }
 
 void PropertyBool::setPyObject(PyObject *value)
 {
-  if(PyInt_Check( value) )
-  {
-    _lValue = PyInt_AsLong(value)!=0;
-    hasSetValue();
-  }else
+  if(PyBool_Check( value) )
+    setValue( value == Py_True );
+  else if(PyInt_Check( value) )
+    setValue( PyInt_AsLong(value)!=0 );
+  else
     throw Base::Exception("Not allowed type used (bool expected)...");
 }
 

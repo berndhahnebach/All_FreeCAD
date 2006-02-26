@@ -105,7 +105,7 @@ void PropertyLink::setPyObject(PyObject *value)
 
 void PropertyLink::Save (Writer &writer)
 {
-  writer << "<Link value=\"" <<  _pcLink->getName() <<"\"/>" ;
+  writer << "<Link value=\"" <<  _pcLink->name.getValue() <<"\"/>" ;
 }
 
 void PropertyLink::Restore(Base::XMLReader &reader)

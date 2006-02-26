@@ -339,7 +339,7 @@ void CmdMeshExport::activated(int iMsg)
     doCommand(Doc,"f = App.document().AddFeature(\"Mesh::Export\",\"MeshExport\")");
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     doCommand(Doc,"f.Format = \"%s\"",format.ascii());
-    doCommand(Doc,"f.Source = App.document().%s",fea.front()->getName());
+    doCommand(Doc,"f.Source = App.document().%s",fea.front()->name.getValue());
     commitCommand();
     updateActive();
 
@@ -452,7 +452,7 @@ void CmdMeshToolMesh::activated(int iMsg)
       "App.document().AddFeature(\"Mesh::SegmentByMesh\",\"%s\")\n"
       "App.document().%s.Source = App.document().%s\n"
       "App.document().%s.Tool = App.document().%s\n",
-      fName.c_str(), fName.c_str(),  mesh->getName(), fName.c_str(), tool->getName() );
+      fName.c_str(), fName.c_str(),  mesh->name.getValue(), fName.c_str(), tool->name.getValue() );
 
     commitCommand();
     updateActive();
@@ -462,8 +462,8 @@ void CmdMeshToolMesh::activated(int iMsg)
 
     if ( pFea && pFea->isValid() )
     {
-      doCommand(Gui,"Gui.hide(\"%s\")", mesh->getName());
-      doCommand(Gui,"Gui.hide(\"%s\")", tool->getName());
+      doCommand(Gui,"Gui.hide(\"%s\")", mesh->name.getValue());
+      doCommand(Gui,"Gui.hide(\"%s\")", tool->name.getValue());
       getSelection().clearSelection();
     }
   }

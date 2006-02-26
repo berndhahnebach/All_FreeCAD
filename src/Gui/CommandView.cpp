@@ -201,10 +201,10 @@ void StdCmdToggleVisibility::activated(int iMsg)
     const std::vector<App::Feature*> sel = Selection().getFeaturesOfType(App::Feature::getClassTypeId(), (*it)->getName());
     for(std::vector<App::Feature*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
     {
-      if ( pcDoc && pcDoc->isShow((*ft)->getName()) )
-        doCommand(Gui,"Gui.hideFeature(\"%s\",\"%s\")", (*it)->getName(), (*ft)->getName());
+      if ( pcDoc && pcDoc->isShow((*ft)->name.getValue()) )
+        doCommand(Gui,"Gui.hideFeature(\"%s\",\"%s\")", (*it)->getName(), (*ft)->name.getValue());
       else
-        doCommand(Gui,"Gui.showFeature(\"%s\",\"%s\")", (*it)->getName(), (*ft)->getName());
+        doCommand(Gui,"Gui.showFeature(\"%s\",\"%s\")", (*it)->getName(), (*ft)->name.getValue());
     }
   }
 }

@@ -99,7 +99,7 @@ void Feature::Save (Base::Writer &writer)
   // save parent
   Parent::Save(writer);
 
-  std::string fn = getName(); fn += ".bms";
+  std::string fn = name.getValue(); fn += ".bms";
   writer.addFile(fn.c_str(), this);
   //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
 

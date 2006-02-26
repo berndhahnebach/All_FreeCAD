@@ -138,7 +138,7 @@ void ViewProviderPoints::attach(App::Feature* pcFeat)
   SoGroup* pcColorShadedRoot = new SoGroup();
 
   // Hilight for selection
-  pcHighlight->featureName = pcFeat->getName();
+  pcHighlight->featureName = pcFeat->name.getValue();
   pcHighlight->documentName = pcFeat->getDocument().getName();
   pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcPointsCoord);
