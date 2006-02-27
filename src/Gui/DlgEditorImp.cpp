@@ -91,6 +91,9 @@ void DlgSettingsEditorImp::saveSettings()
 {
   EnableLineNumber->onSave();
   EnableFolding->onSave();
+  tabIndent->onSave();
+  tabSize->onSave();
+  indentSize->onSave();
 
   // Saves the color map
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Editor");
@@ -107,6 +110,9 @@ void DlgSettingsEditorImp::loadSettings()
 {
   EnableLineNumber->onRestore();
   EnableFolding->onRestore();
+  tabIndent->onRestore();
+  tabSize->onRestore();
+  indentSize->onRestore();
 
   // Restores the color map
   QStringList names = GetDefCol().types();

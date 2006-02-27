@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>377</width>
-            <height>317</height>
+            <width>445</width>
+            <height>445</height>
         </rect>
     </property>
     <property name="caption">
@@ -25,6 +25,46 @@
         <property name="spacing">
             <number>6</number>
         </property>
+        <widget class="QGroupBox" row="2" column="1">
+            <property name="name">
+                <cstring>GroupBox2_2</cstring>
+            </property>
+            <property name="title">
+                <string>Sample</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QTextEdit" row="0" column="0">
+                    <property name="name">
+                        <cstring>textEdit1</cstring>
+                    </property>
+                    <property name="text">
+                        <string># Short Python sample
+import sys
+def foo(begin, end):
+	i=begin
+	while (i&lt;end):
+		print i
+		i=i+1
+		print "Text"
+
+foo(0, 20)
+</string>
+                    </property>
+                    <property name="wordWrap">
+                        <enum>WidgetWidth</enum>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
         <widget class="QGroupBox" row="0" column="0">
             <property name="name">
                 <cstring>GroupBox5</cstring>
@@ -153,7 +193,63 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="1" column="0">
+        <widget class="QGroupBox" row="0" column="1">
+            <property name="name">
+                <cstring>GroupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>Window settings</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="Gui::PrefCheckBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>EnableLineNumber</cstring>
+                    </property>
+                    <property name="focusPolicy">
+                        <enum>TabFocus</enum>
+                    </property>
+                    <property name="text">
+                        <string>Enable line numbers</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>EnableLineNumber</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>Editor</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox" row="1" column="0">
+                    <property name="name">
+                        <cstring>EnableFolding</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Enable folding</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>EnableFolding</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>Editor</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="2" column="0">
             <property name="name">
                 <cstring>GroupBox1</cstring>
             </property>
@@ -190,6 +286,9 @@
                     </property>
                     <property name="focusPolicy">
                         <enum>TabFocus</enum>
+                    </property>
+                    <property name="text">
+                        <string></string>
                     </property>
                 </widget>
                 <spacer row="2" column="2">
@@ -303,98 +402,109 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="QGroupBox" row="0" column="1">
+        <widget class="Gui::PrefButtonGroup" row="1" column="0" rowspan="1" colspan="2">
             <property name="name">
-                <cstring>GroupBox2</cstring>
+                <cstring>tabIndent</cstring>
             </property>
             <property name="title">
-                <string>Window settings</string>
+                <string>Tabs</string>
+            </property>
+            <property name="prefEntry" stdset="0">
+                <cstring>TabsIndent</cstring>
+            </property>
+            <property name="prefPath" stdset="0">
+                <cstring>Editor</cstring>
             </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
                 <property name="spacing">
-                    <number>6</number>
+                    <number>10</number>
                 </property>
-                <widget class="Gui::PrefCheckBox" row="0" column="0">
+                <widget class="QLayoutWidget" row="0" column="0" rowspan="2" colspan="1">
                     <property name="name">
-                        <cstring>EnableLineNumber</cstring>
+                        <cstring>layout2</cstring>
                     </property>
-                    <property name="focusPolicy">
-                        <enum>TabFocus</enum>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="Gui::PrefSpinBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>tabSize</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>20</number>
+                            </property>
+                            <property name="value">
+                                <number>4</number>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>TabSize</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>Editor</cstring>
+                            </property>
+                        </widget>
+                        <widget class="Gui::PrefSpinBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>indentSize</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>20</number>
+                            </property>
+                            <property name="value">
+                                <number>4</number>
+                            </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>IndentSize</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>Editor</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Tab size:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Indent size:</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QRadioButton" row="0" column="1">
+                    <property name="name">
+                        <cstring>radioButton3</cstring>
                     </property>
                     <property name="text">
-                        <string>Enable line numbers</string>
+                        <string>Keep tabs</string>
                     </property>
                     <property name="checked">
                         <bool>true</bool>
                     </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>EnableLineNumber</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>Editor</cstring>
+                    <property name="buttonGroupId">
+                        <number>0</number>
                     </property>
                 </widget>
-                <widget class="Gui::PrefCheckBox" row="1" column="0">
+                <widget class="QRadioButton" row="1" column="1">
                     <property name="name">
-                        <cstring>EnableFolding</cstring>
+                        <cstring>radioButton4</cstring>
                     </property>
                     <property name="text">
-                        <string>Enable folding</string>
+                        <string>Insert spaces</string>
                     </property>
-                    <property name="checked">
-                        <bool>true</bool>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>EnableFolding</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>Editor</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QGroupBox" row="1" column="1">
-            <property name="name">
-                <cstring>GroupBox2_2</cstring>
-            </property>
-            <property name="title">
-                <string>Sample</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QTextEdit" row="0" column="0">
-                    <property name="name">
-                        <cstring>textEdit1</cstring>
-                    </property>
-                    <property name="text">
-                        <string># Short Python sample
-import sys
-def foo(begin, end):
-	i=begin
-	while (i&lt;end):
-		print i
-		i=i+1
-		print "Text"
-
-foo(0, 20)
-</string>
-                    </property>
-                    <property name="wordWrap">
-                        <enum>WidgetWidth</enum>
+                    <property name="buttonGroupId">
+                        <number>1</number>
                     </property>
                 </widget>
             </grid>
@@ -406,10 +516,12 @@ foo(0, 20)
 <tabstops>
     <tabstop>FontDB</tabstop>
     <tabstop>FontSize</tabstop>
-    <tabstop>ListBox1</tabstop>
-    <tabstop>ColorBtn</tabstop>
     <tabstop>EnableLineNumber</tabstop>
     <tabstop>EnableFolding</tabstop>
+    <tabstop>tabSize</tabstop>
+    <tabstop>indentSize</tabstop>
+    <tabstop>ListBox1</tabstop>
+    <tabstop>ColorBtn</tabstop>
     <tabstop>textEdit1</tabstop>
 </tabstops>
 <slots>
@@ -418,6 +530,9 @@ foo(0, 20)
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/Widgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

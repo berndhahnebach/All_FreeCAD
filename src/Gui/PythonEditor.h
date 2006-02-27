@@ -49,11 +49,32 @@ class SyntaxLatex;
  */
 class GuiExport PythonEditor : public TextEdit, public WindowParameter
 {
+  Q_OBJECT
+
 public:
   PythonEditor(QWidget *parent = 0,const char *name = 0);
   ~PythonEditor();
 
   void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
+
+public slots:
+  /** Inserts a '#' at the beginning of each selected line or the current line if 
+   * nothing is selected
+   * @todo Undo/Redo not implemented yet.
+   */
+  void onComment();
+  /**
+   * Removes the leading '#' from each selected line or the current line if
+   * nothing is selected. In case a line hasn't a leading '#' then
+   * this line is skipped.
+   * @todo Undo/Redo not implemented yet.
+   */
+  void onUncomment();
+
+protected:
+  void keyPressEvent ( QKeyEvent * e );
+  /** Pops up the context menu with some extensions */
+  QPopupMenu * createPopupMenu ( const QPoint & pos );
 
 private:
   PythonSyntaxHighlighter* pythonSyntax;
@@ -149,6 +170,7 @@ public:
 
 private slots:
   void checkTimestamp();
+  void onModified(bool);
 
 private:
   void saveFile();

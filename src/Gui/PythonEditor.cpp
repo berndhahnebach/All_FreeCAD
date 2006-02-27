@@ -62,10 +62,18 @@ PythonEditor::PythonEditor(QWidget *parent,const char *name)
   pythonSyntax = new PythonSyntaxHighlighter(this);
 
   ParameterGrp::handle hPrefGrp = getWindowParameter();
+  // set default to 4 characters
+  hPrefGrp->SetInt( "TabSize", 4 );
   hPrefGrp->Attach( this );
 
   // set colors and font
   hPrefGrp->NotifyAll();
+
+  // set acelerators
+  QAccel*  accelComment = new QAccel( this );
+  accelComment->connectItem( accelComment->insertItem( ALT + Key_C ),  this, SLOT( onComment() ) );
+  QAccel*  accelUncomment = new QAccel( this );
+  accelUncomment->connectItem( accelUncomment->insertItem( ALT + Key_U ), this, SLOT( onUncomment() ) );
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -73,6 +81,31 @@ PythonEditor::~PythonEditor()
 {
   getWindowParameter()->Detach( this );
   delete pythonSyntax;
+}
+
+void PythonEditor::keyPressEvent ( QKeyEvent * e )
+{
+  bool ok=true;
+  if ( e->key() == Qt::Key_Tab )
+  {
+    ParameterGrp::handle hPrefGrp = getWindowParameter();
+    int indent = hPrefGrp->GetInt( "IndentSize", 4 );
+    int space = hPrefGrp->GetInt( "TabsIndent", 0 );
+
+    if ( space == 1 )
+    {
+      // recursive call to insert spaces
+      ok = false;
+      for ( int i=0; i<indent; i++ )
+      {
+        QKeyEvent ke( QEvent::KeyPress, Key_Space, ' ', Qt::NoButton, " " );
+        QApplication::sendEvent( this, &ke );
+      }
+    }
+  }
+
+  if ( ok )
+    QTextEdit::keyPressEvent( e );
 }
 
 /** Sets the new color for \a rcColor. */  
@@ -107,6 +140,67 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
 
     pythonSyntax->setColor( sReason, color );
   }
+  if (strcmp(sReason, "TabSize") == 0 || strcmp(sReason, "FontSize") == 0)
+  {
+    int tabWidth  = hPrefGrp->GetInt( "TabSize", 4 );
+    QString str;
+    for (int i=0; i<tabWidth;i++) str += '0';
+    QFontMetrics fm( currentFont() );
+    tabWidth = fm.width( str );
+    setTabStopWidth( tabWidth );
+  }
+}
+
+QPopupMenu * PythonEditor::createPopupMenu ( const QPoint & pos )
+{
+  QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
+  
+  menu->insertSeparator();
+  int id1 = menu->insertItem( tr("Comment"), this, SLOT( onComment() ), ALT + Key_C );
+  int id2 = menu->insertItem( tr("Uncomment"), this, SLOT( onUncomment() ), ALT + Key_U );
+
+  return menu;
+}
+
+void PythonEditor::onComment()
+{
+  QTextParagraph *from = document()->selectionStartCursor( QTextDocument::Standard ).paragraph();
+  QTextParagraph *to = document()->selectionEndCursor( QTextDocument::Standard ).paragraph();
+  if ( !from || !to )
+	  from = to = textCursor()->paragraph();
+  while ( from ) {
+	  if ( from == to && textCursor()->index() == 0 )
+	    break;
+	  from->insert( 0, "#" );
+	  if ( from == to )
+	    break;
+	  from = from->next();
+  }
+
+  document()->removeSelection( QTextDocument::Standard );
+  repaintChanged();
+  setModified( true );
+}
+
+void PythonEditor::onUncomment()
+{
+  QTextParagraph* from = document()->selectionStartCursor( QTextDocument::Standard ).paragraph();
+  QTextParagraph* to = document()->selectionEndCursor( QTextDocument::Standard ).paragraph();
+  if ( !from || !to )
+  	from = to = textCursor()->paragraph();
+  while ( from ) {
+	  if ( from == to && textCursor()->index() == 0 )
+	    break;
+	  if ( from->at( 0 )->c == '#' )
+	    from->remove( 0, 1 );
+	  if ( from == to )
+	    break;
+	  from = from->next();
+  }
+
+  document()->removeSelection( QTextDocument::Standard );
+  repaintChanged();
+  setModified( true );
 }
 
 // ------------------------------------------------------------------------
@@ -497,6 +591,7 @@ PythonEditView::PythonEditView( const QString& file, QWidget* parent, const char
 
   _pcActivityTimer = new QTimer(this);
   connect( _pcActivityTimer, SIGNAL(timeout()),this, SLOT(checkTimestamp()) );
+  connect( _textEdit, SIGNAL(modificationChanged ( bool )),this, SLOT(onModified(bool)) );
   openFile( file );
 }
 
@@ -543,6 +638,21 @@ void PythonEditView::checkTimestamp()
   }
 
   _pcActivityTimer->start( 3000, true );
+}
+
+void PythonEditView::onModified(bool b)
+{
+  QString cap = caption();
+  if ( b && !cap.endsWith(" *"))
+  {
+    cap += " *";
+    setCaption(cap);
+  }
+  else if ( !b && cap.endsWith(" *"))
+  {
+    cap = cap.left(cap.length()-2);
+    setCaption(cap);
+  }
 }
 
 /**
