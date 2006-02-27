@@ -545,7 +545,7 @@ void Document::_RecomputeFeature(Feature* Feat)
   }
 #ifndef FC_DEBUG
   catch(...){
-    Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->getName());
+    Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",Feat->name.getValue());
     succes = 3;
   }
 #endif
