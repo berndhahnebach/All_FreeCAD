@@ -312,7 +312,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
       }
 #ifndef FC_DEBUG
       catch(...){
-        Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",(*It)->getName());
+        Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",(*It)->name.getValue());
       }
 #endif
 
