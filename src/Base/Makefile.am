@@ -56,6 +56,8 @@ libFreeCADBase_la_SOURCES=\
 		Base.h \
 		BoundBox.cpp \
 		BoundBox.h \
+		Builder3D.cpp \
+		Builder3D.h \
 		Console.cpp \
 		Console.h \
 		Documentation.cpp \

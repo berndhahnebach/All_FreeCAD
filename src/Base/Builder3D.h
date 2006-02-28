@@ -28,6 +28,7 @@
 
 #ifndef _PreComp_
 # include <string>
+# include <sstream>
 #endif
 
 namespace Base
@@ -36,15 +37,15 @@ namespace Base
 
 /** A Builder class for 3D representations on App level
  * On application level is nothing known of the visual representation of data.
- * Neverless its often needed to see some 3D information, e.g. points, directions, 
- * when you programm or debug a algorithem. For that purpos Builder3D was made.
- *  This class allows you to easily build up a 3D representation of some math and
- * algorithem internals. You can save this representation to a File and see it in a 
- * inventor viewer, or put it to the log. In case of the log and a Debug FreeCAD
- * the representation will loaded to the activ viewer.
+ * Nevertheless it's often needed to see some 3D information, e.g. points, directions,
+ * when you program or debug an algorithm. For that purpose Builder3D was made.
+ * This class allows you to build up easily a 3D representation of some math and
+ * algorithm internals. You can save this representation to a file and see it in an
+ * Inventor viewer, or put it to the log. In case of the log and a debug FreeCAD
+ * the representation will be loaded into the active viewer.
  *  \par
- * The usage is the following. Create the a Builder3D Object and call the methodes to insert
- * the grafical elements. After that call either saveToLog() or saveToFile().
+ * The usage is the following. Create the a Builder3D object and call the methods to insert
+ * the graphical elements. After that call either saveToLog() or saveToFile().
  *  \par
  * Usage:
  *  \code
@@ -53,7 +54,7 @@ namespace Base
   {
     log3D.addSinglePoint(pMesh->GetPoint(i));
     log3D.addText(pMesh->GetPoint(i),"Point");
-    ...  
+    ...
   }
   log3D.saveToLog();
  *  \endcode

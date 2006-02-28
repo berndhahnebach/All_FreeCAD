@@ -26,6 +26,8 @@ libPoints_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -version-
 libPoints_la_CPPFLAGS = -DPointsAppExport=
 
 libPoints_la_LIBADD   = \
+		-l@PYTHON_LIB@ \
+		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp
 
@@ -40,6 +42,7 @@ Points_la_LDFLAGS = $(libPoints_la_LDFLAGS) -module -avoid-version
 Points_la_CPPFLAGS = $(libPoints_la_CPPFLAGS)
 
 Points_la_LIBADD   = \
+		$(libPoints_la_LIBADD) \
 		-lPoints
 
 #--------------------------------------------------------------------------------------

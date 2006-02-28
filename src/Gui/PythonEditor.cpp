@@ -24,13 +24,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qaccel.h>
 # include <qapplication.h>
 # include <qclipboard.h>
 # include <qfile.h>
-# include <qhbox.h> 
+# include <qhbox.h>
 # include <qmessagebox.h>
 # include <qpaintdevicemetrics.h>
 # include <qpainter.h>
+# include <qpopupmenu.h>
 # include <qprinter.h>
 # include <qregexp.h>
 # include <qsimplerichtext.h>
@@ -122,7 +124,7 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
 
     bool ok;
     int size = txt.toInt(&ok);
-    if ( !ok ) size = 9; 
+    if ( !ok ) size = 9;
 
     font.setPointSize( size );
     setFont( font );
@@ -157,8 +159,8 @@ QPopupMenu * PythonEditor::createPopupMenu ( const QPoint & pos )
   QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
   
   menu->insertSeparator();
-  int id1 = menu->insertItem( tr("Comment"), this, SLOT( onComment() ), ALT + Key_C );
-  int id2 = menu->insertItem( tr("Uncomment"), this, SLOT( onUncomment() ), ALT + Key_U );
+  menu->insertItem( tr("Comment"), this, SLOT( onComment() ), ALT + Key_C );
+  menu->insertItem( tr("Uncomment"), this, SLOT( onUncomment() ), ALT + Key_U );
 
   return menu;
 }
@@ -1066,9 +1068,8 @@ QStringList PythonEditView::undoActions() const
   QTextDocument* doc = dynamic_cast<TextEdit*>(_textEdit)->document();
   QTextCommandHistory* hist = doc->commands();
 
-  int size = hist->historySize();
   int curr = hist->currentPosition();
-  
+
   QStringList lst;
 
   if ( hist->isUndoAvailable() ) {

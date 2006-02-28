@@ -18,10 +18,14 @@ libImageGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libImageGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libImageGui_la_CPPFLAGS = -DImageAppExport= -DImageGuiExport=
 
 libImageGui_la_LIBADD   = \
+		-l@PYTHON_LIB@ \
+		-lxerces-c \
+		-lFreeCADBase \
+		-lFreeCADApp \
 		-lFreeCADGui \
 		-lImage
 
@@ -36,6 +40,7 @@ ImageGui_la_LDFLAGS = $(libImageGui_la_LDFLAGS) -module -avoid-version
 ImageGui_la_CPPFLAGS = $(libImageGui_la_CPPFLAGS)
 
 ImageGui_la_LIBADD   = \
+		$(libImageGui_la_LIBADD) \
 		-lImageGui
 
 #--------------------------------------------------------------------------------------

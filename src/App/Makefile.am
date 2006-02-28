@@ -54,7 +54,7 @@ libFreeCADApp_la_SOURCES=\
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADApp_la_LIBADD   = \
-		-lFreeCADBase
+		-lFreeCADBase -l@PYTHON_LIB@ -lxerces-c
 
 # set the include path found by configure
 INCLUDES= $(all_includes)

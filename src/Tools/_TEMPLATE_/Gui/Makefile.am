@@ -11,10 +11,14 @@ lib_TEMPLATE_Gui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-lib_TEMPLATE_Gui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+lib_TEMPLATE_Gui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 lib_TEMPLATE_Gui_la_CPPFLAGS = -D_TEMPLATE_AppExport= -D_TEMPLATE_GuiExport=
 
 lib_TEMPLATE_Gui_la_LIBADD   = \
+		-l@PYTHON_LIB@ \
+		-lxerces-c \
+		-lFreeCADBase \
+		-lFreeCADApp \
 		-lFreeCADGui \
 		-l_TEMPLATE_
 
@@ -29,6 +33,7 @@ _TEMPLATE_Gui_la_LDFLAGS = $(lib_TEMPLATE_Gui_la_LDFLAGS) -module -avoid-version
 _TEMPLATE_Gui_la_CPPFLAGS = $(lib_TEMPLATE_Gui_la_CPPFLAGS)
 
 _TEMPLATE_Gui_la_LIBADD   = \
+		$(lib_TEMPLATE_Gui_la_LIBADD) \
 		-l_TEMPLATE_Gui
 
 #--------------------------------------------------------------------------------------
