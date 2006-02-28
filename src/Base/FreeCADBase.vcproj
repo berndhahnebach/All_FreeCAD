@@ -841,6 +841,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\Builder3D.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\Builder3D.h"
+			>
+		</File>
+		<File
 			RelativePath="Console.cpp"
 			>
 			<FileConfiguration

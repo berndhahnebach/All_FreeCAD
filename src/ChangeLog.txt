@@ -47,6 +47,7 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
   create modules.
 + Create a loader module (without 'lib' prefix ) for each shared library (with 'lib' prefix)
 + The dirty hack to create symlinks during installation has been removed.
++ Builder3D Visual debuging facility
 + set default tabwidth in editor to 4 char, can be changed in user settings
 + block comment/uncomment implemented
 + Undo/Redo of block comment or uncomment implemented

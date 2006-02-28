@@ -32,6 +32,7 @@
 #include "Core/Approximation.h"
 
 #include <Base/Sequencer.h>
+#include <Base/Builder3D.h>
 
 #ifndef _PreComp_
 # include <Wm3Vector3.h>
@@ -134,8 +135,12 @@ bool MeshCurvaturePerVertex::Compute()
   const Wm3::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
   const float* aMaxCurv = meshCurv.GetMaxCurvatures();
   const float* aMinCurv = meshCurv.GetMinCurvatures();
+//  Base::Builder3D log3D;
+//  log3D.startPoints();
   for ( unsigned long i=0; i<pMesh->CountPoints(); i++ )
   {
+//    log3D.addSinglePoint(pMesh->GetPoint(i));
+//    log3D.addText(pMesh->GetPoint(i),"Punkt");
     MeshPropertyCurvature::fCurvature info;
     info.fMaxCurvature = aMaxCurv[i];
     info.fMinCurvature = aMinCurv[i];
@@ -143,6 +148,8 @@ bool MeshCurvaturePerVertex::Compute()
     info.cMinCurvDir = Vector3D( aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z() );
     _curvature->setValue(i, info);
   }
+//  log3D.endPoints();
+//  log3D.saveToLog();
 
   return true;
 }

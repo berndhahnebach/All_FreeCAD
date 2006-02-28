@@ -915,6 +915,23 @@ void MessageBoxObserver::Error  (const char *m)
 }
 
 /// get called when a Log Message is issued
-void MessageBoxObserver::Log    (const char *)
+void MessageBoxObserver::Log    (const char *log)
 {
+#ifdef FC_DEBUG
+  if(log[0] == 'V' && log[1] == 'd' && log[2] == 'b' && log[3] == 'g' &&  log[4] == ':')
+  {
+    std::string str;
+    str += "#Inventor V2.1 ascii \n";
+    str += (log + 5);
+
+    Gui::Document *d = Application::Instance->activeDocument();
+    if(d)
+    {
+      ViewProviderExtern *pcExt = new ViewProviderExtern();
+      pcExt->setModeByString("1",str.c_str());
+
+      d->setAnotationViewProvider("Vdbg",pcExt);
+    }
+  }
+#endif
 }
