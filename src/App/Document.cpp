@@ -292,8 +292,17 @@ bool Document::open (void)
 
     // notify all as new
     DocChanges DocChange;
+    //FIXME: Since the status of a feature is not saved yet, we must set features without an own data file to Valid
     for(std::map<std::string,FeatEntry>::iterator It = FeatMap.begin();It != FeatMap.end();++It)
+    {
+      // not all feature are necessarily set to New here
+      if ( It->second.F->_eStatus == Feature::New )
+      {
+        It->second.F->_eStatus = Feature::Valid;
+        It->second.F->touchTime.setToActual();
+      }
       DocChange.NewFeatures.insert(It->second.F);
+    }
     Notify(DocChange);
 
     return true;

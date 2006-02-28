@@ -170,11 +170,16 @@ void DocItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int 
 
 void DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
 {
-  FeatItem* item = dynamic_cast<FeatItem*>( Provider->getTreeItem(this) );
-  // set the new ctreated item at the end
-  item->moveItem(_lastFeaItem);
-  _lastFeaItem = item;
-  FeatMap[Provider->getFeature()->name.getValue()] = item;
+  std::string name = Provider->getFeature()->name.getValue();
+  std::map<std::string,FeatItem*>::iterator it = FeatMap.find( name );
+  if ( it == FeatMap.end() )
+  {
+    FeatItem* item = dynamic_cast<FeatItem*>( Provider->getTreeItem(this) );
+    // set the new ctreated item at the end
+    item->moveItem(_lastFeaItem);
+    _lastFeaItem = item;
+    FeatMap[ name ] = item;
+  }
 }
 
 void DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
@@ -187,7 +192,7 @@ void DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
     QListViewItem* item = firstChild();
     QListViewItem* sibling=0;
     while ( item ) {
-      // makesure that we have a FeatItem
+      // make sure that we have a FeatItem
       if ( item == it->second )
       {
         // in case we remove the last item

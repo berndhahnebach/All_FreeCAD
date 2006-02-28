@@ -91,6 +91,8 @@ public:
 
   /// Observer message from the App doc
   virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
+  void setModified(bool);
+  bool isModified() const { return _isModified; }
 
   /// Geter for the Application 
   Application*    getAppWnd(){return _pcAppWnd;}	
@@ -203,6 +205,7 @@ private:
   int        _iWinCount;
   int        _iDocId;
   bool _isClosing;
+  bool _isModified;
   Application*    _pcAppWnd;
   /// List of all registered views
   std::list<Gui::BaseView*> _LpcViews;

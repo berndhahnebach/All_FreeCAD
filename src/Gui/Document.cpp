@@ -59,7 +59,7 @@ using namespace Gui;
 int Document::_iDocCount = 0;
 
 Document::Document(App::Document* pcDocument,Application * app, const char * name)
-  :_iWinCount(1), _isClosing(false), _pcAppWnd(app), _pcDocument(pcDocument)
+  :_iWinCount(1), _isClosing(false), _isModified(false), _pcAppWnd(app), _pcDocument(pcDocument)
 {
   // new instance
   _iDocId = (++_iDocCount);
@@ -257,9 +257,11 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   if(Reason.Why == App::DocChanges::Rename)
   {
     onRename();
+    setModified(false); // either opened or saved
     return;
   }
 
+  setModified(true);
   std::list<Gui::BaseView*>::iterator VIt;
 
   // remove the representation of Features no longer exist
@@ -346,6 +348,26 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   onUpdate();
 }
 
+void Document::setModified(bool b)
+{
+  _isModified = b;
+  std::list<MDIView*> mdis = getMDIViews();
+  for ( std::list<MDIView*>::iterator it = mdis.begin(); it != mdis.end(); ++it )
+  {
+    QString cap = (*it)->caption();
+    if ( b && !cap.endsWith(" *") )
+    {
+      cap += " *";
+      (*it)->setCaption(cap);
+    }
+    else if ( !b && cap.endsWith(" *") )
+    {
+      cap = cap.left(cap.length()-2);
+      (*it)->setCaption(cap);
+    }
+  }
+}
+
 /// Save the document
 bool Document::save(void)
 {
@@ -353,6 +375,7 @@ bool Document::save(void)
   {
     Gui::WaitCursor wc;
     Command::doCommand(Command::Doc,"App.save(\"%s\")", _pcDocument->getName());
+    setModified(false);
     return true;
   }
   else
@@ -519,7 +542,7 @@ bool Document::isLastView(void)
  */
 void Document::canClose ( QCloseEvent * e )
 {
-  if(! _pcDocument->isSaved() || true // at the moment we cannot determine if a saved document has been modified
+  if(! _pcDocument->isSaved() || isModified() // at the moment we cannot determine if a saved document has been modified
     //&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
     //&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK
       )

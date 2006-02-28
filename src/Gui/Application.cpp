@@ -175,6 +175,8 @@ void Application::open(const char* FileName)
       Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
       // ViewFit
       Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+      if ( activeDocument() )
+        activeDocument()->setModified(false);
       // the original file name is required
       getMainWindow()->appendRecentFile( File.filePath().c_str() );
     } catch (const Base::PyException& e){
@@ -212,10 +214,14 @@ void Application::import(const char* FileName, const char* DocName)
       {
         Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
         Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+        if ( activeDocument() )
+          activeDocument()->setModified(false);
       }
       else
       {
         Command::doCommand(Command::App, "%s.insert(\"%s\",\"%s\")", Mod, File.filePath().c_str(), DocName);
+        if ( activeDocument() )
+          activeDocument()->setModified(true);
       }
 
       // the original file name is required

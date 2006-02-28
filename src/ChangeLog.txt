@@ -50,3 +50,5 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + set default tabwidth in editor to 4 char, can be changed in user settings
 + block comment/uncomment implemented
 + Undo/Redo of block comment or uncomment implemented
++ Bug in DocItem class fixed: allow only one item with the same name
++ set the dirty flag after Gui::Document has been changed, remove after saving the document
