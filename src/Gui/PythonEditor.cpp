@@ -94,13 +94,14 @@ void PythonEditor::keyPressEvent ( QKeyEvent * e )
 
     if ( space == 1 )
     {
-      // recursive call to insert spaces
       ok = false;
+      int para, index;
+      QString str;
+      getCursorPosition ( &para, &index );
       for ( int i=0; i<indent; i++ )
-      {
-        QKeyEvent ke( QEvent::KeyPress, Key_Space, ' ', Qt::NoButton, " " );
-        QApplication::sendEvent( this, &ke );
-      }
+        str += " ";
+      insertAt(str,para, index);
+      setCursorPosition ( para, index+indent );
     }
   }
 
@@ -162,19 +163,88 @@ QPopupMenu * PythonEditor::createPopupMenu ( const QPoint & pos )
   return menu;
 }
 
+class PythonComment : public QTextCommand
+{
+public:
+  PythonComment ( QTextDocument *d ) 
+    : QTextCommand( d ) 
+  {
+  }
+
+  virtual ~PythonComment()
+  {
+  }
+
+  Commands type() const { return Insert; }
+
+  void addParagraph( int par)
+  {
+    para.append(par);
+  }
+
+  virtual QTextCursor *execute( QTextCursor *c )
+  {
+    for ( QValueList<int>::Iterator it = para.begin(); it != para.end(); ++it )
+    {
+      QTextParagraph* paragr = doc->paragAt(*it);
+      paragr->insert( 0, "#" );
+    }
+
+    doc->removeSelection( QTextDocument::Standard );
+    return c;
+  }
+
+  virtual QTextCursor *unexecute( QTextCursor *c )
+  {
+    for ( QValueList<int>::Iterator it = para.begin(); it != para.end(); ++it )
+    {
+      QTextParagraph* paragr = doc->paragAt(*it);
+      if ( paragr->at( 0 )->c == '#' )
+        paragr->remove( 0, 1 );
+    }
+
+    doc->removeSelection( QTextDocument::Standard );
+    return c;
+  }
+
+protected:
+  QValueList<int> para;
+};
+
+class PythonUncomment : public PythonComment
+{
+public:
+  PythonUncomment (QTextDocument *d) 
+    : PythonComment( d ) 
+  {
+  }
+
+  virtual ~PythonUncomment()
+  {
+  }
+
+  Commands type() const { return Delete; }
+  QTextCursor *execute( QTextCursor *c ) { return PythonComment::unexecute( c ); }
+  QTextCursor *unexecute( QTextCursor *c ) { return PythonComment::execute( c ); }
+};
+
 void PythonEditor::onComment()
 {
+  PythonComment* cmd = new PythonComment(document());
+  document()->addCommand(cmd);
+
   QTextParagraph *from = document()->selectionStartCursor( QTextDocument::Standard ).paragraph();
   QTextParagraph *to = document()->selectionEndCursor( QTextDocument::Standard ).paragraph();
   if ( !from || !to )
-	  from = to = textCursor()->paragraph();
+    from = to = textCursor()->paragraph();
   while ( from ) {
-	  if ( from == to && textCursor()->index() == 0 )
-	    break;
-	  from->insert( 0, "#" );
-	  if ( from == to )
-	    break;
-	  from = from->next();
+    if ( from == to && textCursor()->index() == 0 )
+      break;
+    from->insert( 0, "#" );
+    cmd->addParagraph(from->paragId());
+    if ( from == to )
+      break;
+    from = from->next();
   }
 
   document()->removeSelection( QTextDocument::Standard );
@@ -184,18 +254,22 @@ void PythonEditor::onComment()
 
 void PythonEditor::onUncomment()
 {
+  PythonComment* cmd = new PythonUncomment(document());
+  document()->addCommand(cmd);
+
   QTextParagraph* from = document()->selectionStartCursor( QTextDocument::Standard ).paragraph();
   QTextParagraph* to = document()->selectionEndCursor( QTextDocument::Standard ).paragraph();
   if ( !from || !to )
-  	from = to = textCursor()->paragraph();
+    from = to = textCursor()->paragraph();
   while ( from ) {
-	  if ( from == to && textCursor()->index() == 0 )
-	    break;
-	  if ( from->at( 0 )->c == '#' )
-	    from->remove( 0, 1 );
-	  if ( from == to )
-	    break;
-	  from = from->next();
+    if ( from == to && textCursor()->index() == 0 )
+      break;
+    if ( from->at( 0 )->c == '#' )
+      from->remove( 0, 1 );
+    cmd->addParagraph(from->paragId());
+    if ( from == to )
+      break;
+    from = from->next();
   }
 
   document()->removeSelection( QTextDocument::Standard );
@@ -989,7 +1063,18 @@ bool PythonEditView::isSavedOnce()
  */
 QStringList PythonEditView::undoActions() const
 {
+  QTextDocument* doc = dynamic_cast<TextEdit*>(_textEdit)->document();
+  QTextCommandHistory* hist = doc->commands();
+
+  int size = hist->historySize();
+  int curr = hist->currentPosition();
+  
   QStringList lst;
+
+  if ( hist->isUndoAvailable() ) {
+    for ( int i=0; i<curr+1;i++ )
+      lst << "Modified";
+  }
   return lst;
 }
 
@@ -998,7 +1083,17 @@ QStringList PythonEditView::undoActions() const
  */
 QStringList PythonEditView::redoActions() const
 {
+  QTextDocument* doc = dynamic_cast<TextEdit*>(_textEdit)->document();
+  QTextCommandHistory* hist = doc->commands();
+
+  int size = hist->historySize();
+  int curr = hist->currentPosition();
+  
   QStringList lst;
+  if ( hist->isRedoAvailable() ) {
+    for ( int i=0; i<size-curr;i++ )
+      lst << "Modified";
+  }
   return lst;
 }
 

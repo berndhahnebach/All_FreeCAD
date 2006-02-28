@@ -60,14 +60,12 @@ public:
 public slots:
   /** Inserts a '#' at the beginning of each selected line or the current line if 
    * nothing is selected
-   * @todo Undo/Redo not implemented yet.
    */
   void onComment();
   /**
    * Removes the leading '#' from each selected line or the current line if
    * nothing is selected. In case a line hasn't a leading '#' then
    * this line is skipped.
-   * @todo Undo/Redo not implemented yet.
    */
   void onUncomment();
 

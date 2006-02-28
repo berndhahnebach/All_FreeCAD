@@ -173,6 +173,14 @@ void UndoRedoDialog::onFetchInfo()
   }
   else if ( dynamic_cast<PythonEditView*>(getMainWindow()->activeWindow()) )
   {
+    PythonEditView* edit = dynamic_cast<PythonEditView*>(getMainWindow()->activeWindow());
+    QStringList reundolist;
+    if ( tMode == Undo ) 
+      reundolist = edit->undoActions();
+    else
+      reundolist = edit->redoActions();
+    for ( QStringList::Iterator i=reundolist.begin(); i!=reundolist.end(); i++)
+      pListBox->insertItem((*i));
     pTextLabel->setText( tr( "No info" ) );
   }
   else
