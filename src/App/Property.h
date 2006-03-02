@@ -62,13 +62,13 @@ public:
 	virtual ~Property();
 
   /// get the name of this property in the belonging Container
-  const char* getName(void);
+  const char* getName(void) const;
 
   /// is called by the framework to set the Father (Container)
   void setContainer(PropertyContainer *Father);
 
   /// get a pointer to the PropertyContainer derived class the property belonging to
-  PropertyContainer *getContainer(void){return father;}
+  PropertyContainer *getContainer(void) const {return father;}
   
   friend class PropertyContainer;
 
@@ -102,7 +102,7 @@ class AppExport PropertyLists: public Property
 public:
 
   virtual void setSize(int newSize)=0;   
-  virtual int getSize(void)=0;   
+  virtual int getSize(void) const =0;   
 
 };
 

@@ -56,17 +56,17 @@ PropertyContainer::~PropertyContainer()
 
 }
 
-Property *PropertyContainer::getPropertyByName(const char* name)
+Property *PropertyContainer::getPropertyByName(const char* name) const
 {
   return getPropertyData().getPropertyByName(this,name);
 }
 
-void PropertyContainer::getPropertyMap(std::map<std::string,Property*> &Map)
+void PropertyContainer::getPropertyMap(std::map<std::string,Property*> &Map) const
 {
   getPropertyData().getPropertyMap(this,Map);
 }
 
-const char* PropertyContainer::getName(Property* prop)const
+const char* PropertyContainer::getName(const Property* prop)const
 {
   return getPropertyData().getName(this,prop);
 }
@@ -141,7 +141,7 @@ const char* PropertyData::getName(const PropertyContainer *container,const Prope
 }
 
 
-Property *PropertyData::getPropertyByName(PropertyContainer *container,const char* name) const 
+Property *PropertyData::getPropertyByName(const PropertyContainer *container,const char* name) const 
 {
   std::map<std::string,int>::const_iterator pos = propertyData.find(name);
 
@@ -157,7 +157,7 @@ Property *PropertyData::getPropertyByName(PropertyContainer *container,const cha
   }
 }
 
-void PropertyData::getPropertyMap(PropertyContainer *container,std::map<std::string,Property*> &Map) const
+void PropertyData::getPropertyMap(const PropertyContainer *container,std::map<std::string,Property*> &Map) const
 {
   std::map<std::string,int>::const_iterator pos;
 

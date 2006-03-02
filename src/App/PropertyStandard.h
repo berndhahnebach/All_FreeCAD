@@ -113,7 +113,7 @@ public:
 	~PropertyIntegerList();
 
   virtual void setSize(int newSize){_lValueList.resize(newSize);}   
-  virtual int getSize(void){return _lValueList.size();}   
+  virtual int getSize(void) const {return _lValueList.size();}   
 
 	/** Sets the property 
 	 */
@@ -198,7 +198,7 @@ public:
 	~PropertyFloatList();
 
   virtual void setSize(int newSize){_lValueList.resize(newSize);}   
-  virtual int getSize(void){return _lValueList.size();}   
+  virtual int getSize(void) const {return _lValueList.size();}   
 
 	/** Sets the property 
 	 */

@@ -43,8 +43,8 @@ struct AppExport PropertyData
 
   void addProperty(PropertyContainer *container,const char* PropName, Property *Prop);
   const char* getName(const PropertyContainer *container,const Property* prop) const;
-  Property *getPropertyByName(PropertyContainer *container,const char* name) const;
-  void getPropertyMap(PropertyContainer *container,std::map<std::string,Property*> &Map) const;
+  Property *getPropertyByName(const PropertyContainer *container,const char* name) const;
+  void getPropertyMap(const PropertyContainer *container,std::map<std::string,Property*> &Map) const;
 
 };
 
@@ -77,11 +77,11 @@ public:
   virtual void onBevorChange(Property* prop){};
 
   /// find a property by his name
-  Property *getPropertyByName(const char* name);
+  Property *getPropertyByName(const char* name) const;
   /// get the name of a property
-  const char* getName(Property* prop) const;
+  const char* getName(const Property* prop) const;
   /// get all properties of the class (including parent)
-  void getPropertyMap(std::map<std::string,Property*> &Map);
+  void getPropertyMap(std::map<std::string,Property*> &Map) const;
 
   virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::XMLReader &reader);

@@ -56,7 +56,7 @@ Property::~Property()
 
 }
 
-const char* Property::getName(void)
+const char* Property::getName(void) const
 {
   return father->getName(this);
 }
