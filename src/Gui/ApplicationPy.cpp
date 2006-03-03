@@ -62,11 +62,11 @@ PyMethodDef Application::Methods[] = {
   {"SendMsgToActiveView",     (PyCFunction) Application::sSendActiveView,          1},
   {"hide",                    (PyCFunction) Application::shide,                    1},
   {"show",                    (PyCFunction) Application::sshow,                    1},
-  {"hideFeature",             (PyCFunction) Application::sHideFeature,             1},
-  {"showFeature",             (PyCFunction) Application::sShowFeature,             1},
   {"open",                    (PyCFunction) Application::sopen,                    1},
   {"insert",                  (PyCFunction) Application::sinsert,                  1},
   {"document",                (PyCFunction) Application::sdocument,                1},
+  {"activeDocument",          (PyCFunction) Application::sActiveDocument,          1},
+  {"getDocument",             (PyCFunction) Application::sGetDocument,             1},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -83,6 +83,36 @@ PYFUNCIMP_S(Application,sdocument)
   }
     
   Py_Return;
+} 
+
+PYFUNCIMP_S(Application,sActiveDocument)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+
+  Document *pcDoc =  Instance->activeDocument();
+  if (pcDoc) {
+	  return pcDoc->getPyObject();
+  }else{
+  	PyErr_SetString(PyExc_Exception, "No active document");
+	  return 0L;
+  }
+} 
+
+PYFUNCIMP_S(Application,sGetDocument)
+{
+  char *pstr=0;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception
+
+  Document *pcDoc =  Instance->activeDocument();
+  if ( !pcDoc )
+  {
+    PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
+    return 0L;
+  }
+
+  return pcDoc->getPyObject();
 } 
 
 PYFUNCIMP_S(Application,shide)
@@ -115,36 +145,6 @@ PYFUNCIMP_S(Application,sshow)
   }
     
    Py_Return;
-} 
-
-PYFUNCIMP_S(Application,sHideFeature)
-{
-  char *psFeatName, *psDocName;
-  if (!PyArg_ParseTuple(args, "ss",&psDocName, &psFeatName))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
-
-  Document *pcDoc = Instance->getDocument(psDocName);
-  if(pcDoc)
-  {
-    pcDoc->setHide(psFeatName);  
-  }
-    
-  Py_Return;
-}
-
-PYFUNCIMP_S(Application,sShowFeature)
-{
-  char *psFeatName, *psDocName;
-  if (!PyArg_ParseTuple(args, "ss",&psDocName, &psFeatName))     // convert args: Python->C 
-    return NULL;                                      // NULL triggers exception 
-
-  Document *pcDoc = Instance->getDocument(psDocName);
-  if(pcDoc)
-  {
-    pcDoc->setShow(psFeatName);  
-  }
-    
-  Py_Return;
 } 
 
 PYFUNCIMP_S(Application,sopen)

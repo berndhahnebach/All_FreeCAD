@@ -168,13 +168,13 @@ public:
 
   PYFUNCDEF_S(shide);
   PYFUNCDEF_S(sshow);
-  PYFUNCDEF_S(sHideFeature);
-  PYFUNCDEF_S(sShowFeature);
   
   PYFUNCDEF_S(sopen);                     // open Python scripts
   PYFUNCDEF_S(sinsert);                   // open Python scripts
 
-  PYFUNCDEF_S(sdocument);  
+  PYFUNCDEF_S(sdocument);                 // deprecated (use activeDocument or getDocument(<string>) instead)
+  PYFUNCDEF_S(sActiveDocument);
+  PYFUNCDEF_S(sGetDocument);
 
   static PyMethodDef    Methods[]; 
 

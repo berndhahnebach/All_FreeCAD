@@ -181,18 +181,6 @@ StdCmdToggleVisibility::StdCmdToggleVisibility()
 
 void StdCmdToggleVisibility::activated(int iMsg)
 {
-//  if( getActiveGuiDocument() )
-//  {
-//    std::vector<App::Feature*> sel = Selection().getFeaturesOfType(App::Feature::getClassTypeId());
-//    for(std::vector<App::Feature*>::const_iterator It=sel.begin();It!=sel.end();It++)
-//    {
-//      if(getActiveGuiDocument()->isShow((*It)->getName()))
-//        doCommand(Gui,"Gui.hideFeature(\"%s\")", (*It)->getName());
-//      else
-//        doCommand(Gui,"Gui.showFeature(\"%s\")", (*It)->getName());
-//    }
-//  }
-
   // go through all documents
   const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
   for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it )
@@ -202,9 +190,9 @@ void StdCmdToggleVisibility::activated(int iMsg)
     for(std::vector<App::Feature*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
     {
       if ( pcDoc && pcDoc->isShow((*ft)->name.getValue()) )
-        doCommand(Gui,"Gui.hideFeature(\"%s\",\"%s\")", (*it)->getName(), (*ft)->name.getValue());
+        doCommand(Gui,"Gui.getDocument(\"%s\").hide(\"%s\")", (*it)->getName(), (*ft)->name.getValue());
       else
-        doCommand(Gui,"Gui.showFeature(\"%s\",\"%s\")", (*it)->getName(), (*ft)->name.getValue());
+        doCommand(Gui,"Gui.getDocument(\"%s\").show(\"%s\")", (*it)->getName(), (*ft)->name.getValue());
     }
   }
 }
