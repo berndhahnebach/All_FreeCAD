@@ -224,8 +224,7 @@ bool MeshGeomEdge::IntersectBoundingBox (const BoundBox3D &rclBB) const
 
 MeshGeomFacet::MeshGeomFacet (void) 
   : _bNormalCalculated(false),
-    _ulProp(0),
-    _ucFlag(0)
+    _ucFlag(0), _ulProp(0)
 { 
 
 }
@@ -233,8 +232,8 @@ MeshGeomFacet::MeshGeomFacet (void)
 
 MeshGeomFacet::MeshGeomFacet (const Vector3D &v1,const Vector3D &v2,const Vector3D &v3)
   : _bNormalCalculated(false), 
-    _ulProp(0),
-    _ucFlag(0)
+    _ucFlag(0),
+    _ulProp(0)
 {
   _aclPoints[0] = v1;
   _aclPoints[1] = v2;

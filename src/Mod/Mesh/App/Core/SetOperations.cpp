@@ -41,7 +41,7 @@
 # include <Wm3Delaunay2.h>
 # include <Wm3Vector2.h>
 # include <Wm3Query.h>
-# include <io.h>
+# include <ios>
 #endif
 
 #include <fstream>
@@ -52,6 +52,10 @@
 #include "Grid.h"
 #include "MeshIO.h"
 #include "Visitor.h"
+
+#ifdef __GNUC__
+# define VOID void
+#endif
 
 #include "triangle.h"
 
@@ -75,7 +79,7 @@ SetOperations::SetOperations (MeshKernel &cutMesh1, MeshKernel &cutMesh2, MeshKe
 
 void SetOperations::Do ()
 {
-  _builder.startPoints(5.0, 1.0, 1.0, 1.0);
+  _builder.startPoints(5, 1.0, 1.0, 1.0);
 
   //_builder.addPoint(1.0, 1.0, 1.0);
   //_builder.addPoint(2.0, 2.0, 2.0);
@@ -106,7 +110,7 @@ void SetOperations::Do ()
   CollectFacets(_cutMesh1, _cutMesh2, _facets1, _cutFacets1, _facetsOf1, true);
   CollectFacets(_cutMesh2, _cutMesh1, _facets2, _cutFacets2, _facetsOf2, false);
 
-  vector<MeshGeomFacet> facets;
+  std::vector<MeshGeomFacet> facets;
   for (std::vector<MeshGeomFacet>::iterator it3 = _facetsOf1.begin(); it3 != _facetsOf1.end(); it3++)
     facets.push_back(*it3);
   //for (std::vector<MeshGeomFacet>::iterator it = _facetsOf2.begin(); it != _facetsOf2.end(); it++)
@@ -320,7 +324,7 @@ void SetOperations::TriangulateMesh (MeshKernel &cutMesh, std::map<unsigned long
 }
 
 
-void SetOperations::CollectFacets (MeshKernel &meshForRegionGrowing, MeshKernel &meshOther, std::vector<MeshGeomFacet> &facetsFromCutting, vector<unsigned long> facetsFromCuttingIndex, vector<MeshGeomFacet> &facetsCollected, bool first)
+void SetOperations::CollectFacets (MeshKernel &meshForRegionGrowing, MeshKernel &meshOther, std::vector<MeshGeomFacet> &facetsFromCutting, std::vector<unsigned long> facetsFromCuttingIndex, std::vector<MeshGeomFacet> &facetsCollected, bool first)
 {
   MeshAlgorithm algo(meshForRegionGrowing);
   algo.ResetFacetFlag(MeshFacet::VISIT);
@@ -329,7 +333,7 @@ void SetOperations::CollectFacets (MeshKernel &meshForRegionGrowing, MeshKernel 
   MeshRefPointToFacets rpf(meshForRegionGrowing);
 
   // find the first facets two of his points lying in direction of the cutting mesh
-  for (std::map<MeshPoint, std::pair<list<unsigned long>, list<unsigned long> > >::iterator it = _points2facets12.begin(); it != _points2facets12.end(); it++)
+  for (std::map<MeshPoint, std::pair<std::list<unsigned long>, std::list<unsigned long> > >::iterator it = _points2facets12.begin(); it != _points2facets12.end(); it++)
   {
     MeshGeomFacet f2;
     std::list<unsigned long>::iterator begin, end;
@@ -363,13 +367,17 @@ void SetOperations::CollectFacets (MeshKernel &meshForRegionGrowing, MeshKernel 
         dir.Normalize();
 
 
-        if (((dir % normal1) * (normal1 % normal2)) > 0.0f)    
+        if (((dir % normal1) * (normal1 % normal2)) > 0.0f)
         { // ok, point found, get a neighbour-facet not visited
           //builder.addSinglePoint(pt, 5.0, 1.0, 1.0, 1.0);
         //  if (kkk < 1)
             _builder.addPoint(pt);
           char txt[20];
+#ifdef __GNUC__ // doesn't know about itoa (it's not a C ANSI function)
+          sprintf(txt, "%d", kkk++);
+#else
           itoa(kkk++, txt, 10);
+#endif
           //builder.addText(pt, txt, 1.0, 1.0, 1.0);
 
 

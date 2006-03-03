@@ -25,11 +25,10 @@
 #define MESH_SETOPERATIONS_H
 
 #ifndef _PreComp_
-# include <Wm3IntrSegment3Plane3.h>
-# include <Wm3Vector3.h>
+# include <list>
+# include <map>
+# include <vector>
 #endif
-
-#include <Wm3Plane3.h>
 
 #include "MeshKernel.h"
 #include "Elements.h"
@@ -93,18 +92,18 @@ private:
   /** created facets from cut points */
   std::vector<MeshGeomFacet> _facets1, _facets2;
   /** set of points refering facets of mesh1 and mesh2 */
-  std::map<MeshPoint, std::pair<list<unsigned long>, list<unsigned long> > >  _points2facets12;
+  std::map<MeshPoint, std::pair<std::list<unsigned long>, std::list<unsigned long> > >  _points2facets12;
   /** Indices of facets cutting the line */
-  vector<unsigned long> _cutFacets1, _cutFacets2; 
+  std::vector<unsigned long> _cutFacets1, _cutFacets2;
   /** Facets collected from region growing */
-  vector<MeshGeomFacet> _facetsOf1, _facetsOf2;
+  std::vector<MeshGeomFacet> _facetsOf1, _facetsOf2;
 
   /** Cut mesh 1 with mesh 2 */
   void Cut ();
   /** Trianglute each facets cutted with his cutting points */
   void TriangulateMesh (MeshKernel &cutMesh, std::map<unsigned long, std::list<MeshPoint> > &mapPoints, std::vector<MeshGeomFacet> &facets);
   /** search facets for adding (with region growing) */
-  void CollectFacets (MeshKernel &meshForRegionGrowing, MeshKernel &meshOther, std::vector<MeshGeomFacet> &facetsFromCutting, vector<unsigned long> facetsFromCuttingIndex, vector<MeshGeomFacet> &facetsCollected, bool first); 
+  void CollectFacets (MeshKernel &meshForRegionGrowing, MeshKernel &meshOther, std::vector<MeshGeomFacet> &facetsFromCutting, std::vector<unsigned long> facetsFromCuttingIndex, std::vector<MeshGeomFacet> &facetsCollected, bool first); 
 
   /** visual debug helper */
   Base::Builder3D _builder;
