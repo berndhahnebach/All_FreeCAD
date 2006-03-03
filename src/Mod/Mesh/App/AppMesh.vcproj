@@ -208,7 +208,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.pyd ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.lib ..\..\..\..\Mod\Mesh&#x0D;&#x0A;"
+				CommandLine="mkdir ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.pyd ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.lib ..\..\..\..\Mod\Mesh&#x0D;&#x0A;xcopy /F  /Y ..\BuildRegularGeoms.py ..\..\..\..\Mod\Mesh"
 			/>
 		</Configuration>
 	</Configurations>
@@ -539,6 +539,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Core\SetOperations.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\SetOperations.h"
+				>
+			</File>
+			<File
 				RelativePath="Core\Tools.cpp"
 				>
 				<FileConfiguration
@@ -588,6 +596,14 @@
 			</File>
 			<File
 				RelativePath="Core\TopoAlgorithm.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\triangle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\Core\triangle.h"
 				>
 			</File>
 			<File
@@ -813,6 +829,14 @@
 		</File>
 		<File
 			RelativePath="FeatureMeshSegmentByMesh.h"
+			>
+		</File>
+		<File
+			RelativePath=".\FeatureMeshSetOperations.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\FeatureMeshSetOperations.h"
 			>
 		</File>
 		<File

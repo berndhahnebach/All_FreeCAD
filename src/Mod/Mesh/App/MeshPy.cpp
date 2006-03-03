@@ -33,6 +33,8 @@
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 
+#include <App/MatrixPy.h>
+
 #include "MeshPy.h"
 #include "Mesh.h"
 #include "MeshAlgos.h"
@@ -127,7 +129,9 @@ PyMethodDef MeshPy::Methods[] = {
 //  PYMETHODEDEF(rotate)
   PYMETHODEDEF(transformToEigen)
   PYMETHODEDEF(scale)
+  PYMETHODEDEF(transform)
   PYMETHODEDEF(addFacet)
+  PYMETHODEDEF(addFacets)
   PYMETHODEDEF(clear)
   PYMETHODEDEF(copy)
   PYMETHODEDEF(hasConsistentOrientation)
@@ -518,6 +522,29 @@ PYFUNCIMP_D(MeshPy,scale)
   Py_Return;
 }
 
+
+PYFUNCIMP_D(MeshPy,transform)
+{
+  Matrix4D mat;
+  PyObject *pcMatObj;
+
+  if (PyArg_ParseTuple(args, "O!: a transform matrix (Matrix) is needed", &(App::MatrixPy::Type), &pcMatObj) )     // convert args: Python->C 
+  {
+    mat = ((App::MatrixPy*)pcMatObj)->value();
+    PyErr_Clear();
+  }
+  else
+    return NULL;
+
+  PY_TRY
+  {
+    _pcMesh->transform(mat);
+  }
+  PY_CATCH;
+
+  Py_Return;
+}
+
 PYFUNCIMP_D(MeshPy,addFacet)
 {
   double x1,y1,z1,x2,y2,z2,x3,y3,z3;
@@ -528,6 +555,84 @@ PYFUNCIMP_D(MeshPy,addFacet)
     _pcMesh->getKernel()->AddFacet(MeshGeomFacet(Vector3D(x1,y1,z1),
                                                  Vector3D(x2,y2,z2),
                                                  Vector3D(x3,y3,z3)));
+  } PY_CATCH;
+
+  Py_Return;
+}
+
+PYFUNCIMP_D(MeshPy,addFacets)
+{
+ 
+  PyObject *list;
+
+  vector<MeshGeomFacet> facets;
+  if (PyArg_ParseTuple(args, "O!: list of vectors (3 of them defined a facet)", &PyList_Type, &list))     
+  {
+    if (PyList_Check(list))
+    {
+      int k = 0;
+      MeshGeomFacet facet;
+      for (int i = 0; i < PyList_Size(list); i++)
+      {
+        PyObject *vec = PyList_GetItem(list, i);
+        if (PyList_Check(vec))
+        {
+          if (PyList_Size(vec) == 3)
+          {
+            for (int j = 0; j < 3; j++)
+            {
+              PyObject *val = PyList_GetItem(vec, j);
+              if (PyFloat_Check(val))
+              {                
+                float f = PyFloat_AsDouble(val);
+                facet._aclPoints[k][j] = f;
+              }
+              else
+              {
+                Py_Error(PyExc_Exception, "vector needs 3 double values");
+                return NULL; // not a double
+              }
+            }
+          }
+          else
+          {
+            Py_Error(PyExc_Exception, "vector needs 3 double values");
+            return NULL; // vector needs 3 doubles
+          }
+        }
+        else
+        {
+          Py_Error(PyExc_Exception, "inner list should be 3 doubles as list");
+          return NULL; // not a vector
+        }
+        k++;
+        if (k == 3)
+        {
+          k = 0;
+          facet.CalcNormal();
+          facets.push_back(facet);
+        }
+        
+      }    
+    }
+    else
+    {
+      Py_Error(PyExc_Exception, "need a list of 3 double values");
+      return NULL; // not a list
+    }
+
+    PyErr_Clear();
+
+
+  }
+  else
+  {
+    Py_Error(PyExc_Exception, "need list of vectors (3 of them defined a facet)");
+    return NULL;
+  }
+
+  PY_TRY {
+    (*_pcMesh->getKernel()) = facets;
   } PY_CATCH;
 
   Py_Return;

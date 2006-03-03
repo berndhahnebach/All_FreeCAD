@@ -303,6 +303,12 @@ public:
   /** Query the flag state of the facet. */
   bool IsFlag (MeshFacet::TFlagType tF) const
   { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
+    /** Set flag state */
+  void SetFlag (MeshFacet::TFlagType tF)
+  { _ucFlag |= (unsigned char)(tF); }
+  /** Reset flag state */
+  void ResetFlag (MeshFacet::TFlagType tF)
+  { _ucFlag &= ~(unsigned char)(tF); }
   /** Calculates the facet's gravity point. */
   inline Vector3D GetGravityPoint (void) const;
   /** Returns the normal of the facet. */
@@ -324,6 +330,12 @@ public:
   /** This method checks if both facets intersects.
    */
   bool IntersectWithFacet(const MeshGeomFacet &rclFacet) const;
+   /**
+   * Intersect the facet with the other facet
+   * The result is line given by two points (if intersected).
+   * Return True if the two facets has a intersections otherwise false
+   */
+  bool IntersectWithFacet (const MeshGeomFacet& facet, Vector3D& rclPt0, Vector3D& rclPt1) const;
   /** Calculates the shortest distance from the line segment defined by \a rcP1 and \a rcP2 to
    * this facet.
    */

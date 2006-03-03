@@ -91,9 +91,10 @@ void DlgSettingsEditorImp::saveSettings()
 {
   EnableLineNumber->onSave();
   EnableFolding->onSave();
-  tabIndent->onSave();
   tabSize->onSave();
   indentSize->onSave();
+  radioTabs->onSave();
+  radioSpaces->onSave();
 
   // Saves the color map
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Editor");
@@ -110,14 +111,15 @@ void DlgSettingsEditorImp::loadSettings()
 {
   EnableLineNumber->onRestore();
   EnableFolding->onRestore();
-  tabIndent->onRestore();
   tabSize->onRestore();
   indentSize->onRestore();
+  radioTabs->onRestore();
+  radioSpaces->onRestore();
 
   // Restores the color map
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Editor");
   QStringList names = GetDefCol().types();
 
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Editor");
   for ( QStringList::Iterator it = names.begin(); it!=names.end(); ++it)
   {
     _mColors[*it] = hGrp->GetInt( (*it).latin1(), GetDefCol().color(*it));

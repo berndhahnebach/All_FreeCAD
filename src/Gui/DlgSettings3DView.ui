@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>344</width>
-            <height>479</height>
+            <width>456</width>
+            <height>524</height>
         </rect>
     </property>
     <property name="caption">
@@ -273,35 +273,35 @@
                 </widget>
             </grid>
         </widget>
-        <widget class="Gui::PrefButtonGroup" row="1" column="0">
+        <widget class="QButtonGroup" row="2" column="0">
             <property name="name">
                 <cstring>backgroundColorGroup</cstring>
             </property>
             <property name="title">
                 <string>Background color</string>
             </property>
-            <property name="prefEntry" stdset="0">
-                <cstring>BackgroundColorGroup</cstring>
-            </property>
-            <property name="prefPath" stdset="0">
-                <cstring>View</cstring>
-            </property>
             <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QRadioButton" row="0" column="0">
+                <widget class="Gui::PrefRadioButton" row="0" column="0">
                     <property name="name">
                         <cstring>radioButtonSimple</cstring>
                     </property>
                     <property name="text">
                         <string>Simple color</string>
                     </property>
-                    <property name="buttonGroupId">
+                    <property name="prefEntry" stdset="0">
+                        <cstring>Simple</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                    <property name="buttonGroupId" stdset="0">
                         <number>0</number>
                     </property>
                 </widget>
-                <widget class="QRadioButton" row="1" column="0">
+                <widget class="Gui::PrefRadioButton" row="1" column="0">
                     <property name="name">
                         <cstring>radioButtonGradient</cstring>
                     </property>
@@ -311,7 +311,13 @@
                     <property name="checked">
                         <bool>true</bool>
                     </property>
-                    <property name="buttonGroupId">
+                    <property name="prefEntry" stdset="0">
+                        <cstring>Gradient</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                    <property name="buttonGroupId" stdset="0">
                         <number>1</number>
                     </property>
                 </widget>
@@ -376,6 +382,56 @@
                 </widget>
             </grid>
         </widget>
+        <widget class="QButtonGroup" row="1" column="0">
+            <property name="name">
+                <cstring>cameraColorGroup</cstring>
+            </property>
+            <property name="title">
+                <string>Camera type</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="Gui::PrefRadioButton" row="0" column="0">
+                    <property name="name">
+                        <cstring>radioPerspective</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Perspective rendering</string>
+                    </property>
+                    <property name="checked">
+                        <bool>true</bool>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>Perspective</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                    <property name="buttonGroupId" stdset="0">
+                        <number>0</number>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefRadioButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>radioOrthographic</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Orthographic rendering</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>Orthographic</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>View</cstring>
+                    </property>
+                    <property name="buttonGroupId" stdset="0">
+                        <number>1</number>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
     </grid>
 </widget>
 <customwidgets>
@@ -415,11 +471,12 @@
     <tabstop>prefCheckBox11</tabstop>
     <tabstop>HighlightColor</tabstop>
     <tabstop>SelectionColor</tabstop>
-    <tabstop>radioButtonSimple</tabstop>
-    <tabstop>SelectionColor_Background</tabstop>
+    <tabstop>radioPerspective</tabstop>
     <tabstop>radioButtonGradient</tabstop>
+    <tabstop>SelectionColor_Background</tabstop>
     <tabstop>backgroundColorFrom</tabstop>
     <tabstop>backgroundColorTo</tabstop>
+    <tabstop>radioButtonSimple</tabstop>
 </tabstops>
 <slots>
     <slot>warnInventor(bool)</slot>
@@ -428,6 +485,9 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

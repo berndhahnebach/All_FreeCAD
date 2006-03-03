@@ -31,7 +31,7 @@ def replaceTemplate(dirName, oldName, newName):
 				print sys.exc_type, sys.exc_value
 
 
-def copyTemplate(dirFrom, dirTo, oldName, newName):
+def copyTemplate(dirFrom, dirTo, oldName, newName, MatchFile, MatchDir):
 	"""
 	copy contents of dirFrom and below to dirTo
 	"""
@@ -43,6 +43,14 @@ def copyTemplate(dirFrom, dirTo, oldName, newName):
 		if (string.find(pathTo, oldName) != -1):
 			pathTo = string.replace(pathTo, oldName, newName)				# rename file if 'oldName' is found
 		if not os.path.isdir(pathFrom):										# copy simple files
+			hit = 0
+			for matchpat in MatchFile:
+				if(re.match(matchpat,file)):
+					hit = 1
+					break
+			if hit:
+				print 'Ignore file '+file
+				continue
 			try:
 				if verbose > 1: print 'copying', pathFrom, 'to', pathTo
 				FCFileTools.cpfile(pathFrom, pathTo)
@@ -51,13 +59,18 @@ def copyTemplate(dirFrom, dirTo, oldName, newName):
 				print 'Error copying', pathFrom, 'to', pathTo, '--skipped'
 				print sys.exc_type, sys.exc_value
 		else:
-			if (file == "CVS"):
-				print 'Ignore CVS directory'
+			hit = 0
+			for matchpat in MatchDir:
+				if(re.match(matchpat,file)):
+					hit = 1
+					break
+			if hit:
+				print 'Ignore directory '+file
 				continue
 			if verbose: print 'copying dir', pathFrom, 'to', pathTo
 			try:
-				os.mkdir(pathTo)											# make new subdir
-				copyTemplate(pathFrom, pathTo, oldName, newName)			# recur into subdirs
+				os.mkdir(pathTo)																# make new subdir
+				copyTemplate(pathFrom, pathTo, oldName, newName, MatchFile, MatchDir)			# recur into subdirs
 				dcount = dcount+1
 			except:
 				print 'Error creating', pathTo, '--skipped'

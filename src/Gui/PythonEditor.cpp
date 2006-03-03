@@ -92,9 +92,9 @@ void PythonEditor::keyPressEvent ( QKeyEvent * e )
   {
     ParameterGrp::handle hPrefGrp = getWindowParameter();
     int indent = hPrefGrp->GetInt( "IndentSize", 4 );
-    int space = hPrefGrp->GetInt( "TabsIndent", 0 );
+    bool space = hPrefGrp->GetBool( "Spaces", false );
 
-    if ( space == 1 )
+    if ( space == true )
     {
       ok = false;
       int para, index;

@@ -221,7 +221,10 @@
 //**************************************************************************
 // Wm3
 
-//#define WM3_DLL_IMPORT
+// Currently use dll for MSVC >= 7.x and static lib for MSVC 6
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+# define WM3_DLL_IMPORT
+#endif
 
 // if not defined then set to current version of LibPack
 #ifndef WM3_VERSION

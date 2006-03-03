@@ -30,6 +30,45 @@
 import os,sys,string
 import FCFileTools
 import MakeAppTools
+import re
+
+FilFilter = ["^.*\\.o$",
+          "^.*\\Makefile$",
+          "^.*\\.la$",
+          "^.*\\.lo$",
+          "^.*\\.positions$",
+          "^.*\\.aux$",
+          "^.*\\.bsc$",
+          "^.*\\.exp$",
+          "^.*\\.ilg$",
+          "^.*\\.ilk$",
+          "^.*\\.in$",
+          "^.*\\.mak$",
+          "^.*\\.ncb$",
+          "^.*\\.opt$",
+          "^.*\\.pyc$",
+          "^.*\\.pyd$",
+          "^.*\\.pdb$",
+          "^.*\\.plg$"]
+
+DirFilter = ["^.*\\.o$",
+          "^Debug$",
+          "^DebugCmd$",
+          "^DebugPy$",
+          "^Release$",
+          "^ReleaseCmd$",
+          "^ReleasePy$",
+          "^Attic$",
+          "^CVS$",
+          "^\\.deps$",
+          "^\\.libs$"]
+
+def SetupFilter(MatchList):
+    RegList = []
+    for regexp in MatchList:
+        a = re.compile(regexp)
+        RegList.append(a)
+    return RegList
 
 
 def createApp(Application):
@@ -46,7 +85,7 @@ def createApp(Application):
 
 	# copying files from _TEMPLATE_ to ../Mod/<Application>
 	sys.stdout.write("Copying files...")
-	MakeAppTools.copyTemplate("_TEMPLATE_","../Mod/"+Application,"_TEMPLATE_", Application)
+	MakeAppTools.copyTemplate("_TEMPLATE_","../Mod/"+Application,"_TEMPLATE_", Application, SetupFilter(FilFilter),SetupFilter(DirFilter))
 	sys.stdout.write("Ok\n")
 
 	# replace the _TEMPLATE_ string by <Application>

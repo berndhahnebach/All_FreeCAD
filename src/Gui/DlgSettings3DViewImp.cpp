@@ -66,9 +66,12 @@ void DlgSettings3DViewImp::saveSettings()
   CheckBox_UseAutoRotation->onSave();
   FloatSpinBox_EyeDistance->onSave();
   SelectionColor_Background->onSave();
-  backgroundColorGroup->onSave();
   backgroundColorFrom->onSave();
   backgroundColorTo->onSave();
+  radioButtonSimple->onSave();
+  radioButtonGradient->onSave();
+  radioPerspective->onSave();
+  radioOrthographic->onSave();
 }
 
 void DlgSettings3DViewImp::loadSettings()
@@ -79,9 +82,12 @@ void DlgSettings3DViewImp::loadSettings()
   CheckBox_UseAutoRotation->onRestore();
   FloatSpinBox_EyeDistance->onRestore();
   SelectionColor_Background->onRestore();
-  backgroundColorGroup->onRestore();
   backgroundColorFrom->onRestore();
   backgroundColorTo->onRestore();
+  radioButtonSimple->onRestore();
+  radioButtonGradient->onRestore();
+  radioPerspective->onRestore();
+  radioOrthographic->onRestore();
 }
 
 #include "DlgSettings3DView.cpp"

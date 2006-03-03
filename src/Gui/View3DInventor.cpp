@@ -73,6 +73,11 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
   // create the inventor widget and set the defaults
   _viewer = new View3DInventorViewer(this);
   setViewerDefaults();
+  // check whether a perspective or orthogrphic camera should be set
+  if ( hGrp->GetBool("Orthographic", false) )
+    _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
+  else
+    _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
   _viewer->show();
 
 
@@ -97,7 +102,7 @@ void View3DInventor::setViewerDefaults(void)
   _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance"      ,65.0));
   _viewer->bDrawAxisCross = hGrp->GetBool("CornerCoordSystem",true);
   _viewer->bAllowSpining =  hGrp->GetBool("UseAutoRotation"  ,true);
-  _viewer->setGradientBackgroud( (hGrp->GetInt("BackgroundColorGroup",1)) > 0 );
+  _viewer->setGradientBackgroud( (hGrp->GetBool("Gradient",true)) );
   long col = hGrp->GetInt("BackgroundColor",0);
   float r,g,b;
   r = (col & 0xff) / 255.0;

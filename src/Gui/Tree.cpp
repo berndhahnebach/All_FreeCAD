@@ -168,7 +168,7 @@ void DocItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int 
 
 
 
-void DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
+bool DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
 {
   std::string name = Provider->getFeature()->name.getValue();
   std::map<std::string,FeatItem*>::iterator it = FeatMap.find( name );
@@ -179,10 +179,14 @@ void DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
     item->moveItem(_lastFeaItem);
     _lastFeaItem = item;
     FeatMap[ name ] = item;
+
+    return true;
   }
+
+  return false;
 }
 
-void DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
+bool DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
 {
   QString name = Provider->getFeature()->name.getValue();
   std::map<std::string,FeatItem*>::iterator it = FeatMap.find(name.latin1());
@@ -200,13 +204,15 @@ void DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
           _lastFeaItem = sibling;
         delete item;
         FeatMap.erase(it);
-        break;
+        return true;
       }
 
       sibling = item;
       item = item->nextSibling();  
     }
   }
+
+  return false;
 }
 
 

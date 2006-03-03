@@ -11,13 +11,6 @@ data_DATA = \
 		unittestgui.py
 
 EXTRA_DIST = \
+		$(data_DATA) \
 		AppTest.dsp \
-		AppTest.vcproj \
-		Base.py \
-		Document.py \
-		Init.py \
-		InitGui.py \
-		Menu.py \
-		TestApp.py \
-		TestGui.py \
-		unittestgui.py
+		AppTest.vcproj

@@ -223,14 +223,18 @@ bool MeshGeomEdge::IntersectBoundingBox (const BoundBox3D &rclBB) const
 // -----------------------------------------------------------------
 
 MeshGeomFacet::MeshGeomFacet (void) 
-  :_bNormalCalculated(false) 
+  : _bNormalCalculated(false),
+    _ulProp(0),
+    _ucFlag(0)
 { 
 
 }
 
 
 MeshGeomFacet::MeshGeomFacet (const Vector3D &v1,const Vector3D &v2,const Vector3D &v3)
-  : _bNormalCalculated(false) 
+  : _bNormalCalculated(false), 
+    _ulProp(0),
+    _ucFlag(0)
 {
   _aclPoints[0] = v1;
   _aclPoints[1] = v2;
@@ -725,6 +729,49 @@ bool MeshGeomFacet::IntersectWithFacet(const MeshGeomFacet &rclFacet) const
 
   //Tests two triangles for intersection (Magic Softwate Library)
   return IntrTriangle3Triangle3<float>(akTria1, akTria2).Test();
+}
+
+bool MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, Vector3D& rclPt0, Vector3D& rclPt1) const
+{
+  Vector3<float> akU[3] = 
+      {Vector3<float>(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z),
+       Vector3<float>(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z),
+       Vector3<float>(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z)};
+
+  Vector3<float> akV[3] = 
+      {Vector3<float>(rclFacet._aclPoints[0].x, rclFacet._aclPoints[0].y, rclFacet._aclPoints[0].z),
+       Vector3<float>(rclFacet._aclPoints[1].x, rclFacet._aclPoints[1].y, rclFacet._aclPoints[1].z),
+       Vector3<float>(rclFacet._aclPoints[2].x, rclFacet._aclPoints[2].y, rclFacet._aclPoints[2].z)};
+
+  Triangle3<float> akTria1(akU);
+  Triangle3<float> akTria2(akV);
+
+  IntrTriangle3Triangle3<float> intersect(akTria1, akTria2);
+
+  if (intersect.Find())
+  {
+    
+    int q = intersect.GetQuantity();
+    if (q == 2)
+    {
+      Vector3<float> p0 = intersect.GetPoint(0);
+      Vector3<float> p1 = intersect.GetPoint(1);
+      rclPt0.Set(p0.X(), p0.Y(), p0.Z());
+      rclPt1.Set(p1.X(), p1.Y(), p1.Z());
+    }
+    else if (q == 1)
+    {
+      Vector3<float> p0 = intersect.GetPoint(0);
+      rclPt0.Set(p0.X(), p0.Y(), p0.Z());
+      rclPt1.Set(p0.X(), p0.Y(), p0.Z());
+    }
+    
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 float MeshGeomFacet::CenterOfInnerCircle(Vector3D& rclCenter) const

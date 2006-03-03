@@ -31,6 +31,10 @@ libMesh_la_SOURCES=\
 		Core/MeshIO.h \
 		Core/Projection.cpp \
 		Core/Projection.h \
+		Core/SetOperations.cpp \
+		Core/SetOperations.h \
+		Core/triangle.cpp \
+		Core/triangle.h \
 		Core/Tools.cpp \
 		Core/Tools.h \
 		Core/TopoAlgorithm.cpp \
@@ -49,6 +53,8 @@ libMesh_la_SOURCES=\
 		FeatureMeshImport.h \
 		FeatureMeshSegmentByMesh.cpp \
 		FeatureMeshSegmentByMesh.h \
+		FeatureMeshSetOperations.cpp \
+		FeatureMeshSetOperations.h \
 		FeatureMeshTransform.cpp \
 		FeatureMeshTransform.h \
 		FeatureMeshTransformDemolding.cpp \

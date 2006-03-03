@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 /nologo /dll /machine:I386 /out:"Release\Mesh.pyd" /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Release\Mesh.pyd ..\..\..\..\Mod\Mesh	copy ..\Init.py ..\..\..\..\Mod\Mesh	copy Release\Mesh.lib ..\..\..\..\Mod\Mesh
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Release\Mesh.pyd ..\..\..\..\Mod\Mesh	copy ..\Init.py ..\..\..\..\Mod\Mesh	copy Release\Mesh.lib ..\..\..\..\Mod\Mesh	copy ..\BuildRegularGeoms.py ..\..\..\..\Mod\Mesh
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppMesh - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 /nologo /dll /debug /machine:I386 /out:"Debug\Mesh_d.pyd" /pdbtype:sept /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Debug\Mesh_d.pyd ..\..\..\..\Mod\Mesh	copy ..\Init.py ..\..\..\..\Mod\Mesh	copy Debug\Mesh_d.lib ..\..\..\..\Mod\Mesh
+PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Debug\Mesh_d.pyd ..\..\..\..\Mod\Mesh	copy ..\Init.py ..\..\..\..\Mod\Mesh	copy Debug\Mesh_d.lib ..\..\..\..\Mod\Mesh	copy ..\BuildRegularGeoms.py ..\..\..\..\Mod\Mesh
 # End Special Build Tool
 
 !ENDIF 
@@ -117,13 +117,6 @@ SOURCE=.\Core\Approximation.h
 # Begin Source File
 
 SOURCE=.\Core\Builder.cpp
-
-!IF  "$(CFG)" == "AppMesh - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "AppMesh - Win32 Debug"
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 
@@ -211,6 +204,14 @@ SOURCE=.\Core\Projection.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\Core\SetOperations.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\SetOperations.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\Core\Tools.cpp
 # End Source File
 # Begin Source File
@@ -224,6 +225,14 @@ SOURCE=.\Core\TopoAlgorithm.cpp
 # Begin Source File
 
 SOURCE=.\Core\TopoAlgorithm.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\triangle.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Core\triangle.h
 # End Source File
 # Begin Source File
 
@@ -286,6 +295,14 @@ SOURCE=.\FeatureMeshSegmentByMesh.cpp
 # Begin Source File
 
 SOURCE=.\FeatureMeshSegmentByMesh.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureMeshSetOperations.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureMeshSetOperations.h
 # End Source File
 # Begin Source File
 

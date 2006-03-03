@@ -129,10 +129,14 @@ public:
   /// Sets the pixmap that will be shown.
 //    void setPixmap( QPixmap *p );
 
-  /// adds an ViewProvider to the view, e.g. from a feature
-  void addViewProviderFeature(ViewProviderFeature*);
-  /// remove a ViewProvider
-  void removeViewProviderFeature(ViewProviderFeature*);
+  /** Adds a view provider to the document item and returns true.
+   * If this view provider is already added nothing happens and false is returned.
+   */
+  bool addViewProviderFeature(ViewProviderFeature*);
+  /** Removes a view provider from the document item and returns true.
+   * If this view provider is not added nothing happens and false is returned.
+   */
+  bool removeViewProviderFeature(ViewProviderFeature*);
 
   void highlightFeature(const char*, bool);
 

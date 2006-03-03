@@ -576,13 +576,14 @@ void Document::_RecomputeFeature(Feature* Feat)
 Feature *Document::addFeature(const char* sType, const char* pFeatName)
 {
   App::Feature* pcFeature = (App::Feature*) Base::Type::createInstanceByName(sType,true);
-  assert(pcFeature->getTypeId().isDerivedFrom(App::Feature::getClassTypeId()));
 
 
   string FeatName;
 
 	if(pcFeature)
 	{
+    assert(pcFeature->getTypeId().isDerivedFrom(App::Feature::getClassTypeId()));
+
     pcFeature->setDocument(this);
     // get Unique name
     if(pFeatName)

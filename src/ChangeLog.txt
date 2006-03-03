@@ -53,3 +53,9 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + Undo/Redo of block comment or uncomment implemented
 + Bug in DocItem class fixed: allow only one item with the same name
 + set the dirty flag after Gui::Document has been changed, remove after saving the document
++ WildMagic dllexport define (patch 1441148)
++ fix assert if missing feature (patch 1441146)
++ new modules (patches 1441103, 1441082)
++ Fixes for new modules (patch 1441145)
++ Specify orthographic or perspective camera in user settings
++ Ignore built files in Python script for creation of modules
