@@ -206,6 +206,8 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
       const SoPickedPoint * pp = action->getPickedPoint();
       SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
 
+      //FIXME: Shouldn't we remove the preselection for newly selected objects?
+      //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
       if (pp && pp->getPath()->containsPath(action->getCurPath())) {
         if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
           if(bCtrl)
