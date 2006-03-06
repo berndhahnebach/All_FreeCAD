@@ -204,6 +204,7 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
   SoGroup* pcWireRoot = new SoGroup();
   SoGroup* pcPointRoot = new SoGroup();
   SoGroup* pcFlatWireRoot = new SoGroup();
+  SoGroup* pcHiddenLineRoot = new SoGroup();
 //  SoGroup* pcColorShadedRoot = new SoGroup();
 
   // only one selection node for the mesh
@@ -276,12 +277,26 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
   pcFlatWireRoot->addChild(pcMeshCoord);
   pcFlatWireRoot->addChild(pcMeshFaces);
 
+ // Turns on backface culling
+  SoShapeHints * hints = new SoShapeHints;
+//  hints->vertexOrdering = SoShapeHints::CLOCKWISE ;
+  hints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
+  hints->shapeType = SoShapeHints::SOLID;
+  hints->faceType = SoShapeHints::UNKNOWN_FACE_TYPE;
+//  hints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+  pcHiddenLineRoot->addChild(hints);
+  pcHiddenLineRoot->addChild(pcLineStyle);
+  pcHiddenLineRoot->addChild(pcLightModel);
+  pcHiddenLineRoot->addChild(pcLineMaterial);
+  pcHiddenLineRoot->addChild(pcHighlight);
+
   // putting all together with a switch
   addDisplayMode(pcFlatRoot, "Flat");
 //  addDisplayMode(pcFlatNormRoot, "Normal");
   addDisplayMode(pcWireRoot, "Wireframe");
   addDisplayMode(pcPointRoot, "Point");
   addDisplayMode(pcFlatWireRoot, "FlatWireframe");
+  addDisplayMode(pcHiddenLineRoot, "HiddenLine");
 
   // call father (set material and feature pointer)
   ViewProviderFeature::attach(pcFeat);
@@ -337,6 +352,8 @@ void ViewProviderMesh::setMode(const char* ModeName)
     setDisplayMode("Point");
   else if ( strcmp("FlatWire",ModeName)==0 )
     setDisplayMode("FlatWireframe");
+  else if ( strcmp("Hidden line",ModeName)==0 )
+    setDisplayMode("HiddenLine");
 
   ViewProviderFeature::setMode( ModeName );
 }
@@ -351,6 +368,7 @@ std::vector<std::string> ViewProviderMesh::getModes(void)
   StrList.push_back("Wire");
   StrList.push_back("Point");
   StrList.push_back("FlatWire");
+  StrList.push_back("Hidden line");
 
   return StrList;
 }
