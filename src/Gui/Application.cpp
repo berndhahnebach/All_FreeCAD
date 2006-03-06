@@ -500,6 +500,7 @@ void Application::tryClose ( QCloseEvent * e )
  */
 bool Application::activateWorkbench( const char* name )
 {
+  WaitCursor wc;
   Workbench* oldWb = WorkbenchManager::instance()->active();
   if ( oldWb && oldWb->name() == name )
     return false; // already active

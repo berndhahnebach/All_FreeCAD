@@ -156,7 +156,7 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
 
 QPopupMenu * PythonEditor::createPopupMenu ( const QPoint & pos )
 {
-  QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
+  QPopupMenu* menu = TextEdit::createPopupMenu(pos);
   
   menu->insertSeparator();
   menu->insertItem( tr("Comment"), this, SLOT( onComment() ), ALT + Key_C );

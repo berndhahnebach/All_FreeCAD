@@ -414,7 +414,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
   // counting faces and start sequencer
   int l = 1;
   for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
-  Base::Sequencer().start("creating view representation", l);
+  Base::SequencerLauncher cSeq("creating view representation", l);
 
   int i = 0;
   for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),i++) {
@@ -489,8 +489,6 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
     Base::Sequencer().next();
 
   } // end of face loop
-
-  Base::Sequencer().stop();
 
   return true;
 }

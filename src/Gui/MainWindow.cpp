@@ -397,18 +397,13 @@ void MainWindow::addWindow( MDIView* view )
   // add a new tab to our tabbar
   QTab* tab = new QTab;
 
-  // extract file name if possible
-  QFileInfo fi( view->caption() );
-  if ( fi.isFile() && fi.exists() )
-    tab->setText( fi.fileName() );
-  else
-    tab->setText( view->caption() );
   if ( view->icon() )
     tab->setIconSet( *view->icon() );
   d->_tabs->setToolTip( d->_tabs->count(), view->caption() );
 
   int id = d->_tabs->addTab( tab );
   d->_mdiIds[ id ] = view;
+  tabChanged( view );
   if ( d->_tabs->count() == 1 )
     d->_tabs->show(); // invoke show() for the first tab
   d->_tabs->update();
@@ -443,13 +438,14 @@ void MainWindow::tabChanged( MDIView* view )
   {
     if ( it.data() == view )
     {
-      // extract file name if possible
-      QFileInfo fi( view->caption() );
+      // remove file separators
+      QString cap = view->caption();
+      int pos = cap.findRev('/');
+      cap = cap.mid( pos+1 );
+      pos = cap.findRev('\\');
+      cap = cap.mid( pos+1 );
       QTab* tab = d->_tabs->tab( it.key() );
-      if ( fi.isFile() && fi.exists() )
-        tab->setText( fi.fileName() );
-      else
-        tab->setText( view->caption() );
+      tab->setText( cap );
       break;
     }
   }

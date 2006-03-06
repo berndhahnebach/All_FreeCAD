@@ -295,14 +295,12 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
     std::string cName = (*It)->getViewProviderName();
 
     ViewProviderFeature *pcProvider = (ViewProviderFeature*) Base::Type::createInstanceByName(cName.c_str(),true);
-    
-    // type not derived from ViewProviderFeature!!!
-    assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
-
-
-    _ViewProviderMap[*It] = pcProvider;
-    if(pcProvider)
+    if ( pcProvider )
     {
+      // type not derived from ViewProviderFeature!!!
+      assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
+      _ViewProviderMap[*It] = pcProvider;
+
       try{
         // if succesfully created set the right name an calculate the view
         pcProvider->attach(*It);

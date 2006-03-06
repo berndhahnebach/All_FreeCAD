@@ -125,15 +125,7 @@ void ProgressBar::showEvent( QShowEvent* e )
 
 void ProgressBar::enterControlEvents()
 {
-  QWidgetList  *list = QApplication::allWidgets();
-  QWidgetListIt it( *list );         // iterate over the widgets
-  QWidget * w;
-  while ( (w=it.current()) != 0 ) {  // for each widget...
-    ++it;
-    if (w != this)
-      w->installEventFilter(this);
-  }
-  delete list;                      // delete the list, not the widgets
+  qApp->installEventFilter(this);
 
   // Make sure that we get the key events, otherwise the Inventor viewer usurps the key events
   // This also disables accelerators.
@@ -142,15 +134,7 @@ void ProgressBar::enterControlEvents()
 
 void ProgressBar::leaveControlEvents()
 {
-  QWidgetList  *list = QApplication::allWidgets();
-  QWidgetListIt it( *list );         // iterate over the widgets
-  QWidget * w;
-  while ( (w=it.current()) != 0 ) {  // for each widget...
-    ++it;
-    if (w != this)
-      w->removeEventFilter(this);
-  }
-  delete list;                      // delete the list, not the widgets
+  qApp->removeEventFilter(this);
 
   // relase the keyboard again
   releaseKeyboard();
