@@ -676,7 +676,7 @@ MeshPointIterator MeshKernel::PointIterator() const
   it.Begin(); return it;
 }
 
-std::vector<MeshGeomEdge>& MeshKernel::GetEdges (void) const
+void MeshKernel::GetEdges (std::vector<MeshGeomEdge>& edges) const
 {
   std::set<MeshBuilder::Edge> tmp;
 
@@ -688,8 +688,7 @@ std::vector<MeshGeomEdge>& MeshKernel::GetEdges (void) const
     }
   }
 
-  std::vector<MeshGeomEdge>* edges = new std::vector<MeshGeomEdge>();
-
+  edges.reserve(tmp.size());
   for (std::set<MeshBuilder::Edge>::iterator it2 = tmp.begin(); it2 != tmp.end(); it2++)
   {
     MeshGeomEdge edge;
@@ -697,8 +696,6 @@ std::vector<MeshGeomEdge>& MeshKernel::GetEdges (void) const
     edge._aclPoints[1] = this->_aclPointArray[it2->pt2];
     edge._bBorder = it2->facetIdx == ULONG_MAX;
 
-    edges->push_back(edge);
+    edges.push_back(edge);
   }
-
-  return *edges;
 }

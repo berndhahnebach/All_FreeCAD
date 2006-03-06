@@ -66,6 +66,7 @@
 #include <Gui/View3DInventorViewer.h>
 
 #include <Mod/Mesh/App/Core/Algorithm.h>
+#include <Mod/Mesh/App/Core/Evaluation.h>
 #include <Mod/Mesh/App/Core/Grid.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Mesh/App/Core/MeshIO.h>
@@ -89,6 +90,7 @@ using MeshCore::MeshFacetGrid;
 using MeshCore::MeshPolygonTriangulation;
 using MeshCore::MeshSTL;
 using MeshCore::MeshTopFacetVisitor;
+using MeshCore::MeshEvalSolid;
 
 using Base::Vector3D;
 
@@ -219,6 +221,19 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
   pcFlatStyle->style = SoDrawStyle::FILLED;
   SoNormalBinding* pcBinding = new SoNormalBinding();
 	pcBinding->value=SoNormalBinding::PER_FACE;
+  
+  // get and save the feature
+  Feature* meshFea = dynamic_cast<Feature*>(pcFeat);
+  MeshEvalSolid cEval(*(meshFea->getMesh().getKernel()));
+
+  // if no solid then enable two-side rendering
+  if ( cEval.Validate() != MeshEvalSolid::Valid )
+  {
+    SoShapeHints * flathints = new SoShapeHints;
+    flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
+    flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+    pcFlatRoot->addChild(flathints);
+  }
 
   pcFlatRoot->addChild(pcFlatStyle);
   pcFlatRoot->addChild(pcSolidMaterial);
@@ -278,13 +293,11 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
   pcFlatWireRoot->addChild(pcMeshFaces);
 
  // Turns on backface culling
-  SoShapeHints * hints = new SoShapeHints;
-//  hints->vertexOrdering = SoShapeHints::CLOCKWISE ;
-  hints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
-  hints->shapeType = SoShapeHints::SOLID;
-  hints->faceType = SoShapeHints::UNKNOWN_FACE_TYPE;
-//  hints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-  pcHiddenLineRoot->addChild(hints);
+  SoShapeHints * wirehints = new SoShapeHints;
+  wirehints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
+  wirehints->shapeType = SoShapeHints::SOLID;
+  wirehints->faceType = SoShapeHints::UNKNOWN_FACE_TYPE;
+  pcHiddenLineRoot->addChild(wirehints);
   pcHiddenLineRoot->addChild(pcLineStyle);
   pcHiddenLineRoot->addChild(pcLightModel);
   pcHiddenLineRoot->addChild(pcLineMaterial);
@@ -301,8 +314,6 @@ void ViewProviderMesh::attach(App::Feature *pcFeat)
   // call father (set material and feature pointer)
   ViewProviderFeature::attach(pcFeat);
 
-  // get and save the feature
-  Feature* meshFea = dynamic_cast<Feature*>(pcFeature);
   // create the mesh core nodes
   createMesh(&(meshFea->getMesh()));
 }

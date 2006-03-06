@@ -173,7 +173,8 @@ MeshEvalSolid::~MeshEvalSolid()
 
 bool MeshEvalSolid::Evaluate ()
 {
-  std::vector<MeshGeomEdge>& edges = _rclMesh.GetEdges();
+  std::vector<MeshGeomEdge> edges;
+  _rclMesh.GetEdges( edges );
   for (std::vector<MeshGeomEdge>::iterator it = edges.begin(); it != edges.end(); it++)
   {
     if (it->_bBorder)

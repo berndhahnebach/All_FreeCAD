@@ -60,3 +60,5 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + Specify orthographic or perspective camera in user settings
 + Ignore built files in Python script for creation of modules
 + turn backface culling on/off (RFE 1443940). Seems to work properly with convex geometries only
++ Enabled two-side rendering for meshes in case it is not a solid
++ Return the edge list by reference in mesh kernel (to avoid memory leak)

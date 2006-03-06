@@ -138,7 +138,7 @@ public:
   /** Returns the array of all edges.
    *  Notice: The Edgelist will be temporary generated. Changes on the mesh structure does not affect the Edgelist
    */
-  std::vector<MeshGeomEdge>& GetEdges (void) const;
+  void GetEdges (std::vector<MeshGeomEdge>&) const;
 
   //@}
 
