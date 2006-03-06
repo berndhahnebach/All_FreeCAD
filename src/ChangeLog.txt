@@ -59,3 +59,4 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + Fixes for new modules (patch 1441145)
 + Specify orthographic or perspective camera in user settings
 + Ignore built files in Python script for creation of modules
++ turn backface culling on/off (RFE 1443940). Seems to work properly with convex geometries only

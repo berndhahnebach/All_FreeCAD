@@ -4,7 +4,7 @@
 # Create a new application
 
 #***************************************************************************
-#*   (c) Werner Mayer (werner.wm.mayer@vr-web.de) 2003                     *
+#*   (c) Werner Mayer (werner.wm.mayer@gmx.de) 2003                        *
 #*                                                                         *
 #*   This file is part of the FreeCAD CAx development system.              *
 #*                                                                         *
