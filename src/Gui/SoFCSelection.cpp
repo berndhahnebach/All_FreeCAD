@@ -67,7 +67,8 @@ SoFCSelection::SoFCSelection()
   SO_NODE_ADD_FIELD(colorHighlight, (SbColor(0.1f, 0.1f, 0.8f)));
   SO_NODE_ADD_FIELD(colorSelection, (SbColor(0.1f, 0.5f, 0.1f)));
   SO_NODE_ADD_FIELD(style,          (EMISSIVE));
-  SO_NODE_ADD_FIELD(mode,           (AUTO));
+  SO_NODE_ADD_FIELD(highlightMode,  (AUTO));
+  SO_NODE_ADD_FIELD(selectionMode,  (SEL_ON));
   SO_NODE_ADD_FIELD(selected,       (OFF));
   SO_NODE_ADD_FIELD(documentName,   (""));
   SO_NODE_ADD_FIELD(featureName,    (""));
@@ -77,10 +78,14 @@ SoFCSelection::SoFCSelection()
   SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE_DIFFUSE);
   SO_NODE_SET_SF_ENUM_TYPE(style, Styles);
 
-  SO_NODE_DEFINE_ENUM_VALUE(Modes, AUTO);
-  SO_NODE_DEFINE_ENUM_VALUE(Modes, ON);
-  SO_NODE_DEFINE_ENUM_VALUE(Modes, OFF);
-  SO_NODE_SET_SF_ENUM_TYPE(mode, Modes);
+  SO_NODE_DEFINE_ENUM_VALUE(HighlightModes, AUTO);
+  SO_NODE_DEFINE_ENUM_VALUE(HighlightModes, ON);
+  SO_NODE_DEFINE_ENUM_VALUE(HighlightModes, OFF);
+  SO_NODE_SET_SF_ENUM_TYPE (highlightMode, HighlightModes);
+
+  SO_NODE_DEFINE_ENUM_VALUE(SelectionModes, SEL_ON);
+  SO_NODE_DEFINE_ENUM_VALUE(SelectionModes, SEL_OFF);
+  SO_NODE_SET_SF_ENUM_TYPE (selectionMode, SelectionModes);
 
   SO_NODE_DEFINE_ENUM_VALUE(Selected, NOTSELECTED);
   SO_NODE_DEFINE_ENUM_VALUE(Selected, SELECTED);
@@ -117,7 +122,7 @@ SoFCSelection::turnOffCurrentHighlight(SoGLRenderAction * action)
 
 void SoFCSelection::doAction( SoAction *action)
 {
-  if ( action->getTypeId() == SoFCSelectionAction::getClassTypeId() ) {
+  if ( selectionMode.getValue() == SEL_ON && action->getTypeId() == SoFCSelectionAction::getClassTypeId() ) {
     SoFCSelectionAction *selaction = reinterpret_cast<SoFCSelectionAction*>(action);
 
     if ( selaction->SelChange.Type == SelectionChanges::AddSelection || selaction->SelChange.Type == SelectionChanges::RmvSelection ) {
@@ -145,7 +150,7 @@ void
 SoFCSelection::handleEvent(SoHandleEventAction * action)
 {
   static char buf[512];
-  Modes mymode = (Modes) this->mode.getValue();
+  HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
   if (mymode == AUTO) {
     const SoEvent * event = action->getEvent();
     if (event->isOfType(SoLocation2Event::getClassTypeId())) {
@@ -253,7 +258,7 @@ SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
 {
   SoState * state = action->getState();
   state->push();
-  if (highlighted || this->mode.getValue() == ON || this->selected.getValue() == SELECTED) {
+  if (highlighted || this->highlightMode.getValue() == ON || this->selected.getValue() == SELECTED) {
     this->setOverride(action);
   }
   inherited::GLRenderBelowPath(action);
@@ -266,7 +271,7 @@ SoFCSelection::GLRenderInPath(SoGLRenderAction * action)
 {
   SoState * state = action->getState();
   state->push();
-  if (highlighted || this->mode.getValue() == ON || this->selected.getValue() == SELECTED) {
+  if (highlighted || this->highlightMode.getValue() == ON || this->selected.getValue() == SELECTED) {
     this->setOverride(action);
   }
   inherited::GLRenderInPath(action);

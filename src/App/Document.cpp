@@ -341,30 +341,6 @@ bool Document::Redo(void)
 }
 
 
-/*
-/// Get the Main Label of the document
-FCPyHandle<FCLabel> Document::Main() 
-{
-	if(!_hcMain){
-		_hcMain = new FCLabel(_hDoc->Main(),this);
-		//_hcMain->IncRef();
-		mcLabelMap[_hDoc->Main()] = _pcMain;
-	}
-	return  FCPyHandle<FCLabel>(_pcMain);
-}
-
-/// Test if the document is empty
-bool Document::IsEmpty() const
-{
-  return false;//_hDoc->IsEmpty() != 0; 
-}
-
-/// Returns False if the  document  contains notified modifications.
-bool Document::IsValid() const
-{
-  return true;//_hDoc->IsValid() != 0;
-}
-*/
 
 /// Remove all modifications. After this call The document becomesagain Valid.
 void Document::PurgeModified()

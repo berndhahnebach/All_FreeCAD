@@ -50,7 +50,49 @@ using namespace Mesh;
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //===========================================================================
-// Example MakeMesh
+// Mesh transform
+//===========================================================================
+DEF_STD_CMD_A(CmdMeshTransform);
+
+CmdMeshTransform::CmdMeshTransform()
+  :Command("Mesh_Transform")
+{
+  sAppModule    = "Mesh";
+  sGroup        = "Mesh";
+  sMenuText     = QT_TR_NOOP("Transformation (moving) of a mesh");
+  sToolTipText  = sMenuText;
+  sWhatsThis    = sMenuText;
+  sStatusTip    = sMenuText;
+  sPixmap       = "Std_Tool1";
+  iAccel        = 0;
+}
+
+void CmdMeshTransform::activated(int iMsg)
+{
+  unsigned int n = getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId());
+  if ( n!=1 ) return;
+
+  std::string fName = getUniqueFeatureName("Move");
+  std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
+
+  openCommand("Mesh Mesh Create");
+  doCommand(Doc,"App.document().AddFeature(\"Mesh::Transform\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
+  doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Transform");
+  doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
+  commitCommand(); 
+ 
+  updateActive();
+}
+
+bool CmdMeshTransform::isActive(void)
+{
+  //return true;
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+}
+
+//===========================================================================
+// Mesh demolding
 //===========================================================================
 DEF_STD_CMD_A(CmdMeshDemolding);
 
@@ -487,4 +529,5 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshDemolding());
   rcCmdMgr.addCommand(new CmdMeshPolyPick());
   rcCmdMgr.addCommand(new CmdMeshToolMesh());
+  rcCmdMgr.addCommand(new CmdMeshTransform());
 }

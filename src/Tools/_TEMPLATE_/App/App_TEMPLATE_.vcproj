@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="AppImageGui"
-	ProjectGUID="{2E642806-D3E5-417E-991B-6154AE00172F}"
+	Name="App_TEMPLATE_"
+	ProjectGUID="{0156C87D-8B73-46A0-8F0E-4DD708FE4CFD}"
 	>
 	<Platforms>
 		<Platform
@@ -40,21 +40,21 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/AppImageGui.tlb"
+				TypeLibraryName=".\Debug/App_TEMPLATE_.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../../"
-				PreprocessorDefinitions="_USRDLL;FCAppImageGui;FC_DEBUG"
+				PreprocessorDefinitions="_USRDLL;FCApp_TEMPLATE_;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile=".\Debug/AppImageGui.pch"
+				PrecompiledHeaderFile=".\Debug/App_TEMPLATE_.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
@@ -76,14 +76,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib"
-				OutputFile="Debug/ImageGui_d.pyd"
+				OutputFile="Debug\_TEMPLATE__d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(QTDIR)\lib"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/ImageGui_d.pdb"
-				ImportLibrary=".\Debug/ImageGui_d.lib"
+				ProgramDatabaseFile=".\Debug/_TEMPLATE__d.pdb"
+				ImportLibrary=".\Debug/_TEMPLATE__d.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -98,7 +96,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Debug/AppImageGui.bsc"
+				OutputFile=".\Debug/App_TEMPLATE_.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -111,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Image&#x0D;&#x0A;copy Debug\ImageGui_d.pyd ..\..\..\..\Mod\Image&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Image&#x0D;&#x0A;"
+				CommandLine="mkdir ..\..\..\..\Mod\_TEMPLATE_&#x0D;&#x0A;copy Debug\_TEMPLATE__d.pyd ..\..\..\..\Mod\_TEMPLATE_&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\_TEMPLATE_&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -141,7 +139,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\Release/AppImageGui.tlb"
+				TypeLibraryName=".\Release/App_TEMPLATE_.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -149,14 +147,14 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../../"
-				PreprocessorDefinitions="NDEBUG;_USRDLL;FCAppImageGui"
+				PreprocessorDefinitions="NDEBUG;_USRDLL;FCApp_TEMPLATE_"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="2"
 				PrecompiledHeaderThrough="PreCompiled.h"
-				PrecompiledHeaderFile=".\Release/AppImageGui.pch"
+				PrecompiledHeaderFile=".\Release/App_TEMPLATE_.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
@@ -176,13 +174,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib"
-				OutputFile="Release/ImageGui.pyd"
+				OutputFile="Release\_TEMPLATE_.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(QTDIR)\lib"
-				ProgramDatabaseFile=".\Release/ImageGui.pdb"
-				ImportLibrary=".\Release/ImageGui.lib"
+				ProgramDatabaseFile=".\Release/_TEMPLATE_.pdb"
+				ImportLibrary=".\Release/_TEMPLATE_.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -197,7 +193,7 @@
 			<Tool
 				Name="VCBscMakeTool"
 				SuppressStartupBanner="true"
-				OutputFile=".\Release/AppImageGui.bsc"
+				OutputFile=".\Release/App_TEMPLATE_.bsc"
 			/>
 			<Tool
 				Name="VCFxCopTool"
@@ -210,7 +206,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Image&#x0D;&#x0A;copy Release\ImageGui.pyd ..\..\..\..\Mod\Image&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Image&#x0D;&#x0A;"
+				CommandLine="mkdir ..\..\..\..\Mod\_TEMPLATE_&#x0D;&#x0A;copy Release\_TEMPLATE_.pyd ..\..\..\..\Mod\_TEMPLATE_&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\_TEMPLATE_&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -221,95 +217,7 @@
 			Name="Source Files"
 			>
 			<File
-				RelativePath="AppImageGui.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="AppImageGuiPy.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Command.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="GLImageBox.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ImageView.cpp"
+				RelativePath="App_TEMPLATE_.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -378,86 +286,12 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="Workbench.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			>
 			<File
-				RelativePath="GLImageBox.h"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ImageView.h"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="PreCompiled.h"
-				>
-			</File>
-			<File
-				RelativePath="Workbench.h"
 				>
 			</File>
 		</Filter>
@@ -512,34 +346,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="..\..\..\..\lib\FreeCADGui.lib"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\..\lib\FreeCADGuiD.lib"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-					/>
-				</FileConfiguration>
-			</File>
-		</Filter>
-		<Filter
-			Name="Dialogs"
-			>
 		</Filter>
 	</Files>
 	<Globals>

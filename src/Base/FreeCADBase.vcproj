@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADBase"
-	ProjectGUID="{9C95F502-D825-4F08-B232-0D55C28E05BB}"
+	ProjectGUID="{0914A985-9A34-4FAD-9E9A-C19C3F2142EF}"
 	>
 	<Platforms>
 		<Platform
@@ -841,11 +841,27 @@
 			>
 		</File>
 		<File
-			RelativePath=".\Builder3D.cpp"
+			RelativePath="Builder3D.cpp"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\Builder3D.h"
+			RelativePath="Builder3D.h"
 			>
 		</File>
 		<File

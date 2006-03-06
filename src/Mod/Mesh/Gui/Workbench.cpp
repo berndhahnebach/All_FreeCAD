@@ -84,7 +84,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
 
   mesh = new Gui::ToolBarItem( root );
   mesh->setCommand( "Mesh test site" );
-  *mesh << "Mesh_Demolding" << "Separator" ;
+  *mesh << "Mesh_Demolding" << "Mesh_Transform" << "Separator" ;
 
   return root;
 }

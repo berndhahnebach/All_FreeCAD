@@ -52,8 +52,12 @@ public:
   static void initClass(void);
   SoFCSelection(void);
 
-  enum Modes {
+  enum HighlightModes {
     AUTO, ON, OFF
+  };
+
+  enum SelectionModes {
+    SEL_ON, SEL_OFF
   };
 
   enum Selected {
@@ -61,7 +65,7 @@ public:
   };
 
   enum Styles {
-    EMISSIVE, EMISSIVE_DIFFUSE
+    EMISSIVE, EMISSIVE_DIFFUSE, BOX
   };
 
   bool isHighlighted(void){return highlighted;}
@@ -69,7 +73,8 @@ public:
   SoSFColor colorHighlight;
   SoSFColor colorSelection;
   SoSFEnum style;
-  SoSFEnum mode;
+  SoSFEnum highlightMode;
+  SoSFEnum selectionMode;
   SoSFEnum selected;
 
   SoSFString documentName;

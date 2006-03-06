@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMeshGui"
-	ProjectGUID="{7B0B5DEF-38ED-4F95-8D93-4BFF049189BD}"
+	ProjectGUID="{03BB2585-8742-4C69-96EF-9EAC5B65FFD6}"
 	>
 	<Platforms>
 		<Platform

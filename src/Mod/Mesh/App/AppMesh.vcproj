@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMesh"
-	ProjectGUID="{DDD92411-D0EB-4C93-ACD6-F01C36110147}"
+	ProjectGUID="{EE6D0487-386A-4496-81CB-FED8A5B7C31F}"
 	>
 	<Platforms>
 		<Platform
@@ -108,7 +108,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Release\Mesh.pyd ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Release\Mesh.lib ..\..\..\..\Mod\Mesh&#x0D;&#x0A;"
+				CommandLine="mkdir ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Release\Mesh.pyd ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Release\Mesh.lib ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\BuildRegularGeoms.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -208,7 +208,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.pyd ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.lib ..\..\..\..\Mod\Mesh&#x0D;&#x0A;xcopy /F  /Y ..\BuildRegularGeoms.py ..\..\..\..\Mod\Mesh"
+				CommandLine="mkdir ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.pyd ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.lib ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\BuildRegularGeoms.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -539,11 +539,29 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\SetOperations.cpp"
+				RelativePath="Core\SetOperations.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\SetOperations.h"
+				RelativePath="Core\SetOperations.h"
 				>
 			</File>
 			<File
@@ -599,11 +617,29 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Core\triangle.cpp"
+				RelativePath="Core\triangle.cpp"
 				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\Core\triangle.h"
+				RelativePath="Core\triangle.h"
 				>
 			</File>
 			<File
@@ -832,11 +868,29 @@
 			>
 		</File>
 		<File
-			RelativePath=".\FeatureMeshSetOperations.cpp"
+			RelativePath="FeatureMeshSetOperations.cpp"
 			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
 		</File>
 		<File
-			RelativePath=".\FeatureMeshSetOperations.h"
+			RelativePath="FeatureMeshSetOperations.h"
 			>
 		</File>
 		<File
