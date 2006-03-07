@@ -68,8 +68,6 @@ public:
   PYFUNCDEF_D(MeshPy,offset)
   PYFUNCDEF_D(MeshPy,offsetSpecial)
   PYFUNCDEF_D(MeshPy,calcVertexNormales)
-  PYFUNCDEF_D(MeshPy,calcVertexCurvature)
-  PYFUNCDEF_D(MeshPy,calcFaceCurvature)
   PYFUNCDEF_D(MeshPy,Union)
   PYFUNCDEF_D(MeshPy,intersect)
   PYFUNCDEF_D(MeshPy,diff)

@@ -65,8 +65,19 @@ int SegmentByMesh::execute(void)
   cBase =   Base.getValue();
   cNormal = Normal.getValue();
 
-  if(!pcMesh || pcMesh->getStatus() != Valid || !pcTool || pcTool->getStatus() != Valid)
+  if (!pcMesh) {
+    setError("No mesh specified.\n");
     return 1;
+  } else if (pcMesh->getStatus() != Valid) {
+    setError("'%s' isn't a valid mesh.\n", pcMesh->name.getValue());
+    return 1;
+  } else if (!pcTool) {
+    setError("No toolmesh specified.\n");
+    return 1;
+  } else if (pcTool->getStatus() != Valid) {
+    setError("'%s' isn't a valid toolmesh.\n", pcTool->name.getValue());
+    return 1;
+  }
 
   MeshWithProperty& rMesh = pcMesh->getMesh();
   MeshWithProperty& rTool = pcTool->getMesh();
@@ -77,7 +88,7 @@ int SegmentByMesh::execute(void)
   // check if the toolmesh is a solid
   if ( MeshEvalSolid(rToolMesh).Validate(false) != MeshEvalSolid::Valid )
   {
-    Base::Console().Log("'%s' isn't a solid.\n", pcTool->name.getValue());
+    setError("'%s' isn't a solid.\n", pcTool->name.getValue());
     return 1; // no solid
   }
 

@@ -75,14 +75,6 @@ public:
   */
   static void calcVertexNormales(MeshWithProperty* Mesh);
 
-  /** Calculate per vertex curvate and adds the curvature property bag
-  */
-  static void calcVertexCurvature(MeshWithProperty* Mesh);
-
-  /** Calculate per face curvate and adds the curvature property bag
-  */
-  static void calcFaceCurvature(MeshWithProperty* Mesh);
-
   /** Calculate per Vertex normales and adds the Normal property bag
   */
   static void offset(MeshWithProperty* Mesh, float fSize);

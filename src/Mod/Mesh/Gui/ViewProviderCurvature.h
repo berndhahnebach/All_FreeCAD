@@ -43,9 +43,7 @@ namespace Gui {
 }
 
 namespace Mesh {
-  class MeshWithProperty;
-  class MeshPropertyColor;
-  class MeshPropertyCurvature;
+  class Curvature;
 }
 
 namespace MeshGui {
@@ -80,11 +78,10 @@ public:
   SoSeparator* getFrontRoot(void);
 
 protected:
-  void setVertexAbsCurvatureMode(Mesh::MeshPropertyCurvature* pcProp);
-  void setVertexCurvatureMode(Mesh::MeshPropertyCurvature* pcProp, int mode);
+  void setVertexCurvatureMode(int mode);
 
 private:
-  void init(App::Feature *pcFeat);
+  void init(Mesh::Curvature *pcFeat);
 
 protected:
   SoMaterial       * pcColorMat;

@@ -119,8 +119,6 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(offset)
   PYMETHODEDEF(offsetSpecial)
   PYMETHODEDEF(calcVertexNormales)
-  PYMETHODEDEF(calcVertexCurvature)
-  PYMETHODEDEF(calcFaceCurvature)
   PYMETHODEDEF(Union)
   PYMETHODEDEF(intersect)
   PYMETHODEDEF(diff)
@@ -340,26 +338,6 @@ PYFUNCIMP_D(MeshPy,calcVertexNormales)
 {
   PY_TRY {
     MeshAlgos::calcVertexNormales(_pcMesh);  
-  } PY_CATCH;
-  
-  Py_Return;
-
-}
-
-PYFUNCIMP_D(MeshPy,calcVertexCurvature)
-{
-  PY_TRY {
-    MeshAlgos::calcVertexCurvature(_pcMesh);  
-  } PY_CATCH;
-  
-  Py_Return;
-
-}
-
-PYFUNCIMP_D(MeshPy,calcFaceCurvature)
-{
-  PY_TRY {
-    MeshAlgos::calcFaceCurvature(_pcMesh);  
   } PY_CATCH;
   
   Py_Return;

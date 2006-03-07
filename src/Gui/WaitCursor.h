@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef DLG_WAIT_CURSOR_H
-#define DLG_WAIT_CURSOR_H
+#ifndef GUI_WAIT_CURSOR_H
+#define GUI_WAIT_CURSOR_H
 
 #ifndef _PreComp_
 # include <qthread.h>
@@ -82,47 +82,7 @@ private:
   struct WaitCursorP* d;
 };
 
-/*
- * The FCAutoWaitCursor sets automatically the
- * waiting cursor if the application is busy
- *
- * NOTE:
- * When clicking on the window bar (under Windows OS) the waiting cursor appears
- * after a while although the application actuallay is not really busy. 
- * Under Linux (Debian) I got some mysterious errors and the application hanged up.
- * So do not use this class but use the  @ref WaitCursor class instead.
- * @author Werner Mayer
-class GuiExport FCAutoWaitCursor : public QThread
-{
-public:
-  static void Destruct(void);
-  static FCAutoWaitCursor &Instance(void);
-
-  void SetWaitCursor();
-
-  // Singleton
-private:
-  FCAutoWaitCursor(uint id, int i);
-  ~FCAutoWaitCursor();
-
-  static FCAutoWaitCursor* _pclSingleton;
-
-protected:
-  /// run the thread, decrement an internal counter
-  void run();
-
-  QMutex mutex;
-  uint main_threadid;
-  int nInterval;
-  bool bActive;
-  bool bRun;
-
-private:
-  class FCAutoWaitCursorP* d;
-  friend class FCAutoWaitCursorP;
-};
-*/
 } // namespace Gui
 
-#endif
+#endif // GUI_WAIT_CURSOR_H 
 

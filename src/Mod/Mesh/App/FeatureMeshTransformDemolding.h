@@ -58,8 +58,6 @@ public:
   virtual int execute(void);
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "MeshGui::ViewProviderMeshTransformDemolding";}
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "MeshTransformDemolding";};
   //@}
 
 };

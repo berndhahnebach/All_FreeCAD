@@ -210,16 +210,14 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
 void ProgressBar::pause()
 {
   // allow key handling of dialog and restore cursor
-  releaseKeyboard();
-  delete d->cWaitCursor;
-  d->cWaitCursor = 0L;
+  leaveControlEvents();
+  QApplication::setOverrideCursor(Qt::ArrowCursor);
 }
 
 void ProgressBar::resume()
 {
-  grabKeyboard(); // grab again
-  //rerun observer thread
-  d->cWaitCursor = new Gui::WaitCursor;
+  enterControlEvents(); // grab again
+  QApplication::restoreOverrideCursor();
 }
 
 void ProgressBar::setProgress( int progr )

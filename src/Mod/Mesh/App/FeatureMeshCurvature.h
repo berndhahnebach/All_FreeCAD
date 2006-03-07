@@ -27,6 +27,7 @@
 #include "MeshFeature.h"
 
 #include <App/PropertyLinks.h>
+#include <App/PropertyGeo.h>
 
 
 namespace Mesh
@@ -37,7 +38,7 @@ namespace Mesh
  * into the FreeCAD workspace.
  * @author Werner Mayer
  */
-class Curvature : public Mesh::Feature
+class AppMeshExport Curvature : public Mesh::Feature
 {
   PROPERTY_HEADER(Mesh::Curvature);
 
@@ -45,6 +46,10 @@ public:
   Curvature();
 
   App::PropertyLink Source;
+  App::PropertyVectorList CurvMaxDir;
+  App::PropertyVectorList CurvMinDir;
+  App::PropertyFloatList CurvMaxVal;
+  App::PropertyFloatList CurvMinVal;
 
   /** @name methods overide Feature */
   //@{
@@ -52,8 +57,6 @@ public:
   virtual int execute(void);
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "MeshGui::ViewProviderMeshCurvature";}
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "MeshCurvature";};
   //@}
 
   virtual MeshWithProperty& getMesh();

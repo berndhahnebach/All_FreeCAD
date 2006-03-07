@@ -84,6 +84,53 @@ private:
 
 };
 
+class AppExport PropertyVectorList: public PropertyLists
+{
+  TYPESYSTEM_HEADER();
+
+public:
+
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyVectorList();
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	~PropertyVectorList();
+
+  virtual void setSize(int newSize){_lValueList.resize(newSize);}   
+  virtual int getSize(void) const {return _lValueList.size();}   
+
+	/** Sets the property 
+	 */
+	void setValue(const Base::Vector3D&);
+  
+  /// index operator
+  const Base::Vector3D& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+  
+  
+  void  set1Value (const int idx, const Base::Vector3D& value){_lValueList.operator[] (idx) = value;}
+
+  const std::vector<Base::Vector3D> &getValues(void) const{return _lValueList;}
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+  virtual void Save (Base::Writer &writer);
+  virtual void Restore(Base::XMLReader &reader);
+
+
+private:
+
+  std::vector<Base::Vector3D> _lValueList;
+
+};
+
 /** Vector properties
  * This is the father of all properties handling Integers.
  */

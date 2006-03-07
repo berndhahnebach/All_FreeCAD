@@ -174,44 +174,6 @@ void MeshAlgos::calcVertexNormales(MeshWithProperty* Mesh)
   Mesh->Add(prop,"VertexNormales");  
 }
 
-void MeshAlgos::calcVertexCurvature(MeshWithProperty* Mesh)
-{
-  MeshPropertyCurvature *prop = dynamic_cast<MeshPropertyCurvature*> (Mesh->Get("VertexCurvature") );
-
-  if(prop && prop->isValid())
-    return;
-
-  // remove invalid property
-  if(prop) Mesh->Remove("VertexCurvature");
-
-  MeshKernel &MeshK = *(Mesh->getKernel());
-
-  // create a property with the right size
-  prop = new MeshPropertyCurvature(MeshK.CountPoints());
-  Mesh->Add(prop,"VertexCurvature");  
-
-  MeshCurvaturePerVertex(*Mesh).Compute();
-}
-
-void MeshAlgos::calcFaceCurvature(MeshWithProperty* Mesh)
-{
-  MeshPropertyCurvature *prop = dynamic_cast<MeshPropertyCurvature*> (Mesh->Get("FaceCurvature") );
-
-  if(prop && prop->isValid())
-    return;
-
-  // remove invalid property
-  if(prop) Mesh->Remove("FaceCurvature");
-
-  MeshKernel &MeshK = *(Mesh->getKernel());
-
-  // create a property with the right size
-  prop = new MeshPropertyCurvature(MeshK.CountFacets());
-  Mesh->Add(prop,"FaceCurvature");  
-
-  MeshCurvaturePerFace(*Mesh).Compute();
-}
-
 void MeshAlgos::offset(MeshWithProperty* Mesh, float fSize)
 {
   MeshPropertyNormal *prop = dynamic_cast<MeshPropertyNormal*> (Mesh->Get("VertexNormales") );

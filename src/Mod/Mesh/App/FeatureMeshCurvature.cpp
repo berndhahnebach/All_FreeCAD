@@ -25,16 +25,18 @@
 #ifndef _PreComp_
 # include <fcntl.h>
 # include <ios>
+# include <Wm3Vector3.h>
+# include <Wm3MeshCurvature.h>
 #endif
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include "FeatureMeshCurvature.h"
-#include "MeshCurvature.h"
-#include "MeshAlgos.h"
 
-#include "Core/MeshIO.h"
+#include "Core/Elements.h"
+#include "Core/Iterator.h"
+
 
 
 using namespace Mesh;
@@ -54,9 +56,48 @@ int Curvature::execute(void)
   Feature *pcFeat  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
     return 1;
-
+ 
+  // get all points
   MeshWithProperty& rMesh = pcFeat->getMesh();
-  MeshAlgos::calcVertexCurvature( &rMesh );
+  MeshKernel* pMesh = rMesh.getKernel();
+  std::vector< Wm3::Vector3<float> > aPnts;
+  MeshPointIterator cPIt( *pMesh );
+  for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
+  {
+    Wm3::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
+    aPnts.push_back( cP );
+  }
+
+  // get all point connections
+  std::vector<int> aIdx;
+  const std::vector<MeshFacet>& raFts = pMesh->GetFacets();
+  for ( std::vector<MeshFacet>::const_iterator it = raFts.begin(); it != raFts.end(); ++it )
+  {
+    for (int i=0; i<3; i++)
+    {
+      int idx = (int)it->_aulPoints[i];
+      aIdx.push_back( (int)it->_aulPoints[i] );
+    }
+  }
+
+  // compute vertex based curvatures
+  Wm3::MeshCurvature<float> meshCurv(pMesh->CountPoints(), &(aPnts[0]), pMesh->CountFacets(), &(aIdx[0]));
+
+  // get curvature information now
+  const Wm3::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
+  const Wm3::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
+  const float* aMaxCurv = meshCurv.GetMaxCurvatures();
+  const float* aMinCurv = meshCurv.GetMinCurvatures();
+
+  CurvMaxVal.setSize(pMesh->CountPoints()); CurvMinVal.setSize(pMesh->CountPoints());
+  CurvMaxDir.setSize(pMesh->CountPoints()); CurvMinDir.setSize(pMesh->CountPoints());
+  for ( unsigned long i=0; i<pMesh->CountPoints(); i++ )
+  {
+    CurvMaxVal.set1Value(i, aMaxCurv[i]);
+    CurvMinVal.set1Value(i, aMinCurv[i]);
+    CurvMaxDir.set1Value(i, Vector3D( aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z() ) );
+    CurvMinDir.set1Value(i, Vector3D( aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z() ) );
+  }
 
   return 0;
 }

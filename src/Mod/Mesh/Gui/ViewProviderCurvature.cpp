@@ -50,6 +50,7 @@
 #include <Gui/SoFCColorBar.h>
 
 #include <Mod/Mesh/App/MeshFeature.h>
+#include <Mod/Mesh/App/FeatureMeshCurvature.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
 
@@ -84,78 +85,65 @@ ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
   pcColorBar->unref();
 }
 
-void ViewProviderMeshCurvature::init(App::Feature *pcFeat)
+void ViewProviderMeshCurvature::init(Mesh::Curvature *pcFeat)
 {
-  MeshWithProperty& rMesh = dynamic_cast<Feature*>(pcFeat)->getMesh();
-  MeshPropertyCurvature *prop = dynamic_cast<MeshPropertyCurvature*>(rMesh.Get("VertexCurvature") );
-  if( prop && prop->isValid() )
+  const std::vector<float>& aMinValues = pcFeat->CurvMinVal.getValues();
+  const std::vector<float>& aMaxValues = pcFeat->CurvMaxVal.getValues();
+  if ( aMinValues.empty() || aMaxValues.empty() ) 
+    return; // no values inside
+
+  float fMin = *std::min_element( aMinValues.begin(), aMinValues.end() );
+  float fMax = *std::max_element( aMinValues.begin(), aMinValues.end() );
+
+  // histogram over all values
+  std::map<int, int> aHistogram;
+  for ( std::vector<float>::const_iterator it = aMinValues.begin(); it != aMinValues.end(); ++it )
   {
-    std::vector<float> aMinValues = prop->getCurvature( MeshPropertyCurvature::MinCurvature );
-    std::vector<float> aMaxValues = prop->getCurvature( MeshPropertyCurvature::MaxCurvature );
-    if ( aMinValues.empty() || aMaxValues.empty() ) 
-      return; // no values inside
-
-    float fMin = *std::min_element( aMinValues.begin(), aMinValues.end() );
-    float fMax = *std::max_element( aMinValues.begin(), aMinValues.end() );
-
-    // histogram over all values
-    std::map<int, int> aHistogram;
-    for ( std::vector<float>::iterator it = aMinValues.begin(); it != aMinValues.end(); ++it )
-    {
-      int grp = (int)(10.0f*( *it - fMin )/( fMax - fMin ));
-      aHistogram[grp]++;
-    }
-
-    float fRMin=-1.0f;
-    for ( std::map<int, int>::iterator mIt = aHistogram.begin(); mIt != aHistogram.end(); ++mIt )
-    {
-      if ( (float)mIt->second / (float)aMinValues.size() > 0.15f )
-      {
-        fRMin = mIt->first * ( fMax - fMin )/10.0f + fMin;
-        break;
-      }
-    }
-
-    fMin = *std::min_element( aMaxValues.begin(), aMaxValues.end() );
-    fMax = *std::max_element( aMaxValues.begin(), aMaxValues.end() );
-
-    // histogram over all values
-    aHistogram.clear();
-    for ( std::vector<float>::iterator it2 = aMaxValues.begin(); it2 != aMaxValues.end(); ++it2 )
-    {
-      int grp = (int)(10.0f*( *it2 - fMin )/( fMax - fMin ));
-      aHistogram[grp]++;
-    }
-
-    float fRMax=1.0f;
-    for ( std::map<int, int>::reverse_iterator rIt2 = aHistogram.rbegin(); rIt2 != aHistogram.rend(); ++rIt2 )
-    {
-      if ( (float)rIt2->second / (float)aMaxValues.size() > 0.15f )
-      {
-        fRMax = rIt2->first * ( fMax - fMin )/10.0f + fMin;
-        break;
-      }
-    }
-
-    float fAbs = std::max<float>(fabs(fRMin), fabs(fRMax));
-    fRMin = -fAbs;
-    fRMax =  fAbs;
-    fMin = fRMin; fMax = fRMax;
-    pcColorBar->setRange( fMin, fMax, 3 );
+    int grp = (int)(10.0f*( *it - fMin )/( fMax - fMin ));
+    aHistogram[grp]++;
   }
-  else if ( prop )
+
+  float fRMin=-1.0f;
+  for ( std::map<int, int>::iterator mIt = aHistogram.begin(); mIt != aHistogram.end(); ++mIt )
   {
-    Base::Console().Warning("Invalid property 'VertexCurvature' found.\n");
+    if ( (float)mIt->second / (float)aMinValues.size() > 0.15f )
+    {
+      fRMin = mIt->first * ( fMax - fMin )/10.0f + fMin;
+      break;
+    }
   }
-  else
+
+  fMin = *std::min_element( aMaxValues.begin(), aMaxValues.end() );
+  fMax = *std::max_element( aMaxValues.begin(), aMaxValues.end() );
+
+  // histogram over all values
+  aHistogram.clear();
+  for ( std::vector<float>::const_iterator it2 = aMaxValues.begin(); it2 != aMaxValues.end(); ++it2 )
   {
-    Base::Console().Warning("Property 'VertexCurvature' not found.\n");
+    int grp = (int)(10.0f*( *it2 - fMin )/( fMax - fMin ));
+    aHistogram[grp]++;
   }
+
+  float fRMax=1.0f;
+  for ( std::map<int, int>::reverse_iterator rIt2 = aHistogram.rbegin(); rIt2 != aHistogram.rend(); ++rIt2 )
+  {
+    if ( (float)rIt2->second / (float)aMaxValues.size() > 0.15f )
+    {
+      fRMax = rIt2->first * ( fMax - fMin )/10.0f + fMin;
+      break;
+    }
+  }
+
+  float fAbs = std::max<float>(fabs(fRMin), fabs(fRMax));
+  fRMin = -fAbs;
+  fRMax =  fAbs;
+  fMin = fRMin; fMax = fRMax;
+  pcColorBar->setRange( fMin, fMax, 3 );
 }
 
 void ViewProviderMeshCurvature::attach(App::Feature *pcFeat)
 {
-  init( pcFeat ); // init color bar
+  init( dynamic_cast<Mesh::Curvature*>(pcFeat) ); // init color bar
 
   SoGroup* pcColorShadedRoot = new SoGroup();
 
@@ -186,38 +174,69 @@ SoSeparator* ViewProviderMeshCurvature::getFrontRoot(void)
   return pcColorBar;
 }
 
-void ViewProviderMeshCurvature::setVertexCurvatureMode(MeshPropertyCurvature* pcProp, int mode)
+void ViewProviderMeshCurvature::setVertexCurvatureMode(int mode)
 {
-  if ( !pcProp->isValid() ) return; // no valid data
-  std::vector<float> fCurvature = pcProp->getCurvature(MeshPropertyCurvature::Mode(mode));
+  Mesh::Curvature* meshcurv = dynamic_cast<Mesh::Curvature*>(pcFeature);
+  std::vector<float> fValues; 
+
+  // Mean curvature
+  if ( mode == 0 )
+  {
+    const std::vector<float>& fMinValues = meshcurv->CurvMinVal.getValues();
+    const std::vector<float>& fMaxValues = meshcurv->CurvMaxVal.getValues();
+    std::vector<float>::const_iterator it1, it2;
+
+    fValues.reserve(fMaxValues.size());
+    for ( it1=fMinValues.begin(),it2=fMaxValues.begin();it1!=fMinValues.end()&&it2!=fMaxValues.end(); ++it1, ++it2 )
+    {
+      fValues.push_back( 0.5f*(*it1+*it2) );
+    }
+  }
+  // Gaussian curvature
+  else if ( mode == 1 )
+  {
+    const std::vector<float>& fMinValues = meshcurv->CurvMinVal.getValues();
+    const std::vector<float>& fMaxValues = meshcurv->CurvMaxVal.getValues();
+    std::vector<float>::const_iterator it1, it2;
+
+    fValues.reserve(fMaxValues.size());
+    for ( it1=fMinValues.begin(),it2=fMaxValues.begin();it1!=fMinValues.end()&&it2!=fMaxValues.end(); ++it1, ++it2 )
+    {
+      fValues.push_back( (*it1)*(*it2) );
+    }
+  }
+  // Maximum curvature
+  else if ( mode == 2 )
+  {
+    fValues = meshcurv->CurvMaxVal.getValues();
+  }
+  // Minimum curvature
+  else if ( mode == 3 )
+  {
+    fValues = meshcurv->CurvMinVal.getValues();
+  }
+  // Absolute curvature
+  else if ( mode == 4 )
+  {
+    const std::vector<float>& fMinValues = meshcurv->CurvMinVal.getValues();
+    const std::vector<float>& fMaxValues = meshcurv->CurvMaxVal.getValues();
+    std::vector<float>::const_iterator it1, it2;
+
+    fValues.reserve(fMaxValues.size());
+    for ( it1=fMinValues.begin(),it2=fMaxValues.begin();it1!=fMinValues.end()&&it2!=fMaxValues.end(); ++it1, ++it2 )
+    {
+      if ( fabs(*it1) > fabs(*it2) )
+        fValues.push_back( *it1 );
+      else
+        fValues.push_back( *it2 );
+    }
+  }
 
   unsigned long i=0;
-  for ( std::vector<float>::const_iterator it = fCurvature.begin(); it != fCurvature.end(); ++it )
+  for ( std::vector<float>::const_iterator it = fValues.begin(); it != fValues.end(); ++it )
   {
     App::Color col = pcColorBar->getColor( *it );
     pcColorMat->diffuseColor.set1Value(i++, SbColor(col.r, col.g, col.b));
-  }
-}
-
-void ViewProviderMeshCurvature::setVertexAbsCurvatureMode(MeshPropertyCurvature* pcProp)
-{
-  if ( !pcProp->isValid() ) return; // no valid data
-  std::vector<float> fMaxCurvature = pcProp->getCurvature(MeshPropertyCurvature::MaxCurvature);
-  std::vector<float> fMinCurvature = pcProp->getCurvature(MeshPropertyCurvature::MinCurvature);
-  
-  unsigned long i=0;
-  for ( std::vector<float>::const_iterator it = fMaxCurvature.begin(),jt = fMinCurvature.begin(); it != fMaxCurvature.end(); ++it,++jt )
-  {
-    if ( fabs(*it) > fabs(*jt) )
-    {
-      App::Color col = pcColorBar->getColor( *it );
-      pcColorMat->diffuseColor.set1Value(i++, SbColor(col.r, col.g, col.b));
-    }
-    else
-    {
-      App::Color col = pcColorBar->getColor( *jt );
-      pcColorMat->diffuseColor.set1Value(i++, SbColor(col.r, col.g, col.b));
-    }
   }
 }
 
@@ -254,34 +273,33 @@ QPixmap ViewProviderMeshCurvature::getIcon() const
 
 void ViewProviderMeshCurvature::setMode(const char* ModeName)
 {
-  MeshWithProperty &rcMesh = dynamic_cast<Feature*>(pcFeature)->getMesh();
-  App::PropertyBag *pcProp = 0;
-  pcProp = rcMesh.GetFirstOfType("VertexCurvature");
-
-  if ( pcProp && strcmp("Mean curvature",ModeName)==0 )
+  if ( pcFeature->getTypeId() == Mesh::Curvature::getClassTypeId() )
   {
-    setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::MeanCurvature);
-    setDisplayMode("ColorShaded");
-  }
-  else if ( pcProp && strcmp("Gaussian curvature",ModeName)==0  )
-  {
-    setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::GaussCurvature);
-    setDisplayMode("ColorShaded");
-  }
-  else if ( pcProp && strcmp("Maximum curvature",ModeName)==0  )
-  {
-    setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::MaxCurvature);
-    setDisplayMode("ColorShaded");
-  }
-  else if ( pcProp && strcmp("Minimum curvature",ModeName)==0  )
-  {
-    setVertexCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp), MeshPropertyCurvature::MinCurvature);
-    setDisplayMode("ColorShaded");
-  }
-  else if ( pcProp && strcmp("Absolute curvature",ModeName)==0  )
-  {
-    setVertexAbsCurvatureMode(dynamic_cast<MeshPropertyCurvature*>(pcProp));
-    setDisplayMode("ColorShaded");
+    if ( strcmp("Mean curvature",ModeName)==0 )
+    {
+      setVertexCurvatureMode(0);
+      setDisplayMode("ColorShaded");
+    }
+    else if ( strcmp("Gaussian curvature",ModeName)==0  )
+    {
+      setVertexCurvatureMode(1);
+      setDisplayMode("ColorShaded");
+    }
+    else if ( strcmp("Maximum curvature",ModeName)==0  )
+    {
+      setVertexCurvatureMode(2);
+      setDisplayMode("ColorShaded");
+    }
+    else if ( strcmp("Minimum curvature",ModeName)==0  )
+    {
+      setVertexCurvatureMode(3);
+      setDisplayMode("ColorShaded");
+    }
+    else if ( strcmp("Absolute curvature",ModeName)==0  )
+    {
+      setVertexCurvatureMode(4);
+      setDisplayMode("ColorShaded");
+    }
   }
 
   ViewProviderMesh::setMode(ModeName);
@@ -292,15 +310,11 @@ std::vector<std::string> ViewProviderMeshCurvature::getModes(void)
   std::vector<std::string> StrList = ViewProviderMesh::getModes();
 
   // add modes
-  MeshWithProperty &rcMesh = dynamic_cast<Feature*>(pcFeature)->getMesh();
-  if ( rcMesh.GetFirstOfType("VertexCurvature") )
-  {
-    StrList.push_back("Absolute curvature");
-    StrList.push_back("Mean curvature");
-    StrList.push_back("Gaussian curvature");
-    StrList.push_back("Maximum curvature");
-    StrList.push_back("Minimum curvature");
-  }
+  StrList.push_back("Absolute curvature");
+  StrList.push_back("Mean curvature");
+  StrList.push_back("Gaussian curvature");
+  StrList.push_back("Maximum curvature");
+  StrList.push_back("Minimum curvature");
 
   return StrList;
 }

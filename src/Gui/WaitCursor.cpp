@@ -46,6 +46,9 @@ struct WaitCursorP
 };
 } // namespace Gui
 
+/* We cannot use Qt's QMutex as we locks/unlocks from different threads, which
+ * is not allowed. So, we use a simple boolean.
+ */
 bool WaitCursorP::override = false;
 
 /**
@@ -93,8 +96,8 @@ void WaitCursor::run()
         // prevent application from setting wait cursor twice
         WaitCursorP::override = true;
         QApplication::setOverrideCursor(Qt::waitCursor);
+        d->wait = true;
       }
-      d->wait = true;
       break;
     }
   }
@@ -129,15 +132,14 @@ void WaitCursor::restoreCursor()
     wait(100);
   }
 
-  // wait cursor already restored
-  if ( !d->wait ) return;
-  if ( WaitCursorP::override )
+  // check whether this instance has overridden the cursor
+  if ( d->wait )
   {
     // do not restore twice
     QApplication::restoreOverrideCursor();
+    d->wait = false;
     WaitCursorP::override = false;
   }
-  d->wait = false;
 }
 
 /**
@@ -156,163 +158,3 @@ void WaitCursor::setMinimumDuration ( int ms )
   d->minimumDuration = ms;
 }
 
-// --------------------------------------------------------
-/*
-class FCAutoWaitCursorP : public QWidget
-{
-public:
-  FCAutoWaitCursorP() : QWidget(0L)
-  {
-  }
-
-protected:
-  void customEvent(QCustomEvent* e)
-  {
-    // if this method is called the message loop is not blocked
-    FCAutoWaitCursor::Instance().mutex.lock();
-    FCAutoWaitCursor::Instance().bActive = true;
-    FCAutoWaitCursor::Instance().mutex.unlock();
-  }
-};
-
-FCAutoWaitCursor* FCAutoWaitCursor::_pclSingleton = NULL;
-
-void FCAutoWaitCursor::Destruct(void)
-{
-  // not initialized or double destruct!
-  assert(_pclSingleton);
-  delete _pclSingleton;
-  _pclSingleton = NULL;
-}
-
-FCAutoWaitCursor &FCAutoWaitCursor::Instance(void)
-{
-  // not initialized?
-  if(!_pclSingleton)
-  {
-#ifdef FC_OS_WIN32
-    _pclSingleton = new FCAutoWaitCursor(GetCurrentThreadId(), 100);
-#else
-    _pclSingleton = new FCAutoWaitCursor(0, 100);
-#endif
-  }
-
-  return *_pclSingleton;
-}
-
-FCAutoWaitCursor::FCAutoWaitCursor(uint id, int i)
-    :main_threadid(id), nInterval(i), bActive(true),bRun(true)
-{
-  d = new FCAutoWaitCursorP;
-  start();
-}
-
-FCAutoWaitCursor::~FCAutoWaitCursor()
-{
-#ifdef FC_OS_WIN32
-  AttachThreadInput(GetCurrentThreadId(), main_threadid, false);
-#endif
-  bRun = false;
-  wait();
-  delete d;
-}
-
-void FCAutoWaitCursor::SetWaitCursor()
-{
-#ifdef FC_OS_WIN32 // win32 api functions
-  SetCursor(LoadCursor(NULL, IDC_WAIT));
-#endif
-}
-
-void FCAutoWaitCursor::run()
-{
-  int step = 5;
-  int i=0;
-  QSize size;
-  QPoint pos;
-  bool ignore;
-  bool cursorset;
-
-#ifdef FC_OS_WIN32
-  HCURSOR hCursor = NULL;
-  AttachThreadInput(GetCurrentThreadId(), main_threadid, true);
-#endif
-
-  while (bRun)
-  {
-    // set the thread sleeping
-    msleep(nInterval);
-
-    // application seems to be busy
-    if (qApp->locked())
-    {
-      ignore = false;
-
-      // search for an active window
-      QWidget* w = qApp->focusWidget();
-      if ( w )
-      {
-        // is application really busy ?
-        //
-        // If you press a mouse button on the edge of
-        // a native window (under Windows OS) the application's
-        // message loop is blocked. Then look if the window
-        // is moved or resized, if so the appliaction is NOT busy.
-        // (But this cannot detect cases if the user clicks on a
-        //  system menu button or doesn't move the mouse after clicking)
-        ignore = (size != w->size() || pos != w->pos());
-        size = w->size();
-        pos = w->pos();
-      }
-
-      if (i<step && !ignore)
-      {
-        i++;
-
-        // seems to be busy, so send an event to the dummy widget
-        if (i==step-2)
-        {
-          mutex.lock();
-          bActive = false;
-          mutex.unlock();
-
-          // send custom event to make sure that the application is really busy
-          QApplication::postEvent(d, new QCustomEvent(346789));
-        }
-
-        if (i==step)
-        {
-          if (bActive == false)
-          {
-#ifdef FC_OS_WIN32 // win32 api functions
-            hCursor = SetCursor(LoadCursor(NULL, IDC_WAIT));
-#else
-            QApplication::setOverrideCursor(Qt::waitCursor);
-#endif
-            cursorset = true;
-          }
-          else
-            i = 0;
-        }
-      }
-      else if ( ignore && cursorset)
-      {
-#ifdef FC_OS_WIN32 // win32 api functions
-        if (hCursor)
-        {
-          SetCursor(hCursor);
-          cursorset = false;
-        }
-#else
-        QApplication::restoreOverrideCursor();
-        cursorset = false;
-#endif
-      }
-    }
-    else
-    {
-      i=0;
-    }
-  }
-}
-*/

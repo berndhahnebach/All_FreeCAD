@@ -115,6 +115,7 @@ PyMethodDef MeshFeaturePy::Methods[] = {
   PYMETHODEDEF(isA)
 // FeaturePy 
 	PYMETHODEDEF(setModified)
+	PYMETHODEDEF(setModifiedView)
 	PYMETHODEDEF(isValid)
 // MeshFeaturePy
   PYMETHODEDEF(getMesh)

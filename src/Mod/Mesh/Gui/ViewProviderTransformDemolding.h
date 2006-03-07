@@ -47,7 +47,6 @@ namespace Gui {
 
 namespace Mesh {
   class MeshWithProperty;
-  class MeshPropertyColor;
 }
 
 #include "ViewProvider.h"

@@ -207,6 +207,20 @@ void PolyPickerMouseModel::terminate()
 //  _pcView3D->getGLWidget()->releaseMouse();
 }
 
+void PolyPickerMouseModel::redraw()
+{
+  if ( _cNodeVector.size() > 2 )
+  {
+    QPoint start = _cNodeVector.front();
+    for ( std::vector<QPoint>::iterator it = _cNodeVector.begin()+1; it != _cNodeVector.end(); ++it )
+    {
+      _pcView3D->drawLine(start.x(),start.y(),it->x(), it->y() );
+      start = *it;
+    }
+  }
+  draw();
+}
+
 void PolyPickerMouseModel::draw ()
 {
   if ( m_bWorking )
@@ -285,6 +299,8 @@ int PolyPickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, 
         QPopupMenu menu;
         int fi = menu.insertItem("Finish");
         int ca = menu.insertItem("Cancel");
+        if ( getPolygon().size() < 3 )
+          menu.setItemEnabled(fi,false);
         int id = menu.exec(QCursor::pos());
         
 //        _pcView3D->getGLWidget()->grabMouse();

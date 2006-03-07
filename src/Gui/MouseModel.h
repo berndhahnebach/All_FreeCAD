@@ -67,6 +67,8 @@ public:
   void releaseMouseModel(void);
   const std::vector<SbVec2f>& getPolygon() const { return _clPoly; }
 
+  virtual void redraw() = 0;
+
   /** @name Mouse events*/
   //@{
   int handleEvent( const SoEvent * const ev, const SbViewportRegion& vp );
@@ -120,6 +122,8 @@ public:
   virtual void initialize();
   /// do nothing
   virtual void terminate();
+
+  virtual void redraw();
 
 protected:
   virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );

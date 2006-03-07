@@ -57,8 +57,6 @@ public:
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  /// Returns the Name/Type of the feature
-  virtual const char *type(void){return "MeshSegmentByMesh";};
   //@}
 };
 
