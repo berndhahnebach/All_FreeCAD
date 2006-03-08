@@ -28,6 +28,7 @@
 
 #include <Base/Console.h>
 
+#include "Mesh.h"
 #include "FeatureMeshImport.h"
 #include "FeatureMeshExport.h"
 #include "FeatureMeshTransform.h"
@@ -48,14 +49,16 @@ void AppMeshExport initMesh() {
 
   (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
 
-  Mesh::Feature           ::init();
-  Mesh::Import            ::init();
-  Mesh::Export            ::init();
-  Mesh::Transform         ::init();
-  Mesh::TransformDemolding::init();
-  Mesh::Curvature         ::init();
-  Mesh::SegmentByMesh     ::init();
-  Mesh::SetOperations     ::init();
+  Mesh::PropertyNormalList    ::init();
+  Mesh::PropertyCurvatureList ::init();
+  Mesh::Feature               ::init();
+  Mesh::Import                ::init();
+  Mesh::Export                ::init();
+  Mesh::Transform             ::init();
+  Mesh::TransformDemolding    ::init();
+  Mesh::Curvature             ::init();
+  Mesh::SegmentByMesh         ::init();
+  Mesh::SetOperations         ::init();
     
   return;
 }

@@ -515,6 +515,7 @@ void Application::initTypes(void)
   // Properties
   App ::Property            ::init();
   App ::PropertyContainer   ::init();
+  App ::PropertyLists       ::init();
   App ::PropertyBool        ::init();
   App ::PropertyFloat       ::init();
   App ::PropertyFloatList   ::init();

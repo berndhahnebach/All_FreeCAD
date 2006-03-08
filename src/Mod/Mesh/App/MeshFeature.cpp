@@ -135,7 +135,7 @@ void Feature::RestoreDocFile(Base::Reader &reader)
   try {
     _cMesh.getKernel()->Read(reader);
   } catch( const Base::MemoryException&) {
-    throw Base::Exception("Invlaid mesh file");
+    throw Base::Exception("Invalid mesh file");
   } catch( const Base::Exception& e) {
     throw e;
   }

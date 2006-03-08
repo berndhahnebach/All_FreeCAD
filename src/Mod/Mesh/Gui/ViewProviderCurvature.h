@@ -58,6 +58,14 @@ class GuiMeshExport ViewProviderMeshCurvature : public ViewProviderMesh, public 
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshCurvature);
 
+  enum Mode { 
+    MeanCurvature  = 0,  /**< Mean curvature */
+    GaussCurvature = 1,  /**< Gaussian curvature */
+    MaxCurvature   = 2,  /**< Maximum curvature */ 
+    MinCurvature   = 3,  /**< Minimum curvature */
+    AbsCurvature   = 4   /**< Absolute curvature */
+  };
+
 public:
   ViewProviderMeshCurvature();
   virtual ~ViewProviderMeshCurvature();

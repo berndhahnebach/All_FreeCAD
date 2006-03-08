@@ -27,12 +27,141 @@
 # include <iostream>
 #endif
 
-#include "Points.h"
+#include <Base/Exception.h>
 #include <Base/Matrix.h>
 #include <Base/Persistance.h>
 #include <Base/Writer.h>
+
+#include "Points.h"
+
 using namespace Points;
 using namespace std;
+
+TYPESYSTEM_SOURCE(Points::PropertyGreyValue, App::PropertyFloat);
+TYPESYSTEM_SOURCE(Points::PropertyGreyValueList, App::PropertyFloatList);
+TYPESYSTEM_SOURCE(Points::PropertyNormalList, App::PropertyVectorList);
+TYPESYSTEM_SOURCE(Points::PropertyCurvatureList , App::PropertyLists);
+
+void PropertyNormalList::transform(const Matrix4D &mat)
+{
+  // A normal vector is only a direction with unit length, so we only need to rotate it
+  // (no translations or scaling)
+
+  // Extract scale factors (assumes an orthogonal rotation matrix)
+  // Use the fact that the length of the row vectors of R are all equal to 1
+  // And that scaling is applied after rotating
+  double s[3];
+  s[0] = sqrt(mat[0][0] * mat[0][0] + mat[0][1] * mat[0][1] + mat[0][2] * mat[0][2]);
+  s[1] = sqrt(mat[1][0] * mat[1][0] + mat[1][1] * mat[1][1] + mat[1][2] * mat[1][2]);
+  s[2] = sqrt(mat[2][0] * mat[2][0] + mat[2][1] * mat[2][1] + mat[2][2] * mat[2][2]);
+
+  // Set up the rotation matrix: zero the translations and make the scale factors = 1
+  Matrix4D rot;
+  rot.unity();
+  for (unsigned short i = 0; i < 3; i++) {
+    for (unsigned short j = 0; j < 3; j++) {
+      rot[i][j] = mat[i][j] / s[i];
+    }
+  }
+
+  // Rotate the normal vectors
+  for (int ii=0; ii<getSize(); ii++)
+  {
+    set1Value(ii, rot * operator[](ii));
+  }
+}
+
+PropertyCurvatureList::PropertyCurvatureList()
+{
+
+}
+
+PropertyCurvatureList::~PropertyCurvatureList()
+{
+
+}
+
+void PropertyCurvatureList::setValue(const CurvatureInfo& lValue)
+{
+  aboutToSetValue();
+  _lValueList.resize(1);
+	_lValueList[0]=lValue;
+  hasSetValue();
+}
+
+void PropertyCurvatureList::transform(const Matrix4D &mat)
+{
+  // The principal direction is only a vector with unit length, so we only need to rotate it
+  // (no translations or scaling)
+
+  // Extract scale factors (assumes an orthogonal rotation matrix)
+  // Use the fact that the length of the row vectors of R are all equal to 1
+  // And that scaling is applied after rotating
+  double s[3];
+  s[0] = sqrt(mat[0][0] * mat[0][0] + mat[0][1] * mat[0][1] + mat[0][2] * mat[0][2]);
+  s[1] = sqrt(mat[1][0] * mat[1][0] + mat[1][1] * mat[1][1] + mat[1][2] * mat[1][2]);
+  s[2] = sqrt(mat[2][0] * mat[2][0] + mat[2][1] * mat[2][1] + mat[2][2] * mat[2][2]);
+
+  // Set up the rotation matrix: zero the translations and make the scale factors = 1
+  Matrix4D rot;
+  rot.unity();
+  for (unsigned short i = 0; i < 3; i++) {
+    for (unsigned short j = 0; j < 3; j++) {
+      rot[i][j] = mat[i][j] / s[i];
+    }
+  }
+
+  // Rotate the principal directions
+  for (int ii=0; ii<getSize(); ii++)
+  {
+    CurvatureInfo ci = operator[](ii);
+    ci.cMaxCurvDir = rot * ci.cMaxCurvDir;
+    ci.cMinCurvDir = rot * ci.cMinCurvDir;
+    set1Value(ii, ci);
+  }
+}
+
+void PropertyCurvatureList::Save (Base::Writer &writer)
+{
+  writer.addFile("Curvature", this);
+}
+
+void PropertyCurvatureList::Restore(Base::XMLReader &reader)
+{
+}
+
+void PropertyCurvatureList::SaveDocFile (Base::Writer &writer)
+{
+  try {
+    unsigned long uCt = getSize();
+    writer.write((const char*)&uCt, sizeof(unsigned long));
+    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
+
+void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
+{
+  try {
+    _lValueList.clear();
+    unsigned long uCt=ULONG_MAX;
+    reader.read((char*)&uCt, sizeof(unsigned long));
+    _lValueList.resize(uCt);
+    reader.read((char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
+
+
+
+
+
+
+
+
+
 
 /*
 

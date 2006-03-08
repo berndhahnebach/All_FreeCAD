@@ -37,16 +37,109 @@ using Base::Matrix4D;
 using Base::Matrix4D;
 
 #include <App/DataWithProperty.h>
+#include <App/PropertyStandard.h>
+#include <App/PropertyGeo.h>
 
 namespace Points
 {
+
+/** Greyvalue property.
+ */
+class PointsAppExport PropertyGreyValue : public App::PropertyFloat
+{
+  TYPESYSTEM_HEADER();
+
+public:
+  PropertyGreyValue(void)
+  {
+  }
+  virtual ~PropertyGreyValue()
+  {
+  }
+};
+
+/**
+ * Own class to distinguish from real float list
+ */
+class PointsAppExport PropertyGreyValueList : public App::PropertyFloatList
+{
+  TYPESYSTEM_HEADER();
+
+public:
+  PropertyGreyValueList()
+  {
+  }
+  virtual ~PropertyGreyValueList()
+  {
+  }
+};
+
+/**
+ * Own class to distinguish from real vector list
+ */
+class PointsAppExport PropertyNormalList : public App::PropertyVectorList
+{
+  TYPESYSTEM_HEADER();
+
+public:
+  PropertyNormalList()
+  {
+  }
+  virtual ~PropertyNormalList()
+  {
+  }
+  void transform(const Matrix4D &rclMat);
+};
+
+/** Curvature information. */
+struct PointsAppExport CurvatureInfo
+{
+  float fMaxCurvature, fMinCurvature;
+  Vector3D cMaxCurvDir, cMinCurvDir;
+};
+
+/** The Curvature property class.
+ */
+class PointsAppExport PropertyCurvatureList: public App::PropertyLists
+{
+  TYPESYSTEM_HEADER();
+
+public:
+	PropertyCurvatureList();
+	~PropertyCurvatureList();
+
+  void setSize(int newSize){_lValueList.resize(newSize);}   
+  int getSize(void) const {return _lValueList.size();}   
+	void setValue(const CurvatureInfo&);
+  
+  /// index operator
+  const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+  void  set1Value (const int idx, const CurvatureInfo& value){_lValueList.operator[] (idx) = value;}
+  const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
+  void transform(const Matrix4D &rclMat);
+
+  void Save (Base::Writer &writer);
+  void Restore(Base::XMLReader &reader);
+  void SaveDocFile (Base::Writer &writer);
+  void RestoreDocFile(Base::Reader &reader);
+
+private:
+  std::vector<CurvatureInfo> _lValueList;
+};
+
+
+
+
+
+
 
 
 typedef std::vector<Vector3D> PointKernel;
 
 
 /** Vertex color property bag
- *  This property bag holds normal vectors of the points.
+ * This property bag holds normal vectors of the points.
+ * @deprecated Use App::PropertyColorList
  */
 class PointsAppExport PointsPropertyColor: public App::PropertyBag
 {
@@ -76,7 +169,8 @@ public:
 };
 
 /** Vertex grey value property bag
- *  This property bag holds grey values of the points.
+ * This property bag holds grey values of the points.
+ * @deprecated Use PropertyGreyValueList
  */
 class PointsAppExport PointsPropertyGreyvalue: public App::PropertyBag
 {
@@ -100,7 +194,8 @@ public:
 };
 
 /** Vertex normal property bag
- *  This property bag holds normals of the points.
+ * This property bag holds normals of the points.
+ * @deprecated Use PropertyNormalList.
  */
 class PointsAppExport PointsPropertyNormal : public App::PropertyBag
 {

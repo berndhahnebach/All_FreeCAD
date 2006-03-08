@@ -180,7 +180,7 @@ void ViewProviderMeshCurvature::setVertexCurvatureMode(int mode)
   std::vector<float> fValues; 
 
   // Mean curvature
-  if ( mode == 0 )
+  if ( mode == MeanCurvature )
   {
     const std::vector<float>& fMinValues = meshcurv->CurvMinVal.getValues();
     const std::vector<float>& fMaxValues = meshcurv->CurvMaxVal.getValues();
@@ -193,7 +193,7 @@ void ViewProviderMeshCurvature::setVertexCurvatureMode(int mode)
     }
   }
   // Gaussian curvature
-  else if ( mode == 1 )
+  else if ( mode == GaussCurvature )
   {
     const std::vector<float>& fMinValues = meshcurv->CurvMinVal.getValues();
     const std::vector<float>& fMaxValues = meshcurv->CurvMaxVal.getValues();
@@ -206,17 +206,17 @@ void ViewProviderMeshCurvature::setVertexCurvatureMode(int mode)
     }
   }
   // Maximum curvature
-  else if ( mode == 2 )
+  else if ( mode == MaxCurvature )
   {
     fValues = meshcurv->CurvMaxVal.getValues();
   }
   // Minimum curvature
-  else if ( mode == 3 )
+  else if ( mode == MinCurvature )
   {
     fValues = meshcurv->CurvMinVal.getValues();
   }
   // Absolute curvature
-  else if ( mode == 4 )
+  else if ( mode == AbsCurvature )
   {
     const std::vector<float>& fMinValues = meshcurv->CurvMinVal.getValues();
     const std::vector<float>& fMaxValues = meshcurv->CurvMaxVal.getValues();
@@ -277,27 +277,27 @@ void ViewProviderMeshCurvature::setMode(const char* ModeName)
   {
     if ( strcmp("Mean curvature",ModeName)==0 )
     {
-      setVertexCurvatureMode(0);
+      setVertexCurvatureMode(MeanCurvature);
       setDisplayMode("ColorShaded");
     }
     else if ( strcmp("Gaussian curvature",ModeName)==0  )
     {
-      setVertexCurvatureMode(1);
+      setVertexCurvatureMode(GaussCurvature);
       setDisplayMode("ColorShaded");
     }
     else if ( strcmp("Maximum curvature",ModeName)==0  )
     {
-      setVertexCurvatureMode(2);
+      setVertexCurvatureMode(MaxCurvature);
       setDisplayMode("ColorShaded");
     }
     else if ( strcmp("Minimum curvature",ModeName)==0  )
     {
-      setVertexCurvatureMode(3);
+      setVertexCurvatureMode(MinCurvature);
       setDisplayMode("ColorShaded");
     }
     else if ( strcmp("Absolute curvature",ModeName)==0  )
     {
-      setVertexCurvatureMode(4);
+      setVertexCurvatureMode(AbsCurvature);
       setDisplayMode("ColorShaded");
     }
   }

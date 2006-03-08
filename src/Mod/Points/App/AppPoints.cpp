@@ -28,6 +28,7 @@
 
 #include <Base/Console.h>
 
+#include "Points.h"
 #include "FeaturePointsImportAscii.h"
 
 
@@ -44,9 +45,15 @@ void PointsAppExport initPoints() {
   Base::Console().Log("Mod : Load AppPoints\n");
   (void) Py_InitModule("Points", Points_Import_methods);   /* mod name, table ptr */
 
+  // add properties
+  Points::PropertyGreyValue     ::init();
+  Points::PropertyGreyValueList ::init();
+  Points::PropertyNormalList    ::init();
+  Points::PropertyCurvatureList ::init();
+
   // add data types
-  Points::Feature    ::init();
-  Points::ImportAscii::init();
+  Points::Feature               ::init();
+  Points::ImportAscii           ::init();
 
   return;
 }

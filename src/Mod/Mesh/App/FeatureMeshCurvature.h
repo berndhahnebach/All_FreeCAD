@@ -29,6 +29,9 @@
 #include <App/PropertyLinks.h>
 #include <App/PropertyGeo.h>
 
+namespace Base {
+class Matrix4D;
+}
 
 namespace Mesh
 {
@@ -57,6 +60,7 @@ public:
   virtual int execute(void);
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "MeshGui::ViewProviderMeshCurvature";}
+  void transform(const Base::Matrix4D &rclMat);
   //@}
 
   virtual MeshWithProperty& getMesh();

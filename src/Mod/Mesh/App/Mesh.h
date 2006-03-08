@@ -34,6 +34,86 @@
 
 #include <Base/Matrix.h>
 #include <Base/Vector3D.h>
+
+#include <App/PropertyStandard.h>
+#include <App/PropertyGeo.h>
+
+
+namespace Mesh
+{
+
+/**
+ * Own class to distinguish from real vector list
+ */
+class AppMeshExport PropertyNormalList : public App::PropertyVectorList
+{
+  TYPESYSTEM_HEADER();
+
+public:
+  PropertyNormalList()
+  {
+  }
+  virtual ~PropertyNormalList()
+  {
+  }
+  void transform(const Base::Matrix4D &rclMat);
+};
+
+/** Curvature information. */
+struct AppMeshExport CurvatureInfo
+{
+  float fMaxCurvature, fMinCurvature;
+  Base::Vector3D cMaxCurvDir, cMinCurvDir;
+};
+
+/** The Curvature property class.
+ */
+class AppMeshExport PropertyCurvatureList: public App::PropertyLists
+{
+  TYPESYSTEM_HEADER();
+
+public:
+  PropertyCurvatureList();
+  ~PropertyCurvatureList();
+
+  void setSize(int newSize){_lValueList.resize(newSize);}   
+  int getSize(void) const {return _lValueList.size();}   
+  void setValue(const CurvatureInfo&);
+  
+  /// index operator
+  const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+  void  set1Value (const int idx, const CurvatureInfo& value){_lValueList.operator[] (idx) = value;}
+  const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
+  void transform(const Base::Matrix4D &rclMat);
+
+  void Save (Base::Writer &writer);
+  void Restore(Base::XMLReader &reader);
+  void SaveDocFile (Base::Writer &writer);
+  void RestoreDocFile(Base::Reader &reader);
+
+private:
+  std::vector<CurvatureInfo> _lValueList;
+};
+
+} // namespace Mesh
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 using Base::Vector3D;
 using Base::Matrix4D;
 
@@ -52,6 +132,7 @@ namespace Mesh
 
 /** Vertex noamal property bag
  *  This property bag holds normal vectors of the mesh points
+ * @deprecated Use PropertyNormalList
  */
 class AppMeshExport MeshPropertyNormal: public App::PropertyBag
 {
@@ -76,6 +157,7 @@ public:
 
 /** Vertex color property bag
  *  This property bag holds normal vectors of the mesh points
+ * @deprecated Use App::ProprtyColorList
  */
 class AppMeshExport MeshPropertyColor: public App::PropertyBag
 {
@@ -107,6 +189,7 @@ public:
 /**
  * The MeshPropertyCurvature class holds curvature information for each element of a mesh object.
  * @author Werner Mayer
+ * @deprecated Use PropertyCurvatureList
  */
 class AppMeshExport MeshPropertyCurvature: public App::PropertyBag
 {
