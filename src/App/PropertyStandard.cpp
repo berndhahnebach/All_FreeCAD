@@ -559,6 +559,266 @@ void PropertyBool::Restore(Base::XMLReader &reader)
     _lValue = false;
 }
 
+//**************************************************************************
+//**************************************************************************
+// PropertyColor
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyColor , App::Property);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyColor::PropertyColor()
+{
+
+}
+
+
+PropertyColor::~PropertyColor()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+
+void PropertyColor::setValue(const Color &col)
+{
+	_cCol=col;
+  hasSetValue();
+}
+
+void PropertyColor::setValue(float r, float g, float b, float a)
+{
+  _cCol.set(r,g,b,a);
+  hasSetValue();
+}
+
+const Color& PropertyColor::getValue(void) const 
+{
+	return _cCol;
+}
+
+PyObject *PropertyColor::getPyObject(void)
+{
+  PyObject* rgba = PyTuple_New(4);
+  PyObject* r = PyFloat_FromDouble(_cCol.r);
+  PyObject* g = PyFloat_FromDouble(_cCol.g);
+  PyObject* b = PyFloat_FromDouble(_cCol.b);
+  PyObject* a = PyFloat_FromDouble(_cCol.a);
+
+  PyTuple_SetItem(rgba, 0, r);
+  PyTuple_SetItem(rgba, 1, g);
+  PyTuple_SetItem(rgba, 2, b);
+  PyTuple_SetItem(rgba, 3, a);
+
+  return rgba;
+}
+
+void PropertyColor::setPyObject(PyObject *value)
+{
+  if ( PyTuple_Check(value) && PyTuple_Size(value) == 3 )
+  {
+    PyObject* item;
+    item = PyTuple_GetItem(value,0);
+    if ( PyFloat_Check(item) )
+      _cCol.r = (float)PyFloat_AsDouble(item);
+    else
+      throw Base::Exception("Not allowed type used in tuple (float expected)...");
+    item = PyTuple_GetItem(value,1);
+    if ( PyFloat_Check(item) )
+      _cCol.g = (float)PyFloat_AsDouble(item);
+    else
+      throw Base::Exception("Not allowed type used in tuple (float expected)...");
+    item = PyTuple_GetItem(value,2);
+    if ( PyFloat_Check(item) )
+      _cCol.b = (float)PyFloat_AsDouble(item);
+    else
+      throw Base::Exception("Not allowed type used in tuple (float expected)...");
+  }
+  else if ( PyTuple_Check(value) && PyTuple_Size(value) == 4 )
+  {
+    PyObject* item;
+    item = PyTuple_GetItem(value,0);
+    if ( PyFloat_Check(item) )
+      _cCol.r = (float)PyFloat_AsDouble(item);
+    else
+      throw Base::Exception("Not allowed type used in tuple (float expected)...");
+    item = PyTuple_GetItem(value,1);
+    if ( PyFloat_Check(item) )
+      _cCol.g = (float)PyFloat_AsDouble(item);
+    else
+      throw Base::Exception("Not allowed type used in tuple (float expected)...");
+    item = PyTuple_GetItem(value,2);
+    if ( PyFloat_Check(item) )
+      _cCol.b = (float)PyFloat_AsDouble(item);
+    else
+      throw Base::Exception("Not allowed type used in tuple (float expected)...");
+    item = PyTuple_GetItem(value,3);
+    if ( PyFloat_Check(item) )
+      _cCol.a = (float)PyFloat_AsDouble(item);
+    else
+      throw Base::Exception("Not allowed type used in tuple (float expected)...");
+  }
+  else if ( PyInt_Check(value) )
+  {
+    _cCol.setPackedValue(PyInt_AsLong(value));
+  }
+  else
+  {
+    throw Base::Exception("Not allowed type used...");
+  }
+}
+
+void PropertyColor::Save (Writer &writer)
+{
+  writer << writer.ind() << "<PropertyColor value=\"" <<  _cCol.getPackedValue() <<"\"/>" << endl;
+}
+
+void PropertyColor::Restore(Base::XMLReader &reader)
+{
+  // read my Element
+  reader.readElement("PropertyColor");
+  // get the value of my Attribute
+  int rgba = reader.getAttributeAsInteger("value");
+  _cCol.setPackedValue(rgba);
+}
+
+//**************************************************************************
+// PropertyColorList
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyColorList , App::PropertyLists);
+
+//**************************************************************************
+// Construction/Destruction
+
+PropertyColorList::PropertyColorList()
+{
+
+}
+
+PropertyColorList::~PropertyColorList()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+void PropertyColorList::setValue(const Color& lValue)
+{
+  aboutToSetValue();
+  _lValueList.resize(1);
+	_lValueList[0]=lValue;
+  hasSetValue();
+}
+
+PyObject *PropertyColorList::getPyObject(void)
+{
+  PyObject* list = PyList_New(	getSize() );
+
+  for(int i = 0;i<getSize(); i++)
+  {
+    PyObject* rgba = PyTuple_New(4);
+    PyObject* r = PyFloat_FromDouble(_lValueList[i].r);
+    PyObject* g = PyFloat_FromDouble(_lValueList[i].g);
+    PyObject* b = PyFloat_FromDouble(_lValueList[i].b);
+    PyObject* a = PyFloat_FromDouble(_lValueList[i].a);
+
+    PyTuple_SetItem(rgba, 0, r);
+    PyTuple_SetItem(rgba, 1, g);
+    PyTuple_SetItem(rgba, 2, b);
+    PyTuple_SetItem(rgba, 3, a);
+
+    PyList_SetItem( list, i, rgba );
+  }
+
+  return list;
+}
+
+void PropertyColorList::setPyObject(PyObject *value)
+{
+  if( PyList_Check( value) )
+  {
+    aboutToSetValue();
+
+    int nSize = PyList_Size(value);
+    _lValueList.resize(nSize);
+
+    for (int i=0; i<nSize;++i)
+    {
+      PyObject* item = PyList_GetItem(value, i);
+      try {
+        PropertyColor col;
+        col.setPyObject( item );
+        _lValueList[i] = col.getValue();
+      } catch (const Base::Exception& e) {
+        _lValueList.resize(1);
+        _lValueList[0] = Color();
+        throw e;
+      }
+    }
+
+    hasSetValue();
+  }
+  else if ( PyTuple_Check(value) && PyTuple_Size(value) == 3 )
+  {
+    PropertyColor col;
+    col.setPyObject( value );
+    setValue( col.getValue() );
+  }
+  else if ( PyTuple_Check(value) && PyTuple_Size(value) == 4 )
+  {
+    PropertyColor col;
+    col.setPyObject( value );
+    setValue( col.getValue() );
+  }
+  else
+    throw Base::Exception("Not allowed type used...");
+}
+
+void PropertyColorList::Save (Writer &writer)
+{
+  writer << "<ColorList count=\"" <<  getSize() <<"\"/>" << endl;
+  for(int i = 0;i<getSize(); i++)
+    writer << writer.ind() << "<PropertyColor value=\"" <<  _lValueList[i].getPackedValue() <<"\"/>" << endl;
+  writer << "</ColorList>" << endl ;
+}
+
+void PropertyColorList::Restore(Base::XMLReader &reader)
+{
+  // read my Element
+  reader.readElement("ColorList");
+  // get the value of my Attribute
+  int count = reader.getAttributeAsInteger("count");
+
+  setSize(count);
+
+  for(int i = 0;i<count; i++)
+  {
+    reader.readElement("PropertyColor");
+    _lValueList[i].setPackedValue( reader.getAttributeAsInteger("value") );
+  }
+
+  reader.readEndElement("ColorList");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #if 0
 //**************************************************************************

@@ -36,6 +36,7 @@
 
 
 #include "Property.h"
+#include "Material.h"
 
 namespace Base {
   class Writer;
@@ -195,7 +196,7 @@ public:
 	 * A destructor.
 	 * A more elaborate description of the destructor.
 	 */
-	~PropertyFloatList();
+	virtual ~PropertyFloatList();
 
   virtual void setSize(int newSize){_lValueList.resize(newSize);}   
   virtual int getSize(void) const {return _lValueList.size();}   
@@ -303,6 +304,88 @@ private:
 	bool _lValue;
 };
 
+
+/** Color properties
+ * This is the father of all properties handling colors.
+ */
+class AppExport PropertyColor : public Property
+{
+  TYPESYSTEM_HEADER();
+
+public:
+      
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyColor();
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	~PropertyColor();
+
+	/** Sets the property 
+	 */
+  void setValue(const Color &col);
+  void setValue(float r, float g, float b, float a=0.0f);
+
+	/** This method returns a string representation of the property
+	 */
+	const Color &getValue(void) const;
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+  virtual void Save (Base::Writer &writer);
+  virtual void Restore(Base::XMLReader &reader);
+
+private:
+  Color _cCol;
+};
+
+class AppExport PropertyColorList: public PropertyLists
+{
+  TYPESYSTEM_HEADER();
+
+public:
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyColorList();
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	~PropertyColorList();
+
+  virtual void setSize(int newSize){_lValueList.resize(newSize);}   
+  virtual int getSize(void) const {return _lValueList.size();}   
+
+	/** Sets the property 
+	 */
+	void setValue(const Color&);
+  
+  /// index operator
+  const Color& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+  
+  void  set1Value (const int idx, const Color& value){_lValueList.operator[] (idx) = value;}
+
+  const std::vector<Color> &getValues(void) const{return _lValueList;}
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+  virtual void Save (Base::Writer &writer);
+  virtual void Restore(Base::XMLReader &reader);
+
+private:
+  std::vector<Color> _lValueList;
+};
 
 
 } // namespace App

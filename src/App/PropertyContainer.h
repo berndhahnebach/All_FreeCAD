@@ -76,7 +76,7 @@ public:
   /// get called befor the value is changed
   virtual void onBevorChange(Property* prop){};
 
-  /// find a property by his name
+  /// find a property by its name
   Property *getPropertyByName(const char* name) const;
   /// get the name of a property
   const char* getName(const Property* prop) const;

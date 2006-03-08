@@ -157,7 +157,6 @@ PropertyVectorList::PropertyVectorList()
 
 }
 
-
 PropertyVectorList::~PropertyVectorList()
 {
 
@@ -166,7 +165,6 @@ PropertyVectorList::~PropertyVectorList()
 //**************************************************************************
 // Base class implementer
 
-
 void PropertyVectorList::setValue(const Base::Vector3D& lValue)
 {
   aboutToSetValue();
@@ -174,7 +172,6 @@ void PropertyVectorList::setValue(const Base::Vector3D& lValue)
 	_lValueList[0]=lValue;
   hasSetValue();
 }
-
 
 PyObject *PropertyVectorList::getPyObject(void)
 {
@@ -198,16 +195,14 @@ void PropertyVectorList::setPyObject(PyObject *value)
     for (int i=0; i<nSize;++i)
     {
       PyObject* item = PyList_GetItem(value, i);
-      if ( PyObject_TypeCheck(item, &(VectorPy::Type)) )
-      {
-   	    VectorPy  *pcObject = (VectorPy*)item;
-        _lValueList[i] = pcObject->value();
-      }
-      else
-      {
+      try {
+        PropertyVector val;
+        val.setPyObject( item );
+        _lValueList[i] = val.getValue();
+      } catch (const Base::Exception& e) {
         _lValueList.resize(1);
         _lValueList[0] = Base::Vector3D();
-        throw Base::Exception("Not allowed type in vector list...");
+        throw e;
       }
     }
 
@@ -217,6 +212,12 @@ void PropertyVectorList::setPyObject(PyObject *value)
   {
     VectorPy  *pcObject = (VectorPy*)value;
     setValue( pcObject->value() );
+  }
+  else if ( PyTuple_Check(value) && PyTuple_Size(value) == 3 )
+  {
+    PropertyVector val;
+    val.setPyObject( value );
+    setValue( val.getValue() );
   }
   else
     throw Base::Exception("Not allowed type used (vector expected)...");
@@ -228,8 +229,6 @@ void PropertyVectorList::Save (Writer &writer)
   for(int i = 0;i<getSize(); i++)
     writer << writer.ind() << "<PropertyVector valueX=\"" <<  _lValueList[i].x << "\" valueY=\"" <<  _lValueList[i].y << "\" valueZ=\"" <<  _lValueList[i].z <<"\"/>" << endl;
   writer << "</VectorList>" << endl ;
-
-
 }
 
 void PropertyVectorList::Restore(Base::XMLReader &reader)

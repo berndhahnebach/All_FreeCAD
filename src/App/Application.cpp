@@ -508,22 +508,30 @@ void Application::init(int argc, char ** argv)
 void Application::initTypes(void)
 {
   // Base types
-  Base::Type             ::init();
-  Base::BaseClass        ::init();
-  Base::Exception        ::init();
-  Base::Persistance      ::init();
+  Base::Type                ::init();
+  Base::BaseClass           ::init();
+  Base::Exception           ::init();
+  Base::Persistance         ::init();
   // Properties
-  App ::Property         ::init();
-  App ::PropertyContainer::init();
-  App ::PropertyFloat    ::init();
-  App ::PropertyInteger  ::init();
-  App ::PropertyString   ::init();
-  App ::PropertyLink     ::init();
+  App ::Property            ::init();
+  App ::PropertyContainer   ::init();
+  App ::PropertyBool        ::init();
+  App ::PropertyFloat       ::init();
+  App ::PropertyFloatList   ::init();
+  App ::PropertyInteger     ::init();
+  App ::PropertyIntegerList ::init();
+  App ::PropertyString      ::init();
+  App ::PropertyLink        ::init();
+  App ::PropertyMatrix      ::init();
+  App ::PropertyVector      ::init();
+  App ::PropertyVectorList  ::init();
+  App ::PropertyColor       ::init();
+  App ::PropertyColorList   ::init();
   // Document classes
-  App ::DocumentObject   ::init();
-  App ::Feature          ::init();
-  App ::FeatureTest      ::init();
-  App ::Document         ::init();
+  App ::DocumentObject      ::init();
+  App ::Feature             ::init();
+  App ::FeatureTest         ::init();
+  App ::Document            ::init();
 
   // test code
   /*
