@@ -561,6 +561,31 @@ void MeshKernel::RecalcBoundBox (void)
     _clBoundBox &= *pI;
 }
 
+std::vector<Base::Vector3D> MeshKernel::CalcVertexNormals() const
+{
+  std::vector<Base::Vector3D> normals;
+
+  normals.resize(CountPoints());
+
+  // data structure to hold all faces belongs to one vertex
+  unsigned long p1,p2,p3;
+
+  // collecting all Facetes indices belonging to a vertex index
+  unsigned int ct = CountFacets();
+  for (unsigned int pFIter = 0;pFIter < ct; pFIter++)
+  {
+    GetFacetPoints(pFIter,p1,p2,p3);
+    
+    Vector3D Norm = (GetPoint(p2)-GetPoint(p1) ) % (GetPoint(p3)-GetPoint(p1));
+
+    normals[p1] += Norm;
+    normals[p2] += Norm;
+    normals[p3] += Norm;
+  }
+
+  return normals;
+}
+
 void MeshKernel::RebuildNeighbours (void)
 {
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >   aclEdgeMap; // Map<Kante, Liste von Facets>

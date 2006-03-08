@@ -107,6 +107,11 @@ public:
    */
   inline MeshPoint GetPoint (unsigned long ulIndex) const;
 
+  /** Returns an array of the vertex normals of the mesh. A vertex normal gets calculated
+   * by summarizing the normals of the associated facets.
+   */
+  std::vector<Base::Vector3D> CalcVertexNormals() const;
+
   /** Returns the facet at the given index. This method is rather slow and should be
    * called occassionally only.
    */
