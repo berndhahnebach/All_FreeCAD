@@ -105,12 +105,22 @@ class PointsAppExport PropertyCurvatureList: public App::PropertyLists
   TYPESYSTEM_HEADER();
 
 public:
+  enum { 
+    MeanCurvature  = 0,  /**< Mean curvature */
+    GaussCurvature = 1,  /**< Gaussian curvature */
+    MaxCurvature   = 2,  /**< Maximum curvature */ 
+    MinCurvature   = 3,  /**< Minimum curvature */
+    AbsCurvature   = 4   /**< Absolute curvature */
+  };
+
+public:
 	PropertyCurvatureList();
 	~PropertyCurvatureList();
 
   void setSize(int newSize){_lValueList.resize(newSize);}   
   int getSize(void) const {return _lValueList.size();}   
 	void setValue(const CurvatureInfo&);
+  std::vector<float> getCurvature( int tMode) const;
   
   /// index operator
   const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
@@ -223,6 +233,7 @@ public:
 /**
  * The PointsPropertyCurvature class holds curvature information for each point.
  * @author Werner Mayer
+ * @deprecated Use PropertyCurvatureList
  */
 class PointsAppExport PointsPropertyCurvature: public App::PropertyBag
 {

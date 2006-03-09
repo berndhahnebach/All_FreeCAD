@@ -100,34 +100,33 @@ void ViewProviderPoints::createPoints(Points::Feature *pFeature)
   pcPoints->numPoints = cPts.size();
 }
 
-void ViewProviderPoints::setVertexColorMode(Points::PointsPropertyColor* pcProp)
+void ViewProviderPoints::setVertexColorMode(App::PropertyColorList* pcProperty)
 {
-  const std::vector<Points::PointsPropertyColor::fColor>& color = pcProp->Color;
+  const std::vector<App::Color>& val = pcProperty->getValues();
   unsigned long i=0;
-  for ( std::vector<Points::PointsPropertyColor::fColor>::const_iterator it = color.begin(); it != color.end(); ++it )
+  for ( std::vector<App::Color>::const_iterator it = val.begin(); it != val.end(); ++it )
   {
     pcColorMat->diffuseColor.set1Value(i++, SbColor(it->r, it->g, it->b));
   }
 }
 
-void ViewProviderPoints::setVertexGreyvalueMode(Points::PointsPropertyGreyvalue* pcProp)
+void ViewProviderPoints::setVertexGreyvalueMode(Points::PropertyGreyValueList* pcProperty)
 {
-  //std::vector<float> greyvalue& = pcProp->aGreyvalue;
-  for (unsigned long i = 0; i < pcProp->aGreyvalue.size(); i++)
+  const std::vector<float>& val = pcProperty->getValues();
+  unsigned long i=0;
+  for ( std::vector<float>::const_iterator it = val.begin(); it != val.end(); ++it )
   {
-    float& grey = pcProp->aGreyvalue[i];
-    pcColorMat->diffuseColor.set1Value(i, SbColor(grey, grey, grey));
+    pcColorMat->diffuseColor.set1Value(i++, SbColor(*it, *it, *it));
   }
 }
 
-void ViewProviderPoints::setVertexNormalMode(Points::PointsPropertyNormal* pcProp)
+void ViewProviderPoints::setVertexNormalMode(Points::PropertyNormalList* pcProperty)
 {
-  if ( !pcProp->isValid() ) return; // no valid data
-  //std::vector<Vector3D> normal& = pcProp->aVertexNormal;
-  int i=0;
-  for ( std::vector<Vector3D>::iterator it = pcProp->aVertexNormal.begin(); it != pcProp->aVertexNormal.end(); ++it, i++ )
+  const std::vector<Vector3D>& val = pcProperty->getValues();
+  unsigned long i=0;
+  for ( std::vector<Vector3D>::const_iterator it = val.begin(); it != val.end(); ++it )
   {
-    pcPointsNormal->vector.set1Value(i, it->x, it->y, it->z);
+    pcPointsNormal->vector.set1Value(i++, it->x, it->y, it->z);
   }
 }
 
@@ -187,24 +186,50 @@ void ViewProviderPoints::attach(App::Feature* pcFeat)
 
 void ViewProviderPoints::setMode(const char* ModeName)
 {
-  Points::PointsWithProperty &rcPoints = dynamic_cast<Points::Feature*>(pcFeature)->getPoints();
-  App::PropertyBag *pcProp = 0;
-  pcProp = rcPoints.Get(ModeName);
-
-  if ( pcProp && stricmp("VertexColor",pcProp->GetType())==0 )
+  if ( strcmp("Color",ModeName)==0 )
   {
-    setVertexColorMode(dynamic_cast<Points::PointsPropertyColor*>(pcProp));
-    setDisplayMode("Color");
+    std::map<std::string,App::Property*> Map;
+    pcFeature->getPropertyMap(Map);
+    for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
+    {
+      Base::Type t = it->second->getTypeId();
+      if ( t==App::PropertyColorList::getClassTypeId() )
+      {
+        setVertexColorMode((App::PropertyColorList*)it->second);
+        setDisplayMode("Color");
+        break;
+      }
+    }
   }
-  else if ( pcProp && stricmp("VertexGreyvalue",pcProp->GetType())==0 )
+  else if ( strcmp("Intensity",ModeName)==0 )
   {
-    setVertexGreyvalueMode(dynamic_cast<Points::PointsPropertyGreyvalue*>(pcProp));
-    setDisplayMode("Color");
+    std::map<std::string,App::Property*> Map;
+    pcFeature->getPropertyMap(Map);
+    for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
+    {
+      Base::Type t = it->second->getTypeId();
+      if ( t==Points::PropertyGreyValueList::getClassTypeId() )
+      {
+        setVertexGreyvalueMode((Points::PropertyGreyValueList*)it->second);
+        setDisplayMode("Color");
+        break;
+      }
+    }
   }
-  else if ( pcProp && strcmp("VertexNormal",pcProp->GetType())==0 )
+  else if ( strcmp("Shaded",ModeName)==0 )
   {
-    setVertexNormalMode(dynamic_cast<Points::PointsPropertyNormal*>(pcProp));
-    setDisplayMode("Shaded");
+    std::map<std::string,App::Property*> Map;
+    pcFeature->getPropertyMap(Map);
+    for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
+    {
+      Base::Type t = it->second->getTypeId();
+      if ( t==Points::PropertyNormalList::getClassTypeId() )
+      {
+        setVertexNormalMode((Points::PropertyNormalList*)it->second);
+        setDisplayMode("Shaded");
+        break;
+      }
+    }
   }
   else if ( stricmp("Point",ModeName)==0 )
   {
@@ -219,20 +244,22 @@ std::vector<std::string> ViewProviderPoints::getModes(void)
   std::vector<std::string> StrList;
   StrList.push_back("Point");
 
-  Points::PointsWithProperty &rcPoints = dynamic_cast<Points::Feature*>(pcFeature)->getPoints();
-  std::list<std::string>::iterator It;
+  if ( pcFeature )
+  {
+    std::map<std::string,App::Property*> Map;
+    pcFeature->getPropertyMap(Map);
 
-  std::list<std::string> list = rcPoints.GetAllNamesOfType("VertexColor");
-  for(It=list.begin();It!=list.end();It++)
-    StrList.push_back(*It);
-
-  list = rcPoints.GetAllNamesOfType("VertexNormal");
-  for(It=list.begin();It!=list.end();It++)
-    StrList.push_back(*It);
-
-  list = rcPoints.GetAllNamesOfType("VertexGreyvalue");
-  for(It=list.begin();It!=list.end();It++)
-    StrList.push_back(*It);
+    for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
+    {
+      Base::Type t = it->second->getTypeId();
+      if ( t==Points::PropertyNormalList::getClassTypeId() )
+        StrList.push_back("Shaded");
+      else if ( t==Points::PropertyGreyValueList::getClassTypeId() )
+        StrList.push_back("Intensity");
+      else if ( t==App::PropertyColorList::getClassTypeId() )
+        StrList.push_back("Color");
+    }
+  }
 
   return StrList;
 }

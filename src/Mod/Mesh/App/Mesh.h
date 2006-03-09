@@ -75,11 +75,21 @@ class AppMeshExport PropertyCurvatureList: public App::PropertyLists
   TYPESYSTEM_HEADER();
 
 public:
+  enum { 
+    MeanCurvature  = 0,  /**< Mean curvature */
+    GaussCurvature = 1,  /**< Gaussian curvature */
+    MaxCurvature   = 2,  /**< Maximum curvature */ 
+    MinCurvature   = 3,  /**< Minimum curvature */
+    AbsCurvature   = 4   /**< Absolute curvature */
+  };
+
+public:
   PropertyCurvatureList();
   ~PropertyCurvatureList();
 
   void setSize(int newSize){_lValueList.resize(newSize);}   
   int getSize(void) const {return _lValueList.size();}   
+  std::vector<float> getCurvature( int tMode) const;
   void setValue(const CurvatureInfo&);
   
   /// index operator

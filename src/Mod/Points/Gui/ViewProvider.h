@@ -32,15 +32,17 @@ class SoLocateHighlight;
 class SoCoordinate3;
 class SoNormal;
 
-namespace Gui
-{
+namespace App {
+  class PropertyColorList;
+}
+
+namespace Gui {
   class SoFCSelection;
 }
 
 namespace Points {
-  class PointsPropertyColor;
-  class PointsPropertyGreyvalue;
-  class PointsPropertyNormal;
+  class PropertyGreyValueList;
+  class PropertyNormalList;
   class Feature;
 }
 
@@ -77,13 +79,11 @@ public:
   /// Set the color
   virtual void setColor(const App::Color &c);
 
-
-
 protected:
   void createPoints(Points::Feature *pcFeature);
-  void setVertexColorMode(Points::PointsPropertyColor*);
-  void setVertexGreyvalueMode(Points::PointsPropertyGreyvalue*);
-  void setVertexNormalMode(Points::PointsPropertyNormal*);
+  void setVertexColorMode(App::PropertyColorList*);
+  void setVertexGreyvalueMode(Points::PropertyGreyValueList*);
+  void setVertexNormalMode(Points::PropertyNormalList*);
 
 protected:
   SoCoordinate3     *pcPointsCoord;

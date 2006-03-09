@@ -89,6 +89,59 @@ void PropertyCurvatureList::setValue(const CurvatureInfo& lValue)
   hasSetValue();
 }
 
+std::vector<float> PropertyCurvatureList::getCurvature( int mode ) const
+{
+  const std::vector<Mesh::CurvatureInfo>& fCurvInfo = getValues();
+  std::vector<float> fValues;
+  fValues.reserve(fCurvInfo.size());
+
+  // Mean curvature
+  if ( mode == MeanCurvature )
+  {
+    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
+    {
+      fValues.push_back( 0.5f*(it->fMaxCurvature+it->fMinCurvature) );
+    }
+  }
+  // Gaussian curvature
+  else if ( mode == GaussCurvature )
+  {
+    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
+    {
+      fValues.push_back( it->fMaxCurvature * it->fMinCurvature );
+    }
+  }
+  // Maximum curvature
+  else if ( mode == MaxCurvature )
+  {
+    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
+    {
+      fValues.push_back( it->fMaxCurvature );
+    }
+  }
+  // Minimum curvature
+  else if ( mode == MinCurvature )
+  {
+    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
+    {
+      fValues.push_back( it->fMinCurvature );
+    }
+  }
+  // Absolute curvature
+  else if ( mode == AbsCurvature )
+  {
+    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
+    {
+      if ( fabs(it->fMaxCurvature) > fabs(it->fMinCurvature) )
+        fValues.push_back( it->fMaxCurvature );
+      else
+        fValues.push_back( it->fMinCurvature );
+    }
+  }
+
+  return fValues;
+}
+
 void PropertyCurvatureList::transform(const Matrix4D &mat)
 {
   // The principal direction is only a vector with unit length, so we only need to rotate it

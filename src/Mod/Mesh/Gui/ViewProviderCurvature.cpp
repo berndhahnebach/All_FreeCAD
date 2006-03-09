@@ -76,6 +76,13 @@ ViewProviderMeshCurvature::ViewProviderMeshCurvature()
   pcColorBar->Attach(this);
   pcColorBar->ref();
   pcColorBar->setRange( -0.1f, 0.1f, 3 );
+
+  //FIXME: When preselection is switched off then selection does not work anymore.
+  //       Seems to be a bug in Gui::SoFCSelection
+  // switch off preselection
+//  pcHighlight->highlightMode = Gui::SoFCSelection::OFF;
+  pcHighlight->selectionMode = Gui::SoFCSelection::SEL_OFF;
+  pcHighlight->style = Gui::SoFCSelection::BOX;
 }
 
 ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
@@ -218,62 +225,7 @@ void ViewProviderMeshCurvature::setVertexCurvatureMode(int mode)
     return; // cannot display this feature type due to missing curvature property
 
   // curvature values
-  std::vector<float> fValues; 
-
-  // Mean curvature
-  if ( mode == MeanCurvature )
-  {
-    const std::vector<Mesh::CurvatureInfo>& fCurvInfo = pCurvInfo->getValues();
-    fValues.reserve(fCurvInfo.size());
-    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
-    {
-      fValues.push_back( 0.5f*(it->fMaxCurvature+it->fMinCurvature) );
-    }
-  }
-  // Gaussian curvature
-  else if ( mode == GaussCurvature )
-  {
-    const std::vector<Mesh::CurvatureInfo>& fCurvInfo = pCurvInfo->getValues();
-    fValues.reserve(fCurvInfo.size());
-    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
-    {
-      fValues.push_back( it->fMaxCurvature * it->fMinCurvature );
-    }
-  }
-  // Maximum curvature
-  else if ( mode == MaxCurvature )
-  {
-    const std::vector<Mesh::CurvatureInfo>& fCurvInfo = pCurvInfo->getValues();
-    fValues.reserve(fCurvInfo.size());
-    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
-    {
-      fValues.push_back( it->fMaxCurvature );
-    }
-  }
-  // Minimum curvature
-  else if ( mode == MinCurvature )
-  {
-    const std::vector<Mesh::CurvatureInfo>& fCurvInfo = pCurvInfo->getValues();
-    fValues.reserve(fCurvInfo.size());
-    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
-    {
-      fValues.push_back( it->fMinCurvature );
-    }
-  }
-  // Absolute curvature
-  else if ( mode == AbsCurvature )
-  {
-    const std::vector<Mesh::CurvatureInfo>& fCurvInfo = pCurvInfo->getValues();
-    fValues.reserve(fCurvInfo.size());
-    for ( std::vector<Mesh::CurvatureInfo>::const_iterator it=fCurvInfo.begin();it!=fCurvInfo.end(); ++it )
-    {
-      if ( fabs(it->fMaxCurvature) > fabs(it->fMinCurvature) )
-        fValues.push_back( it->fMaxCurvature );
-      else
-        fValues.push_back( it->fMinCurvature );
-    }
-  }
-
+  std::vector<float> fValues = pCurvInfo->getCurvature( mode ); 
   unsigned long j=0;
   for ( std::vector<float>::const_iterator jt = fValues.begin(); jt != fValues.end(); ++jt )
   {
@@ -317,27 +269,27 @@ void ViewProviderMeshCurvature::setMode(const char* ModeName)
 {
   if ( strcmp("Mean curvature",ModeName)==0 )
   {
-    setVertexCurvatureMode(MeanCurvature);
+    setVertexCurvatureMode(Mesh::PropertyCurvatureList::MeanCurvature);
     setDisplayMode("ColorShaded");
   }
   else if ( strcmp("Gaussian curvature",ModeName)==0  )
   {
-    setVertexCurvatureMode(GaussCurvature);
+    setVertexCurvatureMode(Mesh::PropertyCurvatureList::GaussCurvature);
     setDisplayMode("ColorShaded");
   }
   else if ( strcmp("Maximum curvature",ModeName)==0  )
   {
-    setVertexCurvatureMode(MaxCurvature);
+    setVertexCurvatureMode(Mesh::PropertyCurvatureList::MaxCurvature);
     setDisplayMode("ColorShaded");
   }
   else if ( strcmp("Minimum curvature",ModeName)==0  )
   {
-    setVertexCurvatureMode(MinCurvature);
+    setVertexCurvatureMode(Mesh::PropertyCurvatureList::MinCurvature);
     setDisplayMode("ColorShaded");
   }
   else if ( strcmp("Absolute curvature",ModeName)==0  )
   {
-    setVertexCurvatureMode(AbsCurvature);
+    setVertexCurvatureMode(Mesh::PropertyCurvatureList::AbsCurvature);
     setDisplayMode("ColorShaded");
   }
 
