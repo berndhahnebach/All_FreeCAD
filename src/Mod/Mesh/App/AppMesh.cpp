@@ -51,6 +51,8 @@ void AppMeshExport initMesh() {
 
   Mesh::PropertyNormalList    ::init();
   Mesh::PropertyCurvatureList ::init();
+  Mesh::PropertyMeshKernel    ::init();
+
   Mesh::Feature               ::init();
   Mesh::Import                ::init();
   Mesh::Export                ::init();

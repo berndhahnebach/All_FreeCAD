@@ -38,12 +38,14 @@
 #include <App/PropertyStandard.h>
 #include <App/PropertyGeo.h>
 
+#include "Core/MeshKernel.h"
+
 
 namespace Mesh
 {
 
-/**
- * Own class to distinguish from real vector list
+/** The normals property class.
+ * Note: We need an own class for that to distinguish from the base vector list.
  */
 class AppMeshExport PropertyNormalList : public App::PropertyVectorList
 {
@@ -93,6 +95,40 @@ public:
 
 private:
   std::vector<CurvatureInfo> _lValueList;
+};
+
+/** The meshkernl property
+ */
+class AppMeshExport PropertyMeshKernel : public App::Property
+{
+  TYPESYSTEM_HEADER();
+
+public:
+	PropertyMeshKernel();
+	~PropertyMeshKernel();
+
+  /** @name Getter/setter */
+  //@{
+  void setValue( const MeshCore::MeshKernel& m);
+	const MeshCore::MeshKernel &getValue(void) const;
+  //@}
+
+  /** @name Python interface */
+  //@{
+  PyObject* getPyObject(void) const;
+  void setPyObject(PyObject *value);
+  //@}
+
+  /** @name Save/restore */
+  //@{
+  void Save (Base::Writer &writer);
+  void Restore(Base::XMLReader &reader);
+  void SaveDocFile (Base::Writer &writer);
+  void RestoreDocFile(Base::Reader &reader);
+  //@}
+
+private:
+  MeshCore::MeshKernel _cMesh;
 };
 
 } // namespace Mesh

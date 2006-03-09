@@ -29,13 +29,16 @@
 #include <Base/Exception.h>
 #include <Base/Writer.h>
 
-#include "Mesh.h"
 #include "Core/MeshKernel.h"
+
+#include "Mesh.h"
+#include "MeshPy.h"
 
 using namespace Mesh;
 
 TYPESYSTEM_SOURCE(Mesh::PropertyNormalList, App::PropertyVectorList);
 TYPESYSTEM_SOURCE(Mesh::PropertyCurvatureList , App::PropertyLists);
+TYPESYSTEM_SOURCE(Mesh::PropertyMeshKernel , App::Property);
 
 void PropertyNormalList::transform(const Matrix4D &mat)
 {
@@ -146,6 +149,70 @@ void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
     reader.read((char*)&uCt, sizeof(unsigned long));
     _lValueList.resize(uCt);
     reader.read((char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+PropertyMeshKernel::PropertyMeshKernel()
+{
+
+}
+
+PropertyMeshKernel::~PropertyMeshKernel()
+{
+}
+
+void PropertyMeshKernel::setValue(const MeshCore::MeshKernel& m)
+{
+  _cMesh = m;
+  hasSetValue();
+}
+
+const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const 
+{
+	return _cMesh;
+}
+
+PyObject *PropertyMeshKernel::getPyObject(void) const
+{
+  //FIXME: We must remove MeshWithProperty class first. MeshPy must own a MeshKernel object instead.
+  return new MeshPy(0);
+}
+
+void PropertyMeshKernel::setPyObject(PyObject *value)
+{
+  //FIXME: see getPyObject()
+  if( PyObject_TypeCheck(value, &(MeshPy::Type)) ) {
+   	MeshPy  *pcObject = (MeshPy*)value;
+    _cMesh = *(pcObject->getMesh()->getKernel());
+  }
+}
+
+void PropertyMeshKernel::Save (Base::Writer &writer)
+{
+  writer.addFile("MeshKernel.bms", this);
+}
+
+void PropertyMeshKernel::Restore(Base::XMLReader &reader)
+{
+}
+
+void PropertyMeshKernel::SaveDocFile (Base::Writer &writer)
+{
+  try {
+    _cMesh.Write( writer );
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
+
+void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
+{
+  try {
+    _cMesh.Read( reader );
   } catch( const Base::Exception& e) {
     throw e;
   }

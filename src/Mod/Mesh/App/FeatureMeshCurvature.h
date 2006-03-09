@@ -49,10 +49,7 @@ public:
   Curvature();
 
   App::PropertyLink Source;
-  App::PropertyVectorList CurvMaxDir;
-  App::PropertyVectorList CurvMinDir;
-  App::PropertyFloatList CurvMaxVal;
-  App::PropertyFloatList CurvMinVal;
+  PropertyCurvatureList CurvInfo;
 
   /** @name methods overide Feature */
   //@{
@@ -60,7 +57,6 @@ public:
   virtual int execute(void);
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "MeshGui::ViewProviderMeshCurvature";}
-  void transform(const Base::Matrix4D &rclMat);
   //@}
 
   virtual MeshWithProperty& getMesh();

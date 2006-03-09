@@ -50,10 +50,7 @@ PROPERTY_SOURCE(Mesh::Curvature, Mesh::Feature)
 Curvature::Curvature(void)
 {
   ADD_PROPERTY(Source,(0));
-  ADD_PROPERTY(CurvMaxDir,(Base::Vector3D()));
-  ADD_PROPERTY(CurvMinDir,(Base::Vector3D()));
-  ADD_PROPERTY(CurvMaxVal,(0.0f));
-  ADD_PROPERTY(CurvMinVal,(0.0f));
+  ADD_PROPERTY(CurvInfo, (CurvatureInfo()));
 }
 
 int Curvature::execute(void)
@@ -94,47 +91,18 @@ int Curvature::execute(void)
   const float* aMaxCurv = meshCurv.GetMaxCurvatures();
   const float* aMinCurv = meshCurv.GetMinCurvatures();
 
-  CurvMaxVal.setSize(pMesh->CountPoints()); CurvMinVal.setSize(pMesh->CountPoints());
-  CurvMaxDir.setSize(pMesh->CountPoints()); CurvMinDir.setSize(pMesh->CountPoints());
+  CurvInfo.setSize(pMesh->CountPoints());
   for ( unsigned long i=0; i<pMesh->CountPoints(); i++ )
   {
-    CurvMaxVal.set1Value(i, aMaxCurv[i]);
-    CurvMinVal.set1Value(i, aMinCurv[i]);
-    CurvMaxDir.set1Value(i, Vector3D( aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z() ) );
-    CurvMinDir.set1Value(i, Vector3D( aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z() ) );
+    CurvatureInfo ci;
+    ci.cMaxCurvDir = Vector3D( aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z() );
+    ci.cMinCurvDir = Vector3D( aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z() );
+    ci.fMaxCurvature = aMaxCurv[i];
+    ci.fMinCurvature = aMinCurv[i];
+    CurvInfo.set1Value(i, ci);
   }
 
   return 0;
-}
-
-void Curvature::transform(const Base::Matrix4D &mat)
-{
-  // The principal direction is only a vector with unit length, so we only need to rotate it
-  // (no translations or scaling)
-
-  // Extract scale factors (assumes an orthogonal rotation matrix)
-  // Use the fact that the length of the row vectors of R are all equal to 1
-  // And that scaling is applied after rotating
-  double s[3];
-  s[0] = sqrt(mat[0][0] * mat[0][0] + mat[0][1] * mat[0][1] + mat[0][2] * mat[0][2]);
-  s[1] = sqrt(mat[1][0] * mat[1][0] + mat[1][1] * mat[1][1] + mat[1][2] * mat[1][2]);
-  s[2] = sqrt(mat[2][0] * mat[2][0] + mat[2][1] * mat[2][1] + mat[2][2] * mat[2][2]);
-
-  // Set up the rotation matrix: zero the translations and make the scale factors = 1
-  Matrix4D rot;
-  rot.unity();
-  for (unsigned short i = 0; i < 3; i++) {
-    for (unsigned short j = 0; j < 3; j++) {
-      rot[i][j] = mat[i][j] / s[i];
-    }
-  }
-
-  // Rotate the principal directions
-  for (int ii=0; ii<CurvMaxDir.getSize(); ii++)
-  {
-    CurvMaxDir.set1Value(ii, rot * CurvMaxDir[ii]);
-    CurvMinDir.set1Value(ii, rot * CurvMinDir[ii]);
-  }
 }
 
 MeshWithProperty& Curvature::getMesh()
