@@ -21,8 +21,8 @@
  *                                                                         *
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
-#ifndef _RSEXCEPTION_HXX
-#define _RSEXCEPTION_HXX
+#ifndef BASE_EXCEPTION_H
+#define BASE_EXCEPTION_H
 
 #include <exception>
 #include <string>
@@ -109,5 +109,5 @@ inline void Exception::SetMessage(const char * sMessage)
 
 } //namespace Base
 
-#endif
+#endif // BASE_EXCEPTION_H
 

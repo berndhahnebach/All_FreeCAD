@@ -25,7 +25,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
 #endif
 
 #include <Base/Console.h>
@@ -62,7 +61,7 @@ Feature::~Feature()
 }
 
 
-Standard_Integer Feature::execute(void)
+int Feature::execute(void)
 {
   return 0;
 }

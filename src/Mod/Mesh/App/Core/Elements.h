@@ -397,7 +397,7 @@ typedef  std::vector<MeshPoint>  TMeshPointArray;
 /**
  * Stores all data points of the mesh structure.
  */
-class MeshPointArray: public TMeshPointArray
+class AppMeshExport MeshPointArray: public TMeshPointArray
 {
 public:
   // Iterator interface

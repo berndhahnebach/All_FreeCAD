@@ -29,7 +29,6 @@
 #include "Core/MeshKernel.h"
 #include "Mesh.h"
 
-class TFunction_Logbook;
 class FeaturePy;
 
 namespace Base{
