@@ -165,7 +165,11 @@ std::string FindHomePathUnix(const char* sCall)
 					test = cwd + PATHSEP + test;
 
 				// does it exist?
+#if defined (__GNUC__)
+				if ( access(test.c_str(), 0) == 0 )
+#else
 				if ( _access(test.c_str(), 0) == 0 )
+#endif
 				{
 					absPath = test;
 #ifdef FC_DEBUG
@@ -228,7 +232,11 @@ std::string FindPyHomePathUnix(const char* sCall)
 	absPath = cwd + PATHSEP + argv;
 
 	// check PATH if module is not in cwd
+#if defined (__GNUC__)
+	if ( access(absPath.c_str(), 0) != 0 )
+#else
 	if ( _access(absPath.c_str(), 0) != 0 )
+#endif
 	{
 		const char *pEnv = getenv( "PYTHONPATH" );
 
@@ -260,7 +268,11 @@ std::string FindPyHomePathUnix(const char* sCall)
 					test = cwd + PATHSEP + test;
 
 				// does it exist?
+#if defined (__GNUC__)
+				if ( access(test.c_str(), 0) == 0 )
+#else
 				if ( _access(test.c_str(), 0) == 0 )
+#endif
 				{
 					absPath = test;
 					break;
@@ -334,13 +346,21 @@ std::string GetFreeCADLib(const char* sHomePath)
 		EnvPrint("Failed using FREECADLIB env variable, search for Setup constellation (./LibPack)");
 		std::string cStrLibPack(sHomePath);
 		cStrLibPack += "LibPack";
+#if defined (__GNUC__)
+		if(chdir(cStrLibPack.c_str()) != -1)
+#else
 		if(_chdir(cStrLibPack.c_str()) != -1)
+#endif
 		{
 			std::string str(sHomePath);
 			str += PATHSEP;
 			str += "bin";
 			// switch back to bin
+#if defined (__GNUC__)
+			chdir(str.c_str());
+#else
 			_chdir(str.c_str());
+#endif
 			EnvPrint("Found Setup constellation");
 			return cStrLibPack+PATHSEP;
 		}

@@ -47,7 +47,11 @@ int ImportAscii::execute(void)
 {
 
   // ask for read permisson
+#if defined (__GNUC__)
+	if ( access(FileName.getValue(), 4) != 0 )
+#else
 	if ( _access(FileName.getValue(), 4) != 0 )
+#endif
   {
     Base::Console().Log("FeaturePointsImportAscii::Execute() not able to open %s!\n",FileName.getValue());
     return 1;

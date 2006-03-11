@@ -64,9 +64,13 @@ Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
 {
   MeshWithProperty *Mesh = new MeshWithProperty();
   // ask for read permisson
+#if defined (__GNUC__)
+	if ( access(FileName, 4) != 0 )
+#else
 	if ( _access(FileName, 4) != 0 )
+#endif
     throw Base::Exception("MeshAlgos::Load() not able to open File!\n");
- 
+
   MeshSTL aReader(* (Mesh->getKernel()) );
 
   // read STL file
@@ -75,15 +79,19 @@ Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
   if ( !aReader.Load( str ) )
     throw Base::Exception("STL read failed (load file)");
 
-  return Mesh; 
+  return Mesh;
 }
 
 void MeshAlgos::read(MeshWithProperty* Mesh,const char *FileName)
 {
   // ask for read permisson
+#if defined (__GNUC__)
+	if ( access(FileName, 4) != 0 )
+#else
 	if ( _access(FileName, 4) != 0 )
+#endif
     throw Base::Exception("MeshAlgos::read() not able to open File!\n");
- 
+
   MeshSTL aReader(* (Mesh->getKernel()) );
 
   // read STL file

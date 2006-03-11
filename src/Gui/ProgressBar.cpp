@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qcursor.h>
 # include <qpainter.h>
 # include <qstatusbar.h>
 # include <qdatetime.h>

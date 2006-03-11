@@ -34,9 +34,14 @@ void FilePath::check() const {
   _is_block    = false ;
   _is_socket   = false ;
   _is_fifo     = false ;
-  
+
+#if defined (__GNUC__)
+  struct stat buf ;
+  if ( stat( _path.c_str(), &buf ) != -1 ) {
+#else
   struct _stat buf ;
   if ( _stat( _path.c_str(), &buf ) != -1 ) {
+#endif
     _exists    = true ;
 #if defined(BOOST_WINNT)
     _is_reg    = _S_IFREG & buf.st_mode ;

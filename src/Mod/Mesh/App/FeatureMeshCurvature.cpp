@@ -77,7 +77,6 @@ int Curvature::execute(void)
   {
     for (int i=0; i<3; i++)
     {
-      int idx = (int)it->_aulPoints[i];
       aIdx.push_back( (int)it->_aulPoints[i] );
     }
   }

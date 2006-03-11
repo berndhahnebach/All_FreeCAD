@@ -92,7 +92,11 @@ void FileInfo::makeTemp(const char* Template)
   char tmp[256];
   strcpy(tmp,Template);
 
+#if defined (__GNUC__)
+  mktemp(tmp);
+#else
   _mktemp(tmp);
+#endif
 
   setFile(tmp);
 }
@@ -159,7 +163,7 @@ string FileInfo::extension ( bool complete ) const
 
 bool FileInfo::hasExtension ( const char* Ext) const
 {
-#ifdef FC_OS_LINUX
+#if defined (__GNUC__)
   return strcasecmp(Ext,extension().c_str()) == 0;
 #else
   return _stricmp(Ext,extension().c_str()) == 0;
@@ -168,17 +172,29 @@ bool FileInfo::hasExtension ( const char* Ext) const
 
 bool FileInfo::exists () const
 {
+#if defined (__GNUC__)
+  return access(FileName.c_str(),0) == 0;
+#else
   return _access(FileName.c_str(),0) == 0;
+#endif
 }
 
 bool FileInfo::isReadable () const
 {
+#if defined (__GNUC__)
+  return access(FileName.c_str(),4) == 0;
+#else
   return _access(FileName.c_str(),4) == 0;
+#endif
 }
 
 bool FileInfo::isWritable () const
 {
+#if defined (__GNUC__)
+  return access(FileName.c_str(),2) == 0;
+#else
   return _access(FileName.c_str(),2) == 0;
+#endif
 }
 
 bool FileInfo::isFile () const
@@ -207,10 +223,17 @@ bool FileInfo::isDir () const
   {
     // if we can chdir then it must be a directory
     char cwd[1000];
+#if defined (__GNUC__)
+    if ( getcwd(cwd,1000) != 0 && chdir(FileName.c_str()) == 0 )
+    {
+      chdir(cwd);
+      return true;
+#else
     if ( _getcwd(cwd,1000) != 0 && _chdir(FileName.c_str()) == 0 )
     {
       _chdir(cwd);
       return true;
+#endif
     }
     else
       return false;

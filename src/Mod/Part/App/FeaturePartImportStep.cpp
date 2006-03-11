@@ -55,10 +55,17 @@ Standard_Integer ImportStep::execute(void)
   if( FileName.isEmpty()) 
     return 1;
 
+#if defined (__GNUC__)
+  int i=open(FileName.getValue(),O_RDONLY);
+	if( i != -1)
+	{
+	  close(i);
+#else
   int i=_open(FileName.getValue(),O_RDONLY);
 	if( i != -1)
 	{
 	  _close(i);
+#endif
 	}else{
     Base::Console().Log("FeaturePartImportStep::Execute() not able to open %s!\n",FileName.getValue());
 	  return 1;

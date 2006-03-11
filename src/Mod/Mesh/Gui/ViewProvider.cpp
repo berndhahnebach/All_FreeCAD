@@ -43,6 +43,7 @@
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
 # include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoSwitch.h>
 #endif
 

@@ -300,8 +300,11 @@ PP_Convert_Result(PyObject *presult, char *resFormat, void *resTarget)
         if (strcmp(resFormat, "O") != 0) {     /* free object unless exported */
             if (strcmp(resFormat, "s") == 0) { /* copy string: caller owns it */
                 char **target = (char**) resTarget;
-            
-                *target = _strdup(*target); 
+#if defined (__GNUC__)
+                *target = strdup(*target);
+#else
+                *target = _strdup(*target);
+#endif
             }
             Py_DECREF(presult);
         }

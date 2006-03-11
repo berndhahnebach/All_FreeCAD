@@ -231,7 +231,7 @@ void ViewProviderPoints::setMode(const char* ModeName)
       }
     }
   }
-  else if ( _stricmp("Point",ModeName)==0 )
+  else if ( strcmp("Point",ModeName)==0 )
   {
     setDisplayMode("Point");
   }

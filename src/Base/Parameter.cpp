@@ -1056,10 +1056,18 @@ void ParameterManager::Init(void)
 
 bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
+#if defined (__GNUC__)
+	int i=open(sFileName,O_RDONLY);
+#else
 	int i=_open(sFileName,O_RDONLY);
+#endif
 	if( i != -1)
 	{
+#if defined (__GNUC__)
+		close(i);
+#else
 		_close(i);
+#endif
 		LoadDocument(sFileName);
 		return false;
 	}else{
