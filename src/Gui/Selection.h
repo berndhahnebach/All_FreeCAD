@@ -39,7 +39,7 @@
 
 namespace App
 {
-  class Feature;
+  class AbstractFeature;
   class Document;
 }
 
@@ -127,13 +127,13 @@ public:
    * @note The vector reflects the sequence of selection.
    * @deprecated Use getFeaturesOfType instead.
    */
-  std::vector<App::Feature*> getSelectedFeatures(const char *TypeName=0, const char* pDocName=0) const;
+  std::vector<App::AbstractFeature*> getSelectedFeatures(const char *TypeName=0, const char* pDocName=0) const;
   /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
    * If no document name is specified the features from the active document are regarded.
    * If no objects of this document are selected a empty vector is returned.
    * @note The vector reflects the sequence of selection.
    */
-  std::vector<App::Feature*> getFeaturesOfType(const Base::Type& typeId, const char* pDocName=0) const;
+  std::vector<App::AbstractFeature*> getFeaturesOfType(const Base::Type& typeId, const char* pDocName=0) const;
 
   struct SelObj {
     const char* DocName;
@@ -141,7 +141,7 @@ public:
     const char* SubName;
     const char* TypeName;
     App::Document* pDoc;
-    App::Feature*  pFeat;
+    App::AbstractFeature*  pFeat;
   };
 
   /** returns a vector of selection objectse
@@ -176,7 +176,7 @@ protected:
     std::string SubName;
     std::string TypeName;
     App::Document* pDoc;
-    App::Feature*  pFeat;
+    App::AbstractFeature*  pFeat;
     float x,y,z;
   };
   std::list<_SelObj> _SelList;

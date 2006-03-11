@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADGui"
-	ProjectGUID="{9CB1F17C-5930-44A1-BF56-3471E4E99073}"
+	ProjectGUID="{C29EBBB0-DF4D-4036-95F5-DCC0B4DE382A}"
 	>
 	<Platforms>
 		<Platform
@@ -76,9 +76,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB xerces-c_2.lib python23_d.lib coin2d.lib qt-mtnc321.lib qui.lib soqt1d.lib opengl32.lib"
 				OutputFile="Debug/FreeCADGuiD.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/FreeCADGuiD.pdb"
 				ImportLibrary=".\Debug/FreeCADGuiD.lib"
@@ -109,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\bin&#x0D;&#x0A;copy Debug\FreeCADGuiD.dll ..\..\bin&#x0D;&#x0A;mkdir ..\..\lib&#x0D;&#x0A;copy Debug\FreeCADGuiD.lib ..\..\lib&#x0D;&#x0A;"
+				CommandLine="xcopy   /y   /f   Debug\FreeCADGuiD.dll   ..\..\bin&#x0D;&#x0A;xcopy   /y   /f   Debug\FreeCADGuiD.lib   ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -175,9 +177,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB xerces-c_2.lib python23.lib coin2.lib qt-mtnc321.lib qui.lib soqt1.lib opengl32.lib"
 				OutputFile=".\Release/FreeCADGui.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/FreeCADGui.pdb"
 				ImportLibrary=".\Release/FreeCADGui.lib"
 				TargetMachine="1"
@@ -207,7 +211,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\bin&#x0D;&#x0A;copy Release\FreeCADGui.dll ..\..\bin&#x0D;&#x0A;mkdir ..\..\lib&#x0D;&#x0A;copy Release\FreeCADGui.lib ..\..\lib&#x0D;&#x0A;"
+				CommandLine="xcopy   /y   /f   Release\FreeCADGui.dll   ..\..\bin\&#x0D;&#x0A;xcopy   /y   /f   Release\FreeCADGui.lib   ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -4283,30 +4287,6 @@
 		<File
 			RelativePath="GuiConsole.h"
 			>
-		</File>
-		<File
-			RelativePath="Libs.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Macro.cpp"

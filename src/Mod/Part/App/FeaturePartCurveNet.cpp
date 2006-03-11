@@ -70,10 +70,10 @@ int CurveNet::execute(void)
 
     std::string FileName = getPropertyString("FileName");
 
-    int i=open(FileName.c_str(),O_RDONLY);
+    int i=_open(FileName.c_str(),O_RDONLY);
 	  if( i != -1)
 	  {
-		  close(i);
+		  _close(i);
 	  }else{
       Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.c_str());
 		  return 1;

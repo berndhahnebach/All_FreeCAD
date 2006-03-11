@@ -65,7 +65,7 @@ class FeaturePy;
 
 /** Base class of all Feature classes in FreeCAD
  */
-class AppExport Feature: public App::DocumentObject
+class AppExport AbstractFeature: public App::DocumentObject
 {
     PROPERTY_HEADER(App::Feature);
 
@@ -75,8 +75,8 @@ public:
   PropertyString name;
 
 	/// Constructor
-	Feature(void);
-  virtual ~Feature();
+	AbstractFeature(void);
+  virtual ~AbstractFeature();
 
   virtual void onChanged(Property* prop);
 
@@ -241,54 +241,7 @@ protected:
 };
 
 
-/** The FeatureFactory singleton
-  */
 
-  /*
-class AppExport FeatureFactorySingleton : public Base::Factory
-{
-public:
-	static FeatureFactorySingleton& Instance(void);
-	static void Destruct (void);
-
-    /// produce the widget using the factory
-	Feature *Produce (const char* sName) const;
-
-private:
-	static FeatureFactorySingleton* _pcSingleton;
-
-	FeatureFactorySingleton(){}
-	~FeatureFactorySingleton(){}
-};
-
-inline AppExport FeatureFactorySingleton& FeatureFactory(void)
-{
-	return FeatureFactorySingleton::Instance();
-}
-
-// --------------------------------------------------------------------
-
-template <class CLASS>
-class FeatureProducer: public Base::AbstractProducer
-{
-	public:
-		/// Constructor
-		FeatureProducer ()
-		{
-			App::FeatureFactory().AddProducer(typeid(CLASS).name(), this);
-		}
-
-		virtual ~FeatureProducer (void){}
-
-		/// Produce an instance
-		virtual void* Produce (void) const
-		{ 
-			return (void*)(new CLASS);
-		}
-};
-
-
-*/
 
 } //namespace App
 

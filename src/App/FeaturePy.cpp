@@ -123,7 +123,7 @@ PyParentObject App::FeaturePy::Parents[] = { &FeaturePy::Type, &PyObjectBase::Ty
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-App::FeaturePy::FeaturePy(Feature *pcFeature, PyTypeObject *T)
+App::FeaturePy::FeaturePy(AbstractFeature *pcFeature, PyTypeObject *T)
 : PyObjectBase( T), _pcFeature(pcFeature),solidMaterialPy(0),lineMaterialPy(0),pointMaterialPy(0)
 {
 //	Base::Console().Log("Create FeaturePy: %p \n",this);

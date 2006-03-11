@@ -34,7 +34,7 @@
 namespace App
 {
 
-class Feature;
+class AbstractFeature;
 class MaterialPy;
 
 //===========================================================================
@@ -52,7 +52,7 @@ protected:
 	~FeaturePy();
 
 public:
-	FeaturePy(Feature *pcFeature, PyTypeObject *T = &Type);
+	FeaturePy(AbstractFeature *pcFeature, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
 
 	//---------------------------------------------------------------------
@@ -70,11 +70,11 @@ public:
 	//---------------------------------------------------------------------
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
-  Feature *getFeature(void){return _pcFeature;}
+  AbstractFeature *getFeature(void){return _pcFeature;}
   
 
 private:
-  Feature *_pcFeature;
+  AbstractFeature *_pcFeature;
 
   MaterialPy* solidMaterialPy;
   MaterialPy* lineMaterialPy;

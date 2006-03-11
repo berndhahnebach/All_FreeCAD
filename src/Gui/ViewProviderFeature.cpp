@@ -82,7 +82,7 @@ ViewProviderFeature::~ViewProviderFeature()
 }
 
 
-void ViewProviderFeature::attach(App::Feature *pcFeat)
+void ViewProviderFeature::attach(App::AbstractFeature *pcFeat)
 {
   // save feature pointer
   pcFeature = pcFeat;
@@ -121,7 +121,7 @@ bool ViewProviderFeature::testStatus(void)
   QPixmap *px=0;
   switch(pcFeature->getStatus())
   {
-  case App::Feature::Valid:
+  case App::AbstractFeature::Valid:
     if(pcFeature->MustExecute())
     {
       const char *feature_warning_xpm[]={
@@ -143,17 +143,17 @@ bool ViewProviderFeature::testStatus(void)
       pcFeatItem->BaseColor =Qt::white;
       pcFeatItem->TextColor =Qt::black;
     } break;
-  case App::Feature::New:
+  case App::AbstractFeature::New:
     {
       pcFeatItem->BaseColor =Qt::white;
       pcFeatItem->TextColor =Qt::gray;
     } break;
-  case App::Feature::Inactive:
+  case App::AbstractFeature::Inactive:
     {
       pcFeatItem->BaseColor =Qt::white;
       pcFeatItem->TextColor =Qt::gray;
     } break;
-  case App::Feature::Recompute:
+  case App::AbstractFeature::Recompute:
     {
       const char *feature_recompute_xpm[]={
         "7 7 3 1",
@@ -171,7 +171,7 @@ bool ViewProviderFeature::testStatus(void)
       pcFeatItem->BaseColor =Qt::white;
       pcFeatItem->TextColor =Qt::black;
     } break;
-  case App::Feature::Error:
+  case App::AbstractFeature::Error:
     {
       const char *feature_error_xpm[]={
         "7 7 3 1",

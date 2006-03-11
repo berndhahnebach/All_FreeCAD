@@ -63,36 +63,8 @@ using App::Application;
 #	define MainExport
 #endif
 
-
-/** freecadNewHandler()
- * prints an error message and throws an exception
- */
-#ifdef _MSC_VER // New handler for Microsoft Visual C++ compiler
-#include <new.h>
-int __cdecl freecadNewHandler(size_t size )
-{
-  // throw an exception
-  throw Base::MemoryException();
-  return 0;
-}
-#else // Ansi C/C++ new handler
-#include <new>
-static void freecadNewHandler ()
-{
-  // throw an exception
-  throw Base::MemoryException();
-}
-#endif
-
 extern "C" {
 	void MainExport initFreeCAD() {
-  // install our own new handler
-#ifdef _MSC_VER // Microsoft compiler
-   _set_new_handler ( freecadNewHandler ); // Setup new handler
-   _set_new_mode( 1 ); // Re-route malloc failures to new handler !
-#else // Ansi compiler
-   std::set_new_handler (freecadNewHandler); // ANSI new handler
-#endif
 
 	// Init phase ===========================================================
   App::Application::Config()["ExeName"] = "FreeCAD";

@@ -45,7 +45,7 @@
 #	pragma comment(lib,"TKShHealing.lib")
 #	pragma comment(lib,"TKSTEP.lib")
 
-
+//TKernel.lib TKBRep.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib
 #endif
 
 

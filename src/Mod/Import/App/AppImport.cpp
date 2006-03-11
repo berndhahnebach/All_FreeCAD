@@ -60,8 +60,8 @@ void ModuleExport initImport() {
   // load dependend module
   Base::Interpreter().loadModule("Part");
 
-	App::FeatureFactory().AddProducer("ImportStep",new App::FeatureProducer<Import::FeatureImportStep>);
-	App::FeatureFactory().AddProducer("ImportIges",new App::FeatureProducer<Import::FeatureImportIges>);
+	App::AbstractFeatureFactory().AddProducer("ImportStep",new App::AbstractFeatureProducer<Import::FeatureImportStep>);
+	App::AbstractFeatureFactory().AddProducer("ImportIges",new App::AbstractFeatureProducer<Import::FeatureImportIges>);
 
 	Base::Console().Log("Import loaded\n");
 

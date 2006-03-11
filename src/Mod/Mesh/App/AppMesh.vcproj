@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMesh"
-	ProjectGUID="{EE6D0487-386A-4496-81CB-FED8A5B7C31F}"
+	ProjectGUID="{9AA352B1-7E7C-44A1-BC78-A1F1DD25B606}"
 	>
 	<Platforms>
 		<Platform
@@ -75,10 +75,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib Wm3Foundation80.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib"
 				OutputFile="Release\Mesh.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="../../../../lib"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/Mesh.pdb"
 				ImportLibrary=".\Release/Mesh.lib"
 				TargetMachine="1"
@@ -108,7 +110,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Release\Mesh.pyd ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Release\Mesh.lib ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\BuildRegularGeoms.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Release\Mesh.pyd  ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy  /y  /f  Release\Mesh.lib  ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy  /y  /f  ..\BuildRegularGeoms.py  ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -174,10 +176,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib Wm3Foundation80.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib"
 				OutputFile="Debug\Mesh_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="../../../../lib"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/Mesh_d.pdb"
 				ImportLibrary=".\Debug/Mesh_d.lib"
@@ -208,7 +212,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.pyd ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy Debug\Mesh_d.lib ..\..\..\..\Mod\Mesh&#x0D;&#x0A;copy ..\BuildRegularGeoms.py ..\..\..\..\Mod\Mesh&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Debug\Mesh_d.pyd  ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy  /y  /f  Debug\Mesh_d.lib  ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy  /y  /f  ..\BuildRegularGeoms.py  ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -944,30 +948,6 @@
 		<File
 			RelativePath="FeatureMeshTransformDemolding.h"
 			>
-		</File>
-		<File
-			RelativePath="Libs.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Mesh.cpp"

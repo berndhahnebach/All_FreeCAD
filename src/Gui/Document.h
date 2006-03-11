@@ -55,7 +55,7 @@ namespace Base
 
 namespace App
 {
-  class Feature;
+  class AbstractFeature;
 }
 
 namespace Gui {
@@ -138,7 +138,7 @@ public:
   /** @name View provider handling  */
   //@{
   /// Get the view provider for that Feature
-  ViewProvider * getViewProvider(App::Feature *);
+  ViewProvider * getViewProvider(App::AbstractFeature *);
   /// set an anotation view provider
   void setAnotationViewProvider(const char* name, ViewProvider *pcProvider);
   /// get an anotation view provider
@@ -219,7 +219,7 @@ private:
   // the doc/Document
   App::Document*  _pcDocument;
  
-  std::map<App::Feature*,ViewProvider*> _ViewProviderMap;
+  std::map<App::AbstractFeature*,ViewProvider*> _ViewProviderMap;
   std::map<std::string,ViewProvider*> _ViewProviderMapAnotation;
 
   /** @name attributes for the UNDO REDO facility

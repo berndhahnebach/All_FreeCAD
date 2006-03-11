@@ -41,9 +41,9 @@ using namespace Gui;
 using namespace std;
 
 
-vector<App::Feature*> SelectionSingelton::getSelectedFeatures(const char *TypeName, const char* pDocName) const
+vector<App::AbstractFeature*> SelectionSingelton::getSelectedFeatures(const char *TypeName, const char* pDocName) const
 {
-  vector<App::Feature*> temp;
+  vector<App::AbstractFeature*> temp;
   App::Document *pcDoc;
   string DocName;
   string typeName = TypeName ? TypeName : "";
@@ -134,9 +134,9 @@ unsigned int SelectionSingelton::getNbrOfType(const char *TypeName, const char* 
   return iNbr;
 }
 
-vector<App::Feature*> SelectionSingelton::getFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
+vector<App::AbstractFeature*> SelectionSingelton::getFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
 {
-  vector<App::Feature*> temp;
+  vector<App::AbstractFeature*> temp;
   App::Document *pcDoc;
 
   if(pDocName)
@@ -391,13 +391,13 @@ void SelectionSingelton::destruct (void)
     delete _pcSingleton;
 }
 /*
-void SelectionSingelton::addFeature(App::Feature *f)
+void SelectionSingelton::addFeature(App::AbstractFeature *f)
 {
   _FeatureSet.insert(f);
 
 }
 
-void SelectionSingelton::removeFeature(App::Feature *f)
+void SelectionSingelton::removeFeature(App::AbstractFeature *f)
 {
   _FeatureSet.erase(f);
 

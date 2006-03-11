@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPointsGui"
-	ProjectGUID="{EB4EFB2A-D322-4B65-B2A1-96CB4860C886}"
+	ProjectGUID="{0247ADB2-AB37-413A-8AF7-CA9947DFADF5}"
 	>
 	<Platforms>
 		<Platform
@@ -76,9 +76,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib coin2d.lib qt-mtnc321.lib"
 				OutputFile="Debug\PointsGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/PointsGui_d.pdb"
 				ImportLibrary=".\Debug/PointsGui_d.lib"
@@ -109,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy Debug\PointsGui_d.pyd ..\..\..\..\Mod\Points&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Points&#x0D;&#x0A;copy Debug\PointsGui_d.lib ..\..\..\..\Mod\Points&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Debug\PointsGui_d.pyd  ..\..\..\..\Mod\Points\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Points\&#x0D;&#x0A;xcopy  /y  /f  Debug\PointsGui_d.lib  ..\..\..\..\Mod\Points\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -174,9 +176,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib coin2.lib qt-mtnc321.lib"
 				OutputFile="Release\PointsGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/PointsGui.pdb"
 				ImportLibrary=".\Release/PointsGui.lib"
 				TargetMachine="1"
@@ -206,7 +210,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy Release\PointsGui.pyd ..\..\..\..\Mod\Points&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Points&#x0D;&#x0A;copy Release\PointsGui.lib ..\..\..\..\Mod\Points&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Release\PointsGui.pyd  ..\..\..\..\Mod\Points\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Points\&#x0D;&#x0A;xcopy  /y  /f  Release\PointsGui.lib  ..\..\..\..\Mod\Points\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -404,30 +408,6 @@
 					Name="VCCLCompilerTool"
 					AdditionalIncludeDirectories=""
 					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Libs.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 		</File>

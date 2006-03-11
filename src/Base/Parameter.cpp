@@ -1056,10 +1056,10 @@ void ParameterManager::Init(void)
 
 bool ParameterManager::LoadOrCreateDocument(const char* sFileName)
 {
-	int i=open(sFileName,O_RDONLY);
+	int i=_open(sFileName,O_RDONLY);
 	if( i != -1)
 	{
-		close(i);
+		_close(i);
 		LoadDocument(sFileName);
 		return false;
 	}else{

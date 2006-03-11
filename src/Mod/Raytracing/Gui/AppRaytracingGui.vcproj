@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppRaytracingGui"
-	ProjectGUID="{2B0629A9-AAEA-4D36-922E-4365230CE488}"
+	ProjectGUID="{F714B000-65A7-47ED-BE2A-870F4CD9063E}"
 	>
 	<Platforms>
 		<Platform
@@ -76,9 +76,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib coin2d.lib qt-mtnc321.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib"
 				OutputFile="Debug\RaytracingGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/RaytracingGui_d.pdb"
 				ImportLibrary=".\Debug/RaytracingGui_d.lib"
@@ -109,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;copy Debug\RaytracingGui_d.pyd ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Debug\RaytracingGui_d.pyd  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -174,9 +176,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib coin2.lib qt-mtnc321.lib TKernel.lib TKMath.lib TKService.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKGeomAlgo.lib TKGeomBase.lib"
 				OutputFile="Release\RaytracingGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/RaytracingGui.pdb"
 				ImportLibrary=".\Release/RaytracingGui.lib"
 				TargetMachine="1"
@@ -206,7 +210,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;copy Release\RaytracingGui.pyd ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Release\RaytracingGui.pyd  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -352,30 +356,6 @@
 					Description="Building FreeCADpov.h"
 					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\PythonToCPP.py FreeCADpov FreeCADpov.h&#x0D;&#x0A;"
 					Outputs="FreeCADpov.h"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Libs.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 		</File>

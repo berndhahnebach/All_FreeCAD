@@ -47,7 +47,7 @@ using namespace Mesh;
 // Feature
 //===========================================================================
 
-PROPERTY_SOURCE(Mesh::Feature, App::Feature)
+PROPERTY_SOURCE(Mesh::Feature, App::AbstractFeature)
 
 Feature::Feature()
 :pcMeshFeaturePy(0)
@@ -94,13 +94,13 @@ typedef App::PropertyContainer Parent;
 
 void Feature::Save (Base::Writer &writer)
 {
-  //typedef App::Feature Parent;
+  //typedef App::AbstractFeature Parent;
   // save parent
   Parent::Save(writer);
 
   std::string fn = name.getValue(); fn += ".bms";
   writer.addFile(fn.c_str(), this);
-  //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
+  //reinterpret_cast<App::AbstractFeature*>(this)->Save(indent,str);
 
 //  MeshCore::MeshDocXML writer(*_cMesh.getKernel());
 

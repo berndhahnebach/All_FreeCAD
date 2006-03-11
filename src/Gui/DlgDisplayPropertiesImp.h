@@ -34,7 +34,7 @@
 
 namespace App
 {
-  class Feature;
+  class AbstractFeature;
 }
 
 namespace Gui {
@@ -68,7 +68,7 @@ public slots:
 
 protected:
   Gui::Command* _pcCmd;
-  std::vector<App::Feature*> Sel;
+  std::vector<App::AbstractFeature*> Sel;
   std::vector<ViewProvider*> Provider;
 
   bool bModeChange;

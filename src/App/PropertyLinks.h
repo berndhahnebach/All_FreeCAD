@@ -36,7 +36,7 @@ namespace Base
 
 namespace App
 {
-class Feature;
+class AbstractFeature;
 
 
 /** Integer properties
@@ -63,11 +63,11 @@ public:
 
 	/** Sets the property 
 	 */
-	void setValue(App::Feature *);
+	void setValue(App::AbstractFeature *);
 
 	/** This method returns a string representation of the property
 	 */
-	App::Feature * getValue(void) const;
+	App::AbstractFeature * getValue(void) const;
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -78,7 +78,7 @@ public:
 
 private:
 
-  App::Feature *_pcLink;
+  App::AbstractFeature *_pcLink;
 
 };
 

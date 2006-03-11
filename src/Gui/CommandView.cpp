@@ -186,8 +186,8 @@ void StdCmdToggleVisibility::activated(int iMsg)
   for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it )
   {
     Document *pcDoc = Application::Instance->getDocument(*it);
-    const std::vector<App::Feature*> sel = Selection().getFeaturesOfType(App::Feature::getClassTypeId(), (*it)->getName());
-    for(std::vector<App::Feature*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
+    const std::vector<App::AbstractFeature*> sel = Selection().getFeaturesOfType(App::AbstractFeature::getClassTypeId(), (*it)->getName());
+    for(std::vector<App::AbstractFeature*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
     {
       if ( pcDoc && pcDoc->isShow((*ft)->name.getValue()) )
         doCommand(Gui,"Gui.getDocument(\"%s\").hide(\"%s\")", (*it)->getName(), (*ft)->name.getValue());

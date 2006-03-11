@@ -121,7 +121,7 @@ void Document::Save (Writer &writer)
   std::map<std::string,FeatEntry>::iterator it;
   for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
   {
-    Feature* feat = it->second.F;
+    AbstractFeature* feat = it->second.F;
     writer << writer.ind() << "<Feature " 
                          << "type=\"" << feat->getTypeId().getName() << "\" "
                          << "name=\"" << feat->name.getValue()       << "\" "
@@ -135,7 +135,7 @@ void Document::Save (Writer &writer)
 
   for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
   {
-    Feature* feat = it->second.F;
+    AbstractFeature* feat = it->second.F;
     writer << writer.ind() << "<Feature name=\"" << feat->name.getValue() << "\">" << endl;   
     writer.unsetFilenames();
     feat->Save(writer);
@@ -183,7 +183,7 @@ void Document::Restore(Base::XMLReader &reader)
   {
     reader.readElement("Feature");
     string name = reader.getAttribute("name");
-    Feature* pFeat = getFeature(name.c_str());
+    AbstractFeature* pFeat = getFeature(name.c_str());
     if(pFeat) // check if this feature has been registered
     {
       //FIXME: We must save/restore that state of a feature
@@ -273,12 +273,12 @@ bool Document::open (void)
       ConstEntryPointer entry = file.getNextEntry();
       if ( entry->isValid() && entry->getName() == it->FileName )
       {
-        Feature* feat = getFeature( it->FeatName.c_str() );
+        AbstractFeature* feat = getFeature( it->FeatName.c_str() );
         if ( feat )
         {
           try {
             feat->RestoreDocFile( file );
-            feat->_eStatus = Feature::Valid;
+            feat->_eStatus = AbstractFeature::Valid;
             feat->touchTime.setToActual();
           } catch ( const Base::Exception& e) {
             feat->setError( e.what() );
@@ -296,9 +296,9 @@ bool Document::open (void)
     for(std::map<std::string,FeatEntry>::iterator It = FeatMap.begin();It != FeatMap.end();++It)
     {
       // not all feature are necessarily set to New here
-      if ( It->second.F->_eStatus == Feature::New )
+      if ( It->second.F->_eStatus == AbstractFeature::New )
       {
-        It->second.F->_eStatus = Feature::Valid;
+        It->second.F->_eStatus = AbstractFeature::Valid;
         It->second.F->touchTime.setToActual();
       }
       DocChange.NewFeatures.insert(It->second.F);
@@ -425,8 +425,8 @@ void Document::Recompute()
   DocChanges DocChange;
   DocChange.Why = DocChanges::Recompute;
 
-  std::set<Feature*>::iterator i;
-  std::set<Feature*> tempErr;
+  std::set<AbstractFeature*>::iterator i;
+  std::set<AbstractFeature*> tempErr;
   
 //  TDF_MapIteratorOfLabelMap It;
   Base::Console().Log("Solv: Start recomputation of document: \"%s\"\n",getName());
@@ -440,7 +440,7 @@ void Document::Recompute()
     for(It = FeatMap.begin();It != FeatMap.end();++It)
     {
       // map the new features
-      if (It->second.F->getStatus() == Feature::New)
+      if (It->second.F->getStatus() == AbstractFeature::New)
         DocChange.NewFeatures.insert(It->second.F);
 
 		  if (It->second.F->MustExecute())
@@ -450,10 +450,10 @@ void Document::Recompute()
 
         _RecomputeFeature(It->second.F);
 
-        if(It->second.F->getStatus() == Feature::Error)
+        if(It->second.F->getStatus() == AbstractFeature::Error)
           DocChange.ErrorFeatures.insert(It->second.F);
         
-        if(It->second.F->getStatus() == Feature::Valid)
+        if(It->second.F->getStatus() == AbstractFeature::Valid)
         {
           DocChange.UpdatedFeatures.insert(It->second.F);
           DocChange.ErrorFeatures.erase(It->second.F);
@@ -487,17 +487,17 @@ void Document::Recompute()
   
 }
 
-void Document::RecomputeFeature(Feature* Feat)
+void Document::RecomputeFeature(AbstractFeature* Feat)
 {
   DocChanges DocChange;
   DocChange.Why = DocChanges::Recompute;
 
   _RecomputeFeature(Feat);
 
-  if(Feat->getStatus() == Feature::Error)
+  if(Feat->getStatus() == AbstractFeature::Error)
     DocChange.ErrorFeatures.insert(Feat);
 
-  if(Feat->getStatus() == Feature::Valid)
+  if(Feat->getStatus() == AbstractFeature::Valid)
     DocChange.UpdatedFeatures.insert(Feat);
 
   Notify(DocChange);
@@ -505,11 +505,11 @@ void Document::RecomputeFeature(Feature* Feat)
 }
 
 // call the recompute of the Feature and handle the exceptions and errors.
-void Document::_RecomputeFeature(Feature* Feat)
+void Document::_RecomputeFeature(AbstractFeature* Feat)
 {
   Base::Console().Log("Solv: Executing Feature: %s\n",Feat->name.getValue());
 
-  Feat->_eStatus = Feature::Recompute;
+  Feat->_eStatus = AbstractFeature::Recompute;
   int  succes;
   try{
     succes = Feat->execute();
@@ -537,28 +537,28 @@ void Document::_RecomputeFeature(Feature* Feat)
 
   // special error code to avoid to execute a feature twice
   if (succes == 4){
-    Feat->_eStatus = Feature::Inactive;
+    Feat->_eStatus = AbstractFeature::Inactive;
   }else if(succes > 0){
-    Feat->_eStatus = Feature::Error;
+    Feat->_eStatus = AbstractFeature::Error;
   }else {
     // set the time of change
-    Feat->_eStatus = Feature::Valid;
+    Feat->_eStatus = AbstractFeature::Valid;
 
     Feat->touchTime.setToActual();
   }
 }
 
 
-Feature *Document::addFeature(const char* sType, const char* pFeatName)
+AbstractFeature *Document::addFeature(const char* sType, const char* pFeatName)
 {
-  App::Feature* pcFeature = (App::Feature*) Base::Type::createInstanceByName(sType,true);
+  App::AbstractFeature* pcFeature = (App::AbstractFeature*) Base::Type::createInstanceByName(sType,true);
 
 
   string FeatName;
 
 	if(pcFeature)
 	{
-    assert(pcFeature->getTypeId().isDerivedFrom(App::Feature::getClassTypeId()));
+    assert(pcFeature->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()));
 
     pcFeature->setDocument(this);
     // get Unique name
@@ -568,7 +568,7 @@ Feature *Document::addFeature(const char* sType, const char* pFeatName)
       FeatName = getUniqueFeatureName(sType);
 
     // set the status of the feature to New
-    pcFeature->_eStatus = Feature::New;
+    pcFeature->_eStatus = AbstractFeature::New;
 
     //_LogBook.SetTouched(FeatureLabel);
     //TouchState(FeatureLabel);
@@ -613,13 +613,13 @@ void Document::remFeature(const char* sName)
 }
 
 
-Feature *Document::getActiveFeature(void)
+AbstractFeature *Document::getActiveFeature(void)
 {
   
   return pActiveFeature;
 }
 
-Feature *Document::getFeature(const char *Name)
+AbstractFeature *Document::getFeature(const char *Name)
 {
   std::map<std::string,FeatEntry>::iterator pos;
   
@@ -631,7 +631,7 @@ Feature *Document::getFeature(const char *Name)
     return 0;
 }
 
-const char *Document::getFeatureName(Feature *pFeat)
+const char *Document::getFeatureName(AbstractFeature *pFeat)
 {
   std::map<std::string,FeatEntry>::iterator pos;
 
@@ -675,17 +675,17 @@ string Document::getUniqueFeatureName(const char *Name)
 	
 }
 
-std::vector<Feature*> Document::getFeatures() const
+std::vector<AbstractFeature*> Document::getFeatures() const
 {
-  std::vector<Feature*> features;
+  std::vector<AbstractFeature*> features;
   for( std::map<std::string,FeatEntry>::const_iterator it = FeatMap.begin(); it != FeatMap.end(); ++it )
     features.push_back( it->second.F );
   return features;
 }
 
-std::vector<Feature*> Document::getFeaturesOfType(const Base::Type& typeId) const
+std::vector<AbstractFeature*> Document::getFeaturesOfType(const Base::Type& typeId) const
 {
-  std::vector<Feature*> features;
+  std::vector<AbstractFeature*> features;
   for( std::map<std::string,FeatEntry>::const_iterator it = FeatMap.begin(); it != FeatMap.end(); ++it )
   {
     if ( it->second.F->getTypeId().isDerivedFrom( typeId ) )
@@ -706,79 +706,7 @@ int Document::countFeaturesOfType(const Base::Type& typeId) const
   return ct;
 }
 
-/*
-void Document::Init (void)
-{
-	TDF_Label lMain = Main();
 
-	_lBase    = lMain.FindChild(1);
-	_lPos     = lMain.FindChild(2);
-	_lFeature = lMain.FindChild(3);
-
-
-	TDataStd_Name::Set(_lBase,    TCollection_ExtendedString((Standard_CString)"Base"));
-	TDataStd_Name::Set(_lPos,     TCollection_ExtendedString((Standard_CString)"Pos"));
-	TDataStd_Name::Set(_lFeature, TCollection_ExtendedString((Standard_CString)"Features"));
-
-	_iNextFreeFeature = 1;
-//	_lActiveFeature; 
-}
-/// Returns the storage string of the document.
-const short* Document::storageFormat() const
-{
-  return _hDoc->StorageFormat().ToExtString(); 
-}
-
-/// Change the storage format of the document.
-void Document::changeStorageFormat(const short* sStorageFormat) 
-{
-  _hDoc->ChangeStorageFormat((Standard_ExtString)sStorageFormat); 
-}
-*/
-
-/*
-void Document::TouchState(const TDF_Label &l)
-{
-  _LogBook.SetTouched(l);
-}
-
-void Document::ImpactState(const TDF_Label &l)
-{
-  _LogBook.SetImpacted(l);
-}
-
-*/
-
-/*
-FCLabel *Document::HasLabel(TDF_Label cLabel)
-{
-	FCLabel *pcL;
-	std::map <TDF_Label,FCLabel*,LabelLess>::iterator It;
-	
-	// find a FCLabel if possible
-	It = mcLabelMap.find(cLabel);
-
-	// if not
-	if(It == mcLabelMap.end())
-	{
-		// create a new label and append it to the map
-		pcL = new FCLabel(cLabel,this);
-		mcLabelMap[cLabel] = pcL;
-		// taking care that python not delete the object
-		pcL->IncRef();
-		return pcL;
-	}
-	// if yes return the found FCLabel
-	return It->second;
-
-}
-
-
-void Document::Dump(void)
-{
-  _hDoc->Main().Dump(std::cout);
-}
-*/
 
 Base::PyObjectBase * Document::GetPyObject(void)
 {

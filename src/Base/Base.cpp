@@ -36,8 +36,8 @@
 using namespace Base;
 
 Type BaseClass::classTypeId = Base::Type::badType();
-
-
+   
+  
 //**************************************************************************
 // Construction/Destruction
 

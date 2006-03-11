@@ -35,8 +35,8 @@ void FilePath::check() const {
   _is_socket   = false ;
   _is_fifo     = false ;
   
-  struct stat buf ;
-  if ( stat( _path.c_str(), &buf ) != -1 ) {
+  struct _stat buf ;
+  if ( _stat( _path.c_str(), &buf ) != -1 ) {
     _exists    = true ;
 #if defined(BOOST_WINNT)
     _is_reg    = _S_IFREG & buf.st_mode ;

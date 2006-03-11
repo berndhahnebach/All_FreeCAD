@@ -36,7 +36,7 @@
 namespace App
 {
   class Document;
-  class Feature;
+  class AbstractFeature;
 }
 
 class QAction;
@@ -176,7 +176,7 @@ public:
    */
   App::Document*  getDocument(const char* Name=0);
   /// returns the named feature or the active one from the active document or NULL
-  App::Feature* getFeature(const char* Name=0);
+  App::AbstractFeature* getFeature(const char* Name=0);
   /// Get unique Feature name from the active document 
   std::string getUniqueFeatureName(const char *BaseName);
   //@}

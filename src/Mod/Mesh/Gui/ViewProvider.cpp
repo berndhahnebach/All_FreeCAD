@@ -198,7 +198,7 @@ void ViewProviderMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
 #endif
 }
 
-void ViewProviderMesh::attach(App::Feature *pcFeat)
+void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
 {
   // some helper Separators
   SoGroup* pcFlatRoot = new SoGroup();
@@ -550,9 +550,9 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 #endif
 
       // now intersect with each selected mesh feature
-      std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+      std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
 
-      for ( std::vector<App::Feature*>::iterator it = fea.begin(); it != fea.end(); ++it )
+      for ( std::vector<App::AbstractFeature*>::iterator it = fea.begin(); it != fea.end(); ++it )
       {
         // check type
         std::string fName = pDoc->getUniqueFeatureName("MeshSegment");

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppRaytracing"
-	ProjectGUID="{D53E9BCA-FC77-48D8-B3FC-FE4E5EAA7BA8}"
+	ProjectGUID="{C621727E-A8A4-4F82-AEEE-E137047B8D79}"
 	>
 	<Platforms>
 		<Platform
@@ -75,9 +75,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib"
 				OutputFile="Release/Raytracing.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/Raytracing.pdb"
 				ImportLibrary=".\Release/Raytracing.lib"
 				TargetMachine="1"
@@ -107,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;copy Release\Raytracing.pyd ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Release\Raytracing.pyd  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -173,9 +175,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib"
 				OutputFile="Debug\Raytracing_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/Raytracing_d.pdb"
 				ImportLibrary=".\Debug/Raytracing_d.lib"
@@ -206,7 +210,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;copy Debug\Raytracing_d.pyd ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Raytracing&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Debug\Raytracing_d.pyd  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -278,30 +282,6 @@
 					Description="Building FreeCADpov.h"
 					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\..\..\Tools\PythonToCPP.py FreeCADpov FreeCADpov.h&#x0D;&#x0A;"
 					Outputs="FreeCADpov.h"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Libs.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 		</File>

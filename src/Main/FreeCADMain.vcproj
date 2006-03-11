@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADMain"
-	ProjectGUID="{BB91740F-9E73-4C74-9B0A-04545FAF5C38}"
+	ProjectGUID="{2F6E1B98-E66A-4B8F-9057-9F265A765D85}"
 	>
 	<Platforms>
 		<Platform
@@ -72,9 +72,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB qt-mtnc321.lib"
 				OutputFile="Release/FreeCAD.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../lib/FreeCAD.pdb"
 				SubSystem="2"
 				TargetMachine="1"
@@ -104,7 +106,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\bin&#x0D;&#x0A;copy Release\FreeCAD.exe ..\..\bin&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Release\FreeCAD.exe  ..\..\bin\"
 			/>
 		</Configuration>
 		<Configuration
@@ -168,9 +170,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB qt-mtnc321.lib"
 				OutputFile="Debug/FreeCADD.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/FreeCADD.pdb"
 				SubSystem="2"
@@ -201,7 +205,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\bin&#x0D;&#x0A;copy Debug\FreeCADD.exe ..\..\bin&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Debug\FreeCADD.exe  ..\..\bin\"
 			/>
 		</Configuration>
 	</Configurations>

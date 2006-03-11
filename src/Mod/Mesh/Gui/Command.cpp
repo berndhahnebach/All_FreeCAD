@@ -369,7 +369,7 @@ void CmdMeshExport::activated(int iMsg)
   QString format;
   QString fn = Gui::FileDialog::getSaveFileName( dir, filter, Gui::getMainWindow(), 0,
                                                  QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );
-  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
 
   if (! fn.isEmpty() )
   {
@@ -450,7 +450,7 @@ CmdMeshPolyPick::CmdMeshPolyPick()
 
 void CmdMeshPolyPick::activated(int iMsg)
 {
-  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
   if ( fea.size() == 1 )
   {
     Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
@@ -480,12 +480,12 @@ CmdMeshToolMesh::CmdMeshToolMesh()
 
 void CmdMeshToolMesh::activated(int iMsg)
 {
-  std::vector<App::Feature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
   if ( fea.size() == 2 )
   {
     std::string fName = getUniqueFeatureName("MeshSegment");
-    App::Feature* mesh = fea.front();
-    App::Feature* tool = fea.back();
+    App::AbstractFeature* mesh = fea.front();
+    App::AbstractFeature* tool = fea.back();
 
     openCommand("Segment by tool mesh");
     doCommand(Doc, "import Mesh");
@@ -500,7 +500,7 @@ void CmdMeshToolMesh::activated(int iMsg)
     updateActive();
 
     App::Document* pDoc = getDocument();
-    App::Feature * pFea = pDoc->getFeature( fName.c_str() );
+    App::AbstractFeature * pFea = pDoc->getFeature( fName.c_str() );
 
     if ( pFea && pFea->isValid() )
     {

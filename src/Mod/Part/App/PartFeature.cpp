@@ -54,7 +54,7 @@ using namespace Part;
 // Feature
 //===========================================================================
 
-PROPERTY_SOURCE(Part::Feature, App::Feature)
+PROPERTY_SOURCE(Part::Feature, App::AbstractFeature)
 
 
 Feature::Feature(void)

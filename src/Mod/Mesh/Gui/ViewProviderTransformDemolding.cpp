@@ -81,7 +81,7 @@ ViewProviderMeshTransformDemolding::~ViewProviderMeshTransformDemolding()
   pcTrackballDragger->unref();
 }
 
-void ViewProviderMeshTransformDemolding::attach(App::Feature *pcFeat)
+void ViewProviderMeshTransformDemolding::attach(App::AbstractFeature *pcFeat)
 {
   SoGroup* pcDemoldRoot = new SoGroup();
 

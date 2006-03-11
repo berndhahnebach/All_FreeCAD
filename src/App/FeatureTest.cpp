@@ -33,7 +33,7 @@
 using namespace App;
 
 
-PROPERTY_SOURCE(App::FeatureTest, App::Feature)
+PROPERTY_SOURCE(App::FeatureTest, App::AbstractFeature)
 
 
 FeatureTest::FeatureTest()

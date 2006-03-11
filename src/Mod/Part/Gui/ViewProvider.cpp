@@ -116,7 +116,7 @@ ViewProviderPart::~ViewProviderPart()
 
 }
 
-void ViewProviderPart::attach(App::Feature *pcFeat)
+void ViewProviderPart::attach(App::AbstractFeature *pcFeat)
 {
   SoGroup* pcNormalRoot = new SoGroup();
   SoGroup* pcFlatRoot = new SoGroup();
@@ -191,7 +191,7 @@ void ViewProviderPart::updateData(void)
 
 
   // if the Feature not valid, do nothing at all
-  if ( pcFeature->getStatus() !=  App::Feature::Valid )
+  if ( pcFeature->getStatus() !=  App::AbstractFeature::Valid )
     return; // feature is invalid
 
   TopoDS_Shape cShape = (dynamic_cast<Part::Feature*>(pcFeature))->getShape();

@@ -46,7 +46,7 @@ class Property;
 
 /** Base class of all Feature classes in FreeCAD
  */
-class AppPartExport Feature: public App::Feature
+class AppPartExport Feature: public App::AbstractFeature
 {
   PROPERTY_HEADER(Part::Feature);
 

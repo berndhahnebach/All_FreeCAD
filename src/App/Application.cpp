@@ -431,7 +431,7 @@ const char* Application::hasOpenType(const char* Type) const
 #ifdef FC_OS_LINUX
   if ( strcasecmp(Type,it->first.c_str()) == 0 )
 #else
-  if ( stricmp(Type,it->first.c_str()) == 0 )
+  if ( _stricmp(Type,it->first.c_str()) == 0 )
 #endif
     return it->second.c_str();
   }
@@ -487,8 +487,36 @@ void Application::destruct(void)
   Base::Interpreter().finalize();
 }
 
+/** freecadNewHandler()
+ * prints an error message and throws an exception
+ */
+#ifdef _MSC_VER // New handler for Microsoft Visual C++ compiler
+#include <new.h>
+int __cdecl freecadNewHandler(size_t size )
+{
+  // throw an exception
+  throw Base::MemoryException();
+  return 0;
+}
+#else // Ansi C/C++ new handler
+#include <new>
+static void freecadNewHandler ()
+{
+  // throw an exception
+  throw Base::MemoryException();
+}
+#endif
+
+
 void Application::init(int argc, char ** argv)
 {
+  // install our own new handler
+#ifdef _MSC_VER // Microsoft compiler
+   _set_new_handler ( freecadNewHandler ); // Setup new handler
+   _set_new_mode( 1 ); // Re-route malloc failures to new handler !
+#else // Ansi compiler
+   std::set_new_handler (freecadNewHandler); // ANSI new handler
+#endif
 
   initTypes();
 
@@ -530,7 +558,7 @@ void Application::initTypes(void)
   App ::PropertyColorList   ::init();
   // Document classes
   App ::DocumentObject      ::init();
-  App ::Feature             ::init();
+  App ::AbstractFeature     ::init();
   App ::FeatureTest         ::init();
   App ::Document            ::init();
 
@@ -698,11 +726,6 @@ void Application::initApplication(void)
       cerr << e.getStackTrace() << endl;
       throw Base::Exception("internal error in init script!");
   }
-
-	// Add the one and only FreeCAD FunctionDriver to the driver Tabel 
-	//Handle(TFunction_Driver) myDriver = new Function();
-	//TFunction_DriverTable::Get()->AddDriver(Function::GetID(),myDriver);
-
 
 }
 

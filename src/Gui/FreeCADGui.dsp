@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="FreeCADGui" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=FreeCADGui - Win32 Debug
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADGui.mak" CFG="FreeCADGui - Win32 Debug"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "FreeCADGui - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "FreeCADGui - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADGui - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -53,10 +53,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /machine:I386
+# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib xerces-c_2.lib python23.lib coin2.lib qt-mtnc321.lib qui.lib soqt1.lib opengl32.lib user32.lib /nologo /dll /machine:I386 /nodefaultlib
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\bin	copy Release\FreeCADGui.dll ..\..\bin	mkdir ..\..\lib	copy Release\FreeCADGui.lib ..\..\lib
+PostBuild_Cmds=xcopy   /y   /f   Release\FreeCADGui.dll   ..\..\bin\  	xcopy   /y   /f   Release\FreeCADGui.lib   ..\..\lib\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
@@ -83,10 +83,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /out:"Debug/FreeCADGuiD.dll"
+# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib xerces-c_2.lib python23_d.lib coin2d.lib qt-mtnc321.lib qui.lib soqt1d.lib opengl32.lib user32.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/FreeCADGuiD.dll"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\bin	copy Debug\FreeCADGuiD.dll ..\..\bin	mkdir ..\..\lib	copy Debug\FreeCADGuiD.lib ..\..\lib
+PostBuild_Cmds=xcopy   /y   /f   Debug\FreeCADGuiD.dll   ..\..\bin  	xcopy   /y   /f   Debug\FreeCADGuiD.lib   ..\..\lib\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -3415,11 +3415,6 @@ SOURCE=.\GuiConsole.cpp
 # Begin Source File
 
 SOURCE=.\GuiConsole.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Libs.cpp
-# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 

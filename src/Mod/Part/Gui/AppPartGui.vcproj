@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPartGui"
-	ProjectGUID="{3F9B17D4-2963-4822-85B6-2C0C550CD980}"
+	ProjectGUID="{E22AADA2-C00B-4237-AFA3-27D94BD09E40}"
 	>
 	<Platforms>
 		<Platform
@@ -75,9 +75,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib coin2.lib qt-mtnc321.lib TKernel.lib TKBRep.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib"
 				OutputFile="Release/PartGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/PartGui.pdb"
 				ImportLibrary=".\Release/PartGui.lib"
 				TargetMachine="1"
@@ -107,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Part&#x0D;&#x0A;copy Release\PartGui.pyd ..\..\..\..\Mod\Part&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Part&#x0D;&#x0A;copy Release\PartGui.lib ..\..\..\..\Mod\Part&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Release\PartGui.pyd  ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy  /y  /f  Release\PartGui.lib  ..\..\..\..\Mod\Part\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -172,9 +174,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib coin2d.lib qt-mtnc321.lib TKernel.lib TKBRep.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib"
 				OutputFile="Debug/PartGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/PartGui_d.pdb"
 				ImportLibrary=".\Debug/PartGui_d.lib"
@@ -205,7 +209,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Part&#x0D;&#x0A;copy Debug\PartGui_d.pyd ..\..\..\..\Mod\Part&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Part&#x0D;&#x0A;copy Debug\PartGui_d.lib ..\..\..\..\Mod\Part&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Debug\PartGui_d.pyd  ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy  /y  /f  Debug\PartGui_d.lib  ..\..\..\..\Mod\Part\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -533,30 +537,6 @@
 					Description="Moc&apos;ing $(InputName).h ..."
 					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="Libs.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
 		</File>

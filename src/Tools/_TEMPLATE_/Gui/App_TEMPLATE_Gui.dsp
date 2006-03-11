@@ -53,10 +53,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /machine:I386 /out:"Release\_TEMPLATE_Gui.pyd"
+# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib  python23.lib coin2.lib qt-mtnc321.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\_TEMPLATE_Gui.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy Release\_TEMPLATE_Gui.pyd ..\..\..\..\Mod\_TEMPLATE_	copy ..\InitGui.py ..\..\..\..\Mod\_TEMPLATE_
+PostBuild_Cmds=xcopy  /y  /f  Release\_TEMPLATE_Gui.pyd  ..\..\..\..\Mod\_TEMPLATE_\ 	xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\_TEMPLATE_\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "App_TEMPLATE_Gui - Win32 Debug"
@@ -83,10 +83,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /out:"Debug\_TEMPLATE_Gui_d.pyd" /pdbtype:sept
+# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib  python23_d.lib coin2d.lib qt-mtnc321.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\_TEMPLATE_Gui_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=copy Debug\_TEMPLATE_Gui_d.pyd ..\..\..\..\Mod\_TEMPLATE_	copy ..\InitGui.py ..\..\..\..\Mod\_TEMPLATE_
+PostBuild_Cmds=xcopy  /y  /f  Debug\_TEMPLATE_Gui_d.pyd  ..\..\..\..\Mod\_TEMPLATE_\ 	xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\_TEMPLATE_\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -95,44 +95,6 @@ PostBuild_Cmds=copy Debug\_TEMPLATE_Gui_d.pyd ..\..\..\..\Mod\_TEMPLATE_	copy ..
 
 # Name "App_TEMPLATE_Gui - Win32 Release"
 # Name "App_TEMPLATE_Gui - Win32 Debug"
-# Begin Group "Source Files"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\App_TEMPLATE_Gui.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Command.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Libs.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\PreCompiled.cpp
-# ADD CPP /Yc"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\Workbench.cpp
-# End Source File
-# End Group
-# Begin Group "Header Files"
-
-# PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\PreCompiled.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Workbench.h
-# End Source File
-# End Group
 # Begin Group "Dialogs"
 
 # PROP Default_Filter ""
@@ -219,5 +181,30 @@ SOURCE=..\..\..\..\lib\FreeCADGuiD.lib
 
 # End Source File
 # End Group
+# Begin Source File
+
+SOURCE=.\App_TEMPLATE_Gui.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Command.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PreCompiled.cpp
+# ADD CPP /Yc"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\PreCompiled.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Workbench.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Workbench.h
+# End Source File
 # End Target
 # End Project

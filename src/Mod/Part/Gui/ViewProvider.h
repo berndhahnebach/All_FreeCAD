@@ -46,7 +46,7 @@ public:
   virtual ~ViewProviderPart();
 
 
-  virtual void attach(App::Feature *);
+  virtual void attach(App::AbstractFeature *);
   virtual void setMode(const char* ModeName);
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);

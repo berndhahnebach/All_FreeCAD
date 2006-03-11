@@ -47,7 +47,7 @@ int ImportAscii::execute(void)
 {
 
   // ask for read permisson
-	if ( access(FileName.getValue(), 4) != 0 )
+	if ( _access(FileName.getValue(), 4) != 0 )
   {
     Base::Console().Log("FeaturePointsImportAscii::Execute() not able to open %s!\n",FileName.getValue());
     return 1;

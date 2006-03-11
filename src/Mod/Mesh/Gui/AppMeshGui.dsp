@@ -53,10 +53,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /machine:I386 /out:"Release\MeshGui.pyd" /libpath:"../../../../lib"
+# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib  python23.lib coin2.lib soqt1.lib qt-mtnc321.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\MeshGui.pyd" /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Release\MeshGui.pyd ..\..\..\..\Mod\Mesh	copy ..\InitGui.py ..\..\..\..\Mod\Mesh	copy Release\MeshGui.lib ..\..\..\..\Mod\Mesh
+PostBuild_Cmds=xcopy  /y  /f  Release\MeshGui.pyd  ..\..\..\..\Mod\Mesh\ 	xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Mesh\ 	xcopy  /y  /f  Release\MeshGui.lib  ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
@@ -83,10 +83,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /out:"Debug\MeshGui_d.pyd" /pdbtype:sept /libpath:"../../../../lib"
+# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib  python23_d.lib coin2d.lib soqt1d.lib qt-mtnc321.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\MeshGui_d.pyd" /pdbtype:sept /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Mesh	copy Debug\MeshGui_d.pyd ..\..\..\..\Mod\Mesh	copy ..\InitGui.py ..\..\..\..\Mod\Mesh	copy Debug\MeshGui_d.lib ..\..\..\..\Mod\Mesh
+PostBuild_Cmds=xcopy  /y  /f  Debug\MeshGui_d.pyd  ..\..\..\..\Mod\Mesh\ 	xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Mesh\ 	xcopy  /y  /f  Debug\MeshGui_d.lib  ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -110,11 +110,6 @@ SOURCE=.\Command.cpp
 # Begin Source File
 
 SOURCE=.\Doxygen.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\Libs.cpp
 # SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File

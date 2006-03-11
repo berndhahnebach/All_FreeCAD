@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppImageGui"
-	ProjectGUID="{2E642806-D3E5-417E-991B-6154AE00172F}"
+	ProjectGUID="{F09EC3BC-8CB3-45D5-B5C1-46821E1EF9D1}"
 	>
 	<Platforms>
 		<Platform
@@ -76,11 +76,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib coin2d.lib qt-mtnc321.lib opengl32.lib glu32.lib"
 				OutputFile="Debug/ImageGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/ImageGui_d.pdb"
 				ImportLibrary=".\Debug/ImageGui_d.lib"
@@ -111,7 +112,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Image&#x0D;&#x0A;copy Debug\ImageGui_d.pyd ..\..\..\..\Mod\Image&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Image&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Debug\ImageGui_d.pyd  ..\..\..\..\Mod\Image\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Image\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -176,11 +177,12 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="opengl32.lib glu32.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib coin2.lib qt-mtnc321.lib opengl32.lib glu32.lib"
 				OutputFile="Release/ImageGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/ImageGui.pdb"
 				ImportLibrary=".\Release/ImageGui.lib"
 				TargetMachine="1"
@@ -210,7 +212,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Image&#x0D;&#x0A;copy Release\ImageGui.pyd ..\..\..\..\Mod\Image&#x0D;&#x0A;copy ..\InitGui.py ..\..\..\..\Mod\Image&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Release\ImageGui.pyd  ..\..\..\..\Mod\Image\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Image\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

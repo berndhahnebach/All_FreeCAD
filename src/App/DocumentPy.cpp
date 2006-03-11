@@ -190,7 +190,7 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 //		else if (streq(attr, "StorageFormat"))						
 //			return Py_BuildValue("u", _pcDoc->storageFormat()); 
     else{
-      Feature *pFeat = _pcDoc->getFeature(attr);
+      AbstractFeature *pFeat = _pcDoc->getFeature(attr);
       if(pFeat)
         return pFeat->GetPyObject();
       else
@@ -335,7 +335,7 @@ PYFUNCIMP_D(DocumentPy,AddFeature)
   if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
     return NULL;                             // NULL triggers exception 
  
-  Feature *pcFtr;
+  AbstractFeature *pcFtr;
   
   PY_TRY {
 	  pcFtr = _pcDoc->addFeature(sType,sName);
@@ -356,7 +356,7 @@ PYFUNCIMP_D(DocumentPy,addFeature)
   if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
     return NULL;                             // NULL triggers exception
 
-  Feature *pcFtr;
+  AbstractFeature *pcFtr;
 
   PY_TRY {
     pcFtr = _pcDoc->addFeature(sType,sName);
@@ -379,7 +379,7 @@ PYFUNCIMP_D(DocumentPy,GetActiveFeature)
     return NULL;                       // NULL triggers exception 
 
   PY_TRY {
-	  Feature *pcFtr = _pcDoc->getActiveFeature();
+	  AbstractFeature *pcFtr = _pcDoc->getActiveFeature();
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
@@ -394,7 +394,7 @@ PYFUNCIMP_D(DocumentPy,activeFeature)
     return NULL;                       // NULL triggers exception 
 
   PY_TRY {
-	  Feature *pcFtr = _pcDoc->getActiveFeature();
+	  AbstractFeature *pcFtr = _pcDoc->getActiveFeature();
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
@@ -410,7 +410,7 @@ PYFUNCIMP_D(DocumentPy,GetFeature)
     return NULL;                             // NULL triggers exception 
 
   PY_TRY {
-	  Feature *pcFtr = _pcDoc->getFeature(sName);
+	  AbstractFeature *pcFtr = _pcDoc->getFeature(sName);
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
@@ -429,7 +429,7 @@ PYFUNCIMP_D(DocumentPy,getFeature)
     return NULL;                             // NULL triggers exception
 
   PY_TRY {
-    Feature *pcFtr = _pcDoc->getFeature(sName);
+    AbstractFeature *pcFtr = _pcDoc->getFeature(sName);
     if(pcFtr)
       return pcFtr->GetPyObject();
     else {

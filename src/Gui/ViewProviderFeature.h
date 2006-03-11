@@ -33,7 +33,7 @@ class SoDrawStyle;
 
 namespace App
 {
-  class Feature;
+  class AbstractFeature;
   class Material;
 }
 
@@ -56,7 +56,7 @@ public:
   // Returns the tree label
   virtual QListViewItem* getTreeItem(QListViewItem* parent);
 
-  virtual void attach(App::Feature *pcFeature);
+  virtual void attach(App::AbstractFeature *pcFeature);
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
 
@@ -85,7 +85,7 @@ public:
 
 
 
-  App::Feature *getFeature(void){return pcFeature;}
+  App::AbstractFeature *getFeature(void){return pcFeature;}
 
 protected:
   SoMaterial  *pcSolidMaterial;
@@ -94,7 +94,7 @@ protected:
   SoDrawStyle *pcLineStyle;
   SoDrawStyle *pcPointStyle;
 
-  App::Feature *pcFeature;
+  App::AbstractFeature *pcFeature;
 
   FeatItem *pcFeatItem;
 

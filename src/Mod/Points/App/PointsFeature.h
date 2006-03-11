@@ -46,7 +46,7 @@ class Property;
 /** Base class of all Points feature classes in FreeCAD.
  * This class holds an PointsKernel object.
  */
-class PointsAppExport Feature : public App::Feature
+class PointsAppExport Feature : public App::AbstractFeature
 {
   PROPERTY_HEADER(Points::Feature);
 

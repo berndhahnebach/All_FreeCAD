@@ -212,7 +212,7 @@ App::Document* Command::getDocument(const char* Name)
   }
 }
 
-App::Feature* Command::getFeature(const char* Name)
+App::AbstractFeature* Command::getFeature(const char* Name)
 {
   App::Document*pDoc = getDocument();
   if(pDoc)

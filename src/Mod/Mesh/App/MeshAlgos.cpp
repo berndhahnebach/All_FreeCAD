@@ -64,7 +64,7 @@ Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
 {
   MeshWithProperty *Mesh = new MeshWithProperty();
   // ask for read permisson
-	if ( access(FileName, 4) != 0 )
+	if ( _access(FileName, 4) != 0 )
     throw Base::Exception("MeshAlgos::Load() not able to open File!\n");
  
   MeshSTL aReader(* (Mesh->getKernel()) );
@@ -81,7 +81,7 @@ Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
 void MeshAlgos::read(MeshWithProperty* Mesh,const char *FileName)
 {
   // ask for read permisson
-	if ( access(FileName, 4) != 0 )
+	if ( _access(FileName, 4) != 0 )
     throw Base::Exception("MeshAlgos::read() not able to open File!\n");
  
   MeshSTL aReader(* (Mesh->getKernel()) );

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADMainPy"
-	ProjectGUID="{3F77A5D1-3616-47E2-BBA0-CE8505EEE4DF}"
+	ProjectGUID="{5D0C10F0-5E01-49F8-92AC-AEC9E8F7D209}"
 	>
 	<Platforms>
 		<Platform
@@ -74,9 +74,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB"
 				OutputFile="DebugPy/FreeCAD_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="DebugPy/FreeCADDCmdPy.pdb"
 				ImportLibrary=".\DebugPy/FreeCAD_d.lib"
@@ -107,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\bin&#x0D;&#x0A;copy DebugPy\FreeCAD_d.pyd ..\..\bin&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  DebugPy\FreeCAD_d.pyd  ..\..\bin\"
 			/>
 		</Configuration>
 		<Configuration
@@ -171,9 +173,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB"
 				OutputFile="ReleasePy/FreeCAD.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile="../../lib/FreeCADCmdPy.pdb"
 				ImportLibrary=".\ReleasePy/FreeCAD.lib"
 				TargetMachine="1"
@@ -203,7 +207,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\bin&#x0D;&#x0A;copy ReleasePy\FreeCAD.pyd ..\..\bin&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  ReleasePy\FreeCAD.pyd  ..\..\bin\"
 			/>
 		</Configuration>
 	</Configurations>

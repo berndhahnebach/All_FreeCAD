@@ -130,7 +130,7 @@ void ViewProviderPoints::setVertexNormalMode(Points::PropertyNormalList* pcPrope
   }
 }
 
-void ViewProviderPoints::attach(App::Feature* pcFeat)
+void ViewProviderPoints::attach(App::AbstractFeature* pcFeat)
 {
   SoGroup* pcPointRoot = new SoGroup();
   SoGroup* pcPointShadedRoot = new SoGroup();
@@ -231,7 +231,7 @@ void ViewProviderPoints::setMode(const char* ModeName)
       }
     }
   }
-  else if ( stricmp("Point",ModeName)==0 )
+  else if ( _stricmp("Point",ModeName)==0 )
   {
     setDisplayMode("Point");
   }

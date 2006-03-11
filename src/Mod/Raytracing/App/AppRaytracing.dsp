@@ -53,10 +53,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /machine:I386 /out:"Release/Raytracing.pyd"
+# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release/Raytracing.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Raytracing	copy Release\Raytracing.pyd ..\..\..\..\Mod\Raytracing	copy ..\Init.py ..\..\..\..\Mod\Raytracing
+PostBuild_Cmds=xcopy  /y  /f  Release\Raytracing.pyd  ..\..\..\..\Mod\Raytracing\ 	xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Raytracing\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppRaytracing - Win32 Debug"
@@ -83,10 +83,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /out:"Debug\Raytracing_d.pyd" /pdbtype:sept
+# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\Raytracing_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\..\..\Mod\Raytracing	copy Debug\Raytracing_d.pyd ..\..\..\..\Mod\Raytracing	copy ..\Init.py ..\..\..\..\Mod\Raytracing
+PostBuild_Cmds=xcopy  /y  /f  Debug\Raytracing_d.pyd  ..\..\..\..\Mod\Raytracing\ 	xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Raytracing\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -131,11 +131,6 @@ InputPath=.\FreeCADpov
 
 !ENDIF 
 
-# End Source File
-# Begin Source File
-
-SOURCE=.\Libs.cpp
-# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 

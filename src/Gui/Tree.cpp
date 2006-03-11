@@ -290,9 +290,9 @@ bool FeatItem::testStatus(void)
 
 void FeatItem::displayStatusInfo()
 {
-  App::Feature* feat = _pcViewProvider->getFeature();
+  App::AbstractFeature* feat = _pcViewProvider->getFeature();
   QString info = feat->getStatusString();
-  if ( feat->getStatus() == App::Feature::Error )
+  if ( feat->getStatus() == App::AbstractFeature::Error )
     info += QString(" (%1)").arg(feat->getErrorString());
   getMainWindow()->statusBar()->message( info );
 }

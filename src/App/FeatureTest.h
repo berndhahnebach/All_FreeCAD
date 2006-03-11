@@ -35,7 +35,7 @@ namespace App
 {
 
 
-class FeatureTest :public Feature
+class FeatureTest :public AbstractFeature
 {
   PROPERTY_HEADER(App::FeatureTest);
 

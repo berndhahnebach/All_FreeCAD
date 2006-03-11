@@ -75,35 +75,10 @@ const char sBanner[] = "(c) Juergen Riegel 2001-2006\n"\
 
 
 
-/** freecadNewHandler()
- * prints an error message and throws an exception
- */
-#ifdef _MSC_VER // New handler for Microsoft Visual C++ compiler
-#include <new.h>
-int __cdecl freecadNewHandler(size_t size )
-{
-  // throw an exception
-  throw Base::MemoryException();
-  return 0;
-}
-#else // Ansi C/C++ new handler
-#include <new>
-static void freecadNewHandler ()
-{
-  // throw an exception
-  throw Base::MemoryException();
-}
-#endif
 
 int main( int argc, char ** argv )
 {
-  // install our own new handler
-#ifdef _MSC_VER // Microsoft compiler
-   _set_new_handler ( freecadNewHandler ); // Setup new handler
-   _set_new_mode( 1 ); // Re-route malloc failures to new handler !
-#else // Ansi compiler
-   std::set_new_handler (freecadNewHandler); // ANSI new handler
-#endif
+
   // Config ===============================================================
 
   // Name and Version of the Application
@@ -115,9 +90,7 @@ int main( int argc, char ** argv )
   App::Application::Config()["AppIcon"] = "FCIcon";
   App::Application::Config()["SplashPicture"] = "FreeCADSplasher";
   App::Application::Config()["StartWorkbench"] = "Part design";
-#ifndef FC_DEBUG
-  App::Application::Config()["HiddenDockWindow"] = "Property editor";
-#endif
+  //App::Application::Config()["HiddenDockWindow"] = "Property editor";
 
 
 

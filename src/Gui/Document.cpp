@@ -97,7 +97,7 @@ Document::~Document()
     delete _LpcViews.front();
   }
 
-  std::map<App::Feature*,ViewProvider*>::iterator it;
+  std::map<App::AbstractFeature*,ViewProvider*>::iterator it;
   for(it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
     delete it->second;
 
@@ -121,7 +121,7 @@ Document::~Document()
 
 void Document::update(void)
 {
-  for(std::map<App::Feature*,ViewProvider*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+  for(std::map<App::AbstractFeature*,ViewProvider*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
     It1->second->update();
   for(std::map<std::string,ViewProvider*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
     It2->second->update();
@@ -176,9 +176,9 @@ void Document::rmvAnotationViewProvider(const char* name)
 }
 
 
-ViewProvider* Document::getViewProvider(App::Feature* Feat)
+ViewProvider* Document::getViewProvider(App::AbstractFeature* Feat)
 {
-  std::map<App::Feature*,ViewProvider*>::iterator it = _ViewProviderMap.find( Feat );
+  std::map<App::AbstractFeature*,ViewProvider*>::iterator it = _ViewProviderMap.find( Feat );
   return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
 }
 
@@ -186,11 +186,11 @@ ViewProvider* Document::getViewProvider(App::Feature* Feat)
 ViewProvider *Document::getViewProviderByName(const char* name)
 {
   // first check on feature name
-  App::Feature *pcFeat = getDocument()->getFeature(name);
+  App::AbstractFeature *pcFeat = getDocument()->getFeature(name);
 
   if(pcFeat)
   {
-    std::map<App::Feature*,ViewProvider*>::iterator it = _ViewProviderMap.find( pcFeat );
+    std::map<App::AbstractFeature*,ViewProvider*>::iterator it = _ViewProviderMap.find( pcFeat );
 
     if(it != _ViewProviderMap.end())
       return it->second;
@@ -265,7 +265,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   std::list<Gui::BaseView*>::iterator VIt;
 
   // remove the representation of Features no longer exist
-  std::set<App::Feature*>::const_iterator It;
+  std::set<App::AbstractFeature*>::const_iterator It;
   for(It=Reason.DeletedFeatures.begin();It!=Reason.DeletedFeatures.end();It++)
   {
     // cycling to all views of the document
@@ -427,7 +427,7 @@ void Document::createView(const char* sType)
     //((View3DInventor*)pcView3D)->getViewer()->addSelectionNode(pcSelection);
     
     // attach the viewprovider
-    for(std::map<App::Feature*,ViewProvider*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
+    for(std::map<App::AbstractFeature*,ViewProvider*>::const_iterator It1=_ViewProviderMap.begin();It1!=_ViewProviderMap.end();++It1)
       ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It1->second);
     for(std::map<std::string,ViewProvider*>::const_iterator It2=_ViewProviderMapAnotation.begin();It2!=_ViewProviderMapAnotation.end();++It2)
       ((View3DInventor*)pcView3D)->getViewer()->addViewProvider(It2->second);

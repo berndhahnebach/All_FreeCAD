@@ -92,7 +92,7 @@ ViewProviderMeshCurvature::~ViewProviderMeshCurvature()
   pcColorBar->unref();
 }
 
-void ViewProviderMeshCurvature::init(App::Feature *pcFeat)
+void ViewProviderMeshCurvature::init(App::AbstractFeature *pcFeat)
 {
   Mesh::PropertyCurvatureList* pCurvInfo=0;
   std::map<std::string,App::Property*> Map;
@@ -173,7 +173,7 @@ void ViewProviderMeshCurvature::init(App::Feature *pcFeat)
   pcColorBar->setRange( fMin, fMax, 3 );
 }
 
-void ViewProviderMeshCurvature::attach(App::Feature *pcFeat)
+void ViewProviderMeshCurvature::attach(App::AbstractFeature *pcFeat)
 {
   init( pcFeat ); // init color bar
 

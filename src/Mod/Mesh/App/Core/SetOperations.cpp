@@ -376,7 +376,7 @@ void SetOperations::CollectFacets (MeshKernel &meshForRegionGrowing, MeshKernel 
 #ifdef __GNUC__ // doesn't know about itoa (it's not a C ANSI function)
           sprintf(txt, "%d", kkk++);
 #else
-          itoa(kkk++, txt, 10);
+          _itoa(kkk++, txt, 10);
 #endif
           //builder.addText(pt, txt, 1.0, 1.0, 1.0);
 

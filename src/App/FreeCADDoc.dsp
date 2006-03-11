@@ -54,10 +54,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 /nologo /dll /machine:I386 /out:"Release/FreeCADApp.dll"
+# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib xerces-c_2.lib python23.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release/FreeCADApp.dll"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\bin	mkdir ..\..\Mod	copy Release\FreeCADApp.dll ..\..\bin	mkdir ..\..\lib	copy Release\FreeCADApp.lib ..\..\lib
+PostBuild_Cmds=xcopy  /y  /f  Release\FreeCADApp.dll  ..\..\bin\ 	xcopy  /y  /f  Release\FreeCADApp.lib  ..\..\lib\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
@@ -85,10 +85,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 /nologo /dll /debug /machine:I386 /out:"Debug/FreeCADAppD.dll" /pdbtype:sept
+# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib xerces-c_2D.lib python23_d.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/FreeCADAppD.dll" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=mkdir ..\..\bin	mkdir ..\..\Mod	copy Debug\FreeCADAppD.dll ..\..\bin	mkdir ..\..\lib	copy Debug\FreeCADAppD.lib ..\..\lib
+PostBuild_Cmds=xcopy  /y  /f  Debug\FreeCADAppD.dll  ..\..\bin\ 	xcopy  /y  /f  Debug\FreeCADAppD.lib  ..\..\lib\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -307,11 +307,6 @@ SOURCE=.\Geometry3D.cpp
 
 SOURCE=.\Geometry3D.h
 # PROP Exclude_From_Build 1
-# End Source File
-# Begin Source File
-
-SOURCE=.\Libs.cpp
-# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 

@@ -54,10 +54,10 @@ Standard_Integer ImportIges::execute(void)
   IGESControl_Reader aReader;
   TopoDS_Shape aShape;
 
-  int i=open(FileName.getValue(),O_RDONLY);
+  int i=_open(FileName.getValue(),O_RDONLY);
 	if( i != -1)
 	{
-	  close(i);
+	  _close(i);
 	}else{
     Base::Console().Log("FeaturePartImportIges::Execute() not able to open %s!\n",FileName.getValue());
 	  return 1;

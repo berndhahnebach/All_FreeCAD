@@ -301,7 +301,7 @@ PP_Convert_Result(PyObject *presult, char *resFormat, void *resTarget)
             if (strcmp(resFormat, "s") == 0) { /* copy string: caller owns it */
                 char **target = (char**) resTarget;
             
-                *target = strdup(*target); 
+                *target = _strdup(*target); 
             }
             Py_DECREF(presult);
         }

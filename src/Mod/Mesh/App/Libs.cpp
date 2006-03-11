@@ -15,7 +15,7 @@
 # pragma comment(lib,"TKTopAlgo.lib")
 # pragma comment(lib,"TKPrim.lib")
 #	pragma comment(lib,"TKXSBase.lib")
-
+//TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib
 
 // wild magic library (succesor of MGC)
 

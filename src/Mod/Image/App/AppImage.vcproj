@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppImage"
-	ProjectGUID="{95380F71-12B9-437F-85F3-1B44B70089C1}"
+	ProjectGUID="{22C37F4D-588E-4FAC-B847-6436BAE0B7DF}"
 	>
 	<Platforms>
 		<Platform
@@ -76,9 +76,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib"
 				OutputFile="Debug/Image_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/Image_d.pdb"
 				ImportLibrary=".\Debug/Image_d.lib"
@@ -109,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Image&#x0D;&#x0A;copy Debug\Image_d.pyd ..\..\..\..\Mod\Image&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Image&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Debug\Image_d.pyd  ..\..\..\..\Mod\Image\&#x0D;&#x0A;xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Image\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -174,9 +176,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib"
 				OutputFile="Release/Image.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/Image.pdb"
 				ImportLibrary=".\Release/Image.lib"
 				TargetMachine="1"
@@ -206,7 +210,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir ..\..\..\..\Mod\Image&#x0D;&#x0A;copy Release\Image.pyd ..\..\..\..\Mod\Image&#x0D;&#x0A;copy ..\Init.py ..\..\..\..\Mod\Image&#x0D;&#x0A;"
+				CommandLine="xcopy  /y  /f  Release\Image.pyd  ..\..\..\..\Mod\Image\&#x0D;&#x0A;xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Image\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

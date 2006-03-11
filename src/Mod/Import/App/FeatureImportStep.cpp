@@ -72,10 +72,10 @@ Standard_Integer FeatureImportStep::Execute(void)
     if( FileName == "") 
       return 1;
 
-    int i=open(FileName.c_str(),O_RDONLY);
+    int i=_open(FileName.c_str(),O_RDONLY);
 	  if( i != -1)
 	  {
-		  close(i);
+		  _close(i);
 	  }else{
       setError("File not readable");
 		  return 1;

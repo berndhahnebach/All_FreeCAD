@@ -43,7 +43,7 @@ class Property;
 /** Base class of all Feature classes in FreeCAD
  */
 //class RayFeature: public Part::PartFeature
-class RayFeature: public App::Feature
+class RayFeature: public App::AbstractFeature
 {
 public:
 	/// Constructor

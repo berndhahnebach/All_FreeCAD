@@ -79,7 +79,7 @@ ViewProviderMeshTransform::~ViewProviderMeshTransform()
   pcTransformerDragger->unref();
 }
 
-void ViewProviderMeshTransform::attach(App::Feature *pcFeat)
+void ViewProviderMeshTransform::attach(App::AbstractFeature *pcFeat)
 {
   SoSeparator* pcEditRoot = new SoSeparator();
 

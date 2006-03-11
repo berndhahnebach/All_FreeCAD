@@ -63,7 +63,7 @@ public:
   virtual ~ViewProviderMeshCurvature();
 
   /// Extracts the mesh data from the feature \a pcFeature and creates an Inventor node \a SoNode with these data. 
-  void attach(App::Feature* pcFeature);
+  void attach(App::AbstractFeature* pcFeature);
   /// Sets the viewing mode
   void setMode(const char* ModeName);
   /// Returns a vector of all possible modes
@@ -81,7 +81,7 @@ protected:
   void setVertexCurvatureMode(int mode);
 
 private:
-  void init(App::Feature *pcFeat);
+  void init(App::AbstractFeature *pcFeat);
 
 protected:
   SoMaterial       * pcColorMat;

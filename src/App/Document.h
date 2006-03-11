@@ -53,7 +53,7 @@ namespace App
 {
   class LabelPy;
   class Document;
-  class Feature;
+  class AbstractFeature;
   class DocumentPy; // the python document class
   class Application;
 }
@@ -82,10 +82,10 @@ public:
     Rename
   } Why;
 
-  std::set<Feature*> NewFeatures;
-  std::set<Feature*> UpdatedFeatures;
-  std::set<Feature*> ErrorFeatures;
-  std::set<Feature*> DeletedFeatures;
+  std::set<AbstractFeature*> NewFeatures;
+  std::set<AbstractFeature*> UpdatedFeatures;
+  std::set<AbstractFeature*> ErrorFeatures;
+  std::set<AbstractFeature*> DeletedFeatures;
 };
 
 
@@ -152,20 +152,20 @@ public:
 	/** @name Feature handling  */
 	//@{
   /// Add a feature of sType with sName to this document and set it active
-	Feature *addFeature(const char* sType, const char* sName=0);
+	AbstractFeature *addFeature(const char* sType, const char* sName=0);
   /// Remove a feature out of the document
 	void remFeature(const char* sName);
   /// Returns the active Feature of this document
-	Feature *getActiveFeature(void);
+	AbstractFeature *getActiveFeature(void);
   /// Returns a Feature of this document
-	Feature *getFeature(const char *Name);
+	AbstractFeature *getFeature(const char *Name);
   /// Returns a Name of an Feature or 0
-	const char *getFeatureName(Feature *pFeat);
+	const char *getFeatureName(AbstractFeature *pFeat);
   /// Returns a Name of an Feature or 0
   std::string getUniqueFeatureName(const char *Name);
   /// Returns a list of all features
-  std::vector<Feature*> getFeatures() const;
-  std::vector<Feature*> getFeaturesOfType(const Base::Type& typeId) const;
+  std::vector<AbstractFeature*> getFeatures() const;
+  std::vector<AbstractFeature*> getFeaturesOfType(const Base::Type& typeId) const;
   int countFeaturesOfType(const Base::Type& typeId) const;
 	//@}
 
@@ -173,19 +173,13 @@ public:
 	/** @name methods for modification and state handling
 	 */
 	//@{
-	/// Get the Main Label of the document
-	//TDF_Label Main();
-	/// Test if the document is empty
-	//bool IsEmpty() const;
-	/// Returns False if the  document  contains notified modifications.
-	//bool IsValid() const;
 
 	/// Remove all modifications. After this call The document becomes again Valid.
 	void PurgeModified();
 	/// Recompute if the document was  not valid and propagate the reccorded modification.
 	void Recompute();
   /// Recompute only this feature
-  void RecomputeFeature(Feature* Feat);
+  void RecomputeFeature(AbstractFeature* Feat);
 	//@}
 
 
@@ -236,18 +230,18 @@ public:
 	friend class DocumentPy;
 	friend class LabelPy;
 	friend class Application;
-	friend class Feature;
+	friend class AbstractFeature;
 
 protected:
 
   /// helper which Recompute only this feature
-  void _RecomputeFeature(Feature* Feat);
+  void _RecomputeFeature(AbstractFeature* Feat);
 
   struct FeatEntry {
-    Feature*  F;
+    AbstractFeature*  F;
   };
 
-  Feature* pActiveFeature;
+  AbstractFeature* pActiveFeature;
   std::map<std::string,FeatEntry> FeatMap;
 
 	/// handle to the OCC document

@@ -42,7 +42,7 @@ using namespace Points;
 // Feature
 //===========================================================================
 
-PROPERTY_SOURCE(Points::Feature, App::Feature)
+PROPERTY_SOURCE(Points::Feature, App::AbstractFeature)
 
 Feature::Feature()
 {
@@ -60,7 +60,7 @@ void Feature::Save (Base::Writer &writer)
 {
   // save parent
   Parent::Save(writer);
-  //reinterpret_cast<App::Feature*>(this)->Save(indent,str);
+  //reinterpret_cast<App::AbstractFeature*>(this)->Save(indent,str);
 
   std::string fn = name.getValue(); fn += ".bin";
   writer.addFile(fn.c_str(), this);

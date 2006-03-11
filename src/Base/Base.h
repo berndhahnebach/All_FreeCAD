@@ -33,7 +33,7 @@
 #endif
 
 #include "Type.h"
-
+ 
 
 
 /// define for subclassing Base::BaseClass

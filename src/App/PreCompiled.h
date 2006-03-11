@@ -14,12 +14,13 @@
 
 
 // standard
-#include <iostream>
-#include <sstream>
 #include <stdio.h>
 #include <assert.h>
-#include <string>
 #include <time.h>
+
+// Streams
+#include <iostream>
+#include <sstream>
 
 // STL 
 #include <string>

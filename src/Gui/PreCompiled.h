@@ -4,9 +4,6 @@
 #include "../FCConfig.h"
 #ifdef _PreComp_
 
-#ifdef FC_OS_WIN32
-# include <windows.h>
-#endif
 /// here get the warnings of to long specifieres disabled (needet for VC6)
 #ifdef _MSC_VER
 # pragma warning( disable : 4251 )
@@ -15,16 +12,24 @@
 #endif
 
 // standard
-#include <iostream>
-#include <iomanip>
 #include <stdio.h>
 #include <assert.h>
-#ifdef FC_OS_WIN32
-# include <io.h>
-#endif
 #include <fcntl.h>
 #include <ctype.h>
 #include <typeinfo>
+#include <float.h>
+#include <limits.h>
+
+#ifdef FC_OS_WIN32
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
+#  include <io.h>
+#endif
+
+// streams
+#include <iostream>
+#include <iomanip>
+
 
 // STL
 #include <vector>
@@ -37,6 +42,8 @@
 #include <queue>
 #include <sstream>
 
+// Python
+#include <Python.h>
 
 // Xerces
 #include <xercesc/util/XercesDefs.hpp>
@@ -110,14 +117,6 @@
 #include <Inventor/SoPickedPoint.h> 
 #include <Inventor/SoInteraction.h> 
 
-#include <float.h>
-
-
-#include <Python.h>
-#ifdef FC_OS_WIN32
-# include <windows.h>
-#endif
-#include <limits.h>
 
 
 // Qt Toolkit

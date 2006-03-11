@@ -73,13 +73,13 @@ PropertyLink::~PropertyLink()
 // Base class implementer
 
 
-void PropertyLink::setValue(App::Feature * lValue)
+void PropertyLink::setValue(App::AbstractFeature * lValue)
 {
 	_pcLink=lValue;
   hasSetValue();
 }
 
-App::Feature * PropertyLink::getValue(void) const
+App::AbstractFeature * PropertyLink::getValue(void) const
 {
 	return _pcLink;
 }
@@ -116,9 +116,9 @@ void PropertyLink::Restore(Base::XMLReader &reader)
   string name = reader.getAttribute("value");
 
   // Property not in a Feature!
-  assert(getContainer()->getTypeId().isDerivedFrom(App::Feature::getClassTypeId()) );
+  assert(getContainer()->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
 
-  _pcLink = reinterpret_cast<App::Feature*>(getContainer())->getDocument().getFeature(name.c_str());
+  _pcLink = reinterpret_cast<App::AbstractFeature*>(getContainer())->getDocument().getFeature(name.c_str());
 
 }
 
