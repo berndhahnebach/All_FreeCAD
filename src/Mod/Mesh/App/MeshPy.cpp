@@ -118,8 +118,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(write)
   PYMETHODEDEF(offset)
   PYMETHODEDEF(offsetSpecial)
-  PYMETHODEDEF(calcVertexNormales)
-  PYMETHODEDEF(Union)
+  PYMETHODEDEF(unite)
   PYMETHODEDEF(intersect)
   PYMETHODEDEF(diff)
   PYMETHODEDEF(coarsen)
@@ -151,7 +150,7 @@ PyParentObject MeshPy::Parents[] = {&Base::PyObjectBase::Type, NULL};
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-MeshPy::MeshPy(MeshWithProperty *pcMesh,bool ReferencedMesh, PyTypeObject *T)
+MeshPy::MeshPy(MeshCore::MeshKernel *pcMesh,bool ReferencedMesh, PyTypeObject *T)
 : Base::PyObjectBase(T), _pcMesh(pcMesh),_bReferencedMesh(ReferencedMesh)
 {
   Base::Console().Log("Create MeshPy: %p \n",this);
@@ -178,7 +177,7 @@ MeshPy::~MeshPy()           // Everything handled in parent
 PyObject *MeshPy::_repr(void)
 {
   std::stringstream a;
-  MeshInfo info(*_pcMesh->getKernel());
+  MeshInfo info(*_pcMesh);
   info.GeneralInformation( a );
   return Py_BuildValue("s", a.str().c_str());
 }
@@ -206,12 +205,12 @@ int MeshPy::_setattr(char *attr, PyObject *value) // __setattr__ function: note 
 } 
 
 
-void MeshPy::setMesh(MeshWithProperty *pcMesh)
+void MeshPy::setMesh(MeshCore::MeshKernel *pcMesh)
 {
   _pcMesh = pcMesh;
 }
 
-MeshWithProperty *MeshPy::getMesh(void)
+MeshCore::MeshKernel *MeshPy::getMesh(void) const
 {
   return _pcMesh;
 }
@@ -230,7 +229,7 @@ PYFUNCIMP_D(MeshPy,makeCutToolFromShape)
 
   pcObject = (Part::TopoShapePy*)pcObj;
 
-  MeshWithProperty *M = new MeshWithProperty();
+  MeshKernel *M = new MeshKernel();
   PY_TRY {
     TopoDS_Shape aShape = pcObject->getShape();
 
@@ -248,12 +247,12 @@ PYFUNCIMP_D(MeshPy,makeCutToolFromShape)
 
 PYFUNCIMP_D(MeshPy,pointCount)
 {
-  return Py_BuildValue("i",_pcMesh->getKernel()->CountPoints()); 
+  return Py_BuildValue("i",_pcMesh->CountPoints()); 
 }
 
 PYFUNCIMP_D(MeshPy,faceCount)
 {
-  return Py_BuildValue("i",_pcMesh->getKernel()->CountFacets()); 
+  return Py_BuildValue("i",_pcMesh->CountFacets()); 
 }
 
 PYFUNCIMP_D(MeshPy,write)
@@ -314,7 +313,7 @@ PYFUNCIMP_D(MeshPy,flipNormals)
     return NULL;                         
 
   PY_TRY {
-    MeshTopoAlgorithm Algo(*(_pcMesh->getKernel()));
+    MeshTopoAlgorithm Algo(*(_pcMesh));
     Algo.FlipNormals();
   } PY_CATCH;
 
@@ -334,17 +333,7 @@ PYFUNCIMP_D(MeshPy,coarsen)
   Py_Return; 
 }
 
-PYFUNCIMP_D(MeshPy,calcVertexNormales)
-{
-  PY_TRY {
-    MeshAlgos::calcVertexNormales(_pcMesh);  
-  } PY_CATCH;
-  
-  Py_Return;
-
-}
-
-PYFUNCIMP_D(MeshPy,Union)
+PYFUNCIMP_D(MeshPy,unite)
 {
  	MeshPy   *pcObject;
   PyObject *pcObj;
@@ -354,7 +343,7 @@ PYFUNCIMP_D(MeshPy,Union)
   pcObject = (MeshPy*)pcObj;
 
   PY_TRY {
-    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshKernel* m = pcObject->_pcMesh;
     MeshAlgos::boolean(_pcMesh,m,_pcMesh,0);
   } PY_CATCH;
 
@@ -371,7 +360,7 @@ PYFUNCIMP_D(MeshPy,intersect)
   pcObject = (MeshPy*)pcObj;
 
   PY_TRY {
-    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshKernel* m = pcObject->_pcMesh;
     MeshAlgos::boolean(_pcMesh,m,_pcMesh,1);  
   } PY_CATCH;
 
@@ -388,7 +377,7 @@ PYFUNCIMP_D(MeshPy,diff)
   pcObject = (MeshPy*)pcObj;
 
   PY_TRY {
-    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshKernel* m = pcObject->_pcMesh;
     MeshAlgos::boolean(_pcMesh,m,_pcMesh,2);  
   } PY_CATCH;
 
@@ -405,7 +394,7 @@ PYFUNCIMP_D(MeshPy,cutOuter)
   pcObject = (MeshPy*)pcObj;
 
   PY_TRY {
-    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshKernel* m = pcObject->_pcMesh;
     MeshAlgos::boolean(_pcMesh,m,_pcMesh,4);  
   } PY_CATCH;
 
@@ -422,7 +411,7 @@ PYFUNCIMP_D(MeshPy,cutInner)
   pcObject = (MeshPy*)pcObj;
 
   PY_TRY {
-    MeshWithProperty* m = pcObject->_pcMesh;
+    MeshKernel* m = pcObject->_pcMesh;
     MeshAlgos::boolean(_pcMesh,m,_pcMesh,3);  
   } PY_CATCH;
 
@@ -438,7 +427,7 @@ PYFUNCIMP_D(MeshPy,translate)
   PY_TRY {
     Matrix4D m;
     m.move(x,y,z);
-    _pcMesh->transform(m);  
+    _pcMesh->Transform(m);  
   } PY_CATCH;
 
   Py_Return;
@@ -469,7 +458,7 @@ PYFUNCIMP_D(MeshPy,transformToEigen)
     return NULL;                             // NULL triggers exception 
 
   bool ok = (pcBool == Py_True ? true : false);
-  MeshEigensystem cMeshEval( *_pcMesh->getKernel() );
+  MeshEigensystem cMeshEval( *_pcMesh );
   switch ( cMeshEval.Validate( ok ) )
   {
   case MeshEvaluation::Fixed:
@@ -494,7 +483,7 @@ PYFUNCIMP_D(MeshPy,scale)
   PY_TRY {
     Matrix4D m;
     m.scale(s,s,s);
-    _pcMesh->transform(m);  
+    _pcMesh->Transform(m);  
   } PY_CATCH;
 
   Py_Return;
@@ -516,7 +505,7 @@ PYFUNCIMP_D(MeshPy,transform)
 
   PY_TRY
   {
-    _pcMesh->transform(mat);
+    _pcMesh->Transform(mat);
   }
   PY_CATCH;
 
@@ -530,9 +519,9 @@ PYFUNCIMP_D(MeshPy,addFacet)
     return NULL;                         
 
   PY_TRY {
-    _pcMesh->getKernel()->AddFacet(MeshGeomFacet(Vector3D(x1,y1,z1),
-                                                 Vector3D(x2,y2,z2),
-                                                 Vector3D(x3,y3,z3)));
+    _pcMesh->AddFacet(MeshGeomFacet(Vector3D(x1,y1,z1),
+                                    Vector3D(x2,y2,z2),
+                                    Vector3D(x3,y3,z3)));
   } PY_CATCH;
 
   Py_Return;
@@ -610,7 +599,7 @@ PYFUNCIMP_D(MeshPy,addFacets)
   }
 
   PY_TRY {
-    (*_pcMesh->getKernel()) = facets;
+    (*_pcMesh) = facets;
   } PY_CATCH;
 
   Py_Return;
@@ -619,7 +608,7 @@ PYFUNCIMP_D(MeshPy,addFacets)
 PYFUNCIMP_D(MeshPy,clear)
 {
   PY_TRY {
-    _pcMesh->clear();
+    _pcMesh->Clear();
   } PY_CATCH;
 
   Py_Return;
@@ -628,14 +617,14 @@ PYFUNCIMP_D(MeshPy,clear)
 PYFUNCIMP_D(MeshPy,copy)
 {
   PY_TRY {
-   return new MeshPy(new MeshWithProperty(*_pcMesh));
+    return new MeshPy(new MeshCore::MeshKernel(*_pcMesh));
   } PY_CATCH;
 }
 
 PYFUNCIMP_D(MeshPy,hasConsistentOrientation)
 {
   std::string txt;
-  MeshEvalNormals cMeshEval( *_pcMesh->getKernel() );
+  MeshEvalNormals cMeshEval( *_pcMesh );
   switch ( cMeshEval.Validate() )
   {
   case MeshEvaluation::Valid:
@@ -658,7 +647,7 @@ PYFUNCIMP_D(MeshPy,hasConsistentOrientation)
 PYFUNCIMP_D(MeshPy,isSolid)
 {
   bool ok;
-  MeshEvalSolid cMeshEval( *_pcMesh->getKernel() );
+  MeshEvalSolid cMeshEval( *_pcMesh );
   switch ( cMeshEval.Validate() )
   {
   case MeshEvaluation::Valid:
@@ -677,7 +666,7 @@ PYFUNCIMP_D(MeshPy,isSolid)
 PYFUNCIMP_D(MeshPy,hasNonManifolds)
 {
   bool ok;
-  MeshEvalTopology cMeshEval( *_pcMesh->getKernel() );
+  MeshEvalTopology cMeshEval( *_pcMesh );
   switch ( cMeshEval.Validate() )
   {
   case MeshEvaluation::Valid:
@@ -696,10 +685,10 @@ PYFUNCIMP_D(MeshPy,hasNonManifolds)
 PYFUNCIMP_D(MeshPy,testDelaunay)
 {
   PY_TRY {
-    MeshPy* pyMesh = new MeshPy(new MeshWithProperty(*_pcMesh));
+    MeshPy* pyMesh = new MeshPy(new MeshCore::MeshKernel(*_pcMesh));
     
     // get all points
-    MeshKernel* pMesh = pyMesh->getMesh()->getKernel();
+    MeshKernel* pMesh = pyMesh->getMesh();
     std::vector< Wm3::Vector3<float> > aPnts;
     MeshPointIterator cPIt( *pMesh );
     for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
@@ -730,7 +719,7 @@ PYFUNCIMP_D(MeshPy,testDelaunay)
         aFaces.push_back( face );
       }
 
-      MeshKernel& kernel = *(pyMesh->getMesh()->getKernel());
+      MeshKernel& kernel = *(pyMesh->getMesh());
       kernel = aFaces;
     }
 

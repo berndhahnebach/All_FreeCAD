@@ -26,11 +26,12 @@
 
 #include <Base/PyExportImp.h>
 
+namespace MeshCore {
+  class MeshKernel;
+}
 
 namespace Mesh
 {
-
-class MeshWithProperty;
 
 //===========================================================================
 // MeshPy - Python wrapper 
@@ -46,11 +47,11 @@ protected:
   ~MeshPy();
 
 public:
-  MeshPy(MeshWithProperty *pcMesh,bool ReferencedMesh=false, PyTypeObject *T = &Type);
+  MeshPy(MeshCore::MeshKernel *pcMesh,bool ReferencedMesh=false, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
 
-  void setMesh(MeshWithProperty *pcMesh);
-  MeshWithProperty *getMesh(void);
+  void setMesh(MeshCore::MeshKernel *pcMesh);
+  MeshCore::MeshKernel *getMesh(void) const;
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -67,8 +68,7 @@ public:
   PYFUNCDEF_D(MeshPy,write)
   PYFUNCDEF_D(MeshPy,offset)
   PYFUNCDEF_D(MeshPy,offsetSpecial)
-  PYFUNCDEF_D(MeshPy,calcVertexNormales)
-  PYFUNCDEF_D(MeshPy,Union)
+  PYFUNCDEF_D(MeshPy,unite)
   PYFUNCDEF_D(MeshPy,intersect)
   PYFUNCDEF_D(MeshPy,diff)
   PYFUNCDEF_D(MeshPy,coarsen)
@@ -92,7 +92,7 @@ public:
 
 protected:
 
-  MeshWithProperty *_pcMesh;
+  MeshCore::MeshKernel *_pcMesh;
   bool _bReferencedMesh;
 };
 

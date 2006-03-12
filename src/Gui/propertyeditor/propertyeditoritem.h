@@ -27,7 +27,11 @@
 #ifndef _PreComp_
 # include <qlistview.h>
 # include <qvariant.h>
+# include <qvector.h>
 #endif
+
+#include <Base/Type.h>
+#include <App/Property.h>
 
 class QPushButton;
 
@@ -41,8 +45,10 @@ namespace PropertyEditor {
  *
  * \author Werner Mayer
  */
-class GuiExport EditableItem :public QObject, public QListViewItem
+class GuiExport EditableItem :public QObject, public QListViewItem, public Base::BaseClass
 {
+  TYPESYSTEM_HEADER();
+
   Q_OBJECT
 
 public:
@@ -60,6 +66,9 @@ public:
 
   /** Gets the override value. */
   const QVariant& overrideValue() const;
+
+  /** Sets the current property object. */
+  void setProperty( App::Property* );
 
   /** This is the class Id to distinguish from QListViewItem itself or 
    * from other QListViewItem-subclasses. 
@@ -116,12 +125,27 @@ protected: // Interface for subclasses.
   /** Sets the editor's default value. */
   virtual void setDefaultValue() = 0;
 
+  /** @name Converter methods */
+  //@{
+  /** Converts from property to QVariant. */
+  virtual void convertFromProperty(App::Property*) = 0;
+  /** Converts from QVariant back to property. */
+  virtual void convertToProperty(const QVariant&) = 0;
+  //@}
+
   /** Does a repaint of the cell. */
   virtual void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
 
   QWidget* _editor; /**< A pointer to the actual editor widget. */
 
+protected:
+  EditableItem();
+
+public:
+  static QListView* parentView;
+
 private:
+  App::Property* _prop;
   QVariant _val;
   QVariant _newval;
   bool _modified;

@@ -30,6 +30,12 @@
 
 using namespace Gui::PropertyEditor;
 
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::TimeEditorItem, Gui::PropertyEditor::EditableItem);
+
+TimeEditorItem::TimeEditorItem()
+{
+}
+
 TimeEditorItem::TimeEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
@@ -60,7 +66,21 @@ void TimeEditorItem::setDefaultValue()
   edit->setTime( value().toTime() );
 }
 
+void TimeEditorItem::convertFromProperty(App::Property* prop)
+{
+}
+
+void TimeEditorItem::convertToProperty(const QVariant&)
+{
+}
+
 // ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::DateEditorItem, Gui::PropertyEditor::EditableItem);
+
+DateEditorItem::DateEditorItem()
+{
+}
 
 DateEditorItem::DateEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
@@ -92,7 +112,21 @@ void DateEditorItem::setDefaultValue()
   edit->setDate( value().toDate() );
 }
 
+void DateEditorItem::convertFromProperty(App::Property* prop)
+{
+}
+
+void DateEditorItem::convertToProperty(const QVariant&)
+{
+}
+
 // ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::DateTimeEditorItem, Gui::PropertyEditor::EditableItem);
+
+DateTimeEditorItem::DateTimeEditorItem()
+{
+}
 
 DateTimeEditorItem::DateTimeEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
@@ -126,3 +160,10 @@ void DateTimeEditorItem::setDefaultValue()
   edit->setDateTime( value().toDateTime() );
 }
 
+void DateTimeEditorItem::convertFromProperty(App::Property* prop)
+{
+}
+
+void DateTimeEditorItem::convertToProperty(const QVariant&)
+{
+}

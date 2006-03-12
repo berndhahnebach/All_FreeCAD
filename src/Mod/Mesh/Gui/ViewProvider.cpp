@@ -25,9 +25,11 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qlineedit.h>
 # include <qlistview.h>
 # include <qmessagebox.h>
 # include <qpainter.h>
+# include <qvariant.h>
 # include <Inventor/events/SoEvent.h>
 # include <Inventor/events/SoKeyboardEvent.h>
 # include <Inventor/events/SoLocation2Event.h>
@@ -55,6 +57,7 @@
 #include <Base/ViewProj.h>
 
 #include <App/Document.h>
+#include <App/PropertyLinks.h>
 
 #include <Gui/Application.h>
 #include <Gui/Command.h>
@@ -96,6 +99,62 @@ using MeshCore::MeshEvalSolid;
 using Base::Vector3D;
 
 
+TYPESYSTEM_SOURCE(MeshGui::KernelEditorItem, Gui::PropertyEditor::EditableItem);
+
+KernelEditorItem::KernelEditorItem()
+{
+}
+
+KernelEditorItem::KernelEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
+{
+  setText( 0, text );
+  setText( 1, value.toString() );
+}
+
+QWidget* KernelEditorItem::createEditor( int column, QWidget* parent )
+{
+  if ( column == 0 )
+    return 0;
+
+  QLineEdit* editor = new QLineEdit( parent, "TextEditorItem::edit" );
+  editor->setText( overrideValue().toString() );
+  editor->setFocus();
+  connect(editor, SIGNAL( textChanged(const QString&) ), this, SLOT( onValueChanged() ) );
+  return editor;
+}
+
+void KernelEditorItem::stopEdit( QWidget* editor, int column )
+{
+  setOverrideValue( dynamic_cast<QLineEdit*>(editor)->text() );
+  setText( column, overrideValue().toString() );
+}
+
+void KernelEditorItem::setDefaultValue()
+{
+  QLineEdit* edit = dynamic_cast<QLineEdit*>(_editor);
+  edit->setText( value().toString() );
+}
+
+void KernelEditorItem::convertFromProperty(App::Property* prop)
+{
+  if ( prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId() )
+  {
+    Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)prop;
+    const MeshKernel& rMesh = pPropMesh->getValue();
+    QString  str = QString("[Points: %1, Faces: %2]").arg(rMesh.CountPoints()).arg(rMesh.CountFacets());
+    QVariant value( str );
+    setValue( value );
+    setText( 1, value.toString() );
+  }
+}
+
+void KernelEditorItem::convertToProperty(const QVariant&)
+{
+}
+
+// ======================================================================
+
 PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderFeature)
 
 
@@ -121,7 +180,7 @@ ViewProviderMesh::~ViewProviderMesh()
   pcHighlight->unref();
 }
 
-void ViewProviderMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
+void ViewProviderMesh::createMesh(Mesh::PropertyMeshKernel *pcMesh)
 {
 #if 1
 
@@ -129,14 +188,14 @@ void ViewProviderMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
   int* faces = 0;
 
   try {
-    MeshKernel *cMesh = pcMesh->getKernel();
-    vertices = new SbVec3f[cMesh->CountPoints()];
-    faces = new int [4*cMesh->CountFacets()];
+    MeshKernel& cMesh = pcMesh->getValue();
+    vertices = new SbVec3f[cMesh.CountPoints()];
+    faces = new int [4*cMesh.CountFacets()];
 
-    Base::SequencerLauncher seq( "Building View node...", cMesh->CountFacets() );
+    Base::SequencerLauncher seq( "Building View node...", cMesh.CountFacets() );
 
     unsigned long j=0;
-    MeshFacetIterator cFIt(*cMesh);
+    MeshFacetIterator cFIt(cMesh);
     for( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
     {
       const MeshGeomFacet& rFace = *cFIt;
@@ -154,9 +213,9 @@ void ViewProviderMesh::createMesh(Mesh::MeshWithProperty *pcMesh)
       Base::Sequencer().next( false ); // don't allow to cancel
     }
 
-	  pcMeshCoord->point.setValues(0,cMesh->CountPoints(), vertices);
+    pcMeshCoord->point.setValues(0,cMesh.CountPoints(), vertices);
     delete [] vertices;
-	  pcMeshFaces->coordIndex.setValues(0,4*cMesh->CountFacets(),(const int32_t*) faces);
+    pcMeshFaces->coordIndex.setValues(0,4*cMesh.CountFacets(),(const int32_t*) faces);
     delete [] faces;
   } catch (const Base::MemoryException& e) {
     pcMeshCoord->point.deleteValues(0);
@@ -221,11 +280,11 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
   SoDrawStyle *pcFlatStyle = new SoDrawStyle();
   pcFlatStyle->style = SoDrawStyle::FILLED;
   SoNormalBinding* pcBinding = new SoNormalBinding();
-	pcBinding->value=SoNormalBinding::PER_FACE;
+  pcBinding->value=SoNormalBinding::PER_FACE;
   
   // get and save the feature
   Feature* meshFea = dynamic_cast<Feature*>(pcFeat);
-  MeshEvalSolid cEval(*(meshFea->getMesh().getKernel()));
+  MeshEvalSolid cEval(meshFea->Mesh.getValue());
 
   // if no solid then enable two-side rendering
   if ( cEval.Validate() != MeshEvalSolid::Valid )
@@ -246,7 +305,7 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
   pcFlatStyle = new SoDrawStyle();
   pcFlatStyle->style = SoDrawStyle::FILLED;
   pcBinding = new SoNormalBinding();
-	pcBinding->value=SoNormalBinding::PER_VERTEX;
+  pcBinding->value=SoNormalBinding::PER_VERTEX;
   h = new SoLocateHighlight();
   h->color.setValue((float)0.2,(float)0.5,(float)0.2);
   h->addChild(pcBinding);
@@ -280,7 +339,7 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
   pcFlatStyle = new SoDrawStyle();
   pcFlatStyle->style = SoDrawStyle::FILLED;
   pcBinding = new SoNormalBinding();
-	pcBinding->value=SoNormalBinding::PER_FACE;
+  pcBinding->value=SoNormalBinding::PER_FACE;
   pcFlatWireRoot->addChild(pcBinding);
   pcFlatWireRoot->addChild(pcFlatStyle);
   pcFlatWireRoot->addChild(pcSolidMaterial);
@@ -316,14 +375,52 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
   ViewProviderFeature::attach(pcFeat);
 
   // create the mesh core nodes
-  createMesh(&(meshFea->getMesh()));
+  updateData();
 }
 
 void ViewProviderMesh::updateData(void)
 {
-  // get the mesh
-  Feature* meshFea = dynamic_cast<Feature*>(pcFeature);
-  createMesh(&(meshFea->getMesh()));
+  // check whether we must display the attached mesh kernel or
+  // the mesh kernel of the attached mesh feature, if so
+  Mesh::PropertyMeshKernel* pMeshInfo=0;
+
+  std::map<std::string,App::Property*> Map;
+  pcFeature->getPropertyMap(Map);
+  for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
+  {
+    Base::Type t = it->second->getTypeId();
+    if ( t.isDerivedFrom( Mesh::PropertyMeshKernel::getClassTypeId() ) )
+    {
+      // Our own mesh kernel is not empty so we propably must render it
+      Mesh::PropertyMeshKernel* prop = (Mesh::PropertyMeshKernel*)it->second;
+      if ( prop->getValue().CountFacets() > 0 )
+      {
+        pMeshInfo = prop;
+        break;
+      }
+    }
+    else if ( t.isDerivedFrom(App::PropertyLink::getClassTypeId()) )
+    {
+      App::PropertyLink* prop = (App::PropertyLink*)it->second;
+      App::AbstractFeature* fea = prop->getValue();
+
+      if ( fea && fea->getTypeId().isDerivedFrom( Mesh::Feature::getClassTypeId() ) )
+      {
+        // Note: Do NOT break here as we want to make sure whether we can render
+        // the own mesh kernel.
+        //
+        // Now get a pointer to the mesh kernel property to this feature
+        Mesh::Feature* mesh = (Mesh::Feature*)(fea);
+        if ( mesh->Mesh.getValue().CountFacets() > 0 )
+          pMeshInfo = &(mesh->Mesh);
+      }
+
+    }
+  }
+
+  if ( !pMeshInfo )
+    return; // cannot display this feature type due to missing mesh property
+  createMesh(pMeshInfo);
 }
 
 QPixmap ViewProviderMesh::getIcon() const

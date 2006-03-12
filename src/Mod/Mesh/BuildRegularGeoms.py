@@ -28,7 +28,7 @@ def Ellipsoid (lenX, lenY, count):
     return RotationBody(polyline, count)    
 
 def Cylinder (radius, len, count):
-    return BuildCone(radius, radius, len, count)
+    return Cone(radius, radius, len, count)
 
 def Cone (radius1, radius2, len, count):
     polyline = ([len, 0.0], [len, radius2], [0.0, radius1], [0.0, 0.0])

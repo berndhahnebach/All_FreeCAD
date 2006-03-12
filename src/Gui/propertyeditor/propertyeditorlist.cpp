@@ -29,10 +29,18 @@
 # include <qcombobox.h>
 #endif
 
+#include <App/PropertyStandard.h>
+
 #include "propertyeditorlist.h"
 
 using namespace Gui::PropertyEditor;
 
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::BoolEditorItem, Gui::PropertyEditor::EditableItem);
+
+BoolEditorItem::BoolEditorItem()
+{
+}
 
 BoolEditorItem::BoolEditorItem( QListView* lv, const QString& text, const QVariant& value )
   : EditableItem( lv, value )
@@ -80,7 +88,27 @@ void BoolEditorItem::setDefaultValue()
     combo->setCurrentItem( 1 );
 }
 
+void BoolEditorItem::convertFromProperty(App::Property* prop)
+{
+  if ( prop && prop->getTypeId() == App::PropertyBool::getClassTypeId() )
+  {
+    App::PropertyBool* pPropBool = (App::PropertyBool*)prop;
+    QVariant var( pPropBool->getValue(), 0 );
+    setValue( var );
+  }
+}
+
+void BoolEditorItem::convertToProperty(const QVariant&)
+{
+}
+
 // ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::ListEditorItem, Gui::PropertyEditor::EditableItem);
+
+ListEditorItem::ListEditorItem()
+{
+}
 
 ListEditorItem::ListEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
@@ -149,7 +177,37 @@ void ListEditorItem::setDefaultValue()
   }
 }
 
+void ListEditorItem::convertFromProperty(App::Property*)
+{
+}
+
+void ListEditorItem::convertToProperty(const QVariant&)
+{
+}
+
 // ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::CursorEditorItem, Gui::PropertyEditor::EditableItem);
+
+CursorEditorItem::CursorEditorItem()
+{
+  _lst[ QObject::ArrowCursor        ] = QString("Arrow");
+  _lst[ QObject::UpArrowCursor      ] = QString("Up Arrow");
+  _lst[ QObject::CrossCursor        ] = QString("Cross");
+  _lst[ QObject::WaitCursor         ] = QString("Waiting");
+  _lst[ QObject::IbeamCursor        ] = QString("iBeam");
+  _lst[ QObject::SizeVerCursor      ] = QString("Size Vertical");
+  _lst[ QObject::SizeHorCursor      ] = QString("Size Horizontal");
+  _lst[ QObject::SizeBDiagCursor    ] = QString("Size Slash");
+  _lst[ QObject::SizeFDiagCursor    ] = QString("Size Backslash");
+  _lst[ QObject::SizeAllCursor      ] = QString("Size All");
+  _lst[ QObject::BlankCursor        ] = QString("Blank");
+  _lst[ QObject::SplitVCursor       ] = QString("Split Vertical");
+  _lst[ QObject::SplitHCursor       ] = QString("Split Horizontal");
+  _lst[ QObject::PointingHandCursor ] = QString("Pointing Hand");
+  _lst[ QObject::ForbiddenCursor    ] = QString("Forbidden");
+  _lst[ QObject::WhatsThisCursor    ] = QString("What's this");
+}
 
 CursorEditorItem::CursorEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
@@ -205,5 +263,13 @@ void CursorEditorItem::setDefaultValue()
 {
   QComboBox* combo = dynamic_cast<QComboBox*>(_editor);
   combo->setCurrentItem(value().toCursor().shape());
+}
+
+void CursorEditorItem::convertFromProperty(App::Property*)
+{
+}
+
+void CursorEditorItem::convertToProperty(const QVariant&)
+{
 }
 

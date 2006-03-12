@@ -36,6 +36,8 @@ namespace PropertyEditor {
  */
 class GuiExport TimeEditorItem: public EditableItem
 {
+  TYPESYSTEM_HEADER();
+
 public:
   TimeEditorItem( QListView* lv, const QString& text, const QVariant& value );
 
@@ -43,6 +45,11 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
+  virtual void convertFromProperty(App::Property*);
+  virtual void convertToProperty(const QVariant&);
+
+private:
+  TimeEditorItem();
 };
 
 /**
@@ -51,6 +58,8 @@ protected:
  */
 class GuiExport DateEditorItem: public EditableItem
 {
+  TYPESYSTEM_HEADER();
+
 public:
   DateEditorItem( QListView* lv, const QString& text, const QVariant& value );
 
@@ -58,6 +67,11 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
+  virtual void convertFromProperty(App::Property*);
+  virtual void convertToProperty(const QVariant&);
+
+private:
+  DateEditorItem();
 };
 
 /**
@@ -66,6 +80,8 @@ protected:
  */
 class GuiExport DateTimeEditorItem: public EditableItem
 {
+  TYPESYSTEM_HEADER();
+
 public:
   DateTimeEditorItem( QListView* lv, const QString& text, const QVariant& value );
 
@@ -73,6 +89,11 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
+  virtual void convertFromProperty(App::Property*);
+  virtual void convertToProperty(const QVariant&);
+
+private:
+  DateTimeEditorItem();
 };
 
 } //namespace PropertyEditor

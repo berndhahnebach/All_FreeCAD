@@ -68,20 +68,18 @@ int Export::execute(void)
     return 1;
   }
 
+  std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
+
   if ( fi.hasExtension("bms") )
   {
-    std::ofstream cOut( FileName.getValue(), std::ios::out | std::ios::binary );
-    pcFeat->getMesh().getKernel()->Write( cOut );
+    pcFeat->Mesh.getValue().Write( str );
   }
   else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
   {
-    MeshSTL aWriter(*(pcFeat->getMesh().getKernel()) );
+    MeshSTL aWriter(pcFeat->Mesh.getValue());
 
     // write file
     bool ok = false;
-    //FileStream str( FileName.getValue(), std::ios::out);
-    std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
-
     if ( std::string(Format.getValue()) == "ASCII STL" )
       ok = aWriter.SaveAscii( str );
     else // "Binary STL"

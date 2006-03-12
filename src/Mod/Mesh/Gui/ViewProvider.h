@@ -30,6 +30,7 @@
 #endif
 
 #include "../App/Core/Elements.h"
+#include <Gui/propertyeditor/propertyeditorinput.h>
 #include <Gui/ViewProviderFeature.h>
 
 
@@ -53,11 +54,33 @@ namespace Gui {
 
 
 namespace Mesh {
-  class MeshWithProperty;
+  class PropertyMeshKernel;
 }
 
 
 namespace MeshGui {
+
+/**
+ * Change a text property.
+ * \author Werner Mayer
+ */
+class GuiMeshExport KernelEditorItem: public Gui::PropertyEditor::EditableItem
+{
+  TYPESYSTEM_HEADER();
+
+public:
+  KernelEditorItem( QListView* lv, const QString& text, const QVariant& value );
+
+protected:
+  QWidget* createEditor( int column, QWidget* parent );
+  virtual void stopEdit( QWidget* editor, int column );
+  virtual void setDefaultValue();
+  virtual void convertFromProperty(App::Property*);
+  virtual void convertToProperty(const QVariant&);
+
+private:
+  KernelEditorItem();
+};
 
 /**
  * The ViewProviderMesh class creates
@@ -99,7 +122,7 @@ public:
 
 protected:
   /// helper methode to build up the FaceSet
-  void createMesh(Mesh::MeshWithProperty *pcMesh);
+  void createMesh(Mesh::PropertyMeshKernel *pcMesh);
   /// Creates a tool mesh from the previous picked polygon on the viewer
   bool createToolMesh( const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& ) const;
 

@@ -47,8 +47,22 @@ static const char * resetproperty_xpm[] = {
       "@+.@.+@",
       "+.@@@.+"};
 
+TYPESYSTEM_SOURCE_ABSTRACT(Gui::PropertyEditor::EditableItem, Base::BaseClass);
+
+QListView* EditableItem::parentView = 0;
+
+EditableItem::EditableItem()
+    : QListViewItem( parentView ), _prop(0), _val(0), _newval(0), _modified(false)
+{
+  _reset = new QPushButton(listView()->viewport());
+  _reset->setPixmap( resetproperty_xpm );
+  _reset->hide();
+
+  connect( _reset, SIGNAL( clicked() ), this, SLOT( restoreOverrideValue() ) );
+}
+
 EditableItem::EditableItem( QListView* lv, const QVariant& value )
-    : QListViewItem( lv ), _val(value), _newval(value), _modified(false)
+    : QListViewItem( lv ), _prop(0), _val(value), _newval(value), _modified(false)
 {
   _reset = new QPushButton(listView()->viewport());
   _reset->setPixmap( resetproperty_xpm );
@@ -139,6 +153,12 @@ void EditableItem::restoreOverrideValue()
   setDefaultValue();
   setModified( false );
   QListViewItem::repaint();
+}
+
+void EditableItem::setProperty( App::Property* prop )
+{
+  _prop = prop;
+  convertFromProperty(_prop);
 }
 
 void EditableItem::setModified( bool mod )

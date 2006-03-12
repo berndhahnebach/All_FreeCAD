@@ -57,11 +57,14 @@
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qfiledialog.h>
+#include <qlineedit.h>
+#include <qlistview.h>
 #include <qmainwindow.h>
 #include <qmessagebox.h>
 #include <qpainter.h>
 #include <qscrollview.h>
 #include <qthread.h>
+#include <qvariant.h>
 #include <qworkspace.h>
 
 // Open Inventor

@@ -22,7 +22,7 @@
 
 
 #include "PreCompiled.h"
-
+#if 0
 #include "MeshCurvature.h"
 #include "Mesh.h"
 #include "Core/MeshKernel.h"
@@ -260,3 +260,4 @@ bool MeshCurvaturePerFace::Compute()
 
   return true;
 }
+#endif

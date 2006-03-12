@@ -48,8 +48,6 @@ using MeshCore::MeshKernel;
 namespace Mesh
 {
 
-class MeshWithProperty;
-
 /** The mesh algorithems container class
  */
 class AppMeshExport MeshAlgos
@@ -57,53 +55,49 @@ class AppMeshExport MeshAlgos
 public:
   /** Load a Mesh
    */
-  static MeshWithProperty* Load(const char *FileName);
+  static MeshCore::MeshKernel* Load(const char *FileName);
 
   /** write a Mesh as binery STL
    */
-  static void writeBin(MeshWithProperty* Mesh,const char *FileName);
+  static void writeBin(MeshCore::MeshKernel* Mesh,const char *FileName);
 
   /** write a Mesh as ASCII STL
    */
-  static void writeAscii(MeshWithProperty* Mesh,const char *FileName);
+  static void writeAscii(MeshCore::MeshKernel* Mesh,const char *FileName);
 
   /** reads a Mesh format if supported
    */
-  static void read(MeshWithProperty* Mesh,const char *FileName);
+  static void read(MeshCore::MeshKernel* Mesh,const char *FileName);
 
   /** Calculate per Vertex normales and adds the Normal property bag
   */
-  static void calcVertexNormales(MeshWithProperty* Mesh);
-
-  /** Calculate per Vertex normales and adds the Normal property bag
-  */
-  static void offset(MeshWithProperty* Mesh, float fSize);
-  static void offsetSpecial(MeshWithProperty* Mesh, float fSize, float zmax, float zmin);
+  static void offset(MeshCore::MeshKernel* Mesh, float fSize);
+  static void offsetSpecial(MeshCore::MeshKernel* Mesh, float fSize, float zmax, float zmin);
 
   /** Coarsen the mesh
   */
-  static void MeshAlgos::coarsen(MeshWithProperty* Mesh, float f);
+  static void coarsen(MeshCore::MeshKernel* Mesh, float f);
 
   /** makes a boolean add
    * The int Type stears the boolean oberation: 0=add;1=intersection;2=diff
   */
-  static MeshWithProperty* MeshAlgos::boolean(MeshWithProperty* Mesh1, MeshWithProperty* Mesh2, MeshWithProperty* pResult, int Type=0);
+  static MeshCore::MeshKernel* MeshAlgos::boolean(MeshCore::MeshKernel* Mesh1, MeshCore::MeshKernel* Mesh2, MeshCore::MeshKernel* pResult, int Type=0);
 
   /** Creates a GTS Surface from a MeshKernel
   */
-  static GtsSurface* createGTSSurface(MeshWithProperty* Mesh);
+  static GtsSurface* createGTSSurface(MeshCore::MeshKernel* Mesh);
 
   /** Creates a GTS Surface from a MeshKernel
   */
-  static void fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSurface);
+  static void fillMeshFromGTSSurface(MeshCore::MeshKernel* pMesh, GtsSurface* pSurface);
 
-  static void cutByShape(const TopoDS_Shape &aShape,const MeshWithProperty* pMesh,MeshWithProperty* pToolMesh);
+  static void cutByShape(const TopoDS_Shape &aShape,const MeshCore::MeshKernel* pMesh,MeshCore::MeshKernel* pToolMesh);
 
   /// helper to discredicice a Edge...
   static void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
 
   /// creates a mesh loft on base of a curve and an up vector
-  static void LoftOnCurve(MeshWithProperty &ResultMesh,const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up = Vector3D(0,0,1),  float MaxSize = 0.1);
+  static void LoftOnCurve(MeshCore::MeshKernel &ResultMesh,const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up = Vector3D(0,0,1),  float MaxSize = 0.1);
 
   /*
   struct FaceSplitEdge
@@ -117,7 +111,7 @@ public:
                                        const std::vector<Vector3D> &rclPoints, 
                                        std::vector<FaceSplitEdge> &vSplitEdges);
 */
-  static void cutByCurve(MeshWithProperty* pMesh,const std::vector<CurveProjector::FaceSplitEdge> &vSplitEdges);
+  static void cutByCurve(MeshCore::MeshKernel* pMesh,const std::vector<CurveProjector::FaceSplitEdge> &vSplitEdges);
 /*
   static bool projectPointToMesh(MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
 */

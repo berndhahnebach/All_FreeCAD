@@ -23,7 +23,7 @@
 
 #ifndef MESH_CURVATURE_H
 #define MESH_CURVATURE_H
-
+#if 0
 #ifndef _PreComp_
 # include <vector>
 
@@ -121,5 +121,5 @@ protected:
 
 } // namespace Mesh
 
-
+#endif
 #endif // MESH_CURVATURE_H

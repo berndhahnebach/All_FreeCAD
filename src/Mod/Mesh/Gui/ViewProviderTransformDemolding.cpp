@@ -132,7 +132,7 @@ void ViewProviderMeshTransformDemolding::attach(App::AbstractFeature *pcFeat)
   calcNormalVector();
   calcMaterialIndex(SbRotation());
   // geting center point
-  center = dynamic_cast<Feature*>(pcFeature)->getMesh().getKernel()->GetBoundBox().CalcCenter();
+  center = dynamic_cast<Feature*>(pcFeature)->Mesh.getValue().GetBoundBox().CalcCenter();
 
   //SoGetBoundingBoxAction  boxAction;
   //pcHighlight->getBoundingBox(&boxAction);
@@ -141,9 +141,9 @@ void ViewProviderMeshTransformDemolding::attach(App::AbstractFeature *pcFeat)
 
 void ViewProviderMeshTransformDemolding::calcNormalVector(void)
 {
-  MeshKernel *cMesh = dynamic_cast<Feature*>(pcFeature)->getMesh().getKernel();
+  MeshKernel& cMesh = dynamic_cast<Feature*>(pcFeature)->Mesh.getValue();
 
-  MeshFacetIterator cFIt(*cMesh);
+  MeshFacetIterator cFIt(cMesh);
   for( cFIt.Init(); cFIt.More(); cFIt.Next())
   {
     const MeshGeomFacet& rFace = *cFIt;

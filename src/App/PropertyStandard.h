@@ -78,6 +78,8 @@ public:
 	 */
 	long getValue(void) const;
 
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::IntEditorItem"; }
+
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
@@ -166,6 +168,8 @@ public:
 
 	void setValue(float lValue);
 	float getValue(void) const;
+
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatEditorItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -256,6 +260,8 @@ public:
 
   bool isEmpty(void){return _cValue == "";}
 
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::TextEditorItem"; }
+
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
@@ -292,6 +298,8 @@ public:
 
 	void setValue(bool lValue);
 	bool getValue(void) const;
+
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::BoolEditorItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -334,6 +342,8 @@ public:
 	/** This method returns a string representation of the property
 	 */
 	const Color &getValue(void) const;
+
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::ColorEditorItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);

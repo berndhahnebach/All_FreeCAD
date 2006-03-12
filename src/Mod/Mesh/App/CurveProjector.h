@@ -50,14 +50,12 @@ using MeshCore::MeshGeomFacet;
 namespace Mesh
 {
 
-class MeshWithProperty;
-
 /** The father of all projection algorithems
  */
 class AppMeshExport CurveProjector
 {
 public:
-  CurveProjector(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh);
+  CurveProjector(const TopoDS_Shape &aShape, const MeshKernel &pMesh);
   virtual ~CurveProjector() {}
 
   struct FaceSplitEdge
@@ -81,7 +79,7 @@ public:
 protected:
   virtual void Do()=0;
   const TopoDS_Shape &_Shape;
-  const MeshWithProperty &_Mesh;
+  const MeshKernel &_Mesh;
   result_type mvEdgeSplitPoints;
 
 };
@@ -92,7 +90,7 @@ protected:
 class AppMeshExport CurveProjectorShape: public CurveProjector
 {
 public:
-  CurveProjectorShape(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh);
+  CurveProjectorShape(const TopoDS_Shape &aShape, const MeshKernel &pMesh);
   virtual ~CurveProjectorShape() {}
 
   void projectCurve(const TopoDS_Edge& aEdge,
@@ -113,7 +111,7 @@ protected:
 class AppMeshExport CurveProjectorSimple: public CurveProjector
 {
 public:
-  CurveProjectorSimple(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh);
+  CurveProjectorSimple(const TopoDS_Shape &aShape, const MeshKernel &pMesh);
   virtual ~CurveProjectorSimple() {}
 
   /// helper to discredicice a Edge...
@@ -142,14 +140,14 @@ public:
     Vector3D n;
   };
 
-  CurveProjectorWithToolMesh(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh,MeshWithProperty &rToolMesh);
+  CurveProjectorWithToolMesh(const TopoDS_Shape &aShape, const MeshKernel &pMesh,MeshKernel &rToolMesh);
   virtual ~CurveProjectorWithToolMesh() {}
 
 
   void makeToolMesh(const TopoDS_Edge& aEdge,std::vector<MeshGeomFacet> &cVAry );
 
 
-  MeshWithProperty &ToolMesh;
+  MeshKernel &ToolMesh;
 
 protected:
   virtual void Do();

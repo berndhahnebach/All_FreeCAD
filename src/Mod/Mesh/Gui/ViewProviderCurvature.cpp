@@ -45,14 +45,12 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 #include <App/Application.h>
+#include <App/Feature.h>
 #include <Gui/Selection.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/SoFCColorBar.h>
 
-#include <Mod/Mesh/App/MeshFeature.h>
-#include <Mod/Mesh/App/FeatureMeshCurvature.h>
 #include <Mod/Mesh/App/Mesh.h>
-#include <Mod/Mesh/App/Core/Iterator.h>
 
 #include "ViewProvider.h"
 #include "ViewProviderCurvature.h"
@@ -60,8 +58,6 @@
 using namespace Mesh;
 using namespace MeshGui;
 using namespace std;
-using MeshCore::MeshKernel;
-using MeshCore::MeshFacetIterator;
 using Base::Vector3D;
 
 

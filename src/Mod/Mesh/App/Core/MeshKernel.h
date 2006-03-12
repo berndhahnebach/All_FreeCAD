@@ -284,6 +284,8 @@ public:
   MeshKernel& operator = (const MeshKernel &rclMesh);
   /// Transform the data structure with the given transformation matrix.
   virtual void operator *= (const Matrix4D &rclMat);
+  /// Transform the data structure with the given transformation matrix.
+  void Transform (const Matrix4D &rclMat);
   /** Moves the point at the given index along the vector \a rclTrans. */
   inline void MovePoint (unsigned long ulPtIndex, const Vector3D &rclTrans);
   //@}

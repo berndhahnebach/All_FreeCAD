@@ -56,6 +56,8 @@ public:
   Feature(void);
   virtual ~Feature();
 
+  PropertyMeshKernel Mesh;
+
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
@@ -71,21 +73,8 @@ public:
   virtual void SaveDocFile (Base::Writer &writer);
   virtual void RestoreDocFile(Base::Reader &reader);
 
-
-  /** @name methods for mesh handling */
-  //@{
-  /** Get the access to the actual mesh */
-  virtual MeshWithProperty& getMesh();
-  /** Set the actual mesh */
-  virtual void setMesh(const MeshWithProperty&);
-  //@}
-
   /// handles the MeshPy object
   virtual Base::PyObjectBase* GetPyObject(void);
-
-
-protected:
-  MeshWithProperty _cMesh;
 
 private:
   MeshFeaturePy *pcMeshFeaturePy;

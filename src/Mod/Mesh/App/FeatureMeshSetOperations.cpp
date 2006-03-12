@@ -62,15 +62,12 @@ int SetOperations::execute(void)
 
   if ((mesh1 != NULL) && (mesh2 != NULL))
   {
-    MeshWithProperty& propMesh1 = mesh1->getMesh();
-    MeshWithProperty& propMesh2 = mesh2->getMesh();
+    MeshCore::MeshKernel& meshKernel1 = mesh1->Mesh.getValue();
+    MeshCore::MeshKernel& meshKernel2 = mesh2->Mesh.getValue();
 
-    MeshKernel& meshKernel1 = *propMesh1.getKernel();
-    MeshKernel& meshKernel2 = *propMesh2.getKernel();
+    MeshCore::MeshKernel res = Mesh.getValue(); // Result Meshkernel
 
-    MeshCore::MeshKernel* res = getMesh().getKernel(); // Result Meshkernel
-
-    MeshCore::SetOperations setOp(meshKernel1, meshKernel2, *res, MeshCore::SetOperations::Union, 1.0e-5);
+    MeshCore::SetOperations setOp(meshKernel1, meshKernel2, res, MeshCore::SetOperations::Union, 1.0e-5);
     setOp.Do();
 
 

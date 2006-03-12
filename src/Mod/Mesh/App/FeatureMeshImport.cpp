@@ -57,11 +57,12 @@ int Import::execute(void)
     return 1;
   }
 
+  std::ifstream str( FileName.getValue(), std::ios::in | std::ios::binary );
+
   if ( fi.hasExtension("bms") )
   {
     try {
-      std::ifstream cIn( FileName.getValue(), std::ios::in | std::ios::binary );
-      _cMesh.getKernel()->Read( cIn );
+      Mesh.getValue().Read( str );
     } catch( const Base::MemoryException&) {
       setError("Invalid mesh file");
       return 1;
@@ -69,14 +70,11 @@ int Import::execute(void)
   }
   else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
   {
-    MeshSTL aReader(*(_cMesh.getKernel()) );
-
-    // read file
-    //FileStream str( FileName.getValue(), std::ios::in);
-    std::ifstream str( FileName.getValue(), std::ios::in | std::ios::binary );
+    MeshSTL aReader( Mesh.getValue() );
 
     // catches the abort exception to set a more detailed description
     try{
+      // read file
       if ( !aReader.Load( str ) )
       {
         setError("Import of mesh from file '%s' failed",FileName.getValue());

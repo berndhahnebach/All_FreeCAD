@@ -54,12 +54,10 @@ Feature::~Feature()
 {
 }
 
-typedef App::PropertyContainer Parent;
-
 void Feature::Save (Base::Writer &writer)
 {
   // save parent
-  Parent::Save(writer);
+  AbstractFeature::Save(writer);
   //reinterpret_cast<App::AbstractFeature*>(this)->Save(indent,str);
 
   std::string fn = name.getValue(); fn += ".bin";
@@ -71,8 +69,8 @@ void Feature::Save (Base::Writer &writer)
 
 void Feature::Restore(Base::XMLReader &reader)
 {
-  // save parent
-  Parent::Restore(reader);
+  // load parent
+  AbstractFeature::Restore(reader);
 
   //_Points.Restore(reader);
 

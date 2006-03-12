@@ -44,6 +44,12 @@ using namespace Gui::PropertyEditor;
 
 /* TRANSLATOR Gui::PropertyEditor::FileEditorItem */
 
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::FileEditorItem, Gui::PropertyEditor::EditableItem);
+
+FileEditorItem::FileEditorItem()
+{
+}
+
 FileEditorItem::FileEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
@@ -94,9 +100,23 @@ void FileEditorItem::onChangeFile()
   }
 }
 
+void FileEditorItem::convertFromProperty(App::Property* prop)
+{
+}
+
+void FileEditorItem::convertToProperty(const QVariant&)
+{
+}
+
 // ======================================================================
 
 /* TRANSLATOR Gui::PropertyEditor::PixmapEditorItem */
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PixmapEditorItem, Gui::PropertyEditor::EditableItem);
+
+PixmapEditorItem::PixmapEditorItem()
+{
+}
 
 PixmapEditorItem::PixmapEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
@@ -167,7 +187,21 @@ void PixmapEditorItem::onChangePixmap()
   }
 }
 
+void PixmapEditorItem::convertFromProperty(App::Property* prop)
+{
+}
+
+void PixmapEditorItem::convertToProperty(const QVariant&)
+{
+}
+
 // ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::ChildrenEditorItem, Gui::PropertyEditor::EditableItem);
+
+ChildrenEditorItem::ChildrenEditorItem()
+{
+}
 
 ChildrenEditorItem::ChildrenEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
@@ -238,6 +272,14 @@ void ChildrenEditorItem::setDefaultValue()
 
     cur++;
   }
+}
+
+void ChildrenEditorItem::convertFromProperty(App::Property* prop)
+{
+}
+
+void ChildrenEditorItem::convertToProperty(const QVariant&)
+{
 }
 
 #include "moc_propertyeditorfile.cpp"

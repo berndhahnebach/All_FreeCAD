@@ -41,6 +41,7 @@
 #include <App/Property.h>
 #include <Mod/Part/App/TopologyPy.h>
 
+#include "Core/MeshKernel.h"
 #include "MeshPy.h"
 #include "Mesh.h"
 #include "MeshAlgos.h"
@@ -131,7 +132,6 @@ insert(PyObject *self, PyObject *args)
 /* module functions */
 static PyObject *                        
 save(PyObject *self, PyObject *args)
-
 {
 	Py_Return;    
 
@@ -140,7 +140,6 @@ save(PyObject *self, PyObject *args)
 /* module functions */
 static PyObject *                        
 read(PyObject *self, PyObject *args)
-
 {
   const char* Name;
   if (! PyArg_ParseTuple(args, "s",&Name))			 
@@ -160,20 +159,18 @@ read(PyObject *self, PyObject *args)
 
 static PyObject *                        
 newMesh(PyObject *self, PyObject *args)
-
 {
   if (! PyArg_ParseTuple(args, "") )			 
     return NULL;                         
 
   PY_TRY {
     // load the mesh and create a mesh python object with it
-    return new MeshPy(new MeshWithProperty());    
+    return new MeshPy(new MeshCore::MeshKernel());    
   } PY_CATCH;
 }
 
 static PyObject *                        
 loftOnCurve(PyObject *self, PyObject *args)
-
 {
 #if 0
   Part::TopoShapePy   *pcObject;
@@ -185,7 +182,7 @@ loftOnCurve(PyObject *self, PyObject *args)
     return NULL;                             // NULL triggers exception 
 
   pcObject = (Part::TopoShapePy*)pcTopoObj;
-  MeshWithProperty *M = new MeshWithProperty();
+  MeshKernel *M = new MeshKernel();
 
   std::vector<Vector3D> poly;
 

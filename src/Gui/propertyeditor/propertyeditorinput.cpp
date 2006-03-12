@@ -32,10 +32,18 @@
 # include <qcursor.h>
 #endif
 
+#include <App/PropertyStandard.h>
+
 #include "propertyeditorinput.h"
 #include "../SpinBox.h"
 
 using namespace Gui::PropertyEditor;
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::TextEditorItem, Gui::PropertyEditor::EditableItem);
+
+TextEditorItem::TextEditorItem()
+{
+}
 
 TextEditorItem::TextEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
@@ -68,7 +76,28 @@ void TextEditorItem::setDefaultValue()
   edit->setText( value().toString() );
 }
 
+void TextEditorItem::convertFromProperty(App::Property* prop)
+{
+  if ( prop && prop->getTypeId() == App::PropertyString::getClassTypeId() )
+  {
+    App::PropertyString* pPropChar = (App::PropertyString*)prop;
+    QVariant value( QString(pPropChar->getValue()) );
+    setValue( value );
+    setText( 1, value.toString() );
+  }
+}
+
+void TextEditorItem::convertToProperty(const QVariant&)
+{
+}
+
 // ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::IntEditorItem, Gui::PropertyEditor::EditableItem);
+
+IntEditorItem::IntEditorItem()
+{
+}
 
 IntEditorItem::IntEditorItem( QListView* lv, const QString& text, const QVariant& value )
   : EditableItem( lv, value )
@@ -100,7 +129,21 @@ void IntEditorItem::setDefaultValue()
   spin->setValue( value().toInt() );
 }
 
+void IntEditorItem::convertFromProperty(App::Property*)
+{
+}
+
+void IntEditorItem::convertToProperty(const QVariant&)
+{
+}
+
 // ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::FloatEditorItem, Gui::PropertyEditor::EditableItem);
+
+FloatEditorItem::FloatEditorItem()
+{
+}
 
 FloatEditorItem::FloatEditorItem( QListView* lv, const QString& text, const QVariant& value )
   : EditableItem( lv, value )
@@ -131,6 +174,14 @@ void FloatEditorItem::setDefaultValue()
 {
   FloatSpinBox* spin = dynamic_cast<FloatSpinBox*>(_editor);
   spin->setValue( (float)value().toDouble() );
+}
+
+void FloatEditorItem::convertFromProperty(App::Property*)
+{
+}
+
+void FloatEditorItem::convertToProperty(const QVariant&)
+{
 }
 
 #include "moc_propertyeditorinput.cpp"

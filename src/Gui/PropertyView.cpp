@@ -76,6 +76,7 @@ PropertyView::PropertyView(Gui::Document* pcDocument,QWidget *parent,const char 
   pLayout->addWidget( pTabs, 0, 0 );
 
   _pPropEditor = new EditableListView( pTabs );
+  EditableItem::parentView = _pPropEditor;
   pTabs->insertTab(_pPropEditor, "Properties");
   _pPropEditor->addColumn("Name");
   _pPropEditor->addColumn( "Value" );
@@ -128,14 +129,12 @@ void PropertyView::buildUp(App::PropertyContainer *cont)
   std::map<std::string,App::Property*>::iterator it;
   for(it = Map.begin(); it != Map.end(); ++it)
   {
-    it->first;    
-    Base::Type t = it->second->getTypeId();
-    if(t==App::PropertyString::getClassTypeId())
-      new TextEditorItem( _pPropEditor, QString(it->first.c_str()), QString(((App::PropertyString*)it->second)->getValue()) ); 
-    else if(t==App::PropertyFloat::getClassTypeId())
-      new FloatEditorItem( _pPropEditor, QString(it->first.c_str()), ((App::PropertyFloat*)it->second)->getValue() );
-    else if(t==App::PropertyInteger::getClassTypeId())
-      new IntEditorItem( _pPropEditor, QString(it->first.c_str()), (int)((App::PropertyInteger*)it->second)->getValue() );
+    EditableItem* item = (EditableItem*) Base::Type::createInstanceByName( it->second->getEditorName(),true);
+    if ( item )
+    {
+      item->setText(0, QString(it->first.c_str()));
+      item->setProperty( it->second );
+    }
   }
 }
 

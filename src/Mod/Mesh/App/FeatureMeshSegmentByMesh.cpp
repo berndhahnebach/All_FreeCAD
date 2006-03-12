@@ -79,11 +79,8 @@ int SegmentByMesh::execute(void)
     return 1;
   }
 
-  MeshWithProperty& rMesh = pcMesh->getMesh();
-  MeshWithProperty& rTool = pcTool->getMesh();
-
-  MeshKernel& rMeshKernel = *rMesh.getKernel();
-  MeshKernel& rToolMesh = *rTool.getKernel();
+  MeshKernel& rMeshKernel = pcMesh->Mesh.getValue();
+  MeshKernel& rToolMesh   = pcTool->Mesh.getValue();
 
   // check if the toolmesh is a solid
   if ( MeshEvalSolid(rToolMesh).Validate(false) != MeshEvalSolid::Valid )
@@ -141,7 +138,7 @@ int SegmentByMesh::execute(void)
 
   for ( std::vector<unsigned long>::iterator it = faces.begin(); it != faces.end(); ++it )
     aFaces.push_back( rMeshKernel.GetFacet(*it) );
-  getMesh().getKernel()->operator = ( aFaces );
+  Mesh.getValue() = ( aFaces );
 
   return 0;
 }

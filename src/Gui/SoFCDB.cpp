@@ -36,17 +36,42 @@
 #include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
 
+#include "propertyeditor/propertyeditordate.h"
+#include "propertyeditor/propertyeditorfile.h"
+#include "propertyeditor/propertyeditorfont.h"
+#include "propertyeditor/propertyeditorinput.h"
+#include "propertyeditor/propertyeditoritem.h"
+#include "propertyeditor/propertyeditorlist.h"
+
 using namespace Gui;
+using namespace Gui::PropertyEditor;
 
 void Gui::SoFCDB::init()
 {
-  SoFCColorBarBase::initClass();
-  SoFCColorBar::initClass();
-  SoFCColorLegend::initClass();
-  SoFCColorGradient::initClass();
-  SoFCBackgroundGradient::initClass();
-  SoInteraction::init();
-  SoFCSelection::initClass();
-  SoFCSelectionAction::initClass();
+  SoFCColorBarBase        ::initClass();
+  SoFCColorBar            ::initClass();
+  SoFCColorLegend         ::initClass();
+  SoFCColorGradient       ::initClass();
+  SoFCBackgroundGradient  ::initClass();
+  SoInteraction           ::init();
+  SoFCSelection           ::initClass();
+  SoFCSelectionAction     ::initClass();
+
+
+  EditableItem            ::init();
+  TimeEditorItem          ::init();
+  DateEditorItem          ::init();
+  DateTimeEditorItem      ::init();
+  FileEditorItem          ::init();
+  PixmapEditorItem        ::init();
+  ChildrenEditorItem      ::init();
+  FontEditorItem          ::init();
+  ColorEditorItem         ::init();
+  TextEditorItem          ::init();
+  IntEditorItem           ::init();
+  FloatEditorItem         ::init();
+  BoolEditorItem          ::init();
+  ListEditorItem          ::init();
+  CursorEditorItem        ::init();
 }
 

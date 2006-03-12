@@ -229,18 +229,21 @@ const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const
 	return _cMesh;
 }
 
-PyObject *PropertyMeshKernel::getPyObject(void) const
+MeshCore::MeshKernel& PropertyMeshKernel::getValue(void) 
 {
-  //FIXME: We must remove MeshWithProperty class first. MeshPy must own a MeshKernel object instead.
-  return new MeshPy(0);
+	return _cMesh;
+}
+
+PyObject *PropertyMeshKernel::getPyObject(void)
+{
+  return new MeshPy(&_cMesh);
 }
 
 void PropertyMeshKernel::setPyObject(PyObject *value)
 {
-  //FIXME: see getPyObject()
   if( PyObject_TypeCheck(value, &(MeshPy::Type)) ) {
    	MeshPy  *pcObject = (MeshPy*)value;
-    _cMesh = *(pcObject->getMesh()->getKernel());
+    _cMesh = *(pcObject->getMesh());
   }
 }
 
@@ -272,7 +275,7 @@ void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
 }
 
 // ----------------------------------------------------------------------------
-
+#if 0
 MeshPropertyNormal::MeshPropertyNormal(int size)
 {
   Normales.resize(size);
@@ -489,3 +492,4 @@ void MeshWithProperty::transform(const Matrix4D &rclMat)
   *_Mesh *= rclMat;
 }
 
+#endif

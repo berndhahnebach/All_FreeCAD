@@ -57,13 +57,15 @@ int Curvature::execute(void)
 {
   Feature *pcFeat  = dynamic_cast<Feature*>(Source.getValue());
   if(!pcFeat || pcFeat->getStatus() != Valid)
+  {
+    setError("No mesh object attached.");
     return 1;
+  }
  
   // get all points
-  MeshWithProperty& rMesh = pcFeat->getMesh();
-  MeshKernel* pMesh = rMesh.getKernel();
+  MeshKernel& rMesh = pcFeat->Mesh.getValue();
   std::vector< Wm3::Vector3<float> > aPnts;
-  MeshPointIterator cPIt( *pMesh );
+  MeshPointIterator cPIt( rMesh );
   for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
   {
     Wm3::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
@@ -72,17 +74,17 @@ int Curvature::execute(void)
 
   // get all point connections
   std::vector<int> aIdx;
-  const std::vector<MeshFacet>& raFts = pMesh->GetFacets();
-  for ( std::vector<MeshFacet>::const_iterator it = raFts.begin(); it != raFts.end(); ++it )
+  const std::vector<MeshFacet>& raFts = rMesh.GetFacets();
+  for ( std::vector<MeshFacet>::const_iterator jt = raFts.begin(); jt != raFts.end(); ++jt )
   {
     for (int i=0; i<3; i++)
     {
-      aIdx.push_back( (int)it->_aulPoints[i] );
+      aIdx.push_back( (int)jt->_aulPoints[i] );
     }
   }
 
   // compute vertex based curvatures
-  Wm3::MeshCurvature<float> meshCurv(pMesh->CountPoints(), &(aPnts[0]), pMesh->CountFacets(), &(aIdx[0]));
+  Wm3::MeshCurvature<float> meshCurv(rMesh.CountPoints(), &(aPnts[0]), rMesh.CountFacets(), &(aIdx[0]));
 
   // get curvature information now
   const Wm3::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
@@ -90,8 +92,8 @@ int Curvature::execute(void)
   const float* aMaxCurv = meshCurv.GetMaxCurvatures();
   const float* aMinCurv = meshCurv.GetMinCurvatures();
 
-  CurvInfo.setSize(pMesh->CountPoints());
-  for ( unsigned long i=0; i<pMesh->CountPoints(); i++ )
+  CurvInfo.setSize(rMesh.CountPoints());
+  for ( unsigned long i=0; i<rMesh.CountPoints(); i++ )
   {
     CurvatureInfo ci;
     ci.cMaxCurvDir = Vector3D( aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z() );
@@ -102,13 +104,4 @@ int Curvature::execute(void)
   }
 
   return 0;
-}
-
-MeshWithProperty& Curvature::getMesh()
-{
-  Feature *pcFeat  = dynamic_cast<Feature*>(Source.getValue());
-  if(!pcFeat || pcFeat->getStatus() != Valid)
-    return Feature::getMesh();
-
-  return pcFeat->getMesh();
 }

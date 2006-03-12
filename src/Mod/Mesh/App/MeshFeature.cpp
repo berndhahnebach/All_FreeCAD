@@ -52,6 +52,7 @@ PROPERTY_SOURCE(Mesh::Feature, App::AbstractFeature)
 Feature::Feature()
 :pcMeshFeaturePy(0)
 {
+  ADD_PROPERTY(Mesh, (MeshCore::MeshKernel()));
 }
 
 Feature::~Feature()
@@ -66,18 +67,6 @@ int Feature::execute(void)
   return 0;
 }
 
-
-MeshWithProperty& Feature::getMesh()
-{
-  return _cMesh;
-}
-
-void Feature::setMesh(const MeshWithProperty& New)
-{
-  _cMesh = New;
-  Touch();
-}
-
 Base::PyObjectBase *Feature::GetPyObject(void)
 {
   if(!pcMeshFeaturePy){
@@ -89,17 +78,13 @@ Base::PyObjectBase *Feature::GetPyObject(void)
   return pcMeshFeaturePy; 
 }
 
-// VC 6 hack!!!
-typedef App::PropertyContainer Parent;
-
 void Feature::Save (Base::Writer &writer)
 {
-  //typedef App::AbstractFeature Parent;
   // save parent
-  Parent::Save(writer);
+  AbstractFeature::Save(writer);
 
-  std::string fn = name.getValue(); fn += ".bms";
-  writer.addFile(fn.c_str(), this);
+//  std::string fn = name.getValue(); fn += ".bms";
+//  writer.addFile(fn.c_str(), this);
   //reinterpret_cast<App::AbstractFeature*>(this)->Save(indent,str);
 
 //  MeshCore::MeshDocXML writer(*_cMesh.getKernel());
@@ -110,8 +95,8 @@ void Feature::Save (Base::Writer &writer)
 
 void Feature::Restore(Base::XMLReader &reader)
 {
-  // save parent
-  Parent::Restore(reader);
+  // load parent
+  AbstractFeature::Restore(reader);
 
 //  MeshCore::MeshDocXML geter(*_cMesh.getKernel());
 
@@ -122,21 +107,23 @@ void Feature::Restore(Base::XMLReader &reader)
 
 void Feature::SaveDocFile (Base::Writer &writer)
 {
-  try {
-    _cMesh.getKernel()->Write(writer);
-  } catch( const Base::Exception& e) {
-    throw e;
-  }
+  // PropertyMeshKernel should do this now!
+//  try {
+//    _cMesh.getKernel()->Write(writer);
+//  } catch( const Base::Exception& e) {
+//    throw e;
+//  }
 }
 
 void Feature::RestoreDocFile(Base::Reader &reader)
 {
-  try {
-    _cMesh.getKernel()->Read(reader);
-  } catch( const Base::MemoryException&) {
-    throw Base::Exception("Invalid mesh file");
-  } catch( const Base::Exception& e) {
-    throw e;
-  }
+  // PropertyMeshKernel should do this now!
+//  try {
+//    _cMesh.getKernel()->Read(reader);
+//  } catch( const Base::MemoryException&) {
+//    throw Base::Exception("Invalid mesh file");
+//  } catch( const Base::Exception& e) {
+//    throw e;
+//  }
 }
 

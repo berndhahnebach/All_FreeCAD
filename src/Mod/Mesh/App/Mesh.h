@@ -121,13 +121,16 @@ public:
   //@{
   void setValue( const MeshCore::MeshKernel& m);
 	const MeshCore::MeshKernel &getValue(void) const;
+	MeshCore::MeshKernel &getValue(void);
   //@}
 
   /** @name Python interface */
   //@{
-  PyObject* getPyObject(void) const;
+  PyObject* getPyObject(void);
   void setPyObject(PyObject *value);
   //@}
+
+  const char* getEditorName(void) const { return "MeshGui::KernelEditorItem"; }
 
   /** @name Save/restore */
   //@{
@@ -159,7 +162,7 @@ private:
 
 
 
-
+#if 0
 using Base::Vector3D;
 using Base::Matrix4D;
 
@@ -313,6 +316,6 @@ private:
 };
 
 } // namespace Mesh
-
+#endif
 #endif // _Mesh_h_
 

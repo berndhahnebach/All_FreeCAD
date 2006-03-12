@@ -60,8 +60,8 @@ int Transform::execute(void)
   Matrix4D Matrix =Position.getValue();
 
  
-  getMesh() = pcFirst->getMesh();
-  getMesh().transform(Matrix);
+  Mesh.getValue() = pcFirst->Mesh.getValue();
+  Mesh.getValue().Transform(Matrix);
 
   return 0;
 }

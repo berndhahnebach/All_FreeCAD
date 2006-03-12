@@ -70,6 +70,8 @@ void GuiMeshExport initMeshGui() {
   // instanciating the commands
   CreateMeshCommands();
 
+  MeshGui::KernelEditorItem                  ::init();
+
   MeshGui::ViewProviderMesh                  ::init();
   MeshGui::ViewProviderMeshCurvature         ::init();
   MeshGui::ViewProviderMeshTransform         ::init();

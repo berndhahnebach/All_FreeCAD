@@ -34,6 +34,12 @@
 
 using namespace Gui::PropertyEditor;
 
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::FontEditorItem, Gui::PropertyEditor::EditableItem);
+
+FontEditorItem::FontEditorItem()
+{
+}
+
 FontEditorItem::FontEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
@@ -86,7 +92,21 @@ void FontEditorItem::onChangeFont()
   }
 }
 
+void FontEditorItem::convertFromProperty(App::Property* prop)
+{
+}
+
+void FontEditorItem::convertToProperty(const QVariant&)
+{
+}
+
 // ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::ColorEditorItem, Gui::PropertyEditor::EditableItem);
+
+ColorEditorItem::ColorEditorItem()
+{
+}
 
 ColorEditorItem::ColorEditorItem( QListView* lv, const QString& text, const QVariant& value )
     :EditableItem( lv, value )
@@ -146,6 +166,14 @@ void ColorEditorItem::paintCell(QPainter* p, const QColorGroup& cg, int column, 
     p->drawLine( width - 1, 0, width - 1, height() );
     p->restore();
   }
+}
+
+void ColorEditorItem::convertFromProperty(App::Property* prop)
+{
+}
+
+void ColorEditorItem::convertToProperty(const QVariant&)
+{
 }
 
 #include "moc_propertyeditorfont.cpp"

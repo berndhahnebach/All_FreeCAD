@@ -58,10 +58,6 @@ public:
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "MeshGui::ViewProviderMeshCurvature";}
   //@}
-
-  virtual MeshWithProperty& getMesh();
-  virtual void setMesh(const MeshWithProperty&){};
-
 };
 
 }

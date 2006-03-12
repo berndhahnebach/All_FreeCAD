@@ -45,10 +45,6 @@ namespace Gui {
 }
 
 
-namespace Mesh {
-  class MeshWithProperty;
-}
-
 #include "ViewProvider.h"
 #include <Base/Vector3D.h>
 

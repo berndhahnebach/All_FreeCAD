@@ -481,6 +481,11 @@ void MeshKernel::operator *= (const Matrix4D &rclMat)
   }
 }
 
+void MeshKernel::Transform (const Matrix4D &rclMat)
+{
+  (*this) *= rclMat;
+}
+
 void MeshKernel::DeleteFacets (const std::vector<unsigned long> &raulFacets)
 {
   _aclPointArray.SetProperty(0);

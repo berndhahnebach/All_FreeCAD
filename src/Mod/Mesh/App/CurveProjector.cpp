@@ -58,7 +58,7 @@ using namespace MeshCore;
 
 
 
-CurveProjector::CurveProjector(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh)
+CurveProjector::CurveProjector(const TopoDS_Shape &aShape, const MeshKernel &pMesh)
 : _Shape(aShape), _Mesh(pMesh)
 {
 }
@@ -82,7 +82,7 @@ void CurveProjector::writeIntersectionPointsToFile(const char *name)
 // Seperator for additional classes
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-CurveProjectorShape::CurveProjectorShape(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh)
+CurveProjectorShape::CurveProjectorShape(const TopoDS_Shape &aShape, const MeshKernel &pMesh)
 : CurveProjector(aShape,pMesh)
 {
   Do();
@@ -108,8 +108,6 @@ void CurveProjectorShape::Do(void)
 void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
                                         std::vector<FaceSplitEdge> &vSplitEdges)
 {
-  const MeshKernel &MeshK = *(_Mesh.getKernel());
-
   Standard_Real fFirst, fLast;
   Handle(Geom_Curve) hCurve = BRep_Tool::Curve( aEdge,fFirst,fLast );
   
@@ -124,13 +122,13 @@ void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
   unsigned long auNeighboursIdx[3];
   bool GoOn;
   
-  if( !findStartPoint(MeshK,cStartPoint,cResultPoint,uStartFacetIdx) )
+  if( !findStartPoint(_Mesh,cStartPoint,cResultPoint,uStartFacetIdx) )
     return;
 
   uCurFacetIdx = uStartFacetIdx;
   do{
-    MeshGeomFacet cCurFacet= MeshK.GetFacet(uCurFacetIdx);
-    MeshK.GetFacetNeighbours ( uCurFacetIdx, auNeighboursIdx[0], auNeighboursIdx[1], auNeighboursIdx[2]);
+    MeshGeomFacet cCurFacet= _Mesh.GetFacet(uCurFacetIdx);
+    _Mesh.GetFacetNeighbours ( uCurFacetIdx, auNeighboursIdx[0], auNeighboursIdx[1], auNeighboursIdx[2]);
     Vector3D PointOnEdge[3];
 
     GoOn = false;
@@ -149,7 +147,7 @@ void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
       if ( auNeighboursIdx[i] != ULONG_MAX )
       {
         // calculate the normal by the edge vector and the middle between the two face normals
-        MeshGeomFacet N = MeshK.GetFacet( auNeighboursIdx[i] );
+        MeshGeomFacet N = _Mesh.GetFacet( auNeighboursIdx[i] );
         cPlaneNormal = ( N.GetNormal() + cCurFacet.GetNormal() ) % ( cP1 - cP0 );
         cPlanePnt    = cP0;
       }else{
@@ -248,7 +246,7 @@ bool CurveProjectorShape::findStartPoint(const MeshKernel &MeshK,const Vector3D 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-CurveProjectorSimple::CurveProjectorSimple(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh)
+CurveProjectorSimple::CurveProjectorSimple(const TopoDS_Shape &aShape, const MeshKernel &pMesh)
 : CurveProjector(aShape,pMesh)
 {
   Do();
@@ -302,8 +300,6 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   bool bFirst = true;
   //unsigned long auNeighboursIdx[3];
   //std::map<unsigned long,std::vector<Vector3D> >::iterator N1,N2,N3;
-
-  const MeshKernel &MeshK = *(_Mesh.getKernel());
   
   Standard_Real fBegin, fEnd;
   Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge,fBegin,fEnd);
@@ -311,7 +307,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   
   unsigned long ulNbOfPoints = 1000,PointCount=0,uCurFacetIdx;
   
-  MeshFacetIterator It(MeshK);
+  MeshFacetIterator It(_Mesh);
 
   Base::SequencerLauncher seq("Building up projection map...", ulNbOfPoints+1);  
   FILE* file = fopen("projected.asc", "w");
@@ -558,7 +554,7 @@ bool CurveProjectorSimple::findStartPoint(const MeshKernel &MeshK,const Vector3D
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-CurveProjectorWithToolMesh::CurveProjectorWithToolMesh(const TopoDS_Shape &aShape, const MeshWithProperty &pMesh,MeshWithProperty &rToolMesh)
+CurveProjectorWithToolMesh::CurveProjectorWithToolMesh(const TopoDS_Shape &aShape, const MeshKernel &pMesh,MeshKernel &rToolMesh)
 : CurveProjector(aShape,pMesh),ToolMesh(rToolMesh)
 {
   Do();
@@ -581,7 +577,7 @@ void CurveProjectorWithToolMesh::Do(void)
 
   }
 
-  ToolMesh.getKernel()->AddFacet(cVAry);
+  ToolMesh.AddFacet(cVAry);
 
 }
 
@@ -593,14 +589,13 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
   Standard_Real fBegin, fEnd;
   Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge,fBegin,fEnd);
   float fLen   = float(fEnd - fBegin);
-  const MeshKernel &MeshK = *(_Mesh.getKernel());
   Vector3D cResultPoint;
 
   unsigned long ulNbOfPoints = 15,PointCount=0/*,uCurFacetIdx*/;
 
   std::vector<LineSeg> LineSegs;
 
-  MeshFacetIterator It(MeshK);
+  MeshFacetIterator It(_Mesh);
 
   Base::SequencerLauncher seq("Building up tool mesh...", ulNbOfPoints+1);  
 

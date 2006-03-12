@@ -60,9 +60,9 @@ using namespace Mesh;
 using namespace MeshCore;
 
 
-Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
+MeshCore::MeshKernel* MeshAlgos::Load(const char *FileName)
 {
-  MeshWithProperty *Mesh = new MeshWithProperty();
+  MeshCore::MeshKernel *Mesh = new MeshCore::MeshKernel();
   // ask for read permisson
 #if defined (__GNUC__)
 	if ( access(FileName, 4) != 0 )
@@ -71,7 +71,7 @@ Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
 #endif
     throw Base::Exception("MeshAlgos::Load() not able to open File!\n");
 
-  MeshSTL aReader(* (Mesh->getKernel()) );
+  MeshSTL aReader( *Mesh );
 
   // read STL file
   //FileStream str( FileName, std::ios::in);
@@ -82,7 +82,7 @@ Mesh::MeshWithProperty* MeshAlgos::Load(const char *FileName)
   return Mesh;
 }
 
-void MeshAlgos::read(MeshWithProperty* Mesh,const char *FileName)
+void MeshAlgos::read(MeshCore::MeshKernel* Mesh,const char *FileName)
 {
   // ask for read permisson
 #if defined (__GNUC__)
@@ -92,7 +92,7 @@ void MeshAlgos::read(MeshWithProperty* Mesh,const char *FileName)
 #endif
     throw Base::Exception("MeshAlgos::read() not able to open File!\n");
 
-  MeshSTL aReader(* (Mesh->getKernel()) );
+  MeshSTL aReader( *Mesh );
 
   // read STL file
   //FileStream str( FileName, std::ios::in);
@@ -101,7 +101,7 @@ void MeshAlgos::read(MeshWithProperty* Mesh,const char *FileName)
     throw Base::Exception("Reading file failed");
 }
 
-void MeshAlgos::writeBin(MeshWithProperty* Mesh,const char *FileName)
+void MeshAlgos::writeBin(MeshCore::MeshKernel* Mesh,const char *FileName)
 {
    Base::FileInfo File(FileName);
   
@@ -109,7 +109,7 @@ void MeshAlgos::writeBin(MeshWithProperty* Mesh,const char *FileName)
   if(File.exists() && !File.isWritable())
         throw Base::Exception("File not writable");
 
-  MeshSTL aReader(*(Mesh->getKernel()) );
+  MeshSTL aReader( *Mesh );
 
   // read STL file
   //FileStream str( File.filePath().c_str(), std::ios::out);
@@ -119,7 +119,7 @@ void MeshAlgos::writeBin(MeshWithProperty* Mesh,const char *FileName)
     throw Base::Exception("STL write failed to write");
 }
 
-void MeshAlgos::writeAscii(MeshWithProperty* Mesh,const char *FileName)
+void MeshAlgos::writeAscii(MeshCore::MeshKernel* Mesh,const char *FileName)
 {
    Base::FileInfo File(FileName);
   
@@ -127,7 +127,7 @@ void MeshAlgos::writeAscii(MeshWithProperty* Mesh,const char *FileName)
   if(File.exists() && !File.isWritable())
         throw Base::Exception("File not writable");
 
-  MeshSTL aReader(*(Mesh->getKernel()) );
+  MeshSTL aReader( *Mesh );
 
   // read STL file
   //FileStream str( File.filePath().c_str(), std::ios::out);
@@ -137,110 +137,46 @@ void MeshAlgos::writeAscii(MeshWithProperty* Mesh,const char *FileName)
     throw Base::Exception("STL write failed to write");
 }
 
-
-void MeshAlgos::calcVertexNormales(MeshWithProperty* Mesh)
+void MeshAlgos::offset(MeshCore::MeshKernel* Mesh, float fSize)
 {
-  MeshPropertyNormal *prop = dynamic_cast<MeshPropertyNormal*> (Mesh->Get("VertexNormales") );
-
-  if(prop && prop->isValid())
-    return;
-
-  // remove invalid Normales
-  if(prop) Mesh->Remove("VertexNormales");
-
-  const MeshKernel &MeshK = *(Mesh->getKernel());
-
-  // create a property with the right size
-  prop = new MeshPropertyNormal(MeshK.CountPoints());
-
-  // data structure to hold all faces belongs to one vertex
-  std::vector<std::set<unsigned int> > faceMap(MeshK.CountPoints());
-  unsigned long p1,p2,p3;
-
-  // colecting all Facetes indexes blonging to a vertex index
-  for (unsigned int pFIter = 0;pFIter < MeshK.CountFacets(); pFIter++)
-  {
-    Mesh->getKernel()->GetFacetPoints(pFIter,p1,p2,p3);
-    
-    Vector3D Norm = (MeshK.GetPoint(p2)-MeshK.GetPoint(p1) ) % (MeshK.GetPoint(p3)-MeshK.GetPoint(p1));
-
-    prop->Normales[p1] += Norm;
-    prop->Normales[p2] += Norm;
-    prop->Normales[p3] += Norm;
-    
-/*    faceMap[p1].insert(pFIter);
-    faceMap[p2].insert(pFIter);
-    faceMap[p3].insert(pFIter);*/
-  }
-
-/*  // calculating the normale weighted by size and write it to the property
-  for( unsigned int ItVertex = 0;ItVertex < Mesh->getKernel()->CountFacets(); ItVertex++)
-  {
-    prop->Normales[ItVertex] = Vector3D(0.0,0.0,0.0);
-  }*/
-
-  Mesh->Add(prop,"VertexNormales");  
-}
-
-void MeshAlgos::offset(MeshWithProperty* Mesh, float fSize)
-{
-  MeshPropertyNormal *prop = dynamic_cast<MeshPropertyNormal*> (Mesh->Get("VertexNormales") );
-
-  // calculate the propertie on demand...
-  if(!prop || !prop->isValid())
-  {
-    calcVertexNormales(Mesh);
-    prop = dynamic_cast<MeshPropertyNormal*> (Mesh->Get("VertexNormales") );
-  }
+  std::vector<Base::Vector3D> normals = Mesh->CalcVertexNormals();
 
   unsigned int i = 0;
   // go throug all the Vertex normales
-  for(std::vector<Vector3D>::iterator It= prop->Normales.begin();It != prop->Normales.end();It++,i++)
+  for(std::vector<Vector3D>::iterator It= normals.begin();It != normals.end();It++,i++)
     // and move each mesh point in the normal direction
-    Mesh->getKernel()->MovePoint(i,It->Normalize() * fSize);
-
-  // invalid because of points movement
-  Mesh->Remove("VertexNormales");
+    Mesh->MovePoint(i,It->Normalize() * fSize);
 }
 
-void MeshAlgos::offsetSpecial(MeshWithProperty* Mesh, float fSize, float zmax, float zmin)
+void MeshAlgos::offsetSpecial(MeshCore::MeshKernel* Mesh, float fSize, float zmax, float zmin)
 {
-  MeshPropertyNormal *prop = dynamic_cast<MeshPropertyNormal*> (Mesh->Get("VertexNormales") );
-
-  // calculate the propertie on demand...
-  if(!prop || !prop->isValid())
-  {
-    calcVertexNormales(Mesh);
-    prop = dynamic_cast<MeshPropertyNormal*> (Mesh->Get("VertexNormales") );
-  }
+  std::vector<Base::Vector3D> normals = Mesh->CalcVertexNormals();
 
   unsigned int i = 0;
   // go throug all the Vertex normales
-  for(std::vector<Vector3D>::iterator It= prop->Normales.begin();It != prop->Normales.end();It++,i++)
+  for(std::vector<Vector3D>::iterator It= normals.begin();It != normals.end();It++,i++)
   {
-    Vector3D Pnt = Mesh->getKernel()->GetPoint(i);
+    Vector3D Pnt = Mesh->GetPoint(i);
 
     if(Pnt.z < zmax && Pnt.z > zmin)
     {
       Pnt.z = 0;
-      Mesh->getKernel()->MovePoint(i,Pnt.Normalize() * fSize);
+      Mesh->MovePoint(i,Pnt.Normalize() * fSize);
     }else
-    // and move each mesh point in the normal direction
-      Mesh->getKernel()->MovePoint(i,It->Normalize() * fSize);
+      // and move each mesh point in the normal direction
+      Mesh->MovePoint(i,It->Normalize() * fSize);
   }
-  // invalid because of points movement
-  Mesh->Remove("VertexNormales");
 }
 
 
-void MeshAlgos::coarsen(MeshWithProperty* Mesh, float f)
+void MeshAlgos::coarsen(MeshCore::MeshKernel* Mesh, float f)
 {
   GtsSurface * surface;
 
   // create a GTS surface
   surface = MeshAlgos::createGTSSurface(Mesh);
 
-  Mesh->clear();
+  Mesh->Clear();
 
   guint stop_number=100000;
   gdouble fold = 3.1415 / 180.;
@@ -256,7 +192,7 @@ void MeshAlgos::coarsen(MeshWithProperty* Mesh, float f)
 }
 
 
-MeshWithProperty* MeshAlgos::boolean(MeshWithProperty* pMesh1, MeshWithProperty* pMesh2, MeshWithProperty* pResult,int Type)
+MeshCore::MeshKernel* MeshAlgos::boolean(MeshCore::MeshKernel* pMesh1, MeshCore::MeshKernel* pMesh2, MeshCore::MeshKernel* pResult,int Type)
 {
   GtsSurface * s1, * s2, * s3;
   GtsSurfaceInter * si;
@@ -412,31 +348,30 @@ static GtsEdge * new_edge (GtsVertex * v1, GtsVertex * v2)
 }
 
 
-GtsSurface* MeshAlgos::createGTSSurface(MeshWithProperty* Mesh)
+GtsSurface* MeshAlgos::createGTSSurface(MeshCore::MeshKernel* Mesh)
 {
   GtsSurface* Surf = gts_surface_new (gts_surface_class (),
                                       gts_face_class (),
                                       gts_edge_class (),
                                       gts_vertex_class () );
 
-  const MeshKernel &MeshK = *(Mesh->getKernel());
   unsigned long p1,p2,p3;
   Vector3D Vertex;
 
 
   // Geting all the points
-  GtsVertex ** aVertex = (GtsVertex **) malloc(MeshK.CountPoints() * sizeof (GtsVertex *));
-  for (unsigned int PIter = 0;PIter < MeshK.CountPoints(); PIter++)
+  GtsVertex ** aVertex = (GtsVertex **) malloc(Mesh->CountPoints() * sizeof (GtsVertex *));
+  for (unsigned int PIter = 0;PIter < Mesh->CountPoints(); PIter++)
   {
-    Vertex = MeshK.GetPoint(PIter);
+    Vertex = Mesh->GetPoint(PIter);
     aVertex[PIter] = gts_vertex_new (gts_vertex_class (), Vertex.x, Vertex.y, Vertex.z);
   }
 
     // cycling through the facets
-  for (unsigned int pFIter = 0;pFIter < MeshK.CountFacets(); pFIter++)
+  for (unsigned int pFIter = 0;pFIter < Mesh->CountFacets(); pFIter++)
   {
     // geting the three points of the facet
-    Mesh->getKernel()->GetFacetPoints(pFIter,p1,p2,p3);
+    Mesh->GetFacetPoints(pFIter,p1,p2,p3);
     
     // creating the edges and add the face to the surface
     gts_surface_add_face (Surf, 
@@ -474,13 +409,12 @@ static void onVertices(GtsVertex *v, MeshKernel *pKernel )
   Vector3D Point(GTS_POINT(v)->x,GTS_POINT(v)->y,GTS_POINT(v)->z);
 }*/
 
-void MeshAlgos::fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSurface)
+void MeshAlgos::fillMeshFromGTSSurface(MeshCore::MeshKernel* pMesh, GtsSurface* pSurface)
 {
-  MeshKernel &MeshK = *(pMesh->getKernel());
   std::vector<MeshGeomFacet> VAry;
 
   // remove old mesh
-  MeshK.Clear();
+  pMesh->Clear();
 
 //  gts_surface_foreach_vertex(pSurface,(GtsFunc) onVertices,&MeshK);
   gts_surface_foreach_face (pSurface, (GtsFunc) onFaces,&VAry);
@@ -489,12 +423,12 @@ void MeshAlgos::fillMeshFromGTSSurface(MeshWithProperty* pMesh, GtsSurface* pSur
   gts_object_destroy (GTS_OBJECT (pSurface));
 
   // put the facets the simple way in the mesh, totp is recalculated!
-  MeshK = VAry;
+  (*pMesh) = VAry;
 
 }
 
 
-void MeshAlgos::cutByShape(const TopoDS_Shape &aShape,const MeshWithProperty* pMesh,MeshWithProperty* pToolMesh)
+void MeshAlgos::cutByShape(const TopoDS_Shape &aShape,const MeshCore::MeshKernel* pMesh,MeshCore::MeshKernel* pToolMesh)
 {
 
   // calculate the projection for each Edge
@@ -520,10 +454,9 @@ void MeshAlgos::doIntersection(const MeshWithProperty &pMesh,const MeshWithPrope
 
 */
 
-void MeshAlgos::cutByCurve(MeshWithProperty* pMesh,const std::vector<CurveProjector::FaceSplitEdge> &vSplitEdges)
+void MeshAlgos::cutByCurve(MeshCore::MeshKernel* pMesh,const std::vector<CurveProjector::FaceSplitEdge> &vSplitEdges)
 {
-  MeshKernel &MeshK = *(pMesh->getKernel());
-  MeshTopoAlgorithm cTopAlg(MeshK);
+  MeshTopoAlgorithm cTopAlg(*pMesh);
 
   for (std::vector<CurveProjector::FaceSplitEdge>::const_iterator it = vSplitEdges.begin();it!=vSplitEdges.end();++it)
   {
@@ -561,7 +494,7 @@ class _VertexCompare
 
 
 
-void MeshAlgos::LoftOnCurve(MeshWithProperty &ResultMesh, const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up, float MaxSize)
+void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up, float MaxSize)
 {
   TopExp_Explorer Ex;
   Standard_Real fBegin, fEnd;
@@ -654,7 +587,7 @@ void MeshAlgos::LoftOnCurve(MeshWithProperty &ResultMesh, const TopoDS_Shape &Sh
     }
   }
 
-  ResultMesh.getKernel()->AddFacet(cVAry);
+  ResultMesh.AddFacet(cVAry);
 
 }
 

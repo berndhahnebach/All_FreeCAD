@@ -265,7 +265,7 @@ void CmdMeshExMakeUnion::activated(int iMsg)
     "m1 = App.document().MeshBox.getMesh()\n"
     "m2 = App.document().MeshTool.getMesh()\n"
     "m3 = m1.copy()\n"
-    "m3.Union(m2)\n"
+    "m3.unite(m2)\n"
     "App.document().AddFeature(\"Mesh::Feature\",\"MeshUnion\")\n"
     "App.document().MeshUnion.setMesh(m3)\n"
     "App.document().MeshUnion.solidMaterial.ambientColor = (0.1,1,0)\n"

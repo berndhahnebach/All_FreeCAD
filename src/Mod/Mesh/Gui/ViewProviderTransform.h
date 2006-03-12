@@ -39,10 +39,6 @@ namespace Gui {
 }
 
 
-namespace Mesh {
-  class MeshWithProperty;
-}
-
 #include "ViewProvider.h"
 
 namespace MeshGui {

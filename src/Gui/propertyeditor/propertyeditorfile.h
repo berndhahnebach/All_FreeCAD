@@ -37,6 +37,7 @@ namespace PropertyEditor {
 class GuiExport FileEditorItem: public EditableItem
 {
   Q_OBJECT 
+  TYPESYSTEM_HEADER();
 
 public:
   FileEditorItem( QListView* lv, const QString& text, const QVariant& value );
@@ -48,6 +49,11 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
+  virtual void convertFromProperty(App::Property*);
+  virtual void convertToProperty(const QVariant&);
+
+private:
+  FileEditorItem();
 };
 
 /**
@@ -57,6 +63,7 @@ protected:
 class GuiExport PixmapEditorItem: public EditableItem
 {
   Q_OBJECT 
+  TYPESYSTEM_HEADER();
 
 public:
   PixmapEditorItem( QListView* lv, const QString& text, const QVariant& value );
@@ -68,6 +75,11 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
+  virtual void convertFromProperty(App::Property*);
+  virtual void convertToProperty(const QVariant&);
+
+private:
+  PixmapEditorItem();
 };
 
 /**
@@ -76,6 +88,8 @@ protected:
  */
 class GuiExport ChildrenEditorItem: public EditableItem
 {
+  TYPESYSTEM_HEADER();
+
 public:
   ChildrenEditorItem( QListView* lv, const QString& text, const QVariant& value );
 
@@ -83,6 +97,11 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
+  virtual void convertFromProperty(App::Property*);
+  virtual void convertToProperty(const QVariant&);
+
+private:
+  ChildrenEditorItem();
 };
 
 } //namespace PropertyEditor
