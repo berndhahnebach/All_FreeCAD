@@ -61,7 +61,6 @@ Feature::~Feature()
     pcMeshFeaturePy->DecRef();
 }
 
-
 int Feature::execute(void)
 {
   return 0;
@@ -125,5 +124,27 @@ void Feature::RestoreDocFile(Base::Reader &reader)
 //  } catch( const Base::Exception& e) {
 //    throw e;
 //  }
+}
+
+/*const*/ MeshCore::MeshKernel& Feature::getMesh() const
+{
+#if 1 // to keep const in signature
+  Mesh::PropertyMeshKernel* pMeshInfo=0;
+
+  std::map<std::string,App::Property*> Map;
+  getPropertyMap(Map);
+
+  for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it ) {
+    Base::Type t = it->second->getTypeId();
+    if ( t.isDerivedFrom( Mesh::PropertyMeshKernel::getClassTypeId() ) ) {
+      pMeshInfo = (Mesh::PropertyMeshKernel*)it->second;
+      break;
+    }
+  }
+
+  return pMeshInfo->getValue();
+#else
+  return Mesh.getValue();
+#endif
 }
 

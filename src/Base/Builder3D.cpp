@@ -185,7 +185,11 @@ void Builder3D::addText(const Base::Vector3D &vec,const char * text, float color
 void Builder3D::saveToLog(void)
 {
   result <<   "} ";
+  //FIXME: The string can become very long, so that ConsoleSingelton::Log() will crash.
+  //       So, we disable the output at least for the release mode.
+#ifdef FC_DEBUG
   Console().Log("Vdbg: %s \n",result.str().c_str());
+#endif
 }
 
 /**

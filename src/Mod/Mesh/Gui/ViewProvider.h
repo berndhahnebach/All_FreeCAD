@@ -53,8 +53,8 @@ namespace Gui {
 }
 
 
-namespace Mesh {
-  class PropertyMeshKernel;
+namespace MeshCore {
+  class MeshKernel;
 }
 
 
@@ -122,9 +122,9 @@ public:
 
 protected:
   /// helper methode to build up the FaceSet
-  void createMesh(Mesh::PropertyMeshKernel *pcMesh);
+  void createMesh( const MeshCore::MeshKernel& pcMesh );
   /// Creates a tool mesh from the previous picked polygon on the viewer
-  bool createToolMesh( const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& ) const;
+  bool createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& ) const;
 
 protected:
   SoCoordinate3     *pcMeshCoord;
@@ -137,7 +137,6 @@ private:
   Gui::AbstractMouseModel* _mouseModel;
   bool m_bEdit;
   QTime _timer;
-  std::vector<SbVec2f> _clPoly;
 };
 
 } // namespace MeshGui

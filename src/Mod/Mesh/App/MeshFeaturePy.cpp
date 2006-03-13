@@ -199,7 +199,7 @@ PYFUNCIMP_D(MeshFeaturePy,getMesh)
 {
   if(! _pcMeshPy)
   {
-    _pcMeshPy = new MeshPy(&(_pcFeature->Mesh.getValue()),true);
+    _pcMeshPy = new MeshPy(&(_pcFeature->getMesh()),true);
 
     /* We must NOT instanciating the object only one time without incrementing it every 
        time we return it. Otherwise this leads to an error in the following cases:
@@ -234,7 +234,7 @@ PYFUNCIMP_D(MeshFeaturePy,getMesh)
 
 PYFUNCIMP_D(MeshFeaturePy,getMeshCopy)
 {
-   return new MeshPy(&(_pcFeature->Mesh.getValue()),false);
+   return new MeshPy(&(_pcFeature->getMesh()),false);
 }
 
 PYFUNCIMP_D(MeshFeaturePy,setMesh)
@@ -250,7 +250,7 @@ PYFUNCIMP_D(MeshFeaturePy,setMesh)
   _pcFeature->Mesh.setValue(*(pcObject->getMesh()));
   // and set the python object of this feature
   if(_pcMeshPy)
-    _pcMeshPy->setMesh(&(_pcFeature->Mesh.getValue()));
+    _pcMeshPy->setMesh(&(_pcFeature->getMesh()));
 
   Py_Return;
 }

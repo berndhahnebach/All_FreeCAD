@@ -180,7 +180,7 @@ ViewProviderMesh::~ViewProviderMesh()
   pcHighlight->unref();
 }
 
-void ViewProviderMesh::createMesh(Mesh::PropertyMeshKernel *pcMesh)
+void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
 {
 #if 1
 
@@ -188,14 +188,13 @@ void ViewProviderMesh::createMesh(Mesh::PropertyMeshKernel *pcMesh)
   int* faces = 0;
 
   try {
-    MeshKernel& cMesh = pcMesh->getValue();
-    vertices = new SbVec3f[cMesh.CountPoints()];
-    faces = new int [4*cMesh.CountFacets()];
+    vertices = new SbVec3f[rcMesh.CountPoints()];
+    faces = new int [4*rcMesh.CountFacets()];
 
-    Base::SequencerLauncher seq( "Building View node...", cMesh.CountFacets() );
+    Base::SequencerLauncher seq( "Building View node...", rcMesh.CountFacets() );
 
     unsigned long j=0;
-    MeshFacetIterator cFIt(cMesh);
+    MeshFacetIterator cFIt(rcMesh);
     for( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
     {
       const MeshGeomFacet& rFace = *cFIt;
@@ -213,9 +212,9 @@ void ViewProviderMesh::createMesh(Mesh::PropertyMeshKernel *pcMesh)
       Base::Sequencer().next( false ); // don't allow to cancel
     }
 
-    pcMeshCoord->point.setValues(0,cMesh.CountPoints(), vertices);
+    pcMeshCoord->point.setValues(0,rcMesh.CountPoints(), vertices);
     delete [] vertices;
-    pcMeshFaces->coordIndex.setValues(0,4*cMesh.CountFacets(),(const int32_t*) faces);
+    pcMeshFaces->coordIndex.setValues(0,4*rcMesh.CountFacets(),(const int32_t*) faces);
     delete [] faces;
   } catch (const Base::MemoryException& e) {
     pcMeshCoord->point.deleteValues(0);
@@ -380,47 +379,8 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
 
 void ViewProviderMesh::updateData(void)
 {
-  // check whether we must display the attached mesh kernel or
-  // the mesh kernel of the attached mesh feature, if so
-  Mesh::PropertyMeshKernel* pMeshInfo=0;
-
-  std::map<std::string,App::Property*> Map;
-  pcFeature->getPropertyMap(Map);
-  for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
-  {
-    Base::Type t = it->second->getTypeId();
-    if ( t.isDerivedFrom( Mesh::PropertyMeshKernel::getClassTypeId() ) )
-    {
-      // Our own mesh kernel is not empty so we propably must render it
-      Mesh::PropertyMeshKernel* prop = (Mesh::PropertyMeshKernel*)it->second;
-      if ( prop->getValue().CountFacets() > 0 )
-      {
-        pMeshInfo = prop;
-        break;
-      }
-    }
-    else if ( t.isDerivedFrom(App::PropertyLink::getClassTypeId()) )
-    {
-      App::PropertyLink* prop = (App::PropertyLink*)it->second;
-      App::AbstractFeature* fea = prop->getValue();
-
-      if ( fea && fea->getTypeId().isDerivedFrom( Mesh::Feature::getClassTypeId() ) )
-      {
-        // Note: Do NOT break here as we want to make sure whether we can render
-        // the own mesh kernel.
-        //
-        // Now get a pointer to the mesh kernel property to this feature
-        Mesh::Feature* mesh = (Mesh::Feature*)(fea);
-        if ( mesh->Mesh.getValue().CountFacets() > 0 )
-          pMeshInfo = &(mesh->Mesh);
-      }
-
-    }
-  }
-
-  if ( !pMeshInfo )
-    return; // cannot display this feature type due to missing mesh property
-  createMesh(pMeshInfo);
+  Mesh::Feature* mesh = dynamic_cast<Mesh::Feature*>(pcFeature);
+  createMesh(mesh->getMesh());
 }
 
 QPixmap ViewProviderMesh::getIcon() const
@@ -504,19 +464,21 @@ const char* ViewProviderMesh::getEditModeName(void)
   return "Polygon picking";
 }
 
-bool ViewProviderMesh::createToolMesh( const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces) const
+bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces) const
 {
   float fX, fY, fZ;
   SbVec3f pt1, pt2, pt3, pt4;
   MeshGeomFacet face;
   std::vector<Vector3D> top, bottom;
 
-  for ( std::vector<SbVec2f>::const_iterator it = _clPoly.begin(); it != _clPoly.end(); ++it )
+  for ( std::vector<SbVec2f>::const_iterator it = rclPoly.begin(); it != rclPoly.end(); ++it )
   {
     // the following element
     std::vector<SbVec2f>::const_iterator nt = it + 1;
-    if ( nt == _clPoly.end() )
-      nt = _clPoly.begin();
+    if ( nt == rclPoly.end() )
+      nt = rclPoly.begin();
+    else if ( *it == *nt )
+      continue; // two adjacent verteces are equal
 
     vol.projectPointToLine( *it, pt1, pt2 );
     vol.projectPointToLine( *nt, pt3, pt4 );
@@ -541,7 +503,7 @@ bool ViewProviderMesh::createToolMesh( const SbViewVolume& vol, const Base::Vect
     if ( face.Area() > 0 )
       aFaces.push_back( face );
 
-    if ( it+1 < _clPoly.end() )
+    if ( it+1 < rclPoly.end() )
     {
       pt1.getValue(fX, fY, fZ);
       top.push_back( Vector3D(fX, fY, fZ) );
@@ -594,7 +556,6 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
   {
     _mouseModel = new Gui::PolyPickerMouseModel();
     _mouseModel->grabMouseModel(&Viewer);
-    _clPoly.clear();
   }
 
   if ( m_bEdit && _mouseModel )
@@ -603,11 +564,11 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
     int hd = _mouseModel->handleEvent(ev, Viewer.getViewportRegion());
     if ( hd == Gui::AbstractMouseModel::Finish )
     {
-      _clPoly = _mouseModel->getPolygon();
-      if ( _clPoly.size() < 3 )
+      std::vector<SbVec2f> clPoly = _mouseModel->getPolygon();
+      if ( clPoly.size() < 3 )
         return true;
-      if ( _clPoly.front() != _clPoly.back() )
-        _clPoly.push_back(_clPoly.back());
+      if ( clPoly.front() != clPoly.back() )
+        clPoly.push_back(clPoly.front());
 
       // get the normal of the front clipping plane
       Vector3D cPoint, cNormal;
@@ -617,7 +578,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 
       // create a tool shape from these points
       std::vector<MeshGeomFacet> aFaces;
-      bool ok = createToolMesh( vol, cNormal, aFaces );
+      bool ok = createToolMesh( clPoly, vol, cNormal, aFaces );
 
       Gui::Document* pGDoc = Gui::Application::Instance->activeDocument();
       App::Document* pDoc = pGDoc->getDocument();

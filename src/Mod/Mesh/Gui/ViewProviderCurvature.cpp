@@ -36,6 +36,7 @@
 # include <Inventor/nodes/SoNormal.h>
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoSwitch.h>
 #endif
 
@@ -173,7 +174,12 @@ void ViewProviderMeshCurvature::attach(App::AbstractFeature *pcFeat)
 {
   init( pcFeat ); // init color bar
 
+  SoShapeHints * flathints = new SoShapeHints;
+  flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
+  flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+
   SoGroup* pcColorShadedRoot = new SoGroup();
+  pcColorShadedRoot->addChild(flathints);
 
   // color shaded  ------------------------------------------
   SoDrawStyle *pcFlatStyle = new SoDrawStyle();

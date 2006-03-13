@@ -58,7 +58,7 @@ int TransformDemolding::execute(void)
   if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
 
-  Mesh.getValue() = pcFirst->Mesh.getValue();
+  Mesh.getValue() = pcFirst->getMesh();
   Mesh.getValue().Transform(Matrix4D(Vector3D(0,0,0), Axis.getValue(), Rotation.getValue()  ));
  
   return 0;
