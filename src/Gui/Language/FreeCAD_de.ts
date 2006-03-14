@@ -1352,7 +1352,7 @@ Diese Datei ist bereits vorhanden.</translation>
         </message>
         <message>
             <source>Property editor</source>
-            <translation>Eigenschaften-Ansicht</translation>
+            <translation>Eigenschaften</translation>
         </message>
     </context>
     <context>
