@@ -52,7 +52,7 @@ TYPESYSTEM_SOURCE_ABSTRACT(Gui::PropertyEditor::EditableItem, Base::BaseClass);
 QListView* EditableItem::parentView = 0;
 
 EditableItem::EditableItem()
-    : QListViewItem( parentView ), _prop(0), _val(0), _newval(0), _modified(false)
+    : QListViewItem( parentView ), _prop(0), _val(0), _newval(0), _modified(false), _editable(true)
 {
   _reset = new QPushButton(listView()->viewport());
   _reset->setPixmap( resetproperty_xpm );
@@ -62,7 +62,7 @@ EditableItem::EditableItem()
 }
 
 EditableItem::EditableItem( QListView* lv, const QVariant& value )
-    : QListViewItem( lv ), _prop(0), _val(value), _newval(value), _modified(false)
+    : QListViewItem( lv ), _prop(0), _val(value), _newval(value), _modified(false), _editable(true)
 {
   _reset = new QPushButton(listView()->viewport());
   _reset->setPixmap( resetproperty_xpm );
@@ -79,6 +79,9 @@ void EditableItem::setup()
 
 bool EditableItem::startEdit( int col )
 {
+  if ( !_editable ) 
+    return false;
+
   _editor = createEditor( col, listView()->viewport() );
   if ( _editor ) 
   {
@@ -170,6 +173,16 @@ void EditableItem::setModified( bool mod )
 bool EditableItem::isModified() const
 {
   return _modified;
+}
+
+void EditableItem::setEditable( bool edit )
+{
+  _editable = edit;
+}
+
+bool EditableItem::isEditable() const
+{
+  return _editable;
 }
 
 void EditableItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)

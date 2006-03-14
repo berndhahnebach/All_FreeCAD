@@ -75,6 +75,15 @@ public:
    */
   int rtti () const { return 4000; }
 
+  /** 
+   * If \a edit is true, this item can be edited, 
+   * otherwise it cannot be edited. 
+   */
+  void setEditable( bool edit );
+
+  /** Returns true if the item is editable, otherwise returns false. */
+  bool isEditable() const;
+
 public slots:
   /** Undoes the all setOverrideValue(). */
   void restoreOverrideValue();
@@ -149,6 +158,7 @@ private:
   QVariant _val;
   QVariant _newval;
   bool _modified;
+  bool _editable;
   int _col;
   QPushButton* _reset;
 };

@@ -129,8 +129,15 @@ void IntEditorItem::setDefaultValue()
   spin->setValue( value().toInt() );
 }
 
-void IntEditorItem::convertFromProperty(App::Property*)
+void IntEditorItem::convertFromProperty(App::Property* prop)
 {
+  if ( prop && prop->getTypeId() == App::PropertyInteger::getClassTypeId() )
+  {
+    App::PropertyInteger* pPropInt = (App::PropertyInteger*)prop;
+    QVariant value( pPropInt->getValue() );
+    setValue( value );
+    setText( 1, value.toString() );
+  }
 }
 
 void IntEditorItem::convertToProperty(const QVariant&)
@@ -176,8 +183,15 @@ void FloatEditorItem::setDefaultValue()
   spin->setValue( (float)value().toDouble() );
 }
 
-void FloatEditorItem::convertFromProperty(App::Property*)
+void FloatEditorItem::convertFromProperty(App::Property* prop)
 {
+  if ( prop && prop->getTypeId() == App::PropertyFloat::getClassTypeId() )
+  {
+    App::PropertyFloat* pPropFlt = (App::PropertyFloat*)prop;
+    QVariant value( pPropFlt->getValue() );
+    setValue( value );
+    setText( 1, value.toString() );
+  }
 }
 
 void FloatEditorItem::convertToProperty(const QVariant&)

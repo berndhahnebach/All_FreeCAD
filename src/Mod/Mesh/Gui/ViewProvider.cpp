@@ -103,13 +103,31 @@ TYPESYSTEM_SOURCE(MeshGui::KernelEditorItem, Gui::PropertyEditor::EditableItem);
 
 KernelEditorItem::KernelEditorItem()
 {
+  setEditable(false);
+  setExpandable( true );
+  Gui::PropertyEditor::IntEditorItem* item=0;
+  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Faces", 0);
+  item->setEditable(false);
+  insertItem(item);
+  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Points", 0);
+  item->setEditable(false);
+  insertItem(item);
 }
 
 KernelEditorItem::KernelEditorItem( QListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
+  setEditable(false);
   setText( 0, text );
   setText( 1, value.toString() );
+  setExpandable( true );
+  Gui::PropertyEditor::IntEditorItem* item=0;
+  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Faces", 0);
+  item->setEditable(false);
+  insertItem(item);
+  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Points", 0);
+  item->setEditable(false);
+  insertItem(item);
 }
 
 QWidget* KernelEditorItem::createEditor( int column, QWidget* parent )
@@ -146,6 +164,16 @@ void KernelEditorItem::convertFromProperty(App::Property* prop)
     QVariant value( str );
     setValue( value );
     setText( 1, value.toString() );
+
+    // set children
+    Gui::PropertyEditor::EditableItem* item = (Gui::PropertyEditor::EditableItem*)firstChild();
+    QVariant pts((int)rMesh.CountPoints());
+    item->setValue(pts);
+    item->setText( 1, pts.toString() );
+    item = (Gui::PropertyEditor::EditableItem*)item->nextSibling();
+    QVariant fts((int)rMesh.CountFacets());
+    item->setValue(fts);
+    item->setText( 1, fts.toString() );
   }
 }
 
