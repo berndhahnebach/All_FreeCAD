@@ -38,27 +38,15 @@
 #include <stdio.h>
 
 
-// FreeCAD Base header
+// FreeCAD header
 #include "../Base/Console.h"
 #include "../Base/Interpreter.h"
 #include "../Base/Parameter.h"
 #include "../Base/Exception.h"
 #include "../Base/Factory.h"
-
-// FreeCAD doc header
 #include "../App/Application.h"
-
-#include "../Gui/Splashscreen.h"
 #include "../Gui/BitmapFactory.h"
-
 #include "../Gui/Icons/developers.h"
-
-// QT extension
-#ifdef _MSC_VER
-#	pragma comment(lib,QTLIBNAME)
-#	pragma comment(lib,"TKernel.lib")
-#endif
-
 #include "../Gui/Application.h"
 
 

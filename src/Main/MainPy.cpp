@@ -54,10 +54,6 @@ using App::Application;
 
 
 #ifdef FC_OS_WIN32
-#	pragma comment(lib,"TKernel.lib")
-#endif
-
-#ifdef FC_OS_WIN32
 #	define MainExport __declspec(dllexport)
 #else
 #	define MainExport

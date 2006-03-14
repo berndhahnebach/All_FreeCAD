@@ -37,10 +37,6 @@
 
 #include <stdio.h>
 
-#ifdef _MSC_VER
-#	pragma comment(lib,"TKernel.lib")
-#endif
-
 // FreeCAD Base header
 #include "../Base/Console.h"
 #include "../Base/Interpreter.h"
