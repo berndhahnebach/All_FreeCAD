@@ -35,5 +35,4 @@ INCLUDES= $(all_includes) -I../../../
 libdir = $(prefix)/Mod/_TEMPLATE_
 
 EXTRA_DIST = \
-		App_TEMPLATE_.dsp \
-		Libs.cpp
+		App_TEMPLATE_.dsp

@@ -61,5 +61,4 @@ libdir = $(prefix)/Mod/_TEMPLATE_
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		App_TEMPLATE_Gui.dsp \
-		Libs.cpp
+		App_TEMPLATE_Gui.dsp
