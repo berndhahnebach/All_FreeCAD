@@ -54,7 +54,7 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
-  virtual void convertFromProperty(App::Property*);
+  virtual void convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:
@@ -83,7 +83,7 @@ protected:
   virtual void setDefaultValue();
   /** Paints the current color with a frame outside. */
   void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
-  virtual void convertFromProperty(App::Property*);
+  virtual void convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:

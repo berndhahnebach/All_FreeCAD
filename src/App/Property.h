@@ -65,7 +65,7 @@ public:
   const char* getName(void) const;
 
   /// Get the class name of the associated property editor item
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::TextEditorItem"; }
+  virtual const char* getEditorName(void) const { return ""; }
 
   /// is called by the framework to set the Father (Container)
   void setContainer(PropertyContainer *Father);

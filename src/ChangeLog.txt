@@ -69,4 +69,4 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + PropertyMeshKernel added
 + move all Projects to NODEFAULTLIBS
 + move all Projects to xcopy
-
++ start implementing the link between FreeCAD property and property editor

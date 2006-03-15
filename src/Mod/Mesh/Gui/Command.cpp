@@ -73,7 +73,7 @@ void CmdMeshTransform::activated(int iMsg)
   if ( n!=1 ) return;
 
   std::string fName = getUniqueFeatureName("Move");
-  std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
+  std::vector<Gui::SelectionSingleton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh Mesh Create");
   doCommand(Doc,"App.document().AddFeature(\"Mesh::Transform\",\"%s\")",fName.c_str());
@@ -115,7 +115,7 @@ void CmdMeshDemolding::activated(int iMsg)
   if ( n!=1 ) return;
 
   std::string fName = getUniqueFeatureName("Demolding");
-  std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
+  std::vector<Gui::SelectionSingleton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh Mesh Create");
   doCommand(Doc,"App.document().AddFeature(\"Mesh::TransformDemolding\",\"%s\")",fName.c_str());
@@ -416,7 +416,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
   if ( n!=1 ) return;
 
   std::string fName = getUniqueFeatureName("Vertex_Curvature");
-  std::vector<Gui::SelectionSingelton::SelObj> cSel = getSelection().getSelection();
+  std::vector<Gui::SelectionSingleton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh VertexCurvature");
   doCommand(Doc,"App.document().AddFeature(\"Mesh::Curvature\",\"%s\")",fName.c_str());

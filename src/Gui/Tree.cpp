@@ -462,7 +462,7 @@ void TreeView::testStatus(void)
 }
 
 // Observer message from the Selection
-void TreeView::OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason)
+void TreeView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
 {
   bFromOutside = true;
   if(Reason.Type != SelectionChanges::ClearSelection)

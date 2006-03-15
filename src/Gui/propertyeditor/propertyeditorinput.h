@@ -49,7 +49,7 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
-  virtual void convertFromProperty(App::Property*);
+  virtual void convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:
@@ -72,7 +72,7 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
-  virtual void convertFromProperty(App::Property*);
+  virtual void convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:
@@ -95,7 +95,7 @@ protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
-  virtual void convertFromProperty(App::Property*);
+  virtual void convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:

@@ -41,7 +41,7 @@ using namespace Gui;
 using namespace std;
 
 
-vector<App::AbstractFeature*> SelectionSingelton::getSelectedFeatures(const char *TypeName, const char* pDocName) const
+vector<App::AbstractFeature*> SelectionSingleton::getSelectedFeatures(const char *TypeName, const char* pDocName) const
 {
   vector<App::AbstractFeature*> temp;
   App::Document *pcDoc;
@@ -68,7 +68,26 @@ vector<App::AbstractFeature*> SelectionSingelton::getSelectedFeatures(const char
   return temp;
 }
 
-vector<SelectionSingelton::SelObj> SelectionSingelton::getSelection(const char* pDocName)
+std::vector<SelectionSingleton::SelObj> SelectionSingleton::getCompleteSelection() const
+{
+  vector<SelObj> temp;
+  SelObj tempSelObj;
+
+  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
+  {
+    tempSelObj.DocName  = It->DocName.c_str();
+    tempSelObj.FeatName = It->FeatName.c_str();
+    tempSelObj.SubName  = It->SubName.c_str();
+    tempSelObj.TypeName = It->TypeName.c_str();
+    tempSelObj.pFeat    = It->pFeat;
+    tempSelObj.pDoc     = It->pDoc;
+    temp.push_back(tempSelObj);
+  }
+
+  return temp;
+}
+
+vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const char* pDocName) const
 {
   vector<SelObj> temp;
   SelObj tempSelObj;
@@ -84,7 +103,7 @@ vector<SelectionSingelton::SelObj> SelectionSingelton::getSelection(const char* 
   if(!pcDoc)
     return temp;
 
-  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
   {
     if(It->pDoc == pcDoc)
     {
@@ -102,7 +121,7 @@ vector<SelectionSingelton::SelObj> SelectionSingelton::getSelection(const char* 
   return temp;
 }
 
-unsigned int SelectionSingelton::getNbrOfType(const char *TypeName, const char* pDocName)
+unsigned int SelectionSingleton::getNbrOfType(const char *TypeName, const char* pDocName) const
 {
   unsigned int iNbr=0;
   App::Document *pcDoc;
@@ -117,7 +136,7 @@ unsigned int SelectionSingelton::getNbrOfType(const char *TypeName, const char* 
     return 0;
 
   string typeName = TypeName ? TypeName : "";
-  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
   {
     // find_first_of() kann unmöglich richtig sein, da nur die jeweils ersten Buchstaben gleich sein müssen  (Werner)
 //    if(It->pDoc == pcDoc && It->TypeName.find_first_of(TypeName) == 0)
@@ -134,7 +153,7 @@ unsigned int SelectionSingelton::getNbrOfType(const char *TypeName, const char* 
   return iNbr;
 }
 
-vector<App::AbstractFeature*> SelectionSingelton::getFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
+vector<App::AbstractFeature*> SelectionSingleton::getFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
 {
   vector<App::AbstractFeature*> temp;
   App::Document *pcDoc;
@@ -158,7 +177,7 @@ vector<App::AbstractFeature*> SelectionSingelton::getFeaturesOfType(const Base::
   return temp;
 }
 
-unsigned int SelectionSingelton::countFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
+unsigned int SelectionSingleton::countFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
 {
   unsigned int iNbr=0;
   App::Document *pcDoc;
@@ -182,7 +201,7 @@ unsigned int SelectionSingelton::countFeaturesOfType(const Base::Type& typeId, c
   return iNbr;
 }
 
-bool SelectionSingelton::setPreselect(const char* pDocName, const char* pFeatName, const char* pSubName, float x, float y, float z)
+bool SelectionSingleton::setPreselect(const char* pDocName, const char* pFeatName, const char* pSubName, float x, float y, float z)
 {
   if(DocName != "")
     rmvPreselect();
@@ -213,7 +232,7 @@ bool SelectionSingelton::setPreselect(const char* pDocName, const char* pFeatNam
   return true;
 }
 
-void SelectionSingelton::rmvPreselect()
+void SelectionSingleton::rmvPreselect()
 {
   if(DocName == "")
     return;
@@ -240,7 +259,7 @@ void SelectionSingelton::rmvPreselect()
 
 
 
-bool SelectionSingelton::addSelection(const char* pDocName, const char* pFeatName, const char* pSubName, float x, float y, float z)
+bool SelectionSingleton::addSelection(const char* pDocName, const char* pFeatName, const char* pSubName, float x, float y, float z)
 {
   // already in ?
   if(isSelected(pDocName, pFeatName, pSubName))
@@ -291,7 +310,7 @@ bool SelectionSingelton::addSelection(const char* pDocName, const char* pFeatNam
 
 }
 
-void SelectionSingelton::rmvSelection(const char* pDocName, const char* pFeatName, const char* pSubName)
+void SelectionSingleton::rmvSelection(const char* pDocName, const char* pFeatName, const char* pSubName)
 {
   vector<SelectionChanges> rmvList;
 
@@ -327,7 +346,7 @@ void SelectionSingelton::rmvSelection(const char* pDocName, const char* pFeatNam
 
 }
 
-void SelectionSingelton::clearSelection(void)
+void SelectionSingleton::clearSelection(void)
 {
   _SelList.clear();
 
@@ -341,12 +360,12 @@ void SelectionSingelton::clearSelection(void)
 
 }
 
-bool SelectionSingelton::isSelected(const char* pDocName, const char* pFeatName, const char* pSubName)
+bool SelectionSingleton::isSelected(const char* pDocName, const char* pFeatName, const char* pSubName) const
 {
   const char* tmpDocName = pDocName ? pDocName : "";
   const char* tmpFeaName = pFeatName ? pFeatName : "";
   const char* tmpSubName = pSubName ? pSubName : "";
-  for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();++It)
+  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
     if(It->DocName == tmpDocName && It->FeatName == tmpFeaName && It->SubName == tmpSubName )
       return true;
   return false;
@@ -360,7 +379,7 @@ bool SelectionSingelton::isSelected(const char* pDocName, const char* pFeatName,
  * A constructor.
  * A more elaborate description of the constructor.
  */
-SelectionSingelton::SelectionSingelton()
+SelectionSingleton::SelectionSingleton()
 {
 }
 
@@ -368,36 +387,36 @@ SelectionSingelton::SelectionSingelton()
  * A destructor.
  * A more elaborate description of the destructor.
  */
-SelectionSingelton::~SelectionSingelton()
+SelectionSingleton::~SelectionSingleton()
 {
 }
 
 
-SelectionSingelton* SelectionSingelton::_pcSingleton = NULL;
+SelectionSingleton* SelectionSingleton::_pcSingleton = NULL;
 
-SelectionSingelton& SelectionSingelton::instance(void)
+SelectionSingleton& SelectionSingleton::instance(void)
 {
   if (_pcSingleton == NULL)
   {
-    _pcSingleton = new SelectionSingelton;
+    _pcSingleton = new SelectionSingleton;
   }
 
   return *_pcSingleton;
 }
 
-void SelectionSingelton::destruct (void)
+void SelectionSingleton::destruct (void)
 {
   if (_pcSingleton != NULL)
     delete _pcSingleton;
 }
 /*
-void SelectionSingelton::addFeature(App::AbstractFeature *f)
+void SelectionSingleton::addFeature(App::AbstractFeature *f)
 {
   _FeatureSet.insert(f);
 
 }
 
-void SelectionSingelton::removeFeature(App::AbstractFeature *f)
+void SelectionSingleton::removeFeature(App::AbstractFeature *f)
 {
   _FeatureSet.erase(f);
 

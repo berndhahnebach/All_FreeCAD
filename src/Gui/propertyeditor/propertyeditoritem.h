@@ -27,7 +27,7 @@
 #ifndef _PreComp_
 # include <qlistview.h>
 # include <qvariant.h>
-# include <qvector.h>
+# include <vector>
 #endif
 
 #include <Base/Type.h>
@@ -68,7 +68,7 @@ public:
   const QVariant& overrideValue() const;
 
   /** Sets the current property object. */
-  void setProperty( App::Property* );
+  void setProperty( const std::vector<App::Property*>& );
 
   /** This is the class Id to distinguish from QListViewItem itself or 
    * from other QListViewItem-subclasses. 
@@ -137,7 +137,7 @@ protected: // Interface for subclasses.
   /** @name Converter methods */
   //@{
   /** Converts from property to QVariant. */
-  virtual void convertFromProperty(App::Property*) = 0;
+  virtual void convertFromProperty(const std::vector<App::Property*>&) = 0;
   /** Converts from QVariant back to property. */
   virtual void convertToProperty(const QVariant&) = 0;
   //@}
@@ -154,7 +154,7 @@ public:
   static QListView* parentView;
 
 private:
-  App::Property* _prop;
+  std::vector<App::Property*> _prop;
   QVariant _val;
   QVariant _newval;
   bool _modified;

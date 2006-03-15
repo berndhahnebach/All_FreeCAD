@@ -50,7 +50,7 @@ class SoFCBackgroundGradient;
 /** The Inventor viewer
  *
  */
-class GuiExport View3DInventorViewer: public SoQtViewer, public Gui::SelectionSingelton::ObserverType
+class GuiExport View3DInventorViewer: public SoQtViewer, public Gui::SelectionSingleton::ObserverType
 {
 
   SOQT_OBJECT_ABSTRACT_HEADER(View3DInventorViewer, SoQtViewer);
@@ -60,7 +60,7 @@ public:
   ~View3DInventorViewer();
 
   /// Observer message from the Selection
-  virtual void OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason);
+  virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
 
 
   /// adds an ViewProvider to the view, e.g. from a feature

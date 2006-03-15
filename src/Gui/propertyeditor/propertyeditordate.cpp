@@ -66,7 +66,7 @@ void TimeEditorItem::setDefaultValue()
   edit->setTime( value().toTime() );
 }
 
-void TimeEditorItem::convertFromProperty(App::Property* prop)
+void TimeEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
 }
 
@@ -112,7 +112,7 @@ void DateEditorItem::setDefaultValue()
   edit->setDate( value().toDate() );
 }
 
-void DateEditorItem::convertFromProperty(App::Property* prop)
+void DateEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
 }
 
@@ -160,7 +160,7 @@ void DateTimeEditorItem::setDefaultValue()
   edit->setDateTime( value().toDateTime() );
 }
 
-void DateTimeEditorItem::convertFromProperty(App::Property* prop)
+void DateTimeEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
 }
 

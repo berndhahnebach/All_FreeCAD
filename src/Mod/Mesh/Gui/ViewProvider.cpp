@@ -105,22 +105,7 @@ KernelEditorItem::KernelEditorItem()
 {
   setEditable(false);
   setExpandable( true );
-  Gui::PropertyEditor::IntEditorItem* item=0;
-  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Faces", 0);
-  item->setEditable(false);
-  insertItem(item);
-  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Points", 0);
-  item->setEditable(false);
-  insertItem(item);
-}
-
-KernelEditorItem::KernelEditorItem( QListView* lv, const QString& text, const QVariant& value )
-  :EditableItem( lv, value )
-{
-  setEditable(false);
-  setText( 0, text );
-  setText( 1, value.toString() );
-  setExpandable( true );
+  setOpen(true);
   Gui::PropertyEditor::IntEditorItem* item=0;
   item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Faces", 0);
   item->setEditable(false);
@@ -154,27 +139,33 @@ void KernelEditorItem::setDefaultValue()
   edit->setText( value().toString() );
 }
 
-void KernelEditorItem::convertFromProperty(App::Property* prop)
+void KernelEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
-  if ( prop && prop->getTypeId() == Mesh::PropertyMeshKernel::getClassTypeId() )
-  {
-    Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)prop;
-    const MeshKernel& rMesh = pPropMesh->getValue();
-    QString  str = QString("[Points: %1, Faces: %2]").arg(rMesh.CountPoints()).arg(rMesh.CountFacets());
-    QVariant value( str );
-    setValue( value );
-    setText( 1, value.toString() );
+  int ctPts = 0;
+  int ctFts = 0;
 
-    // set children
-    Gui::PropertyEditor::EditableItem* item = (Gui::PropertyEditor::EditableItem*)firstChild();
-    QVariant pts((int)rMesh.CountPoints());
-    item->setValue(pts);
-    item->setText( 1, pts.toString() );
-    item = (Gui::PropertyEditor::EditableItem*)item->nextSibling();
-    QVariant fts((int)rMesh.CountFacets());
-    item->setValue(fts);
-    item->setText( 1, fts.toString() );
+  for ( std::vector<App::Property*>::const_iterator pt = prop.begin(); pt != prop.end(); ++pt )
+  {
+    Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)(*pt);
+    const MeshKernel& rMesh = pPropMesh->getValue();
+    ctPts += (int)rMesh.CountPoints();
+    ctFts += (int)rMesh.CountFacets();
   }
+
+  QString  str = QString("[Points: %1, Faces: %2]").arg(ctPts).arg(ctFts);
+  QVariant value( str );
+  setValue( value );
+  setText( 1, value.toString() );
+
+  // set children
+  Gui::PropertyEditor::EditableItem* item = (Gui::PropertyEditor::EditableItem*)firstChild();
+  QVariant pts(ctPts);
+  item->setValue(pts);
+  item->setText( 1, pts.toString() );
+  item = (Gui::PropertyEditor::EditableItem*)item->nextSibling();
+  QVariant fts(ctFts);
+  item->setValue(fts);
+  item->setText( 1, fts.toString() );
 }
 
 void KernelEditorItem::convertToProperty(const QVariant&)

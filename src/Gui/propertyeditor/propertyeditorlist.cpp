@@ -88,14 +88,11 @@ void BoolEditorItem::setDefaultValue()
     combo->setCurrentItem( 1 );
 }
 
-void BoolEditorItem::convertFromProperty(App::Property* prop)
+void BoolEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
-  if ( prop && prop->getTypeId() == App::PropertyBool::getClassTypeId() )
-  {
-    App::PropertyBool* pPropBool = (App::PropertyBool*)prop;
-    QVariant var( pPropBool->getValue(), 0 );
-    setValue( var );
-  }
+  App::PropertyBool* pPropBool = (App::PropertyBool*)prop.front();
+  QVariant var( pPropBool->getValue(), 0 );
+  setValue( var );
 }
 
 void BoolEditorItem::convertToProperty(const QVariant&)
@@ -177,7 +174,7 @@ void ListEditorItem::setDefaultValue()
   }
 }
 
-void ListEditorItem::convertFromProperty(App::Property*)
+void ListEditorItem::convertFromProperty(const std::vector<App::Property*>&)
 {
 }
 
@@ -265,7 +262,7 @@ void CursorEditorItem::setDefaultValue()
   combo->setCurrentItem(value().toCursor().shape());
 }
 
-void CursorEditorItem::convertFromProperty(App::Property*)
+void CursorEditorItem::convertFromProperty(const std::vector<App::Property*>&)
 {
 }
 

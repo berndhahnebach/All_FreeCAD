@@ -180,7 +180,7 @@ private:
 /** 
  *  \author Jürgen Riegel
  */
-class TreeView :public Gui::DockView, public Gui::SelectionSingelton::ObserverType
+class TreeView :public Gui::DockView, public Gui::SelectionSingleton::ObserverType
 {
   Q_OBJECT
 
@@ -195,7 +195,7 @@ public:
   virtual const char *getName(void){return "TreeView";}
 
     /// Observer message from the Selection
-  virtual void OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason);
+  virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
 
 
   //void InitCascade(Handle(TDocStd_Document) hDoc);

@@ -86,7 +86,7 @@ template class GuiExport Base::Subject<const SelectionChanges&>;
 /** The Selcetion singleton class
  
  */
-class GuiExport SelectionSingelton :public Base::Subject<const SelectionChanges&>
+class GuiExport SelectionSingleton :public Base::Subject<const SelectionChanges&>
 {
 public:
 
@@ -97,7 +97,7 @@ public:
   /// clears the selection
   void clearSelection(void);
   /// checks if selected
-  bool isSelected(const char* pDocName, const char* pFeatName=0, const char* pSubName=0);
+  bool isSelected(const char* pDocName, const char* pFeatName=0, const char* pSubName=0) const;
 
   bool setPreselect(const char* pDocName, const char* pFeatName, const char* pSubName, float x=0, float y=0, float z=0);
   void rmvPreselect();
@@ -111,7 +111,7 @@ public:
    *  If no document name is given the active document is asumed.
    *  @deprecated Use countFeaturesOfType instead.
    */
-  unsigned int getNbrOfType(const char *TypeName, const char* pDocName=0);
+  unsigned int getNbrOfType(const char *TypeName, const char* pDocName=0) const;
   /** Returns the number of selected objects with an special feature type
    * Its the convenient way to check if the right features are selected to 
    * perform an operation (GuiCommand). The checking also detect base type. 
@@ -123,14 +123,14 @@ public:
   /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
    * If \a TypeName is 0 (the default) the feature type is ignored. If no document name is specified the features 
    * from the active document are regarded.
-   * If no objects of this document are selected a empty vector is returned.
+   * If no objects of this document are selected an empty vector is returned.
    * @note The vector reflects the sequence of selection.
    * @deprecated Use getFeaturesOfType instead.
    */
   std::vector<App::AbstractFeature*> getSelectedFeatures(const char *TypeName=0, const char* pDocName=0) const;
   /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
    * If no document name is specified the features from the active document are regarded.
-   * If no objects of this document are selected a empty vector is returned.
+   * If no objects of this document are selected an empty vector is returned.
    * @note The vector reflects the sequence of selection.
    */
   std::vector<App::AbstractFeature*> getFeaturesOfType(const Base::Type& typeId, const char* pDocName=0) const;
@@ -144,30 +144,33 @@ public:
     App::AbstractFeature*  pFeat;
   };
 
-  /** returns a vector of selection objectse
+  /** returns a vector of selection objects
    * if no document name is given the objects of the active are returned.
    * If nothing for this Document is selected a empty vector is returnd.
    * The vector reflects the sequence of selection!
    */
-  std::vector<SelObj> getSelection(const char* pDocName=0);
+  std::vector<SelObj> getSelection(const char* pDocName=0) const;
+
+  /** Returns a vector of all selection objects of all documents. */
+  std::vector<SelObj> getCompleteSelection() const;
 
 
   /// size of selcted enteties for all docuements
-  unsigned int size(void){return _SelList.size();}
+  unsigned int size(void) const {return _SelList.size();}
 
-  static SelectionSingelton& instance(void);
+  static SelectionSingleton& instance(void);
   static void destruct (void);
 
 protected:
 
   /// Construction
-  SelectionSingelton();
+  SelectionSingleton();
   /// Destruction
-  virtual ~SelectionSingelton();
+  virtual ~SelectionSingleton();
 
 
   /// helper to retrive document by name
-  App::Document* getDocument(const char* pDocName=0);
+  App::Document* getDocument(const char* pDocName=0) const;
 
 
   struct _SelObj {
@@ -181,7 +184,7 @@ protected:
   };
   std::list<_SelObj> _SelList;
 
-  static SelectionSingelton* _pcSingleton;
+  static SelectionSingleton* _pcSingleton;
 
   std::string DocName;
   std::string FeatName;
@@ -192,9 +195,9 @@ protected:
 
 
 /// Get the global instance
-inline GuiExport SelectionSingelton& Selection(void)
+inline GuiExport SelectionSingleton& Selection(void)
 {
-  return SelectionSingelton::instance();
+  return SelectionSingleton::instance();
 }
 
 

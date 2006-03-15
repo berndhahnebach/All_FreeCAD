@@ -52,7 +52,7 @@ TYPESYSTEM_SOURCE_ABSTRACT(Gui::PropertyEditor::EditableItem, Base::BaseClass);
 QListView* EditableItem::parentView = 0;
 
 EditableItem::EditableItem()
-    : QListViewItem( parentView ), _prop(0), _val(0), _newval(0), _modified(false), _editable(true)
+    : QListViewItem( parentView ), _val(0), _newval(0), _modified(false), _editable(true)
 {
   _reset = new QPushButton(listView()->viewport());
   _reset->setPixmap( resetproperty_xpm );
@@ -62,7 +62,7 @@ EditableItem::EditableItem()
 }
 
 EditableItem::EditableItem( QListView* lv, const QVariant& value )
-    : QListViewItem( lv ), _prop(0), _val(value), _newval(value), _modified(false), _editable(true)
+    : QListViewItem( lv ), _val(value), _newval(value), _modified(false), _editable(true)
 {
   _reset = new QPushButton(listView()->viewport());
   _reset->setPixmap( resetproperty_xpm );
@@ -158,7 +158,7 @@ void EditableItem::restoreOverrideValue()
   QListViewItem::repaint();
 }
 
-void EditableItem::setProperty( App::Property* prop )
+void EditableItem::setProperty( const std::vector<App::Property*>& prop )
 {
   _prop = prop;
   convertFromProperty(_prop);

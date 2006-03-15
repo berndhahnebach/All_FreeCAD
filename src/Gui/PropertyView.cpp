@@ -37,6 +37,7 @@
 #include <App/PropertyLinks.h>
 #include <App/PropertyContainer.h>
 #include <App/Feature.h>
+#include <App/Document.h>
 
 #include "PropertyView.h"
 #include "BitmapFactory.h"
@@ -101,13 +102,19 @@ PropertyView::~PropertyView()
 }
 
 
-void PropertyView::OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason)
+void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
 {
+  //FIXME: We get notified for each object that has changed its selection status. It is sufficient to be called only once.
+  //
+
   if(Reason.Type == SelectionChanges::ClearSelection)
   {
     tearDown();
   }else if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection){
-    vector<SelectionSingelton::SelObj> list = Gui::Selection().getSelection();
+#if 0
+    // We must not listen neither to the given rCaller nor to the Reason object, because there can be selected items from
+    // documents other as the currently active one.
+    vector<SelectionSingleton::SelObj> list = Gui::Selection().getCompleteSelection();
     if(list.size() == 1){
       if(list.begin()->pFeat)
         buildUp(list.begin()->pFeat);
@@ -115,6 +122,53 @@ void PropertyView::OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::S
         buildUp(reinterpret_cast<App::PropertyContainer*>(list.begin()->pDoc));
     }else
       tearDown();
+#else
+    // We must not listen neither to the given rCaller nor to the Reason object only, because there can be selected items from
+    // documents other than the currently active one.
+
+    // group the properties by <name,id>
+    std::map<std::pair<std::string, int>, std::vector<App::Property*> > propMap;
+    vector<SelectionSingleton::SelObj> array = Gui::Selection().getCompleteSelection();
+    for ( vector<SelectionSingleton::SelObj>::const_iterator it = array.begin(); it != array.end(); ++it )
+    {
+      std::map<std::string,App::Property*> Map;
+      if ( (*it).pFeat )
+        (*it).pFeat->getPropertyMap(Map);
+      else if ( (*it).pDoc )
+        (*it).pDoc->getPropertyMap(Map);
+
+      // store the properties with <name,id> as key in a map
+      for( std::map<std::string,App::Property*>::iterator pt = Map.begin(); pt != Map.end(); ++pt )
+      {
+        std::pair<std::string, int> nameType = std::make_pair<std::string, int>( pt->first, pt->second->getTypeId().getKey());
+        propMap[nameType].push_back(pt->second);
+      }
+    }
+
+    tearDown();
+
+    std::map<std::pair<std::string, int>, std::vector<App::Property*> >::const_iterator jt;
+    for ( jt = propMap.begin(); jt != propMap.end(); ++jt )
+    {
+      // the property must be part of each selected object, i.e. the number of selected objects is equal to the number of properties
+      // with same name and id
+      if ( jt->second.size() == array.size() )
+      {
+        App::Property* prop = (jt->second)[0];
+        QString editor = prop->getEditorName();
+        if ( !editor.isEmpty() )
+        {
+          EditableItem* item = (EditableItem*) Base::Type::createInstanceByName( prop->getEditorName(),true);
+          if ( item )
+          {
+            item->setText(0, QString(prop->getName()));
+            item->setProperty( jt->second );
+          }
+        }
+      }
+    }
+    
+#endif
   }
 }
 
@@ -133,7 +187,7 @@ void PropertyView::buildUp(App::PropertyContainer *cont)
     if ( item )
     {
       item->setText(0, QString(it->first.c_str()));
-      item->setProperty( it->second );
+//      item->setProperty( it->second );
     }
   }
 }

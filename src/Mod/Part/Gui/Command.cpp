@@ -333,7 +333,7 @@ void FCCmdPartCut::activated(int iMsg)
 
   string FeatName = getUniqueFeatureName("Cut");
 
-  vector<Gui::SelectionSingelton::SelObj> Sel = getSelection().getSelection();
+  vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
   openCommand("Part Cut");
 	doCommand(Doc,"App.document().AddFeature(\"Part::Cut\",\"%s\")",FeatName.c_str());

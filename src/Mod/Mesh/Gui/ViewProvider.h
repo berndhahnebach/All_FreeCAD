@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qdatetime.h>
+# include <qptrlist.h>
 # include <vector>
 # include <Inventor/fields/SoSFVec2f.h>
 #endif
@@ -68,14 +69,11 @@ class GuiMeshExport KernelEditorItem: public Gui::PropertyEditor::EditableItem
 {
   TYPESYSTEM_HEADER();
 
-public:
-  KernelEditorItem( QListView* lv, const QString& text, const QVariant& value );
-
 protected:
   QWidget* createEditor( int column, QWidget* parent );
   virtual void stopEdit( QWidget* editor, int column );
   virtual void setDefaultValue();
-  virtual void convertFromProperty(App::Property*);
+  virtual void convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:

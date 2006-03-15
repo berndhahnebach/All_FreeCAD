@@ -92,7 +92,7 @@ void FontEditorItem::onChangeFont()
   }
 }
 
-void FontEditorItem::convertFromProperty(App::Property* prop)
+void FontEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
 }
 
@@ -168,7 +168,7 @@ void ColorEditorItem::paintCell(QPainter* p, const QColorGroup& cg, int column, 
   }
 }
 
-void ColorEditorItem::convertFromProperty(App::Property* prop)
+void ColorEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
 }
 

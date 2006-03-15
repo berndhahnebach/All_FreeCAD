@@ -282,7 +282,7 @@ bool Command::hasFeature(const char* Name)
   return getDocument() != 0 && getDocument()->getFeature(Name) != 0;
 }
 
-Gui::SelectionSingelton&  Command::getSelection(void)
+Gui::SelectionSingleton&  Command::getSelection(void)
 {
   return Gui::Selection();
 }

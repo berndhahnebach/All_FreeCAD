@@ -76,14 +76,21 @@ void TextEditorItem::setDefaultValue()
   edit->setText( value().toString() );
 }
 
-void TextEditorItem::convertFromProperty(App::Property* prop)
+void TextEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
-  if ( prop && prop->getTypeId() == App::PropertyString::getClassTypeId() )
+  if ( prop.size() == 1 )
   {
-    App::PropertyString* pPropChar = (App::PropertyString*)prop;
+    App::PropertyString* pPropChar = (App::PropertyString*)prop.front();
     QVariant value( QString(pPropChar->getValue()) );
     setValue( value );
     setText( 1, value.toString() );
+  }
+  else
+  {
+    QVariant value( "" );
+    setValue( value );
+    setText( 1, value.toString() );
+    setEditable(false);
   }
 }
 
@@ -129,15 +136,12 @@ void IntEditorItem::setDefaultValue()
   spin->setValue( value().toInt() );
 }
 
-void IntEditorItem::convertFromProperty(App::Property* prop)
+void IntEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
-  if ( prop && prop->getTypeId() == App::PropertyInteger::getClassTypeId() )
-  {
-    App::PropertyInteger* pPropInt = (App::PropertyInteger*)prop;
-    QVariant value( pPropInt->getValue() );
-    setValue( value );
-    setText( 1, value.toString() );
-  }
+  App::PropertyInteger* pPropInt = (App::PropertyInteger*)prop.front();
+  QVariant value( pPropInt->getValue() );
+  setValue( value );
+  setText( 1, value.toString() );
 }
 
 void IntEditorItem::convertToProperty(const QVariant&)
@@ -183,15 +187,12 @@ void FloatEditorItem::setDefaultValue()
   spin->setValue( (float)value().toDouble() );
 }
 
-void FloatEditorItem::convertFromProperty(App::Property* prop)
+void FloatEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
-  if ( prop && prop->getTypeId() == App::PropertyFloat::getClassTypeId() )
-  {
-    App::PropertyFloat* pPropFlt = (App::PropertyFloat*)prop;
-    QVariant value( pPropFlt->getValue() );
-    setValue( value );
-    setText( 1, value.toString() );
-  }
+  App::PropertyFloat* pPropFlt = (App::PropertyFloat*)prop.front();
+  QVariant value( pPropFlt->getValue() );
+  setValue( value );
+  setText( 1, value.toString() );
 }
 
 void FloatEditorItem::convertToProperty(const QVariant&)

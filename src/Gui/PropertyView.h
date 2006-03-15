@@ -53,7 +53,7 @@ namespace DockWnd {
 
 /** A test class. A more elaborate class description.
  */
-class PropertyView :public Gui::DockView, public Gui::SelectionSingelton::ObserverType
+class PropertyView :public Gui::DockView, public Gui::SelectionSingleton::ObserverType
 {
 public:
   /**
@@ -69,7 +69,7 @@ public:
   virtual ~PropertyView();
 
   /// Observer message from the Selection
-  virtual void OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason);
+  virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
 
 
   bool onMsg(const char* pMsg);

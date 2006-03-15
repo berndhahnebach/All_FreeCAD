@@ -100,7 +100,7 @@ void FileEditorItem::onChangeFile()
   }
 }
 
-void FileEditorItem::convertFromProperty(App::Property* prop)
+void FileEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
 }
 
@@ -187,7 +187,7 @@ void PixmapEditorItem::onChangePixmap()
   }
 }
 
-void PixmapEditorItem::convertFromProperty(App::Property* prop)
+void PixmapEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
 }
 
@@ -274,7 +274,7 @@ void ChildrenEditorItem::setDefaultValue()
   }
 }
 
-void ChildrenEditorItem::convertFromProperty(App::Property* prop)
+void ChildrenEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
 }
 

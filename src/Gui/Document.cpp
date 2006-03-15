@@ -90,6 +90,9 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
 
 Document::~Document()
 {
+  // We must clear the selection here to notify all observers
+  Gui::Selection().clearSelection();
+
   // e.g. if document gets closed from within a Python command
   _isClosing = true;
   while ( _LpcViews.size() > 0 )

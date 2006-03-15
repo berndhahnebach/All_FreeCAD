@@ -48,7 +48,7 @@ class CommandManager;
 class Command;
 class ActionGroup;
 class Document;
-class SelectionSingelton;
+class SelectionSingleton;
 class MDIView;
 
 
@@ -166,7 +166,7 @@ public:
   /// Get pointer to the Application Window
   static Application*  getGuiApplication(void);   
   /// Get a referenc to the selection 
-  Gui::SelectionSingelton&  getSelection(void);
+  Gui::SelectionSingleton&  getSelection(void);
   /// Get pointer to the active gui document
   Gui::Document*  getActiveGuiDocument(void);
   /** Get pointer to the named or active App document

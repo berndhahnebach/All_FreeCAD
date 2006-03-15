@@ -106,7 +106,7 @@ SOQT_OBJECT_ABSTRACT_SOURCE(View3DInventorViewer);
 
 
 
-void View3DInventorViewer::OnChange(Gui::SelectionSingelton::SubjectType &rCaller,Gui::SelectionSingelton::MessageType Reason)
+void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason)
 {
   SoFCSelectionAction cAct(Reason);
 
