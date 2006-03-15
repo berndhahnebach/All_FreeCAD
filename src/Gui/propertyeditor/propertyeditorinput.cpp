@@ -139,7 +139,7 @@ void IntEditorItem::setDefaultValue()
 void IntEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
   App::PropertyInteger* pPropInt = (App::PropertyInteger*)prop.front();
-  QVariant value( pPropInt->getValue() );
+  QVariant value( (int)pPropInt->getValue() );
   setValue( value );
   setText( 1, value.toString() );
 }
