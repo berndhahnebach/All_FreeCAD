@@ -94,6 +94,12 @@ public:
   void SearchNearestFromPoint (const Vector3D &rclPt, std::set<unsigned long> &rclInd) const;
   //@}
 
+  /** @name Getters */
+  //@{
+  /** Returns the indices of the elements in the given grid. */
+  unsigned long GetElements (unsigned long ulX, unsigned long ulY, unsigned long ulZ,  std::set<unsigned long> &raclInd) const;
+  //@}
+
   /** Returns the lengths of the grid elements in x,y and z direction. */
   virtual void  GetGridLengths (float &rfLenX, float &rfLenY, float &rfLenZ) const
   { rfLenX = _fGridLenX; rfLenY = _fGridLenY; rfLenZ = _fGridLenZ; }
@@ -138,8 +144,6 @@ protected:
   virtual unsigned long HasElements (void) const = 0;
   /** Get the indices of all elements lying in the grids around a given grid with distance \a ulDistance. */
   void GetHull (unsigned long ulX, unsigned long ulY, unsigned long ulZ, unsigned long ulDistance, std::set<unsigned long> &raclInd) const;
-  /** Returns the indices of the elements in the given grid. */
-  unsigned long GetElements (unsigned long ulX, unsigned long ulY, unsigned long ulZ,  std::set<unsigned long> &raclInd) const;
 
 protected:
   std::vector<std::vector<std::vector<std::set<unsigned long> > > >  _aulGrid;   /**< Grid data structure. */

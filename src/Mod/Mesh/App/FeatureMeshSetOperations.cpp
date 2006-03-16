@@ -32,6 +32,7 @@
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
 
+#include "Core/MeshKernel.h"
 #include "Core/Algorithm.h"
 #include "Core/Evaluation.h"
 #include "Core/Iterator.h"
@@ -52,7 +53,7 @@ SetOperations::SetOperations(void)
 {
   ADD_PROPERTY(Source1  ,(0));
   ADD_PROPERTY(Source2  ,(0));
- 
+  ADD_PROPERTY(OperationType, ("union"));
 }
 
 int SetOperations::execute(void)
@@ -65,9 +66,22 @@ int SetOperations::execute(void)
     MeshCore::MeshKernel& meshKernel1 = mesh1->getMesh();
     MeshCore::MeshKernel& meshKernel2 = mesh2->getMesh();
 
-    MeshCore::MeshKernel& res = Mesh.getValue(); // Result Meshkernel
+    MeshCore::MeshKernel& res = getMesh(); // Result Meshkernel
 
-    MeshCore::SetOperations setOp(meshKernel1, meshKernel2, res, MeshCore::SetOperations::Union, 1.0e-5);
+    MeshCore::SetOperations::OperationType type;
+    string ot(OperationType.getValue());
+    if (ot == "union")
+      type = MeshCore::SetOperations::Union;
+    else if (ot == "intersection")
+      type = MeshCore::SetOperations::Intersect;
+    else if (ot == "difference")
+      type = MeshCore::SetOperations::Difference;
+    else
+    {
+      //throw new exception("operation type must be: union, intersection or difference");
+    }
+    
+    MeshCore::SetOperations setOp(meshKernel1, meshKernel2, res, type, 1.0e-5);
     setOp.Do();
 
 

@@ -49,6 +49,12 @@ public:
    * returned the calling method stops immediately visiting further facets.
    */
   virtual bool Visit (MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel) = 0;
+
+  /** Test before a facet will be flagged as VISIT, return false means: go on with visiting the facets but not this one and set not the VISIT flag */
+  virtual bool AllowVisit (MeshFacet& rclFacet, MeshFacet& rclFrom, unsigned long ulFInd, unsigned long ulLevel, unsigned short neighbourIndex)
+  {
+    return true;
+  }
 };
 
 /**

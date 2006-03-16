@@ -28,6 +28,8 @@
 # include <string>
 #endif
 
+#include <stdlib.h>
+
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Builder3D.h"
 #include "Exception.h"
@@ -168,9 +170,118 @@ void Builder3D::addText(const Base::Vector3D &vec,const char * text, float color
   addText(vec.x, vec.y , vec.z,text, color_r,color_g,color_b);
 }
 
+void Builder3D::addText(const Base::Vector3D &vec, float color_r, float color_g, float color_b, const char * format, ...)
+{
+  // temp buffer
+  char* txt = (char*) malloc(strlen(format)+4024);
 
+  va_list namelessVars;
+  va_start(namelessVars, format);  // Get the "..." vars
+  vsprintf(txt, format, namelessVars);
+  va_end(namelessVars);
 
+  addText(vec, txt, color_r, color_g, color_b);
+}
 
+void Builder3D::clear ()
+{
+  // Under VC6 string::clear() doesn't exist, under gcc stringstream::str() returns a copy not a reference
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+  result.str().clear();
+#endif
+  result.clear();
+}
+
+//**************************************************************************
+// line/arrow handling
+
+void Builder3D::addSingleLine(Vector3D pt1, Vector3D pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+{
+  char lp[20];
+  sprintf(lp, "0x%x", linePattern);
+  //char lp[20] = "0x";
+  //itoa(linePattern, buf, 16);
+  //strcat(lp, buf);
+
+  result << "Separator { "
+         <<   "Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} " 
+         <<   "DrawStyle { lineWidth " << lineSize << " linePattern " << lp << " } "
+         <<   "Coordinate3 { "
+         <<     "point [ "
+         <<        pt1.x << " " << pt1.y << " " << pt1.z << ","
+         <<        pt2.x << " " << pt2.y << " " << pt2.z 
+         <<     "] "
+         <<   "} "
+         <<   "LineSet { } "
+         << "} ";
+}
+
+void Builder3D::addSingleArrow(Vector3D pt1, Vector3D pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+{
+    float pi = 3.1415926535f;
+    float pih = pi / 2.0f;
+    float pi2 = pi * 2.0f;
+    float l = (pt2 - pt1).Length();
+    float cl = l / 10.0f;
+    float cr = cl / 2.0f;
+
+    Vector3D dir = pt2 - pt1;
+    dir.Normalize();
+    dir.Scale(l-cl, l-cl, l-cl);
+    Vector3D pt2s = pt1 + dir;
+    dir.Normalize();
+    dir.Scale(l-cl/2.0f, l-cl/2.0f, l-cl/2.0f);
+    Vector3D cpt = pt1 + dir;
+
+    Vector3D rot = Vector3D(0.0f, 1.0f, 0.0f) % dir;
+    rot.Normalize();
+    float a = Vector3D(0.0f, 1.0f, 0.0f).GetAngle(dir);
+
+    result << "Separator { "
+         <<   "Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} " 
+         <<   "DrawStyle { lineWidth " << lineSize << "} "
+         <<   "Coordinate3 { "
+         <<     "point [ "
+         <<        pt1.x << " " << pt1.y << " " << pt1.z << ","
+         <<        pt2s.x << " " << pt2s.y << " " << pt2s.z 
+         <<     "] "
+         <<   "} "
+         <<   "LineSet { } "
+         <<   "Transform { "
+         <<     "translation " << cpt.x << " " << cpt.y << " " << cpt.z << " "
+         <<     "rotation " << rot.x << " " << rot.y << " " << rot.z << " " << a
+         <<   "} "
+         <<   "Cone { bottomRadius " << cr << " height " << cl << "} "
+         << "} ";
+
+}
+
+//**************************************************************************
+// triangle handling
+
+void Builder3D::addSingleTriangle(Vector3D pt0, Vector3D pt1, Vector3D pt2, bool filled, short lineSize, float color_r, float color_g, float color_b)
+{
+  std::string fs = "";
+  if (filled)
+  {
+    fs = "IndexedFaceSet { coordIndex[ 0, 1, 2, -1 ] } ";
+  }
+
+    result << "Separator { "
+         <<   "Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} " 
+         <<   "DrawStyle { lineWidth " << lineSize << "} "
+         <<   "Coordinate3 { "
+         <<     "point [ "
+         <<        pt0.x << " " << pt0.y << " " << pt0.z << ","
+         <<        pt1.x << " " << pt1.y << " " << pt1.z << ","
+         <<        pt2.x << " " << pt2.y << " " << pt2.z << ","
+         <<     "] "
+         <<   "} "
+         <<   "LineSet { } "
+         <<   fs
+         << "} ";
+
+}
 
 //**************************************************************************
 // output handling
@@ -185,11 +296,7 @@ void Builder3D::addText(const Base::Vector3D &vec,const char * text, float color
 void Builder3D::saveToLog(void)
 {
   result <<   "} ";
-  //FIXME: The string can become very long, so that ConsoleSingelton::Log() will crash.
-  //       So, we disable the output at least for the release mode.
-#ifdef FC_DEBUG
   Console().Log("Vdbg: %s \n",result.str().c_str());
-#endif
 }
 
 /**

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Imetric 3D GmbH                                    *
+ *   Copyright (c) 2005 Berthold Grupp                                     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -128,15 +128,17 @@ public:
 
   /** adding facets */
   /** Add new facet
+    * facet \a the facet
+    * @param \a takeFlag if true the flag from the MeshGeomFacet will be taken
    */
-	void AddFacet (const MeshGeomFacet& facet);
+	void AddFacet (const MeshGeomFacet& facet, bool takeFlag = false, bool takePropery = false);
   /** Add new facet
    */
-	void AddFacet (const Vector3D& pt1, const Vector3D& pt2, const Vector3D& pt3, const Vector3D& normal);
+	void AddFacet (const Vector3D& pt1, const Vector3D& pt2, const Vector3D& pt3, const Vector3D& normal, unsigned char flag = 0, unsigned long prop = 0);
   /** Add new facet
    * @param facetPoints Array of vectors (size 4) in order of vec1, vec2, vec3, normal
    */
-	void AddFacet (Vector3D* facetPoints);
+	void AddFacet (Vector3D* facetPoints, unsigned char flag = 0, unsigned long prop = 0);
 
   /** Finishes building up the mesh structure. Must be done after adding facets.
    * @param \a freeMemory if false (default) only the memory of internal structures gets freed, otherwise 

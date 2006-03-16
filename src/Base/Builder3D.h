@@ -71,7 +71,7 @@ public:
   /** @name point set handling */
   //@{
   /// starts a point set
-  void startPoints(short pointSize=2, float color_r=1.0,float color_g=0.0,float color_b=0.0);
+  void startPoints(short pointSize=2.0, float color_r=1.0,float color_g=0.0,float color_b=0.0);
   /// insert a point in an point set
   void addPoint(float x, float y, float z);
   /// add a vector to a point set
@@ -79,18 +79,37 @@ public:
   /// ends the points set operation 
   void endPoints(void);
   /// add a singular point (without startPoints() & endPoints() )
-  void addSinglePoint(float x, float y, float z, short pointSize=2, float color_r=0.0,float color_g=0.0,float color_b=0.0);
+  void addSinglePoint(float x, float y, float z, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   /// add a singular point (without startPoints() & endPoints() )
-  void addSinglePoint(const Base::Vector3D &vec, short pointSize=2, float color_r=0.0,float color_g=0.0,float color_b=0.0);
+  void addSinglePoint(const Base::Vector3D &vec, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  //@}
+
+  /** @name line/direction handling */
+  //@{
+  /// add a line defined by 2 Vector3D
+  void addSingleLine(Vector3D pt1, Vector3D pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+  /// add a arrow (directed line) by 2 Vector3D. The arrow shows in direction of point 2.
+  void addSingleArrow(Vector3D pt1, Vector3D pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+  //@}
+
+  /** @name triangle handling */
+  //@{
+  /// add a (filled) triangle defined by 3 vectors
+  void addSingleTriangle(Vector3D pt0, Vector3D pt1, Vector3D pt2, bool filled = true, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   //@}
 
   /** @name text handling */
   //@{
   /// add a text
-  void addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r=0.0,float color_g=0.0,float color_b=0.0);
+  void addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   /// add a text
-  void addText(const Base::Vector3D &vec,const char * text, float color_r=0.0,float color_g=0.0,float color_b=0.0);
+  void addText(const Base::Vector3D &vec,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  /// add a text
+  void addText(const Base::Vector3D &vec, float color_r,float color_g,float color_b, const char * format, ...);
   //@}
+
+  /// clear the string buffer
+  void clear (void);
 
   /** @name write the result */
   //@{

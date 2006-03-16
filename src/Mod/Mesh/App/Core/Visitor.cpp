@@ -55,7 +55,12 @@ unsigned long MeshKernel::VisitNeighbourFacets (MeshFacetVisitor &rclFVisitor, u
         j = clCurrFacet->_aulNeighbours[i]; // Index Nachbar-Facet
         if (j == ULONG_MAX) 
           continue;      // kein Nachbarn-Facet vorhanden
+
         clNBFacet = _aclFacetArray.begin() + j;
+
+        if (!rclFVisitor.AllowVisit(*clNBFacet, *clCurrFacet, j, ulLevel, i))
+          continue;
+
         if (clNBFacet->IsFlag(MeshFacet::VISIT) == true)
           continue; // Nachbar-Facet schon besucht
         else

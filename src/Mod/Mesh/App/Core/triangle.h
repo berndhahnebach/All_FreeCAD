@@ -254,6 +254,9 @@
 #define ANSI_DECLARATORS
 #define SINGLE
 #define REAL float
+#ifdef __GNUC__
+# define VOID void
+#endif
 
 struct triangulateio {
   REAL *pointlist;                                               /* In / out */

@@ -47,9 +47,9 @@ class SetOperations : public Mesh::Feature
 public:
   SetOperations();
 
-  App::PropertyLink Source1;
-  App::PropertyLink Source2;
-
+  App::PropertyLink   Source1;
+  App::PropertyLink   Source2;
+  App::PropertyString OperationType;
 
   /** @name methods overide Feature */
   //@{

@@ -86,18 +86,25 @@ void MeshBuilder::Initialize (unsigned long ctFacets, bool deletion)
 	Base::Sequencer().start("create mesh structure...", ctFacets * 2);
 }
 
-void MeshBuilder::AddFacet (const MeshGeomFacet& facet)
+void MeshBuilder::AddFacet (const MeshGeomFacet& facet, bool takeFlag, bool takeProperty)
 {
-	AddFacet(facet._aclPoints[0], facet._aclPoints[1], facet._aclPoints[2], facet.GetNormal());
+  unsigned char flag = 0;
+  unsigned long prop = 0;
+  if (takeFlag)
+    flag = facet._ucFlag;
+  if (takeProperty)
+    prop = facet._ulProp;
+
+  AddFacet(facet._aclPoints[0], facet._aclPoints[1], facet._aclPoints[2], facet.GetNormal(), flag, prop);
 }
 
-void MeshBuilder::AddFacet (const Vector3D& pt1, const Vector3D& pt2, const Vector3D& pt3, const Vector3D& normal)
+void MeshBuilder::AddFacet (const Vector3D& pt1, const Vector3D& pt2, const Vector3D& pt3, const Vector3D& normal, unsigned char flag, unsigned long prop)
 {
 	Vector3D facetPoints[4] = { pt1, pt2, pt3, normal };
-	AddFacet(facetPoints);
+	AddFacet(facetPoints, flag, prop);
 }
 
-void MeshBuilder::AddFacet (Vector3D* facetPoints)
+void MeshBuilder::AddFacet (Vector3D* facetPoints, unsigned char flag, unsigned long prop)
 {
 	Base::Sequencer().next(true); // allow to cancel
 
@@ -108,6 +115,9 @@ void MeshBuilder::AddFacet (Vector3D* facetPoints)
 	}
 
 	MeshFacet mf;
+  mf._ucFlag = flag;
+  mf._ulProp = prop;
+
   int i = 0;
 	for (i = 0; i < 3; i++)
 	{

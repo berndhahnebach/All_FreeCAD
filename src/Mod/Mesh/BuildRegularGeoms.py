@@ -27,11 +27,37 @@ def Ellipsoid (lenX, lenY, count):
 
     return RotationBody(polyline, count)    
 
-def Cylinder (radius, len, count):
-    return Cone(radius, radius, len, count)
+def Cylinder (radius, len, closed, edgelen, count):
+    return Cone(radius, radius, len, closed, edgelen, count)
 
-def Cone (radius1, radius2, len, count):
-    polyline = ([len, 0.0], [len, radius2], [0.0, radius1], [0.0, 0.0])
+def Cone (radius1, radius2, len, closed, edgelen, count):
+    polyline = []
+    if (closed):        
+        step = radius2 / math.ceil(radius2 / edgelen)
+        i = 0.0
+        while (i < radius2 - step / 2.0):
+            polyline.append([len, i])
+            i = i + step
+
+    ct = math.ceil(len / edgelen)        
+    step = len / ct
+    rstep = (radius1 - radius2) / ct
+    i = len;
+    r = radius2
+    while (i > 0.0 + step / 2.0):
+        polyline.append([i, r])
+        i = i - step
+        r = r + rstep
+    polyline.append([0.0, radius1])
+
+    if (closed):
+        step = radius1 / math.ceil(radius1 / edgelen)
+        i = radius1 - step
+        while (i > 0.0 + step / 2.0):
+            polyline.append([0.0, i])
+            i = i - step
+        polyline.append([0.0, 0.0])
+        
     return RotationBody(polyline, count)
 
 def Toroid (radius1, radius2, count):
@@ -55,7 +81,7 @@ def RotationBody (polyline, count):
 
     step = math.pi * 2.0 / count
     i = -math.pi;
-    while (i < math.pi + step / 10.0):
+    while (i < math.pi - step / 10.0):
         li = i + step
         for j in range(0, len(polyline) - 1):
             v1 = polyline[j]
@@ -146,7 +172,7 @@ def Cube (lenX, lenY, lenZ):
     return facets
 
 def main ():
-    Ellipsoid(5.0, 5.0, 10)
+    Cylinder (10.0, 20.0, 1, 10, 10)
     
 if __name__ == "__main__":
     main()
