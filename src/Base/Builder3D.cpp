@@ -296,7 +296,11 @@ void Builder3D::addSingleTriangle(Vector3D pt0, Vector3D pt1, Vector3D pt2, bool
 void Builder3D::saveToLog(void)
 {
   result <<   "} ";
+  //FIXME: The string can become very long, so that ConsoleSingelton::Log() will crash.
+  //       So, we disable the output at least for the release mode.
+#ifdef FC_DEBUG
   Console().Log("Vdbg: %s \n",result.str().c_str());
+#endif
 }
 
 /**
