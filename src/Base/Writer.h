@@ -53,37 +53,55 @@ class Persistance;
  */
 class BaseExport Writer: public zipios::ZipOutputStream
 {
+
+public:
+  /// opens the file and write the first file
+  Writer(const char* FileName);
+  ~Writer();
+
+  /// switch the writer in XML only mode (no files allowed)
+  void setForceXML(bool on);
+  /// check on state
+  bool isForceXML(void);
+
+  /// insert a file as CDATA section in the XML file
+  void insertAsciiFile(const char* FileName);
+  /// insert a binary file BASE64 coded as CDATA section in the XML file
+  void insertBinFile(const char* FileName);
+
+  /** @name additional file writing */
+  //@{
+  /// add a write request of a Persitant object
+  const char *addFile(const char* Name, Base::Persistance *Object);
+  /// process the requested file writes
+  void writeFiles(void);
+  /// get all registered file names
+  const std::vector<std::string>& getFilenames() const;
+  //@{
+
+  /** @name prety formating for XML */
+  //@{
+  /// get the actual indetion
+  const char* ind(void){return indBuf;}
+  /// increase indetion by one tab
+  void incInd(void);
+  /// decreas indetion by one tab
+  void decInd(void);
+  //@{
+
+
 private:
   struct FileEntry {
     std::string FileName;
     Base::Persistance *Object;
   };
-
-public:
-  typedef std::vector<FileEntry>::const_iterator  ConstIterator;
-
-  ConstIterator begin (void) const { return FileList.begin(); }
-  ConstIterator end (void) const { return FileList.end(); }
-
-  /// opens the file and write the first file
-  Writer(const char* FileName);
-  ~Writer();
-
-  void addFile(const char* Name, Base::Persistance *Object);
-
-  void unsetFilenames();
-  const std::vector<std::string>& getFilenames() const;
-
-  const char* ind(void);
-  void incInd(void);
-  void decInd(void);
-
-
-private:
   std::vector<FileEntry> FileList;
   std::vector<std::string> FileNames;
 
   short indent;
+  char indBuf[256];
+
+  bool forceXML;
 };
 
 
@@ -92,6 +110,7 @@ private:
  * @see App::Persistance
  * @author Werner Mayer
  */
+/*
 class BaseExport Reader: public zipios::ZipInputStream
 {
 private:
@@ -115,7 +134,7 @@ public:
 private:
   std::vector<FileEntry> FileList;
 };
-
+*/
 }
 
 

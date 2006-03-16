@@ -33,8 +33,15 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Reader.h"
 #include "Exception.h"
+#include "Persistance.h"
 #include "gzstream.h"
 #include "InputSource.h"
+
+#include "zipios/zipios-config.h"
+#include "zipios/zipfile.h"
+#include "zipios/zipinputstream.h"
+#include "zipios/zipoutputstream.h"
+#include "zipios/meta-iostreams.h"
 
 #include "XMLTools.h"
 
@@ -196,6 +203,31 @@ void Base::XMLReader::readCharacters(void)
 }
 
 
+void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream)
+{
+  for ( std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it )
+  {
+    zipios::ConstEntryPointer entry = zipstream.getNextEntry();
+    if ( entry->isValid() && entry->getName() == it->FileName )
+    {
+      it->Object->RestoreDocFile( zipstream );
+    }else
+      throw Exception("Base::XMLReader::readFiles(): Files in ZIP not in the right order!");
+  }
+}
+
+const char *Base::XMLReader::addFile(const char* Name, Base::Persistance *Object)
+{
+  FileEntry temp;
+  temp.FileName = Name;
+  temp.Object = Object;
+  
+  FileList.push_back(temp);
+
+  FileNames.push_back( temp.FileName );
+
+  return Name;
+}
 
 // ---------------------------------------------------------------------------
 //  Base::XMLReader: Implementation of the SAX DocumentHandler interface

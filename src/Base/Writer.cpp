@@ -32,6 +32,7 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Writer.h"
+#include "Persistance.h"
 #include "Exception.h"
 
 using namespace Base;
@@ -45,16 +46,49 @@ using namespace zipios ;
 // ---------------------------------------------------------------------------
 
 Writer::Writer(const char* FileName) 
-: ZipOutputStream(FileName),indent(0)
+: ZipOutputStream(FileName),indent(0),forceXML(false)
 {
+  indBuf[0] = '\0';
 }
 
 Writer::~Writer()
 {
 }
 
-void Writer::addFile(const char* Name, Base::Persistance *Object)
+void Writer::insertAsciiFile(const char* FileName)
 {
+
+}
+
+void Writer::insertBinFile(const char* FileName)
+{
+
+}
+
+void Writer::setForceXML(bool on)
+{
+  forceXML = on;
+}
+
+bool Writer::isForceXML(void)
+{
+  return forceXML;
+}
+
+void Writer::writeFiles(void)
+{
+  for ( std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it )
+  {
+    putNextEntry(it->FileName);
+    it->Object->SaveDocFile( *this );
+  }
+}
+
+const char *Writer::addFile(const char* Name, Base::Persistance *Object)
+{
+  // allways check isForceXML() bevor requesting a file!
+  assert(isForceXML()==false);
+
   FileEntry temp;
   temp.FileName = Name;
   temp.Object = Object;
@@ -62,11 +96,8 @@ void Writer::addFile(const char* Name, Base::Persistance *Object)
   FileList.push_back(temp);
 
   FileNames.push_back( temp.FileName );
-}
 
-void Writer::unsetFilenames()
-{
-  FileNames.clear();
+  return Name;
 }
 
 const std::vector<std::string>& Writer::getFilenames() const
@@ -74,33 +105,30 @@ const std::vector<std::string>& Writer::getFilenames() const
   return FileNames;
 }
 
-const char* Writer::ind(void)
-{
-  static char buf[256];
-  short i;
-  for(i=0;i<indent;i++)
-    buf[i] = '\t';
-  buf[i] = '\0';
-
-  return buf;
-}
 
 void Writer::incInd(void)
 {
-  // because of buffer in ::ind()
+  // because of buffer 
   assert(indent < 255);
+
+  indBuf[indent] = '\t';
+  indBuf[indent+1] = '\0';
+
   indent++;
 }
 
 void Writer::decInd(void)
 {
+  // indetion missmatch
+  assert(indent > 0);
   indent--;
+  indBuf[indent] = '\0';
 }
 
 // ---------------------------------------------------------------------------
 //  Reader: Constructors and Destructor
 // ---------------------------------------------------------------------------
-
+/*
 Reader::Reader(const char* FileName) 
 : ZipInputStream(FileName)
 {
@@ -118,4 +146,4 @@ void Reader::addFile(const char* FileName, const char* FeatName)
   
   FileList.push_back(temp);
 }
-
+*/

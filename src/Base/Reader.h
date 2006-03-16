@@ -36,6 +36,7 @@
 #include "FileInfo.h"
 #include "Writer.h"
 
+class zipios::ZipInputStream;
 
 XERCES_CPP_NAMESPACE_BEGIN
 	class DefaultHandler;
@@ -121,7 +122,7 @@ public:
 
   /** @name Parser handling */
 	//@{
-  // read the next element
+  /// read the next element
   void read(void);
   /// get the local name of the current Element
   const char* localName(void);
@@ -146,6 +147,16 @@ public:
   /// returns the named attribute as an double floating point (does type checking)
   const char*  getAttribute         (const char* AttrName);
 	//@}
+
+   /** @name additional file reading */
+  //@{
+  /// add a read request of a Persitant object
+  const char *addFile(const char* Name, Base::Persistance *Object);
+  /// process the requested file writes
+  void readFiles(zipios::ZipInputStream &zipstream);
+  /// get all registered file names
+  const std::vector<std::string>& getFilenames() const;
+  //@{
 
 private:
 
@@ -188,12 +199,21 @@ private:
   XERCES_CPP_NAMESPACE_QUALIFIER SAX2XMLReader* parser;
   XERCES_CPP_NAMESPACE_QUALIFIER XMLPScanToken token;
   bool _valid;
+
+  struct FileEntry {
+    std::string FileName;
+    Base::Persistance *Object;
+  };
+  std::vector<FileEntry> FileList;
+  std::vector<std::string> FileNames;
+
 };
 
 /**
  * Extended XML reader class the collects also the attached data files in a zip file.
  * @author Werner Mayer
  */
+ /*
 class BaseExport XMLZipReader : public XMLReader
 {
 public:
@@ -215,7 +235,7 @@ public:
 private:
   Reader& _reader;
 };
-
+*/
 }
 
 

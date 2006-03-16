@@ -28,10 +28,12 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Writer.h>
+#include <Base/Reader.h>
 
 #include "Core/MeshKernel.h"
 
 #include "Mesh.h"
+#include "Core/MeshIO.h"
 #include "MeshPy.h"
 
 using namespace Mesh;
@@ -176,11 +178,24 @@ void PropertyCurvatureList::transform(const Matrix4D &mat)
 
 void PropertyCurvatureList::Save (Base::Writer &writer)
 {
-  writer.addFile("Curvature", this);
+  if(writer.isForceXML())
+  {
+  }else{
+    writer << writer.ind() << "<Curvature file=\"" << writer.addFile("Curvature.bin", this) << "\"/>" << std::endl;
+  }
 }
 
 void PropertyCurvatureList::Restore(Base::XMLReader &reader)
 {
+  reader.readElement("Curvature");
+  string file (reader.getAttribute("file") );
+
+  if(file == "")
+  {
+  }else{
+    // initate a file read
+    reader.addFile(file.c_str(),this);
+  }
 }
 
 void PropertyCurvatureList::SaveDocFile (Base::Writer &writer)
@@ -249,11 +264,30 @@ void PropertyMeshKernel::setPyObject(PyObject *value)
 
 void PropertyMeshKernel::Save (Base::Writer &writer)
 {
-  writer.addFile("MeshKernel.bms", this);
+  if(writer.isForceXML())
+  {
+    writer << writer.ind() << "<Mesh>" << std::endl;
+    MeshCore::MeshDocXML saver(_cMesh);
+    saver.Save(writer);
+  }else{
+    writer << writer.ind() << "<Mesh file=\"" << writer.addFile("MeshKernel.bms", this) << "\"/>" << std::endl;
+  }
 }
 
 void PropertyMeshKernel::Restore(Base::XMLReader &reader)
 {
+  reader.readElement("Mesh");
+  string file (reader.getAttribute("file") );
+
+  if (file == "")
+  {
+    // read XML
+    MeshCore::MeshDocXML restorer(_cMesh);
+    restorer.Restore(reader);
+  }else{
+    // initate a file read
+    reader.addFile(file.c_str(),this);
+  }
 }
 
 void PropertyMeshKernel::SaveDocFile (Base::Writer &writer)

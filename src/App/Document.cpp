@@ -107,11 +107,11 @@ Document::~Document()
 void Document::Save (Writer &writer)
 {
   writer << "<?xml version='1.0' encoding='utf-8'?>" << endl
-      << "<!--" << endl
-      << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
-      << "-->" << endl;
+         << "<!--" << endl
+         << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
+         << "-->" << endl;
 
-  writer << "<Document SchemaVersion=\"1\">" << endl;
+  writer << "<Document SchemaVersion=\"2\">" << endl;
 
   PropertyContainer::Save(writer);
 
@@ -123,9 +123,9 @@ void Document::Save (Writer &writer)
   {
     AbstractFeature* feat = it->second.F;
     writer << writer.ind() << "<Feature " 
-                         << "type=\"" << feat->getTypeId().getName() << "\" "
-                         << "name=\"" << feat->name.getValue()       << "\" "
-                         << "/>" << endl;    
+                             << "type=\"" << feat->getTypeId().getName() << "\" "
+                             << "name=\"" << feat->name.getValue()       << "\" "
+                           << "/>" << endl;    
   }
 
   writer << writer.ind() << "</Features>" << endl;
@@ -137,15 +137,7 @@ void Document::Save (Writer &writer)
   {
     AbstractFeature* feat = it->second.F;
     writer << writer.ind() << "<Feature name=\"" << feat->name.getValue() << "\">" << endl;   
-    writer.unsetFilenames();
     feat->Save(writer);
-    const std::vector<std::string>& fn = writer.getFilenames();
-    writer << writer.ind() << "<Files Count=\"" << fn.size() <<"\">" << endl;
-    for ( std::vector<std::string>::const_iterator iF = fn.begin(); iF != fn.end(); ++iF)
-    {
-      writer << writer.ind() << "<File name=\"" << (*iF) << "\" ></File>" << endl;
-    }
-    writer << writer.ind() << "</Files>" << endl;
     writer << writer.ind() << "</Feature>" << endl;
   }
 
@@ -188,7 +180,7 @@ void Document::Restore(Base::XMLReader &reader)
     {
       //FIXME: We must save/restore that state of a feature
       pFeat->Restore(reader);
-
+/*
       // restore the attached files to this feature
       reader.readElement("Files");
       int ctFiles = reader.getAttributeAsInteger("Count");
@@ -199,6 +191,7 @@ void Document::Restore(Base::XMLReader &reader)
         reinterpret_cast<Base::XMLZipReader&>(reader).addFile(fn.c_str(), name.c_str());
       }
       reader.readEndElement("Files");
+      */
     }
     reader.readEndElement("Feature");
   }
@@ -236,21 +229,18 @@ bool Document::save (void)
 
   if(*(FileName.getValue()) != '\0')
   {
-    Base::Writer file(FileName.getValue());
-    file.setComment("FreeCAD Document");
-    file.setLevel( compression );
+    Base::Writer writer(FileName.getValue());
 
-    file.putNextEntry("Document.xml");
+    writer.setComment("FreeCAD Document");
+    writer.setLevel( compression );
+    writer.putNextEntry("Document.xml");
 
-    Document::Save(file);
+    Document::Save(writer);
 
-    for ( Base::Writer::ConstIterator it = file.begin(); it != file.end(); ++it )
-    {
-      file.putNextEntry(it->FileName);
-      it->Object->SaveDocFile( file );
-    }
+    // write additional files
+    writer.writeFiles();
 
-    file.close();
+    writer.close();
 
     return true;
   }
@@ -261,13 +251,15 @@ bool Document::save (void)
 // Open the document
 bool Document::open (void)
 {
-  Base::Reader file(FileName.getValue());
+  zipios::ZipInputStream zipstream(FileName.getValue());
 
-  Base::XMLZipReader reader(FileName.getValue(), file);
+  Base::XMLReader reader(FileName.getValue(), zipstream);
+
   if ( reader.isValid() )
   {
     Document::Restore(reader);
 
+    /*
     for ( Base::Reader::ConstIterator it = file.begin(); it != file.end(); ++it )
     {
       ConstEntryPointer entry = file.getNextEntry();
@@ -287,8 +279,9 @@ bool Document::open (void)
         }
       }
     }
+*/
+    reader.readFiles(zipstream);
 
-    file.close();
 
     // notify all as new
     DocChanges DocChange;
@@ -307,8 +300,6 @@ bool Document::open (void)
 
     return true;
   }
-
-  file.close();
   return false;
 }
 

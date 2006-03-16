@@ -37,7 +37,7 @@
 
 namespace Base
 {
-  class Reader;
+  typedef std::istream Reader;
   class Writer;
   class XMLReader;
 

@@ -581,7 +581,7 @@ bool MeshInventor::Save (FileStream &rstrOut) const
 
 void MeshDocXML::Save (Base::Writer &writer)
 {
-  writer << writer.ind() << "<Mesh>" << std::endl;
+//  writer << writer.ind() << "<Mesh>" << std::endl;
 
   writer.incInd();
   writer << writer.ind() << "<Points Count=\"" << _rclMesh.CountPoints() << "\">" << std::endl;
@@ -627,7 +627,7 @@ void MeshDocXML::Restore(Base::XMLReader &reader)
 { 
   int Cnt,i;
  
-  reader.readElement("Mesh");
+//  reader.readElement("Mesh");
 
   reader.readElement("Points");
   Cnt = reader.getAttributeAsInteger("Count");
