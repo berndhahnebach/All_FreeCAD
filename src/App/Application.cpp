@@ -428,7 +428,7 @@ const char* Application::hasOpenType(const char* Type) const
 {
   for ( std::map<std::string, std::string>::const_iterator it = _mEndings.begin(); it != _mEndings.end(); ++it )
   {
-#ifdef FC_OS_LINUX
+#ifdef __GNUC__
   if ( strcasecmp(Type,it->first.c_str()) == 0 )
 #else
   if ( _stricmp(Type,it->first.c_str()) == 0 )
