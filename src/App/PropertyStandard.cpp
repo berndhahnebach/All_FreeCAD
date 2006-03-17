@@ -366,32 +366,68 @@ void PropertyFloatList::setPyObject(PyObject *value)
 
 void PropertyFloatList::Save (Writer &writer)
 {
-  writer << "<FloatList count=\"" <<  getSize() <<"\"/>" << endl;
-  for(int i = 0;i<getSize(); i++)
-    writer << "<F v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
-  writer << "</FloatList>" << endl ;
-
-
+  if(writer.isForceXML())
+  {
+//  writer << "<FloatList count=\"" <<  getSize() <<"\"/>" << endl;
+//  for(int i = 0;i<getSize(); i++)
+//    writer << "<F v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+//  writer << "</FloatList>" << endl ;
+  }else{
+    writer << writer.ind() << "<FloatList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+  }
 }
 
 void PropertyFloatList::Restore(Base::XMLReader &reader)
 {
-  // read my Element
   reader.readElement("FloatList");
-  // get the value of my Attribute
-  int count = reader.getAttributeAsInteger("count");
+  string file (reader.getAttribute("file") );
 
-  setSize(count);
-
-  for(int i = 0;i<count; i++)
+  if(file == "")
   {
-    reader.readElement("F");
-    _lValueList[i] = (float) reader.getAttributeAsFloat("v");
+//  // read my Element
+//  reader.readElement("FloatList");
+//  // get the value of my Attribute
+//  int count = reader.getAttributeAsInteger("count");
+//
+//  setSize(count);
+//
+//  for(int i = 0;i<count; i++)
+//  {
+//    reader.readElement("F");
+//    _lValueList[i] = (float) reader.getAttributeAsFloat("v");
+//  }
+//
+//  reader.readEndElement("FloatList");
+  }else{
+    // initate a file read
+    reader.addFile(file.c_str(),this);
   }
-
-  reader.readEndElement("FloatList");
-
 }
+
+void PropertyFloatList::SaveDocFile (Base::Writer &writer)
+{
+  try {
+    unsigned long uCt = getSize();
+    writer.write((const char*)&uCt, sizeof(unsigned long));
+    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(float));
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
+
+void PropertyFloatList::RestoreDocFile(Base::Reader &reader)
+{
+  try {
+    _lValueList.clear();
+    unsigned long uCt=ULONG_MAX;
+    reader.read((char*)&uCt, sizeof(unsigned long));
+    _lValueList.resize(uCt);
+    reader.read((char*)&(_lValueList[0]), uCt*sizeof(float));
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
+
 
 
 //**************************************************************************
@@ -783,28 +819,66 @@ void PropertyColorList::setPyObject(PyObject *value)
 
 void PropertyColorList::Save (Writer &writer)
 {
-  writer << "<ColorList count=\"" <<  getSize() <<"\"/>" << endl;
-  for(int i = 0;i<getSize(); i++)
-    writer << writer.ind() << "<PropertyColor value=\"" <<  _lValueList[i].getPackedValue() <<"\"/>" << endl;
-  writer << "</ColorList>" << endl ;
+  if(writer.isForceXML())
+  {
+//    writer << "<ColorList count=\"" <<  getSize() <<"\"/>" << endl;
+//    for(int i = 0;i<getSize(); i++)
+//      writer << writer.ind() << "<PropertyColor value=\"" <<  _lValueList[i].getPackedValue() <<"\"/>" << endl;
+//    writer << "</ColorList>" << endl ;
+  }else{
+    writer << writer.ind() << "<ColorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+  }
 }
 
 void PropertyColorList::Restore(Base::XMLReader &reader)
 {
-  // read my Element
   reader.readElement("ColorList");
-  // get the value of my Attribute
-  int count = reader.getAttributeAsInteger("count");
+  string file (reader.getAttribute("file") );
 
-  setSize(count);
-
-  for(int i = 0;i<count; i++)
+  if(file == "")
   {
-    reader.readElement("PropertyColor");
-    _lValueList[i].setPackedValue( reader.getAttributeAsInteger("value") );
+//  // read my Element
+//  reader.readElement("ColorList");
+//  // get the value of my Attribute
+//  int count = reader.getAttributeAsInteger("count");
+//
+//  setSize(count);
+//
+//  for(int i = 0;i<count; i++)
+//  {
+//    reader.readElement("PropertyColor");
+//    _lValueList[i].setPackedValue( reader.getAttributeAsInteger("value") );
+//  }
+//
+//  reader.readEndElement("ColorList");
+  }else{
+    // initate a file read
+    reader.addFile(file.c_str(),this);
   }
+}
 
-  reader.readEndElement("ColorList");
+void PropertyColorList::SaveDocFile (Base::Writer &writer)
+{
+  try {
+    unsigned long uCt = getSize();
+    writer.write((const char*)&uCt, sizeof(unsigned long));
+    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(Color));
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
+
+void PropertyColorList::RestoreDocFile(Base::Reader &reader)
+{
+  try {
+    _lValueList.clear();
+    unsigned long uCt=ULONG_MAX;
+    reader.read((char*)&uCt, sizeof(unsigned long));
+    _lValueList.resize(uCt);
+    reader.read((char*)&(_lValueList[0]), uCt*sizeof(Color));
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
 }
 
 

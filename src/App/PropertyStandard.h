@@ -222,6 +222,8 @@ public:
 
   virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::XMLReader &reader);
+  virtual void SaveDocFile (Base::Writer &writer);
+  virtual void RestoreDocFile(Base::Reader &reader);
 
 
 private:
@@ -392,6 +394,8 @@ public:
 
   virtual void Save (Base::Writer &writer);
   virtual void Restore(Base::XMLReader &reader);
+  virtual void SaveDocFile (Base::Writer &writer);
+  virtual void RestoreDocFile(Base::Reader &reader);
 
 private:
   std::vector<Color> _lValueList;

@@ -35,6 +35,8 @@
 #include "Persistance.h"
 #include "Exception.h"
 
+#include <algorithm>
+
 using namespace Base;
 using namespace std;
 using namespace zipios ;
@@ -84,20 +86,56 @@ void Writer::writeFiles(void)
   }
 }
 
-const char *Writer::addFile(const char* Name, Base::Persistance *Object)
+std::string Writer::addFile(const char* Name, Base::Persistance *Object)
 {
-  // allways check isForceXML() bevor requesting a file!
+  // always check isForceXML() before requesting a file!
   assert(isForceXML()==false);
 
   FileEntry temp;
-  temp.FileName = Name;
+  temp.FileName = getUniqueFileName(Name);
   temp.Object = Object;
   
   FileList.push_back(temp);
 
   FileNames.push_back( temp.FileName );
 
-  return Name;
+  // return the unique file name
+  return temp.FileName;
+}
+
+string Writer::getUniqueFileName(const char *Name)
+{
+  //std::vector<std::string>::const_iterator pos;
+
+  // name in use?
+  std::vector<std::string>::const_iterator pos = find(FileNames.begin(),FileNames.end(),Name);
+
+  if (pos == FileNames.end())
+    // if not, name is OK
+    return Name;
+  else
+  {
+    // find highes sufix
+    int nSuff = 0;  
+    for(pos = FileNames.begin();pos != FileNames.end();++pos)
+    {
+      const string &rclObjName = *pos;
+      if (rclObjName.substr(0, strlen(Name)) == Name)  // Prefix gleich
+      {
+        string clSuffix(rclObjName.substr(strlen(Name)));
+        if (clSuffix.size() > 0){
+          int nPos = clSuffix.find_first_not_of("0123456789");
+          if(nPos==-1)
+            nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+        }
+      }
+    }
+    char szName[200];
+    sprintf(szName, "%s%d", Name, nSuff + 1);
+	
+    return string(szName);
+  }
+	
 }
 
 const std::vector<std::string>& Writer::getFilenames() const

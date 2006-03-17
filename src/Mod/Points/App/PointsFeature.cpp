@@ -58,23 +58,27 @@ void Feature::Save (Base::Writer &writer)
 {
   // save parent
   AbstractFeature::Save(writer);
-  //reinterpret_cast<App::AbstractFeature*>(this)->Save(indent,str);
 
-  std::string fn = name.getValue(); fn += ".bin";
-  writer.addFile(fn.c_str(), this);
-
-  //_Points.Save(writer);
-
+  if(writer.isForceXML())
+  {
+  }else{
+    writer << writer.ind() << "<Points file=\"" << writer.addFile(name.getValue(), this) << "\"/>" << std::endl;
+  }
 }
 
 void Feature::Restore(Base::XMLReader &reader)
 {
   // load parent
   AbstractFeature::Restore(reader);
+  reader.readElement("Points");
+  std::string file (reader.getAttribute("file") );
 
-  //_Points.Restore(reader);
-
-
+  if (file == "")
+  {
+  }else{
+    // initate a file read
+    reader.addFile(file.c_str(),this);
+  }
 }
 
 void Feature::SaveDocFile (Base::Writer &writer)

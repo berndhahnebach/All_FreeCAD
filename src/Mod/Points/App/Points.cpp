@@ -176,11 +176,24 @@ void PropertyCurvatureList::transform(const Matrix4D &mat)
 
 void PropertyCurvatureList::Save (Base::Writer &writer)
 {
-  writer.addFile("Curvature", this);
+  if(writer.isForceXML())
+  {
+  }else{
+    writer << writer.ind() << "<CurvatureList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+  }
 }
 
 void PropertyCurvatureList::Restore(Base::XMLReader &reader)
 {
+  reader.readElement("CurvatureList");
+  string file (reader.getAttribute("file") );
+
+  if(file == "")
+  {
+  }else{
+    // initate a file read
+    reader.addFile(file.c_str(),this);
+  }
 }
 
 void PropertyCurvatureList::SaveDocFile (Base::Writer &writer)

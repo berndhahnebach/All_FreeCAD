@@ -225,30 +225,68 @@ void PropertyVectorList::setPyObject(PyObject *value)
 
 void PropertyVectorList::Save (Writer &writer)
 {
-  writer << "<VectorList count=\"" <<  getSize() <<"\"/>" << endl;
-  for(int i = 0;i<getSize(); i++)
-    writer << writer.ind() << "<PropertyVector valueX=\"" <<  _lValueList[i].x << "\" valueY=\"" <<  _lValueList[i].y << "\" valueZ=\"" <<  _lValueList[i].z <<"\"/>" << endl;
-  writer << "</VectorList>" << endl ;
+  if(writer.isForceXML())
+  {
+//  writer << "<VectorList count=\"" <<  getSize() <<"\"/>" << endl;
+//  for(int i = 0;i<getSize(); i++)
+//    writer << writer.ind() << "<PropertyVector valueX=\"" <<  _lValueList[i].x << "\" valueY=\"" <<  _lValueList[i].y << "\" valueZ=\"" <<  _lValueList[i].z <<"\"/>" << endl;
+//  writer << "</VectorList>" << endl ;
+  }else{
+    writer << writer.ind() << "<VectorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+  }
 }
 
 void PropertyVectorList::Restore(Base::XMLReader &reader)
 {
-  // read my Element
   reader.readElement("VectorList");
-  // get the value of my Attribute
-  int count = reader.getAttributeAsInteger("count");
+  string file (reader.getAttribute("file") );
 
-  setSize(count);
-
-  for(int i = 0;i<count; i++)
+  if(file == "")
   {
-    reader.readElement("PropertyVector");
-    _lValueList[i].x = (float) reader.getAttributeAsFloat("valueX");
-    _lValueList[i].y = (float) reader.getAttributeAsFloat("valueY");
-    _lValueList[i].z = (float) reader.getAttributeAsFloat("valueZ");
+//  // read my Element
+//  reader.readElement("VectorList");
+//  // get the value of my Attribute
+//  int count = reader.getAttributeAsInteger("count");
+//
+//  setSize(count);
+//
+//  for(int i = 0;i<count; i++)
+//  {
+//    reader.readElement("PropertyVector");
+//    _lValueList[i].x = (float) reader.getAttributeAsFloat("valueX");
+//    _lValueList[i].y = (float) reader.getAttributeAsFloat("valueY");
+//    _lValueList[i].z = (float) reader.getAttributeAsFloat("valueZ");
+//  }
+//
+//  reader.readEndElement("VectorList");
+  }else{
+    // initate a file read
+    reader.addFile(file.c_str(),this);
   }
+}
 
-  reader.readEndElement("VectorList");
+void PropertyVectorList::SaveDocFile (Base::Writer &writer)
+{
+  try {
+    unsigned long uCt = getSize();
+    writer.write((const char*)&uCt, sizeof(unsigned long));
+    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3D));
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
+
+void PropertyVectorList::RestoreDocFile(Base::Reader &reader)
+{
+  try {
+    _lValueList.clear();
+    unsigned long uCt=ULONG_MAX;
+    reader.read((char*)&uCt, sizeof(unsigned long));
+    _lValueList.resize(uCt);
+    reader.read((char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3D));
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
 }
 
 //**************************************************************************

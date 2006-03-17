@@ -181,13 +181,13 @@ void PropertyCurvatureList::Save (Base::Writer &writer)
   if(writer.isForceXML())
   {
   }else{
-    writer << writer.ind() << "<Curvature file=\"" << writer.addFile("Curvature.bin", this) << "\"/>" << std::endl;
+    writer << writer.ind() << "<CurvatureList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
   }
 }
 
 void PropertyCurvatureList::Restore(Base::XMLReader &reader)
 {
-  reader.readElement("Curvature");
+  reader.readElement("CurvatureList");
   string file (reader.getAttribute("file") );
 
   if(file == "")
