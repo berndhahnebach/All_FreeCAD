@@ -586,7 +586,7 @@ void PropertyBool::Save (Writer &writer)
 void PropertyBool::Restore(Base::XMLReader &reader)
 {
   // read my Element
-  reader.readElement("String");
+  reader.readElement("Bool");
   // get the value of my Attribute
   string b = reader.getAttribute("value");
   if(b == "true")

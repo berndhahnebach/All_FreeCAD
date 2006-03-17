@@ -97,7 +97,7 @@ void *Type::createInstanceByName(const char* TypeName, bool bLoadModule)
     // cut out the module name 
     string Mod = getModuleName(TypeName);
     // ignore base modules
-    if(Mod != "App" && Mod != "Gui" && Mod == "Base")
+    if(Mod != "App" && Mod != "Gui" && Mod != "Base")
     {
       // remember allready loaded modules
       set<string>::const_iterator pos = loadModuleSet.find(Mod);

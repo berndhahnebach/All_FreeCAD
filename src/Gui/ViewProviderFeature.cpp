@@ -216,7 +216,24 @@ bool ViewProviderFeature::testStatus(void)
   return true;
 }
 
+void ViewProviderFeature::hide(void)
+{
+  ViewProvider::hide();
+  if ( pcFeature )
+    pcFeature->visibility.setValue(false);
+}
 
+void ViewProviderFeature::show(void)
+{
+  ViewProvider::show();
+  if ( pcFeature )
+    pcFeature->visibility.setValue(true);
+}
+
+bool ViewProviderFeature::isShow(void)
+{
+  return (pcFeature ? pcFeature->visibility.getValue() : false);
+}
 
 bool ViewProviderFeature::ifDataNewer(void)
 {

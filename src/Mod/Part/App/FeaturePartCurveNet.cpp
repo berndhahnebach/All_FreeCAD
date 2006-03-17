@@ -58,7 +58,7 @@ CurveNet::CurveNet()
   _pointMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
   _pointMaterial.shininess = 0.3f;
   _pointSize = 0.05f;
-  _showMode = "Flat";
+  showMode.setValue("Flat");
 }
 
 

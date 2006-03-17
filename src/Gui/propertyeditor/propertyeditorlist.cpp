@@ -91,8 +91,12 @@ void BoolEditorItem::setDefaultValue()
 void BoolEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
   App::PropertyBool* pPropBool = (App::PropertyBool*)prop.front();
-  QVariant var( pPropBool->getValue(), 0 );
-  setValue( var );
+  QVariant value( pPropBool->getValue(), 0 );
+  setValue( value );
+  if ( value.toBool() )
+    setText( 1, QObject::tr("True") );
+  else
+    setText( 1, QObject::tr("False") );
 }
 
 void BoolEditorItem::convertToProperty(const QVariant&)

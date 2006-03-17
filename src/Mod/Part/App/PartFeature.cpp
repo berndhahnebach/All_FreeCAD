@@ -59,9 +59,7 @@ PROPERTY_SOURCE(Part::Feature, App::AbstractFeature)
 
 Feature::Feature(void)
 {
-  _showMode = "Normal";
-
-
+  showMode.setValue("Normal");
 }
 
 Standard_Integer Feature::execute(void)

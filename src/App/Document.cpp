@@ -289,9 +289,9 @@ bool Document::open (void)
     for(std::map<std::string,FeatEntry>::iterator It = FeatMap.begin();It != FeatMap.end();++It)
     {
       // not all feature are necessarily set to New here
-      if ( It->second.F->_eStatus == AbstractFeature::New )
+      if ( It->second.F->status.getValue() == AbstractFeature::New )
       {
-        It->second.F->_eStatus = AbstractFeature::Valid;
+        It->second.F->status.setValue(AbstractFeature::Valid);
         It->second.F->touchTime.setToActual();
       }
       DocChange.NewFeatures.insert(It->second.F);
@@ -500,7 +500,7 @@ void Document::_RecomputeFeature(AbstractFeature* Feat)
 {
   Base::Console().Log("Solv: Executing Feature: %s\n",Feat->name.getValue());
 
-  Feat->_eStatus = AbstractFeature::Recompute;
+  Feat->status.setValue(AbstractFeature::Recompute);
   int  succes;
   try{
     succes = Feat->execute();
@@ -528,12 +528,12 @@ void Document::_RecomputeFeature(AbstractFeature* Feat)
 
   // special error code to avoid to execute a feature twice
   if (succes == 4){
-    Feat->_eStatus = AbstractFeature::Inactive;
+    Feat->status.setValue(AbstractFeature::Inactive);
   }else if(succes > 0){
-    Feat->_eStatus = AbstractFeature::Error;
+    Feat->status.setValue(AbstractFeature::Error);
   }else {
     // set the time of change
-    Feat->_eStatus = AbstractFeature::Valid;
+    Feat->status.setValue(AbstractFeature::Valid);
 
     Feat->touchTime.setToActual();
   }
@@ -559,7 +559,7 @@ AbstractFeature *Document::addFeature(const char* sType, const char* pFeatName)
       FeatName = getUniqueFeatureName(sType);
 
     // set the status of the feature to New
-    pcFeature->_eStatus = AbstractFeature::New;
+    pcFeature->status.setValue(AbstractFeature::New);
 
     //_LogBook.SetTouched(FeatureLabel);
     //TouchState(FeatureLabel);

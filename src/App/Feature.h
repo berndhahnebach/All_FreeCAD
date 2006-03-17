@@ -69,10 +69,13 @@ class AppExport AbstractFeature: public App::DocumentObject
 {
     PROPERTY_HEADER(App::Feature);
 
+protected:
+  PropertyString showMode;
+  PropertyInteger status;
+
 public:
-
-
   PropertyString name;
+  PropertyBool visibility;
 
 	/// Constructor
 	AbstractFeature(void);
@@ -112,7 +115,7 @@ public:
   };
 
   /// gets the status
-  Status getStatus(void) const { return _eStatus;}
+  int getStatus(void) const { return /*_eStatus;*/status.getValue();}
   /// set the status, e.g. after recoputation in Execute()
  // void setStatus(const Status &s){_eStatus = s;}
   /// get the status Message
@@ -122,7 +125,7 @@ public:
   /// set an error on recoputation
   void setError(const char* pMsg,...);
   /// checks if valid
-  bool isValid(void){return _eStatus == Valid;}
+  bool isValid(void){return /*_eStatus == Valid;*/ status.getValue() == Valid; }
   /// Recompute only this feature and makes it valid again
   void recompute(void);
   //@}
@@ -175,9 +178,9 @@ public:
   /// get line Size
   float getLineSize(void) const {return _lineSize;}
   /// get show mode
-  const char* getShowMode(void) const {return _showMode.c_str();}
+  const char* getShowMode(void) const {/*return _showMode.c_str();*/return showMode.getValue();}
   /// get show mode
-  void setShowMode(const char* Mode) {_showMode = Mode;}
+  void setShowMode(const char* Mode) {/*_showMode = Mode;*/showMode.setValue(Mode);}
 
 	//@}
 
@@ -216,7 +219,7 @@ protected:
   float       _lineSize;
   Material    _pointMaterial;
   float       _pointSize;
-  std::string _showMode;
+  //std::string _showMode;
 	//@}
 
   Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;
@@ -235,7 +238,7 @@ protected:
 
   //std::string _Name;
 
-  Status _eStatus;
+  //Status _eStatus;
   std::string _cErrorMessage;
 
 };

@@ -47,7 +47,7 @@ PROPERTY_SOURCE(Points::Feature, App::AbstractFeature)
 Feature::Feature()
 {
   // set default display mode
-  _showMode = "Point";
+  showMode.setValue("Point");
 }
 
 Feature::~Feature()

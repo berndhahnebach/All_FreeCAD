@@ -82,6 +82,9 @@ public:
 
     /// freqently called by the framework to check status changes in the data
   virtual bool testStatus(void);
+  virtual void hide(void);
+  virtual void show(void);
+  virtual bool isShow(void);
 
 
 

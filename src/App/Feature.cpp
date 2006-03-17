@@ -77,13 +77,15 @@ AbstractFeature::AbstractFeature(void)
   _pointMaterial.shininess = 0.3f;
   _pointMaterial.transparency = 0.0f;
   _pointSize = 2.0;
-  _showMode = "Flat";
+  //_showMode = "Flat";
 
   touchTime.setToActual();
   touchViewTime.setToActual();
 
   ADD_PROPERTY(name,("Unnamed"));
-
+  ADD_PROPERTY(visibility,(true));
+  ADD_PROPERTY(showMode,("Flat"));
+  ADD_PROPERTY(status,(Valid));
 }
 
 AbstractFeature::~AbstractFeature(void)
@@ -104,6 +106,13 @@ Base::PyObjectBase *AbstractFeature::GetPyObject(void)
 
 void AbstractFeature::onChanged(Property* prop)
 {
+  // Ignore some properties
+  if ( prop == &status )
+    return;
+  else if ( prop == &showMode )
+    return;
+  else if ( prop == &visibility )
+    return;
   touchPropertyTime.setToActual();
 };
 
@@ -147,7 +156,7 @@ void AbstractFeature::removeModifications(void)
 
 const char* AbstractFeature::getStatusString(void) const
 {
-  switch (_eStatus)
+  switch (/*_eStatus*/status.getValue())
   {
   case Valid:
     return "Valid";
@@ -174,7 +183,8 @@ void AbstractFeature::setError(const char* pMsg,...)
   vsprintf(format, pMsg, namelessVars);
   va_end(namelessVars);
 
-  _eStatus = Error;
+  /*_eStatus = Error;*/
+  status.setValue(Error);
   _cErrorMessage = format;
 }
 

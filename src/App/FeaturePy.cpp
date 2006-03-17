@@ -204,7 +204,7 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
     }
     else if (Base::streq(attr, "showMode"))
     {
-        return Py_BuildValue("s", _pcFeature->_showMode.c_str());
+        return Py_BuildValue("s", _pcFeature->showMode.getValue());
     }
     else{
       // search in PropertyList
@@ -273,7 +273,7 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
     _pcFeature->setColor(MaterialPy::getColorFromPy(value));
     _pcFeature->TouchView();
   }else	if (Base::streq(attr, "showMode")){	
-    _pcFeature->_showMode = PyString_AsString(value);
+    _pcFeature->showMode.setValue(PyString_AsString(value));
     _pcFeature->TouchView();
   }else{
        // search in PropertyList
