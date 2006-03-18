@@ -188,7 +188,7 @@ void PropertyCurvatureList::Save (Base::Writer &writer)
 void PropertyCurvatureList::Restore(Base::XMLReader &reader)
 {
   reader.readElement("CurvatureList");
-  string file (reader.getAttribute("file") );
+  std::string file (reader.getAttribute("file") );
 
   if(file == "")
   {
@@ -277,7 +277,7 @@ void PropertyMeshKernel::Save (Base::Writer &writer)
 void PropertyMeshKernel::Restore(Base::XMLReader &reader)
 {
   reader.readElement("Mesh");
-  string file (reader.getAttribute("file") );
+  std::string file (reader.getAttribute("file") );
 
   if (file == "")
   {

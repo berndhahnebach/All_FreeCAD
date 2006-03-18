@@ -131,7 +131,7 @@ void SetOperations::Do ()
   //for (std::set<EdgeInfo>::iterator it = _edges.begin(); it != _edges.end(); it++)
   //  _builder.addSingleLine(it->pt1, it->pt2, 3.0, 1.0, 1.0, 0.0);
 
-  float mult0, mult1;
+  float mult0=0.0f, mult1=0.0f;
   switch (_operationType)
   {
     case Union:       mult0 =  1.0f; mult1 =  1.0f;  break;
@@ -296,7 +296,7 @@ void SetOperations::TriangulateMesh (MeshKernel &cutMesh, int side)
     MeshGeomFacet f = cutMesh.GetFacet(fidx);
 
      // facet corner points
-    MeshFacet& mf = cutMesh._aclFacetArray[fidx];
+    //MeshFacet& mf = cutMesh._aclFacetArray[fidx];
     int i;
     for (i = 0; i < 3; i++)
     {
@@ -417,7 +417,7 @@ void SetOperations::CollectFacets (int side, float mult)
   MeshAlgorithm algo(mesh);
   algo.ResetFacetFlag((MeshFacet::TFlagType)(MeshFacet::VISIT | MeshFacet::TMP0));
 
-   bool hasFacetsNotVisited = true; // until facets not visited
+  // bool hasFacetsNotVisited = true; // until facets not visited
   // search for facet not visited
   TMeshFacetArray::iterator itf;
   for (itf = mesh._aclFacetArray.begin(); itf != mesh._aclFacetArray.end(); itf++)
@@ -449,8 +449,8 @@ void SetOperations::CollectFacets (int side, float mult)
 }
 
 SetOperations::CollectFacetVisitor::CollectFacetVisitor (MeshKernel& mesh, std::vector<unsigned long>& facets, std::set<EdgeInfo>& edges, int side, float mult , Base::Builder3D& builder )
-: _mesh(mesh),
-  _facets(facets),
+: _facets(facets),
+  _mesh(mesh),
   _edges(edges),
   _side(side),
   _mult(mult),

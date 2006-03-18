@@ -218,9 +218,6 @@ void Builder3D::addSingleLine(Vector3D pt1, Vector3D pt2, short lineSize, float 
 
 void Builder3D::addSingleArrow(Vector3D pt1, Vector3D pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
 {
-    float pi = 3.1415926535f;
-    float pih = pi / 2.0f;
-    float pi2 = pi * 2.0f;
     float l = (pt2 - pt1).Length();
     float cl = l / 10.0f;
     float cr = cl / 2.0f;

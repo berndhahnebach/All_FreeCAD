@@ -78,6 +78,7 @@ int SetOperations::execute(void)
       type = MeshCore::SetOperations::Difference;
     else
     {
+      type = MeshCore::SetOperations::Union;
       //throw new exception("operation type must be: union, intersection or difference");
     }
     

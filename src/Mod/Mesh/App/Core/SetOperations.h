@@ -27,6 +27,8 @@
 #ifndef _PreComp_
 # include <Wm3IntrSegment3Plane3.h>
 # include <Wm3Vector3.h>
+# include <list>
+# include <map>
 #endif
 
 #include <Wm3Plane3.h>
