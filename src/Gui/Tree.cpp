@@ -175,7 +175,7 @@ bool DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
   if ( it == FeatMap.end() )
   {
     FeatItem* item = dynamic_cast<FeatItem*>( Provider->getTreeItem(this) );
-    // set the new ctreated item at the end
+    // set the new created item at the end
     item->moveItem(_lastFeaItem);
     _lastFeaItem = item;
     FeatMap[ name ] = item;
@@ -294,6 +294,8 @@ void FeatItem::displayStatusInfo()
   QString info = feat->getStatusString();
   if ( feat->getStatus() == App::AbstractFeature::Error )
     info += QString(" (%1)").arg(feat->getErrorString());
+  else if ( feat->MustExecute() )
+    info += QString(" (but must be executed)");
   getMainWindow()->statusBar()->message( info );
 }
 
@@ -575,11 +577,27 @@ DocItem * TreeView::NewDoc( Gui::Document* pDoc )
 
 void TreeView::DeleteDoc( Gui::Document* pDoc )
 {
-  map<string, DocItem*>::iterator it = DocMap.find( pDoc->getDocument()->getName() );
-  if(it!= DocMap.end())
+  std::map<std::string,DocItem*>::iterator it = DocMap.find(pDoc->getDocument()->getName());
+  if ( it != DocMap.end() )
   {
-    delete it->second;
-    DocMap.erase( it );
+    // now we must search for the matching listview item
+    QListViewItem* item = _pcMainItem->firstChild();
+    QListViewItem* sibling=0;
+    while ( item ) {
+      // make sure that we have a FeatItem
+      if ( item == it->second )
+      {
+        // in case we remove the last item
+        if ( _lastDocItem == item )
+          _lastDocItem = sibling;
+        delete item;
+        DocMap.erase(it);
+        return;
+      }
+
+      sibling = item;
+      item = item->nextSibling();  
+    }
   }
 }
 

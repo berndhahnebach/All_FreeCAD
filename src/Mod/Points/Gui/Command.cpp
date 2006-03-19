@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <qaction.h>
+# include <qdir.h>
+# include <qfileinfo.h>
 #endif
 
 #include <Base/Exception.h>
@@ -39,47 +41,50 @@
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //===========================================================================
-// CmdPointsTest THIS IS JUST A TEST COMMAND
+// CmdPointsImport
 //===========================================================================
-DEF_STD_CMD_A(CmdPointsTest);
+DEF_STD_CMD_A(CmdPointsImport);
 
-CmdPointsTest::CmdPointsTest()
-  :Command("Points_Test")
+CmdPointsImport::CmdPointsImport()
+  :Command("Points_Import")
 {
   sAppModule    = "Points";
   sGroup        = QT_TR_NOOP("Points");
-  sMenuText     = QT_TR_NOOP("Import");
-  sToolTipText  = QT_TR_NOOP("Points Test function");
-  sWhatsThis    = QT_TR_NOOP("Points Test function");
-  sStatusTip    = QT_TR_NOOP("Points Test function");
+  sMenuText     = QT_TR_NOOP("Import Points");
+  sToolTipText  = QT_TR_NOOP("Imports a point cloud");
+  sWhatsThis    = QT_TR_NOOP("Imports a point cloud");
+  sStatusTip    = QT_TR_NOOP("Imports a point cloud");
   sPixmap       = "Test1";
-  iAccel        = Qt::CTRL+Qt::Key_T;
 }
 
-void CmdPointsTest::activated(int iMsg)
+void CmdPointsImport::activated(int iMsg)
 {
+  // use current path as default
+  std::string path = QDir::currentDirPath().latin1();
+  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
+  QString dir = path.c_str();
 
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "Ascii Points (*.asc);;All Files (*.*)", Gui::getMainWindow() );
-	if ( fn.isEmpty() )
-		return;
-
-//  PointsGui::DlgPointsReadImp cDlg(fn.latin1(), getAppWnd(),"ReadFile",true);
-//	cDlg.exec();
+  QString fn = Gui::FileDialog::getOpenFileName( dir, "Ascii Points (*.asc);;All Files (*.*)", Gui::getMainWindow() );
+  if ( fn.isEmpty() )
+    return;
 
   if (! fn.isEmpty() )
   {
+    QFileInfo fi;
+    fi.setFile(fn);
+
     openCommand("Points Import Create");
-    doCommand(Doc,"f = App.document().AddFeature(\"Points::ImportAscii\",\"PointsImport\")");
+    doCommand(Doc,"f = App.document().AddFeature(\"Points::ImportAscii\",\"%s\")", fi.baseName().latin1());
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
  
     updateActive();
+    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
   }
-
-
 }
 
-bool CmdPointsTest::isActive(void)
+bool CmdPointsImport::isActive(void)
 {
   if( getActiveGuiDocument() )
     return true;
@@ -90,5 +95,5 @@ bool CmdPointsTest::isActive(void)
 void CreatePointsCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-  rcCmdMgr.addCommand(new CmdPointsTest());
+  rcCmdMgr.addCommand(new CmdPointsImport());
 }

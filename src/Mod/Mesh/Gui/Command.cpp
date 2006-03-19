@@ -299,7 +299,7 @@ CmdMeshImport::CmdMeshImport()
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Import Mesh");
+  sMenuText     = QT_TR_NOOP("Import mesh...");
   sToolTipText  = QT_TR_NOOP("Imports a mesh from file");
   sWhatsThis    = QT_TR_NOOP("Imports a mesh from file");
   sStatusTip    = QT_TR_NOOP("Imports a mesh from file");
@@ -313,20 +313,21 @@ void CmdMeshImport::activated(int iMsg)
   std::string path = QDir::currentDirPath().latin1();
   FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
   path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-	QString dir = path.c_str();
+  QString dir = path.c_str();
 
   QString filter = "All Mesh Files (*.stl *.ast *.bms);;Binary STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
   QString fn = Gui::FileDialog::getOpenFileName( dir, filter, Gui::getMainWindow() );
   if (! fn.isEmpty() )
   {
+    QFileInfo fi;
+    fi.setFile(fn);
+
     openCommand("Mesh ImportSTL Create");
-    doCommand(Doc,"f = App.document().AddFeature(\"Mesh::Import\",\"MeshImport\")");
+    doCommand(Doc,"f = App.document().AddFeature(\"Mesh::Import\",\"%s\")", fi.baseName().latin1());
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
     updateActive();
 
-    QFileInfo fi;
-		fi.setFile(fn);
     hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
   }
 }
@@ -349,7 +350,7 @@ CmdMeshExport::CmdMeshExport()
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Export Mesh");
+  sMenuText     = QT_TR_NOOP("Export mesh...");
   sToolTipText  = QT_TR_NOOP("Exports a mesh to file");
   sWhatsThis    = QT_TR_NOOP("Exports a mesh to file");
   sStatusTip    = QT_TR_NOOP("Exports a mesh to file");
@@ -363,7 +364,7 @@ void CmdMeshExport::activated(int iMsg)
   std::string path = QDir::currentDirPath().latin1();
   FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
   path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-	QString dir = path.c_str();
+  QString dir = path.c_str();
 
   QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
   QString format;
@@ -377,16 +378,16 @@ void CmdMeshExport::activated(int iMsg)
       format = "Binary STL";
     else if ( format.startsWith("ASCII STL") )
       format = "ASCII STL";
+
+    QFileInfo fi; fi.setFile(fn);
     openCommand("Mesh ExportSTL Create");
-    doCommand(Doc,"f = App.document().AddFeature(\"Mesh::Export\",\"MeshExport\")");
+    doCommand(Doc,"f = App.document().AddFeature(\"Mesh::Export\",\"%s\")", fi.baseName().ascii());
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     doCommand(Doc,"f.Format = \"%s\"",format.ascii());
     doCommand(Doc,"f.Source = App.document().%s",fea.front()->name.getValue());
     commitCommand();
     updateActive();
 
-    QFileInfo fi;
-		fi.setFile(fn);
     hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
   }
 }
@@ -403,7 +404,7 @@ CmdMeshVertexCurvature::CmdMeshVertexCurvature()
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Curvature per vertex");
+  sMenuText     = QT_TR_NOOP("Curvature info");
   sToolTipText  = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
   sWhatsThis    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
   sStatusTip    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
@@ -412,26 +413,29 @@ CmdMeshVertexCurvature::CmdMeshVertexCurvature()
 
 void CmdMeshVertexCurvature::activated(int iMsg)
 {
-  unsigned int n = getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId());
-  if ( n!=1 ) return;
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    std::string fName = (*it)->name.getValue();
+    fName += "_Curvature";
+    fName = getUniqueFeatureName(fName.c_str());
 
-  std::string fName = getUniqueFeatureName("Vertex_Curvature");
-  std::vector<Gui::SelectionSingleton::SelObj> cSel = getSelection().getSelection();
+    openCommand("Mesh VertexCurvature");
+    doCommand(Doc,"App.document().AddFeature(\"Mesh::Curvature\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Absolute curvature");
+    commitCommand();
+    updateActive();
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+  }
 
-  openCommand("Mesh VertexCurvature");
-  doCommand(Doc,"App.document().AddFeature(\"Mesh::Curvature\",\"%s\")",fName.c_str());
-  doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
-  doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Absolute curvature");
-  commitCommand();
-  updateActive();
-  doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
   getSelection().clearSelection();
 }
 
 bool CmdMeshVertexCurvature::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdMeshPolyPick);

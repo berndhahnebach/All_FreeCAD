@@ -258,44 +258,15 @@ bool Document::open (void)
   if ( reader.isValid() )
   {
     Document::Restore(reader);
-
-    /*
-    for ( Base::Reader::ConstIterator it = file.begin(); it != file.end(); ++it )
-    {
-      ConstEntryPointer entry = file.getNextEntry();
-      if ( entry->isValid() && entry->getName() == it->FileName )
-      {
-        AbstractFeature* feat = getFeature( it->FeatName.c_str() );
-        if ( feat )
-        {
-          try {
-            feat->RestoreDocFile( file );
-            feat->_eStatus = AbstractFeature::Valid;
-            feat->touchTime.setToActual();
-          } catch ( const Base::Exception& e) {
-            feat->setError( e.what() );
-            Base::Console().Log( e.what() );
-          }
-        }
-      }
-    }
-*/
     reader.readFiles(zipstream);
-
 
     // notify all as new
     DocChanges DocChange;
-    //FIXME: Since the status of a feature is not saved yet, we must set features without an own data file to Valid
-    for(std::map<std::string,FeatEntry>::iterator It = FeatMap.begin();It != FeatMap.end();++It)
-    {
-      // not all feature are necessarily set to New here
-      if ( It->second.F->status.getValue() == AbstractFeature::New )
-      {
-        It->second.F->status.setValue(AbstractFeature::Valid);
-        It->second.F->touchTime.setToActual();
-      }
+    for(std::map<std::string,FeatEntry>::iterator It = FeatMap.begin();It != FeatMap.end();++It) {
       DocChange.NewFeatures.insert(It->second.F);
+      It->second.F->touchTime.setToActual();
     }
+
     Notify(DocChange);
 
     return true;

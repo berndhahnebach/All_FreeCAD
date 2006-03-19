@@ -47,7 +47,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
   pnt->setCommand( "PointsTools" );
-  *pnt << "Points_Test";
+  *pnt << "Points_Import";
   return root;
 }
 
@@ -57,7 +57,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
   Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
   pnt->setCommand( "PointsTools" );
-  *pnt << "Points_Test";
+  *pnt << "Points_Import";
   return root;
 }
 

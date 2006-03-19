@@ -32,7 +32,7 @@
             <property name="title">
                 <string>General</string>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -42,7 +42,7 @@
                 <property name="spacing">
                     <number>6</number>
                 </property>
-                <widget class="QLayoutWidget">
+                <widget class="QLayoutWidget" row="2" column="0">
                     <property name="name">
                         <cstring>layout8</cstring>
                     </property>
@@ -78,7 +78,35 @@
                         </widget>
                     </hbox>
                 </widget>
-            </vbox>
+                <widget class="Line" row="1" column="0">
+                    <property name="name">
+                        <cstring>line1</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>prefCheckNewDoc</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Create new document at startup</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>CreateNewDoc</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>Document</cstring>
+                    </property>
+                </widget>
+            </grid>
         </widget>
     </grid>
 </widget>
@@ -90,6 +118,7 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
 </includehints>
 </UI>

@@ -52,11 +52,13 @@ DlgSettingsDocumentImp::~DlgSettingsDocumentImp()
 
 void DlgSettingsDocumentImp::saveSettings()
 {
+  prefCheckNewDoc->onSave();
   SpinBoxCompression->onSave();
 }
 
 void DlgSettingsDocumentImp::loadSettings()
 {
+  prefCheckNewDoc->onRestore();
   SpinBoxCompression->onRestore();
 }
 

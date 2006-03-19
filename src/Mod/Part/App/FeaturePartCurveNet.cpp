@@ -59,6 +59,8 @@ CurveNet::CurveNet()
   _pointMaterial.shininess = 0.3f;
   _pointSize = 0.05f;
   showMode.setValue("Flat");
+
+  ADD_PROPERTY(FileName,(""));
 }
 
 

@@ -30,6 +30,9 @@
 #include "Workbench.h"
 #include <Gui/MenuManager.h>
 #include <Gui/ToolBarManager.h>
+#include <Gui/Selection.h>
+
+#include "../App/MeshFeature.h"
 
 using namespace MeshGui;
 
@@ -45,8 +48,11 @@ Workbench::~Workbench()
 
 void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) const
 {
-	StdWorkbench::setupContextMenu( recipient, item );
-	*item << "Separator" << "Mesh_VertexCurvature";
+  if ( Gui::Selection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0 )
+  {
+    StdWorkbench::setupContextMenu( recipient, item );
+    *item << "Separator" << "Mesh_Import" << "Mesh_Export" << "Mesh_VertexCurvature";
+  }
 }
 
 Gui::MenuItem* Workbench::setupMenuBar() const
@@ -79,7 +85,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
 
   mesh = new Gui::ToolBarItem( root );
   mesh->setCommand( "Mesh Tools" );
-  *mesh << "Std_New" << "Mesh_Import" << "Mesh_Export" << "Mesh_PolyPick" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool"
+  *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_PolyPick" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool"
         << "Mesh_ExMakeUnion";
 
   mesh = new Gui::ToolBarItem( root );

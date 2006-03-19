@@ -113,10 +113,10 @@ void AbstractFeature::onChanged(Property* prop)
     return;
   else if ( prop == &visibility )
     return;
+  else if ( prop == &name )
+    return;
   touchPropertyTime.setToActual();
-};
-
-
+}
 
 void AbstractFeature::Touch(void)
 {

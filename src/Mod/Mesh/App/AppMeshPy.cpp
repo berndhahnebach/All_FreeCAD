@@ -70,8 +70,8 @@ open(PyObject *self, PyObject *args)
     if(file.hasExtension("stl") || file.hasExtension("ast") || file.hasExtension("bms"))
     {
       // create new document and add Import feature
-      App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      Mesh::Import *pcFeature = (Mesh::Import*)pcDoc->addFeature("Mesh::Import","MeshOpen");
+      App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
+      Mesh::Import *pcFeature = (Mesh::Import*)pcDoc->addFeature("Mesh::Import",file.fileNamePure().c_str());
       pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
     }
@@ -115,7 +115,7 @@ insert(PyObject *self, PyObject *args)
         Py_Error(PyExc_Exception,szBuf);
       }
 
-      Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addFeature("Mesh::Import", "MeshImport");
+      Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addFeature("Mesh::Import", file.fileNamePure().c_str());
       pcFeature->FileName.setValue( Name );
       pcDoc->Recompute();
     }

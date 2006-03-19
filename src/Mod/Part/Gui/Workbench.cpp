@@ -50,7 +50,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
   Gui::MenuItem* part = new Gui::MenuItem;
   root->insertItem( item, part );
   part->setCommand( "&Part" );
-  *part << "Part_ImportStep" << "Part_ImportIges" << "Part_ImportBrep" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
+  *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
         << "Separator" << "Part_Test1" << "Part_Test2";
   return root;
 }
@@ -60,7 +60,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
   part->setCommand( "PartTools" );
-  *part << "Part_ImportStep" << "Part_ImportIges" << "Part_ImportBrep" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
+  *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
         << "Separator" << "Part_Test1" << "Part_Test2";
   return root;
 }
@@ -72,7 +72,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
 
   Gui::ToolBarItem* imp = new Gui::ToolBarItem( root );
   imp->setCommand( "Import" );
-  *imp << "Part_NewDoc" << "Part_ImportStep" << "Part_ImportIges" << "Part_ImportBrep" << "Part_ImportCurveNet";
+  *imp << "Part_NewDoc" << "Part_Import" << "Part_ImportCurveNet";
 
   Gui::ToolBarItem* bol = new Gui::ToolBarItem( root );
   bol->setCommand( "Boolean" );

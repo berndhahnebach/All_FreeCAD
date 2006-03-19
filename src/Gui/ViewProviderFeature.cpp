@@ -92,6 +92,8 @@ void ViewProviderFeature::attach(App::AbstractFeature *pcFeat)
 
   // set viewing mode
   setMode(pcFeature->getShowMode());
+  if ( !pcFeature->visibility.getValue() )
+    ViewProvider::hide();
 
 
   calcMaterial = pcFeature->getTouchViewTime();

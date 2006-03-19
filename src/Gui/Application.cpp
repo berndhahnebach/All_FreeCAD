@@ -67,6 +67,7 @@
 #include "CommandBarManager.h"
 #include "WaitCursor.h"
 #include "MenuManager.h"
+#include "Window.h"
 
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
@@ -860,6 +861,14 @@ void Application::runApplication(void)
   // attach the console observer
   MessageBoxObserver* msgbox = new MessageBoxObserver(mw);
   Base::Console().AttachObserver( msgbox );
+
+  // Create new document?
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
+  if ( hGrp->GetBool("CreateNewDoc", false) )
+  {
+    App::GetApplication().newDocument();
+  }
+
   _pcQApp->exec();
   Base::Console().DetachObserver( msgbox );
   Console().Log("Init: event loop left\n");
