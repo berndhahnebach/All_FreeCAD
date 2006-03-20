@@ -342,14 +342,38 @@ void PropertyMatrix::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (Vector expected)...");
 }
 
-void PropertyMatrix::Save (short indent,std::ostream &str)
+void PropertyMatrix::Save (Base::Writer &writer)
 {
-  //str << ind(indent) << "<PropertyLink valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
+  writer << writer.ind() << "<PropertyMatrix"; 
+  writer << " a11=\"" <<  _cMat[0][0] << "\" a12=\"" <<  _cMat[0][1] << "\" a13=\"" <<  _cMat[0][2] << "\" a14=\"" <<  _cMat[0][3] << "\"";
+  writer << " a21=\"" <<  _cMat[1][0] << "\" a22=\"" <<  _cMat[1][1] << "\" a23=\"" <<  _cMat[1][2] << "\" a24=\"" <<  _cMat[1][3] << "\"";
+  writer << " a31=\"" <<  _cMat[2][0] << "\" a32=\"" <<  _cMat[2][1] << "\" a33=\"" <<  _cMat[2][2] << "\" a34=\"" <<  _cMat[2][3] << "\"";
+  writer << " a41=\"" <<  _cMat[3][0] << "\" a42=\"" <<  _cMat[3][1] << "\" a43=\"" <<  _cMat[3][2] << "\" a44=\"" <<  _cMat[3][3] << "\"";
+  writer <<"/>" << endl;
 }
 
 void PropertyMatrix::Restore(Base::XMLReader &reader)
 {
+  // read my Element
+  reader.readElement("PropertyMatrix");
+  // get the value of my Attribute
+  _cMat[0][0] = (float)reader.getAttributeAsFloat("a11");
+  _cMat[0][1] = (float)reader.getAttributeAsFloat("a12");
+  _cMat[0][2] = (float)reader.getAttributeAsFloat("a13");
+  _cMat[0][3] = (float)reader.getAttributeAsFloat("a14");
 
+  _cMat[1][0] = (float)reader.getAttributeAsFloat("a21");
+  _cMat[1][1] = (float)reader.getAttributeAsFloat("a22");
+  _cMat[1][2] = (float)reader.getAttributeAsFloat("a23");
+  _cMat[1][3] = (float)reader.getAttributeAsFloat("a24");
 
+  _cMat[2][0] = (float)reader.getAttributeAsFloat("a31");
+  _cMat[2][1] = (float)reader.getAttributeAsFloat("a32");
+  _cMat[2][2] = (float)reader.getAttributeAsFloat("a33");
+  _cMat[2][3] = (float)reader.getAttributeAsFloat("a34");
+
+  _cMat[3][0] = (float)reader.getAttributeAsFloat("a41");
+  _cMat[3][1] = (float)reader.getAttributeAsFloat("a42");
+  _cMat[3][2] = (float)reader.getAttributeAsFloat("a43");
+  _cMat[3][3] = (float)reader.getAttributeAsFloat("a44");
 }
-
