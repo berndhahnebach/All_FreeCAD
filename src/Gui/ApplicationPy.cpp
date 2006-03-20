@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qfileinfo.h>
 #endif
 
 
@@ -154,9 +155,18 @@ PYFUNCIMP_S(Application,sopen)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
   PY_TRY {
+    QFileInfo fi;
+    fi.setFile(Name);
+    QString ext = fi.extension().lower();
     MDIView* view = getMainWindow()->getWindowWithCaption( Name );
     if ( view ) {
       view->setFocus();
+    }
+    else if ( ext == "iv" ) {
+      if ( !Application::Instance->activeDocument() )
+        App::GetApplication().newDocument();
+      QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
+      Base::Interpreter().runString( cmd.ascii() );
     }
     else {
       PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
@@ -170,9 +180,26 @@ PYFUNCIMP_S(Application,sopen)
 
 PYFUNCIMP_S(Application,sinsert)
 {
-  // not supported to insert an Python file (by dropping on an Python view)
-  // hence do nothing
-  Py_Return;
+  const char* Name;
+  const char* DocName;
+  if (! PyArg_ParseTuple(args, "ss",&Name,&DocName))	 		 
+    return NULL;                         
+
+  PY_TRY {
+    QFileInfo fi;
+    fi.setFile(Name);
+    QString ext = fi.extension().lower();
+    if ( ext == "iv" ) {
+      QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
+      Base::Interpreter().runString( cmd.ascii() );
+    }
+    else {
+    // not supported to insert a Python file (by dropping on a Python view)
+    // hence do nothing
+    }
+  } PY_CATCH;
+
+	Py_Return;    
 } 
 
 PYFUNCIMP_S(Application,sSendActiveView)
