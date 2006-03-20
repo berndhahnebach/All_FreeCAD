@@ -265,6 +265,8 @@ bool Document::open (void)
     for(std::map<std::string,FeatEntry>::iterator It = FeatMap.begin();It != FeatMap.end();++It) {
       DocChange.NewFeatures.insert(It->second.F);
       It->second.F->touchTime.setToActual();
+      if ( It->second.F->status.getValue() == AbstractFeature::New )
+        It->second.F->status.setValue( AbstractFeature::Valid );
     }
 
     Notify(DocChange);
