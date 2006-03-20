@@ -258,6 +258,7 @@ bool Document::open (void)
   if ( reader.isValid() )
   {
     Document::Restore(reader);
+
     reader.readFiles(zipstream);
 
     // notify all as new
@@ -608,7 +609,7 @@ const char *Document::getFeatureName(AbstractFeature *pFeat)
 
 string Document::getUniqueFeatureName(const char *Name)
 {
-  std::map<std::string,FeatEntry>::iterator pos;
+  std::map<std::string,FeatEntry>::const_iterator pos;
 
   // name in use?
   pos = FeatMap.find(Name);
@@ -623,12 +624,14 @@ string Document::getUniqueFeatureName(const char *Name)
     for(pos = FeatMap.begin();pos != FeatMap.end();++pos)
     {
       const string &rclObjName = pos->first;
-      int nPos = rclObjName.find_last_not_of("0123456789");
-      if (rclObjName.substr(0, nPos + 1) == Name)  // Prefix gleich
+      if (rclObjName.substr(0, strlen(Name)) == Name)  // Prefix gleich
       {
-        string clSuffix(rclObjName.substr(nPos + 1));
-        if (clSuffix.size() > 0)
-          nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+        string clSuffix(rclObjName.substr(strlen(Name)));
+        if (clSuffix.size() > 0){
+          int nPos = clSuffix.find_first_not_of("0123456789");
+          if(nPos==-1)
+            nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+        }
       }
     }
     char szName[200];

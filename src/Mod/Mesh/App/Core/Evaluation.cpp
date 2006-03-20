@@ -462,7 +462,7 @@ bool MeshEvalNeighbourhood::Evaluate ()
 
 bool MeshEvalNeighbourhood::Fixup()
 {
-  std::vector<MeshFacet>& raFacets = _rclMesh.GetFacets();
+  std::vector<MeshFacet>& raFacets = _rclMesh._aclFacetArray;
 
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > aclHits;
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pEdge;
@@ -548,8 +548,8 @@ bool MeshEigensystem::Evaluate()
   Vector3D clVect, clProj;
   float fH;
 
-  std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
-  for (std::vector<MeshPoint>::iterator it = aclPoints.begin(); it!=aclPoints.end(); ++it)
+  const std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
+  for (std::vector<MeshPoint>::const_iterator it = aclPoints.begin(); it!=aclPoints.end(); ++it)
   {
     // u-Richtung
     clVect = *it - _cC;
@@ -713,8 +713,8 @@ void MeshEigensystem::CalculateLocalSystem()
   float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
   sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
 
-  std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
-  std::vector<MeshPoint>::iterator it;
+  const std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
+  std::vector<MeshPoint>::const_iterator it;
   for ( it = aclPoints.begin(); it!=aclPoints.end(); ++it)
   {
     sxx += it->x * it->x; sxy += it->x * it->y;

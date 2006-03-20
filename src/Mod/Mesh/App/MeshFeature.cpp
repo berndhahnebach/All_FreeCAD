@@ -77,9 +77,11 @@ Base::PyObjectBase *Feature::GetPyObject(void)
   return pcMeshFeaturePy; 
 }
 
-/*const*/ MeshCore::MeshKernel& Feature::getMesh() const
+
+
+const MeshCore::MeshKernel& Feature::getMesh() const
 {
-#if 1 // to keep const in signature
+#if 0 // to keep const in signature
   Mesh::PropertyMeshKernel* pMeshInfo=0;
 
   std::map<std::string,App::Property*> Map;

@@ -255,7 +255,7 @@ std::vector<App::Document*> Application::getDocuments() const
 
 string Application::getUniqueDocumentName(const char *Name)
 {
-  map<string,DocEntry>::iterator pos;
+  map<string,DocEntry>::const_iterator pos;
 
   // name in use?
   pos = DocMap.find(Name);
@@ -270,12 +270,14 @@ string Application::getUniqueDocumentName(const char *Name)
     for(pos = DocMap.begin();pos != DocMap.end();++pos)
     {
       const string &rclObjName = pos->first;
-      int nPos = rclObjName.find_last_not_of("0123456789");
-      if (rclObjName.substr(0, nPos + 1) == Name)  // Prefix gleich
+      if (rclObjName.substr(0, strlen(Name)) == Name)  // Prefix gleich
       {
-        string clSuffix(rclObjName.substr(nPos + 1));
-        if (clSuffix.size() > 0)
-          nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+        string clSuffix(rclObjName.substr(strlen(Name)));
+        if (clSuffix.size() > 0){
+          int nPos = clSuffix.find_first_not_of("0123456789");
+          if(nPos==-1)
+            nSuff = max<int>(nSuff, atol(clSuffix.c_str()));
+        }
       }
     }
     char szName[200];

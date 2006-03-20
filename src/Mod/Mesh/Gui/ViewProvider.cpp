@@ -302,7 +302,7 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
   
   // get and save the feature
   Feature* meshFea = dynamic_cast<Feature*>(pcFeat);
-  MeshEvalSolid cEval(meshFea->Mesh.getValue());
+  MeshEvalSolid cEval(const_cast<MeshCore::MeshKernel&>(meshFea->Mesh.getValue()));
 
   // if no solid then enable two-side rendering
   if ( cEval.Validate() != MeshEvalSolid::Valid )

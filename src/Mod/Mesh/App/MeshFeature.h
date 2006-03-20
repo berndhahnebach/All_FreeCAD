@@ -73,7 +73,7 @@ public:
    *
    * The default implementation returns a reference to its own mesh kernel.
    */
-  virtual /*const*/ MeshCore::MeshKernel& getMesh() const;
+  virtual const MeshCore::MeshKernel& getMesh() const;
   //@}
 
   /** @name methods overide Feature */

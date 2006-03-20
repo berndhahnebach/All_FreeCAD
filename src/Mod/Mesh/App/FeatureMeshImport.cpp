@@ -58,19 +58,26 @@ int Import::execute(void)
   }
 
   std::ifstream str( FileName.getValue(), std::ios::in | std::ios::binary );
-
+  
+  MeshCore::MeshKernel *pcKernel;
   if ( fi.hasExtension("bms") )
   {
     try {
-      Mesh.getValue().Read( str );
+      pcKernel = new MeshCore::MeshKernel();
+      pcKernel->Read( str );
+      Mesh.setValue(pcKernel);
     } catch( const Base::MemoryException&) {
       setError("Invalid mesh file");
+      delete pcKernel;
       return 1;
     }
+    Mesh.setValue(pcKernel);
   }
   else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
   {
-    MeshSTL aReader( Mesh.getValue() );
+    pcKernel = new MeshCore::MeshKernel();
+
+    LoadMeshSTL aReader( *pcKernel );
 
     // catches the abort exception to set a more detailed description
     try{
@@ -84,8 +91,10 @@ int Import::execute(void)
       char szBuf[200];
       sprintf(szBuf, "Loading of STL file '%s' aborted.", FileName.getValue());
       e.SetMessage( szBuf );
+      delete pcKernel;
       throw e;
     }
+    Mesh.setValue(pcKernel);
   }
   else
   {

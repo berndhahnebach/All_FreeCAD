@@ -141,7 +141,7 @@ void ViewProviderMeshTransformDemolding::attach(App::AbstractFeature *pcFeat)
 
 void ViewProviderMeshTransformDemolding::calcNormalVector(void)
 {
-  MeshKernel& cMesh = dynamic_cast<Feature*>(pcFeature)->getMesh();
+  const MeshKernel& cMesh = dynamic_cast<Feature*>(pcFeature)->getMesh();
 
   MeshFacetIterator cFIt(cMesh);
   for( cFIt.Init(); cFIt.More(); cFIt.Next())

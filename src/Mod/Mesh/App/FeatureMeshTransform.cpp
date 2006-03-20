@@ -60,8 +60,9 @@ int Transform::execute(void)
   Matrix4D Matrix =Position.getValue();
 
  
-  Mesh.getValue() = pcFirst->getMesh();
-  Mesh.getValue().Transform(Matrix);
+  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->getMesh()); // Result Meshkernel
+  pcKernel->Transform(Matrix);
+  Mesh.setValue(pcKernel);
 
   return 0;
 }

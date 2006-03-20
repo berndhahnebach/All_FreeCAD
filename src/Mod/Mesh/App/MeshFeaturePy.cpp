@@ -118,7 +118,7 @@ PyMethodDef MeshFeaturePy::Methods[] = {
 	PYMETHODEDEF(setModifiedView)
 	PYMETHODEDEF(isValid)
 // MeshFeaturePy
-  PYMETHODEDEF(getMesh)
+//  PYMETHODEDEF(getMesh) // not allowed anymore (const!!)
   PYMETHODEDEF(getMeshCopy)
   PYMETHODEDEF(setMesh)
 
@@ -194,7 +194,7 @@ int MeshFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ function
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-
+#if 0
 PYFUNCIMP_D(MeshFeaturePy,getMesh)
 {
   if(! _pcMeshPy)
@@ -231,10 +231,13 @@ PYFUNCIMP_D(MeshFeaturePy,getMesh)
   
   return _pcMeshPy;
 }
+#endif
 
 PYFUNCIMP_D(MeshFeaturePy,getMeshCopy)
 {
-   return new MeshPy(&(_pcFeature->getMesh()),false);
+   MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(_pcFeature->getMesh()); // Result Meshkernel
+
+   return new MeshPy(pcKernel,false);
 }
 
 PYFUNCIMP_D(MeshFeaturePy,setMesh)
@@ -247,10 +250,12 @@ PYFUNCIMP_D(MeshFeaturePy,setMesh)
   pcObject = (MeshPy*)pcObj;
 
   // copy in the Feature Mesh
-  _pcFeature->Mesh.setValue(*(pcObject->getMesh()));
+  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(_pcFeature->getMesh());
+  _pcFeature->Mesh.setValue(pcKernel);
   // and set the python object of this feature
-  if(_pcMeshPy)
-    _pcMeshPy->setMesh(&(_pcFeature->getMesh()));
+  if(_pcMeshPy){
+    _pcMeshPy->setMesh(pcKernel);
+  }
 
   Py_Return;
 }

@@ -38,11 +38,11 @@ class MeshKernel;
 /**
  * The MeshSTL class is able to read or write mesh object in STL format.
  */
-class AppMeshExport MeshSTL
+class AppMeshExport LoadMeshSTL
 {
 public:
-  MeshSTL (MeshKernel &rclM);
-  virtual ~MeshSTL (void) { }
+  LoadMeshSTL (MeshKernel &rclM): _rclMesh(rclM){};
+  virtual ~LoadMeshSTL (void) { }
 
   /** Loads an STL file either in binary or ASCII. 
    * Therefore the file header gets checked to decide if
@@ -57,6 +57,16 @@ public:
   //bool LoadBinary (FileStream &rstrIn);
   bool LoadBinary (std::istream &rstrIn);
 
+protected:
+  MeshKernel &_rclMesh;   /**< reference to mesh data structure */
+};
+
+class AppMeshExport SaveMeshSTL
+{
+public:
+  SaveMeshSTL (const MeshKernel &rclM): _rclMesh(rclM){};
+  virtual ~SaveMeshSTL (void) { }
+
   /** Saves the mesh object into an ASCII file. */
   //bool SaveAscii (FileStream &rstrOut) const;
   bool SaveAscii (std::ostream &rstrOut) const;
@@ -65,8 +75,12 @@ public:
   bool SaveBinary (std::ostream &rstrOut) const;
 
 protected:
-  MeshKernel &_rclMesh;   /**< reference to mesh data structure */
+  const MeshKernel &_rclMesh;   /**< reference to mesh data structure */
 };
+
+
+
+
 #if 0
 /**
  * The MeshInventor class is able to read or write mesh object in 

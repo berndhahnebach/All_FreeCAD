@@ -51,7 +51,7 @@ public:
   App::PropertyLink Source;
   PropertyCurvatureList CurvInfo;
   /// Get the mesh kernel of the feature of 'Source'.
-  /*const*/ MeshCore::MeshKernel& getMesh() const;
+  const MeshCore::MeshKernel& getMesh() const;
 
   /** @name methods overide Feature */
   //@{

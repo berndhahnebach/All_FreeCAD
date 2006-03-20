@@ -68,12 +68,8 @@ char *ltrim (char *psz)
 
 // --------------------------------------------------------------
 
-MeshSTL::MeshSTL (MeshKernel &rclM)
-: _rclMesh(rclM)
-{
-}
 
-bool MeshSTL::Load (std::istream &rstrIn)
+bool LoadMeshSTL::Load (std::istream &rstrIn)
 {
   char szBuf[200];
 
@@ -126,7 +122,7 @@ bool MeshSTL::Load (std::istream &rstrIn)
   return true;
 }
 
-bool MeshSTL::LoadAscii (std::istream &rstrIn)
+bool LoadMeshSTL::LoadAscii (std::istream &rstrIn)
 {
   char szLine[200], szKey1[200], szKey2[200];
   unsigned long ulVertexCt, ulFacetCt=0;
@@ -194,7 +190,7 @@ bool MeshSTL::LoadAscii (std::istream &rstrIn)
   return true;
 }
 
-bool MeshSTL::LoadBinary (std::istream &rstrIn)
+bool LoadMeshSTL::LoadBinary (std::istream &rstrIn)
 {
   char szInfo[80];
   Vector3D clVects[4];
@@ -249,7 +245,7 @@ bool MeshSTL::LoadBinary (std::istream &rstrIn)
   return true;
 }
 
-bool MeshSTL::SaveAscii (std::ostream &rstrOut) const
+bool SaveMeshSTL::SaveAscii (std::ostream &rstrOut) const
 {
   MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
   const MeshGeomFacet *pclFacet;
@@ -303,7 +299,7 @@ bool MeshSTL::SaveAscii (std::ostream &rstrOut) const
   return true;
 }
 
-bool MeshSTL::SaveBinary (std::ostream &rstrOut) const
+bool SaveMeshSTL::SaveBinary (std::ostream &rstrOut) const
 {
   MeshFacetIterator clIter(_rclMesh), clEnd(_rclMesh);  
   const MeshGeomFacet *pclFacet;

@@ -72,3 +72,5 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + start implementing the link between FreeCAD property and property editor
 + New methods in Builder3D (patch 1450695,1451028)
 + Set operations (patch 1451026, 1451138, 1451141)
++ start const Mesh and MeshProperty
+

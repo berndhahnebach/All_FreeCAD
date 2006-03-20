@@ -71,7 +71,7 @@ MeshCore::MeshKernel* MeshAlgos::Load(const char *FileName)
 #endif
     throw Base::Exception("MeshAlgos::Load() not able to open File!\n");
 
-  MeshSTL aReader( *Mesh );
+  LoadMeshSTL aReader( *Mesh );
 
   // read STL file
   //FileStream str( FileName, std::ios::in);
@@ -92,7 +92,7 @@ void MeshAlgos::read(MeshCore::MeshKernel* Mesh,const char *FileName)
 #endif
     throw Base::Exception("MeshAlgos::read() not able to open File!\n");
 
-  MeshSTL aReader( *Mesh );
+  LoadMeshSTL aReader( *Mesh );
 
   // read STL file
   //FileStream str( FileName, std::ios::in);
@@ -109,13 +109,13 @@ void MeshAlgos::writeBin(MeshCore::MeshKernel* Mesh,const char *FileName)
   if(File.exists() && !File.isWritable())
         throw Base::Exception("File not writable");
 
-  MeshSTL aReader( *Mesh );
+  SaveMeshSTL aWriter( *Mesh );
 
   // read STL file
   //FileStream str( File.filePath().c_str(), std::ios::out);
   std::ofstream str( File.filePath().c_str(), std::ios::out | std::ios::binary );
 
-  if ( !aReader.SaveBinary( str ) )
+  if ( !aWriter.SaveBinary( str ) )
     throw Base::Exception("STL write failed to write");
 }
 
@@ -127,13 +127,13 @@ void MeshAlgos::writeAscii(MeshCore::MeshKernel* Mesh,const char *FileName)
   if(File.exists() && !File.isWritable())
         throw Base::Exception("File not writable");
 
-  MeshSTL aReader( *Mesh );
+  SaveMeshSTL writer( *Mesh );
 
   // read STL file
   //FileStream str( File.filePath().c_str(), std::ios::out);
   std::ofstream str( File.filePath().c_str(), std::ios::out | std::ios::binary );
 
-  if ( !aReader.SaveAscii( str ) )
+  if ( !writer.SaveAscii( str ) )
     throw Base::Exception("STL write failed to write");
 }
 

@@ -119,9 +119,13 @@ public:
 
   /** @name Getter/setter */
   //@{
+  /// COPIES the mesh into the Property
   void setValue( const MeshCore::MeshKernel& m);
+  /// REPLACE the mesh in the Property
+  void setValue( MeshCore::MeshKernel* m);
+  /// get the Kernel (only const possible!)
 	const MeshCore::MeshKernel &getValue(void) const;
-	MeshCore::MeshKernel &getValue(void);
+	//MeshCore::MeshKernel &getValue(void);
   //@}
 
   /** @name Python interface */
@@ -141,7 +145,7 @@ public:
   //@}
 
 private:
-  MeshCore::MeshKernel _cMesh;
+  MeshCore::MeshKernel *_pcMesh;
 };
 
 } // namespace Mesh

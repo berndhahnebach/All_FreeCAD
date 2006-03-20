@@ -79,7 +79,7 @@ public:
   /** @name I/O methods */
   //@{
   /// Binary streaming of data
-  virtual void Write (std::ostream &rclOut);
+  virtual void Write (std::ostream &rclOut) const;
   virtual void Read (std::istream &rclIn);
   //@}
 
@@ -135,10 +135,12 @@ public:
   { return _bValid; }
 
   /** Returns the array of all data points. */
-  std::vector<MeshPoint>& GetPoints (void) { return _aclPointArray; }
+  //std::vector<MeshPoint>& GetPoints (void) { return _aclPointArray; }
+  const MeshPointArray& GetPoints (void) const { return _aclPointArray; }
 
   /** Returns the array of all facets */
-  std::vector<MeshFacet>& GetFacets (void) { return _aclFacetArray; }
+  //std::vector<MeshFacet>& GetFacets (void) { return _aclFacetArray; }
+  const MeshFacetArray& GetFacets (void) const { return _aclFacetArray; }
 
   /** Returns the array of all edges.
    *  Notice: The Edgelist will be temporary generated. Changes on the mesh structure does not affect the Edgelist
@@ -335,6 +337,7 @@ protected:
   friend class MeshTopoAlgorithm;
   friend class MeshInfo;
   friend class MeshEvalTopology;
+  friend class MeshEvalNeighbourhood;
   friend class MeshDegenerations;
   friend class MeshBuilder;
   friend class MeshDocXML;

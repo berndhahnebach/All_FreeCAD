@@ -440,7 +440,7 @@ std::vector<unsigned long> MeshKernel::HasFacets (const MeshPointIterator &rclIt
   return aulBelongs;
 }
 
-void MeshKernel::Write (std::ostream &rclOut)
+void MeshKernel::Write (std::ostream &rclOut) const 
 {
   unsigned long uCtPts = CountPoints();
   unsigned long uCtFts = CountFacets();

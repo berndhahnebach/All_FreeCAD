@@ -63,7 +63,7 @@ int Curvature::execute(void)
   }
  
   // get all points
-  MeshKernel& rMesh = pcFeat->getMesh();
+  const MeshKernel& rMesh = pcFeat->Mesh.getValue();
   std::vector< Wm3::Vector3<float> > aPnts;
   MeshPointIterator cPIt( rMesh );
   for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
@@ -106,7 +106,7 @@ int Curvature::execute(void)
   return 0;
 }
 
-/*const*/ MeshCore::MeshKernel& Curvature::getMesh() const
+const MeshCore::MeshKernel& Curvature::getMesh() const
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   return pcFeat->getMesh();

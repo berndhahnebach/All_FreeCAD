@@ -225,6 +225,7 @@ void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
 // ----------------------------------------------------------------------------
 
 PropertyMeshKernel::PropertyMeshKernel()
+:_pcMesh(new MeshCore::MeshKernel())
 {
 
 }
@@ -235,39 +236,50 @@ PropertyMeshKernel::~PropertyMeshKernel()
 
 void PropertyMeshKernel::setValue(const MeshCore::MeshKernel& m)
 {
-  _cMesh = m;
+  aboutToSetValue();
+  _pcMesh->operator=( m );
+  hasSetValue();
+}
+
+void PropertyMeshKernel::setValue(MeshCore::MeshKernel* m)
+{
+  aboutToSetValue();
+  delete (_pcMesh);
+  _pcMesh = m;
   hasSetValue();
 }
 
 const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const 
 {
-	return _cMesh;
+	return *_pcMesh;
 }
 
+/*
 MeshCore::MeshKernel& PropertyMeshKernel::getValue(void) 
 {
 	return _cMesh;
 }
-
+*/
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
-  return new MeshPy(&_cMesh);
+  return new MeshPy(_pcMesh);
 }
 
 void PropertyMeshKernel::setPyObject(PyObject *value)
 {
   if( PyObject_TypeCheck(value, &(MeshPy::Type)) ) {
    	MeshPy  *pcObject = (MeshPy*)value;
-    _cMesh = *(pcObject->getMesh());
+    _pcMesh = pcObject->getMesh();
   }
 }
 
 void PropertyMeshKernel::Save (Base::Writer &writer)
 {
+
   if(writer.isForceXML())
   {
     writer << writer.ind() << "<Mesh>" << std::endl;
-    MeshCore::MeshDocXML saver(_cMesh);
+    MeshCore::MeshDocXML saver(*_pcMesh);
     saver.Save(writer);
   }else{
     writer << writer.ind() << "<Mesh file=\"" << writer.addFile("MeshKernel.bms", this) << "\"/>" << std::endl;
@@ -277,23 +289,24 @@ void PropertyMeshKernel::Save (Base::Writer &writer)
 void PropertyMeshKernel::Restore(Base::XMLReader &reader)
 {
   reader.readElement("Mesh");
-  std::string file (reader.getAttribute("file") );
+  string file (reader.getAttribute("file") );
 
-  if (file == "")
+  if(file == "")
   {
     // read XML
-    MeshCore::MeshDocXML restorer(_cMesh);
+    MeshCore::MeshDocXML restorer(*_pcMesh);
     restorer.Restore(reader);
   }else{
     // initate a file read
     reader.addFile(file.c_str(),this);
   }
+
 }
 
 void PropertyMeshKernel::SaveDocFile (Base::Writer &writer)
 {
   try {
-    _cMesh.Write( writer );
+    _pcMesh->Write( writer );
   } catch( const Base::Exception& e) {
     throw e;
   }
@@ -302,7 +315,7 @@ void PropertyMeshKernel::SaveDocFile (Base::Writer &writer)
 void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
 {
   try {
-    _cMesh.Read( reader );
+    _pcMesh->Read( reader );
   } catch( const Base::Exception& e) {
     throw e;
   }

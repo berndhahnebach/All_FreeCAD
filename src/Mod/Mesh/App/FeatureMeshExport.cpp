@@ -76,7 +76,7 @@ int Export::execute(void)
   }
   else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
   {
-    MeshSTL aWriter(pcFeat->Mesh.getValue());
+    SaveMeshSTL aWriter(pcFeat->Mesh.getValue());
 
     // write file
     bool ok = false;
