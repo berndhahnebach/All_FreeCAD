@@ -85,12 +85,6 @@ public:
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "MeshGui::ViewProviderMesh";}
 
-  virtual void Save (Base::Writer &writer);
-  virtual void Restore(Base::XMLReader &reader);
-
-  virtual void SaveDocFile (Base::Writer &writer);
-  virtual void RestoreDocFile(Base::Reader &reader);
-
   /// handles the MeshPy object
   virtual Base::PyObjectBase* GetPyObject(void);
 

@@ -77,55 +77,6 @@ Base::PyObjectBase *Feature::GetPyObject(void)
   return pcMeshFeaturePy; 
 }
 
-void Feature::Save (Base::Writer &writer)
-{
-  // save parent
-  AbstractFeature::Save(writer);
-
-//  std::string fn = name.getValue(); fn += ".bms";
-//  writer.addFile(fn.c_str(), this);
-  //reinterpret_cast<App::AbstractFeature*>(this)->Save(indent,str);
-
-//  MeshCore::MeshDocXML writer(*_cMesh.getKernel());
-
-//  writer.Save(indent,str);
-
-}
-
-void Feature::Restore(Base::XMLReader &reader)
-{
-  // load parent
-  AbstractFeature::Restore(reader);
-
-//  MeshCore::MeshDocXML geter(*_cMesh.getKernel());
-
-//  geter.Restore(reader);
-
-
-}
-
-void Feature::SaveDocFile (Base::Writer &writer)
-{
-  // PropertyMeshKernel should do this now!
-//  try {
-//    _cMesh.getKernel()->Write(writer);
-//  } catch( const Base::Exception& e) {
-//    throw e;
-//  }
-}
-
-void Feature::RestoreDocFile(Base::Reader &reader)
-{
-  // PropertyMeshKernel should do this now!
-//  try {
-//    _cMesh.getKernel()->Read(reader);
-//  } catch( const Base::MemoryException&) {
-//    throw Base::Exception("Invalid mesh file");
-//  } catch( const Base::Exception& e) {
-//    throw e;
-//  }
-}
-
 /*const*/ MeshCore::MeshKernel& Feature::getMesh() const
 {
 #if 1 // to keep const in signature
