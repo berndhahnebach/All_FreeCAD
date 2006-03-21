@@ -77,27 +77,17 @@ Base::PyObjectBase *Feature::GetPyObject(void)
   return pcMeshFeaturePy; 
 }
 
-
+void Feature::onChanged(App::Property* prop)
+{
+  // Ignore some properties
+  if ( prop == &Mesh )
+    return;
+  else
+    AbstractFeature::onChanged(prop);
+}
 
 const MeshCore::MeshKernel& Feature::getMesh() const
 {
-#if 0 // to keep const in signature
-  Mesh::PropertyMeshKernel* pMeshInfo=0;
-
-  std::map<std::string,App::Property*> Map;
-  getPropertyMap(Map);
-
-  for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it ) {
-    Base::Type t = it->second->getTypeId();
-    if ( t.isDerivedFrom( Mesh::PropertyMeshKernel::getClassTypeId() ) ) {
-      pMeshInfo = (Mesh::PropertyMeshKernel*)it->second;
-      break;
-    }
-  }
-
-  return pMeshInfo->getValue();
-#else
   return Mesh.getValue();
-#endif
 }
 

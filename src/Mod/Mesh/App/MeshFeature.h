@@ -80,6 +80,7 @@ public:
   //@{
   /// recalculate the Feature
   virtual int execute(void);
+  virtual void onChanged(App::Property* prop);
   //@}
 
   /// returns the type name of the ViewProvider

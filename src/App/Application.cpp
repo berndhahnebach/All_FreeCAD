@@ -163,7 +163,7 @@ void Application::renameDocument(const char *OldName, const char *NewName)
     DocMap.erase(pos);
     DocMap[NewName] = temp;
   } else 
-    Base::Exception("Application::renameDocument(): no document with this name to raname!");
+    Base::Exception("Application::renameDocument(): no document with this name to rename!");
 
 }
 
@@ -253,7 +253,7 @@ std::vector<App::Document*> Application::getDocuments() const
   return docs;
 }
 
-string Application::getUniqueDocumentName(const char *Name)
+string Application::getUniqueDocumentName(const char *Name) const
 {
   map<string,DocEntry>::const_iterator pos;
 
@@ -265,7 +265,7 @@ string Application::getUniqueDocumentName(const char *Name)
     return Name;
   else
   {
-    // find highes sufix
+    // find highest suffix
     int nSuff = 0;  
     for(pos = DocMap.begin();pos != DocMap.end();++pos)
     {
@@ -300,7 +300,8 @@ Document* Application::openDocument(const char * FileName)
 
     // Creating a FreeCAD Document
     newDoc.pDoc = new Document();
-    newDoc.pDoc->Name.setValue(File.fileNamePure());
+    string name = getUniqueDocumentName(File.fileNamePure().c_str());
+    newDoc.pDoc->Name.setValue(name);
     newDoc.pDoc->FileName.setValue(File.filePath());
 
     // trigger Observers (open windows and so on)
@@ -311,8 +312,23 @@ Document* Application::openDocument(const char * FileName)
 
     // read the document
     bool ok = newDoc.pDoc->open();
-    // FIXME: The document XML file can contain a name different from the file name.
-    //        But we must make sure that this name is unique.
+    // The document XML file can contain a name different from the file name.
+    // But we must make sure that this name is unique.
+    if ( name != newDoc.pDoc->Name.getValue() )
+    {
+      std::string newname = getUniqueDocumentName(newDoc.pDoc->Name.getValue());
+      newDoc.pDoc->Name.setValue(newname);
+
+      // unique name created from filename and unique name created from document XML file are different
+      if ( name != newname )
+      {
+        // Notify all observers
+        DocChanges DocChange;
+        DocChange.Why = DocChanges::Rename;
+        newDoc.pDoc->Notify(DocChange);
+      }
+    }
+
     // use the document's name, not the file name
     DocMap[newDoc.pDoc->getName()] = newDoc;
 

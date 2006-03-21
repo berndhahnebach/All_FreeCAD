@@ -61,8 +61,7 @@ public:
   virtual PyObject *_repr(void);  				// the representation
   PyObject *_getattr(char *attr);					// __getattr__ function
   int _setattr(char *attr, PyObject *value);		// __setattr__ function
-//  PYFUNCDEF_D(MeshFeaturePy,getMesh)// not allowed anymore (const!!)
-  PYFUNCDEF_D(MeshFeaturePy,getMeshCopy)
+  PYFUNCDEF_D(MeshFeaturePy,getMesh)
   PYFUNCDEF_D(MeshFeaturePy,setMesh)
 
 private:

@@ -36,6 +36,7 @@ namespace MeshCore {
 /**
  * The MeshEvaluation class checks the mesh kernel for correctness with respect to a
  * certain criterion, such as manifoldness, self-intersections, etc.
+ * The passed mesh kernel is read-only and cannot be modified.
  * @see MeshEvalTopology
  * @see MeshEvalGeometry
  * The class itself is abstract, hence the method Evaluate() must be implemented 
@@ -44,67 +45,43 @@ namespace MeshCore {
 class AppMeshExport MeshEvaluation
 {
 public:
-  enum State { Invalid, Fixed, Valid };
-
-  MeshEvaluation (MeshKernel &rclB) : _rclMesh(rclB), _bIsValid(false) {}
+  MeshEvaluation (const MeshKernel &rclB) : _rclMesh(rclB) {}
   virtual ~MeshEvaluation () {}
 
-  /**
-   * Invokes Evaluate() to check for correctness. If \a fixup is true and if Evaluate() returns false then
-   * Fixup() gets also invoked. If the evaluation was successful \a Valid is returned, if the evaluation failed
-   * but the errors could be fixed -- in case \a fixup is \a true -- \a Fixed is returned, in all other cases \a
-   * Invalid is returned.
-   * @note: \a Fixed does not necessarily mean \a Valid. It is possible to have fixed some errors but the mesh
-   * is still invalid. If you want to know if Fixed() was successful you might run Validate() twice.
-   */
-  State Validate ( bool fixup=false )
-  {
-    _bIsValid = false;
-    if ( Evaluate() )
-    {
-      _bIsValid = true;
-      return Valid;
-    }
-    else if ( fixup )
-    {
-      if ( Fixup() )
-        return Fixed;
-      else
-        return Invalid;
-    }
-    else
-    {
-      return Invalid;
-    }
-  };
-
-  bool IsValid() const
-  {
-    return _bIsValid;
-  }
-
-protected:
   /**
    * Evaluates the mesh kernel with respect to certain criteria. Must be reimplemented by every 
    * subclass. This pure virtual function returns false if the mesh kernel is invalid according
    * to this criterion and true if the mesh kernel is correct. 
    */
   virtual bool Evaluate () = 0;
+
+protected:
+  const MeshKernel& _rclMesh; /**< Mesh kernel */
+};
+
+// ----------------------------------------------------
+
+/**
+ * The MeshValidation class tries to make a mesh kernel valid with respect to a
+ * certain criterion, such as manifoldness, self-intersections, etc.
+ * The passed mesh kernel can be modified to fix the errors.
+ * The class itself is abstract, hence the method Fixup() must be implemented 
+ * by subclasses.
+ */
+class AppMeshExport MeshValidation
+{
+public:
+  MeshValidation (MeshKernel &rclB) : _rclMesh(rclB) {}
+  virtual ~MeshValidation () {}
+
   /**
    * This function attempts to change the mesh kernel to be valid according to the checked 
-   * criterion: True is returned if the errors could be fixed, false otherwise. The default 
-   * implementation does nothing and returns false.
+   * criterion: True is returned if the errors could be fixed, false otherwise. 
    */
-  virtual bool Fixup()
-  {
-    return false;
-  }
+  virtual bool Fixup() = 0;
 
 protected:
   MeshKernel& _rclMesh; /**< Mesh kernel */
-
-private:
-  bool _bIsValid; /**< Holds the result of Evakuate(). */
 };
 
 // ----------------------------------------------------
@@ -116,11 +93,20 @@ private:
 class AppMeshExport MeshEvalNormals : public MeshEvaluation
 {
 public:
-  MeshEvalNormals (MeshKernel& rclM);
+  MeshEvalNormals (const MeshKernel& rclM);
   ~MeshEvalNormals();
-
-protected:
   bool Evaluate ();
+};
+
+/**
+ * The MeshFixNormals class harmonizes the facet normals of the passed mesh kernel.
+ * @author Werner Mayer
+ */
+class AppMeshExport MeshFixNormals : public MeshValidation
+{
+public:
+  MeshFixNormals (MeshKernel& rclM);
+  ~MeshFixNormals();
   bool Fixup();
 };
 
@@ -133,12 +119,9 @@ protected:
 class AppMeshExport MeshEvalSolid : public MeshEvaluation
 {
 public:
-  MeshEvalSolid (MeshKernel& rclM);
+  MeshEvalSolid (const MeshKernel& rclM);
   ~MeshEvalSolid();
-
-protected:
   bool Evaluate ();
-  bool Fixup();
 };
 
 // ----------------------------------------------------
@@ -152,8 +135,9 @@ protected:
 class AppMeshExport MeshEvalTopology : public MeshEvaluation
 {
 public:
-  MeshEvalTopology (MeshKernel &rclB) : MeshEvaluation(rclB) {}
+  MeshEvalTopology (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
   virtual ~MeshEvalTopology () {}
+  virtual bool Evaluate ();
 
   void GetEdgeManifolds (std::vector<unsigned long> &raclEdgeIndList) const;
   void GetFacetManifolds (std::vector<unsigned long> &raclFacetIndList) const;
@@ -161,7 +145,6 @@ public:
 
 protected:
   std::vector<std::list<unsigned long> >   _aclManifoldList;
-  virtual bool Evaluate ();
 };
 
 // ----------------------------------------------------
@@ -176,12 +159,25 @@ protected:
 class AppMeshExport MeshEvalSingleFacet : public MeshEvalTopology
 {
 public:
-  MeshEvalSingleFacet (MeshKernel &rclB) : MeshEvalTopology(rclB) {}
+  MeshEvalSingleFacet (const MeshKernel &rclB) : MeshEvalTopology(rclB) {}
   virtual ~MeshEvalSingleFacet () {}
+  bool Evaluate ();
+};
+
+/**
+ * The MeshFixSingleFacet class tries to fix a special case of non-manifolds.
+ * @see MeshEvalSingleFacet
+ */
+class AppMeshExport MeshFixSingleFacet : public MeshValidation
+{
+public:
+  MeshFixSingleFacet (MeshKernel &rclB, const std::vector<std::list<unsigned long> >& mf)
+    : MeshValidation(rclB), _raclManifoldList(mf) {}
+  virtual ~MeshFixSingleFacet () {}
+  bool Fixup();
 
 protected:
-  bool Evaluate ();
-  bool Fixup();
+  const std::vector<std::list<unsigned long> >& _raclManifoldList;
 };
 
 // ----------------------------------------------------
@@ -193,10 +189,8 @@ protected:
 class AppMeshExport MeshEvalSelfIntersection : public MeshEvaluation
 {
 public:
-  MeshEvalSelfIntersection (MeshKernel &rclB) : MeshEvaluation(rclB) {}
+  MeshEvalSelfIntersection (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
   virtual ~MeshEvalSelfIntersection () {}
-
-protected:
   bool Evaluate ();
 };
 
@@ -210,11 +204,20 @@ protected:
 class AppMeshExport MeshEvalNeighbourhood : public MeshEvaluation
 {
 public:
-  MeshEvalNeighbourhood (MeshKernel &rclB) : MeshEvaluation(rclB) {}
+  MeshEvalNeighbourhood (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
   ~MeshEvalNeighbourhood () {}
-
-protected:
   bool Evaluate ();
+};
+
+/**
+ * The MeshFixNeighbourhood class fixes the neighbourhood of the facets.
+ * @author Werner Mayer
+ */
+class AppMeshExport MeshFixNeighbourhood : public MeshValidation
+{
+public:
+  MeshFixNeighbourhood (MeshKernel &rclB) : MeshValidation(rclB) {}
+  ~MeshFixNeighbourhood () {}
   bool Fixup();
 };
 
@@ -231,7 +234,7 @@ protected:
 class AppMeshExport MeshEigensystem : public MeshEvaluation
 {
 public:
-  MeshEigensystem (MeshKernel &rclB);
+  MeshEigensystem (const MeshKernel &rclB);
   virtual ~MeshEigensystem () {}
 
   /** Returns the transformation matrix. */
@@ -241,15 +244,11 @@ public:
    */
   Vector3D GetBoundings() const;
 
-protected:
   bool Evaluate();
-  /** 
-   * Does not fix errors but apply the transformation matrix to the mesh object.
-   */
-  bool Fixup();
   /** 
    * Calculates the local coordinate system defined by \a u, \av, \a w and \a c. 
    */
+protected:
   void CalculateLocalSystem();
 
 private:

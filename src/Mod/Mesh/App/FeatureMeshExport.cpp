@@ -72,11 +72,11 @@ int Export::execute(void)
 
   if ( fi.hasExtension("bms") )
   {
-    pcFeat->Mesh.getValue().Write( str );
+    pcFeat->getMesh().Write( str );
   }
   else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
   {
-    SaveMeshSTL aWriter(pcFeat->Mesh.getValue());
+    SaveMeshSTL aWriter(pcFeat->getMesh());
 
     // write file
     bool ok = false;
@@ -100,3 +100,8 @@ int Export::execute(void)
   return 0;
 }
 
+const MeshCore::MeshKernel& Export::getMesh() const
+{
+  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
+  return pcFeat->getMesh();
+}

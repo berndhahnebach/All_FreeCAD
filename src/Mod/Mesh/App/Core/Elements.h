@@ -88,20 +88,24 @@ public:
   //@}
 
 public:
-  /** @name Flag state */
+  /** @name Flag state
+   * @note All flag methods are const as they do NOT change the actual properties of the object
+   */
   //@{
-  void SetFlag (TFlagType tF)
-  { _ucFlag |= (unsigned char)(tF); }
-  void ResetFlag (TFlagType tF)
-  { _ucFlag &= ~(unsigned char)(tF); }
+  void SetFlag (TFlagType tF) const
+  { const_cast<MeshPoint*>(this)->_ucFlag |= (unsigned char)(tF); }
+  void ResetFlag (TFlagType tF) const
+  { const_cast<MeshPoint*>(this)->_ucFlag &= ~(unsigned char)(tF); }
   bool IsFlag (TFlagType tF) const
   { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF);  }
-  void ResetInvalid (void)
+  void ResetInvalid (void) const
   { ResetFlag(INVALID); }
-  void  SetInvalid (void)
+  void  SetInvalid (void) const
   { SetFlag(INVALID); }
   bool IsValid (void) const
   { return !IsFlag(INVALID); }
+  void SetProperty(unsigned long uP) const
+  { const_cast<MeshPoint*>(this)->_ulProp = uP; }
   //@}
 
   // Assignment
@@ -114,7 +118,7 @@ public:
 
 public:
   unsigned char _ucFlag; /**< Flag member */
-  unsigned long   _ulProp; /**< Free usable property */
+  unsigned long _ulProp; /**< Free usable property */
 };
 
 /**
@@ -162,22 +166,26 @@ public:
   ~MeshFacet (void) { }
   //@}
 
-  /** @name Flag state */
+  /** @name Flag state
+   * @note All flag methods are const as they do NOT change the actual properties of the object
+   */
   //@{
-  void SetFlag (TFlagType tF)
-  { _ucFlag |= (unsigned char)(tF); }
-  void ResetFlag (TFlagType tF)
-  { _ucFlag &= ~(unsigned char)(tF); }
+  void SetFlag (TFlagType tF) const
+  { const_cast<MeshFacet*>(this)->_ucFlag |= (unsigned char)(tF); }
+  void ResetFlag (TFlagType tF) const
+  { const_cast<MeshFacet*>(this)->_ucFlag &= ~(unsigned char)(tF); }
   bool IsFlag (TFlagType tF) const
   { return (_ucFlag & (unsigned char)(tF)) == (unsigned char)(tF); }
-  void ResetInvalid (void)
+  void ResetInvalid (void) const
   { ResetFlag(INVALID); }
+  void SetProperty(unsigned long uP) const
+  { const_cast<MeshFacet*>(this)->_ulProp = uP; }
   /**
    * Marks a facet as invalid. Should be used only temporary from within an algorithm
    * (e.g. deletion of several facets) but must not be set permanently.
    * From outside the data-structure must not have invalid facets.
    */
-  void  SetInvalid (void)
+  void  SetInvalid (void) const
   { SetFlag(INVALID); }
   bool IsValid (void) const
   { return !IsFlag(INVALID); }
@@ -390,7 +398,7 @@ protected:
 public:
   Vector3D  _aclPoints[3]; /**< Geometric corner points. */
   unsigned char _ucFlag; /**< Flag property */
-  unsigned long   _ulProp; /**< Free usable property. */
+  unsigned long _ulProp; /**< Free usable property. */
 };
 
 typedef  std::vector<MeshPoint>  TMeshPointArray;
@@ -414,16 +422,18 @@ public:
   ~MeshPointArray (void) { }
   //@}
 
-  /** @name Flag state */
+  /** @name Flag state
+   * @note All flag methods are const as they do NOT change the actual properties of the object
+   */
   //@{
   /// Sets the flag for all points
-  void SetFlag (MeshPoint::TFlagType tF);
+  void SetFlag (MeshPoint::TFlagType tF) const;
   /// Resets the flag for all points
-  void ResetFlag (MeshPoint::TFlagType tF);
+  void ResetFlag (MeshPoint::TFlagType tF) const;
   /// Sets all points invalid
-  void ResetInvalid (void);
+  void ResetInvalid (void) const;
   /// Sets the property for all points
-  void SetProperty (unsigned long ulVal);
+  void SetProperty (unsigned long ulVal) const;
   //@}
 
   // Assignment
@@ -453,7 +463,6 @@ public:
   typedef std::vector<MeshFacet>::iterator        _TIterator;
   typedef std::vector<MeshFacet>::const_iterator  _TConstIterator;
 
-public:
   /** @name Construction */
   //@{
   /// constructor
@@ -464,16 +473,18 @@ public:
   ~MeshFacetArray (void) { }
   //@}
 
-  /** @name Flag state */
+  /** @name Flag state
+   * @note All flag methods are const as they do NOT change the actual properties of the object
+   */
   //@{
   /// Sets the flag for all facets. 
-  void SetFlag (MeshFacet::TFlagType tF);
-  /// Reets the flag for all facets. 
-  void ResetFlag (MeshFacet::TFlagType tF);
+  void SetFlag (MeshFacet::TFlagType tF) const;
+  /// Resets the flag for all facets. 
+  void ResetFlag (MeshFacet::TFlagType tF) const;
   /// Sets all facets invalid
-  void ResetInvalid (void);
+  void ResetInvalid (void) const;
   /// Sets the property for all facets
-  void SetProperty (unsigned long ulVal);
+  void SetProperty (unsigned long ulVal) const;
   //@}
 
   // Assignment

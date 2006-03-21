@@ -74,7 +74,7 @@ public:
   enum OperationType { Union, Intersect, Difference };
 
   /// Construction
-  SetOperations (MeshKernel &cutMesh1, MeshKernel &cutMesh2, MeshKernel &result, OperationType opType, float minDistanceToPoint = 1e-5f);
+  SetOperations (const MeshKernel &cutMesh1, const MeshKernel &cutMesh2, MeshKernel &result, OperationType opType, float minDistanceToPoint = 1e-5f);
   /// Destruction
   virtual ~SetOperations (void);
 
@@ -87,8 +87,8 @@ public:
   void Do ();
 
 protected:
-  MeshKernel   &_cutMesh0;             /** Mesh for set operations source 1 */
-  MeshKernel   &_cutMesh1;             /** Mesh for set operations source 2 */
+  const MeshKernel   &_cutMesh0;             /** Mesh for set operations source 1 */
+  const MeshKernel   &_cutMesh1;             /** Mesh for set operations source 2 */
   MeshKernel   &_resultMesh;           /** Result mesh */
   OperationType _operationType;        /** Set Operation Type */
   float         _minDistanceToPoint;   /** Minimal distance to facet corner points */
@@ -147,16 +147,16 @@ private:
   {
     public:
       std::vector<unsigned long> &_facets;
-      MeshKernel                 &_mesh;
+      const MeshKernel           &_mesh;
       std::set<EdgeInfo>         &_edges;
       int                         _side;
       float                       _mult;
       int                         _addFacets; // 0: add facets to the result 1: do not add facets to the result
       Base::Builder3D& _builder;
 
-      CollectFacetVisitor (MeshKernel& mesh, std::vector<unsigned long>& facets, std::set<EdgeInfo>& edges, int side, float mult, Base::Builder3D& builder);
-      bool Visit (MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
-      bool AllowVisit (MeshFacet& rclFacet, MeshFacet& rclFrom, unsigned long ulFInd, unsigned long ulLevel, unsigned short neighbourIndex);
+      CollectFacetVisitor (const MeshKernel& mesh, std::vector<unsigned long>& facets, std::set<EdgeInfo>& edges, int side, float mult, Base::Builder3D& builder);
+      bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel);
+      bool AllowVisit (const MeshFacet& rclFacet, const MeshFacet& rclFrom, unsigned long ulFInd, unsigned long ulLevel, unsigned short neighbourIndex);
   };
 
   /** all edges */
@@ -171,7 +171,7 @@ private:
   /** Cut mesh 1 with mesh 2 */
   void Cut (std::set<unsigned long>& facetsNotCuttingEdge0, std::set<unsigned long>& facetsCuttingEdge1);
   /** Trianglute each facets cutted with his cutting points */
-  void TriangulateMesh (MeshKernel &cutMesh, int side);
+  void TriangulateMesh (const MeshKernel &cutMesh, int side);
   /** search facets for adding (with region growing) */
   void CollectFacets (int side, float mult);
 

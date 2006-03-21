@@ -162,7 +162,7 @@ public:
   /// Returns a Name of an Feature or 0
 	const char *getFeatureName(AbstractFeature *pFeat);
   /// Returns a Name of an Feature or 0
-  std::string getUniqueFeatureName(const char *Name);
+  std::string getUniqueFeatureName(const char *Name) const;
   /// Returns a list of all features
   std::vector<AbstractFeature*> getFeatures() const;
   std::vector<AbstractFeature*> getFeaturesOfType(const Base::Type& typeId) const;

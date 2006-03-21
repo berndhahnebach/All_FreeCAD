@@ -37,6 +37,8 @@
 namespace Base{
   class Vector3D;
   class Matrix4D;
+  class Polygon2D;
+  class ViewProjMethod;
 }
 using Base::Vector3D;
 using Base::Matrix4D;
@@ -53,6 +55,7 @@ class MeshFacetFunc;
 class MeshSTL;
 class MeshFacetVisitor;
 class MeshPointVisitor;
+class MeshFacetGrid;
 
 
 /** 
@@ -94,8 +97,8 @@ public:
   { return (unsigned long)(_aclPointArray.size()); }
 
   /// Determines the bounding box
-  BoundBox3D GetBoundBox (void) const
-  { return const_cast<BoundBox3D&>(_clBoundBox); }
+  const BoundBox3D& GetBoundBox (void) const
+  { return _clBoundBox; }
 
   /** Forces a recalculation of the bounding box. This method should be called after
    * the removal of points.or after a transformation of the data structure.
@@ -135,11 +138,9 @@ public:
   { return _bValid; }
 
   /** Returns the array of all data points. */
-  //std::vector<MeshPoint>& GetPoints (void) { return _aclPointArray; }
   const MeshPointArray& GetPoints (void) const { return _aclPointArray; }
 
   /** Returns the array of all facets */
-  //std::vector<MeshFacet>& GetFacets (void) { return _aclFacetArray; }
   const MeshFacetArray& GetFacets (void) const { return _aclFacetArray; }
 
   /** Returns the array of all edges.
@@ -194,12 +195,12 @@ public:
    * \note For the start facet \a ulStartFacet MeshFacetVisitor::Visit() does not get invoked though
    * the facet gets marked as VISIT.
    */
-  unsigned long VisitNeighbourFacets (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet);
+  unsigned long VisitNeighbourFacets (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet) const;
   /**
    * Does basically the same as the method above unless the facets that share just a common point
    * are regared as neighbours.
    */
-  unsigned long VisitNeighbourFacetsOverCorners (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet);
+  unsigned long VisitNeighbourFacetsOverCorners (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet) const;
   //@}
 
   /** @name Point visitors
@@ -221,7 +222,7 @@ public:
    * \note For the start facet \a ulStartPoint MeshPointVisitor::Visit() does not get invoked though
    * the point gets marked as VISIT.
    */
-  unsigned long VisitNeighbourPoints (MeshPointVisitor &rclPVisitor, unsigned long ulStartPoint); 
+  unsigned long VisitNeighbourPoints (MeshPointVisitor &rclPVisitor, unsigned long ulStartPoint) const; 
   //@}
 
   /** @name Iterators 
@@ -290,6 +291,19 @@ public:
   void Transform (const Matrix4D &rclMat);
   /** Moves the point at the given index along the vector \a rclTrans. */
   inline void MovePoint (unsigned long ulPtIndex, const Vector3D &rclTrans);
+  /**
+   * CheckFacets() is invoked within this method and all found facets get deleted from the mesh structure. 
+   * The facets to be deleted are returned with their geometric reprsentation.
+   * @see CheckFacets().
+   */
+  void CutFacets (const MeshFacetGrid& rclGrid, const Base::ViewProjMethod *pclP, const Base::Polygon2D& rclPoly, 
+                  bool bCutInner, std::vector<MeshGeomFacet> &raclFacets);
+  /**
+   * Does basically the same as method above unless that the facets to be deleted are returned with their
+   * index number in the facet array of the mesh structure.
+   */
+  void CutFacets (const MeshFacetGrid& rclGrid, const Base::ViewProjMethod* pclP, const Base::Polygon2D& rclPoly, 
+                  bool bCutInner, std::vector<unsigned long> &raclCutted);
   //@}
 
 protected:
@@ -320,28 +334,19 @@ protected:
   MeshPointArray  _aclPointArray; /**< Holds the array of geometric points. */
   MeshFacetArray  _aclFacetArray; /**< Holds the array of facets. */
   BoundBox3D      _clBoundBox; /**< The current calculated bounding box. */
-  bool             _bValid; /**< Current state of validality. */
+  bool            _bValid; /**< Current state of validality. */
 
   // friends
   friend class MeshPointIterator;
-  friend class MeshEdgeIterator;
   friend class MeshFacetIterator;
   friend class MeshFastFacetIterator;
-  friend class MeshInventor;
-  friend class MeshSTL;
-  friend class MeshRefPointToFacets;
-  friend class MeshRefFacetToFacets;
-  friend class MeshRefPointToPoints;
-  friend class MeshSearchNeighbours;
   friend class MeshAlgorithm;
   friend class MeshTopoAlgorithm;
-  friend class MeshInfo;
-  friend class MeshEvalTopology;
-  friend class MeshEvalNeighbourhood;
-  friend class MeshDegenerations;
+  friend class MeshFixNeighbourhood;
+  friend class MeshFixDegenerations;
+  friend class MeshFixSingleFacet;
   friend class MeshBuilder;
   friend class MeshDocXML;
-  friend class SetOperations;
 };
 
 inline MeshPoint MeshKernel::GetPoint (unsigned long ulIndex) const

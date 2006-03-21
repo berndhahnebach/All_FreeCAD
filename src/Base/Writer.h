@@ -72,7 +72,7 @@ public:
   /** @name additional file writing */
   //@{
   /// add a write request of a Persitant object
-  const char *addFile(const char* Name, Base::Persistance *Object);
+  std::string addFile(const char* Name, Base::Persistance *Object);
   /// process the requested file writes
   void writeFiles(void);
   /// get all registered file names

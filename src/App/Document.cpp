@@ -607,7 +607,7 @@ const char *Document::getFeatureName(AbstractFeature *pFeat)
   return 0;
 }
 
-string Document::getUniqueFeatureName(const char *Name)
+string Document::getUniqueFeatureName(const char *Name) const
 {
   std::map<std::string,FeatEntry>::const_iterator pos;
 

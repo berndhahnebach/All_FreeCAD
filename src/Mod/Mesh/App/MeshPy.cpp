@@ -453,25 +453,10 @@ PYFUNCIMP_D(MeshPy,rotate)
 */
 PYFUNCIMP_D(MeshPy,transformToEigen)
 {
-  PyObject* pcBool;
-  if (!PyArg_ParseTuple(args, "O", &pcBool))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  bool ok = (pcBool == Py_True ? true : false);
   MeshEigensystem cMeshEval( *_pcMesh );
-  switch ( cMeshEval.Validate( ok ) )
-  {
-  case MeshEvaluation::Fixed:
-    ok = true;
-    break;
-  case MeshEvaluation::Valid:
-  case MeshEvaluation::Invalid:
-  default:
-    ok = false;
-    break;
-  }
-
-  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+  cMeshEval.Evaluate();
+  _pcMesh->Transform(cMeshEval.Transform());
+  Py_Return;
 }
 
 PYFUNCIMP_D(MeshPy,scale)
@@ -623,62 +608,22 @@ PYFUNCIMP_D(MeshPy,copy)
 
 PYFUNCIMP_D(MeshPy,hasConsistentOrientation)
 {
-  std::string txt;
   MeshEvalNormals cMeshEval( *_pcMesh );
-  switch ( cMeshEval.Validate() )
-  {
-  case MeshEvaluation::Valid:
-    txt = "True";
-    break;
-  case MeshEvaluation::Fixed:
-    txt = "Tried to fix";
-    break;
-  case MeshEvaluation::Invalid:
-    txt = "False";
-    break;
-  default:
-    txt = "no information";
-    break;
-  }
-
-  return Py_BuildValue("s",txt.c_str()); 
+  bool ok = cMeshEval.Evaluate();
+  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
 }
 
 PYFUNCIMP_D(MeshPy,isSolid)
 {
-  bool ok;
   MeshEvalSolid cMeshEval( *_pcMesh );
-  switch ( cMeshEval.Validate() )
-  {
-  case MeshEvaluation::Valid:
-    ok = true;
-    break;
-  case MeshEvaluation::Fixed:
-  case MeshEvaluation::Invalid:
-  default:
-    ok = false;
-    break;
-  }
-
+  bool ok = cMeshEval.Evaluate();
   return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
 }
 
 PYFUNCIMP_D(MeshPy,hasNonManifolds)
 {
-  bool ok;
   MeshEvalTopology cMeshEval( *_pcMesh );
-  switch ( cMeshEval.Validate() )
-  {
-  case MeshEvaluation::Valid:
-    ok = false;
-    break;
-  case MeshEvaluation::Fixed:
-  case MeshEvaluation::Invalid:
-  default:
-    ok = true;
-    break;
-  }
-
+  bool ok = !cMeshEval.Evaluate();
   return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
 }
 

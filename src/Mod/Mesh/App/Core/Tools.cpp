@@ -29,10 +29,10 @@
 
 using namespace MeshCore;
 
-MeshSearchNeighbours::MeshSearchNeighbours (MeshKernel &rclM, float fSampleDistance)
+MeshSearchNeighbours::MeshSearchNeighbours (const MeshKernel &rclM, float fSampleDistance)
 : _rclMesh(rclM),
-  _rclFAry(rclM._aclFacetArray),
-  _rclPAry(rclM._aclPointArray),
+  _rclFAry(rclM.GetFacets()),
+  _rclPAry(rclM.GetPoints()),
   _clPt2Fa(rclM),
   _fSampleDistance(fSampleDistance)
 {
@@ -55,7 +55,7 @@ unsigned long MeshSearchNeighbours::NeighboursFromFacet (unsigned long ulFacetId
   _clCenter       = _rclMesh.GetFacet(ulFacetIdx).GetGravityPoint();
 
   unsigned long ulVisited = 1;
-  std::vector<MeshFacetArray::_TIterator>  aclTestedFacet;
+  std::vector<MeshFacetArray::_TConstIterator>  aclTestedFacet;
 
   _aclResult.clear();
   _aclOuter.clear();
@@ -82,11 +82,11 @@ unsigned long MeshSearchNeighbours::NeighboursFromFacet (unsigned long ulFacetId
     aclTmp.swap(_aclOuter);
     for (std::set<unsigned long>::iterator pI = aclTmp.begin(); pI != aclTmp.end(); pI++)
     {
-      const std::set<MeshFacetArray::_TIterator> &rclISet = _clPt2Fa[*pI]; 
+      const std::set<MeshFacetArray::_TConstIterator> &rclISet = _clPt2Fa[*pI]; 
       // search all facets hanging on this point
-      for (std::set<MeshFacetArray::_TIterator>::const_iterator pJ = rclISet.begin(); pJ != rclISet.end(); pJ++)
+      for (std::set<MeshFacetArray::_TConstIterator>::const_iterator pJ = rclISet.begin(); pJ != rclISet.end(); pJ++)
       {
-        MeshFacet &rclF = *(*pJ);
+        const MeshFacet &rclF = *(*pJ);
 
         if (rclF.IsFlag(MeshFacet::MARKED) == false)
         {
@@ -111,7 +111,7 @@ unsigned long MeshSearchNeighbours::NeighboursFromFacet (unsigned long ulFacetId
   }
   
   // reset marked facets, points
-  for (std::vector<MeshFacetArray::_TIterator>::iterator pF = aclTestedFacet.begin(); pF != aclTestedFacet.end(); pF++)
+  for (std::vector<MeshFacetArray::_TConstIterator>::iterator pF = aclTestedFacet.begin(); pF != aclTestedFacet.end(); pF++)
     (*pF)->ResetFlag(MeshFacet::MARKED);
   for (std::set<unsigned long>::iterator pR = _aclResult.begin(); pR != _aclResult.end(); pR++)
     _rclPAry[*pR].ResetFlag(MeshPoint::MARKED);
@@ -161,7 +161,7 @@ unsigned long MeshSearchNeighbours::NeighboursFromSampledFacets (unsigned long u
   _akSphere.Radius = fDistance;
 
   unsigned long ulVisited = 1;
-  std::vector<MeshFacetArray::_TIterator>  aclTestedFacet;
+  std::vector<MeshFacetArray::_TConstIterator>  aclTestedFacet;
 
   _aclResult.clear();
   _aclOuter.clear();
@@ -181,11 +181,11 @@ unsigned long MeshSearchNeighbours::NeighboursFromSampledFacets (unsigned long u
     aclTmp.swap(_aclOuter);
     for (std::set<unsigned long>::iterator pI = aclTmp.begin(); pI != aclTmp.end(); pI++)
     {
-      const std::set<MeshFacetArray::_TIterator> &rclISet = _clPt2Fa[*pI]; 
+      const std::set<MeshFacetArray::_TConstIterator> &rclISet = _clPt2Fa[*pI]; 
       // search all facets hanging on this point
-      for (std::set<MeshFacetArray::_TIterator>::const_iterator pJ = rclISet.begin(); pJ != rclISet.end(); pJ++)
+      for (std::set<MeshFacetArray::_TConstIterator>::const_iterator pJ = rclISet.begin(); pJ != rclISet.end(); pJ++)
       {
-        MeshFacet &rclF = *(*pJ);
+        const MeshFacet &rclF = *(*pJ);
 
         if (rclF.IsFlag(MeshFacet::MARKED) == false)
         {
@@ -200,7 +200,7 @@ unsigned long MeshSearchNeighbours::NeighboursFromSampledFacets (unsigned long u
   }
   
   // reset marked facets
-  for (std::vector<MeshFacetArray::_TIterator>::iterator pF = aclTestedFacet.begin(); pF != aclTestedFacet.end(); pF++)
+  for (std::vector<MeshFacetArray::_TConstIterator>::iterator pF = aclTestedFacet.begin(); pF != aclTestedFacet.end(); pF++)
     (*pF)->ResetFlag(MeshFacet::MARKED);
 
   // copy points in result container
@@ -284,7 +284,7 @@ unsigned long MeshSearchNeighbours::NeighboursFacetFromFacet (unsigned long ulFa
   _clCenter       = _rclMesh.GetFacet(ulFacetIdx).GetGravityPoint();
 
   unsigned long            ulVisited = 1;
-  std::vector<MeshFacetArray::_TIterator>  aclTestedFacet;
+  std::vector<MeshFacetArray::_TConstIterator>  aclTestedFacet;
 
   _aclResult.clear();
   _aclOuter.clear();
@@ -305,11 +305,11 @@ unsigned long MeshSearchNeighbours::NeighboursFacetFromFacet (unsigned long ulFa
     aclTmp.swap(_aclOuter);
     for (std::set<unsigned long>::iterator pI = aclTmp.begin(); pI != aclTmp.end(); pI++)
     {
-      const std::set<MeshFacetArray::_TIterator> &rclISet = _clPt2Fa[*pI]; 
+      const std::set<MeshFacetArray::_TConstIterator> &rclISet = _clPt2Fa[*pI]; 
       // search all facets hanging on this point
-      for (std::set<MeshFacetArray::_TIterator>::const_iterator pJ = rclISet.begin(); pJ != rclISet.end(); pJ++)
+      for (std::set<MeshFacetArray::_TConstIterator>::const_iterator pJ = rclISet.begin(); pJ != rclISet.end(); pJ++)
       {
-        MeshFacet &rclF = *(*pJ);
+        const MeshFacet &rclF = *(*pJ);
 
         for (int i = 0; i < 3; i++)
         {
@@ -334,7 +334,7 @@ unsigned long MeshSearchNeighbours::NeighboursFacetFromFacet (unsigned long ulFa
   }
   
   // reset marked facets, points
-  for (std::vector<MeshFacetArray::_TIterator>::iterator pF = aclTestedFacet.begin(); pF != aclTestedFacet.end(); pF++)
+  for (std::vector<MeshFacetArray::_TConstIterator>::iterator pF = aclTestedFacet.begin(); pF != aclTestedFacet.end(); pF++)
     (*pF)->ResetFlag(MeshFacet::MARKED);
   for (std::set<unsigned long>::iterator pR = _aclResult.begin(); pR != _aclResult.end(); pR++)
     _rclPAry[*pR].ResetFlag(MeshPoint::MARKED);

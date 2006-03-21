@@ -40,11 +40,11 @@ class MeshGeomFacet;
 class MeshFacetIterator;
 
 /**
- * The MeshDegenerations class allows to examine the mesh for degenerated elements,
+ * The MeshEvalDegenerations class allows to examine the mesh for degenerated elements,
  * to invalid set elememts, duplicated elements, etc.
  * Moreover the class provides methods to fixup some of the mentioned degenrations.
  */
-class AppMeshExport MeshDegenerations : public MeshEvaluation
+class AppMeshExport MeshEvalDegenerations : public MeshEvaluation
 {
 public:
   enum TErrorTable 
@@ -64,11 +64,11 @@ public:
   /**
    * Construction.
    */
-  MeshDegenerations (MeshKernel &rclM) : MeshEvaluation( rclM ) { }
+  MeshEvalDegenerations (const MeshKernel &rclM) : MeshEvaluation( rclM ) { }
   /** 
    * Destruction.
    */
-  ~MeshDegenerations () { }
+  ~MeshEvalDegenerations () { }
   /**
    * Returns true if the mesh contains any degenerated elements.
    */
@@ -91,26 +91,10 @@ public:
    */
   unsigned long CountEdgeTooSmall (float fMinEdgeLength) const;
   /**
-   * Removes all facets with an edge smaller than \a fMinEdgeLength without leaving holes or gaps
-   * in the mesh. Returns the number of removed facets.
-   */
-  unsigned long RemoveEdgeTooSmall (float fMinEdgeLength = MeshDefinitions::_fMinPointDistance,
-                                    float fMinEdgeAngle  = MeshDefinitions::_fMinEdgeAngle);
-  /**
    * Searches for defaced facets. A facet is regarded as defaced if an angle is < 30° or > 120°.
    */
   std::vector<unsigned long> DefacedFacets() const;
-  /**
-   * Merges points to one if the distance between them is less than \a fMinDistance.
-   * If \a open is true only points from open edges are regarded. Returns the number of removed points.
-   */
-  unsigned long MergePoints (bool open, float fMinDistance = MeshDefinitions::_fMinPointDistance);
-  /**
-   * Removes to an edge or to a point degenerated facets and returns the number of removed facets.
-   */
-  unsigned long RemoveDegeneratedFacets ();
 
-protected:
   /**
    * Checks the mesh data structure for
    * \li If indexing of the facets and edges to the points is inside the range 
@@ -121,8 +105,42 @@ protected:
    * Returns true if the data structure is valid, false otherwise.
    */
   bool Evaluate ();
-  /** @todo Not yet implemented. */
-  bool Fixup();
+
+private:
+  void AddErrorMode (TErrorTable tErr) { _errMode.set(size_t(tErr)); }
+  void ResetErrorMode (TErrorTable tErr) { _errMode.reset(size_t(tErr)); } 
+  void ResetErrorModes () { _errMode.reset(); } 
+
+private:
+  std::bitset<12> _errMode; /**< \internal */
+};
+
+class AppMeshExport MeshFixDegenerations : public MeshValidation
+{
+public:
+  /**
+   * Construction.
+   */
+  MeshFixDegenerations (MeshKernel &rclM) : MeshValidation( rclM ) { }
+  /** 
+   * Destruction.
+   */
+  ~MeshFixDegenerations () { }
+  /**
+   * Removes all facets with an edge smaller than \a fMinEdgeLength without leaving holes or gaps
+   * in the mesh. Returns the number of removed facets.
+   */
+  unsigned long RemoveEdgeTooSmall (float fMinEdgeLength = MeshDefinitions::_fMinPointDistance,
+                                    float fMinEdgeAngle  = MeshDefinitions::_fMinEdgeAngle);
+  /**
+   * Merges points to one if the distance between them is less than \a fMinDistance.
+   * If \a open is true only points from open edges are regarded. Returns the number of removed points.
+   */
+  unsigned long MergePoints (bool open, float fMinDistance = MeshDefinitions::_fMinPointDistance);
+  /**
+   * Removes to an edge or to a point degenerated facets and returns the number of removed facets.
+   */
+  unsigned long RemoveDegeneratedFacets ();
 
 private:
   /**
@@ -132,13 +150,6 @@ private:
    * only one neighbour exists then just remove the facet.
    */
   void RemoveFacetETS (unsigned long ulFacetPos, unsigned long ulFront);
-
-  void AddErrorMode (TErrorTable tErr) { _errMode.set(size_t(tErr)); }
-  void ResetErrorMode (TErrorTable tErr) { _errMode.reset(size_t(tErr)); } 
-  void ResetErrorModes () { _errMode.reset(); } 
-
-private:
-  std::bitset<12> _errMode; /**< \internal */
 };
 
 } // namespace MeshCore

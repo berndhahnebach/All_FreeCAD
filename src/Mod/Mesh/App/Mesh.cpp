@@ -254,12 +254,6 @@ const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const
 	return *_pcMesh;
 }
 
-/*
-MeshCore::MeshKernel& PropertyMeshKernel::getValue(void) 
-{
-	return _cMesh;
-}
-*/
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
   return new MeshPy(_pcMesh);
@@ -269,14 +263,14 @@ void PropertyMeshKernel::setPyObject(PyObject *value)
 {
   if( PyObject_TypeCheck(value, &(MeshPy::Type)) ) {
    	MeshPy  *pcObject = (MeshPy*)value;
-    _pcMesh = pcObject->getMesh();
+    // Copy the content, do NOT replace the pointer
+    setValue(*pcObject->getMesh());
   }
 }
 
 void PropertyMeshKernel::Save (Base::Writer &writer)
 {
-
-  if(writer.isForceXML())
+  if( writer.isForceXML() )
   {
     writer << writer.ind() << "<Mesh>" << std::endl;
     MeshCore::MeshDocXML saver(*_pcMesh);
@@ -289,7 +283,7 @@ void PropertyMeshKernel::Save (Base::Writer &writer)
 void PropertyMeshKernel::Restore(Base::XMLReader &reader)
 {
   reader.readElement("Mesh");
-  string file (reader.getAttribute("file") );
+  std::string file (reader.getAttribute("file") );
 
   if(file == "")
   {
@@ -300,7 +294,6 @@ void PropertyMeshKernel::Restore(Base::XMLReader &reader)
     // initate a file read
     reader.addFile(file.c_str(),this);
   }
-
 }
 
 void PropertyMeshKernel::SaveDocFile (Base::Writer &writer)

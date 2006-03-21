@@ -57,7 +57,7 @@ public:
   {
   }
 
-  bool Visit (MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel)
+  bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel)
   {
     _raulVisited.push_back(ulFInd);
     unsigned long i, j;
@@ -94,7 +94,7 @@ private:
 
 // ----------------------------------------------------
 
-MeshEvalNormals::MeshEvalNormals (MeshKernel& rclM)
+MeshEvalNormals::MeshEvalNormals (const MeshKernel& rclM)
   :MeshEvaluation( rclM )
 {
 }
@@ -154,7 +154,16 @@ bool MeshEvalNormals::Evaluate ()
   return true;
 }
 
-bool MeshEvalNormals::Fixup ()
+MeshFixNormals::MeshFixNormals (MeshKernel& rclM)
+  :MeshValidation( rclM )
+{
+}
+
+MeshFixNormals::~MeshFixNormals()
+{
+}
+
+bool MeshFixNormals::Fixup ()
 {
   MeshTopoAlgorithm(_rclMesh).HarmonizeNormals();
   return true;
@@ -162,7 +171,7 @@ bool MeshEvalNormals::Fixup ()
 
 // ----------------------------------------------------
 
-MeshEvalSolid::MeshEvalSolid (MeshKernel& rclM)
+MeshEvalSolid::MeshEvalSolid (const MeshKernel& rclM)
   :MeshEvaluation( rclM )
 {
 }
@@ -184,16 +193,11 @@ bool MeshEvalSolid::Evaluate ()
   return true;
 }
 
-bool MeshEvalSolid::Fixup()
-{
-  return false; // don't want to do anything :-) 
-}
-
 // ----------------------------------------------------
 
 bool MeshEvalTopology::Evaluate ()
 {
-  const MeshFacetArray& rclFAry = _rclMesh._aclFacetArray;
+  const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
   MeshFacetArray::_TConstIterator pI;
 
   _aclManifoldList.clear();
@@ -248,7 +252,7 @@ unsigned long MeshEvalTopology::CountManifolds() const
 // ---------------------------------------------------------
 
 bool MeshEvalSingleFacet::Evaluate ()
-{/*
+{
   // get all non-manifolds
   MeshEvalTopology::Evaluate();
 
@@ -305,26 +309,26 @@ bool MeshEvalSingleFacet::Evaluate ()
     if ( aulManifolds.size() > 0 )
       _aclManifoldList.push_back(aulManifolds);
   }
-*/
+
   return (_aclManifoldList.size() == 0);
 }
 
-bool MeshEvalSingleFacet::Fixup ()
-{/*
+bool MeshFixSingleFacet::Fixup ()
+{
   std::vector<unsigned long> aulInvalids;
-  std::vector<MeshFacet>& raFacets = _rclMesh.GetFacets();
-  for ( std::vector<std::list<unsigned long> >::iterator it=_aclManifoldList.begin();it!=_aclManifoldList.end();++it )
+  MeshFacetArray& raFacets = _rclMesh._aclFacetArray;
+  for ( std::vector<std::list<unsigned long> >::const_iterator it=_raclManifoldList.begin();it!=_raclManifoldList.end();++it )
   {
     unsigned long uFInd1, uFInd2;
     uFInd1 = uFInd2 = ULONG_MAX;
-    for ( std::list<unsigned long>::iterator it2 = it->begin(); it2 != it->end(); ++it2 )
+    for ( std::list<unsigned long>::const_iterator it2 = it->begin(); it2 != it->end(); ++it2 )
     {
-      MeshFacet& rF = raFacets[*it2];
+      aulInvalids.push_back(*it2);
+//      MeshFacet& rF = raFacets[*it2];
     }
   }
-
-  _aclManifoldList.clear();
-  _rclMesh.DeleteFacets(aulInvalids);*/
+  
+  _rclMesh.DeleteFacets(aulInvalids);
   return true;
 }
 
@@ -460,9 +464,9 @@ bool MeshEvalNeighbourhood::Evaluate ()
   return true;
 }
 
-bool MeshEvalNeighbourhood::Fixup()
+bool MeshFixNeighbourhood::Fixup()
 {
-  std::vector<MeshFacet>& raFacets = _rclMesh._aclFacetArray;
+  MeshFacetArray& raFacets = _rclMesh._aclFacetArray;
 
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > aclHits;
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pEdge;
@@ -504,7 +508,7 @@ bool MeshEvalNeighbourhood::Fixup()
 
 // ----------------------------------------------------------------
 
-MeshEigensystem::MeshEigensystem (MeshKernel &rclB)
+MeshEigensystem::MeshEigensystem (const MeshKernel &rclB)
  : MeshEvaluation(rclB), _cU(1.0f, 0.0f, 0.0f), _cV(0.0f, 1.0f, 0.0f), _cW(0.0f, 0.0f, 1.0f)
 {
   // use the values of world coordinates as default
@@ -548,8 +552,8 @@ bool MeshEigensystem::Evaluate()
   Vector3D clVect, clProj;
   float fH;
 
-  const std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
-  for (std::vector<MeshPoint>::const_iterator it = aclPoints.begin(); it!=aclPoints.end(); ++it)
+  const MeshPointArray& aclPoints = _rclMesh.GetPoints ();
+  for (MeshPointArray::_TConstIterator it = aclPoints.begin(); it!=aclPoints.end(); ++it)
   {
     // u-Richtung
     clVect = *it - _cC;
@@ -713,8 +717,8 @@ void MeshEigensystem::CalculateLocalSystem()
   float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
   sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
 
-  const std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
-  std::vector<MeshPoint>::const_iterator it;
+  const MeshPointArray& aclPoints = _rclMesh.GetPoints ();
+  MeshPointArray::_TConstIterator it;
   for ( it = aclPoints.begin(); it!=aclPoints.end(); ++it)
   {
     sxx += it->x * it->x; sxy += it->x * it->y;
@@ -770,11 +774,4 @@ void MeshEigensystem::CalculateLocalSystem()
 
   if ((_cU%_cV)*_cW < 0.0f)
     _cW = -_cW; // make a right-handed system
-}
-
-bool MeshEigensystem::Fixup()
-{
-  // move to the origin of world coordinates and align the axis
-  _rclMesh *= Transform();
-  return true;
 }

@@ -63,10 +63,9 @@ class AppMeshExport MeshAlgorithm
 {
 public:
   /// Construction
-  MeshAlgorithm (MeshKernel &rclM) 
-    : _rclMesh(rclM), _rclFAry(rclM._aclFacetArray), _rclPAry(rclM._aclPointArray) { }
+  MeshAlgorithm (const MeshKernel &rclM) : _rclMesh(rclM) { }
   /// Destruction
-  virtual ~MeshAlgorithm (void) { }
+  ~MeshAlgorithm (void) { }
 
 public:
   /**
@@ -110,50 +109,37 @@ public:
   /**
    * Returns all boundaries of the mesh.
    */
-  void GetMeshBorders (std::list<std::vector<Vector3D> > &rclBorders);
+  void GetMeshBorders (std::list<std::vector<Vector3D> > &rclBorders) const;
   /**
    * Returns all boundaries of a subset the mesh defined by \a raulInd.
    */
-  void GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<Vector3D> > &rclBorders);
-  /** Sets to all facets the flag \a tF. */
-  virtual void SetFacetFlag (MeshFacet::TFlagType tF);
-  /** Sets to all points the flag \a tF. */
-  virtual void SetPointFlag (MeshPoint::TFlagType tF);
-  /** Resets of all facets the flag \a tF. */
-  virtual void ResetFacetFlag (MeshFacet::TFlagType tF);
-  /** Resets of all points the flag \a tF. */
-  virtual void ResetPointFlag (MeshPoint::TFlagType tF);
-  /** Sets to all facets in \a raulInds the flag \a tF. */
-  void SetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF);
-  /** Sets to all points in \a raulInds the flag \a tF. */
-  void SetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF);
-  /** Resets from all facets in \a raulInds the flag \a tF. */
-  void ResetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF);
-  /** Resets from all points in \a raulInds the flag \a tF. */
-  void ResetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF);
+  void GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<Vector3D> > &rclBorders) const;
   /** Sets to all facets in \a raulInds the properties in raulProps. 
    * \note Both arrays must have the same size.
    */
-  void SetFacetsProperty(const std::vector<unsigned long> &raulInds, const std::vector<unsigned long> &raulProps);
+  void SetFacetsProperty(const std::vector<unsigned long> &raulInds, const std::vector<unsigned long> &raulProps) const;
+  /** Sets to all facets the flag \a tF. */
+  void SetFacetFlag (MeshFacet::TFlagType tF) const;
+  /** Sets to all points the flag \a tF. */
+  void SetPointFlag (MeshPoint::TFlagType tF) const;
+  /** Resets of all facets the flag \a tF. */
+  void ResetFacetFlag (MeshFacet::TFlagType tF) const;
+  /** Resets of all points the flag \a tF. */
+  void ResetPointFlag (MeshPoint::TFlagType tF) const;
+  /** Sets to all facets in \a raulInds the flag \a tF. */
+  void SetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF) const;
+  /** Sets to all points in \a raulInds the flag \a tF. */
+  void SetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF) const;
+  /** Resets from all facets in \a raulInds the flag \a tF. */
+  void ResetFacetsFlag (const std::vector<unsigned long> &raulInds, MeshFacet::TFlagType tF) const;
+  /** Resets from all points in \a raulInds the flag \a tF. */
+  void ResetPointsFlag (const std::vector<unsigned long> &raulInds, MeshPoint::TFlagType tF) const;
   /** Count all facets with the flag \a tF. */
   unsigned long CountFacetFlag (MeshFacet::TFlagType tF) const;
   /** Count all points with the flag \a tF. */
   unsigned long CountPointFlag (MeshPoint::TFlagType tF) const;
   /** Returns all geometric points from the facets in \a rvecIndices. */
   void PointsFromFacetsIndices (const std::vector<unsigned long> &rvecIndices, std::vector<Vector3D> &rvecPoints) const;
-  /**
-   * CheckFacets() is invoked within this method and all found facets get deleted from the mesh structure. 
-   * The facets to be deleted are returned with their geometric reprsentation.
-   * @see CheckFacets().
-   */
-  void CutFacets (const MeshFacetGrid& rclGrid, const ViewProjMethod *pclP, const Polygon2D& rclPoly, 
-                  bool bCutInner, std::vector<MeshGeomFacet> &raclFacets) const;
-  /**
-   * Does basically the same as method above unless that the facets to be deleted are returned with their
-   * index number in the facet array of the mesh structure.
-   */
-  void CutFacets (const MeshFacetGrid& rclGrid, const ViewProjMethod* pclP, const Polygon2D& rclPoly, 
-                  bool bCutInner, std::vector<unsigned long> &raclCutted) const;
   /**
    * Returns the indices of all facets that have at least one point that lies inside the tool mesh. The direction
    * \a dir is used to try to foraminate the facets of the tool mesh and counts the number of formainated facets.
@@ -182,17 +168,17 @@ public:
    * repeated.
    */
   void CheckBorderFacets (const std::vector<unsigned long> &raclFacetIndices, 
-                          std::vector<unsigned long> &raclResultIndices, unsigned short usLevel = 1);
+                          std::vector<unsigned long> &raclResultIndices, unsigned short usLevel = 1) const;
   /**
    * Invokes CheckBorderFacets() to get all border facets of \a raclFacetIndices. Then the content of
    * \a raclFacetIndices is replaced by all facets that can be deleted.
    * \note The mesh structure is not modified by this method. This is in the responsibility of the user.
    */
-  void CutBorderFacets (std::vector<unsigned long> &raclFacetIndices, unsigned short usLevel = 1);
+  void CutBorderFacets (std::vector<unsigned long> &raclFacetIndices, unsigned short usLevel = 1) const;
   /**
    * Determines all border points as indices of the facets in \a raclFacetIndices. The points are unsorted.
    */
-  void GetBorderPoints (const std::vector<unsigned long> &raclFacetIndices, std::set<unsigned long> &raclResultPointsIndices);
+  void GetBorderPoints (const std::vector<unsigned long> &raclFacetIndices, std::set<unsigned long> &raclResultPointsIndices) const;
   /** Tessellates the shape \a aShape and replaces the mesh structure with the created facets. */
 #if 0 // move to a module that uses Part and Mesh
   bool MeshTopoShape(TopoDS_Shape aShape, float fAccuracy, float fAngle) const;
@@ -222,9 +208,9 @@ public:
   bool NearestPointFromPoint (const Vector3D &rclPt, const MeshFacetGrid& rclGrid, float fMaxSearchArea, 
                               unsigned long &rclResFacetIndex, Vector3D &rclResPoint) const;
   /** Cuts the mesh with a plane. The result is a list of polylines. */
-  bool CutWithPlane (const Wm3::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid, std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f); 
+  bool CutWithPlane (const Wm3::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid, std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f) const; 
   bool CutWithPlane (const Vector3D &clBase, const Vector3D &clNormal, const MeshFacetGrid &rclGrid, 
-                     std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f, bool bConnectPolygons = false); 
+                     std::list<std::vector<Vector3D> > &rclResult, float fMinEps = 1.0e-2f, bool bConnectPolygons = false) const; 
   /** Gets all facets that cut the plane and lying between the the two points. */
   void GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Wm3::Plane3<float>& clPlane, const Vector3D &rclLeft, const Vector3D &rclRight, std::vector<unsigned long> &rclRes) const;
   /** Returns true if the distance from the \a rclPt to the facet \a ulFacetIdx is less than \a fMaxDistance.
@@ -243,9 +229,7 @@ protected:
                         Vector3D &rclRes, unsigned long &rulFacet, float fMaxAngle = F_PI) const;
 
 protected:
-  MeshKernel      &_rclMesh; /**< The mesh kernel. */
-  MeshFacetArray  &_rclFAry; /**< The facet array. */
-  MeshPointArray  &_rclPAry; /**< The point array. */
+  const MeshKernel      &_rclMesh; /**< The mesh kernel. */
 };
 
 /**
@@ -254,30 +238,30 @@ protected:
  * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
  * be rebuilt.
  */
-class AppMeshExport MeshRefPointToFacets : public std::vector<std::set<MeshFacetArray::_TIterator> >
+class AppMeshExport MeshRefPointToFacets : public std::vector<std::set<MeshFacetArray::_TConstIterator> >
 {
 public:
   /// Construction
-  MeshRefPointToFacets (MeshKernel &rclM) : _rclMesh(rclM) 
+  MeshRefPointToFacets (const MeshKernel &rclM) : _rclMesh(rclM) 
   { Rebuild(); }
   /// Destruction
-  virtual ~MeshRefPointToFacets (void)
+  ~MeshRefPointToFacets (void)
   {
-    for (std::vector<std::set<MeshFacetArray::_TIterator> >::iterator it = begin(); it != end(); ++it)
+    for (std::vector<std::set<MeshFacetArray::_TConstIterator> >::iterator it = begin(); it != end(); ++it)
       it->clear();
     clear();
-    std::vector<std::set<MeshFacetArray::_TIterator> >().swap(*this);
+    std::vector<std::set<MeshFacetArray::_TConstIterator> >().swap(*this);
   }
 
   /// Rebuilds up data structure
   void Rebuild (void);
-  void Neighbours (unsigned long ulFacetInd, float fMaxDist, std::vector<MeshFacetArray::_TIterator> &rclNb);
+  void Neighbours (unsigned long ulFacetInd, float fMaxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb);
 
 protected:
-  void SearchNeighbours(MeshFacetArray::_TIterator pFIter, const Vector3D &rclCenter, float fMaxDist, std::vector<MeshFacetArray::_TIterator> &rclNb);
+  void SearchNeighbours(MeshFacetArray::_TConstIterator pFIter, const Vector3D &rclCenter, float fMaxDist, std::vector<MeshFacetArray::_TConstIterator> &rclNb);
 
 protected:
-  MeshKernel  &_rclMesh; /**< The mesh kernel. */
+  const MeshKernel  &_rclMesh; /**< The mesh kernel. */
 };
 
 /**
@@ -286,29 +270,29 @@ protected:
  * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
  * be rebuilt.
  */
-class AppMeshExport MeshRefFacetToFacets : public std::vector<std::set<MeshFacetArray::_TIterator> >
+class AppMeshExport MeshRefFacetToFacets : public std::vector<std::set<MeshFacetArray::_TConstIterator> >
 {
 public:
   /// Construction
-  MeshRefFacetToFacets (MeshKernel &rclM) : _rclMesh(rclM)
+  MeshRefFacetToFacets (const MeshKernel &rclM) : _rclMesh(rclM)
   { Rebuild(); }
   /// Destruction
-  virtual ~MeshRefFacetToFacets (void)
+  ~MeshRefFacetToFacets (void)
   {
-    for (std::vector<std::set<MeshFacetArray::_TIterator> >::iterator it = begin(); it != end(); ++it)
+    for (std::vector<std::set<MeshFacetArray::_TConstIterator> >::iterator it = begin(); it != end(); ++it)
       it->clear();
     clear();
-    std::vector<std::set<MeshFacetArray::_TIterator> >().swap(*this);
+    std::vector<std::set<MeshFacetArray::_TConstIterator> >().swap(*this);
   }
   /// Rebuilds up data structure
   void Rebuild (void);
 
   /// Returns a set of facets sharing one or more points with the facet with index \a ulFacetIndex.
-  const std::set<MeshFacetArray::_TIterator>& Neighbours (unsigned long ulFacetIndex) const
+  const std::set<MeshFacetArray::_TConstIterator>& Neighbours (unsigned long ulFacetIndex) const
   { return operator[](ulFacetIndex); }
 
 protected:
-  MeshKernel  &_rclMesh; /**< The mesh kernel. */
+  const MeshKernel  &_rclMesh; /**< The mesh kernel. */
 };
 
 /**
@@ -317,26 +301,26 @@ protected:
  * \note If the underlying mesh kernel gets changed this structure becomes invalid and must
  * be rebuilt.
  */
-class AppMeshExport MeshRefPointToPoints : public std::vector<std::set<MeshPointArray::_TIterator> >
+class AppMeshExport MeshRefPointToPoints : public std::vector<std::set<MeshPointArray::_TConstIterator> >
 {
 public:
   /// Construction
-  MeshRefPointToPoints (MeshKernel &rclM) : _rclMesh(rclM) 
+  MeshRefPointToPoints (const MeshKernel &rclM) : _rclMesh(rclM) 
   { Rebuild(); }
   /// Destruction
-  virtual ~MeshRefPointToPoints (void)
+  ~MeshRefPointToPoints (void)
   {
-    for (std::vector<std::set<MeshPointArray::_TIterator> >::iterator it = begin(); it != end(); ++it)
+    for (std::vector<std::set<MeshPointArray::_TConstIterator> >::iterator it = begin(); it != end(); ++it)
       it->clear();
     clear();
-    std::vector<std::set<MeshPointArray::_TIterator> >().swap(*this);
+    std::vector<std::set<MeshPointArray::_TConstIterator> >().swap(*this);
   }
 
   /// Rebuilds up data structure
   void Rebuild (void);
 
 protected:
-  MeshKernel  &_rclMesh; /**< The mesh kernel. */
+  const MeshKernel  &_rclMesh; /**< The mesh kernel. */
 };
 
 class AppMeshExport MeshPolygonTriangulation

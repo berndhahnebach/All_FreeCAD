@@ -83,7 +83,7 @@ int SegmentByMesh::execute(void)
   const MeshKernel& rToolMesh   = pcTool->getMesh();
 
   // check if the toolmesh is a solid
-  if ( MeshEvalSolid(const_cast<MeshKernel&>(rToolMesh)).Validate(false) != MeshEvalSolid::Valid )
+  if ( !MeshEvalSolid(rToolMesh).Evaluate() )
   {
     setError("'%s' isn't a solid.\n", pcTool->name.getValue());
     return 1; // no solid
@@ -92,7 +92,7 @@ int SegmentByMesh::execute(void)
   std::vector<unsigned long> faces;
   std::vector<MeshGeomFacet> aFaces;
 
-  MeshAlgorithm cAlg(const_cast<MeshKernel&>(rMeshKernel));
+  MeshAlgorithm cAlg(rMeshKernel);
   if ( cNormal.Length() > 0.1f ) // not a null vector
     cAlg.GetFacetsFromToolMesh(rToolMesh, cNormal, faces);
   else
@@ -129,7 +129,7 @@ int SegmentByMesh::execute(void)
 
       faces.clear();
       MeshTopFacetVisitor clVisitor(faces);
-      const_cast<MeshKernel&>(rMeshKernel).VisitNeighbourFacets(clVisitor, uIdx);
+      rMeshKernel.VisitNeighbourFacets(clVisitor, uIdx);
     
       // append also the start facet
       faces.push_back(uIdx);

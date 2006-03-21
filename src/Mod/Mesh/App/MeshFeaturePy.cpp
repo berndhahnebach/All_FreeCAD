@@ -118,8 +118,7 @@ PyMethodDef MeshFeaturePy::Methods[] = {
 	PYMETHODEDEF(setModifiedView)
 	PYMETHODEDEF(isValid)
 // MeshFeaturePy
-//  PYMETHODEDEF(getMesh) // not allowed anymore (const!!)
-  PYMETHODEDEF(getMeshCopy)
+  PYMETHODEDEF(getMesh)
   PYMETHODEDEF(setMesh)
 
   {NULL, NULL}    /* Sentinel */
@@ -194,49 +193,9 @@ int MeshFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ function
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-#if 0
 PYFUNCIMP_D(MeshFeaturePy,getMesh)
 {
-  if(! _pcMeshPy)
-  {
-    _pcMeshPy = new MeshPy(&(_pcFeature->getMesh()),true);
-
-    /* We must NOT instanciating the object only one time without incrementing it every 
-       time we return it. Otherwise this leads to an error in the following cases:
-
-       1. f=App.document().GetActiveFeature()
-          f.getMesh().calculateVertexCurvature() # Creates the object and increments it. 
-                                                 # By using it temporarily Python decrements
-                                                 # it again
-          f.getMesh().calculateVertexCurvature() # Okay, but the object gets decremented again
-                                                 # and gets then destroyed
-          f.getMesh().calculateVertexCurvature() # Error: Access violation
-
-       2. a=f.getMesh()                          # Creates the object and increments
-          b=f.getMesh()                          # Just assigns the object
-          c=f.getMesh()                          # Just assigns the object
-          a=0                                    # Decrements the object
-          b=0                                    # Deletes the object
-          dir(c)                                 # Error: Access violation
-
-       To avoid these problems either create the object only once and increment it every time 
-       we returns it or create always a new object. This does NOT lead to a memory leak as long 
-       as we reset the variable the object is assigned to.
-       Werner Mayer
-     */
-  }
-  
-  // keeps the object alive
-  _pcMeshPy->IncRef();
-  
-  return _pcMeshPy;
-}
-#endif
-
-PYFUNCIMP_D(MeshFeaturePy,getMeshCopy)
-{
    MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(_pcFeature->getMesh()); // Result Meshkernel
-
    return new MeshPy(pcKernel,false);
 }
 
@@ -250,7 +209,7 @@ PYFUNCIMP_D(MeshFeaturePy,setMesh)
   pcObject = (MeshPy*)pcObj;
 
   // copy in the Feature Mesh
-  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(_pcFeature->getMesh());
+  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(*pcObject->getMesh());
   _pcFeature->Mesh.setValue(pcKernel);
   // and set the python object of this feature
   if(_pcMeshPy){

@@ -124,8 +124,7 @@ public:
   /// REPLACE the mesh in the Property
   void setValue( MeshCore::MeshKernel* m);
   /// get the Kernel (only const possible!)
-	const MeshCore::MeshKernel &getValue(void) const;
-	//MeshCore::MeshKernel &getValue(void);
+  const MeshCore::MeshKernel &getValue(void) const;
   //@}
 
   /** @name Python interface */

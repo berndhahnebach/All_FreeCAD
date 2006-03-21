@@ -86,9 +86,9 @@ void Writer::writeFiles(void)
   }
 }
 
-const char *Writer::addFile(const char* Name, Base::Persistance *Object)
+std::string Writer::addFile(const char* Name, Base::Persistance *Object)
 {
-  // allways check isForceXML() bevor requesting a file!
+  // always check isForceXML() before requesting a file!
   assert(isForceXML()==false);
 
   FileEntry temp;
@@ -99,7 +99,8 @@ const char *Writer::addFile(const char* Name, Base::Persistance *Object)
 
   FileNames.push_back( temp.FileName );
 
-  return Name;
+  // return the unique file name
+  return temp.FileName;
 }
 
 string Writer::getUniqueFileName(const char *Name)

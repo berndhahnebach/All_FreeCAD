@@ -273,13 +273,13 @@ void CmdMeshExMakeUnion::activated(int iMsg)
     "App.document().MeshUnion.lineMaterial.ambientColor = (0.1,0.11,0.1)\n"
     "App.document().MeshUnion.lineSize = 2\n"
     "App.document().MeshUnion.showMode = \"FlatWire\"" );
+ 
+  updateActive();
 
   doCommand(Gui,"Gui.hide(\"MeshBox\")");
   doCommand(Gui,"Gui.hide(\"MeshTool\")");
 
   commitCommand();
- 
-  updateActive();
 }
 
 bool CmdMeshExMakeUnion::isActive(void)

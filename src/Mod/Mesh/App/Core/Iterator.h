@@ -89,16 +89,16 @@ public:
   { return _clIter == rclI._clIter; }
   /// Sets the iterator to the beginning of the array.
   void Begin (void)
-  { _clIter = _rclMesh._aclFacetArray.begin(); }
+  { _clIter = _rclFAry.begin(); }
   /// Sets the iterator to the end of the array.
   void End (void)
-  { _clIter = _rclMesh._aclFacetArray.end(); }
+  { _clIter = _rclFAry.end(); }
   /// Returns the current position of the iterator in the array.
   unsigned long Position (void) const
-  { return _clIter - _rclMesh._aclFacetArray.begin(); }
+  { return _clIter - _rclFAry.begin(); }
   /// Checks if the end is already reached.
   bool EndReached (void) const
-  { return !(_clIter < _rclMesh._aclFacetArray.end()); }
+  { return !(_clIter < _rclFAry.end()); }
   /// Sets the iterator to the beginning of the array.
   void  Init (void)
   { Begin(); }
@@ -121,7 +121,7 @@ public:
   inline unsigned long GetProperty (void) const;
   /// Checks if the iterator points to a valid element inside the array.
   inline bool IsValid (void) const
-  { return (_clIter >= _rclMesh._aclFacetArray.begin()) && (_clIter < _rclMesh._aclFacetArray.end()); }
+  { return (_clIter >= _rclFAry.begin()) && (_clIter < _rclFAry.end()); }
   //@}
 
 protected:
@@ -138,6 +138,10 @@ protected:
   friend class MeshKernel;
 };
 
+/**
+ * The MeshPointIterator allows to iterate over the vertices of the mesh and provides access to their
+ * geometric information.
+ */
 class AppMeshExport MeshPointIterator
 {
 public:
@@ -177,16 +181,16 @@ public:
   { return _clIter == rclI._clIter; }
   /// Sets the iterator to the beginning of the array.
   void Begin (void)
-  { _clIter = _rclMesh._aclPointArray.begin(); }
+  { _clIter = _rclPAry.begin(); }
   /// Sets the iterator to the end of the array.
   void End (void)
-  { _clIter = _rclMesh._aclPointArray.end(); }
+  { _clIter = _rclPAry.end(); }
   /// Returns the current position of the iterator in the array.
   unsigned long Position (void) const
-  { return _clIter - _rclMesh._aclPointArray.begin(); }
+  { return _clIter - _rclPAry.begin(); }
   /// Checks if the end is already reached.
   bool EndReached (void) const
-  { return !(_clIter < _rclMesh._aclPointArray.end()); }
+  { return !(_clIter < _rclPAry.end()); }
   /// Sets the iterator to the beginning of the array.
   void  Init (void)
   { Begin(); }
@@ -200,7 +204,7 @@ public:
   inline bool Set (unsigned long ulIndex);
   /// Checks if the iterator points to a valid element inside the array.
   inline bool IsValid (void) const
-  { return (_clIter >= _rclMesh._aclPointArray.begin()) && (_clIter < _rclMesh._aclPointArray.end()); }
+  { return (_clIter >= _rclPAry.begin()) && (_clIter < _rclPAry.end()); }
   //@}
 
 protected:
@@ -209,6 +213,7 @@ protected:
 
 protected:
   const MeshKernel& _rclMesh;
+  const MeshPointArray& _rclPAry;
   MeshPoint _clFacet;
   MeshPointArray::_TConstIterator _clIter;
 
@@ -296,14 +301,14 @@ inline const MeshGeomFacet& MeshFacetIterator::Dereference (void)
 
 inline bool MeshFacetIterator::Set (unsigned long ulIndex)
 {
-  if (ulIndex < _rclMesh._aclFacetArray.size())
+  if (ulIndex < _rclFAry.size())
   {
-    _clIter    = _rclMesh._aclFacetArray.begin() + ulIndex;
+    _clIter    = _rclFAry.begin() + ulIndex;
     return true;
   }
   else
   {
-    _clIter    = _rclMesh._aclFacetArray.end();
+    _clIter    = _rclFAry.end();
     return false;
   }
 }
@@ -342,39 +347,38 @@ inline void MeshFacetIterator::GetNeighbours (MeshFacetIterator &rclN0, MeshFace
 inline void MeshFacetIterator::SetToNeighbour (unsigned short usN)
 { 
   if (_clIter->_aulNeighbours[usN] != ULONG_MAX)
-    _clIter = _rclMesh._aclFacetArray.begin() + _clIter->_aulNeighbours[usN];
+    _clIter = _rclFAry.begin() + _clIter->_aulNeighbours[usN];
   else
     End();
 }
 
 inline MeshPointIterator::MeshPointIterator (const MeshKernel &rclM)
-: _rclMesh(rclM)
+: _rclMesh(rclM), _rclPAry(_rclMesh._aclPointArray)
 {
-  _clIter = _rclMesh._aclPointArray.begin();
+  _clIter = _rclPAry.begin();
 }
 
 inline MeshPointIterator::MeshPointIterator (const MeshKernel &rclM, unsigned long ulPos)
-: _rclMesh(rclM)
+: _rclMesh(rclM), _rclPAry(_rclMesh._aclPointArray)
 {
-  _clIter = _rclMesh._aclPointArray.begin() + ulPos;
+  _clIter = _rclPAry.begin() + ulPos;
 }
 
 inline MeshPointIterator::MeshPointIterator (const MeshPointIterator &rclI)
-: _rclMesh(rclI._rclMesh),
-  _clIter(rclI._clIter)
+: _rclMesh(rclI._rclMesh), _rclPAry(rclI._rclPAry), _clIter(rclI._clIter)
 {
 }
 
 inline bool MeshPointIterator::Set (unsigned long ulIndex)
 {
-  if (ulIndex < _rclMesh._aclPointArray.size())
+  if (ulIndex < _rclPAry.size())
   {
-    _clIter = _rclMesh._aclPointArray.begin() + ulIndex;
+    _clIter = _rclPAry.begin() + ulIndex;
     return true;
   }
   else
   {
-    _clIter = _rclMesh._aclPointArray.end();
+    _clIter = _rclPAry.end();
     return false;
   }
 }

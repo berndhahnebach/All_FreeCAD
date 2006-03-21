@@ -73,6 +73,7 @@ void GuiMeshExport initMeshGui() {
   MeshGui::KernelEditorItem                  ::init();
 
   MeshGui::ViewProviderMesh                  ::init();
+  MeshGui::ViewProviderExport                ::init();
   MeshGui::ViewProviderMeshCurvature         ::init();
   MeshGui::ViewProviderMeshTransform         ::init();
   MeshGui::ViewProviderMeshTransformDemolding::init();

@@ -93,7 +93,6 @@ using MeshCore::MeshFacet;
 using MeshCore::MeshFacetGrid;
 using MeshCore::MeshPolygonTriangulation;
 using MeshCore::MeshSTL;
-using MeshCore::MeshTopFacetVisitor;
 using MeshCore::MeshEvalSolid;
 
 using Base::Vector3D;
@@ -170,6 +169,51 @@ void KernelEditorItem::convertFromProperty(const std::vector<App::Property*>& pr
 
 void KernelEditorItem::convertToProperty(const QVariant&)
 {
+}
+
+// ======================================================================
+
+PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderFeature)
+
+ViewProviderExport::ViewProviderExport()
+{
+}
+
+ViewProviderExport::~ViewProviderExport()
+{
+}
+
+std::vector<std::string> ViewProviderExport::getModes(void)
+{
+  return std::vector<std::string>();
+}
+
+QPixmap ViewProviderExport::getIcon() const
+{
+  const char * Mesh_Feature_xpm[] = {
+    "16 16 4 1",
+    ".	c None",
+    "#	c #000000",
+    "s	c #BEC2FC",
+    "g	c #00FF00",
+    ".......##.......",
+    "....#######.....",
+    "..##ggg#ggg#....",
+    "##ggggg#gggg##..",
+    "#g#ggg#gggggg##.",
+    "#gg#gg#gggg###s.",
+    "#gg#gg#gg##gg#s.",
+    "#ggg#####ggg#ss.",
+    "#gggg##gggg#ss..",
+    ".#g##g#gggg#s...",
+    ".##ggg#ggg#ss...",
+    ".##gggg#g#ss....",
+    "..s#####g#s.....",
+    "....sss##ss.....",
+    "........ss......",
+    "................"};
+  QPixmap px(Mesh_Feature_xpm);
+  return px;
 }
 
 // ======================================================================
@@ -302,10 +346,10 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
   
   // get and save the feature
   Feature* meshFea = dynamic_cast<Feature*>(pcFeat);
-  MeshEvalSolid cEval(const_cast<MeshCore::MeshKernel&>(meshFea->Mesh.getValue()));
+  MeshEvalSolid cEval(meshFea->getMesh());
 
   // if no solid then enable two-side rendering
-  if ( cEval.Validate() != MeshEvalSolid::Valid )
+  if ( !cEval.Evaluate() )
   {
     SoShapeHints * flathints = new SoShapeHints;
     flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
@@ -621,6 +665,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
           itF->_aclPoints[2].x, itF->_aclPoints[2].y, itF->_aclPoints[2].z);
       }
 
+      Gui::Command::doCommand(Gui::Command::Doc, "App.document().GetFeature(\"%s\").setMesh(m)\n", fTool.c_str());
       Gui::Command::doCommand(Gui::Command::Doc, "App.document().Recompute()\n");
 
 #ifndef FC_DEBUG

@@ -148,7 +148,7 @@ public:
   /// Closes the document \a name and removes it from the application.
   bool closeDocument(const char* name);
   /// find a unique docuement name
-  std::string getUniqueDocumentName(const char *Name);
+  std::string getUniqueDocumentName(const char *Name) const;
   /// Open an existing document from a file
   App::Document* openDocument(const char * FileName=0l);
   /// Retrive the active document

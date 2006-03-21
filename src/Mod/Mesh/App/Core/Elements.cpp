@@ -63,24 +63,24 @@ unsigned long MeshPointArray::GetOrAddIndex (const MeshPoint &rclPoint)
     return ulIndex;
 }
 
-void MeshPointArray::SetFlag (MeshPoint::TFlagType tF)
+void MeshPointArray::SetFlag (MeshPoint::TFlagType tF) const
 {
-  for (MeshPointArray::_TIterator i = begin(); i < end(); i++) i->SetFlag(tF);
+  for (MeshPointArray::_TConstIterator i = begin(); i < end(); i++) i->SetFlag(tF);
 }
 
-void MeshPointArray::ResetFlag (MeshPoint::TFlagType tF)
+void MeshPointArray::ResetFlag (MeshPoint::TFlagType tF) const
 {
-  for (MeshPointArray::_TIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
+  for (MeshPointArray::_TConstIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
 }
 
-void MeshPointArray::SetProperty (unsigned long ulVal)
+void MeshPointArray::SetProperty (unsigned long ulVal) const
 {
-  for (_TIterator pP = begin(); pP != end(); pP++) pP->_ulProp = ulVal;
+  for (_TConstIterator pP = begin(); pP != end(); pP++) pP->SetProperty(ulVal);
 }
 
-void MeshPointArray::ResetInvalid (void)
+void MeshPointArray::ResetInvalid (void) const
 {
-  for (_TIterator pP = begin(); pP != end(); pP++) pP->ResetInvalid();
+  for (_TConstIterator pP = begin(); pP != end(); pP++) pP->ResetInvalid();
 }
 
 MeshPointArray& MeshPointArray::operator = (const MeshPointArray &rclPAry)
@@ -133,24 +133,24 @@ void MeshFacetArray::DecrementIndicies (unsigned long ulIndex)
   }
 }
 
-void MeshFacetArray::SetFlag (MeshFacet::TFlagType tF)
+void MeshFacetArray::SetFlag (MeshFacet::TFlagType tF) const
 {
-  for (MeshFacetArray::_TIterator i = begin(); i < end(); i++) i->SetFlag(tF);
+  for (MeshFacetArray::_TConstIterator i = begin(); i < end(); i++) i->SetFlag(tF);
 }
 
-void MeshFacetArray::ResetFlag (MeshFacet::TFlagType tF)
+void MeshFacetArray::ResetFlag (MeshFacet::TFlagType tF) const
 {
-  for (MeshFacetArray::_TIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
+  for (MeshFacetArray::_TConstIterator i = begin(); i < end(); i++) i->ResetFlag(tF);
 }
 
-void MeshFacetArray::SetProperty (unsigned long ulVal)
+void MeshFacetArray::SetProperty (unsigned long ulVal) const
 {
-  for (_TIterator pF = begin(); pF != end(); pF++) pF->_ulProp = ulVal;
+  for (_TConstIterator pF = begin(); pF != end(); pF++) pF->SetProperty(ulVal);
 }
 
-void MeshFacetArray::ResetInvalid (void)
+void MeshFacetArray::ResetInvalid (void) const
 {
-  for (_TIterator pF = begin(); pF != end(); pF++) pF->ResetInvalid();
+  for (_TConstIterator pF = begin(); pF != end(); pF++) pF->ResetInvalid();
 }
 
 MeshFacetArray& MeshFacetArray::operator = (const MeshFacetArray &rclFAry)

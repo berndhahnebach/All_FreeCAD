@@ -65,18 +65,17 @@ int Import::execute(void)
     try {
       pcKernel = new MeshCore::MeshKernel();
       pcKernel->Read( str );
-      Mesh.setValue(pcKernel);
     } catch( const Base::MemoryException&) {
       setError("Invalid mesh file");
       delete pcKernel;
       return 1;
     }
+
     Mesh.setValue(pcKernel);
   }
   else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
   {
     pcKernel = new MeshCore::MeshKernel();
-
     LoadMeshSTL aReader( *pcKernel );
 
     // catches the abort exception to set a more detailed description
@@ -85,6 +84,7 @@ int Import::execute(void)
       if ( !aReader.Load( str ) )
       {
         setError("Import of mesh from file '%s' failed",FileName.getValue());
+        delete pcKernel;
         return 1;
       }
     }catch ( Base::AbortException& e ){
@@ -94,6 +94,7 @@ int Import::execute(void)
       delete pcKernel;
       throw e;
     }
+
     Mesh.setValue(pcKernel);
   }
   else

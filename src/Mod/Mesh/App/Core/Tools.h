@@ -42,7 +42,7 @@ namespace MeshCore {
 class MeshSearchNeighbours 
 {
 public:
-  MeshSearchNeighbours ( MeshKernel &rclM, float fSampleDistance = 1.0f);
+  MeshSearchNeighbours ( const MeshKernel &rclM, float fSampleDistance = 1.0f);
   virtual ~MeshSearchNeighbours () {}
   /** Re-initilaizes internal structures. */
   void Reinit (float fSampleDistance);
@@ -73,9 +73,9 @@ protected:
   };
 
 protected:
-  MeshKernel  &_rclMesh;
-  MeshFacetArray &_rclFAry;
-  MeshPointArray &_rclPAry;
+  const MeshKernel  &_rclMesh;
+  const MeshFacetArray &_rclFAry;
+  const MeshPointArray &_rclPAry;
   MeshRefPointToFacets _clPt2Fa;
   float _fMaxDistanceP2;   // square distance 
   Vector3D _clCenter;         // center points of start facet

@@ -67,7 +67,6 @@ int SetOperations::execute(void)
     const MeshCore::MeshKernel& meshKernel2 = mesh2->getMesh();
 
     MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(); // Result Meshkernel
-    //MeshCore::MeshKernel& res = Mesh.getValue(); // Result Meshkernel
 
     MeshCore::SetOperations::OperationType type;
     string ot(OperationType.getValue());
@@ -83,7 +82,7 @@ int SetOperations::execute(void)
       //throw new exception("operation type must be: union, intersection or difference");
     }
     
-    MeshCore::SetOperations setOp(const_cast<MeshCore::MeshKernel&>(meshKernel1), const_cast<MeshCore::MeshKernel&>(meshKernel2), *pcKernel, type, 1.0e-5);
+    MeshCore::SetOperations setOp(meshKernel1, meshKernel2, *pcKernel, type, 1.0e-5);
 
     setOp.Do();
     

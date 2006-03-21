@@ -30,6 +30,7 @@
 
 #include <Base/Sequencer.h>
 
+#include "Algorithm.h"
 #include "Helpers.h"
 #include "MeshKernel.h"
 #include "Iterator.h"
@@ -559,6 +560,26 @@ void MeshKernel::DeletePoints (const std::vector<unsigned long> &raulPoints)
   RecalcBoundBox();
 }
 
+void MeshKernel::CutFacets(const MeshFacetGrid& rclGrid, const Base::ViewProjMethod* pclProj, 
+                           const Base::Polygon2D& rclPoly, bool bCutInner, std::vector<MeshGeomFacet> &raclFacets) 
+{
+  std::vector<unsigned long> aulFacets;
+
+  MeshAlgorithm(*this).CheckFacets(rclGrid, pclProj, rclPoly, bCutInner, aulFacets );
+
+  for (std::vector<unsigned long>::iterator i = aulFacets.begin(); i != aulFacets.end(); i++)
+    raclFacets.push_back(GetFacet(*i));
+
+  DeleteFacets(aulFacets);
+}
+
+void MeshKernel::CutFacets(const MeshFacetGrid& rclGrid, const Base::ViewProjMethod* pclProj,
+                           const Base::Polygon2D& rclPoly, bool bInner, std::vector<unsigned long> &raclCutted)
+{
+  MeshAlgorithm(*this).CheckFacets(rclGrid, pclProj, rclPoly, bInner, raclCutted);
+  DeleteFacets(raclCutted);
+}
+
 void MeshKernel::RecalcBoundBox (void)
 {
   _clBoundBox.Flush();
@@ -652,8 +673,8 @@ float MeshKernel::GetSurface() const
 
 float MeshKernel::GetVolume() const
 {
-  MeshEvalSolid cSolid(const_cast<MeshKernel&>(*this));
-  if ( cSolid.Validate(false) != MeshEvaluation::Valid )
+  MeshEvalSolid cSolid(*this);
+  if ( !cSolid.Evaluate() )
     return 0.0f; // no solid
 
   float fVolume = 0.0;
@@ -677,20 +698,20 @@ float MeshKernel::GetVolume() const
 
 bool MeshKernel::HasOpenEdges() const
 {
-  MeshEvalSolid eval(const_cast<MeshKernel&>(*this));
-  return eval.Validate() != MeshEvaluation::Valid;
+  MeshEvalSolid eval(*this);
+  return !eval.Evaluate();
 }
 
 bool MeshKernel::HasNonManifolds() const
 {
-  MeshEvalTopology eval(const_cast<MeshKernel&>(*this));
-  return eval.Validate() != MeshEvaluation::Valid;
+  MeshEvalTopology eval(*this);
+  return !eval.Evaluate();
 }
 
 bool MeshKernel::HasSelfIntersections() const
 {
-  MeshEvalSelfIntersection eval(const_cast<MeshKernel&>(*this));
-  return eval.Validate() != MeshEvaluation::Valid;
+  MeshEvalSelfIntersection eval(*this);
+  return !eval.Evaluate();
 }
 
 // Iterators

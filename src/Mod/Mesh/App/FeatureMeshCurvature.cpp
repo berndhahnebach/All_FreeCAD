@@ -63,7 +63,7 @@ int Curvature::execute(void)
   }
  
   // get all points
-  const MeshKernel& rMesh = pcFeat->Mesh.getValue();
+  const MeshKernel& rMesh = pcFeat->getMesh();
   std::vector< Wm3::Vector3<float> > aPnts;
   MeshPointIterator cPIt( rMesh );
   for ( cPIt.Init(); cPIt.More(); cPIt.Next() )

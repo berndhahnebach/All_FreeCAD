@@ -483,8 +483,8 @@ void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Vector3D& rP1
 bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdgeP1)
 {
   RefPointToFacet();
-  std::set<MeshFacetArray::_TIterator> aclNeighbours0 = (*_pclRefPt2Fac)[ulEdgeP0];
-  std::set<MeshFacetArray::_TIterator> aclNeighbours1 = (*_pclRefPt2Fac)[ulEdgeP1];
+  std::set<MeshFacetArray::_TConstIterator> aclNeighbours0 = (*_pclRefPt2Fac)[ulEdgeP0];
+  std::set<MeshFacetArray::_TConstIterator> aclNeighbours1 = (*_pclRefPt2Fac)[ulEdgeP1];
 
   if (aclNeighbours0.size() < 3 || aclNeighbours1.size() < 3)
     return false; // this must be a border point => must not remove
@@ -506,7 +506,7 @@ bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdg
     return false;
 
   MeshGeomFacet clFacet;
-  for (std::set<MeshFacetArray::_TIterator>::iterator it0 = aclNeighbours0.begin(); it0 != aclNeighbours0.end(); ++it0)
+  for (std::set<MeshFacetArray::_TConstIterator>::iterator it0 = aclNeighbours0.begin(); it0 != aclNeighbours0.end(); ++it0)
   {
     (*it0)->SetFlag(MeshFacet::INVALID); // mark for deletion
 
@@ -531,7 +531,7 @@ bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdg
       _aclNewFacets.push_back(clFacet);
     }
   }
-  for (std::set<MeshFacetArray::_TIterator>::iterator it1 = aclNeighbours1.begin(); it1 != aclNeighbours1.end(); ++it1)
+  for (std::set<MeshFacetArray::_TConstIterator>::iterator it1 = aclNeighbours1.begin(); it1 != aclNeighbours1.end(); ++it1)
   {
     (*it1)->SetFlag(MeshFacet::INVALID); // mark for deletion
 
@@ -563,7 +563,7 @@ bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdg
 bool MeshTopoAlgorithm::InverseInsertNode(unsigned long ulPointPos)
 {
   RefPointToFacet();
-  std::set<MeshFacetArray::_TIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
+  std::set<MeshFacetArray::_TConstIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
   if (aclNeighbours.size() == 3)
   {
     std::vector<unsigned long> aulPoly;
@@ -572,7 +572,7 @@ bool MeshTopoAlgorithm::InverseInsertNode(unsigned long ulPointPos)
 
     if (TriangulatePolygon(aulPoly, _aclNewFacets))
     {
-      for (std::set<MeshFacetArray::_TIterator>::iterator it = aclNeighbours.begin(); it != aclNeighbours.end(); ++it)
+      for (std::set<MeshFacetArray::_TConstIterator>::iterator it = aclNeighbours.begin(); it != aclNeighbours.end(); ++it)
       {
         (*it)->SetFlag(MeshFacet::INVALID); // mark for deletion
       }
@@ -589,7 +589,7 @@ bool MeshTopoAlgorithm::InverseInsertNode(unsigned long ulPointPos)
 bool MeshTopoAlgorithm::CollapseNode(unsigned long ulPointPos)
 {
   RefPointToFacet();
-  std::set<MeshFacetArray::_TIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
+  std::set<MeshFacetArray::_TConstIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
   if (aclNeighbours.size() < 3)
     return false; // this must be a border point => must not remove
 
@@ -602,7 +602,7 @@ bool MeshTopoAlgorithm::CollapseNode(unsigned long ulPointPos)
 
   if (TriangulatePolygon(clPoly, _aclNewFacets))
   {
-    for (std::set<MeshFacetArray::_TIterator>::iterator it = aclNeighbours.begin(); it != aclNeighbours.end(); ++it)
+    for (std::set<MeshFacetArray::_TConstIterator>::iterator it = aclNeighbours.begin(); it != aclNeighbours.end(); ++it)
     {
       (*it)->SetFlag(MeshFacet::INVALID); // mark for deletion
     }
@@ -649,9 +649,9 @@ bool MeshTopoAlgorithm::GetPolygonOfNeighbours(unsigned long ulPointPos, std::ve
 {
   RefPointToFacet();
   raulPoly.clear();
-  std::set<MeshFacetArray::_TIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
+  std::set<MeshFacetArray::_TConstIterator> aclNeighbours = (*_pclRefPt2Fac)[ulPointPos];
 
-  MeshFacetArray::_TIterator pFirst = *aclNeighbours.begin();
+  MeshFacetArray::_TConstIterator pFirst = *aclNeighbours.begin();
   aclNeighbours.erase(aclNeighbours.begin());
 
   unsigned long ulStartPoint;
@@ -668,9 +668,9 @@ bool MeshTopoAlgorithm::GetPolygonOfNeighbours(unsigned long ulPointPos, std::ve
   while (aclNeighbours.size() > 0)
   {
     bool found=false;
-    for (std::set<MeshFacetArray::_TIterator>::iterator it = aclNeighbours.begin(); !found&&it!= aclNeighbours.end(); ++it)
+    for (std::set<MeshFacetArray::_TConstIterator>::iterator it = aclNeighbours.begin(); !found&&it!= aclNeighbours.end(); ++it)
     {
-      MeshFacetArray::_TIterator pElement = *it;
+      MeshFacetArray::_TConstIterator pElement = *it;
       for (int i=0; i<3; ++i)
       {
         if (pElement->_aulPoints[i] == ulPointPos && pElement->_aulPoints[(i+1)%3] == ulStartPoint)
@@ -743,8 +743,9 @@ void MeshTopoAlgorithm::RefPointToFacet()
 
 void MeshTopoAlgorithm::HarmonizeNormals (void)
 {
-  unsigned long                       ulStartFacet, ulVisited;
-  MeshHarmonizer              clHarmonizer;
+  unsigned long               ulStartFacet, ulVisited;
+  std::vector<unsigned long>  uIndices;
+  MeshHarmonizer              clHarmonizer(uIndices);
   MeshFacetArray::_TIterator  clFIter;
   Vector3D                    clGravityPoint, clDir;  
 
@@ -784,6 +785,9 @@ void MeshTopoAlgorithm::HarmonizeNormals (void)
     else
       ulStartFacet = ULONG_MAX;
   }
+
+  for ( std::vector<unsigned long>::iterator it = uIndices.begin(); it != uIndices.end(); ++it )
+    _rclMesh._aclFacetArray[*it].FlipNormal();
  
   Base::Sequencer().stop(); 
 }
@@ -852,7 +856,7 @@ void MeshTopoAlgorithm::RotateFacet(unsigned long ulFacetPos, int iInd)
  * R  = #components
  */
 
-MeshComponents::MeshComponents( MeshKernel& rclMesh )
+MeshComponents::MeshComponents( const MeshKernel& rclMesh )
 : _rclMesh(rclMesh)
 {
 }

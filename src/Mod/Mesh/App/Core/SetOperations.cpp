@@ -66,7 +66,7 @@ using namespace Base;
 using namespace MeshCore;
 
 
-SetOperations::SetOperations (MeshKernel &cutMesh1, MeshKernel &cutMesh2, MeshKernel &result, OperationType opType, float minDistanceToPoint)
+SetOperations::SetOperations (const MeshKernel &cutMesh1, const MeshKernel &cutMesh2, MeshKernel &result, OperationType opType, float minDistanceToPoint)
 : _cutMesh0(cutMesh1), 
   _cutMesh1(cutMesh2),
   _resultMesh(result),
@@ -282,7 +282,7 @@ void SetOperations::Cut (std::set<unsigned long>& facetsCuttingEdge0, std::set<u
   } // for (gx1 = 0; gx1 < ctGx1; gx1++)  
 }
 
-void SetOperations::TriangulateMesh (MeshKernel &cutMesh, int side)
+void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
 {
 
   // Triangulate Mesh 
@@ -419,15 +419,16 @@ void SetOperations::CollectFacets (int side, float mult)
 
   // bool hasFacetsNotVisited = true; // until facets not visited
   // search for facet not visited
-  TMeshFacetArray::iterator itf;
-  for (itf = mesh._aclFacetArray.begin(); itf != mesh._aclFacetArray.end(); itf++)
+  MeshFacetArray::_TConstIterator itf;
+  const MeshFacetArray& rFacets = mesh.GetFacets();
+  for (itf = rFacets.begin(); itf != rFacets.end(); itf++)
   {
     if (!itf->IsFlag(MeshFacet::VISIT))
     { // Facet found, visit neighbours
       std::vector<unsigned long> facets;
-      facets.push_back(itf - mesh._aclFacetArray.begin()); // add seed facet
+      facets.push_back(itf - rFacets.begin()); // add seed facet
       CollectFacetVisitor visitor(mesh, facets, _edges, side, mult, _builder); 
-      mesh.VisitNeighbourFacets(visitor, itf - mesh._aclFacetArray.begin());
+      mesh.VisitNeighbourFacets(visitor, itf - rFacets.begin());
       
       if (visitor._addFacets == 0)
       { // mark all facets to add it to the result
@@ -437,7 +438,7 @@ void SetOperations::CollectFacets (int side, float mult)
   }
 
   // add all facets to the result vector
-  for (itf = mesh._aclFacetArray.begin(); itf != mesh._aclFacetArray.end(); itf++)
+  for (itf = rFacets.begin(); itf != rFacets.end(); itf++)
   {
     if (itf->IsFlag(MeshFacet::TMP0))
     {
@@ -448,7 +449,7 @@ void SetOperations::CollectFacets (int side, float mult)
   MeshDefinitions::SetMinPointDistance(distSave);
 }
 
-SetOperations::CollectFacetVisitor::CollectFacetVisitor (MeshKernel& mesh, std::vector<unsigned long>& facets, std::set<EdgeInfo>& edges, int side, float mult , Base::Builder3D& builder )
+SetOperations::CollectFacetVisitor::CollectFacetVisitor (const MeshKernel& mesh, std::vector<unsigned long>& facets, std::set<EdgeInfo>& edges, int side, float mult , Base::Builder3D& builder )
 : _facets(facets),
   _mesh(mesh),
   _edges(edges),
@@ -459,13 +460,13 @@ SetOperations::CollectFacetVisitor::CollectFacetVisitor (MeshKernel& mesh, std::
 {
 }
 
-bool SetOperations::CollectFacetVisitor::Visit (MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel)
+bool SetOperations::CollectFacetVisitor::Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel)
 {
   _facets.push_back(ulFInd);
   return true;
 }
 
-bool SetOperations::CollectFacetVisitor::AllowVisit (MeshFacet& rclFacet, MeshFacet& rclFrom, unsigned long ulFInd, unsigned long ulLevel, unsigned short neighbourIndex)
+bool SetOperations::CollectFacetVisitor::AllowVisit (const MeshFacet& rclFacet, const MeshFacet& rclFrom, unsigned long ulFInd, unsigned long ulLevel, unsigned short neighbourIndex)
 {
   if (rclFacet.IsFlag(MeshFacet::MARKED) && rclFrom.IsFlag(MeshFacet::MARKED))
   { // facet connected to an edge

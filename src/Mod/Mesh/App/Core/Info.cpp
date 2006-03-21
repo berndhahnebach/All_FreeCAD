@@ -38,7 +38,7 @@
 
 using namespace MeshCore;
 
-MeshInfo::MeshInfo (MeshKernel &rclM)
+MeshInfo::MeshInfo (const MeshKernel &rclM)
 : _rclMesh(rclM)
 {
 }
@@ -50,7 +50,9 @@ std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const
   ulCtFc = _rclMesh.CountFacets();
   ulCtEd = 0;
   unsigned long openEdges = 0, closedEdges = 0;
-  for (MeshFacetArray::_TConstIterator it = _rclMesh._aclFacetArray.begin(); it != _rclMesh._aclFacetArray.end(); it++)
+
+  const MeshFacetArray& rFacets = _rclMesh.GetFacets();
+  for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); it++)
   {
     for (int i = 0; i < 3; i++)
     {
@@ -104,9 +106,11 @@ std::ostream& MeshInfo::DetailedEdgeInfo (std::ostream& rclStream) const
   // print edges
   // get edges from facets
   std::map<std::pair<unsigned long, unsigned long>, int > lEdges;
+
+  const MeshFacetArray& rFacets = _rclMesh.GetFacets();
   MeshFacetArray::_TConstIterator pFIter;
-  pFIter = _rclMesh._aclFacetArray.begin();
-  while (pFIter < _rclMesh._aclFacetArray.end())
+  pFIter = rFacets.begin();
+  while (pFIter < rFacets.end())
   {
     const MeshFacet& rFacet = *pFIter;
     for ( int j=0; j<3; j++ )
@@ -128,11 +132,12 @@ std::ostream& MeshInfo::DetailedEdgeInfo (std::ostream& rclStream) const
   rclStream.precision(3);
   rclStream.setf(std::ios::fixed | std::ios::showpoint | std::ios::showpos);
   unsigned long i=0;
+  const MeshPointArray& rPoints = _rclMesh.GetPoints();
   while (pEIter != lEdges.end())
   {
     int ct = pEIter->second;
-    const Vector3D& rP0 = _rclMesh._aclPointArray[ pEIter->first.first ];
-    const Vector3D& rP1 = _rclMesh._aclPointArray[ pEIter->first.second ];
+    const Vector3D& rP0 = rPoints[ pEIter->first.first ];
+    const Vector3D& rP1 = rPoints[ pEIter->first.second ];
 
     rclStream << "E "    << std::setw(4) << (i++) << ": "
               << "  P (" << std::setw(8) << rP0.x << ", "
@@ -219,10 +224,12 @@ std::ostream& MeshInfo::InternalFacetInfo (std::ostream& rclStream) const
   // print facets
   unsigned long i;
   rclStream << _rclMesh.CountFacets() << " Faces:" << std::endl;
+
+  const MeshFacetArray& rFacets = _rclMesh.GetFacets();
   MeshFacetArray::_TConstIterator pFIter;
-  pFIter = _rclMesh._aclFacetArray.begin();
+  pFIter = rFacets.begin();
   i = 0;
-  while (pFIter < _rclMesh._aclFacetArray.end())
+  while (pFIter < rFacets.end())
   {
     rclStream << "F " << std::setw(4) << (i++) << ": P ("
                       << std::setw(4) << pFIter->_aulPoints[0] << ", "

@@ -97,7 +97,331 @@ struct TMeshFacetInds
   }
 };
 
-unsigned long MeshDegenerations::MergePoints (bool open, float fMinDistance)
+unsigned long MeshEvalDegenerations::CountEdgeTooSmall (float fMinEdgeLength) const
+{
+  MeshFacetIterator  clFIter(_rclMesh);   
+  unsigned long              i, k;
+
+  k = 0;
+  while (clFIter.EndReached() == false)
+  {
+    for (i = 0; i < 3; i++)
+    {
+      if (Base::Distance(clFIter->_aclPoints[i], clFIter->_aclPoints[(i+1)%3]) < fMinEdgeLength)
+        k++;
+    }
+    ++clFIter;
+  }
+
+  return k;
+}
+
+std::vector<unsigned long> MeshEvalDegenerations::DefacedFacets() const
+{
+  std::vector<unsigned long> aulDeg;
+  MeshFacetIterator cIter(_rclMesh);
+
+  Vector3D u,v;
+  float fAngle;
+  for (cIter.Init(); cIter.More(); cIter.Next())
+  {
+    const MeshGeomFacet& rclF = *cIter;
+    for (int i=0; i<3; i++)
+    {
+      u = rclF._aclPoints[(i+1)%3]-rclF._aclPoints[i];
+      v = rclF._aclPoints[(i+2)%3]-rclF._aclPoints[i];
+      u.Normalize();
+      v.Normalize();
+
+      fAngle = u * v;
+      if (fAngle > 0.86f || fAngle < -0.5f)
+      {
+        aulDeg.push_back(cIter.Position());
+        break;
+      }
+    }
+  }
+
+  return aulDeg;
+}
+
+bool MeshEvalDegenerations::Evaluate ()
+{
+  // first reset all error modes
+  ResetErrorModes();
+
+  MeshFacetArray::_TConstIterator  pFIter;
+  MeshPointArray::_TConstIterator  pPIter;
+  const MeshFacetArray& rFaces = _rclMesh.GetFacets();
+  const MeshPointArray& rPoint = _rclMesh.GetPoints();
+
+  unsigned long ulCtPoints, ulCtFacets, i;
+
+  ulCtPoints = _rclMesh.CountPoints();
+  ulCtFacets = _rclMesh.CountFacets();
+
+  // Ueberpruefung auf ungueltige Facets
+  for (pFIter = rFaces.begin(); pFIter < rFaces.end(); pFIter++)
+  {
+    if (pFIter->IsValid() == false)
+    {
+      // 1 oder mehrere ungueltige Facets
+      AddErrorMode( InvalidFacet );
+    }
+
+    if (std::find_if(pFIter->_aulPoints, pFIter->_aulPoints + 3,
+      std::bind2nd(std::greater_equal<unsigned long>(), ulCtPoints)) < pFIter->_aulPoints + 3)
+    {
+      // Punkt-Indizies > max. Punkte
+      AddErrorMode( OutOfRangePoint );
+    }
+
+    // doppelte Punktbelegung
+    if ((pFIter->_aulPoints[0] == pFIter->_aulPoints[1]) ||
+        (pFIter->_aulPoints[0] == pFIter->_aulPoints[2]) ||
+        (pFIter->_aulPoints[1] == pFIter->_aulPoints[2]))
+    {
+      AddErrorMode( CorruptedFacets );
+    }
+
+    for (i = 0; i < 3; i++)
+    {
+      if ((pFIter->_aulNeighbours[i] >= ulCtFacets) && (pFIter->_aulNeighbours[i] < ULONG_MAX))
+      {
+        // Nachbar-Indizies ungueltig
+        AddErrorMode( OutOfRangeFacet );
+      }
+    }
+  }
+
+  // mind. ein zu einer Kante (oder Punkt) degeneriertes Dreieck (geometrisch, nicht topologisch)
+  MeshFacetIterator cFIter(_rclMesh);
+  for (cFIter.Init(); cFIter.More(); cFIter.Next())
+  {
+    if ((cFIter->_aclPoints[0] == cFIter->_aclPoints[1]) ||
+        (cFIter->_aclPoints[0] == cFIter->_aclPoints[2]) ||
+        (cFIter->_aclPoints[1] == cFIter->_aclPoints[2]))
+    {
+      AddErrorMode( DegeneratedFacets );
+      break;
+    }
+  }
+
+  // Ueberpruefung auf ungueltige Punkte
+  for (pPIter = rPoint.begin(); pPIter < rPoint.end(); pPIter++)
+  {
+    if (pPIter->IsValid() == false)
+    {
+      // 1 oder mehrere ungueltige Punkte
+      AddErrorMode( InvalidPoint );
+      break;
+    }
+  }
+
+  // Ueberpruefung auf doppelte Dreiecke
+  std::set<TMeshFacetInds> FIndsSet;
+  for (pFIter = rFaces.begin(); pFIter < rFaces.end(); pFIter++)
+  {
+    TMeshFacetInds FInds(pFIter->_aulPoints[0], pFIter->_aulPoints[1], pFIter->_aulPoints[2]);
+    FIndsSet.insert(FInds);
+  }
+  if (FIndsSet.size() != rFaces.size())
+  {
+    // zwei gleiche Dreiecke
+    AddErrorMode( DuplicatedFacets );
+  }
+
+  // keine doppelte Punkte
+  {
+    std::vector<MeshHelpPoint>             aclPoints(_rclMesh.CountPoints());
+    std::vector<MeshHelpPoint>::iterator   pI = aclPoints.begin();
+    for (pPIter = rPoint.begin(); pPIter < rPoint.end(); pPIter++, pI++)
+      pI->Set(0, 0, *pPIter);
+    std::sort(aclPoints.begin(), aclPoints.end());
+    if (std::adjacent_find(aclPoints.begin(), aclPoints.end()) < aclPoints.end())
+    {
+      // doppelter Punkt
+      AddErrorMode( DuplicatedPoints );
+    }
+  }
+
+  return !HasDegenerations();
+}
+
+std::vector<unsigned long> MeshEvalDegenerations::GetIndices(MeshEvalDegenerations::TErrorTable error)
+{
+  unsigned long ulCtFacets = _rclMesh.CountFacets();
+  unsigned long ulCtPoints = _rclMesh.CountPoints();
+
+  unsigned long i=0;
+  std::vector<unsigned long> ulInds;
+  MeshFacetArray::_TConstIterator  pFIter;
+  MeshPointArray::_TConstIterator  pPIter;
+  const MeshFacetArray& rFaces = _rclMesh.GetFacets();
+  const MeshPointArray& rPoint = _rclMesh.GetPoints();
+
+  switch (error)
+  {
+    case InvalidFacet:
+    {
+      for (pFIter = rFaces.begin(); pFIter < rFaces.end(); pFIter++, i++)
+      {
+        if (pFIter->IsValid() == false)
+        {
+          ulInds.push_back(i);
+        }
+      } break;
+    }
+    case InvalidPoint:
+    {
+      std::map<unsigned long, std::vector<unsigned long> > aulPoint2Facet;
+      for (pFIter = rFaces.begin(); pFIter < rFaces.end(); pFIter++, i++)
+      {
+        for (int i=0; i<3; i++)
+        {
+          aulPoint2Facet[pFIter->_aulPoints[i]].push_back(i);
+        }
+      }
+
+      i = 0;
+      MeshPointArray::_TConstIterator  pPIter;
+      std::vector<unsigned long> aulTmp;
+      for (pPIter = rPoint.begin(); pPIter < rPoint.end(); pPIter++, i++)
+      {
+        if (pPIter->IsValid() == false)
+        {
+          aulTmp.push_back(i);
+        }
+      }
+
+      for (std::vector<unsigned long>::iterator it = aulTmp.begin(); it != aulTmp.end(); ++it)
+      {
+        for (std::vector<unsigned long>::iterator it2 = aulPoint2Facet[*it].begin(); it2 != aulPoint2Facet[*it].end(); it2++)
+        {
+          ulInds.push_back(*it2);
+        }
+      }
+
+      std::sort(ulInds.begin(), ulInds.end());
+      ulInds.erase(std::unique(ulInds.begin(), ulInds.end()), ulInds.end());
+      break;
+    }
+    case DuplicatedFacets:
+    {
+      // get all facets
+      std::map<TMeshFacetInds, std::vector<unsigned long> > aFIndsMap;
+      for (pFIter = rFaces.begin(); pFIter < rFaces.end(); pFIter++, i++)
+      {
+        TMeshFacetInds FInds(pFIter->_aulPoints[0], pFIter->_aulPoints[1], pFIter->_aulPoints[2]);
+        aFIndsMap[FInds].push_back(i);
+      }
+
+      // get all double facets
+      std::vector<unsigned long> idx;
+      for (std::map<TMeshFacetInds, std::vector<unsigned long> >::iterator it = aFIndsMap.begin(); it != aFIndsMap.end(); ++it)
+      {
+        idx = it->second;
+        if (idx.size() > 1)
+        {
+          for (std::vector<unsigned long>::iterator it2 = idx.begin(); it2 != idx.end(); ++it2)
+            ulInds.push_back(*it2);
+        }
+      } break;
+    }
+    case DuplicatedPoints:
+    {
+      std::vector<MeshHelpPoint> aclPoints(_rclMesh.CountPoints());
+      std::vector<MeshHelpPoint>::iterator   pI = aclPoints.begin();
+      for (pPIter = rPoint.begin(); pPIter < rPoint.end(); pPIter++, pI++)
+        pI->Set(0, 0, *pPIter);
+      std::sort(aclPoints.begin(), aclPoints.end());
+      if (std::adjacent_find(aclPoints.begin(), aclPoints.end()) < aclPoints.end())
+      {
+        std::map<unsigned long, std::vector<unsigned long> > aulPoint2Facet;
+        i = 0;
+        for (pFIter = rFaces.begin(); pFIter < rFaces.end(); pFIter++, i++)
+        {
+          for (int i=0; i<3; i++)
+          {
+            aulPoint2Facet[pFIter->_aulPoints[i]].push_back(i);
+          }
+        }
+
+        i = 0;
+
+        // get all multiple points
+        std::vector<MeshHelpPoint>::iterator it  = aclPoints.begin();
+        std::vector<MeshHelpPoint>::iterator it2 = aclPoints.begin();
+        std::vector<unsigned long> aclMultiple;
+        for (++it2; it2 != aclPoints.end() && it != aclPoints.end(); ++it2, ++it)
+        {
+//          if ((*it2) == (*it))
+//            aclMultiple.push_back(_rclMesh._aclPointArray.GetOrAddIndex(it2->_clPt));
+        }
+
+        for (std::vector<unsigned long>::iterator it3 = aclMultiple.begin(); it3 != aclMultiple.end(); ++it3)
+        {
+          for (std::vector<unsigned long>::iterator it4 = aulPoint2Facet[*it3].begin(); it4 != aulPoint2Facet[*it3].end(); it4++)
+          {
+            ulInds.push_back(*it4);
+          }
+        }
+
+        std::sort(ulInds.begin(), ulInds.end());
+        ulInds.erase(std::unique(ulInds.begin(), ulInds.end()), ulInds.end());
+      } break;
+    }
+    case OutOfRangePoint:
+    {
+      MeshFacetArray::_TConstIterator  pFIter;
+      for (pFIter = rFaces.begin(); pFIter < rFaces.end(); pFIter++, i++)
+      {
+        if (std::find_if(pFIter->_aulPoints, pFIter->_aulPoints + 3,
+          std::bind2nd(std::greater_equal<unsigned long>(), ulCtPoints)) < pFIter->_aulPoints + 3)
+        {
+          ulInds.push_back(i);
+        }
+      } break;
+    }
+    case OutOfRangeFacet:
+    {
+      MeshFacetArray::_TConstIterator  pFIter;
+      for (pFIter = rFaces.begin(); pFIter < rFaces.end(); pFIter++, i++)
+      {
+        for (i = 0; i < 3; i++)
+        {
+          if ((pFIter->_aulNeighbours[i] >= ulCtFacets) && (pFIter->_aulNeighbours[i] < ULONG_MAX))
+          {
+            ulInds.push_back(i);
+            break;
+          }
+        }
+      } break;
+    }
+    case CorruptedFacets:
+    {
+      MeshFacetArray::_TConstIterator  pFIter;
+      for (pFIter = rFaces.begin(); pFIter < rFaces.end(); pFIter++, i++)
+      {
+        if ((pFIter->_aulPoints[0] == pFIter->_aulPoints[1]) ||
+            (pFIter->_aulPoints[0] == pFIter->_aulPoints[2]) ||
+            (pFIter->_aulPoints[1] == pFIter->_aulPoints[2]))
+        {
+          ulInds.push_back(i);
+        }
+      } break;
+    }
+    case DegeneratedFacets:
+    case Undefined:
+      break;
+  }
+
+  return ulInds;
+}
+
+// -----------------------------------------
+
+unsigned long MeshFixDegenerations::MergePoints (bool open, float fMinDistance)
 {
   MeshPointArray &rclPAry = _rclMesh._aclPointArray;
   rclPAry.ResetFlag(MeshPoint::MARKED);
@@ -181,14 +505,14 @@ unsigned long MeshDegenerations::MergePoints (bool open, float fMinDistance)
     {
       ulCt++;
       rclPAry[*it2].SetInvalid();
-      std::set<MeshFacetArray::_TIterator>& aulFacs = clPt2Facets[*it2];
-      for (std::set<MeshFacetArray::_TIterator>::iterator itF = aulFacs.begin(); itF != aulFacs.end(); ++itF)
+      std::set<MeshFacetArray::_TConstIterator>& aulFacs = clPt2Facets[*it2];
+      for (std::set<MeshFacetArray::_TConstIterator>::iterator itF = aulFacs.begin(); itF != aulFacs.end(); ++itF)
       {
         for (int i=0; i<3; i++)
         {
           if ((*itF)->_aulPoints[i] == *it2)
           {
-            (*itF)->_aulPoints[i] = ulPos;
+//            (*itF)->_aulPoints[i] = ulPos;
           }
         }
       }
@@ -205,7 +529,7 @@ unsigned long MeshDegenerations::MergePoints (bool open, float fMinDistance)
   return ulDiff;
 }
 
-unsigned long MeshDegenerations::RemoveDegeneratedFacets ()
+unsigned long MeshFixDegenerations::RemoveDegeneratedFacets ()
 {
   MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
   unsigned long ulPos = 0;
@@ -280,55 +604,7 @@ unsigned long MeshDegenerations::RemoveDegeneratedFacets ()
   return ulDiff;
 }
 
-unsigned long MeshDegenerations::CountEdgeTooSmall (float fMinEdgeLength) const
-{
-  MeshFacetIterator  clFIter(_rclMesh);   
-  unsigned long              i, k;
-
-  k = 0;
-  while (clFIter.EndReached() == false)
-  {
-    for (i = 0; i < 3; i++)
-    {
-      if (Base::Distance(clFIter->_aclPoints[i], clFIter->_aclPoints[(i+1)%3]) < fMinEdgeLength)
-        k++;
-    }
-    ++clFIter;
-  }
-
-  return k;
-}
-
-std::vector<unsigned long> MeshDegenerations::DefacedFacets() const
-{
-  std::vector<unsigned long> aulDeg;
-  MeshFacetIterator cIter(_rclMesh);
-
-  Vector3D u,v;
-  float fAngle;
-  for (cIter.Init(); cIter.More(); cIter.Next())
-  {
-    const MeshGeomFacet& rclF = *cIter;
-    for (int i=0; i<3; i++)
-    {
-      u = rclF._aclPoints[(i+1)%3]-rclF._aclPoints[i];
-      v = rclF._aclPoints[(i+2)%3]-rclF._aclPoints[i];
-      u.Normalize();
-      v.Normalize();
-
-      fAngle = u * v;
-      if (fAngle > 0.86f || fAngle < -0.5f)
-      {
-        aulDeg.push_back(cIter.Position());
-        break;
-      }
-    }
-  }
-
-  return aulDeg;
-}
-
-unsigned long MeshDegenerations::RemoveEdgeTooSmall (float fMinEdgeLength, float fMinEdgeAngle)
+unsigned long MeshFixDegenerations::RemoveEdgeTooSmall (float fMinEdgeLength, float fMinEdgeAngle)
 {
   unsigned long ulCtLastLoop, ulCtFacets = _rclMesh.CountFacets();
 
@@ -387,14 +663,14 @@ unsigned long MeshDegenerations::RemoveEdgeTooSmall (float fMinEdgeLength, float
       rclPAry[pI->second].SetInvalid();
 
       // alle Eckpunkt-Indizies der Dreiecke die den geloeschten Punkte indizieren umbiegen auf neuen (Nachbar-)Punkt
-      for (std::set<MeshFacetArray::_TIterator>::iterator pF = clPt2Facets[pI->second].begin(); pF != clPt2Facets[pI->second].end(); pF++)
+      for (std::set<MeshFacetArray::_TConstIterator>::iterator pF = clPt2Facets[pI->second].begin(); pF != clPt2Facets[pI->second].end(); pF++)
       {
-        MeshFacet &rclF = *(*pF);
+        const MeshFacet &rclF = *(*pF);
 
         for (int i = 0; i < 3; i++)
         {
-          if (rclF._aulPoints[i] == pI->second)
-            rclF._aulPoints[i] = pI->first;
+//          if (rclF._aulPoints[i] == pI->second)
+//            rclF._aulPoints[i] = pI->first;
         }
 
         // Facets mit 2 indentischen Eckpunkten loeschen
@@ -417,278 +693,4 @@ unsigned long MeshDegenerations::RemoveEdgeTooSmall (float fMinEdgeLength, float
   _rclMesh.RebuildNeighbours();
 
   return ulCtFacets - _rclMesh.CountFacets();
-}
-
-bool MeshDegenerations::Evaluate ()
-{
-  // first reset all error modes
-  ResetErrorModes();
-
-  MeshFacetArray::_TIterator  pFIter;
-  MeshPointArray::_TIterator  pPIter;
-  unsigned long ulCtPoints, ulCtFacets, i;
-
-  ulCtPoints = _rclMesh.CountPoints();
-  ulCtFacets = _rclMesh.CountFacets();
-
-  // Ueberpruefung auf ungueltige Facets
-  for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++)
-  {
-    if (pFIter->IsValid() == false)
-    {
-      // 1 oder mehrere ungueltige Facets
-      AddErrorMode( InvalidFacet );
-    }
-
-    if (std::find_if(pFIter->_aulPoints, pFIter->_aulPoints + 3,
-      std::bind2nd(std::greater_equal<unsigned long>(), ulCtPoints)) < pFIter->_aulPoints + 3)
-    {
-      // Punkt-Indizies > max. Punkte
-      AddErrorMode( OutOfRangePoint );
-    }
-
-    // doppelte Punktbelegung
-    if ((pFIter->_aulPoints[0] == pFIter->_aulPoints[1]) ||
-        (pFIter->_aulPoints[0] == pFIter->_aulPoints[2]) ||
-        (pFIter->_aulPoints[1] == pFIter->_aulPoints[2]))
-    {
-      AddErrorMode( CorruptedFacets );
-    }
-
-    for (i = 0; i < 3; i++)
-    {
-      if ((pFIter->_aulNeighbours[i] >= ulCtFacets) && (pFIter->_aulNeighbours[i] < ULONG_MAX))
-      {
-        // Nachbar-Indizies ungueltig
-        AddErrorMode( OutOfRangeFacet );
-      }
-    }
-  }
-
-  // mind. ein zu einer Kante (oder Punkt) degeneriertes Dreieck (geometrisch, nicht topologisch)
-  MeshFacetIterator cFIter(_rclMesh);
-  for (cFIter.Init(); cFIter.More(); cFIter.Next())
-  {
-    if ((cFIter->_aclPoints[0] == cFIter->_aclPoints[1]) ||
-        (cFIter->_aclPoints[0] == cFIter->_aclPoints[2]) ||
-        (cFIter->_aclPoints[1] == cFIter->_aclPoints[2]))
-    {
-      AddErrorMode( DegeneratedFacets );
-      break;
-    }
-  }
-
-  // Ueberpruefung auf ungueltige Punkte
-  for (pPIter = _rclMesh._aclPointArray.begin(); pPIter < _rclMesh._aclPointArray.end(); pPIter++)
-  {
-    if (pPIter->IsValid() == false)
-    {
-      // 1 oder mehrere ungueltige Punkte
-      AddErrorMode( InvalidPoint );
-      break;
-    }
-  }
-
-  // Ueberpruefung auf doppelte Dreiecke
-  std::set<TMeshFacetInds> FIndsSet;
-  for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++)
-  {
-    TMeshFacetInds FInds(pFIter->_aulPoints[0], pFIter->_aulPoints[1], pFIter->_aulPoints[2]);
-    FIndsSet.insert(FInds);
-  }
-  if (FIndsSet.size() != _rclMesh._aclFacetArray.size())
-  {
-    // zwei gleiche Dreiecke
-    AddErrorMode( DuplicatedFacets );
-  }
-
-  // keine doppelte Punkte
-  {
-    std::vector<MeshHelpPoint>             aclPoints(_rclMesh.CountPoints());
-    std::vector<MeshHelpPoint>::iterator   pI = aclPoints.begin();
-    for (pPIter = _rclMesh._aclPointArray.begin(); pPIter < _rclMesh._aclPointArray.end(); pPIter++, pI++)
-      pI->Set(0, 0, *pPIter);
-    std::sort(aclPoints.begin(), aclPoints.end());
-    if (std::adjacent_find(aclPoints.begin(), aclPoints.end()) < aclPoints.end())
-    {
-      // doppelter Punkt
-      AddErrorMode( DuplicatedPoints );
-    }
-  }
-
-  return !HasDegenerations();
-}
-
-bool MeshDegenerations::Fixup()
-{
-  return false;
-}
-
-std::vector<unsigned long> MeshDegenerations::GetIndices(MeshDegenerations::TErrorTable error)
-{
-  unsigned long ulCtFacets = _rclMesh.CountFacets();
-  unsigned long ulCtPoints = _rclMesh.CountPoints();
-
-  unsigned long i=0;
-  std::vector<unsigned long> ulInds;
-  MeshFacetArray::_TIterator  pFIter;
-  MeshPointArray::_TIterator  pPIter;
-
-  switch (error)
-  {
-    case InvalidFacet:
-    {
-      for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++, i++)
-      {
-        if (pFIter->IsValid() == false)
-        {
-          ulInds.push_back(i);
-        }
-      } break;
-    }
-    case InvalidPoint:
-    {
-      std::map<unsigned long, std::vector<unsigned long> > aulPoint2Facet;
-      for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++, i++)
-      {
-        for (int i=0; i<3; i++)
-        {
-          aulPoint2Facet[pFIter->_aulPoints[i]].push_back(i);
-        }
-      }
-
-      i = 0;
-      MeshPointArray::_TIterator  pPIter;
-      std::vector<unsigned long> aulTmp;
-      for (pPIter = _rclMesh._aclPointArray.begin(); pPIter < _rclMesh._aclPointArray.end(); pPIter++, i++)
-      {
-        if (pPIter->IsValid() == false)
-        {
-          aulTmp.push_back(i);
-        }
-      }
-
-      for (std::vector<unsigned long>::iterator it = aulTmp.begin(); it != aulTmp.end(); ++it)
-      {
-        for (std::vector<unsigned long>::iterator it2 = aulPoint2Facet[*it].begin(); it2 != aulPoint2Facet[*it].end(); it2++)
-        {
-          ulInds.push_back(*it2);
-        }
-      }
-
-      std::sort(ulInds.begin(), ulInds.end());
-      ulInds.erase(std::unique(ulInds.begin(), ulInds.end()), ulInds.end());
-      break;
-    }
-    case DuplicatedFacets:
-    {
-      // get all facets
-      std::map<TMeshFacetInds, std::vector<unsigned long> > aFIndsMap;
-      for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++, i++)
-      {
-        TMeshFacetInds FInds(pFIter->_aulPoints[0], pFIter->_aulPoints[1], pFIter->_aulPoints[2]);
-        aFIndsMap[FInds].push_back(i);
-      }
-
-      // get all double facets
-      std::vector<unsigned long> idx;
-      for (std::map<TMeshFacetInds, std::vector<unsigned long> >::iterator it = aFIndsMap.begin(); it != aFIndsMap.end(); ++it)
-      {
-        idx = it->second;
-        if (idx.size() > 1)
-        {
-          for (std::vector<unsigned long>::iterator it2 = idx.begin(); it2 != idx.end(); ++it2)
-            ulInds.push_back(*it2);
-        }
-      } break;
-    }
-    case DuplicatedPoints:
-    {
-      std::vector<MeshHelpPoint> aclPoints(_rclMesh.CountPoints());
-      std::vector<MeshHelpPoint>::iterator   pI = aclPoints.begin();
-      for (pPIter = _rclMesh._aclPointArray.begin(); pPIter < _rclMesh._aclPointArray.end(); pPIter++, pI++)
-        pI->Set(0, 0, *pPIter);
-      std::sort(aclPoints.begin(), aclPoints.end());
-      if (std::adjacent_find(aclPoints.begin(), aclPoints.end()) < aclPoints.end())
-      {
-        std::map<unsigned long, std::vector<unsigned long> > aulPoint2Facet;
-        i = 0;
-        for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++, i++)
-        {
-          for (int i=0; i<3; i++)
-          {
-            aulPoint2Facet[pFIter->_aulPoints[i]].push_back(i);
-          }
-        }
-
-        i = 0;
-
-        // get all multiple points
-        std::vector<MeshHelpPoint>::iterator it  = aclPoints.begin();
-        std::vector<MeshHelpPoint>::iterator it2 = aclPoints.begin();
-        std::vector<unsigned long> aclMultiple;
-        for (++it2; it2 != aclPoints.end() && it != aclPoints.end(); ++it2, ++it)
-        {
-          if ((*it2) == (*it))
-            aclMultiple.push_back(_rclMesh._aclPointArray.GetOrAddIndex(it2->_clPt));
-        }
-
-        for (std::vector<unsigned long>::iterator it3 = aclMultiple.begin(); it3 != aclMultiple.end(); ++it3)
-        {
-          for (std::vector<unsigned long>::iterator it4 = aulPoint2Facet[*it3].begin(); it4 != aulPoint2Facet[*it3].end(); it4++)
-          {
-            ulInds.push_back(*it4);
-          }
-        }
-
-        std::sort(ulInds.begin(), ulInds.end());
-        ulInds.erase(std::unique(ulInds.begin(), ulInds.end()), ulInds.end());
-      } break;
-    }
-    case OutOfRangePoint:
-    {
-      MeshFacetArray::_TIterator  pFIter;
-      for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++, i++)
-      {
-        if (std::find_if(pFIter->_aulPoints, pFIter->_aulPoints + 3,
-          std::bind2nd(std::greater_equal<unsigned long>(), ulCtPoints)) < pFIter->_aulPoints + 3)
-        {
-          ulInds.push_back(i);
-        }
-      } break;
-    }
-    case OutOfRangeFacet:
-    {
-      MeshFacetArray::_TIterator  pFIter;
-      for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++, i++)
-      {
-        for (i = 0; i < 3; i++)
-        {
-          if ((pFIter->_aulNeighbours[i] >= ulCtFacets) && (pFIter->_aulNeighbours[i] < ULONG_MAX))
-          {
-            ulInds.push_back(i);
-            break;
-          }
-        }
-      } break;
-    }
-    case CorruptedFacets:
-    {
-      MeshFacetArray::_TIterator  pFIter;
-      for (pFIter = _rclMesh._aclFacetArray.begin(); pFIter < _rclMesh._aclFacetArray.end(); pFIter++, i++)
-      {
-        if ((pFIter->_aulPoints[0] == pFIter->_aulPoints[1]) ||
-            (pFIter->_aulPoints[0] == pFIter->_aulPoints[2]) ||
-            (pFIter->_aulPoints[1] == pFIter->_aulPoints[2]))
-        {
-          ulInds.push_back(i);
-        }
-      } break;
-    }
-    case DegeneratedFacets:
-    case Undefined:
-      break;
-  }
-
-  return ulInds;
 }

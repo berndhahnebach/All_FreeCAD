@@ -81,6 +81,21 @@ private:
 };
 
 /**
+ * The ViewProviderExport class creates an empty node.
+ * @author Werner Mayer
+ */
+class GuiMeshExport ViewProviderExport : public Gui::ViewProviderFeature
+{
+  PROPERTY_HEADER(MeshGui::ViewProviderExport);
+
+public:
+  ViewProviderExport();
+  virtual ~ViewProviderExport();
+  std::vector<std::string> getModes(void);
+  virtual QPixmap getIcon() const;
+};
+
+/**
  * The ViewProviderMesh class creates
  * a node representing the mesh data structure.
  * @author Werner Mayer

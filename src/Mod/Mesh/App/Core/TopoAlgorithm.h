@@ -196,8 +196,9 @@ private:
 class AppMeshExport MeshHarmonizer: virtual public MeshFacetVisitor
 {
 public:
+  MeshHarmonizer( std::vector<unsigned long>& uIndices ) : _uIndices(uIndices) {}
   /** Adjusts the orientation of facet \a rclFacet to that one of \a rclFrom. */
-  bool Visit (MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long, unsigned long)
+  bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long)
   {
     unsigned long i, j;
     Base::Sequencer().next();
@@ -212,7 +213,7 @@ public:
           if ((rclFrom._aulPoints[i+1]     == rclFacet._aulPoints[(j+1)%3]) ||
               (rclFrom._aulPoints[(i+2)%3] == rclFacet._aulPoints[(j+2)%3]))
           {
-            rclFacet.FlipNormal();
+            _uIndices.push_back(ulFInd);
           } 
           return true;
         }
@@ -220,6 +221,9 @@ public:
     }
     return true;
   }
+
+private:
+  std::vector<unsigned long>& _uIndices;
 };
 
 /**
@@ -233,7 +237,7 @@ class AppMeshExport MeshComponents
 public:
   enum TMode {OverEdge, OverPoint};
 
-  MeshComponents( MeshKernel& rclMesh );
+  MeshComponents( const MeshKernel& rclMesh );
   ~MeshComponents();
 
   /**
@@ -259,7 +263,7 @@ protected:
     }
   };
 protected:
-	MeshKernel& _rclMesh;
+	const MeshKernel& _rclMesh;
 };
 
 } // namespace MeshCore
