@@ -43,11 +43,13 @@ typedef Matrix4D& RMatrix4D;
 class BaseExport Matrix4D
 {
 public:
+  /// default constructor
+  Matrix4D(void);
   /// Construction
-  Matrix4D (float a11=1.0, float a12=0.0, float a13=0.0, float a14=0.0, 
-            float a21=0.0, float a22=1.0, float a23=0.0, float a24=0.0,
-            float a31=0.0, float a32=0.0, float a33=1.0, float a34=0.0,
-            float a41=0.0, float a42=0.0, float a43=0.0, float a44=1.0 );
+  Matrix4D (float a11, float a12, float a13, float a14, 
+            float a21, float a22, float a23, float a24,
+            float a31, float a32, float a33, float a34,
+            float a41, float a42, float a43, float a44 );
   /// Construction
   Matrix4D (const Matrix4D& rclMtrx);
   /// Construction with an Axis

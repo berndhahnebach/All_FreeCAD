@@ -33,6 +33,10 @@
 
 using namespace Base;
 
+Matrix4D::Matrix4D (void)
+{
+  unity();
+}
 
 Matrix4D::Matrix4D (float a11, float a12, float a13, float a14, 
                     float a21, float a22, float a23, float a24,
@@ -53,7 +57,7 @@ Matrix4D::Matrix4D (const Matrix4D& rclMtrx)
 
 Matrix4D::Matrix4D (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle)
 {
-  rotLine(rclBase,rclDir,fAngle);
+  this->rotLine(rclBase,rclDir,fAngle);
 }
 
 void Matrix4D::unity (void)

@@ -59,7 +59,10 @@ int TransformDemolding::execute(void)
     return 1;
 
   MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->getMesh()); // Result Meshkernel
-  pcKernel->Transform(Matrix4D(Vector3D(0,0,0), Axis.getValue(), Rotation.getValue()  ));
+  //Matrix4D trans(Vector3D(0,0,0), Axis.getValue(), Rotation.getValue()  );
+  Matrix4D trans;
+  trans.rotLine( Axis.getValue(), Rotation.getValue()  );
+  pcKernel->Transform(trans);
   Mesh.setValue(pcKernel);
  
   return 0;
