@@ -64,7 +64,7 @@ public:
   /// Assignment
   inline Matrix4D& operator=  (const Matrix4D& rclMtrx);
   /// Matrix multiplication
-  inline Matrix4D  operator*  (const Matrix4D& rclMtrx);
+  inline Matrix4D  operator*  (const Matrix4D& rclMtrx) const;
   /// Multiplication matrix with vector 
   inline Vector3D  operator*  (const Vector3D& rclVct) const;
   /// Comparison
@@ -140,7 +140,7 @@ inline Matrix4D& Matrix4D::operator *= (const Matrix4D& rclMtrx)
   return *this;
 }
 
-inline Matrix4D Matrix4D::operator * (const Matrix4D& rclMtrx)
+inline Matrix4D Matrix4D::operator * (const Matrix4D& rclMtrx) const
 {
   Matrix4D  clMat;
   short     ie, iz, is;

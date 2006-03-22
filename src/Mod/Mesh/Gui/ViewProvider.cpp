@@ -92,7 +92,6 @@ using MeshCore::MeshGeomFacet;
 using MeshCore::MeshFacet;
 using MeshCore::MeshFacetGrid;
 using MeshCore::MeshPolygonTriangulation;
-using MeshCore::MeshSTL;
 using MeshCore::MeshEvalSolid;
 
 using Base::Vector3D;
