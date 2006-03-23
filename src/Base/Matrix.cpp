@@ -57,6 +57,7 @@ Matrix4D::Matrix4D (const Matrix4D& rclMtrx)
 
 Matrix4D::Matrix4D (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle)
 {
+  unity();
   this->rotLine(rclBase,rclDir,fAngle);
 }
 
