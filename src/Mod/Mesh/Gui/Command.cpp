@@ -26,6 +26,7 @@
 # include <qaction.h>
 # include <qdir.h>
 # include <qfileinfo.h>
+# include <qmessagebox.h>
 # include <gts.h>
 # include <map>
 #endif
@@ -44,6 +45,8 @@
 #include <Gui/FileDialog.h>
 #include <Gui/Selection.h>
 #include <Gui/ViewProvider.h>
+
+#include "DlgEvaluateMeshImp.h"
 
 using namespace Mesh;
 
@@ -101,7 +104,7 @@ CmdMeshDemolding::CmdMeshDemolding()
 {
   sAppModule    = "Mesh";
   sGroup        = "Mesh";
-  sMenuText     = QT_TR_NOOP("Interactive dmolding direction");
+  sMenuText     = QT_TR_NOOP("Interactive demolding direction");
   sToolTipText  = sMenuText;
   sWhatsThis    = sMenuText;
   sStatusTip    = sMenuText;
@@ -468,6 +471,36 @@ bool CmdMeshPolyPick::isActive(void)
   return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
+DEF_STD_CMD_A(CmdMeshPolyCut);
+
+CmdMeshPolyCut::CmdMeshPolyCut()
+  :Command("Mesh_PolyCut")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Cut mesh");
+  sToolTipText  = QT_TR_NOOP("Cuts a mesh with a picked polygon");
+  sWhatsThis    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
+  sStatusTip    = QT_TR_NOOP("Cuts a mesh with a picked polygon");
+  sPixmap       = "PolygonPick";
+}
+
+void CmdMeshPolyCut::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  if ( fea.size() == 1 )
+  {
+    Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
+    pVP->setEdit();
+  }
+}
+
+bool CmdMeshPolyCut::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+}
+
 DEF_STD_CMD_A(CmdMeshToolMesh);
 
 CmdMeshToolMesh::CmdMeshToolMesh()
@@ -521,6 +554,183 @@ bool CmdMeshToolMesh::isActive(void)
   return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 2;
 }
 
+DEF_STD_CMD_A(CmdMeshEvaluation);
+
+CmdMeshEvaluation::CmdMeshEvaluation()
+  :Command("Mesh_Evaluation")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Evaluate mesh...");
+  sToolTipText  = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
+  sWhatsThis    = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
+  sStatusTip    = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshEvaluation::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    MeshGui::DlgEvaluateMeshImp dlg(Gui::getMainWindow());
+    dlg.setMesh( (Mesh::Feature*)(*it) );
+    dlg.exec();
+  }
+}
+
+bool CmdMeshEvaluation::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+}
+
+DEF_STD_CMD_A(CmdMeshEvaluateSolid);
+
+CmdMeshEvaluateSolid::CmdMeshEvaluateSolid()
+  :Command("Mesh_EvaluateSolid")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Check solid mesh");
+  sToolTipText  = QT_TR_NOOP("Checks whether the mesh is a solid");
+  sWhatsThis    = QT_TR_NOOP("Checks whether the mesh is a solid");
+  sStatusTip    = QT_TR_NOOP("Checks whether the mesh is a solid");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshEvaluateSolid::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    Mesh::Feature* mesh = (Mesh::Feature*)(*it);
+    QString msg = QString("The mesh '%1' is ").arg(mesh->name.getValue());
+    if ( mesh->getMesh().HasOpenEdges() )
+      msg += "not a solid.";
+    else
+      msg += "a solid.";
+    QMessageBox::information(Gui::getMainWindow(), QObject::tr("Solid Mesh"), msg);
+  }
+}
+
+bool CmdMeshEvaluateSolid::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+}
+
+DEF_STD_CMD_A(CmdMeshHarmonizeNormals);
+
+CmdMeshHarmonizeNormals::CmdMeshHarmonizeNormals()
+  :Command("Mesh_HarmonizeNormals")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Harmoinze normals");
+  sToolTipText  = QT_TR_NOOP("Hormonizes the normals of the mesh");
+  sWhatsThis    = QT_TR_NOOP("Hormonizes the normals of the mesh");
+  sStatusTip    = QT_TR_NOOP("Hormonizes the normals of the mesh");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshHarmonizeNormals::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    openCommand("Mesh Harmonize Normals");
+    doCommand(Doc,"f=App.document().GetFeature(\"%s\")",(*it)->name.getValue());
+    doCommand(Doc,"m=f.getMesh()");
+    doCommand(Doc,"m.harmonizeNormals()");
+    doCommand(Doc,"f.setMesh(m)");
+    commitCommand();
+    updateActive();
+  }
+}
+
+bool CmdMeshHarmonizeNormals::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
+DEF_STD_CMD_A(CmdMeshFlipNormals);
+
+CmdMeshFlipNormals::CmdMeshFlipNormals()
+  :Command("Mesh_FlipNormals")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Flip normals");
+  sToolTipText  = QT_TR_NOOP("Flips the normals of the mesh");
+  sWhatsThis    = QT_TR_NOOP("Flips the normals of the mesh");
+  sStatusTip    = QT_TR_NOOP("Flips the normals of the mesh");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshFlipNormals::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    openCommand("Mesh Flip Normals");
+    doCommand(Doc,"f=App.document().GetFeature(\"%s\")",(*it)->name.getValue());
+    doCommand(Doc,"m=f.getMesh()");
+    doCommand(Doc,"m.flipNormals()");
+    doCommand(Doc,"f.setMesh(m)");
+    commitCommand();
+    updateActive();
+  }
+}
+
+bool CmdMeshFlipNormals::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
+DEF_STD_CMD_A(CmdMeshBoundingBox);
+
+CmdMeshBoundingBox::CmdMeshBoundingBox()
+  :Command("Mesh_BoundingBox")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Boundings info");
+  sToolTipText  = QT_TR_NOOP("Shows the boundings of the selected mesh");
+  sWhatsThis    = QT_TR_NOOP("Shows the boundings of the selected mesh");
+  sStatusTip    = QT_TR_NOOP("Shows the boundings of the selected mesh");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshBoundingBox::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    const MeshCore::MeshKernel& rMesh = ((Mesh::Feature*)(*it))->getMesh();
+    const Base::BoundBox3D& box = rMesh.GetBoundBox();
+    QString minX, maxX, minY, maxY, minZ, maxZ;
+    minX.sprintf("Min X=%f", box.MinX);
+    maxX.sprintf("Max X=%f", box.MaxX);
+    minY.sprintf("Min Y=%f", box.MinY);
+    maxY.sprintf("Min Y=%f", box.MaxY);
+    minZ.sprintf("Min Z=%f", box.MinZ);
+    maxZ.sprintf("Max Z=%f", box.MaxZ);
+
+    QString msg = QString("%1\t%2\t%3\n\n%4\t%5\t%6\n\n").arg(minX).arg(minY).arg(minZ).arg(maxX).arg(maxY).arg(maxZ);
+    QMessageBox::information(Gui::getMainWindow(), QObject::tr("Boundings"), msg);
+    break;
+  }
+}
+
+bool CmdMeshBoundingBox::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+}
+
 void CreateMeshCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -532,6 +742,12 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshExMakeUnion());
   rcCmdMgr.addCommand(new CmdMeshDemolding());
   rcCmdMgr.addCommand(new CmdMeshPolyPick());
+  rcCmdMgr.addCommand(new CmdMeshPolyCut());
   rcCmdMgr.addCommand(new CmdMeshToolMesh());
   rcCmdMgr.addCommand(new CmdMeshTransform());
+  rcCmdMgr.addCommand(new CmdMeshEvaluation());
+  rcCmdMgr.addCommand(new CmdMeshEvaluateSolid());
+  rcCmdMgr.addCommand(new CmdMeshHarmonizeNormals());
+  rcCmdMgr.addCommand(new CmdMeshFlipNormals());
+  rcCmdMgr.addCommand(new CmdMeshBoundingBox());
 }

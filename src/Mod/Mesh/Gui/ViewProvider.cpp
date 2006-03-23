@@ -24,12 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qapplication.h>
-# include <qlineedit.h>
-# include <qlistview.h>
-# include <qmessagebox.h>
-# include <qpainter.h>
-# include <qvariant.h>
 # include <Inventor/events/SoEvent.h>
 # include <Inventor/events/SoKeyboardEvent.h>
 # include <Inventor/events/SoLocation2Event.h>
@@ -96,81 +90,6 @@ using MeshCore::MeshEvalSolid;
 
 using Base::Vector3D;
 
-
-TYPESYSTEM_SOURCE(MeshGui::KernelEditorItem, Gui::PropertyEditor::EditableItem);
-
-KernelEditorItem::KernelEditorItem()
-{
-  setEditable(false);
-  setExpandable( true );
-  setOpen(true);
-  Gui::PropertyEditor::IntEditorItem* item=0;
-  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Faces", 0);
-  item->setEditable(false);
-  insertItem(item);
-  item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Points", 0);
-  item->setEditable(false);
-  insertItem(item);
-}
-
-QWidget* KernelEditorItem::createEditor( int column, QWidget* parent )
-{
-  if ( column == 0 )
-    return 0;
-
-  QLineEdit* editor = new QLineEdit( parent, "TextEditorItem::edit" );
-  editor->setText( overrideValue().toString() );
-  editor->setFocus();
-  connect(editor, SIGNAL( textChanged(const QString&) ), this, SLOT( onValueChanged() ) );
-  return editor;
-}
-
-void KernelEditorItem::stopEdit( QWidget* editor, int column )
-{
-  setOverrideValue( dynamic_cast<QLineEdit*>(editor)->text() );
-  setText( column, overrideValue().toString() );
-}
-
-void KernelEditorItem::setDefaultValue()
-{
-  QLineEdit* edit = dynamic_cast<QLineEdit*>(_editor);
-  edit->setText( value().toString() );
-}
-
-void KernelEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
-{
-  int ctPts = 0;
-  int ctFts = 0;
-
-  for ( std::vector<App::Property*>::const_iterator pt = prop.begin(); pt != prop.end(); ++pt )
-  {
-    Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)(*pt);
-    const MeshKernel& rMesh = pPropMesh->getValue();
-    ctPts += (int)rMesh.CountPoints();
-    ctFts += (int)rMesh.CountFacets();
-  }
-
-  QString  str = QString("[Points: %1, Faces: %2]").arg(ctPts).arg(ctFts);
-  QVariant value( str );
-  setValue( value );
-  setText( 1, value.toString() );
-
-  // set children
-  Gui::PropertyEditor::EditableItem* item = (Gui::PropertyEditor::EditableItem*)firstChild();
-  QVariant pts(ctPts);
-  item->setValue(pts);
-  item->setText( 1, pts.toString() );
-  item = (Gui::PropertyEditor::EditableItem*)item->nextSibling();
-  QVariant fts(ctFts);
-  item->setValue(fts);
-  item->setText( 1, fts.toString() );
-}
-
-void KernelEditorItem::convertToProperty(const QVariant&)
-{
-}
-
-// ======================================================================
 
 PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderFeature)
 

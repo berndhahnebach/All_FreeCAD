@@ -133,7 +133,7 @@ public:
   void setPyObject(PyObject *value);
   //@}
 
-  const char* getEditorName(void) const { return "MeshGui::KernelEditorItem"; }
+  const char* getEditorName(void) const { return "MeshGui::PropertyEditorMesh"; }
 
   /** @name Save/restore */
   //@{

@@ -61,9 +61,15 @@ Gui::MenuItem* Workbench::setupMenuBar() const
   Gui::MenuItem* item = root->findItem( "&Windows" );
   Gui::MenuItem* mesh = new Gui::MenuItem;
   root->insertItem( item, mesh );
+
+  // analyze
+  Gui::MenuItem* analyze = new Gui::MenuItem;
+  analyze->setCommand( "Analyze" );
+  *analyze << "Mesh_Evaluation" << "Separator" << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
+ 
   mesh->setCommand( "&Mesh" );
-  *mesh << "Mesh_Import" << "Mesh_Export" << "Separator" << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature"
-        << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
+  *mesh << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" << "Mesh_Import" << "Mesh_Export" << "Separator" 
+        << "Mesh_PolyCut" << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
   return root;
 }
 

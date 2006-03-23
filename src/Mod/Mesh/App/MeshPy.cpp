@@ -139,6 +139,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(cutOuter)
   PYMETHODEDEF(cutInner)
   PYMETHODEDEF(flipNormals)
+  PYMETHODEDEF(harmonizeNormals)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -315,6 +316,19 @@ PYFUNCIMP_D(MeshPy,flipNormals)
   PY_TRY {
     MeshTopoAlgorithm Algo(*(_pcMesh));
     Algo.FlipNormals();
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,harmonizeNormals)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshTopoAlgorithm Algo(*(_pcMesh));
+    Algo.HarmonizeNormals();
   } PY_CATCH;
 
   Py_Return; 

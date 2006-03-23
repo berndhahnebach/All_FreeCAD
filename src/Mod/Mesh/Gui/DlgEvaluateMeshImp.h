@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,50 +21,42 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+#ifndef MESHGUI_DLG_EVALUATE_MESH_IMP_H
+#define MESHGUI_DLG_EVALUATE_MESH_IMP_H
+
 #ifndef _PreComp_
-# include <fcntl.h>
-# include <TFunction_Logbook.hxx>
-# include <ios>
 #endif
 
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Base/Sequencer.h>
-#include <Base/Matrix.h>
-#include <Base/Vector3D.h>
+#include "DlgEvaluateMesh.h"
 
-#include "FeatureMeshTransformDemolding.h"
-
-#include "Core/MeshIO.h"
-
-
-using namespace Mesh;
-using namespace MeshCore;
-
-PROPERTY_SOURCE(Mesh::TransformDemolding, Mesh::Transform)
-
-
-TransformDemolding::TransformDemolding(void)
-{
-  ADD_PROPERTY(Source,(0));
-  ADD_PROPERTY(Rotation,(0.0));
-  ADD_PROPERTY(Axis,(0.0,0.0,1.0));
+namespace Mesh {
+  class Feature;
 }
 
-int TransformDemolding::execute(void)
-{
-  Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
-  if(!pcFirst || pcFirst->getStatus() != Valid)
-    return 1;
+namespace MeshGui {
 
-  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->getMesh()); // Result Meshkernel
-  Matrix4D trans(Vector3D(0,0,0), Axis.getValue(), Rotation.getValue()  );
-  //Matrix4D trans;
-  //trans.rotLine( Axis.getValue(), Rotation.getValue()  );
-  pcKernel->Transform(trans);
-  Mesh.setValue(pcKernel);
- 
-  return 0;
-}
+/**
+ * \author Werner Mayer
+ */
+class DlgEvaluateMeshImp : public DlgEvaluateMesh
+{ 
+public:
+  DlgEvaluateMeshImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  ~DlgEvaluateMeshImp();
 
+  void setMesh( Mesh::Feature* );
+  void onRefreshInfo();
+  void onAnalyzeOrientation();
+  void onAnalyzeNonManifolds();
+  void onAnalyzeTopology();
+  void onAnalyzeDegenerations();
+  void onAnalyzeDuplicatedFaces();
+  void onAnalyzeDuplicatedPoints();
+
+private:
+  Mesh::Feature* _meshFeature;
+};
+
+} // namespace MeshGui
+
+#endif // MESHGUI_DLG_EVALUATE_MESH_IMP_H

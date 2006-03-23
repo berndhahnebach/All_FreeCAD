@@ -25,13 +25,11 @@
 
 #ifndef _PreComp_
 # include <qdatetime.h>
-# include <qptrlist.h>
 # include <vector>
 # include <Inventor/fields/SoSFVec2f.h>
 #endif
 
 #include "../App/Core/Elements.h"
-#include <Gui/propertyeditor/propertyeditorinput.h>
 #include <Gui/ViewProviderFeature.h>
 
 
@@ -60,25 +58,6 @@ namespace MeshCore {
 
 
 namespace MeshGui {
-
-/**
- * Change a text property.
- * \author Werner Mayer
- */
-class GuiMeshExport KernelEditorItem: public Gui::PropertyEditor::EditableItem
-{
-  TYPESYSTEM_HEADER();
-
-protected:
-  QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( QWidget* editor, int column );
-  virtual void setDefaultValue();
-  virtual void convertFromProperty(const std::vector<App::Property*>&);
-  virtual void convertToProperty(const QVariant&);
-
-private:
-  KernelEditorItem();
-};
 
 /**
  * The ViewProviderExport class creates an empty node.

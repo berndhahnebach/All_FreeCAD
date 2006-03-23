@@ -32,6 +32,7 @@
 #include <Gui/BitmapFactory.h>
 
 #include "images.h"
+#include "PropertyEditorMesh.h"
 #include "ViewProvider.h"
 #include "ViewProviderCurvature.h"
 #include "ViewProviderTransform.h"
@@ -70,7 +71,7 @@ void GuiMeshExport initMeshGui() {
   // instanciating the commands
   CreateMeshCommands();
 
-  MeshGui::KernelEditorItem                  ::init();
+  MeshGui::PropertyEditorMesh                ::init();
 
   MeshGui::ViewProviderMesh                  ::init();
   MeshGui::ViewProviderExport                ::init();

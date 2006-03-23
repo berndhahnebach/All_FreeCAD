@@ -30,6 +30,7 @@
 
 // STL
 #include <algorithm>
+#include <bitset>
 #include <iostream>
 #include <fstream>
 #include <list>
@@ -57,11 +58,13 @@
 #include <qapplication.h>
 #include <qcursor.h>
 #include <qfiledialog.h>
+#include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistview.h>
 #include <qmainwindow.h>
 #include <qmessagebox.h>
 #include <qpainter.h>
+#include <qpushbutton.h>
 #include <qscrollview.h>
 #include <qthread.h>
 #include <qvariant.h>

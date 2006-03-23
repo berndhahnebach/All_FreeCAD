@@ -89,6 +89,7 @@ public:
   PYFUNCDEF_D(MeshPy,cutOuter)
   PYFUNCDEF_D(MeshPy,cutInner)
   PYFUNCDEF_D(MeshPy,flipNormals)
+  PYFUNCDEF_D(MeshPy,harmonizeNormals)
 
 protected:
 

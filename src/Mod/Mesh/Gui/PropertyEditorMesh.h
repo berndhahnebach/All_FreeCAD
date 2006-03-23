@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,51 +20,38 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef MESHGUI_PROPERTYEDITOR_MESH_H
+#define MESHGUI_PROPERTYEDITOR_MESH_H
 
-#include "PreCompiled.h"
 #ifndef _PreComp_
-# include <fcntl.h>
-# include <TFunction_Logbook.hxx>
-# include <ios>
+# include <qptrlist.h>
 #endif
 
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Base/Sequencer.h>
-#include <Base/Matrix.h>
-#include <Base/Vector3D.h>
+#include <Gui/propertyeditor/propertyeditorinput.h>
 
-#include "FeatureMeshTransformDemolding.h"
+namespace MeshGui {
 
-#include "Core/MeshIO.h"
-
-
-using namespace Mesh;
-using namespace MeshCore;
-
-PROPERTY_SOURCE(Mesh::TransformDemolding, Mesh::Transform)
-
-
-TransformDemolding::TransformDemolding(void)
+/**
+ * Change a text property.
+ * \author Werner Mayer
+ */
+class GuiMeshExport PropertyEditorMesh : public Gui::PropertyEditor::EditableItem
 {
-  ADD_PROPERTY(Source,(0));
-  ADD_PROPERTY(Rotation,(0.0));
-  ADD_PROPERTY(Axis,(0.0,0.0,1.0));
-}
+  TYPESYSTEM_HEADER();
 
-int TransformDemolding::execute(void)
-{
-  Feature *pcFirst  = dynamic_cast<Feature*>(Source.getValue());
-  if(!pcFirst || pcFirst->getStatus() != Valid)
-    return 1;
+protected:
+  QWidget* createEditor( int column, QWidget* parent );
+  virtual void stopEdit( QWidget* editor, int column );
+  virtual void setDefaultValue();
+  virtual void convertFromProperty(const std::vector<App::Property*>&);
+  virtual void convertToProperty(const QVariant&);
 
-  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->getMesh()); // Result Meshkernel
-  Matrix4D trans(Vector3D(0,0,0), Axis.getValue(), Rotation.getValue()  );
-  //Matrix4D trans;
-  //trans.rotLine( Axis.getValue(), Rotation.getValue()  );
-  pcKernel->Transform(trans);
-  Mesh.setValue(pcKernel);
- 
-  return 0;
-}
+private:
+  PropertyEditorMesh();
+};
+
+} // namespace MeshGui
+
+
+#endif // MESHGUI_PROPERTYEDITOR_MESH_H
 
