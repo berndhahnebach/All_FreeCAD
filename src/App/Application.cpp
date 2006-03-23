@@ -255,14 +255,42 @@ std::vector<App::Document*> Application::getDocuments() const
 
 string Application::getUniqueDocumentName(const char *Name) const
 {
+ // strip ilegal chars
+  string CleanName;
+  const char *It=Name;
+
+  while(*It != '\0')
+  {
+    if(   (*It>=48 && *It<=57)   // Numbers
+        ||(*It>=65 && *It<=90)   // Upercase letters
+        ||(*It>=97 && *It<=122)  // Upercase letters
+       )
+    {
+      CleanName += *It;
+    }else{
+      switch(*It)
+      {
+      case 'ä': CleanName += "ae"; break;
+      case 'ü': CleanName += "ue"; break;
+      case 'ö': CleanName += "oe"; break;
+      case 'Ä': CleanName += "Ae"; break;
+      case 'Ü': CleanName += "Ue"; break;
+      case 'Ö': CleanName += "Oe"; break;
+      default:
+        CleanName += '_';
+      }
+    }
+    It++;
+  }
+
   map<string,DocEntry>::const_iterator pos;
 
   // name in use?
-  pos = DocMap.find(Name);
+  pos = DocMap.find(CleanName);
 
   if (pos == DocMap.end())
     // if not, name is OK
-    return Name;
+    return CleanName;
   else
   {
     // find highest suffix
@@ -270,9 +298,9 @@ string Application::getUniqueDocumentName(const char *Name) const
     for(pos = DocMap.begin();pos != DocMap.end();++pos)
     {
       const string &rclObjName = pos->first;
-      if (rclObjName.substr(0, strlen(Name)) == Name)  // Prefix gleich
+      if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName)  // Prefix gleich
       {
-        string clSuffix(rclObjName.substr(strlen(Name)));
+        string clSuffix(rclObjName.substr(strlen(CleanName.c_str())));
         if (clSuffix.size() > 0){
           int nPos = clSuffix.find_first_not_of("0123456789");
           if(nPos==-1)
@@ -281,7 +309,7 @@ string Application::getUniqueDocumentName(const char *Name) const
       }
     }
     char szName[200];
-    sprintf(szName, "%s%d", Name, nSuff + 1);
+    sprintf(szName, "%s%d", CleanName, nSuff + 1);
 	
     return string(szName);
   }

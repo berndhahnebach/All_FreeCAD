@@ -42,6 +42,38 @@
 #  include <Inventor/bundles/SoMaterialBundle.h>
 #  include <Inventor/elements/SoSwitchElement.h>
 #include "Selection.h"
+
+#include <Inventor/elements/SoComplexityElement.h>
+#include <Inventor/elements/SoComplexityTypeElement.h>
+#include <Inventor/elements/SoCoordinateElement.h>
+#include <Inventor/elements/SoElements.h>
+#include <Inventor/elements/SoFontNameElement.h>
+#include <Inventor/elements/SoFontSizeElement.h>
+#include <Inventor/elements/SoModelMatrixElement.h>
+#include <Inventor/elements/SoProfileCoordinateElement.h>
+#include <Inventor/elements/SoProfileElement.h>
+#include <Inventor/elements/SoSwitchElement.h>
+#include <Inventor/elements/SoUnitsElement.h>
+#include <Inventor/elements/SoViewVolumeElement.h>
+#include <Inventor/elements/SoViewingMatrixElement.h>
+#include <Inventor/elements/SoViewportRegionElement.h>
+#include <Inventor/nodes/SoCamera.h>
+#include <Inventor/nodes/SoComplexity.h>
+#include <Inventor/nodes/SoCoordinate3.h>
+#include <Inventor/nodes/SoCoordinate4.h>
+#include <Inventor/nodes/SoCube.h>
+#include <Inventor/nodes/SoFont.h>
+#include <Inventor/nodes/SoGroup.h>
+#include <Inventor/nodes/SoProfile.h>
+#include <Inventor/nodes/SoProfileCoordinate2.h>
+#include <Inventor/nodes/SoProfileCoordinate3.h>
+#include <Inventor/nodes/SoSphere.h>
+#include <Inventor/nodes/SoTransformation.h>
+
+
+
+
+
 using namespace Gui;
 
 
@@ -62,6 +94,22 @@ void SoFCSelectionAction::initClass()
   SO_ENABLE(SoFCSelectionAction, SoSwitchElement);
 
   SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+   SO_ENABLE(SoFCSelectionAction, SoModelMatrixElement);
+   SO_ENABLE(SoFCSelectionAction, SoComplexityElement);
+   SO_ENABLE(SoFCSelectionAction, SoComplexityTypeElement);
+   SO_ENABLE(SoFCSelectionAction, SoCoordinateElement);
+   SO_ENABLE(SoFCSelectionAction, SoFontNameElement);
+   SO_ENABLE(SoFCSelectionAction, SoFontSizeElement);
+   SO_ENABLE(SoFCSelectionAction, SoProfileCoordinateElement);
+   SO_ENABLE(SoFCSelectionAction, SoProfileElement);
+   SO_ENABLE(SoFCSelectionAction, SoSwitchElement);
+   SO_ENABLE(SoFCSelectionAction, SoUnitsElement);
+   SO_ENABLE(SoFCSelectionAction, SoViewVolumeElement);
+   SO_ENABLE(SoFCSelectionAction, SoViewingMatrixElement);
+   SO_ENABLE(SoFCSelectionAction, SoViewportRegionElement);
+
+
 
 
   SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);

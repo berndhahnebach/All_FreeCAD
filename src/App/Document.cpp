@@ -609,14 +609,43 @@ const char *Document::getFeatureName(AbstractFeature *pFeat)
 
 string Document::getUniqueFeatureName(const char *Name) const
 {
+
+  // strip ilegal chars
+  string CleanName;
+  const char *It=Name;
+
+  while(*It != '\0')
+  {
+    if(   (*It>=48 && *It<=57)   // Numbers
+        ||(*It>=65 && *It<=90)   // Upercase letters
+        ||(*It>=97 && *It<=122)  // Upercase letters
+       )
+    {
+      CleanName += *It;
+    }else{
+      switch(*It)
+      {
+      case 'ä': CleanName += "ae"; break;
+      case 'ü': CleanName += "ue"; break;
+      case 'ö': CleanName += "oe"; break;
+      case 'Ä': CleanName += "Ae"; break;
+      case 'Ü': CleanName += "Ue"; break;
+      case 'Ö': CleanName += "Oe"; break;
+      default:
+        CleanName += '_';
+      }
+    }
+    It++;
+  }
+
   std::map<std::string,FeatEntry>::const_iterator pos;
 
   // name in use?
-  pos = FeatMap.find(Name);
+  pos = FeatMap.find(CleanName);
 
   if (pos == FeatMap.end())
     // if not, name is OK
-    return Name;
+    return CleanName;
   else
   {
     // find highes sufix
@@ -624,9 +653,9 @@ string Document::getUniqueFeatureName(const char *Name) const
     for(pos = FeatMap.begin();pos != FeatMap.end();++pos)
     {
       const string &rclObjName = pos->first;
-      if (rclObjName.substr(0, strlen(Name)) == Name)  // Prefix gleich
+      if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName)  // Prefix gleich
       {
-        string clSuffix(rclObjName.substr(strlen(Name)));
+        string clSuffix(rclObjName.substr(strlen(CleanName.c_str())));
         if (clSuffix.size() > 0){
           int nPos = clSuffix.find_first_not_of("0123456789");
           if(nPos==-1)
@@ -635,7 +664,7 @@ string Document::getUniqueFeatureName(const char *Name) const
       }
     }
     char szName[200];
-    sprintf(szName, "%s%d", Name, nSuff + 1);
+    sprintf(szName, "%s%d", CleanName, nSuff + 1);
 	
     return string(szName);
   }
