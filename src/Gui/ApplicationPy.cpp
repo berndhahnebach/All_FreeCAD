@@ -106,7 +106,7 @@ PYFUNCIMP_S(Application,sGetDocument)
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
 
-  Document *pcDoc =  Instance->activeDocument();
+  Document *pcDoc =  Instance->getDocument(pstr);
   if ( !pcDoc )
   {
     PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);

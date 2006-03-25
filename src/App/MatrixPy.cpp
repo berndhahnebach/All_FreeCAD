@@ -168,7 +168,7 @@ MatrixPy::~MatrixPy()						// Everything handled in parent
 PyObject *MatrixPy::_repr(void)
 {
   std::stringstream a;
-  a << "App.Matrix ( ";
+  a << "App.Matrix (";
   a << "(" << _cMatrix[0][0] << ","<< _cMatrix[0][1] << ","<< _cMatrix[0][2] << ","<< _cMatrix[0][3] << ")" << ",";
   a << "(" << _cMatrix[1][0] << ","<< _cMatrix[1][1] << ","<< _cMatrix[1][2] << ","<< _cMatrix[1][3] << ")"<< ",";
   a << "(" << _cMatrix[2][0] << ","<< _cMatrix[2][1] << ","<< _cMatrix[2][2] << ","<< _cMatrix[2][3] << ")"<< ",";

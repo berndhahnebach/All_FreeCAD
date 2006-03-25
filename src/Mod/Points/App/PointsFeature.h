@@ -26,6 +26,7 @@
 #define Points_FEATURE_H
 
 #include <App/Feature.h>
+#include <App/PropertyLinks.h>
 #include "Points.h"
 
 
@@ -93,6 +94,47 @@ public:
 protected:
   PointsWithProperty _Points;
 
+};
+
+/**
+ * The Export class writes a point cloud to a file.
+ * @author Werner Mayer
+ */
+class Export : public Feature
+{
+  PROPERTY_HEADER(Points::Export);
+
+public:
+  Export();
+
+  App::PropertyLink   Source;
+  App::PropertyString FileName;
+  App::PropertyString Format;
+
+  /** @name methods override Feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
+};
+
+class PointsAppExport Transform : public Feature
+{
+  PROPERTY_HEADER(Points::Transform);
+
+public:
+  /// Constructor
+  Transform(void);
+  virtual ~Transform(void);
+
+  App::PropertyLink Source;
+  App::PropertyMatrix Trnsfrm;
+
+  /** @name methods overide Feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
 };
 
 } //namespace Points

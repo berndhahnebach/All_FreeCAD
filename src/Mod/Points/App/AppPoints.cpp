@@ -53,6 +53,8 @@ void PointsAppExport initPoints() {
 
   // add data types
   Points::Feature               ::init();
+  Points::Export                ::init();
+  Points::Transform             ::init();
   Points::ImportAscii           ::init();
 
   return;

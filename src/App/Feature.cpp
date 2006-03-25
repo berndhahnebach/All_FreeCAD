@@ -130,14 +130,12 @@ void AbstractFeature::TouchView(void)
 
 bool AbstractFeature::MustExecute(void)
 {
-  //Handle(TDF_Reference) RefAttr;
-  //TDF_Label L;
-
   // If the object's label is modified:
   if (getStatus() != Valid && getStatus()!= Inactive) 
     return true;
 
-  if(touchTime<touchPropertyTime || touchTime==touchPropertyTime) return true;
+  if ( touchTime <= touchPropertyTime ) 
+    return true;
 
   return false;
 
@@ -145,9 +143,7 @@ bool AbstractFeature::MustExecute(void)
 
 void AbstractFeature::recompute(void)
 {
-
   _pDoc->RecomputeFeature(this);
-
 }
 
 void AbstractFeature::removeModifications(void)

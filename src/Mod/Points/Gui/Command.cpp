@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -29,12 +29,16 @@
 #endif
 
 #include <Base/Exception.h>
+#include <Base/Matrix.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
+#include <Gui/Document.h>
 #include <Gui/MainWindow.h>
 #include <Gui/Command.h>
 #include <Gui/FileDialog.h>
+#include <Gui/Selection.h>
 
+#include "../App/PointsFeature.h"
 #include "DlgPointsReadImp.h"
 
 
@@ -50,7 +54,7 @@ CmdPointsImport::CmdPointsImport()
 {
   sAppModule    = "Points";
   sGroup        = QT_TR_NOOP("Points");
-  sMenuText     = QT_TR_NOOP("Import Points");
+  sMenuText     = QT_TR_NOOP("Import points...");
   sToolTipText  = QT_TR_NOOP("Imports a point cloud");
   sWhatsThis    = QT_TR_NOOP("Imports a point cloud");
   sStatusTip    = QT_TR_NOOP("Imports a point cloud");
@@ -92,8 +96,109 @@ bool CmdPointsImport::isActive(void)
     return false;
 }
 
+DEF_STD_CMD_A(CmdPointsExport);
+
+CmdPointsExport::CmdPointsExport()
+  :Command("Points_Export")
+{
+  sAppModule    = "Points";
+  sGroup        = QT_TR_NOOP("Points");
+  sMenuText     = QT_TR_NOOP("Export points...");
+  sToolTipText  = QT_TR_NOOP("Exports a point cloud");
+  sWhatsThis    = QT_TR_NOOP("Exports a point cloud");
+  sStatusTip    = QT_TR_NOOP("Exports a point cloud");
+  sPixmap       = "Test2";
+}
+
+void CmdPointsExport::activated(int iMsg)
+{
+  // use current path as default
+  std::string path = QDir::currentDirPath().latin1();
+  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
+  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
+  QString dir = path.c_str();
+
+  QString fn = Gui::FileDialog::getSaveFileName( dir, "Ascii Points (*.asc);;All Files (*.*)", Gui::getMainWindow() );
+  if ( fn.isEmpty() )
+    return;
+
+  if (! fn.isEmpty() )
+  {
+    QFileInfo fi;
+    fi.setFile(fn);
+  
+    openCommand("Export Points");
+    std::vector<App::AbstractFeature*> points = getSelection().getFeaturesOfType(Points::Feature::getClassTypeId());
+    for ( std::vector<App::AbstractFeature*>::const_iterator it = points.begin(); it != points.end(); ++it )
+    {
+      doCommand(Doc,"f = App.document().AddFeature(\"Points::Export\",\"%s\")", fi.baseName().latin1());
+      doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+      doCommand(Doc,"f.Source = App.document().GetFeature(\"%s\")",(*it)->name.getValue());
+    }
+
+    commitCommand();
+    updateActive();
+    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+  }
+}
+
+bool CmdPointsExport::isActive(void)
+{
+  return getSelection().countFeaturesOfType(Points::Feature::getClassTypeId()) == 1;
+}
+
+DEF_STD_CMD_A(CmdPointsTransform);
+
+CmdPointsTransform::CmdPointsTransform()
+  :Command("Points_Transform")
+{
+  sAppModule    = "Points";
+  sGroup        = QT_TR_NOOP("Points");
+  sMenuText     = QT_TR_NOOP("Transform Points");
+  sToolTipText  = QT_TR_NOOP("Test to transform a point cloud");
+  sWhatsThis    = QT_TR_NOOP("Test to transform a point cloud");
+  sStatusTip    = QT_TR_NOOP("Test to transform a point cloud");
+  sPixmap       = "Test1";
+}
+
+void CmdPointsTransform::activated(int iMsg)
+{
+  // This is a test command to transform a point cloud directly written in C++ (not Python)
+  Base::Matrix4D trans( Base::Vector3D(0.0f, 0.0f, 0.0f), Base::Vector3D(0.0f, 0.0f, 1.0f), 1.570796f  );
+
+  App::Document* pDoc = App::GetApplication().getActiveDocument();
+  Gui::Document* pGui = Gui::Application::Instance->activeDocument();
+
+  std::vector<App::AbstractFeature*> points = getSelection().getFeaturesOfType(Points::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = points.begin(); it != points.end(); ++it )
+  {
+    if ( (*it)->getTypeId().isDerivedFrom(Points::Transform::getClassTypeId()) )
+    {
+      Points::Transform* f = (Points::Transform*)(*it);
+      f->Touch();
+      f->TouchView();
+      f->Trnsfrm.setValue( trans*f->Trnsfrm.getValue() );
+      pDoc->Recompute();
+    }
+    else
+    {
+      Points::Transform* f = (Points::Transform*)pDoc->addFeature(Points::Transform::getClassTypeId().getName(),"Transform");
+      pGui->setHide( (*it)->name.getValue() );
+      f->Source.setValue(*it);
+      pDoc->Recompute();
+    }
+  }
+}
+
+bool CmdPointsTransform::isActive(void)
+{
+  return getSelection().countFeaturesOfType(Points::Feature::getClassTypeId()) > 0;
+}
+
 void CreatePointsCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdPointsImport());
+  rcCmdMgr.addCommand(new CmdPointsExport());
+  rcCmdMgr.addCommand(new CmdPointsTransform());
 }

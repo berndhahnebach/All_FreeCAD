@@ -33,6 +33,7 @@
 #include <Base/Writer.h>
 
 #include "Points.h"
+#include "PointsPy.h"
 
 using namespace Points;
 using namespace std;
@@ -41,6 +42,7 @@ TYPESYSTEM_SOURCE(Points::PropertyGreyValue, App::PropertyFloat);
 TYPESYSTEM_SOURCE(Points::PropertyGreyValueList, App::PropertyFloatList);
 TYPESYSTEM_SOURCE(Points::PropertyNormalList, App::PropertyVectorList);
 TYPESYSTEM_SOURCE(Points::PropertyCurvatureList , App::PropertyLists);
+TYPESYSTEM_SOURCE(Points::PropertyPointKernel , App::Property);
 
 void PropertyNormalList::transform(const Matrix4D &mat)
 {
@@ -218,6 +220,90 @@ void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
   } catch( const Base::Exception& e) {
     throw e;
   }
+}
+
+// ----------------------------------------------------------------------------
+
+PropertyPointKernel::PropertyPointKernel()
+:_pcPoints(new PointKernel())
+{
+
+}
+
+PropertyPointKernel::~PropertyPointKernel()
+{
+}
+
+void PropertyPointKernel::setValue(const PointKernel& m)
+{
+  aboutToSetValue();
+  _pcPoints->operator=( m );
+  hasSetValue();
+}
+
+void PropertyPointKernel::setValue(PointKernel* m)
+{
+  aboutToSetValue();
+  delete (_pcPoints);
+  _pcPoints = m;
+  hasSetValue();
+}
+
+const PointKernel& PropertyPointKernel::getValue(void)const 
+{
+	return *_pcPoints;
+}
+
+PyObject *PropertyPointKernel::getPyObject(void)
+{
+  return 0;
+  //return new PointsPy(_pcPoints);
+}
+
+void PropertyPointKernel::setPyObject(PyObject *value)
+{
+//  if( PyObject_TypeCheck(value, &(PointsPy::Type)) ) {
+//   	PointsPy  *pcObject = (PointsPy*)value;
+//    // Copy the content, do NOT replace the pointer
+//    setValue(*pcObject->getPoints());
+//  }
+}
+
+void PropertyPointKernel::Save (Base::Writer &writer)
+{
+  if ( writer.isForceXML() ) {
+  } else {
+    writer << writer.ind() << "<Points file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+  }
+}
+
+void PropertyPointKernel::Restore(Base::XMLReader &reader)
+{
+  reader.readElement("Points");
+  std::string file (reader.getAttribute("file") );
+
+  if ( file == "" ) {
+  } else {
+    // initate a file read
+    reader.addFile(file.c_str(),this);
+  }
+}
+
+void PropertyPointKernel::SaveDocFile (Base::Writer &writer)
+{
+  unsigned long uCtPts = _pcPoints->size();
+  writer.write((const char*)&uCtPts, sizeof(unsigned long));
+  writer.write((const char*)&((*_pcPoints)[0]), uCtPts*sizeof(Base::Vector3D));
+}
+
+void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
+{
+  _pcPoints->clear();
+
+  unsigned long uCtPts;
+  reader.read((char*)&uCtPts, sizeof(unsigned long));
+  _pcPoints->resize(uCtPts);
+  reader.read((char*)&((*_pcPoints)[0]), uCtPts*sizeof(Base::Vector3D));
 }
 
 

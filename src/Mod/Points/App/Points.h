@@ -43,6 +43,8 @@ using Base::Matrix4D;
 namespace Points
 {
 
+typedef std::vector<Vector3D> PointKernel;
+
 /** Greyvalue property.
  */
 class PointsAppExport PropertyGreyValue : public App::PropertyFloat
@@ -137,6 +139,43 @@ private:
   std::vector<CurvatureInfo> _lValueList;
 };
 
+/** The point kernel property
+ */
+class PointsAppExport PropertyPointKernel : public App::Property
+{
+  TYPESYSTEM_HEADER();
+
+public:
+	PropertyPointKernel();
+	~PropertyPointKernel();
+
+  /** @name Getter/setter */
+  //@{
+  /// COPIES the mesh into the Property
+  void setValue( const PointKernel& m);
+  /// REPLACE the mesh in the Property
+  void setValue( PointKernel* m);
+  /// get the Kernel (only const possible!)
+  const PointKernel &getValue(void) const;
+  //@}
+
+  /** @name Python interface */
+  //@{
+  PyObject* getPyObject(void);
+  void setPyObject(PyObject *value);
+  //@}
+
+  /** @name Save/restore */
+  //@{
+  void Save (Base::Writer &writer);
+  void Restore(Base::XMLReader &reader);
+  void SaveDocFile (Base::Writer &writer);
+  void RestoreDocFile(Base::Reader &reader);
+  //@}
+
+private:
+  PointKernel *_pcPoints;
+};
 
 
 
@@ -144,7 +183,6 @@ private:
 
 
 
-typedef std::vector<Vector3D> PointKernel;
 
 
 /** Vertex color property bag

@@ -93,25 +93,41 @@ TimeInfo::operator == (const TimeInfo &time) const
 inline bool
 TimeInfo::operator <  (const TimeInfo &time) const
 {
-  return (timebuffer.time < time.timebuffer.time && timebuffer.millitm < time.timebuffer.millitm);
+  if ( timebuffer.time == time.timebuffer.time )
+    return timebuffer.millitm < time.timebuffer.millitm;
+  else
+    return timebuffer.time < time.timebuffer.time;
+//  return (timebuffer.time < time.timebuffer.time && timebuffer.millitm < time.timebuffer.millitm);
 }
 
 inline bool
 TimeInfo::operator <= (const TimeInfo &time) const
 {
-  return (timebuffer.time <= time.timebuffer.time && timebuffer.millitm <= time.timebuffer.millitm);
+  if ( timebuffer.time == time.timebuffer.time )
+    return timebuffer.millitm <= time.timebuffer.millitm;
+  else
+    return timebuffer.time <= time.timebuffer.time;
+//  return (timebuffer.time <= time.timebuffer.time && timebuffer.millitm <= time.timebuffer.millitm);
 }
 
 inline bool
 TimeInfo::operator >= (const TimeInfo &time) const
 {
-  return (timebuffer.time >= time.timebuffer.time && timebuffer.millitm >= time.timebuffer.millitm);
+  if ( timebuffer.time == time.timebuffer.time )
+    return timebuffer.millitm >= time.timebuffer.millitm;
+  else
+    return timebuffer.time >= time.timebuffer.time;
+//  return (timebuffer.time >= time.timebuffer.time && timebuffer.millitm >= time.timebuffer.millitm);
 }
 
 inline bool
 TimeInfo::operator >  (const TimeInfo &time) const
 {
-  return (timebuffer.time > time.timebuffer.time && timebuffer.millitm > time.timebuffer.millitm);
+  if ( timebuffer.time == time.timebuffer.time )
+    return timebuffer.millitm > time.timebuffer.millitm;
+  else
+    return timebuffer.time > time.timebuffer.time;
+//  return (timebuffer.time > time.timebuffer.time && timebuffer.millitm > time.timebuffer.millitm);
 }
 
 

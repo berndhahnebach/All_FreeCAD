@@ -117,3 +117,78 @@ Base::PyObjectBase *Feature::GetPyObject(void)
   return new PointsFeaturePy(this);
 }
 
+// ------------------------------------------------------------------
+
+PROPERTY_SOURCE(Points::Export, Points::Feature)
+
+Export::Export(void)
+{
+  ADD_PROPERTY(Source  ,(0));
+  ADD_PROPERTY(FileName,(""));
+  ADD_PROPERTY(Format  ,(""));
+}
+
+int Export::execute(void)
+{
+  Feature *pcFeat  = dynamic_cast<Feature*>(Source.getValue());
+  if(!pcFeat || pcFeat->getStatus() != Valid)
+  {
+    setError("Cannot export invalid point feature '%s'", pcFeat->name.getValue());
+    return 1;
+  }
+
+  // ask for write permission
+  Base::FileInfo fi(FileName.getValue());
+  Base::FileInfo di(fi.dirPath().c_str());
+	if ( fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false )
+  {
+    setError("No write permission for file '%s'",FileName.getValue());
+    return 1;
+  }
+
+  std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
+
+  if ( fi.hasExtension("asc") )
+  {
+    const PointKernel& kernel = pcFeat->getPoints().getKernel();
+
+    str << "# " << kernel.size() << "Points" << std::endl;
+    for ( PointKernel::const_iterator it = kernel.begin(); it != kernel.end(); ++it )
+      str << it->x << " " << it->y << " " << it->z << std::endl;
+  }
+  else
+  {
+    setError("File format '%s' not supported", fi.extension().c_str());
+    return 1;
+  }
+
+  return 0;
+}
+
+// ------------------------------------------------------------------
+
+PROPERTY_SOURCE(Points::Transform, Points::Feature)
+
+Transform::Transform()
+{
+  ADD_PROPERTY(Source, (0));
+  ADD_PROPERTY(Trnsfrm, (Base::Matrix4D()));
+}
+
+Transform::~Transform()
+{
+}
+
+int Transform::execute(void)
+{
+  Feature *pcPoints  = dynamic_cast<Feature*>(Source.getValue());
+  _Points = pcPoints->getPoints();
+  _Points.transform( Trnsfrm.getValue() );
+
+  const Base::Matrix4D& cMat = Trnsfrm.getValue();
+  Base::Console().Message("Transform [[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f]]\n",
+                          cMat[0][0],cMat[0][1],cMat[0][2],cMat[0][3],cMat[1][0],cMat[1][1],cMat[1][2],cMat[1][3],
+                          cMat[2][0],cMat[2][1],cMat[2][2],cMat[2][3],cMat[3][0],cMat[3][1],cMat[3][2],cMat[3][3]);
+
+  return 0;
+}

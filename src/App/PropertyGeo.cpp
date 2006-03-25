@@ -97,33 +97,35 @@ void PropertyVector::setPyObject(PyObject *value)
 { 
   if( PyObject_TypeCheck(value, &(VectorPy::Type)) ) {
    	VectorPy  *pcObject = (VectorPy*)value;
-    _cVec = pcObject->value();
+    setValue( pcObject->value() );
   }else if(PyTuple_Check(value)&&PyTuple_Size(value)==3) {
     PyObject* item;
+    Base::Vector3D cVec;
     // x
     item = PyTuple_GetItem(value,0);
     if (PyFloat_Check(item))
-      _cVec.x = (float)PyFloat_AsDouble(item);
+      cVec.x = (float)PyFloat_AsDouble(item);
     else if (PyInt_Check(item))
-      _cVec.x = (float)PyInt_AsLong(item);
+      cVec.x = (float)PyInt_AsLong(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
     // y
     item = PyTuple_GetItem(value,1);
     if (PyFloat_Check(item))
-      _cVec.y = (float)PyFloat_AsDouble(item);
+      cVec.y = (float)PyFloat_AsDouble(item);
     else if (PyInt_Check(item))
-      _cVec.y = (float)PyInt_AsLong(item);
+      cVec.y = (float)PyInt_AsLong(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
     // z
     item = PyTuple_GetItem(value,2);
     if (PyFloat_Check(item))
-      _cVec.z = (float)PyFloat_AsDouble(item);
+      cVec.z = (float)PyFloat_AsDouble(item);
     else if (PyInt_Check(item))
-      _cVec.z = (float)PyInt_AsLong(item);
+      cVec.z = (float)PyInt_AsLong(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
+    setValue( cVec );
   }else
     throw Base::Exception("Not allowed type used (Vector expected)...");
 }
@@ -337,7 +339,7 @@ void PropertyMatrix::setPyObject(PyObject *value)
   if( PyObject_TypeCheck(value, &(MatrixPy::Type)) )
   {
    	MatrixPy  *pcObject = (MatrixPy*)value;
-    _cMat = pcObject->value();
+    setValue( pcObject->value() );
   }else
     throw Base::Exception("Not allowed type used (Vector expected)...");
 }

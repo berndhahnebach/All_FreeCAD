@@ -29,6 +29,7 @@
 
 #include "Workbench.h"
 #include <Gui/ToolBarManager.h>
+#include <Gui/MenuManager.h>
 
 using namespace PointsGui;
 
@@ -47,7 +48,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
   pnt->setCommand( "PointsTools" );
-  *pnt << "Points_Import";
+  *pnt << "Points_Import" << "Points_Export";
   return root;
 }
 
@@ -57,7 +58,23 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
   Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
   pnt->setCommand( "PointsTools" );
-  *pnt << "Points_Import";
+  *pnt << "Points_Import" << "Points_Export";
+  return root;
+}
+
+Gui::MenuItem* Workbench::setupMenuBar() const
+{
+  Gui::MenuItem* root = StdWorkbench::setupMenuBar();
+  Gui::MenuItem* item = root->findItem( "&Windows" );
+  Gui::MenuItem* pnts = new Gui::MenuItem;
+  root->insertItem( item, pnts );
+
+  Gui::MenuItem* test = new Gui::MenuItem;
+  test->setCommand( "Test" );
+  *test << "Points_Transform";
+ 
+  pnts->setCommand( "&Points" );
+  *pnts << test << "Separator" << "Points_Import" << "Points_Export";
   return root;
 }
 

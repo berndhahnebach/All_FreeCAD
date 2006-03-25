@@ -656,22 +656,23 @@ PyObject *PropertyColor::getPyObject(void)
 
 void PropertyColor::setPyObject(PyObject *value)
 {
+  App::Color cCol;
   if ( PyTuple_Check(value) && PyTuple_Size(value) == 3 )
   {
     PyObject* item;
     item = PyTuple_GetItem(value,0);
     if ( PyFloat_Check(item) )
-      _cCol.r = (float)PyFloat_AsDouble(item);
+      cCol.r = (float)PyFloat_AsDouble(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
     item = PyTuple_GetItem(value,1);
     if ( PyFloat_Check(item) )
-      _cCol.g = (float)PyFloat_AsDouble(item);
+      cCol.g = (float)PyFloat_AsDouble(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
     item = PyTuple_GetItem(value,2);
     if ( PyFloat_Check(item) )
-      _cCol.b = (float)PyFloat_AsDouble(item);
+      cCol.b = (float)PyFloat_AsDouble(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
   }
@@ -680,33 +681,35 @@ void PropertyColor::setPyObject(PyObject *value)
     PyObject* item;
     item = PyTuple_GetItem(value,0);
     if ( PyFloat_Check(item) )
-      _cCol.r = (float)PyFloat_AsDouble(item);
+      cCol.r = (float)PyFloat_AsDouble(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
     item = PyTuple_GetItem(value,1);
     if ( PyFloat_Check(item) )
-      _cCol.g = (float)PyFloat_AsDouble(item);
+      cCol.g = (float)PyFloat_AsDouble(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
     item = PyTuple_GetItem(value,2);
     if ( PyFloat_Check(item) )
-      _cCol.b = (float)PyFloat_AsDouble(item);
+      cCol.b = (float)PyFloat_AsDouble(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
     item = PyTuple_GetItem(value,3);
     if ( PyFloat_Check(item) )
-      _cCol.a = (float)PyFloat_AsDouble(item);
+      cCol.a = (float)PyFloat_AsDouble(item);
     else
       throw Base::Exception("Not allowed type used in tuple (float expected)...");
   }
   else if ( PyInt_Check(value) )
   {
-    _cCol.setPackedValue(PyInt_AsLong(value));
+    cCol.setPackedValue(PyInt_AsLong(value));
   }
   else
   {
     throw Base::Exception("Not allowed type used...");
   }
+
+  setValue( cCol );
 }
 
 void PropertyColor::Save (Writer &writer)

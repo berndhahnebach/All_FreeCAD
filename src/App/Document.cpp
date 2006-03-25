@@ -664,7 +664,7 @@ string Document::getUniqueFeatureName(const char *Name) const
       }
     }
     char szName[200];
-    sprintf(szName, "%s%d", CleanName, nSuff + 1);
+    sprintf(szName, "%s%d", CleanName.c_str(), nSuff + 1);
 	
     return string(szName);
   }
