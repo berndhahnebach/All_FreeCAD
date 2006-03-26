@@ -4,13 +4,20 @@ if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMeshGui.la MeshGui.la
 
-# BUILT_SOURCES=\
-#
+BUILT_SOURCES=\
+		DlgEvaluateMesh.cpp \
+		DlgEvaluateMesh.h \
+		moc_DlgEvaluateMesh.cpp
+
 libMeshGui_la_SOURCES=\
 		Command.cpp \
+		DlgEvaluateMeshImp.cpp \
+		DlgEvaluateMeshImp.h \
 		Doxygen.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		PropertyEditorMesh.cpp \
+		PropertyEditorMesh.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
 		ViewProviderCurvature.cpp \
@@ -74,5 +81,6 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		AppMeshGui.dsp \
 		AppMeshGui.vcproj \
+		DlgEvaluateMesh.ui \
 		Libs.cpp \
 		images.h

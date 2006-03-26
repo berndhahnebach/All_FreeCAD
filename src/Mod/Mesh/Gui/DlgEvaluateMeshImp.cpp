@@ -27,6 +27,7 @@
 # include <qapplication.h>
 # include <qcursor.h>
 # include <qlabel.h>
+# include <qlineedit.h>
 # include <qpushbutton.h>
 #endif
 
