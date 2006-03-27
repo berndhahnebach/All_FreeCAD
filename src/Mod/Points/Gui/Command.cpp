@@ -129,13 +129,16 @@ void CmdPointsExport::activated(int iMsg)
   
     openCommand("Export Points");
     std::vector<App::AbstractFeature*> points = getSelection().getFeaturesOfType(Points::Feature::getClassTypeId());
+    doCommand(Doc,"f = App.document().AddFeature(\"Points::Export\",\"%s\")", fi.baseName().latin1());
+    doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+    doCommand(Doc,"l=list()");
+    
     for ( std::vector<App::AbstractFeature*>::const_iterator it = points.begin(); it != points.end(); ++it )
     {
-      doCommand(Doc,"f = App.document().AddFeature(\"Points::Export\",\"%s\")", fi.baseName().latin1());
-      doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
-      doCommand(Doc,"f.Source = App.document().GetFeature(\"%s\")",(*it)->name.getValue());
+      doCommand(Doc,"l.append(App.document().GetFeature(\"%s\"))",(*it)->name.getValue());
     }
 
+    doCommand(Doc,"f.Sources = l");
     commitCommand();
     updateActive();
     hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
@@ -144,7 +147,7 @@ void CmdPointsExport::activated(int iMsg)
 
 bool CmdPointsExport::isActive(void)
 {
-  return getSelection().countFeaturesOfType(Points::Feature::getClassTypeId()) == 1;
+  return getSelection().countFeaturesOfType(Points::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdPointsTransform);

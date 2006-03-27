@@ -123,3 +123,106 @@ void PropertyLink::Restore(Base::XMLReader &reader)
 }
 
 
+TYPESYSTEM_SOURCE(App::PropertyLinkList , App::PropertyLists);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyLinkList::PropertyLinkList()
+{
+
+}
+
+PropertyLinkList::~PropertyLinkList()
+{
+
+}
+
+void PropertyLinkList::setValue(AbstractFeature* lValue)
+{
+  aboutToSetValue();
+  _lValueList.resize(1);
+	_lValueList[0]=lValue;
+  hasSetValue();
+}
+
+PyObject *PropertyLinkList::getPyObject(void)
+{
+  PyObject* list = PyList_New(	getSize() );
+
+  for(int i = 0;i<getSize(); i++)
+     PyList_SetItem( list, i, _lValueList[i]->GetPyObject());
+
+  return list;
+}
+
+void PropertyLinkList::setPyObject(PyObject *value)
+{
+  if ( PyList_Check( value) )
+  {
+    aboutToSetValue();
+
+    int nSize = PyList_Size( value );
+    _lValueList.resize(nSize);
+
+    for (int i=0; i<nSize;++i)
+    {
+      PyObject* item = PyList_GetItem(value, i);
+      if ( PyObject_TypeCheck(item, &(FeaturePy::Type)) )
+      {
+   	    FeaturePy  *pcObject = (FeaturePy*)item;
+        _lValueList[i] = pcObject->getFeature();
+        hasSetValue();
+      }
+      else
+      {
+        _lValueList.resize(1);
+        _lValueList[0] = 0;
+        throw Base::Exception("Not allowed type in list (float expected)...");
+      }
+    }
+
+    hasSetValue();
+  }
+  else if( PyObject_TypeCheck(value, &(FeaturePy::Type)) )
+  {
+    aboutToSetValue();
+   	FeaturePy  *pcObject = (FeaturePy*)value;
+    setValue( pcObject->getFeature() );
+  }
+  else
+  {
+    throw Base::Exception("Not allowed type used (Feature expected)...");
+  }
+}
+
+void PropertyLinkList::Save (Writer &writer)
+{
+  writer << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
+  for(int i = 0;i<getSize(); i++)
+    writer << "<Link value=\"" <<  _lValueList[i]->name.getValue() <<"\"/>" << endl; ;
+  writer << "</LinkList>" << endl ;
+}
+
+void PropertyLinkList::Restore(Base::XMLReader &reader)
+{
+  // read my Element
+  reader.readElement("LinkList");
+  // get the value of my Attribute
+  int count = reader.getAttributeAsInteger("count");
+
+  setSize(count);
+
+  for(int i = 0;i<count; i++)
+  {
+    reader.readElement("Link");
+    std::string name = reader.getAttribute("value");
+
+    // Property not in a Feature!
+    assert(getContainer()->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
+    _lValueList[i] = reinterpret_cast<App::AbstractFeature*>(getContainer())->getDocument().getFeature(name.c_str());
+  }
+
+  reader.readEndElement("LinkList");
+}

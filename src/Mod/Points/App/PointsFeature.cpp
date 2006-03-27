@@ -123,20 +123,13 @@ PROPERTY_SOURCE(Points::Export, Points::Feature)
 
 Export::Export(void)
 {
-  ADD_PROPERTY(Source  ,(0));
+  ADD_PROPERTY(Sources ,(0));
   ADD_PROPERTY(FileName,(""));
   ADD_PROPERTY(Format  ,(""));
 }
 
 int Export::execute(void)
 {
-  Feature *pcFeat  = dynamic_cast<Feature*>(Source.getValue());
-  if(!pcFeat || pcFeat->getStatus() != Valid)
-  {
-    setError("Cannot export invalid point feature '%s'", pcFeat->name.getValue());
-    return 1;
-  }
-
   // ask for write permission
   Base::FileInfo fi(FileName.getValue());
   Base::FileInfo di(fi.dirPath().c_str());
@@ -150,11 +143,16 @@ int Export::execute(void)
 
   if ( fi.hasExtension("asc") )
   {
-    const PointKernel& kernel = pcFeat->getPoints().getKernel();
+    const std::vector<App::AbstractFeature*>& features = Sources.getValues();
+    for ( std::vector<App::AbstractFeature*>::const_iterator it = features.begin(); it != features.end(); ++it )
+    {
+      Feature *pcFeat  = dynamic_cast<Feature*>(*it);
+      const PointKernel& kernel = pcFeat->getPoints().getKernel();
 
-    str << "# " << kernel.size() << "Points" << std::endl;
-    for ( PointKernel::const_iterator it = kernel.begin(); it != kernel.end(); ++it )
-      str << it->x << " " << it->y << " " << it->z << std::endl;
+      str << "# " << pcFeat->name.getValue() << " Number of points: " << kernel.size() << std::endl;
+      for ( PointKernel::const_iterator it = kernel.begin(); it != kernel.end(); ++it )
+        str << it->x << " " << it->y << " " << it->z << std::endl;
+    }
   }
   else
   {

@@ -107,7 +107,7 @@ class Export : public Feature
 public:
   Export();
 
-  App::PropertyLink   Source;
+  App::PropertyLinkList   Sources;
   App::PropertyString FileName;
   App::PropertyString Format;
 

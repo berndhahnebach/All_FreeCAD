@@ -47,11 +47,17 @@ public:
   void setMesh( Mesh::Feature* );
   void onRefreshInfo();
   void onAnalyzeOrientation();
+  void onRepairOrientation();
   void onAnalyzeNonManifolds();
+  void onRepairNonManifolds();
   void onAnalyzeTopology();
+  void onRepairTopology();
   void onAnalyzeDegenerations();
+  void onRepairDegenerations();
   void onAnalyzeDuplicatedFaces();
+  void onRepairDuplicatedFaces();
   void onAnalyzeDuplicatedPoints();
+  void onRepairDuplicatedPoints();
 
 private:
   Mesh::Feature* _meshFeature;

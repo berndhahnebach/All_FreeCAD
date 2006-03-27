@@ -192,6 +192,20 @@ void MeshBuilder::SetNeighbourhood ()
   }
 }
 
+void MeshBuilder::RemoveUnreferencedPoints()
+{
+  _meshKernel._aclPointArray.SetFlag(MeshPoint::INVALID);
+  for ( MeshFacetArray::_TConstIterator it = _meshKernel._aclFacetArray.begin(); it != _meshKernel._aclFacetArray.end(); ++it )
+  {
+    for ( int i=0; i<3; i++ )
+     _meshKernel._aclPointArray[it->_aulPoints[i]].ResetInvalid();
+  }
+
+  unsigned long uValidPts = std::count_if(_meshKernel._aclPointArray.begin(), _meshKernel._aclPointArray.end(), std::mem_fun_ref(&MeshPoint::IsValid));
+  if ( uValidPts < _meshKernel.CountPoints() )
+    _meshKernel.RemoveInvalids();
+}
+
 void MeshBuilder::Finish (bool freeMemory)
 {
   // now we can resize the vertex array to the exact size and copy the vertices with their correct positions in the array
@@ -207,6 +221,7 @@ void MeshBuilder::Finish (bool freeMemory)
 //  _points.swap(_points);
 
   SetNeighbourhood();
+  RemoveUnreferencedPoints();
 
   // if AddFacet() has been called more often (or even less) as specified in Initialize() we have a wastage of memory
   if ( freeMemory )

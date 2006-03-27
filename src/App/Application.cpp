@@ -597,6 +597,7 @@ void Application::initTypes(void)
   App ::PropertyIntegerList ::init();
   App ::PropertyString      ::init();
   App ::PropertyLink        ::init();
+  App ::PropertyLinkList    ::init();
   App ::PropertyMatrix      ::init();
   App ::PropertyVector      ::init();
   App ::PropertyVectorList  ::init();

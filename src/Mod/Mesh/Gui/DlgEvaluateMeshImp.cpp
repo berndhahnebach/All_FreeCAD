@@ -28,9 +28,11 @@
 # include <qcursor.h>
 # include <qlabel.h>
 # include <qlineedit.h>
+# include <qmessagebox.h>
 # include <qpushbutton.h>
 #endif
 
+#include <Gui/MainWindow.h>
 #include "../App/Core/Evaluation.h"
 #include "../App/Core/Degeneration.h"
 #include "../App/MeshFeature.h"
@@ -52,6 +54,7 @@ using namespace MeshGui;
 DlgEvaluateMeshImp::DlgEvaluateMeshImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgEvaluateMesh( parent, name, modal, fl ), _meshFeature(0)
 {
+  connect( buttonHelp,  SIGNAL ( clicked() ), Gui::getMainWindow(), SLOT ( whatsThis() ));
 }
 
 /**
@@ -123,6 +126,30 @@ void DlgEvaluateMeshImp::onAnalyzeOrientation()
   }
 }
 
+void DlgEvaluateMeshImp::onRepairOrientation()
+{
+  if ( _meshFeature )
+  {
+    qApp->setOverrideCursor(Qt::WaitCursor);
+
+    MeshKernel cMesh = _meshFeature->getMesh();
+    MeshFixNormals eval(cMesh);
+    
+    if ( eval.Fixup() )
+    {
+      _meshFeature->Mesh.setValue( cMesh );
+      textLabelOrientation->setText( "Wrong oriented faces fixed." );
+      repairOrientation->setEnabled(false);
+    }
+    else
+    {
+      textLabelOrientation->setText( "Still wrong oriented faces found" );
+    }
+
+    qApp->restoreOverrideCursor();
+  }
+}
+
 void DlgEvaluateMeshImp::onAnalyzeNonManifolds()
 {
   if ( _meshFeature )
@@ -147,6 +174,11 @@ void DlgEvaluateMeshImp::onAnalyzeNonManifolds()
     qApp->restoreOverrideCursor();
     analyzeNonmanifolds->setEnabled(true);
   }
+}
+
+void DlgEvaluateMeshImp::onRepairNonManifolds()
+{
+  QMessageBox::warning(this, "Non-manifolds", "Not implemeted.");
 }
 
 void DlgEvaluateMeshImp::onAnalyzeTopology()
@@ -175,30 +207,77 @@ void DlgEvaluateMeshImp::onAnalyzeTopology()
   }
 }
 
+void DlgEvaluateMeshImp::onRepairTopology()
+{
+  if ( _meshFeature )
+  {
+    qApp->setOverrideCursor(Qt::WaitCursor);
+
+    MeshKernel cMesh = _meshFeature->getMesh();
+    MeshFixNeighbourhood eval(cMesh);
+    
+    if ( eval.Fixup() )
+    {
+      _meshFeature->Mesh.setValue( cMesh );
+      textLabelTopology->setText( "Invalid neighbourhood fixed." );
+      repairTopology->setEnabled(false);
+    }
+    else
+    {
+      textLabelTopology->setText( "Still invalid neighbourhood" );
+    }
+
+    qApp->restoreOverrideCursor();
+  }
+}
+
 void DlgEvaluateMeshImp::onAnalyzeDegenerations()
 {
   if ( _meshFeature )
   {
-    analyzeDegenrated->setEnabled(false);
+    analyzeDegenerated->setEnabled(false);
     qApp->processEvents();
     qApp->setOverrideCursor(Qt::WaitCursor);
 
     const MeshKernel& rMesh = _meshFeature->getMesh();
-    MeshEvalDegenerations eval(rMesh);
-    unsigned long ct = eval.CountEdgeTooSmall(FLOAT_EPS);
+    MeshEvalDegeneratedFacets eval(rMesh);
     
-    if ( ct == 0 )
+    if ( eval.Evaluate() )
     {
-      textLabelDegeneration->setText( "No degenrated faces found." );
+      textLabelDegeneration->setText( "No degenerated faces found." );
     }
     else
     {
-      textLabelDegeneration->setText( QString("%1 degenerated faces found").arg(ct) );
-      repairDegenrated->setEnabled(true);
+      textLabelDegeneration->setText( "Degenerated faces found" );
+      repairDegenerated->setEnabled(true);
     }
 
     qApp->restoreOverrideCursor();
-    analyzeDegenrated->setEnabled(true);
+    analyzeDegenerated->setEnabled(true);
+  }
+}
+
+void DlgEvaluateMeshImp::onRepairDegenerations()
+{
+  if ( _meshFeature )
+  {
+    qApp->setOverrideCursor(Qt::WaitCursor);
+
+    MeshKernel cMesh = _meshFeature->getMesh();
+    MeshFixDegeneratedFacets eval(cMesh);
+    
+    if ( eval.Fixup() )
+    {
+      _meshFeature->Mesh.setValue( cMesh );
+      textLabelDegeneration->setText( "Degenerated faces fixed." );
+      repairDegenerated->setEnabled(false);
+    }
+    else
+    {
+      textLabelDegeneration->setText( "Still degenerated faces found" );
+    }
+
+    qApp->restoreOverrideCursor();
   }
 }
 
@@ -211,9 +290,9 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedFaces()
     qApp->setOverrideCursor(Qt::WaitCursor);
 
     const MeshKernel& rMesh = _meshFeature->getMesh();
-    MeshEvalDegenerations eval(rMesh);
+    MeshEvalDuplicateFacets eval(rMesh);
     
-    if ( !eval.HasDegeneration(MeshEvalDegenerations::DuplicatedFacets) )
+    if ( eval.Evaluate() )
     {
       textLabelDuplicatedFaces->setText( "No duplicated faces found." );
     }
@@ -228,6 +307,30 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedFaces()
   }
 }
 
+void DlgEvaluateMeshImp::onRepairDuplicatedFaces()
+{
+  if ( _meshFeature )
+  {
+    qApp->setOverrideCursor(Qt::WaitCursor);
+
+    MeshKernel cMesh = _meshFeature->getMesh();
+    MeshFixDuplicateFacets eval(cMesh);
+    
+    if ( eval.Fixup() )
+    {
+      _meshFeature->Mesh.setValue( cMesh );
+      textLabelDuplicatedFaces->setText( "Duplicated faces removed." );
+      analyzeDupFaces->setEnabled(false);
+    }
+    else
+    {
+      textLabelDuplicatedFaces->setText( "Still duplicated faces found" );
+    }
+
+    qApp->restoreOverrideCursor();
+  }
+}
+
 void DlgEvaluateMeshImp::onAnalyzeDuplicatedPoints()
 {
   if ( _meshFeature )
@@ -237,9 +340,9 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedPoints()
     qApp->setOverrideCursor(Qt::WaitCursor);
 
     const MeshKernel& rMesh = _meshFeature->getMesh();
-    MeshEvalDegenerations eval(rMesh);
+    MeshEvalDuplicatePoints eval(rMesh);
     
-    if ( !eval.HasDegeneration(MeshEvalDegenerations::DuplicatedPoints) )
+    if ( eval.Evaluate() )
     {
       textLabelDuplPoints->setText( "No duplicated points found." );
     }
@@ -251,6 +354,30 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedPoints()
 
     qApp->restoreOverrideCursor();
     analyzeDupPts->setEnabled(true);
+  }
+}
+
+void DlgEvaluateMeshImp::onRepairDuplicatedPoints()
+{
+  if ( _meshFeature )
+  {
+    qApp->setOverrideCursor(Qt::WaitCursor);
+
+    MeshKernel cMesh = _meshFeature->getMesh();
+    MeshFixDuplicatePoints eval(cMesh);
+    
+    if ( eval.Fixup() )
+    {
+      _meshFeature->Mesh.setValue( cMesh );
+      textLabelDuplPoints->setText( "Duplicated points removed." );
+      analyzeDupPts->setEnabled(false);
+    }
+    else
+    {
+      textLabelDuplPoints->setText( "Still duplicated points found" );
+    }
+
+    qApp->restoreOverrideCursor();
   }
 }
 

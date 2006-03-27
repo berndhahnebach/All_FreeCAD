@@ -335,7 +335,7 @@
                 <cstring>groupBox2_3_2</cstring>
             </property>
             <property name="title">
-                <string>Topologic neighbourhood</string>
+                <string>Topological neighbourhood</string>
             </property>
             <hbox>
                 <property name="name">
@@ -563,7 +563,7 @@
                 <cstring>groupBox2_3_2_2</cstring>
             </property>
             <property name="title">
-                <string>Degenrated faces</string>
+                <string>Degenerated faces</string>
             </property>
             <hbox>
                 <property name="name">
@@ -596,7 +596,7 @@
                 </spacer>
                 <widget class="QPushButton">
                     <property name="name">
-                        <cstring>analyzeDegenrated</cstring>
+                        <cstring>analyzeDegenerated</cstring>
                     </property>
                     <property name="text">
                         <string>Analyze</string>
@@ -604,7 +604,7 @@
                 </widget>
                 <widget class="QPushButton">
                     <property name="name">
-                        <cstring>repairDegenrated</cstring>
+                        <cstring>repairDegenerated</cstring>
                     </property>
                     <property name="enabled">
                         <bool>false</bool>
@@ -640,7 +640,7 @@
         <sender>repairDupFaces</sender>
         <signal>clicked()</signal>
         <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onRepairDupicatedFaces()</slot>
+        <slot>onRepairDuplicatedFaces()</slot>
     </connection>
     <connection>
         <sender>analyzeDupPts</sender>
@@ -679,13 +679,13 @@
         <slot>onRepairTopology()</slot>
     </connection>
     <connection>
-        <sender>analyzeDegenrated</sender>
+        <sender>analyzeDegenerated</sender>
         <signal>clicked()</signal>
         <receiver>MeshGui::DlgEvaluateMesh</receiver>
         <slot>onAnalyzeDegenerations()</slot>
     </connection>
     <connection>
-        <sender>repairDegenrated</sender>
+        <sender>repairDegenerated</sender>
         <signal>clicked()</signal>
         <receiver>MeshGui::DlgEvaluateMesh</receiver>
         <slot>onRepairDegenerations()</slot>
@@ -716,15 +716,15 @@
     <tabstop>repairNonmanifolds</tabstop>
     <tabstop>analyzeTopology</tabstop>
     <tabstop>repairTopology</tabstop>
-    <tabstop>analyzeDegenrated</tabstop>
-    <tabstop>repairDegenrated</tabstop>
+    <tabstop>analyzeDegenerated</tabstop>
+    <tabstop>repairDegenerated</tabstop>
     <tabstop>buttonHelp</tabstop>
     <tabstop>buttonCancel</tabstop>
 </tabstops>
 <slots>
     <slot>onRefreshInfo()</slot>
     <slot>onAnalyzeDuplicatedFaces()</slot>
-    <slot>onRepairDupicatedFaces()</slot>
+    <slot>onRepairDuplicatedFaces()</slot>
     <slot>onRepairDuplicatedPoints()</slot>
     <slot>onAnalyzeDuplicatedPoints()</slot>
     <slot>onAnalyzeNonManifolds()</slot>

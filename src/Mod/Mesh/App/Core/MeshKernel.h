@@ -264,6 +264,10 @@ public:
    * True is returned if the facet could be deleted.
    */
   bool DeleteFacet (const MeshFacetIterator &rclIter);
+  /**
+   * Does basically the same as the method above unless that the index of the facet is given.
+   */
+  bool DeleteFacet (unsigned long ulInd);
   /** Removes several facets from the data structure. */
   virtual void DeleteFacets (const std::vector<unsigned long> &raulFacets);
   /** Deletes the point the iterator points to. The deletion of a point requires the following step:
@@ -342,6 +346,8 @@ protected:
   friend class MeshFixNeighbourhood;
   friend class MeshFixDegenerations;
   friend class MeshFixSingleFacet;
+  friend class MeshFixInvalids;
+  friend class MeshFixDegeneratedFacets;
   friend class MeshBuilder;
   friend class MeshDocXML;
 };

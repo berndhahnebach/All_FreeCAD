@@ -50,7 +50,8 @@ class MeshKernel;
 class MeshFacet;
 
 /**
- * None of the provided methods modifies the data structure directly except of 'Commit'.
+ * Most of the provided methods don't modify the data structure directly but the changes are buffered in an array of facets.
+ * To perform the changes on the data structure 'Commit' must be called.
  * E.g. if you want to insert a node to any triangles you have to do the following:
  * \code
  * MeshTopoAlgorithm cTopAlg(...);
@@ -62,6 +63,8 @@ class MeshFacet;
  * 
  * cTopAlg.Commit(); // now the data structure is modified
  * \endcode
+ *
+ * All methods with the prefix 'Direct' modify the structure directly. 
  * @author Werner Mayer
  */
 class AppMeshExport MeshTopoAlgorithm
@@ -146,6 +149,29 @@ public:
    * Flips the normals. The changes are done immediately.
    */
   void FlipNormals (void);
+
+  /** @name Direct manipulation 
+   * All these methods manipulate the mesh structure directly. 
+   */
+  //@{
+  /**
+   * Splits the facet at position \a ulFacetPos in the mesh array into two facets. The point \a rP must lie on the 
+   * edge with at \a side of the given facet. The adjacent facet that shares the same edge where \a rP lies on gets 
+   * broken, too.
+   * If the number of facets is less than \a ulFacetPos+1 or if \a rP is coincident with a corner point nothing happens.
+   */
+  void DirectSplitFacet(unsigned long ulFacetPos, unsigned short side, const Vector3D& rP);
+  /**
+   * Does basically the same as DirectSplitFacet() unless that the facet at position \a ulFacetPos has no adjacent
+   * facet at its \a side.
+   */
+  void DirectSplitFacetWithOpenEdge(unsigned long ulFacetPos, unsigned short side, const Vector3D& rP);
+  /**
+   * Removes the degenerated facet at position \a index from the mesh structure. A facet is degenerated if its corner
+   * points are collinear.
+   */
+  void DirectRemoveDegenerated(unsigned long index);
+  //@}
 
 private:
   void RefPointToFacet();

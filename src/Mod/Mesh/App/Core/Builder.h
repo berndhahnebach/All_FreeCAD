@@ -113,6 +113,8 @@ private:
 	unsigned long				_ptIdx; 
 
   void SetNeighbourhood  ();
+  // As it's forbidden to insert a degenerated facet but insert its vertices anyway we must remove them 
+  void RemoveUnreferencedPoints();
 
 public:
 	MeshBuilder(MeshKernel &rclM);

@@ -798,6 +798,149 @@ void MeshTopoAlgorithm::FlipNormals (void)
     i->FlipNormal();
 }
 
+void MeshTopoAlgorithm::DirectSplitFacet(unsigned long ulFacetPos, unsigned short i, const Vector3D& rP)
+{
+  if (ulFacetPos >= _rclMesh._aclFacetArray.size() ) return;
+  MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
+
+  const MeshPoint& rE1 = _rclMesh._aclPointArray[rFace._aulPoints[i]];
+  const MeshPoint& rE2 = _rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]];
+  if ( rP == rE1 || rP == rE2 ) return;
+
+  unsigned long uNeighbour = rFace._aulNeighbours[i];
+
+  // open edge
+  if ( uNeighbour == ULONG_MAX )
+  {
+    DirectSplitFacetWithOpenEdge(ulFacetPos, i, rP);
+  }
+  else
+  {
+    MeshFacet& rFace2 = _rclMesh._aclFacetArray[uNeighbour];
+    unsigned long ulSize = _rclMesh.CountFacets();
+    unsigned long uPtInd = _rclMesh._aclPointArray.GetOrAddIndex(rP);
+
+    // first new face
+    MeshFacet cNewFace1;
+    cNewFace1._aulPoints[0] = uPtInd;
+    cNewFace1._aulPoints[1] = rFace._aulPoints[(i+2)%3];
+    cNewFace1._aulPoints[2] = rFace._aulPoints[i];
+    cNewFace1._aulNeighbours[0] = ulFacetPos;
+    cNewFace1._aulNeighbours[1] = rFace._aulNeighbours[(i+2)%3];
+    cNewFace1._aulNeighbours[2] = ulSize+1;
+    _rclMesh._aclFacetArray.push_back(cNewFace1);
+
+    // second new face
+    MeshFacet cNewFace2;
+    cNewFace2._aulPoints[0] = uPtInd;
+    cNewFace2._aulPoints[1] = rFace._aulPoints[(i+2)%3];
+    cNewFace2._aulPoints[2] = rFace._aulPoints[i];
+    cNewFace2._aulNeighbours[0] = ulFacetPos;
+    cNewFace2._aulNeighbours[1] = rFace._aulNeighbours[(i+2)%3];
+    cNewFace2._aulNeighbours[2] = ulSize+1;
+    _rclMesh._aclFacetArray.push_back(cNewFace2);
+  }
+}
+
+void MeshTopoAlgorithm::DirectSplitFacetWithOpenEdge(unsigned long ulFacetPos, unsigned short i, const Vector3D& rP)
+{
+  if (ulFacetPos >= _rclMesh._aclFacetArray.size() ) return;
+  MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
+
+  const MeshPoint& rE1 = _rclMesh._aclPointArray[rFace._aulPoints[i]];
+  const MeshPoint& rE2 = _rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]];
+  if ( rP == rE1 || rP == rE2 ) return;
+
+  unsigned long ulSize = _rclMesh.CountFacets();
+  unsigned long uPtInd = _rclMesh._aclPointArray.GetOrAddIndex(rP);
+
+  // insert one new facet
+  MeshFacet cNewFace;
+  cNewFace._aulPoints[0] = uPtInd;
+  cNewFace._aulPoints[1] = rFace._aulPoints[(i+2)%3];
+  cNewFace._aulPoints[2] = rFace._aulPoints[i];
+  cNewFace._aulNeighbours[0] = ulFacetPos;
+  cNewFace._aulNeighbours[1] = rFace._aulNeighbours[(i+2)%3];
+  cNewFace._aulNeighbours[2] = ULONG_MAX;
+  _rclMesh._aclFacetArray.push_back(cNewFace);
+
+  // adjust the original face
+  rFace._aulPoints[i] = uPtInd;
+  rFace._aulNeighbours[(i+2)%3] = ulSize;
+
+  // Adjust neighbour indices
+  unsigned long uN = rFace._aulNeighbours[(i+2)%3];
+  if ( uN != ULONG_MAX )
+    _rclMesh._aclFacetArray[uN].ReplaceNeighbour(ulFacetPos, ulSize);
+}
+
+void MeshTopoAlgorithm::DirectRemoveDegenerated(unsigned long index)
+{
+  if (index >= _rclMesh._aclFacetArray.size() ) return;
+  MeshFacet& rFace = _rclMesh._aclFacetArray[index];
+
+  // coincident corners (either topological or geometrical)
+  for ( int i=0; i<3; i++ ) {
+    const MeshPoint& rE0 = _rclMesh._aclPointArray[rFace._aulPoints[i]]; 
+    const MeshPoint& rE1 = _rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]; 
+    if ( rFace._aulPoints[i] == rFace._aulPoints[(i+1)%3] || rE0 == rE1 ) {
+      unsigned long uN1 = rFace._aulNeighbours[(i+1)%3];
+      unsigned long uN2 = rFace._aulNeighbours[(i+2)%3];
+      if ( uN2 != ULONG_MAX )
+        _rclMesh._aclFacetArray[uN2].ReplaceNeighbour(index, uN1);
+      if ( uN1 != ULONG_MAX )
+        _rclMesh._aclFacetArray[uN1].ReplaceNeighbour(index, uN2);
+
+      // isolate the face and reove it
+      rFace._aulNeighbours[0] = ULONG_MAX;
+      rFace._aulNeighbours[1] = ULONG_MAX;
+      rFace._aulNeighbours[2] = ULONG_MAX;
+      _rclMesh.DeleteFacet( index );
+      return;
+    }
+  }
+
+  // We have a facet of the form
+  // P0 +----+------+P2
+  //         P1
+  for ( int j=0; j<3; j++ ) {
+    Base::Vector3D cVec1 = _rclMesh._aclPointArray[rFace._aulPoints[(j+1)%3]] - _rclMesh._aclPointArray[rFace._aulPoints[j]];
+    Base::Vector3D cVec2 = _rclMesh._aclPointArray[rFace._aulPoints[(j+2)%3]] - _rclMesh._aclPointArray[rFace._aulPoints[j]];
+
+    // adjust the neighbourhoods and point indices
+    if ( cVec1 * cVec2 < 0.0f ) {
+      unsigned long uN1 = rFace._aulNeighbours[(j+1)%3];
+      if ( uN1 != ULONG_MAX ) {
+        // get the neighbour and common edge side
+        MeshFacet& rNb = _rclMesh._aclFacetArray[uN1];
+        unsigned short side = rNb.Side(index);
+
+        // bend the point indices
+        rFace._aulPoints[(j+2)%3] = rNb._aulPoints[(side+2)%3];
+        rNb._aulPoints[(side+1)%3] = rFace._aulPoints[j];
+
+        // set correct neighbourhood
+        unsigned long uN2 = rFace._aulNeighbours[(j+2)%3];
+        rNb._aulNeighbours[side] = uN2;
+        if ( uN2 != ULONG_MAX ) {
+          _rclMesh._aclFacetArray[uN2].ReplaceNeighbour(index, uN1);
+        }
+        unsigned long uN3 = rNb._aulNeighbours[(side+1)%3];
+        rFace._aulNeighbours[(j+1)%3] = uN3;
+        if ( uN3 != ULONG_MAX ) {
+          _rclMesh._aclFacetArray[uN3].ReplaceNeighbour(uN1, index);
+        }
+        rNb._aulNeighbours[(side+1)%3] = index;
+        rFace._aulNeighbours[(j+2)%3] = uN1;
+      }
+      else
+        _rclMesh.DeleteFacet(index);
+
+      return;
+    }
+  }
+}
+
 //
 // OBSOLETE
 //

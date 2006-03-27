@@ -237,6 +237,19 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
   return true;
 }
 
+bool MeshKernel::DeleteFacet (unsigned long ulInd)
+{
+  unsigned long i, j, ulNFacet;
+
+  if (ulInd >= _aclFacetArray.size() ) 
+    return false;
+
+  MeshFacetIterator clIter(*this);
+  clIter.Set(ulInd);
+
+  return DeleteFacet(clIter);
+}
+
 bool MeshKernel::DeletePoint (const MeshPointIterator &rclIter)
 {
   MeshFacetIterator pFIter(*this), pFEnd(*this);

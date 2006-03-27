@@ -35,11 +35,329 @@
 #include "Algorithm.h"
 #include "Info.h"
 #include "Grid.h"
+#include "TopoAlgorithm.h"
 
 #include <Base/Sequencer.h>
 
 using namespace MeshCore;
 
+bool MeshEvalInvalids::Evaluate()
+{
+  const MeshFacetArray& rFaces = _rclMesh.GetFacets();
+  for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it )
+  {
+    if ( it->IsFlag(MeshFacet::INVALID) )
+      return false;
+  }
+
+  const MeshPointArray& rPoints = _rclMesh.GetPoints();
+  for ( MeshPointArray::_TConstIterator jt = rPoints.begin(); jt != rPoints.end(); ++jt )
+  {
+    if ( jt->IsFlag(MeshPoint::INVALID) )
+      return false;
+  }
+
+  return true;
+}
+
+bool MeshFixInvalids::Fixup()
+{
+  _rclMesh.RemoveInvalids();
+  return true;
+}
+
+// ----------------------------------------------------------------------
+
+/*
+ * When building up a mesh then usually the class MeshBuilder is used. This class uses internally a std::set<MeshPoint> 
+ * which uses the '<' operator of MeshPoint to sort the points. Thus to be consistent (and avoid using the '==' operator of MeshPoint) 
+ * we use the same operator when comparing the points in the function object.
+ */
+struct MeshPoint_EqualTo  : public std::binary_function<const MeshPoint&, const MeshPoint&, bool>
+{
+  bool operator()(const MeshPoint& x, const MeshPoint& y) const
+  {
+    if ( x < y )
+      return false;
+    else if ( y < x )
+      return false;
+    return true;
+  }
+};
+
+bool MeshEvalDuplicatePoints::Evaluate()
+{
+  // make a copy of the point list
+  MeshPointArray aPoints = _rclMesh.GetPoints();
+
+  // sort the points ascending x,y or z coordinates
+  std::sort(aPoints.begin(), aPoints.end());
+  // if there are two adjacent points whose distance is less then an epsilon
+  if (std::adjacent_find(aPoints.begin(), aPoints.end(), MeshPoint_EqualTo()) < aPoints.end() )
+    return false;
+  return true;
+}
+
+bool MeshFixDuplicatePoints::Fixup()
+{/*
+  MeshPointArray &rclPAry = _rclMesh._aclPointArray;
+  rclPAry.ResetFlag(MeshPoint::MARKED);
+
+  // merge only points in open edges =>
+  // mark all other points to skip them
+  if ( open )
+  {
+    // set all points as MARKED
+    rclPAry.SetFlag(MeshPoint::MARKED);
+    MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
+    for (MeshFacetArray::_TIterator it = rclFAry.begin(); it != rclFAry.end(); ++it)
+    {
+      for (int i=0; i<3; i++)
+      {
+        // open edge
+        if (it->_aulNeighbours[i] == ULONG_MAX)
+        {
+          // and reset the open edge points
+          rclPAry[it->_aulPoints[i]].ResetFlag(MeshPoint::MARKED);
+          rclPAry[it->_aulPoints[(i+1)%3]].ResetFlag(MeshPoint::MARKED);
+        }
+      }
+    }
+  }
+
+  MeshPointGrid clGrid(_rclMesh);
+
+  // take square distance
+  fMinDistance = fMinDistance * fMinDistance;
+  std::vector<std::pair<unsigned long, std::vector<unsigned long> > > aulMergePts;
+  
+  MeshGridIterator clGridIter(clGrid);
+  std::vector<unsigned long> aulPoints;
+  for (clGridIter.Init(); clGridIter.More(); clGridIter.Next())
+  {
+    aulPoints.clear();
+    clGridIter.GetElements(aulPoints);
+
+    // compare all points in each grid
+    for (std::vector<unsigned long>::iterator it1 = aulPoints.begin(); it1 != aulPoints.end(); ++it1)
+    {
+      MeshPoint& rclPt1 = rclPAry[*it1];
+      if (rclPt1.IsFlag(MeshPoint::MARKED))
+        continue; // already merged with another point
+
+      rclPt1.SetFlag(MeshPoint::MARKED);
+      std::pair<unsigned long, std::vector<unsigned long> > aMergePt;
+      aMergePt.first = *it1;
+
+      for (std::vector<unsigned long>::iterator it2 = it1; it2 != aulPoints.end(); ++it2)
+      {
+        if (it2 == it1 || (*it2) == (*it1))
+          continue;
+
+        MeshPoint& rclPt2 = rclPAry[*it2];
+        if (rclPt2.IsFlag(MeshPoint::MARKED))
+          continue; // already merged with another point
+
+        if (Base::DistanceP2(rclPt1, rclPt2) < fMinDistance)
+        {
+          rclPt2.SetFlag(MeshPoint::MARKED);
+          aMergePt.second.push_back(*it2);
+        }
+      }
+
+      // point cluster to merge
+      if (aMergePt.second.size() > 0)
+        aulMergePts.push_back(aMergePt);
+    }
+  }
+
+  // adjust the corresponding facets
+  MeshRefPointToFacets  clPt2Facets(_rclMesh);
+  unsigned long ulCt = 0;
+  for (std::vector<std::pair<unsigned long, std::vector<unsigned long> > >::iterator it = aulMergePts.begin(); it != aulMergePts.end(); ++it)
+  {
+    unsigned long ulPos = it->first;
+    std::vector<unsigned long>& aMergePt = it->second;
+    for (std::vector<unsigned long>::iterator it2 = aMergePt.begin(); it2 != aMergePt.end(); ++it2)
+    {
+      ulCt++;
+      rclPAry[*it2].SetInvalid();
+      std::set<MeshFacetArray::_TConstIterator>& aulFacs = clPt2Facets[*it2];
+      for (std::set<MeshFacetArray::_TConstIterator>::iterator itF = aulFacs.begin(); itF != aulFacs.end(); ++itF)
+      {
+        for (int i=0; i<3; i++)
+        {
+          if ((*itF)->_aulPoints[i] == *it2)
+          {
+//            (*itF)->_aulPoints[i] = ulPos;
+          }
+        }
+      }
+    }
+  }
+
+  unsigned long ulCtPts = _rclMesh.CountPoints();
+  _rclMesh.RemoveInvalids();
+  unsigned long ulDiff = ulCtPts - _rclMesh.CountPoints();
+
+  // falls Dreiecke zusammenklappen => entfernen
+  RemoveDegeneratedFacets();
+
+  return ulDiff;*/
+  return false;
+}
+
+// ----------------------------------------------------------------------
+
+/*
+ * The facet with the lowset index is regarded as 'less'.
+ */
+struct MeshFacet_Less  : public std::binary_function<const MeshFacet&, const MeshFacet&, bool>
+{
+  bool operator()(const MeshFacet& x, const MeshFacet& y) const
+  {
+    unsigned long tmp;
+    unsigned long x0 = x._aulPoints[0];
+    unsigned long x1 = x._aulPoints[1];
+    unsigned long x2 = x._aulPoints[2];
+    unsigned long y0 = y._aulPoints[0];
+    unsigned long y1 = y._aulPoints[1];
+    unsigned long y2 = y._aulPoints[2];
+
+    if (x0 > x1)
+    { tmp = x0; x0 = x1; x1 = tmp; }
+    if (x0 > x2)
+    { tmp = x0; x0 = x2; x2 = tmp; }
+    if (x1 > x2)
+    { tmp = x1; x1 = x2; x2 = tmp; }
+    if (y0 > y1)
+    { tmp = y0; y0 = y1; y1 = tmp; }
+    if (y0 > y2)
+    { tmp = y0; y0 = y2; y2 = tmp; }
+    if (y1 > y2)
+    { tmp = y1; y1 = y2; y2 = tmp; }
+
+    if      (x0 < y0)  return true;
+    else if (x0 > y0)  return false;
+    else if (x1 < y1)  return true;
+    else if (x1 > y1)  return false;
+    else if (x2 < y2)  return true;
+    else               return false;
+  }
+};
+
+/*
+ * Two facets are equal if all its three point indices refer to the same location in the point array of
+ * the mesh kernel they belong to.
+ */
+struct MeshFacet_EqualTo  : public std::binary_function<const MeshFacet&, const MeshFacet&, bool>
+{
+  bool operator()(const MeshFacet& x, const MeshFacet& y) const
+  {
+    std::vector<unsigned long> xx;
+    std::vector<unsigned long> yy;
+    for ( int i=0; i<3; i++ )
+    {
+      xx.push_back( x._aulPoints[i] );
+      yy.push_back( y._aulPoints[i] );
+    }
+
+    std::sort(xx.begin(), xx.end());
+    std::sort(yy.begin(), yy.end());
+
+    return ( (xx[0] == yy[0]) && (xx[1] == yy[1]) && (xx[2] == yy[2]) );
+  }
+};
+
+bool MeshEvalDuplicateFacets::Evaluate()
+{
+  std::set<MeshFacet, MeshFacet_Less> aFaces;
+  const MeshFacetArray& rFaces = _rclMesh.GetFacets();
+  for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it )
+    aFaces.insert( *it );
+
+  return (aFaces.size() == rFaces.size());
+}
+
+bool MeshFixDuplicateFacets::Fixup()
+{
+  return false;
+}
+
+// ----------------------------------------------------------------------
+
+bool MeshEvalDegeneratedFacets::Evaluate()
+{
+  MeshFacetIterator it(_rclMesh);
+  for ( it.Init(); it.More(); it.Next() )
+  {
+    if ( it->Area() < FLOAT_EPS )
+      return false;
+  }
+
+  return true;
+}
+
+bool MeshFixDegeneratedFacets::Fixup()
+{
+  MeshTopoAlgorithm cTopAlg(_rclMesh);
+
+  MeshFacetIterator it(_rclMesh);
+  for ( it.Init(); it.More(); it.Next() )
+  {
+    if ( it->Area() <= FLOAT_EPS )
+    {
+      unsigned long uCt = _rclMesh.CountFacets();
+      unsigned long uId = it.Position();
+      cTopAlg.DirectRemoveDegenerated(uId);
+      if ( uCt != _rclMesh.CountFacets() )
+      {
+        // due to a modification of the array the iterator became invalid
+        it.Set(uId-1);
+      }
+    }
+  }
+
+  return true;
+}
+
+// ----------------------------------------------------------------------
+
+bool MeshEvalRangeFacet::Evaluate()
+{
+  return false;
+}
+
+bool MeshFixRangeFacet::Fixup()
+{
+  return false;
+}
+
+// ----------------------------------------------------------------------
+
+bool MeshEvalRangePoint::Evaluate()
+{
+  return false;
+}
+
+bool MeshFixRangePoint::Fixup()
+{
+  return false;
+}
+
+// ----------------------------------------------------------------------
+
+bool MeshEvalCorruptedFacets::Evaluate()
+{
+  return false;
+}
+
+bool MeshFixCorruptedFacets::Fixup()
+{
+  return false;
+}
+
+// ----------------------------------------------------------------------
 
 struct TMeshFacetInds
 {
@@ -87,13 +405,6 @@ struct TMeshFacetInds
       return true;
     else 
       return false;
-  }
-
-  bool operator == (const TMeshFacetInds& m) const
-  {
-    if (p0 == m.p0 && p1 == m.p1 && p2 == m.p2)
-      return true;
-    return false;
   }
 };
 
