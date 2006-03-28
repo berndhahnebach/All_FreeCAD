@@ -50,8 +50,8 @@ public:
   void onRepairOrientation();
   void onAnalyzeNonManifolds();
   void onRepairNonManifolds();
-  void onAnalyzeTopology();
-  void onRepairTopology();
+  void onAnalyzeIndices();
+  void onRepairIndices();
   void onAnalyzeDegenerations();
   void onRepairDegenerations();
   void onAnalyzeDuplicatedFaces();

@@ -330,63 +330,6 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QGroupBox" row="5" column="0">
-            <property name="name">
-                <cstring>groupBox2_3_2</cstring>
-            </property>
-            <property name="title">
-                <string>Topological neighbourhood</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabelTopology</cstring>
-                    </property>
-                    <property name="text">
-                        <string>No information</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer9_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>290</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>analyzeTopology</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Analyze</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>repairTopology</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Repair</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
         <widget class="QGroupBox" row="4" column="0">
             <property name="name">
                 <cstring>groupBox2_3</cstring>
@@ -558,7 +501,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QGroupBox" row="6" column="0">
+        <widget class="QGroupBox" row="5" column="0">
             <property name="name">
                 <cstring>groupBox2_3_2_2</cstring>
             </property>
@@ -605,6 +548,63 @@
                 <widget class="QPushButton">
                     <property name="name">
                         <cstring>repairDegenerated</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>Repair</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox" row="6" column="0">
+            <property name="name">
+                <cstring>groupBox2_3_2</cstring>
+            </property>
+            <property name="title">
+                <string>Face indices</string>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabelIndices</cstring>
+                    </property>
+                    <property name="text">
+                        <string>No information</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer9_2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>290</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>analyzeIndices</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Analyze</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>repairIndices</cstring>
                     </property>
                     <property name="enabled">
                         <bool>false</bool>
@@ -667,16 +667,16 @@
         <slot>onRepairNonManifolds()</slot>
     </connection>
     <connection>
-        <sender>analyzeTopology</sender>
+        <sender>analyzeIndices</sender>
         <signal>clicked()</signal>
         <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onAnalyzeTopology()</slot>
+        <slot>onAnalyzeIndices()</slot>
     </connection>
     <connection>
-        <sender>repairTopology</sender>
+        <sender>repairIndices</sender>
         <signal>clicked()</signal>
         <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onRepairTopology()</slot>
+        <slot>onRepairIndices()</slot>
     </connection>
     <connection>
         <sender>analyzeDegenerated</sender>
@@ -714,8 +714,8 @@
     <tabstop>repairDupPts</tabstop>
     <tabstop>analyzeNonmanifolds</tabstop>
     <tabstop>repairNonmanifolds</tabstop>
-    <tabstop>analyzeTopology</tabstop>
-    <tabstop>repairTopology</tabstop>
+    <tabstop>analyzeIndices</tabstop>
+    <tabstop>repairIndices</tabstop>
     <tabstop>analyzeDegenerated</tabstop>
     <tabstop>repairDegenerated</tabstop>
     <tabstop>buttonHelp</tabstop>
@@ -731,8 +731,8 @@
     <slot>onRepairNonManifolds()</slot>
     <slot>onAnalyzeDegenerations()</slot>
     <slot>onRepairDegenerations()</slot>
-    <slot>onAnalyzeTopology()</slot>
-    <slot>onRepairTopology()</slot>
+    <slot>onAnalyzeIndices()</slot>
+    <slot>onRepairIndices()</slot>
     <slot>onAnalyzeOrientation()</slot>
     <slot>onRepairOrientation()</slot>
 </slots>

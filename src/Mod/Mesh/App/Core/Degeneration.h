@@ -61,6 +61,10 @@ public:
    * Searches for as 'Invalid' marked points or facets.
    */
   bool Evaluate ();
+  /**
+   * Returns the indices of all invalid facets or facets whose points are invalid.
+   */
+  std::vector<unsigned long> GetIndices() const;
 };
 
 /**
@@ -104,10 +108,14 @@ public:
    * Destruction.
    */
   ~MeshEvalDuplicatePoints () { }
-  /** 
-   * Searches for duplicated points.
+  /**
+   * Merges points to one if the distance between them is less than the global \a MeshDefinitions::_fMinPointDistanceD1.
    */
   bool Evaluate ();
+  /**
+   * Returns the indices of all duplicated points.
+   */
+  std::vector<unsigned long> GetIndices() const;
 };
 
 /**
@@ -154,6 +162,10 @@ public:
    * Searches for duplicated facets.
    */
   bool Evaluate ();
+  /**
+   * Returns the indices of all duplicated facets.
+   */
+  std::vector<unsigned long> GetIndices() const;
 };
 
 /**
@@ -181,6 +193,8 @@ public:
 /**
  * The MeshEvalDegeneratedFacets class searches for degenerated facets. A facet is degenerated either if its points
  * are collinear, i.e. they lie on a line or two points are coincident. In the latter case these points are duplicated.
+ * If a facet refers to at least two equal point indices then the facet is also regarded is 'corrupt'.
+ * @see MeshEvalCorruptedFacets
  * @see MeshEvalDuplicatePoints
  * @see MeshFixDegeneratedFacets
  * @author Werner Mayer
@@ -200,6 +214,14 @@ public:
    * Searches degenerated facets.
    */
   bool Evaluate ();
+  /**
+   * Returns the number of facets with an edge smaller than \a fMinEdgeLength.
+   */
+  unsigned long CountEdgeTooSmall (float fMinEdgeLength) const;
+  /**
+   * Searches for defaced facets. A facet is regarded as defaced if an angle is < 30° or > 120°.
+   */
+  std::vector<unsigned long> DefacedFacets() const;
 };
 
 /**
@@ -222,6 +244,12 @@ public:
    * Removes degenerated facets.
    */
   bool Fixup ();
+  /**
+   * Removes all facets with an edge smaller than \a fMinEdgeLength without leaving holes or gaps
+   * in the mesh. Returns the number of removed facets.
+   */
+  unsigned long RemoveEdgeTooSmall (float fMinEdgeLength = MeshDefinitions::_fMinPointDistance,
+                                    float fMinEdgeAngle  = MeshDefinitions::_fMinEdgeAngle);
 };
 
 /**
@@ -245,6 +273,10 @@ public:
    * Searches for facets that has neighbour facet indices out of range.
    */
   bool Evaluate ();
+  /**
+   * Returns the indices of all facets with invalid neighbour indices.
+   */
+  std::vector<unsigned long> GetIndices() const;
 };
 
 /** 
@@ -289,6 +321,10 @@ public:
    * Searches for facets that has point indices out of range.
    */
   bool Evaluate ();
+  /**
+   * Returns the indices of all facets with invalid point indices.
+   */
+  std::vector<unsigned long> GetIndices() const;
 };
 
 /**
@@ -334,6 +370,10 @@ public:
    * Searches for corrupted facets.
    */
   bool Evaluate ();
+  /**
+   * Returns the indices of all corrupt facets.
+   */
+  std::vector<unsigned long> GetIndices() const;
 };
 
 /**
@@ -357,119 +397,6 @@ public:
    * Removes corrupted facets.
    */
   bool Fixup ();
-};
-
-/**
- * The MeshEvalDegenerations class allows to examine the mesh for degenerated elements,
- * to invalid set elememts, duplicated elements, etc.
- * Moreover the class provides methods to fixup some of the mentioned degenerations.
- */
-class AppMeshExport MeshEvalDegenerations : public MeshEvaluation
-{
-public:
-  enum TErrorTable 
-  {
-    InvalidFacet       =  0,    /**< as invalid marked facet */
-    InvalidPoint       =  1,    /**< as invalid marked point */
-    DuplicatedFacets   =  2,    /**< duplicated facets */
-    DuplicatedPoints   =  3,    /**< duplicated points */
-    OutOfRangeFacet    =  4,    /**< */
-    OutOfRangePoint    =  5,    /**< */
-    CorruptedFacets    =  6,    /**< */
-    DegeneratedFacets  =  7,    /**< */
-    Undefined          =  8,    /**< unknown error type */
-  };
-
-public:
-  /**
-   * Construction.
-   */
-  MeshEvalDegenerations (const MeshKernel &rclM) : MeshEvaluation( rclM ) { }
-  /** 
-   * Destruction.
-   */
-  ~MeshEvalDegenerations () { }
-  /**
-   * Returns true if the mesh contains any degenerated elements.
-   */
-  bool HasDegenerations () const { return _errMode.any(); }
-  /**
-   * Returns true if the mesh contains any degenerated elements of the type \a err.
-   */
-  bool HasDegeneration (TErrorTable tErr) const { return _errMode.test(size_t(tErr)); }
-  /**
-   * Returns the error types as unsigned long.
-   */
-  unsigned long GetDegenerations() const { return _errMode.to_ulong(); }
-  /**
-   * Returns an array of indices to the specified error type \a err. Depending on \a err the
-   * indices can refer to facets, edges or points.
-   */
-  std::vector<unsigned long> GetIndices(TErrorTable err);
-  /**
-   * Returns the number of facets with an edge smaller than \a fMinEdgeLength.
-   */
-  unsigned long CountEdgeTooSmall (float fMinEdgeLength) const;
-  /**
-   * Searches for defaced facets. A facet is regarded as defaced if an angle is < 30° or > 120°.
-   */
-  std::vector<unsigned long> DefacedFacets() const;
-
-  /**
-   * Checks the mesh data structure for
-   * \li If indexing of the facets and edges to the points is inside the range 
-   * \li invalid indexing
-   * \li multiple edges
-   * \li invalid elements
-   * \li multiple points
-   * Returns true if the data structure is valid, false otherwise.
-   */
-  bool Evaluate ();
-
-private:
-  void AddErrorMode (TErrorTable tErr) { _errMode.set(size_t(tErr)); }
-  void ResetErrorMode (TErrorTable tErr) { _errMode.reset(size_t(tErr)); } 
-  void ResetErrorModes () { _errMode.reset(); } 
-
-private:
-  std::bitset<12> _errMode; /**< \internal */
-};
-
-class AppMeshExport MeshFixDegenerations : public MeshValidation
-{
-public:
-  /**
-   * Construction.
-   */
-  MeshFixDegenerations (MeshKernel &rclM) : MeshValidation( rclM ) { }
-  /** 
-   * Destruction.
-   */
-  ~MeshFixDegenerations () { }
-  /**
-   * Removes all facets with an edge smaller than \a fMinEdgeLength without leaving holes or gaps
-   * in the mesh. Returns the number of removed facets.
-   */
-  unsigned long RemoveEdgeTooSmall (float fMinEdgeLength = MeshDefinitions::_fMinPointDistance,
-                                    float fMinEdgeAngle  = MeshDefinitions::_fMinEdgeAngle);
-  /**
-   * Merges points to one if the distance between them is less than \a fMinDistance.
-   * If \a open is true only points from open edges are regarded. Returns the number of removed points.
-   */
-  unsigned long MergePoints (bool open, float fMinDistance = MeshDefinitions::_fMinPointDistance);
-  /**
-   * Removes to an edge or to a point degenerated facets and returns the number of removed facets.
-   */
-  unsigned long RemoveDegeneratedFacets ();
-
-private:
-  /**
-   * \internal Marks the facet with index \a ulFacetPos with too small edge length as deleted.
-   * Two cases: left and right neighbours of the edge \a ulFront exist => delete one point and
-   * correct indices.
-   * only one neighbour exists then just remove the facet.
-   */
-  void RemoveFacetETS (unsigned long ulFacetPos, unsigned long ulFront);
 };
 
 } // namespace MeshCore

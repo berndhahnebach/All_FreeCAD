@@ -171,6 +171,11 @@ public:
    * points are collinear.
    */
   void DirectRemoveDegenerated(unsigned long index);
+  /**
+   * Removes the corrupted facet at position \a index from the mesh structure. A facet is corrupted if the indices of its corner
+   * points are not all different.
+   */
+  void DirectRemoveCorrupted(unsigned long index);
   //@}
 
 private:

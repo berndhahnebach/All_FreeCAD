@@ -883,7 +883,7 @@ void MeshTopoAlgorithm::DirectRemoveDegenerated(unsigned long index)
   for ( int i=0; i<3; i++ ) {
     const MeshPoint& rE0 = _rclMesh._aclPointArray[rFace._aulPoints[i]]; 
     const MeshPoint& rE1 = _rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]; 
-    if ( rFace._aulPoints[i] == rFace._aulPoints[(i+1)%3] || rE0 == rE1 ) {
+    if ( rE0 == rE1 ) {
       unsigned long uN1 = rFace._aulNeighbours[(i+1)%3];
       unsigned long uN2 = rFace._aulNeighbours[(i+2)%3];
       if ( uN2 != ULONG_MAX )
@@ -891,7 +891,7 @@ void MeshTopoAlgorithm::DirectRemoveDegenerated(unsigned long index)
       if ( uN1 != ULONG_MAX )
         _rclMesh._aclFacetArray[uN1].ReplaceNeighbour(index, uN2);
 
-      // isolate the face and reove it
+      // isolate the face and remove it
       rFace._aulNeighbours[0] = ULONG_MAX;
       rFace._aulNeighbours[1] = ULONG_MAX;
       rFace._aulNeighbours[2] = ULONG_MAX;
@@ -936,6 +936,31 @@ void MeshTopoAlgorithm::DirectRemoveDegenerated(unsigned long index)
       else
         _rclMesh.DeleteFacet(index);
 
+      return;
+    }
+  }
+}
+
+void MeshTopoAlgorithm::DirectRemoveCorrupted(unsigned long index)
+{
+  if (index >= _rclMesh._aclFacetArray.size() ) return;
+  MeshFacet& rFace = _rclMesh._aclFacetArray[index];
+
+  // coincident corners (topological)
+  for ( int i=0; i<3; i++ ) {
+    if ( rFace._aulPoints[i] == rFace._aulPoints[(i+1)%3] ) {
+      unsigned long uN1 = rFace._aulNeighbours[(i+1)%3];
+      unsigned long uN2 = rFace._aulNeighbours[(i+2)%3];
+      if ( uN2 != ULONG_MAX )
+        _rclMesh._aclFacetArray[uN2].ReplaceNeighbour(index, uN1);
+      if ( uN1 != ULONG_MAX )
+        _rclMesh._aclFacetArray[uN1].ReplaceNeighbour(index, uN2);
+
+      // isolate the face and remove it
+      rFace._aulNeighbours[0] = ULONG_MAX;
+      rFace._aulNeighbours[1] = ULONG_MAX;
+      rFace._aulNeighbours[2] = ULONG_MAX;
+      _rclMesh.DeleteFacet( index );
       return;
     }
   }
