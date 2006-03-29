@@ -56,3 +56,8 @@ void DocumentObject::setDocument(App::Document* doc)
 {
   _pDoc=doc;
 }
+
+void DocumentObject::onBevorChange(const Property* prop)
+{
+  _pDoc->onBevorChangeProperty(this,prop);
+};

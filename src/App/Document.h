@@ -31,6 +31,7 @@
 
 #include "PropertyContainer.h"
 #include "PropertyStandard.h"
+//#include "Transaction.h"
 
 
 #include <map>
@@ -51,11 +52,12 @@ namespace Base {
 //class FCLabel;
 namespace App
 {
-  class LabelPy;
+  class DocumentObject;
   class Document;
   class AbstractFeature;
   class DocumentPy; // the python document class
   class Application;
+  class Transaction;
 }
 
 
@@ -113,20 +115,13 @@ public:
   PropertyString FileName;
 
 
-  /// init with an OpenCasCade Document (done by App::Application)
+  /// Construction
 	Document(void);
   /// Destruction
 	virtual ~Document();
 
 	//---------------------------------------------------------------------
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
-
-	//void InitType(App::DocType *pcDocType);
-	//App::DocType *GetDocType(void);
-
-	//---------------------------------------------------------------------
-	// CasCade exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
 
  	/** @name File handling of the document */
@@ -224,16 +219,40 @@ public:
 	//@}
 
 
+ 	/** @name methods for the transaction handling
+   *  normaly the Transction system is used through the
+   *  Undo/Redo system. Direct acces you nee e.g. reconstruction
+   *  of documents through transction logging or fine grain change
+   *  history!
+	 */
+	//@{
+  /// starts a new transaction
+  int  beginTransaction(void);
+  /// revert all changes to the document since beginTransaction()
+  void rollbackTransaction(void);
+  /// ends the open Transaction
+  int  endTransaction(void);
+  /// returns the named Transaction
+  const Transaction *getTransaction(int pos = -1) const;
+  //@}
+
+
 	virtual Base::PyObjectBase *GetPyObject(void);
 
 
 	friend class DocumentPy;
-	friend class LabelPy;
 	friend class Application;
 	friend class AbstractFeature;
+  /// because of transaction handling
+	friend class DocumentObject;
 
 protected:
 
+  void onBevorChangeProperty(const DocumentObject *Who, const Property *What);
+
+  int iTransactionCount;
+  std::map<int,Transaction*> mTransactions;
+  Transaction *activTransaction;
   /// helper which Recompute only this feature
   void _RecomputeFeature(AbstractFeature* Feat);
 

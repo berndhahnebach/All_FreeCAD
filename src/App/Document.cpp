@@ -47,6 +47,7 @@
 #include <Base/zipios/meta-iostreams.h>
 
 #include "Application.h"
+#include "Transaction.h"
 
 using Base::Console;
 using Base::streq;
@@ -59,11 +60,71 @@ using namespace zipios ;
 
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 
+
+
+
+
+void Document::onBevorChangeProperty(const DocumentObject *Who, const Property *What)
+{
+
+}
+
+
+/// starts a new transaction
+int  Document::beginTransaction(void)
+{
+  if(activTransaction)
+    endTransaction();
+
+  iTransactionCount++;
+
+  activTransaction = new Transaction(iTransactionCount);
+  mTransactions[iTransactionCount] = activTransaction;
+
+  return iTransactionCount;
+}
+
+/// revert all changes to the document since beginTransaction()
+void Document::rollbackTransaction(void)
+{
+  // ToDo
+  assert(0);
+  endTransaction();
+}
+
+/// ends the open Transaction
+int  Document::endTransaction(void)
+{
+  activTransaction = 0;
+  return iTransactionCount;
+}
+
+/// returns the named Transaction
+const Transaction *Document::getTransaction(int pos) const
+{
+  if(pos == -1)
+    return activTransaction;
+  else
+  {
+    std::map<int,Transaction*>::const_iterator Pos( mTransactions.find(pos));
+    if(Pos != mTransactions.end())
+      return Pos->second;
+    else
+      return 0;
+  }
+}
+
+
+
+
+
+
+
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
 Document::Document(void)
-: pActiveFeature(0)
+: pActiveFeature(0),iTransactionCount(0),activTransaction(0)
 {
   // Remark: In a constructor we should never increment a Python object as we cannot be sure
   // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't 
@@ -100,9 +161,11 @@ Document::~Document()
 
 
 
+
 //--------------------------------------------------------------------------
 // Exported functions
 //--------------------------------------------------------------------------
+
 
 void Document::Save (Writer &writer)
 {

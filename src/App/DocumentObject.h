@@ -51,6 +51,9 @@ public:
   void setDocument(App::Document* doc);
 
 protected:
+  /// get called befor the value is changed
+  virtual void onBevorChange(const Property* prop);
+
 
   App::Document* _pDoc;
 

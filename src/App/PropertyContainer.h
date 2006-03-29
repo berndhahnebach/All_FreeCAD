@@ -71,11 +71,6 @@ public:
 	 */
 	virtual ~PropertyContainer();
 
-  /// get called by the container when a Proptery was changed
-  virtual void onChanged(Property* prop){};
-  /// get called befor the value is changed
-  virtual void onBevorChange(Property* prop){};
-
   /// find a property by its name
   Property *getPropertyByName(const char* name) const;
   /// get the name of a property
@@ -91,6 +86,11 @@ public:
 
 	
 protected: 
+  /// get called by the container when a Proptery was changed
+  virtual void onChanged(const Property* prop){};
+  /// get called befor the value is changed
+  virtual void onBevorChange(const Property* prop){};
+
   //void hasChanged(Propterty* prop);
   static const  PropertyData * getPropertyDataPtr(void); 
   virtual const PropertyData& getPropertyData(void) const; 
