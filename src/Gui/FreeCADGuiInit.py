@@ -125,6 +125,7 @@ Gui.ActivateWorkbench("<none>")
 # Register .py, .FCScript and .FCMacro
 FreeCAD.EndingAdd("py","FreeCADGui")
 FreeCAD.EndingAdd("iv","FreeCADGui")
+FreeCAD.EndingAdd("wrl","FreeCADGui")
 FreeCAD.EndingAdd("FCMacro","FreeCADGui")
 FreeCAD.EndingAdd("FCScript","FreeCADGui")
 

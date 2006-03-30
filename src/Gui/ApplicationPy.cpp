@@ -162,7 +162,7 @@ PYFUNCIMP_S(Application,sopen)
     if ( view ) {
       view->setFocus();
     }
-    else if ( ext == "iv" ) {
+    else if ( ext == "iv" || ext == "wrl" ) {
       if ( !Application::Instance->activeDocument() )
         App::GetApplication().newDocument();
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
@@ -189,7 +189,7 @@ PYFUNCIMP_S(Application,sinsert)
     QFileInfo fi;
     fi.setFile(Name);
     QString ext = fi.extension().lower();
-    if ( ext == "iv" ) {
+    if ( ext == "iv" || ext == "wrl" ) {
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
       Base::Interpreter().runString( cmd.ascii() );
     }
