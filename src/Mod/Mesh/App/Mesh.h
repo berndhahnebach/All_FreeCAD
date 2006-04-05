@@ -43,6 +43,27 @@
 
 namespace Mesh
 {
+class AppMeshExport MeshObject
+{
+public:
+  MeshObject(MeshCore::MeshKernel *Kernel, const Base::Matrix4D &Mtrx )
+    : _pcKernel(Kernel),_Mtrx(Mtrx){}
+
+  /** Returns an iterator object to go over all facets. */
+  MeshCore::MeshFacetIterator FacetIterator() const;
+  /** Returns an iterator object to go over all points. */
+  MeshCore::MeshPointIterator PointIterator() const;
+
+  /** Applies an additional transformation to the current transformation. */
+  void ApplyTransform( const Base::Matrix4D& rclTrf );
+  /** Override the current transformation with the new one. */
+  void SetTransform( const Base::Matrix4D& rclTrf );
+
+protected:
+  MeshCore::MeshKernel* _pcKernel;
+  Base::Matrix4D _Mtrx;
+};
+
 
 /** The normals property class.
  * Note: We need an own class for that to distinguish from the base vector list.

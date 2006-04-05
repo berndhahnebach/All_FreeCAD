@@ -73,4 +73,8 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + New methods in Builder3D (patch 1450695,1451028)
 + Set operations (patch 1451026, 1451138, 1451141)
 + start const Mesh and MeshProperty
-
++ implement class to evaluate and validate meshes with corresponding feature classes
++ dialog added to analyze and repair meshes
++ special viewproviders to display defects of meshes
++ delete features from the document
++ bug fixed: remove features to be deleted from the selection

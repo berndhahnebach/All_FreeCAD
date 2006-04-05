@@ -32,11 +32,13 @@
 #include <Gui/BitmapFactory.h>
 
 #include "images.h"
+#include "DlgEvaluateMeshImp.h"
 #include "PropertyEditorMesh.h"
 #include "ViewProvider.h"
 #include "ViewProviderCurvature.h"
 #include "ViewProviderTransform.h"
 #include "ViewProviderTransformDemolding.h"
+#include "ViewProviderDefects.h"
 #include "Workbench.h"
 
 
@@ -70,6 +72,7 @@ void GuiMeshExport initMeshGui() {
 
   // instanciating the commands
   CreateMeshCommands();
+  new MeshGui::CleanupHandler;
 
   MeshGui::PropertyEditorMesh                ::init();
 
@@ -78,6 +81,13 @@ void GuiMeshExport initMeshGui() {
   MeshGui::ViewProviderMeshCurvature         ::init();
   MeshGui::ViewProviderMeshTransform         ::init();
   MeshGui::ViewProviderMeshTransformDemolding::init();
+  MeshGui::ViewProviderMeshDefects           ::init();
+  MeshGui::ViewProviderMeshOrientation       ::init();
+  MeshGui::ViewProviderMeshManifolds         ::init();
+  MeshGui::ViewProviderMeshDuplicatedFaces   ::init();
+  MeshGui::ViewProviderMeshDuplicatedPoints  ::init();
+  MeshGui::ViewProviderMeshDegenerations     ::init();
+  MeshGui::ViewProviderMeshIndices           ::init();
 
   MeshGui::Workbench                         ::init();
 

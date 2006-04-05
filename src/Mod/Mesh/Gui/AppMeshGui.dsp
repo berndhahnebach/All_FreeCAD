@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib coin2.lib soqt1.lib qt-mtnc321.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\MeshGui.pyd" /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Release\MeshGui.pyd    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    ..\InitGui.py    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    Release\MeshGui.lib    ..\..\..\..\Mod\Mesh\ 
+PostBuild_Cmds=xcopy     /y     /f     Release\MeshGui.pyd     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     ..\InitGui.py     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     Release\MeshGui.lib     ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib coin2d.lib soqt1d.lib qt-mtnc321.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\MeshGui_d.pyd" /pdbtype:sept /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Debug\MeshGui_d.pyd    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    ..\InitGui.py    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    Debug\MeshGui_d.lib    ..\..\..\..\Mod\Mesh\ 
+PostBuild_Cmds=xcopy     /y     /f     Debug\MeshGui_d.pyd     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     ..\InitGui.py     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     Debug\MeshGui_d.lib     ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -158,6 +158,33 @@ SOURCE=.\DlgEvaluateMeshImp.cpp
 # Begin Source File
 
 SOURCE=.\DlgEvaluateMeshImp.h
+
+!IF  "$(CFG)" == "AppMeshGui - Win32 Release"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\DlgEvaluateMeshImp.h
+InputName=DlgEvaluateMeshImp
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
+
+# Begin Custom Build - Moc'ing $(InputName).h ...
+InputDir=.
+InputPath=.\DlgEvaluateMeshImp.h
+InputName=DlgEvaluateMeshImp
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp"
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # End Group
 # Begin Source File
@@ -205,6 +232,14 @@ SOURCE=.\ViewProviderCurvature.cpp
 # Begin Source File
 
 SOURCE=.\ViewProviderCurvature.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderDefects.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderDefects.h
 # End Source File
 # Begin Source File
 

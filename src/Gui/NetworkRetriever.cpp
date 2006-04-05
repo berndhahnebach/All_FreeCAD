@@ -515,6 +515,23 @@ void StdCmdOnlineHelp::activated(int iMsg)
     {
       loop--;
       QFileInfo fi( path );
+      if ( !fi.exists() )
+      {
+        if ( QMessageBox::critical(getMainWindow(), tr("Non-existing directory"), tr("The directory '%1' does not exist.\n\n"
+                                                       "Do you want to specify an existing directory?").arg( fi.filePath() ), 
+             QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape) != QMessageBox::Yes )
+        {
+          // exit the command
+          return;
+        }
+        else 
+        {
+          path = QFileDialog::getExistingDirectory();
+          if ( path.isEmpty() )
+            return;
+        }
+      }
+
       if ( !fi.permission( QFileInfo::WriteUser ) )
       {
         if ( QMessageBox::critical(getMainWindow(), tr("Missing permission"), tr("You don't have write permission to '%1'\n\n"

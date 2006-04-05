@@ -122,6 +122,7 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(addFeature)
   PYMETHODEDEF(activeFeature)
   PYMETHODEDEF(getFeature)
+  PYMETHODEDEF(removeFeature)
   PYMETHODEDEF(listFeatures)
   PYMETHODEDEF(getName)
 
@@ -432,6 +433,26 @@ PYFUNCIMP_D(DocumentPy,getFeature)
     AbstractFeature *pcFtr = _pcDoc->getFeature(sName);
     if(pcFtr)
       return pcFtr->GetPyObject();
+    else {
+      char szBuf[200];
+      sprintf(szBuf, "No feature found with name '%s'", sName);
+      Py_Error(PyExc_Exception,szBuf);
+    }
+  } PY_CATCH;
+}
+
+PYFUNCIMP_D(DocumentPy,removeFeature)
+{
+  char *sName;
+  if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C
+    return NULL;                             // NULL triggers exception
+
+  PY_TRY {
+    AbstractFeature *pcFtr = _pcDoc->getFeature(sName);
+    if(pcFtr) {
+      _pcDoc->remFeature( sName );
+      Py_Return;
+    }
     else {
       char szBuf[200];
       sprintf(szBuf, "No feature found with name '%s'", sName);

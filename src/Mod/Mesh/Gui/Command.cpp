@@ -573,16 +573,15 @@ void CmdMeshEvaluation::activated(int iMsg)
   std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    MeshGui::DlgEvaluateMeshImp dlg(Gui::getMainWindow());
-    dlg.setMesh( (Mesh::Feature*)(*it) );
-    dlg.exec();
+    MeshGui::DockEvaluateMeshImp::instance()->setMesh( (Mesh::Feature*)(*it) );
+    break;
   }
 }
 
 bool CmdMeshEvaluation::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return (!MeshGui::DockEvaluateMeshImp::hasInstance()) && (getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1);
 }
 
 DEF_STD_CMD_A(CmdMeshEvaluateSolid);
@@ -639,13 +638,16 @@ void CmdMeshHarmonizeNormals::activated(int iMsg)
   std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
+    std::string fName = (*it)->name.getValue();
+    fName += "_Harmonize";
+    fName = getUniqueFeatureName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"f=App.document().GetFeature(\"%s\")",(*it)->name.getValue());
-    doCommand(Doc,"m=f.getMesh()");
-    doCommand(Doc,"m.harmonizeNormals()");
-    doCommand(Doc,"f.setMesh(m)");
+    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::HarmonizeNormals\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
   }
 }
 
@@ -674,17 +676,172 @@ void CmdMeshFlipNormals::activated(int iMsg)
   std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
+    std::string fName = (*it)->name.getValue();
+    fName += "_Flip";
+    fName = getUniqueFeatureName(fName.c_str());
     openCommand("Mesh Flip Normals");
-    doCommand(Doc,"f=App.document().GetFeature(\"%s\")",(*it)->name.getValue());
-    doCommand(Doc,"m=f.getMesh()");
-    doCommand(Doc,"m.flipNormals()");
-    doCommand(Doc,"f.setMesh(m)");
+    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FlipNormals\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
   }
 }
 
 bool CmdMeshFlipNormals::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
+DEF_STD_CMD_A(CmdMeshFixDegenerations);
+
+CmdMeshFixDegenerations::CmdMeshFixDegenerations()
+  :Command("Mesh_FixDegenerations")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Remove degenerated faces");
+  sToolTipText  = QT_TR_NOOP("Remove degenerated faces from the mesh");
+  sWhatsThis    = QT_TR_NOOP("Remove degenerated faces from the mesh");
+  sStatusTip    = QT_TR_NOOP("Remove degenerated faces from the mesh");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshFixDegenerations::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    std::string fName = (*it)->name.getValue();
+    fName += "_Fixed";
+    fName = getUniqueFeatureName(fName.c_str());
+    openCommand("Mesh Harmonize Normals");
+    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FixDegenerations\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
+    commitCommand();
+    updateActive();
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+  }
+}
+
+bool CmdMeshFixDegenerations::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
+DEF_STD_CMD_A(CmdMeshFixDuplicateFaces);
+
+CmdMeshFixDuplicateFaces::CmdMeshFixDuplicateFaces()
+  :Command("Mesh_FixDuplicateFaces")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Remove duplicated faces");
+  sToolTipText  = QT_TR_NOOP("Remove duplicated faces from the mesh");
+  sWhatsThis    = QT_TR_NOOP("Remove duplicated faces from the mesh");
+  sStatusTip    = QT_TR_NOOP("Remove duplicated faces from the mesh");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshFixDuplicateFaces::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    std::string fName = (*it)->name.getValue();
+    fName += "_Fixed";
+    fName = getUniqueFeatureName(fName.c_str());
+    openCommand("Mesh Harmonize Normals");
+    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
+    commitCommand();
+    updateActive();
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+  }
+}
+
+bool CmdMeshFixDuplicateFaces::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
+DEF_STD_CMD_A(CmdMeshFixDuplicatePoints);
+
+CmdMeshFixDuplicatePoints::CmdMeshFixDuplicatePoints()
+  :Command("Mesh_FixDuplicatePoints")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Remove duplicated points");
+  sToolTipText  = QT_TR_NOOP("Remove duplicated points from the mesh");
+  sWhatsThis    = QT_TR_NOOP("Remove duplicated points from the mesh");
+  sStatusTip    = QT_TR_NOOP("Remove duplicated points from the mesh");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshFixDuplicatePoints::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    std::string fName = (*it)->name.getValue();
+    fName += "_Fixed";
+    fName = getUniqueFeatureName(fName.c_str());
+    openCommand("Mesh Harmonize Normals");
+    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
+    commitCommand();
+    updateActive();
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+  }
+}
+
+bool CmdMeshFixDuplicatePoints::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
+DEF_STD_CMD_A(CmdMeshFixIndices);
+
+CmdMeshFixIndices::CmdMeshFixIndices()
+  :Command("Mesh_FixIndices")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Fix indices");
+  sToolTipText  = QT_TR_NOOP("Fixes invalid indices in the mesh structure");
+  sWhatsThis    = QT_TR_NOOP("Fixes invalid indices in the mesh structure");
+  sStatusTip    = QT_TR_NOOP("Fixes invalid indices in the mesh structure");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshFixIndices::activated(int iMsg)
+{
+  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    std::string fName = (*it)->name.getValue();
+    fName += "_Fixed";
+    fName = getUniqueFeatureName(fName.c_str());
+    openCommand("Mesh Harmonize Normals");
+    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FixIndices\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
+    commitCommand();
+    updateActive();
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+  }
+}
+
+bool CmdMeshFixIndices::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
   return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
@@ -749,5 +906,9 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshEvaluateSolid());
   rcCmdMgr.addCommand(new CmdMeshHarmonizeNormals());
   rcCmdMgr.addCommand(new CmdMeshFlipNormals());
+  rcCmdMgr.addCommand(new CmdMeshFixDegenerations());
+  rcCmdMgr.addCommand(new CmdMeshFixDuplicateFaces());
+  rcCmdMgr.addCommand(new CmdMeshFixDuplicatePoints());
+  rcCmdMgr.addCommand(new CmdMeshFixIndices());
   rcCmdMgr.addCommand(new CmdMeshBoundingBox());
 }

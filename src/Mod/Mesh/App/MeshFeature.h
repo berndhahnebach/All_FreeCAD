@@ -29,8 +29,6 @@
 #include "Core/MeshKernel.h"
 #include "Mesh.h"
 
-class FeaturePy;
-
 namespace Base{
   class PyObjectBase;
   class XMLReader;

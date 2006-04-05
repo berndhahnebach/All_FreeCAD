@@ -412,6 +412,19 @@ std::vector<unsigned long> MeshEvalDegeneratedFacets::DefacedFacets() const
   return aulDeg;
 }
 
+std::vector<unsigned long> MeshEvalDegeneratedFacets::GetIndices() const
+{
+  std::vector<unsigned long> aInds;
+  MeshFacetIterator it(_rclMesh);
+  for ( it.Init(); it.More(); it.Next() )
+  {
+    if ( it->Area() < FLOAT_EPS )
+      aInds.push_back(it.Position());
+  }
+
+  return aInds;
+}
+
 bool MeshFixDegeneratedFacets::Fixup()
 {
   MeshTopoAlgorithm cTopAlg(_rclMesh);

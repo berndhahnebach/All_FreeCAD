@@ -31,9 +31,10 @@
 #include <Base/Reader.h>
 
 #include "Core/MeshKernel.h"
+#include "Core/MeshIO.h"
+#include "Core/Iterator.h"
 
 #include "Mesh.h"
-#include "Core/MeshIO.h"
 #include "MeshPy.h"
 
 using namespace Mesh;
@@ -41,6 +42,32 @@ using namespace Mesh;
 TYPESYSTEM_SOURCE(Mesh::PropertyNormalList, App::PropertyVectorList);
 TYPESYSTEM_SOURCE(Mesh::PropertyCurvatureList , App::PropertyLists);
 TYPESYSTEM_SOURCE(Mesh::PropertyMeshKernel , App::Property);
+
+MeshCore::MeshFacetIterator MeshObject::FacetIterator() const
+{
+  MeshCore::MeshFacetIterator it = _pcKernel->FacetIterator();
+  it.Transform(_Mtrx);
+  return it;
+}
+
+MeshCore::MeshPointIterator MeshObject::PointIterator() const
+{
+  MeshCore::MeshPointIterator it = _pcKernel->PointIterator();
+  it.Transform(_Mtrx);
+  return it;
+}
+
+void MeshObject::ApplyTransform( const Base::Matrix4D& rclTrf )
+{
+  _Mtrx = rclTrf * _Mtrx;
+}
+
+void MeshObject::SetTransform( const Base::Matrix4D& rclTrf )
+{
+  _Mtrx = rclTrf;
+}
+
+// ----------------------------------------------------------------------------
 
 void PropertyNormalList::transform(const Matrix4D &mat)
 {

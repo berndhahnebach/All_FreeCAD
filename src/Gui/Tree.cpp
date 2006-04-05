@@ -427,17 +427,9 @@ void TreeView::contextMenuEvent ( QContextMenuEvent * e )
     }
   }
 
-  MenuItem* StdViews = new MenuItem;
-  StdViews->setCommand( "Standard views" );
-
-  *StdViews<< "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewTop" << "Std_ViewRight"
-           << "Std_ViewRear" << "Std_ViewBottom" << "Std_ViewLeft";
-
   MenuItem* view = new MenuItem;
   if ( selected )
-    *view << "Std_ToggleVisibility" << "Separator" << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
-  else
-    *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
+    *view << "Std_SetMaterial" << "Std_ToggleVisibility" << "Separator" << "Std_Delete";
 
   // ask workbenches and view provider, ...
   Gui::Application::Instance->setupContextMenu("Tree", view);

@@ -24,11 +24,10 @@
 #ifndef MOUSEMODEL_H
 #define MOUSEMODEL_H
 
-#ifndef _PreComp_
-# include <qcursor.h>
-# include <vector>
-# include <Inventor/SbLinear.h>
-#endif
+#include <qcursor.h>
+#include <vector>
+#include <Inventor/SbLinear.h>
+#include <Inventor/SbVec2f.h>
 
 // forwards
 class QMouseEvent;
@@ -38,6 +37,9 @@ class QPaintEvent;
 class QResizeEvent;
 class SoEvent;
 class SbViewportRegion;
+class SoMouseButtonEvent;
+class SoLocation2Event;
+class SoKeyboardEvent;
 
 namespace Gui {
   class View3DInventorViewer;

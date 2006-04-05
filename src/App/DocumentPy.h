@@ -69,6 +69,7 @@ public:
 	PYFUNCDEF_D(DocumentPy,activeFeature)
 	PYFUNCDEF_D(DocumentPy,addFeature)
 	PYFUNCDEF_D(DocumentPy,getFeature)
+	PYFUNCDEF_D(DocumentPy,removeFeature)
 	PYFUNCDEF_D(DocumentPy,listFeatures)
 	PYFUNCDEF_D(DocumentPy,getName)
 

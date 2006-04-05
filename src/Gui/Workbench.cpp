@@ -415,7 +415,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
   // Edit
   MenuItem* edit = new MenuItem( menuBar );
   edit->setCommand( "&Edit" );
-  *edit << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo"
+  *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Delete"
         << "Separator" << "Std_DlgPreferences";
 
 

@@ -36,6 +36,7 @@
 #include "FeatureMeshCurvature.h"
 #include "FeatureMeshSegmentByMesh.h"
 #include "FeatureMeshSetOperations.h"
+#include "FeatureMeshDefects.h"
 
 /* registration table  */
 extern struct PyMethodDef Mesh_Import_methods[];
@@ -61,6 +62,14 @@ void AppMeshExport initMesh() {
   Mesh::Curvature             ::init();
   Mesh::SegmentByMesh         ::init();
   Mesh::SetOperations         ::init();
+  Mesh::FixDefects            ::init();
+  Mesh::HarmonizeNormals      ::init();
+  Mesh::FlipNormals           ::init();
+  Mesh::FixNonManifolds       ::init();
+  Mesh::FixDuplicatedFaces    ::init();
+  Mesh::FixDuplicatedPoints   ::init();
+  Mesh::FixDegenerations      ::init();
+  Mesh::FixIndices            ::init();
     
   return;
 }

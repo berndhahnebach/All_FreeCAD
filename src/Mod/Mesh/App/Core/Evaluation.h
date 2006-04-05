@@ -96,6 +96,7 @@ public:
   MeshEvalNormals (const MeshKernel& rclM);
   ~MeshEvalNormals();
   bool Evaluate ();
+  std::vector<unsigned long> GetIndices() const;
 };
 
 /**
@@ -139,12 +140,12 @@ public:
   virtual ~MeshEvalTopology () {}
   virtual bool Evaluate ();
 
-  void GetEdgeManifolds (std::vector<unsigned long> &raclEdgeIndList) const;
   void GetFacetManifolds (std::vector<unsigned long> &raclFacetIndList) const;
   unsigned long CountManifolds() const;
+  const std::vector<std::pair<unsigned long, unsigned long> >& GetIndices() const { return _aclManifoldList; }
 
 protected:
-  std::vector<std::list<unsigned long> >   _aclManifoldList;
+  std::vector<std::pair<unsigned long, unsigned long> >   _aclManifoldList;
 };
 
 // ----------------------------------------------------

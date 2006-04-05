@@ -172,7 +172,8 @@ DockContainer::~DockContainer()
 }
 
 /**
- * Inserts the widget \a w to the container.
+ * Inserts the widget \a w to the container. To fit into the dockable window area the widget \w 
+ * should reimplement QWidget::sizeHint() with the minimum required size.
  */
 void DockContainer::setChild( QWidget* w )
 {

@@ -23,11 +23,9 @@
 #ifndef __VIEWPROVIDERMESH_H__
 #define __VIEWPROVIDERMESH_H__
 
-#ifndef _PreComp_
-# include <qdatetime.h>
-# include <vector>
-# include <Inventor/fields/SoSFVec2f.h>
-#endif
+#include <qdatetime.h>
+#include <vector>
+#include <Inventor/fields/SoSFVec2f.h>
 
 #include "../App/Core/Elements.h"
 #include <Gui/ViewProviderFeature.h>

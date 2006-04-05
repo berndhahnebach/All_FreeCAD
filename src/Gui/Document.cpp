@@ -290,6 +290,9 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
       delete vpInv;
       _ViewProviderMap.erase(*It);
     }
+
+    // remove also from the selection, if selected
+    Selection().rmvSelection( _pcDocument->getName(), (*It)->name.getValue() );
   }
 
   // set up new providers

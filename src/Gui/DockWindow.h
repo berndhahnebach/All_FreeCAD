@@ -141,6 +141,25 @@ signals:
 };
 
 /** The DockContainer class provides a dockable container window to embed a widget.
+ *
+ * \code
+ * // create a non-modal dialog
+ * MyDialog* dlg = new MyDialog( getMainWindow(), "MyDialog", false, WDestructiveClose);
+ *
+ * // embed this dialog into a dockable widget container
+ * DockWindowManager* pDockMgr = DockWindowManager::instance();
+ * DockContainer* pDockDlg = new DockContainer( getMainWindow(), "MyDialog" );
+ * pDockMgr->addDockWindow("MyDialog", pDockDlg, Qt::DockLeft );
+ *
+ * // do not allow to hide
+ * pDockDlg->dockWindow()->setCloseMode(QDockWindow::Never);
+ * pDockDlg->setChild(dlg);
+ * pDockDlg->show();
+ *
+ * // restore the destructive close flag to invoke the destructor automatically
+ * dlg->setWFlags(WDestructiveClose);
+ * \endcode
+ *
  * \author Werner Mayer
  */
 class GuiExport DockContainer : public DockWindow

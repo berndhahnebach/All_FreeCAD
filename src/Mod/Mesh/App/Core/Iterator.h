@@ -26,6 +26,7 @@
 
 #include "MeshKernel.h"
 #include "Elements.h"
+#include <Base/Matrix.h>
 
 namespace MeshCore {
 
@@ -52,6 +53,12 @@ public:
   inline MeshFacetIterator (const MeshKernel &rclM, unsigned long ulPos);
   /// construction
   inline MeshFacetIterator (const MeshFacetIterator &rclI);
+  //@}
+
+  /** @name Transformation */
+  //@{
+  /// Transforms the returned facet points with the current tranformation
+  inline void Transform( const Base::Matrix4D& rclTrf );
   //@}
 
   /** @name Access methods */
@@ -133,6 +140,8 @@ protected:
   const MeshPointArray& _rclPAry;
   MeshFacetArray::_TConstIterator _clIter;
   MeshGeomFacet _clFacet;
+  bool _bApply;
+  Base::Matrix4D _clTrf;
 
   // friends
   friend class MeshKernel;
@@ -151,7 +160,13 @@ public:
   inline MeshPointIterator (const MeshKernel &rclM, unsigned long ulPos);
   inline MeshPointIterator (const MeshPointIterator &rclI);
   //@}
-  
+ 
+  /** @name Transformation */
+  //@{
+  /// Transforms the returned points with the current tranformation
+  inline void Transform( const Base::Matrix4D& rclTrf );
+  //@}
+ 
   /** @name Access methods */
   //@{
   /// Access to the element the iterator points to.
@@ -208,14 +223,15 @@ public:
   //@}
 
 protected:
-  inline const MeshPoint& Dereference (void) const
-  { return *_clIter; }
+  inline const MeshPoint& Dereference (void) const;
 
 protected:
   const MeshKernel& _rclMesh;
   const MeshPointArray& _rclPAry;
-  MeshPoint _clFacet;
+  MeshPoint _clPoint;
   MeshPointArray::_TConstIterator _clIter;
+  bool _bApply;
+  Base::Matrix4D _clTrf;
 
   // friends
   friend class MeshKernel;
@@ -265,7 +281,8 @@ inline MeshFacetIterator::MeshFacetIterator (const MeshKernel &rclM)
 : _rclMesh(rclM),
   _rclFAry(rclM._aclFacetArray),
   _rclPAry(rclM._aclPointArray),
-  _clIter(rclM._aclFacetArray.begin())
+  _clIter(rclM._aclFacetArray.begin()),
+  _bApply(false)
 {
 }
 
@@ -273,7 +290,8 @@ inline MeshFacetIterator::MeshFacetIterator (const MeshKernel &rclM, unsigned lo
 : _rclMesh(rclM),
   _rclFAry(rclM._aclFacetArray),
   _rclPAry(rclM._aclPointArray),
-  _clIter(rclM._aclFacetArray.begin() + ulPos)
+  _clIter(rclM._aclFacetArray.begin() + ulPos),
+  _bApply(false)
 {
 }
 
@@ -281,8 +299,18 @@ inline MeshFacetIterator::MeshFacetIterator (const MeshFacetIterator &rclI)
 : _rclMesh(rclI._rclMesh),
   _rclFAry(rclI._rclFAry),
   _rclPAry(rclI._rclPAry),
-  _clIter(rclI._clIter)
+  _clIter(rclI._clIter),
+  _bApply(rclI._bApply),
+  _clTrf(rclI._clTrf)
 {
+}
+
+inline void MeshFacetIterator::Transform( const Base::Matrix4D& rclTrf )
+{
+  _clTrf = rclTrf;
+  Base::Matrix4D tmp;
+  // cecks for unit matrix
+  _clTrf != tmp ? _bApply = true : _bApply = false;
 }
 
 inline const MeshGeomFacet& MeshFacetIterator::Dereference (void)
@@ -296,6 +324,12 @@ inline const MeshGeomFacet& MeshFacetIterator::Dereference (void)
   _clFacet._ulProp = rclF._ulProp;
   _clFacet._ucFlag = rclF._ucFlag;
   _clFacet.NormalInvalid();
+  if ( _bApply )
+  {
+    _clFacet._aclPoints[0] = _clTrf * _clFacet._aclPoints[0];
+    _clFacet._aclPoints[1] = _clTrf * _clFacet._aclPoints[1];
+    _clFacet._aclPoints[2] = _clTrf * _clFacet._aclPoints[2];
+  }
   return _clFacet;
 }
 
@@ -316,6 +350,8 @@ inline bool MeshFacetIterator::Set (unsigned long ulIndex)
 inline MeshFacetIterator& MeshFacetIterator::operator = (const MeshFacetIterator &rpI)
 {
   _clIter  = rpI._clIter;
+  _bApply = rpI._bApply;
+  _clTrf = rpI._clTrf;
   // dirty flat copy of reference
   memcpy((void*)&_rclMesh, &rpI._rclMesh, sizeof(&_rclMesh));
   return *this;
@@ -353,20 +389,36 @@ inline void MeshFacetIterator::SetToNeighbour (unsigned short usN)
 }
 
 inline MeshPointIterator::MeshPointIterator (const MeshKernel &rclM)
-: _rclMesh(rclM), _rclPAry(_rclMesh._aclPointArray)
+: _rclMesh(rclM), _rclPAry(_rclMesh._aclPointArray), _bApply(false)
 {
   _clIter = _rclPAry.begin();
 }
 
 inline MeshPointIterator::MeshPointIterator (const MeshKernel &rclM, unsigned long ulPos)
-: _rclMesh(rclM), _rclPAry(_rclMesh._aclPointArray)
+: _rclMesh(rclM), _rclPAry(_rclMesh._aclPointArray), _bApply(false)
 {
   _clIter = _rclPAry.begin() + ulPos;
 }
 
 inline MeshPointIterator::MeshPointIterator (const MeshPointIterator &rclI)
-: _rclMesh(rclI._rclMesh), _rclPAry(rclI._rclPAry), _clIter(rclI._clIter)
+: _rclMesh(rclI._rclMesh), _rclPAry(rclI._rclPAry), _clIter(rclI._clIter), _bApply(rclI._bApply), _clTrf(rclI._clTrf)
 {
+}
+
+inline void MeshPointIterator::Transform( const Base::Matrix4D& rclTrf )
+{
+  _clTrf = rclTrf;
+  Base::Matrix4D tmp;
+  // cecks for unit matrix
+  _clTrf != tmp ? _bApply = true : _bApply = false;
+}
+
+inline const MeshPoint& MeshPointIterator::Dereference (void) const
+{ // We change only the value of the point but not the actual iterator
+  const_cast<MeshPointIterator*>(this)->_clPoint = *_clIter;
+  if ( _bApply )
+    const_cast<MeshPointIterator*>(this)->_clPoint = _clTrf * _clPoint;
+  return _clPoint; 
 }
 
 inline bool MeshPointIterator::Set (unsigned long ulIndex)
@@ -386,6 +438,8 @@ inline bool MeshPointIterator::Set (unsigned long ulIndex)
 inline MeshPointIterator& MeshPointIterator::operator = (const MeshPointIterator &rpI)
 {
   _clIter  = rpI._clIter;
+  _bApply = rpI._bApply;
+  _clTrf = rpI._clTrf;
   // dirty flat copy of reference
   memcpy((void*)&_rclMesh, &rpI._rclMesh, sizeof(&_rclMesh));
   return *this;

@@ -44,6 +44,7 @@
 #include <Base/Interpreter.h>
 #include <Base/Sequencer.h>
 #include <App/Document.h>
+#include <App/Feature.h>
 
 #include "Action.h"
 #include "Application.h"
@@ -51,6 +52,7 @@
 #include "Command.h"
 #include "MainWindow.h"
 #include "BitmapFactory.h"
+#include "Selection.h"
 
 using Base::Console;
 using Base::Sequencer;
@@ -436,6 +438,47 @@ bool StdCmdPaste::isActive(void)
   return getGuiApplication()->sendHasMsgToActiveView("Paste");
 }
 
+//===========================================================================
+// Std_Delete
+//===========================================================================
+DEF_STD_CMD_A(StdCmdDelete);
+
+StdCmdDelete::StdCmdDelete()
+  :Command("Std_Delete")
+{
+  sGroup        = QT_TR_NOOP("Edit");
+  sMenuText     = QT_TR_NOOP("&Delete");
+  sToolTipText  = QT_TR_NOOP("Deletes the selected objects");
+  sWhatsThis    = QT_TR_NOOP("Deletes the selected objects");
+  sStatusTip    = QT_TR_NOOP("Deletes the selected objects");
+//  sPixmap       = "Paste";
+  iAccel        = Qt::Key_Delete;
+}
+
+void StdCmdDelete::activated(int iMsg)
+{
+  openCommand("Delete Feature");
+  const SelectionSingleton& rSel = Selection();
+  // go through all documents
+  const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
+  for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it )
+  {
+    doCommand(Doc,"d=App.getDocument(\"%s\")",(*it)->getName());
+    const std::vector<App::AbstractFeature*> sel = rSel.getFeaturesOfType(App::AbstractFeature::getClassTypeId(), (*it)->getName());
+    for(std::vector<App::AbstractFeature*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
+    {
+      doCommand(Doc,"d.removeFeature(\"%s\")",(*ft)->name.getValue());
+    }
+  }
+
+  commitCommand(); 
+}
+
+bool StdCmdDelete::isActive(void)
+{
+  return true;
+}
+
 
 namespace Gui {
 
@@ -455,6 +498,7 @@ void CreateDocCommands(void)
   rcCmdMgr.addCommand(new StdCmdCut());
   rcCmdMgr.addCommand(new StdCmdCopy());
   rcCmdMgr.addCommand(new StdCmdPaste());
+  rcCmdMgr.addCommand(new StdCmdDelete());
 }
 
 } // namespace Gui

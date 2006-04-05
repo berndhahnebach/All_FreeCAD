@@ -92,6 +92,49 @@ private:
   bool _wrongOrientation;
 };
 
+/**
+ * This class searches for inconsistent orientation of neighboured facets. 
+ * Note: The 'TMP0' flag for facets must be restted before using this class.
+ */
+class MeshWrongOrientationCollect : public MeshWrongOrientation
+{
+public:
+  MeshWrongOrientationCollect(std::vector<unsigned long>& aulVisited, std::vector<unsigned long>& aulIndices)
+    : MeshWrongOrientation(aulVisited), _aulIndices(aulIndices)
+  {
+  }
+
+  bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel)
+  {
+    // different orientation of rclFacet and rclFrom
+    if ( !MeshWrongOrientation::Visit(rclFacet, rclFrom, ulFInd, ulLevel) )
+    {
+      // is not marked as false oriented
+      if ( !rclFrom.IsFlag(MeshFacet::TMP0) )
+      {
+        // mark this facet as false oriented
+        rclFacet.SetFlag(MeshFacet::TMP0);
+        _aulIndices.push_back( ulFInd );
+      }
+    }
+    else
+    {
+      // same orientation but if the neighbour rclFrom is false oriented then rclFrom is also false oriented
+      if ( rclFrom.IsFlag(MeshFacet::TMP0) )
+      {
+        // mark this facet as false oriented
+        rclFacet.SetFlag(MeshFacet::TMP0);
+        _aulIndices.push_back( ulFInd );
+      }
+    }
+
+    return true;
+  }
+
+private:
+  std::vector<unsigned long>& _aulIndices;
+};
+
 // ----------------------------------------------------
 
 MeshEvalNormals::MeshEvalNormals (const MeshKernel& rclM)
@@ -152,6 +195,66 @@ bool MeshEvalNormals::Evaluate ()
   }
 
   return true;
+}
+
+std::vector<unsigned long> MeshEvalNormals::GetIndices() const
+{
+  // reset VISIT flags
+  MeshAlgorithm cAlg(_rclMesh);
+  cAlg.ResetFacetFlag(MeshFacet::VISIT);
+  cAlg.ResetFacetFlag(MeshFacet::TMP0);
+
+  // all facet indices
+  std::vector<unsigned long> aAllFacets(_rclMesh.CountFacets());
+  unsigned long k = 0;
+  for (std::vector<unsigned long>::iterator pI = aAllFacets.begin(); pI != aAllFacets.end(); pI++)
+    *pI = k++;
+
+  std::vector<unsigned long> inds;
+  unsigned long ulStartFacet=0, ulVisited=0;
+
+  // if the mesh consists of several topologic independent components
+  while ( true ) // while unvisited facets are available
+  {
+    if ( aAllFacets.size() > 0 )
+      ulStartFacet = aAllFacets.front();
+    else
+      break; // no more facets to visit
+
+    std::vector<unsigned long> aComponent;
+
+    // get start facet first
+    aComponent.push_back(ulStartFacet);
+    MeshWrongOrientationCollect clOrientation(aComponent, inds);
+    ulVisited += _rclMesh.VisitNeighbourFacets(clOrientation, ulStartFacet);
+
+    // search for all NOT YET visited facets
+    std::vector<unsigned long> aNotVisited;
+    std::sort(aAllFacets.begin(), aAllFacets.end());
+    std::sort(aComponent.begin(), aComponent.end());
+    std::back_insert_iterator<std::vector<unsigned long> >  pBInd(aNotVisited);
+    std::set_difference(aAllFacets.begin(), aAllFacets.end(), aComponent.begin(), aComponent.end(), pBInd);
+  
+    aAllFacets = aNotVisited;
+  }
+
+  // As we cannot determine for sure whether the start facet has correct orientation
+  unsigned long diff = _rclMesh.CountFacets()-inds.size();
+  if ( inds.size() > diff )
+  {
+    // free memory
+    { inds.clear(); std::vector<unsigned long>().swap(inds);}
+    inds.reserve( diff );
+
+    const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
+    for (MeshFacetArray::_TConstIterator pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
+    {
+      if ( !pI->IsFlag(MeshFacet::TMP0) )
+        inds.push_back( pI-rclFAry.begin() );
+    }
+  }
+
+  return inds;
 }
 
 MeshFixNormals::MeshFixNormals (MeshKernel& rclM)
@@ -222,7 +325,7 @@ bool MeshEvalTopology::Evaluate ()
     // Edge that is shared by more than 2 facets
     if (pEdge->second.size() > 2)
     {  // found non-manifold edge, add to list
-      _aclManifoldList.push_back(pEdge->second);
+      _aclManifoldList.push_back( std::make_pair<unsigned long, unsigned long>(pEdge->first.first, pEdge->first.second) );
     }
   }
 
@@ -235,13 +338,22 @@ bool MeshEvalTopology::Evaluate ()
 // generate indexed edge list which tangents non-manifolds
 void MeshEvalTopology::GetFacetManifolds (std::vector<unsigned long> &raclFacetIndList) const
 {
-  std::set<unsigned long>  aclIndices;
-
-  for (std::vector<std::list<unsigned long> >::const_iterator pMF = _aclManifoldList.begin(); pMF != _aclManifoldList.end(); pMF++)
-    aclIndices.insert(pMF->begin(), pMF->end());
-
   raclFacetIndList.clear();
-  raclFacetIndList.insert(raclFacetIndList.begin(), aclIndices.begin(), aclIndices.end());
+  const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
+  MeshFacetArray::_TConstIterator pI;
+
+  for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+      unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+      std::pair<unsigned long, unsigned long> edge = std::make_pair<unsigned long, unsigned long>(ulPt0, ulPt1);
+
+      if ( std::find(_aclManifoldList.begin(), _aclManifoldList.end(), edge) != _aclManifoldList.end() )
+        raclFacetIndList.push_back( pI - rclFAry.begin() );
+    }
+  }
 }
 
 unsigned long MeshEvalTopology::CountManifolds() const
@@ -255,7 +367,7 @@ bool MeshEvalSingleFacet::Evaluate ()
 {
   // get all non-manifolds
   MeshEvalTopology::Evaluate();
-
+/*
   // for each (multiple) single linked facet there should
   // exist two valid facets sharing the same edge 
   // so make facet 1 neighbour of facet 2 and vice versa
@@ -309,7 +421,7 @@ bool MeshEvalSingleFacet::Evaluate ()
     if ( aulManifolds.size() > 0 )
       _aclManifoldList.push_back(aulManifolds);
   }
-
+*/
   return (_aclManifoldList.size() == 0);
 }
 

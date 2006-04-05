@@ -222,6 +222,10 @@ public:
    * Searches for defaced facets. A facet is regarded as defaced if an angle is < 30° or > 120°.
    */
   std::vector<unsigned long> DefacedFacets() const;
+  /**
+   * Returns the indices of all corrupt facets.
+   */
+  std::vector<unsigned long> GetIndices() const;
 };
 
 /**
