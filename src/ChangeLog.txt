@@ -78,3 +78,5 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + special viewproviders to display defects of meshes
 + delete features from the document
 + bug fixed: remove features to be deleted from the selection
++ bugs fixed in selection node
++ restore original document file name after loading a project file

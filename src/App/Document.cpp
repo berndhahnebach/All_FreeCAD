@@ -314,6 +314,7 @@ bool Document::save (void)
 // Open the document
 bool Document::open (void)
 {
+  std::string FilePath = FileName.getValue();
   zipios::ZipInputStream zipstream(FileName.getValue());
 
   Base::XMLReader reader(FileName.getValue(), zipstream);
@@ -321,6 +322,9 @@ bool Document::open (void)
   if ( reader.isValid() )
   {
     Document::Restore(reader);
+
+    // We must restore the correct 'FileName' property again because the stored value could be invalid.
+    FileName.setValue(FilePath.c_str());
 
     reader.readFiles(zipstream);
 

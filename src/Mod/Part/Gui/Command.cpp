@@ -289,7 +289,7 @@ bool CmdPartBox3::isActive(void)
 //===========================================================================
 // Part_Cut
 //===========================================================================
-DEF_STD_CMD(CmdPartCut);
+DEF_STD_CMD_A(CmdPartCut);
 
 CmdPartCut::CmdPartCut()
   :Command("Part_Cut")
@@ -310,7 +310,7 @@ void CmdPartCut::activated(int iMsg)
   unsigned int n = getSelection().countFeaturesOfType(Part::Feature::getClassTypeId());
   if(n != 2)
   {
-    Base::Console().Warning("Pleas select two shapes (Part Feature)");
+    Base::Console().Warning("Please, select two shapes (Part Feature)");
     return;
   }
 
@@ -326,6 +326,11 @@ void CmdPartCut::activated(int iMsg)
   doCommand(Gui,"Gui.document().hide(\"%s\")",Sel[1].FeatName);
   updateActive();
   commitCommand();
+}
+
+bool CmdPartCut::isActive(void)
+{
+  return getSelection().countFeaturesOfType(Part::Feature::getClassTypeId())==2;
 }
 
 //===========================================================================

@@ -151,12 +151,13 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
 {
   static char buf[512];
   HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
-  if (mymode == AUTO) {
-    const SoEvent * event = action->getEvent();
-    if (event->isOfType(SoLocation2Event::getClassTypeId())) {
-      const SoPickedPoint * pp = action->getPickedPoint();
-      if (pp && pp->getPath()->containsPath(action->getCurPath())) {
-        if (!highlighted) {
+
+  const SoEvent * event = action->getEvent();
+  if (event->isOfType(SoLocation2Event::getClassTypeId())) {
+    const SoPickedPoint * pp = action->getPickedPoint();
+    if (pp && pp->getPath()->containsPath(action->getCurPath())) {
+      if (!highlighted) {
+        if (mymode == AUTO) {
           if(Gui::Selection().setPreselect(documentName.getValue().getString()
                                            ,featureName.getValue().getString()
                                            ,subElementName.getValue().getString()
@@ -171,84 +172,96 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
             this->touch(); // force scene redraw
             this->redrawHighlighted(action, TRUE);
           }
-
-        }
-        sprintf(buf,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
-                                                        ,featureName.getValue().getString()
-                                                        ,subElementName.getValue().getString()
-                                                        ,pp->getPoint()[0]
-                                                        ,pp->getPoint()[1]
-                                                        ,pp->getPoint()[2]);
-
-        getMainWindow()->statusBar()->message(buf,3000);
-      }
-      else {
-        if (highlighted) {
-          SoFCSelection::turnoffcurrent(action);
-          Gui::Selection().rmvPreselect();
-        }
-      }
-    }else if (event->isOfType(SoKeyboardEvent ::getClassTypeId())) {
-      //const SoPickedPoint * pp = action->getPickedPoint();
-      SoKeyboardEvent  * const e = (SoKeyboardEvent  *) event;
-
-      if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_SHIFT) ||
-          SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
-          bShift = true;
-      if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_SHIFT) ||
-          SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
-          bShift = false;
-
-      if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
-          SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
-          bCtrl = true;
-      if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
-          SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
-          bCtrl = false;
-
-       
-    }else if (event->isOfType(SoMouseButtonEvent::getClassTypeId())) {
-      const SoPickedPoint * pp = action->getPickedPoint();
-      SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
-
-      //FIXME: Shouldn't we remove the preselection for newly selected objects?
-      //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
-      if (pp && pp->getPath()->containsPath(action->getCurPath())) {
-        if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
-          if(bCtrl)
-          {
-            if(Gui::Selection().isSelected(documentName.getValue().getString()
+        } else {
+         // preselection in the viewer is disabled but we must inform all observers anyway
+         if (Gui::Selection().setPreselect(documentName.getValue().getString()
                                            ,featureName.getValue().getString()
-                                           ,subElementName.getValue().getString()))
-            {
-              Gui::Selection().rmvSelection(documentName.getValue().getString()
-                                            ,featureName.getValue().getString()
-                                            ,subElementName.getValue().getString());
-            }else{
-              Gui::Selection().addSelection(documentName.getValue().getString()
-                                            ,featureName.getValue().getString()
-                                            ,subElementName.getValue().getString()
-                                            ,pp->getPoint()[0]
-                                            ,pp->getPoint()[1]
-                                            ,pp->getPoint()[2]);
-            }
-          }else{
-            Gui::Selection().clearSelection();
-            Gui::Selection().addSelection(documentName.getValue().getString()
-                                            ,featureName.getValue().getString()
-                                            ,subElementName.getValue().getString()
-                                            ,pp->getPoint()[0]
-                                            ,pp->getPoint()[1]
-                                            ,pp->getPoint()[2]);
-          }
-
-
-          action->setHandled(); 
+                                           ,subElementName.getValue().getString()
+                                           ,pp->getPoint()[0]
+                                           ,pp->getPoint()[1]
+                                           ,pp->getPoint()[2]))
+           highlighted = TRUE;
         }
-      
+      }
+      sprintf(buf,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+                                                      ,featureName.getValue().getString()
+                                                      ,subElementName.getValue().getString()
+                                                      ,pp->getPoint()[0]
+                                                      ,pp->getPoint()[1]
+                                                      ,pp->getPoint()[2]);
+
+      getMainWindow()->statusBar()->message(buf,3000);
+    }
+    else {
+      if (highlighted) {
+        if (mymode == AUTO)
+          SoFCSelection::turnoffcurrent(action);
+        else
+          highlighted = FALSE;
+        Gui::Selection().rmvPreselect();
       }
     }
+  }else if (event->isOfType(SoKeyboardEvent ::getClassTypeId())) {
+    //const SoPickedPoint * pp = action->getPickedPoint();
+    SoKeyboardEvent  * const e = (SoKeyboardEvent  *) event;
+
+    if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_SHIFT) ||
+        SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
+        bShift = true;
+    if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_SHIFT) ||
+        SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_SHIFT)   )
+        bShift = false;
+
+    if (SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
+        SoKeyboardEvent::isKeyPressEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
+        bCtrl = true;
+    if (SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::LEFT_CONTROL) ||
+        SoKeyboardEvent::isKeyReleaseEvent(e,SoKeyboardEvent::RIGHT_CONTROL)   )
+        bCtrl = false;
+
+     
+  }else if (event->isOfType(SoMouseButtonEvent::getClassTypeId())) {
+    const SoPickedPoint * pp = action->getPickedPoint();
+    SoMouseButtonEvent * const e = (SoMouseButtonEvent *) event;
+
+    //FIXME: Shouldn't we remove the preselection for newly selected objects?
+    //       Otherwise the tree signals that an object is preselected even though it is hidden. (Werner)
+    if (pp && pp->getPath()->containsPath(action->getCurPath())) {
+      if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
+        if(bCtrl)
+        {
+          if(Gui::Selection().isSelected(documentName.getValue().getString()
+                                         ,featureName.getValue().getString()
+                                         ,subElementName.getValue().getString()))
+          {
+            Gui::Selection().rmvSelection(documentName.getValue().getString()
+                                          ,featureName.getValue().getString()
+                                          ,subElementName.getValue().getString());
+          }else{
+            Gui::Selection().addSelection(documentName.getValue().getString()
+                                          ,featureName.getValue().getString()
+                                          ,subElementName.getValue().getString()
+                                          ,pp->getPoint()[0]
+                                          ,pp->getPoint()[1]
+                                          ,pp->getPoint()[2]);
+          }
+        }else{
+          Gui::Selection().clearSelection();
+          Gui::Selection().addSelection(documentName.getValue().getString()
+                                          ,featureName.getValue().getString()
+                                          ,subElementName.getValue().getString()
+                                          ,pp->getPoint()[0]
+                                          ,pp->getPoint()[1]
+                                          ,pp->getPoint()[2]);
+        }
+
+
+        action->setHandled(); 
+      }
+    
+    }
   }
+
   inherited::handleEvent(action);
 }
 
@@ -256,9 +269,12 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
 void
 SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
 {
+  // check if preselection is active
+  HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
+  bool preselected = highlighted && mymode == AUTO;
   SoState * state = action->getState();
   state->push();
-  if (highlighted || this->highlightMode.getValue() == ON || this->selected.getValue() == SELECTED) {
+  if (preselected || this->highlightMode.getValue() == ON || this->selected.getValue() == SELECTED) {
     this->setOverride(action);
   }
   inherited::GLRenderBelowPath(action);
@@ -269,9 +285,12 @@ SoFCSelection::GLRenderBelowPath(SoGLRenderAction * action)
 void
 SoFCSelection::GLRenderInPath(SoGLRenderAction * action)
 {
+  // check if preselection is active
+  HighlightModes mymode = (HighlightModes) this->highlightMode.getValue();
+  bool preselected = highlighted && mymode == AUTO;
   SoState * state = action->getState();
   state->push();
-  if (highlighted || this->highlightMode.getValue() == ON || this->selected.getValue() == SELECTED) {
+  if (preselected || this->highlightMode.getValue() == ON || this->selected.getValue() == SELECTED) {
     this->setOverride(action);
   }
   inherited::GLRenderInPath(action);

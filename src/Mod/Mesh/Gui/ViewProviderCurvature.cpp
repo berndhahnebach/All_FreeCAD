@@ -74,10 +74,8 @@ ViewProviderMeshCurvature::ViewProviderMeshCurvature()
   pcColorBar->ref();
   pcColorBar->setRange( -0.1f, 0.1f, 3 );
 
-  //FIXME: When preselection is switched off then selection does not work anymore.
-  //       Seems to be a bug in Gui::SoFCSelection
   // switch off preselection
-//  pcHighlight->highlightMode = Gui::SoFCSelection::OFF;
+  pcHighlight->highlightMode = Gui::SoFCSelection::OFF;
   pcHighlight->selectionMode = Gui::SoFCSelection::SEL_OFF;
   pcHighlight->style = Gui::SoFCSelection::BOX;
 }
