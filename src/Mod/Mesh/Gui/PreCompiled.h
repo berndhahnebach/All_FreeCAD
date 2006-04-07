@@ -77,6 +77,7 @@
 #include <Inventor/SbColor.h>
 #include <Inventor/SoInput.h>
 #include <Inventor/SoPickedPoint.h>
+#include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
@@ -105,10 +106,12 @@
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/nodes/SoIndexedTriangleStripSet.h>
 #include <Inventor/nodes/SoLightModel.h>
+#include <Inventor/elements/SoLightModelElement.h>
 #include <Inventor/nodes/SoLineSet.h>
 #include <Inventor/nodes/SoLocateHighlight.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoMaterialBinding.h>
+#include <Inventor/bundles/SoMaterialBundle.h>
 #include <Inventor/nodes/SoNurbsSurface.h>
 #include <Inventor/nodes/SoNormalBinding.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>

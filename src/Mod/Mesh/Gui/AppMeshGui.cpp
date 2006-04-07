@@ -34,6 +34,7 @@
 #include "images.h"
 #include "DlgEvaluateMeshImp.h"
 #include "PropertyEditorMesh.h"
+#include "SoFCMeshNode.h"
 #include "ViewProvider.h"
 #include "ViewProviderCurvature.h"
 #include "ViewProviderTransform.h"
@@ -75,7 +76,7 @@ void GuiMeshExport initMeshGui() {
   new MeshGui::CleanupHandler;
 
   MeshGui::PropertyEditorMesh                ::init();
-
+  MeshGui::SoFCMeshNode                      ::initClass();
   MeshGui::ViewProviderMesh                  ::init();
   MeshGui::ViewProviderExport                ::init();
   MeshGui::ViewProviderMeshCurvature         ::init();

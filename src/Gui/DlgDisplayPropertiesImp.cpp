@@ -101,7 +101,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
         cColor = (*It)->getColor();
       else
         if(cColor != (*It)->getColor())
-          bSameMode = bSameTransp;
+          bSameColor = false;
 
 
       Provider.push_back(pcProv);
@@ -109,14 +109,20 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   }
 
 
-  for(set<string>::iterator It3= ModeList.begin();It3!=ModeList.end();It3++)
-    ModeBox->insertItem(It3->c_str()); 
+  if ( ModeList.size() > 0 ) {
+    for(set<string>::iterator It3= ModeList.begin();It3!=ModeList.end();It3++)
+      ModeBox->insertItem(It3->c_str()); 
 
-  if(bSameMode){
-    ModeBox->setCurrentText(sModeName.c_str());
-  }else{
-    ModeBox->insertItem("");
-    ModeBox->setCurrentText("");
+    if(bSameMode){
+      ModeBox->setCurrentText(sModeName.c_str());
+    }else{
+      ModeBox->insertItem("");
+      ModeBox->setCurrentText("");
+    }
+  }
+  else {
+    // if the viewproviders of the selected features have no display mode
+    ModeBox->setDisabled(true);
   }
 
   if(bSameTransp){
@@ -204,7 +210,7 @@ void DlgDisplayPropertiesImp::onOK(void)
     {
       if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
       {
-        _pcCmd->doCommand(Command::Doc,"App.document().%s.color = (%f,%f,%f)",(*It)->name.getValue(),cColorChange.r,cColorChange.r,cColorChange.b);
+        _pcCmd->doCommand(Command::Doc,"App.document().%s.color = (%f,%f,%f)",(*It)->name.getValue(),cColorChange.r,cColorChange.g,cColorChange.b);
       }
     }
   }
@@ -233,8 +239,10 @@ void DlgDisplayPropertiesImp::onCancel()
 {
   for(std::vector<App::AbstractFeature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
-    if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
+    ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
+    if (pcProv)
     {
+      pcProv->setColor((*It)->getColor());
       (*It)->TouchView();
     }
   }

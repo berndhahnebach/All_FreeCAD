@@ -80,3 +80,4 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + bug fixed: remove features to be deleted from the selection
 + bugs fixed in selection node
 + restore original document file name after loading a project file
++ start implementing an Inventor node rendering the mesh structure directly
