@@ -32,6 +32,8 @@
 # include <qpushbutton.h>
 #endif
 
+#include "DlgEvaluateMeshImp.h"
+
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
@@ -45,7 +47,6 @@
 #include "../App/Core/Degeneration.h"
 #include "../App/MeshFeature.h"
 #include "../App/FeatureMeshDefects.h"
-#include "DlgEvaluateMeshImp.h"
 #include "ViewProviderDefects.h"
 
 using namespace MeshCore;
@@ -61,7 +62,7 @@ CleanupHandler::CleanupHandler()
 
 // The lastWindowClosed signal will be emitted recursively and before the cleanup slot is finished
 // therefore all code inside this function must handle this case!
-CleanupHandler::cleanup()
+void CleanupHandler::cleanup()
 {
   DockEvaluateMeshImp::destruct();
 }
@@ -552,7 +553,11 @@ DockEvaluateMeshImp::~DockEvaluateMeshImp()
   pDockDlg->removeChild(this);
   // destroy the dock window container
   pDockMgr->removeDockWindow("Evaluate Mesh");
+
+#ifdef FC_OS_WIN32
+  //FIXME: Under Linux this leads to a strange error. There seems to be something wrong with the children of pDockDlg.
   delete pDockDlg;
+#endif
   _instance = 0;
 }
 

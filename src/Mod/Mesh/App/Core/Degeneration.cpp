@@ -656,7 +656,6 @@ bool MeshFixCorruptedFacets::Fixup()
   {
     if ( it->Area() <= FLOAT_EPS )
     {
-      unsigned long uCt = _rclMesh.CountFacets();
       unsigned long uId = it.Position();
       cTopAlg.DirectRemoveCorrupted(uId);
       // due to a modification of the array the iterator became invalid

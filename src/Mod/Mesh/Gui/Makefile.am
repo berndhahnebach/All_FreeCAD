@@ -7,7 +7,8 @@ lib_LTLIBRARIES=libMeshGui.la MeshGui.la
 BUILT_SOURCES=\
 		DlgEvaluateMesh.cpp \
 		DlgEvaluateMesh.h \
-		moc_DlgEvaluateMesh.cpp
+		moc_DlgEvaluateMesh.cpp \
+		moc_DlgEvaluateMeshImp.cpp
 
 libMeshGui_la_SOURCES=\
 		Command.cpp \
@@ -18,10 +19,14 @@ libMeshGui_la_SOURCES=\
 		PreCompiled.h \
 		PropertyEditorMesh.cpp \
 		PropertyEditorMesh.h \
+		SoFCMeshNode.cpp \
+		SoFCMeshNode.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
 		ViewProviderCurvature.cpp \
 		ViewProviderCurvature.h \
+		ViewProviderDefects.cpp \
+		ViewProviderDefects.h \
 		ViewProviderTransform.cpp \
 		ViewProviderTransform.h \
 		ViewProviderTransformDemolding.cpp \

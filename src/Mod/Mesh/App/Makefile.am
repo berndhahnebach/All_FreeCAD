@@ -49,6 +49,8 @@ libMesh_la_SOURCES=\
 		FeatureMeshCurvature.h \
 		FeatureMeshExport.cpp \
 		FeatureMeshExport.h \
+		FeatureMeshDefects.cpp \
+		FeatureMeshDefects.h \
 		FeatureMeshImport.cpp \
 		FeatureMeshImport.h \
 		FeatureMeshSegmentByMesh.cpp \

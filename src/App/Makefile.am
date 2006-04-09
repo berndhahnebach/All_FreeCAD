@@ -44,6 +44,8 @@ libFreeCADApp_la_SOURCES=\
 		PropertyLinks.h \
 		PropertyStandard.cpp \
 		PropertyStandard.h \
+		Transaction.cpp \
+		Transaction.h \
 		VectorPy.cpp \
 		VectorPy.h
 

@@ -239,9 +239,7 @@ bool MeshKernel::DeleteFacet (const MeshFacetIterator &rclIter)
 
 bool MeshKernel::DeleteFacet (unsigned long ulInd)
 {
-  unsigned long i, j, ulNFacet;
-
-  if (ulInd >= _aclFacetArray.size() ) 
+  if (ulInd >= _aclFacetArray.size() )
     return false;
 
   MeshFacetIterator clIter(*this);

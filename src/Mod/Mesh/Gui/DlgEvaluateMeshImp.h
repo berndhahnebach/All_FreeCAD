@@ -24,9 +24,8 @@
 #ifndef MESHGUI_DLG_EVALUATE_MESH_IMP_H
 #define MESHGUI_DLG_EVALUATE_MESH_IMP_H
 
-#ifndef _PreComp_
-#endif
-
+#include <map>
+#include <App/Application.h>
 #include <App/Document.h>
 #include "DlgEvaluateMesh.h"
 
@@ -53,7 +52,7 @@ public:
    CleanupHandler();
 
 public slots:
-   cleanup();
+   void cleanup();
 };
 
 /**
