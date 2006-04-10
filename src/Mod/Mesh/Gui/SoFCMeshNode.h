@@ -32,7 +32,7 @@ class Feature;
 
 namespace MeshGui {
 
-class SoFCMeshNode : public SoShape
+class GuiMeshExport SoFCMeshNode : public SoShape
 {
   SO_NODE_HEADER(SoFCMeshNode);
     

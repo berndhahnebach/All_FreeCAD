@@ -173,8 +173,12 @@ public:
   void setChild( QWidget* w );
   void removeChild( QWidget* w );
 
+private slots:
+  void destroyDockWidget();
+
 private:
   QScrollView* sv;
+  QWidget* formerParent;
 };
 
 /**
@@ -191,6 +195,7 @@ public:
   DockWindow* getDockWindow( const QString& name );
   QPtrList<DockWindow> getDockWindows();
   void removeDockWindow( const QString& name );
+  void removeDockWindow( DockWindow* dock );
   void addDockWindow( const QString& name, DockWindow *pcDocWindow, Qt::Dock pos = Qt::DockUnmanaged,
                       bool stretch=false, int extWidth=0, int extHeight=0 );
   void showDockWindows( const QStringList& );

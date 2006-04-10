@@ -156,7 +156,7 @@ bool DockView::onHasMsg(const char* pMsg)
 // --------------------------------------------------------------------
 
 DockContainer::DockContainer( QWidget* parent, const char* name, WFlags fl )
-  : DockWindow( 0L, parent, name, fl )
+  : DockWindow( 0L, parent, name, fl ), formerParent(0)
 {
   sv = new QScrollView( this );
   sv->setResizePolicy( QScrollView::AutoOneFit );
@@ -178,19 +178,44 @@ DockContainer::~DockContainer()
 void DockContainer::setChild( QWidget* w )
 {
   if( !w ) return;
+  formerParent = w->parentWidget();
   // prevent state of widget w from being changed by QScrollView::addChild()
   w->reparent( sv->viewport(), QPoint(0,0) );
   sv->addChild(w);
+  connect(w, SIGNAL(destroyed()), this, SLOT(destroyDockWidget()));
 }
 
 /**
- * Removes the widget \a w from the container.
+ * Removes the widget \a w from the container and restores its previous parent widget.
  */
 void DockContainer::removeChild( QWidget* w )
 {
-  if( !w ) return;
-  w->reparent(0, QPoint());
-//  sv->viewport()->removeChild(w);
+  if( w && w->parentWidget() == sv->viewport() )
+  {
+    w->reparent(formerParent, QPoint());
+    disconnect(w, SIGNAL(destroyed()), this, SLOT(destroyDockWidget()));
+    sv->removeChild(w);
+  }
+}
+
+/**
+ * The function gets called when the dockable widget is about to be destroyed.
+ * It destroys also itself.
+ */
+void DockContainer::destroyDockWidget()
+{
+  DockWindowManager* pDockMgr = DockWindowManager::instance();
+
+  // prevent the widget from being destructed twice
+  QWidget* w = (QWidget*)sender();
+  sv->removeChild(w);
+  // destroy the dock window container
+  pDockMgr->removeDockWindow(this);
+
+#ifdef FC_OS_WIN32
+  //FIXME: Under Linux this leads to a strange error. There seems to be something wrong with the children of pDockDlg.
+  deleteLater();
+#endif
 }
 
 // --------------------------------------------------------------------
@@ -315,6 +340,25 @@ void DockWindowManager::removeDockWindow( const QString& name )
     dw->removeChild( It.data() );
     d->_clDocWindows.erase(It);
     delete dw; // destruct the QDockWindow
+  }
+}
+
+/**
+ * Method provided for convenience. Does basically the same as the method above unless that
+ * it accepts a pointer.
+ */
+void DockWindowManager::removeDockWindow( DockWindow* dock )
+{
+  for ( QMap <QString,DockWindow*>::Iterator It = d->_clDocWindows.begin(); It != d->_clDocWindows.end(); ++It ) {
+    if ( It.data() == dock ) {
+      QDockWindow* dw = dock->dockWindow();
+      getMainWindow()->removeDockWindow( dw );
+      // avoid to destruct the DockWindow object
+      dw->removeChild( dock );
+      d->_clDocWindows.erase(It);
+      delete dw; // destruct the QDockWindow
+      break;
+    }
   }
 }
 

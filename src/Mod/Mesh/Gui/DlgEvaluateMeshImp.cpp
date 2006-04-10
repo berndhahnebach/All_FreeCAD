@@ -547,17 +547,6 @@ DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent,  const char* name, WF
  */
 DockEvaluateMeshImp::~DockEvaluateMeshImp()
 {
-  // prevent the dialog from being destructed twice
-  Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
-  Gui::DockContainer* pDockDlg = dynamic_cast<Gui::DockContainer*>(pDockMgr->getDockWindow("Evaluate Mesh"));
-  pDockDlg->removeChild(this);
-  // destroy the dock window container
-  pDockMgr->removeDockWindow("Evaluate Mesh");
-
-#ifdef FC_OS_WIN32
-  //FIXME: Under Linux this leads to a strange error. There seems to be something wrong with the children of pDockDlg.
-  delete pDockDlg;
-#endif
   _instance = 0;
 }
 
