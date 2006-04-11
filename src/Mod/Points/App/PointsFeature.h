@@ -56,9 +56,10 @@ public:
   Feature(void);
   virtual ~Feature(void);
 
-  virtual void Save (Base::Writer &writer);
+  virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
-  virtual void SaveDocFile (Base::Writer &writer);
+
+  virtual void SaveDocFile (Base::Writer &writer) const;
   virtual void RestoreDocFile(Base::Reader &reader);
 
   /** @name methods overide Feature */

@@ -54,7 +54,7 @@ Feature::~Feature()
 {
 }
 
-void Feature::Save (Base::Writer &writer)
+void Feature::Save (Base::Writer &writer) const
 {
   // save parent
   AbstractFeature::Save(writer);
@@ -81,7 +81,7 @@ void Feature::Restore(Base::XMLReader &reader)
   }
 }
 
-void Feature::SaveDocFile (Base::Writer &writer)
+void Feature::SaveDocFile (Base::Writer &writer) const
 {
   const PointKernel& kernel = _Points.getKernel();
   unsigned long uCtPts = kernel.size();

@@ -138,7 +138,7 @@ public:
   /** @name View provider handling  */
   //@{
   /// Get the view provider for that Feature
-  ViewProvider * getViewProvider(App::AbstractFeature *);
+  ViewProvider * getViewProvider(App::DocumentObject *);
   /// set an anotation view provider
   void setAnotationViewProvider(const char* name, ViewProvider *pcProvider);
   /// get an anotation view provider
@@ -195,11 +195,6 @@ protected:
   	// pointer to the python class
   Gui::DocumentPy *_pcDocPy;
 
-
-private:
-//  Handle(V3d_Viewer) Viewer(const Standard_CString aDisplay,const Standard_ExtString aName,
-//    const Standard_CString aDomain,const Standard_Real ViewSize , const V3d_TypeOfOrientation ViewProj,
-//    const Standard_Boolean ComputedMode,const Standard_Boolean aDefaultComputedMode );
 private:
   static int _iDocCount;
   int        _iWinCount;
@@ -219,7 +214,7 @@ private:
   // the doc/Document
   App::Document*  _pcDocument;
  
-  std::map<App::AbstractFeature*,ViewProvider*> _ViewProviderMap;
+  std::map<App::DocumentObject*,ViewProvider*> _ViewProviderMap;
   std::map<std::string,ViewProvider*> _ViewProviderMapAnotation;
 
   /** @name attributes for the UNDO REDO facility

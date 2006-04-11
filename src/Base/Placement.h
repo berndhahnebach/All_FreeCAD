@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2006 Juergen Riegel                                     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,70 +21,42 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProviderCurveNet_H__
-#define __ViewProviderCurveNet_H__
+#ifndef __Placement_H
+#define __Placement_H
 
-#include "ViewProvider.h"
+//#include "Definitions.h"
+#include <assert.h>
+#include <math.h>
+#include <stdio.h>
 
-
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-class SoTransform;
-
-namespace Gui {
-  class View3DInventorViewer;
-  class SoFCSelection;
-}
-
-namespace PartGui {
+#include "Vector3D.h"
 
 
-class AppPartGuiExport ViewProviderCurveNet:public ViewProviderPart
+namespace Base {
+
+
+/**
+ * The Matrix4D class.
+ */
+class BaseExport Placement
 {
-  PROPERTY_HEADER(PartGui::ViewProviderPart);
-
 public:
-  /// constructor
-  ViewProviderCurveNet();
-  /// destructor
-  virtual ~ViewProviderCurveNet();
+  /// default constructor
+  Placement(void){};
+  /// Destruction
+  virtual ~Placement () {};
 
+  const Vector3<double> &getPos(void) const {return _Pos;}
+  const double *getRotateion(void) const {return _q;}
 
-  virtual void attach(App::DocumentObject *);
-
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void){return std::vector<std::string>();}
-  /// Update the Part representation
-  virtual void update(void){}
-
-  virtual void setEdit(void);
-  virtual void unsetEdit(void);
-
-  virtual bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
-
-protected:
-  struct Node {
-    Gui::SoFCSelection  *pcHighlight;
-    SoTransform    *pcTransform;
-  };
-
-  std::list<Node> NodeList;
-
-  bool bInEdit;
-  bool bMovePointMode;
-  Node PointToMove;
-  /// root of the edge and vertex points
-  SoSeparator *EdgeRoot, *VertexRoot;
-
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
+  Vector3<double> _Pos;
+  double _q[4];
 
 };
 
-} // namespace PartGui
 
+} // namespace Mesh
 
-#endif // __VIEWPROVIDERPART_H__
+#endif // __Placement_H 
+
 

@@ -32,86 +32,99 @@
 
 using namespace Base;
 
-void Vector3D::ScaleX (float f)
+/* Moved to .h because of Template
+template <class _Precision>
+void Vector3<_Precision>::ScaleX (_Precision f)
 {
   x *= f;
 }
 
-void Vector3D::ScaleY (float f)
+template <class _Precision>
+void Vector3<_Precision>::ScaleY (_Precision f)
 {
   y *= f;
 }
 
-void Vector3D::ScaleZ (float f)
+template <class _Precision>
+void Vector3<_Precision>::ScaleZ (_Precision f)
 {
   z *= f;
 }
 
-void Vector3D::Scale (float fX, float fY, float fZ)
+template <class _Precision>
+void Vector3<_Precision>::Scale (_Precision fX, _Precision fY, _Precision fZ)
 {
   x *= fX;
   y *= fY;
   z *= fZ;
 }
 
-void Vector3D::MoveX (float f)
+template <class _Precision>
+void Vector3<_Precision>::MoveX (_Precision f)
 {
   x += f;
 }
 
-void Vector3D::MoveY (float f)
+template <class _Precision>
+void Vector3<_Precision>::MoveY (_Precision f)
 {
   y += f;
 }
 
-void Vector3D::MoveZ (float f)
+template <class _Precision>
+void Vector3<_Precision>::MoveZ (_Precision f)
 {
   z += f;
 }
 
-void Vector3D::Move (float fX, float fY, float fZ)
+template <class _Precision>
+void Vector3<_Precision>::Move (_Precision fX, _Precision fY, _Precision fZ)
 {
   x += fX;
   y += fY;
   z += fZ;
 }
 
-void Vector3D::RotateX (float f)
+template <class _Precision>
+void Vector3<_Precision>::RotateX (_Precision f)
 {
-  Vector3D cPt (*this);
-  float fsin, fcos;
+  Vector3 cPt (*this);
+  _Precision fsin, fcos;
  
-  fsin = (float)sin (f);
-  fcos = (float)cos (f);
+  fsin = (_Precision)sin (f);
+  fcos = (_Precision)cos (f);
   y = (cPt.y * fcos) - (cPt.z * fsin);
   z = (cPt.y * fsin) + (cPt.z * fcos);
 }
 
-void Vector3D::RotateY (float f)
+template <class _Precision>
+void Vector3<_Precision>::RotateY (_Precision f)
 {
-  Vector3D cPt (*this);
-  float fsin, fcos;
+  Vector3 cPt (*this);
+  _Precision fsin, fcos;
  
-  fsin = (float)sin (f);
-  fcos = (float)cos (f);
+  fsin = (_Precision)sin (f);
+  fcos = (_Precision)cos (f);
   x = (cPt.z * fsin) + (cPt.x * fcos);
   z = (cPt.z * fcos) - (cPt.x * fsin);
 }
 
-void Vector3D::RotateZ (float f)
+template <class _Precision>
+void Vector3<_Precision>::RotateZ (_Precision f)
 {
-  Vector3D cPt (*this);
-  float fsin, fcos;
+  Vector3 cPt (*this);
+  _Precision fsin, fcos;
  
-  fsin = (float)sin (f);
-  fcos = (float)cos (f);
+  fsin = (_Precision)sin (f);
+  fcos = (_Precision)cos (f);
   x = (cPt.x * fcos) - (cPt.y * fsin);
   y = (cPt.x * fsin) + (cPt.y * fcos);
 }
 
-RVector3D Vector3D::Normalize (void)
+template <class _Precision>
+Vector3<_Precision> & Vector3<_Precision>::Normalize (void)
 {
-  float fLen = Length ();
+  _Precision fLen = Length ();
   if (fLen != 0.0f)
   {
     x /= fLen;
@@ -121,11 +134,12 @@ RVector3D Vector3D::Normalize (void)
   return *this;
 }
 
-float Vector3D::GetAngle (const Vector3D &rcVect) const
+template <class _Precision>
+_Precision Vector3<_Precision>::GetAngle (const Vector3 &rcVect) const
 {
-  float divid, fNum;
+  _Precision divid, fNum;
   
-  divid = Length() * ((RVector3D)rcVect).Length();
+  divid = Length() * ((RVector3)rcVect).Length();
  
   if ((divid < -1e-10f) || (divid > 1e-10f))
   {
@@ -136,17 +150,18 @@ float Vector3D::GetAngle (const Vector3D &rcVect) const
       if (fNum > 1)
         return 0.0F;
       else
-        return float(acos(fNum));
+        return _Precision(acos(fNum));
   }
   else
-    return -FLOAT_MAX; // division by zero
+    return -_Precision_MAX; // division by zero
 }
 
-void Vector3D::TransformToCoordinateSystem ( const Vector3D &rclBase,
-                                             const Vector3D &rclDirX,
-                                             const Vector3D &rclDirY )
+template <class _Precision>
+void Vector3<_Precision>::TransformToCoordinateSystem ( const Vector3 &rclBase,
+                                             const Vector3 &rclDirX,
+                                             const Vector3 &rclDirY )
 {
-  Vector3D  clVectX, clVectY, clVectZ, clVectOld;
+  Vector3  clVectX, clVectY, clVectZ, clVectOld;
   
   clVectX = rclDirX;
   clVectY = rclDirY;
@@ -162,7 +177,8 @@ void Vector3D::TransformToCoordinateSystem ( const Vector3D &rclBase,
   z = clVectZ * clVectOld;
 }
 
-bool Vector3D::Equal(const Vector3D &rclVect) const
+template <class _Precision>
+bool Vector3<_Precision>::Equal(const Vector3 &rclVect) const
 {
   int     ex1, ex2, ey1, ey2, ez1, ez2;
   double  mx1, mx2, my1, my2, mz1, mz2;
@@ -176,18 +192,21 @@ bool Vector3D::Equal(const Vector3D &rclVect) const
   mz2 = frexp(rclVect.z, &ez2);
   
   return ( (ex1 == ex2) && (ey1 == ey2) && (ez1 == ez2) &&
-           (fabs(mx1 - mx2) < FLOAT_EPS) &&
-           (fabs(my1 - my2) < FLOAT_EPS) &&
-           (fabs(mz1 - mz2) < FLOAT_EPS) );
+           (fabs(mx1 - mx2) < _Precision_EPS) &&
+           (fabs(my1 - my2) < _Precision_EPS) &&
+           (fabs(mz1 - mz2) < _Precision_EPS) );
 }
 
-unsigned long Vector3D::GetMemSpace (void)
+template <class _Precision>
+unsigned long Vector3<_Precision>::GetMemSpace (void)
 {
-  return sizeof(Vector3D);
+  return sizeof(Vector3);
 }
 
-void Vector3D::Print (void)
+template <class _Precision>
+void Vector3<_Precision>::Print (void)
 {
   printf ("x: %f, y: %f, z: %f\n", x, y, z);
 }
 
+*/

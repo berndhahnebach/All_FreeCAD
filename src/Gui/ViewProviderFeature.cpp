@@ -45,12 +45,12 @@
 using namespace Gui;
 
 
-PROPERTY_SOURCE_ABSTRACT(Gui::ViewProviderFeature, Gui::ViewProvider)
+PROPERTY_SOURCE_ABSTRACT(Gui::ViewProviderDocumentObject, Gui::ViewProvider)
 
 
       
-ViewProviderFeature::ViewProviderFeature()
-  : pcFeature(0), _cLastStatus(-1)
+ViewProviderDocumentObject::ViewProviderDocumentObject()
+  : pcObject(0), _cLastStatus(-1)
 {
   pcSolidMaterial = new SoMaterial;
   pcSolidMaterial->ref();
@@ -73,7 +73,7 @@ ViewProviderFeature::ViewProviderFeature()
 }
 
 
-ViewProviderFeature::~ViewProviderFeature()
+ViewProviderDocumentObject::~ViewProviderDocumentObject()
 {
   pcSolidMaterial->unref();
   pcLineMaterial->unref();
@@ -82,40 +82,45 @@ ViewProviderFeature::~ViewProviderFeature()
 }
 
 
-void ViewProviderFeature::attach(App::AbstractFeature *pcFeat)
+void ViewProviderDocumentObject::attach(App::DocumentObject *pcFeat)
 {
-  // save feature pointer
-  pcFeature = pcFeat;
+  // save Object pointer
+  pcObject = pcFeat;
 
-  // copy the material properties of the feature
-  setMatFromFeature();
+  // copy the material properties of the Object
+  setMatFromObject();
 
   // set viewing mode
-  setMode(pcFeature->getShowMode());
-  if ( !pcFeature->visibility.getValue() )
+  setMode(pcObject->getShowMode());
+  if ( !pcObject->visibility.getValue() )
     ViewProvider::hide();
 
 
-  calcMaterial = pcFeature->getTouchViewTime();
-  calcData = pcFeature->getTouchTime();
+  calcMaterial = pcObject->getTouchViewTime();
+  calcData = pcObject->getTouchTime();
 
 }
 
 
-QListViewItem* ViewProviderFeature::getTreeItem(QListViewItem* parent)
+QListViewItem* ViewProviderDocumentObject::getTreeItem(QListViewItem* parent)
 {
-  pcFeatItem = new FeatItem(parent,this);
-  pcFeatItem->setPixmap(0,/*ViewProvider::*/getIcon());
-  pcFeatItem->setText(0,QString(pcFeature->name.getValue()));
-  return pcFeatItem;
+  pcObjItem = new ObjectItem(parent,this);
+  pcObjItem->setPixmap(0,/*ViewProvider::*/getIcon());
+  pcObjItem->setText(0,QString(pcObject->name.getValue()));
+  return pcObjItem;
 }
 
-bool ViewProviderFeature::testStatus(void)
+bool ViewProviderDocumentObject::testStatus(void)
 {
-  assert(pcFeature);
+  assert(pcObject);
+
+  if(! pcObject->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) )
+    return true;
+
+  App::AbstractFeature *pcFeature = dynamic_cast<App::AbstractFeature *>(pcObject);
 
   // if status has changed then continue
-  int newStatus = (((int)(pcFeature->getStatus())) << 2) | ((pcFeature->MustExecute()?1:0) << 1) | (isShow()?1:0);
+  int newStatus = (((int)(pcFeature->getStatus())) << 2) | ((pcFeature->mustExecute()?1:0) << 1) | (isShow()?1:0);
   if ( _cLastStatus == newStatus )
     return false;
   _cLastStatus = newStatus;
@@ -124,7 +129,7 @@ bool ViewProviderFeature::testStatus(void)
   switch(pcFeature->getStatus())
   {
   case App::AbstractFeature::Valid:
-    if(pcFeature->MustExecute())
+    if(pcFeature->mustExecute())
     {
       const char *feature_warning_xpm[]={
         "7 7 3 1",
@@ -139,21 +144,21 @@ bool ViewProviderFeature::testStatus(void)
         "######.",
         "###a###"};
       px = new QPixmap(feature_warning_xpm);
-      pcFeatItem->BaseColor =Qt::yellow.light();
-      pcFeatItem->TextColor =Qt::black;
+      pcObjItem->BaseColor =Qt::yellow.light();
+      pcObjItem->TextColor =Qt::black;
     }else{
-      pcFeatItem->BaseColor =Qt::white;
-      pcFeatItem->TextColor =Qt::black;
+      pcObjItem->BaseColor =Qt::white;
+      pcObjItem->TextColor =Qt::black;
     } break;
   case App::AbstractFeature::New:
     {
-      pcFeatItem->BaseColor =Qt::white;
-      pcFeatItem->TextColor =Qt::gray;
+      pcObjItem->BaseColor =Qt::white;
+      pcObjItem->TextColor =Qt::gray;
     } break;
   case App::AbstractFeature::Inactive:
     {
-      pcFeatItem->BaseColor =Qt::white;
-      pcFeatItem->TextColor =Qt::gray;
+      pcObjItem->BaseColor =Qt::white;
+      pcObjItem->TextColor =Qt::gray;
     } break;
   case App::AbstractFeature::Recompute:
     {
@@ -170,8 +175,8 @@ bool ViewProviderFeature::testStatus(void)
         ".##aa#.",
         "..#aa.."};
       px = new QPixmap(feature_recompute_xpm);
-      pcFeatItem->BaseColor =Qt::white;
-      pcFeatItem->TextColor =Qt::black;
+      pcObjItem->BaseColor =Qt::white;
+      pcObjItem->TextColor =Qt::black;
     } break;
   case App::AbstractFeature::Error:
     {
@@ -188,28 +193,28 @@ bool ViewProviderFeature::testStatus(void)
         ".##aa#.",
         "..#aa.."};
       px = new QPixmap(feature_error_xpm);
-      pcFeatItem->BaseColor =Qt::white;
-      pcFeatItem->TextColor =Qt::red;
+      pcObjItem->BaseColor =Qt::white;
+      pcObjItem->TextColor =Qt::red;
     } break;
   }
 
   if( !isShow() )
   {
-    pcFeatItem->BaseColor =Qt::white;
-    pcFeatItem->TextColor =Qt::gray;
+    pcObjItem->BaseColor =Qt::white;
+    pcObjItem->TextColor =Qt::gray;
     QPixmap hidden = Tools::disabled( getIcon() );
     if ( px ) {
-      pcFeatItem->setPixmap(0,Tools::merge(hidden,*px,false));
+      pcObjItem->setPixmap(0,Tools::merge(hidden,*px,false));
     } else {
-      pcFeatItem->setPixmap(0,hidden);
+      pcObjItem->setPixmap(0,hidden);
     }
   }
   else // visible
   {
     if ( px ) {
-      pcFeatItem->setPixmap(0,Tools::merge(getIcon(),*px,false));
+      pcObjItem->setPixmap(0,Tools::merge(getIcon(),*px,false));
     } else {
-      pcFeatItem->setPixmap(0,getIcon());
+      pcObjItem->setPixmap(0,getIcon());
     }
   }
 
@@ -218,42 +223,42 @@ bool ViewProviderFeature::testStatus(void)
   return true;
 }
 
-void ViewProviderFeature::hide(void)
+void ViewProviderDocumentObject::hide(void)
 {
   ViewProvider::hide();
-  if ( pcFeature )
-    pcFeature->visibility.setValue(false);
+  if ( pcObject )
+    pcObject->visibility.setValue(false);
 }
 
-void ViewProviderFeature::show(void)
+void ViewProviderDocumentObject::show(void)
 {
   ViewProvider::show();
-  if ( pcFeature )
-    pcFeature->visibility.setValue(true);
+  if ( pcObject )
+    pcObject->visibility.setValue(true);
 }
 
-bool ViewProviderFeature::isShow(void)
+bool ViewProviderDocumentObject::isShow(void)
 {
-  return (pcFeature ? pcFeature->visibility.getValue() : false);
+  return (pcObject ? pcObject->visibility.getValue() : false);
 }
 
-bool ViewProviderFeature::ifDataNewer(void)
-{
-  // first do attach
-  assert(pcFeature);
-  return pcFeature->getTouchTime() > calcData || pcFeature->getTouchTime() == calcData; 
-}
-
-bool ViewProviderFeature::ifMaterialNewer(void)
+bool ViewProviderDocumentObject::ifDataNewer(void)
 {
   // first do attach
-  assert(pcFeature);
-  return pcFeature->getTouchViewTime() > calcMaterial || pcFeature->getTouchViewTime() == calcMaterial; 
+  assert(pcObject);
+  return pcObject->getTouchTime() > calcData || pcObject->getTouchTime() == calcData; 
+}
+
+bool ViewProviderDocumentObject::ifMaterialNewer(void)
+{
+  // first do attach
+  assert(pcObject);
+  return pcObject->getTouchViewTime() > calcMaterial || pcObject->getTouchViewTime() == calcMaterial; 
 
 }
 
 
-void ViewProviderFeature::update(void)
+void ViewProviderDocumentObject::update(void)
 {
   if(ifDataNewer())
   {
@@ -264,8 +269,8 @@ void ViewProviderFeature::update(void)
 
   if(ifMaterialNewer())
   {
-    setMatFromFeature();
-    setMode(pcFeature->getShowMode());
+    setMatFromObject();
+    setMode(pcObject->getShowMode());
 
     calcMaterial.setToActual();
   }
@@ -273,14 +278,14 @@ void ViewProviderFeature::update(void)
 }
 
 
-std::vector<std::string> ViewProviderFeature::getModes(void)
+std::vector<std::string> ViewProviderDocumentObject::getModes(void)
 {
   // empty
   return std::vector<std::string>();
 }
 
 
-void ViewProviderFeature::copy(const App::Material &Mat, SoMaterial* pcSoMat)
+void ViewProviderDocumentObject::copy(const App::Material &Mat, SoMaterial* pcSoMat)
 {
   pcSoMat->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
   pcSoMat->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
@@ -291,24 +296,24 @@ void ViewProviderFeature::copy(const App::Material &Mat, SoMaterial* pcSoMat)
 
 }
 
-void ViewProviderFeature::setMatFromFeature(void)
+void ViewProviderDocumentObject::setMatFromObject(void)
 {
-  copy(pcFeature->getSolidMaterial(),pcSolidMaterial);
-  copy(pcFeature->getLineMaterial(),pcLineMaterial);
-  copy(pcFeature->getPointMaterial(),pcPointMaterial);
-  pcLineStyle->lineWidth  = pcFeature->getLineSize();
-  pcPointStyle->pointSize = pcFeature->getPointSize();
+  copy(pcObject->getSolidMaterial(),pcSolidMaterial);
+  copy(pcObject->getLineMaterial(),pcLineMaterial);
+  copy(pcObject->getPointMaterial(),pcPointMaterial);
+  pcLineStyle->lineWidth  = pcObject->getLineSize();
+  pcPointStyle->pointSize = pcObject->getPointSize();
 
   // touch the material time
   calcMaterial.setToActual();
 }
 
-void ViewProviderFeature::setTransparency(float trans)
+void ViewProviderDocumentObject::setTransparency(float trans)
 {
   pcSolidMaterial->transparency = trans;
 }
 
-void ViewProviderFeature::setColor(const App::Color &c)
+void ViewProviderDocumentObject::setColor(const App::Color &c)
 {
   pcSolidMaterial->diffuseColor.setValue(c.r,c.g,c.b);
 }
@@ -319,24 +324,24 @@ void ViewProviderFeature::setColor(const App::Color &c)
 
 /*
 
-ViewProviderFeatureFactorySingleton* ViewProviderFeatureFactorySingleton::_pcSingleton = NULL;
+ViewProviderDocumentObjectFactorySingleton* ViewProviderDocumentObjectFactorySingleton::_pcSingleton = NULL;
 
-ViewProviderFeatureFactorySingleton& ViewProviderFeatureFactorySingleton::Instance(void)
+ViewProviderDocumentObjectFactorySingleton& ViewProviderDocumentObjectFactorySingleton::Instance(void)
 {
   if (_pcSingleton == NULL)
-    _pcSingleton = new ViewProviderFeatureFactorySingleton;
+    _pcSingleton = new ViewProviderDocumentObjectFactorySingleton;
   return *_pcSingleton;
 }
 
-void ViewProviderFeatureFactorySingleton::Destruct (void)
+void ViewProviderDocumentObjectFactorySingleton::Destruct (void)
 {
   if (_pcSingleton != NULL)
     delete _pcSingleton;
 }
 
-ViewProviderFeature* ViewProviderFeatureFactorySingleton::Produce (const char* sName) const
+ViewProviderDocumentObject* ViewProviderDocumentObjectFactorySingleton::Produce (const char* sName) const
 {
-	ViewProviderFeature* w = (ViewProviderFeature*)Factory::Produce(sName);
+	ViewProviderDocumentObject* w = (ViewProviderDocumentObject*)Factory::Produce(sName);
 
   // this Feature class is not registered
   if (!w)

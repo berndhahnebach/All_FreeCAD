@@ -111,7 +111,7 @@ public:
   MeshDocXML (MeshKernel &rclM) : _rclMesh(rclM) { }
   virtual ~MeshDocXML (void) { }
 
-  void Save (Base::Writer &writer);
+  void Save (Base::Writer &writer) const;
   void Restore(Base::XMLReader &reader);
 
 protected:

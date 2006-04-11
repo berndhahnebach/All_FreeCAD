@@ -575,7 +575,7 @@ bool MeshInventor::Save (FileStream &rstrOut) const
 #endif
 
 
-void MeshDocXML::Save (Base::Writer &writer)
+void MeshDocXML::Save (Base::Writer &writer) const
 {
 //  writer << writer.ind() << "<Mesh>" << std::endl;
 

@@ -203,7 +203,7 @@ void PropertyCurvatureList::transform(const Matrix4D &mat)
   }
 }
 
-void PropertyCurvatureList::Save (Base::Writer &writer)
+void PropertyCurvatureList::Save (Base::Writer &writer) const
 {
   if(writer.isForceXML())
   {
@@ -225,7 +225,7 @@ void PropertyCurvatureList::Restore(Base::XMLReader &reader)
   }
 }
 
-void PropertyCurvatureList::SaveDocFile (Base::Writer &writer)
+void PropertyCurvatureList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
@@ -295,7 +295,7 @@ void PropertyMeshKernel::setPyObject(PyObject *value)
   }
 }
 
-void PropertyMeshKernel::Save (Base::Writer &writer)
+void PropertyMeshKernel::Save (Base::Writer &writer) const
 {
   if( writer.isForceXML() )
   {
@@ -323,7 +323,7 @@ void PropertyMeshKernel::Restore(Base::XMLReader &reader)
   }
 }
 
-void PropertyMeshKernel::SaveDocFile (Base::Writer &writer)
+void PropertyMeshKernel::SaveDocFile (Base::Writer &writer) const
 {
   try {
     _pcMesh->Write( writer );

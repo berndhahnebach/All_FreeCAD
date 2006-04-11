@@ -67,9 +67,9 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-      Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addFeature("Points::ImportAscii", file.fileNamePure().c_str());
+      Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addObject("Points::ImportAscii", file.fileNamePure().c_str());
       pcFeature->FileName.setValue( Name );
-      pcDoc->Recompute();
+      pcDoc->recompute();
     }
     else
     {
@@ -108,9 +108,9 @@ insert(PyObject *self, PyObject *args)
         Py_Error(PyExc_Exception,szBuf);
       }
 
-      Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addFeature("Points::ImportAscii", file.fileNamePure().c_str());
+      Points::ImportAscii *pcFeature = (Points::ImportAscii *)pcDoc->addObject("Points::ImportAscii", file.fileNamePure().c_str());
       pcFeature->FileName.setValue( Name );
-      pcDoc->Recompute();
+      pcDoc->recompute();
     }
     else
     {

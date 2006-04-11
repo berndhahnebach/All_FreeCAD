@@ -72,14 +72,14 @@ CmdMeshTransform::CmdMeshTransform()
 
 void CmdMeshTransform::activated(int iMsg)
 {
-  unsigned int n = getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId());
+  unsigned int n = getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId());
   if ( n!=1 ) return;
 
-  std::string fName = getUniqueFeatureName("Move");
+  std::string fName = getUniqueObjectName("Move");
   std::vector<Gui::SelectionSingleton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh Mesh Create");
-  doCommand(Doc,"App.document().AddFeature(\"Mesh::Transform\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.document().addObject(\"Mesh::Transform\",\"%s\")",fName.c_str());
   doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
   doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Transform");
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
@@ -91,7 +91,7 @@ void CmdMeshTransform::activated(int iMsg)
 bool CmdMeshTransform::isActive(void)
 {
   //return true;
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 //===========================================================================
@@ -114,14 +114,14 @@ CmdMeshDemolding::CmdMeshDemolding()
 
 void CmdMeshDemolding::activated(int iMsg)
 {
-  unsigned int n = getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId());
+  unsigned int n = getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId());
   if ( n!=1 ) return;
 
-  std::string fName = getUniqueFeatureName("Demolding");
+  std::string fName = getUniqueObjectName("Demolding");
   std::vector<Gui::SelectionSingleton::SelObj> cSel = getSelection().getSelection();
 
   openCommand("Mesh Mesh Create");
-  doCommand(Doc,"App.document().AddFeature(\"Mesh::TransformDemolding\",\"%s\")",fName.c_str());
+  doCommand(Doc,"App.document().addObject(\"Mesh::TransformDemolding\",\"%s\")",fName.c_str());
   doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
   doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Demold");
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
@@ -133,7 +133,7 @@ void CmdMeshDemolding::activated(int iMsg)
 bool CmdMeshDemolding::isActive(void)
 {
   //return true;
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 //===========================================================================
 // Example MakeMesh
@@ -172,10 +172,10 @@ void CmdMeshExMakeMesh::activated(int iMsg)
     "mb.addFacet(1.0,1.0,0.0, 1.0,1.0,1.0, 1.0,0.0,1.0)\n"
     "mb.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
     "mb.scale(100.0)\n"
-    "App.document().AddFeature(\"Mesh::Feature\",\"MeshBox\")\n"
+    "App.document().addObject(\"Mesh::Feature\",\"MeshBox\")\n"
     "App.document().MeshBox.setMesh(mb)\n"
     "App.document().MeshBox.showMode = \"FlatWire\"\n" 
-    "App.document().Recompute()" );
+    "App.document().recompute()" );
 
   doCommand(Gui,"Gui.SendMsgToActiveView(\"ViewFit\")");
   commitCommand();
@@ -185,7 +185,7 @@ void CmdMeshExMakeMesh::activated(int iMsg)
 
 bool CmdMeshExMakeMesh::isActive(void)
 {
-  return hasActiveDocument() && !hasFeature("MeshBox");
+  return hasActiveDocument() && !hasObject("MeshBox");
 }
 
 //===========================================================================
@@ -226,7 +226,7 @@ void CmdMeshExMakeTool::activated(int iMsg)
     "mt.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
     "mt.scale(100.0)\n"
     "mt.translate(50.0,50.0,50.0)\n"
-    "App.document().AddFeature(\"Mesh::Feature\",\"MeshTool\")\n"
+    "App.document().addObject(\"Mesh::Feature\",\"MeshTool\")\n"
     "App.document().MeshTool.setMesh(mt)\n"
     "App.document().MeshTool.solidMaterial.diffuseColor = (0.5,0.2,0.2)\n"
     "App.document().MeshTool.showMode = \"FlatWire\"" );
@@ -238,7 +238,7 @@ void CmdMeshExMakeTool::activated(int iMsg)
 
 bool CmdMeshExMakeTool::isActive(void)
 {
-  return hasFeature("MeshBox") && !hasFeature("MeshTool");
+  return hasObject("MeshBox") && !hasObject("MeshTool");
 }
 
 
@@ -269,7 +269,7 @@ void CmdMeshExMakeUnion::activated(int iMsg)
     "m2 = App.document().MeshTool.getMesh()\n"
     "m3 = m1.copy()\n"
     "m3.unite(m2)\n"
-    "App.document().AddFeature(\"Mesh::Feature\",\"MeshUnion\")\n"
+    "App.document().addObject(\"Mesh::Feature\",\"MeshUnion\")\n"
     "App.document().MeshUnion.setMesh(m3)\n"
     "App.document().MeshUnion.solidMaterial.ambientColor = (0.1,1,0)\n"
     "App.document().MeshUnion.solidMaterial.transparency = 0.5\n"
@@ -287,7 +287,7 @@ void CmdMeshExMakeUnion::activated(int iMsg)
 
 bool CmdMeshExMakeUnion::isActive(void)
 {
-  return hasFeature("MeshTool") && !hasFeature("MeshUnion");
+  return hasObject("MeshTool") && !hasObject("MeshUnion");
 }
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -326,7 +326,7 @@ void CmdMeshImport::activated(int iMsg)
     fi.setFile(fn);
 
     openCommand("Mesh ImportSTL Create");
-    doCommand(Doc,"f = App.document().AddFeature(\"Mesh::Import\",\"%s\")", fi.baseName().latin1());
+    doCommand(Doc,"f = App.document().addObject(\"Mesh::Import\",\"%s\")", fi.baseName().latin1());
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
     updateActive();
@@ -373,7 +373,7 @@ void CmdMeshExport::activated(int iMsg)
   QString format;
   QString fn = Gui::FileDialog::getSaveFileName( dir, filter, Gui::getMainWindow(), 0,
                                                  QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );
-  std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
 
   if (! fn.isEmpty() )
   {
@@ -384,7 +384,7 @@ void CmdMeshExport::activated(int iMsg)
 
     QFileInfo fi; fi.setFile(fn);
     openCommand("Mesh ExportSTL Create");
-    doCommand(Doc,"f = App.document().AddFeature(\"Mesh::Export\",\"%s\")", fi.baseName().ascii());
+    doCommand(Doc,"f = App.document().addObject(\"Mesh::Export\",\"%s\")", fi.baseName().ascii());
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     doCommand(Doc,"f.Format = \"%s\"",format.ascii());
     doCommand(Doc,"f.Source = App.document().%s",fea.front()->name.getValue());
@@ -397,7 +397,7 @@ void CmdMeshExport::activated(int iMsg)
 
 bool CmdMeshExport::isActive(void)
 {
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshVertexCurvature);
@@ -416,15 +416,15 @@ CmdMeshVertexCurvature::CmdMeshVertexCurvature()
 
 void CmdMeshVertexCurvature::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     std::string fName = (*it)->name.getValue();
     fName += "_Curvature";
-    fName = getUniqueFeatureName(fName.c_str());
+    fName = getUniqueObjectName(fName.c_str());
 
     openCommand("Mesh VertexCurvature");
-    doCommand(Doc,"App.document().AddFeature(\"Mesh::Curvature\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.document().addObject(\"Mesh::Curvature\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Absolute curvature");
     commitCommand();
@@ -438,7 +438,7 @@ void CmdMeshVertexCurvature::activated(int iMsg)
 bool CmdMeshVertexCurvature::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdMeshPolyPick);
@@ -457,7 +457,7 @@ CmdMeshPolyPick::CmdMeshPolyPick()
 
 void CmdMeshPolyPick::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   if ( fea.size() == 1 )
   {
     Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
@@ -468,7 +468,7 @@ void CmdMeshPolyPick::activated(int iMsg)
 bool CmdMeshPolyPick::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshPolyCut);
@@ -487,7 +487,7 @@ CmdMeshPolyCut::CmdMeshPolyCut()
 
 void CmdMeshPolyCut::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   if ( fea.size() == 1 )
   {
     Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
@@ -498,7 +498,7 @@ void CmdMeshPolyCut::activated(int iMsg)
 bool CmdMeshPolyCut::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshToolMesh);
@@ -517,18 +517,18 @@ CmdMeshToolMesh::CmdMeshToolMesh()
 
 void CmdMeshToolMesh::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+  std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   if ( fea.size() == 2 )
   {
-    std::string fName = getUniqueFeatureName("MeshSegment");
-    App::AbstractFeature* mesh = fea.front();
-    App::AbstractFeature* tool = fea.back();
+    std::string fName = getUniqueObjectName("MeshSegment");
+    App::DocumentObject* mesh = fea.front();
+    App::DocumentObject* tool = fea.back();
 
     openCommand("Segment by tool mesh");
     doCommand(Doc, "import Mesh");
     doCommand(Gui, "import MeshGui");
     doCommand(Doc,
-      "App.document().AddFeature(\"Mesh::SegmentByMesh\",\"%s\")\n"
+      "App.document().addObject(\"Mesh::SegmentByMesh\",\"%s\")\n"
       "App.document().%s.Source = App.document().%s\n"
       "App.document().%s.Tool = App.document().%s\n",
       fName.c_str(), fName.c_str(),  mesh->name.getValue(), fName.c_str(), tool->name.getValue() );
@@ -537,9 +537,9 @@ void CmdMeshToolMesh::activated(int iMsg)
     updateActive();
 
     App::Document* pDoc = getDocument();
-    App::AbstractFeature * pFea = pDoc->getFeature( fName.c_str() );
+    App::DocumentObject * pObj = pDoc->getObject( fName.c_str() );
 
-    if ( pFea && pFea->isValid() )
+    if ( pObj )
     {
       doCommand(Gui,"Gui.hide(\"%s\")", mesh->name.getValue());
       doCommand(Gui,"Gui.hide(\"%s\")", tool->name.getValue());
@@ -551,7 +551,7 @@ void CmdMeshToolMesh::activated(int iMsg)
 bool CmdMeshToolMesh::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 2;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 2;
 }
 
 DEF_STD_CMD_A(CmdMeshEvaluation);
@@ -570,8 +570,8 @@ CmdMeshEvaluation::CmdMeshEvaluation()
 
 void CmdMeshEvaluation::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     MeshGui::DockEvaluateMeshImp::instance()->setMesh( (Mesh::Feature*)(*it) );
     break;
@@ -581,7 +581,7 @@ void CmdMeshEvaluation::activated(int iMsg)
 bool CmdMeshEvaluation::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return (!MeshGui::DockEvaluateMeshImp::hasInstance()) && (getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1);
+  return (!MeshGui::DockEvaluateMeshImp::hasInstance()) && (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1);
 }
 
 DEF_STD_CMD_A(CmdMeshEvaluateSolid);
@@ -600,8 +600,8 @@ CmdMeshEvaluateSolid::CmdMeshEvaluateSolid()
 
 void CmdMeshEvaluateSolid::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     Mesh::Feature* mesh = (Mesh::Feature*)(*it);
     QString msg = QString("The mesh '%1' is ").arg(mesh->name.getValue());
@@ -616,7 +616,7 @@ void CmdMeshEvaluateSolid::activated(int iMsg)
 bool CmdMeshEvaluateSolid::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 DEF_STD_CMD_A(CmdMeshHarmonizeNormals);
@@ -635,14 +635,14 @@ CmdMeshHarmonizeNormals::CmdMeshHarmonizeNormals()
 
 void CmdMeshHarmonizeNormals::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     std::string fName = (*it)->name.getValue();
     fName += "_Harmonize";
-    fName = getUniqueFeatureName(fName.c_str());
+    fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::HarmonizeNormals\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
@@ -654,7 +654,7 @@ void CmdMeshHarmonizeNormals::activated(int iMsg)
 bool CmdMeshHarmonizeNormals::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdMeshFlipNormals);
@@ -673,14 +673,14 @@ CmdMeshFlipNormals::CmdMeshFlipNormals()
 
 void CmdMeshFlipNormals::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     std::string fName = (*it)->name.getValue();
     fName += "_Flip";
-    fName = getUniqueFeatureName(fName.c_str());
+    fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Flip Normals");
-    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FlipNormals\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FlipNormals\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
@@ -692,7 +692,7 @@ void CmdMeshFlipNormals::activated(int iMsg)
 bool CmdMeshFlipNormals::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdMeshFixDegenerations);
@@ -711,14 +711,14 @@ CmdMeshFixDegenerations::CmdMeshFixDegenerations()
 
 void CmdMeshFixDegenerations::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     std::string fName = (*it)->name.getValue();
     fName += "_Fixed";
-    fName = getUniqueFeatureName(fName.c_str());
+    fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FixDegenerations\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
@@ -730,7 +730,7 @@ void CmdMeshFixDegenerations::activated(int iMsg)
 bool CmdMeshFixDegenerations::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdMeshFixDuplicateFaces);
@@ -749,14 +749,14 @@ CmdMeshFixDuplicateFaces::CmdMeshFixDuplicateFaces()
 
 void CmdMeshFixDuplicateFaces::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     std::string fName = (*it)->name.getValue();
     fName += "_Fixed";
-    fName = getUniqueFeatureName(fName.c_str());
+    fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
@@ -768,7 +768,7 @@ void CmdMeshFixDuplicateFaces::activated(int iMsg)
 bool CmdMeshFixDuplicateFaces::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdMeshFixDuplicatePoints);
@@ -787,14 +787,14 @@ CmdMeshFixDuplicatePoints::CmdMeshFixDuplicatePoints()
 
 void CmdMeshFixDuplicatePoints::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     std::string fName = (*it)->name.getValue();
     fName += "_Fixed";
-    fName = getUniqueFeatureName(fName.c_str());
+    fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
@@ -806,7 +806,7 @@ void CmdMeshFixDuplicatePoints::activated(int iMsg)
 bool CmdMeshFixDuplicatePoints::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdMeshFixIndices);
@@ -825,14 +825,14 @@ CmdMeshFixIndices::CmdMeshFixIndices()
 
 void CmdMeshFixIndices::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     std::string fName = (*it)->name.getValue();
     fName += "_Fixed";
-    fName = getUniqueFeatureName(fName.c_str());
+    fName = getUniqueObjectName(fName.c_str());
     openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addFeature(\"Mesh::FixIndices\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
@@ -844,7 +844,7 @@ void CmdMeshFixIndices::activated(int iMsg)
 bool CmdMeshFixIndices::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdMeshBoundingBox);
@@ -863,8 +863,8 @@ CmdMeshBoundingBox::CmdMeshBoundingBox()
 
 void CmdMeshBoundingBox::activated(int iMsg)
 {
-  std::vector<App::AbstractFeature*> meshes = getSelection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     const MeshCore::MeshKernel& rMesh = ((Mesh::Feature*)(*it))->getMesh();
     const Base::BoundBox3D& box = rMesh.GetBoundBox();
@@ -885,7 +885,7 @@ void CmdMeshBoundingBox::activated(int iMsg)
 bool CmdMeshBoundingBox::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
 void CreateMeshCommands(void)

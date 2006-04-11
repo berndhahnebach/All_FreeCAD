@@ -79,10 +79,24 @@ void Property::aboutToSetValue(void)
     father->onBevorChange(this);
 }
 
+Property *Property::Copy(void) const 
+{
+  // have to be reimplemented by a subclass!
+  assert(0);
+  return 0;
+}
+
+void Property::Paste(const Property &from)
+{
+  // have to be reimplemented by a subclass!
+  assert(0);
+}
+
+
 
 //**************************************************************************
 //**************************************************************************
-// Property
+// PropertyLists
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TYPESYSTEM_SOURCE_ABSTRACT(App::PropertyLists , Base::Persistance);

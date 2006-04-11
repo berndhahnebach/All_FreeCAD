@@ -63,6 +63,8 @@
 #include <Base/Sequencer.h>
 #include <App/Application.h>
 #include <App/Document.h>
+#include <App/DocumentObject.h>
+#include <App/Feature.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/Selection.h>
 #include <Gui/Tree.h>
@@ -81,7 +83,7 @@
 
 using namespace PartGui;
 
-PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderFeature)
+PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderDocumentObject)
 
 
 //**************************************************************************
@@ -116,8 +118,10 @@ ViewProviderPart::~ViewProviderPart()
 
 }
 
-void ViewProviderPart::attach(App::AbstractFeature *pcFeat)
+void ViewProviderPart::attach(App::DocumentObject *pcFeat)
 {
+  pcObject = pcFeat;
+
   SoGroup* pcNormalRoot = new SoGroup();
   SoGroup* pcFlatRoot = new SoGroup();
   SoGroup* pcWireframeRoot = new SoGroup();
@@ -145,7 +149,7 @@ void ViewProviderPart::attach(App::AbstractFeature *pcFeat)
   addDisplayMode(pcPointsRoot, "Point");
 
   // call father (set material and feature pointer)
-  ViewProviderFeature::attach(pcFeat);
+  ViewProviderDocumentObject::attach(pcFeat);
 
   // Build up the view represetation from the shape
   updateData();
@@ -162,13 +166,13 @@ void ViewProviderPart::setMode(const char* ModeName)
   else if ( strcmp("Points",ModeName)==0 )
     setDisplayMode("Point");
 
-  ViewProviderFeature::setMode( ModeName );
+  ViewProviderDocumentObject::setMode( ModeName );
 }
 
 std::vector<std::string> ViewProviderPart::getModes(void)
 {
   // get the modes of the father
-  vector<string> StrList = ViewProviderFeature::getModes();
+  vector<string> StrList = ViewProviderDocumentObject::getModes();
 
   // add your own modes
   StrList.push_back("Normal");
@@ -191,10 +195,10 @@ void ViewProviderPart::updateData(void)
 
 
   // if the Feature not valid, do nothing at all
-  if ( pcFeature->getStatus() !=  App::AbstractFeature::Valid )
+  if ( getAsFeature()->getStatus() !=  App::AbstractFeature::Valid )
     return; // feature is invalid
 
-  TopoDS_Shape cShape = (dynamic_cast<Part::Feature*>(pcFeature))->getShape();
+  TopoDS_Shape cShape = (dynamic_cast<Part::Feature*>(getAsFeature()))->getShape();
 
   // clear anchor nodes
   EdgeRoot->removeAllChildren();
@@ -349,8 +353,8 @@ Standard_Boolean ViewProviderPart::computeEdges (SoSeparator* EdgeRoot, const To
     Gui::SoFCSelection* h = new Gui::SoFCSelection();
     SbString name("Edge");
     name += SbString(i);
-    h->featureName = pcFeature->name.getValue();
-    h->documentName = pcFeature->getDocument().getName();
+    h->objectName = pcObject->name.getValue();
+    h->documentName = pcObject->getDocument().getName();
     h->subElementName = name;
 
     SoLineSet * lineset = new SoLineSet;
@@ -390,8 +394,8 @@ Standard_Boolean ViewProviderPart::computeVertices(SoSeparator* VertexRoot, cons
   Gui::SoFCSelection* h = new Gui::SoFCSelection();
   SbString name("Point");
   name += SbString(i);
-  h->featureName = pcFeature->name.getValue();
-  h->documentName = pcFeature->getDocument().getName();
+  h->objectName = pcObject->name.getValue();
+  h->documentName = pcObject->getDocument().getName();
   h->subElementName = name;
 
   SoPointSet * pointset = new SoPointSet;
@@ -470,8 +474,8 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
 		Gui::SoFCSelection* h = new Gui::SoFCSelection();
     SbString name("Face");
     name += SbString(i);
-    h->featureName = pcFeature->name.getValue();
-    h->documentName = pcFeature->getDocument().getName();
+    h->objectName = pcObject->name.getValue();
+    h->documentName = pcObject->getDocument().getName();
     h->subElementName = name;
 
     SoIndexedFaceSet * faceset = new SoIndexedFaceSet;

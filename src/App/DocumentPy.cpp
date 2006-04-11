@@ -105,25 +105,24 @@ PyTypeObject DocumentPy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef DocumentPy::Methods[] = {
 //  {"DocType",      (PyCFunction) sPyDocType,         Py_NEWARGS},
-  PYMETHODEDEF(Undo)
-  PYMETHODEDEF(ClearUndos)
-  PYMETHODEDEF(SaveAs)
-  PYMETHODEDEF(Save)
+//  PYMETHODEDEF(Undo)
+//  PYMETHODEDEF(ClearUndos)
+//  PYMETHODEDEF(SaveAs)
+  PYMETHODEDEF(save)
 //  PYMETHODEDEF(SetModified)
-  PYMETHODEDEF(PurgeModified)
-  PYMETHODEDEF(NewCommand)
-  PYMETHODEDEF(OpenCommand)
-  PYMETHODEDEF(CommitCommand)
-  PYMETHODEDEF(Recompute)
-  PYMETHODEDEF(Dump)
-  PYMETHODEDEF(AddFeature)
-  PYMETHODEDEF(GetActiveFeature)
-  PYMETHODEDEF(GetFeature)
-  PYMETHODEDEF(addFeature)
-  PYMETHODEDEF(activeFeature)
-  PYMETHODEDEF(getFeature)
-  PYMETHODEDEF(removeFeature)
-  PYMETHODEDEF(listFeatures)
+//  PYMETHODEDEF(PurgeModified)
+//  PYMETHODEDEF(NewCommand)
+//  PYMETHODEDEF(OpenCommand)
+//  PYMETHODEDEF(CommitCommand)
+  PYMETHODEDEF(recompute)
+//  PYMETHODEDEF(Dump)
+  PYMETHODEDEF(getActiveObject)
+  PYMETHODEDEF(getObject)
+  PYMETHODEDEF(addObject)
+  PYMETHODEDEF(activeObject)
+  PYMETHODEDEF(getObject)
+  PYMETHODEDEF(removeObject)
+  PYMETHODEDEF(listObjects)
   PYMETHODEDEF(getName)
 
   {NULL, NULL}		/* Sentinel */
@@ -191,9 +190,9 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 //		else if (streq(attr, "StorageFormat"))						
 //			return Py_BuildValue("u", _pcDoc->storageFormat()); 
     else{
-      AbstractFeature *pFeat = _pcDoc->getFeature(attr);
-      if(pFeat)
-        return pFeat->GetPyObject();
+      DocumentObject *pObject = _pcDoc->getObject(attr);
+      if(pObject)
+        return pObject->GetPyObject();
       else
 			 _getattr_up(PyObjectBase); 						
     }
@@ -221,7 +220,6 @@ PyObject *DocumentPy::PyDocType(PyObject *args)
 { 
 	return _pcDoc->GetDocType()->GetPyObject();
 }
- */
 PYFUNCIMP_D(DocumentPy,Dump)
 { 
   PY_TRY {
@@ -263,8 +261,9 @@ PYFUNCIMP_D(DocumentPy,SaveAs)
   	Py_Return; 
   }PY_CATCH;
 } 
+ */
 
-PYFUNCIMP_D(DocumentPy,Save)
+PYFUNCIMP_D(DocumentPy,save)
 { 
   PY_TRY {
 	  _pcDoc->save(); 
@@ -281,7 +280,7 @@ PYFUNCIMP_D(DocumentPy,SetModified)
 	  Py_Return; 
   }PY_CATCH;
 } 
-*/	
+	
 PYFUNCIMP_D(DocumentPy,PurgeModified)
 { 
   PY_TRY {
@@ -321,25 +320,25 @@ PYFUNCIMP_D(DocumentPy,AbortCommand)
 	  Py_Return; 
   }PY_CATCH;
 } 
-	
-PYFUNCIMP_D(DocumentPy,Recompute)
+*/	
+PYFUNCIMP_D(DocumentPy,recompute)
 { 
   PY_TRY {
-	  _pcDoc->Recompute(); 
+	  _pcDoc->recompute(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(DocumentPy,AddFeature)
+PYFUNCIMP_D(DocumentPy,addObject)
 {
 	char *sType,*sName=0;
   if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
     return NULL;                             // NULL triggers exception 
  
-  AbstractFeature *pcFtr;
+  DocumentObject *pcFtr;
   
   PY_TRY {
-	  pcFtr = _pcDoc->addFeature(sType,sName);
+	  pcFtr = _pcDoc->addObject(sType,sName);
   }PY_CATCH;
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
@@ -351,59 +350,38 @@ PYFUNCIMP_D(DocumentPy,AddFeature)
     }
 }
 
-PYFUNCIMP_D(DocumentPy,addFeature)
-{
-  char *sType,*sName=0;
-  if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
-    return NULL;                             // NULL triggers exception
 
-  AbstractFeature *pcFtr;
-
-  PY_TRY {
-    pcFtr = _pcDoc->addFeature(sType,sName);
-  }PY_CATCH;
-
-  if(pcFtr)
-    return pcFtr->GetPyObject();
-  else
-  {
-    char szBuf[200];
-    sprintf(szBuf, "No feature found of type '%s'", sType);
-    Py_Error(PyExc_Exception,szBuf);
-  }
-}
-
-PYFUNCIMP_D(DocumentPy,GetActiveFeature)
+PYFUNCIMP_D(DocumentPy,getActiveObject)
 {
 	
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                       // NULL triggers exception 
 
   PY_TRY {
-	  AbstractFeature *pcFtr = _pcDoc->getActiveFeature();
+	  DocumentObject *pcFtr = _pcDoc->getActiveObject();
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
-		  Py_Error(PyExc_Exception,"No active Feature");
+		  Py_Error(PyExc_Exception,"No active Object");
   } PY_CATCH;
 }
 
-PYFUNCIMP_D(DocumentPy,activeFeature)
+PYFUNCIMP_D(DocumentPy,activeObject)
 {
 	
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                       // NULL triggers exception 
 
   PY_TRY {
-	  AbstractFeature *pcFtr = _pcDoc->getActiveFeature();
+	  DocumentObject *pcFtr = _pcDoc->getActiveObject();
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
-		  Py_Error(PyExc_Exception,"No active Feature");
+		  Py_Error(PyExc_Exception,"No active Object");
   } PY_CATCH;
 }
 
-PYFUNCIMP_D(DocumentPy,GetFeature)
+PYFUNCIMP_D(DocumentPy,getObject)
 {
 	
 	char *sName;
@@ -411,7 +389,7 @@ PYFUNCIMP_D(DocumentPy,GetFeature)
     return NULL;                             // NULL triggers exception 
 
   PY_TRY {
-	  AbstractFeature *pcFtr = _pcDoc->getFeature(sName);
+	  DocumentObject *pcFtr = _pcDoc->getObject(sName);
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
@@ -423,34 +401,17 @@ PYFUNCIMP_D(DocumentPy,GetFeature)
   } PY_CATCH;
 }
 
-PYFUNCIMP_D(DocumentPy,getFeature)
+
+PYFUNCIMP_D(DocumentPy,removeObject)
 {
   char *sName;
   if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C
     return NULL;                             // NULL triggers exception
 
   PY_TRY {
-    AbstractFeature *pcFtr = _pcDoc->getFeature(sName);
-    if(pcFtr)
-      return pcFtr->GetPyObject();
-    else {
-      char szBuf[200];
-      sprintf(szBuf, "No feature found with name '%s'", sName);
-      Py_Error(PyExc_Exception,szBuf);
-    }
-  } PY_CATCH;
-}
-
-PYFUNCIMP_D(DocumentPy,removeFeature)
-{
-  char *sName;
-  if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C
-    return NULL;                             // NULL triggers exception
-
-  PY_TRY {
-    AbstractFeature *pcFtr = _pcDoc->getFeature(sName);
+    DocumentObject *pcFtr = _pcDoc->getObject(sName);
     if(pcFtr) {
-      _pcDoc->remFeature( sName );
+      _pcDoc->remObject( sName );
       Py_Return;
     }
     else {
@@ -461,21 +422,21 @@ PYFUNCIMP_D(DocumentPy,removeFeature)
   } PY_CATCH;
 }
 
-PYFUNCIMP_D(DocumentPy,listFeatures)
+PYFUNCIMP_D(DocumentPy,listObjects)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                       // NULL triggers exception 
 
   PY_TRY {
-    std::map<std::string,Document::FeatEntry> features = _pcDoc->FeatMap;
+    std::map<std::string,DocumentObject*> features = _pcDoc->ObjectMap;
     PyObject *pDict = PyDict_New();
     PyObject *pKey; Base::PyObjectBase* pValue;
     
-    for (std::map<std::string,Document::FeatEntry>::const_iterator It = features.begin();It != features.end();++It)
+    for (std::map<std::string,DocumentObject*>::const_iterator It = features.begin();It != features.end();++It)
     {
       pKey   = PyString_FromString(It->first.c_str());
       // GetPyObject() increments
-      pValue = It->second.F->GetPyObject();
+      pValue = It->second->GetPyObject();
       PyDict_SetItem(pDict, pKey, pValue); 
       // now we can decrement again as PyDict_SetItem also has incremented
       pValue->DecRef();

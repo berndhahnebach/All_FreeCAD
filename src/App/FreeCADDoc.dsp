@@ -57,7 +57,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib xerces-c_2.lib python23.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release/FreeCADApp.dll"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy   /y   /f   Release\FreeCADApp.dll   ..\..\bin\  	xcopy   /y   /f   Release\FreeCADApp.lib   ..\..\lib\ 
+PostBuild_Cmds=xcopy    /y    /f    Release\FreeCADApp.dll    ..\..\bin\   	xcopy    /y    /f    Release\FreeCADApp.lib    ..\..\lib\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
@@ -88,7 +88,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib xerces-c_2D.lib python23_d.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/FreeCADAppD.dll" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy   /y   /f   Debug\FreeCADAppD.dll   ..\..\bin\  	xcopy   /y   /f   Debug\FreeCADAppD.lib   ..\..\lib\ 
+PostBuild_Cmds=xcopy    /y    /f    Debug\FreeCADAppD.dll    ..\..\bin\   	xcopy    /y    /f    Debug\FreeCADAppD.lib    ..\..\lib\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -141,6 +141,76 @@ SOURCE=.\PropertyStandard.cpp
 SOURCE=.\PropertyStandard.h
 # End Source File
 # End Group
+# Begin Group "Document"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\Document.cpp
+# ADD CPP /Yu"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\Document.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DocumentObject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DocumentObject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DocumentObjectPy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DocumentObjectPy.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DocumentPy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DocumentPy.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Feature.cpp
+# ADD CPP /Yu"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\Feature.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePy.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureTest.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureTest.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Transaction.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Transaction.h
+# End Source File
+# End Group
 # Begin Source File
 
 SOURCE=.\Application.cpp
@@ -177,58 +247,8 @@ SOURCE=.\DllMain.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Document.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\Document.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\DocumentObject.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\DocumentObject.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\DocumentPy.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\DocumentPy.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\Doxygen.cpp
 # SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\Feature.cpp
-# ADD CPP /Yu"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\Feature.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeaturePy.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeaturePy.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeatureTest.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\FeatureTest.h
 # End Source File
 # Begin Source File
 
@@ -340,14 +360,6 @@ SOURCE=.\PreCompiled.cpp
 # Begin Source File
 
 SOURCE=.\PreCompiled.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\Transaction.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Transaction.h
 # End Source File
 # Begin Source File
 

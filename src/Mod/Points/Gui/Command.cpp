@@ -79,7 +79,7 @@ void CmdPointsImport::activated(int iMsg)
     fi.setFile(fn);
 
     openCommand("Points Import Create");
-    doCommand(Doc,"f = App.document().AddFeature(\"Points::ImportAscii\",\"%s\")", fi.baseName().latin1());
+    doCommand(Doc,"f = App.document().addObject(\"Points::ImportAscii\",\"%s\")", fi.baseName().latin1());
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
  
@@ -128,12 +128,12 @@ void CmdPointsExport::activated(int iMsg)
     fi.setFile(fn);
   
     openCommand("Export Points");
-    std::vector<App::AbstractFeature*> points = getSelection().getFeaturesOfType(Points::Feature::getClassTypeId());
-    doCommand(Doc,"f = App.document().AddFeature(\"Points::Export\",\"%s\")", fi.baseName().latin1());
+    std::vector<App::DocumentObject*> points = getSelection().getObjectsOfType(Points::Feature::getClassTypeId());
+    doCommand(Doc,"f = App.document().addObject(\"Points::Export\",\"%s\")", fi.baseName().latin1());
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     doCommand(Doc,"l=list()");
     
-    for ( std::vector<App::AbstractFeature*>::const_iterator it = points.begin(); it != points.end(); ++it )
+    for ( std::vector<App::DocumentObject*>::const_iterator it = points.begin(); it != points.end(); ++it )
     {
       doCommand(Doc,"l.append(App.document().GetFeature(\"%s\"))",(*it)->name.getValue());
     }
@@ -147,7 +147,7 @@ void CmdPointsExport::activated(int iMsg)
 
 bool CmdPointsExport::isActive(void)
 {
-  return getSelection().countFeaturesOfType(Points::Feature::getClassTypeId()) > 0;
+  return getSelection().countObjectsOfType(Points::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdPointsTransform);
@@ -172,8 +172,8 @@ void CmdPointsTransform::activated(int iMsg)
   App::Document* pDoc = App::GetApplication().getActiveDocument();
   Gui::Document* pGui = Gui::Application::Instance->activeDocument();
 
-  std::vector<App::AbstractFeature*> points = getSelection().getFeaturesOfType(Points::Feature::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = points.begin(); it != points.end(); ++it )
+  std::vector<App::DocumentObject*> points = getSelection().getObjectsOfType(Points::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = points.begin(); it != points.end(); ++it )
   {
     if ( (*it)->getTypeId().isDerivedFrom(Points::Transform::getClassTypeId()) )
     {
@@ -181,21 +181,21 @@ void CmdPointsTransform::activated(int iMsg)
       f->Touch();
       f->TouchView();
       f->Trnsfrm.setValue( trans*f->Trnsfrm.getValue() );
-      pDoc->Recompute();
+      pDoc->recompute();
     }
     else
     {
-      Points::Transform* f = (Points::Transform*)pDoc->addFeature(Points::Transform::getClassTypeId().getName(),"Transform");
+      Points::Transform* f = (Points::Transform*)pDoc->addObject(Points::Transform::getClassTypeId().getName(),"Transform");
       pGui->setHide( (*it)->name.getValue() );
-      f->Source.setValue(*it);
-      pDoc->Recompute();
+      f->Source.setValue(dynamic_cast<App::AbstractFeature*>(*it));
+      pDoc->recompute();
     }
   }
 }
 
 bool CmdPointsTransform::isActive(void)
 {
-  return getSelection().countFeaturesOfType(Points::Feature::getClassTypeId()) > 0;
+  return getSelection().countObjectsOfType(Points::Feature::getClassTypeId()) > 0;
 }
 
 void CreatePointsCommands(void)

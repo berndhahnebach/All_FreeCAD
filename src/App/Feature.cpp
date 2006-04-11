@@ -53,39 +53,11 @@ PROPERTY_SOURCE_ABSTRACT(App::AbstractFeature, App::DocumentObject)
 //===========================================================================
 
 AbstractFeature::AbstractFeature(void)
-:_nextFreeLabel(1),pcFeaturePy(0)
+:/*_nextFreeLabel(1),*/pcFeaturePy(0)
 {
-  _solidMaterial.ambientColor.set(0.2f,0.2f,0.2f);
-  _solidMaterial.diffuseColor.set(0.8f,0.8f,0.8f);
-  _solidMaterial.specularColor.set(0.0f,0.0f,0.0f);
-  _solidMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
-  _solidMaterial.shininess = 0.2f;
-  _solidMaterial.transparency = 0.0f;
 
-  _lineMaterial.ambientColor.set(0.2f,0.2f,0.2f);
-  _lineMaterial.diffuseColor.set(0.1f,0.1f,0.1f);
-  _lineMaterial.specularColor.set(0.0f,0.0f,0.0f);
-  _lineMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
-  _lineMaterial.shininess = 0.0f;
-  _lineMaterial.transparency = 0.0f;
-  _lineSize = 2.0f;
 
-  _pointMaterial.ambientColor.set(0.9f,0.9f,0.9f);
-  _pointMaterial.diffuseColor.set(0.8f,0.8f,0.8f);;
-  _pointMaterial.specularColor.set(0.0f,0.0f,0.0f);
-  _pointMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
-  _pointMaterial.shininess = 0.3f;
-  _pointMaterial.transparency = 0.0f;
-  _pointSize = 2.0;
-  //_showMode = "Flat";
-
-  touchTime.setToActual();
-  touchViewTime.setToActual();
-
-  ADD_PROPERTY(name,("Unnamed"));
-  ADD_PROPERTY(visibility,(true));
-  ADD_PROPERTY(showMode,("Flat"));
-  ADD_PROPERTY(status,(Valid));
+  ADD_PROPERTY(status,(New));
 }
 
 AbstractFeature::~AbstractFeature(void)
@@ -118,17 +90,8 @@ void AbstractFeature::onChanged(Property* prop)
   touchPropertyTime.setToActual();
 }
 
-void AbstractFeature::Touch(void)
-{
-  touchTime.setToActual();
-}
 
-void AbstractFeature::TouchView(void)
-{
-  touchViewTime.setToActual();
-}
-
-bool AbstractFeature::MustExecute(void)
+bool AbstractFeature::mustExecute(void)
 {
   // If the object's label is modified:
   if (getStatus() != Valid && getStatus()!= Inactive) 
@@ -143,16 +106,12 @@ bool AbstractFeature::MustExecute(void)
 
 void AbstractFeature::recompute(void)
 {
-  _pDoc->RecomputeFeature(this);
-}
-
-void AbstractFeature::removeModifications(void)
-{
+  _pDoc->recomputeFeature(this);
 }
 
 const char* AbstractFeature::getStatusString(void) const
 {
-  switch (/*_eStatus*/status.getValue())
+  switch (status.getValue())
   {
   case Valid:
     return "Valid";

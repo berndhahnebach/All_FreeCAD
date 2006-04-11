@@ -108,7 +108,7 @@ void ImportStep::activated(int iMsg)
 	if (! fn.isEmpty() )
   {
     openCommand("Part ImportSTEP Create");
-	  doCommand(Doc,"f = App.document().AddFeature(\"ImportStep\",\"ImportStep\")");
+	  doCommand(Doc,"f = App.document().addObject(\"ImportStep\",\"ImportStep\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
   
@@ -157,7 +157,7 @@ void ImportIges::activated(int iMsg)
 	if (! fn.isEmpty() )
   {
     openCommand("ImportIGES Create");
-	  doCommand(Doc,"f = App.document().AddFeature(\"ImportIges\",\"ImportIges\")");
+	  doCommand(Doc,"f = App.document().addObject(\"ImportIges\",\"ImportIges\")");
 	  doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
   

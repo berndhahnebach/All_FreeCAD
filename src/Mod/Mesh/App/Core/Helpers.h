@@ -26,9 +26,7 @@
 
 #include "Elements.h"
 
-namespace Base{
-  class Vector3D;
-}
+#include <Base/Vector3D.h>
 using Base::Vector3D;
 
 namespace MeshCore {

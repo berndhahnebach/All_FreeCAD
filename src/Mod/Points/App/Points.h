@@ -130,9 +130,10 @@ public:
   const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
   void transform(const Matrix4D &rclMat);
 
-  void Save (Base::Writer &writer);
+  void Save (Base::Writer &writer) const;
   void Restore(Base::XMLReader &reader);
-  void SaveDocFile (Base::Writer &writer);
+
+  void SaveDocFile (Base::Writer &writer) const;
   void RestoreDocFile(Base::Reader &reader);
 
 private:
@@ -167,9 +168,10 @@ public:
 
   /** @name Save/restore */
   //@{
-  void Save (Base::Writer &writer);
+  void Save (Base::Writer &writer) const;
   void Restore(Base::XMLReader &reader);
-  void SaveDocFile (Base::Writer &writer);
+
+  void SaveDocFile (Base::Writer &writer) const;
   void RestoreDocFile(Base::Reader &reader);
   //@}
 
@@ -357,8 +359,9 @@ public:
   void transform(const Matrix4D &rclMat);
 
   PointKernel &getKernel(void){return _Points;}
+  const PointKernel &getKernel(void) const{return _Points;}
 
-  virtual void Save (Base::Writer &writer);
+  virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
 
 private:

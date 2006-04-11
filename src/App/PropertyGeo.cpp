@@ -73,12 +73,14 @@ PropertyVector::~PropertyVector()
 
 void PropertyVector::setValue(const Base::Vector3D &vec)
 {
+  aboutToSetValue();
 	_cVec=vec;
   hasSetValue();
 }
 
 void PropertyVector::setValue(float x, float y, float z)
 {
+  aboutToSetValue();
 	_cVec=Vector3D(x,y,z);
   hasSetValue();
 }
@@ -130,7 +132,7 @@ void PropertyVector::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (Vector expected)...");
 }
 
-void PropertyVector::Save (Writer &writer)
+void PropertyVector::Save (Writer &writer) const
 {
   writer << writer.ind() << "<PropertyVector valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
 }
@@ -144,6 +146,20 @@ void PropertyVector::Restore(Base::XMLReader &reader)
   _cVec.y = (float)reader.getAttributeAsFloat("valueY");
   _cVec.z = (float)reader.getAttributeAsFloat("valueZ");
 }
+
+
+Property *PropertyVector::Copy(void) const
+{
+  PropertyVector *p= new PropertyVector();
+  p->_cVec = _cVec;
+  return p;
+}
+
+void PropertyVector::Paste(const Property &from)
+{
+  _cVec = dynamic_cast<const PropertyVector&>(from)._cVec;
+}
+
 
 //**************************************************************************
 // PropertyVectorList
@@ -225,7 +241,7 @@ void PropertyVectorList::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (vector expected)...");
 }
 
-void PropertyVectorList::Save (Writer &writer)
+void PropertyVectorList::Save (Writer &writer) const
 {
   if(writer.isForceXML())
   {
@@ -267,7 +283,7 @@ void PropertyVectorList::Restore(Base::XMLReader &reader)
   }
 }
 
-void PropertyVectorList::SaveDocFile (Base::Writer &writer)
+void PropertyVectorList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
@@ -289,6 +305,19 @@ void PropertyVectorList::RestoreDocFile(Base::Reader &reader)
   } catch( const Base::Exception& e) {
     throw e;
   }
+}
+
+
+Property *PropertyVectorList::Copy(void) const
+{
+  PropertyVectorList *p= new PropertyVectorList();
+  p->_lValueList = _lValueList;
+  return p;
+}
+
+void PropertyVectorList::Paste(const Property &from)
+{
+  _lValueList = dynamic_cast<const PropertyVectorList&>(from)._lValueList;
 }
 
 //**************************************************************************
@@ -319,6 +348,7 @@ PropertyMatrix::~PropertyMatrix()
 
 void PropertyMatrix::setValue(const Base::Matrix4D &mat)
 {
+  aboutToSetValue();
 	_cMat=mat;
   hasSetValue();
 }
@@ -344,7 +374,7 @@ void PropertyMatrix::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (Vector expected)...");
 }
 
-void PropertyMatrix::Save (Base::Writer &writer)
+void PropertyMatrix::Save (Base::Writer &writer) const
 {
   writer << writer.ind() << "<PropertyMatrix"; 
   writer << " a11=\"" <<  _cMat[0][0] << "\" a12=\"" <<  _cMat[0][1] << "\" a13=\"" <<  _cMat[0][2] << "\" a14=\"" <<  _cMat[0][3] << "\"";
@@ -379,3 +409,102 @@ void PropertyMatrix::Restore(Base::XMLReader &reader)
   _cMat[3][2] = (float)reader.getAttributeAsFloat("a43");
   _cMat[3][3] = (float)reader.getAttributeAsFloat("a44");
 }
+
+
+Property *PropertyMatrix::Copy(void) const
+{
+  PropertyMatrix *p= new PropertyMatrix();
+  p->_cMat = _cMat;
+  return p;
+}
+
+void PropertyMatrix::Paste(const Property &from)
+{
+  _cMat = dynamic_cast<const PropertyMatrix&>(from)._cMat;
+}
+
+//**************************************************************************
+//**************************************************************************
+// PropertyPlacement
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyPlacement , App::Property);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyPlacement::PropertyPlacement()
+{
+
+}
+
+
+PropertyPlacement::~PropertyPlacement()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+
+void PropertyPlacement::setValue(const Base::Placement &pos)
+{
+  aboutToSetValue();
+	_cPos=pos;
+  hasSetValue();
+}
+
+
+const Base::Placement & PropertyPlacement::getValue(void)const 
+{
+	return _cPos;
+}
+
+PyObject *PropertyPlacement::getPyObject(void)
+{
+  return 0;
+}
+
+void PropertyPlacement::setPyObject(PyObject *value)
+{ 
+  assert(0);
+}
+
+void PropertyPlacement::Save (Base::Writer &writer) const
+{
+  writer << writer.ind() << "<PropertyPlacement"; 
+  writer << " Px=\"" <<  _cPos.getPos().x << "\" Py=\"" <<  _cPos.getPos().y << "\" Pz=\"" <<  _cPos.getPos().z << "\"";
+  writer << " Q0=\"" <<  _cPos.getRotateion()[0] << "\" Q1=\"" <<  _cPos.getRotateion()[1] << "\" Q2=\"" <<  _cPos.getRotateion()[2] << "\" Q3=\"" <<  _cPos.getRotateion()[3] << "\"";
+  writer <<"/>" << endl;
+}
+
+void PropertyPlacement::Restore(Base::XMLReader &reader)
+{
+  // read my Element
+  reader.readElement("PropertyPlacement");
+  // get the value of my Attribute
+  _cPos._Pos.x = reader.getAttributeAsFloat("Px");
+  _cPos._Pos.y = reader.getAttributeAsFloat("Py");
+  _cPos._Pos.z = reader.getAttributeAsFloat("Pz");
+
+  _cPos._q[0] = reader.getAttributeAsFloat("Q0");
+  _cPos._q[1] = reader.getAttributeAsFloat("Q1");
+  _cPos._q[2] = reader.getAttributeAsFloat("Q2");
+  _cPos._q[3] = reader.getAttributeAsFloat("Q3");
+}
+
+
+Property *PropertyPlacement::Copy(void) const
+{
+  PropertyPlacement *p= new PropertyPlacement();
+  p->_cPos = _cPos;
+  return p;
+}
+
+void PropertyPlacement::Paste(const Property &from)
+{
+  _cPos = dynamic_cast<const PropertyPlacement&>(from)._cPos;
+}
+

@@ -53,7 +53,7 @@ namespace PointsGui {
  * a node representing the point data structure.
  * @author Werner Mayer
  */
-class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderFeature
+class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderDocumentObject
 {
   PROPERTY_HEADER(PointsGui::ViewProviderPoints);
 

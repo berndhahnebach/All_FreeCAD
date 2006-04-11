@@ -92,7 +92,7 @@ using MeshCore::MeshEvalSolid;
 using Base::Vector3D;
 
 
-PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderFeature)
+PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderDocumentObject)
 
 ViewProviderExport::ViewProviderExport()
 {
@@ -137,7 +137,7 @@ QPixmap ViewProviderExport::getIcon() const
 
 // ======================================================================
 
-PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderFeature)
+PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderDocumentObject)
 
 
 
@@ -239,8 +239,10 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
 #endif
 }
 
-void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
+void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 {
+  pcObject = pcFeat;
+
   // some helper Separators
   SoGroup* pcFlatRoot = new SoGroup();
 //  SoGroup* pcFlatNormRoot = new SoGroup();
@@ -251,8 +253,8 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
 //  SoGroup* pcColorShadedRoot = new SoGroup();
 
   // only one selection node for the mesh
-  pcHighlight->featureName = pcFeat->name.getValue();
-  pcHighlight->documentName = pcFeat->getDocument().getName();
+  pcHighlight->objectName = getAsFeature()->name.getValue();
+  pcHighlight->documentName = getAsFeature()->getDocument().getName();
   pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcMeshCoord);
   pcHighlight->addChild(pcMeshFaces);
@@ -353,7 +355,7 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
   addDisplayMode(pcHiddenLineRoot, "HiddenLine");
 
   // call father (set material and feature pointer)
-  ViewProviderFeature::attach(pcFeat);
+  ViewProviderDocumentObject::attach(pcFeat);
 
   // create the mesh core nodes
   updateData();
@@ -361,7 +363,7 @@ void ViewProviderMesh::attach(App::AbstractFeature *pcFeat)
 
 void ViewProviderMesh::updateData(void)
 {
-  Mesh::Feature* mesh = dynamic_cast<Mesh::Feature*>(pcFeature);
+  Mesh::Feature* mesh = dynamic_cast<Mesh::Feature*>(pcObject);
   createMesh(mesh->getMesh());
 }
 
@@ -406,13 +408,13 @@ void ViewProviderMesh::setMode(const char* ModeName)
   else if ( strcmp("Hidden line",ModeName)==0 )
     setDisplayMode("HiddenLine");
 
-  ViewProviderFeature::setMode( ModeName );
+  ViewProviderDocumentObject::setMode( ModeName );
 }
 
 std::vector<std::string> ViewProviderMesh::getModes(void)
 {
   // get the modes of the father
-  std::vector<std::string> StrList = ViewProviderFeature::getModes();
+  std::vector<std::string> StrList = ViewProviderDocumentObject::getModes();
 
   // add your own modes
   StrList.push_back("Flat");
@@ -570,12 +572,12 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
       Gui::Command::doCommand(Gui::Command::Gui, "import MeshGui\n");
 
       // create a mesh feature and append it to the document
-      std::string fTool = pDoc->getUniqueFeatureName("Toolmesh");
-      Gui::Command::doCommand(Gui::Command::Doc, "App.document().AddFeature(\"Mesh::Feature\", \"%s\")\n", fTool.c_str());
+      std::string fTool = pDoc->getUniqueObjectName("Toolmesh");
+      Gui::Command::doCommand(Gui::Command::Doc, "App.document().addObject(\"Mesh::Feature\", \"%s\")\n", fTool.c_str());
 
       // replace the mesh from feature
       Gui::Command::doCommand(Gui::Command::Gui, "App.document().%s.solidMaterial.transparency = 0.7\n", fTool.c_str());
-      Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().GetFeature(\"%s\").getMesh()\n", fTool.c_str());
+      Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().getObject(\"%s\").getMesh()\n", fTool.c_str());
       for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
       {
         Gui::Command::doCommand(Gui::Command::Doc, "m.addFacet(%.6f,%.6f,%.6f, %.6f,%.6f,%.6f, %.6f,%.6f,%.6f)",
@@ -584,25 +586,25 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
           itF->_aclPoints[2].x, itF->_aclPoints[2].y, itF->_aclPoints[2].z);
       }
 
-      Gui::Command::doCommand(Gui::Command::Doc, "App.document().GetFeature(\"%s\").setMesh(m)\n", fTool.c_str());
-      Gui::Command::doCommand(Gui::Command::Doc, "App.document().Recompute()\n");
+      Gui::Command::doCommand(Gui::Command::Doc, "App.document().getObject(\"%s\").setMesh(m)\n", fTool.c_str());
+      Gui::Command::doCommand(Gui::Command::Doc, "App.document().recompute()\n");
 
 #ifndef FC_DEBUG
       Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
 #endif
 
       // now intersect with each selected mesh feature
-      std::vector<App::AbstractFeature*> fea = Gui::Selection().getFeaturesOfType(Mesh::Feature::getClassTypeId());
+      std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
 
-      for ( std::vector<App::AbstractFeature*>::iterator it = fea.begin(); it != fea.end(); ++it )
+      for ( std::vector<App::DocumentObject*>::iterator it = fea.begin(); it != fea.end(); ++it )
       {
         // check type
-        std::string fName = pDoc->getUniqueFeatureName("MeshSegment");
+        std::string fName = pDoc->getUniqueObjectName("MeshSegment");
         Feature* meshFeature = dynamic_cast<Feature*>(*it);
         if ( !meshFeature ) continue; // no mesh
 
         Gui::Command::doCommand(Gui::Command::Doc,
-            "f = App.document().AddFeature(\"Mesh::SegmentByMesh\",\"%s\")\n"
+            "f = App.document().addObject(\"Mesh::SegmentByMesh\",\"%s\")\n"
             "f.Source   = App.document().%s\n"
             "f.Tool     = App.document().%s\n"
             "f.Base     = (%.6f,%.6f,%.6f)\n"
@@ -612,7 +614,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
       }
 
       pGDoc->commitCommand();
-      pDoc->Recompute();
+      pDoc->recompute();
 
 #ifndef FC_DEBUG
       // make sure that toolmesh is still hidden

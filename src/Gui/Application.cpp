@@ -688,7 +688,7 @@ void Application::initTypes(void)
   // View Provider
   Gui::ViewProvider        ::init();
   Gui::ViewProviderExtern  ::init();
-  Gui::ViewProviderFeature ::init();
+  Gui::ViewProviderDocumentObject ::init();
 
   // Workbench
   Gui::Workbench           ::init();

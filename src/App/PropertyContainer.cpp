@@ -77,7 +77,7 @@ const PropertyData & PropertyContainer::getPropertyData(void) const{return prope
 
 PropertyData PropertyContainer::propertyData;
 
-void PropertyContainer::Save (Writer &writer)
+void PropertyContainer::Save (Writer &writer) const 
 {
   std::map<std::string,Property*> Map;
   getPropertyMap(Map);

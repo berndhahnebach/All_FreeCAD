@@ -35,6 +35,8 @@
 
 #include "FeaturePy.h"
 #include "Feature.h"
+#include "DocumentObject.h"
+#include "DocumentObjectPy.h"
 #include "Document.h"
 
 #include "PropertyLinks.h"
@@ -103,7 +105,7 @@ void PropertyLink::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (Feature expected)...");
 }
 
-void PropertyLink::Save (Writer &writer)
+void PropertyLink::Save (Writer &writer) const
 {
   writer << "<Link value=\"" <<  _pcLink->name.getValue() <<"\"/>" ;
 }
@@ -116,11 +118,29 @@ void PropertyLink::Restore(Base::XMLReader &reader)
   string name = reader.getAttribute("value");
 
   // Property not in a Feature!
-  assert(getContainer()->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
+  assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-  _pcLink = reinterpret_cast<App::AbstractFeature*>(getContainer())->getDocument().getFeature(name.c_str());
+  DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
+
+  assert(pcObject->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
+
+  _pcLink = dynamic_cast<AbstractFeature*>(pcObject);
 
 }
+
+
+Property *PropertyLink::Copy(void) const
+{
+  PropertyLink *p= new PropertyLink();
+  p->_pcLink = _pcLink;
+  return p;
+}
+
+void PropertyLink::Paste(const Property &from)
+{
+  _pcLink = dynamic_cast<const PropertyLink&>(from)._pcLink;
+}
+
 
 
 TYPESYSTEM_SOURCE(App::PropertyLinkList , App::PropertyLists);
@@ -197,7 +217,7 @@ void PropertyLinkList::setPyObject(PyObject *value)
   }
 }
 
-void PropertyLinkList::Save (Writer &writer)
+void PropertyLinkList::Save (Writer &writer) const
 {
   writer << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
   for(int i = 0;i<getSize(); i++)
@@ -214,15 +234,36 @@ void PropertyLinkList::Restore(Base::XMLReader &reader)
 
   setSize(count);
 
+  assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+
   for(int i = 0;i<count; i++)
   {
     reader.readElement("Link");
     std::string name = reader.getAttribute("value");
 
     // Property not in a Feature!
-    assert(getContainer()->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
-    _lValueList[i] = reinterpret_cast<App::AbstractFeature*>(getContainer())->getDocument().getFeature(name.c_str());
+    //assert(getContainer()->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
+    //_lValueList[i] = reinterpret_cast<App::AbstractFeature*>(getContainer())->getDocument().getObject(name.c_str());
+
+    // Property not in a Feature!
+    DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
+    assert(pcObject->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
+    _lValueList[i] = dynamic_cast<AbstractFeature*>(pcObject);
+
   }
 
   reader.readEndElement("LinkList");
+}
+
+
+Property *PropertyLinkList::Copy(void) const
+{
+  PropertyLinkList *p= new PropertyLinkList();
+  p->_lValueList = _lValueList;
+  return p;
+}
+
+void PropertyLinkList::Paste(const Property &from)
+{
+  _lValueList = dynamic_cast<const PropertyLinkList&>(from)._lValueList;
 }

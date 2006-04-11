@@ -37,6 +37,7 @@ namespace App
 {
   class Document;
   class AbstractFeature;
+  class DocumentObject;
 }
 
 class QAction;
@@ -176,9 +177,10 @@ public:
    */
   App::Document*  getDocument(const char* Name=0);
   /// returns the named feature or the active one from the active document or NULL
-  App::AbstractFeature* getFeature(const char* Name=0);
+  App::AbstractFeature* getFeature(const char* Name);
+  App::DocumentObject*  getObject(const char* Name);
   /// Get unique Feature name from the active document 
-  std::string getUniqueFeatureName(const char *BaseName);
+  std::string getUniqueObjectName(const char *BaseName);
   //@}
 
   /** @name Helper methods for the Undo/Redo and Update handling */
@@ -230,7 +232,7 @@ public:
   /// true when there is a document
   bool hasActiveDocument(void);
   /// true when there is a document and a Feature with Name
-  bool hasFeature(const char* Name);
+  bool hasObject(const char* Name);
   //@}
 
   /** @name checking of internal state */

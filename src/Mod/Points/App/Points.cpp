@@ -176,7 +176,7 @@ void PropertyCurvatureList::transform(const Matrix4D &mat)
   }
 }
 
-void PropertyCurvatureList::Save (Base::Writer &writer)
+void PropertyCurvatureList::Save (Base::Writer &writer) const
 {
   if(writer.isForceXML())
   {
@@ -198,7 +198,7 @@ void PropertyCurvatureList::Restore(Base::XMLReader &reader)
   }
 }
 
-void PropertyCurvatureList::SaveDocFile (Base::Writer &writer)
+void PropertyCurvatureList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
@@ -269,7 +269,7 @@ void PropertyPointKernel::setPyObject(PyObject *value)
 //  }
 }
 
-void PropertyPointKernel::Save (Base::Writer &writer)
+void PropertyPointKernel::Save (Base::Writer &writer) const
 {
   if ( writer.isForceXML() ) {
   } else {
@@ -289,7 +289,7 @@ void PropertyPointKernel::Restore(Base::XMLReader &reader)
   }
 }
 
-void PropertyPointKernel::SaveDocFile (Base::Writer &writer)
+void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
 {
   unsigned long uCtPts = _pcPoints->size();
   writer.write((const char*)&uCtPts, sizeof(unsigned long));
@@ -540,7 +540,7 @@ void PointsWithProperty::transform(const Matrix4D &rclMat)
   }
 }
 
-void PointsWithProperty::Save (Base::Writer &writer)
+void PointsWithProperty::Save (Base::Writer &writer) const
 {
   writer << writer.ind() << "<Points Count=\"" << _Points.size() << "\">" << std::endl;
 

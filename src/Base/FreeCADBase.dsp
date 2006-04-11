@@ -57,7 +57,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib xerces-c_2.lib zlib1.lib python23.lib /nologo /dll /machine:I386 /nodefaultlib
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy  /y  /f  Release\FreeCADBase.dll  ..\..\bin\ 	xcopy  /y  /f  Release\FreeCADBase.lib  ..\..\lib\ 
+PostBuild_Cmds=xcopy   /y   /f   Release\FreeCADBase.dll   ..\..\bin\  	xcopy   /y   /f   Release\FreeCADBase.lib   ..\..\lib\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
@@ -88,7 +88,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib xerces-c_2D.lib zlib1.lib python23_d.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/FreeCADBaseD.dll" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy  /Y  /f   Debug\FreeCADBaseD.dll  ..\..\bin\ 	xcopy  /Y  /f  Debug\FreeCADBaseD.lib  ..\..\lib\ 
+PostBuild_Cmds=xcopy   /Y   /f    Debug\FreeCADBaseD.dll   ..\..\bin\  	xcopy   /Y   /f   Debug\FreeCADBaseD.lib   ..\..\lib\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -333,6 +333,15 @@ SOURCE=.\Base.h
 # Begin Source File
 
 SOURCE=.\BoundBox.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -435,6 +444,13 @@ SOURCE=.\Interpreter.h
 # Begin Source File
 
 SOURCE=.\Matrix.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -463,6 +479,14 @@ SOURCE=.\Persistance.cpp
 # Begin Source File
 
 SOURCE=.\Persistance.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Placement.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Placement.h
 # End Source File
 # Begin Source File
 
@@ -557,6 +581,15 @@ SOURCE=.\Type.h
 # Begin Source File
 
 SOURCE=.\Vector3D.cpp
+
+!IF  "$(CFG)" == "FreeCADBase - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

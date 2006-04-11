@@ -35,7 +35,7 @@ namespace MeshGui {
  * In subclasses defects like non-manifolds, wrong oriented facets, degenerated facets, duplicates, .... are displayed.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshDefects : public Gui::ViewProviderFeature
+class GuiMeshExport ViewProviderMeshDefects : public Gui::ViewProviderDocumentObject
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMeshDefects);
 

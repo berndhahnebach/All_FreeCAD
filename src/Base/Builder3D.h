@@ -30,10 +30,12 @@
 # include <string>
 # include <sstream>
 #endif
+#include "Vector3D.h"
 
 namespace Base
 {
-  class Vector3D;
+//  typedef Vector3D;
+//  class Vector3D;
 
 /** A Builder class for 3D representations on App level
  * On application level is nothing known of the visual representation of data.

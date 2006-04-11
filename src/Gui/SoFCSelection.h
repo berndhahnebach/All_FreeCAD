@@ -78,7 +78,7 @@ public:
   SoSFEnum selected;
 
   SoSFString documentName;
-  SoSFString featureName;
+  SoSFString objectName;
   SoSFString subElementName;
 
 

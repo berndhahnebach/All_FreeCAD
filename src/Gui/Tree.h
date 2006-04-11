@@ -43,7 +43,7 @@ using namespace std;
 namespace Gui {
 class Document;
 class TreeView;
-class ViewProviderFeature;
+class ViewProviderDocumentObject;
 
 struct GUIDDefs {
     char  *Guid;
@@ -56,11 +56,11 @@ struct GUIDDefs {
  *  and the functions of the Document.
  *  \author Jürgen Riegel
  */
-class FeatItem : public QListViewItem
+class ObjectItem : public QListViewItem
 {
 public:
   /// Constructor
-  FeatItem( QListViewItem* parent,Gui::ViewProviderFeature* pcViewProvider);
+  ObjectItem( QListViewItem* parent,Gui::ViewProviderDocumentObject* pcViewProvider);
 
   /// This is the class Id to distinguish from QListViewItem itself or from other QListViewItem-subclasses. 
   int rtti () const { return 3100; }
@@ -100,7 +100,7 @@ protected:
   int FeatStatus;
 
 
-  Gui::ViewProviderFeature*  _pcViewProvider;
+  Gui::ViewProviderDocumentObject*  _pcViewProvider;
 };
 
 
@@ -132,11 +132,11 @@ public:
   /** Adds a view provider to the document item and returns true.
    * If this view provider is already added nothing happens and false is returned.
    */
-  bool addViewProviderFeature(ViewProviderFeature*);
+  bool addViewProviderDocumentObject(ViewProviderDocumentObject*);
   /** Removes a view provider from the document item and returns true.
    * If this view provider is not added nothing happens and false is returned.
    */
-  bool removeViewProviderFeature(ViewProviderFeature*);
+  bool removeViewProviderDocumentObject(ViewProviderDocumentObject*);
 
   void highlightFeature(const char*, bool);
 
@@ -167,7 +167,7 @@ protected:
 
 
   Gui::Document*  _pcDocument;
-  std::map<std::string,FeatItem*> FeatMap;
+  std::map<std::string,ObjectItem*> FeatMap;
 
 private:
   QListViewItem* _lastFeaItem;
@@ -200,7 +200,7 @@ public:
 
   //void InitCascade(Handle(TDocStd_Document) hDoc);
   friend class DocItem;
-  friend class FeatItem;
+  friend class ObjectItem;
 
   /// is called when the above function is called to handle document change stuff
   virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument);

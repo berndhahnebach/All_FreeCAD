@@ -49,23 +49,10 @@ public:
 	/// Constructor
 	RayFeature(void);
 
-	/** Init the Label the Feature is attached to
-	 *  This methode will be called when the Feature is mounted 
-	 *  to a Label in the document. It need to be overwriten in 
-	 *  every Feature
-	 */
-	virtual void InitLabel(const TDF_Label &rcLabel)=0;
 
 
 	/** @name methods used for recalculation (update) */
 	//@{
-	/** MustExecute
-	 *  We call this method to check if the object was modified to
-	 *  be invoked. If the object label or an argument is modified,
-	 *  we must recompute the object - to call the method Execute().
-	 */
-//	virtual bool MustExecute(const TFunction_Logbook& log);
-
 	/** Validate
 	 *  We compute the object and topologically name it.
 	 *  If during the execution we found something wrong,
@@ -76,10 +63,6 @@ public:
 	 */
 	virtual Standard_Integer Execute(void)=0;
 
-	/** Validate
-	 * Validation of the object label, its arguments and its results.
-	 */
-	virtual void Validate(void)=0;
 	//@}
 
 

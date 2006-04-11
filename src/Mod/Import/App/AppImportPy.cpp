@@ -69,7 +69,7 @@ open(PyObject *self, PyObject *args)
     App::AbstractFeature *pcFeature = pcDoc->addFeature("ImportStep","Step Import");
     pcFeature->setPropertyString (Name,"FileName");
     pcFeature->TouchProperty("FileName");
-    pcDoc->Recompute();
+    pcDoc->recompute();
 
   }else if(cEnding == "igs" || cEnding == "iges")
   {
@@ -79,7 +79,7 @@ open(PyObject *self, PyObject *args)
 assert(0);
 //    pcFeature->GetProperty("FileName").Set(Name);
     pcFeature->TouchProperty("FileName");
-    pcDoc->Recompute();
+    pcDoc->recompute();
 
   }else
 

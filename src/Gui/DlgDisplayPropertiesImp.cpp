@@ -59,7 +59,7 @@ using namespace std;
  */
 DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
   : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),
-    Sel(Gui::Selection().getFeaturesOfType(App::AbstractFeature::getClassTypeId()))
+    Sel(Gui::Selection().getObjectsOfType(App::DocumentObject::getClassTypeId()))
 {
 
   ViewProvider *pcProv;
@@ -74,7 +74,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   bool bSameColor= true;
   App::Color cColor;
 
-  for(vector<App::AbstractFeature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  for(vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
     pcProv = pcCmd->getActiveGuiDocument()->getViewProvider(*It);
 
@@ -161,7 +161,7 @@ void DlgDisplayPropertiesImp::onChangeMode(const QString&s)
   Base::Console().Log("Mode = %s\n",s.latin1());
 //  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
 //    (*It)->setMode(s.latin1()); 
-  for(std::vector<App::AbstractFeature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
     ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
     (*It)->setShowMode( s.latin1() );
@@ -184,7 +184,7 @@ void DlgDisplayPropertiesImp::onOK(void)
 
   if(bModeChange)
   {
-    for(std::vector<App::AbstractFeature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
     {
       if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
       {
@@ -195,7 +195,7 @@ void DlgDisplayPropertiesImp::onOK(void)
 
   if(bTranspChange)
   {
-    for(std::vector<App::AbstractFeature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
     {
       if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
       {
@@ -206,7 +206,7 @@ void DlgDisplayPropertiesImp::onOK(void)
 
   if(bColorChange)
   {
-    for(std::vector<App::AbstractFeature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
     {
       if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
       {
@@ -224,7 +224,7 @@ void DlgDisplayPropertiesImp::onColorChange()
   bColorChange = true;
   cColorChange = App::Color(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
 
-  for(std::vector<App::AbstractFeature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
     ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
     pcProv->setColor(cColorChange);
@@ -237,7 +237,7 @@ void DlgDisplayPropertiesImp::onColorChange()
 
 void DlgDisplayPropertiesImp::onCancel()
 {
-  for(std::vector<App::AbstractFeature*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
     ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
     if (pcProv)

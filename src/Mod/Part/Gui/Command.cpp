@@ -177,7 +177,7 @@ void CmdPartBox::activated(int iMsg)
   if ( cDlg.exec()== QDialog::Accepted )
   {
     openCommand("Part Box Create");
-    doCommand(Doc,"f = App.document().AddFeature(\"Part::Box\",\"PartBox\")");
+    doCommand(Doc,"f = App.document().addObject(\"Part::Box\",\"PartBox\")");
     doCommand(Doc,"f.x = %f",cDlg.XLineEdit->text().toFloat());
     doCommand(Doc,"f.y = %f",cDlg.YLineEdit->text().toFloat());
     doCommand(Doc,"f.z = %f",cDlg.ZLineEdit->text().toFloat());
@@ -221,7 +221,7 @@ void CmdPartBox2::activated(int iMsg)
 {
   openCommand("PartBox Create");
 
-  doCommand(Doc,"f = App.document().AddFeature(\"Part::Box\",\"PartBox\")");
+  doCommand(Doc,"f = App.document().addObject(\"Part::Box\",\"PartBox\")");
   doCommand(Doc,"f.x = 0.0");
   doCommand(Doc,"f.y = 0.0");
   doCommand(Doc,"f.z = 0.0");
@@ -265,7 +265,7 @@ void CmdPartBox3::activated(int iMsg)
 {
   openCommand("PartBox Create");
 
-  doCommand(Doc,"f = App.document().AddFeature(\"Part::Box\",\"PartBox\")");
+  doCommand(Doc,"f = App.document().addObject(\"Part::Box\",\"PartBox\")");
   doCommand(Doc,"f.x = 50.0");
   doCommand(Doc,"f.y = 50.0");
   doCommand(Doc,"f.z = 50.0");
@@ -307,19 +307,19 @@ CmdPartCut::CmdPartCut()
 
 void CmdPartCut::activated(int iMsg)
 {
-  unsigned int n = getSelection().countFeaturesOfType(Part::Feature::getClassTypeId());
+  unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
   if(n != 2)
   {
     Base::Console().Warning("Please, select two shapes (Part Feature)");
     return;
   }
 
-  string FeatName = getUniqueFeatureName("Cut");
+  string FeatName = getUniqueObjectName("Cut");
 
   vector<Gui::SelectionSingleton::SelObj> Sel = getSelection().getSelection();
 
   openCommand("Part Cut");
-  doCommand(Doc,"App.document().AddFeature(\"Part::Cut\",\"%s\")",FeatName.c_str());
+  doCommand(Doc,"App.document().addObject(\"Part::Cut\",\"%s\")",FeatName.c_str());
   doCommand(Doc,"App.document().%s.Base = App.document().%s",FeatName.c_str(),Sel[0].FeatName);
   doCommand(Doc,"App.document().%s.Tool = App.document().%s",FeatName.c_str(),Sel[1].FeatName);
   doCommand(Gui,"Gui.document().hide(\"%s\")",Sel[0].FeatName);
@@ -330,7 +330,7 @@ void CmdPartCut::activated(int iMsg)
 
 bool CmdPartCut::isActive(void)
 {
-  return getSelection().countFeaturesOfType(Part::Feature::getClassTypeId())==2;
+  return getSelection().countObjectsOfType(Part::Feature::getClassTypeId())==2;
 }
 
 //===========================================================================
@@ -416,7 +416,7 @@ void CmdPartImportCurveNet::activated(int iMsg)
   {
     QFileInfo fi; fi.setFile(fn);
     openCommand("Part Import Curve Net");
-    doCommand(Doc,"f = App.document().AddFeature(\"Part::CurveNet\",\"%s\")", fi.baseName().latin1());
+    doCommand(Doc,"f = App.document().addObject(\"Part::CurveNet\",\"%s\")", fi.baseName().latin1());
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     commitCommand();
     updateActive();

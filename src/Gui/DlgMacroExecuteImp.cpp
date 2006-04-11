@@ -127,7 +127,7 @@ void DlgMacroExecuteImp::onExecute()
     Application::Instance->macroManager()->run(Gui::MacroManager::File,( fi.filePath() ).latin1());
     // after macro run recalculate the document
     if ( Application::Instance->activeDocument() )
-      Application::Instance->activeDocument()->getDocument()->Recompute();
+      Application::Instance->activeDocument()->getDocument()->recompute();
   }
 }
 

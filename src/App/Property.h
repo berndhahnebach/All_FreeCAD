@@ -72,7 +72,13 @@ public:
 
   /// get a pointer to the PropertyContainer derived class the property belonging to
   PropertyContainer *getContainer(void) const {return father;}
-  
+
+  /// returns a new copy of the property (mainly for Undo/Redo and transactions)
+  virtual Property *Copy(void) const;
+  /// paste the value from the property (mainly for Undo/Redo and transactions)
+  virtual void Paste(const Property &from);
+
+
   friend class PropertyContainer;
 
 protected:

@@ -86,25 +86,25 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-      Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addFeature("Part::ImportStep",file.fileNamePure().c_str());
+      Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addObject("Part::ImportStep",file.fileNamePure().c_str());
       pcFeature->FileName.setValue(Name);
-      pcDoc->Recompute();
+      pcDoc->recompute();
 
     }else if(file.hasExtension("igs") || file.hasExtension("iges"))
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addFeature("Part::ImportIges",file.fileNamePure().c_str());
+      Part::ImportIges *pcFeature = (Part::ImportIges*) pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
       pcFeature->FileName.setValue(Name);
-      pcDoc->Recompute();
+      pcDoc->recompute();
 
     }else if(file.hasExtension("brp") || file.hasExtension("brep"))
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument(file.fileNamePure().c_str());
-      Part::ImportBrep *pcFeature = (Part::ImportBrep *)pcDoc->addFeature("Part::ImportBrep",file.fileNamePure().c_str());
+      Part::ImportBrep *pcFeature = (Part::ImportBrep *)pcDoc->addObject("Part::ImportBrep",file.fileNamePure().c_str());
       pcFeature->FileName.setValue(Name);
-      pcDoc->Recompute();
+      pcDoc->recompute();
 
     }
     else
@@ -148,27 +148,27 @@ insert(PyObject *self, PyObject *args)
         Py_Error(PyExc_Exception,szBuf);
       }
 
-      Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addFeature("Part::ImportStep",file.fileNamePure().c_str());
+      Part::ImportStep *pcFeature = (Part::ImportStep *)pcDoc->addObject("Part::ImportStep",file.fileNamePure().c_str());
       pcFeature->FileName.setValue(Name);
-      pcDoc->Recompute();
+      pcDoc->recompute();
 
     }else if(file.hasExtension("igs") || file.hasExtension("iges"))
     {
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      Part::ImportIges *pcFeature = (Part::ImportIges *)pcDoc->addFeature("Part::ImportIges",file.fileNamePure().c_str());
+      Part::ImportIges *pcFeature = (Part::ImportIges *)pcDoc->addObject("Part::ImportIges",file.fileNamePure().c_str());
       pcFeature->FileName.setValue(Name);
-      pcDoc->Recompute();
+      pcDoc->recompute();
 
     }else if(file.hasExtension("brp") || file.hasExtension("brep"))
     {
       App::Document *pcDoc = App::GetApplication().getActiveDocument();
       if (!pcDoc)
         throw "Import called without a active document??";
-      Part::ImportBrep *pcFeature = (Part::ImportBrep *) pcDoc->addFeature("Part::ImportBrep",file.fileNamePure().c_str());
+      Part::ImportBrep *pcFeature = (Part::ImportBrep *) pcDoc->addObject("Part::ImportBrep",file.fileNamePure().c_str());
       pcFeature->FileName.setValue(Name);
-      pcDoc->Recompute();
+      pcDoc->recompute();
     }
     else
     {

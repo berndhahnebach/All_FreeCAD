@@ -35,7 +35,7 @@ class SbVec3f;
 namespace PartGui {
 
 
-class AppPartGuiExport ViewProviderPart:public Gui::ViewProviderFeature
+class AppPartGuiExport ViewProviderPart:public Gui::ViewProviderDocumentObject
 {
   PROPERTY_HEADER(PartGui::ViewProviderPart);
 
@@ -46,7 +46,7 @@ public:
   virtual ~ViewProviderPart();
 
 
-  virtual void attach(App::AbstractFeature *);
+  virtual void attach(App::DocumentObject *);
   virtual void setMode(const char* ModeName);
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);

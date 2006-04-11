@@ -34,20 +34,16 @@
 #include <Base/Factory.h>
 #include <Base/PyExport.h>
 #include <Base/TimeInfo.h>
+#include <Base/Vector3D.h>
 
 #include <App/DocumentObject.h>
 #include <App/Material.h>
 #include <App/PropertyStandard.h>
 
-class TFunction_Logbook;
-class PyObjectBase;
-class TopoDS_Shape;
-class TDF_Label;
-//class Standard_Integer;
 
 namespace Base
 {
-  class Vector3D;
+//  class Vector3D;
   class Matrix4D;
 }
 
@@ -69,13 +65,10 @@ class AppExport AbstractFeature: public App::DocumentObject
 {
     PROPERTY_HEADER(App::Feature);
 
-protected:
-  PropertyString showMode;
+public:
+
   PropertyInteger status;
 
-public:
-  PropertyString name;
-  PropertyBool visibility;
 
 	/// Constructor
 	AbstractFeature(void);
@@ -97,8 +90,6 @@ public:
 	 */
 	virtual int execute(void)=0;
 
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void){return "";}
 
   //@}
 
@@ -128,61 +119,15 @@ public:
   bool isValid(void){return /*_eStatus == Valid;*/ status.getValue() == Valid; }
   /// Recompute only this feature and makes it valid again
   void recompute(void);
+	/** MustExecute
+	 *  We call this method to check if the object was modified to
+	 *  be invoked. If the object label or an argument is modified.
+	 *  If we must recompute the object - to call the method Execute().
+	 */
+	virtual bool mustExecute(void);
   //@}
 
 
-  /** Set the property touched -> changed, cause recomputation in Update()
-	 *  
-	 */
-	//void TouchProperty(const char *Name);
-  /// set this feature touched (cause recomputation on depndend features)
-	void Touch(void);
-  /// set the view parameter of this feature touched (cause recomputation of representation)
-	void TouchView(void);
-  /// get the touch time
-  Base::TimeInfo getTouchTime(void){return touchTime;}
-  /// get the view touch time
-  Base::TimeInfo getTouchViewTime(void){return touchViewTime;}
-	//@}
-
-
-	/** @name methods to change the apperance of the shape
-    */
-	//@{
-  /// set the solid material
-  void setSolidMaterial(const Material &Mat) {_solidMaterial = Mat;}
-  /// get the solid material
-  const Material &getSolidMaterial(void) const {return _solidMaterial;}
-  /// set line size
-  virtual void setTransparency(float trans) {_solidMaterial.transparency = trans;}
-  /// get line Size
-  virtual float getTransparency(void) const {return _solidMaterial.transparency;}
-  /// set color
-  virtual void setColor(const Color &c) {_solidMaterial.diffuseColor = c;}
-  /// get color
-  virtual const Color &getColor(void) const {return _solidMaterial.diffuseColor;}
-  /// set the line material
-  void setLineMaterial(const Material &Mat) {_lineMaterial = Mat;}
-  /// get the line material
-  const Material &getLineMaterial(void) const {return _lineMaterial;}
-  /// set the line material
-  void setPointMaterial(const Material &Mat) {_pointMaterial = Mat;}
-  /// get the line material
-  const Material &getPointMaterial(void) const {return _pointMaterial;}
-  /// set point size
-  void setPointSize(float size) {_pointSize = size;}
-  /// get point Size
-  float getPointSize(void) const {return _pointSize;}
-  /// set line size
-  void setLineSize(float size) {_lineSize = size;}
-  /// get line Size
-  float getLineSize(void) const {return _lineSize;}
-  /// get show mode
-  const char* getShowMode(void) const {/*return _showMode.c_str();*/return showMode.getValue();}
-  /// get show mode
-  void setShowMode(const char* Mode) {/*_showMode = Mode;*/showMode.setValue(Mode);}
-
-	//@}
 
 
 	virtual Base::PyObjectBase *GetPyObject(void);
@@ -190,55 +135,12 @@ public:
   friend class FeaturePy;
   friend class Document;
 
-	/** MustExecute
-	 *  We call this method to check if the object was modified to
-	 *  be invoked. If the object label or an argument is modified.
-	 *  If we must recompute the object - to call the method Execute().
-	 */
-	virtual bool MustExecute(void);
 
 protected:
-	/** @name methods used for recalculation and document handling
-    *  this methods are only called/used by the document
-    */
-	//@{
 
-  // remove all modifikations from the property labels
-  void removeModifications(void);
-
-  /// Get called by the framework when the label is attached to the document
-	void AttachLabel(const TDF_Label &rcLabel,Document*);
-
-	//@}
-
-	/** @name Material
-    */
-	//@{
-  Material    _solidMaterial;
-  Material    _lineMaterial;
-  float       _lineSize;
-  Material    _pointMaterial;
-  float       _pointSize;
-  //std::string _showMode;
-	//@}
-
-  Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;
-
-	//TDF_Label            _cFeatureLabel;
-	int                  _nextFreeLabel;
-
-  struct FeatEntry {
-    int Label;
-    Base::TimeInfo T;
-  };
-  
-  std::map<std::string,FeatEntry> _PropertiesMap;
 
   FeaturePy* pcFeaturePy;
 
-  //std::string _Name;
-
-  //Status _eStatus;
   std::string _cErrorMessage;
 
 };

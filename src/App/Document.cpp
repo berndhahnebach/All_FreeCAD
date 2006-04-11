@@ -47,7 +47,7 @@
 #include <Base/zipios/meta-iostreams.h>
 
 #include "Application.h"
-#include "Transaction.h"
+#include "Transactions.h"
 
 using Base::Console;
 using Base::streq;
@@ -124,7 +124,7 @@ const Transaction *Document::getTransaction(int pos) const
 // constructor
 //--------------------------------------------------------------------------
 Document::Document(void)
-: iTransactionCount(0),activTransaction(0),pActiveFeature(0),_pcDocPy(0)
+: pActiveObject(0),iTransactionCount(0),activTransaction(0),_pcDocPy(0)
 {
   // Remark: In a constructor we should never increment a Python object as we cannot be sure
   // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't
@@ -145,14 +145,14 @@ Document::~Document()
 {
   Console().Log("-App::Document: %s %p\n",getName(), this);
 
-  std::map<std::string,FeatEntry>::iterator it;
+  std::map<std::string,DocumentObject*>::iterator it;
 
 
   Console().Log("-Delete Features of %s \n",getName());
 
-  for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
+  for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
   {
-    delete(it->second.F);
+    delete(it->second);
   }
 
   _pcDocPy->DecRef(); // decrement by one
@@ -167,44 +167,44 @@ Document::~Document()
 //--------------------------------------------------------------------------
 
 
-void Document::Save (Writer &writer)
+void Document::Save (Writer &writer) const
 {
   writer << "<?xml version='1.0' encoding='utf-8'?>" << endl
          << "<!--" << endl
          << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
          << "-->" << endl;
 
-  writer << "<Document SchemaVersion=\"2\">" << endl;
+  writer << "<Document SchemaVersion=\"3\">" << endl;
 
   PropertyContainer::Save(writer);
 
   // writing the features types
-  writer << writer.ind() << "<Features Count=\"" << FeatMap.size() <<"\">" << endl;
+  writer << writer.ind() << "<Objects Count=\"" << ObjectMap.size() <<"\">" << endl;
 
-  std::map<std::string,FeatEntry>::iterator it;
-  for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
+  std::map<std::string,DocumentObject*>::const_iterator it;
+  for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
   {
-    AbstractFeature* feat = it->second.F;
-    writer << writer.ind() << "<Feature " 
-                             << "type=\"" << feat->getTypeId().getName() << "\" "
-                             << "name=\"" << feat->name.getValue()       << "\" "
+    DocumentObject* obj = it->second;
+    writer << writer.ind() << "<Object " 
+                             << "type=\"" << obj->getTypeId().getName() << "\" "
+                             << "name=\"" << obj->name.getValue()       << "\" "
                            << "/>" << endl;    
   }
 
-  writer << writer.ind() << "</Features>" << endl;
+  writer << writer.ind() << "</Objects>" << endl;
   
   // writing the features itself
-  writer << writer.ind() << "<FeatureData Count=\"" << FeatMap.size() <<"\">" << endl;
+  writer << writer.ind() << "<FeatureData Count=\"" << ObjectMap.size() <<"\">" << endl;
 
-  for(it = FeatMap.begin(); it != FeatMap.end(); ++it)
+  for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
   {
-    AbstractFeature* feat = it->second.F;
-    writer << writer.ind() << "<Feature name=\"" << feat->name.getValue() << "\">" << endl;   
-    feat->Save(writer);
-    writer << writer.ind() << "</Feature>" << endl;
+    DocumentObject* obj = it->second;
+    writer << writer.ind() << "<Object name=\"" << obj->name.getValue() << "\">" << endl;   
+    obj->Save(writer);
+    writer << writer.ind() << "</Object>" << endl;
   }
 
-  writer << writer.ind() << "</FeatureData>" << endl;
+  writer << writer.ind() << "</ObjectData>" << endl;
   writer << "</Document>" << endl;
 
 }
@@ -219,46 +219,34 @@ void Document::Restore(Base::XMLReader &reader)
   PropertyContainer::Restore(reader);
 
   // read the feature types
-  reader.readElement("Features");
+  reader.readElement("Objects");
   Cnt = reader.getAttributeAsInteger("Count");
   for(i=0 ;i<Cnt ;i++)
   {
-    reader.readElement("Feature");
+    reader.readElement("Object");
     string type = reader.getAttribute("type");
     string name = reader.getAttribute("name");
 
-    addFeature(type.c_str(),name.c_str());
+    addObject(type.c_str(),name.c_str());
   }
-  reader.readEndElement("Features");
+  reader.readEndElement("Objects");
 
   // read the features itself
-  reader.readElement("FeatureData");
+  reader.readElement("ObjectData");
   Cnt = reader.getAttributeAsInteger("Count");
   for(i=0 ;i<Cnt ;i++)
   {
-    reader.readElement("Feature");
+    reader.readElement("Object");
     string name = reader.getAttribute("name");
-    AbstractFeature* pFeat = getFeature(name.c_str());
-    if(pFeat) // check if this feature has been registered
+    DocumentObject* pObj = getObject(name.c_str());
+    if(pObj) // check if this feature has been registered
     {
       //FIXME: We must save/restore that state of a feature
-      pFeat->Restore(reader);
-/*
-      // restore the attached files to this feature
-      reader.readElement("Files");
-      int ctFiles = reader.getAttributeAsInteger("Count");
-      for ( int iFiles = 0; iFiles < ctFiles; ++iFiles )
-      {
-        reader.readElement("File");
-        string fn = reader.getAttribute("name");
-        reinterpret_cast<Base::XMLZipReader&>(reader).addFile(fn.c_str(), name.c_str());
-      }
-      reader.readEndElement("Files");
-      */
+      pObj->Restore(reader);
     }
-    reader.readEndElement("Feature");
+    reader.readEndElement("Object");
   }
-  reader.readEndElement("FeatureData");
+  reader.readEndElement("ObjectData");
 
   reader.readEndElement("Document");
 }
@@ -330,11 +318,15 @@ bool Document::open (void)
 
     // notify all as new
     DocChanges DocChange;
-    for(std::map<std::string,FeatEntry>::iterator It = FeatMap.begin();It != FeatMap.end();++It) {
-      DocChange.NewFeatures.insert(It->second.F);
-      It->second.F->touchTime.setToActual();
-      if ( It->second.F->status.getValue() == AbstractFeature::New )
-        It->second.F->status.setValue( AbstractFeature::Valid );
+    for(std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
+      DocChange.NewObjects.insert(It->second);
+      if(It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) )
+      {
+        AbstractFeature* feat = dynamic_cast<AbstractFeature*>(It->second);
+        feat->touchTime.setToActual();
+        if ( feat->status.getValue() == AbstractFeature::New )
+          feat->status.setValue( AbstractFeature::Valid );
+      }
     }
 
     Notify(DocChange);
@@ -450,45 +442,50 @@ int Document::GetAvailableRedos() const
 
 
 /// Recompute if the document was  not valid and propagate the reccorded modification.
-void Document::Recompute()
+void Document::recompute()
 {  
   int iSentinel = 20;
   bool goOn;
   DocChanges DocChange;
   DocChange.Why = DocChanges::Recompute;
 
-  std::set<AbstractFeature*>::iterator i;
+  std::set<DocumentObject*>::iterator i;
+  std::set<AbstractFeature*>::iterator l;
   std::set<AbstractFeature*> tempErr;
   
 //  TDF_MapIteratorOfLabelMap It;
-  Base::Console().Log("Solv: Start recomputation of document: \"%s\"\n",getName());
+  Base::Console().Log("Solv: Start recomputation of document: \"%s\"\n",Name.getValue());
 
   do{
     goOn = false;
     tempErr = DocChange.ErrorFeatures;
 
-    std::map<std::string,FeatEntry>::iterator It;
+    std::map<std::string,DocumentObject*>::iterator It;
 
-    for(It = FeatMap.begin();It != FeatMap.end();++It)
+    for(It = ObjectMap.begin();It != ObjectMap.end();++It)
     {
-      // map the new features
-      if (It->second.F->getStatus() == AbstractFeature::New)
-        DocChange.NewFeatures.insert(It->second.F);
+      if( ! (It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) ) )
+        continue;
+      AbstractFeature *feat = dynamic_cast<AbstractFeature *>(It->second);
 
-		  if (It->second.F->MustExecute())
+      // map the new features
+      if (feat->getStatus() == AbstractFeature::New)
+        DocChange.NewObjects.insert(feat);
+
+		  if (feat->mustExecute())
 		  {
         // if a feature change a other (earlier) Feature could be impacted, so go on ...
         goOn = true;
 
-        _RecomputeFeature(It->second.F);
+        _recomputeFeature(feat);
 
-        if(It->second.F->getStatus() == AbstractFeature::Error)
-          DocChange.ErrorFeatures.insert(It->second.F);
+        if(feat->getStatus() == AbstractFeature::Error)
+          DocChange.ErrorFeatures.insert(feat);
         
-        if(It->second.F->getStatus() == AbstractFeature::Valid)
+        if(feat->getStatus() == AbstractFeature::Valid)
         {
-          DocChange.UpdatedFeatures.insert(It->second.F);
-          DocChange.ErrorFeatures.erase(It->second.F);
+          DocChange.UpdatedObjects.insert(feat);
+          DocChange.ErrorFeatures.erase(feat);
         }
 		  }
     }
@@ -498,46 +495,44 @@ void Document::Recompute()
   }while(iSentinel > 0 && goOn && tempErr != DocChange.ErrorFeatures);
 
   if(iSentinel <= 0)
-    Base::Console().Warning("Document::Recompute(): bailing out with to high solver count, possible recursion!\n");
+    Base::Console().Warning("Document::recompute(): bailing out with to high solver count, possible recursion!\n");
   
   // remove the new features from the update set, get updated anyway
-  for(i = DocChange.NewFeatures.begin();i!=DocChange.NewFeatures.end();++i)
-    DocChange.UpdatedFeatures.erase(*i);
-
-  //_hDoc->Recompute(); 
+  for(i = DocChange.NewObjects.begin();i!=DocChange.NewObjects.end();++i)
+    DocChange.UpdatedObjects.erase(*i);
 
   Notify(DocChange);
 
-  for(i = DocChange.ErrorFeatures.begin();i!=DocChange.ErrorFeatures.end();++i)
-    Base::Console().Log("Error in Feature \"%s\": %s\n",(*i)->name.getValue(),(*i)->getErrorString());
+  for(l = DocChange.ErrorFeatures.begin();l!=DocChange.ErrorFeatures.end();++l)
+    Base::Console().Log("Error in Feature \"%s\": %s\n",(*l)->name.getValue(),(*l)->getErrorString());
 
   Base::Console().Log("Solv: Recomputation of Document \"%s\" with %d new, %d Updated and %d errors finished\n",
                       getName(),
-                      DocChange.NewFeatures.size(),
-                      DocChange.UpdatedFeatures.size(),
+                      DocChange.NewObjects.size(),
+                      DocChange.UpdatedObjects.size(),
                       DocChange.ErrorFeatures.size());
   
 }
 
-void Document::RecomputeFeature(AbstractFeature* Feat)
+void Document::recomputeFeature(AbstractFeature* Feat)
 {
   DocChanges DocChange;
   DocChange.Why = DocChanges::Recompute;
 
-  _RecomputeFeature(Feat);
+  _recomputeFeature(Feat);
 
   if(Feat->getStatus() == AbstractFeature::Error)
     DocChange.ErrorFeatures.insert(Feat);
 
   if(Feat->getStatus() == AbstractFeature::Valid)
-    DocChange.UpdatedFeatures.insert(Feat);
+    DocChange.UpdatedObjects.insert(Feat);
 
   Notify(DocChange);
 
 }
 
 // call the recompute of the Feature and handle the exceptions and errors.
-void Document::_RecomputeFeature(AbstractFeature* Feat)
+void Document::_recomputeFeature(AbstractFeature* Feat)
 {
   Base::Console().Log("Solv: Executing Feature: %s\n",Feat->name.getValue());
 
@@ -581,100 +576,92 @@ void Document::_RecomputeFeature(AbstractFeature* Feat)
 }
 
 
-AbstractFeature *Document::addFeature(const char* sType, const char* pFeatName)
+
+DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 {
-  App::AbstractFeature* pcFeature = (App::AbstractFeature*) Base::Type::createInstanceByName(sType,true);
+  App::DocumentObject* pcObject = (App::DocumentObject*) Base::Type::createInstanceByName(sType,true);
 
 
-  string FeatName;
+  string ObjectName;
 
-	if(pcFeature)
+	if(pcObject)
 	{
-    assert(pcFeature->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()));
+    assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()));
 
-    pcFeature->setDocument(this);
+    pcObject->setDocument(this);
     // get Unique name
-    if(pFeatName)
-      FeatName = getUniqueFeatureName(pFeatName);
+    if(pObjectName)
+      ObjectName = getUniqueObjectName(pObjectName);
     else
-      FeatName = getUniqueFeatureName(sType);
+      ObjectName = getUniqueObjectName(sType);
 
-    // set the status of the feature to New
-    pcFeature->status.setValue(AbstractFeature::New);
+		pActiveObject = pcObject;
 
-    //_LogBook.SetTouched(FeatureLabel);
-    //TouchState(FeatureLabel);
-		// update the pointer
-		pActiveFeature = pcFeature;
+    ObjectMap[ObjectName] = pcObject;
 
-    // remember name (for faster search)
-    FeatEntry e;
-    e.F = pcFeature;
-//    e.L = FeatureLabel;
-    FeatMap[FeatName] = FeatEntry(e);
-
-    pcFeature->name.setValue( FeatName );
+    pcObject->name.setValue( ObjectName );
 	
-    // return the feature
-		return pcFeature;
+    // return the Object
+		return pcObject;
 
-	}else return 0;
+	}else 
+    return 0;
 
 }
 
 
-/// Remove a feature out of the document
-void Document::remFeature(const char* sName)
+/// Remove a Object out of the document
+void Document::remObject(const char* sName)
 {
   DocChanges DocChange;
   DocChange.Why = DocChanges::Recompute;
 
-  std::map<std::string,FeatEntry>::iterator pos = FeatMap.find(sName);
+  std::map<std::string,DocumentObject*>::iterator pos = ObjectMap.find(sName);
 
   // name not found?
-  if(pos == FeatMap.end())
+  if(pos == ObjectMap.end())
     return;
 
-  DocChange.DeletedFeatures.insert(pos->second.F);
+  DocChange.DeletedObjects.insert(pos->second);
 
   Notify(DocChange);
 
-  // finally delete the feature
-  delete pos->second.F;
-  FeatMap.erase(pos);
+  // finally delete the Object
+  delete pos->second;
+  ObjectMap.erase(pos);
 }
 
 
-AbstractFeature *Document::getActiveFeature(void)
+DocumentObject *Document::getActiveObject(void)
 {
   
-  return pActiveFeature;
+  return pActiveObject;
 }
 
-AbstractFeature *Document::getFeature(const char *Name)
+DocumentObject *Document::getObject(const char *Name)
 {
-  std::map<std::string,FeatEntry>::iterator pos;
+  std::map<std::string,DocumentObject*>::iterator pos;
   
-  pos = FeatMap.find(Name);
+  pos = ObjectMap.find(Name);
 
-  if(pos != FeatMap.end())
-    return pos->second.F;
+  if(pos != ObjectMap.end())
+    return pos->second;
   else
     return 0;
 }
 
-const char *Document::getFeatureName(AbstractFeature *pFeat)
+const char *Document::getObjectName(DocumentObject *pFeat)
 {
-  std::map<std::string,FeatEntry>::iterator pos;
+  std::map<std::string,DocumentObject*>::iterator pos;
 
-  for(pos = FeatMap.begin();pos != FeatMap.end();++pos)
-    if(pos->second.F == pFeat)
+  for(pos = ObjectMap.begin();pos != ObjectMap.end();++pos)
+    if(pos->second == pFeat)
       return pos->first.c_str();
 
   return 0;
 }
 
-string Document::getUniqueFeatureName(const char *Name) const
+string Document::getUniqueObjectName(const char *Name) const
 {
 
   // strip ilegal chars
@@ -705,19 +692,19 @@ string Document::getUniqueFeatureName(const char *Name) const
     It++;
   }
 
-  std::map<std::string,FeatEntry>::const_iterator pos;
+  std::map<std::string,DocumentObject*>::const_iterator pos;
 
   // name in use?
-  pos = FeatMap.find(CleanName);
+  pos = ObjectMap.find(CleanName);
 
-  if (pos == FeatMap.end())
+  if (pos == ObjectMap.end())
     // if not, name is OK
     return CleanName;
   else
   {
     // find highes sufix
     int nSuff = 0;  
-    for(pos = FeatMap.begin();pos != FeatMap.end();++pos)
+    for(pos = ObjectMap.begin();pos != ObjectMap.end();++pos)
     {
       const string &rclObjName = pos->first;
       if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName)  // Prefix gleich
@@ -738,31 +725,31 @@ string Document::getUniqueFeatureName(const char *Name) const
 	
 }
 
-std::vector<AbstractFeature*> Document::getFeatures() const
+std::vector<DocumentObject*> Document::getObjects() const
 {
-  std::vector<AbstractFeature*> features;
-  for( std::map<std::string,FeatEntry>::const_iterator it = FeatMap.begin(); it != FeatMap.end(); ++it )
-    features.push_back( it->second.F );
-  return features;
+  std::vector<DocumentObject*> Objects;
+  for( std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it )
+    Objects.push_back( it->second );
+  return Objects;
 }
 
-std::vector<AbstractFeature*> Document::getFeaturesOfType(const Base::Type& typeId) const
+std::vector<DocumentObject*> Document::getObjectsOfType(const Base::Type& typeId) const
 {
-  std::vector<AbstractFeature*> features;
-  for( std::map<std::string,FeatEntry>::const_iterator it = FeatMap.begin(); it != FeatMap.end(); ++it )
+  std::vector<DocumentObject*> Objects;
+  for( std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it )
   {
-    if ( it->second.F->getTypeId().isDerivedFrom( typeId ) )
-      features.push_back( it->second.F );
+    if ( it->second->getTypeId().isDerivedFrom( typeId ) )
+      Objects.push_back( it->second );
   }
-  return features;
+  return Objects;
 }
 
-int Document::countFeaturesOfType(const Base::Type& typeId) const
+int Document::countObjectsOfType(const Base::Type& typeId) const
 {
   int ct=0;
-  for( std::map<std::string,FeatEntry>::const_iterator it = FeatMap.begin(); it != FeatMap.end(); ++it )
+  for( std::map<std::string,DocumentObject*>::const_iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it )
   {
-    if ( it->second.F->getTypeId().isDerivedFrom( typeId ) )
+    if ( it->second->getTypeId().isDerivedFrom( typeId ) )
       ct++;
   }
 

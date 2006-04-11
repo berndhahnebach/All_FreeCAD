@@ -72,9 +72,11 @@ public:
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
-  virtual void Save (Base::Writer &writer);
+  virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
 
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
 
 private:
 
@@ -119,8 +121,11 @@ public:
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
-  virtual void Save (Base::Writer &writer);
+  virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
+
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
 
 private:
   std::vector<AbstractFeature*> _lValueList;

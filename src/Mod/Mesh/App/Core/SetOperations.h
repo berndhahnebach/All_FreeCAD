@@ -39,13 +39,13 @@
 #include "Visitor.h"
 
 #include <Base/Builder3D.h>
+#include <Base/Vector3D.h>
 
 // forward declarations
 
 namespace Base
 {
   class Vector2D;
-  class Vector3D;
   class ViewProjMethod;
   class Polygon2D;
 }

@@ -84,10 +84,10 @@ public:
     Rename
   } Why;
 
-  std::set<AbstractFeature*> NewFeatures;
-  std::set<AbstractFeature*> UpdatedFeatures;
+  std::set<DocumentObject*>   NewObjects;
+  std::set<DocumentObject*>   UpdatedObjects;
   std::set<AbstractFeature*> ErrorFeatures;
-  std::set<AbstractFeature*> DeletedFeatures;
+  std::set<DocumentObject*>   DeletedObjects;
 };
 
 
@@ -120,6 +120,8 @@ public:
   /// Destruction
 	virtual ~Document();
 
+  //typedef  App::Document SubjectType;   
+
 	//---------------------------------------------------------------------
 	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
@@ -140,28 +142,28 @@ public:
 	const char* getPath() const;
   //@}
 
-  virtual void Save (Base::Writer &writer);
+  virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
 
 
-	/** @name Feature handling  */
+	/** @name Object handling  */
 	//@{
   /// Add a feature of sType with sName to this document and set it active
-	AbstractFeature *addFeature(const char* sType, const char* sName=0);
+	DocumentObject *addObject(const char* sType, const char* pObjectName=0);
   /// Remove a feature out of the document
-	void remFeature(const char* sName);
-  /// Returns the active Feature of this document
-	AbstractFeature *getActiveFeature(void);
-  /// Returns a Feature of this document
-	AbstractFeature *getFeature(const char *Name);
-  /// Returns a Name of an Feature or 0
-	const char *getFeatureName(AbstractFeature *pFeat);
-  /// Returns a Name of an Feature or 0
-  std::string getUniqueFeatureName(const char *Name) const;
-  /// Returns a list of all features
-  std::vector<AbstractFeature*> getFeatures() const;
-  std::vector<AbstractFeature*> getFeaturesOfType(const Base::Type& typeId) const;
-  int countFeaturesOfType(const Base::Type& typeId) const;
+	void remObject(const char* sName);
+  /// Returns the active Object of this document
+	DocumentObject *getActiveObject(void);
+  /// Returns a Object of this document
+	DocumentObject *getObject(const char *Name);
+  /// Returns a Name of an Object or 0
+	const char *getObjectName(DocumentObject *pFeat);
+  /// Returns a Name of an Object or 0
+  std::string getUniqueObjectName(const char *Name) const;
+  /// Returns a list of all Objects
+  std::vector<DocumentObject*> getObjects() const;
+  std::vector<DocumentObject*> getObjectsOfType(const Base::Type& typeId) const;
+  int countObjectsOfType(const Base::Type& typeId) const;
 	//@}
 
 
@@ -172,9 +174,9 @@ public:
 	/// Remove all modifications. After this call The document becomes again Valid.
 	void PurgeModified();
 	/// Recompute if the document was  not valid and propagate the reccorded modification.
-	void Recompute();
+	void recompute();
   /// Recompute only this feature
-  void RecomputeFeature(AbstractFeature* Feat);
+  void recomputeFeature(AbstractFeature* Feat);
 	//@}
 
 
@@ -248,22 +250,19 @@ public:
 
 protected:
 
+  /// callback from the Document objects
   void onBevorChangeProperty(const DocumentObject *Who, const Property *What);
+  /// helper which Recompute only this feature
+  void _recomputeFeature(AbstractFeature* Feat);
 
   int iTransactionCount;
   std::map<int,Transaction*> mTransactions;
   Transaction *activTransaction;
-  /// helper which Recompute only this feature
-  void _RecomputeFeature(AbstractFeature* Feat);
 
-  struct FeatEntry {
-    AbstractFeature*  F;
-  };
 
-  AbstractFeature* pActiveFeature;
-  std::map<std::string,FeatEntry> FeatMap;
 
-	/// handle to the OCC document
+  DocumentObject* pActiveObject;
+  std::map<std::string,DocumentObject*> ObjectMap;
 
 	// pointer to the python class
 	DocumentPy *_pcDocPy;

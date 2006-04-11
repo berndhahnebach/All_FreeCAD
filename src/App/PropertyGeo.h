@@ -28,6 +28,7 @@
 
 #include <Base/Vector3D.h>
 #include <Base/Matrix.h>
+#include <Base/Placement.h>
 
 #include "Property.h"
 
@@ -38,6 +39,7 @@ namespace Base {
 namespace App
 {
 class Feature;
+
 
 
 /** Vector properties
@@ -74,15 +76,21 @@ public:
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
-  virtual void Save (Base::Writer &writer);
+  virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
 
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
 
 private:
 
   Base::Vector3D _cVec;
 
 };
+
+
+
+
 
 class AppExport PropertyVectorList: public PropertyLists
 {
@@ -121,11 +129,14 @@ public:
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
-  virtual void Save (Base::Writer &writer);
+  virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
-  virtual void SaveDocFile (Base::Writer &writer);
+
+  virtual void SaveDocFile (Base::Writer &writer) const;
   virtual void RestoreDocFile(Base::Reader &reader);
 
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
 
 private:
 
@@ -166,11 +177,57 @@ public:
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
-  virtual void Save (Base::Writer &writer);
+  virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
+
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
 
 private:
   Base::Matrix4D _cMat;
+};
+
+/** Vector properties
+ * This is the father of all properties handling Integers.
+ */
+class AppExport PropertyPlacement: public Property
+{
+  TYPESYSTEM_HEADER();
+
+public:
+
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyPlacement();
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	~PropertyPlacement();
+
+	/** Sets the property 
+	 */
+  void setValue(const Base::Placement &pos);
+
+	/** This method returns a string representation of the property
+	 */
+	const Base::Placement &getValue(void) const;
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+  virtual void Save (Base::Writer &writer) const;
+  virtual void Restore(Base::XMLReader &reader);
+
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
+
+private:
+  Base::Placement _cPos;
 };
 
 

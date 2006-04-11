@@ -86,7 +86,7 @@ void Writer::writeFiles(void)
   }
 }
 
-std::string Writer::addFile(const char* Name, Base::Persistance *Object)
+std::string Writer::addFile(const char* Name,const Base::Persistance *Object)
 {
   // always check isForceXML() before requesting a file!
   assert(isForceXML()==false);

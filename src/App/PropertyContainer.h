@@ -78,7 +78,7 @@ public:
   /// get all properties of the class (including parent)
   void getPropertyMap(std::map<std::string,Property*> &Map) const;
 
-  virtual void Save (Base::Writer &writer);
+  virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
 
 

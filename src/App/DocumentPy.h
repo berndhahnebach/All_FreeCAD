@@ -50,33 +50,31 @@ public:
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
 //	PyObject *PyDocType(PyObject *args);		// Python wrapper
 //	static PyObject *sPyDocType(PyObject *self, PyObject *args, PyObject *kwd){return ((DocumentPy*)self)->PyDocType(args);};
-	PYFUNCDEF_D(DocumentPy,Undo)
-	PYFUNCDEF_D(DocumentPy,Redo)
-	PYFUNCDEF_D(DocumentPy,ClearUndos)
-	PYFUNCDEF_D(DocumentPy,Save)
-	PYFUNCDEF_D(DocumentPy,SaveAs)
+//	PYFUNCDEF_D(DocumentPy,Undo)
+//	PYFUNCDEF_D(DocumentPy,Redo)
+//	PYFUNCDEF_D(DocumentPy,ClearUndos)
+	PYFUNCDEF_D(DocumentPy,save)
+//	PYFUNCDEF_D(DocumentPy,SaveAs)
 //	PYFUNCDEF_D(DocumentPy,SetModified)
-	PYFUNCDEF_D(DocumentPy,PurgeModified)
+//	PYFUNCDEF_D(DocumentPy,PurgeModified)
 
-	PYFUNCDEF_D(DocumentPy,NewCommand)
-	PYFUNCDEF_D(DocumentPy,OpenCommand)
-	PYFUNCDEF_D(DocumentPy,CommitCommand)
-	PYFUNCDEF_D(DocumentPy,AbortCommand)
-	PYFUNCDEF_D(DocumentPy,Recompute)
+//	PYFUNCDEF_D(DocumentPy,NewCommand)
+//	PYFUNCDEF_D(DocumentPy,OpenCommand)
+//	PYFUNCDEF_D(DocumentPy,CommitCommand)
+//	PYFUNCDEF_D(DocumentPy,AbortCommand)
+	PYFUNCDEF_D(DocumentPy,recompute)
 
-	PYFUNCDEF_D(DocumentPy,Dump)
+//	PYFUNCDEF_D(DocumentPy,Dump)
 
-	PYFUNCDEF_D(DocumentPy,activeFeature)
-	PYFUNCDEF_D(DocumentPy,addFeature)
-	PYFUNCDEF_D(DocumentPy,getFeature)
-	PYFUNCDEF_D(DocumentPy,removeFeature)
-	PYFUNCDEF_D(DocumentPy,listFeatures)
+	PYFUNCDEF_D(DocumentPy,activeObject)
+	PYFUNCDEF_D(DocumentPy,addObject)
+	PYFUNCDEF_D(DocumentPy,getObject)
+	PYFUNCDEF_D(DocumentPy,removeObject)
+	PYFUNCDEF_D(DocumentPy,listObjects)
 	PYFUNCDEF_D(DocumentPy,getName)
 
    // deprecated methods
-	PYFUNCDEF_D(DocumentPy,AddFeature)
-	PYFUNCDEF_D(DocumentPy,GetActiveFeature)
-	PYFUNCDEF_D(DocumentPy,GetFeature)
+	PYFUNCDEF_D(DocumentPy,getActiveObject)
 
 private:
 	Document *_pcDoc;

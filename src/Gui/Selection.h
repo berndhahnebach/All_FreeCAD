@@ -39,7 +39,7 @@
 
 namespace App
 {
-  class AbstractFeature;
+  class DocumentObject;
   class Document;
 }
 
@@ -70,7 +70,7 @@ public:
   MsgType Type;
 
   const char* pDocName;
-  const char* pFeatName;
+  const char* pObjectName;
   const char* pSubName;
   float x;
   float y;
@@ -91,49 +91,49 @@ class GuiExport SelectionSingleton :public Base::Subject<const SelectionChanges&
 public:
 
   /// Add a selection 
-  bool addSelection(const char* pDocName, const char* pFeatName=0, const char* pSubName=0, float x=0, float y=0, float z=0);
+  bool addSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0, float x=0, float y=0, float z=0);
   /// Remove a selection (for internal use)
-  void rmvSelection(const char* pDocName, const char* pFeatName=0, const char* pSubName=0);
+  void rmvSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0);
   /// clears the selection
   void clearSelection(void);
   /// checks if selected
-  bool isSelected(const char* pDocName, const char* pFeatName=0, const char* pSubName=0) const;
+  bool isSelected(const char* pDocName, const char* pObjectName=0, const char* pSubName=0) const;
 
-  bool setPreselect(const char* pDocName, const char* pFeatName, const char* pSubName, float x=0, float y=0, float z=0);
+  bool setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x=0, float y=0, float z=0);
   void rmvPreselect();
 
 
 
-  /** returns the number of selected objects with an special feature type
-   *  Its the conviniant way to check if the right features selected to do 
+  /** returns the number of selected objects with an special Object type
+   *  Its the conviniant way to check if the right Objects selected to do 
    *  an operation (GuiCommand). The checking also detect base type. E.g. 
    *  "Part" also fits on "PartImport" or "PartTransform types.
    *  If no document name is given the active document is asumed.
-   *  @deprecated Use countFeaturesOfType instead.
+   *  @deprecated Use countObjectsOfType instead.
    */
   unsigned int getNbrOfType(const char *TypeName, const char* pDocName=0) const;
-  /** Returns the number of selected objects with an special feature type
-   * Its the convenient way to check if the right features are selected to 
+  /** Returns the number of selected objects with an special Object type
+   * Its the convenient way to check if the right Objects are selected to 
    * perform an operation (GuiCommand). The checking also detect base type. 
    * E.g. "Part" also fits on "PartImport" or "PartTransform types.
    * If no document name is given the active document is assumed.
    */
-  unsigned int countFeaturesOfType(const Base::Type& typeId, const char* pDocName=0) const;
+  unsigned int countObjectsOfType(const Base::Type& typeId, const char* pDocName=0) const;
 
-  /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
-   * If \a TypeName is 0 (the default) the feature type is ignored. If no document name is specified the features 
+  /** Returns a vector of Objects of type \a TypeName selected for the given document name \a pDocName.
+   * If \a TypeName is 0 (the default) the Object type is ignored. If no document name is specified the Objects 
    * from the active document are regarded.
    * If no objects of this document are selected an empty vector is returned.
    * @note The vector reflects the sequence of selection.
-   * @deprecated Use getFeaturesOfType instead.
+   * @deprecated Use getObjectsOfType instead.
    */
-  std::vector<App::AbstractFeature*> getSelectedFeatures(const char *TypeName=0, const char* pDocName=0) const;
+  std::vector<App::DocumentObject*> getSelectedObjects(const char *TypeName=0, const char* pDocName=0) const;
   /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
-   * If no document name is specified the features from the active document are regarded.
+   * If no document name is specified the Objects from the active document are regarded.
    * If no objects of this document are selected an empty vector is returned.
    * @note The vector reflects the sequence of selection.
    */
-  std::vector<App::AbstractFeature*> getFeaturesOfType(const Base::Type& typeId, const char* pDocName=0) const;
+  std::vector<App::DocumentObject*> getObjectsOfType(const Base::Type& typeId, const char* pDocName=0) const;
 
   struct SelObj {
     const char* DocName;
@@ -141,7 +141,7 @@ public:
     const char* SubName;
     const char* TypeName;
     App::Document* pDoc;
-    App::AbstractFeature*  pFeat;
+    App::DocumentObject*  pObject;
   };
 
   /** returns a vector of selection objects
@@ -179,7 +179,7 @@ protected:
     std::string SubName;
     std::string TypeName;
     App::Document* pDoc;
-    App::AbstractFeature*  pFeat;
+    App::DocumentObject*  pObject;
     float x,y,z;
   };
   std::list<_SelObj> _SelList;

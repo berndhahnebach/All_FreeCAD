@@ -32,9 +32,10 @@
 # include <map>
 #endif
 
+#include <Base/Vector3D.h>
+
 namespace Base
 {
-  class Vector3D;
   class Matrix4D;
 }
 

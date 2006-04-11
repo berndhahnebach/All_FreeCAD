@@ -55,72 +55,71 @@
 
 namespace Base {
 
-class   Vector3D;
-typedef Vector3D * PVector3D;
-typedef Vector3D & RVector3D;
 
-/** The mesh vector class. */
-class BaseExport Vector3D
+
+/** The Vector Base class. */
+template <class _Precision>
+class BaseExport Vector3
 {
 public:
   /** @name Public data members */
   //@{
-  float x; /**< x-coordinate */
-  float y; /**< y-coordinate */
-  float z; /**< z-coordinate */
+  _Precision x; /**< x-coordinate */
+  _Precision y; /**< y-coordinate */
+  _Precision z; /**< z-coordinate */
   //@}
   
   /// Construction
-  inline explicit Vector3D (float fx = 0.0f, float fy = 0.0f, float fz = 0.0f);
+  inline explicit Vector3 (_Precision fx = 0.0f, _Precision fy = 0.0f, _Precision fz = 0.0f);
   /// Construction
-  inline Vector3D (const Vector3D& rcVct);
+  inline Vector3 (const Vector3<_Precision>& rcVct);
 
   /** @name Operator */
   //@{
   /// Returns a reference to a coordinate. \a usIndex must be in the range [0,2]
-  inline float & operator [] (unsigned short usIndex);
+  inline _Precision & operator [] (unsigned short usIndex);
   /// Vector addition
-  inline Vector3D operator +  (const Vector3D& rcVct) const;
-  inline Vector3D operator &  (const Vector3D& rcVct) const;
+  inline Vector3 operator +  (const Vector3<_Precision>& rcVct) const;
+  inline Vector3 operator &  (const Vector3<_Precision>& rcVct) const;
   /// Vector subtraction
-  inline Vector3D operator -  (const Vector3D& rcVct) const;
+  inline Vector3 operator -  (const Vector3<_Precision>& rcVct) const;
   /// Negative vector
-  inline Vector3D operator - (void) const;
+  inline Vector3 operator - (void) const;
   /// Vector summation
-  inline RVector3D operator += (const Vector3D& rcVct);
+  inline Vector3 &operator += (const Vector3<_Precision>& rcVct);
   /// Vector subtraction
-  inline RVector3D operator -= (const Vector3D& rcVct);
+  inline Vector3 & operator -= (const Vector3<_Precision>& rcVct);
   /// Vector scaling
-  inline RVector3D operator *= (float fScale);
+  inline Vector3 & operator *= (_Precision fScale);
   /// Vector scaling
-  inline Vector3D operator *   (float fScale);
+  inline Vector3 operator *   (_Precision fScale);
   /// Assignment
-  inline RVector3D operator =  (const Vector3D& rcVct);
+  inline Vector3 & operator =  (const Vector3<_Precision>& rcVct);
   /// Scalar product
-  inline float operator *  (const Vector3D& rcVct) const;
+  inline _Precision operator *  (const Vector3<_Precision>& rcVct) const;
   /// Vector scaling
-  inline RVector3D operator / (float fDiv); 
+  inline Vector3 & operator / (_Precision fDiv); 
   /// Cross product
-  inline Vector3D operator %  (const Vector3D& rcVct) const;
+  inline Vector3 operator %  (const Vector3<_Precision>& rcVct) const;
   /// Comparing for inequality
-  inline bool operator != (const Vector3D& rcVct) const;
+  inline bool operator != (const Vector3<_Precision>& rcVct) const;
   /// Comparing for equality
-  inline bool operator == (const Vector3D& rcVct) const;
+  inline bool operator == (const Vector3<_Precision>& rcVct) const;
   //@}
 
   /** @name Modification */
   //@{
-  void ScaleX (float f);
-  void ScaleY (float f);
-  void ScaleZ (float f);
-  void Scale (float fX, float fY, float fZ);
-  void MoveX (float f);
-  void MoveY (float f);
-  void MoveZ (float f);
-  void Move (float fX, float fY, float fZ);
-  void RotateX (float f);
-  void RotateY (float f);
-  void RotateZ (float f);
+  void ScaleX (_Precision f);
+  void ScaleY (_Precision f);
+  void ScaleZ (_Precision f);
+  void Scale (_Precision fX, _Precision fY, _Precision fZ);
+  void MoveX (_Precision f);
+  void MoveY (_Precision f);
+  void MoveZ (_Precision f);
+  void Move (_Precision fX, _Precision fY, _Precision fZ);
+  void RotateX (_Precision f);
+  void RotateY (_Precision f);
+  void RotateZ (_Precision f);
   //@}
 
   inline void Set (float fX, float fY, float fZ);
@@ -132,21 +131,21 @@ public:
   /** @name Mathematics */
   //@{
   /// Length of the vector.
-  inline float Length (void) const;
+  inline _Precision Length (void) const;
   /// Squared length of the vector.
-  inline float Sqr (void) const;
+  inline _Precision Sqr (void) const;
   /// Set length to 1.
-  RVector3D Normalize (void);
+  Vector3 & Normalize (void);
   /// Get angle between both vectors.
-  float GetAngle (const Vector3D &rcVect) const;
+  _Precision GetAngle (const Vector3 &rcVect) const;
   /** Transforms this point to the coordinate system defined by origin \a rclBase, 
    * vector \a vector rclDirX and vector \a vector rclDirY. 
    * \note \a rclDirX must be perpendicular to \a rclDirY, i.e. \a rclDirX * \a rclDirY = 0..
    */
-  void TransformToCoordinateSystem (const Vector3D &rclBase, const Vector3D &rclDirX, const Vector3D &rclDirY);
-  bool Equal(const Vector3D &rclVect) const;
+  void TransformToCoordinateSystem (const Vector3 &rclBase, const Vector3 &rclDirX, const Vector3 &rclDirY);
+  bool Equal(const Vector3 &rclVect) const;
   /// Projects this point onto the plane given by the base \a rclBase and the normal \a rclNorm.
-  inline RVector3D ProjToPlane (const Vector3D &rclBase, const Vector3D &rclNorm);
+  inline Vector3 & ProjToPlane (const Vector3 &rclBase, const Vector3 &rclNorm);
   /// Projects this point onto the line given by the base \a rclPoint and the direction \a rclLine.
   /**
    * Projects a point \a rclPoint onto the line defined by the origin and the direction \a rclLine.
@@ -154,42 +153,45 @@ public:
    * is the distance from \a rclPoint to the line.
    * Note: The resulting vector does not depend on the current vector.
    */
-  inline RVector3D ProjToLine (const Vector3D &rclPoint, const Vector3D &rclLine);
+  inline Vector3 & ProjToLine (const Vector3 &rclPoint, const Vector3 &rclLine);
   /** Computes the distance to the given plane. Depending on the side this point is located
    * the distance can also be negative. The distance is positive if the point is at the same
    * side the plane normal points to, negative otherwise.
    */
-  inline float DistanceToPlane (const Vector3D &rclBase, const Vector3D &rclNorm) const;
+  inline _Precision DistanceToPlane (const Vector3 &rclBase, const Vector3 &rclNorm) const;
   /// Computes the distance from this point to the line given by \a rclBase and \a rclDirect.
-  inline float DistanceToLine (const Vector3D &rclBase, const Vector3D &rclDirect) const;
+  inline _Precision DistanceToLine (const Vector3 &rclBase, const Vector3 &rclDirect) const;
   //@}
 
   /** @name Friends */
   //@{
   /// Returns the distance between two points
-  friend float Distance (const Vector3D &rcVct1, const Vector3D &rcVct2);
+  friend _Precision Distance (const Vector3 &rcVct1, const Vector3 &rcVct2);
   /// Returns the squared distance between two points
-  friend float DistanceP2 (const Vector3D &rclV1, const Vector3D &rclV2);
+  friend _Precision DistanceP2 (const Vector3 &rclV1, const Vector3 &rclV2);
   /// Multiplication of scalar with vector.
-  friend Vector3D operator * (float fFac, const Vector3D &rcVct);
+  friend Vector3 operator * (_Precision fFac, const Vector3 &rcVct);
   //@}
 };
 
-inline Vector3D::Vector3D (float fx, float fy, float fz)
+template <class _Precision>
+inline Vector3<_Precision>::Vector3 (_Precision fx, _Precision fy, _Precision fz)
 : x(fx),
   y(fy),
   z(fz)
 {
 }
 
-inline Vector3D::Vector3D (const Vector3D& rcVct)
+template <class _Precision>
+inline Vector3<_Precision>::Vector3 (const Vector3<_Precision>& rcVct)
 : x(rcVct.x),
   y(rcVct.y),
   z(rcVct.z)
 {
 }
 
-inline float& Vector3D::operator [] (unsigned short usIndex)
+template <class _Precision>
+inline _Precision& Vector3<_Precision>::operator [] (unsigned short usIndex)
 {
   switch (usIndex)
   {
@@ -200,39 +202,44 @@ inline float& Vector3D::operator [] (unsigned short usIndex)
   return x;
 }
 
-inline Vector3D Vector3D::operator +  (const Vector3D& rcVct) const
+template <class _Precision>
+inline Vector3 <_Precision>Vector3<_Precision>::operator +  (const Vector3<_Precision>& rcVct) const
 {
-  Vector3D cVctRes;
+  Vector3<_Precision> cVctRes;
   cVctRes.x = x + rcVct.x;
   cVctRes.y = y + rcVct.y;
   cVctRes.z = z + rcVct.z;
   return cVctRes;
 }
 
-inline Vector3D Vector3D::operator &  (const Vector3D& rcVct) const
+template <class _Precision>
+inline Vector3<_Precision> Vector3<_Precision>::operator &  (const Vector3<_Precision>& rcVct) const
 {
-  Vector3D cVctRes;
-  cVctRes.x = x * (float) fabs(rcVct.x);
-  cVctRes.y = y * (float) fabs(rcVct.y);
-  cVctRes.z = z * (float) fabs(rcVct.z);
+  Vector3<_Precision> cVctRes;
+  cVctRes.x = x * (_Precision) fabs(rcVct.x);
+  cVctRes.y = y * (_Precision) fabs(rcVct.y);
+  cVctRes.z = z * (_Precision) fabs(rcVct.z);
   return cVctRes;
 }
 
-inline Vector3D Vector3D::operator -  (const Vector3D& rcVct) const
+template <class _Precision>
+inline Vector3<_Precision> Vector3<_Precision>::operator -  (const Vector3<_Precision>& rcVct) const
 {
-  Vector3D cVctRes;
+  Vector3<_Precision> cVctRes;
   cVctRes.x = x - rcVct.x;
   cVctRes.y = y - rcVct.y;
   cVctRes.z = z - rcVct.z;
   return cVctRes;
 }
  
-inline Vector3D Vector3D::operator - (void) const
+template <class _Precision>
+inline Vector3<_Precision> Vector3<_Precision>::operator - (void) const
 {
-  return Vector3D(-x, -y, -z);
+  return Vector3(-x, -y, -z);
 }
 
-inline Vector3D& Vector3D::operator += (const Vector3D& rcVct)
+template <class _Precision>
+inline Vector3<_Precision>& Vector3<_Precision>::operator += (const Vector3<_Precision>& rcVct)
 {
   x += rcVct.x;
   y += rcVct.y;
@@ -240,7 +247,8 @@ inline Vector3D& Vector3D::operator += (const Vector3D& rcVct)
   return *this;
 }
 
-inline Vector3D& Vector3D::operator -= (const Vector3D& rcVct)
+template <class _Precision>
+inline Vector3<_Precision>& Vector3<_Precision>::operator -= (const Vector3<_Precision>& rcVct)
 {
   x -= rcVct.x;
   y -= rcVct.y;
@@ -248,7 +256,8 @@ inline Vector3D& Vector3D::operator -= (const Vector3D& rcVct)
   return *this;
 }
 
-inline Vector3D& Vector3D::operator *= (float fScale)
+template <class _Precision>
+inline Vector3<_Precision>& Vector3<_Precision>::operator *= (_Precision fScale)
 {
   x *= fScale;
   y *= fScale;
@@ -256,14 +265,16 @@ inline Vector3D& Vector3D::operator *= (float fScale)
   return *this;
 }
 
-inline Vector3D Vector3D::operator * (float fScale)
+template <class _Precision>
+inline Vector3<_Precision> Vector3<_Precision>::operator * (_Precision fScale)
 {
-  Vector3D temp(*this);
+  Vector3<_Precision> temp(*this);
   temp *= fScale;
   return temp;
 }
 
-inline Vector3D& Vector3D::operator =  (const Vector3D& rcVct)
+template <class _Precision>
+inline Vector3<_Precision>& Vector3<_Precision>::operator =  (const Vector3<_Precision>& rcVct)
 {
   x = rcVct.x;
   y = rcVct.y;
@@ -271,12 +282,14 @@ inline Vector3D& Vector3D::operator =  (const Vector3D& rcVct)
   return *this;
 }
 
-inline float Vector3D::operator *  (const Vector3D& rcVct) const
+template <class _Precision>
+inline _Precision Vector3<_Precision>::operator *  (const Vector3<_Precision>& rcVct) const
 {
   return (x * rcVct.x) + (y * rcVct.y) + (z * rcVct.z);
 }
 
-inline Vector3D& Vector3D::operator /  (float fDiv) 
+template <class _Precision>
+inline Vector3<_Precision>& Vector3<_Precision>::operator /  (_Precision fDiv) 
 {
   x /= fDiv;
   y /= fDiv;
@@ -284,91 +297,306 @@ inline Vector3D& Vector3D::operator /  (float fDiv)
   return *this;
 }
 
-inline Vector3D Vector3D::operator %  (const Vector3D& rcVct) const
+template <class _Precision>
+inline Vector3<_Precision> Vector3<_Precision>::operator %  (const Vector3<_Precision>& rcVct) const
 {
-  Vector3D cVctRes;
+  Vector3<_Precision> cVctRes;
   cVctRes.x = (y * rcVct.z) - (z * rcVct.y);
   cVctRes.y = (z * rcVct.x) - (x * rcVct.z);
   cVctRes.z = (x * rcVct.y) - (y * rcVct.x);
   return cVctRes;
 }
 
-inline bool Vector3D::operator != (const Vector3D& rcVct) const
+template <class _Precision>
+inline bool Vector3<_Precision>::operator != (const Vector3<_Precision>& rcVct) const
 { 
   return !((*this) == rcVct);
 }
  
-inline bool Vector3D::operator == (const Vector3D& rcVct) const
+template <class _Precision>
+inline bool Vector3<_Precision>::operator == (const Vector3<_Precision>& rcVct) const
 {
   return (fabs (x - rcVct.x) <= FLOAT_EPS) &&
          (fabs (y - rcVct.y) <= FLOAT_EPS) &&
          (fabs (z - rcVct.z) <= FLOAT_EPS);
 }  
 
-inline Vector3D& Vector3D::ProjToPlane (const Vector3D &rclBase, const Vector3D &rclNorm)
+template <class _Precision>
+inline Vector3<_Precision>& Vector3<_Precision>::ProjToPlane (const Vector3<_Precision> &rclBase, const Vector3<_Precision> &rclNorm)
 {
-  Vector3D clTemp(rclNorm);
+  Vector3<_Precision> clTemp(rclNorm);
   
   *this = *this - (clTemp *=  ((*this - rclBase) * clTemp));
   return *this;
 }
 
-inline float Vector3D::DistanceToPlane (const Vector3D &rclBase, const Vector3D &rclNorm) const
+template <class _Precision>
+inline _Precision Vector3<_Precision>::DistanceToPlane (const Vector3<_Precision> &rclBase, const Vector3<_Precision> &rclNorm) const
 {
   return (*this - rclBase) * rclNorm;
 }
 
-inline float Vector3D::Length (void) const
+template <class _Precision>
+inline _Precision Vector3<_Precision>::Length (void) const
 {
-  return (float)sqrt ((x * x) + (y * y) + (z * z));
+  return (_Precision)sqrt ((x * x) + (y * y) + (z * z));
 }
 
-inline float Vector3D::DistanceToLine (const Vector3D &rclBase, const Vector3D &rclDirect) const
+template <class _Precision>
+inline _Precision Vector3<_Precision>::DistanceToLine (const Vector3<_Precision> &rclBase, const Vector3<_Precision> &rclDirect) const
 {
-  return (float) fabs((rclDirect % Vector3D(*this - rclBase)).Length() / 
+  return (_Precision) fabs((rclDirect % Vector3(*this - rclBase)).Length() / 
                                      rclDirect.Length());
 }
 
-inline Vector3D& Vector3D::ProjToLine (const Vector3D &rclPoint, const Vector3D &rclLine)
+template <class _Precision>
+inline Vector3<_Precision>& Vector3<_Precision>::ProjToLine (const Vector3<_Precision> &rclPoint, const Vector3<_Precision> &rclLine)
 {
   return (*this = ((((rclPoint * rclLine) / rclLine.Sqr()) * rclLine) - rclPoint));
 }
 
-inline float Vector3D::Sqr (void) const
+template <class _Precision>
+inline _Precision Vector3<_Precision>::Sqr (void) const
 {
-  return (float) ((x * x) + (y * y) + (z * z));
+  return (_Precision) ((x * x) + (y * y) + (z * z));
 }
 
-inline void Vector3D::Set (float fX, float fY, float fZ)
+template <class _Precision>
+inline void Vector3<_Precision>::Set (float fX, float fY, float fZ)
 {
-  x = fX;
-  y = fY;
-  z = fZ;
+  x = _Precision(fX);
+  y = _Precision(fY);
+  z = _Precision(fZ);
 }
 
-inline void Vector3D::Set (double dX, double dY, double dZ)
+template <class _Precision>
+inline void Vector3<_Precision>::Set (double dX, double dY, double dZ)
 {
-  x = float(dX);
-  y = float(dY);
-  z = float(dZ);
+  x = _Precision(dX);
+  y = _Precision(dY);
+  z = _Precision(dZ);
 }
 
 // global functions
-inline float Distance (const Vector3D &rcVct1, const Vector3D &rcVct2)
+template <class _Precision>
+inline _Precision Distance (const Vector3<_Precision> &rcVct1, const Vector3<_Precision> &rcVct2)
 {
   return (rcVct1 - rcVct2).Length();
 }
 
-inline float DistanceP2 (const Vector3D &rclV1, const Vector3D &rclV2)
+template <class _Precision>
+inline _Precision DistanceP2 (const Vector3<_Precision> &rclV1, const Vector3<_Precision> &rclV2)
 {
-  float x=rclV1.x-rclV2.x, y=rclV1.y-rclV2.y, z=rclV1.z-rclV2.z; 
+  _Precision x=rclV1.x-rclV2.x, y=rclV1.y-rclV2.y, z=rclV1.z-rclV2.z; 
   return x * x + y * y + z * z;
 }
 
-inline Vector3D operator * (float fFac, const Vector3D &rcVct)
+template <class _Precision>
+inline Vector3<_Precision> operator * (_Precision fFac, const Vector3<_Precision> &rcVct)
 {
-  return Vector3D(rcVct.x * fFac, rcVct.y * fFac, rcVct.z * fFac);
+  return Vector3<_Precision>(rcVct.x * fFac, rcVct.y * fFac, rcVct.z * fFac);
 }
+
+template <class _Precision>
+void Vector3<_Precision>::ScaleX (_Precision f)
+{
+  x *= f;
+}
+
+template <class _Precision>
+void Vector3<_Precision>::ScaleY (_Precision f)
+{
+  y *= f;
+}
+
+template <class _Precision>
+void Vector3<_Precision>::ScaleZ (_Precision f)
+{
+  z *= f;
+}
+
+template <class _Precision>
+void Vector3<_Precision>::Scale (_Precision fX, _Precision fY, _Precision fZ)
+{
+  x *= fX;
+  y *= fY;
+  z *= fZ;
+}
+
+template <class _Precision>
+void Vector3<_Precision>::MoveX (_Precision f)
+{
+  x += f;
+}
+
+template <class _Precision>
+void Vector3<_Precision>::MoveY (_Precision f)
+{
+  y += f;
+}
+
+template <class _Precision>
+void Vector3<_Precision>::MoveZ (_Precision f)
+{
+  z += f;
+}
+
+template <class _Precision>
+void Vector3<_Precision>::Move (_Precision fX, _Precision fY, _Precision fZ)
+{
+  x += fX;
+  y += fY;
+  z += fZ;
+}
+
+template <class _Precision>
+void Vector3<_Precision>::RotateX (_Precision f)
+{
+  Vector3 cPt (*this);
+  _Precision fsin, fcos;
+ 
+  fsin = (_Precision)sin (f);
+  fcos = (_Precision)cos (f);
+  y = (cPt.y * fcos) - (cPt.z * fsin);
+  z = (cPt.y * fsin) + (cPt.z * fcos);
+}
+
+template <class _Precision>
+void Vector3<_Precision>::RotateY (_Precision f)
+{
+  Vector3 cPt (*this);
+  _Precision fsin, fcos;
+ 
+  fsin = (_Precision)sin (f);
+  fcos = (_Precision)cos (f);
+  x = (cPt.z * fsin) + (cPt.x * fcos);
+  z = (cPt.z * fcos) - (cPt.x * fsin);
+}
+
+template <class _Precision>
+void Vector3<_Precision>::RotateZ (_Precision f)
+{
+  Vector3 cPt (*this);
+  _Precision fsin, fcos;
+ 
+  fsin = (_Precision)sin (f);
+  fcos = (_Precision)cos (f);
+  x = (cPt.x * fcos) - (cPt.y * fsin);
+  y = (cPt.x * fsin) + (cPt.y * fcos);
+}
+
+template <class _Precision>
+Vector3<_Precision> & Vector3<_Precision>::Normalize (void)
+{
+  _Precision fLen = Length ();
+  if (fLen != 0.0f)
+  {
+    x /= fLen;
+    y /= fLen;
+    z /= fLen;
+  };
+  return *this;
+}
+
+template <class _Precision>
+_Precision Vector3<_Precision>::GetAngle (const Vector3 &rcVect) const
+{
+  _Precision divid, fNum;
+  
+  divid = Length() * ((Vector3<_Precision>&)rcVect).Length();
+ 
+  if ((divid < -1e-10f) || (divid > 1e-10f))
+  {
+    fNum = (*this * rcVect) / divid;
+    if (fNum < -1)
+      return F_PI;
+    else
+      if (fNum > 1)
+        return 0.0F;
+      else
+        return _Precision(acos(fNum));
+  }
+  else
+    return (_Precision) FLOAT_MAX; // division by zero
+}
+
+template <class _Precision>
+void Vector3<_Precision>::TransformToCoordinateSystem ( const Vector3 &rclBase,
+                                             const Vector3 &rclDirX,
+                                             const Vector3 &rclDirY )
+{
+  Vector3  clVectX, clVectY, clVectZ, clVectOld;
+  
+  clVectX = rclDirX;
+  clVectY = rclDirY;
+  clVectZ = rclDirX % rclDirY;
+  clVectX.Normalize();
+  clVectY.Normalize();
+  clVectZ.Normalize();
+
+  clVectOld = *this - rclBase;
+   
+  x = clVectX * clVectOld;
+  y = clVectY * clVectOld;
+  z = clVectZ * clVectOld;
+}
+
+template <class _Precision>
+bool Vector3<_Precision>::Equal(const Vector3 &rclVect) const
+{
+  int     ex1, ex2, ey1, ey2, ez1, ez2;
+  double  mx1, mx2, my1, my2, mz1, mz2;
+  
+  mx1 = frexp(x, &ex1);
+  my1 = frexp(y, &ey1);
+  mz1 = frexp(z, &ez1);
+
+  mx2 = frexp(rclVect.x, &ex2);
+  my2 = frexp(rclVect.y, &ey2);
+  mz2 = frexp(rclVect.z, &ez2);
+  
+  return ( (ex1 == ex2) && (ey1 == ey2) && (ez1 == ez2) &&
+           (fabs(mx1 - mx2) < _Precision_EPS) &&
+           (fabs(my1 - my2) < _Precision_EPS) &&
+           (fabs(mz1 - mz2) < _Precision_EPS) );
+}
+
+template <class _Precision>
+unsigned long Vector3<_Precision>::GetMemSpace (void)
+{
+  return sizeof(Vector3);
+}
+
+template <class _Precision>
+void Vector3<_Precision>::Print (void)
+{
+  printf ("x: %f, y: %f, z: %f\n", x, y, z);
+}
+
+
+
+
+
+/*
+class Vector3D : public Vector3<float> 
+{
+  /// Construction
+//  inline explicit Vector3 (float fx = 0.0f, float fy = 0.0f, float fz = 0.0f);
+  /// Construction
+  inline Vector3 (const Vector3<double>& rcVct);
+
+};
+*/
+
+typedef Vector3<float> Vector3F;
+typedef Vector3F * PVector3F;
+typedef Vector3F & RVector3F;
+
+typedef Vector3<float> Vector3D ;
+typedef Vector3D * PVector3D;
+typedef Vector3D & RVector3D;
+
+
 
 } // namespace Base
 

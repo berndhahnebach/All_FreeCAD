@@ -34,16 +34,16 @@
 #include <Base/Console.h>
 #include <App/Application.h>
 #include <App/Document.h>
-#include <App/Feature.h>
+#include <App/DocumentObject.h>
 
 
 using namespace Gui;
 using namespace std;
 
 
-vector<App::AbstractFeature*> SelectionSingleton::getSelectedFeatures(const char *TypeName, const char* pDocName) const
+vector<App::DocumentObject*> SelectionSingleton::getSelectedObjects(const char *TypeName, const char* pDocName) const
 {
-  vector<App::AbstractFeature*> temp;
+  vector<App::DocumentObject*> temp;
   App::Document *pcDoc;
   string DocName;
   string typeName = TypeName ? TypeName : "";
@@ -60,8 +60,8 @@ vector<App::AbstractFeature*> SelectionSingleton::getSelectedFeatures(const char
   {
     if (It->pDoc == pcDoc && typeName.size() <= It->TypeName.size())
     {
-      if ( It->pFeat && (typeName.empty() || It->TypeName.substr(0, typeName.size()).compare(typeName) == 0) )
-        temp.push_back(It->pFeat);
+      if ( It->pObject && (typeName.empty() || It->TypeName.substr(0, typeName.size()).compare(typeName) == 0) )
+        temp.push_back(It->pObject);
     }
   }
 
@@ -79,7 +79,7 @@ std::vector<SelectionSingleton::SelObj> SelectionSingleton::getCompleteSelection
     tempSelObj.FeatName = It->FeatName.c_str();
     tempSelObj.SubName  = It->SubName.c_str();
     tempSelObj.TypeName = It->TypeName.c_str();
-    tempSelObj.pFeat    = It->pFeat;
+    tempSelObj.pObject  = It->pObject;
     tempSelObj.pDoc     = It->pDoc;
     temp.push_back(tempSelObj);
   }
@@ -111,7 +111,7 @@ vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const char* 
       tempSelObj.FeatName = It->FeatName.c_str();
       tempSelObj.SubName  = It->SubName.c_str();
       tempSelObj.TypeName = It->TypeName.c_str();
-      tempSelObj.pFeat    = It->pFeat;
+      tempSelObj.pObject    = It->pObject;
       tempSelObj.pDoc     = It->pDoc;
         
       temp.push_back(tempSelObj);
@@ -153,9 +153,9 @@ unsigned int SelectionSingleton::getNbrOfType(const char *TypeName, const char* 
   return iNbr;
 }
 
-vector<App::AbstractFeature*> SelectionSingleton::getFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
+vector<App::DocumentObject*> SelectionSingleton::getObjectsOfType(const Base::Type& typeId, const char* pDocName) const
 {
-  vector<App::AbstractFeature*> temp;
+  vector<App::DocumentObject*> temp;
   App::Document *pcDoc;
 
   if(pDocName)
@@ -168,16 +168,16 @@ vector<App::AbstractFeature*> SelectionSingleton::getFeaturesOfType(const Base::
 
   for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
   {
-    if ( It->pDoc == pcDoc && It->pFeat && It->pFeat->getTypeId().isDerivedFrom( typeId ) )
+    if ( It->pDoc == pcDoc && It->pObject && It->pObject->getTypeId().isDerivedFrom( typeId ) )
     {
-      temp.push_back(It->pFeat);
+      temp.push_back(It->pObject);
     }
   }
 
   return temp;
 }
 
-unsigned int SelectionSingleton::countFeaturesOfType(const Base::Type& typeId, const char* pDocName) const
+unsigned int SelectionSingleton::countObjectsOfType(const Base::Type& typeId, const char* pDocName) const
 {
   unsigned int iNbr=0;
   App::Document *pcDoc;
@@ -192,7 +192,7 @@ unsigned int SelectionSingleton::countFeaturesOfType(const Base::Type& typeId, c
 
   for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
   {
-    if ( It->pDoc == pcDoc && It->pFeat && It->pFeat->getTypeId().isDerivedFrom( typeId ) )
+    if ( It->pDoc == pcDoc && It->pObject && It->pObject->getTypeId().isDerivedFrom( typeId ) )
     {
       iNbr++;
     }
@@ -201,13 +201,13 @@ unsigned int SelectionSingleton::countFeaturesOfType(const Base::Type& typeId, c
   return iNbr;
 }
 
-bool SelectionSingleton::setPreselect(const char* pDocName, const char* pFeatName, const char* pSubName, float x, float y, float z)
+bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x, float y, float z)
 {
   if(DocName != "")
     rmvPreselect();
 
   DocName = pDocName;
-  FeatName= pFeatName;
+  FeatName= pObjectName;
   SubName = pSubName;
   hx = x;
   hy = y;
@@ -216,7 +216,7 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pFeatNam
   SelectionChanges Chng;
 
   Chng.pDocName  = DocName.c_str();
-  Chng.pFeatName = FeatName.c_str();
+  Chng.pObjectName = FeatName.c_str();
   Chng.pSubName  = SubName.c_str();
   Chng.x = x;
   Chng.y = y;
@@ -226,7 +226,7 @@ bool SelectionSingleton::setPreselect(const char* pDocName, const char* pFeatNam
 
   Notify(Chng);
 
-  //Base::Console().Log("Sel : Add preselect %s \n",pFeatName);
+  //Base::Console().Log("Sel : Add preselect %s \n",pObjectName);
 
   // allows the preselection
   return true;
@@ -240,7 +240,7 @@ void SelectionSingleton::rmvPreselect()
 
   SelectionChanges Chng;
   Chng.pDocName  = DocName.c_str();
-  Chng.pFeatName = FeatName.c_str();
+  Chng.pObjectName = FeatName.c_str();
   Chng.pSubName  = SubName.c_str();
   Chng.Type = SelectionChanges::RmvPreselect;
 
@@ -259,10 +259,10 @@ void SelectionSingleton::rmvPreselect()
 
 
 
-bool SelectionSingleton::addSelection(const char* pDocName, const char* pFeatName, const char* pSubName, float x, float y, float z)
+bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectName, const char* pSubName, float x, float y, float z)
 {
   // already in ?
-  if(isSelected(pDocName, pFeatName, pSubName))
+  if(isSelected(pDocName, pObjectName, pSubName))
     return true;
 
   _SelObj temp;
@@ -272,28 +272,28 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pFeatNam
   else
     temp.pDoc = App::GetApplication().getActiveDocument();
 
-  if(pFeatName)
-    temp.pFeat = temp.pDoc->getFeature(pFeatName);
+  if(pObjectName)
+    temp.pObject = temp.pDoc->getObject(pObjectName);
   else
-    temp.pFeat = 0;
+    temp.pObject = 0;
 
 
   temp.DocName  = pDocName;
-  temp.FeatName = pFeatName?pFeatName:"";
+  temp.FeatName = pObjectName?pObjectName:"";
   temp.SubName  = pSubName ?pSubName :"";
   temp.x        = x;
   temp.y        = y;
   temp.z        = z;
 
-  if(temp.pFeat)
-    temp.TypeName = temp.pFeat->getTypeId().getName();
+  if(temp.pObject)
+    temp.TypeName = temp.pObject->getTypeId().getName();
 
   _SelList.push_back(temp);
 
   SelectionChanges Chng;
 
   Chng.pDocName  = pDocName;
-  Chng.pFeatName = pFeatName?pFeatName:"";
+  Chng.pObjectName = pObjectName?pObjectName:"";
   Chng.pSubName  = pSubName ?pSubName :"";
   Chng.x         = x;
   Chng.y         = y;
@@ -303,22 +303,22 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pFeatNam
 
   Notify(Chng);
 
-  Base::Console().Log("Sel : Add Selection \"%s.%s.%s(%f,%f,%f)\"\n",pDocName,pFeatName,pSubName,x,y,z);
+  Base::Console().Log("Sel : Add Selection \"%s.%s.%s(%f,%f,%f)\"\n",pDocName,pObjectName,pSubName,x,y,z);
 
   // allow selection
   return true;
 
 }
 
-void SelectionSingleton::rmvSelection(const char* pDocName, const char* pFeatName, const char* pSubName)
+void SelectionSingleton::rmvSelection(const char* pDocName, const char* pObjectName, const char* pSubName)
 {
   vector<SelectionChanges> rmvList;
 
   for( list<_SelObj>::iterator It = _SelList.begin();It != _SelList.end();)
   {
-    if( ( It->DocName == pDocName && !pFeatName ) ||
-        ( It->DocName == pDocName && pFeatName && It->FeatName == pFeatName && !pSubName ) ||
-        ( It->DocName == pDocName && pFeatName && It->FeatName == pFeatName && pSubName && It->SubName == pSubName ))
+    if( ( It->DocName == pDocName && !pObjectName ) ||
+        ( It->DocName == pDocName && pObjectName && It->FeatName == pObjectName && !pSubName ) ||
+        ( It->DocName == pDocName && pObjectName && It->FeatName == pObjectName && pSubName && It->SubName == pSubName ))
     {
       // save in tmp. string vars
       std::string tmpDocName = It->DocName;
@@ -330,14 +330,14 @@ void SelectionSingleton::rmvSelection(const char* pDocName, const char* pFeatNam
 
       SelectionChanges Chng;
       Chng.pDocName  = tmpDocName.c_str();
-      Chng.pFeatName = tmpFeaName.c_str();
+      Chng.pObjectName = tmpFeaName.c_str();
       Chng.pSubName  = tmpSubName.c_str();
       Chng.Type      = SelectionChanges::RmvSelection;
 
       Notify(Chng);
       
       rmvList.push_back(Chng);
-      Base::Console().Log("Sel : Rmv Selection \"%s.%s.%s\"\n",pDocName,pFeatName,pSubName);
+      Base::Console().Log("Sel : Rmv Selection \"%s.%s.%s\"\n",pDocName,pObjectName,pSubName);
     } else 
       ++It;
   }
@@ -360,10 +360,10 @@ void SelectionSingleton::clearSelection(void)
 
 }
 
-bool SelectionSingleton::isSelected(const char* pDocName, const char* pFeatName, const char* pSubName) const
+bool SelectionSingleton::isSelected(const char* pDocName, const char* pObjectName, const char* pSubName) const
 {
   const char* tmpDocName = pDocName ? pDocName : "";
-  const char* tmpFeaName = pFeatName ? pFeatName : "";
+  const char* tmpFeaName = pObjectName ? pObjectName : "";
   const char* tmpSubName = pSubName ? pSubName : "";
   for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
     if(It->DocName == tmpDocName && It->FeatName == tmpFeaName && It->SubName == tmpSubName )
@@ -410,15 +410,15 @@ void SelectionSingleton::destruct (void)
     delete _pcSingleton;
 }
 /*
-void SelectionSingleton::addFeature(App::AbstractFeature *f)
+void SelectionSingleton::addObject(App::DocumentObject *f)
 {
-  _FeatureSet.insert(f);
+  _ObjectSet.insert(f);
 
 }
 
-void SelectionSingleton::removeFeature(App::AbstractFeature *f)
+void SelectionSingleton::removeObject(App::DocumentObject *f)
 {
-  _FeatureSet.erase(f);
+  _ObjectSet.erase(f);
 
 
 }

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2006 Juergen Riegel                                     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,70 +21,15 @@
  ***************************************************************************/
 
 
-#ifndef __ViewProviderCurveNet_H__
-#define __ViewProviderCurveNet_H__
-
-#include "ViewProvider.h"
-
-
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-class SoTransform;
-
-namespace Gui {
-  class View3DInventorViewer;
-  class SoFCSelection;
-}
-
-namespace PartGui {
+#include "PreCompiled.h"
+#ifndef _PreComp_
+# include <stdio.h>
+# include <string.h>
+# include <math.h>
+#endif
 
 
-class AppPartGuiExport ViewProviderCurveNet:public ViewProviderPart
-{
-  PROPERTY_HEADER(PartGui::ViewProviderPart);
+#include "Placement.h"
 
-public:
-  /// constructor
-  ViewProviderCurveNet();
-  /// destructor
-  virtual ~ViewProviderCurveNet();
-
-
-  virtual void attach(App::DocumentObject *);
-
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void){return std::vector<std::string>();}
-  /// Update the Part representation
-  virtual void update(void){}
-
-  virtual void setEdit(void);
-  virtual void unsetEdit(void);
-
-  virtual bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
-
-protected:
-  struct Node {
-    Gui::SoFCSelection  *pcHighlight;
-    SoTransform    *pcTransform;
-  };
-
-  std::list<Node> NodeList;
-
-  bool bInEdit;
-  bool bMovePointMode;
-  Node PointToMove;
-  /// root of the edge and vertex points
-  SoSeparator *EdgeRoot, *VertexRoot;
-
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
-
-};
-
-} // namespace PartGui
-
-
-#endif // __VIEWPROVIDERPART_H__
+using namespace Base;
 

@@ -42,7 +42,7 @@ MTL=midl.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Desc=Light
-PostBuild_Cmds=light.exe -out Release\FreeCAD.msi "D:\Develop\Libs\Wix_20\ui\wixui_mondo.wixlib" Release\*.wxobj	mkdir ..\..\Install	copy Release\FreeCAD.msi ..\..\Install
+PostBuild_Cmds=light.exe -out Release\FreeCAD.msi "C:\Documents and Settings\jriegel\My Documents\Projects\Wix_2.0\ui\wixui_mondo.wixlib" Release\*.wxobj	mkdir ..\..\Install	copy Release\FreeCAD.msi ..\..\Install
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "Install - Win32 Debug"

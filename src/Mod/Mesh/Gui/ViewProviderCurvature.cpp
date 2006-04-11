@@ -210,7 +210,7 @@ void ViewProviderMeshCurvature::setVertexCurvatureMode(int mode)
 {
   Mesh::PropertyCurvatureList* pCurvInfo=0;
   std::map<std::string,App::Property*> Map;
-  pcFeature->getPropertyMap(Map);
+  pcObject->getPropertyMap(Map);
   for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
   {
     Base::Type t = it->second->getTypeId();

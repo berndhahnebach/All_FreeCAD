@@ -33,9 +33,9 @@
 #include "Helpers.h"
 
 #include <Base/BoundBox.h>
+#include <Base/Vector3D.h>
 
 namespace Base{
-  class Vector3D;
   class Matrix4D;
   class Polygon2D;
   class ViewProjMethod;

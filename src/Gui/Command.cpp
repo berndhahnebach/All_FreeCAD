@@ -45,6 +45,10 @@
 #include <Base/Interpreter.h>
 #include <Base/Sequencer.h>
 
+#include <App/Document.h>
+#include <App/Feature.h>
+#include <App/DocumentObject.h>
+
 using Base::Interpreter;
 using namespace Gui;
 using namespace Gui::Dialog;
@@ -214,9 +218,18 @@ App::Document* Command::getDocument(const char* Name)
 
 App::AbstractFeature* Command::getFeature(const char* Name)
 {
+  App::DocumentObject *pObj = getObject(Name);
+  if(pObj && pObj->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()))
+    return dynamic_cast<App::AbstractFeature*>(pObj);
+  else
+    return 0;
+}
+
+App::DocumentObject* Command::getObject(const char* Name)
+{
   App::Document*pDoc = getDocument();
   if(pDoc)
-    return pDoc->getFeature(Name);
+    return pDoc->getObject(Name);
   else
     return 0;
 }
@@ -277,9 +290,9 @@ bool Command::hasActiveDocument(void)
   return getActiveGuiDocument() != 0;
 }
 /// true when there is a document and a Feature with Name
-bool Command::hasFeature(const char* Name)
+bool Command::hasObject(const char* Name)
 {
-  return getDocument() != 0 && getDocument()->getFeature(Name) != 0;
+  return getDocument() != 0 && getDocument()->getObject(Name) != 0;
 }
 
 Gui::SelectionSingleton&  Command::getSelection(void)
@@ -287,11 +300,11 @@ Gui::SelectionSingleton&  Command::getSelection(void)
   return Gui::Selection();
 }
 
-std::string Command::getUniqueFeatureName(const char *BaseName)
+std::string Command::getUniqueObjectName(const char *BaseName)
 {
   assert(hasActiveDocument());
 
-  return getActiveGuiDocument()->getDocument()->getUniqueFeatureName(BaseName);
+  return getActiveGuiDocument()->getDocument()->getUniqueObjectName(BaseName);
 }
 
 
@@ -367,7 +380,7 @@ void Command::updateActive(void)
 {
   WaitCursor wc;
 
-  getGuiApplication()->activeDocument()->getDocument()->Recompute();
+  getGuiApplication()->activeDocument()->getDocument()->recompute();
   //getGuiApplication()->UpdateActive();
 }
 

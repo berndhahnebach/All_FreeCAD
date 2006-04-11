@@ -71,7 +71,7 @@ SoFCSelection::SoFCSelection()
   SO_NODE_ADD_FIELD(selectionMode,  (SEL_ON));
   SO_NODE_ADD_FIELD(selected,       (OFF));
   SO_NODE_ADD_FIELD(documentName,   (""));
-  SO_NODE_ADD_FIELD(featureName,    (""));
+  SO_NODE_ADD_FIELD(objectName,    (""));
   SO_NODE_ADD_FIELD(subElementName, (""));
 
   SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE);
@@ -127,7 +127,7 @@ void SoFCSelection::doAction( SoAction *action)
 
     if ( selaction->SelChange.Type == SelectionChanges::AddSelection || selaction->SelChange.Type == SelectionChanges::RmvSelection ) {
       if ( documentName.getValue() == selaction->SelChange.pDocName &&
-           featureName.getValue() == selaction->SelChange.pFeatName &&
+           objectName.getValue() == selaction->SelChange.pObjectName &&
            (subElementName.getValue() == selaction->SelChange.pSubName || *(selaction->SelChange.pSubName) == '\0') ) {
         if ( selaction->SelChange.Type == SelectionChanges::AddSelection )
         {
@@ -159,7 +159,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
       if (!highlighted) {
         if (mymode == AUTO) {
           if(Gui::Selection().setPreselect(documentName.getValue().getString()
-                                           ,featureName.getValue().getString()
+                                           ,objectName.getValue().getString()
                                            ,subElementName.getValue().getString()
                                            ,pp->getPoint()[0]
                                            ,pp->getPoint()[1]
@@ -175,7 +175,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
         } else {
          // preselection in the viewer is disabled but we must inform all observers anyway
          if (Gui::Selection().setPreselect(documentName.getValue().getString()
-                                           ,featureName.getValue().getString()
+                                           ,objectName.getValue().getString()
                                            ,subElementName.getValue().getString()
                                            ,pp->getPoint()[0]
                                            ,pp->getPoint()[1]
@@ -184,7 +184,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
         }
       }
       sprintf(buf,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
-                                                      ,featureName.getValue().getString()
+                                                      ,objectName.getValue().getString()
                                                       ,subElementName.getValue().getString()
                                                       ,pp->getPoint()[0]
                                                       ,pp->getPoint()[1]
@@ -231,15 +231,15 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
         if(bCtrl)
         {
           if(Gui::Selection().isSelected(documentName.getValue().getString()
-                                         ,featureName.getValue().getString()
+                                         ,objectName.getValue().getString()
                                          ,subElementName.getValue().getString()))
           {
             Gui::Selection().rmvSelection(documentName.getValue().getString()
-                                          ,featureName.getValue().getString()
+                                          ,objectName.getValue().getString()
                                           ,subElementName.getValue().getString());
           }else{
             Gui::Selection().addSelection(documentName.getValue().getString()
-                                          ,featureName.getValue().getString()
+                                          ,objectName.getValue().getString()
                                           ,subElementName.getValue().getString()
                                           ,pp->getPoint()[0]
                                           ,pp->getPoint()[1]
@@ -248,7 +248,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
         }else{
           Gui::Selection().clearSelection();
           Gui::Selection().addSelection(documentName.getValue().getString()
-                                          ,featureName.getValue().getString()
+                                          ,objectName.getValue().getString()
                                           ,subElementName.getValue().getString()
                                           ,pp->getPoint()[0]
                                           ,pp->getPoint()[1]

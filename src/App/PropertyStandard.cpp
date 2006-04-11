@@ -97,7 +97,7 @@ void PropertyInteger::setPyObject(PyObject *value)
 
 }
 
-void PropertyInteger::Save (Writer &writer)
+void PropertyInteger::Save (Writer &writer) const
 {
   writer << "<Integer value=\"" <<  _lValue <<"\"/>" ;
 }
@@ -108,6 +108,18 @@ void PropertyInteger::Restore(Base::XMLReader &reader)
   reader.readElement("Integer");
   // get the value of my Attribute
   _lValue = reader.getAttributeAsInteger("value");
+}
+
+Property *PropertyInteger::Copy(void) const
+{
+  PropertyInteger *p= new PropertyInteger();
+  p->_lValue = _lValue;
+  return p;
+}
+
+void PropertyInteger::Paste(const Property &from)
+{
+  _lValue = dynamic_cast<const PropertyInteger&>(from)._lValue;
 }
 
 
@@ -187,7 +199,7 @@ void PropertyIntegerList::setPyObject(PyObject *value)
 
 }
 
-void PropertyIntegerList::Save (Writer &writer)
+void PropertyIntegerList::Save (Writer &writer) const
 {
   writer << "<IntegerList count=\"" <<  getSize() <<"\"/>" << endl;
   for(int i = 0;i<getSize(); i++)
@@ -215,6 +227,19 @@ void PropertyIntegerList::Restore(Base::XMLReader &reader)
   reader.readEndElement("IntegerList");
 
 }
+
+Property *PropertyIntegerList::Copy(void) const
+{
+  PropertyIntegerList *p= new PropertyIntegerList();
+  p->_lValueList = _lValueList;
+  return p;
+}
+
+void PropertyIntegerList::Paste(const Property &from)
+{
+  _lValueList = dynamic_cast<const PropertyIntegerList&>(from)._lValueList;
+}
+
 
 
 //**************************************************************************
@@ -276,7 +301,7 @@ void PropertyFloat::setPyObject(PyObject *value)
 
 }
 
-void PropertyFloat::Save (Writer &writer)
+void PropertyFloat::Save (Writer &writer) const
 {
   writer <<  "<Float value=\"" <<  _dValue <<"\"/>" ;
 }
@@ -288,6 +313,19 @@ void PropertyFloat::Restore(Base::XMLReader &reader)
   // get the value of my Attribute
   _dValue = (float) reader.getAttributeAsFloat("value");
 }
+
+Property *PropertyFloat::Copy(void) const
+{
+  PropertyFloat *p= new PropertyFloat();
+  p->_dValue = _dValue;
+  return p;
+}
+
+void PropertyFloat::Paste(const Property &from)
+{
+  _dValue = dynamic_cast<const PropertyFloat&>(from)._dValue;
+}
+
 
 //**************************************************************************
 // PropertyFloatList
@@ -364,7 +402,7 @@ void PropertyFloatList::setPyObject(PyObject *value)
 
 }
 
-void PropertyFloatList::Save (Writer &writer)
+void PropertyFloatList::Save (Writer &writer) const
 {
   if(writer.isForceXML())
   {
@@ -404,7 +442,7 @@ void PropertyFloatList::Restore(Base::XMLReader &reader)
   }
 }
 
-void PropertyFloatList::SaveDocFile (Base::Writer &writer)
+void PropertyFloatList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
@@ -428,6 +466,17 @@ void PropertyFloatList::RestoreDocFile(Base::Reader &reader)
   }
 }
 
+Property *PropertyFloatList::Copy(void) const
+{
+  PropertyFloatList *p= new PropertyFloatList();
+  p->_lValueList = _lValueList;
+  return p;
+}
+
+void PropertyFloatList::Paste(const Property &from)
+{
+  _lValueList = dynamic_cast<const PropertyFloatList&>(from)._lValueList;
+}
 
 
 //**************************************************************************
@@ -500,7 +549,7 @@ void PropertyString::setPyObject(PyObject *value)
 
 }
 
-void PropertyString::Save (Writer &writer)
+void PropertyString::Save (Writer &writer) const
 {
   writer << "<String value=\"" <<  _cValue.c_str() <<"\"/>" ;
 }
@@ -511,6 +560,19 @@ void PropertyString::Restore(Base::XMLReader &reader)
   reader.readElement("String");
   // get the value of my Attribute
   _cValue = reader.getAttribute("value");
+}
+
+
+Property *PropertyString::Copy(void) const
+{
+  PropertyString *p= new PropertyString();
+  p->_cValue = _cValue;
+  return p;
+}
+
+void PropertyString::Paste(const Property &from)
+{
+  _cValue = dynamic_cast<const PropertyString&>(from)._cValue;
 }
 
 
@@ -573,7 +635,7 @@ void PropertyBool::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (bool expected)...");
 }
 
-void PropertyBool::Save (Writer &writer)
+void PropertyBool::Save (Writer &writer) const
 {
   writer << "<Bool value=\"" ;
   if(_lValue)
@@ -594,6 +656,21 @@ void PropertyBool::Restore(Base::XMLReader &reader)
   else
     _lValue = false;
 }
+
+
+Property *PropertyBool::Copy(void) const
+{
+  PropertyBool *p= new PropertyBool();
+  p->_lValue = _lValue;
+  return p;
+}
+
+void PropertyBool::Paste(const Property &from)
+{
+  _lValue = dynamic_cast<const PropertyBool&>(from)._lValue;
+}
+
+
 
 //**************************************************************************
 //**************************************************************************
@@ -712,7 +789,7 @@ void PropertyColor::setPyObject(PyObject *value)
   setValue( cCol );
 }
 
-void PropertyColor::Save (Writer &writer)
+void PropertyColor::Save (Writer &writer) const
 {
   writer << writer.ind() << "<PropertyColor value=\"" <<  _cCol.getPackedValue() <<"\"/>" << endl;
 }
@@ -725,6 +802,21 @@ void PropertyColor::Restore(Base::XMLReader &reader)
   int rgba = reader.getAttributeAsInteger("value");
   _cCol.setPackedValue(rgba);
 }
+
+
+Property *PropertyColor::Copy(void) const
+{
+  PropertyColor *p= new PropertyColor();
+  p->_cCol = _cCol;
+  return p;
+}
+
+void PropertyColor::Paste(const Property &from)
+{
+  _cCol = dynamic_cast<const PropertyColor&>(from)._cCol;
+}
+
+
 
 //**************************************************************************
 // PropertyColorList
@@ -820,7 +912,7 @@ void PropertyColorList::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used...");
 }
 
-void PropertyColorList::Save (Writer &writer)
+void PropertyColorList::Save (Writer &writer) const
 {
   if(writer.isForceXML())
   {
@@ -860,7 +952,7 @@ void PropertyColorList::Restore(Base::XMLReader &reader)
   }
 }
 
-void PropertyColorList::SaveDocFile (Base::Writer &writer)
+void PropertyColorList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
@@ -886,252 +978,26 @@ void PropertyColorList::RestoreDocFile(Base::Reader &reader)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-#if 0
-//**************************************************************************
-//**************************************************************************
-// PropertyColor
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-//**************************************************************************
-// Construction/Destruction
-
-
-PropertyColor::PropertyColor(long lRed, long lGreen, long lBlue)
-	:_lRed(lRed),_lGreen(lGreen), _lBlue(lBlue)
+Property *PropertyColorList::Copy(void) const
 {
-
+  PropertyColorList *p= new PropertyColorList();
+  p->_lValueList = _lValueList;
+  return p;
 }
 
-
-PropertyColor::~PropertyColor()
+void PropertyColorList::Paste(const Property &from)
 {
-
-}
-
-//**************************************************************************
-// Base class implementer
-
-void PropertyColor::Set(const char* Str)
-{
-
-}
-
-const char* PropertyColor::GetAsString(void)
-{
-	static char sBuf[DBL_DIG+10];
-	sprintf(sBuf,"[%ld, %ld, %ld]",_lRed, _lGreen, _lBlue);
-	return sBuf;
+  _lValueList = dynamic_cast<const PropertyColorList&>(from)._lValueList;
 }
 
 
 
-const char* PropertyColor::GetType(void)
-{
-	return "Color";
-}
-
-const char* PropertyColor::SetSubProperty(const char* sSubPropName,const char* sNewValue)
-{
-
-	if(strcmp(sSubPropName,"Red")==0)
-		_lRed = atol(sNewValue);
-	else if(strcmp(sSubPropName,"Green")==0)
-		_lGreen = atol(sNewValue);
-	else if(strcmp(sSubPropName,"Blue")==0)
-		_lBlue = atol(sNewValue);
-	else return "";
-
-	return GetSubProperty(sSubPropName);
-}
-
-
-const char* PropertyColor::GetSubProperty(const char* sSubPropName)
-{
-	static char sBuf[DBL_DIG+10];
-
-	if(strcmp(sSubPropName,"Red")==0)
-		sprintf(sBuf,"%ld",_lRed);
-	else if(strcmp(sSubPropName,"Green")==0)
-		sprintf(sBuf,"%ld",_lGreen);
-	else if(strcmp(sSubPropName,"Blue")==0)
-		sprintf(sBuf,"%ld",_lBlue);
-	else return "";
-
-	return sBuf;
-}
-
-
-const char* PropertyColor::GetSubPropertyNames(void)
-{
-	return "Red;Green;Blue";
-}
-
-//**************************************************************************
-// Seter getter for the property
-
-void PropertyColor::SetRed(long lRed)
-{
-	_lRed=lRed;
-}
-
-long PropertyColor::GetRed(void)
-{
-	return _lRed;
-}
-
-void PropertyColor::SetGreen(long lGreen)
-{
-	_lGreen=lGreen;
-}
-
-long PropertyColor::GetGreen(void)
-{
-	return _lGreen;
-}
-
-void PropertyColor::SetBlue(long lBlue)
-{
-	_lBlue=lBlue;
-}
-
-long PropertyColor::GetBlue(void)
-{
-	return _lBlue;
-}
-
-//**************************************************************************
-//**************************************************************************
-// PropertyList
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-//**************************************************************************
-// Construction/Destruction
-
-       
-PropertyList::PropertyList(const std::vector<std::string>& lValue, long lCurrent)
-	:_lValue(lValue), _lCurrent(lCurrent)
-{
-
-}
-
-
-PropertyList::~PropertyList()
-{
-
-}
-
-//**************************************************************************
-// Base class implementer
-
-void PropertyList::Set(const char* Str)
-{
-
-}
-
-const char* PropertyList::GetAsString(void)
-{
-	static char sBuf[DBL_DIG+10];
-  int pos = 0;
-  for (std::vector<std::string>::iterator it = _lValue.begin(); it!=_lValue.end(); ++it)
-  {
-    if (pos+it->length() >= DBL_DIG)
-    {
-//      Console().Warning("PropertyList: List too long\n");
-      break;
-    }
-  	pos += sprintf(sBuf+pos,"%s ",it->c_str());
-  }
-	return sBuf;
-}
 
 
 
-const char* PropertyList::GetType(void)
-{
-	return "List";
-}
-
-const char* PropertyList::SetSubProperty(const char* sSubPropName,const char* sNewValue)
-{
-	if(strcmp(sSubPropName,"Current")==0)
-		_lCurrent = atol(sNewValue);
-  else
-  {
-    unsigned lPos = atol(sSubPropName);
-    if (lPos < _lValue.size())
-      _lValue[lPos] = sNewValue;
-  	else return "";
-  }
-
-	return GetSubProperty(sSubPropName);
-}
 
 
-const char* PropertyList::GetSubProperty(const char* sSubPropName)
-{
-	static char sBuf[DBL_DIG+10];
-
-	if(strcmp(sSubPropName,"Current")==0)
-      sprintf(sBuf,"%ld",_lCurrent);
-  else
-  {
-    unsigned lPos = atol(sSubPropName);
-    if (lPos < _lValue.size())
-      sprintf(sBuf,"%s",_lValue[lPos].c_str());
-  	else return "";
-  }
-
-	return sBuf;
-}
 
 
-const char* PropertyList::GetSubPropertyNames(void)
-{
-	static char sBuf[DBL_DIG+10];
-  int pos = 0;
 
-  long size = _lValue.size()-1;
-  pos = sprintf(sBuf, "%ld.", _lCurrent);
-  for (long i = 0; i < size; ++i)
-    pos += sprintf(sBuf+pos, "%ld.", i);
-  sprintf(sBuf+pos, "%ld", size);
-	return sBuf;
-}
-
-//**************************************************************************
-// Seter getter for the property
-
-void PropertyList::SetValue(const std::vector<std::string>& lValue)
-{
-	_lValue=lValue;
-}
-
-const std::vector<std::string>& PropertyList::GetValue(void)
-{
-	return _lValue;
-}
-
-void PropertyList::SetCurrentItem (long lCurrent)
-{
-  _lCurrent = lCurrent;
-}
-
-long PropertyList::GetCurrentItem (void)
-{
-  return _lCurrent;
-}
-#endif
 

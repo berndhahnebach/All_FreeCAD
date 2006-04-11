@@ -28,35 +28,38 @@
 #include <Base/TimeInfo.h>
 #include "ViewProvider.h"
 
+#include <App/DocumentObject.h>
+#include <App/Feature.h>
+
 class SoMaterial;
 class SoDrawStyle;
 
 namespace App
 {
-  class AbstractFeature;
+  class DocumentObject;
   class Material;
 }
 
 
 namespace Gui {
 
-class FeatItem;
+class ObjectItem;
 
-class GuiExport ViewProviderFeature:public ViewProvider
+class GuiExport ViewProviderDocumentObject:public ViewProvider
 {
-  PROPERTY_HEADER(Gui::ViewProviderFeature);
+  PROPERTY_HEADER(Gui::ViewProviderDocumentObject);
 
 public:
   /// constructor.
-  ViewProviderFeature();
+  ViewProviderDocumentObject();
 
   /// destructor.
-  virtual ~ViewProviderFeature();
+  virtual ~ViewProviderDocumentObject();
 
   // Returns the tree label
   virtual QListViewItem* getTreeItem(QListViewItem* parent);
 
-  virtual void attach(App::AbstractFeature *pcFeature);
+  virtual void attach(App::DocumentObject *pcObject);
   /// returns a vector of all possible modes
   virtual std::vector<std::string> getModes(void);
 
@@ -68,12 +71,17 @@ public:
   virtual void update(void);
 
   virtual void updateData(void){};
+
+  inline App::AbstractFeature *getAsFeature(void){
+    assert(pcObject && pcObject->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
+    return dynamic_cast<App::AbstractFeature *>(pcObject);
+  }
   
 
   /// helper to copy material from a feature to a SoMeterial Node
   void copy(const App::Material&, SoMaterial*);
   /// helper to set the materials
-  void setMatFromFeature(void);
+  void setMatFromObject(void);
 
   /// Set the transparency
   virtual void setTransparency(float);
@@ -88,7 +96,7 @@ public:
 
 
 
-  App::AbstractFeature *getFeature(void){return pcFeature;}
+  App::DocumentObject *getObject(void){return pcObject;}
 
 protected:
   SoMaterial  *pcSolidMaterial;
@@ -97,66 +105,14 @@ protected:
   SoDrawStyle *pcLineStyle;
   SoDrawStyle *pcPointStyle;
 
-  App::AbstractFeature *pcFeature;
+  App::DocumentObject *pcObject;
 
-  FeatItem *pcFeatItem;
+  ObjectItem *pcObjItem;
 
   int _cLastStatus;
   Base::TimeInfo calcMaterial,calcData;
 };
 
-
-
-
-
-/** The FeatureFactory singleton
-  */
-
-/*
-class GuiExport ViewProviderFeatureFactorySingleton : public Base::Factory
-{
-public:
-	static ViewProviderFeatureFactorySingleton& Instance(void);
-	static void Destruct (void);
-
-    /// produce the ViewProvider using the factory
-	ViewProviderFeature *Produce (const char* sName) const;
-
-private:
-	static ViewProviderFeatureFactorySingleton* _pcSingleton;
-
-	ViewProviderFeatureFactorySingleton(){}
-	~ViewProviderFeatureFactorySingleton(){}
-};
-
-inline GuiExport ViewProviderFeatureFactorySingleton& ViewProviderFeatureFactory(void)
-{
-	return ViewProviderFeatureFactorySingleton::Instance();
-}
-
-// --------------------------------------------------------------------
-
-template <class CLASS>
-class ViewProviderFeatureProducer: public Base::AbstractProducer
-{
-	public:
-		/// Constructor
-		ViewProviderFeatureProducer ()
-		{
-			Gui::ViewProviderFeatureFactory().AddProducer(typeid(CLASS).name(), this);
-		}
-
-		virtual ~ViewProviderFeatureProducer (void){}
-
-		/// Produce an instance
-		virtual void* Produce (void) const
-		{ 
-			return (void*)(new CLASS);
-		}
-};
-
-
-*/
 
 } // namespace Gui
 

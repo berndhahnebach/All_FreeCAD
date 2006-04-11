@@ -457,17 +457,17 @@ StdCmdDelete::StdCmdDelete()
 
 void StdCmdDelete::activated(int iMsg)
 {
-  openCommand("Delete Feature");
+  openCommand("Delete Object");
   const SelectionSingleton& rSel = Selection();
   // go through all documents
   const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
   for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it )
   {
     doCommand(Doc,"d=App.getDocument(\"%s\")",(*it)->getName());
-    const std::vector<App::AbstractFeature*> sel = rSel.getFeaturesOfType(App::AbstractFeature::getClassTypeId(), (*it)->getName());
-    for(std::vector<App::AbstractFeature*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
+    const std::vector<App::DocumentObject*> sel = rSel.getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->getName());
+    for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
     {
-      doCommand(Doc,"d.removeFeature(\"%s\")",(*ft)->name.getValue());
+      doCommand(Doc,"d.removeObject(\"%s\")",(*ft)->name.getValue());
     }
   }
 

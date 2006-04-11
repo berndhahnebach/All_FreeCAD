@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,71 +20,65 @@
  *                                                                         *
  ***************************************************************************/
 
-
-#ifndef __ViewProviderCurveNet_H__
-#define __ViewProviderCurveNet_H__
-
-#include "ViewProvider.h"
+ 
 
 
-class TopoDS_Shape;
-class TopoDS_Face;
-class SoSeparator;
-class SbVec3f;
-class SoTransform;
+#ifndef _DocumentObjectPy_h_
+#define _DocumentObjectPy_h_
 
-namespace Gui {
-  class View3DInventorViewer;
-  class SoFCSelection;
-}
+#ifndef _PreComp_
+#endif
 
-namespace PartGui {
+#include <Base/PyExportImp.h>
 
-
-class AppPartGuiExport ViewProviderCurveNet:public ViewProviderPart
+namespace App
 {
-  PROPERTY_HEADER(PartGui::ViewProviderPart);
+
+class DocumentObject;
+
+
+//===========================================================================
+// DocumentObjectPy - Python wrapper
+//===========================================================================
+
+/** The DocTypeStd python class
+ */
+class AppExport DocumentObjectPy :public Base::PyObjectBase
+{
+	/// always start with Py_Header
+	Py_Header;
 
 public:
-  /// constructor
-  ViewProviderCurveNet();
-  /// destructor
-  virtual ~ViewProviderCurveNet();
+	DocumentObjectPy(DocumentObject *pcDocumentObject, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
+	~DocumentObjectPy();
+
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+
+	virtual PyObject *_repr(void);  				// the representation
+	PyObject *_getattr(char *attr);					// __getattr__ function
+	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+//	PYFUNCDEF_D(FeaturePy,setModified)
 
 
-  virtual void attach(App::DocumentObject *);
+	//---------------------------------------------------------------------
+	// helpers for python exports goes here +++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+  DocumentObject *getDocumentObject(void){return _pcDocumentObject;}
+  
 
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void){return std::vector<std::string>();}
-  /// Update the Part representation
-  virtual void update(void){}
+private:
+  DocumentObject *_pcDocumentObject;
 
-  virtual void setEdit(void);
-  virtual void unsetEdit(void);
-
-  virtual bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
-
-protected:
-  struct Node {
-    Gui::SoFCSelection  *pcHighlight;
-    SoTransform    *pcTransform;
-  };
-
-  std::list<Node> NodeList;
-
-  bool bInEdit;
-  bool bMovePointMode;
-  Node PointToMove;
-  /// root of the edge and vertex points
-  SoSeparator *EdgeRoot, *VertexRoot;
-
-  Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
-  Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
 
 };
 
-} // namespace PartGui
 
 
-#endif // __VIEWPROVIDERPART_H__
+} //namespace App
 
+
+
+#endif

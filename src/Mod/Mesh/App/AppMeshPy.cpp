@@ -71,9 +71,9 @@ open(PyObject *self, PyObject *args)
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
-      Mesh::Import *pcFeature = (Mesh::Import*)pcDoc->addFeature("Mesh::Import",file.fileNamePure().c_str());
+      Mesh::Import *pcFeature = (Mesh::Import*)pcDoc->addObject("Mesh::Import",file.fileNamePure().c_str());
       pcFeature->FileName.setValue( Name );
-      pcDoc->Recompute();
+      pcDoc->recompute();
     }
     else
     {
@@ -115,9 +115,9 @@ insert(PyObject *self, PyObject *args)
         Py_Error(PyExc_Exception,szBuf);
       }
 
-      Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addFeature("Mesh::Import", file.fileNamePure().c_str());
+      Mesh::Import *pcFeature = (Mesh::Import *)pcDoc->addObject("Mesh::Import", file.fileNamePure().c_str());
       pcFeature->FileName.setValue( Name );
-      pcDoc->Recompute();
+      pcDoc->recompute();
     }
     else
     {

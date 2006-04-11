@@ -112,14 +112,14 @@ ViewProviderCurveNet::~ViewProviderCurveNet()
 
 }
 
-void ViewProviderCurveNet::attach(App::AbstractFeature *pcFeat)
+void ViewProviderCurveNet::attach(App::DocumentObject *pcFeat)
 {
-  pcFeature = pcFeat;
+  pcObject = pcFeat;
 
   // copy the material properties of the feature
-  setMatFromFeature();
+  setMatFromObject();
 
-  if ( pcFeature->getStatus() ==  App::AbstractFeature::Error )
+  if ( getAsFeature()->getStatus() ==  App::AbstractFeature::Error )
     return; // feature is invalid
 
 //  TopoDS_Shape cShape = (dynamic_cast<Part::PartFeature*>(pcFeature))->getShape();

@@ -29,11 +29,8 @@
 #endif
 
 #include "MeshKernel.h"
+#include <Base/Vector3D.h>
 
-namespace Base
-{
-  class Vector3D;
-}
 
 using Base::Vector3D;
 

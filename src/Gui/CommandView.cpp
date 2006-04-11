@@ -186,8 +186,8 @@ void StdCmdToggleVisibility::activated(int iMsg)
   for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it )
   {
     Document *pcDoc = Application::Instance->getDocument(*it);
-    const std::vector<App::AbstractFeature*> sel = Selection().getFeaturesOfType(App::AbstractFeature::getClassTypeId(), (*it)->getName());
-    for(std::vector<App::AbstractFeature*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
+    const std::vector<App::DocumentObject*> sel = Selection().getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->getName());
+    for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
     {
       if ( pcDoc && pcDoc->isShow((*ft)->name.getValue()) )
         doCommand(Gui,"Gui.getDocument(\"%s\").hide(\"%s\")", (*it)->getName(), (*ft)->name.getValue());
@@ -873,7 +873,7 @@ void StdCmdViewIvIssueCamPos::activated(int iMsg)
 
   Base::Console().Message("%s",Temp.c_str());
 
-  getGuiApplication()->macroManager()->addLine(MacroManager::Gui,"FreeCAD.document().Recompute()");
+  getGuiApplication()->macroManager()->addLine(MacroManager::Gui,"FreeCAD.document().recompute()");
   getGuiApplication()->macroManager()->addLine(MacroManager::Gui,Temp.c_str());
   //doCommand(Command::Gui,Temp.c_str());
 }

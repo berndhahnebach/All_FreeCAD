@@ -72,7 +72,7 @@ public:
   /** @name additional file writing */
   //@{
   /// add a write request of a Persitant object
-  std::string addFile(const char* Name, Base::Persistance *Object);
+  std::string addFile(const char* Name, const Base::Persistance *Object);
   /// process the requested file writes
   void writeFiles(void);
   /// get all registered file names
@@ -94,7 +94,7 @@ private:
   std::string getUniqueFileName(const char *Name);
   struct FileEntry {
     std::string FileName;
-    Base::Persistance *Object;
+    const Base::Persistance *Object;
   };
   std::vector<FileEntry> FileList;
   std::vector<std::string> FileNames;

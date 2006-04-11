@@ -57,7 +57,7 @@ using namespace PointsGui;
 using namespace Points;
 
 
-PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProviderFeature)
+PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProviderDocumentObject)
 
        
 ViewProviderPoints::ViewProviderPoints()
@@ -137,7 +137,7 @@ void ViewProviderPoints::attach(App::AbstractFeature* pcFeat)
   SoGroup* pcColorShadedRoot = new SoGroup();
 
   // Hilight for selection
-  pcHighlight->featureName = pcFeat->name.getValue();
+  pcHighlight->objectName = pcFeat->name.getValue();
   pcHighlight->documentName = pcFeat->getDocument().getName();
   pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcPointsCoord);
@@ -177,7 +177,7 @@ void ViewProviderPoints::attach(App::AbstractFeature* pcFeat)
   addDisplayMode(pcPointShadedRoot, "Shaded");
 
   // call father (set material and feature pointer)
-  ViewProviderFeature::attach(pcFeat);
+  ViewProviderDocumentObject::attach(pcFeat);
 
   // get and save the feature
   Points::Feature* ptFea = dynamic_cast<Points::Feature*>(pcFeat);
@@ -189,7 +189,7 @@ void ViewProviderPoints::setMode(const char* ModeName)
   if ( strcmp("Color",ModeName)==0 )
   {
     std::map<std::string,App::Property*> Map;
-    pcFeature->getPropertyMap(Map);
+    pcObject->getPropertyMap(Map);
     for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
     {
       Base::Type t = it->second->getTypeId();
@@ -204,7 +204,7 @@ void ViewProviderPoints::setMode(const char* ModeName)
   else if ( strcmp("Intensity",ModeName)==0 )
   {
     std::map<std::string,App::Property*> Map;
-    pcFeature->getPropertyMap(Map);
+    pcObject->getPropertyMap(Map);
     for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
     {
       Base::Type t = it->second->getTypeId();
@@ -219,7 +219,7 @@ void ViewProviderPoints::setMode(const char* ModeName)
   else if ( strcmp("Shaded",ModeName)==0 )
   {
     std::map<std::string,App::Property*> Map;
-    pcFeature->getPropertyMap(Map);
+    pcObject->getPropertyMap(Map);
     for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
     {
       Base::Type t = it->second->getTypeId();
@@ -236,7 +236,7 @@ void ViewProviderPoints::setMode(const char* ModeName)
     setDisplayMode("Point");
   }
 
-  ViewProviderFeature::setMode(ModeName);
+  ViewProviderDocumentObject::setMode(ModeName);
 }
 
 std::vector<std::string> ViewProviderPoints::getModes(void)
@@ -244,10 +244,10 @@ std::vector<std::string> ViewProviderPoints::getModes(void)
   std::vector<std::string> StrList;
   StrList.push_back("Point");
 
-  if ( pcFeature )
+  if ( pcObject )
   {
     std::map<std::string,App::Property*> Map;
-    pcFeature->getPropertyMap(Map);
+    pcObject->getPropertyMap(Map);
 
     for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
     {
@@ -266,7 +266,7 @@ std::vector<std::string> ViewProviderPoints::getModes(void)
 
 void ViewProviderPoints::updateData()
 {
-  createPoints(dynamic_cast<Points::Feature*>(pcFeature));
+  createPoints(dynamic_cast<Points::Feature*>(pcObject));
 }
 
 void ViewProviderPoints::setTransparency(float trans)

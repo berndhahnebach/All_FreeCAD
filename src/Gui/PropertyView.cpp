@@ -132,8 +132,8 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
     for ( vector<SelectionSingleton::SelObj>::const_iterator it = array.begin(); it != array.end(); ++it )
     {
       std::map<std::string,App::Property*> Map;
-      if ( (*it).pFeat )
-        (*it).pFeat->getPropertyMap(Map);
+      if ( (*it).pObject )
+        (*it).pObject->getPropertyMap(Map);
       else if ( (*it).pDoc )
         (*it).pDoc->getPropertyMap(Map);
 

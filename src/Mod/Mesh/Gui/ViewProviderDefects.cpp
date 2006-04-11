@@ -65,7 +65,7 @@ using namespace std;
 using Base::Vector3D;
 
 
-PROPERTY_SOURCE_ABSTRACT(MeshGui::ViewProviderMeshDefects, Gui::ViewProviderFeature)
+PROPERTY_SOURCE_ABSTRACT(MeshGui::ViewProviderMeshDefects, Gui::ViewProviderDocumentObject)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshOrientation, MeshGui::ViewProviderMeshDefects)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshManifolds, MeshGui::ViewProviderMeshDefects)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshDuplicatedFaces, MeshGui::ViewProviderMeshDefects)
@@ -99,7 +99,7 @@ ViewProviderMeshOrientation::~ViewProviderMeshOrientation()
 
 void ViewProviderMeshOrientation::attach(App::AbstractFeature* pcFeat)
 {
-  ViewProviderFeature::attach( pcFeat );
+  ViewProviderDocumentObject::attach( pcFeat );
 
   SoGroup* pcFaceRoot = new SoGroup();
 
@@ -126,7 +126,7 @@ void ViewProviderMeshOrientation::attach(App::AbstractFeature* pcFeat)
 
 void ViewProviderMeshOrientation::showDefects()
 {
-  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcFeature);
+  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
   const MeshCore::MeshKernel & rMesh = f->getMesh();
   MeshCore::MeshEvalNormals eval(rMesh);
   
@@ -166,7 +166,7 @@ ViewProviderMeshManifolds::~ViewProviderMeshManifolds()
 
 void ViewProviderMeshManifolds::attach(App::AbstractFeature* pcFeat)
 {
-  ViewProviderFeature::attach( pcFeat );
+  ViewProviderDocumentObject::attach( pcFeat );
 
   SoGroup* pcLineRoot = new SoGroup();
   pcLineStyle->lineWidth = 3;
@@ -186,7 +186,7 @@ void ViewProviderMeshManifolds::attach(App::AbstractFeature* pcFeat)
 
 void ViewProviderMeshManifolds::showDefects()
 {
-  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcFeature);
+  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
   const MeshCore::MeshKernel & rMesh = f->getMesh();
   MeshCore::MeshEvalTopology eval(rMesh);
   eval.Evaluate();
@@ -224,7 +224,7 @@ ViewProviderMeshDuplicatedFaces::~ViewProviderMeshDuplicatedFaces()
 
 void ViewProviderMeshDuplicatedFaces::attach(App::AbstractFeature* pcFeat)
 {
-  ViewProviderFeature::attach( pcFeat );
+  ViewProviderDocumentObject::attach( pcFeat );
 
   SoGroup* pcFaceRoot = new SoGroup();
 
@@ -251,7 +251,7 @@ void ViewProviderMeshDuplicatedFaces::attach(App::AbstractFeature* pcFeat)
 
 void ViewProviderMeshDuplicatedFaces::showDefects()
 {
-  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcFeature);
+  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
   const MeshCore::MeshKernel & rMesh = f->getMesh();
   MeshCore::MeshEvalDuplicateFacets eval(rMesh);
   
@@ -309,7 +309,7 @@ ViewProviderMeshDegenerations::~ViewProviderMeshDegenerations()
 
 void ViewProviderMeshDegenerations::attach(App::AbstractFeature* pcFeat)
 {
-  ViewProviderFeature::attach( pcFeat );
+  ViewProviderDocumentObject::attach( pcFeat );
 
   SoGroup* pcLineRoot = new SoGroup();
   pcLineStyle->lineWidth = 3;
@@ -329,7 +329,7 @@ void ViewProviderMeshDegenerations::attach(App::AbstractFeature* pcFeat)
 
 void ViewProviderMeshDegenerations::showDefects()
 {
-  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcFeature);
+  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
   const MeshCore::MeshKernel & rMesh = f->getMesh();
   MeshCore::MeshEvalDegeneratedFacets eval(rMesh);
   

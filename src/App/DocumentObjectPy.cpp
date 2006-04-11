@@ -33,12 +33,9 @@
 using Base::Console;
 
 #include "Document.h"
-#include "Feature.h"
+#include "DocumentObject.h"
 #include "Property.h"
-#include "FeaturePy.h"
-#include "MaterialPy.h"
-#include "MatrixPy.h"
-#include "VectorPy.h"
+#include "DocumentObjectPy.h"
 
 using namespace App;
 
@@ -49,11 +46,11 @@ using namespace App;
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject App::FeaturePy::Type = {
+PyTypeObject App::DocumentObjectPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"FeaturePy",				/*tp_name*/
-	sizeof(FeaturePy),			/*tp_basicsize*/
+	"DocumentObjectPy",				/*tp_name*/
+	sizeof(DocumentObjectPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -74,7 +71,7 @@ PyTypeObject App::FeaturePy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About FeaturePy",                                /*tp_doc */
+  "About PyObjectBase",                             /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
@@ -84,7 +81,7 @@ PyTypeObject App::FeaturePy::Type = {
   0,                                                /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
-  &App::DocumentObjectPy::Type,                     /*tp_base */
+  &Base::PyObjectBase::Type,                        /*tp_base */
   0,                                                /*tp_dict */
   0,                                                /*tp_descr_get */
   0,                                                /*tp_descr_set */
@@ -104,14 +101,11 @@ PyTypeObject App::FeaturePy::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef App::FeaturePy::Methods[] = {
+PyMethodDef App::DocumentObjectPy::Methods[] = {
 // PyObjectBase
   PYMETHODEDEF(isA)
-// DocumentObjectPy
-// FeaturePy 
-	PYMETHODEDEF(setModified)
-	PYMETHODEDEF(setModifiedView)
-	PYMETHODEDEF(isValid)
+// DocumentObjectPy 
+//	PYMETHODEDEF(setModified)
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -119,39 +113,36 @@ PyMethodDef App::FeaturePy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject App::FeaturePy::Parents[] = { &FeaturePy::Type, &DocumentObjectPy::Type, &PyObjectBase::Type, NULL};
+PyParentObject App::DocumentObjectPy::Parents[] = { &DocumentObjectPy::Type, &PyObjectBase::Type, NULL};
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-App::FeaturePy::FeaturePy(AbstractFeature *pcFeature, PyTypeObject *T)
-: DocumentObjectPy(pcFeature, T), _pcFeature(pcFeature),solidMaterialPy(0),lineMaterialPy(0),pointMaterialPy(0)
+App::DocumentObjectPy::DocumentObjectPy(DocumentObject *pcDocumentObject, PyTypeObject *T)
+: PyObjectBase( T), _pcDocumentObject(pcDocumentObject)
 {
-//	Base::Console().Log("Create FeaturePy: %p \n",this);
+//	Base::Console().Log("Create DocumentObjectPy: %p \n",this);
 }
 
-PyObject *FeaturePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *DocumentObjectPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  //return new FeaturePy(name, n, tau, gamma);			// Make new Python-able object
+  //return new DocumentObjectPy(name, n, tau, gamma);			// Make new Python-able object
 	return 0;
 }
 
 //--------------------------------------------------------------------------
 // destructor
 //--------------------------------------------------------------------------
-FeaturePy::~FeaturePy()						// Everything handled in parent
+DocumentObjectPy::~DocumentObjectPy()						// Everything handled in parent
 {
-//	Base::Console().Log("Destroy FeaturePy: %p \n",this);
+//	Base::Console().Log("Destroy DocumentObjectPy: %p \n",this);
 
-  if(solidMaterialPy) solidMaterialPy->DecRef();
-  if(lineMaterialPy) lineMaterialPy->DecRef();
-  if(pointMaterialPy) pointMaterialPy->DecRef();
 }
 
 //--------------------------------------------------------------------------
-// FeaturePy representation
+// DocumentObjectPy representation
 //--------------------------------------------------------------------------
-PyObject *FeaturePy::_repr(void)
+PyObject *DocumentObjectPy::_repr(void)
 {
   std::stringstream a;
   a << "Feature: [ ";
@@ -163,190 +154,50 @@ PyObject *FeaturePy::_repr(void)
 	return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
-// FeaturePy Attributes
+// DocumentObjectPy Attributes
 //--------------------------------------------------------------------------
-PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+PyObject *DocumentObjectPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	PY_TRY{
-		if (Base::streq(attr, "solidMaterial"))
     {
-      if(solidMaterialPy==0){
-        solidMaterialPy = new MaterialPy(&(_pcFeature->_solidMaterial));
-//        solidMaterialPy->IncRef();
-      }
-      solidMaterialPy->IncRef();
-			return solidMaterialPy; 
-    }
-    else if (Base::streq(attr, "lineMaterial"))
-    {
-      if(lineMaterialPy==0){
-        lineMaterialPy = new MaterialPy(&(_pcFeature->_lineMaterial));
-//        lineMaterialPy->IncRef();
-      }
-      lineMaterialPy->IncRef();
-			return lineMaterialPy; 
-    }
-    else if (Base::streq(attr, "pointMaterial"))
-    {
-      if(pointMaterialPy==0){
-        pointMaterialPy = new MaterialPy(&(_pcFeature->_pointMaterial));
-//        pointMaterialPy->IncRef();
-      }
-      pointMaterialPy->IncRef();
-			return pointMaterialPy; 
-    }
-    else if (Base::streq(attr, "lineSize"))
-    {
-      return Py_BuildValue("f", _pcFeature->_lineSize);
-    }
-    else if (Base::streq(attr, "pointSize"))
-    {
-      return Py_BuildValue("f", _pcFeature->_pointSize);
-    }
-    else if (Base::streq(attr, "showMode"))
-    {
-        return Py_BuildValue("s", _pcFeature->showMode.getValue());
-    }
-    else{
       // search in PropertyList
-      Property *prop = _pcFeature->getPropertyByName(attr);
+      Property *prop = _pcDocumentObject->getPropertyByName(attr);
       if(prop)
       {
         return prop->getPyObject();
       }
       else
-			  _getattr_up(DocumentObjectPy); 						
+			  _getattr_up(PyObjectBase); 						
     }
 	}PY_CATCH;
 
   return Py_None;
 } 
 
-int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int DocumentObjectPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	if (Base::streq(attr, "solidMaterial")){						// settable new state
-    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
-    {
-      _pcFeature->_solidMaterial = *((MaterialPy*)value)->_pcMaterial;
-      _pcFeature->TouchView();
-    }else if( PyString_Check( value ))
-    {
-      _pcFeature->_solidMaterial = Material(PyString_AsString(value));
-      _pcFeature->TouchView();
-    }else if( PyTuple_Check( value ))
-    {
-      _pcFeature->_solidMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
-      _pcFeature->TouchView();
-    }else
-      throw "material expected for that attribute";
-  }else	if (Base::streq(attr, "lineMaterial")){	
-    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
-    {
-      _pcFeature->_lineMaterial = *((MaterialPy*)value)->_pcMaterial;
-      _pcFeature->TouchView();
-    }else if( PyTuple_Check( value ))
-    {
-      _pcFeature->_lineMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
-      _pcFeature->TouchView();
-    }else
-      throw "material expected for that attribute";
-  }else	if (Base::streq(attr, "pointMaterial")){	
-    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
-    {
-      _pcFeature->_pointMaterial = *((MaterialPy*)value)->_pcMaterial;
-      _pcFeature->TouchView();
-    }else if( PyTuple_Check( value ))
-    {
-      _pcFeature->_pointMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
-      _pcFeature->TouchView();
-    }else
-      throw "material expected for that attribute";
-  }else	if (Base::streq(attr, "lineSize")){	
-    _pcFeature->_lineSize = getFloatFromPy(value);
-    _pcFeature->TouchView();
-  }else	if (Base::streq(attr, "pointSize")){	
-    _pcFeature->_pointSize = getFloatFromPy(value);
-    _pcFeature->TouchView();
-  }else	if (Base::streq(attr, "transparency")){	
-    _pcFeature->setTransparency(getFloatFromPy(value));
-    _pcFeature->TouchView();
-  }else	if (Base::streq(attr, "color")){	
-    _pcFeature->setColor(MaterialPy::getColorFromPy(value));
-    _pcFeature->TouchView();
-  }else	if (Base::streq(attr, "showMode")){	
-    _pcFeature->showMode.setValue(PyString_AsString(value));
-    _pcFeature->TouchView();
-  }else{
+  {
        // search in PropertyList
-      Property *prop = _pcFeature->getPropertyByName(attr);
+      Property *prop = _pcDocumentObject->getPropertyByName(attr);
       if(prop)
       {
         prop->setPyObject(value);
       }else
-			  return DocumentObjectPy::_setattr(attr, value); 						
+			  return PyObjectBase::_setattr(attr, value); 						
   }
   return 0;
 } 
 
-/*
-int FeaturePy::setProperty(const char *attr, PyObject *value)
-{
-  //char sBuf[256];
-  //sprintf(sBuf,"%f",PyFloat_AsDouble(value));
-  //_pcFeature->GetProperty(attr).Set(sBuf);
-  if( PyObject_TypeCheck(value, &PyFloat_Type) )
-    _pcFeature->setPropertyFloat(PyFloat_AsDouble(value),attr);
-  else if( PyObject_TypeCheck(value, &PyInt_Type) )
-    _pcFeature->setPropertyInt(PyInt_AsLong(value),attr);
-  else if( PyObject_TypeCheck(value, &PyString_Type) )
-    _pcFeature->setPropertyString(PyString_AsString(value),attr);
-  else if( PyObject_TypeCheck(value, &(FeaturePy::Type)) )
-  {
-   	FeaturePy  *pcObject = (FeaturePy*)value;
-    _pcFeature->setPropertyLink(pcObject->_pcFeature,attr);
-  }
-  else if( PyObject_TypeCheck(value, &(VectorPy::Type)) )
-  {
-   	VectorPy  *pcObject = (VectorPy*)value;
-    _pcFeature->setPropertyVector(pcObject->value(),attr);
-  }
-  else if( PyObject_TypeCheck(value, &(MatrixPy::Type)) )
-  {
-   	MatrixPy  *pcObject = (MatrixPy*)value;
-    _pcFeature->setPropertyMatrix(pcObject->value(),attr);
-  }
-  else
-    return 0;
-  
-  _pcFeature->TouchProperty(attr);
-  return 1;
-}
-*/
 
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PYFUNCIMP_D(FeaturePy,setModified)
+/*
+PYFUNCIMP_D(DocumentObjectPy,setModified)
 {
   _pcFeature->Touch();
 
 	Py_Return;
 }
-
-PYFUNCIMP_D(FeaturePy,setModifiedView)
-{
-  _pcFeature->TouchView();
-
-	Py_Return;
-}
-
-PYFUNCIMP_D(FeaturePy,isValid)
-{
-  if(_pcFeature->isValid() && !_pcFeature->mustExecute())
-    {Py_INCREF(Py_True); return Py_True;}
-  else
-    {Py_INCREF(Py_False); return Py_False;}
-
-}
-
+*/

@@ -31,10 +31,8 @@
 #include "Definitions.h"
 
 #include <Base/BoundBox.h>
+#include <Base/Vector3D.h>
 
-namespace Base{
-  class Vector3D;
-}
 using Base::Vector3D;
 using Base::BoundBox3D;
 

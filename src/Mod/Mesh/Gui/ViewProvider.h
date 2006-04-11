@@ -61,7 +61,7 @@ namespace MeshGui {
  * The ViewProviderExport class creates an empty node.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderExport : public Gui::ViewProviderFeature
+class GuiMeshExport ViewProviderExport : public Gui::ViewProviderDocumentObject
 {
   PROPERTY_HEADER(MeshGui::ViewProviderExport);
 
@@ -77,7 +77,7 @@ public:
  * a node representing the mesh data structure.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderFeature
+class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderDocumentObject
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMesh);
 
@@ -89,7 +89,7 @@ public:
    * Extracts the mesh data from the feature \a pcFeature and creates
    * an Inventor node \a SoNode with these data. 
    */
-  virtual void attach(App::AbstractFeature *);
+  virtual void attach(App::DocumentObject *);
   /// Sets the correct display mode
   virtual void setMode(const char* ModeName);
   /// returns a vector of all possible modes

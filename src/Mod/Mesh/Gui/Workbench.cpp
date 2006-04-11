@@ -48,7 +48,7 @@ Workbench::~Workbench()
 
 void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) const
 {
-  if ( Gui::Selection().countFeaturesOfType(Mesh::Feature::getClassTypeId()) > 0 )
+  if ( Gui::Selection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0 )
   {
     StdWorkbench::setupContextMenu( recipient, item );
     *item << "Separator" << "Mesh_Import" << "Mesh_Export" << "Mesh_VertexCurvature";

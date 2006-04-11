@@ -73,7 +73,7 @@ void CleanupHandler::cleanup()
 
 void DlgEvaluateMeshImp::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
 {
-  if ( std::find(Reason.DeletedFeatures.begin(), Reason.DeletedFeatures.end(), _meshFeature) != Reason.DeletedFeatures.end() )
+  if ( std::find(Reason.DeletedObjects.begin(), Reason.DeletedObjects.end(), _meshFeature) != Reason.DeletedObjects.end() )
   {
     for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
       _viewer->removeViewProvider( it->second );
@@ -150,8 +150,8 @@ void DlgEvaluateMeshImp::setMesh( Mesh::Feature* m )
 
 void DlgEvaluateMeshImp::setFixedMesh()
 {
-  std::vector<App::AbstractFeature*> fixed = _pDoc->getFeaturesOfType(Mesh::FixDefects::getClassTypeId());
-  for ( std::vector<App::AbstractFeature*>::const_iterator it = fixed.begin(); it != fixed.end(); ++it ) {
+  std::vector<App::DocumentObject*> fixed = _pDoc->getObjectsOfType(Mesh::FixDefects::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::const_iterator it = fixed.begin(); it != fixed.end(); ++it ) {
     Mesh::FixDefects* fix = dynamic_cast<Mesh::FixDefects*>(*it);
     if ( fix && fix->Source.getValue() == _meshFeature ) {
       setMesh(fix);

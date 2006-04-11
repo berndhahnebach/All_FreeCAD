@@ -30,6 +30,7 @@
 #endif
 
 #include <Base/PyExportImp.h>
+#include "DocumentObjectPy.h"
 
 namespace App
 {
@@ -43,7 +44,7 @@ class MaterialPy;
 
 /** The DocTypeStd python class
  */
-class AppExport FeaturePy :public Base::PyObjectBase
+class AppExport FeaturePy :public DocumentObjectPy
 {
 	/// always start with Py_Header
 	Py_Header;

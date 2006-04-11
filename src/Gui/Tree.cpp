@@ -82,7 +82,7 @@ bool DocItem::testStatus(void)
 {
   bool bChanged = false;
 
-  for (std::map<string,FeatItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
+  for (std::map<string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
   {
     if(pos->second->testStatus())
       bChanged = true;
@@ -93,7 +93,7 @@ bool DocItem::testStatus(void)
 
 void DocItem::highlightFeature(const char* name, bool bOn)
 {
-  std::map<string,FeatItem*>::iterator pos;
+  std::map<string,ObjectItem*>::iterator pos;
   pos = FeatMap.find(name);
   
   if(pos != FeatMap.end())
@@ -107,7 +107,7 @@ void DocItem::highlightFeature(const char* name, bool bOn)
 
 void DocItem::selectFeature(const char* name, bool bOn)
 {
-  std::map<string,FeatItem*>::iterator pos;
+  std::map<string,ObjectItem*>::iterator pos;
   pos = FeatMap.find(name);
   
   if(pos != FeatMap.end())
@@ -117,7 +117,7 @@ void DocItem::selectFeature(const char* name, bool bOn)
 }
 void DocItem::clearSelection(void)
 {
-  for (std::map<string,FeatItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
+  for (std::map<string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
   {
     pos->second->bSelected = false;
     pos->second->setSelected(false);
@@ -127,7 +127,7 @@ void DocItem::clearSelection(void)
 
 void DocItem::isSelectionUptodate(void)
 {
-  for (std::map<string,FeatItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
+  for (std::map<string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
   {
     if(pos->second->bSelected != pos->second->isSelected())
     {
@@ -168,17 +168,21 @@ void DocItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int 
 
 
 
-bool DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
+bool DocItem::addViewProviderDocumentObject(ViewProviderDocumentObject* Provider)
 {
-  std::string name = Provider->getFeature()->name.getValue();
-  std::map<std::string,FeatItem*>::iterator it = FeatMap.find( name );
+  std::string name = Provider->getObject()->name.getValue();
+  std::map<std::string,ObjectItem*>::iterator it = FeatMap.find( name );
   if ( it == FeatMap.end() )
   {
-    FeatItem* item = dynamic_cast<FeatItem*>( Provider->getTreeItem(this) );
+    ObjectItem* item = dynamic_cast<ObjectItem*>( Provider->getTreeItem(this) );
+
     // set the new created item at the end
     item->moveItem(_lastFeaItem);
     _lastFeaItem = item;
     FeatMap[ name ] = item;
+
+    if(FeatMap.size() == 1)
+      setOpen(true);
 
     return true;
   }
@@ -186,17 +190,17 @@ bool DocItem::addViewProviderFeature(ViewProviderFeature* Provider)
   return false;
 }
 
-bool DocItem::removeViewProviderFeature(ViewProviderFeature* Provider)
+bool DocItem::removeViewProviderDocumentObject(ViewProviderDocumentObject* Provider)
 {
-  QString name = Provider->getFeature()->name.getValue();
-  std::map<std::string,FeatItem*>::iterator it = FeatMap.find(name.latin1());
+  QString name = Provider->getObject()->name.getValue();
+  std::map<std::string,ObjectItem*>::iterator it = FeatMap.find(name.latin1());
   if ( it != FeatMap.end() )
   {
     // now we must search for the matching listview item
     QListViewItem* item = firstChild();
     QListViewItem* sibling=0;
     while ( item ) {
-      // make sure that we have a FeatItem
+      // make sure that we have a ObjectItem
       if ( item == it->second )
       {
         // in case we remove the last item
@@ -252,7 +256,7 @@ void DocItem::rename(void)
 }
 
 //**************************************************************************
-// FeatItem
+// ObjectItem
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -261,7 +265,7 @@ void DocItem::rename(void)
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-FeatItem::FeatItem( QListViewItem* parent,Gui::ViewProviderFeature* pcViewProvider)
+ObjectItem::ObjectItem( QListViewItem* parent,Gui::ViewProviderDocumentObject* pcViewProvider)
     : QListViewItem( parent ),
   _pcViewProvider(pcViewProvider)
 {
@@ -270,7 +274,7 @@ FeatItem::FeatItem( QListViewItem* parent,Gui::ViewProviderFeature* pcViewProvid
   HighlightColor = QColor (200,200,255);
 
 //  setPixmap(0,pcViewProvider->getIcon());
-//  setText(0,QString(pcViewProvider->getFeature()->getName()));
+//  setText(0,QString(pcViewProvider->getObject()->getName()));
 
 
   bHighlight = false;
@@ -280,7 +284,7 @@ FeatItem::FeatItem( QListViewItem* parent,Gui::ViewProviderFeature* pcViewProvid
 }
 
 
-bool FeatItem::testStatus(void)
+bool ObjectItem::testStatus(void)
 {
   bool ret = _pcViewProvider->testStatus();
   if ( ret )
@@ -288,18 +292,23 @@ bool FeatItem::testStatus(void)
   return ret;
 }
 
-void FeatItem::displayStatusInfo()
+void ObjectItem::displayStatusInfo()
 {
-  App::AbstractFeature* feat = _pcViewProvider->getFeature();
-  QString info = feat->getStatusString();
-  if ( feat->getStatus() == App::AbstractFeature::Error )
-    info += QString(" (%1)").arg(feat->getErrorString());
-  else if ( feat->MustExecute() )
-    info += QString(" (but must be executed)");
-  getMainWindow()->statusBar()->message( info );
+  App::DocumentObject* Obj = _pcViewProvider->getObject();
+
+  if(Obj->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) )
+  {
+    App::AbstractFeature *feat = dynamic_cast<App::AbstractFeature *>(Obj);
+    QString info = feat->getStatusString();
+    if ( feat->getStatus() == App::AbstractFeature::Error )
+      info += QString(" (%1)").arg(feat->getErrorString());
+    else if ( feat->mustExecute() )
+      info += QString(" (but must be executed)");
+    getMainWindow()->statusBar()->message( info );
+  }
 }
 
-void FeatItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align )
+void ObjectItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
    QColorGroup _cg( cg );
    QColor c = _cg.text();
@@ -317,44 +326,44 @@ void FeatItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int
 
 }
 
-void FeatItem::highlightFeature(bool bOn)
+void ObjectItem::highlightFeature(bool bOn)
 {
   bHighlight = bOn;
   repaint();
 }
 
-void FeatItem::selectFeature(bool bOn)
+void ObjectItem::selectFeature(bool bOn)
 {
   setSelected(bOn);
   bSelected =bOn;
   repaint();
 }
 
-void FeatItem::update(void)
+void ObjectItem::update(void)
 {
   //puts("Updtate");
 
 }
 
-void FeatItem::buildUp(void)
+void ObjectItem::buildUp(void)
 {
 
 }
 
-void FeatItem::setOpen( bool o )
+void ObjectItem::setOpen( bool o )
 {
 
   QListViewItem::setOpen ( o );
 }
 
 
-void FeatItem::setup()
+void ObjectItem::setup()
 {
   //setExpandable( TRUE );
   QListViewItem::setup();
 }
 
-void FeatItem::activate ()
+void ObjectItem::activate ()
 {
   //puts("Activated");
 }
@@ -467,13 +476,13 @@ void TreeView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::Selec
     {
   
       if(Reason.Type == SelectionChanges::SetPreselect)
-       it->second->highlightFeature(Reason.pFeatName,true);
+       it->second->highlightFeature(Reason.pObjectName,true);
       else  if(Reason.Type == SelectionChanges::RmvPreselect)
-       it->second->highlightFeature(Reason.pFeatName,false);
+       it->second->highlightFeature(Reason.pObjectName,false);
       else if(Reason.Type == SelectionChanges::AddSelection)
-       it->second->selectFeature(Reason.pFeatName,true);
+       it->second->selectFeature(Reason.pObjectName,true);
       else  if(Reason.Type == SelectionChanges::RmvSelection)
-       it->second->selectFeature(Reason.pFeatName,false);
+       it->second->selectFeature(Reason.pObjectName,false);
     }
   }else{
     for (std::map<string,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
@@ -508,7 +517,7 @@ void TreeView::onItem(QListViewItem* item)
   // feature item selected
   if ( item && item->rtti() == 3100 )
   {
-    FeatItem* feat = reinterpret_cast<FeatItem*>(item);
+    ObjectItem* feat = reinterpret_cast<ObjectItem*>(item);
     feat->displayStatusInfo();
   }
 }
@@ -576,7 +585,7 @@ void TreeView::DeleteDoc( Gui::Document* pDoc )
     QListViewItem* item = _pcMainItem->firstChild();
     QListViewItem* sibling=0;
     while ( item ) {
-      // make sure that we have a FeatItem
+      // make sure that we have a ObjectItem
       if ( item == it->second )
       {
         // in case we remove the last item

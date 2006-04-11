@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Riegel         <juergen.riegel@web.de>                  *
+ *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,62 +21,97 @@
  ***************************************************************************/
 
 
-#ifndef __Persistance_H__
-#define __Persistance_H__
+#ifndef __Transaction_H__
+#define __Transaction_H__
 
 // Std. configurations
 
-
 #ifndef _PreComp_
-# include <string>
-# include <map>
 #endif
 
-#include "Base.h"
-#include "zipios/zipinputstream.h"
+#include <Base/Persistance.h>
 
-namespace Base
-{
-  typedef std::istream Reader;
-  class Writer;
-  class XMLReader;
-
-/// Persistance class and root of the type system
-class BaseExport Persistance : public BaseClass
+namespace App
 {
 
+class Document;
+class DocumentObject;
+class Property;
+
+/** Represents a entry in a Transaction
+ */
+class AppExport TransactionObject: public Base::Persistance
+{
   TYPESYSTEM_HEADER();
 
-public: 
-  /// This method is used to get the size of objects
-  virtual unsigned int size (void){
-    assert(0);
-    return 0;
-  } 
-  /// This method is used to save properties or very small amounts of data to an XML document.
-  virtual void Save (Writer &writer) const {
-    assert(0);
-  } 
+public:
+  /// Construction
+  TransactionObject();
+  /// Destruction
+  virtual ~TransactionObject();
+
+  
+  virtual void Save (Base::Writer &writer) const;
   /// This method is used to restore properties from an XML document.
-  virtual void Restore(XMLReader &reader){
-    assert(0);
-  } 
-  /// This method is used to save large amounts of data to a binary file.
-  virtual void SaveDocFile (Writer &writer) const{
-    assert(0);
-  } 
-  /// This method is used to restore large amounts of data from a binary file.
-  virtual void RestoreDocFile(Reader &reader){
-    assert(0);
-  } 
+  virtual void Restore(Base::XMLReader &reader);
+
+};
+
+/** Represents a atomic transaction of the document
+ */
+class AppExport Transaction: public Base::Persistance
+{
+  TYPESYSTEM_HEADER();
+
+public:
+  /// Construction
+  Transaction();
+  /// Construction
+  Transaction(int pos);
+  /// Destruction
+  virtual ~Transaction();
+
+
+  virtual void Save (Base::Writer &writer) const;
+  /// This method is used to restore properties from an XML document.
+  virtual void Restore(Base::XMLReader &reader);
+
+  /// get the position in the transaction history
+  int getPos(void) const;
+
+  friend Document;
+
+protected:
+  void addObjectNew(DocumentObject *Obj);
+  void addObjectDel(DocumentObject *Obj);
+  void addObjectChange(DocumentObject *Obj,Property *Prop);
+private:
+  int iPos;
+
+};
+
+/** Represents a creation of a DocObject in a Transaction
+ */
+class AppExport TransactionObjectNew: public TransactionObject
+{
+  TYPESYSTEM_HEADER();
+
+public:
+  /// Construction
+  TransactionObjectNew();
+  /// Destruction
+  virtual ~TransactionObjectNew();
+
+  
+  virtual void Save (Base::Writer &writer) const; 
+ 
+  virtual void Restore(Base::XMLReader &reader);
 
 };
 
 
 
+} //namespace App
 
-
-} //namespace Base
-
-#endif // __Persistance_H__
+#endif // __Transaction_H__
 
