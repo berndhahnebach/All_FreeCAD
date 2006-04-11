@@ -57,7 +57,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib xerces-c_2.lib python23.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release/FreeCADApp.dll"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Release\FreeCADApp.dll    ..\..\bin\   	xcopy    /y    /f    Release\FreeCADApp.lib    ..\..\lib\ 
+PostBuild_Cmds=xcopy     /y     /f     Release\FreeCADApp.dll     ..\..\bin\    	xcopy     /y     /f     Release\FreeCADApp.lib     ..\..\lib\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADApp - Win32 Debug"
@@ -88,7 +88,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib xerces-c_2D.lib python23_d.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/FreeCADAppD.dll" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Debug\FreeCADAppD.dll    ..\..\bin\   	xcopy    /y    /f    Debug\FreeCADAppD.lib    ..\..\lib\ 
+PostBuild_Cmds=xcopy     /y     /f     Debug\FreeCADAppD.dll     ..\..\bin\    	xcopy     /y     /f     Debug\FreeCADAppD.lib     ..\..\lib\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -204,11 +204,11 @@ SOURCE=.\FeatureTest.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\Transaction.cpp
+SOURCE=.\Transactions.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\Transaction.h
+SOURCE=.\Transactions.h
 # End Source File
 # End Group
 # Begin Source File
