@@ -65,7 +65,7 @@ public:
    * Extracts the point data from the feature \a pcFeature and creates
    * an Inventor node \a SoNode with these data. 
    */
-  virtual void attach(App::AbstractFeature *);
+  virtual void attach(App::DocumentObject *);
   /// set the viewing mode
   virtual void setMode(const char* ModeName);
   /// returns a vector of all possible modes

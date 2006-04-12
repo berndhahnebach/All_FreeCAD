@@ -135,7 +135,7 @@ void CmdPointsExport::activated(int iMsg)
     
     for ( std::vector<App::DocumentObject*>::const_iterator it = points.begin(); it != points.end(); ++it )
     {
-      doCommand(Doc,"l.append(App.document().GetFeature(\"%s\"))",(*it)->name.getValue());
+      doCommand(Doc,"l.append(App.document().getObject(\"%s\"))",(*it)->name.getValue());
     }
 
     doCommand(Doc,"f.Sources = l");
@@ -178,8 +178,6 @@ void CmdPointsTransform::activated(int iMsg)
     if ( (*it)->getTypeId().isDerivedFrom(Points::Transform::getClassTypeId()) )
     {
       Points::Transform* f = (Points::Transform*)(*it);
-      f->Touch();
-      f->TouchView();
       f->Trnsfrm.setValue( trans*f->Trnsfrm.getValue() );
       pDoc->recompute();
     }

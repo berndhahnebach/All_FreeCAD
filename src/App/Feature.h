@@ -74,7 +74,7 @@ public:
 	AbstractFeature(void);
   virtual ~AbstractFeature();
 
-  virtual void onChanged(Property* prop);
+  virtual void onChanged(const Property* prop);
 
 
 	/** @name methods to overide with a new feature type */

@@ -44,7 +44,7 @@ public:
   virtual ~ViewProviderMeshDefects();
 
   // Build up the initial Inventor node
-  virtual void attach(App::AbstractFeature* pcFeature) = 0;
+  virtual void attach(App::DocumentObject* pcFeature) = 0;
   /// Fill up the Inventor node with data
   virtual void showDefects() = 0;
 
@@ -63,7 +63,7 @@ public:
   ViewProviderMeshOrientation();
   virtual ~ViewProviderMeshOrientation();
 
-  void attach(App::AbstractFeature* pcFeature);
+  void attach(App::DocumentObject* pcFeature);
   void showDefects();
 
 protected:
@@ -81,7 +81,7 @@ public:
   ViewProviderMeshManifolds();
   virtual ~ViewProviderMeshManifolds();
 
-  void attach(App::AbstractFeature* pcFeature);
+  void attach(App::DocumentObject* pcFeature);
   void showDefects();
 
 protected:
@@ -99,7 +99,7 @@ public:
   ViewProviderMeshDuplicatedFaces();
   virtual ~ViewProviderMeshDuplicatedFaces();
 
-  void attach(App::AbstractFeature* pcFeature);
+  void attach(App::DocumentObject* pcFeature);
   void showDefects();
 
 protected:
@@ -117,7 +117,7 @@ public:
   ViewProviderMeshDegenerations();
   virtual ~ViewProviderMeshDegenerations();
 
-  void attach(App::AbstractFeature* pcFeature);
+  void attach(App::DocumentObject* pcFeature);
   void showDefects();
 
 protected:
@@ -132,7 +132,7 @@ public:
   ViewProviderMeshDuplicatedPoints();
   virtual ~ViewProviderMeshDuplicatedPoints();
 
-  void attach(App::AbstractFeature* pcFeature);
+  void attach(App::DocumentObject* pcFeature);
   void showDefects();
 };
 
@@ -144,7 +144,7 @@ public:
   ViewProviderMeshIndices();
   virtual ~ViewProviderMeshIndices();
 
-  void attach(App::AbstractFeature* pcFeature);
+  void attach(App::DocumentObject* pcFeature);
   void showDefects();
 };
 

@@ -97,7 +97,7 @@ ViewProviderMeshOrientation::~ViewProviderMeshOrientation()
   pcFaces->unref();
 }
 
-void ViewProviderMeshOrientation::attach(App::AbstractFeature* pcFeat)
+void ViewProviderMeshOrientation::attach(App::DocumentObject* pcFeat)
 {
   ViewProviderDocumentObject::attach( pcFeat );
 
@@ -164,7 +164,7 @@ ViewProviderMeshManifolds::~ViewProviderMeshManifolds()
   pcLines->unref();
 }
 
-void ViewProviderMeshManifolds::attach(App::AbstractFeature* pcFeat)
+void ViewProviderMeshManifolds::attach(App::DocumentObject* pcFeat)
 {
   ViewProviderDocumentObject::attach( pcFeat );
 
@@ -222,7 +222,7 @@ ViewProviderMeshDuplicatedFaces::~ViewProviderMeshDuplicatedFaces()
   pcFaces->unref();
 }
 
-void ViewProviderMeshDuplicatedFaces::attach(App::AbstractFeature* pcFeat)
+void ViewProviderMeshDuplicatedFaces::attach(App::DocumentObject* pcFeat)
 {
   ViewProviderDocumentObject::attach( pcFeat );
 
@@ -286,7 +286,7 @@ ViewProviderMeshDuplicatedPoints::~ViewProviderMeshDuplicatedPoints()
 {
 }
 
-void ViewProviderMeshDuplicatedPoints::attach(App::AbstractFeature* pcFeat)
+void ViewProviderMeshDuplicatedPoints::attach(App::DocumentObject* pcFeat)
 {
 }
 
@@ -307,7 +307,7 @@ ViewProviderMeshDegenerations::~ViewProviderMeshDegenerations()
   pcLines->unref();
 }
 
-void ViewProviderMeshDegenerations::attach(App::AbstractFeature* pcFeat)
+void ViewProviderMeshDegenerations::attach(App::DocumentObject* pcFeat)
 {
   ViewProviderDocumentObject::attach( pcFeat );
 
@@ -393,7 +393,7 @@ ViewProviderMeshIndices::~ViewProviderMeshIndices()
 {
 }
 
-void ViewProviderMeshIndices::attach(App::AbstractFeature* pcFeat)
+void ViewProviderMeshIndices::attach(App::DocumentObject* pcFeat)
 {
 }
 

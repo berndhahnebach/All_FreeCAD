@@ -536,7 +536,7 @@ BoundBox2D BoundBox3D::ProjectBox(const ViewProjMethod *pclP) const
   return clBB2D;
 }
 
- Vector3D BoundBox3D::NearestPoint (const Vector3D &rclPt)
+Vector3D BoundBox3D::NearestPoint (const Vector3D &rclPt)
 {
   // Suche naechsten Punkt auf der BB, !!! Punkt MUSS innerhalb BB liegen !!!
   float fMinDist = FLOAT_MAX;

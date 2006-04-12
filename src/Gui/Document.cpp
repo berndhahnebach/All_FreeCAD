@@ -37,8 +37,6 @@
 
 #include <App/Document.h>
 #include <App/DocumentObject.h>
-#include <App/Feature.h>
-#include <App/DocumentObject.h>
 
 #include "Application.h"
 #include "MainWindow.h"
@@ -259,8 +257,6 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   Base::Console().Log("Acti: Gui::Document::OnChange()");
 #endif
 
-  dynamic_cast<App::Document &>(rCaller).isSaved();
-
   if(Reason.Why == App::DocChanges::Rename)
   {
     onRename();
@@ -273,8 +269,6 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
 
   // remove the representation of Objects no longer exist
   std::set<App::DocumentObject*>::const_iterator It;
-  std::set<App::AbstractFeature*>::const_iterator Itf;
-
   for(It=Reason.DeletedObjects.begin();It!=Reason.DeletedObjects.end();It++)
   {
     // cycling to all views of the document
@@ -314,11 +308,10 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
       _ViewProviderMap[*It] = pcProvider;
 
       try{
-        // if succesfully created set the right name an calculate the view
+        // if succesfully created set the right name and calculate the view
         pcProvider->attach(*It);
       }catch(const Base::MemoryException& e){
         Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*It)->name.getValue(),e.what());
-        //(*It)->setError(e.what());
       }catch(Base::Exception &e){
         e.ReportException();
       }

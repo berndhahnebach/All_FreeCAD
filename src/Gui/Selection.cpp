@@ -41,33 +41,6 @@ using namespace Gui;
 using namespace std;
 
 
-vector<App::DocumentObject*> SelectionSingleton::getSelectedObjects(const char *TypeName, const char* pDocName) const
-{
-  vector<App::DocumentObject*> temp;
-  App::Document *pcDoc;
-  string DocName;
-  string typeName = TypeName ? TypeName : "";
-
-  if(pDocName)
-    pcDoc =  App::GetApplication().getDocument(pDocName);
-  else
-    pcDoc = App::GetApplication().getActiveDocument();
-
-  if(!pcDoc)
-    return temp;
-
-  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
-  {
-    if (It->pDoc == pcDoc && typeName.size() <= It->TypeName.size())
-    {
-      if ( It->pObject && (typeName.empty() || It->TypeName.substr(0, typeName.size()).compare(typeName) == 0) )
-        temp.push_back(It->pObject);
-    }
-  }
-
-  return temp;
-}
-
 std::vector<SelectionSingleton::SelObj> SelectionSingleton::getCompleteSelection() const
 {
   vector<SelObj> temp;
@@ -119,38 +92,6 @@ vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const char* 
   }
 
   return temp;
-}
-
-unsigned int SelectionSingleton::getNbrOfType(const char *TypeName, const char* pDocName) const
-{
-  unsigned int iNbr=0;
-  App::Document *pcDoc;
-  string DocName;
-
-  if(pDocName)
-    pcDoc =  App::GetApplication().getDocument(pDocName);
-  else
-    pcDoc = App::GetApplication().getActiveDocument();
-
-  if(!pcDoc)
-    return 0;
-
-  string typeName = TypeName ? TypeName : "";
-  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It)
-  {
-    // find_first_of() kann unmöglich richtig sein, da nur die jeweils ersten Buchstaben gleich sein müssen  (Werner)
-//    if(It->pDoc == pcDoc && It->TypeName.find_first_of(TypeName) == 0)
-    // 'it->TypeName' starts with 'typeName'
-    if ( It->pDoc == pcDoc && typeName.size() <= It->TypeName.size() )
-    {
-      if ( It->TypeName.substr(0, typeName.size()).compare(typeName) == 0 )
-      {
-        iNbr++;
-      }
-    }
-  }
-
-  return iNbr;
 }
 
 vector<App::DocumentObject*> SelectionSingleton::getObjectsOfType(const Base::Type& typeId, const char* pDocName) const

@@ -77,7 +77,7 @@ Base::PyObjectBase *Feature::GetPyObject(void)
   return pcMeshFeaturePy; 
 }
 
-void Feature::onChanged(App::Property* prop)
+void Feature::onChanged(const App::Property* prop)
 {
   // Ignore some properties
   if ( prop == &Mesh )

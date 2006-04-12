@@ -130,15 +130,15 @@ void ViewProviderPoints::setVertexNormalMode(Points::PropertyNormalList* pcPrope
   }
 }
 
-void ViewProviderPoints::attach(App::AbstractFeature* pcFeat)
+void ViewProviderPoints::attach(App::DocumentObject* pcObj)
 {
   SoGroup* pcPointRoot = new SoGroup();
   SoGroup* pcPointShadedRoot = new SoGroup();
   SoGroup* pcColorShadedRoot = new SoGroup();
 
   // Hilight for selection
-  pcHighlight->objectName = pcFeat->name.getValue();
-  pcHighlight->documentName = pcFeat->getDocument().getName();
+  pcHighlight->objectName = pcObj->name.getValue();
+  pcHighlight->documentName = pcObj->getDocument().getName();
   pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcPointsCoord);
   pcHighlight->addChild(pcPoints);
@@ -177,10 +177,10 @@ void ViewProviderPoints::attach(App::AbstractFeature* pcFeat)
   addDisplayMode(pcPointShadedRoot, "Shaded");
 
   // call father (set material and feature pointer)
-  ViewProviderDocumentObject::attach(pcFeat);
+  ViewProviderDocumentObject::attach(pcObj);
 
   // get and save the feature
-  Points::Feature* ptFea = dynamic_cast<Points::Feature*>(pcFeat);
+  Points::Feature* ptFea = dynamic_cast<Points::Feature*>(pcObj);
   createPoints( ptFea );
 }
 

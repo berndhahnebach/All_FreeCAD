@@ -76,7 +76,7 @@ Base::PyObjectBase *AbstractFeature::GetPyObject(void)
 	return pcFeaturePy; 
 }
 
-void AbstractFeature::onChanged(Property* prop)
+void AbstractFeature::onChanged(const Property* prop)
 {
   // Ignore some properties
   if ( prop == &status )
