@@ -410,16 +410,16 @@ public:
     float zx = - ( Fx(x,y,z) / dQuot );
     float zy = - ( Fy(x,y,z) / dQuot );
     
-    float zxx = - ( 2.0 * ( dKoeff[5] + dKoeff[6] * zx * zx + dKoeff[8] * zx ) ) / dQuot;
-    float zyy = - ( 2.0 * ( dKoeff[5] + dKoeff[6] * zy * zy + dKoeff[9] * zy ) ) / dQuot;
+    float zxx = - ( 2.0f * ( dKoeff[5] + dKoeff[6] * zx * zx + dKoeff[8] * zx ) ) / dQuot;
+    float zyy = - ( 2.0f * ( dKoeff[5] + dKoeff[6] * zy * zy + dKoeff[9] * zy ) ) / dQuot;
     float zxy = - ( dKoeff[6] * zx * zy + dKoeff[7] + dKoeff[8] * zy + dKoeff[9] * zx ) / dQuot;
 
     float dNen = 1 + zx*zx + zy*zy;
-    float dNenSqrt = sqrt( dNen );
+    float dNenSqrt = (float)sqrt( dNen );
     float K = ( zxx * zyy - zxy * zxy ) / ( dNen * dNen );
-    float H = 0.5 * ( ( 1.0+zx*zx - 2*zx*zy*zxy + (1.0+zy*zy)*zxx ) / ( dNenSqrt * dNenSqrt * dNenSqrt ) ) ;
+    float H = 0.5f * ( ( 1.0f+zx*zx - 2*zx*zy*zxy + (1.0f+zy*zy)*zxx ) / ( dNenSqrt * dNenSqrt * dNenSqrt ) ) ;
 
-    float dDiscr = sqrt(fabs(H*H-K));
+    float dDiscr = (float)sqrt(fabs(H*H-K));
     rfCurv0 = H - dDiscr;
     rfCurv1 = H + dDiscr;
 
@@ -437,21 +437,21 @@ public:
   //+++++++++ 1. derivations ++++++++++++++++++++++++++++++++
   static float Fx ( float x, float y, float z )
   {
-    return( dKoeff[1] + 2.0*dKoeff[4]*x + dKoeff[7]*y + dKoeff[8]*z );
+    return( dKoeff[1] + 2.0f*dKoeff[4]*x + dKoeff[7]*y + dKoeff[8]*z );
   }
   static float Fy ( float x, float y, float z ) 
   {
-    return( dKoeff[2] + 2.0*dKoeff[5]*y + dKoeff[7]*x + dKoeff[9]*z );
+    return( dKoeff[2] + 2.0f*dKoeff[5]*y + dKoeff[7]*x + dKoeff[9]*z );
   }
   static float Fz ( float x, float y, float z ) 
   {
-    return( dKoeff[3] + 2.0*dKoeff[6]*z + dKoeff[8]*x + dKoeff[9]*y );
+    return( dKoeff[3] + 2.0f*dKoeff[6]*z + dKoeff[8]*x + dKoeff[9]*y );
   }
 
   //+++++++++ 2. derivations ++++++++++++++++++++++++++++++++
   static float Fxx( float x, float y, float z ) 
   {
-    return( 2.0*dKoeff[4] );
+    return( 2.0f*dKoeff[4] );
   }
   static float Fxy( float x, float y, float z ) 
   {
@@ -463,7 +463,7 @@ public:
   }
   static float Fyy( float x, float y, float z ) 
   {
-    return( 2.0*dKoeff[5] );
+    return( 2.0f*dKoeff[5] );
   }
   static float Fyz( float x, float y, float z ) 
   {
@@ -471,7 +471,7 @@ public:
   }
   static float Fzz( float x, float y, float z ) 
   {
-    return( 2.0*dKoeff[6] );
+    return( 2.0f*dKoeff[6] );
   }
    
 protected:
