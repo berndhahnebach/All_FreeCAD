@@ -439,7 +439,7 @@ PYFUNCIMP_D(MeshPy,translate)
     return NULL;                         
 
   PY_TRY {
-    Matrix4D m;
+    Base::Matrix4D m;
     m.move(x,y,z);
     _pcMesh->Transform(m);  
   } PY_CATCH;
@@ -480,7 +480,7 @@ PYFUNCIMP_D(MeshPy,scale)
     return NULL;                         
 
   PY_TRY {
-    Matrix4D m;
+    Base::Matrix4D m;
     m.scale(s,s,s);
     _pcMesh->Transform(m);  
   } PY_CATCH;
@@ -491,7 +491,7 @@ PYFUNCIMP_D(MeshPy,scale)
 
 PYFUNCIMP_D(MeshPy,transform)
 {
-  Matrix4D mat;
+  Base::Matrix4D mat;
   PyObject *pcMatObj;
 
   if (PyArg_ParseTuple(args, "O!: a transform matrix (Matrix) is needed", &(App::MatrixPy::Type), &pcMatObj) )     // convert args: Python->C 
@@ -518,9 +518,9 @@ PYFUNCIMP_D(MeshPy,addFacet)
     return NULL;                         
 
   PY_TRY {
-    _pcMesh->AddFacet(MeshGeomFacet(Vector3D(x1,y1,z1),
-                                    Vector3D(x2,y2,z2),
-                                    Vector3D(x3,y3,z3)));
+    _pcMesh->AddFacet(MeshGeomFacet(Base::Vector3f(x1,y1,z1),
+                                    Base::Vector3f(x2,y2,z2),
+                                    Base::Vector3f(x3,y3,z3)));
   } PY_CATCH;
 
   Py_Return;

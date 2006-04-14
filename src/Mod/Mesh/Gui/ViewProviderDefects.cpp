@@ -61,8 +61,6 @@
 
 using namespace Mesh;
 using namespace MeshGui;
-using namespace std;
-using Base::Vector3D;
 
 
 PROPERTY_SOURCE_ABSTRACT(MeshGui::ViewProviderMeshDefects, Gui::ViewProviderDocumentObject)
@@ -140,7 +138,7 @@ void ViewProviderMeshOrientation::showDefects()
   for ( std::vector<unsigned long>::const_iterator it = inds.begin(); it != inds.end(); ++it ) {
     cF.Set(*it);
     for ( int k=0; k<3; k++ ) {
-      Base::Vector3D cP = cF->_aclPoints[k];
+      Base::Vector3f cP = cF->_aclPoints[k];
       // move a bit in opposite normal direction to overlay the original faces
       cP -= 0.001f * cF->GetNormal();
       pcCoords->point.set1Value(i++,cP.x,cP.y,cP.z);
@@ -265,7 +263,7 @@ void ViewProviderMeshDuplicatedFaces::showDefects()
   for ( std::vector<unsigned long>::const_iterator it = inds.begin(); it != inds.end(); ++it ) {
     cF.Set(*it);
     for ( int k=0; k<3; k++ ) {
-      Base::Vector3D cP = cF->_aclPoints[k];
+      Base::Vector3f cP = cF->_aclPoints[k];
       // move a bit in normal direction to overlay the original faces
       cP += 0.001f * cF->GetNormal();
       pcCoords->point.set1Value(i++,cP.x,cP.y,cP.z);
@@ -365,8 +363,8 @@ void ViewProviderMeshDegenerations::showDefects()
     }
     else {
       for ( int j=0; j<3; j++ ) {
-        Base::Vector3D cVec1 = cF->_aclPoints[(j+1)%3] - cF->_aclPoints[j];
-        Base::Vector3D cVec2 = cF->_aclPoints[(j+2)%3] - cF->_aclPoints[j];
+        Base::Vector3f cVec1 = cF->_aclPoints[(j+1)%3] - cF->_aclPoints[j];
+        Base::Vector3f cVec2 = cF->_aclPoints[(j+2)%3] - cF->_aclPoints[j];
 
         // adjust the neighbourhoods and point indices
         if ( cVec1 * cVec2 < 0.0f ) {

@@ -846,7 +846,7 @@ void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
   ContextMenu.exec( QCursor::pos() );
 }
 
-Base::Vector3D View3DInventorViewer::getViewDirection() const
+Base::Vector3f View3DInventorViewer::getViewDirection() const
 {
   SoCamera* pCam = getCamera();
   SbViewVolume  vol = pCam->getViewVolume (); 
@@ -856,13 +856,13 @@ Base::Vector3D View3DInventorViewer::getViewDirection() const
   SbVec3f n = nearPlane.getNormal();
   float nx, ny, nz; n.getValue(nx, ny, nz);
 
-  Base::Vector3D viewDir(nx, ny, nz);
+  Base::Vector3f viewDir(nx, ny, nz);
   viewDir.Normalize();
 
   return viewDir;
 }
 
-void View3DInventorViewer::getFrontClippingPlane( Base::Vector3D& rcPt, Base::Vector3D& rcNormal ) const
+void View3DInventorViewer::getFrontClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const
 {
   SoCamera* pCam = getCamera();  
   SbViewVolume  vol = pCam->getViewVolume (); 
@@ -878,7 +878,7 @@ void View3DInventorViewer::getFrontClippingPlane( Base::Vector3D& rcPt, Base::Ve
   rcPt.Set(d*rcNormal.x, d*rcNormal.y, d*rcNormal.z);
 }
 
-void View3DInventorViewer::getBackClippingPlane( Base::Vector3D& rcPt, Base::Vector3D& rcNormal ) const
+void View3DInventorViewer::getBackClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const
 {
   SoCamera* pCam = getCamera();  
   SbViewVolume  vol = pCam->getViewVolume (); 

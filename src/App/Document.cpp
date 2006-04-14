@@ -124,7 +124,7 @@ const Transaction *Document::getTransaction(int pos) const
 // constructor
 //--------------------------------------------------------------------------
 Document::Document(void)
-: pActiveObject(0),iTransactionCount(0),activTransaction(0),_pcDocPy(0)
+: iTransactionCount(0),activTransaction(0),pActiveObject(0),_pcDocPy(0)
 {
   // Remark: In a constructor we should never increment a Python object as we cannot be sure
   // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't

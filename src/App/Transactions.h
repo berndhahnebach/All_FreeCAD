@@ -79,7 +79,7 @@ public:
   /// get the position in the transaction history
   int getPos(void) const;
 
-  friend Document;
+  friend class Document;
 
 protected:
   void addObjectNew(DocumentObject *Obj);

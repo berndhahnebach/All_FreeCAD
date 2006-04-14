@@ -32,9 +32,6 @@
 #include <Base/Matrix.h>
 #include <Base/Reader.h>
 #include <Base/Writer.h>
-using Base::Vector3D;
-using Base::Matrix4D;
-using Base::Matrix4D;
 
 #include <App/DataWithProperty.h>
 #include <App/PropertyStandard.h>
@@ -43,7 +40,7 @@ using Base::Matrix4D;
 namespace Points
 {
 
-typedef std::vector<Vector3D> PointKernel;
+typedef std::vector<Base::Vector3f> PointKernel;
 
 /** Greyvalue property.
  */
@@ -97,7 +94,7 @@ public:
 struct PointsAppExport CurvatureInfo
 {
   float fMaxCurvature, fMinCurvature;
-  Vector3D cMaxCurvDir, cMinCurvDir;
+  Base::Vector3f cMaxCurvDir, cMinCurvDir;
 };
 
 /** The Curvature property class.
@@ -266,7 +263,7 @@ public:
   virtual void transform(const Matrix4D &rclMat);
 
   /// normal vector
-  std::vector<Base::Vector3D> aVertexNormal;
+  std::vector<Base::Vector3f> aVertexNormal;
 
 };
 
@@ -282,7 +279,7 @@ public:
   struct fCurvature
   {
     float fMaxCurvature, fMinCurvature;
-    Vector3D cMaxCurvDir, cMinCurvDir;
+    Base::Vector3f cMaxCurvDir, cMinCurvDir;
   };
 
   enum Mode { 
@@ -305,11 +302,11 @@ public:
   /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
    * for \c MeanCurvature or \c GaussCurvature an empty list is returned.
    */
-  std::vector<Vector3D> getCurvatureDir( Mode tMode) const;
+  std::vector<Base::Vector3f> getCurvatureDir( Mode tMode) const;
   /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
    * for \c MeanCurvature or \c GaussCurvature an empty list is returned.
    */
-  std::vector<Vector3D> getAbsCurvatureDir( Mode tMode) const;
+  std::vector<Base::Vector3f> getAbsCurvatureDir( Mode tMode) const;
   void setValue(unsigned long pos, const fCurvature& val)
   { Curvature[pos] = val; }
 
@@ -325,7 +322,7 @@ private:
  *  @see Points
  */
 /*
-  class PointsAppExport Point: puplic Base::Vector3D
+  class PointsAppExport Point: puplic Base::Vector3f
 {
 public:
     // construction

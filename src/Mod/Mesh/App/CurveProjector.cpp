@@ -115,8 +115,8 @@ void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
   gp_Pnt gpPt = hCurve->Value(fFirst);
 
   // projection of the first point 
-  Vector3D cStartPoint = Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z());
-  Vector3D cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal;
+  Base::Vector3f cStartPoint = Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z());
+  Base::Vector3f cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal;
   unsigned long uStartFacetIdx,uCurFacetIdx;
   unsigned long uLastFacetIdx=ULONG_MAX-1; // use another value as ULONG_MAX
   unsigned long auNeighboursIdx[3];
@@ -129,7 +129,7 @@ void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
   do{
     MeshGeomFacet cCurFacet= _Mesh.GetFacet(uCurFacetIdx);
     _Mesh.GetFacetNeighbours ( uCurFacetIdx, auNeighboursIdx[0], auNeighboursIdx[1], auNeighboursIdx[2]);
-    Vector3D PointOnEdge[3];
+    Base::Vector3f PointOnEdge[3];
 
     GoOn = false;
     int NbrOfHits = 0,HitIdx=0;
@@ -141,8 +141,8 @@ void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
         continue;
 
       // get points of the edge i
-      const Vector3D& cP0 = cCurFacet._aclPoints[i];
-      const Vector3D& cP1 = cCurFacet._aclPoints[(i+1)%3];
+      const Base::Vector3f& cP0 = cCurFacet._aclPoints[i];
+      const Base::Vector3f& cP1 = cCurFacet._aclPoints[(i+1)%3];
 
       if ( auNeighboursIdx[i] != ULONG_MAX )
       {
@@ -167,10 +167,10 @@ void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
         if( Alg.NbPoints() == 1)
         {
           gp_Pnt P = Alg.Point(1);
-          float l = ( (Vector3D(P.X(),P.Y(),P.Z())  - cP0 ) * (cP1 - cP0) ) / ( (cP1 - cP0) * ( cP1 - cP0) );
+          float l = ( (Base::Vector3f(P.X(),P.Y(),P.Z())  - cP0 ) * (cP1 - cP0) ) / ( (cP1 - cP0) * ( cP1 - cP0) );
           // is the Point on the Edge of the facet?
           if(l<0.0 || l>1.0)
-            PointOnEdge[i] = Vector3D(FLOAT_MAX,0,0);
+            PointOnEdge[i] = Base::Vector3f(FLOAT_MAX,0,0);
           else{
             cSplitPoint = (1-l) * cP0 + l * cP1;
             PointOnEdge[i] = (1-l)*cP0 + l * cP1;
@@ -179,10 +179,10 @@ void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
           }
         // no intersection
         }else if(Alg.NbPoints() == 0){
-          PointOnEdge[i] = Vector3D(FLOAT_MAX,0,0);
+          PointOnEdge[i] = Base::Vector3f(FLOAT_MAX,0,0);
         // more the one intersection (@ToDo)
         }else if(Alg.NbPoints() > 1){
-          PointOnEdge[i] = Vector3D(FLOAT_MAX,0,0);
+          PointOnEdge[i] = Base::Vector3f(FLOAT_MAX,0,0);
           Base::Console().Log("MeshAlgos::projectCurve(): More then one intersection in Facet %ld, Edge %d\n",uCurFacetIdx,i);
         }
       }
@@ -211,9 +211,9 @@ void CurveProjectorShape::projectCurve( const TopoDS_Edge& aEdge,
 
 }
 
-bool CurveProjectorShape::findStartPoint(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex)
+bool CurveProjectorShape::findStartPoint(const MeshKernel &MeshK,const Base::Vector3f &Pnt,Base::Vector3f &Rslt,unsigned long &FaceIndex)
 {
-  Vector3D TempResultPoint;
+  Base::Vector3f TempResultPoint;
   float MinLength = FLOAT_MAX;
   bool bHit = false;
 
@@ -258,7 +258,7 @@ void CurveProjectorSimple::Do(void)
   TopExp_Explorer Ex;
   TopoDS_Shape Edge;
 
-  std::vector<Vector3D> vEdgePolygon;
+  std::vector<Base::Vector3f> vEdgePolygon;
 
   for (Ex.Init(_Shape, TopAbs_EDGE); Ex.More(); Ex.Next())
   {
@@ -273,7 +273,7 @@ void CurveProjectorSimple::Do(void)
 }
 
 
-void CurveProjectorSimple::GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints)
+void CurveProjectorSimple::GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Base::Vector3f>& rclPoints, unsigned long ulNbOfPoints)
 {
   rclPoints.clear();
 
@@ -285,7 +285,7 @@ void CurveProjectorSimple::GetSampledCurves( const TopoDS_Edge& aEdge, std::vect
     for (unsigned long i = 0; i < ulNbOfPoints; i++)
     {
       gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
-      rclPoints.push_back(Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()));
+      rclPoints.push_back(Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z()));
     }
 }
 
@@ -293,13 +293,13 @@ void CurveProjectorSimple::GetSampledCurves( const TopoDS_Edge& aEdge, std::vect
 //projectToNeighbours(Handle(Geom_Curve) hCurve,float pos
 
 void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
-                                         const std::vector<Vector3D> &rclPoints, 
+                                         const std::vector<Base::Vector3f> &rclPoints,
                                          std::vector<FaceSplitEdge> &vSplitEdges)
 {
-  Vector3D /*cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal,*/TempResultPoint;
+  Base::Vector3f /*cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal,*/TempResultPoint;
   bool bFirst = true;
   //unsigned long auNeighboursIdx[3];
-  //std::map<unsigned long,std::vector<Vector3D> >::iterator N1,N2,N3;
+  //std::map<unsigned long,std::vector<Base::Vector3f> >::iterator N1,N2,N3;
   
   Standard_Real fBegin, fEnd;
   Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge,fBegin,fEnd);
@@ -312,7 +312,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   Base::SequencerLauncher seq("Building up projection map...", ulNbOfPoints+1);  
   FILE* file = fopen("projected.asc", "w");
 
-  std::map<unsigned long,std::vector<Vector3D> > FaceProjctMap;
+  std::map<unsigned long,std::vector<Base::Vector3f> > FaceProjctMap;
  
   for (unsigned long i = 0; i <= ulNbOfPoints; i++)
   {
@@ -323,7 +323,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
     for(It.Init();It.More();It.Next())
     {
       // try to project (with angle) to the face
-      if(It->IntersectWithLine (Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), TempResultPoint) )
+      if(It->IntersectWithLine (Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), TempResultPoint) )
       {
         FaceProjctMap[It.Position()].push_back(TempResultPoint);
         fprintf(file, "%.4f %.4f %.4f\n", TempResultPoint.x, TempResultPoint.y, TempResultPoint.z);
@@ -344,7 +344,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
 
   // estimate the first face
 //  gp_Pnt gpPt = hCurve->Value(fBegin);
-//  if( !findStartPoint(MeshK,Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()),cResultPoint,uCurFacetIdx) )
+//  if( !findStartPoint(MeshK,Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z()),cResultPoint,uCurFacetIdx) )
 //    uCurFacetIdx = FaceProjctMap.begin()->first;
 
 /*
@@ -389,7 +389,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
 
 /*
 void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
-                                   const std::vector<Vector3D> &rclPoints, 
+                                   const std::vector<Base::Vector3f> &rclPoints,
                                    std::vector<FaceSplitEdge> &vSplitEdges)
 {
   const MeshKernel &MeshK = *(_Mesh.getKernel());
@@ -401,8 +401,8 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   gp_Pnt gpPt = hCurve->Value(fFirst);
   fAct = fFirst;
   // projection of the first point 
-  Vector3D cStartPoint = Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z());
-  Vector3D cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal,TempResultPoint;
+  Base::Vector3f cStartPoint = Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z());
+  Base::Vector3f cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal,TempResultPoint;
   unsigned long uStartFacetIdx,uCurFacetIdx;
   unsigned long uLastFacetIdx=ULONG_MAX-1; // use another value as ULONG_MAX
   unsigned long auNeighboursIdx[3];
@@ -438,7 +438,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
       fStep /= 2.0;
       // still on the same facet?
       gpPt = hCurve->Value(fAct+fStep);
-      if(MeshFacetFunc::IntersectWithLine (cCurFacet, Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()), cCurFacet.GetNormal(), cResultPoint) )
+      if(MeshFacetFunc::IntersectWithLine (cCurFacet, Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z()), cCurFacet.GetNormal(), cResultPoint) )
       {
         fAct += fStep;
         fStep *= 2.0;
@@ -454,7 +454,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
           // try to project next intervall
           MeshGeomFacet N = MeshK.GetFacet( auNeighboursIdx[i] );
           gpPt = hCurve->Value(fAct+fStep);
-          if(MeshFacetFunc::IntersectWithLine (*It, Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), cResultPoint) )
+          if(MeshFacetFunc::IntersectWithLine (*It, Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), cResultPoint) )
           {
             HitCount++;
             uStartFacetIdx = auNeighboursIdx[i];
@@ -475,7 +475,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
 /*
 
 void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
-                                   const std::vector<Vector3D> &rclPoints, 
+                                   const std::vector<Base::Vector3f> &rclPoints,
                                    std::vector<FaceSplitEdge> &vSplitEdges)
 {
   const MeshKernel &MeshK = *(_Mesh.getKernel());
@@ -487,8 +487,8 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   gp_Pnt gpPt = hCurve->Value(fFirst);
 
   // projection of the first point 
-  Vector3D cStartPoint = Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z());
-  Vector3D cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal;
+  Base::Vector3f cStartPoint = Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z());
+  Base::Vector3f cResultPoint, cSplitPoint, cPlanePnt, cPlaneNormal;
   unsigned long uStartFacetIdx,uCurFacetIdx;
   unsigned long uLastFacetIdx=ULONG_MAX-1; // use another value as ULONG_MAX
   unsigned long auNeighboursIdx[3];
@@ -504,7 +504,7 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
   for(It1.Init();It1.More();It1.Next())
   {
     // cycling through the points and find the first projecteble point ( if the curve starts outside the mesh)
-    for( std::vector<Vector3D>::const_iterator It = rclPoints.begin()+1;It!=rclPoints.end();++It)
+    for( std::vector<Base::Vector3f>::const_iterator It = rclPoints.begin()+1;It!=rclPoints.end();++It)
     {
 //      MeshGeomFacet facet = MeshK.GetFacet(uStartFacetIdx);
       MeshGeomFacet facet = *It1;
@@ -520,9 +520,9 @@ void CurveProjectorSimple::projectCurve( const TopoDS_Edge& aEdge,
 }
 */
 
-bool CurveProjectorSimple::findStartPoint(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex)
+bool CurveProjectorSimple::findStartPoint(const MeshKernel &MeshK,const Base::Vector3f &Pnt,Base::Vector3f &Rslt,unsigned long &FaceIndex)
 {
-  Vector3D TempResultPoint;
+  Base::Vector3f TempResultPoint;
   float MinLength = FLOAT_MAX;
   bool bHit = false;
 
@@ -567,7 +567,7 @@ void CurveProjectorWithToolMesh::Do(void)
   TopoDS_Shape Edge;
   std::vector<MeshGeomFacet> cVAry;
 
-  std::vector<Vector3D> vEdgePolygon;
+  std::vector<Base::Vector3f> vEdgePolygon;
 
   for (Ex.Init(_Shape, TopAbs_EDGE); Ex.More(); Ex.Next())
   {
@@ -589,7 +589,7 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
   Standard_Real fBegin, fEnd;
   Handle(Geom_Curve) hCurve = BRep_Tool::Curve(aEdge,fBegin,fEnd);
   float fLen   = float(fEnd - fBegin);
-  Vector3D cResultPoint;
+  Base::Vector3f cResultPoint;
 
   unsigned long ulNbOfPoints = 15,PointCount=0/*,uCurFacetIdx*/;
 
@@ -599,28 +599,28 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
 
   Base::SequencerLauncher seq("Building up tool mesh...", ulNbOfPoints+1);  
 
-  std::map<unsigned long,std::vector<Vector3D> > FaceProjctMap;
+  std::map<unsigned long,std::vector<Base::Vector3f> > FaceProjctMap;
  
   for (unsigned long i = 0; i < ulNbOfPoints; i++)
   {
     Base::Sequencer().next();
     gp_Pnt gpPt = hCurve->Value(fBegin + (fLen * float(i)) / float(ulNbOfPoints-1));
-    Vector3D LinePoint(gpPt.X(),gpPt.Y(),gpPt.Z());
+    Base::Vector3f LinePoint(gpPt.X(),gpPt.Y(),gpPt.Z());
 
-    Vector3D ResultNormal;
+    Base::Vector3f ResultNormal;
 
     // go through the whole Mesh
     for(It.Init();It.More();It.Next())
     {
       // try to project (with angle) to the face
-      if(It->IntersectWithLine (Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), cResultPoint) )
+      if(It->IntersectWithLine (Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z()), It->GetNormal(), cResultPoint) )
       {
         if(Base::Distance(LinePoint,cResultPoint) < 0.5)
           ResultNormal += It->GetNormal();
       }
     }
     LineSeg s;
-    s.p = Vector3D(gpPt.X(),gpPt.Y(),gpPt.Z());
+    s.p = Base::Vector3f(gpPt.X(),gpPt.Y(),gpPt.Z());
     s.n = ResultNormal.Normalize();
     LineSegs.push_back(s);
   }
@@ -629,7 +629,7 @@ void CurveProjectorWithToolMesh::makeToolMesh( const TopoDS_Edge& aEdge,std::vec
 
 
   // build up the new mesh
-  Vector3D lp(FLOAT_MAX,0,0), ln, p1, p2, p3, p4,p5,p6;
+  Base::Vector3f lp(FLOAT_MAX,0,0), ln, p1, p2, p3, p4,p5,p6;
   float ToolSize = 0.2;
 
   for (std::vector<LineSeg>::iterator It2=LineSegs.begin(); It2!=LineSegs.end();++It2)

@@ -96,7 +96,7 @@ void Builder3D::addPoint(float x, float y, float z)
 
 
 /// add a vector to a point set
-void Builder3D::addPoint(const Vector3D &vec)
+void Builder3D::addPoint(const Vector3f &vec)
 {
   addPoint(vec.x,vec.y,vec.z);
 }
@@ -134,7 +134,7 @@ void Builder3D::addSinglePoint(float x, float y, float z,short pointSize, float 
 
 }
 
-void Builder3D::addSinglePoint(const Base::Vector3D &vec, short pointSize, float color_r,float color_g,float color_b)
+void Builder3D::addSinglePoint(const Base::Vector3f &vec, short pointSize, float color_r,float color_g,float color_b)
 {
   addSinglePoint(vec.x, vec.y , vec.z, pointSize, color_r, color_g, color_b);
 }
@@ -165,12 +165,12 @@ void Builder3D::addText(float pos_x, float pos_y , float pos_z,const char * text
 
 }
 
-void Builder3D::addText(const Base::Vector3D &vec,const char * text, float color_r,float color_g,float color_b)
+void Builder3D::addText(const Base::Vector3f &vec,const char * text, float color_r,float color_g,float color_b)
 {
   addText(vec.x, vec.y , vec.z,text, color_r,color_g,color_b);
 }
 
-void Builder3D::addText(const Base::Vector3D &vec, float color_r, float color_g, float color_b, const char * format, ...)
+void Builder3D::addText(const Base::Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
 {
   // temp buffer
   char* txt = (char*) malloc(strlen(format)+4024);
@@ -195,7 +195,7 @@ void Builder3D::clear ()
 //**************************************************************************
 // line/arrow handling
 
-void Builder3D::addSingleLine(Vector3D pt1, Vector3D pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void Builder3D::addSingleLine(Vector3f pt1, Vector3f pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
 {
   char lp[20];
   sprintf(lp, "0x%x", linePattern);
@@ -216,23 +216,23 @@ void Builder3D::addSingleLine(Vector3D pt1, Vector3D pt2, short lineSize, float 
          << "} ";
 }
 
-void Builder3D::addSingleArrow(Vector3D pt1, Vector3D pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void Builder3D::addSingleArrow(Vector3f pt1, Vector3f pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
 {
     float l = (pt2 - pt1).Length();
     float cl = l / 10.0f;
     float cr = cl / 2.0f;
 
-    Vector3D dir = pt2 - pt1;
+    Vector3f dir = pt2 - pt1;
     dir.Normalize();
     dir.Scale(l-cl, l-cl, l-cl);
-    Vector3D pt2s = pt1 + dir;
+    Vector3f pt2s = pt1 + dir;
     dir.Normalize();
     dir.Scale(l-cl/2.0f, l-cl/2.0f, l-cl/2.0f);
-    Vector3D cpt = pt1 + dir;
+    Vector3f cpt = pt1 + dir;
 
-    Vector3D rot = Vector3D(0.0f, 1.0f, 0.0f) % dir;
+    Vector3f rot = Vector3f(0.0f, 1.0f, 0.0f) % dir;
     rot.Normalize();
-    float a = Vector3D(0.0f, 1.0f, 0.0f).GetAngle(dir);
+    float a = Vector3f(0.0f, 1.0f, 0.0f).GetAngle(dir);
 
     result << "Separator { "
          <<   "Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} " 
@@ -256,7 +256,7 @@ void Builder3D::addSingleArrow(Vector3D pt1, Vector3D pt2, short lineSize, float
 //**************************************************************************
 // triangle handling
 
-void Builder3D::addSingleTriangle(Vector3D pt0, Vector3D pt1, Vector3D pt2, bool filled, short lineSize, float color_r, float color_g, float color_b)
+void Builder3D::addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2, bool filled, short lineSize, float color_r, float color_g, float color_b)
 {
   std::string fs = "";
   if (filled)

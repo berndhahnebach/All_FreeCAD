@@ -59,7 +59,6 @@
 using namespace Mesh;
 using namespace MeshGui;
 using namespace std;
-using Base::Vector3D;
 
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshCurvature, MeshGui::ViewProviderMesh)

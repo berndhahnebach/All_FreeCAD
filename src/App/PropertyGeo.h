@@ -66,12 +66,12 @@ public:
 
 	/** Sets the property 
 	 */
-  void setValue(const Base::Vector3D &vec);
+  void setValue(const Base::Vector3f &vec);
   void setValue(float x, float y, float z);
 
 	/** This method returns a string representation of the property
 	 */
-	const Base::Vector3D &getValue(void) const;
+	const Base::Vector3f &getValue(void) const;
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -84,7 +84,7 @@ public:
 
 private:
 
-  Base::Vector3D _cVec;
+  Base::Vector3f _cVec;
 
 };
 
@@ -116,15 +116,15 @@ public:
 
 	/** Sets the property 
 	 */
-	void setValue(const Base::Vector3D&);
+	void setValue(const Base::Vector3f&);
   
   /// index operator
-  const Base::Vector3D& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+  const Base::Vector3f& operator[] (const int idx) const {return _lValueList.operator[] (idx);}
   
   
-  void  set1Value (const int idx, const Base::Vector3D& value){_lValueList.operator[] (idx) = value;}
+  void  set1Value (const int idx, const Base::Vector3f& value){_lValueList.operator[] (idx) = value;}
 
-  const std::vector<Base::Vector3D> &getValues(void) const{return _lValueList;}
+  const std::vector<Base::Vector3f> &getValues(void) const{return _lValueList;}
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -140,7 +140,7 @@ public:
 
 private:
 
-  std::vector<Base::Vector3D> _lValueList;
+  std::vector<Base::Vector3f> _lValueList;
 
 };
 

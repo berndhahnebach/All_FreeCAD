@@ -88,7 +88,7 @@ protected:
   SoTransform        *pcTransformDrag;
   SoMaterial         *pcColorMat;
   std::vector<SbVec3f> normalVector;
-  Base::Vector3D            center;
+  Base::Vector3f            center;
 
 };
 

@@ -31,7 +31,6 @@
 
 #include <Base/PyExportImp.h>
 #include <Base/Vector3D.h>
-using Base::Vector3D;
 
 namespace App
 {
@@ -52,11 +51,11 @@ protected:
 	~VectorPy();
 
 public:
-  VectorPy(const Base::Vector3D &rcVector = Vector3D(), PyTypeObject *T = &Type);
+  VectorPy(const Base::Vector3f &rcVector = Base::Vector3f(), PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyTypeObject  *, PyObject *, PyObject *);
 
-  Base::Vector3D value(void){return _cVector;}
-  void set(const Base::Vector3D &cVec){_cVector = cVec;}
+  Base::Vector3f value(void){return _cVector;}
+  void set(const Base::Vector3f &cVec){_cVector = cVec;}
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
@@ -74,7 +73,7 @@ public:
 
 protected:
 
-  Base::Vector3D  _cVector;
+  Base::Vector3f  _cVector;
 
 };
 

@@ -30,7 +30,6 @@
 #endif
 
 #include <Base/Vector3D.h>
-using Base::Vector3D;
 
 #include "CurveProjector.h"
 #include "gts.h"
@@ -94,26 +93,27 @@ public:
   static void cutByShape(const TopoDS_Shape &aShape,const MeshCore::MeshKernel* pMesh,MeshCore::MeshKernel* pToolMesh);
 
   /// helper to discredicice a Edge...
-  static void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
+  static void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Base::Vector3f>& rclPoints, unsigned long ulNbOfPoints = 30);
 
   /// creates a mesh loft on base of a curve and an up vector
-  static void LoftOnCurve(MeshCore::MeshKernel &ResultMesh,const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up = Vector3D(0,0,1),  float MaxSize = 0.1);
+  static void LoftOnCurve(MeshCore::MeshKernel &ResultMesh,const TopoDS_Shape &Shape, const std::vector<Base::Vector3f> &poly,
+                          const Base::Vector3f & up = Base::Vector3f(0,0,1),  float MaxSize = 0.1);
 
   /*
   struct FaceSplitEdge
   {
     unsigned long ulFaceIndex;
-    Vector3D p1,p2;
+    Base::Vector3f p1,p2;
   };
 
   static void projectCurve( MeshWithProperty* pMesh,
                                        const TopoDS_Edge& aEdge,
-                                       const std::vector<Vector3D> &rclPoints, 
+                                       const std::vector<Base::Vector3f> &rclPoints,
                                        std::vector<FaceSplitEdge> &vSplitEdges);
 */
   static void cutByCurve(MeshCore::MeshKernel* pMesh,const std::vector<CurveProjector::FaceSplitEdge> &vSplitEdges);
 /*
-  static bool projectPointToMesh(MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
+  static bool projectPointToMesh(MeshKernel &MeshK,const Base::Vector3f &Pnt,Base::Vector3f &Rslt,unsigned long &FaceIndex);
 */
 
 

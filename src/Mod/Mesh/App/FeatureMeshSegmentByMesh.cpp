@@ -61,7 +61,7 @@ int SegmentByMesh::execute(void)
   Feature *pcTool  = dynamic_cast<Feature*>(Tool.getValue());
 
   // the clipping plane
-  Vector3D cBase, cNormal;
+  Base::Vector3f cBase, cNormal;
   cBase =   Base.getValue();
   cNormal = Normal.getValue();
 
@@ -96,7 +96,7 @@ int SegmentByMesh::execute(void)
   if ( cNormal.Length() > 0.1f ) // not a null vector
     cAlg.GetFacetsFromToolMesh(rToolMesh, cNormal, faces);
   else
-    cAlg.GetFacetsFromToolMesh(rToolMesh, Vector3D(0.0, 1.0f, 0.0f), faces);
+    cAlg.GetFacetsFromToolMesh(rToolMesh, Base::Vector3f(0.0, 1.0f, 0.0f), faces);
 
   // if the clipping plane was set then we want only the visible facets
   if ( cNormal.Length() > 0.1f ) // not a null vector

@@ -55,7 +55,7 @@ Matrix4D::Matrix4D (const Matrix4D& rclMtrx)
   (*this) = rclMtrx;
 }
 
-Matrix4D::Matrix4D (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle)
+Matrix4D::Matrix4D (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle)
 {
   unity();
   this->rotLine(rclBase,rclDir,fAngle);
@@ -94,7 +94,7 @@ void Matrix4D::setMoveZ (float fMove)
   (*this) *= clMat;
 }
 */
-void Matrix4D::move (const Vector3D& rclVct)
+void Matrix4D::move (const Vector3f& rclVct)
 {
   Matrix4D clMat;
 
@@ -130,7 +130,7 @@ void Matrix4D::setScaleZ (float fScale)
 }
 */
 
-void Matrix4D::scale (const Vector3D& rclVct)
+void Matrix4D::scale (const Vector3f& rclVct)
 {
   Matrix4D clMat;
 
@@ -179,11 +179,11 @@ void Matrix4D::rotZ (float fAngle)
   (*this) *= clMat;
 }
 
-void Matrix4D::rotLine (const Vector3D& rclVct, float fAngle)
+void Matrix4D::rotLine (const Vector3f& rclVct, float fAngle)
 {
   // **** Algorithmus wurde aus einem Mathebuch entnohmen 
   Matrix4D  clMA, clMB, clMC, clMRot;
-  Vector3D  clRotAxis(rclVct);
+  Vector3f  clRotAxis(rclVct);
   short iz, is;
   float fcos, fsin;
 
@@ -230,10 +230,10 @@ void Matrix4D::rotLine (const Vector3D& rclVct, float fAngle)
   (*this) *= clMRot;
 }
 
-void Matrix4D::rotLine   (const Vector3D& rclBase, const Vector3D& rclDir, float fAngle)
+void Matrix4D::rotLine   (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle)
 {
   Matrix4D  clMT, clMRot, clMInvT, clM;
-  Vector3D clBase(rclBase);
+  Vector3f clBase(rclBase);
   
   clMT.move(clBase);            // Translation
   clMInvT.move(clBase *= (-1.0f));  // inverse Translation
@@ -244,7 +244,7 @@ void Matrix4D::rotLine   (const Vector3D& rclBase, const Vector3D& rclDir, float
   (*this) *= clM;  
 }
 
-void Matrix4D::transform (const Vector3D& rclVct, const Matrix4D& rclMtrx) 
+void Matrix4D::transform (const Vector3f& rclVct, const Matrix4D& rclMtrx)
 {
   move(-rclVct);
   (*this) *= rclMtrx;

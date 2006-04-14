@@ -461,7 +461,7 @@ void MeshKernel::Write (std::ostream &rclOut) const
 
   rclOut.write((const char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
   rclOut.write((const char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
-  rclOut.write((const char*)&_clBoundBox, sizeof(Base::BoundBox3D));
+  rclOut.write((const char*)&_clBoundBox, sizeof(Base::BoundBox3f));
 }
 
 void MeshKernel::Read (std::istream &rclIn)
@@ -476,14 +476,14 @@ void MeshKernel::Read (std::istream &rclIn)
 
   rclIn.read((char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
   rclIn.read((char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
-  rclIn.read((char*)&_clBoundBox, sizeof(Base::BoundBox3D));
+  rclIn.read((char*)&_clBoundBox, sizeof(Base::BoundBox3f));
 }
 
-void MeshKernel::operator *= (const Matrix4D &rclMat)
+void MeshKernel::operator *= (const Base::Matrix4D &rclMat)
 {
   MeshPointArray::_TIterator  clPIter = _aclPointArray.begin(), clPEIter = _aclPointArray.end();
-  Matrix4D                    clMatrix(rclMat);
-  
+  Base::Matrix4D clMatrix(rclMat);
+
   _clBoundBox.Flush();
   while (clPIter < clPEIter)
   {
@@ -493,7 +493,7 @@ void MeshKernel::operator *= (const Matrix4D &rclMat)
   }
 }
 
-void MeshKernel::Transform (const Matrix4D &rclMat)
+void MeshKernel::Transform (const Base::Matrix4D &rclMat)
 {
   (*this) *= rclMat;
 }
@@ -598,9 +598,9 @@ void MeshKernel::RecalcBoundBox (void)
     _clBoundBox &= *pI;
 }
 
-std::vector<Base::Vector3D> MeshKernel::CalcVertexNormals() const
+std::vector<Base::Vector3f> MeshKernel::CalcVertexNormals() const
 {
-  std::vector<Base::Vector3D> normals;
+  std::vector<Base::Vector3f> normals;
 
   normals.resize(CountPoints());
 
@@ -613,7 +613,7 @@ std::vector<Base::Vector3D> MeshKernel::CalcVertexNormals() const
   {
     GetFacetPoints(pFIter,p1,p2,p3);
     
-    Vector3D Norm = (GetPoint(p2)-GetPoint(p1) ) % (GetPoint(p3)-GetPoint(p1));
+    Base::Vector3f Norm = (GetPoint(p2)-GetPoint(p1) ) % (GetPoint(p3)-GetPoint(p1));
 
     normals[p1] += Norm;
     normals[p2] += Norm;
@@ -690,7 +690,7 @@ float MeshKernel::GetVolume() const
 
   float fVolume = 0.0;
   MeshFacetIterator cIter(*this);
-  Vector3D p1,p2,p3;
+  Base::Vector3f p1,p2,p3;
   for (cIter.Init(); cIter.More(); cIter.Next())
   {
     const MeshGeomFacet& rclF = *cIter;

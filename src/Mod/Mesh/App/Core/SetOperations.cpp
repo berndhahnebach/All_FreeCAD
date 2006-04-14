@@ -172,7 +172,7 @@ void SetOperations::Cut (std::set<unsigned long>& facetsCuttingEdge0, std::set<u
 {
   MeshFacetGrid grid1(_cutMesh0, 20);
   MeshFacetGrid grid2(_cutMesh1, 20);
-  BoundBox3D bbMesh2 = _cutMesh1.GetBoundBox();
+  Base::BoundBox3f bbMesh2 = _cutMesh1.GetBoundBox();
 
   unsigned long ctGx1, ctGy1, ctGz1;
   grid1.GetCtGrids(ctGx1, ctGy1, ctGz1);
@@ -289,7 +289,7 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
   std::map<unsigned long, std::list<MeshPoint> >::iterator it1;
   for (it1 = _facet2points[side].begin(); it1 != _facet2points[side].end(); it1++)
   {
-    std::vector<Vector3D> points;
+    std::vector<Vector3f> points;
     std::set<MeshPoint>   pointsSet;
 
     unsigned long fidx = it1->first;
@@ -316,11 +316,11 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
 
     }
 
-    Vector3D normal = f.GetNormal();
-    Vector3D base = points[0];
-    Vector3D dirX = points[1] - points[0];
+    Vector3f normal = f.GetNormal();
+    Vector3f base = points[0];
+    Vector3f dirX = points[1] - points[0];
     dirX.Normalize();
-    Vector3D dirY = dirX % normal;
+    Vector3f dirY = dirX % normal;
 
     triangulateio* in = new triangulateio();
     memset(in, 0, sizeof(triangulateio));
@@ -329,10 +329,10 @@ void SetOperations::TriangulateMesh (const MeshKernel &cutMesh, int side)
 
     // project points to 2D plane
     i = 0;
-    std::vector<Vector3D>::iterator it;
+    std::vector<Vector3f>::iterator it;
     for (it = points.begin(); it != points.end(); it++)
     {
-      Vector3D pv = *it;
+      Vector3f pv = *it;
       pv.TransformToCoordinateSystem(base, dirX, dirY);
       in->pointlist[i++] = pv.x;
       in->pointlist[i++] = pv.y;
@@ -481,10 +481,10 @@ bool SetOperations::CollectFacetVisitor::AllowVisit (const MeshFacet& rclFacet, 
       { // detemine if the facets shoud add or not only once
         MeshGeomFacet facet = _mesh.GetFacet(rclFacet); // triangulated facet
         MeshGeomFacet facetOther = it->facets[1-_side][0]; // triangulated facet from same edge and other mesh
-        Vector3D normalOther = facetOther.GetNormal();
+        Vector3f normalOther = facetOther.GetNormal();
 
-        Vector3D edgeDir = it->pt1 - it->pt2;
-        Vector3D ocDir = (edgeDir % (facet.GetGravityPoint() - it->pt1)) % edgeDir;
+        Vector3f edgeDir = it->pt1 - it->pt2;
+        Vector3f ocDir = (edgeDir % (facet.GetGravityPoint() - it->pt1)) % edgeDir;
         ocDir.Normalize();
              
        //_builder.addSingleTriangle(facet._aclPoints[0], facet._aclPoints[1], facet._aclPoints[2], 3.0, 0.9, 0.0, 0.1);

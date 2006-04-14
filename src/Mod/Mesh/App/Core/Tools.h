@@ -50,26 +50,27 @@ public:
    * inside a sphere of radius \a fDistance, center \a center of the original facet. This method uses the 
    * MARKED flags.
    */
-  unsigned long  NeighboursFromFacet (unsigned long ulFacetIdx, float fDistance, unsigned long ulMinPoints, std::vector<Vector3D> &raclResultPoints);
+  unsigned long  NeighboursFromFacet (unsigned long ulFacetIdx, float fDistance, unsigned long ulMinPoints, std::vector<Base::Vector3f> &raclResultPoints);
   /** Searches for facets from the start facet, sample the neighbour facets and accumulates the points. */
-  unsigned long  NeighboursFromSampledFacets (unsigned long ulFacetIdx, float fDistance, std::vector<Vector3D> &raclResultPoints);
+  unsigned long  NeighboursFromSampledFacets (unsigned long ulFacetIdx, float fDistance, std::vector<Base::Vector3f> &raclResultPoints);
   /** Searches for facets from the start facet. */
-  unsigned long  NeighboursFacetFromFacet (unsigned long ulFacetIdx, float fDistance, std::vector<Vector3D> &raclResultPoints, std::vector<unsigned long> &raclResultFacets);
+  unsigned long  NeighboursFacetFromFacet (unsigned long ulFacetIdx, float fDistance, std::vector<Base::Vector3f> &raclResultPoints,
+                                           std::vector<unsigned long> &raclResultFacets);
 
 protected:
   /** Subsamples the mesh. */
   void SampleAllFacets (void);
   inline bool CheckDistToFacet (const MeshFacet &rclF);     // check distance to facet, add points inner radius
   bool AccumulateNeighbours (const MeshFacet &rclF, unsigned long ulFIdx); // accumulate the sample neighbours facet
-  inline bool InnerPoint (const Vector3D &rclPt) const;
+  inline bool InnerPoint (const Base::Vector3f &rclPt) const;
   inline bool TriangleCutsSphere (const MeshFacet &rclF) const;
   bool ExpandRadius (unsigned long ulMinPoints);
 
-  struct CDistRad : public std::binary_function<const Vector3D&, const Vector3D&, bool>
+  struct CDistRad : public std::binary_function<const Base::Vector3f&, const Base::Vector3f&, bool>
   {
-    CDistRad (const Vector3D clCenter) : _clCenter(clCenter) {}
-    bool operator()(const Vector3D &rclPt1, const Vector3D &rclPt2) { return Base::DistanceP2(_clCenter, rclPt1) < Base::DistanceP2(_clCenter, rclPt2); }
-    Vector3D  _clCenter;
+    CDistRad (const Base::Vector3f clCenter) : _clCenter(clCenter) {}
+    bool operator()(const Base::Vector3f &rclPt1, const Base::Vector3f &rclPt2) { return Base::DistanceP2(_clCenter, rclPt1) < Base::DistanceP2(_clCenter, rclPt2); }
+    Base::Vector3f  _clCenter;
   };
 
 protected:
@@ -78,11 +79,11 @@ protected:
   const MeshPointArray &_rclPAry;
   MeshRefPointToFacets _clPt2Fa;
   float _fMaxDistanceP2;   // square distance 
-  Vector3D _clCenter;         // center points of start facet
+  Base::Vector3f _clCenter;         // center points of start facet
   std::set<unsigned long> _aclResult;        // result container (point indices)
   std::set<unsigned long> _aclOuter;         // next searching points
-  std::vector<Vector3D> _aclPointsResult;  // result as vertex
-  std::vector<std::vector<Vector3D> > _aclSampledFacets; // sample points from each facet
+  std::vector<Base::Vector3f> _aclPointsResult;  // result as vertex
+  std::vector<std::vector<Base::Vector3f> > _aclSampledFacets; // sample points from each facet
   float _fSampleDistance;  // distance between two sampled points
   Wm3::Sphere3<float> _akSphere;
   bool _bTooFewPoints;    
@@ -116,16 +117,16 @@ inline bool MeshSearchNeighbours::CheckDistToFacet (const MeshFacet &rclF)
   return bFound;
 }
 
-inline bool MeshSearchNeighbours::InnerPoint (const Vector3D &rclPt) const
+inline bool MeshSearchNeighbours::InnerPoint (const Base::Vector3f &rclPt) const
 {
   return Base::DistanceP2(_clCenter, rclPt) < _fMaxDistanceP2;
 }
 
 inline bool MeshSearchNeighbours::TriangleCutsSphere (const MeshFacet &rclF) const
 {
-  Vector3D cP0 = _rclPAry[rclF._aulPoints[0]];
-  Vector3D cP1 = _rclPAry[rclF._aulPoints[1]];
-  Vector3D cP2 = _rclPAry[rclF._aulPoints[2]];
+  Base::Vector3f cP0 = _rclPAry[rclF._aulPoints[0]];
+  Base::Vector3f cP1 = _rclPAry[rclF._aulPoints[1]];
+  Base::Vector3f cP2 = _rclPAry[rclF._aulPoints[2]];
 
   Wm3::Vector3<float> akP0(cP0.x, cP0.y, cP0.z);
   Wm3::Vector3<float> akP1(cP1.x, cP1.y, cP1.z);

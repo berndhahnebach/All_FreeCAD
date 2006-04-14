@@ -17,6 +17,8 @@ libFreeCADApp_la_SOURCES=\
 		Document.h \
 		DocumentObject.cpp \
 		DocumentObject.h \
+		DocumentObjectPy.cpp \
+		DocumentObjectPy.h \
 		DocumentPy.cpp \
 		DocumentPy.h \
 		Doxygen.cpp \
@@ -44,8 +46,8 @@ libFreeCADApp_la_SOURCES=\
 		PropertyLinks.h \
 		PropertyStandard.cpp \
 		PropertyStandard.h \
-		Transaction.cpp \
-		Transaction.h \
+		Transactions.cpp \
+		Transactions.h \
 		VectorPy.cpp \
 		VectorPy.h
 

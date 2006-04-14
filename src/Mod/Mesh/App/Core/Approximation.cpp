@@ -39,25 +39,25 @@ using namespace Wm3;
 using namespace MeshCore;
 
 
-void MeshPointFit::Convert( const Wm3::Vector3<float>& wm3, Vector3D& pt)
+void MeshPointFit::Convert( const Wm3::Vector3<float>& wm3, Base::Vector3f& pt)
 {
   pt.Set( wm3.X(), wm3.Y(), wm3.Z() );
 }
 
-void MeshPointFit::Convert( const Vector3D& pt, Wm3::Vector3<float>& wm3)
+void MeshPointFit::Convert( const Base::Vector3f& pt, Wm3::Vector3<float>& wm3)
 {
   wm3.X() = pt.x; wm3.Y() = pt.y; wm3.Z() = pt.z;
 }
 
-void MeshPointFit::AddPoint( const Vector3D &rcVector )
+void MeshPointFit::AddPoint( const Base::Vector3f &rcVector )
 { 
   _vPoints.push_back( rcVector );
   _bIsFitted = false;
 }
 
-void MeshPointFit::AddPoint( const std::vector<Vector3D> &rvPointVect )
+void MeshPointFit::AddPoint( const std::vector<Base::Vector3f> &rvPointVect )
 {
-  std::vector<Vector3D>::const_iterator cIt;
+  std::vector<Base::Vector3f>::const_iterator cIt;
 
   for( cIt = rvPointVect.begin(); cIt != rvPointVect.end(); cIt++ )
     _vPoints.push_back( *cIt );
@@ -65,9 +65,9 @@ void MeshPointFit::AddPoint( const std::vector<Vector3D> &rvPointVect )
   _bIsFitted = false;
 }
 
-void MeshPointFit::AddPoint( const std::set<Vector3D> &rsPointSet )
+void MeshPointFit::AddPoint( const std::set<Base::Vector3f> &rsPointSet )
 {
-  std::set<Vector3D>::const_iterator cIt;
+  std::set<Base::Vector3f>::const_iterator cIt;
 
   for( cIt = rsPointSet.begin(); cIt != rsPointSet.end(); cIt++ )
     _vPoints.push_back( *cIt );
@@ -75,9 +75,9 @@ void MeshPointFit::AddPoint( const std::set<Vector3D> &rsPointSet )
   _bIsFitted = false;
 }
 
-void MeshPointFit::AddPoint( const std::list<Vector3D> &rsPointList )
+void MeshPointFit::AddPoint( const std::list<Base::Vector3f> &rsPointList )
 {
-  std::list<Vector3D>::const_iterator cIt;
+  std::list<Base::Vector3f>::const_iterator cIt;
 
   for( cIt = rsPointList.begin(); cIt != rsPointList.end(); cIt++ )
     _vPoints.push_back( *cIt );
@@ -85,10 +85,10 @@ void MeshPointFit::AddPoint( const std::list<Vector3D> &rsPointList )
   _bIsFitted = false;
 }
 
-Vector3D MeshPointFit::GetGravity() const
+Base::Vector3f MeshPointFit::GetGravity() const
 {
-  Vector3D clGravity;
-  for (std::list<Vector3D>::const_iterator it = _vPoints.begin(); it!=_vPoints.end(); it++)
+  Base::Vector3f clGravity;
+  for (std::list<Base::Vector3f>::const_iterator it = _vPoints.begin(); it!=_vPoints.end(); it++)
     clGravity += *it;
   clGravity *= 1.0f / float(_vPoints.size());
 
@@ -108,7 +108,7 @@ void MeshPointFit::Clear()
 
 void MeshPointFit::GetMgcVectorArray( std::vector< Wm3::Vector3<float> >& rcPts ) const
 {
-  std::list< Vector3D >::const_iterator It;
+  std::list< Base::Vector3f >::const_iterator It;
   for( It = _vPoints.begin(); It != _vPoints.end(); It++ )
   {
     Wm3::Vector3<float> pt( (*It).x, (*It).y, (*It).z );
@@ -148,15 +148,15 @@ float MeshPlaneFit::Fit()
   return fResult;
 }
 
-Vector3D MeshPlaneFit::GetNormal() const
+Base::Vector3f MeshPlaneFit::GetNormal() const
 {
   if( _bIsFitted )
     return _vNormal;
   else
-    return Vector3D(); 
+    return Base::Vector3f();
 }
 
-float MeshPlaneFit::GetDistanceToPlane( const Vector3D &rcPoint ) const
+float MeshPlaneFit::GetDistanceToPlane( const Base::Vector3f &rcPoint ) const
 {
   float fResult = FLOAT_MAX;
 
@@ -184,7 +184,7 @@ float MeshPlaneFit::GetStdDeviation() const
          fDist   = 0.0f;
   
   unsigned long ulPtCt = CountPoints();
-  std::list< Vector3D >::const_iterator cIt;
+  std::list< Base::Vector3f >::const_iterator cIt;
 
   for( cIt = _vPoints.begin(); cIt != _vPoints.end(); cIt++  )
   {
@@ -214,8 +214,8 @@ float MeshPlaneFit::GetSignedStdDeviation() const
   float fFactor;
          
   unsigned long ulPtCt = CountPoints();
-  Vector3D clGravity, clPt;
-  std::list<Vector3D>::const_iterator cIt;
+  Base::Vector3f clGravity, clPt;
+  std::list<Base::Vector3f>::const_iterator cIt;
   for (cIt = _vPoints.begin(); cIt != _vPoints.end(); cIt++)
     clGravity += *cIt;
   clGravity *= (1.0f / ulPtCt);
@@ -245,12 +245,12 @@ float MeshPlaneFit::GetSignedStdDeviation() const
 
 void MeshPlaneFit::ProjectToPlane ()
 {
-  Vector3D cGravity(GetGravity());
-  Vector3D cNormal (GetNormal ());
+  Base::Vector3f cGravity(GetGravity());
+  Base::Vector3f cNormal (GetNormal ());
 
-  for (std::list< Vector3D >::iterator it = _vPoints.begin(); it != _vPoints.end(); ++it)
+  for (std::list< Base::Vector3f >::iterator it = _vPoints.begin(); it != _vPoints.end(); ++it)
   {
-    Vector3D& cPnt = *it;
+    Base::Vector3f& cPnt = *it;
     float fD = (cPnt - cGravity) * cNormal;
     cPnt = cPnt - fD * cNormal;
   }
@@ -262,7 +262,7 @@ float FunctionContainer::dKoeff[]; // Koeffizienten der Quadrik
 
 bool MeshQuadraticFit::GetCurvatureInfo( float x, float y, float z,
                                          float &rfCurv0, float &rfCurv1,
-                                         Vector3D &rkDir0, Vector3D &rkDir1, float &dDistance )
+                                         Base::Vector3f &rkDir0, Base::Vector3f &rkDir1, float &dDistance )
 {
   assert( _bIsFitted );
   bool bResult = false;
@@ -328,7 +328,7 @@ float MeshQuadraticFit::Fit()
 }
 
 void MeshQuadraticFit::CalcEigenValues( float &dLambda1, float &dLambda2, float &dLambda3,
-                                        Vector3D &clEV1, Vector3D &clEV2, Vector3D &clEV3 ) const
+                                        Base::Vector3f &clEV1, Base::Vector3f &clEV2, Base::Vector3f &clEV3 ) const
 {
   assert( _bIsFitted );
 
@@ -435,7 +435,7 @@ float MeshSurfaceFit::Fit()
 }
 
 bool MeshSurfaceFit::GetCurvatureInfo(float x, float y, float z, float &rfCurv0, float &rfCurv1,
-                                      Vector3D &rkDir0, Vector3D &rkDir1, float &dDistance )
+                                      Base::Vector3f &rkDir0, Base::Vector3f &rkDir1, float &dDistance )
 {
   bool bResult = false;
 
@@ -475,7 +475,7 @@ float MeshSurfaceFit::SurfaceFit()
 
 	// Calculate gravity
 	//
-	Vector3D clBasePoint(GetGravity());
+	Base::Vector3f clBasePoint(GetGravity());
 
 
 	// =============================================================
@@ -484,7 +484,7 @@ float MeshSurfaceFit::SurfaceFit()
 	//
 	// Get Base and Axis
 	//
-	Vector3D clWVector(GetNormal());
+	Base::Vector3f clWVector(GetNormal());
 
   // Normale zuweisen
   _vNormal = GetNormal();
@@ -534,9 +534,9 @@ float MeshSurfaceFit::SurfaceFit()
 	clMatEqn.Init(0.0);
 	clBEqn  .Init(0.0);
 
-  for (std::list<Vector3D>::iterator it = _vPoints.begin(); it != _vPoints.end(); it++)
+  for (std::list<Base::Vector3f>::iterator it = _vPoints.begin(); it != _vPoints.end(); it++)
 	{
-		Vector3D clPoint = *it;		
+		Base::Vector3f clPoint = *it;
 
 		clB(1) = (clPoint    .x - clBasePoint.x);
 		clB(2) = (clPoint    .y - clBasePoint.y);

@@ -238,7 +238,7 @@ PYFUNCIMP_D(PointsPy,addPoint)
     return NULL;                         
 
   PY_TRY {
-    _pcPoints->getKernel().push_back(Vector3D(x,y,z));
+    _pcPoints->getKernel().push_back(Base::Vector3f(x,y,z));
   } PY_CATCH;
 
   Py_Return;

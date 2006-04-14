@@ -37,8 +37,6 @@
 using namespace MeshCore;
 using namespace Wm3;
 
-using Base::BoundBox3D;
-
 unsigned long MeshPointArray::Get (const MeshPoint &rclPoint)
 {
   iterator clIter;
@@ -161,7 +159,7 @@ MeshFacetArray& MeshFacetArray::operator = (const MeshFacetArray &rclFAry)
 
 // -----------------------------------------------------------------
 
-bool MeshGeomEdge::ContainedByOrIntersectBoundingBox ( const BoundBox3D &rclBB ) const
+bool MeshGeomEdge::ContainedByOrIntersectBoundingBox ( const Base::BoundBox3f &rclBB ) const
 {
   // Test, ob alle Eckpunkte der Edge sich auf einer der 6 Seiten der BB befinden
   if ((GetBoundBox() && rclBB) == false)
@@ -185,15 +183,15 @@ bool MeshGeomEdge::ContainedByOrIntersectBoundingBox ( const BoundBox3D &rclBB )
   return false;
 }
 
-BoundBox3D MeshGeomEdge::GetBoundBox () const
+Base::BoundBox3f MeshGeomEdge::GetBoundBox () const
 {
-  return BoundBox3D(_aclPoints,2);
+  return Base::BoundBox3f(_aclPoints,2);
 }
 
-bool MeshGeomEdge::IntersectBoundingBox (const BoundBox3D &rclBB) const
+bool MeshGeomEdge::IntersectBoundingBox (const Base::BoundBox3f &rclBB) const
 {
-  const Vector3D& rclP0 = _aclPoints[0];
-  const Vector3D& rclP1 = _aclPoints[1];
+  const Base::Vector3f& rclP0 = _aclPoints[0];
+  const Base::Vector3f& rclP1 = _aclPoints[1];
 
   Vector3<float> A(rclP0.x, rclP0.y, rclP0.z);
   Vector3<float> B(rclP1.x, rclP1.y, rclP1.z);
@@ -205,7 +203,7 @@ bool MeshGeomEdge::IntersectBoundingBox (const BoundBox3D &rclBB) const
 
   Segment3<float> akSeg(p, n, 0.5f*len);
 
-  Vector3D clCenter  = rclBB.CalcCenter();
+  Base::Vector3f clCenter  = rclBB.CalcCenter();
   Vector3<float> center(clCenter.x, clCenter.y, clCenter.z);
   Vector3<float> axis0(1.0f, 0.0f, 0.0f);
   Vector3<float> axis1(0.0f, 1.0f, 0.0f);
@@ -230,7 +228,7 @@ MeshGeomFacet::MeshGeomFacet (void)
 }
 
 
-MeshGeomFacet::MeshGeomFacet (const Vector3D &v1,const Vector3D &v2,const Vector3D &v3)
+MeshGeomFacet::MeshGeomFacet (const Base::Vector3f &v1,const Base::Vector3f &v2,const Base::Vector3f &v3)
   : _bNormalCalculated(false), 
     _ucFlag(0),
     _ulProp(0)
@@ -242,13 +240,13 @@ MeshGeomFacet::MeshGeomFacet (const Vector3D &v1,const Vector3D &v2,const Vector
 
 
 
-bool MeshGeomFacet::IsPointOf (const Vector3D &rclPoint, float fDistance) const
+bool MeshGeomFacet::IsPointOf (const Base::Vector3f &rclPoint, float fDistance) const
 {
   if (Distance(rclPoint) > fDistance)
     return false;
 
-  Vector3D clNorm(_clNormal), clProjPt(rclPoint), clEdge;
-  Vector3D clP0(_aclPoints[0]), clP1(_aclPoints[1]), clP2(_aclPoints[2]);
+  Base::Vector3f clNorm(_clNormal), clProjPt(rclPoint), clEdge;
+  Base::Vector3f clP0(_aclPoints[0]), clP1(_aclPoints[1]), clP2(_aclPoints[2]);
   float     fLP, fLE;
 
   clNorm.Normalize();
@@ -303,19 +301,19 @@ bool MeshGeomFacet::IsPointOf (const Vector3D &rclPoint, float fDistance) const
   return true;
 }
 
-bool MeshGeomFacet::IsPointOfFace (const Vector3D& rclP, float fDistance) const
+bool MeshGeomFacet::IsPointOfFace (const Base::Vector3f& rclP, float fDistance) const
 {
   // effektivere Implementierung als in MeshGeomFacet::IsPointOf
   //
-  Vector3D a(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
-  Vector3D b(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
-  Vector3D c(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z);
-  Vector3D p(rclP);
+  Base::Vector3f a(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
+  Base::Vector3f b(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
+  Base::Vector3f c(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z);
+  Base::Vector3f p(rclP);
 
-  Vector3D n  = (b - a) % (c - a);
-  Vector3D n1 = (a - p) % (b - p);
-  Vector3D n2 = (c - p) % (a - p);
-  Vector3D n3 = (b - p) % (c - p);
+  Base::Vector3f n  = (b - a) % (c - a);
+  Base::Vector3f n1 = (a - p) % (b - p);
+  Base::Vector3f n2 = (c - p) % (a - p);
+  Base::Vector3f n3 = (b - p) % (c - p);
 
   if (n * (p - a) > fDistance * n.Length())
     return false;
@@ -335,7 +333,7 @@ bool MeshGeomFacet::IsPointOfFace (const Vector3D& rclP, float fDistance) const
   return true;
 }
 
-bool MeshGeomFacet::Weights(const Vector3D& rclP, float& w0, float& w1, float& w2) const
+bool MeshGeomFacet::Weights(const Base::Vector3f& rclP, float& w0, float& w1, float& w2) const
 {
   float fAreaABC = Area();
   float fAreaPBC = MeshGeomFacet(rclP,_aclPoints[1],_aclPoints[2]).Area();
@@ -351,7 +349,7 @@ bool MeshGeomFacet::Weights(const Vector3D& rclP, float& w0, float& w1, float& w
 
 void MeshGeomFacet::Enlarge (float fDist)
 {
-  Vector3D  clM, clU, clV, clPNew[3];
+  Base::Vector3f  clM, clU, clV, clPNew[3];
   float      fA, fD;
   unsigned long i, ulP1, ulP2, ulP3;
 
@@ -375,12 +373,12 @@ void MeshGeomFacet::Enlarge (float fDist)
   _aclPoints[2] = clPNew[2];
 }
 
-bool MeshGeomFacet::IntersectBoundingBox ( const BoundBox3D &rclBB ) const
+bool MeshGeomFacet::IntersectBoundingBox ( const Base::BoundBox3f &rclBB ) const
 {
   // the triangle's corner points
-  const Vector3D& v0 = _aclPoints[0];
-  const Vector3D& v1 = _aclPoints[1];
-  const Vector3D& v2 = _aclPoints[2];
+  const Base::Vector3f& v0 = _aclPoints[0];
+  const Base::Vector3f& v1 = _aclPoints[1];
+  const Base::Vector3f& v2 = _aclPoints[2];
 
   // first check if at least one point is inside the box
   if ( rclBB.IsInBox( v0 ) || rclBB.IsInBox( v1 ) || rclBB.IsInBox( v2 ) )
@@ -408,7 +406,7 @@ bool MeshGeomFacet::IntersectBoundingBox ( const BoundBox3D &rclBB ) const
   Segment3<float> akSeg2(p2, d2, len2/2.0f);
 
   // Build up the box
-  Vector3D clCenter  = rclBB.CalcCenter();
+  Base::Vector3f clCenter  = rclBB.CalcCenter();
   Vector3<float> center(clCenter.x, clCenter.y, clCenter.z);
   Vector3<float> axis0(1.0f, 0.0f, 0.0f);
   Vector3<float> axis1(0.0f, 1.0f, 0.0f);
@@ -434,12 +432,12 @@ bool MeshGeomFacet::IntersectBoundingBox ( const BoundBox3D &rclBB ) const
   return false;
 }
 
-bool MeshGeomFacet::IntersectWithPlane (const Vector3D &rclBase, const Vector3D &rclNormal, Vector3D &rclP1, Vector3D &rclP2) const
+bool MeshGeomFacet::IntersectWithPlane (const Base::Vector3f &rclBase, const Base::Vector3f &rclNormal, Base::Vector3f &rclP1, Base::Vector3f &rclP2) const
 {
   // the triangle's corner points
-  const Vector3D& v0 = _aclPoints[0];
-  const Vector3D& v1 = _aclPoints[1];
-  const Vector3D& v2 = _aclPoints[2];
+  const Base::Vector3f& v0 = _aclPoints[0];
+  const Base::Vector3f& v1 = _aclPoints[1];
+  const Base::Vector3f& v2 = _aclPoints[2];
 
   // edge lengths
   float len0 = (v0-v1).Length();
@@ -507,14 +505,14 @@ bool MeshGeomFacet::IntersectWithPlane (const Vector3D &rclBase, const Vector3D 
   return false;
 }
 
-bool MeshGeomFacet::Foraminate (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes, float fMaxAngle) const
+bool MeshGeomFacet::Foraminate (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, Base::Vector3f &rclRes, float fMaxAngle) const
 {
   const float fTolerance = 1e-06f;
 
-  Vector3D clE0 = _aclPoints[1] - _aclPoints[0];
-  Vector3D clE1 = _aclPoints[2] - _aclPoints[0];
+  Base::Vector3f clE0 = _aclPoints[1] - _aclPoints[0];
+  Base::Vector3f clE1 = _aclPoints[2] - _aclPoints[0];
 
-  Vector3D clFacetNormal = GetNormal();
+  Base::Vector3f clFacetNormal = GetNormal();
 
   float fDenominator = clFacetNormal * rclDir;
   float fLLenSqr     = rclDir * rclDir;
@@ -526,10 +524,10 @@ bool MeshGeomFacet::Foraminate (const Vector3D &rclPt, const Vector3D &rclDir, V
   if ((fDenominator * fDenominator) <= (fTolerance * fLLenSqr * fNLenSqr))
     return false;
 
-  Vector3D clDiff0 = rclPt - _aclPoints[0];
+  Base::Vector3f clDiff0 = rclPt - _aclPoints[0];
   float     fTime   = -(GetNormal() * clDiff0) / fDenominator;
 
-  Vector3D  clDiff1 = clDiff0 + fTime * rclDir;
+  Base::Vector3f  clDiff1 = clDiff0 + fTime * rclDir;
 
   float fE00 = clE0 * clE0;
   float fE01 = clE0 * clE1;
@@ -550,7 +548,7 @@ bool MeshGeomFacet::Foraminate (const Vector3D &rclPt, const Vector3D &rclDir, V
     return false;
 }
 
-bool MeshGeomFacet::IntersectPlaneWithLine (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes) const
+bool MeshGeomFacet::IntersectPlaneWithLine (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, Base::Vector3f &rclRes) const
 {
   // berechne den Schnittpunkt Gerade <-> Ebene
   if ( fabs(rclDir * GetNormal()) < 1e-3f )
@@ -563,7 +561,7 @@ bool MeshGeomFacet::IntersectPlaneWithLine (const Vector3D &rclPt, const Vector3
   return true;
 }
 
-bool MeshGeomFacet::IntersectWithLine (const Vector3D &rclPt, const Vector3D &rclDir, Vector3D &rclRes) const
+bool MeshGeomFacet::IntersectWithLine (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, Base::Vector3f &rclRes) const
 {
   if ( !IntersectPlaneWithLine( rclPt, rclDir, rclRes ) )
     return false; // line and plane are parallel
@@ -571,7 +569,7 @@ bool MeshGeomFacet::IntersectWithLine (const Vector3D &rclPt, const Vector3D &rc
   return IsPointOfFace(rclRes, 1e-03f);
 }
 
-float MeshGeomFacet::DistanceToLineSegment (const Vector3D &rclP1, const Vector3D &rclP2) const
+float MeshGeomFacet::DistanceToLineSegment (const Base::Vector3f &rclP1, const Base::Vector3f &rclP2) const
 {
   // line segment
   Vector3<float> A(rclP1.x, rclP1.y, rclP1.z);
@@ -595,7 +593,7 @@ float MeshGeomFacet::DistanceToLineSegment (const Vector3D &rclP1, const Vector3
   return akDistSegTria.Get();
 }
 
-float MeshGeomFacet::DistanceToPoint (const Vector3D &rclPt, Vector3D &rclNt) const
+float MeshGeomFacet::DistanceToPoint (const Base::Vector3f &rclPt, Base::Vector3f &rclNt) const
 {
   Vector3<float>  akPt(rclPt.x, rclPt.y, rclPt.z);
   Vector3<float>  akF0(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
@@ -614,13 +612,13 @@ float MeshGeomFacet::DistanceToPoint (const Vector3D &rclPt, Vector3D &rclNt) co
   return fDist;
 }
 
-void MeshGeomFacet::SubSample (float fStep, std::vector<Vector3D> &rclPoints) const
+void MeshGeomFacet::SubSample (float fStep, std::vector<Base::Vector3f> &rclPoints) const
 {
-  std::vector<Vector3D> clPoints;
-  Vector3D A = _aclPoints[0], B = _aclPoints[1], C = _aclPoints[2];
-  Vector3D clVecAB(B - A);
-  Vector3D clVecAC(C - A);
-  Vector3D clVecBC(C - B);
+  std::vector<Base::Vector3f> clPoints;
+  Base::Vector3f A = _aclPoints[0], B = _aclPoints[1], C = _aclPoints[2];
+  Base::Vector3f clVecAB(B - A);
+  Base::Vector3f clVecAC(C - A);
+  Base::Vector3f clVecBC(C - B);
 
   // laengste Achse entspricht AB
   float fLenAB = clVecAB.Length();
@@ -641,8 +639,8 @@ void MeshGeomFacet::SubSample (float fStep, std::vector<Vector3D> &rclPoints) co
   clVecAB = (B - A);
   clVecAC = (C - A);
   clVecBC = (C - B);
-  Vector3D clVecABNorm(clVecAB);
-  Vector3D clVecHNorm((clVecAB % clVecAC) % clVecAB);
+  Base::Vector3f clVecABNorm(clVecAB);
+  Base::Vector3f clVecHNorm((clVecAB % clVecAC) % clVecAB);
   clVecABNorm.Normalize();
   clVecHNorm.Normalize();
 
@@ -662,8 +660,8 @@ void MeshGeomFacet::SubSample (float fStep, std::vector<Vector3D> &rclPoints) co
 
       if ((u >= 0.0f) && (v >= 0.0f) && (w >= 0.0f) && ((u + v) < 1.0f))
       {
-       // rclPoints.push_back(CVector3D(u*A + v*B + w*C));
-        Vector3D clV = A + (px * clVecABNorm) + (py * clVecHNorm);
+       // rclPoints.push_back(CBase::Vector3f(u*A + v*B + w*C));
+        Base::Vector3f clV = A + (px * clVecABNorm) + (py * clVecHNorm);
         clPoints.push_back(clV);
 
       }
@@ -683,7 +681,7 @@ bool MeshGeomFacet::IntersectWithProjectedFacet(const MeshGeomFacet &rclFacet) c
 {
   // project facet 2 onto facet 1
   MeshGeomFacet cProjFac;
-  Vector3D res;
+  Base::Vector3f res;
   IntersectPlaneWithLine( rclFacet._aclPoints[0], GetNormal(), res);
   cProjFac._aclPoints[0] = res;
 
@@ -730,7 +728,7 @@ bool MeshGeomFacet::IntersectWithFacet(const MeshGeomFacet &rclFacet) const
   return IntrTriangle3Triangle3<float>(akTria1, akTria2).Test();
 }
 
-bool MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, Vector3D& rclPt0, Vector3D& rclPt1) const
+bool MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const
 {
   Vector3<float> akU[3] = 
       {Vector3<float>(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z),
@@ -773,11 +771,11 @@ bool MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, Vector3D&
   }
 }
 
-float MeshGeomFacet::CenterOfInnerCircle(Vector3D& rclCenter) const
+float MeshGeomFacet::CenterOfInnerCircle(Base::Vector3f& rclCenter) const
 {
-  Vector3D p0(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
-  Vector3D p1(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
-  Vector3D p2(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z);
+  Base::Vector3f p0(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
+  Base::Vector3f p1(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
+  Base::Vector3f p2(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z);
 
   float a = (p1-p2).Length();
   float b = (p2-p0).Length();
@@ -793,15 +791,15 @@ float MeshGeomFacet::CenterOfInnerCircle(Vector3D& rclCenter) const
   return fRadius;
 }
 
-float MeshGeomFacet::CenterOfOuterCircle(Vector3D& rclCenter) const
+float MeshGeomFacet::CenterOfOuterCircle(Base::Vector3f& rclCenter) const
 {
-  Vector3D p0(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
-  Vector3D p1(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
-  Vector3D p2(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z);
+  Base::Vector3f p0(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
+  Base::Vector3f p1(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
+  Base::Vector3f p2(_aclPoints[2].x, _aclPoints[2].y, _aclPoints[2].z);
 
-  Vector3D u = (p1-p0);
-  Vector3D v = (p2-p1);
-  Vector3D w = (p0-p2);
+  Base::Vector3f u = (p1-p0);
+  Base::Vector3f v = (p2-p1);
+  Base::Vector3f w = (p0-p2);
 
   float uu =   (u * u);
   float vv =   (v * v);
@@ -823,20 +821,20 @@ float MeshGeomFacet::CenterOfOuterCircle(Vector3D& rclCenter) const
   return fRadius;
 }
 
-unsigned short MeshGeomFacet::NearestEdgeToPoint(const Vector3D& rclPt) const
+unsigned short MeshGeomFacet::NearestEdgeToPoint(const Base::Vector3f& rclPt) const
 {
   unsigned short usSide;
 
-  const Vector3D& rcP1 = _aclPoints[0];
-  const Vector3D& rcP2 = _aclPoints[1];
-  const Vector3D& rcP3 = _aclPoints[2];
+  const Base::Vector3f& rcP1 = _aclPoints[0];
+  const Base::Vector3f& rcP2 = _aclPoints[1];
+  const Base::Vector3f& rcP3 = _aclPoints[2];
 
   float fD1 = FLOAT_MAX;
   float fD2 = FLOAT_MAX;
   float fD3 = FLOAT_MAX;
 
   // 1st edge
-  Vector3D clDir = rcP2 - rcP1;
+  Base::Vector3f clDir = rcP2 - rcP1;
   float fLen = Base::Distance(rcP2, rcP1);
   float t = ( ( rclPt - rcP1 ) * clDir ) / ( fLen * fLen );
   if ( t < 0.0f )
@@ -896,35 +894,35 @@ unsigned short MeshGeomFacet::NearestEdgeToPoint(const Vector3D& rclPt) const
 
 float MeshGeomFacet::VolumeOfPrism (const MeshGeomFacet& rclF1) const
 {
-  Base::Vector3D P1 = this->_aclPoints[0];
-  Base::Vector3D P2 = this->_aclPoints[1];
-  Base::Vector3D P3 = this->_aclPoints[2];
-  Base::Vector3D Q1 = rclF1._aclPoints[0];
-  Base::Vector3D Q2 = rclF1._aclPoints[1];
-  Base::Vector3D Q3 = rclF1._aclPoints[2];
+  Base::Vector3f P1 = this->_aclPoints[0];
+  Base::Vector3f P2 = this->_aclPoints[1];
+  Base::Vector3f P3 = this->_aclPoints[2];
+  Base::Vector3f Q1 = rclF1._aclPoints[0];
+  Base::Vector3f Q2 = rclF1._aclPoints[1];
+  Base::Vector3f Q3 = rclF1._aclPoints[2];
 
   if ((P1-Q2).Length() < (P1-Q1).Length())
   {
-    Base::Vector3D tmp = Q1;
+    Base::Vector3f tmp = Q1;
     Q1 = Q2;
     Q2 = tmp;
   }
   if ((P1-Q3).Length() < (P1-Q1).Length())
   {
-    Base::Vector3D tmp = Q1;
+    Base::Vector3f tmp = Q1;
     Q1 = Q3;
     Q3 = tmp;
   }
   if ((P2-Q3).Length() < (P2-Q2).Length())
   {
-    Base::Vector3D tmp = Q2;
+    Base::Vector3f tmp = Q2;
     Q2 = Q3;
     Q3 = tmp;
   }
 
-  Base::Vector3D N1 = (P2-P1) % (P3-P1);
-  Base::Vector3D N2 = (P2-P1) % (Q2-P1);
-  Base::Vector3D N3 = (Q2-P1) % (Q1-P1);
+  Base::Vector3f N1 = (P2-P1) % (P3-P1);
+  Base::Vector3f N2 = (P2-P1) % (Q2-P1);
+  Base::Vector3f N3 = (Q2-P1) % (Q1-P1);
 
   float fVol=0.0f;
   fVol += float(fabs((Q3-P1) * N1));

@@ -98,7 +98,7 @@ void PointsAlgos::LoadAscii(PointsWithProperty &points, const char *FileName)
       if(buff[0]>='0'&&buff[0]<='9' || buff[1]>='0'&&buff[1]<='9')
       {
         sscanf(buff,"%f %f %f",&x,&y,&z);
-        Kernel[LineCnt] = Vector3D(x,y,z);
+        Kernel[LineCnt] = Base::Vector3f(x,y,z);
         Base::Sequencer().next();
         LineCnt++;
       }

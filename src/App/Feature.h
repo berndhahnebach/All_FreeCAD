@@ -34,21 +34,11 @@
 #include <Base/Factory.h>
 #include <Base/PyExport.h>
 #include <Base/TimeInfo.h>
-#include <Base/Vector3D.h>
 
 #include <App/DocumentObject.h>
 #include <App/Material.h>
 #include <App/PropertyStandard.h>
 
-
-namespace Base
-{
-//  class Vector3D;
-  class Matrix4D;
-}
-
-using Base::Vector3D;
-using Base::Matrix4D;
 
 namespace App
 {

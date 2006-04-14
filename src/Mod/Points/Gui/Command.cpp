@@ -167,7 +167,7 @@ CmdPointsTransform::CmdPointsTransform()
 void CmdPointsTransform::activated(int iMsg)
 {
   // This is a test command to transform a point cloud directly written in C++ (not Python)
-  Base::Matrix4D trans( Base::Vector3D(0.0f, 0.0f, 0.0f), Base::Vector3D(0.0f, 0.0f, 1.0f), 1.570796f  );
+  Base::Matrix4D trans( Base::Vector3f(0.0f, 0.0f, 0.0f), Base::Vector3f(0.0f, 0.0f, 1.0f), 1.570796f  );
 
   App::Document* pDoc = App::GetApplication().getActiveDocument();
   Gui::Document* pGui = Gui::Application::Instance->activeDocument();

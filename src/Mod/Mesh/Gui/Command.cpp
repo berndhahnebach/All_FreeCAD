@@ -867,7 +867,7 @@ void CmdMeshBoundingBox::activated(int iMsg)
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     const MeshCore::MeshKernel& rMesh = ((Mesh::Feature*)(*it))->getMesh();
-    const Base::BoundBox3D& box = rMesh.GetBoundBox();
+    const Base::BoundBox3f& box = rMesh.GetBoundBox();
     QString minX, maxX, minY, maxY, minZ, maxZ;
     minX.sprintf("Min X=%f", box.MinX);
     maxX.sprintf("Max X=%f", box.MaxX);

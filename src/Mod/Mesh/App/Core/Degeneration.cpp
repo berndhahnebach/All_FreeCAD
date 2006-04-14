@@ -388,7 +388,7 @@ std::vector<unsigned long> MeshEvalDegeneratedFacets::DefacedFacets() const
   std::vector<unsigned long> aulDeg;
   MeshFacetIterator cIter(_rclMesh);
 
-  Vector3D u,v;
+  Base::Vector3f u,v;
   float fAngle;
   for (cIter.Init(); cIter.More(); cIter.Next())
   {
@@ -470,12 +470,12 @@ unsigned long MeshFixDegeneratedFacets::RemoveEdgeTooSmall (float fMinEdgeLength
     for (clFIter.Init(); clFIter.More(); clFIter.Next())
     {
       MeshGeomFacet clSFacet = *clFIter;
-      Vector3D clP0  = clSFacet._aclPoints[0];
-      Vector3D clP1  = clSFacet._aclPoints[1];
-      Vector3D clP2  = clSFacet._aclPoints[2];
-      Vector3D clE01 = clP1 - clP0;
-      Vector3D clE12 = clP2 - clP1;
-      Vector3D clE20 = clP2 - clP0;
+      Base::Vector3f clP0  = clSFacet._aclPoints[0];
+      Base::Vector3f clP1  = clSFacet._aclPoints[1];
+      Base::Vector3f clP2  = clSFacet._aclPoints[2];
+      Base::Vector3f clE01 = clP1 - clP0;
+      Base::Vector3f clE12 = clP2 - clP1;
+      Base::Vector3f clE20 = clP2 - clP0;
       MeshFacet clFacet = clFIter.GetIndicies();
       unsigned long    ulP0 = clFacet._aulPoints[0];
       unsigned long    ulP1 = clFacet._aulPoints[1];

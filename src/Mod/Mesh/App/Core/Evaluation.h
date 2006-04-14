@@ -239,11 +239,11 @@ public:
   virtual ~MeshEigensystem () {}
 
   /** Returns the transformation matrix. */
-  Matrix4D Transform() const;
+  Base::Matrix4D Transform() const;
   /**
    * Returns the expansions in \a u, \a v and \a w of the bounding box.
    */
-  Vector3D GetBoundings() const;
+  Base::Vector3f GetBoundings() const;
 
   bool Evaluate();
   /** 
@@ -253,7 +253,7 @@ protected:
   void CalculateLocalSystem();
 
 private:
-  Vector3D _cU, _cV, _cW, _cC; /**< Vectors that define the local coordinate system. */
+  Base::Vector3f _cU, _cV, _cW, _cC; /**< Vectors that define the local coordinate system. */
   float _fU, _fV, _fW; /**< Expansion in \a u, \a v, and \a w direction of the transformed mesh. */
 };
 

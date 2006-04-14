@@ -43,7 +43,6 @@
 #include <Base/Sequencer.h>
 
 using namespace MeshCore;
-using namespace Wm3;
 
 
 /**
@@ -428,7 +427,7 @@ bool MeshEvalSingleFacet::Evaluate ()
 bool MeshFixSingleFacet::Fixup ()
 {
   std::vector<unsigned long> aulInvalids;
-  MeshFacetArray& raFacets = _rclMesh._aclFacetArray;
+//  MeshFacetArray& raFacets = _rclMesh._aclFacetArray;
   for ( std::vector<std::list<unsigned long> >::const_iterator it=_raclManifoldList.begin();it!=_raclManifoldList.end();++it )
   {
     unsigned long uFInd1, uFInd2;
@@ -624,13 +623,13 @@ MeshEigensystem::MeshEigensystem (const MeshKernel &rclB)
  : MeshEvaluation(rclB), _cU(1.0f, 0.0f, 0.0f), _cV(0.0f, 1.0f, 0.0f), _cW(0.0f, 0.0f, 1.0f)
 {
   // use the values of world coordinates as default
-  BoundBox3D box = _rclMesh.GetBoundBox();
+  Base::BoundBox3f box = _rclMesh.GetBoundBox();
   _fU = box.LengthX();
   _fV = box.LengthY();
   _fW = box.LengthZ();
 }
 
-Matrix4D MeshEigensystem::Transform() const
+Base::Matrix4D MeshEigensystem::Transform() const
 {
   // x,y,c ... vectors
   // R,Q   ... matrices (R is orthonormal so its transposed(=inverse) is equal to Q)
@@ -639,14 +638,14 @@ Matrix4D MeshEigensystem::Transform() const
   // y = R * x  + c
   //     <==> 
   // x = Q * y - Q * c
-  Matrix4D clTMat;
+  Base::Matrix4D clTMat;
   // rotation part
   clTMat[0][0] = _cU.x; clTMat[0][1] = _cU.y; clTMat[0][2] = _cU.z; clTMat[0][3] = 0.0f;
   clTMat[1][0] = _cV.x; clTMat[1][1] = _cV.y; clTMat[1][2] = _cV.z; clTMat[1][3] = 0.0f;
   clTMat[2][0] = _cW.x; clTMat[2][1] = _cW.y; clTMat[2][2] = _cW.z; clTMat[2][3] = 0.0f;
   clTMat[3][0] =  0.0f; clTMat[3][1] =  0.0f; clTMat[3][2] =  0.0f; clTMat[3][3] = 1.0f;
 
-  Vector3D c(_cC);
+  Base::Vector3f c(_cC);
   c = clTMat * c;
 
   // translation part
@@ -661,7 +660,7 @@ bool MeshEigensystem::Evaluate()
 
   float xmin=0.0f, xmax=0.0f, ymin=0.0f, ymax=0.0f, zmin=0.0f, zmax=0.0f;
 
-  Vector3D clVect, clProj;
+  Base::Vector3f clVect, clProj;
   float fH;
 
   const MeshPointArray& aclPoints = _rclMesh.GetPoints ();
@@ -714,9 +713,9 @@ bool MeshEigensystem::Evaluate()
   return false; // to call Fixup() if needed
 }
 
-Vector3D MeshEigensystem::GetBoundings() const
+Base::Vector3f MeshEigensystem::GetBoundings() const
 {
-  return Vector3D ( _fU, _fV, _fW );
+  return Base::Vector3f ( _fU, _fV, _fW );
 }
 
 void MeshEigensystem::CalculateLocalSystem()
@@ -735,7 +734,7 @@ void MeshEigensystem::CalculateLocalSystem()
   m20 = m21 = m22 = 0.0f;
 
   float fSumArea=0.0f;
-  Vector3D cGravity;
+  Vector3f cGravity;
 
   // get the center of mass for the mesh
   MeshFacetIterator cIter( _rclMesh );
@@ -750,7 +749,7 @@ void MeshEigensystem::CalculateLocalSystem()
 
   for ( cIter.Init(); cIter.More(); cIter.Next() )
   {
-    Vector3D d = ( cIter->GetGravityPoint() - cGravity );
+    Vector3f d = ( cIter->GetGravityPoint() - cGravity );
     float fArea = MeshFacetFunc::Area( *cIter );
     m00 += fArea * d.x * d.x; m01 += fArea * d.x * d.y; m02 += fArea * d.x * d.z;
     m10 += fArea * d.y * d.x; m11 += fArea * d.y * d.y; m12 += fArea * d.y * d.z;
@@ -772,7 +771,7 @@ void MeshEigensystem::CalculateLocalSystem()
   m20 = m21 = m22 = 0.0f;
 
   float fSumArea=0.0f;
-  Vector3D cGravity;
+  Vector3f cGravity;
   MeshRefPointToFacets cPt2Fac( _rclMesh );
   MeshPointIterator cP (_rclMesh);
   std::vector<MeshPoint>& aclPoints = _rclMesh.GetPoints ();
@@ -805,7 +804,7 @@ void MeshEigensystem::CalculateLocalSystem()
   for ( it2 = cPt2Fac.begin(); it2 != cPt2Fac.end(); it2++ )
   {
     cP.Set( pos++ );
-    Vector3D d = ( *cP - cGravity );
+    Vector3f d = ( *cP - cGravity );
     float fArea = 0.0f;
     const std::set<MeshFacetArray::_TIterator>& facs = *it2;
     for ( std::set<MeshFacetArray::_TIterator>::const_iterator cI = facs.begin(); cI != facs.end(); cI++ )
@@ -848,15 +847,15 @@ void MeshEigensystem::CalculateLocalSystem()
   szz = szz - mz*mz/((float)nSize);
 
   // Kovarianzmatrix
-  Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
+  Wm3::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
 #endif
 
-  Matrix3<float> rkRot, rkDiag;
+  Wm3::Matrix3<float> rkRot, rkDiag;
   akMat.EigenDecomposition(rkRot, rkDiag);
 
-  Vector3<float> U = rkRot.GetColumn(0);
-  Vector3<float> V = rkRot.GetColumn(1);
-  Vector3<float> W = rkRot.GetColumn(2);
+  Wm3::Vector3<float> U = rkRot.GetColumn(0);
+  Wm3::Vector3<float> V = rkRot.GetColumn(1);
+  Wm3::Vector3<float> W = rkRot.GetColumn(2);
 
   _cC.Set(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
   _cU.Set(U.X(), U.Y(), U.Z());

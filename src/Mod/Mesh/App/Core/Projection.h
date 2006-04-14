@@ -30,7 +30,7 @@
 
 #include <Base/Vector3D.h>
 
-using Base::Vector3D;
+using Base::Vector3f;
 
 class TopoDS_Edge;
 class TopoDS_Shape;
@@ -45,7 +45,7 @@ class MeshKernel;
 struct SplitEdge
 {
   unsigned long uE0, uE1; /**< start and endpoint of an edge */
-  Base::Vector3D cPt; /**< Point on edge (\a uE0, \a uE1) */
+  Base::Vector3f cPt; /**< Point on edge (\a uE0, \a uE1) */
 };
 
 /**

@@ -59,7 +59,7 @@ namespace Base {
 
 /** The Vector Base class. */
 template <class _Precision>
-class BaseExport Vector3
+class /*BaseExport*/ Vector3
 {
 public:
   /** @name Public data members */
@@ -166,11 +166,11 @@ public:
   /** @name Friends */
   //@{
   /// Returns the distance between two points
-  friend _Precision Distance (const Vector3 &rcVct1, const Vector3 &rcVct2);
+  //friend _Precision Distance (const Vector3 &rcVct1, const Vector3 &rcVct2);
   /// Returns the squared distance between two points
-  friend _Precision DistanceP2 (const Vector3 &rclV1, const Vector3 &rclV2);
+  //friend _Precision DistanceP2 (const Vector3 &rclV1, const Vector3 &rclV2);
   /// Multiplication of scalar with vector.
-  friend Vector3 operator * (_Precision fFac, const Vector3 &rcVct);
+  //friend Vector3 operator * (_Precision fFac, const Vector3 &rcVct);
   //@}
 };
 
@@ -387,7 +387,7 @@ inline _Precision Distance (const Vector3<_Precision> &rcVct1, const Vector3<_Pr
 template <class _Precision>
 inline _Precision DistanceP2 (const Vector3<_Precision> &rclV1, const Vector3<_Precision> &rclV2)
 {
-  _Precision x=rclV1.x-rclV2.x, y=rclV1.y-rclV2.y, z=rclV1.z-rclV2.z; 
+  _Precision x=rclV1.x-rclV2.x, y=rclV1.y-rclV2.y, z=rclV1.z-rclV2.z;
   return x * x + y * y + z * z;
 }
 
@@ -573,32 +573,11 @@ void Vector3<_Precision>::Print (void)
   printf ("x: %f, y: %f, z: %f\n", x, y, z);
 }
 
-
-
-
-
-/*
-class Vector3D : public Vector3<float> 
-{
-  /// Construction
-//  inline explicit Vector3 (float fx = 0.0f, float fy = 0.0f, float fz = 0.0f);
-  /// Construction
-  inline Vector3 (const Vector3<double>& rcVct);
-
-};
-*/
-
-typedef Vector3<float> Vector3F;
-typedef Vector3F * PVector3F;
-typedef Vector3F & RVector3F;
-
-typedef Vector3<float> Vector3D ;
-typedef Vector3D * PVector3D;
-typedef Vector3D & RVector3D;
-
+typedef Vector3<float> Vector3f;
+typedef Vector3<double> Vector3d;
 
 
 } // namespace Base
 
-#endif // VECTOR3D_H 
+#endif // VECTOR3D_H
 

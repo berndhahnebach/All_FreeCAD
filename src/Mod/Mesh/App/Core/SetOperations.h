@@ -39,21 +39,8 @@
 #include "Visitor.h"
 
 #include <Base/Builder3D.h>
-#include <Base/Vector3D.h>
 
 // forward declarations
-
-namespace Base
-{
-  class Vector2D;
-  class ViewProjMethod;
-  class Polygon2D;
-}
-
-using Base::Vector2D;
-using Base::Vector3D;
-using Base::ViewProjMethod;
-using Base::Polygon2D;
 
 namespace MeshCore
 {

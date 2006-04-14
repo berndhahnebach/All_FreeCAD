@@ -53,7 +53,7 @@ PROPERTY_SOURCE_ABSTRACT(App::AbstractFeature, App::DocumentObject)
 //===========================================================================
 
 AbstractFeature::AbstractFeature(void)
-:/*_nextFreeLabel(1),*/pcFeaturePy(0)
+:pcFeaturePy(0)
 {
 
 

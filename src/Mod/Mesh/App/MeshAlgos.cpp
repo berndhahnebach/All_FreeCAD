@@ -139,24 +139,24 @@ void MeshAlgos::writeAscii(MeshCore::MeshKernel* Mesh,const char *FileName)
 
 void MeshAlgos::offset(MeshCore::MeshKernel* Mesh, float fSize)
 {
-  std::vector<Base::Vector3D> normals = Mesh->CalcVertexNormals();
+  std::vector<Base::Vector3f> normals = Mesh->CalcVertexNormals();
 
   unsigned int i = 0;
   // go throug all the Vertex normales
-  for(std::vector<Vector3D>::iterator It= normals.begin();It != normals.end();It++,i++)
+  for(std::vector<Base::Vector3f>::iterator It= normals.begin();It != normals.end();It++,i++)
     // and move each mesh point in the normal direction
     Mesh->MovePoint(i,It->Normalize() * fSize);
 }
 
 void MeshAlgos::offsetSpecial(MeshCore::MeshKernel* Mesh, float fSize, float zmax, float zmin)
 {
-  std::vector<Base::Vector3D> normals = Mesh->CalcVertexNormals();
+  std::vector<Base::Vector3f> normals = Mesh->CalcVertexNormals();
 
   unsigned int i = 0;
   // go throug all the Vertex normales
-  for(std::vector<Vector3D>::iterator It= normals.begin();It != normals.end();It++,i++)
+  for(std::vector<Base::Vector3f>::iterator It= normals.begin();It != normals.end();It++,i++)
   {
-    Vector3D Pnt = Mesh->GetPoint(i);
+    Base::Vector3f Pnt = Mesh->GetPoint(i);
 
     if(Pnt.z < zmax && Pnt.z > zmin)
     {
@@ -356,7 +356,7 @@ GtsSurface* MeshAlgos::createGTSSurface(MeshCore::MeshKernel* Mesh)
                                       gts_vertex_class () );
 
   unsigned long p1,p2,p3;
-  Vector3D Vertex;
+  Base::Vector3f Vertex;
 
 
   // Geting all the points
@@ -397,16 +397,16 @@ static void onFaces (GtsTriangle * t,  std::vector<MeshGeomFacet> *VAry )
 
   gts_triangle_vertices (t,&mv0,&mv1,&mv2);
 
-  VAry->push_back(MeshGeomFacet(Vector3D(mv0->p.x,mv0->p.y,mv0->p.z),
-                                Vector3D(mv1->p.x,mv1->p.y,mv1->p.z),
-                                Vector3D(mv2->p.x,mv2->p.y,mv2->p.z)));
+  VAry->push_back(MeshGeomFacet(Base::Vector3f(mv0->p.x,mv0->p.y,mv0->p.z),
+                                Base::Vector3f(mv1->p.x,mv1->p.y,mv1->p.z),
+                                Base::Vector3f(mv2->p.x,mv2->p.y,mv2->p.z)));
 
 }
 
 /*
 static void onVertices(GtsVertex *v, MeshKernel *pKernel )
 {
-  Vector3D Point(GTS_POINT(v)->x,GTS_POINT(v)->y,GTS_POINT(v)->z);
+  Base::Vector3f Point(GTS_POINT(v)->x,GTS_POINT(v)->y,GTS_POINT(v)->z);
 }*/
 
 void MeshAlgos::fillMeshFromGTSSurface(MeshCore::MeshKernel* pMesh, GtsSurface* pSurface)
@@ -494,12 +494,12 @@ class _VertexCompare
 
 
 
-void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape &Shape, const std::vector<Vector3D> &poly, const Vector3D & up, float MaxSize)
+void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape &Shape, const std::vector<Base::Vector3f> &poly, const Base::Vector3f & up, float MaxSize)
 {
   TopExp_Explorer Ex;
   Standard_Real fBegin, fEnd;
   std::vector<MeshGeomFacet> cVAry;
-  std::map<TopoDS_Vertex,std::vector<Vector3D>,_VertexCompare> ConnectMap;
+  std::map<TopoDS_Vertex,std::vector<Base::Vector3f>,_VertexCompare> ConnectMap;
 
   for (Ex.Init(Shape, TopAbs_EDGE); Ex.More(); Ex.Next())
   {
@@ -516,8 +516,8 @@ void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape
       res = 2;
     gp_Dir Tangent;
 
-    std::vector<Vector3D> prePoint(poly.size());
-    std::vector<Vector3D> actPoint(poly.size());
+    std::vector<Base::Vector3f> prePoint(poly.size());
+    std::vector<Base::Vector3f> actPoint(poly.size());
     
     // checking if there is already a end to conect
     if(ConnectMap.find(V1) != ConnectMap.end() ){
@@ -534,18 +534,18 @@ void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape
       // get point and tangent at the position, up is fix for the moment
       prop.SetParameter(fBegin + ((fEnd - fBegin) * float(i)) / float(res-1));
       prop.Tangent(Tangent);
-      Vector3D Tng(Tangent.X(),Tangent.Y(),Tangent.Z());
-      Vector3D Ptn(prop.Value().X(),prop.Value().Y(),prop.Value().Z());
-      Vector3D Up (up);
+      Base::Vector3f Tng(Tangent.X(),Tangent.Y(),Tangent.Z());
+      Base::Vector3f Ptn(prop.Value().X(),prop.Value().Y(),prop.Value().Z());
+      Base::Vector3f Up (up);
       // normalize and calc the third vector of the plane coordinatesystem
       Tng.Normalize(); 
       Up.Normalize();
-      Vector3D Third(Tng%Up);
+      Base::Vector3f Third(Tng%Up);
 
 //      Base::Console().Log("Pos: %f %f %f \n",Ptn.x,Ptn.y,Ptn.z);
 
       unsigned int l=0;
-      std::vector<Vector3D>::const_iterator It;
+      std::vector<Base::Vector3f>::const_iterator It;
 
       // got through the profile
       for(It=poly.begin();It!=poly.end();++It,l++)
@@ -572,7 +572,7 @@ void MeshAlgos::LoftOnCurve(MeshCore::MeshKernel &ResultMesh, const TopoDS_Shape
             if(i == res-1 && bEnd) // if last row and a end to conect
               actPoint = ConnectMap[V2];
 
-            Vector3D p1 = prePoint[l-1],
+            Base::Vector3f p1 = prePoint[l-1],
                      p2 = actPoint[l-1],
                      p3 = prePoint[l],
                      p4 = actPoint[l];

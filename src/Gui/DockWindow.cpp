@@ -23,6 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
+# include <qobjectlist.h>
 # include <qdockarea.h>
 # include <qdockwindow.h>
 # include <qscrollview.h>
@@ -156,7 +157,7 @@ bool DockView::onHasMsg(const char* pMsg)
 // --------------------------------------------------------------------
 
 DockContainer::DockContainer( QWidget* parent, const char* name, WFlags fl )
-  : DockWindow( 0L, parent, name, fl ), formerParent(0)
+  : DockWindow( 0L, parent, name, fl )
 {
   sv = new QScrollView( this );
   sv->setResizePolicy( QScrollView::AutoOneFit );
@@ -172,50 +173,12 @@ DockContainer::~DockContainer()
 }
 
 /**
- * Inserts the widget \a w to the container. To fit into the dockable window area the widget \w 
+ * Inserts the widget \a w to the container. To fit into the dockable window area the widget \w
  * should reimplement QWidget::sizeHint() with the minimum required size.
  */
-void DockContainer::setChild( QWidget* w )
+void DockContainer::setDockedWidget( QWidget* w )
 {
-  if( !w ) return;
-  formerParent = w->parentWidget();
-  // prevent state of widget w from being changed by QScrollView::addChild()
-  w->reparent( sv->viewport(), QPoint(0,0) );
-  sv->addChild(w);
-  connect(w, SIGNAL(destroyed()), this, SLOT(destroyDockWidget()));
-}
-
-/**
- * Removes the widget \a w from the container and restores its previous parent widget.
- */
-void DockContainer::removeChild( QWidget* w )
-{
-  if( w && w->parentWidget() == sv->viewport() )
-  {
-    w->reparent(formerParent, QPoint());
-    disconnect(w, SIGNAL(destroyed()), this, SLOT(destroyDockWidget()));
-    sv->removeChild(w);
-  }
-}
-
-/**
- * The function gets called when the dockable widget is about to be destroyed.
- * It destroys also itself.
- */
-void DockContainer::destroyDockWidget()
-{
-  DockWindowManager* pDockMgr = DockWindowManager::instance();
-
-  // prevent the widget from being destructed twice
-  QWidget* w = (QWidget*)sender();
-  sv->removeChild(w);
-  // destroy the dock window container
-  pDockMgr->removeDockWindow(this);
-
-#ifdef FC_OS_WIN32
-  //FIXME: Under Linux this leads to a strange error. There seems to be something wrong with the children of pDockDlg.
-  deleteLater();
-#endif
+  sv->addChild( w );
 }
 
 // --------------------------------------------------------------------
@@ -357,6 +320,39 @@ void DockWindowManager::removeDockWindow( DockWindow* dock )
       dw->removeChild( dock );
       d->_clDocWindows.erase(It);
       delete dw; // destruct the QDockWindow
+      break;
+    }
+  }
+}
+
+/**
+ * Removes the dock window to the docked widget \a w and destructs it with all its children, especially \a w.
+ * @note The widget \a w becomes invalid after the usage of this method.
+ */
+void DockWindowManager::removeDockedWidget( QWidget* docked )
+{
+  for ( QMap <QString,DockWindow*>::Iterator It = d->_clDocWindows.begin(); It != d->_clDocWindows.end(); ++It ) {
+    bool ok = false;
+    QObjectList *l = It.data()->queryList( docked->className(), docked->name() );
+    QObjectListIt it( *l ); // iterate over the widgets of the same type and name as 'docked'
+    QObject *obj;
+    while ( (obj = it.current()) != 0 ) {
+        // for each found object...
+        if ( obj == docked ) {
+          ok = true;
+          break;
+        }
+        ++it;
+    }
+    delete l; // delete the list, not the objects
+
+    // if we have a DockWindow containing 'docked'
+    if ( It.data() == docked || ok ) {
+      QDockWindow* dw = It.data()->dockWindow();
+      getMainWindow()->removeDockWindow( dw );
+      d->_clDocWindows.erase(It);
+      // destruct the QDockWindow and all its children, especially 'docked'
+      delete dw;
       break;
     }
   }

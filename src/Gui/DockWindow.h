@@ -25,9 +25,6 @@
 #define DOCK_WINDOW_H
 
 
-#ifndef _PreComp_
-#endif
-
 #include "../Base/Parameter.h"
 #include "View.h"
 
@@ -68,7 +65,7 @@ public:
   virtual bool canClose(void){return true;}
   //@}
   void setCaption ( const QString & );
-  /** Returns the associated QDockWindow object this widget. 
+  /** Returns the associated QDockWindow object to this widget.
    * @note A valid pointer is not returned before this widget has been docked with DockWindowManager::addDockWindow().
    * Otherwise 0 is returned.
    */
@@ -144,7 +141,7 @@ signals:
  *
  * \code
  * // create a non-modal dialog
- * MyDialog* dlg = new MyDialog( getMainWindow(), "MyDialog", false, WDestructiveClose);
+ * MyDialog* dlg = new MyDialog( getMainWindow(), "MyDialog", false);
  *
  * // embed this dialog into a dockable widget container
  * DockWindowManager* pDockMgr = DockWindowManager::instance();
@@ -153,11 +150,20 @@ signals:
  *
  * // do not allow to hide
  * pDockDlg->dockWindow()->setCloseMode(QDockWindow::Never);
- * pDockDlg->setChild(dlg);
+ * pDockDlg->setDockedWidget(dlg);
  * pDockDlg->show();
+ * \endcode
  *
- * // restore the destructive close flag to invoke the destructor automatically
- * dlg->setWFlags(WDestructiveClose);
+ * If you want to also close the dock window when you close the dialog then call the following code
+ * in the corresponding slot function of the dialog:
+ * \code
+ * // This slot is connected to the dialog's 'Close' button
+ * void MyDialog::closeWindow()
+ * {
+ *   DockWindowManager* pDockMgr = DockWindowManager::instance();
+ *   // destructs the associated QDockWindow and all its children
+ *   pDockMgr->removeDockedWidget(this);
+ * }
  * \endcode
  *
  * \author Werner Mayer
@@ -170,15 +176,10 @@ public:
   DockContainer( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DockContainer();
 
-  void setChild( QWidget* w );
-  void removeChild( QWidget* w );
-
-private slots:
-  void destroyDockWidget();
+  void setDockedWidget( QWidget* w );
 
 private:
   QScrollView* sv;
-  QWidget* formerParent;
 };
 
 /**
@@ -189,13 +190,14 @@ private:
 class GuiExport DockWindowManager
 {
 public:
-  /** Creates the only instance of the WorkbenchManager. */
+  /** Creates the only instance of the DockWindowManager. */
   static DockWindowManager* instance();
 
   DockWindow* getDockWindow( const QString& name );
   QPtrList<DockWindow> getDockWindows();
   void removeDockWindow( const QString& name );
   void removeDockWindow( DockWindow* dock );
+  void removeDockedWidget( QWidget* docked );
   void addDockWindow( const QString& name, DockWindow *pcDocWindow, Qt::Dock pos = Qt::DockUnmanaged,
                       bool stretch=false, int extWidth=0, int extHeight=0 );
   void showDockWindows( const QStringList& );

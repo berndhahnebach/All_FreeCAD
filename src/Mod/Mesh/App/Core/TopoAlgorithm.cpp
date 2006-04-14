@@ -87,7 +87,7 @@ void MeshTopoAlgorithm::Discard()
   ClearFlag();
 }
 
-void MeshTopoAlgorithm::InsertNode(unsigned long ulFacetPos, const Vector3D&  rclPoint)
+void MeshTopoAlgorithm::InsertNode(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint)
 {
   MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
   if (IsFlag(ulFacetPos)) return; // already marked as INVALID
@@ -146,7 +146,7 @@ void MeshTopoAlgorithm::OptimizeTopology()
   //// first reset VISITed flag
   //MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
 
-  //Vector3D p0, p1, q0, q1;
+  //Base::Vector3f p0, p1, q0, q1;
   //MeshFacet clF, clN;
   //for (MeshEdgeArray::_TIterator it = _rclMesh._aclEdgeArray.begin(); it != _rclMesh._aclEdgeArray.end(); ++it)
   //{
@@ -261,7 +261,7 @@ void MeshTopoAlgorithm::SwapEdge(unsigned long ulFacetPos, int iSide)
   _aclNewFacets.push_back(clFacet2);
 }
 /// @todo
-bool MeshTopoAlgorithm::MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint, float fTolerance)
+bool MeshTopoAlgorithm::MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, const Base::Vector3f& rclPoint, float fTolerance)
 {
   assert(ulFacetPos < _rclMesh._aclFacetArray.size());
   MeshFacetIterator cFIter(_rclMesh, ulFacetPos);
@@ -362,7 +362,7 @@ bool MeshTopoAlgorithm::MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, 
   return false;
 }
 
-void MeshTopoAlgorithm::SplitEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint)
+void MeshTopoAlgorithm::SplitEdge(unsigned long ulFacetPos, int iSide, const Base::Vector3f& rclPoint)
 {
   MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
   if (IsFlag(ulFacetPos)) return; // already marked as INVALID
@@ -417,16 +417,16 @@ void MeshTopoAlgorithm::SplitEdge(unsigned long ulFacetPos, int iSide, const Vec
   _aclNewFacets.push_back(clFacet);
 }
 
-void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Vector3D& rP1, const Vector3D& rP2)
+void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1, const Base::Vector3f& rP2)
 {
   // search for the matching edges
   int iEdgeNo1=-1, iEdgeNo2=-1;
   const MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
   for ( int i=0; i<3; i++ )
   {
-    Vector3D cBase(_rclMesh._aclPointArray[rFace._aulPoints[i]]);
-    Vector3D cEnd (_rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]);
-    Vector3D cDir = cEnd - cBase;
+    Base::Vector3f cBase(_rclMesh._aclPointArray[rFace._aulPoints[i]]);
+    Base::Vector3f cEnd (_rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]);
+    Base::Vector3f cDir = cEnd - cBase;
 
     if ( rP1.DistanceToLine(cBase, cDir) < /*MESH_MIN_PT_DIST*/0.05f )
     {
@@ -442,8 +442,8 @@ void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Vector3D& rP1
     return; // no two different edge
 
   // rP1 should lie at the edge with the previous index
-  Vector3D cP1 = rP1;
-  Vector3D cP2 = rP2;
+  Base::Vector3f cP1 = rP1;
+  Base::Vector3f cP2 = rP2;
 
   if ( (iEdgeNo2+1)%3 == iEdgeNo2 )
   {
@@ -489,7 +489,7 @@ bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdg
   if (aclNeighbours0.size() < 3 || aclNeighbours1.size() < 3)
     return false; // this must be a border point => must not remove
 
-  Vector3D clNew = 0.5f*(_rclMesh._aclPointArray[ulEdgeP0]+_rclMesh._aclPointArray[ulEdgeP1]);
+  Base::Vector3f clNew = 0.5f*(_rclMesh._aclPointArray[ulEdgeP0]+_rclMesh._aclPointArray[ulEdgeP1]);
 
   // check point 0
   std::vector<unsigned long> clPoly;
@@ -618,8 +618,8 @@ bool MeshTopoAlgorithm::IsConvexPolygon(const std::vector<unsigned long>& raulPo
   unsigned long ulCt = raulPoly.size();
   std::vector<unsigned long>::const_iterator pBegin = raulPoly.begin();
 
-  Vector3D a, b, c;
-  Vector3D clNormal;
+  Base::Vector3f a, b, c;
+  Base::Vector3f clNormal;
 
   // get reference normal first
   //
@@ -747,7 +747,7 @@ void MeshTopoAlgorithm::HarmonizeNormals (void)
   std::vector<unsigned long>  uIndices;
   MeshHarmonizer              clHarmonizer(uIndices);
   MeshFacetArray::_TIterator  clFIter;
-  Vector3D                    clGravityPoint, clDir;  
+  Base::Vector3f                    clGravityPoint, clDir;
 
   if (_rclMesh.CountFacets() == 0)
     return;
@@ -798,7 +798,7 @@ void MeshTopoAlgorithm::FlipNormals (void)
     i->FlipNormal();
 }
 
-void MeshTopoAlgorithm::DirectSplitFacet(unsigned long ulFacetPos, unsigned short i, const Vector3D& rP)
+void MeshTopoAlgorithm::DirectSplitFacet(unsigned long ulFacetPos, unsigned short i, const Base::Vector3f& rP)
 {
   if (ulFacetPos >= _rclMesh._aclFacetArray.size() ) return;
   MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
@@ -842,7 +842,7 @@ void MeshTopoAlgorithm::DirectSplitFacet(unsigned long ulFacetPos, unsigned shor
   }
 }
 
-void MeshTopoAlgorithm::DirectSplitFacetWithOpenEdge(unsigned long ulFacetPos, unsigned short i, const Vector3D& rP)
+void MeshTopoAlgorithm::DirectSplitFacetWithOpenEdge(unsigned long ulFacetPos, unsigned short i, const Base::Vector3f& rP)
 {
   if (ulFacetPos >= _rclMesh._aclFacetArray.size() ) return;
   MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
@@ -904,8 +904,8 @@ void MeshTopoAlgorithm::DirectRemoveDegenerated(unsigned long index)
   // P0 +----+------+P2
   //         P1
   for ( int j=0; j<3; j++ ) {
-    Base::Vector3D cVec1 = _rclMesh._aclPointArray[rFace._aulPoints[(j+1)%3]] - _rclMesh._aclPointArray[rFace._aulPoints[j]];
-    Base::Vector3D cVec2 = _rclMesh._aclPointArray[rFace._aulPoints[(j+2)%3]] - _rclMesh._aclPointArray[rFace._aulPoints[j]];
+    Base::Vector3f cVec1 = _rclMesh._aclPointArray[rFace._aulPoints[(j+1)%3]] - _rclMesh._aclPointArray[rFace._aulPoints[j]];
+    Base::Vector3f cVec2 = _rclMesh._aclPointArray[rFace._aulPoints[(j+2)%3]] - _rclMesh._aclPointArray[rFace._aulPoints[j]];
 
     // adjust the neighbourhoods and point indices
     if ( cVec1 * cVec2 < 0.0f ) {

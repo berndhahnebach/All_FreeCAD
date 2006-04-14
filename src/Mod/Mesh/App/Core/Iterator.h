@@ -27,6 +27,7 @@
 #include "MeshKernel.h"
 #include "Elements.h"
 #include <Base/Matrix.h>
+#include <Base/Vector3D.h>
 
 namespace MeshCore {
 
@@ -247,7 +248,7 @@ public:
   inline void Next (void);
   bool More (void) { return _clIter != _rclFAry.end(); }
 
-  Vector3D _afPoints[3];
+  Base::Vector3f _afPoints[3];
 
 protected:
   const MeshKernel&     _rclMesh;
@@ -271,7 +272,7 @@ inline MeshFastFacetIterator::MeshFastFacetIterator (const MeshKernel &rclM)
 inline void MeshFastFacetIterator::Next (void)
 {
   const unsigned long *paulPt = _clIter->_aulPoints;
-  Vector3D *pfPt = _afPoints;
+  Base::Vector3f *pfPt = _afPoints;
   *(pfPt++)      = _rclPAry[*(paulPt++)];
   *(pfPt++)      = _rclPAry[*(paulPt++)];
   *pfPt          = _rclPAry[*paulPt];
@@ -317,7 +318,7 @@ inline const MeshGeomFacet& MeshFacetIterator::Dereference (void)
 {
   MeshFacet rclF             = *_clIter;
   const unsigned long *paulPt        = &(_clIter->_aulPoints[0]);
-  Vector3D  *pclPt = _clFacet._aclPoints;
+  Base::Vector3f  *pclPt = _clFacet._aclPoints;
   *(pclPt++)       = _rclPAry[*(paulPt++)];
   *(pclPt++)       = _rclPAry[*(paulPt++)];
   *pclPt           = _rclPAry[*paulPt];

@@ -35,8 +35,6 @@
 
 #include <Base/Vector3D.h>
 #include <Base/Matrix.h>
-using Base::Vector3D;
-using Base::Matrix4D;
 
 namespace MeshCore {
 
@@ -60,28 +58,28 @@ public:
   /**
    * Add points for the fit algorithm.
    */
-  void AddPoint( const std::vector<Vector3D> &rvPointVect );
+  void AddPoint( const std::vector<Base::Vector3f> &rvPointVect );
 
   /**
    * Add points for the fit algorithm.
    */
-  void AddPoint( const std::set<Vector3D> &rsPointSet );
+  void AddPoint( const std::set<Base::Vector3f> &rsPointSet );
 
   /**
    * Add points for the fit algorithm.
    */
-  void AddPoint( const std::list<Vector3D> &rsPointList );
+  void AddPoint( const std::list<Base::Vector3f> &rsPointList );
 
   /**
    * Add points for the fit algorithm.
    */
-  void AddPoint( const Vector3D &rcVector );
+  void AddPoint( const Base::Vector3f &rcVector );
 
   /**
    * Returns the center of gravity of the current added points.
-   * @return Vector3D
+   * @return Base::Vector3f
    */
-  Vector3D GetGravity() const;
+  Base::Vector3f GetGravity() const;
 
   /**
    * Determines the number of the current added points.
@@ -113,20 +111,20 @@ public:
 
 protected:
   /**
-   * Converts point from Wm3::Vector3 to Vector3D.
+   * Converts point from Wm3::Vector3 to Base::Vector3f.
    */
-  static void Convert( const Wm3::Vector3<float>&, Vector3D&);
+  static void Convert( const Wm3::Vector3<float>&, Base::Vector3f&);
   /**
-   * Converts point from Vector3D to Wm3::Vector3.
+   * Converts point from Base::Vector3f to Wm3::Vector3.
    */
-  static void Convert( const Vector3D&, Wm3::Vector3<float>&);
+  static void Convert( const Base::Vector3f&, Wm3::Vector3<float>&);
 
   /**
    * Creates a vector of Wm3::Vector3 elements.
    */
   void GetMgcVectorArray( std::vector< Wm3::Vector3<float> >& rcPts ) const;
 
-  std::list< Vector3D > _vPoints; /**< Holds the points for the fit algorithm.  */
+  std::list< Base::Vector3f > _vPoints; /**< Holds the points for the fit algorithm.  */
   bool _bIsFitted; /**< Flag, whether the fit has been called. */
   float _fLastResult; /**< Stores the last result of the fit */
 };
@@ -152,14 +150,14 @@ public:
    * Returns the normal of the fitted plane. If Fit() has not been called the null vector is
    * returned.
    */
-  Vector3D GetNormal() const;
+  Base::Vector3f GetNormal() const;
 
   virtual float Fit();
   /** 
    * Returns the distance from the point \a rcPoint to the fitted plane. If Fit() has not been
    * called FLOAT_MAX is returned.
    */ 
-  float GetDistanceToPlane( Vector3D const &rcPoint ) const;
+  float GetDistanceToPlane( Base::Vector3f const &rcPoint ) const;
   /**
    * Returns the standard deviation from the points to the fitted plane. If Fit() has not been
    * called FLOAT_MAX is returned.
@@ -176,8 +174,8 @@ public:
   void ProjectToPlane ();
 
 protected:
-  Vector3D _vBase; /**< Base vector of the plane. */
-  Vector3D _vNormal; /**< Normal of the plane. */
+  Base::Vector3f _vBase; /**< Base vector of the plane. */
+  Base::Vector3f _vNormal; /**< Normal of the plane. */
 };
 
 // -------------------------------------------------------------------------------
@@ -239,7 +237,7 @@ public:
    */
   bool GetCurvatureInfo( float x, float y, float z,
                          float &rfCurv0, float &rfCurv1,
-                         Vector3D &rkDir0, Vector3D &rkDir1, float &dDistance );
+                         Base::Vector3f &rkDir0, Base::Vector3f &rkDir1, float &dDistance );
 
   bool GetCurvatureInfo( float x, float y, float z,
                                     float &rfCurv0, float &rfcurv1 );
@@ -253,7 +251,7 @@ public:
    * @param clEV3    Eigenvektor 3
    */
   void CalcEigenValues( float &dLambda1, float &dLambda2, float &dLambda3,
-                        Vector3D &clEV1, Vector3D &clEV2, Vector3D &clEV3 ) const;
+                        Base::Vector3f &clEV1, Base::Vector3f &clEV2, Base::Vector3f &clEV3 ) const;
 
 protected:
   float _fCoeff[ 10 ];  /**< Ziel der Koeffizienten aus dem Fit */
@@ -285,7 +283,7 @@ public:
   virtual ~MeshSurfaceFit(){};
  
   bool GetCurvatureInfo( float x, float y, float z, float &rfCurv0, float &rfCurv1,
-                         Vector3D &rkDir0, Vector3D &rkDir1, float &dDistance );
+                         Base::Vector3f &rkDir0, Base::Vector3f &rkDir1, float &dDistance );
 
   bool GetCurvatureInfo( float x, float y, float z, float &rfCurv0, float &rfcurv1 );
 
@@ -387,16 +385,16 @@ public:
     return pImplSurf->ComputePrincipalCurvatureInfo( Wm3::Vector3<float>(x, y, z),rfCurv0, rfCurv1, rkDir0, rkDir1 );
   }
 
-  Vector3D GetGradient( float x, float y, float z ) const
+  Base::Vector3f GetGradient( float x, float y, float z ) const
   {
     Wm3::Vector3<float> grad = pImplSurf->GetGradient( Wm3::Vector3<float>(x, y, z) );
-    return Vector3D( grad.X(), grad.Y(), grad.Z() );
+    return Base::Vector3f( grad.X(), grad.Y(), grad.Z() );
   }
 
-  Matrix4D GetHessian( float x, float y, float z ) const
+  Base::Matrix4D GetHessian( float x, float y, float z ) const
   {
     Wm3::Matrix3<float> hess = pImplSurf->GetHessian( Wm3::Vector3<float>(x, y, z) );
-    Matrix4D cMat; cMat.unity();
+    Base::Matrix4D cMat; cMat.unity();
     cMat[0][0] = hess[0][0]; cMat[0][1] = hess[0][1]; cMat[0][2] = hess[0][2];
     cMat[1][0] = hess[1][0]; cMat[1][1] = hess[1][1]; cMat[1][2] = hess[1][2];
     cMat[2][0] = hess[2][0]; cMat[2][1] = hess[2][1]; cMat[2][2] = hess[2][2];

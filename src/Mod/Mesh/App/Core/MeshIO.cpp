@@ -169,7 +169,7 @@ bool LoadMeshSTL::LoadAscii (std::istream &rstrIn)
     if (strncmp(szLine, "FACET", 5) == 0)  // normale
     {
       if (sscanf(szLine, "%s %s %f %f %f", szKey1, szKey2, &fX, &fY, &fZ) == 5)
-        clFacet.SetNormal(Vector3D(fX, fY, fZ));
+        clFacet.SetNormal(Base::Vector3f(fX, fY, fZ));
     }
     else if (strncmp(szLine, "VERTEX", 6) == 0)  // vertex
     {
@@ -193,7 +193,7 @@ bool LoadMeshSTL::LoadAscii (std::istream &rstrIn)
 bool LoadMeshSTL::LoadBinary (std::istream &rstrIn)
 {
   char szInfo[80];
-  Vector3D clVects[4];
+  Base::Vector3f clVects[4];
   unsigned short usAtt; 
   unsigned long ulCt;
 
@@ -354,11 +354,11 @@ bool MeshInventor::Load (FileStream &rstrIn)
   unsigned long i, ulCt, ulPoints[3];
   long lSeparator;
   bool bFlag;
-  Vector3D clPoint;
+  Vector3f clPoint;
   float fX, fY, fZ;
   MeshGeomFacet clFacet;
   std::vector<MeshGeomFacet> clFacetAry;
-  std::vector<Vector3D> aclPoints;
+  std::vector<Vector3f> aclPoints;
 
 
   if ((rstrIn.IsOpen() == false) || (rstrIn.IsBad() == true))
@@ -379,7 +379,7 @@ bool MeshInventor::Load (FileStream &rstrIn)
               rstrIn.ReadLine(szLine, 200);
 
               if (sscanf(szLine, "%f %f %f", &fX, &fY, &fZ) == 3){
-                  clFacet.SetNormal(Vector3D(fX, fY, fZ));
+                  clFacet.SetNormal(Vector3f(fX, fY, fZ));
                   clFacetAry.push_back(clFacet);
 
                   Base::Sequencer().next( true ); // allow to cancel

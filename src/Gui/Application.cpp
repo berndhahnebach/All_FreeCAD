@@ -517,8 +517,12 @@ bool Application::activateWorkbench( const char* name )
   try{
     // import the matching module first
     Interpreter().runMethodVoid(pcWorkbench, "Activate");
-  } catch (const Base::Exception&)
-  {
+#ifdef FC_DEBUG
+  } catch (const Base::Exception& e) {
+    Base::Console().Error("%s\n", e.what() );
+#else
+  } catch (const Base::Exception&) {
+#endif
     // clears the error flag if needed (coming from a Python file)
     if ( PyErr_Occurred() )
       PyErr_Clear();
@@ -688,7 +692,7 @@ void Application::initTypes(void)
   // View Provider
   Gui::ViewProvider        ::init();
   Gui::ViewProviderExtern  ::init();
-  Gui::ViewProviderDocumentObject ::init();
+  Gui::ViewProviderDocumentObject::init();
 
   // Workbench
   Gui::Workbench           ::init();

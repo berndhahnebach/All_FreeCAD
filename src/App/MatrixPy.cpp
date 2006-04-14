@@ -31,7 +31,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Vector3D.h>
-using Base::Vector3D;
+using Base::Vector3f;
 using Base::Console;
 
 #include "MatrixPy.h"
@@ -221,7 +221,7 @@ PYFUNCIMP_D(MatrixPy,set)
 PYFUNCIMP_D(MatrixPy,move)
 {
 	float x,y,z;
-  Vector3D vec;
+  Vector3f vec;
   PyObject *pcVecObj;
 
   if (PyArg_ParseTuple(args, "fff", &x,&y,&z))     // convert args: Python->C 
@@ -229,7 +229,7 @@ PYFUNCIMP_D(MatrixPy,move)
     vec.x = x;
     vec.y = y;
     vec.z = z;
-  }else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj))     // convert args: Python->C 
+  }else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj))     // convert args: Python->C
   {
     vec = ((VectorPy*)pcVecObj)->value();
     // clears the error from the first PyArg_ParseTuple()6
@@ -248,7 +248,7 @@ PYFUNCIMP_D(MatrixPy,move)
 PYFUNCIMP_D(MatrixPy,scale)
 {
 	float x,y,z;
-  Vector3D vec;
+  Vector3f vec;
   PyObject *pcVecObj;
 
   if (PyArg_ParseTuple(args, "fff", &x,&y,&z))     // convert args: Python->C 
@@ -256,7 +256,7 @@ PYFUNCIMP_D(MatrixPy,scale)
     vec.x = x;
     vec.y = y;
     vec.z = z;
-  }else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj))     // convert args: Python->C 
+  }else if (PyArg_ParseTuple(args, "O!:three floats or a vector is needed", &(VectorPy::Type), &pcVecObj))     // convert args: Python->C
   {
     vec = ((VectorPy*)pcVecObj)->value();
     // clears the error from the first PyArg_ParseTuple()6
@@ -283,7 +283,7 @@ PYFUNCIMP_D(MatrixPy,unity)
 
 PYFUNCIMP_D(MatrixPy,transform)
 {
-  Vector3D vec;
+  Vector3f vec;
   Matrix4D mat;
   PyObject *pcVecObj,*pcMatObj;
 

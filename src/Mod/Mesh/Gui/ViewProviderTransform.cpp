@@ -60,10 +60,7 @@
 
 using namespace MeshGui;
 using Mesh::Feature;
-using MeshCore::MeshKernel;
-using MeshCore::MeshFacetIterator;
-using Base::Vector3D;
-    
+
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshTransform, MeshGui::ViewProviderMesh)
 

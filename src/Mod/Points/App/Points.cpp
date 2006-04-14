@@ -293,7 +293,7 @@ void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
 {
   unsigned long uCtPts = _pcPoints->size();
   writer.write((const char*)&uCtPts, sizeof(unsigned long));
-  writer.write((const char*)&((*_pcPoints)[0]), uCtPts*sizeof(Base::Vector3D));
+  writer.write((const char*)&((*_pcPoints)[0]), uCtPts*sizeof(Base::Vector3f));
 }
 
 void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
@@ -303,7 +303,7 @@ void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)
   unsigned long uCtPts;
   reader.read((char*)&uCtPts, sizeof(unsigned long));
   _pcPoints->resize(uCtPts);
-  reader.read((char*)&((*_pcPoints)[0]), uCtPts*sizeof(Base::Vector3D));
+  reader.read((char*)&((*_pcPoints)[0]), uCtPts*sizeof(Base::Vector3f));
 }
 
 
@@ -395,7 +395,7 @@ void PointsPropertyNormal::transform(const Matrix4D &mat)
       rot[i][j] = mat[i][j] / s[i];
 
   // Rotate the normal vectors
-  for (std::vector<Vector3D>::iterator it = aVertexNormal.begin(); it != aVertexNormal.end(); ++it)
+  for (std::vector<Base::Vector3f>::iterator it = aVertexNormal.begin(); it != aVertexNormal.end(); ++it)
   {
     *it = rot * (*it);
   }
@@ -481,9 +481,9 @@ std::vector<float> PointsPropertyCurvature::getCurvature( PointsPropertyCurvatur
   return aCurvatures;
 }
 
-std::vector<Vector3D> PointsPropertyCurvature::getCurvatureDir( Mode tMode) const
+std::vector<Base::Vector3f> PointsPropertyCurvature::getCurvatureDir( Mode tMode) const
 {
-  std::vector<Vector3D> aCurvatures;
+  std::vector<Base::Vector3f> aCurvatures;
   if ( tMode == MaxCurvature )
   {
     for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
@@ -502,9 +502,9 @@ std::vector<Vector3D> PointsPropertyCurvature::getCurvatureDir( Mode tMode) cons
   return aCurvatures;
 }
 
-std::vector<Vector3D> PointsPropertyCurvature::getAbsCurvatureDir( Mode tMode) const
+std::vector<Base::Vector3f> PointsPropertyCurvature::getAbsCurvatureDir( Mode tMode) const
 {
-  std::vector<Vector3D> aCurvatures;
+  std::vector<Base::Vector3f> aCurvatures;
   if ( tMode == MaxCurvature )
   {
     for ( std::vector<fCurvature>::const_iterator it = Curvature.begin(); it != Curvature.end(); ++it )
@@ -534,7 +534,7 @@ std::vector<Vector3D> PointsPropertyCurvature::getAbsCurvatureDir( Mode tMode) c
 void PointsWithProperty::transform(const Matrix4D &rclMat)
 {
   DataWithPropertyBag::transform(rclMat);
-  for (std::vector<Vector3D>::iterator it = _Points.begin(); it != _Points.end(); ++it)
+  for (std::vector<Base::Vector3f>::iterator it = _Points.begin(); it != _Points.end(); ++it)
   {
     *it = rclMat * (*it);
   }

@@ -27,7 +27,6 @@
 #include "Elements.h"
 
 #include <Base/Vector3D.h>
-using Base::Vector3D;
 
 namespace MeshCore {
 
@@ -37,7 +36,7 @@ namespace MeshCore {
  */
 struct AppMeshExport MeshHelpPoint
 {
-  inline void Set (unsigned long ulCorner, unsigned long ulFacet, const Vector3D &rclPt);
+  inline void Set (unsigned long ulCorner, unsigned long ulFacet, const Base::Vector3f &rclPt);
 
   inline bool operator < (const MeshHelpPoint &rclObj) const;
   inline bool operator == (const MeshHelpPoint &rclObj) const;
@@ -57,7 +56,7 @@ struct AppMeshExport MeshHelpPoint
  */
 struct MeshPointBuilder: public std::vector<MeshHelpPoint>
 {
-  inline void Add (unsigned long ulCorner, unsigned long ulFacet, const Vector3D &rclPt);
+  inline void Add (unsigned long ulCorner, unsigned long ulFacet, const Base::Vector3f &rclPt);
 };
 
 /**
@@ -94,7 +93,7 @@ struct MeshEdgeBuilder: public std::vector<MeshHelpBuilderEdge>
   inline void Add (unsigned long ulInd1, unsigned long ulInd2, unsigned long ulSide, unsigned long ulFInd);
 };
 
-inline void MeshHelpPoint::Set (unsigned long ulCorner, unsigned long ulFacet, const Vector3D &rclPt)
+inline void MeshHelpPoint::Set (unsigned long ulCorner, unsigned long ulFacet, const Base::Vector3f &rclPt)
 {
   _ulInd = (ulFacet << 2) | ulCorner;
   _clPt  = rclPt;
@@ -149,7 +148,7 @@ inline bool MeshHelpPoint::operator == (const MeshHelpPoint &rclObj) const
 */
 }
 
-inline void MeshPointBuilder::Add (unsigned long ulCorner, unsigned long ulFacet, const Vector3D &rclPt)
+inline void MeshPointBuilder::Add (unsigned long ulCorner, unsigned long ulFacet, const Base::Vector3f &rclPt)
 {
   MeshHelpPoint  clObj;
   clObj.Set(ulCorner, ulFacet, rclPt);

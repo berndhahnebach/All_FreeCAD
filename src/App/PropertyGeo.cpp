@@ -71,7 +71,7 @@ PropertyVector::~PropertyVector()
 // Base class implementer
 
 
-void PropertyVector::setValue(const Base::Vector3D &vec)
+void PropertyVector::setValue(const Base::Vector3f &vec)
 {
   aboutToSetValue();
 	_cVec=vec;
@@ -81,11 +81,11 @@ void PropertyVector::setValue(const Base::Vector3D &vec)
 void PropertyVector::setValue(float x, float y, float z)
 {
   aboutToSetValue();
-	_cVec=Vector3D(x,y,z);
+	_cVec=Vector3f(x,y,z);
   hasSetValue();
 }
 
-const Base::Vector3D & PropertyVector::getValue(void)const 
+const Base::Vector3f & PropertyVector::getValue(void)const
 {
 	return _cVec;
 }
@@ -102,7 +102,7 @@ void PropertyVector::setPyObject(PyObject *value)
     setValue( pcObject->value() );
   }else if(PyTuple_Check(value)&&PyTuple_Size(value)==3) {
     PyObject* item;
-    Base::Vector3D cVec;
+    Base::Vector3f cVec;
     // x
     item = PyTuple_GetItem(value,0);
     if (PyFloat_Check(item))
@@ -183,7 +183,7 @@ PropertyVectorList::~PropertyVectorList()
 //**************************************************************************
 // Base class implementer
 
-void PropertyVectorList::setValue(const Base::Vector3D& lValue)
+void PropertyVectorList::setValue(const Base::Vector3f& lValue)
 {
   aboutToSetValue();
   _lValueList.resize(1);
@@ -219,7 +219,7 @@ void PropertyVectorList::setPyObject(PyObject *value)
         _lValueList[i] = val.getValue();
       } catch (const Base::Exception& e) {
         _lValueList.resize(1);
-        _lValueList[0] = Base::Vector3D();
+        _lValueList[0] = Base::Vector3f();
         throw e;
       }
     }
@@ -288,7 +288,7 @@ void PropertyVectorList::SaveDocFile (Base::Writer &writer) const
   try {
     unsigned long uCt = getSize();
     writer.write((const char*)&uCt, sizeof(unsigned long));
-    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3D));
+    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
   } catch( const Base::Exception& e) {
     throw e;
   }
@@ -301,7 +301,7 @@ void PropertyVectorList::RestoreDocFile(Base::Reader &reader)
     unsigned long uCt=ULONG_MAX;
     reader.read((char*)&uCt, sizeof(unsigned long));
     _lValueList.resize(uCt);
-    reader.read((char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3D));
+    reader.read((char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
   } catch( const Base::Exception& e) {
     throw e;
   }

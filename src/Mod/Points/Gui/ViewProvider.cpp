@@ -42,6 +42,7 @@
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
+#include <Base/Vector3D.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <Gui/Selection.h>
@@ -122,9 +123,9 @@ void ViewProviderPoints::setVertexGreyvalueMode(Points::PropertyGreyValueList* p
 
 void ViewProviderPoints::setVertexNormalMode(Points::PropertyNormalList* pcProperty)
 {
-  const std::vector<Vector3D>& val = pcProperty->getValues();
+  const std::vector<Base::Vector3f>& val = pcProperty->getValues();
   unsigned long i=0;
-  for ( std::vector<Vector3D>::const_iterator it = val.begin(); it != val.end(); ++it )
+  for ( std::vector<Base::Vector3f>::const_iterator it = val.begin(); it != val.end(); ++it )
   {
     pcPointsNormal->vector.set1Value(i++, it->x, it->y, it->z);
   }

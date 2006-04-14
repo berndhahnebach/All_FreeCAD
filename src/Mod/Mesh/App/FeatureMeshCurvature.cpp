@@ -96,8 +96,8 @@ int Curvature::execute(void)
   for ( unsigned long i=0; i<rMesh.CountPoints(); i++ )
   {
     CurvatureInfo ci;
-    ci.cMaxCurvDir = Vector3D( aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z() );
-    ci.cMinCurvDir = Vector3D( aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z() );
+    ci.cMaxCurvDir = Base::Vector3f( aMaxCurvDir[i].X(), aMaxCurvDir[i].Y(), aMaxCurvDir[i].Z() );
+    ci.cMinCurvDir = Base::Vector3f( aMinCurvDir[i].X(), aMinCurvDir[i].Y(), aMinCurvDir[i].Z() );
     ci.fMaxCurvature = aMaxCurv[i];
     ci.fMinCurvature = aMinCurv[i];
     CurvInfo.set1Value(i, ci);

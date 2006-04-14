@@ -72,7 +72,7 @@ public:
 
 protected:
   const MeshKernel& _rclMeshBase; /**< The mesh kernel. */
-  Vector3D    _clCenter; /**< Center. */
+  Base::Vector3f    _clCenter; /**< Center. */
   float  _fRadius; /**< Search radius. */
   unsigned long _ulCurrentLevel;
   bool _bFacetsFoundInCurrentLevel;

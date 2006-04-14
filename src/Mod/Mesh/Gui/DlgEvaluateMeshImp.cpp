@@ -496,7 +496,7 @@ DockEvaluateMeshImp* DockEvaluateMeshImp::instance()
   // not initialized?
   if(!_instance)
   {
-    _instance = new DockEvaluateMeshImp( Gui::getMainWindow(), "Evaluate Mesh", WDestructiveClose);
+    _instance = new DockEvaluateMeshImp( Gui::getMainWindow(), "Evaluate Mesh");
     _instance->setSizeGripEnabled(false);
     // embed this dialog into a dockable widget container
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
@@ -505,14 +505,11 @@ DockEvaluateMeshImp* DockEvaluateMeshImp::instance()
 
     // do not allow to hide
     pDockDlg->dockWindow()->setCloseMode(QDockWindow::Never);
-    pDockDlg->setChild(_instance);
+    pDockDlg->setDockedWidget(_instance);
 
     // try to set an appropriate width
     pDockDlg->setFixedExtentWidth( _instance->width() );
     pDockDlg->show();
-
-    // restore the destructive close flag to invoke the destructor automatically
-    _instance->setWFlags(WDestructiveClose);
   }
 
   return _instance;
@@ -534,8 +531,8 @@ bool DockEvaluateMeshImp::hasInstance()
 }
 
 /**
- *  Constructs a DockEvaluateMeshImp which is a child of 'parent', with the 
- *  name 'name' and widget flags set to 'f' 
+ *  Constructs a DockEvaluateMeshImp which is a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'
  */
 DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent,  const char* name, WFlags fl )
     : DlgEvaluateMeshImp( parent, name, false, fl )
@@ -548,6 +545,15 @@ DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent,  const char* name, WF
 DockEvaluateMeshImp::~DockEvaluateMeshImp()
 {
   _instance = 0;
+}
+
+/**
+ * Destroys the dock window this object is embedded into thus it destroys itself.
+ */
+void DockEvaluateMeshImp::reject()
+{
+  Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
+  pDockMgr->removeDockedWidget(this);
 }
 
 /**

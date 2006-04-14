@@ -29,7 +29,6 @@
 #endif
 
 #include <Base/Vector3D.h>
-using Base::Vector3D;
 
 
 class TopoDS_Edge;
@@ -61,7 +60,7 @@ public:
   struct FaceSplitEdge
   {
     unsigned long ulFaceIndex;
-    Vector3D p1,p2;
+    Base::Vector3f p1,p2;
   };
 
   template<class T>
@@ -96,7 +95,7 @@ public:
   void projectCurve(const TopoDS_Edge& aEdge,
                     std::vector<FaceSplitEdge> &vSplitEdges);
 
-  bool findStartPoint(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
+  bool findStartPoint(const MeshKernel &MeshK,const Base::Vector3f &Pnt,Base::Vector3f &Rslt,unsigned long &FaceIndex);
 
 
 
@@ -115,14 +114,14 @@ public:
   virtual ~CurveProjectorSimple() {}
 
   /// helper to discredicice a Edge...
-  void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Vector3D>& rclPoints, unsigned long ulNbOfPoints = 30);
+  void GetSampledCurves( const TopoDS_Edge& aEdge, std::vector<Base::Vector3f>& rclPoints, unsigned long ulNbOfPoints = 30);
 
 
   void projectCurve(const TopoDS_Edge& aEdge,
-                    const std::vector<Vector3D> &rclPoints,
+                    const std::vector<Base::Vector3f> &rclPoints,
                     std::vector<FaceSplitEdge> &vSplitEdges);
 
-  bool findStartPoint(const MeshKernel &MeshK,const Vector3D &Pnt,Vector3D &Rslt,unsigned long &FaceIndex);
+  bool findStartPoint(const MeshKernel &MeshK,const Base::Vector3f &Pnt,Base::Vector3f &Rslt,unsigned long &FaceIndex);
 
 
 
@@ -136,8 +135,8 @@ class AppMeshExport CurveProjectorWithToolMesh: public CurveProjector
 {
 public:
   struct LineSeg {
-    Vector3D p;
-    Vector3D n;
+    Base::Vector3f p;
+    Base::Vector3f n;
   };
 
   CurveProjectorWithToolMesh(const TopoDS_Shape &aShape, const MeshKernel &pMesh,MeshKernel &rToolMesh);

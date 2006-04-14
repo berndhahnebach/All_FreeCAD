@@ -40,8 +40,6 @@ namespace Base{
   class Polygon2D;
   class ViewProjMethod;
 }
-using Base::Vector3D;
-using Base::Matrix4D;
 
 namespace MeshCore {
 
@@ -94,7 +92,7 @@ public:
   { return (unsigned long)(_aclPointArray.size()); }
 
   /// Determines the bounding box
-  const BoundBox3D& GetBoundBox (void) const
+  const Base::BoundBox3f& GetBoundBox (void) const
   { return _clBoundBox; }
 
   /** Forces a recalculation of the bounding box. This method should be called after
@@ -110,7 +108,7 @@ public:
   /** Returns an array of the vertex normals of the mesh. A vertex normal gets calculated
    * by summarizing the normals of the associated facets.
    */
-  std::vector<Base::Vector3D> CalcVertexNormals() const;
+  std::vector<Base::Vector3f> CalcVertexNormals() const;
 
   /** Returns the facet at the given index. This method is rather slow and should be
    * called occassionally only.
@@ -287,11 +285,11 @@ public:
   /** Assignment operator. */
   MeshKernel& operator = (const MeshKernel &rclMesh);
   /// Transform the data structure with the given transformation matrix.
-  virtual void operator *= (const Matrix4D &rclMat);
+  virtual void operator *= (const Base::Matrix4D &rclMat);
   /// Transform the data structure with the given transformation matrix.
-  void Transform (const Matrix4D &rclMat);
+  void Transform (const Base::Matrix4D &rclMat);
   /** Moves the point at the given index along the vector \a rclTrans. */
-  inline void MovePoint (unsigned long ulPtIndex, const Vector3D &rclTrans);
+  inline void MovePoint (unsigned long ulPtIndex, const Base::Vector3f &rclTrans);
   /**
    * CheckFacets() is invoked within this method and all found facets get deleted from the mesh structure. 
    * The facets to be deleted are returned with their geometric reprsentation.
@@ -327,14 +325,14 @@ protected:
   void RebuildNeighbours (void);
 
   /** Adjusts the facet's orierntation to the given normal direction. */
-  inline void AdjustNormal (MeshFacet &rclFacet, const Vector3D &rclNormal);
+  inline void AdjustNormal (MeshFacet &rclFacet, const Base::Vector3f &rclNormal);
 
   /** Calculates the normal to the given facet. */
-  inline Vector3D GetNormal (const MeshFacet &rclFacet) const;
+  inline Base::Vector3f GetNormal (const MeshFacet &rclFacet) const;
 
-  MeshPointArray  _aclPointArray; /**< Holds the array of geometric points. */
-  MeshFacetArray  _aclFacetArray; /**< Holds the array of facets. */
-  BoundBox3D      _clBoundBox; /**< The current calculated bounding box. */
+  MeshPointArray   _aclPointArray; /**< Holds the array of geometric points. */
+  MeshFacetArray   _aclFacetArray; /**< Holds the array of facets. */
+  Base::BoundBox3f _clBoundBox;    /**< The current calculated bounding box. */
   bool            _bValid; /**< Current state of validality. */
 
   // friends
@@ -399,14 +397,14 @@ inline void MeshKernel::GetFacetNeighbours (unsigned long ulIndex, unsigned long
   rulNIdx2 = _aclFacetArray[ulIndex]._aulNeighbours[2];
 }
 
-inline void MeshKernel::MovePoint (unsigned long ulPtIndex, const Vector3D &rclTrans)
+inline void MeshKernel::MovePoint (unsigned long ulPtIndex, const Base::Vector3f &rclTrans)
 {
   _aclPointArray[ulPtIndex] += rclTrans;
 }
 
-inline void MeshKernel::AdjustNormal (MeshFacet &rclFacet, const Vector3D &rclNormal)
+inline void MeshKernel::AdjustNormal (MeshFacet &rclFacet, const Base::Vector3f &rclNormal)
 {
-  Vector3D clN = (_aclPointArray[rclFacet._aulPoints[1]] - _aclPointArray[rclFacet._aulPoints[0]]) %
+  Base::Vector3f clN = (_aclPointArray[rclFacet._aulPoints[1]] - _aclPointArray[rclFacet._aulPoints[0]]) %
                  (_aclPointArray[rclFacet._aulPoints[2]] - _aclPointArray[rclFacet._aulPoints[0]]);
   if ((clN * rclNormal) < 0.0f)
   {
@@ -414,9 +412,9 @@ inline void MeshKernel::AdjustNormal (MeshFacet &rclFacet, const Vector3D &rclNo
   }
 }
 
-inline Vector3D MeshKernel::GetNormal (const MeshFacet &rclFacet) const
+inline Base::Vector3f MeshKernel::GetNormal (const MeshFacet &rclFacet) const
 {
-  Vector3D clN = (_aclPointArray[rclFacet._aulPoints[1]] - _aclPointArray[rclFacet._aulPoints[0]]) %
+  Base::Vector3f clN = (_aclPointArray[rclFacet._aulPoints[1]] - _aclPointArray[rclFacet._aulPoints[0]]) %
                  (_aclPointArray[rclFacet._aulPoints[2]] - _aclPointArray[rclFacet._aulPoints[0]]);
   clN.Normalize();
   return clN;

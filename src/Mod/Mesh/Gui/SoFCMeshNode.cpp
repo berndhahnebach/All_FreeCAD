@@ -49,7 +49,7 @@ inline void glVertex(const MeshCore::MeshPoint& _v)
 }
 
 // Helper functions: draw normal
-inline void glNormal(const Base::Vector3D& _n)  
+inline void glNormal(const Base::Vector3f& _n)
 { 
   float n[3];
   n[0]=_n.x; n[1]=_n.y;n[2]=_n.z;
@@ -57,7 +57,7 @@ inline void glNormal(const Base::Vector3D& _n)
 }
 
 // Helper function: convert Vec to SbVec3f
-inline SbVec3f sbvec3f(const Base::Vector3D& _v) { 
+inline SbVec3f sbvec3f(const Base::Vector3f& _v) {
   return SbVec3f(_v.x, _v.y, _v.z); 
 }
 
@@ -160,7 +160,7 @@ SoDetail * SoFCMeshNode::createTriangleDetail(SoRayPickAction * action,
 void SoFCMeshNode::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
 {
   if (_mesh && _mesh->getMesh().CountPoints() > 0) {
-    const Base::BoundBox3D& cBox = _mesh->getMesh().GetBoundBox();
+    const Base::BoundBox3f& cBox = _mesh->getMesh().GetBoundBox();
     box.setBounds(SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
 		              SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MaxZ));
   }

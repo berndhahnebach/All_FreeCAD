@@ -86,7 +86,7 @@ void Feature::SaveDocFile (Base::Writer &writer) const
   const PointKernel& kernel = _Points.getKernel();
   unsigned long uCtPts = kernel.size();
   writer.write((const char*)&uCtPts, sizeof(unsigned long));
-  writer.write((const char*)&(kernel[0]), uCtPts*sizeof(Base::Vector3D));
+  writer.write((const char*)&(kernel[0]), uCtPts*sizeof(Base::Vector3f));
 }
 
 void Feature::RestoreDocFile(Base::Reader &reader)
@@ -97,7 +97,7 @@ void Feature::RestoreDocFile(Base::Reader &reader)
   unsigned long uCtPts;
   reader.read((char*)&uCtPts, sizeof(unsigned long));
   kernel.resize(uCtPts);
-  reader.read((char*)&(kernel[0]), uCtPts*sizeof(Base::Vector3D));
+  reader.read((char*)&(kernel[0]), uCtPts*sizeof(Base::Vector3f));
 }
 
 

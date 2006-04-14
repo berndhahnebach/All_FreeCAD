@@ -63,7 +63,6 @@ using Mesh::Feature;
 using MeshCore::MeshKernel;
 using MeshCore::MeshFacetIterator;
 using MeshCore::MeshGeomFacet;
-using Base::Vector3D;
 using namespace MeshGui;
 
 
@@ -148,7 +147,7 @@ void ViewProviderMeshTransformDemolding::calcNormalVector(void)
   {
     const MeshGeomFacet& rFace = *cFIt;
 
-    Vector3D norm(rFace.GetNormal());
+    Base::Vector3f norm(rFace.GetNormal());
     normalVector.push_back(SbVec3f(norm.x,norm.y,norm.z));
   }
 }

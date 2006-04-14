@@ -89,9 +89,6 @@ using MeshCore::MeshFacetGrid;
 using MeshCore::MeshPolygonTriangulation;
 using MeshCore::MeshEvalSolid;
 
-using Base::Vector3D;
-
-
 PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderDocumentObject)
 
 ViewProviderExport::ViewProviderExport()
@@ -448,12 +445,12 @@ const char* ViewProviderMesh::getEditModeName(void)
   return "Polygon picking";
 }
 
-bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3D& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces) const
+bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces) const
 {
   float fX, fY, fZ;
   SbVec3f pt1, pt2, pt3, pt4;
   MeshGeomFacet face;
-  std::vector<Vector3D> top, bottom;
+  std::vector<Base::Vector3f> top, bottom;
 
   for ( std::vector<SbVec2f>::const_iterator it = rclPoly.begin(); it != rclPoly.end(); ++it )
   {
@@ -490,9 +487,9 @@ bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, cons
     if ( it+1 < rclPoly.end() )
     {
       pt1.getValue(fX, fY, fZ);
-      top.push_back( Vector3D(fX, fY, fZ) );
+      top.push_back( Base::Vector3f(fX, fY, fZ) );
       pt2.getValue(fX, fY, fZ);
-      bottom.push_back( Vector3D(fX, fY, fZ) );
+      bottom.push_back( Base::Vector3f(fX, fY, fZ) );
     }
   }
 
@@ -555,7 +552,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
         clPoly.push_back(clPoly.front());
 
       // get the normal of the front clipping plane
-      Vector3D cPoint, cNormal;
+      Base::Vector3f cPoint, cNormal;
       Viewer.getFrontClippingPlane(cPoint, cNormal);
       SoCamera* pCam = Viewer.getCamera();  
       SbViewVolume  vol = pCam->getViewVolume (); 

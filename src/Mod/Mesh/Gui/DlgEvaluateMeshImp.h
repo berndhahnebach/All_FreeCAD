@@ -98,6 +98,7 @@ private:
 };
 
 /**
+ * The DockEvaluateMeshImp class creates a single instance and embeds it into a dock window.
  * \author Werner Mayer
  */
 class DockEvaluateMeshImp : public DlgEvaluateMeshImp
@@ -105,6 +106,7 @@ class DockEvaluateMeshImp : public DlgEvaluateMeshImp
 protected:
   DockEvaluateMeshImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DockEvaluateMeshImp();
+  void reject();
 
 public:
   static DockEvaluateMeshImp* instance();

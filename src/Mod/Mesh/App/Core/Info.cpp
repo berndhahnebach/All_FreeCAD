@@ -136,8 +136,8 @@ std::ostream& MeshInfo::DetailedEdgeInfo (std::ostream& rclStream) const
   while (pEIter != lEdges.end())
   {
     int ct = pEIter->second;
-    const Vector3D& rP0 = rPoints[ pEIter->first.first ];
-    const Vector3D& rP1 = rPoints[ pEIter->first.second ];
+    const Base::Vector3f& rP0 = rPoints[ pEIter->first.first ];
+    const Base::Vector3f& rP1 = rPoints[ pEIter->first.second ];
 
     rclStream << "E "    << std::setw(4) << (i++) << ": "
               << "  P (" << std::setw(8) << rP0.x << ", "

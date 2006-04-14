@@ -39,9 +39,6 @@
 #include <Base/Vector3D.h>
 #include <Base/Sequencer.h>
 
-using Base::Vector3D;
-
-
 namespace MeshCore {
 
 class MeshKernel;
@@ -89,7 +86,7 @@ public:
    * Inserts a new vertex in the given triangle.
    * The given point must lie inside the triangle not outside or on an edge.
    */
-  void InsertNode(unsigned long ulFacetPos, const Vector3D&  rclPoint);
+  void InsertNode(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint);
   /**
    * If the given point references three facets only (the point must not be a border point, 
    * this is not checked) then each pair of the three facets must be neighbours.
@@ -107,7 +104,7 @@ public:
    * Insert a new edge. Each concerned triangle is broken into two
    * new triangles.
    */
-  void SplitEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint);
+  void SplitEdge(unsigned long ulFacetPos, int iSide, const Base::Vector3f& rclPoint);
   /**
    * Splits the facet with index \a ulFacetPos into several facets. The points \a rP1 and \a
    * rP2 must lie at two different edges of the facets.
@@ -115,7 +112,7 @@ public:
    * caller has to take care that SplitFacet() gets invoked for these facets, too; otherwise
    * the topology of the mesh gets broken after the call of Commit()
    */
-  void SplitFacet(unsigned long ulFacetPos, const Vector3D& rP1, const Vector3D& rP2);
+  void SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1, const Base::Vector3f& rP2);
   /**
    * Insert a new edge. Each concerned triangle is broken into two
    * new triangles. Unlike SplitEdge this method allows to split a facet several
@@ -125,7 +122,7 @@ public:
    * the specified side of the facet must be an open edge because the algorithm 
    * does not check for neighbours if it is not an open edge.
    */
-  bool MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, const Vector3D& rclPoint, float fTol = FLOAT_EPS);
+  bool MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, const Base::Vector3f& rclPoint, float fTol = FLOAT_EPS);
   /**
    * Removes a vertex and retriangulates the arising hole.
    */
@@ -158,12 +155,12 @@ public:
    * broken, too.
    * If the number of facets is less than \a ulFacetPos+1 or if \a rP is coincident with a corner point nothing happens.
    */
-  void DirectSplitFacet(unsigned long ulFacetPos, unsigned short side, const Vector3D& rP);
+  void DirectSplitFacet(unsigned long ulFacetPos, unsigned short side, const Base::Vector3f& rP);
   /**
    * Does basically the same as DirectSplitFacet() unless that the facet at position \a ulFacetPos has no adjacent
    * facet at its \a side.
    */
-  void DirectSplitFacetWithOpenEdge(unsigned long ulFacetPos, unsigned short side, const Vector3D& rP);
+  void DirectSplitFacetWithOpenEdge(unsigned long ulFacetPos, unsigned short side, const Base::Vector3f& rP);
   /**
    * Removes the degenerated facet at position \a index from the mesh structure. A facet is degenerated if its corner
    * points are collinear.

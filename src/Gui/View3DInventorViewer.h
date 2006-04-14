@@ -88,11 +88,11 @@ public:
   /** Returns the view direction from the viewport in direction to the user's eye point which is actually the normal of the front clipping plane. The vector
    * is normalized to length of 1.
    */
-  Base::Vector3D getViewDirection() const;
+  Base::Vector3f getViewDirection() const;
   /** Returns the front clipping plane represented by its normal and base point. */
-  void getFrontClippingPlane( Base::Vector3D& rcPt, Base::Vector3D& rcNormal ) const;
+  void getFrontClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const;
   /** Returns the back clipping plane represented by its normal and base point. */
-  void getBackClippingPlane( Base::Vector3D& rcPt, Base::Vector3D& rcNormal ) const;
+  void getBackClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const;
   //@}
 
   /** @name Modus handling of the viewer

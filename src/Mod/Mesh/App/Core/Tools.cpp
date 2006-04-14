@@ -47,7 +47,7 @@ void MeshSearchNeighbours::Reinit (float fSampleDistance)
   MeshAlgorithm(_rclMesh).ResetPointFlag(MeshPoint::MARKED);
 }
 
-unsigned long MeshSearchNeighbours::NeighboursFromFacet (unsigned long ulFacetIdx, float fDistance, unsigned long ulMinPoints, std::vector<Vector3D> &raclResultPoints) 
+unsigned long MeshSearchNeighbours::NeighboursFromFacet (unsigned long ulFacetIdx, float fDistance, unsigned long ulMinPoints, std::vector<Base::Vector3f> &raclResultPoints)
 {
   bool bAddPoints = false;
 
@@ -143,14 +143,14 @@ void MeshSearchNeighbours::SampleAllFacets (void)
   int i = 0;
   for (clFIter.Init(); clFIter.More(); clFIter.Next(), i++)
   {
-    std::vector<Vector3D> clPoints;
+    std::vector<Base::Vector3f> clPoints;
     clFIter->SubSample(_fSampleDistance, clPoints);
     _aclSampledFacets[i].resize(clPoints.size());
     std::copy(clPoints.begin(), clPoints.end(), _aclSampledFacets[i].begin());
   }
 }
 
-unsigned long MeshSearchNeighbours::NeighboursFromSampledFacets (unsigned long ulFacetIdx, float fDistance, std::vector<Vector3D> &raclResultPoints)
+unsigned long MeshSearchNeighbours::NeighboursFromSampledFacets (unsigned long ulFacetIdx, float fDistance, std::vector<Base::Vector3f> &raclResultPoints)
 {
   SampleAllFacets();
 
@@ -243,10 +243,10 @@ bool MeshSearchNeighbours::AccumulateNeighbours (const MeshFacet &rclF, unsigned
 
     if (bFound == true)
     {
-      std::vector<Vector3D> &rclT = _aclSampledFacets[ulFIdx];
-      std::vector<Vector3D> clTmp;
+      std::vector<Base::Vector3f> &rclT = _aclSampledFacets[ulFIdx];
+      std::vector<Base::Vector3f> clTmp;
       clTmp.reserve(rclT.size());
-      for (std::vector<Vector3D>::iterator pI = rclT.begin(); pI != rclT.end(); pI++)
+      for (std::vector<Base::Vector3f>::iterator pI = rclT.begin(); pI != rclT.end(); pI++)
       {
         if (InnerPoint(*pI) == true)
           clTmp.push_back(*pI);
@@ -274,7 +274,7 @@ bool MeshSearchNeighbours::ExpandRadius (unsigned long ulMinPoints)
     return false;
 }
 
-unsigned long MeshSearchNeighbours::NeighboursFacetFromFacet (unsigned long ulFacetIdx, float fDistance, std::vector<Vector3D> &raclResultPoints, std::vector<unsigned long> &raclResultFacets)
+unsigned long MeshSearchNeighbours::NeighboursFacetFromFacet (unsigned long ulFacetIdx, float fDistance, std::vector<Base::Vector3f> &raclResultPoints, std::vector<unsigned long> &raclResultFacets)
 {
   std::set<unsigned long> aulFacetSet;
 

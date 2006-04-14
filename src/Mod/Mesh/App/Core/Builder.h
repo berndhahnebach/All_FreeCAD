@@ -32,8 +32,6 @@
 #include <Base/Vector3D.h>
 
 
-using Base::Vector3D;
-
 namespace MeshCore
 {
 class MeshKernel;
@@ -133,11 +131,11 @@ public:
 	void AddFacet (const MeshGeomFacet& facet, bool takeFlag = false, bool takePropery = false);
   /** Add new facet
    */
-	void AddFacet (const Vector3D& pt1, const Vector3D& pt2, const Vector3D& pt3, const Vector3D& normal, unsigned char flag = 0, unsigned long prop = 0);
+	void AddFacet (const Base::Vector3f& pt1, const Base::Vector3f& pt2, const Base::Vector3f& pt3, const Base::Vector3f& normal, unsigned char flag = 0, unsigned long prop = 0);
   /** Add new facet
    * @param facetPoints Array of vectors (size 4) in order of vec1, vec2, vec3, normal
    */
-	void AddFacet (Vector3D* facetPoints, unsigned char flag = 0, unsigned long prop = 0);
+	void AddFacet (Base::Vector3f* facetPoints, unsigned char flag = 0, unsigned long prop = 0);
 
   /** Finishes building up the mesh structure. Must be done after adding facets.
    * @param \a freeMemory if false (default) only the memory of internal structures gets freed, otherwise 
