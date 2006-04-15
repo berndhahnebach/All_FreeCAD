@@ -212,9 +212,9 @@ StdCmdSetMaterial::StdCmdSetMaterial()
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Material");
-  sToolTipText  = QT_TR_NOOP("Set the material properties of the selcted feature");
-  sWhatsThis    = QT_TR_NOOP("Set the material properties of the selcted feature");
-  sStatusTip    = QT_TR_NOOP("Set the material properties of the selcted feature");
+  sToolTipText  = QT_TR_NOOP("Set the material properties of the selected object");
+  sWhatsThis    = QT_TR_NOOP("Set the material properties of the selected object");
+  sStatusTip    = QT_TR_NOOP("Set the material properties of the selected object");
   sPixmap       = "Std_Tool1";
   iAccel        = Qt::CTRL+Qt::Key_D;
 }
@@ -596,7 +596,7 @@ StdCmdViewCreate::StdCmdViewCreate()
   :Command("Std_ViewCreate")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
-  sMenuText   = QT_TR_NOOP("Create new  View");
+  sMenuText   = QT_TR_NOOP("Create new view");
   sToolTipText= QT_TR_NOOP("Creates a new  view window for the active document");
   sWhatsThis  = QT_TR_NOOP("Creates a new  view window for the active document");
   sStatusTip  = QT_TR_NOOP("Creates a new  view window for the active document");

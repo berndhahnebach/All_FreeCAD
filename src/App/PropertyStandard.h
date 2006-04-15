@@ -289,6 +289,53 @@ private:
 
 };
 
+class AppExport PropertyStringList: public PropertyLists
+{
+  TYPESYSTEM_HEADER();
+
+public:
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyStringList();
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	~PropertyStringList();
+
+  virtual void setSize(int newSize){_lValueList.resize(newSize);}   
+  virtual int getSize(void) const {return _lValueList.size();}   
+
+	/** Sets the property 
+	 */
+  void setValue(const std::string&);
+  
+  /// index operator
+  const std::string& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+  
+  void  set1Value (const int idx, const std::string& value){_lValueList.operator[] (idx) = value;}
+
+  const std::vector<std::string> &getValues(void) const{return _lValueList;}
+
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::ListEditorItem"; }
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+  virtual void Save (Base::Writer &writer) const;
+  virtual void Restore(Base::XMLReader &reader);
+
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
+
+private:
+  std::vector<std::string> _lValueList;
+};
+
 /** Bool properties
  * This is the father of all properties handling booleans.
  */

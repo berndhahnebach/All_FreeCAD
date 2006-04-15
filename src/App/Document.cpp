@@ -31,6 +31,7 @@
 #include "DocumentPy.h"
 #include "Application.h"
 #include "Feature.h"
+#include "PropertyLinks.h"
 
 #include <Base/PyExport.h>
 #include <Base/Console.h>
@@ -610,7 +611,7 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 }
 
 
-/// Remove a Object out of the document
+/// Remove an object out of the document
 void Document::remObject(const char* sName)
 {
   DocChanges DocChange;
@@ -625,6 +626,41 @@ void Document::remObject(const char* sName)
   DocChange.DeletedObjects.insert(pos->second);
 
   Notify(DocChange);
+
+  // Before deleting we must nullify all dependant objects
+  for ( std::map<std::string,DocumentObject*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it )
+  {
+    std::map<std::string,App::Property*> Map;
+    it->second->getPropertyMap(Map);
+    // search for all properties that could have a link to the object
+    for( std::map<std::string,App::Property*>::iterator pt = Map.begin(); pt != Map.end(); ++pt )
+    {
+      if ( pt->second->getTypeId().isDerivedFrom(PropertyLink::getClassTypeId()) )
+      {
+        PropertyLink* link = (PropertyLink*)pt->second;
+        if ( link->getValue() == pos->second )
+          link->setValue(0);
+      }
+      else if ( pt->second->getTypeId().isDerivedFrom(PropertyLinkList::getClassTypeId()) )
+      {
+        PropertyLinkList* link = (PropertyLinkList*)pt->second;
+        // copy the list (not the features)
+        std::vector<AbstractFeature*>::const_iterator fIt;
+        std::vector<AbstractFeature*> copy_linked;
+        const std::vector<AbstractFeature*>& linked = link->getValues();
+        for ( fIt = linked.begin(); fIt != linked.end(); ++fIt )
+        {
+          if ( (*fIt) != pos->second )
+            copy_linked.push_back( *fIt );
+        }
+
+        // reset the the copied list without the object(s) to be deleted
+        link->setSize( copy_linked.size() );
+        for ( fIt = copy_linked.begin(); fIt != copy_linked.end(); ++fIt )
+          link->set1Value(fIt-copy_linked.begin(), *fIt );
+      }
+    }
+  }
 
   // finally delete the Object
   delete pos->second;

@@ -29,6 +29,7 @@
 
 #include "../App/Core/Elements.h"
 #include <Gui/ViewProviderFeature.h>
+#include <App/PropertyStandard.h>
 
 
 class SoSeparator;
@@ -84,6 +85,16 @@ class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderDocumentObject
 public:
   ViewProviderMesh();
   virtual ~ViewProviderMesh();
+
+  //FIXME: This is just to test the integration to the property editor.
+  //       Later this should be moved to Gui::ViewProviderDocumentObject.
+  App::PropertyColor SolidMaterial;
+  App::PropertyFloat LineWidth;
+  App::PropertyStringList Display;
+  App::PropertyInteger Transparency;
+  App::PropertyBool Visibility;
+  /// get called by the container when a Proptery was changed
+  virtual void onChanged(const App::Property* prop);
 
   /** 
    * Extracts the mesh data from the feature \a pcFeature and creates

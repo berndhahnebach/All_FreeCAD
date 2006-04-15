@@ -33,6 +33,10 @@
 #include <Base/BoundBox.h>
 #include <Base/Vector3D.h>
 
+// Cannot use namespace Base in constructors of MeshPoint
+#ifdef _MSC_VER
+using Base::Vector3f;
+#endif
 
 namespace MeshCore {
 
@@ -501,14 +505,22 @@ public:
 };
 
 inline MeshPoint::MeshPoint (const Base::Vector3f &rclPt)
+#ifdef _MSC_VER
+: Vector3f(rclPt),
+#else
 : Base::Vector3f(rclPt),
+#endif
   _ucFlag(0),
   _ulProp(0)
 {
 }
 
 inline MeshPoint::MeshPoint (const MeshPoint &rclPt)
+#ifdef _MSC_VER
+: Vector3f(rclPt),
+#else
 : Base::Vector3f(rclPt),
+#endif
   _ucFlag(rclPt._ucFlag),
   _ulProp(rclPt._ulProp)
 {
@@ -516,7 +528,11 @@ inline MeshPoint::MeshPoint (const MeshPoint &rclPt)
 
 inline MeshPoint& MeshPoint::operator = (const MeshPoint &rclPt)
 {
+#ifdef _MSC_VER
+  Vector3f::operator=(rclPt);
+#else
   Base::Vector3f::operator=(rclPt);
+#endif
   _ucFlag = rclPt._ucFlag;
   _ulProp = rclPt._ulProp;
   return *this;

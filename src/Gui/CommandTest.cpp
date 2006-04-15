@@ -236,32 +236,32 @@ bool FCCmdTest6::isActive(void)
 
 
 //===========================================================================
-// Std_Test7
+// Std_TestProgress1
 //===========================================================================
-DEF_STD_CMD_A(FCCmdTest7);
+DEF_STD_CMD_A(CmdTestProgress1);
 
-FCCmdTest7::FCCmdTest7()
-	:Command("Std_Test7")
+CmdTestProgress1::CmdTestProgress1()
+	:Command("Std_TestProgress1")
 {
 	sGroup			= "Standard-Test";
-	sMenuText		= "Test progress bar";
-	sToolTipText	= "Test progress bar";
+	sMenuText		= "Breakable bar";
+	sToolTipText	= "Test a breakable progress bar";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Std_Tool7";
 	iAccel			= 0;
 }
 
-void FCCmdTest7::activated(int iMsg)
+void CmdTestProgress1::activated(int iMsg)
 {
 	try
 	{
 		unsigned long steps = 1000;
-		Base::Sequencer().start("Starting progress bar", 0);
+		Base::Sequencer().start("Starting progress bar", steps);
 		
 		for (unsigned long i=0; i<steps;i++)
 		{
-			Base::Sequencer().next();
+			Base::Sequencer().next(true);
 			QWaitCondition().wait(30);
 		}
 
@@ -272,31 +272,71 @@ void FCCmdTest7::activated(int iMsg)
 	}
 }
 
-
-bool FCCmdTest7::isActive(void)
+bool CmdTestProgress1::isActive(void)
 {
 	return ( !Base::Sequencer().isRunning() );
 }
 
-
 //===========================================================================
-// Std_Test8
+// Std_TestProgress2
 //===========================================================================
-DEF_STD_CMD_A(FCCmdTest8);
+DEF_STD_CMD_A(CmdTestProgress2);
 
-FCCmdTest8::FCCmdTest8()
-	:Command("Std_Test8")
+CmdTestProgress2::CmdTestProgress2()
+	:Command("Std_TestProgress2")
 {
 	sGroup			= "Standard-Test";
-	sMenuText		= "Test progress bar";
-	sToolTipText	= "Test progress bar";
+	sMenuText		= "Unbreakable bar";
+	sToolTipText	= "Test a unbreakable progress bar";
+	sWhatsThis		= sToolTipText;
+	sStatusTip		= sToolTipText;
+	sPixmap			= "Std_Tool7";
+	iAccel			= 0;
+}
+
+void CmdTestProgress2::activated(int iMsg)
+{
+	try
+	{
+		unsigned long steps = 1000;
+		Base::Sequencer().start("Starting progress bar", steps);
+		
+		for (unsigned long i=0; i<steps;i++)
+		{
+			Base::Sequencer().next(false);
+			QWaitCondition().wait(10);
+		}
+
+		Base::Sequencer().stop();
+	}
+	catch (...)
+	{
+	}
+}
+
+bool CmdTestProgress2::isActive(void)
+{
+	return ( !Base::Sequencer().isRunning() );
+}
+
+//===========================================================================
+// Std_TestProgress3
+//===========================================================================
+DEF_STD_CMD_A(CmdTestProgress3);
+
+CmdTestProgress3::CmdTestProgress3()
+	:Command("Std_TestProgress3")
+{
+	sGroup			= "Standard-Test";
+	sMenuText		= "Nested progress bar";
+	sToolTipText	= "Test nested progress bar";
 	sWhatsThis		= sToolTipText;
 	sStatusTip		= sToolTipText;
 	sPixmap			= "Std_Tool8";
 	iAccel			= 0;
 }
 
-void FCCmdTest8::activated(int iMsg)
+void CmdTestProgress3::activated(int iMsg)
 {
 	try
 	{
@@ -306,7 +346,7 @@ void FCCmdTest8::activated(int iMsg)
 		for (unsigned long i=0; i<steps;i++)
 		{
       QWaitCondition().wait(200);
-			Base::Sequencer().next();
+			Base::Sequencer().next(true);
 
       // level 2
       unsigned long steps = 6;
@@ -314,7 +354,7 @@ void FCCmdTest8::activated(int iMsg)
       for (unsigned long j=0; j<steps;j++)
       {
         QWaitCondition().wait(150);
-        Base::Sequencer().next();
+        Base::Sequencer().next(true);
 
         // level 3
         unsigned long steps = 7;
@@ -322,7 +362,7 @@ void FCCmdTest8::activated(int iMsg)
         for (unsigned long k=0; k<steps;k++)
         {
           QWaitCondition().wait(100);
-          Base::Sequencer().next();
+          Base::Sequencer().next(true);
 
           // level 4
           unsigned long steps = 8;
@@ -330,7 +370,7 @@ void FCCmdTest8::activated(int iMsg)
           for (unsigned long l=0; l<steps;l++)
           {
             QWaitCondition().wait(5);
-            Base::Sequencer().next();
+            Base::Sequencer().next(true);
           }
           Base::Sequencer().stop();
         }
@@ -346,7 +386,7 @@ void FCCmdTest8::activated(int iMsg)
 }
 
 
-bool FCCmdTest8::isActive(void)
+bool CmdTestProgress3::isActive(void)
 {
 	return ( !Base::Sequencer().isRunning() );
 }
@@ -364,8 +404,9 @@ void CreateTestCommands(void)
 	rcCmdMgr.addCommand(new FCCmdTest4());
 	rcCmdMgr.addCommand(new FCCmdTest5());
 	rcCmdMgr.addCommand(new FCCmdTest6());
-	rcCmdMgr.addCommand(new FCCmdTest7());
-	rcCmdMgr.addCommand(new FCCmdTest8());
+	rcCmdMgr.addCommand(new CmdTestProgress1());
+	rcCmdMgr.addCommand(new CmdTestProgress2());
+  rcCmdMgr.addCommand(new CmdTestProgress3());
 }
 
 } // namespace Gui

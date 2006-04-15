@@ -835,7 +835,7 @@ void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
            << "Std_ViewRear" << "Std_ViewBottom" << "Std_ViewLeft";
 
   MenuItem* view = new MenuItem;
-  *view << "Std_ViewFitAll" << "Std_SetMaterial" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
+  *view << "Std_ViewFitAll" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
 
   // ask workbenches and view provider, ...
   Gui::Application::Instance->setupContextMenu("View", view);

@@ -37,8 +37,10 @@
 #include "Command.h"
 #include "CommandBarManager.h"
 #include "Window.h"
+#include "Selection.h"
 
 #include <App/Application.h>
+#include <App/DocumentObject.h>
 
 #include <Base/Parameter.h>
 #include <Base/Interpreter.h>
@@ -308,7 +310,7 @@ void Workbench::showOrHideToolBars( bool read ) const
   }
 }
 
-void Workbench::setupContextMenu(const char* recipient,MenuItem*) const
+void Workbench::setupContextMenu(const char* recipient,MenuItem* item) const
 {
 }
 
@@ -399,6 +401,15 @@ StdWorkbench::StdWorkbench()
 
 StdWorkbench::~StdWorkbench()
 {
+}
+
+void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
+{
+  if ( strcmp(recipient,"View") == 0 )
+  {
+    if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
+    	*item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" << "Separator" << "Std_Delete";
+  }
 }
 
 MenuItem* StdWorkbench::setupMenuBar() const
@@ -638,17 +649,33 @@ ToolBarItem* PythonWorkbench::setupCommandBars() const
   return root;
 }
 
-void PythonWorkbench::appendMenu( const QString& menu, const QStringList& items ) const
+void PythonWorkbench::appendMenu( const QStringList& menu, const QStringList& items ) const
 {
-  MenuItem* item = _menuBar->findItem( menu );
+  if ( menu.empty() || items.empty() )
+    return;
+  
+  QStringList::ConstIterator jt=menu.begin();
+  MenuItem* item = _menuBar->findItem( *jt );
   if ( !item )
   {
     Gui::MenuItem* wnd = _menuBar->findItem( "&Windows" );
     item = new MenuItem;
-    item->setCommand( menu );
+    item->setCommand( *jt );
     _menuBar->insertItem( wnd, item );
   }
 
+  // create sub menus   
+  for ( jt++; jt != menu.end(); jt++ )
+  {
+    MenuItem* subitem = item->findItem( *jt );
+    if ( !subitem )
+    {
+      subitem = new MenuItem(item);
+      subitem->setCommand( *jt );
+    }
+    item = subitem;
+  }
+  
   for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
     *item << *it;
 }

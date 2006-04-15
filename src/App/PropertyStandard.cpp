@@ -545,7 +545,7 @@ void PropertyString::setPyObject(PyObject *value)
     hasSetValue();
 
   }else
-    throw "Not allowed type used (float or int expected)...";
+    throw "Not allowed type used (string expected)...";
 
 }
 
@@ -575,6 +575,125 @@ void PropertyString::Paste(const Property &from)
   _cValue = dynamic_cast<const PropertyString&>(from)._cValue;
 }
 
+
+//**************************************************************************
+// PropertyStringList
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyStringList , App::PropertyLists);
+
+//**************************************************************************
+// Construction/Destruction
+
+PropertyStringList::PropertyStringList()
+{
+
+}
+
+PropertyStringList::~PropertyStringList()
+{
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+void PropertyStringList::setValue(const std::string& lValue)
+{
+  aboutToSetValue();
+  if ( _lValueList.empty() )
+    _lValueList.resize(1);
+	_lValueList[0]=lValue;
+  hasSetValue();
+}
+
+PyObject *PropertyStringList::getPyObject(void)
+{
+  PyObject* list = PyList_New(	getSize() );
+
+  for(int i = 0;i<getSize(); i++)
+  {
+    PyObject* item = PyString_FromString(_lValueList[i].c_str());
+    PyList_SetItem( list, i, item );
+  }
+
+  return list;
+}
+
+void PropertyStringList::setPyObject(PyObject *value)
+{
+  if ( PyList_Check( value ) )
+  {
+    aboutToSetValue();
+
+    int nSize = PyList_Size(value);
+    _lValueList.resize(nSize);
+
+    for (int i=0; i<nSize;++i)
+    {
+      PyObject* item = PyList_GetItem(value, i);
+      if ( PyString_Check(item) )
+      {
+        char* pItem = PyString_AsString(item);
+        _lValueList[i] = pItem;
+        hasSetValue();
+      }
+      else
+      {
+        _lValueList.resize(1);
+        _lValueList[0] = "";
+        throw Base::Exception("Not allowed type in list (string expected)...");
+      }
+    }
+
+    hasSetValue();
+  }
+  else if ( PyString_Check(value) )
+  {
+    _lValueList.resize(1);
+    _lValueList[0] = PyString_AsString(value);
+  }
+  else
+    throw Base::Exception("Not allowed type used...");
+}
+
+void PropertyStringList::Save (Writer &writer) const
+{
+  writer << "<StringList count=\"" <<  getSize() <<"\">" << endl;
+  for(int i = 0;i<getSize(); i++)
+    writer << "<String value=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+  writer << "</StringList>" << endl ;
+}
+
+void PropertyStringList::Restore(Base::XMLReader &reader)
+{
+  // read my Element
+  reader.readElement("StringList");
+  // get the value of my Attribute
+  int count = reader.getAttributeAsInteger("count");
+
+  setSize(count);
+
+  for(int i = 0;i<count; i++)
+  {
+    reader.readElement("String");
+    _lValueList[i] = reader.getAttribute("value");
+  }
+
+  reader.readEndElement("StringList");
+}
+
+Property *PropertyStringList::Copy(void) const
+{
+  PropertyStringList *p= new PropertyStringList();
+  p->_lValueList = _lValueList;
+  return p;
+}
+
+void PropertyStringList::Paste(const Property &from)
+{
+  _lValueList = dynamic_cast<const PropertyStringList&>(from)._lValueList;
+}
 
 //**************************************************************************
 //**************************************************************************

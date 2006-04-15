@@ -802,13 +802,19 @@ QAction * PythonCommand::createAction(void)
   QAction *pcAction;
 
   pcAction = new Action(this,getMainWindow(),sName);
-  pcAction->setText(sName);
+//  pcAction->setText(sName);
+  pcAction->setText(getResource("MenuText"));
   pcAction->setMenuText(getResource("MenuText"));
   pcAction->setToolTip(getResource("ToolTip"));
   pcAction->setStatusTip(getResource("StatusTip"));
   pcAction->setWhatsThis(getResource("WhatsThis"));
   if(getResource("Pixmap") != "")
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
+
+  if ( pcAction->statusTip().isEmpty() )
+    pcAction->setStatusTip(getResource("ToolTip"));
+  if ( pcAction->whatsThis().isEmpty() )
+    pcAction->setWhatsThis(getResource("ToolTip"));
 
   return pcAction;
 }

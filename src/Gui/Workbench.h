@@ -120,6 +120,10 @@ public:
   StdWorkbench();
   virtual ~StdWorkbench();
 
+public:
+  /** Defines the standard context menu. */
+  virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+
 protected:
   /** Defines the standard menus. */
   virtual MenuItem* setupMenuBar() const;
@@ -163,7 +167,7 @@ public:
   /** @name Manipulation methods */
   //@{
   /// Appends a new menu
-  void appendMenu( const QString& menu, const QStringList& items ) const;
+  void appendMenu( const QStringList& menu, const QStringList& items ) const;
   /// Removes a menu
   void removeMenu( const QString& menu ) const;
   //// Shows a list of all menus

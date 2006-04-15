@@ -78,24 +78,34 @@ void TextEditorItem::setDefaultValue()
 
 void TextEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
-  if ( prop.size() == 1 )
+  QString txt = "";
+  bool equal = true;
+  for ( std::vector<App::Property*>::const_iterator it = prop.begin(); it != prop.end(); ++it )
   {
-    App::PropertyString* pPropChar = (App::PropertyString*)prop.front();
-    QVariant value( QString(pPropChar->getValue()) );
-    setValue( value );
-    setText( 1, value.toString() );
+    App::PropertyString* pPropChar = (App::PropertyString*)*it;
+    if ( it == prop.begin() )
+      txt = pPropChar->getValue();
+    else 
+      equal &= ( txt == pPropChar->getValue() );
   }
-  else
-  {
-    QVariant value( "" );
-    setValue( value );
-    setText( 1, value.toString() );
-    setEditable(false);
-  }
+
+  // set empty text when the properties are different
+  if ( !equal )
+    txt = "";
+
+  QVariant val( txt );
+  setValue( val );
+  setText( 1, txt );
 }
 
-void TextEditorItem::convertToProperty(const QVariant&)
+void TextEditorItem::convertToProperty(const QVariant& val)
 {
+  QString value = val.toString();
+  for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
+  {
+    App::PropertyString* pPropChar = (App::PropertyString*)*it;
+    pPropChar->setValue( value.ascii() );
+  }
 }
 
 // ======================================================================
@@ -144,8 +154,14 @@ void IntEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
   setText( 1, value.toString() );
 }
 
-void IntEditorItem::convertToProperty(const QVariant&)
+void IntEditorItem::convertToProperty(const QVariant& val)
 {
+  int value = val.toInt();
+  for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
+  {
+    App::PropertyInteger* pPropInt = (App::PropertyInteger*)*it;
+    pPropInt->setValue( value );
+  }
 }
 
 // ======================================================================
@@ -189,14 +205,21 @@ void FloatEditorItem::setDefaultValue()
 
 void FloatEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
-  App::PropertyFloat* pPropFlt = (App::PropertyFloat*)prop.front();
-  QVariant value( pPropFlt->getValue() );
+  App::PropertyFloat* pPropFloat = (App::PropertyFloat*)prop.front();
+  QVariant value( (double)pPropFloat->getValue() );
   setValue( value );
-  setText( 1, value.toString() );
+  QString txt;
+  setText( 1, txt.sprintf("%.3f", value.toDouble()) );
 }
 
-void FloatEditorItem::convertToProperty(const QVariant&)
+void FloatEditorItem::convertToProperty(const QVariant& val)
 {
+  float value = (float)val.toDouble();
+  for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
+  {
+    App::PropertyFloat* pPropFloat = (App::PropertyFloat*)*it;
+    pPropFloat->setValue( value );
+  }
 }
 
 #include "moc_propertyeditorinput.cpp"

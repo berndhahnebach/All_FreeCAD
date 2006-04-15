@@ -476,7 +476,7 @@ void StdCmdDelete::activated(int iMsg)
 
 bool StdCmdDelete::isActive(void)
 {
-  return true;
+  return Selection().getCompleteSelection().size() > 0;
 }
 
 

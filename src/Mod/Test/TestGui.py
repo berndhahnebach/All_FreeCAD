@@ -131,7 +131,7 @@ class TestCreateMenuCmd:
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Test menu',
+        		'MenuText': 'Add menu',
                 'ToolTip' : 'Test the menu stuff of FreeCAD'}
 
 class TestDeleteMenuCmd:
@@ -141,7 +141,7 @@ class TestDeleteMenuCmd:
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Test menu',
+        		'MenuText': 'Remove menu',
                 'ToolTip' : 'Test the menu stuff of FreeCAD'}
 
 #---------------------------------------------------------------------------

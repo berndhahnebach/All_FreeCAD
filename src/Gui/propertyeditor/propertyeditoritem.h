@@ -149,12 +149,13 @@ protected: // Interface for subclasses.
 
 protected:
   EditableItem();
+  std::vector<App::Property*> _prop;
 
 public:
   static QListView* parentView;
 
 private:
-  std::vector<App::Property*> _prop;
+//  std::vector<App::Property*> _prop;
   QVariant _val;
   QVariant _newval;
   bool _modified;

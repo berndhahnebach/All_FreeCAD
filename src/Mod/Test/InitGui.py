@@ -42,17 +42,24 @@ class TestWorkbench ( Workbench ):
 				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
 				w.AppendToolbar("TestTools",list)
 
+				menu = ["Test &Commands","TestToolsGui"]
 				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
 				w.AppendCommandbar("TestToolsGui",list)
+				w.AppendMenu(menu,list)
 
+				menu = ["Test &Commands","TestToolsText"]
 				list = ["Test_TestAllText","Test_TestDocText","Test_TestBaseText"]
 				w.AppendCommandbar("TestToolsText",list)
+				w.AppendMenu(menu,list)
 
+				menu = ["Test &Commands","TestToolsMenu"]
 				list = ["Test_TestCreateMenu", "Test_TestDeleteMenu"]
 				w.AppendCommandbar("TestToolsMenu",list)
+				w.AppendMenu(menu,list)
 
-				list = ["Std_Test1", "Std_Test2", "Std_Test3", "Std_Test4", "Std_Test5", "Std_Test6", "Std_Test7", "Std_Test8"]
-				w.AppendMenu("Test &Commands",list)
+				menu = ["Test &Commands","Progress bar"]
+				list = ["Std_TestProgress1", "Std_TestProgress2", "Std_TestProgress3"]
+				w.AppendMenu(menu,list)
 
 				list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3", 
 				"Separator", "Std_ViewIvStereoRedGreen", "Std_ViewIvStereoQuadBuff", "Std_ViewIvStereoInterleavedRows", 

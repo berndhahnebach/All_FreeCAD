@@ -81,3 +81,29 @@ Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
 + bugs fixed in selection node
 + restore original document file name after loading a project file
 + start implementing an Inventor node rendering the mesh structure directly
+
+Version: V0.5B6 Date: Sat Apr 15 18:23:54 2006 +++++++++++++++++++++++++++++++
++ renamed Vector3D to Vector3f indicating the precision of float and Vector3d as double respectively
++ updated the unittests in Test framework using new API
++ Added some experimental properties to mesh viewprovider
++ Allow to build up structured menus from within Python
++ StdWorkbench::setupContextMenu() implemented
++ PropertyStringList added
++ Continued implementation of property editor
++ Nullify reference to deleted object of dependent objects (Document::remObject)
++ Check if the reference is valid in Mesh::Feature::getMesh() and subclasses
++ Several bugs in Raytracing module fixed
++ API changes in DocumentPy:
+  - Recompute -> recompute
+  - activeFeature -> activeDocument
+  - addFeature -> addObject
+  - getFeature -> getObject
+  - removeFeature -> removeObject
+  - listFeatures -> listObjects
+  - AddFeature removed
+  - GetFeature removed
+  - GetActiveFeature -> getActiveObject
++ API changes in Property
+  - Save(Writer&) -> Save(Writer) const
++ API changes in ViewProviderDocumentObject
+  - attach(App::AbstractFeature*) -> attach(App::DocumentObject*)

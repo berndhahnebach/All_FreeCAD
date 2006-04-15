@@ -161,7 +161,7 @@ copyResource(PyObject *self, PyObject *args)
     std::string resName = App::GetApplication().GetHomePath(); 
     resName += "Mod"; 
     resName += PATHSEP ;
-    resName += "Rytracing"; 
+    resName += "Raytracing"; 
     resName += PATHSEP ;
     resName += "resources"; 
     resName += PATHSEP;

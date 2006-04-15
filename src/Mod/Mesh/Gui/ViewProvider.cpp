@@ -140,6 +140,20 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderDocumentObject)
 
 ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
 {
+  ADD_PROPERTY(SolidMaterial,(0.8f,0.8f,0.8f));
+  ADD_PROPERTY(LineWidth,(2.0f));
+  ADD_PROPERTY(Display,(""));
+  ADD_PROPERTY(Transparency,(0));
+  ADD_PROPERTY(Visibility,(true));
+
+  Display.setSize(6);
+  Display.set1Value(0,"Flat"/*"Shaded"*/); // active mode
+  Display.set1Value(1,"Flat"/*"Shaded"*/);
+  Display.set1Value(2,"Wire"/*"Wireframe"*/);
+  Display.set1Value(3,"Point");
+  Display.set1Value(4,"FlatWire"/*"Shaded&Wire"*/);
+  Display.set1Value(5,"Hidden line");
+
   // create the mesh core nodes
   pcMeshCoord     = new SoCoordinate3();
   pcMeshCoord->ref();
@@ -157,6 +171,21 @@ ViewProviderMesh::~ViewProviderMesh()
 //  pcMeshNormal->unref();
   pcMeshFaces->unref();
   pcHighlight->unref();
+}
+
+void ViewProviderMesh::onChanged(const App::Property* prop)
+{
+  if ( prop == &SolidMaterial ) {
+    setColor(SolidMaterial.getValue());
+  } else if ( prop == &LineWidth ) {
+    pcLineStyle->lineWidth = LineWidth.getValue();
+  } else if ( prop == &Transparency ) {
+    setTransparency( Transparency.getValue()/100.0f );
+  } else if ( prop == &Display ) {
+    setMode( Display.getValues().front().c_str() );
+  } else if ( prop == &Visibility ) {
+    Visibility.getValue() ? show() : hide();
+  }
 }
 
 void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )

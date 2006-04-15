@@ -45,7 +45,7 @@ class MenuCreateCases(unittest.TestCase):
 
     def setUp(self):
         FreeCAD.PrintLog ('Setup Test menu...\n')
-        list = ["Std_CommandLine","Std_DlgCustomize","Std_DlgMacroStop","Std_DlgMacroExecute"]
+        list = ["Test_TestAll","Test_TestDoc","Test_TestBase","Test_TestWork"]
         w = FreeCADGui.GetWorkbench('Test framework')
         w.AppendMenu("TestMenu",list)
         w.Activate()

@@ -268,30 +268,66 @@ int PythonWorkbenchPy::_setattr(char *attr, PyObject *value) 	// __setattr__ fun
 PYFUNCIMP_D(PythonWorkbenchPy,AppendMenu)
 {
   PY_TRY {
-    PyObject* pObject;
-    char* psMenu;
-    if ( !PyArg_ParseTuple(args, "sO", &psMenu, &pObject) )
+    PyObject* pPath;
+    PyObject* pItems;
+    if ( !PyArg_ParseTuple(args, "OO", &pPath, &pItems) )
     {
-      return NULL;                             // NULL triggers exception 
-    }
-    if (!PyList_Check(pObject))
-    {
-      PyErr_SetString(PyExc_AssertionError, "Expected a list as second argument");
       return NULL;                             // NULL triggers exception 
     }
 
-    QStringList items;
-    int nSize = PyList_Size(pObject);
-    for (int i=0; i<nSize;++i)
+    // menu path
+    QStringList path;
+    if (PyList_Check(pPath))
     {
-      PyObject* item = PyList_GetItem(pObject, i);
-      if (!PyString_Check(item))
-        continue;
-      char* pItem = PyString_AsString(item);
+      int nDepth = PyList_Size(pPath);
+      for (int j=0; j<nDepth;++j)
+      {
+        PyObject* item = PyList_GetItem(pPath, j);
+        if (!PyString_Check(item))
+          continue;
+        char* pItem = PyString_AsString(item);
+        path.push_back(pItem);
+      }
+    }
+    else if (PyString_Check(pPath))
+    {
+      // one single item
+      char* pItem = PyString_AsString(pPath);
+      path.push_back(pItem);
+    }
+    else
+    {
+      PyErr_SetString(PyExc_AssertionError, "Expected either a string or a stringlist as first argument");
+      return NULL;                             // NULL triggers exception 
+    }
+
+    // menu items
+    QStringList items;
+    if (PyList_Check(pItems))
+    {
+      int nItems = PyList_Size(pItems);
+      for (int i=0; i<nItems;++i)
+      {
+        PyObject* item = PyList_GetItem(pItems, i);
+        if (!PyString_Check(item))
+          continue;
+        char* pItem = PyString_AsString(item);
+        items.push_back(pItem);
+      }
+    }
+    else if (PyString_Check(pItems))
+    {
+      // one single item
+      char* pItem = PyString_AsString(pItems);
       items.push_back(pItem);
     }
+    else
+    {
+      PyErr_SetString(PyExc_AssertionError, "Expected either a string or a stringlist as first argument");
+      return NULL;                             // NULL triggers exception 
+    }
 
-    _pcWorkbench->appendMenu( psMenu, items );
+    _pcWorkbench->appendMenu( path, items );
 
     Py_Return; 
   }PY_CATCH;

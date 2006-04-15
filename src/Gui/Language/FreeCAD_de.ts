@@ -2215,6 +2215,21 @@ Wollen Sie wirklich fortfahren?</translation>
         </message>
     </context>
     <context>
+        <name>StdCmdDelete</name>
+        <message>
+            <source>Edit</source>
+            <translation>Bearbeiten</translation>
+        </message>
+        <message>
+            <source>&amp;Delete</source>
+            <translation>&amp;Löschen</translation>
+        </message>
+        <message>
+            <source>Deletes the selected objects</source>
+            <translation>Löscht die ausgewählten Objekte</translation>
+        </message>
+    </context>
+    <context>
         <name>StdCmdPerspectiveCamera</name>
         <message>
             <source>Standard-View</source>
@@ -2311,8 +2326,8 @@ Wollen Sie wirklich fortfahren?</translation>
             <translation>Material</translation>
         </message>
         <message>
-            <source>Set the material properties of the selcted feature</source>
-            <translation>Setzen Sie die Materialeigenschaften des ausgewählten Features</translation>
+            <source>Set the material properties of the selected object</source>
+            <translation>Setzen der Materialeigenschaften des ausgewählten Objektes</translation>
         </message>
     </context>
     <context>
@@ -2398,7 +2413,7 @@ Wollen Sie wirklich fortfahren?</translation>
         </message>
         <message>
             <source>Toggle visibility</source>
-            <translation>Sichtbarkeit umschalten</translation>
+            <translation>Ein-/Ausblenden</translation>
         </message>
         <message>
             <source>Toggles visibility</source>
@@ -2457,12 +2472,12 @@ Wollen Sie wirklich fortfahren?</translation>
             <translation>Standardansicht</translation>
         </message>
         <message>
-            <source>Create new Inventor View</source>
-            <translation>Neuer Inventor-View</translation>
+            <source>Create new view</source>
+            <translation>Neue Ansicht</translation>
         </message>
         <message>
             <source>Creates a new Inventor view window for the active document</source>
-            <translation>Neuen Inventor-View erstellen</translation>
+            <translation>Neue Inventor-Ansicht erstellen</translation>
         </message>
     </context>
     <context>

@@ -143,6 +143,9 @@ const QVariant& EditableItem::value() const
 void EditableItem::setOverrideValue( const QVariant& val )
 {
   _newval = val;
+  //FIXME: This is just for testing the modification of properties
+  if ( isModified() )
+    convertToProperty(_newval);
 }
 
 const QVariant& EditableItem::overrideValue() const

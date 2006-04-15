@@ -26,6 +26,7 @@
 #endif
 
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 #include <Gui/Application.h>
 #include <Gui/WidgetFactory.h>
 #include <Gui/Language/LanguageFactory.h>
@@ -57,6 +58,7 @@ void AppRaytracingGuiExport initRaytracingGui() {
 
   Base::Console().Log("Mod : Load AppRaytracingGui\n");
   (void) Py_InitModule("RaytracingGui", RaytracingGui_methods);   /* mod name, table ptr */
+  Base::Interpreter().loadModule("Raytracing");
 
   // instanciating the commands
   CreateRaytracingCommands();

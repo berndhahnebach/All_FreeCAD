@@ -29,7 +29,6 @@
 # include <math.h>
 #endif
 
-//#include "Definitions.h"
 #define FLOAT_EPS   1.0e-4f 
 
 #ifndef  F_PI
@@ -59,7 +58,7 @@ namespace Base {
 
 /** The Vector Base class. */
 template <class _Precision>
-class /*BaseExport*/ Vector3
+class Vector3
 {
 public:
   /** @name Public data members */
@@ -125,9 +124,6 @@ public:
   inline void Set (float fX, float fY, float fZ);
   inline void Set (double dX, double dY, double dZ);
 
-  void  Print (void);
-  unsigned long GetMemSpace (void);
-
   /** @name Mathematics */
   //@{
   /// Length of the vector.
@@ -161,16 +157,6 @@ public:
   inline _Precision DistanceToPlane (const Vector3 &rclBase, const Vector3 &rclNorm) const;
   /// Computes the distance from this point to the line given by \a rclBase and \a rclDirect.
   inline _Precision DistanceToLine (const Vector3 &rclBase, const Vector3 &rclDirect) const;
-  //@}
-
-  /** @name Friends */
-  //@{
-  /// Returns the distance between two points
-  //friend _Precision Distance (const Vector3 &rcVct1, const Vector3 &rcVct2);
-  /// Returns the squared distance between two points
-  //friend _Precision DistanceP2 (const Vector3 &rclV1, const Vector3 &rclV2);
-  /// Multiplication of scalar with vector.
-  //friend Vector3 operator * (_Precision fFac, const Vector3 &rcVct);
   //@}
 };
 
@@ -378,12 +364,15 @@ inline void Vector3<_Precision>::Set (double dX, double dY, double dZ)
 }
 
 // global functions
+
+/// Returns the distance between two points
 template <class _Precision>
 inline _Precision Distance (const Vector3<_Precision> &rcVct1, const Vector3<_Precision> &rcVct2)
 {
   return (rcVct1 - rcVct2).Length();
 }
 
+/// Returns the squared distance between two points
 template <class _Precision>
 inline _Precision DistanceP2 (const Vector3<_Precision> &rclV1, const Vector3<_Precision> &rclV2)
 {
@@ -391,6 +380,7 @@ inline _Precision DistanceP2 (const Vector3<_Precision> &rclV1, const Vector3<_P
   return x * x + y * y + z * z;
 }
 
+/// Multiplication of scalar with vector.
 template <class _Precision>
 inline Vector3<_Precision> operator * (_Precision fFac, const Vector3<_Precision> &rcVct)
 {
@@ -559,18 +549,6 @@ bool Vector3<_Precision>::Equal(const Vector3 &rclVect) const
            (fabs(mx1 - mx2) < _Precision_EPS) &&
            (fabs(my1 - my2) < _Precision_EPS) &&
            (fabs(mz1 - mz2) < _Precision_EPS) );
-}
-
-template <class _Precision>
-unsigned long Vector3<_Precision>::GetMemSpace (void)
-{
-  return sizeof(Vector3);
-}
-
-template <class _Precision>
-void Vector3<_Precision>::Print (void)
-{
-  printf ("x: %f, y: %f, z: %f\n", x, y, z);
 }
 
 typedef Vector3<float> Vector3f;

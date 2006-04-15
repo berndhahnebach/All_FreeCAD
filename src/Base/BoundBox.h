@@ -42,7 +42,7 @@ class ViewProjMethod;
 
 /** The 3D bounding box class. */
 template <class _Precision>
-class /*BaseExport*/ BoundBox3
+class BoundBox3
 {
 public:
   /**  Public attributes */

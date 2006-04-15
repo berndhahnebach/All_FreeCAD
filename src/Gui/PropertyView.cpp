@@ -40,7 +40,10 @@
 #include <App/Document.h>
 
 #include "PropertyView.h"
+#include "Application.h"
+#include "Document.h"
 #include "BitmapFactory.h"
+#include "ViewProvider.h"
 
 #include "propertyeditor/propertyeditor.h"
 #include "propertyeditor/propertyeditorlist.h"
@@ -132,10 +135,16 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
     for ( vector<SelectionSingleton::SelObj>::const_iterator it = array.begin(); it != array.end(); ++it )
     {
       std::map<std::string,App::Property*> Map;
-      if ( (*it).pObject )
+      if ( (*it).pObject ) {
         (*it).pObject->getPropertyMap(Map);
-      else if ( (*it).pDoc )
+        // get also the properites of the associated view provider
+        Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
+        ViewProvider* vp = doc->getViewProvider((*it).pObject);
+        vp->getPropertyMap(Map);
+      }
+      else if ( (*it).pDoc ) {
         (*it).pDoc->getPropertyMap(Map);
+      }
 
       // store the properties with <name,id> as key in a map
       for( std::map<std::string,App::Property*>::iterator pt = Map.begin(); pt != Map.end(); ++pt )
@@ -150,8 +159,8 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
     std::map<std::pair<std::string, int>, std::vector<App::Property*> >::const_iterator jt;
     for ( jt = propMap.begin(); jt != propMap.end(); ++jt )
     {
-      // the property must be part of each selected object, i.e. the number of selected objects is equal to the number of properties
-      // with same name and id
+      // the property must be part of each selected object, i.e. the number of selected objects is equal 
+      // to the number of properties with same name and id
       if ( jt->second.size() == array.size() )
       {
         App::Property* prop = (jt->second)[0];

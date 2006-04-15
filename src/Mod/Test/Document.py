@@ -38,28 +38,47 @@ import FreeCAD, os, unittest
 
 
 class DocumentBasicCases(unittest.TestCase):
+    def setUp(self):
+        self.Doc = FreeCAD.newDocument("CreateTest")
 
     def testCreateDestroy(self):
-        self.Doc = FreeCAD.New("CreateTest")
-		self.failUnless(FreeCAD.document("CreateTest")!= none,"Create Document fails")
+        self.failUnless(FreeCAD.getDocument("CreateTest")!= None,"Creating Document failed")
 
-    def testLabels(self):
-        Main = self.Doc.Main #getting the main label of the document 
-        L1 = Main.GetLabel(1)
-        L1 = Main.GetLabel(1)
-        L1 = Main.GetLabel(1)
-        L1 = Main.GetLabel(1)
-        L1 = Main.GetLabel(1)
-        L1 = Main.GetLabel(1)
-        L2 = Main.GetLabel(2)
-        L3 = Main.GetLabel(3)
-        L4 = Main.GetLabel(4)
-        L5 = Main.GetLabel(5)
-        L6 = Main.GetLabel(6)
-        L7 = Main.GetLabel(7)
-        L1.Int = 1
-        L1.Real = 1.0
-        L1.Name = "Hallo"
+    def testObjects(self):
+        L1 = self.Doc.addObject("App::FeatureTest","Label_1")
+        self.Doc.recompute()
+        self.failUnless(L1.Integer == 4711,    "Different value to '4711'")
+        FreeCAD.PrintLog("Integer: "+str(L1.Integer))
+        self.failUnless(L1.Float-47.11<0.001,   "Different value to '47.11'")
+        FreeCAD.PrintLog("Float: "+str(L1.Float))
+        self.failUnless(L1.Bool    == True,    "Different value to 'True'")
+        FreeCAD.PrintLog("Boolean: "+str(L1.Bool))
+        self.failUnless(L1.String  == "empty",  "Different value to '4711'")
+        FreeCAD.PrintLog("String: "+L1.String)
+        
+        self.failUnless(L1.name== "Label_1","Invalid object name")
+        L1.name="Label_2"
+        self.Doc.recompute()
+        self.failUnless(L1.name== "Label_2","Invalid object name")
+        self.Doc.removeObject("Label_1")
+
+#    def testLabels(self):
+#        Main = self.Doc.Main #getting the main label of the document 
+#        L1 = Main.GetLabel(1)
+#        L1 = Main.GetLabel(1)
+#        L1 = Main.GetLabel(1)
+#        L1 = Main.GetLabel(1)
+#        L1 = Main.GetLabel(1)
+#        L1 = Main.GetLabel(1)
+#        L2 = Main.GetLabel(2)
+#        L3 = Main.GetLabel(3)
+#        L4 = Main.GetLabel(4)
+#        L5 = Main.GetLabel(5)
+#        L6 = Main.GetLabel(6)
+#        L7 = Main.GetLabel(7)
+#        L1.Int = 1
+#        L1.Real = 1.0
+#        L1.Name = "Hallo"
 
 #    def testSaveAndRestore(self):
 #        # saving and restoring
@@ -80,7 +99,7 @@ class DocumentBasicCases(unittest.TestCase):
 
     def tearDown(self):
         # closing doc
-        self.Doc = 0
+        FreeCAD.closeDocument("CreateTest")
 
 
         

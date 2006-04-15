@@ -29,6 +29,8 @@
 # include <qpainter.h>
 #endif
 
+#include <App/PropertyStandard.h>
+
 #include "propertyeditorfont.h"
 #include "Widgets.h"
 
@@ -170,10 +172,24 @@ void ColorEditorItem::paintCell(QPainter* p, const QColorGroup& cg, int column, 
 
 void ColorEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
+  if ( prop.size() > 0 )
+  {
+    App::PropertyColor* pPropColor = (App::PropertyColor*)prop.front();
+    App::Color col = pPropColor->getValue();
+    QVariant value( QColor((int)(255.0f*col.r),(int)(255.0f*col.g),(int)(255.0f*col.b)) );
+    setValue( value );
+    _color = value.toColor();
+  }
 }
 
-void ColorEditorItem::convertToProperty(const QVariant&)
+void ColorEditorItem::convertToProperty(const QVariant& val)
 {
+  QColor col = val.toColor();
+  for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
+  {
+    App::PropertyColor* pPropColor = (App::PropertyColor*)*it;
+    pPropColor->setValue( (float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f );
+  }
 }
 
 #include "moc_propertyeditorfont.cpp"

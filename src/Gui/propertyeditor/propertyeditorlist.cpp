@@ -90,17 +90,35 @@ void BoolEditorItem::setDefaultValue()
 
 void BoolEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
-  App::PropertyBool* pPropBool = (App::PropertyBool*)prop.front();
-  QVariant value( pPropBool->getValue(), 0 );
-  setValue( value );
-  if ( value.toBool() )
+  bool value = true;
+  bool equal = true;
+  for ( std::vector<App::Property*>::const_iterator it = prop.begin(); it != prop.end(); ++it )
+  {
+    App::PropertyBool* pPropBool = (App::PropertyBool*)*it;
+    if ( it == prop.begin() )
+      value = pPropBool->getValue();
+    else 
+      equal &= ( pPropBool->getValue() == value );
+  }
+
+  QVariant val( value, 0 );
+  setValue( val );
+  if ( !equal )
+    setText( 1, QObject::tr("") );
+  else if ( value )
     setText( 1, QObject::tr("True") );
   else
     setText( 1, QObject::tr("False") );
 }
 
-void BoolEditorItem::convertToProperty(const QVariant&)
+void BoolEditorItem::convertToProperty(const QVariant& val)
 {
+  bool value = val.toBool();
+  for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
+  {
+    App::PropertyBool* pPropBool = (App::PropertyBool*)*it;
+    pPropBool->setValue( value );
+  }
 }
 
 // ======================================================================
@@ -115,7 +133,7 @@ ListEditorItem::ListEditorItem( QListView* lv, const QString& text, const QVaria
   :EditableItem( lv, value )
 {
   setText( 0, text);
-  setText( 1, value.toStringList().last());
+  setText( 1, value.toStringList().front());
 }
 
 QWidget* ListEditorItem::createEditor( int column, QWidget* parent )
@@ -127,8 +145,8 @@ QWidget* ListEditorItem::createEditor( int column, QWidget* parent )
   QComboBox* editor = new QComboBox( parent, "ListEditorItem::combo" );
   connect(editor, SIGNAL( activated(int) ), this, SLOT( onValueChanged() ) );
 
-  QString txt = items.last();
-  items.pop_back();
+  QString txt = items.front();
+  items.pop_front();
   editor->insertStringList( items );
 
   int cur = 0;
@@ -151,9 +169,9 @@ void ListEditorItem::stopEdit( QWidget* editor, int column )
   QComboBox* combo = dynamic_cast<QComboBox*>(editor);
 
   QVariant var = overrideValue();
-  var.asStringList().last() = combo->currentText();
+  var.asStringList().front() = combo->currentText();
   setOverrideValue( var );
-  setText( column, overrideValue().toStringList().last() );
+  setText( column, overrideValue().toStringList().front() );
 }
 
 void ListEditorItem::setDefaultValue()
@@ -162,8 +180,8 @@ void ListEditorItem::setDefaultValue()
 
   QStringList items = value().toStringList();
 
-  QString txt = items.last();
-  items.pop_back();
+  QString txt = items.front();
+  items.pop_front();
 
   int cur = 0;
   for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
@@ -178,12 +196,62 @@ void ListEditorItem::setDefaultValue()
   }
 }
 
-void ListEditorItem::convertFromProperty(const std::vector<App::Property*>&)
+void ListEditorItem::convertFromProperty(const std::vector<App::Property*>& props)
 {
+  if ( props.size() > 0 )
+  {
+    // We want to get all common modes of the properties and also want to prevent the order of them
+    // So, we need a string list therefore (not a map)
+    QStringList commonModeList;
+    for ( std::vector<App::Property*>::const_iterator it = props.begin(); it != props.end(); ++it )
+    {
+      if ( it == props.begin() )
+      {
+        App::PropertyStringList* pPropList = (App::PropertyStringList*)*it;
+        const std::vector<std::string>& modes = pPropList->getValues();
+        for ( std::vector<std::string>::const_iterator jt = modes.begin(); jt != modes.end(); ++jt )
+          commonModeList << jt->c_str();
+      }
+      else
+      {
+        QStringList modeList;
+        App::PropertyStringList* pPropList = (App::PropertyStringList*)*it;
+        const std::vector<std::string>& modes = pPropList->getValues();
+        for ( std::vector<std::string>::const_iterator jt = modes.begin(); jt != modes.end(); ++jt ){
+          if ( commonModeList.find(jt->c_str()) != commonModeList.end() )
+            modeList << jt->c_str();
+        }
+
+        // intersection of both lists
+        commonModeList = modeList;
+      }
+    }
+
+    // We don't know which item to use as default, just use the first and append
+    // it to the end (which is reagarded as default)
+    //commonModeList << commonModeList.front();
+    QVariant value( commonModeList );
+    setValue( value );
+    setText( 1, commonModeList.front() );
+  }
+  else
+  {
+    QVariant value( "" );
+    setValue( value );
+    setText( 1, value.toString() );
+    setEditable(false);
+  }
 }
 
-void ListEditorItem::convertToProperty(const QVariant&)
+void ListEditorItem::convertToProperty(const QVariant& val)
 {
+  QString value = val.toStringList().front();
+  for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
+  {
+    App::PropertyStringList* pPropList = (App::PropertyStringList*)*it;
+    // Set the current active item (last item)
+    pPropList->setValue(value.ascii());
+  }
 }
 
 // ======================================================================

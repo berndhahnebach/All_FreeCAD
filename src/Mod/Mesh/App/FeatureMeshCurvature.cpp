@@ -109,5 +109,8 @@ int Curvature::execute(void)
 const MeshCore::MeshKernel& Curvature::getMesh() const
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  return pcFeat->getMesh();
+  if ( pcFeat )
+    return pcFeat->getMesh();
+  else
+    return Mesh.getValue();
 }

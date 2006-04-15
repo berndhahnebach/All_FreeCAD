@@ -132,6 +132,7 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
   out << "(" << lookat.getValue()[0] <<"," << lookat.getValue()[1] <<"," << lookat.getValue()[2] <<")," 
       << "(" << upvec.getValue()[0]  <<"," << upvec.getValue()[1]  <<"," << upvec.getValue()[2]  <<") )" ;
 
+  doCommand(Doc,"import Raytracing");
  	doCommand(Gui,out.str().c_str());
 
 
@@ -305,20 +306,22 @@ void CmdRaytracingWritePart::activated(int iMsg)
 
   std::stringstream out;
   //Raytracing.writePartFile(App.document().GetActiveFeature().getShape())
-  out << "Raytracing.writePartFile(\"" << strToPython(cFullName) << "\",\"" << Name << "\",App.document().GetActiveFeature().getShape())";
+  out << "Raytracing.writePartFile(\"" << strToPython(cFullName) << "\",\"" << Name << "\",App.document().activeObject().getShape())";
 
+  doCommand(Doc,"import Raytracing");
  	doCommand(Doc,out.str().c_str());
-
-
-
 }
 
 bool CmdRaytracingWritePart::isActive(void)
 {
 	if( getActiveGuiDocument() )
-		return true;
-	else
-		return false;
+  {
+    App::DocumentObject* obj = getActiveGuiDocument()->getDocument()->getActiveObject();
+    if ( obj && obj->getTypeId().isDerivedFrom(Part::Feature::getClassTypeId()) )
+  		return true;
+  }
+
+	return false;
 }
 
 
@@ -333,7 +336,7 @@ CmdRaytracingNewProject::CmdRaytracingNewProject()
   sAppModule    = "Raytracing";
   sGroup        = "Raytracing";
   sMenuText     = "New render project";
-  sToolTipText  = "Wirte the initial povray file to render a part";
+  sToolTipText  = "Write the initial povray file to render a part";
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Test1";
@@ -342,11 +345,11 @@ CmdRaytracingNewProject::CmdRaytracingNewProject()
 
 void CmdRaytracingNewProject::activated(int iMsg)
 {
+  const char* tmp = getenv("TMP");
+  std::string tempPath = tmp ? tmp : "";
 
-  std::string tempPath = "c:\\temp\\";
-
+  doCommand(Doc,"import Raytracing");
   doCommand(Doc,"Raytracing.copyResource(\"FCSimple.pov\",\"%s\")",tempPath.c_str());
-
 }
 
 bool CmdRaytracingNewProject::isActive(void)
