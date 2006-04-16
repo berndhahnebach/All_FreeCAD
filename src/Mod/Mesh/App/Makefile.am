@@ -35,6 +35,7 @@ libMesh_la_SOURCES=\
 		Core/SetOperations.h \
 		Core/triangle.cpp \
 		Core/triangle.h \
+		Core/tritritest.h \
 		Core/Tools.cpp \
 		Core/Tools.h \
 		Core/TopoAlgorithm.cpp \

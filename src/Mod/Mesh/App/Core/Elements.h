@@ -337,6 +337,13 @@ public:
   /** This method checks if both facets intersects.
    */
   bool IntersectWithFacet(const MeshGeomFacet &rclFacet) const;
+  /**
+   * Intersect the facet with the other facet
+   * The result is line given by two points (if intersected).
+   * Return is the number of intersections points: 0: no intersection, 1: one intersection point (rclPt0), 2: two intersections points (rclPt0, rclPt1)
+   */
+  int IntersectWithFacet1 (const MeshGeomFacet& facet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const;
+
    /**
    * Intersect the facet with the other facet
    * The result is line given by two points (if intersected).

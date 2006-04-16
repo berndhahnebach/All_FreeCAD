@@ -335,7 +335,7 @@ std::vector<unsigned long> MeshEvalDuplicateFacets::GetIndices() const
     aFIndsMap[*it].push_back(ind);
 
   // get all duplicated facets
-  for (std::map<MeshFacet, std::vector<unsigned long> >::iterator it2 = aFIndsMap.begin(); it2 != aFIndsMap.end(); ++it2) {
+  for (std::map<MeshFacet, std::vector<unsigned long>, MeshFacet_Less >::iterator it2 = aFIndsMap.begin(); it2 != aFIndsMap.end(); ++it2) {
     const std::vector<unsigned long>& idx = it2->second;
     if (idx.size() > 1) {
       for (std::vector<unsigned long>::const_iterator it3 = idx.begin(); it3 != idx.end(); ++it3)

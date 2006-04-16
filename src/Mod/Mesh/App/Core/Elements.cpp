@@ -33,6 +33,7 @@
 
 #include "Elements.h"
 #include "Algorithm.h"
+#include "tritritest.h"
 
 using namespace MeshCore;
 using namespace Wm3;
@@ -726,6 +727,39 @@ bool MeshGeomFacet::IntersectWithFacet(const MeshGeomFacet &rclFacet) const
 
   //Tests two triangles for intersection (Magic Softwate Library)
   return IntrTriangle3Triangle3<float>(akTria1, akTria2).Test();
+}
+
+/**
+ * Fast Triangle-Triangle Intersection Test by Tomas Möller
+ * http://www.acm.org/jgt/papers/Moller97/tritri.html
+ * http://www.cs.lth.se/home/Tomas_Akenine_Moller/code/
+ */
+int MeshGeomFacet::IntersectWithFacet1 (const MeshGeomFacet& rclFacet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const
+{
+  float V[3][3], U[3][3];
+  int coplanar = 0;
+  float isectpt1[3], isectpt2[3];
+
+  for (int i = 0; i < 3; i++)
+  {
+    V[i][0] = _aclPoints[i].x;
+    V[i][1] = _aclPoints[i].y;
+    V[i][2] = _aclPoints[i].z;
+    U[i][0] = rclFacet._aclPoints[i].x;
+    U[i][1] = rclFacet._aclPoints[i].y;
+    U[i][2] = rclFacet._aclPoints[i].z;
+  }
+
+  if (tri_tri_intersect_with_isectline(V[0], V[1], V[2], U[0], U[1], U[2], &coplanar, isectpt1, isectpt2) == 0)
+    return 0; // no intersections
+
+  rclPt0.x = isectpt1[0]; rclPt0.y = isectpt1[1]; rclPt0.z = isectpt1[2];
+  rclPt1.x = isectpt2[0]; rclPt1.y = isectpt2[1]; rclPt1.z = isectpt2[2];
+
+  if (rclPt0 == rclPt1)
+    return 1;
+  else
+    return 2;
 }
 
 bool MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, Base::Vector3f& rclPt0, Base::Vector3f& rclPt1) const
