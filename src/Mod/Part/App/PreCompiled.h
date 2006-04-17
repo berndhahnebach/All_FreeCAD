@@ -119,7 +119,10 @@
 #include <TCollection_AsciiString.hxx>
 #include <TColStd_SequenceOfExtendedString.hxx>
 
+#include <BRep_Builder.hxx>
 #include <BRepBuilderAPI.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakePolygon.hxx>
 
 #include <BRepTools.hxx>
 #include <Standard_DefineHandle.hxx> 
@@ -142,7 +145,9 @@
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
+#include <gp_Lin.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Vec2d.hxx>
 #include <MMgt_TShared.hxx>
@@ -172,6 +177,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_ListIteratorOfListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>

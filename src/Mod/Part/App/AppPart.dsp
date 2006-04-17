@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="AppPart" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=AppPart - Win32 Debug
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "AppPart.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "AppPart.mak" CFG="AppPart - Win32 Debug"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "AppPart - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "AppPart - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppPart - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppPart - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -57,7 +57,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib TKernel.lib TKBRep.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\Part.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy  /y  /f  Release\Part.pyd  ..\..\..\..\Mod\Part\ 	xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Part\ 	xcopy  /y  /f  Release\Part.lib  ..\..\..\..\Mod\Part\ 
+PostBuild_Cmds=xcopy   /y   /f   Release\Part.pyd   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   ..\Init.py   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   Release\Part.lib   ..\..\..\..\Mod\Part\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppPart - Win32 Debug"
@@ -87,7 +87,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib TKernel.lib TKBRep.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\Part_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy  /y  /f  Debug\Part_d.pyd  ..\..\..\..\Mod\Part\ 	xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Part\ 	xcopy  /y  /f  Debug\Part_d.lib  ..\..\..\..\Mod\Part\ 
+PostBuild_Cmds=xcopy   /y   /f   Debug\Part_d.pyd   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   ..\Init.py   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   Debug\Part_d.lib   ..\..\..\..\Mod\Part\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -151,6 +151,22 @@ SOURCE=.\FeaturePartImportStep.cpp
 # Begin Source File
 
 SOURCE=.\FeaturePartImportStep.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartLine.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartLine.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartPolygon.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeaturePartPolygon.h
 # End Source File
 # Begin Source File
 

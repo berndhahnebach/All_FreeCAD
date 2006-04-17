@@ -22,6 +22,8 @@
 #include "FeaturePartImportIges.h"
 #include "FeaturePartImportBrep.h"
 #include "FeaturePartCurveNet.h"
+#include "FeaturePartLine.h"
+#include "FeaturePartPolygon.h"
 
 extern struct PyMethodDef Part_methods[];
 
@@ -38,6 +40,8 @@ void AppPartExport initPart() {
   Part::ImportIges::init();
   Part::ImportBrep::init();
   Part::CurveNet  ::init();
+  Part::Line      ::init();
+  Part::Polygon   ::init();
 
 	return;
 }

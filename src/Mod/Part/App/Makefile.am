@@ -16,6 +16,10 @@ libPart_la_SOURCES=\
 		FeaturePartImportIges.h \
 		FeaturePartImportStep.cpp \
 		FeaturePartImportStep.h \
+		FeaturePartLine.cpp \
+		FeaturePartLine.h \
+		FeaturePartPolygon.cpp \
+		FeaturePartPolygon.h \
 		PartAlgos.cpp \
 		PartAlgos.h \
 		PartFeature.cpp \
