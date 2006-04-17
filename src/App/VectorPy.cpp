@@ -172,13 +172,45 @@ int VectorPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: no
 
 PYFUNCIMP_D(VectorPy,set)
 {
-	char *pstr;
-  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  PY_TRY{
-   ;
-	}PY_CATCH;
+  float x,y,z;
+  PyObject *pyObject;
+  if ( PyArg_ParseTuple(args, "fff", &x, &y, &z) ) {
+    _cVector.Set(x,y,z);
+  }
+  else if ( PyArg_ParseTuple(args, "O", &pyObject) ) {
+    PY_TRY{
+      // clears the error from the first PyArg_ParseTuple()
+      PyErr_Clear();
+      if ( PyObject_TypeCheck(pyObject, &(VectorPy::Type)) ) {
+   	    VectorPy  *pcVector = (VectorPy*)pyObject;
+        // check for the identical object
+        if ( this != pcVector )
+          _cVector = pcVector->value();
+      } else if ( PyTuple_Check(pyObject) && PyTuple_Size(pyObject)==3 ) {
+        PyObject* item;
+        // x coordinate
+        item = PyTuple_GetItem(pyObject,0);
+        if (PyFloat_Check(item))
+          _cVector.x = (float)PyFloat_AsDouble(item);
+        else if (PyInt_Check(item))
+          _cVector.x = (float)PyInt_AsLong(item);
+        // y coordinate
+        item = PyTuple_GetItem(pyObject,1);
+        if (PyFloat_Check(item))
+          _cVector.y = (float)PyFloat_AsDouble(item);
+        else if (PyInt_Check(item))
+          _cVector.y = (float)PyInt_AsLong(item);
+        // z coordinate
+        item = PyTuple_GetItem(pyObject,2);
+        if (PyFloat_Check(item))
+          _cVector.z = (float)PyFloat_AsDouble(item);
+        else if (PyInt_Check(item))
+          _cVector.z = (float)PyInt_AsLong(item);
+      }
+	  }PY_CATCH;
+  }
+  else
+    return NULL; // NULL triggers exception 
 
 	Py_Return;
 }

@@ -254,6 +254,22 @@ doesn't need header files at runtime, but to build an application using Python t
 
 
 
+Known Bugs
+==========
+
+The following problems are Linux specific, i.e. under Windows they do not appear.
+
+1: Conflicts between OpenCASCADE 5.2 and GTS library.
+  The library libTKTopAlgo.so (OpenCASCADE) and GTS provide the global function 'orient3d()'. This leads to a segmentation fault when
+  using GTS functionality from within the Mesh module.
+  To avoid the problem you can rename 'orient3d' to 'gts_orient3d' in GTS and recompile the library.
+  Note: The problem may occur with other versions of OpenCASCADE than 5.2.
+
+
+2: Problems when loading CAD files.
+  CAD files can be loaded from the Part module. But there is somehow a conflict caused by the global function 'locate()' in libTKTopAlgo.so
+  when the Mesh module has been loaded before the Part module. If the Part module has been loaded first the problem does not appear.
+  This problem arised with FreeCAD version 0.5 but isn't fixed yet.
 
 
 Werner Mayer <werner.wm.mayer@gmx.de>
