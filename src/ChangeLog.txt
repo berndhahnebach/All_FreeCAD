@@ -107,3 +107,5 @@ Version: V0.5B6 Date: Sat Apr 15 18:23:54 2006 +++++++++++++++++++++++++++++++
   - Save(Writer&) -> Save(Writer) const
 + API changes in ViewProviderDocumentObject
   - attach(App::AbstractFeature*) -> attach(App::DocumentObject*)
++ Applied patch 1470733, SetOperation patch
++ Applied patch 1470737, new module tritritest
