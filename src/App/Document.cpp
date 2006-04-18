@@ -195,7 +195,7 @@ void Document::Save (Writer &writer) const
   writer << writer.ind() << "</Objects>" << endl;
   
   // writing the features itself
-  writer << writer.ind() << "<FeatureData Count=\"" << ObjectMap.size() <<"\">" << endl;
+  writer << writer.ind() << "<ObjectData Count=\"" << ObjectMap.size() <<"\">" << endl;
 
   for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
   {
