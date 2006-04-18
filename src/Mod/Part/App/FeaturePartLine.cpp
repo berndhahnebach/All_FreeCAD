@@ -58,6 +58,36 @@ int Line::execute(void)
 
   // Create directly the underlying line geometry
   BRepBuilderAPI_MakeEdge makeEdge(pnt1,pnt2);
+  
+  bool ok = false;
+  switch ( makeEdge.Error() )
+  {
+  case BRepBuilderAPI_EdgeDone:
+    ok = true;
+    break; // ok
+  case BRepBuilderAPI_PointProjectionFailed:
+    setError("Point projection failed");
+    break;
+  case BRepBuilderAPI_ParameterOutOfRange:
+    setError("Parameter out of range");
+    break;
+  case BRepBuilderAPI_DifferentPointsOnClosedCurve:
+    setError("Different points on closed curve");
+    break;
+  case BRepBuilderAPI_PointWithInfiniteParameter:
+    setError("Point with infinite parameter");
+    break;
+  case BRepBuilderAPI_DifferentsPointAndParameter:
+    setError("Different point and parameter");
+    break;
+  case BRepBuilderAPI_LineThroughIdenticPoints:
+    setError("Line through identic points");
+    break;
+  }
+
+  // Error 
+  if ( !ok ) return 1;
+
   TopoDS_Edge edge = makeEdge.Edge();
   setShape(edge);
 

@@ -58,13 +58,14 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
   pcLineMaterial->ref();
   pcPointMaterial  = new SoMaterial;
   pcPointMaterial->ref();
-  pcLineStyle = new SoDrawStyle();
 
+  pcLineStyle = new SoDrawStyle();
   pcLineStyle->ref();
   pcLineStyle->style = SoDrawStyle::LINES;
   pcLineStyle->lineWidth = 1;
 
   pcPointStyle = new SoDrawStyle();
+  pcPointStyle->ref();
   pcPointStyle->style = SoDrawStyle::POINTS;
   pcPointStyle->pointSize = 1;
 
