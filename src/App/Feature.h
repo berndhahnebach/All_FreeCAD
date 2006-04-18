@@ -53,7 +53,7 @@ class FeaturePy;
  */
 class AppExport AbstractFeature: public App::DocumentObject
 {
-    PROPERTY_HEADER(App::Feature);
+    PROPERTY_HEADER(App::AbstractFeature);
 
 public:
 

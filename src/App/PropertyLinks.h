@@ -36,11 +36,11 @@ namespace Base
 
 namespace App
 {
-class AbstractFeature;
+class DocumentObject;
 
 
-/** Integer properties
- * This is the father of all properties handling Integers.
+/** the general Link Poperty
+ *  Main Purpose of this property is to Link Objects and Feautures in a document.
  */
 class AppExport PropertyLink: public Property
 {
@@ -63,11 +63,15 @@ public:
 
 	/** Sets the property 
 	 */
-	void setValue(App::AbstractFeature *);
+	void setValue(App::DocumentObject *);
 
-	/** This method returns a string representation of the property
+	/** This method returns the linked DocumentObject
 	 */
-	App::AbstractFeature * getValue(void) const;
+	App::DocumentObject * getValue(void) const;
+
+	/** Returns the link type checked
+	 */
+  App::DocumentObject * getValue(Base::Type t) const;
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -78,9 +82,9 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
-private:
+protected:
 
-  App::AbstractFeature *_pcLink;
+  App::DocumentObject *_pcLink;
 
 };
 
@@ -108,15 +112,15 @@ public:
 
 	/** Sets the property 
 	 */
-	void setValue(AbstractFeature*);
+	void setValue(DocumentObject*);
   
   /// index operator
-  AbstractFeature* operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
+  DocumentObject* operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
   
   
-  void  set1Value (const int idx, AbstractFeature* value){_lValueList.operator[] (idx) = value;}
+  void  set1Value (const int idx, DocumentObject* value){_lValueList.operator[] (idx) = value;}
 
-  const std::vector<AbstractFeature*> &getValues(void) const{return _lValueList;}
+  const std::vector<DocumentObject*> &getValues(void) const{return _lValueList;}
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -128,7 +132,7 @@ public:
   virtual void Paste(const Property &from);
 
 private:
-  std::vector<AbstractFeature*> _lValueList;
+  std::vector<DocumentObject*> _lValueList;
 };
 
 } // namespace App

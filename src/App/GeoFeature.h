@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,33 +21,47 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+
+
+#ifndef _GeoFeature_h_
+#define _GeoFeature_h_
+
 #ifndef _PreComp_
-# include <Python.h>
+# include <string>
+# include <vector>
 #endif
 
-#include <Base/Console.h>
+#include "Feature.h"
+#include "PropertyGeo.h"
 
 
-/* registration table  */
-static struct PyMethodDef _TEMPLATE__methods[] = {
-    {NULL, NULL}                   /* end of table marker */
+
+namespace App
+{
+
+
+/** Base class of all Feature classes in FreeCAD
+ */
+class AppExport GeoFeature: public App::AbstractFeature
+{
+    PROPERTY_HEADER(App::GeoFeature);
+
+public:
+
+  PropertyPlacementLink Pos;
+
+
+	/// Constructor
+	GeoFeature(void);
+  virtual ~GeoFeature();
+
 };
 
 
-/* Python entry */
-extern "C" {
-void _TEMPLATE_AppExport init_TEMPLATE_() {
-
-  // ADD YOUR CODE HERE
-  //
-  //
-
-  (void) Py_InitModule("_TEMPLATE_", _TEMPLATE__methods);   /* mod name, table ptr */
-  Base::Console().Log("Init: App_TEMPLATE_ loaded\n");
-
-  return;
-}
 
 
-} // extern "C"
+} //namespace App
+
+
+
+#endif

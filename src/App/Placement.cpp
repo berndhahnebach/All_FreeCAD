@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -22,32 +22,37 @@
 
 
 #include "PreCompiled.h"
+
 #ifndef _PreComp_
-# include <Python.h>
 #endif
 
-#include <Base/Console.h>
+#include <Base/Placement.h>
+
+#include "Placement.h"
+
+using namespace App;
 
 
-/* registration table  */
-static struct PyMethodDef _TEMPLATE__methods[] = {
-    {NULL, NULL}                   /* end of table marker */
-};
+PROPERTY_SOURCE_ABSTRACT(App::Placement, App::DocumentObject)
 
 
-/* Python entry */
-extern "C" {
-void _TEMPLATE_AppExport init_TEMPLATE_() {
+//===========================================================================
+// Feature
+//===========================================================================
 
-  // ADD YOUR CODE HERE
-  //
-  //
+Placement::Placement(void)
+{
 
-  (void) Py_InitModule("_TEMPLATE_", _TEMPLATE__methods);   /* mod name, table ptr */
-  Base::Console().Log("Init: App_TEMPLATE_ loaded\n");
+  ADD_PROPERTY(Pos,(Base::Placement()));
+}
 
-  return;
+Placement::~Placement(void)
+{
 }
 
 
-} // extern "C"
+
+
+
+
+

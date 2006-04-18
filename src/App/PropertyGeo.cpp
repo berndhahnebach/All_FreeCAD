@@ -35,6 +35,7 @@
 
 #include "VectorPy.h"
 #include "MatrixPy.h"
+#include "Placement.h"
 
 #include "PropertyGeo.h"
 
@@ -506,5 +507,51 @@ Property *PropertyPlacement::Copy(void) const
 void PropertyPlacement::Paste(const Property &from)
 {
   _cPos = dynamic_cast<const PropertyPlacement&>(from)._cPos;
+}
+
+//**************************************************************************
+//**************************************************************************
+// PropertyPlacement
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyPlacementLink , App::PropertyLink);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyPlacementLink::PropertyPlacementLink()
+{
+
+}
+
+
+PropertyPlacementLink::~PropertyPlacementLink()
+{
+
+}
+
+App::Placement * PropertyPlacementLink::getPlacementObject(void) const
+{
+  if(_pcLink->getTypeId().isDerivedFrom(App::Placement::getClassTypeId()))
+    return dynamic_cast<App::Placement*>(_pcLink);
+  else
+    return 0;
+
+}
+
+//**************************************************************************
+// Base class implementer
+
+Property *PropertyPlacementLink::Copy(void) const
+{
+  PropertyPlacementLink *p= new PropertyPlacementLink();
+  p->_pcLink = _pcLink;
+  return p;
+}
+
+void PropertyPlacementLink::Paste(const Property &from)
+{
+  _pcLink = dynamic_cast<const PropertyPlacementLink&>(from)._pcLink;
 }
 

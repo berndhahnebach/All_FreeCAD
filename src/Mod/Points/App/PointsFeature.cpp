@@ -143,8 +143,8 @@ int Export::execute(void)
 
   if ( fi.hasExtension("asc") )
   {
-    const std::vector<App::AbstractFeature*>& features = Sources.getValues();
-    for ( std::vector<App::AbstractFeature*>::const_iterator it = features.begin(); it != features.end(); ++it )
+    const std::vector<App::DocumentObject*>& features = Sources.getValues();
+    for ( std::vector<App::DocumentObject*>::const_iterator it = features.begin(); it != features.end(); ++it )
     {
       Feature *pcFeat  = dynamic_cast<Feature*>(*it);
       const PointKernel& kernel = pcFeat->getPoints().getKernel();

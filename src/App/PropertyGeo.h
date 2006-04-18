@@ -31,6 +31,7 @@
 #include <Base/Placement.h>
 
 #include "Property.h"
+#include "PropertyLinks.h"
 
 namespace Base {
   class Writer;
@@ -38,7 +39,8 @@ namespace Base {
 
 namespace App
 {
-class Feature;
+  class Feature;
+  class Placement;
 
 
 
@@ -230,6 +232,37 @@ private:
   Base::Placement _cPos;
 };
 
+/** the general Link Poperty
+ *  Main Purpose of this property is to Link Objects and Feautures in a document.
+ */
+class AppExport PropertyPlacementLink: public PropertyLink
+{
+  TYPESYSTEM_HEADER();
+
+public:
+
+       
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyPlacementLink();
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	~PropertyPlacementLink();
+
+
+	/** This method returns the linked DocumentObject
+	 */
+	App::Placement * getPlacementObject(void) const;
+
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
+
+};
 
 
 } // namespace App

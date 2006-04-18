@@ -50,7 +50,7 @@ using namespace std;
 
 //**************************************************************************
 //**************************************************************************
-// PropertyInteger
+// PropertyLink
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 TYPESYSTEM_SOURCE(App::PropertyLink , App::Property);
@@ -75,16 +75,26 @@ PropertyLink::~PropertyLink()
 // Base class implementer
 
 
-void PropertyLink::setValue(App::AbstractFeature * lValue)
+void PropertyLink::setValue(App::DocumentObject * lValue)
 {
 	_pcLink=lValue;
   hasSetValue();
 }
 
-App::AbstractFeature * PropertyLink::getValue(void) const
+App::DocumentObject * PropertyLink::getValue(void) const
 {
 	return _pcLink;
 }
+
+App::DocumentObject * PropertyLink::getValue(Base::Type t) const
+{
+  if(_pcLink->getTypeId().isDerivedFrom(t))
+	  return _pcLink;
+  else
+    return 0;
+}
+
+
 
 PyObject *PropertyLink::getPyObject(void)
 {
@@ -122,9 +132,9 @@ void PropertyLink::Restore(Base::XMLReader &reader)
 
   DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
 
-  assert(pcObject->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
+  assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-  _pcLink = dynamic_cast<AbstractFeature*>(pcObject);
+  _pcLink = dynamic_cast<DocumentObject*>(pcObject);
 
 }
 
@@ -159,7 +169,7 @@ PropertyLinkList::~PropertyLinkList()
 
 }
 
-void PropertyLinkList::setValue(AbstractFeature* lValue)
+void PropertyLinkList::setValue(DocumentObject* lValue)
 {
   aboutToSetValue();
   _lValueList.resize(1);
@@ -242,13 +252,13 @@ void PropertyLinkList::Restore(Base::XMLReader &reader)
     std::string name = reader.getAttribute("value");
 
     // Property not in a Feature!
-    //assert(getContainer()->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
-    //_lValueList[i] = reinterpret_cast<App::AbstractFeature*>(getContainer())->getDocument().getObject(name.c_str());
+    //assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+    //_lValueList[i] = reinterpret_cast<App::DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
 
     // Property not in a Feature!
     DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
-    assert(pcObject->getTypeId().isDerivedFrom(App::AbstractFeature::getClassTypeId()) );
-    _lValueList[i] = dynamic_cast<AbstractFeature*>(pcObject);
+    assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+    _lValueList[i] = dynamic_cast<DocumentObject*>(pcObject);
 
   }
 

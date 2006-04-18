@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,33 +21,63 @@
  ***************************************************************************/
 
 
-#include "PreCompiled.h"
+
+
+#ifndef _AppPlacement_h_
+#define _AppPlacement_h_
+
 #ifndef _PreComp_
-# include <Python.h>
+# include <string>
+# include <vector>
 #endif
 
-#include <Base/Console.h>
+#include <Base/Placement.h>
+//#include <Base/PyExport.h>
+//#include <Base/TimeInfo.h>
+//#include <Base/Vector3D.h>
+
+#include "DocumentObject.h"
+//#include <App/Material.h>
+#include "PropertyGeo.h"
 
 
-/* registration table  */
-static struct PyMethodDef _TEMPLATE__methods[] = {
-    {NULL, NULL}                   /* end of table marker */
+namespace Base
+{
+//  class Vector3D;
+  //class Matrix4D;
+}
+
+//using Base::Vector3D;
+//using Base::Matrix4D;
+
+namespace App
+{
+
+
+/** Placement Object
+ *  Handles the repositioning of data. Also can do grouping
+ */
+class AppExport Placement: public App::DocumentObject
+{
+    PROPERTY_HEADER(App::Placement);
+
+public:
+
+  PropertyPlacement Pos;
+
+
+	/// Constructor
+	Placement(void);
+  virtual ~Placement();
+
+
 };
 
 
-/* Python entry */
-extern "C" {
-void _TEMPLATE_AppExport init_TEMPLATE_() {
-
-  // ADD YOUR CODE HERE
-  //
-  //
-
-  (void) Py_InitModule("_TEMPLATE_", _TEMPLATE__methods);   /* mod name, table ptr */
-  Base::Console().Log("Init: App_TEMPLATE_ loaded\n");
-
-  return;
-}
 
 
-} // extern "C"
+} //namespace App
+
+
+
+#endif

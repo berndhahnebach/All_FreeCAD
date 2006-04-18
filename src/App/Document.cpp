@@ -645,9 +645,9 @@ void Document::remObject(const char* sName)
       {
         PropertyLinkList* link = (PropertyLinkList*)pt->second;
         // copy the list (not the features)
-        std::vector<AbstractFeature*>::const_iterator fIt;
-        std::vector<AbstractFeature*> copy_linked;
-        const std::vector<AbstractFeature*>& linked = link->getValues();
+        std::vector<DocumentObject*>::const_iterator fIt;
+        std::vector<DocumentObject*> copy_linked;
+        const std::vector<DocumentObject*>& linked = link->getValues();
         for ( fIt = linked.begin(); fIt != linked.end(); ++fIt )
         {
           if ( (*fIt) != pos->second )
