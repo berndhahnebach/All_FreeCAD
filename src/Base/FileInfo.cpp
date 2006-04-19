@@ -27,7 +27,6 @@
 
 #ifndef _PreComp_
 # include <assert.h>
-# include <string>
 # include <stdio.h>
 # if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 # include <unistd.h>

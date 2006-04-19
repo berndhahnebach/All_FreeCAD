@@ -27,6 +27,7 @@
 // Std. configurations
 
 
+#include <vector>
 #include "Property.h"
 
 namespace Base

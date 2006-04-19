@@ -25,7 +25,6 @@
 
 #ifndef _PreComp_
 # include <stdio.h>
-# include <string.h>
 #endif
 
 #include "Vector3D.h"

@@ -27,14 +27,9 @@
 // Std. configurations
 
 
-#ifndef _PreComp_
-# include <stdio.h>
-# include <sys/timeb.h>
-# include <time.h>
-#endif
-
-# include <sys/timeb.h>
-# include <time.h>
+#include <stdio.h>
+#include <sys/timeb.h>
+#include <time.h>
 
 namespace Base
 {

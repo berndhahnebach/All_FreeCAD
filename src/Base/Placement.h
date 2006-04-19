@@ -24,11 +24,6 @@
 #ifndef __Placement_H
 #define __Placement_H
 
-//#include "Definitions.h"
-#include <assert.h>
-#include <math.h>
-#include <stdio.h>
-
 #include "Vector3D.h"
 
 

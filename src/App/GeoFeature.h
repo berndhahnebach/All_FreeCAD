@@ -26,11 +26,6 @@
 #ifndef _GeoFeature_h_
 #define _GeoFeature_h_
 
-#ifndef _PreComp_
-# include <string>
-# include <vector>
-#endif
-
 #include "Feature.h"
 #include "PropertyGeo.h"
 

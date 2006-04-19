@@ -24,10 +24,7 @@
 #ifndef SEQUENCER_H
 #define SEQUENCER_H
 
-#ifndef _PreComp_
-# include <list>
-# include <vector>
-#endif
+#include <vector>
 
 #include "Exception.h"
 
@@ -241,7 +238,7 @@ private:
                             are finished. */
   int _nLastPercentage; /**< Progress in percent. */
   unsigned long _nNewSteps; /**< Is used for nested calls of the sequencer. */
-  static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */ 
+  static std::vector<SequencerBase*> _aclInstances; /**< A vector of all created instances */
 };
 
 

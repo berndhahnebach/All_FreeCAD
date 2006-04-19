@@ -28,12 +28,10 @@
 
 #include "PyExport.h"
 
-#ifndef _PreComp_
-# include <string>
-# include <map>
-# include <set>
-# include <vector>
-#endif
+#include <string>
+#include <map>
+#include <set>
+#include <vector>
 
 namespace Base
 {

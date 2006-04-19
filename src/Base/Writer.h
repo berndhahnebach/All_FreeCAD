@@ -26,7 +26,7 @@
 
 #ifndef _PreComp_
 # include <string>
-# include <map>
+# include <vector>
 #endif
 
 #include "zipios/zipios-config.h"

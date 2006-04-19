@@ -24,12 +24,9 @@
 #define __InputSource_H__
 
 
-#ifndef _PreComp_
-# include <xercesc/sax2/Attributes.hpp>
-# include <string>
-# include <map>
-#endif
+#include <iostream>
 
+#include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/util/BinInputStream.hpp>
 #include <xercesc/util/PlatformUtils.hpp>
 #include <xercesc/sax/InputSource.hpp>

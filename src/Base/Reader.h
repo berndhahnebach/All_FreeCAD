@@ -24,12 +24,10 @@
 #define __Reader_H__
 
 
-#ifndef _PreComp_
-# include <xercesc/sax2/Attributes.hpp>
-# include <string>
-# include <map>
-#endif
+#include <string>
+#include <map>
 
+#include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/sax2/SAX2XMLReader.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
 

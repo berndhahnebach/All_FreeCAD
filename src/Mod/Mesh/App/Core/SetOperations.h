@@ -24,10 +24,9 @@
 #ifndef MESH_SETOPERATIONS_H
 #define MESH_SETOPERATIONS_H
 
-#ifndef _PreComp_
-# include <list>
-# include <map>
-#endif
+#include <list>
+#include <map>
+#include <set>
 
 #include "MeshKernel.h"
 #include "Elements.h"

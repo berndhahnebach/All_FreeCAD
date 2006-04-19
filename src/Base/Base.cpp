@@ -25,7 +25,6 @@
 
 #ifndef _PreComp_
 # include <assert.h>
-# include <string>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -64,11 +63,11 @@ BaseClass::~BaseClass()
 
 void BaseClass::init(void)
 {
-  assert(BaseClass::classTypeId == Type::badType() && "don't init() twice!"); 
+  assert(BaseClass::classTypeId == Type::badType() && "don't init() twice!");
   /* Make sure superclass gets initialized before subclass. */ 
-  /*assert(strcmp(#_parentclass_), "inherited"));*/ 
+  /*assert(strcmp(#_parentclass_), "inherited"));*/
   /*Type parentType(Type::fromName(#_parentclass_));*/ 
-  /*assert(parentType != Type::badType() && "you forgot init() on parentclass!");*/ 
+  /*assert(parentType != Type::badType() && "you forgot init() on parentclass!");*/
  
   /* Set up entry in the type system. */ 
   BaseClass::classTypeId = 
@@ -95,7 +94,7 @@ void BaseClass::initSubclass(Base::Type &toInit,const char* ClassName, const cha
   // get the parent class
   Base::Type parentType(Base::Type::fromName(ParentName)); 
   // forgot init parent!
-  assert(parentType != Base::Type::badType() ); 
+  assert(parentType != Base::Type::badType() );
 
   // create the new type
   toInit = Base::Type::createType(parentType, ClassName, method);

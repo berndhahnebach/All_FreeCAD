@@ -28,10 +28,7 @@
 
 #include "PyExport.h"
 
-#ifndef _PreComp_
-# include <string>
-# include <map>
-#endif
+#include <string>
 
 namespace Base
 {

@@ -127,16 +127,28 @@ PyObject *MaterialPy::_repr(void)
 // MaterialPy Attributes
 //--------------------------------------------------------------------------
 PyObject *MaterialPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-		if (Base::streq(attr, "ambientColor"))
+{
+    if (Base::streq(attr, "__members__")) {
+      PyObject *list = PyList_New(5);
+      if (list) {
+        PyList_SetItem(list, 0, PyString_FromString("ambientColor"));
+        PyList_SetItem(list, 1, PyString_FromString("diffuseColor"));
+        PyList_SetItem(list, 2, PyString_FromString("specularColor"));
+        PyList_SetItem(list, 3, PyString_FromString("shininess"));
+        PyList_SetItem(list, 4, PyString_FromString("transparency"));
+        if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+      }
+      return list;
+    }
+    if (Base::streq(attr, "ambientColor"))
     {
-      if(_pcMaterial->ambientColor.a == 0.0)			
-			  return Py_BuildValue("(fff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b); 
+      if(_pcMaterial->ambientColor.a == 0.0)
+			  return Py_BuildValue("(fff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b);
       else
-			  return Py_BuildValue("(ffff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b,_pcMaterial->ambientColor.a); 
+			  return Py_BuildValue("(ffff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b,_pcMaterial->ambientColor.a);
     }else	if (Base::streq(attr, "diffuseColor"))
     {
-      if(_pcMaterial->diffuseColor.a == 0.0)			
+      if(_pcMaterial->diffuseColor.a == 0.0)
 			  return Py_BuildValue("(fff)",_pcMaterial->diffuseColor.r,_pcMaterial->diffuseColor.g,_pcMaterial->diffuseColor.b); 
       else
 			  return Py_BuildValue("(ffff)",_pcMaterial->diffuseColor.r,_pcMaterial->diffuseColor.g,_pcMaterial->diffuseColor.b,_pcMaterial->diffuseColor.a); 

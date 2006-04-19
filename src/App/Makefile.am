@@ -28,12 +28,16 @@ libFreeCADApp_la_SOURCES=\
 		FeaturePy.h \
 		FeatureTest.cpp \
 		FeatureTest.h \
+		GeoFeature.cpp \
+		GeoFeature.h \
 		Material.cpp \
 		Material.h \
 		MaterialPy.cpp \
 		MaterialPy.h \
 		MatrixPy.cpp \
 		MatrixPy.h \
+		Placement.cpp \
+		Placement.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		Property.cpp \

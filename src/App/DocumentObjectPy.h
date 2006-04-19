@@ -26,9 +26,6 @@
 #ifndef _DocumentObjectPy_h_
 #define _DocumentObjectPy_h_
 
-#ifndef _PreComp_
-#endif
-
 #include <Base/PyExportImp.h>
 
 namespace App

@@ -24,7 +24,6 @@
 
 #ifndef _PreComp_
 # include <assert.h>
-# include <string>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

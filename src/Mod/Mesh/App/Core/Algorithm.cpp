@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <Wm3Matrix3.h>
+# include <Wm3Vector3.h>
 #endif
 
 #include "Algorithm.h"
@@ -867,7 +868,7 @@ bool MeshAlgorithm::NearestPointFromPoint (const Base::Vector3f &rclPt, const Me
   return true;
 }
 
-bool MeshAlgorithm::CutWithPlane (const Wm3::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid, 
+bool MeshAlgorithm::CutWithPlane (const Wm3::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid,
                                   std::list<std::vector<Base::Vector3f> > &rclResult, float fMinEps) const
 {
   Base::Vector3f  clBase, clNormal; // Schnittebene

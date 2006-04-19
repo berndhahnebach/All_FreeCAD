@@ -27,10 +27,7 @@
 // Std. configurations
 
 
-#ifndef _PreComp_
-# include <string>
-# include <map>
-#endif
+#include <assert.h>
 
 #include "Base.h"
 #include "zipios/zipinputstream.h"

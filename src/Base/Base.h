@@ -24,16 +24,8 @@
 #ifndef __Base_H__
 #define __Base_H__
 
-// Std. configurations
-
-
-#ifndef _PreComp_
-# include <string>
-# include <map>
-#endif
-
 #include "Type.h"
- 
+
 
 
 /// define for subclassing Base::BaseClass

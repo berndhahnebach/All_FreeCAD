@@ -27,7 +27,6 @@
 // Std. configurations
 
 #ifndef _PreComp_
-# include <string>
 # include <sstream>
 #endif
 #include "Vector3D.h"

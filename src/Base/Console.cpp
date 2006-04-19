@@ -27,10 +27,10 @@
 #ifndef _PreComp_
 # include <time.h>
 # include <stdio.h>
-#   ifdef FC_OS_WIN32
+# ifdef FC_OS_WIN32
 # include <io.h>
 # include <windows.h>
-#   endif
+# endif
 # include "fcntl.h"
 #endif
 

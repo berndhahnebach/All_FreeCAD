@@ -29,6 +29,7 @@
 # include <Inventor/events/SoKeyboardEvent.h>
 # include <Inventor/events/SoLocation2Event.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
+# include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoIndexedLineSet.h>

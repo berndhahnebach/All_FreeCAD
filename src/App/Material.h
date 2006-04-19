@@ -26,9 +26,6 @@
 #ifndef _Material_h_
 #define _Material_h_
 
-#ifndef _PreComp_
-#endif
-
 namespace Base
 {
   class PyObjectBase;

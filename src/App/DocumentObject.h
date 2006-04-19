@@ -26,9 +26,6 @@
 #ifndef _DocumentObject_h_
 #define _DocumentObject_h_
 
-#ifndef _PreComp_
-#endif
-
 #include <App/PropertyContainer.h>
 #include <App/PropertyStandard.h>
 

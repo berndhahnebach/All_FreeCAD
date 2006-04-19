@@ -24,8 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <iostream>
-# include <xercesc/sax2/Attributes.hpp>
 # include <xercesc/sax/SAXParseException.hpp>
 # include <xercesc/sax/SAXException.hpp>
 # include <xercesc/sax2/XMLReaderFactory.hpp>

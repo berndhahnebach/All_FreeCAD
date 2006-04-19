@@ -25,13 +25,10 @@
 #define TOOLS2D_H
 
 
-#ifndef _PreComp_
-# include <math.h>
-# include <stdio.h>
-# include <list>
-# include <set>
-# include <vector>
-#endif
+#include <math.h>
+#include <stdio.h>
+#include <list>
+#include <vector>
 
 #include "Vector3D.h"
 

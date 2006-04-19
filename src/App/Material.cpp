@@ -26,11 +26,7 @@
 #ifndef _PreComp_
 #endif
 
-#include "../Base/PyExportImp.h"
-#include "../Base/Console.h"
 #include "../Base/Exception.h"
-using Base::Console;
-
 #include "Material.h"
 
 using namespace App;

@@ -24,13 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <assert.h>
-# include <string>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "FileTemplate.h"
-#include "Exception.h"
 
 
 using namespace Base;

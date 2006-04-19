@@ -166,27 +166,40 @@ PyObject *DocumentPy::_repr(void)
 // DocumentPy Attributes
 //--------------------------------------------------------------------------
 PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-		if (streq(attr, "UndoLimit"))						
-			return Py_BuildValue("i", _pcDoc->GetUndoLimit()); 
-		else if (streq(attr, "AvailableUndos"))				
+{
+		if (streq(attr, "__members__")) {
+			PyObject *list = PyList_New(6);
+			if (list) {
+				PyList_SetItem(list, 0, PyString_FromString("UndoLimit"));
+				PyList_SetItem(list, 1, PyString_FromString("AvailableUndos"));
+				PyList_SetItem(list, 2, PyString_FromString("AvailableRedos"));
+				PyList_SetItem(list, 3, PyString_FromString("HasOpenCommand"));
+				PyList_SetItem(list, 4, PyString_FromString("Name"));
+				PyList_SetItem(list, 5, PyString_FromString("Path"));
+				if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+			}
+			return list;
+		}
+		else if (streq(attr, "UndoLimit"))
+			return Py_BuildValue("i", _pcDoc->GetUndoLimit());
+		else if (streq(attr, "AvailableUndos"))
 			return Py_BuildValue("i", _pcDoc->GetAvailableUndos()); 
-		else if (streq(attr, "AvailableRedos"))				
+		else if (streq(attr, "AvailableRedos"))
 			return Py_BuildValue("i", _pcDoc->GetAvailableRedos()); 
-		else if (streq(attr, "Name"))						
-			return Py_BuildValue("u", _pcDoc->getName()); 
-		else if (streq(attr, "Path"))						
-			return Py_BuildValue("u", _pcDoc->getPath()); 
+		else if (streq(attr, "Name"))
+			return Py_BuildValue("s", _pcDoc->getName());
+		else if (streq(attr, "Path"))
+			return Py_BuildValue("s", _pcDoc->getPath());
 //		else if (streq(attr, "Main")){
 //			//_pcDoc->Main()->IncRef();
-//			return new LabelPy(_pcDoc->_hDoc->Main()); 
+//			return new LabelPy(_pcDoc->_hDoc->Main());
 //		}
-//		else if (streq(attr, "IsEmpty"))					
-//			return Py_BuildValue("u", _pcDoc->IsEmpty()?1:0); 
-//		else if (streq(attr, "IsValid"))					
-//			return Py_BuildValue("u", _pcDoc->IsValid()?1:0); 
-		else if (streq(attr, "HasOpenCommand"))				
-			return Py_BuildValue("u", _pcDoc->HasOpenCommand()?1:0);
+//		else if (streq(attr, "IsEmpty"))
+//			return Py_BuildValue("u", _pcDoc->IsEmpty()?1:0);
+//		else if (streq(attr, "IsValid"))
+//			return Py_BuildValue("u", _pcDoc->IsValid()?1:0);
+		else if (streq(attr, "HasOpenCommand"))
+			return Py_BuildValue("i", _pcDoc->HasOpenCommand()?1:0);
 //		else if (streq(attr, "StorageFormat"))						
 //			return Py_BuildValue("u", _pcDoc->storageFormat()); 
     else{

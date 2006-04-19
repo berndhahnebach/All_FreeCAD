@@ -24,6 +24,7 @@
 #ifndef _PreComp_
 # include <qdir.h>
 # include <qfileinfo.h>
+# include <qlineedit.h>
 #endif
 
 #include <Base/Exception.h>

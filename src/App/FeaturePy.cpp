@@ -166,9 +166,22 @@ PyObject *FeaturePy::_repr(void)
 // FeaturePy Attributes
 //--------------------------------------------------------------------------
 PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-	PY_TRY{
-		if (Base::streq(attr, "solidMaterial"))
+{
+  PY_TRY{
+    if (Base::streq(attr, "__members__"))
+    {
+      PyObject *list = DocumentObjectPy::_getattr(attr);
+      if (list) {
+        PyList_Append(list, PyString_FromString("solidMaterial"));
+        PyList_Append(list, PyString_FromString("lineMaterial"));
+        PyList_Append(list, PyString_FromString("pointMaterial"));
+        PyList_Append(list, PyString_FromString("lineSize"));
+        PyList_Append(list, PyString_FromString("pointSize"));
+        if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+      }
+      return list;
+    }
+    else if (Base::streq(attr, "solidMaterial"))
     {
       if(solidMaterialPy==0){
         solidMaterialPy = new MaterialPy(&(_pcFeature->_solidMaterial));

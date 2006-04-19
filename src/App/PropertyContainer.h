@@ -24,6 +24,7 @@
 #ifndef __PropteryContainer_H__
 #define __PropteryContainer_H__
 
+#include <map>
 #include <Base/Persistance.h>
 
 namespace Base {

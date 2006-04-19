@@ -26,11 +26,6 @@
 #ifndef _AppPlacement_h_
 #define _AppPlacement_h_
 
-#ifndef _PreComp_
-# include <string>
-# include <vector>
-#endif
-
 #include <Base/Placement.h>
 //#include <Base/PyExport.h>
 //#include <Base/TimeInfo.h>

@@ -113,3 +113,4 @@ Version: V0.5B6 Date: Sat Apr 15 18:23:54 2006 +++++++++++++++++++++++++++++++
 + Check for scheme version when loading a project file and handle the reading procedure differently
 + RFE 1470745 implemented (material mode: Open Edges)
 + show also members of DocumentObjects in Python (implemented in DocumentObjectPy::_getattr)
++ show members in MaterialPy, DocumentPy and FeaturePy

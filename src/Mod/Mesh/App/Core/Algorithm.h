@@ -24,11 +24,8 @@
 #ifndef MESHALGORITHM_H
 #define MESHALGORITHM_H
 
-#ifndef _PreComp_
-# include <Wm3IntrSegment3Plane3.h>
-# include <Wm3Vector3.h>
-#endif
-
+#include <set>
+#include <vector>
 #include <Wm3Plane3.h>
 
 #include "MeshKernel.h"

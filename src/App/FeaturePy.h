@@ -26,9 +26,6 @@
 #ifndef _FeaturePy_h_
 #define _FeaturePy_h_
 
-#ifndef _PreComp_
-#endif
-
 #include <Base/PyExportImp.h>
 #include "DocumentObjectPy.h"
 

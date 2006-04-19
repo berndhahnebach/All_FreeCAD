@@ -26,10 +26,6 @@
 #ifndef _FeatureDataProviderPy_h_
 #define _FeatureDataProviderPy_h_
 
-#ifndef _PreComp_
-# include <TDF_Label.hxx>
-#endif
-
 #include <Base/PyExportImp.h>
 
 #include "FeatureDataProvider.h"

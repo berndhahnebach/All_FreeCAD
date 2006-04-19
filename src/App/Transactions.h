@@ -24,11 +24,6 @@
 #ifndef __Transaction_H__
 #define __Transaction_H__
 
-// Std. configurations
-
-#ifndef _PreComp_
-#endif
-
 #include <Base/Persistance.h>
 
 namespace App

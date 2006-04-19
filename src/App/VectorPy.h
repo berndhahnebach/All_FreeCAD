@@ -26,9 +26,6 @@
 #ifndef _VectorPy_h_
 #define _VectorPy_h_
 
-#ifndef _PreComp_
-#endif
-
 #include <Base/PyExportImp.h>
 #include <Base/Vector3D.h>
 

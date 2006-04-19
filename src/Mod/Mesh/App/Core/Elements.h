@@ -24,9 +24,8 @@
 #ifndef MESH_ELEMENTS_H
 #define MESH_ELEMENTS_H
 
-#ifndef _PreComp_
-# include <vector>
-#endif
+#include <functional>
+#include <vector>
 
 #include "Definitions.h"
 

@@ -24,13 +24,10 @@
 #ifndef _DataWithProperty_h_
 #define _DataWithProperty_h_
 
-#ifndef _PreComp_
-# include <vector>
-# include <set>
-# include <string>
-# include <list>
-# include <map>
-#endif
+#include <set>
+#include <string>
+#include <list>
+#include <map>
 
 namespace Base
 {

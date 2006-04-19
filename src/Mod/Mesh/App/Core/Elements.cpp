@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Wm3IntrSegment3Plane3.h>
 # include <Wm3IntrSegment3Box3.h>
 # include <Wm3IntrTriangle3Triangle3.h>
 # include <Wm3DistVector3Triangle3.h>
