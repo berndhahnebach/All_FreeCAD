@@ -31,6 +31,7 @@
 # include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
+# include <Inventor/nodes/SoIndexedLineSet.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoFaceSet.h>
 # include <Inventor/nodes/SoLocateHighlight.h>
@@ -145,6 +146,7 @@ ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
   ADD_PROPERTY(Display,(""));
   ADD_PROPERTY(Transparency,(0));
   ADD_PROPERTY(Visibility,(true));
+  ADD_PROPERTY(OpenEdges,(false));
 
   Display.setSize(6);
   Display.set1Value(0,"Flat"/*"Shaded"*/); // active mode
@@ -185,6 +187,8 @@ void ViewProviderMesh::onChanged(const App::Property* prop)
     setMode( Display.getValues().front().c_str() );
   } else if ( prop == &Visibility ) {
     Visibility.getValue() ? show() : hide();
+  } else if ( prop == &OpenEdges ) {
+    showOpenEdges( OpenEdges.getValue() );
   }
 }
 
@@ -663,4 +667,47 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
   }
 
   return false;
+}
+
+void ViewProviderMesh::showOpenEdges(bool show)
+{
+  if ( show ) {
+    SoGroup* pcLineRoot = new SoGroup();
+    SoDrawStyle* lineStyle = new SoDrawStyle();
+    lineStyle->lineWidth = 3;
+    pcLineRoot->addChild(lineStyle);
+
+    // Draw lines
+    SoSeparator* linesep = new SoSeparator;
+    SoBaseColor * basecol = new SoBaseColor;
+    basecol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+    linesep->addChild(basecol);
+    linesep->addChild(pcMeshCoord);
+    SoIndexedLineSet* lines = new SoIndexedLineSet;
+    linesep->addChild(lines);
+    pcLineRoot->addChild(linesep);
+    // add to the top of the node
+    pcHighlight->addChild(pcLineRoot/*,0*/);
+
+    // Build up the lines with indices to the list of vertices 'pcMeshCoord'
+    int index=0;
+    const MeshCore::MeshKernel& rMesh = dynamic_cast<Mesh::Feature*>(pcObject)->getMesh();
+    const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
+    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it ) {
+      for ( int i=0; i<3; i++ ) {
+        if ( it->_aulNeighbours[i] == ULONG_MAX ) {
+          lines->coordIndex.set1Value(index++,it->_aulPoints[i]);
+          lines->coordIndex.set1Value(index++,it->_aulPoints[(i+1)%3]);
+          lines->coordIndex.set1Value(index++,SO_END_LINE_INDEX);
+        }
+      }
+    }
+  } else {
+    // remove the indexed line set node and its parent group
+    int childs = pcHighlight->getNumChildren();
+    if ( pcHighlight->findChild(pcMeshFaces)+1 < childs ) {
+      SoNode* node = pcHighlight->getChild(childs-1);
+      pcHighlight->removeChild(node);
+    }
+  }
 }

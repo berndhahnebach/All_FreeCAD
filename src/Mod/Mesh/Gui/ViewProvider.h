@@ -93,6 +93,8 @@ public:
   App::PropertyStringList Display;
   App::PropertyInteger Transparency;
   App::PropertyBool Visibility;
+  App::PropertyBool OpenEdges;
+
   /// get called by the container when a Proptery was changed
   virtual void onChanged(const App::Property* prop);
 
@@ -126,6 +128,7 @@ protected:
   void createMesh( const MeshCore::MeshKernel& pcMesh );
   /// Creates a tool mesh from the previous picked polygon on the viewer
   bool createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& ) const;
+  void showOpenEdges( bool );
 
 protected:
   SoCoordinate3     *pcMeshCoord;

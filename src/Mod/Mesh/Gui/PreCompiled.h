@@ -104,6 +104,7 @@
 #include <Inventor/nodes/SoFaceSet.h>
 #include <Inventor/nodes/SoImage.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
+#include <Inventor/nodes/SoIndexedLineSet.h>
 #include <Inventor/nodes/SoIndexedTriangleStripSet.h>
 #include <Inventor/nodes/SoLightModel.h>
 #include <Inventor/elements/SoLightModelElement.h>
