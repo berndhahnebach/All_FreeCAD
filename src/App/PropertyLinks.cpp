@@ -258,7 +258,7 @@ void PropertyLinkList::Restore(Base::XMLReader &reader)
     // Property not in a Feature!
     DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
     assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
-    _lValueList[i] = dynamic_cast<DocumentObject*>(pcObject);
+    _lValueList[i] = pcObject;
 
   }
 

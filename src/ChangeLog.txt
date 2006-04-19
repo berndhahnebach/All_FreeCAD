@@ -110,3 +110,4 @@ Version: V0.5B6 Date: Sat Apr 15 18:23:54 2006 +++++++++++++++++++++++++++++++
 + Applied patch 1470733, SetOperation patch
 + Applied patch 1470737, new module tritritest
 + Fixed bug in ViewProviderDocumentObject::ViewProviderDocumentObject(): pcPointStyle->ref()
++ Check for scheme version when loading a project file and handle the reading procedure differently

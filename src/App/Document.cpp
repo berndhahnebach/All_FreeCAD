@@ -215,39 +215,74 @@ void Document::Restore(Base::XMLReader &reader)
   int i,Cnt;
 
   reader.readElement("Document");
+  long scheme = reader.getAttributeAsInteger("SchemaVersion");
 
   // read the Document Properties
   PropertyContainer::Restore(reader);
 
-  // read the feature types
-  reader.readElement("Objects");
-  Cnt = reader.getAttributeAsInteger("Count");
-  for(i=0 ;i<Cnt ;i++)
-  {
-    reader.readElement("Object");
-    string type = reader.getAttribute("type");
-    string name = reader.getAttribute("name");
-
-    addObject(type.c_str(),name.c_str());
-  }
-  reader.readEndElement("Objects");
-
-  // read the features itself
-  reader.readElement("ObjectData");
-  Cnt = reader.getAttributeAsInteger("Count");
-  for(i=0 ;i<Cnt ;i++)
-  {
-    reader.readElement("Object");
-    string name = reader.getAttribute("name");
-    DocumentObject* pObj = getObject(name.c_str());
-    if(pObj) // check if this feature has been registered
+  // SchemeVersion "2"
+  if ( scheme == 2 ) {
+    // read the feature types
+    reader.readElement("Features");
+    Cnt = reader.getAttributeAsInteger("Count");
+    for(i=0 ;i<Cnt ;i++)
     {
-      //FIXME: We must save/restore that state of a feature
-      pObj->Restore(reader);
+      reader.readElement("Feature");
+      string type = reader.getAttribute("type");
+      string name = reader.getAttribute("name");
+
+      addObject(type.c_str(),name.c_str());
     }
-    reader.readEndElement("Object");
+    reader.readEndElement("Features");
+
+    // read the features itself
+    reader.readElement("FeatureData");
+    Cnt = reader.getAttributeAsInteger("Count");
+    for(i=0 ;i<Cnt ;i++)
+    {
+      reader.readElement("Feature");
+      string name = reader.getAttribute("name");
+      DocumentObject* pObj = getObject(name.c_str());
+      if(pObj) // check if this feature has been registered
+      {
+        //FIXME: We must save/restore that state of a feature
+        pObj->Restore(reader);
+      }
+      reader.readEndElement("Feature");
+    }
+    reader.readEndElement("FeatureData");
+  } // SchemeVersion "3"
+  else if ( scheme == 3 ) {
+    // read the feature types
+    reader.readElement("Objects");
+    Cnt = reader.getAttributeAsInteger("Count");
+    for(i=0 ;i<Cnt ;i++)
+    {
+      reader.readElement("Object");
+      string type = reader.getAttribute("type");
+      string name = reader.getAttribute("name");
+
+      addObject(type.c_str(),name.c_str());
+    }
+    reader.readEndElement("Objects");
+
+    // read the features itself
+    reader.readElement("ObjectData");
+    Cnt = reader.getAttributeAsInteger("Count");
+    for(i=0 ;i<Cnt ;i++)
+    {
+      reader.readElement("Object");
+      string name = reader.getAttribute("name");
+      DocumentObject* pObj = getObject(name.c_str());
+      if(pObj) // check if this feature has been registered
+      {
+        //FIXME: We must save/restore that state of a feature
+        pObj->Restore(reader);
+      }
+      reader.readEndElement("Object");
+    }
+    reader.readEndElement("ObjectData");
   }
-  reader.readEndElement("ObjectData");
 
   reader.readEndElement("Document");
 }
