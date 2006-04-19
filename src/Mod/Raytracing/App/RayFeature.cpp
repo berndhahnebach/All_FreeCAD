@@ -24,27 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <TDF_Label.hxx>
-#	include <TDF_ChildIterator.hxx>
-#	include <TDF_Tool.hxx>
-#	include <TCollection_AsciiString.hxx>
-#	include <TDF_ListIteratorOfAttributeList.hxx>
-#	include <TFunction_Logbook.hxx>
-#	include <TFunction_DriverTable.hxx>
-#	include <TFunction_Function.hxx>
-# include <TNaming_Builder.hxx>
-#	include <Standard_GUID.hxx>
 #endif
-
-#include "../../../Base/Console.h"
-#include "../../../Base/Exception.h"
-using Base::Console;
 
 
 #include "RayFeature.h"
-//#include "Function.h"
-//#include "Property.h"
-//#include "PropertyAttr.h"
 
 using namespace Raytracing;
 

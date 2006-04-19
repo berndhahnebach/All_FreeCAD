@@ -23,12 +23,9 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <TopoDS_Shape.hxx>
-# include <TFunction_Logbook.hxx>
 #endif
 
 
-#include "../../../Base/Console.h"
 #include "FeaturePartCut.h"
 
 #include <BRepAlgoAPI_Cut.hxx>
@@ -46,7 +43,7 @@ Cut::Cut(void)
   ADD_PROPERTY(Tool,(0));
 }
 
-Standard_Integer Cut::execute(void)
+int Cut::execute(void)
 {
  
   Part::Feature *pcFirst  = dynamic_cast<Part::Feature*>(Base.getValue());
@@ -56,7 +53,7 @@ Standard_Integer Cut::execute(void)
   if(!pcSecond || pcSecond->getStatus() != Valid)
     return 1;
 
-  // Now, let's get the TopoDS_Shape of these TNaming_NamedShape:
+  // Now, let's get the TopoDS_Shape
 	TopoDS_Shape OriginalShape  = pcFirst->getShape();
 	TopoDS_Shape ToolShape = pcSecond->getShape();
 

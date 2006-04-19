@@ -22,12 +22,8 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qaction.h>
 # include <qdir.h>
 # include <qfileinfo.h>
-# include <qlineedit.h>
-#	include <BRepTools.hxx>
-#	include <TNaming_NamedShape.hxx>
 #endif
 
 #include <Base/Exception.h>

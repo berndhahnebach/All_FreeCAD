@@ -26,11 +26,8 @@
 # include <fcntl.h>
 # include <BRep_Builder.hxx>
 # include <BRepTools.hxx>
-# include <TopTools_HSequenceOfShape.hxx>
-# include <IGESControl_Writer.hxx>
 # include <IGESControl_Reader.hxx>
 # include <TopoDS_Shape.hxx>
-# include <TFunction_Logbook.hxx>
 #endif
 
 #include <Base/Console.h>

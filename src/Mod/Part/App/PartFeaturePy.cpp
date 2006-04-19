@@ -24,18 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <TDF_Label.hxx>
-#	include <TDF_ChildIterator.hxx>
-#	include <TDF_Tool.hxx>
-#	include <TCollection_AsciiString.hxx>
-#	include <TDF_ListIteratorOfAttributeList.hxx>
-#	include <TFunction_Logbook.hxx>
-#	include <TFunction_DriverTable.hxx>
-#	include <TFunction_Function.hxx>
-# include <TNaming_Builder.hxx>
-# include <TNaming_NamedShape.hxx>
-# include <TopoDS_Shape.hxx>
-#	include <Standard_GUID.hxx>
 #endif
 
 #include <Base/Console.h>

@@ -64,7 +64,6 @@
 #include <TopoDS.hxx>
 #include <TopExp_Explorer.hxx>
 #include <TopLoc_Location.hxx>
-#include <TNaming_Tool.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
 #include <Geom_SphericalSurface.hxx>

@@ -23,18 +23,12 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qaction.h>
 # include <BRep_Tool.hxx>
-# include <BRepMesh_IncrementalMesh.hxx>
-# include <BRepPrimAPI_MakeBox.hxx>
 # include <GeomAPI_ProjectPointOnSurf.hxx>
 # include <GeomLProp_SLProps.hxx>
 # include <gp_Pnt.hxx>
 # include <Poly_Triangulation.hxx>
-# include <TNaming_Builder.hxx>
-# include <TopExp_Explorer.hxx>
-# include <TopoDS.hxx>
-# include <TopoDS_Shape.hxx>
+# include <TopoDS_Face.hxx>
 #endif
 
 #include <Base/Exception.h>

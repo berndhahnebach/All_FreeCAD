@@ -24,30 +24,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <TDF_Label.hxx>
-# include <TDF_ChildIterator.hxx>
-# include <TDF_Tool.hxx>
-# include <TCollection_AsciiString.hxx>
-# include <TDF_ListIteratorOfAttributeList.hxx>
-# include <TFunction_Logbook.hxx>
-# include <TFunction_DriverTable.hxx>
-# include <TFunction_Function.hxx>
-# include <TNaming_Builder.hxx>
-# include <TNaming_NamedShape.hxx>
-# include <TopoDS_Shape.hxx>
-# include <Standard_GUID.hxx>
 #endif
 
 #include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Mod/Part/App/TopologyPy.h>
-
 
 #include "MeshPy.h"
 #include "MeshFeature.h"
 #include "MeshFeaturePy.h"
 
-using Base::Console;
 using namespace Mesh;
 
 
@@ -58,7 +42,7 @@ using namespace Mesh;
 PyTypeObject MeshFeaturePy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "MeshFeaturePy",        /*tp_name*/
+  "Mesh::Feature",        /*tp_name*/
   sizeof(MeshFeaturePy),  /*tp_basicsize*/
   0,                      /*tp_itemsize*/
                           /* methods */
@@ -80,7 +64,7 @@ PyTypeObject MeshFeaturePy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About PyObjectBase",                             /*tp_doc */
+  "The Mesh::Feature class handles meshes",         /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
@@ -137,7 +121,7 @@ MeshFeaturePy::MeshFeaturePy(Feature *pcFeature, PyTypeObject *T)
     _pcFeature(pcFeature),
     _pcMeshPy(0)
 {
-  Base::Console().Log("Create MeshFeaturePy: %p \n",this);
+  Base::Console().Log("Create Mesh::Feature: %p \n",this);
 }
 
 PyObject *MeshFeaturePy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
@@ -151,7 +135,7 @@ PyObject *MeshFeaturePy::PyMake(PyObject *ignored, PyObject *args)  // Python wr
 //--------------------------------------------------------------------------
 MeshFeaturePy::~MeshFeaturePy()           // Everything handled in parent
 {
-  Base::Console().Log("Destroy MeshFeaturePy: %p \n",this);
+  Base::Console().Log("Destroy Mesh::Feature: %p \n",this);
 
   if( _pcMeshPy) _pcMeshPy->DecRef();
 
@@ -163,8 +147,7 @@ MeshFeaturePy::~MeshFeaturePy()           // Everything handled in parent
 PyObject *MeshFeaturePy::_repr(void)
 {
   std::stringstream a;
-  a << _pcFeature->getTypeId().getName() << " feature: [ ";
-  a << "]" << std::endl;
+  a << _pcFeature->getTypeId().getName() << " : ['" << _pcFeature->name.getValue() << "']";
   return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
