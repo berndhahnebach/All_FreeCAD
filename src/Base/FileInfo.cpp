@@ -31,6 +31,10 @@
 # if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 # include <unistd.h>
 # include <sys/stat.h>
+# elif defined (FC_OS_WIN32)
+# include <direct.h>
+# include <io.h>
+# include <windows.h>
 # endif
 #endif
 

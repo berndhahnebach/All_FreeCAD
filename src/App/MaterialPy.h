@@ -28,12 +28,6 @@
 
 #include <Base/PyExportImp.h>
 
-/*
-class TFunction_Logbook;
-class PyObjectBase;
-class MaterialPy;
-class TopoDS_Shape;
-*/
 namespace App
 {
 

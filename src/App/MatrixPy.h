@@ -28,12 +28,6 @@
 
 #include <Base/PyExportImp.h>
 
-/*
-class TFunction_Logbook;
-class PyObjectBase;
-class MatrixPy;
-class TopoDS_Shape;
-*/
 
 #include <Base/Matrix.h>
 

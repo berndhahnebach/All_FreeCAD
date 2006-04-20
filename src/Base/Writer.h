@@ -24,10 +24,8 @@
 #define __Writer_H__
 
 
-#ifndef _PreComp_
-# include <string>
-# include <vector>
-#endif
+#include <string>
+#include <vector>
 
 #include "zipios/zipios-config.h"
 #include "zipios/zipfile.h"

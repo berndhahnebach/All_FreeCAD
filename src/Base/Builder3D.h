@@ -26,9 +26,7 @@
 
 // Std. configurations
 
-#ifndef _PreComp_
-# include <sstream>
-#endif
+#include <sstream>
 #include "Vector3D.h"
 
 namespace Base

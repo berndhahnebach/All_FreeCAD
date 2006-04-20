@@ -28,6 +28,7 @@
 
 // Std. configurations
 
+#include <assert.h>
 #include <set>
 
 
