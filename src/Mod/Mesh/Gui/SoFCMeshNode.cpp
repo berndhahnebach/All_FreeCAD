@@ -24,6 +24,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# ifdef FC_OS_WIN32
+# include <windows.h>
+# endif
 # include <GL/gl.h>
 # include <Inventor/SbBox.h>
 # include <Inventor/SoPrimitiveVertex.h>
@@ -89,15 +92,15 @@ void SoFCMeshNode::GLRender(SoGLRenderAction *action)
     SoMaterialBundle mb(action);
     mb.sendFirst();
 
-    drawFaces(send_normals);
+    drawFaces(send_normals?true:false);
   }
 }
 
-void SoFCMeshNode::drawFaces(bool _send_normals)
+void SoFCMeshNode::drawFaces(SbBool send_normals)
 {
   MeshCore::MeshFacetIterator it(_mesh->getMesh());
 
-  if (_send_normals)
+  if (send_normals)
   {
     glBegin(GL_TRIANGLES);
     for (it.Init(); it.More(); it.Next())

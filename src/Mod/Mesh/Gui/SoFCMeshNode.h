@@ -52,7 +52,7 @@ protected:
                                           SoPickedPoint * pp);
 
   // Draw faces
-  void drawFaces(bool send_normals);
+  void drawFaces(SbBool send_normals);
 
 private:
   // Force using the reference count mechanism.

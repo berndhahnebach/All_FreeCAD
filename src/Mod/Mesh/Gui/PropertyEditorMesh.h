@@ -23,9 +23,7 @@
 #ifndef MESHGUI_PROPERTYEDITOR_MESH_H
 #define MESHGUI_PROPERTYEDITOR_MESH_H
 
-#ifndef _PreComp_
-# include <qptrlist.h>
-#endif
+#include <qptrlist.h>
 
 #include <Gui/propertyeditor/propertyeditorinput.h>
 

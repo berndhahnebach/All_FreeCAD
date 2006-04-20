@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 #ifndef _PreComp_
 # include <fcntl.h>
-# include <TFunction_Logbook.hxx>
 # include <ios>
 #endif
 

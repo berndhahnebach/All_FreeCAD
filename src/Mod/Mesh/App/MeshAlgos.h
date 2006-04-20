@@ -24,15 +24,12 @@
 #ifndef _MeshAlgos_h_
 #define _MeshAlgos_h_
 
-#ifndef _PreComp_
-# include <gts.h>
-# include <vector>
-#endif
+#include <gts.h>
+#include <vector>
 
 #include <Base/Vector3D.h>
 
 #include "CurveProjector.h"
-#include "gts.h"
 
 class TopoDS_Edge;
 class TopoDS_Shape;

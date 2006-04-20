@@ -38,6 +38,7 @@
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/nodes/SoSwitch.h>
+# include <algorithm>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

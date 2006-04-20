@@ -24,9 +24,6 @@
 #ifndef MESH_WORKBENCH_H
 #define MESH_WORKBENCH_H
 
-#ifndef _PreComp_
-#endif
-
 #include <Gui/Workbench.h>
 
 namespace MeshGui {

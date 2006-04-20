@@ -23,9 +23,7 @@
 #ifndef __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
 #define __VIEWPROVIDERMESHTRANSFORMDEMOLDING_H__
 
-#ifndef _PreComp_
-# include <Inventor/nodes/SoRotation.h>
-#endif
+#include <Inventor/nodes/SoRotation.h>
 
 class SoSeparator;
 class SbVec3f;

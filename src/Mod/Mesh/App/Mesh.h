@@ -24,13 +24,11 @@
 #ifndef _Mesh_h_
 #define _Mesh_h_
 
-#ifndef _PreComp_
-# include <vector>
-# include <list>
-# include <set>
-# include <string>
-# include <map>
-#endif
+#include <vector>
+#include <list>
+#include <set>
+#include <string>
+#include <map>
 
 #include <Base/Matrix.h>
 #include <Base/Vector3D.h>

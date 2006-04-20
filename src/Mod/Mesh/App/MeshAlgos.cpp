@@ -26,7 +26,6 @@
 # ifdef FC_OS_LINUX
 #	  include <unistd.h>
 # endif
-# include <gp_Pln.hxx>
 #endif
 
 

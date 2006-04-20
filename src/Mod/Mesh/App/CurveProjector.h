@@ -24,9 +24,8 @@
 #ifndef _CurveProjector_h_
 #define _CurveProjector_h_
 
-#ifndef _PreComp_
-# include <gts.h>
-#endif
+#include <gts.h>
+#include <gp_Pln.hxx>
 
 #include <Base/Vector3D.h>
 
