@@ -24,27 +24,14 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <Inventor/nodes/SoMaterial.h>
-# include <Inventor/nodes/SoShapeHints.h>
 # include <qwaitcondition.h>
 #endif
 
-#include "../Base/Exception.h"
-#include "../Base/Interpreter.h"
-#include "../App/Document.h"
-#include "../App/Feature.h"
-
 #include "Application.h"
 #include "MainWindow.h"
-#include "Document.h"
 #include "Command.h"
 
-#include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
-#include "Inventor/Qt/SoQt.h"
-
-#include "FileDialog.h"
 #include "ProgressBar.h"
-#include "Macro.h"
 
 
 using namespace Gui;

@@ -24,9 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qobjectlist.h>
-# include <qwidget.h>
-# include <qvaluelist.h>
 #endif
 
 #include "PropertyPage.h"

@@ -24,19 +24,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# if defined (_POSIX_C_SOURCE)
-#   undef  _POSIX_C_SOURCE
-# endif // (re-)defined in pyconfig.h
-# include <Python.h>
-# include <qapplication.h>
-# include <qdir.h>
 # include <qstatusbar.h>
 # include <qfiledialog.h>
-# include <qfileinfo.h>
-# include <qobjectlist.h>
-# include <qmessagebox.h>
 # include <qprinter.h>
-# include <qtimer.h>
 #endif
 
 

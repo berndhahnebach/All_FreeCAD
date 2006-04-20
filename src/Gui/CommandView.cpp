@@ -25,11 +25,6 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
-# include <qcursor.h>
-# include <qdatetime.h>
-# include <qdesktopwidget.h>
-# include <qfileinfo.h>
-# include <qimage.h>
 # include <qmessagebox.h>
 # include <qtextedit.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>

@@ -29,7 +29,6 @@
 # include <qfileinfo.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
-# include <Inventor/nodes/SoSelection.h>
 #endif
 
 

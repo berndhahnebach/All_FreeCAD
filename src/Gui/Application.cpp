@@ -26,15 +26,8 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qeventloop.h>
-# include <qlabel.h>
-# include <qmenubar.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
-# include <qstyle.h>
-# include <qstylefactory.h>
-# include <qtabbar.h>
-# include <qtimer.h>
-# include <qvbox.h>
 # include <strstream>
 # include <map>
 #endif

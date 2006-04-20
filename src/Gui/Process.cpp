@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qprocess.h>
 # include <qstring.h>
 # ifdef FC_OS_WIN32
 #   include <windows.h>
