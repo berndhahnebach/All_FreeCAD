@@ -21,6 +21,7 @@
 #ifndef _PreComp_
 # include <math.h>
 # include <qmessagebox.h>
+# include <algorithm>
 #endif
 
 #include "GLImageBox.h"

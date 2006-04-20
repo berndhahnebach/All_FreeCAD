@@ -24,10 +24,6 @@
 #ifndef BOUNDBOX_H
 #define BOUNDBOX_H
 
-#ifndef _PreComp_
-# include <math.h>
-#endif
-
 #include "Vector3D.h"
 #include "Matrix.h"
 #include "ViewProj.h"

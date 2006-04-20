@@ -30,12 +30,9 @@
 
 
 // Include files
-#ifndef _PreComp_
-# include <xercesc/util/XercesDefs.hpp>
-# include <iostream>
-#endif
-
-# include <xercesc/util/XMLString.hpp>
+#include <iostream>
+#include <xercesc/util/XercesDefs.hpp>
+#include <xercesc/util/XMLString.hpp>
 
 
 XERCES_CPP_NAMESPACE_BEGIN

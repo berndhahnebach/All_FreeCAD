@@ -25,9 +25,7 @@
 #define VECTOR3D_H
 
 
-#ifndef _PreComp_
-# include <math.h>
-#endif
+#include <math.h>
 
 #define FLOAT_EPS   1.0e-4f 
 

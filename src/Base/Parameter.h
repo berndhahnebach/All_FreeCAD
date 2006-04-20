@@ -46,9 +46,7 @@
 #include <map>
 #include <vector>
 
-#ifndef _PreComp_
-# include <xercesc/util/XercesDefs.hpp>
-#endif
+#include <xercesc/util/XercesDefs.hpp>
 
 XERCES_CPP_NAMESPACE_BEGIN
 class DOMNode;

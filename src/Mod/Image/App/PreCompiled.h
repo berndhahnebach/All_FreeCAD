@@ -3,8 +3,15 @@
 
 #include "../../../FCConfig.h"
 
+// Exporting of App classes
+#ifdef FC_OS_WIN32
+# define ImageAppExport __declspec(dllexport)
+#else // for Linux
+# define ImageAppExport
+#endif
+
 #ifdef _PreComp_
-/// here get the warnings of to long specifieres disabled (needet for VC6)
+/// here get the warnings of to long specifieres disabled (needed for VC6)
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
 #	pragma warning( disable : 4503 )
@@ -20,13 +27,6 @@
 #include <map>
 #include <vector>
 #include <set>
-
-// Exporting of App classes
-#ifdef FC_OS_WIN32
-# define ImageAppExport __declspec(dllexport)
-#else // for Linux
-# define ImageAppExport
-#endif
 
 #include <Python.h>
 #include <xercesc/util/XercesDefs.hpp>

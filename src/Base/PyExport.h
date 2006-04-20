@@ -11,20 +11,17 @@
 // Std. configurations
 
 // needed header
-#undef slots
 
 // (re-)defined in pyconfig.h
 #if defined (_POSIX_C_SOURCE)
 #	undef  _POSIX_C_SOURCE
 #endif
 
+#undef slots
 #include <Python.h>
 #define slots
 //#include <iostream>
-
-#ifndef _PreComp_
-#	include<typeinfo>
-#endif
+//#include <typeinfo>
 
 // forward
 //class FCInterpreter;
