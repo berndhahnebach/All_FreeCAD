@@ -167,8 +167,14 @@ PyObject *VectorPy::_getattr(char *attr)				// __getattr__ function: note only n
     }
     return list;
   }
+  else if (Base::streq(attr, "x"))
+    return Py_BuildValue("f",_cVector.x);
+  else if (Base::streq(attr, "y"))
+    return Py_BuildValue("f",_cVector.y);
+  else if (Base::streq(attr, "z"))
+    return Py_BuildValue("f",_cVector.z);
   else
-   _getattr_up(PyObjectBase); 						
+   _getattr_up(PyObjectBase);
 } 
 
 int VectorPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state

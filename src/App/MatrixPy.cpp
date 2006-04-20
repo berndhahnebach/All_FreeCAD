@@ -204,8 +204,40 @@ PyObject *MatrixPy::_getattr(char *attr)				// __getattr__ function: note only n
     }
     return list;
   }
+  else if (Base::streq(attr, "a11"))
+    return PyFloat_FromDouble(_cMatrix[0][0]);
+  else if (Base::streq(attr, "a12"))
+    return PyFloat_FromDouble(_cMatrix[0][1]);
+  else if (Base::streq(attr, "a13"))
+    return PyFloat_FromDouble(_cMatrix[0][2]);
+  else if (Base::streq(attr, "a14"))
+    return PyFloat_FromDouble(_cMatrix[0][3]);
+  else if (Base::streq(attr, "a21"))
+    return PyFloat_FromDouble(_cMatrix[1][0]);
+  else if (Base::streq(attr, "a22"))
+    return PyFloat_FromDouble(_cMatrix[1][1]);
+  else if (Base::streq(attr, "a23"))
+    return PyFloat_FromDouble(_cMatrix[1][2]);
+  else if (Base::streq(attr, "a24"))
+    return PyFloat_FromDouble(_cMatrix[1][3]);
+  else if (Base::streq(attr, "a31"))
+    return PyFloat_FromDouble(_cMatrix[2][0]);
+  else if (Base::streq(attr, "a32"))
+    return PyFloat_FromDouble(_cMatrix[2][1]);
+  else if (Base::streq(attr, "a33"))
+    return PyFloat_FromDouble(_cMatrix[2][2]);
+  else if (Base::streq(attr, "a34"))
+    return PyFloat_FromDouble(_cMatrix[2][3]);
+  else if (Base::streq(attr, "a41"))
+    return PyFloat_FromDouble(_cMatrix[3][0]);
+  else if (Base::streq(attr, "a42"))
+    return PyFloat_FromDouble(_cMatrix[3][1]);
+  else if (Base::streq(attr, "a43"))
+    return PyFloat_FromDouble(_cMatrix[3][2]);
+  else if (Base::streq(attr, "a44"))
+    return PyFloat_FromDouble(_cMatrix[3][3]);
   else
-   _getattr_up(PyObjectBase); 						
+   _getattr_up(PyObjectBase);
 } 
 
 
