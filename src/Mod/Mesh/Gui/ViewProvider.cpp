@@ -31,6 +31,8 @@
 # include <Inventor/nodes/SoIndexedLineSet.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoMaterialBinding.h>
+# include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoShapeHints.h>
 #endif

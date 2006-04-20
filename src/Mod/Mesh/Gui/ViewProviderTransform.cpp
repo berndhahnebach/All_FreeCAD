@@ -26,8 +26,9 @@
 #ifndef _PreComp_
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
-# include <Inventor/manips/SoTransformerManip.h> 
+# include <Inventor/manips/SoTransformerManip.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
