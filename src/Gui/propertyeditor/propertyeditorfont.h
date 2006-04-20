@@ -26,9 +26,7 @@
 
 #include "propertyeditoritem.h"
 
-#ifndef _PreComp_
-# include <qpushbutton.h>
-#endif
+#include <qpushbutton.h>
 
 
 namespace Gui {

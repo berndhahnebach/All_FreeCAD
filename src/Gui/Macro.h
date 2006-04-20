@@ -26,9 +26,7 @@
 
 // Std. configurations
 
-#ifndef _PreComp_
-# include <qstring.h>
-#endif
+#include <qstring.h>
 
 
 namespace Gui {

@@ -24,9 +24,7 @@
 #ifndef PROGRESS_BAR_H
 #define PROGRESS_BAR_H
 
-#ifndef _PreComp_
-# include <qprogressbar.h>
-#endif
+#include <qprogressbar.h>
 
 #include "../Base/Sequencer.h"
 

@@ -25,10 +25,8 @@
 #define __FCVIEW_H__
 
 
-#ifndef _PreComp_
-# include <vector>
-# include <qmainwindow.h>
-#endif
+#include <vector>
+#include <qmainwindow.h>
 
 namespace App
 {

@@ -27,11 +27,9 @@
 
 #include "Window.h"
 
-#ifndef _PreComp_
-# include <qcombobox.h>
-# include <qlineedit.h>
-# include <qvalidator.h>
-#endif
+#include <qcombobox.h>
+#include <qlineedit.h>
+#include <qvalidator.h>
 
 namespace Gui {
 

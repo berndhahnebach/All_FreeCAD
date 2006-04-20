@@ -24,9 +24,7 @@
 #ifndef WHATS_THIS_H
 #define WHATS_THIS_H
 
-#ifndef _PreComp_
-# include <qwhatsthis.h>
-#endif
+#include <qwhatsthis.h>
 
 #include "Command.h"
 

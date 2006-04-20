@@ -24,10 +24,8 @@
 #ifndef __HELP_VIEW_H__
 #define __HELP_VIEW_H__
 
-#ifndef _PreComp_
-# include <qmime.h>
-# include <qtextbrowser.h>
-#endif
+#include <qmime.h>
+#include <qtextbrowser.h>
 
 #include "DockWindow.h"
 #include "Window.h"

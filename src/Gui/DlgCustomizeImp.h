@@ -24,9 +24,7 @@
 #ifndef DLGCUSTOMIZE_H
 #define DLGCUSTOMIZE_H
 
-#ifndef _PreComp_
-# include <qdialog.h>
-#endif
+#include <qdialog.h>
 
 class QTabWidget;
 class QGridLayout;

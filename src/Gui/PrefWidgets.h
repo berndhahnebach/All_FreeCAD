@@ -30,15 +30,13 @@
 #include "SpinBox.h"
 #include "FileDialog.h"
 
-#ifndef _PreComp_
-# include <qbuttongroup.h>
-# include <qcheckbox.h>
-# include <qcombobox.h>
-# include <qlineedit.h>
-# include <qlistbox.h>
-# include <qradiobutton.h>
-# include <qslider.h>
-#endif
+#include <qbuttongroup.h>
+#include <qcheckbox.h>
+#include <qcombobox.h>
+#include <qlineedit.h>
+#include <qlistbox.h>
+#include <qradiobutton.h>
+#include <qslider.h>
 
 // forward declarations
 class QDoubleValidator;

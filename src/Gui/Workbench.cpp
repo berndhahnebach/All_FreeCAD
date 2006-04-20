@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qaction.h>
 # include <qkeysequence.h>
 # include <qpopupmenu.h>
 # include <qtoolbar.h>

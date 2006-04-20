@@ -24,14 +24,18 @@
 #ifndef GUI_COMMAND_H
 #define GUI_COMMAND_H
 
-#ifndef _PreComp_
-# include <qaction.h>
-# include <qstringlist.h>
-# include <string>
-# include <vector>
-#endif
+#include <qstringlist.h>
+
+#include <list>
+#include <map>
+#include <string>
+#include <vector>
 
 #include "../Base/PyExport.h"
+
+class QAction;
+class QActionGroup;
+class QWidget;
 
 namespace App
 {
@@ -39,8 +43,6 @@ namespace App
   class AbstractFeature;
   class DocumentObject;
 }
-
-class QAction;
 
 namespace Gui {
 

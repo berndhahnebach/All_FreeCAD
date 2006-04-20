@@ -24,13 +24,10 @@
 #ifndef __PYTHON_EDITOR_H__
 #define __PYTHON_EDITOR_H__
 
+#include <qsyntaxhighlighter.h>
+
 #include "View.h"
 #include "Window.h"
-
-#ifndef _PreComp_
-# include <qsyntaxhighlighter.h>
-#endif
-
 #include "TextEdit.h"
 
 class QListBox;

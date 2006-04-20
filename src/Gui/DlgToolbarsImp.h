@@ -26,10 +26,6 @@
 
 #include "DlgToolbars.h"
 
-#ifndef _PreComp_
-#endif
-
-
 namespace Gui {
 class Command;
 class CustomToolBar;

@@ -24,11 +24,9 @@
 #ifndef UNDOREDODLG_H
 #define UNDOREDODLG_H
 
-#ifndef _PreComp_
-# include <qlistbox.h>
-# include <qpopupmenu.h>
-# include <qtoolbutton.h>
-#endif
+#include <qlistbox.h>
+#include <qpopupmenu.h>
+#include <qtoolbutton.h>
 
 // forward declarations
 class QVBoxLayout; 

@@ -26,9 +26,7 @@
 
 #include "DockWindow.h"
 
-#ifndef _PreComp_
-# include <qtoolbutton.h>
-#endif
+#include <qtoolbutton.h>
 
 class QScrollView;
 class QVBoxLayout;

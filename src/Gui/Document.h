@@ -26,15 +26,11 @@
 
 #include "View.h"
 
-#ifndef _PreComp_
-# include <map>
-# include <string>
-#endif
+#include <list>
+#include <map>
+#include <string>
 
 #include <Base/PyExport.h>
-#include <Base/Matrix.h>
-using Base::Matrix4D;
-
 #include <App/Document.h>
 
 #ifdef _MSC_VER
@@ -152,7 +148,7 @@ public:
   /// set the feature in Noshow
   void setHide(const char* name);
   /// set the feature transformation (only viewing)
-  void setPos(const char* name, const Matrix4D& rclMtrx);
+  void setPos(const char* name, const Base::Matrix4D& rclMtrx);
   /// updates the view property of all view provider
   void update(void);
   ViewProvider *getViewProviderByName(const char* name);

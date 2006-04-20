@@ -24,14 +24,12 @@
 #ifndef __FC_REPORT_VIEW_H__
 #define __FC_REPORT_VIEW_H__
 
-#ifndef _PreComp_
-# include <qsyntaxhighlighter.h>
-# include <qtextedit.h>
-#endif
+#include <qsyntaxhighlighter.h>
+#include <qtextedit.h>
 
+#include <Base/Console.h>
 #include "DockWindow.h"
 #include "Window.h"
-#include "../Base/Console.h"
 
 class QTabWidget;
 

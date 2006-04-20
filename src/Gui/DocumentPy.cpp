@@ -225,7 +225,7 @@ PYFUNCIMP_D(DocumentPy,show)
 PYFUNCIMP_D(DocumentPy,setPos)
 { 
   char *psFeatStr;
-  Matrix4D mat;
+  Base::Matrix4D mat;
   PyObject *pcMatObj;
   if (!PyArg_ParseTuple(args, "sO!;Name of the Feature and the transformation matrix have to be given!",
                         &psFeatStr,

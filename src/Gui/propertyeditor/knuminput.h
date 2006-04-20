@@ -27,10 +27,8 @@
 #ifndef K_NUMINPUT_H
 #define K_NUMINPUT_H
 
-#ifndef _PreComp_
-# include <qwidget.h>
-# include <qspinbox.h>
-#endif
+#include <qwidget.h>
+#include <qspinbox.h>
 
 class QLabel;
 class QSlider;

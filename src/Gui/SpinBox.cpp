@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <assert.h>
+# include <algorithm>
 # include <qapplication.h>
 # include <qcursor.h>
 # include <qlineedit.h>

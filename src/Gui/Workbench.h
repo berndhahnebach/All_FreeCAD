@@ -24,10 +24,8 @@
 #ifndef WORKBENCH_H
 #define WORKBENCH_H
 
-#ifndef _PreComp_
-# include <qstring.h>
-# include <qstringlist.h>
-#endif
+#include <qstring.h>
+#include <qstringlist.h>
 
 #include <Base/PyExport.h>
 #include <Base/Base.h>

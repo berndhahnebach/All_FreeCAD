@@ -24,9 +24,7 @@
 #ifndef MENUMANAGER_H
 #define MENUMANAGER_H
 
-#ifndef _PreComp_
-# include <qstring.h>
-#endif
+#include <qstring.h>
 
 class QPopupMenu;
 class QMenuData;

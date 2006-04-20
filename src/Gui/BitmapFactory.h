@@ -26,11 +26,9 @@
 
 #include "../Base/Factory.h"
 
-#ifndef _PreComp_
-# include <qmap.h>
-# include <qpixmap.h>
-# include <qstringlist.h>
-#endif
+#include <qmap.h>
+#include <qpixmap.h>
+#include <qstringlist.h>
 
 namespace Gui {
 

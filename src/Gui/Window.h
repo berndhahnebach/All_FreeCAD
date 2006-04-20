@@ -25,9 +25,6 @@
 #define __WINDOW_H__
 
 
-#ifndef _PreComp_
-#endif
-
 #include "../Base/Parameter.h"
 #include "View.h"
 

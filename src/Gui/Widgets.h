@@ -24,13 +24,11 @@
 #ifndef ___WIDGETS_H__
 #define ___WIDGETS_H__
 
-#ifndef _PreComp_
-# include <qiconview.h>
-# include <qlineedit.h>
-# include <qlistview.h>
-# include <qmessagebox.h>
-# include <qpushbutton.h>
-#endif
+#include <qiconview.h>
+#include <qlineedit.h>
+#include <qlistview.h>
+#include <qmessagebox.h>
+#include <qpushbutton.h>
 
 class QAction;
 class QHBoxLayout;

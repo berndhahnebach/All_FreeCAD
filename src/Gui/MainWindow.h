@@ -24,12 +24,9 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
-#ifndef _PreComp_
-# include <string>
-# include <vector>
-# include <qstringlist.h>
-#endif
-
+#include <string>
+#include <vector>
+#include <qstringlist.h>
 #include <qmainwindow.h>
 #include <qworkspace.h>
 

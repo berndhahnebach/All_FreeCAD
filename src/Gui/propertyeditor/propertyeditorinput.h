@@ -26,9 +26,7 @@
 
 #include "propertyeditoritem.h"
 
-#ifndef _PreComp_
-# include <qspinbox.h>
-#endif
+#include <qspinbox.h>
 
 namespace Gui {
 namespace PropertyEditor {

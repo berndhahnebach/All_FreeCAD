@@ -24,11 +24,9 @@
 #ifndef TOOLS_H__
 #define TOOLS_H__
 
-#ifndef _PreComp_
-# include <qstring.h>
-# include <qpixmap.h>
-# include <Inventor/fields/SoSFImage.h>
-#endif
+#include <qstring.h>
+#include <qpixmap.h>
+#include <Inventor/fields/SoSFImage.h>
 
 namespace Gui {
 

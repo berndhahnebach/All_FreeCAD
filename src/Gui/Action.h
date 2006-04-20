@@ -24,12 +24,9 @@
 #ifndef __ACTION_H__
 #define __ACTION_H__
 
-#ifndef _PreComp_
-# include <qaction.h>
-# include <qdragobject.h>
-# include <qmainwindow.h>
-# include <qtooltip.h>
-#endif
+#include <qaction.h>
+#include <qdragobject.h>
+#include <qmainwindow.h>
 
 namespace Gui 
 {

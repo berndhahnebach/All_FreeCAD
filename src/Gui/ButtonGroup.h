@@ -24,9 +24,10 @@
 #ifndef __BUTTON_GROUP_H__
 #define __BUTTON_GROUP_H__
 
-#ifndef _PreComp_
-# include <qbuttongroup.h>
-#endif
+#include <map>
+
+#include <qbuttongroup.h>
+#include <qpixmap.h>
 
 class QScrollView;
 class QPopupMenu;

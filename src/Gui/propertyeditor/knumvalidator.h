@@ -22,9 +22,7 @@
 #ifndef __KNUMVALIDATOR_H
 #define __KNUMVALIDATOR_H
 
-#ifndef _PreComp_
-# include <qvalidator.h>
-#endif
+#include <qvalidator.h>
 
 class QWidget;
 class QString;

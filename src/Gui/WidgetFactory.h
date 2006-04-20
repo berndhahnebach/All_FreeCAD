@@ -24,10 +24,8 @@
 #ifndef __FC_WIDGET_FACTORY_H__
 #define __FC_WIDGET_FACTORY_H__
 
-#ifndef _PreComp_
-# include <qdialog.h>
-# include <vector>
-#endif
+#include <qdialog.h>
+#include <vector>
 
 # include <qwidgetfactory.h>
 

@@ -27,11 +27,9 @@
 #include "View.h"
 #include "Window.h"
 
-#ifndef _PreComp_
-# include <qlistbox.h>
-# include <qtextedit.h>
-# include <private/qrichtext_p.h>
-#endif
+#include <qlistbox.h>
+#include <qtextedit.h>
+#include <private/qrichtext_p.h>
 
 class QListBox;
 class QListBoxItem;

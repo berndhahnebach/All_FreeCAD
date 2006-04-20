@@ -26,12 +26,10 @@
 
 // Std. configurations
 
-#ifndef _PreComp_
-# include <string>
-# include <vector>
-# include <list>
-# include <map>
-#endif
+#include <string>
+#include <vector>
+#include <list>
+#include <map>
 
 #include <Base/Observer.h>
 #include <Base/PyExport.h>

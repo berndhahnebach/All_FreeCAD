@@ -27,10 +27,8 @@
 #include "../Base/Parameter.h"
 #include "PrefWidgets.h"
 
-#ifndef _PreComp_
-# include <qpopupmenu.h>
-# include <qtoolbar.h>
-#endif
+#include <qpopupmenu.h>
+#include <qtoolbar.h>
 
 // forward declarations
 class QDoubleValidator;

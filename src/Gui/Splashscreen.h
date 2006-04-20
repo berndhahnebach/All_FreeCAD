@@ -24,10 +24,8 @@
 #ifndef __SPLASHSCREEN_H__
 #define __SPLASHSCREEN_H__
 
-#ifndef _PreComp_
-# include <qsplashscreen.h>
-# include <qdialog.h>
-#endif
+#include <qsplashscreen.h>
+#include <qdialog.h>
 
 class QHBoxLayout;
 class QGridLayout;

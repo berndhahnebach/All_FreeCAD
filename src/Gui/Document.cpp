@@ -34,6 +34,7 @@
 
 
 #include <Base/Exception.h>
+#include <Base/Matrix.h>
 
 #include <App/Document.h>
 #include <App/DocumentObject.h>
@@ -238,7 +239,7 @@ void Document::setHide(const char* name)
 }
 
 /// set the feature in Noshow
-void Document::setPos(const char* name, const Matrix4D& rclMtrx)
+void Document::setPos(const char* name, const Base::Matrix4D& rclMtrx)
 {
   ViewProvider* pcProv = getViewProviderByName(name);
 

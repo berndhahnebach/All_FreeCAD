@@ -68,7 +68,7 @@ public:
     EMISSIVE, EMISSIVE_DIFFUSE, BOX
   };
 
-  bool isHighlighted(void){return highlighted;}
+  SbBool isHighlighted(void){return highlighted;}
 
   SoSFColor colorHighlight;
   SoSFColor colorSelection;

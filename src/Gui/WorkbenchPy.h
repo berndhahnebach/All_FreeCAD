@@ -24,9 +24,6 @@
 #ifndef WORKBENCH_PY_H
 #define WORKBENCH_PY_H
 
-#ifndef _PreComp_
-#endif
-
 #include "../Base/PyExportImp.h"
 
 namespace Gui {

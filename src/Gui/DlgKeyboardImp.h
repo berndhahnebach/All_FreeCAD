@@ -26,9 +26,7 @@
 
 #include "DlgKeyboard.h"
 
-#ifndef _PreComp_
-# include <qmap.h>
-#endif
+#include <qmap.h>
 
 
 namespace Gui {

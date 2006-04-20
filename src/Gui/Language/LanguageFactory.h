@@ -26,11 +26,9 @@
 
 #include <Base/Factory.h>
 
-#ifndef _PreComp_
-# include <qtranslator.h>
-# include <qvaluelist.h>
-# include <vector>
-#endif
+#include <qtranslator.h>
+#include <qvaluelist.h>
+#include <vector>
 
 namespace Gui {
 

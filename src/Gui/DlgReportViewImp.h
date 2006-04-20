@@ -26,9 +26,6 @@
 
 #include "DlgReportView.h"
 
-#ifndef _PreComp_
-#endif
-
 namespace Gui {
 namespace Dialog {
 

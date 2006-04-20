@@ -24,9 +24,7 @@
 #ifndef TOOLBAR_MANAGER_H
 #define TOOLBAR_MANAGER_H
 
-#ifndef _PreComp_
-# include <qstring.h>
-#endif
+#include <qstring.h>
 
 class QToolBar;
 

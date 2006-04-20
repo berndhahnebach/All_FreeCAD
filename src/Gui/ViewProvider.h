@@ -24,10 +24,8 @@
 #ifndef __VIEWPROVIDER_H__
 #define __VIEWPROVIDER_H__
 
-#ifndef _PreComp_
-# include <map>
-# include <vector>
-#endif
+#include <map>
+#include <vector>
 
 class SoNode;
 class SoPath;

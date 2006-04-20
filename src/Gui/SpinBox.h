@@ -24,9 +24,7 @@
 #ifndef ___SPINBOX_H__
 #define ___SPINBOX_H__
 
-#ifndef _PreComp_
-# include <qspinbox.h>
-#endif
+#include <qspinbox.h>
 
 namespace Gui {
 

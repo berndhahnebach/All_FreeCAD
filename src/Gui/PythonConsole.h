@@ -24,10 +24,8 @@
 #ifndef PYTHON_CONSOLE_H
 #define PYTHON_CONSOLE_H
 
-#ifndef _PreComp_
-# include <qstringlist.h>
-# include <qsyntaxhighlighter.h>
-#endif
+#include <qstringlist.h>
+#include <qsyntaxhighlighter.h>
 
 #include "PythonEditor.h"
 

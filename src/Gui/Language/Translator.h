@@ -24,10 +24,8 @@
 #ifndef TRANSLATOR_H__
 #define TRANSLATOR_H__
 
-#ifndef _PreComp_
-# include <qptrlist.h>
-# include <qtranslator.h>
-#endif
+#include <qptrlist.h>
+#include <qtranslator.h>
 
 namespace Gui {
 

@@ -24,11 +24,9 @@
 #ifndef PROPERTYEDITORITEM_H
 #define PROPERTYEDITORITEM_H
 
-#ifndef _PreComp_
-# include <qlistview.h>
-# include <qvariant.h>
-# include <vector>
-#endif
+#include <qlistview.h>
+#include <qvariant.h>
+#include <vector>
 
 #include <Base/Type.h>
 #include <App/Property.h>

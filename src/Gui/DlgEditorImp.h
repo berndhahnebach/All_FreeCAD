@@ -24,9 +24,7 @@
 #ifndef DLG_EDITOR_IMP_H
 #define DLG_EDITOR_IMP_H
 
-#ifndef _PreComp_
-# include <qmap.h>
-#endif
+#include <qmap.h>
 
 #include "DlgEditor.h"
 

@@ -26,9 +26,7 @@
 #define __PROPTERYVIEW_H__
 
 
-#ifndef _PreComp_
-# include <qptrlist.h>
-#endif
+#include <qptrlist.h>
 
 #include "DockWindow.h"
 #include "Selection.h"

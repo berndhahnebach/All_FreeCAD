@@ -24,9 +24,7 @@
 #ifndef GUI_WAIT_CURSOR_H
 #define GUI_WAIT_CURSOR_H
 
-#ifndef _PreComp_
-# include <qthread.h>
-#endif
+#include <qthread.h>
 
 
 namespace Gui {

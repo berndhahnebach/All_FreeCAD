@@ -24,9 +24,7 @@
 #ifndef __TREE_H_
 #define __TREE_H_
 
-#ifndef _PreComp_
-# include <qlistview.h>
-#endif
+#include <qlistview.h>
 
 #include <Base/PyExport.h>
 #include <App/Document.h>

@@ -24,11 +24,9 @@
 #ifndef __VIEW3DINVENTORVIEWER__
 #define __VIEW3DINVENTORVIEWER__
 
-#ifndef _PreComp_
-# include <qcursor.h>
-# include <set>
-# include <stack>
-#endif
+#include <qcursor.h>
+#include <set>
+#include <stack>
 
 #include <Base/Vector3D.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>

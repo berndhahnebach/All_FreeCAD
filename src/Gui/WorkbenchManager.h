@@ -24,10 +24,8 @@
 #ifndef WORKBENCH_MANAGER_H
 #define WORKBENCH_MANAGER_H
 
-#ifndef _PreComp_
-# include <qmap.h>
-# include <qstring.h>
-#endif
+#include <qmap.h>
+#include <qstring.h>
 
 namespace Gui {
 

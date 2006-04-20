@@ -24,10 +24,8 @@
 #ifndef DlgDisplayPropertiesImp_H
 #define DlgDisplayPropertiesImp_H
 
-#ifndef _PreComp_
-# include <set>
-# include <vector>
-#endif
+#include <set>
+#include <vector>
 
 #include "DlgDisplayProperties.h"
 #include <App/Material.h>

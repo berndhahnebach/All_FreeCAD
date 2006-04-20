@@ -24,11 +24,9 @@
 #ifndef ___FILE_DIALOG_H__
 #define ___FILE_DIALOG_H__
 
-#ifndef _PreComp_
-# include <qfiledialog.h>
-# include <qpixmap.h>
-# include <qscrollview.h>
-#endif
+#include <qfiledialog.h>
+#include <qpixmap.h>
+#include <qscrollview.h>
 
 class QCheckBox;
 class QLineEdit;

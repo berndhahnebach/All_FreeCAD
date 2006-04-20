@@ -27,9 +27,7 @@
 #include "DlgTipOfTheDay.h"
 #include "Window.h"
 
-#ifndef _PreComp_
-# include <qstringlist.h>
-#endif
+#include <qstringlist.h>
 
 namespace Gui {
 namespace Dialog {

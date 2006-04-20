@@ -24,9 +24,7 @@
 #ifndef PROCESS__H__
 #define PROCESS__H__
 
-#ifndef _PreComp_
-# include <qprocess.h>
-#endif
+#include <qprocess.h>
 
 #include "../Base/Observer.h"
 

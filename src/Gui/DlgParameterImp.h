@@ -27,12 +27,10 @@
 #include "DlgParameter.h"
 #include "../Base/Parameter.h"
 
-#ifndef _PreComp_
-# include <qlistview.h>
-# include <qmap.h>
-# include <qmenudata.h>
-# include <qpainter.h>
-#endif 
+#include <qlistview.h>
+#include <qmap.h>
+#include <qmenudata.h>
+#include <qpainter.h>
 
 class QPopupMenu;
 

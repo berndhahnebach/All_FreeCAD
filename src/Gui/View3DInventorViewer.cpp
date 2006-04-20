@@ -32,6 +32,9 @@
 # include <qpainter.h>
 # include <qpen.h>
 # include <qpopupmenu.h>
+# ifdef FC_OS_WIN32
+#  include <windows.h>
+# endif
 # include <GL/gl.h>
 # include <Inventor/actions/SoHandleEventAction.h> 
 # include <Inventor/nodes/SoBaseColor.h>
