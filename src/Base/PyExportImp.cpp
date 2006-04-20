@@ -137,6 +137,7 @@ PyObject *PyObjectBase::_getattr(char *attr)
     //FIXME: How do we treat this correctly?
 	  PyTypeObject *tp = this->ob_type;
 		PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", tp->tp_name, attr);
+    return NULL;
   }
   
   Py_Return;
