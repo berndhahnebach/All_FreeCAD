@@ -24,9 +24,6 @@
 #ifndef _PointsAlgos_h_
 #define _PointsAlgos_h_
 
-#ifndef _PreComp_
-#endif
-
 
 namespace Points
 {

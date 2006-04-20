@@ -24,9 +24,6 @@
 #ifndef RAY_WORKBENCH_H
 #define RAY_WORKBENCH_H
 
-#ifndef _PreComp_
-#endif
-
 #include <Gui/Workbench.h>
 
 namespace RaytracingGui {

@@ -23,10 +23,8 @@
 #ifndef MESH_BUILDER_H
 #define MESH_BUILDER_H
 
-#ifndef _PreComp_
-# include <set>
-# include <vector>
-#endif
+#include <set>
+#include <vector>
 
 #include "MeshKernel.h"
 #include <Base/Vector3D.h>

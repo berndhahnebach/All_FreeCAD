@@ -24,6 +24,7 @@
 #ifndef __DLGREADPOINTS_H__
 #define __DLGREADPOINTS_H__
 
+#include <string>
 #include "DlgPointsRead.h"
 
 namespace PointsGui {

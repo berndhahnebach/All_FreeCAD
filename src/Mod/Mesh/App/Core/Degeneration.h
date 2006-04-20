@@ -24,11 +24,9 @@
 #ifndef MESH_DEGENERATION_H
 #define MESH_DEGENERATION_H
 
-#ifndef _PreComp_
-# include <bitset>
-# include <string>
-# include <vector>
-#endif
+#include <bitset>
+#include <string>
+#include <vector>
 
 #include "Evaluation.h"
 #include "Definitions.h"

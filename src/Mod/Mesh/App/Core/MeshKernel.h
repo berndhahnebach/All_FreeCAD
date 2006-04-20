@@ -24,10 +24,8 @@
 #ifndef MESH_KERNEL_H
 #define MESH_KERNEL_H
 
-#ifndef _PreComp_
-# include <assert.h>
-# include <iostream>
-#endif
+#include <assert.h>
+#include <iostream>
 
 #include "Elements.h"
 #include "Helpers.h"

@@ -24,9 +24,6 @@
 #ifndef POINTS_WORKBENCH_H
 #define POINTS_WORKBENCH_H
 
-#ifndef _PreComp_
-#endif
-
 #include <Gui/Workbench.h>
 
 namespace PointsGui {

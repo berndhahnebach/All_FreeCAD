@@ -24,10 +24,8 @@
 #ifndef MESH_TOPOALGORITHM_H
 #define MESH_TOPOALGORITHM_H
 
-#ifndef _PreComp_
-# include <map>
-# include <vector>
-#endif
+#include <map>
+#include <vector>
 
 #include "Definitions.h"
 #include "Iterator.h"

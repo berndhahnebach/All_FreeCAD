@@ -31,7 +31,6 @@
 #include <TopoDS_Shape.hxx>
 #include <App/Feature.h>
 
-class TFunction_Logbook;
 class PyObjectBase;
 class FeaturePy;
 

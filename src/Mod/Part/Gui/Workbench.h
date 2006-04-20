@@ -24,9 +24,6 @@
 #ifndef PART_WORKBENCH_H
 #define PART_WORKBENCH_H
 
-#ifndef _PreComp_
-#endif
-
 #include <Gui/Workbench.h>
 
 namespace PartGui {

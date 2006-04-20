@@ -24,9 +24,7 @@
 #ifndef MESH_PROJECTION_H
 #define MESH_PROJECTION_H
 
-#ifndef _PreComp_
-# include <vector>
-#endif
+#include <vector>
 
 #include <Base/Vector3D.h>
 

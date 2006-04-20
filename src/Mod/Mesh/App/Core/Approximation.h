@@ -24,14 +24,12 @@
 #ifndef MESH_APPROXIMATION_H
 #define MESH_APPROXIMATION_H
 
-#ifndef _PreComp_
-# include <Wm3Vector3.h>
-# include <Wm3QuadricSurface.h>
-# include <Wm3Eigen.h>
-# include <list>
-# include <set>
-# include <vector>
-#endif
+#include <Wm3Vector3.h>
+#include <Wm3QuadricSurface.h>
+#include <Wm3Eigen.h>
+#include <list>
+#include <set>
+#include <vector>
 
 #include <Base/Vector3D.h>
 #include <Base/Matrix.h>

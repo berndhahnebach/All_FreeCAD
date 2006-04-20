@@ -254,7 +254,7 @@
 #define ANSI_DECLARATORS
 #define SINGLE
 #define REAL float
-#ifdef __GNUC__
+#ifndef VOID
 # define VOID void
 #endif
 

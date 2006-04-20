@@ -24,9 +24,7 @@
 #ifndef _PartAlgos_h_
 #define _PartAlgos_h_
 
-#ifndef _PreComp_
-# include <TopoDS_Shape.hxx>
-#endif
+#include <TopoDS_Shape.hxx>
 
 
 namespace Part

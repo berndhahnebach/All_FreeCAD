@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <Wm3Vector3.h>
 # include <Wm3DistVector3Segment3.h>
+# include <algorithm>
 #endif
 
 #include "TopoAlgorithm.h"

@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <algorithm>
 # include <Wm3Matrix3.h>
 # include <Wm3Vector3.h>
 #endif

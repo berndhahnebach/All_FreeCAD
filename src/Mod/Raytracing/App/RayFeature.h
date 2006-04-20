@@ -31,7 +31,6 @@
 
 #include "../../Part/App/PartFeature.h"
 
-class TFunction_Logbook;
 class PyObjectBase;
 class FeaturePy;
 

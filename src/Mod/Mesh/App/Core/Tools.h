@@ -24,11 +24,9 @@
 #ifndef MESH_TOOLS_H
 #define MESH_TOOLS_H
 
-#ifndef _PreComp_
-# include <Wm3DistVector3Triangle3.h>
-# include <Wm3Sphere3.h>
-# include <Wm3Triangle3.h>
-#endif
+#include <Wm3DistVector3Triangle3.h>
+#include <Wm3Sphere3.h>
+#include <Wm3Triangle3.h>
 
 #include "MeshKernel.h"
 #include "Algorithm.h"

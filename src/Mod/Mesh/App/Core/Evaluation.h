@@ -24,10 +24,8 @@
 #ifndef MESH_EVALUATION_H
 #define MESH_EVALUATION_H
 
-#ifndef _PreComp_
-# include <list>
-# include <math.h>
-#endif
+#include <list>
+#include <math.h>
 
 #include "MeshKernel.h"
 

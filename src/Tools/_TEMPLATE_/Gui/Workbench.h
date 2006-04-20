@@ -24,9 +24,6 @@
 #ifndef _TEMPLATE__WORKBENCH_H
 #define _TEMPLATE__WORKBENCH_H
 
-#ifndef _PreComp_
-#endif
-
 #include <Gui/Workbench.h>
 
 namespace _TEMPLATE_Gui {

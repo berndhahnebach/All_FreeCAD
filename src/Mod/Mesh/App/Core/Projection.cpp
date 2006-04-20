@@ -35,6 +35,7 @@
 # include <TopExp_Explorer.hxx>
 # include <TopoDS.hxx>
 # include <TopoDS_Edge.hxx>
+# include <algorithm>
 # include <map>
 #endif
 
@@ -123,7 +124,7 @@ void MeshProjection::projectEdgeToEdge( const TopoDS_Edge &aEdge, float fMaxDist
     for (Standard_Integer i = 1; i <= nNbPoints; i++)
     {
       gp_Pnt gpPt = clCurve.Value(clDefl.Parameter(i));
-      acPolyLine.push_back( Vector3f( gpPt.X(), gpPt.Y(), gpPt.Z() ) );
+      acPolyLine.push_back( Vector3f( (float)gpPt.X(), (float)gpPt.Y(), (float)gpPt.Z() ) );
     }
   }
 

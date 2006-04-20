@@ -24,19 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlistview.h>
-# include <Inventor/actions/SoWriteAction.h>
-# include <Inventor/nodes/SoCoordinate3.h>
-# include <Inventor/nodes/SoDrawStyle.h>
-# include <Inventor/nodes/SoIndexedFaceSet.h>
-# include <Inventor/nodes/SoLineSet.h>
-# include <Inventor/nodes/SoLocateHighlight.h>
-# include <Inventor/nodes/SoMaterial.h>
-# include <Inventor/nodes/SoNormal.h>
-# include <Inventor/nodes/SoNormalBinding.h>
-# include <Inventor/nodes/SoPointSet.h>
-# include <Inventor/nodes/SoSeparator.h>
-# include <Inventor/nodes/SoSwitch.h>
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <BRep_Tool.hxx>
 # include <GeomAPI_ProjectPointOnSurf.hxx>
@@ -54,6 +41,19 @@
 # include <Poly_PolygonOnTriangulation.hxx>
 # include <TColStd_Array1OfInteger.hxx>
 # include <TopTools_ListOfShape.hxx>
+# include <qlistview.h>
+# include <Inventor/actions/SoWriteAction.h>
+# include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoIndexedFaceSet.h>
+# include <Inventor/nodes/SoLineSet.h>
+# include <Inventor/nodes/SoLocateHighlight.h>
+# include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoNormal.h>
+# include <Inventor/nodes/SoNormalBinding.h>
+# include <Inventor/nodes/SoPointSet.h>
+# include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoSwitch.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......

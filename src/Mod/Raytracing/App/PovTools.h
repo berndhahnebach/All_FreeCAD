@@ -24,10 +24,8 @@
 #ifndef _PovTools_h_
 #define _PovTools_h_
 
-#ifndef _PreComp_
-# include <gp_Vec.hxx>
-# include <vector>
-#endif
+#include <gp_Vec.hxx>
+#include <vector>
 
 class TopoDS_Shape;
 class TopoDS_Face;

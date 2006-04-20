@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <algorithm>
 # include <map>
 # include <queue>
 #endif
@@ -702,7 +703,7 @@ float MeshKernel::GetVolume() const
   }
 
   fVolume /= 6.0;
-  fVolume = fabs(fVolume);
+  fVolume = (float)fabs(fVolume);
 
   return fVolume;
 }

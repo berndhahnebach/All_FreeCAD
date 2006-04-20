@@ -27,6 +27,7 @@
 # include <Wm3IntrSegment3Plane3.h>
 # include <Wm3Matrix3.h>
 # include <Wm3Vector3.h>
+# include <algorithm>
 # include <vector>
 #endif
 

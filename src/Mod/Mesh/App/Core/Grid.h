@@ -24,9 +24,7 @@
 #ifndef MESH_GRID_H
 #define MESH_GRID_H
 
-#ifndef _PreComp_
-# include <set>
-#endif
+#include <set>
 
 #include "MeshKernel.h"
 #include <Base/Vector3D.h>

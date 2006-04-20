@@ -24,9 +24,7 @@
 #ifndef POINTS_GRID_H
 #define POINTS_GRID_H
 
-#ifndef _PreComp_
-# include <set>
-#endif
+#include <set>
 
 #include "Points.h"
 #include <Base/Vector3D.h>
