@@ -24,22 +24,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlistview.h>
-# include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
-# include <Inventor/nodes/SoFaceSet.h>
-# include <Inventor/nodes/SoLocateHighlight.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoMaterialBinding.h>
-# include <Inventor/nodes/SoNormal.h>
-# include <Inventor/nodes/SoNormalBinding.h>
-# include <Inventor/nodes/SoSeparator.h>
-# include <Inventor/nodes/SoSwitch.h>
 # include <Inventor/draggers/SoTrackballDragger.h>
 # include <Inventor/nodes/SoAntiSquish.h>
 # include <Inventor/nodes/SoSurroundScale.h>
-# include <Inventor/nodes/SoTranslation.h>
 # include <Inventor/manips/SoTransformerManip.h>
 #endif
 

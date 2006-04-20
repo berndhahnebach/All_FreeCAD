@@ -23,11 +23,6 @@
  
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <fcntl.h>
-# include <TopTools_HSequenceOfShape.hxx>
-# include <IGESControl_Writer.hxx>
-# include <IGESControl_Reader.hxx>
-# include <TopoDS_Shape.hxx>
 #endif
 
 #include <Base/Console.h>

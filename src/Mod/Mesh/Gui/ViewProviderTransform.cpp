@@ -24,14 +24,10 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlistview.h>
-# include <Inventor/nodes/SoCoordinate3.h>
+# include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
-# include <Inventor/nodes/SoFaceSet.h>
-# include <Inventor/nodes/SoNormal.h>
-# include <Inventor/nodes/SoNormalBinding.h>
-# include <Inventor/nodes/SoSeparator.h>
-# include <Inventor/nodes/SoSwitch.h>
+# include <Inventor/manips/SoTransformerManip.h> 
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -49,14 +45,6 @@
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/App/Mesh.h>
 #include <Mod/Mesh/App/Core/Iterator.h>
-#include <Inventor/nodes/SoLocateHighlight.h>
-#include <Inventor/nodes/SoDrawStyle.h>
-#include <Inventor/nodes/SoLightModel.h>
-#include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoIndexedFaceSet.h>
-#include <Inventor/nodes/SoMaterialBinding.h>
-#include <Inventor/draggers/SoTransformerDragger.h>
-#include <Inventor/manips/SoTransformerManip.h> 
 
 using namespace MeshGui;
 using Mesh::Feature;

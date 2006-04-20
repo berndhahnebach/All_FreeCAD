@@ -51,7 +51,7 @@ using namespace App;
 PyTypeObject App::MatrixPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"MatrixPy",				/*tp_name*/
+	"Matrix",				/*tp_name*/
 	sizeof(MatrixPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
@@ -181,22 +181,136 @@ PyObject *MatrixPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *MatrixPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-/*		if (Base::streq(attr, "XXX"))
-    {
-      if(_pcMaterial->ambientColor.a == 0.0)			
-			  return Py_BuildValue("(fff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b); 
-      else
-			  return Py_BuildValue("(ffff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b,_pcMaterial->ambientColor.a); 
-        
-    }else*/
-
-	    _getattr_up(PyObjectBase); 						
+  if (Base::streq(attr, "__members__")) {
+    PyObject *list = PyList_New(16);
+    if (list) {
+      PyList_SetItem(list, 0, PyString_FromString("a11"));
+      PyList_SetItem(list, 1, PyString_FromString("a12"));
+      PyList_SetItem(list, 2, PyString_FromString("a13"));
+      PyList_SetItem(list, 3, PyString_FromString("a14"));
+      PyList_SetItem(list, 4, PyString_FromString("a21"));
+      PyList_SetItem(list, 5, PyString_FromString("a22"));
+      PyList_SetItem(list, 6, PyString_FromString("a23"));
+      PyList_SetItem(list, 7, PyString_FromString("a24"));
+      PyList_SetItem(list, 8, PyString_FromString("a31"));
+      PyList_SetItem(list, 9, PyString_FromString("a32"));
+      PyList_SetItem(list,10, PyString_FromString("a33"));
+      PyList_SetItem(list,11, PyString_FromString("a34"));
+      PyList_SetItem(list,12, PyString_FromString("a41"));
+      PyList_SetItem(list,13, PyString_FromString("a42"));
+      PyList_SetItem(list,14, PyString_FromString("a43"));
+      PyList_SetItem(list,15, PyString_FromString("a44"));
+      if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+    }
+    return list;
+  }
+  else
+   _getattr_up(PyObjectBase); 						
 } 
 
 
 int MatrixPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	  return PyObjectBase::_setattr(attr, value); 						
+  if (Base::streq(attr, "a11")) {
+    if (PyInt_Check(value))
+      _cMatrix[0][0] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[0][0] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a12")) {
+    if (PyInt_Check(value))
+      _cMatrix[0][1] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[0][1] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a13")) {
+    if (PyInt_Check(value))
+      _cMatrix[0][2] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[0][2] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a14")) {
+    if (PyInt_Check(value))
+      _cMatrix[0][3] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[0][3] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a21")) {
+    if (PyInt_Check(value))
+      _cMatrix[1][0] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[1][0] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a22")) {
+    if (PyInt_Check(value))
+      _cMatrix[1][1] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[1][1] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a23")) {
+    if (PyInt_Check(value))
+      _cMatrix[1][2] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[1][2] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a24")) {
+    if (PyInt_Check(value))
+      _cMatrix[1][3] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[1][3] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a31")) {
+    if (PyInt_Check(value))
+      _cMatrix[2][0] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[2][0] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a32")) {
+    if (PyInt_Check(value))
+      _cMatrix[2][1] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[2][1] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a33")) {
+    if (PyInt_Check(value))
+      _cMatrix[2][2] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[2][2] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a34")) {
+    if (PyInt_Check(value))
+      _cMatrix[2][3] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[2][3] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a41")) {
+    if (PyInt_Check(value))
+      _cMatrix[3][0] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[3][0] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a42")) {
+    if (PyInt_Check(value))
+      _cMatrix[3][1] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[3][1] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a43")) {
+    if (PyInt_Check(value))
+      _cMatrix[3][2] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[3][2] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "a44")) {
+    if (PyInt_Check(value))
+      _cMatrix[3][3] = (double)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cMatrix[3][3] = (float)PyFloat_AsDouble(value);
+    return 0;
+  }
+
+
+  return PyObjectBase::_setattr(attr, value); 						
 } 
 
 

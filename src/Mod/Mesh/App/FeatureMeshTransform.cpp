@@ -23,8 +23,6 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <fcntl.h>
-# include <ios>
 #endif
 
 #include <Base/Console.h>

@@ -128,15 +128,27 @@ PyObject *PyObjectBase::_getattr(char *attr)
     return Py_BuildValue("s","ObjectBase");
   else if (streq(attr, "__members__"))
     return Py_FindMethod(Methods, this, attr); 
+  else if (streq(attr,"__dict__")) {
+  }
+  else if (streq(attr,"softspace")) {
+    // Internal Python stuff
+  }
+  else {
+    //FIXME: How do we treat this correctly?
+	  PyTypeObject *tp = this->ob_type;
+		PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", tp->tp_name, attr);
+  }
   
   Py_Return;
 }
 
 int PyObjectBase::_setattr(char *attr, PyObject *value)
 {
-  std::string err = "Unknown attribute: ";
-  err += attr;
-  PyErr_SetString(PyExc_AttributeError,err.c_str());
+	PyTypeObject *tp = this->ob_type;
+	PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", tp->tp_name, attr);
+//  std::string err = "Unknown attribute: ";
+//  err += attr;
+//  PyErr_SetString(PyExc_AttributeError,err.c_str());
   return -1;
 }
 

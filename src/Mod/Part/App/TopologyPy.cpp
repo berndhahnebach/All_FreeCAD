@@ -50,7 +50,7 @@ using namespace Part;
 PyTypeObject TopoShapePy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"TopoShapePy",				/*tp_name*/
+	"TopoShape",				/*tp_name*/
 	sizeof(TopoShapePy),	/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */

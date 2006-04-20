@@ -52,7 +52,7 @@ using namespace App;
 PyTypeObject App::FeaturePy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"FeaturePy",				/*tp_name*/
+	"Feature",				/*tp_name*/
 	sizeof(FeaturePy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */

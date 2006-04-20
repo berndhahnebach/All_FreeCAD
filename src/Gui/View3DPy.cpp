@@ -47,7 +47,7 @@ using namespace Gui;
 PyTypeObject View3DPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"GuiView3DPy",				/*tp_name*/
+	"GuiView3D",				/*tp_name*/
 	sizeof(View3DPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */

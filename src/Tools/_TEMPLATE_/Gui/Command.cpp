@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qaction.h>
+# include <qobject.h>
 #endif
 
 #include <Base/Exception.h>

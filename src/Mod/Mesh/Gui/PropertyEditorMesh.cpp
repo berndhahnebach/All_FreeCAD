@@ -24,12 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qapplication.h>
 # include <qlineedit.h>
-# include <qlistview.h>
-# include <qmessagebox.h>
-# include <qpainter.h>
-# include <qvariant.h>
 #endif
 
 #include <Mod/Mesh/App/MeshFeature.h>

@@ -45,7 +45,7 @@ using namespace Points;
 PyTypeObject PointsFeaturePy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "PointsFeaturePy",        /*tp_name*/
+  "Points::Feature",        /*tp_name*/
   sizeof(PointsFeaturePy),  /*tp_basicsize*/
   0,                      /*tp_itemsize*/
                           /* methods */

@@ -51,7 +51,7 @@ using namespace App;
 PyTypeObject DocumentPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"DocumentPy",				/*tp_name*/
+	"Document",				/*tp_name*/
 	sizeof(DocumentPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */

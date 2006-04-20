@@ -46,7 +46,7 @@ using namespace Part;
 PyTypeObject PartFeaturePy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"PartFeaturePy",				/*tp_name*/
+	"Part::Feature",				/*tp_name*/
 	sizeof(PartFeaturePy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */

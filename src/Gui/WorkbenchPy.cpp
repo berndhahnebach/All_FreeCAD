@@ -41,7 +41,7 @@ using namespace Gui;
 PyTypeObject WorkbenchPy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "WorkbenchPy",          /*tp_name*/
+  "Workbench",          /*tp_name*/
   sizeof(WorkbenchPy),    /*tp_basicsize*/
   0,                      /*tp_itemsize*/
   /* methods */
@@ -144,7 +144,7 @@ PYFUNCIMP_D(WorkbenchPy,Activate)
 PyTypeObject PythonWorkbenchPy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "PythonWorkbenchPy",          /*tp_name*/
+  "PythonWorkbench",          /*tp_name*/
   sizeof(PythonWorkbenchPy),    /*tp_basicsize*/
   0,                      /*tp_itemsize*/
   /* methods */

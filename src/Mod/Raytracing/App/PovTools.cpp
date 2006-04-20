@@ -27,8 +27,6 @@
 # include <BRepMesh_IncrementalMesh.hxx>
 # include <GeomAPI_ProjectPointOnSurf.hxx>
 # include <GeomLProp_SLProps.hxx>
-# include <gp_Pnt.hxx>
-# include <gp_Vec.hxx>
 # include <Poly_Triangulation.hxx>
 # include <TopExp_Explorer.hxx>
 # include <TopoDS.hxx>

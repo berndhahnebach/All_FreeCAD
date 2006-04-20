@@ -26,6 +26,8 @@
 
 #include <map>
 #include <vector>
+#include <string>
+#include <qpixmap.h>
 
 class SoNode;
 class SoPath;

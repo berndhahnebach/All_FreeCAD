@@ -41,7 +41,7 @@ using namespace Gui;
 PyTypeObject PythonStdoutPy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "PythonStdoutPy",       /*tp_name*/
+  "PythonStdout",       /*tp_name*/
   sizeof(PythonStdoutPy), /*tp_basicsize*/
   0,                      /*tp_itemsize*/
   /* methods */
@@ -132,7 +132,7 @@ PYFUNCIMP_D(PythonStdoutPy,flush)
 PyTypeObject PythonStderrPy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "PythonStderrPy",       /*tp_name*/
+  "PythonStderr",       /*tp_name*/
   sizeof(PythonStderrPy), /*tp_basicsize*/
   0,                      /*tp_itemsize*/
   /* methods */
@@ -223,7 +223,7 @@ PYFUNCIMP_D(PythonStderrPy,flush)
 PyTypeObject PythonStdinPy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "PythonStdinPy",        /*tp_name*/
+  "PythonStdin",        /*tp_name*/
   sizeof(PythonStdinPy),  /*tp_basicsize*/
   0,                      /*tp_itemsize*/
   /* methods */

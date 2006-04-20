@@ -24,56 +24,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <BRepMesh_IncrementalMesh.hxx>
-# include <BRep_Tool.hxx>
-# include <GeomAPI_ProjectPointOnSurf.hxx>
-# include <Geom_Curve.hxx>
-# include <GeomLProp_SLProps.hxx>
-# include <gp_Trsf.hxx>
-# include <Poly_Array1OfTriangle.hxx>
-# include <Poly_Triangulation.hxx>
-# include <TColgp_Array1OfPnt.hxx>
-# include <TopoDS.hxx>
-# include <TopoDS_Edge.hxx>
-# include <TopoDS_Face.hxx>
-# include <TopoDS_Shape.hxx>
-# include <TopExp_Explorer.hxx>
-# include <TopExp.hxx>
-# include <Poly_PolygonOnTriangulation.hxx>
-# include <TColStd_Array1OfInteger.hxx>
-# include <TopTools_ListOfShape.hxx>
-# include <qlistview.h>
-# include <Inventor/actions/SoWriteAction.h>
-# include <Inventor/nodes/SoComplexity.h>
-# include <Inventor/nodes/SoCoordinate3.h>
-# include <Inventor/nodes/SoDrawStyle.h>
-# include <Inventor/nodes/SoIndexedFaceSet.h>
-# include <Inventor/nodes/SoLineSet.h>
-# include <Inventor/nodes/SoLocateHighlight.h>
-# include <Inventor/nodes/SoMaterial.h>
-# include <Inventor/nodes/SoNormal.h>
-# include <Inventor/nodes/SoNormalBinding.h>
-# include <Inventor/nodes/SoPointSet.h>
-# include <Inventor/nodes/SoSeparator.h>
-# include <Inventor/nodes/SoTransform.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
-#include <Base/Console.h>
 #include <Base/Parameter.h>
-#include <Base/Exception.h>
-#include <Base/Sequencer.h>
-#include <Gui/View3DInventorViewer.h>
-#include <Gui/SoFCSelection.h>
-#include <App/Application.h>
-
 
 #include "ViewProviderBox.h"
-
-#include <Mod/Part/App/PartFeature.h>
-
-#include <Poly_Polygon3D.hxx>
-#include <BRepMesh.hxx>
 
 
 //#include "Tree.h"

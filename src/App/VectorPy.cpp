@@ -47,7 +47,7 @@ using namespace App;
 PyTypeObject App::VectorPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"VectorPy",				/*tp_name*/
+	"Vector",				/*tp_name*/
 	sizeof(VectorPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
@@ -157,11 +157,42 @@ PyObject *VectorPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *VectorPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
+  if (Base::streq(attr, "__members__")) {
+    PyObject *list = PyList_New(3);
+    if (list) {
+      PyList_SetItem(list, 0, PyString_FromString("x"));
+      PyList_SetItem(list, 1, PyString_FromString("y"));
+      PyList_SetItem(list, 2, PyString_FromString("z"));
+      if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+    }
+    return list;
+  }
+  else
    _getattr_up(PyObjectBase); 						
 } 
 
 int VectorPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
+  if (Base::streq(attr, "x")) {
+    if (PyInt_Check(value))
+      _cVector.x = (float)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cVector.x = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "y")) {
+    if (PyInt_Check(value))
+      _cVector.y = (float)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cVector.y = (float)PyFloat_AsDouble(value);
+    return 0;
+  }else if (Base::streq(attr, "z")) {
+    if (PyInt_Check(value))
+      _cVector.z = (float)PyInt_AsLong(value);
+    else if (PyFloat_Check(value))
+      _cVector.z = (float)PyFloat_AsDouble(value);
+    return 0;
+  }
+
   return PyObjectBase::_setattr(attr, value); 						
 } 
 

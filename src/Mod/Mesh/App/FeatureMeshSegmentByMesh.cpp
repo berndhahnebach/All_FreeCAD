@@ -23,8 +23,6 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <fcntl.h>
-# include <ios>
 #endif
 
 #include <Base/Console.h>
@@ -111,7 +109,7 @@ int SegmentByMesh::execute(void)
     for ( std::vector<unsigned long>::iterator it = faces.begin(); it != faces.end(); ++it )
     {
       cFIt.Set(*it);
-      float dist = fabs(cFIt->GetGravityPoint().DistanceToPlane( cBase, cNormal ));
+      float dist = (float)fabs(cFIt->GetGravityPoint().DistanceToPlane( cBase, cNormal ));
       if ( dist < fDist )
       {
         fDist = dist;

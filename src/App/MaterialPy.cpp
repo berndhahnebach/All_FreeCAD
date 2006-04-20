@@ -47,7 +47,7 @@ using namespace App;
 PyTypeObject App::MaterialPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"MaterialPy",				/*tp_name*/
+	"Material",				/*tp_name*/
 	sizeof(MaterialPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
@@ -139,8 +139,7 @@ PyObject *MaterialPy::_getattr(char *attr)				// __getattr__ function: note only
         if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
       }
       return list;
-    }
-    if (Base::streq(attr, "ambientColor"))
+    }else if (Base::streq(attr, "ambientColor"))
     {
       if(_pcMaterial->ambientColor.a == 0.0)
 			  return Py_BuildValue("(fff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b);

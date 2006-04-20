@@ -23,8 +23,6 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <fcntl.h>
-# include <ios>
 # include <Wm3Vector3.h>
 # include <Wm3MeshCurvature.h>
 #endif

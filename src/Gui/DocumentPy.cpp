@@ -51,7 +51,7 @@ using namespace Gui;
 PyTypeObject DocumentPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"GuiDocumentPy",				/*tp_name*/
+	"GuiDocument",				/*tp_name*/
 	sizeof(DocumentPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
