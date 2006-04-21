@@ -39,7 +39,7 @@
 
 using namespace Gui;
 
-#ifdef FC_OS_WINDOWS
+#ifdef FC_OS_WIN32
 
 const unsigned int GUIConsole::s_nMaxLines = 1000;
 unsigned int       GUIConsole::s_nRefCount = 0;
