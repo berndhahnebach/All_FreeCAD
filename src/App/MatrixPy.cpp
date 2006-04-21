@@ -51,7 +51,7 @@ using namespace App;
 PyTypeObject App::MatrixPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"Matrix",				/*tp_name*/
+	"App.Matrix",				/*tp_name*/
 	sizeof(MatrixPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
@@ -73,7 +73,7 @@ PyTypeObject App::MatrixPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About App::MatrixPy",                            /*tp_doc */
+  "About App.Matrix",                            /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */

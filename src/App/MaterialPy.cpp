@@ -128,17 +128,17 @@ PyObject *MaterialPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *MaterialPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 {
-    if (Base::streq(attr, "__members__")) {
-      PyObject *list = PyList_New(5);
-      if (list) {
-        PyList_SetItem(list, 0, PyString_FromString("ambientColor"));
-        PyList_SetItem(list, 1, PyString_FromString("diffuseColor"));
-        PyList_SetItem(list, 2, PyString_FromString("specularColor"));
-        PyList_SetItem(list, 3, PyString_FromString("shininess"));
-        PyList_SetItem(list, 4, PyString_FromString("transparency"));
-        if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+    if (Base::streq(attr, "__dict__")) {
+      PyObject *dict = PyDict_New();
+      if (dict) {
+        PyDict_SetItem(dict, PyString_FromString("ambientColor"),  PyString_FromString(""));
+        PyDict_SetItem(dict, PyString_FromString("diffuseColor"),  PyString_FromString(""));
+        PyDict_SetItem(dict, PyString_FromString("specularColor"), PyString_FromString(""));
+        PyDict_SetItem(dict, PyString_FromString("shininess"),     PyString_FromString(""));
+        PyDict_SetItem(dict, PyString_FromString("transparency"),  PyString_FromString(""));
+        if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
       }
-      return list;
+      return dict;
     }else if (Base::streq(attr, "ambientColor"))
     {
       if(_pcMaterial->ambientColor.a == 0.0)

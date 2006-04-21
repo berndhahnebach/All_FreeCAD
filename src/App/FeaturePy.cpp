@@ -168,18 +168,18 @@ PyObject *FeaturePy::_repr(void)
 PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 {
   PY_TRY{
-    if (Base::streq(attr, "__members__"))
+    if (Base::streq(attr, "__dict__"))
     {
-      PyObject *list = DocumentObjectPy::_getattr(attr);
-      if (list) {
-        PyList_Append(list, PyString_FromString("solidMaterial"));
-        PyList_Append(list, PyString_FromString("lineMaterial"));
-        PyList_Append(list, PyString_FromString("pointMaterial"));
-        PyList_Append(list, PyString_FromString("lineSize"));
-        PyList_Append(list, PyString_FromString("pointSize"));
-        if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+      PyObject *dict = DocumentObjectPy::_getattr(attr);
+      if (dict) {
+        PyDict_SetItem(dict, PyString_FromString("solidMaterial"), PyString_FromString(""));
+        PyDict_SetItem(dict, PyString_FromString("lineMaterial"),  PyString_FromString(""));
+        PyDict_SetItem(dict, PyString_FromString("pointMaterial"), PyString_FromString(""));
+        PyDict_SetItem(dict, PyString_FromString("lineSize"),      PyString_FromString(""));
+        PyDict_SetItem(dict, PyString_FromString("pointSize"),     PyString_FromString(""));
+        if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
       }
-      return list;
+      return dict;
     }
     else if (Base::streq(attr, "solidMaterial"))
     {

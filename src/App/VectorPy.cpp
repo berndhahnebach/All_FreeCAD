@@ -47,7 +47,7 @@ using namespace App;
 PyTypeObject App::VectorPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"Vector",				/*tp_name*/
+	"App.Vector",				/*tp_name*/
 	sizeof(VectorPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
@@ -69,7 +69,7 @@ PyTypeObject App::VectorPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About App::VectorPy",                            /*tp_doc */
+  "About App.Vector",                            /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */

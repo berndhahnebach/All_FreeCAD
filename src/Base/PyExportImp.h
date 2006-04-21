@@ -218,11 +218,16 @@ public:
 	 *  @see FCDocument
 	 */
   virtual int _setattr(char *attr, PyObject *value);		// _setattr method
-  /// static wrapper for pythons _setattr()
-  static  int __setattr(PyObject *PyObj, 			// This should be the entry in Type. 
-                        char *attr, 
-                        PyObject *value)
-    {return ((PyObjectBase*) PyObj)->_setattr(attr, value);};
+  /// static wrapper for pythons _setattr(). // This should be the entry in Type. 
+  static  int __setattr(PyObject *PyObj, char *attr, PyObject *value) { 
+    //FIXME: In general we don't allow to delete attributes (i.e. value=0). However, if we want to allow
+    //we must check then in _setattr() of all subclasses whether value is 0.
+    if ( value==0 ) {
+      PyErr_Format(PyExc_TypeError, "Cannot delete attribute: '%s'", attr);
+      return -1;
+    }
+    return ((PyObjectBase*) PyObj)->_setattr(attr, value);
+  }
 
 	/** _repr method
     * Overide this methode to return a string object with some

@@ -130,7 +130,7 @@ PyObject *PyObjectBase::_getattr(char *attr)
     return Py_BuildValue("s",tp->tp_name);
   }
   else if (streq(attr, "__members__")) {
-    // Use __dict__ instead as __members__ is depricated
+    // Use __dict__ instead as __members__ is deprecated
 //    return Py_FindMethod(Methods, this, attr); 
     return NULL;
   }
@@ -154,8 +154,10 @@ PyObject *PyObjectBase::_getattr(char *attr)
 
 int PyObjectBase::_setattr(char *attr, PyObject *value)
 {
-	PyTypeObject *tp = this->ob_type;
-	PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
+ if (!streq(attr,"softspace")) {
+	  PyTypeObject *tp = this->ob_type;
+	  PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
+ }
 //  std::string err = "Unknown attribute: ";
 //  err += attr;
 //  PyErr_SetString(PyExc_AttributeError,err.c_str());

@@ -927,6 +927,77 @@ unsigned short MeshGeomFacet::NearestEdgeToPoint(const Base::Vector3f& rclPt) co
   return usSide;
 }
 
+void MeshGeomFacet::NearestEdgeToPoint(const Base::Vector3f& rclPt, float& fDistance, unsigned short& usSide) const
+{
+  const Base::Vector3f& rcP1 = _aclPoints[0];
+  const Base::Vector3f& rcP2 = _aclPoints[1];
+  const Base::Vector3f& rcP3 = _aclPoints[2];
+
+  float fD1 = FLOAT_MAX;
+  float fD2 = FLOAT_MAX;
+  float fD3 = FLOAT_MAX;
+
+  // 1st edge
+  Base::Vector3f clDir = rcP2 - rcP1;
+  float fLen = Base::Distance(rcP2, rcP1);
+  float t = ( ( rclPt - rcP1 ) * clDir ) / ( fLen * fLen );
+  if ( t < 0.0f )
+    fD1 = Base::Distance(rclPt, rcP1);
+  else if ( t > 1.0f )
+    fD1 = Base::Distance(rclPt, rcP2);
+  else
+    fD1 = ( ( ( rclPt - rcP1 ) % clDir).Length() ) / fLen;
+
+  // 2nd edge
+  clDir = rcP3 - rcP2;
+  fLen = Base::Distance(rcP3, rcP2);
+  t = ( ( rclPt - rcP2 ) * clDir ) / ( fLen * fLen );
+  if ( t < 0.0f )
+    fD2 = Base::Distance(rclPt, rcP2);
+  else if ( t > 1.0f )
+    fD2 = Base::Distance(rclPt, rcP3);
+  else
+    fD2 = ( ( ( rclPt - rcP2 ) % clDir).Length() ) / fLen;
+
+  // 3rd edge
+  clDir = rcP1 - rcP3;
+  fLen = Base::Distance(rcP1, rcP3);
+  t = ( ( rclPt - rcP3 ) * clDir ) / ( fLen * fLen );
+  if ( t < 0.0f )
+    fD3 = Base::Distance(rclPt, rcP3);
+  else if ( t > 1.0f )
+    fD3 = Base::Distance(rclPt, rcP1);
+  else
+    fD3 = ( ( ( rclPt - rcP3 ) % clDir).Length() ) / fLen;
+
+  if ( fD1 < fD2 )
+  {
+    if ( fD1 < fD3 )
+    {
+      usSide = 0;
+      fDistance = fD1;
+    }
+    else
+    {
+      usSide = 2;
+      fDistance = fD3;
+    }
+  }
+  else
+  {
+    if ( fD2 < fD3 )
+    {
+      usSide = 1;
+      fDistance = fD2;
+    }
+    else
+    {
+      usSide = 2;
+      fDistance = fD3;
+    }
+  }
+}
+
 float MeshGeomFacet::VolumeOfPrism (const MeshGeomFacet& rclF1) const
 {
   Base::Vector3f P1 = this->_aclPoints[0];

@@ -395,6 +395,8 @@ public:
   float CenterOfOuterCircle(Base::Vector3f& rclCenter) const;
   /** Returns the edge number of the facet that is nearest to the point \a rclPt. */
   unsigned short NearestEdgeToPoint(const Base::Vector3f& rclPt) const;
+  /** Returns the edge number \a side of the facet and the distance to the edge that is nearest to the point \a rclPt. */
+  void NearestEdgeToPoint(const Base::Vector3f& rclPt, float& fDistance, unsigned short& side) const;
 
 protected:
   Base::Vector3f  _clNormal; /**< Normal of the facet. */
