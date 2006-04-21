@@ -157,15 +157,15 @@ PyObject *VectorPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *VectorPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-  if (Base::streq(attr, "__members__")) {
-    PyObject *list = PyList_New(3);
-    if (list) {
-      PyList_SetItem(list, 0, PyString_FromString("x"));
-      PyList_SetItem(list, 1, PyString_FromString("y"));
-      PyList_SetItem(list, 2, PyString_FromString("z"));
-      if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+  if (Base::streq(attr, "__dict__")) {
+    PyObject *dict = PyDict_New();
+    if (dict) {
+      PyDict_SetItemString(dict,"x", Py_BuildValue("f",_cVector.x));
+      PyDict_SetItemString(dict,"y", Py_BuildValue("f",_cVector.y));
+      PyDict_SetItemString(dict,"z", Py_BuildValue("f",_cVector.z));
+      if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
     }
-    return list;
+    return dict;
   }
   else if (Base::streq(attr, "x"))
     return Py_BuildValue("f",_cVector.x);

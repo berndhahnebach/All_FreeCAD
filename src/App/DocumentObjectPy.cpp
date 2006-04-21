@@ -165,18 +165,17 @@ PyObject *DocumentObjectPy::_getattr(char *attr)				// __getattr__ function: not
       if(prop)
       {
         return prop->getPyObject();
-      } else if (Base::streq(attr, "__members__")) {
+      } else if (Base::streq(attr, "__dict__")) {
         // get the properties to the C++ DocumentObject class
         std::map<std::string,App::Property*> Map;
         _pcDocumentObject->getPropertyMap(Map);
-        PyObject *list = PyList_New(Map.size());
-        if (list) { 
-          int i=0;
+        PyObject *dict = PyDict_New();
+        if (dict) { 
           for ( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
-            PyList_SetItem(list, i++, PyString_FromString(it->first.c_str()));
-          if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+            PyDict_SetItem(dict, PyString_FromString(it->first.c_str()), PyString_FromString(""));
+          if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
         }
-        return list;
+        return dict;
       }
       else
 			  _getattr_up(PyObjectBase); 						

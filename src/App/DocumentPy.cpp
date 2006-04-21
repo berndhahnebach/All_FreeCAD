@@ -167,19 +167,19 @@ PyObject *DocumentPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 {
-		if (streq(attr, "__members__")) {
-			PyObject *list = PyList_New(6);
-			if (list) {
-				PyList_SetItem(list, 0, PyString_FromString("UndoLimit"));
-				PyList_SetItem(list, 1, PyString_FromString("AvailableUndos"));
-				PyList_SetItem(list, 2, PyString_FromString("AvailableRedos"));
-				PyList_SetItem(list, 3, PyString_FromString("HasOpenCommand"));
-				PyList_SetItem(list, 4, PyString_FromString("Name"));
-				PyList_SetItem(list, 5, PyString_FromString("Path"));
-				if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
-			}
-			return list;
-		}
+    if (Base::streq(attr, "__dict__")) {
+      PyObject *dict = PyDict_New();
+      if (dict) {
+        PyDict_SetItemString(dict,"UndoLimit",      Py_BuildValue("i",_pcDoc->GetUndoLimit()));
+        PyDict_SetItemString(dict,"AvailableUndos", Py_BuildValue("i",_pcDoc->GetAvailableUndos()));
+        PyDict_SetItemString(dict,"AvailableRedos", Py_BuildValue("i",_pcDoc->GetAvailableRedos()));
+        PyDict_SetItemString(dict,"HasOpenCommand", Py_BuildValue("i",_pcDoc->HasOpenCommand()?1:0));
+        PyDict_SetItemString(dict,"Name",           Py_BuildValue("s",_pcDoc->getName()));
+        PyDict_SetItemString(dict,"Path",           Py_BuildValue("s",_pcDoc->getPath()));
+        if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
+      }
+      return dict;
+    }
 		else if (streq(attr, "UndoLimit"))
 			return Py_BuildValue("i", _pcDoc->GetUndoLimit());
 		else if (streq(attr, "AvailableUndos"))

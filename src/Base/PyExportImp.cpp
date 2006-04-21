@@ -122,21 +122,30 @@ PyParentObject PyObjectBase::Parents[] = {&PyObjectBase::Type, NULL};
 ------------------------------*/
 PyObject *PyObjectBase::_getattr(char *attr)
 {
-  if (streq(attr, "type"))
-    return Py_BuildValue("s", (*(GetParents()))->tp_name);
-  else if (streq(attr, "__class__"))
-    return Py_BuildValue("s","ObjectBase");
-  else if (streq(attr, "__members__"))
-    return Py_FindMethod(Methods, this, attr); 
+//  if (streq(attr, "type"))
+//    return Py_BuildValue("s", (*(GetParents()))->tp_name);
+//  else 
+  if (streq(attr, "__class__")) {
+  	PyTypeObject *tp = this->ob_type;
+    return Py_BuildValue("s",tp->tp_name);
+  }
+  else if (streq(attr, "__members__")) {
+    // Use __dict__ instead as __members__ is depricated
+//    return Py_FindMethod(Methods, this, attr); 
+    return NULL;
+  }
   else if (streq(attr,"__dict__")) {
+    // No data to fill up the dictionary here, must be done in subclasses
+    return NULL;
   }
   else if (streq(attr,"softspace")) {
     // Internal Python stuff
+    return NULL;
   }
   else {
     //FIXME: How do we treat this correctly?
 	  PyTypeObject *tp = this->ob_type;
-		PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", tp->tp_name, attr);
+		PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
     return NULL;
   }
   
@@ -146,7 +155,7 @@ PyObject *PyObjectBase::_getattr(char *attr)
 int PyObjectBase::_setattr(char *attr, PyObject *value)
 {
 	PyTypeObject *tp = this->ob_type;
-	PyErr_Format(PyExc_AttributeError, "'%.50s' object has no attribute '%.400s'", tp->tp_name, attr);
+	PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
 //  std::string err = "Unknown attribute: ";
 //  err += attr;
 //  PyErr_SetString(PyExc_AttributeError,err.c_str());

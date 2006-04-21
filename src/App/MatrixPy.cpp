@@ -181,28 +181,28 @@ PyObject *MatrixPy::_repr(void)
 //--------------------------------------------------------------------------
 PyObject *MatrixPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-  if (Base::streq(attr, "__members__")) {
-    PyObject *list = PyList_New(16);
-    if (list) {
-      PyList_SetItem(list, 0, PyString_FromString("a11"));
-      PyList_SetItem(list, 1, PyString_FromString("a12"));
-      PyList_SetItem(list, 2, PyString_FromString("a13"));
-      PyList_SetItem(list, 3, PyString_FromString("a14"));
-      PyList_SetItem(list, 4, PyString_FromString("a21"));
-      PyList_SetItem(list, 5, PyString_FromString("a22"));
-      PyList_SetItem(list, 6, PyString_FromString("a23"));
-      PyList_SetItem(list, 7, PyString_FromString("a24"));
-      PyList_SetItem(list, 8, PyString_FromString("a31"));
-      PyList_SetItem(list, 9, PyString_FromString("a32"));
-      PyList_SetItem(list,10, PyString_FromString("a33"));
-      PyList_SetItem(list,11, PyString_FromString("a34"));
-      PyList_SetItem(list,12, PyString_FromString("a41"));
-      PyList_SetItem(list,13, PyString_FromString("a42"));
-      PyList_SetItem(list,14, PyString_FromString("a43"));
-      PyList_SetItem(list,15, PyString_FromString("a44"));
-      if (PyErr_Occurred()) { Py_DECREF(list);list = NULL;}
+  if (Base::streq(attr, "__dict__")) {
+    PyObject *dict = PyDict_New();
+    if (dict) {
+      PyDict_SetItemString(dict,"a11", PyFloat_FromDouble(_cMatrix[0][0]));
+      PyDict_SetItemString(dict,"a12", PyFloat_FromDouble(_cMatrix[0][1]));
+      PyDict_SetItemString(dict,"a13", PyFloat_FromDouble(_cMatrix[0][2]));
+      PyDict_SetItemString(dict,"a14", PyFloat_FromDouble(_cMatrix[0][3]));
+      PyDict_SetItemString(dict,"a21", PyFloat_FromDouble(_cMatrix[1][0]));
+      PyDict_SetItemString(dict,"a22", PyFloat_FromDouble(_cMatrix[1][1]));
+      PyDict_SetItemString(dict,"a23", PyFloat_FromDouble(_cMatrix[1][2]));
+      PyDict_SetItemString(dict,"a24", PyFloat_FromDouble(_cMatrix[1][3]));
+      PyDict_SetItemString(dict,"a31", PyFloat_FromDouble(_cMatrix[2][0]));
+      PyDict_SetItemString(dict,"a32", PyFloat_FromDouble(_cMatrix[2][1]));
+      PyDict_SetItemString(dict,"a33", PyFloat_FromDouble(_cMatrix[2][2]));
+      PyDict_SetItemString(dict,"a34", PyFloat_FromDouble(_cMatrix[2][3]));
+      PyDict_SetItemString(dict,"a41", PyFloat_FromDouble(_cMatrix[3][0]));
+      PyDict_SetItemString(dict,"a42", PyFloat_FromDouble(_cMatrix[3][1]));
+      PyDict_SetItemString(dict,"a43", PyFloat_FromDouble(_cMatrix[3][2]));
+      PyDict_SetItemString(dict,"a44", PyFloat_FromDouble(_cMatrix[3][3]));
+      if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
     }
-    return list;
+    return dict;
   }
   else if (Base::streq(attr, "a11"))
     return PyFloat_FromDouble(_cMatrix[0][0]);
