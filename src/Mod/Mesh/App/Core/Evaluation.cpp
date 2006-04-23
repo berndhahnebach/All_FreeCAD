@@ -578,43 +578,7 @@ bool MeshEvalNeighbourhood::Evaluate ()
 
 bool MeshFixNeighbourhood::Fixup()
 {
-  MeshFacetArray& raFacets = _rclMesh._aclFacetArray;
-
-  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > aclHits;
-  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pEdge;
-
-  unsigned long uCur=0;
-  for ( std::vector<MeshFacet>::const_iterator it = raFacets.begin(); it != raFacets.end(); ++it, uCur++ )
-  {
-    for (int i = 0; i < 3; i++)
-    {
-      unsigned long ulPt0 = std::min<unsigned long>(it->_aulPoints[i],  it->_aulPoints[(i+1)%3]);
-      unsigned long ulPt1 = std::max<unsigned long>(it->_aulPoints[i],  it->_aulPoints[(i+1)%3]);
-      aclHits[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_front( uCur);
-    }
-  }
-
-  for (pEdge = aclHits.begin(); pEdge != aclHits.end(); pEdge++)
-  {
-    // search for closed edges
-    if (pEdge->second.size() == 2)
-    {
-      unsigned long uP0 = pEdge->first.first;
-      unsigned long uP1 = pEdge->first.second;
-      unsigned long uF0 = pEdge->second.front();
-      unsigned long uF1 = pEdge->second.back();
-
-      // get references to the corresponding facets
-      MeshFacet& cF0 = raFacets[uF0];
-      MeshFacet& cF1 = raFacets[uF1];
-
-      unsigned short usNb1 = cF0.Side(uP0, uP1);
-      unsigned short usNb2 = cF1.Side(uP0, uP1);
-      cF0._aulNeighbours[usNb1] = uF1;
-      cF1._aulNeighbours[usNb2] = uF0;
-    }
-  }
-
+  _rclMesh.RebuildNeighbours();
   return true;
 }
 
