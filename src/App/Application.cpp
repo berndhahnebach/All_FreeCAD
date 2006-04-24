@@ -54,6 +54,7 @@
 #include "MatrixPy.h"
 #include "Feature.h"
 #include "FeatureTest.h"
+#include "FeaturePython.h"
 #include "Property.h"
 #include "PropertyContainer.h"
 #include "PropertyStandard.h"
@@ -608,6 +609,7 @@ void Application::initTypes(void)
   App ::DocumentObject      ::init();
   App ::AbstractFeature     ::init();
   App ::FeatureTest         ::init();
+  App ::FeaturePython       ::init();
   App ::Document            ::init();
 
   // test code

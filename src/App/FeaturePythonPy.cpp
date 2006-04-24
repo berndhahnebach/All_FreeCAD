@@ -33,9 +33,10 @@
 using Base::Console;
 
 #include "Document.h"
-#include "DocumentObject.h"
+#include "Feature.h"
 #include "Property.h"
-#include "DocumentObjectPy.h"
+#include "FeaturePythonPy.h"
+#include "FeaturePython.h"
 
 using namespace App;
 
@@ -46,11 +47,11 @@ using namespace App;
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject App::DocumentObjectPy::Type = {
+PyTypeObject App::FeaturePythonPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"DocumentObject",				/*tp_name*/
-	sizeof(DocumentObjectPy),			/*tp_basicsize*/
+	"FeaturePython",				/*tp_name*/
+	sizeof(FeaturePythonPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -71,7 +72,7 @@ PyTypeObject App::DocumentObjectPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About PyObjectBase",                             /*tp_doc */
+  "About FeatureProperty",                          /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
@@ -81,7 +82,7 @@ PyTypeObject App::DocumentObjectPy::Type = {
   0,                                                /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
-  &Base::PyObjectBase::Type,                        /*tp_base */
+  &App::DocumentObjectPy::Type,                     /*tp_base */
   0,                                                /*tp_dict */
   0,                                                /*tp_descr_get */
   0,                                                /*tp_descr_set */
@@ -101,11 +102,17 @@ PyTypeObject App::DocumentObjectPy::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef App::DocumentObjectPy::Methods[] = {
+PyMethodDef App::FeaturePythonPy::Methods[] = {
 // PyObjectBase
   PYMETHODEDEF(isA)
-// DocumentObjectPy 
-//	PYMETHODEDEF(setModified)
+// DocumentObjectPy
+// FeaturePy 
+	PYMETHODEDEF(setModified)
+	PYMETHODEDEF(setModifiedView)
+	PYMETHODEDEF(isValid)
+// FeaturePythonPy 
+	PYMETHODEDEF(addProperty)
+	PYMETHODEDEF(setClass)
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -113,39 +120,39 @@ PyMethodDef App::DocumentObjectPy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject App::DocumentObjectPy::Parents[] = { &DocumentObjectPy::Type, &PyObjectBase::Type, NULL};
+PyParentObject App::FeaturePythonPy::Parents[] = { &FeaturePythonPy::Type,&FeaturePy::Type, &DocumentObjectPy::Type, &PyObjectBase::Type, NULL};
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-App::DocumentObjectPy::DocumentObjectPy(DocumentObject *pcDocumentObject, PyTypeObject *T)
-: PyObjectBase( T), _pcDocumentObject(pcDocumentObject)
+FeaturePythonPy::FeaturePythonPy(FeaturePython *pcFeature, PyTypeObject *T)
+: FeaturePy(pcFeature, T)
 {
-//	Base::Console().Log("Create DocumentObjectPy: %p \n",this);
+//	Base::Console().Log("Create FeaturePythonPy: %p \n",this);
 }
 
-PyObject *DocumentObjectPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *FeaturePythonPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  //return new DocumentObjectPy(name, n, tau, gamma);			// Make new Python-able object
+  //return new FeaturePythonPy(name, n, tau, gamma);			// Make new Python-able object
 	return 0;
 }
 
 //--------------------------------------------------------------------------
 // destructor
 //--------------------------------------------------------------------------
-DocumentObjectPy::~DocumentObjectPy()						// Everything handled in parent
+FeaturePythonPy::~FeaturePythonPy()						// Everything handled in parent
 {
-//	Base::Console().Log("Destroy DocumentObjectPy: %p \n",this);
+//	Base::Console().Log("Destroy FeaturePythonPy: %p \n",this);
 
 }
 
 //--------------------------------------------------------------------------
-// DocumentObjectPy representation
+// FeaturePythonPy representation
 //--------------------------------------------------------------------------
-PyObject *DocumentObjectPy::_repr(void)
+PyObject *FeaturePythonPy::_repr(void)
 {
   std::stringstream a;
-  a << "Feature: [ ";
+  a << "FeaturePython: [ ";
 //  for(std::map<std::string,int>::const_iterator It = _pcFeature->_PropertiesMap.begin();It!=_pcFeature->_PropertiesMap.end();It++)
 //  {
 //    a << It->first << "=" << _pcFeature->GetProperty(It->first.c_str()).GetAsString() << "; ";
@@ -154,49 +161,50 @@ PyObject *DocumentObjectPy::_repr(void)
 	return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
-// DocumentObjectPy Attributes
+// FeaturePythonPy Attributes
 //--------------------------------------------------------------------------
-PyObject *DocumentObjectPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-	PY_TRY{
+PyObject *FeaturePythonPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+{
+  PY_TRY{
+
+     // search in object PropertyList
+    std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies.find(attr);
+
+    if (pos == reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies.end())
     {
-      // search in PropertyList
-      Property *prop = _pcDocumentObject->getPropertyByName(attr);
-      if(prop)
-      {
-        return prop->getPyObject();
-      } else if (Base::streq(attr, "__dict__")) {
-        // get the properties to the C++ DocumentObject class
-        std::map<std::string,App::Property*> Map;
-        _pcDocumentObject->getPropertyMap(Map);
-        PyObject *dict = PyDict_New();
-        if (dict) { 
-          for ( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
-            PyDict_SetItem(dict, PyString_FromString(it->first.c_str()), PyString_FromString(""));
-          if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
-        }
-        return dict;
-      }
-      else
-			  _getattr_up(PyObjectBase); 						
+      _getattr_up(FeaturePy); 						
+    }else
+    {
+      Property *prop = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies[attr];
+      return prop->getPyObject();
     }
+
+    
+    // search in PropertyList
+/*    Property *prop = _pcFeature->getPropertyByName(attr);
+    if(prop)
+      return prop->getPyObject();
+    else
+      _getattr_up(FeaturePy); */
+    
 	}PY_CATCH;
 
   return Py_None;
 } 
 
-int DocumentObjectPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int FeaturePythonPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
+   // search in object PropertyList
+  std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies.find(attr);
+
+  if (pos == reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies.end())
+    return FeaturePy::_setattr(attr, value); 						
+  else
   {
-       // search in PropertyList
-      Property *prop = _pcDocumentObject->getPropertyByName(attr);
-      if(prop)
-      {
-        prop->setPyObject(value);
-      }else
-			  return PyObjectBase::_setattr(attr, value); 						
+    Property *prop = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies[attr];
+    prop->setPyObject(value);
+    return 0;
   }
-  return 0;
 } 
 
 
@@ -204,11 +212,31 @@ int DocumentObjectPy::_setattr(char *attr, PyObject *value) 	// __setattr__ func
 // Python wrappers
 //--------------------------------------------------------------------------
 
-/*
-PYFUNCIMP_D(DocumentObjectPy,setModified)
+PYFUNCIMP_D(FeaturePythonPy,addProperty)
 {
-  _pcFeature->Touch();
+  char *sType,*sName=0;
+  if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
+    return NULL;                             // NULL triggers exception 
+ 
+ 
+  PY_TRY {
+	  reinterpret_cast<FeaturePython*>(_pcFeature)->addDynamicProperty(sType,sName);
+  }PY_CATCH;
 
-	Py_Return;
+  Py_Return;
 }
-*/
+
+PYFUNCIMP_D(FeaturePythonPy,setClass)
+{
+  //char *sType,*sName=0;
+  if (!PyArg_ParseTuple(args, ""))    // convert args: Python->C
+    return NULL;                             // NULL triggers exception 
+ 
+ 
+  PY_TRY {
+	  //reinterpret_cast<FeaturePython*>(_pcFeature)->addDynamicProperty(sType,sName);
+  }PY_CATCH;
+
+  Py_Return;
+}
+

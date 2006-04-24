@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2006     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,34 +21,56 @@
  ***************************************************************************/
 
 
-#ifndef PART_FEATUREPARTPOLYGON_H
-#define PART_FEATUREPARTPOLYGON_H
 
-#include <App/PropertyGeo.h>
+#ifndef __FEATUREPYTHON_H__
+#define __FEATUREPYTHON_H__
 
-#include "PartFeature.h"
 
-namespace Part
+#include "Feature.h"
+#include "PropertyStandard.h"
+#include "PropertyGeo.h"
+#include "PropertyLinks.h"
+
+namespace App
 {
 
-class Polygon :public Part::Feature
+class FeaturePythonPy;
+
+class FeaturePython :public AbstractFeature
 {
-  PROPERTY_HEADER(Part::Polygon);
+  PROPERTY_HEADER(App::FeaturePython);
 
 public:
-  Polygon();
-  virtual ~Polygon();
+  FeaturePython();  
 
-  App::PropertyVectorList Nodes;
-  App::PropertyBool       Close;
+  App::PropertyString  ExecuteCode;
 
+  
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
+  /// returns the type name of the ViewProvider
+  //FIXME: Propably it makes sense to have a view provider for unittests (e.g. Gui::ViewProviderTest)
+  virtual const char* getViewProviderName(void){return "Gui::ViewProviderDocumentObject";}
   //@}
+
+  void addDynamicProperty(const char* type, const char* name=0);
+
+  std::string getUniquePropertyName(const char *Name) const;
+
+	virtual Base::PyObjectBase *GetPyObject(void);
+
+  friend FeaturePythonPy;
+
+private:
+  std::map<std::string,Property*> objectProperies;
+  //PropertyData objectProperies;
+
 };
 
-} //namespace Part
 
-#endif // PART_FEATUREPARTPOLYGON_H
+
+} //namespace App
+
+#endif // __FeaturePython_H__

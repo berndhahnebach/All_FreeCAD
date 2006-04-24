@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,34 +21,58 @@
  ***************************************************************************/
 
 
-#ifndef PART_FEATUREPARTPOLYGON_H
-#define PART_FEATUREPARTPOLYGON_H
 
-#include <App/PropertyGeo.h>
 
-#include "PartFeature.h"
+#ifndef _FeaturePropertyPy_h_
+#define _FeaturePropertyPy_h_
 
-namespace Part
+#include <Base/PyExportImp.h>
+#include "FeaturePy.h"
+
+namespace App
 {
 
-class Polygon :public Part::Feature
+class FeaturePython;
+class MaterialPy;
+
+//===========================================================================
+// FeaturePythonPy - Python wrapper
+//===========================================================================
+
+/** The DocTypeStd python class
+ */
+class AppExport FeaturePythonPy :public FeaturePy
 {
-  PROPERTY_HEADER(Part::Polygon);
+	/// always start with Py_Header
+	Py_Header;
+
+protected:
+	~FeaturePythonPy();
 
 public:
-  Polygon();
-  virtual ~Polygon();
+	FeaturePythonPy(FeaturePython *pcFeature, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
 
-  App::PropertyVectorList Nodes;
-  App::PropertyBool       Close;
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual int execute(void);
-  //@}
+	virtual PyObject *_repr(void);  				// the representation
+	PyObject *_getattr(char *attr);					// __getattr__ function
+	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+
+  // additional methodes
+  PYFUNCDEF_D(FeaturePythonPy,addProperty)
+	PYFUNCDEF_D(FeaturePythonPy,setClass)
+  
+private:
+
 };
 
-} //namespace Part
 
-#endif // PART_FEATUREPARTPOLYGON_H
+
+} //namespace App
+
+
+
+#endif

@@ -71,7 +71,7 @@ public:
   AbstractFeature *getFeature(void){return _pcFeature;}
   
 
-private:
+protected:
   AbstractFeature *_pcFeature;
 
   MaterialPy* solidMaterialPy;
