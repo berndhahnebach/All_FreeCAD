@@ -207,8 +207,13 @@ public:
 	 */
 	virtual PyObject *_getattr(char *attr);	
 	/// static wrapper for pythons _getattr()
-	static  PyObject *__getattr(PyObject * PyObj, char *attr) 	// This should be the entry in Type. 
-	  {return ((PyObjectBase*) PyObj)->_getattr(attr);};
+  static  PyObject *__getattr(PyObject * PyObj, char *attr) { 	// This should be the entry in Type. 
+    if (!((PyObjectBase*) PyObj)->_valid){
+      PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
+      return NULL;
+    }
+	  return ((PyObjectBase*) PyObj)->_getattr(attr);
+  }
    
 	/** SetAttribute implementation
 	 *  This method implements the seting of object attributes.
@@ -223,8 +228,12 @@ public:
     //FIXME: In general we don't allow to delete attributes (i.e. value=0). However, if we want to allow
     //we must check then in _setattr() of all subclasses whether value is 0.
     if ( value==0 ) {
-      PyErr_Format(PyExc_TypeError, "Cannot delete attribute: '%s'", attr);
+      PyErr_Format(PyExc_AttributeError, "Cannot delete attribute: '%s'", attr);
       return -1;
+    }
+    else if (!((PyObjectBase*) PyObj)->_valid){
+      PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
+      return NULL;
     }
     return ((PyObjectBase*) PyObj)->_setattr(attr, value);
   }
@@ -267,6 +276,11 @@ public:
   {
     return ((PyObjectBase*)self)->isA(args);
   };
+
+  void setInvalid() { _valid = false; }
+
+private:
+  bool _valid;
 };
 
 

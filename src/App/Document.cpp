@@ -157,6 +157,7 @@ Document::~Document()
   }
 
   _pcDocPy->DecRef(); // decrement by one
+  _pcDocPy->setInvalid();
 }
 
 

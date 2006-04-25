@@ -42,6 +42,7 @@ PyObjectBase::PyObjectBase(PyTypeObject *T)
 #ifdef FC_LOGPYOBJECTS
   Base::Console().Log("PyO+: %s (%p)\n",T->tp_name, this);
 #endif
+  _valid = true;
 }
 /// destructor
 PyObjectBase::~PyObjectBase() 
