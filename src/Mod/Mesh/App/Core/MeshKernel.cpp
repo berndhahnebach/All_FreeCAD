@@ -60,6 +60,24 @@ MeshKernel& MeshKernel::operator = (const MeshKernel &rclMesh)
   return *this;
 }
 
+void MeshKernel::Assign(const MeshPointArray& rPoints, const MeshFacetArray& rFacets, bool checkNeighbourHood)
+{
+  _aclPointArray = rPoints;
+  _aclFacetArray = rFacets;
+  RecalcBoundBox();
+  if (checkNeighbourHood)
+    RebuildNeighbours();
+}
+
+void MeshKernel::Adopt(MeshPointArray& rPoints, MeshFacetArray& rFacets, bool checkNeighbourHood)
+{
+  _aclPointArray.swap(rPoints);
+  _aclFacetArray.swap(rFacets);
+  RecalcBoundBox();
+  if (checkNeighbourHood)
+    RebuildNeighbours();
+}
+
 MeshKernel& MeshKernel::operator += (const MeshGeomFacet &rclSFacet)
 {
   unsigned long i;

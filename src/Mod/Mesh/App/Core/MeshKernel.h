@@ -282,6 +282,15 @@ public:
   MeshKernel& operator = (std::vector<MeshGeomFacet> &rclVAry);
   /** Assignment operator. */
   MeshKernel& operator = (const MeshKernel &rclMesh);
+  /** This allows to assign the mesh structure directly. The caller must make sure that the point indices are correctly set
+   * but the neighbourhood gets checked and corrected if \a checkNeighbourHood is true.
+   */
+  void Assign(const MeshPointArray& rPoints, const MeshFacetArray& rFaces, bool checkNeighbourHood=false);
+  /** This method does basically the same as Assign() unless that it adopts the content of both arrays.
+   * These arrays are empty after assigning to the kernel. This method can be used for huge meshes to save memory
+   * and increase speed.
+   */
+  void Adopt(MeshPointArray& rPoints, MeshFacetArray& rFaces, bool checkNeighbourHood=false);
   /// Transform the data structure with the given transformation matrix.
   virtual void operator *= (const Base::Matrix4D &rclMat);
   /// Transform the data structure with the given transformation matrix.

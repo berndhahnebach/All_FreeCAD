@@ -548,29 +548,55 @@ bool MeshEvalSelfIntersection::Evaluate ()
 
 bool MeshEvalNeighbourhood::Evaluate ()
 {
-  const std::vector<MeshFacet>& raFacets = _rclMesh.GetFacets();
+  const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
+  MeshFacetArray::_TConstIterator pI;
 
-  try
+  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > cEdgeList;
+  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pEdge;
+
+  // facet to edge
+  for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
   {
-    unsigned long uCur=0;
-    for ( std::vector<MeshFacet>::const_iterator it = raFacets.begin(); it != raFacets.end(); ++it, uCur++ )
+    for (int i = 0; i < 3; i++)
     {
-      for ( int i=0; i<3; i++ )
-      {
-        unsigned long uNInd = it->_aulNeighbours[i];
-        if ( uNInd != ULONG_MAX )
-        {
-          const MeshFacet& rFacet = raFacets[uNInd];
-          if ( rFacet.Side(uCur) == USHRT_MAX )
-            return false; // stop here
-        }
-      }
+      unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+      unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+      cEdgeList[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_front(pI - rclFAry.begin());
     }
   }
-  catch (...)
+
+  // search for the attached faces to an edge
+  for (pEdge = cEdgeList.begin(); pEdge != cEdgeList.end(); ++pEdge)
   {
-    // maybe invalid index number
-    return false;
+    // open edge
+    if (pEdge->second.size() == 1) {
+      unsigned long p0 = pEdge->first.first;
+      unsigned long p1 = pEdge->first.second;
+      const MeshFacet& rFace = rclFAry[pEdge->second.front()];
+      unsigned short side = rFace.Side(p0,p1);
+      // should be "open edge" but isn't marked as such
+      if ( rFace._aulNeighbours[side] != ULONG_MAX )
+        return false;
+    }
+    // two-manifolds
+    else if (pEdge->second.size() == 2) {
+      unsigned long p0 = pEdge->first.first;
+      unsigned long p1 = pEdge->first.second;
+      unsigned long f0 = pEdge->second.front();
+      unsigned long f1 = pEdge->second.back();
+
+      const MeshFacet& rFace0 = rclFAry[f0];
+      const MeshFacet& rFace1 = rclFAry[f1];
+      unsigned short side0 = rFace0.Side(p0,p1);
+      unsigned short side1 = rFace1.Side(p0,p1);
+
+      // Check wether rFace0 and rFace1 reference each other as neighbour
+      if ( rFace0._aulNeighbours[side0]!=f1 || rFace1._aulNeighbours[side1]!=f0 )
+        return false;
+    }
+    // Non-manifold edge here => the neighbourhood cannot be valid
+    else
+      return false;
   }
 
   return true;

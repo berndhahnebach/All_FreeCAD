@@ -211,6 +211,11 @@ public:
    */
   inline unsigned short Side (unsigned long ulP0, unsigned long P1) const;
   /**
+   * Returns the edge-number defined by the shared edge of both facets. If the facets don't 
+   * share a common edge USHRT_MAX is returned.
+   */
+  inline unsigned short Side (const MeshFacet& rcFace) const;
+  /**
    * Replaces the index of the corner point that is equal to \a ulOrig
    * by \a ulNew. If the facet does not have a corner point with this index
    * nothing happens.
@@ -770,6 +775,18 @@ inline unsigned short MeshFacet::Side (unsigned long ulP0, unsigned long ulP1) c
       return 2; // Kante 2-0 ==> 2
     else if (_aulPoints[1] == ulP1)
       return 1; // Kante 2-1 ==> 1
+  }
+  
+  return USHRT_MAX;
+}
+
+inline unsigned short MeshFacet::Side (const MeshFacet& rFace) const
+{
+  unsigned short side;
+  for ( int i=0; i<3;i++ ){
+    side = Side(rFace._aulPoints[i], rFace._aulPoints[(i+1)%3]);
+    if ( side != USHRT_MAX )
+      return side;
   }
   
   return USHRT_MAX;
