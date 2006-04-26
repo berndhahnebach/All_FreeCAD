@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2006     *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,54 +21,30 @@
  ***************************************************************************/
 
 
+#ifndef GUI_VIEWPROVIDER_PYTHON_FEATURE_H
+#define GUI_VIEWPROVIDER_PYTHON_FEATURE_H
 
-#ifndef __FEATUREPYTHON_H__
-#define __FEATUREPYTHON_H__
+#include "ViewProviderFeature.h"
 
 
-#include "Feature.h"
+namespace Gui {
 
-namespace App
+class GuiExport ViewProviderPythonFeature : public ViewProviderDocumentObject
 {
-
-class FeaturePythonPy;
-
-class FeaturePython :public AbstractFeature
-{
-  PROPERTY_HEADER(App::FeaturePython);
+  PROPERTY_HEADER(Gui::ViewProviderPythonFeature);
 
 public:
-  FeaturePython();  
+  /// constructor.
+  ViewProviderPythonFeature();
+  /// destructor.
+  virtual ~ViewProviderPythonFeature();
 
-  App::PropertyString  ExecuteCode;
-
-  
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual int execute(void);
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void){return "Gui::ViewProviderPythonFeature";}
-  /// get all properties of the class (including parent)
-  virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
-  /// find a property by its name
-  virtual Property *getPropertyByName(const char* name) const;
-  /// get the name of a property
-  virtual const char* getName(const Property* prop) const;
-  //@}
-
-  void addDynamicProperty(const char* type, const char* name=0);
-
-  std::string getUniquePropertyName(const char *Name) const;
-
-	virtual Base::PyObjectBase *GetPyObject(void);
-
-  friend class FeaturePythonPy;
-
-private:
-  std::map<std::string,Property*> objectProperties;
+  // Returns the icon
+  QPixmap getIcon() const;
 };
 
-} //namespace App
 
-#endif // __FeaturePython_H__
+} // namespace Gui
+
+#endif // GUI_VIEWPROVIDER_PYTHON_FEATURE_H
+

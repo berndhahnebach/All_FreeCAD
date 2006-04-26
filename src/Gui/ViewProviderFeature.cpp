@@ -45,7 +45,7 @@
 using namespace Gui;
 
 
-PROPERTY_SOURCE_ABSTRACT(Gui::ViewProviderDocumentObject, Gui::ViewProvider)
+PROPERTY_SOURCE(Gui::ViewProviderDocumentObject, Gui::ViewProvider)
 
 
       

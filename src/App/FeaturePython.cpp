@@ -27,6 +27,7 @@
 
 
 #include <Base/Console.h>
+#include <Base/Interpreter.h>
 #include "FeaturePython.h"
 #include "FeaturePythonPy.h"
 
@@ -46,11 +47,39 @@ FeaturePython::FeaturePython()
 
 int FeaturePython::execute(void)
 {
-  Base::Console().Message("FeaturePython::execute() with \"%s\"\n",ExecuteCode.getValue());
+  //Base::Console().Message("FeaturePython::execute() with \"%s\"\n",ExecuteCode.getValue());
+
+  // Run the callback function of the Python object. There is no need to handle any exceptions here as the calling
+  // instance does this for us.
+  Base::Interpreter().runMethodVoid(pcFeaturePy, "execute");
 
   return 0;
 }
 
+void FeaturePython::getPropertyMap(std::map<std::string,Property*> &Map) const
+{
+  // get the properties of the base class first and insert the dynamic properties afterwards
+  AbstractFeature::getPropertyMap(Map);
+  for ( std::map<std::string,Property*>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it )
+    Map[it->first] = it->second;
+}
+
+Property *FeaturePython::getPropertyByName(const char* name) const
+{
+  std::map<std::string,Property*>::const_iterator it = objectProperties.find( name );
+  if ( it != objectProperties.end() )
+    return it->second;
+  return AbstractFeature::getPropertyByName( name );
+}
+
+const char* FeaturePython::getName(const Property* prop) const
+{
+  for ( std::map<std::string,Property*>::const_iterator it = objectProperties.begin(); it != objectProperties.end(); ++it ) {
+    if (it->second == prop)
+      return it->first.c_str();
+  }
+  return AbstractFeature::getName(prop);
+}
 
 void FeaturePython::addDynamicProperty(const char* type, const char* name)
 {  
@@ -70,7 +99,7 @@ void FeaturePython::addDynamicProperty(const char* type, const char* name)
       ObjectName = getUniquePropertyName(type);
 
     pcObject->setContainer(this);
-    objectProperies[name] = pcObject;
+    objectProperties[name] = pcObject;
 
   }  
 }
@@ -110,16 +139,16 @@ string FeaturePython::getUniquePropertyName(const char *Name) const
   std::map<std::string,Property*>::const_iterator pos;
 
   // name in use?
-  pos = objectProperies.find(CleanName);
+  pos = objectProperties.find(CleanName);
 
-  if (pos == objectProperies.end())
+  if (pos == objectProperties.end())
     // if not, name is OK
     return CleanName;
   else
   {
     // find highes sufix
     int nSuff = 0;  
-    for(pos = objectProperies.begin();pos != objectProperies.end();++pos)
+    for(pos = objectProperties.begin();pos != objectProperties.end();++pos)
     {
       const string &rclObjName = pos->first;
       if (rclObjName.substr(0, strlen(CleanName.c_str())) == CleanName)  // Prefix gleich

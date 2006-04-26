@@ -72,7 +72,7 @@ PyTypeObject App::FeaturePythonPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About FeatureProperty",                          /*tp_doc */
+  "About FeaturePython",                          /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
@@ -113,6 +113,7 @@ PyMethodDef App::FeaturePythonPy::Methods[] = {
 // FeaturePythonPy 
 	PYMETHODEDEF(addProperty)
 	PYMETHODEDEF(setClass)
+	PYMETHODEDEF(execute)
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -126,7 +127,7 @@ PyParentObject App::FeaturePythonPy::Parents[] = { &FeaturePythonPy::Type,&Featu
 //t constructor
 //--------------------------------------------------------------------------
 FeaturePythonPy::FeaturePythonPy(FeaturePython *pcFeature, PyTypeObject *T)
-: FeaturePy(pcFeature, T)
+: FeaturePy(pcFeature, T), executeCallback(0)
 {
 //	Base::Console().Log("Create FeaturePythonPy: %p \n",this);
 }
@@ -143,6 +144,7 @@ PyObject *FeaturePythonPy::PyMake(PyObject *ignored, PyObject *args)	// Python w
 FeaturePythonPy::~FeaturePythonPy()						// Everything handled in parent
 {
 //	Base::Console().Log("Destroy FeaturePythonPy: %p \n",this);
+  Py_XDECREF(executeCallback);  /* Dispose of callback */
 
 }
 
@@ -166,16 +168,24 @@ PyObject *FeaturePythonPy::_repr(void)
 PyObject *FeaturePythonPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 {
   PY_TRY{
-
+	  if (Base::streq(attr, "__dict__")){
+      PyObject* dict = FeaturePy::_getattr(attr);
+      if (dict){
+        const std::map<std::string,Property*>& Map = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties;
+        for ( std::map<std::string,App::Property*>::const_iterator it = Map.begin(); it != Map.end(); ++it )
+          PyDict_SetItem(dict, PyString_FromString(it->first.c_str()), PyString_FromString(""));
+      }
+      return dict;
+    }
      // search in object PropertyList
-    std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies.find(attr);
+    std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties.find(attr);
 
-    if (pos == reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies.end())
+    if (pos == reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties.end())
     {
       _getattr_up(FeaturePy); 						
     }else
     {
-      Property *prop = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies[attr];
+      Property *prop = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties[attr];
       return prop->getPyObject();
     }
 
@@ -193,15 +203,34 @@ PyObject *FeaturePythonPy::_getattr(char *attr)				// __getattr__ function: note
 } 
 
 int FeaturePythonPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-   // search in object PropertyList
-  std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies.find(attr);
+{
+  if (Base::streq(attr, "execute")){
+    if ( value == NULL) {
+      Py_XDECREF(executeCallback);  /* Dispose of callback */
+      executeCallback = value;
+    } else {
+      // Here we can check whether 'value' is a method or function but we cannot check the argument list
+      // This will do Python for us in the execute method (and throws an exception if not empty).
+      if (!PyCallable_Check(value)){
+        PyErr_SetString(PyExc_TypeError, "Value must be callable");
+        return -1;
+      }
 
-  if (pos == reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies.end())
+      Py_XINCREF(value);         /* Add a reference to new callback */
+      Py_XDECREF(executeCallback);  /* Dispose of callback */
+      executeCallback = value;
+    }
+    return 0;
+  }
+
+  // search in object PropertyList
+  std::map<std::string,Property*>::const_iterator pos = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties.find(attr);
+
+  if (pos == reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties.end())
     return FeaturePy::_setattr(attr, value); 						
   else
   {
-    Property *prop = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperies[attr];
+    Property *prop = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties[attr];
     prop->setPyObject(value);
     return 0;
   }
@@ -240,3 +269,40 @@ PYFUNCIMP_D(FeaturePythonPy,setClass)
   Py_Return;
 }
 
+/** Invokes the registered callback function.
+ * To register a callback function in Python do it as follows:
+ * \code
+ *  # Create a document and add a FeaturePython object
+ *  d=FreeCAD.newDocument()
+ *  f=d.addObject("App::FeaturePython")
+ *
+ *  def myCallback():
+ *      FreeCAD.PrintMessage("Hello, World!")
+ *
+ *  # Save the callback function
+ *  f.execute = myCallback
+ *
+ *  # Performing a recomputation of the document invokes the callback function
+ *  d.recompute()
+ * \endcode
+ *
+ * \note You must not pass any parameters to the callback function, it's argument list must be empty.
+ */
+PYFUNCIMP_D(FeaturePythonPy,execute)
+{
+  if ( executeCallback )
+  {
+    PyObject *result;
+    /* Time to call the callback */
+    result = PyEval_CallObject(executeCallback, NULL);
+    if ( result == NULL )
+      return NULL; /* Pass error back */
+    Py_DECREF(result);  /* Dispose of result */
+    Py_Return;
+  }
+  else
+  {
+    PyErr_SetString(PyExc_NotImplementedError , "FeaturePython.execute not implemented");
+    return NULL;
+  }
+}

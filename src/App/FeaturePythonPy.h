@@ -64,9 +64,10 @@ public:
   // additional methodes
   PYFUNCDEF_D(FeaturePythonPy,addProperty)
 	PYFUNCDEF_D(FeaturePythonPy,setClass)
+	PYFUNCDEF_D(FeaturePythonPy,execute)
   
 private:
-
+  PyObject* executeCallback;
 };
 
 

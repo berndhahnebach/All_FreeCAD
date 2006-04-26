@@ -73,11 +73,11 @@ public:
 	virtual ~PropertyContainer();
 
   /// find a property by its name
-  Property *getPropertyByName(const char* name) const;
+  virtual Property *getPropertyByName(const char* name) const;
   /// get the name of a property
-  const char* getName(const Property* prop) const;
+  virtual const char* getName(const Property* prop) const;
   /// get all properties of the class (including parent)
-  void getPropertyMap(std::map<std::string,Property*> &Map) const;
+  virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
 
   virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
