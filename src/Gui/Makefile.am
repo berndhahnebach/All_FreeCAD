@@ -311,6 +311,8 @@ libFreeCADGui_la_SOURCES=\
 		ViewProviderExtern.h \
 		ViewProviderFeature.cpp \
 		ViewProviderFeature.h \
+		ViewProviderPythonFeature.cpp \
+		ViewProviderPythonFeature.h \
 		WaitCursor.cpp \
 		WaitCursor.h \
 		WhatsThis.cpp \

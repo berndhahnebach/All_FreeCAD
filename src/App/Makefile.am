@@ -26,6 +26,10 @@ libFreeCADApp_la_SOURCES=\
 		Feature.h \
 		FeaturePy.cpp \
 		FeaturePy.h \
+		FeaturePython.cpp \
+		FeaturePython.h \
+		FeaturePythonPy.cpp \
+		FeaturePythonPy.h \
 		FeatureTest.cpp \
 		FeatureTest.h \
 		GeoFeature.cpp \
