@@ -94,12 +94,6 @@ PyObject *MaterialPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrappe
 	return 0;
 }
 
-Base::PyObjectBase *Material::GetPyObject(void)
-{
-	return new MaterialPy(this);
-}
-
-
 //--------------------------------------------------------------------------
 // destructor
 //--------------------------------------------------------------------------

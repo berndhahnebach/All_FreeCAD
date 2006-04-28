@@ -824,7 +824,8 @@ void MainWindow::dropEvent ( QDropEvent      * e )
       QFileInfo info(*it);
       if ( info.exists() && info.isFile() )
       {
-        Application::Instance->open(info.absFilePath().latin1());
+        if ( App::GetApplication().hasOpenType( info.extension().latin1() ) )
+          Application::Instance->open(info.absFilePath().latin1());
       }
     }
   }else
@@ -833,16 +834,10 @@ void MainWindow::dropEvent ( QDropEvent      * e )
 
 void MainWindow::dragEnterEvent ( QDragEnterEvent * e )
 {
+  // Here we must allow uri drafs and check them in dropEvent
   if ( QUriDrag::canDecode(e) )
-  {
-    QStringList fn;
-    QUriDrag::decodeLocalFiles(e, fn);
-    QString f = fn.first();
-
-    string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
-    if ( App::GetApplication().hasOpenType( Ending.c_str() ) )
-      e->accept();
-  }else
+    e->accept();
+  else
     e->ignore();
 }
 

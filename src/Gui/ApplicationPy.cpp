@@ -168,7 +168,7 @@ PYFUNCIMP_S(Application,sopen)
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
       Base::Interpreter().runString( cmd.ascii() );
     }
-    else {
+    else if ( ext == "py" || ext == "FCMacro" || ext == "FCScript" ) {
       PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
@@ -193,9 +193,10 @@ PYFUNCIMP_S(Application,sinsert)
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
       Base::Interpreter().runString( cmd.ascii() );
     }
-    else {
-    // not supported to insert a Python file (by dropping on a Python view)
-    // hence do nothing
+    else if ( ext == "py" || ext == "FCMacro" || ext == "FCScript" ) {
+      PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
+      edit->resize( 400, 300 );
+      getMainWindow()->addWindow( edit );
     }
   } PY_CATCH;
 

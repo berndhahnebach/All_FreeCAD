@@ -143,9 +143,18 @@ FeaturePy::~FeaturePy()						// Everything handled in parent
 {
 //	Base::Console().Log("Destroy FeaturePy: %p \n",this);
 
+  setInvalid();
   if(solidMaterialPy) solidMaterialPy->DecRef();
   if(lineMaterialPy) lineMaterialPy->DecRef();
   if(pointMaterialPy) pointMaterialPy->DecRef();
+}
+
+void FeaturePy::setInvalid()
+{
+  DocumentObjectPy::setInvalid();
+  if(solidMaterialPy) solidMaterialPy->setInvalid();
+  if(lineMaterialPy) lineMaterialPy->setInvalid();
+  if(pointMaterialPy) pointMaterialPy->setInvalid();
 }
 
 //--------------------------------------------------------------------------
@@ -185,7 +194,6 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
     {
       if(solidMaterialPy==0){
         solidMaterialPy = new MaterialPy(&(_pcFeature->_solidMaterial));
-//        solidMaterialPy->IncRef();
       }
       solidMaterialPy->IncRef();
 			return solidMaterialPy; 
@@ -194,7 +202,6 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
     {
       if(lineMaterialPy==0){
         lineMaterialPy = new MaterialPy(&(_pcFeature->_lineMaterial));
-//        lineMaterialPy->IncRef();
       }
       lineMaterialPy->IncRef();
 			return lineMaterialPy; 
@@ -203,7 +210,6 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
     {
       if(pointMaterialPy==0){
         pointMaterialPy = new MaterialPy(&(_pcFeature->_pointMaterial));
-//        pointMaterialPy->IncRef();
       }
       pointMaterialPy->IncRef();
 			return pointMaterialPy; 

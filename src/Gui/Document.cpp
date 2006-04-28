@@ -114,6 +114,7 @@ Document::~Document()
   _pcDocument->Detach(this);
 
   // remove the reference from the object
+  _pcDocPy->setInvalid();
   _pcDocPy->DecRef();
   //_pcDocument->DecRef();
 }

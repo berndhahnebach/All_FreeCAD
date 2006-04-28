@@ -173,7 +173,7 @@ void CmdMeshExMakeMesh::activated(int iMsg)
     "mb.addFacet(1.0,1.0,0.0, 1.0,0.0,1.0, 1.0,0.0,0.0)\n"
     "mb.scale(100.0)\n"
     "App.document().addObject(\"Mesh::Feature\",\"MeshBox\")\n"
-    "App.document().MeshBox.setMesh(mb)\n"
+    "App.document().MeshBox.Mesh=mb\n"
     "App.document().MeshBox.showMode = \"FlatWire\"\n" 
     "App.document().recompute()" );
 
@@ -227,7 +227,7 @@ void CmdMeshExMakeTool::activated(int iMsg)
     "mt.scale(100.0)\n"
     "mt.translate(50.0,50.0,50.0)\n"
     "App.document().addObject(\"Mesh::Feature\",\"MeshTool\")\n"
-    "App.document().MeshTool.setMesh(mt)\n"
+    "App.document().MeshTool.Mesh=mt\n"
     "App.document().MeshTool.solidMaterial.diffuseColor = (0.5,0.2,0.2)\n"
     "App.document().MeshTool.showMode = \"FlatWire\"" );
 
@@ -265,12 +265,12 @@ void CmdMeshExMakeUnion::activated(int iMsg)
   openCommand("Mesh Mesh Create");
   doCommand(Doc,
     "import Mesh,MeshGui\n"
-    "m1 = App.document().MeshBox.getMesh()\n"
-    "m2 = App.document().MeshTool.getMesh()\n"
+    "m1 = App.document().MeshBox.Mesh\n"
+    "m2 = App.document().MeshTool.Mesh\n"
     "m3 = m1.copy()\n"
     "m3.unite(m2)\n"
     "App.document().addObject(\"Mesh::Feature\",\"MeshUnion\")\n"
-    "App.document().MeshUnion.setMesh(m3)\n"
+    "App.document().MeshUnion.Mesh=m3\n"
     "App.document().MeshUnion.solidMaterial.ambientColor = (0.1,1,0)\n"
     "App.document().MeshUnion.solidMaterial.transparency = 0.5\n"
     "App.document().MeshUnion.lineMaterial.ambientColor = (0.1,0.11,0.1)\n"

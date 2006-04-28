@@ -61,12 +61,14 @@ public:
   virtual PyObject *_repr(void);  				// the representation
   PyObject *_getattr(char *attr);					// __getattr__ function
   int _setattr(char *attr, PyObject *value);		// __setattr__ function
-  PYFUNCDEF_D(MeshFeaturePy,getMesh)
-  PYFUNCDEF_D(MeshFeaturePy,setMesh)
+  PYFUNCDEF_D(MeshFeaturePy,countPoints)
+  PYFUNCDEF_D(MeshFeaturePy,countFacets)
+  PYFUNCDEF_D(MeshFeaturePy,hasConsistentOrientation)
+  PYFUNCDEF_D(MeshFeaturePy,isSolid)
+  PYFUNCDEF_D(MeshFeaturePy,hasNonManifolds)
 
 private:
   Feature     *_pcFeature;
-  MeshPy      *_pcMeshPy;
 };
 
 } //namespace Mesh

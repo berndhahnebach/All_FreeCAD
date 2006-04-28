@@ -66,7 +66,6 @@ public:
 
 private:
   Points::Feature *_pcFeature;
-  PointsPy        *_pcPointsPy;
 };
 
 } //namespace Points

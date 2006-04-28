@@ -254,8 +254,13 @@ public:
     */
 	virtual PyObject *_repr(void);				
 	/// python wrapper for the _repr() function
-	static  PyObject *__repr(PyObject *PyObj)		
-	  {return ((PyObjectBase*) PyObj)->_repr();};
+  static  PyObject *__repr(PyObject *PyObj)	{
+    if (!((PyObjectBase*) PyObj)->_valid){
+      PyErr_Format(PyExc_ReferenceError, "Cannot print representation of deleted object");
+      return NULL;
+    }
+	  return ((PyObjectBase*) PyObj)->_repr();
+  }
 
   /** @name helper methods */
   //@{
@@ -277,7 +282,10 @@ public:
     return ((PyObjectBase*)self)->isA(args);
   };
 
-  void setInvalid() { _valid = false; }
+  /** Should be implemented by subclasses that have PyObjectBase members 
+   * to set them invalid as well. 
+   */
+  virtual void setInvalid() { _valid = false; }
 
 private:
   bool _valid;

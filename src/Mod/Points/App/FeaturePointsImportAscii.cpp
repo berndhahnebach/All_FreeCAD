@@ -55,7 +55,7 @@ int ImportAscii::execute(void)
     return 1;
   }
 
-   PointsAlgos::Load(getPoints(),FileName.getValue());
+   PointsAlgos::Load(_Points,FileName.getValue());
 
 
   return 0;

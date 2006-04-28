@@ -28,6 +28,7 @@
 
 #include <Base/Console.h>
 
+#include "Core/Evaluation.h"
 #include "MeshPy.h"
 #include "MeshFeature.h"
 #include "MeshFeaturePy.h"
@@ -102,8 +103,11 @@ PyMethodDef MeshFeaturePy::Methods[] = {
 	PYMETHODEDEF(setModifiedView)
 	PYMETHODEDEF(isValid)
 // MeshFeaturePy
-  PYMETHODEDEF(getMesh)
-  PYMETHODEDEF(setMesh)
+  PYMETHODEDEF(countPoints)
+  PYMETHODEDEF(countFacets)
+  PYMETHODEDEF(hasConsistentOrientation)
+  PYMETHODEDEF(isSolid)
+  PYMETHODEDEF(hasNonManifolds)
 
   {NULL, NULL}    /* Sentinel */
 };
@@ -117,9 +121,7 @@ PyParentObject MeshFeaturePy::Parents[] = {&PyObjectBase::Type,&App::FeaturePy::
 // constructor
 //--------------------------------------------------------------------------
 MeshFeaturePy::MeshFeaturePy(Feature *pcFeature, PyTypeObject *T)
-  : App::FeaturePy(pcFeature, T),
-    _pcFeature(pcFeature),
-    _pcMeshPy(0)
+  : App::FeaturePy(pcFeature, T), _pcFeature(pcFeature)
 {
   Base::Console().Log("Create Mesh::Feature: %p \n",this);
 }
@@ -136,9 +138,6 @@ PyObject *MeshFeaturePy::PyMake(PyObject *ignored, PyObject *args)  // Python wr
 MeshFeaturePy::~MeshFeaturePy()           // Everything handled in parent
 {
   Base::Console().Log("Destroy Mesh::Feature: %p \n",this);
-
-  if( _pcMeshPy) _pcMeshPy->DecRef();
-
 } 
 
 //--------------------------------------------------------------------------
@@ -176,29 +175,35 @@ int MeshFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ function
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-PYFUNCIMP_D(MeshFeaturePy,getMesh)
+
+PYFUNCIMP_D(MeshFeaturePy,countPoints)
 {
-   MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(_pcFeature->getMesh()); // Result Meshkernel
-   return new MeshPy(pcKernel,false);
+  return Py_BuildValue("i",_pcFeature->Mesh.getValue().CountPoints()); 
 }
 
-PYFUNCIMP_D(MeshFeaturePy,setMesh)
+PYFUNCIMP_D(MeshFeaturePy,countFacets)
 {
- 	MeshPy   *pcObject;
-  PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
+  return Py_BuildValue("i",_pcFeature->Mesh.getValue().CountFacets()); 
+}
 
-  pcObject = (MeshPy*)pcObj;
+PYFUNCIMP_D(MeshFeaturePy,hasConsistentOrientation)
+{
+  MeshCore::MeshEvalNormals cMeshEval( _pcFeature->Mesh.getValue() );
+  bool ok = cMeshEval.Evaluate();
+  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+}
 
-  // copy in the Feature Mesh
-  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(*pcObject->getMesh());
-  _pcFeature->Mesh.setValue(pcKernel);
-  // and set the python object of this feature
-  if(_pcMeshPy){
-    _pcMeshPy->setMesh(pcKernel);
-  }
+PYFUNCIMP_D(MeshFeaturePy,isSolid)
+{
+  MeshCore::MeshEvalSolid cMeshEval( _pcFeature->Mesh.getValue() );
+  bool ok = cMeshEval.Evaluate();
+  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+}
 
-  Py_Return;
+PYFUNCIMP_D(MeshFeaturePy,hasNonManifolds)
+{
+  MeshCore::MeshEvalTopology cMeshEval( _pcFeature->Mesh.getValue() );
+  bool ok = !cMeshEval.Evaluate();
+  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
 }
 

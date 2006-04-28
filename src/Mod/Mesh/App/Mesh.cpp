@@ -283,7 +283,7 @@ const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const
 
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
-  return new MeshPy(_pcMesh);
+  return new MeshPy(*_pcMesh);
 }
 
 void PropertyMeshKernel::setPyObject(PyObject *value)
@@ -291,7 +291,7 @@ void PropertyMeshKernel::setPyObject(PyObject *value)
   if( PyObject_TypeCheck(value, &(MeshPy::Type)) ) {
    	MeshPy  *pcObject = (MeshPy*)value;
     // Copy the content, do NOT replace the pointer
-    setValue(*pcObject->getMesh());
+    setValue(pcObject->getMesh());
   }
 }
 

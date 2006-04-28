@@ -58,7 +58,10 @@ Feature::Feature()
 Feature::~Feature()
 {
   if ( pcMeshFeaturePy )
+  {
+    pcMeshFeaturePy->setInvalid();
     pcMeshFeaturePy->DecRef();
+  }
 }
 
 int Feature::execute(void)

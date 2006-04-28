@@ -46,11 +46,13 @@ protected:
   ~PointsPy();
 
 public:
-  PointsPy(PointsWithProperty *pcPoints,bool Referenced=false, PyTypeObject *T = &Type);
+  PointsPy(PyTypeObject *T = &Type);
+  PointsPy(const PointsWithProperty& rcPoints, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
 
-  void setPoints(PointsWithProperty *pcPoints);
-  PointsWithProperty *getPoints(void);
+  void setPoints(const PointsWithProperty& rcPoints);
+  const PointsWithProperty& getPoints(void) const;
+  PointsWithProperty& refToPoints(void);
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -65,16 +67,14 @@ public:
   PYFUNCDEF_D(PointsPy,read)
   PYFUNCDEF_D(PointsPy,write)
   PYFUNCDEF_D(PointsPy,translate)
-//  PYFUNCDEF_D(PointsPy,rotate)
+  PYFUNCDEF_D(PointsPy,rotate)
   PYFUNCDEF_D(PointsPy,scale)
   PYFUNCDEF_D(PointsPy,addPoint)
   PYFUNCDEF_D(PointsPy,clear)
   PYFUNCDEF_D(PointsPy,copy)
 
 protected:
-
   PointsWithProperty *_pcPoints;
-  bool _bReferenced;
 };
 
 } //namespace Points

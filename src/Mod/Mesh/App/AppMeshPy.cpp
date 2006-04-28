@@ -123,34 +123,6 @@ insert(PyObject *self, PyObject *args)
 	Py_Return;    
 }
 
-/* module functions */
-static PyObject *                        
-save(PyObject *self, PyObject *args)
-{
-	Py_Return;    
-
-}
-
-/* module functions */
-static PyObject *                        
-read(PyObject *self, PyObject *args)
-{
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-
-  Base::FileInfo File(Name);
-  
-  // checking on the file
-  if(!File.isReadable())
-    Py_Error(PyExc_Exception,"File to load not existing or not readable");
-
-  PY_TRY {
-    // load the mesh and create a mesh python object with it
-    return new MeshPy(MeshAlgos::Load(File.filePath().c_str()));    
-  } PY_CATCH;
-}
-
 static PyObject *                        
 newMesh(PyObject *self, PyObject *args)
 {
@@ -159,7 +131,7 @@ newMesh(PyObject *self, PyObject *args)
 
   PY_TRY {
     // load the mesh and create a mesh python object with it
-    return new MeshPy(new MeshCore::MeshKernel());    
+    return new MeshPy();    
   } PY_CATCH;
 }
 
@@ -222,9 +194,7 @@ loftOnCurve(PyObject *self, PyObject *args)
 /* registration table  */
 struct PyMethodDef Mesh_Import_methods[] = {
     {"open"       ,open ,       1},				/* method name, C func ptr, always-tuple */
-    {"save"       ,save ,       1},
     {"insert"     ,insert,      1},
-    {"read"       ,read ,       1},
     {"newMesh"    ,newMesh,     1},
     {"loftOnCurve",loftOnCurve, 1},
 

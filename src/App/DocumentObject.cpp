@@ -79,7 +79,10 @@ DocumentObject::DocumentObject(void)
 DocumentObject::~DocumentObject(void)
 {
   if(pcObjectPy)
-    delete pcObjectPy;
+  {
+    pcObjectPy->setInvalid();
+    pcObjectPy->DecRef();
+  }
 }
 
 App::Document &DocumentObject::getDocument(void)

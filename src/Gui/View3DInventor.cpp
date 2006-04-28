@@ -432,14 +432,17 @@ void View3DInventor::dropEvent ( QDropEvent * e )
     QStringList fn;
     QUriDrag::decodeLocalFiles(e, fn);
 
-    for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it ) {
+    App::Document* pDoc = getAppDocument();
+    if ( pDoc ) 
+    {
+      for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it ) {
 
-      QFileInfo info(*it);
-      if ( info.exists() && info.isFile() )
-      {
-        App::Document* pDoc = getAppDocument();
-        if (pDoc)
-          Application::Instance->import(info.absFilePath().latin1(), pDoc->getName());
+        QFileInfo info(*it);
+        if ( info.exists() && info.isFile() )
+        {
+          if ( App::GetApplication().hasOpenType( info.extension().latin1() ) )
+            Application::Instance->import(info.absFilePath().latin1(), pDoc->getName());
+        }
       }
     }
   }else
@@ -448,18 +451,11 @@ void View3DInventor::dropEvent ( QDropEvent * e )
 
 void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
 {
+  // Here we must allow uri drafs and check them in dropEvent
   if ( QUriDrag::canDecode(e) )
-  {
-    QStringList fn;
-    QUriDrag::decodeLocalFiles(e, fn);
-    QString f = fn.first();
-
-    std::string Ending = (f.right(f.length() - f.findRev('.')-1)).latin1();
-    if ( App::GetApplication().hasOpenType( Ending.c_str() ) )
-      e->accept();
-  }else
+    e->accept();
+  else
     e->ignore();
-
 }
 
 

@@ -579,7 +579,10 @@ PythonWorkbench::~PythonWorkbench()
   delete _toolBar;
   delete _commandBar;
   if ( _workbenchPy )
+  {
+    _workbenchPy->setInvalid();
     _workbenchPy->DecRef();
+  }
 }
 
 Base::PyObjectBase* PythonWorkbench::GetPyObject()

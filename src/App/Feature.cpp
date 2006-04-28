@@ -63,7 +63,10 @@ AbstractFeature::AbstractFeature(void)
 AbstractFeature::~AbstractFeature(void)
 {
   if (pcFeaturePy)
+  {
+    pcFeaturePy->setInvalid();
     pcFeaturePy->DecRef();
+  }
 }
 
 Base::PyObjectBase *AbstractFeature::GetPyObject(void)

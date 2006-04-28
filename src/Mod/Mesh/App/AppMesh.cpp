@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 
 #include "Mesh.h"
+#include "MeshPy.h"
 #include "FeatureMeshImport.h"
 #include "FeatureMeshExport.h"
 #include "FeatureMeshTransform.h"
@@ -48,7 +49,14 @@ void AppMeshExport initMesh() {
 
   Base::Console().Log("Mod : Load AppMesh\n");
 
-  (void) Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
+  PyObject* meshModule = Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
+
+  // NOTE: As the Python docu says that PyModule_AddObject() steals
+  //       a reference to its last argument we must increment it, otherwise
+  //       we run into a segmentation fault, later on.
+  PyObject* pyMeshType = (PyObject *)&Mesh::MeshPy::Type;
+  Py_INCREF(pyMeshType);
+  PyModule_AddObject(meshModule, "mesh", pyMeshType);
 
   Mesh::PropertyNormalList    ::init();
   Mesh::PropertyCurvatureList ::init();

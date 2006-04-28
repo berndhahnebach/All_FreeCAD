@@ -25,6 +25,7 @@
 #define MESH_PY_H
 
 #include <Base/PyExportImp.h>
+#include "Core/MeshKernel.h"
 
 namespace MeshCore {
   class MeshKernel;
@@ -47,11 +48,12 @@ protected:
   ~MeshPy();
 
 public:
-  MeshPy(MeshCore::MeshKernel *pcMesh,bool ReferencedMesh=false, PyTypeObject *T = &Type);
-  static PyObject *PyMake(PyObject *, PyObject *);
+  MeshPy(PyTypeObject *T = &Type);
+  MeshPy(const MeshCore::MeshKernel& rcMesh, PyTypeObject *T = &Type);
+  static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
 
-  void setMesh(MeshCore::MeshKernel *pcMesh);
-  MeshCore::MeshKernel *getMesh(void) const;
+  void setMesh(const MeshCore::MeshKernel& rcMesh);
+  const MeshCore::MeshKernel& getMesh(void) const;
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -73,7 +75,7 @@ public:
   PYFUNCDEF_D(MeshPy,diff)
   PYFUNCDEF_D(MeshPy,coarsen)
   PYFUNCDEF_D(MeshPy,translate)
-//  PYFUNCDEF_D(MeshPy,rotate)
+  PYFUNCDEF_D(MeshPy,rotate)
   PYFUNCDEF_D(MeshPy,transformToEigen)
   PYFUNCDEF_D(MeshPy,scale)
   PYFUNCDEF_D(MeshPy,transform)
@@ -92,9 +94,7 @@ public:
   PYFUNCDEF_D(MeshPy,harmonizeNormals)
 
 protected:
-
-  MeshCore::MeshKernel *_pcMesh;
-  bool _bReferencedMesh;
+  MeshCore::MeshKernel _cMesh;
 };
 
 } //namespace Mesh

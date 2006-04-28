@@ -156,8 +156,9 @@ Document::~Document()
     delete(it->second);
   }
 
-  _pcDocPy->DecRef(); // decrement by one
+  // Call before decrementing the reference counter, otherwise a heap error can occur
   _pcDocPy->setInvalid();
+  _pcDocPy->DecRef(); // decrement by one
 }
 
 

@@ -52,6 +52,7 @@ protected:
 public:
 	FeaturePy(AbstractFeature *pcFeature, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
+  void setInvalid();
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++

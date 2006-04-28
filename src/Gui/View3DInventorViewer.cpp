@@ -192,10 +192,8 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   this->backgroundroot->addChild(cam);
 
   // Background stuff
-  setBackgroundColor(SbColor(0.1f, 0.1f, 0.1f));
   pcBackGround = new SoFCBackgroundGradient;
   pcBackGround->ref();
-  setGradientBackgroud(true);
 
   // Set up foreground, overlayed scenegraph.
   this->foregroundroot = new SoSeparator;
@@ -242,10 +240,14 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_SORTED_TRIANGLE_BLEND);
 //  getGLRenderAction()->setSmoothing(true);
 
+  // Settings
   setSeekTime(0.5);
   if ( isSeekValuePercentage() == false )
     setSeekValueAsPercentage(true);
   setSeekDistance(50);
+
+  setBackgroundColor(SbColor(0.1f, 0.1f, 0.1f));
+  setGradientBackgroud(true);
 }
 
 void View3DInventorViewer::setGradientBackgroud(bool b)
@@ -254,6 +256,7 @@ void View3DInventorViewer::setGradientBackgroud(bool b)
     backgroundroot->addChild( pcBackGround );
   else if(!b && backgroundroot->findChild(pcBackGround) != -1)
     backgroundroot->removeChild( pcBackGround );
+  sizeChanged(getSize());
 }
 
 void View3DInventorViewer::setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor )
@@ -395,16 +398,18 @@ bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbNam
 void View3DInventorViewer::sizeChanged( const SbVec2s& size )
 {
   // searching in the background node
-  SoNode* child = this->backgroundroot->getChild(1);
-  if ( child && child->getTypeId() == SoFCBackgroundGradient::getClassTypeId() )
-  {
-    reinterpret_cast<SoFCBackgroundGradient*>(child)->setViewerSize( size );
+  if ( this->backgroundroot->getNumChildren() > 1 ) {
+    SoNode* child = this->backgroundroot->getChild(1);
+    if ( child && child->getTypeId() == SoFCBackgroundGradient::getClassTypeId() )
+    {
+      reinterpret_cast<SoFCBackgroundGradient*>(child)->setViewerSize( size );
+    }
   }
   
   // searching in the foreground node
   for ( int i=0; i<this->foregroundroot->getNumChildren(); i++ )
   {
-    child = this->foregroundroot->getChild(i);
+    SoNode* child = this->foregroundroot->getChild(i);
     if ( child && child->getTypeId().isDerivedFrom( SoFCColorBarBase::getClassTypeId() ) )
     {
       reinterpret_cast<SoFCColorBarBase*>(child)->setViewerSize( size );

@@ -44,7 +44,7 @@ using namespace Points;
 
 PROPERTY_SOURCE(Points::Feature, App::AbstractFeature)
 
-Feature::Feature()
+Feature::Feature() : _featurePy(0)
 {
   // set default display mode
   showMode.setValue("Point");
@@ -52,6 +52,11 @@ Feature::Feature()
 
 Feature::~Feature()
 {
+  if ( _featurePy )
+  {
+    _featurePy->setInvalid();
+    _featurePy->DecRef();
+  }
 }
 
 void Feature::Save (Base::Writer &writer) const
@@ -114,7 +119,11 @@ void Feature::setPoints(const PointsWithProperty& New)
 
 Base::PyObjectBase *Feature::GetPyObject(void)
 {
-  return new PointsFeaturePy(this);
+  if (!_featurePy) {
+    _featurePy = new PointsFeaturePy(this);
+  }
+  _featurePy->IncRef();
+  return _featurePy;
 }
 
 // ------------------------------------------------------------------

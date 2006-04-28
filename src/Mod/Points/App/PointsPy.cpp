@@ -71,7 +71,7 @@ PyMethodDef PointsPy::Methods[] = {
   PYMETHODEDEF(read)
   PYMETHODEDEF(write)
   PYMETHODEDEF(translate)
-//  PYMETHODEDEF(rotate)
+  PYMETHODEDEF(rotate)
   PYMETHODEDEF(scale)
   PYMETHODEDEF(addPoint)
   PYMETHODEDEF(clear)
@@ -87,8 +87,15 @@ PyParentObject PointsPy::Parents[] = {&Base::PyObjectBase::Type, NULL};
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-PointsPy::PointsPy(PointsWithProperty *pcPoints,bool Referenced, PyTypeObject *T)
-: Base::PyObjectBase(T), _pcPoints(pcPoints),_bReferenced(Referenced)
+PointsPy::PointsPy(const PointsWithProperty& rcPoints, PyTypeObject *T)
+: Base::PyObjectBase(T), _pcPoints(new PointsWithProperty())
+{
+  Base::Console().Log("Create PointsPy: %p \n",this);
+  (*_pcPoints) = rcPoints;
+}
+
+PointsPy::PointsPy(PyTypeObject *T)
+: Base::PyObjectBase(T), _pcPoints(new PointsWithProperty())
 {
   Base::Console().Log("Create PointsPy: %p \n",this);
 }
@@ -105,7 +112,7 @@ PyObject *PointsPy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
 PointsPy::~PointsPy()           // Everything handled in parent
 {
   Base::Console().Log("Destroy PointsPy: %p \n",this);
-  if(!_bReferenced) delete _pcPoints;
+  delete _pcPoints;
 } 
 
 //--------------------------------------------------------------------------
@@ -138,17 +145,21 @@ int PointsPy::_setattr(char *attr, PyObject *value) // __setattr__ function: not
     return 1;
   else 
     return PyObjectBase::_setattr(attr, value); 
-} 
-
-
-void PointsPy::setPoints(PointsWithProperty *pcPoints)
-{
-  _pcPoints = pcPoints;
 }
 
-PointsWithProperty *PointsPy::getPoints(void)
+void PointsPy::setPoints(const PointsWithProperty& rcPoints)
 {
-  return _pcPoints;
+  (*_pcPoints) = rcPoints;
+}
+
+const PointsWithProperty& PointsPy::getPoints(void) const
+{
+  return *_pcPoints;
+}
+
+PointsWithProperty& PointsPy::refToPoints(void)
+{
+  return *_pcPoints;
 }
 
 //--------------------------------------------------------------------------
@@ -177,6 +188,12 @@ PYFUNCIMP_D(PointsPy,read)
   if (! PyArg_ParseTuple(args, "s",&Name))			 
     return NULL;                         
 
+  Base::FileInfo File(Name);
+  
+  // checking on the file
+  if(!File.isReadable())
+    Py_Error(PyExc_Exception,"File to load not existing or not readable");
+
   PY_TRY {
     PointsAlgos::Load(*_pcPoints,Name);
   } PY_CATCH;
@@ -198,7 +215,7 @@ PYFUNCIMP_D(PointsPy,translate)
 
   Py_Return;
 }
-/*
+
 PYFUNCIMP_D(PointsPy,rotate)
 {
   float x,y,z;
@@ -215,7 +232,7 @@ PYFUNCIMP_D(PointsPy,rotate)
 
   Py_Return;
 }
-*/
+
 PYFUNCIMP_D(PointsPy,scale)
 {
   float s;
@@ -256,6 +273,6 @@ PYFUNCIMP_D(PointsPy,clear)
 PYFUNCIMP_D(PointsPy,copy)
 {
   PY_TRY {
-   return new PointsPy(new PointsWithProperty(*_pcPoints));
+   return new PointsPy(*_pcPoints);
   } PY_CATCH;
 }

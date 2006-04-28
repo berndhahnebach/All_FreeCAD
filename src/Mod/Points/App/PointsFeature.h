@@ -43,6 +43,7 @@ namespace Points
 {
 class PointsWithProperty;
 class Property;
+class PointsFeaturePy;
 
 /** Base class of all Points feature classes in FreeCAD.
  * This class holds an PointsKernel object.
@@ -75,7 +76,7 @@ public:
   /** @name methods for convenient handling of parameter (properties) */
   //@{
   /** Get the actual result Points. */
-  virtual PointsWithProperty &getPoints(void){return _Points;}
+  virtual /*const*/ PointsWithProperty &getPoints(void){return _Points;}
   /// sets the points 
   void setPoints(const PointsWithProperty&);
   //@}
@@ -94,7 +95,7 @@ public:
 
 protected:
   PointsWithProperty _Points;
-
+  PointsFeaturePy* _featurePy;
 };
 
 /**

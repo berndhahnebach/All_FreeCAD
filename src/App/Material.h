@@ -97,13 +97,14 @@ public:
 
 /** Material class
  */
+class MaterialPy;
 class AppExport Material
 {
 public:
 	/// Constructor
-  Material(void){}
-  Material(const char* MatName){set(MatName);}
-  virtual ~Material() {}
+  Material(void);
+  Material(const char* MatName);
+  virtual ~Material();
 
 	/** Set a material by name
 	 *  There are some standard materials defined which are:
@@ -123,6 +124,8 @@ public:
   float shininess;
   float transparency;
 
+private:
+  MaterialPy* _materialPy;
 };
 
 } //namespace App

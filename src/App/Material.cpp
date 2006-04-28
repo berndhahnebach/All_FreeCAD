@@ -28,6 +28,7 @@
 
 #include "../Base/Exception.h"
 #include "Material.h"
+#include "MaterialPy.h"
 
 using namespace App;
 
@@ -35,6 +36,33 @@ using namespace App;
 //===========================================================================
 // Material
 //===========================================================================
+Material::Material(void) : _materialPy(0)
+{
+}
+
+Material::Material(const char* MatName) : _materialPy(0)
+{
+  set(MatName);
+}
+
+Material::~Material() 
+{
+  if ( _materialPy )
+  {
+    _materialPy->setInvalid();
+    _materialPy->DecRef();
+  }
+}
+
+Base::PyObjectBase *Material::GetPyObject(void)
+{
+  if (!_materialPy){
+    _materialPy = new MaterialPy(this);
+  }
+
+  _materialPy->IncRef();
+	return _materialPy; 
+}
 
 void Material::set(const char* MatName)
 {

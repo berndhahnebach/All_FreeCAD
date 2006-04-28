@@ -118,7 +118,7 @@ PyParentObject PointsFeaturePy::Parents[] = {&PyObjectBase::Type,&App::FeaturePy
 // constructor
 //--------------------------------------------------------------------------
 PointsFeaturePy::PointsFeaturePy(Points::Feature *pcFeature, PyTypeObject *T)
-: App::FeaturePy(pcFeature, T), _pcFeature(pcFeature), _pcPointsPy(0)
+: App::FeaturePy(pcFeature, T), _pcFeature(pcFeature)
 {
   Base::Console().Log("Create PointsFeaturePy: %p \n",this);
 }
@@ -135,7 +135,6 @@ PyObject *PointsFeaturePy::PyMake(PyObject *ignored, PyObject *args)  // Python 
 PointsFeaturePy::~PointsFeaturePy()           // Everything handled in parent
 {
   Base::Console().Log("Destroy PointsFeaturePy: %p \n",this);
-  if( _pcPointsPy ) _pcPointsPy->DecRef();
 } 
 
 //--------------------------------------------------------------------------
@@ -178,12 +177,8 @@ int PointsFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ functi
 
 PYFUNCIMP_D(PointsFeaturePy,getPoints)
 {
-  if(! _pcPointsPy)
-    _pcPointsPy = new PointsPy(&(_pcFeature->getPoints()),true);
-  // keeps the object alive
-  _pcPointsPy->IncRef();
-  
-  return _pcPointsPy;
+  // get a copy of the points
+  return new PointsPy(_pcFeature->getPoints());
 }
 
 PYFUNCIMP_D(PointsFeaturePy,setPoints)
@@ -195,11 +190,8 @@ PYFUNCIMP_D(PointsFeaturePy,setPoints)
 
   pcObject = (PointsPy*)pcObj;
 
-  // copy in the Feature Mesh
-  _pcFeature->setPoints(*(pcObject->getPoints()));
-  // and set the python object of this feature
-  if(_pcPointsPy)
-    _pcPointsPy->setPoints(&(_pcFeature->getPoints()));
+  // copy points to feature
+  _pcFeature->setPoints( pcObject->getPoints() );
 
   Py_Return;
 }

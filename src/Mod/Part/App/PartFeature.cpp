@@ -39,9 +39,18 @@ using namespace Part;
 PROPERTY_SOURCE(Part::Feature, App::AbstractFeature)
 
 
-Feature::Feature(void)
+Feature::Feature(void) : _featurePy(0)
 {
   showMode.setValue("Normal");
+}
+
+Feature::~Feature()
+{
+  if ( _featurePy )
+  {
+    _featurePy->setInvalid();
+    _featurePy->DecRef();
+  }
 }
 
 int Feature::execute(void)
@@ -63,7 +72,12 @@ TopoDS_Shape Feature::getShape(void)
 
 Base::PyObjectBase *Feature::GetPyObject(void)
 {
-  return new PartFeaturePy(this);
+  if ( !_featurePy ) {
+    _featurePy = new PartFeaturePy(this);
+  }
+
+  _featurePy->IncRef();
+  return _featurePy;
 }
 
 

@@ -42,6 +42,7 @@ namespace Part
 {
 
 class Property;
+class PartFeaturePy;
 
 /** Base class of all Feature classes in FreeCAD
  */
@@ -52,6 +53,7 @@ class AppPartExport Feature: public App::AbstractFeature
 public:
 	/// Constructor
 	Feature(void);
+  virtual ~Feature();
 
   /** @name methods overide Feature */
   //@{
@@ -82,7 +84,7 @@ public:
 
 private:
   TopoDS_Shape _Shape;
-
+  PartFeaturePy* _featurePy;
 };
 
 
