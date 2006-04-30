@@ -99,7 +99,7 @@ PyTypeObject PointsFeaturePy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef PointsFeaturePy::Methods[] = {
 // PyObjectBase
-  PYMETHODEDEF(isA)
+//  PYMETHODEDEF(isA)
 // FeaturePy 
 	PYMETHODEDEF(setModified)
 	PYMETHODEDEF(isValid)

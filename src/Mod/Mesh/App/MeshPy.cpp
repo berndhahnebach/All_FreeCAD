@@ -79,15 +79,15 @@ PyTypeObject MeshPy::Type = {
   /* --- Functions to access object as input/output buffer ---------*/
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
-  Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About MeshObject",                             /*tp_doc */
+  Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
+  "About MeshObject",                               /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  0,                                                /*tp_methods */
+  MeshPy::Methods,                                  /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
   &Base::PyObjectBase::Type,                        /*tp_base */
@@ -95,7 +95,7 @@ PyTypeObject MeshPy::Type = {
   0,                                                /*tp_descr_get */
   0,                                                /*tp_descr_set */
   0,                                                /*tp_dictoffset */
-  0,                                                /*tp_init */
+  PyInit,                                           /*tp_init */
   0,                                                /*tp_alloc */
   PyMake,                                           /*tp_new */
   0,                                                /*tp_free   Low-level free-memory routine */
@@ -147,6 +147,26 @@ PyMethodDef MeshPy::Methods[] = {
 //--------------------------------------------------------------------------
 PyParentObject MeshPy::Parents[] = {&Base::PyObjectBase::Type, NULL};     
 
+PyObject *MeshPy::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwds)  // Python wrapper
+{
+  return new MeshPy();
+}
+
+int MeshPy::PyInit(PyObject* self, PyObject* args, PyObject*)
+{
+  PyObject *pcObj=0;
+  if (!PyArg_ParseTuple(args, "|O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
+    return -1;                             // NULL triggers exception 
+
+  if ( pcObj )
+  {
+    MeshPy* pcMesh = (MeshPy*)pcObj;
+    ((MeshPy*)self)->_cMesh = pcMesh->_cMesh;
+  }
+
+  return 0;
+}
+
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
@@ -160,23 +180,6 @@ MeshPy::MeshPy(const MeshCore::MeshKernel& rcMesh, PyTypeObject *T)
 : Base::PyObjectBase(T), _cMesh(rcMesh)
 {
   Base::Console().Log("Create MeshPy: %p \n",this);
-}
-
-PyObject *MeshPy::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwds)  // Python wrapper
-{
-  PyObject *pcObj=0;
-  if (!PyArg_ParseTuple(args, "|O!", &(MeshPy::Type), &pcObj))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  if ( pcObj )
-  {
- 	  MeshPy* pcMesh = (MeshPy*)pcObj;
-    return new MeshPy( pcMesh->getMesh() );
-  }
-  else
-  {
-    return new MeshPy();
-  }
 }
 
 //--------------------------------------------------------------------------

@@ -104,7 +104,7 @@ PyTypeObject App::FeaturePythonPy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef App::FeaturePythonPy::Methods[] = {
 // PyObjectBase
-  PYMETHODEDEF(isA)
+//  PYMETHODEDEF(isA)
 // DocumentObjectPy
 // FeaturePy 
 	PYMETHODEDEF(setModified)

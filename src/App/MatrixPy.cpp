@@ -72,8 +72,8 @@ PyTypeObject App::MatrixPy::Type = {
   /* --- Functions to access object as input/output buffer ---------*/
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
-  Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About App.Matrix",                            /*tp_doc */
+  Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
+  "About App.Matrix",                               /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */

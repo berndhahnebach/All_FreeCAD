@@ -191,12 +191,24 @@ loftOnCurve(PyObject *self, PyObject *args)
 #endif
 }
 
-/* registration table  */
-struct PyMethodDef Mesh_Import_methods[] = {
-    {"open"       ,open ,       1},				/* method name, C func ptr, always-tuple */
-    {"insert"     ,insert,      1},
-    {"newMesh"    ,newMesh,     1},
-    {"loftOnCurve",loftOnCurve, 1},
+PyDoc_STRVAR(open_doc,
+"Load a mesh file into a newly created document.");
 
-    {NULL, NULL}                   /* end of table marker */
+PyDoc_STRVAR(inst_doc,
+"Load a mesh file into an existing document.");
+
+PyDoc_STRVAR(mesh_doc,
+"Create a new mesh object.");
+
+PyDoc_STRVAR(loft_doc,
+"Loft on curve.");
+
+/* List of functions defined in the module */
+
+struct PyMethodDef Mesh_Import_methods[] = { 
+    {"open"       ,open ,       METH_VARARGS, open_doc},				
+    {"insert"     ,insert,      METH_VARARGS, inst_doc},
+    {"newMesh"    ,newMesh,     METH_VARARGS, mesh_doc},
+    {"loftOnCurve",loftOnCurve, METH_VARARGS, loft_doc},
+    {NULL, NULL}  /* sentinel */
 };

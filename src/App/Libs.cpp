@@ -1,11 +1,3 @@
-/** \file Libs.cpp
- *  \brief Include all needed libs on Windows
- *  Here all the libs get includet by a #pragma dirctive.
- *  Unfortunatly there is nothin comperable on UNIX, so there
- *  you have to use compiler -l staments, which are somwere deep
- *  in the Makefile.
- */
-
 
 // === Incuding of libs: ============================================================================
 

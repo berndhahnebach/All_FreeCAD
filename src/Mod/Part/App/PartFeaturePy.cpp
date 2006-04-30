@@ -100,7 +100,7 @@ PyTypeObject PartFeaturePy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef PartFeaturePy::Methods[] = {
 // PyObjectBase
-  PYMETHODEDEF(isA)
+//  PYMETHODEDEF(isA)
 // FeaturePy 
 	PYMETHODEDEF(setModified)
 	PYMETHODEDEF(isValid)

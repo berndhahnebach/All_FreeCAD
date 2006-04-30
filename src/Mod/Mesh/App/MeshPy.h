@@ -51,6 +51,7 @@ public:
   MeshPy(PyTypeObject *T = &Type);
   MeshPy(const MeshCore::MeshKernel& rcMesh, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
+  static int PyInit(PyObject*, PyObject*, PyObject*);
 
   void setMesh(const MeshCore::MeshKernel& rcMesh);
   const MeshCore::MeshKernel& getMesh(void) const;

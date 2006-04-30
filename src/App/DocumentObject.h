@@ -62,8 +62,9 @@ public:
 
 
   /** Set the property touched -> changed, cause recomputation in Update()
-	 *  
+	 *
 	 */
+	//@{
 	//void TouchProperty(const char *Name);
   /// set this feature touched (cause recomputation on depndend features)
 	void Touch(void);

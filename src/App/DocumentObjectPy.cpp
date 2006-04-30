@@ -103,7 +103,7 @@ PyTypeObject App::DocumentObjectPy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef App::DocumentObjectPy::Methods[] = {
 // PyObjectBase
-  PYMETHODEDEF(isA)
+//  PYMETHODEDEF(isA)
 // DocumentObjectPy 
 //	PYMETHODEDEF(setModified)
 

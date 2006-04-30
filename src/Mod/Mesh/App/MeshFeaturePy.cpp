@@ -97,7 +97,7 @@ PyTypeObject MeshFeaturePy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef MeshFeaturePy::Methods[] = {
 // PyObjectBase
-  PYMETHODEDEF(isA)
+//  PYMETHODEDEF(isA)
 // FeaturePy 
 	PYMETHODEDEF(setModified)
 	PYMETHODEDEF(setModifiedView)

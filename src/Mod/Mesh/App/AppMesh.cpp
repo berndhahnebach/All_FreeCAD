@@ -43,19 +43,22 @@
 extern struct PyMethodDef Mesh_Import_methods[];
 
 
+PyDoc_STRVAR(module_doc,
+"This is a module working with meshes.");
+
 /* Python entry */
 extern "C" {
 void AppMeshExport initMesh() {
 
   Base::Console().Log("Mod : Load AppMesh\n");
 
-  PyObject* meshModule = Py_InitModule("Mesh", Mesh_Import_methods);   /* mod name, table ptr */
+  PyObject* meshModule = Py_InitModule3("Mesh", Mesh_Import_methods, module_doc);   /* mod name, table ptr */
 
-  // NOTE: As the Python docu says that PyModule_AddObject() steals
-  //       a reference to its last argument we must increment it, otherwise
-  //       we run into a segmentation fault, later on.
+  // NOTE: To finish the initialization of our own type objects we must
+  // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+  // This function is responsible for adding inherited slots from a type's base class.
   PyObject* pyMeshType = (PyObject *)&Mesh::MeshPy::Type;
-  Py_INCREF(pyMeshType);
+  if(PyType_Ready(&Mesh::MeshPy::Type) < 0) return;
   PyModule_AddObject(meshModule, "mesh", pyMeshType);
 
   Mesh::PropertyNormalList    ::init();

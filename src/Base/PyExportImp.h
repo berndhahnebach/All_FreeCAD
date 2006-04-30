@@ -233,7 +233,7 @@ public:
     }
     else if (!((PyObjectBase*) PyObj)->_valid){
       PyErr_Format(PyExc_ReferenceError, "Cannot access attribute '%s' of deleted object", attr);
-      return NULL;
+      return -1;
     }
     return ((PyObjectBase*) PyObj)->_setattr(attr, value);
   }
@@ -267,20 +267,20 @@ public:
   /// return a float from an int or flot object, or throw.
   static float getFloatFromPy(PyObject *value);
   //@}
-
-	/// Type checking							
-	bool IsA(PyTypeObject *T);
-	/// Type checking
-	bool IsA(const char *type_name);
-
-  /// Python type checking
-	PyObject *isA(PyObject *args);
-	/// static python wrapper
-  
-  static PyObject *sisA(PyObject *self, PyObject *args, PyObject *)
-  {
-    return ((PyObjectBase*)self)->isA(args);
-  };
+//
+//	/// Type checking							
+//	bool IsA(PyTypeObject *T);
+//	/// Type checking
+//	bool IsA(const char *type_name);
+//
+//  /// Python type checking
+//	PyObject *isA(PyObject *args);
+//	/// static python wrapper
+//  
+//  static PyObject *sisA(PyObject *self, PyObject *args, PyObject *)
+//  {
+//    return ((PyObjectBase*)self)->isA(args);
+//  };
 
   /** Should be implemented by subclasses that have PyObjectBase members 
    * to set them invalid as well. 

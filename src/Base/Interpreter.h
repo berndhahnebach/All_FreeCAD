@@ -111,7 +111,7 @@ public:
    * completed before the cleanup function, no Python APIs should be called by \a func. 
    */
   int cleanup(void (*func)(void));
-  /// This calls the registered cleanup functions. @see cleanup() for more details.
+  /** This calls the registered cleanup functions. @see cleanup() for more details. */
   void finalize();
   /// This shuts down the application.
   void systemExit();

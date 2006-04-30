@@ -130,14 +130,15 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
 	_pcAppModule = Py_InitModule("FreeCAD", Application::Methods);
 
   // introducing additional classes
-  // NOTE: As the Python docu says that PyModule_AddObject() steals
-  //       a reference to its last argument we must increment it, otherwise
-  //       we run into a segmentation fault, later on.
+
+  // NOTE: To finish the initialization of our own type objects we must
+  // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+  // This function is responsible for adding inherited slots from a type's base class.
   PyObject* pyVecType = (PyObject *)&App::VectorPy::Type;
-  Py_INCREF(pyVecType);
+  if (PyType_Ready(&App::VectorPy::Type) < 0) return;
   PyModule_AddObject(_pcAppModule, "Vector", pyVecType);
   PyObject* pyMatType = (PyObject *)&App::MatrixPy::Type;
-  Py_INCREF(pyMatType);
+  if(PyType_Ready(&App::MatrixPy::Type) < 0) return;;
   PyModule_AddObject(_pcAppModule, "Matrix", pyMatType);
 
 

@@ -56,6 +56,15 @@ PyObjectBase::~PyObjectBase()
  * PyObjectBase Type		-- Every class, even the abstract one should have a Type
 ------------------------------*/
 
+/** \brief 
+ * To prevent subclasses of PyTypeObject to be subclassed in Python we should remove 
+ * the Py_TPFLAGS_BASETYPE flag. For example, the classes App::VectorPy and App::MatrixPy
+ * have removed this flag and its Python proxies App.Vector and App.Matrix cannot be subclassed.
+ * In case we want to allow to derive from subclasses of PyTypeObject in Python
+ * we must either reimplment tp_new, tp_dealloc, tp_getattr, tp_setattr, tp_repr or set them to
+ * 0 and define tp_base as 0.
+ */
+
 PyTypeObject PyObjectBase::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						                                   	/*ob_size*/
@@ -108,8 +117,7 @@ PyTypeObject PyObjectBase::Type = {
  * PyObjectBase Methods 	-- Every class, even the abstract one should have a Methods
 ------------------------------*/
 PyMethodDef PyObjectBase::Methods[] = {
- 	PYMETHODEDEF(isA)
-
+// 	PYMETHODEDEF(isA)
   {NULL, NULL}		/* Sentinel */
 };
 
@@ -123,31 +131,40 @@ PyParentObject PyObjectBase::Parents[] = {&PyObjectBase::Type, NULL};
 ------------------------------*/
 PyObject *PyObjectBase::_getattr(char *attr)
 {
-//  if (streq(attr, "type"))
-//    return Py_BuildValue("s", (*(GetParents()))->tp_name);
-//  else 
   if (streq(attr, "__class__")) {
-  	PyTypeObject *tp = this->ob_type;
-    return Py_BuildValue("s",tp->tp_name);
+    // Note: We must return the type object here, 
+    // so that our own types feel as really Python objects 
+	  Py_INCREF(this->ob_type);
+	  return (PyObject *)(this->ob_type);
   }
   else if (streq(attr, "__members__")) {
     // Use __dict__ instead as __members__ is deprecated
-//    return Py_FindMethod(Methods, this, attr); 
     return NULL;
   }
   else if (streq(attr,"__dict__")) {
-    // No data to fill up the dictionary here, must be done in subclasses
-    return NULL;
+    // Return the default dict
+    PyTypeObject *tp = this->ob_type;
+    Py_INCREF(tp->tp_dict);
+    return tp->tp_dict;
   }
   else if (streq(attr,"softspace")) {
     // Internal Python stuff
     return NULL;
   }
   else {
-    //FIXME: How do we treat this correctly?
-	  PyTypeObject *tp = this->ob_type;
-		PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
-    return NULL;
+    // As fallback solution use Python's default method to get generic attributes
+	  PyObject *w, *res;
+	  w = PyString_InternFromString(attr);
+    if (w != NULL) {
+	    res = PyObject_GenericGetAttr(this, w);
+	    Py_XDECREF(w);
+	    return res;
+    } else {
+      // Throw an exception for unknown attributes
+	    PyTypeObject *tp = this->ob_type;
+		  PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
+      return NULL;
+    }
   }
   
   Py_Return;
@@ -155,20 +172,11 @@ PyObject *PyObjectBase::_getattr(char *attr)
 
 int PyObjectBase::_setattr(char *attr, PyObject *value)
 {
- if (!streq(attr,"softspace")) {
+  if (!streq(attr,"softspace")) {
 	  PyTypeObject *tp = this->ob_type;
 	  PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
- }
-//  std::string err = "Unknown attribute: ";
-//  err += attr;
-//  PyErr_SetString(PyExc_AttributeError,err.c_str());
+  }
   return -1;
-}
-
-// static wrapper
-int __setattr(PyObject *PyObj, char *attr, PyObject *value)
-{
-  return ((PyObjectBase*) PyObj)->_setattr(attr, value);
 }
 
 /*------------------------------
@@ -188,34 +196,34 @@ PyObject *PyObjectBase::_repr(void)
 /*------------------------------
  * PyObjectBase isA		-- the isA functions
 ------------------------------*/
-bool PyObjectBase::IsA(PyTypeObject *T)		// if called with a Type, use "typename"
-{
-  return IsA(T->tp_name);
-}
-
-bool PyObjectBase::IsA(const char *type_name)		// check typename of each parent
-{
-  int i;
-  PyParentObject  P;
-  PyParentObject *Ps = GetParents();
-
-  for (P = Ps[i=0]; P != NULL; P = Ps[i++])
-      if (streq(P->tp_name, type_name))
-	return true;
-  return false;
-}
-
-PYFUNCIMP_D(PyObjectBase,isA)
-{
-  char *type_name;
-  Py_Try(PyArg_ParseTuple(args, "s", &type_name));
-  if(IsA(type_name))
-    {Py_INCREF(Py_True); return Py_True;}
-  else
-    {Py_INCREF(Py_False); return Py_False;};
-}
-
-
+//bool PyObjectBase::IsA(PyTypeObject *T)		// if called with a Type, use "typename"
+//{
+//  return IsA(T->tp_name);
+//}
+//
+//bool PyObjectBase::IsA(const char *type_name)		// check typename of each parent
+//{
+//  int i;
+//  PyParentObject  P;
+//  PyParentObject *Ps = GetParents();
+//
+//  for (P = Ps[i=0]; P != NULL; P = Ps[i++])
+//      if (streq(P->tp_name, type_name))
+//	return true;
+//  return false;
+//}
+//
+//PYFUNCIMP_D(PyObjectBase,isA)
+//{
+//  char *type_name;
+//  Py_Try(PyArg_ParseTuple(args, "s", &type_name));
+//  if(IsA(type_name))
+//    {Py_INCREF(Py_True); return Py_True;}
+//  else
+//    {Py_INCREF(Py_False); return Py_False;};
+//}
+//
+//
 float PyObjectBase::getFloatFromPy(PyObject *value)
 {
   if(PyFloat_Check( value) )
