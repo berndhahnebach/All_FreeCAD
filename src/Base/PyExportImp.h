@@ -150,17 +150,17 @@ namespace Base
 
 /** The PyObjectBase class, exports the class as a python type
  *  PyObjectBase is the base class for all C++ classes which
- *  need to get exported into the python name space. This class is 
- *  very importand because nearly all imported classes in FreeCAD
- *  are visible in python for Macro recording and Automation purpose.
- *  The FCDocument is a good expample for a exported class.
- *  There are some conviniance macros to makes it easear to inheriting
+ *  need to get exported into the python namespace. This class is 
+ *  very important because nearly all imported classes in FreeCAD
+ *  are visible in python for macro recording and automation purpose.
+ *  The class App::Document is a good expample for a exported class.
+ *  There are some conveniance macros to make it easier to inherit
  *  from this class and defining new methods exported to python.
  *  PYFUNCDEF_D defines a new exported methode.
  *  PYFUNCIMP_D defines the implementation of the new exported methode.
  *  In the implementation you can use Py_Return, Py_Error, Py_Try and Py_Assert.
  *  PYMETHODEDEF makes the entry in the python methods tabel.
- *  @see FCDocument
+ *  @see Document
  *  @see PYFUNCDEF_D
  *  @see PYFUNCIMP_D
  *  @see PYMETHODEDEF

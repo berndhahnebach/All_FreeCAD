@@ -64,19 +64,25 @@ QWidget* TextEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void TextEditorItem::stopEdit( QWidget* editor, int column )
+void TextEditorItem::stopEdit( int column )
 {
-  setOverrideValue( dynamic_cast<QLineEdit*>(editor)->text() );
   setText( column, overrideValue().toString() );
 }
 
-void TextEditorItem::setDefaultValue()
+void TextEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QLineEdit* edit = dynamic_cast<QLineEdit*>(_editor);
+  QLineEdit* edit = dynamic_cast<QLineEdit*>(editor);
   edit->setText( value().toString() );
 }
 
-void TextEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant TextEditorItem::currentEditorValue( QWidget* editor ) const
+{
+  QVariant var;
+  var.asString() = dynamic_cast<QLineEdit*>(editor)->text();
+  return var;
+}
+
+QVariant TextEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
   QString txt = "";
   bool equal = true;
@@ -94,8 +100,9 @@ void TextEditorItem::convertFromProperty(const std::vector<App::Property*>& prop
     txt = "";
 
   QVariant val( txt );
-  setValue( val );
   setText( 1, txt );
+
+  return val;
 }
 
 void TextEditorItem::convertToProperty(const QVariant& val)
@@ -134,24 +141,30 @@ QWidget* IntEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void IntEditorItem::stopEdit( QWidget* editor, int column )
+void IntEditorItem::stopEdit( int column )
 {
-  setOverrideValue( dynamic_cast<QSpinBox*>(editor)->value() );
   setText( column, QString("%1").arg( overrideValue().toInt() ) );
 }
 
-void IntEditorItem::setDefaultValue()
+void IntEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QSpinBox* spin = dynamic_cast<QSpinBox*>(_editor);
+  QSpinBox* spin = dynamic_cast<QSpinBox*>(editor);
   spin->setValue( value().toInt() );
 }
 
-void IntEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant IntEditorItem::currentEditorValue( QWidget* editor ) const
+{
+  QVariant var;
+  var.asInt() = dynamic_cast<QSpinBox*>(editor)->value();
+  return var;
+}
+
+QVariant IntEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
   App::PropertyInteger* pPropInt = (App::PropertyInteger*)prop.front();
   QVariant value( (int)pPropInt->getValue() );
-  setValue( value );
   setText( 1, value.toString() );
+  return value;
 }
 
 void IntEditorItem::convertToProperty(const QVariant& val)
@@ -191,25 +204,31 @@ QWidget* FloatEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void FloatEditorItem::stopEdit( QWidget* editor, int column )
+void FloatEditorItem::stopEdit( int column )
 {
-  setOverrideValue( dynamic_cast<FloatSpinBox*>(editor)->value() );
   setText( column, QString("%1").arg( overrideValue().toDouble() ) );
 }
 
-void FloatEditorItem::setDefaultValue()
+void FloatEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  FloatSpinBox* spin = dynamic_cast<FloatSpinBox*>(_editor);
+  FloatSpinBox* spin = dynamic_cast<FloatSpinBox*>(editor);
   spin->setValue( (float)value().toDouble() );
 }
 
-void FloatEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant FloatEditorItem::currentEditorValue( QWidget* editor ) const
+{
+  QVariant var;
+  var.asDouble() = dynamic_cast<FloatSpinBox*>(editor)->value();
+  return var;
+}
+
+QVariant FloatEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
   App::PropertyFloat* pPropFloat = (App::PropertyFloat*)prop.front();
   QVariant value( (double)pPropFloat->getValue() );
-  setValue( value );
   QString txt;
   setText( 1, txt.sprintf("%.3f", value.toDouble()) );
+  return value;
 }
 
 void FloatEditorItem::convertToProperty(const QVariant& val)

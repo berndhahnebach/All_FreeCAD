@@ -53,16 +53,10 @@ public:
   /** Constructs an property item. */
   EditableItem( QListView* lv, const QVariant& value );
 
-  /** Sets the default value for this item to \a value. */
-  void setValue( const QVariant& value );
-
   /** Gets the default value of this item. */
   const QVariant& value() const;
 
-  /** Sets the override value to \a value. */
-  void setOverrideValue( const QVariant& value );
-
-  /** Gets the override value. */
+  /** Gets the overridden value. */
   const QVariant& overrideValue() const;
 
   /** Sets the current property object. */
@@ -74,26 +68,21 @@ public:
   int rtti () const { return 4000; }
 
   /** 
-   * If \a edit is true, this item can be edited, 
-   * otherwise it cannot be edited. 
+   * If \a read is true, this item cannot be edited, otherwise it can be edited. 
    */
-  void setEditable( bool edit );
+  void setReadOnly( bool read );
 
   /** Returns true if the item is editable, otherwise returns false. */
-  bool isEditable() const;
-
-public slots:
-  /** Undoes the all setOverrideValue(). */
-  void restoreOverrideValue();
-
-  /** 
-   * If \a modify is true, this item is set to be modified, 
-   * otherwise it is set to be not modified. 
-   */
-  void setModified( bool modify );
+  bool isReadOnly() const;
 
   /** Returns true if the item was modified, otherwise returns false. */
   bool isModified() const;
+
+public slots:
+  /** Undoes the changes performed by setOverrideValue(). */
+  void restoreOverrideValue();
+  /** Applies the changes performed by setOverrideValue(). */
+  void applyOverrideValue();
 
 protected slots:
   /**
@@ -117,25 +106,21 @@ protected slots:
    */
   void onValueChanged();
 
-private: // Interface for EditableListView
-  friend class EditableListView;
-  bool startEdit( int column );
-  void stopEdit();
-  void update();
-  void setup();
-
 protected: // Interface for subclasses.
-  /** Creates the appropriate editor for this item. */
+  EditableItem();
+  /** Creates the appropriate editor for this item and sets the editor to the value of overrideValue(). */
   virtual QWidget* createEditor( int column, QWidget* parent ) = 0;
-  /** Sets the new value for this item. Afterwards the editor is deleted automatically. */
-  virtual void stopEdit( QWidget* editor, int column ) = 0;
-  /** Sets the editor's default value. */
-  virtual void setDefaultValue() = 0;
+  /** Sets the new value of overrideValue() for this item. Afterwards the editor is deleted automatically. */
+  virtual void stopEdit( int column ) = 0;
+  /** Sets the editor's default value of value(). */
+  virtual void setDefaultEditorValue( QWidget* editor ) = 0;
+  /** Gets the current overridden value. */
+  virtual QVariant currentEditorValue( QWidget* editor ) const;
 
   /** @name Converter methods */
   //@{
   /** Converts from property to QVariant. */
-  virtual void convertFromProperty(const std::vector<App::Property*>&) = 0;
+  virtual QVariant convertFromProperty(const std::vector<App::Property*>&) = 0;
   /** Converts from QVariant back to property. */
   virtual void convertToProperty(const QVariant&) = 0;
   //@}
@@ -143,23 +128,41 @@ protected: // Interface for subclasses.
   /** Does a repaint of the cell. */
   virtual void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
 
-  QWidget* _editor; /**< A pointer to the actual editor widget. */
-
-protected:
-  EditableItem();
-  std::vector<App::Property*> _prop;
-
 public:
   static QListView* parentView;
+
+protected:
+  std::vector<App::Property*> _prop;
+
+private: // Interface for EditableListView
+  friend class EditableListView;
+
+  /** Sets the default value for this item to \a value. */
+  void setValue( const QVariant& value );
+
+  /** Sets the override value to \a value. */
+  void setOverrideValue( const QVariant& value );
+
+  /** 
+   * If \a modify is true, this item is set to be modified, 
+   * otherwise it is set to be not modified. 
+   */
+  void setModified( bool modify );
+
+  bool startEdit( int column );
+  void stopEdit();
+  void update();
+  void setup();
 
 private:
 //  std::vector<App::Property*> _prop;
   QVariant _val;
   QVariant _newval;
   bool _modified;
-  bool _editable;
+  bool _readonly;
   int _col;
-  QPushButton* _reset;
+  QWidget* _editor; /**< A pointer to the actual editor widget. */
+  QPushButton* _apply;
 };
 
 } // namespace PropertyEditor

@@ -43,9 +43,10 @@ public:
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( QWidget* editor, int column );
-  virtual void setDefaultValue();
-  virtual void convertFromProperty(const std::vector<App::Property*>&);
+  virtual void stopEdit( int column );
+  virtual void setDefaultEditorValue( QWidget* editor );
+  virtual QVariant currentEditorValue( QWidget* editor ) const;
+  virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:
@@ -65,9 +66,10 @@ public:
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( QWidget* editor, int column );
-  virtual void setDefaultValue();
-  virtual void convertFromProperty(const std::vector<App::Property*>&);
+  virtual void stopEdit( int column );
+  virtual void setDefaultEditorValue( QWidget* editor );
+  virtual QVariant currentEditorValue( QWidget* editor ) const;
+  virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:
@@ -87,9 +89,10 @@ public:
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( QWidget* editor, int column );
-  virtual void setDefaultValue();
-  virtual void convertFromProperty(const std::vector<App::Property*>&);
+  virtual void stopEdit( int column );
+  virtual void setDefaultEditorValue( QWidget* editor );
+  virtual QVariant currentEditorValue( QWidget* editor ) const;
+  virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:

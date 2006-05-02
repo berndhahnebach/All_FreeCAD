@@ -60,25 +60,29 @@ QWidget* FontEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void FontEditorItem::stopEdit( QWidget* editor, int column )
+void FontEditorItem::stopEdit( int column )
 {
-  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
-
-  QVariant var;
-  var.asFont().setFamily( btn->text() );
-  setOverrideValue( var );
   setText( column, overrideValue().toFont().family() );
 }
 
-void FontEditorItem::setDefaultValue()
+void FontEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+  QPushButton* btn = dynamic_cast<QPushButton*>(editor);
   btn->setText( value().toFont().family() );
+}
+
+QVariant FontEditorItem::currentEditorValue( QWidget* editor ) const
+{
+  QPushButton* btn = dynamic_cast<QPushButton*>(editor);
+
+  QVariant var;
+  var.asFont().setFamily( btn->text() );
+  return var;
 }
 
 void FontEditorItem::onChangeFont()
 {
-  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+  QPushButton* btn = (QPushButton*)sender();
 
   if ( btn )
   {
@@ -94,8 +98,11 @@ void FontEditorItem::onChangeFont()
   }
 }
 
-void FontEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant FontEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
+  QVariant var;
+  var.asFont().setFamily( "" );
+  return var;
 }
 
 void FontEditorItem::convertToProperty(const QVariant&)
@@ -126,29 +133,28 @@ QWidget* ColorEditorItem::createEditor( int column, QWidget* parent )
 
   editor->setColor( _color );
 
-  connect(editor, SIGNAL( changed() ), this, SLOT( onChangeColor() ));
+  connect(editor, SIGNAL( changed() ), this, SLOT( onValueChanged() ));
   return editor;
 }
 
-void ColorEditorItem::stopEdit( QWidget* editor, int column )
+void ColorEditorItem::stopEdit( int column )
 {
-  _color = dynamic_cast<Gui::ColorButton*>(_editor)->color();
-  setOverrideValue( _color );
+  _color = overrideValue().toColor();
 }
 
-void ColorEditorItem::setDefaultValue()
+void ColorEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  Gui::ColorButton* btn = dynamic_cast<Gui::ColorButton*>(_editor);
+  Gui::ColorButton* btn = dynamic_cast<Gui::ColorButton*>(editor);
   btn->setColor( value().toColor() );
 }
 
-void ColorEditorItem::onChangeColor()
+QVariant ColorEditorItem::currentEditorValue( QWidget* editor ) const
 {
-  Gui::ColorButton* btn = dynamic_cast<Gui::ColorButton*>(_editor);
-  if ( btn )
-  {
-    onValueChanged();
-  }
+  Gui::ColorButton* btn = dynamic_cast<Gui::ColorButton*>(editor);
+
+  QVariant var;
+  var.asColor() = btn->color();
+  return var;
 }
 
 void ColorEditorItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)
@@ -170,16 +176,18 @@ void ColorEditorItem::paintCell(QPainter* p, const QColorGroup& cg, int column, 
   }
 }
 
-void ColorEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant ColorEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
+  QVariant value;
   if ( prop.size() > 0 )
   {
     App::PropertyColor* pPropColor = (App::PropertyColor*)prop.front();
     App::Color col = pPropColor->getValue();
-    QVariant value( QColor((int)(255.0f*col.r),(int)(255.0f*col.g),(int)(255.0f*col.b)) );
-    setValue( value );
+    value.asColor() = QColor((int)(255.0f*col.r),(int)(255.0f*col.g),(int)(255.0f*col.b));
     _color = value.toColor();
   }
+
+  return value;
 }
 
 void ColorEditorItem::convertToProperty(const QVariant& val)

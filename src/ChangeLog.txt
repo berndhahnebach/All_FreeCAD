@@ -119,3 +119,4 @@ Version: V0.5B6 Date: Sat Apr 15 18:23:54 2006 +++++++++++++++++++++++++++++++
          for each call but it must return the same instance, otherwise the Python objects cannot be notified when the C++ object
          has been destroyed)
 + Allow drag'n'drop for files coming from ZIP files
++ More intuitive handling of property editor

@@ -34,6 +34,27 @@
 using namespace Gui::PropertyEditor;
  
 /* XPM */
+static const char * applyproperty_xpm[] = {
+"14 14 3 1",
+"# c #000000",
+"b c #00FF00",
+". c None",
+"..............",
+"..............",
+"..........#...",
+".........#b#..",
+"........#bbb#.",
+"...#...#bbb#..",
+"..#b#.#bbb#...",
+".#bbb#bbb#....",
+"..#bbbbb#.....",
+"...#bbb#......",
+"....#b#.......",
+".....#........",
+"..............",
+".............."};
+ 
+/* XPM */
 static const char * resetproperty_xpm[] = {
       "7 6 4 1",
       "   c None",
@@ -52,23 +73,23 @@ TYPESYSTEM_SOURCE_ABSTRACT(Gui::PropertyEditor::EditableItem, Base::BaseClass);
 QListView* EditableItem::parentView = 0;
 
 EditableItem::EditableItem()
-    : QListViewItem( parentView ), _val(0), _newval(0), _modified(false), _editable(true)
+    : QListViewItem( parentView ), _val(0), _newval(0), _modified(false), _readonly(false), _col(1), _editor(0)
 {
-  _reset = new QPushButton(listView()->viewport());
-  _reset->setPixmap( resetproperty_xpm );
-  _reset->hide();
+  _apply = new QPushButton(listView()->viewport());
+  _apply->setPixmap( applyproperty_xpm );
+  _apply->hide();
 
-  connect( _reset, SIGNAL( clicked() ), this, SLOT( restoreOverrideValue() ) );
+  connect( _apply, SIGNAL( clicked() ), this, SLOT( applyOverrideValue() ) );
 }
 
 EditableItem::EditableItem( QListView* lv, const QVariant& value )
-    : QListViewItem( lv ), _val(value), _newval(value), _modified(false), _editable(true)
+    : QListViewItem( lv ), _val(value), _newval(value), _modified(false), _readonly(false), _col(1), _editor(0)
 {
-  _reset = new QPushButton(listView()->viewport());
-  _reset->setPixmap( resetproperty_xpm );
-  _reset->hide();
+  _apply = new QPushButton(listView()->viewport());
+  _apply->setPixmap( applyproperty_xpm );
+  _apply->hide();
 
-  connect( _reset, SIGNAL( clicked() ), this, SLOT( restoreOverrideValue() ) );
+  connect( _apply, SIGNAL( clicked() ), this, SLOT( applyOverrideValue() ) );
 }
 
 void EditableItem::setup()
@@ -79,7 +100,7 @@ void EditableItem::setup()
 
 bool EditableItem::startEdit( int col )
 {
-  if ( !_editable ) 
+  if ( _readonly ) 
     return false;
 
   _editor = createEditor( col, listView()->viewport() );
@@ -87,7 +108,7 @@ bool EditableItem::startEdit( int col )
   {
     _col = col;
     update();
-    _reset->show();
+    _apply->show();
     _editor->show();
     return true;
   }
@@ -99,8 +120,10 @@ void EditableItem::stopEdit()
 {
   if ( _editor )
   {
-    stopEdit( _editor, _col );
-    _reset->hide();
+    QVariant var = currentEditorValue( _editor );
+    setOverrideValue( var );
+    stopEdit( _col );
+    _apply->hide();
     delete _editor;
     _editor = 0;
   }
@@ -125,8 +148,8 @@ void EditableItem::update()
   rect2.setLeft( listView()->header()->sectionPos(_col)
                 - listView()->header()->offset() + rect.width());
   rect2.setWidth( rect.height() );
-  _reset->setGeometry( rect2 );
-  _reset->setEnabled( isModified() );
+  _apply->setGeometry( rect2 );
+  _apply->setEnabled( isModified() );
 }
 
 void EditableItem::setValue( const QVariant& val )
@@ -140,12 +163,14 @@ const QVariant& EditableItem::value() const
   return _val;
 }
 
+QVariant EditableItem::currentEditorValue( QWidget* editor ) const
+{
+  return _newval;
+}
+
 void EditableItem::setOverrideValue( const QVariant& val )
 {
   _newval = val;
-  //FIXME: This is just for testing the modification of properties
-  if ( isModified() )
-    convertToProperty(_newval);
 }
 
 const QVariant& EditableItem::overrideValue() const
@@ -156,7 +181,18 @@ const QVariant& EditableItem::overrideValue() const
 void EditableItem::restoreOverrideValue()
 {
   _newval = _val;
-  setDefaultValue();
+  if ( _editor ) {
+    setDefaultEditorValue( _editor );
+  }
+  setModified( false );
+  QListViewItem::repaint();
+}
+
+void EditableItem::applyOverrideValue()
+{
+  QVariant var = currentEditorValue( _editor );
+  setValue( var );
+  convertToProperty(var);
   setModified( false );
   QListViewItem::repaint();
 }
@@ -164,13 +200,14 @@ void EditableItem::restoreOverrideValue()
 void EditableItem::setProperty( const std::vector<App::Property*>& prop )
 {
   _prop = prop;
-  convertFromProperty(_prop);
+  QVariant var = convertFromProperty(_prop);
+  setValue(var);
 }
 
 void EditableItem::setModified( bool mod )
 {
   _modified = mod;
-  _reset->setEnabled( mod );
+  _apply->setEnabled( mod );
 }
 
 bool EditableItem::isModified() const
@@ -178,14 +215,14 @@ bool EditableItem::isModified() const
   return _modified;
 }
 
-void EditableItem::setEditable( bool edit )
+void EditableItem::setReadOnly( bool read )
 {
-  _editable = edit;
+  _readonly = read;
 }
 
-bool EditableItem::isEditable() const
+bool EditableItem::isReadOnly() const
 {
-  return _editable;
+  return _readonly;
 }
 
 void EditableItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align)

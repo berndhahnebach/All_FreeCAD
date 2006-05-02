@@ -54,20 +54,28 @@ QWidget* TimeEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void TimeEditorItem::stopEdit( QWidget* editor, int column )
+void TimeEditorItem::stopEdit( int column )
 {
-  setOverrideValue( dynamic_cast<QTimeEdit*>(editor)->time() );
   setText( column, QString("%1").arg(overrideValue().toTime().toString()) );
 }
 
-void TimeEditorItem::setDefaultValue()
+void TimeEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QTimeEdit* edit = dynamic_cast<QTimeEdit*>(_editor);
+  QTimeEdit* edit = dynamic_cast<QTimeEdit*>(editor);
   edit->setTime( value().toTime() );
 }
 
-void TimeEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant TimeEditorItem::currentEditorValue( QWidget* editor ) const
 {
+  QVariant var;
+  var.asTime() = dynamic_cast<QTimeEdit*>(editor)->time();
+  return var;
+}
+
+QVariant TimeEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+{
+  QVariant var;
+  return var;
 }
 
 void TimeEditorItem::convertToProperty(const QVariant&)
@@ -100,20 +108,28 @@ QWidget* DateEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void DateEditorItem::stopEdit( QWidget* editor, int column )
+void DateEditorItem::stopEdit( int column )
 {
-  setOverrideValue( dynamic_cast<QDateEdit*>(editor)->date() );
   setText( column, QString("%1").arg(overrideValue().toDate().toString()) );
 }
 
-void DateEditorItem::setDefaultValue()
+void DateEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QDateEdit* edit = dynamic_cast<QDateEdit*>(_editor);
+  QDateEdit* edit = dynamic_cast<QDateEdit*>(editor);
   edit->setDate( value().toDate() );
 }
 
-void DateEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant DateEditorItem::currentEditorValue( QWidget* editor ) const
 {
+  QVariant var;
+  var.asDate() = dynamic_cast<QDateEdit*>(editor)->date();
+  return var;
+}
+
+QVariant DateEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+{
+  QVariant var;
+  return var;
 }
 
 void DateEditorItem::convertToProperty(const QVariant&)
@@ -146,22 +162,28 @@ QWidget* DateTimeEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void DateTimeEditorItem::stopEdit( QWidget* editor, int column )
+void DateTimeEditorItem::stopEdit( int column )
 {
-  QVariant var = overrideValue();
-  var.asDateTime() = dynamic_cast<QDateTimeEdit*>(editor)->dateTime();
-  setOverrideValue( var );
-  setText( column, QString("%1").arg(var.toDateTime().toString()) );
+  setText( column, QString("%1").arg(overrideValue().toDateTime().toString()) );
 }
 
-void DateTimeEditorItem::setDefaultValue()
+void DateTimeEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QDateTimeEdit* edit = dynamic_cast<QDateTimeEdit*>(_editor);
+  QDateTimeEdit* edit = dynamic_cast<QDateTimeEdit*>(editor);
   edit->setDateTime( value().toDateTime() );
 }
 
-void DateTimeEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant DateTimeEditorItem::currentEditorValue( QWidget* editor ) const
 {
+  QVariant var;
+  var.asDateTime() = dynamic_cast<QDateTimeEdit*>(editor)->dateTime();
+  return var;
+}
+
+QVariant DateTimeEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+{
+  QVariant var;
+  return var;
 }
 
 void DateTimeEditorItem::convertToProperty(const QVariant&)

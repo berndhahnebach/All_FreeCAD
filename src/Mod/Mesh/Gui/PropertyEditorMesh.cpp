@@ -38,15 +38,15 @@ TYPESYSTEM_SOURCE(MeshGui::PropertyEditorMesh, Gui::PropertyEditor::EditableItem
 
 PropertyEditorMesh::PropertyEditorMesh()
 {
-  setEditable(false);
+  setReadOnly(true);
   setExpandable( true );
   setOpen(true);
   Gui::PropertyEditor::IntEditorItem* item=0;
   item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Faces", 0);
-  item->setEditable(false);
+  item->setReadOnly(true);
   insertItem(item);
   item = new Gui::PropertyEditor::IntEditorItem(EditableItem::parentView, "Points", 0);
-  item->setEditable(false);
+  item->setReadOnly(true);
   insertItem(item);
 }
 
@@ -62,19 +62,18 @@ QWidget* PropertyEditorMesh::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void PropertyEditorMesh::stopEdit( QWidget* editor, int column )
+void PropertyEditorMesh::stopEdit( int column )
 {
-  setOverrideValue( dynamic_cast<QLineEdit*>(editor)->text() );
   setText( column, overrideValue().toString() );
 }
 
-void PropertyEditorMesh::setDefaultValue()
+void PropertyEditorMesh::setDefaultEditorValue( QWidget* editor )
 {
-  QLineEdit* edit = dynamic_cast<QLineEdit*>(_editor);
+  QLineEdit* edit = dynamic_cast<QLineEdit*>(editor);
   edit->setText( value().toString() );
 }
 
-void PropertyEditorMesh::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant PropertyEditorMesh::convertFromProperty(const std::vector<App::Property*>& prop)
 {
   int ctPts = 0;
   int ctFts = 0;
@@ -89,18 +88,16 @@ void PropertyEditorMesh::convertFromProperty(const std::vector<App::Property*>& 
 
   QString  str = QString("[Points: %1, Faces: %2]").arg(ctPts).arg(ctFts);
   QVariant value( str );
-  setValue( value );
   setText( 1, value.toString() );
 
   // set children
   Gui::PropertyEditor::EditableItem* item = (Gui::PropertyEditor::EditableItem*)firstChild();
   QVariant pts(ctPts);
-  item->setValue(pts);
   item->setText( 1, pts.toString() );
   item = (Gui::PropertyEditor::EditableItem*)item->nextSibling();
   QVariant fts(ctFts);
-  item->setValue(fts);
   item->setText( 1, fts.toString() );
+  return value;
 }
 
 void PropertyEditorMesh::convertToProperty(const QVariant&)

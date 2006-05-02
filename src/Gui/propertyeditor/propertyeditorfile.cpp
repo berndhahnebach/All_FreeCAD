@@ -70,23 +70,27 @@ QWidget* FileEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void FileEditorItem::stopEdit( QWidget* editor, int column )
+void FileEditorItem::stopEdit( int column )
 {
-  QVariant var;
-  var.asCString() = dynamic_cast<QPushButton*>(_editor)->text();
-  setOverrideValue( var );
-  setText( column, var.toCString() );
+  setText( column, overrideValue().toCString() );
 }
 
-void FileEditorItem::setDefaultValue()
+void FileEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+  QPushButton* btn = dynamic_cast<QPushButton*>(editor);
   btn->setText( value().toCString() );
+}
+
+QVariant FileEditorItem::currentEditorValue( QWidget* editor ) const
+{
+  QVariant var;
+  var.asCString() = dynamic_cast<QPushButton*>(editor)->text();
+  return var;
 }
 
 void FileEditorItem::onChangeFile()
 {
-  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+  QPushButton* btn = (QPushButton*)sender();
 
   if ( btn )
   {
@@ -95,13 +99,15 @@ void FileEditorItem::onChangeFile()
     {
       onValueChanged();
       btn->setText( url );
-      setModified( true );
     }
   }
 }
 
-void FileEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant FileEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
+  QVariant var;
+  var.asCString() = "";
+  return var;
 }
 
 void FileEditorItem::convertToProperty(const QVariant&)
@@ -138,26 +144,32 @@ QWidget* PixmapEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void PixmapEditorItem::stopEdit( QWidget* editor, int column )
+void PixmapEditorItem::stopEdit( int column )
 {
-  const QPixmap* p = dynamic_cast<QPushButton*>(_editor)->pixmap();
-
-  if ( p )
-  {
-    setOverrideValue( *p );
-    setPixmap( column, *p );
-  }
+  setPixmap( column, overrideValue().toPixmap() );
 }
 
-void PixmapEditorItem::setDefaultValue()
+void PixmapEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+  QPushButton* btn = dynamic_cast<QPushButton*>(editor);
   btn->setPixmap( value().toPixmap() );
+}
+
+QVariant PixmapEditorItem::currentEditorValue( QWidget* editor ) const
+{
+  QVariant var;
+  const QPixmap* p = dynamic_cast<QPushButton*>(editor)->pixmap();
+  if ( p )
+  {
+    var.asPixmap() = *p;
+  }
+
+  return var;
 }
 
 void PixmapEditorItem::onChangePixmap()
 {
-  QPushButton* btn = dynamic_cast<QPushButton*>(_editor);
+  QPushButton* btn = (QPushButton*)sender();
 
   if ( btn )
   {
@@ -187,8 +199,11 @@ void PixmapEditorItem::onChangePixmap()
   }
 }
 
-void PixmapEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant PixmapEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
+  QVariant var;
+  var.asPixmap() = QPixmap();
+  return var;
 }
 
 void PixmapEditorItem::convertToProperty(const QVariant&)
@@ -242,19 +257,14 @@ QWidget* ChildrenEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void ChildrenEditorItem::stopEdit( QWidget* editor, int column )
+void ChildrenEditorItem::stopEdit( int column )
 {
-  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
-
-  QVariant var = overrideValue();
-  var.asStringList().last() = combo->currentText();
-  setOverrideValue( var );
   setText( column, overrideValue().toStringList().last() );
 }
 
-void ChildrenEditorItem::setDefaultValue()
+void ChildrenEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QComboBox* combo = dynamic_cast<QComboBox*>(_editor);
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
 
   QStringList items = value().toStringList();
 
@@ -274,8 +284,19 @@ void ChildrenEditorItem::setDefaultValue()
   }
 }
 
-void ChildrenEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant ChildrenEditorItem::currentEditorValue( QWidget* editor ) const
 {
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
+
+  QVariant var = overrideValue();
+  var.asStringList().last() = combo->currentText();
+  return var;
+}
+
+QVariant ChildrenEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+{
+  QVariant var;
+  return var;
 }
 
 void ChildrenEditorItem::convertToProperty(const QVariant&)

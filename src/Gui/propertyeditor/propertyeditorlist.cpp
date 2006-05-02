@@ -70,25 +70,32 @@ QWidget* BoolEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void BoolEditorItem::stopEdit( QWidget* editor, int column )
+void BoolEditorItem::stopEdit( int column )
 {
-  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
-  QVariant var;
-  var.asBool() = combo->currentItem() == 0 ? true : false;
-  setOverrideValue( var );
-  setText( column, combo->currentText() );
+  if ( overrideValue().toBool() )
+    setText( column, QObject::tr("True") );
+  else
+    setText( column, QObject::tr("False") );
 }
 
-void BoolEditorItem::setDefaultValue()
+void BoolEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QComboBox* combo = dynamic_cast<QComboBox*>(_editor);
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
   if ( value().toBool() )
     combo->setCurrentItem( 0 );
   else
     combo->setCurrentItem( 1 );
 }
 
-void BoolEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
+QVariant BoolEditorItem::currentEditorValue( QWidget* editor ) const
+{
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
+  bool cur = combo->currentItem() == 0;
+  QVariant val(cur, 0);
+  return val;
+}
+
+QVariant BoolEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
   bool value = true;
   bool equal = true;
@@ -102,13 +109,14 @@ void BoolEditorItem::convertFromProperty(const std::vector<App::Property*>& prop
   }
 
   QVariant val( value, 0 );
-  setValue( val );
   if ( !equal )
     setText( 1, QObject::tr("") );
   else if ( value )
     setText( 1, QObject::tr("True") );
   else
     setText( 1, QObject::tr("False") );
+
+  return val;
 }
 
 void BoolEditorItem::convertToProperty(const QVariant& val)
@@ -164,19 +172,14 @@ QWidget* ListEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void ListEditorItem::stopEdit( QWidget* editor, int column )
+void ListEditorItem::stopEdit( int column )
 {
-  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
-
-  QVariant var = overrideValue();
-  var.asStringList().front() = combo->currentText();
-  setOverrideValue( var );
   setText( column, overrideValue().toStringList().front() );
 }
 
-void ListEditorItem::setDefaultValue()
+void ListEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QComboBox* combo = dynamic_cast<QComboBox*>(_editor);
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
 
   QStringList items = value().toStringList();
 
@@ -196,7 +199,16 @@ void ListEditorItem::setDefaultValue()
   }
 }
 
-void ListEditorItem::convertFromProperty(const std::vector<App::Property*>& props)
+QVariant ListEditorItem::currentEditorValue( QWidget* editor ) const
+{
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
+
+  QVariant var = overrideValue();
+  var.asStringList().front() = combo->currentText();
+  return var;
+}
+
+QVariant ListEditorItem::convertFromProperty(const std::vector<App::Property*>& props)
 {
   if ( props.size() > 0 )
   {
@@ -231,15 +243,15 @@ void ListEditorItem::convertFromProperty(const std::vector<App::Property*>& prop
     // it to the end (which is reagarded as default)
     //commonModeList << commonModeList.front();
     QVariant value( commonModeList );
-    setValue( value );
     setText( 1, commonModeList.front() );
+    return value;
   }
   else
   {
     QVariant value( "" );
-    setValue( value );
     setText( 1, value.toString() );
-    setEditable(false);
+    setReadOnly(true);
+    return value;
   }
 }
 
@@ -320,22 +332,29 @@ QWidget* CursorEditorItem::createEditor( int column, QWidget* parent )
   return editor;
 }
 
-void CursorEditorItem::stopEdit( QWidget* editor, int column )
+void CursorEditorItem::stopEdit( int column )
 {
-  QVariant var;
-  var.asCursor().setShape( dynamic_cast<QComboBox*>(editor)->currentItem() );
-  setOverrideValue( var );
   setText( column, _lst[overrideValue().toCursor().shape()] );
 }
 
-void CursorEditorItem::setDefaultValue()
+void CursorEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QComboBox* combo = dynamic_cast<QComboBox*>(_editor);
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
   combo->setCurrentItem(value().toCursor().shape());
 }
 
-void CursorEditorItem::convertFromProperty(const std::vector<App::Property*>&)
+QVariant CursorEditorItem::currentEditorValue( QWidget* editor ) const
 {
+  QVariant var;
+  var.asCursor().setShape( dynamic_cast<QComboBox*>(editor)->currentItem() );
+  return var;
+}
+
+QVariant CursorEditorItem::convertFromProperty(const std::vector<App::Property*>&)
+{
+  QVariant var;
+  var.asCursor().setShape( 0 );
+  return var;
 }
 
 void CursorEditorItem::convertToProperty(const QVariant&)

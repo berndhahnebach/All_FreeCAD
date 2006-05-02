@@ -50,9 +50,10 @@ protected slots:
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( QWidget* editor, int column );
-  virtual void setDefaultValue();
-  virtual void convertFromProperty(const std::vector<App::Property*>&);
+  virtual void stopEdit( int column );
+  virtual void setDefaultEditorValue( QWidget* editor );
+  virtual QVariant currentEditorValue( QWidget* editor ) const;
+  virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:
@@ -72,16 +73,14 @@ class GuiExport ColorEditorItem: public EditableItem
 public:
   ColorEditorItem( QListView* lv, const QString& text, const QVariant& value );
 
-protected slots:
-  void onChangeColor();
-
 protected:
   QWidget* createEditor( int column, QWidget* parent );
-  virtual void stopEdit( QWidget* editor, int column );
-  virtual void setDefaultValue();
+  virtual void stopEdit( int column );
+  virtual void setDefaultEditorValue( QWidget* editor );
+  virtual QVariant currentEditorValue( QWidget* editor ) const;
   /** Paints the current color with a frame outside. */
   void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
-  virtual void convertFromProperty(const std::vector<App::Property*>&);
+  virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
 private:
