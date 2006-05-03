@@ -49,15 +49,6 @@ DlgSettings3DViewImp::~DlgSettings3DViewImp()
   // no need to delete child widgets, Qt does it all for us
 }
 
-/**
- * Print warning if OpenInventor viewer is used.
- */
-void DlgSettings3DViewImp::warnInventor(bool b)
-{
-//  if ( b )
-//    Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
-}
-
 void DlgSettings3DViewImp::saveSettings()
 {
   prefCheckBox8->onSave();
@@ -72,6 +63,10 @@ void DlgSettings3DViewImp::saveSettings()
   radioButtonGradient->onSave();
   radioPerspective->onSave();
   radioOrthographic->onSave();
+  checkBoxPreselection->onSave();
+  checkBoxSelection->onSave();
+  HighlightColor->onSave();
+  SelectionColor->onSave();
 }
 
 void DlgSettings3DViewImp::loadSettings()
@@ -88,6 +83,10 @@ void DlgSettings3DViewImp::loadSettings()
   radioButtonGradient->onRestore();
   radioPerspective->onRestore();
   radioOrthographic->onRestore();
+  checkBoxPreselection->onRestore();
+  checkBoxSelection->onRestore();
+  HighlightColor->onRestore();
+  SelectionColor->onRestore();
 }
 
 #include "DlgSettings3DView.cpp"

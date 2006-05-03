@@ -155,8 +155,6 @@ ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
 //  pcMeshNormal->ref();
   pcMeshFaces     = new SoIndexedFaceSet();
   pcMeshFaces->ref();
-  pcHighlight = new Gui::SoFCSelection();
-  pcHighlight->ref();
 }
 
 ViewProviderMesh::~ViewProviderMesh()
@@ -164,7 +162,6 @@ ViewProviderMesh::~ViewProviderMesh()
   pcMeshCoord->unref();
 //  pcMeshNormal->unref();
   pcMeshFaces->unref();
-  pcHighlight->unref();
 }
 
 void ViewProviderMesh::onChanged(const App::Property* prop)

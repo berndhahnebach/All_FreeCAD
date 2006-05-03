@@ -53,7 +53,7 @@ namespace PointsGui {
  * a node representing the point data structure.
  * @author Werner Mayer
  */
-class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderDocumentObject
+class PointsGuiExport ViewProviderPoints : public Gui::ViewProviderFeature
 {
   PROPERTY_HEADER(PointsGui::ViewProviderPoints);
 
@@ -88,7 +88,6 @@ protected:
 protected:
   SoCoordinate3     *pcPointsCoord;
   SoPointSet        *pcPoints;
-  Gui::SoFCSelection *pcHighlight;
   SoMaterial        *pcColorMat;
   SoNormal          *pcPointsNormal;
 };

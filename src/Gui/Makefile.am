@@ -307,6 +307,8 @@ libFreeCADGui_la_SOURCES=\
 		View3DPy.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
+		ViewProviderDocumentObject.cpp \
+		ViewProviderDocumentObject.h \
 		ViewProviderExtern.cpp \
 		ViewProviderExtern.h \
 		ViewProviderFeature.cpp \

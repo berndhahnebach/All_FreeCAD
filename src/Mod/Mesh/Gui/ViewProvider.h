@@ -78,7 +78,7 @@ public:
  * a node representing the mesh data structure.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderDocumentObject
+class GuiMeshExport ViewProviderMesh : public Gui::ViewProviderFeature
 {
   PROPERTY_HEADER(MeshGui::ViewProviderMesh);
 
@@ -135,7 +135,6 @@ protected:
   SoNormal          *pcMeshNormal;
   SoIndexedFaceSet  *pcMeshFaces;
   //SoFaceSet         *pcMeshFaces;
-  Gui::SoFCSelection *pcHighlight;
 
 private:
   Gui::AbstractMouseModel* _mouseModel;

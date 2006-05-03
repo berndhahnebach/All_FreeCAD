@@ -63,11 +63,6 @@ ViewProviderMeshCurvature::ViewProviderMeshCurvature()
   pcColorBar->Attach(this);
   pcColorBar->ref();
   pcColorBar->setRange( -0.1f, 0.1f, 3 );
-
-  // switch off preselection
-  pcHighlight->highlightMode = Gui::SoFCSelection::OFF;
-  pcHighlight->selectionMode = Gui::SoFCSelection::SEL_OFF;
-  pcHighlight->style = Gui::SoFCSelection::BOX;
 }
 
 ViewProviderMeshCurvature::~ViewProviderMeshCurvature()

@@ -64,8 +64,6 @@ ViewProviderPoints::ViewProviderPoints()
   pcPoints->ref();
   pcPointsNormal = new SoNormal();  
   pcPointsNormal->ref();
-  pcHighlight = new Gui::SoFCSelection();
-  pcHighlight->ref();
   pcColorMat = new SoMaterial;
   pcColorMat->ref();
 }
@@ -75,7 +73,6 @@ ViewProviderPoints::~ViewProviderPoints()
   pcPointsCoord->unref();
   pcPoints->unref();
   pcPointsNormal->unref();
-  pcHighlight->unref();
   pcColorMat->unref();
 }
 

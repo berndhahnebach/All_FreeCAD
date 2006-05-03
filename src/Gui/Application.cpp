@@ -684,16 +684,17 @@ void Application::initApplication(void)
 void Application::initTypes(void)
 {
   // View Provider
-  Gui::ViewProvider        ::init();
-  Gui::ViewProviderExtern  ::init();
-  Gui::ViewProviderDocumentObject::init();
-  Gui::ViewProviderPythonFeature::init();
+  Gui::ViewProvider                          ::init();
+  Gui::ViewProviderExtern                    ::init();
+  Gui::ViewProviderDocumentObject            ::init();
+  Gui::ViewProviderFeature                   ::init();
+  Gui::ViewProviderPythonFeature             ::init();
 
   // Workbench
-  Gui::Workbench           ::init();
-  Gui::StdWorkbench        ::init();
-  Gui::TestWorkbench       ::init();
-  Gui::PythonWorkbench     ::init();
+  Gui::Workbench                             ::init();
+  Gui::StdWorkbench                          ::init();
+  Gui::TestWorkbench                         ::init();
+  Gui::PythonWorkbench                       ::init();
 }
 
 void messageHandler( QtMsgType type, const char *msg )
