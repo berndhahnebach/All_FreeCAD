@@ -785,12 +785,22 @@ void PrefColorButton::restorePreferences()
   }
 
   QColor col = color();
+
+#ifndef COIN_COLOR_STYLE
   long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
 
   lcol = getWindowParameter()->GetInt( entryName(), lcol );
   int b = lcol >> 16;  lcol -= b << 16;
   int g = lcol >> 8;   lcol -= g << 8;
   int r = lcol;
+#else
+  unsigned long lcol = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
+
+  lcol = getWindowParameter()->GetInt( entryName(), lcol );
+  int r = (lcol >> 24)&0xff;
+  int g = (lcol >> 16)&0xff;
+  int b = (lcol >>  8)&0xff;
+#endif
 
   setColor(QColor(r,g,b));
 }
@@ -804,7 +814,12 @@ void PrefColorButton::savePreferences()
   }
 
   QColor col = color();
+#ifndef COIN_COLOR_STYLE
   long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
+#else
+  // (r,g,b,a) with a = 255 (opaque)
+  unsigned long lcol = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8) | 255;
+#endif
 
   getWindowParameter()->SetInt( entryName(), lcol );
 }

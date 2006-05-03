@@ -57,7 +57,7 @@ protected:
 
 private:
   void trToOrig();
-  QMap<QString, long> _mColors; /**< Color map containing color settings. */
+  QMap<QString, unsigned long> _mColors; /**< Color map containing color settings. */
   QMap<QString, QString> _trMap; /**< Holds the original text to each translated text. */
   Gui::PythonSyntaxHighlighter* pythonSyntax;
 
@@ -69,11 +69,11 @@ private:
 /** This class implements a color map of string->color.
  * The string represents the type of word (text, keywords, operators, ...).
  * To each type a special color is assigned to. These types and their colors
- * are used within the Python syntax highlighing. The colors are stored as long,
+ * are used within the Python syntax highlighing. The colors are stored as unsigned long,
  * not as QColor objects. 
  * To get back the (r,g,b) values from a long head the statement as follows:
- * long col = ...
- * QColor color(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+ * unsigned long col = ...
+ * QColor color((col>>24) & 0xff, (col >> 16) & 0xff, (col >> 8) & 0xff);
  * @author Werner Mayer
  */
 class DefColorMap
@@ -83,11 +83,11 @@ protected:
   ~DefColorMap(void);
 
   static DefColorMap *_pcSingleton;
-  QMap<QString, long> m_clDefColors;
+  QMap<QString, unsigned long> m_clDefColors;
 
 public:
   QStringList types() const;
-  long color(const QString& name);
+  unsigned long color(const QString& name);
   static void Destruct(void);
   static DefColorMap &Instance(void);
 };

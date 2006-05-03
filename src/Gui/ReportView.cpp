@@ -348,6 +348,7 @@ void ReportOutput::OnChange(Base::Subject<const char*> &rCaller, const char * sR
   {
     bErr = rclGrp.GetBool( sReason, bErr );
   }
+#ifndef COIN_COLOR_STYLE
   else if (strcmp(sReason, "colorText") == 0)
   {
     long col = rclGrp.GetInt( sReason );
@@ -368,6 +369,28 @@ void ReportOutput::OnChange(Base::Subject<const char*> &rCaller, const char * sR
     long col = rclGrp.GetInt( sReason );
     reportHl->setErrorColor( QColor(col & 0xff,(col >> 8) & 0xff,(col >> 16) & 0xff) );
   }
+#else
+  else if (strcmp(sReason, "colorText") == 0)
+  {
+    long col = rclGrp.GetInt( sReason );
+    reportHl->setTextColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
+  }
+  else if (strcmp(sReason, "colorLogging") == 0)
+  {
+    long col = rclGrp.GetInt( sReason );
+    reportHl->setLogColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
+  }
+  else if (strcmp(sReason, "colorWarning") == 0)
+  {
+    long col = rclGrp.GetInt( sReason );
+    reportHl->setWarningColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
+  }
+  else if (strcmp(sReason, "colorError") == 0)
+  {
+    long col = rclGrp.GetInt( sReason );
+    reportHl->setErrorColor( QColor( (col >> 24) & 0xff,(col >> 16) & 0xff,(col >> 8) & 0xff) );
+  }
+#endif
 }
 
 #include "moc_ReportView.cpp"
