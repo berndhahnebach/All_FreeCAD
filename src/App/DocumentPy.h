@@ -50,18 +50,25 @@ public:
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
 //	PyObject *PyDocType(PyObject *args);		// Python wrapper
 //	static PyObject *sPyDocType(PyObject *self, PyObject *args, PyObject *kwd){return ((DocumentPy*)self)->PyDocType(args);};
-//	PYFUNCDEF_D(DocumentPy,Undo)
-//	PYFUNCDEF_D(DocumentPy,Redo)
-//	PYFUNCDEF_D(DocumentPy,ClearUndos)
 	PYFUNCDEF_D(DocumentPy,save)
 //	PYFUNCDEF_D(DocumentPy,SaveAs)
 //	PYFUNCDEF_D(DocumentPy,SetModified)
 //	PYFUNCDEF_D(DocumentPy,PurgeModified)
 
-//	PYFUNCDEF_D(DocumentPy,NewCommand)
-//	PYFUNCDEF_D(DocumentPy,OpenCommand)
-//	PYFUNCDEF_D(DocumentPy,CommitCommand)
-//	PYFUNCDEF_D(DocumentPy,AbortCommand)
+//	UndoRedo stuff
+	PYFUNCDEF_D(DocumentPy,setUndoMode)
+	PYFUNCDEF_D(DocumentPy,openCommand)
+	PYFUNCDEF_D(DocumentPy,commitCommand)
+	PYFUNCDEF_D(DocumentPy,abortCommand)
+	PYFUNCDEF_D(DocumentPy,undo)
+	PYFUNCDEF_D(DocumentPy,redo)
+	PYFUNCDEF_D(DocumentPy,clearUndos)
+
+//	Transaction stuff
+	PYFUNCDEF_D(DocumentPy,beginTransaction)
+	PYFUNCDEF_D(DocumentPy,rollbackTransaction)
+	PYFUNCDEF_D(DocumentPy,endTransaction)
+	PYFUNCDEF_D(DocumentPy,setTransactionMode)
 	PYFUNCDEF_D(DocumentPy,recompute)
 
 //	PYFUNCDEF_D(DocumentPy,Dump)

@@ -36,6 +36,7 @@
 
 #include <map>
 #include <vector>
+#include <stack>
 
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
@@ -186,48 +187,51 @@ public:
 	 *  nececary.
 	 */
 	//@{
-	/// New Command (Short cut for Commit and Open transaction)
-	void NewCommand() ;
-	/// returns True if a Command transaction is open
-	bool HasOpenCommand() const;
+  ///
+  void setUndoMode(int iMode);
+
+	/// New Command (Short cut for Commit and Open command)
+	void newCommand() ;
 	/** Open a new command transaction.
 	 *  Raise If a Command is already open.
 	 *  You may   check  it with the   previous method <HasOpenCommand>.
 	 */
-	void OpenCommand();
+	void openCommand();
 	/// Commit the Command transaction. Do nothing If there is no Command transaction open.
-	void CommitCommand();
+	void commitCommand();
 	/// Abort the  Command  transaction. Do nothing If there is no Command transaction open.
-	void AbortCommand();
+	void abortCommand();
 	/// The current limit on the number of undos
-	int GetUndoLimit() const;
+//	int GetUndoLimit() const;
 	/** Set the limit on the number of Undo Deltas stored.
 	 *  0 will disable Undo on the document A negative value
 	 *  means no limit. Note that by default Undo is disabled.
 	 *  Enabling it will take effect with the next call to
 	 *  NewCommand. Of course this limit is the same for Redo.
 	 */
-	void SetUndoLimit(const int L);
+//	void SetUndoLimit(const int L);
 	/// Remove all stored Undos and Redos
-	void ClearUndos();
+	void clearUndos();
 	/// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
-	int GetAvailableUndos() const;
+	int getAvailableUndos() const;
 	/// Will UNDO  one step, returns  False if no undo was done (Undos == 0).
-	bool Undo();
+	bool undo();
 	/// Returns the number   of stored Redos. If greater than 0 Redo will be effective.
-	int GetAvailableRedos() const;
+	int getAvailableRedos() const;
 	/// Will REDO  one step, returns  False if no redo was done (Redos == 0).
-	bool Redo() ;
+	bool redo() ;
 	//@}
 
 
  	/** @name methods for the transaction handling
    *  normaly the Transction system is used through the
-   *  Undo/Redo system. Direct acces you nee e.g. reconstruction
+   *  Undo/Redo system. Direct acces you need e.g. reconstruction
    *  of documents through transction logging or fine grain change
    *  history!
 	 */
 	//@{
+  /// starts a new transaction
+  void setTransactionMode(int iMode);
   /// starts a new transaction
   int  beginTransaction(void);
   /// revert all changes to the document since beginTransaction()
@@ -250,14 +254,22 @@ public:
 
 protected:
 
-  /// callback from the Document objects
+  /// callback from the Document objects bevor property will be changed
   void onBevorChangeProperty(const DocumentObject *Who, const Property *What);
+  /// callback from the Document objects after property was changed
+  void onChangedProperty(const DocumentObject *Who, const Property *What);
   /// helper which Recompute only this feature
   void _recomputeFeature(AbstractFeature* Feat);
 
+  int _iTransactionMode;
   int iTransactionCount;
   std::map<int,Transaction*> mTransactions;
   Transaction *activTransaction;
+
+  int _iUndoMode;
+  std::stack<Transaction*> mUndoTransactions;
+  std::stack<Transaction*> mRedoTransactions;
+  Transaction *activUndoTransaction;
 
 
 

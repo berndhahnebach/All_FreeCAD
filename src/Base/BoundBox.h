@@ -99,7 +99,7 @@ public:
   enum OCTANT {OCT_LDB = 0, OCT_RDB, OCT_LUB, OCT_RUB,
                OCT_LDF,     OCT_RDF, OCT_LUF, OCT_RUF};
   bool GetOctantFromVector (Vector3<_Precision> &rclVct, OCTANT &rclOctant);
-  BoundBox3<_Precision> CalcOctant (BoundBox3<_Precision>::OCTANT Octant);
+  BoundBox3<_Precision> CalcOctant (typename BoundBox3<_Precision>::OCTANT Octant);
 
   enum SIDE { LEFT =0, RIGHT=1, TOP=2, BOTTOM=3, FRONT=4, BACK=5, INVALID=255 };
 

@@ -62,11 +62,143 @@ using namespace zipios ;
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 
 
+bool Document::undo(void)					
+{
+  if(_iUndoMode)
+  {
+    if(activUndoTransaction)
+      commitCommand();
+  
+    assert(mUndoTransactions.size()!=0);
 
+    // redo
+    activUndoTransaction = new Transaction();
+    mUndoTransactions.top()->apply(*this);
+    mRedoTransactions.push(activUndoTransaction);
+    
+    delete mUndoTransactions.top();
+    mUndoTransactions.pop();
+  }
+
+  return false; 
+}
+
+bool Document::redo(void)
+{
+  if(_iUndoMode)
+  {
+    if(activUndoTransaction)
+      commitCommand();
+  
+    assert(mRedoTransactions.size()!=0);
+
+    // undo
+    activUndoTransaction = new Transaction();
+    mRedoTransactions.top()->apply(*this);
+    mUndoTransactions.push(activUndoTransaction);
+    
+    delete mRedoTransactions.top();
+    mRedoTransactions.pop();
+  }
+
+  return false; 
+}
+
+void Document::newCommand() 
+{
+  openCommand();
+}
+
+void Document::openCommand()
+{
+  if(_iUndoMode)
+  {
+    if(activUndoTransaction)
+      commitCommand();
+
+    activUndoTransaction = new Transaction();
+  }
+  
+}
+
+void Document::commitCommand()
+{
+  if(activUndoTransaction)
+  {
+    mUndoTransactions.push(activUndoTransaction);
+    activUndoTransaction = 0;
+  }
+  
+}
+
+void Document::abortCommand()
+{
+   
+}
+
+
+void Document::clearUndos()
+{
+
+  while(!mUndoTransactions.empty())
+  {
+    delete mUndoTransactions.top();
+    mUndoTransactions.pop();
+  }
+
+  while(!mRedoTransactions.empty())
+  {
+    delete mRedoTransactions.top();
+    mRedoTransactions.pop();
+  }
+}
+
+int Document::getAvailableUndos() const
+{
+  return mUndoTransactions.size();
+}
+
+int Document::getAvailableRedos() const
+{
+  return mRedoTransactions.size();
+}
+
+void Document::setUndoMode(int iMode)
+{
+  _iUndoMode = iMode;
+}
 
 
 void Document::onBevorChangeProperty(const DocumentObject *Who, const Property *What)
 {
+  if(activUndoTransaction)
+  {
+    activUndoTransaction->addObjectChange(Who,What);
+
+  }else
+    // if the Undo is switched on, never do a change without openCommand()!
+    assert(_iUndoMode==0);
+
+}
+
+void Document::onChangedProperty(const DocumentObject *Who, const Property *What)
+{
+  if(this->activTransaction)
+  {
+    this->activTransaction->addObjectChange(Who,What);
+
+  }
+}
+
+void Document::setTransactionMode(int iMode)
+{
+  if(_iTransactionMode == 0 && iMode == 1)
+    beginTransaction();
+   
+  if(activTransaction && iMode == 0)
+    endTransaction();
+  
+  _iTransactionMode = iMode;
 
 }
 
@@ -125,7 +257,13 @@ const Transaction *Document::getTransaction(int pos) const
 // constructor
 //--------------------------------------------------------------------------
 Document::Document(void)
-: iTransactionCount(0),activTransaction(0),pActiveObject(0),_pcDocPy(0)
+: iTransactionCount(0),
+  activTransaction(0),
+  _iTransactionMode(0),
+  _iUndoMode(0),
+  activUndoTransaction(0),
+  pActiveObject(0),
+  _pcDocPy(0)
 {
   // Remark: In a constructor we should never increment a Python object as we cannot be sure
   // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't
@@ -146,8 +284,9 @@ Document::~Document()
 {
   Console().Log("-App::Document: %s %p\n",getName(), this);
 
+  clearUndos();
+  
   std::map<std::string,DocumentObject*>::iterator it;
-
 
   Console().Log("-Delete Features of %s \n",getName());
 
@@ -392,92 +531,12 @@ const char* Document::getPath() const
   return FileName.getValue();//_hDoc->GetPath().ToExtString();
 }
 
-bool Document::Undo(void)					
-{
-  return false;//_hDoc->Undo() != 0; 
-}
-
-bool Document::Redo(void)
-{
-  return false;//_hDoc->Redo() != 0; 
-}
-
-
 
 /// Remove all modifications. After this call The document becomesagain Valid.
 void Document::PurgeModified()
 {
   //_hDoc->PurgeModified(); 
 }
-
-/// New Command (Short cut for Commit and Open transaction)
-void Document::NewCommand() 
-{
-  //_hDoc->NewCommand(); 
-}
-
-/// returns True if a Command transaction is open
-bool Document::HasOpenCommand() const
-{
-  return false;//hDoc->HasOpenCommand() != 0; 
-}
-
-/** Open a new command transaction.
- *  Raise a OCC Exception If a Command is already open.
- *  You may   check  it with the   previous method <HasOpenCommand>.
- */
-void Document::OpenCommand()
-{
-  //_hDoc->OpenCommand(); 
-}
-
-/// Commit the Command transaction. Do nothing If there is no Command transaction open.
-void Document::CommitCommand()
-{
-  //_hDoc->CommitCommand();
-}
-
-/// Abort the  Command  transaction. Do nothing If there is no Command transaction open.
-void Document::AbortCommand()
-{
-  //_hDoc->AbortCommand(); 
-}
-
-/// The current limit on the number of undos
-int Document::GetUndoLimit() const
-{
-  return 1000;//_hDoc->GetUndoLimit(); 
-}
-
-/** Set the limit on the number of Undo Deltas stored.
- *  0 will disable Undo on the document A negative value
- *  means no limit. Note that by default Undo is disabled.
- *  Enabling it will take effect with the next call to
- *  NewCommand. Of course this limit is the same for Redo.
- */
-void Document::SetUndoLimit(const int L)
-{
-  //_hDoc->SetUndoLimit(L); 
-}
-
-/// Remove all stored Undos and Redos
-void Document::ClearUndos()
-{
-  //_hDoc->ClearUndos(); 
-}
-
-/// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
-int Document::GetAvailableUndos() const
-{
-  return 0;//_hDoc->GetAvailableUndos(); 
-}
-
-/// Returns the number   of stored Redos. If greater than 0 Redo will be effective.
-int Document::GetAvailableRedos() const
-{
-  return 0;//_hDoc->GetAvailableRedos(); 
-}
-
 
 /// Recompute if the document was  not valid and propagate the reccorded modification.
 void Document::recompute()
@@ -627,6 +686,14 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
     assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()));
 
     pcObject->setDocument(this);
+     
+    // Transaction stuff
+    if(activTransaction)
+      activTransaction->addObjectNew(pcObject);
+    // Undo stuff
+    if(activUndoTransaction)
+      activUndoTransaction->addObjectDel(pcObject);
+
     // get Unique name
     if(pObjectName)
       ObjectName = getUniqueObjectName(pObjectName);
@@ -698,6 +765,14 @@ void Document::remObject(const char* sName)
       }
     }
   }
+
+  // Transaction stuff
+  if(this->activTransaction)
+    this->activTransaction->addObjectDel(pos->second);
+
+  // Undo stuff
+  if(activUndoTransaction)
+    activUndoTransaction->addObjectNew(pos->second);
 
   // finally delete the Object
   delete pos->second;

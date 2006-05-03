@@ -121,6 +121,8 @@ public:
 protected:
   /// get called befor the value is changed
   virtual void onBevorChange(const Property* prop);
+  /// get called by the container when a Proptery was changed
+  virtual void onChanged(const Property* prop);
 
  /** @name Material
   */

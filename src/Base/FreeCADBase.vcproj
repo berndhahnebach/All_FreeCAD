@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADBase"
-	ProjectGUID="{629E4626-F1D2-453B-9F94-2E120ECE1964}"
+	ProjectGUID="{C86B841B-15DB-4961-9093-EA22946E93B6}"
 	>
 	<Platforms>
 		<Platform
@@ -109,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /Y  /f   Debug\FreeCADBaseD.dll  ..\..\bin\&#x0D;&#x0A;xcopy  /Y  /f  Debug\FreeCADBaseD.lib  ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy    /Y    /f     Debug\FreeCADBaseD.dll    ..\..\bin\&#x0D;&#x0A;xcopy    /Y    /f    Debug\FreeCADBaseD.lib    ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -207,7 +207,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /y  /f  Release\FreeCADBase.dll  ..\..\bin\&#x0D;&#x0A;xcopy  /y  /f  Release\FreeCADBase.lib  ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy    /y    /f    Release\FreeCADBase.dll    ..\..\bin\&#x0D;&#x0A;xcopy    /y    /f    Release\FreeCADBase.lib    ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -825,6 +825,7 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
+				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -833,6 +834,7 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1229,6 +1231,30 @@
 			>
 		</File>
 		<File
+			RelativePath="Placement.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Placement.h"
+			>
+		</File>
+		<File
 			RelativePath="PreCompiled.cpp"
 			>
 			<FileConfiguration
@@ -1501,6 +1527,7 @@
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
+				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"
@@ -1509,6 +1536,7 @@
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCLCompilerTool"

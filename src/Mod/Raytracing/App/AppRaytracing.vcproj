@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppRaytracing"
-	ProjectGUID="{C621727E-A8A4-4F82-AEEE-E137047B8D79}"
+	ProjectGUID="{6BCFED91-3EA9-46DA-B554-2E8C3C4B5968}"
 	>
 	<Platforms>
 		<Platform

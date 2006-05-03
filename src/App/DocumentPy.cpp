@@ -105,15 +105,20 @@ PyTypeObject DocumentPy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef DocumentPy::Methods[] = {
 //  {"DocType",      (PyCFunction) sPyDocType,         Py_NEWARGS},
-//  PYMETHODEDEF(Undo)
-//  PYMETHODEDEF(ClearUndos)
 //  PYMETHODEDEF(SaveAs)
   PYMETHODEDEF(save)
 //  PYMETHODEDEF(SetModified)
 //  PYMETHODEDEF(PurgeModified)
-//  PYMETHODEDEF(NewCommand)
-//  PYMETHODEDEF(OpenCommand)
-//  PYMETHODEDEF(CommitCommand)
+
+
+  PYMETHODEDEF(setUndoMode)
+  PYMETHODEDEF(openCommand)
+  PYMETHODEDEF(commitCommand)
+  PYMETHODEDEF(abortCommand)
+  PYMETHODEDEF(undo)
+  PYMETHODEDEF(redo)
+  PYMETHODEDEF(clearUndos)
+
   PYMETHODEDEF(recompute)
 //  PYMETHODEDEF(Dump)
   PYMETHODEDEF(getActiveObject)
@@ -124,6 +129,11 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(removeObject)
   PYMETHODEDEF(listObjects)
   PYMETHODEDEF(getName)
+
+  PYMETHODEDEF(beginTransaction)
+  PYMETHODEDEF(rollbackTransaction)
+  PYMETHODEDEF(endTransaction)
+  PYMETHODEDEF(setTransactionMode)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -170,22 +180,22 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
     if (Base::streq(attr, "__dict__")) {
       PyObject *dict = PyDict_New();
       if (dict) {
-        PyDict_SetItemString(dict,"UndoLimit",      Py_BuildValue("i",_pcDoc->GetUndoLimit()));
-        PyDict_SetItemString(dict,"AvailableUndos", Py_BuildValue("i",_pcDoc->GetAvailableUndos()));
-        PyDict_SetItemString(dict,"AvailableRedos", Py_BuildValue("i",_pcDoc->GetAvailableRedos()));
-        PyDict_SetItemString(dict,"HasOpenCommand", Py_BuildValue("i",_pcDoc->HasOpenCommand()?1:0));
+//        PyDict_SetItemString(dict,"UndoLimit",      Py_BuildValue("i",_pcDoc->GetUndoLimit()));
+        PyDict_SetItemString(dict,"AvailableUndos", Py_BuildValue("i",_pcDoc->getAvailableUndos()));
+        PyDict_SetItemString(dict,"AvailableRedos", Py_BuildValue("i",_pcDoc->getAvailableRedos()));
+//        PyDict_SetItemString(dict,"HasOpenCommand", Py_BuildValue("i",_pcDoc->HasOpenCommand()?1:0));
         PyDict_SetItemString(dict,"Name",           Py_BuildValue("s",_pcDoc->getName()));
         PyDict_SetItemString(dict,"Path",           Py_BuildValue("s",_pcDoc->getPath()));
         if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
       }
       return dict;
     }
-		else if (streq(attr, "UndoLimit"))
-			return Py_BuildValue("i", _pcDoc->GetUndoLimit());
+//		else if (streq(attr, "UndoLimit"))
+//			return Py_BuildValue("i", _pcDoc->GetUndoLimit());
 		else if (streq(attr, "AvailableUndos"))
-			return Py_BuildValue("i", _pcDoc->GetAvailableUndos()); 
+			return Py_BuildValue("i", _pcDoc->getAvailableUndos()); 
 		else if (streq(attr, "AvailableRedos"))
-			return Py_BuildValue("i", _pcDoc->GetAvailableRedos()); 
+			return Py_BuildValue("i", _pcDoc->getAvailableRedos()); 
 		else if (streq(attr, "Name"))
 			return Py_BuildValue("s", _pcDoc->getName());
 		else if (streq(attr, "Path"))
@@ -198,8 +208,8 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 //			return Py_BuildValue("u", _pcDoc->IsEmpty()?1:0);
 //		else if (streq(attr, "IsValid"))
 //			return Py_BuildValue("u", _pcDoc->IsValid()?1:0);
-		else if (streq(attr, "HasOpenCommand"))
-			return Py_BuildValue("i", _pcDoc->HasOpenCommand()?1:0);
+//		else if (streq(attr, "HasOpenCommand"))
+//			return Py_BuildValue("i", _pcDoc->HasOpenCommand()?1:0);
 //		else if (streq(attr, "StorageFormat"))						
 //			return Py_BuildValue("u", _pcDoc->storageFormat()); 
     else{
@@ -213,13 +223,13 @@ PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only
 
 int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	if (streq(attr, "UndoLimit")){						// settable new state
-		_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
-		return 1;
+//	if (streq(attr, "UndoLimit")){						// settable new state
+//		_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
+//		return 1;
 //	}else if (streq(attr, "StorageFormat")){						// settable new state
 //		_pcDoc->changeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
 //		return 1;
-	}else  
+//	}else  
 		return PyObjectBase::_setattr(attr, value); 	// send up to parent
 } 
 
@@ -228,6 +238,109 @@ int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: 
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
+
+PYFUNCIMP_D(DocumentPy,setUndoMode)
+{ 
+	long  Int;
+  if (!PyArg_ParseTuple(args, "i", &Int))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  PY_TRY {
+	  _pcDoc->setUndoMode(Int); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+
+
+PYFUNCIMP_D(DocumentPy,undo)
+{ 
+  PY_TRY {
+	  _pcDoc->undo(); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(DocumentPy,redo)
+{ 
+  PY_TRY {
+	  _pcDoc->redo(); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(DocumentPy,clearUndos)
+{ 
+  PY_TRY {
+	  _pcDoc->clearUndos(); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+PYFUNCIMP_D(DocumentPy,openCommand)
+{ 
+  PY_TRY {
+	  _pcDoc->openCommand(); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+	
+PYFUNCIMP_D(DocumentPy,commitCommand)
+{ 
+  PY_TRY {
+	  _pcDoc->commitCommand(); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+	
+PYFUNCIMP_D(DocumentPy,abortCommand)
+{ 
+  PY_TRY {
+	  _pcDoc->abortCommand(); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+
+
+PYFUNCIMP_D(DocumentPy,beginTransaction)
+{ 
+  PY_TRY {
+    return Py_BuildValue("i",_pcDoc->beginTransaction());
+  }PY_CATCH;
+} 
+
+
+PYFUNCIMP_D(DocumentPy,rollbackTransaction)
+{ 
+  PY_TRY {
+	  _pcDoc->rollbackTransaction(); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+
+
+PYFUNCIMP_D(DocumentPy,endTransaction)
+{ 
+  PY_TRY {
+	   return Py_BuildValue("i",_pcDoc->endTransaction()); 
+  }PY_CATCH;
+} 
+
+
+PYFUNCIMP_D(DocumentPy,setTransactionMode)
+{ 
+	long  Int;
+  if (!PyArg_ParseTuple(args, "i", &Int))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  PY_TRY {
+	  _pcDoc->setTransactionMode(Int); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+
+
+
+
+
 /*
 PyObject *DocumentPy::PyDocType(PyObject *args)
 { 
@@ -241,28 +354,6 @@ PYFUNCIMP_D(DocumentPy,Dump)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(DocumentPy,Undo)
-{ 
-  PY_TRY {
-	  _pcDoc->Undo(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(DocumentPy,Redo)
-{ 
-  PY_TRY {
-	  _pcDoc->Redo(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-PYFUNCIMP_D(DocumentPy,ClearUndos)
-{ 
-  PY_TRY {
-	  _pcDoc->ClearUndos(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
 
 PYFUNCIMP_D(DocumentPy,SaveAs)
 {
@@ -310,29 +401,6 @@ PYFUNCIMP_D(DocumentPy,NewCommand)
   }PY_CATCH;
 } 
 		
-PYFUNCIMP_D(DocumentPy,OpenCommand)
-{ 
-  PY_TRY {
-	  _pcDoc->OpenCommand(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-	
-PYFUNCIMP_D(DocumentPy,CommitCommand)
-{ 
-  PY_TRY {
-	  _pcDoc->CommitCommand(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-	
-PYFUNCIMP_D(DocumentPy,AbortCommand)
-{ 
-  PY_TRY {
-	  _pcDoc->AbortCommand(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
 */	
 PYFUNCIMP_D(DocumentPy,recompute)
 { 

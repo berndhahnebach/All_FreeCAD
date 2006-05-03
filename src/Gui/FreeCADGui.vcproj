@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADGui"
-	ProjectGUID="{C29EBBB0-DF4D-4036-95F5-DCC0B4DE382A}"
+	ProjectGUID="{0F34A895-9C25-4435-95D0-D79F770F4A24}"
 	>
 	<Platforms>
 		<Platform
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy   /y   /f   Debug\FreeCADGuiD.dll   ..\..\bin&#x0D;&#x0A;xcopy   /y   /f   Debug\FreeCADGuiD.lib   ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy     /y     /f     Debug\FreeCADGuiD.dll     ..\..\bin&#x0D;&#x0A;xcopy     /y     /f     Debug\FreeCADGuiD.lib     ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -211,7 +211,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy   /y   /f   Release\FreeCADGui.dll   ..\..\bin\&#x0D;&#x0A;xcopy   /y   /f   Release\FreeCADGui.lib   ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy     /y     /f     Release\FreeCADGui.dll     ..\..\bin\&#x0D;&#x0A;xcopy     /y     /f     Release\FreeCADGui.lib     ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -1933,6 +1933,52 @@
 			</File>
 			<File
 				RelativePath="ButtonGroup.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DockWindow.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DockWindow.h"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -3811,6 +3857,32 @@
 				RelativePath="ViewProviderFeature.h"
 				>
 			</File>
+			<File
+				RelativePath="ViewProviderPythonFeature.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProviderPythonFeature.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Workbench"
@@ -3840,52 +3912,6 @@
 			<File
 				RelativePath="CommandBarManager.h"
 				>
-			</File>
-			<File
-				RelativePath="DockWindow.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="DockWindow.h"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCustomBuildTool"
-						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)moc_$(InputName).cpp"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="MenuManager.cpp"

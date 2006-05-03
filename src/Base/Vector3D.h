@@ -137,7 +137,7 @@ public:
    * \note \a rclDirX must be perpendicular to \a rclDirY, i.e. \a rclDirX * \a rclDirY = 0..
    */
   void TransformToCoordinateSystem (const Vector3 &rclBase, const Vector3 &rclDirX, const Vector3 &rclDirY);
-  bool Equal(const Vector3 &rclVect) const;
+  //bool Equal(const Vector3 &rclVect) const;
   /// Projects this point onto the plane given by the base \a rclBase and the normal \a rclNorm.
   inline Vector3 & ProjToPlane (const Vector3 &rclBase, const Vector3 &rclNorm);
   /// Projects this point onto the line given by the base \a rclPoint and the direction \a rclLine.
@@ -529,25 +529,26 @@ void Vector3<_Precision>::TransformToCoordinateSystem ( const Vector3 &rclBase,
   z = clVectZ * clVectOld;
 }
 
-template <class _Precision>
-bool Vector3<_Precision>::Equal(const Vector3 &rclVect) const
-{
-  int     ex1, ex2, ey1, ey2, ez1, ez2;
-  double  mx1, mx2, my1, my2, mz1, mz2;
-  
-  mx1 = frexp(x, &ex1);
-  my1 = frexp(y, &ey1);
-  mz1 = frexp(z, &ez1);
 
-  mx2 = frexp(rclVect.x, &ex2);
-  my2 = frexp(rclVect.y, &ey2);
-  mz2 = frexp(rclVect.z, &ez2);
-  
-  return ( (ex1 == ex2) && (ey1 == ey2) && (ez1 == ez2) &&
-           (fabs(mx1 - mx2) < _Precision_EPS) &&
-           (fabs(my1 - my2) < _Precision_EPS) &&
-           (fabs(mz1 - mz2) < _Precision_EPS) );
-}
+//template <class _Precision>
+//bool Vector3<_Precision>::Equal(const Vector3 &rclVect) const
+//{
+//  int     ex1, ex2, ey1, ey2, ez1, ez2;
+//  double  mx1, mx2, my1, my2, mz1, mz2;
+//  
+//  mx1 = frexp(x, &ex1);
+//  my1 = frexp(y, &ey1);
+//  mz1 = frexp(z, &ez1);
+//
+//  mx2 = frexp(rclVect.x, &ex2);
+//  my2 = frexp(rclVect.y, &ey2);
+//  mz2 = frexp(rclVect.z, &ez2);
+//  
+//  return ( (ex1 == ex2) && (ey1 == ey2) && (ez1 == ez2) &&
+//           (fabs(mx1 - mx2) < _Precision_EPS) &&
+//           (fabs(my1 - my2) < _Precision_EPS) &&
+//           (fabs(mz1 - mz2) < _Precision_EPS) );
+//}
 
 typedef Vector3<float> Vector3f;
 typedef Vector3<double> Vector3d;

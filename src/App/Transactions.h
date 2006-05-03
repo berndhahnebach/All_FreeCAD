@@ -32,6 +32,7 @@ namespace App
 class Document;
 class DocumentObject;
 class Property;
+class Transaction;
 
 /** Represents a entry in a Transaction
  */
@@ -41,15 +42,24 @@ class AppExport TransactionObject: public Base::Persistance
 
 public:
   /// Construction
-  TransactionObject();
+  TransactionObject(const DocumentObject *pcObj);
   /// Destruction
   virtual ~TransactionObject();
 
+  enum Status {New,Del,Chn} status;
+
+  void setProperty(const Property* pcProp);
   
   virtual void Save (Base::Writer &writer) const;
   /// This method is used to restore properties from an XML document.
   virtual void Restore(Base::XMLReader &reader);
 
+  friend Transaction;
+
+protected:
+  const DocumentObject *_pcObj;
+  std::string _name;
+  std::map<const Property*,Property*> _PropChangeMap;
 };
 
 /** Represents a atomic transaction of the document
@@ -66,6 +76,9 @@ public:
   /// Destruction
   virtual ~Transaction();
 
+  /// apply the content to the document
+  void apply(Document &Doc);
+
 
   virtual void Save (Base::Writer &writer) const;
   /// This method is used to restore properties from an XML document.
@@ -74,19 +87,24 @@ public:
   /// get the position in the transaction history
   int getPos(void) const;
 
+
   friend class Document;
 
 protected:
-  void addObjectNew(DocumentObject *Obj);
-  void addObjectDel(DocumentObject *Obj);
-  void addObjectChange(DocumentObject *Obj,Property *Prop);
+  void addObjectNew(const DocumentObject *Obj);
+  void addObjectDel(const DocumentObject *Obj);
+  void addObjectChange(const DocumentObject *Obj,const Property *Prop);
 private:
   int iPos;
+  std::map<const DocumentObject*,TransactionObject*> _Objects;
 
 };
 
+
+
 /** Represents a creation of a DocObject in a Transaction
  */
+/*
 class AppExport TransactionObjectNew: public TransactionObject
 {
   TYPESYSTEM_HEADER();
@@ -104,7 +122,7 @@ public:
 
 };
 
-
+*/
 
 } //namespace App
 

@@ -41,7 +41,7 @@ PROPERTY_SOURCE(App::DocumentObject, App::PropertyContainer)
 //===========================================================================
 
 DocumentObject::DocumentObject(void)
-:pcObjectPy(0)
+:pcObjectPy(0),_pDoc(0)
 {
   _solidMaterial.ambientColor.set(0.2f,0.2f,0.2f);
   _solidMaterial.diffuseColor.set(0.8f,0.8f,0.8f);
@@ -97,9 +97,16 @@ void DocumentObject::setDocument(App::Document* doc)
 
 void DocumentObject::onBevorChange(const Property* prop)
 {
-  _pDoc->onBevorChangeProperty(this,prop);
+  if(_pDoc)
+    _pDoc->onBevorChangeProperty(this,prop);
 };
 
+  /// get called by the container when a Proptery was changed
+void DocumentObject::onChanged(const Property* prop)
+{
+  if(_pDoc)
+    _pDoc->onChangedProperty(this,prop);
+};
 
 Base::PyObjectBase *DocumentObject::GetPyObject(void)
 {

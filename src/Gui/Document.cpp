@@ -662,23 +662,23 @@ MDIView* Document::getActiveView(void)
 void Document::openCommand(const char* sName)
 {
   // check on double open Commands
-  assert(!getDocument()->HasOpenCommand());
+//  assert(!getDocument()->HasOpenCommand());
 
   listUndoNames.push_back(sName);
 
-  getDocument()->NewCommand();
+  getDocument()->newCommand();
 }
 
 void Document::commitCommand(void)
 {
-  getDocument()->CommitCommand();	
+  getDocument()->commitCommand();	
 }
 
 void Document::abortCommand(void)
 {
   listUndoNames.pop_back();
 
-  getDocument()->AbortCommand();	
+  getDocument()->abortCommand();	
 }
 
 /// Get an Undo string vector with the Undo names
@@ -709,7 +709,7 @@ void Document::undo(int iSteps)
 {
   for (int i=0;i<iSteps;i++)
   {
-    getDocument()->Undo();
+    getDocument()->undo();
   }
 }
 
@@ -718,7 +718,7 @@ void Document::redo(int iSteps)
 {
   for (int i=0;i<iSteps;i++)
   {
-    getDocument()->Undo();
+    getDocument()->redo();
   }
 }
 

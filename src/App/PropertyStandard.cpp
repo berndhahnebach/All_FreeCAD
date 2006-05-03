@@ -88,6 +88,7 @@ void PropertyInteger::setPyObject(PyObject *value)
 { 
   if(PyInt_Check( value) )
   {
+    aboutToSetValue();
     _lValue = PyInt_AsLong(value);
     hasSetValue();
   }else
@@ -287,6 +288,7 @@ void PropertyFloat::setPyObject(PyObject *value)
 {
   if(PyFloat_Check( value) )
   {
+    aboutToSetValue();
     _dValue = (float) PyFloat_AsDouble(value);
     hasSetValue();
 
@@ -519,6 +521,7 @@ void PropertyString::setValue(const char* sString)
 
 void PropertyString::setValue(const std::string &sString)
 {
+  aboutToSetValue();
 	_cValue = sString;
   hasSetValue();
 
@@ -539,6 +542,7 @@ void PropertyString::setPyObject(PyObject *value)
 {
   if(PyString_Check( value) )
   {
+    aboutToSetValue();
     _cValue = PyString_AsString(value);
     hasSetValue();
 

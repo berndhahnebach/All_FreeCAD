@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppRaytracingGui"
-	ProjectGUID="{F714B000-65A7-47ED-BE2A-870F4CD9063E}"
+	ProjectGUID="{B0C02306-4961-4CAE-A6BE-54623A297203}"
 	>
 	<Platforms>
 		<Platform
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /y  /f  Debug\RaytracingGui_d.pyd  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
+				CommandLine="xcopy   /y   /f   Debug\RaytracingGui_d.pyd   ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -210,7 +210,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /y  /f  Release\RaytracingGui.pyd  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
+				CommandLine="xcopy   /y   /f   Release\RaytracingGui.pyd   ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

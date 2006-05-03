@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPart"
-	ProjectGUID="{56512BD8-B301-42E2-8AD5-F9350B7C16B6}"
+	ProjectGUID="{6F502E47-5E9E-4A9F-9C17-D119042062E8}"
 	>
 	<Platforms>
 		<Platform
@@ -112,7 +112,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /y  /f  Debug\Part_d.pyd  ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy  /y  /f  Debug\Part_d.lib  ..\..\..\..\Mod\Part\&#x0D;&#x0A;"
+				CommandLine="xcopy   /y   /f   Debug\Part_d.pyd   ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy   /y   /f   ..\Init.py   ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy   /y   /f   Debug\Part_d.lib   ..\..\..\..\Mod\Part\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -211,7 +211,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /y  /f  Release\Part.pyd  ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy  /y  /f  ..\Init.py  ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy  /y  /f  Release\Part.lib  ..\..\..\..\Mod\Part\&#x0D;&#x0A;"
+				CommandLine="xcopy   /y   /f   Release\Part.pyd   ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy   /y   /f   ..\Init.py   ..\..\..\..\Mod\Part\&#x0D;&#x0A;xcopy   /y   /f   Release\Part.lib   ..\..\..\..\Mod\Part\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -416,6 +416,58 @@
 		</File>
 		<File
 			RelativePath="FeaturePartImportStep.h"
+			>
+		</File>
+		<File
+			RelativePath="FeaturePartLine.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeaturePartLine.h"
+			>
+		</File>
+		<File
+			RelativePath="FeaturePartPolygon.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="FeaturePartPolygon.h"
 			>
 		</File>
 		<File

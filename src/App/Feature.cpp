@@ -81,6 +81,9 @@ Base::PyObjectBase *AbstractFeature::GetPyObject(void)
 
 void AbstractFeature::onChanged(const Property* prop)
 {
+  // call father for Undo/Redo....
+  DocumentObject::onChanged(prop);
+
   // Ignore some properties
   if ( prop == &status )
     return;

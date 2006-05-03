@@ -33,9 +33,11 @@ using Base::Writer;
 #include <Base/Reader.h>
 using Base::XMLReader;
 #include "Transactions.h"
+#include "Property.h"
 
 
 using namespace App;
+using namespace std;
 
 TYPESYSTEM_SOURCE(App::Transaction, Base::Persistance);
 
@@ -78,6 +80,55 @@ int Transaction::getPos(void) const
 // separator for other implemetation aspects
 
 
+void Transaction::apply(Document &Doc)
+{
+
+
+}
+
+void Transaction::addObjectNew(const DocumentObject *Obj)
+{
+  TransactionObject *To = new TransactionObject(Obj);
+  _Objects[Obj] = To;
+}
+
+void Transaction::addObjectDel(const DocumentObject *Obj)
+{
+  map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
+
+  if(pos != _Objects.end())
+    pos->second->status = TransactionObject::Del;
+  else
+  {
+    TransactionObject *To = new TransactionObject(Obj);
+    _Objects[Obj] = To;
+    To->status = TransactionObject::Del;
+  }
+
+}
+
+void Transaction::addObjectChange(const DocumentObject *Obj,const Property *Prop)
+{
+  map<const DocumentObject*,TransactionObject*>::iterator pos = _Objects.find(Obj);
+  TransactionObject *To;
+
+  if(pos != _Objects.end())
+    To = pos->second;
+  else
+  {
+    To = new TransactionObject(Obj);
+    _Objects[Obj] = To;
+    To->status = TransactionObject::Chn;
+  }
+
+  To->setProperty(Prop);
+
+}
+
+
+
+
+
 //**************************************************************************
 //**************************************************************************
 // TransactionObject
@@ -92,7 +143,8 @@ TYPESYSTEM_SOURCE_ABSTRACT(App::TransactionObject, Base::Persistance);
  * A constructor.
  * A more elaborate description of the constructor.
  */
-TransactionObject::TransactionObject()
+TransactionObject::TransactionObject(const DocumentObject *pcObj)
+:status(New),_pcObj(pcObj)
 {
 }
 
@@ -102,6 +154,23 @@ TransactionObject::TransactionObject()
  */
 TransactionObject::~TransactionObject()
 {
+}
+
+
+
+
+void TransactionObject::setProperty(const Property* pcProp)
+{
+  map<const Property*,Property*>::iterator pos = _PropChangeMap.find(pcProp);
+
+  if(pos == _PropChangeMap.end())
+    _PropChangeMap[pcProp] = pcProp->Copy();
+  else
+  {
+    delete pos->second;
+    pos->second = pcProp->Copy();
+  }
+
 }
 
 void TransactionObject::Save (Writer &writer) const{
@@ -124,7 +193,7 @@ void TransactionObject::Restore(XMLReader &reader){
 // TransactionObjectNew
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(App::TransactionObjectNew, App::TransactionObject);
+//TYPESYSTEM_SOURCE(App::TransactionObjectNew, App::TransactionObject);
 
 //**************************************************************************
 // Construction/Destruction
@@ -133,25 +202,25 @@ TYPESYSTEM_SOURCE(App::TransactionObjectNew, App::TransactionObject);
  * A constructor.
  * A more elaborate description of the constructor.
  */
-TransactionObjectNew::TransactionObjectNew()
-{
-}
+//TransactionObjectNew::TransactionObjectNew()
+//{
+//}
 
 /**
  * A destructor.
  * A more elaborate description of the destructor.
  */
-TransactionObjectNew::~TransactionObjectNew()
-{
-}
+//TransactionObjectNew::~TransactionObjectNew()
+//{
+//}
 
-void TransactionObjectNew::Save (Writer &writer) const{
-  assert(0);
-} 
+//void TransactionObjectNew::Save (Writer &writer) const{
+ // assert(0);
+//} 
 
-void TransactionObjectNew::Restore(XMLReader &reader){
-  assert(0);
-} 
+//void TransactionObjectNew::Restore(XMLReader &reader){
+//  assert(0);
+//} 
 
 
 //**************************************************************************
