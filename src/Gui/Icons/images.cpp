@@ -3146,6 +3146,7 @@ const char* MacroEditor[] = {
 "OXXXXXXXXXO.",
 "OOOOOOOOOOO.",
 "............"};
+
 /* XPM */
 static const char *python[]={
 "32 32 6 1",
@@ -3187,6 +3188,32 @@ static const char *python[]={
 ".......###ccccc..ccccc..........",
 "........ccc#c...................",
 "................................"};
+
+/* XPM */
+static const char *python_small[]={
+    "14 15 7 1",
+    "# c #000000",
+    "b c #0000ff",
+    "d c #00ff00",
+    "a c #808000",
+    ". c None",
+    "e c #ff0000",
+    "c c #ffff00",
+    "...###........",
+    "..#aaa#.......",
+    "..#b#ba##.....",
+    ".##c#c#aa#....",
+    "#aa#a#aaaa#...",
+    "#aaaaaadaa#...",
+    "#dddddd#aa#...",
+    "##de#d##da#...",
+    ".#ee###da#..##",
+    ".#e##ddaa#.#a#",
+    "..##ddaa#..#a#",
+    "..#ddaa####aa#",
+    "..#ddaa#aaaa#.",
+    "..#ddaaaaaad#.",
+    "...#ddddddd#.."};
 
 /* XPM */
 const char* back_pixmap[]={

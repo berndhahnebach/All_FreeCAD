@@ -683,7 +683,7 @@ PythonEditView::PythonEditView( const QString& file, QWidget* parent, const char
   _textEdit->reparent(hbox, QPoint());
   _lineMarker->show();
   _textEdit->setWordWrap( QTextEdit::NoWrap );
-  setIcon( Gui::BitmapFactory().pixmap("python") );
+  setIcon( Gui::BitmapFactory().pixmap("python_small") );
 
 
   setFocusProxy( _textEdit );

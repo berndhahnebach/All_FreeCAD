@@ -168,7 +168,7 @@ PYFUNCIMP_S(Application,sopen)
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
       Base::Interpreter().runString( cmd.ascii() );
     }
-    else if ( ext == "py" || ext == "FCMacro" || ext == "FCScript" ) {
+    else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
       PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
@@ -193,7 +193,7 @@ PYFUNCIMP_S(Application,sinsert)
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());
       Base::Interpreter().runString( cmd.ascii() );
     }
-    else if ( ext == "py" || ext == "FCMacro" || ext == "FCScript" ) {
+    else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
       PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
