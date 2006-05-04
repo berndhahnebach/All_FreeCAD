@@ -469,6 +469,35 @@ bool StdCmdDelete::isActive(void)
   return Selection().getCompleteSelection().size() > 0;
 }
 
+//===========================================================================
+// Std_Refresh
+//===========================================================================
+DEF_STD_CMD_A(StdCmdRefresh);
+
+StdCmdRefresh::StdCmdRefresh()
+  :Command("Std_Refresh")
+{
+  sGroup        = QT_TR_NOOP("Edit");
+  sMenuText     = QT_TR_NOOP("&Refresh");
+  sToolTipText  = QT_TR_NOOP("Recomputes the current active document");
+  sWhatsThis    = QT_TR_NOOP("Recomputes the current active document");
+  sStatusTip    = QT_TR_NOOP("Recomputes the current active document");
+  sPixmap       = "reload";
+  iAccel        = Qt::Key_F5;
+}
+
+void StdCmdRefresh::activated(int iMsg)
+{
+  openCommand("Refresh active document");
+  doCommand(Doc,"d=App.activeDocument().recompute()");
+  commitCommand(); 
+}
+
+bool StdCmdRefresh::isActive(void)
+{
+  return getActiveGuiDocument() ? true : false;
+}
+
 
 namespace Gui {
 
@@ -489,6 +518,7 @@ void CreateDocCommands(void)
   rcCmdMgr.addCommand(new StdCmdCopy());
   rcCmdMgr.addCommand(new StdCmdPaste());
   rcCmdMgr.addCommand(new StdCmdDelete());
+  rcCmdMgr.addCommand(new StdCmdRefresh());
 }
 
 } // namespace Gui

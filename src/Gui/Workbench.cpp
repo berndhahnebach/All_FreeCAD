@@ -427,7 +427,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
   // Edit
   MenuItem* edit = new MenuItem( menuBar );
   edit->setCommand( "&Edit" );
-  *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Delete"
+  *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Refresh" << "Std_Delete"
         << "Separator" << "Std_DlgPreferences";
 
 
@@ -479,7 +479,7 @@ ToolBarItem* StdWorkbench::setupToolBars() const
   file->setCommand( "file operations" );
   *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
         << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
-        << "Std_Workbench" << "Std_WhatsThis";
+        << "Std_Refresh" << "Separator" << "Std_Workbench" << "Std_WhatsThis";
 
   // Macro
   ToolBarItem* macro = new ToolBarItem( root );
