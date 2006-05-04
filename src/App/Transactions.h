@@ -54,7 +54,7 @@ public:
   /// This method is used to restore properties from an XML document.
   virtual void Restore(Base::XMLReader &reader);
 
-  friend Transaction;
+  friend class Transaction;
 
 protected:
   const DocumentObject *_pcObj;

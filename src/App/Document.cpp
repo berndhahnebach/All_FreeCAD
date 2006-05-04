@@ -257,9 +257,9 @@ const Transaction *Document::getTransaction(int pos) const
 // constructor
 //--------------------------------------------------------------------------
 Document::Document(void)
-: iTransactionCount(0),
+: _iTransactionMode(0),
+  iTransactionCount(0),
   activTransaction(0),
-  _iTransactionMode(0),
   _iUndoMode(0),
   activUndoTransaction(0),
   pActiveObject(0),
