@@ -209,8 +209,14 @@ PYFUNCIMP_S(Application,sSendActiveView)
   if (!PyArg_ParseTuple(args, "s",&psCommandStr))     // convert args: Python->C 
     return NULL;                                      // NULL triggers exception 
 
-  if(!Instance->sendMsgToActiveView(psCommandStr))
+  const char* ppReturn=0;
+  if(!Instance->sendMsgToActiveView(psCommandStr,&ppReturn))
     Base::Console().Warning("Unknown view command: %s\n",psCommandStr);
+
+  // Print the return value to the output
+  if (ppReturn) {
+    return Py_BuildValue("s",ppReturn);
+  }
 
   Py_INCREF(Py_None);
   return Py_None;

@@ -144,7 +144,7 @@ PyObject *PyObjectBase::_getattr(char *attr)
   else if (streq(attr,"__dict__")) {
     // Return the default dict
     PyTypeObject *tp = this->ob_type;
-    Py_INCREF(tp->tp_dict);
+    Py_XINCREF(tp->tp_dict);
     return tp->tp_dict;
   }
   else if (streq(attr,"softspace")) {
