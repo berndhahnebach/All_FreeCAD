@@ -34,6 +34,7 @@
 #include "Builder3D.h"
 #include "Exception.h"
 #include "Vector3D.h"
+#include "Matrix.h"
 #include "Console.h"
 
 using namespace Base;
@@ -280,6 +281,25 @@ void Builder3D::addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2, bool
 
 }
 
+void Builder3D::addTransformation(const Base::Matrix4D& transform)
+{
+  Base::Vector3f cAxis, cBase;
+  float fAngle, fTranslation;
+  transform.toAxisAngle(cBase, cAxis,fAngle,fTranslation);
+  cBase.x = (float)transform[0][3];
+  cBase.y = (float)transform[1][3];
+  cBase.z = (float)transform[2][3];
+  addTransformation(cBase,cAxis,fAngle);
+}
+
+void Builder3D::addTransformation(const Base::Vector3f& translation, const Base::Vector3f& rotationaxis, float fAngle)
+{
+  result << "Transform {";
+  result << "  translation " << translation.x << " " << translation.y << " " << translation.z;
+  result << "  rotation " << rotationaxis.x << " " << rotationaxis.y << " " << rotationaxis.z << " " << fAngle;
+  result << "}";
+}
+
 //**************************************************************************
 // output handling
 
@@ -319,4 +339,250 @@ void Builder3D::saveToFile(const char* FileName)
   file << result.str();
 }
 
+// -----------------------------------------------------------------------------
 
+StreamBuilder3D::StreamBuilder3D(std::ofstream& output)
+  :result(output),bStartEndOpen(false),bClosed(false)
+{
+  result << "#Inventor V2.1 ascii " << std::endl << std::endl;
+  result << "Separator { " << std::endl;
+}
+
+StreamBuilder3D:: ~StreamBuilder3D()
+{
+  close();
+}
+
+void StreamBuilder3D::close()
+{
+  if (!bClosed) {
+    bClosed = true;
+    result <<   "} " << std::endl;
+  }
+}
+
+//**************************************************************************
+// points handling
+
+/**
+ * Starts the definition of point set with the given point size and color.
+ * If posible make not to much startPoints() and endPoints() calls. Try to put all
+ * points in one set. 
+ * @see endPoints()
+ * @param pointSize the point size in pixel the points are showed.
+ * @param color_r red part of the point color (0.0 - 1.0).
+ * @param color_g green part of the point color (0.0 - 1.0).
+ * @param color_b blue part of the point color (0.0 - 1.0).
+ */
+void StreamBuilder3D::startPoints(short pointSize, float color_r,float color_g,float color_b)
+{
+ bStartEndOpen = true;
+ result << "  Separator { " << std::endl;
+ result << "    Material { " << std::endl;
+ result << "      diffuseColor " << color_r << " "<< color_g << " "<< color_b << std::endl;
+ result << "    } " << std::endl;
+ result << "    MaterialBinding { value PER_PART } " << std::endl;
+ result << "    DrawStyle { pointSize " << pointSize << "} " << std::endl;
+ result << "    Coordinate3 { " << std::endl;
+ result << "      point [ ";
+
+}
+
+/// insert a point in an point set
+void StreamBuilder3D::addPoint(float x, float y, float z)
+{
+  result << x << " " << y << " " << z << "," << std::endl;
+}
+
+
+/// add a vector to a point set
+void StreamBuilder3D::addPoint(const Vector3f &vec)
+{
+  addPoint(vec.x,vec.y,vec.z);
+}
+/**
+ * Ends the point set operations and write the resulting inventor string.
+ * @see startPoints()
+ */
+void StreamBuilder3D::endPoints(void)
+{
+  result  << "] " << std::endl;
+  result  << "  } " << std::endl;
+  result  <<   "PointSet { } " << std::endl;
+  result  << "} " << std::endl;
+  bStartEndOpen = false;
+}
+
+void StreamBuilder3D::addSinglePoint(float x, float y, float z,short pointSize, float color_r,float color_g,float color_b)
+{
+  // addSinglePoint() not between startXXX() and endXXX() allowed
+  assert( bStartEndOpen == false );
+
+  result << "  Separator { " << std::endl;
+  result << "    Material { " << std::endl;
+  result << "      diffuseColor " << color_r << " "<< color_g << " "<< color_b << std::endl;
+  result << "    } " << std::endl;
+  result << "    MaterialBinding { value PER_PART } " << std::endl;
+  result << "    DrawStyle { pointSize " << pointSize << "} " << std::endl;
+  result << "    Coordinate3 { " << std::endl;
+  result << "      point [ " << x << " " << y << " " << z << " ] " << std::endl;
+  result << "    } " << std::endl;
+  result << "    PointSet { } " << std::endl;
+  result << "  } " << std::endl;
+
+}
+
+void StreamBuilder3D::addSinglePoint(const Base::Vector3f &vec, short pointSize, float color_r,float color_g,float color_b)
+{
+  addSinglePoint(vec.x, vec.y , vec.z, pointSize, color_r, color_g, color_b);
+}
+
+//**************************************************************************
+// text handling
+
+
+/**
+ * Add a Text with a given position to the 3D set. The origion is the 
+ * lower leftmost corner.
+ * @param pos_x,pos_y,pos_z origin of the text
+ * @param text the text to display.
+ * @param color_r red part of the text color (0.0 - 1.0).
+ * @param color_g green part of the text color (0.0 - 1.0).
+ * @param color_b blue part of the text color (0.0 - 1.0).
+ */
+void StreamBuilder3D::addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r,float color_g,float color_b)
+{
+  // addSinglePoint() not between startXXX() and endXXX() allowed
+  assert( bStartEndOpen == false );
+
+  result << "  Separator { "   << std::endl
+         << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
+         << "    Transform { translation " << pos_x << " "<< pos_y << " "<< pos_z << "} "  << std::endl
+         << "    Text2 { string \" " << text << "\" " << "} " << std::endl
+         << "  } " << std::endl;
+
+}
+
+void StreamBuilder3D::addText(const Base::Vector3f &vec,const char * text, float color_r,float color_g,float color_b)
+{
+  addText(vec.x, vec.y , vec.z,text, color_r,color_g,color_b);
+}
+
+void StreamBuilder3D::addText(const Base::Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
+{
+  // temp buffer
+  char* txt = (char*) malloc(strlen(format)+4024);
+
+  va_list namelessVars;
+  va_start(namelessVars, format);  // Get the "..." vars
+  vsprintf(txt, format, namelessVars);
+  va_end(namelessVars);
+
+  addText(vec, txt, color_r, color_g, color_b);
+}
+
+//**************************************************************************
+// line/arrow handling
+
+void StreamBuilder3D::addSingleLine(Vector3f pt1, Vector3f pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+{
+  char lp[20];
+  sprintf(lp, "0x%x", linePattern);
+  //char lp[20] = "0x";
+  //itoa(linePattern, buf, 16);
+  //strcat(lp, buf);
+
+  result << "  Separator { " << std::endl
+         << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
+         << "    DrawStyle { lineWidth " << lineSize << " linePattern " << lp << " } " << std::endl
+         << "    Coordinate3 { " << std::endl
+         << "      point [ "
+         <<        pt1.x << " " << pt1.y << " " << pt1.z << ","
+         <<        pt2.x << " " << pt2.y << " " << pt2.z
+         << " ] " << std::endl
+         << "    } " << std::endl
+         << "    LineSet { } " << std::endl
+         << "  } " << std::endl;
+}
+
+void StreamBuilder3D::addSingleArrow(Vector3f pt1, Vector3f pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+{
+    float l = (pt2 - pt1).Length();
+    float cl = l / 10.0f;
+    float cr = cl / 2.0f;
+
+    Vector3f dir = pt2 - pt1;
+    dir.Normalize();
+    dir.Scale(l-cl, l-cl, l-cl);
+    Vector3f pt2s = pt1 + dir;
+    dir.Normalize();
+    dir.Scale(l-cl/2.0f, l-cl/2.0f, l-cl/2.0f);
+    Vector3f cpt = pt1 + dir;
+
+    Vector3f rot = Vector3f(0.0f, 1.0f, 0.0f) % dir;
+    rot.Normalize();
+    float a = Vector3f(0.0f, 1.0f, 0.0f).GetAngle(dir);
+
+    result << "  Separator { " << std::endl
+           << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
+           << "    DrawStyle { lineWidth " << lineSize << "} " << std::endl
+           << "    Coordinate3 { " << std::endl
+           << "      point [ "
+           <<        pt1.x << " " << pt1.y << " " << pt1.z << ","
+           <<        pt2s.x << " " << pt2s.y << " " << pt2s.z
+           << " ] " << std::endl
+           << "    } " << std::endl
+           << "    LineSet { } " << std::endl
+           << "    Transform { " << std::endl
+           << "      translation " << cpt.x << " " << cpt.y << " " << cpt.z << " " << std::endl
+           << "      rotation " << rot.x << " " << rot.y << " " << rot.z << " " << a << std::endl
+           << "    } " << std::endl
+           << "    Cone { bottomRadius " << cr << " height " << cl << "} " << std::endl
+           << "  } " << std::endl;
+
+}
+
+//**************************************************************************
+// triangle handling
+
+void StreamBuilder3D::addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2, bool filled, short lineSize, float color_r, float color_g, float color_b)
+{
+  std::string fs = "";
+  if (filled)
+  {
+    fs = "    IndexedFaceSet { coordIndex[ 0, 1, 2, -1 ] } ";
+  }
+
+    result << "  Separator { " << std::endl
+           << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
+           << "    DrawStyle { lineWidth " << lineSize << "} " << std::endl
+           << "    Coordinate3 { " << std::endl
+           << "      point [ "
+           <<        pt0.x << " " << pt0.y << " " << pt0.z << ","
+           <<        pt1.x << " " << pt1.y << " " << pt1.z << ","
+           <<        pt2.x << " " << pt2.y << " " << pt2.z
+           << "] " << std::endl
+           << "    } " << std::endl
+           << "    LineSet { } " << std::endl
+           << fs << std::endl
+           << "  } " << std::endl;
+}
+
+void StreamBuilder3D::addTransformation(const Base::Matrix4D& transform)
+{
+  Base::Vector3f cAxis, cBase;
+  float fAngle, fTranslation;
+  transform.toAxisAngle(cBase, cAxis,fAngle,fTranslation);
+  cBase.x = (float)transform[0][3];
+  cBase.y = (float)transform[1][3];
+  cBase.z = (float)transform[2][3];
+  addTransformation(cBase,cAxis,fAngle);
+}
+
+void StreamBuilder3D::addTransformation(const Base::Vector3f& translation, const Base::Vector3f& rotationaxis, float fAngle)
+{
+  result << "  Transform {" << std::endl;
+  result << "    translation " << translation.x << " " << translation.y << " " << translation.z << std::endl;
+  result << "    rotation " << rotationaxis.x << " " << rotationaxis.y << " " << rotationaxis.z << " " << fAngle << std::endl;
+  result << "  }" << std::endl;
+}

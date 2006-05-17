@@ -59,6 +59,12 @@ public:
 
   /** @name Operators */
   //@{
+  /// Matrix addition
+  inline Matrix4D operator  +  (const Matrix4D& rclMtrx) const;
+  inline Matrix4D& operator += (const Matrix4D& rclMtrx);
+  /// Matrix subtraction
+  inline Matrix4D operator  -  (const Matrix4D& rclMtrx) const;
+  inline Matrix4D& operator -= (const Matrix4D& rclMtrx);
   /// Matrix multiplication
   inline Matrix4D& operator*= (const Matrix4D& rclMtrx);
   /// Assignment
@@ -109,6 +115,8 @@ public:
   void rotLine   (const Vector3f& rclVct, float fAngle);
   /// Rotation around an arbitrary axis that needn't necessarily pass the origin.
   void rotLine   (const Vector3f& rclBase, const Vector3f& rclDir, float fAngle);
+  /// Extract the rotation axis and angle. Therefore the 3x3 submatrix must be orthogonal.
+  bool toAxisAngle (Vector3f& rclBase, Vector3f& rclDir, float& fAngle, float& fTranslation) const;
   /// transform (move,scale,rotate) around a point
   void transform    (const Vector3f& rclVct, const Matrix4D& rclMtrx);
   void inverse      (void);
@@ -121,6 +129,60 @@ public:
 private:
   double  dMtrx4D[4][4];
 };
+
+inline Matrix4D Matrix4D::operator  +  (const Matrix4D& rclMtrx) const
+{
+  Matrix4D  clMat;
+  short     iz, is;
+
+  for (iz = 0; iz < 4; iz++) {
+    for (is = 0; is < 4; is++) {
+      clMat.dMtrx4D[iz][is] = dMtrx4D[iz][is] + rclMtrx[iz][is];
+    }
+  }
+
+  return clMat;
+}
+
+inline Matrix4D& Matrix4D::operator += (const Matrix4D& rclMtrx)
+{
+  short     iz, is;
+
+  for (iz = 0; iz < 4; iz++) {
+    for (is = 0; is < 4; is++) {
+      dMtrx4D[iz][is] += rclMtrx[iz][is];
+    }
+  }
+
+  return *this;
+}
+
+inline Matrix4D Matrix4D::operator  -  (const Matrix4D& rclMtrx) const
+{
+  Matrix4D  clMat;
+  short     iz, is;
+
+  for (iz = 0; iz < 4; iz++) {
+    for (is = 0; is < 4; is++) {
+      clMat.dMtrx4D[iz][is] = dMtrx4D[iz][is] - rclMtrx[iz][is];
+    }
+  }
+
+  return clMat;
+}
+
+inline Matrix4D& Matrix4D::operator -= (const Matrix4D& rclMtrx)
+{
+  short     iz, is;
+
+  for (iz = 0; iz < 4; iz++) {
+    for (is = 0; is < 4; is++) {
+      dMtrx4D[iz][is] -= rclMtrx[iz][is];
+    }
+  }
+
+  return *this;
+}
 
 inline Matrix4D& Matrix4D::operator *= (const Matrix4D& rclMtrx)
 {
