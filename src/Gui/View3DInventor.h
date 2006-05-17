@@ -97,7 +97,7 @@ public slots:
 //  void closeEvent(QCloseEvent* e);
   void onWindowActivated ();
   void setCursor(const QCursor&);
-  void dump();
+  void dump(const char* filename);
 
 protected:
   void dropEvent        ( QDropEvent      * e );

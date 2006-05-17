@@ -75,6 +75,16 @@ public:
   int  minimumDuration();
   void setMinimumDuration ( int ms );
 
+  /** @name Locking facility */
+  //@{
+  /// Locks the wait cursor so that the current cursor cannot be overridden
+  static void lock();
+  /// Unlocks the wait cursor so that the current cursor might be overridden
+  static void unlock();
+  /// Checks whether the wait cursor is locked or not.
+  static bool locked();
+  //@}
+
 private:
   void run();
   struct WaitCursorP* d;

@@ -73,6 +73,9 @@ vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const char* 
   else
     pcDoc = App::GetApplication().getActiveDocument();
 
+  //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
+  //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
+  //be an active document but not for internal stuff. (Werner 20060517)
   if(!pcDoc)
     return temp;
 
@@ -104,6 +107,9 @@ vector<App::DocumentObject*> SelectionSingleton::getObjectsOfType(const Base::Ty
   else
     pcDoc = App::GetApplication().getActiveDocument();
 
+  //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
+  //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
+  //be an active document but not for internal stuff. (Werner 20060517)
   if(!pcDoc)
     return temp;
 
@@ -128,6 +134,9 @@ unsigned int SelectionSingleton::countObjectsOfType(const Base::Type& typeId, co
   else
     pcDoc = App::GetApplication().getActiveDocument();
 
+  //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
+  //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
+  //be an active document but not for internal stuff. (Werner 20060517)
   if(!pcDoc)
     return 0;
 
@@ -213,42 +222,49 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectN
   else
     temp.pDoc = App::GetApplication().getActiveDocument();
 
-  if(pObjectName)
-    temp.pObject = temp.pDoc->getObject(pObjectName);
-  else
-    temp.pObject = 0;
+  if ( temp.pDoc )
+  {
+    if(pObjectName)
+      temp.pObject = temp.pDoc->getObject(pObjectName);
+    else
+      temp.pObject = 0;
 
 
-  temp.DocName  = pDocName;
-  temp.FeatName = pObjectName?pObjectName:"";
-  temp.SubName  = pSubName ?pSubName :"";
-  temp.x        = x;
-  temp.y        = y;
-  temp.z        = z;
+    temp.DocName  = pDocName;
+    temp.FeatName = pObjectName?pObjectName:"";
+    temp.SubName  = pSubName ?pSubName :"";
+    temp.x        = x;
+    temp.y        = y;
+    temp.z        = z;
 
-  if(temp.pObject)
-    temp.TypeName = temp.pObject->getTypeId().getName();
+    if(temp.pObject)
+      temp.TypeName = temp.pObject->getTypeId().getName();
 
-  _SelList.push_back(temp);
+    _SelList.push_back(temp);
 
-  SelectionChanges Chng;
+    SelectionChanges Chng;
 
-  Chng.pDocName  = pDocName;
-  Chng.pObjectName = pObjectName?pObjectName:"";
-  Chng.pSubName  = pSubName ?pSubName :"";
-  Chng.x         = x;
-  Chng.y         = y;
-  Chng.z         = z;
-  Chng.Type      = SelectionChanges::AddSelection;
+    Chng.pDocName  = pDocName;
+    Chng.pObjectName = pObjectName?pObjectName:"";
+    Chng.pSubName  = pSubName ?pSubName :"";
+    Chng.x         = x;
+    Chng.y         = y;
+    Chng.z         = z;
+    Chng.Type      = SelectionChanges::AddSelection;
 
 
-  Notify(Chng);
+    Notify(Chng);
 
-  Base::Console().Log("Sel : Add Selection \"%s.%s.%s(%f,%f,%f)\"\n",pDocName,pObjectName,pSubName,x,y,z);
+    Base::Console().Log("Sel : Add Selection \"%s.%s.%s(%f,%f,%f)\"\n",pDocName,pObjectName,pSubName,x,y,z);
 
-  // allow selection
-  return true;
-
+    // allow selection
+    return true;
+  }
+  else // neither an existing nor active document available 
+  {
+    assert(0);
+    return false;
+  }
 }
 
 void SelectionSingleton::rmvSelection(const char* pDocName, const char* pObjectName, const char* pSubName)

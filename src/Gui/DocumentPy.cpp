@@ -185,6 +185,7 @@ PYFUNCIMP_D(DocumentPy,addAnnotation)
     ViewProviderExtern *pcExt = new ViewProviderExtern();
 
     pcExt->setModeByFile(psModName?psModName:"Main",psFileName);
+    pcExt->adjustDocumentName(_pcDoc->getDocument()->getName());
 
     _pcDoc->setAnotationViewProvider(psAnnoName,pcExt);
 

@@ -75,6 +75,10 @@ public:
    * Creates also a XML stream regarding MIBA standard. To embed in a picture comment field (e.g. JPEG).
    */
   bool makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& ) const;
+  /**
+   * Writes the current scenegraph to an Inventor file, either in ascii or binary. 
+   */
+  bool dumpToFile( const char* filename, bool binary ) const;
 
   // calls a PickAction on the scene graph
   bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);

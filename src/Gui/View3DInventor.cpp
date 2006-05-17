@@ -259,6 +259,9 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
     return true;
   }else if(strncmp("SetCamera",pMsg,9) == 0 ){
     return setCamera(pMsg+10);
+  }else if(strncmp("Dump",pMsg,4) == 0 ){
+    dump(pMsg+5);
+    return true;
   }else if(strcmp("ViewBottom",pMsg) == 0 ){
     SoCamera* cam = _viewer->getCamera();
     cam->orientation.setValue(-1, 0, 0, 0);
@@ -347,6 +350,8 @@ bool View3DInventor::onHasMsg(const char* pMsg)
     return true;
   }else if(strncmp("SetCamera",pMsg,9) == 0 ){
     return true;
+  }else if(strncmp("Dump",pMsg,4) == 0 ){
+    return true;
   }
   return false;
 }
@@ -417,9 +422,9 @@ void View3DInventor::setCursor(const QCursor& aCursor)
   _viewer->getWidget()->setCursor(aCursor);
 }
 
-void View3DInventor::dump()
+void View3DInventor::dump(const char* filename)
 {
-
+  _viewer->dumpToFile(filename,false);
 }
 
 /**

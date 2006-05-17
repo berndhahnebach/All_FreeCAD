@@ -898,13 +898,20 @@ MessageBoxObserver::MessageBoxObserver(MainWindow *pcAppWnd)
 /// get called when a Warning is issued
 void MessageBoxObserver::Warning(const char *m)
 {
+  WaitCursor::lock();
+  QCursor* cursor = QApplication::overrideCursor();
   bool ok = Base::Sequencer().isRunning();
   if ( ok )
     Base::Sequencer().pause();
+  else if ( cursor )
+    QApplication::setOverrideCursor(Qt::ArrowCursor);
   QMessageBox::warning( _pcAppWnd, QObject::tr("Warning"),m);
   if ( ok )
     Base::Sequencer().resume();
+  else if ( cursor )
+    QApplication::restoreOverrideCursor();
   _pcAppWnd->statusBar()->message( m, 2001 );
+  WaitCursor::unlock();
 }
 
 /// get called when a Message is issued
@@ -916,13 +923,20 @@ void MessageBoxObserver::Message(const char * m)
 /// get called when a Error is issued
 void MessageBoxObserver::Error  (const char *m)
 {
+  WaitCursor::lock();
+  QCursor* cursor = QApplication::overrideCursor();
   bool ok = ProgressBar::instance()->isRunning();
   if ( ok )
     ProgressBar::instance()->pause();
+  else if ( cursor )
+    QApplication::setOverrideCursor(Qt::ArrowCursor);
   QMessageBox::critical( _pcAppWnd, QObject::tr("Critical Error"),m);
   if ( ok )
     ProgressBar::instance()->resume();
+  else if ( cursor )
+    QApplication::restoreOverrideCursor();
   _pcAppWnd->statusBar()->message( m, 2001 );
+  WaitCursor::unlock();
 }
 
 /// get called when a Log Message is issued

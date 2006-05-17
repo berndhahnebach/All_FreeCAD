@@ -36,6 +36,7 @@
 #include <App/Material.h>
 #include <App/Feature.h>
 #include "Selection.h"
+#include "SoFCSelection.h"
 #include "ViewProviderExtern.h"
 #include "Tree.h"
 
@@ -103,7 +104,27 @@ void ViewProviderExtern::setModeBySoInput(const char* name, SoInput &ivFileInput
   return;
 }
 
+void ViewProviderExtern::adjustDocumentName(const char* docname)
+{
+  for ( int i=0; i<this->pcModeSwitch->getNumChildren(); i++ )
+  {
+    SoNode* child = this->pcModeSwitch->getChild(i);
+    adjustRecursiveDocumentName(child, docname);
+  }
+}
 
+void ViewProviderExtern::adjustRecursiveDocumentName(SoNode* child, const char* docname)
+{
+  if ( child->getTypeId().isDerivedFrom( SoFCSelection::getClassTypeId() ) ) {
+    reinterpret_cast<SoFCSelection*>(child)->documentName = docname;
+  } else if ( child->getTypeId().isDerivedFrom( SoGroup::getClassTypeId() ) ) {
+    SoGroup* group = (SoGroup*)child;
+    for ( int i=0; i<group->getNumChildren(); i++ ) {
+      SoNode* subchild = group->getChild(i);
+      adjustRecursiveDocumentName(subchild, docname);
+    }
+  }
+}
 
 std::vector<std::string> ViewProviderExtern::getModes(void)
 {
