@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib opengl32.lib coin2.lib soqt1.lib qt-mtnc321.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\MeshGui.pyd" /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy      /y      /f      Release\MeshGui.pyd      ..\..\..\..\Mod\Mesh\     	xcopy      /y      /f      ..\InitGui.py      ..\..\..\..\Mod\Mesh\     	xcopy      /y      /f      Release\MeshGui.lib      ..\..\..\..\Mod\Mesh\ 
+PostBuild_Cmds=xcopy       /y       /f       Release\MeshGui.pyd       ..\..\..\..\Mod\Mesh\      	xcopy       /y       /f       ..\InitGui.py       ..\..\..\..\Mod\Mesh\      	xcopy       /y       /f       Release\MeshGui.lib       ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib opengl32.lib coin2d.lib soqt1d.lib qt-mtnc321.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\MeshGui_d.pyd" /pdbtype:sept /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy      /y      /f      Debug\MeshGui_d.pyd      ..\..\..\..\Mod\Mesh\     	xcopy      /y      /f      ..\InitGui.py      ..\..\..\..\Mod\Mesh\     	xcopy      /y      /f      Debug\MeshGui_d.lib      ..\..\..\..\Mod\Mesh\ 
+PostBuild_Cmds=xcopy       /y       /f       Debug\MeshGui_d.pyd       ..\..\..\..\Mod\Mesh\      	xcopy       /y       /f       ..\InitGui.py       ..\..\..\..\Mod\Mesh\      	xcopy       /y       /f       Debug\MeshGui_d.lib       ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -185,6 +185,67 @@ InputName=DlgEvaluateMeshImp
 
 !ENDIF 
 
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgRegularSolid.ui
+
+!IF  "$(CFG)" == "AppMeshGui - Win32 Release"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgRegularSolid.ui
+InputName=DlgRegularSolid
+
+BuildCmds= \
+	"%qtdir%\bin\uic.exe" "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	"%qtdir%\bin\uic.exe" "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
+
+# Begin Custom Build - Uic'ing $(InputName).ui ...
+InputDir=.
+InputPath=.\DlgRegularSolid.ui
+InputName=DlgRegularSolid
+
+BuildCmds= \
+	"%qtdir%\bin\uic.exe" "$(InputPath)" -o "$(InputDir)\$(InputName).h" \
+	"%qtdir%\bin\uic.exe" "$(InputPath)" -i "$(InputName).h" -o "$(InputDir)\$(InputName).cpp" \
+	"%qtdir%\bin\moc.exe" "$(InputDir)\$(InputName).h" -o "$(InputDir)\moc_$(InputName).cpp" \
+	
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(InputDir)\moc_$(InputName).cpp" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgRegularSolidImp.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DlgRegularSolidImp.h
 # End Source File
 # End Group
 # Begin Source File

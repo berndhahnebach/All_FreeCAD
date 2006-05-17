@@ -189,6 +189,8 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
   int* faces = 0;
 
   try {
+    pcMeshCoord->point.deleteValues(0);
+    pcMeshFaces->coordIndex.deleteValues(0);
     vertices = new SbVec3f[rcMesh.CountPoints()];
     faces = new int [4*rcMesh.CountFacets()];
 
@@ -596,7 +598,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 
       // replace the mesh from feature
       Gui::Command::doCommand(Gui::Command::Gui, "App.document().%s.solidMaterial.transparency = 0.7\n", fTool.c_str());
-      Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().getObject(\"%s\").getMesh()\n", fTool.c_str());
+      Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().getObject(\"%s\").Mesh\n", fTool.c_str());
       for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
       {
         Gui::Command::doCommand(Gui::Command::Doc, "m.addFacet(%.6f,%.6f,%.6f, %.6f,%.6f,%.6f, %.6f,%.6f,%.6f)",
@@ -605,7 +607,7 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
           itF->_aclPoints[2].x, itF->_aclPoints[2].y, itF->_aclPoints[2].z);
       }
 
-      Gui::Command::doCommand(Gui::Command::Doc, "App.document().getObject(\"%s\").setMesh(m)\n", fTool.c_str());
+      Gui::Command::doCommand(Gui::Command::Doc, "App.document().getObject(\"%s\").Mesh=m\n", fTool.c_str());
       Gui::Command::doCommand(Gui::Command::Doc, "App.document().recompute()\n");
 
 #ifndef FC_DEBUG

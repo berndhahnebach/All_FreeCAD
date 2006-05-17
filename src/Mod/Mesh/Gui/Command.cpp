@@ -47,6 +47,7 @@
 #include <Gui/ViewProvider.h>
 
 #include "DlgEvaluateMeshImp.h"
+#include "DlgRegularSolidImp.h"
 
 using namespace Mesh;
 
@@ -888,6 +889,31 @@ bool CmdMeshBoundingBox::isActive(void)
   return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
 }
 
+DEF_STD_CMD_A(CmdMeshBuildRegularSolid);
+
+CmdMeshBuildRegularSolid::CmdMeshBuildRegularSolid()
+  :Command("Mesh_BuildRegularSolid")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Regular solid...");
+  sToolTipText  = QT_TR_NOOP("Builds a regular solid");
+  sWhatsThis    = QT_TR_NOOP("Builds a regular solid");
+  sStatusTip    = QT_TR_NOOP("Builds a regular solid");
+  sPixmap       = "solid_mesh";
+}
+
+void CmdMeshBuildRegularSolid::activated(int iMsg)
+{
+  MeshGui::SingleDlgRegularSolidImp::instance()->show();
+}
+
+bool CmdMeshBuildRegularSolid::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return (!MeshGui::SingleDlgRegularSolidImp::hasInstance())&&hasActiveDocument();
+}
+
 void CreateMeshCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -911,4 +937,5 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshFixDuplicatePoints());
   rcCmdMgr.addCommand(new CmdMeshFixIndices());
   rcCmdMgr.addCommand(new CmdMeshBoundingBox());
+  rcCmdMgr.addCommand(new CmdMeshBuildRegularSolid());
 }
