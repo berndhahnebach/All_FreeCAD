@@ -76,6 +76,7 @@ SoFCSelection::SoFCSelection()
 
   SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE);
   SO_NODE_DEFINE_ENUM_VALUE(Styles, EMISSIVE_DIFFUSE);
+  SO_NODE_DEFINE_ENUM_VALUE(Styles, BOX);
   SO_NODE_SET_SF_ENUM_TYPE(style, Styles);
 
   SO_NODE_DEFINE_ENUM_VALUE(HighlightModes, AUTO);
@@ -306,6 +307,13 @@ SoFCSelection::redrawHighlighted(SoAction * /* act */, SbBool /* flag */)
 {
 }
 
+SbBool 
+SoFCSelection::readInstance  (  SoInput *  in, unsigned short  flags )
+{
+  // Note: The read in document name can be false, so the caller must ensure pointing to the correct documemt
+  SbBool ret = inherited::readInstance(in, flags);
+  return ret;
+}
 //
 // update override state before rendering
 //

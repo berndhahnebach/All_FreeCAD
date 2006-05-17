@@ -27,6 +27,7 @@
 #include "ViewProvider.h"
 
 
+class SoNode;
 class SoMaterial;
 
 namespace App
@@ -62,6 +63,11 @@ public:
   virtual void setTransparency(float);
   /// Set the color
   virtual void setColor(const App::Color &c);
+
+  void adjustDocumentName(const char* docname);
+
+private:
+  void adjustRecursiveDocumentName(SoNode*, const char* docname);
 
 protected:
 

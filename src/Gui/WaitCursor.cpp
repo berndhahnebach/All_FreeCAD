@@ -40,6 +40,7 @@ struct WaitCursorP
 {
   bool wait;
   static bool override;
+  static bool locked;
   int minimumDuration;
   uint main_threadid;
   QTime measure;
@@ -50,6 +51,7 @@ struct WaitCursorP
  * is not allowed. So, we use a simple boolean.
  */
 bool WaitCursorP::override = false;
+bool WaitCursorP::locked = false;
 
 /**
  * Constructs this object and starts the thread immediately.
@@ -89,16 +91,20 @@ void WaitCursor::run()
   {
     // set the thread sleeping
     msleep(100);
-    if ( d->measure.elapsed() > d->minimumDuration )
+    // just wait if locked
+    if ( !WaitCursorP::locked )
     {
-      if ( !WaitCursorP::override )
+      if ( d->measure.elapsed() > d->minimumDuration )
       {
-        // prevent application from setting wait cursor twice
-        WaitCursorP::override = true;
-        QApplication::setOverrideCursor(Qt::waitCursor);
-        d->wait = true;
+        if ( !WaitCursorP::override )
+        {
+          // prevent application from setting wait cursor twice
+          WaitCursorP::override = true;
+          QApplication::setOverrideCursor(Qt::waitCursor);
+          d->wait = true;
+        }
+        break;
       }
-      break;
     }
   }
 
@@ -158,3 +164,17 @@ void WaitCursor::setMinimumDuration ( int ms )
   d->minimumDuration = ms;
 }
 
+void WaitCursor::lock()
+{
+  WaitCursorP::locked = true;
+}
+
+void WaitCursor::unlock()
+{
+  WaitCursorP::locked = false;
+}
+
+bool WaitCursor::locked()
+{
+  return WaitCursorP::locked;
+}

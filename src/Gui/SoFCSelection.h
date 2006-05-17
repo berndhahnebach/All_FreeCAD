@@ -93,6 +93,8 @@ public:
 protected:
   virtual ~SoFCSelection();
   virtual void redrawHighlighted(SoAction * act, SbBool  flag);
+  virtual SbBool readInstance  (  SoInput *  in, unsigned short  flags ); 
+
 
 private:
 

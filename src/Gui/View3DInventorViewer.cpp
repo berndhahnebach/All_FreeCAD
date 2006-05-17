@@ -27,6 +27,7 @@
 # include <float.h>
 # include <qapplication.h>
 # include <qcursor.h>
+# include <qfile.h>
 # include <qimage.h>
 # include <qmessagebox.h>
 # include <qpainter.h>
@@ -37,6 +38,7 @@
 # endif
 # include <GL/gl.h>
 # include <Inventor/actions/SoHandleEventAction.h> 
+# include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCallback.h> 
 # include <Inventor/nodes/SoCoordinate3.h>
@@ -393,6 +395,21 @@ bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbNam
   root->unref();
 
   return ok;
+}
+
+bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
+{
+	SoWriteAction wa;
+	SoOutput* out = wa.getOutput();
+	QFile::remove( filename );
+	if ( out->openFile( filename ) != NULL )
+	{
+		out->setBinary( binary );
+		wa.apply(pcViewProviderRoot);
+    return true;
+	}
+
+  return false;
 }
 
 void View3DInventorViewer::sizeChanged( const SbVec2s& size )
