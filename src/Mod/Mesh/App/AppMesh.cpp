@@ -38,6 +38,7 @@
 #include "FeatureMeshSegmentByMesh.h"
 #include "FeatureMeshSetOperations.h"
 #include "FeatureMeshDefects.h"
+#include "FeatureMeshSolid.h"
 
 /* registration table  */
 extern struct PyMethodDef Mesh_Import_methods[];
@@ -81,6 +82,13 @@ void AppMeshExport initMesh() {
   Mesh::FixDuplicatedPoints   ::init();
   Mesh::FixDegenerations      ::init();
   Mesh::FixIndices            ::init();
+
+  Mesh::Sphere                ::init();
+  Mesh::Ellipsoid             ::init();
+  Mesh::Cylinder              ::init();
+  Mesh::Cone                  ::init();
+  Mesh::Torus                 ::init();
+  Mesh::Cube                  ::init();
     
   return;
 }

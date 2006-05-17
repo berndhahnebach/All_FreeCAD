@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\Mesh.pyd" /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Release\Mesh.pyd    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    Release\Mesh.lib    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    ..\BuildRegularGeoms.py    ..\..\..\..\Mod\Mesh\ 
+PostBuild_Cmds=xcopy     /y     /f     Release\Mesh.pyd     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     ..\Init.py     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     Release\Mesh.lib     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     ..\BuildRegularGeoms.py     ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppMesh - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\Mesh_d.pyd" /pdbtype:sept /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Debug\Mesh_d.pyd    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    Debug\Mesh_d.lib    ..\..\..\..\Mod\Mesh\   	xcopy    /y    /f    ..\BuildRegularGeoms.py    ..\..\..\..\Mod\Mesh\ 
+PostBuild_Cmds=xcopy     /y     /f     Debug\Mesh_d.pyd     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     ..\Init.py     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     Debug\Mesh_d.lib     ..\..\..\..\Mod\Mesh\    	xcopy     /y     /f     ..\BuildRegularGeoms.py     ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -315,6 +315,14 @@ SOURCE=.\FeatureMeshSetOperations.cpp
 # Begin Source File
 
 SOURCE=.\FeatureMeshSetOperations.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureMeshSolid.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\FeatureMeshSolid.h
 # End Source File
 # Begin Source File
 
