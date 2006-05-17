@@ -57,7 +57,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib xerces-c_2.lib zlib1.lib python23.lib /nologo /dll /machine:I386 /nodefaultlib
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Release\FreeCADBase.dll    ..\..\bin\   	xcopy    /y    /f    Release\FreeCADBase.lib    ..\..\lib\ 
+PostBuild_Cmds=xcopy     /y     /f     Release\FreeCADBase.dll     ..\..\bin\    	xcopy     /y     /f     Release\FreeCADBase.lib     ..\..\lib\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
@@ -88,7 +88,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib xerces-c_2D.lib zlib1.lib python23_d.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/FreeCADBaseD.dll" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /Y    /f     Debug\FreeCADBaseD.dll    ..\..\bin\   	xcopy    /Y    /f    Debug\FreeCADBaseD.lib    ..\..\lib\ 
+PostBuild_Cmds=xcopy     /Y     /f      Debug\FreeCADBaseD.dll     ..\..\bin\    	xcopy     /Y     /f     Debug\FreeCADBaseD.lib     ..\..\lib\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -514,6 +514,14 @@ SOURCE=.\Reader.cpp
 # Begin Source File
 
 SOURCE=.\Reader.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Rotation.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Rotation.h
 # End Source File
 # Begin Source File
 
