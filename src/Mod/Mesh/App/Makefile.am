@@ -58,6 +58,8 @@ libMesh_la_SOURCES=\
 		FeatureMeshSegmentByMesh.h \
 		FeatureMeshSetOperations.cpp \
 		FeatureMeshSetOperations.h \
+		FeatureMeshSolid.cpp \
+		FeatureMeshSolid.h \
 		FeatureMeshTransform.cpp \
 		FeatureMeshTransform.h \
 		FeatureMeshTransformDemolding.cpp \
