@@ -24,6 +24,9 @@ Package=<4>
     Project_Dep_Name AppRaytracingGui
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name All Cmd Files
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name AppImageGui
     End Project Dependency
     Begin Project Dependency
