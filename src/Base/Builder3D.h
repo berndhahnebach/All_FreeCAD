@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) YEAR YOUR NAME         <Your e-mail address>            *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de)          *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -31,6 +31,7 @@
 
 namespace Base
 {
+class Matrix4D;
 /** A Builder class for 3D representations on App level
  * On application level is nothing known of the visual representation of data.
  * Nevertheless it's often needed to see some 3D information, e.g. points, directions,
@@ -94,6 +95,13 @@ public:
   void addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2, bool filled = true, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   //@}
 
+  /** @name Transformation */
+  //@{
+  /// adds a transformation
+  void addTransformation(const Base::Matrix4D&);
+  void addTransformation(const Base::Vector3f& translation, const Base::Vector3f& rotationaxis, float fAngle);
+  //@}
+
   /** @name text handling */
   //@{
   /// add a text
@@ -121,6 +129,75 @@ private:
 
   bool bStartEndOpen;
 
+};
+
+/**
+ * This class does basically the same as Builder3D except that it writes the data directly into a given stream without
+ * buffering the output data in a string stream.
+ * Compared to file streams string streams are quite slow when writing data with more than a few hundred lines. Due to performance 
+ * reasons the user should use a file stream in this case.
+ * @author Werner Mayer
+ */
+class BaseExport StreamBuilder3D
+{
+public:
+  /// Construction
+  StreamBuilder3D(std::ofstream&);
+  /// Destruction
+  virtual ~StreamBuilder3D();
+  void close();
+
+  /** @name point set handling */
+  //@{
+  /// starts a point set
+  void startPoints(short pointSize=2.0, float color_r=1.0,float color_g=0.0,float color_b=0.0);
+  /// insert a point in an point set
+  void addPoint(float x, float y, float z);
+  /// add a vector to a point set
+  void addPoint(const Vector3f &vec);
+  /// ends the points set operation 
+  void endPoints(void);
+  /// add a singular point (without startPoints() & endPoints() )
+  void addSinglePoint(float x, float y, float z, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  /// add a singular point (without startPoints() & endPoints() )
+  void addSinglePoint(const Base::Vector3f &vec, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  //@}
+
+  /** @name line/direction handling */
+  //@{
+  /// add a line defined by 2 Vector3D
+  void addSingleLine(Vector3f pt1, Vector3f pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+  /// add a arrow (directed line) by 2 Vector3D. The arrow shows in direction of point 2.
+  void addSingleArrow(Vector3f pt1, Vector3f pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+  //@}
+
+  /** @name triangle handling */
+  //@{
+  /// add a (filled) triangle defined by 3 vectors
+  void addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2, bool filled = true, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  //@}
+
+  /** @name Transformation */
+  //@{
+  /// adds a transformation
+  void addTransformation(const Base::Matrix4D&);
+  void addTransformation(const Base::Vector3f& translation, const Base::Vector3f& rotationaxis, float fAngle);
+  //@}
+
+  /** @name text handling */
+  //@{
+  /// add a text
+  void addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  /// add a text
+  void addText(const Base::Vector3f &vec,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  /// add a text
+  void addText(const Base::Vector3f &vec, float color_r,float color_g,float color_b, const char * format, ...);
+  //@}
+
+private:
+  std::ofstream& result;
+  bool bStartEndOpen;
+  bool bClosed;
 };
 
 } //namespace Base
