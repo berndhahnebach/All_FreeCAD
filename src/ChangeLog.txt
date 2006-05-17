@@ -1,0 +1,122 @@
+Version: V0.5B1 Date: Jan 15 2006 +++++++++++++++++++++++++++++++
++ changes due Version in Installer
+
+Version: V0.5B2 Date: Sun Jan 15 20:09:22 2006 +++++++++++++++++++++++++++++++
++ remove all OCAF header and libs
++ remove all modules related to OCAF
++ implementing Mesh save and restore
++ implementing Points save and restore
++ Save/Open of compressed XML documents
++ Preference page for document
++ Setting of document compression level
++ set _STLP_USE_NEWALLOC to free memory allocated in associative containers
++ implement Open/Save/SaveAs for use from Python
+
+Version: V0.5B3 Date: Mon Jan 30 13:54:25 2006 +++++++++++++++++++++++++++++++
++ use the zipios++ library for reading from/writing into compressed archives
++ update zipios++ sources to current CVS version
++ mesh creation with less memory usag (patch from bgrupp)
++ a fast algorithm to count edges (2 manifold) without additional memory (patch from bgrupp)
++ resolve problems for running macros from file with Microsoft Visual Studio 8.0 (patch from bgrupp)
++ I/O of points and meshes in document container file
++ fixes memory exception in view provider for meshes
++ fixes memory exception when rendering a huge Inventor node
++ more efficient loading of huge meshes
+
+Version: V0.5B4 Date: Sat Feb 04 13:14:55 2006 +++++++++++++++++++++++++++++++
++ use type system in selection class
++ replace DataStream classes by i/ostream classes
++ start standardization of API of exported Python classes
++ implement standard factory in Base::Type
++ remove Feature and ViewProvider Factory, use Standard
++ using update instead of recompute after load document
++ using c++ name in addFeature()
++ updating the installer files
++ fixing the build Dist scripts
++ implementing Comment for Save picture
++ implement MIBA
++ use type system in workbench classes
++ VC8 Port
++ Property Pre Callback
++ Property Lists started
++ FeatureTest
++ Run script from Editor
+
+Version: V0.5B5 Date: Sat Feb 25 18:49:43 2006 +++++++++++++++++++++++++++++++
++ Make use of AC_LIBTOOL_DLOPEN macro for Unix/Linux based systems to allow to
+  create modules.
++ Create a loader module (without 'lib' prefix ) for each shared library (with 'lib' prefix)
++ The dirty hack to create symlinks during installation has been removed.
++ Builder3D Visual debuging facility
++ set default tabwidth in editor to 4 char, can be changed in user settings
++ block comment/uncomment implemented
++ Undo/Redo of block comment or uncomment implemented
++ Bug in DocItem class fixed: allow only one item with the same name
++ set the dirty flag after Gui::Document has been changed, remove after saving the document
++ WildMagic dllexport define (patch 1441148)
++ fix assert if missing feature (patch 1441146)
++ new modules (patches 1441103, 1441082)
++ Fixes for new modules (patch 1441145)
++ Specify orthographic or perspective camera in user settings
++ Ignore built files in Python script for creation of modules
++ Fixing Bug 1442521,
++ turn backface culling on/off (RFE 1443940). Seems to work properly with convex geometries only
++ Enabled two-side rendering for meshes in case it is not a solid
++ Return the edge list by reference in mesh kernel (to avoid memory leak)
++ PropertyVectorList implemented
++ Use PropertyVectorLists and PropertyFloatLists in Mesh::Curvature feature and its associated view provider
++ PropertyColor(List) implemeted
++ PropertyMeshKernel added
++ move all Projects to NODEFAULTLIBS
++ move all Projects to xcopy
++ start implementing the link between FreeCAD property and property editor
++ New methods in Builder3D (patch 1450695,1451028)
++ Set operations (patch 1451026, 1451138, 1451141)
++ start const Mesh and MeshProperty
++ implement class to evaluate and validate meshes with corresponding feature classes
++ dialog added to analyze and repair meshes
++ special viewproviders to display defects of meshes
++ delete features from the document
++ bug fixed: remove features to be deleted from the selection
++ bugs fixed in selection node
++ restore original document file name after loading a project file
++ start implementing an Inventor node rendering the mesh structure directly
+
+Version: V0.5B6 Date: Sat Apr 15 18:23:54 2006 +++++++++++++++++++++++++++++++
++ renamed Vector3D to Vector3f indicating the precision of float and Vector3d as double respectively
++ updated the unittests in Test framework using new API
++ Added some experimental properties to mesh viewprovider
++ Allow to build up structured menus from within Python
++ StdWorkbench::setupContextMenu() implemented
++ PropertyStringList added
++ Continued implementation of property editor
++ Nullify reference to deleted object of dependent objects (Document::remObject)
++ Check if the reference is valid in Mesh::Feature::getMesh() and subclasses
++ Several bugs in Raytracing module fixed
++ API changes in DocumentPy:
+  - Recompute -> recompute
+  - activeFeature -> activeDocument
+  - addFeature -> addObject
+  - getFeature -> getObject
+  - removeFeature -> removeObject
+  - listFeatures -> listObjects
+  - AddFeature removed
+  - GetFeature removed
+  - GetActiveFeature -> getActiveObject
++ API changes in Property
+  - Save(Writer&) -> Save(Writer) const
++ API changes in ViewProviderDocumentObject
+  - attach(App::AbstractFeature*) -> attach(App::DocumentObject*)
++ Applied patch 1470733, SetOperation patch
++ Applied patch 1470737, new module tritritest
++ Fixed bug in ViewProviderDocumentObject::ViewProviderDocumentObject(): pcPointStyle->ref()
++ Check for scheme version when loading a project file and handle the reading procedure differently
++ RFE 1470745 implemented (material mode: Open Edges)
++ show also members of DocumentObjects in Python (implemented in DocumentObjectPy::_getattr)
++ show members in MaterialPy, DocumentPy and FeaturePy
++ Fixed bugs with C++/Python framework 
+  (NOTE: All C++ classes returning an associated Python object with a reference to itself must NOT return always a new instances 
+         for each call but it must return the same instance, otherwise the Python objects cannot be notified when the C++ object
+         has been destroyed)
++ Allow drag'n'drop for files coming from ZIP files
++ More intuitive handling of property editor

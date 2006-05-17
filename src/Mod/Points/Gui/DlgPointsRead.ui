@@ -1,0 +1,444 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>PointsGui::DlgPointsRead</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>PointsGui::DlgPointsRead</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>342</width>
+            <height>550</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>ASCII points import</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout5</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Template:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>comboBoxTrmplate</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Special lines</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout1</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>First line:</string>
+                            </property>
+                        </widget>
+                        <widget class="QButtonGroup">
+                            <property name="name">
+                                <cstring>buttonGroup2</cstring>
+                            </property>
+                            <property name="title">
+                                <string>Action</string>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QRadioButton">
+                                    <property name="name">
+                                        <cstring>radioButtonIgnore</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Ignore</string>
+                                    </property>
+                                </widget>
+                                <widget class="QRadioButton">
+                                    <property name="name">
+                                        <cstring>radioButtonNbrOfPoints</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Nbr. of Points</string>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout4</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout3</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel3</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Cluster by lines starting with:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel4</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Ignore lines starting with:</string>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout2</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>lineEditClusterStart</cstring>
+                                    </property>
+                                    <property name="frameShape">
+                                        <enum>LineEditPanel</enum>
+                                    </property>
+                                    <property name="frameShadow">
+                                        <enum>Sunken</enum>
+                                    </property>
+                                </widget>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>lineEditComments</cstring>
+                                    </property>
+                                    <property name="frameShape">
+                                        <enum>LineEditPanel</enum>
+                                    </property>
+                                    <property name="frameShadow">
+                                        <enum>Sunken</enum>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>Point format</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout9</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout8</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel6</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Number seperator:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel7</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Points format:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel8</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Next block:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel8_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Next block:</string>
+                                    </property>
+                                </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>textLabel8_2_2</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Next block:</string>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>layout7</cstring>
+                            </property>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QComboBox">
+                                    <item>
+                                        <property name="text">
+                                            <string>,</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>;</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>\t</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>\w</string>
+                                        </property>
+                                    </item>
+                                    <property name="name">
+                                        <cstring>comboBoxSeperator</cstring>
+                                    </property>
+                                    <property name="editable">
+                                        <bool>true</bool>
+                                    </property>
+                                </widget>
+                                <widget class="QComboBox">
+                                    <item>
+                                        <property name="text">
+                                            <string>X,Y,Z</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>X,Y</string>
+                                        </property>
+                                    </item>
+                                    <property name="name">
+                                        <cstring>comboBoxPointsFormat</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QComboBox">
+                                    <item>
+                                        <property name="text">
+                                            <string>none</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>I,J,K (normal vector)</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>I,K (normal vector 2D)</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>R,G,B (color)</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>I (Gray value)</string>
+                                        </property>
+                                    </item>
+                                    <property name="name">
+                                        <cstring>comboBoxNextBlock1</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QComboBox">
+                                    <item>
+                                        <property name="text">
+                                            <string>none</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>I,J,K (normal vector)</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>I,K (normal vector 2D)</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>R,G,B (color)</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>I (Gray value)</string>
+                                        </property>
+                                    </item>
+                                    <property name="name">
+                                        <cstring>comboBoxNextBlock2</cstring>
+                                    </property>
+                                </widget>
+                                <widget class="QComboBox">
+                                    <item>
+                                        <property name="text">
+                                            <string>none</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>I,J,K (normal vector)</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>I,K (normal vector 2D)</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>R,G,B (color)</string>
+                                        </property>
+                                    </item>
+                                    <item>
+                                        <property name="text">
+                                            <string>I (Gray value)</string>
+                                        </property>
+                                    </item>
+                                    <property name="name">
+                                        <cstring>comboBoxNextBlock3</cstring>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox3</cstring>
+            </property>
+            <property name="title">
+                <string>Preview</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>lineEditFileName</cstring>
+                    </property>
+                    <property name="readOnly">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout6</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel5</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Nbr. of previewd lines:</string>
+                            </property>
+                        </widget>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>lineEditPreviewLines</cstring>
+                            </property>
+                            <property name="text">
+                                <string>100</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QTextEdit">
+                    <property name="name">
+                        <cstring>textEditPreview</cstring>
+                    </property>
+                </widget>
+            </vbox>
+        </widget>
+    </vbox>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

@@ -1,0 +1,110 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>Gui::Dialog::DlgActivateWindowBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>Gui::Dialog::DlgActivateWindowBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>341</width>
+            <height>267</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Choose Window</string>
+    </property>
+    <property name="sizeGripEnabled">
+        <bool>true</bool>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonOk</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Activate</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+A</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Horizontal Spacing2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>100</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonCancel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Cancel</string>
+                    </property>
+                    <property name="accel">
+                        <string></string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QListBox" row="0" column="0">
+            <property name="name">
+                <cstring>listBox2</cstring>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>buttonOk</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgActivateWindowBase</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>buttonCancel</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgActivateWindowBase</receiver>
+        <slot>reject()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>listBox2</tabstop>
+    <tabstop>buttonOk</tabstop>
+    <tabstop>buttonCancel</tabstop>
+</tabstops>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

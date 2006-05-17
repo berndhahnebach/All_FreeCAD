@@ -1,0 +1,108 @@
+/****************************************************************************
+** Gui::KDoubleValidator meta object code from reading C++ file 'knumvalidator.h'
+**
+** Created: Sa 13. Mai 12:35:53 2006
+**      by: The Qt MOC ($Id: $)
+**
+** WARNING! All changes made in this file will be lost!
+*****************************************************************************/
+
+#undef QT_NO_COMPAT
+#include "knumvalidator.h"
+#include <qmetaobject.h>
+#include <qapplication.h>
+
+#include <private/qucomextra_p.h>
+#if !defined(Q_MOC_OUTPUT_REVISION) || (Q_MOC_OUTPUT_REVISION != 26)
+#error "This file was generated using the moc from 3.2.0. It"
+#error "cannot be used with the include files from this version of Qt."
+#error "(The moc has changed too much.)"
+#endif
+
+#include <qvariant.h>
+const char *Gui::KDoubleValidator::className() const
+{
+    return "Gui::KDoubleValidator";
+}
+
+QMetaObject *Gui::KDoubleValidator::metaObj = 0;
+static QMetaObjectCleanUp cleanUp_Gui__KDoubleValidator( "Gui::KDoubleValidator", &Gui::KDoubleValidator::staticMetaObject );
+
+#ifndef QT_NO_TRANSLATION
+QString Gui::KDoubleValidator::tr( const char *s, const char *c )
+{
+    if ( qApp )
+	return qApp->translate( "Gui::KDoubleValidator", s, c, QApplication::DefaultCodec );
+    else
+	return QString::fromLatin1( s );
+}
+#ifndef QT_NO_TRANSLATION_UTF8
+QString Gui::KDoubleValidator::trUtf8( const char *s, const char *c )
+{
+    if ( qApp )
+	return qApp->translate( "Gui::KDoubleValidator", s, c, QApplication::UnicodeUTF8 );
+    else
+	return QString::fromUtf8( s );
+}
+#endif // QT_NO_TRANSLATION_UTF8
+
+#endif // QT_NO_TRANSLATION
+
+QMetaObject* Gui::KDoubleValidator::staticMetaObject()
+{
+    if ( metaObj )
+	return metaObj;
+    QMetaObject* parentObject = QDoubleValidator::staticMetaObject();
+#ifndef QT_NO_PROPERTIES
+    static const QMetaProperty props_tbl[1] = {
+ 	{ "bool","acceptLocalizedNumbers", 0x12000103, &Gui::KDoubleValidator::metaObj, 0, -1 }
+    };
+#endif // QT_NO_PROPERTIES
+    metaObj = QMetaObject::new_metaobject(
+	"Gui::KDoubleValidator", parentObject,
+	0, 0,
+	0, 0,
+#ifndef QT_NO_PROPERTIES
+	props_tbl, 1,
+	0, 0,
+#endif // QT_NO_PROPERTIES
+	0, 0 );
+    cleanUp_Gui__KDoubleValidator.setMetaObject( metaObj );
+    return metaObj;
+}
+
+void* Gui::KDoubleValidator::qt_cast( const char* clname )
+{
+    if ( !qstrcmp( clname, "Gui::KDoubleValidator" ) )
+	return this;
+    return QDoubleValidator::qt_cast( clname );
+}
+
+bool Gui::KDoubleValidator::qt_invoke( int _id, QUObject* _o )
+{
+    return QDoubleValidator::qt_invoke(_id,_o);
+}
+
+bool Gui::KDoubleValidator::qt_emit( int _id, QUObject* _o )
+{
+    return QDoubleValidator::qt_emit(_id,_o);
+}
+#ifndef QT_NO_PROPERTIES
+
+bool Gui::KDoubleValidator::qt_property( int id, int f, QVariant* v)
+{
+    switch ( id - staticMetaObject()->propertyOffset() ) {
+    case 0: switch( f ) {
+	case 0: setAcceptLocalizedNumbers(v->asBool()); break;
+	case 1: *v = QVariant( this->acceptLocalizedNumbers(), 0 ); break;
+	case 3: case 4: case 5: break;
+	default: return FALSE;
+    } break;
+    default:
+	return QDoubleValidator::qt_property( id, f, v );
+    }
+    return TRUE;
+}
+
+bool Gui::KDoubleValidator::qt_static_property( QObject* , int , int , QVariant* ){ return FALSE; }
+#endif // QT_NO_PROPERTIES

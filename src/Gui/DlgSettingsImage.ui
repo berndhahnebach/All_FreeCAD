@@ -1,0 +1,482 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>Gui::Dialog::DlgSettingsImage</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>Gui::Dialog::DlgSettingsImage</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>463</width>
+            <height>582</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Image settings</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox" row="1" column="0">
+            <property name="name">
+                <cstring>groupBoxProp</cstring>
+            </property>
+            <property name="title">
+                <string>Image properties</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>textLabelImageType</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Image format:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>comboImageType</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabelColor</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Back&amp;ground color:</string>
+                    </property>
+                    <property name="buddy" stdset="0">
+                        <cstring>comboColor</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="1" column="1">
+                    <item>
+                        <property name="text">
+                            <string>Current</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>White</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Black</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Red</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Green</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Blue</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Cyan</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Magenta</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Yellow</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>Gray</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>comboColor</cstring>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="0" column="1">
+                    <item>
+                        <property name="text">
+                            <string>Grayscale Image</string>
+                        </property>
+                    </item>
+                    <item>
+                        <property name="text">
+                            <string>RGB Image</string>
+                        </property>
+                    </item>
+                    <property name="name">
+                        <cstring>comboImageType</cstring>
+                    </property>
+                </widget>
+                <spacer row="2" column="0">
+                    <property name="name">
+                        <cstring>spacer2</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>121</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QCheckBox" row="2" column="1">
+                    <property name="name">
+                        <cstring>checkTransparent</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Transparent background</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="2" column="0">
+            <property name="name">
+                <cstring>groupBoxComment</cstring>
+            </property>
+            <property name="title">
+                <string>Picture comment</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QTextEdit">
+                    <property name="name">
+                        <cstring>textEditComment</cstring>
+                    </property>
+                    <property name="vScrollBarMode">
+                        <enum>Auto</enum>
+                    </property>
+                    <property name="hScrollBarMode">
+                        <enum>Auto</enum>
+                    </property>
+                    <property name="textFormat">
+                        <enum>PlainText</enum>
+                    </property>
+                    <property name="wordWrap">
+                        <enum>NoWrap</enum>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButtonInsertTimeDate</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Insert &amp;datetime</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+D</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButtonInsertMatrix</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Insert &amp;view matrix</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+V</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButtonInsertMIBA</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Insert &amp;MIBA</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+M</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>groupBoxDim</cstring>
+            </property>
+            <property name="title">
+                <string>Image dimensions</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="5">
+                    <property name="name">
+                        <cstring>layout4</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabelWidth</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Width:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>spinWidth</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>spinWidth</cstring>
+                            </property>
+                            <property name="suffix">
+                                <string> Pixel</string>
+                            </property>
+                            <property name="maxValue">
+                                <number>32767</number>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="5">
+                    <property name="name">
+                        <cstring>layout5</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabelHeight</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Height:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>spinHeight</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>spinHeight</cstring>
+                            </property>
+                            <property name="suffix">
+                                <string> Pixel</string>
+                            </property>
+                            <property name="maxValue">
+                                <number>32767</number>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget" row="2" column="0" rowspan="1" colspan="5">
+                    <property name="name">
+                        <cstring>layout6</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabelResolution</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Resolution:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>spinResolution</cstring>
+                            </property>
+                        </widget>
+                        <widget class="Gui::FloatSpinBox">
+                            <property name="name">
+                                <cstring>spinResolution</cstring>
+                            </property>
+                            <property name="suffix">
+                                <string> Pixel/Inch</string>
+                            </property>
+                            <property name="maxValue">
+                                <number>2540</number>
+                            </property>
+                            <property name="minValue">
+                                <number>1</number>
+                            </property>
+                            <property name="value">
+                                <number>72</number>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>textLabel1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Aspect ratio:</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="3" column="1">
+                    <property name="name">
+                        <cstring>pushButtonRatioScreen</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Screen</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+S</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="3" column="2">
+                    <property name="name">
+                        <cstring>pushButtonRatio4x3</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;4:3</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+4</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="3" column="3">
+                    <property name="name">
+                        <cstring>pushButtonRatio16x9</cstring>
+                    </property>
+                    <property name="text">
+                        <string>1&amp;6:9</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+6</string>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="3" column="4">
+                    <property name="name">
+                        <cstring>pushButtonRatio1x1</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;1:1</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+1</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
+</widget>
+<customwidgets>
+</customwidgets>
+<connections>
+    <connection>
+        <sender>pushButtonRatioScreen</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onRatioScreen()</slot>
+    </connection>
+    <connection>
+        <sender>checkTransparent</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>comboColor</receiver>
+        <slot>setDisabled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonInsertMIBA</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onInsertMIBA()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonInsertMatrix</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onInsertViewMatrix()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonInsertTimeDate</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onInsertDateTime()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonRatio4x3</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onRatio4x3()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonRatio16x9</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onRatio16x9()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonRatio1x1</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgSettingsImage</receiver>
+        <slot>onRatio1x1()</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>spinWidth</tabstop>
+    <tabstop>spinHeight</tabstop>
+    <tabstop>spinResolution</tabstop>
+    <tabstop>pushButtonRatioScreen</tabstop>
+    <tabstop>pushButtonRatio4x3</tabstop>
+    <tabstop>pushButtonRatio16x9</tabstop>
+    <tabstop>pushButtonRatio1x1</tabstop>
+    <tabstop>comboImageType</tabstop>
+    <tabstop>comboColor</tabstop>
+    <tabstop>checkTransparent</tabstop>
+    <tabstop>textEditComment</tabstop>
+    <tabstop>pushButtonInsertTimeDate</tabstop>
+    <tabstop>pushButtonInsertMatrix</tabstop>
+    <tabstop>pushButtonInsertMIBA</tabstop>
+</tabstops>
+<slots>
+    <slot access="protected">onRatioScreen()</slot>
+    <slot>onInsertMIBA()</slot>
+    <slot>onInsertViewMatrix()</slot>
+    <slot>onInsertDateTime()</slot>
+    <slot>onSelectedFilter( const QString&amp; )</slot>
+    <slot access="protected">onRatio4x3()</slot>
+    <slot access="protected">onRatio16x9()</slot>
+    <slot access="protected">onRatio1x1()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>Gui/SpinBox.h</includehint>
+</includehints>
+</UI>

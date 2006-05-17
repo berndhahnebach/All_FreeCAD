@@ -1,0 +1,124 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# This is the debhelper compatibility version to use.
+export DH_COMPAT=4
+
+# CFLAGS = -Wall -g
+DEBIAN = $(shell pwd)/debian
+FREECADDIR = $(DEBIAN)/freecad
+
+freecad-stamp:
+	dh_testdir
+
+	#Add here commands to configure the package.
+	sh cvsbuild.sh
+	./configure --prefix=/opt/freecad --with-wildmagic-includes=/home/werner/Projekte/GeometricTools/WildMagic3/Include --with-wildmagic-libs=/home/werner/Projekte/GeometricTools/WildMagic3/Library --with-Qt-lib=qt-mt32
+
+#	# Patch the generated libtool to avoid passing -rpath when linking,
+#	# and to explicitly link libraries against the libraries they
+#	# depend on.
+#	sed < libtool > libtool-2 \
+#	-e 's/^hardcode_libdir_flag_spec.*$$/hardcode_libdir_flag_spec=" -D__LIBTOOL_IS_A_FOOL__ "/' \
+#	-e '/^archive_cmds="/s/"$$/ \\$$deplibs"/'
+#	mv libtool-2 libtool
+#	chmod 755 libtool
+
+	$(MAKE) clean
+	$(MAKE)
+	touch freecad-stamp
+
+build: freecad-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+
+	rm -f freecad-stamp
+	rm -rf $(FREECADDIR)
+
+	# Add here commands to clean up after the build process.
+	# if Makefile exists run distclean
+	if test -f Makefile; then \
+		$(MAKE) distclean; \
+	fi
+
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs
+
+	# Add here commands to install the package into debian/freecad.
+	$(MAKE) DESTDIR=$(FREECADDIR) install
+
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installdirs -a
+	dh_installchangelogs ChangeLog.txt
+	dh_installdocs
+#	dh_installexamples
+	dh_installmenu
+#	dh_installdebconf
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+	dh_installman
+#	dh_install --sourcedir=$(FREECADDIR)
+	install -m777 /usr/local/lib/libpython2.3.so.1.0 $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /usr/local/lib/libxerces-c.so.24.0 $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/qt3/lib/libqt-mt.so.3.2.1 $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/qt3/lib/libqui.so.1.0.0 $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /usr/local/lib/libCoin.so.40.2.1 $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /usr/local/lib/libSoQt.so.20.0.2 $(FREECADDIR)/opt/freecad/lib/
+	dh_link
+#	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+  # Part module
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKernel.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKMath.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKService.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKG2d.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKG3d.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKGeomBase.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKBRep.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKGeomAlgo.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKTopAlgo.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKPrim.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKBO.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKBool.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKShHealing.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKXSBase.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKSTEP.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKFillet.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKOffset.so $(FREECADDIR)/opt/freecad/lib/
+	install -m777 /opt/OCC/Cas5.2/ros/Linux/lib/libTKIGES.so $(FREECADDIR)/opt/freecad/lib/
+	dh_strip
+	dh_compress
+	dh_fixperms
+#	dh_perl
+#	dh_python
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure

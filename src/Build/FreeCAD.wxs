@@ -1,0 +1,93 @@
+<?xml version='1.0'?>
+<!--
+   (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
+                                                                        
+   This file is part of the FreeCAD CAx development system.             
+                                                                        
+   This program is free software; you can redistribute it and/or modify 
+   it under the terms of the GNU Library General Public License (LGPL)  
+   as published by the Free Software Foundation; either version 2 of    
+   the License, or (at your option) any later version.                  
+   for detail see the LICENCE text file.                                
+                                                                        
+   FreeCAD is distributed in the hope that it will be useful,           
+   but WITHOUT ANY WARRANTY; without even the implied warranty of       
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the        
+   GNU Library General Public License for more details.                 
+                                                                        
+   You should have received a copy of the GNU Library General Public    
+   License along with FreeCAD; if not, write to the Free Software       
+   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
+   USA                                                                  
+                                                                        
+   Juergen Riegel 2005                                                 
+-->
+<Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
+   <?include ../Version.wxi ?>
+   <Product Id           ='0C6EC504-2794-4992-BE14-2F57378C1183' 
+            UpgradeCode  ='D898BEFD-CFFA-4163-A624-AB36B2C7A719'
+            Name         ='FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)' Language='1033'
+            Version      ='$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionBuild)' 
+            Manufacturer ='Juergen Riegel (juergen.riegel@web.de)'>
+      <Package  Id='????????-????-????-????-????????????' 
+                Description='FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor) Installer package'
+                Comments='for details about FreeCAD see http://free-cad.sourceforge.net'
+                InstallerVersion='100' 
+                Compressed='yes' />
+ 
+      <Media Id='1' Cabinet='product.cab' EmbedCab='yes' />
+
+      <Property Id='ARPCOMMENTS'>any comments</Property>
+      <Property Id='ARPCONTACT'>Juergen Riegel (juergen.riegel@web.de)</Property>
+      <Property Id='ARPHELPLINK'>http://sourceforge.net/forum/forum.php?forum_id=161659</Property>
+      <Property Id='ARPURLINFOABOUT'>http://free-cad.sourceforge.net/</Property>
+      <Property Id='ARPURLUPDATEINFO'>http://sourceforge.net/project/showfiles.php?group_id=49159</Property>
+      <Property Id='ALLUSERS'>1</Property>
+
+
+ 
+      <Directory Id='TARGETDIR' Name='SourceDir'>
+         <Directory Id='ProgramFilesFolder'  Name='PFiles'>
+            <Directory Id='INSTALLDIR'       Name='FreeCAD$(var.FCVersionMajor).$(var.FCVersionMinor)'>
+              <Directory Id='BinDir'         Name='bin' />
+              <Directory Id='ModDir'         Name='Mod' />
+              <Directory Id='DocDir'         Name='doc' />
+              <Directory Id='LibPackDir'     Name='LibPack'/>
+            </Directory>
+          </Directory>
+          <Directory Id="ProgramMenuFolder">
+            <Directory Id="MenuDir" Name="FC03" LongName="FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)" />
+          </Directory>
+        <Directory Id="DesktopFolder" Name="Desktop" />
+      </Directory>
+      <Feature  Id='Complete' 
+                Title='FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)' 
+                Description='The Base system and standard modules'
+                Display='expand' 
+                Level='1'
+                Absent='disallow' 
+                ConfigurableDirectory='INSTALLDIR'>
+        <ComponentRef Id='Base' />
+        <ComponentRef Id='resOCC' />
+        <ComponentRef Id='PyLibs' />
+        <ComponentRef Id='PyLibsEnc' />
+        <ComponentRef Id='CompModMesh' />
+        <ComponentRef Id='CompModPart' />
+        <ComponentRef Id='CompModPoints' />
+        <Feature Id='FeatModImage' Title='The Image module' Description='Module to handle pictures' Level='1'>
+         <ComponentRef Id='CompModImage' />
+        </Feature>
+        <Feature Id='FeatModRaytracing' Title='The Raytracing module' Description='Module to work with the Populat PovRay raytracer. (Experimental)' Level='1'>
+         <ComponentRef Id='CompModRaytracing' />
+        </Feature>
+        <Feature Id='Documentation' Title='Documentation' Description='The manuals.' Level='1'>
+          <ComponentRef Id='DocComp' />
+        </Feature>
+      </Feature>
+
+      <Icon Id="FreeCADIcon" src="../../bin/FreeCAD.exe" />
+      <Property Id='ARPPRODUCTICON'>FreeCADIcon</Property>
+      <UIRef Id="WixUI" />
+
+   </Product>
+</Wix>

@@ -1,0 +1,485 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNUNG: DIESE ARBEITSBEREICHSDATEI DARF NICHT BEARBEITET ODER GELÖSCHT WERDEN!
+
+###############################################################################
+
+Project: "All"=.\All.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMain
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppPartGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppMeshGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppRaytracingGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppImageGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppPointsGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name App_TEMPLATE_Gui
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "All Cmd Files"=".\All Cmd Files.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name AppPart
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMainCmd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMainPy
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppRaytracing
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppTest
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppImage
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppMesh
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppPoints
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppImage"=.\Mod\Image\App\AppImage.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppImageGui"=.\Mod\Image\Gui\AppImageGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name AppImage
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppMesh"=.\Mod\Mesh\App\AppMesh.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppPart
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppMeshGui"=.\Mod\Mesh\Gui\AppMeshGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name AppMesh
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppPart"=.\Mod\Part\App\AppPart.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppPartGui"=.\MOD\PART\GUI\AppPartGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMain
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppPart
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppPoints"=.\Mod\Points\App\AppPoints.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppPointsGui"=.\Mod\Points\Gui\AppPointsGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name AppPoints
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADMain
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppRaytracing"=.\Mod\Raytracing\App\AppRaytracing.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppPart
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppRaytracingGui"=.\Mod\Raytracing\Gui\AppRaytracingGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name AppRaytracing
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppPart
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "AppTest"=.\Mod\Test\AppTest.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "App_TEMPLATE_"=.\Tools\_TEMPLATE_\App\App_TEMPLATE_.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "App_TEMPLATE_Gui"=.\Tools\_TEMPLATE_\Gui\App_TEMPLATE_Gui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name App_TEMPLATE_
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "FreeCADApp"=.\App\FreeCADDoc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "FreeCADBase"=.\Base\FreeCADBase.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "FreeCADGui"=.\Gui\FreeCADGui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "FreeCADMain"=.\Main\FreeCADMain.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "FreeCADMainCmd"=.\Main\FreeCADMainCmd.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "FreeCADMainPy"=.\Main\FreeCADMainPy.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Install"=.\Build\Install.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name All
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

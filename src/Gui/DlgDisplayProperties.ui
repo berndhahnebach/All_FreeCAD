@@ -1,0 +1,286 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>Gui::Dialog::DlgDisplayProperties</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>Gui::Dialog::DlgDisplayProperties</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>248</width>
+            <height>266</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Display properties</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="title">
+                <string>Viewing mode</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout3</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Visual mode:</string>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>ModeBox</cstring>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout2</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel1_3</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="text">
+                                <string>Plot mode:</string>
+                            </property>
+                        </widget>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>PlotCombo</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>groupBox2</cstring>
+            </property>
+            <property name="title">
+                <string>Material</string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QComboBox">
+                    <property name="name">
+                        <cstring>MaterialCombo</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                </widget>
+                <widget class="Gui::ColorButton">
+                    <property name="name">
+                        <cstring>ColorButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>textLabel1_2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Transparency:</string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>layout1</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QScrollBar">
+                            <property name="name">
+                                <cstring>TransBar</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                        </widget>
+                        <widget class="QSpinBox">
+                            <property name="name">
+                                <cstring>TransSpin</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="maxValue">
+                                <number>100</number>
+                            </property>
+                            <property name="lineStep">
+                                <number>5</number>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>OkButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>OK</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>81</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>CancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>MaterialCombo</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onChangeMaterial(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>ModeBox</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onChangeMode(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>PlotCombo</sender>
+        <signal>activated(const QString&amp;)</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onChangePlot(const QString&amp;)</slot>
+    </connection>
+    <connection>
+        <sender>TransSpin</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>TransBar</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+    <connection>
+        <sender>TransBar</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>TransSpin</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+    <connection>
+        <sender>OkButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onOK()</slot>
+    </connection>
+    <connection>
+        <sender>CancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onCancel()</slot>
+    </connection>
+    <connection>
+        <sender>ColorButton</sender>
+        <signal>changed()</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onColorChange()</slot>
+    </connection>
+    <connection>
+        <sender>TransBar</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onChangeTrans(int)</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>onChangeMaterial(const QString&amp;)</slot>
+    <slot>onChangeMode(const QString&amp;)</slot>
+    <slot>onChangePlot(const QString&amp;)</slot>
+    <slot>onOK(void)</slot>
+    <slot>onColorChange()</slot>
+    <slot>onCancel()</slot>
+    <slot>onChangeTrans(int)</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+<includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
+</includehints>
+</UI>

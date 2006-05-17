@@ -1,0 +1,272 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>Gui::Dialog::DlgTipOfTheDayBase</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>Gui::Dialog::DlgTipOfTheDayBase</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>415</width>
+            <height>270</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Tip of the day</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>layout2</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QCheckBox">
+                    <property name="name">
+                        <cstring>checkShowTips</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Show tips at startup</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+S</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer3</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>40</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pushButtonNext</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Next Tip</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+N</string>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                </widget>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>pushButtonClose</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Close</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+C</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>groupBox1</cstring>
+            </property>
+            <property name="paletteBackgroundColor">
+                <color>
+                    <red>134</red>
+                    <green>132</green>
+                    <blue>127</blue>
+                </color>
+            </property>
+            <property name="frameShape">
+                <enum>WinPanel</enum>
+            </property>
+            <property name="title">
+                <string></string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>0</number>
+                </property>
+                <widget class="QLayoutWidget" row="0" column="1">
+                    <property name="name">
+                        <cstring>layout4</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="spacing">
+                            <number>1</number>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textHeader</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>32767</width>
+                                    <height>50</height>
+                                </size>
+                            </property>
+                            <property name="paletteBackgroundColor">
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                            </property>
+                            <property name="text">
+                                <string>&lt;b&gt;&lt;font face="Times New Roman"&gt;&lt;font size="+3"&gt;Did you know...&lt;/font&gt;&lt;/font&gt;&lt;/b&gt;</string>
+                            </property>
+                            <property name="alignment">
+                                <set>WordBreak|AlignVCenter</set>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textTip</cstring>
+                            </property>
+                            <property name="paletteBackgroundColor">
+                                <color>
+                                    <red>255</red>
+                                    <green>255</green>
+                                    <blue>255</blue>
+                                </color>
+                            </property>
+                            <property name="font">
+                                <font>
+                                    <pointsize>10</pointsize>
+                                </font>
+                            </property>
+                            <property name="text">
+                                <string>Tip of the day</string>
+                            </property>
+                            <property name="alignment">
+                                <set>WordBreak|AlignVCenter</set>
+                            </property>
+                            <property name="indent">
+                                <number>5</number>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QGroupBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>groupBox2</cstring>
+                    </property>
+                    <property name="sizePolicy">
+                        <sizepolicy>
+                            <hsizetype>5</hsizetype>
+                            <vsizetype>5</vsizetype>
+                            <horstretch>0</horstretch>
+                            <verstretch>1</verstretch>
+                        </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                        <size>
+                            <width>50</width>
+                            <height>32767</height>
+                        </size>
+                    </property>
+                    <property name="paletteBackgroundColor">
+                        <color>
+                            <red>134</red>
+                            <green>132</green>
+                            <blue>127</blue>
+                        </color>
+                    </property>
+                    <property name="frameShape">
+                        <enum>NoFrame</enum>
+                    </property>
+                    <property name="title">
+                        <string></string>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>pixmapLightbulb</cstring>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>0</width>
+                                    <height>46</height>
+                                </size>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>40</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="paletteBackgroundColor">
+                                <color>
+                                    <red>134</red>
+                                    <green>132</green>
+                                    <blue>127</blue>
+                                </color>
+                            </property>
+                            <property name="pixmap">
+                                <pixmap>image0</pixmap>
+                            </property>
+                            <property name="scaledContents">
+                                <bool>false</bool>
+                            </property>
+                            <property name="alignment">
+                                <set>AlignBottom|AlignHCenter</set>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
+</widget>
+<images>
+    <image name="image0">
+        <data format="XPM.GZ" length="1124">789c95d2c14ac4301006e07b9f2234b722d9ba8214c447503c0ae2219349d1c32ae87a10f1ddcdcca4e924edc5f4d29f6fff6d32ed61308f0f776638749f677f7e0d26bcf80f33e0d7e9f4fdf47cfbd3f5c76b73753493b9ec2fbade9960eedfdf22dd63bab7232f8a51e29c16454b711aa7ac618913c7996218e9a2e82952537e0c4b94bf7265595a6b745aadf5b4942bb51ef265b79a1020608054c756190111b98dad4256c256a55aba16f7949f9bbaad422ec37ed7cb76fc6ed797d3ee741dd29896f3daf644c8edbce78d32fbd45555a51197675b8c6d3702ca2ba22ac47a5791cecaafd02684cc59a30c2ab9a5512fcc8a51c6c8739e675666e90a878090aced16e6ee8a6557cc2170b7a09a5594d7ab51cf2ab342fd4de69d2bacbee7cc2b562aacb056628d8d3aacb05557e146dd7ff4f7a6fb03cbf0152b</data>
+    </image>
+</images>
+<connections>
+    <connection>
+        <sender>pushButtonClose</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgTipOfTheDayBase</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>pushButtonNext</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgTipOfTheDayBase</receiver>
+        <slot>onNext()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>onNext()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

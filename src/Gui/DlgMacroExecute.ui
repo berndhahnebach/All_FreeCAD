@@ -1,0 +1,346 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>Gui::Dialog::DlgMacroExecute</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>Gui::Dialog::DlgMacroExecute</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>344</width>
+            <height>316</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Execute macro</string>
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QLayoutWidget">
+            <property name="name">
+                <cstring>Layout4</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>0</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLayoutWidget" row="0" column="1">
+                    <property name="name">
+                        <cstring>Layout3</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QPushButton" row="3" column="0">
+                            <property name="name">
+                                <cstring>CreateButton</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>true</bool>
+                            </property>
+                            <property name="text">
+                                <string>Create</string>
+                            </property>
+                        </widget>
+                        <spacer row="2" column="0">
+                            <property name="name">
+                                <cstring>Spacer4</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QPushButton" row="4" column="0">
+                            <property name="name">
+                                <cstring>DeleteButton</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="text">
+                                <string>Delete macro</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton" row="0" column="0">
+                            <property name="name">
+                                <cstring>ExecuteButton</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="text">
+                                <string>Execute</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton" row="5" column="0">
+                            <property name="name">
+                                <cstring>EditButton</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="text">
+                                <string>Edit</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton" row="1" column="0">
+                            <property name="name">
+                                <cstring>CancelButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Cancel</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QGroupBox" row="0" column="0">
+                    <property name="name">
+                        <cstring>MacroNameGroup</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Macro name:</string>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>11</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>LineEditMacroName</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="frameShape">
+                                <enum>LineEditPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
+                            </property>
+                        </widget>
+                        <widget class="QListView">
+                            <column>
+                                <property name="text">
+                                    <string>Macros</string>
+                                </property>
+                                <property name="clickable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="resizable">
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <column>
+                                <property name="text">
+                                    <string>Type</string>
+                                </property>
+                                <property name="clickable">
+                                    <bool>true</bool>
+                                </property>
+                                <property name="resizable">
+                                    <bool>true</bool>
+                                </property>
+                            </column>
+                            <property name="name">
+                                <cstring>MacrosListView</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>true</bool>
+                            </property>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QGroupBox" row="1" column="0">
+                    <property name="name">
+                        <cstring>DestinationGroup</cstring>
+                    </property>
+                    <property name="title">
+                        <string>Macro destination:</string>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>11</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>ComboBoxPath</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>1</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>DestButton</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>4</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="minimumSize">
+                                <size>
+                                    <width>23</width>
+                                    <height>0</height>
+                                </size>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>23</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+                <widget class="QPushButton" row="1" column="1">
+                    <property name="name">
+                        <cstring>DoneButton</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>true</bool>
+                    </property>
+                    <property name="text">
+                        <string>Done</string>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>CancelButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgMacroExecute</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>DestButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgMacroExecute</receiver>
+        <slot>onNewFolder()</slot>
+    </connection>
+    <connection>
+        <sender>CreateButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgMacroExecute</receiver>
+        <slot>onCreate()</slot>
+    </connection>
+    <connection>
+        <sender>DeleteButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgMacroExecute</receiver>
+        <slot>onDelete()</slot>
+    </connection>
+    <connection>
+        <sender>EditButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgMacroExecute</receiver>
+        <slot>onEdit()</slot>
+    </connection>
+    <connection>
+        <sender>DoneButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgMacroExecute</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>ExecuteButton</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgMacroExecute</receiver>
+        <slot>onExecute()</slot>
+    </connection>
+    <connection>
+        <sender>MacrosListView</sender>
+        <signal>doubleClicked(QListViewItem*)</signal>
+        <receiver>Gui::Dialog::DlgMacroExecute</receiver>
+        <slot>onListDoubleClicked(QListViewItem*)</slot>
+    </connection>
+    <connection>
+        <sender>MacrosListView</sender>
+        <signal>selectionChanged(QListViewItem*)</signal>
+        <receiver>Gui::Dialog::DlgMacroExecute</receiver>
+        <slot>onNewListItemPicked(QListViewItem*)</slot>
+    </connection>
+</connections>
+<tabstops>
+    <tabstop>LineEditMacroName</tabstop>
+    <tabstop>MacrosListView</tabstop>
+    <tabstop>ExecuteButton</tabstop>
+    <tabstop>CancelButton</tabstop>
+    <tabstop>CreateButton</tabstop>
+    <tabstop>DeleteButton</tabstop>
+    <tabstop>EditButton</tabstop>
+    <tabstop>ComboBoxPath</tabstop>
+    <tabstop>DestButton</tabstop>
+    <tabstop>DoneButton</tabstop>
+</tabstops>
+<slots>
+    <slot>onCreate()</slot>
+    <slot>onDelete()</slot>
+    <slot>onEdit()</slot>
+    <slot>onExecute()</slot>
+    <slot>onNewFolder()</slot>
+    <slot access="protected">onNewListItemPicked(QListViewItem*)</slot>
+    <slot access="protected">onListDoubleClicked(QListViewItem*)</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>
