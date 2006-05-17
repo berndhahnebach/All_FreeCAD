@@ -523,8 +523,36 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
           } break;
         default:
           {
+            // Check for normal text
+            if ( ch.isLetter() || ch == '_' )
+            {
+              QString buffer;
+              while ( ch.isLetterOrNumber() || ch == '_' ) {
+                buffer += ch;
+                i++;
+                ch = text.at( i ).latin1();
+              }
+
+              // go back by one char
+              if ( buffer.length() > 0 )
+                i--;
+
+              if ( d->keywords.contains( buffer ) != 0 ) {
+                if ( buffer == "def")
+                  endStateOfLastPara = DefineName;
+                else if ( buffer == "class")
+                  endStateOfLastPara = ClassName;
+
+                QFont font = textEdit()->currentFont();
+                font.setBold( true );
+                setFormat( i - buffer.length()+1, buffer.length(),font,d->cKeyword);
+              }
+              else {
+                setFormat( i - buffer.length()+1, buffer.length(),d->cNormalText);
+              }
+            }
             // this is the beginning of a number
-            if ( ch.isDigit() && !prev.isLetter() && buffer.isEmpty() )
+            else if ( ch.isDigit() )
             {
               setFormat( i, 1, d->cNumber);
               endStateOfLastPara=Digit;
@@ -533,42 +561,6 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
             else if ( ch.isSymbol() || ch.isPunct() )
             {
               setFormat( i, 1, d->cOperator);
-              buffer = QString::null;
-            }
-            // normal text
-            else
-            {
-              if ( !ch.isLetterOrNumber() )
-                buffer = QString::null;
-              buffer += ch;
-
-              // search for keywords
-              if ( buffer.length() > 0 )
-              {
-                bool keywordFound=false;
-                for ( QStringList::Iterator it = d->keywords.begin(); it != d->keywords.end(); ++it ) 
-                {
-                  if ( buffer == *it)
-                  {
-                    if ( buffer == "def")
-                      endStateOfLastPara = DefineName;
-                    else if ( buffer == "class")
-                      endStateOfLastPara = ClassName;
-
-                    QFont font = textEdit()->currentFont();
-                    font.setBold( true );
-                    setFormat( i - buffer.length()+1, buffer.length(),font,d->cKeyword);
-                    keywordFound = true;
-                    break;
-                  }
-                }
-
-                // no keywords matches
-                if (!keywordFound)
-                {
-                  setFormat( i - buffer.length()+1, buffer.length(),d->cNormalText);
-                }
-              }
             }
           }
         }
@@ -608,7 +600,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
       } break;
     case DefineName:
       {
-        if ( ch.isLetterOrNumber()/* || ch == ' '*/ )
+        if ( ch.isLetterOrNumber() || ch == ' ' )
         {
           setFormat( i, 1, d->cDefineName);
         }
@@ -622,7 +614,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
       } break;
     case ClassName:
       {
-        if ( ch.isLetterOrNumber()/* || ch == ' '*/ )
+        if ( ch.isLetterOrNumber() || ch == ' ' )
         {
           setFormat( i, 1, d->cClassName);
         }
