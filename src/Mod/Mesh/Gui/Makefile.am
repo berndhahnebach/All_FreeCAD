@@ -7,13 +7,18 @@ lib_LTLIBRARIES=libMeshGui.la MeshGui.la
 BUILT_SOURCES=\
 		DlgEvaluateMesh.cpp \
 		DlgEvaluateMesh.h \
+		DlgRegularSolid.cpp \
+		DlgRegularSolid.h \
 		moc_DlgEvaluateMesh.cpp \
-		moc_DlgEvaluateMeshImp.cpp
+		moc_DlgEvaluateMeshImp.cpp \
+		moc_DlgRegularSolid.cpp 
 
 libMeshGui_la_SOURCES=\
 		Command.cpp \
 		DlgEvaluateMeshImp.cpp \
 		DlgEvaluateMeshImp.h \
+		DlgRegularSolidImp.cpp \
+		DlgRegularSolidImp.h \
 		Doxygen.cpp \
 		PreCompiled.cpp \
 		PreCompiled.h \
@@ -87,5 +92,6 @@ EXTRA_DIST = \
 		AppMeshGui.dsp \
 		AppMeshGui.vcproj \
 		DlgEvaluateMesh.ui \
+		DlgRegularSolid.ui \
 		Libs.cpp \
 		images.h
