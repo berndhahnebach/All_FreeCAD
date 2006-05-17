@@ -18,8 +18,8 @@
 // ============================================================================
 //
 // File          : gzstream.C
-// Revision      : $Revision$
-// Revision_date : $Date$
+// Revision      : $Revision: 2.6 $
+// Revision_date : $Date: 2006/04/20 09:14:54 $
 // Author(s)     : Deepak Bandyopadhyay, Lutz Kettner
 // 
 // Standard streambuf implementation following Nicolai Josuttis, "The 

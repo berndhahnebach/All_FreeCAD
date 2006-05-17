@@ -15,7 +15,7 @@ dnl @synopsis AC_CXX_HAVE_STL
 dnl
 dnl If the compiler supports the Standard Template Library, define HAVE_STL.
 dnl
-dnl @version $Id$
+dnl @version $Id: aclocal.m4,v 2.6 2006/02/26 15:12:32 wmayer Exp $
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_HAVE_STL],
@@ -42,7 +42,7 @@ dnl
 dnl If the compiler supports ISO C++ standard library (i.e., can include the
 dnl files iostream, map, iomanip and cmath}), define HAVE_STD.
 dnl
-dnl @version $Id$
+dnl @version $Id: aclocal.m4,v 2.6 2006/02/26 15:12:32 wmayer Exp $
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_HAVE_STD],
@@ -70,7 +70,7 @@ dnl
 dnl If the compiler can prevent names clashes using namespaces, define
 dnl HAVE_NAMESPACES.
 dnl
-dnl @version $Id$
+dnl @version $Id: aclocal.m4,v 2.6 2006/02/26 15:12:32 wmayer Exp $
 dnl @author Luc Maisonobe
 dnl
 AC_DEFUN([AC_CXX_NAMESPACES],

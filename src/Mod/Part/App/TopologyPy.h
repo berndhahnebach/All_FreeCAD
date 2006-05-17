@@ -1,8 +1,8 @@
 /** \file FileTemplate.h
  *  \brief FileTemplate example header
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author $Author: wmayer $
+ *  \version $Revision: 2.2 $
+ *  \date    $Date: 2006/01/13 16:59:41 $
  *  Here a example of a file layout for FreeCAD.
  *  @see Parameter.cpp
  */

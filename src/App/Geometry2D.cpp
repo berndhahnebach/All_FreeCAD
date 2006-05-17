@@ -1,7 +1,7 @@
 /** \file Geometry2D.cpp
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author $Author: wmayer $
+ *  \version $Revision: 2.1 $
+ *  \date    $Date: 2006/01/24 14:26:42 $
  */
 
 /***************************************************************************

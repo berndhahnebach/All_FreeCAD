@@ -1,8 +1,8 @@
 /** \file PyExport.cpp
  *  \brief implementation of the python export facility
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author $Author: wmayer $
+ *  \version $Revision: 2.2 $
+ *  \date    $Date: 2006/01/24 14:26:42 $
  */
 
 /***************************************************************************

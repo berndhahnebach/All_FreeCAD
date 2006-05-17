@@ -1,8 +1,8 @@
 /** \file PartDocType.cpp
  *  \brief document type system
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author $Author: jriegel $
+ *  \version $Revision: 2.1 $
+ *  \date    $Date: 2006/01/15 21:09:03 $
  */
 
 /***************************************************************************

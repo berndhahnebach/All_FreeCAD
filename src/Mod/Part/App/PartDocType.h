@@ -1,8 +1,8 @@
 /** \file PartDocType.h
  *  \brief FileTemplate example header
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author $Author: jriegel $
+ *  \version $Revision: 2.0 $
+ *  \date    $Date: 2005/08/09 14:36:29 $
  *  Here a example of a file layout for FreeCAD.
  *  @see Parameter.cpp
  */

@@ -1,8 +1,8 @@
 /** \file Documentation.h
  *  \brief This module handels the retraivel and editing of build in documentation 
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author $Author: jriegel $
+ *  \version $Revision: 2.0 $
+ *  \date    $Date: 2005/08/09 14:35:18 $
  *  Here a example of a file layout for FreeCAD.
  *  @see Parameter.cpp
  */

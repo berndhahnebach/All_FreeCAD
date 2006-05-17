@@ -1,8 +1,8 @@
 /** \file Documentation.cpp
  *  \brief This module handels the retraivel and editing of build in documentation 
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author $Author: wmayer $
+ *  \version $Revision: 2.1 $
+ *  \date    $Date: 2006/02/22 16:42:24 $
  */
 
 /***************************************************************************

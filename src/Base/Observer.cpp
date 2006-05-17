@@ -1,8 +1,8 @@
 /** \file Observer.cpp
  *  \brief Observer facility of FreeCAD
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author $Author: wmayer $
+ *  \version $Revision: 2.2 $
+ *  \date    $Date: 2006/02/22 16:42:24 $
  *  Here the implemetation of the Observer pattern
  *  @see Parameter.h ParameterGrp
  */

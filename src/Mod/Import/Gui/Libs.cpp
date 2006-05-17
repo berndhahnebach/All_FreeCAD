@@ -1,8 +1,8 @@
 /** \file Libs.cpp
  *  \brief Include all needed libs on Windows
- *  \author $Author$
- *  \version $Revision$
- *  \date    $Date$
+ *  \author $Author: jriegel $
+ *  \version $Revision: 2.0 $
+ *  \date    $Date: 2005/08/09 14:36:18 $
  *  Here all the libs get includet by a #pragma dirctive.
  *  Unfortunatly there is nothin comperable on UNIX, so there
  *  you have to use compiler -l staments, which are somwere deep
