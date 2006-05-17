@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file '.\DlgActions.ui'
 **
-** Created: Sa 13. Mai 12:36:00 2006
+** Created: Mi 17. Mai 14:36:14 2006
 **      by: The User Interface Compiler ($Id: qt/main.cpp   3.2.1   edited May 19 14:22 $)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -16,6 +16,7 @@
 #include <qlistview.h>
 #include <qtoolbutton.h>
 #include <qlabel.h>
+#include <Gui/PrefWidgets.h>
 #include <qlineedit.h>
 #include <qcombobox.h>
 #include <qlayout.h>

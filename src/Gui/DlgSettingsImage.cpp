@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file '.\DlgSettingsImage.ui'
 **
-** Created: Sa 13. Mai 12:36:01 2006
+** Created: Mi 17. Mai 14:36:16 2006
 **      by: The User Interface Compiler ($Id: qt/main.cpp   3.2.1   edited May 19 14:22 $)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -17,6 +17,7 @@
 #include <qcheckbox.h>
 #include <qtextedit.h>
 #include <qspinbox.h>
+#include <Gui/PrefWidgets.h>
 #include <qlayout.h>
 #include <qtooltip.h>
 #include <qwhatsthis.h>

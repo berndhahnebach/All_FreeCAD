@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form implementation generated from reading ui file '.\DlgEditor.ui'
 **
-** Created: Sa 13. Mai 12:36:06 2006
+** Created: Mi 17. Mai 14:36:23 2006
 **      by: The User Interface Compiler ($Id: qt/main.cpp   3.2.1   edited May 19 14:22 $)
 **
 ** WARNING! All changes made in this file will be lost!
@@ -15,6 +15,7 @@
 #include <qtextedit.h>
 #include <qlabel.h>
 #include <qcombobox.h>
+#include <Gui/PrefWidgets.h>
 #include <qlistbox.h>
 #include <qbuttongroup.h>
 #include <qlayout.h>

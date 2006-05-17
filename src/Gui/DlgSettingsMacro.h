@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Form interface generated from reading ui file '.\DlgSettingsMacro.ui'
 **
-** Created: Sa 13. Mai 12:36:00 2006
+** Created: Mi 17. Mai 14:36:15 2006
 **      by: The User Interface Compiler ($Id: qt/main.cpp   3.2.1   edited May 19 14:22 $)
 **
 ** WARNING! All changes made in this file will be lost!
