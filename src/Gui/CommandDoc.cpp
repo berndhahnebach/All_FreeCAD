@@ -489,7 +489,7 @@ StdCmdRefresh::StdCmdRefresh()
 void StdCmdRefresh::activated(int iMsg)
 {
   openCommand("Refresh active document");
-  doCommand(Doc,"d=App.activeDocument().recompute()");
+  doCommand(Doc,"App.activeDocument().recompute()");
   commitCommand(); 
 }
 
