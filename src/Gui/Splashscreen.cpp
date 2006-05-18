@@ -23,7 +23,6 @@
 
 #include "PreCompiled.h"
 
-#include "../Version.h"
 #ifndef _PreComp_
 # include <qlabel.h>
 # include <qlayout.h>
@@ -197,6 +196,10 @@ void AboutDialog::languageChange()
   QString exeName = App::Application::Config()["ExeName"].c_str();
   QString banner  = App::Application::Config()["ConsoleBanner"].c_str();
   banner = banner.left( banner.find('\n') );
+  QString major  = App::Application::Config()["MajorVersion"].c_str();
+  QString minor  = App::Application::Config()["MinorVersion"].c_str();
+  QString build  = App::Application::Config()["BuildVersion"].c_str();
+  QString disda  = App::Application::Config()["DisDaVersion"].c_str();
 
   pushButton1->setText( tr( "&Ok" ) );
   pushButton1->setAccel( QKeySequence( tr( "Alt+O" ) ) );
@@ -227,9 +230,8 @@ void AboutDialog::languageChange()
                            "</td>"
                            "</tr>"
                            "</table>"
-                           "</body></html>").arg(exeName).arg(banner).arg(FCVersionMajor).arg(FCVersionMinor).arg(FCVersionBuild).arg(FCVersionDisDa);
+                           "</body></html>").arg(exeName).arg(banner).arg(major).arg(minor).arg(build).arg(disda);
   textLabel1->setText( SplasherText );
-
 }
 
 #include "moc_Splashscreen.cpp"
