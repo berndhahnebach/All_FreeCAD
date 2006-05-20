@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADGui"
-	ProjectGUID="{0F34A895-9C25-4435-95D0-D79F770F4A24}"
+	ProjectGUID="{D9F1087B-48DE-4D55-AE68-D25275193F2F}"
 	>
 	<Platforms>
 		<Platform
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy     /y     /f     Debug\FreeCADGuiD.dll     ..\..\bin&#x0D;&#x0A;xcopy     /y     /f     Debug\FreeCADGuiD.lib     ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy      /y      /f      Debug\FreeCADGuiD.dll      ..\..\bin&#x0D;&#x0A;xcopy      /y      /f      Debug\FreeCADGuiD.lib      ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -211,7 +211,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy     /y     /f     Release\FreeCADGui.dll     ..\..\bin\&#x0D;&#x0A;xcopy     /y     /f     Release\FreeCADGui.lib     ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy      /y      /f      Release\FreeCADGui.dll      ..\..\bin\&#x0D;&#x0A;xcopy      /y      /f      Release\FreeCADGui.lib      ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -3803,6 +3803,32 @@
 			</File>
 			<File
 				RelativePath="ViewProvider.h"
+				>
+			</File>
+			<File
+				RelativePath="ViewProviderDocumentObject.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProviderDocumentObject.h"
 				>
 			</File>
 			<File
