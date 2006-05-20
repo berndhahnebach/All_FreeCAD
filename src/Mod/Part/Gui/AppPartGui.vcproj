@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPartGui"
-	ProjectGUID="{A0DF71E1-CB5D-4A28-B734-FE8806BA2FB4}"
+	ProjectGUID="{911F1CF5-DC62-408D-B508-3E18A5233D8E}"
 	>
 	<Platforms>
 		<Platform

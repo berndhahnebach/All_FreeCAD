@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMeshGui"
-	ProjectGUID="{6EA8F6B4-F5B5-44A3-9087-75CCCDC130A9}"
+	ProjectGUID="{3A6155E3-7383-4D3B-8B64-C1ED119384EF}"
 	>
 	<Platforms>
 		<Platform
@@ -110,7 +110,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy      /y      /f      Release\MeshGui.pyd      ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy      /y      /f      ..\InitGui.py      ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy      /y      /f      Release\MeshGui.lib      ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
+				CommandLine="xcopy       /y       /f       Release\MeshGui.pyd       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy       /y       /f       ..\InitGui.py       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy       /y       /f       Release\MeshGui.lib       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -212,7 +212,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy      /y      /f      Debug\MeshGui_d.pyd      ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy      /y      /f      ..\InitGui.py      ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy      /y      /f      Debug\MeshGui_d.lib      ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
+				CommandLine="xcopy       /y       /f       Debug\MeshGui_d.pyd       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy       /y       /f       ..\InitGui.py       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy       /y       /f       Debug\MeshGui_d.lib       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -291,6 +291,56 @@
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DlgRegularSolid.ui"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DlgRegularSolidImp.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DlgRegularSolidImp.h"
+				>
 			</File>
 		</Filter>
 		<File
