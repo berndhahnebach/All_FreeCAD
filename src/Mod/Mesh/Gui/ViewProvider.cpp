@@ -297,6 +297,7 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
     flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
     flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
     pcFlatRoot->addChild(flathints);
+    pcFlatWireRoot->addChild(flathints);
   }
 
   pcFlatRoot->addChild(pcFlatStyle);
