@@ -27,6 +27,7 @@
 #include <set>
 #include <vector>
 #include <Inventor/SbLinear.h>
+#include <qmap.h>
 
 #include "DlgDisplayProperties.h"
 #include <App/Material.h>
@@ -73,6 +74,7 @@ protected:
   Gui::Command* _pcCmd;
   std::vector<App::DocumentObject*> Sel;
   std::vector<ViewProvider*> Provider;
+  QMap<QString, App::Material::MaterialType> Materials;
 
   bool bModeChange;
   std::string sModeChangeName;

@@ -905,7 +905,7 @@ void MessageBoxObserver::Warning(const char *m)
     Base::Sequencer().pause();
   else if ( cursor )
     QApplication::setOverrideCursor(Qt::ArrowCursor);
-  QMessageBox::warning( _pcAppWnd, QObject::tr("Warning"),m);
+  QMessageBox::warning( qApp->activeWindow(), QObject::tr("Warning"),m);
   if ( ok )
     Base::Sequencer().resume();
   else if ( cursor )
@@ -930,7 +930,7 @@ void MessageBoxObserver::Error  (const char *m)
     ProgressBar::instance()->pause();
   else if ( cursor )
     QApplication::setOverrideCursor(Qt::ArrowCursor);
-  QMessageBox::critical( _pcAppWnd, QObject::tr("Critical Error"),m);
+  QMessageBox::critical( qApp->activeWindow(), QObject::tr("Critical Error"),m);
   if ( ok )
     ProgressBar::instance()->resume();
   else if ( cursor )

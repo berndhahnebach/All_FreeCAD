@@ -29,6 +29,7 @@
 # include <qfiledialog.h>
 # include <qlineedit.h>
 # include <qspinbox.h>
+# include <qstringlist.h>
 #endif
 
 #include "DlgDisplayPropertiesImp.h"
@@ -42,6 +43,7 @@
 #include "ViewProvider.h"
 #include "WaitCursor.h"
 #include "SpinBox.h"
+#include "ViewProviderDocumentObject.h"
 
 #include <App/Application.h>
 #include <App/Feature.h>
@@ -190,6 +192,30 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   bLineWidthChange = false;
   bColorChange = false;
 
+  Materials["Brass"]         = App::Material::BRASS;
+  Materials["Bronze"]        = App::Material::BRONZE;
+  Materials["Copper"]        = App::Material::COPPER;
+  Materials["Gold"]          = App::Material::GOLD;
+  Materials["Pewter"]        = App::Material::PEWTER;
+  Materials["Plaster"]       = App::Material::PLASTER;
+  Materials["Plastic"]       = App::Material::PLASTIC;
+  Materials["Silver"]        = App::Material::SILVER;
+  Materials["Steel"]         = App::Material::STEEL;
+  Materials["Stone"]         = App::Material::STONE;
+  Materials["Shiny plastic"] = App::Material::SHINY_PLASTIC;
+  Materials["Satin"]         = App::Material::SATIN;
+  Materials["Metalized"]     = App::Material::METALIZED;
+  Materials["Neon GNC"]      = App::Material::NEON_GNC;
+  Materials["Chrome"]        = App::Material::CHROME;
+  Materials["Aluminium"]     = App::Material::ALUMINIUM;
+  Materials["Obsidian"]      = App::Material::OBSIDIAN;
+  Materials["Neon PHC"]      = App::Material::NEON_PHC;
+  Materials["Jade"]          = App::Material::JADE;
+
+  
+  QStringList material = Materials.keys();
+  material.sort();
+  MaterialCombo->insertStringList(material);
 }
 
 /** 
@@ -200,10 +226,20 @@ DlgDisplayPropertiesImp::~DlgDisplayPropertiesImp()
   // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgDisplayPropertiesImp::onChangeMaterial(const QString&s)
+void DlgDisplayPropertiesImp::onChangeMaterial(const QString& material)
 {
-  Base::Console().Log("Material = %s\n",s.latin1());
+  App::Material::MaterialType type = Materials[material];
+  App::Material mat(type);
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
+  {
+    if ( (*It)->getTypeId().isDerivedFrom( ViewProviderDocumentObject::getClassTypeId() ) ) {
+      ViewProviderDocumentObject* vp = (ViewProviderDocumentObject*)(*It);
+      vp->getObject()->setSolidMaterial(mat);
+      vp->setMatFromObject();
+    }
+  }
 
+  _pcCmd->getActiveGuiDocument()->onUpdate();
 }
 
 void DlgDisplayPropertiesImp::onChangeMode(const QString&s)

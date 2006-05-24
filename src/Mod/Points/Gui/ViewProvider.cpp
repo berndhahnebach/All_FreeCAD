@@ -218,7 +218,12 @@ void ViewProviderPoints::setMode(const char* ModeName)
       Base::Type t = it->second->getTypeId();
       if ( t==Points::PropertyNormalList::getClassTypeId() )
       {
-        setVertexNormalMode((Points::PropertyNormalList*)it->second);
+        Points::PropertyNormalList* normals = (Points::PropertyNormalList*)it->second;
+        if ( pcPointsCoord->point.getNum() != normals->getSize() ) {
+          Base::Console().Error("No normals defined");
+          return;
+        }
+        setVertexNormalMode(normals);
         setDisplayMode("Shaded");
         break;
       }
