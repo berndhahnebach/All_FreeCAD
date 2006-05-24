@@ -26,6 +26,7 @@
 
 #include <set>
 #include <vector>
+#include <Inventor/SbLinear.h>
 
 #include "DlgDisplayProperties.h"
 #include <App/Material.h>
@@ -56,13 +57,17 @@ public:
   ~DlgDisplayPropertiesImp();
 
 public slots:
-    virtual void onChangeMaterial(const QString&);
-    virtual void onChangeMode(const QString&);
-    virtual void onChangePlot(const QString&);
-    virtual void onOK(void);
-    virtual void onColorChange();
-    virtual void onCancel();
-    virtual void onChangeTrans(int);
+  virtual void onChangeMaterial(const QString&);
+  virtual void onChangeMode(const QString&);
+  virtual void onChangePlot(const QString&);
+  virtual void onColorChange();
+  virtual void onChangeTrans(int);
+  virtual void onChangePointSize(double);
+  virtual void onChangeLineWidth(double);
+
+protected:
+  virtual void accept();
+  virtual void reject();
 
 protected:
   Gui::Command* _pcCmd;
@@ -74,6 +79,16 @@ protected:
 
   bool bTranspChange;
   float fTranspChange;
+
+  bool bPointSizeChange;
+  float fPointSizeChange;
+  float fPointSizeGranularity;
+  SbVec2f pointSizeRange;
+  
+  bool bLineWidthChange;
+  float fLineWidthChange;
+  float fLineWidthGranularity;
+  SbVec2f lineWidthRange;
 
   bool bColorChange;
   App::Color cColorChange;

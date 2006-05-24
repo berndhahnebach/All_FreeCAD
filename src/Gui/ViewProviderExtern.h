@@ -63,6 +63,10 @@ public:
   virtual void setTransparency(float);
   /// Set the color
   virtual void setColor(const App::Color &c);
+  /// Set the point size
+  virtual void setPointSize(float);
+  /// Set the line width
+  virtual void setLineWidth(float);
 
   void adjustDocumentName(const char* docname);
 

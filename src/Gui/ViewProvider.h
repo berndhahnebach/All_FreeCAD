@@ -131,9 +131,12 @@ public:
   //@{
   /// Set the transparency
   virtual void setTransparency(float)=0;
-
   /// Set the color
   virtual void setColor(const App::Color &c)=0;
+  /// Set the point size
+  virtual void setPointSize(float)=0;
+  /// Set the line width
+  virtual void setLineWidth(float)=0;
 
   /// set the viewing transformation of the provider
   virtual void setTransformation(const Base::Matrix4D &rcMatrix);
