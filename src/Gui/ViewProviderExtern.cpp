@@ -142,5 +142,11 @@ void ViewProviderExtern::setColor(const App::Color &c)
   
 }
 
+void ViewProviderExtern::setPointSize(float)
+{
+}
 
+void ViewProviderExtern::setLineWidth(float)
+{
+}
 

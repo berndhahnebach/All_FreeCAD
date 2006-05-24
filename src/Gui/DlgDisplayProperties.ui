@@ -8,18 +8,18 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>248</width>
-            <height>266</height>
+            <width>296</width>
+            <height>374</height>
         </rect>
     </property>
     <property name="caption">
         <string>Display properties</string>
     </property>
-    <vbox>
+    <grid>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QGroupBox">
+        <widget class="QGroupBox" row="0" column="0">
             <property name="name">
                 <cstring>groupBox1</cstring>
             </property>
@@ -43,7 +43,7 @@
                                 <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Visual mode:</string>
+                                <string>Display mode:</string>
                             </property>
                         </widget>
                         <widget class="QComboBox">
@@ -84,18 +84,61 @@
                 </widget>
             </vbox>
         </widget>
-        <widget class="QGroupBox">
+        <widget class="QLayoutWidget" row="2" column="0">
+            <property name="name">
+                <cstring>layout4</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>OkButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>OK</string>
+                    </property>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>spacer1</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>81</width>
+                            <height>21</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>CancelButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Cancel</string>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+        <widget class="QGroupBox" row="1" column="0">
             <property name="name">
                 <cstring>groupBox2</cstring>
             </property>
             <property name="title">
-                <string>Material</string>
+                <string>Display</string>
             </property>
-            <vbox>
+            <grid>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QComboBox">
+                <widget class="QComboBox" row="0" column="0">
                     <property name="name">
                         <cstring>MaterialCombo</cstring>
                     </property>
@@ -103,7 +146,15 @@
                         <bool>false</bool>
                     </property>
                 </widget>
-                <widget class="Gui::ColorButton">
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>textLabel1_4</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Color:</string>
+                    </property>
+                </widget>
+                <widget class="Gui::ColorButton" row="2" column="0">
                     <property name="name">
                         <cstring>ColorButton</cstring>
                     </property>
@@ -111,15 +162,7 @@
                         <string></string>
                     </property>
                 </widget>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Transparency:</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
+                <widget class="QLayoutWidget" row="6" column="0">
                     <property name="name">
                         <cstring>layout1</cstring>
                     </property>
@@ -167,53 +210,106 @@
                         </widget>
                     </hbox>
                 </widget>
-            </vbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>layout4</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
+                <widget class="QLabel" row="5" column="0">
                     <property name="name">
-                        <cstring>OkButton</cstring>
+                        <cstring>textLabel1_2</cstring>
                     </property>
                     <property name="text">
-                        <string>OK</string>
+                        <string>Transparency:</string>
                     </property>
                 </widget>
-                <spacer>
+                <widget class="QLayoutWidget" row="3" column="0">
                     <property name="name">
-                        <cstring>spacer1</cstring>
+                        <cstring>layout9</cstring>
                     </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>81</width>
-                            <height>21</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>CancelButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Point size:</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer2</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>71</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="Gui::FloatSpinBox">
+                            <property name="name">
+                                <cstring>pointSizeSpin</cstring>
+                            </property>
+                            <property name="precision">
+                                <number>2</number>
+                            </property>
+                        </widget>
+                    </hbox>
                 </widget>
-            </hbox>
+                <widget class="QLayoutWidget" row="4" column="0">
+                    <property name="name">
+                        <cstring>layout10</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>textLabel3</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Line width:</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>spacer3</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>71</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="Gui::FloatSpinBox">
+                            <property name="name">
+                                <cstring>lineWidthSpin</cstring>
+                            </property>
+                            <property name="precision">
+                                <number>2</number>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </grid>
         </widget>
-    </vbox>
+    </grid>
 </widget>
+<customwidgets>
+</customwidgets>
 <connections>
     <connection>
         <sender>MaterialCombo</sender>
@@ -249,13 +345,13 @@
         <sender>OkButton</sender>
         <signal>clicked()</signal>
         <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
-        <slot>onOK()</slot>
+        <slot>accept()</slot>
     </connection>
     <connection>
         <sender>CancelButton</sender>
         <signal>clicked()</signal>
         <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
-        <slot>onCancel()</slot>
+        <slot>reject()</slot>
     </connection>
     <connection>
         <sender>ColorButton</sender>
@@ -269,18 +365,32 @@
         <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
         <slot>onChangeTrans(int)</slot>
     </connection>
+    <connection>
+        <sender>pointSizeSpin</sender>
+        <signal>valueChanged(double)</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onChangePointSize(double)</slot>
+    </connection>
+    <connection>
+        <sender>lineWidthSpin</sender>
+        <signal>valueChanged(double)</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onChangeLineWidth(double)</slot>
+    </connection>
 </connections>
 <slots>
     <slot>onChangeMaterial(const QString&amp;)</slot>
     <slot>onChangeMode(const QString&amp;)</slot>
     <slot>onChangePlot(const QString&amp;)</slot>
-    <slot>onOK(void)</slot>
     <slot>onColorChange()</slot>
-    <slot>onCancel()</slot>
     <slot>onChangeTrans(int)</slot>
+    <slot>onChangePointSize(double)</slot>
+    <slot>onChangeLineWidth(double)</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/Widgets.h</includehint>
+    <includehint>Gui/SpinBox.h</includehint>
+    <includehint>Gui/SpinBox.h</includehint>
 </includehints>
 </UI>

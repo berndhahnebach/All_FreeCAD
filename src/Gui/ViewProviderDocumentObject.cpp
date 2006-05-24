@@ -319,6 +319,16 @@ void ViewProviderDocumentObject::setColor(const App::Color &c)
   pcSolidMaterial->diffuseColor.setValue(c.r,c.g,c.b);
 }
 
+void ViewProviderDocumentObject::setPointSize(float val)
+{
+  pcPointStyle->pointSize.setValue( val );
+}
+
+void ViewProviderDocumentObject::setLineWidth(float val)
+{
+  pcLineStyle->lineWidth.setValue( val );
+}
+
 //===========================================================================
 // FeatureFactorySingleton - Factory for Features
 //===========================================================================

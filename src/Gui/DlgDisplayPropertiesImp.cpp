@@ -32,6 +32,8 @@
 #endif
 
 #include "DlgDisplayPropertiesImp.h"
+#include "View3DInventorViewer.h"
+#include "View3DInventor.h"
 #include "Command.h"
 #include "Application.h"
 #include "Widgets.h"
@@ -39,6 +41,7 @@
 #include "Document.h"
 #include "ViewProvider.h"
 #include "WaitCursor.h"
+#include "SpinBox.h"
 
 #include <App/Application.h>
 #include <App/Feature.h>
@@ -71,8 +74,16 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   bool bSameTransp= true;
   float fTransp=0.0f;
 
+  bool bSamePointSize= true;
+  float fPointSize=0.0f;
+
+  bool bSameLineWidth= true;
+  float fLineWidth=0.0f;
+
   bool bSameColor= true;
   App::Color cColor;
+
+  bool bViewerLimits=false;
 
   for(vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
@@ -98,10 +109,33 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
           bSameMode = bSameTransp;
 
       if(It==Sel.begin())
+        fPointSize = (*It)->getPointSize();
+      else
+        if(fPointSize != (*It)->getPointSize())
+          bSameMode = bSamePointSize;
+
+      if(It==Sel.begin())
+        fLineWidth = (*It)->getLineSize();
+      else
+        if(fLineWidth != (*It)->getLineSize())
+          bSameMode = bSameLineWidth;
+
+      if(It==Sel.begin())
         cColor = (*It)->getColor();
       else
         if(cColor != (*It)->getColor())
           bSameColor = false;
+
+      if ( !bViewerLimits ) {
+        View3DInventor* activeView = dynamic_cast<View3DInventor*>(pcCmd->getActiveGuiDocument()->getActiveView());
+        if (activeView)
+        {
+          View3DInventorViewer* viewer = activeView->getViewer();
+          viewer->getPointSizeLimits(pointSizeRange,fPointSizeGranularity);
+          viewer->getLineWidthLimits(lineWidthRange,fLineWidthGranularity);
+          bViewerLimits = true;
+        }
+      }
 
 
       Provider.push_back(pcProv);
@@ -130,6 +164,20 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
     TransSpin->setValue((int) (fTransp * 100.0));
   }
 
+  if(bSamePointSize){
+    pointSizeSpin->setMaxValue(pointSizeRange[1]);
+    pointSizeSpin->setMinValue(pointSizeRange[0]);
+    pointSizeSpin->setLineStep(fPointSizeGranularity);
+    pointSizeSpin->setValue(fPointSize);
+  }
+
+  if(bSameLineWidth){
+    lineWidthSpin->setMaxValue(lineWidthRange[1]);
+    lineWidthSpin->setMinValue(lineWidthRange[0]);
+    lineWidthSpin->setLineStep(fLineWidthGranularity);
+    lineWidthSpin->setValue(fLineWidth);
+  }
+
   if(bSameColor){
     ColorButton->setColor(QColor((int)(255.0f*cColor.r),(int)(255.0f*cColor.g),(int)(255.0f*cColor.b)));
   }else{
@@ -138,6 +186,8 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
 
   bModeChange = false;
   bTranspChange = false;
+  bPointSizeChange = false;
+  bLineWidthChange = false;
   bColorChange = false;
 
 }
@@ -155,6 +205,7 @@ void DlgDisplayPropertiesImp::onChangeMaterial(const QString&s)
   Base::Console().Log("Material = %s\n",s.latin1());
 
 }
+
 void DlgDisplayPropertiesImp::onChangeMode(const QString&s)
 {
   Gui::WaitCursor wc;
@@ -179,7 +230,7 @@ void DlgDisplayPropertiesImp::onChangePlot(const QString&s)
   Base::Console().Log("Plot = %s\n",s.latin1());
 }
 
-void DlgDisplayPropertiesImp::onOK(void)
+void DlgDisplayPropertiesImp::accept()
 {
 
   if(bModeChange)
@@ -204,6 +255,28 @@ void DlgDisplayPropertiesImp::onOK(void)
     }
   }
 
+  if(bPointSizeChange)
+  {
+    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+    {
+      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
+      {
+        _pcCmd->doCommand(Command::Doc,"App.document().%s.pointSize = %f",(*It)->name.getValue(),fPointSizeChange);
+      }
+    }
+  }
+
+  if(bLineWidthChange)
+  {
+    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+    {
+      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
+      {
+        _pcCmd->doCommand(Command::Doc,"App.document().%s.lineSize = %f",(*It)->name.getValue(),fLineWidthChange);
+      }
+    }
+  }
+
   if(bColorChange)
   {
     for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
@@ -215,7 +288,7 @@ void DlgDisplayPropertiesImp::onOK(void)
     }
   }
 
-  accept();
+  DlgDisplayProperties::accept();
 }
 
 void DlgDisplayPropertiesImp::onColorChange()
@@ -235,7 +308,7 @@ void DlgDisplayPropertiesImp::onColorChange()
 
 }
 
-void DlgDisplayPropertiesImp::onCancel()
+void DlgDisplayPropertiesImp::reject()
 {
   for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
@@ -247,7 +320,7 @@ void DlgDisplayPropertiesImp::onCancel()
     }
   }
 
-  reject();
+  DlgDisplayProperties::reject();
 }
 
 void DlgDisplayPropertiesImp::onChangeTrans(int i)
@@ -257,6 +330,28 @@ void DlgDisplayPropertiesImp::onChangeTrans(int i)
 
   bTranspChange = true;
   fTranspChange = i/100.0;
+
+  _pcCmd->getActiveGuiDocument()->onUpdate();
+}
+
+void DlgDisplayPropertiesImp::onChangePointSize(double pointsize)
+{
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
+    (*It)->setPointSize( (float)pointsize ); 
+
+  bPointSizeChange = true;
+  fPointSizeChange = (float)pointsize;
+
+  _pcCmd->getActiveGuiDocument()->onUpdate();
+}
+
+void DlgDisplayPropertiesImp::onChangeLineWidth(double linewidth)
+{
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
+    (*It)->setLineWidth( linewidth ); 
+
+  bLineWidthChange = true;
+  fLineWidthChange = (float)linewidth;
 
   _pcCmd->getActiveGuiDocument()->onUpdate();
 }

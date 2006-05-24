@@ -206,10 +206,10 @@ StdCmdSetMaterial::StdCmdSetMaterial()
   :Command("Std_SetMaterial")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Material");
-  sToolTipText  = QT_TR_NOOP("Set the material properties of the selected object");
-  sWhatsThis    = QT_TR_NOOP("Set the material properties of the selected object");
-  sStatusTip    = QT_TR_NOOP("Set the material properties of the selected object");
+  sMenuText     = QT_TR_NOOP("Display properties...");
+  sToolTipText  = QT_TR_NOOP("Sets the display properties of the selected object");
+  sWhatsThis    = QT_TR_NOOP("Sets the display properties of the selected object");
+  sStatusTip    = QT_TR_NOOP("Sets the display properties of the selected object");
   sPixmap       = "Std_Tool1";
   iAccel        = Qt::CTRL+Qt::Key_D;
 }

@@ -411,23 +411,35 @@
         <name>Gui::Dialog::DlgDisplayProperties</name>
         <message>
             <source>Display properties</source>
-            <translation>Ansichteigenschaften</translation>
+            <translation>Anzeigeeigenschaften</translation>
         </message>
         <message>
             <source>Viewing mode</source>
             <translation>Anzeigemodus</translation>
         </message>
         <message>
-            <source>Visual mode:</source>
-            <translation>Visualisierungsmodus:</translation>
+            <source>Display mode:</source>
+            <translation>Anzeigemodus:</translation>
         </message>
         <message>
             <source>Plot mode:</source>
             <translation>Plotmodus:</translation>
         </message>
         <message>
-            <source>Material</source>
-            <translation>Material</translation>
+            <source>Display</source>
+            <translation>Anzeige</translation>
+        </message>
+        <message>
+            <source>Color</source>
+            <translation>Farbe</translation>
+        </message>
+        <message>
+            <source>Point size:</source>
+            <translation>Punktgröße:</translation>
+        </message>
+        <message>
+            <source>Line width:</source>
+            <translation>Linienstärke:</translation>
         </message>
         <message>
             <source>Transparency:</source>
@@ -2322,12 +2334,12 @@ Wollen Sie wirklich fortfahren?</translation>
             <translation>Standardansicht</translation>
         </message>
         <message>
-            <source>Material</source>
-            <translation>Material</translation>
+            <source>Display properties...</source>
+            <translation>Anzeigeeigenschaften...</translation>
         </message>
         <message>
-            <source>Set the material properties of the selected object</source>
-            <translation>Setzen der Materialeigenschaften des ausgewählten Objektes</translation>
+            <source>Sets the display properties of the selected object</source>
+            <translation>Setzen der Anzeigeeigenschaften des ausgewählten Objektes</translation>
         </message>
     </context>
     <context>
