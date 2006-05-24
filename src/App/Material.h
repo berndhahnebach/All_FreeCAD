@@ -101,9 +101,33 @@ class MaterialPy;
 class AppExport Material
 {
 public:
+  enum MaterialType { 
+    BRASS,
+    BRONZE,
+    COPPER,
+    GOLD,
+    PEWTER,
+    PLASTER,
+    PLASTIC,
+    SILVER,
+    STEEL,
+    STONE,
+    SHINY_PLASTIC,
+    SATIN,
+    METALIZED,
+    NEON_GNC,
+    CHROME,
+    ALUMINIUM,
+    OBSIDIAN,
+    NEON_PHC,
+    JADE
+  };
+
+public:
 	/// Constructor
   Material(void);
   Material(const char* MatName);
+  Material(const MaterialType MatType);
   virtual ~Material();
 
 	/** Set a material by name
@@ -113,6 +137,7 @@ public:
    *  The Color and the other properteis of the material are defined in the range [0-1].
 	 */
   void set(const char* MatName);
+  void setType(const MaterialType MatType);
 
 
   Base::PyObjectBase *Material::GetPyObject(void);

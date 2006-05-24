@@ -142,9 +142,6 @@
                     <property name="name">
                         <cstring>MaterialCombo</cstring>
                     </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
                     <property name="name">
