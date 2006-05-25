@@ -927,7 +927,7 @@ void ColorButton::drawButtonLabel( QPainter *paint )
 
 void ColorButton::onChooseColor()
 {
-  QColor c = QColorDialog::getColor( palette().active().background(), this );
+  QColor c = QColorDialog::getColor( _col, this );
   if ( c.isValid() )
   {
     setColor( c );

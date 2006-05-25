@@ -36,7 +36,7 @@ using namespace App;
 //===========================================================================
 // Material
 //===========================================================================
-Material::Material(void) : _materialPy(0)
+Material::Material(void) : _materialPy(0), _matType(USER_DEFINED)
 {
 }
 
@@ -71,30 +71,78 @@ Base::PyObjectBase *Material::GetPyObject(void)
 
 void Material::set(const char* MatName)
 {
-  if(strcmp("Gold",MatName) == 0 ){
-    ambientColor.set(0.3f,0.1f,0.1f);
-    diffuseColor.set(0.8f,0.7f,0.2f);
-    specularColor.set(0.4f,0.3f,0.1f);
-    shininess = .4f;
-    transparency = .0f;
-  }else if(strcmp("Stone",MatName) == 0 ){
-    ambientColor.set(0.0f,0.0f,0.0f);
-    diffuseColor.set(0.0f,0.0f,0.0f);
-    specularColor.set(0.4f,0.3f,0.1f);
-    shininess = .4f;
-    transparency = .0f;
+  if(strcmp("Brass",MatName) == 0 ){
+    setType(BRASS);
+  } else if(strcmp("Bronze",MatName) == 0 ){
+    setType(BRONZE);
+  } else if(strcmp("Copper",MatName) == 0 ){
+    setType(COPPER);
+  } else if(strcmp("Gold",MatName) == 0 ){
+//    ambientColor.set(0.3f,0.1f,0.1f);
+//    diffuseColor.set(0.8f,0.7f,0.2f);
+//    specularColor.set(0.4f,0.3f,0.1f);
+//    shininess = .4f;
+//    transparency = .0f;
+////    ambientColor.set(0.3f,0.1f,0.1f);
+////    diffuseColor.set(0.22f,0.15f,0.00f);
+////    specularColor.set(0.71f,0.70f,0.56f);
+////    shininess = .16f;
+////    transparency = .0f;
+////    ambientColor.set(0.24725f, 0.1995f, 0.0745f);
+////    diffuseColor.set(0.75164f, 0.60648f, 0.22648f);
+////    specularColor.set(0.628281f, 0.555802f, 0.366065f);
+////    shininess = .16f;
+////    transparency = .0f;
+    setType(GOLD);
+  } else if(strcmp("Pewter",MatName) == 0 ){
+    setType(PEWTER);
+  } else if(strcmp("Plaster",MatName) == 0 ){
+    setType(PLASTER);
+  } else if(strcmp("Plastic",MatName) == 0 ){
+    setType(PLASTIC);
+  } else if(strcmp("Silver",MatName) == 0 ){
+    setType(SILVER);
+  } else if(strcmp("Steel",MatName) == 0 ){
+    setType(STEEL);
+  } else if(strcmp("Stone",MatName) == 0 ){
+//    ambientColor.set(0.0f,0.0f,0.0f);
+//    diffuseColor.set(0.0f,0.0f,0.0f);
+//    specularColor.set(0.4f,0.3f,0.1f);
+//    shininess = .4f;
+//    transparency = .0f;
+    setType(STONE);
+  } else if(strcmp("Shiny plastic",MatName) == 0 ){
+    setType(SHINY_PLASTIC);
+  } else if(strcmp("Satin",MatName) == 0 ){
+    setType(SATIN);
+  } else if(strcmp("Metalized",MatName) == 0 ){
+    setType(METALIZED);
+  } else if(strcmp("Neon GNC",MatName) == 0 ){
+    setType(NEON_GNC);
+  } else if(strcmp("Chrome",MatName) == 0 ){
+    setType(CHROME);
+  } else if(strcmp("Aluminium",MatName) == 0 ){
+    setType(ALUMINIUM);
+  } else if(strcmp("Obsidian",MatName) == 0 ){
+    setType(OBSIDIAN);
+  } else if(strcmp("Neon PHC",MatName) == 0 ){
+    setType(NEON_PHC);
+  } else if(strcmp("Jade",MatName) == 0 ){
+    setType(JADE);
+  } else if(strcmp("Ruby",MatName) == 0 ){
+    setType(RUBY);
+  } else if(strcmp("Emerald",MatName) == 0 ){
+    setType(EMERALD);
+  } else if(strcmp("Default",MatName) == 0 ){
+    setType(DEFAULT);
   }else{
-    throw Base::Exception("Unknown material");
+    setType(USER_DEFINED);
   }
 }
-//    //ambientColor.set(0.3f,0.1f,0.1f);
-//    diffuseColor.set(0.22f,0.15f,0.00f);
-//    specularColor.set(0.71f,0.70f,0.56f);
-//    shininess = .16f;
-//    transparency = .0f;
 
 void Material::setType(const MaterialType MatType)
 {
+  _matType = MatType;
   switch (MatType)
   {
   case BRASS:
@@ -247,6 +295,32 @@ void Material::setType(const MaterialType MatType)
     specularColor.set(0.3162f,0.3162f,0.3162f);
     emissiveColor.set(0.0000f,0.0000f,0.0000f);
     shininess    = 0.1000f;
+    transparency = 0.0000f;
+    break;
+  case RUBY:
+    ambientColor .set(0.1745f,0.0118f,0.0118f);
+    diffuseColor .set(0.6142f,0.0414f,0.0414f);
+    specularColor.set(0.7278f,0.6279f,0.6267f);
+    emissiveColor.set(0.0000f,0.0000f,0.0000f);
+    shininess    = 0.6000f;
+    transparency = 0.0000f;
+    break;
+  case EMERALD:
+    ambientColor .set(0.0215f,0.1745f,0.0215f);
+    diffuseColor .set(0.0757f,0.6142f,0.0757f);
+    specularColor.set(0.6330f,0.7278f,0.6330f);
+    emissiveColor.set(0.0000f,0.0000f,0.0000f);
+    shininess    = 0.6000f;
+    transparency = 0.0000f;
+    break;
+  case USER_DEFINED:
+    break;
+  default:
+    ambientColor .set(0.2000f,0.2000f,0.2000f);
+    diffuseColor .set(0.8000f,0.8000f,0.8000f);
+    specularColor.set(0.0000f,0.0000f,0.0000f);
+    emissiveColor.set(0.0000f,0.0000f,0.0000f);
+    shininess    = 0.2000f;
     transparency = 0.0000f;
     break;
   }

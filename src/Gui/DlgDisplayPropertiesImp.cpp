@@ -33,6 +33,7 @@
 #endif
 
 #include "DlgDisplayPropertiesImp.h"
+#include "DlgMaterialPropertiesImp.h"
 #include "View3DInventorViewer.h"
 #include "View3DInventor.h"
 #include "Command.h"
@@ -82,6 +83,8 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   bool bSameLineWidth= true;
   float fLineWidth=0.0f;
 
+  App::Material::MaterialType cMatType;
+
   bool bSameColor= true;
   App::Color cColor;
 
@@ -121,6 +124,11 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
       else
         if(fLineWidth != (*It)->getLineSize())
           bSameMode = bSameLineWidth;
+
+      if(It==Sel.begin())
+        cMatType = (*It)->getSolidMaterial().getType();
+      else if(cMatType != (*It)->getSolidMaterial().getType())
+        cMatType = App::Material::USER_DEFINED;
 
       if(It==Sel.begin())
         cColor = (*It)->getColor();
@@ -211,11 +219,21 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   Materials["Obsidian"]      = App::Material::OBSIDIAN;
   Materials["Neon PHC"]      = App::Material::NEON_PHC;
   Materials["Jade"]          = App::Material::JADE;
+  Materials["Ruby"]          = App::Material::RUBY;
+  Materials["Emerald"]       = App::Material::EMERALD;
 
-  
   QStringList material = Materials.keys();
   material.sort();
+  MaterialCombo->insertItem("Default");
   MaterialCombo->insertStringList(material);
+  Materials["Default"]       = App::Material::DEFAULT;
+  for (QMap<QString, App::Material::MaterialType>::ConstIterator it = Materials.begin(); it != Materials.end(); ++it)
+  {
+    if (it.data() == cMatType) {
+      MaterialCombo->setCurrentText(it.key());
+      break;
+    }
+  }
 }
 
 /** 
@@ -226,16 +244,36 @@ DlgDisplayPropertiesImp::~DlgDisplayPropertiesImp()
   // no need to delete child widgets, Qt does it all for us
 }
 
+void DlgDisplayPropertiesImp::onUserDefinedMaterial()
+{
+  std::vector<ViewProviderDocumentObject*> ViewProvDocObj;
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
+  {
+    if ( (*It)->getTypeId().isDerivedFrom( ViewProviderDocumentObject::getClassTypeId() ) ) {
+      ViewProvDocObj.push_back((ViewProviderDocumentObject*)(*It));
+    }
+  }
+
+  DlgMaterialPropertiesImp dlg(this);
+  dlg.setViewProviders(ViewProvDocObj);
+  dlg.exec();
+
+  ColorButton->setColor(dlg.diffuseColor->color());
+}
+
 void DlgDisplayPropertiesImp::onChangeMaterial(const QString& material)
 {
   App::Material::MaterialType type = Materials[material];
-  App::Material mat(type);
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
     if ( (*It)->getTypeId().isDerivedFrom( ViewProviderDocumentObject::getClassTypeId() ) ) {
       ViewProviderDocumentObject* vp = (ViewProviderDocumentObject*)(*It);
+      App::Material mat = vp->getObject()->getSolidMaterial();
+      mat.setType(type);
       vp->getObject()->setSolidMaterial(mat);
       vp->setMatFromObject();
+      App::Color diffuseColor = mat.diffuseColor;
+      ColorButton->setColor(QColor( (int)(diffuseColor.r*255.0f), (int)(diffuseColor.g*255.0f), (int)(diffuseColor.b*255.0f) ));
     }
   }
 
@@ -266,8 +304,70 @@ void DlgDisplayPropertiesImp::onChangePlot(const QString&s)
   Base::Console().Log("Plot = %s\n",s.latin1());
 }
 
-void DlgDisplayPropertiesImp::accept()
+void DlgDisplayPropertiesImp::onColorChange()
 {
+//  QColor s = ColorButton->color();
+//  bColorChange = true;
+//  cColorChange = App::Color(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
+//
+//  for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+//  {
+//    ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
+//    pcProv->setColor(cColorChange);
+//  }
+//
+//
+//  _pcCmd->getActiveGuiDocument()->onUpdate();
+  QColor s = ColorButton->color();
+  bColorChange = true;
+  cColorChange = App::Color(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
+  {
+    if ( (*It)->getTypeId().isDerivedFrom( ViewProviderDocumentObject::getClassTypeId() ) ) {
+      ViewProviderDocumentObject* vp = (ViewProviderDocumentObject*)(*It);
+      vp->getObject()->setColor(cColorChange);
+      vp->setColor(cColorChange);
+    }
+  }
+
+  _pcCmd->getActiveGuiDocument()->onUpdate();
+}
+
+void DlgDisplayPropertiesImp::onChangeTrans(int i)
+{
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
+    (*It)->setTransparency( i/100.0); 
+
+  bTranspChange = true;
+  fTranspChange = i/100.0;
+
+  _pcCmd->getActiveGuiDocument()->onUpdate();
+}
+
+void DlgDisplayPropertiesImp::onChangePointSize(double pointsize)
+{
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
+    (*It)->setPointSize( (float)pointsize ); 
+
+  bPointSizeChange = true;
+  fPointSizeChange = (float)pointsize;
+
+  _pcCmd->getActiveGuiDocument()->onUpdate();
+}
+
+void DlgDisplayPropertiesImp::onChangeLineWidth(double linewidth)
+{
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
+    (*It)->setLineWidth( linewidth ); 
+
+  bLineWidthChange = true;
+  fLineWidthChange = (float)linewidth;
+
+  _pcCmd->getActiveGuiDocument()->onUpdate();
+}
+
+void DlgDisplayPropertiesImp::accept()
+{/*
 
   if(bModeChange)
   {
@@ -323,29 +423,12 @@ void DlgDisplayPropertiesImp::accept()
       }
     }
   }
-
+*/
   DlgDisplayProperties::accept();
 }
 
-void DlgDisplayPropertiesImp::onColorChange()
-{
-  QColor s = ColorButton->color();
-  bColorChange = true;
-  cColorChange = App::Color(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
-
-  for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
-  {
-    ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
-    pcProv->setColor(cColorChange);
-  }
-
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
-
-}
-
 void DlgDisplayPropertiesImp::reject()
-{
+{/*
   for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
   {
     ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
@@ -355,41 +438,8 @@ void DlgDisplayPropertiesImp::reject()
       (*It)->TouchView();
     }
   }
-
+*/
   DlgDisplayProperties::reject();
-}
-
-void DlgDisplayPropertiesImp::onChangeTrans(int i)
-{
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-    (*It)->setTransparency( i/100.0); 
-
-  bTranspChange = true;
-  fTranspChange = i/100.0;
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
-}
-
-void DlgDisplayPropertiesImp::onChangePointSize(double pointsize)
-{
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-    (*It)->setPointSize( (float)pointsize ); 
-
-  bPointSizeChange = true;
-  fPointSizeChange = (float)pointsize;
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
-}
-
-void DlgDisplayPropertiesImp::onChangeLineWidth(double linewidth)
-{
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-    (*It)->setLineWidth( linewidth ); 
-
-  bLineWidthChange = true;
-  fLineWidthChange = (float)linewidth;
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
 }
 
 

@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>296</width>
-            <height>374</height>
+            <width>290</width>
+            <height>383</height>
         </rect>
     </property>
     <property name="caption">
@@ -84,7 +84,7 @@
                 </widget>
             </vbox>
         </widget>
-        <widget class="QLayoutWidget" row="2" column="0">
+        <widget class="QLayoutWidget" row="3" column="0">
             <property name="name">
                 <cstring>layout4</cstring>
             </property>
@@ -92,14 +92,6 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>OkButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string>OK</string>
-                    </property>
-                </widget>
                 <spacer>
                     <property name="name">
                         <cstring>spacer1</cstring>
@@ -122,12 +114,70 @@
                         <cstring>CancelButton</cstring>
                     </property>
                     <property name="text">
-                        <string>Cancel</string>
+                        <string>Close</string>
                     </property>
                 </widget>
             </hbox>
         </widget>
         <widget class="QGroupBox" row="1" column="0">
+            <property name="name">
+                <cstring>groupBox3</cstring>
+            </property>
+            <property name="title">
+                <string>Material</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="Gui::ColorButton" row="1" column="0">
+                    <property name="name">
+                        <cstring>ColorButton</cstring>
+                    </property>
+                    <property name="text">
+                        <string></string>
+                    </property>
+                </widget>
+                <widget class="QLayoutWidget" row="0" column="0">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QComboBox">
+                            <property name="name">
+                                <cstring>MaterialCombo</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>pushButton2</cstring>
+                            </property>
+                            <property name="sizePolicy">
+                                <sizepolicy>
+                                    <hsizetype>0</hsizetype>
+                                    <vsizetype>0</vsizetype>
+                                    <horstretch>0</horstretch>
+                                    <verstretch>0</verstretch>
+                                </sizepolicy>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>40</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="text">
+                                <string>...</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="2" column="0">
             <property name="name">
                 <cstring>groupBox2</cstring>
             </property>
@@ -138,28 +188,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QComboBox" row="0" column="0">
-                    <property name="name">
-                        <cstring>MaterialCombo</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>textLabel1_4</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Color:</string>
-                    </property>
-                </widget>
-                <widget class="Gui::ColorButton" row="2" column="0">
-                    <property name="name">
-                        <cstring>ColorButton</cstring>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget" row="6" column="0">
+                <widget class="QLayoutWidget" row="3" column="0">
                     <property name="name">
                         <cstring>layout1</cstring>
                     </property>
@@ -207,7 +236,7 @@
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="QLabel" row="5" column="0">
+                <widget class="QLabel" row="2" column="0">
                     <property name="name">
                         <cstring>textLabel1_2</cstring>
                     </property>
@@ -215,7 +244,7 @@
                         <string>Transparency:</string>
                     </property>
                 </widget>
-                <widget class="QLayoutWidget" row="3" column="0">
+                <widget class="QLayoutWidget" row="0" column="0">
                     <property name="name">
                         <cstring>layout9</cstring>
                     </property>
@@ -258,7 +287,7 @@
                         </widget>
                     </hbox>
                 </widget>
-                <widget class="QLayoutWidget" row="4" column="0">
+                <widget class="QLayoutWidget" row="1" column="0">
                     <property name="name">
                         <cstring>layout10</cstring>
                     </property>
@@ -339,12 +368,6 @@
         <slot>setValue(int)</slot>
     </connection>
     <connection>
-        <sender>OkButton</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
         <sender>CancelButton</sender>
         <signal>clicked()</signal>
         <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
@@ -374,6 +397,12 @@
         <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
         <slot>onChangeLineWidth(double)</slot>
     </connection>
+    <connection>
+        <sender>pushButton2</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgDisplayProperties</receiver>
+        <slot>onUserDefinedMaterial()</slot>
+    </connection>
 </connections>
 <slots>
     <slot>onChangeMaterial(const QString&amp;)</slot>
@@ -383,6 +412,7 @@
     <slot>onChangeTrans(int)</slot>
     <slot>onChangePointSize(double)</slot>
     <slot>onChangeLineWidth(double)</slot>
+    <slot>onUserDefinedMaterial()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>

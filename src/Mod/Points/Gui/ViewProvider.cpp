@@ -142,22 +142,13 @@ void ViewProviderPoints::attach(App::DocumentObject* pcObj)
   pcPointRoot->addChild(pcHighlight);
 
   // points shaded ---------------------------------------------
-  //SoLightModel* pcLightModel = new SoLightModel();
-  //pcLightModel->model = SoLightModel::PHONG;
-  SoDrawStyle* pcPointShadedStyle = new SoDrawStyle();
-  pcPointShadedStyle->style = SoDrawStyle::POINTS;
-  pcPointShadedStyle->pointSize = 2*pcPointStyle->pointSize.getValue();
-  pcPointShadedRoot->addChild(pcPointShadedStyle);
-//  pcHighlight->addChild(pcLightModel);
+  pcPointShadedRoot->addChild(pcPointStyle);
   pcPointShadedRoot->addChild(pcPointMaterial);
   pcPointShadedRoot->addChild(pcPointsNormal);
   pcPointShadedRoot->addChild(pcHighlight);
 
   // color shaded  ------------------------------------------
-  SoDrawStyle *pcFlatStyle = new SoDrawStyle();
-  pcFlatStyle->style = SoDrawStyle::FILLED;
-  pcColorShadedRoot->addChild(pcFlatStyle);
-
+  pcColorShadedRoot->addChild(pcPointStyle);
   SoMaterialBinding* pcMatBinding = new SoMaterialBinding;
   pcMatBinding->value = SoMaterialBinding::PER_VERTEX_INDEXED;
   pcColorShadedRoot->addChild(pcColorMat);
@@ -169,12 +160,12 @@ void ViewProviderPoints::attach(App::DocumentObject* pcObj)
   addDisplayMode(pcColorShadedRoot, "Color");
   addDisplayMode(pcPointShadedRoot, "Shaded");
 
-  // call father (set material and feature pointer)
-  ViewProviderDocumentObject::attach(pcObj);
-
   // get and save the feature
   Points::Feature* ptFea = dynamic_cast<Points::Feature*>(pcObj);
   createPoints( ptFea );
+
+  // call father (set material and feature pointer)
+  ViewProviderDocumentObject::attach(pcObj);
 }
 
 void ViewProviderPoints::setMode(const char* ModeName)
