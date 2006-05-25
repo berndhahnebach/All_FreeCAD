@@ -1,0 +1,159 @@
+/***************************************************************************
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
+
+#include "PreCompiled.h"
+
+
+#include "DlgMaterialPropertiesImp.h"
+#include "Widgets.h"
+#include "SpinBox.h"
+#include "ViewProviderDocumentObject.h"
+
+#include <App/DocumentObject.h>
+
+using namespace Gui::Dialog;
+
+
+/* TRANSLATOR Gui::Dialog::DlgMaterialPropertiesImp */
+
+/**
+ *  Constructs a Gui::Dialog::DlgMaterialPropertiesImp as a child of 'parent', with the
+ *  name 'name' and widget flags set to 'f'.
+ *
+ *  The dialog will by default be modeless, unless you set 'modal' to
+ *  TRUE to construct a modal dialog.
+ */
+DlgMaterialPropertiesImp::DlgMaterialPropertiesImp( QWidget* parent, const char* name, bool modal, WFlags fl )
+  : DlgMaterialProperties(parent, name, modal, fl)
+{
+}
+
+/**
+ *  Destroys the object and frees any allocated resources
+ */
+DlgMaterialPropertiesImp::~DlgMaterialPropertiesImp()
+{
+}
+
+/**
+ * Sets the current ambient color.
+ */
+void DlgMaterialPropertiesImp::onAmbientColorChanged()
+{
+  QColor col = ambientColor->color();
+  float r = (float)col.red()/255.0f;
+  float g = (float)col.green()/255.0f;
+  float b = (float)col.blue()/255.0f;
+  App::Color ambient(r,g,b);
+  for ( std::vector<Gui::ViewProviderDocumentObject*>::iterator it = Objects.begin(); it != Objects.end(); ++it )
+  {
+    App::Material mat = (*it)->getObject()->getSolidMaterial();
+    mat.ambientColor = ambient;
+    (*it)->getObject()->setSolidMaterial(mat);
+    (*it)->setMatFromObject();
+  }
+}
+
+/**
+ * Sets the diffuse ambient color.
+ */
+void DlgMaterialPropertiesImp::onDiffuseColorChanged()
+{
+  QColor col = diffuseColor->color();
+  float r = (float)col.red()/255.0f;
+  float g = (float)col.green()/255.0f;
+  float b = (float)col.blue()/255.0f;
+  App::Color diffuse(r,g,b);
+  for ( std::vector<Gui::ViewProviderDocumentObject*>::iterator it = Objects.begin(); it != Objects.end(); ++it )
+  {
+    App::Material mat = (*it)->getObject()->getSolidMaterial();
+    mat.diffuseColor = diffuse;
+    (*it)->getObject()->setSolidMaterial(mat);
+    (*it)->setMatFromObject();
+  }
+}
+
+/**
+ * Sets the current specular color.
+ */
+void DlgMaterialPropertiesImp::onSpecularColorChanged()
+{
+  QColor col = specularColor->color();
+  float r = (float)col.red()/255.0f;
+  float g = (float)col.green()/255.0f;
+  float b = (float)col.blue()/255.0f;
+  App::Color specular(r,g,b);
+  for ( std::vector<Gui::ViewProviderDocumentObject*>::iterator it = Objects.begin(); it != Objects.end(); ++it )
+  {
+    App::Material mat = (*it)->getObject()->getSolidMaterial();
+    mat.specularColor = specular;
+    (*it)->getObject()->setSolidMaterial(mat);
+    (*it)->setMatFromObject();
+  }
+}
+
+/**
+ * Sets the current shininess.
+ */
+void DlgMaterialPropertiesImp::onShininessChanged(int sh)
+{
+  float shininess = (float)sh/100.0f;
+  for ( std::vector<Gui::ViewProviderDocumentObject*>::iterator it = Objects.begin(); it != Objects.end(); ++it )
+  {
+    App::Material mat = (*it)->getObject()->getSolidMaterial();
+    mat.shininess = shininess;
+    (*it)->getObject()->setSolidMaterial(mat);
+    (*it)->setMatFromObject();
+  }
+}
+
+/**
+ * Sets the document objects and their view providers to manipulate the material.
+ */
+void DlgMaterialPropertiesImp::setViewProviders( const std::vector<Gui::ViewProviderDocumentObject*>& Obj)
+{
+  Objects = Obj;
+  if ( Objects.size() > 0 ) {
+    App::DocumentObject* docObj = Objects.front()->getObject();
+    const App::Material& mat = docObj->getSolidMaterial();
+    int r = int(mat.ambientColor.r * 255.0f);
+    int g = int(mat.ambientColor.g * 255.0f);
+    int b = int(mat.ambientColor.b * 255.0f);
+    ambientColor->setColor( QColor(r,g,b) );
+    r = int(mat.diffuseColor.r * 255.0f);
+    g = int(mat.diffuseColor.g * 255.0f);
+    b = int(mat.diffuseColor.b * 255.0f);
+    diffuseColor->setColor( QColor(r,g,b) );
+    r = int(mat.specularColor.r * 255.0f);
+    g = int(mat.specularColor.g * 255.0f);
+    b = int(mat.specularColor.b * 255.0f);
+    specularColor->setColor( QColor(r,g,b) );
+    shininessSpin->blockSignals(true);
+    shininessSpin->setValue((int)(100.0f * (mat.shininess+0.001f)));
+    shininessSpin->blockSignals(false);
+  }
+}
+
+#include "DlgMaterialProperties.cpp"
+#include "moc_DlgMaterialProperties.cpp"
+
