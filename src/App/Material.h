@@ -40,21 +40,35 @@ namespace App
 class AppExport Color
 {
 public:
+  /**
+   * Defines the color as (R,G,B,A) whereas all values are in the range [0,1].
+   * \a A defines the transparency.
+   */
   explicit Color(float R=0.0,float G=0.0, float B=0.0, float A=0.0)
     :r(R),g(G),b(B),a(A){}
+  /**
+   * Does basically the same as the constructor above unless that (R,G,B,A) is
+   * encoded as an unsigned long.
+   */
   Color(unsigned long rgba)
   { setPackedValue( rgba ); }
+  /** Copy constructor. */
   Color(const Color& c)
     :r(c.r),g(c.g),b(c.b),a(c.a){}
-
+  /** Returns true if both colors are equal. Therefore all components must be equal. */
   bool operator==(const Color& c) const
   {
-    return (c.r==r && c.g==g && c.b==b && c.a==a); 
+    return getPackedValue() == c.getPackedValue();
+    //return (c.r==r && c.g==g && c.b==b && c.a==a); 
   }
   bool operator!=(const Color& c) const 
   {
     return !operator==(c);
   }
+  /**
+   * Defines the color as (R,G,B,A) whereas all values are in the range [0,1].
+   * \a A defines the transparency, 0 means complete opaque and 1 invisible.
+   */
   void set(float R,float G, float B, float A=0.0)
   {
     r=R;g=G;b=B;a=A;
@@ -64,7 +78,6 @@ public:
     r=c.r;g=c.g;b=c.b;a=c.a;
     return *this;
   }
-
   /**
    * Sets the color value as a 32 bit combined red/green/blue/alpha value.
    * Each component is 8 bit wide (i.e. from 0x00 to 0xff), and the red
@@ -77,7 +90,6 @@ public:
     this->set( (rgba >> 24)/255.0f, ((rgba >> 16)&0xff)/255.0f, ((rgba >> 8)&0xff)/255.0f, (rgba&0xff)/255.0f );
     return *this;
   }
-
   /**
    * Returns color as a 32 bit packed unsigned long in the form 0xRRGGBBAA.
    *
@@ -120,37 +132,83 @@ public:
     ALUMINIUM,
     OBSIDIAN,
     NEON_PHC,
-    JADE
+    JADE,
+    RUBY,
+    EMERALD,
+    DEFAULT,
+    USER_DEFINED
   };
 
 public:
-	/// Constructor
+	/** @name Constructors
+	 */
+	//@{
+  /** Sets the USER_DEFINED material type. The user must set the colors afterwards. */
   Material(void);
+  /** Defines the colors and shininess for the material \a MatName. If \a MatName isn't defined then USER_DEFINED is
+   * set and the user must define the colors itself.
+   */
   Material(const char* MatName);
+  /** Does basically the same as the constructor above unless that it accepts a MaterialType as argument. */
   Material(const MaterialType MatType);
+	//@}
   virtual ~Material();
 
 	/** Set a material by name
 	 *  There are some standard materials defined which are:
-   *  - Gold
-   *  - Stone
-   *  The Color and the other properteis of the material are defined in the range [0-1].
+   *  \li Brass
+   *  \li Bronze
+   *  \li Copper
+   *  \li Gold
+   *  \li Pewter
+   *  \li Plaster
+   *  \li Plastic
+   *  \li Silver
+   *  \li Steel
+   *  \li Stone
+   *  \li Shiny plastic
+   *  \li Satin
+   *  \li Metalized
+   *  \li Neon GNC
+   *  \li Chrome
+   *  \li Aluminium
+   *  \li Obsidian
+   *  \li Neon PHC
+   *  \li Jade
+   *  \li Ruby
+   *  \li Emerald
+   * Furthermore there two additional modes \a Default which defines a kind of grey metalic and user defined that
+   * does nothing.
+   * The Color and the other properties of the material are defined in the range [0-1].
+   * If \a MatName is an unknown material name then the type USER_DEFINED is set and the material doesn't get changed.
 	 */
   void set(const char* MatName);
+  /**
+   * This method is provided for convenience which does basically the same as the method above unless that it accepts a MaterialType 
+   * as argument.
+   */
   void setType(const MaterialType MatType);
-
+  /**
+   * Returns the currently set material type.
+   */
+  MaterialType getType() const
+  { return _matType; }
 
   Base::PyObjectBase *Material::GetPyObject(void);
 
-  Color ambientColor;
-  Color diffuseColor;
-  Color specularColor;
-  Color emissiveColor;
+	/** @name Properties */
+	//@{
+  Color ambientColor;  /**< Defines the ambient color. */
+  Color diffuseColor;  /**< Defines the diffuse color. */
+  Color specularColor; /**< Defines the specular color. */
+  Color emissiveColor; /**< Defines the emissive color. */
   float shininess;
   float transparency;
+	//@}
 
 private:
   MaterialPy* _materialPy;
+  MaterialType _matType;
 };
 
 } //namespace App

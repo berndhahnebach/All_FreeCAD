@@ -65,6 +65,7 @@ public slots:
   virtual void onChangeTrans(int);
   virtual void onChangePointSize(double);
   virtual void onChangeLineWidth(double);
+  virtual void onUserDefinedMaterial();
 
 protected:
   virtual void accept();
