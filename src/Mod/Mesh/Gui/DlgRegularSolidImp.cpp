@@ -29,6 +29,7 @@
 # include <qmessagebox.h>
 #endif
 
+#include <Base/PyExportImp.h>
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
