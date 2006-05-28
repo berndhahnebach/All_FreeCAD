@@ -24,6 +24,7 @@ BUILT_SOURCES=\
 		moc_DlgMacroExecuteImp.cpp \
 		moc_DlgMacroRecord.cpp \
 		moc_DlgMacroRecordImp.cpp \
+		moc_DlgMaterialProperties.cpp \
 		moc_DlgOnlineHelp.cpp \
 		moc_DlgOnlineHelpImp.cpp \
 		moc_DlgParameter.cpp \
@@ -86,6 +87,8 @@ BUILT_SOURCES=\
 		DlgMacroExecute.h \
 		DlgMacroRecord.cpp \
 		DlgMacroRecord.h \
+		DlgMaterialProperties.cpp \
+		DlgMaterialProperties.h \
 		DlgOnlineHelp.cpp \
 		DlgOnlineHelp.h \
 		DlgParameter.cpp \
@@ -191,6 +194,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgMacroExecuteImp.h \
 		DlgMacroRecordImp.cpp \
 		DlgMacroRecordImp.h \
+		DlgMaterialPropertiesImp.cpp \
+		DlgMaterialPropertiesImp.h \
 		DlgOnlineHelpImp.cpp \
 		DlgOnlineHelpImp.h \
 		DlgParameterImp.cpp \
@@ -364,6 +369,7 @@ EXTRA_DIST = \
 		DlgMacroExecute.ui \
 		DlgMacroRecord.ui \
 		DlgMacros.ui \
+		DlgMaterialProperties.ui \
 		DlgOnlineHelp.ui \
 		DlgParameter.ui \
 		DlgPreferences.ui \

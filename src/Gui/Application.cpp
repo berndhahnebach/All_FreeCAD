@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qcursor.h>
 # include <qeventloop.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
@@ -904,7 +905,7 @@ void MessageBoxObserver::Warning(const char *m)
   if ( ok )
     Base::Sequencer().pause();
   else if ( cursor )
-    QApplication::setOverrideCursor(Qt::ArrowCursor);
+    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
   QMessageBox::warning( qApp->activeWindow(), QObject::tr("Warning"),m);
   if ( ok )
     Base::Sequencer().resume();
