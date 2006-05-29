@@ -73,8 +73,11 @@ bool Document::undo(void)
 
     // redo
     activUndoTransaction = new Transaction();
+    // applieing the undo
     mUndoTransactions.top()->apply(*this);
+    // save the redo
     mRedoTransactions.push(activUndoTransaction);
+    activUndoTransaction = 0;
     
     delete mUndoTransactions.top();
     mUndoTransactions.pop();
@@ -96,6 +99,7 @@ bool Document::redo(void)
     activUndoTransaction = new Transaction();
     mRedoTransactions.top()->apply(*this);
     mUndoTransactions.push(activUndoTransaction);
+    activUndoTransaction = 0;
     
     delete mRedoTransactions.top();
     mRedoTransactions.pop();

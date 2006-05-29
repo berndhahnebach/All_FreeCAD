@@ -839,6 +839,13 @@ void Application::runApplication()
 		Interpreter().runFile(mConfig["FileName"].c_str());
 		Interpreter().runCommandLine("FreeCAD Console mode");
 	}
+	else if(mConfig["RunMode"] == "Module")
+	{
+		// run a script
+		Console().Log("Loading module: %s\n",mConfig["ScriptFileName"].c_str());
+		Interpreter().loadModule(mConfig["FileName"].c_str());
+		//Interpreter().runCommandLine("FreeCAD Console mode");
+	}
 	else if(mConfig["RunMode"] == "Internal")
 	{
 		// run internal script
@@ -946,12 +953,13 @@ void Application::ParseOptions(int argc, char ** argv)
 	static const char Usage[] = \
 	" [Options] files..."\
 	"Options:\n"\
-	"  -h             Display this information\n"\
-	"  -c             Runs FreeCAD in console mode (no windows)\n"\
-	"  -cf file-name  Runs FreeCAD in server mode with script file-name\n"\
-	"  -cc file-name  Runs first the script an then console mode\n"\
-	"  -t0            Runs FreeCAD self test function\n"\
-	"  -v             Runs FreeCAD in verbose mode\n"\
+	"  -h               Display this information\n"\
+	"  -c               Runs FreeCAD in console mode (no windows)\n"\
+	"  -cf file-name    Runs FreeCAD in server mode with script file-name\n"\
+	"  -cc file-name    Runs first the script an then console mode\n"\
+	"  -cm module-name  Loads the Python module and exiting when done\n"\
+	"  -t0              Runs FreeCAD self test function\n"\
+	"  -v               Runs FreeCAD in verbose mode\n"\
 	"\n consult also the HTML documentation on http://free-cad.sourceforge.net/\n"\
 	"";
 
@@ -988,6 +996,18 @@ void Application::ParseOptions(int argc, char ** argv)
 						if(argc <= i+1)
 						{
               std::cerr << "Expecting a file" << std::endl;  
+							std::cerr << "\nUsage: " << argv[0] << Usage;
+              throw;
+						}
+						mConfig["FileName"]= argv[i+1];
+						i++;
+						break;   
+					case 'm':  
+					case 'M':  
+						mConfig["RunMode"] = "Module";
+						if(argc <= i+1)
+						{
+              std::cerr << "Expecting a module name" << std::endl;  
 							std::cerr << "\nUsage: " << argv[0] << Usage;
               throw;
 						}
