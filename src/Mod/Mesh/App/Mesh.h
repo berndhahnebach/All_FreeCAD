@@ -141,10 +141,16 @@ public:
   //@{
   /// COPIES the mesh into the Property
   void setValue( const MeshCore::MeshKernel& m);
-  /// REPLACE the mesh in the Property
+  /// REPLACES the mesh in the Property
   void setValue( MeshCore::MeshKernel* m);
   /// get the Kernel (only const possible!)
   const MeshCore::MeshKernel &getValue(void) const;
+  //@}
+
+  /** @name Modify */
+  //@{
+  void deletePointIndices( const std::vector<unsigned long>& );
+  void deleteFacetIndices( const std::vector<unsigned long>& );
   //@}
 
   /** @name Python interface */

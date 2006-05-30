@@ -510,25 +510,25 @@ bool MeshGeomFacet::IntersectWithPlane (const Base::Vector3f &rclBase, const Bas
 bool MeshGeomFacet::Foraminate (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, Base::Vector3f &rclRes, float fMaxAngle) const
 {
   const float fTolerance = 1e-06f;
-
-  Base::Vector3f clE0 = _aclPoints[1] - _aclPoints[0];
-  Base::Vector3f clE1 = _aclPoints[2] - _aclPoints[0];
-
   Base::Vector3f clFacetNormal = GetNormal();
 
-  float fDenominator = clFacetNormal * rclDir;
-  float fLLenSqr     = rclDir * rclDir;
-  float fNLenSqr     = GetNormal() * GetNormal();
-
+  // check angle between facet normal and the line direction
   if (rclDir.GetAngle(clFacetNormal) > fMaxAngle)
     return false;
 
+  float fDenominator = clFacetNormal * rclDir;
+  float fLLenSqr     = rclDir * rclDir;
+  float fNLenSqr     = clFacetNormal * clFacetNormal;
+
+  // the line mustn't be parallel to the facet
   if ((fDenominator * fDenominator) <= (fTolerance * fLLenSqr * fNLenSqr))
     return false;
 
+  Base::Vector3f clE0 = _aclPoints[1] - _aclPoints[0];
+  Base::Vector3f clE1 = _aclPoints[2] - _aclPoints[0];
+  
   Base::Vector3f clDiff0 = rclPt - _aclPoints[0];
-  float     fTime   = -(GetNormal() * clDiff0) / fDenominator;
-
+  float fTime   = -(clFacetNormal * clDiff0) / fDenominator;
   Base::Vector3f  clDiff1 = clDiff0 + fTime * rclDir;
 
   float fE00 = clE0 * clE0;
