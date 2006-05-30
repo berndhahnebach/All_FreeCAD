@@ -281,6 +281,20 @@ const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const
 	return *_pcMesh;
 }
 
+void PropertyMeshKernel::deletePointIndices( const std::vector<unsigned long>& inds )
+{
+  aboutToSetValue();
+  _pcMesh->DeletePoints(inds);
+  hasSetValue();
+}
+
+void PropertyMeshKernel::deleteFacetIndices( const std::vector<unsigned long>& inds )
+{
+  aboutToSetValue();
+  _pcMesh->DeleteFacets(inds);
+  hasSetValue();
+}
+
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
   return new MeshPy(*_pcMesh);
