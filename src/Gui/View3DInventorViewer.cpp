@@ -266,6 +266,15 @@ void View3DInventorViewer::setGradientBackgroudColor( const SbColor& fromColor, 
   pcBackGround->setColorGradient( fromColor, toColor );
 }
 
+void View3DInventorViewer::setEnabledFPSCounter(bool b)
+{
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+  setenv("COIN_SHOW_FPS_COUNTER", (b?"1":"0"), 1);
+#else
+  b ? _putenv ("COIN_SHOW_FPS_COUNTER=1") : _putenv ("COIN_SHOW_FPS_COUNTER=0");
+#endif
+}
+
 View3DInventorViewer::~View3DInventorViewer()
 {
   this->backgroundroot->unref();
