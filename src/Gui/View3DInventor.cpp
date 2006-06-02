@@ -121,6 +121,7 @@ void View3DInventor::setViewerDefaults(void)
     _viewer->getGLRenderAction()->setSmoothing(true);
   else
     _viewer->getGLRenderAction()->setSmoothing(false);
+  _viewer->setEnabledFPSCounter(hGrp->GetBool("ShowFPS",false));
 }
 
 /// Observer message from the ParameterGrp

@@ -32,8 +32,9 @@ class Feature;
 
 namespace MeshGui {
 
-class GuiMeshExport SoFCMeshNode : public SoShape
-{
+class GuiMeshExport SoFCMeshNode : public SoShape {
+  typedef SoShape inherited;
+
   SO_NODE_HEADER(SoFCMeshNode);
     
 public:
@@ -57,6 +58,8 @@ protected:
 private:
   // Force using the reference count mechanism.
   virtual ~SoFCMeshNode() {};
+  virtual void notify(SoNotList * list);
+
 
 protected:
   const Mesh::Feature*  _mesh;

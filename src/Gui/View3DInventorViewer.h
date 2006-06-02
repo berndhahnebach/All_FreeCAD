@@ -128,6 +128,7 @@ public:
 
   void setGradientBackgroud(bool b);
   void setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor );
+  void setEnabledFPSCounter(bool b);
 
 protected:
   unsigned long             currMod;

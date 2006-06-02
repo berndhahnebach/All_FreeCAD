@@ -31,6 +31,8 @@
 # include <Inventor/SbBox.h>
 # include <Inventor/SoPrimitiveVertex.h>
 # include <Inventor/actions/SoGLRenderAction.h>
+# include <Inventor/details/SoFaceDetail.h>
+# include <Inventor/details/SoPointDetail.h>
 # include <Inventor/misc/SoState.h>
 # include <Inventor/elements/SoLightModelElement.h>
 # include <Inventor/bundles/SoMaterialBundle.h>
@@ -74,6 +76,11 @@ void SoFCMeshNode::initClass()
 SoFCMeshNode::SoFCMeshNode(const Mesh::Feature* mesh) : _mesh(mesh)
 {
   SO_NODE_CONSTRUCTOR(SoFCMeshNode);
+}
+
+void SoFCMeshNode::notify(SoNotList * node)
+{
+  SoShape::notify(node);
 }
 
 void SoFCMeshNode::setMesh(const Mesh::Feature* mesh)
@@ -130,21 +137,32 @@ void SoFCMeshNode::generatePrimitives(SoAction* _action)
   if (_mesh)
   {
     MeshCore::MeshFacetIterator it(_mesh->getMesh());
-    SoPrimitiveVertex pv;
-    beginShape(_action, TRIANGLES);
+    SoPrimitiveVertex vertex;
+    SoPointDetail pointDetail;
+    SoFaceDetail faceDetail;
 
+    vertex.setDetail(&pointDetail);
+
+    beginShape(_action, TRIANGLES, &faceDetail);
+    MeshCore::MeshFacet face;
     for (it.Init(); it.More(); it.Next())
     {
-      pv.setNormal(sbvec3f(it->GetNormal()));
-			   
-      pv.setPoint(sbvec3f(it->_aclPoints[0]));
-      shapeVertex(&pv);
+      face = it.GetIndicies();
+      vertex.setNormal(sbvec3f(it->GetNormal()));
+ 
+      pointDetail.setCoordinateIndex(face._aulPoints[0]);
+      vertex.setPoint(sbvec3f(it->_aclPoints[0]));
+      shapeVertex(&vertex);
 
-      pv.setPoint(sbvec3f(it->_aclPoints[1]));
-      shapeVertex(&pv);
+      pointDetail.setCoordinateIndex(face._aulPoints[1]);
+      vertex.setPoint(sbvec3f(it->_aclPoints[1]));
+      shapeVertex(&vertex);
 
-      pv.setPoint(sbvec3f(it->_aclPoints[2]));
-      shapeVertex(&pv);
+      pointDetail.setCoordinateIndex(face._aulPoints[2]);
+      vertex.setPoint(sbvec3f(it->_aclPoints[2]));
+      shapeVertex(&vertex);
+
+      faceDetail.incFaceIndex();
     }
 
     endShape();
@@ -157,7 +175,8 @@ SoDetail * SoFCMeshNode::createTriangleDetail(SoRayPickAction * action,
                                               const SoPrimitiveVertex * v3,
                                               SoPickedPoint * pp)
 {
-  return 0;
+  SoDetail* detail = inherited::createTriangleDetail(action, v1, v2, v3, pp);
+  return detail;
 }
 
 void SoFCMeshNode::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
@@ -166,8 +185,11 @@ void SoFCMeshNode::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
     const Base::BoundBox3f& cBox = _mesh->getMesh().GetBoundBox();
     box.setBounds(SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
 		              SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MaxZ));
+    Base::Vector3f mid = cBox.CalcCenter();
+    center.setValue(mid.x,mid.y,mid.z);
   }
   else {
     box.setBounds(SbVec3f(0,0,0), SbVec3f(0,0,0));
+    center.setValue(0.0f,0.0f,0.0f);
   }
 }

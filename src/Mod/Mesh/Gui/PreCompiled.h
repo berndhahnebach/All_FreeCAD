@@ -82,6 +82,8 @@
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/actions/SoWriteAction.h>
+#include <Inventor/details/SoFaceDetail.h>
+#include <Inventor/details/SoPointDetail.h>
 #include <Inventor/draggers/SoTransformerDragger.h>
 #include <Inventor/events/SoEvent.h>
 #include <Inventor/events/SoKeyboardEvent.h>

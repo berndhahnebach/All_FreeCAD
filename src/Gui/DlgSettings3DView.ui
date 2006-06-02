@@ -34,11 +34,8 @@
                     <property name="name">
                         <cstring>CheckBox_ShowFPS</cstring>
                     </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
                     <property name="text">
-                        <string>Show FPS Count</string>
+                        <string>Show counter of frames per second</string>
                     </property>
                     <property name="prefEntry" stdset="0">
                         <cstring>ShowFPS</cstring>
