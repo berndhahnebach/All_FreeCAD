@@ -183,8 +183,7 @@ void ViewProviderMesh::onChanged(const App::Property* prop)
 
 void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
 {
-#if 1
-
+#if 0
   SbVec3f* vertices = 0;
   int* faces = 0;
 
@@ -227,23 +226,31 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
     throw e;
   }
 
-#else /// @todo This doesn't seem to work as expected (save tmp. memory and time). Don't know why!?
-  MeshKernel *cMesh = pcMesh->getKernel();
-  pcMeshCoord->point.setNum( cMesh->CountPoints() );
-  pcMeshFaces->coordIndex.setNum( 4*cMesh->CountFacets() );
+#else
+  // This is a faster way to build up the mesh structure and needs less temporary memory.
+  // Therefore we must disable the notification of SoIndexedFaceSet whenn filling up the SoCoordinate3 and 
+  // coordIndex fields. Once this has finished we enable it again.
+  pcMeshCoord->point.setNum( rcMesh.CountPoints() );
+  pcMeshFaces->coordIndex.setNum( 4*rcMesh.CountFacets() );
 
-  Base::SequencerLauncher seq( "Building View node...", cMesh->CountFacets() );
+  Base::SequencerLauncher seq( "Building View node...", rcMesh.CountFacets() );
 
+  // disable the notification, otherwise whenever a point is inserted SoIndexedFacetSet gets notified
+  pcMeshCoord->enableNotify(false);
   // set the point coordinates
-  MeshPointIterator cPIt(*cMesh);
+  MeshPointIterator cPIt(rcMesh);
   for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
   {
     pcMeshCoord->point.set1Value( cPIt.Position(), cPIt->x, cPIt->y, cPIt->z );
   }
+  // enable notofication again
+  pcMeshCoord->enableNotify(true);
 
+  // disable the notification, otherwise whenever a point is inserted SoIndexedFacetSet gets notified
+  pcMeshFaces->coordIndex.enableNotify(false);
   // set the facets indices
   unsigned long j=0;
-  MeshFacetIterator cFIt(*cMesh);
+  MeshFacetIterator cFIt(rcMesh);
   for ( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
   {
     MeshFacet aFace = cFIt.GetIndicies();
@@ -256,7 +263,8 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
     pcMeshFaces->coordIndex.set1Value(4*j+3, SO_END_FACE_INDEX);
     Base::Sequencer().next( false ); // don't allow to cancel
   }
-
+  // enable notofication again
+  pcMeshCoord->enableNotify(true);
 #endif
 }
 
