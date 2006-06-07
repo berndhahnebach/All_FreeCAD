@@ -230,13 +230,12 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
   // This is a faster way to build up the mesh structure and needs less temporary memory.
   // Therefore we must disable the notification of SoIndexedFaceSet whenn filling up the SoCoordinate3 and 
   // coordIndex fields. Once this has finished we enable it again.
-  pcMeshCoord->point.setNum( rcMesh.CountPoints() );
-  pcMeshFaces->coordIndex.setNum( 4*rcMesh.CountFacets() );
 
   Base::SequencerLauncher seq( "Building View node...", rcMesh.CountFacets() );
 
   // disable the notification, otherwise whenever a point is inserted SoIndexedFacetSet gets notified
   pcMeshCoord->enableNotify(false);
+  pcMeshCoord->point.setNum( rcMesh.CountPoints() );
   // set the point coordinates
   MeshPointIterator cPIt(rcMesh);
   for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
@@ -248,6 +247,7 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
 
   // disable the notification, otherwise whenever a point is inserted SoIndexedFacetSet gets notified
   pcMeshFaces->coordIndex.enableNotify(false);
+  pcMeshFaces->coordIndex.setNum( 4*rcMesh.CountFacets() );
   // set the facets indices
   unsigned long j=0;
   MeshFacetIterator cFIt(rcMesh);
@@ -264,7 +264,10 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
     Base::Sequencer().next( false ); // don't allow to cancel
   }
   // enable notofication again
-  pcMeshCoord->enableNotify(true);
+  pcMeshFaces->coordIndex.enableNotify(true);
+
+  pcMeshCoord->touch();
+  pcMeshFaces->coordIndex.touch();
 #endif
 }
 
