@@ -123,7 +123,7 @@ public:
 	 */
 	//@{
 	void init(int argc,char *argv[]);
-	int  runCommandLine(char *prompt);
+	int  runCommandLine(const char *prompt);
 	static InterpreterSingleton &Instance(void);
 	static void Destruct(void);
 //	static void Init(void);

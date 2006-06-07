@@ -836,8 +836,16 @@ void Application::runApplication()
 	{
 		// run a script
 		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
-		Interpreter().runFile(mConfig["FileName"].c_str());
-		Interpreter().runCommandLine("FreeCAD Console mode");
+    try{
+      Interpreter().runFile(mConfig["FileName"].c_str());
+    }catch(Base::Exception e){
+      e.ReportException();
+    }catch(...){
+      Console().Error("Unknown exception in runing file:%s \n",mConfig["FileName"].c_str());
+    }
+    std::string text;
+    text += "FreeCAD Console mode after runing " + mConfig["FileName"];
+		Interpreter().runCommandLine(text.c_str());
 	}
 	else if(mConfig["RunMode"] == "Module")
 	{
@@ -856,7 +864,6 @@ void Application::runApplication()
 	} else {
 
 		Console().Log("Unknown Run mode (%d) in main()?!?\n\n",mConfig["RunMode"].c_str());
-		exit(1);
 	}
 
 }

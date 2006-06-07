@@ -181,11 +181,14 @@ void InterpreterSingleton::runFile(const char*pxFileName)
 {
   std::ifstream file;
   file.open(pxFileName);
-  std::stringbuf buf;
-  file >> &buf;
-  file.close();
-  
-  runString(buf.str().c_str());
+  if(file){
+    std::stringbuf buf;
+    file >> &buf;
+    file.close();
+    
+    runString(buf.str().c_str());
+  }else
+    throw Exception("Unknown file!");
 }
 
 bool InterpreterSingleton::loadModule(const char* psModName)
@@ -256,9 +259,11 @@ void InterpreterSingleton::init(int argc,char *argv[])
 	PySys_SetArgv(argc, argv);
 }
 
-int InterpreterSingleton::runCommandLine(char *prompt)
+int InterpreterSingleton::runCommandLine(const char *prompt)
 {
-	return PP_Run_Command_Line(prompt);
+  PyBuf buf(prompt);
+
+	return PP_Run_Command_Line(buf.str);
 }
 
 /**
