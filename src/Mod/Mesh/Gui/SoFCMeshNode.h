@@ -45,6 +45,7 @@ public:
 protected:
   virtual void GLRender(SoGLRenderAction *action);
   virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
+  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
   virtual void generatePrimitives(SoAction *action);
   virtual SoDetail * createTriangleDetail(SoRayPickAction * action,
                                           const SoPrimitiveVertex * v1,
@@ -53,7 +54,7 @@ protected:
                                           SoPickedPoint * pp);
 
   // Draw faces
-  void drawFaces(SbBool send_normals);
+  void drawFaces(SbBool needNormals);
 
 private:
   // Force using the reference count mechanism.

@@ -31,16 +31,18 @@
 # include <Inventor/SbBox.h>
 # include <Inventor/SoPrimitiveVertex.h>
 # include <Inventor/actions/SoGLRenderAction.h>
+# include <Inventor/actions/SoGetPrimitiveCountAction.h>
+# include <Inventor/bundles/SoMaterialBundle.h>
+# include <Inventor/bundles/SoTextureCoordinateBundle.h>
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/details/SoPointDetail.h>
-# include <Inventor/misc/SoState.h>
+# include <Inventor/elements/SoGLCacheContextElement.h>
 # include <Inventor/elements/SoLightModelElement.h>
-# include <Inventor/bundles/SoMaterialBundle.h>
+# include <Inventor/misc/SoState.h>
 #endif
 
 #include "SoFCMeshNode.h"
 #include <Mod/Mesh/App/Core/Elements.h>
-#include <Mod/Mesh/App/Core/Iterator.h>
 #include <Mod/Mesh/App/MeshFeature.h>
 
 using namespace MeshGui;
@@ -58,6 +60,12 @@ inline void glNormal(const Base::Vector3f& _n)
 { 
   float n[3];
   n[0]=_n.x; n[1]=_n.y;n[2]=_n.z;
+  glNormal3fv(n); 
+}
+
+// Helper functions: draw normal
+inline void glNormal(float* n)
+{ 
   glNormal3fv(n); 
 }
 
@@ -93,40 +101,57 @@ void SoFCMeshNode::GLRender(SoGLRenderAction *action)
   if (_mesh && shouldGLRender(action))
   {
     SoState*  state = action->getState();
-    SbBool send_normals = (SoLightModelElement::get(state) !=
-			   SoLightModelElement::BASE_COLOR);
 
     SoMaterialBundle mb(action);
-    mb.sendFirst();
+    //SoTextureCoordinateBundle tb(action, true, false);
 
-    drawFaces(send_normals?true:false);
+    SbBool needNormals = !mb.isColorOnly()/* || tb.isFunction()*/;
+    mb.sendFirst();  // make sure we have the correct material
+
+    drawFaces(needNormals);
+
+    // Disable caching for this node
+    SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
   }
 }
 
-void SoFCMeshNode::drawFaces(SbBool send_normals)
+void SoFCMeshNode::drawFaces(SbBool needNormals)
 {
-  MeshCore::MeshFacetIterator it(_mesh->getMesh());
+  // Use the data structure directly and not through MeshFacetIterator as this
+  // class is quite slowly (at least for rendering)
+  const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
+  const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
 
-  if (send_normals)
+  if (needNormals)
   {
     glBegin(GL_TRIANGLES);
-    for (it.Init(); it.More(); it.Next())
+    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it )
     {
-      glNormal(it->GetNormal());
-      glVertex(it->_aclPoints[0]);
-      glVertex(it->_aclPoints[1]);
-      glVertex(it->_aclPoints[2]);
+      const MeshCore::MeshPoint& v0 = rPoints[it->_aulPoints[0]];
+      const MeshCore::MeshPoint& v1 = rPoints[it->_aulPoints[1]];
+      const MeshCore::MeshPoint& v2 = rPoints[it->_aulPoints[2]];
+
+      // Calculate the normal n = (v1-v0)x(v2-v0)
+      float n[3];
+      n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
+      n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
+      n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
+      
+      glNormal(n);
+      glVertex(v0);
+      glVertex(v1);
+      glVertex(v2);
     }
     glEnd();
   }
   else 
   {
     glBegin(GL_TRIANGLES);
-    for (it.Init(); it.More(); it.Next())
+    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it )
     {
-      glVertex(it->_aclPoints[0]);
-      glVertex(it->_aclPoints[1]);
-      glVertex(it->_aclPoints[2]);
+      glVertex(rPoints[it->_aulPoints[0]]);
+      glVertex(rPoints[it->_aulPoints[1]]);
+      glVertex(rPoints[it->_aulPoints[2]]);
     }
     glEnd();
   }
@@ -136,7 +161,12 @@ void SoFCMeshNode::generatePrimitives(SoAction* _action)
 {
   if (_mesh)
   {
-    MeshCore::MeshFacetIterator it(_mesh->getMesh());
+    // Use the data structure directly and not through MeshFacetIterator as this
+    // class is quite slowly (at least for rendering)
+    const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
+    const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
+
+    // Create the information when moving over or picking into the scene
     SoPrimitiveVertex vertex;
     SoPointDetail pointDetail;
     SoFaceDetail faceDetail;
@@ -144,24 +174,37 @@ void SoFCMeshNode::generatePrimitives(SoAction* _action)
     vertex.setDetail(&pointDetail);
 
     beginShape(_action, TRIANGLES, &faceDetail);
-    MeshCore::MeshFacet face;
-    for (it.Init(); it.More(); it.Next())
+    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it )
     {
-      face = it.GetIndicies();
-      vertex.setNormal(sbvec3f(it->GetNormal()));
- 
-      pointDetail.setCoordinateIndex(face._aulPoints[0]);
-      vertex.setPoint(sbvec3f(it->_aclPoints[0]));
+      const MeshCore::MeshPoint& v0 = rPoints[it->_aulPoints[0]];
+      const MeshCore::MeshPoint& v1 = rPoints[it->_aulPoints[1]];
+      const MeshCore::MeshPoint& v2 = rPoints[it->_aulPoints[2]];
+
+      // Calculate the normal n = (v1-v0)x(v2-v0)
+      SbVec3f n;
+      n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
+      n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
+      n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
+
+      // Set the normal
+      vertex.setNormal(n);
+
+      // Vertex 0
+      pointDetail.setCoordinateIndex(it->_aulPoints[0]);
+      vertex.setPoint(sbvec3f(v0));
       shapeVertex(&vertex);
 
-      pointDetail.setCoordinateIndex(face._aulPoints[1]);
-      vertex.setPoint(sbvec3f(it->_aclPoints[1]));
+      // Vertex 1
+      pointDetail.setCoordinateIndex(it->_aulPoints[1]);
+      vertex.setPoint(sbvec3f(v1));
       shapeVertex(&vertex);
 
-      pointDetail.setCoordinateIndex(face._aulPoints[2]);
-      vertex.setPoint(sbvec3f(it->_aclPoints[2]));
+      // Vertex 2
+      pointDetail.setCoordinateIndex(it->_aulPoints[2]);
+      vertex.setPoint(sbvec3f(v2));
       shapeVertex(&vertex);
 
+      // Increment for the next face
       faceDetail.incFaceIndex();
     }
 
@@ -181,6 +224,7 @@ SoDetail * SoFCMeshNode::createTriangleDetail(SoRayPickAction * action,
 
 void SoFCMeshNode::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
 {
+  // Get the bbox directly from the mesh kernel
   if (_mesh && _mesh->getMesh().CountPoints() > 0) {
     const Base::BoundBox3f& cBox = _mesh->getMesh().GetBoundBox();
     box.setBounds(SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
@@ -191,5 +235,14 @@ void SoFCMeshNode::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
   else {
     box.setBounds(SbVec3f(0,0,0), SbVec3f(0,0,0));
     center.setValue(0.0f,0.0f,0.0f);
+  }
+}
+
+void SoFCMeshNode::getPrimitiveCount(SoGetPrimitiveCountAction * action)
+{
+  if (_mesh)
+  {
+    if (!this->shouldPrimitiveCount(action)) return;
+    action->addNumTriangles(_mesh->getMesh().CountFacets());
   }
 }

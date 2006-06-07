@@ -79,12 +79,16 @@
 #include <Inventor/SoPickedPoint.h>
 #include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
+#include <Inventor/actions/SoGetBoundingBoxAction.h> 
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/actions/SoWriteAction.h>
+#include <Inventor/bundles/SoMaterialBundle.h>
+#include <Inventor/bundles/SoTextureCoordinateBundle.h>
 #include <Inventor/details/SoFaceDetail.h>
 #include <Inventor/details/SoPointDetail.h>
 #include <Inventor/draggers/SoTransformerDragger.h>
+#include <Inventor/elements/SoGLCacheContextElement.h>
 #include <Inventor/events/SoEvent.h>
 #include <Inventor/events/SoKeyboardEvent.h>
 #include <Inventor/events/SoLocation2Event.h>
@@ -114,7 +118,6 @@
 #include <Inventor/nodes/SoLocateHighlight.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoMaterialBinding.h>
-#include <Inventor/bundles/SoMaterialBundle.h>
 #include <Inventor/nodes/SoNurbsSurface.h>
 #include <Inventor/nodes/SoNormalBinding.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
@@ -138,7 +141,6 @@
 #include <Inventor/nodes/SoSurroundScale.h>
 #include <Inventor/nodes/SoRotation.h>
 #include <Inventor/nodes/SoTranslation.h>
-#include <Inventor/actions/SoGetBoundingBoxAction.h> 
 
 
 #endif  //_PreComp_
