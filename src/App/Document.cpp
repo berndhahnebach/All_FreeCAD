@@ -820,6 +820,10 @@ string Document::getUniqueObjectName(const char *Name) const
   string CleanName;
   const char *It=Name;
 
+  // check for first character whether it's a digit
+  if ((*It != '\0') && (*It>=48 && *It<=57))
+    CleanName = "_";
+
   while(*It != '\0')
   {
     if(   (*It>=48 && *It<=57)   // Numbers
