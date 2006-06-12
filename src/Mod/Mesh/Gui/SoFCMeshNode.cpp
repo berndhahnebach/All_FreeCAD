@@ -417,3 +417,31 @@ unsigned int SoFCMeshNode::countTriangles() const
 {
   return (_mesh ? _mesh->getMesh().CountFacets() : 0);
 }
+
+/**
+ * Just implemented to keep things working, but no data are written to the output.
+ */
+void SoFCMeshNode::write( SoWriteAction* action ) 
+{
+  SoOutput * out = action->getOutput();
+
+  if (out->getStage() == SoOutput::COUNT_REFS) {
+    this->addWriteReference(out, false);
+  }
+  else if (out->getStage() == SoOutput::WRITE) {
+    // Just write the header and footer but no data
+    if (this->writeHeader(out, false, false)) return;
+    //this->getFieldData()->write(out, this);
+    this->writeFooter(out);
+  }
+  else assert(0 && "unknown stage");
+}
+
+/**
+ * Just implemented to keep things working, but no data are read.
+ */
+SbBool SoFCMeshNode::readInstance( SoInput* in, unsigned short  flags )
+{
+  return true;
+}
+
