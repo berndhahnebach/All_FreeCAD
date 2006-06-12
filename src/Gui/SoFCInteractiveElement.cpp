@@ -20,56 +20,52 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MESHGUI_SOFC_MESH_NODE_H
-#define MESHGUI_SOFC_MESH_NODE_H
 
-#include <Inventor/nodes/SoNode.h>
-#include <Inventor/nodes/SoShape.h>
+#include "PreCompiled.h"
 
-namespace Mesh {
-class Feature;
+#ifndef _PreComp_
+# include <Inventor/actions/SoGLRenderAction.h>
+#endif
+
+#include "SoFCInteractiveElement.h"
+
+using namespace Gui;
+
+SO_ELEMENT_SOURCE(SoFCInteractiveElement);
+
+void SoFCInteractiveElement::initClass(void)
+{
+  SO_ELEMENT_INIT_CLASS(SoFCInteractiveElement, inherited);
+  SO_ENABLE(SoGLRenderAction, SoFCInteractiveElement);
 }
 
-namespace MeshGui {
+void SoFCInteractiveElement::init(SoState * state)
+{
+  this->interactiveMode = false;
+}
 
-class GuiMeshExport SoFCMeshNode : public SoShape {
-  typedef SoShape inherited;
+SoFCInteractiveElement::~SoFCInteractiveElement()
+{
+}
 
-  SO_NODE_HEADER(SoFCMeshNode);
-    
-public:
-  static void initClass();
-  SoFCMeshNode(const Mesh::Feature* mesh=0);
-  void setMesh(const Mesh::Feature* mesh);
+void SoFCInteractiveElement::set(SoState * const state, SoNode * const node, SbBool mode)
+{
+  SoFCInteractiveElement * elem = (SoFCInteractiveElement *)
+    SoReplacedElement::getElement(state, classStackIndex, node);
+  elem->setElt(mode);
+}
 
-  unsigned int MaximumTriangles;
+SbBool SoFCInteractiveElement::get(SoState * const state)
+{
+  return SoFCInteractiveElement::getInstance(state)->interactiveMode;
+}
 
-protected:
-  virtual void GLRender(SoGLRenderAction *action);
-  virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
-  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
-  virtual void generatePrimitives(SoAction *action);
-  virtual SoDetail * createTriangleDetail(SoRayPickAction * action,
-                                          const SoPrimitiveVertex * v1,
-                                          const SoPrimitiveVertex * v2,
-                                          const SoPrimitiveVertex * v3,
-                                          SoPickedPoint * pp);
+void SoFCInteractiveElement::setElt(SbBool mode)
+{
+  this->interactiveMode = mode;
+}
 
-private:
-  // Force using the reference count mechanism.
-  virtual ~SoFCMeshNode() {};
-  virtual void notify(SoNotList * list);
-  // Draw faces
-  void drawFaces(SbBool needNormals);
-  void drawPoints(SbBool needNormals);
-  unsigned int countTriangles() const;
-
-private:
-  const Mesh::Feature*  _mesh;
-};
-
-} // namespace MeshGui
-
-
-#endif // MESHGUI_SOFC_MESH_NODE_H
-
+const SoFCInteractiveElement * SoFCInteractiveElement::getInstance(SoState * state)
+{
+  return (const SoFCInteractiveElement *) SoElement::getConstElement(state, classStackIndex);
+}

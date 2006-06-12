@@ -123,3 +123,4 @@ Version: V0.5B6 Date: Sat Apr 15 18:23:54 2006 +++++++++++++++++++++++++++++++
 
 Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + added spins to edit line width and point size in display dialog
++ Optimized SoFCMeshNode for huge handling of huge meshes

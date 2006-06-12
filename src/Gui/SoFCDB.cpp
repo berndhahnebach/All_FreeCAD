@@ -35,6 +35,7 @@
 #include "SoFCBackgroundGradient.h"
 #include "SoFCSelection.h"
 #include "SoFCSelectionAction.h"
+#include "SoFCInteractiveElement.h"
 
 #include "propertyeditor/propertyeditordate.h"
 #include "propertyeditor/propertyeditorfile.h"
@@ -56,6 +57,7 @@ void Gui::SoFCDB::init()
   SoInteraction           ::init();
   SoFCSelection           ::initClass();
   SoFCSelectionAction     ::initClass();
+  SoFCInteractiveElement  ::initClass();
 
 
   EditableItem            ::init();

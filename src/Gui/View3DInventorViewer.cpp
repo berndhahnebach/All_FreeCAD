@@ -83,6 +83,7 @@
 #include "SoFCColorGradient.h"
 #include "SoFCOffscreenRenderer.h"
 #include "SoFCSelection.h"
+#include "SoFCInteractiveElement.h"
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
 #include "MainWindow.h"
@@ -250,6 +251,10 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
 
   setBackgroundColor(SbColor(0.1f, 0.1f, 0.1f));
   setGradientBackgroud(true);
+
+  // set some callback functions for user interaction
+  addStartCallback(interactionStartCB);
+  addFinishCallback(interactionFinishCB);
 }
 
 void View3DInventorViewer::setGradientBackgroud(bool b)
@@ -443,6 +448,25 @@ void View3DInventorViewer::sizeChanged( const SbVec2s& size )
   }
 
   inherited::sizeChanged( size );
+}
+
+/**
+ * Sets the SoFCInteractiveElement to \a true.
+ */
+void View3DInventorViewer::interactionStartCB(void * data, SoQtViewer * viewer)
+{
+  SoGLRenderAction * glra = viewer->getGLRenderAction();
+  SoFCInteractiveElement::set(glra->getState(), viewer->getSceneGraph(), true);
+}
+
+/**
+ * Sets the SoFCInteractiveElement to \a false and forces a redraw.
+ */
+void View3DInventorViewer::interactionFinishCB(void * data, SoQtViewer * viewer)
+{
+  SoGLRenderAction * glra = viewer->getGLRenderAction();
+  SoFCInteractiveElement::set(glra->getState(), viewer->getSceneGraph(), false);
+  viewer->render();
 }
 
 void View3DInventorViewer::actualRedraw(void)
@@ -823,6 +847,13 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
       }
     }
   }
+
+  // invokes the appropriate callback function when user interaction has started or finished
+  bool bInteraction = (MoveMode||ZoomMode||RotMode|_bSpining);
+  if (bInteraction && getInteractiveCount()==0)
+    interactiveCountInc();
+  else if (!bInteraction&&getInteractiveCount()>0)
+    interactiveCountDec();
 
 
   bool baseProcessed;

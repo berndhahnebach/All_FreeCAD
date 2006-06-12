@@ -20,56 +20,38 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef MESHGUI_SOFC_MESH_NODE_H
-#define MESHGUI_SOFC_MESH_NODE_H
 
-#include <Inventor/nodes/SoNode.h>
-#include <Inventor/nodes/SoShape.h>
+#ifndef COIN_SOFCINTERACTIVEELEMENT_H
+#define COIN_SOFCINTERACTIVEELEMENT_H
 
-namespace Mesh {
-class Feature;
-}
+#include <Inventor/elements/SoReplacedElement.h>
 
-namespace MeshGui {
 
-class GuiMeshExport SoFCMeshNode : public SoShape {
-  typedef SoShape inherited;
+namespace Gui {
+/**
+ * @author Werner Mayer
+ */
+class GuiExport SoFCInteractiveElement : public SoReplacedElement {
+  typedef SoReplacedElement inherited;
 
-  SO_NODE_HEADER(SoFCMeshNode);
-    
+  SO_ELEMENT_HEADER(SoFCInteractiveElement);
+
 public:
-  static void initClass();
-  SoFCMeshNode(const Mesh::Feature* mesh=0);
-  void setMesh(const Mesh::Feature* mesh);
+  static void initClass(void);
 
-  unsigned int MaximumTriangles;
+  virtual void init(SoState * state);
+  static void set(SoState * const state, SoNode * const node, SbBool mode);
+  static SbBool get(SoState * const state);
+  static const SoFCInteractiveElement * getInstance(SoState * state);
 
 protected:
-  virtual void GLRender(SoGLRenderAction *action);
-  virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
-  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
-  virtual void generatePrimitives(SoAction *action);
-  virtual SoDetail * createTriangleDetail(SoRayPickAction * action,
-                                          const SoPrimitiveVertex * v1,
-                                          const SoPrimitiveVertex * v2,
-                                          const SoPrimitiveVertex * v3,
-                                          SoPickedPoint * pp);
+  virtual ~SoFCInteractiveElement();
+  virtual void setElt(SbBool mode);
 
 private:
-  // Force using the reference count mechanism.
-  virtual ~SoFCMeshNode() {};
-  virtual void notify(SoNotList * list);
-  // Draw faces
-  void drawFaces(SbBool needNormals);
-  void drawPoints(SbBool needNormals);
-  unsigned int countTriangles() const;
-
-private:
-  const Mesh::Feature*  _mesh;
+  SbBool interactiveMode;
 };
 
-} // namespace MeshGui
+} // namespace Gui
 
-
-#endif // MESHGUI_SOFC_MESH_NODE_H
-
+#endif // COIN_SOFCINTERACTIVEELEMENT_H

@@ -425,7 +425,7 @@ void View3DInventor::setCursor(const QCursor& aCursor)
 
 void View3DInventor::dump(const char* filename)
 {
-  _viewer->dumpToFile(filename,false);
+  _viewer->dumpToFile(filename,true);
 }
 
 /**
