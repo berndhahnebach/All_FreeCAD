@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADApp"
-	ProjectGUID="{9032BB82-F9E9-40EB-8D5A-D2523801C5FF}"
+	ProjectGUID="{0D1D2CAA-E51E-4DE0-BFCD-2BF1A7794F3B}"
 	>
 	<Platforms>
 		<Platform
@@ -765,30 +765,6 @@
 		<File
 			RelativePath="DataWithProperty.h"
 			>
-		</File>
-		<File
-			RelativePath="DllMain.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Doxygen.cpp"

@@ -62,6 +62,13 @@ void SetEnvironment(const char* sVar, const char* sVal)
 	env += sVal;
 	_putenv (env.c_str());
 	//SetEnvironmentVariable(sVar,sVal);
+  if (! SetEnvironmentVariable(sVar,sVal) )
+  {
+    char buf[255];
+    sprintf(buf,"SetEnvironmentVariable %s failed (%d)\n", sVar, GetLastError()); 
+    throw Base::Exception(buf);
+  }
+
 #endif
 }
 

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMesh"
-	ProjectGUID="{CDB64953-5399-4327-A9E3-3D41CC0BBABD}"
+	ProjectGUID="{ED272B88-477B-44DF-B816-7538DBBAA3A2}"
 	>
 	<Platforms>
 		<Platform
@@ -75,7 +75,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib Wm3Foundation80.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib"
 				OutputFile="Release\Mesh.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
