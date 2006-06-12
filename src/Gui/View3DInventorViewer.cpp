@@ -44,6 +44,7 @@
 # include <Inventor/nodes/SoCoordinate3.h>
 # include <Inventor/nodes/SoCube.h>
 # include <Inventor/nodes/SoDirectionalLight.h>
+# include <Inventor/nodes/SoEventCallback.h>
 # include <Inventor/nodes/SoFaceSet.h>
 # include <Inventor/nodes/SoImage.h>
 # include <Inventor/nodes/SoIndexedFaceSet.h>
@@ -93,6 +94,7 @@
 #include "ViewProvider.h"
 // build in Inventor
 
+//#define FC_LOGGING_CB
 
 using namespace Gui;
 
@@ -236,6 +238,13 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   // is not realy working with Coin3D. 
 //  redrawOverlayOnSelectionChange(pcSelection);
   setSceneGraph(pcViewProviderRoot);
+
+  // This is a callback node that logs all action that traverse the Inventor tree.
+#if defined (FC_DEBUG) && defined(FC_LOGGING_CB)
+  SoCallback * cb = new SoCallback;	 	
+  cb->setCallback(interactionLoggerCB, this);
+  pcViewProviderRoot->addChild(cb);
+#endif
 
 
   // set the transperency and antialiasing settings
@@ -467,6 +476,14 @@ void View3DInventorViewer::interactionFinishCB(void * data, SoQtViewer * viewer)
   SoGLRenderAction * glra = viewer->getGLRenderAction();
   SoFCInteractiveElement::set(glra->getState(), viewer->getSceneGraph(), false);
   viewer->render();
+}
+
+/**
+ * Logs the type of the action that traverses the Inventor tree.
+ */
+void View3DInventorViewer::interactionLoggerCB(void * ud, SoAction* action)
+{
+  Base::Console().Log("%s\n", action->getTypeId().getName().getString());
 }
 
 void View3DInventorViewer::actualRedraw(void)
