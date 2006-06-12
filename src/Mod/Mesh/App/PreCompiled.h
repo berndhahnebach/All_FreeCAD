@@ -101,6 +101,8 @@
 #include <Wm3Sphere3.h>
 #include <Wm3Triangle3.h>
 #include <Wm3Vector3.h>
+#include <Wm3Query.h>
+#include <Wm3Query2.h>
 
 
 
