@@ -42,6 +42,7 @@ public:
   SoFCMeshNode(const Mesh::Feature* mesh=0);
   void setMesh(const Mesh::Feature* mesh);
 
+  virtual void write( SoWriteAction* action );
   unsigned int MaximumTriangles;
 
 protected:
@@ -54,6 +55,8 @@ protected:
                                           const SoPrimitiveVertex * v2,
                                           const SoPrimitiveVertex * v3,
                                           SoPickedPoint * pp);
+
+  virtual SbBool readInstance( SoInput* in, unsigned short  flags );
 
 private:
   // Force using the reference count mechanism.
