@@ -37,7 +37,7 @@ namespace Mesh
  * into the FreeCAD workspace.
  * @author Werner Mayer
  */
-class Export : public Mesh::Feature
+class AppMeshExport Export : public Mesh::Feature
 {
   PROPERTY_HEADER(Mesh::Export);
 
