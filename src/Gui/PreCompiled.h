@@ -76,6 +76,7 @@
 #include <Inventor/nodes/SoDirectionalLight.h>
 #include <Inventor/nodes/SoDrawStyle.h>
 #include <Inventor/nodes/SoEnvironment.h>
+#include <Inventor/nodes/SoEventCallback.h>
 #include <Inventor/nodes/SoExtSelection.h>
 #include <Inventor/nodes/SoFaceSet.h>
 #include <Inventor/nodes/SoImage.h>

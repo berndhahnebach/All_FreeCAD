@@ -38,6 +38,7 @@ class SoShapeHints;
 class SoMaterial;
 class SoRotationXYZ;
 class SbSphereSheetProjector;
+class SoEventCallback;
 
 namespace Gui {
 
@@ -164,6 +165,7 @@ protected:
   static void clearBuffer(void * userdata, SoAction * action);
   static void interactionStartCB(void * data, SoQtViewer * viewer);
   static void interactionFinishCB(void * data, SoQtViewer * viewer);
+  static void interactionLoggerCB(void * ud, SoAction* action);
 
   SbVec2f lastmouseposition;
   SbPlane panningplane;

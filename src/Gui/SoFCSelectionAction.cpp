@@ -112,6 +112,7 @@ void SoFCSelectionAction::initClass()
 
 
 
+  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
   SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
   SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
   SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
