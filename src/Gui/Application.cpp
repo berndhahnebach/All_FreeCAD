@@ -749,6 +749,24 @@ void messageHandlerSoQt( const SbString errmsg, SoQt::FatalErrors errcode, void 
 #endif
 
 /**
+ * This method gets called for Coin internal processes that take a long time.
+ * Unfortunately, this framework doesn't seem to work why this method is uncommented at the moment.
+ */
+/*
+SbBool progressCallbackHandler(const SbName & itemid, float fraction, SbBool interruptible, void * userdata)
+{
+  if ( fraction < 0.0f )
+    Base::Sequencer().halt();
+  else if ( fraction == 0.0f )
+    Base::Sequencer().start(itemid, 100);
+  else if ( fraction == 1.0f )
+    Base::Sequencer().stop();
+  else
+    Base::Sequencer().next();
+  return true;
+}*/
+
+/**
  * A modal dialog has its own event loop and normally gets shown with QDialog::exec().
  * If an exception is thrown from within the dialog and this exception is caught in the calling
  * instance then the main event loop from the application gets terminated, because the implementation
@@ -829,6 +847,8 @@ void Application::runApplication(void)
   SoDebugError::setHandlerCallback( messageHandlerCoin, 0 );
   SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
 #endif
+
+  //SoDB::addProgressCallback(progressCallbackHandler,0);
 
   
   Console().Log("Init: Processing command line files\n");

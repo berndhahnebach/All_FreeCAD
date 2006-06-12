@@ -276,6 +276,8 @@ libFreeCADGui_la_SOURCES=\
 		SoFCColorLegend.h \
 		SoFCDB.cpp \
 		SoFCDB.h \
+		SoFCInteractiveElement.cpp \
+		SoFCInteractiveElement.h \
 		SoFCOffscreenRenderer.cpp \
 		SoFCOffscreenRenderer.h \
 		SoFCSelection.cpp \

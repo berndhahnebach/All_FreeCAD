@@ -162,6 +162,8 @@ protected:
   void printDimension();
 
   static void clearBuffer(void * userdata, SoAction * action);
+  static void interactionStartCB(void * data, SoQtViewer * viewer);
+  static void interactionFinishCB(void * data, SoQtViewer * viewer);
 
   SbVec2f lastmouseposition;
   SbPlane panningplane;
