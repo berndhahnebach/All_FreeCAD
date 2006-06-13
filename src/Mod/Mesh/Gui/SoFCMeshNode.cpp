@@ -29,9 +29,11 @@
 # endif
 # include <GL/gl.h>
 # include <Inventor/SbBox.h>
+# include <Inventor/SoOutput.h>
 # include <Inventor/SoPrimitiveVertex.h>
 # include <Inventor/actions/SoGLRenderAction.h>
 # include <Inventor/actions/SoGetPrimitiveCountAction.h>
+# include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/bundles/SoMaterialBundle.h>
 # include <Inventor/bundles/SoTextureCoordinateBundle.h>
 # include <Inventor/details/SoFaceDetail.h>

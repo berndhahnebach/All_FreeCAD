@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#  include <Inventor/nodes/SoCallback.h>
 #  include <Inventor/nodes/SoComplexity.h>
 #  include <Inventor/nodes/SoCoordinate3.h>
 #  include <Inventor/nodes/SoCoordinate4.h>
