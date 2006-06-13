@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib opengl32.lib coin2.lib soqt1.lib qt-mtnc321.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\MeshGui.pyd" /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy       /y       /f       Release\MeshGui.pyd       ..\..\..\..\Mod\Mesh\      	xcopy       /y       /f       ..\InitGui.py       ..\..\..\..\Mod\Mesh\      	xcopy       /y       /f       Release\MeshGui.lib       ..\..\..\..\Mod\Mesh\ 
+PostBuild_Cmds=xcopy        /y        /f        Release\MeshGui.pyd        ..\..\..\..\Mod\Mesh\       	xcopy        /y        /f        ..\InitGui.py        ..\..\..\..\Mod\Mesh\       	xcopy        /y        /f        Release\MeshGui.lib        ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppMeshGui - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib opengl32.lib coin2d.lib soqt1d.lib qt-mtnc321.lib Wm3Foundation60.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib gts-0.7.lib glib-1.3.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\MeshGui_d.pyd" /pdbtype:sept /libpath:"../../../../lib"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy       /y       /f       Debug\MeshGui_d.pyd       ..\..\..\..\Mod\Mesh\      	xcopy       /y       /f       ..\InitGui.py       ..\..\..\..\Mod\Mesh\      	xcopy       /y       /f       Debug\MeshGui_d.lib       ..\..\..\..\Mod\Mesh\ 
+PostBuild_Cmds=xcopy        /y        /f        Debug\MeshGui_d.pyd        ..\..\..\..\Mod\Mesh\       	xcopy        /y        /f        ..\InitGui.py        ..\..\..\..\Mod\Mesh\       	xcopy        /y        /f        Debug\MeshGui_d.lib        ..\..\..\..\Mod\Mesh\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -248,36 +248,9 @@ SOURCE=.\DlgRegularSolidImp.cpp
 SOURCE=.\DlgRegularSolidImp.h
 # End Source File
 # End Group
-# Begin Source File
+# Begin Group "Inventor"
 
-SOURCE=.\AppMeshGui.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Command.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Doxygen.cpp
-# SUBTRACT CPP /YX /Yc /Yu
-# End Source File
-# Begin Source File
-
-SOURCE=.\PreCompiled.cpp
-# ADD CPP /Yc"PreCompiled.h"
-# End Source File
-# Begin Source File
-
-SOURCE=.\PreCompiled.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\PropertyEditorMesh.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\PropertyEditorMesh.h
-# End Source File
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\SoFCMeshNode.cpp
@@ -286,6 +259,10 @@ SOURCE=.\SoFCMeshNode.cpp
 
 SOURCE=.\SoFCMeshNode.h
 # End Source File
+# End Group
+# Begin Group "ViewProvider"
+
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=.\ViewProvider.cpp
@@ -325,6 +302,37 @@ SOURCE=.\ViewProviderTransformDemolding.cpp
 # Begin Source File
 
 SOURCE=.\ViewProviderTransformDemolding.h
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\AppMeshGui.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Command.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Doxygen.cpp
+# SUBTRACT CPP /YX /Yc /Yu
+# End Source File
+# Begin Source File
+
+SOURCE=.\PreCompiled.cpp
+# ADD CPP /Yc"PreCompiled.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\PreCompiled.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyEditorMesh.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\PropertyEditorMesh.h
 # End Source File
 # Begin Source File
 

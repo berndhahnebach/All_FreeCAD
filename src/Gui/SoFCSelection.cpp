@@ -69,7 +69,7 @@ SoFCSelection::SoFCSelection()
   SO_NODE_ADD_FIELD(style,          (EMISSIVE));
   SO_NODE_ADD_FIELD(highlightMode,  (AUTO));
   SO_NODE_ADD_FIELD(selectionMode,  (SEL_ON));
-  SO_NODE_ADD_FIELD(selected,       (OFF));
+  SO_NODE_ADD_FIELD(selected,       (NOTSELECTED));
   SO_NODE_ADD_FIELD(documentName,   (""));
   SO_NODE_ADD_FIELD(objectName,    (""));
   SO_NODE_ADD_FIELD(subElementName, (""));

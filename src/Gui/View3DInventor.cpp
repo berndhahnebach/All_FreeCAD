@@ -28,6 +28,7 @@
 # include <qfileinfo.h>
 # include <qvbox.h>
 # include <Inventor/actions/SoWriteAction.h>
+# include <Inventor/actions/SoGetPrimitiveCountAction.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
@@ -425,7 +426,14 @@ void View3DInventor::setCursor(const QCursor& aCursor)
 
 void View3DInventor::dump(const char* filename)
 {
-  _viewer->dumpToFile(filename,true);
+  SoGetPrimitiveCountAction action;
+  action.setCanApproximate(true);
+  action.apply(_viewer->getSceneGraph());
+
+  if ( action.getTriangleCount() > 100000 || action.getPointCount() > 30000 || action.getLineCount() > 10000 )
+    _viewer->dumpToFile(filename,true);
+  else
+    _viewer->dumpToFile(filename,false);
 }
 
 /**
