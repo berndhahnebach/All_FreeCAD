@@ -104,6 +104,8 @@ void SoFCMeshNode::initClass()
 SoFCMeshNode::SoFCMeshNode(const Mesh::Feature* mesh) : MaximumTriangles(500000),_mesh(mesh)
 {
   SO_NODE_CONSTRUCTOR(SoFCMeshNode);
+  SO_NODE_ADD_FIELD(point, (0.0f, 0.0f, 0.0f));
+  SO_NODE_ADD_FIELD(coordIndex,(0));
 }
 
 void SoFCMeshNode::notify(SoNotList * node)
@@ -421,29 +423,69 @@ unsigned int SoFCMeshNode::countTriangles() const
 }
 
 /**
- * Just implemented to keep things working, but no data are written to the output.
+ * Writes out the mesh node.
  */
 void SoFCMeshNode::write( SoWriteAction* action ) 
-{
+{ 
   SoOutput * out = action->getOutput();
 
   if (out->getStage() == SoOutput::COUNT_REFS) {
-    this->addWriteReference(out, false);
+    this->addWriteReference(out, FALSE);
   }
   else if (out->getStage() == SoOutput::WRITE) {
-    // Just write the header and footer but no data
-    if (this->writeHeader(out, false, false)) return;
-    //this->getFieldData()->write(out, this);
+    const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
+    const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
+    if (this->writeHeader(out, FALSE, FALSE)) return;
+    point.setNum(rPoints.size());
+    unsigned int pos=0;
+    for (MeshCore::MeshPointArray::_TConstIterator cP=rPoints.begin(); cP!=rPoints.end(); ++cP)
+      point.set1Value(pos++,cP->x,cP->y,cP->z);
+    coordIndex.setNum(3*rFacets.size());
+    pos=0;
+    for (MeshCore::MeshFacetArray::_TConstIterator cF=rFacets.begin(); cF!=rFacets.end(); ++cF){
+      coordIndex.set1Value(pos++,cF->_aulPoints[0]);
+      coordIndex.set1Value(pos++,cF->_aulPoints[1]);
+      coordIndex.set1Value(pos++,cF->_aulPoints[2]);
+    }
+    this->getFieldData()->write(out, this);
     this->writeFooter(out);
+    point.deleteValues(0);
+    coordIndex.deleteValues(0);
   }
-  else assert(0 && "unknown stage");
 }
 
 /**
- * Just implemented to keep things working, but no data are read.
+ * Reads in the mesh node from the input stream.
  */
 SbBool SoFCMeshNode::readInstance( SoInput* in, unsigned short  flags )
 {
-  return true;
+  SbBool ret = inherited::readInstance(in, flags);
+
+  MeshCore::MeshPointArray cPoints;
+  cPoints.resize(point.getNum());
+  for (int i=0; i<point.getNum(); ++i) {
+    const SbVec3f& pt = point[i];
+    cPoints[i].Set(pt[0],pt[1],pt[2]);
+  }
+
+  MeshCore::MeshFacetArray cFacets;
+  cFacets.resize(coordIndex.getNum()/3);
+  unsigned long k=0;
+  for (int j=0; j<coordIndex.getNum(); ++k) {
+    cFacets[k]._aulPoints[0] = coordIndex[j++];
+    cFacets[k]._aulPoints[1] = coordIndex[j++];
+    cFacets[k]._aulPoints[2] = coordIndex[j++];
+  }
+
+  point.deleteValues(0);
+  coordIndex.deleteValues(0);
+
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel;
+  kernel->Adopt(cPoints, cFacets, true);
+
+  Mesh::Feature* mesh = new Mesh::Feature;
+  mesh->Mesh.setValue(*kernel);
+  _mesh=mesh;
+  return ret;
 }
 

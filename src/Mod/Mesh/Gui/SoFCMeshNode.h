@@ -25,6 +25,8 @@
 
 #include <Inventor/nodes/SoNode.h>
 #include <Inventor/nodes/SoShape.h>
+#include <Inventor/fields/SoMFVec3f.h>
+#include <Inventor/fields/SoMFInt32.h>
 
 namespace Mesh {
 class Feature;
@@ -69,6 +71,8 @@ private:
 
 private:
   const Mesh::Feature*  _mesh;
+  SoMFVec3f point;
+  SoMFInt32 coordIndex;
 };
 
 } // namespace MeshGui

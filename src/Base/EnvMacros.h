@@ -34,6 +34,8 @@
 # include <windows.h>
 #endif
 
+#include "Exception.h"
+
 #define FC_VERBOSE
 
 void EnvPrint(const char* sVar, const char* sVal)
