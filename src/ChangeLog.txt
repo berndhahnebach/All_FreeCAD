@@ -125,3 +125,5 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + added spins to edit line width and point size in display dialog
 + Optimized SoFCMeshNode for huge handling of huge meshes
 + Prepend SoCallback node to log all traversing actions (only for debugging)
++ command for toggling clipping plane
++ command for freezing view positions

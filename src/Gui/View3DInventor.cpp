@@ -64,8 +64,6 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
   setMouseTracking(true);
   // accept drops on the window, get handled in dropEvent, dragEnterEvent   
   setAcceptDrops(true);
-
-  pcActViewProvider = 0l;
   
   // attache Parameter Observer
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/View");
@@ -87,9 +85,7 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
 View3DInventor::~View3DInventor()
 {
   hGrp->Detach(this);
-
   delete _viewer;
-//  pcSepRoot->unref();
 }
 
 
@@ -130,33 +126,6 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
 {
   setViewerDefaults();
 }
-
-SoSeparator *View3DInventor::createAxis(void)
-{
-  // create axis
-  pcSepAxis = new SoSeparator();
-
-  // x Axis
-  SoMaterial *pcMat = new SoMaterial();
-  pcMat->diffuseColor.setValue(1.0,0,0);
-  pcSepAxis->addChild(pcMat);
-  SoCylinder *pcCylinder = new SoCylinder();
-  pcCylinder->height.setValue(100);
-
-  SoTransform *pcTransform = new SoTransform();
-  pcTransform->rotation.setValue(  SbVec3f (1,0,0), 90);
-  pcSepAxis->addChild(pcTransform);
-
-  // y axis
-  pcMat = new SoMaterial();
-  pcMat->diffuseColor.setValue(0,1.0,0);
-  pcSepAxis->addChild(pcMat);
-  pcCylinder = new SoCylinder();
-  pcCylinder->height.setValue(100);
-
-  return pcSepAxis;
-}
-
 
 void View3DInventor::onUpdate(void)
 {
@@ -364,15 +333,9 @@ bool View3DInventor::onHasMsg(const char* pMsg)
 bool View3DInventor::setCamera(const char* pCamera)
 {
   SoCamera * CamViewer = _viewer->getCamera();
-  if(!CamViewer)
-    Base::Console().Warning("setCamera because no camera set so far....");
-  SoPerspectiveCamera  * CamViewerP = 0;
-  SoOrthographicCamera * CamViewerO = 0;
-
-  if (CamViewer->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
-    CamViewerP = (SoPerspectiveCamera *)CamViewer;  // safe downward cast, knows the type
-  }else if (CamViewer->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
-    CamViewerO = (SoOrthographicCamera *)CamViewer;  // safe downward cast, knows the type
+  if(!CamViewer) {
+    Base::Console().Warning("No camera set so far...");
+    return false;
   }
 
   SoInput in;
@@ -382,8 +345,24 @@ bool View3DInventor::setCamera(const char* pCamera)
   SoDB::read(&in,(SoNode*&)Cam);
 
   if (!Cam){
-    Base::Console().Error("setCamera failed to read: %s\n",pCamera);
-    return true;
+    Base::Console().Error("Camera settings failed to read: %s\n",pCamera);
+    return false;
+  }
+
+  // toogle between persepective and orthographic camera
+  if (Cam->getTypeId() != CamViewer->getTypeId())
+  {
+    _viewer->setCameraType(Cam->getTypeId());
+    CamViewer = _viewer->getCamera();
+  }
+  
+  SoPerspectiveCamera  * CamViewerP = 0;
+  SoOrthographicCamera * CamViewerO = 0;
+
+  if (CamViewer->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+    CamViewerP = (SoPerspectiveCamera *)CamViewer;  // safe downward cast, knows the type
+  }else if (CamViewer->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+    CamViewerO = (SoOrthographicCamera *)CamViewer;  // safe downward cast, knows the type
   }
 
   if (Cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
@@ -412,6 +391,16 @@ bool View3DInventor::setCamera(const char* pCamera)
   }
 
   return true;
+}
+
+void View3DInventor::toggleClippingPlane()
+{
+  _viewer->toggleClippingPlane();
+}
+
+bool View3DInventor::hasClippingPlane() const
+{
+  return _viewer->hasClippingPlane();
 }
 
 void View3DInventor::onWindowActivated ()

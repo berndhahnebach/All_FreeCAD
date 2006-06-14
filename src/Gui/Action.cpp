@@ -405,6 +405,140 @@ void MRUActionGroup::onActivated ()
 
 // --------------------------------------------------------------------
 
+SepAction::SepAction ( QObject * parent, const char * name, bool toggle )
+  : QAction( parent, name, toggle )
+{
+}
+
+SepAction::~SepAction()
+{
+}
+
+bool SepAction::addTo(QWidget* w)
+{
+  QAction::addTo(w);
+  QAction::removeFrom(w);
+  return true;
+}
+
+/**
+ * Sets the index for this action to \a index. 
+ */
+void SepAction::addedTo ( int index, QPopupMenu * menu )
+{
+  menu->insertSeparator();
+}
+
+ListAction::ListAction ( QObject * parent, const char * name, bool toggle )
+  : QAction( parent, name, toggle ), _idx(-1)
+{
+}
+
+ListAction::~ListAction()
+{
+}
+
+/**
+ * Sets the index for this action to \a index. 
+ */
+void ListAction::addedTo ( int index, QPopupMenu * menu )
+{
+  _idx = index;
+}
+
+/**
+ * Returns the index number.
+ */
+int ListAction::index() const
+{
+  return _idx;
+}
+
+// --------------------------------------------------------------------
+
+ListActionGroup::ListActionGroup ( Command* pcCmd, QObject * parent, const char * name, bool exclusive )
+  :QActionGroup( parent, name, exclusive ), _pcCmd( pcCmd )
+{
+}
+
+ListActionGroup::~ListActionGroup()
+{ 
+}
+
+/**
+ * Adds a ListAction object to this group.
+ */
+void ListActionGroup::addActionData( const QString& item, const QString& data)
+{
+  // This is a trick to fool Qt's QAction handling.
+  // To the QAction constructor a null pointer is given to delay the addition to a QActionGroup.
+  // Reason: If the parent QActionGroup is already added to a widget then it isn't possible to
+  // get called our own addedTo() method but the QAction::addedTo() is called instead.
+  QAction* action = 0;
+  if ( item == "Separator" )
+    action = new SepAction(0,item);
+  else
+    action = new ListAction( 0, item );
+  insertChild(action);
+  action->setText( data );
+  action->setMenuText( item );
+
+  connect( action, SIGNAL( activated() ), this, SLOT( onActivated() ));
+
+  // now addedTo() is called whenever a new action is added to this action group
+  add( action );
+}
+
+QString ListActionGroup::getData(int idx) const
+{
+  int pos=0;
+  QObjectList *l = queryList( "Gui::ListAction" );
+  QObjectListIt it( *l );
+  QObject *obj;
+  while ( (obj = it.current()) != 0 ) 
+  {
+    if ( pos == idx )
+      return ((QAction*)obj)->text();
+    ++pos;
+    ++it;
+  }
+
+  delete l; // delete the list, not the objects
+  return QString::null;
+}
+
+QAction* ListActionGroup::getAction(int idx) const
+{
+  int pos=0;
+  QObjectList *l = queryList( "Gui::ListAction" );
+  QObjectListIt it( *l );
+  QObject *obj;
+  while ( (obj = it.current()) != 0 ) 
+  {
+    if ( pos == idx )
+      return ((QAction*)obj);
+    ++pos;
+    ++it;
+  }
+
+  delete l; // delete the list, not the objects
+  return 0;
+}
+
+void ListActionGroup::onActivated ()
+{
+  const QObject* o = sender();
+
+  if ( o->inherits("Gui::ListAction") )
+  {
+    ListAction* act = (ListAction*)o;
+    if ( act )
+      _pcCmd->invoke( act->index() );
+  }
+}
+
+// --------------------------------------------------------------------
+
 UndoRedoAction::UndoRedoAction ( Command* pcCmd,QObject * parent, const char * name, bool toggle )
   : Action(pcCmd, parent, name, toggle)
 {

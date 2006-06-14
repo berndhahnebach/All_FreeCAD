@@ -35,6 +35,7 @@
 #include "Command.h"
 #include "Action.h"
 #include "Application.h"
+#include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "MainWindow.h"
 #include "View.h"
@@ -155,6 +156,114 @@ bool StdCameraType::isActive(void)
   }
 
   return false;
+}
+
+//===========================================================================
+// Std_FreezeViews
+//===========================================================================
+DEF_STD_CMD_AC(StdCmdFreezeViews);
+
+StdCmdFreezeViews::StdCmdFreezeViews()
+  :Command("Std_FreezeViews")
+{
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Freeze display");
+  sToolTipText  = QT_TR_NOOP("Freezes the current view position");
+  sWhatsThis    = QT_TR_NOOP("Freezes the current view position");
+  sStatusTip    = QT_TR_NOOP("Freezes the current view position");
+  iAccel        = Qt::SHIFT+Qt::Key_F;
+}
+
+QAction * StdCmdFreezeViews::createAction(void)
+{
+  ListActionGroup* pcAction = new ListActionGroup( this, getMainWindow(),sName, false );
+  pcAction->setUsesDropDown( true );
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setMenuText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  if(sPixmap)
+    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+
+  pcAction->addActionData( QT_TR_NOOP("Freeze view") );
+  QAction* action = pcAction->getAction(0);
+  if (action)
+    action->setAccel(iAccel);
+  pcAction->addSeparator();
+
+  return pcAction;
+}
+
+void StdCmdFreezeViews::activated(int iMsg)
+{
+  ListActionGroup* pcAction = dynamic_cast<ListActionGroup*>(_pcAction);
+  if ( iMsg == 0 ) {
+    const char* ppReturn=0;
+    getGuiApplication()->sendMsgToActiveView("GetCamera",&ppReturn);
+    static int ct = 1;
+    QString viewnr = QString(QT_TR_NOOP("Restore view &%1")).arg(ct++);
+    pcAction->addActionData( viewnr, ppReturn );
+    if ( ct < 11 ) {
+      static int accel = Qt::CTRL+Qt::Key_1;
+      QAction* action = pcAction->getAction(ct-1);
+      if (action)
+        action->setAccel(accel++);
+    }
+  } else {
+    QString data = pcAction->getData(iMsg-1);
+    QString send = QString("SetCamera %1").arg(data);
+    getGuiApplication()->sendMsgToActiveView(send.latin1());
+  }
+}
+
+bool StdCmdFreezeViews::isActive(void)
+{
+  return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+}
+
+//===========================================================================
+// Std_ToggleClipPlane
+//===========================================================================
+DEF_STD_CMD_TOGGLE_A(StdCmdToggleClipPlane);
+
+StdCmdToggleClipPlane::StdCmdToggleClipPlane()
+  :ToggleCommand("Std_ToggleClipPlane")
+{
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Clipping plane");
+  sToolTipText  = QT_TR_NOOP("Toggles clipping plane for active view");
+  sWhatsThis    = QT_TR_NOOP("Toggles clipping plane for active view");
+  sStatusTip    = QT_TR_NOOP("Toggles clipping plane for active view");
+}
+
+void StdCmdToggleClipPlane::activated(int iMsg)
+{
+  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  if (view)
+  {
+    view->toggleClippingPlane();
+  }
+}
+
+bool StdCmdToggleClipPlane::isActive(void)
+{
+  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  if (view){
+    if (_pcAction->isOn() != view->hasClippingPlane()){
+      _pcAction->blockSignals(true);
+      _pcAction->setOn(view->hasClippingPlane());
+      _pcAction->blockSignals(false);
+    }
+    return true;
+  } else {
+    if (_pcAction->isOn()){
+      _pcAction->blockSignals(true);
+      _pcAction->setOn(false);
+      _pcAction->blockSignals(false);
+    }
+    return false;
+  }
 }
 
 //===========================================================================
@@ -837,9 +946,9 @@ StdCmdViewIvIssueCamPos::StdCmdViewIvIssueCamPos()
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Issue camera position");
-  sToolTipText  = QT_TR_NOOP("Issue the camera posiotion to the console and to a macro, to easily recall this position");
-  sWhatsThis    = QT_TR_NOOP("Issue the camera posiotion to the console and to a macro, to easily recall this position");
-  sStatusTip    = QT_TR_NOOP("Issue the camera posiotion to the console and to a macro, to easily recall this position");
+  sToolTipText  = QT_TR_NOOP("Issue the camera position to the console and to a macro, to easily recall this position");
+  sWhatsThis    = QT_TR_NOOP("Issue the camera position to the console and to a macro, to easily recall this position");
+  sStatusTip    = QT_TR_NOOP("Issue the camera position to the console and to a macro, to easily recall this position");
   sPixmap       = "Std_Tool8";
   iAccel        = 0;
 }
@@ -923,6 +1032,8 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdPerspectiveCamera());
   rcCmdMgr.addCommand(new StdCmdOrthographicCamera());
   rcCmdMgr.addCommand(new StdCameraType());
+  rcCmdMgr.addCommand(new StdCmdToggleClipPlane());
+  rcCmdMgr.addCommand(new StdCmdFreezeViews());
 }
 
 } // namespace Gui

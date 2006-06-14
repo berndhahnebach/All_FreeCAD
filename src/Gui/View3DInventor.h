@@ -84,14 +84,13 @@ public:
   void setViewerDefaults(void);
 
   bool setCamera(const char* pCamera);
+  void toggleClippingPlane();
+  bool hasClippingPlane() const;
+
   /// helper to apply a SoWriteAction to a node and write it to a string
   static const std::string &View3DInventor::writeNodesToString(SoNode * root);
 
   View3DInventorViewer *getViewer(void) {return _viewer;}
-
-
-//signals:
-  //void message(const QString&, int );
 
 public slots:
 //  void closeEvent(QCloseEvent* e);
@@ -106,21 +105,7 @@ protected:
   /// handle to the viewer parameter group
   ParameterGrp::handle hGrp;
 
-  SoSeparator *createAxis(void);
-
-  // inventor nodes:
-  SoSeparator * pcSepUserSpecial;
-  SoSeparator * pcSepRoot;
-  SoSeparator * pcSepShapeRoot;
-  SoSeparator * pcSepAxis;
-  SoShapeHints* pcShapeHint; 
-  SoMaterial	* pcShapeMaterial;
-
-  std::string            cViewProviderName;
-  ViewProviderFeature * pcActViewProvider;
-
 private:
-
   View3DInventorViewer * _viewer;
 };
 
