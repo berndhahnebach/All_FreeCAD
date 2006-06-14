@@ -34,7 +34,7 @@ class DocumentObject;
 class Property;
 class Transaction;
 
-/** Represents a entry in a Transaction
+/** Represents an entry for an object in a Transaction
  */
 class AppExport TransactionObject: public Base::Persistance
 {
@@ -45,6 +45,8 @@ public:
   TransactionObject(const DocumentObject *pcObj);
   /// Destruction
   virtual ~TransactionObject();
+
+  void apply(Document &Doc, DocumentObject *pcObj);
 
   enum Status {New,Del,Chn} status;
 
@@ -57,7 +59,7 @@ public:
   friend class Transaction;
 
 protected:
-  const DocumentObject *_pcObj;
+  //const DocumentObject *_pcObj;
   std::string _name;
   std::map<const Property*,Property*> _PropChangeMap;
 };

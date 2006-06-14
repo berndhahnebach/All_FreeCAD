@@ -251,8 +251,12 @@ public:
 	friend class AbstractFeature;
   /// because of transaction handling
 	friend class DocumentObject;
+	friend class Transaction;
+	friend class TransactionObject;
 
 protected:
+  void _remObject(DocumentObject* pcObject);
+  void _addObject(DocumentObject* pcObject, const char* pObjectName);
 
   /// callback from the Document objects bevor property will be changed
   void onBevorChangeProperty(const DocumentObject *Who, const Property *What);

@@ -26,15 +26,8 @@ import FreeCAD, os, unittest
 
 
 #---------------------------------------------------------------------------
-# define the functions to test the FreeCAD base code
+# define the functions to test the FreeCAD Document code
 #---------------------------------------------------------------------------
-
-#def suite():
-#    suite = unittest.TestSuite()
-#    suite.addTest(DocTestCase("DocumentProperties"))
-#    suite.addTest(DocTestCase("DocumentLabels"))
-#    suite.addTest(DocTestCase("DocumentSaveAndRestore"))
-#    return suite
 
 
 class DocumentBasicCases(unittest.TestCase):
@@ -62,24 +55,6 @@ class DocumentBasicCases(unittest.TestCase):
         self.failUnless(L1.name== "Label_2","Invalid object name")
         self.Doc.removeObject("Label_1")
 
-#    def testLabels(self):
-#        Main = self.Doc.Main #getting the main label of the document 
-#        L1 = Main.GetLabel(1)
-#        L1 = Main.GetLabel(1)
-#        L1 = Main.GetLabel(1)
-#        L1 = Main.GetLabel(1)
-#        L1 = Main.GetLabel(1)
-#        L1 = Main.GetLabel(1)
-#        L2 = Main.GetLabel(2)
-#        L3 = Main.GetLabel(3)
-#        L4 = Main.GetLabel(4)
-#        L5 = Main.GetLabel(5)
-#        L6 = Main.GetLabel(6)
-#        L7 = Main.GetLabel(7)
-#        L1.Int = 1
-#        L1.Real = 1.0
-#        L1.Name = "Hallo"
-
 #    def testSaveAndRestore(self):
 #        # saving and restoring
 #        TempPath = os.getenv('TEMP')
@@ -100,6 +75,27 @@ class DocumentBasicCases(unittest.TestCase):
     def tearDown(self):
         # closing doc
         FreeCAD.closeDocument("CreateTest")
+
+class UndoRedoCases(unittest.TestCase):
+    def setUp(self):
+        self.Doc = FreeCAD.newDocument("UndoTest")
+        self.Doc.addObject("App::FeatureTest","Base")
+        self.Doc.setUndoMode(1)
+
+    def testUndo(self):
+        self.Doc.openCommand()
+        self.Doc.addObject("App::FeatureTest","test1").String = "test1"
+        self.Doc.addObject("App::FeatureTest","test2").String = "test2"
+        self.Doc.undo()
+        self.failUnless(self.Doc.getObject("test1") == None)
+        self.failUnless(self.Doc.getObject("test2") == None)
+        self.Doc.redo()
+        self.assertEqual(self.Doc.getObject("test1").String,  "test1")
+        self.assertEqual(self.Doc.getObject("test1").String,  "test1")
+
+    def tearDown(self):
+        # closing doc
+        FreeCAD.closeDocument("UndoTest")
 
 
         

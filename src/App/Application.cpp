@@ -852,7 +852,9 @@ void Application::runApplication()
 		// run a script
 		Console().Log("Loading module: %s\n",mConfig["ScriptFileName"].c_str());
 		Interpreter().loadModule(mConfig["FileName"].c_str());
-		//Interpreter().runCommandLine("FreeCAD Console mode");
+#ifdef FC_DEBUG
+		Interpreter().runCommandLine("FreeCAD Console mode");
+#endif
 	}
 	else if(mConfig["RunMode"] == "Internal")
 	{

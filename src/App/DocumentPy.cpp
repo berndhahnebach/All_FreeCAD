@@ -475,9 +475,11 @@ PYFUNCIMP_D(DocumentPy,getObject)
 		  return pcFtr->GetPyObject();
 	  else
     {
-      char szBuf[200];
-      sprintf(szBuf, "No feature found with name '%s'", sName);
-		  Py_Error(PyExc_Exception,szBuf);
+      Py_Return;
+
+      //char szBuf[200];
+      //sprintf(szBuf, "No feature found with name '%s'", sName);
+		  //Py_Error(PyExc_Exception,szBuf);
     }
   } PY_CATCH;
 }
