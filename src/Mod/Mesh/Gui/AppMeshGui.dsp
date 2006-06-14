@@ -289,6 +289,14 @@ SOURCE=.\ViewProviderDefects.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\ViewProviderMeshNode.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderMeshNode.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\ViewProviderTransform.cpp
 # End Source File
 # Begin Source File
