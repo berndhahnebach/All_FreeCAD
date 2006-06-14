@@ -34,7 +34,8 @@ using Base::Writer;
 using Base::XMLReader;
 #include "Transactions.h"
 #include "Property.h"
-
+#include "Document.h"
+#include "DocumentObject.h"
 
 using namespace App;
 using namespace std;
@@ -82,6 +83,13 @@ int Transaction::getPos(void) const
 
 void Transaction::apply(Document &Doc)
 {
+  std::map<const DocumentObject*,TransactionObject*>::iterator It;
+
+  for( It= _Objects.begin();It!=_Objects.end();++It)
+  {
+    It->second->apply(Doc,const_cast<DocumentObject*>(It->first));
+
+  }
 
 
 }
@@ -144,7 +152,7 @@ TYPESYSTEM_SOURCE_ABSTRACT(App::TransactionObject, Base::Persistance);
  * A more elaborate description of the constructor.
  */
 TransactionObject::TransactionObject(const DocumentObject *pcObj)
-:status(New),_pcObj(pcObj)
+:status(New)
 {
 }
 
@@ -156,6 +164,18 @@ TransactionObject::~TransactionObject()
 {
 }
 
+void TransactionObject::apply(Document &Doc, DocumentObject *pcObj)
+{
+  if(status == Del){
+    // simply filling in the saved object
+    Doc._remObject(pcObj);
+  }else if(status == New){
+    Doc._addObject(pcObj,pcObj->name.getValue());
+  }else if(status == Chn){
+
+  }
+
+}
 
 
 

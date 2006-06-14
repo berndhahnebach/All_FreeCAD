@@ -718,6 +718,20 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 
 }
 
+void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
+{
+
+  ObjectMap[pObjectName] = pcObject;
+
+  // Transaction stuff
+  if(activTransaction)
+    activTransaction->addObjectNew(pcObject);
+  // Undo stuff
+  if(activUndoTransaction)
+    activUndoTransaction->addObjectDel(pcObject);
+
+
+}
 
 /// Remove an object out of the document
 void Document::remObject(const char* sName)
@@ -777,10 +791,29 @@ void Document::remObject(const char* sName)
   // Undo stuff
   if(activUndoTransaction)
     activUndoTransaction->addObjectNew(pos->second);
+  else
+    // if not saved in undo -> delete
+    delete pos->second;
 
-  // finally delete the Object
-  delete pos->second;
   ObjectMap.erase(pos);
+}
+
+/// Remove an object out of the document (internal)
+void Document::_remObject(DocumentObject* pcObject)
+{
+  // Transaction stuff
+  if(this->activTransaction)
+    this->activTransaction->addObjectDel(pcObject);
+
+  // Undo stuff
+  if(activUndoTransaction)
+    activUndoTransaction->addObjectNew(pcObject);
+  else
+    // if not saved in undo -> delete
+    delete pcObject;
+
+  ObjectMap.erase(pcObject->name.getValue());
+
 }
 
 

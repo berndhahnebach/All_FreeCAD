@@ -58,7 +58,7 @@ LINK32=link.exe
 # SUBTRACT LINK32 /pdb:none
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy  /y  /f  ReleaseCmd\FreeCADCmd.exe  ..\..\bin\ 
+PostBuild_Cmds=xcopy   /y   /f   ReleaseCmd\FreeCADCmd.exe   ..\..\bin\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADMainCmd - Win32 Debug"
@@ -90,7 +90,7 @@ LINK32=link.exe
 # SUBTRACT LINK32 /pdb:none
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy  /y  /f  DebugCmd\FreeCADCmdD.exe  ..\..\bin\ 
+PostBuild_Cmds=xcopy   /y   /f   DebugCmd\FreeCADCmdD.exe   ..\..\bin\ 
 # End Special Build Tool
 
 !ENDIF 
