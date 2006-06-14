@@ -39,6 +39,7 @@
 # include <GL/gl.h>
 # include <Inventor/actions/SoHandleEventAction.h> 
 # include <Inventor/actions/SoWriteAction.h>
+# include <Inventor/manips/SoClipPlaneManip.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCallback.h> 
 # include <Inventor/nodes/SoCoordinate3.h>
@@ -974,6 +975,28 @@ void View3DInventorViewer::getBackClippingPlane( Base::Vector3f& rcPt, Base::Vec
   rcNormal.Set(nx, ny, nz);
   rcNormal.Normalize();
   rcPt.Set(d*rcNormal.x, d*rcNormal.y, d*rcNormal.z);
+}
+
+void View3DInventorViewer::toggleClippingPlane()
+{
+  if ( pcViewProviderRoot->getNumChildren() > 0 && pcViewProviderRoot->getChild(0)->getTypeId() == SoClipPlaneManip::getClassTypeId() )
+  {
+    pcViewProviderRoot->removeChild(0);
+  }
+  else
+  {
+    pcViewProviderRoot->insertChild(new SoClipPlaneManip,0);
+  }
+}
+
+bool View3DInventorViewer::hasClippingPlane() const
+{
+  if ( pcViewProviderRoot->getNumChildren() > 0 )
+  {
+    return ( pcViewProviderRoot->getChild(0)->getTypeId() == SoClipPlaneManip::getClassTypeId() );
+  }
+
+  return false;
 }
 
 bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm)

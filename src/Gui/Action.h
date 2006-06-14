@@ -217,6 +217,78 @@ private:
 // --------------------------------------------------------------------
 
 /**
+ * The SepAction class represents an separator of a toolbar or popup menu. This action can be added to a group
+ * after the group has been added to a widget.
+ * @author Werner Mayer
+ */
+class GuiExport SepAction : public QAction
+{
+  Q_OBJECT
+
+protected:
+  SepAction ( QObject * parent, const char * name = 0, bool toggle = FALSE );
+  virtual ~SepAction();
+
+  bool addTo(QWidget*);
+
+protected:
+  virtual void addedTo ( int index, QPopupMenu * menu );
+
+  friend class ListActionGroup;
+};
+
+/**
+ * The ListAction class represents an item of a dynamic list that may grow (but not shrink). Usually
+ * this list is provided as a popupmenu.
+ * @see ListActionGroup
+ * @author Werner Mayer
+ */
+class GuiExport ListAction : public QAction
+{
+  Q_OBJECT
+
+protected:
+  ListAction ( QObject * parent, const char * name = 0, bool toggle = FALSE );
+  virtual ~ListAction();
+
+  int index() const;
+
+protected:
+  virtual void addedTo ( int index, QPopupMenu * menu );
+
+private:
+  int _idx;
+
+  friend class ListActionGroup;
+};
+
+/**
+ * The ListActionGroup class is the container for ListAction objects.
+ * @see ListAction
+ * @author Werner Mayer
+ */
+class GuiExport ListActionGroup : public QActionGroup
+{
+  Q_OBJECT
+
+public:
+  ListActionGroup ( Command* pcCmd, QObject * parent = 0, const char * name = 0, bool exclusive = TRUE );
+  virtual ~ListActionGroup();
+
+  void addActionData( const QString&, const QString& = QString::null );
+  QString getData(int) const;
+  QAction* getAction(int) const;
+
+private slots:
+  void onActivated ();
+
+private:
+  Command *_pcCmd;
+};
+
+// --------------------------------------------------------------------
+
+/**
  * The UndoRedoAction class reimplements the addedTo() function to make a popup menu 
  * appearing when the button with the arrow is clicked.
  * @author Werner Mayer

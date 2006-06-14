@@ -430,6 +430,11 @@ MenuItem* StdWorkbench::setupMenuBar() const
   *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Refresh" << "Std_Delete"
         << "Separator" << "Std_DlgPreferences";
 
+  // Standard views
+  MenuItem* stdviews = new MenuItem;
+  stdviews->setCommand( "Standard views" );
+  *stdviews << "Separator" << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
+            << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
 
   // stereo
   MenuItem* view3d = new MenuItem;
@@ -440,8 +445,8 @@ MenuItem* StdWorkbench::setupMenuBar() const
   // View
   MenuItem* view = new MenuItem( menuBar );
   view->setCommand( "&View" );
-  *view << "Std_ViewCreate" << "Std_CameraType" << "Separator" << view3d
-        << "Std_ToggleVisibility" << "Std_ViewDockUndockFullscreen" << "Separator"
+  *view << "Std_ViewCreate" << "Std_CameraType" << "Separator" << stdviews << "Std_FreezeViews" << "Separator" << view3d
+        << "Std_ToggleVisibility" << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator"
         << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
 
   // Tools

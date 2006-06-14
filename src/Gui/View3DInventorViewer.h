@@ -96,6 +96,10 @@ public:
   void getFrontClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const;
   /** Returns the back clipping plane represented by its normal and base point. */
   void getBackClippingPlane( Base::Vector3f& rcPt, Base::Vector3f& rcNormal ) const;
+  /** Adds or remove a manipulator to/from the scenegraph. */
+  void toggleClippingPlane();
+  /** Checks whether a clipping plane is set or not. */
+  bool hasClippingPlane() const;
   //@}
 
   /** @name Modus handling of the viewer
