@@ -28,6 +28,8 @@ libMeshGui_la_SOURCES=\
 		SoFCMeshNode.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
+		ViewProviderMeshNode.cpp \
+		ViewProviderMeshNode.h \
 		ViewProviderCurvature.cpp \
 		ViewProviderCurvature.h \
 		ViewProviderDefects.cpp \
