@@ -36,9 +36,15 @@ import TestApp               #Test as Module name not possible
 # define the Commands of the Test Application module
 #---------------------------------------------------------------------------
 class TestCmd:
-    "Test1 commando object"
+    """Opens a Qt dialog with all inserted unit tests"""
     def Activated(self):
-        TestApp.TestGui("TestApp.All")
+        import QtUnitGui
+        QtUnitGui.addTest("TestApp.All")
+        QtUnitGui.setTest("TestApp.All")
+        QtUnitGui.addTest("Base")
+        QtUnitGui.addTest("Document")
+        QtUnitGui.addTest("Menu.MenuCreateCases")
+        QtUnitGui.addTest("Menu.MenuDeleteCases")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test 1', 'ToolTip': 'First very important Test!!!'}
