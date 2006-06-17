@@ -52,18 +52,20 @@ def Test(s):
     
 
 def TestGui(s):
-    import unittestgui
-    import sys
-    import Tkinter
-    import tkMessageBox
-    import traceback
-    import string
-    root = Tkinter.Tk()
-    root.title("FreeCAD unit tests")
-    runner = unittestgui.TkTestRunner(root, s)
-    root.protocol('WM_DELETE_WINDOW', root.quit)
-    root.mainloop()
-    root.destroy()
+    import QtUnitGui
+    QtUnitGui.setTest(s)
+#    import unittestgui
+#    import sys
+#    import Tkinter
+#    import tkMessageBox
+#    import traceback
+#    import string
+#    root = Tkinter.Tk()
+#    root.title("FreeCAD unit tests")
+#    runner = unittestgui.TkTestRunner(root, s)
+#    root.protocol('WM_DELETE_WINDOW', root.quit)
+#    root.mainloop()
+#    root.destroy()
 
 
     

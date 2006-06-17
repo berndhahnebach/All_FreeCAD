@@ -1,3 +1,5 @@
+SUBDIRS=Gui
+
 # Change data dir from default ($(prefix)/share) to $(prefix)
 datadir = $(prefix)/Mod/Test
 data_DATA = \
