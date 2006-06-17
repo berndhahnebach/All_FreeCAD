@@ -584,6 +584,7 @@ Mod/Image/Makefile
 Mod/Image/App/Makefile
 Mod/Image/Gui/Makefile
 Mod/Test/Makefile
+Mod/Test/Gui/Makefile
 Tools/Makefile
 Tools/_TEMPLATE_/Makefile
 Tools/_TEMPLATE_/App/Makefile
