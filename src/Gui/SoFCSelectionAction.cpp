@@ -51,6 +51,7 @@
 #include <Inventor/elements/SoFontNameElement.h>
 #include <Inventor/elements/SoFontSizeElement.h>
 #include <Inventor/elements/SoModelMatrixElement.h>
+#include <Inventor/elements/SoShapeStyleElement.h>
 #include <Inventor/elements/SoProfileCoordinateElement.h>
 #include <Inventor/elements/SoProfileElement.h>
 #include <Inventor/elements/SoSwitchElement.h>
@@ -96,19 +97,20 @@ void SoFCSelectionAction::initClass()
 
   SO_ACTION_ADD_METHOD(SoNode,nullAction);
 
-   SO_ENABLE(SoFCSelectionAction, SoModelMatrixElement);
-   SO_ENABLE(SoFCSelectionAction, SoComplexityElement);
-   SO_ENABLE(SoFCSelectionAction, SoComplexityTypeElement);
-   SO_ENABLE(SoFCSelectionAction, SoCoordinateElement);
-   SO_ENABLE(SoFCSelectionAction, SoFontNameElement);
-   SO_ENABLE(SoFCSelectionAction, SoFontSizeElement);
-   SO_ENABLE(SoFCSelectionAction, SoProfileCoordinateElement);
-   SO_ENABLE(SoFCSelectionAction, SoProfileElement);
-   SO_ENABLE(SoFCSelectionAction, SoSwitchElement);
-   SO_ENABLE(SoFCSelectionAction, SoUnitsElement);
-   SO_ENABLE(SoFCSelectionAction, SoViewVolumeElement);
-   SO_ENABLE(SoFCSelectionAction, SoViewingMatrixElement);
-   SO_ENABLE(SoFCSelectionAction, SoViewportRegionElement);
+  SO_ENABLE(SoFCSelectionAction, SoModelMatrixElement);
+  SO_ENABLE(SoFCSelectionAction, SoShapeStyleElement);
+  SO_ENABLE(SoFCSelectionAction, SoComplexityElement);
+  SO_ENABLE(SoFCSelectionAction, SoComplexityTypeElement);
+  SO_ENABLE(SoFCSelectionAction, SoCoordinateElement);
+  SO_ENABLE(SoFCSelectionAction, SoFontNameElement);
+  SO_ENABLE(SoFCSelectionAction, SoFontSizeElement);
+  SO_ENABLE(SoFCSelectionAction, SoProfileCoordinateElement);
+  SO_ENABLE(SoFCSelectionAction, SoProfileElement);
+  SO_ENABLE(SoFCSelectionAction, SoSwitchElement);
+  SO_ENABLE(SoFCSelectionAction, SoUnitsElement);
+  SO_ENABLE(SoFCSelectionAction, SoViewVolumeElement);
+  SO_ENABLE(SoFCSelectionAction, SoViewingMatrixElement);
+  SO_ENABLE(SoFCSelectionAction, SoViewportRegionElement);
 
 
 
@@ -150,7 +152,6 @@ void SoFCSelectionAction::beginTraversal(SoNode *node)
 void SoFCSelectionAction::selNode(SoAction *action,SoNode *node)
 {
   node->doAction(action);
-  //Base::Console().Log("SoFCSelectionAction::selNode()");
 }
 
 void SoFCSelectionAction::callDoAction(SoAction *action,SoNode *node)
