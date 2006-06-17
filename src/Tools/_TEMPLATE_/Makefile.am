@@ -5,6 +5,5 @@ datadir = $(prefix)/Mod/_TEMPLATE_
 data_DATA = Init.py InitGui.py
 
 EXTRA_DIST = \
-		App_TEMPLATE_.dsw \
-		Init.py \
-		InitGui.py
+		$(data_DATA) \
+		App_TEMPLATE_.dsw
