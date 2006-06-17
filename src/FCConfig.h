@@ -132,14 +132,20 @@
 // Open CasCade
 
 #ifdef FC_OS_WIN32
+#	ifndef WNT
 #	define WNT
+#	endif
+#	ifndef WIN32
 #	define WIN32
+#	endif
+#	ifndef _WINDOWS
 #	define _WINDOWS
+#	endif
 #endif
 
 #ifdef FC_OS_LINUX
 #	define LIN
-#       define LININTEL
+#	define LININTEL
 //#       define NO_CXX_EXCEPTION
 #endif
 

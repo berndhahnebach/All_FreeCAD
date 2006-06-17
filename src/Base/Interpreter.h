@@ -54,7 +54,7 @@ public:
   ~PyException() throw() {}
 
   ///  this function returns the stack trace
-  const std::string &getStackTrace(void){return _stackTrace;}
+  const std::string &getStackTrace(void) const {return _stackTrace;}
 
 protected:
   std::string _stackTrace;
