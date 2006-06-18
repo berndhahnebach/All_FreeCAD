@@ -35,6 +35,9 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name App_TEMPLATE_Gui
     End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name AppTestGui
+    End Project Dependency
 }}}
 
 ###############################################################################
