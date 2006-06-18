@@ -4,6 +4,13 @@
 
 # Make executable due to Debian package policy
 chmod u+x Mod/Test/unittestgui.py
+dos2unix config.guess
+dos2unix config.sub
+chmod u+x config.guess
+chmod u+x config.sub
+chmod u+x depcomp
+chmod u+x install-sh
+chmod u+x ltmain.sh
 
 #aclocal
 #autoheader

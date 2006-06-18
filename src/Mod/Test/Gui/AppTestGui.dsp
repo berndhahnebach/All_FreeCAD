@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib coin2.lib qt-mtnc321.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\QtUnitGui.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy   /y   /f   Release\QtUnitGui.pyd   ..\..\..\..\Mod\Test\  	xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Test\ 
+PostBuild_Cmds=xcopy    /y    /f    Release\QtUnitGui.pyd    ..\..\..\..\Mod\Test\   	xcopy    /y    /f    qtunittest.py    ..\..\..\..\Mod\Test\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppTestGui - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib coin2d.lib qt-mtnc321.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\QtUnitGui_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy   /y   /f   Debug\QtUnitGui_d.pyd   ..\..\..\..\Mod\Test\  	xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Test\ 
+PostBuild_Cmds=xcopy    /y    /f    Debug\QtUnitGui_d.pyd    ..\..\..\..\Mod\Test\   	xcopy    /y    /f    qtunittest.py    ..\..\..\..\Mod\Test\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -101,35 +101,6 @@ PostBuild_Cmds=xcopy   /y   /f   Debug\QtUnitGui_d.pyd   ..\..\..\..\Mod\Test\  
 # Begin Source File
 
 SOURCE=.\qtunittest.py
-
-!IF  "$(CFG)" == "AppTestGui - Win32 Release"
-
-# Begin Custom Build - Copying $(InputName).py ...
-InputDir=.
-OutDir=.\Release
-InputPath=.\qtunittest.py
-InputName=qtunittest
-
-"$(OutDir)\$(InputName).py" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).py" "$(OutDir)\$(InputName).py"
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "AppTestGui - Win32 Debug"
-
-# Begin Custom Build - Copying $(InputName).py ...
-InputDir=.
-OutDir=.\Debug
-InputPath=.\qtunittest.py
-InputName=qtunittest
-
-"$(OutDir)\$(InputName).py" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	copy "$(InputDir)\$(InputName).py" "$(OutDir)\$(InputName).py"
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # Begin Source File
 

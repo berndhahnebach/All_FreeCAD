@@ -100,6 +100,8 @@ libFreeCADBase_la_SOURCES=\
 		PyTools.h \
 		Reader.cpp \
 		Reader.h \
+		Rotation.cpp \
+		Rotation.h \
 		Sequencer.cpp \
 		Sequencer.h \
 		Stream.cpp \
