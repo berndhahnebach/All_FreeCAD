@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="AppTest" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Console Application" 0x0103
 
 CFG=AppTest - Win32 Debug
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "AppTest.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "AppTest.mak" CFG="AppTest - Win32 Debug"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "AppTest - Win32 Release" (basierend auf  "Win32 (x86) Console Application")
-!MESSAGE "AppTest - Win32 Debug" (basierend auf  "Win32 (x86) Console Application")
+!MESSAGE "AppTest - Win32 Release" (based on "Win32 (x86) Console Application")
+!MESSAGE "AppTest - Win32 Debug" (based on "Win32 (x86) Console Application")
 !MESSAGE 
 
 # Begin Project
@@ -337,6 +337,39 @@ InputDir=.
 OutDir=.\../../../Mod/Test
 InputPath=.\unittestgui.py
 InputName=unittestgui
+
+"$(OutDir)\$(InputName).py" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).py" "$(OutDir)\$(InputName).py"
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\Workbench.py
+
+!IF  "$(CFG)" == "AppTest - Win32 Release"
+
+# Begin Custom Build - Copying $(InputName).py ...
+InputDir=.
+OutDir=.\../../../Mod/Test
+InputPath=.\Workbench.py
+InputName=Workbench
+
+"$(OutDir)\$(InputName).py" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	copy "$(InputDir)\$(InputName).py" "$(OutDir)\$(InputName).py"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "AppTest - Win32 Debug"
+
+# Begin Custom Build - Copying $(InputName).py ...
+InputDir=.
+OutDir=.\../../../Mod/Test
+InputPath=.\Workbench.py
+InputName=Workbench
 
 "$(OutDir)\$(InputName).py" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
 	copy "$(InputDir)\$(InputName).py" "$(OutDir)\$(InputName).py"

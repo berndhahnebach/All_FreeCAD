@@ -776,7 +776,9 @@ void PythonCommand::activated(int iMsg)
 {
   try{
     Interpreter().runMethodVoid(_pcPyCommand, "Activated");
-  }catch (Base::Exception e){
+  }catch ( const Base::PyException& e){
+    Base::Console().Error("Running the Python command '%s' failed:\n%s",sName, e.getStackTrace());
+  }catch ( const Base::Exception&){
     Base::Console().Error("Running the Python command '%s' failed, try to resume",sName);
   }
 }
@@ -784,6 +786,18 @@ void PythonCommand::activated(int iMsg)
 bool PythonCommand::isActive(void)
 {
   return true;
+}
+
+void PythonCommand::languageChange()
+{
+  if ( _pcAction )
+  {
+    _pcAction->setText       ( QObject::tr( getMenuText()    ) );
+    _pcAction->setMenuText   ( QObject::tr( getMenuText()    ) );
+    _pcAction->setToolTip    ( QObject::tr( getToolTipText() ) );
+    _pcAction->setStatusTip  ( QObject::tr( getStatusTip()   ) );
+    _pcAction->setWhatsThis  ( QObject::tr( getWhatsThis()   ) );
+  }
 }
 
 const char* PythonCommand::getHelpUrl(void)
