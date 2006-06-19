@@ -92,14 +92,7 @@ UnitTestDialog::UnitTestDialog( QWidget* parent, const char* name, bool modal, W
   // As it doesn't seem to be able to change the "Highlight" color for the active colorgroup
   // we force e.g. the "Motif" style only for the progressbar to change the color to green.
   this->progressBar1->setStyle("Motif");
-  QPalette pl = this->progressBar1->palette();
-  QColorGroup cg = pl.active();
-  cg.setColor(QColorGroup::Highlight, QColor(40,210,43)); // a darker green
-  pl.setActive(cg);
-  cg = pl.inactive();
-  cg.setColor(QColorGroup::Highlight, QColor(40,210,43)); // a darker green
-  pl.setInactive(cg);
-  this->progressBar1->setPalette(pl);
+  setProgressColor(QColor(40,210,43)); // a darker green
 
   // red items
   listViewFailure->setPaletteForegroundColor(Qt::red);
@@ -110,6 +103,21 @@ UnitTestDialog::UnitTestDialog( QWidget* parent, const char* name, bool modal, W
  */
 UnitTestDialog::~UnitTestDialog()
 {
+}
+
+/**
+ * Sets the color to the progressbar to \a col.
+ */
+void UnitTestDialog::setProgressColor( const QColor& col)
+{
+  QPalette pl = this->progressBar1->palette();
+  QColorGroup cg = pl.active();
+  cg.setColor(QColorGroup::Highlight, col);
+  pl.setActive(cg);
+  cg = pl.inactive();
+  cg.setColor(QColorGroup::Highlight, col); 
+  pl.setInactive(cg);
+  this->progressBar1->setPalette(pl);
 }
 
 /**
@@ -148,10 +156,12 @@ void UnitTestDialog::showAboutDialog()
  */
 void UnitTestDialog::startTest()
 {
+  reset();
+  setProgressColor(QColor(40,210,43)); // a darker green
   this->buttonStart->setDisabled(true);
   try {
     Base::Interpreter().runString("import qtunittest");
-    Base::Interpreter().runString("g=qtunittest.QtTestRunner(0,\"TestApp.All\")");
+    Base::Interpreter().runString("g=qtunittest.QtTestRunner(0,\"\")");
     Base::Interpreter().runString("g.runClicked()");
   } catch ( const Base::PyException& e ) {
     showErrorDialog("Exception", e.getStackTrace().c_str());
@@ -243,14 +253,7 @@ void UnitTestDialog::setProgressFraction( float fraction, const QString& color )
     this->progressBar1->setTotalSteps(100);
   } else {
     if ( color == "red" ){
-      QPalette pl = this->progressBar1->palette();
-      QColorGroup cg = pl.active();
-      cg.setColor(QColorGroup::Highlight, Qt::red);
-      pl.setActive(cg);
-      cg = pl.inactive();
-      cg.setColor(QColorGroup::Highlight, Qt::red);
-      pl.setInactive(cg);
-      this->progressBar1->setPalette(pl);
+      setProgressColor(Qt::red);
     }
 
     this->progressBar1->setProgress((int)(100*fraction));

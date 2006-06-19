@@ -39,6 +39,7 @@ def All():
     suite = unittest.TestSuite()
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Document") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Base") )
+    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Workbench") )
     return suite
 
     

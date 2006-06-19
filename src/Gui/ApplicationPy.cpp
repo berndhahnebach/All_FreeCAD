@@ -316,6 +316,7 @@ PYFUNCIMP_S(Application,sGetWorkbenchHandler)
 
 PYFUNCIMP_S(Application,sListWorkbenchHandlers)
 {
+  Py_INCREF(Instance->_pcWorkbenchDictionary);
   return Instance->_pcWorkbenchDictionary;
 } 
 

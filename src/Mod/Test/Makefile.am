@@ -10,7 +10,8 @@ data_DATA = \
 		Menu.py \
 		TestApp.py \
 		TestGui.py \
-		unittestgui.py
+		unittestgui.py \
+		Workbench.py
 
 EXTRA_DIST = \
 		$(data_DATA) \

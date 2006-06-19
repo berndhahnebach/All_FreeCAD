@@ -59,6 +59,7 @@ protected:
   void showHelpDialog();
   void showAboutDialog();
   void startTest();
+  void setProgressColor( const QColor& col);
 
   void reject();
 

@@ -43,6 +43,7 @@ class TestCmd:
         QtUnitGui.setTest("TestApp.All")
         QtUnitGui.addTest("Base")
         QtUnitGui.addTest("Document")
+        QtUnitGui.addTest("Workbench")
         QtUnitGui.addTest("Menu.MenuCreateCases")
         QtUnitGui.addTest("Menu.MenuDeleteCases")
 
@@ -114,16 +115,17 @@ class TestWorkbenchCmd:
     def Activated(self):
     	i=0
     	while (i<20):
-	        FreeCADGui.ActivateWorkbench("Import")
+	        FreeCADGui.ActivateWorkbench("Mesh design")
 	        FreeCADGui.UpdateGui()
 	        FreeCADGui.ActivateWorkbench("<none>")
 	        FreeCADGui.UpdateGui()
 	        FreeCADGui.ActivateWorkbench("Part design")
 	        FreeCADGui.UpdateGui()
-	        FreeCADGui.ActivateWorkbench("Sketcher")
+	        FreeCADGui.ActivateWorkbench("Raytracing")
 	        FreeCADGui.UpdateGui()
 	        print i
 	        i=i+1
+    	FreeCADGui.ActivateWorkbench("Test framework")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',

@@ -398,6 +398,8 @@ protected:
 public:
   /** @name Methods to get the properties of the command */
   //@{
+  /// Reassigns QAction stuff after the language has changed. 
+  void languageChange();
   const char* getWhatsThis  () const;
   const char* getMenuText   () const;
   const char* getToolTipText() const;
