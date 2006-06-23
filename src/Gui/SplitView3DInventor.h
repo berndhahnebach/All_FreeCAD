@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <juergen.riegel@web.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,49 +21,51 @@
  ***************************************************************************/
 
 
-#ifndef GUI_VIEWPROVIDER_FEATURE_H
-#define GUI_VIEWPROVIDER_FEATURE_H
+#ifndef GUI_SPLITVIEW3DINVENTOR_H
+#define GUI_SPLITVIEW3DINVENTOR_H
 
-#include <Inventor/lists/SoPickedPointList.h> 
-#include "ViewProviderDocumentObject.h"
+#include "View.h"
 
-class SoPickedPointList;
-class SbVec2s;
+#include <Base/Parameter.h>
+#include <Inventor/Qt/viewers/SoQtViewer.h>
+#include <vector>
 
 namespace Gui {
-
-class SoFCSelection;
 class View3DInventorViewer;
 
-class GuiExport ViewProviderFeature:public ViewProviderDocumentObject
+
+/** The SplitView3DInventor class allows to create a window with two or more Inventor views.
+ *  \author Werner Mayer
+ */
+class GuiExport SplitView3DInventor : public MDIView,public ParameterGrp::ObserverType
 {
-  PROPERTY_HEADER(Gui::ViewProviderFeature);
-
 public:
-  /// constructor.
-  ViewProviderFeature();
+  SplitView3DInventor( int views, Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+  ~SplitView3DInventor();
 
-  /// destructor.
-  virtual ~ViewProviderFeature();
+  virtual const char *getName(void);
 
-  /**
-   * Returns a list of picked points from the geometry under \a pcHighlight.
-   * If \a pickAll is false (the default) only the intersection point closest to the camera will be picked, otherwise
-   * all intersection points will be picked. 
-   */
-  SoPickedPointList getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll=false) const;
-  /**
-   * This method is provided for convenience and does basically the same as getPickedPoints() unless that only the closest
-   * point to the camera will be picked.
-   * \note It is in the response of the client programmer to delete the returned SoPickedPoint object.
-   */
-  SoPickedPoint* getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const;
+  /// Mesage handler
+  virtual bool onMsg(const char* pMsg, const char** ppReturn);
+  virtual bool onHasMsg(const char* pMsg);
+  virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
+  virtual void onUpdate(void);
+  void updatePrefs(void);
+  void setViewerDefaults(void);
+
+  View3DInventorViewer *getViewer(unsigned int) const;
+
+  void setCursor(const QCursor&);
 
 protected:
-  SoFCSelection* pcHighlight;
+  /// handle to the viewer parameter group
+  ParameterGrp::handle hGrp;
+
+private:
+  std::vector<View3DInventorViewer*> _viewer;
 };
 
 } // namespace Gui
 
-#endif // GUI_VIEWPROVIDER_FEATURE_H
+#endif  //GUI_SPLITVIEW3DINVENTOR_H
 

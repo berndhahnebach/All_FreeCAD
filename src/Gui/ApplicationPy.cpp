@@ -418,7 +418,13 @@ PYFUNCIMP_S(Application,sHasWorkbench)
     return NULL;                    // NULL triggers exception 
 
   Workbench* wb = WorkbenchManager::instance()->getWorkbench( psKey );
-  return wb ? Py_True : Py_False;
+  if ( wb ) {
+    Py_INCREF(Py_True);
+    return Py_True;
+  } else {
+    Py_INCREF(Py_False);
+    return Py_False;
+  }
 } 
 
 PYFUNCIMP_S(Application,sAddCommand)

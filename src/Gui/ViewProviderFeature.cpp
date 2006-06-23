@@ -26,6 +26,10 @@
 #ifndef _PreComp_
 # include <Inventor/SbColor.h>
 # include <Inventor/fields/SoSFColor.h> 
+# include <Inventor/nodes/SoCamera.h>
+# include <Inventor/nodes/SoSeparator.h>
+# include <Inventor/nodes/SoDirectionalLight.h>
+# include <Inventor/actions/SoRayPickAction.h> 
 #endif
 
 #include <Base/Parameter.h>
@@ -33,6 +37,7 @@
 #include "Window.h"
 #include "SoFCSelection.h"
 #include "ViewProviderFeature.h"
+#include "View3DInventorViewer.h"
 
 
 using namespace Gui;
@@ -114,4 +119,40 @@ ViewProviderFeature::ViewProviderFeature()
 ViewProviderFeature::~ViewProviderFeature()
 {
   pcHighlight->unref();
+}
+
+SoPickedPointList ViewProviderFeature::getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll) const
+{
+  SoSeparator* root = new SoSeparator;
+  root->ref();
+  root->addChild(viewer.getHeadlight());
+  root->addChild(viewer.getCamera());
+  root->addChild(this->pcHighlight);
+
+  SoRayPickAction rp(viewer.getViewportRegion());
+  rp.setPickAll(pickAll);
+  rp.setPoint(pos);
+  rp.apply(root);
+  root->unref();
+
+  // returns a copy of the list
+  return rp.getPickedPointList();
+}
+
+SoPickedPoint* ViewProviderFeature::getPickedPoint(const SbVec2s& pos, const View3DInventorViewer& viewer) const
+{
+  SoSeparator* root = new SoSeparator;
+  root->ref();
+  root->addChild(viewer.getHeadlight());
+  root->addChild(viewer.getCamera());
+  root->addChild(this->pcHighlight);
+
+  SoRayPickAction rp(viewer.getViewportRegion());
+  rp.setPoint(pos);
+  rp.apply(root);
+  root->unref();
+
+  // returns a copy of the point
+  SoPickedPoint* pick = rp.getPickedPoint();
+  return (pick ? pick->copy() : 0);
 }
