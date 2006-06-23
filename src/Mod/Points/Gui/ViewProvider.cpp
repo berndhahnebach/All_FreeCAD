@@ -48,7 +48,6 @@
 #include "ViewProvider.h"
 
 
-
 using namespace PointsGui;
 using namespace Points;
 
@@ -79,11 +78,14 @@ ViewProviderPoints::~ViewProviderPoints()
 void ViewProviderPoints::createPoints(Points::Feature *pFeature)
 {
   if ( !pFeature ) return;
+  const PointKernel& cPts = pFeature->getPoints().getKernel();
 
+  // disable the notification, otherwise whenever a point is inserted SoPointSet gets notified
+  pcPointsCoord->enableNotify(false);
   pcPointsCoord->point.deleteValues(0);
+  pcPointsCoord->point.setNum(cPts.size());
 
   // get all points
-  const PointKernel& cPts = pFeature->getPoints().getKernel();
   int idx=0;
   for ( PointKernel::const_iterator it = cPts.begin(); it != cPts.end(); ++it, idx++ )
   {
@@ -91,36 +93,62 @@ void ViewProviderPoints::createPoints(Points::Feature *pFeature)
   }
 
   pcPoints->numPoints = cPts.size();
+  pcPointsCoord->enableNotify(true);
+  pcPointsCoord->touch();
 }
 
 void ViewProviderPoints::setVertexColorMode(App::PropertyColorList* pcProperty)
 {
   const std::vector<App::Color>& val = pcProperty->getValues();
   unsigned long i=0;
+
+  pcColorMat->enableNotify(false);
+  pcColorMat->diffuseColor.deleteValues(0);
+  pcColorMat->diffuseColor.setNum(val.size());
+  
   for ( std::vector<App::Color>::const_iterator it = val.begin(); it != val.end(); ++it )
   {
     pcColorMat->diffuseColor.set1Value(i++, SbColor(it->r, it->g, it->b));
   }
+
+  pcColorMat->enableNotify(true);
+  pcColorMat->touch();
 }
 
 void ViewProviderPoints::setVertexGreyvalueMode(Points::PropertyGreyValueList* pcProperty)
 {
   const std::vector<float>& val = pcProperty->getValues();
   unsigned long i=0;
+
+  pcColorMat->enableNotify(false);
+  pcColorMat->diffuseColor.deleteValues(0);
+  pcColorMat->diffuseColor.setNum(val.size());
+
   for ( std::vector<float>::const_iterator it = val.begin(); it != val.end(); ++it )
   {
     pcColorMat->diffuseColor.set1Value(i++, SbColor(*it, *it, *it));
   }
+
+  pcColorMat->enableNotify(true);
+  pcColorMat->touch();
 }
 
 void ViewProviderPoints::setVertexNormalMode(Points::PropertyNormalList* pcProperty)
 {
   const std::vector<Base::Vector3f>& val = pcProperty->getValues();
   unsigned long i=0;
+
+  pcPointsNormal->enableNotify(false);
+  pcPointsNormal->vector.deleteValues(0);
+  pcPointsNormal->vector.setNum(val.size());
+
   for ( std::vector<Base::Vector3f>::const_iterator it = val.begin(); it != val.end(); ++it )
   {
     pcPointsNormal->vector.set1Value(i++, it->x, it->y, it->z);
   }
+
+  pcPointsNormal->enableNotify(true);
+  pcPointsNormal->touch();
 }
 
 void ViewProviderPoints::attach(App::DocumentObject* pcObj)
@@ -170,6 +198,7 @@ void ViewProviderPoints::attach(App::DocumentObject* pcObj)
 
 void ViewProviderPoints::setMode(const char* ModeName)
 {
+  modeString = ModeName;
   if ( strcmp("Color",ModeName)==0 )
   {
     std::map<std::string,App::Property*> Map;
@@ -256,6 +285,7 @@ std::vector<std::string> ViewProviderPoints::getModes(void)
 void ViewProviderPoints::updateData()
 {
   createPoints(dynamic_cast<Points::Feature*>(pcObject));
+  setMode(modeString.c_str());
 }
 
 void ViewProviderPoints::setTransparency(float trans)

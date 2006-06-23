@@ -328,6 +328,18 @@ bool SelectionSingleton::isSelected(const char* pDocName, const char* pObjectNam
   return false;
 }
 
+bool SelectionSingleton::isSelected(App::DocumentObject* obj) const
+{
+  if (!obj) return false;
+
+  for( list<_SelObj>::const_iterator It = _SelList.begin();It != _SelList.end();++It) {
+    if ( It->pObject == obj )
+      return true;
+  }
+
+  return false;
+}
+
 
 //**************************************************************************
 // Construction/Destruction

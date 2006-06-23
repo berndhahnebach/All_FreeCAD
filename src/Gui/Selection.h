@@ -96,6 +96,8 @@ public:
   void clearSelection(void);
   /// checks if selected
   bool isSelected(const char* pDocName, const char* pObjectName=0, const char* pSubName=0) const;
+  /// checks if selected
+  bool isSelected(App::DocumentObject*) const;
 
   bool setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x=0, float y=0, float z=0);
   void rmvPreselect();

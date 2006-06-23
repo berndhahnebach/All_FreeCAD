@@ -40,6 +40,68 @@ class WorkbenchTestCase(unittest.TestCase):
             FreeCADGui.UpdateGui()
             FreeCAD.PrintLog("Currently: "+i+ " Should be: "+FreeCADGui.ActiveWorkbench().Name())
             self.failUnless(FreeCADGui.ActiveWorkbench().Name()==i, "Test on activating workbench failed")
+        
+# Need a method to delete a workbench
+#    def testWorkbench(self):
+#        self.failUnless(FreeCADGui.HasWorkbench("TestWb")==False, "TestWb was not expected to be in the list")
+#        self.failUnless(FreeCADGui.CreateWorkbench("TestWb")!=None, "Creation of TestWb failed")
+#        self.failUnless(FreeCADGui.HasWorkbench("TestWb")==True, "TestWb was not expected to be in the list")
+#        self.failUnless(FreeCADGui.GetWorkbench("TestWb")!=None, "Retrieval of TestWb failed")
+#        list=FreeCADGui.ListWorkbenches()
+#        fnd = False
+#        for i in list: 
+#            if (i == "TestWb"): 
+#                fnd = True;
+#        self.failUnless(fnd==True, "TestWb was expected to be in the list")
+#
+        
+    def testHandler(self):
+        class UnitWorkbench:
+            def Activate(self):
+                try:
+                    if FreeCADGui.HasWorkbench('Unittest') == False:
+                        w = FreeCADGui.CreateWorkbench('Unittest')
+                        list = ["Test_Test"]
+                        w.AppendToolbar("My Unittest",list)
+                except:
+                    raise
+            def GetClassName(self):
+                return "Gui::PythonWorkbench"
+            def GetIcon(self):
+                # returns an icon for the workbench
+                return ["/* XPM */\n"
+                    "static const char *FCIcon[]={\n"
+                    "\"16 16 4 1\",\n"
+                    "\". c None\",\n"
+                    "\"# c #000000\",\n"
+                    "\"a c #848284\",\n"
+                    "\"b c #ff0000\",\n"
+                    "\"........#.......\",\n"
+                    "\".......##aaaaaa.\",\n"
+                    "\"........#.....a.\",\n"
+                    "\".#######......a.\",\n"
+                    "\".##...........a.\",\n"
+                    "\".##...bbbb....a.\",\n"
+                    "\".##..bb..bb...a.\",\n"
+                    "\".###bb#...b..###\",\n"
+                    "\".##.bb........#.\",\n"
+                    "\".##.bb..........\",\n"
+                    "\".##.bb..........\",\n"
+                    "\".##.bb..........\",\n"
+                    "\".##.bb....b.....\",\n"
+                    "\".....bb..bb.....\",\n"
+                    "\"......bbbb......\",\n"
+                    "\"................\"};\n"]
+
+        FreeCADGui.AddWorkbenchHandler("Unittest",UnitWorkbench())
+        list=FreeCADGui.ListWorkbenchHandlers()
+        self.failUnless(list.has_key("Unittest")==True, "Test on adding workbench handler failed")
+        FreeCADGui.ActivateWorkbench("Unittest")
+        FreeCADGui.UpdateGui()
+        self.failUnless(FreeCADGui.ActiveWorkbench().Name()=="Unittest", "Test on loading workbench 'Unittest' failed")
+        FreeCADGui.RemoveWorkbenchHandler("Unittest")
+        list=FreeCADGui.ListWorkbenchHandlers()
+        self.failUnless(list.has_key("Unittest")==False, "Test on removing workbench handler failed")
 
     def tearDown(self):
         FreeCADGui.ActivateWorkbench(self.Active.Name())

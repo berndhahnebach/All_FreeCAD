@@ -144,6 +144,7 @@
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoWriteAction.h>
+#include <Inventor/events/SoMouseButtonEvent.h>
 #include <Inventor/fields/SoMFColor.h>
 #include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/nodes/SoBaseColor.h>
@@ -155,6 +156,7 @@
 #include <Inventor/nodes/SoCylinder.h>
 #include <Inventor/nodes/SoDrawStyle.h>
 #include <Inventor/nodes/SoEnvironment.h>
+#include <Inventor/nodes/SoEventCallback.h>
 #include <Inventor/nodes/SoExtSelection.h>
 #include <Inventor/nodes/SoFaceSet.h>
 #include <Inventor/nodes/SoImage.h>

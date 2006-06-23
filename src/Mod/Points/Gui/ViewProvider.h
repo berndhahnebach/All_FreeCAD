@@ -20,8 +20,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef __VIEWPROVIDERPOINTS_H__
-#define __VIEWPROVIDERPOINTS_H__
+#ifndef POINTSGUI_VIEWPROVIDERPOINTS_H
+#define POINTSGUI_VIEWPROVIDERPOINTS_H
 
 #include <Gui/ViewProviderFeature.h>
 
@@ -90,10 +90,13 @@ protected:
   SoPointSet        *pcPoints;
   SoMaterial        *pcColorMat;
   SoNormal          *pcPointsNormal;
+
+private:
+  std::string modeString;
 };
 
-} // namespace MeshGui
+} // namespace PointsGui
 
 
-#endif // __VIEWPROVIDERPOINTS_H__
+#endif // POINTSGUI_VIEWPROVIDERPOINTS_H
 
