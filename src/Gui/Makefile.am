@@ -288,6 +288,8 @@ libFreeCADGui_la_SOURCES=\
 		SpinBox.h \
 		Splashscreen.cpp \
 		Splashscreen.h \
+		SplitView3DInventor.cpp \
+		SplitView3DInventor.h \
 		StackBar.cpp \
 		StackBar.h \
 		TextEdit.cpp \
