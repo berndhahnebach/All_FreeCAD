@@ -29,6 +29,7 @@
 # include <Inventor/nodes/SoCamera.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoDirectionalLight.h>
+# include <Inventor/SoPickedPoint.h>
 # include <Inventor/actions/SoRayPickAction.h> 
 #endif
 

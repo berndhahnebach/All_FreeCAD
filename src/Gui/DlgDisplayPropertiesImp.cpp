@@ -83,7 +83,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget*
   bool bSameLineWidth= true;
   float fLineWidth=0.0f;
 
-  App::Material::MaterialType cMatType;
+  App::Material::MaterialType cMatType = App::Material::DEFAULT;
 
   bool bSameColor= true;
   App::Color cColor;
