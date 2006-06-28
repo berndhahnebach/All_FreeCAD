@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>392</width>
+            <width>421</width>
             <height>421</height>
         </rect>
     </property>
@@ -272,6 +272,9 @@
                             </property>
                             <property name="editable">
                                 <bool>true</bool>
+                            </property>
+                            <property name="duplicatesEnabled">
+                                <bool>false</bool>
                             </property>
                         </widget>
                     </hbox>
