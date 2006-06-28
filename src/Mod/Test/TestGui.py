@@ -44,16 +44,19 @@ class TestCmd:
         QtUnitGui.addTest("Base")
         QtUnitGui.addTest("Document")
         QtUnitGui.addTest("Workbench")
-        QtUnitGui.addTest("Menu.MenuCreateCases")
+        QtUnitGui.addTest("Menu")
         QtUnitGui.addTest("Menu.MenuDeleteCases")
+        QtUnitGui.addTest("Menu.MenuCreateCases")
 
     def GetResources(self):
-        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test 1', 'ToolTip': 'First very important Test!!!'}
+        return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test Dialog', 'ToolTip': 'First very important Test!!!'}
 
 class TestAllCmd:
     "Test all commando object"
     def Activated(self):
-        TestApp.TestGui("TestApp.All")
+        import QtUnitGui
+        QtUnitGui.addTest("TestApp.All")
+        QtUnitGui.setTest("TestApp.All")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test all', 'ToolTip': 'Runs all tests at once (can take very long!)'}
@@ -61,27 +64,34 @@ class TestAllCmd:
 class TestDocCmd:
     "Document test commando object"
     def Activated(self):
-        TestApp.TestGui("Document")
+        import QtUnitGui
+        QtUnitGui.addTest("Document")
+        QtUnitGui.setTest("Document")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Test Document',
+                'MenuText': 'Test Document',
                 'ToolTip' : 'Test the document (creation, save, load and destruction)'}
 
 class TestBaseCmd:
     "Base test commando object"
     def Activated(self):
-        TestApp.TestGui("Base")
+        import QtUnitGui
+        QtUnitGui.addTest("Base")
+        QtUnitGui.setTest("Base")
 
     def GetResources(self):
-        return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Test base',
-                'ToolTip' : 'Test the basic functions of FreeCAD'}
+        return {
+            'Pixmap'  : 'Std_Tool1',
+            'MenuText': 'Test base',
+            'ToolTip' : 'Test the basic functions of FreeCAD'
+              }
 
 class TestAllTextCmd:
     "Test all commando object"
     def Activated(self):
-        TestApp.TestText("TestApp.All")
+        import unittest, TestApp
+        unittest.TextTestRunner().run(unittest.defaultTestLoader.loadTestsFromName("TestApp.All"))
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1', 'MenuText': 'Test all', 'ToolTip': 'Runs all tests at once (can take very long!)'}
@@ -93,7 +103,7 @@ class TestDocTextCmd:
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Test Document',
+                'MenuText': 'Test Document',
                 'ToolTip' : 'Test the document (creation, save, load and destruction)'}
 
 class TestBaseTextCmd:
@@ -103,7 +113,7 @@ class TestBaseTextCmd:
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Test base',
+                'MenuText': 'Test base',
                 'ToolTip' : 'Test the basic functions of FreeCAD'}
 
 
@@ -113,23 +123,23 @@ class TestBaseTextCmd:
 class TestWorkbenchCmd:
     "Workbench test"
     def Activated(self):
-    	i=0
-    	while (i<20):
-	        FreeCADGui.ActivateWorkbench("Mesh design")
-	        FreeCADGui.UpdateGui()
-	        FreeCADGui.ActivateWorkbench("<none>")
-	        FreeCADGui.UpdateGui()
-	        FreeCADGui.ActivateWorkbench("Part design")
-	        FreeCADGui.UpdateGui()
-	        FreeCADGui.ActivateWorkbench("Raytracing")
-	        FreeCADGui.UpdateGui()
-	        print i
-	        i=i+1
-    	FreeCADGui.ActivateWorkbench("Test framework")
+        i=0
+        while (i<20):
+            FreeCADGui.ActivateWorkbench("Mesh design")
+            FreeCADGui.UpdateGui()
+            FreeCADGui.ActivateWorkbench("<none>")
+            FreeCADGui.UpdateGui()
+            FreeCADGui.ActivateWorkbench("Part design")
+            FreeCADGui.UpdateGui()
+            FreeCADGui.ActivateWorkbench("Raytracing")
+            FreeCADGui.UpdateGui()
+            print i
+            i=i+1
+        FreeCADGui.ActivateWorkbench("Test framework")
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Test workbench',
+                'MenuText': 'Test workbench',
                 'ToolTip' : 'Test the switching of workbenches in FreeCAD'}
 
 class TestCreateMenuCmd:
@@ -139,7 +149,7 @@ class TestCreateMenuCmd:
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Add menu',
+                'MenuText': 'Add menu',
                 'ToolTip' : 'Test the menu stuff of FreeCAD'}
 
 class TestDeleteMenuCmd:
@@ -149,7 +159,7 @@ class TestDeleteMenuCmd:
 
     def GetResources(self):
         return {'Pixmap'  : 'Std_Tool1',
-        		'MenuText': 'Remove menu',
+                'MenuText': 'Remove menu',
                 'ToolTip' : 'Test the menu stuff of FreeCAD'}
 
 #---------------------------------------------------------------------------

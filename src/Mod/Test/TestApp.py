@@ -1,8 +1,3 @@
-# FreeCAD Part module  
-# (c) 2001 Juergen Riegel
-#
-# Part design module
-
 #***************************************************************************
 #*   (c) Juergen Riegel (juergen.riegel@web.de) 2002                       *   
 #*                                                                         *
@@ -39,7 +34,9 @@ def All():
     suite = unittest.TestSuite()
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Document") )
     suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Base") )
-    suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Workbench") )
+    if ( FreeCAD.GuiUp == 1):
+        suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Workbench") )
+        suite.addTest(unittest.defaultTestLoader.loadTestsFromName("Menu") )
     return suite
 
     
@@ -52,21 +49,6 @@ def Test(s):
     TestText(s)
     
 
-def TestGui(s):
-    import QtUnitGui
-    QtUnitGui.setTest(s)
-#    import unittestgui
-#    import sys
-#    import Tkinter
-#    import tkMessageBox
-#    import traceback
-#    import string
-#    root = Tkinter.Tk()
-#    root.title("FreeCAD unit tests")
-#    runner = unittestgui.TkTestRunner(root, s)
-#    root.protocol('WM_DELETE_WINDOW', root.quit)
-#    root.mainloop()
-#    root.destroy()
 
 
     
