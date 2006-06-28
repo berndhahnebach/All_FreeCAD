@@ -61,6 +61,18 @@ class Application;
 class DocumentPy;
 class DocItem;
 
+class GuiExport DocChanges
+{
+public:  
+  enum {
+    New,
+    Update,
+    Delete
+  } Why;
+
+  std::set<ViewProvider*> ViewProviders;
+};
+
 /** The Gui Document
  *  This is the document on GUI level. Its main responsibility is 
  *  keeping track off open windows for a document, handling the OCC
@@ -70,7 +82,7 @@ class DocItem;
  *  @see MDIView
  *  @author Jürgen Riegel
  */
-class GuiExport Document :public QObject, public App::Document::ObserverType
+class GuiExport Document :public QObject, public App::Document::ObserverType, public Base::Subject<const DocChanges&>
 {
   Q_OBJECT
 

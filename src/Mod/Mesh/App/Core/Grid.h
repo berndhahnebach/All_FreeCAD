@@ -156,7 +156,6 @@ protected:
 
   // friends
   friend class MeshGridIterator;
-  friend class MeshGridIteratorStatistic;
 };
 
 /**
@@ -281,6 +280,11 @@ public:
   void GetElements (std::vector<unsigned long> &raulElements) const
   {
     raulElements.insert(raulElements.end(), _rclGrid._aulGrid[_ulX][_ulY][_ulZ].begin(), _rclGrid._aulGrid[_ulX][_ulY][_ulZ].end());
+  }
+  /** Returns the number of elements in the current grid. */
+  unsigned long GetCtElements() const
+  {
+    return _rclGrid.GetCtElements(_ulX, _ulY, _ulZ);
   }
   /** @name Iteration */
   //@{

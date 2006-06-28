@@ -426,7 +426,7 @@ bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
 	SoWriteAction wa;
 	SoOutput* out = wa.getOutput();
 	QFile::remove( filename );
-	if ( out->openFile( filename ) == true )
+	if ( out->openFile( filename ) == TRUE )
 	{
 		out->setBinary( binary );
 		wa.apply(pcViewProviderRoot);

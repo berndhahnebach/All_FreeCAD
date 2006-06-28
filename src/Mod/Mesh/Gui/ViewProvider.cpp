@@ -149,18 +149,15 @@ ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
   Display.set1Value(5,"Hidden line");
 
   // create the mesh core nodes
-  pcMeshCoord     = new SoCoordinate3();
+  pcMeshCoord = new SoCoordinate3();
   pcMeshCoord->ref();
-//  pcMeshNormal    = new SoNormal();
-//  pcMeshNormal->ref();
-  pcMeshFaces     = new SoIndexedFaceSet();
+  pcMeshFaces = new SoIndexedFaceSet();
   pcMeshFaces->ref();
 }
 
 ViewProviderMesh::~ViewProviderMesh()
 {
   pcMeshCoord->unref();
-//  pcMeshNormal->unref();
   pcMeshFaces->unref();
 }
 
@@ -231,7 +228,7 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
   // Therefore we must disable the notification of SoIndexedFaceSet whenn filling up the SoCoordinate3 and 
   // coordIndex fields. Once this has finished we enable it again.
 
-  Base::SequencerLauncher seq( "Building View node...", rcMesh.CountFacets() );
+  Base::SequencerLauncher seq( "Building display data...", rcMesh.CountFacets() );
 
   // disable the notification, otherwise whenever a point is inserted SoIndexedFacetSet gets notified
   pcMeshCoord->enableNotify(false);
@@ -275,116 +272,55 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 {
   pcObject = pcFeat;
 
-  // some helper Separators
-  SoGroup* pcFlatRoot = new SoGroup();
-//  SoGroup* pcFlatNormRoot = new SoGroup();
-  SoGroup* pcWireRoot = new SoGroup();
-  SoGroup* pcPointRoot = new SoGroup();
-  SoGroup* pcFlatWireRoot = new SoGroup();
-  SoGroup* pcHiddenLineRoot = new SoGroup();
-//  SoGroup* pcColorShadedRoot = new SoGroup();
-
   // only one selection node for the mesh
-  pcHighlight->objectName = getAsFeature()->name.getValue();
-  pcHighlight->documentName = getAsFeature()->getDocument().getName();
+  pcHighlight->objectName = pcFeat->name.getValue();
+  pcHighlight->documentName = pcFeat->getDocument().getName();
   pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcMeshCoord);
   pcHighlight->addChild(pcMeshFaces);
 
+  // enable two-side rendering
+  SoShapeHints * flathints = new SoShapeHints;
+  flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
+  flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+
   // flat shaded (Normal) ------------------------------------------
-  SoDrawStyle *pcFlatStyle = new SoDrawStyle();
-  pcFlatStyle->style = SoDrawStyle::FILLED;
-  SoNormalBinding* pcBinding = new SoNormalBinding();
-  pcBinding->value=SoNormalBinding::PER_FACE;
-  
-  // get and save the feature
-  Feature* meshFea = dynamic_cast<Feature*>(pcFeat);
-  MeshEvalSolid cEval(meshFea->getMesh());
-
-  // if no solid then enable two-side rendering
-  if ( !cEval.Evaluate() )
-  {
-    SoShapeHints * flathints = new SoShapeHints;
-    flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
-    flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-    pcFlatRoot->addChild(flathints);
-    pcFlatWireRoot->addChild(flathints);
-  }
-
-  pcFlatRoot->addChild(pcFlatStyle);
+  SoGroup* pcFlatRoot = new SoGroup();
+  pcFlatRoot->addChild(flathints);
   pcFlatRoot->addChild(pcSolidMaterial);
-  pcFlatRoot->addChild(pcBinding);
   pcFlatRoot->addChild(pcHighlight);
-
-
-/*  // flat shaded (per Vertex normales) ------------------------------------------
-  pcFlatStyle = new SoDrawStyle();
-  pcFlatStyle->style = SoDrawStyle::FILLED;
-  pcBinding = new SoNormalBinding();
-  pcBinding->value=SoNormalBinding::PER_VERTEX;
-  h = new SoLocateHighlight();
-  h->color.setValue((float)0.2,(float)0.5,(float)0.2);
-  h->addChild(pcBinding);
-  h->addChild(pcMeshCoord);
-  h->addChild(pcMeshNormal);
-  h->addChild(pcMeshFaces);
-  pcFlatNormRoot->addChild(pcFlatStyle);
-  pcFlatNormRoot->addChild(pcSolidMaterial);
-  pcFlatNormRoot->addChild(h); */
-
-  // wire part ----------------------------------------------
-  //SoDrawStyle *pcWireStyle = new SoDrawStyle();
-  //pcWireStyle->style = SoDrawStyle::LINES;
-  //pcWireStyle->lineWidth = fLineSize;
-  SoLightModel *pcLightModel = new SoLightModel();
-  pcLightModel->model = SoLightModel::BASE_COLOR;
-  pcWireRoot->addChild(pcLineStyle);
-  pcWireRoot->addChild(pcLightModel);
-  pcWireRoot->addChild(pcLineMaterial);
-  pcWireRoot->addChild(pcHighlight);
+  addDisplayMode(pcFlatRoot, "Flat");
 
   // points part ---------------------------------------------
-  //SoDrawStyle *pcPointStyle = new SoDrawStyle();
-  //pcPointStyle->style = SoDrawStyle::POINTS;
-  //pcPointStyle->pointSize = fPointSize;
+  SoGroup* pcPointRoot = new SoGroup();
   pcPointRoot->addChild(pcPointStyle);
-  pcPointRoot->addChild(pcPointMaterial);
-  pcPointRoot->addChild(pcHighlight);
+  pcPointRoot->addChild(pcFlatRoot);
+  addDisplayMode(pcPointRoot, "Point");
+
+  // wire part ----------------------------------------------
+  SoLightModel* pcLightModel = new SoLightModel();
+  pcLightModel->model = SoLightModel::BASE_COLOR;
+  SoGroup* pcWireRoot = new SoGroup();
+  pcWireRoot->addChild(pcLineStyle);
+  pcWireRoot->addChild(pcLightModel);
+  pcWireRoot->addChild(pcSolidMaterial);
+  pcWireRoot->addChild(pcHighlight);
+  addDisplayMode(pcWireRoot, "Wireframe");
 
   // wire shaded  ------------------------------------------
-  pcFlatStyle = new SoDrawStyle();
-  pcFlatStyle->style = SoDrawStyle::FILLED;
-  pcBinding = new SoNormalBinding();
-  pcBinding->value=SoNormalBinding::PER_FACE;
-  pcFlatWireRoot->addChild(pcBinding);
-  pcFlatWireRoot->addChild(pcFlatStyle);
-  pcFlatWireRoot->addChild(pcSolidMaterial);
-  pcFlatWireRoot->addChild(pcHighlight);
-  pcLightModel = new SoLightModel();
-  pcLightModel->model = SoLightModel::BASE_COLOR;
-  pcFlatWireRoot->addChild(pcLineStyle);
-  pcFlatWireRoot->addChild(pcLightModel);
-  pcFlatWireRoot->addChild(pcLineMaterial);
-  pcFlatWireRoot->addChild(pcMeshCoord);
-  pcFlatWireRoot->addChild(pcMeshFaces);
+  SoGroup* pcFlatWireRoot = new SoGroup();
+  pcFlatWireRoot->addChild(pcFlatRoot);
+  pcFlatWireRoot->addChild(pcWireRoot);
+  addDisplayMode(pcFlatWireRoot, "FlatWireframe");
 
- // Turns on backface culling
+  // Turns on backface culling
   SoShapeHints * wirehints = new SoShapeHints;
   wirehints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
   wirehints->shapeType = SoShapeHints::SOLID;
   wirehints->faceType = SoShapeHints::UNKNOWN_FACE_TYPE;
+  SoGroup* pcHiddenLineRoot = new SoGroup();
   pcHiddenLineRoot->addChild(wirehints);
-  pcHiddenLineRoot->addChild(pcLineStyle);
-  pcHiddenLineRoot->addChild(pcLightModel);
-  pcHiddenLineRoot->addChild(pcLineMaterial);
-  pcHiddenLineRoot->addChild(pcHighlight);
-
-  // putting all together with a switch
-  addDisplayMode(pcFlatRoot, "Flat");
-//  addDisplayMode(pcFlatNormRoot, "Normal");
-  addDisplayMode(pcWireRoot, "Wireframe");
-  addDisplayMode(pcPointRoot, "Point");
-  addDisplayMode(pcFlatWireRoot, "FlatWireframe");
+  pcHiddenLineRoot->addChild(pcWireRoot);
   addDisplayMode(pcHiddenLineRoot, "HiddenLine");
 
   // call father (set material and feature pointer)

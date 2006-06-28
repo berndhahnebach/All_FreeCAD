@@ -257,8 +257,6 @@ void Application::OnChange(App::Application::SubjectType &rCaller,App::Applicati
   }
 }
 
-
-
 void Application::OnDocNew(App::Document* pcDoc)
 {
 #ifdef FC_DEBUG
@@ -266,6 +264,11 @@ void Application::OnDocNew(App::Document* pcDoc)
   assert(it==d->lpcDocuments.end());
 #endif
   d->lpcDocuments[pcDoc] = new Gui::Document(pcDoc,this);
+  AppChanges AppChange;
+  AppChange.Why = AppChanges::New;
+  AppChange.Doc = d->lpcDocuments[pcDoc];
+
+  Notify(AppChange);
 }
 
 void Application::OnDocDelete(App::Document* pcDoc)
@@ -274,6 +277,13 @@ void Application::OnDocDelete(App::Document* pcDoc)
 #ifdef FC_DEBUG
   assert(doc!=d->lpcDocuments.end());
 #endif
+  
+  AppChanges AppChange;
+  AppChange.Why = AppChanges::Del;
+  AppChange.Doc = doc->second;
+
+  Notify(AppChange);
+
   delete doc->second; // destroy the Gui document
   d->lpcDocuments.erase(doc);
 

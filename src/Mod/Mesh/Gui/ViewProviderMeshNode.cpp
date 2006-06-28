@@ -79,12 +79,7 @@ ViewProviderMeshNode::~ViewProviderMeshNode()
 
 void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
 {
-  // call father (set material and feature pointer)
-  //pcFeat->setColor(App::Color(0.47f,0.63f,0.93f));
   ViewProviderDocumentObject::attach(pcFeat);
-
-  // some helper Separators
-  SoGroup* pcFlatRoot = new SoGroup();
 
   // only one selection node for the mesh
   pcHighlight->objectName = pcFeat->name.getValue();
@@ -92,33 +87,42 @@ void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
   pcHighlight->subElementName = "Main";
 
   const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
-  MeshGui::SoFCMeshNode* mesh = new MeshGui::SoFCMeshNode(meshFeature);
+  MeshGui::SoFCMeshNode* mesh = new MeshGui::SoFCMeshNode();
+  mesh->setMesh(meshFeature);
   pcHighlight->addChild(mesh);
 
+  // enable two-side rendering
   SoShapeHints * flathints = new SoShapeHints;
-  flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
+  flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
   flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-  pcFlatRoot->addChild(flathints);
 
+  // faces
+  SoGroup* pcFlatRoot = new SoGroup();
+  pcFlatRoot->addChild(flathints);
   pcFlatRoot->addChild(pcSolidMaterial);
   pcFlatRoot->addChild(pcHighlight);
-
   addDisplayMode(pcFlatRoot, "Flat");
 
+  // points
   SoGroup* pcPointRoot = new SoGroup();
   pcPointRoot->addChild(pcPointStyle);
-  pcPointRoot->addChild(pcPointMaterial);
-  pcPointRoot->addChild(pcHighlight);
+  pcPointRoot->addChild(pcFlatRoot);
   addDisplayMode(pcPointRoot, "Point");
 
-  SoGroup* pcFlatWireRoot = new SoGroup();
-  pcFlatWireRoot->addChild(pcFlatRoot);
+  // wires
   SoLightModel* pcLightModel = new SoLightModel();
   pcLightModel->model = SoLightModel::BASE_COLOR;
-  pcFlatWireRoot->addChild(pcLineStyle);
-  pcFlatWireRoot->addChild(pcLightModel);
-  pcFlatWireRoot->addChild(pcSolidMaterial);
-  pcFlatWireRoot->addChild(pcHighlight);
+  SoGroup* pcWireRoot = new SoGroup();
+  pcWireRoot->addChild(pcLineStyle);
+  pcWireRoot->addChild(pcLightModel);
+  pcWireRoot->addChild(pcSolidMaterial);
+  pcWireRoot->addChild(pcHighlight);
+  addDisplayMode(pcWireRoot, "Wireframe");
+
+  // faces+wires
+  SoGroup* pcFlatWireRoot = new SoGroup();
+  pcFlatWireRoot->addChild(pcFlatRoot);
+  pcFlatWireRoot->addChild(pcWireRoot);
   addDisplayMode(pcFlatWireRoot, "FlatWireframe");
 
   setDisplayMode("Flat");
@@ -160,6 +164,8 @@ void ViewProviderMeshNode::setMode(const char* ModeName)
     setDisplayMode("Point");
   else if ( strcmp("FlatWire",ModeName)==0 )
     setDisplayMode("FlatWireframe");
+  else if ( strcmp("Wireframe",ModeName)==0 )
+    setDisplayMode("Wireframe");
 
   ViewProviderDocumentObject::setMode( ModeName );
 }
@@ -171,6 +177,7 @@ std::vector<std::string> ViewProviderMeshNode::getModes(void)
 
   // add your own modes
   StrList.push_back("Flat");
+  StrList.push_back("Wireframe");
   StrList.push_back("Point");
   StrList.push_back("FlatWire");
 
@@ -343,3 +350,46 @@ bool ViewProviderMeshNode::handleEvent(const SoEvent * const ev,Gui::View3DInven
 
   return false;
 }
+//
+//void ViewProviderMeshNode::showOpenEdges(bool show)
+//{
+//  if ( show ) {
+//    SoGroup* pcLineRoot = new SoGroup();
+//    SoDrawStyle* lineStyle = new SoDrawStyle();
+//    lineStyle->lineWidth = 3;
+//    pcLineRoot->addChild(lineStyle);
+//
+//    // Draw lines
+//    SoSeparator* linesep = new SoSeparator;
+//    SoBaseColor * basecol = new SoBaseColor;
+//    basecol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+//    linesep->addChild(basecol);
+//    linesep->addChild(pcMeshCoord);
+//    SoIndexedLineSet* lines = new SoIndexedLineSet;
+//    linesep->addChild(lines);
+//    pcLineRoot->addChild(linesep);
+//    // add to the top of the node
+//    pcHighlight->addChild(pcLineRoot/*,0*/);
+//
+//    // Build up the lines with indices to the list of vertices 'pcMeshCoord'
+//    int index=0;
+//    const MeshCore::MeshKernel& rMesh = dynamic_cast<Mesh::Feature*>(pcObject)->getMesh();
+//    const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
+//    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it ) {
+//      for ( int i=0; i<3; i++ ) {
+//        if ( it->_aulNeighbours[i] == ULONG_MAX ) {
+//          lines->coordIndex.set1Value(index++,it->_aulPoints[i]);
+//          lines->coordIndex.set1Value(index++,it->_aulPoints[(i+1)%3]);
+//          lines->coordIndex.set1Value(index++,SO_END_LINE_INDEX);
+//        }
+//      }
+//    }
+//  } else {
+//    // remove the indexed line set node and its parent group
+//    int childs = pcHighlight->getNumChildren();
+//    if ( pcHighlight->findChild(pcMeshFaces)+1 < childs ) {
+//      SoNode* node = pcHighlight->getChild(childs-1);
+//      pcHighlight->removeChild(node);
+//    }
+//  }
+//}
