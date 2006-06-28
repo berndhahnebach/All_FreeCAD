@@ -43,10 +43,13 @@
 # include <Inventor/misc/SoState.h>
 #endif
 
-#include "SoFCMeshNode.h"
 #include <Gui/SoFCInteractiveElement.h>
 #include <Mod/Mesh/App/Core/Elements.h>
+#include <Mod/Mesh/App/Core/Grid.h>
+#include <Mod/Mesh/App/Core/Algorithm.h>
+#include <Mod/Mesh/App/Core/MeshIO.h>
 #include <Mod/Mesh/App/MeshFeature.h>
+#include "SoFCMeshNode.h"
 
 using namespace MeshGui;
 
@@ -101,7 +104,7 @@ void SoFCMeshNode::initClass()
   SO_NODE_INIT_CLASS(SoFCMeshNode, SoShape, "Shape");
 }
 
-SoFCMeshNode::SoFCMeshNode(const Mesh::Feature* mesh) : MaximumTriangles(500000),_mesh(mesh)
+SoFCMeshNode::SoFCMeshNode() : MaximumTriangles(500000), _mesh(0), _ctPrimitives(0)
 {
   SO_NODE_CONSTRUCTOR(SoFCMeshNode);
   SO_NODE_ADD_FIELD(point, (0.0f, 0.0f, 0.0f));
@@ -119,6 +122,162 @@ void SoFCMeshNode::notify(SoNotList * node)
 void SoFCMeshNode::setMesh(const Mesh::Feature* mesh)
 { 
   _mesh = mesh; 
+}
+
+/**
+ * Creates a rough mesh model from the original data attached to a grid in case \a simplest is false. The number of grids 
+ * in each direction doesn't exceed 50.
+ * If \a simplest is true then the model is built from the bounding box instead.
+ *
+ * For every move event the complete data set must be iterated to refresh internal Inventor data @see generatePrimitives(). 
+ * Doing this very often for very huge data sets slows down the system noticable. Using a rough model as proxy instead of the orignal 
+ * data set can speed up the user interaction extremely. 
+ * @note The proxy will never be displayed. It's just used for the picking mechanism.
+ * @note The usage of the proxy might be confusing a little bit due to the fact that some details get lost. So it'll be possible
+ * to pick the data set where no data seem to be.
+ */
+void SoFCMeshNode::createRoughModel(bool simplest)
+{
+  const Base::BoundBox3f& cBox = _mesh->getMesh().GetBoundBox();
+
+  if ( simplest ) {
+    int triangles[36] = {
+      0,1,2,0,2,3,
+      0,1,5,0,5,4,
+      0,4,7,0,7,3,
+      6,7,4,6,4,5,
+      6,2,3,6,3,7,
+      6,1,2,6,5,1
+    };
+    SbVec3f points[8] = {
+      SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
+      SbVec3f(cBox.MaxX,cBox.MinY,cBox.MinZ),
+      SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MinZ),
+      SbVec3f(cBox.MinX,cBox.MaxY,cBox.MinZ),
+      SbVec3f(cBox.MinX,cBox.MinY,cBox.MaxZ),
+      SbVec3f(cBox.MaxX,cBox.MinY,cBox.MaxZ),
+      SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MaxZ),
+      SbVec3f(cBox.MinX,cBox.MaxY,cBox.MaxZ)
+    };
+
+    coordIndex.setValues(0,36,triangles);
+    point.setValues (0,8,points);
+  } else {
+    // Check the boundings and the average edge length
+    float fAvgLen = 5.0f * MeshCore::MeshAlgorithm(_mesh->getMesh()).GetAverageEdgeLength();
+
+    // create maximum 50 grids in each direction 
+    fAvgLen = std::max<float>(fAvgLen, (cBox.MaxX-cBox.MinX)/50.0f);
+    fAvgLen = std::max<float>(fAvgLen, (cBox.MaxY-cBox.MinY)/50.0f);
+    fAvgLen = std::max<float>(fAvgLen, (cBox.MaxZ-cBox.MinZ)/50.0f);
+
+    MeshCore::MeshGeomFacet face;
+    std::vector<MeshCore::MeshGeomFacet> facets;
+
+    MeshCore::MeshPointGrid cGrid(_mesh->getMesh(), fAvgLen);
+    unsigned long ulMaxX, ulMaxY, ulMaxZ;
+    cGrid.GetCtGrids(ulMaxX, ulMaxY, ulMaxZ);
+    MeshCore::MeshGridIterator cIter(cGrid);
+
+    for ( cIter.Init(); cIter.More(); cIter.Next() ) {
+      if ( cIter.GetCtElements() > 0 ) {
+        unsigned long ulX, ulY, ulZ;
+        cIter.GetGridPos(ulX, ulY, ulZ);
+        Base::BoundBox3f cBox = cIter.GetBoundBox();
+
+        if ( ulX == 0 || (ulX-1 >= 0 && cGrid.GetCtElements(ulX-1,ulY, ulZ) == 0) ) {
+          face._aclPoints[0].Set(cBox.MinX,cBox.MinY,cBox.MinZ);
+          face._aclPoints[1].Set(cBox.MinX,cBox.MinY,cBox.MaxZ);
+          face._aclPoints[2].Set(cBox.MinX,cBox.MaxY,cBox.MinZ);
+          facets.push_back(face);
+          face._aclPoints[0].Set(cBox.MinX,cBox.MaxY,cBox.MaxZ);
+          face._aclPoints[1].Set(cBox.MinX,cBox.MaxY,cBox.MinZ);
+          face._aclPoints[2].Set(cBox.MinX,cBox.MinY,cBox.MaxZ);
+          facets.push_back(face);
+        }
+        if ( ulX+1 == ulMaxX || (ulX+1 < ulMaxX && cGrid.GetCtElements(ulX+1,ulY, ulZ) == 0) ) {
+          face._aclPoints[0].Set(cBox.MaxX,cBox.MinY,cBox.MinZ);
+          face._aclPoints[1].Set(cBox.MaxX,cBox.MaxY,cBox.MinZ);
+          face._aclPoints[2].Set(cBox.MaxX,cBox.MinY,cBox.MaxZ);
+          facets.push_back(face);
+          face._aclPoints[0].Set(cBox.MaxX,cBox.MaxY,cBox.MaxZ);
+          face._aclPoints[1].Set(cBox.MaxX,cBox.MinY,cBox.MaxZ);
+          face._aclPoints[2].Set(cBox.MaxX,cBox.MaxY,cBox.MinZ);
+          facets.push_back(face);
+        }
+        if ( ulY == 0 || (ulY-1 >= 0 && cGrid.GetCtElements(ulX,ulY-1, ulZ) == 0) ) {
+          face._aclPoints[0].Set(cBox.MinX,cBox.MinY,cBox.MaxZ);
+          face._aclPoints[1].Set(cBox.MinX,cBox.MinY,cBox.MinZ);
+          face._aclPoints[2].Set(cBox.MaxX,cBox.MinY,cBox.MaxZ);
+          facets.push_back(face);
+          face._aclPoints[0].Set(cBox.MaxX,cBox.MinY,cBox.MinZ);
+          face._aclPoints[1].Set(cBox.MaxX,cBox.MinY,cBox.MaxZ);
+          face._aclPoints[2].Set(cBox.MinX,cBox.MinY,cBox.MinZ);
+          facets.push_back(face);
+        }
+        if ( ulY+1 == ulMaxY || (ulY+1 < ulMaxY && cGrid.GetCtElements(ulX,ulY+1, ulZ) == 0) ) {
+          face._aclPoints[0].Set(cBox.MaxX,cBox.MaxY,cBox.MinZ);
+          face._aclPoints[1].Set(cBox.MinX,cBox.MaxY,cBox.MinZ);
+          face._aclPoints[2].Set(cBox.MaxX,cBox.MaxY,cBox.MaxZ);
+          facets.push_back(face);
+          face._aclPoints[0].Set(cBox.MinX,cBox.MaxY,cBox.MaxZ);
+          face._aclPoints[1].Set(cBox.MaxX,cBox.MaxY,cBox.MaxZ);
+          face._aclPoints[2].Set(cBox.MinX,cBox.MaxY,cBox.MinZ);
+          facets.push_back(face);
+        }
+        if ( ulZ == 0 || (ulZ-1 >= 0 && cGrid.GetCtElements(ulX,ulY, ulZ-1) == 0) ) {
+          face._aclPoints[0].Set(cBox.MaxX,cBox.MinY,cBox.MinZ);
+          face._aclPoints[1].Set(cBox.MinX,cBox.MinY,cBox.MinZ);
+          face._aclPoints[2].Set(cBox.MaxX,cBox.MaxY,cBox.MinZ);
+          facets.push_back(face);
+          face._aclPoints[0].Set(cBox.MinX,cBox.MaxY,cBox.MinZ);
+          face._aclPoints[1].Set(cBox.MaxX,cBox.MaxY,cBox.MinZ);
+          face._aclPoints[2].Set(cBox.MinX,cBox.MinY,cBox.MinZ);
+          facets.push_back(face);
+        }
+        if ( ulZ+1 == ulMaxZ || (ulZ+1 < ulMaxZ && cGrid.GetCtElements(ulX,ulY, ulZ+1) == 0) ) {
+          face._aclPoints[0].Set(cBox.MaxX,cBox.MinY,cBox.MaxZ);
+          face._aclPoints[1].Set(cBox.MaxX,cBox.MaxY,cBox.MaxZ);
+          face._aclPoints[2].Set(cBox.MinX,cBox.MinY,cBox.MaxZ);
+          facets.push_back(face);
+          face._aclPoints[0].Set(cBox.MinX,cBox.MaxY,cBox.MaxZ);
+          face._aclPoints[1].Set(cBox.MinX,cBox.MinY,cBox.MaxZ);
+          face._aclPoints[2].Set(cBox.MaxX,cBox.MaxY,cBox.MaxZ);
+          facets.push_back(face);
+        }
+      }
+    }
+
+    MeshCore::MeshKernel kernel; kernel = facets;
+    const MeshCore::MeshPointArray& rPoints = kernel.GetPoints();
+    const MeshCore::MeshFacetArray& rFacets = kernel.GetFacets();
+
+    point.enableNotify(false);
+    point.setNum(rPoints.size());
+    unsigned int pos=0;
+    for (MeshCore::MeshPointArray::_TConstIterator cP=rPoints.begin(); cP!=rPoints.end(); ++cP)
+      point.set1Value(pos++,cP->x,cP->y,cP->z);
+    point.enableNotify(true);
+
+    coordIndex.enableNotify(false);
+    coordIndex.setNum(3*rFacets.size());
+    pos=0;
+    for (MeshCore::MeshFacetArray::_TConstIterator cF=rFacets.begin(); cF!=rFacets.end(); ++cF){
+      coordIndex.set1Value(pos++,cF->_aulPoints[0]);
+      coordIndex.set1Value(pos++,cF->_aulPoints[1]);
+      coordIndex.set1Value(pos++,cF->_aulPoints[2]);
+    }
+    coordIndex.enableNotify(true);
+
+    point.touch();
+    coordIndex.touch();
+
+#ifdef FC_DEBUG
+    std::ofstream str( "bbox.stl", std::ios::out | std::ios::binary );
+    MeshCore::SaveMeshSTL aWriter(kernel);
+    aWriter.SaveBinary( str );
+#endif
+  }
 }
 
 /**
@@ -259,7 +418,7 @@ void SoFCMeshNode::drawPoints(SbBool needNormals)
 
 /** Sets the point indices, the geometric points and the normal for each triangle.
  * If the number of triangles exceeds \a MaximumTriangles then only a triangulation of
- * the bounding box is filled in instead. This is due to performance issues.
+ * a rough model is filled in instead. This is due to performance issues.
  * \see createTriangleDetail().
  */
 void SoFCMeshNode::generatePrimitives(SoAction* action)
@@ -271,51 +430,37 @@ void SoFCMeshNode::generatePrimitives(SoAction* action)
     const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
     const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
 
-    // In case we have too many triangles we just fill in some dummy triangles that
-    // define the bounding box
+    // In case we have too many triangles we just create a rough model of the original mesh
     if ( this->MaximumTriangles < rFacets.size() ) {
-      const Base::BoundBox3f& cBox = _mesh->getMesh().GetBoundBox();
-      int triangles[36] = {
-        0,1,2,0,2,3,
-        0,1,5,0,5,4,
-        0,4,7,0,7,3,
-        6,7,4,6,4,5,
-        6,2,3,6,3,7,
-        6,1,2,6,5,1
-      };
-      SbVec3f points[8] = {
-        SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
-        SbVec3f(cBox.MaxX,cBox.MinY,cBox.MinZ),
-        SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MinZ),
-        SbVec3f(cBox.MinX,cBox.MaxY,cBox.MinZ),
-        SbVec3f(cBox.MinX,cBox.MinY,cBox.MaxZ),
-        SbVec3f(cBox.MaxX,cBox.MinY,cBox.MaxZ),
-        SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MaxZ),
-        SbVec3f(cBox.MinX,cBox.MaxY,cBox.MaxZ)
-      };
-
+      //FIXME: We should notify this shape when the data has changed.
+      //Just counting the number of triangles won't always work.
+      if ( rFacets.size() != _ctPrimitives ) {
+        _ctPrimitives = rFacets.size();
+        createRoughModel(false);
+      }
       SoPrimitiveVertex vertex;
       beginShape(action, TRIANGLES, 0);
       int i=0;
-      while ( i<36 ) 
+      while ( i<coordIndex.getNum() )
       {
-        if (i<6)
-          vertex.setNormal(SbVec3f(0.0f,0.0f,-1.0f));
-        else if (i<12)
-          vertex.setNormal(SbVec3f(0.0f,-1.0f,0.0f));
-        else if (i<18)
-          vertex.setNormal(SbVec3f(-1.0f,0.0f,0.0f));
-        else if (i<24)
-          vertex.setNormal(SbVec3f(0.0f,0.0f,1.0f));
-        else if (i<30)
-          vertex.setNormal(SbVec3f(0.0f,1.0f,0.0f));
-        else
-          vertex.setNormal(SbVec3f(1.0f,0.0f,0.0f));
-        vertex.setPoint( points[triangles[i++]] );
+        const SbVec3f& v0 = point[coordIndex[i++]]; 
+        const SbVec3f& v1 = point[coordIndex[i++]]; 
+        const SbVec3f& v2 = point[coordIndex[i++]]; 
+
+        // Calculate the normal n = (v1-v0)x(v2-v0)
+        SbVec3f n;
+        n[0] = (v1[1]-v0[1])*(v2[2]-v0[2])-(v1[2]-v0[2])*(v2[1]-v0[1]);
+        n[1] = (v1[2]-v0[2])*(v2[0]-v0[0])-(v1[0]-v0[0])*(v2[2]-v0[2]);
+        n[2] = (v1[0]-v0[0])*(v2[1]-v0[1])-(v1[1]-v0[1])*(v2[0]-v0[0]);
+
+        // Set the normal
+        vertex.setNormal(n);
+
+        vertex.setPoint( v0 );
         shapeVertex(&vertex);
-        vertex.setPoint( points[triangles[i++]] );
+        vertex.setPoint( v1 );
         shapeVertex(&vertex);
-        vertex.setPoint( points[triangles[i++]] );
+        vertex.setPoint( v2 );
         shapeVertex(&vertex);
       }
       endShape();

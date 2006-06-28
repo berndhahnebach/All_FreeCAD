@@ -270,6 +270,8 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
 
   // remove the representation of Objects no longer exist
   std::set<App::DocumentObject*>::const_iterator It;
+
+  DocChanges DocChange;
   for(It=Reason.DeletedObjects.begin();It!=Reason.DeletedObjects.end();It++)
   {
     // cycling to all views of the document
@@ -288,13 +290,23 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
       // removing from tree
       pcTreeItem->removeViewProviderDocumentObject(dynamic_cast<ViewProviderDocumentObject*>( vpInv ));
 
-      delete vpInv;
+      //delete vpInv;
+      DocChange.ViewProviders.insert(vpInv);
       _ViewProviderMap.erase(*It);
     }
 
     // remove also from the selection, if selected
     Selection().rmvSelection( _pcDocument->getName(), (*It)->name.getValue() );
   }
+
+  if ( !DocChange.ViewProviders.empty() ) {
+    DocChange.Why = DocChanges::Delete;
+    Notify(DocChange);
+    for ( std::set<ViewProvider*>::iterator vp = DocChange.ViewProviders.begin(); vp != DocChange.ViewProviders.end(); ++vp )
+      delete *vp;
+    DocChange.ViewProviders.clear();
+  }
+
 
   // set up new providers
   for(It=Reason.NewObjects.begin();It!=Reason.NewObjects.end();It++)

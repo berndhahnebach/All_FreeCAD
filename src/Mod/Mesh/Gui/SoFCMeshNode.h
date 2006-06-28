@@ -41,7 +41,7 @@ class GuiMeshExport SoFCMeshNode : public SoShape {
     
 public:
   static void initClass();
-  SoFCMeshNode(const Mesh::Feature* mesh=0);
+  SoFCMeshNode();
   void setMesh(const Mesh::Feature* mesh);
 
   virtual void write( SoWriteAction* action );
@@ -68,9 +68,11 @@ private:
   void drawFaces(SbBool needNormals);
   void drawPoints(SbBool needNormals);
   unsigned int countTriangles() const;
+  void createRoughModel(bool simplest);
 
 private:
   const Mesh::Feature*  _mesh;
+  unsigned int _ctPrimitives;
   SoMFVec3f point;
   SoMFInt32 coordIndex;
 };

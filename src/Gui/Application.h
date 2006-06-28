@@ -46,11 +46,27 @@ class MDIView;
 class MainWindow;
 class MenuItem;
 
+/** transport the changes of the Application
+ *  This class transport closer information what was changed in the
+ *  application. 
+ *@see Application
+ *@see Observer
+*/
+class GuiExport AppChanges
+{
+public:
+  enum {
+    New,
+    Del
+  } Why;
+  Gui::Document* Doc;
+};
+
 /** The Applcation main class
  * This is the central class of the GUI 
  * @author Jürgen Riegel, Werner Mayer
  */
-class GuiExport Application :public App::Application::ObserverType
+class GuiExport Application :public App::Application::ObserverType, public Base::Subject<const AppChanges&>
 {
 public:
   /// construction
