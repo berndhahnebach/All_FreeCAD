@@ -31,6 +31,7 @@
 #include <string>
 
 #include <Base/PyExport.h>
+#include <Base/Persistance.h>
 #include <App/Document.h>
 
 #ifdef _MSC_VER
@@ -82,20 +83,30 @@ public:
  *  @see MDIView
  *  @author Jürgen Riegel
  */
-class GuiExport Document :public QObject, public App::Document::ObserverType, public Base::Subject<const DocChanges&>
+class GuiExport Document : /*public QObject, */public App::Document::ObserverType, public Base::Subject<const DocChanges&>, public Base::Persistance
 {
-  Q_OBJECT
+//  Q_OBJECT
 
 public:
   Document(App::Document* pcDocument, Application * app, const char * name=0);
   ~Document();
 
 
+ 	/** @name I/O of the document */
+	//@{
   /// Save the document
   bool save(void);
-
   /// Save the document under a new file name
   bool saveAs(void);
+  /// This method is used to save properties or very small amounts of data to an XML document.
+  virtual void Save (Base::Writer &writer) const;
+  /// This method is used to restore properties from an XML document.
+  virtual void Restore(Base::XMLReader &reader);
+  /// This method is used to save large amounts of data to a binary file.
+  virtual void SaveDocFile (Base::Writer &writer) const;
+  /// This method is used to restore large amounts of data from a binary file.
+  virtual void RestoreDocFile(Base::Reader &reader);
+  //@}
 
   /// Observer message from the App doc
   virtual void OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason);
@@ -125,7 +136,6 @@ public:
     * send a specific massage to the active view and is able to recive a
     * return massage
     */
-  bool sendMsgToActiveView(const char* pMsg, const char** pReturn=0);
   /// send Messages to all views
   bool sendMsgToViews(const char* pMsg);
   /// Attach a view (get called by the MDIView constructor)
@@ -193,10 +203,10 @@ public:
   /// 
   bool isLastView(void);
 
- 	virtual Base::PyObjectBase *getPyObject(void);
+  virtual PyObject *getPyObject(void);
 
 
-public slots:
+//public slots:
 //	void slotCloseView(MDIView* theView);
 
 protected:
@@ -214,8 +224,6 @@ private:
   std::list<Gui::BaseView*> _LpcViews;
   /// List of all registered views
   std::list<Gui::BaseView*> _LpcPassivViews;
-  /// Active view
-  Gui::MDIView* _pcActiveView;
   /// root of the document in the tree
   DocItem *pcTreeItem;
 

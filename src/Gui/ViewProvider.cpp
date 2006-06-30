@@ -83,7 +83,10 @@ QPixmap ViewProvider::getIcon(void) const
   return Gui::BitmapFactory().pixmap(sPixmap);
 }
 
-
+void ViewProvider::onTouched(const App::Property* prop)
+{
+  this->onChanged(prop);
+}
 
 void ViewProvider::setTransformation(const Base::Matrix4D &rcMatrix)
 {

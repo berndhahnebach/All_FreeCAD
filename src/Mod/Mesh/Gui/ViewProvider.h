@@ -43,6 +43,7 @@ class SoPath;
 class SoLocateHighlight;
 class SoEventCallback;
 class SbViewVolume;
+class SoBaseColor;
 
 namespace Gui {
   class View3DInventorViewer;
@@ -134,6 +135,7 @@ protected:
   SoCoordinate3     *pcMeshCoord;
   SoIndexedFaceSet  *pcMeshFaces;
   //SoFaceSet         *pcMeshFaces;
+  SoBaseColor       *pOpenEdges;
 
 private:
   Gui::AbstractMouseModel* _mouseModel;

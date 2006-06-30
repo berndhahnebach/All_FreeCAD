@@ -328,7 +328,7 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ba
       // at least the point must be inside the bounding box of the tool mesh
       if ( cBB.IsInBox( cFIt->_aclPoints[i] ) )
       {
-        // should not cause runtime problems since the tool mesh is usually rather lightweigt
+        // should not cause performance problems since the tool mesh is usually rather lightweight
         int ct=0;
         for ( cTIt.Init(); cTIt.More(); cTIt.Next() )
         {
@@ -356,7 +356,6 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ba
 
     Base::Sequencer().next();
   }
-
 }
 
 void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Base::Vector3f& rcDir, const MeshFacetGrid& rGrid, std::vector<unsigned long> &raclCutted ) const
@@ -364,13 +363,30 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ba
   // iterator over grid structure
   MeshGridIterator clGridIter(rGrid);
   BoundBox3f cBB = rToolMesh.GetBoundBox();
+  Base::Vector3f tmp;
 
+  MeshFacetIterator cFIt(_rclMesh);
+  MeshFacetIterator cTIt(rToolMesh);
+  MeshAlgorithm cToolAlg(rToolMesh);
+
+  // To speed up the algorithm we use the grid built up from the associated mesh. For each grid element we check whether it lies completely inside 
+  // or outside the toolmesh or even intersect with the toolmesh. So we can reduce the number of facets with further tests dramatically.
+  // If the grid box is outside the toolmesh all the facets inside can be skipped. If the grid box is inside the toolmesh all facets are stored with
+  // no further tests because they must also lie inside the toolmesh. Finally, if the grid box intersect with the toolmesh we must also check for each
+  // whether it intersect we the toolmesh as well.
   std::vector<unsigned long> aulInds;
   for (clGridIter.Init(); clGridIter.More(); clGridIter.Next())
   {
-    if ( cBB && clGridIter.GetBoundBox() )
-    {
-      // collect all indices
+    int ret = cToolAlg.Surround( clGridIter.GetBoundBox(), rcDir );
+
+    // the box is completely inside the toolmesh
+    if ( ret == 1 ) {
+      // these facets can be removed without more checks
+      clGridIter.GetElements(raclCutted);
+    } 
+    // the box intersect with toolmesh
+    else if ( ret == 0 ) {
+      // these facets must be tested for intersectons with the toolmesh
       clGridIter.GetElements(aulInds);
     }
   }
@@ -378,14 +394,12 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ba
   // remove duplicates
   std::sort(aulInds.begin(), aulInds.end());
   aulInds.erase(std::unique(aulInds.begin(), aulInds.end()), aulInds.end());
-
-  MeshFacetIterator cFIt(_rclMesh);
-  MeshFacetIterator cTIt(rToolMesh);
+  std::sort(raclCutted.begin(), raclCutted.end());
+  raclCutted.erase(std::unique(raclCutted.begin(), raclCutted.end()), raclCutted.end());
 
   Base::SequencerLauncher seq("Check facets...", aulInds.size());
 
   // check all facets
-  Base::Vector3f tmp;
   for ( std::vector<unsigned long>::iterator it = aulInds.begin(); it != aulInds.end(); ++it )
   {
     cFIt.Set( *it );
@@ -396,7 +410,7 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ba
       // at least the point must be inside the bounding box of the tool mesh
       if ( cBB.IsInBox( cFIt->_aclPoints[i] ) )
       {
-        // should not cause runtime problems since the tool mesh is usually rather lightweigt
+        // should not cause performance problems since the tool mesh is usually rather lightweight
         int ct=0;
         for ( cTIt.Init(); cTIt.More(); cTIt.Next() )
         {
@@ -425,6 +439,85 @@ void MeshAlgorithm::GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Ba
     Base::Sequencer().next();
   }
 
+  // remove duplicates
+  std::sort(raclCutted.begin(), raclCutted.end());
+  raclCutted.erase(std::unique(raclCutted.begin(), raclCutted.end()), raclCutted.end());
+}
+
+int MeshAlgorithm::Surround( const Base::BoundBox3f& rBox, const Base::Vector3f& rcDir )
+{
+  Base::Vector3f pt1, pt2, tmp;
+  const BoundBox3f& cBB = _rclMesh.GetBoundBox();
+
+  // at least both boxes intersect
+  if ( cBB && rBox )
+  {
+    // check for intersections with the actual mesh
+    Base::Vector3f cCorner[8] = {
+      Base::Vector3f(rBox.MinX,rBox.MinY,rBox.MinZ), Base::Vector3f(rBox.MaxX,rBox.MinY,rBox.MinZ), 
+      Base::Vector3f(rBox.MaxX,rBox.MaxY,rBox.MinZ), Base::Vector3f(rBox.MinX,rBox.MaxY,rBox.MinZ),
+      Base::Vector3f(rBox.MinX,rBox.MinY,rBox.MaxZ), Base::Vector3f(rBox.MaxX,rBox.MinY,rBox.MaxZ), 
+      Base::Vector3f(rBox.MaxX,rBox.MaxY,rBox.MaxZ), Base::Vector3f(rBox.MinX,rBox.MaxY,rBox.MaxZ)
+    };
+
+    MeshFacetIterator cTIt(_rclMesh);
+
+    // triangulation of the box
+    int triangles[36] = {
+      0,1,2,0,2,3,
+      0,1,5,0,5,4,
+      0,4,7,0,7,3,
+      6,7,4,6,4,5,
+      6,2,3,6,3,7,
+      6,1,2,6,5,1
+    };
+
+    std::vector<MeshGeomFacet> cFacet(12);
+    int id=0;
+    for ( int ii=0; ii<12; ii++ )
+    {
+      cFacet[ii]._aclPoints[0]=cCorner[triangles[id++]]; 
+      cFacet[ii]._aclPoints[1]=cCorner[triangles[id++]]; 
+      cFacet[ii]._aclPoints[2]=cCorner[triangles[id++]];
+    }
+
+    // check for intersections of the box with the mesh
+    for ( std::vector<MeshGeomFacet>::iterator it = cFacet.begin(); it != cFacet.end(); ++it )
+    {
+      for ( cTIt.Init(); cTIt.More(); cTIt.Next() )
+      {
+        int ret = cTIt->IntersectWithFacet1(*it,pt1, pt2);
+
+        // the box intersects the mesh?
+        if ( ret != 0)
+          return 0; // => no more investigations required
+      }
+    }
+
+    // Now we know that the box doesn't intersect with the mesh. This means that either the box is completely inside
+    // or outside the mesh. To check this we test one point of the box whether it is inside or outside.
+    int ct=0;
+    for ( cTIt.Init(); cTIt.More(); cTIt.Next() )
+    {
+      if ( cTIt->IsPointOfFace( cCorner[0], FLOAT_EPS ) )
+      {
+        ct=1;
+        break; // the point lies on the tool mesh
+      }
+      else if ( cTIt->Foraminate( cCorner[0], rcDir, tmp ) )
+      {
+        // check if the intersection point lies in direction rcDir of the considered point
+        if ( (tmp - cCorner[0]) * rcDir > 0 )
+          ct++;
+      }
+    }
+
+    // odd number => point (i.e. the box) is inside the mesh, even number => point is outside the mesh
+    return (ct % 2 == 1) ? 1 : -1;
+  }
+
+  // no intersection the box is outside the mesh
+  return -1;
 }
 
 void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const Base::ViewProjMethod* pclProj, const Base::Polygon2D& rclPoly,

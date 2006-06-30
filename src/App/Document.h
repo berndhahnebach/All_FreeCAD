@@ -27,6 +27,7 @@
 
 #include <Base/PyExport.h>
 #include <Base/Observer.h>
+#include <Base/Persistance.h>
 #include <Base/Type.h>
 
 #include "PropertyContainer.h"
@@ -145,6 +146,13 @@ public:
 
   virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
+  //FIXME: This is a hack to allow to save or read data from the Gui::Document.
+  void installDocumentHook(Base::Persistance* pHook) {
+    pDocumentHook = pHook;
+  }
+  void removeDocumentHook() {
+    pDocumentHook=0;
+  }
 
 
 	/** @name Object handling  */
@@ -279,6 +287,7 @@ protected:
 
   DocumentObject* pActiveObject;
   std::map<std::string,DocumentObject*> ObjectMap;
+  Base::Persistance* pDocumentHook;
 
 	// pointer to the python class
 	DocumentPy *_pcDocPy;

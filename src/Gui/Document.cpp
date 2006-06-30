@@ -34,6 +34,8 @@
 
 #include <Base/Exception.h>
 #include <Base/Matrix.h>
+#include <Base/Reader.h>
+#include <Base/Writer.h>
 
 #include <App/Document.h>
 #include <App/DocumentObject.h>
@@ -70,6 +72,7 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   //Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
 
   _pcDocument->Attach(this);
+  _pcDocument->installDocumentHook(this);
 
   // pointer to the python class
   // NOTE: As this Python object doesn't get returned to the interpreter we mustn't increment it (Werner Jan-12-2006) 
@@ -112,6 +115,7 @@ Document::~Document()
 
   //delete (pcTreeItem);
   _pcDocument->Detach(this);
+  _pcDocument->removeDocumentHook();
 
   // remove the reference from the object
   _pcDocPy->setInvalid();
@@ -403,7 +407,7 @@ bool Document::save(void)
 /// Save the document under a new file name
 bool Document::saveAs(void)
 {
-  getMainWindow()->statusBar()->message(tr("Saving file under new filename..."));
+  getMainWindow()->statusBar()->message(QObject::tr("Saving file under new filename..."));
 
   // use current path as default
   std::string path = QDir::currentDirPath().latin1();
@@ -433,6 +437,105 @@ bool Document::saveAs(void)
   }
 }
 
+void Document::Save (Base::Writer &writer) const
+{
+  // It's only possible to add extra information if force of XML is disabled
+  if ( writer.isForceXML() == false )
+    writer.addFile("GuiDocument.xml", this);
+}
+
+void Document::Restore(Base::XMLReader &reader)
+{
+  int i,Cnt;
+
+  reader.readElement("Document");
+  long scheme = reader.getAttributeAsInteger("SchemaVersion");
+
+  // At this stage all the document objects and their associated view providers exist.
+  // Now we must restore the properties of the view providers only.
+  //
+  // SchemeVersion "1"
+  if ( scheme == 1 ) {
+    // read the viewproviders itself
+    reader.readElement("ViewProviderData");
+    Cnt = reader.getAttributeAsInteger("Count");
+    for(i=0 ;i<Cnt ;i++)
+    {
+      reader.readElement("ViewProvider");
+      string name = reader.getAttribute("name");
+      ViewProvider* pObj = getViewProviderByName(name.c_str());
+      if(pObj) // check if this feature has been registered
+      {
+        pObj->Restore(reader);
+
+        // As the view providers don't get notified when their proprties change while reading we must force this here
+        std::map<std::string,App::Property*> Map;
+        pObj->getPropertyMap(Map);
+        for ( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
+          pObj->onTouched(it->second);
+      }
+      reader.readEndElement("ViewProvider");
+    }
+    reader.readEndElement("ViewProviderData");
+
+    // read camera settings
+    reader.readElement("Camera");
+    const char* ppReturn = reader.getAttribute("settings");
+    std::string sMsg = "SetCamera ";
+    sMsg += ppReturn;
+    _pcAppWnd->sendMsgToActiveView(sMsg.c_str());
+  }
+
+  reader.readEndElement("Document");
+}
+
+void Document::RestoreDocFile(Base::Reader &reader)
+{
+  // We must create an XML parser to read from the input stream
+  Base::XMLReader xmlReader("GuiDocument.xml", reader);
+  Restore(xmlReader);
+}
+
+void Document::SaveDocFile (Base::Writer &writer) const
+{
+  writer << "<?xml version='1.0' encoding='utf-8'?>" << endl
+         << "<!--" << endl
+         << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
+         << "-->" << endl;
+
+  writer << "<Document SchemaVersion=\"1\">" << endl;
+
+  std::map<App::DocumentObject*,ViewProvider*>::const_iterator it;
+  
+  // writing the features itself
+  writer << writer.ind() << "<ViewProviderData Count=\"" << _ViewProviderMap.size() <<"\">" << endl;
+
+  bool xml = writer.isForceXML();
+  writer.setForceXML(true);
+  for(it = _ViewProviderMap.begin(); it != _ViewProviderMap.end(); ++it)
+  {
+    App::DocumentObject* doc = it->first;
+    ViewProvider* obj = it->second;
+    writer << writer.ind() << "<ViewProvider name=\"" << doc->name.getValue() << "\">" << endl;   
+    obj->Save(writer);
+    writer << writer.ind() << "</ViewProvider>" << endl;
+  }
+  writer.setForceXML(xml);
+
+  writer << writer.ind() << "</ViewProviderData>" << endl;
+
+  // set camera settings
+  const char* ppReturn=0;
+  _pcAppWnd->sendMsgToActiveView("GetCamera",&ppReturn);
+  
+  // remove the first line because it's a comment like '#Inventor V2.1 ascii'
+  QStringList lines = QStringList::split("\n", ppReturn);
+  lines.pop_front();
+  QString sCamera = lines.join(" ");
+  writer << writer.ind() << "<Camera settings=\"" <<  sCamera.latin1() <<"\"/>" << endl;
+  writer << "</Document>" << endl;
+}
+
 void Document::createView(const char* sType) 
 {
   QPixmap FCIcon = Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str());
@@ -460,7 +563,7 @@ void Document::createView(const char* sType)
 
   const char* name = getDocument()->getName();
 
-  QString aName = tr("%1 : %3").arg(name).arg(_iWinCount++);
+  QString aName = QString("%1 : %3").arg(name).arg(_iWinCount++);
 
 
   pcView3D->setCaption(aName);
@@ -564,7 +667,7 @@ void Document::canClose ( QCloseEvent * e )
       )
   {
 #   ifndef FC_DEBUG
-      switch(QMessageBox::question( getActiveView(), tr("Unsaved document"),tr("Save document before close?"),
+    switch(QMessageBox::question( getActiveView(), QObject::tr("Unsaved document"),QObject::tr("Save document before close?"),
         QMessageBox::Yes|QMessageBox::Default,QMessageBox::No,QMessageBox::Cancel|QMessageBox::Escape ))
       {
       case QMessageBox::Yes: // "Yes" was pressed
@@ -641,17 +744,6 @@ bool Document::sendMsgToViews(const char* pMsg)
 
   return false;
 }
-
-/// send Messages to all views
-bool Document::sendMsgToActiveView(const char* pMsg,const char** pReturn)
-{
-  if(_pcActiveView)
-    return _pcActiveView->onMsg(pMsg,pReturn);
-  else
-    return false;
-}
-
-
 
 /// Geter for the Active View
 MDIView* Document::getActiveView(void)
@@ -764,7 +856,7 @@ Handle(V3d_Viewer) Document::Viewer(const Standard_CString aDisplay,
 
   */
 
-Base::PyObjectBase * Document::getPyObject(void)
+PyObject* Document::getPyObject(void)
 {
   _pcDocPy->IncRef();
   return _pcDocPy;
