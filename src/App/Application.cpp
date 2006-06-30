@@ -327,6 +327,11 @@ Document* Application::openDocument(const char * FileName)
   // checking on the extension
   if(File.hasExtension("FCStd") || File.hasExtension("std") )
   {
+    if ( !File.exists() ) {
+      std::stringstream str;
+      str << "File '" << FileName << "' does not exist!";
+      throw Base::Exception(str.str().c_str());
+    }
 
     // Creating a FreeCAD Document
     newDoc.pDoc = new Document();

@@ -128,3 +128,7 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + command for toggling clipping plane
 + command for freezing view positions
 + added new ViewProvider for meshes with more than 100.000 triangles using SoFCMeshNode for optimizations
++ save/restore of view providers into/from a separate XML file in a project file
++ check if project file exists when loading from command line
++ using grid to speed up cutting algoritm for huge meshes
++ calculate inverse color of mesh color for open edges 

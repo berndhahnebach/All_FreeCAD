@@ -143,6 +143,14 @@ public:
    * Does basically the same as method above except it uses a mesh grid to speed up the computation.
    */
   void GetFacetsFromToolMesh( const MeshKernel& rToolMesh, const Base::Vector3f& rcDir, const MeshFacetGrid& rGrid, std::vector<unsigned long> &raclCutted ) const;
+  /** 
+   * Checks whether the bounding box \a rBox is surrounded by the attached mesh which must be a solid.
+   * The direction \a rcDir is used to try to foraminate the facets of the tool mesh and counts the number of formainated facets.
+   *  1 is returned if the box is completely inside the mesh
+   *  0 is returned if the box is partially inside (i.e. intersects) the mesh
+   * -1 is returned if the box is completely outside the mesh. This could also mean that the mesh is surrounded by \a rBox.
+   */
+  int Surround( const Base::BoundBox3f& rBox, const Base::Vector3f& rcDir );
   /**
    * Projects the determined facets through projection with \a pclProj into the 2D plane and checks for
    * intersection with the polygon.

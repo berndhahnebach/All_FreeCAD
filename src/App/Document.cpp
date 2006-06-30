@@ -267,6 +267,7 @@ Document::Document(void)
   _iUndoMode(0),
   activUndoTransaction(0),
   pActiveObject(0),
+  pDocumentHook(0),
   _pcDocPy(0)
 {
   // Remark: In a constructor we should never increment a Python object as we cannot be sure
@@ -469,6 +470,11 @@ bool Document::save (void)
 
     Document::Save(writer);
 
+    // Special handling for Gui document.
+    if (pDocumentHook) {
+      pDocumentHook->Save(writer);
+    }
+
     // write additional files
     writer.writeFiles();
 
@@ -511,6 +517,14 @@ bool Document::open (void)
     }
 
     Notify(DocChange);
+
+    // Special handling for Gui document
+    if (pDocumentHook) {
+      zipios::ConstEntryPointer entry = zipstream.getNextEntry();
+      if ( entry->isValid() ) {
+        pDocumentHook->RestoreDocFile( zipstream );
+      }
+    }
 
     return true;
   }

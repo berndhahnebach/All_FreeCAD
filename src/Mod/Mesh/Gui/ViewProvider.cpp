@@ -153,12 +153,16 @@ ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
   pcMeshCoord->ref();
   pcMeshFaces = new SoIndexedFaceSet();
   pcMeshFaces->ref();
+  pOpenEdges = new SoBaseColor();
+  pOpenEdges->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  pOpenEdges->ref();
 }
 
 ViewProviderMesh::~ViewProviderMesh()
 {
   pcMeshCoord->unref();
   pcMeshFaces->unref();
+  pOpenEdges->unref();
 }
 
 void ViewProviderMesh::onChanged(const App::Property* prop)
@@ -174,6 +178,9 @@ void ViewProviderMesh::onChanged(const App::Property* prop)
   } else if ( prop == &Visibility ) {
     Visibility.getValue() ? show() : hide();
   } else if ( prop == &OpenEdges ) {
+    // FIXME: We must have a material property to adjust the open edge color
+    App::Color c = SolidMaterial.getValue();
+    pOpenEdges->rgb.setValue(1.0f-c.r, 1.0f-c.g, 1.0f-c.b);
     showOpenEdges( OpenEdges.getValue() );
   }
 }
@@ -618,9 +625,7 @@ void ViewProviderMesh::showOpenEdges(bool show)
 
     // Draw lines
     SoSeparator* linesep = new SoSeparator;
-    SoBaseColor * basecol = new SoBaseColor;
-    basecol->rgb.setValue( 1.0f, 1.0f, 0.0f );
-    linesep->addChild(basecol);
+    linesep->addChild(pOpenEdges);
     linesep->addChild(pcMeshCoord);
     SoIndexedLineSet* lines = new SoIndexedLineSet;
     linesep->addChild(lines);

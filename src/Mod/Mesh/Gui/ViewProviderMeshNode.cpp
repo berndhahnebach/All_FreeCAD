@@ -329,8 +329,9 @@ bool ViewProviderMeshNode::handleEvent(const SoEvent * const ev,Gui::View3DInven
       std::vector<unsigned long> indices;
       MeshCore::MeshKernel cToolMesh;
       cToolMesh = aFaces;
+      MeshCore::MeshFacetGrid cGrid(meshProp.getValue());
       MeshCore::MeshAlgorithm cAlg(meshProp.getValue());
-      cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, indices);
+      cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
       meshProp.deleteFacetIndices( indices );
 
       Viewer.render();
