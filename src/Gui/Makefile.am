@@ -31,6 +31,7 @@ BUILT_SOURCES=\
 		moc_DlgParameterImp.cpp \
 		moc_DlgPreferences.cpp \
 		moc_DlgPreferencesImp.cpp \
+		moc_DlgProjectInformation.cpp \
 		moc_DlgReportView.cpp \
 		moc_DlgSettings3DView.cpp \
 		moc_DlgSettings3DViewImp.cpp \
@@ -95,6 +96,8 @@ BUILT_SOURCES=\
 		DlgParameter.h \
 		DlgPreferences.cpp \
 		DlgPreferences.h \
+		DlgProjectInformation.cpp \
+		DlgProjectInformation.h \
 		DlgReportView.cpp \
 		DlgReportView.h \
 		DlgSettings3DView.cpp \
@@ -202,6 +205,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgParameterImp.h \
 		DlgPreferencesImp.cpp \
 		DlgPreferencesImp.h \
+		DlgProjectInformationImp.cpp \
+		DlgProjectInformationImp.h \
 		DlgReportViewImp.cpp \
 		DlgReportViewImp.h \
 		DlgSettings3DViewImp.cpp \
@@ -322,6 +327,8 @@ libFreeCADGui_la_SOURCES=\
 		ViewProviderExtern.h \
 		ViewProviderFeature.cpp \
 		ViewProviderFeature.h \
+		ViewProviderPy.cpp \
+		ViewProviderPy.h \
 		ViewProviderPythonFeature.cpp \
 		ViewProviderPythonFeature.h \
 		WaitCursor.cpp \
@@ -377,6 +384,7 @@ EXTRA_DIST = \
 		DlgOnlineHelp.ui \
 		DlgParameter.ui \
 		DlgPreferences.ui \
+		DlgProjectInformation.ui \
 		DlgReportView.ui \
 		DlgSettings3DView.ui \
 		DlgSettingsDocument.ui \

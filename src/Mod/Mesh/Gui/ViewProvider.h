@@ -87,17 +87,9 @@ public:
   ViewProviderMesh();
   virtual ~ViewProviderMesh();
 
-  //FIXME: This is just to test the integration to the property editor.
-  //       Later this should be moved to Gui::ViewProviderDocumentObject.
-  App::PropertyColor SolidMaterial;
+  // Display properties
   App::PropertyFloat LineWidth;
-  App::PropertyStringList Display;
-  App::PropertyInteger Transparency;
-  App::PropertyBool Visibility;
   App::PropertyBool OpenEdges;
-
-  /// get called by the container when a Proptery was changed
-  virtual void onChanged(const App::Property* prop);
 
   /** 
    * Extracts the mesh data from the feature \a pcFeature and creates
@@ -125,6 +117,8 @@ public:
 	//@}
 
 protected:
+  /// get called by the container whenever a proptery has been changed
+  void onChanged(const App::Property* prop);
   /// helper methode to build up the FaceSet
   void createMesh( const MeshCore::MeshKernel& pcMesh );
   /// Creates a tool mesh from the previous picked polygon on the viewer

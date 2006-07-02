@@ -286,7 +286,7 @@ PYFUNCIMP_D(FeaturePythonPy,setClass)
  *  d.recompute()
  * \endcode
  *
- * \note You must not pass any parameters to the callback function, it's argument list must be empty.
+ * \note You must not pass any parameters to the callback function, its argument list must be empty.
  */
 PYFUNCIMP_D(FeaturePythonPy,execute)
 {

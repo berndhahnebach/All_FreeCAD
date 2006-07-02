@@ -471,6 +471,54 @@ private:
   std::vector<Color> _lValueList;
 };
 
+/** Material properties
+ * This is the father of all properties handling colors.
+ */
+class AppExport PropertyMaterial : public Property
+{
+  TYPESYSTEM_HEADER();
+
+public:
+      
+	/**
+	 * A constructor.
+	 * A more elaborate description of the constructor.
+	 */
+	PropertyMaterial();
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	~PropertyMaterial();
+
+	/** Sets the property 
+	 */
+  void setValue(const Material &mat);
+  void setAmbientColor(const Color& col);
+  void setDiffuseColor(const Color& col);
+  void setSpecularColor(const Color& col);
+  void setEmmisiveColor(const Color& col);
+  void setShininess(float);
+  void setTransparency(float);
+
+	/** This method returns a string representation of the property
+	 */
+	const Material &getValue(void) const;
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+  virtual void Save (Base::Writer &writer) const;
+  virtual void Restore(Base::XMLReader &reader);
+
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
+
+private:
+  Material _cMat;
+};
+
 
 } // namespace App
 

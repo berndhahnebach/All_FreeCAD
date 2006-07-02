@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,77 +21,33 @@
  ***************************************************************************/
 
 
+#ifndef GUI_DIALOG_DLGPROJECTINFORMATIONIMP_H
+#define GUI_DIALOG_DLGPROJECTINFORMATIONIMP_H
 
-#include "PreCompiled.h"
+#include "DlgProjectInformation.h"
 
-#ifndef _PreComp_
-#endif
-
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Base/Reader.h>
-#include <Base/Writer.h>
-
-#include <Mod/Part/App/TopologyPy.h>
-
-#include "Core/MeshIO.h"
-
-#include "MeshFeature.h"
-#include "MeshFeaturePy.h"
-#include <App/Feature.h>
-
-using namespace Mesh;
-
-
-//===========================================================================
-// Feature
-//===========================================================================
-
-PROPERTY_SOURCE(Mesh::Feature, App::AbstractFeature)
-
-Feature::Feature()
-:pcMeshFeaturePy(0)
-{
-  ADD_PROPERTY(Mesh, (MeshCore::MeshKernel()));
-  showMode.setValue("Shaded");
+namespace App {
+class Document;
 }
 
-Feature::~Feature()
-{
-  if ( pcMeshFeaturePy )
-  {
-    pcMeshFeaturePy->setInvalid();
-    pcMeshFeaturePy->DecRef();
-  }
-}
+namespace Gui {
 
-int Feature::execute(void)
-{
-  return 0;
-}
+namespace Dialog {
 
-Base::PyObjectBase *Feature::GetPyObject(void)
+class DlgProjectInformationImp : public DlgProjectInformation
 {
-  if(!pcMeshFeaturePy){
-    pcMeshFeaturePy = new MeshFeaturePy(this);
-  }
- 
-  // Increment every time when this object is returned
-  pcMeshFeaturePy->IncRef();
-  return pcMeshFeaturePy; 
-}
+public:
+  DlgProjectInformationImp( App::Document* doc, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  ~DlgProjectInformationImp();
 
-void Feature::onChanged(const App::Property* prop)
-{
-  // Ignore some properties
-  if ( prop == &Mesh )
-    return;
-  else
-    AbstractFeature::onChanged(prop);
-}
+protected:
+  void accept();
+  App::Document* _doc;
+};
 
-const MeshCore::MeshKernel& Feature::getMesh() const
-{
-  return Mesh.getValue();
-}
+} // namespace Dialog
+} // namespace Gui
+
+
+#endif // GUI_DIALOG_DLGPROJECTINFORMATIONIMP_H
 

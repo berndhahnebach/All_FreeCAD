@@ -421,7 +421,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
   // File
   MenuItem* file = new MenuItem( menuBar );
   file->setCommand( "&File" );
-  *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_SaveAs" << "Separator" << "Std_Print"
+  *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_SaveAs" << "Std_ProjectInfo" << "Separator" << "Std_Print"
         << "Separator" << "Std_MRU" << "Separator" << "Std_Quit";
 
   // Edit

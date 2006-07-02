@@ -84,7 +84,6 @@ public:
     * the data has manipulated.
     */
   virtual void update(void)=0;
-  virtual void onTouched(const App::Property* prop);
 
 protected:
 	/** @name Display modes

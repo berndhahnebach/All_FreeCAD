@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,77 +21,45 @@
  ***************************************************************************/
 
 
+#ifndef GUI_VIEWPROVIDER_PY_H
+#define GUI_VIEWPROVIDER_PY_H
 
-#include "PreCompiled.h"
+#include <Base/PyExportImp.h>
 
-#ifndef _PreComp_
-#endif
+namespace Gui {
+class ViewProvider;
 
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Base/Reader.h>
-#include <Base/Writer.h>
-
-#include <Mod/Part/App/TopologyPy.h>
-
-#include "Core/MeshIO.h"
-
-#include "MeshFeature.h"
-#include "MeshFeaturePy.h"
-#include <App/Feature.h>
-
-using namespace Mesh;
-
-
-//===========================================================================
-// Feature
-//===========================================================================
-
-PROPERTY_SOURCE(Mesh::Feature, App::AbstractFeature)
-
-Feature::Feature()
-:pcMeshFeaturePy(0)
+class GuiExport ViewProviderPy : public Base::PyObjectBase
 {
-  ADD_PROPERTY(Mesh, (MeshCore::MeshKernel()));
-  showMode.setValue("Shaded");
-}
+	/// always start with Py_Header
+	Py_Header;
 
-Feature::~Feature()
-{
-  if ( pcMeshFeaturePy )
-  {
-    pcMeshFeaturePy->setInvalid();
-    pcMeshFeaturePy->DecRef();
-  }
-}
+public:
+  /// constructor.
+  ViewProviderPy(ViewProvider *pcViewProvider, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
+  /// destructor.
+  virtual ~ViewProviderPy();
+  void setInvalid();
 
-int Feature::execute(void)
-{
-  return 0;
-}
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
 
-Base::PyObjectBase *Feature::GetPyObject(void)
-{
-  if(!pcMeshFeaturePy){
-    pcMeshFeaturePy = new MeshFeaturePy(this);
-  }
- 
-  // Increment every time when this object is returned
-  pcMeshFeaturePy->IncRef();
-  return pcMeshFeaturePy; 
-}
+	virtual PyObject *_repr(void);  				// the representation
+	PyObject *_getattr(char *attr);					// __getattr__ function
+	int _setattr(char *attr, PyObject *value);		// __setattr__ function
 
-void Feature::onChanged(const App::Property* prop)
-{
-  // Ignore some properties
-  if ( prop == &Mesh )
-    return;
-  else
-    AbstractFeature::onChanged(prop);
-}
+  //---------------------------------------------------------------------
+	// helpers for python exports goes here +++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+  ViewProvider *getViewProvider(void) const {return _pcViewProvider;}
 
-const MeshCore::MeshKernel& Feature::getMesh() const
-{
-  return Mesh.getValue();
-}
+private:
+  ViewProvider *_pcViewProvider;
+};
+
+} // namespace Gui
+
+#endif // GUI_VIEWPROVIDER_PY_H
 

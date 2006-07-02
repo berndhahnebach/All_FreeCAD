@@ -24,7 +24,6 @@
 #ifndef DlgDisplayPropertiesImp_H
 #define DlgDisplayPropertiesImp_H
 
-#include <set>
 #include <vector>
 #include <Inventor/SbLinear.h>
 #include <qmap.h>
@@ -54,7 +53,7 @@ class DlgDisplayPropertiesImp : public DlgDisplayProperties
     Q_OBJECT
 
 public:
-  DlgDisplayPropertiesImp( Gui::Command* pcCmd, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgDisplayPropertiesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
   ~DlgDisplayPropertiesImp();
 
 public slots:
@@ -72,31 +71,8 @@ protected:
   virtual void reject();
 
 protected:
-  Gui::Command* _pcCmd;
-  std::vector<App::DocumentObject*> Sel;
   std::vector<ViewProvider*> Provider;
   QMap<QString, App::Material::MaterialType> Materials;
-
-  bool bModeChange;
-  std::string sModeChangeName;
-
-  bool bTranspChange;
-  float fTranspChange;
-
-  bool bPointSizeChange;
-  float fPointSizeChange;
-  float fPointSizeGranularity;
-  SbVec2f pointSizeRange;
-  
-  bool bLineWidthChange;
-  float fLineWidthChange;
-  float fLineWidthGranularity;
-  SbVec2f lineWidthRange;
-
-  bool bColorChange;
-  App::Color cColorChange;
-
-
 };
 
 } // namespace Dialog
