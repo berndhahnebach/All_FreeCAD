@@ -52,6 +52,13 @@ PROPERTY_SOURCE(Gui::ViewProviderDocumentObject, Gui::ViewProvider)
 ViewProviderDocumentObject::ViewProviderDocumentObject()
   : pcObject(0), _cLastStatus(-1)
 {
+  ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
+  ADD_PROPERTY(Display,("Flat"));
+  ADD_PROPERTY(Transparency,(0));
+  ADD_PROPERTY(Visibility,(true));
+  App::Material mat(App::Material::DEFAULT);
+  ADD_PROPERTY(ShapeMaterial,(mat));
+
   pcSolidMaterial = new SoMaterial;
   pcSolidMaterial->ref();
   pcLineMaterial   = new SoMaterial;
@@ -82,6 +89,44 @@ ViewProviderDocumentObject::~ViewProviderDocumentObject()
   pcLineStyle->unref();
 }
 
+void ViewProviderDocumentObject::onChanged(const App::Property* prop)
+{
+  // Actually, the properties 'ShapeColor' and 'Transparency' are part of the property 'ShapeMaterial'.
+  // Both redundant properties are kept due to more convenience for the user. But we must keep the values
+  // consistent of all these properties.
+  if ( prop == &ShapeColor ) {
+    const App::Color& c = ShapeColor.getValue();
+    pcSolidMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+    ShapeMaterial.enableNotify(false);
+    ShapeMaterial.setDiffuseColor(c);
+    ShapeMaterial.enableNotify(true);
+  } else if ( prop == &Transparency ) {
+    float trans = Transparency.getValue()/100.0f;
+    pcSolidMaterial->transparency = trans;
+    ShapeMaterial.enableNotify(false);
+    ShapeMaterial.setTransparency(trans);
+    ShapeMaterial.enableNotify(true);
+  } else if ( prop == &ShapeMaterial ) {
+    const App::Material& Mat = ShapeMaterial.getValue();
+    Transparency.enableNotify(false);
+    Transparency.setValue(100*Mat.transparency);
+    Transparency.enableNotify(true);
+    ShapeColor.enableNotify(false);
+    ShapeColor.setValue(Mat.diffuseColor);
+    ShapeColor.enableNotify(true);
+    pcSolidMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
+    pcSolidMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
+    pcSolidMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
+    pcSolidMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
+    pcSolidMaterial->shininess.setValue(Mat.shininess);
+    pcSolidMaterial->transparency.setValue(Mat.transparency);
+  } else if ( prop == &Display ) {
+    setMode( Display.getValues().front().c_str() );
+  } else if ( prop == &Visibility ) {
+    Visibility.getValue() ? show() : hide();
+  }
+}
+
 
 void ViewProviderDocumentObject::attach(App::DocumentObject *pcFeat)
 {
@@ -92,7 +137,12 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcFeat)
   setMatFromObject();
 
   // set viewing mode
-  setMode(pcObject->getShowMode());
+  //setMode(pcObject->getShowMode());
+  const std::vector<std::string>& modes = Display.getValues();
+  if ( modes.size() > 0 )
+    setMode(modes.front().c_str());
+  else
+    setMode("Flat");
   if ( !pcObject->visibility.getValue() )
     ViewProvider::hide();
 
@@ -328,44 +378,3 @@ void ViewProviderDocumentObject::setLineWidth(float val)
 {
   pcLineStyle->lineWidth.setValue( val );
 }
-
-//===========================================================================
-// FeatureFactorySingleton - Factory for Features
-//===========================================================================
-
-/*
-
-ViewProviderDocumentObjectFactorySingleton* ViewProviderDocumentObjectFactorySingleton::_pcSingleton = NULL;
-
-ViewProviderDocumentObjectFactorySingleton& ViewProviderDocumentObjectFactorySingleton::Instance(void)
-{
-  if (_pcSingleton == NULL)
-    _pcSingleton = new ViewProviderDocumentObjectFactorySingleton;
-  return *_pcSingleton;
-}
-
-void ViewProviderDocumentObjectFactorySingleton::Destruct (void)
-{
-  if (_pcSingleton != NULL)
-    delete _pcSingleton;
-}
-
-ViewProviderDocumentObject* ViewProviderDocumentObjectFactorySingleton::Produce (const char* sName) const
-{
-	ViewProviderDocumentObject* w = (ViewProviderDocumentObject*)Factory::Produce(sName);
-
-  // this Feature class is not registered
-  if (!w)
-  {
-#ifdef FC_DEBUG
-    Base::Console().Warning("\"%s\" ViewProvider is not registered\n", sName);
-#else
-    Base::Console().Log("Warn: %s ViewProvider is not registered\n", sName);
-#endif
-    return NULL;
-  }
-
-  return w;
-}
-
-*/ 

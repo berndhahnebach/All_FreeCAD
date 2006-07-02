@@ -43,6 +43,7 @@
 #include "MainWindow.h"
 #include "BitmapFactory.h"
 #include "Selection.h"
+#include "DlgProjectInformationImp.h"
 
 using Base::Console;
 using Base::Sequencer;
@@ -199,6 +200,34 @@ bool StdCmdSaveAs::isActive(void)
     return true;
   else
     return getGuiApplication()->sendHasMsgToActiveView("SaveAs");
+}
+
+//===========================================================================
+// Std_ProjectInfo
+//===========================================================================
+
+DEF_STD_CMD_A(StdCmdProjectInfo);
+
+StdCmdProjectInfo::StdCmdProjectInfo()
+  :Command("Std_ProjectInfo")
+{
+  // seting the 
+  sGroup        = QT_TR_NOOP("File");
+  sMenuText     = QT_TR_NOOP("Project i&nformation...");
+  sToolTipText  = QT_TR_NOOP("Show details of the currently active project");
+  sWhatsThis    = QT_TR_NOOP("Show details of the currently active project");
+  sStatusTip    = QT_TR_NOOP("Show details of the currently active project");
+}
+
+void StdCmdProjectInfo::activated(int iMsg)
+{
+  Gui::Dialog::DlgProjectInformationImp dlg(getActiveGuiDocument()->getDocument(), getMainWindow());
+  dlg.exec();
+}
+
+bool StdCmdProjectInfo::isActive(void)
+{
+  return ( getActiveGuiDocument() ? true : false );
 }
 
 //===========================================================================
@@ -510,6 +539,7 @@ void CreateDocCommands(void)
 
   rcCmdMgr.addCommand(new StdCmdSave());
   rcCmdMgr.addCommand(new StdCmdSaveAs());
+  rcCmdMgr.addCommand(new StdCmdProjectInfo());
   rcCmdMgr.addCommand(new StdCmdUndo());
   rcCmdMgr.addCommand(new StdCmdRedo());
   rcCmdMgr.addCommand(new StdCmdPrint());

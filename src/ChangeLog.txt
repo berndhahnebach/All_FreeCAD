@@ -132,3 +132,10 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + check if project file exists when loading from command line
 + using grid to speed up cutting algoritm for huge meshes
 + calculate inverse color of mesh color for open edges 
++ added project properties to App::Document
++ added material property class
++ allow to disable notification of property container when a property has changed its value
++ added dialog to show and set project information
++ start moving display relevant properties from DocumentObject (data) classes to the associated ViewProvider (view) classes
++ reimplemented dialogs DlgDisplayPropertiesImp and DlgMaterialPropertiesImp
++ added ViewProvider class for Python 

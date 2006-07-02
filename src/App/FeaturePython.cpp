@@ -41,14 +41,10 @@ PROPERTY_SOURCE(App::FeaturePython, App::AbstractFeature)
 
 FeaturePython::FeaturePython()
 {
-  ADD_PROPERTY(ExecuteCode ,(""));
 }
-
 
 int FeaturePython::execute(void)
 {
-  //Base::Console().Message("FeaturePython::execute() with \"%s\"\n",ExecuteCode.getValue());
-
   // Run the callback function of the Python object. There is no need to handle any exceptions here as the calling
   // instance does this for us.
   Base::Interpreter().runMethodVoid(pcFeaturePy, "execute");
@@ -104,10 +100,8 @@ void FeaturePython::addDynamicProperty(const char* type, const char* name)
   }  
 }
 
-
 string FeaturePython::getUniquePropertyName(const char *Name) const
 {
-
   // strip ilegal chars
   string CleanName;
   const char *It=Name;

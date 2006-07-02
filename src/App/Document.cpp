@@ -37,6 +37,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/TimeInfo.h>
 #include <Base/Interpreter.h>
 #include <Base/Reader.h>
 #include <Base/Writer.h>
@@ -281,8 +282,12 @@ Document::Document(void)
 
   ADD_PROPERTY(Name,("Unnamed"));
   ADD_PROPERTY(FileName,(""));
-
-
+  ADD_PROPERTY(CreatedBy,(""));
+  ADD_PROPERTY(CreationDate,(Base::TimeInfo::currentDateTimeString()));
+  ADD_PROPERTY(LastModifiedBy,(""));
+  ADD_PROPERTY(LastModifiedDate,("Unknown"));
+  ADD_PROPERTY(Company,(""));
+  ADD_PROPERTY(Comment,(""));
 }
 
 Document::~Document()
@@ -462,6 +467,7 @@ bool Document::save (void)
 
   if(*(FileName.getValue()) != '\0')
   {
+    LastModifiedDate.setValue(Base::TimeInfo::currentDateTimeString());
     Base::Writer writer(FileName.getValue());
 
     writer.setComment("FreeCAD Document");

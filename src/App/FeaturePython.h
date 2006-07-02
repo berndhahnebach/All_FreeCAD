@@ -40,9 +40,6 @@ class FeaturePython :public AbstractFeature
 public:
   FeaturePython();  
 
-  App::PropertyString  ExecuteCode;
-
-  
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature

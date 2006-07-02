@@ -325,7 +325,7 @@ StdCmdSetMaterial::StdCmdSetMaterial()
 
 void StdCmdSetMaterial::activated(int iMsg)
 {
-  Gui::Dialog::DlgDisplayPropertiesImp dlg(this, getMainWindow()->activeWindow(), "Display", true );
+  Gui::Dialog::DlgDisplayPropertiesImp dlg(getMainWindow()->activeWindow(), "Display", true );
   dlg.exec();
 }
 

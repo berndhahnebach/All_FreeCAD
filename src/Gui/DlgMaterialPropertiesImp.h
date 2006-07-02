@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -28,7 +28,7 @@
 #include <vector>
 
 namespace Gui {
-class ViewProviderDocumentObject;
+class ViewProvider;
 
 namespace Dialog {
 
@@ -43,10 +43,10 @@ public:
   virtual void onDiffuseColorChanged();
   virtual void onSpecularColorChanged();
   virtual void onShininessChanged(int);
-  void setViewProviders( const std::vector<Gui::ViewProviderDocumentObject*>&);
+  void setViewProviders( const std::vector<Gui::ViewProvider*>&);
 
 private:
-  std::vector<Gui::ViewProviderDocumentObject*> Objects;
+  std::vector<Gui::ViewProvider*> Objects;
 };
 
 } // namespace Dialog

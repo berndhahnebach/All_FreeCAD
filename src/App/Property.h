@@ -72,6 +72,16 @@ public:
 
   /// get a pointer to the PropertyContainer derived class the property belonging to
   PropertyContainer *getContainer(void) const {return father;}
+  /**
+   * If \a on is true the property container gets notified whenever the value has changed.
+   * Due to performance issues it's possible to disable the notification mechanism temporarily.
+   */
+  void enableNotify(bool on);
+  /** 
+   * Forces a notification of its property container even if the notification mechanism is
+   * disabled.
+   */
+  void touch();
 
   /// returns a new copy of the property (mainly for Undo/Redo and transactions)
   virtual Property *Copy(void) const;
@@ -82,14 +92,15 @@ public:
   friend class PropertyContainer;
 
 protected:
-  /// is called by all setValue() methodes after the value was changed
+  /// is called by all setValue() methods after the value was changed
   void hasSetValue(void);
-  /// is called by all setValue() methodes befor the value is changed
+  /// is called by all setValue() methods befor the value is changed
   void aboutToSetValue(void);
 
 private:
 
   PropertyContainer *father;
+  bool notify;
 
 };
 

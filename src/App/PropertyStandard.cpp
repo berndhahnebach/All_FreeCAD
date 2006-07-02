@@ -33,6 +33,7 @@
 #include <Base/Writer.h>
 
 #include "PropertyStandard.h"
+#include "MaterialPy.h"
 
 using namespace App;
 using namespace Base;
@@ -1112,13 +1113,115 @@ void PropertyColorList::Paste(const Property &from)
 }
 
 
+//**************************************************************************
+//**************************************************************************
+// PropertyMaterial
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyMaterial , App::Property);
 
 
+PropertyMaterial::PropertyMaterial()
+{
 
+}
 
+PropertyMaterial::~PropertyMaterial()
+{
 
+}
 
+void PropertyMaterial::setValue(const Material &mat)
+{
+	_cMat=mat;
+  hasSetValue();
+}
 
+const Material& PropertyMaterial::getValue(void) const 
+{
+	return _cMat;
+}
 
+void PropertyMaterial::setAmbientColor(const Color& col)
+{
+  _cMat.ambientColor = col;
+  hasSetValue();
+}
 
+void PropertyMaterial::setDiffuseColor(const Color& col)
+{
+  _cMat.diffuseColor = col;
+  hasSetValue();
+}
+
+void PropertyMaterial::setSpecularColor(const Color& col)
+{
+  _cMat.specularColor = col;
+  hasSetValue();
+}
+
+void PropertyMaterial::setEmmisiveColor(const Color& col)
+{
+  _cMat.emissiveColor = col;
+  hasSetValue();
+}
+
+void PropertyMaterial::setShininess(float val)
+{
+  _cMat.shininess = val;
+  hasSetValue();
+}
+
+void PropertyMaterial::setTransparency(float val)
+{
+  _cMat.transparency = val;
+  hasSetValue();
+}
+
+PyObject *PropertyMaterial::getPyObject(void)
+{
+  return new MaterialPy(&_cMat);
+}
+
+void PropertyMaterial::setPyObject(PyObject *value)
+{
+  if( PyObject_TypeCheck(value, &(MaterialPy::Type)) ) {
+   	MaterialPy  *pcObject = (MaterialPy*)value;
+    setValue( *pcObject->_pcMaterial );
+  }
+}
+
+void PropertyMaterial::Save (Writer &writer) const
+{
+  writer << writer.ind() << "<PropertyMaterial ambientColor=\"" <<  _cMat.ambientColor.getPackedValue() 
+    << "\" diffuseColor=\"" <<  _cMat.diffuseColor.getPackedValue() 
+    << "\" specularColor=\"" <<  _cMat.specularColor.getPackedValue()
+    << "\" emissiveColor=\"" <<  _cMat.emissiveColor.getPackedValue()
+    << "\" shininess=\"" <<  _cMat.shininess << "\" transparency=\"" <<  _cMat.transparency << "\"/>" << endl;
+}
+
+void PropertyMaterial::Restore(Base::XMLReader &reader)
+{
+  // read my Element
+  reader.readElement("PropertyMaterial");
+  // get the value of my Attribute
+  _cMat.ambientColor.setPackedValue(reader.getAttributeAsInteger("ambientColor"));
+  _cMat.diffuseColor.setPackedValue(reader.getAttributeAsInteger("diffuseColor"));
+  _cMat.specularColor.setPackedValue(reader.getAttributeAsInteger("specularColor"));
+  _cMat.emissiveColor.setPackedValue(reader.getAttributeAsInteger("emissiveColor"));
+  _cMat.shininess = (float)reader.getAttributeAsInteger("shininess");
+  _cMat.transparency = (float)reader.getAttributeAsFloat("transparency");
+}
+
+Property *PropertyMaterial::Copy(void) const
+{
+  PropertyMaterial *p= new PropertyMaterial();
+  p->_cMat = _cMat;
+  return p;
+}
+
+void PropertyMaterial::Paste(const Property &from)
+{
+  _cMat = dynamic_cast<const PropertyMaterial&>(from)._cMat;
+}
 

@@ -133,19 +133,15 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderDocumentObject)
 
 ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
 {
-  ADD_PROPERTY(SolidMaterial,(0.8f,0.8f,0.8f));
   ADD_PROPERTY(LineWidth,(2.0f));
-  ADD_PROPERTY(Display,(""));
-  ADD_PROPERTY(Transparency,(0));
-  ADD_PROPERTY(Visibility,(true));
   ADD_PROPERTY(OpenEdges,(false));
 
   Display.setSize(6);
-  Display.set1Value(0,"Flat"/*"Shaded"*/); // active mode
-  Display.set1Value(1,"Flat"/*"Shaded"*/);
-  Display.set1Value(2,"Wire"/*"Wireframe"*/);
-  Display.set1Value(3,"Point");
-  Display.set1Value(4,"FlatWire"/*"Shaded&Wire"*/);
+  Display.set1Value(0,"Shaded"); // active mode
+  Display.set1Value(1,"Shaded");
+  Display.set1Value(2,"Wireframe");
+  Display.set1Value(3,"Points");
+  Display.set1Value(4,"Shaded+Wireframe");
   Display.set1Value(5,"Hidden line");
 
   // create the mesh core nodes
@@ -154,7 +150,8 @@ ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
   pcMeshFaces = new SoIndexedFaceSet();
   pcMeshFaces->ref();
   pOpenEdges = new SoBaseColor();
-  pOpenEdges->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  const App::Color& c = ShapeColor.getValue();
+  pOpenEdges->rgb.setValue(1.0f-c.r, 1.0f-c.g, 1.0f-c.b);
   pOpenEdges->ref();
 }
 
@@ -167,21 +164,20 @@ ViewProviderMesh::~ViewProviderMesh()
 
 void ViewProviderMesh::onChanged(const App::Property* prop)
 {
-  if ( prop == &SolidMaterial ) {
-    setColor(SolidMaterial.getValue());
-  } else if ( prop == &LineWidth ) {
+  if ( prop == &LineWidth ) {
     pcLineStyle->lineWidth = LineWidth.getValue();
-  } else if ( prop == &Transparency ) {
-    setTransparency( Transparency.getValue()/100.0f );
-  } else if ( prop == &Display ) {
-    setMode( Display.getValues().front().c_str() );
-  } else if ( prop == &Visibility ) {
-    Visibility.getValue() ? show() : hide();
   } else if ( prop == &OpenEdges ) {
-    // FIXME: We must have a material property to adjust the open edge color
-    App::Color c = SolidMaterial.getValue();
-    pOpenEdges->rgb.setValue(1.0f-c.r, 1.0f-c.g, 1.0f-c.b);
     showOpenEdges( OpenEdges.getValue() );
+  } else {
+    // Set the inverse color for open edges
+    if ( prop == &ShapeColor ) {
+      const App::Color& c = ShapeColor.getValue();
+      pOpenEdges->rgb.setValue(1.0f-c.r, 1.0f-c.g, 1.0f-c.b);
+    } else if ( prop == &ShapeMaterial ) {
+      const App::Color& c = ShapeMaterial.getValue().diffuseColor;
+      pOpenEdges->rgb.setValue(1.0f-c.r, 1.0f-c.g, 1.0f-c.b);
+    }
+    ViewProviderFeature::onChanged(prop);
   }
 }
 
@@ -373,13 +369,13 @@ QPixmap ViewProviderMesh::getIcon() const
 
 void ViewProviderMesh::setMode(const char* ModeName)
 {
-  if ( strcmp("Flat",ModeName)==0 )
+  if ( strcmp("Shaded",ModeName)==0 )
     setDisplayMode("Flat");
-  else if ( strcmp("Wire",ModeName)==0 )
+  else if ( strcmp("Wireframe",ModeName)==0 )
     setDisplayMode("Wireframe");
-  else if ( strcmp("Point",ModeName)==0 )
+  else if ( strcmp("Points",ModeName)==0 )
     setDisplayMode("Point");
-  else if ( strcmp("FlatWire",ModeName)==0 )
+  else if ( strcmp("Shaded+Wireframe",ModeName)==0 )
     setDisplayMode("FlatWireframe");
   else if ( strcmp("Hidden line",ModeName)==0 )
     setDisplayMode("HiddenLine");
@@ -393,10 +389,10 @@ std::vector<std::string> ViewProviderMesh::getModes(void)
   std::vector<std::string> StrList = ViewProviderDocumentObject::getModes();
 
   // add your own modes
-  StrList.push_back("Flat");
-  StrList.push_back("Wire");
-  StrList.push_back("Point");
-  StrList.push_back("FlatWire");
+  StrList.push_back("Shaded");
+  StrList.push_back("Wireframe");
+  StrList.push_back("Points");
+  StrList.push_back("Shaded+Wireframe");
   StrList.push_back("Hidden line");
 
   return StrList;

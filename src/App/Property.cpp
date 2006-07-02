@@ -46,7 +46,7 @@ TYPESYSTEM_SOURCE(App::Property , Base::Persistance);
 
 // here the implemataion! description should take place in the header file!
 Property::Property()
-:father(0)
+:father(0),notify(true)
 {
 
 }
@@ -67,15 +67,26 @@ void Property::setContainer(PropertyContainer *Father)
   father = Father;
 }
 
-void Property::hasSetValue(void)
+void Property::enableNotify(bool on)
+{
+  notify = on;
+}
+
+void Property::touch()
 {
   if(father)
     father->onChanged(this);
 }
 
+void Property::hasSetValue(void)
+{
+  if(father&&notify)
+    father->onChanged(this);
+}
+
 void Property::aboutToSetValue(void)
 {
-  if(father)
+  if(father&&notify)
     father->onBevorChange(this);
 }
 

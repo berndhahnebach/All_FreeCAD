@@ -115,6 +115,12 @@ public:
 
   PropertyString Name;
   PropertyString FileName;
+  PropertyString CreatedBy;
+  PropertyString CreationDate;
+  PropertyString LastModifiedBy;
+  PropertyString LastModifiedDate;
+  PropertyString Company;
+  PropertyString Comment;
 
 
   /// Construction

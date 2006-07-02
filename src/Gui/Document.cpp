@@ -472,7 +472,7 @@ void Document::Restore(Base::XMLReader &reader)
         std::map<std::string,App::Property*> Map;
         pObj->getPropertyMap(Map);
         for ( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
-          pObj->onTouched(it->second);
+          it->second->touch();
       }
       reader.readEndElement("ViewProvider");
     }

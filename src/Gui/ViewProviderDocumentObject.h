@@ -56,6 +56,13 @@ public:
   /// destructor.
   virtual ~ViewProviderDocumentObject();
 
+  // Display properties
+  App::PropertyColor ShapeColor;
+  App::PropertyStringList Display;
+  App::PropertyInteger Transparency;
+  App::PropertyBool Visibility;
+  App::PropertyMaterial ShapeMaterial;
+
   // Returns the tree label
   virtual QListViewItem* getTreeItem(QListViewItem* parent);
 
@@ -98,9 +105,11 @@ public:
   virtual void show(void);
   virtual bool isShow(void);
 
-
-
   App::DocumentObject *getObject(void){return pcObject;}
+
+protected:
+  /// get called by the container whenever a proptery has been changed
+  virtual void onChanged(const App::Property* prop);
 
 protected:
   SoMaterial  *pcSolidMaterial;

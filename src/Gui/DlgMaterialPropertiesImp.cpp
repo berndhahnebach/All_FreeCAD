@@ -23,13 +23,13 @@
 
 #include "PreCompiled.h"
 
+#include <App/Material.h>
+#include <App/PropertyStandard.h>
 
 #include "DlgMaterialPropertiesImp.h"
 #include "Widgets.h"
 #include "SpinBox.h"
-#include "ViewProviderDocumentObject.h"
-
-#include <App/DocumentObject.h>
+#include "ViewProvider.h"
 
 using namespace Gui::Dialog;
 
@@ -65,12 +65,17 @@ void DlgMaterialPropertiesImp::onAmbientColorChanged()
   float g = (float)col.green()/255.0f;
   float b = (float)col.blue()/255.0f;
   App::Color ambient(r,g,b);
-  for ( std::vector<Gui::ViewProviderDocumentObject*>::iterator it = Objects.begin(); it != Objects.end(); ++it )
+
+  for( std::vector<ViewProvider*>::iterator it= Objects.begin();it!=Objects.end();it++)
   {
-    App::Material mat = (*it)->getObject()->getSolidMaterial();
-    mat.ambientColor = ambient;
-    (*it)->getObject()->setSolidMaterial(mat);
-    (*it)->setMatFromObject();
+    App::Property* prop = (*it)->getPropertyByName("ShapeMaterial");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
+    {
+      App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
+      App::Material mat = ShapeMaterial->getValue();
+      mat.ambientColor = ambient;
+      ShapeMaterial->setValue(mat);
+    }
   }
 }
 
@@ -84,12 +89,17 @@ void DlgMaterialPropertiesImp::onDiffuseColorChanged()
   float g = (float)col.green()/255.0f;
   float b = (float)col.blue()/255.0f;
   App::Color diffuse(r,g,b);
-  for ( std::vector<Gui::ViewProviderDocumentObject*>::iterator it = Objects.begin(); it != Objects.end(); ++it )
+
+  for( std::vector<ViewProvider*>::iterator it= Objects.begin();it!=Objects.end();it++)
   {
-    App::Material mat = (*it)->getObject()->getSolidMaterial();
-    mat.diffuseColor = diffuse;
-    (*it)->getObject()->setSolidMaterial(mat);
-    (*it)->setMatFromObject();
+    App::Property* prop = (*it)->getPropertyByName("ShapeMaterial");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
+    {
+      App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
+      App::Material mat = ShapeMaterial->getValue();
+      mat.diffuseColor = diffuse;
+      ShapeMaterial->setValue(mat);
+    }
   }
 }
 
@@ -103,12 +113,17 @@ void DlgMaterialPropertiesImp::onSpecularColorChanged()
   float g = (float)col.green()/255.0f;
   float b = (float)col.blue()/255.0f;
   App::Color specular(r,g,b);
-  for ( std::vector<Gui::ViewProviderDocumentObject*>::iterator it = Objects.begin(); it != Objects.end(); ++it )
+
+  for( std::vector<ViewProvider*>::iterator it= Objects.begin();it!=Objects.end();it++)
   {
-    App::Material mat = (*it)->getObject()->getSolidMaterial();
-    mat.specularColor = specular;
-    (*it)->getObject()->setSolidMaterial(mat);
-    (*it)->setMatFromObject();
+    App::Property* prop = (*it)->getPropertyByName("ShapeMaterial");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
+    {
+      App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
+      App::Material mat = ShapeMaterial->getValue();
+      mat.specularColor = specular;
+      ShapeMaterial->setValue(mat);
+    }
   }
 }
 
@@ -118,39 +133,50 @@ void DlgMaterialPropertiesImp::onSpecularColorChanged()
 void DlgMaterialPropertiesImp::onShininessChanged(int sh)
 {
   float shininess = (float)sh/100.0f;
-  for ( std::vector<Gui::ViewProviderDocumentObject*>::iterator it = Objects.begin(); it != Objects.end(); ++it )
+  for( std::vector<ViewProvider*>::iterator it= Objects.begin();it!=Objects.end();it++)
   {
-    App::Material mat = (*it)->getObject()->getSolidMaterial();
-    mat.shininess = shininess;
-    (*it)->getObject()->setSolidMaterial(mat);
-    (*it)->setMatFromObject();
+    App::Property* prop = (*it)->getPropertyByName("ShapeMaterial");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
+    {
+      App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
+      App::Material mat = ShapeMaterial->getValue();
+      mat.shininess = shininess;
+      ShapeMaterial->setValue(mat);
+    }
   }
 }
 
 /**
  * Sets the document objects and their view providers to manipulate the material.
  */
-void DlgMaterialPropertiesImp::setViewProviders( const std::vector<Gui::ViewProviderDocumentObject*>& Obj)
+void DlgMaterialPropertiesImp::setViewProviders( const std::vector<Gui::ViewProvider*>& Obj)
 {
   Objects = Obj;
-  if ( Objects.size() > 0 ) {
-    App::DocumentObject* docObj = Objects.front()->getObject();
-    const App::Material& mat = docObj->getSolidMaterial();
-    int r = int(mat.ambientColor.r * 255.0f);
-    int g = int(mat.ambientColor.g * 255.0f);
-    int b = int(mat.ambientColor.b * 255.0f);
-    ambientColor->setColor( QColor(r,g,b) );
-    r = int(mat.diffuseColor.r * 255.0f);
-    g = int(mat.diffuseColor.g * 255.0f);
-    b = int(mat.diffuseColor.b * 255.0f);
-    diffuseColor->setColor( QColor(r,g,b) );
-    r = int(mat.specularColor.r * 255.0f);
-    g = int(mat.specularColor.g * 255.0f);
-    b = int(mat.specularColor.b * 255.0f);
-    specularColor->setColor( QColor(r,g,b) );
-    shininessSpin->blockSignals(true);
-    shininessSpin->setValue((int)(100.0f * (mat.shininess+0.001f)));
-    shininessSpin->blockSignals(false);
+
+  for( std::vector<ViewProvider*>::iterator it= Objects.begin();it!=Objects.end();it++)
+  {
+    App::Property* prop = (*it)->getPropertyByName("ShapeMaterial");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
+    {
+      App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
+      App::Material mat = ShapeMaterial->getValue();
+      int r = int(mat.ambientColor.r * 255.0f);
+      int g = int(mat.ambientColor.g * 255.0f);
+      int b = int(mat.ambientColor.b * 255.0f);
+      ambientColor->setColor( QColor(r,g,b) );
+      r = int(mat.diffuseColor.r * 255.0f);
+      g = int(mat.diffuseColor.g * 255.0f);
+      b = int(mat.diffuseColor.b * 255.0f);
+      diffuseColor->setColor( QColor(r,g,b) );
+      r = int(mat.specularColor.r * 255.0f);
+      g = int(mat.specularColor.g * 255.0f);
+      b = int(mat.specularColor.b * 255.0f);
+      specularColor->setColor( QColor(r,g,b) );
+      shininessSpin->blockSignals(true);
+      shininessSpin->setValue((int)(100.0f * (mat.shininess+0.001f)));
+      shininessSpin->blockSignals(false);
+      break;
+    }
   }
 }
 

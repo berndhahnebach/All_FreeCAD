@@ -62,3 +62,15 @@ void TimeInfo::setToActual(void)
   ftime( &timebuffer );
 #endif
 }
+
+const char* TimeInfo::currentDateTimeString()
+{
+  struct tm* systime;
+  time_t sec;
+
+  time(&sec);
+  systime = localtime(&sec);
+
+  const char* dt = asctime(systime);
+  return dt;
+}

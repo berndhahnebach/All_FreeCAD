@@ -27,9 +27,11 @@
 # include <qcombobox.h>
 # include <qiconview.h>
 # include <qfiledialog.h>
+# include <qlabel.h>
 # include <qlineedit.h>
 # include <qspinbox.h>
 # include <qstringlist.h>
+# include <qpushbutton.h>
 #endif
 
 #include "DlgDisplayPropertiesImp.h"
@@ -44,7 +46,6 @@
 #include "ViewProvider.h"
 #include "WaitCursor.h"
 #include "SpinBox.h"
-#include "ViewProviderDocumentObject.h"
 
 #include <App/Application.h>
 #include <App/Feature.h>
@@ -63,176 +64,250 @@ using namespace std;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgDisplayPropertiesImp::DlgDisplayPropertiesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
-  : DlgDisplayProperties( parent, name, modal, fl ),_pcCmd(pcCmd),
-    Sel(Gui::Selection().getObjectsOfType(App::DocumentObject::getClassTypeId()))
+DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
+  : DlgDisplayProperties( parent, name, modal, fl )
 {
-
-  ViewProvider *pcProv;
-  set<string> ModeList;
-
-  bool bSameMode= true;
-  string sModeName;
-
-  bool bSameTransp= true;
-  float fTransp=0.0f;
-
-  bool bSamePointSize= true;
-  float fPointSize=0.0f;
-
-  bool bSameLineWidth= true;
-  float fLineWidth=0.0f;
-
+  QStringList commonModeList;
+  QString activeMode;
+  int transparency = -1;
+  QColor shapeColor;
+  float pointsize = -1.0f;
+  float linewidth = -1.0f;
+  float fPointSizeGranularity=0.125f;
+  SbVec2f pointSizeRange(1.0f,1.0f);
+  float fLineWidthGranularity=0.125f;
+  SbVec2f lineWidthRange(1.0f,1.0f);
   App::Material::MaterialType cMatType = App::Material::DEFAULT;
 
-  bool bSameColor= true;
-  App::Color cColor;
+  bool viewerLimits=false;
+  bool bMaterial = false;
+  bool bDisplay = true;
+  bool bTransparency = true;
+  bool bShapeColor = true;
+  bool bPointSize = true;
+  bool bLineWidth = true;
+  bool bShapeMaterial = true;
 
-  bool bViewerLimits=false;
-
-  for(vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  std::vector<SelectionSingleton::SelObj> obj = Gui::Selection().getCompleteSelection();
+  for ( std::vector<SelectionSingleton::SelObj>::iterator so = obj.begin(); so != obj.end(); ++so )
   {
-    pcProv = pcCmd->getActiveGuiDocument()->getViewProvider(*It);
+    Gui::Document* doc = Application::Instance->getDocument(so->pDoc);
+    if ( viewerLimits == false ) {
+      View3DInventor* activeView = dynamic_cast<View3DInventor*>(doc->getActiveView());
+      if (activeView)
+      {
+        View3DInventorViewer* viewer = activeView->getViewer();
+        viewer->getPointSizeLimits(pointSizeRange,fPointSizeGranularity);
+        viewer->getLineWidthLimits(lineWidthRange,fLineWidthGranularity);
+        viewerLimits = true;
+      }
+    }
 
+    ViewProvider *pcProv = doc->getViewProvider(so->pObject);
     if ( pcProv )
     {
-      vector<std::string> Modes = pcProv->getModes();
+      Provider.push_back(pcProv);
 
-      for(vector<string>::iterator It2= Modes.begin();It2!=Modes.end();It2++)
-        ModeList.insert(*It2);
-
-      if(It==Sel.begin())
-        sModeName = pcProv->getModeName();
-      else
-        if(sModeName != pcProv->getModeName())
-          bSameMode = false;
-
-      if(It==Sel.begin())
-        fTransp = (*It)->getTransparency();
-      else
-        if(fTransp != (*It)->getTransparency())
-          bSameMode = bSameTransp;
-
-      if(It==Sel.begin())
-        fPointSize = (*It)->getPointSize();
-      else
-        if(fPointSize != (*It)->getPointSize())
-          bSameMode = bSamePointSize;
-
-      if(It==Sel.begin())
-        fLineWidth = (*It)->getLineSize();
-      else
-        if(fLineWidth != (*It)->getLineSize())
-          bSameMode = bSameLineWidth;
-
-      if(It==Sel.begin())
-        cMatType = (*It)->getSolidMaterial().getType();
-      else if(cMatType != (*It)->getSolidMaterial().getType())
-        cMatType = App::Material::USER_DEFINED;
-
-      if(It==Sel.begin())
-        cColor = (*It)->getColor();
-      else
-        if(cColor != (*It)->getColor())
-          bSameColor = false;
-
-      if ( !bViewerLimits ) {
-        View3DInventor* activeView = dynamic_cast<View3DInventor*>(pcCmd->getActiveGuiDocument()->getActiveView());
-        if (activeView)
+      // 'Display' property
+      if ( bDisplay )
+      {
+        App::Property* prop = pcProv->getPropertyByName("Display");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyStringList::getClassTypeId()))
         {
-          View3DInventorViewer* viewer = activeView->getViewer();
-          viewer->getPointSizeLimits(pointSizeRange,fPointSizeGranularity);
-          viewer->getLineWidthLimits(lineWidthRange,fLineWidthGranularity);
-          bViewerLimits = true;
+          App::PropertyStringList* Display = (App::PropertyStringList*)prop;
+          const std::vector<std::string>& modes = Display->getValues();
+
+          if ( commonModeList.isEmpty() ) {
+            for ( std::vector<std::string>::const_iterator it = modes.begin(); it != modes.end(); ++it )
+              commonModeList << it->c_str();
+            // currently active mode is the first item and can be popped
+            if ( !commonModeList.isEmpty() ) {
+              activeMode = commonModeList.front();
+              commonModeList.pop_front();
+              if ( commonModeList.isEmpty() )
+                bDisplay = false;
+            } else {
+              bDisplay = false;
+            }
+          } else {
+            QStringList modeList;
+            for ( std::vector<std::string>::const_iterator it = modes.begin(); it != modes.end(); ++it ) {
+              if ( commonModeList.find(it->c_str()) != commonModeList.end() )
+                modeList << it->c_str();
+            }
+
+            // intersection of both lists
+            if ( !modeList.isEmpty() ) {
+              modeList.pop_front();
+              if ( modeList.isEmpty() )
+                bDisplay = false;
+              commonModeList = modeList;
+            } else {
+              bDisplay = false;
+            }
+          }
         }
+        else
+          bDisplay = false;
       }
 
+      // 'Transparency' property
+      if ( bTransparency )
+      {
+        App::Property* prop = pcProv->getPropertyByName("Transparency");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()))
+        {
+          App::PropertyInteger* Transparency = (App::PropertyInteger*)prop;
+          transparency = Transparency->getValue();
+        }
+        else
+          bTransparency = false;
+      }
 
-      Provider.push_back(pcProv);
+      // 'ShapeColor' property
+      if ( bShapeColor )
+      {
+        App::Property* prop = pcProv->getPropertyByName("ShapeColor");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()))
+        {
+          App::PropertyColor* ShapeColor = (App::PropertyColor*)prop;
+          App::Color c = ShapeColor->getValue();
+          shapeColor.setRgb((int)(c.r*255.0f), (int)(c.g*255.0f),(int)(c.b*255.0f));
+        }
+        else
+          bShapeColor = false;
+      }
+
+      // 'PointSize' property
+      if ( bPointSize )
+      {
+        App::Property* prop = pcProv->getPropertyByName("PointSize");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()))
+        {
+          App::PropertyFloat* PointSize = (App::PropertyFloat*)prop;
+          pointsize = PointSize->getValue();
+        }
+        else
+          bPointSize = false;
+      }
+
+      // 'LineWidth' property
+      if ( bLineWidth )
+      {
+        App::Property* prop = pcProv->getPropertyByName("LineWidth");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()))
+        {
+          App::PropertyFloat* LineWidth = (App::PropertyFloat*)prop;
+          linewidth = LineWidth->getValue();
+        }
+        else
+          bLineWidth = false;
+      }
+
+      // 'ShapeMaterial' property
+      if ( bShapeMaterial )
+      {
+        App::Property* prop = pcProv->getPropertyByName("ShapeMaterial");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
+        {
+          App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
+          App::Material mat;
+          if ( bMaterial == false ) {
+            cMatType = mat.getType();
+            bMaterial = true;
+          } else if ( cMatType != mat.getType() ) {
+            cMatType = App::Material::USER_DEFINED;
+          }
+        }
+      }
     }
   }
 
-
-  if ( ModeList.size() > 0 ) {
-    for(set<string>::iterator It3= ModeList.begin();It3!=ModeList.end();It3++)
-      ModeBox->insertItem(It3->c_str()); 
-
-    if(bSameMode){
-      ModeBox->setCurrentText(sModeName.c_str());
-    }else{
-      ModeBox->insertItem("");
-      ModeBox->setCurrentText("");
-    }
-  }
-  else {
-    // if the viewproviders of the selected features have no display mode
+  // set dialog stuff
+  //
+  if ( !bDisplay ) {
     ModeBox->setDisabled(true);
+  } else {
+    ModeBox->insertStringList(commonModeList);
+    ModeBox->setCurrentText(activeMode);
   }
 
-  if(bSameTransp){
-    TransBar->setValue((int) (fTransp * 100.0));
-    TransSpin->setValue((int) (fTransp * 100.0));
+  if ( !bTransparency ) {
+    TransBar->setDisabled(true);
+    TransSpin->setDisabled(true);
+    textLabel1_2->setDisabled(true);
+  } else {
+    TransBar->setValue(transparency);
+    TransSpin->setValue(transparency);
   }
 
-  if(bSamePointSize){
+  if ( bShapeColor ) {
+    ColorButton->setColor(shapeColor);
+  } else {
+    ColorButton->setDisabled(true);
+  }
+
+  if ( !bPointSize ) {
+    pointSizeSpin->setDisabled(true);
+    textLabel2->setDisabled(true);
+  } else {
     pointSizeSpin->setMaxValue(pointSizeRange[1]);
     pointSizeSpin->setMinValue(pointSizeRange[0]);
     pointSizeSpin->setLineStep(fPointSizeGranularity);
-    pointSizeSpin->setValue(fPointSize);
+    pointSizeSpin->setValue(pointsize);
   }
 
-  if(bSameLineWidth){
+  if ( !bLineWidth ) {
+    lineWidthSpin->setDisabled(true);
+    textLabel3->setDisabled(true);
+  } else {
     lineWidthSpin->setMaxValue(lineWidthRange[1]);
     lineWidthSpin->setMinValue(lineWidthRange[0]);
     lineWidthSpin->setLineStep(fLineWidthGranularity);
-    lineWidthSpin->setValue(fLineWidth);
+    lineWidthSpin->setValue(linewidth);
   }
 
-  if(bSameColor){
-    ColorButton->setColor(QColor((int)(255.0f*cColor.r),(int)(255.0f*cColor.g),(int)(255.0f*cColor.b)));
-  }else{
-    ColorButton->setColor(QColor(127,127,127));
-  }
-
-  bModeChange = false;
-  bTranspChange = false;
-  bPointSizeChange = false;
-  bLineWidthChange = false;
-  bColorChange = false;
-
-  Materials["Brass"]         = App::Material::BRASS;
-  Materials["Bronze"]        = App::Material::BRONZE;
-  Materials["Copper"]        = App::Material::COPPER;
-  Materials["Gold"]          = App::Material::GOLD;
-  Materials["Pewter"]        = App::Material::PEWTER;
-  Materials["Plaster"]       = App::Material::PLASTER;
-  Materials["Plastic"]       = App::Material::PLASTIC;
-  Materials["Silver"]        = App::Material::SILVER;
-  Materials["Steel"]         = App::Material::STEEL;
-  Materials["Stone"]         = App::Material::STONE;
-  Materials["Shiny plastic"] = App::Material::SHINY_PLASTIC;
-  Materials["Satin"]         = App::Material::SATIN;
-  Materials["Metalized"]     = App::Material::METALIZED;
-  Materials["Neon GNC"]      = App::Material::NEON_GNC;
-  Materials["Chrome"]        = App::Material::CHROME;
-  Materials["Aluminium"]     = App::Material::ALUMINIUM;
-  Materials["Obsidian"]      = App::Material::OBSIDIAN;
-  Materials["Neon PHC"]      = App::Material::NEON_PHC;
-  Materials["Jade"]          = App::Material::JADE;
-  Materials["Ruby"]          = App::Material::RUBY;
-  Materials["Emerald"]       = App::Material::EMERALD;
-
-  QStringList material = Materials.keys();
-  material.sort();
-  MaterialCombo->insertItem("Default");
-  MaterialCombo->insertStringList(material);
-  Materials["Default"]       = App::Material::DEFAULT;
-  for (QMap<QString, App::Material::MaterialType>::ConstIterator it = Materials.begin(); it != Materials.end(); ++it)
+  if ( bShapeMaterial )
   {
-    if (it.data() == cMatType) {
-      MaterialCombo->setCurrentText(it.key());
-      break;
+    Materials["Brass"]         = App::Material::BRASS;
+    Materials["Bronze"]        = App::Material::BRONZE;
+    Materials["Copper"]        = App::Material::COPPER;
+    Materials["Gold"]          = App::Material::GOLD;
+    Materials["Pewter"]        = App::Material::PEWTER;
+    Materials["Plaster"]       = App::Material::PLASTER;
+    Materials["Plastic"]       = App::Material::PLASTIC;
+    Materials["Silver"]        = App::Material::SILVER;
+    Materials["Steel"]         = App::Material::STEEL;
+    Materials["Stone"]         = App::Material::STONE;
+    Materials["Shiny plastic"] = App::Material::SHINY_PLASTIC;
+    Materials["Satin"]         = App::Material::SATIN;
+    Materials["Metalized"]     = App::Material::METALIZED;
+    Materials["Neon GNC"]      = App::Material::NEON_GNC;
+    Materials["Chrome"]        = App::Material::CHROME;
+    Materials["Aluminium"]     = App::Material::ALUMINIUM;
+    Materials["Obsidian"]      = App::Material::OBSIDIAN;
+    Materials["Neon PHC"]      = App::Material::NEON_PHC;
+    Materials["Jade"]          = App::Material::JADE;
+    Materials["Ruby"]          = App::Material::RUBY;
+    Materials["Emerald"]       = App::Material::EMERALD;
+
+    QStringList material = Materials.keys();
+    material.sort();
+    MaterialCombo->insertItem("Default");
+    MaterialCombo->insertStringList(material);
+    Materials["Default"]       = App::Material::DEFAULT;
+    for (QMap<QString, App::Material::MaterialType>::ConstIterator it = Materials.begin(); it != Materials.end(); ++it)
+    {
+      if (it.data() == cMatType) {
+        MaterialCombo->setCurrentText(it.key());
+        break;
+      }
     }
+  }
+  else
+  {
+    MaterialCombo->setDisabled(true);
+    pushButton2->setDisabled(true);
   }
 }
 
@@ -244,59 +319,55 @@ DlgDisplayPropertiesImp::~DlgDisplayPropertiesImp()
   // no need to delete child widgets, Qt does it all for us
 }
 
+/**
+ * Opens a dialog that allows to modify the 'ShapeMaterial' property of all selected view providers.
+ */
 void DlgDisplayPropertiesImp::onUserDefinedMaterial()
 {
-  std::vector<ViewProviderDocumentObject*> ViewProvDocObj;
-  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-  {
-    if ( (*It)->getTypeId().isDerivedFrom( ViewProviderDocumentObject::getClassTypeId() ) ) {
-      ViewProvDocObj.push_back((ViewProviderDocumentObject*)(*It));
-    }
-  }
-
   DlgMaterialPropertiesImp dlg(this);
-  dlg.setViewProviders(ViewProvDocObj);
+  dlg.setViewProviders(Provider);
   dlg.exec();
 
   ColorButton->setColor(dlg.diffuseColor->color());
 }
 
+/**
+ * Sets the 'ShapeMaterial' property of all selected view providers.
+ */
 void DlgDisplayPropertiesImp::onChangeMaterial(const QString& material)
 {
   App::Material::MaterialType type = Materials[material];
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
-    if ( (*It)->getTypeId().isDerivedFrom( ViewProviderDocumentObject::getClassTypeId() ) ) {
-      ViewProviderDocumentObject* vp = (ViewProviderDocumentObject*)(*It);
-      App::Material mat = vp->getObject()->getSolidMaterial();
+    App::Property* prop = (*It)->getPropertyByName("ShapeMaterial");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
+    {
+      App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
+      App::Material mat;
       mat.setType(type);
-      vp->getObject()->setSolidMaterial(mat);
-      vp->setMatFromObject();
+      ShapeMaterial->setValue(mat);
       App::Color diffuseColor = mat.diffuseColor;
       ColorButton->setColor(QColor( (int)(diffuseColor.r*255.0f), (int)(diffuseColor.g*255.0f), (int)(diffuseColor.b*255.0f) ));
     }
   }
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
 }
 
-void DlgDisplayPropertiesImp::onChangeMode(const QString&s)
+/**
+ * Sets the 'Display' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::onChangeMode(const QString& s)
 {
   Gui::WaitCursor wc;
-  Base::Console().Log("Mode = %s\n",s.latin1());
-//  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-//    (*It)->setMode(s.latin1()); 
-  for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
+  for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
-    ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
-    (*It)->setShowMode( s.latin1() );
-    pcProv->setMode( (*It)->getShowMode() );
+    App::Property* prop = (*It)->getPropertyByName("Display");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyStringList::getClassTypeId()))
+    {
+      App::PropertyStringList* Display = (App::PropertyStringList*)prop;
+      Display->set1Value(0,s.latin1());
+      Display->touch();
+    }
   }
-
-  bModeChange = true;
-  sModeChangeName = s.latin1();
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
 }
 
 void DlgDisplayPropertiesImp::onChangePlot(const QString&s)
@@ -304,141 +375,79 @@ void DlgDisplayPropertiesImp::onChangePlot(const QString&s)
   Base::Console().Log("Plot = %s\n",s.latin1());
 }
 
+/**
+ * Sets the 'ShapeColor' property of all selected view providers.
+ */
 void DlgDisplayPropertiesImp::onColorChange()
 {
-//  QColor s = ColorButton->color();
-//  bColorChange = true;
-//  cColorChange = App::Color(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
-//
-//  for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
-//  {
-//    ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
-//    pcProv->setColor(cColorChange);
-//  }
-//
-//
-//  _pcCmd->getActiveGuiDocument()->onUpdate();
   QColor s = ColorButton->color();
-  bColorChange = true;
-  cColorChange = App::Color(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
+  App::Color c(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
-    if ( (*It)->getTypeId().isDerivedFrom( ViewProviderDocumentObject::getClassTypeId() ) ) {
-      ViewProviderDocumentObject* vp = (ViewProviderDocumentObject*)(*It);
-      vp->getObject()->setColor(cColorChange);
-      vp->setColor(cColorChange);
+    App::Property* prop = (*It)->getPropertyByName("ShapeColor");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()))
+    {
+      App::PropertyColor* ShapeColor = (App::PropertyColor*)prop;
+      ShapeColor->setValue(c);
     }
   }
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
 }
 
-void DlgDisplayPropertiesImp::onChangeTrans(int i)
+/**
+ * Sets the 'Transparency' property of all selected view providers.
+ */
+void DlgDisplayPropertiesImp::onChangeTrans(int transparency)
 {
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-    (*It)->setTransparency( i/100.0); 
-
-  bTranspChange = true;
-  fTranspChange = i/100.0;
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
+  {
+    App::Property* prop = (*It)->getPropertyByName("Transparency");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()))
+    {
+      App::PropertyInteger* Transparency = (App::PropertyInteger*)prop;
+      Transparency->setValue(transparency);
+    }
+  }
 }
 
+/**
+ * Sets the 'PointSize' property of all selected view providers.
+ */
 void DlgDisplayPropertiesImp::onChangePointSize(double pointsize)
 {
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-    (*It)->setPointSize( (float)pointsize ); 
-
-  bPointSizeChange = true;
-  fPointSizeChange = (float)pointsize;
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
+  {
+    App::Property* prop = (*It)->getPropertyByName("PointSize");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()))
+    {
+      App::PropertyFloat* PointSize = (App::PropertyFloat*)prop;
+      PointSize->setValue((float)pointsize);
+    }
+  }
 }
 
+/**
+ * Sets the 'LineWidth' property of all selected view providers.
+ */
 void DlgDisplayPropertiesImp::onChangeLineWidth(double linewidth)
 {
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
-    (*It)->setLineWidth( linewidth ); 
-
-  bLineWidthChange = true;
-  fLineWidthChange = (float)linewidth;
-
-  _pcCmd->getActiveGuiDocument()->onUpdate();
+  {
+    App::Property* prop = (*It)->getPropertyByName("LineWidth");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()))
+    {
+      App::PropertyFloat* LineWidth = (App::PropertyFloat*)prop;
+      LineWidth->setValue((float)linewidth);
+    }
+  }
 }
 
 void DlgDisplayPropertiesImp::accept()
-{/*
-
-  if(bModeChange)
-  {
-    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
-    {
-      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
-      {
-        _pcCmd->doCommand(Command::Doc,"App.document().%s.showMode = \"%s\"",(*It)->name.getValue(),sModeChangeName.c_str());
-      }
-    }
-  }
-
-  if(bTranspChange)
-  {
-    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
-    {
-      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
-      {
-        _pcCmd->doCommand(Command::Doc,"App.document().%s.transparency = %f",(*It)->name.getValue(),fTranspChange);
-      }
-    }
-  }
-
-  if(bPointSizeChange)
-  {
-    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
-    {
-      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
-      {
-        _pcCmd->doCommand(Command::Doc,"App.document().%s.pointSize = %f",(*It)->name.getValue(),fPointSizeChange);
-      }
-    }
-  }
-
-  if(bLineWidthChange)
-  {
-    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
-    {
-      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
-      {
-        _pcCmd->doCommand(Command::Doc,"App.document().%s.lineSize = %f",(*It)->name.getValue(),fLineWidthChange);
-      }
-    }
-  }
-
-  if(bColorChange)
-  {
-    for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
-    {
-      if(_pcCmd->getActiveGuiDocument()->getViewProvider(*It))
-      {
-        _pcCmd->doCommand(Command::Doc,"App.document().%s.color = (%f,%f,%f)",(*It)->name.getValue(),cColorChange.r,cColorChange.g,cColorChange.b);
-      }
-    }
-  }
-*/
+{
   DlgDisplayProperties::accept();
 }
 
 void DlgDisplayPropertiesImp::reject()
-{/*
-  for(std::vector<App::DocumentObject*>::const_iterator It=Sel.begin();It!=Sel.end();It++)
-  {
-    ViewProvider* pcProv = _pcCmd->getActiveGuiDocument()->getViewProvider(*It);
-    if (pcProv)
-    {
-      pcProv->setColor((*It)->getColor());
-      (*It)->TouchView();
-    }
-  }
-*/
+{
   DlgDisplayProperties::reject();
 }
 

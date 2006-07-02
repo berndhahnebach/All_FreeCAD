@@ -58,6 +58,8 @@ public:
   bool operator >= (const TimeInfo &time) const;
   bool operator >  (const TimeInfo &time) const;
 
+  static const char* currentDateTimeString();
+
 protected:
 #if defined (_MSC_VER)
   struct _timeb timebuffer;
