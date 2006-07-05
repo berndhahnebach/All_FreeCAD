@@ -41,7 +41,6 @@ PROPERTY_SOURCE(Part::Feature, App::AbstractFeature)
 
 Feature::Feature(void) : _featurePy(0)
 {
-  showMode.setValue("Normal");
 }
 
 Feature::~Feature()

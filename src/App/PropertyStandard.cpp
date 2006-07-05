@@ -554,7 +554,8 @@ void PropertyString::setPyObject(PyObject *value)
 
 void PropertyString::Save (Writer &writer) const
 {
-  writer << "<String value=\"" <<  _cValue.c_str() <<"\"/>" ;
+  std::string val = encodeAttribute(_cValue);
+  writer << "<String value=\"" <<  val <<"\"/>" ;
 }
 
 void PropertyString::Restore(Base::XMLReader &reader)
@@ -607,6 +608,21 @@ void PropertyStringList::setValue(const std::string& lValue)
   if ( _lValueList.empty() )
     _lValueList.resize(1);
 	_lValueList[0]=lValue;
+  hasSetValue();
+}
+
+void PropertyStringList::setValue(const std::vector<std::string>& lValue)
+{
+  aboutToSetValue();
+	_lValueList=lValue;
+  hasSetValue();
+}
+
+void PropertyStringList::setValue(const std::list<std::string>& lValue)
+{
+  aboutToSetValue();
+  _lValueList.resize(lValue.size());
+  std::copy(lValue.begin(), lValue.end(), _lValueList.begin());
   hasSetValue();
 }
 
@@ -663,8 +679,10 @@ void PropertyStringList::setPyObject(PyObject *value)
 void PropertyStringList::Save (Writer &writer) const
 {
   writer << "<StringList count=\"" <<  getSize() <<"\">" << endl;
-  for(int i = 0;i<getSize(); i++)
-    writer << "<String value=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+  for(int i = 0;i<getSize(); i++) {
+    std::string val = encodeAttribute(_lValueList[i]);
+    writer << "<String value=\"" <<  val <<"\"/>" << endl;
+  }
   writer << "</StringList>" << endl ;
 }
 

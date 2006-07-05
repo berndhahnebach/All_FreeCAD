@@ -53,7 +53,6 @@ Feature::Feature()
 :pcMeshFeaturePy(0)
 {
   ADD_PROPERTY(Mesh, (MeshCore::MeshKernel()));
-  showMode.setValue("Shaded");
 }
 
 Feature::~Feature()

@@ -45,9 +45,9 @@ class AppExport DocumentObject: public App::PropertyContainer
 
 public:
 
-  PropertyString showMode;
+//  PropertyString showMode;
   PropertyString name;
-  PropertyBool visibility;
+//  PropertyBool visibility;
 
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "";}
@@ -77,41 +77,41 @@ public:
 	//@}
 
 
-  	/** @name methods to change the apperance of the shape
+  	/** @name methods to change the appearance of the shape
     */
 	//@{
-  /// set the solid material
-  void setSolidMaterial(const Material &Mat) {_solidMaterial = Mat;}
-  /// get the solid material
-  const Material &getSolidMaterial(void) const {return _solidMaterial;}
-  /// set line size
-  virtual void setTransparency(float trans) {_solidMaterial.transparency = trans;}
-  /// get line Size
-  virtual float getTransparency(void) const {return _solidMaterial.transparency;}
-  /// set color
-  virtual void setColor(const Color &c) {_solidMaterial.diffuseColor = c;}
-  /// get color
-  virtual const Color &getColor(void) const {return _solidMaterial.diffuseColor;}
-  /// set the line material
-  void setLineMaterial(const Material &Mat) {_lineMaterial = Mat;}
-  /// get the line material
-  const Material &getLineMaterial(void) const {return _lineMaterial;}
-  /// set the line material
-  void setPointMaterial(const Material &Mat) {_pointMaterial = Mat;}
-  /// get the line material
-  const Material &getPointMaterial(void) const {return _pointMaterial;}
-  /// set point size
-  void setPointSize(float size) {_pointSize = size;}
-  /// get point Size
-  float getPointSize(void) const {return _pointSize;}
-  /// set line size
-  void setLineSize(float size) {_lineSize = size;}
-  /// get line Size
-  float getLineSize(void) const {return _lineSize;}
-  /// get show mode
-  const char* getShowMode(void) const {/*return _showMode.c_str();*/return showMode.getValue();}
-  /// get show mode
-  void setShowMode(const char* Mode) {/*_showMode = Mode;*/showMode.setValue(Mode);}
+//  /// set the solid material
+//  void setSolidMaterial(const Material &Mat) {_solidMaterial = Mat;}
+//  /// get the solid material
+//  const Material &getSolidMaterial(void) const {return _solidMaterial;}
+//  /// set line size
+//  virtual void setTransparency(float trans) {_solidMaterial.transparency = trans;}
+//  /// get line Size
+//  virtual float getTransparency(void) const {return _solidMaterial.transparency;}
+//  /// set color
+//  virtual void setColor(const Color &c) {_solidMaterial.diffuseColor = c;}
+//  /// get color
+//  virtual const Color &getColor(void) const {return _solidMaterial.diffuseColor;}
+//  /// set the line material
+//  void setLineMaterial(const Material &Mat) {_lineMaterial = Mat;}
+//  /// get the line material
+//  const Material &getLineMaterial(void) const {return _lineMaterial;}
+//  /// set the line material
+//  void setPointMaterial(const Material &Mat) {_pointMaterial = Mat;}
+//  /// get the line material
+//  const Material &getPointMaterial(void) const {return _pointMaterial;}
+//  /// set point size
+//  void setPointSize(float size) {_pointSize = size;}
+//  /// get point Size
+//  float getPointSize(void) const {return _pointSize;}
+//  /// set line size
+//  void setLineSize(float size) {_lineSize = size;}
+//  /// get line Size
+//  float getLineSize(void) const {return _lineSize;}
+//  /// get show mode
+//  const char* getShowMode(void) const {/*return _showMode.c_str();*/return showMode.getValue();}
+//  /// get show mode
+//  void setShowMode(const char* Mode) {/*_showMode = Mode;*/showMode.setValue(Mode);}
 
 	//@}
 
@@ -127,12 +127,11 @@ protected:
  /** @name Material
   */
 	//@{
-  Material    _solidMaterial;
-  Material    _lineMaterial;
-  float       _lineSize;
-  Material    _pointMaterial;
-  float       _pointSize;
-  //std::string _showMode;
+//  Material    _solidMaterial;
+//  Material    _lineMaterial;
+//  float       _lineSize;
+//  Material    _pointMaterial;
+//  float       _pointSize;
 	//@}
 
   Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;

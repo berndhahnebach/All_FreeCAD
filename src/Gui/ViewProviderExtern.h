@@ -53,30 +53,16 @@ public:
   void setModeByString(const char* name, const char* ivFragment);
   void setModeByFile(const char* name, const char* ivFileName);
   void setModeBySoInput(const char* name, SoInput &ivFileInput);
-
-  
-  virtual std::vector<std::string> getModes(void);
-
-  virtual void update(void){}
-
-  /// Set the transparency
-  virtual void setTransparency(float);
-  /// Set the color
-  virtual void setColor(const App::Color &c);
-  /// Set the point size
-  virtual void setPointSize(float);
-  /// Set the line width
-  virtual void setLineWidth(float);
-
   void adjustDocumentName(const char* docname);
+  
+  virtual std::list<std::string> getModes(void) const;
+  virtual void update(void){}
 
 private:
   void adjustRecursiveDocumentName(SoNode*, const char* docname);
 
 protected:
-
-  std::vector<std::string> modes;
-
+  std::list<std::string> modes;
 };
 
 

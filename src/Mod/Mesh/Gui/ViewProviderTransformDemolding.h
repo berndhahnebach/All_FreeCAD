@@ -67,8 +67,8 @@ public:
 
   /// set the viewing mode
   virtual void setMode(const char* ModeName);
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void);
+  /// returns a list of all possible modes
+  virtual std::list<std::string> getModes(void) const;
   /// Update the Mesh representation
   //virtual void updateData(void);
 

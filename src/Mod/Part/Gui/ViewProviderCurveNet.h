@@ -55,7 +55,7 @@ public:
   virtual void attach(App::DocumentObject *);
 
   /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void){return std::vector<std::string>();}
+  virtual std::list<std::string> getModes(void) const {return std::list<std::string>();}
   /// Update the Part representation
   virtual void update(void){}
 

@@ -75,9 +75,9 @@ public:
 protected:
   AbstractFeature *_pcFeature;
 
-  MaterialPy* solidMaterialPy;
-  MaterialPy* lineMaterialPy;
-  MaterialPy* pointMaterialPy;
+//  MaterialPy* solidMaterialPy;
+//  MaterialPy* lineMaterialPy;
+//  MaterialPy* pointMaterialPy;
 
 };
 

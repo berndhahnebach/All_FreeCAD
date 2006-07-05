@@ -54,9 +54,11 @@ using namespace Points;
 
 PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProviderDocumentObject)
 
-       
+
 ViewProviderPoints::ViewProviderPoints()
 {
+  ADD_PROPERTY(PointSize,(2.0f));
+
   pcPointsCoord = new SoCoordinate3();
   pcPointsCoord->ref();
   pcPoints = new SoPointSet();
@@ -65,6 +67,11 @@ ViewProviderPoints::ViewProviderPoints()
   pcPointsNormal->ref();
   pcColorMat = new SoMaterial;
   pcColorMat->ref();
+
+  pcPointStyle = new SoDrawStyle();
+  pcPointStyle->ref();
+  pcPointStyle->style = SoDrawStyle::POINTS;
+  pcPointStyle->pointSize = PointSize.getValue();
 }
 
 ViewProviderPoints::~ViewProviderPoints()
@@ -73,6 +80,16 @@ ViewProviderPoints::~ViewProviderPoints()
   pcPoints->unref();
   pcPointsNormal->unref();
   pcColorMat->unref();
+  pcPointStyle->unref();
+}
+
+void ViewProviderPoints::onChanged(const App::Property* prop)
+{
+  if ( prop == &PointSize ) {
+    pcPointStyle->pointSize = PointSize.getValue();
+  } else {
+    ViewProviderFeature::onChanged(prop);
+  }
 }
 
 void ViewProviderPoints::createPoints(Points::Feature *pFeature)
@@ -153,6 +170,9 @@ void ViewProviderPoints::setVertexNormalMode(Points::PropertyNormalList* pcPrope
 
 void ViewProviderPoints::attach(App::DocumentObject* pcObj)
 {
+  // call parent's attach to define display modes
+  ViewProviderFeature::attach(pcObj);
+
   SoGroup* pcPointRoot = new SoGroup();
   SoGroup* pcPointShadedRoot = new SoGroup();
   SoGroup* pcColorShadedRoot = new SoGroup();
@@ -166,12 +186,12 @@ void ViewProviderPoints::attach(App::DocumentObject* pcObj)
 
   // points part ---------------------------------------------
   pcPointRoot->addChild(pcPointStyle);
-  pcPointRoot->addChild(pcPointMaterial);
+  pcPointRoot->addChild(pcShapeMaterial);
   pcPointRoot->addChild(pcHighlight);
 
   // points shaded ---------------------------------------------
   pcPointShadedRoot->addChild(pcPointStyle);
-  pcPointShadedRoot->addChild(pcPointMaterial);
+  pcPointShadedRoot->addChild(pcShapeMaterial);
   pcPointShadedRoot->addChild(pcPointsNormal);
   pcPointShadedRoot->addChild(pcHighlight);
 
@@ -191,14 +211,10 @@ void ViewProviderPoints::attach(App::DocumentObject* pcObj)
   // get and save the feature
   Points::Feature* ptFea = dynamic_cast<Points::Feature*>(pcObj);
   createPoints( ptFea );
-
-  // call father (set material and feature pointer)
-  ViewProviderDocumentObject::attach(pcObj);
 }
 
 void ViewProviderPoints::setMode(const char* ModeName)
 {
-  modeString = ModeName;
   if ( strcmp("Color",ModeName)==0 )
   {
     std::map<std::string,App::Property*> Map;
@@ -257,9 +273,9 @@ void ViewProviderPoints::setMode(const char* ModeName)
   ViewProviderDocumentObject::setMode(ModeName);
 }
 
-std::vector<std::string> ViewProviderPoints::getModes(void)
+std::list<std::string> ViewProviderPoints::getModes(void) const
 {
-  std::vector<std::string> StrList;
+  std::list<std::string> StrList;
   StrList.push_back("Point");
 
   if ( pcObject )
@@ -285,17 +301,9 @@ std::vector<std::string> ViewProviderPoints::getModes(void)
 void ViewProviderPoints::updateData()
 {
   createPoints(dynamic_cast<Points::Feature*>(pcObject));
-  setMode(modeString.c_str());
-}
 
-void ViewProviderPoints::setTransparency(float trans)
-{
-  pcPointMaterial->transparency = trans;
-}
-
-void ViewProviderPoints::setColor(const App::Color &c)
-{
-  pcPointMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+  // The number of points might have changed, so force also a resize of the Inventor internals
+  setActiveMode();
 }
 
 QPixmap ViewProviderPoints::getIcon() const

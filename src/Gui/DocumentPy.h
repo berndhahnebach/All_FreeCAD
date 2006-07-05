@@ -53,6 +53,8 @@ public:
 	PYFUNCDEF_D(DocumentPy,setPos)
 	PYFUNCDEF_D(DocumentPy,addAnnotation)
 	PYFUNCDEF_D(DocumentPy,update)
+  PYFUNCDEF_D(DocumentPy,activeObject)
+	PYFUNCDEF_D(DocumentPy,getObject)
  
 private:
   Gui::Document *_pcDoc;

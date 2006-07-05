@@ -92,9 +92,9 @@ ViewProviderExport::~ViewProviderExport()
 {
 }
 
-std::vector<std::string> ViewProviderExport::getModes(void)
+std::list<std::string> ViewProviderExport::getModes(void) const
 {
-  return std::vector<std::string>();
+  return std::list<std::string>();
 }
 
 QPixmap ViewProviderExport::getIcon() const
@@ -134,15 +134,8 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderDocumentObject)
 ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
 {
   ADD_PROPERTY(LineWidth,(2.0f));
+  ADD_PROPERTY(PointSize,(2.0f));
   ADD_PROPERTY(OpenEdges,(false));
-
-  Display.setSize(6);
-  Display.set1Value(0,"Shaded"); // active mode
-  Display.set1Value(1,"Shaded");
-  Display.set1Value(2,"Wireframe");
-  Display.set1Value(3,"Points");
-  Display.set1Value(4,"Shaded+Wireframe");
-  Display.set1Value(5,"Hidden line");
 
   // create the mesh core nodes
   pcMeshCoord = new SoCoordinate3();
@@ -150,9 +143,18 @@ ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
   pcMeshFaces = new SoIndexedFaceSet();
   pcMeshFaces->ref();
   pOpenEdges = new SoBaseColor();
-  const App::Color& c = ShapeColor.getValue();
-  pOpenEdges->rgb.setValue(1.0f-c.r, 1.0f-c.g, 1.0f-c.b);
+  setOpenEdgeColorFrom(ShapeColor.getValue());
   pOpenEdges->ref();
+
+  pcLineStyle = new SoDrawStyle();
+  pcLineStyle->ref();
+  pcLineStyle->style = SoDrawStyle::LINES;
+  pcLineStyle->lineWidth = LineWidth.getValue();
+
+  pcPointStyle = new SoDrawStyle();
+  pcPointStyle->ref();
+  pcPointStyle->style = SoDrawStyle::POINTS;
+  pcPointStyle->pointSize = PointSize.getValue();
 }
 
 ViewProviderMesh::~ViewProviderMesh()
@@ -160,25 +162,35 @@ ViewProviderMesh::~ViewProviderMesh()
   pcMeshCoord->unref();
   pcMeshFaces->unref();
   pOpenEdges->unref();
+  pcLineStyle->unref();
+  pcPointStyle->unref();
 }
 
 void ViewProviderMesh::onChanged(const App::Property* prop)
 {
   if ( prop == &LineWidth ) {
     pcLineStyle->lineWidth = LineWidth.getValue();
+  } else if ( prop == &PointSize ) {
+    pcPointStyle->pointSize = PointSize.getValue();
   } else if ( prop == &OpenEdges ) {
     showOpenEdges( OpenEdges.getValue() );
   } else {
     // Set the inverse color for open edges
     if ( prop == &ShapeColor ) {
-      const App::Color& c = ShapeColor.getValue();
-      pOpenEdges->rgb.setValue(1.0f-c.r, 1.0f-c.g, 1.0f-c.b);
+      setOpenEdgeColorFrom(ShapeColor.getValue());
     } else if ( prop == &ShapeMaterial ) {
-      const App::Color& c = ShapeMaterial.getValue().diffuseColor;
-      pOpenEdges->rgb.setValue(1.0f-c.r, 1.0f-c.g, 1.0f-c.b);
+      setOpenEdgeColorFrom(ShapeMaterial.getValue().diffuseColor);
     }
     ViewProviderFeature::onChanged(prop);
   }
+}
+
+void ViewProviderMesh::setOpenEdgeColorFrom( const App::Color& c )
+{
+  float r=1.0f-c.r; r = r < 0.5f ? 0.0f : 1.0f;
+  float g=1.0f-c.g; g = g < 0.5f ? 0.0f : 1.0f;
+  float b=1.0f-c.b; b = b < 0.5f ? 0.0f : 1.0f;
+  pOpenEdges->rgb.setValue(r, g, b);
 }
 
 void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
@@ -273,7 +285,8 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
 
 void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 {
-  pcObject = pcFeat;
+  // Call parents attach method
+  ViewProviderDocumentObject::attach(pcFeat);
 
   // only one selection node for the mesh
   pcHighlight->objectName = pcFeat->name.getValue();
@@ -290,7 +303,7 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   // flat shaded (Normal) ------------------------------------------
   SoGroup* pcFlatRoot = new SoGroup();
   pcFlatRoot->addChild(flathints);
-  pcFlatRoot->addChild(pcSolidMaterial);
+  pcFlatRoot->addChild(pcShapeMaterial);
   pcFlatRoot->addChild(pcHighlight);
   addDisplayMode(pcFlatRoot, "Flat");
 
@@ -306,7 +319,7 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   SoGroup* pcWireRoot = new SoGroup();
   pcWireRoot->addChild(pcLineStyle);
   pcWireRoot->addChild(pcLightModel);
-  pcWireRoot->addChild(pcSolidMaterial);
+  pcWireRoot->addChild(pcShapeMaterial);
   pcWireRoot->addChild(pcHighlight);
   addDisplayMode(pcWireRoot, "Wireframe");
 
@@ -325,9 +338,6 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   pcHiddenLineRoot->addChild(wirehints);
   pcHiddenLineRoot->addChild(pcWireRoot);
   addDisplayMode(pcHiddenLineRoot, "HiddenLine");
-
-  // call father (set material and feature pointer)
-  ViewProviderDocumentObject::attach(pcFeat);
 
   // create the mesh core nodes
   updateData();
@@ -383,16 +393,16 @@ void ViewProviderMesh::setMode(const char* ModeName)
   ViewProviderDocumentObject::setMode( ModeName );
 }
 
-std::vector<std::string> ViewProviderMesh::getModes(void)
+std::list<std::string> ViewProviderMesh::getModes(void) const
 {
   // get the modes of the father
-  std::vector<std::string> StrList = ViewProviderDocumentObject::getModes();
+  std::list<std::string> StrList;
 
   // add your own modes
   StrList.push_back("Shaded");
   StrList.push_back("Wireframe");
-  StrList.push_back("Points");
   StrList.push_back("Shaded+Wireframe");
+  StrList.push_back("Points");
   StrList.push_back("Hidden line");
 
   return StrList;
@@ -548,7 +558,6 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
       Gui::Command::doCommand(Gui::Command::Doc, "App.document().addObject(\"Mesh::Feature\", \"%s\")\n", fTool.c_str());
 
       // replace the mesh from feature
-      Gui::Command::doCommand(Gui::Command::Gui, "App.document().%s.solidMaterial.transparency = 0.7\n", fTool.c_str());
       Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().getObject(\"%s\").Mesh\n", fTool.c_str());
       for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
       {

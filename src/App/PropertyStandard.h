@@ -28,6 +28,7 @@
 
 
 #include <string>
+#include <list>
 #include <vector>
 
 #ifdef _MSC_VER
@@ -313,6 +314,8 @@ public:
 	/** Sets the property 
 	 */
   void setValue(const std::string&);
+  void setValue(const std::vector<std::string>&);
+  void setValue(const std::list<std::string>&);
   
   /// index operator
   const std::string& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 

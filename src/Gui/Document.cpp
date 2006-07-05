@@ -229,8 +229,9 @@ void Document::setShow(const char* name)
 {
   ViewProvider* pcProv = getViewProviderByName(name);
 
-  if(pcProv)
-    pcProv->show();
+  if(pcProv && pcProv->getTypeId().isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) {
+    ((ViewProviderDocumentObject*)pcProv)->Visibility.setValue(true);
+  }
 }
 
 /// set the feature in Noshow
@@ -238,8 +239,9 @@ void Document::setHide(const char* name)
 {
   ViewProvider* pcProv = getViewProviderByName(name);
 
-  if(pcProv)
-    pcProv->hide();
+  if(pcProv && pcProv->getTypeId().isDerivedFrom(ViewProviderDocumentObject::getClassTypeId())) {
+    ((ViewProviderDocumentObject*)pcProv)->Visibility.setValue(false);
+  }
 }
 
 /// set the feature in Noshow
@@ -327,6 +329,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
       try{
         // if succesfully created set the right name and calculate the view
         pcProvider->attach(*It);
+        pcProvider->setActiveMode();
       }catch(const Base::MemoryException& e){
         Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*It)->name.getValue(),e.what());
       }catch(Base::Exception &e){

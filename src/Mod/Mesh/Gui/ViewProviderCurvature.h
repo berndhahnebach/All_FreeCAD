@@ -66,8 +66,8 @@ public:
   void attach(App::DocumentObject* pcFeature);
   /// Sets the viewing mode
   void setMode(const char* ModeName);
-  /// Returns a vector of all possible modes
-  std::vector<std::string> getModes(void);
+  /// Returns a list of all possible modes
+  std::list<std::string> getModes(void) const;
   /// Updates the mesh feature representation
   void updateData();
   /// Returns a pixmap for the associated feature type

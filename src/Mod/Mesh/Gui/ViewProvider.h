@@ -45,6 +45,10 @@ class SoEventCallback;
 class SbViewVolume;
 class SoBaseColor;
 
+namespace App {
+  class Color;
+}
+
 namespace Gui {
   class View3DInventorViewer;
   class SoFCSelection;
@@ -70,7 +74,7 @@ class GuiMeshExport ViewProviderExport : public Gui::ViewProviderDocumentObject
 public:
   ViewProviderExport();
   virtual ~ViewProviderExport();
-  std::vector<std::string> getModes(void);
+  std::list<std::string> getModes(void) const;
   virtual QPixmap getIcon() const;
 };
 
@@ -89,6 +93,7 @@ public:
 
   // Display properties
   App::PropertyFloat LineWidth;
+  App::PropertyFloat PointSize;
   App::PropertyBool OpenEdges;
 
   /** 
@@ -98,8 +103,8 @@ public:
   virtual void attach(App::DocumentObject *);
   /// Sets the correct display mode
   virtual void setMode(const char* ModeName);
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void);
+  /// returns a list of all possible modes
+  virtual std::list<std::string> getModes(void) const;
   /// Update the Mesh representation
   virtual void updateData();
   virtual QPixmap getIcon() const;
@@ -124,12 +129,15 @@ protected:
   /// Creates a tool mesh from the previous picked polygon on the viewer
   bool createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& ) const;
   void showOpenEdges( bool );
+  void setOpenEdgeColorFrom( const App::Color& col );
 
 protected:
   SoCoordinate3     *pcMeshCoord;
   SoIndexedFaceSet  *pcMeshFaces;
   //SoFaceSet         *pcMeshFaces;
   SoBaseColor       *pOpenEdges;
+  SoDrawStyle       *pcLineStyle;
+  SoDrawStyle       *pcPointStyle;
 
 private:
   Gui::AbstractMouseModel* _mouseModel;

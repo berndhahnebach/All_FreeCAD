@@ -64,13 +64,29 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshIndices, MeshGui::ViewProviderMeshDefec
 
 ViewProviderMeshDefects::ViewProviderMeshDefects()
 {
+  ADD_PROPERTY(LineWidth,(2.0f));
+
   pcCoords = new SoCoordinate3();
   pcCoords->ref();
+  pcLineStyle = new SoDrawStyle();
+  pcLineStyle->ref();
+  pcLineStyle->style = SoDrawStyle::LINES;
+  pcLineStyle->lineWidth = LineWidth.getValue();
 }
 
 ViewProviderMeshDefects::~ViewProviderMeshDefects()
 {
   pcCoords->unref();
+  pcLineStyle->unref();
+}
+
+void ViewProviderMeshDefects::onChanged(const App::Property* prop)
+{
+  if ( prop == &LineWidth ) {
+    pcLineStyle->lineWidth = LineWidth.getValue();
+  } else {
+    ViewProviderDocumentObject::onChanged(prop);
+  }
 }
 
 // ----------------------------------------------------------------------

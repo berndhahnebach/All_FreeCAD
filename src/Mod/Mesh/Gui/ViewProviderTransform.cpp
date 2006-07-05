@@ -67,6 +67,9 @@ ViewProviderMeshTransform::~ViewProviderMeshTransform()
 
 void ViewProviderMeshTransform::attach(App::DocumentObject *pcFeat)
 {
+  // creats the standard viewing modes
+  ViewProviderMesh::attach(pcFeat);
+
   SoSeparator* pcEditRoot = new SoSeparator();
 
   // flat shaded (Normal) ------------------------------------------
@@ -77,15 +80,12 @@ void ViewProviderMeshTransform::attach(App::DocumentObject *pcFeat)
 
   pcEditRoot->addChild(pcTransformerDragger);
   pcEditRoot->addChild(pcFlatStyle);
-  pcEditRoot->addChild(pcSolidMaterial);
+  pcEditRoot->addChild(pcShapeMaterial);
   pcEditRoot->addChild(pcBinding);
   pcEditRoot->addChild(pcHighlight);
 
   // adding to the switch
   addDisplayMode(pcEditRoot, "Edit");
-
-  // creats the standard viewing modes
-  ViewProviderMesh::attach(pcFeat);
 }
 
 void ViewProviderMeshTransform::updateData(void)
@@ -100,10 +100,10 @@ void ViewProviderMeshTransform::setMode(const char* ModeName)
   ViewProviderMesh::setMode(ModeName);
 }
 
-std::vector<std::string> ViewProviderMeshTransform::getModes(void)
+std::list<std::string> ViewProviderMeshTransform::getModes(void) const
 {
-  std::vector<std::string> StrList = ViewProviderMesh::getModes();
-  StrList.push_back("Transform");
+  std::list<std::string> StrList = ViewProviderMesh::getModes();
+  StrList.push_front("Transform");
   return StrList;
 }
 

@@ -79,11 +79,15 @@ PropertyView::PropertyView(Gui::Document* pcDocument,QWidget *parent,const char 
   pTabs->setTabShape(QTabWidget::Triangular);
   pLayout->addWidget( pTabs, 0, 0 );
 
-  _pPropEditor = new EditableListView( pTabs );
-  EditableItem::parentView = _pPropEditor;
-  pTabs->insertTab(_pPropEditor, "Properties");
-  _pPropEditor->addColumn("Name");
-  _pPropEditor->addColumn( "Value" );
+  _pPropEditorView = new EditableListView( pTabs );
+  pTabs->insertTab(_pPropEditorView, tr("View"));
+  _pPropEditorView->addColumn(tr("Name"));
+  _pPropEditorView->addColumn(tr("Value"));
+
+  _pPropEditorData = new EditableListView( pTabs );
+  pTabs->insertTab(_pPropEditorData, tr("Data"));
+  _pPropEditorData->addColumn(tr("Name"));
+  _pPropEditorData->addColumn(tr("Value"));
 
   // retrieve the Pixmaps
   pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
@@ -113,51 +117,52 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
   if(Reason.Type == SelectionChanges::ClearSelection)
   {
     tearDown();
-  }else if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection){
-#if 0
-    // We must not listen neither to the given rCaller nor to the Reason object, because there can be selected items from
-    // documents other as the currently active one.
-    vector<SelectionSingleton::SelObj> list = Gui::Selection().getCompleteSelection();
-    if(list.size() == 1){
-      if(list.begin()->pFeat)
-        buildUp(list.begin()->pFeat);
-      else if(list.begin()->pDoc)
-        buildUp(reinterpret_cast<App::PropertyContainer*>(list.begin()->pDoc));
-    }else
-      tearDown();
-#else
+  }
+  else if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection)
+  {
     // We must not listen neither to the given rCaller nor to the Reason object only, because there can be selected items from
     // documents other than the currently active one.
 
     // group the properties by <name,id>
-    std::map<std::pair<std::string, int>, std::vector<App::Property*> > propMap;
+    std::map<std::pair<std::string, int>, std::vector<App::Property*> > propDataMap;
+    std::map<std::pair<std::string, int>, std::vector<App::Property*> > propViewMap;
     vector<SelectionSingleton::SelObj> array = Gui::Selection().getCompleteSelection();
     for ( vector<SelectionSingleton::SelObj>::const_iterator it = array.begin(); it != array.end(); ++it )
     {
-      std::map<std::string,App::Property*> Map;
+      std::map<std::string,App::Property*> dataMap;
+      std::map<std::string,App::Property*> viewMap;
       if ( (*it).pObject ) {
-        (*it).pObject->getPropertyMap(Map);
-        // get also the properites of the associated view provider
+        (*it).pObject->getPropertyMap(dataMap);
+
+        // get also the properties of the associated view provider
         Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
         ViewProvider* vp = doc->getViewProvider((*it).pObject);
-        vp->getPropertyMap(Map);
+        vp->getPropertyMap(viewMap);
       }
       else if ( (*it).pDoc ) {
-        (*it).pDoc->getPropertyMap(Map);
+        (*it).pDoc->getPropertyMap(dataMap);
       }
 
       // store the properties with <name,id> as key in a map
-      for( std::map<std::string,App::Property*>::iterator pt = Map.begin(); pt != Map.end(); ++pt )
+      std::map<std::string,App::Property*>::iterator pt;
+      for( pt = dataMap.begin(); pt != dataMap.end(); ++pt )
       {
         std::pair<std::string, int> nameType = std::make_pair<std::string, int>( pt->first, pt->second->getTypeId().getKey());
-        propMap[nameType].push_back(pt->second);
+        propDataMap[nameType].push_back(pt->second);
+      }
+      // the same for the view properties
+      for( pt = viewMap.begin(); pt != viewMap.end(); ++pt )
+      {
+        std::pair<std::string, int> nameType = std::make_pair<std::string, int>( pt->first, pt->second->getTypeId().getKey());
+        propViewMap[nameType].push_back(pt->second);
       }
     }
 
     tearDown();
 
     std::map<std::pair<std::string, int>, std::vector<App::Property*> >::const_iterator jt;
-    for ( jt = propMap.begin(); jt != propMap.end(); ++jt )
+    EditableItem::parentView = _pPropEditorData;
+    for ( jt = propDataMap.begin(); jt != propDataMap.end(); ++jt )
     {
       // the property must be part of each selected object, i.e. the number of selected objects is equal 
       // to the number of properties with same name and id
@@ -176,8 +181,28 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
         }
       }
     }
-    
-#endif
+
+    // fill up the tab with the view properties
+    EditableItem::parentView = _pPropEditorView;
+    for ( jt = propViewMap.begin(); jt != propViewMap.end(); ++jt )
+    {
+      // the property must be part of each selected object, i.e. the number of selected objects is equal 
+      // to the number of properties with same name and id
+      if ( jt->second.size() == array.size() )
+      {
+        App::Property* prop = (jt->second)[0];
+        QString editor = prop->getEditorName();
+        if ( !editor.isEmpty() )
+        {
+          EditableItem* item = (EditableItem*) Base::Type::createInstanceByName( prop->getEditorName(),true);
+          if ( item )
+          {
+            item->setText(0, QString(prop->getName()));
+            item->setProperty( jt->second );
+          }
+        }
+      }
+    }
   }
 }
 
@@ -204,10 +229,10 @@ void PropertyView::buildUp(App::PropertyContainer *cont)
 
 void PropertyView::tearDown(void)
 {
-
-  _pPropEditor->stopEdit();
-
-  _pPropEditor->clear();
+  _pPropEditorView->stopEdit();
+  _pPropEditorView->clear();
+  _pPropEditorData->stopEdit();
+  _pPropEditorData->clear();
 }
 
 

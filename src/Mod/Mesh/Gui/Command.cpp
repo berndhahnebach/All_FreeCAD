@@ -82,7 +82,6 @@ void CmdMeshTransform::activated(int iMsg)
   openCommand("Mesh Mesh Create");
   doCommand(Doc,"App.document().addObject(\"Mesh::Transform\",\"%s\")",fName.c_str());
   doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
-  doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Transform");
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
   commitCommand(); 
  
@@ -124,7 +123,6 @@ void CmdMeshDemolding::activated(int iMsg)
   openCommand("Mesh Mesh Create");
   doCommand(Doc,"App.document().addObject(\"Mesh::TransformDemolding\",\"%s\")",fName.c_str());
   doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),cSel[0].FeatName);
-  doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Demold");
   doCommand(Gui,"Gui.hide(\"%s\")",cSel[0].FeatName);
   commitCommand(); 
  
@@ -175,7 +173,6 @@ void CmdMeshExMakeMesh::activated(int iMsg)
     "mb.scale(100.0)\n"
     "App.document().addObject(\"Mesh::Feature\",\"MeshBox\")\n"
     "App.document().MeshBox.Mesh=mb\n"
-    "App.document().MeshBox.showMode = \"FlatWire\"\n" 
     "App.document().recompute()" );
 
   doCommand(Gui,"Gui.SendMsgToActiveView(\"ViewFit\")");
@@ -228,9 +225,7 @@ void CmdMeshExMakeTool::activated(int iMsg)
     "mt.scale(100.0)\n"
     "mt.translate(50.0,50.0,50.0)\n"
     "App.document().addObject(\"Mesh::Feature\",\"MeshTool\")\n"
-    "App.document().MeshTool.Mesh=mt\n"
-    "App.document().MeshTool.solidMaterial.diffuseColor = (0.5,0.2,0.2)\n"
-    "App.document().MeshTool.showMode = \"FlatWire\"" );
+    "App.document().MeshTool.Mesh=mt\n");
 
   commitCommand();
  
@@ -271,12 +266,7 @@ void CmdMeshExMakeUnion::activated(int iMsg)
     "m3 = m1.copy()\n"
     "m3.unite(m2)\n"
     "App.document().addObject(\"Mesh::Feature\",\"MeshUnion\")\n"
-    "App.document().MeshUnion.Mesh=m3\n"
-    "App.document().MeshUnion.solidMaterial.ambientColor = (0.1,1,0)\n"
-    "App.document().MeshUnion.solidMaterial.transparency = 0.5\n"
-    "App.document().MeshUnion.lineMaterial.ambientColor = (0.1,0.11,0.1)\n"
-    "App.document().MeshUnion.lineSize = 2\n"
-    "App.document().MeshUnion.showMode = \"FlatWire\"" );
+    "App.document().MeshUnion.Mesh=m3\n");
  
   updateActive();
 
@@ -427,7 +417,6 @@ void CmdMeshVertexCurvature::activated(int iMsg)
     openCommand("Mesh VertexCurvature");
     doCommand(Doc,"App.document().addObject(\"Mesh::Curvature\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
-    doCommand(Doc,"App.document().%s.showMode=\"%s\"",fName.c_str(), "Absolute curvature");
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -645,7 +634,6 @@ void CmdMeshHarmonizeNormals::activated(int iMsg)
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
-    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -683,7 +671,6 @@ void CmdMeshFlipNormals::activated(int iMsg)
     openCommand("Mesh Flip Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FlipNormals\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
-    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -721,7 +708,6 @@ void CmdMeshFixDegenerations::activated(int iMsg)
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
-    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -759,7 +745,6 @@ void CmdMeshFixDuplicateFaces::activated(int iMsg)
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
-    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -797,7 +782,6 @@ void CmdMeshFixDuplicatePoints::activated(int iMsg)
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
-    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
@@ -835,7 +819,6 @@ void CmdMeshFixIndices::activated(int iMsg)
     openCommand("Mesh Harmonize Normals");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
-    doCommand(Doc,"App.activeDocument().%s.showMode=App.activeDocument().%s.showMode",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());

@@ -52,7 +52,7 @@ using namespace App;
 PyTypeObject App::FeaturePy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"Feature",				/*tp_name*/
+	"App.Feature",				/*tp_name*/
 	sizeof(FeaturePy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
@@ -125,7 +125,7 @@ PyParentObject App::FeaturePy::Parents[] = { &FeaturePy::Type, &DocumentObjectPy
 //t constructor
 //--------------------------------------------------------------------------
 App::FeaturePy::FeaturePy(AbstractFeature *pcFeature, PyTypeObject *T)
-: DocumentObjectPy(pcFeature, T), _pcFeature(pcFeature),solidMaterialPy(0),lineMaterialPy(0),pointMaterialPy(0)
+: DocumentObjectPy(pcFeature, T), _pcFeature(pcFeature)//,solidMaterialPy(0),lineMaterialPy(0),pointMaterialPy(0)
 {
 //	Base::Console().Log("Create FeaturePy: %p \n",this);
 }
@@ -144,17 +144,17 @@ FeaturePy::~FeaturePy()						// Everything handled in parent
 //	Base::Console().Log("Destroy FeaturePy: %p \n",this);
 
   setInvalid();
-  if(solidMaterialPy) solidMaterialPy->DecRef();
-  if(lineMaterialPy) lineMaterialPy->DecRef();
-  if(pointMaterialPy) pointMaterialPy->DecRef();
+//  if(solidMaterialPy) solidMaterialPy->DecRef();
+//  if(lineMaterialPy) lineMaterialPy->DecRef();
+//  if(pointMaterialPy) pointMaterialPy->DecRef();
 }
 
 void FeaturePy::setInvalid()
 {
   DocumentObjectPy::setInvalid();
-  if(solidMaterialPy) solidMaterialPy->setInvalid();
-  if(lineMaterialPy) lineMaterialPy->setInvalid();
-  if(pointMaterialPy) pointMaterialPy->setInvalid();
+//  if(solidMaterialPy) solidMaterialPy->setInvalid();
+//  if(lineMaterialPy) lineMaterialPy->setInvalid();
+//  if(pointMaterialPy) pointMaterialPy->setInvalid();
 }
 
 //--------------------------------------------------------------------------
@@ -180,52 +180,52 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
     if (Base::streq(attr, "__dict__"))
     {
       PyObject *dict = DocumentObjectPy::_getattr(attr);
-      if (dict) {
-        PyDict_SetItem(dict, PyString_FromString("solidMaterial"), PyString_FromString(""));
-        PyDict_SetItem(dict, PyString_FromString("lineMaterial"),  PyString_FromString(""));
-        PyDict_SetItem(dict, PyString_FromString("pointMaterial"), PyString_FromString(""));
-        PyDict_SetItem(dict, PyString_FromString("lineSize"),      PyString_FromString(""));
-        PyDict_SetItem(dict, PyString_FromString("pointSize"),     PyString_FromString(""));
-        if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
-      }
+//      if (dict) {
+//        PyDict_SetItem(dict, PyString_FromString("solidMaterial"), PyString_FromString(""));
+//        PyDict_SetItem(dict, PyString_FromString("lineMaterial"),  PyString_FromString(""));
+//        PyDict_SetItem(dict, PyString_FromString("pointMaterial"), PyString_FromString(""));
+//        PyDict_SetItem(dict, PyString_FromString("lineSize"),      PyString_FromString(""));
+//        PyDict_SetItem(dict, PyString_FromString("pointSize"),     PyString_FromString(""));
+//        if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
+//      }
       return dict;
     }
-    else if (Base::streq(attr, "solidMaterial"))
-    {
-      if(solidMaterialPy==0){
-        solidMaterialPy = new MaterialPy(&(_pcFeature->_solidMaterial));
-      }
-      solidMaterialPy->IncRef();
-			return solidMaterialPy; 
-    }
-    else if (Base::streq(attr, "lineMaterial"))
-    {
-      if(lineMaterialPy==0){
-        lineMaterialPy = new MaterialPy(&(_pcFeature->_lineMaterial));
-      }
-      lineMaterialPy->IncRef();
-			return lineMaterialPy; 
-    }
-    else if (Base::streq(attr, "pointMaterial"))
-    {
-      if(pointMaterialPy==0){
-        pointMaterialPy = new MaterialPy(&(_pcFeature->_pointMaterial));
-      }
-      pointMaterialPy->IncRef();
-			return pointMaterialPy; 
-    }
-    else if (Base::streq(attr, "lineSize"))
-    {
-      return Py_BuildValue("f", _pcFeature->_lineSize);
-    }
-    else if (Base::streq(attr, "pointSize"))
-    {
-      return Py_BuildValue("f", _pcFeature->_pointSize);
-    }
-    else if (Base::streq(attr, "showMode"))
-    {
-        return Py_BuildValue("s", _pcFeature->showMode.getValue());
-    }
+//    else if (Base::streq(attr, "solidMaterial"))
+//    {
+//      if(solidMaterialPy==0){
+//        solidMaterialPy = new MaterialPy(&(_pcFeature->_solidMaterial));
+//      }
+//      solidMaterialPy->IncRef();
+//			return solidMaterialPy; 
+//    }
+//    else if (Base::streq(attr, "lineMaterial"))
+//    {
+//      if(lineMaterialPy==0){
+//        lineMaterialPy = new MaterialPy(&(_pcFeature->_lineMaterial));
+//      }
+//      lineMaterialPy->IncRef();
+//			return lineMaterialPy; 
+//    }
+//    else if (Base::streq(attr, "pointMaterial"))
+//    {
+//      if(pointMaterialPy==0){
+//        pointMaterialPy = new MaterialPy(&(_pcFeature->_pointMaterial));
+//      }
+//      pointMaterialPy->IncRef();
+//			return pointMaterialPy; 
+//    }
+//    else if (Base::streq(attr, "lineSize"))
+//    {
+//      return Py_BuildValue("f", _pcFeature->_lineSize);
+//    }
+//    else if (Base::streq(attr, "pointSize"))
+//    {
+//      return Py_BuildValue("f", _pcFeature->_pointSize);
+//    }
+//    else if (Base::streq(attr, "showMode"))
+//    {
+//        return Py_BuildValue("s", _pcFeature->showMode.getValue());
+//    }
     else{
       // search in PropertyList
       Property *prop = _pcFeature->getPropertyByName(attr);
@@ -243,59 +243,59 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
 
 int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	if (Base::streq(attr, "solidMaterial")){						// settable new state
-    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
-    {
-      _pcFeature->_solidMaterial = *((MaterialPy*)value)->_pcMaterial;
-      _pcFeature->TouchView();
-    }else if( PyString_Check( value ))
-    {
-      _pcFeature->_solidMaterial = Material(PyString_AsString(value));
-      _pcFeature->TouchView();
-    }else if( PyTuple_Check( value ))
-    {
-      _pcFeature->_solidMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
-      _pcFeature->TouchView();
-    }else
-      throw "material expected for that attribute";
-  }else	if (Base::streq(attr, "lineMaterial")){	
-    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
-    {
-      _pcFeature->_lineMaterial = *((MaterialPy*)value)->_pcMaterial;
-      _pcFeature->TouchView();
-    }else if( PyTuple_Check( value ))
-    {
-      _pcFeature->_lineMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
-      _pcFeature->TouchView();
-    }else
-      throw "material expected for that attribute";
-  }else	if (Base::streq(attr, "pointMaterial")){	
-    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
-    {
-      _pcFeature->_pointMaterial = *((MaterialPy*)value)->_pcMaterial;
-      _pcFeature->TouchView();
-    }else if( PyTuple_Check( value ))
-    {
-      _pcFeature->_pointMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
-      _pcFeature->TouchView();
-    }else
-      throw "material expected for that attribute";
-  }else	if (Base::streq(attr, "lineSize")){	
-    _pcFeature->_lineSize = getFloatFromPy(value);
-    _pcFeature->TouchView();
-  }else	if (Base::streq(attr, "pointSize")){	
-    _pcFeature->_pointSize = getFloatFromPy(value);
-    _pcFeature->TouchView();
-  }else	if (Base::streq(attr, "transparency")){	
-    _pcFeature->setTransparency(getFloatFromPy(value));
-    _pcFeature->TouchView();
-  }else	if (Base::streq(attr, "color")){	
-    _pcFeature->setColor(MaterialPy::getColorFromPy(value));
-    _pcFeature->TouchView();
-  }else	if (Base::streq(attr, "showMode")){	
-    _pcFeature->showMode.setValue(PyString_AsString(value));
-    _pcFeature->TouchView();
-  }else{
+//	if (Base::streq(attr, "solidMaterial")){						// settable new state
+//    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
+//    {
+//      _pcFeature->_solidMaterial = *((MaterialPy*)value)->_pcMaterial;
+//      _pcFeature->TouchView();
+//    }else if( PyString_Check( value ))
+//    {
+//      _pcFeature->_solidMaterial = Material(PyString_AsString(value));
+//      _pcFeature->TouchView();
+//    }else if( PyTuple_Check( value ))
+//    {
+//      _pcFeature->_solidMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
+//      _pcFeature->TouchView();
+//    }else
+//      throw "material expected for that attribute";
+//  }else	if (Base::streq(attr, "lineMaterial")){	
+//    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
+//    {
+//      _pcFeature->_lineMaterial = *((MaterialPy*)value)->_pcMaterial;
+//      _pcFeature->TouchView();
+//    }else if( PyTuple_Check( value ))
+//    {
+//      _pcFeature->_lineMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
+//      _pcFeature->TouchView();
+//    }else
+//      throw "material expected for that attribute";
+//  }else	if (Base::streq(attr, "pointMaterial")){	
+//    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
+//    {
+//      _pcFeature->_pointMaterial = *((MaterialPy*)value)->_pcMaterial;
+//      _pcFeature->TouchView();
+//    }else if( PyTuple_Check( value ))
+//    {
+//      _pcFeature->_pointMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
+//      _pcFeature->TouchView();
+//    }else
+//      throw "material expected for that attribute";
+//  }else	if (Base::streq(attr, "lineSize")){	
+//    _pcFeature->_lineSize = getFloatFromPy(value);
+//    _pcFeature->TouchView();
+//  }else	if (Base::streq(attr, "pointSize")){	
+//    _pcFeature->_pointSize = getFloatFromPy(value);
+//    _pcFeature->TouchView();
+//  }else	if (Base::streq(attr, "transparency")){	
+//    _pcFeature->setTransparency(getFloatFromPy(value));
+//    _pcFeature->TouchView();
+//  }else	if (Base::streq(attr, "color")){	
+//    _pcFeature->setColor(MaterialPy::getColorFromPy(value));
+//    _pcFeature->TouchView();
+//  }else	if (Base::streq(attr, "showMode")){	
+//    _pcFeature->showMode.setValue(PyString_AsString(value));
+//    _pcFeature->TouchView();
+//  }else{
        // search in PropertyList
       Property *prop = _pcFeature->getPropertyByName(attr);
       if(prop)
@@ -303,7 +303,7 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
         prop->setPyObject(value);
       }else
 			  return DocumentObjectPy::_setattr(attr, value); 						
-  }
+//  }
   return 0;
 } 
 

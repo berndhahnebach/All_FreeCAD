@@ -52,6 +52,7 @@
 # include <Inventor/nodes/SoNormal.h>
 # include <Inventor/nodes/SoNormalBinding.h>
 # include <Inventor/nodes/SoPointSet.h>
+# include <Inventor/nodes/SoShapeHints.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
@@ -88,12 +89,43 @@ PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderDocumentObject)
        
 ViewProviderPart::ViewProviderPart()
 {
+  App::Material mat;
+  mat.ambientColor.set(0.2f,0.2f,0.2f);
+  mat.diffuseColor.set(0.1f,0.1f,0.1f);
+  mat.specularColor.set(0.0f,0.0f,0.0f);
+  mat.emissiveColor.set(0.0f,0.0f,0.0f);
+  mat.shininess = 0.0f;
+  mat.transparency = 0.0f;
+  ADD_PROPERTY(LineMaterial,(mat));
+  ADD_PROPERTY(PointMaterial,(mat));
+  ADD_PROPERTY(LineColor,(mat.diffuseColor));
+  ADD_PROPERTY(PointColor,(mat.diffuseColor));
+  ADD_PROPERTY(LineWidth,(2.0f));
+  ADD_PROPERTY(PointSize,(2.0f));
+
   EdgeRoot = new SoSeparator();
   EdgeRoot->ref();
   FaceRoot = new SoSeparator();
   FaceRoot->ref();
   VertexRoot = new SoSeparator();
   VertexRoot->ref();
+  pcLineMaterial = new SoMaterial;
+  pcLineMaterial->ref();
+  LineMaterial.touch();
+
+  pcPointMaterial = new SoMaterial;
+  pcPointMaterial->ref();
+  PointMaterial.touch();
+
+  pcLineStyle = new SoDrawStyle();
+  pcLineStyle->ref();
+  pcLineStyle->style = SoDrawStyle::LINES;
+  pcLineStyle->lineWidth = LineWidth.getValue();
+
+  pcPointStyle = new SoDrawStyle();
+  pcPointStyle->ref();
+  pcPointStyle->style = SoDrawStyle::POINTS;
+  pcPointStyle->pointSize = PointSize.getValue();
 
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
 
@@ -111,24 +143,80 @@ ViewProviderPart::~ViewProviderPart()
   EdgeRoot->unref();
   FaceRoot->unref();
   VertexRoot->unref();
+  pcLineMaterial->unref();
+  pcPointMaterial->unref();
+  pcLineStyle->unref();
+  pcPointStyle->unref();
+}
 
+void ViewProviderPart::onChanged(const App::Property* prop)
+{
+  if ( prop == &LineWidth ) {
+    pcLineStyle->lineWidth = LineWidth.getValue();
+  } else if ( prop == &PointSize ) {
+    pcPointStyle->pointSize = PointSize.getValue();
+  } else if ( prop == &LineColor ) {
+    const App::Color& c = LineColor.getValue();
+    pcLineMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+    LineMaterial.enableNotify(false);
+    LineMaterial.setDiffuseColor(c);
+    LineMaterial.enableNotify(true);
+  } else if ( prop == &PointColor ) {
+    const App::Color& c = PointColor.getValue();
+    pcPointMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+    PointMaterial.enableNotify(false);
+    PointMaterial.setDiffuseColor(c);
+    PointMaterial.enableNotify(true);
+  } else if ( prop == &LineMaterial ) {
+    const App::Material& Mat = LineMaterial.getValue();
+    LineColor.enableNotify(false);
+    LineColor.setValue(Mat.diffuseColor);
+    LineColor.enableNotify(true);
+    pcLineMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
+    pcLineMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
+    pcLineMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
+    pcLineMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
+    pcLineMaterial->shininess.setValue(Mat.shininess);
+    pcLineMaterial->transparency.setValue(Mat.transparency);
+  } else if ( prop == &PointMaterial ) {
+    const App::Material& Mat = PointMaterial.getValue();
+    PointColor.enableNotify(false);
+    PointColor.setValue(Mat.diffuseColor);
+    PointColor.enableNotify(true);
+    pcPointMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
+    pcPointMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
+    pcPointMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
+    pcPointMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
+    pcPointMaterial->shininess.setValue(Mat.shininess);
+    pcPointMaterial->transparency.setValue(Mat.transparency);
+  } else {
+    ViewProviderDocumentObject::onChanged(prop);
+  }
 }
 
 void ViewProviderPart::attach(App::DocumentObject *pcFeat)
 {
-  pcObject = pcFeat;
+  // call parent attach method
+  ViewProviderDocumentObject::attach(pcFeat);
 
   SoGroup* pcNormalRoot = new SoGroup();
   SoGroup* pcFlatRoot = new SoGroup();
   SoGroup* pcWireframeRoot = new SoGroup();
   SoGroup* pcPointsRoot = new SoGroup();
 
+  // enable two-side rendering
+  SoShapeHints * flathints = new SoShapeHints;
+  flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
+  flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+
   // normal viewing with edges and points
+  pcNormalRoot->addChild(flathints);
   pcNormalRoot->addChild(FaceRoot);
   pcNormalRoot->addChild(EdgeRoot);
 //  pcNormalRoot->addChild(VertexRoot);
 
   // just faces with no edges or points
+  pcFlatRoot->addChild(flathints);
   pcFlatRoot->addChild(FaceRoot);
 
   // only edges
@@ -143,9 +231,6 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
   addDisplayMode(pcFlatRoot, "Flat");
   addDisplayMode(pcWireframeRoot, "Wireframe");
   addDisplayMode(pcPointsRoot, "Point");
-
-  // call father (set material and feature pointer)
-  ViewProviderDocumentObject::attach(pcFeat);
 
   // Build up the view represetation from the shape
   updateData();
@@ -165,15 +250,15 @@ void ViewProviderPart::setMode(const char* ModeName)
   ViewProviderDocumentObject::setMode( ModeName );
 }
 
-std::vector<std::string> ViewProviderPart::getModes(void)
+std::list<std::string> ViewProviderPart::getModes(void) const
 {
   // get the modes of the father
-  vector<string> StrList = ViewProviderDocumentObject::getModes();
+  std::list<std::string> StrList = ViewProviderDocumentObject::getModes();
 
   // add your own modes
-  StrList.push_back("Normal");
   StrList.push_back("Flat");
   StrList.push_back("Wireframe");
+  StrList.push_back("Normal");
   StrList.push_back("Points");
 
   return StrList;
@@ -405,7 +490,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
 {
   TopExp_Explorer ex;
 
-  FaceRoot->addChild(pcSolidMaterial);
+  FaceRoot->addChild(pcShapeMaterial);
 
 //  BRepMesh::Mesh(myShape,1.0);
 //	BRepMesh_Discret MESH(1.0,myShape,20.0);

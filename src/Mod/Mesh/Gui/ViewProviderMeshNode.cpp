@@ -71,10 +71,44 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshNode, Gui::ViewProviderDocumentObject)
 
 ViewProviderMeshNode::ViewProviderMeshNode() : _mouseModel(0), m_bEdit(false)
 {
+  ADD_PROPERTY(LineWidth,(2.0f));
+  ADD_PROPERTY(PointSize,(2.0f));
+  ADD_PROPERTY(OpenEdges,(false));
+
+  pcLineStyle = new SoDrawStyle();
+  pcLineStyle->ref();
+  pcLineStyle->style = SoDrawStyle::LINES;
+  pcLineStyle->lineWidth = LineWidth.getValue();
+
+  pcPointStyle = new SoDrawStyle();
+  pcPointStyle->ref();
+  pcPointStyle->style = SoDrawStyle::POINTS;
+  pcPointStyle->pointSize = PointSize.getValue();
 }
 
 ViewProviderMeshNode::~ViewProviderMeshNode()
 {
+  pcLineStyle->unref();
+  pcPointStyle->unref();
+}
+
+void ViewProviderMeshNode::onChanged(const App::Property* prop)
+{
+  if ( prop == &LineWidth ) {
+    pcLineStyle->lineWidth = LineWidth.getValue();
+  } else if ( prop == &PointSize ) {
+    pcPointStyle->pointSize = PointSize.getValue();
+  } else if ( prop == &OpenEdges ) {
+//    showOpenEdges( OpenEdges.getValue() );
+  } else {
+    // Set the inverse color for open edges
+//    if ( prop == &ShapeColor ) {
+//      setOpenEdgeColorFrom(ShapeColor.getValue());
+//    } else if ( prop == &ShapeMaterial ) {
+//      setOpenEdgeColorFrom(ShapeMaterial.getValue().diffuseColor);
+//    }
+    ViewProviderFeature::onChanged(prop);
+  }
 }
 
 void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
@@ -99,7 +133,7 @@ void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
   // faces
   SoGroup* pcFlatRoot = new SoGroup();
   pcFlatRoot->addChild(flathints);
-  pcFlatRoot->addChild(pcSolidMaterial);
+  pcFlatRoot->addChild(pcShapeMaterial);
   pcFlatRoot->addChild(pcHighlight);
   addDisplayMode(pcFlatRoot, "Flat");
 
@@ -115,7 +149,7 @@ void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
   SoGroup* pcWireRoot = new SoGroup();
   pcWireRoot->addChild(pcLineStyle);
   pcWireRoot->addChild(pcLightModel);
-  pcWireRoot->addChild(pcSolidMaterial);
+  pcWireRoot->addChild(pcShapeMaterial);
   pcWireRoot->addChild(pcHighlight);
   addDisplayMode(pcWireRoot, "Wireframe");
 
@@ -124,8 +158,6 @@ void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
   pcFlatWireRoot->addChild(pcFlatRoot);
   pcFlatWireRoot->addChild(pcWireRoot);
   addDisplayMode(pcFlatWireRoot, "FlatWireframe");
-
-  setDisplayMode("Flat");
 }
 
 QPixmap ViewProviderMeshNode::getIcon() const
@@ -158,11 +190,11 @@ QPixmap ViewProviderMeshNode::getIcon() const
 
 void ViewProviderMeshNode::setMode(const char* ModeName)
 {
-  if ( strcmp("Flat",ModeName)==0 )
+  if ( strcmp("Shaded",ModeName)==0 )
     setDisplayMode("Flat");
-  else if ( strcmp("Point",ModeName)==0 )
+  else if ( strcmp("Points",ModeName)==0 )
     setDisplayMode("Point");
-  else if ( strcmp("FlatWire",ModeName)==0 )
+  else if ( strcmp("Shaded+Wireframe",ModeName)==0 )
     setDisplayMode("FlatWireframe");
   else if ( strcmp("Wireframe",ModeName)==0 )
     setDisplayMode("Wireframe");
@@ -170,16 +202,15 @@ void ViewProviderMeshNode::setMode(const char* ModeName)
   ViewProviderDocumentObject::setMode( ModeName );
 }
 
-std::vector<std::string> ViewProviderMeshNode::getModes(void)
+std::list<std::string> ViewProviderMeshNode::getModes(void) const
 {
-  // get the modes of the father
-  std::vector<std::string> StrList = ViewProviderDocumentObject::getModes();
+  std::list<std::string> StrList;
 
   // add your own modes
-  StrList.push_back("Flat");
+  StrList.push_back("Shaded");
   StrList.push_back("Wireframe");
-  StrList.push_back("Point");
-  StrList.push_back("FlatWire");
+  StrList.push_back("Shaded+Wireframe");
+  StrList.push_back("Points");
 
   return StrList;
 }

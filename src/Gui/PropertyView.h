@@ -86,7 +86,8 @@ private:
   void tearDown(void);
 
 
-  Gui::PropertyEditor::EditableListView * _pPropEditor;
+  Gui::PropertyEditor::EditableListView * _pPropEditorView;
+  Gui::PropertyEditor::EditableListView * _pPropEditorData;
 };
 
 } // namespace DockWnd

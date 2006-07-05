@@ -59,22 +59,23 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
   App::Material mat(App::Material::DEFAULT);
   ADD_PROPERTY(ShapeMaterial,(mat));
 
-  pcSolidMaterial = new SoMaterial;
-  pcSolidMaterial->ref();
-  pcLineMaterial   = new SoMaterial;
-  pcLineMaterial->ref();
-  pcPointMaterial  = new SoMaterial;
-  pcPointMaterial->ref();
+  pcShapeMaterial = new SoMaterial;
+  pcShapeMaterial->ref();
+  ShapeMaterial.touch();
+//  pcLineMaterial   = new SoMaterial;
+//  pcLineMaterial->ref();
+//  pcPointMaterial  = new SoMaterial;
+//  pcPointMaterial->ref();
 
-  pcLineStyle = new SoDrawStyle();
-  pcLineStyle->ref();
-  pcLineStyle->style = SoDrawStyle::LINES;
-  pcLineStyle->lineWidth = 1;
+//  pcLineStyle = new SoDrawStyle();
+//  pcLineStyle->ref();
+//  pcLineStyle->style = SoDrawStyle::LINES;
+//  pcLineStyle->lineWidth = 1;
 
-  pcPointStyle = new SoDrawStyle();
-  pcPointStyle->ref();
-  pcPointStyle->style = SoDrawStyle::POINTS;
-  pcPointStyle->pointSize = 1;
+//  pcPointStyle = new SoDrawStyle();
+//  pcPointStyle->ref();
+//  pcPointStyle->style = SoDrawStyle::POINTS;
+//  pcPointStyle->pointSize = 1;
 
   sPixmap = "Feature";
 
@@ -83,10 +84,11 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
 
 ViewProviderDocumentObject::~ViewProviderDocumentObject()
 {
-  pcSolidMaterial->unref();
-  pcLineMaterial->unref();
-  pcPointMaterial->unref();
-  pcLineStyle->unref();
+  pcShapeMaterial->unref();
+//  pcLineMaterial->unref();
+//  pcPointMaterial->unref();
+//  pcLineStyle->unref();
+//  pcPointStyle->unref();
 }
 
 void ViewProviderDocumentObject::onChanged(const App::Property* prop)
@@ -96,13 +98,13 @@ void ViewProviderDocumentObject::onChanged(const App::Property* prop)
   // consistent of all these properties.
   if ( prop == &ShapeColor ) {
     const App::Color& c = ShapeColor.getValue();
-    pcSolidMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+    pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
     ShapeMaterial.enableNotify(false);
     ShapeMaterial.setDiffuseColor(c);
     ShapeMaterial.enableNotify(true);
   } else if ( prop == &Transparency ) {
     float trans = Transparency.getValue()/100.0f;
-    pcSolidMaterial->transparency = trans;
+    pcShapeMaterial->transparency = trans;
     ShapeMaterial.enableNotify(false);
     ShapeMaterial.setTransparency(trans);
     ShapeMaterial.enableNotify(true);
@@ -114,44 +116,63 @@ void ViewProviderDocumentObject::onChanged(const App::Property* prop)
     ShapeColor.enableNotify(false);
     ShapeColor.setValue(Mat.diffuseColor);
     ShapeColor.enableNotify(true);
-    pcSolidMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
-    pcSolidMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
-    pcSolidMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
-    pcSolidMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
-    pcSolidMaterial->shininess.setValue(Mat.shininess);
-    pcSolidMaterial->transparency.setValue(Mat.transparency);
+    pcShapeMaterial->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
+    pcShapeMaterial->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
+    pcShapeMaterial->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
+    pcShapeMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
+    pcShapeMaterial->shininess.setValue(Mat.shininess);
+    pcShapeMaterial->transparency.setValue(Mat.transparency);
   } else if ( prop == &Display ) {
-    setMode( Display.getValues().front().c_str() );
+    setActiveMode();
   } else if ( prop == &Visibility ) {
     Visibility.getValue() ? show() : hide();
   }
 }
 
-
-void ViewProviderDocumentObject::attach(App::DocumentObject *pcFeat)
+void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
 {
   // save Object pointer
-  pcObject = pcFeat;
+  pcObject = pcObj;
 
   // copy the material properties of the Object
-  setMatFromObject();
+//  setMatFromObject();
 
   // set viewing mode
   //setMode(pcObject->getShowMode());
-  const std::vector<std::string>& modes = Display.getValues();
-  if ( modes.size() > 0 )
-    setMode(modes.front().c_str());
-  else
-    setMode("Flat");
-  if ( !pcObject->visibility.getValue() )
-    ViewProvider::hide();
+
+  // Retrieve the supported display modes of the view provider
+  std::list<std::string> modes = getModes();
+
+  // In the 'Display' property the first item is duplicated and always specifies the active mode. 
+  if ( modes.size() > 0 ) {
+    // Has getModes() already defined the active mode?
+    std::list<std::string>::iterator sp = modes.begin();
+    std::list<std::string>::iterator it = std::find(++sp, modes.end(), modes.front());
+    if ( it == modes.end() )
+      modes.push_front(modes.front());
+    Display.enableNotify(false);
+    Display.setValue(modes);
+    Display.enableNotify(true);
+  } else {
+    // default
+    Display.enableNotify(false);
+    Display.setValue(modes); // empty mode list
+    Display.enableNotify(true);
+  }
 
 
   calcMaterial = pcObject->getTouchViewTime();
   calcData = pcObject->getTouchTime();
-
 }
 
+void ViewProviderDocumentObject::setActiveMode()
+{
+  const std::vector<std::string>& modes = Display.getValues();
+  if ( !modes.empty() )
+    setMode(modes.front().c_str());
+  if ( !Visibility.getValue() )
+    ViewProvider::hide();
+}
 
 QListViewItem* ViewProviderDocumentObject::getTreeItem(QListViewItem* parent)
 {
@@ -274,25 +295,6 @@ bool ViewProviderDocumentObject::testStatus(void)
   return true;
 }
 
-void ViewProviderDocumentObject::hide(void)
-{
-  ViewProvider::hide();
-  if ( pcObject )
-    pcObject->visibility.setValue(false);
-}
-
-void ViewProviderDocumentObject::show(void)
-{
-  ViewProvider::show();
-  if ( pcObject )
-    pcObject->visibility.setValue(true);
-}
-
-bool ViewProviderDocumentObject::isShow(void)
-{
-  return (pcObject ? pcObject->visibility.getValue() : false);
-}
-
 bool ViewProviderDocumentObject::ifDataNewer(void)
 {
   // first do attach
@@ -320,61 +322,59 @@ void ViewProviderDocumentObject::update(void)
 
   if(ifMaterialNewer())
   {
-    setMatFromObject();
-    setMode(pcObject->getShowMode());
-
+//    setMatFromObject();
     calcMaterial.setToActual();
   }
 
 }
 
 
-std::vector<std::string> ViewProviderDocumentObject::getModes(void)
+std::list<std::string> ViewProviderDocumentObject::getModes(void) const
 {
   // empty
-  return std::vector<std::string>();
+  return std::list<std::string>();
 }
 
 
-void ViewProviderDocumentObject::copy(const App::Material &Mat, SoMaterial* pcSoMat)
-{
-  pcSoMat->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
-  pcSoMat->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
-  pcSoMat->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
-  pcSoMat->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
-  pcSoMat->shininess.setValue(Mat.shininess);
-  pcSoMat->transparency.setValue(Mat.transparency);
+//void ViewProviderDocumentObject::copy(const App::Material &Mat, SoMaterial* pcSoMat)
+//{
+//  pcSoMat->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
+//  pcSoMat->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
+//  pcSoMat->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
+//  pcSoMat->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
+//  pcSoMat->shininess.setValue(Mat.shininess);
+//  pcSoMat->transparency.setValue(Mat.transparency);
+//
+//}
 
-}
+//void ViewProviderDocumentObject::setMatFromObject(void)
+//{
+//  copy(pcObject->getSolidMaterial(),pcShapeMaterial);
+//  copy(pcObject->getLineMaterial(),pcLineMaterial);
+//  copy(pcObject->getPointMaterial(),pcPointMaterial);
+//  pcLineStyle->lineWidth  = pcObject->getLineSize();
+//  pcPointStyle->pointSize = pcObject->getPointSize();
+//
+//  // touch the material time
+//  calcMaterial.setToActual();
+//}
 
-void ViewProviderDocumentObject::setMatFromObject(void)
-{
-  copy(pcObject->getSolidMaterial(),pcSolidMaterial);
-  copy(pcObject->getLineMaterial(),pcLineMaterial);
-  copy(pcObject->getPointMaterial(),pcPointMaterial);
-  pcLineStyle->lineWidth  = pcObject->getLineSize();
-  pcPointStyle->pointSize = pcObject->getPointSize();
+//void ViewProviderDocumentObject::setTransparency(float trans)
+//{
+//  pcShapeMaterial->transparency = trans;
+//}
 
-  // touch the material time
-  calcMaterial.setToActual();
-}
+//void ViewProviderDocumentObject::setColor(const App::Color &c)
+//{
+//  pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
+//}
 
-void ViewProviderDocumentObject::setTransparency(float trans)
-{
-  pcSolidMaterial->transparency = trans;
-}
+//void ViewProviderDocumentObject::setPointSize(float val)
+//{
+//  pcPointStyle->pointSize.setValue( val );
+//}
 
-void ViewProviderDocumentObject::setColor(const App::Color &c)
-{
-  pcSolidMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-}
-
-void ViewProviderDocumentObject::setPointSize(float val)
-{
-  pcPointStyle->pointSize.setValue( val );
-}
-
-void ViewProviderDocumentObject::setLineWidth(float val)
-{
-  pcLineStyle->lineWidth.setValue( val );
-}
+//void ViewProviderDocumentObject::setLineWidth(float val)
+//{
+//  pcLineStyle->lineWidth.setValue( val );
+//}

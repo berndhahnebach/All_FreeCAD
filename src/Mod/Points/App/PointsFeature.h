@@ -81,15 +81,6 @@ public:
   void setPoints(const PointsWithProperty&);
   //@}
 
-  /// set line size
-  virtual void setTransparency(float trans) {_pointMaterial.transparency = trans;}
-  /// get line Size
-  virtual float getTransparency(void) const {return _pointMaterial.transparency;}
-  /// set color
-  virtual void setColor(const App::Color &c) {_pointMaterial.diffuseColor = c;}
-  /// get color
-  virtual const App::Color &getColor(void) const {return _pointMaterial.diffuseColor;}
-
   // handling the PointsPy object
   virtual Base::PyObjectBase *Feature::GetPyObject(void);
 

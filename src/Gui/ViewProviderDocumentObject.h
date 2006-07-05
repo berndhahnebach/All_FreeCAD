@@ -56,6 +56,12 @@ public:
   /// destructor.
   virtual ~ViewProviderDocumentObject();
 
+  /*
+   * Note: Due to the redesign using display properties in this class directly instead of DocumentObject several
+   * methods can be removed, such as copy(), setMatFromObject(), setTransparency(), setColor(), setPointSize() and
+   * setLineWidth()
+   */
+
   // Display properties
   App::PropertyColor ShapeColor;
   App::PropertyStringList Display;
@@ -67,8 +73,10 @@ public:
   virtual QListViewItem* getTreeItem(QListViewItem* parent);
 
   virtual void attach(App::DocumentObject *pcObject);
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void);
+  /// returns a list of all possible modes
+  virtual std::list<std::string> getModes(void) const;
+  /// Sets the active mode, i.e. the first item of the 'Display' property.
+  void setActiveMode();
 
   /// check if the Data has to be recalculated
   bool ifDataNewer(void);
@@ -86,37 +94,34 @@ public:
   
 
   /// helper to copy material from a feature to a SoMeterial Node
-  void copy(const App::Material&, SoMaterial*);
+//  void copy(const App::Material&, SoMaterial*);
   /// helper to set the materials
-  void setMatFromObject(void);
+//  void setMatFromObject(void);
 
   /// Set the transparency
-  virtual void setTransparency(float);
+//  virtual void setTransparency(float);
   /// Set the color
-  virtual void setColor(const App::Color &c);
+//  virtual void setColor(const App::Color &c);
   /// Set the point size
-  virtual void setPointSize(float);
+//  virtual void setPointSize(float);
   /// Set the line width
-  virtual void setLineWidth(float);
+//  virtual void setLineWidth(float);
 
-    /// freqently called by the framework to check status changes in the data
+  /// freqently called by the framework to check status changes in the data
   virtual bool testStatus(void);
-  virtual void hide(void);
-  virtual void show(void);
-  virtual bool isShow(void);
 
   App::DocumentObject *getObject(void){return pcObject;}
 
 protected:
-  /// get called by the container whenever a proptery has been changed
+  /// get called by the container whenever a property has been changed
   virtual void onChanged(const App::Property* prop);
 
 protected:
-  SoMaterial  *pcSolidMaterial;
-  SoMaterial  *pcLineMaterial;
-  SoMaterial  *pcPointMaterial;
-  SoDrawStyle *pcLineStyle;
-  SoDrawStyle *pcPointStyle;
+  SoMaterial  *pcShapeMaterial;
+//  SoMaterial  *pcLineMaterial;
+//  SoMaterial  *pcPointMaterial;
+//  SoDrawStyle *pcLineStyle;
+//  SoDrawStyle *pcPointStyle;
 
   App::DocumentObject *pcObject;
 

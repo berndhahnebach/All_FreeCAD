@@ -121,7 +121,7 @@ public:
   /** @name Parser handling */
 	//@{
   /// read the next element
-  void read(void);
+  bool read(void);
   /// get the local name of the current Element
   const char* localName(void);
   /// reads until it findes a start element (<name>) or start-end element (<name/>) (with special name if given)

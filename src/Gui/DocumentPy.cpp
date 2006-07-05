@@ -36,6 +36,7 @@
 #include <Base/Exception.h>
 #include <Base/Matrix.h>
 #include <App/MatrixPy.h>
+#include <App/DocumentObject.h>
 #include "Application.h"
 #include "ViewProviderExtern.h"
 
@@ -51,7 +52,7 @@ using namespace Gui;
 PyTypeObject DocumentPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"GuiDocument",				/*tp_name*/
+	"Gui.Document",				/*tp_name*/
 	sizeof(DocumentPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
@@ -110,6 +111,8 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(setPos)
   PYMETHODEDEF(addAnnotation)
   PYMETHODEDEF(update)
+  PYMETHODEDEF(activeObject)
+  PYMETHODEDEF(getObject)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -255,4 +258,38 @@ PYFUNCIMP_D(DocumentPy,update)
 
   }PY_CATCH;
 } 
+
+PYFUNCIMP_D(DocumentPy,activeObject)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+
+  PY_TRY {
+    App::DocumentObject *pcFtr = _pcDoc->getDocument()->getActiveObject();
+    if(pcFtr) {
+      ViewProvider *pcView = _pcDoc->getViewProvider(pcFtr);
+	    return pcView->getPyObject();
+    } else {
+		  Py_Error(PyExc_Exception,"No active Object");
+    }
+  } PY_CATCH;
+}
+
+PYFUNCIMP_D(DocumentPy,getObject)
+{
+	char *sName;
+  if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  PY_TRY {
+    ViewProvider *pcView = _pcDoc->getViewProviderByName(sName);
+	  if(pcView)
+		  return pcView->getPyObject();
+	  else
+    {
+      Py_Return;
+    }
+  } PY_CATCH;
+} 
+
 

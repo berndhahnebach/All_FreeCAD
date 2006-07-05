@@ -80,13 +80,12 @@ void ViewProviderExtern::setModeByFile(const char* name, const char* ivFileName)
   }
 }
 
-
 void ViewProviderExtern::setModeBySoInput(const char* name, SoInput &ivFileInput)
 {
   SoSeparator * root = SoDB::readAll(&ivFileInput);
   if (root) {
 
-    vector<string>::iterator pos = std::find<vector<string>::iterator,string>(modes.begin(),modes.end(),string(name));
+    std::list<string>::iterator pos = std::find<list<string>::iterator,string>(modes.begin(),modes.end(),string(name));
 
     if(pos == modes.end())
     { // new mode
@@ -126,27 +125,7 @@ void ViewProviderExtern::adjustRecursiveDocumentName(SoNode* child, const char* 
   }
 }
 
-std::vector<std::string> ViewProviderExtern::getModes(void)
+std::list<std::string> ViewProviderExtern::getModes(void) const
 {
-  // empty
   return modes;
 }
-
-void ViewProviderExtern::setTransparency(float trans)
-{
-
-}
-
-void ViewProviderExtern::setColor(const App::Color &c)
-{
-  
-}
-
-void ViewProviderExtern::setPointSize(float)
-{
-}
-
-void ViewProviderExtern::setLineWidth(float)
-{
-}
-
