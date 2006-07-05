@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Jürgen Riegel <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -61,6 +61,8 @@ public:
   ViewProviderPoints();
   virtual ~ViewProviderPoints();
 
+  App::PropertyFloat PointSize;
+
   /** 
    * Extracts the point data from the feature \a pcFeature and creates
    * an Inventor node \a SoNode with these data. 
@@ -68,18 +70,14 @@ public:
   virtual void attach(App::DocumentObject *);
   /// set the viewing mode
   virtual void setMode(const char* ModeName);
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void);
+  /// returns a list of all possible modes
+  virtual std::list<std::string> getModes(void) const;
   /// Update the point representation
   virtual void updateData();
   virtual QPixmap getIcon() const;
 
-  /// Set the transparency
-  virtual void setTransparency(float);
-  /// Set the color
-  virtual void setColor(const App::Color &c);
-
 protected:
+  void onChanged(const App::Property* prop);
   void createPoints(Points::Feature *pcFeature);
   void setVertexColorMode(App::PropertyColorList*);
   void setVertexGreyvalueMode(Points::PropertyGreyValueList*);
@@ -90,9 +88,7 @@ protected:
   SoPointSet        *pcPoints;
   SoMaterial        *pcColorMat;
   SoNormal          *pcPointsNormal;
-
-private:
-  std::string modeString;
+  SoDrawStyle       *pcPointStyle;
 };
 
 } // namespace PointsGui

@@ -45,17 +45,27 @@ public:
   /// destructor
   virtual ~ViewProviderPart();
 
+  // Display properties
+  App::PropertyFloat LineWidth;
+  App::PropertyFloat PointSize;
+  App::PropertyColor LineColor;
+  App::PropertyColor PointColor;
+  App::PropertyMaterial LineMaterial;
+  App::PropertyMaterial PointMaterial;
+
 
   virtual void attach(App::DocumentObject *);
   virtual void setMode(const char* ModeName);
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void);
+  /// returns a list of all possible modes
+  virtual std::list<std::string> getModes(void) const;
   /// Update the Part representation
   //virtual void update(const ChangeType&);
 
   virtual void updateData(void);
 
 protected:
+  /// get called by the container whenever a property has been changed
+  virtual void onChanged(const App::Property* prop);
   Standard_Boolean computeFaces   (SoSeparator* root, const TopoDS_Shape &myShape);
   Standard_Boolean computeEdges   (SoSeparator* root, const TopoDS_Shape &myShape);
   Standard_Boolean computeVertices(SoSeparator* root, const TopoDS_Shape &myShape);
@@ -66,6 +76,10 @@ protected:
   SoSeparator *EdgeRoot;
   SoSeparator *FaceRoot;
   SoSeparator *VertexRoot;
+  SoMaterial  *pcLineMaterial;
+  SoMaterial  *pcPointMaterial;
+  SoDrawStyle *pcLineStyle;
+  SoDrawStyle *pcPointStyle;
 
 
   // settings stuff

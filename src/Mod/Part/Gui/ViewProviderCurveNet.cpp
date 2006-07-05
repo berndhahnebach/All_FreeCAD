@@ -69,6 +69,8 @@ PROPERTY_SOURCE(PartGui::ViewProviderCurveNet,PartGui::ViewProviderPart)
 ViewProviderCurveNet::ViewProviderCurveNet()
 :bInEdit(false),bMovePointMode(false)
 {
+  LineWidth.setValue(4.0f);
+  PointSize.setValue(0.05f);
   /*
   hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Part");
 
@@ -87,9 +89,6 @@ ViewProviderCurveNet::~ViewProviderCurveNet()
 void ViewProviderCurveNet::attach(App::DocumentObject *pcFeat)
 {
   pcObject = pcFeat;
-
-  // copy the material properties of the feature
-  setMatFromObject();
 
   if ( getAsFeature()->getStatus() ==  App::AbstractFeature::Error )
     return; // feature is invalid

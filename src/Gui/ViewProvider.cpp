@@ -34,6 +34,7 @@
 #include <Base/Matrix.h>
 
 #include "ViewProvider.h"
+#include "ViewProviderPy.h"
 #include "BitmapFactory.h"
 #include "Tree.h"
 
@@ -56,7 +57,7 @@ PROPERTY_SOURCE_ABSTRACT(Gui::ViewProvider, App::PropertyContainer)
 
 
        
-ViewProvider::ViewProvider() : _iActualMode(0)
+ViewProvider::ViewProvider() : _iActualMode(-1), _pyObject(0)
 {
   pcRoot = new SoSeparator();
   pcRoot->ref();
@@ -67,12 +68,18 @@ ViewProvider::ViewProvider() : _iActualMode(0)
   pcRoot->addChild(pcTransform);
   pcRoot->addChild(pcModeSwitch);
   sPixmap = "px";
-  pcModeSwitch->whichChild = -1;
+  pcModeSwitch->whichChild = _iActualMode;
 }
 
 
 ViewProvider::~ViewProvider()
 {
+  if (_pyObject)
+  {
+    _pyObject->setInvalid();
+    _pyObject->DecRef();
+  }
+
   pcRoot->unref();
   pcTransform->unref();
   pcModeSwitch->unref();
@@ -114,6 +121,7 @@ void ViewProvider::setDisplayMode( const char* type )
     pcModeSwitch->whichChild = it->second;
   else
     pcModeSwitch->whichChild = -1;
+  _iActualMode = pcModeSwitch->whichChild.getValue();
 }
 
 std::vector<std::string> ViewProvider::getDisplayModes() const
@@ -153,8 +161,6 @@ std::string ViewProvider::getModeName(void) const
 
 void ViewProvider::hide(void)
 {
-  if(pcModeSwitch->whichChild.getValue() != -1)
-    _iActualMode = pcModeSwitch->whichChild.getValue();
   pcModeSwitch->whichChild = -1;
 }
 
@@ -169,4 +175,11 @@ bool ViewProvider::isShow(void)
 
 }
 
+PyObject* ViewProvider::getPyObject()
+{
+  if (!_pyObject)
+    _pyObject = new ViewProviderPy(this);
+  _pyObject->IncRef();
+  return _pyObject;
+}
 

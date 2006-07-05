@@ -73,8 +73,10 @@ ViewProviderMeshTransformDemolding::~ViewProviderMeshTransformDemolding()
 
 void ViewProviderMeshTransformDemolding::attach(App::DocumentObject *pcFeat)
 {
-  SoGroup* pcDemoldRoot = new SoGroup();
+  // creats the satandard viewing modes
+  ViewProviderMesh::attach(pcFeat);
 
+  SoGroup* pcDemoldRoot = new SoGroup();
 
   SoDrawStyle *pcFlatStyle = new SoDrawStyle();
   pcFlatStyle->style = SoDrawStyle::FILLED;
@@ -115,9 +117,6 @@ void ViewProviderMeshTransformDemolding::attach(App::DocumentObject *pcFeat)
 
   // adding to the switch
   addDisplayMode(pcDemoldRoot, "Demold");
-
-  // creats the satandard viewing modes
-  ViewProviderMesh::attach(pcFeat);
 
   calcNormalVector();
   calcMaterialIndex(SbRotation());
@@ -210,9 +209,9 @@ void ViewProviderMeshTransformDemolding::setMode(const char* ModeName)
   ViewProviderMesh::setMode(ModeName);
 }
 
-std::vector<std::string> ViewProviderMeshTransformDemolding::getModes(void)
+std::list<std::string> ViewProviderMeshTransformDemolding::getModes(void) const
 {
-  std::vector<std::string> StrList = ViewProviderMesh::getModes();
-  StrList.push_back("Demold");
+  std::list<std::string> StrList = ViewProviderMesh::getModes();
+  StrList.push_front("Demold");
   return StrList;
 }

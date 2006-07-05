@@ -51,6 +51,7 @@ namespace App {
 namespace Gui {
 
 class View3DInventorViewer;
+class ViewProviderPy;
 
 
 
@@ -85,6 +86,8 @@ public:
     */
   virtual void update(void)=0;
 
+  PyObject* getPyObject();
+
 protected:
 	/** @name Display modes
    * Mainly controls a SoSwitch which selects the display modes.
@@ -109,8 +112,8 @@ public:
   virtual void setMode(const char* ModeName);
   /// get the viewing mode name
   std::string getModeName(void) const;
-  /// returns a vector of all possible modes
-  virtual std::vector<std::string> getModes(void)=0;
+  /// returns a list of all possible modes
+  virtual std::list<std::string> getModes(void) const=0;
 
   virtual void setEdit(void){};
   virtual void unsetEdit(void){};
@@ -130,13 +133,13 @@ public:
     */
   //@{
   /// Set the transparency
-  virtual void setTransparency(float)=0;
+//  virtual void setTransparency(float)=0;
   /// Set the color
-  virtual void setColor(const App::Color &c)=0;
+//  virtual void setColor(const App::Color &c)=0;
   /// Set the point size
-  virtual void setPointSize(float)=0;
+//  virtual void setPointSize(float)=0;
   /// Set the line width
-  virtual void setLineWidth(float)=0;
+//  virtual void setLineWidth(float)=0;
 
   /// set the viewing transformation of the provider
   virtual void setTransformation(const Base::Matrix4D &rcMatrix);
@@ -168,6 +171,7 @@ private:
   int _iActualMode;
   std::string _sCurrentMode;
   std::map<std::string, int> _sDisplayModes;
+  ViewProviderPy* _pyObject;
 };
 
 } // namespace Gui

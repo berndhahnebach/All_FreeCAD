@@ -38,21 +38,11 @@ PROPERTY_SOURCE(Part::CurveNet, Part::Feature)
 
 CurveNet::CurveNet()
 {
-  _lineMaterial.ambientColor.set(0.2f,0.8f,0.2f);
-  _lineMaterial.diffuseColor.set(0.1f,0.8f,0.1f);
-  _lineMaterial.specularColor.set(0.0f,0.0f,0.0f);
-  _lineMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
-  _lineMaterial.shininess = 0.0f;
-  _lineMaterial.transparency = 0.0f;
-  _lineSize = 4.0f;
-
-  _pointMaterial.ambientColor.set(0.9f,0.9f,0.9f);
-  _pointMaterial.diffuseColor.set(0.8f,0.8f,0.8f);;
-  _pointMaterial.specularColor.set(0.0f,0.0f,0.0f);
-  _pointMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
-  _pointMaterial.shininess = 0.3f;
-  _pointSize = 0.05f;
-  showMode.setValue("Flat");
+//  _pointMaterial.ambientColor.set(0.9f,0.9f,0.9f);
+//  _pointMaterial.diffuseColor.set(0.8f,0.8f,0.8f);;
+//  _pointMaterial.specularColor.set(0.0f,0.0f,0.0f);
+//  _pointMaterial.emissiveColor.set(0.0f,0.0f,0.0f);
+//  _pointMaterial.shininess = 0.3f;
 
   ADD_PROPERTY(FileName,(""));
 }

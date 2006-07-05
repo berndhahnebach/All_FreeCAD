@@ -251,20 +251,24 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent,  const char* 
     pointSizeSpin->setDisabled(true);
     textLabel2->setDisabled(true);
   } else {
+    pointSizeSpin->blockSignals(true);
     pointSizeSpin->setMaxValue(pointSizeRange[1]);
     pointSizeSpin->setMinValue(pointSizeRange[0]);
     pointSizeSpin->setLineStep(fPointSizeGranularity);
     pointSizeSpin->setValue(pointsize);
+    pointSizeSpin->blockSignals(false);
   }
 
   if ( !bLineWidth ) {
     lineWidthSpin->setDisabled(true);
     textLabel3->setDisabled(true);
   } else {
+    lineWidthSpin->blockSignals(true);
     lineWidthSpin->setMaxValue(lineWidthRange[1]);
     lineWidthSpin->setMinValue(lineWidthRange[0]);
     lineWidthSpin->setLineStep(fLineWidthGranularity);
     lineWidthSpin->setValue(linewidth);
+    lineWidthSpin->blockSignals(false);
   }
 
   if ( bShapeMaterial )

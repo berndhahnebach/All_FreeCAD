@@ -29,6 +29,7 @@
 //#include "PyExport.h"
 
 #include <Base/Persistance.h>
+#include <string>
 
 
 
@@ -87,6 +88,8 @@ public:
   virtual Property *Copy(void) const;
   /// paste the value from the property (mainly for Undo/Redo and transactions)
   virtual void Paste(const Property &from);
+  /// Encodes an attribute upon saving.
+  std::string encodeAttribute(const std::string&) const;
 
 
   friend class PropertyContainer;

@@ -55,7 +55,12 @@ DlgProjectInformationImp::DlgProjectInformationImp( App::Document* doc, QWidget*
   lineEditLastMod->setText( doc->LastModifiedBy.getValue() );
   lineEditLastModDate->setText( doc->LastModifiedDate.getValue() );
   lineEditCompany->setText( doc->Company.getValue() );
-  textEditComment->setText( doc->Comment.getValue() );
+
+  // When saving the text to XML the newlines get lost. So we store also the newlines as '\n'.
+  // See also accept().
+  QStringList lines = QStringList::split( "\\n", doc->Comment.getValue(), true );
+  QString text = lines.join("\n");
+  textEditComment->setText( text );
 }
 
 /**
@@ -74,7 +79,11 @@ void DlgProjectInformationImp::accept()
   _doc->CreatedBy.setValue( lineEditCreator->text().latin1() );
   _doc->LastModifiedBy.setValue( lineEditCreator->text().latin1() );
   _doc->Company.setValue( lineEditCompany->text().latin1() );
-  _doc->Comment.setValue( textEditComment->text().latin1() );
+
+  // Replace newline escape sequence trough '\\n' string
+  QStringList lines = QStringList::split("\n", textEditComment->text(), true );
+  QString text = lines.join("\\n");
+  _doc->Comment.setValue( text.isEmpty() ? "" : text.latin1() );
   
   DlgProjectInformation::accept();
 }

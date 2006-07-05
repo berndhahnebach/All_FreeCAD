@@ -51,7 +51,7 @@ public:
   /// destructor
   virtual ~ViewProviderBox();
 
-
+  std::list<std::string> getModes(void) const;
   virtual void setEdit(void);
   virtual void unsetEdit(void);
 

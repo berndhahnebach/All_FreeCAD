@@ -157,7 +157,7 @@ bool Base::XMLReader::hasAttribute (const char* AttrName)
 
 
 
-void Base::XMLReader::read(void)
+bool Base::XMLReader::read(void)
 {
   ReadType = None;
 
@@ -170,31 +170,37 @@ void Base::XMLReader::read(void)
       cout << "Exception message is: \n"
            << message << "\n";
       XMLString::release(&message);
+      return false;
   }
   catch (const SAXParseException& toCatch) {
       char* message = XMLString::transcode(toCatch.getMessage());
       cout << "Exception message is: \n"
            << message << "\n";
       XMLString::release(&message);
+      return false;
   }
   catch (...) {
       cout << "Unexpected Exception \n" ;
+      return false;
   }
 
+  return true;
 }
 
 void Base::XMLReader::readElement(const char* ElementName)
 {
-  read();
-  while( (ReadType != StartElement && ReadType != StartEndElement) || (ElementName && LocalName != ElementName))
-    read();
+  bool ok;
+  do {
+    ok = read(); if (!ok) break;
+  } while( (ReadType != StartElement && ReadType != StartEndElement) || (ElementName && LocalName != ElementName));
 }
 
 void Base::XMLReader::readEndElement(const char* ElementName)
 {
-  read();
-  while(ReadType != EndElement || (ElementName && LocalName != ElementName))
-    read();
+  bool ok;
+  do {
+    ok = read(); if (!ok) break;
+  } while(ReadType != EndElement || (ElementName && LocalName != ElementName));
 }
 
 void Base::XMLReader::readCharacters(void)

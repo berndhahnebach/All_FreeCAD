@@ -29,6 +29,7 @@
 #include <Base/Exception.h>
 #include <Base/Console.h>
 #include <App/Property.h>
+#include <App/PropertyStandard.h>
 
 #include "ViewProviderPy.h"
 #include "ViewProvider.h"
@@ -127,9 +128,6 @@ ViewProviderPy::~ViewProviderPy()
 void ViewProviderPy::setInvalid()
 {
   PyObjectBase::setInvalid();
-//  if(solidMaterialPy) solidMaterialPy->setInvalid();
-//  if(lineMaterialPy) lineMaterialPy->setInvalid();
-//  if(pointMaterialPy) pointMaterialPy->setInvalid();
 }
 
 //--------------------------------------------------------------------------
@@ -138,8 +136,7 @@ void ViewProviderPy::setInvalid()
 PyObject *ViewProviderPy::_repr(void)
 {
   std::stringstream a;
-  a << "ViewProvider: [ ";
-  a << "]" << std::endl;
+  a << _pcViewProvider->getTypeId().getName() << std::endl;
 	return Py_BuildValue("s", a.str().c_str());
 }
 
@@ -176,10 +173,25 @@ PyObject *ViewProviderPy::_getattr(char *attr)				// __getattr__ function: note 
 } 
 
 int ViewProviderPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
+{
    // search in PropertyList
   App::Property *prop = _pcViewProvider->getPropertyByName(attr);
   if(prop){
+    // Do not allow to change the list of display modes except of the active one
+    if ( strcmp(attr, "Display") == 0 ) {
+      App::PropertyStringList p;
+      p.setPyObject(value);
+      std::vector<std::string> modeNew = p.getValues();
+      // Check wether the specified modes are supported
+      std::list<std::string> modeOld = _pcViewProvider->getModes();
+      for ( std::vector<std::string>::iterator it = modeNew.begin(); it != modeNew.end(); ++it ) {
+        if ( std::find(modeOld.begin(), modeOld.end(), *it) == modeOld.end() ) {
+          PyErr_Format(PyExc_ValueError, "ViewProvider '%s' does not support the mode '%s'", _pcViewProvider->getTypeId().getName(), it->c_str());
+          return -1;
+        }
+      }
+    }
+
     prop->setPyObject(value);
   }else{
 		return PyObjectBase::_setattr(attr, value); 						

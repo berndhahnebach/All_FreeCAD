@@ -169,11 +169,11 @@ void Application::open(const char* FileName)
     try{
       // load the file with the module
       Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
-//      // ViewFit
-//      if ( sendHasMsgToActiveView("ViewFit") )
-//        Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
       if ( activeDocument() )
         activeDocument()->setModified(false);
+      // ViewFit
+      if ( !File.hasExtension("FCStd") && sendHasMsgToActiveView("ViewFit") )
+          Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
       // the original file name is required
       getMainWindow()->appendRecentFile( File.filePath().c_str() );
     } catch (const Base::PyException& e){
@@ -210,7 +210,6 @@ void Application::import(const char* FileName, const char* DocName)
       if ( File.hasExtension("FCStd") )
       {
         Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
-        //Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
         if ( activeDocument() )
           activeDocument()->setModified(false);
       }

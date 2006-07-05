@@ -49,10 +49,16 @@ class GuiMeshExport ViewProviderMeshNode : public Gui::ViewProviderFeature
 public:
   ViewProviderMeshNode();
   virtual ~ViewProviderMeshNode();
+  
+  // Display properties
+  App::PropertyFloat LineWidth;
+  App::PropertyFloat PointSize;
+  App::PropertyBool OpenEdges;
+
   void attach(App::DocumentObject *pcFeat);
   virtual QPixmap getIcon() const;
   virtual void setMode(const char* ModeName);
-  virtual std::vector<std::string> getModes();
+  virtual std::list<std::string> getModes() const;
 
   /** @name Polygon picking */
 	//@{
@@ -65,6 +71,14 @@ public:
   /// Returns the edit mode
   const char* getEditModeName(void);
 	//@}
+
+protected:
+  /// get called by the container whenever a proptery has been changed
+  void onChanged(const App::Property* prop);
+
+  SoDrawStyle *pcLineStyle;
+  SoDrawStyle *pcPointStyle;
+
 
 private:
   bool createPolygonMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& ) const;

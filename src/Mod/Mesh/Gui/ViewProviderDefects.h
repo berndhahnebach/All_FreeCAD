@@ -43,13 +43,20 @@ public:
   ViewProviderMeshDefects();
   virtual ~ViewProviderMeshDefects();
 
+  // Display properties
+  App::PropertyFloat LineWidth;
+
   // Build up the initial Inventor node
   virtual void attach(App::DocumentObject* pcFeature) = 0;
   /// Fill up the Inventor node with data
   virtual void showDefects() = 0;
 
 protected:
+  /// get called by the container whenever a proptery has been changed
+  void onChanged(const App::Property* prop);
+
   SoCoordinate3 * pcCoords;
+  SoDrawStyle   * pcLineStyle;
 };
 
 /** The ViewProviderMeshOrientation class displays wrong oriented facets in orange. 

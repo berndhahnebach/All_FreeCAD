@@ -46,8 +46,6 @@ PROPERTY_SOURCE(Points::Feature, App::AbstractFeature)
 
 Feature::Feature() : _featurePy(0)
 {
-  // set default display mode
-  showMode.setValue("Point");
 }
 
 Feature::~Feature()

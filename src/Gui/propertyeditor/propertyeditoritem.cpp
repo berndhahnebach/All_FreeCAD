@@ -73,7 +73,7 @@ TYPESYSTEM_SOURCE_ABSTRACT(Gui::PropertyEditor::EditableItem, Base::BaseClass);
 QListView* EditableItem::parentView = 0;
 
 EditableItem::EditableItem()
-    : QListViewItem( parentView ), _val(0), _newval(0), _modified(false), _readonly(false), _col(1), _editor(0)
+    : QListViewItem( parentView, parentView->lastItem() ), _val(0), _newval(0), _modified(false), _readonly(false), _col(1), _editor(0)
 {
   _apply = new QPushButton(listView()->viewport());
   _apply->setPixmap( applyproperty_xpm );

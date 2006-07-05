@@ -139,3 +139,6 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + start moving display relevant properties from DocumentObject (data) classes to the associated ViewProvider (view) classes
 + reimplemented dialogs DlgDisplayPropertiesImp and DlgMaterialPropertiesImp
 + added ViewProvider class for Python 
++ separate data and view properties and show in different tabs in the editor
++ new methods added to Gui::DocumentPy to get active object and object by name
++ add only required Inventor nodes to all ViewProvider subclasses and removed from ViewProviderDocumentObject

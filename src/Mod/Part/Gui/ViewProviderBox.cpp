@@ -59,6 +59,20 @@ ViewProviderBox::~ViewProviderBox()
 
 // **********************************************************************************
 
+std::list<std::string> ViewProviderBox::getModes(void) const
+{
+  // get the modes of the father
+  list<string> StrList;
+
+  // add your own modes
+  StrList.push_back("Normal");
+  StrList.push_back("Flat");
+  StrList.push_back("Wireframe");
+  StrList.push_back("Points");
+
+  return StrList;
+}
+
 
 void ViewProviderBox::setEdit(void)
 {

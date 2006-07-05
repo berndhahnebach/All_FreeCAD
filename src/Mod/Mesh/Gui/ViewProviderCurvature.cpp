@@ -155,6 +155,8 @@ void ViewProviderMeshCurvature::init(App::DocumentObject *pcFeat)
 
 void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
 {
+  // creats the satandard viewing modes
+  ViewProviderMesh::attach(pcFeat);
   init( pcFeat ); // init color bar
 
   SoShapeHints * flathints = new SoShapeHints;
@@ -176,9 +178,6 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
   pcColorShadedRoot->addChild(pcHighlight);
 
   addDisplayMode(pcColorShadedRoot, "ColorShaded");
-
-  // creats the satandard viewing modes
-  ViewProviderMesh::attach(pcFeat);
 }
 
 void ViewProviderMeshCurvature::updateData(void)
@@ -281,16 +280,16 @@ void ViewProviderMeshCurvature::setMode(const char* ModeName)
   ViewProviderMesh::setMode(ModeName);
 }
 
-std::vector<std::string> ViewProviderMeshCurvature::getModes(void)
+std::list<std::string> ViewProviderMeshCurvature::getModes(void) const
 {
-  std::vector<std::string> StrList = ViewProviderMesh::getModes();
+  std::list<std::string> StrList = ViewProviderMesh::getModes();
 
   // add modes
-  StrList.push_back("Absolute curvature");
-  StrList.push_back("Mean curvature");
-  StrList.push_back("Gaussian curvature");
-  StrList.push_back("Maximum curvature");
-  StrList.push_back("Minimum curvature");
+  StrList.push_front("Minimum curvature");
+  StrList.push_front("Maximum curvature");
+  StrList.push_front("Gaussian curvature");
+  StrList.push_front("Mean curvature");
+  StrList.push_front("Absolute curvature");
 
   return StrList;
 }
