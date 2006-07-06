@@ -56,7 +56,7 @@ using namespace Gui::Dialog;
  *  TRUE to construct a modal dialog.
  */
 DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgParameter( parent, name, modal, fl|WStyle_MinMax ),_pcMainLabel(0L)
+    : DlgParameter( parent, name, modal, fl|WStyle_MinMax )
 {
   ParamGrp = new ParameterGroup( splitter3, "ParameterGroup" );
   ParamGrp->addColumn( tr( "Group" ) );
@@ -71,7 +71,7 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal
   ParamVal->addColumn( tr( "Value" ) );
   ParamVal->header()->setClickEnabled( FALSE, ParamVal->header()->count() - 1 );
   ParamVal->setResizeMode( QListView::AllColumns );
-  
+
   const std::map<std::string,ParameterManager *> rcList = App::GetApplication().GetParameterSetList();
 
   for( std::map<std::string,ParameterManager *>::const_iterator It= rcList.begin();It!=rcList.end();It++)
@@ -152,16 +152,18 @@ void DlgParameterImp::onGroupSelected( QListViewItem * item )
 /** Switches the type of parameters either to user or system parameters. */
 void DlgParameterImp::onParameterSetChange(const QString& rcString)
 {
-  ParameterManager &rcParMngr = App::GetApplication().GetParameterSet(rcString.latin1());
+  ParameterManager* rcParMngr = App::GetApplication().GetParameterSet(rcString.latin1());
 
-  if(_pcMainLabel) delete _pcMainLabel;
   // remove all labels
   ParamGrp->clear();
   ParamVal->clear();
 
-  // root label
-  _pcMainLabel = new ParameterGroupItem(ParamGrp,rcParMngr.GetGroup("BaseApp"));
-  _pcMainLabel->setOpen(true);
+  // root labels
+  std::vector<FCHandle<ParameterGrp> > grps = rcParMngr->GetGroups();
+  for ( std::vector<FCHandle<ParameterGrp> >::iterator it = grps.begin(); it != grps.end(); ++it ) {
+    QListViewItem* item = new ParameterGroupItem(ParamGrp,*it);
+    item->setOpen(true);
+  }
 
   ParamGrp->triggerUpdate(); 
 }

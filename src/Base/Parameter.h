@@ -99,9 +99,9 @@ public:
 	/// get a vector of all sub groups in this group
 	std::vector<FCHandle<ParameterGrp> > GetGroups(void);
 	/// test if this group is emty
-	bool IsEmpty(void);
+	bool IsEmpty(void) const;
 	/// test if a special sub group is in this group
-	bool HasGroup(const char* Name);
+	bool HasGroup(const char* Name) const;
 	/// type of the handle
 	typedef FCHandle<ParameterGrp> handle;
 	/// remove a sub group from this group
@@ -113,13 +113,13 @@ public:
 	/** @name methods for bool handling */
 	//@{
 	/// read bool values or give default
-	bool GetBool(const char* Name, bool bPreset=false);
+	bool GetBool(const char* Name, bool bPreset=false) const;
 	/// set a bool value
 	void SetBool(const char* Name, bool bValue);
 	/// get a vector of all bool values in this group
-	std::vector<bool> GetBools(const char * sFilter = NULL);
+	std::vector<bool> GetBools(const char * sFilter = NULL) const;
 	/// get a map with all bool values and the keys of this group
-	std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter = NULL);
+	std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter = NULL) const;
 	/// remove a bool value from this group
 	void RemoveBool(const char* Name);
 	//@}
@@ -127,13 +127,13 @@ public:
 	/** @name methods for Int handling */
 	//@{
 	/// read bool values or give default
-	long GetInt(const char* Name, long lPreset=0);
+	long GetInt(const char* Name, long lPreset=0) const;
 	/// set a int value
 	void SetInt(const char* Name, long lValue);
 	/// get a vector of all int values in this group
-	std::vector<long> GetInts(const char * sFilter = NULL);
+	std::vector<long> GetInts(const char * sFilter = NULL) const;
 	/// get a map with all int values and the keys of this group
-	std::map<std::string,long> GetIntMap(const char * sFilter = NULL);
+	std::map<std::string,long> GetIntMap(const char * sFilter = NULL) const;
 	/// remove a int value from this group
 	void RemoveInt(const char* Name);
 	//@}
@@ -142,13 +142,13 @@ public:
 	/** @name methods for Float handling */
 	//@{
 	/// set a float value
-	double GetFloat(const char* Name, double dPreset=0.0);
+	double GetFloat(const char* Name, double dPreset=0.0) const;
 	/// read float values or give default
 	void SetFloat(const char* Name, double dValue);
 	/// get a vector of all float values in this group
-	std::vector<double> GetFloats(const char * sFilter = NULL);
+	std::vector<double> GetFloats(const char * sFilter = NULL) const;
 	/// get a map with all float values and the keys of this group
-	std::map<std::string,double> GetFloatMap(const char * sFilter = NULL);
+	std::map<std::string,double> GetFloatMap(const char * sFilter = NULL) const;
 	/// remove a float value from this group
 	void RemoveFloat(const char* Name);
 	//@}
@@ -159,7 +159,7 @@ public:
 	/// set a blob value
 	void  SetBlob(const char* Name, void *pValue, long lLength);
 	/// read blob values or give default
-	void GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset=NULL);
+	void GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset=NULL) const;
 	/// remove a blob value from this group
 	void RemoveBlob(const char* Name);
 	//@}
@@ -171,9 +171,9 @@ public:
 	/// set a string value
 	void  SetASCII(const char* Name, const char *sValue);
 	/// read a string values with a buffer
-	void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL);
+	void GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset=NULL) const;
 	/// read a string values
-	std::string GetASCII(const char* Name, const char * pPreset=NULL);
+	std::string GetASCII(const char* Name, const char * pPreset=NULL) const;
 	/// remove a string value from this group
 	void RemoveASCII(const char* Name);
 	/** Return all string elements in this group as a vector of strings
@@ -181,9 +181,9 @@ public:
 	 *  @param sFilter only strings which name includes sFilter are put in the vector
 	 *  @return std::vector of std::strings
 	 */
-	std::vector<std::string> GetASCIIs(const char * sFilter = NULL);
+	std::vector<std::string> GetASCIIs(const char * sFilter = NULL) const;
 	/// Same as GetASCIIs() but with key,value map
-	std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter = NULL);
+	std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter = NULL) const;
 	//@}
 
 	static void Init(void);
@@ -191,7 +191,7 @@ public:
 	friend class ParameterManager;
 
 	/// returns the name
-	const char* GetGroupName(void) {return _cName.c_str();}
+	const char* GetGroupName(void) const {return _cName.c_str();}
 
 	/** Notifies all observers for all entries except of sub-groups.
 	 */
@@ -205,7 +205,7 @@ protected:
 	/// helper function for GetGroup
 	FCHandle<ParameterGrp> _GetGroup(const char* Name);
 
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindNextElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *Prev, const char* Type);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindNextElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMNode *Prev, const char* Type) const;
 
 	/** Find an element specified by Type and Name
 	 *  Search in the parent element Start for the first occourrence of an
@@ -213,14 +213,14 @@ protected:
 	 *  the pointer to that element, otherwise NULL
 	 *  If the names not given he returns the first occourence fo Type.
 	 */
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name=0L);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name=0L) const;
 
 	/** Find an element specified by Type and Name or create it if not found
 	 *  Search in the parent element Start for the first occourrence of an
 	 *  element of Type and with the attribute Name=Name. On success it returns
 	 *  the pointer to that element, otherwise it creates the element and returns the pointer.
 	 */
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *ParameterGrp::FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name);
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *ParameterGrp::FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name) const;
 
 
 	/// DOM Node of the Base node of this group
@@ -249,11 +249,11 @@ public:
 
 	bool  LoadOrCreateDocument(const char* sFileName);
 
-	void  SaveDocument(const char* sFileName);
+	void  SaveDocument(const char* sFileName) const;
 
 	void  CreateDocument(void);
 
-	void  CheckDocument();
+	void  CheckDocument() const;
 
 private:
 
