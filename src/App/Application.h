@@ -179,8 +179,10 @@ public:
     */
 	FCHandle<ParameterGrp>                            GetParameterGroupByPath(const char* sName);
 
-	ParameterManager &                                GetParameterSet(const char* sName);
-	const std::map<std::string,ParameterManager *> &  GetParameterSetList(void);
+	ParameterManager *                                GetParameterSet(const char* sName) const;
+	const std::map<std::string,ParameterManager *> &  GetParameterSetList(void) const;
+	void AddParameterSet(const char* sName);
+	void RemoveParameterSet(const char* sName);
 	//@}
 
 	/** @name methods for the open handler 

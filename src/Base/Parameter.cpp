@@ -384,7 +384,7 @@ std::vector<FCHandle<ParameterGrp> > ParameterGrp::GetGroups(void)
 }
 
 /// test if this group is emty
-bool ParameterGrp::IsEmpty(void)
+bool ParameterGrp::IsEmpty(void) const
 {
 	if( _pGroupNode->getFirstChild() )
 		return false;
@@ -393,7 +393,7 @@ bool ParameterGrp::IsEmpty(void)
 }
 
 /// test if a special sub group is in this group
-bool ParameterGrp::HasGroup(const char* Name)
+bool ParameterGrp::HasGroup(const char* Name) const
 {
 	if( _GroupMap.find(Name) != _GroupMap.end() )
 		return true;
@@ -407,7 +407,7 @@ bool ParameterGrp::HasGroup(const char* Name)
 
 
 
-bool ParameterGrp::GetBool(const char* Name, bool bPreset)
+bool ParameterGrp::GetBool(const char* Name, bool bPreset) const
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCBool",Name);
@@ -430,7 +430,7 @@ void  ParameterGrp::SetBool(const char* Name, bool bValue)
 	Notify(Name);
 }
 
-std::vector<bool> ParameterGrp::GetBools(const char * sFilter)
+std::vector<bool> ParameterGrp::GetBools(const char * sFilter) const
 {
 	std::vector<bool>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
@@ -454,7 +454,7 @@ std::vector<bool> ParameterGrp::GetBools(const char * sFilter)
 	return vrValues;
 }
 
-std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter)
+std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter) const
 {
 	std::map<std::string,bool>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
@@ -478,7 +478,7 @@ std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter)
 	return vrValues;
 }
 
-long ParameterGrp::GetInt(const char* Name, long lPreset)
+long ParameterGrp::GetInt(const char* Name, long lPreset) const
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCInt",Name);
@@ -500,7 +500,7 @@ void  ParameterGrp::SetInt(const char* Name, long lValue)
 	Notify(Name);
 }
 
-std::vector<long> ParameterGrp::GetInts(const char * sFilter)
+std::vector<long> ParameterGrp::GetInts(const char * sFilter) const
 {
 	std::vector<long>  vrValues;
 	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
@@ -521,7 +521,7 @@ std::vector<long> ParameterGrp::GetInts(const char * sFilter)
 	return vrValues;
 }
 
-std::map<std::string,long> ParameterGrp::GetIntMap(const char * sFilter)
+std::map<std::string,long> ParameterGrp::GetIntMap(const char * sFilter) const
 {
 	std::map<std::string,long>  vrValues;
 	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
@@ -542,7 +542,7 @@ std::map<std::string,long> ParameterGrp::GetIntMap(const char * sFilter)
 	return vrValues;
 }
 
-double ParameterGrp::GetFloat(const char* Name, double dPreset)
+double ParameterGrp::GetFloat(const char* Name, double dPreset) const
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCFloat",Name);
@@ -564,7 +564,7 @@ void  ParameterGrp::SetFloat(const char* Name, double dValue)
 	Notify(Name);
 }
 
-std::vector<double> ParameterGrp::GetFloats(const char * sFilter)
+std::vector<double> ParameterGrp::GetFloats(const char * sFilter) const
 {
 	std::vector<double>  vrValues;
 	DOMElement *pcTemp ;//= _pGroupNode->getFirstChild();
@@ -585,7 +585,7 @@ std::vector<double> ParameterGrp::GetFloats(const char * sFilter)
 	return vrValues;
 }
 
-std::map<std::string,double> ParameterGrp::GetFloatMap(const char * sFilter)
+std::map<std::string,double> ParameterGrp::GetFloatMap(const char * sFilter) const
 {
 	std::map<std::string,double>  vrValues;
 	DOMElement *pcTemp ;//= _pGroupNode->getFirstChild();
@@ -614,7 +614,7 @@ void  ParameterGrp::SetBlob(const char* Name, void *pValue, long lLength)
 	assert(0);
 }
 
-void ParameterGrp::GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset)
+void ParameterGrp::GetBlob(const char* Name, void * pBuf, long lMaxLength, void* pPreset) const
 {
 	// not implemented so far
 	assert(0);
@@ -639,7 +639,7 @@ void  ParameterGrp::SetASCII(const char* Name, const char *sValue)
 
 }
 
-void ParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset)
+void ParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, const char * pPreset) const
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
@@ -656,7 +656,7 @@ void ParameterGrp::GetASCII(const char* Name, char * pBuf, long lMaxLength, cons
 	}
 }
 
-std::string ParameterGrp::GetASCII(const char* Name, const char * pPreset)
+std::string ParameterGrp::GetASCII(const char* Name, const char * pPreset) const
 {
 	// check if Element in group
 	DOMElement *pcElem = FindElement(_pGroupNode,"FCText",Name);
@@ -679,7 +679,7 @@ std::string ParameterGrp::GetASCII(const char* Name, const char * pPreset)
 
 }
 
-std::vector<std::string> ParameterGrp::GetASCIIs(const char * sFilter)
+std::vector<std::string> ParameterGrp::GetASCIIs(const char * sFilter) const
 {
 	std::vector<std::string>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
@@ -703,7 +703,7 @@ std::vector<std::string> ParameterGrp::GetASCIIs(const char * sFilter)
 	return vrValues;
 }
 
-std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter)
+std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter) const
 {
 	std::map<std::string,std::string>  vrValues;
 	DOMElement *pcTemp;// = _pGroupNode->getFirstChild();
@@ -852,7 +852,7 @@ void ParameterGrp::Clear(void)
 // Access methods
 
 
-DOMElement *ParameterGrp::FindElement(DOMElement *Start, const char* Type, const char* Name)
+DOMElement *ParameterGrp::FindElement(DOMElement *Start, const char* Type, const char* Name) const
 {
 	for (DOMNode *clChild = Start->getFirstChild(); clChild != 0;  clChild = clChild->getNextSibling())
 	{
@@ -878,7 +878,7 @@ DOMElement *ParameterGrp::FindElement(DOMElement *Start, const char* Type, const
 	return NULL;
 }
 
-DOMElement *ParameterGrp::FindNextElement(DOMNode *Prev, const char* Type)
+DOMElement *ParameterGrp::FindNextElement(DOMNode *Prev, const char* Type) const
 {
 	DOMNode *clChild = Prev;
 	if(!clChild) return 0l;
@@ -897,7 +897,7 @@ DOMElement *ParameterGrp::FindNextElement(DOMNode *Prev, const char* Type)
 	return NULL;
 }
 
-DOMElement *ParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name)
+DOMElement *ParameterGrp::FindOrCreateElement(DOMElement *Start, const char* Type, const char* Name) const
 {
 	// first try to find it
 	DOMElement *pcElem = FindElement(Start,Type,Name);
@@ -1141,7 +1141,7 @@ int  ParameterManager::LoadDocument(const char* sFileName)
 	return 1;
 }
 
-void  ParameterManager::SaveDocument(const char* sFileName)
+void  ParameterManager::SaveDocument(const char* sFileName) const
 {
 	DOMPrintFilter   *myFilter = 0;
 
@@ -1245,7 +1245,7 @@ void  ParameterManager::CreateDocument(void)
 }
 
 
-void  ParameterManager::CheckDocument()
+void  ParameterManager::CheckDocument() const
 {
 	
 }

@@ -421,14 +421,36 @@ ParameterManager & Application::GetUserParameter(void)
 	return *_pcUserParamMngr;
 }
 
-ParameterManager & Application::GetParameterSet(const char* sName)
+ParameterManager * Application::GetParameterSet(const char* sName) const
 {
-	return *mpcPramManager[sName];
+  std::map<std::string,ParameterManager *>::const_iterator it = mpcPramManager.find(sName);
+  if ( it != mpcPramManager.end() )
+    return it->second;
+  else
+    return 0;
 }
 
-const std::map<std::string,ParameterManager *> & Application::GetParameterSetList(void)
+const std::map<std::string,ParameterManager *> & Application::GetParameterSetList(void) const
 {
 	return mpcPramManager;
+}
+
+void Application::AddParameterSet(const char* sName)
+{
+  std::map<std::string,ParameterManager *>::const_iterator it = mpcPramManager.find(sName);
+  if ( it != mpcPramManager.end() )
+    return;
+  mpcPramManager[sName] = new ParameterManager();
+}
+
+void Application::RemoveParameterSet(const char* sName)
+{
+  std::map<std::string,ParameterManager *>::iterator it = mpcPramManager.find(sName);
+  // Must not delete user or system parameter
+  if ( it == mpcPramManager.end() || it->second == _pcUserParamMngr || it->second == _pcSysParamMngr )
+    return;
+  delete it->second;
+  mpcPramManager.erase(it);
 }
 
 /*

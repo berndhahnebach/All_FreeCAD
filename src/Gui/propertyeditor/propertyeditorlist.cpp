@@ -153,20 +153,28 @@ QWidget* ListEditorItem::createEditor( int column, QWidget* parent )
   QComboBox* editor = new QComboBox( parent, "ListEditorItem::combo" );
   connect(editor, SIGNAL( activated(int) ), this, SLOT( onValueChanged() ) );
 
-  QString txt = items.front();
-  items.pop_front();
-  editor->insertStringList( items );
-
-  int cur = 0;
-  for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
+  if ( !items.isEmpty() )
   {
-    if ( txt == *it)
-    {
-      editor->setCurrentItem( cur );
-      break;
-    }
+    QString txt = items.front();
+    items.pop_front();
+    editor->insertStringList( items );
 
-    cur++;
+    int cur = 0;
+    for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
+    {
+      if ( txt == *it)
+      {
+        editor->setCurrentItem( cur );
+        break;
+      }
+
+      cur++;
+    }
+  }
+  else
+  {
+    // all the selected objects don't share a common value
+    editor->setDisabled(true);
   }
 
   return editor;

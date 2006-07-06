@@ -60,7 +60,6 @@ protected slots:
   virtual void onGroupSelected(QListViewItem *);
 
 protected:
-  ParameterGroupItem *_pcMainLabel;
   QListView* ParamGrp;
   QListView* ParamVal;
 };
