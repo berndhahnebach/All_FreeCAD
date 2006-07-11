@@ -70,6 +70,7 @@
 #include "ViewProviderExtern.h"
 #include "ViewProviderFeature.h"
 #include "ViewProviderPythonFeature.h"
+#include "ViewProviderDocumentObjectGroup.h"
 
 
 using Base::Console;
@@ -700,6 +701,7 @@ void Application::initTypes(void)
   Gui::ViewProviderDocumentObject            ::init();
   Gui::ViewProviderFeature                   ::init();
   Gui::ViewProviderPythonFeature             ::init();
+  Gui::ViewProviderDocumentObjectGroup       ::init();
 
   // Workbench
   Gui::Workbench                             ::init();

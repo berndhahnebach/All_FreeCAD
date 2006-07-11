@@ -60,6 +60,7 @@
 #include "PropertyStandard.h"
 #include "PropertyLinks.h"
 #include "Document.h"
+#include "DocumentObjectGroup.h"
 
 
 
@@ -633,12 +634,14 @@ void Application::initTypes(void)
   App ::PropertyVectorList  ::init();
   App ::PropertyColor       ::init();
   App ::PropertyColorList   ::init();
+  App ::PropertyMaterial    ::init();
   // Document classes
   App ::DocumentObject      ::init();
   App ::AbstractFeature     ::init();
   App ::FeatureTest         ::init();
   App ::FeaturePython       ::init();
   App ::Document            ::init();
+  App ::DocumentObjectGroup ::init();
 
   // test code
   /*

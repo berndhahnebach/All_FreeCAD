@@ -34,6 +34,7 @@
 #include <Base/Console.h>
 #include <App/Document.h>
 #include <App/Feature.h>
+#include <App/DocumentObjectGroup.h>
 
 #include "Tree.h"
 #include "Document.h"
@@ -60,7 +61,7 @@ using namespace Gui;
  *  @return Const string with the date/time
  */
 DocItem::DocItem( QListViewItem* parent,QListViewItem * after,Gui::Document* doc)
-    : QListViewItem( parent, after ), _pcDocument(doc), _lastFeaItem(0)
+    : QListViewItem( parent, after ), _pcDocument(doc)
 {
   setPixmap(0,*TreeView::pcDocumentPixmap);
   setText(0,QString(_pcDocument->getDocument()->getName()));
@@ -151,7 +152,6 @@ void DocItem::isSelectionUptodate(void)
 
 }
 
-
 void DocItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
    QColorGroup _cg( cg );
@@ -166,59 +166,71 @@ void DocItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int 
 
 }
 
-
-
-bool DocItem::addViewProviderDocumentObject(ViewProviderDocumentObject* Provider)
+void DocItem::addViewProviderDocumentObject(ViewProviderDocumentObject* Provider)
 {
   std::string name = Provider->getObject()->name.getValue();
   std::map<std::string,ObjectItem*>::iterator it = FeatMap.find( name );
   if ( it == FeatMap.end() )
   {
-    ObjectItem* item = dynamic_cast<ObjectItem*>( Provider->getTreeItem(this) );
+    ObjectItem* item = Provider->getTreeItem(this);
 
-    // set the new created item at the end
-    item->moveItem(_lastFeaItem);
-    _lastFeaItem = item;
+    ObjectItem* groupItem=0;
+    for ( it = FeatMap.begin(); it != FeatMap.end(); ++it )
+    {
+      App::DocumentObject* obj = it->second->_pcViewProvider->getObject();
+      if ( obj->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId()) )
+      {
+        App::DocumentObjectGroup* grp = (App::DocumentObjectGroup*)obj;
+        if ( grp->hasObject(Provider->getObject()) )
+        {
+          groupItem = it->second;
+          break;
+        }
+      }
+    }
+
+    QListViewItem* child=0;
+    QListViewItem* sibling=0;
+    if ( groupItem )
+    {
+      // set the newly created item at the end of the group
+      groupItem->setOpen(true);
+      groupItem->insertItem(item);
+      child = groupItem->firstChild();
+    }
+    else
+    {
+      // set the newly created item at the end of the document item
+      child = firstChild();
+    }
+
+    // get the last item
+    while (child)
+    {
+      sibling = child;
+      child = child->nextSibling();
+    }
+
+    if ( sibling )
+      item->moveItem(sibling);
+
     FeatMap[ name ] = item;
 
     if(FeatMap.size() == 1)
       setOpen(true);
-
-    return true;
   }
-
-  return false;
 }
 
-bool DocItem::removeViewProviderDocumentObject(ViewProviderDocumentObject* Provider)
+void DocItem::removeViewProviderDocumentObject(ViewProviderDocumentObject* Provider)
 {
   QString name = Provider->getObject()->name.getValue();
   std::map<std::string,ObjectItem*>::iterator it = FeatMap.find(name.latin1());
   if ( it != FeatMap.end() )
   {
-    // now we must search for the matching listview item
-    QListViewItem* item = firstChild();
-    QListViewItem* sibling=0;
-    while ( item ) {
-      // make sure that we have a ObjectItem
-      if ( item == it->second )
-      {
-        // in case we remove the last item
-        if ( _lastFeaItem == item )
-          _lastFeaItem = sibling;
-        delete item;
-        FeatMap.erase(it);
-        return true;
-      }
-
-      sibling = item;
-      item = item->nextSibling();  
-    }
+    delete it->second;
+    FeatMap.erase(it);
   }
-
-  return false;
 }
-
 
 void DocItem::update(void)
 {
@@ -236,7 +248,6 @@ void DocItem::setOpen( bool o )
   QListViewItem::setOpen ( o );
 }
 
-
 void DocItem::setup()
 {
   //setExpandable( TRUE );
@@ -247,7 +258,6 @@ void DocItem::activate ()
 {
   //puts("Activated");
 }
-
 
 void DocItem::rename(void)
 {
@@ -283,6 +293,9 @@ ObjectItem::ObjectItem( QListViewItem* parent,Gui::ViewProviderDocumentObject* p
   buildUp();
 }
 
+ObjectItem::~ObjectItem()
+{
+}
 
 bool ObjectItem::testStatus(void)
 {

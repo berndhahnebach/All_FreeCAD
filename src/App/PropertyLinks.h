@@ -114,6 +114,7 @@ public:
 	/** Sets the property 
 	 */
 	void setValue(DocumentObject*);
+  void setValues(const std::vector<DocumentObject*>&);
   
   /// index operator
   DocumentObject* operator[] (const int idx) const {return _lValueList.operator[] (idx);} 

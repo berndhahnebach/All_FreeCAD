@@ -1099,7 +1099,7 @@ static const char *Play[]={
 "................"};
 
 /* XPM */
-static const char *PrefTree_GroupClosed[]={
+static const char *PrefTree_GroupOpen[]={
 "16 16 10 1",
 ". c None",
 "# c #000000",
@@ -1129,7 +1129,7 @@ static const char *PrefTree_GroupClosed[]={
 "............#ee#"};
 
 /* XPM */
-static const char *PrefTree_GroupOpen[]={
+static const char *PrefTree_GroupClosed[]={
 "16 16 8 1",
 ". c None",
 "# c #000000",

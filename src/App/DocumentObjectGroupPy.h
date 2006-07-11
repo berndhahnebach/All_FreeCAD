@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,74 +21,49 @@
  ***************************************************************************/
 
 
+#ifndef APP_DOCUMENTOBJECTGROUPPY_H
+#define APP_DOCUMENTOBJECTGROUPPY_H
 
-#include "PreCompiled.h"
-
-#ifndef _PreComp_
-#endif
-
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Base/Reader.h>
-#include <Base/Writer.h>
-
-#include <Mod/Part/App/TopologyPy.h>
-
-#include "Core/MeshIO.h"
-
-#include "MeshFeature.h"
-#include "MeshFeaturePy.h"
-#include <App/Feature.h>
-
-using namespace Mesh;
+#include "FeaturePy.h"
 
 
-//===========================================================================
-// Feature
-//===========================================================================
-
-PROPERTY_SOURCE(Mesh::Feature, App::AbstractFeature)
-
-Feature::Feature()
-:pcMeshFeaturePy(0)
+namespace App
 {
-  ADD_PROPERTY(Mesh, (MeshCore::MeshKernel()));
-}
+class DocumentObjectGroup;
 
-Feature::~Feature()
+class AppExport DocumentObjectGroupPy : public FeaturePy
 {
-  if ( pcMeshFeaturePy )
-  {
-    pcMeshFeaturePy->setInvalid();
-    pcMeshFeaturePy->DecRef();
-  }
-}
+  Py_Header;
 
-int Feature::execute(void)
-{
-  return 0;
-}
+protected:
+  virtual ~DocumentObjectGroupPy();
 
-Base::PyObjectBase *Feature::GetPyObject(void)
-{
-  if(!pcMeshFeaturePy){
-    pcMeshFeaturePy = new MeshFeaturePy(this);
-  }
- 
-  // Increment every time when this object is returned
-  pcMeshFeaturePy->IncRef();
-  return pcMeshFeaturePy; 
-}
+public:
+	DocumentObjectGroupPy(DocumentObjectGroup *pcGroup, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
 
-void Feature::onChanged(const App::Property* prop)
-{
-  // Ignore some properties
-  //
-  AbstractFeature::onChanged(prop);
-}
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
 
-const MeshCore::MeshKernel& Feature::getMesh() const
-{
-  return Mesh.getValue();
-}
+  virtual PyObject *_repr(void);  				// the representation
+  PyObject *_getattr(char *attr);					// __getattr__ function
+  int _setattr(char *attr, PyObject *value);		// __setattr__ function
+	PYFUNCDEF_D(DocumentObjectGroupPy,addObject)
+	PYFUNCDEF_D(DocumentObjectGroupPy,removeObject)
+	PYFUNCDEF_D(DocumentObjectGroupPy,getObject)
+	PYFUNCDEF_D(DocumentObjectGroupPy,hasObject)
 
+	//---------------------------------------------------------------------
+	// helpers for python exports goes here +++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+  DocumentObjectGroup *getDocumentObjectGroup(void) const {return _pcGroup;}
+
+protected:
+  DocumentObjectGroup *_pcGroup;
+};
+
+} //namespace App
+
+
+#endif // APP_DOCUMENTOBJECTGROUPPY_H

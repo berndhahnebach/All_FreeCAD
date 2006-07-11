@@ -52,6 +52,7 @@ namespace Gui {
 
 class View3DInventorViewer;
 class ViewProviderPy;
+class ObjectItem;
 
 
 
@@ -72,8 +73,6 @@ public:
   virtual SoSeparator* getFrontRoot(void){return 0;}
   // returns the root node of the Provider (3D)
   virtual SoSeparator* getBackRoot(void){return 0;}
-  // returns the TreeLabel
-  virtual QListViewItem* getTreeItem(QListViewItem* parent){return 0;}
   // returns the TreeLabel
   virtual QPixmap getIcon(void) const;
 
@@ -121,7 +120,7 @@ public:
 
   virtual void hide(void);
   virtual void show(void);
-  virtual bool isShow(void);
+  virtual bool isShow(void) const;
   //@}
 
   
