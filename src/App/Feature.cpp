@@ -53,7 +53,7 @@ PROPERTY_SOURCE_ABSTRACT(App::AbstractFeature, App::DocumentObject)
 //===========================================================================
 
 AbstractFeature::AbstractFeature(void)
-:pcFeaturePy(0)
+:pcFeaturePy(0), _execute(false)
 {
 
 
@@ -94,8 +94,13 @@ void AbstractFeature::onChanged(const Property* prop)
   else if ( prop == &name )
     return;
   touchPropertyTime.setToActual();
+  setModified(true);
 }
 
+void AbstractFeature::setModified(bool b)
+{
+  _execute = b;
+}
 
 bool AbstractFeature::mustExecute(void)
 {
@@ -103,10 +108,16 @@ bool AbstractFeature::mustExecute(void)
   if (getStatus() != Valid && getStatus()!= Inactive) 
     return true;
 
-  if ( touchTime <= touchPropertyTime ) 
-    return true;
-
-  return false;
+  //FIXME: The setModified() method is a workaround for the problems with the time stamp.
+  //E.g. when a property has changed then the feature itself has changed. If the recomputation takes place
+  //immediately and is finished very fast then it could happen that the OS returns the same time stamp for both
+  //events. And the other way round a property has changed immediately after a recomputation of the feature.
+  //In both cases the time stamp doesn't work as expected. Using a boolean instead solves the problem.
+  return _execute;
+//  if ( touchTime <= touchPropertyTime ) 
+//    return true;
+//
+//  return false;
 
 }
 

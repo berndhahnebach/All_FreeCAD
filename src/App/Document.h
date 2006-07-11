@@ -86,7 +86,8 @@ public:
     Rename
   } Why;
 
-  std::set<DocumentObject*>   NewObjects;
+  // use a vector to preserve insertion order
+  std::vector<DocumentObject*>   NewObjects;
   std::set<DocumentObject*>   UpdatedObjects;
   std::set<AbstractFeature*> ErrorFeatures;
   std::set<DocumentObject*>   DeletedObjects;
@@ -168,11 +169,11 @@ public:
   /// Remove a feature out of the document
 	void remObject(const char* sName);
   /// Returns the active Object of this document
-	DocumentObject *getActiveObject(void);
+	DocumentObject *getActiveObject(void) const;
   /// Returns a Object of this document
-	DocumentObject *getObject(const char *Name);
+	DocumentObject *getObject(const char *Name) const;
   /// Returns a Name of an Object or 0
-	const char *getObjectName(DocumentObject *pFeat);
+	const char *getObjectName(DocumentObject *pFeat) const;
   /// Returns a Name of an Object or 0
   std::string getUniqueObjectName(const char *Name) const;
   /// Returns a list of all Objects
@@ -293,6 +294,8 @@ protected:
 
   DocumentObject* pActiveObject;
   std::map<std::string,DocumentObject*> ObjectMap;
+  // Array to preserve the creation order of created objects
+  std::vector<DocumentObject*> ObjectArray;
   Base::Persistance* pDocumentHook;
 
 	// pointer to the python class

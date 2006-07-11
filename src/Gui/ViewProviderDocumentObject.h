@@ -70,7 +70,8 @@ public:
   App::PropertyMaterial ShapeMaterial;
 
   // Returns the tree label
-  virtual QListViewItem* getTreeItem(QListViewItem* parent);
+  virtual ObjectItem* createTreeItem(QListViewItem* parent);
+  ObjectItem* getTreeItem(QListViewItem* parent);
 
   virtual void attach(App::DocumentObject *pcObject);
   /// returns a list of all possible modes
@@ -110,7 +111,7 @@ public:
   /// freqently called by the framework to check status changes in the data
   virtual bool testStatus(void);
 
-  App::DocumentObject *getObject(void){return pcObject;}
+  App::DocumentObject *getObject(void) const {return pcObject;}
 
 protected:
   /// get called by the container whenever a property has been changed

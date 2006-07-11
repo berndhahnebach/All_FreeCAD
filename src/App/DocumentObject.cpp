@@ -84,7 +84,7 @@ DocumentObject::~DocumentObject(void)
   }
 }
 
-App::Document &DocumentObject::getDocument(void)
+App::Document &DocumentObject::getDocument(void) const
 {
   return *_pDoc;
 }
@@ -98,14 +98,14 @@ void DocumentObject::onBevorChange(const Property* prop)
 {
   if(_pDoc)
     _pDoc->onBevorChangeProperty(this,prop);
-};
+}
 
   /// get called by the container when a Proptery was changed
 void DocumentObject::onChanged(const Property* prop)
 {
   if(_pDoc)
     _pDoc->onChangedProperty(this,prop);
-};
+}
 
 Base::PyObjectBase *DocumentObject::GetPyObject(void)
 {

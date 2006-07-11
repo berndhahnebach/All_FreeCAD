@@ -57,7 +57,7 @@ public:
 	DocumentObject(void);
   virtual ~DocumentObject();
 
-  App::Document &getDocument(void);
+  App::Document &getDocument(void) const;
   void setDocument(App::Document* doc);
 
 

@@ -177,6 +177,13 @@ void PropertyLinkList::setValue(DocumentObject* lValue)
   hasSetValue();
 }
 
+void PropertyLinkList::setValues(const std::vector<DocumentObject*>& lValue)
+{
+  aboutToSetValue();
+	_lValueList=lValue;
+  hasSetValue();
+}
+
 PyObject *PropertyLinkList::getPyObject(void)
 {
   PyObject* list = PyList_New(	getSize() );

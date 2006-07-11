@@ -70,7 +70,7 @@ private:
 } // namespace Gui
 
 PrefGroupItem::PrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixmap &p2, const QString &name )
-    : QListBoxItem( parent ), pm_Unsel( p1 ), pm_Sel( p2 )
+    : QListBoxItem( parent ), pm_Sel( p1 ), pm_Unsel( p2 )
 {
   setText( name );
   QPalette pal = parent->palette();

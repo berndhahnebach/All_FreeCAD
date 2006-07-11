@@ -331,7 +331,7 @@ void StdCmdMRU::load()
       pCmd->setMaxCount( maxCnt );
       std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
 
-      // append the items in reverse mode to prevent the order
+      // append the items in reverse mode to preserve the order
       for (std::vector<std::string>::reverse_iterator it = MRU.rbegin(); it!=MRU.rend();++it)
       {
         pCmd->addRecentFile( it->c_str() );

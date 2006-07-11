@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,74 +21,40 @@
  ***************************************************************************/
 
 
+#ifndef GUI_VIEWPROVIDER_DOCUMENTOBJECTGROUP_H
+#define GUI_VIEWPROVIDER_DOCUMENTOBJECTGROUP_H
 
-#include "PreCompiled.h"
+#include "ViewProviderDocumentObject.h"
 
-#ifndef _PreComp_
-#endif
+namespace Gui {
 
-#include <Base/Console.h>
-#include <Base/Exception.h>
-#include <Base/Reader.h>
-#include <Base/Writer.h>
-
-#include <Mod/Part/App/TopologyPy.h>
-
-#include "Core/MeshIO.h"
-
-#include "MeshFeature.h"
-#include "MeshFeaturePy.h"
-#include <App/Feature.h>
-
-using namespace Mesh;
-
-
-//===========================================================================
-// Feature
-//===========================================================================
-
-PROPERTY_SOURCE(Mesh::Feature, App::AbstractFeature)
-
-Feature::Feature()
-:pcMeshFeaturePy(0)
+class GuiExport ViewProviderDocumentObjectGroup:public ViewProviderDocumentObject
 {
-  ADD_PROPERTY(Mesh, (MeshCore::MeshKernel()));
-}
+  PROPERTY_HEADER(Gui::ViewProviderDocumentObjectGroup);
 
-Feature::~Feature()
-{
-  if ( pcMeshFeaturePy )
-  {
-    pcMeshFeaturePy->setInvalid();
-    pcMeshFeaturePy->DecRef();
-  }
-}
+public:
+  /// constructor.
+  ViewProviderDocumentObjectGroup();
 
-int Feature::execute(void)
-{
-  return 0;
-}
+  /// destructor.
+  virtual ~ViewProviderDocumentObjectGroup();
 
-Base::PyObjectBase *Feature::GetPyObject(void)
-{
-  if(!pcMeshFeaturePy){
-    pcMeshFeaturePy = new MeshFeaturePy(this);
-  }
- 
-  // Increment every time when this object is returned
-  pcMeshFeaturePy->IncRef();
-  return pcMeshFeaturePy; 
-}
+  virtual void attach(App::DocumentObject *pcObject);
+  virtual ObjectItem* createTreeItem(QListViewItem* parent);
+  virtual QPixmap getOpenedGroupIcon() const;
+  virtual QPixmap getClosedGroupIcon() const;
+  /// returns a list of all possible modes
+  virtual std::list<std::string> getModes(void) const;
+  bool isShow(void) const;
 
-void Feature::onChanged(const App::Property* prop)
-{
-  // Ignore some properties
-  //
-  AbstractFeature::onChanged(prop);
-}
+protected:
+  /// get called by the container whenever a property has been changed
+  virtual void onChanged(const App::Property* prop);
+  void getViewProviders(std::vector<ViewProviderDocumentObject*>&) const;
+};
 
-const MeshCore::MeshKernel& Feature::getMesh() const
-{
-  return Mesh.getValue();
-}
+
+} // namespace Gui
+
+#endif // GUI_VIEWPROVIDER_DOCUMENTOBJECTGROUP_H
 

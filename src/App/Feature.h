@@ -62,6 +62,7 @@ public:
   virtual ~AbstractFeature();
 
   virtual void onChanged(const Property* prop);
+  void setModified(bool);
 
 
 	/** @name methods to overide with a new feature type */
@@ -129,6 +130,7 @@ protected:
   FeaturePy* pcFeaturePy;
 
   std::string _cErrorMessage;
+  bool _execute;
 
 };
 

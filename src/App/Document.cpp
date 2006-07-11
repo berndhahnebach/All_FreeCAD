@@ -300,6 +300,7 @@ Document::~Document()
 
   Console().Log("-Delete Features of %s \n",getName());
 
+  ObjectArray.clear();
   for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
   {
     delete(it->second);
@@ -331,28 +332,26 @@ void Document::Save (Writer &writer) const
   PropertyContainer::Save(writer);
 
   // writing the features types
-  writer << writer.ind() << "<Objects Count=\"" << ObjectMap.size() <<"\">" << endl;
+  writer << writer.ind() << "<Objects Count=\"" << ObjectArray.size() <<"\">" << endl;
 
-  std::map<std::string,DocumentObject*>::const_iterator it;
-  for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
+  std::vector<DocumentObject*>::const_iterator it;
+  for(it = ObjectArray.begin(); it != ObjectArray.end(); ++it)
   {
-    DocumentObject* obj = it->second;
     writer << writer.ind() << "<Object " 
-                             << "type=\"" << obj->getTypeId().getName() << "\" "
-                             << "name=\"" << obj->name.getValue()       << "\" "
+                             << "type=\"" << (*it)->getTypeId().getName() << "\" "
+                             << "name=\"" << (*it)->name.getValue()       << "\" "
                            << "/>" << endl;    
   }
 
   writer << writer.ind() << "</Objects>" << endl;
   
   // writing the features itself
-  writer << writer.ind() << "<ObjectData Count=\"" << ObjectMap.size() <<"\">" << endl;
+  writer << writer.ind() << "<ObjectData Count=\"" << ObjectArray.size() <<"\">" << endl;
 
-  for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
+  for(it = ObjectArray.begin(); it != ObjectArray.end(); ++it)
   {
-    DocumentObject* obj = it->second;
-    writer << writer.ind() << "<Object name=\"" << obj->name.getValue() << "\">" << endl;   
-    obj->Save(writer);
+    writer << writer.ind() << "<Object name=\"" << (*it)->name.getValue() << "\">" << endl;   
+    (*it)->Save(writer);
     writer << writer.ind() << "</Object>" << endl;
   }
 
@@ -443,11 +442,12 @@ void Document::saveAs (const char* name)
 {
   Base::FileInfo File(name);
 
-  //Base::ogzstream file(File.filePath().c_str());
-  //ofstream file(File.filePath().c_str());
-
   std::string oldName = Name.getValue();
-  Name.setValue(File.fileNamePure());
+  std::string newName = File.fileNamePure();
+
+  // make sure that the new document name is a valid Python specifier
+  newName = GetApplication().getUniqueDocumentName(newName.c_str());
+  Name.setValue(newName);
   FileName.setValue(File.filePath());
 
   Document::save();
@@ -511,12 +511,13 @@ bool Document::open (void)
 
     // notify all as new
     DocChanges DocChange;
+    DocChange.NewObjects = ObjectArray;
     for(std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
-      DocChange.NewObjects.insert(It->second);
       if(It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) )
       {
         AbstractFeature* feat = dynamic_cast<AbstractFeature*>(It->second);
         feat->touchTime.setToActual();
+        feat->setModified(false);
         if ( feat->status.getValue() == AbstractFeature::New )
           feat->status.setValue( AbstractFeature::Valid );
       }
@@ -581,17 +582,17 @@ void Document::recompute()
     goOn = false;
     tempErr = DocChange.ErrorFeatures;
 
-    std::map<std::string,DocumentObject*>::iterator It;
+    std::vector<DocumentObject*>::iterator It;
 
-    for(It = ObjectMap.begin();It != ObjectMap.end();++It)
+    for(It = ObjectArray.begin();It != ObjectArray.end();++It)
     {
-      if( ! (It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) ) )
+      if( ! ((*It)->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) ) )
         continue;
-      AbstractFeature *feat = dynamic_cast<AbstractFeature *>(It->second);
+      AbstractFeature *feat = dynamic_cast<AbstractFeature *>(*It);
 
       // map the new features
       if (feat->getStatus() == AbstractFeature::New)
-        DocChange.NewObjects.insert(feat);
+        DocChange.NewObjects.push_back(feat);
 
 		  if (feat->mustExecute())
 		  {
@@ -619,8 +620,8 @@ void Document::recompute()
     Base::Console().Warning("Document::recompute(): bailing out with to high solver count, possible recursion!\n");
   
   // remove the new features from the update set, get updated anyway
-  for(i = DocChange.NewObjects.begin();i!=DocChange.NewObjects.end();++i)
-    DocChange.UpdatedObjects.erase(*i);
+  for(std::vector<App::DocumentObject*>::iterator it = DocChange.NewObjects.begin();it!=DocChange.NewObjects.end();++it)
+    DocChange.UpdatedObjects.erase(*it);
 
   Notify(DocChange);
 
@@ -693,6 +694,7 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
     Feat->status.setValue(AbstractFeature::Valid);
 
     Feat->touchTime.setToActual();
+    Feat->setModified(false);
   }
 }
 
@@ -727,6 +729,7 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 		pActiveObject = pcObject;
 
     ObjectMap[ObjectName] = pcObject;
+    ObjectArray.push_back(pcObject);
 
     pcObject->name.setValue( ObjectName );
 	
@@ -742,6 +745,7 @@ void Document::_addObject(DocumentObject* pcObject, const char* pObjectName)
 {
 
   ObjectMap[pObjectName] = pcObject;
+  ObjectArray.push_back(pcObject);
 
   // Transaction stuff
   if(activTransaction)
@@ -815,6 +819,12 @@ void Document::remObject(const char* sName)
     // if not saved in undo -> delete
     delete pos->second;
 
+  for ( std::vector<DocumentObject*>::iterator obj = ObjectArray.begin(); obj != ObjectArray.end(); ++obj ) {
+    if ( *obj == pos->second ) {
+      ObjectArray.erase(obj);
+      break;
+    }
+  }
   ObjectMap.erase(pos);
 }
 
@@ -833,19 +843,25 @@ void Document::_remObject(DocumentObject* pcObject)
     delete pcObject;
 
   ObjectMap.erase(pcObject->name.getValue());
+  for ( std::vector<DocumentObject*>::iterator it = ObjectArray.begin(); it != ObjectArray.end(); ++it ) {
+    if ( *it == pcObject ) {
+      ObjectArray.erase(it);
+      break;
+    }
+  }
 
 }
 
 
-DocumentObject *Document::getActiveObject(void)
+DocumentObject *Document::getActiveObject(void) const
 {
   
   return pActiveObject;
 }
 
-DocumentObject *Document::getObject(const char *Name)
+DocumentObject *Document::getObject(const char *Name) const
 {
-  std::map<std::string,DocumentObject*>::iterator pos;
+  std::map<std::string,DocumentObject*>::const_iterator pos;
   
   pos = ObjectMap.find(Name);
 
@@ -855,9 +871,9 @@ DocumentObject *Document::getObject(const char *Name)
     return 0;
 }
 
-const char *Document::getObjectName(DocumentObject *pFeat)
+const char *Document::getObjectName(DocumentObject *pFeat) const
 {
-  std::map<std::string,DocumentObject*>::iterator pos;
+  std::map<std::string,DocumentObject*>::const_iterator pos;
 
   for(pos = ObjectMap.begin();pos != ObjectMap.end();++pos)
     if(pos->second == pFeat)

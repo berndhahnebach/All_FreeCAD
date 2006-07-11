@@ -50,7 +50,7 @@ PROPERTY_SOURCE(Gui::ViewProviderDocumentObject, Gui::ViewProvider)
 
       
 ViewProviderDocumentObject::ViewProviderDocumentObject()
-  : pcObject(0), _cLastStatus(-1)
+  : pcObject(0), pcObjItem(0), _cLastStatus(-1)
 {
   ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
   ADD_PROPERTY(Display,("Flat"));
@@ -174,12 +174,19 @@ void ViewProviderDocumentObject::setActiveMode()
     ViewProvider::hide();
 }
 
-QListViewItem* ViewProviderDocumentObject::getTreeItem(QListViewItem* parent)
+ObjectItem* ViewProviderDocumentObject::getTreeItem(QListViewItem* parent)
 {
-  pcObjItem = new ObjectItem(parent,this);
-  pcObjItem->setPixmap(0,/*ViewProvider::*/getIcon());
-  pcObjItem->setText(0,QString(pcObject->name.getValue()));
+  if ( !pcObjItem )
+    pcObjItem = createTreeItem(parent);
   return pcObjItem;
+}
+
+ObjectItem* ViewProviderDocumentObject::createTreeItem(QListViewItem* parent)
+{
+  ObjectItem* item = new ObjectItem(parent,this);
+  item->setPixmap(0, this->getIcon());
+  item->setText(0, QString(pcObject->name.getValue()));
+  return item;
 }
 
 bool ViewProviderDocumentObject::testStatus(void)

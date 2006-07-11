@@ -142,3 +142,5 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + separate data and view properties and show in different tabs in the editor
 + new methods added to Gui::DocumentPy to get active object and object by name
 + add only required Inventor nodes to all ViewProvider subclasses and removed from ViewProviderDocumentObject
++ use an additional STL vector to prevent the creation order of objects
++ added a group class for document objects and its view provider

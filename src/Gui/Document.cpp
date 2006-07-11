@@ -315,29 +315,30 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
 
 
   // set up new providers
-  for(It=Reason.NewObjects.begin();It!=Reason.NewObjects.end();It++)
+  std::vector<App::DocumentObject*>::const_iterator it;
+  for(it=Reason.NewObjects.begin();it!=Reason.NewObjects.end();it++)
   {
-    std::string cName = (*It)->getViewProviderName();
+    std::string cName = (*it)->getViewProviderName();
 
     ViewProviderDocumentObject *pcProvider = (ViewProviderDocumentObject*) Base::Type::createInstanceByName(cName.c_str(),true);
     if ( pcProvider )
     {
       // type not derived from ViewProviderDocumentObject!!!
       assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
-      _ViewProviderMap[*It] = pcProvider;
+      _ViewProviderMap[*it] = pcProvider;
 
       try{
         // if succesfully created set the right name and calculate the view
-        pcProvider->attach(*It);
+        pcProvider->attach(*it);
         pcProvider->setActiveMode();
       }catch(const Base::MemoryException& e){
-        Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*It)->name.getValue(),e.what());
+        Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",(*it)->name.getValue(),e.what());
       }catch(Base::Exception &e){
         e.ReportException();
       }
 #ifndef FC_DEBUG
       catch(...){
-        Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",(*It)->name.getValue());
+        Base::Console().Error("App::Document::_RecomputeFeature(): Unknown exception in Feature \"%s\" thrown\n",(*it)->name.getValue());
       }
 #endif
 
@@ -353,7 +354,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
       pcTreeItem->addViewProviderDocumentObject(pcProvider);
 
     }else{
-      Base::Console().Warning("Gui::View3DInventorEx::onUpdate() no view provider for the Feature %s found\n",(*It)->getViewProviderName());
+      Base::Console().Warning("Gui::Document::OnChange() no view provider for the object %s found\n",(*It)->getViewProviderName());
     }
   }
 
@@ -486,7 +487,10 @@ void Document::Restore(Base::XMLReader &reader)
     const char* ppReturn = reader.getAttribute("settings");
     std::string sMsg = "SetCamera ";
     sMsg += ppReturn;
-    _pcAppWnd->sendMsgToActiveView(sMsg.c_str());
+    if ( strcmp(ppReturn, "") != 0 ) { // non-empty attribute
+      if ( _pcAppWnd->sendHasMsgToActiveView("SetCamera") )
+        _pcAppWnd->sendMsgToActiveView(sMsg.c_str());
+    }
   }
 
   reader.readEndElement("Document");
@@ -528,14 +532,20 @@ void Document::SaveDocFile (Base::Writer &writer) const
   writer << writer.ind() << "</ViewProviderData>" << endl;
 
   // set camera settings
-  const char* ppReturn=0;
-  _pcAppWnd->sendMsgToActiveView("GetCamera",&ppReturn);
+  QString viewPos="";
+  if ( _pcAppWnd->sendHasMsgToActiveView("GetCamera") ) {
+    const char* ppReturn=0;
+    _pcAppWnd->sendMsgToActiveView("GetCamera",&ppReturn);
   
-  // remove the first line because it's a comment like '#Inventor V2.1 ascii'
-  QStringList lines = QStringList::split("\n", ppReturn);
-  lines.pop_front();
-  QString sCamera = lines.join(" ");
-  writer << writer.ind() << "<Camera settings=\"" <<  sCamera.latin1() <<"\"/>" << endl;
+    // remove the first line because it's a comment like '#Inventor V2.1 ascii'
+    QStringList lines = QStringList::split("\n", ppReturn);
+    if ( lines.size() > 1 ) {
+      lines.pop_front();
+      viewPos = lines.join(" ");
+    }
+  }
+
+  writer << writer.ind() << "<Camera settings=\"" <<  viewPos.latin1() <<"\"/>" << endl;
   writer << "</Document>" << endl;
 }
 

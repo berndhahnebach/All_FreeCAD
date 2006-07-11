@@ -59,6 +59,7 @@ class ObjectItem : public QListViewItem
 public:
   /// Constructor
   ObjectItem( QListViewItem* parent,Gui::ViewProviderDocumentObject* pcViewProvider);
+  virtual ~ObjectItem();
 
   /// This is the class Id to distinguish from QListViewItem itself or from other QListViewItem-subclasses. 
   int rtti () const { return 3100; }
@@ -127,14 +128,14 @@ public:
   /// Sets the pixmap that will be shown.
 //    void setPixmap( QPixmap *p );
 
-  /** Adds a view provider to the document item and returns true.
-   * If this view provider is already added nothing happens and false is returned.
+  /** Adds a view provider to the document item.
+   * If this view provider is already added nothing happens.
    */
-  bool addViewProviderDocumentObject(ViewProviderDocumentObject*);
-  /** Removes a view provider from the document item and returns true.
-   * If this view provider is not added nothing happens and false is returned.
+  void addViewProviderDocumentObject(ViewProviderDocumentObject*);
+  /** Removes a view provider from the document item.
+   * If this view provider is not added nothing happens.
    */
-  bool removeViewProviderDocumentObject(ViewProviderDocumentObject*);
+  void removeViewProviderDocumentObject(ViewProviderDocumentObject*);
 
   void highlightFeature(const char*, bool);
 
@@ -166,9 +167,6 @@ protected:
 
   Gui::Document*  _pcDocument;
   std::map<std::string,ObjectItem*> FeatMap;
-
-private:
-  QListViewItem* _lastFeaItem;
 };
  
 

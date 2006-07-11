@@ -169,7 +169,7 @@ void ViewProvider::show(void)
   pcModeSwitch->whichChild = _iActualMode;
 }
 
-bool ViewProvider::isShow(void)
+bool ViewProvider::isShow(void) const
 {
   return pcModeSwitch->whichChild.getValue() != -1;
 
