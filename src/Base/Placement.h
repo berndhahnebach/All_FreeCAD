@@ -42,7 +42,7 @@ public:
   virtual ~Placement () {};
 
   const Vector3<double> &getPos(void) const {return _Pos;}
-  const double *getRotateion(void) const {return _q;}
+  const double *getRotation(void) const {return _q;}
 
   Vector3<double> _Pos;
   double _q[4];
