@@ -124,6 +124,14 @@ vector<App::DocumentObject*> SelectionSingleton::getObjectsOfType(const Base::Ty
   return temp;
 }
 
+std::vector<App::DocumentObject*> SelectionSingleton::getObjectsOfType(const char* typeName, const char* pDocName) const
+{
+  Base::Type typeId = Base::Type::fromName(typeName);
+  if ( typeId == Base::Type::badType() )
+    return std::vector<App::DocumentObject*>();
+  return getObjectsOfType(typeId, pDocName);
+}
+
 unsigned int SelectionSingleton::countObjectsOfType(const Base::Type& typeId, const char* pDocName) const
 {
   unsigned int iNbr=0;
@@ -149,6 +157,14 @@ unsigned int SelectionSingleton::countObjectsOfType(const Base::Type& typeId, co
   }
 
   return iNbr;
+}
+
+unsigned int SelectionSingleton::countObjectsOfType(const char* typeName, const char* pDocName) const
+{
+  Base::Type typeId = Base::Type::fromName(typeName);
+  if ( typeId == Base::Type::badType() )
+    return 0;
+  return countObjectsOfType(typeId, pDocName);
 }
 
 bool SelectionSingleton::setPreselect(const char* pDocName, const char* pObjectName, const char* pSubName, float x, float y, float z)

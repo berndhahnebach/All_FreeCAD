@@ -110,12 +110,24 @@ public:
    */
   unsigned int countObjectsOfType(const Base::Type& typeId, const char* pDocName=0) const;
 
+  /**
+   * Does basically the same as the method above unless that it accepts a string literal as first argument.
+   * \a typeName must be a registered type otherwise 0 is returned.
+   */
+  unsigned int countObjectsOfType(const char* typeName, const char* pDocName=0) const;
+
   /** Returns a vector of features of type \a TypeName selected for the given document name \a pDocName.
    * If no document name is specified the Objects from the active document are regarded.
    * If no objects of this document are selected an empty vector is returned.
    * @note The vector reflects the sequence of selection.
    */
   std::vector<App::DocumentObject*> getObjectsOfType(const Base::Type& typeId, const char* pDocName=0) const;
+
+  /**
+   * Does basically the same as the method above unless that it accepts a string literal as first argument.
+   * \a typeName must be a registered type otherwise an empty array is returned.
+   */
+  std::vector<App::DocumentObject*> getObjectsOfType(const char* typeName, const char* pDocName=0) const;
 
   struct SelObj {
     const char* DocName;

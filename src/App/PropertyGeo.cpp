@@ -477,7 +477,7 @@ void PropertyPlacement::Save (Base::Writer &writer) const
 {
   writer << writer.ind() << "<PropertyPlacement"; 
   writer << " Px=\"" <<  _cPos.getPos().x << "\" Py=\"" <<  _cPos.getPos().y << "\" Pz=\"" <<  _cPos.getPos().z << "\"";
-  writer << " Q0=\"" <<  _cPos.getRotateion()[0] << "\" Q1=\"" <<  _cPos.getRotateion()[1] << "\" Q2=\"" <<  _cPos.getRotateion()[2] << "\" Q3=\"" <<  _cPos.getRotateion()[3] << "\"";
+  writer << " Q0=\"" <<  _cPos.getRotation()[0] << "\" Q1=\"" <<  _cPos.getRotation()[1] << "\" Q2=\"" <<  _cPos.getRotation()[2] << "\" Q3=\"" <<  _cPos.getRotation()[3] << "\"";
   writer <<"/>" << endl;
 }
 
