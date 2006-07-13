@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppTest"
-	ProjectGUID="{C7916E68-E2C9-4DC5-A6A0-A2C02F15C441}"
+	ProjectGUID="{6C0158E6-A8E0-4F8C-A1D8-65272016CD23}"
 	>
 	<Platforms>
 		<Platform
@@ -368,6 +368,30 @@
 		</File>
 		<File
 			RelativePath="unittestgui.py"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Copying $(InputName).py ..."
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
+					Outputs="$(OutDir)\$(InputName).py"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Copying $(InputName).py ..."
+					CommandLine="copy &quot;$(InputDir)$(InputName).py&quot; &quot;$(OutDir)\$(InputName).py&quot;&#x0D;&#x0A;"
+					Outputs="$(OutDir)\$(InputName).py"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath="Workbench.py"
 			>
 			<FileConfiguration
 				Name="Release|Win32"

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="Install"
-	ProjectGUID="{45251F02-6F8E-4476-88A8-513E07D76AB2}"
+	ProjectGUID="{613788A7-339C-44DC-B836-C5CF96ADE24B}"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>

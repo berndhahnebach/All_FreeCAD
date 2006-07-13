@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADMainPy"
-	ProjectGUID="{2E5FD04E-4DD4-45FE-9FEE-F251E4F6C521}"
+	ProjectGUID="{3605A3C4-8907-463E-A6E1-21D8DCEA03CB}"
 	>
 	<Platforms>
 		<Platform
