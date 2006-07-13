@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADBase"
-	ProjectGUID="{830B4006-24A6-4C00-AD72-CE2C236B46C4}"
+	ProjectGUID="{2AFF2B7D-4110-41BD-BF50-4F4B900073A0}"
 	>
 	<Platforms>
 		<Platform
@@ -893,6 +893,28 @@
 		<File
 			RelativePath="Console.h"
 			>
+		</File>
+		<File
+			RelativePath="DllMain.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions=""
+					UsePrecompiledHeader="0"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					PreprocessorDefinitions=""
+					UsePrecompiledHeader="0"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Doxygen.cpp"

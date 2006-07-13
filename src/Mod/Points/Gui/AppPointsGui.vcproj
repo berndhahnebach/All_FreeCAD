@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppPointsGui"
-	ProjectGUID="{F2DDCB06-823B-423B-87E9-329336555C6E}"
+	ProjectGUID="{8018432C-AC1C-4417-8727-B98E6C2D0B6F}"
 	>
 	<Platforms>
 		<Platform

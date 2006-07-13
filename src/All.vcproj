@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="All"
-	ProjectGUID="{6CFE485B-13C2-482C-9978-6E546CC0DB38}"
+	ProjectGUID="{6BE6DA45-F4EA-4884-AE7B-D76C78EB6C1E}"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>

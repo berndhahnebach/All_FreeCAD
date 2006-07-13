@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMeshGui"
-	ProjectGUID="{E3E2418E-2637-4BD1-B725-0B154192FDCF}"
+	ProjectGUID="{C0693CCC-6A42-4542-8ABA-96D458EB2B9F}"
 	>
 	<Platforms>
 		<Platform
@@ -110,7 +110,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy       /y       /f       Release\MeshGui.pyd       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy       /y       /f       ..\InitGui.py       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy       /y       /f       Release\MeshGui.lib       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
+				CommandLine="xcopy        /y        /f        Release\MeshGui.pyd        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy        /y        /f        ..\InitGui.py        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy        /y        /f        Release\MeshGui.lib        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -212,7 +212,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy       /y       /f       Debug\MeshGui_d.pyd       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy       /y       /f       ..\InitGui.py       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy       /y       /f       Debug\MeshGui_d.lib       ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
+				CommandLine="xcopy        /y        /f        Debug\MeshGui_d.pyd        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy        /y        /f        ..\InitGui.py        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy        /y        /f        Debug\MeshGui_d.lib        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -343,6 +343,196 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Inventor"
+			>
+			<File
+				RelativePath="SoFCMeshNode.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="SoFCMeshNode.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="ViewProvider"
+			>
+			<File
+				RelativePath="ViewProvider.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProvider.h"
+				>
+			</File>
+			<File
+				RelativePath="ViewProviderCurvature.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProviderCurvature.h"
+				>
+			</File>
+			<File
+				RelativePath="ViewProviderDefects.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProviderDefects.h"
+				>
+			</File>
+			<File
+				RelativePath="ViewProviderMeshNode.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProviderMeshNode.h"
+				>
+			</File>
+			<File
+				RelativePath="ViewProviderTransform.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProviderTransform.h"
+				>
+			</File>
+			<File
+				RelativePath="ViewProviderTransformDemolding.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProviderTransformDemolding.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="AppMeshGui.cpp"
 			>
@@ -463,162 +653,6 @@
 		</File>
 		<File
 			RelativePath="PropertyEditorMesh.h"
-			>
-		</File>
-		<File
-			RelativePath="SoFCMeshNode.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="SoFCMeshNode.h"
-			>
-		</File>
-		<File
-			RelativePath="ViewProvider.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="ViewProvider.h"
-			>
-		</File>
-		<File
-			RelativePath="ViewProviderCurvature.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="ViewProviderCurvature.h"
-			>
-		</File>
-		<File
-			RelativePath="ViewProviderDefects.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="ViewProviderDefects.h"
-			>
-		</File>
-		<File
-			RelativePath="ViewProviderTransform.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="ViewProviderTransform.h"
-			>
-		</File>
-		<File
-			RelativePath="ViewProviderTransformDemolding.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="ViewProviderTransformDemolding.h"
 			>
 		</File>
 		<File

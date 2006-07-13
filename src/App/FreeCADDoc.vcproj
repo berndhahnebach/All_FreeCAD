@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADApp"
-	ProjectGUID="{0D1D2CAA-E51E-4DE0-BFCD-2BF1A7794F3B}"
+	ProjectGUID="{42B0D547-0B90-48EF-B423-38400E5E635D}"
 	>
 	<Platforms>
 		<Platform
@@ -109,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy       /y       /f       Release\FreeCADApp.dll       ..\..\bin\&#x0D;&#x0A;xcopy       /y       /f       Release\FreeCADApp.lib       ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy         /y         /f         Release\FreeCADApp.dll         ..\..\bin\&#x0D;&#x0A;xcopy         /y         /f         Release\FreeCADApp.lib         ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -209,7 +209,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy       /y       /f       Debug\FreeCADAppD.dll       ..\..\bin\&#x0D;&#x0A;xcopy       /y       /f       Debug\FreeCADAppD.lib       ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy         /y         /f         Debug\FreeCADAppD.dll         ..\..\bin\&#x0D;&#x0A;xcopy         /y         /f         Debug\FreeCADAppD.lib         ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -403,6 +403,58 @@
 			</File>
 			<File
 				RelativePath="DocumentObject.h"
+				>
+			</File>
+			<File
+				RelativePath="DocumentObjectGroup.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DocumentObjectGroup.h"
+				>
+			</File>
+			<File
+				RelativePath="DocumentObjectGroupPy.cpp"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DocumentObjectGroupPy.h"
 				>
 			</File>
 			<File
@@ -765,6 +817,30 @@
 		<File
 			RelativePath="DataWithProperty.h"
 			>
+		</File>
+		<File
+			RelativePath="DllMain.cpp"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					UsePrecompiledHeader="0"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					UsePrecompiledHeader="0"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Doxygen.cpp"

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADGui"
-	ProjectGUID="{EC8BFDBB-6B06-458F-B958-C9E4D25AAC40}"
+	ProjectGUID="{4A1A8B8C-9D79-4FAE-AF0C-D35FEC30B11F}"
 	>
 	<Platforms>
 		<Platform
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy       /y       /f       Debug\FreeCADGuiD.dll       ..\..\bin&#x0D;&#x0A;xcopy       /y       /f       Debug\FreeCADGuiD.lib       ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy           /y           /f           Debug\FreeCADGuiD.dll           ..\..\bin&#x0D;&#x0A;xcopy           /y           /f           Debug\FreeCADGuiD.lib           ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -211,7 +211,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy       /y       /f       Release\FreeCADGui.dll       ..\..\bin\&#x0D;&#x0A;xcopy       /y       /f       Release\FreeCADGui.lib       ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy           /y           /f           Release\FreeCADGui.dll           ..\..\bin\&#x0D;&#x0A;xcopy           /y           /f           Release\FreeCADGui.lib           ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -624,6 +624,56 @@
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DlgProjectInformation.ui"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Uic&apos;ing $(InputName).ui ..."
+						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DlgProjectInformationImp.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="DlgProjectInformationImp.h"
+				>
 			</File>
 			<File
 				RelativePath="DlgTipOfTheDay.ui"
@@ -2514,6 +2564,32 @@
 				>
 			</File>
 			<File
+				RelativePath="SoFCInteractiveElement.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="SoFCInteractiveElement.h"
+				>
+			</File>
+			<File
 				RelativePath="SoFCOffscreenRenderer.cpp"
 				>
 				<FileConfiguration
@@ -3654,14 +3730,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\SoFCInteractiveElement.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SoFCInteractiveElement.h"
-				>
-			</File>
-			<File
 				RelativePath="SoFCSelection.cpp"
 				>
 				<FileConfiguration
@@ -3711,6 +3779,32 @@
 			</File>
 			<File
 				RelativePath="SoFCSelectionAction.h"
+				>
+			</File>
+			<File
+				RelativePath="SplitView3DInventor.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="SplitView3DInventor.h"
 				>
 			</File>
 			<File
@@ -3890,6 +3984,32 @@
 				>
 			</File>
 			<File
+				RelativePath="ViewProviderDocumentObjectGroup.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProviderDocumentObjectGroup.h"
+				>
+			</File>
+			<File
 				RelativePath="ViewProviderExtern.cpp"
 				>
 				<FileConfiguration
@@ -3939,6 +4059,32 @@
 			</File>
 			<File
 				RelativePath="ViewProviderFeature.h"
+				>
+			</File>
+			<File
+				RelativePath="ViewProviderPy.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="ViewProviderPy.h"
 				>
 			</File>
 			<File
@@ -4227,6 +4373,30 @@
 		<File
 			RelativePath="BitmapFactory.h"
 			>
+		</File>
+		<File
+			RelativePath="DllMain.cpp"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					UsePrecompiledHeader="0"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCLCompilerTool"
+					AdditionalIncludeDirectories=""
+					PreprocessorDefinitions=""
+					UsePrecompiledHeader="0"
+				/>
+			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Document.cpp"
