@@ -27,6 +27,8 @@
 //#include <Inventor/SoAction.h> 
 #include <Inventor/actions/SoSubAction.h> 
 
+class SoSFString;
+
 namespace Gui {
 
 class SelectionChanges;
