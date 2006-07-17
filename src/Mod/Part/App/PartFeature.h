@@ -44,6 +44,43 @@ namespace Part
 class Property;
 class PartFeaturePy;
 
+/** The part shape property
+ */
+class AppPartExport PropertyPartShape : public App::Property
+{
+  TYPESYSTEM_HEADER();
+
+public:
+	PropertyPartShape();
+	~PropertyPartShape();
+
+  /** @name Getter/setter */
+  //@{
+  /// set the part shape
+  void setValue( TopoDS_Shape );
+  /// get the part shape
+  TopoDS_Shape getValue(void) const;
+  //@}
+
+  /** @name Python interface */
+  //@{
+  PyObject* getPyObject(void);
+  void setPyObject(PyObject *value);
+  //@}
+
+  /** @name Save/restore */
+  //@{
+  void Save (Base::Writer &writer) const;
+  void Restore(Base::XMLReader &reader);
+
+  void SaveDocFile (Base::Writer &writer) const;
+  void RestoreDocFile(Base::Reader &reader);
+  //@}
+
+private:
+  TopoDS_Shape _Shape;
+};
+
 /** Base class of all Feature classes in FreeCAD
  */
 class AppPartExport Feature: public App::AbstractFeature
@@ -54,6 +91,8 @@ public:
 	/// Constructor
 	Feature(void);
   virtual ~Feature();
+
+  PropertyPartShape Shape;
 
   /** @name methods overide Feature */
   //@{
@@ -83,7 +122,6 @@ public:
   virtual Base::PyObjectBase *Feature::GetPyObject(void);
 
 private:
-  TopoDS_Shape _Shape;
   PartFeaturePy* _featurePy;
 };
 

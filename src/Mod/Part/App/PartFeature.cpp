@@ -24,13 +24,156 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <sstream>
+# include <TopTools_HSequenceOfShape.hxx>
+# include <STEPControl_Writer.hxx>
+# include <STEPControl_Reader.hxx>
 #endif
+
+#include <Base/Writer.h>
+#include <Base/Reader.h>
+#include <Base/Exception.h>
+#include <Base/FileInfo.h>
 
 #include "PartFeature.h"
 #include "PartFeaturePy.h"
+#include "TopologyPy.h"
 
 using namespace Part;
 
+TYPESYSTEM_SOURCE(Part::PropertyPartShape , App::Property);
+
+PropertyPartShape::PropertyPartShape()
+{
+
+}
+
+PropertyPartShape::~PropertyPartShape()
+{
+}
+
+void PropertyPartShape::setValue(TopoDS_Shape m)
+{
+  aboutToSetValue();
+  _Shape = m;
+  hasSetValue();
+}
+
+TopoDS_Shape PropertyPartShape::getValue(void)const 
+{
+	return _Shape;
+}
+
+PyObject *PropertyPartShape::getPyObject(void)
+{
+  return new TopoShapePy(_Shape);
+}
+
+void PropertyPartShape::setPyObject(PyObject *value)
+{
+  if( PyObject_TypeCheck(value, &(TopoShapePy::Type)) ) {
+   	TopoShapePy  *pcObject = (TopoShapePy*)value;
+    setValue(pcObject->getTopoShape());
+  }
+}
+
+void PropertyPartShape::Save (Base::Writer &writer) const
+{
+//  if( writer.isForceXML() )
+//  {
+//    writer << writer.ind() << "<Part>" << std::endl;
+//    MeshCore::MeshDocXML saver(*_pcMesh);
+//    saver.Save(writer);
+//  }else{
+    writer << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.stp", this) << "\"/>" << std::endl;
+//  }
+}
+
+void PropertyPartShape::Restore(Base::XMLReader &reader)
+{
+  reader.readElement("Part");
+  std::string file (reader.getAttribute("file") );
+//
+//  if(file == "")
+//  {
+//    // read XML
+//    MeshCore::MeshDocXML restorer(*_pcMesh);
+//    restorer.Restore(reader);
+//  }else{
+    // initate a file read
+    reader.addFile(file.c_str(),this);
+//  }
+}
+
+void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
+{
+  try {
+    // create a temporary file and copy the content to the zip stream
+    Base::FileInfo fi;
+    std::string filename = fi.getTempFileName();
+
+    STEPControl_Writer aWriter;
+    aWriter.Transfer(_Shape, STEPControl_AsIs);
+    if (aWriter.Write((const Standard_CString)filename.c_str()) != IFSelect_RetDone)
+      return;
+
+    std::ifstream file( filename.c_str(), std::ios::in | std::ios::binary );
+    if (file){
+      char line[200];
+      while (!file.eof()) {
+        file.getline(line,200);
+        writer << line << std::endl;
+      }
+    }
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
+
+void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
+{
+  try {
+    // create a temporary file and copy the content from the zip stream
+    Base::FileInfo fi;
+    std::string filename = fi.getTempFileName();
+
+    std::ofstream file(filename.c_str(), std::ios::out | std::ios::binary);
+    if (file){
+      char line[200];
+      while (!reader.eof()) {
+        reader.getline(line,200);
+        file << line << std::endl;
+      }
+      file.close();
+    }
+
+    STEPControl_Reader aReader;
+    Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
+    if (aReader.ReadFile((const Standard_CString)filename.c_str()) != IFSelect_RetDone)
+      return;
+  
+    // Root transfers
+    Standard_Integer nbr = aReader.NbRootsForTransfer();
+    for ( Standard_Integer n = 1; n<= nbr; n++)
+    {
+      // Collecting resulting entities
+      aReader.TransferRoot(n);
+      Standard_Integer nbs = aReader.NbShapes();
+      if (nbs == 0) {
+        aHSequenceOfShape.Nullify();
+        return;
+      } else {
+        for (Standard_Integer i =1; i<=nbs; i++) 
+        {
+          _Shape=aReader.Shape(i);
+          aHSequenceOfShape->Append(_Shape);
+        }
+      }
+    }
+  } catch( const Base::Exception& e) {
+    throw e;
+  }
+}
 
 //===========================================================================
 // Feature
@@ -41,6 +184,7 @@ PROPERTY_SOURCE(Part::Feature, App::AbstractFeature)
 
 Feature::Feature(void) : _featurePy(0)
 {
+  ADD_PROPERTY(Shape, (TopoDS_Shape()));
 }
 
 Feature::~Feature()
@@ -60,12 +204,12 @@ int Feature::execute(void)
 
 void Feature::setShape(const TopoDS_Shape &Shape)
 {
-  _Shape = Shape;
+  this->Shape.setValue(Shape);
 }
 
 TopoDS_Shape Feature::getShape(void)
 {
-  return _Shape;
+  return Shape.getValue();
 }
 
 

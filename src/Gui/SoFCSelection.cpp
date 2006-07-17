@@ -123,6 +123,11 @@ SoFCSelection::turnOffCurrentHighlight(SoGLRenderAction * action)
 
 void SoFCSelection::doAction( SoAction *action)
 {
+  if ( action->getTypeId() == SoFCDocumentAction::getClassTypeId() ) {
+    SoFCDocumentAction *docaction = (SoFCDocumentAction*)action;
+    this->documentName = docaction->documentName;
+  }
+
   if ( selectionMode.getValue() == SEL_ON && action->getTypeId() == SoFCSelectionAction::getClassTypeId() ) {
     SoFCSelectionAction *selaction = reinterpret_cast<SoFCSelectionAction*>(action);
 

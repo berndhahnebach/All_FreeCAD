@@ -70,7 +70,8 @@ public:
 
   /// Observer message from the ParameterGrp
   virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
-
+  /// get called when the document is updated
+  virtual void onRename(Gui::Document *pDoc);
 
   /// handle dropt files on this document
   void import(const char* FileName);
@@ -101,6 +102,8 @@ public slots:
 protected:
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
+  void keyPressEvent    ( QKeyEvent       * e );
+  void keyReleaseEvent  ( QKeyEvent       * e );
 
   /// handle to the viewer parameter group
   ParameterGrp::handle hGrp;

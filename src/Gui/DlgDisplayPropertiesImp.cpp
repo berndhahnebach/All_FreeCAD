@@ -211,7 +211,7 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent,  const char* 
         if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
         {
           App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
-          App::Material mat;
+          App::Material mat = ShapeMaterial->getValue();
           if ( bMaterial == false ) {
             cMatType = mat.getType();
             bMaterial = true;

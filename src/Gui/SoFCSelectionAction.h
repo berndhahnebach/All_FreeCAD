@@ -58,6 +58,31 @@ private:
   static void callDoAction(SoAction *action,SoNode *node);
 };
 
+/**
+ * The SoFCDocumentAction class is used to inform an SoFCSelection node when a document has been renamed. 
+ * @author Werner Mayer
+ */
+class GuiExport SoFCDocumentAction : public SoAction
+{
+
+  SO_ACTION_HEADER(SoFCDocumentAction);
+
+public:
+  SoFCDocumentAction (const SoSFString& docName);
+	~SoFCDocumentAction();
+
+  const SoSFString& documentName;
+
+  static void initClass();
+
+protected:
+  virtual void beginTraversal(SoNode *node);
+
+private:
+  static void selNode(SoAction *action,SoNode *node);
+  static void callDoAction(SoAction *action,SoNode *node);
+};
+
 } // namespace Gui
 
 

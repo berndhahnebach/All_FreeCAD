@@ -321,6 +321,10 @@ void MDIView::keyPressEvent ( QKeyEvent* e )
     {
       setCurrentViewMode(FullScreen);
     }
+    else
+    {
+      QMainWindow::keyPressEvent( e );
+    }
   }
   else // the occupied key events F,D and U are are "eaten" by the main window
   {

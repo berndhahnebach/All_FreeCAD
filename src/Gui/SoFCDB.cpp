@@ -57,6 +57,7 @@ void Gui::SoFCDB::init()
   SoInteraction           ::init();
   SoFCSelection           ::initClass();
   SoFCSelectionAction     ::initClass();
+  SoFCDocumentAction      ::initClass();
   SoFCInteractiveElement  ::initClass();
 
 

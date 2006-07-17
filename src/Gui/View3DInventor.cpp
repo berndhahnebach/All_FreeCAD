@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qapplication.h>
 # include <qdragobject.h>
 # include <qfileinfo.h>
 # include <qvbox.h>
@@ -50,6 +51,7 @@
 
 #include "View3DInventorExamples.h"
 #include "ViewProviderFeature.h"
+#include "SoFCSelectionAction.h"
 
 #include <locale>
 
@@ -125,6 +127,15 @@ void View3DInventor::setViewerDefaults(void)
 void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason)
 {
   setViewerDefaults();
+}
+
+void View3DInventor::onRename(Gui::Document *pDoc)
+{
+  MDIView::onRename(pDoc);
+  SoSFString name;
+  name.setValue(pDoc->getDocument()->getName());
+  SoFCDocumentAction cAct(name);
+  cAct.apply(_viewer->getSceneGraph());
 }
 
 void View3DInventor::onUpdate(void)
@@ -459,6 +470,54 @@ void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
     e->accept();
   else
     e->ignore();
+}
+
+void View3DInventor::keyPressEvent ( QKeyEvent* e )
+{
+  // Note: if the widget is in fullscreen mode then we can return to normal mode either
+  // by pressing D or ESC. Since keyboard is grabbed accelerators don't work any more
+  // (propably accelerators don't work at all - even without having grabbed the keyboard!?)
+
+  if ( _actualMode != Normal )
+  {
+    // use Command's API to hold toogled state consistent
+    if ( e->key() == Key_D || e->key() == Key_Escape )
+    {
+      setCurrentViewMode(Normal);
+    }
+    else if ( e->key() == Key_U )
+    {
+      setCurrentViewMode(TopLevel);
+    }
+    else if ( e->key() == Key_F )
+    {
+      setCurrentViewMode(FullScreen);
+    }
+    else
+    {
+      // send the event to the proxy widget that converts to and handles an SoEvent
+      QWidget* w = _viewer->getGLWidget();
+      QApplication::sendEvent(w,e);
+    }
+  }
+  else // the occupied key events F,D and U are are "eaten" by the main window
+  {
+    QMainWindow::keyPressEvent( e );
+  }
+}
+
+void View3DInventor::keyReleaseEvent ( QKeyEvent* e )
+{
+  if ( _actualMode != Normal )
+  {
+    // send the event to the proxy widget that converts to and handles an SoEvent
+    QWidget* w = _viewer->getGLWidget();
+    QApplication::sendEvent(w,e);
+  }
+  else
+  {
+    QMainWindow::keyReleaseEvent( e );
+  }
 }
 
 
