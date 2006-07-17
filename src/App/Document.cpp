@@ -565,16 +565,16 @@ void Document::PurgeModified()
 
 /// Recompute if the document was  not valid and propagate the reccorded modification.
 void Document::recompute()
-{  
+{
   int iSentinel = 20;
   bool goOn;
   DocChanges DocChange;
   DocChange.Why = DocChanges::Recompute;
 
-  std::set<DocumentObject*>::iterator i;
+//  std::set<DocumentObject*>::iterator i;
   std::set<AbstractFeature*>::iterator l;
   std::set<AbstractFeature*> tempErr;
-  
+
 //  TDF_MapIteratorOfLabelMap It;
   Base::Console().Log("Solv: Start recomputation of document: \"%s\"\n",Name.getValue());
 

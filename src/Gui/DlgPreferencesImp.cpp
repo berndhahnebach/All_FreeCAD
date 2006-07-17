@@ -62,8 +62,8 @@ protected:
   virtual void paint( QPainter * );
 
 private:
-  QPixmap pm_Unsel;
   QPixmap pm_Sel;
+  QPixmap pm_Unsel;
 };
 
 } // namespace Dialog

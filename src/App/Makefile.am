@@ -17,6 +17,10 @@ libFreeCADApp_la_SOURCES=\
 		Document.h \
 		DocumentObject.cpp \
 		DocumentObject.h \
+		DocumentObjectGroup.cpp \
+		DocumentObjectGroup.h \
+		DocumentObjectGroupPy.cpp \
+		DocumentObjectGroupPy.h \
 		DocumentObjectPy.cpp \
 		DocumentObjectPy.h \
 		DocumentPy.cpp \

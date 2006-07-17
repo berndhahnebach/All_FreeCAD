@@ -323,6 +323,8 @@ libFreeCADGui_la_SOURCES=\
 		ViewProvider.h \
 		ViewProviderDocumentObject.cpp \
 		ViewProviderDocumentObject.h \
+		ViewProviderDocumentObjectGroup.cpp \
+		ViewProviderDocumentObjectGroup.h \
 		ViewProviderExtern.cpp \
 		ViewProviderExtern.h \
 		ViewProviderFeature.cpp \

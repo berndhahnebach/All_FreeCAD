@@ -147,11 +147,11 @@ public:
 
   /** @name Getter/setter */
   //@{
-  /// COPIES the mesh into the Property
+  /// COPIES the points to the property
   void setValue( const PointKernel& m);
-  /// REPLACE the mesh in the Property
+  /// REPLACE the point in the property
   void setValue( PointKernel* m);
-  /// get the Kernel (only const possible!)
+  /// get the points (only const possible!)
   const PointKernel &getValue(void) const;
   //@}
 

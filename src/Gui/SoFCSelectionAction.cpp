@@ -159,3 +159,85 @@ void SoFCSelectionAction::callDoAction(SoAction *action,SoNode *node)
   node->doAction(action);
 }
 
+// ---------------------------------------------------------------
+
+SO_ACTION_SOURCE(SoFCDocumentAction);
+
+/**
+ * The order of the defined SO_ACTION_ADD_METHOD statements is very important. First the base 
+ * classes and afterwards subclasses of them must be listed, otherwise the registered methods 
+ * of subclasses will be overridden. For more details see the thread in the Coin3d forum 
+ * https://www.coin3d.org/pipermail/coin-discuss/2004-May/004346.html.
+ * This means that \c SoSwitch must be listed after \c SoGroup and \c SoFCSelection after 
+ * \c SoSeparator because both classes inherits the others.
+ */
+void SoFCDocumentAction::initClass()
+{
+  SO_ACTION_INIT_CLASS(SoFCDocumentAction,SoAction);
+
+  SO_ENABLE(SoFCDocumentAction, SoSwitchElement);
+
+  SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+  SO_ENABLE(SoFCDocumentAction, SoModelMatrixElement);
+  SO_ENABLE(SoFCDocumentAction, SoShapeStyleElement);
+  SO_ENABLE(SoFCDocumentAction, SoComplexityElement);
+  SO_ENABLE(SoFCDocumentAction, SoComplexityTypeElement);
+  SO_ENABLE(SoFCDocumentAction, SoCoordinateElement);
+  SO_ENABLE(SoFCDocumentAction, SoFontNameElement);
+  SO_ENABLE(SoFCDocumentAction, SoFontSizeElement);
+  SO_ENABLE(SoFCDocumentAction, SoProfileCoordinateElement);
+  SO_ENABLE(SoFCDocumentAction, SoProfileElement);
+  SO_ENABLE(SoFCDocumentAction, SoSwitchElement);
+  SO_ENABLE(SoFCDocumentAction, SoUnitsElement);
+  SO_ENABLE(SoFCDocumentAction, SoViewVolumeElement);
+  SO_ENABLE(SoFCDocumentAction, SoViewingMatrixElement);
+  SO_ENABLE(SoFCDocumentAction, SoViewportRegionElement);
+
+
+
+
+  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
+  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
+  SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
+  SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+}
+
+
+SoFCDocumentAction::SoFCDocumentAction (const SoSFString& docName)
+  : documentName(docName)
+{
+  SO_ACTION_CONSTRUCTOR(SoFCDocumentAction);
+}
+
+
+SoFCDocumentAction::~SoFCDocumentAction()
+{
+}
+
+ 
+void SoFCDocumentAction::beginTraversal(SoNode *node)
+{
+  traverse(node);
+}
+
+void SoFCDocumentAction::selNode(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+void SoFCDocumentAction::callDoAction(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+

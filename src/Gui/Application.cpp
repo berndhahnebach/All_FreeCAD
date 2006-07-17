@@ -62,6 +62,7 @@
 #include "WaitCursor.h"
 #include "MenuManager.h"
 #include "Window.h"
+#include "Selection.h"
 
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
@@ -911,6 +912,7 @@ void Application::destruct(void)
 {
   Console().Log("Destruct GuiApplication\n");
   MainWindow::destruct();
+  SelectionSingleton::destruct();
   delete Instance;
 
   delete _pcQApp;
