@@ -295,6 +295,7 @@ void PropertyFloat::setPyObject(PyObject *value)
 
   }else if(PyInt_Check( value) )
   {
+    aboutToSetValue();
     _dValue = (float) PyInt_AsLong(value);
     hasSetValue();
   }else
