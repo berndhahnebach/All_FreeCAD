@@ -70,6 +70,7 @@ class BaseExport ConsoleObserver
 public:
   ConsoleObserver()
     :bErr(true),bMsg(true),bLog(true),bWrn(true) {}
+  virtual ~ConsoleObserver() {}
 	/// get calles when a Warning is issued
 	virtual void Warning(const char *){};
 	/// get calles when a Message is issued
