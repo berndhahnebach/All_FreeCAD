@@ -42,6 +42,7 @@ namespace MeshCore
 
 class MeshGeomFacet;
 class MeshGeomEdge;
+class MeshBuilder;
 class MeshKernel;
 class MeshFacetGrid;
 class MeshFacetArray;

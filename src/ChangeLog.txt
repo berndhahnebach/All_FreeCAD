@@ -146,3 +146,5 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + added a group class for document objects and its view provider
 + added PropertyPartShape to save/load shapes to/from a document
 + rename document member in SoFCSelection after a document has been renamed
++ Prepared for OCC 6.1: The modules 'AppMesh', 'AppPartGui', 'AppRaytracing' and 'AppRaytracingGui' need the module 'TKMesh.lib'
++ Added a method to XMLReader to get unsigned long from a string

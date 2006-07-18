@@ -70,6 +70,7 @@ class BaseExport PyHandler
 public:
 	void IncRef(void);
 	void DecRef(void);
+  virtual ~PyHandler();
 	virtual PyObjectBase *GetPyObject(void)=0;
 
 };
