@@ -30,30 +30,30 @@ import FreeCAD, os, unittest
 #---------------------------------------------------------------------------
 
 
-class DocumentBasicCases(unittest.TestCase):
-    def setUp(self):
-        self.Doc = FreeCAD.newDocument("CreateTest")
+# class DocumentBasicCases(unittest.TestCase):
+    # def setUp(self):
+        # self.Doc = FreeCAD.newDocument("CreateTest")
 
-    def testCreateDestroy(self):
-        self.failUnless(FreeCAD.getDocument("CreateTest")!= None,"Creating Document failed")
+    # def testCreateDestroy(self):
+        # self.failUnless(FreeCAD.getDocument("CreateTest")!= None,"Creating Document failed")
 
-    def testObjects(self):
-        L1 = self.Doc.addObject("App::FeatureTest","Label_1")
-        self.Doc.recompute()
-        self.failUnless(L1.Integer == 4711,    "Different value to '4711'")
-        FreeCAD.PrintLog("Integer: "+str(L1.Integer))
-        self.failUnless(L1.Float-47.11<0.001,   "Different value to '47.11'")
-        FreeCAD.PrintLog("Float: "+str(L1.Float))
-        self.failUnless(L1.Bool    == True,    "Different value to 'True'")
-        FreeCAD.PrintLog("Boolean: "+str(L1.Bool))
-        self.failUnless(L1.String  == "empty",  "Different value to '4711'")
-        FreeCAD.PrintLog("String: "+L1.String)
+    # def testObjects(self):
+        # L1 = self.Doc.addObject("App::FeatureTest","Label_1")
+        # self.Doc.recompute()
+        # self.failUnless(L1.Integer == 4711,    "Different value to '4711'")
+        # FreeCAD.PrintLog("Integer: "+str(L1.Integer))
+        # self.failUnless(L1.Float-47.11<0.001,   "Different value to '47.11'")
+        # FreeCAD.PrintLog("Float: "+str(L1.Float))
+        # self.failUnless(L1.Bool    == True,    "Different value to 'True'")
+        # FreeCAD.PrintLog("Boolean: "+str(L1.Bool))
+        # self.failUnless(L1.String  == "empty",  "Different value to '4711'")
+        # FreeCAD.PrintLog("String: "+L1.String)
         
-        self.failUnless(L1.name== "Label_1","Invalid object name")
-        L1.name="Label_2"
-        self.Doc.recompute()
-        self.failUnless(L1.name== "Label_2","Invalid object name")
-        self.Doc.removeObject("Label_1")
+        # self.failUnless(L1.name== "Label_1","Invalid object name")
+        # L1.name="Label_2"
+        # self.Doc.recompute()
+        # self.failUnless(L1.name== "Label_2","Invalid object name")
+        # self.Doc.removeObject("Label_1")
 
 #    def testSaveAndRestore(self):
 #        # saving and restoring
@@ -72,9 +72,9 @@ class DocumentBasicCases(unittest.TestCase):
 #            FreeCAD.PrintLog("   no exception thrown, ERROR\n")
 #            raise IOError
 
-    def tearDown(self):
-        # closing doc
-        FreeCAD.closeDocument("CreateTest")
+    # def tearDown(self):
+        #closing doc
+        # FreeCAD.closeDocument("CreateTest")
 
 class UndoRedoCases(unittest.TestCase):
     def setUp(self):
@@ -84,14 +84,49 @@ class UndoRedoCases(unittest.TestCase):
 
     def testUndo(self):
         self.Doc.openCommand()
-        self.Doc.addObject("App::FeatureTest","test1").String = "test1"
-        self.Doc.addObject("App::FeatureTest","test2").String = "test2"
+        self.Doc.addObject("App::FeatureTest","test1")
+        self.Doc.getObject("test1").String   = "test1"
+        self.Doc.getObject("test1").Float    = 1.0
+        self.Doc.getObject("test1").Integer  = 1
+        self.Doc.getObject("test1").Bool     = 1
+        self.Doc.addObject("App::FeatureTest","test2")
+        self.Doc.getObject("test2").String   = "test1"
+        self.Doc.getObject("test2").Float    = 1.0
+        self.Doc.getObject("test2").Integer  = 1
+        self.Doc.getObject("test2").Bool     = 1
+        self.Doc.getObject("test2").Link     = self.Doc.test1
+        self.Doc.openCommand()
+        self.Doc.getObject("test1").String   = "test2"
+        self.Doc.getObject("test1").Float    = 2.0
+        self.Doc.getObject("test1").Integer  = 2
+        self.Doc.getObject("test1").Bool     = 0
+        self.Doc.getObject("test2").String   = "test2"
+        self.Doc.getObject("test2").Float    = 2.0
+        self.Doc.getObject("test2").Integer  = 2
+        self.Doc.getObject("test2").Bool     = 0
+        self.Doc.undo()
+        self.assertEqual(self.Doc.getObject("test1").String,  "test1")
+        self.assertEqual(self.Doc.getObject("test1").Float,   1.0)
+        self.assertEqual(self.Doc.getObject("test1").Integer, 1)
+        self.assertEqual(self.Doc.getObject("test1").Bool,    1)
+        self.assertEqual(self.Doc.getObject("test2").String,  "test1")
+        self.assertEqual(self.Doc.getObject("test2").Float,   1.0)
+        self.assertEqual(self.Doc.getObject("test2").Integer, 1)
+        self.assertEqual(self.Doc.getObject("test2").Bool,    1)
+        self.assertEqual(self.Doc.getObject("test2").Link,    self.Doc.getObject("test1"))
         self.Doc.undo()
         self.failUnless(self.Doc.getObject("test1") == None)
         self.failUnless(self.Doc.getObject("test2") == None)
         self.Doc.redo()
-        self.assertEqual(self.Doc.getObject("test1").String,  "test1")
-        self.assertEqual(self.Doc.getObject("test1").String,  "test1")
+        self.assertEqual(self.Doc.getObject("test1").String,  "test2")
+        self.assertEqual(self.Doc.getObject("test1").Float,   2.0)
+        self.assertEqual(self.Doc.getObject("test1").Integer, 2)
+        self.assertEqual(self.Doc.getObject("test1").Bool,    0)
+        self.assertEqual(self.Doc.getObject("test2").String,  "test2")
+        self.assertEqual(self.Doc.getObject("test2").Float,   2.0)
+        self.assertEqual(self.Doc.getObject("test2").Integer, 2)
+        self.assertEqual(self.Doc.getObject("test2").Bool,    0)
+        self.assertEqual(self.Doc.getObject("test2").Link,    self.Doc.getObject("test1"))
 
     def tearDown(self):
         # closing doc
