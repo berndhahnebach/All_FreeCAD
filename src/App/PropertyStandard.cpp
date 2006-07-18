@@ -939,7 +939,7 @@ void PropertyColor::Restore(Base::XMLReader &reader)
   // read my Element
   reader.readElement("PropertyColor");
   // get the value of my Attribute
-  int rgba = reader.getAttributeAsInteger("value");
+  unsigned long rgba = reader.getAttributeAsUnsigned("value");
   _cCol.setPackedValue(rgba);
 }
 

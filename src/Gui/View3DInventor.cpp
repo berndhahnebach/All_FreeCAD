@@ -36,7 +36,7 @@
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/events/SoEvent.h>
-#include <Inventor/fields/SoSFString.h>
+# include <Inventor/fields/SoSFString.h>
 #endif
 
 #include "View3DInventor.h"

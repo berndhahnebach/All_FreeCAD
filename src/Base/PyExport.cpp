@@ -41,6 +41,10 @@
 
 using namespace Base;
 
+PyHandler::~PyHandler()
+{
+
+}
 
 void PyHandler::IncRef(void)
 {

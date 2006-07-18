@@ -135,15 +135,16 @@ public:
   /** @name Attribute handling */
 	//@{
   /// get the numbers of attributes of the current Element
-  unsigned int getAttributeCount    (void);
+  unsigned int getAttributeCount    (void) const;
   /// check if the read element has a special attribute
-  bool         hasAttribute (const char* AttrName);
+  bool         hasAttribute (const char* AttrName) const;
   /// returns the named attribute as an interer (does type checking)
-  long         getAttributeAsInteger(const char* AttrName);
+  long         getAttributeAsInteger(const char* AttrName) const;
+  unsigned long getAttributeAsUnsigned(const char* AttrName) const;
   /// returns the named attribute as an double floating point (does type checking)
-  double       getAttributeAsFloat  (const char* AttrName);
+  double       getAttributeAsFloat  (const char* AttrName) const;
   /// returns the named attribute as an double floating point (does type checking)
-  const char*  getAttribute         (const char* AttrName);
+  const char*  getAttribute         (const char* AttrName) const;
 	//@}
 
    /** @name additional file reading */

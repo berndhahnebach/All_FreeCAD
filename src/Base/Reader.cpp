@@ -105,12 +105,12 @@ const char* Base::XMLReader::localName(void)
   return LocalName.c_str();
 }
 
-unsigned int Base::XMLReader::getAttributeCount(void)
+unsigned int Base::XMLReader::getAttributeCount(void) const
 {
   return AttrMap.size();
 }
 
-long Base::XMLReader::getAttributeAsInteger(const char* AttrName)
+long Base::XMLReader::getAttributeAsInteger(const char* AttrName) const
 {
   AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
@@ -123,7 +123,20 @@ long Base::XMLReader::getAttributeAsInteger(const char* AttrName)
   return 0;
 }
 
-double Base::XMLReader::getAttributeAsFloat  (const char* AttrName)
+unsigned long Base::XMLReader::getAttributeAsUnsigned(const char* AttrName) const
+{
+  AttrMapType::const_iterator pos = AttrMap.find(AttrName);
+
+  if(pos != AttrMap.end())
+    return strtoul(pos->second.c_str(),0,10);
+  else
+    // wrong name, use hasAttribute if not shure!
+    assert(0);
+
+  return 0;
+}
+
+double Base::XMLReader::getAttributeAsFloat  (const char* AttrName) const
 {
   AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
@@ -137,7 +150,7 @@ double Base::XMLReader::getAttributeAsFloat  (const char* AttrName)
 
 }
 
-const char*  Base::XMLReader::getAttribute (const char* AttrName)
+const char*  Base::XMLReader::getAttribute (const char* AttrName) const
 {
   AttrMapType::const_iterator pos = AttrMap.find(AttrName);
 
@@ -150,7 +163,7 @@ const char*  Base::XMLReader::getAttribute (const char* AttrName)
   return ""; 
 }
 
-bool Base::XMLReader::hasAttribute (const char* AttrName)
+bool Base::XMLReader::hasAttribute (const char* AttrName) const
 {
   return AttrMap.find(AttrName) != AttrMap.end();
 }
