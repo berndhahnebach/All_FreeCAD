@@ -212,6 +212,7 @@ class MessageBoxObserver: public Base::ConsoleObserver
 {
 public:
   MessageBoxObserver(MainWindow *pcAppWnd);
+  virtual ~MessageBoxObserver();
 
   /// get calles when a Warning is issued
   virtual void Warning(const char *m);

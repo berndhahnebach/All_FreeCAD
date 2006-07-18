@@ -40,6 +40,8 @@ namespace Base
 class BaseExport AbstractProducer
 {
 	public:
+    AbstractProducer() {}
+    virtual ~AbstractProducer() {}
     /// overwriten by a concret producer to produce the needed object
 		virtual void* Produce (void) const = 0;
 };

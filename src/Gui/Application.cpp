@@ -929,6 +929,10 @@ MessageBoxObserver::MessageBoxObserver(MainWindow *pcAppWnd)
 #endif
 }
 
+MessageBoxObserver::~MessageBoxObserver()
+{
+}
+
 /// get called when a Warning is issued
 void MessageBoxObserver::Warning(const char *m)
 {
@@ -964,7 +968,10 @@ void MessageBoxObserver::Error  (const char *m)
     ProgressBar::instance()->pause();
   else if ( cursor )
     QApplication::setOverrideCursor(Qt::ArrowCursor);
-  QMessageBox::critical( qApp->activeWindow(), QObject::tr("Critical Error"),m);
+  QWidget* parent = qApp->activeWindow();
+  if ( !parent )
+    parent = getMainWindow();
+  QMessageBox::critical( parent, QObject::tr("Critical Error"),m);
   if ( ok )
     ProgressBar::instance()->resume();
   else if ( cursor )
