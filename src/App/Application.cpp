@@ -352,13 +352,14 @@ Document* Application::openDocument(const char * FileName)
     // But we must make sure that this name is unique.
     if ( name != newDoc.pDoc->Name.getValue() )
     {
+      std::string oldname = newDoc.pDoc->Name.getValue();
       std::string newname = getUniqueDocumentName(newDoc.pDoc->Name.getValue());
-      newDoc.pDoc->Name.setValue(newname);
 
-      // unique name created from filename and unique name created from document XML file are different
-      if ( name != newname )
+      // the name from document XML file isn't unique
+      if ( oldname != newname )
       {
         // Notify all observers
+        newDoc.pDoc->Name.setValue(newname);
         DocChanges DocChange;
         DocChange.Why = DocChanges::Rename;
         newDoc.pDoc->Notify(DocChange);

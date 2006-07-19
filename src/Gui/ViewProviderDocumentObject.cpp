@@ -111,7 +111,7 @@ void ViewProviderDocumentObject::onChanged(const App::Property* prop)
   } else if ( prop == &ShapeMaterial ) {
     const App::Material& Mat = ShapeMaterial.getValue();
     Transparency.enableNotify(false);
-    Transparency.setValue(100*Mat.transparency);
+    Transparency.setValue((long)(100*Mat.transparency));
     Transparency.enableNotify(true);
     ShapeColor.enableNotify(false);
     ShapeColor.setValue(Mat.diffuseColor);

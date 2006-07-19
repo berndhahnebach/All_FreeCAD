@@ -78,11 +78,11 @@ public:
   //@}
 
   /// returns the document the view is attached to
-  Gui::Document* getGuiDocument(){return _pcDocument;}
+  Gui::Document* getGuiDocument() const {return _pcDocument;}
   /// returns the document the view is attached to
-  App::Document* getAppDocument();
+  App::Document* getAppDocument() const;
   /// indikates if the view is in passiv mode
-  bool isPassiv(void){return bIsPassiv;}
+  bool isPassive(void) const {return bIsPassive;}
 
 
   /** @name methods to overrride 
@@ -93,34 +93,19 @@ public:
   /// get called when the document is updated
   virtual void onRename(Gui::Document *pDoc){};
   /// returns the name of the view (important for messages)
-  virtual const char *getName(void)=0;
+  virtual const char *getName(void) const=0;
   /// Mesage handler
   virtual bool onMsg(const char* pMsg, const char** ppReturn)=0;
   /// Mesage handler test
-  virtual bool onHasMsg(const char* pMsg)=0;
-  /// is called when the above function is called to handle document change stuff
-  virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument){};
+  virtual bool onHasMsg(const char* pMsg) const=0;
   /// overvrit when checking on close state
   virtual bool canClose(void){return true;}
-  //@}
-
-  /** @name View provider handling 
-   * View provider handle the visual apperance of things in the document
-   * FreeCAD itself an all application modules can register View provider 
-   * to visualize its new Features or Datatypes
-   */
-  //@{
-  /// Register a new View provider
-  static void addViewProvider(Gui::ViewProvider* pcProvider);
   //@}
 
 protected:
   Gui::Document*  _pcDocument;
   bool bIsDetached;
-  bool bIsPassiv;
-
-  // view provider container
-  static std::vector<Gui::ViewProvider*> _vpcViewProvider;
+  bool bIsPassive;
 };
 
 /** Base class of all windows belonging to a document
@@ -155,14 +140,10 @@ public:
   /// get called when the document is updated
   virtual void onRename(Gui::Document *pDoc);
 
-
-  /// returns the name of the view (important for messages)
-  virtual const char *getName(void)=0;
-
   /// Mesage handler
   virtual bool onMsg(const char* pMsg,const char** ppReturn);
   /// Mesage handler test
-  virtual bool onHasMsg(const char* pMsg);
+  virtual bool onHasMsg(const char* pMsg) const;
   /// overvrit when checking on close state
   virtual bool canClose(void){return true;}
   /// print function of the view

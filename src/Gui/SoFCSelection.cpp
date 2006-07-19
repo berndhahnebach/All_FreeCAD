@@ -128,6 +128,37 @@ void SoFCSelection::doAction( SoAction *action)
     this->documentName = docaction->documentName;
   }
 
+  if ( action->getTypeId() == SoFCEnableHighlightAction::getClassTypeId() ) {
+    SoFCEnableHighlightAction *preaction = (SoFCEnableHighlightAction*)action;
+    if ( preaction->highlight ) {
+      this->highlightMode = SoFCSelection::AUTO;
+    } else {
+      this->highlightMode = SoFCSelection::OFF;
+    }
+  }
+
+  if ( action->getTypeId() == SoFCEnableSelectionAction::getClassTypeId() ) {
+    SoFCEnableSelectionAction *selaction = (SoFCEnableSelectionAction*)action;
+    if ( selaction->selection ) {
+      this->selectionMode = SoFCSelection::SEL_ON;
+      this->style = SoFCSelection::EMISSIVE;
+    } else {
+      this->selectionMode = SoFCSelection::SEL_OFF;
+      this->style = SoFCSelection::BOX;
+      this->selected = NOTSELECTED;
+    }
+  }
+
+  if ( action->getTypeId() == SoFCSelectionColorAction::getClassTypeId() ) {
+    SoFCSelectionColorAction *colaction = (SoFCSelectionColorAction*)action;
+    this->colorSelection = colaction->selectionColor;
+  }
+
+  if ( action->getTypeId() == SoFCHighlightColorAction::getClassTypeId() ) {
+    SoFCHighlightColorAction *colaction = (SoFCHighlightColorAction*)action;
+    this->colorHighlight = colaction->highlightColor;
+  }
+
   if ( selectionMode.getValue() == SEL_ON && action->getTypeId() == SoFCSelectionAction::getClassTypeId() ) {
     SoFCSelectionAction *selaction = reinterpret_cast<SoFCSelectionAction*>(action);
 
@@ -202,7 +233,8 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
       if (highlighted) {
         if (mymode == AUTO)
           SoFCSelection::turnoffcurrent(action);
-        else
+        //FIXME: I think we should set 'highlighted' to false whenever no point is picked
+//        else
           highlighted = FALSE;
         Gui::Selection().rmvPreselect();
       }

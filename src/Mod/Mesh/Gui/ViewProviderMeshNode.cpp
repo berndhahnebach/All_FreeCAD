@@ -116,10 +116,6 @@ void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
   ViewProviderDocumentObject::attach(pcFeat);
 
   // only one selection node for the mesh
-  pcHighlight->objectName = pcFeat->name.getValue();
-  pcHighlight->documentName = pcFeat->getDocument().getName();
-  pcHighlight->subElementName = "Main";
-
   const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
   MeshGui::SoFCMeshNode* mesh = new MeshGui::SoFCMeshNode();
   mesh->setMesh(meshFeature);

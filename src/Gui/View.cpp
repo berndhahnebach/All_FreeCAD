@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qregexp.h>
 #endif
 
 
@@ -40,17 +41,15 @@ using namespace Gui;
 // BaseView
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-std::vector<Gui::ViewProvider*> BaseView::_vpcViewProvider;
-
 BaseView::BaseView( Gui::Document* pcDocument)
   :_pcDocument(pcDocument), bIsDetached(false)
 {
   if(pcDocument){
     pcDocument->attachView(this);
-    bIsPassiv = false;
+    bIsPassive = false;
   }else{
     Application::Instance->attachView(this);
-    bIsPassiv = true;
+    bIsPassive = true;
   }
 }
 
@@ -67,7 +66,7 @@ void BaseView::onClose(void)
 {
   if(bIsDetached) return;
 
-  if(bIsPassiv){
+  if(bIsPassive){
     Application::Instance->detachView(this);
     if(_pcDocument)
       _pcDocument->detachView(this, true);
@@ -98,22 +97,13 @@ void BaseView::setDocument(Gui::Document* pcDocument)
   // set the new document as the active one
   pcOldDocument = _pcDocument;
   _pcDocument = pcDocument;
-
-  // tell the view
-  onNewDocument(pcOldDocument,_pcDocument);
 }
 
 /// returns the document the view is attached to
-App::Document* BaseView::getAppDocument()
+App::Document* BaseView::getAppDocument() const
 {
   if(!_pcDocument) return 0;
   return _pcDocument->getDocument();
-}
-
-/// Register a new View provider
-void BaseView::addViewProvider(Gui::ViewProvider* pcProvider)
-{
-  _vpcViewProvider.push_back(pcProvider);
 }
 
 
@@ -134,9 +124,25 @@ MDIView::~MDIView()
 
 void MDIView::onRename(Gui::Document *pDoc)
 {
-  if(!bIsPassiv)
-    setCaption(QString(pDoc->getDocument()->getName()));
-
+  if(!bIsPassive)
+  {
+    // Try to separate document name and view number if there is one
+    QString cap = caption();
+    // Either with dirty flag ...
+    QRegExp rx("(\\s\\:\\s\\d+\\s\\*)$");
+    int pos = rx.searchRev(cap);
+    if ( pos == -1 ) {
+      // ... or not
+      rx.setPattern("(\\s\\:\\s\\d+)$");
+    }
+    if ( pos != -1 ) {
+      cap = cap.left(pos);
+      cap += rx.cap();
+      setCaption(cap);
+    } else {
+      setCaption(QString(pDoc->getDocument()->getName()));
+    }
+  }
 }
 
 
@@ -146,14 +152,14 @@ bool MDIView::onMsg(const char* pMsg,const char** ppReturn)
   return false;
 }
 
-bool MDIView::onHasMsg(const char* pMsg)
+bool MDIView::onHasMsg(const char* pMsg) const
 {
   return false;
 }
 
 void MDIView::closeEvent(QCloseEvent *e)
 {
-  if(bIsPassiv){
+  if(bIsPassive){
     if(canClose() ){
       e->accept();
       // avoid flickering

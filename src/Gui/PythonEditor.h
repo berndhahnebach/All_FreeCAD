@@ -135,11 +135,11 @@ public:
   void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
   QTextEdit* editor() const { return _textEdit; }
 
-  const char *getName(void){return "PythonEditView";}
+  const char *getName(void) const {return "PythonEditView";}
   void onUpdate(void){};
 
   bool onMsg(const char* pMsg,const char** ppReturn);
-  bool onHasMsg(const char* pMsg);
+  bool onHasMsg(const char* pMsg) const;
 
   bool canClose(void);
   void print( QPrinter* printer );

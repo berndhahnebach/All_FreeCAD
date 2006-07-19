@@ -34,6 +34,7 @@
 #endif
 
 #include <Base/Parameter.h>
+#include <App/Document.h>
 
 #include "Window.h"
 #include "SoFCSelection.h"
@@ -120,6 +121,14 @@ ViewProviderFeature::ViewProviderFeature()
 ViewProviderFeature::~ViewProviderFeature()
 {
   pcHighlight->unref();
+}
+
+void ViewProviderFeature::attach(App::DocumentObject *pcObj)
+{
+  ViewProviderDocumentObject::attach(pcObj);
+  pcHighlight->objectName = pcObj->name.getValue();
+  pcHighlight->documentName = pcObj->getDocument().getName();
+  pcHighlight->subElementName = "Main";
 }
 
 SoPickedPointList ViewProviderFeature::getPickedPoints(const SbVec2s& pos, const View3DInventorViewer& viewer,bool pickAll) const

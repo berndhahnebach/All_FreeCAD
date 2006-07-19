@@ -800,7 +800,7 @@ bool PythonEditView::onMsg(const char* pMsg,const char** ppReturn)
  * Checks if the action \a pMsg is available. This is for enabling/disabling
  * the corresponding buttons or menu items for this action.
  */
-bool PythonEditView::onHasMsg(const char* pMsg)
+bool PythonEditView::onHasMsg(const char* pMsg) const
 {
   if (strcmp(pMsg,"Save")==0)  return true;
   if (strcmp(pMsg,"Run")==0)  return true;

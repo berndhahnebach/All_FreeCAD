@@ -49,32 +49,36 @@ using namespace Gui::PropertyEditor;
 
 void Gui::SoFCDB::init()
 {
-  SoFCColorBarBase        ::initClass();
-  SoFCColorBar            ::initClass();
-  SoFCColorLegend         ::initClass();
-  SoFCColorGradient       ::initClass();
-  SoFCBackgroundGradient  ::initClass();
-  SoInteraction           ::init();
-  SoFCSelection           ::initClass();
-  SoFCSelectionAction     ::initClass();
-  SoFCDocumentAction      ::initClass();
-  SoFCInteractiveElement  ::initClass();
+  SoFCColorBarBase         ::initClass();
+  SoFCColorBar             ::initClass();
+  SoFCColorLegend          ::initClass();
+  SoFCColorGradient        ::initClass();
+  SoFCBackgroundGradient   ::initClass();
+  SoInteraction            ::init();
+  SoFCSelection            ::initClass();
+  SoFCSelectionAction      ::initClass();
+  SoFCDocumentAction       ::initClass();
+  SoFCInteractiveElement   ::initClass();
+  SoFCEnableSelectionAction::initClass();
+  SoFCEnableHighlightAction::initClass();
+  SoFCSelectionColorAction ::initClass();
+  SoFCHighlightColorAction ::initClass();
 
 
-  EditableItem            ::init();
-  TimeEditorItem          ::init();
-  DateEditorItem          ::init();
-  DateTimeEditorItem      ::init();
-  FileEditorItem          ::init();
-  PixmapEditorItem        ::init();
-  ChildrenEditorItem      ::init();
-  FontEditorItem          ::init();
-  ColorEditorItem         ::init();
-  TextEditorItem          ::init();
-  IntEditorItem           ::init();
-  FloatEditorItem         ::init();
-  BoolEditorItem          ::init();
-  ListEditorItem          ::init();
-  CursorEditorItem        ::init();
+  EditableItem             ::init();
+  TimeEditorItem           ::init();
+  DateEditorItem           ::init();
+  DateTimeEditorItem       ::init();
+  FileEditorItem           ::init();
+  PixmapEditorItem         ::init();
+  ChildrenEditorItem       ::init();
+  FontEditorItem           ::init();
+  ColorEditorItem          ::init();
+  TextEditorItem           ::init();
+  IntEditorItem            ::init();
+  FloatEditorItem          ::init();
+  BoolEditorItem           ::init();
+  ListEditorItem           ::init();
+  CursorEditorItem         ::init();
 }
 

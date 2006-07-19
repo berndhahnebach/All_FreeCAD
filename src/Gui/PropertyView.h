@@ -72,10 +72,8 @@ public:
 
   bool onMsg(const char* pMsg);
 
-  virtual const char *getName(void){return "PropertyView";}
+  virtual const char *getName(void) const {return "PropertyView";}
 
-  /// is called when the above function is called to handle document change stuff
-  virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument);
   /// get called when the document is changed or updated
   virtual void onUpdate(void);
 
