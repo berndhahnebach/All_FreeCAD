@@ -279,10 +279,6 @@ void PropertyView::onUpdate(void)
 //  Base::Console().Log("Property Updated\n");
 }
 
-void PropertyView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument)
-{
-}
-
 bool PropertyView::onMsg(const char* pMsg)
 {
   // no messages yet

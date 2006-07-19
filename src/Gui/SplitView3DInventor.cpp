@@ -132,7 +132,7 @@ void SplitView3DInventor::onUpdate(void)
   update();  
 }
 
-const char *SplitView3DInventor::getName(void)
+const char *SplitView3DInventor::getName(void) const
 {
   return "SplitView3DInventor";
 }
@@ -200,7 +200,7 @@ bool SplitView3DInventor::onMsg(const char* pMsg, const char** ppReturn)
   return false;
 }
 
-bool SplitView3DInventor::onHasMsg(const char* pMsg)
+bool SplitView3DInventor::onHasMsg(const char* pMsg) const
 {
   if(strcmp("ViewFit",pMsg) == 0 ){
     return true;

@@ -289,9 +289,6 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   ViewProviderDocumentObject::attach(pcFeat);
 
   // only one selection node for the mesh
-  pcHighlight->objectName = pcFeat->name.getValue();
-  pcHighlight->documentName = pcFeat->getDocument().getName();
-  pcHighlight->subElementName = "Main";
   pcHighlight->addChild(pcMeshCoord);
   pcHighlight->addChild(pcMeshFaces);
 

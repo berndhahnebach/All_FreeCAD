@@ -419,7 +419,7 @@ void Application::viewActivated(MDIView* pcView)
 #endif
 
   // set the new active document
-  if(pcView->isPassiv())
+  if(pcView->isPassive())
     setActiveDocument(0);
   else
     setActiveDocument(pcView->getGuiDocument());

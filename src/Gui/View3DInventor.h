@@ -66,7 +66,7 @@ public:
 
   /// Mesage handler
   virtual bool onMsg(const char* pMsg, const char** ppReturn);
-  virtual bool onHasMsg(const char* pMsg);
+  virtual bool onHasMsg(const char* pMsg) const;
 
   /// Observer message from the ParameterGrp
   virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
@@ -76,7 +76,7 @@ public:
   /// handle dropt files on this document
   void import(const char* FileName);
 
-  virtual const char *getName(void);
+  virtual const char *getName(void) const;
 
   virtual void onUpdate(void);
 

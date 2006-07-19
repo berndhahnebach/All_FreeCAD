@@ -47,6 +47,11 @@ public:
   virtual ~ViewProviderFeature();
 
   /**
+   * Attaches the document object to this view provider.
+   */
+  virtual void attach(App::DocumentObject *pcObj);
+
+  /**
    * Returns a list of picked points from the geometry under \a pcHighlight.
    * If \a pickAll is false (the default) only the intersection point closest to the camera will be picked, otherwise
    * all intersection points will be picked. 

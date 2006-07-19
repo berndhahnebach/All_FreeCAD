@@ -37,6 +37,7 @@
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/events/SoEvent.h>
 # include <Inventor/fields/SoSFString.h>
+# include <Inventor/fields/SoSFColor.h>
 #endif
 
 #include "View3DInventor.h"
@@ -49,6 +50,8 @@
 
 // build in Inventor
 #include "Inventor/Qt/viewers/SoQtExaminerViewer.h"
+#include <Inventor/nodes/SoPerspectiveCamera.h>
+#include <Inventor/nodes/SoOrthographicCamera.h>
 
 #include "View3DInventorExamples.h"
 #include "ViewProviderFeature.h"
@@ -81,8 +84,6 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
   else
     _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
   _viewer->show();
-
-
 }
 
 View3DInventor::~View3DInventor()
@@ -90,10 +91,6 @@ View3DInventor::~View3DInventor()
   hGrp->Detach(this);
   delete _viewer;
 }
-
-
-#include <Inventor/nodes/SoCylinder.h>
-#include <Inventor/nodes/SoTransform.h>
 
 void View3DInventor::setViewerDefaults(void)
 {
@@ -127,7 +124,69 @@ void View3DInventor::setViewerDefaults(void)
 /// Observer message from the ParameterGrp
 void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason)
 {
-  setViewerDefaults();
+  if ( strcmp(Reason,"DisablePreselection") == 0 ) {
+    const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+    SoFCEnableHighlightAction cAct( !rclGrp.GetBool("DisablePreselection", false) );
+    cAct.apply(_viewer->getSceneGraph());
+  } else if ( strcmp(Reason,"DisableSelection") == 0) {
+    const ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+    SoFCEnableSelectionAction cAct( !rclGrp.GetBool("DisableSelection", false) );
+    cAct.apply(_viewer->getSceneGraph());
+  } else if ( strcmp(Reason,"HighlightColor") == 0) {
+    float transparency;
+    SbColor highlightColor(0.1f, 0.1f, 0.8f);
+#ifndef COIN_COLOR_STYLE
+    unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
+    int r = (highlight >> 24)&0xff;
+    int g = (highlight >> 16)&0xff;
+    int b = (highlight >>  8)&0xff;
+    int a = (highlight)&0xff;
+    highlight = (b << 16) | (g << 8) | r;
+    highlight = hGrp->GetInt("HighlightColor", highlight);
+    b = (highlight >> 16)&0xff;
+    g = (highlight >>  8)&0xff;
+    r = (highlight)&0xff;
+    highlight = (r << 24) | (g << 16) | (b << 8) | a;
+    highlightColor.setPackedValue((uint32_t)highlight, transparency);
+#else
+    unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
+    int a = (highlight)&0xff;
+    highlight = hGrp->GetInt("HighlightColor", highlight);
+    highlight += a;
+    highlightColor.setPackedValue((uint32_t)highlight, transparency);
+#endif
+    SoSFColor col; col.setValue(highlightColor);
+    SoFCHighlightColorAction cAct( col );
+    cAct.apply(_viewer->getSceneGraph());
+  } else if ( strcmp(Reason,"SelectionColor") == 0) {
+    float transparency;
+    SbColor selectionColor(0.1f, 0.5f, 0.1f);
+#ifndef COIN_COLOR_STYLE
+    unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
+    int r = (selection >> 24)&0xff;
+    int g = (selection >> 16)&0xff;
+    int b = (selection >>  8)&0xff;
+    int a = (selection)&0xff;
+    selection = (b << 16) | (g << 8) | r;
+    selection = hGrp->GetInt("SelectionColor", selection);
+    b = (selection >> 16)&0xff;
+    g = (selection >>  8)&0xff;
+    r = (selection)&0xff;
+    selection = (r << 24) | (g << 16) | (b << 8) | a;
+    selectionColor.setPackedValue((uint32_t)selection, transparency);
+#else
+    unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
+    int a = (selection)&0xff;
+    selection = hGrp->GetInt("SelectionColor", highlight);
+    selection += a;
+    selectionColor.setPackedValue((uint32_t)selection, transparency);
+#endif
+    SoSFColor col; col.setValue(selectionColor);
+    SoFCSelectionColorAction cAct( col );
+    cAct.apply(_viewer->getSceneGraph());
+  } else {
+    setViewerDefaults();
+  }
 }
 
 void View3DInventor::onRename(Gui::Document *pDoc)
@@ -147,7 +206,7 @@ void View3DInventor::onUpdate(void)
   update();  
 }
 
-const char *View3DInventor::getName(void)
+const char *View3DInventor::getName(void) const
 {
   return "View3DInventor";
 }
@@ -295,7 +354,7 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
 }
 
 
-bool View3DInventor::onHasMsg(const char* pMsg)
+bool View3DInventor::onHasMsg(const char* pMsg) const
 {
   if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
     return true;
@@ -338,9 +397,6 @@ bool View3DInventor::onHasMsg(const char* pMsg)
   }
   return false;
 }
-
-#include <Inventor/nodes/SoPerspectiveCamera.h>
-#include <Inventor/nodes/SoOrthographicCamera.h>
 
 bool View3DInventor::setCamera(const char* pCamera)
 {

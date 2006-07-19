@@ -161,6 +161,334 @@ void SoFCSelectionAction::callDoAction(SoAction *action,SoNode *node)
 
 // ---------------------------------------------------------------
 
+SO_ACTION_SOURCE(SoFCEnableSelectionAction);
+
+/**
+ * The order of the defined SO_ACTION_ADD_METHOD statements is very important. First the base 
+ * classes and afterwards subclasses of them must be listed, otherwise the registered methods 
+ * of subclasses will be overridden. For more details see the thread in the Coin3d forum 
+ * https://www.coin3d.org/pipermail/coin-discuss/2004-May/004346.html.
+ * This means that \c SoSwitch must be listed after \c SoGroup and \c SoFCSelection after 
+ * \c SoSeparator because both classes inherits the others.
+ */
+void SoFCEnableSelectionAction::initClass()
+{
+  SO_ACTION_INIT_CLASS(SoFCEnableSelectionAction,SoAction);
+
+  SO_ENABLE(SoFCEnableSelectionAction, SoSwitchElement);
+
+  SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+  SO_ENABLE(SoFCEnableSelectionAction, SoModelMatrixElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoShapeStyleElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoComplexityElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoComplexityTypeElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoCoordinateElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoFontNameElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoFontSizeElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoProfileCoordinateElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoProfileElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoSwitchElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoUnitsElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoViewVolumeElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoViewingMatrixElement);
+  SO_ENABLE(SoFCEnableSelectionAction, SoViewportRegionElement);
+
+
+
+
+  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
+  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
+  SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
+  SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+}
+
+
+SoFCEnableSelectionAction::SoFCEnableSelectionAction (const SbBool& sel)
+  : selection(sel)
+{
+  SO_ACTION_CONSTRUCTOR(SoFCEnableSelectionAction);
+}
+
+
+SoFCEnableSelectionAction::~SoFCEnableSelectionAction()
+{
+}
+
+ 
+void SoFCEnableSelectionAction::beginTraversal(SoNode *node)
+{
+  traverse(node);
+}
+
+void SoFCEnableSelectionAction::selNode(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+void SoFCEnableSelectionAction::callDoAction(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+// ---------------------------------------------------------------
+
+SO_ACTION_SOURCE(SoFCEnableHighlightAction);
+
+/**
+ * The order of the defined SO_ACTION_ADD_METHOD statements is very important. First the base 
+ * classes and afterwards subclasses of them must be listed, otherwise the registered methods 
+ * of subclasses will be overridden. For more details see the thread in the Coin3d forum 
+ * https://www.coin3d.org/pipermail/coin-discuss/2004-May/004346.html.
+ * This means that \c SoSwitch must be listed after \c SoGroup and \c SoFCSelection after 
+ * \c SoSeparator because both classes inherits the others.
+ */
+void SoFCEnableHighlightAction::initClass()
+{
+  SO_ACTION_INIT_CLASS(SoFCEnableHighlightAction,SoAction);
+
+  SO_ENABLE(SoFCEnableHighlightAction, SoSwitchElement);
+
+  SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+  SO_ENABLE(SoFCEnableHighlightAction, SoModelMatrixElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoShapeStyleElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoComplexityElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoComplexityTypeElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoCoordinateElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoFontNameElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoFontSizeElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoProfileCoordinateElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoProfileElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoSwitchElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoUnitsElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoViewVolumeElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoViewingMatrixElement);
+  SO_ENABLE(SoFCEnableHighlightAction, SoViewportRegionElement);
+
+
+
+
+  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
+  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
+  SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
+  SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+}
+
+
+SoFCEnableHighlightAction::SoFCEnableHighlightAction (const SbBool& sel)
+  : highlight(sel)
+{
+  SO_ACTION_CONSTRUCTOR(SoFCEnableHighlightAction);
+}
+
+
+SoFCEnableHighlightAction::~SoFCEnableHighlightAction()
+{
+}
+
+ 
+void SoFCEnableHighlightAction::beginTraversal(SoNode *node)
+{
+  traverse(node);
+}
+
+void SoFCEnableHighlightAction::selNode(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+void SoFCEnableHighlightAction::callDoAction(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+// ---------------------------------------------------------------
+
+SO_ACTION_SOURCE(SoFCSelectionColorAction);
+
+/**
+ * The order of the defined SO_ACTION_ADD_METHOD statements is very important. First the base 
+ * classes and afterwards subclasses of them must be listed, otherwise the registered methods 
+ * of subclasses will be overridden. For more details see the thread in the Coin3d forum 
+ * https://www.coin3d.org/pipermail/coin-discuss/2004-May/004346.html.
+ * This means that \c SoSwitch must be listed after \c SoGroup and \c SoFCSelection after 
+ * \c SoSeparator because both classes inherits the others.
+ */
+void SoFCSelectionColorAction::initClass()
+{
+  SO_ACTION_INIT_CLASS(SoFCSelectionColorAction,SoAction);
+
+  SO_ENABLE(SoFCSelectionColorAction, SoSwitchElement);
+
+  SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+  SO_ENABLE(SoFCSelectionColorAction, SoModelMatrixElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoShapeStyleElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoComplexityElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoComplexityTypeElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoCoordinateElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoFontNameElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoFontSizeElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoProfileCoordinateElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoProfileElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoSwitchElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoUnitsElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoViewVolumeElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoViewingMatrixElement);
+  SO_ENABLE(SoFCSelectionColorAction, SoViewportRegionElement);
+
+
+
+
+  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
+  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
+  SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
+  SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+}
+
+
+SoFCSelectionColorAction::SoFCSelectionColorAction (const SoSFColor& col)
+  : selectionColor(col)
+{
+  SO_ACTION_CONSTRUCTOR(SoFCSelectionColorAction);
+}
+
+
+SoFCSelectionColorAction::~SoFCSelectionColorAction()
+{
+}
+
+ 
+void SoFCSelectionColorAction::beginTraversal(SoNode *node)
+{
+  traverse(node);
+}
+
+void SoFCSelectionColorAction::selNode(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+void SoFCSelectionColorAction::callDoAction(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+// ---------------------------------------------------------------
+
+SO_ACTION_SOURCE(SoFCHighlightColorAction);
+
+/**
+ * The order of the defined SO_ACTION_ADD_METHOD statements is very important. First the base 
+ * classes and afterwards subclasses of them must be listed, otherwise the registered methods 
+ * of subclasses will be overridden. For more details see the thread in the Coin3d forum 
+ * https://www.coin3d.org/pipermail/coin-discuss/2004-May/004346.html.
+ * This means that \c SoSwitch must be listed after \c SoGroup and \c SoFCSelection after 
+ * \c SoSeparator because both classes inherits the others.
+ */
+void SoFCHighlightColorAction::initClass()
+{
+  SO_ACTION_INIT_CLASS(SoFCHighlightColorAction,SoAction);
+
+  SO_ENABLE(SoFCHighlightColorAction, SoSwitchElement);
+
+  SO_ACTION_ADD_METHOD(SoNode,nullAction);
+
+  SO_ENABLE(SoFCHighlightColorAction, SoModelMatrixElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoShapeStyleElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoComplexityElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoComplexityTypeElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoCoordinateElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoFontNameElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoFontSizeElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoProfileCoordinateElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoProfileElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoSwitchElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoUnitsElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoViewVolumeElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoViewingMatrixElement);
+  SO_ENABLE(SoFCHighlightColorAction, SoViewportRegionElement);
+
+
+
+
+  SO_ACTION_ADD_METHOD(SoCallback,callDoAction);
+  SO_ACTION_ADD_METHOD(SoComplexity,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoCoordinate4,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFont,callDoAction);
+  SO_ACTION_ADD_METHOD(SoGroup,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfile,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate2,callDoAction);
+  SO_ACTION_ADD_METHOD(SoProfileCoordinate3,callDoAction);
+  SO_ACTION_ADD_METHOD(SoTransformation,callDoAction);
+  SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
+
+  SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
+  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+}
+
+
+SoFCHighlightColorAction::SoFCHighlightColorAction (const SoSFColor& col)
+  : highlightColor(col)
+{
+  SO_ACTION_CONSTRUCTOR(SoFCHighlightColorAction);
+}
+
+
+SoFCHighlightColorAction::~SoFCHighlightColorAction()
+{
+}
+
+ 
+void SoFCHighlightColorAction::beginTraversal(SoNode *node)
+{
+  traverse(node);
+}
+
+void SoFCHighlightColorAction::selNode(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+void SoFCHighlightColorAction::callDoAction(SoAction *action,SoNode *node)
+{
+  node->doAction(action);
+}
+
+// ---------------------------------------------------------------
+
 SO_ACTION_SOURCE(SoFCDocumentAction);
 
 /**

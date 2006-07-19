@@ -149,7 +149,7 @@ bool DockView::onMsg(const char* pMsg)
   return false;
 }
 
-bool DockView::onHasMsg(const char* pMsg)
+bool DockView::onHasMsg(const char* pMsg) const
 {
   return false;
 }

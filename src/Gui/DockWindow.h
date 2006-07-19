@@ -54,13 +54,11 @@ public:
   /// get called when the document is updated
   virtual void onUpdate(void){};
   /// returns the name of the view (important for messages)
-  virtual const char *getName(void){ return "DockWindow"; };
+  virtual const char *getName(void) const { return "DockWindow"; };
   /// Mesage handler
   virtual bool onMsg(const char* pMsg,const char** ppReturn){ return false; };
   /// Mesage handler test
-  virtual bool onHasMsg(const char* pMsg) { return false; };
-  /// is called when the above function is called to handle document change stuff
-  virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument){};
+  virtual bool onHasMsg(const char* pMsg) const { return false; };
   /// overvrit when checking on close state
   virtual bool canClose(void){return true;}
   //@}
@@ -123,13 +121,10 @@ public:
   /// get called when the document is updated
   virtual void onUpdate(void){};
 
-  /// returns the name of the view (important for messages)
-  virtual const char *getName(void)=0;
-
   /// Mesage handler
   virtual bool onMsg(const char* pMsg);
   /// Mesage handler test
-  virtual bool onHasMsg(const char* pMsg);
+  virtual bool onHasMsg(const char* pMsg) const;
 
 
 signals:

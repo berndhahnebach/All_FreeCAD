@@ -28,6 +28,7 @@
 #include <Inventor/actions/SoSubAction.h> 
 
 class SoSFString;
+class SoSFColor;
 
 namespace Gui {
 
@@ -54,6 +55,106 @@ public:
 protected:
   virtual void beginTraversal(SoNode *node);
 
+
+private:
+  static void selNode(SoAction *action,SoNode *node);
+  static void callDoAction(SoAction *action,SoNode *node);
+};
+
+/**
+ * The SoFCEnableSelectionAction class is used to inform an SoFCSelection node whether selecton is enabled or disabled. 
+ * @author Werner Mayer
+ */
+class GuiExport SoFCEnableSelectionAction : public SoAction
+{
+
+  SO_ACTION_HEADER(SoFCEnableSelectionAction);
+
+public:
+  SoFCEnableSelectionAction (const SbBool& sel);
+	~SoFCEnableSelectionAction();
+
+  const SbBool& selection;
+
+  static void initClass();
+
+protected:
+  virtual void beginTraversal(SoNode *node);
+
+private:
+  static void selNode(SoAction *action,SoNode *node);
+  static void callDoAction(SoAction *action,SoNode *node);
+};
+
+/**
+ * The SoFCEnableHighlightAction class is used to inform an SoFCSelection node whether preselecton is enabled or disabled. 
+ * @author Werner Mayer
+ */
+class GuiExport SoFCEnableHighlightAction : public SoAction
+{
+
+  SO_ACTION_HEADER(SoFCEnableHighlightAction);
+
+public:
+  SoFCEnableHighlightAction (const SbBool& sel);
+	~SoFCEnableHighlightAction();
+
+  const SbBool& highlight;
+
+  static void initClass();
+
+protected:
+  virtual void beginTraversal(SoNode *node);
+
+private:
+  static void selNode(SoAction *action,SoNode *node);
+  static void callDoAction(SoAction *action,SoNode *node);
+};
+
+/**
+ * The SoFCSelectionColorAction class is used to inform an SoFCSelection node which selection color is used. 
+ * @author Werner Mayer
+ */
+class GuiExport SoFCSelectionColorAction : public SoAction
+{
+
+  SO_ACTION_HEADER(SoFCSelectionColorAction);
+
+public:
+  SoFCSelectionColorAction (const SoSFColor& col);
+	~SoFCSelectionColorAction();
+
+  const SoSFColor& selectionColor;
+
+  static void initClass();
+
+protected:
+  virtual void beginTraversal(SoNode *node);
+
+private:
+  static void selNode(SoAction *action,SoNode *node);
+  static void callDoAction(SoAction *action,SoNode *node);
+};
+
+/**
+ * The SoFCHighlightColorAction class is used to inform an SoFCSelection node which preselection color is used. 
+ * @author Werner Mayer
+ */
+class GuiExport SoFCHighlightColorAction : public SoAction
+{
+
+  SO_ACTION_HEADER(SoFCHighlightColorAction);
+
+public:
+  SoFCHighlightColorAction (const SoSFColor& col);
+	~SoFCHighlightColorAction();
+
+  const SoSFColor& highlightColor;
+
+  static void initClass();
+
+protected:
+  virtual void beginTraversal(SoNode *node);
 
 private:
   static void selNode(SoAction *action,SoNode *node);

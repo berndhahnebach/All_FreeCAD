@@ -467,7 +467,7 @@ void TreeView::testStatus(void)
 {
   bool bChanged = false;
 
-  for (std::map<string,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
+  for (std::map<Gui::Document*,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
   {
     if(pos->second->testStatus())
       bChanged = true;
@@ -483,7 +483,8 @@ void TreeView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::Selec
   bFromOutside = true;
   if(Reason.Type != SelectionChanges::ClearSelection)
   {
-    map<string, DocItem*>::iterator it = DocMap.find( Reason.pDocName );
+    Gui::Document* pDoc = Application::Instance->getDocument( Reason.pDocName );
+    map<Gui::Document*, DocItem*>::iterator it = DocMap.find( pDoc );
 
     if(it!= DocMap.end())
     {
@@ -498,7 +499,7 @@ void TreeView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::Selec
        it->second->selectFeature(Reason.pObjectName,false);
     }
   }else{
-    for (std::map<string,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
+    for (std::map<Gui::Document*,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
     {
       pos->second->clearSelection();
     }
@@ -518,7 +519,7 @@ void TreeView::onSelectionChanged ()
 
   //Base::Console().Log("Sel : QListView::selectionChanged()");
 
-  for (std::map<string,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
+  for (std::map<Gui::Document*,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
   {
     pos->second->isSelectionUptodate();
   }
@@ -548,28 +549,10 @@ void TreeView::onUpdate(void)
 
 void TreeView::onRename(Gui::Document *pDoc)
 {
-  std::map<string,DocItem*>::iterator pos;
-
-  for ( pos = DocMap.begin();pos!=DocMap.end();++pos)
-  {
-    if(pos->second->getDocument() == pDoc)
-    {
-      pos->second->rename();
-      DocMap[ pDoc->getDocument()->getName() ]  = pos->second;
-      DocMap.erase(pos);
-      break;
-    }
+  std::map<Gui::Document*,DocItem*>::iterator pos = DocMap.find( pDoc );
+  if ( pos != DocMap.end() ) {
+    pos->second->rename();
   }
-  
-}
-
-void TreeView::onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument)
-{
-
-//  if(pcOldDocument && DocMap.find(pcOldDocument->getDocument()) != DocMap.end())
-//    DocMap[pcOldDocument->getDocument()]->setOpen(false);
-//  if(pcNewDocument && DocMap.find(pcNewDocument->getDocument()) != DocMap.end())
-//    DocMap[pcNewDocument->getDocument()]->setOpen(true);
 }
 
 bool TreeView::onMsg(const char* pMsg)
@@ -585,13 +568,13 @@ DocItem * TreeView::NewDoc( Gui::Document* pDoc )
   // set the new ctreated item at the end
   DocItem *item = new DocItem(_pcMainItem,_lastDocItem,pDoc);
   _lastDocItem = item;
-  DocMap[ pDoc->getDocument()->getName() ] = item;
+  DocMap[ pDoc ] = item;
   return item;
 }
 
 void TreeView::DeleteDoc( Gui::Document* pDoc )
 {
-  std::map<std::string,DocItem*>::iterator it = DocMap.find(pDoc->getDocument()->getName());
+  std::map<Gui::Document*,DocItem*>::iterator it = DocMap.find( pDoc );
   if ( it != DocMap.end() )
   {
     // now we must search for the matching listview item

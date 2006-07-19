@@ -148,3 +148,7 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + rename document member in SoFCSelection after a document has been renamed
 + Prepared for OCC 6.1: The modules 'AppMesh', 'AppPartGui', 'AppRaytracing' and 'AppRaytracingGui' need the module 'TKMesh.lib'
 + Added a method to XMLReader to get unsigned long from a string
++ Make several methods of BaseView const
++ Bug fixed in TreeView
++ Added new action classes for en/disabling selection and highlighting with their colors
++ Bug fixed when opening a project with the same file name

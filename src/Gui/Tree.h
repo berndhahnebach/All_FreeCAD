@@ -188,7 +188,7 @@ public:
 
   bool onMsg(const char* pMsg);
 
-  virtual const char *getName(void){return "TreeView";}
+  virtual const char *getName(void) const {return "TreeView";}
 
     /// Observer message from the Selection
   virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
@@ -198,8 +198,6 @@ public:
   friend class DocItem;
   friend class ObjectItem;
 
-  /// is called when the above function is called to handle document change stuff
-  virtual void onNewDocument(Gui::Document* pcOldDocument,Gui::Document* pcNewDocument);
   /// get called when the document is changed or updated
   virtual void onUpdate(void);
   /// get called when the document is renamed
@@ -229,7 +227,7 @@ protected:
 
   static QPixmap *pcDocumentPixmap;
 
-  map<string,DocItem*> DocMap;
+  map<Gui::Document*,DocItem*> DocMap;
 
   bool bFromOutside;
 

@@ -43,11 +43,11 @@ public:
   SplitView3DInventor( int views, Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
   ~SplitView3DInventor();
 
-  virtual const char *getName(void);
+  virtual const char *getName(void) const;
 
   /// Mesage handler
   virtual bool onMsg(const char* pMsg, const char** ppReturn);
-  virtual bool onHasMsg(const char* pMsg);
+  virtual bool onHasMsg(const char* pMsg) const;
   virtual void OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::MessageType Reason);
   virtual void onUpdate(void);
   void updatePrefs(void);
