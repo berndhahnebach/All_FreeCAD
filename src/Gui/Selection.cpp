@@ -40,7 +40,6 @@
 using namespace Gui;
 using namespace std;
 
-
 std::vector<SelectionSingleton::SelObj> SelectionSingleton::getCompleteSelection() const
 {
   vector<SelObj> temp;
@@ -68,10 +67,7 @@ vector<SelectionSingleton::SelObj> SelectionSingleton::getSelection(const char* 
   App::Document *pcDoc;
   string DocName;
 
-  if(pDocName)
-    pcDoc =  App::GetApplication().getDocument(pDocName);
-  else
-    pcDoc = App::GetApplication().getActiveDocument();
+  pcDoc = getDocument(pDocName);
 
   //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
   //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
@@ -102,10 +98,7 @@ vector<App::DocumentObject*> SelectionSingleton::getObjectsOfType(const Base::Ty
   vector<App::DocumentObject*> temp;
   App::Document *pcDoc;
 
-  if(pDocName)
-    pcDoc =  App::GetApplication().getDocument(pDocName);
-  else
-    pcDoc = App::GetApplication().getActiveDocument();
+  pcDoc = getDocument(pDocName);
 
   //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
   //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
@@ -137,10 +130,7 @@ unsigned int SelectionSingleton::countObjectsOfType(const Base::Type& typeId, co
   unsigned int iNbr=0;
   App::Document *pcDoc;
 
-  if(pDocName)
-    pcDoc =  App::GetApplication().getDocument(pDocName);
-  else
-    pcDoc = App::GetApplication().getActiveDocument();
+  pcDoc = getDocument(pDocName);
 
   //FIXME: We should abandon all the 'active' document stuff because this make quite a lot of troubles.
   //Thus it should only be able to access (an existing) document stuff by its name. For Python there might
@@ -223,7 +213,13 @@ void SelectionSingleton::rmvPreselect()
 
 }
 
-
+App::Document* SelectionSingleton::getDocument(const char* pDocName) const
+{
+  if(pDocName)
+    return  App::GetApplication().getDocument(pDocName);
+  else
+    return App::GetApplication().getActiveDocument();
+}
 
 bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectName, const char* pSubName, float x, float y, float z)
 {
@@ -233,10 +229,7 @@ bool SelectionSingleton::addSelection(const char* pDocName, const char* pObjectN
 
   _SelObj temp;
 
-  if(pDocName)
-    temp.pDoc =  App::GetApplication().getDocument(pDocName);
-  else
-    temp.pDoc = App::GetApplication().getActiveDocument();
+  temp.pDoc = getDocument(pDocName);
 
   if ( temp.pDoc )
   {
@@ -319,18 +312,50 @@ void SelectionSingleton::rmvSelection(const char* pDocName, const char* pObjectN
 
 }
 
-void SelectionSingleton::clearSelection(void)
+void SelectionSingleton::clearSelection(const char* pDocName)
+{
+  App::Document* pDoc;
+  pDoc = getDocument(pDocName);
+
+  // the document 'pDocName' has already been removed
+  if (!pDoc && !pDocName) {
+    clearCompleteSelection();
+  } else {
+    std::string docName;
+    if (pDocName)
+      docName = pDocName;
+    else
+      docName = pDoc->getName(); // active document
+    std::list<_SelObj> selList;
+    for ( std::list<_SelObj>::iterator it = _SelList.begin(); it != _SelList.end(); ++it ) {
+      if ( it->DocName != docName )
+        selList.push_back(*it);
+    }
+
+    _SelList = selList;
+
+    SelectionChanges Chng;
+    Chng.Type = SelectionChanges::ClearSelection;
+    Chng.pDocName = docName.c_str();
+
+    Notify(Chng);
+
+    Base::Console().Log("Sel : Clear selection\n");
+  }
+}
+
+void SelectionSingleton::clearCompleteSelection()
 {
   _SelList.clear();
 
   SelectionChanges Chng;
   Chng.Type = SelectionChanges::ClearSelection;
+  Chng.pDocName = "";
 
 
   Notify(Chng);
 
   Base::Console().Log("Sel : Clear selection\n");
-
 }
 
 bool SelectionSingleton::isSelected(const char* pDocName, const char* pObjectName, const char* pSubName) const

@@ -79,6 +79,7 @@ void GuiMeshExport initMeshGui() {
 
   MeshGui::PropertyEditorMesh                ::init();
   MeshGui::SoFCMeshNode                      ::initClass();
+  MeshGui::SoFCMeshOpenEdge                  ::initClass();
   MeshGui::ViewProviderMesh                  ::init();
   MeshGui::ViewProviderMeshNode              ::init();
   MeshGui::ViewProviderExport                ::init();

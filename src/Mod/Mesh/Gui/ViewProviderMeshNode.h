@@ -31,6 +31,7 @@
 #include <Inventor/fields/SoSFVec2f.h>
 
 class SbViewVolume;
+class SoBaseColor;
 
 namespace Gui {
   class SoFCSelection;
@@ -75,9 +76,13 @@ public:
 protected:
   /// get called by the container whenever a proptery has been changed
   void onChanged(const App::Property* prop);
+  void showOpenEdges( bool );
+  void setOpenEdgeColorFrom( const App::Color& col );
 
-  SoDrawStyle *pcLineStyle;
-  SoDrawStyle *pcPointStyle;
+  SoDrawStyle    *pcLineStyle;
+  SoDrawStyle    *pcPointStyle;
+  SoSeparator    *pcOpenEdge;
+  SoBaseColor    *pOpenColor;
 
 
 private:

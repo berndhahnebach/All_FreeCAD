@@ -67,13 +67,17 @@
 using namespace MeshGui;
 
 
-PROPERTY_SOURCE(MeshGui::ViewProviderMeshNode, Gui::ViewProviderDocumentObject)
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshNode, Gui::ViewProviderFeature)
 
-ViewProviderMeshNode::ViewProviderMeshNode() : _mouseModel(0), m_bEdit(false)
+ViewProviderMeshNode::ViewProviderMeshNode() : _mouseModel(0), m_bEdit(false), pcOpenEdge(0)
 {
   ADD_PROPERTY(LineWidth,(2.0f));
   ADD_PROPERTY(PointSize,(2.0f));
   ADD_PROPERTY(OpenEdges,(false));
+
+  pOpenColor = new SoBaseColor();
+  setOpenEdgeColorFrom(ShapeColor.getValue());
+  pOpenColor->ref();
 
   pcLineStyle = new SoDrawStyle();
   pcLineStyle->ref();
@@ -88,6 +92,7 @@ ViewProviderMeshNode::ViewProviderMeshNode() : _mouseModel(0), m_bEdit(false)
 
 ViewProviderMeshNode::~ViewProviderMeshNode()
 {
+  pOpenColor->unref();
   pcLineStyle->unref();
   pcPointStyle->unref();
 }
@@ -99,21 +104,29 @@ void ViewProviderMeshNode::onChanged(const App::Property* prop)
   } else if ( prop == &PointSize ) {
     pcPointStyle->pointSize = PointSize.getValue();
   } else if ( prop == &OpenEdges ) {
-//    showOpenEdges( OpenEdges.getValue() );
+    showOpenEdges( OpenEdges.getValue() );
   } else {
     // Set the inverse color for open edges
-//    if ( prop == &ShapeColor ) {
-//      setOpenEdgeColorFrom(ShapeColor.getValue());
-//    } else if ( prop == &ShapeMaterial ) {
-//      setOpenEdgeColorFrom(ShapeMaterial.getValue().diffuseColor);
-//    }
+    if ( prop == &ShapeColor ) {
+      setOpenEdgeColorFrom(ShapeColor.getValue());
+    } else if ( prop == &ShapeMaterial ) {
+      setOpenEdgeColorFrom(ShapeMaterial.getValue().diffuseColor);
+    }
     ViewProviderFeature::onChanged(prop);
   }
 }
 
+void ViewProviderMeshNode::setOpenEdgeColorFrom( const App::Color& c )
+{
+  float r=1.0f-c.r; r = r < 0.5f ? 0.0f : 1.0f;
+  float g=1.0f-c.g; g = g < 0.5f ? 0.0f : 1.0f;
+  float b=1.0f-c.b; b = b < 0.5f ? 0.0f : 1.0f;
+  pOpenColor->rgb.setValue(r, g, b);
+}
+
 void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
 {
-  ViewProviderDocumentObject::attach(pcFeat);
+  ViewProviderFeature::attach(pcFeat);
 
   // only one selection node for the mesh
   const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcFeat);
@@ -361,6 +374,13 @@ bool ViewProviderMeshNode::handleEvent(const SoEvent * const ev,Gui::View3DInven
       cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
       meshProp.deleteFacetIndices( indices );
 
+      // update open edge display if needed
+//      if ( pcOpenEdge ) 
+//      {
+//        showOpenEdges(false);
+//        showOpenEdges(true);
+//      }
+
       Viewer.render();
       unsetEdit();
       if ( !ok ) // note: the mouse grabbing needs to be released
@@ -378,46 +398,86 @@ bool ViewProviderMeshNode::handleEvent(const SoEvent * const ev,Gui::View3DInven
 
   return false;
 }
-//
-//void ViewProviderMeshNode::showOpenEdges(bool show)
-//{
-//  if ( show ) {
-//    SoGroup* pcLineRoot = new SoGroup();
-//    SoDrawStyle* lineStyle = new SoDrawStyle();
-//    lineStyle->lineWidth = 3;
-//    pcLineRoot->addChild(lineStyle);
-//
-//    // Draw lines
-//    SoSeparator* linesep = new SoSeparator;
-//    SoBaseColor * basecol = new SoBaseColor;
-//    basecol->rgb.setValue( 1.0f, 1.0f, 0.0f );
-//    linesep->addChild(basecol);
-//    linesep->addChild(pcMeshCoord);
-//    SoIndexedLineSet* lines = new SoIndexedLineSet;
-//    linesep->addChild(lines);
-//    pcLineRoot->addChild(linesep);
-//    // add to the top of the node
-//    pcHighlight->addChild(pcLineRoot/*,0*/);
-//
-//    // Build up the lines with indices to the list of vertices 'pcMeshCoord'
-//    int index=0;
-//    const MeshCore::MeshKernel& rMesh = dynamic_cast<Mesh::Feature*>(pcObject)->getMesh();
-//    const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
-//    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it ) {
-//      for ( int i=0; i<3; i++ ) {
-//        if ( it->_aulNeighbours[i] == ULONG_MAX ) {
-//          lines->coordIndex.set1Value(index++,it->_aulPoints[i]);
-//          lines->coordIndex.set1Value(index++,it->_aulPoints[(i+1)%3]);
-//          lines->coordIndex.set1Value(index++,SO_END_LINE_INDEX);
-//        }
-//      }
-//    }
-//  } else {
-//    // remove the indexed line set node and its parent group
-//    int childs = pcHighlight->getNumChildren();
-//    if ( pcHighlight->findChild(pcMeshFaces)+1 < childs ) {
-//      SoNode* node = pcHighlight->getChild(childs-1);
-//      pcHighlight->removeChild(node);
-//    }
-//  }
-//}
+
+void ViewProviderMeshNode::showOpenEdges(bool show)
+{
+#if 1
+  if ( show ) {
+    pcOpenEdge = new SoSeparator();
+    SoDrawStyle* lineStyle = new SoDrawStyle();
+    lineStyle->lineWidth = 3;
+    pcOpenEdge->addChild(lineStyle);
+    pcOpenEdge->addChild(pOpenColor);
+
+    const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcObject);
+    MeshGui::SoFCMeshOpenEdge* mesh = new MeshGui::SoFCMeshOpenEdge();
+    mesh->setMesh(meshFeature);
+    pcOpenEdge->addChild(mesh);
+    
+    // add to the highlight node
+    pcHighlight->addChild(pcOpenEdge);
+  } else {
+    // remove the node and destroy the data
+    pcHighlight->removeChild(pcOpenEdge);
+    pcOpenEdge = 0;
+  }
+#else
+  if ( show ) {
+    pcOpenEdge = new SoSeparator();
+    SoDrawStyle* lineStyle = new SoDrawStyle();
+    lineStyle->lineWidth = 3;
+    pcOpenEdge->addChild(lineStyle);
+    pcOpenEdge->addChild(pOpenColor);
+    SoCoordinate3* points = new SoCoordinate3();
+    pcOpenEdge->addChild(points);
+    SoLineSet* lines = new SoLineSet();
+    pcOpenEdge->addChild(lines);
+    // add to the highlight node
+    pcHighlight->addChild(pcOpenEdge);
+
+    // Build up the array of border points
+    int index=0;
+    const MeshCore::MeshKernel& rMesh = dynamic_cast<Mesh::Feature*>(pcObject)->getMesh();
+    const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
+    const MeshCore::MeshPointArray& rPoint = rMesh.GetPoints();
+
+    // Count number of open edges first
+    int ctEdges=0;
+    for ( MeshCore::MeshFacetArray::_TConstIterator jt = rFaces.begin(); jt != rFaces.end(); ++jt ) {
+      for ( int i=0; i<3; i++ ) {
+        if ( jt->_aulNeighbours[i] == ULONG_MAX ) {
+          ctEdges++;
+        }
+      }
+    }
+
+    // disable internal notification for speedup
+    points->enableNotify(false);
+    lines->enableNotify(false);
+
+    points->point.setNum(2*ctEdges);
+    lines->numVertices.setNum(ctEdges);
+    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it ) {
+      for ( int i=0; i<3; i++ ) {
+        if ( it->_aulNeighbours[i] == ULONG_MAX ) {
+          const MeshCore::MeshPoint& cP0 = rPoint[it->_aulPoints[i]];
+          const MeshCore::MeshPoint& cP1 = rPoint[it->_aulPoints[(i+1)%3]];
+          points->point.set1Value(index++, cP0.x, cP0.y, cP0.z);
+          points->point.set1Value(index++, cP1.x, cP1.y, cP1.z);
+          lines->numVertices.set1Value(index/2-1,2);
+        }
+      }
+    }
+
+    // enable notification
+    points->enableNotify(true);
+    lines->enableNotify(true);
+    points->touch();
+    lines->touch();
+  } else {
+    // remove the node and destroy the data
+    pcHighlight->removeChild(pcOpenEdge);
+    pcOpenEdge = 0;
+  }
+#endif
+}

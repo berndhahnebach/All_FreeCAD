@@ -116,6 +116,7 @@ void DocItem::selectFeature(const char* name, bool bOn)
 
 
 }
+
 void DocItem::clearSelection(void)
 {
   for (std::map<string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
@@ -499,12 +500,23 @@ void TreeView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::Selec
        it->second->selectFeature(Reason.pObjectName,false);
     }
   }else{
-    for (std::map<Gui::Document*,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
-    {
-      pos->second->clearSelection();
+    // clears the complete selection
+    if ( strcmp(Reason.pDocName,"") == 0 ) {
+      for (std::map<Gui::Document*,DocItem*>::iterator pos = DocMap.begin();pos!=DocMap.end();++pos)
+      {
+        pos->second->clearSelection();
+      }
+
+      _pcListView->clearSelection ();
+    } else {
+      // clears the selection of the given document
+      Gui::Document* pDoc = Application::Instance->getDocument(Reason.pDocName);
+      std::map<Gui::Document*, DocItem*>::iterator pos = DocMap.find(pDoc);
+      if ( pos != DocMap.end() ) {
+        pos->second->clearSelection();
+      }
     }
 
-    _pcListView->clearSelection ();
     _pcListView->update();
   }
 
