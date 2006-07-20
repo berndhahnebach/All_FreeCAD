@@ -77,7 +77,7 @@ void DlgSettingsImageImp::onInsertMIBA()
  
   com << setw(7) << setfill(' ') << fixed;
   com << "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n" ;
-  com << "<MIBA xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"MIBA.xsd\"> \n" ;
+  com << "<MIBA xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://juergen-riegel.net/Miba/Miba2.xsd\" Version=\"2\"> \n" ;
   com << " <View>\n"; 
   com << "  <Matrix \n"; 
   com << "     a11=\"" << _Matrix[0][0] <<"\" a12=\"" << _Matrix[1][0] <<"\" a13=\"" << _Matrix[2][0] <<"\" a14=\"" << _Matrix[3][0] << "\"\n";
@@ -86,11 +86,13 @@ void DlgSettingsImageImp::onInsertMIBA()
   com << "     a41=\"" << _Matrix[0][3] <<"\" a42=\"" << _Matrix[1][3] <<"\" a43=\"" << _Matrix[2][3] <<"\" a44=\"" << _Matrix[3][3] << "\"\n";
   com << "   />\n" ; 
   com << " </View>\n" ; 
-  com << " <CAD>\n" ; 
-  com << "  <Erzeugendes_System>FreeCAD 0.5</Erzeugendes_System>\n" ;
-  com << "  <Datum>1968-12-17T04:00:00.000</Datum>\n";
-  com << "  <Bearbeiter>riegel</Bearbeiter>\n" ;
-  com << " </CAD>\n" ;
+  com << " <Source>\n" ; 
+  com << "  <Creator>riegel</Creator>\n" ;  
+  com << "  <CreationDate>2006-07-05T01:11:00</CreationDate>\n" ;  
+  com << "  <CreatingSystem>FreeCAD 0.5</CreatingSystem>\n" ;
+  com << "  <PartNumber>Unknown</PartNumber>\n";
+  com << "  <Revision>1.0</Revision>\n";
+  com << " </Source>\n" ;
   com << "</MIBA>\n" ;
 
   textEditComment->setText(QString(com.str().c_str()));
