@@ -65,8 +65,8 @@ private:
   virtual ~SoFCMeshNode() {};
   virtual void notify(SoNotList * list);
   // Draw faces
-  void drawFaces(SbBool needNormals);
-  void drawPoints(SbBool needNormals);
+  void drawFaces(SbBool needNormals) const;
+  void drawPoints(SbBool needNormals) const;
   unsigned int countTriangles() const;
   void createRoughModel(bool simplest);
 
@@ -75,6 +75,32 @@ private:
   unsigned int _ctPrimitives;
   SoMFVec3f point;
   SoMFInt32 coordIndex;
+};
+
+// ------------------------------------------------------------
+
+class GuiMeshExport SoFCMeshOpenEdge : public SoShape {
+  typedef SoShape inherited;
+
+  SO_NODE_HEADER(SoFCMeshOpenEdge);
+    
+public:
+  static void initClass();
+  SoFCMeshOpenEdge();
+  void setMesh(const Mesh::Feature* mesh);
+
+protected:
+  virtual void GLRender(SoGLRenderAction *action);
+  virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
+  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+  virtual void generatePrimitives(SoAction *action);
+private:
+  // Force using the reference count mechanism.
+  virtual ~SoFCMeshOpenEdge() {};
+  void drawLines() const ;
+
+private:
+  const Mesh::Feature*  _mesh;
 };
 
 } // namespace MeshGui

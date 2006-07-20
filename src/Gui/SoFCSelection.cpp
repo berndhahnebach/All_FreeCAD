@@ -174,7 +174,8 @@ void SoFCSelection::doAction( SoAction *action)
         }
       }
     }else if ( selaction->SelChange.Type == SelectionChanges::ClearSelection ){
-      selected = NOTSELECTED;
+      if (documentName.getValue() == selaction->SelChange.pDocName || strcmp(selaction->SelChange.pDocName,"") == 0)
+        selected = NOTSELECTED;
     }
   }
 
@@ -284,7 +285,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
                                           ,pp->getPoint()[2]);
           }
         }else{
-          Gui::Selection().clearSelection();
+          Gui::Selection().clearSelection(documentName.getValue().getString());
           Gui::Selection().addSelection(documentName.getValue().getString()
                                           ,objectName.getValue().getString()
                                           ,subElementName.getValue().getString()

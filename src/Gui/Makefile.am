@@ -46,7 +46,6 @@ BUILT_SOURCES=\
 		moc_DlgToolbarsImp.cpp \
 		moc_DlgUndoRedo.cpp \
 		moc_DockWindow.cpp \
-		moc_Document.cpp \
 		moc_FileDialog.cpp \
 		moc_HelpView.cpp \
 		moc_MainWindow.cpp \

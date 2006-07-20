@@ -285,6 +285,9 @@ void Application::OnDocDelete(App::Document* pcDoc)
 
   Notify(AppChange);
 
+  // We must clear the selection here to notify all observers
+  Gui::Selection().clearSelection(doc->second->getDocument()->getName());
+
   delete doc->second; // destroy the Gui document
   d->lpcDocuments.erase(doc);
 

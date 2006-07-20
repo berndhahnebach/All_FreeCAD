@@ -152,3 +152,5 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + Bug fixed in TreeView
 + Added new action classes for en/disabling selection and highlighting with their colors
 + Bug fixed when opening a project with the same file name
++ RFE 1450472 Clear selection of active document only
++ SoFCMeshOpenEdge shape node added to render the open edges of a mesh

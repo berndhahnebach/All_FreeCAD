@@ -114,11 +114,7 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
   //FIXME: We get notified for each object that has changed its selection status. It is sufficient to be called only once.
   //
 
-  if(Reason.Type == SelectionChanges::ClearSelection)
-  {
-    tearDown();
-  }
-  else if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection)
+  if(Reason.Type == SelectionChanges::AddSelection || Reason.Type == SelectionChanges::RmvSelection || Reason.Type == SelectionChanges::ClearSelection)
   {
     // We must not listen neither to the given rCaller nor to the Reason object only, because there can be selected items from
     // documents other than the currently active one.

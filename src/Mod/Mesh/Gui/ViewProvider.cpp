@@ -82,7 +82,7 @@ using MeshCore::MeshFacetGrid;
 using MeshCore::MeshPolygonTriangulation;
 using MeshCore::MeshEvalSolid;
 
-PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderDocumentObject)
+PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderFeature)
 
 ViewProviderExport::ViewProviderExport()
 {
@@ -286,7 +286,7 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
 void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 {
   // Call parents attach method
-  ViewProviderDocumentObject::attach(pcFeat);
+  ViewProviderFeature::attach(pcFeat);
 
   // only one selection node for the mesh
   pcHighlight->addChild(pcMeshCoord);

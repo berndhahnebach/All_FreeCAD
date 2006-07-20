@@ -310,7 +310,7 @@ void SoFCMeshNode::GLRender(SoGLRenderAction *action)
 /**
  * Renders the triangles of the complete mesh.
  */
-void SoFCMeshNode::drawFaces(SbBool needNormals)
+void SoFCMeshNode::drawFaces(SbBool needNormals) const
 {
   // Use the data structure directly and not through MeshFacetIterator as this
   // class is quite slowly (at least for rendering)
@@ -355,7 +355,7 @@ void SoFCMeshNode::drawFaces(SbBool needNormals)
 /**
  * Renders the gravity points of a subset of triangles.
  */
-void SoFCMeshNode::drawPoints(SbBool needNormals)
+void SoFCMeshNode::drawPoints(SbBool needNormals) const
 {
   // Use the data structure directly and not through MeshFacetIterator as this
   // class is quite slowly (at least for rendering)
@@ -634,3 +634,115 @@ SbBool SoFCMeshNode::readInstance( SoInput* in, unsigned short  flags )
   return ret;
 }
 
+// -------------------------------------------------------
+
+SO_NODE_SOURCE(SoFCMeshOpenEdge);
+
+void SoFCMeshOpenEdge::initClass()
+{
+  SO_NODE_INIT_CLASS(SoFCMeshOpenEdge, SoShape, "Shape");
+}
+
+SoFCMeshOpenEdge::SoFCMeshOpenEdge() : _mesh(0)
+{
+  SO_NODE_CONSTRUCTOR(SoFCMeshOpenEdge);
+}
+
+/**
+ * Sets the mesh.
+ */
+void SoFCMeshOpenEdge::setMesh(const Mesh::Feature* mesh)
+{ 
+  _mesh = mesh; 
+}
+
+/**
+ * Renders the open edges only.
+ */
+void SoFCMeshOpenEdge::GLRender(SoGLRenderAction *action)
+{
+  if (_mesh && shouldGLRender(action))
+  {
+    SoState*  state = action->getState();
+
+    SoMaterialBundle mb(action);
+    SoTextureCoordinateBundle tb(action, TRUE, FALSE);
+    SoLazyElement::setLightModel(state, SoLazyElement::BASE_COLOR);
+    mb.sendFirst();  // make sure we have the correct material
+
+    drawLines();
+
+    // Disable caching for this node
+    SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
+  }
+}
+
+/**
+ * Renders the triangles of the complete mesh.
+ */
+void SoFCMeshOpenEdge::drawLines() const
+{
+  // Use the data structure directly and not through MeshFacetIterator as this
+  // class is quite slowly (at least for rendering)
+  const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
+  const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
+
+  glBegin(GL_LINES);
+  for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it ) {
+    for ( int i=0; i<3; i++ ) {
+      if ( it->_aulNeighbours[i] == ULONG_MAX ) {
+        glVertex(rPoints[it->_aulPoints[i]]);
+        glVertex(rPoints[it->_aulPoints[(i+1)%3]]);
+      }
+    }
+  }
+
+  glEnd();
+}
+
+void SoFCMeshOpenEdge::generatePrimitives(SoAction* action)
+{
+  // do not create primitive information as an SoFCMeshNode should already be used that delivers the information
+}
+
+/**
+ * Sets the bounding box of the mesh to \a box and its center to \a center.
+ */
+void SoFCMeshOpenEdge::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
+{
+  // Get the bbox directly from the mesh kernel
+  if (_mesh) {
+    const Base::BoundBox3f& cBox = _mesh->getMesh().GetBoundBox();
+    box.setBounds(SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
+		              SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MaxZ));
+    Base::Vector3f mid = cBox.CalcCenter();
+    center.setValue(mid.x,mid.y,mid.z);
+  }
+  else {
+    box.setBounds(SbVec3f(0,0,0), SbVec3f(0,0,0));
+    center.setValue(0.0f,0.0f,0.0f);
+  }
+}
+
+/**
+ * Adds the number of the triangles to the \a SoGetPrimitiveCountAction.
+ */
+void SoFCMeshOpenEdge::getPrimitiveCount(SoGetPrimitiveCountAction * action)
+{
+  if (!this->shouldPrimitiveCount(action)) return;
+  
+  // Count number of open edges first
+  int ctEdges=0;
+
+  const MeshCore::MeshFacetArray& rFaces = _mesh->getMesh().GetFacets();
+  const MeshCore::MeshPointArray& rPoint = _mesh->getMesh().GetPoints();
+  for ( MeshCore::MeshFacetArray::_TConstIterator jt = rFaces.begin(); jt != rFaces.end(); ++jt ) {
+    for ( int i=0; i<3; i++ ) {
+      if ( jt->_aulNeighbours[i] == ULONG_MAX ) {
+        ctEdges++;
+      }
+    }
+  }
+
+  action->addNumLines(ctEdges);
+}

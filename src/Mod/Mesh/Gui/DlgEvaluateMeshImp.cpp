@@ -269,7 +269,7 @@ void DlgEvaluateMeshImp::onRepairOrientation()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection();
+    Gui::Selection().clearSelection(_pDoc->getName());
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_HarmonizeNormals\")");
     repairOrientation->setEnabled(false);
@@ -358,7 +358,7 @@ void DlgEvaluateMeshImp::onRepairIndices()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection();
+    Gui::Selection().clearSelection(_pDoc->getName());
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixIndices\")");
     repairIndices->setEnabled(false);
@@ -398,7 +398,7 @@ void DlgEvaluateMeshImp::onRepairDegenerations()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection();
+    Gui::Selection().clearSelection(_pDoc->getName());
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixDegenerations\")");
     repairDegenerated->setEnabled(false);
@@ -438,7 +438,7 @@ void DlgEvaluateMeshImp::onRepairDuplicatedFaces()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection();
+    Gui::Selection().clearSelection(_pDoc->getName());
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixDuplicateFaces\")");
     repairDupFaces->setEnabled(false);
@@ -478,7 +478,7 @@ void DlgEvaluateMeshImp::onRepairDuplicatedPoints()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection();
+    Gui::Selection().clearSelection(_pDoc->getName());
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixDuplicatePoints\")");
     repairDupPts->setEnabled(false);

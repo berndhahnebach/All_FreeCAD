@@ -85,8 +85,6 @@ public:
  */
 class GuiExport Document : /*public QObject, */public App::Document::ObserverType, public Base::Subject<const DocChanges&>, public Base::Persistance
 {
-//  Q_OBJECT
-
 public:
   Document(App::Document* pcDocument, Application * app, const char * name=0);
   ~Document();
@@ -204,10 +202,6 @@ public:
   bool isLastView(void);
 
   virtual PyObject *getPyObject(void);
-
-
-//public slots:
-//	void slotCloseView(MDIView* theView);
 
 protected:
   	// pointer to the python class

@@ -93,9 +93,6 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
 
 Document::~Document()
 {
-  // We must clear the selection here to notify all observers
-  Gui::Selection().clearSelection();
-
   // e.g. if document gets closed from within a Python command
   _isClosing = true;
   while ( _LpcViews.size() > 0 )
@@ -645,7 +642,6 @@ void Document::onRename(void)
 #ifdef FC_LOGUPDATECHAIN
   Base::Console().Log("Acti: Gui::Document::onRename()");
 #endif
-  Gui::Selection().clearSelection();
 
   std::list<Gui::BaseView*>::iterator It;
 
@@ -961,5 +957,3 @@ void Document::unmadeSelection(  SoPath * path )
 
 
 #endif
-
-#include "moc_Document.cpp"

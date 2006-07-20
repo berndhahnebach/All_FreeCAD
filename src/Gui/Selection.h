@@ -92,8 +92,10 @@ public:
   bool addSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0, float x=0, float y=0, float z=0);
   /// Remove a selection (for internal use)
   void rmvSelection(const char* pDocName, const char* pObjectName=0, const char* pSubName=0);
-  /// clears the selection
-  void clearSelection(void);
+  /// Clears the selection of document \a pDocName. If the document name is not given the selection of the active document is cleared.
+  void clearSelection(const char* pDocName=0);
+  /// Clears the selection of all documents
+  void clearCompleteSelection();
   /// checks if selected
   bool isSelected(const char* pDocName, const char* pObjectName=0, const char* pSubName=0) const;
   /// checks if selected
@@ -163,7 +165,7 @@ protected:
   virtual ~SelectionSingleton();
 
 
-  /// helper to retrive document by name
+  /// helper to retrieve document by name
   App::Document* getDocument(const char* pDocName=0) const;
 
 
