@@ -134,9 +134,10 @@ void MDIView::onRename(Gui::Document *pDoc)
     if ( pos == -1 ) {
       // ... or not
       rx.setPattern("(\\s\\:\\s\\d+)$");
+      pos = rx.searchRev(cap);
     }
     if ( pos != -1 ) {
-      cap = cap.left(pos);
+      cap = QString(pDoc->getDocument()->getName());
       cap += rx.cap();
       setCaption(cap);
     } else {
