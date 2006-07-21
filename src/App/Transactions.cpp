@@ -97,6 +97,7 @@ void Transaction::apply(Document &Doc)
 void Transaction::addObjectNew(const DocumentObject *Obj)
 {
   TransactionObject *To = new TransactionObject(Obj);
+  To->status = TransactionObject::New;
   _Objects[Obj] = To;
 }
 
