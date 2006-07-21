@@ -231,6 +231,7 @@ void ViewProviderPoints::setMode(const char* ModeName)
   {
     std::map<std::string,App::Property*> Map;
     pcObject->getPropertyMap(Map);
+    bool ok=false;
     for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
     {
       Base::Type t = it->second->getTypeId();
@@ -238,8 +239,14 @@ void ViewProviderPoints::setMode(const char* ModeName)
       {
         setVertexGreyvalueMode((Points::PropertyGreyValueList*)it->second);
         setDisplayMode("Color");
+        ok=true;
         break;
       }
+    }
+    // Intensity mode is not possible then set the default () mode instead.
+    if (!ok) {
+      setMode("Point");
+      return;
     }
   }
   else if ( strcmp("Shaded",ModeName)==0 )
@@ -253,7 +260,9 @@ void ViewProviderPoints::setMode(const char* ModeName)
       {
         Points::PropertyNormalList* normals = (Points::PropertyNormalList*)it->second;
         if ( pcPointsCoord->point.getNum() != normals->getSize() ) {
-          Base::Console().Error("No normals defined");
+          Base::Console().Message("No normals defined");
+          // Try to set the 'Intensity' mode instead
+          setMode("Intensity");
           return;
         }
         setVertexNormalMode(normals);
