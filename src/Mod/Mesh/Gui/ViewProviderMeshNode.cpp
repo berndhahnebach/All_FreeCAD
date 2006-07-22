@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoShapeHints.h>
@@ -69,7 +70,7 @@ using namespace MeshGui;
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshNode, Gui::ViewProviderFeature)
 
-ViewProviderMeshNode::ViewProviderMeshNode() : _mouseModel(0), m_bEdit(false), pcOpenEdge(0)
+ViewProviderMeshNode::ViewProviderMeshNode() : pcOpenEdge(0), _mouseModel(0), m_bEdit(false)
 {
   ADD_PROPERTY(LineWidth,(2.0f));
   ADD_PROPERTY(PointSize,(2.0f));

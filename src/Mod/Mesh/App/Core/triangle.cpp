@@ -3956,7 +3956,7 @@ int alignment;
   /*   - The parameter `alignment'.                                   */
   /*   - sizeof(VOID *), so the stack of dead items can be maintained */
   /*       without unaligned accesses.                                */
-  if (alignment > sizeof(VOID *)) {
+  if (alignment > (int)(sizeof(VOID *))) {
     pool->alignbytes = alignment;
   } else {
     pool->alignbytes = sizeof(VOID *);
@@ -4356,8 +4356,8 @@ struct behavior *b;
   /*   integer index can occupy the same space as the subsegment pointers  */
   /*   or attributes or area constraint or extra nodes.                    */
   if ((b->voronoi || b->neighbors) &&
-      (trisize < 6 * sizeof(triangle) + sizeof(int))) {
-    trisize = 6 * sizeof(triangle) + sizeof(int);
+      (trisize < (int)(6 * sizeof(triangle) + sizeof(int)))) {
+    trisize = (int)(6 * sizeof(triangle) + sizeof(int));
   }
 
   /* Having determined the memory size of a triangle, initialize the pool. */
@@ -5385,6 +5385,9 @@ REAL permanent;
   REAL err1, err2, err3;
   INEXACT REAL _i, _j;
   REAL _0;
+
+  // To shut up gcc warning 'might be used uninitialized'
+  axtbclen = aytbclen = bxtcalen = bytcalen = cxtablen = cytablen = 0;
 
   adx = (REAL) (pa[0] - pd[0]);
   bdx = (REAL) (pb[0] - pd[0]);
@@ -6961,7 +6964,7 @@ struct badtriang *badtri;
     length *= multiplier;
   }
   /* `length' is approximately squareroot(2.0) to what exponent? */
-  exponent = 2.0 * exponent + (length > SQUAREROOTTWO);
+  exponent = (int)(2.0 * exponent + (length > SQUAREROOTTWO));
   /* `exponent' is now in the range 0...2047 for IEEE double precision.   */
   /*   Choose a queue in the range 0...4095.  The shortest edges have the */
   /*   highest priority (queue 4095).                                     */

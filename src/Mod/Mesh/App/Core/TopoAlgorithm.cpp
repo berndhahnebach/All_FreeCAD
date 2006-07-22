@@ -817,7 +817,7 @@ void MeshTopoAlgorithm::DirectSplitFacet(unsigned long ulFacetPos, unsigned shor
   }
   else
   {
-    MeshFacet& rFace2 = _rclMesh._aclFacetArray[uNeighbour];
+    //MeshFacet& rFace2 = _rclMesh._aclFacetArray[uNeighbour];
     unsigned long ulSize = _rclMesh.CountFacets();
     unsigned long uPtInd = _rclMesh._aclPointArray.GetOrAddIndex(rP);
 

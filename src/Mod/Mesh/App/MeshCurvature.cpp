@@ -261,3 +261,4 @@ bool MeshCurvaturePerFace::Compute()
   return true;
 }
 #endif
+

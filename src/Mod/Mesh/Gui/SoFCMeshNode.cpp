@@ -39,6 +39,7 @@
 # include <Inventor/details/SoFaceDetail.h>
 # include <Inventor/details/SoPointDetail.h>
 # include <Inventor/elements/SoGLCacheContextElement.h>
+# include <Inventor/elements/SoLazyElement.h>
 # include <Inventor/elements/SoLightModelElement.h>
 # include <Inventor/misc/SoState.h>
 #endif
@@ -735,7 +736,6 @@ void SoFCMeshOpenEdge::getPrimitiveCount(SoGetPrimitiveCountAction * action)
   int ctEdges=0;
 
   const MeshCore::MeshFacetArray& rFaces = _mesh->getMesh().GetFacets();
-  const MeshCore::MeshPointArray& rPoint = _mesh->getMesh().GetPoints();
   for ( MeshCore::MeshFacetArray::_TConstIterator jt = rFaces.begin(); jt != rFaces.end(); ++jt ) {
     for ( int i=0; i<3; i++ ) {
       if ( jt->_aulNeighbours[i] == ULONG_MAX ) {

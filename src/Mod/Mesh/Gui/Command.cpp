@@ -354,17 +354,24 @@ CmdMeshExport::CmdMeshExport()
 
 void CmdMeshExport::activated(int iMsg)
 {
+  std::vector<App::DocumentObject*> docObjs = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  if ( docObjs.size() != 1 )
+    return;
+
+  App::DocumentObject* docObj = docObjs.front();
+
   // use current path as default
   std::string path = QDir::currentDirPath().latin1();
   FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
   path = hPath->GetASCII("FileOpenSavePath", path.c_str());
   QString dir = path.c_str();
+  dir += "/";
+  dir += docObj->name.getValue();
 
   QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
   QString format;
   QString fn = Gui::FileDialog::getSaveFileName( dir, filter, Gui::getMainWindow(), 0,
                                                  QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );
-  std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
 
   if (! fn.isEmpty() )
   {
@@ -378,7 +385,7 @@ void CmdMeshExport::activated(int iMsg)
     doCommand(Doc,"f = App.document().addObject(\"Mesh::Export\",\"%s\")", fi.baseName().ascii());
     doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
     doCommand(Doc,"f.Format = \"%s\"",format.ascii());
-    doCommand(Doc,"f.Source = App.document().%s",fea.front()->name.getValue());
+    doCommand(Doc,"f.Source = App.document().%s",docObj->name.getValue());
     commitCommand();
     updateActive();
 
