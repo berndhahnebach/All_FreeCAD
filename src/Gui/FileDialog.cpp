@@ -82,12 +82,27 @@ QString FileDialog::getOpenFileName ( const QString & startWith, const QString &
  * This is a convenience static function that will return a file name selected by the user. The file does not have to exist.
  */
 QString FileDialog::getSaveFileName ( const QString & startWith, const QString & filter, QWidget * parent,
-                                      const char* name, const QString & caption, QString * selectedFilter, 
+                                      const char* name, const QString & caption, QString * selectedFilter,
                                       bool resolveSymlinks, const QString& buttonText, bool * ok  )
 {
-  FileDialog fd( startWith, filter, parent, name, true );
+  // The string 'startWith' can also contain the file name that is shown in the lineedit.
+  QString dirName = startWith;
+  QString selName = QString::null;
+  if ( startWith != QString::null ) {
+    QDir dirPath(startWith);
+    QString curName = dirPath.dirName();
+    // If the directory in 'startWith' doesn't exist but exists one level up
+    // then the last part is the file name.
+    if ( !dirPath.exists() && dirPath.cdUp() ) {
+      dirName = dirPath.path();
+      selName = curName;
+    }
+  }
+
+  FileDialog fd( dirName, filter, parent, name, true );
   fd.setMode( AnyFile );
   fd.setCaption(caption);
+  fd.setSelection(selName);
   if ( selectedFilter )
     fd.setFilter( *selectedFilter );
   if ( buttonText != QString::null )
