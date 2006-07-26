@@ -688,6 +688,12 @@ void SoFCMeshOpenEdge::drawLines() const
   const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
   const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
 
+  // When rendering open edges use the given line width * 3 
+  GLfloat lineWidth;
+  glGetFloatv(GL_LINE_WIDTH, &lineWidth);
+  glLineWidth(3.0f*lineWidth);
+
+
   glBegin(GL_LINES);
   for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); ++it ) {
     for ( int i=0; i<3; i++ ) {

@@ -204,6 +204,7 @@ void View3DInventor::onUpdate(void)
   Base::Console().Log("Acti: Gui::View3DInventor::onUpdate()");
 #endif
   update();  
+  _viewer->render();
 }
 
 const char *View3DInventor::getName(void) const

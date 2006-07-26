@@ -127,7 +127,7 @@ QPixmap ViewProviderExport::getIcon() const
 
 // ======================================================================
 
-PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderDocumentObject)
+PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderFeature)
 
 
 

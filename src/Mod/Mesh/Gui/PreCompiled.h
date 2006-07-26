@@ -79,6 +79,7 @@
 #include <Inventor/SoPickedPoint.h>
 #include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
+#include <Inventor/actions/SoCallbackAction.h>
 #include <Inventor/actions/SoGetBoundingBoxAction.h> 
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
@@ -86,6 +87,7 @@
 #include <Inventor/bundles/SoMaterialBundle.h>
 #include <Inventor/bundles/SoTextureCoordinateBundle.h>
 #include <Inventor/details/SoFaceDetail.h>
+#include <Inventor/details/SoLineDetail.h>
 #include <Inventor/details/SoPointDetail.h>
 #include <Inventor/draggers/SoTransformerDragger.h>
 #include <Inventor/elements/SoGLCacheContextElement.h>
@@ -93,6 +95,7 @@
 #include <Inventor/events/SoKeyboardEvent.h>
 #include <Inventor/events/SoLocation2Event.h>
 #include <Inventor/events/SoMouseButtonEvent.h>
+#include <Inventor/errors/SoReadError.h>
 #include <Inventor/fields/SoMFColor.h>
 #include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/manips/SoTransformerManip.h> 

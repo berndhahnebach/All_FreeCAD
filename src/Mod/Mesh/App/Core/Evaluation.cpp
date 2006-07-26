@@ -594,9 +594,11 @@ bool MeshEvalNeighbourhood::Evaluate ()
       if ( rFace0._aulNeighbours[side0]!=f1 || rFace1._aulNeighbours[side1]!=f0 )
         return false;
     }
-    // Non-manifold edge here => the neighbourhood cannot be valid
-    else
-      return false;
+
+    // Note: If more than two facets are attached to the edge then we have a non-manifold edge here. 
+    // This means that the neighbourhood cannot be valid, fore sure. But we just want to check whether
+    // the neighbourhood is valid for topologic correctly edges and thus we ignore this case.
+    // Non-manifolds are an own category of errors and are handled by the class MeshEvalTopology.
   }
 
   return true;
