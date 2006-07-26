@@ -35,6 +35,8 @@
 #include "DlgEvaluateMeshImp.h"
 #include "PropertyEditorMesh.h"
 #include "SoFCMeshNode.h"
+#include "SoFCMeshVertex.h"
+#include "SoFCMeshFaceSet.h"
 #include "ViewProvider.h"
 #include "ViewProviderMeshNode.h"
 #include "ViewProviderCurvature.h"
@@ -77,9 +79,17 @@ void GuiMeshExport initMeshGui() {
   CreateMeshCommands();
   new MeshGui::CleanupHandler;
 
-  MeshGui::PropertyEditorMesh                ::init();
   MeshGui::SoFCMeshNode                      ::initClass();
   MeshGui::SoFCMeshOpenEdge                  ::initClass();
+  MeshGui::SoFCMeshVertexElement             ::initClass();
+  MeshGui::SoFCMeshFacetElement              ::initClass();
+  MeshGui::SoSFMeshPointArray                ::initClass();
+  MeshGui::SoFCMeshVertex                    ::initClass();
+  MeshGui::SoFCMeshFacet                     ::initClass();
+  MeshGui::SoSFMeshFacetArray                ::initClass();
+  MeshGui::SoFCMeshFaceSet                   ::initClass();
+  MeshGui::SoFCMeshOpenEdgeSet               ::initClass();
+  MeshGui::PropertyEditorMesh                ::init();
   MeshGui::ViewProviderMesh                  ::init();
   MeshGui::ViewProviderMeshNode              ::init();
   MeshGui::ViewProviderExport                ::init();
@@ -93,7 +103,6 @@ void GuiMeshExport initMeshGui() {
   MeshGui::ViewProviderMeshDuplicatedPoints  ::init();
   MeshGui::ViewProviderMeshDegenerations     ::init();
   MeshGui::ViewProviderMeshIndices           ::init();
-
   MeshGui::Workbench                         ::init();
 
   return;

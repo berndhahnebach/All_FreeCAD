@@ -642,7 +642,8 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     case SoKeyboardEvent::UP_ARROW:
     case SoKeyboardEvent::RIGHT_ARROW:
     case SoKeyboardEvent::DOWN_ARROW:
-      setViewing( true );
+      if (!isViewing())
+        setViewing( true );
       break;
     default:
       break;
@@ -870,7 +871,8 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   bool bInteraction = (MoveMode||ZoomMode||RotMode|_bSpining);
   if (bInteraction && getInteractiveCount()==0)
     interactiveCountInc();
-  else if (!bInteraction&&getInteractiveCount()>0)
+  // must not be in seek mode because it gets decremented in setSeekMode(FALSE)
+  else if (!bInteraction&&getInteractiveCount()>0&&!isSeekMode())
     interactiveCountDec();
 
 
@@ -999,7 +1001,11 @@ bool View3DInventorViewer::hasClippingPlane() const
   return false;
 }
 
-bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm)
+/**
+ * This method picks the closest point to the camera in the underlying scenegraph and returns its location and normal. 
+ * If no point was picked false is returned.
+ */
+bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm) const
 {
  // attempting raypick in the event_cb() callback method
   SoRayPickAction rp( getViewportRegion() );
@@ -1014,6 +1020,22 @@ bool View3DInventorViewer::pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &
     return true;
   }else
     return false;
+}
+
+/**
+ * This method is provided for convenience and does basically the same as method above unless that it
+ * returns an SoPickedPoint object with additional information.
+ * \note It is in the response of the client programmer to delete the returned SoPickedPoint object.
+ */
+SoPickedPoint* View3DInventorViewer::pickPoint(const SbVec2s& pos) const
+{
+  SoRayPickAction rp( getViewportRegion() );
+  rp.setPoint(pos);
+  rp.apply(getSceneManager()->getSceneGraph());
+
+  // returns a copy of the point
+  SoPickedPoint* pick = rp.getPickedPoint();
+  return (pick ? pick->copy() : 0);
 }
 
 void View3DInventorViewer::panToCenter(const SbPlane & panningplane, const SbVec2f & currpos)

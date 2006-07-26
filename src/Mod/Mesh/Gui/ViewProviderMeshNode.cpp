@@ -405,9 +405,7 @@ void ViewProviderMeshNode::showOpenEdges(bool show)
 #if 1
   if ( show ) {
     pcOpenEdge = new SoSeparator();
-    SoDrawStyle* lineStyle = new SoDrawStyle();
-    lineStyle->lineWidth = 3;
-    pcOpenEdge->addChild(lineStyle);
+    pcOpenEdge->addChild(pcLineStyle);
     pcOpenEdge->addChild(pOpenColor);
 
     const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcObject);
@@ -417,7 +415,7 @@ void ViewProviderMeshNode::showOpenEdges(bool show)
     
     // add to the highlight node
     pcHighlight->addChild(pcOpenEdge);
-  } else {
+  } else if (pcOpenEdge) {
     // remove the node and destroy the data
     pcHighlight->removeChild(pcOpenEdge);
     pcOpenEdge = 0;
@@ -425,9 +423,7 @@ void ViewProviderMeshNode::showOpenEdges(bool show)
 #else
   if ( show ) {
     pcOpenEdge = new SoSeparator();
-    SoDrawStyle* lineStyle = new SoDrawStyle();
-    lineStyle->lineWidth = 3;
-    pcOpenEdge->addChild(lineStyle);
+    pcOpenEdge->addChild(pcLineStyle);
     pcOpenEdge->addChild(pOpenColor);
     SoCoordinate3* points = new SoCoordinate3();
     pcOpenEdge->addChild(points);

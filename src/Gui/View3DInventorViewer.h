@@ -82,7 +82,8 @@ public:
   bool dumpToFile( const char* filename, bool binary ) const;
 
   // calls a PickAction on the scene graph
-  bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm);
+  bool pickPoint(const SbVec2s& pos,SbVec3f &point,SbVec3f &norm) const;
+  SoPickedPoint* pickPoint(const SbVec2s& pos) const;
 
 
   /** @name Clipping plane

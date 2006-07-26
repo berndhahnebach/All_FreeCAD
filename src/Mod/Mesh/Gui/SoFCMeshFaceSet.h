@@ -1,0 +1,164 @@
+/***************************************************************************
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *                                                                         *
+ *   This file is part of the FreeCAD CAx development system.              *
+ *                                                                         *
+ *   This library is free software; you can redistribute it and/or         *
+ *   modify it under the terms of the GNU Library General Public           *
+ *   License as published by the Free Software Foundation; either          *
+ *   version 2 of the License, or (at your option) any later version.      *
+ *                                                                         *
+ *   This library  is distributed in the hope that it will be useful,      *
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ *   GNU Library General Public License for more details.                  *
+ *                                                                         *
+ *   You should have received a copy of the GNU Library General Public     *
+ *   License along with this library; see the file COPYING.LIB. If not,    *
+ *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
+ *   Suite 330, Boston, MA  02111-1307, USA                                *
+ *                                                                         *
+ ***************************************************************************/
+
+#ifndef MESHGUI_SOFC_MESHFACESET_H
+#define MESHGUI_SOFC_MESHFACESET_H
+
+#include <Inventor/fields/SoSField.h>
+#include <Inventor/fields/SoSubField.h>
+#include <Mod/Mesh/App/Core/Elements.h>
+
+
+#include <Inventor/nodes/SoNode.h>
+#include <Inventor/nodes/SoShape.h>
+#include <Inventor/fields/SoMFVec3f.h>
+#include <Inventor/fields/SoMFInt32.h>
+
+namespace Mesh {
+class Feature;
+}
+
+namespace MeshGui {
+
+class GuiMeshExport SoSFMeshFacetArray : public SoSField {
+  typedef SoSField inherited;
+
+  SO_SFIELD_HEADER(SoSFMeshFacetArray, MeshCore::MeshFacetArray*, MeshCore::MeshFacetArray*);
+
+public:
+  static void initClass(void);
+  void setValue(const MeshCore::MeshFacetArray& p);
+
+protected:
+  SbBool readBinaryValues(SoInput * in, unsigned long numarg);
+  SbBool read1Value(SoInput * in, unsigned long idx);
+  void writeBinaryValues(SoOutput * out) const;
+  void write1Value(SoOutput * out, unsigned long idx) const;
+  int getNumValuesPerLine() const;
+};
+
+// -------------------------------------------------------
+
+class GuiMeshExport SoFCMeshFacetElement : public SoReplacedElement {
+  typedef SoReplacedElement inherited;
+
+  SO_ELEMENT_HEADER(SoFCMeshFacetElement);
+
+public:
+  static void initClass(void);
+
+  virtual void init(SoState * state);
+  static void set(SoState * const state, SoNode * const node, const MeshCore::MeshFacetArray * const coords);
+  static const MeshCore::MeshFacetArray * get(SoState * const state);
+  static const SoFCMeshFacetElement * getInstance(SoState * state);
+  virtual void print(FILE * file) const;
+
+protected:
+  virtual ~SoFCMeshFacetElement();
+  const MeshCore::MeshFacetArray *coordIndex;
+};
+
+// -------------------------------------------------------
+
+class GuiMeshExport SoFCMeshFacet : public SoNode {
+  typedef SoSField inherited;
+
+  SO_NODE_HEADER(SoFCMeshFacet);
+
+public:
+  static void initClass(void);
+  SoFCMeshFacet(void);
+
+  SoSFMeshFacetArray coordIndex;
+
+  virtual void doAction(SoAction * action);
+  virtual void GLRender(SoGLRenderAction * action);
+  virtual void callback(SoCallbackAction * action);
+  virtual void getBoundingBox(SoGetBoundingBoxAction * action);
+  virtual void pick(SoPickAction * action);
+  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+
+protected:
+  virtual ~SoFCMeshFacet();
+};
+
+// -------------------------------------------------------
+
+class GuiMeshExport SoFCMeshFaceSet : public SoShape {
+  typedef SoShape inherited;
+
+  SO_NODE_HEADER(SoFCMeshFaceSet);
+    
+public:
+  static void initClass();
+  SoFCMeshFaceSet();
+
+  unsigned int MaximumTriangles;
+
+protected:
+  virtual void GLRender(SoGLRenderAction *action);
+  virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
+  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+  virtual void generatePrimitives(SoAction *action);
+  virtual SoDetail * createTriangleDetail(SoRayPickAction * action,
+                                          const SoPrimitiveVertex * v1,
+                                          const SoPrimitiveVertex * v2,
+                                          const SoPrimitiveVertex * v3,
+                                          SoPickedPoint * pp);
+
+private:
+  // Force using the reference count mechanism.
+  virtual ~SoFCMeshFaceSet() {};
+  virtual void notify(SoNotList * list);
+  // Draw faces
+  void drawFaces(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool needNormals) const;
+  void drawPoints(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool needNormals) const;
+  unsigned int countTriangles(SoAction * action) const;
+};
+
+// ------------------------------------------------------------
+
+class GuiMeshExport SoFCMeshOpenEdgeSet : public SoShape {
+  typedef SoShape inherited;
+
+  SO_NODE_HEADER(SoFCMeshOpenEdgeSet);
+    
+public:
+  static void initClass();
+  SoFCMeshOpenEdgeSet();
+
+protected:
+  virtual void GLRender(SoGLRenderAction *action);
+  virtual void computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center);
+  virtual void getPrimitiveCount(SoGetPrimitiveCountAction * action);
+  virtual void generatePrimitives(SoAction *action);
+private:
+  // Force using the reference count mechanism.
+  virtual ~SoFCMeshOpenEdgeSet() {};
+  void drawLines(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*) const ;
+};
+
+} // namespace MeshGui
+
+
+#endif // MESHGUI_SOFC_MESHFACESET_H
+
