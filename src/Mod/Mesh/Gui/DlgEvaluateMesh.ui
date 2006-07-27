@@ -284,7 +284,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>textLabelDuplPoints</cstring>
                     </property>
@@ -341,7 +341,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>textLabelNonmanifolds</cstring>
                     </property>
@@ -398,7 +398,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>textLabelDuplicatedFaces</cstring>
                     </property>
@@ -455,7 +455,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>textLabelOrientation</cstring>
                     </property>
@@ -512,7 +512,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>textLabelDegeneration</cstring>
                     </property>
@@ -569,7 +569,7 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLabel">
+                <widget class="QCheckBox">
                     <property name="name">
                         <cstring>textLabelIndices</cstring>
                     </property>
@@ -702,6 +702,42 @@
         <receiver>MeshGui::DlgEvaluateMesh</receiver>
         <slot>onRepairOrientation()</slot>
     </connection>
+    <connection>
+        <sender>textLabelOrientation</sender>
+        <signal>clicked()</signal>
+        <receiver>MeshGui::DlgEvaluateMesh</receiver>
+        <slot>onCheckOrientation()</slot>
+    </connection>
+    <connection>
+        <sender>textLabelDuplicatedFaces</sender>
+        <signal>clicked()</signal>
+        <receiver>MeshGui::DlgEvaluateMesh</receiver>
+        <slot>onCheckDuplicatedFaces()</slot>
+    </connection>
+    <connection>
+        <sender>textLabelDuplPoints</sender>
+        <signal>clicked()</signal>
+        <receiver>MeshGui::DlgEvaluateMesh</receiver>
+        <slot>onCheckDuplicatedPoints()</slot>
+    </connection>
+    <connection>
+        <sender>textLabelNonmanifolds</sender>
+        <signal>clicked()</signal>
+        <receiver>MeshGui::DlgEvaluateMesh</receiver>
+        <slot>onCheckNonManifolds()</slot>
+    </connection>
+    <connection>
+        <sender>textLabelDegeneration</sender>
+        <signal>clicked()</signal>
+        <receiver>MeshGui::DlgEvaluateMesh</receiver>
+        <slot>onCheckDegenerations()</slot>
+    </connection>
+    <connection>
+        <sender>textLabelIndices</sender>
+        <signal>clicked()</signal>
+        <receiver>MeshGui::DlgEvaluateMesh</receiver>
+        <slot>onCheckIndices()</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>lineEditName</tabstop>
@@ -735,6 +771,12 @@
     <slot>onRepairIndices()</slot>
     <slot>onAnalyzeOrientation()</slot>
     <slot>onRepairOrientation()</slot>
+    <slot>onCheckOrientation()</slot>
+    <slot>onCheckDegenerations()</slot>
+    <slot>onCheckDuplicatedFaces()</slot>
+    <slot>onCheckDuplicatedPoints()</slot>
+    <slot>onCheckNonManifolds()</slot>
+    <slot>onCheckIndices()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

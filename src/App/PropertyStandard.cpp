@@ -99,7 +99,7 @@ void PropertyInteger::setPyObject(PyObject *value)
 
 void PropertyInteger::Save (Writer &writer) const
 {
-  writer << "<Integer value=\"" <<  _lValue <<"\"/>" ;
+  writer << writer.ind() << "<Integer value=\"" <<  _lValue <<"\"/>" << std::endl;
 }
 
 void PropertyInteger::Restore(Base::XMLReader &reader)
@@ -201,12 +201,12 @@ void PropertyIntegerList::setPyObject(PyObject *value)
 
 void PropertyIntegerList::Save (Writer &writer) const
 {
-  writer << "<IntegerList count=\"" <<  getSize() <<"\"/>" << endl;
+  writer << writer.ind() << "<IntegerList count=\"" <<  getSize() <<"\"/>" << endl;
+  writer.incInd();
   for(int i = 0;i<getSize(); i++)
-    writer << "<I v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+    writer << writer.ind() << "<I v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+  writer.decInd();
   writer << "</IntegerList>" << endl ;
-
-
 }
 
 void PropertyIntegerList::Restore(Base::XMLReader &reader)
@@ -305,7 +305,7 @@ void PropertyFloat::setPyObject(PyObject *value)
 
 void PropertyFloat::Save (Writer &writer) const
 {
-  writer <<  "<Float value=\"" <<  _dValue <<"\"/>" ;
+  writer << writer.ind() << "<Float value=\"" <<  _dValue <<"\"/>" << std::endl;
 }
 
 void PropertyFloat::Restore(Base::XMLReader &reader)
@@ -556,7 +556,7 @@ void PropertyString::setPyObject(PyObject *value)
 void PropertyString::Save (Writer &writer) const
 {
   std::string val = encodeAttribute(_cValue);
-  writer << "<String value=\"" <<  val <<"\"/>" ;
+  writer << writer.ind() << "<String value=\"" <<  val <<"\"/>" << std::endl;
 }
 
 void PropertyString::Restore(Base::XMLReader &reader)
@@ -679,12 +679,14 @@ void PropertyStringList::setPyObject(PyObject *value)
 
 void PropertyStringList::Save (Writer &writer) const
 {
-  writer << "<StringList count=\"" <<  getSize() <<"\">" << endl;
+  writer << writer.ind() << "<StringList count=\"" <<  getSize() <<"\">" << endl;
+  writer.incInd();
   for(int i = 0;i<getSize(); i++) {
     std::string val = encodeAttribute(_lValueList[i]);
-    writer << "<String value=\"" <<  val <<"\"/>" << endl;
+    writer << writer.ind() << "<String value=\"" <<  val <<"\"/>" << endl;
   }
-  writer << "</StringList>" << endl ;
+  writer.decInd();
+  writer << writer.ind() << "</StringList>" << endl ;
 }
 
 void PropertyStringList::Restore(Base::XMLReader &reader)
@@ -778,11 +780,12 @@ void PropertyBool::setPyObject(PyObject *value)
 
 void PropertyBool::Save (Writer &writer) const
 {
-  writer << "<Bool value=\"" ;
+  writer << writer.ind() << "<Bool value=\"" ;
   if(_lValue)
     writer << "true" <<"\"/>" ;
   else
     writer << "false" <<"\"/>" ;
+  writer << std::endl;
 
 }
 

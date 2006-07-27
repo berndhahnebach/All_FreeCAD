@@ -512,10 +512,12 @@ void Document::SaveDocFile (Base::Writer &writer) const
   std::map<App::DocumentObject*,ViewProvider*>::const_iterator it;
   
   // writing the features itself
+  writer.incInd(); // indention for 'ViewProviderData Count'
   writer << writer.ind() << "<ViewProviderData Count=\"" << _ViewProviderMap.size() <<"\">" << endl;
 
   bool xml = writer.isForceXML();
   writer.setForceXML(true);
+  writer.incInd(); // indention for 'ViewProvider name'
   for(it = _ViewProviderMap.begin(); it != _ViewProviderMap.end(); ++it)
   {
     App::DocumentObject* doc = it->first;
@@ -526,7 +528,9 @@ void Document::SaveDocFile (Base::Writer &writer) const
   }
   writer.setForceXML(xml);
 
+  writer.decInd(); // indention for 'ViewProvider name'
   writer << writer.ind() << "</ViewProviderData>" << endl;
+  writer.decInd();  // indention for 'ViewProviderData Count'
 
   // set camera settings
   QString viewPos="";
@@ -542,7 +546,9 @@ void Document::SaveDocFile (Base::Writer &writer) const
     }
   }
 
+  writer.incInd(); // indention for camera settings
   writer << writer.ind() << "<Camera settings=\"" <<  viewPos.latin1() <<"\"/>" << endl;
+  writer.decInd(); // indention for camera settings
   writer << "</Document>" << endl;
 }
 

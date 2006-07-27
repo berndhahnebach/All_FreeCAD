@@ -56,6 +56,7 @@
 // Qt Toolkit
 #include <qaction.h>
 #include <qapplication.h>
+#include <qcheckbox.h>
 #include <qcursor.h>
 #include <qfiledialog.h>
 #include <qlabel.h>

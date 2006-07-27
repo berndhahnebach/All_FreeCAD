@@ -332,8 +332,10 @@ void Document::Save (Writer &writer) const
   PropertyContainer::Save(writer);
 
   // writing the features types
+  writer.incInd(); // indention for 'Objects count'
   writer << writer.ind() << "<Objects Count=\"" << ObjectArray.size() <<"\">" << endl;
 
+  writer.incInd(); // indention for 'Object type'
   std::vector<DocumentObject*>::const_iterator it;
   for(it = ObjectArray.begin(); it != ObjectArray.end(); ++it)
   {
@@ -343,11 +345,13 @@ void Document::Save (Writer &writer) const
                            << "/>" << endl;    
   }
 
+  writer.decInd();  // indention for 'Object type'
   writer << writer.ind() << "</Objects>" << endl;
   
   // writing the features itself
   writer << writer.ind() << "<ObjectData Count=\"" << ObjectArray.size() <<"\">" << endl;
 
+  writer.incInd(); // indention for 'Object name'
   for(it = ObjectArray.begin(); it != ObjectArray.end(); ++it)
   {
     writer << writer.ind() << "<Object name=\"" << (*it)->name.getValue() << "\">" << endl;   
@@ -355,7 +359,9 @@ void Document::Save (Writer &writer) const
     writer << writer.ind() << "</Object>" << endl;
   }
 
+  writer.decInd(); // indention for 'Object name'
   writer << writer.ind() << "</ObjectData>" << endl;
+  writer.decInd();  // indention for 'Objects count'
   writer << "</Document>" << endl;
 
 }

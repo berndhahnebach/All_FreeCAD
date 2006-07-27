@@ -115,6 +115,8 @@ std::string Property::encodeAttribute(const std::string& str) const
       tmp += "&amp;";
     else if ( *it == '>' )
       tmp += "&gt";
+    else if ( *it == '\n')
+      tmp += " ";
     else
       tmp += *it;
   }
