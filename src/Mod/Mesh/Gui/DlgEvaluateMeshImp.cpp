@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
+# include <qcheckbox.h>
 # include <qcursor.h>
 # include <qlabel.h>
 # include <qlineedit.h>
@@ -238,6 +239,18 @@ void DlgEvaluateMeshImp::onRefreshInfo()
   }
 }
 
+void DlgEvaluateMeshImp::onCheckOrientation()
+{
+  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshOrientation");
+  if ( it != _vp.end() )
+  {
+    if ( textLabelOrientation->isChecked() )
+      it->second->show();
+    else
+      it->second->hide();
+  }
+}
+
 void DlgEvaluateMeshImp::onAnalyzeOrientation()
 {
   if ( _meshFeature )
@@ -256,6 +269,7 @@ void DlgEvaluateMeshImp::onAnalyzeOrientation()
     else
     {
       textLabelOrientation->setText( tr("Flipped normals found") );
+      textLabelOrientation->setChecked(true);
       repairOrientation->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshOrientation" );
     }
@@ -278,6 +292,18 @@ void DlgEvaluateMeshImp::onRepairOrientation()
   }
 }
 
+void DlgEvaluateMeshImp::onCheckNonManifolds()
+{
+  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshManifolds");
+  if ( it != _vp.end() )
+  {
+    if ( textLabelNonmanifolds->isChecked() )
+      it->second->show();
+    else
+      it->second->hide();
+  }
+}
+
 void DlgEvaluateMeshImp::onAnalyzeNonManifolds()
 {
   if ( _meshFeature )
@@ -296,8 +322,8 @@ void DlgEvaluateMeshImp::onAnalyzeNonManifolds()
     else
     {
       textLabelNonmanifolds->setText( tr("%1 non-manifolds found").arg(eval.CountManifolds()) );
+      textLabelNonmanifolds->setChecked(true);
       repairNonmanifolds->setEnabled(true);
-
       addViewProvider( "MeshGui::ViewProviderMeshManifolds" );
     }
 
@@ -309,6 +335,18 @@ void DlgEvaluateMeshImp::onAnalyzeNonManifolds()
 void DlgEvaluateMeshImp::onRepairNonManifolds()
 {
   QMessageBox::warning(this, "Non-manifolds", "Cannot remove non-manifolds");
+}
+
+void DlgEvaluateMeshImp::onCheckIndices()
+{
+  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshIndices");
+  if ( it != _vp.end() )
+  {
+    if ( textLabelIndices->isChecked() )
+      it->second->show();
+    else
+      it->second->hide();
+  }
 }
 
 void DlgEvaluateMeshImp::onAnalyzeIndices()
@@ -327,21 +365,25 @@ void DlgEvaluateMeshImp::onAnalyzeIndices()
     
     if ( !nb.Evaluate() ) {
       textLabelIndices->setText( tr("Invalid neighbour indices") );
+      textLabelIndices->setChecked(true);
       repairIndices->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshIndices" );
     }
     else if ( !rf.Evaluate() ) {
       textLabelIndices->setText( tr("Invalid face indices") );
+      textLabelIndices->setChecked(true);
       repairIndices->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshIndices" );
     }
     else if ( !rp.Evaluate() ) {
       textLabelIndices->setText( tr("Invalid point indices") );
+      textLabelIndices->setChecked(true);
       repairIndices->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshIndices" );
     }
     else if ( !cf.Evaluate() ) {
       textLabelIndices->setText( tr("Multiple point indices") );
+      textLabelIndices->setChecked(true);
       repairIndices->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshIndices" );
     }
@@ -367,6 +409,18 @@ void DlgEvaluateMeshImp::onRepairIndices()
   }
 }
 
+void DlgEvaluateMeshImp::onCheckDegenerations()
+{
+  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshDegenerations");
+  if ( it != _vp.end() )
+  {
+    if ( textLabelDegeneration->isChecked() )
+      it->second->show();
+    else
+      it->second->hide();
+  }
+}
+
 void DlgEvaluateMeshImp::onAnalyzeDegenerations()
 {
   if ( _meshFeature )
@@ -380,11 +434,12 @@ void DlgEvaluateMeshImp::onAnalyzeDegenerations()
     
     if ( eval.Evaluate() )
     {
-      textLabelDegeneration->setText( tr("No degenerated faces found") );
+      textLabelDegeneration->setText( tr("No degenerations found") );
     }
     else
     {
       textLabelDegeneration->setText( tr("Degenerated faces found") );
+      textLabelDegeneration->setChecked(true);
       repairDegenerated->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
     }
@@ -407,6 +462,18 @@ void DlgEvaluateMeshImp::onRepairDegenerations()
   }
 }
 
+void DlgEvaluateMeshImp::onCheckDuplicatedFaces()
+{
+  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshDuplicatedFaces");
+  if ( it != _vp.end() )
+  {
+    if ( textLabelDuplicatedFaces->isChecked() )
+      it->second->show();
+    else
+      it->second->hide();
+  }
+}
+
 void DlgEvaluateMeshImp::onAnalyzeDuplicatedFaces()
 {
   if ( _meshFeature )
@@ -425,6 +492,7 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedFaces()
     else
     {
       textLabelDuplicatedFaces->setText( tr("Duplicated faces found") );
+      textLabelDuplicatedFaces->setChecked(true);
       repairDupFaces->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
     }
@@ -447,6 +515,18 @@ void DlgEvaluateMeshImp::onRepairDuplicatedFaces()
   }
 }
 
+void DlgEvaluateMeshImp::onCheckDuplicatedPoints()
+{
+  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshDuplicatedPoints");
+  if ( it != _vp.end() )
+  {
+    if ( textLabelDuplPoints->isChecked() )
+      it->second->show();
+    else
+      it->second->hide();
+  }
+}
+
 void DlgEvaluateMeshImp::onAnalyzeDuplicatedPoints()
 {
   if ( _meshFeature )
@@ -465,7 +545,8 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedPoints()
     else
     {
       textLabelDuplPoints->setText( tr("Duplicated points found") );
-      textLabelDuplPoints->setEnabled(true);
+      textLabelDuplPoints->setChecked(true);
+      repairDupPts->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
     }
 

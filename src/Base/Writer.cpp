@@ -153,7 +153,7 @@ void Writer::incInd(void)
 
 void Writer::decInd(void)
 {
-  // indetion missmatch
+  // indention mismatch
   assert(indent > 0);
   indent--;
   indBuf[indent] = '\0';

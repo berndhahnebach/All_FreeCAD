@@ -80,7 +80,7 @@ public:
   /** @name prety formating for XML */
   //@{
   /// get the actual indetion
-  const char* ind(void){return indBuf;}
+  const char* ind(void) const {return indBuf;}
   /// increase indetion by one tab
   void incInd(void);
   /// decreas indetion by one tab

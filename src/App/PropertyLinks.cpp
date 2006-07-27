@@ -117,7 +117,7 @@ void PropertyLink::setPyObject(PyObject *value)
 
 void PropertyLink::Save (Writer &writer) const
 {
-  writer << "<Link value=\"" <<  _pcLink->name.getValue() <<"\"/>" ;
+  writer << writer.ind() << "<Link value=\"" <<  _pcLink->name.getValue() <<"\"/>" << std::endl;
 }
 
 void PropertyLink::Restore(Base::XMLReader &reader)
@@ -236,10 +236,12 @@ void PropertyLinkList::setPyObject(PyObject *value)
 
 void PropertyLinkList::Save (Writer &writer) const
 {
-  writer << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
+  writer << writer.ind() << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
+  writer.incInd();
   for(int i = 0;i<getSize(); i++)
-    writer << "<Link value=\"" <<  _lValueList[i]->name.getValue() <<"\"/>" << endl; ;
-  writer << "</LinkList>" << endl ;
+    writer << writer.ind() << "<Link value=\"" <<  _lValueList[i]->name.getValue() <<"\"/>" << endl; ;
+  writer.decInd();
+  writer << writer.ind() << "</LinkList>" << endl ;
 }
 
 void PropertyLinkList::Restore(Base::XMLReader &reader)
