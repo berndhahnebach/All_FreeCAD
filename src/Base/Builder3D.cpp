@@ -341,7 +341,7 @@ void Builder3D::saveToFile(const char* FileName)
 
 // -----------------------------------------------------------------------------
 
-StreamBuilder3D::StreamBuilder3D(std::ofstream& output)
+StreamBuilder3D::StreamBuilder3D(std::ostream& output)
   :result(output),bStartEndOpen(false),bClosed(false)
 {
   result << "#Inventor V2.1 ascii " << std::endl << std::endl;
@@ -550,7 +550,7 @@ void StreamBuilder3D::addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2
   std::string fs = "";
   if (filled)
   {
-    fs = "    IndexedFaceSet { coordIndex[ 0, 1, 2, -1 ] } ";
+    fs = "    FaceSet { } ";
   }
 
     result << "  Separator { " << std::endl
@@ -563,7 +563,7 @@ void StreamBuilder3D::addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2
            <<        pt2.x << " " << pt2.y << " " << pt2.z
            << "] " << std::endl
            << "    } " << std::endl
-           << "    LineSet { } " << std::endl
+           << "    IndexedLineSet { coordIndex[ 0, 1, 2, 0, -1 ] } " << std::endl
            << fs << std::endl
            << "  } " << std::endl;
 }

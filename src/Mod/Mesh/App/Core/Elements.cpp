@@ -244,10 +244,11 @@ MeshGeomFacet::MeshGeomFacet (const Base::Vector3f &v1,const Base::Vector3f &v2,
 
 bool MeshGeomFacet::IsPointOf (const Base::Vector3f &rclPoint, float fDistance) const
 {
-  if (Distance(rclPoint) > fDistance)
+  if (DistancePlaneToPoint(rclPoint) > fDistance)
     return false;
 
-  Base::Vector3f clNorm(_clNormal), clProjPt(rclPoint), clEdge;
+  // force internal normal to be computed if not done yet
+  Base::Vector3f clNorm(GetNormal()), clProjPt(rclPoint), clEdge;
   Base::Vector3f clP0(_aclPoints[0]), clP1(_aclPoints[1]), clP2(_aclPoints[2]);
   float     fLP, fLE;
 

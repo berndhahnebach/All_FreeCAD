@@ -290,9 +290,9 @@ public:
    */
   bool Weights(const Base::Vector3f& rclP, float& w0, float& w1, float& w2) const;
   /**
-   * Calculates the distance of a point to the triangle.
+   * Calculates the distance of a point to the plane defined by the triangle.
    */
-  inline float Distance (const Base::Vector3f &rclPoint) const;
+  inline float DistancePlaneToPoint (const Base::Vector3f &rclPoint) const;
   /**
    * Enlarges the triangle.
    */
@@ -579,9 +579,10 @@ inline bool MeshPoint::operator < (const MeshPoint &rclPt) const
     return x < rclPt.x;
 }
 
-inline float MeshGeomFacet::Distance (const Base::Vector3f &rclPoint) const
+inline float MeshGeomFacet::DistancePlaneToPoint (const Base::Vector3f &rclPoint) const
 {
-  Base::Vector3f clNorm(_clNormal);
+  // force internal normal to be computed if not done yet
+  Base::Vector3f clNorm(GetNormal());
   clNorm.Normalize();
   return float(fabs(rclPoint.DistanceToPlane(_aclPoints[0], clNorm)));
 }
@@ -609,7 +610,8 @@ inline void MeshGeomFacet::SetNormal (const Base::Vector3f &rclNormal)
 
 inline void MeshGeomFacet::ArrangeNormal (const Base::Vector3f &rclN)
 {
-  if ((rclN * _clNormal) < 0.0f)
+  // force internal normal to be computed if not done yet
+  if ((rclN * GetNormal()) < 0.0f)
     _clNormal = -_clNormal;
 }
 

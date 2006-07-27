@@ -142,7 +142,7 @@ class BaseExport StreamBuilder3D
 {
 public:
   /// Construction
-  StreamBuilder3D(std::ofstream&);
+  StreamBuilder3D(std::ostream&);
   /// Destruction
   virtual ~StreamBuilder3D();
   void close();
@@ -195,7 +195,7 @@ public:
   //@}
 
 private:
-  std::ofstream& result;
+  std::ostream& result;
   bool bStartEndOpen;
   bool bClosed;
 };
