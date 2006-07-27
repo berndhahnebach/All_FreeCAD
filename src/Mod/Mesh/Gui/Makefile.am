@@ -24,8 +24,12 @@ libMeshGui_la_SOURCES=\
 		PreCompiled.h \
 		PropertyEditorMesh.cpp \
 		PropertyEditorMesh.h \
+		SoFCMeshFaceSet.cpp \
+		SoFCMeshFaceSet.h \
 		SoFCMeshNode.cpp \
 		SoFCMeshNode.h \
+		SoFCMeshVertex.cpp \
+		SoFCMeshVertex.h \
 		ViewProvider.cpp \
 		ViewProvider.h \
 		ViewProviderMeshNode.cpp \
