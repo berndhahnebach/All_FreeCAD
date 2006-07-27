@@ -27,10 +27,11 @@
 # ifdef FC_OS_WIN32
 # include <windows.h>
 # endif
-# include <GL/gl.h>
-# include <Inventor/SoOutput.h>
 # include <Inventor/actions/SoCallbackAction.h>
+# include <Inventor/actions/SoGetBoundingBoxAction.h>
+# include <Inventor/actions/SoGetPrimitiveCountAction.h>
 # include <Inventor/actions/SoGLRenderAction.h>
+# include <Inventor/actions/SoPickAction.h>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/errors/SoReadError.h>
 # include <Inventor/misc/SoState.h>

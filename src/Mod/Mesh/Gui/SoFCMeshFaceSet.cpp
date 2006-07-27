@@ -31,8 +31,12 @@
 # include <Inventor/SbBox.h>
 # include <Inventor/SoOutput.h>
 # include <Inventor/SoPrimitiveVertex.h>
+# include <Inventor/actions/SoCallbackAction.h>
 # include <Inventor/actions/SoGLRenderAction.h>
+# include <Inventor/actions/SoGetBoundingBoxAction.h>
 # include <Inventor/actions/SoGetPrimitiveCountAction.h>
+# include <Inventor/actions/SoPickAction.h>
+# include <Inventor/actions/SoRayPickAction.h>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/bundles/SoMaterialBundle.h>
 # include <Inventor/bundles/SoTextureCoordinateBundle.h>
@@ -43,6 +47,7 @@
 # include <Inventor/elements/SoLazyElement.h>
 # include <Inventor/elements/SoLightModelElement.h>
 # include <Inventor/misc/SoState.h>
+# include <Inventor/errors/SoReadError.h>
 #endif
 
 #include <Gui/SoFCInteractiveElement.h>
@@ -50,7 +55,6 @@
 #include <Mod/Mesh/App/Core/Grid.h>
 #include <Mod/Mesh/App/Core/Algorithm.h>
 #include <Mod/Mesh/App/Core/MeshIO.h>
-#include <Mod/Mesh/App/MeshFeature.h>
 #include "SoFCMeshFaceSet.h"
 #include "SoFCMeshVertex.h"
 
