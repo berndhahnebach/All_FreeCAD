@@ -761,9 +761,28 @@ bool Document::sendMsgToViews(const char* pMsg)
 }
 
 /// Geter for the Active View
-MDIView* Document::getActiveView(void)
+MDIView* Document::getActiveView(void) const
 {
-  return getMainWindow()->activeWindow();
+  // get the main window's active view 
+  MDIView* active = getMainWindow()->activeWindow();
+
+  // get all MDI views of the document
+  std::list<MDIView*> mdis = getMDIViews();
+
+  // check whether the active view is part of this document
+  bool ok=false;
+  for ( std::list<MDIView*>::const_iterator it = mdis.begin(); it != mdis.end(); ++it ) {
+    if ( (*it) == active ) {
+      ok = true;
+      break;
+    }
+  }
+
+  // the active view is not part of this document, just use the first view
+  if (!ok && !mdis.empty())
+    active = mdis.front();
+
+  return active;
 }
 
 

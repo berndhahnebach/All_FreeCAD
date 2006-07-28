@@ -128,6 +128,9 @@ CommandBase::CommandBase( const char* sMenu, const char* sToolTip, const char* s
 
 CommandBase::~CommandBase()
 {
+  //FIXME: The QAction object becomes a children of QMainWindow which gets destoyed _before_ the command manager 
+  //hence before any command object. So the action pointer is a dangling pointer here.
+  //delete _pcAction;
 }
 
 QAction* CommandBase::getAction() 
@@ -174,7 +177,6 @@ Command::Command(const char* name)
 
 Command::~Command()
 {
-  delete _pcAction;
 }
 
 bool Command::addTo(QWidget *pcWidget)
@@ -867,6 +869,14 @@ int PythonCommand::getAccel() const
 // CommandManager 
 //===========================================================================
 
+CommandManager::CommandManager()
+{
+}
+
+CommandManager::~CommandManager()
+{
+  clearCommands();
+}
 
 void CommandManager::addCommand(Command* pCom)
 {
@@ -881,6 +891,13 @@ void CommandManager::removeCommand(Command* pCom)
     delete It->second;
     _sCommands.erase(It);
   }
+}
+
+void CommandManager::clearCommands()
+{
+  for ( std::map<std::string,Command*>::iterator it = _sCommands.begin(); it != _sCommands.end(); ++it )
+    delete it->second;
+  _sCommands.clear();
 }
 
 void CommandManager::addTo(const char* Name,QWidget *pcWidget)

@@ -653,6 +653,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   static bool MoveMode=false;
   static bool ZoomMode=false;
   static bool RotMode =false;
+  static bool dCliBut3=false;
 
   const SbVec2s size(this->getGLSize());
   const SbVec2f prevnormalized = lastmouseposition;
@@ -757,12 +758,14 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
         float dci = (float)QApplication::doubleClickInterval()/1000.0f;
         if (tmp.getValue() < dci/*0.300*/)
         {
+          dCliBut3 = true;
           if(!seekToPoint(pos))
             panToCenter(panningplane, posn);
         }else{
           CenterTime = ev->getTime();
           MoveMode = true;
           _bSpining = false;
+          dCliBut3 = false;
           SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
           panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
           // save the current cursor before overriding
@@ -872,7 +875,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   if (bInteraction && getInteractiveCount()==0)
     interactiveCountInc();
   // must not be in seek mode because it gets decremented in setSeekMode(FALSE)
-  else if (!bInteraction&&getInteractiveCount()>0&&!isSeekMode())
+  else if (!bInteraction&&!dCliBut3&&getInteractiveCount()>0&&!isSeekMode())
     interactiveCountDec();
 
 

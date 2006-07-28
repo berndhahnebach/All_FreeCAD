@@ -619,6 +619,14 @@ void MainWindow::closeEvent ( QCloseEvent * e )
   Application::Instance->tryClose( e );
   if( e->isAccepted() )
   {
+    // Before closing the main window we must make sure that all views are in 'Normal' mode otherwise the 'lastWindowClosed()' signal
+    // doesn't get emitted from QApplication later on. Just destroying these views doesn't work either.
+    for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); ++it )
+    {
+      if ( it.data()->currentViewMode() != MDIView::Normal )
+        it.data()->setCurrentViewMode(MDIView::Normal);
+    }
+
     d->_pcActivityTimer->stop();
     QMainWindow::closeEvent( e );
   }

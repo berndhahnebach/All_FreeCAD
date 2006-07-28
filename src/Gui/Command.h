@@ -491,6 +491,10 @@ protected:
 class GuiExport CommandManager
 {
 public:
+  /// Construction
+  CommandManager();
+  /// Destruction
+  ~CommandManager();
   /// Insert a new command into the manager
   void addCommand(Command* pCom);
   /// Remove a command from the manager
@@ -536,6 +540,8 @@ public:
   /// get frequently called by the AppWnd to check the commands are active
   void testActive(void);
 private:
+  /// Destroys all commands in the manager and empties the list.
+  void clearCommands();
   std::map<std::string,Command*> _sCommands;
 };
 

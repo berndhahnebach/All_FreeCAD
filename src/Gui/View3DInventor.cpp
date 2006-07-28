@@ -44,6 +44,7 @@
 #include "View3DInventorViewer.h"
 #include "Document.h"
 #include "Application.h"
+#include "MainWindow.h"
 #include "MenuManager.h"
 #include <App/Feature.h>
 #include <Base/Console.h>
@@ -472,9 +473,22 @@ bool View3DInventor::hasClippingPlane() const
   return _viewer->hasClippingPlane();
 }
 
+/**
+ * Reimplemented from QWidget. For internal use only.
+ */
+void View3DInventor::windowActivationChange ( bool oldActive )
+{
+  MDIView::windowActivationChange(oldActive);
+  onWindowActivated();
+}
+
+/**
+ * Forces this window to be the active view of the main window.
+ */
 void View3DInventor::onWindowActivated ()
 {
-  //myOperations->onSelectionChanged();
+  if ( getMainWindow()->activeWindow() != this )
+    getMainWindow()->onWindowActivated( this );
 }
 
 void View3DInventor::setCursor(const QCursor& aCursor)

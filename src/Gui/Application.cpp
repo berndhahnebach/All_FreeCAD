@@ -140,6 +140,7 @@ Application::~Application()
 {
   // save macros
   MacroCommand::save();
+  delete d;
 
   App::GetApplication().Detach(this);
 }
@@ -444,11 +445,8 @@ void Application::tryClose ( QCloseEvent * e )
     for (map<App::Document*, Gui::Document*>::iterator It = d->lpcDocuments.begin();It!=d->lpcDocuments.end();It++)
     {
 #ifndef FC_DEBUG
-      std::list<MDIView*> mdiViews = It->second->getMDIViews();
-      if ( mdiViews.size() > 0 )
-      {
-        mdiViews.front()->setFocus();
-      }
+      MDIView* active = It->second->getActiveView();
+      active->setFocus(); // raises the view to front
 #endif
 
       It->second->canClose ( e );

@@ -154,3 +154,8 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + Bug fixed when opening a project with the same file name
 + RFE 1450472 Clear selection of active document only
 + SoFCMeshOpenEdge shape node added to render the open edges of a mesh
++ print some information in Attach() and Detach() in Observer in debug mode
++ delete command objects when application is exiting
++ bug fixed in 'Refresh' command
++ active view stuff fixed
++ proper handling of double clicks with wheel button
