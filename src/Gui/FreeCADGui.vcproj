@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADGui"
-	ProjectGUID="{4A1A8B8C-9D79-4FAE-AF0C-D35FEC30B11F}"
+	ProjectGUID="{7C306AE9-42BA-4FAB-8DA1-AFA1B015636A}"
 	>
 	<Platforms>
 		<Platform
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy           /y           /f           Debug\FreeCADGuiD.dll           ..\..\bin&#x0D;&#x0A;xcopy           /y           /f           Debug\FreeCADGuiD.lib           ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy            /y            /f            Debug\FreeCADGuiD.dll            ..\..\bin&#x0D;&#x0A;xcopy            /y            /f            Debug\FreeCADGuiD.lib            ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -211,7 +211,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy           /y           /f           Release\FreeCADGui.dll           ..\..\bin\&#x0D;&#x0A;xcopy           /y           /f           Release\FreeCADGui.lib           ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy            /y            /f            Release\FreeCADGui.dll            ..\..\bin\&#x0D;&#x0A;xcopy            /y            /f            Release\FreeCADGui.lib            ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -4423,26 +4423,6 @@
 		<File
 			RelativePath="Document.h"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-					Outputs="$(InputDir)moc_$(InputName).cpp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-					Outputs="$(InputDir)moc_$(InputName).cpp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="DocumentPy.cpp"
