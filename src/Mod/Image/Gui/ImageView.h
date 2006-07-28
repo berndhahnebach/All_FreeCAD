@@ -48,6 +48,11 @@ public:
     virtual int createImageCopy(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, int displayMode = IV_DISPLAY_RESET);
     virtual int pointImageTo(void* pSrcPixelData, unsigned long width, unsigned long height, int format, unsigned short numSigBitsPerSample, bool takeOwnership, int displayMode = IV_DISPLAY_RESET);
 
+    virtual void EnableStatusBar(bool Enable);
+    virtual void EnableToolBar(bool Enable);
+    virtual void EnableMouseEvents(bool Enable);
+    virtual void EnableOneToOneAction(bool Enable);
+    virtual void EnableFitImageAction(bool Enable);
     virtual void EnableColorActions(bool Enable);
     virtual int createColorMap(int numEntriesReq = 0, bool Initialise = true);
     virtual void clearColorMap();
@@ -118,6 +123,10 @@ protected:
     // Slider for brightness adjustment
     QSlider* _pSliderBrightAdj;
     int _sliderBrightAdjVal;
+
+    // Flag for status bar enablement
+    bool _statusBarEnabled;
+	bool _mouseEventsEnabled;
 
 };
 
