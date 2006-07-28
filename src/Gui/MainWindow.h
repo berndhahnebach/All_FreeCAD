@@ -170,7 +170,11 @@ public slots:
    * This method gets frequently activated and test the commands if they are still active.
    */
   void updateCmdActivity();
- 
+  /**
+   * Activates the associated tab to this widget.
+   */
+  void onWindowActivated( QWidget* );
+
   /** @name Methods for the undo/redo handling 
    *  This methods are usally used by the GUI document! Its not intended
    *  to use them directly. If the GUI is not up, there is usaly no undo/redo 
@@ -218,10 +222,6 @@ protected:
   //@}
 
 private slots:
-  /**
-   * Activates the associated tab to this widget.
-   */
-  void onWindowActivated( QWidget* );
   /**
    * Fills up the menu with the current windows in the workspace.
    */

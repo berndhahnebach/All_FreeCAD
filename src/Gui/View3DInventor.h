@@ -100,6 +100,7 @@ public slots:
   void dump(const char* filename);
 
 protected:
+  void windowActivationChange( bool oldActive );
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
   void keyPressEvent    ( QKeyEvent       * e );

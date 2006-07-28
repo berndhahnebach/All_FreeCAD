@@ -517,9 +517,12 @@ StdCmdRefresh::StdCmdRefresh()
 
 void StdCmdRefresh::activated(int iMsg)
 {
-  openCommand("Refresh active document");
-  doCommand(Doc,"App.activeDocument().recompute()");
-  commitCommand(); 
+  if ( getActiveGuiDocument() )
+  {
+    openCommand("Refresh active document");
+    doCommand(Doc,"App.activeDocument().recompute()");
+    commitCommand(); 
+  }
 }
 
 bool StdCmdRefresh::isActive(void)

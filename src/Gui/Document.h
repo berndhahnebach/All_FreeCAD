@@ -121,7 +121,7 @@ public:
   /** @name methods for activation handling */
   //@{
   /// Geter for the Active View
-  Gui::MDIView* getActiveView(void);
+  Gui::MDIView* getActiveView(void) const;
   //@}
 
 
