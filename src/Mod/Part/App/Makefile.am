@@ -32,7 +32,7 @@ libPart_la_SOURCES=\
 		TopologyPy.h
 
 # the library search path.
-libPart_la_LDFLAGS = -L../../../Base -L../../../App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPart_la_LDFLAGS = -L../../../Base -L../../../App -L/usr/X11R6/lib -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPart_la_CPPFLAGS = -DAppPartExport=
 
 libPart_la_LIBADD   = \
@@ -42,7 +42,8 @@ libPart_la_LIBADD   = \
 		-lTKSTEP \
 		-lTKIGES \
 		-lTKShHealing \
-		-lTKXSBase
+		-lTKXSBase \
+		-lXmu   # Required by TKService and OCC 6.1 on some platforms (located in /usr/X11R6/lib/)
 
 #--------------------------------------------------------------------------------------
 # Loader of libPart
