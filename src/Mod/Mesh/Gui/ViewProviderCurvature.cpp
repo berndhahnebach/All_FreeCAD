@@ -24,7 +24,12 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Inventor/SoPickedPoint.h>
+# include <Inventor/details/SoFaceDetail.h>
+# include <Inventor/details/SoPointDetail.h>
+# include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoIndexedFaceSet.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoShapeHints.h>
@@ -38,9 +43,11 @@
 #include <Base/Sequencer.h>
 #include <App/Application.h>
 #include <App/Feature.h>
+#include <Gui/MainWindow.h>
 #include <Gui/Selection.h>
 #include <Gui/SoFCSelection.h>
 #include <Gui/SoFCColorBar.h>
+#include <Gui/View3DInventorViewer.h>
 
 #include <Mod/Mesh/App/Mesh.h>
 
@@ -297,4 +304,87 @@ std::list<std::string> ViewProviderMeshCurvature::getModes(void) const
 void ViewProviderMeshCurvature::OnChange(Base::Subject<int> &rCaller,int rcReason)
 {
   setMode(this->getModeName().c_str());
+}
+
+bool ViewProviderMeshCurvature::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
+{
+  // handle mouse press events only
+  bool ret = false;
+  if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+    const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
+    const int button = event->getButton();
+    const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+    if ( button == SoMouseButtonEvent::BUTTON1 && press) {
+      // search for the picked facet index and report its current curvature values
+      //
+      SoPickedPoint* picked = Viewer.pickPoint(ev->getPosition());
+      if ( picked ) {
+        // We pass the 'pcMeshFaces' node here to get a point of this mesh and not
+        // any point of the scene. If we let the default we get any point that need
+        // not to be part of our mesh.
+        const SoDetail* detail = picked->getDetail(pcMeshFaces);
+        if ( detail && detail->getTypeId() == SoFaceDetail::getClassTypeId() ) {
+          // safe downward cast, know the type
+          SoFaceDetail * facedetail = (SoFaceDetail *)detail;
+
+          // get the curvature info of the three points of the picked facet
+          int index1 = facedetail->getPoint(0)->getCoordinateIndex();
+          int index2 = facedetail->getPoint(1)->getCoordinateIndex();
+          int index3 = facedetail->getPoint(2)->getCoordinateIndex();
+          App::Property* prop = pcObject->getPropertyByName("CurvInfo");
+          if ( prop && prop->getTypeId() == Mesh::PropertyCurvatureList::getClassTypeId() ) {
+            Mesh::PropertyCurvatureList* curv = (Mesh::PropertyCurvatureList*)prop;
+            const Mesh::CurvatureInfo& cVal1 = (*curv)[index1];
+            const Mesh::CurvatureInfo& cVal2 = (*curv)[index2];
+            const Mesh::CurvatureInfo& cVal3 = (*curv)[index3];
+            float fVal1 = 0.0f; float fVal2 = 0.0f; float fVal3 = 0.0f;
+            
+            bool print=true;
+            ret = true;
+            QString mode = getModeName().c_str();
+            if ( mode == "Minimum curvature" ) {
+              fVal1 = cVal1.fMinCurvature;
+              fVal2 = cVal1.fMinCurvature;
+              fVal3 = cVal1.fMinCurvature;
+            } else if ( mode == "Maximum curvature" ) {
+              fVal1 = cVal1.fMaxCurvature;
+              fVal2 = cVal1.fMaxCurvature;
+              fVal3 = cVal1.fMaxCurvature;
+            } else if ( mode == "Gaussian curvature" ) {
+              fVal1 = cVal1.fMaxCurvature*cVal1.fMinCurvature;
+              fVal2 = cVal1.fMaxCurvature*cVal2.fMinCurvature;
+              fVal3 = cVal1.fMaxCurvature*cVal3.fMinCurvature;
+            } else if ( mode == "Mean curvature" ) {
+              fVal1 = 0.5f*(cVal1.fMaxCurvature+cVal1.fMinCurvature);
+              fVal2 = 0.5f*(cVal1.fMaxCurvature+cVal2.fMinCurvature);
+              fVal3 = 0.5f*(cVal1.fMaxCurvature+cVal3.fMinCurvature);
+            } else if ( mode == "Absolute curvature" ) {
+              fVal1 = fabs(cVal1.fMaxCurvature) > fabs(cVal1.fMinCurvature) ? cVal1.fMaxCurvature : cVal1.fMinCurvature;
+              fVal2 = fabs(cVal2.fMaxCurvature) > fabs(cVal2.fMinCurvature) ? cVal2.fMaxCurvature : cVal2.fMinCurvature;
+              fVal3 = fabs(cVal3.fMaxCurvature) > fabs(cVal3.fMinCurvature) ? cVal3.fMaxCurvature : cVal3.fMinCurvature;
+            } else {
+              print = false;
+            }
+
+            if ( print ) {
+              mode += QString(": <%1, %2, %3>").arg(fVal1).arg(fVal2).arg(fVal3);
+            } else {
+              mode = "No curvature mode set";
+            }
+
+            Gui::getMainWindow()->setPaneText(1,mode);
+          }
+        }
+
+        delete picked;
+      }
+
+      // pressed left mouse button but we possibly picked no object or 
+      // the picked object isn't rendered by this view provider
+      if (ret == false)
+        Gui::getMainWindow()->setPaneText(1,"");
+    }
+  }
+
+  return ret;
 }

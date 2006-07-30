@@ -482,7 +482,13 @@ void MainWindow::onWindowDestroyed()
 void MainWindow::onWindowActivated( QWidget* w )
 {
   MDIView* mdi = dynamic_cast<MDIView*>(w);
-  if ( !mdi ) return; // either no MDIView or no valid object
+
+  // Even if windowActivated() signal is emitted mdi doesn't need to be a top-level window.
+  // This happens if e.g. two windows are top-level and one of them gets docked again.
+  // QWorkspace emits the signal then even though the other window is in front.
+  if ( !mdi || !mdi->isActiveWindow() ) 
+    return; // either no MDIView or no valid object or no top-level window
+
   mdi->setActive();
 
   for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
@@ -569,7 +575,7 @@ void MainWindow::setPaneText(int i, QString text)
     d->_pclSizeLabel->setText(text);
 }
 
-MDIView* MainWindow::activeWindow(void)
+MDIView* MainWindow::activeWindow(void) const
 {/*
   // redirect all meesages to the view in fullscreen mode, if so
   MDIView* pView = 0;
@@ -598,10 +604,15 @@ MDIView* MainWindow::activeWindow(void)
   // the corresponding window to the current tab is active
   MDIView* pView = 0;
   int id = d->_tabs->currentTab();
-  QMap<int, MDIView*>::Iterator it = d->_mdiIds.find( id );
+  QMap<int, MDIView*>::ConstIterator it = d->_mdiIds.find( id );
   if ( it != d->_mdiIds.end() )
     pView = it.data();
   return pView;
+}
+
+void MainWindow::setActiveWindow( MDIView* view )
+{
+  onWindowActivated( view );
 }
 
 void MainWindow::onUndo()

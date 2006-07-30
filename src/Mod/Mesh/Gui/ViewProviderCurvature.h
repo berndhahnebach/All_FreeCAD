@@ -64,6 +64,8 @@ public:
 
   /// Extracts the mesh data from the feature \a pcFeature and creates an Inventor node \a SoNode with these data. 
   void attach(App::DocumentObject* pcFeature);
+  /// Handles pick events to write curvature value to the status bar.
+  bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
   /// Sets the viewing mode
   void setMode(const char* ModeName);
   /// Returns a list of all possible modes
