@@ -409,7 +409,7 @@ void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
   if ( strcmp(recipient,"View") == 0 )
   {
     if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
-    	*item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" << "Separator" << "Std_Delete";
+    	*item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" << "Std_Delete";
   }
 }
 
