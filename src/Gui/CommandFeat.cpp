@@ -26,36 +26,15 @@
 #ifndef _PreComp_
 #endif
 
+#include <App/DocumentObject.h>
 
-#include "../Base/Exception.h"
-#include "../Base/Interpreter.h"
-#include "../Base/Sequencer.h"
-#include "../App/Document.h"
-#include "Action.h"
-#include "Process.h"
 #include "Application.h"
-#include "Document.h"
-#include "Splashscreen.h"
 #include "Command.h"
-#include "MainWindow.h"
-#include "WhatsThis.h"
-#include "DlgUndoRedo.h"
-#include "BitmapFactory.h"
-#include "View.h"
+#include "Document.h"
+#include "Selection.h"
+#include "ViewProvider.h"
+#include "ViewProviderDocumentObject.h"
 
-//#include "DlgDocTemplatesImp.h"
-#include "DlgParameterImp.h"
-#include "DlgMacroExecuteImp.h"
-#include "DlgMacroRecordImp.h"
-#include "Macro.h"
-#include "DlgPreferencesImp.h"
-#include "DlgCustomizeImp.h"
-#include "Widgets.h"
-#include "NetworkRetriever.h"
-#include "GuiConsole.h"
-
-using Base::Console;
-using Base::Sequencer;
 using namespace Gui;
 
 
@@ -85,6 +64,48 @@ void StdCmdFeatRecompute::activated(int iMsg)
 
 }
 
+//===========================================================================
+// Std_RandomColor
+//===========================================================================
+
+DEF_STD_CMD_A(StdCmdRandomColor);
+
+StdCmdRandomColor::StdCmdRandomColor()
+  :Command("Std_RandomColor")
+{
+  sGroup        = QT_TR_NOOP("File");
+  sMenuText     = QT_TR_NOOP("Random color");
+  sToolTipText  = QT_TR_NOOP("Random color");
+  sWhatsThis    = QT_TR_NOOP("Random color");
+  sStatusTip    = QT_TR_NOOP("Random color");
+}
+
+void StdCmdRandomColor::activated(int iMsg)
+{
+  // get the complete selection
+  std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
+  for ( std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it ) {
+    // get the Gui related document of an object
+    Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
+    // get the view provider of an object over its Gui document
+    ViewProvider* vp = doc->getViewProvider(it->pObject);
+    if ( vp && vp->getTypeId().isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()) ) {
+      // set the <r,g,b> color triples for each object
+      ViewProviderDocumentObject* obj = (ViewProviderDocumentObject*)vp;
+      float fMax = (float)RAND_MAX;
+      float fRed = (float)rand();
+      float fGrn = (float)rand();
+      float fBlu = (float)rand();
+      obj->ShapeColor.setValue(fRed/fMax, fGrn/fMax, fBlu/fMax);
+    }
+  }
+}
+
+bool StdCmdRandomColor::isActive(void)
+{
+  return ( Gui::Selection().size() != 0 );
+}
+
 
 namespace Gui {
 
@@ -93,6 +114,7 @@ void CreateFeatCommands(void)
   CommandManager &rcCmdMgr = Application::Instance->commandManager();
 
   rcCmdMgr.addCommand(new StdCmdFeatRecompute());
+  rcCmdMgr.addCommand(new StdCmdRandomColor());
 
 
 }

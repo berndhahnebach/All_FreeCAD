@@ -39,6 +39,7 @@
 #include "SoFCMeshFaceSet.h"
 #include "ViewProvider.h"
 #include "ViewProviderMeshNode.h"
+#include "ViewProviderMeshFaceSet.h"
 #include "ViewProviderCurvature.h"
 #include "ViewProviderTransform.h"
 #include "ViewProviderTransformDemolding.h"
@@ -92,6 +93,7 @@ void GuiMeshExport initMeshGui() {
   MeshGui::PropertyEditorMesh                ::init();
   MeshGui::ViewProviderMesh                  ::init();
   MeshGui::ViewProviderMeshNode              ::init();
+  MeshGui::ViewProviderMeshFaceSet           ::init();
   MeshGui::ViewProviderExport                ::init();
   MeshGui::ViewProviderMeshCurvature         ::init();
   MeshGui::ViewProviderMeshTransform         ::init();

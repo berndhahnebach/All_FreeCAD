@@ -159,3 +159,5 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + bug fixed in 'Refresh' command
 + active view stuff fixed
 + proper handling of double clicks with wheel button
++ Random color implemented
++ Box zoom implementation started

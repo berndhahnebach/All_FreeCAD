@@ -27,6 +27,7 @@
 # include <qapplication.h>
 # include <qmessagebox.h>
 # include <qtextedit.h>
+# include <Inventor/SbViewportRegion.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
 #endif
@@ -988,6 +989,49 @@ bool StdCmdViewIvIssueCamPos::isActive(void)
 }
 
 
+//===========================================================================
+// Std_ViewBoxZoom
+//===========================================================================
+DEF_STD_CMD_A(StdViewBoxZoom);
+
+StdViewBoxZoom::StdViewBoxZoom()
+  :Command("Std_ViewBoxZoom")
+{
+  sGroup        = QT_TR_NOOP("Standard-View");
+  sMenuText     = QT_TR_NOOP("Box zoom");
+  sToolTipText  = QT_TR_NOOP("Box zoom");
+  sWhatsThis    = QT_TR_NOOP("Box zoom");
+  sStatusTip    = QT_TR_NOOP("Box zoom");
+  iAccel        = 0;
+}
+
+void StdViewBoxZoom::activated(int iMsg)
+{
+//  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+//  if ( view ) {
+//    View3DInventorViewer* viewer = view->getViewer();
+//    SbViewportRegion vp = viewer->getViewportRegion();
+//    SoCamera* cam = viewer->getCamera();
+//
+//    SoSFVec3f pos = cam->position;
+//    float val=0.5f;
+//    cam->scaleHeight(val);
+////    SbVec2s origin = vp.getViewportOriginPixels(); 
+////    SbVec2s size = vp.getViewportSizePixels();
+////    size[0]=size[0]/2;
+////    size[1]=size[1]/2;
+//    //vp.setViewportPixels(origin,size);
+//    //cam->viewAll(viewer->getSceneGraph(), vp);
+//    //viewer->setViewportRegion(vp);
+//    //viewer->viewAll();
+//  }
+}
+
+bool StdViewBoxZoom::isActive(void)
+{
+  return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+}
+
 
 
 //===========================================================================
@@ -1034,6 +1078,7 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdCameraType());
   rcCmdMgr.addCommand(new StdCmdToggleClipPlane());
   rcCmdMgr.addCommand(new StdCmdFreezeViews());
+  rcCmdMgr.addCommand(new StdViewBoxZoom());
 }
 
 } // namespace Gui

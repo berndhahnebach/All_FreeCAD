@@ -11,7 +11,7 @@ BUILT_SOURCES=\
 		DlgRegularSolid.h \
 		moc_DlgEvaluateMesh.cpp \
 		moc_DlgEvaluateMeshImp.cpp \
-		moc_DlgRegularSolid.cpp 
+		moc_DlgRegularSolid.cpp
 
 libMeshGui_la_SOURCES=\
 		Command.cpp \
@@ -34,6 +34,8 @@ libMeshGui_la_SOURCES=\
 		ViewProvider.h \
 		ViewProviderMeshNode.cpp \
 		ViewProviderMeshNode.h \
+		ViewProviderMeshFaceSet.cpp \
+		ViewProviderMeshFaceSet.h \
 		ViewProviderCurvature.cpp \
 		ViewProviderCurvature.h \
 		ViewProviderDefects.cpp \

@@ -452,7 +452,7 @@ void TreeView::contextMenuEvent ( QContextMenuEvent * e )
 
   MenuItem* view = new MenuItem;
   if ( selected )
-    *view << "Std_SetMaterial" << "Std_ToggleVisibility" << "Separator" << "Std_Delete";
+    *view << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" << "Std_Delete";
 
   // ask workbenches and view provider, ...
   Gui::Application::Instance->setupContextMenu("Tree", view);
