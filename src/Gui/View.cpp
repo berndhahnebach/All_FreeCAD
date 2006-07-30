@@ -215,7 +215,6 @@ void MDIView::setCurrentViewMode( ViewMode b )
       showNormal();
       clearWFlags ( WType_TopLevel );
       getMainWindow()->addWindow( this );
-      releaseKeyboard();
     }else if(_actualMode == TopLevel)
     {/*
       WFlags f = getWFlags();
@@ -248,11 +247,9 @@ void MDIView::setCurrentViewMode( ViewMode b )
       WFlags f = getWFlags();
       setWFlags( f | WType_TopLevel );
       showFullScreen();
-      grabKeyboard();
     }else if(_actualMode == TopLevel)
     {
       showFullScreen();
-      grabKeyboard();
     }
     _actualMode = FullScreen;
     update();
@@ -260,7 +257,6 @@ void MDIView::setCurrentViewMode( ViewMode b )
     if(_actualMode == FullScreen)
     {
       showNormal();
-      releaseKeyboard();
     }else if(_actualMode == Normal)
     {
       WFlags f = getWFlags();
@@ -305,38 +301,6 @@ void MDIView::setCurrentViewMode( ViewMode b )
     releaseKeyboard();
   }
   */
-}
-
-void MDIView::keyPressEvent ( QKeyEvent* e )
-{
-  // Note: if the widget is in fullscreen mode then we can return to normal mode either
-  // by pressing D or ESC. Since keyboard is grabbed accelerators don't work any more
-  // (propably accelerators don't work at all - even without having grabbed the keyboard!?)
-
-  if ( _actualMode != Normal )
-  {
-    // use Command's API to hold toogled state consistent
-    if ( e->key() == Key_D || e->key() == Key_Escape )
-    {
-      setCurrentViewMode(Normal);
-    }
-    else if ( e->key() == Key_U )
-    {
-      setCurrentViewMode(TopLevel);
-    }
-    else if ( e->key() == Key_F )
-    {
-      setCurrentViewMode(FullScreen);
-    }
-    else
-    {
-      QMainWindow::keyPressEvent( e );
-    }
-  }
-  else // the occupied key events F,D and U are are "eaten" by the main window
-  {
-    QMainWindow::keyPressEvent( e );
-  }
 }
 
 #include "moc_View.cpp"

@@ -425,7 +425,7 @@ bool View3DInventor::setCamera(const char* pCamera)
     _viewer->setCameraType(Cam->getTypeId());
     CamViewer = _viewer->getCamera();
   }
-  
+
   SoPerspectiveCamera  * CamViewerP = 0;
   SoOrthographicCamera * CamViewerO = 0;
 
@@ -479,7 +479,8 @@ bool View3DInventor::hasClippingPlane() const
 void View3DInventor::windowActivationChange ( bool oldActive )
 {
   MDIView::windowActivationChange(oldActive);
-  onWindowActivated();
+  if ( isActiveWindow() )
+    onWindowActivated();
 }
 
 /**
@@ -488,7 +489,7 @@ void View3DInventor::windowActivationChange ( bool oldActive )
 void View3DInventor::onWindowActivated ()
 {
   if ( getMainWindow()->activeWindow() != this )
-    getMainWindow()->onWindowActivated( this );
+    getMainWindow()->setActiveWindow( this );
 }
 
 void View3DInventor::setCursor(const QCursor& aCursor)
@@ -544,30 +545,58 @@ void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
     e->ignore();
 }
 
+void View3DInventor::setCurrentViewMode( ViewMode b )
+{
+  ViewMode curmode = _actualMode;
+  MDIView::setCurrentViewMode( b );
+
+  // This widget becomes the focus proxy of the embedded GL widget.if we leave 
+  // the 'Normal' mode. If we reenter 'Normal' mode the focus proxy is reset to 0.
+  // If we change from 'TopLevel' mode to 'Fullscreen' mode or vice versa nothing
+  // happens.
+  // Grabbing keyboard when leaving 'Normal' mode (as done in a recent version) should
+  // be avoided because when two or more windows are either in 'TopLevel' or 'Fullscreen'
+  // mode only the last window gets all key event even if it is not the active one.
+  //
+  // It is important to set the focus proxy to get all key events otherwise we would loose
+  // control after redirecting the first key event to the GL widget.
+  // We redirect these events in keyPressEvent() and keyReleaseEvent().
+  if ( curmode == Normal ) {
+    _viewer->getGLWidget()->setFocusProxy(this);
+  } else if ( b == Normal ) {
+    _viewer->getGLWidget()->setFocusProxy(0);
+  }
+}
+
+bool View3DInventor::eventFilter(QObject* o, QEvent* e)
+{
+  // As long as this widget is a top-level widget (either 'TopLevel' or 'Fullscrenn' mode) we 
+  // redirect any accel event to the main window that handles such events.
+  // In case the event isn't handled by any widget we receive it again as a key event.
+  if ( _actualMode != Normal && o == this && e->type() == QEvent::Accel ) {
+    QApplication::sendEvent(getMainWindow(),e);
+    return true;
+  } else {
+    return MDIView::eventFilter(o,e);
+  }
+}
+
 void View3DInventor::keyPressEvent ( QKeyEvent* e )
 {
-  // Note: if the widget is in fullscreen mode then we can return to normal mode either
-  // by pressing D or ESC. Since keyboard is grabbed accelerators don't work any more
-  // (propably accelerators don't work at all - even without having grabbed the keyboard!?)
-
   if ( _actualMode != Normal )
   {
-    // use Command's API to hold toogled state consistent
-    if ( e->key() == Key_D || e->key() == Key_Escape )
+    // If the widget is in fullscreen mode then we can return to normal mode either
+    // by pressing the matching accelerator or ESC. 
+    if ( e->key() == Key_Escape )
     {
       setCurrentViewMode(Normal);
     }
-    else if ( e->key() == Key_U )
-    {
-      setCurrentViewMode(TopLevel);
-    }
-    else if ( e->key() == Key_F )
-    {
-      setCurrentViewMode(FullScreen);
-    }
     else
     {
-      // send the event to the proxy widget that converts to and handles an SoEvent
+      // Note: The key events should be redirected directly to the GL widget and not the main window
+      // otherwise the first redirected key event always disappears in hyperspace.
+      //
+      // send the event to the GL widget that converts to and handles an SoEvent
       QWidget* w = _viewer->getGLWidget();
       QApplication::sendEvent(w,e);
     }
@@ -582,7 +611,7 @@ void View3DInventor::keyReleaseEvent ( QKeyEvent* e )
 {
   if ( _actualMode != Normal )
   {
-    // send the event to the proxy widget that converts to and handles an SoEvent
+    // send the event to the GL widget that converts to and handles an SoEvent
     QWidget* w = _viewer->getGLWidget();
     QApplication::sendEvent(w,e);
   }

@@ -180,7 +180,6 @@ public slots:
 
 protected:
   void closeEvent    ( QCloseEvent *e );
-  void keyPressEvent ( QKeyEvent   *e );
 
   ViewMode _actualMode;
 };
