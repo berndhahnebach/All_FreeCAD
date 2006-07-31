@@ -39,6 +39,7 @@ class SoMaterial;
 class SoRotationXYZ;
 class SbSphereSheetProjector;
 class SoEventCallback;
+class SbBox2f;
 
 namespace Gui {
 
@@ -102,6 +103,12 @@ public:
   /** Checks whether a clipping plane is set or not. */
   bool hasClippingPlane() const;
   //@}
+
+  /** 
+   * Zooms the viewport to the size of the bounding box. 
+   * FIXME: This method is due to testing purposes public but should become protected later on.
+   */
+  void boxZoom( const SbBox2f& );
 
   /** @name Modus handling of the viewer
     * Here the you can switch on/off several features

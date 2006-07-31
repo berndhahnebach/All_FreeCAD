@@ -517,7 +517,7 @@ PyObject *ParameterGrpPy::PyHasGroup(PyObject *args)
 PyObject *ParameterGrpPy::PyNotify(PyObject *args)
 { 
 	char *pstr;
-  if (!PyArg_ParseTuple(args, "s"),&pstr)     // convert args: Python->C 
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception 
   PY_TRY {
   	_cParamGrp->Notify(pstr);
