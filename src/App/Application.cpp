@@ -807,7 +807,7 @@ void Application::runApplication()
     if(Ext == "FCStd" || Ext == "std")
     {
 
-      // try to open 
+      // try to open
       try{
         Application::_pcSingelton->openDocument(File.fileName().c_str());
       }catch(...){
@@ -1129,23 +1129,38 @@ void Application::ExtractUser()
 		user = "Anonymous";
 	mConfig["UserName"] = user;
 
+  // On Linux systems the environment variable 'HOME' is set while Windows systems
+  // have set 'HOMEDRIVE' and 'HOMEPATH' to get the user's home directory.
+  // In the rare case that none of them are set we get the directory where FreeCAD is
+  // installed as a fallback solution.
+  //
   // Default paths for the user
   if(getenv("HOME") != 0)
     mConfig["UserHomePath"] = getenv("HOME");
   else if(getenv("HOMEDRIVE") != 0 && getenv("HOMEPATH") != 0 )
     mConfig["UserHomePath"] = std::string(getenv("HOMEDRIVE")) + getenv("HOMEPATH");
-  else 
+  else
     mConfig["UserHomePath"] = mConfig["HomePath"];
 
+  // In the second step we want the directory where user settings of FreeCAD can be
+  // kept. On Windows usually 'APPDATA' is set supplemented by 'FreeCAD'.
+  // On Linux the directory '.FreeCAD' (with a leading dot) is created directly under
+  // the home path.
   if(getenv("APPDATA") == 0)
-    mConfig["UserAppData"] = mConfig["UserHomePath"] + ".FreeCAD/";
+    mConfig["UserAppData"] = mConfig["UserHomePath"] + "/.FreeCAD/";
   else
-    mConfig["UserAppData"] = std::string(getenv("APPDATA")) + "/.FreeCAD/";
+    mConfig["UserAppData"] = std::string(getenv("APPDATA")) + "/FreeCAD/";
 
   Base::FileInfo fi(mConfig["UserAppData"].c_str());
-  if ( ! fi.exists() )
+  if ( ! fi.exists() ) {
  	  if ( ! fi.createDirectory( mConfig["UserAppData"].c_str() ) )
+    {
+      // Want more details on console
+      printf("Application::ExtractUser(): Could not create directory '%s'\n", mConfig["UserAppData"].c_str());
+      // FIXME: Who should catch this exception?
       throw Base::Exception("Application::ExtractUser(): could not write in AppData directory!");
+    }
+  }
 }
 
 //const char sEnvErrorText1[] = \
@@ -1166,6 +1181,29 @@ void Application::ExtractUser()
 //
 
 #if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+
+void SimplifyPath(std::string& sPath)
+{
+	// remove all unnecessary '/./' from sPath
+	std::string sep; sep += PATHSEP;
+	std::string pattern = sep + '.' + sep;
+	std::string::size_type npos = sPath.find(pattern);
+	while (npos != std::string::npos)
+	{
+		sPath.replace(npos, 3, sep);
+		npos = sPath.find(pattern);
+	}
+
+	// remove all unnecessary '//' from sPath
+	pattern = sep + sep;
+	npos = sPath.find(pattern);
+	while (npos != std::string::npos)
+	{
+		sPath.replace(npos, 2, sep);
+		npos = sPath.find(pattern);
+	}
+}
+
 std::string Application::FindHomePath(const char* sCall)
 {
 	std::string argv = sCall;
@@ -1258,21 +1296,15 @@ std::string Application::FindHomePath(const char* sCall)
 		std::string::size_type pos = absPath.find_last_of(PATHSEP);
 		homePath.assign(absPath,0,pos);
     homePath += PATHSEP;
-
-    EnvPrint(homePath.c_str());
   }
 	// should be an absolute path now
 	else if (absPath[0] == PATHSEP)
 	{
-		EnvPrint("FindHomePath -----------------");
-
 		SimplifyPath( absPath );
 		std::string::size_type pos = absPath.find_last_of(PATHSEP);
 		homePath.assign(absPath,0,pos);
 		pos = homePath.find_last_of(PATHSEP);
 		homePath.assign(homePath,0,pos+1);
-
-		EnvPrint(homePath.c_str());
 	}
 	else
 	{
