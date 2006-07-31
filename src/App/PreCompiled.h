@@ -17,6 +17,9 @@
 #include <stdio.h>
 #include <assert.h>
 #include <time.h>
+#include <direct.h>
+#include <windows.h>
+
 
 // Streams
 #include <iostream>

@@ -122,7 +122,8 @@ public:
 	/** @name startup and singletons
 	 */
 	//@{
-	void init(int argc,char *argv[]);
+  /// init the interpreter and returns the module search path
+	const char* init(int argc,char *argv[]);
 	int  runCommandLine(const char *prompt);
 	static InterpreterSingleton &Instance(void);
 	static void Destruct(void);

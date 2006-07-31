@@ -308,7 +308,10 @@ private:
 	/// argument helper function
 	static void ParseOptions(int argc, char ** argv);
 	/// checks if the environment is allreight
-	static void CheckEnv(void);
+	//static void CheckEnv(void);
+  // search for the home path
+  static std::string FindHomePath(const char* sCall);
+
 	/// print the help massage
 	static void PrintInitHelp(void);
 	/// figure out some things
