@@ -770,7 +770,10 @@ void MainWindow::languageChange()
     (*it)->languageChange();
   }
 
-  MenuManager::getInstance()->languageChange();
+  //MenuManager::getInstance()->languageChange();
+  // reload current workbench to translate root items of submenus
+  Workbench* wb = WorkbenchManager::instance()->active();
+  if (wb) wb->activate();
 }
 
 //**************************************************************************

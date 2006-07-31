@@ -52,6 +52,7 @@
 // Open Inventor
 #include <GL/gl.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+#include <Inventor/SbBox.h>
 #include <Inventor/SbClip.h>
 #include <Inventor/SbColor.h>
 #include <Inventor/SoInput.h>

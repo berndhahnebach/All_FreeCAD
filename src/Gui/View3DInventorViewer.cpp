@@ -37,6 +37,7 @@
 #  include <windows.h>
 # endif
 # include <GL/gl.h>
+# include <Inventor/SbBox.h>
 # include <Inventor/actions/SoHandleEventAction.h> 
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/manips/SoClipPlaneManip.h>
@@ -1039,6 +1040,21 @@ SoPickedPoint* View3DInventorViewer::pickPoint(const SbVec2s& pos) const
   // returns a copy of the point
   SoPickedPoint* pick = rp.getPickedPoint();
   return (pick ? pick->copy() : 0);
+}
+
+void View3DInventorViewer::boxZoom( const SbBox2f& box )
+{
+  // first move to the center of the box
+  panToCenter(panningplane, box.getCenter());
+  float w,h;
+  box.getSize(w,h);
+
+  // normalized coordinates are within the range [0,1]
+  float max = w>h?w:h;
+  if ( max < 0.001f )
+    return;
+  // global ln function
+  zoom(getCamera(), ::log(max));
 }
 
 void View3DInventorViewer::panToCenter(const SbPlane & panningplane, const SbVec2f & currpos)

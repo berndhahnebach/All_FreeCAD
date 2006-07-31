@@ -82,6 +82,10 @@ public:
    * The default implementation does nothing.
    */
   virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+  /** 
+   * Activates the workbench and adds/removes GUI elements.
+   */
+  bool activate();
 
 protected:
   /** Returns a MenuItem tree structure of menus for the this workbench. */
@@ -90,18 +94,12 @@ protected:
   virtual ToolBarItem* setupToolBars() const=0;
   /** Returns a ToolBarItem tree structure of command bars for the this workbench. */
   virtual ToolBarItem* setupCommandBars() const=0;
-  /**
-   * Activates the workbench and adds/removes GUI elements.
-   */
-  bool activate();
 
 private:
   void showOrHideToolBars(bool read) const;
 
 private:
   QString _name;
-
-  friend class WorkbenchManager;
 };
 
 /**
