@@ -252,11 +252,12 @@ void InterpreterSingleton::Destruct(void)
 	delete _pcSingelton;
 }
 
-void InterpreterSingleton::init(int argc,char *argv[])
+const char* InterpreterSingleton::init(int argc,char *argv[])
 {
   Py_SetProgramName(argv[0]);
   Py_Initialize();
 	PySys_SetArgv(argc, argv);
+  return Py_GetPath();
 }
 
 int InterpreterSingleton::runCommandLine(const char *prompt)

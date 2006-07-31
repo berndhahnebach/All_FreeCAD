@@ -64,9 +64,9 @@
 
 
 
-namespace EnvMacro {
-#include <Base/EnvMacros.h>
-}
+//namespace EnvMacro {
+//#include <Base/EnvMacros.h>
+//}
 
 using namespace App;
 
@@ -663,41 +663,14 @@ void Application::initTypes(void)
 void Application::initConfig(int argc, char ** argv)
 {
 	// find the home path....
-	std::string HomePath;
 
-#	ifdef FC_OS_WIN32
-    HomePath = EnvMacro::FindHomePathWin32(0);
-#	else
-		HomePath = EnvMacro::FindHomePathUnix(argv[0]);
-#	endif
+    mConfig["HomePath"] = FindHomePath(argv[0]);
 
-  // try to figure out if using FreeCADLib
-  std::string Temp = EnvMacro::GetFreeCADLib(HomePath.c_str());
-
-  // sets all needed varables if a FreeCAD LibPack is found
-  if(Temp != "")
-  {
-	  EnvMacro::EnvPrint("MeinGui Set Python ++++++++++++++++++++++++++++++++++++++++++++++");
-	  // sets the python environment variables if the FREECADLIB variable is defined
-	  EnvMacro::SetPythonToFreeCADLib(Temp.c_str());
-  }
-	
 	_argc = argc;
 	_argv = argv;
 
-	// use home path out of the main modules
-  //for(std::string::iterator i=HomePath.begin();i!=HomePath.end();++i)
-  //  if(*i == '\\')
-  //    *i = '/';
-
-	mConfig["HomePath"] = HomePath;
-
-	// extract home path
+	// extract home paths
 	ExtractUser();
-
-
-	// first check the environment variables
-	CheckEnv();
 
 #	ifdef FC_DEBUG
 		mConfig["Debug"] = "1";
@@ -705,13 +678,16 @@ void Application::initConfig(int argc, char ** argv)
 		mConfig["Debug"] = "0";
 #	endif
 
+    
+
+
 	// Parse the options which have impact to the init process
 	ParseOptions(argc,argv);
 
 
 	DBG_TRY
 		// init python
-		Interpreter().init(argc,argv);
+		mConfig["PythonSearchPath"] = Interpreter().init(argc,argv);
 	DBG_CATCH(puts("Application::InitConfig() error init Python Interpreter\n");exit(1);)
 
 	DBG_TRY
@@ -772,7 +748,6 @@ void Application::initConfig(int argc, char ** argv)
 
 	// capture path
 	SaveEnv("PATH");
-
   logStatus();
 
 }
@@ -929,45 +904,10 @@ void Application::LoadParameters(void)
 
 	// Init parameter sets ===========================================================
   //
-  // Default path
-  std::string appData = mConfig["HomePath"];
 
-#if defined (FC_OS_WIN32)
-  const char* APPDATA = 0;//getenv("APPDATA");
-  const char* FreeCADDir = "/FreeCAD/";
-#elif defined(FC_OS_LINUX)
-  const char* APPDATA = getenv("HOME");
-  const char* FreeCADDir = "/.FreeCAD/";
-#elif defined (FC_OS_CYGWIN)
-  const char* APPDATA = getenv("HOME");
-  const char* FreeCADDir = "/.FreeCAD/";
-#else
-# error "Location of configuration files not implemented yet!"
-#endif
-  if ( APPDATA )
-  {
-    std::string newDir = APPDATA; newDir += FreeCADDir;
-    Base::FileInfo fi(newDir.c_str());
-    if ( fi.exists() )
-      appData = newDir;
-		else if ( fi.createDirectory( newDir.c_str() ) )
-      appData = newDir;
-  }
+  mConfig["UserParameter"]   = mConfig["UserAppData"] + "user.cfg";
+	mConfig["SystemParameter"] = mConfig["UserAppData"] + "system.cfg";
 
-#if defined (FC_OS_WIN32)
-  mConfig["UserParameter"]   = appData + "Config_" + mConfig["UserName"] + ".FCParam";
-	mConfig["SystemParameter"] = appData + "AppParam.FCParam";
-#elif defined (FC_OS_LINUX)
-  mConfig["UserParameter"]   = appData + "user.cfg";
-	mConfig["SystemParameter"] = appData + "system.cfg";
-#elif defined (FC_OS_CYGWIN)
-  mConfig["UserParameter"]   = appData + "Config_" + mConfig["UserName"] + ".FCParam";
-	mConfig["SystemParameter"] = appData + "AppParam.FCParam";
-#endif
-
-	//puts(mConfig["HomePath"].c_str());
-	//puts(mConfig["UserParameter"].c_str());
-	//puts(mConfig["SystemParameter"].c_str());
 
 	if(_pcSysParamMngr->LoadOrCreateDocument(mConfig["SystemParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
 	{
@@ -999,11 +939,19 @@ void Application::ParseOptions(int argc, char ** argv)
 	"  -cc file-name    Runs first the script an then console mode\n"\
 	"  -cm module-name  Loads the Python module and exiting when done\n"\
 	"  -t0              Runs FreeCAD self test function\n"\
+	"  -l               Enabels logging in File FreeCAD.log\n"\
+	"  -lf file-ame     Enabels logging in File with the given file-name\n"\
 	"  -v               Runs FreeCAD in verbose mode\n"\
 	"\n consult also the HTML documentation on http://free-cad.sourceforge.net/\n"\
 	"";
 
   int OpenFileCount = 0;
+
+  // logging in debug is on
+#ifdef FC_DEBUG
+	mConfig["LoggingFile"] = "1";
+	mConfig["LoggingFileName"]= mConfig["BinPath"] + "FreeCAD.log";
+#endif
 
 	// scan command line arguments for user input. 
 	for (int i = 1; i < argc; i++) 
@@ -1171,7 +1119,7 @@ void Application::ExtractUser()
 	mConfig["DocPath"] = mConfig["HomePath"] + "doc" + PATHSEP;
 
 	// try to figure out if using FreeCADLib
-	mConfig["FreeCADLib"] = EnvMacro::GetFreeCADLib(mConfig["HomePath"].c_str());
+	//mConfig["FreeCADLib"] = EnvMacro::GetFreeCADLib(mConfig["HomePath"].c_str());
 
 	// try to figure out the user
 	char* user = getenv("USERNAME");
@@ -1181,58 +1129,223 @@ void Application::ExtractUser()
 		user = "Anonymous";
 	mConfig["UserName"] = user;
 
-	EnvMacro::PrintPath();
+  // Default paths for the user
+  if(getenv("HOME") != 0)
+    mConfig["UserHomePath"] = getenv("HOME");
+  else if(getenv("HOMEDRIVE") != 0 && getenv("HOMEPATH") != 0 )
+    mConfig["UserHomePath"] = std::string(getenv("HOMEDRIVE")) + getenv("HOMEPATH");
+  else 
+    mConfig["UserHomePath"] = mConfig["HomePath"];
+
+  if(getenv("APPDATA") == 0)
+    mConfig["UserAppData"] = mConfig["UserHomePath"] + ".FreeCAD/";
+  else
+    mConfig["UserAppData"] = std::string(getenv("APPDATA")) + "/.FreeCAD/";
+
+  Base::FileInfo fi(mConfig["UserAppData"].c_str());
+  if ( ! fi.exists() )
+ 	  if ( ! fi.createDirectory( mConfig["UserAppData"].c_str() ) )
+      throw Base::Exception("Application::ExtractUser(): could not write in AppData directory!");
 }
 
-const char sEnvErrorText1[] = \
-"It seems some of the variables needed by FreeCAD are not set\n"\
-"or wrong set. This regards the Open CasCade or python variables:\n"\
-"CSF_GraphicShr=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
-"CSF_MDTVFontDirectory=C:\\CasRoot\\src\\FontMFT\\\n"\
-"CSF_MDTVTexturesDirectory=C:\\CasRoot\\src\\Textures\\\n"\
-"CSF_UnitsDefinition=C:\\CasRoot\\src\\UnitsAPI\\Units.dat\n"\
-"CSF_UnitsLexicon=C:\\CasRoot\\src\\UnitsAPI\\Lexi_Expr.dat\n"\
-"Please reinstall python or OpenCasCade!\n\n";
+//const char sEnvErrorText1[] = \
+//"It seems some of the variables needed by FreeCAD are not set\n"\
+//"or wrong set. This regards the Open CasCade or python variables:\n"\
+//"CSF_GraphicShr=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
+//"CSF_MDTVFontDirectory=C:\\CasRoot\\src\\FontMFT\\\n"\
+//"CSF_MDTVTexturesDirectory=C:\\CasRoot\\src\\Textures\\\n"\
+//"CSF_UnitsDefinition=C:\\CasRoot\\src\\UnitsAPI\\Units.dat\n"\
+//"CSF_UnitsLexicon=C:\\CasRoot\\src\\UnitsAPI\\Lexi_Expr.dat\n"\
+//"Please reinstall python or OpenCasCade!\n\n";
+//
+//const char sEnvErrorText2[] = \
+//"It seems some of the variables needed by FreeCAD are not set\n"\
+//"or wrong set. This regards the Open CasCade variables:\n"\
+//"XXX=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
+//"Please reinstall XXX!\n\n";
+//
 
-const char sEnvErrorText2[] = \
-"It seems some of the variables needed by FreeCAD are not set\n"\
-"or wrong set. This regards the Open CasCade variables:\n"\
-"XXX=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
-"Please reinstall XXX!\n\n";
-
-
-void Application::CheckEnv(void)
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+std::string Application::FindHomePath(const char* sCall)
 {
-	// set the OpenCasCade plugin variables to the FreeCAD bin path.
-	EnvMacro::SetPluginDefaults(mConfig["HomePath"].c_str());
+	std::string argv = sCall;
+	std::string absPath;
+	std::string homePath;
+	std::string cwd;
 
-	// sets all needed varables if a FreeCAD LibPack is found
-	if(mConfig["FreeCADLib"] != "")
+	// get the current working directory
+	char szDir[1024];
+	if ( getcwd(szDir, sizeof(szDir)) == NULL)
+		return homePath;
+
+	cwd = szDir;
+
+	// absolute path
+	if ( argv[0] == PATHSEP )
 	{
-		// sets the python environment variables if the FREECADLIB variable is defined
-		EnvMacro::SetPythonToFreeCADLib(mConfig["FreeCADLib"].c_str());
+		absPath = argv;
+#ifdef FC_DEBUG
+		printf("Absolute path: %s\n", absPath.c_str());
+#endif
+	}
+	// relative path
+	else if ( argv.find(PATHSEP) != std::string::npos )
+	{
+		absPath = cwd + PATHSEP + argv;
+#ifdef FC_DEBUG
+		printf("Relative path: %s\n", argv.c_str());
+		printf("Absolute path: %s\n", absPath.c_str());
+#endif
+	}
+	// check PATH
+	else
+	{
+#ifdef FC_DEBUG
+		printf("Searching in PATH variable...");
+#endif
+		const char *pEnv = getenv( "PATH" );
 
-		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-		EnvMacro::SetCasCadeToFreeCADLib(mConfig["FreeCADLib"].c_str());
+		if ( pEnv )
+		{
+			std::string path = pEnv;
+			std::vector<std::string> paths;
+
+			// split into each component
+			std::string::size_type start = 0;
+			std::string::size_type npos = path.find(':', start);
+			while ( npos != std::string::npos )
+			{
+				std::string tmp = path.substr(start, npos - start);
+				paths.push_back( path.substr(start, npos - start) );
+				start = npos + 1;
+				npos = path.find(':', start);
+			}
+
+			// append also last component
+			paths.push_back( path.substr(start) );
+
+			for (std::vector<std::string>::const_iterator it = paths.begin(); it != paths.end(); ++it)
+			{
+				std::string test = *it + PATHSEP + argv;
+
+				// no abs. path
+				if ( test[0] != PATHSEP )
+					test = cwd + PATHSEP + test;
+
+				// does it exist?
+#if defined (__GNUC__)
+				if ( access(test.c_str(), 0) == 0 )
+#else
+				if ( _access(test.c_str(), 0) == 0 )
+#endif
+				{
+					absPath = test;
+#ifdef FC_DEBUG
+					printf("found.\n");
+					printf("Absolute path: %s\n", absPath.c_str());
+#endif
+					break;
+				}
+			}
+		}
 	}
 
-	cout << flush;
+  // neither an absolute path in the specified call nor a relative path nor a call in PATH (maybe called from within Python)
+  if ( absPath.empty() )
+  {
+  	// get the current working directory
+    absPath = cwd;
+		std::string::size_type pos = absPath.find_last_of(PATHSEP);
+		homePath.assign(absPath,0,pos);
+    homePath += PATHSEP;
 
-	bool bFailure=false;
-/*
-  //TODO: Do we need this OCC stuff? (Werner)
-  //
-	EnvMacro::TestEnvExists("CSF_MDTVFontDirectory",bFailure);
-	EnvMacro::TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
-	EnvMacro::TestEnvExists("CSF_UnitsDefinition",bFailure);
-	EnvMacro::TestEnvExists("CSF_UnitsLexicon",bFailure);
-*/
+    EnvPrint(homePath.c_str());
+  }
+	// should be an absolute path now
+	else if (absPath[0] == PATHSEP)
+	{
+		EnvPrint("FindHomePath -----------------");
 
-  if (bFailure) {
-     		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
-		exit(1);
+		SimplifyPath( absPath );
+		std::string::size_type pos = absPath.find_last_of(PATHSEP);
+		homePath.assign(absPath,0,pos);
+		pos = homePath.find_last_of(PATHSEP);
+		homePath.assign(homePath,0,pos+1);
+
+		EnvPrint(homePath.c_str());
 	}
+	else
+	{
+		printf("ERROR: no valid home path! (%s)\n", absPath.c_str());
+		exit(0);
+	}
+
+	return homePath;
 }
+
+
+#endif
+
+#ifdef FC_OS_WIN32
+//std::string FindHomePathWin32(HANDLE hModule)
+std::string Application::FindHomePath(const char* sCall)
+{
+	char  szFileName [MAX_PATH] ;
+	GetModuleFileName(0,
+		               szFileName,
+					         MAX_PATH-1);
+
+	std::string Call(szFileName), TempHomePath;
+	std::string::size_type pos = Call.find_last_of(PATHSEP);
+	TempHomePath.assign(Call,0,pos);
+	pos = TempHomePath.find_last_of(PATHSEP);
+	TempHomePath.assign(TempHomePath,0,pos+1);
+
+  // switch to posix style
+  for(std::string::iterator i=TempHomePath.begin();i!=TempHomePath.end();++i)
+    if(*i == '\\')
+      *i = '/';
+
+	return TempHomePath;
+
+}
+#endif
+
+
+
+
+//void Application::CheckEnv(void)
+//{
+//	// set the OpenCasCade plugin variables to the FreeCAD bin path.
+//	EnvMacro::SetPluginDefaults(mConfig["HomePath"].c_str());
+//
+//	// sets all needed varables if a FreeCAD LibPack is found
+//	if(mConfig["FreeCADLib"] != "")
+//	{
+//		// sets the python environment variables if the FREECADLIB variable is defined
+//		EnvMacro::SetPythonToFreeCADLib(mConfig["FreeCADLib"].c_str());
+//
+//		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
+//		EnvMacro::SetCasCadeToFreeCADLib(mConfig["FreeCADLib"].c_str());
+//	}
+//
+//	cout << flush;
+//
+//	bool bFailure=false;
+///*
+//  //TODO: Do we need this OCC stuff? (Werner)
+//  //
+//	EnvMacro::TestEnvExists("CSF_MDTVFontDirectory",bFailure);
+//	EnvMacro::TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
+//	EnvMacro::TestEnvExists("CSF_UnitsDefinition",bFailure);
+//	EnvMacro::TestEnvExists("CSF_UnitsLexicon",bFailure);
+//*/
+//
+//  if (bFailure) {
+//     		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
+//		exit(1);
+//	}
+//}
 
 //**************************************************************************
 // Observer stuff
