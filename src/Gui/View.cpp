@@ -205,6 +205,19 @@ void MDIView::setCaption ( const QString& cap )
   getMainWindow()->tabChanged( this );
 }
 
+/**
+ * Reimplemented from QWidget.
+ * Forces this window to be the active view of the main window.
+ */
+void MDIView::windowActivationChange ( bool oldActive )
+{
+  QMainWindow::windowActivationChange(oldActive);
+  if ( isActiveWindow() ) {
+    if ( getMainWindow()->activeWindow() != this )
+      getMainWindow()->setActiveWindow( this );
+  }
+}
+
 void MDIView::setCurrentViewMode( ViewMode b )
 {
   // set fullscreen mode

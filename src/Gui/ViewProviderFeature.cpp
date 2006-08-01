@@ -64,7 +64,14 @@ ViewProviderFeature::ViewProviderFeature()
   } else {
     // Search for a user defined value with the current color as default
     SbColor highlightColor = pcHighlight->colorHighlight.getValue();
-#ifndef COIN_COLOR_STYLE
+#ifndef OLD_COLOR_STYLE
+    unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
+    int a = (highlight)&0xff;
+    highlight = hGrp->GetUnsigned("HighlightColor", highlight);
+    highlight += a;
+    highlightColor.setPackedValue((uint32_t)highlight, transparency);
+    pcHighlight->colorHighlight.setValue(highlightColor);
+#else
     unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
     int r = (highlight >> 24)&0xff;
     int g = (highlight >> 16)&0xff;
@@ -78,13 +85,6 @@ ViewProviderFeature::ViewProviderFeature()
     highlight = (r << 24) | (g << 16) | (b << 8) | a;
     highlightColor.setPackedValue((uint32_t)highlight, transparency);
     pcHighlight->colorHighlight.setValue(highlightColor);
-#else
-    unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
-    int a = (highlight)&0xff;
-    highlight = hGrp->GetInt("HighlightColor", highlight);
-    highlight += a;
-    highlightColor.setPackedValue((uint32_t)highlight, transparency);
-    pcHighlight->colorHighlight.setValue(highlightColor);
 #endif
   }
   if (disableSel) {
@@ -93,7 +93,14 @@ ViewProviderFeature::ViewProviderFeature()
   } else {
     // Do the same with the selection color
     SbColor selectionColor = pcHighlight->colorSelection.getValue();
-#ifndef COIN_COLOR_STYLE
+#ifndef OLD_COLOR_STYLE
+    unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
+    int a = (selection)&0xff;
+    selection = hGrp->GetUnsigned("SelectionColor", selection);
+    selection += a;
+    selectionColor.setPackedValue((uint32_t)selection, transparency);
+    pcHighlight->colorSelection.setValue(selectionColor);
+#else
     unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
     int r = (selection >> 24)&0xff;
     int g = (selection >> 16)&0xff;
@@ -105,13 +112,6 @@ ViewProviderFeature::ViewProviderFeature()
     g = (selection >>  8)&0xff;
     r = (selection)&0xff;
     selection = (r << 24) | (g << 16) | (b << 8) | a;
-    selectionColor.setPackedValue((uint32_t)selection, transparency);
-    pcHighlight->colorSelection.setValue(selectionColor);
-#else
-    unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
-    int a = (selection)&0xff;
-    selection = hGrp->GetInt("SelectionColor", selection);
-    selection += a;
     selectionColor.setPackedValue((uint32_t)selection, transparency);
     pcHighlight->colorSelection.setValue(selectionColor);
 #endif

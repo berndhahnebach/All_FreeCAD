@@ -103,13 +103,10 @@ public:
   View3DInventorViewer *getViewer(void) {return _viewer;}
 
 public slots:
-//  void closeEvent(QCloseEvent* e);
-  void onWindowActivated ();
   void setCursor(const QCursor&);
   void dump(const char* filename);
 
 protected:
-  void windowActivationChange( bool oldActive );
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
   void keyPressEvent    ( QKeyEvent       * e );

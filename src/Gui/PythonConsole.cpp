@@ -204,9 +204,13 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
   }
   else
   {
-    long col = hPrefGrp->GetInt( sReason, GetDefCol().color( sReason ));
+    unsigned long col = hPrefGrp->GetUnsigned( sReason, GetDefCol().color( sReason ));
     QColor color;
+#ifndef OLD_COLOR_STYLE
+    color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
+#else
     color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+#endif
     pythonSyntax->setColor( sReason, color );
   }
 }

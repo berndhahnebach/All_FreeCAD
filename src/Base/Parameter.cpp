@@ -256,7 +256,11 @@ void ParameterGrp::insertTo(FCHandle<ParameterGrp> Grp)
   for(It5 = FloatMap.begin();It5 != FloatMap.end();++It5)
     Grp->SetFloat(It5->first.c_str(),It5->second);
 
-
+  // copy uint
+	std::map<std::string,unsigned long> UIntMap = GetUnsignedMap();
+  std::map<std::string,unsigned long>::iterator It6;
+  for(It6 = UIntMap.begin();It6 != UIntMap.end();++It6)
+    Grp->SetUnsigned(It6->first.c_str(),It6->second);
 }
 
 void ParameterGrp::exportTo(const char* FileName)
@@ -542,6 +546,70 @@ std::map<std::string,long> ParameterGrp::GetIntMap(const char * sFilter) const
 	return vrValues;
 }
 
+unsigned long ParameterGrp::GetUnsigned(const char* Name, unsigned long lPreset) const
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCUInt",Name);
+	// if not return preset
+	if(!pcElem) return lPreset;
+	// if yes check the value and return
+	return strtoul (StrX(pcElem->getAttribute(XStr("Value").unicodeForm())).c_str(),0,10);
+}
+
+void  ParameterGrp::SetUnsigned(const char* Name, unsigned long lValue)
+{
+ 	char cBuf[256];
+	// find or create the Element
+	DOMElement *pcElem = FindOrCreateElement(_pGroupNode,"FCUInt",Name);
+	// and set the vaue
+	sprintf(cBuf,"%lu",lValue);
+	pcElem->setAttribute(XStr("Value").unicodeForm(), XStr(cBuf).unicodeForm());
+	// trigger observer
+	Notify(Name);
+}
+
+std::vector<unsigned long> ParameterGrp::GetUnsigneds(const char * sFilter) const
+{
+	std::vector<unsigned long>  vrValues;
+	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
+	std::string Name;
+
+	pcTemp = FindElement(_pGroupNode,"FCUInt");
+	while( pcTemp )
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
+		{
+			vrValues.push_back( strtoul (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str(),0,10) );
+		}
+		pcTemp = FindNextElement(pcTemp,"FCUInt") ;
+	}
+
+	return vrValues;
+}
+
+std::map<std::string,unsigned long> ParameterGrp::GetUnsignedMap(const char * sFilter) const
+{
+	std::map<std::string,unsigned long>  vrValues;
+	DOMNode *pcTemp;// = _pGroupNode->getFirstChild();
+	std::string Name;
+
+	pcTemp = FindElement(_pGroupNode,"FCUInt");
+	while( pcTemp )
+	{
+		Name = StrX( ((DOMElement*)pcTemp)->getAttributes()->getNamedItem(XStr("Name").unicodeForm())->getNodeValue()).c_str();
+		// check on filter condition
+		if(sFilter == NULL || Name.find(sFilter)!= std::string::npos)
+		{
+			vrValues[Name] = ( strtoul (StrX(((DOMElement*)pcTemp)->getAttribute(XStr("Value").unicodeForm())).c_str(),0,10) );
+		}
+		pcTemp = FindNextElement(pcTemp,"FCUInt");
+	}
+
+	return vrValues;
+}
+
 double ParameterGrp::GetFloat(const char* Name, double dPreset) const
 {
 	// check if Element in group
@@ -815,6 +883,20 @@ void ParameterGrp::RemoveInt(const char* Name)
 	Notify(Name);
 }
 
+void ParameterGrp::RemoveUnsigned(const char* Name)
+{
+	// check if Element in group
+	DOMElement *pcElem = FindElement(_pGroupNode,"FCUInt",Name);
+	// if not return 
+	if(!pcElem) 
+		return; 
+	else
+		_pGroupNode->removeChild(pcElem); 	
+
+	// trigger observer
+	Notify(Name);
+}
+
 void ParameterGrp::Clear(void)
 {
 	std::vector<DOMNode*> vecNodes;
@@ -935,6 +1017,11 @@ void ParameterGrp::NotifyAll()
   std::map<std::string,std::string> StringMap = GetASCIIMap();
   for (std::map<std::string,std::string>::iterator It4= StringMap.begin(); It4 != StringMap.end(); It4++)
     Notify(It4->first.c_str());
+
+  // get all uints and notify
+  std::map<std::string,unsigned long> UIntMap    = GetUnsignedMap();
+  for (std::map<std::string,unsigned long>::iterator It5= UIntMap.begin(); It5 != UIntMap.end(); It5++)
+    Notify(It5->first.c_str());
 }
 
 //**************************************************************************

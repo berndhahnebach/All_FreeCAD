@@ -146,6 +146,13 @@ void DlgParameterImp::onGroupSelected( QListViewItem * item )
     {
       (void)new ParameterBool(ParamVal,It5->first.c_str(),It5->second, _hcGrp);
     }
+
+    // filling up UInt nodes
+    std::map<std::string,unsigned long> mcUIntMap = _hcGrp->GetUnsignedMap();
+    for(std::map<std::string,unsigned long>::iterator It6=mcUIntMap.begin();It6!=mcUIntMap.end();It6++)
+    {
+      (void)new ParameterUInt(ParamVal,It6->first.c_str(),It6->second, _hcGrp);
+    }
   }
 }
 
@@ -400,6 +407,7 @@ ParameterValue::ParameterValue( QWidget * parent, const char * name, WFlags f )
   menuNew->insertItem( tr("New string item"), this, SLOT( onCreateTextItem() ) );
   menuNew->insertItem( tr("New float item"), this, SLOT( onCreateFloatItem() ) );
   menuNew->insertItem( tr("New integer item"), this, SLOT( onCreateIntItem() ) );
+  menuNew->insertItem( tr("New unsigned item"), this, SLOT( onCreateUIntItem() ) );
   menuNew->insertItem( tr("New boolean item"), this, SLOT( onCreateBoolItem() ) );
 
   connect(this, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(onChangeSelectedItem()));
@@ -527,6 +535,33 @@ void ParameterValue::onCreateIntItem()
   {
     ParameterValueItem *pcItem;
     pcItem = new ParameterInt(this,name,(long)val, _hcGrp);
+    pcItem->appendToGroup();
+  }
+}
+
+void ParameterValue::onCreateUIntItem()
+{
+  bool ok;
+  QString name = QInputDialog::getText(QObject::tr("New unsigned item"), QObject::tr("Enter the name:"), 
+                                      QLineEdit::Normal, QString::null, &ok, this);
+  if ( !ok || name.isEmpty() )
+    return;
+
+  std::map<std::string,unsigned long> lmap = _hcGrp->GetUnsignedMap();
+  if ( lmap.find( name.latin1() ) != lmap.end() )
+  {
+    QMessageBox::critical( this, tr("Existing item"),
+      tr("The item '%1' already exists.").arg( name ) );
+    return;
+  }
+
+  int val = QInputDialog::getInteger(QObject::tr("New unsigned item"), QObject::tr("Enter your number:"), 
+                                     0, 0, 2147483647, 1, &ok, this);
+
+  if ( ok )
+  {
+    ParameterValueItem *pcItem;
+    pcItem = new ParameterUInt(this,name,(unsigned long)val, _hcGrp);
     pcItem->appendToGroup();
   }
 }
@@ -819,6 +854,53 @@ void ParameterInt::appendToGroup()
   const char* name = text(0).latin1();
   long val =  text(2).toLong();
   _hcGrp->SetInt(name, val );
+}
+
+// --------------------------------------------------------------------
+
+ParameterUInt::ParameterUInt ( QListView * parent, QString label1, unsigned long value, const FCHandle<ParameterGrp> &hcGrp)
+  :ParameterValueItem( parent, label1, hcGrp)
+{
+  setPixmap(0,BitmapFactory().pixmap("Param_UInt") );
+  setText(1, "Unsigned");
+  setText(2, QString("%1").arg(value));
+}
+
+ParameterUInt::~ParameterUInt()
+{
+}
+
+void ParameterUInt::changeValue()
+{
+  const char* name = text(0).latin1();
+  bool ok;
+
+  int num = QInputDialog::getInteger(QObject::tr("Change value"), QObject::tr("Enter your number:"), 
+                                     (int)text(2).toULong(), 0, 2147483647, 1, &ok, listView());
+  if ( ok )
+  {
+    setText(2, QString("%1").arg(num));
+    _hcGrp->SetUnsigned(name, (unsigned long)num);
+  }
+}
+
+void ParameterUInt::removeFromGroup ()
+{
+  _hcGrp->RemoveUnsigned(text(0).latin1());
+}
+
+void ParameterUInt::replace( const QString& oldName, const QString& newName )
+{
+  unsigned long val = _hcGrp->GetUnsigned( oldName.latin1() );
+  _hcGrp->RemoveUnsigned( oldName.latin1() );
+  _hcGrp->SetUnsigned( newName.latin1(), val );
+}
+
+void ParameterUInt::appendToGroup()
+{
+  const char* name = text(0).latin1();
+  unsigned long val =  text(2).toULong();
+  _hcGrp->SetUnsigned(name, val );
 }
 
 // --------------------------------------------------------------------
