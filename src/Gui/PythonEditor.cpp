@@ -137,12 +137,12 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
   }
   else
   {
-    long col = hPrefGrp->GetInt( sReason, GetDefCol().color( sReason ));
+    unsigned long col = hPrefGrp->GetUnsigned( sReason, GetDefCol().color( sReason ));
     QColor color;
-#ifndef COIN_COLOR_STYLE
-    color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-#else
+#ifndef OLD_COLOR_STYLE
     color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
+#else
+    color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
 #endif
 
     pythonSyntax->setColor( sReason, color );
@@ -296,30 +296,8 @@ public:
     "if" << "import" << "in" << "is" << "lambda" << "None" << "not" << "or" << "pass" << "print" <<
     "raise" << "return" << "try" << "while" << "yield";
 
-    long col = GetDefCol().color( "Text" );
-#ifndef COIN_COLOR_STYLE
-    cNormalText     = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "Comment" );
-    cComment        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "Block comment" );
-    cBlockcomment   = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "String" );
-    cLiteral        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "Number" );
-    cNumber         = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "Operator" );
-    cOperator       = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "Keyword" );
-    cKeyword        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "Class name" );
-    cClassName      = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "Define name" );
-    cDefineName     = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "Python output" );
-    cOutput        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-    col = GetDefCol().color( "Python error" );
-    cError         = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-#else
+    unsigned long col = GetDefCol().color( "Text" );
+#ifndef OLD_COLOR_STYLE
     cNormalText     = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
     col = GetDefCol().color( "Comment" );
     cComment        = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
@@ -341,6 +319,28 @@ public:
     cOutput        =  QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
     col = GetDefCol().color( "Python error" );
     cError         =  QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
+#else
+    cNormalText     = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Comment" );
+    cComment        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Block comment" );
+    cBlockcomment   = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "String" );
+    cLiteral        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Number" );
+    cNumber         = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Operator" );
+    cOperator       = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Keyword" );
+    cKeyword        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Class name" );
+    cClassName      = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Define name" );
+    cDefineName     = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Python output" );
+    cOutput        = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
+    col = GetDefCol().color( "Python error" );
+    cError         = QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
 #endif
   }
 

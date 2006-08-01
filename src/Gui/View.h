@@ -170,15 +170,13 @@ public:
   ViewMode currentViewMode() const { return _actualMode; }
 
 signals:
-  /// sends a message to the document
-//  void sendCloseView(MDIView* theView);
-
   void message(const QString&, int );
 
 public slots:
   void setActive(void);
 
 protected:
+  void windowActivationChange( bool oldActive );
   void closeEvent    ( QCloseEvent *e );
 
   ViewMode _actualMode;

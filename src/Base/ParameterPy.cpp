@@ -104,6 +104,10 @@ public:
 	PYFUNCDEF_D (ParameterGrpPy,PyGetInt);
 	PYFUNCDEF_D (ParameterGrpPy,PyRemInt);
 
+	PYFUNCDEF_D (ParameterGrpPy,PySetUnsigned);
+	PYFUNCDEF_D (ParameterGrpPy,PyGetUnsigned);
+	PYFUNCDEF_D (ParameterGrpPy,PyRemUnsigned);
+
 	PYFUNCDEF_D (ParameterGrpPy,PySetFloat);
 	PYFUNCDEF_D (ParameterGrpPy,PyGetFloat);
 	PYFUNCDEF_D (ParameterGrpPy,PyRemFloat);
@@ -166,6 +170,10 @@ PyMethodDef ParameterGrpPy::Methods[] = {
   {"SetInt",           (PyCFunction) sPySetInt,          Py_NEWARGS},
   {"GetInt",           (PyCFunction) sPyGetInt,          Py_NEWARGS},
   {"RemInt",           (PyCFunction) sPyRemInt,          Py_NEWARGS},
+
+  {"SetUnsigned",      (PyCFunction) sPySetUnsigned,     Py_NEWARGS},
+  {"GetUnsigned",      (PyCFunction) sPyGetUnsigned,     Py_NEWARGS},
+  {"RemUnsigned",      (PyCFunction) sPyRemUnsigned,     Py_NEWARGS},
 
   {"SetFloat",         (PyCFunction) sPySetFloat,        Py_NEWARGS},
   {"GetFloat",         (PyCFunction) sPyGetFloat,        Py_NEWARGS},
@@ -382,6 +390,29 @@ PyObject *ParameterGrpPy::PyGetInt(PyObject *args)
   }PY_CATCH;
 } 
 
+PyObject *ParameterGrpPy::PySetUnsigned(PyObject *args)
+{ 
+	char *pstr;
+	unsigned long  UInt;
+  if (!PyArg_ParseTuple(args, "sI", &pstr,&UInt))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+  PY_TRY {
+	  _cParamGrp->SetUnsigned(pstr,UInt);
+	  Py_Return; 
+  }PY_CATCH;
+} 
+
+PyObject *ParameterGrpPy::PyGetUnsigned(PyObject *args)
+{ 
+	char *pstr;
+	unsigned long  UInt=0;
+  if (!PyArg_ParseTuple(args, "s|I", &pstr,&UInt))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+  PY_TRY {
+  	return Py_BuildValue("I",_cParamGrp->GetUnsigned(pstr,UInt));
+  }PY_CATCH;
+} 
+
 PyObject *ParameterGrpPy::PySetFloat(PyObject *args)
 { 
 	char *pstr;
@@ -437,6 +468,17 @@ PyObject *ParameterGrpPy::PyRemInt(PyObject *args)
     return NULL;                             // NULL triggers exception 
   PY_TRY {
   	_cParamGrp->RemoveInt(pstr);
+	  Py_Return; 
+  }PY_CATCH;
+} 
+
+PyObject *ParameterGrpPy::PyRemUnsigned(PyObject *args)
+{ 
+	char *pstr;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+  PY_TRY {
+  	_cParamGrp->RemoveUnsigned(pstr);
 	  Py_Return; 
   }PY_CATCH;
 } 

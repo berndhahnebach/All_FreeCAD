@@ -935,12 +935,12 @@ void Application::ParseOptions(int argc, char ** argv)
 	"Options:\n"\
 	"  -h               Display this information\n"\
 	"  -c               Runs FreeCAD in console mode (no windows)\n"\
-	"  -cf file-name    Runs FreeCAD in server mode with script file-name\n"\
-	"  -cc file-name    Runs first the script an then console mode\n"\
-	"  -cm module-name  Loads the Python module and exiting when done\n"\
+	"  -cf file-name    Runs FreeCAD in server mode with script filename\n"\
+	"  -cc file-name    Runs first the script and then console mode\n"\
+	"  -cm module-name  Loads the Python module and exits when done\n"\
 	"  -t0              Runs FreeCAD self test function\n"\
-	"  -l               Enabels logging in File FreeCAD.log\n"\
-	"  -lf file-ame     Enabels logging in File with the given file-name\n"\
+	"  -l               Enables logging in file FreeCAD.log\n"\
+	"  -lf file-ame     Enables logging in file with the given filename\n"\
 	"  -v               Runs FreeCAD in verbose mode\n"\
 	"\n consult also the HTML documentation on http://free-cad.sourceforge.net/\n"\
 	"";
@@ -950,7 +950,8 @@ void Application::ParseOptions(int argc, char ** argv)
   // logging in debug is on
 #ifdef FC_DEBUG
 	mConfig["LoggingFile"] = "1";
-	mConfig["LoggingFileName"]= mConfig["BinPath"] + "FreeCAD.log";
+//	mConfig["LoggingFileName"]= mConfig["BinPath"] + "FreeCAD.log";
+	mConfig["LoggingFileName"]= mConfig["UserAppData"] + "FreeCAD.log";
 #endif
 
 	// scan command line arguments for user input. 
@@ -1014,7 +1015,8 @@ void Application::ParseOptions(int argc, char ** argv)
 			case 'l': 
 			case 'L':  
 				mConfig["LoggingFile"] = "1";
-				mConfig["LoggingFileName"]= mConfig["BinPath"] + "FreeCAD.log";
+				//mConfig["LoggingFileName"]= mConfig["BinPath"] + "FreeCAD.log";
+      	mConfig["LoggingFileName"]= mConfig["UserAppData"] + "FreeCAD.log";
 				switch (argv[i][2])  
 				{
 					// Console with file
@@ -1134,11 +1136,14 @@ void Application::ExtractUser()
   // In the rare case that none of them are set we get the directory where FreeCAD is
   // installed as a fallback solution.
   //
-  // Default paths for the user
+  // Default paths for the user depending on the platform
+#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
   if(getenv("HOME") != 0)
     mConfig["UserHomePath"] = getenv("HOME");
-  else if(getenv("HOMEDRIVE") != 0 && getenv("HOMEPATH") != 0 )
+#elif defined(FC_OS_WIN32)
+  if(getenv("HOMEDRIVE") != 0 && getenv("HOMEPATH") != 0 )
     mConfig["UserHomePath"] = std::string(getenv("HOMEDRIVE")) + getenv("HOMEPATH");
+#endif
   else
     mConfig["UserHomePath"] = mConfig["HomePath"];
 

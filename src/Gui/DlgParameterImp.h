@@ -154,6 +154,8 @@ protected slots:
   void onCreateTextItem();
   /** Creates and appends a new "integer" leaf. */
   void onCreateIntItem();
+  /** Creates and appends a new "unsigned integer" leaf. */
+  void onCreateUIntItem();
   /** Creates and appends a new "float" leaf. */
   void onCreateFloatItem();
   /** Creates and appends a new "boolean" leaf. */
@@ -260,6 +262,25 @@ public:
   /// Constructor
   ParameterInt ( QListView * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterInt();
+
+  void changeValue();
+  void appendToGroup();
+  void removeFromGroup();
+
+protected:
+  void replace( const QString& oldName, const QString& newName );
+};
+
+/**
+ * The ParameterUInt class allows interaction with "unsigned integer" parameter leaves.
+ * @author Werner Mayer
+ */
+class ParameterUInt : public ParameterValueItem
+{
+public:
+  /// Constructor
+  ParameterUInt ( QListView * parent, QString label1, unsigned long value, const FCHandle<ParameterGrp> &hcGrp);
+  ~ParameterUInt();
 
   void changeValue();
   void appendToGroup();

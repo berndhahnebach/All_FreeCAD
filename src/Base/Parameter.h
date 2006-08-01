@@ -138,6 +138,20 @@ public:
 	void RemoveInt(const char* Name);
 	//@}
 
+	/** @name methods for Unsigned Int handling */
+	//@{
+	/// read uint values or give default
+	unsigned long GetUnsigned(const char* Name, unsigned long lPreset=0) const;
+	/// set a uint value
+	void SetUnsigned(const char* Name, unsigned long lValue);
+	/// get a vector of all uint values in this group
+	std::vector<unsigned long> GetUnsigneds(const char * sFilter = NULL) const;
+	/// get a map with all uint values and the keys of this group
+	std::map<std::string,unsigned long> GetUnsignedMap(const char * sFilter = NULL) const;
+	/// remove a uint value from this group
+	void RemoveUnsigned(const char* Name);
+	//@}
+
 
 	/** @name methods for Float handling */
 	//@{

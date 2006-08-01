@@ -484,9 +484,16 @@ void MainWindow::onWindowActivated( QWidget* w )
   MDIView* mdi = dynamic_cast<MDIView*>(w);
 
   // Even if windowActivated() signal is emitted mdi doesn't need to be a top-level window.
-  // This happens if e.g. two windows are top-level and one of them gets docked again.
+  // This happens e.g. if two windows are top-level and one of them gets docked again.
   // QWorkspace emits the signal then even though the other window is in front.
-  if ( !mdi || !mdi->isActiveWindow() ) 
+  // The consequence is that the docked window becomes the active window and not the undocked
+  // window on top. This means that all accel events, menu and toolbar actions get redirected
+  // to the (wrong) docked window.
+  // But just testing whether the view is active and ignore it if not leads to other more serious problems -
+  // at least under Linux. It seems to be a problem with the window manager.
+  // Under Windows it seems to work though it's not really sure that it works reliably.
+  // Result: So, we accept the first problem to be sure to avoid the second one.
+  if ( !mdi /*|| !mdi->isActiveWindow()*/ ) 
     return; // either no MDIView or no valid object or no top-level window
 
   mdi->setActive();

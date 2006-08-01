@@ -1106,7 +1106,8 @@ void StdViewBoxZoom::activated(int iMsg)
 
 bool StdViewBoxZoom::isActive(void)
 {
-  return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+  return false; // tmp. deactivated
+  //return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()));
 }
 
 

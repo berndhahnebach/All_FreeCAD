@@ -21,6 +21,7 @@ void RegisterIcons()
   rclBmpFactory.addXPM("Param_Bool", Param_Bool);
   rclBmpFactory.addXPM("Param_Float", Param_Float);
   rclBmpFactory.addXPM("Param_Int", Param_Int);
+  rclBmpFactory.addXPM("Param_UInt", Param_UInt);
   rclBmpFactory.addXPM("Param_Text", Param_Text);
   rclBmpFactory.addXPM("Param_XML", Param_XML);
   rclBmpFactory.addXPM("Part_Box", Part_Box);
