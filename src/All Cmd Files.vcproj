@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="All Cmd Files"
-	ProjectGUID="{42F17572-3B03-4880-B1C7-DA956F833A57}"
+	ProjectGUID="{1D95E276-38C8-4992-9853-013E9D574995}"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
