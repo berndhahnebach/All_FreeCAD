@@ -65,46 +65,5 @@
          <RemoveFile Id="RmvScripts" Directory="INSTALLDIR"  Name="nix*.fcp" LongName="*.FCScript" On="uninstall" />
       </Component>
     </DirectoryRef>
-    <DirectoryRef Id='LibPackDir'>
-      <Directory Id='resPackDir' Name='res' >
-        <Directory Id='OpenCascedeResPackDir' Name='OCC' LongName='OpenCascade'>
-          <Component Id='resOCC' Guid='D38BCB31-24B0-4129-9168-D286BD42EE4F'>
-            <File Id='IGESus'       Name='IGES.us'       src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-            <File Id='IGESfr'       Name='IGES.fr'       src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-            <File Id='Lexi_Exprdat' Name='LexiExpr.dat'  LongName='Lexi_Expr.dat' src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-            <File Id='SHAPEfr'      Name='SHAPE.fr'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-            <File Id='SHAPEus'      Name='SHAPE.us'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-            <File Id='Unitsdat'     Name='Units.dat'     src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-            <File Id='XSTEPfr'      Name='XSTEP.fr'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-            <File Id='XSTEPus'      Name='XSTEP.us'      src='$(env.FREECADLIB)\res\OpenCascade\' DiskId='1' />
-          </Component>
-        </Directory>
-        <Directory Id='PythonResPackDir' Name='pylibs' src='$(env.FREECADLIB)\res\pylibs\'>
-          <Component Id='PyLibs' Guid='9E9C03BC-54E6-4274-A1CA-FA362EB1CCB5'>
-            <File Id='ospy'        Name='os.py'          DiskId='1' />
-            <File Id='sitepy'      Name='site.py'        DiskId='1' />
-            <File Id='stringpy'    Name='string.py'      DiskId='1' />
-            <File Id='repy'        Name='re.py'          DiskId='1' />
-            <File Id='codecspy'    Name='codecs.py'      DiskId='1' />
-            <File Id='copy_regpy'  Name='copy_reg.py'    DiskId='1' />
-            <File Id='linecachepy' Name='linca.py'    LongName='linecache.py'    DiskId='1' />
-            <File Id='dircachepy'  Name='dircache.py'    DiskId='1' />
-            <File Id='localepy'    Name='locale.py'      DiskId='1' />
-            <File Id='ntpathpy'    Name='ntpath.py'      DiskId='1' />
-            <File Id='statpy'      Name='stat.py'        DiskId='1' />
-            <File Id='typespy'     Name='types.py'       DiskId='1' />
-            <File Id='UserDictpy'  Name='UserDict.py'    DiskId='1' />
-            <File Id='warnings.py'  Name='warnings.py'   DiskId='1' />
-          </Component>
-          <Directory Id='PythonResPackDirEnc' Name='enc' LongName='encodings' src='$(env.FREECADLIB)\res\pylibs\encodings'>
-            <Component Id='PyLibsEnc' Guid='A496FFFD-3EB1-47b8-9815-819DBAE36E91'>
-              <File Id='initpy'        Name='__init__.py'          DiskId='1' />
-              <File Id='cp1252py'      Name='cp1252.py'          DiskId='1' />
-          </Component>
-          
-          </Directory>
-        </Directory>
-      </Directory>
-    </DirectoryRef>
   </Fragment>
 </Wix>

@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="AppPart" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=AppPart - Win32 Debug
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "AppPart.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "AppPart.mak" CFG="AppPart - Win32 Debug"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "AppPart - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "AppPart - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppPart - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppPart - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -54,10 +54,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib TKernel.lib TKBRep.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\Part.pyd"
+# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\Part.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy   /y   /f   Release\Part.pyd   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   ..\Init.py   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   Release\Part.lib   ..\..\..\..\Mod\Part\ 
+PostBuild_Cmds=xcopy    /y    /f    Release\Part.pyd    ..\..\..\..\Mod\Part\   	xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Part\   	xcopy    /y    /f    Release\Part.lib    ..\..\..\..\Mod\Part\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppPart - Win32 Debug"
@@ -84,10 +84,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib TKernel.lib TKBRep.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\Part_d.pyd" /pdbtype:sept
+# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\Part_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy   /y   /f   Debug\Part_d.pyd   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   ..\Init.py   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   Debug\Part_d.lib   ..\..\..\..\Mod\Part\ 
+PostBuild_Cmds=xcopy    /y    /f    Debug\Part_d.pyd    ..\..\..\..\Mod\Part\   	xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Part\   	xcopy    /y    /f    Debug\Part_d.lib    ..\..\..\..\Mod\Part\ 
 # End Special Build Tool
 
 !ENDIF 

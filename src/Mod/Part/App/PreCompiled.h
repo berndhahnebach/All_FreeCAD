@@ -127,7 +127,6 @@
 
 #include <BRepTools.hxx>
 #include <Standard_DefineHandle.hxx> 
-#include <DsgPrs_LengthPresentation.hxx>
 #include <GCE2d_MakeSegment.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
 #include <Geom_Axis2Placement.hxx>
