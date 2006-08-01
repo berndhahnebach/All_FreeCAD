@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppMeshGui"
-	ProjectGUID="{16D626DB-559F-4D76-8423-F9DA1B8E8712}"
+	ProjectGUID="{6A1BB7BB-5A13-4273-BE05-24736D118082}"
 	>
 	<Platforms>
 		<Platform
@@ -110,7 +110,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy          /y          /f          Release\MeshGui.pyd          ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy          /y          /f          ..\InitGui.py          ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy          /y          /f          Release\MeshGui.lib          ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
+				CommandLine="xcopy        /y        /f        Release\MeshGui.pyd        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy        /y        /f        ..\InitGui.py        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy        /y        /f        Release\MeshGui.lib        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -212,7 +212,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy          /y          /f          Debug\MeshGui_d.pyd          ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy          /y          /f          ..\InitGui.py          ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy          /y          /f          Debug\MeshGui_d.lib          ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
+				CommandLine="xcopy        /y        /f        Debug\MeshGui_d.pyd        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy        /y        /f        ..\InitGui.py        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;xcopy        /y        /f        Debug\MeshGui_d.lib        ..\..\..\..\Mod\Mesh\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -347,32 +347,6 @@
 			Name="Inventor"
 			>
 			<File
-				RelativePath="SoFCMeshFaceSet.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="SoFCMeshFaceSet.h"
-				>
-			</File>
-			<File
 				RelativePath="SoFCMeshNode.cpp"
 				>
 				<FileConfiguration
@@ -396,32 +370,6 @@
 			</File>
 			<File
 				RelativePath="SoFCMeshNode.h"
-				>
-			</File>
-			<File
-				RelativePath="SoFCMeshVertex.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="SoFCMeshVertex.h"
 				>
 			</File>
 		</Filter>
@@ -504,32 +452,6 @@
 			</File>
 			<File
 				RelativePath="ViewProviderDefects.h"
-				>
-			</File>
-			<File
-				RelativePath="ViewProviderMeshFaceSet.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="ViewProviderMeshFaceSet.h"
 				>
 			</File>
 			<File

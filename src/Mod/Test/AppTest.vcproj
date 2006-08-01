@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppTest"
-	ProjectGUID="{33CBE2B5-71D8-4B05-AD47-6477B86742D5}"
+	ProjectGUID="{8280AC71-78DB-4607-8B76-0917DA695736}"
 	>
 	<Platforms>
 		<Platform
@@ -68,7 +68,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="../../../Mod/Test/dummy.log"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -158,7 +157,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="odbc32.lib odbccp32.lib"
 				OutputFile="../../../Mod/Test/dummy.log"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
