@@ -54,10 +54,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib  python23.lib coin2.lib qt-mtnc321.lib TKernel.lib TKBRep.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release/PartGui.pyd"
+# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib coin2.lib qt-mtnc321.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib  TKMesh.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release/PartGui.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy  /y  /f  Release\PartGui.pyd  ..\..\..\..\Mod\Part\ 	xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Part\ 	xcopy  /y  /f  Release\PartGui.lib  ..\..\..\..\Mod\Part\ 
+PostBuild_Cmds=xcopy   /y   /f   Release\PartGui.pyd   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   Release\PartGui.lib   ..\..\..\..\Mod\Part\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
@@ -85,10 +85,10 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib  python23_d.lib coin2d.lib qt-mtnc321.lib TKernel.lib TKBRep.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/PartGui_d.pyd" /pdbtype:sept
+# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib coin2d.lib qt-mtnc321.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib  TKMesh.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/PartGui_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy  /y  /f  Debug\PartGui_d.pyd  ..\..\..\..\Mod\Part\ 	xcopy  /y  /f  ..\InitGui.py  ..\..\..\..\Mod\Part\ 	xcopy  /y  /f  Debug\PartGui_d.lib  ..\..\..\..\Mod\Part\ 
+PostBuild_Cmds=xcopy   /y   /f   Debug\PartGui_d.pyd   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Part\  	xcopy   /y   /f   Debug\PartGui_d.lib   ..\..\..\..\Mod\Part\ 
 # End Special Build Tool
 
 !ENDIF 

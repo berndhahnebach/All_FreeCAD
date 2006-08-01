@@ -37,7 +37,6 @@
 
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TNaming_Builder.hxx>
 
 #include "../App/PartFeature.h"
 #include "DlgPartBoxImp.h"

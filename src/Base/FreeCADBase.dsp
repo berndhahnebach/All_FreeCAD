@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="FreeCADBase" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** DO NOT EDIT **
+# ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=FreeCADBase - Win32 Debug
-!MESSAGE This is not a valid makefile. To build this project using NMAKE,
-!MESSAGE use the Export Makefile command and run
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADBase.mak".
 !MESSAGE 
-!MESSAGE You can specify a configuration when running NMAKE
-!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
+!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
 !MESSAGE 
 !MESSAGE NMAKE /f "FreeCADBase.mak" CFG="FreeCADBase - Win32 Debug"
 !MESSAGE 
-!MESSAGE Possible choices for configuration are:
+!MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "FreeCADBase - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "FreeCADBase - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADBase - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "FreeCADBase - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -57,7 +57,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib xerces-c_2.lib zlib1.lib python23.lib /nologo /dll /machine:I386 /nodefaultlib
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy     /y     /f     Release\FreeCADBase.dll     ..\..\bin\    	xcopy     /y     /f     Release\FreeCADBase.lib     ..\..\lib\ 
+PostBuild_Cmds=xcopy       /y       /f       Release\FreeCADBase.dll       ..\..\bin\      	xcopy       /y       /f       Release\FreeCADBase.lib       ..\..\lib\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADBase - Win32 Debug"
@@ -88,7 +88,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib xerces-c_2D.lib zlib1.lib python23_d.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/FreeCADBaseD.dll" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy     /Y     /f      Debug\FreeCADBaseD.dll     ..\..\bin\    	xcopy     /Y     /f     Debug\FreeCADBaseD.lib     ..\..\lib\ 
+PostBuild_Cmds=xcopy       /Y       /f        Debug\FreeCADBaseD.dll       ..\..\bin\      	xcopy       /Y       /f       Debug\FreeCADBaseD.lib       ..\..\lib\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -354,11 +354,6 @@ SOURCE=.\Console.cpp
 # Begin Source File
 
 SOURCE=.\Console.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\DllMain.cpp
-# SUBTRACT CPP /YX /Yc /Yu
 # End Source File
 # Begin Source File
 

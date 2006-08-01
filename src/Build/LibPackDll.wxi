@@ -1,7 +1,7 @@
 <Include>
-<File Id='DLL1'    Name='ERR1' LongName='BinPlugin.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL1'    Name='ERR1' LongName='TKMesh.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL2'    Name='ERR2' LongName='coin2.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL4'    Name='ERR4' LongName='FWOSPlugin.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL3'    Name='ERR3' LongName='TKSTEPBase.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL5'    Name='ERR5' LongName='glib-1.3.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL6'    Name='ERR6' LongName='gmodule-1.3.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL7'    Name='ERR7' LongName='gthread-1.3.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
@@ -15,14 +15,13 @@
 <File Id='DLL18'    Name='ERR18' LongName='qt-mtnc321.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL19'    Name='ERR19' LongName='simage1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL21'    Name='ERR21' LongName='soqt1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL22'    Name='ERR22' LongName='tcl84.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL23'    Name='ERR23' LongName='tk84.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL24'    Name='ERR24' LongName='TKBin.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL22'    Name='ERR22' LongName='TKSTEP209.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL23'    Name='ERR23' LongName='TKMeshVS.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL25'    Name='ERR25' LongName='TKBO.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL26'    Name='ERR26' LongName='TKBool.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL27'    Name='ERR27' LongName='TKBRep.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL36'    Name='ERR36' LongName='TKernel.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL37'    Name='ERR37' LongName='TKFeat.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL37'    Name='ERR37' LongName='TKSTEPAttr.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL38'    Name='ERR38' LongName='TKFillet.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL39'    Name='ERR39' LongName='TKG2d.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL40'    Name='ERR40' LongName='TKG3d.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
@@ -42,4 +41,9 @@
 <File Id='DLL73'    Name='ERR73' LongName='TKPrim.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL75'    Name='ERR75' LongName='xerces-c_2_6.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL79'    Name='ERR79' LongName='zlib1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL80'    Name='ERR80' LongName='python23.zip' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL81'    Name='ERR81' LongName='zlib.pyd' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL82'    Name='ERR82' LongName='Msvcr71.dll' src='C:\WINDOWS\system32\' DiskId='1' />
+<File Id='DLL83'    Name='ERR83' LongName='msvcp60.dll' src='C:\WINDOWS\system32\' DiskId='1' />
+<File Id='DLL84'    Name='ERR84' LongName='msvcp71.dll' src='C:\WINDOWS\system32\' DiskId='1' />
 </Include>

@@ -25,7 +25,7 @@
 <Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
    <?include ../Version.wxi ?>
    <Product Id           ='0C6EC504-2794-4992-BE14-2F57378C1183' 
-            UpgradeCode  ='D898BEFD-CFFA-4163-A624-AB36B2C7A719'
+            UpgradeCode  ='D898BEFD-CFFA-4163-A624-AB36B2C7A710'
             Name         ='FreeCAD $(var.FCVersionMajor).$(var.FCVersionMinor)' Language='1033'
             Version      ='$(var.FCVersionMajor).$(var.FCVersionMinor).$(var.FCVersionBuild)' 
             Manufacturer ='Juergen Riegel (juergen.riegel@web.de)'>
@@ -52,7 +52,6 @@
               <Directory Id='BinDir'         Name='bin' />
               <Directory Id='ModDir'         Name='Mod' />
               <Directory Id='DocDir'         Name='doc' />
-              <Directory Id='LibPackDir'     Name='LibPack'/>
             </Directory>
           </Directory>
           <Directory Id="ProgramMenuFolder">
@@ -68,9 +67,6 @@
                 Absent='disallow' 
                 ConfigurableDirectory='INSTALLDIR'>
         <ComponentRef Id='Base' />
-        <ComponentRef Id='resOCC' />
-        <ComponentRef Id='PyLibs' />
-        <ComponentRef Id='PyLibsEnc' />
         <ComponentRef Id='CompModMesh' />
         <ComponentRef Id='CompModPart' />
         <ComponentRef Id='CompModPoints' />

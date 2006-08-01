@@ -161,3 +161,5 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + proper handling of double clicks with wheel button
 + Random color implemented
 + Box zoom implementation started
+
+Version: V0.5B8 Date: Tue Aug 01 21:53:34 2006 +++++++++++++++++++++++++++++++
