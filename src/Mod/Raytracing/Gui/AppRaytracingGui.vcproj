@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="AppRaytracingGui"
-	ProjectGUID="{B713FB2D-CFC3-4830-95D4-1B69D10FED7E}"
+	ProjectGUID="{7989D3BE-9CB1-4D45-AB20-EDF23D171C97}"
 	>
 	<Platforms>
 		<Platform
@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib coin2d.lib qt-mtnc321.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib coin2d.lib qt-mtnc321.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKMesh.lib"
 				OutputFile="Debug\RaytracingGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy   /y   /f   Debug\RaytracingGui_d.pyd   ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
+				CommandLine="xcopy    /y    /f    Debug\RaytracingGui_d.pyd    ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy    /y    /f    ..\InitGui.py    ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -176,7 +176,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib coin2.lib qt-mtnc321.lib TKernel.lib TKMath.lib TKService.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKGeomAlgo.lib TKGeomBase.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib coin2.lib qt-mtnc321.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKMesh.lib"
 				OutputFile="Release\RaytracingGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -210,7 +210,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy   /y   /f   Release\RaytracingGui.pyd   ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
+				CommandLine="xcopy    /y    /f    Release\RaytracingGui.pyd    ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;xcopy    /y    /f    ..\InitGui.py    ..\..\..\..\Mod\Raytracing\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

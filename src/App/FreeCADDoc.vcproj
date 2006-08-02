@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADApp"
-	ProjectGUID="{6E98DD25-BED7-4BD8-A73B-2BB25A40C40F}"
+	ProjectGUID="{07499EC3-CFB2-449A-9A00-6C153FF3C565}"
 	>
 	<Platforms>
 		<Platform
@@ -109,7 +109,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy         /y         /f         Release\FreeCADApp.dll         ..\..\bin\&#x0D;&#x0A;xcopy         /y         /f         Release\FreeCADApp.lib         ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy           /y           /f           Release\FreeCADApp.dll           ..\..\bin\&#x0D;&#x0A;xcopy           /y           /f           Release\FreeCADApp.lib           ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -209,7 +209,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy         /y         /f         Debug\FreeCADAppD.dll         ..\..\bin\&#x0D;&#x0A;xcopy         /y         /f         Debug\FreeCADAppD.lib         ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy           /y           /f           Debug\FreeCADAppD.dll           ..\..\bin\&#x0D;&#x0A;xcopy           /y           /f           Debug\FreeCADAppD.lib           ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -819,30 +819,6 @@
 			>
 		</File>
 		<File
-			RelativePath="DllMain.cpp"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath="Doxygen.cpp"
 			>
 			<FileConfiguration
@@ -875,7 +851,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building InitScript.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h&#x0D;&#x0A;"
+					CommandLine="python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h&#x0D;&#x0A;"
 					Outputs="InitScript.h"
 				/>
 			</FileConfiguration>
@@ -885,7 +861,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building InitScript.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h&#x0D;&#x0A;"
+					CommandLine="python ..\Tools\PythonToCPP.py FreeCADInit.py InitScript.h&#x0D;&#x0A;"
 					Outputs="InitScript.h"
 				/>
 			</FileConfiguration>
@@ -899,7 +875,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building TestScript.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h&#x0D;&#x0A;"
+					CommandLine="python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h&#x0D;&#x0A;"
 					Outputs="TestScript.h"
 				/>
 			</FileConfiguration>
@@ -909,7 +885,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building TestScript.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h&#x0D;&#x0A;"
+					CommandLine="python ..\Tools\PythonToCPP.py FreeCADTest.py TestScript.h&#x0D;&#x0A;"
 					Outputs="TestScript.h"
 				/>
 			</FileConfiguration>

@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADMain"
-	ProjectGUID="{4528BCA2-CFC4-4434-966C-36C706A1EC1B}"
+	ProjectGUID="{85350C7D-68B4-40C7-9BF8-98C3453FF569}"
 	>
 	<Platforms>
 		<Platform
@@ -106,7 +106,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /y  /f  Release\FreeCAD.exe  ..\..\bin\"
+				CommandLine="xcopy   /y   /f   Release\FreeCAD.exe   ..\..\bin\"
 			/>
 		</Configuration>
 		<Configuration
@@ -205,7 +205,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy  /y  /f  Debug\FreeCADD.exe  ..\..\bin\"
+				CommandLine="xcopy   /y   /f   Debug\FreeCADD.exe   ..\..\bin\"
 			/>
 		</Configuration>
 	</Configurations>

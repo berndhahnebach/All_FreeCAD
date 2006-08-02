@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADGui"
-	ProjectGUID="{310EF6BA-E247-416A-B1CE-A92AF9A139B6}"
+	ProjectGUID="{48D48D6E-3B37-46B2-A50E-C83DBDF93804}"
 	>
 	<Platforms>
 		<Platform
@@ -111,7 +111,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy           /y           /f           Debug\FreeCADGuiD.dll           ..\..\bin&#x0D;&#x0A;xcopy           /y           /f           Debug\FreeCADGuiD.lib           ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy              /y              /f              Debug\FreeCADGuiD.dll              ..\..\bin&#x0D;&#x0A;xcopy              /y              /f              Debug\FreeCADGuiD.lib              ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -211,7 +211,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy           /y           /f           Release\FreeCADGui.dll           ..\..\bin\&#x0D;&#x0A;xcopy           /y           /f           Release\FreeCADGui.lib           ..\..\lib\&#x0D;&#x0A;"
+				CommandLine="xcopy              /y              /f              Release\FreeCADGui.dll              ..\..\bin\&#x0D;&#x0A;xcopy              /y              /f              Release\FreeCADGui.lib              ..\..\lib\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -4375,30 +4375,6 @@
 			>
 		</File>
 		<File
-			RelativePath="DllMain.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-					UsePrecompiledHeader="0"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath="Document.cpp"
 			>
 			<FileConfiguration
@@ -4423,26 +4399,6 @@
 		<File
 			RelativePath="Document.h"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-					Outputs="$(InputDir)moc_$(InputName).cpp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-					Outputs="$(InputDir)moc_$(InputName).cpp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="DocumentPy.cpp"
@@ -4503,7 +4459,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building InitGuiScript.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py FreeCADGuiInit.py GuiInitScript.h&#x0D;&#x0A;"
+					CommandLine="python ..\Tools\PythonToCPP.py FreeCADGuiInit.py GuiInitScript.h&#x0D;&#x0A;"
 					Outputs="GuiInitScript.h"
 				/>
 			</FileConfiguration>
@@ -4513,7 +4469,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Building InitGuiScript.h"
-					CommandLine="if exist &quot;%FREECADLIB%&quot; (set PYTHONPATH=%FREECADLIB%\res\pylibs)&#x0D;&#x0A;python ..\Tools\PythonToCPP.py FreeCADGuiInit.py GuiInitScript.h&#x0D;&#x0A;"
+					CommandLine="python ..\Tools\PythonToCPP.py FreeCADGuiInit.py GuiInitScript.h&#x0D;&#x0A;"
 					Outputs="GuiInitScript.h"
 				/>
 			</FileConfiguration>

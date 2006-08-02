@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="Install"
-	ProjectGUID="{C971C7AE-C483-45FF-92AD-2EDCA48E7B45}"
+	ProjectGUID="{A3531367-813C-4561-A5EC-63EE441EE35A}"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -61,7 +61,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Light"
-				CommandLine="light.exe -out Release\FreeCAD.msi &quot;C:\Documents and Settings\jriegel\My Documents\Projects\Wix_2.0\ui\wixui_mondo.wixlib&quot; Release\*.wxobj&#x0D;&#x0A;mkdir ..\..\Install&#x0D;&#x0A;copy Release\FreeCAD.msi ..\..\Install&#x0D;&#x0A;"
+				CommandLine="light.exe -out Release\FreeCAD.msi &quot;D:\Develop\Libs\Wix_20\ui\wixui_mondo.wixlib&quot; Release\*.wxobj&#x0D;&#x0A;mkdir ..\..\Install&#x0D;&#x0A;copy Release\FreeCAD.msi ..\..\Install&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
