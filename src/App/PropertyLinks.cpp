@@ -148,7 +148,9 @@ Property *PropertyLink::Copy(void) const
 
 void PropertyLink::Paste(const Property &from)
 {
+  aboutToSetValue();
   _pcLink = dynamic_cast<const PropertyLink&>(from)._pcLink;
+  hasSetValue();
 }
 
 
@@ -284,5 +286,7 @@ Property *PropertyLinkList::Copy(void) const
 
 void PropertyLinkList::Paste(const Property &from)
 {
+  aboutToSetValue();
   _lValueList = dynamic_cast<const PropertyLinkList&>(from)._lValueList;
+  hasSetValue();
 }

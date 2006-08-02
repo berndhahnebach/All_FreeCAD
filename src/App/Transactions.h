@@ -59,8 +59,6 @@ public:
   friend class Transaction;
 
 protected:
-  //const DocumentObject *_pcObj;
-  std::string _name;
   std::map<const Property*,Property*> _PropChangeMap;
 };
 
