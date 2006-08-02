@@ -38,9 +38,13 @@ namespace Gui {
   class AbstractMouseModel;
 }
 namespace MeshGui {
+class SoFCMeshFaceSet;
 
 /**
  * The ViewProviderMeshFaceSet class creates a node representing the mesh data structure.
+ * It does basically the same ViewProviderMeshNode by rendering directly the FreeCAD mesh
+ * structure whereas this class follows the Inventor way. For more details @see 
+ * SoFCMeshNode and SoFCMeshFaceSet.
  * @author Werner Mayer
  */
 class GuiMeshExport ViewProviderMeshFaceSet : public Gui::ViewProviderFeature
@@ -79,10 +83,11 @@ protected:
   void showOpenEdges( bool );
   void setOpenEdgeColorFrom( const App::Color& col );
 
-  SoDrawStyle    *pcLineStyle;
-  SoDrawStyle    *pcPointStyle;
-  SoSeparator    *pcOpenEdge;
-  SoBaseColor    *pOpenColor;
+  SoFCMeshFaceSet* pcFaceSet;
+  SoDrawStyle    * pcLineStyle;
+  SoDrawStyle    * pcPointStyle;
+  SoSeparator    * pcOpenEdge;
+  SoBaseColor    * pOpenColor;
 
 
 private:
