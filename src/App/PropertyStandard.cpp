@@ -119,7 +119,9 @@ Property *PropertyInteger::Copy(void) const
 
 void PropertyInteger::Paste(const Property &from)
 {
+  aboutToSetValue();
   _lValue = dynamic_cast<const PropertyInteger&>(from)._lValue;
+  hasSetValue();
 }
 
 
@@ -237,7 +239,9 @@ Property *PropertyIntegerList::Copy(void) const
 
 void PropertyIntegerList::Paste(const Property &from)
 {
+  aboutToSetValue();
   _lValueList = dynamic_cast<const PropertyIntegerList&>(from)._lValueList;
+  hasSetValue();
 }
 
 
@@ -325,7 +329,9 @@ Property *PropertyFloat::Copy(void) const
 
 void PropertyFloat::Paste(const Property &from)
 {
+  aboutToSetValue();
   _dValue = dynamic_cast<const PropertyFloat&>(from)._dValue;
+  hasSetValue();
 }
 
 
@@ -477,7 +483,9 @@ Property *PropertyFloatList::Copy(void) const
 
 void PropertyFloatList::Paste(const Property &from)
 {
+  aboutToSetValue();
   _lValueList = dynamic_cast<const PropertyFloatList&>(from)._lValueList;
+  hasSetValue();
 }
 
 
@@ -577,7 +585,9 @@ Property *PropertyString::Copy(void) const
 
 void PropertyString::Paste(const Property &from)
 {
+  aboutToSetValue();
   _cValue = dynamic_cast<const PropertyString&>(from)._cValue;
+  hasSetValue();
 }
 
 
@@ -716,7 +726,9 @@ Property *PropertyStringList::Copy(void) const
 
 void PropertyStringList::Paste(const Property &from)
 {
+  aboutToSetValue();
   _lValueList = dynamic_cast<const PropertyStringList&>(from)._lValueList;
+  hasSetValue();
 }
 
 //**************************************************************************
@@ -811,7 +823,9 @@ Property *PropertyBool::Copy(void) const
 
 void PropertyBool::Paste(const Property &from)
 {
+  aboutToSetValue();
   _lValue = dynamic_cast<const PropertyBool&>(from)._lValue;
+  hasSetValue();
 }
 
 
@@ -957,7 +971,9 @@ Property *PropertyColor::Copy(void) const
 
 void PropertyColor::Paste(const Property &from)
 {
+  aboutToSetValue();
   _cCol = dynamic_cast<const PropertyColor&>(from)._cCol;
+  hasSetValue();
 }
 
 
@@ -1131,7 +1147,9 @@ Property *PropertyColorList::Copy(void) const
 
 void PropertyColorList::Paste(const Property &from)
 {
+  aboutToSetValue();
   _lValueList = dynamic_cast<const PropertyColorList&>(from)._lValueList;
+  hasSetValue();
 }
 
 
@@ -1244,6 +1262,8 @@ Property *PropertyMaterial::Copy(void) const
 
 void PropertyMaterial::Paste(const Property &from)
 {
+  aboutToSetValue();
   _cMat = dynamic_cast<const PropertyMaterial&>(from)._cMat;
+  hasSetValue();
 }
 

@@ -158,7 +158,9 @@ Property *PropertyVector::Copy(void) const
 
 void PropertyVector::Paste(const Property &from)
 {
+  aboutToSetValue();
   _cVec = dynamic_cast<const PropertyVector&>(from)._cVec;
+  hasSetValue();
 }
 
 
@@ -318,7 +320,9 @@ Property *PropertyVectorList::Copy(void) const
 
 void PropertyVectorList::Paste(const Property &from)
 {
+  aboutToSetValue();
   _lValueList = dynamic_cast<const PropertyVectorList&>(from)._lValueList;
+  hasSetValue();
 }
 
 //**************************************************************************
@@ -421,7 +425,9 @@ Property *PropertyMatrix::Copy(void) const
 
 void PropertyMatrix::Paste(const Property &from)
 {
+  aboutToSetValue();
   _cMat = dynamic_cast<const PropertyMatrix&>(from)._cMat;
+  hasSetValue();
 }
 
 //**************************************************************************
@@ -506,7 +512,9 @@ Property *PropertyPlacement::Copy(void) const
 
 void PropertyPlacement::Paste(const Property &from)
 {
+  aboutToSetValue();
   _cPos = dynamic_cast<const PropertyPlacement&>(from)._cPos;
+  hasSetValue();
 }
 
 //**************************************************************************
@@ -552,6 +560,8 @@ Property *PropertyPlacementLink::Copy(void) const
 
 void PropertyPlacementLink::Paste(const Property &from)
 {
+  aboutToSetValue();
   _pcLink = dynamic_cast<const PropertyPlacementLink&>(from)._pcLink;
+  hasSetValue();
 }
 

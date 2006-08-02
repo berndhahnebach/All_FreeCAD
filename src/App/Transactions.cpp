@@ -61,6 +61,9 @@ Transaction::Transaction(int pos)
  */
 Transaction::~Transaction()
 {
+  std::map<const DocumentObject*,TransactionObject*>::iterator It;
+  for( It= _Objects.begin();It!=_Objects.end();++It)
+    delete It->second;
 }
 
 void Transaction::Save (Writer &writer) const{
@@ -84,14 +87,8 @@ int Transaction::getPos(void) const
 void Transaction::apply(Document &Doc)
 {
   std::map<const DocumentObject*,TransactionObject*>::iterator It;
-
   for( It= _Objects.begin();It!=_Objects.end();++It)
-  {
     It->second->apply(Doc,const_cast<DocumentObject*>(It->first));
-
-  }
-
-
 }
 
 void Transaction::addObjectNew(const DocumentObject *Obj)
@@ -163,6 +160,10 @@ TransactionObject::TransactionObject(const DocumentObject *pcObj)
  */
 TransactionObject::~TransactionObject()
 {
+  std::map<const Property*,Property*>::const_iterator It;
+  for(It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
+    delete It->second;
+
 }
 
 void TransactionObject::apply(Document &Doc, DocumentObject *pcObj)
@@ -173,7 +174,9 @@ void TransactionObject::apply(Document &Doc, DocumentObject *pcObj)
   }else if(status == New){
     Doc._addObject(pcObj,pcObj->name.getValue());
   }else if(status == Chn){
-
+    std::map<const Property*,Property*>::const_iterator It;
+    for(It=_PropChangeMap.begin();It!=_PropChangeMap.end();++It)
+      const_cast<Property*>(It->first)->Paste(*(It->second));
   }
 
 }

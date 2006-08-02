@@ -85,48 +85,30 @@ class UndoRedoCases(unittest.TestCase):
     def testUndo(self):
         self.Doc.openCommand()
         self.Doc.addObject("App::FeatureTest","test1")
-        self.Doc.getObject("test1").String   = "test1"
-        self.Doc.getObject("test1").Float    = 1.0
         self.Doc.getObject("test1").Integer  = 1
-        self.Doc.getObject("test1").Bool     = 1
-        self.Doc.addObject("App::FeatureTest","test2")
-        self.Doc.getObject("test2").String   = "test1"
-        self.Doc.getObject("test2").Float    = 1.0
-        self.Doc.getObject("test2").Integer  = 1
-        self.Doc.getObject("test2").Bool     = 1
-        self.Doc.getObject("test2").Link     = self.Doc.test1
         self.Doc.openCommand()
-        self.Doc.getObject("test1").String   = "test2"
-        self.Doc.getObject("test1").Float    = 2.0
         self.Doc.getObject("test1").Integer  = 2
-        self.Doc.getObject("test1").Bool     = 0
-        self.Doc.getObject("test2").String   = "test2"
-        self.Doc.getObject("test2").Float    = 2.0
-        self.Doc.getObject("test2").Integer  = 2
-        self.Doc.getObject("test2").Bool     = 0
         self.Doc.undo()
-        self.assertEqual(self.Doc.getObject("test1").String,  "test1")
-        self.assertEqual(self.Doc.getObject("test1").Float,   1.0)
         self.assertEqual(self.Doc.getObject("test1").Integer, 1)
-        self.assertEqual(self.Doc.getObject("test1").Bool,    1)
-        self.assertEqual(self.Doc.getObject("test2").String,  "test1")
-        self.assertEqual(self.Doc.getObject("test2").Float,   1.0)
-        self.assertEqual(self.Doc.getObject("test2").Integer, 1)
-        self.assertEqual(self.Doc.getObject("test2").Bool,    1)
-        self.assertEqual(self.Doc.getObject("test2").Link,    self.Doc.getObject("test1"))
         self.Doc.undo()
         self.failUnless(self.Doc.getObject("test1") == None)
-        self.failUnless(self.Doc.getObject("test2") == None)
         self.Doc.redo()
-        self.assertEqual(self.Doc.getObject("test1").String,  "test2")
-        self.assertEqual(self.Doc.getObject("test1").Float,   2.0)
+        self.assertEqual(self.Doc.getObject("test1").Integer, 1)
+        self.Doc.redo()
         self.assertEqual(self.Doc.getObject("test1").Integer, 2)
-        self.assertEqual(self.Doc.getObject("test1").Bool,    0)
-        self.assertEqual(self.Doc.getObject("test2").String,  "test2")
-        self.assertEqual(self.Doc.getObject("test2").Float,   2.0)
-        self.assertEqual(self.Doc.getObject("test2").Integer, 2)
-        self.assertEqual(self.Doc.getObject("test2").Bool,    0)
-        self.assertEqual(self.Doc.getObject("test2").Link,    self.Doc.getObject("test1"))
+        self.Doc.undo()
+        self.assertEqual(self.Doc.getObject("test1").Integer, 1)
+        self.Doc.openCommand()
+        self.Doc.getObject("test1").Integer  = 8
+        self.assertEqual(self.Doc.getObject("test1").Integer, 8)
+        self.Doc.undo()
+        self.assertEqual(self.Doc.getObject("test1").Integer, 1)
+        self.Doc.redo()
+        self.assertEqual(self.Doc.getObject("test1").Integer, 8)
+        self.Doc.undo()
+        self.assertEqual(self.Doc.getObject("test1").Integer, 1)
+        self.Doc.undo()
+        self.failUnless(self.Doc.getObject("test1") == None)
 
     def tearDown(self):
         # closing doc

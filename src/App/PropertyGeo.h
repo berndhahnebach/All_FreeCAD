@@ -140,7 +140,7 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
-private:
+protected:
 
   std::vector<Base::Vector3f> _lValueList;
 

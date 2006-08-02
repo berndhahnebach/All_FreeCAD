@@ -91,11 +91,16 @@ void PropertyNormalList::transform(const Base::Matrix4D &mat)
     }
   }
 
+  aboutToSetValue();
+
   // Rotate the normal vectors
   for (int ii=0; ii<getSize(); ii++)
   {
-    set1Value(ii, rot * operator[](ii));
+    _lValueList[ii] =  rot * _lValueList[ii];
   }
+
+  hasSetValue();
+
 }
 
 // ----------------------------------------------------------------------------
@@ -249,6 +254,22 @@ void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
   }
 }
 
+App::Property *PropertyCurvatureList::Copy(void) const
+{
+  PropertyCurvatureList *p= new PropertyCurvatureList();
+  p->_lValueList = _lValueList;
+  return p;
+}
+
+void PropertyCurvatureList::Paste(const App::Property &from)
+{
+  aboutToSetValue();
+  _lValueList = dynamic_cast<const PropertyCurvatureList&>(from)._lValueList;
+  hasSetValue();
+}
+
+
+
 // ----------------------------------------------------------------------------
 
 PropertyMeshKernel::PropertyMeshKernel()
@@ -354,3 +375,18 @@ void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
     throw e;
   }
 }
+
+App::Property *PropertyMeshKernel::Copy(void) const
+{
+  PropertyMeshKernel *p= new PropertyMeshKernel();
+  p->_pcMesh = _pcMesh;
+  return p;
+}
+
+void PropertyMeshKernel::Paste(const App::Property &from)
+{
+  aboutToSetValue();
+  _pcMesh = dynamic_cast<const PropertyMeshKernel&>(from)._pcMesh;
+  hasSetValue();
+}
+
