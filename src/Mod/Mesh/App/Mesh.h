@@ -123,8 +123,8 @@ public:
   void SaveDocFile (Base::Writer &writer) const;
   void RestoreDocFile(Base::Reader &reader);
 
-  Property *Copy(void) const;
-  void Paste(const Property &from);
+  App::Property *Copy(void) const;
+  void Paste(const App::Property &from);
 
 private:
   std::vector<CurvatureInfo> _lValueList;
@@ -172,8 +172,8 @@ public:
   void SaveDocFile (Base::Writer &writer) const;
   void RestoreDocFile(Base::Reader &reader);
 
-  Property *Copy(void) const;
-  void Paste(const Property &from);
+  App::Property *Copy(void) const;
+  void Paste(const App::Property &from);
   //@}
 
 private:
