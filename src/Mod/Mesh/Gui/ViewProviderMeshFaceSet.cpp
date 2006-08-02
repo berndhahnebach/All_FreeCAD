@@ -144,8 +144,8 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
   facet->coordIndex.setValue(rFAry);
   pcHighlight->addChild(facet);
 
-  SoFCMeshFaceSet* faceset = new SoFCMeshFaceSet;
-  pcHighlight->addChild(faceset);
+  pcFaceSet = new SoFCMeshFaceSet;
+  pcHighlight->addChild(pcFaceSet);
 
   // enable two-side rendering
   SoShapeHints * flathints = new SoShapeHints;
@@ -386,6 +386,9 @@ bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DIn
       MeshCore::MeshAlgorithm cAlg(meshProp.getValue());
       cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
       meshProp.deleteFacetIndices( indices );
+
+      // notify the mesh shape node
+      pcFaceSet->touch();
 
       Viewer.render();
       unsetEdit();
