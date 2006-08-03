@@ -29,6 +29,7 @@
 # include <qpixmap.h>
 # include <qprogressbar.h>
 # include <qpushbutton.h>
+# include <qregexp.h>
 # include <qstylefactory.h>
 # include <qthread.h>
 # include <qvariant.h>
@@ -75,11 +76,20 @@ public:
   void Log (const char * s)
   {
     QString msg(s);
-    // remove leading blanks and carriage returns
-    while (msg[0] == '\n' || msg[0] == ' ')
-    {
-      msg = msg.mid(1);
+    QRegExp rx;
+    // ignore 'Init:' and 'Mod:' prefixes
+    rx.setPattern("^\\s*(Init:|Mod:)\\s*");
+    int pos = rx.search(msg);
+    if ( pos != -1 ) {
+      msg = msg.mid(rx.matchedLength());
+    } else {
+      // ignore activation of commands
+      rx.setPattern("^\\s*(CmdG:)\\s*");
+      pos = rx.search(msg);
+      if ( pos == 0 )
+        return;
     }
+
     msg = QString("\n %1").arg(msg);
     splash->message( msg, Qt::AlignTop|Qt::AlignLeft, Qt::black );
 //    qApp->processEvents();

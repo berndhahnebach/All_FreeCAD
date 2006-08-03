@@ -36,6 +36,7 @@ class MeshWorkbench ( Workbench ):
 	def Activate(self):
 		# load the module
 		try:
+			Log ('Loading GUI of Mesh module...')
 			import MeshGui
 		except:
 			Err('Cannot load MeshGui')

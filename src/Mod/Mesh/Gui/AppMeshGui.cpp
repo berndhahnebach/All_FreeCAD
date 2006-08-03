@@ -67,7 +67,7 @@ void GuiMeshExport initMeshGui() {
   (void) Py_InitModule("MeshGui", MeshGui_methods);   /* mod name, table ptr */
 
   // load needed modules
-  Base::Console().Log("Mod : Load AppMeshGui\n");
+  Base::Console().Log("Mod: Loading GUI of Mesh module... done\n");
   Base::Interpreter().loadModule("Mesh");
 
   // Register icons

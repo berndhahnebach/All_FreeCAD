@@ -37,7 +37,7 @@ void ImageGuiExport initImageGui() {
   }
 
   (void) Py_InitModule("ImageGui", ImageGui_Import_methods);   /* mod name, table ptr */
-  Base::Console().Log("AppImageGui loaded\n");
+  Base::Console().Log("Mod: Loading GUI of Image module... done\n");
 
   // instanciating the commands
   CreateImageCommands();

@@ -50,7 +50,7 @@ void PointsGuiExport initPointsGui() {
     return;
   }
 
-  Base::Console().Log("Mod : Load AppPointsGui\n");
+  Base::Console().Log("Mod: Loading GUI of Points module... done\n");
   (void) Py_InitModule("PointsGui", PointsGui_methods);   /* mod name, table ptr */
 
   Base::Interpreter().loadModule("Points");

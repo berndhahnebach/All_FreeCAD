@@ -30,7 +30,7 @@ extern struct PyMethodDef Part_methods[];
 extern "C" {
 void AppPartExport initPart() {
 
-  Base::Console().Log("Mod : Load AppPart\n");
+  Base::Console().Log("Mod: Loading Part module... done\n");
 	(void) Py_InitModule("Part", Part_methods);   /* mod name, table ptr */
 
   Part::Feature   ::init();

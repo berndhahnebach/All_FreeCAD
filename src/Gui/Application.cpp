@@ -839,12 +839,12 @@ void Application::runApplication(void)
   // runing the Gui init script
   Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
   // show the main window
-  Console().Log("Init: Showing Application Window\n");
+  Console().Log("Init: Showing main window\n");
   mw->show();
 
   _pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
 
-  Console().Log("Init: Starting default Workbench\n");
+  Console().Log("Init: Activating default workbench\n");
   std::string hidden = App::Application::Config()["HiddenWorkbench"];
   const char* start = App::Application::Config()["StartWorkbench"].c_str();
   std::string defWb = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->
