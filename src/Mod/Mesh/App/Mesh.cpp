@@ -198,14 +198,18 @@ void PropertyCurvatureList::transform(const Base::Matrix4D &mat)
     }
   }
 
+  aboutToSetValue();
+
   // Rotate the principal directions
   for (int ii=0; ii<getSize(); ii++)
   {
     CurvatureInfo ci = operator[](ii);
     ci.cMaxCurvDir = rot * ci.cMaxCurvDir;
     ci.cMinCurvDir = rot * ci.cMinCurvDir;
-    set1Value(ii, ci);
+    _lValueList[ii] = ci;
   }
+
+  hasSetValue();
 }
 
 void PropertyCurvatureList::Save (Base::Writer &writer) const
