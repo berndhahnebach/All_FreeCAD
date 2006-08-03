@@ -270,6 +270,9 @@ void Application::OnDocNew(App::Document* pcDoc)
   AppChange.Why = AppChanges::New;
   AppChange.Doc = d->lpcDocuments[pcDoc];
 
+  // Let the selection participate when App::Dcoument chnages
+  pcDoc->Attach(&Selection());
+
   Notify(AppChange);
 }
 
@@ -283,6 +286,9 @@ void Application::OnDocDelete(App::Document* pcDoc)
   AppChanges AppChange;
   AppChange.Why = AppChanges::Del;
   AppChange.Doc = doc->second;
+
+  // Remove the selection from notification
+  pcDoc->Detach(&Selection());
 
   Notify(AppChange);
 

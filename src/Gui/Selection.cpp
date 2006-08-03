@@ -381,6 +381,20 @@ bool SelectionSingleton::isSelected(App::DocumentObject* obj) const
   return false;
 }
 
+void SelectionSingleton::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
+{
+  if(Reason.Why == App::DocChanges::Rename)
+  {
+    // compare internals with the document and change them if needed
+    App::Document* pDoc = dynamic_cast<App::Document*>(&rCaller);
+    for ( std::list<_SelObj>::iterator it = _SelList.begin(); it != _SelList.end(); ++it ) {
+      if ( it->pDoc == pDoc ) {
+        it->DocName = pDoc->getName();
+      }
+    }
+  }
+}
+
 
 //**************************************************************************
 // Construction/Destruction
