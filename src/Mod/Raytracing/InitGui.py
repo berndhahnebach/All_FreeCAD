@@ -36,7 +36,7 @@ class RaytracingWorkbench ( Workbench ):
 	def Activate(self):
 		# load the module
 		try:
-			Log ('Loading RaytracingGui module')
+			Log ('Loading GUI of Raytracing module...')
 			import PartGui
 			import RaytracingGui
 		except:

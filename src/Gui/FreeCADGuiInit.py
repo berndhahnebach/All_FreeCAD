@@ -73,7 +73,7 @@ class StandardWorkbench ( Workbench ):
 	"Standard workbench object"
 	def Activate(self):
 		# load the module
-		Log ('Mod : Loading FreeCADGui')
+		Log ('Init: Loading FreeCAD GUI')
 	def GetClassName(self):
 		return "Gui::StdWorkbench"
 
@@ -93,7 +93,7 @@ def InitApplications():
 	ModPar = App.ParamGet("System parameter:Modules")
 	for Dir in ModDirs:
 		if ( (Dir != 'CVS') & (Dir != '__init__.py')):
-			Log('Init:      Initializing: ' + Dir + '...')
+			Log('Init:      Initializing ' + Dir + '...')
 			InstallFile = os.path.join(os.path.join(ModDir,Dir),"InitGui.py")
 			if ( os.path.exists(InstallFile) ):
 				try:
@@ -101,12 +101,12 @@ def InitApplications():
 				except Exception, inst:
 					Err("During initialization the error " + str(inst) + " occurred in " + InstallFile + "\n")
 				else:
-					Log('Init:        done\n')
+					Log('Init:      Initializing ' + Dir + '... done')
 			else:
 				Wrn("InitGui.py not found! "+Dir+" not initialized!\n")
  
 
-Log ('Init: starting Gui::FreeCADGuiInit.py\n')
+Log ('Init: Running FreeCADGuiInit.py start script...\n')
 
 # init the gui
 
@@ -130,4 +130,4 @@ FreeCAD.EndingAdd("FCMacro","FreeCADGui")
 FreeCAD.EndingAdd("FCScript","FreeCADGui")
 
 
-Log ('Init: Gui::FreeCADGuiInit.py done\n')
+Log ('Init: Running FreeCADGuiInit.py start script... done\n')

@@ -44,7 +44,7 @@ void _TEMPLATE_AppExport init_TEMPLATE_() {
   //
 
   (void) Py_InitModule("_TEMPLATE_", _TEMPLATE__methods);   /* mod name, table ptr */
-  Base::Console().Log("Init: App_TEMPLATE_ loaded\n");
+  Base::Console().Log("Mod: Loading _TEMPLATE_ module... done\n");
 
   return;
 }

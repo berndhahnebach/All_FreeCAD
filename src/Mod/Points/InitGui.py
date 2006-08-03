@@ -36,7 +36,7 @@ class PointsWorkbench ( Workbench ):
 	def Activate(self):
 		# load the module
 		try:
-			Log ('Loading PointsGui module')
+			Log ('Loading GUI of Points module...')
 			import PointsGui
 		except:
 			Err('Cannot load PointsGui')

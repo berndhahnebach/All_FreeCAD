@@ -36,7 +36,7 @@ class ImageWorkbench ( Workbench ):
 	def Activate(self):
 		# load the module
 		try:
-			Log ('Loading ImageGui module')
+			Log ('Loading GUI of Image module...')
 			import ImageGui
 		except:
 			Err('Cannot load ImageGui')

@@ -36,7 +36,7 @@ class _TEMPLATE_Workbench ( Workbench ):
 	def Activate(self):
 		# load the module
 		try:
-			Log ('Loading _TEMPLATE_Gui module')
+			Log ('Loading GUI of _TEMPLATE_ module...')
 			import _TEMPLATE_Gui
 		except:
 			Err('Cannot load _TEMPLATE_Gui')

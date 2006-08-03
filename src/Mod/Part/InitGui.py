@@ -36,6 +36,7 @@ class PartWorkbench ( Workbench ):
 	def Activate(self):
 		# load the module
 		try:
+			Log ('Loading GUI of Part module...')
 			import PartGui
 			import Part
 		except:

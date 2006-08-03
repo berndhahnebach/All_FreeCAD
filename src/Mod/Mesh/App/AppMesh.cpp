@@ -51,7 +51,7 @@ PyDoc_STRVAR(module_doc,
 extern "C" {
 void AppMeshExport initMesh() {
 
-  Base::Console().Log("Mod : Load AppMesh\n");
+  Base::Console().Log("Mod: Loading Mesh module... done\n");
 
   PyObject* meshModule = Py_InitModule3("Mesh", Mesh_Import_methods, module_doc);   /* mod name, table ptr */
 

@@ -35,13 +35,11 @@ extern struct PyMethodDef Raytracing_methods[];
 extern "C" {
 void AppRaytracingExport initRaytracing() {
 
-  Base::Console().Log("Mod : Load AppRaytracing\n");
   (void) Py_InitModule("Raytracing", Raytracing_methods);   /* mod name, table ptr */
 
     // load dependend module
   Base::Interpreter().loadModule("Part");
-
-  Base::Console().Log("AppRaytracing loaded\n");
+  Base::Console().Log("Loading Raytracing module... done\n");
 
   return;
 }

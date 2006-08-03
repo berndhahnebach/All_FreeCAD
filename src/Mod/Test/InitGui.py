@@ -32,12 +32,11 @@ class TestWorkbench ( Workbench ):
 	"Test workbench object"
 	def Activate(self):
 		try:
-			Log ('Loading TestGui module\n')
+			Log ('Loading GUI of Test module...\n')
 			import TestGui
 			w=0
 			if Gui.HasWorkbench('Test framework') == False:
 				w = Gui.CreateWorkbench('Test framework')
-				Log ('Activating Test workbench...\n')
 
 				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
 				w.AppendToolbar("TestTools",list)
@@ -66,7 +65,8 @@ class TestWorkbench ( Workbench ):
 				"Std_ViewIvStereoInterleavedColumns", "Std_ViewIvStereoOff", "Std_ViewIvIssueCamPos"]
 				w.AppendMenu("Inventor View",list)
 
-				Log ('   Set up Test menues...\n')
+				Log ('Setup Test menues...\n')
+			Log ('Loading GUI of Test module... done\n')
 		except:
 			Err('Activating of workbench "Test framework" failed\n')
 			raise

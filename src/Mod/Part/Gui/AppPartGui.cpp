@@ -50,7 +50,7 @@ void AppPartGuiExport initPartGui() {
     return;
   }
 
-  Base::Console().Log("Mod : Load AppPartGui\n");
+  Base::Console().Log("Mod: Loading GUI of Part module... done\n");
 	(void) Py_InitModule("PartGui", PartGui_methods);   /* mod name, table ptr */
 
   // load needed modules

@@ -56,7 +56,7 @@ void AppRaytracingGuiExport initRaytracingGui() {
     return;
   }
 
-  Base::Console().Log("Mod : Load AppRaytracingGui\n");
+  Base::Console().Log("Mod: Loading GUI of Raytracing module... done\n");
   (void) Py_InitModule("RaytracingGui", RaytracingGui_methods);   /* mod name, table ptr */
   Base::Interpreter().loadModule("Raytracing");
 
