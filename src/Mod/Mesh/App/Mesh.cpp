@@ -284,6 +284,7 @@ PropertyMeshKernel::PropertyMeshKernel()
 
 PropertyMeshKernel::~PropertyMeshKernel()
 {
+  delete _pcMesh;
 }
 
 void PropertyMeshKernel::setValue(const MeshCore::MeshKernel& m)
