@@ -40,6 +40,8 @@
 
 
 #include "FileInfo.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 
 using namespace Base;
 using namespace std;

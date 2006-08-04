@@ -25,6 +25,8 @@
 #define MESH_IO_H
 
 #include "MeshKernel.h"
+#include <Base/Vector3D.h>
+#include <App/Material.h>
 
 namespace Base {
   class XMLReader;
@@ -81,26 +83,37 @@ protected:
 
 
 
-#if 0
+
 /**
  * The MeshInventor class is able to read or write mesh object in 
  * OpenInventor format.
  */
-class AppMeshExport MeshInventor
+class AppMeshExport SaveMeshInventor
 {
 public:
-  MeshInventor (MeshKernel &rclM) : _rclMesh(rclM) { }
-  virtual ~MeshInventor (void) { }
+  SaveMeshInventor (const MeshKernel &rclM) : _rclMesh(rclM) { }
+  virtual ~SaveMeshInventor (void) { }
+
+  /** Writes an OpenInventor file. */
+  bool Save (std::ostream &rstrOut) const;
+
+protected:
+  const MeshKernel &_rclMesh; /**< reference to mesh data structure */
+};
+
+class AppMeshExport LoadMeshInventor
+{
+public:
+  LoadMeshInventor (MeshKernel &rclM) : _rclMesh(rclM) { }
+  virtual ~LoadMeshInventor (void) { }
 
   /** Loads an OpenInventor file. */
-  bool Load (FileStream &rstrIn);
-  /** Writes an OpenInventor file. */
-  bool Save (FileStream &rstrOut) const;
+  bool Load (std::istream &rstrIn);
 
 protected:
   MeshKernel &_rclMesh; /**< reference to mesh data structure */
 };
-#endif
+
 /**
  * The MeshInventor class is able to read or write mesh object in 
  * OpenInventor format.
@@ -117,6 +130,112 @@ public:
 protected:
   MeshKernel &_rclMesh; /**< reference to mesh data structure */
 };
+
+struct AppMeshExport VRMLViewpointData
+{
+  Base::Vector3f clVRefPln;
+  Base::Vector3f clVRefUp;
+  Base::Vector3f clVRefPt;
+  Base::Vector3f clPRefPt;
+  double    dVPlnDist;
+  double    dUmin;
+  double    dUmax;
+  double    dVmin;
+  double    dVmax;
+  std::string  clName;
+};
+
+
+
+struct AppMeshExport VRMLInfo
+{
+  std::string _clFileName;
+  std::string _clAuthor;
+  std::string _clDate;
+  std::string _clCompany;
+  std::string _clAnnotation;
+  std::string _clPicFileName;
+  App::Color  _clColor;
+  bool     _bSaveViewPoints;
+  bool     _bSavePicture;
+  std::vector<std::string> _clComments;
+  std::vector<VRMLViewpointData> _clViewpoints;
+};
+
+
+class AppMeshExport SaveMeshVRML
+{
+  public:
+    SaveMeshVRML (const MeshKernel &rclM);
+    SaveMeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo);
+    virtual ~SaveMeshVRML (void){}
+
+    bool Save (std::ofstream &rstrOut, const App::Material &rclMat) const;
+    bool Save (std::ofstream &rstrOut, const std::vector<App::Color> &raclColor, const App::Material &rclMat, bool bColorPerVertex = true) const;
+
+  protected:
+    void WriteVRMLHeaderInfo(std::ofstream &rstrOut) const;
+    void WriteVRMLAnnotations(std::ofstream &rstrOut) const;
+    void WriteVRMLViewpoints(std::ofstream &rstrOut) const;
+    void WriteVRMLColorbar(std::ofstream &rstrOut) const;
+
+    const MeshKernel &_rclMesh;   // reference to mesh data structure
+    VRMLInfo* _pclVRMLInfo;
+};
+
+
+class AppMeshExport SaveMeshNastran
+{
+  public:
+    SaveMeshNastran (const MeshKernel &rclM);
+    virtual ~SaveMeshNastran (void){}
+
+    bool Load (std::ifstream &rstrIn);
+
+    bool Save (std::ofstream &rstrOut);
+
+  protected:
+    const MeshKernel &_rclMesh;   // reference to mesh data structure
+};
+
+class AppMeshExport LoadMeshNastran
+{
+  public:
+    LoadMeshNastran (MeshKernel &rclM);
+    virtual ~LoadMeshNastran (void){}
+
+    bool Load (std::ifstream &rstrIn);
+
+  protected:
+    MeshKernel &_rclMesh;   // reference to mesh data structure
+};
+
+
+class AppMeshExport LoadMeshCadmouldFE
+{
+  public:
+    LoadMeshCadmouldFE (MeshKernel &rclM);
+    virtual ~LoadMeshCadmouldFE (void){}
+
+    bool Load (std::ifstream &rstrIn);
+
+  protected:
+    MeshKernel &_rclMesh;   // reference to mesh data structure
+};
+
+class AppMeshExport SaveMeshCadmouldFE
+{
+  public:
+    SaveMeshCadmouldFE (const MeshKernel &rclM);
+    virtual ~SaveMeshCadmouldFE (void){}
+
+    bool Save (std::ofstream &rstrOut);
+
+  protected:
+    const MeshKernel &_rclMesh;   // reference to mesh data structure
+};
+
+
 
 } // namespace MeshCore
 

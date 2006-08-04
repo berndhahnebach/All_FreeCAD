@@ -36,8 +36,10 @@ using namespace App;
 //===========================================================================
 // Material
 //===========================================================================
-Material::Material(void) : _materialPy(0), _matType(USER_DEFINED)
+Material::Material(void) : _materialPy(0)
 {
+  setType(STEEL);
+  setType(USER_DEFINED);
 }
 
 Material::Material(const char* MatName) : _materialPy(0)
