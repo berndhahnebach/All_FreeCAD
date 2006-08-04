@@ -84,7 +84,41 @@ int Export::execute(void)
 
     if ( !ok )
     {
-      setError("Export of mesh to file '%s' failed",FileName.getValue());
+      setError("Export of STL mesh to file '%s' failed",FileName.getValue());
+      return 1;
+    }
+  }
+  else if ( fi.hasExtension("iv")  )
+  {
+    MeshCore::SaveMeshInventor aWriter(pcFeat->getMesh());
+
+    // write file
+    if ( !aWriter.Save(str) )
+    {
+      setError("Export of Inventor mesh to file '%s' failed",FileName.getValue());
+      return 1;
+    }
+  }
+  else if ( fi.hasExtension("wrl") || fi.hasExtension("vrml")  )
+  {
+    MeshCore::SaveMeshVRML aWriter(pcFeat->getMesh());
+
+    // write file
+    App::Material rclMat;
+    if ( !aWriter.Save(str,rclMat) )
+    {
+      setError("Export of VRML mesh to file '%s' failed",FileName.getValue());
+      return 1;
+    }
+  }
+  else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") )
+  {
+    MeshCore::SaveMeshNastran aWriter(pcFeat->getMesh());
+
+    // write file
+    if ( !aWriter.Save(str) )
+    {
+      setError("Export of NASTRAN mesh to file '%s' failed",FileName.getValue());
       return 1;
     }
   }
