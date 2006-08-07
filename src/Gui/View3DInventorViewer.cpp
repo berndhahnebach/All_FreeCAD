@@ -28,6 +28,7 @@
 # include <qapplication.h>
 # include <qcursor.h>
 # include <qfile.h>
+# include <qfileinfo.h>
 # include <qimage.h>
 # include <qmessagebox.h>
 # include <qpainter.h>
@@ -39,6 +40,7 @@
 # include <GL/gl.h>
 # include <Inventor/SbBox.h>
 # include <Inventor/actions/SoHandleEventAction.h> 
+# include <Inventor/actions/SoToVRML2Action.h>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/manips/SoClipPlaneManip.h>
 # include <Inventor/nodes/SoBaseColor.h>
@@ -73,10 +75,13 @@
 # include <Inventor/projectors/SbSphereSheetProjector.h>
 # include <Inventor/SoOffscreenRenderer.h>
 # include <Inventor/SoPickedPoint.h>
+# include <Inventor/VRMLnodes/SoVRMLGroup.h>
 #endif
 
+#include <strstream>
 #include <Base/Console.h>
 #include <Base/Sequencer.h>
+#include <Base/gzstream.h>
 
 #include "View3DInventorViewer.h"
 #include "Tools.h"
@@ -424,17 +429,83 @@ bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbNam
 
 bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
 {
-	SoWriteAction wa;
-	SoOutput* out = wa.getOutput();
-	QFile::remove( filename );
-	if ( out->openFile( filename ) == TRUE )
-	{
-		out->setBinary( binary );
-		wa.apply(pcViewProviderRoot);
-    return true;
-	}
+  bool ret = false;
+  SoWriteAction wa;
+  SoOutput* out = wa.getOutput();
+  QFile::remove( filename );
+  QFileInfo fi( filename );
+  
+  // Write VRML V2.0
+  if ( fi.extension() == "wrl" ) {
+    SoToVRML2Action tovrml2;
+    tovrml2.apply(pcViewProviderRoot);
+    SoVRMLGroup *vrmlRoot = tovrml2.getVRML2SceneGraph();
+    vrmlRoot->ref();
+    if ( out->openFile( filename ) == TRUE )
+    {
+      SbBool supported = TRUE;
+      if ( binary ) {
+        supported = out->setCompression( "GZIP" );
+      }
 
-  return false;
+      out->setHeaderString("#VRML V2.0 utf8");
+      wa.apply(vrmlRoot);
+      vrmlRoot->unref(); // release the memory as soon as possible
+      out->closeFile();
+
+      // Unfortunately, we get no hint when Coin supports zlib but cannot load the library
+      // at runtime So, we check the file on our own to be sure.
+      // Maybe this is a bug in Coin 2.4.3
+      if ( supported && binary )
+      {
+        SoInput in;
+        in.openFile(filename);
+        if ( !in.isBinary() )
+          supported = FALSE;
+        in.closeFile();
+      }
+
+      // We want to write compressed VRML but Coin might be compiled without
+      // zlib support. 
+      if ( !supported && binary )
+      {
+        Base::Console().Log("Writing directly compressed VRML file failed. Compress it now.");
+
+        std::ifstream file( filename, std::ios::in | std::ios::binary );
+        if (file){
+          unsigned long ulSize = 0; 
+          std::streambuf* buf = file.rdbuf();
+          if ( buf ) {
+            unsigned long ulCurr;
+            ulCurr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
+            ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
+            buf->pubseekoff(ulCurr, std::ios::beg, std::ios::in);
+          }
+
+          // read in the ASCII file and write back as GZIPped stream
+          std::strstreambuf sbuf(ulSize);
+          file >> &sbuf;
+          Base::ogzstream gzip(filename);
+          gzip << &sbuf;
+          gzip.close();
+        }
+      }
+
+      ret = true;
+    }
+    else
+      vrmlRoot->unref();
+  } else {
+    // Write Inventor
+    if ( out->openFile( filename ) == TRUE )
+    {
+      out->setBinary( binary );
+      wa.apply(pcViewProviderRoot);
+      ret = true;
+    }
+  }
+
+  return ret;
 }
 
 void View3DInventorViewer::sizeChanged( const SbVec2s& size )

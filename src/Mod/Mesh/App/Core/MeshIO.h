@@ -38,97 +38,63 @@ namespace MeshCore {
 class MeshKernel;
 
 /**
- * The MeshSTL class is able to read or write mesh object in STL format.
+ * The MeshInput class is able to read a mesh object from a input stream
+ * in various formats.
  */
-class AppMeshExport LoadMeshSTL
+class AppMeshExport MeshInput
 {
 public:
-  LoadMeshSTL (MeshKernel &rclM): _rclMesh(rclM){};
-  virtual ~LoadMeshSTL (void) { }
+  MeshInput (MeshKernel &rclM): _rclMesh(rclM){};
+  virtual ~MeshInput (void) { }
 
-  /** Loads an STL file either in binary or ASCII. 
-   * Therefore the file header gets checked to decide if
-   * the file is binary or not.
+  /** Loads an STL file either in binary or ASCII format. 
+   * Therefore the file header gets checked to decide if the file is binary or not.
    */
-  //bool Load (FileStream &rstrIn);
-  bool Load (std::istream &rstrIn);
+  bool LoadSTL (std::istream &rstrIn);
   /** Loads an ASCII STL file. */
-  //bool LoadAscii (FileStream &rstrIn);
-  bool LoadAscii (std::istream &rstrIn);
+  bool LoadAsciiSTL (std::istream &rstrIn);
   /** Loads a binary STL file. */
-  //bool LoadBinary (FileStream &rstrIn);
-  bool LoadBinary (std::istream &rstrIn);
+  bool LoadBinarySTL (std::istream &rstrIn);
+  /** Loads the mesh object from an XML file. */
+  void LoadXML (Base::XMLReader &reader);
+  /** Loads an OpenInventor file. */
+  bool LoadInventor (std::istream &rstrIn);
+  /** Loads a Nastran file. */
+  bool LoadNastran (std::istream &rstrIn);
+  /** Loads a Cadmould FE file. */
+  bool LoadCadmouldFE (std::ifstream &rstrIn);
 
 protected:
   MeshKernel &_rclMesh;   /**< reference to mesh data structure */
 };
 
-class AppMeshExport SaveMeshSTL
+/**
+ * The MeshOutput class is able to write a mesh object to an ouput stream
+ * on various formats.
+ */
+class AppMeshExport MeshOutput
 {
 public:
-  SaveMeshSTL (const MeshKernel &rclM): _rclMesh(rclM){};
-  virtual ~SaveMeshSTL (void) { }
+  MeshOutput (const MeshKernel &rclM): _rclMesh(rclM){};
+  virtual ~MeshOutput (void) { }
 
-  /** Saves the mesh object into an ASCII file. */
-  //bool SaveAscii (FileStream &rstrOut) const;
-  bool SaveAscii (std::ostream &rstrOut) const;
-  /** Saves the mesh object into a binary file. */
-  //bool SaveBinary (FileStream &rstrOut) const;
-  bool SaveBinary (std::ostream &rstrOut) const;
+  /** Saves the mesh object into an ASCII STL file. */
+  bool SaveAsciiSTL (std::ostream &rstrOut) const;
+  /** Saves the mesh object into a binary STL file. */
+  bool SaveBinarySTL (std::ostream &rstrOut) const;
+  /** Saves the mesh object into an XML file. */
+  void SaveXML (Base::Writer &writer) const;
+  /** Writes an OpenInventor file. */
+  bool SaveInventor (std::ostream &rstrOut) const;
+  /** Writes a VRML file. */
+  bool SaveVRML (std::ostream &rstrOut) const;
+  /** Writes a Nastran file. */
+  bool SaveNastran (std::ostream &rstrOut) const;
+  /** Writes a Cadmould FE file. */
+  bool SaveCadmouldFE (std::ostream &rstrOut) const;
 
 protected:
   const MeshKernel &_rclMesh;   /**< reference to mesh data structure */
-};
-
-
-
-
-
-/**
- * The MeshInventor class is able to read or write mesh object in 
- * OpenInventor format.
- */
-class AppMeshExport SaveMeshInventor
-{
-public:
-  SaveMeshInventor (const MeshKernel &rclM) : _rclMesh(rclM) { }
-  virtual ~SaveMeshInventor (void) { }
-
-  /** Writes an OpenInventor file. */
-  bool Save (std::ostream &rstrOut) const;
-
-protected:
-  const MeshKernel &_rclMesh; /**< reference to mesh data structure */
-};
-
-class AppMeshExport LoadMeshInventor
-{
-public:
-  LoadMeshInventor (MeshKernel &rclM) : _rclMesh(rclM) { }
-  virtual ~LoadMeshInventor (void) { }
-
-  /** Loads an OpenInventor file. */
-  bool Load (std::istream &rstrIn);
-
-protected:
-  MeshKernel &_rclMesh; /**< reference to mesh data structure */
-};
-
-/**
- * The MeshInventor class is able to read or write mesh object in 
- * OpenInventor format.
- */
-class AppMeshExport MeshDocXML
-{
-public:
-  MeshDocXML (MeshKernel &rclM) : _rclMesh(rclM) { }
-  virtual ~MeshDocXML (void) { }
-
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
-
-protected:
-  MeshKernel &_rclMesh; /**< reference to mesh data structure */
 };
 
 struct AppMeshExport VRMLViewpointData
@@ -144,8 +110,6 @@ struct AppMeshExport VRMLViewpointData
   double    dVmax;
   std::string  clName;
 };
-
-
 
 struct AppMeshExport VRMLInfo
 {
@@ -170,71 +134,17 @@ class AppMeshExport SaveMeshVRML
     SaveMeshVRML (const MeshKernel &rclM, VRMLInfo* pclVRMLInfo);
     virtual ~SaveMeshVRML (void){}
 
-    bool Save (std::ofstream &rstrOut, const App::Material &rclMat) const;
-    bool Save (std::ofstream &rstrOut, const std::vector<App::Color> &raclColor, const App::Material &rclMat, bool bColorPerVertex = true) const;
+    bool Save (std::ostream &rstrOut, const App::Material &rclMat) const;
+    bool Save (std::ostream &rstrOut, const std::vector<App::Color> &raclColor, const App::Material &rclMat, bool bColorPerVertex = true) const;
 
   protected:
-    void WriteVRMLHeaderInfo(std::ofstream &rstrOut) const;
-    void WriteVRMLAnnotations(std::ofstream &rstrOut) const;
-    void WriteVRMLViewpoints(std::ofstream &rstrOut) const;
-    void WriteVRMLColorbar(std::ofstream &rstrOut) const;
+    void WriteVRMLHeaderInfo(std::ostream &rstrOut) const;
+    void WriteVRMLAnnotations(std::ostream &rstrOut) const;
+    void WriteVRMLViewpoints(std::ostream &rstrOut) const;
 
     const MeshKernel &_rclMesh;   // reference to mesh data structure
     VRMLInfo* _pclVRMLInfo;
 };
-
-
-class AppMeshExport SaveMeshNastran
-{
-  public:
-    SaveMeshNastran (const MeshKernel &rclM);
-    virtual ~SaveMeshNastran (void){}
-
-    bool Load (std::ifstream &rstrIn);
-
-    bool Save (std::ofstream &rstrOut);
-
-  protected:
-    const MeshKernel &_rclMesh;   // reference to mesh data structure
-};
-
-class AppMeshExport LoadMeshNastran
-{
-  public:
-    LoadMeshNastran (MeshKernel &rclM);
-    virtual ~LoadMeshNastran (void){}
-
-    bool Load (std::ifstream &rstrIn);
-
-  protected:
-    MeshKernel &_rclMesh;   // reference to mesh data structure
-};
-
-
-class AppMeshExport LoadMeshCadmouldFE
-{
-  public:
-    LoadMeshCadmouldFE (MeshKernel &rclM);
-    virtual ~LoadMeshCadmouldFE (void){}
-
-    bool Load (std::ifstream &rstrIn);
-
-  protected:
-    MeshKernel &_rclMesh;   // reference to mesh data structure
-};
-
-class AppMeshExport SaveMeshCadmouldFE
-{
-  public:
-    SaveMeshCadmouldFE (const MeshKernel &rclM);
-    virtual ~SaveMeshCadmouldFE (void){}
-
-    bool Save (std::ofstream &rstrOut);
-
-  protected:
-    const MeshKernel &_rclMesh;   // reference to mesh data structure
-};
-
 
 
 } // namespace MeshCore

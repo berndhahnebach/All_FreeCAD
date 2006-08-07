@@ -70,9 +70,9 @@ public:
   // returns the root node of the Provider (3D)
   virtual SoSeparator* getRoot(void){return pcRoot;}
   // returns the root node of the Provider (3D)
-  virtual SoSeparator* getFrontRoot(void){return 0;}
+  virtual SoSeparator* getFrontRoot(void) const {return 0;}
   // returns the root node of the Provider (3D)
-  virtual SoSeparator* getBackRoot(void){return 0;}
+  virtual SoSeparator* getBackRoot(void) const {return 0;}
   // returns the TreeLabel
   virtual QPixmap getIcon(void) const;
 

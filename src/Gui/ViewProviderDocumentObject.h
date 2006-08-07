@@ -24,6 +24,8 @@
 #ifndef GUI_VIEWPROVIDER_DOCUMENTOBJECT_H
 #define GUI_VIEWPROVIDER_DOCUMENTOBJECT_H
 
+#include <Inventor/SoType.h>
+
 #include <Base/Factory.h>
 #include <Base/TimeInfo.h>
 #include "ViewProvider.h"
@@ -116,6 +118,12 @@ public:
 protected:
   /// get called by the container whenever a property has been changed
   virtual void onChanged(const App::Property* prop);
+  /** Searches in all view providers that are attached to an object that is part of the same document as the object this
+   * view provider is attached to for an front root of \a type.
+   * Before calling this function this view provider has to be attached to an object.
+   * The method returns after the first front root node matches. If no front root node matches, 0 is returned.
+   */
+  SoSeparator* findFrontRootOfType( const SoType& type) const;
 
 protected:
   SoMaterial  *pcShapeMaterial;

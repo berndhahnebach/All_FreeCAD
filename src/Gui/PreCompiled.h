@@ -60,6 +60,7 @@
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
+#include <Inventor/actions/SoToVRML2Action.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/draggers/SoTransformerDragger.h>
 #include <Inventor/events/SoEvent.h>
@@ -119,7 +120,7 @@
 #include <Inventor/actions/SoRayPickAction.h> 
 #include <Inventor/SoPickedPoint.h> 
 #include <Inventor/SoInteraction.h> 
-
+#include <Inventor/VRMLnodes/SoVRMLGroup.h>
 
 
 // Qt Toolkit

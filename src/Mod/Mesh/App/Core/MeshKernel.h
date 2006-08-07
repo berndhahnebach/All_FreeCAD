@@ -357,7 +357,6 @@ protected:
   friend class MeshFixInvalids;
   friend class MeshFixDegeneratedFacets;
   friend class MeshBuilder;
-  friend class MeshDocXML;
 };
 
 inline MeshPoint MeshKernel::GetPoint (unsigned long ulIndex) const

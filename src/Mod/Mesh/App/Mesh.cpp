@@ -348,8 +348,8 @@ void PropertyMeshKernel::Save (Base::Writer &writer) const
   if( writer.isForceXML() )
   {
     writer << writer.ind() << "<Mesh>" << std::endl;
-    MeshCore::MeshDocXML saver(*_pcMesh);
-    saver.Save(writer);
+    MeshCore::MeshOutput saver(*_pcMesh);
+    saver.SaveXML(writer);
   }else{
     writer << writer.ind() << "<Mesh file=\"" << writer.addFile("MeshKernel.bms", this) << "\"/>" << std::endl;
   }
@@ -363,8 +363,8 @@ void PropertyMeshKernel::Restore(Base::XMLReader &reader)
   if(file == "")
   {
     // read XML
-    MeshCore::MeshDocXML restorer(*_pcMesh);
-    restorer.Restore(reader);
+    MeshCore::MeshInput restorer(*_pcMesh);
+    restorer.LoadXML(reader);
   }else{
     // initate a file read
     reader.addFile(file.c_str(),this);

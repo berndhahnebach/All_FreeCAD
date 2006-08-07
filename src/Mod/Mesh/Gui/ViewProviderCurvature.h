@@ -77,7 +77,7 @@ public:
   /// Once the color bar settinhs has been changed this method gets called to update the feature's representation
   void OnChange(Base::Subject<int> &rCaller,int rcReason);
   /// Returns a color bar
-  SoSeparator* getFrontRoot(void);
+  SoSeparator* getFrontRoot(void) const;
 
 protected:
   void setVertexCurvatureMode(int mode);
