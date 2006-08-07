@@ -89,6 +89,9 @@ public:
   unsigned long CountPoints (void) const
   { return (unsigned long)(_aclPointArray.size()); }
 
+  unsigned int getMemSize (void) const
+    { return _aclPointArray.size() * sizeof(MeshPoint) +
+             _aclFacetArray.size() * sizeof(MeshFacet); }
   /// Determines the bounding box
   const Base::BoundBox3f& GetBoundBox (void) const
   { return _clBoundBox; }

@@ -55,6 +55,16 @@ PropertyContainer::~PropertyContainer()
 
 }
 
+unsigned int PropertyContainer::getMemSize (void) const
+{
+  std::map<std::string,Property*> Map;
+  getPropertyMap(Map);
+  std::map<std::string,Property*>::const_iterator It;
+  unsigned int size = 0;
+  for(It = Map.begin(); It != Map.end();++It)
+    size += It->second->getMemSize();
+  return size;
+}
 Property *PropertyContainer::getPropertyByName(const char* name) const
 {
   return getPropertyData().getPropertyByName(this,name);

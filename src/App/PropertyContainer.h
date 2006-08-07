@@ -72,6 +72,8 @@ public:
 	 */
 	virtual ~PropertyContainer();
 
+  virtual unsigned int getMemSize (void) const;
+
   /// find a property by its name
   virtual Property *getPropertyByName(const char* name) const;
   /// get the name of a property

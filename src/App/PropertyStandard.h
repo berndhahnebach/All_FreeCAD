@@ -90,6 +90,7 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
+  virtual unsigned int getMemSize (void) const{return sizeof(long);}
 private:
 
 	long _lValue;
@@ -142,6 +143,7 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
+  virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(long);}
 private:
 
   std::vector<long> _lValueList;
@@ -184,6 +186,8 @@ public:
 
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
+
+  virtual unsigned int getMemSize (void) const{return sizeof(float);}
 
 private:
 
@@ -237,6 +241,8 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
+  virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(float);}
+
 private:
 
   std::vector<float> _lValueList;
@@ -283,6 +289,8 @@ public:
 
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
+
+  virtual unsigned int getMemSize (void) const{return _cValue.size();}
 
 private:
 
@@ -335,6 +343,9 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
+  virtual unsigned int getMemSize (void) const;
+
+
 private:
   std::vector<std::string> _lValueList;
 };
@@ -374,6 +385,8 @@ public:
 
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
+
+  virtual unsigned int getMemSize (void) const{return sizeof(bool);}
 
 private:
 
@@ -421,6 +434,9 @@ public:
 
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
+
+  virtual unsigned int getMemSize (void) const{return sizeof(Color);}
+
 
 private:
   Color _cCol;
@@ -470,6 +486,8 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
+  virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(Color);}
+
 private:
   std::vector<Color> _lValueList;
 };
@@ -517,6 +535,8 @@ public:
 
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
+
+  virtual unsigned int getMemSize (void) const{return sizeof(_cMat);}
 
 private:
   Material _cMat;

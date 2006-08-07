@@ -83,6 +83,7 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
+  virtual unsigned int getMemSize (void) const{return sizeof(App::DocumentObject *);}
 protected:
 
   App::DocumentObject *_pcLink;
@@ -132,6 +133,8 @@ public:
 
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
+
+  virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(App::DocumentObject *);}
 
 private:
   std::vector<DocumentObject*> _lValueList;

@@ -307,6 +307,14 @@ const MeshCore::MeshKernel& PropertyMeshKernel::getValue(void)const
 	return *_pcMesh;
 }
 
+unsigned int PropertyMeshKernel::getMemSize (void) const
+{
+  unsigned int size = 0;
+  size += _pcMesh->getMemSize();
+  
+  return size;
+}
+
 void PropertyMeshKernel::deletePointIndices( const std::vector<unsigned long>& inds )
 {
   aboutToSetValue();
