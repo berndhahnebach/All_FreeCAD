@@ -63,6 +63,7 @@ public:
 	PYFUNCDEF_D(DocumentPy,undo)
 	PYFUNCDEF_D(DocumentPy,redo)
 	PYFUNCDEF_D(DocumentPy,clearUndos)
+	PYFUNCDEF_D(DocumentPy,getUndoMemSize)
 
 //	Transaction stuff
 	PYFUNCDEF_D(DocumentPy,beginTransaction)
@@ -79,6 +80,7 @@ public:
 	PYFUNCDEF_D(DocumentPy,removeObject)
 	PYFUNCDEF_D(DocumentPy,listObjects)
 	PYFUNCDEF_D(DocumentPy,getName)
+	PYFUNCDEF_D(DocumentPy,getMemSize)
 
    // deprecated methods
 	PYFUNCDEF_D(DocumentPy,getActiveObject)

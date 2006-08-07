@@ -118,6 +118,7 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(undo)
   PYMETHODEDEF(redo)
   PYMETHODEDEF(clearUndos)
+  PYMETHODEDEF(getUndoMemSize)
 
   PYMETHODEDEF(recompute)
 //  PYMETHODEDEF(Dump)
@@ -129,6 +130,7 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(removeObject)
   PYMETHODEDEF(listObjects)
   PYMETHODEDEF(getName)
+  PYMETHODEDEF(getMemSize)
 
   PYMETHODEDEF(beginTransaction)
   PYMETHODEDEF(rollbackTransaction)
@@ -538,3 +540,16 @@ PYFUNCIMP_D(DocumentPy,getName)
   } PY_CATCH;
 }
 
+PYFUNCIMP_D(DocumentPy,getUndoMemSize)
+{ 
+  PY_TRY {
+	   return Py_BuildValue("i",_pcDoc->getUndoMemSize()); 
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(DocumentPy,getMemSize)
+{ 
+  PY_TRY {
+	   return Py_BuildValue("i",_pcDoc->getMemSize()); 
+  }PY_CATCH;
+} 

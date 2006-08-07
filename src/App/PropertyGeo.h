@@ -84,6 +84,9 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
+  virtual unsigned int getMemSize (void) const{return sizeof(Base::Vector3f);}
+
+
 private:
 
   Base::Vector3f _cVec;
@@ -140,6 +143,8 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
+  virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(Base::Vector3f);}
+
 protected:
 
   std::vector<Base::Vector3f> _lValueList;
@@ -185,6 +190,8 @@ public:
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
 
+  virtual unsigned int getMemSize (void) const{return sizeof(Base::Matrix4D);}
+
 private:
   Base::Matrix4D _cMat;
 };
@@ -227,6 +234,8 @@ public:
 
   virtual Property *Copy(void) const;
   virtual void Paste(const Property &from);
+
+  virtual unsigned int getMemSize (void) const{return sizeof(Base::Placement);}
 
 private:
   Base::Placement _cPos;

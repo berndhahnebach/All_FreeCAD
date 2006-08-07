@@ -174,6 +174,10 @@ void Document::setUndoMode(int iMode)
 }
 
 
+unsigned int Document::getUndoMemSize (void) const
+{
+  return 0;
+}
 void Document::onBevorChangeProperty(const DocumentObject *Who, const Property *What)
 {
   if(activUndoTransaction)
@@ -443,6 +447,24 @@ void Document::Restore(Base::XMLReader &reader)
   reader.readEndElement("Document");
 }
 
+unsigned int Document::getMemSize (void) const
+{
+  unsigned int size = 0;
+
+  // size of the DocObjects in the document
+  std::vector<DocumentObject*>::const_iterator it;
+  for(it = ObjectArray.begin(); it != ObjectArray.end(); ++it)
+    size += (*it)->getMemSize();
+
+  // size of the document properties...
+  size += PropertyContainer::getMemSize();
+
+  // Undo Redo size
+  size += getUndoMemSize();
+
+  return size;
+
+}
 // Save the Document under a new Name
 void Document::saveAs (const char* name)
 {

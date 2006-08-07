@@ -126,6 +126,8 @@ public:
   App::Property *Copy(void) const;
   void Paste(const App::Property &from);
 
+  virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(CurvatureInfo);}
+
 private:
   std::vector<CurvatureInfo> _lValueList;
 };
@@ -148,6 +150,8 @@ public:
   void setValue( MeshCore::MeshKernel* m);
   /// get the Kernel (only const possible!)
   const MeshCore::MeshKernel &getValue(void) const;
+  virtual unsigned int getMemSize (void) const;
+
   //@}
 
   /** @name Modify */

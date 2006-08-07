@@ -83,7 +83,8 @@ class AppExport DocChanges
 public:  
   enum {
     Recompute,
-    Rename
+    Rename,
+    UndoRedo
   } Why;
 
   // use a vector to preserve insertion order
@@ -153,6 +154,11 @@ public:
 
   virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
+
+  /// returns the complete document mermory consumption, including Undo Redo.
+  unsigned int getMemSize (void) const;
+  
+
   //FIXME: This is a hack to allow to save or read data from the Gui::Document.
   void installDocumentHook(Base::Persistance* pHook) {
     pDocumentHook = pHook;
@@ -229,6 +235,8 @@ public:
 	void clearUndos();
 	/// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
 	int getAvailableUndos() const;
+  /// Returns the actual memory consumption of the Undo redo stuff.
+  unsigned int getUndoMemSize (void) const;
 	/// Will UNDO  one step, returns  False if no undo was done (Undos == 0).
 	bool undo();
 	/// Returns the number   of stored Redos. If greater than 0 Redo will be effective.

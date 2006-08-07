@@ -561,6 +561,7 @@ void PropertyString::setPyObject(PyObject *value)
 
 }
 
+
 void PropertyString::Save (Writer &writer) const
 {
   std::string val = encodeAttribute(_cValue);
@@ -685,6 +686,15 @@ void PropertyStringList::setPyObject(PyObject *value)
   }
   else
     throw Base::Exception("Not allowed type used...");
+}
+
+unsigned int PropertyStringList::getMemSize (void) const
+{
+  unsigned int size=0;
+  for(int i = 0;i<getSize(); i++) 
+    size += _lValueList[i].size();
+  
+  return size;
 }
 
 void PropertyStringList::Save (Writer &writer) const
