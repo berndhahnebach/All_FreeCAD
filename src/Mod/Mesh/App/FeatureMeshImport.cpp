@@ -70,33 +70,43 @@ int Import::execute(void)
       return 1;
     }
   }
-  else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
+  else 
   {
     pcKernel = new MeshCore::MeshKernel();
-    LoadMeshSTL aReader( *pcKernel );
-
-    // catches the abort exception to set a more detailed description
+    MeshInput aReader( *pcKernel );
+    
     try {
       // read file
-      if ( !aReader.Load( str ) ) {
-        setError("Import of mesh from file '%s' failed",FileName.getValue());
+      bool ok = false;
+      if ( fi.hasExtension("stl") || fi.hasExtension("ast") ) {
+        ok = aReader.LoadSTL( str );
+      } else if ( fi.hasExtension("iv") ) {
+        ok = aReader.LoadInventor( str );
+      } else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") ) {
+        ok = aReader.LoadNastran( str );
+      } else {
+        setError("File format '%s' not supported", fi.extension().c_str());
         delete pcKernel;
         return 1;
       }
 
+      // Check whether load process succeeded
+      if ( !ok ) {
+        setError("Import of file '%s' failed",FileName.getValue());
+        delete pcKernel;
+        return 1;
+      }
+
+      // Mesh is okay
       Mesh.setValue(pcKernel);
+
     }catch ( Base::AbortException& e ){
       char szBuf[200];
-      sprintf(szBuf, "Loading of STL file '%s' aborted.", FileName.getValue());
+      sprintf(szBuf, "Import of file '%s' aborted.", FileName.getValue());
       e.SetMessage( szBuf );
       delete pcKernel;
       throw e;
     }
-  }
-  else
-  {
-    setError("File format '%s' not supported", fi.extension().c_str());
-    return 1;
   }
 
   return 0;

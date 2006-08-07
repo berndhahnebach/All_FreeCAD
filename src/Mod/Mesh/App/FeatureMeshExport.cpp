@@ -28,6 +28,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/gzstream.h>
 #include <Base/Sequencer.h>
 #include "FeatureMeshExport.h"
 
@@ -65,22 +66,22 @@ int Export::execute(void)
     return 1;
   }
 
-  std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
-
   if ( fi.hasExtension("bms") )
   {
+    std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
     pcFeat->getMesh().Write( str );
   }
   else if ( fi.hasExtension("stl") || fi.hasExtension("ast") )
   {
-    SaveMeshSTL aWriter(pcFeat->getMesh());
+    std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
+    MeshOutput aWriter(pcFeat->getMesh());
 
     // write file
     bool ok = false;
     if ( std::string(Format.getValue()) == "ASCII STL" )
-      ok = aWriter.SaveAscii( str );
+      ok = aWriter.SaveAsciiSTL( str );
     else // "Binary STL"
-      ok = aWriter.SaveBinary( str );
+      ok = aWriter.SaveBinarySTL( str );
 
     if ( !ok )
     {
@@ -90,17 +91,19 @@ int Export::execute(void)
   }
   else if ( fi.hasExtension("iv")  )
   {
-    MeshCore::SaveMeshInventor aWriter(pcFeat->getMesh());
+    std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
+    MeshCore::MeshOutput aWriter(pcFeat->getMesh());
 
     // write file
-    if ( !aWriter.Save(str) )
+    if ( !aWriter.SaveInventor(str) )
     {
       setError("Export of Inventor mesh to file '%s' failed",FileName.getValue());
       return 1;
     }
   }
-  else if ( fi.hasExtension("wrl") || fi.hasExtension("vrml")  )
+  else if ( fi.hasExtension("wrl") || fi.hasExtension("vrml") )
   {
+    std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
     MeshCore::SaveMeshVRML aWriter(pcFeat->getMesh());
 
     // write file
@@ -111,12 +114,27 @@ int Export::execute(void)
       return 1;
     }
   }
-  else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") )
+  else if ( fi.hasExtension("wrz") )
   {
-    MeshCore::SaveMeshNastran aWriter(pcFeat->getMesh());
+    // Compressed VRML is nothing else than a GZIP'ped VRML ascii file
+    Base::ogzstream gzip( FileName.getValue(), std::ios::out | std::ios::binary );
+    MeshCore::SaveMeshVRML aWriter(pcFeat->getMesh());
 
     // write file
-    if ( !aWriter.Save(str) )
+    App::Material rclMat;
+    if ( !aWriter.Save(gzip,rclMat) )
+    {
+      setError("Export of compressed VRML mesh to file '%s' failed",FileName.getValue());
+      return 1;
+    }
+  }
+  else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") )
+  {
+    std::ofstream str( FileName.getValue(), std::ios::out | std::ios::binary );
+    MeshCore::MeshOutput aWriter(pcFeat->getMesh());
+
+    // write file
+    if ( !aWriter.SaveNastran(str) )
     {
       setError("Export of NASTRAN mesh to file '%s' failed",FileName.getValue());
       return 1;

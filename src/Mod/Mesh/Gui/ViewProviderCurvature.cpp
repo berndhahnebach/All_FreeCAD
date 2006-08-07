@@ -185,6 +185,23 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
   pcColorShadedRoot->addChild(pcHighlight);
 
   addDisplayMode(pcColorShadedRoot, "ColorShaded");
+
+  // Check for an already existing color bar
+  Gui::SoFCColorBar* pcBar = ((Gui::SoFCColorBar*)findFrontRootOfType( Gui::SoFCColorBar::getClassTypeId() ));
+  if ( pcBar )
+  {
+    float fMin = pcColorBar->getMinValue();
+    float fMax = pcColorBar->getMaxValue();
+    
+    // Attach to the foreign color bar and delete our own bar
+    pcBar->Attach(this);
+    pcBar->ref();
+    pcBar->setRange(fMin, fMax, 3);
+    pcBar->Notify(0);
+    pcColorBar->Detach(this);
+    pcColorBar->unref();
+    pcColorBar = pcBar;
+  }
 }
 
 void ViewProviderMeshCurvature::updateData(void)
@@ -192,7 +209,7 @@ void ViewProviderMeshCurvature::updateData(void)
   ViewProviderMesh::updateData();
 }
 
-SoSeparator* ViewProviderMeshCurvature::getFrontRoot(void)
+SoSeparator* ViewProviderMeshCurvature::getFrontRoot(void) const
 {
   return pcColorBar;
 }

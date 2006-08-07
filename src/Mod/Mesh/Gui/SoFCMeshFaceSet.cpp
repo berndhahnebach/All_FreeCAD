@@ -585,8 +585,8 @@ void SoFCMeshFaceSet::createRoughModel(const MeshCore::MeshPointArray* rPoints, 
 
 #ifdef FC_DEBUG
     std::ofstream str( "bbox.stl", std::ios::out | std::ios::binary );
-    MeshCore::SaveMeshSTL aWriter(kernel);
-    aWriter.SaveBinary( str );
+    MeshCore::MeshOutput aWriter(kernel);
+    aWriter.SaveBinarySTL( str );
 #endif
   }
 }

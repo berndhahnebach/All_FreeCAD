@@ -275,8 +275,8 @@ void SoFCMeshNode::createRoughModel(bool simplest)
 
 #ifdef FC_DEBUG
     std::ofstream str( "bbox.stl", std::ios::out | std::ios::binary );
-    MeshCore::SaveMeshSTL aWriter(kernel);
-    aWriter.SaveBinary( str );
+    MeshCore::MeshOutput aWriter(kernel);
+    aWriter.SaveBinarySTL( str );
 #endif
   }
 }

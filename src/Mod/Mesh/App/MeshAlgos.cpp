@@ -70,12 +70,12 @@ MeshCore::MeshKernel* MeshAlgos::Load(const char *FileName)
 #endif
     throw Base::Exception("MeshAlgos::Load() not able to open File!\n");
 
-  LoadMeshSTL aReader( *Mesh );
+  MeshInput aReader( *Mesh );
 
   // read STL file
   //FileStream str( FileName, std::ios::in);
   std::ifstream str( FileName, std::ios::in | std::ios::binary );
-  if ( !aReader.Load( str ) )
+  if ( !aReader.LoadSTL( str ) )
     throw Base::Exception("STL read failed (load file)");
 
   return Mesh;
@@ -91,12 +91,12 @@ void MeshAlgos::read(MeshCore::MeshKernel* Mesh,const char *FileName)
 #endif
     throw Base::Exception("MeshAlgos::read() not able to open File!\n");
 
-  LoadMeshSTL aReader( *Mesh );
+  MeshInput aReader( *Mesh );
 
   // read STL file
   //FileStream str( FileName, std::ios::in);
   std::ifstream str( FileName, std::ios::in | std::ios::binary );
-  if ( !aReader.Load( str ) )
+  if ( !aReader.LoadSTL( str ) )
     throw Base::Exception("Reading file failed");
 }
 
@@ -108,13 +108,13 @@ void MeshAlgos::writeBin(MeshCore::MeshKernel* Mesh,const char *FileName)
   if(File.exists() && !File.isWritable())
         throw Base::Exception("File not writable");
 
-  SaveMeshSTL aWriter( *Mesh );
+  MeshOutput aWriter( *Mesh );
 
   // read STL file
   //FileStream str( File.filePath().c_str(), std::ios::out);
   std::ofstream str( File.filePath().c_str(), std::ios::out | std::ios::binary );
 
-  if ( !aWriter.SaveBinary( str ) )
+  if ( !aWriter.SaveBinarySTL( str ) )
     throw Base::Exception("STL write failed to write");
 }
 
@@ -126,13 +126,13 @@ void MeshAlgos::writeAscii(MeshCore::MeshKernel* Mesh,const char *FileName)
   if(File.exists() && !File.isWritable())
         throw Base::Exception("File not writable");
 
-  SaveMeshSTL writer( *Mesh );
+  MeshOutput writer( *Mesh );
 
   // read STL file
   //FileStream str( File.filePath().c_str(), std::ios::out);
   std::ofstream str( File.filePath().c_str(), std::ios::out | std::ios::binary );
 
-  if ( !writer.SaveAscii( str ) )
+  if ( !writer.SaveAsciiSTL( str ) )
     throw Base::Exception("STL write failed to write");
 }
 

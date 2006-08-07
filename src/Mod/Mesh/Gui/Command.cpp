@@ -309,6 +309,7 @@ void CmdMeshImport::activated(int iMsg)
   path = hPath->GetASCII("FileOpenSavePath", path.c_str());
   QString dir = path.c_str();
 
+  //QString filter = "All Mesh Files (*.stl *.ast *.bms);;Binary STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Inventor V2.1 ascii (*.iv);;Nastran (*.nas *.bdf);;All Files (*.*)";
   QString filter = "All Mesh Files (*.stl *.ast *.bms);;Binary STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
   QString fn = Gui::FileDialog::getOpenFileName( dir, filter, Gui::getMainWindow() );
   if (! fn.isEmpty() )
@@ -368,7 +369,8 @@ void CmdMeshExport::activated(int iMsg)
   dir += "/";
   dir += docObj->name.getValue();
 
-  QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Inventor V2.1 ascii (*.iv);;VRML V2.0 (*.wrl *.vrml);;Nastran (*.nas *.bdf);;All Files (*.*)";
+  QString filter = "Binary STL (*.stl);;ASCII STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Inventor V2.1 ascii (*.iv);;"
+                   "VRML V2.0 (*.wrl *.vrml);;Compressed VRML 2.0 (*.wrz);;Nastran (*.nas *.bdf);;All Files (*.*)";
   QString format;
   QString fn = Gui::FileDialog::getSaveFileName( dir, filter, Gui::getMainWindow(), 0,
                                                  QObject::tr("Export mesh"), &format, true, QObject::tr("Export") );

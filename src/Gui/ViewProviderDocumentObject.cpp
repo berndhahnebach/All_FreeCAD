@@ -28,12 +28,15 @@
 # include <qpixmap.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
+# include <Inventor/nodes/SoSeparator.h>
 #endif
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include <Base/Console.h>
 #include <App/Material.h>
 #include <App/Feature.h>
+#include "Application.h"
+#include "Document.h"
 #include "Selection.h"
 #include "ViewProviderDocumentObject.h"
 #include "Tree.h"
@@ -163,6 +166,28 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
 
   calcMaterial = pcObject->getTouchViewTime();
   calcData = pcObject->getTouchTime();
+}
+
+SoSeparator* ViewProviderDocumentObject::findFrontRootOfType( const SoType& type) const
+{
+  // first get the document this object is part of and get its GUI counterpart
+  const App::Document& pAppDoc = pcObject->getDocument();
+  Gui::Document* pGuiDoc = Gui::Application::Instance->getDocument(pAppDoc.getName());
+
+  // search in all view providers for the node type
+  std::vector<App::DocumentObject*> obj = pAppDoc.getObjects();
+  for ( std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it )
+  {
+    const ViewProvider* vp = pGuiDoc->getViewProvider(*it);
+    // ignore this view provider
+    if ( vp == this )
+      continue;
+    SoSeparator* front = vp->getFrontRoot();
+    if ( front && front->getTypeId() == type ) 
+      return front;
+  }
+
+  return 0;
 }
 
 void ViewProviderDocumentObject::setActiveMode()
