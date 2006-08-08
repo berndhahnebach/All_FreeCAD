@@ -123,11 +123,9 @@ InitApplications()
 Gui.ActivateWorkbench("<none>")
 
 # Register .py, .FCScript and .FCMacro
-FreeCAD.EndingAdd("py","FreeCADGui")
-FreeCAD.EndingAdd("iv","FreeCADGui")
-FreeCAD.EndingAdd("wrl","FreeCADGui")
-FreeCAD.EndingAdd("FCMacro","FreeCADGui")
-FreeCAD.EndingAdd("FCScript","FreeCADGui")
+FreeCAD.EndingAdd("Inventor V2.1 (*.iv)","FreeCADGui")
+FreeCAD.EndingAdd("VRML V2.0 (*.wrl *.vrml *.wrz *.wrl.gz)","FreeCADGui")
+FreeCAD.EndingAdd("Python (*.py *.FCMacro *.FCScript)","FreeCADGui")
 
 
 Log ('Init: Running FreeCADGuiInit.py start script... done\n')

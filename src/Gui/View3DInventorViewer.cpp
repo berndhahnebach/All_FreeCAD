@@ -434,43 +434,33 @@ bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
   SoOutput* out = wa.getOutput();
   QFile::remove( filename );
   QFileInfo fi( filename );
-  
+
   // Write VRML V2.0
-  if ( fi.extension() == "wrl" ) {
+  if ( fi.extension() == "wrl" || fi.extension() == "vrml" || fi.extension() == "wrz" ) {
+    // If 'wrz' is set then force compression
+    if ( fi.extension() == "wrz" )
+      binary = true;
+    
     SoToVRML2Action tovrml2;
     tovrml2.apply(pcViewProviderRoot);
     SoVRMLGroup *vrmlRoot = tovrml2.getVRML2SceneGraph();
     vrmlRoot->ref();
+
     if ( out->openFile( filename ) == TRUE )
     {
-      SbBool supported = TRUE;
-      if ( binary ) {
-        supported = out->setCompression( "GZIP" );
-      }
-
       out->setHeaderString("#VRML V2.0 utf8");
       wa.apply(vrmlRoot);
       vrmlRoot->unref(); // release the memory as soon as possible
       out->closeFile();
 
-      // Unfortunately, we get no hint when Coin supports zlib but cannot load the library
-      // at runtime So, we check the file on our own to be sure.
-      // Maybe this is a bug in Coin 2.4.3
-      if ( supported && binary )
+      // We want to write compressed VRML but Coin 2.4.3 doesn't do it even though
+      // SoOutput::getAvailableCompressionMethods() delivers a string list that
+      // contains 'GZIP'. setCompression() was called directly after opening the file, 
+      // returned TRUE and no error message appeared but anyway it didn't work.
+      // Strange is that reading GZIPped VRML files works.
+      // So, we do the compression on our own.
+      if ( binary )
       {
-        SoInput in;
-        in.openFile(filename);
-        if ( !in.isBinary() )
-          supported = FALSE;
-        in.closeFile();
-      }
-
-      // We want to write compressed VRML but Coin might be compiled without
-      // zlib support. 
-      if ( !supported && binary )
-      {
-        Base::Console().Log("Writing directly compressed VRML file failed. Compress it now.");
-
         std::ifstream file( filename, std::ios::in | std::ios::binary );
         if (file){
           unsigned long ulSize = 0; 

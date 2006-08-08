@@ -202,7 +202,4 @@ class ImageWorkbench ( Workbench ):
 Gui.AddWorkbenchHandler("Image",ImageWorkbench())
 
 # Append the open handler
-FreeCAD.EndingAdd("png","ImageGui")
-FreeCAD.EndingAdd("xpm","ImageGui")
-FreeCAD.EndingAdd("jpg","ImageGui")
-FreeCAD.EndingAdd("bmp","ImageGui")
+FreeCAD.EndingAdd("Image formats (*.bmp *.jpg *.png *.xpm)","ImageGui")

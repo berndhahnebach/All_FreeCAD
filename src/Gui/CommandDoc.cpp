@@ -73,22 +73,23 @@ StdCmdOpen::StdCmdOpen()
 void StdCmdOpen::activated(int iMsg)
 {
   // fill the list of registered endings
-  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
   std::string EndingList;
-  
   EndingList = "All suported formats (";
-
+  
+  std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
   std::map<std::string,std::string>::const_iterator It;
   for(It=EndingMap.begin();It != EndingMap.end();It++)
   {
-    EndingList += ";*." + It->first;
+    EndingList += " *." + It->first;
   }
 
   EndingList += ");;";
 
-  for(It=EndingMap.begin();It != EndingMap.end();It++)
+  std::vector<std::string> FilterList = App::GetApplication().getOpenFilter();
+  std::vector<std::string>::const_iterator Jt;
+  for(Jt=FilterList.begin();Jt != FilterList.end();Jt++)
   {
-    EndingList += It->second + " (*." + It->first + ");;";
+    EndingList += (*Jt) + ";;";
   }
   EndingList += "All files (*.*)";
   
