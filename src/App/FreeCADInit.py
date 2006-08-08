@@ -107,9 +107,9 @@ Log ('\nInit: starting App::FreeCADInit.py\n')
 # init every application by importing Init.py
 InitApplications()
 
-FreeCAD.EndingAdd("FCStd","FreeCAD")
+FreeCAD.EndingAdd("FreeCAD document (*.FCStd)","FreeCAD")
 
-# set to no gui, is overwriten by InitGui
+# set to no gui, is overwritten by InitGui
 App.GuiUp = 0
 
 Log ('\nInit: App::FreeCADInit.py done\n')

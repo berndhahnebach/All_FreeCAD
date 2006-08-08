@@ -31,9 +31,7 @@
 ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Mesh")
 
 # Append the open handler
-FreeCAD.EndingAdd("stl","Mesh")
-FreeCAD.EndingAdd("ast","Mesh")
-FreeCAD.EndingAdd("bms","Mesh")
+FreeCAD.EndingAdd("Mesh formats (*.stl *.ast *.bms)","Mesh")
 
 
 # Set the needed information

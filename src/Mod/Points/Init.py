@@ -35,6 +35,6 @@ ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Points")
 ParGrp.SetString("WorkBenchName",    "Points Design")
 
 # Append the open handler
-FreeCAD.EndingAdd("asc","Points")
+FreeCAD.EndingAdd("Point formats (*.asc)","Points")
 
 

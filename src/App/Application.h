@@ -202,7 +202,8 @@ public:
   /// checks if a type is already registered and returns the module name on success or NULL at fail
   const char* hasOpenType(const char* Type) const;
   /// returns a map of all registered open types
-  const std::map<std::string,std::string> &getOpenType(void);
+  std::map<std::string,std::string> getOpenType(void) const;
+  std::vector<std::string> getOpenFilter(void) const;
   /// removes a open handler type
   void rmvOpenType(const char* Type);
 	//@}
@@ -326,9 +327,14 @@ private:
 	static char ** _argv;
 	//@}
 
+  struct OpenTypeItem {
+    std::string filter;
+    std::string module;
+    std::vector<std::string> types;
+  };
 
   /// open ending information
-  std::map<std::string,std::string> _mEndings;
+  std::vector<OpenTypeItem> _mEndings;
 	/// Handle to the OCC Application
 	//Handle_ApplicationOCC _hApp;
 	/// Handles the App::Document (and python) objects;

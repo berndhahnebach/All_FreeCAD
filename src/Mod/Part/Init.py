@@ -43,10 +43,5 @@ ParGrp.SetString("WorkBenchName",    "Part Design")
 ParGrp.SetString("WorkBenchModule",  "PartWorkbench.py")
 
 
-FreeCAD.EndingAdd("igs","Part")
-FreeCAD.EndingAdd("iges","Part")
-FreeCAD.EndingAdd("step","Part")
-FreeCAD.EndingAdd("stp","Part")
-FreeCAD.EndingAdd("brep","Part")
-FreeCAD.EndingAdd("brp","Part")
+FreeCAD.EndingAdd("CAD formats (*.igs *.iges *.step *.stp *.brep *.brp)","Mesh")
 

@@ -498,19 +498,47 @@ FCHandle<ParameterGrp>  Application::GetParameterGroupByPath(const char* sName)
 
 void Application::addOpenType(const char* Type, const char* ModuleName)
 {
-  _mEndings[Type] = ModuleName;
+  OpenTypeItem item;
+  item.filter = Type;
+  item.module = ModuleName;
+
+  // Extract each file type from 'Type' literal
+  int pos = item.filter.find("*.");
+  while ( pos != std::string::npos )
+  {
+    int next = item.filter.find_first_of(" )", pos+1);
+    int len = next-pos-2;
+    std::string type = item.filter.substr(pos+2,len);
+    item.types.push_back(type);
+    pos = item.filter.find("*.", next);
+  }
+
+  // Due to branding stuuf replace FreeCAD through the application name
+  if ( strncmp(Type, "FreeCAD", 7) == 0 ) {
+    std::string AppName = Config()["ExeName"];
+    AppName += item.filter.substr(7);
+    item.filter = AppName;
+    // put to the front of the array
+    _mEndings.insert(_mEndings.begin(),item);
+  } else {
+    _mEndings.push_back(item);
+  }
 }
 
 const char* Application::hasOpenType(const char* Type) const
 {
-  for ( std::map<std::string, std::string>::const_iterator it = _mEndings.begin(); it != _mEndings.end(); ++it )
+  for ( std::vector<OpenTypeItem>::const_iterator it = _mEndings.begin(); it != _mEndings.end(); ++it )
   {
+    const std::vector<std::string>& types = it->types;
+    for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt )
+    {
 #ifdef __GNUC__
-  if ( strcasecmp(Type,it->first.c_str()) == 0 )
+      if ( strcasecmp(Type,jt->c_str()) == 0 )
 #else
-  if ( _stricmp(Type,it->first.c_str()) == 0 )
+      if ( _stricmp(Type,jt->c_str()) == 0 )
 #endif
-    return it->second.c_str();
+        return it->module.c_str();
+    }
   }
 
   return 0;
@@ -518,14 +546,35 @@ const char* Application::hasOpenType(const char* Type) const
 
 void Application::rmvOpenType(const char* Type)
 {
-  _mEndings.erase(Type);
+//  _mEndings.erase(Type);
 }
 
-const std::map<std::string,std::string> &Application::getOpenType(void)
+std::map<std::string,std::string> Application::getOpenType(void) const
 {
-  return _mEndings;
+  std::map<std::string,std::string> endings;
+  
+  for ( std::vector<OpenTypeItem>::const_iterator it = _mEndings.begin(); it != _mEndings.end(); ++it )
+  {
+    const std::vector<std::string>& types = it->types;
+    for ( std::vector<std::string>::const_iterator jt = types.begin(); jt != types.end(); ++jt )
+    {
+      endings[*jt] = it->module;;
+    }
+  }
+
+  return endings;
 }
 
+std::vector<std::string> Application::getOpenFilter(void) const
+{
+  std::vector<std::string> filter;
+  for ( std::vector<OpenTypeItem>::const_iterator it = _mEndings.begin(); it != _mEndings.end(); ++it )
+  {
+    filter.push_back(it->filter);
+  }
+
+  return filter;
+}
 
 //**************************************************************************
 // Init, Destruct and singelton
@@ -788,7 +837,7 @@ void Application::initApplication(void)
 
 void Application::runApplication()
 {
-  const std::map<std::string,std::string> &EndingMap = App::GetApplication().getOpenType();
+  std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
 
   // cycling through all the open files
   unsigned short count = 0;

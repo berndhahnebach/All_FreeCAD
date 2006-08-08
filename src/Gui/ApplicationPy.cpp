@@ -162,7 +162,7 @@ PYFUNCIMP_S(Application,sopen)
     if ( view ) {
       view->setFocus();
     }
-    else if ( ext == "iv" || ext == "wrl" ) {
+    else if ( ext == "iv" || ext == "wrl" || ext == "vrml" || ext == "wrz" ) {
       if ( !Application::Instance->activeDocument() )
         App::GetApplication().newDocument();
       QString cmd = QString("Gui.activeDocument().addAnnotation(\"%1\",\"%2\")").arg(fi.baseName()).arg(fi.absFilePath());

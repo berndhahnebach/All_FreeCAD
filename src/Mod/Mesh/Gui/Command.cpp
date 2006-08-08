@@ -27,6 +27,7 @@
 # include <qdir.h>
 # include <qfileinfo.h>
 # include <qmessagebox.h>
+# include <qstringlist.h>
 # include <gts.h>
 # include <map>
 #endif
@@ -309,9 +310,16 @@ void CmdMeshImport::activated(int iMsg)
   path = hPath->GetASCII("FileOpenSavePath", path.c_str());
   QString dir = path.c_str();
 
-  //QString filter = "All Mesh Files (*.stl *.ast *.bms);;Binary STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;Inventor V2.1 ascii (*.iv);;Nastran (*.nas *.bdf);;All Files (*.*)";
-  QString filter = "All Mesh Files (*.stl *.ast *.bms);;Binary STL (*.stl);;ASCII STL (*.ast);;Binary Mesh (*.bms);;All Files (*.*)";
-  QString fn = Gui::FileDialog::getOpenFileName( dir, filter, Gui::getMainWindow() );
+  QStringList filter;
+  filter << "All Mesh Files (*.stl *.ast *.bms)";
+  filter << "Binary STL (*.stl)";
+  filter << "ASCII STL (*.ast)";
+  filter << "Binary Mesh (*.bms)";
+  //filter << "Inventor V2.1 ascii (*.iv)";
+  //filter << "Nastran (*.nas *.bdf)";
+  filter << "All Files (*.*)";
+
+  QString fn = Gui::FileDialog::getOpenFileName( dir, filter.join(";;"), Gui::getMainWindow() );
   if (! fn.isEmpty() )
   {
     QFileInfo fi;
