@@ -334,11 +334,25 @@ Document* Application::openDocument(const char * FileName)
       throw Base::Exception(str.str().c_str());
     }
 
+    // Before creating a new document we check whether the document is already open
+    std::string filepath = File.filePath();
+    for ( std::map<std::string,DocEntry>::iterator it = DocMap.begin(); it != DocMap.end(); ++it )
+    {
+      Document* doc = it->second.pDoc;
+      if ( filepath == doc->FileName.getValue() )
+        return doc; // already open
+    }
+
     // Creating a FreeCAD Document
     newDoc.pDoc = new Document();
     string name = getUniqueDocumentName(File.fileNamePure().c_str());
     newDoc.pDoc->Name.setValue(name);
     newDoc.pDoc->FileName.setValue(File.filePath());
+    // Use the filename as preliminary name. This name might change within
+    // document's open() method. We must already insert the document here to
+    // guarantee that all observers of application can rely that the document
+    // is available.
+    DocMap[newDoc.pDoc->getName()] = newDoc;
 
     // trigger Observers (open windows and so on)
     AppChanges Reason;
@@ -348,27 +362,6 @@ Document* Application::openDocument(const char * FileName)
 
     // read the document
     bool ok = newDoc.pDoc->open();
-    // The document XML file can contain a name different from the file name.
-    // But we must make sure that this name is unique.
-    if ( name != newDoc.pDoc->Name.getValue() )
-    {
-      std::string oldname = newDoc.pDoc->Name.getValue();
-      std::string newname = getUniqueDocumentName(newDoc.pDoc->Name.getValue());
-
-      // the name from document XML file isn't unique
-      if ( oldname != newname )
-      {
-        // Notify all observers
-        newDoc.pDoc->Name.setValue(newname);
-        DocChanges DocChange;
-        DocChange.Why = DocChanges::Rename;
-        newDoc.pDoc->Notify(DocChange);
-      }
-    }
-
-    // use the document's name, not the file name
-    DocMap[newDoc.pDoc->getName()] = newDoc;
-
     if ( !ok )
     {
       std::stringstream str;

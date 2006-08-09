@@ -524,8 +524,9 @@ bool Document::save (void)
 bool Document::open (void)
 {
   std::string FilePath = FileName.getValue();
+  std::string OrigName = Name.getValue();
+  
   zipios::ZipInputStream zipstream(FileName.getValue());
-
   Base::XMLReader reader(FileName.getValue(), zipstream);
 
   if ( reader.isValid() )
@@ -534,6 +535,23 @@ bool Document::open (void)
 
     // We must restore the correct 'FileName' property again because the stored value could be invalid.
     FileName.setValue(FilePath.c_str());
+
+    // When this document has been created it got a preliminary name which might have changed now,
+    // because the document XML file can contain a name different from the original name.
+    // So firstly we must make sure that the new name is unique and secondly we must notify the 
+    // application and the observers of this.
+    std::string NewName = Name.getValue();
+    if ( NewName != OrigName )
+    {
+      // The document's name has changed. We make sure that this new name is unique then.
+      std::string NewUniqueName = GetApplication().getUniqueDocumentName(NewName.c_str());
+      Name.setValue(NewUniqueName);
+      // Notify the application and all observers
+      GetApplication().renameDocument(OrigName.c_str(), NewUniqueName.c_str());
+      DocChanges DocChange;
+      DocChange.Why = DocChanges::Rename;
+      Notify(DocChange);
+    }
 
     reader.readFiles(zipstream);
 

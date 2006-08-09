@@ -179,8 +179,10 @@ SoSeparator* ViewProviderDocumentObject::findFrontRootOfType( const SoType& type
   for ( std::vector<App::DocumentObject*>::iterator it = obj.begin(); it != obj.end(); ++it )
   {
     const ViewProvider* vp = pGuiDoc->getViewProvider(*it);
-    // ignore this view provider
-    if ( vp == this )
+    // Ignore 'this' view provider. It could also happen that vp is 0, e.g. when
+    // several objects have been added to the App::Document before notifying the
+    // Gui::Document
+    if ( !vp || vp == this )
       continue;
     SoSeparator* front = vp->getFrontRoot();
     if ( front && front->getTypeId() == type ) 
@@ -410,3 +412,4 @@ std::list<std::string> ViewProviderDocumentObject::getModes(void) const
 //{
 //  pcLineStyle->lineWidth.setValue( val );
 //}
+
