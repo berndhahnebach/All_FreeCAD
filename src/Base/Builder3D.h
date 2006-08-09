@@ -138,13 +138,13 @@ private:
  * reasons the user should use a file stream in this case.
  * @author Werner Mayer
  */
-class BaseExport StreamBuilder3D
+class BaseExport InventorScene
 {
 public:
   /// Construction
-  StreamBuilder3D(std::ostream&);
+  InventorScene(std::ostream&);
   /// Destruction
-  virtual ~StreamBuilder3D();
+  virtual ~InventorScene();
   void close();
 
   /** @name point set handling */
@@ -160,28 +160,30 @@ public:
   /// add a singular point (without startPoints() & endPoints() )
   void addSinglePoint(float x, float y, float z, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   /// add a singular point (without startPoints() & endPoints() )
-  void addSinglePoint(const Base::Vector3f &vec, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  void addSinglePoint(const Vector3f &vec, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   //@}
 
   /** @name line/direction handling */
   //@{
   /// add a line defined by 2 Vector3D
-  void addSingleLine(Vector3f pt1, Vector3f pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+  void addSingleLine(const Vector3f& pt1, const Vector3f& pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
   /// add a arrow (directed line) by 2 Vector3D. The arrow shows in direction of point 2.
-  void addSingleArrow(Vector3f pt1, Vector3f pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+  void addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
+  /// add a line defined by a list of points whereat always a pair (i.e. a point and the following point) builds a line.
+  void addLineSet(const std::vector<Vector3f>& points, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0, unsigned short linePattern = 0xffff);
   //@}
 
   /** @name triangle handling */
   //@{
   /// add a (filled) triangle defined by 3 vectors
-  void addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2, bool filled = true, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  void addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2, bool filled = true, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   //@}
 
   /** @name Transformation */
   //@{
   /// adds a transformation
-  void addTransformation(const Base::Matrix4D&);
-  void addTransformation(const Base::Vector3f& translation, const Base::Vector3f& rotationaxis, float fAngle);
+  void addTransformation(const Matrix4D&);
+  void addTransformation(const Vector3f& translation, const Vector3f& rotationaxis, float fAngle);
   //@}
 
   /** @name text handling */
@@ -189,9 +191,9 @@ public:
   /// add a text
   void addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   /// add a text
-  void addText(const Base::Vector3f &vec,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  void addText(const Vector3f &vec,const char * text, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   /// add a text
-  void addText(const Base::Vector3f &vec, float color_r,float color_g,float color_b, const char * format, ...);
+  void addText(const Vector3f &vec, float color_r,float color_g,float color_b, const char * format, ...);
   //@}
 
 private:

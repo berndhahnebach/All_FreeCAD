@@ -341,19 +341,19 @@ void Builder3D::saveToFile(const char* FileName)
 
 // -----------------------------------------------------------------------------
 
-StreamBuilder3D::StreamBuilder3D(std::ostream& output)
+InventorScene::InventorScene(std::ostream& output)
   :result(output),bStartEndOpen(false),bClosed(false)
 {
   result << "#Inventor V2.1 ascii " << std::endl << std::endl;
   result << "Separator { " << std::endl;
 }
 
-StreamBuilder3D:: ~StreamBuilder3D()
+InventorScene:: ~InventorScene()
 {
   close();
 }
 
-void StreamBuilder3D::close()
+void InventorScene::close()
 {
   if (!bClosed) {
     bClosed = true;
@@ -374,7 +374,7 @@ void StreamBuilder3D::close()
  * @param color_g green part of the point color (0.0 - 1.0).
  * @param color_b blue part of the point color (0.0 - 1.0).
  */
-void StreamBuilder3D::startPoints(short pointSize, float color_r,float color_g,float color_b)
+void InventorScene::startPoints(short pointSize, float color_r,float color_g,float color_b)
 {
  bStartEndOpen = true;
  result << "  Separator { " << std::endl;
@@ -389,14 +389,14 @@ void StreamBuilder3D::startPoints(short pointSize, float color_r,float color_g,f
 }
 
 /// insert a point in an point set
-void StreamBuilder3D::addPoint(float x, float y, float z)
+void InventorScene::addPoint(float x, float y, float z)
 {
   result << x << " " << y << " " << z << "," << std::endl;
 }
 
 
 /// add a vector to a point set
-void StreamBuilder3D::addPoint(const Vector3f &vec)
+void InventorScene::addPoint(const Vector3f &vec)
 {
   addPoint(vec.x,vec.y,vec.z);
 }
@@ -404,7 +404,7 @@ void StreamBuilder3D::addPoint(const Vector3f &vec)
  * Ends the point set operations and write the resulting inventor string.
  * @see startPoints()
  */
-void StreamBuilder3D::endPoints(void)
+void InventorScene::endPoints(void)
 {
   result  << "] " << std::endl;
   result  << "  } " << std::endl;
@@ -413,7 +413,7 @@ void StreamBuilder3D::endPoints(void)
   bStartEndOpen = false;
 }
 
-void StreamBuilder3D::addSinglePoint(float x, float y, float z,short pointSize, float color_r,float color_g,float color_b)
+void InventorScene::addSinglePoint(float x, float y, float z,short pointSize, float color_r,float color_g,float color_b)
 {
   // addSinglePoint() not between startXXX() and endXXX() allowed
   assert( bStartEndOpen == false );
@@ -432,7 +432,7 @@ void StreamBuilder3D::addSinglePoint(float x, float y, float z,short pointSize, 
 
 }
 
-void StreamBuilder3D::addSinglePoint(const Base::Vector3f &vec, short pointSize, float color_r,float color_g,float color_b)
+void InventorScene::addSinglePoint(const Vector3f &vec, short pointSize, float color_r,float color_g,float color_b)
 {
   addSinglePoint(vec.x, vec.y , vec.z, pointSize, color_r, color_g, color_b);
 }
@@ -450,7 +450,7 @@ void StreamBuilder3D::addSinglePoint(const Base::Vector3f &vec, short pointSize,
  * @param color_g green part of the text color (0.0 - 1.0).
  * @param color_b blue part of the text color (0.0 - 1.0).
  */
-void StreamBuilder3D::addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r,float color_g,float color_b)
+void InventorScene::addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r,float color_g,float color_b)
 {
   // addSinglePoint() not between startXXX() and endXXX() allowed
   assert( bStartEndOpen == false );
@@ -463,12 +463,12 @@ void StreamBuilder3D::addText(float pos_x, float pos_y , float pos_z,const char 
 
 }
 
-void StreamBuilder3D::addText(const Base::Vector3f &vec,const char * text, float color_r,float color_g,float color_b)
+void InventorScene::addText(const Vector3f &vec,const char * text, float color_r,float color_g,float color_b)
 {
   addText(vec.x, vec.y , vec.z,text, color_r,color_g,color_b);
 }
 
-void StreamBuilder3D::addText(const Base::Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
+void InventorScene::addText(const Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
 {
   // temp buffer
   char* txt = (char*) malloc(strlen(format)+4024);
@@ -484,7 +484,7 @@ void StreamBuilder3D::addText(const Base::Vector3f &vec, float color_r, float co
 //**************************************************************************
 // line/arrow handling
 
-void StreamBuilder3D::addSingleLine(Vector3f pt1, Vector3f pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void InventorScene::addSingleLine(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
 {
   char lp[20];
   sprintf(lp, "0x%x", linePattern);
@@ -505,7 +505,7 @@ void StreamBuilder3D::addSingleLine(Vector3f pt1, Vector3f pt2, short lineSize, 
          << "  } " << std::endl;
 }
 
-void StreamBuilder3D::addSingleArrow(Vector3f pt1, Vector3f pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void InventorScene::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
 {
     float l = (pt2 - pt1).Length();
     float cl = l / 10.0f;
@@ -542,10 +542,52 @@ void StreamBuilder3D::addSingleArrow(Vector3f pt1, Vector3f pt2, short lineSize,
 
 }
 
+/** Add a line defined by a list of points whereat always a pair (i.e. a point and the following point) builds a line.
+ * the size of the list must then be even.
+ */
+void InventorScene::addLineSet(const std::vector<Vector3f>& points, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+{
+  char lp[20];
+  sprintf(lp, "0x%x", linePattern);
+
+  result << "  Separator { " << std::endl
+         << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
+         << "    DrawStyle { lineWidth " << lineSize << " linePattern " << lp << " } " << std::endl
+         << "    Coordinate3 { " << std::endl
+         << "      point [ ";
+  std::vector<Vector3f>::const_iterator it = points.begin();
+  if ( it != points.end() )
+  {
+    result << it->x << " " << it->y << " " << it->z;
+    for ( ++it ; it != points.end(); ++it )
+      result << "," << std::endl << "          " << it->x << " " << it->y << " " << it->z;
+  }
+
+  result << " ] " << std::endl
+         << "    } " << std::endl
+         << "    LineSet { " << std::endl
+         << "      numVertices [ ";
+  unsigned long ct = points.size() / 2;
+  if ( ct > 0 )
+  {
+    result << "2";
+    for ( unsigned long i=1; i<ct; i++)
+    {
+      result << ","; 
+      if (i%16==0)
+        result << std::endl << "          "; 
+      result << "2";
+    }
+  }
+  result << " ] " << std::endl
+         << "    } " << std::endl
+         << "  } " << std::endl;
+}
+
 //**************************************************************************
 // triangle handling
 
-void StreamBuilder3D::addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2, bool filled, short lineSize, float color_r, float color_g, float color_b)
+void InventorScene::addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2, bool filled, short lineSize, float color_r, float color_g, float color_b)
 {
   std::string fs = "";
   if (filled)
@@ -568,9 +610,9 @@ void StreamBuilder3D::addSingleTriangle(Vector3f pt0, Vector3f pt1, Vector3f pt2
            << "  } " << std::endl;
 }
 
-void StreamBuilder3D::addTransformation(const Base::Matrix4D& transform)
+void InventorScene::addTransformation(const Matrix4D& transform)
 {
-  Base::Vector3f cAxis, cBase;
+  Vector3f cAxis, cBase;
   float fAngle, fTranslation;
   transform.toAxisAngle(cBase, cAxis,fAngle,fTranslation);
   cBase.x = (float)transform[0][3];
@@ -579,7 +621,7 @@ void StreamBuilder3D::addTransformation(const Base::Matrix4D& transform)
   addTransformation(cBase,cAxis,fAngle);
 }
 
-void StreamBuilder3D::addTransformation(const Base::Vector3f& translation, const Base::Vector3f& rotationaxis, float fAngle)
+void InventorScene::addTransformation(const Vector3f& translation, const Vector3f& rotationaxis, float fAngle)
 {
   result << "  Transform {" << std::endl;
   result << "    translation " << translation.x << " " << translation.y << " " << translation.z << std::endl;

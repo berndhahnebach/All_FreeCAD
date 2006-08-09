@@ -49,6 +49,7 @@
 #include <Gui/MainWindow.h>
 #include <Gui/MouseModel.h>
 #include <Gui/Selection.h>
+#include <Gui/Window.h>
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
 
@@ -89,6 +90,17 @@ ViewProviderMeshNode::ViewProviderMeshNode() : pcOpenEdge(0), _mouseModel(0), m_
   pcPointStyle->ref();
   pcPointStyle->style = SoDrawStyle::POINTS;
   pcPointStyle->pointSize = PointSize.getValue();
+
+  // read the correct shape color from the preferences
+  FCHandle<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+  App::Color color = ShapeColor.getValue();
+  unsigned long current = color.getPackedValue();
+  unsigned long setting = hGrp->GetUnsigned("MeshColor", current);
+  if ( current != setting )
+  {
+    color.setPackedValue(setting);
+    ShapeColor.setValue(color);
+  }
 }
 
 ViewProviderMeshNode::~ViewProviderMeshNode()

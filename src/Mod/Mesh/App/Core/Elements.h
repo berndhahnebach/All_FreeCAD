@@ -236,6 +236,10 @@ public:
    */
   bool HasNeighbour (unsigned short usSide) const
   { return (_aulNeighbours[usSide] != ULONG_MAX); }
+  /** Counts the number of edges without neighbour. */
+  inline unsigned short CountOpenEdges() const;
+  /** Returns true if there is an edge without neighbour, otherwise false. */
+  inline bool HasOpenEdge() const;
   /** Flips the orientation of the facet. The edge array must be adjusted. */
   void FlipNormal (void)
   {
@@ -741,6 +745,19 @@ inline void MeshFacet::ReplaceNeighbour (unsigned long ulOrig, unsigned long ulN
     _aulNeighbours[1] = ulNew;
   else if (_aulNeighbours[2] == ulOrig)
     _aulNeighbours[2] = ulNew;
+}
+
+inline unsigned short MeshFacet::CountOpenEdges() const
+{
+  unsigned short ct;
+  for ( unsigned short i=0; i<3; i++ ) 
+  { if ( !HasNeighbour(i) ) ct++; }
+  return ct;
+}
+
+inline bool MeshFacet::HasOpenEdge() const
+{
+  return (CountOpenEdges() == 0);
 }
 
 inline unsigned short MeshFacet::Side (unsigned long ulNIndex) const
