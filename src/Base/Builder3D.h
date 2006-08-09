@@ -27,6 +27,7 @@
 // Std. configurations
 
 #include <sstream>
+#include <vector>
 #include "Vector3D.h"
 
 namespace Base
@@ -138,13 +139,13 @@ private:
  * reasons the user should use a file stream in this case.
  * @author Werner Mayer
  */
-class BaseExport InventorScene
+class BaseExport InventorBuilder
 {
 public:
   /// Construction
-  InventorScene(std::ostream&);
+  InventorBuilder(std::ostream&);
   /// Destruction
-  virtual ~InventorScene();
+  virtual ~InventorBuilder();
   void close();
 
   /** @name point set handling */
@@ -155,7 +156,7 @@ public:
   void addPoint(float x, float y, float z);
   /// add a vector to a point set
   void addPoint(const Vector3f &vec);
-  /// ends the points set operation 
+  /// ends the points set operation
   void endPoints(void);
   /// add a singular point (without startPoints() & endPoints() )
   void addSinglePoint(float x, float y, float z, short pointSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);

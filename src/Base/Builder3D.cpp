@@ -341,19 +341,19 @@ void Builder3D::saveToFile(const char* FileName)
 
 // -----------------------------------------------------------------------------
 
-InventorScene::InventorScene(std::ostream& output)
+InventorBuilder::InventorBuilder(std::ostream& output)
   :result(output),bStartEndOpen(false),bClosed(false)
 {
   result << "#Inventor V2.1 ascii " << std::endl << std::endl;
   result << "Separator { " << std::endl;
 }
 
-InventorScene:: ~InventorScene()
+InventorBuilder:: ~InventorBuilder()
 {
   close();
 }
 
-void InventorScene::close()
+void InventorBuilder::close()
 {
   if (!bClosed) {
     bClosed = true;
@@ -374,7 +374,7 @@ void InventorScene::close()
  * @param color_g green part of the point color (0.0 - 1.0).
  * @param color_b blue part of the point color (0.0 - 1.0).
  */
-void InventorScene::startPoints(short pointSize, float color_r,float color_g,float color_b)
+void InventorBuilder::startPoints(short pointSize, float color_r,float color_g,float color_b)
 {
  bStartEndOpen = true;
  result << "  Separator { " << std::endl;
@@ -389,14 +389,14 @@ void InventorScene::startPoints(short pointSize, float color_r,float color_g,flo
 }
 
 /// insert a point in an point set
-void InventorScene::addPoint(float x, float y, float z)
+void InventorBuilder::addPoint(float x, float y, float z)
 {
   result << x << " " << y << " " << z << "," << std::endl;
 }
 
 
 /// add a vector to a point set
-void InventorScene::addPoint(const Vector3f &vec)
+void InventorBuilder::addPoint(const Vector3f &vec)
 {
   addPoint(vec.x,vec.y,vec.z);
 }
@@ -404,7 +404,7 @@ void InventorScene::addPoint(const Vector3f &vec)
  * Ends the point set operations and write the resulting inventor string.
  * @see startPoints()
  */
-void InventorScene::endPoints(void)
+void InventorBuilder::endPoints(void)
 {
   result  << "] " << std::endl;
   result  << "  } " << std::endl;
@@ -413,7 +413,7 @@ void InventorScene::endPoints(void)
   bStartEndOpen = false;
 }
 
-void InventorScene::addSinglePoint(float x, float y, float z,short pointSize, float color_r,float color_g,float color_b)
+void InventorBuilder::addSinglePoint(float x, float y, float z,short pointSize, float color_r,float color_g,float color_b)
 {
   // addSinglePoint() not between startXXX() and endXXX() allowed
   assert( bStartEndOpen == false );
@@ -432,7 +432,7 @@ void InventorScene::addSinglePoint(float x, float y, float z,short pointSize, fl
 
 }
 
-void InventorScene::addSinglePoint(const Vector3f &vec, short pointSize, float color_r,float color_g,float color_b)
+void InventorBuilder::addSinglePoint(const Vector3f &vec, short pointSize, float color_r,float color_g,float color_b)
 {
   addSinglePoint(vec.x, vec.y , vec.z, pointSize, color_r, color_g, color_b);
 }
@@ -450,7 +450,7 @@ void InventorScene::addSinglePoint(const Vector3f &vec, short pointSize, float c
  * @param color_g green part of the text color (0.0 - 1.0).
  * @param color_b blue part of the text color (0.0 - 1.0).
  */
-void InventorScene::addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r,float color_g,float color_b)
+void InventorBuilder::addText(float pos_x, float pos_y , float pos_z,const char * text, float color_r,float color_g,float color_b)
 {
   // addSinglePoint() not between startXXX() and endXXX() allowed
   assert( bStartEndOpen == false );
@@ -463,12 +463,12 @@ void InventorScene::addText(float pos_x, float pos_y , float pos_z,const char * 
 
 }
 
-void InventorScene::addText(const Vector3f &vec,const char * text, float color_r,float color_g,float color_b)
+void InventorBuilder::addText(const Vector3f &vec,const char * text, float color_r,float color_g,float color_b)
 {
   addText(vec.x, vec.y , vec.z,text, color_r,color_g,color_b);
 }
 
-void InventorScene::addText(const Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
+void InventorBuilder::addText(const Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
 {
   // temp buffer
   char* txt = (char*) malloc(strlen(format)+4024);
@@ -484,7 +484,7 @@ void InventorScene::addText(const Vector3f &vec, float color_r, float color_g, f
 //**************************************************************************
 // line/arrow handling
 
-void InventorScene::addSingleLine(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void InventorBuilder::addSingleLine(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
 {
   char lp[20];
   sprintf(lp, "0x%x", linePattern);
@@ -505,7 +505,7 @@ void InventorScene::addSingleLine(const Vector3f& pt1, const Vector3f& pt2, shor
          << "  } " << std::endl;
 }
 
-void InventorScene::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void InventorBuilder::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
 {
     float l = (pt2 - pt1).Length();
     float cl = l / 10.0f;
@@ -545,7 +545,7 @@ void InventorScene::addSingleArrow(const Vector3f& pt1, const Vector3f& pt2, sho
 /** Add a line defined by a list of points whereat always a pair (i.e. a point and the following point) builds a line.
  * the size of the list must then be even.
  */
-void InventorScene::addLineSet(const std::vector<Vector3f>& points, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
+void InventorBuilder::addLineSet(const std::vector<Vector3f>& points, short lineSize, float color_r,float color_g,float color_b, unsigned short linePattern)
 {
   char lp[20];
   sprintf(lp, "0x%x", linePattern);
@@ -587,7 +587,7 @@ void InventorScene::addLineSet(const std::vector<Vector3f>& points, short lineSi
 //**************************************************************************
 // triangle handling
 
-void InventorScene::addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2, bool filled, short lineSize, float color_r, float color_g, float color_b)
+void InventorBuilder::addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2, bool filled, short lineSize, float color_r, float color_g, float color_b)
 {
   std::string fs = "";
   if (filled)
@@ -610,7 +610,7 @@ void InventorScene::addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, 
            << "  } " << std::endl;
 }
 
-void InventorScene::addTransformation(const Matrix4D& transform)
+void InventorBuilder::addTransformation(const Matrix4D& transform)
 {
   Vector3f cAxis, cBase;
   float fAngle, fTranslation;
@@ -621,7 +621,7 @@ void InventorScene::addTransformation(const Matrix4D& transform)
   addTransformation(cBase,cAxis,fAngle);
 }
 
-void InventorScene::addTransformation(const Vector3f& translation, const Vector3f& rotationaxis, float fAngle)
+void InventorBuilder::addTransformation(const Vector3f& translation, const Vector3f& rotationaxis, float fAngle)
 {
   result << "  Transform {" << std::endl;
   result << "    translation " << translation.x << " " << translation.y << " " << translation.z << std::endl;
