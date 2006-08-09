@@ -111,11 +111,11 @@ public:
   void setModified(bool);
   bool isModified() const { return _isModified; }
 
-  /// Geter for the Application 
-  Application*    getAppWnd(){return _pcAppWnd;}	
+  /// Geter for the Application
+  Application*    getAppWnd(){return _pcAppWnd;}
 
   /// Gerer for the App Document 
-  App::Document*  getDocument(void){return _pcDocument;}
+  App::Document*  getDocument(void) const {return _pcDocument;}
 
 
   /** @name methods for activation handling */
@@ -154,11 +154,11 @@ public:
   /** @name View provider handling  */
   //@{
   /// Get the view provider for that Feature
-  ViewProvider * getViewProvider(App::DocumentObject *);
+  ViewProvider * getViewProvider(App::DocumentObject *) const;
   /// set an anotation view provider
   void setAnotationViewProvider(const char* name, ViewProvider *pcProvider);
   /// get an anotation view provider
-  ViewProvider * getAnotationViewProvider(const char* name);
+  ViewProvider * getAnotationViewProvider(const char* name) const;
   /// remove an anotation view provider
   void rmvAnotationViewProvider(const char* name);
   /// test if the feature is in show
@@ -171,7 +171,7 @@ public:
   void setPos(const char* name, const Base::Matrix4D& rclMtrx);
   /// updates the view property of all view provider
   void update(void);
-  ViewProvider *getViewProviderByName(const char* name);
+  ViewProvider *getViewProviderByName(const char* name) const;
   //@}
 
 
@@ -185,9 +185,9 @@ public:
   /// Abort the Undo transaction on the document
   void abortCommand(void);
   /// Get an Undo string vector with the Undo names
-  std::vector<std::string> getUndoVector(void);
+  std::vector<std::string> getUndoVector(void) const;
   /// Get an Redo string vector with the Redo names
-  std::vector<std::string> getRedoVector(void);
+  std::vector<std::string> getRedoVector(void) const;
   /// Will UNDO  one or more steps
   void undo(int iSteps);
   /// Will REDO  one or more steps
@@ -251,3 +251,4 @@ private:
 
 
 #endif // __GUIDOCUMENT_h__
+

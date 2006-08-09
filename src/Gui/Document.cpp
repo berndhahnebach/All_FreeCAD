@@ -75,7 +75,7 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   _pcDocument->installDocumentHook(this);
 
   // pointer to the python class
-  // NOTE: As this Python object doesn't get returned to the interpreter we mustn't increment it (Werner Jan-12-2006) 
+  // NOTE: As this Python object doesn't get returned to the interpreter we mustn't increment it (Werner Jan-12-2006)
   _pcDocPy = new Gui::DocumentPy(this);
 
 /*  // set the ViewProvider root
@@ -156,9 +156,9 @@ void Document::setAnotationViewProvider(const char* name, ViewProvider *pcProvid
 
 }
 
-ViewProvider * Document::getAnotationViewProvider(const char* name)
+ViewProvider * Document::getAnotationViewProvider(const char* name) const
 {
-  std::map<std::string,ViewProvider*>::iterator it = _ViewProviderMapAnotation.find( name );
+  std::map<std::string,ViewProvider*>::const_iterator it = _ViewProviderMapAnotation.find( name );
   return ( (it != _ViewProviderMapAnotation.end()) ? it->second : 0 );
 
 }
@@ -181,27 +181,27 @@ void Document::rmvAnotationViewProvider(const char* name)
 }
 
 
-ViewProvider* Document::getViewProvider(App::DocumentObject* Feat)
+ViewProvider* Document::getViewProvider(App::DocumentObject* Feat) const
 {
-  std::map<App::DocumentObject*,ViewProvider*>::iterator it = _ViewProviderMap.find( Feat );
+  std::map<App::DocumentObject*,ViewProvider*>::const_iterator it = _ViewProviderMap.find( Feat );
   return ( (it != _ViewProviderMap.end()) ? it->second : 0 );
 }
 
 
-ViewProvider *Document::getViewProviderByName(const char* name)
+ViewProvider *Document::getViewProviderByName(const char* name) const
 {
   // first check on feature name
   App::DocumentObject *pcFeat = getDocument()->getObject(name);
 
   if(pcFeat)
   {
-    std::map<App::DocumentObject*,ViewProvider*>::iterator it = _ViewProviderMap.find( pcFeat );
+    std::map<App::DocumentObject*,ViewProvider*>::const_iterator it = _ViewProviderMap.find( pcFeat );
 
     if(it != _ViewProviderMap.end())
       return it->second;
   }else {
     // then try annotation name
-    std::map<std::string,ViewProvider*>::iterator it2 = _ViewProviderMapAnotation.find( name );
+    std::map<std::string,ViewProvider*>::const_iterator it2 = _ViewProviderMapAnotation.find( name );
 
     if(it2 != _ViewProviderMapAnotation.end())
       return it2->second;
@@ -217,7 +217,7 @@ bool Document::isShow(const char* name)
 
   if(pcProv)
     return pcProv->isShow();
-  else 
+  else
     return false;
 }
 
@@ -724,7 +724,7 @@ void Document::closeAllViews(void)
 }
 
 std::list<MDIView*> Document::getMDIViews() const
-{ 
+{
   std::list<MDIView*> views;
   for ( std::list<BaseView*>::const_iterator it = _LpcViews.begin(); it != _LpcViews.end(); ++it )
   {
@@ -820,20 +820,20 @@ void Document::abortCommand(void)
 }
 
 /// Get an Undo string vector with the Undo names
-std::vector<std::string> Document::getUndoVector(void)
+std::vector<std::string> Document::getUndoVector(void) const
 {
   std::vector<std::string> vecTemp;
 
   //std::copy(listUndoNames.begin(),listUndoNames.end(),vecTemp.begin());
 
-  for(std::list<std::string>::iterator It=listUndoNames.begin();It!=listUndoNames.end();It++)
+  for(std::list<std::string>::const_iterator It=listUndoNames.begin();It!=listUndoNames.end();It++)
     vecTemp.push_back(*It);
 
   return vecTemp;
 }
 
 /// Get an Redo string vector with the Redo names
-std::vector<std::string> Document::getRedoVector(void)
+std::vector<std::string> Document::getRedoVector(void) const
 {
   std::vector<std::string> vecTemp;
 
@@ -919,7 +919,7 @@ void Document::madeSelection(  SoPath * path )
   for(int i = 0; i<path->getLength();i++)
   {
     SoNode *node = path->getNodeFromTail(i);
-    if (node->getTypeId() == SoFCSelection::getClassTypeId()) 
+    if (node->getTypeId() == SoFCSelection::getClassTypeId())
     {
       SoFCSelection * SelNode = (SoFCSelection *)node;  // safe downward cast, knows the type
       Base::Console().Log("Select:%s.%s.%s \n",SelNode->documentName.getValue().getString(),
@@ -961,7 +961,7 @@ void Document::unmadeSelection(  SoPath * path )
   for(int i = 0; i<path->getLength();i++)
   {
     SoNode *node = path->getNodeFromTail(i);
-    if (node->getTypeId() == SoFCSelection::getClassTypeId()) 
+    if (node->getTypeId() == SoFCSelection::getClassTypeId())
     {
       SoFCSelection * SelNode = (SoFCSelection *)node;  // safe downward cast, knows the type
       Base::Console().Log("Unselect:%s.%s.%s \n",SelNode->documentName.getValue().getString(),
@@ -982,3 +982,4 @@ void Document::unmadeSelection(  SoPath * path )
 
 
 #endif
+
