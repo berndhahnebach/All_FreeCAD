@@ -38,6 +38,7 @@ namespace MeshCore
 
 class MeshFacetGrid;
 class MeshKernel;
+class MeshGeomFacet;
 
 /// Helper class
 struct SplitEdge
@@ -54,7 +55,7 @@ class AppMeshExport MeshProjection
 {
 public:
   /// Construction
-  MeshProjection( MeshKernel& rMesh);
+  MeshProjection( const MeshKernel& rMesh);
   /// Destruction
   ~MeshProjection();
 
@@ -63,19 +64,19 @@ public:
    * contain shapes of type TopoDS_Edge, other shape types are ignored. A possible solution is
    * taken if the distance between the curve point and the projected point is <= \a fMaxDist.
    */
-  void projectToMesh ( const TopoDS_Shape &aShape, float fMaxDist, std::vector<SplitEdge>& rSplitEdges );
+  void projectToMesh ( const TopoDS_Shape &aShape, float fMaxDist, std::vector<SplitEdge>& rSplitEdges ) const;
   /**
    * Cuts the mesh at the curve defined by \a aShape. This method call @ref projectToMesh() to get the
    * split the facet at the found points. @see projectToMesh() for more details.
    */
-  void splitMeshByShape ( const TopoDS_Shape &aShape, float fMaxDist );
+  void splitMeshByShape ( const TopoDS_Shape &aShape, float fMaxDist ) const;
 
 protected:
   void projectEdgeToEdge( const TopoDS_Edge &aCurve, float fMaxDist, const MeshFacetGrid& rGrid, 
-                          std::vector<SplitEdge>& rSplitEdges );
+                          std::vector<SplitEdge>& rSplitEdges ) const;
 
 private:
-  MeshKernel& _rcMesh;
+  const MeshKernel& _rcMesh;
 };
 
 } // namespace MeshCore

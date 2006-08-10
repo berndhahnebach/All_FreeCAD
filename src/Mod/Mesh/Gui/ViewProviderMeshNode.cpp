@@ -385,7 +385,9 @@ bool ViewProviderMeshNode::handleEvent(const SoEvent * const ev,Gui::View3DInven
       MeshCore::MeshFacetGrid cGrid(meshProp.getValue());
       MeshCore::MeshAlgorithm cAlg(meshProp.getValue());
       cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
+      meshProp.enableNotify(false);
       meshProp.deleteFacetIndices( indices );
+      meshProp.enableNotify(true);
 
       // update open edge display if needed
 //      if ( pcOpenEdge ) 

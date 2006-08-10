@@ -298,6 +298,10 @@ public:
    */
   inline float DistancePlaneToPoint (const Base::Vector3f &rclPoint) const;
   /**
+   * Calculates the projecttion of a point onto the plane defined by the triangle.
+   */
+  void ProjectPointToPlane (Base::Vector3f &rclPoint) const;
+  /**
    * Enlarges the triangle.
    */
   void Enlarge (float fDist);
@@ -332,6 +336,8 @@ public:
   inline void SetNormal (const Base::Vector3f &rclNormal);
   /** Returns the wrapping bounding box. */
   inline Base::BoundBox3f GetBoundBox (void) const;
+  /** Calculates the perimeter of the facet. */
+  inline float Perimeter() const;
   /** Calculates the area of a facet. */
   inline float Area () const;
   /** Checks if the facet is inside the bounding box or intersects with it. */
@@ -634,6 +640,15 @@ inline void MeshGeomFacet::AdjustCirculationDirection (void)
 inline Base::BoundBox3f MeshGeomFacet::GetBoundBox (void) const
 {
   return Base::BoundBox3f(_aclPoints, 3);
+}
+
+inline float MeshGeomFacet::Perimeter() const
+{
+  float perimeter=0.0f;
+  perimeter += Base::Distance(_aclPoints[0], _aclPoints[1]);
+  perimeter += Base::Distance(_aclPoints[1], _aclPoints[2]);
+  perimeter += Base::Distance(_aclPoints[2], _aclPoints[0]);
+  return perimeter;
 }
 
 inline float MeshGeomFacet::Area () const
