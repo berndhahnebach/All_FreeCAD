@@ -278,8 +278,11 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
   std::streambuf* buf = rstrIn.rdbuf();
   if (!buf) return false;
   buf->pubseekoff(80, std::ios::beg, std::ios::in);
+  unsigned long ulCt;
+  rstrIn.read((char*)&ulCt, sizeof(ulCt));
+  // Either it's really an invalid STL file or it's just empty. In this case the number of facets must be 0.
   if ( rstrIn.read(szBuf, 50) == false )
-    return false;
+    return (ulCt==0);
   szBuf[50] = 0;
   upper(szBuf);
 
@@ -948,7 +951,7 @@ bool MeshOutput::SaveBinarySTL (std::ostream &rstrOut) const
   unsigned short usAtt;
   char szInfo[81];
 
-  if ( !rstrOut || rstrOut.bad() == true || _rclMesh.CountFacets() == 0 )
+  if ( !rstrOut || rstrOut.bad() == true /*|| _rclMesh.CountFacets() == 0*/ )
     return false;
 
   Base::SequencerLauncher seq("saving...", _rclMesh.CountFacets() + 1);  

@@ -350,6 +350,11 @@ bool MeshGeomFacet::Weights(const Base::Vector3f& rclP, float& w0, float& w1, fl
   return fabs(w0+w1+w2-1.0f)<0.001f;
 }
 
+void MeshGeomFacet::ProjectPointToPlane (Base::Vector3f &rclPoint) const
+{
+  rclPoint.ProjToPlane(_aclPoints[0], GetNormal());
+}
+
 void MeshGeomFacet::Enlarge (float fDist)
 {
   Base::Vector3f  clM, clU, clV, clPNew[3];

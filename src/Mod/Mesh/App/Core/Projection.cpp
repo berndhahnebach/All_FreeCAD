@@ -54,7 +54,7 @@
 using namespace MeshCore;
 
 
-MeshProjection::MeshProjection(MeshKernel& rMesh) 
+MeshProjection::MeshProjection(const MeshKernel& rMesh) 
   : _rcMesh(rMesh)
 {
 }
@@ -63,7 +63,7 @@ MeshProjection::~MeshProjection()
 {
 }
 
-void MeshProjection::splitMeshByShape ( const TopoDS_Shape &aShape, float fMaxDist )
+void MeshProjection::splitMeshByShape ( const TopoDS_Shape &aShape, float fMaxDist ) const
 {
   std::vector<SplitEdge> cSplitEdges;
   projectToMesh( aShape, fMaxDist, cSplitEdges );
@@ -76,7 +76,7 @@ void MeshProjection::splitMeshByShape ( const TopoDS_Shape &aShape, float fMaxDi
   fclose(file);
 }
 
-void MeshProjection::projectToMesh ( const TopoDS_Shape &aShape, float fMaxDist, std::vector<SplitEdge>& rSplitEdges )
+void MeshProjection::projectToMesh ( const TopoDS_Shape &aShape, float fMaxDist, std::vector<SplitEdge>& rSplitEdges ) const
 {
   // calculate the average edge length and create a grid
   MeshAlgorithm clAlg( _rcMesh );
@@ -103,7 +103,7 @@ void MeshProjection::projectToMesh ( const TopoDS_Shape &aShape, float fMaxDist,
 }
 
 void MeshProjection::projectEdgeToEdge( const TopoDS_Edge &aEdge, float fMaxDist, const MeshFacetGrid& rGrid,
-                                         std::vector<SplitEdge>& rSplitEdges )
+                                         std::vector<SplitEdge>& rSplitEdges ) const
 {
   std::vector<unsigned long> auFInds;
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > pEdgeToFace;
