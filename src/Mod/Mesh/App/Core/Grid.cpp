@@ -140,7 +140,7 @@ void MeshGrid::InitGrid (void)
   }
 }
 
-unsigned long MeshGrid::InSide (const Base::BoundBox3f &rclBB, std::vector<unsigned long> &raulElements,
+unsigned long MeshGrid::Inside (const Base::BoundBox3f &rclBB, std::vector<unsigned long> &raulElements,
                                 bool bDelDoubles) const
 {
   unsigned long i, j, k, ulMinX, ulMinY, ulMinZ,  ulMaxX, ulMaxY, ulMaxZ;
@@ -172,7 +172,7 @@ unsigned long MeshGrid::InSide (const Base::BoundBox3f &rclBB, std::vector<unsig
   return raulElements.size();
 }
 
-unsigned long MeshGrid::InSide (const Base::BoundBox3f &rclBB, std::vector<unsigned long> &raulElements,
+unsigned long MeshGrid::Inside (const Base::BoundBox3f &rclBB, std::vector<unsigned long> &raulElements,
                                 const Base::Vector3f &rclOrg, float fMaxDist, bool bDelDoubles) const
 {
   unsigned long i, j, k, ulMinX, ulMinY, ulMinZ,  ulMaxX, ulMaxY, ulMaxZ;
@@ -207,7 +207,7 @@ unsigned long MeshGrid::InSide (const Base::BoundBox3f &rclBB, std::vector<unsig
   return raulElements.size();
 }
 
-unsigned long MeshGrid::InSide (const Base::BoundBox3f &rclBB, std::set<unsigned long> &raulElements) const
+unsigned long MeshGrid::Inside (const Base::BoundBox3f &rclBB, std::set<unsigned long> &raulElements) const
 {
   unsigned long i, j, k, ulMinX, ulMinY, ulMinZ,  ulMaxX, ulMaxY, ulMaxZ;
   
@@ -804,7 +804,7 @@ unsigned long MeshFacetGrid::SearchNearestFromPoint (const Base::Vector3f &rclPt
   Base::BoundBox3f clBB(rclPt.x - fMaxSearchArea, rclPt.y - fMaxSearchArea, rclPt.z - fMaxSearchArea,
            rclPt.x + fMaxSearchArea, rclPt.y + fMaxSearchArea, rclPt.z + fMaxSearchArea);
 
-  InSide(clBB, aulFacets, rclPt, fMaxSearchArea, true);
+  Inside(clBB, aulFacets, rclPt, fMaxSearchArea, true);
 
   for (std::vector<unsigned long>::const_iterator pI = aulFacets.begin(); pI != aulFacets.end(); pI++)
   {    
