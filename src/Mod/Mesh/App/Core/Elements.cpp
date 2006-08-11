@@ -355,6 +355,14 @@ void MeshGeomFacet::ProjectPointToPlane (Base::Vector3f &rclPoint) const
   rclPoint.ProjToPlane(_aclPoints[0], GetNormal());
 }
 
+void MeshGeomFacet::ProjectFacetToPlane (MeshGeomFacet &rclFacet) const
+{
+  // project facet 2 onto facet 1
+  IntersectPlaneWithLine( rclFacet._aclPoints[0], GetNormal(), rclFacet._aclPoints[0] );
+  IntersectPlaneWithLine( rclFacet._aclPoints[1], GetNormal(), rclFacet._aclPoints[1] );
+  IntersectPlaneWithLine( rclFacet._aclPoints[2], GetNormal(), rclFacet._aclPoints[2] );
+}
+
 void MeshGeomFacet::Enlarge (float fDist)
 {
   Base::Vector3f  clM, clU, clV, clPNew[3];

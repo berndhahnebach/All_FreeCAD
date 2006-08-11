@@ -79,11 +79,11 @@ public:
   /** @name Search */
   //@{
   /** Searches for elements lying in the intersection area of the grid and the bounding box. */
-  virtual unsigned long InSide (const Base::BoundBox3f &rclBB, std::vector<unsigned long> &raulElements, bool bDelDoubles = true) const;
+  virtual unsigned long Inside (const Base::BoundBox3f &rclBB, std::vector<unsigned long> &raulElements, bool bDelDoubles = true) const;
   /** Searches for elements lying in the intersection area of the grid and the bounding box. */
-  virtual unsigned long InSide (const Base::BoundBox3f &rclBB, std::set<unsigned long> &raulElementss) const;
+  virtual unsigned long Inside (const Base::BoundBox3f &rclBB, std::set<unsigned long> &raulElementss) const;
   /** Searches for elements lying in the intersection area of the grid and the bounding box. */
-  virtual unsigned long InSide (const Base::BoundBox3f &rclBB, std::vector<unsigned long> &raulElements,
+  virtual unsigned long Inside (const Base::BoundBox3f &rclBB, std::vector<unsigned long> &raulElements,
                                 const Base::Vector3f &rclOrg, float fMaxDist, bool bDelDoubles = true) const;
   /** Searches for the nearest grids that contain elements from a point, the result are grid indices. */
   void SearchNearestFromPoint (const Base::Vector3f &rclPt, std::set<unsigned long> &rclInd) const;

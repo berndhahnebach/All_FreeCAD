@@ -525,6 +525,14 @@ QAction* ListActionGroup::getAction(int idx) const
   return 0;
 }
 
+int ListActionGroup::countActions() const
+{
+  QObjectList *l = queryList( "Gui::ListAction" );
+  int ct = l->count();
+  delete l; // delete the list, not the objects
+  return ct;
+}
+
 void ListActionGroup::onActivated ()
 {
   const QObject* o = sender();

@@ -302,6 +302,10 @@ public:
    */
   void ProjectPointToPlane (Base::Vector3f &rclPoint) const;
   /**
+   * Calculates the projecttion of a facet onto the plane defined by the triangle.
+   */
+  void ProjectFacetToPlane (MeshGeomFacet &rclFacet) const;
+  /**
    * Enlarges the triangle.
    */
   void Enlarge (float fDist);

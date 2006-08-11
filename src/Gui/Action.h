@@ -278,6 +278,7 @@ public:
   void addActionData( const QString&, const QString& = QString::null );
   QString getData(int) const;
   QAction* getAction(int) const;
+  int countActions() const;
 
 private slots:
   void onActivated ();

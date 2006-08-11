@@ -161,7 +161,7 @@ void SetOperations::Cut (std::set<unsigned long>& facetsCuttingEdge0, std::set<u
         if (grid1.GetCtElements(gx1, gy1, gz1) > 0)
         {
           std::vector<unsigned long> vecFacets2;
-          grid2.InSide(grid1.GetBoundBox(gx1, gy1, gz1), vecFacets2);
+          grid2.Inside(grid1.GetBoundBox(gx1, gy1, gz1), vecFacets2);
       
           if (vecFacets2.size() > 0)
           {

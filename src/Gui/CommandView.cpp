@@ -53,6 +53,7 @@
 
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
+#include <Base/Reader.h>
 #include <App/Document.h>
 #include <App/Feature.h>
 
@@ -189,8 +190,11 @@ QAction * StdCmdFreezeViews::createAction(void)
   if(sPixmap)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
 
+  pcAction->addActionData( QT_TR_NOOP("Save views") );
+  pcAction->addActionData( QT_TR_NOOP("Restore views") );
+  pcAction->addSeparator();
   pcAction->addActionData( QT_TR_NOOP("Freeze view") );
-  QAction* action = pcAction->getAction(0);
+  QAction* action = pcAction->getAction(2);
   if (action)
     action->setAccel(iAccel);
   pcAction->addSeparator();
@@ -201,20 +205,85 @@ QAction * StdCmdFreezeViews::createAction(void)
 void StdCmdFreezeViews::activated(int iMsg)
 {
   ListActionGroup* pcAction = dynamic_cast<ListActionGroup*>(_pcAction);
+  
   if ( iMsg == 0 ) {
+    // Save the views to an XML file
+    QString file = FileDialog::getSaveFileName(QString::null, "Frozen views (*.cam)", getMainWindow(),0,QT_TR_NOOP("Save frozen views"));
+    std::ofstream str( file.latin1(), std::ios::out );
+    if ( str && str.is_open() )
+    {
+      int ct = pcAction->countActions()-3;
+      str << "<?xml version='1.0' encoding='utf-8'?>" << std::endl
+          << "<FrozenViews SchemaVersion=\"1\">" << std::endl;
+      str << "  <Views Count=\"" << ct <<"\">" << std::endl;
+      for ( int i=0; i<ct; i++ )
+      {
+        QString data = pcAction->getData(i+3);
+
+        // remove the first line because it's a comment like '#Inventor V2.1 ascii'
+        QString viewPos="";
+        if ( !data.isEmpty() ) {
+          QStringList lines = QStringList::split("\n", data);
+          if ( lines.size() > 1 ) {
+            lines.pop_front();
+            viewPos = lines.join(" ");
+          }
+        }
+
+        str << "    <Camera settings=\"" << viewPos.latin1() << "\"/>" << std::endl;
+      }
+      str << "  </Views>" << std::endl;
+      str << "</FrozenViews>" << std::endl;
+    }
+  } else if ( iMsg == 1 ) {
+    // Restore the views from an XML file
+    QString file = FileDialog::getOpenFileName(QString::null, "Frozen views (*.cam)", getMainWindow(),0,QT_TR_NOOP("Save frozen views"));
+    std::ifstream str( file.latin1(), std::ios::in | std::ios::binary );
+    Base::XMLReader xmlReader(file.latin1(), str);
+    xmlReader.readElement("FrozenViews");
+    long scheme = xmlReader.getAttributeAsInteger("SchemaVersion");
+    int ctViews = pcAction->countActions()-3+1;
+
+    // SchemeVersion "1"
+    if ( scheme == 1 ) {
+      // read the views itself
+      xmlReader.readElement("Views");
+      int ct = xmlReader.getAttributeAsInteger("Count");
+      for(int i=0; i<ct; i++)
+      {
+        xmlReader.readElement("Camera");
+        const char* camera = xmlReader.getAttribute("settings");
+        QString viewnr = QString(QT_TR_NOOP("Restore view &%1")).arg(ctViews+i);
+        pcAction->addActionData( viewnr, camera );
+        if ( ctViews+i < 10 ) {
+          int accel = Qt::CTRL+Qt::Key_1;
+          QAction* action = pcAction->getAction(ctViews+2+i);
+          if (action)
+            action->setAccel(accel+ctViews+i-1);
+        }
+      }
+
+      xmlReader.readEndElement("Views");
+    }
+ 
+    xmlReader.readEndElement("FrozenViews");
+  }
+  else if ( iMsg == 3 ) {
+    // Create a new view
     const char* ppReturn=0;
     getGuiApplication()->sendMsgToActiveView("GetCamera",&ppReturn);
-    static int ct = 1;
-    QString viewnr = QString(QT_TR_NOOP("Restore view &%1")).arg(ct++);
+    int ctViews = pcAction->countActions()-3+1;
+    QString viewnr = QString(QT_TR_NOOP("Restore view &%1")).arg(ctViews);
     pcAction->addActionData( viewnr, ppReturn );
-    if ( ct < 11 ) {
-      static int accel = Qt::CTRL+Qt::Key_1;
-      QAction* action = pcAction->getAction(ct-1);
+    if ( ctViews < 10 ) {
+      int accel = Qt::CTRL+Qt::Key_1;
+      QAction* action = pcAction->getAction(ctViews+2);
       if (action)
-        action->setAccel(accel++);
+        action->setAccel(accel+ctViews-1);
     }
   } else {
-    QString data = pcAction->getData(iMsg-1);
+    // Activate a view
+    QString data = pcAction->getData(iMsg-2);
     QString send = QString("SetCamera %1").arg(data);
     getGuiApplication()->sendMsgToActiveView(send.latin1());
   }

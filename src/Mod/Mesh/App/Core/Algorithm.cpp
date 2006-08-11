@@ -815,7 +815,7 @@ void MeshAlgorithm::SearchFacetsFromPolyline (const std::vector<Base::Vector3f> 
     clSegmBB.Enlarge(fRadius);  // BB um Suchradius vergroessern
 
     std::vector<unsigned long> aclBBFacets;
-    unsigned long k = rclGrid.InSide(clSegmBB, aclBBFacets, false);
+    unsigned long k = rclGrid.Inside(clSegmBB, aclBBFacets, false);
     for (unsigned long i = 0; i < k; i++)
     {
       if (_rclMesh.GetFacet(aclBBFacets[i]).DistanceToLineSegment(rclP0, rclP1) < fRadius)
