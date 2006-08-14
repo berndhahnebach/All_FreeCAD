@@ -104,6 +104,9 @@ Document::~Document()
   std::map<App::DocumentObject*,ViewProvider*>::iterator it;
   for(it = _ViewProviderMap.begin();it != _ViewProviderMap.end(); ++it)
     delete it->second;
+  std::map<std::string,ViewProvider*>::iterator it2;
+  for(it2 = _ViewProviderMapAnotation.begin();it2 != _ViewProviderMapAnotation.end(); ++it2)
+    delete it2->second;
 
 //  pcSelection->unref();
     Gui::getMainWindow()->getTreeView()->DeleteDoc(this);
@@ -422,12 +425,29 @@ bool Document::saveAs(void)
     if ( !fn.endsWith(".FCStd"))
       fn += ".FCStd";
 
+    QFileInfo fi;
+    fi.setFile(fn);
+
+    // Workaround for Qt bug in QFileDialog::getSaveFileName().
+#ifdef FC_OS_WIN32
+    if ( fi.exists() )
+    {
+      // Get user confirmation
+      QString msg = QObject::tr("Overwrite file '%1' ?").arg(fn);
+      int ret = QMessageBox::question( getMainWindow(), QObject::tr("File overwrite confirmation"), msg,
+                                       QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape );
+      if ( ret != QMessageBox::Yes )
+      {
+        getMainWindow()->statusBar()->message(QObject::tr("Saving aborted"), 2000);
+        return false;
+      }
+    }
+#endif
+
     // save as new file name
     Gui::WaitCursor wc;
     Command::doCommand(Command::Doc,"App.saveAs(\"%s\",\"%s\")", _pcDocument->getName(), fn.latin1());
 
-    QFileInfo fi;
-		fi.setFile(fn);
     Gui::FileDialog::setWorkingDirectory(fn);
     getMainWindow()->appendRecentFile( fi.filePath().latin1() );
     return true;
