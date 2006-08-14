@@ -26,7 +26,6 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qdir.h>
-# include <qfiledialog.h>
 # include <qfileinfo.h>
 # include <qlineedit.h>
 # include <qmessagebox.h>
@@ -39,6 +38,7 @@
 #include "BitmapFactory.h"
 #include "MainWindow.h"
 #include "DlgAuthorization.h"
+#include "FileDialog.h"
 
 #include "../App/Application.h"
 #include "../Base/Console.h"
@@ -526,7 +526,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
         }
         else 
         {
-          path = QFileDialog::getExistingDirectory();
+          path = FileDialog::getExistingDirectory();
           if ( path.isEmpty() )
             return;
         }
@@ -543,7 +543,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
         }
         else 
         {
-          path = QFileDialog::getExistingDirectory();
+          path = FileDialog::getExistingDirectory();
           if ( path.isEmpty() )
             return;
         }

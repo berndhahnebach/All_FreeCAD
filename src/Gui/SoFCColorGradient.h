@@ -45,10 +45,6 @@ public:
   SoFCColorGradient(void);
 
   /**
-   * Sets the current viewer size this color gradient is embedded into to recalculate its new position.
-   */
-  void setViewerSize( const SbVec2s& size );
-  /**
    * Sets the range of the colorbar from the maximum \a fMax to the minimum \a fMin.
    * \a prec indicates the post decimal positions, \a prec should be in between 0 and 6.
    */
@@ -76,6 +72,11 @@ public:
   const char* getColorBarName() const { return "Color Gradient"; }
 
 protected:
+  /**
+   * Sets the current viewer size this color gradient is embedded into to recalculate its new position.
+   */
+  void setViewportSize( const SbVec2s& size );
+
   virtual ~SoFCColorGradient();
   /**
    * Sets the color model of the underlying color gradient to \a tModel. \a tModel either can

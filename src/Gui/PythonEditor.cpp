@@ -902,20 +902,6 @@ bool PythonEditView::saveAs(void)
 }
 
 /**
- * Opens a file specified by the appearing file dialog.
- */
-bool PythonEditView::open(void)
-{
-  QString file = QFileDialog::getOpenFileName(QString::null, "Macro files (*.py *.FCMacro);;Python (*.py);;FreeCAD macro (*.FCMacro)", this);
-  if ( file.isEmpty() )
-    return false;
-
-  openFile(file);
-
-  return true;
-}
-
-/**
  * Opens the file \a fileName.
  */
 void PythonEditView::openFile (const QString& fileName)

@@ -1277,3 +1277,19 @@ void PropertyMaterial::Paste(const Property &from)
   hasSetValue();
 }
 
+
+//**************************************************************************
+// PropertyFile
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyFile , App::PropertyString);
+       
+PropertyFile::PropertyFile()
+{
+
+}
+
+PropertyFile::~PropertyFile()
+{
+
+}

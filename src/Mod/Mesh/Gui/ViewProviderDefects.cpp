@@ -392,16 +392,75 @@ void ViewProviderMeshDegenerations::showDefects()
 
 ViewProviderMeshIndices::ViewProviderMeshIndices()
 {
+  pcFaces = new SoFaceSet;
+  pcFaces->ref();
 }
 
 ViewProviderMeshIndices::~ViewProviderMeshIndices()
 {
+  pcFaces->unref();
 }
 
 void ViewProviderMeshIndices::attach(App::DocumentObject* pcFeat)
 {
+  ViewProviderDocumentObject::attach( pcFeat );
+
+  SoGroup* pcFaceRoot = new SoGroup();
+
+  SoDrawStyle* pcFlatStyle = new SoDrawStyle();
+  pcFlatStyle->style = SoDrawStyle::FILLED;
+  pcFaceRoot->addChild(pcFlatStyle);
+  
+  SoShapeHints * flathints = new SoShapeHints;
+  flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE ;
+  flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+  pcFaceRoot->addChild(flathints);
+
+  // Draw lines
+  SoSeparator* linesep = new SoSeparator;
+  SoBaseColor * basecol = new SoBaseColor;
+  basecol->rgb.setValue( 1.0f, 0.5f, 0.0f );
+  linesep->addChild(basecol);
+  linesep->addChild(pcCoords);
+  linesep->addChild(pcFaces);
+  pcFaceRoot->addChild(linesep);
+
+  addDisplayMode(pcFaceRoot, "Face");
 }
 
 void ViewProviderMeshIndices::showDefects()
 {
+  Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
+  const MeshCore::MeshKernel & rMesh = f->getMesh();
+  MeshCore::MeshEvalNeighbourhood nb(rMesh);
+  MeshCore::MeshEvalRangeFacet rf(rMesh);
+  MeshCore::MeshEvalRangePoint rp(rMesh);
+  MeshCore::MeshEvalCorruptedFacets cf(rMesh);
+
+  std::vector<unsigned long> inds = nb.GetIndices();
+  if ( !inds.empty() ) {
+    pcCoords->point.deleteValues(0);
+    pcCoords->point.setNum(3*inds.size());
+    MeshCore::MeshFacetIterator cF(rMesh);
+    unsigned long i=0;
+    unsigned long j=0;
+    for ( std::vector<unsigned long>::const_iterator it = inds.begin(); it != inds.end(); ++it ) {
+      cF.Set(*it);
+      for ( int k=0; k<3; k++ ) {
+        Base::Vector3f cP = cF->_aclPoints[k];
+        // move a bit in opposite normal direction to overlay the original faces
+        cP -= 0.001f * cF->GetNormal();
+        pcCoords->point.set1Value(i++,cP.x,cP.y,cP.z);
+      }
+      pcFaces->numVertices.set1Value(j++, 3);
+    }
+
+    setDisplayMode("Face");
+  }
+  else if ( !rf.Evaluate() ) {
+  }
+  else if ( !rp.Evaluate() ) {
+  }
+  else if ( !cf.Evaluate() ) {
+  }
 }

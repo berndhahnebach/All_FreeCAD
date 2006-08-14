@@ -59,6 +59,7 @@ SoFCColorGradient::SoFCColorGradient() : _fMaxX(4.5f), _fMinX(4.0f), _fMaxY(4.0f
 
   _cColGrad.setStyle(App::ColorGradient::FLOW);
   setColorModel( App::ColorGradient::TRIA );
+  setRange(-0.5f, 0.5f, 1);
 }
 
 /*!
@@ -106,7 +107,7 @@ void SoFCColorGradient::setMarkerLabel( const SoMFString& label )
   }
 }
 
-void SoFCColorGradient::setViewerSize( const SbVec2s& size )
+void SoFCColorGradient::setViewportSize( const SbVec2s& size )
 {
   // don't know why the parameter range isn't between [-1,+1]
   float fRatio = ((float)size[0])/((float)size[1]);

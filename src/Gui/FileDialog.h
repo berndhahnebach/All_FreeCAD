@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef ___FILE_DIALOG_H__
-#define ___FILE_DIALOG_H__
+#ifndef GUI_FILEDIALOG_H
+#define GUI_FILEDIALOG_H
 
 #include <qfiledialog.h>
 #include <qpixmap.h>
@@ -58,6 +58,8 @@ public:
                                         QWidget * parent = 0, const char * name = 0, const QString & caption = QString::null, 
                                         QString * selectedFilter = 0, bool resolveSymlinks = true, 
                                         const QString& buttonText = QString::null, bool * ok = 0 );
+  static QString getWorkingDirectory();
+  static void setWorkingDirectory( const QString& );
 
 public:
   FileDialog ( QWidget* parent = 0, const char* name = 0, bool modal = false );
@@ -222,4 +224,4 @@ private:
 
 } // namespace Gui
 
-#endif // ___FILE_DIALOG_H__
+#endif // GUI_FILEDIALOG_H

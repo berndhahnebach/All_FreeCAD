@@ -305,17 +305,14 @@ CmdMeshImport::CmdMeshImport()
 void CmdMeshImport::activated(int iMsg)
 {
   // use current path as default
-  std::string path = QDir::currentDirPath().latin1();
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-  QString dir = path.c_str();
+  QString dir = Gui::FileDialog::getWorkingDirectory();
 
   QStringList filter;
   filter << "All Mesh Files (*.stl *.ast *.bms)";
   filter << "Binary STL (*.stl)";
   filter << "ASCII STL (*.ast)";
   filter << "Binary Mesh (*.bms)";
-  //filter << "Inventor V2.1 ascii (*.iv)";
+  filter << "Inventor V2.1 ascii (*.iv)";
   //filter << "Nastran (*.nas *.bdf)";
   filter << "All Files (*.*)";
 
@@ -331,7 +328,7 @@ void CmdMeshImport::activated(int iMsg)
     commitCommand();
     updateActive();
 
-    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+    Gui::FileDialog::setWorkingDirectory(fn);
   }
 }
 
@@ -369,11 +366,7 @@ void CmdMeshExport::activated(int iMsg)
 
   App::DocumentObject* docObj = docObjs.front();
 
-  // use current path as default
-  std::string path = QDir::currentDirPath().latin1();
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-  QString dir = path.c_str();
+  QString dir = Gui::FileDialog::getWorkingDirectory();
   dir += "/";
   dir += docObj->name.getValue();
 
@@ -399,7 +392,7 @@ void CmdMeshExport::activated(int iMsg)
     commitCommand();
     updateActive();
 
-    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+    Gui::FileDialog::setWorkingDirectory(fn);
   }
 }
 

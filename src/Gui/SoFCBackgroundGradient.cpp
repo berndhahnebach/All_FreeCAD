@@ -115,7 +115,20 @@ void SoFCBackgroundGradient::initClass(void)
   SO_NODE_INIT_CLASS(SoFCBackgroundGradient,SoSeparator,"Separator");
 }
 
-void SoFCBackgroundGradient::setViewerSize( const SbVec2s& size )
+void SoFCBackgroundGradient::GLRenderBelowPath ( SoGLRenderAction *action )
+{
+  const SbViewportRegion& vp = action->getViewportRegion();
+  const SbVec2s&  size = vp.getWindowSize();
+  if ( size != viewsize )
+  {
+    setViewportSize(size);
+    viewsize = size;
+  }
+
+  inherited::GLRenderBelowPath(action);
+}
+
+void SoFCBackgroundGradient::setViewportSize( const SbVec2s& size )
 {
   float fRatio = ((float)size[0])/((float)size[1]);
   float fMinX= -0.5f, fMaxX=0.5f, fAvgX=0.0f;

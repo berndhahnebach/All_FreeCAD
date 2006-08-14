@@ -24,7 +24,6 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qfiledialog.h>
 # include <qlineedit.h>
 # include <qmessagebox.h>
 # include <qpushbutton.h>
@@ -34,6 +33,7 @@
 #include "Application.h"
 #include "MainWindow.h"
 #include "DlgMacroRecordImp.h"
+#include "FileDialog.h"
 
 
 using namespace Gui::Dialog;
@@ -167,7 +167,7 @@ void DlgMacroRecordImp::stop()
  */
 void DlgMacroRecordImp::onSaveMacro()
 {
-  QString fn = QFileDialog::getSaveFileName(0, "FreeCAD script (*.FCScript)", getMainWindow());
+  QString fn = FileDialog::getSaveFileName(0, "FreeCAD script (*.FCScript)", getMainWindow());
 
   if (!fn.isEmpty())
   {

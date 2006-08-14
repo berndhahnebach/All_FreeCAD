@@ -340,7 +340,11 @@ Document* Application::openDocument(const char * FileName)
     {
       Document* doc = it->second.pDoc;
       if ( filepath == doc->FileName.getValue() )
-        return doc; // already open
+      {
+        std::stringstream str;
+        str << "The project '" << FileName << "' is already open!";
+        throw Base::Exception(str.str().c_str());
+      }
     }
 
     // Creating a FreeCAD Document
@@ -678,6 +682,7 @@ void Application::initTypes(void)
   App ::PropertyColor       ::init();
   App ::PropertyColorList   ::init();
   App ::PropertyMaterial    ::init();
+  App ::PropertyFile        ::init();
   // Document classes
   App ::DocumentObject      ::init();
   App ::AbstractFeature     ::init();

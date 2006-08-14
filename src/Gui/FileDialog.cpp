@@ -35,6 +35,9 @@
 # include <qpushbutton.h>
 #endif
 
+#include <Base/Parameter.h>
+#include <App/Application.h>
+
 #include "FileDialog.h"
 #include "BitmapFactory.h"
 
@@ -51,9 +54,36 @@ QString FileDialog::getOpenFileName ( const QString & startWith, const QString &
                                       const char* name, const QString & caption, QString* selectedFilter,
                                       bool resolveSymlinks, const QString& buttonText, bool * ok )
 {
-  FileDialog fd( startWith, filter, parent, name, true );
+  // The string 'startWith' can also contain the file name that is shown in the lineedit.
+  QString dirName = startWith;
+  QString selName = QString::null;
+  if ( !startWith.isEmpty() ) {
+    QUrlOperator u( startWith );
+    if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
+      dirName = startWith;
+    } else {
+      if ( u.isLocalFile() ) {
+        QFileInfo fi( u.dirPath() );
+        if ( fi.exists() ) {
+          dirName = u.dirPath();
+          selName = u.fileName();
+        }
+      } else {
+        dirName = u.toString();
+        selName = QString::null;
+      }
+    }
+  }
+
+  FileDialog fd( dirName, filter, parent, name, true );
+
   fd.setMode( ExistingFile );
-  fd.setCaption(caption);
+  if ( !caption.isNull() )
+    fd.setCaption( caption );
+  else
+    fd.setCaption( FileDialog::tr( "Open" ) );
+  if ( !selName.isEmpty() )
+    fd.setSelection( selName );
   if ( selectedFilter )
     fd.setFilter( *selectedFilter );
   if ( buttonText != QString::null )
@@ -88,21 +118,33 @@ QString FileDialog::getSaveFileName ( const QString & startWith, const QString &
   // The string 'startWith' can also contain the file name that is shown in the lineedit.
   QString dirName = startWith;
   QString selName = QString::null;
-  if ( startWith != QString::null ) {
-    QDir dirPath(startWith);
-    QString curName = dirPath.dirName();
-    // If the directory in 'startWith' doesn't exist but exists one level up
-    // then the last part is the file name.
-    if ( !dirPath.exists() && dirPath.cdUp() ) {
-      dirName = dirPath.path();
-      selName = curName;
+  if ( !startWith.isEmpty() ) {
+    QUrlOperator u( startWith );
+    if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
+      dirName = startWith;
+    } else {
+      if ( u.isLocalFile() ) {
+        QFileInfo fi( u.dirPath() );
+        if ( fi.exists() ) {
+          dirName = u.dirPath();
+          selName = u.fileName();
+        }
+      } else {
+        dirName = u.toString();
+        selName = QString::null;
+      }
     }
   }
 
   FileDialog fd( dirName, filter, parent, name, true );
+
   fd.setMode( AnyFile );
-  fd.setCaption(caption);
-  fd.setSelection(selName);
+  if ( !caption.isNull() )
+    fd.setCaption( caption );
+  else
+    fd.setCaption( FileDialog::tr( "Save as" ) );
+  if ( !selName.isEmpty() )
+    fd.setSelection( selName );
   if ( selectedFilter )
     fd.setFilter( *selectedFilter );
   if ( buttonText != QString::null )
@@ -181,6 +223,49 @@ QStringList FileDialog::getOpenFileNames ( const QString & filter, const QString
   }
 
   return lst;
+}
+
+/**
+ * Returns the working directory for the file dialog. This path can be used in
+ * combination with getSaveFileName(), getOpenFileName(), getOpenFileNames() or
+ * getExistingDirectory() to open the dialog in this path.
+ */
+QString FileDialog::getWorkingDirectory()
+{
+  QString path = QDir::currentDirPath();
+  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
+                               ->GetGroup("Preferences")->GetGroup("General");
+  path = hPath->GetASCII("FileOpenSavePath", path.latin1()).c_str();
+  return path;
+}
+
+/**
+ * Sets the working directory to \a dir for the file dialog.
+ * If \a dir is a file then the path only is taken.
+ * getWorkingDirectory() returns the working directory.
+ */
+void FileDialog::setWorkingDirectory( const QString& dir )
+{
+  QString dirName = dir;
+  if ( !dir.isEmpty() ) {
+    QUrlOperator u( dir );
+    if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
+      dirName = dir;
+    } else {
+      if ( u.isLocalFile() ) {
+        QFileInfo fi( u.dirPath() );
+        if ( fi.exists() ) {
+          dirName = u.dirPath();
+        }
+      } else {
+        dirName = u.toString();
+      }
+    }
+  }
+
+  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
+                               ->GetGroup("Preferences")->GetGroup("General");
+  hPath->SetASCII("FileOpenSavePath", dirName.latin1());
 }
 
 /**

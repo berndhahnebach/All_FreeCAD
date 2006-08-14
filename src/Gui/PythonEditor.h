@@ -149,7 +149,6 @@ public:
   //@{
   bool save   (void);
   bool saveAs (void);
-  bool open   (void);
   void cut    (void);
   void copy   (void);
   void paste  (void);

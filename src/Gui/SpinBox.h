@@ -21,12 +21,37 @@
  ***************************************************************************/
 
 
-#ifndef ___SPINBOX_H__
-#define ___SPINBOX_H__
+#ifndef GUI_SPINBOX_H
+#define GUI_SPINBOX_H
 
 #include <qspinbox.h>
+#include <qvalidator.h>
 
 namespace Gui {
+
+class GuiExport UnsignedValidator : public QValidator
+{
+  Q_OBJECT
+  Q_PROPERTY( uint bottom READ bottom WRITE setBottom )
+  Q_PROPERTY( uint top READ top WRITE setTop )
+
+public:
+  UnsignedValidator( QObject * parent, const char *name = 0 );
+  UnsignedValidator( uint bottom, uint top, QObject * parent, const char *name = 0 );
+  ~UnsignedValidator();
+
+  QValidator::State validate( QString &, int & ) const;
+
+  void setBottom( uint );
+  void setTop( uint );
+  virtual void setRange( uint bottom, uint top );
+
+  uint bottom() const { return b; }
+  uint top() const { return t; }
+
+private:
+  uint b, t;
+};
 
 /**
  * A special spin box: augmenting or diminishing its value by moving up or down
@@ -118,4 +143,4 @@ private:
 
 } // namespace Gui
 
-#endif // ___SPINBOX_H__
+#endif // GUI_SPINBOX_H

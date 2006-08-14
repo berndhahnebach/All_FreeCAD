@@ -208,7 +208,8 @@ void StdCmdFreezeViews::activated(int iMsg)
   
   if ( iMsg == 0 ) {
     // Save the views to an XML file
-    QString file = FileDialog::getSaveFileName(QString::null, "Frozen views (*.cam)", getMainWindow(),0,QT_TR_NOOP("Save frozen views"));
+    QString dir = FileDialog::getWorkingDirectory();
+    QString file = FileDialog::getSaveFileName(dir, "Frozen views (*.cam)", getMainWindow(),0,QT_TR_NOOP("Save frozen views"));
     std::ofstream str( file.latin1(), std::ios::out );
     if ( str && str.is_open() )
     {
@@ -237,7 +238,8 @@ void StdCmdFreezeViews::activated(int iMsg)
     }
   } else if ( iMsg == 1 ) {
     // Restore the views from an XML file
-    QString file = FileDialog::getOpenFileName(QString::null, "Frozen views (*.cam)", getMainWindow(),0,QT_TR_NOOP("Save frozen views"));
+    QString dir = FileDialog::getWorkingDirectory();
+    QString file = FileDialog::getOpenFileName(dir, "Frozen views (*.cam)", getMainWindow(),0,QT_TR_NOOP("Save frozen views"));
     std::ifstream str( file.latin1(), std::ios::in | std::ios::binary );
     Base::XMLReader xmlReader(file.latin1(), str);
     xmlReader.readElement("FrozenViews");

@@ -287,6 +287,7 @@ void DlgEvaluateMeshImp::onRepairOrientation()
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_HarmonizeNormals\")");
     repairOrientation->setEnabled(false);
+    textLabelOrientation->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
     setFixedMesh();
   }
@@ -404,6 +405,7 @@ void DlgEvaluateMeshImp::onRepairIndices()
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixIndices\")");
     repairIndices->setEnabled(false);
+    textLabelIndices->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
     setFixedMesh();
   }
@@ -457,6 +459,7 @@ void DlgEvaluateMeshImp::onRepairDegenerations()
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixDegenerations\")");
     repairDegenerated->setEnabled(false);
+    textLabelDegeneration->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
     setFixedMesh();
   }
@@ -510,6 +513,7 @@ void DlgEvaluateMeshImp::onRepairDuplicatedFaces()
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixDuplicateFaces\")");
     repairDupFaces->setEnabled(false);
+    textLabelDuplicatedFaces->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
     setFixedMesh();
   }
@@ -563,6 +567,7 @@ void DlgEvaluateMeshImp::onRepairDuplicatedPoints()
     Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
     Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixDuplicatePoints\")");
     repairDupPts->setEnabled(false);
+    textLabelDuplPoints->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
     setFixedMesh();
   }

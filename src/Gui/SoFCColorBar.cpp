@@ -71,6 +71,18 @@ void SoFCColorBarBase::initClass(void)
   SO_NODE_INIT_ABSTRACT_CLASS(SoFCColorBarBase,SoSeparator,"Separator");
 }
 
+void SoFCColorBarBase::GLRenderBelowPath  (  SoGLRenderAction *  action   )
+{
+  const SbViewportRegion& vp = action->getViewportRegion();
+  const SbVec2s&  size = vp.getWindowSize();
+  if ( _windowSize != size )
+  {
+    _windowSize = size;
+    setViewportSize(size);
+  }
+  SoSeparator::GLRenderBelowPath(action);
+}
+
 // --------------------------------------------------------------------------
 
 SO_NODE_SOURCE(SoFCColorBar);
@@ -117,7 +129,7 @@ SoFCColorBarBase* SoFCColorBar::getActiveBar() const
   return _colorBars[child];
 }
 
-void SoFCColorBar::setViewerSize( const SbVec2s& size )
+void SoFCColorBar::setViewportSize( const SbVec2s& size )
 {
   // don't know why the parameter range isn't between [-1,+1]
   float fRatio = ((float)size[0])/((float)size[1]);
@@ -133,9 +145,6 @@ void SoFCColorBar::setViewerSize( const SbVec2s& size )
     _fMinY =  -4.0f / fRatio;
     _fMaxY =   4.0f / fRatio;
   }
-
-  for ( std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it )
-    (*it)->setViewerSize( size );
 }
 
 void SoFCColorBar::setRange( float fMin, float fMax, int prec )

@@ -33,6 +33,7 @@
 #include "Iterator.h"
 #include "MeshKernel.h"
 #include "Algorithm.h"
+#include "Evaluation.h"
 
 
 using namespace MeshCore;
@@ -744,11 +745,12 @@ void MeshTopoAlgorithm::RefPointToFacet()
 
 void MeshTopoAlgorithm::HarmonizeNormals (void)
 {
+#if 0
   unsigned long               ulStartFacet, ulVisited;
   std::vector<unsigned long>  uIndices;
   MeshHarmonizer              clHarmonizer(uIndices);
   MeshFacetArray::_TIterator  clFIter;
-  Base::Vector3f                    clGravityPoint, clDir;
+  Base::Vector3f              clGravityPoint, clDir;
 
   if (_rclMesh.CountFacets() == 0)
     return;
@@ -756,7 +758,7 @@ void MeshTopoAlgorithm::HarmonizeNormals (void)
   // Flags zuruecksetzen
   MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
 
-  Base::Sequencer().start("harmonize normals...", _rclMesh.CountFacets() + 1);
+  Base::Sequencer().start("Harmonize normals...", _rclMesh.CountFacets() + 1);
 
   // gemeinsame Schwerpunkt aller Facets(-eckpunkte) bestimmen
   clGravityPoint.Set(0.0f, 0.0f, 0.0f);
@@ -791,6 +793,11 @@ void MeshTopoAlgorithm::HarmonizeNormals (void)
     _rclMesh._aclFacetArray[*it].FlipNormal();
  
   Base::Sequencer().stop(); 
+#else
+  std::vector<unsigned long> uIndices = MeshEvalNormals(_rclMesh).GetIndices();
+  for ( std::vector<unsigned long>::iterator it = uIndices.begin(); it != uIndices.end(); ++it )
+    _rclMesh._aclFacetArray[*it].FlipNormal();
+#endif
 }
 
 void MeshTopoAlgorithm::FlipNormals (void)
@@ -1047,37 +1054,53 @@ void MeshComponents::SearchForComponents(TMode tMode, std::vector<std::vector<un
 
 void MeshComponents::SearchForComponents(TMode tMode, const std::vector<unsigned long>& aSegment, std::vector<std::vector<unsigned long> >& aclT) const
 {
-  // reset flag
-  MeshAlgorithm(_rclMesh).SetFacetFlag(MeshFacet::VISIT);
-  MeshAlgorithm(_rclMesh).ResetFacetsFlag(aSegment, MeshFacet::VISIT);
+  unsigned long ulStartFacet, ulVisited;
 
-  // all facets
-  std::vector<unsigned long> aulAllFacets = aSegment;
+  if (_rclMesh.CountFacets() == 0)
+    return;
 
+  // reset VISIT flags
+  MeshAlgorithm cAlgo(_rclMesh);
+  cAlgo.SetFacetFlag(MeshFacet::VISIT);
+  cAlgo.ResetFacetsFlag(aSegment, MeshFacet::VISIT);
+  
+  const MeshFacetArray& rFAry = _rclMesh.GetFacets();
+  MeshFacetArray::_TConstIterator iTri = rFAry.begin();
+  MeshFacetArray::_TConstIterator iBeg = rFAry.begin();
+  MeshFacetArray::_TConstIterator iEnd = rFAry.end();
+
+  // start from the first not visited facet
+  ulVisited = cAlgo.CountFacetFlag(MeshFacet::VISIT);
+  iTri = std::find_if(iTri, iEnd, std::bind2nd(MeshIsNotFlag<MeshFacet>(), MeshFacet::VISIT));
+  ulStartFacet = iTri - iBeg;
+
+  // visitor
+  std::vector<unsigned long> aclComponent;
   std::vector<std::vector<unsigned long> > aclConnectComp;
-  while (aulAllFacets.size() > 0)
-  {
-    std::vector<unsigned long> aclComponent;
-    MeshTopFacetVisitor clFVisitor( aclComponent );
+  MeshTopFacetVisitor clFVisitor( aclComponent );
 
+  while ( ulStartFacet !=  ULONG_MAX )
+  {
     // collect all facets of a component
+    aclComponent.clear();
     if (tMode == OverEdge)
-      _rclMesh.VisitNeighbourFacets(clFVisitor, aulAllFacets.front());
+      ulVisited += _rclMesh.VisitNeighbourFacets(clFVisitor, ulStartFacet);
     else if (tMode == OverPoint)
-      _rclMesh.VisitNeighbourFacetsOverCorners(clFVisitor, aulAllFacets.front());
+      ulVisited += _rclMesh.VisitNeighbourFacetsOverCorners(clFVisitor, ulStartFacet);
 
     // get also start facet
-    aclComponent.push_back(aulAllFacets.front());
+    aclComponent.push_back(ulStartFacet);
     aclConnectComp.push_back(aclComponent);
 
-    // search for all NOT YET visited facets
-    std::vector<unsigned long> aclNotVisited;
-    std::sort(aulAllFacets.begin(), aulAllFacets.end());
-    std::sort(aclComponent.begin(), aclComponent.end());
-    std::back_insert_iterator<std::vector<unsigned long> >  pBInd(aclNotVisited);
-    std::set_difference(aulAllFacets.begin(), aulAllFacets.end(), aclComponent.begin(), aclComponent.end(), pBInd);
-  
-    aulAllFacets = aclNotVisited;
+    // if the mesh consists of several topologic independent components
+    // We can search from position 'iTri' on because all elements _before_ are already visited
+    // what we know from the previous iteration.
+    iTri = std::find_if(iTri, iEnd, std::bind2nd(MeshIsNotFlag<MeshFacet>(), MeshFacet::VISIT));
+
+    if (iTri < iEnd)
+      ulStartFacet = iTri - iBeg;
+    else
+      ulStartFacet = ULONG_MAX;
 	}
 
   // sort components by size (descending order)

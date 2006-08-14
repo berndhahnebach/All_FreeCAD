@@ -163,7 +163,7 @@ void ViewProviderMeshCurvature::init(App::DocumentObject *pcFeat)
 void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
 {
   // creats the satandard viewing modes
-  ViewProviderMesh::attach(pcFeat);
+  inherited::attach(pcFeat);
   init( pcFeat ); // init color bar
 
   SoShapeHints * flathints = new SoShapeHints;
@@ -206,7 +206,7 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
 
 void ViewProviderMeshCurvature::updateData(void)
 {
-  ViewProviderMesh::updateData();
+  inherited::updateData();
 }
 
 SoSeparator* ViewProviderMeshCurvature::getFrontRoot(void) const
@@ -306,12 +306,12 @@ void ViewProviderMeshCurvature::setMode(const char* ModeName)
     setDisplayMode("ColorShaded");
   }
 
-  ViewProviderMesh::setMode(ModeName);
+  inherited::setMode(ModeName);
 }
 
 std::list<std::string> ViewProviderMeshCurvature::getModes(void) const
 {
-  std::list<std::string> StrList = ViewProviderMesh::getModes();
+  std::list<std::string> StrList = inherited::getModes();
 
   // add modes
   StrList.push_front("Minimum curvature");

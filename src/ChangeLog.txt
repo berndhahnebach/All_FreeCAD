@@ -163,3 +163,13 @@ Version: V0.5B7 Date: Thu May 18 16:37:30 2006 +++++++++++++++++++++++++++++++
 + Box zoom implementation started
 
 Version: V0.5B8 Date: Tue Aug 01 21:53:34 2006 +++++++++++++++++++++++++++++++
++ PropertyFile added and editor implemented
++ Check whether a project file is already open and throw an exception
++ Allow to open a project file even if not everything can be loaded e.g. if a module is missing
++ Select name if a file instead of directory was given in FileDialog's getOpenFileName() or getSaveFileName() methods
++ Bug fixed in harmonizing normals of a mesh
++ speed up a lot several algorithms that searches for independant components of a mesh or searches for inhomogenous normals
++ make MeshKernel::VisitNeighbourFacets() more robust against topologic errors in mesh
++ Option added to do one- or two-side rendering of meshes
++ Dialog to enter numbers higher than the maximum of int's, i.e numbers up to 4294967295
+

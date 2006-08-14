@@ -350,12 +350,7 @@ CmdPartImport::CmdPartImport()
 
 void CmdPartImport::activated(int iMsg)
 {
-  // use current path as default
-  std::string path = QDir::currentDirPath().latin1();
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-  QString dir = path.c_str();
-
+  QString dir = Gui::FileDialog::getWorkingDirectory();
   QString filter = "STEP (*.stp *.step);;IGES (*.igs *.iges);;BREP (*.brp *.brep *.BREP);;All Files (*.*)";
   QString fn = Gui::FileDialog::getOpenFileName( dir, filter, Gui::getMainWindow() );
   if (! fn.isEmpty() )
@@ -367,8 +362,7 @@ void CmdPartImport::activated(int iMsg)
     doCommand(Doc, "Part.insert(\"%s\",\"%s\")", fn.latin1(), pDoc->getName());
     commitCommand();
 
-    QFileInfo fi; fi.setFile(fn);
-    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+    Gui::FileDialog::setWorkingDirectory(fn);
   }
 }
 
@@ -400,12 +394,7 @@ CmdPartImportCurveNet::CmdPartImportCurveNet()
 
 void CmdPartImportCurveNet::activated(int iMsg)
 {
-  // use current path as default
-  std::string path = QDir::currentDirPath().latin1();
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-  QString dir = path.c_str();
-
+  QString dir = Gui::FileDialog::getWorkingDirectory();
   QString filter = "All CAD (*.stp *. step *.igs *.iges *.brp *.brep );;STEP (*.stp *. step);;IGES (*.igs *.iges);;BREP (*.brp *.brep );;All Files (*.*)";
   QString fn = Gui::FileDialog::getOpenFileName( dir, filter, Gui::getMainWindow() );
   if (! fn.isEmpty() )
@@ -417,7 +406,7 @@ void CmdPartImportCurveNet::activated(int iMsg)
     commitCommand();
     updateActive();
 
-    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+    Gui::FileDialog::setWorkingDirectory(fn);
   }
 }
 

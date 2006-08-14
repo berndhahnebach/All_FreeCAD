@@ -35,8 +35,10 @@
 #endif
 
 #include "DlgParameterImp.h"
+#include "DlgInputDialogImp.h"
 #include "BitmapFactory.h"
 #include "FileDialog.h"
+#include "SpinBox.h"
 
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
@@ -87,6 +89,7 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal
            this, SLOT( onParameterSetChange( const QString& ) ) );
   connect( ParamGrp, SIGNAL( currentChanged( QListViewItem* ) ), 
            this, SLOT( onGroupSelected(QListViewItem *) ) );
+  onGroupSelected(ParamGrp->currentItem());
 }
 
 /** 
@@ -555,14 +558,21 @@ void ParameterValue::onCreateUIntItem()
     return;
   }
 
-  int val = QInputDialog::getInteger(QObject::tr("New unsigned item"), QObject::tr("Enter your number:"), 
-                                     0, 0, 2147483647, 1, &ok, this);
+  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),this, "Input", true);
+  dlg.setCaption(QObject::tr("New unsigned item"));
+  QLineEdit* edit = dlg.getLineEdit();
+  edit->setValidator( new Gui::UnsignedValidator(0, ULONG_MAX, &dlg) );
+  edit->setText("0");
+  if (dlg.exec() == QDialog::Accepted ) {
+    QString value = edit->text();
+    unsigned long val = value.toULong(&ok);
 
-  if ( ok )
-  {
-    ParameterValueItem *pcItem;
-    pcItem = new ParameterUInt(this,name,(unsigned long)val, _hcGrp);
-    pcItem->appendToGroup();
+    if ( ok )
+    {
+      ParameterValueItem *pcItem;
+      pcItem = new ParameterUInt(this,name, val, _hcGrp);
+      pcItem->appendToGroup();
+    }
   }
 }
 
@@ -875,12 +885,22 @@ void ParameterUInt::changeValue()
   const char* name = text(0).latin1();
   bool ok;
 
-  int num = QInputDialog::getInteger(QObject::tr("Change value"), QObject::tr("Enter your number:"), 
-                                     (int)text(2).toULong(), 0, 2147483647, 1, &ok, listView());
-  if ( ok )
+  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),listView(), "Input", true);
+  dlg.setCaption(QObject::tr("Change value"));
+  QLineEdit* edit = dlg.getLineEdit();
+  edit->setValidator( new Gui::UnsignedValidator(0, ULONG_MAX, &dlg) );
+  edit->setText(text(2));
+  
+  if (dlg.exec() == QDialog::Accepted)
   {
-    setText(2, QString("%1").arg(num));
-    _hcGrp->SetUnsigned(name, (unsigned long)num);
+    QString value = edit->text();
+    unsigned long num = value.toULong(&ok);
+
+    if ( ok )
+    {
+      setText(2, QString("%1").arg(num));
+      _hcGrp->SetUnsigned(name, (unsigned long)num);
+    }
   }
 }
 

@@ -149,13 +149,13 @@ public:
 
    /** @name additional file reading */
   //@{
-  /// add a read request of a Persitant object
+  /// add a read request of a persistent object
   const char *addFile(const char* Name, Base::Persistance *Object);
   /// process the requested file writes
   void readFiles(zipios::ZipInputStream &zipstream);
   /// get all registered file names
   const std::vector<std::string>& getFilenames() const;
-  //@{
+  //@}
 
 private:
 

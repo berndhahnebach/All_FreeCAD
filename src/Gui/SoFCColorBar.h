@@ -25,6 +25,7 @@
 #define COIN_SOFCCOLORBAR_H
 
 #include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/SbLinear.h>
 #include <Base/Observer.h>
 #include <App/ColorModel.h>
 #include <qdatetime.h>
@@ -34,6 +35,7 @@ class SoSwitch;
 class SoEventCallback;
 class SbVec2s;
 class SoHandleEventAction;
+class SoGLRenderAction;
 
 namespace Gui {
 class SoFCColorGradient;
@@ -42,7 +44,7 @@ class SoFCColorGradient;
  * The abstract color bar base class to get most important information on how to convert a scalar to an RGB color. 
  * @author Werner Mayer
  */
-class SoFCColorBarBase : public SoSeparator, public App::ValueFloatToRGB {
+class GuiExport SoFCColorBarBase : public SoSeparator, public App::ValueFloatToRGB {
   typedef SoSeparator inherited;
 
   SO_NODE_ABSTRACT_HEADER(Gui::SoFCColorBarBase);
@@ -50,12 +52,8 @@ class SoFCColorBarBase : public SoSeparator, public App::ValueFloatToRGB {
 public:
   static void initClass(void);
 
-  /**
-   * Sets the current viewer size to recalculate the new position.
-   *
-   * This method must be implemented in subclasses.
-   */
-  virtual void setViewerSize( const SbVec2s& size ) = 0;
+  virtual void GLRenderBelowPath ( SoGLRenderAction *action );
+
   /**
    * Sets the range of the colorbar from the maximum \a fMax to the minimum \a fMin.
    * \a prec indicates the post decimal positions, \a prec should be in between 0 and 6.
@@ -101,8 +99,18 @@ public:
   virtual const char* getColorBarName() const = 0;
 
 protected:
+  /**
+   * Sets the current viewer size to recalculate the new position.
+   *
+   * This method must be implemented in subclasses.
+   */
+  virtual void setViewportSize( const SbVec2s& size ) = 0;
+
   SoFCColorBarBase (void);
   virtual ~SoFCColorBarBase ();
+
+private:
+  SbVec2s _windowSize;
 };
 
 // --------------------------------------------------------------------------
@@ -128,10 +136,6 @@ public:
    * Handles the mouse button events and checks if the user has clicked on the area of the currently active color bar.
    */
   void handleEvent (SoHandleEventAction *action);
-  /**
-   * Sets the current viewer size to all color bars to recalculate their new position.
-   */
-  void setViewerSize( const SbVec2s& size );
   /**
    * Sets the range of all color bars from the maximum \a fMax to the minimum \a fMin.
    * \a prec indicates the post decimal positions, \a prec should be in between 0 and 6.
@@ -162,6 +166,11 @@ public:
   const char* getColorBarName() const { return "Color Bar"; }
 
 protected:
+  /**
+   * Sets the current viewer size to all color bars to recalculate their new position.
+   */
+  void setViewportSize( const SbVec2s& size );
+
   virtual ~SoFCColorBar();
 
 private:

@@ -38,6 +38,58 @@
 using namespace Gui;
 
 
+// -----------------------------------------------------------------------------------
+
+UnsignedValidator::UnsignedValidator( QObject * parent, const char *name )
+  : QValidator( parent, name )
+{
+  b =  0;
+  t =  UINT_MAX;
+}
+
+UnsignedValidator::UnsignedValidator( uint minimum, uint maximum, QObject * parent, const char* name )
+  : QValidator( parent, name )
+{
+  b = minimum;
+  t = maximum;
+}
+
+UnsignedValidator::~UnsignedValidator()
+{
+
+}
+
+QValidator::State UnsignedValidator::validate( QString & input, int & ) const
+{
+  QString stripped = input.stripWhiteSpace();
+  if ( stripped.isEmpty() )
+	  return Intermediate;
+  bool ok;
+  uint entered = input.toUInt( &ok );
+  if ( !ok )
+	  return Invalid;
+  else if ( entered < b || entered > t )
+	  return Intermediate;
+  else
+	  return Acceptable;
+}
+
+void UnsignedValidator::setRange( uint minimum, uint maximum )
+{
+  b = minimum;
+  t = maximum;
+}
+
+void UnsignedValidator::setBottom( uint bottom )
+{
+  setRange( bottom, top() );
+}
+
+void UnsignedValidator::setTop( uint top )
+{
+  setRange( bottom(), top );
+}
+
 namespace Gui {
 
 class SpinBoxPrivate

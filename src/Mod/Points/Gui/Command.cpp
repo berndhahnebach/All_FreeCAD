@@ -63,12 +63,7 @@ CmdPointsImport::CmdPointsImport()
 
 void CmdPointsImport::activated(int iMsg)
 {
-  // use current path as default
-  std::string path = QDir::currentDirPath().latin1();
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-  QString dir = path.c_str();
-
+  QString dir = Gui::FileDialog::getWorkingDirectory();
   QString fn = Gui::FileDialog::getOpenFileName( dir, "Ascii Points (*.asc);;All Files (*.*)", Gui::getMainWindow() );
   if ( fn.isEmpty() )
     return;
@@ -84,7 +79,7 @@ void CmdPointsImport::activated(int iMsg)
     commitCommand();
  
     updateActive();
-    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+    Gui::FileDialog::setWorkingDirectory(fn);
   }
 }
 
@@ -112,12 +107,7 @@ CmdPointsExport::CmdPointsExport()
 
 void CmdPointsExport::activated(int iMsg)
 {
-  // use current path as default
-  std::string path = QDir::currentDirPath().latin1();
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-  QString dir = path.c_str();
-
+  QString dir = Gui::FileDialog::getWorkingDirectory();
   QString fn = Gui::FileDialog::getSaveFileName( dir, "Ascii Points (*.asc);;All Files (*.*)", Gui::getMainWindow() );
   if ( fn.isEmpty() )
     return;
@@ -141,7 +131,7 @@ void CmdPointsExport::activated(int iMsg)
     doCommand(Doc,"f.Sources = l");
     commitCommand();
     updateActive();
-    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+    Gui::FileDialog::setWorkingDirectory(fn);
   }
 }
 

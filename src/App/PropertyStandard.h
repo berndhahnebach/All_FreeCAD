@@ -277,7 +277,7 @@ public:
   void setValue(const std::string &sString);
 	const char* getValue(void) const;
 
-  bool isEmpty(void){return _cValue == "";}
+  bool isEmpty(void){return _cValue.empty();}
 
   virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::TextEditorItem"; }
 
@@ -540,6 +540,19 @@ public:
 
 private:
   Material _cMat;
+};
+
+/** File properties
+ */
+class AppExport PropertyFile : public PropertyString
+{
+  TYPESYSTEM_HEADER();
+
+public:
+	PropertyFile(void);
+	virtual ~PropertyFile();
+
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FileEditorItem"; }
 };
 
 
