@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2005 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,37 +21,45 @@
  ***************************************************************************/
 
 
-#ifndef FEATURE_MESH_IMPORT_H
-#define FEATURE_MESH_IMPORT_H
+#ifndef GUI_DIALOG_DLGINPUTDIALOGIMP_H
+#define GUI_DIALOG_DLGINPUTDIALOGIMP_H
 
-#include "MeshFeature.h"
+#include "DlgInputDialog.h"
 
-#include <App/PropertyStandard.h>
-
-namespace Mesh
-{
+namespace Gui {
+namespace Dialog {
 
 /**
- * The Import class reads the any supported mesh format
- * into the FreeCAD workspace.
- * @author Werner Mayer
+ * The DlgInputDialogImp dialog class does basically the same as Qt's QInputDialog
+ * unless that it provides no static function but the application programmer must
+ * create an instance and prepare it. This requires a little more work but increases
+ * the flexibility.
+ * \author Werner Mayer
  */
-class Import : public Mesh::Feature
+class GuiExport DlgInputDialogImp : public DlgInputDialog
 {
-  PROPERTY_HEADER(Mesh::Import);
-
 public:
-  Import();
+  enum Type { LineEdit, SpinBox, FloatSpinBox, ComboBox };
 
-  App::PropertyFile FileName;
+  DlgInputDialogImp( const QString& label, QWidget* parent = 0, const char* name = 0, 
+    bool modal = TRUE, Type = LineEdit );
+  ~DlgInputDialogImp();
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual int execute(void);
-  //@}
+  void setType( Type t );
+  Type type() const;
+
+  Gui::SpinBox *getSpinBox() const;
+  Gui::FloatSpinBox *getFloatSpinBox() const;
+  QLineEdit *getLineEdit() const;
+  QComboBox *getComboBox() const;
+
+protected:
+  void textChanged( const QString &s );
+  void tryAccept();
+  Type inputtype;
 };
 
-}
+} // namespace Dialog
+} // namespace Gui
 
-#endif // FEATURE_MESH_IMPORT_H 
+#endif // GUI_DIALOG_DLGINPUTDIALOGIMP_H

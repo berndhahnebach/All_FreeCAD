@@ -57,7 +57,6 @@ protected:
 
 
 private:
-  static void selNode(SoAction *action,SoNode *node);
   static void callDoAction(SoAction *action,SoNode *node);
 };
 
@@ -82,7 +81,6 @@ protected:
   virtual void beginTraversal(SoNode *node);
 
 private:
-  static void selNode(SoAction *action,SoNode *node);
   static void callDoAction(SoAction *action,SoNode *node);
 };
 
@@ -107,7 +105,6 @@ protected:
   virtual void beginTraversal(SoNode *node);
 
 private:
-  static void selNode(SoAction *action,SoNode *node);
   static void callDoAction(SoAction *action,SoNode *node);
 };
 
@@ -132,7 +129,6 @@ protected:
   virtual void beginTraversal(SoNode *node);
 
 private:
-  static void selNode(SoAction *action,SoNode *node);
   static void callDoAction(SoAction *action,SoNode *node);
 };
 
@@ -157,7 +153,6 @@ protected:
   virtual void beginTraversal(SoNode *node);
 
 private:
-  static void selNode(SoAction *action,SoNode *node);
   static void callDoAction(SoAction *action,SoNode *node);
 };
 
@@ -182,7 +177,6 @@ protected:
   virtual void beginTraversal(SoNode *node);
 
 private:
-  static void selNode(SoAction *action,SoNode *node);
   static void callDoAction(SoAction *action,SoNode *node);
 };
 

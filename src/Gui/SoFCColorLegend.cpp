@@ -101,7 +101,7 @@ void SoFCColorLegend::setMarkerLabel( const SoMFString& label )
   }
 }
 
-void SoFCColorLegend::setViewerSize( const SbVec2s& size )
+void SoFCColorLegend::setViewportSize( const SbVec2s& size )
 {
   float fRatio = ((float)size[0])/((float)size[1]);
   float fMinX=  4.0f, fMaxX=4.5f;
@@ -157,8 +157,8 @@ void SoFCColorLegend::setViewerSize( const SbVec2s& size )
   {
     float w = (float)j/(float)(ct-1);
     float fPosY = (1.0f-w)*fMaxY + w*fMinY;
-  	coords->point.set1Value(2*j, fMinX, fPosY, 0.0f);
-  	coords->point.set1Value(2*j+1, fMaxX, fPosY, 0.0f);
+    coords->point.set1Value(2*j, fMinX, fPosY, 0.0f);
+    coords->point.set1Value(2*j+1, fMaxX, fPosY, 0.0f);
   }
 }
 
@@ -190,8 +190,8 @@ void SoFCColorLegend::setColorModel( App::ColorGradient::TColorModel tModel )
   {
     float w = (float)i/(float)(uCtColors-1);
     float fPosY = (1.0f-w)*fMaxY + w*fMinY;
-  	coords->point.set1Value(2*i, fMinX, fPosY, 0.0f);
-  	coords->point.set1Value(2*i+1, fMaxX, fPosY, 0.0f);
+    coords->point.set1Value(2*i, fMinX, fPosY, 0.0f);
+    coords->point.set1Value(2*i+1, fMaxX, fPosY, 0.0f);
   }
 
   // for uCtColors colors we need 2*(uCtColors-1) facets and therefore an array with
@@ -227,8 +227,8 @@ void SoFCColorLegend::setColorModel( App::ColorGradient::TColorModel tModel )
   if ( getNumChildren() > 0 )
     removeAllChildren();
   addChild(labels);
-	addChild(coords);
+  addChild(coords);
   addChild(mat);
   addChild(matBinding);
-	addChild(faceset);
+  addChild(faceset);
 }

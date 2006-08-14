@@ -143,7 +143,7 @@ void View3DInventorViewer::addViewProvider(ViewProvider* pcProvider)
   
   _ViewProviderSet.insert(pcProvider);
 
-  sizeChanged( getSize() );
+  //sizeChanged( getSize() );
 }
 
 void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
@@ -279,7 +279,7 @@ void View3DInventorViewer::setGradientBackgroud(bool b)
     backgroundroot->addChild( pcBackGround );
   else if(!b && backgroundroot->findChild(pcBackGround) != -1)
     backgroundroot->removeChild( pcBackGround );
-  sizeChanged(getSize());
+  //sizeChanged(getSize());
 }
 
 void View3DInventorViewer::setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor )
@@ -501,23 +501,23 @@ bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
 void View3DInventorViewer::sizeChanged( const SbVec2s& size )
 {
   // searching in the background node
-  if ( this->backgroundroot->getNumChildren() > 1 ) {
-    SoNode* child = this->backgroundroot->getChild(1);
-    if ( child && child->getTypeId() == SoFCBackgroundGradient::getClassTypeId() )
-    {
-      reinterpret_cast<SoFCBackgroundGradient*>(child)->setViewerSize( size );
-    }
-  }
-  
-  // searching in the foreground node
-  for ( int i=0; i<this->foregroundroot->getNumChildren(); i++ )
-  {
-    SoNode* child = this->foregroundroot->getChild(i);
-    if ( child && child->getTypeId().isDerivedFrom( SoFCColorBarBase::getClassTypeId() ) )
-    {
-      reinterpret_cast<SoFCColorBarBase*>(child)->setViewerSize( size );
-    }
-  }
+//  if ( this->backgroundroot->getNumChildren() > 1 ) {
+//    SoNode* child = this->backgroundroot->getChild(1);
+//    if ( child && child->getTypeId() == SoFCBackgroundGradient::getClassTypeId() )
+//    {
+//      reinterpret_cast<SoFCBackgroundGradient*>(child)->setViewerSize( size );
+//    }
+//  }
+//  
+//  // searching in the foreground node
+//  for ( int i=0; i<this->foregroundroot->getNumChildren(); i++ )
+//  {
+//    SoNode* child = this->foregroundroot->getChild(i);
+//    if ( child && child->getTypeId().isDerivedFrom( SoFCColorBarBase::getClassTypeId() ) )
+//    {
+//      reinterpret_cast<SoFCColorBarBase*>(child)->setViewerSize( size );
+//    }
+//  }
 
   inherited::sizeChanged( size );
 }

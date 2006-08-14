@@ -223,14 +223,28 @@ void Base::XMLReader::readCharacters(void)
 
 void Base::XMLReader::readFiles(zipios::ZipInputStream &zipstream)
 {
+  // It's possible that not all objects inside the document could be created, e.g. if a module
+  // is missing that would know these object types. So, there may be data files inside the document
+  // structure that cannot be read. This means that the number of registered files is less or equal
+  // to the number of available files. However, it's guaranteed that the order of the files is kept.
   for ( std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it )
   {
     zipios::ConstEntryPointer entry = zipstream.getNextEntry();
-    if ( entry->isValid() && entry->getName() == it->FileName )
-    {
+
+    // Check if the current file is registered, otherwise check the next files as soon as
+    // both file names match.
+    while ( entry->isValid() && entry->getName() != it->FileName )
+      entry = zipstream.getNextEntry();
+    if ( entry->isValid() )
       it->Object->RestoreDocFile( zipstream );
-    }else
+    else
       throw Exception("Base::XMLReader::readFiles(): Files in ZIP not in the right order!");
+//    zipios::ConstEntryPointer entry = zipstream.getNextEntry();
+//    if ( entry->isValid() && entry->getName() == it->FileName )
+//    {
+//      it->Object->RestoreDocFile( zipstream );
+//    }else
+//      throw Exception("Base::XMLReader::readFiles(): Files in ZIP not in the right order!");
   }
 }
 
@@ -245,6 +259,11 @@ const char *Base::XMLReader::addFile(const char* Name, Base::Persistance *Object
   FileNames.push_back( temp.FileName );
 
   return Name;
+}
+
+const std::vector<std::string>& Base::XMLReader::getFilenames() const
+{
+  return FileNames;
 }
 
 // ---------------------------------------------------------------------------

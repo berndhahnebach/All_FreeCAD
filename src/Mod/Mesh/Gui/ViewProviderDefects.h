@@ -153,6 +153,9 @@ public:
 
   void attach(App::DocumentObject* pcFeature);
   void showDefects();
+
+protected:
+  SoFaceSet* pcFaces;
 };
 
 } // namespace MeshGui

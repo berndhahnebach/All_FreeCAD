@@ -42,13 +42,15 @@ public:
   static void initClass(void);
   SoFCBackgroundGradient(void);
 
-  void setViewerSize( const SbVec2s& size );
+  void GLRenderBelowPath ( SoGLRenderAction *action );
   void setColorGradient( const SbColor& fromColor, const SbColor& toColor );
 
 protected:
+  void setViewportSize( const SbVec2s& size );
   virtual ~SoFCBackgroundGradient();
 
   SoCoordinate3* coords;
+  SbVec2s viewsize;
 };
 
 } // namespace Gui

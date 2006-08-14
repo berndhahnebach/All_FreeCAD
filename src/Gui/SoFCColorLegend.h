@@ -44,7 +44,6 @@ public:
   SoFCColorLegend(void);
 
   void setMarkerLabel( const SoMFString& label );
-  void setViewerSize( const SbVec2s& size );
 
   /**
    * Sets the range of the colorbar from the maximum \a fMax to the minimum \a fMin.
@@ -72,6 +71,7 @@ public:
 //  virtual void GLRenderInPath(SoGLRenderAction * action);
 
 protected:
+  void setViewportSize( const SbVec2s& size );
   virtual ~SoFCColorLegend();
 //  virtual void redrawHighlighted(SoAction * act, SbBool  flag);
 

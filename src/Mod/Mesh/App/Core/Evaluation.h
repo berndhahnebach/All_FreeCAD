@@ -28,6 +28,7 @@
 #include <math.h>
 
 #include "MeshKernel.h"
+#include "Visitor.h"
 
 namespace MeshCore {
 
@@ -83,6 +84,40 @@ protected:
 };
 
 // ----------------------------------------------------
+
+/**
+ * This class searches for inconsistent orientation of neighboured facets.
+ * @author Werner Mayer
+ */
+class AppMeshExport MeshOrientationChecker : public MeshFacetVisitor
+{
+public:
+  MeshOrientationChecker();
+
+  /** Returns false after the first inconsistence is found, true otherwise. */
+  bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long );
+  bool HasWrongOrientatedFacet() const;
+
+private:
+  bool _wrongOrientation;
+};
+
+/**
+ * This class searches for inconsistent orientation of neighboured facets.
+ * Note: The 'TMP0' flag for facets must be resetted before using this class.
+ * @author Werner Mayer
+ */
+class AppMeshExport MeshOrientationCollector : public MeshOrientationChecker
+{
+public:
+  MeshOrientationCollector(std::vector<unsigned long>& aulIndices);
+
+  /** Returns always true and collects the indices with wrong orientation. */
+  bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long );
+
+private:
+  std::vector<unsigned long>& _aulIndices;
+};
 
 /**
  * The MeshEvalNormals class checks the mesh kernel for consistent facet normals.
@@ -206,6 +241,7 @@ public:
   MeshEvalNeighbourhood (const MeshKernel &rclB) : MeshEvaluation(rclB) {}
   ~MeshEvalNeighbourhood () {}
   bool Evaluate ();
+  std::vector<unsigned long> GetIndices() const;
 };
 
 /**

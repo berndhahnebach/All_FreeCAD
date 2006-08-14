@@ -33,6 +33,8 @@
 # include <qlayout.h>
 #endif
 
+#include <App/PropertyStandard.h>
+
 #include "../FileDialog.h"
 
 #include "propertyeditorfile.h"
@@ -94,7 +96,7 @@ void FileEditorItem::onChangeFile()
 
   if ( btn )
   {
-    QString url = QFileDialog::getOpenFileName(QString::null, QString::null, listView(), tr("Choose a file"));
+    QString url = FileDialog::getOpenFileName(QString::null, QString::null, listView(), tr("Choose a file"));
     if ( !url.isEmpty() )
     {
       onValueChanged();
@@ -105,13 +107,37 @@ void FileEditorItem::onChangeFile()
 
 QVariant FileEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
+  QString txt = "";
+  bool equal = true;
+  for ( std::vector<App::Property*>::const_iterator it = prop.begin(); it != prop.end(); ++it )
+  {
+    App::PropertyString* pPropChar = (App::PropertyString*)*it;
+    if ( it == prop.begin() )
+      txt = pPropChar->getValue();
+    else 
+      equal &= ( txt == pPropChar->getValue() );
+  }
+
+  // set empty text when the properties are different
+  if ( !equal )
+    txt = "";
+
+  setText( 1, txt );
+
   QVariant var;
-  var.asCString() = "";
+  var.asCString() = txt;
   return var;
 }
 
-void FileEditorItem::convertToProperty(const QVariant&)
+void FileEditorItem::convertToProperty(const QVariant& val)
 {
+  QCString value = val.toCString();
+  QString file = value;
+  for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
+  {
+    App::PropertyFile* pPropFile = (App::PropertyFile*)*it;
+    pPropFile->setValue( file.ascii() );
+  }
 }
 
 // ======================================================================

@@ -159,14 +159,21 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
   pcFaceSet = new SoFCMeshFaceSet;
   pcHighlight->addChild(pcFaceSet);
 
-  // enable two-side rendering
-  SoShapeHints * flathints = new SoShapeHints;
-  flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-  flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-
   // faces
   SoGroup* pcFlatRoot = new SoGroup();
-  pcFlatRoot->addChild(flathints);
+
+  // read the correct shape color from the preferences
+  FCHandle<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
+  bool twoSide = hGrp->GetBool("TwoSideRendering", true);
+  if ( twoSide )
+  {
+    // enable two-side rendering
+    SoShapeHints * flathints = new SoShapeHints;
+    flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
+    flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+    pcFlatRoot->addChild(flathints);
+  }
+
   pcFlatRoot->addChild(pcShapeMaterial);
   pcFlatRoot->addChild(pcHighlight);
   addDisplayMode(pcFlatRoot, "Flat");

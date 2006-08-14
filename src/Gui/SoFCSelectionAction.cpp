@@ -128,7 +128,7 @@ void SoFCSelectionAction::initClass()
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
-  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+  SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
 
@@ -147,11 +147,6 @@ SoFCSelectionAction::~SoFCSelectionAction()
 void SoFCSelectionAction::beginTraversal(SoNode *node)
 {
   traverse(node);
-}
-
-void SoFCSelectionAction::selNode(SoAction *action,SoNode *node)
-{
-  node->doAction(action);
 }
 
 void SoFCSelectionAction::callDoAction(SoAction *action,SoNode *node)
@@ -210,7 +205,7 @@ void SoFCEnableSelectionAction::initClass()
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
-  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+  SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
 
@@ -229,11 +224,6 @@ SoFCEnableSelectionAction::~SoFCEnableSelectionAction()
 void SoFCEnableSelectionAction::beginTraversal(SoNode *node)
 {
   traverse(node);
-}
-
-void SoFCEnableSelectionAction::selNode(SoAction *action,SoNode *node)
-{
-  node->doAction(action);
 }
 
 void SoFCEnableSelectionAction::callDoAction(SoAction *action,SoNode *node)
@@ -292,7 +282,7 @@ void SoFCEnableHighlightAction::initClass()
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
-  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+  SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
 
@@ -311,11 +301,6 @@ SoFCEnableHighlightAction::~SoFCEnableHighlightAction()
 void SoFCEnableHighlightAction::beginTraversal(SoNode *node)
 {
   traverse(node);
-}
-
-void SoFCEnableHighlightAction::selNode(SoAction *action,SoNode *node)
-{
-  node->doAction(action);
 }
 
 void SoFCEnableHighlightAction::callDoAction(SoAction *action,SoNode *node)
@@ -374,7 +359,7 @@ void SoFCSelectionColorAction::initClass()
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
-  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+  SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
 
@@ -393,11 +378,6 @@ SoFCSelectionColorAction::~SoFCSelectionColorAction()
 void SoFCSelectionColorAction::beginTraversal(SoNode *node)
 {
   traverse(node);
-}
-
-void SoFCSelectionColorAction::selNode(SoAction *action,SoNode *node)
-{
-  node->doAction(action);
 }
 
 void SoFCSelectionColorAction::callDoAction(SoAction *action,SoNode *node)
@@ -456,7 +436,7 @@ void SoFCHighlightColorAction::initClass()
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
-  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+  SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
 
@@ -475,11 +455,6 @@ SoFCHighlightColorAction::~SoFCHighlightColorAction()
 void SoFCHighlightColorAction::beginTraversal(SoNode *node)
 {
   traverse(node);
-}
-
-void SoFCHighlightColorAction::selNode(SoAction *action,SoNode *node)
-{
-  node->doAction(action);
 }
 
 void SoFCHighlightColorAction::callDoAction(SoAction *action,SoNode *node)
@@ -538,7 +513,7 @@ void SoFCDocumentAction::initClass()
   SO_ACTION_ADD_METHOD(SoSwitch,callDoAction);
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
-  SO_ACTION_ADD_METHOD(SoFCSelection,selNode);
+  SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
 
@@ -557,11 +532,6 @@ SoFCDocumentAction::~SoFCDocumentAction()
 void SoFCDocumentAction::beginTraversal(SoNode *node)
 {
   traverse(node);
-}
-
-void SoFCDocumentAction::selNode(SoAction *action,SoNode *node)
-{
-  node->doAction(action);
 }
 
 void SoFCDocumentAction::callDoAction(SoAction *action,SoNode *node)

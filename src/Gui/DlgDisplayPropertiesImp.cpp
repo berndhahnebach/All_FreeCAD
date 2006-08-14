@@ -26,7 +26,6 @@
 #ifndef _PreComp_
 # include <qcombobox.h>
 # include <qiconview.h>
-# include <qfiledialog.h>
 # include <qlabel.h>
 # include <qlineedit.h>
 # include <qspinbox.h>

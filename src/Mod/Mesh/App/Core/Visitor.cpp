@@ -33,6 +33,7 @@ using namespace MeshCore;
 unsigned long MeshKernel::VisitNeighbourFacets (MeshFacetVisitor &rclFVisitor, unsigned long ulStartFacet) const
 {
   unsigned long ulVisited = 0, i, j, ulLevel = 0;
+  unsigned long ulCount = _aclFacetArray.size();
   std::vector<unsigned long> clCurrentLevel, clNextLevel;
   std::vector<unsigned long>::iterator  clCurrIter;  
   MeshFacetArray::_TConstIterator clCurrFacet, clNBFacet;
@@ -55,6 +56,9 @@ unsigned long MeshKernel::VisitNeighbourFacets (MeshFacetVisitor &rclFVisitor, u
         j = clCurrFacet->_aulNeighbours[i]; // Index Nachbar-Facet
         if (j == ULONG_MAX) 
           continue;      // kein Nachbarn-Facet vorhanden
+
+        if (j >= ulCount) 
+          continue;      // Fehler in der Datenstruktur
 
         clNBFacet = _aclFacetArray.begin() + j;
 

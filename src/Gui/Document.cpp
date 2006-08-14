@@ -46,6 +46,7 @@
 #include "Document.h"
 #include "DocumentPy.h"
 #include "Command.h"
+#include "FileDialog.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 #include "BitmapFactory.h"
@@ -410,12 +411,12 @@ bool Document::saveAs(void)
 {
   getMainWindow()->statusBar()->message(QObject::tr("Saving file under new filename..."));
 
-  // use current path as default
-  std::string path = QDir::currentDirPath().latin1();
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-	QString dir = path.c_str();
-  QString fn = QFileDialog::getSaveFileName(dir, "FreeCAD (*.FCStd)", getMainWindow());
+  QString dir = Gui::FileDialog::getWorkingDirectory();
+#ifdef FC_OS_WIN32
+  QString fn = QFileDialog::getSaveFileName(dir, "FreeCAD document (*.FCStd)", getMainWindow());
+#else
+  QString fn = FileDialog::getSaveFileName(dir, "FreeCAD document (*.FCStd)", getMainWindow());
+#endif
   if (!fn.isEmpty())
   {
     if ( !fn.endsWith(".FCStd"))
@@ -427,7 +428,7 @@ bool Document::saveAs(void)
 
     QFileInfo fi;
 		fi.setFile(fn);
-    hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+    Gui::FileDialog::setWorkingDirectory(fn);
     getMainWindow()->appendRecentFile( fi.filePath().latin1() );
     return true;
   }
@@ -447,10 +448,18 @@ void Document::Save (Base::Writer &writer) const
 
 void Document::Restore(Base::XMLReader &reader)
 {
+  reader.addFile("GuiDocument.xml",this);
+}
+
+void Document::RestoreDocFile(Base::Reader &reader)
+{
+  // We must create an XML parser to read from the input stream
+  Base::XMLReader xmlReader("GuiDocument.xml", reader);
+
   int i,Cnt;
 
-  reader.readElement("Document");
-  long scheme = reader.getAttributeAsInteger("SchemaVersion");
+  xmlReader.readElement("Document");
+  long scheme = xmlReader.getAttributeAsInteger("SchemaVersion");
 
   // At this stage all the document objects and their associated view providers exist.
   // Now we must restore the properties of the view providers only.
@@ -458,16 +467,16 @@ void Document::Restore(Base::XMLReader &reader)
   // SchemeVersion "1"
   if ( scheme == 1 ) {
     // read the viewproviders itself
-    reader.readElement("ViewProviderData");
-    Cnt = reader.getAttributeAsInteger("Count");
+    xmlReader.readElement("ViewProviderData");
+    Cnt = xmlReader.getAttributeAsInteger("Count");
     for(i=0 ;i<Cnt ;i++)
     {
-      reader.readElement("ViewProvider");
-      string name = reader.getAttribute("name");
+      xmlReader.readElement("ViewProvider");
+      string name = xmlReader.getAttribute("name");
       ViewProvider* pObj = getViewProviderByName(name.c_str());
       if(pObj) // check if this feature has been registered
       {
-        pObj->Restore(reader);
+        pObj->Restore(xmlReader);
 
         // As the view providers don't get notified when their proprties change while reading we must force this here
         std::map<std::string,App::Property*> Map;
@@ -475,13 +484,13 @@ void Document::Restore(Base::XMLReader &reader)
         for ( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
           it->second->touch();
       }
-      reader.readEndElement("ViewProvider");
+      xmlReader.readEndElement("ViewProvider");
     }
-    reader.readEndElement("ViewProviderData");
+    xmlReader.readEndElement("ViewProviderData");
 
     // read camera settings
-    reader.readElement("Camera");
-    const char* ppReturn = reader.getAttribute("settings");
+    xmlReader.readElement("Camera");
+    const char* ppReturn = xmlReader.getAttribute("settings");
     std::string sMsg = "SetCamera ";
     sMsg += ppReturn;
     if ( strcmp(ppReturn, "") != 0 ) { // non-empty attribute
@@ -490,14 +499,7 @@ void Document::Restore(Base::XMLReader &reader)
     }
   }
 
-  reader.readEndElement("Document");
-}
-
-void Document::RestoreDocFile(Base::Reader &reader)
-{
-  // We must create an XML parser to read from the input stream
-  Base::XMLReader xmlReader("GuiDocument.xml", reader);
-  Restore(xmlReader);
+  xmlReader.readEndElement("Document");
 }
 
 void Document::SaveDocFile (Base::Writer &writer) const
@@ -676,7 +678,7 @@ bool Document::isLastView(void)
  */
 void Document::canClose ( QCloseEvent * e )
 {
-  if(! _pcDocument->isSaved() || isModified() // at the moment we cannot determine if a saved document has been modified
+  if(/*! _pcDocument->isSaved() ||*/ isModified() // at the moment we cannot determine if a saved document has been modified
     //&& _pcDocument->GetOCCDoc()->StorageVersion() < _pcDocument->GetOCCDoc()->Modifications() 
     //&& _pcDocument->GetOCCDoc()->CanClose() == CDM_CCS_OK
       )

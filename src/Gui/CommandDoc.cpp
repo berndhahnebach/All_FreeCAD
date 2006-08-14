@@ -40,6 +40,7 @@
 #include "Application.h"
 #include "Document.h"
 #include "Command.h"
+#include "FileDialog.h"
 #include "MainWindow.h"
 #include "BitmapFactory.h"
 #include "Selection.h"
@@ -93,20 +94,18 @@ void StdCmdOpen::activated(int iMsg)
   }
   EndingList += "All files (*.*)";
   
-  // use current path as default
-  std::string path = QDir::currentDirPath().latin1();
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("General");
-  path = hPath->GetASCII("FileOpenSavePath", path.c_str());
-	QString dir = path.c_str();
+  QString dir = FileDialog::getWorkingDirectory();
+#ifdef FC_OS_WIN32
   QStringList FileList = QFileDialog::getOpenFileNames( EndingList.c_str(),dir, getMainWindow() );
+#else
+  QStringList FileList = FileDialog::getOpenFileNames( EndingList.c_str(),dir, getMainWindow() );
+#endif
 
   int n=0;
   for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
     getGuiApplication()->open((*it).latin1());
 		if (n == 0) {
-      QFileInfo fi;
-			fi.setFile(*it);
-      hPath->SetASCII("FileOpenSavePath", fi.dirPath(true).latin1());
+      FileDialog::setWorkingDirectory(*it);
 			n++;
 		}
   }

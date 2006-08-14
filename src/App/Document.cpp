@@ -391,7 +391,11 @@ void Document::Restore(Base::XMLReader &reader)
       string type = reader.getAttribute("type");
       string name = reader.getAttribute("name");
 
-      addObject(type.c_str(),name.c_str());
+      try {
+        addObject(type.c_str(),name.c_str());
+      } catch ( Base::Exception& ) {
+        Base::Console().Message("Cannot create object '%s'\n", name.c_str());
+      }
     }
     reader.readEndElement("Features");
 
@@ -422,7 +426,11 @@ void Document::Restore(Base::XMLReader &reader)
       string type = reader.getAttribute("type");
       string name = reader.getAttribute("name");
 
-      addObject(type.c_str(),name.c_str());
+      try {
+        addObject(type.c_str(),name.c_str());
+      } catch ( Base::Exception& ) {
+        Base::Console().Message("Cannot create object '%s'\n", name.c_str());
+      }
     }
     reader.readEndElement("Objects");
 
@@ -571,11 +579,23 @@ bool Document::open (void)
 
     Notify(DocChange);
 
-    // Special handling for Gui document
+    // Special handling for Gui document, the view representations must already
+    // exist, what is done in Notify().
     if (pDocumentHook) {
-      zipios::ConstEntryPointer entry = zipstream.getNextEntry();
-      if ( entry->isValid() ) {
-        pDocumentHook->RestoreDocFile( zipstream );
+      pDocumentHook->Restore( reader );
+      const std::vector<std::string>& files = reader.getFilenames();
+      if ( !files.empty() ) {
+        // That's the name of the GUI related stuff
+        std::string GuiDocument = files.back();
+        zipios::ConstEntryPointer entry = zipstream.getNextEntry();
+        // If this file is there then we search for it. 
+        // Note: This file doesn't need to be available if the document has been created
+        // without GUI. But if available then it's the last file inside the ZIP.  
+        while ( entry->isValid() && entry->getName() != GuiDocument )
+          entry = zipstream.getNextEntry();
+        // Okay, the file is available
+        if ( entry->isValid() )
+          pDocumentHook->RestoreDocFile( zipstream );
       }
     }
 

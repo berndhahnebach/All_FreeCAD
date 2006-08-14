@@ -54,8 +54,9 @@ namespace MeshGui {
  *
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshCurvature : public ViewProviderMesh, public Base::Observer<int>
-{
+class GuiMeshExport ViewProviderMeshCurvature : public ViewProviderMesh, public Base::Observer<int> {
+  typedef ViewProviderMesh inherited;
+
   PROPERTY_HEADER(MeshGui::ViewProviderMeshCurvature);
 
 public:

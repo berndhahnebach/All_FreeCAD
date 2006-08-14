@@ -34,7 +34,6 @@
 #include "Evaluation.h"
 #include "Iterator.h"
 #include "Algorithm.h"
-#include "Visitor.h"
 #include "MeshIO.h"
 #include "Helpers.h"
 #include "Grid.h"
@@ -46,94 +45,70 @@
 using namespace MeshCore;
 
 
-/**
- * This class searches for inconsistent orientation of neighboured facets. 
- */
-class MeshWrongOrientation : public MeshFacetVisitor
+MeshOrientationChecker::MeshOrientationChecker() : _wrongOrientation(false)
 {
-public:
-  MeshWrongOrientation(std::vector<unsigned long>& aulVisited)
-    : _raulVisited(aulVisited), _wrongOrientation(false)
-  {
-  }
+}
 
-  bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel)
-  {
-    _raulVisited.push_back(ulFInd);
-    unsigned long i, j;
-  
-    // check the orientation of two neighboured facets
-    for (i = 0; i < 3; i++)
-    {
-      for (j = 0; j < 3; j++)
-      {
-        // sharing two same points?
-        if (rclFrom._aulPoints[i] == rclFacet._aulPoints[j])
-        { 
-          if ((rclFrom._aulPoints[(i+1)%3] == rclFacet._aulPoints[(j+1)%3]))
-          {
-            _wrongOrientation = true;
-            return false;
-          } 
-        }
-      }
-    }
-
-    return true;
-  }
-
-  bool HasWrongOrientatedFacet() const
-  {
-    return _wrongOrientation;
-  }
-
-private:
-  std::vector<unsigned long>& _raulVisited;
-  bool _wrongOrientation;
-};
-
-/**
- * This class searches for inconsistent orientation of neighboured facets. 
- * Note: The 'TMP0' flag for facets must be restted before using this class.
- */
-class MeshWrongOrientationCollect : public MeshWrongOrientation
+bool MeshOrientationChecker::Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, 
+                                    unsigned long ulFInd, unsigned long ulLevel)
 {
-public:
-  MeshWrongOrientationCollect(std::vector<unsigned long>& aulVisited, std::vector<unsigned long>& aulIndices)
-    : MeshWrongOrientation(aulVisited), _aulIndices(aulIndices)
+  // Normale an Vorgaenger-Facet angleichen => Umlaufrichtung gegenseitig
+  for (int i = 0; i < 2; i++)
   {
-  }
-
-  bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long ulLevel)
-  {
-    // different orientation of rclFacet and rclFrom
-    if ( !MeshWrongOrientation::Visit(rclFacet, rclFrom, ulFInd, ulLevel) )
+    for (int j = 0; j < 3; j++)
     {
-      // is not marked as false oriented
-      if ( !rclFrom.IsFlag(MeshFacet::TMP0) )
-      {
-        // mark this facet as false oriented
-        rclFacet.SetFlag(MeshFacet::TMP0);
-        _aulIndices.push_back( ulFInd );
+      if (rclFrom._aulPoints[i] == rclFacet._aulPoints[j])
+      {  // gemeinsamer Punkt
+        if ((rclFrom._aulPoints[i+1]     == rclFacet._aulPoints[(j+1)%3]) ||
+            (rclFrom._aulPoints[(i+2)%3] == rclFacet._aulPoints[(j+2)%3]))
+        {
+          _wrongOrientation = true;
+          return false;
+        } 
       }
     }
-    else
-    {
-      // same orientation but if the neighbour rclFrom is false oriented then rclFrom is also false oriented
-      if ( rclFrom.IsFlag(MeshFacet::TMP0) )
-      {
-        // mark this facet as false oriented
-        rclFacet.SetFlag(MeshFacet::TMP0);
-        _aulIndices.push_back( ulFInd );
-      }
-    }
-
-    return true;
   }
 
-private:
-  std::vector<unsigned long>& _aulIndices;
-};
+  return true;
+}
+
+bool MeshOrientationChecker::HasWrongOrientatedFacet() const
+{
+  return _wrongOrientation;
+}
+
+MeshOrientationCollector::MeshOrientationCollector(std::vector<unsigned long>& aulIndices)
+ : _aulIndices(aulIndices)
+{
+}
+
+bool MeshOrientationCollector::Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, 
+                                      unsigned long ulFInd, unsigned long ulLevel)
+{
+  // different orientation of rclFacet and rclFrom
+  if ( !MeshOrientationChecker::Visit(rclFacet, rclFrom, ulFInd, ulLevel) )
+  {
+    // is not marked as false oriented
+    if ( !rclFrom.IsFlag(MeshFacet::TMP0) )
+    {
+      // mark this facet as false oriented
+      rclFacet.SetFlag(MeshFacet::TMP0);
+      _aulIndices.push_back( ulFInd );
+    }
+  }
+  else
+  {
+    // same orientation but if the neighbour rclFrom is false oriented then rclFrom is also false oriented
+    if ( rclFrom.IsFlag(MeshFacet::TMP0) )
+    {
+      // mark this facet as false oriented
+      rclFacet.SetFlag(MeshFacet::TMP0);
+      _aulIndices.push_back( ulFInd );
+    }
+  }
+
+  return true;
+}
 
 // ----------------------------------------------------
 
@@ -155,43 +130,33 @@ bool MeshEvalNormals::Evaluate ()
 
   // reset VISIT flags
   MeshAlgorithm(_rclMesh).ResetFacetFlag(MeshFacet::VISIT);
+  
+  const MeshFacetArray& rFAry = _rclMesh.GetFacets();
+  MeshFacetArray::_TConstIterator iTri = rFAry.begin();
+  MeshFacetArray::_TConstIterator iBeg = rFAry.begin();
+  MeshFacetArray::_TConstIterator iEnd = rFAry.end();
 
   ulVisited = 0;
   ulStartFacet = 0;
-
-  // all facet indices
-  std::vector<unsigned long> aAllFacets(_rclMesh.CountFacets());
-  unsigned long k = 0;
-  for (std::vector<unsigned long>::iterator pI = aAllFacets.begin(); pI != aAllFacets.end(); pI++)
-    *pI = k++;
-
-  // if the mesh consists of several topologic independent components
-  while ( true ) // while unvisited facets are available
+  MeshOrientationChecker clOrientation;
+ 
+  while ( ulStartFacet !=  ULONG_MAX )
   {
-    if ( aAllFacets.size() > 0 )
-      ulStartFacet = aAllFacets.front();
-    else
-      return true; // no more facets to visit
-
-    std::vector<unsigned long> aComponent;
-
-    // get start facet first
-    aComponent.push_back(ulStartFacet);
-    MeshWrongOrientation clOrientation(aComponent);
     ulVisited += _rclMesh.VisitNeighbourFacets(clOrientation, ulStartFacet);
 
     // return immediately after having found one "wrong" facet
     if ( clOrientation.HasWrongOrientatedFacet() )
       return false;
 
-    // search for all NOT YET visited facets
-    std::vector<unsigned long> aNotVisited;
-    std::sort(aAllFacets.begin(), aAllFacets.end());
-    std::sort(aComponent.begin(), aComponent.end());
-    std::back_insert_iterator<std::vector<unsigned long> >  pBInd(aNotVisited);
-    std::set_difference(aAllFacets.begin(), aAllFacets.end(), aComponent.begin(), aComponent.end(), pBInd);
-  
-    aAllFacets = aNotVisited;
+    // if the mesh consists of several topologic independent components
+    // We can search from position 'iTri' on because all elements _before_ are already visited
+    // what we know from the previous iteration.
+    iTri = std::find_if(iTri, iEnd, std::bind2nd(MeshIsNotFlag<MeshFacet>(), MeshFacet::VISIT));
+
+    if (iTri < iEnd)
+      ulStartFacet = iTri - iBeg;
+    else
+      ulStartFacet = ULONG_MAX;
   }
 
   return true;
@@ -199,62 +164,77 @@ bool MeshEvalNormals::Evaluate ()
 
 std::vector<unsigned long> MeshEvalNormals::GetIndices() const
 {
+  unsigned long ulStartFacet, ulVisited;
+
+  if (_rclMesh.CountFacets() == 0)
+    return true;
+
   // reset VISIT flags
   MeshAlgorithm cAlg(_rclMesh);
   cAlg.ResetFacetFlag(MeshFacet::VISIT);
   cAlg.ResetFacetFlag(MeshFacet::TMP0);
-
-  // all facet indices
-  std::vector<unsigned long> aAllFacets(_rclMesh.CountFacets());
-  unsigned long k = 0;
-  for (std::vector<unsigned long>::iterator pI = aAllFacets.begin(); pI != aAllFacets.end(); pI++)
-    *pI = k++;
-
-  std::vector<unsigned long> inds;
-  unsigned long ulStartFacet=0, ulVisited=0;
-
-  // if the mesh consists of several topologic independent components
-  while ( true ) // while unvisited facets are available
-  {
-    if ( aAllFacets.size() > 0 )
-      ulStartFacet = aAllFacets.front();
-    else
-      break; // no more facets to visit
-
-    std::vector<unsigned long> aComponent;
-
-    // get start facet first
-    aComponent.push_back(ulStartFacet);
-    MeshWrongOrientationCollect clOrientation(aComponent, inds);
-    ulVisited += _rclMesh.VisitNeighbourFacets(clOrientation, ulStartFacet);
-
-    // search for all NOT YET visited facets
-    std::vector<unsigned long> aNotVisited;
-    std::sort(aAllFacets.begin(), aAllFacets.end());
-    std::sort(aComponent.begin(), aComponent.end());
-    std::back_insert_iterator<std::vector<unsigned long> >  pBInd(aNotVisited);
-    std::set_difference(aAllFacets.begin(), aAllFacets.end(), aComponent.begin(), aComponent.end(), pBInd);
   
-    aAllFacets = aNotVisited;
-  }
+  const MeshFacetArray& rFAry = _rclMesh.GetFacets();
+  MeshFacetArray::_TConstIterator iTri = rFAry.begin();
+  MeshFacetArray::_TConstIterator iBeg = rFAry.begin();
+  MeshFacetArray::_TConstIterator iEnd = rFAry.end();
 
-  // As we cannot determine for sure whether the start facet has correct orientation
-  unsigned long diff = _rclMesh.CountFacets()-inds.size();
-  if ( inds.size() > diff )
+  // common gravity center of all facet corners
+  Base::Vector3f clGravityPoint, clDir;
+  clGravityPoint.Set(0.0f, 0.0f, 0.0f);
+  for (MeshPointIterator clIter(_rclMesh); clIter.EndReached() == false; ++clIter)
+    clGravityPoint += *clIter; 
+  clGravityPoint *= 1.0f / float(_rclMesh.CountPoints());
+
+  ulVisited = 0;
+  ulStartFacet = 0;
+
+  std::vector<unsigned long> uIndices;
+  MeshOrientationCollector clHarmonizer(uIndices);
+ 
+  while ( ulStartFacet !=  ULONG_MAX )
   {
-    // free memory
-    { inds.clear(); std::vector<unsigned long>().swap(inds);}
-    inds.reserve( diff );
-
-    const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
-    for (MeshFacetArray::_TConstIterator pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
+    // set normal of the start facet that it points in opposite direction to
+    // the gravity center
+    clDir = _rclMesh.GetFacet(ulStartFacet).GetGravityPoint() - clGravityPoint;
+    MeshFacetIterator cF(_rclMesh);
+    cF.Set(ulStartFacet);
+    if (cF->GetNormal() * clDir < 0.0f )
     {
-      if ( !pI->IsFlag(MeshFacet::TMP0) )
-        inds.push_back( pI-rclFAry.begin() );
+      (rFAry.begin()+ulStartFacet)->SetFlag(MeshFacet::TMP0);
+      uIndices.push_back(ulStartFacet);
     }
+
+    ulVisited += _rclMesh.VisitNeighbourFacets(clHarmonizer, ulStartFacet);
+
+    // if the mesh consists of several topologic independent components
+    // We can search from position 'iTri' on because all elements _before_ are already visited
+    // what we know from the previous iteration.
+    iTri = std::find_if(iTri, iEnd, std::bind2nd(MeshIsNotFlag<MeshFacet>(), MeshFacet::VISIT));
+
+    if (iTri < iEnd)
+      ulStartFacet = iTri - iBeg;
+    else
+      ulStartFacet = ULONG_MAX;
   }
 
-  return inds;
+//  // As we cannot determine for sure whether the start facet has correct orientation
+//  unsigned long diff = _rclMesh.CountFacets()-uIndices.size();
+//  if ( uIndices.size() > diff )
+//  {
+//    // free memory
+//    { uIndices.clear(); std::vector<unsigned long>().swap(uIndices);}
+//    uIndices.reserve( diff );
+//
+//    const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
+//    for (MeshFacetArray::_TConstIterator pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
+//    {
+//      if ( !pI->IsFlag(MeshFacet::TMP0) )
+//        uIndices.push_back( pI-rclFAry.begin() );
+//    }
+//  }
+
+  return uIndices;
 }
 
 MeshFixNormals::MeshFixNormals (MeshKernel& rclM)
@@ -269,7 +249,7 @@ MeshFixNormals::~MeshFixNormals()
 bool MeshFixNormals::Fixup ()
 {
   MeshTopoAlgorithm(_rclMesh).HarmonizeNormals();
-  return true;
+  return MeshEvalNormals(_rclMesh).Evaluate();
 }
 
 // ----------------------------------------------------
@@ -303,6 +283,8 @@ bool MeshEvalTopology::Evaluate ()
   const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
   MeshFacetArray::_TConstIterator pI;
 
+  Base::SequencerLauncher seq("Checking topology...", rclFAry.size());
+
   _aclManifoldList.clear();
 
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > aclHits;
@@ -317,6 +299,8 @@ bool MeshEvalTopology::Evaluate ()
       unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
       aclHits[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_front(pI - rclFAry.begin());
     }
+
+    Base::Sequencer().next();
   }
 
   // search for non-manifold edges
@@ -551,6 +535,8 @@ bool MeshEvalNeighbourhood::Evaluate ()
   const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
   MeshFacetArray::_TConstIterator pI;
 
+  Base::SequencerLauncher seq("Checking indices", rclFAry.size());
+
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > cEdgeList;
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pEdge;
 
@@ -563,6 +549,8 @@ bool MeshEvalNeighbourhood::Evaluate ()
       unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
       cEdgeList[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_front(pI - rclFAry.begin());
     }
+
+    Base::Sequencer().next();
   }
 
   // search for the attached faces to an edge
@@ -596,12 +584,78 @@ bool MeshEvalNeighbourhood::Evaluate ()
     }
 
     // Note: If more than two facets are attached to the edge then we have a non-manifold edge here. 
-    // This means that the neighbourhood cannot be valid, fore sure. But we just want to check whether
+    // This means that the neighbourhood cannot be valid, for sure. But we just want to check whether
     // the neighbourhood is valid for topologic correctly edges and thus we ignore this case.
     // Non-manifolds are an own category of errors and are handled by the class MeshEvalTopology.
   }
 
   return true;
+}
+
+std::vector<unsigned long> MeshEvalNeighbourhood::GetIndices() const
+{
+  std::vector<unsigned long> inds;
+  const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
+  MeshFacetArray::_TConstIterator pI;
+
+  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > cEdgeList;
+  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pEdge;
+
+  // facet to edge
+  for (pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+      unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+      cEdgeList[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_front(pI - rclFAry.begin());
+    }
+  }
+
+  // search for the attached faces to an edge
+  for (pEdge = cEdgeList.begin(); pEdge != cEdgeList.end(); ++pEdge)
+  {
+    // open edge
+    if (pEdge->second.size() == 1) {
+      unsigned long p0 = pEdge->first.first;
+      unsigned long p1 = pEdge->first.second;
+      const MeshFacet& rFace = rclFAry[pEdge->second.front()];
+      unsigned short side = rFace.Side(p0,p1);
+      // should be "open edge" but isn't marked as such
+      if ( rFace._aulNeighbours[side] != ULONG_MAX )
+        inds.push_back(pEdge->second.front());
+    }
+    // two-manifolds
+    else if (pEdge->second.size() == 2) {
+      unsigned long p0 = pEdge->first.first;
+      unsigned long p1 = pEdge->first.second;
+      unsigned long f0 = pEdge->second.front();
+      unsigned long f1 = pEdge->second.back();
+
+      const MeshFacet& rFace0 = rclFAry[f0];
+      const MeshFacet& rFace1 = rclFAry[f1];
+      unsigned short side0 = rFace0.Side(p0,p1);
+      unsigned short side1 = rFace1.Side(p0,p1);
+
+      // Check wether rFace0 and rFace1 reference each other as neighbour
+      if ( rFace0._aulNeighbours[side0]!=f1 || rFace1._aulNeighbours[side1]!=f0 )
+      {
+        inds.push_back(pEdge->second.front());
+        inds.push_back(pEdge->second.back());
+      }
+    }
+
+    // Note: If more than two facets are attached to the edge then we have a non-manifold edge here. 
+    // This means that the neighbourhood cannot be valid, for sure. But we just want to check whether
+    // the neighbourhood is valid for topologic correctly edges and thus we ignore this case.
+    // Non-manifolds are an own category of errors and are handled by the class MeshEvalTopology.
+  }
+
+  // remove duplicates
+  std::sort(inds.begin(), inds.end());
+  inds.erase(std::unique(inds.begin(), inds.end()), inds.end());
+
+  return inds;
 }
 
 bool MeshFixNeighbourhood::Fixup()
