@@ -55,6 +55,7 @@ SoFCColorLegend::SoFCColorLegend() : _fPosX(4.0f), _fPosY(4.0f)
   labels->ref();
 
   setColorModel( App::ColorGradient::TRIA );
+  setRange(-0.5f,0.5f,1);
 }
 
 /*!
