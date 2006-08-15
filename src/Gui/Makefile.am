@@ -19,6 +19,7 @@ BUILT_SOURCES=\
 		moc_DlgEditorImp.cpp \
 		moc_DlgGeneral.cpp \
 		moc_DlgGeneralImp.cpp \
+		moc_DlgInputDialog.cpp \
 		moc_DlgKeyboard.cpp \
 		moc_DlgMacroExecute.cpp \
 		moc_DlgMacroExecuteImp.cpp \
@@ -79,6 +80,8 @@ BUILT_SOURCES=\
 		DlgDisplayProperties.h \
 		DlgEditor.cpp \
 		DlgEditor.h \
+		DlgInputDialog.cpp \
+		DlgInputDialog.h \
 		DlgKeyboard.cpp \
 		DlgKeyboard.h \
 		DlgGeneral.cpp \
@@ -190,6 +193,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgEditorImp.h \
 		DlgGeneralImp.cpp \
 		DlgGeneralImp.h \
+		DlgInputDialogImp.cpp \
+		DlgInputDialogImp.h \
 		DlgKeyboardImp.cpp \
 		DlgKeyboardImp.h \
 		DlgMacroExecuteImp.cpp \
@@ -377,6 +382,7 @@ EXTRA_DIST = \
 		DlgDisplayProperties.ui \
 		DlgEditor.ui \
 		DlgGeneral.ui \
+		DlgInputDialog.ui \
 		DlgKeyboard.ui \
 		DlgMacroExecute.ui \
 		DlgMacroRecord.ui \
