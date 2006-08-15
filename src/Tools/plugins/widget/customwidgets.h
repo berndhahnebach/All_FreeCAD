@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef FILECHOOSER_H
-#define FILECHOOSER_H
+#ifndef GUI_CUSTOMWIDGETS_H
+#define GUI_CUSTOMWIDGETS_H
 
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
@@ -156,6 +156,46 @@ protected:
 
 private:
   SpinBoxPrivate* d;
+};
+
+// -------------------------------------------------------------
+
+class UIntSpinBoxPrivate;
+class QT_WIDGET_PLUGIN_EXPORT UIntSpinBox : public SpinBox
+{
+  Q_OBJECT
+  Q_OVERRIDE( uint maxValue READ maxValue WRITE setMaxValue )
+  Q_OVERRIDE( uint minValue READ minValue WRITE setMinValue )
+  Q_OVERRIDE( uint value READ value WRITE setValue )
+
+public:
+  UIntSpinBox ( QWidget* parent, const char* name = 0 );
+  virtual ~UIntSpinBox();
+
+  void setRange( uint minVal, uint maxVal );
+  uint value() const;
+  uint minValue() const;
+  void setMinValue( uint value );
+  uint maxValue() const;
+  void setMaxValue( uint value );
+
+  void setValidator( const QValidator * );
+
+signals:
+  void valueChanged( uint value );
+
+public slots:
+  void setValue( uint value );
+
+protected:
+  QString mapValueToText( int v );
+  int mapTextToValue ( bool * ok );
+  void valueChange();
+  void rangeChange();
+
+private:
+  void updateValidator();
+  UIntSpinBoxPrivate * d;
 };
 
 // -------------------------------------------------------------
@@ -472,4 +512,4 @@ private:
 
 } // namespace Gui
 
-#endif
+#endif // GUI_CUSTOMWIDGETS_H

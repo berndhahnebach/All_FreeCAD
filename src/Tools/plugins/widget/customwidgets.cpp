@@ -281,6 +281,112 @@ public:
   QDoubleValidator * mValidator;
 };
 
+class UnsignedValidator : public QValidator
+{
+public:
+  UnsignedValidator( QObject * parent, const char *name = 0 );
+  UnsignedValidator( uint bottom, uint top, QObject * parent, const char *name = 0 );
+  ~UnsignedValidator();
+
+  QValidator::State validate( QString &, int & ) const;
+
+  void setBottom( uint );
+  void setTop( uint );
+  virtual void setRange( uint bottom, uint top );
+
+  uint bottom() const { return b; }
+  uint top() const { return t; }
+
+private:
+  uint b, t;
+};
+
+UnsignedValidator::UnsignedValidator( QObject * parent, const char *name )
+  : QValidator( parent, name )
+{
+  b =  0;
+  t =  UINT_MAX;
+}
+
+UnsignedValidator::UnsignedValidator( uint minimum, uint maximum, QObject * parent, const char* name )
+  : QValidator( parent, name )
+{
+  b = minimum;
+  t = maximum;
+}
+
+UnsignedValidator::~UnsignedValidator()
+{
+
+}
+
+QValidator::State UnsignedValidator::validate( QString & input, int & ) const
+{
+  QString stripped = input.stripWhiteSpace();
+  if ( stripped.isEmpty() )
+	  return Intermediate;
+  bool ok;
+  uint entered = input.toUInt( &ok );
+  if ( !ok )
+	  return Invalid;
+  else if ( entered < b )
+    return Intermediate;
+  else if ( entered > t )
+    return Invalid;
+//  else if ( entered < b || entered > t )
+//	  return Invalid;
+  else
+	  return Acceptable;
+}
+
+void UnsignedValidator::setRange( uint minimum, uint maximum )
+{
+  b = minimum;
+  t = maximum;
+}
+
+void UnsignedValidator::setBottom( uint bottom )
+{
+  setRange( bottom, top() );
+}
+
+void UnsignedValidator::setTop( uint top )
+{
+  setRange( bottom(), top );
+}
+
+class UIntSpinBoxPrivate
+{
+public:
+  UnsignedValidator * mValidator;
+
+  UIntSpinBoxPrivate() : mValidator(0)
+  {
+  }
+  uint mapToUInt( int v ) const
+  {
+    uint ui;
+    if ( v== INT_MIN ) {
+      ui = 0;
+    } else if ( v < 0 ) {
+      v += INT_MAX; ui = (uint)v;
+    } else {
+      ui = (uint)v; ui += INT_MAX;
+    } return ui;
+  }
+  int mapToInt( uint v ) const
+  {
+    int in;
+    if ( v == UINT_MAX ) {
+      in = INT_MAX;
+    } if ( v > INT_MAX ) {
+      v -= INT_MAX; in = (int)v;
+    } else {
+      in = v; in -= INT_MAX;
+    } return in;
+  }
+};
+
 } // namespace Gui
 
 SpinBox::SpinBox ( QWidget* parent, const char* name )
@@ -312,12 +418,16 @@ void SpinBox::mouseMoveEvent ( QMouseEvent* e )
   {
     // get "speed" of mouse move
     int mult = d->nY - e->y();
+    int old = lineStep();
+    setLineStep( abs(mult) );
+    ( mult > 0 ) ? stepUp() : stepDown();
+    setLineStep( old );
 
-    int nValue = value() + mult * d->nStep;
-    if (nValue <= maxValue())
-      setValue ( nValue );
-    else
-      setValue ( maxValue() );
+//    int nValue = value() + mult * d->nStep;
+//    if (nValue <= maxValue())
+//      setValue ( nValue );
+//    else
+//      setValue ( maxValue() );
 
     d->nY = e->y();
   }
@@ -332,7 +442,7 @@ void SpinBox::mousePressEvent   ( QMouseEvent* e )
   int nMax = maxValue();
   int nMin = minValue();
 
-  if (nMax == INT_MAX || nMin == -INT_MAX)
+  if (nMax == INT_MAX || nMin == INT_MIN)
   {
     d->nStep = 100;
   }
@@ -398,6 +508,112 @@ bool SpinBox::eventFilter ( QObject* o, QEvent* e )
   }
 
   return QSpinBox::eventFilter(o, e);
+}
+
+// -------------------------------------------------------------
+
+UIntSpinBox::UIntSpinBox ( QWidget* parent, const char* name )
+  : SpinBox (INT_MIN,INT_MAX,1,parent, name)
+{
+  d = new UIntSpinBoxPrivate;
+  setRange(0, 99);
+  setValue(0);
+  updateValidator();
+}
+
+UIntSpinBox::~UIntSpinBox()
+{
+  delete d; d = 0;
+}
+
+void UIntSpinBox::setRange( uint minVal, uint maxVal )
+{
+  int iminVal = d->mapToInt(minVal);
+  int imaxVal = d->mapToInt(maxVal);
+  QSpinBox::setRange( iminVal, imaxVal );
+}
+
+uint UIntSpinBox::value() const
+{
+  return d->mapToUInt( QSpinBox::value() );
+}
+
+void UIntSpinBox::setValue( uint value )
+{
+  QSpinBox::setValue( d->mapToInt( value ) );
+}
+
+uint UIntSpinBox::minValue() const
+{
+  return d->mapToUInt( QSpinBox::minValue() );
+}
+
+void UIntSpinBox::setMinValue( uint minVal )
+{
+  uint maxVal = maxValue();
+  if ( maxVal < minVal )
+    maxVal = minVal;
+  setRange( minVal, maxVal );
+}
+
+uint UIntSpinBox::maxValue() const
+{
+  return d->mapToUInt( QSpinBox::maxValue() );
+}
+
+void UIntSpinBox::setMaxValue( uint maxVal )
+{
+  uint minVal = minValue();
+  if ( minVal > maxVal )
+    minVal = maxVal;
+  setRange( minVal, maxVal );
+}
+
+void UIntSpinBox::setValidator( const QValidator * )
+{
+}
+
+void UIntSpinBox::valueChange()
+{
+  QSpinBox::valueChange();
+  emit valueChanged( d->mapToUInt( QSpinBox::value() ) );
+}
+
+void UIntSpinBox::rangeChange()
+{
+  QSpinBox::rangeChange();
+  updateValidator();
+}
+
+QString UIntSpinBox::mapValueToText( int v )
+{
+  uint val = d->mapToUInt( v );
+  QString s;
+  s.setNum(val);
+  return s;
+}
+
+int UIntSpinBox::mapTextToValue ( bool * ok )
+{
+  QString s = text();
+  uint newVal = s.toUInt( ok );
+  if ( !(*ok) && !( !prefix() && !suffix() ) ) {
+    s = cleanText();
+    newVal = s.toUInt( ok );
+  }
+ 
+  return d->mapToInt( newVal );
+}
+
+void UIntSpinBox::updateValidator() 
+{
+  if ( !d->mValidator ) 
+  {
+    d->mValidator =  new UnsignedValidator( this->minValue(), this->maxValue(), this, "d->mValidator" );
+    QSpinBox::setValidator( d->mValidator );
+  } 
+  else
+    d->mValidator->setRange( this->minValue(), this->maxValue() );
 }
 
 // -------------------------------------------------------------

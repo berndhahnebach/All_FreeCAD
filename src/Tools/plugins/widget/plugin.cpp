@@ -401,7 +401,7 @@ QStringList CustomWidgetPlugin::keys() const
   list << "Gui::FileChooser" << "Gui::PrefFileChooser" 
        << "Gui::AccelLineEdit" 
        << "Gui::CommandIconView"
-       << "Gui::SpinBox" << "Gui::FloatSpinBox" 
+       << "Gui::SpinBox" << "Gui::UIntSpinBox" << "Gui::FloatSpinBox" 
        << "Gui::PrefSpinBox" << "Gui::PrefFloatSpinBox"
        << "Gui::PrefLineEdit" 
        << "Gui::PrefComboBox"
@@ -425,6 +425,8 @@ QWidget* CustomWidgetPlugin::create( const QString &key, QWidget* parent, const 
     return new Gui::CommandIconView( parent, name );
   else if ( key == "Gui::SpinBox" )
     return new Gui::SpinBox( parent, name );
+  else if ( key == "Gui::UIntSpinBox" )
+    return new Gui::UIntSpinBox( parent, name );
   else if ( key == "Gui::FloatSpinBox" )
     return new Gui::FloatSpinBox( parent, name );
   else if ( key == "Gui::PrefSpinBox" )
@@ -465,6 +467,8 @@ QString CustomWidgetPlugin::group( const QString& feature ) const
     return "Views";
   else if ( feature == "Gui::SpinBox" )
     return "Input";
+  else if ( feature == "Gui::UIntSpinBox" )
+    return "Input";
   else if ( feature == "Gui::FloatSpinBox" )
     return "Input";
   else if ( feature == "Gui::ColorButton" )
@@ -484,6 +488,8 @@ QIconSet CustomWidgetPlugin::iconSet( const QString& feature ) const
   else if ( feature == "Gui::CommandIconView" )
     return QIconSet( QPixmap( iconview_pixmap ) );
   else if ( feature == "Gui::SpinBox" )
+    return QIconSet( QPixmap( spinbox_pixmap ) );
+  else if ( feature == "Gui::UIntSpinBox" )
     return QIconSet( QPixmap( spinbox_pixmap ) );
   else if ( feature == "Gui::FloatSpinBox" )
     return QIconSet( QPixmap( spinbox_pixmap ) );
@@ -525,6 +531,8 @@ QString CustomWidgetPlugin::includeFile( const QString& feature ) const
   	return "Gui/Widgets.h";
   else if ( feature == "Gui::SpinBox" )
   	return "Gui/SpinBox.h";
+  else if ( feature == "Gui::UIntSpinBox" )
+  	return "Gui/SpinBox.h";
   else if ( feature == "Gui::FloatSpinBox" )
   	return "Gui/SpinBox.h";
   else if ( feature == "Gui::ColorButton" )
@@ -545,6 +553,8 @@ QString CustomWidgetPlugin::toolTip( const QString& feature ) const
   	return "Command View";
   else if ( feature == "Gui::SpinBox" )
   	return "Spin Box";
+  else if ( feature == "Gui::UIntSpinBox" )
+  	return "Unsigned Spin Box";
   else if ( feature == "Gui::FloatSpinBox" )
   	return "Double Spin Box";
   else if ( feature == "Gui::PrefSpinBox" )
@@ -585,6 +595,8 @@ QString CustomWidgetPlugin::whatsThis( const QString& feature ) const
   	return "Area with movable and labeled icons.";
   else if ( feature == "Gui::SpinBox" )
   	return "Spin box widget (spin button).";
+  else if ( feature == "Gui::UIntSpinBox" )
+  	return "Spin box widget that can work with unsigned int.";
   else if ( feature == "Gui::FloatSpinBox" )
   	return "Spin box widget that can work with doubles.";
   else if ( feature == "Gui::PrefSpinBox" )
