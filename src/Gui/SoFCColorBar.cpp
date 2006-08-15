@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <Inventor/SbViewportRegion.h>
+# include <Inventor/actions/SoGLRenderAction.h>
 # include <Inventor/events/SoMouseButtonEvent.h>
 # include <Inventor/nodes/SoBaseColor.h>
 # include <Inventor/nodes/SoCoordinate3.h>

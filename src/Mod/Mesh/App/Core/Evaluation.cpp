@@ -167,7 +167,7 @@ std::vector<unsigned long> MeshEvalNormals::GetIndices() const
   unsigned long ulStartFacet, ulVisited;
 
   if (_rclMesh.CountFacets() == 0)
-    return true;
+    return std::vector<unsigned long>();
 
   // reset VISIT flags
   MeshAlgorithm cAlg(_rclMesh);

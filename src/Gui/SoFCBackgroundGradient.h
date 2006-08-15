@@ -30,6 +30,7 @@ class SoCoordinate3;
 class SoMFString;
 class SbVec2s;
 class SbColor;
+class SoGLRenderAction;
 
 namespace Gui {
 
