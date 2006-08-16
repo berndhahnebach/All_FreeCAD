@@ -42,7 +42,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "All Cmd Files"=".\All Cmd Files.dsp" - Package Owner=<4>
+Project: "All Cmd Files"=".\AllCmdFiles.dsp" - Package Owner=<4>
 
 Package=<5>
 {{{
