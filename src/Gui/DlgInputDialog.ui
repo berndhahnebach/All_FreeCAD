@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>406</width>
+            <width>400</width>
             <height>89</height>
         </rect>
     </property>
@@ -142,6 +142,30 @@
                     </widget>
                 </grid>
             </widget>
+            <widget class="QWidget">
+                <property name="name">
+                    <cstring>WStackPage</cstring>
+                </property>
+                <attribute name="id">
+                    <number>4</number>
+                </attribute>
+                <hbox>
+                    <property name="name">
+                        <cstring>unnamed</cstring>
+                    </property>
+                    <property name="margin">
+                        <number>1</number>
+                    </property>
+                    <property name="spacing">
+                        <number>6</number>
+                    </property>
+                    <widget class="Gui::UIntSpinBox">
+                        <property name="name">
+                            <cstring>uIntSpinBox</cstring>
+                        </property>
+                    </widget>
+                </hbox>
+            </widget>
         </widget>
         <widget class="QLayoutWidget">
             <property name="name">
@@ -237,7 +261,8 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/SpinBox.h</includehint>
+    <includehint>Gui/SpinBox.h</includehint>
+    <includehint>Gui/SpinBox.h</includehint>
 </includehints>
 </UI>

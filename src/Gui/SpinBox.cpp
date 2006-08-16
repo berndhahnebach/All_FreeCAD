@@ -146,6 +146,24 @@ SpinBox::~SpinBox()
   d = 0L;
 }
 
+void SpinBox::stepUp()
+{
+  // This fixes a bug in Qt if value and maximum value is set to INT_MAX
+  // then stepUp() sets to value to minValue() even if wrapping() is off..
+  if ( QSpinBox::value() < INT_MAX )
+    QSpinBox::stepUp();
+  else if ( wrapping() )
+    QSpinBox::setValue( QSpinBox::minValue() );
+}
+
+void SpinBox::stepDown()
+{
+  if ( QSpinBox::value() > INT_MIN )
+    QSpinBox::stepDown();
+  else if ( wrapping() )
+    QSpinBox::setValue( QSpinBox::maxValue() );
+}
+
 /**
  * If this widget grabs the mouse its value is either augmented in case the mouse moves up or diminished
  * in case the mouse moves down.
@@ -158,13 +176,21 @@ void SpinBox::mouseMoveEvent ( QMouseEvent* e )
   if (QWidget::mouseGrabber() == this)
   {
     // get "speed" of mouse move
-    int mult = d->nY - e->y();
-
-    int nValue = value() + mult * d->nStep;
-    if (nValue <= maxValue())
-      setValue ( nValue );
-    else
-      setValue ( maxValue() );
+    int val = value();
+    int step = (d->nY - e->y()) * d->nStep;
+    if ( wrapping() ) {
+      setValue( val + step );
+    } else {
+      // avoid overflow of integer
+      int diff=INT_MAX;
+      if ( val < 0 )
+        diff = INT_MIN - val;
+      else if ( val > 0 )
+        diff = INT_MAX - val;
+      // only allowed if no overflow occurs
+      if ( !( ( val > 0 && step > diff ) || ( val < 0 && step < diff) ) )
+        setValue( val + step );
+    }
 
     d->nY = e->y();
   }
@@ -273,12 +299,14 @@ public:
   uint mapToUInt( int v ) const
   {
     uint ui;
-    if ( v== INT_MIN ) {
+    if ( v == INT_MIN ) {
       ui = 0;
+    } else if ( v == INT_MAX ) {
+      ui = UINT_MAX;
     } else if ( v < 0 ) {
-      v += INT_MAX; ui = (uint)v;
+      v -= INT_MIN; ui = (uint)v;
     } else {
-      ui = (uint)v; ui += INT_MAX;
+      ui = (uint)v; ui -= INT_MIN;
     } return ui;
   }
   int mapToInt( uint v ) const
@@ -286,10 +314,12 @@ public:
     int in;
     if ( v == UINT_MAX ) {
       in = INT_MAX;
-    } if ( v > INT_MAX ) {
-      v -= INT_MAX; in = (int)v;
+    } else if ( v == 0 ) {
+      in = INT_MIN;
+    } else if ( v > INT_MAX ) {
+      v += INT_MIN; in = (int)v;
     } else {
-      in = v; in -= INT_MAX;
+      in = v; in += INT_MIN;
     } return in;
   }
 };

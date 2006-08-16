@@ -100,6 +100,9 @@ void DlgInputDialogImp::setType( DlgInputDialogImp::Type t )
   case SpinBox:
 	  input = spinBox;
 	  break;
+  case UIntBox:
+	  input = uIntSpinBox;
+	  break;
   case FloatSpinBox:
 	  input = floatSpinBox;
 	  break;
@@ -126,6 +129,11 @@ DlgInputDialogImp::Type DlgInputDialogImp::type() const
 Gui::SpinBox *DlgInputDialogImp::getSpinBox() const
 {
   return spinBox;
+}
+
+Gui::UIntSpinBox *DlgInputDialogImp::getUIntBox() const
+{
+  return uIntSpinBox;
 }
 
 Gui::FloatSpinBox *DlgInputDialogImp::getFloatSpinBox() const

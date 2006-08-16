@@ -198,7 +198,7 @@ QStringList FileDialog::getOpenFileNames ( const QString & filter, const QString
                                            bool resolveSymlinks, const QString& buttonText, bool * ok )
 {
   FileDialog fd( dir, filter, parent, name, true );
-  fd.setMode( ExistingFile );
+  fd.setMode( ExistingFiles );
   fd.setCaption(caption);
   if ( selectedFilter )
     fd.setFilter( *selectedFilter );
@@ -300,17 +300,22 @@ FileDialog::~FileDialog()
  */
 void FileDialog::accept()
 {
-  QString fn = selectedFileName();
-
-  if ( QFile(fn).exists() && mode() == AnyFile )
+  // if not in multi-selection mode
+  if ( mode() != ExistingFiles )
   {
-    QString msg = tr("'%1' already exists.\nReplace existing file?").arg(fn);
-    if ( QMessageBox::question(this, tr("Existing file"), msg, QMessageBox::Yes, 
-         QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) != QMessageBox::Yes )
-      return;
+    QString fn = selectedFileName();
+
+    if ( QFile(fn).exists() && mode() == AnyFile )
+    {
+      QString msg = tr("'%1' already exists.\nReplace existing file?").arg(fn);
+      if ( QMessageBox::question(this, tr("Existing file"), msg, QMessageBox::Yes, 
+           QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) != QMessageBox::Yes )
+        return;
+    }
+
+    setSelection( fn );
   }
 
-  setSelection( fn );
   QFileDialog::accept();
 }
 

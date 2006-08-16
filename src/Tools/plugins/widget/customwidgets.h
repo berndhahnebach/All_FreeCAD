@@ -146,6 +146,9 @@ public:
   SpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
   virtual ~SpinBox();
 
+  void stepUp();
+  void stepDown();
+
 protected:
   void mouseMoveEvent    ( QMouseEvent* e );
   void mousePressEvent   ( QMouseEvent* e );

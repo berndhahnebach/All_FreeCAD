@@ -29,6 +29,10 @@
 
 namespace Gui {
 
+/**
+ * A validator that allows only input of unsigned int values in the range
+ * from 0 to UINT_MAX.
+ */
 class GuiExport UnsignedValidator : public QValidator
 {
   Q_OBJECT
@@ -68,6 +72,9 @@ public:
   SpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
   virtual ~SpinBox();
 
+  void stepUp();
+  void stepDown();
+
 protected:
   void mouseMoveEvent    ( QMouseEvent* e );
   void mousePressEvent   ( QMouseEvent* e );
@@ -81,6 +88,12 @@ private:
 };
 
 class UIntSpinBoxPrivate;
+/**
+ * The UIntSpinBox class does basically the same as Qt's QSpinBox unless
+ * that it works with unsigned int's instead.
+ * This allows to use numbers in the range of [0, UINT_MAX]
+ * @author Werner Mayer
+ */
 class GuiExport UIntSpinBox : public SpinBox
 {
   Q_OBJECT
