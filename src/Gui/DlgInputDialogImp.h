@@ -39,7 +39,7 @@ namespace Dialog {
 class GuiExport DlgInputDialogImp : public DlgInputDialog
 {
 public:
-  enum Type { LineEdit, SpinBox, FloatSpinBox, ComboBox };
+  enum Type { LineEdit, SpinBox, UIntBox, FloatSpinBox, ComboBox };
 
   DlgInputDialogImp( const QString& label, QWidget* parent = 0, const char* name = 0, 
     bool modal = TRUE, Type = LineEdit );
@@ -49,6 +49,7 @@ public:
   Type type() const;
 
   Gui::SpinBox *getSpinBox() const;
+  Gui::UIntSpinBox *getUIntBox() const;
   Gui::FloatSpinBox *getFloatSpinBox() const;
   QLineEdit *getLineEdit() const;
   QComboBox *getComboBox() const;

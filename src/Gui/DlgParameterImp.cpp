@@ -558,11 +558,10 @@ void ParameterValue::onCreateUIntItem()
     return;
   }
 
-  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),this, "Input", true);
+  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),this, "Input", true, DlgInputDialogImp::UIntBox);
   dlg.setCaption(QObject::tr("New unsigned item"));
-  QLineEdit* edit = dlg.getLineEdit();
-  edit->setValidator( new Gui::UnsignedValidator(0, ULONG_MAX, &dlg) );
-  edit->setText("0");
+  UIntSpinBox* edit = dlg.getUIntBox();
+  edit->setRange(0,UINT_MAX);
   if (dlg.exec() == QDialog::Accepted ) {
     QString value = edit->text();
     unsigned long val = value.toULong(&ok);
@@ -885,12 +884,11 @@ void ParameterUInt::changeValue()
   const char* name = text(0).latin1();
   bool ok;
 
-  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),listView(), "Input", true);
+  DlgInputDialogImp dlg(QObject::tr("Enter your number:"),listView(), "Input", true, DlgInputDialogImp::UIntBox);
   dlg.setCaption(QObject::tr("Change value"));
-  QLineEdit* edit = dlg.getLineEdit();
-  edit->setValidator( new Gui::UnsignedValidator(0, ULONG_MAX, &dlg) );
-  edit->setText(text(2));
-  
+  UIntSpinBox* edit = dlg.getUIntBox();
+  edit->setRange(0,UINT_MAX);
+  edit->setValue(text(2).toULong());
   if (dlg.exec() == QDialog::Accepted)
   {
     QString value = edit->text();
