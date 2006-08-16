@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="FreeCADBase"
-	ProjectGUID="{4B4BED33-4B0A-43CF-867E-621A3B1AAFDA}"
+	ProjectGUID="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
 	>
 	<Platforms>
 		<Platform
