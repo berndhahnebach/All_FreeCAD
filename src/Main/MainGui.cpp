@@ -97,9 +97,8 @@ int main( int argc, char ** argv )
 	// Inits the Application 
 	App::Application::init(argc,argv);
 
- 
   Gui::BitmapFactory().addXPM("FreeCADSplasher", ( const char** ) splash_screen);
-
+ 
   Gui::Application::initApplication();
 
 
