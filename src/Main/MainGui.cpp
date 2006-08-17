@@ -88,7 +88,9 @@ int main( int argc, char ** argv )
   App::Application::Config()["StartWorkbench"] = "Part design";
   //App::Application::Config()["HiddenDockWindow"] = "Property editor";
 
-
+#ifndef FC_DEBUG
+  try{
+#endif
 
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with gui if not overridden in InitConfig...
@@ -101,6 +103,17 @@ int main( int argc, char ** argv )
  
   Gui::Application::initApplication();
 
+#ifndef FC_DEBUG
+  }
+  catch(const Base::Exception &Exc){
+    // do someting meaningfull
+    exit(100);
+  }
+  catch(...){
+    // do someting meaningfull
+    exit(101);
+  }
+#endif
 
 	// Run phase ===========================================================
 
