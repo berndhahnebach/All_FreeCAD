@@ -732,9 +732,12 @@ void Document::_recomputeFeature(AbstractFeature* Feat)
     e.ReportException();
     succes = 4;
   }catch(const Base::MemoryException& e){
-    Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
+    if ( !e.isHandled() )
+      Base::Console().Error("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
+    else
+      Base::Console().Log("Memory exception in feature '%s' thrown: %s\n",Feat->name.getValue(),e.what());
     Feat->setError(e.what());
-    succes = 3;
+    succes = 4; // Must not rerun twice
   }catch(Base::Exception &e){
     e.ReportException();
     succes = 3;
