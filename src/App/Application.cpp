@@ -63,11 +63,6 @@
 #include "DocumentObjectGroup.h"
 
 
-
-//namespace EnvMacro {
-//#include <Base/EnvMacros.h>
-//}
-
 using namespace App;
 
 
@@ -106,8 +101,8 @@ using namespace std;
 
 ParameterManager *App::Application::_pcSysParamMngr;
 ParameterManager *App::Application::_pcUserParamMngr;
-Base::ConsoleObserverStd  *Application::_pConsoleObserverStd;
-Base::ConsoleObserverFile *Application::_pConsoleObserverFile;
+Base::ConsoleObserverStd  *Application::_pConsoleObserverStd =0;
+Base::ConsoleObserverFile *Application::_pConsoleObserverFile =0;
 
 AppExport std::map<std::string,std::string> Application::mConfig;
 
@@ -601,13 +596,25 @@ void Application::destruct(void)
 	delete _pcSingelton;
 
   // We must detach from console and delete the observer to save our file
+  destructObserver();
+
+  Base::Interpreter().finalize();
+}
+
+void Application::destructObserver(void)
+{
   if ( _pConsoleObserverFile )
   {
     Console().DetachObserver(_pConsoleObserverFile);
-    delete _pConsoleObserverFile; _pConsoleObserverFile = 0;
+    delete _pConsoleObserverFile; 
+    _pConsoleObserverFile = 0;
   }
-
-  Base::Interpreter().finalize();
+  if ( _pConsoleObserverStd )
+  {
+    Console().DetachObserver(_pConsoleObserverStd);
+    delete _pConsoleObserverStd; 
+    _pConsoleObserverFile = 0;
+  }
 }
 
 /** freecadNewHandler()
@@ -633,27 +640,35 @@ static void freecadNewHandler ()
 
 void Application::init(int argc, char ** argv)
 {
-  // install our own new handler
-#ifdef _MSC_VER // Microsoft compiler
-   _set_new_handler ( freecadNewHandler ); // Setup new handler
-   _set_new_mode( 1 ); // Re-route malloc failures to new handler !
-#else // Ansi compiler
-   std::set_new_handler (freecadNewHandler); // ANSI new handler
-#endif
+  try {
+    // install our own new handler
+    #ifdef _MSC_VER // Microsoft compiler
+      _set_new_handler ( freecadNewHandler ); // Setup new handler
+      _set_new_mode( 1 ); // Re-route malloc failures to new handler !
+    #else // Ansi compiler
+      std::set_new_handler (freecadNewHandler); // ANSI new handler
+    #endif
 
-  initTypes();
+    initTypes();
 
-  if(argc==0)
-  {
-    char* buf = new char[256];
-    strncpy(buf,mConfig["ExeName"].c_str(),98);
-    initConfig(1,reinterpret_cast<char **>(&buf));
-    delete [] buf; buf = 0;
+    if(argc==0)
+    {
+      char* buf = new char[256];
+      strncpy(buf,mConfig["ExeName"].c_str(),98);
+      initConfig(1,reinterpret_cast<char **>(&buf));
+      delete [] buf; buf = 0;
+    }
+    else
+      initConfig(argc,argv);
+
+    initApplication();
   }
-  else
-    initConfig(argc,argv);
-
-  initApplication();
+  catch (...)
+  {
+    // force to flush the log
+    destructObserver();
+    throw;
+  }
 }
 
 void Application::initTypes(void)
@@ -725,35 +740,24 @@ void Application::initConfig(int argc, char ** argv)
 		mConfig["Debug"] = "0";
 #	endif
 
-    
-
-
 	// Parse the options which have impact to the init process
 	ParseOptions(argc,argv);
 
-
-	DBG_TRY
-		// init python
-		mConfig["PythonSearchPath"] = Interpreter().init(argc,argv);
-	DBG_CATCH(puts("Application::InitConfig() error init Python Interpreter\n");exit(1);)
-
-	DBG_TRY
+  // init python
+	mConfig["PythonSearchPath"] = Interpreter().init(argc,argv);
 		
-    // Init console ===========================================================
-    _pConsoleObserverStd = new ConsoleObserverStd();
-		Console().AttachObserver(_pConsoleObserverStd);
-		if(mConfig["Verbose"] == "Strict") 
-      Console().SetMode(ConsoleSingelton::Verbose);
+  // Init console ===========================================================
+  _pConsoleObserverStd = new ConsoleObserverStd();
+	Console().AttachObserver(_pConsoleObserverStd);
+	if(mConfig["Verbose"] == "Strict") 
+    Console().SetMode(ConsoleSingelton::Verbose);
 
-    // file logging Init ===========================================================
-    if(mConfig["LoggingFile"] == "1"){
-		  _pConsoleObserverFile = new ConsoleObserverFile(mConfig["LoggingFileName"].c_str());
-		  Console().AttachObserver(_pConsoleObserverFile);
-    }else
-      _pConsoleObserverFile = 0;
-
-
-	DBG_CATCH(puts("error init console\n");exit(2);)
+  // file logging Init ===========================================================
+  if(mConfig["LoggingFile"] == "1"){
+	  _pConsoleObserverFile = new ConsoleObserverFile(mConfig["LoggingFileName"].c_str());
+	  Console().AttachObserver(_pConsoleObserverFile);
+  }else
+    _pConsoleObserverFile = 0;
 	
 	// Banner ===========================================================
 	if(!(mConfig["Verbose"] == "Strict"))
@@ -769,7 +773,6 @@ void Application::initConfig(int argc, char ** argv)
                                                   Application::VersionMajor,
                                                   Application::VersionMinor,
                                                   Application::VersionBuild);
-
 
 	LoadParameters();
 
@@ -823,14 +826,7 @@ void Application::initApplication(void)
 
 
 	// starting the init script
-  try{
-	  Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADInit"));
-  }catch(Base::PyException &e){
-      cerr << e.what() << endl;
-      cerr << e.getStackTrace() << endl;
-      throw Base::Exception("internal error in init script!");
-  }
-
+  Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADInit"));
 }
 
 void Application::runApplication()
@@ -1215,22 +1211,6 @@ void Application::ExtractUser()
   }
 }
 
-//const char sEnvErrorText1[] = \
-//"It seems some of the variables needed by FreeCAD are not set\n"\
-//"or wrong set. This regards the Open CasCade or python variables:\n"\
-//"CSF_GraphicShr=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
-//"CSF_MDTVFontDirectory=C:\\CasRoot\\src\\FontMFT\\\n"\
-//"CSF_MDTVTexturesDirectory=C:\\CasRoot\\src\\Textures\\\n"\
-//"CSF_UnitsDefinition=C:\\CasRoot\\src\\UnitsAPI\\Units.dat\n"\
-//"CSF_UnitsLexicon=C:\\CasRoot\\src\\UnitsAPI\\Lexi_Expr.dat\n"\
-//"Please reinstall python or OpenCasCade!\n\n";
-//
-//const char sEnvErrorText2[] = \
-//"It seems some of the variables needed by FreeCAD are not set\n"\
-//"or wrong set. This regards the Open CasCade variables:\n"\
-//"XXX=C:\\CasRoot\\Windows_NT\\dll\\opengl.dll\n"\
-//"Please reinstall XXX!\n\n";
-//
 
 #if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
 
