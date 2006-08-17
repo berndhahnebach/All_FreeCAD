@@ -31,29 +31,41 @@
 namespace Base
 {
 
-class BaseExport Exception: public BaseClass
+class BaseExport Exception : public BaseClass
 {
   TYPESYSTEM_HEADER();
 
 public:
-	Exception(const char * sMessage);
+  Exception(const char * sMessage);
   Exception(void);
   Exception(const Exception &inst);
   virtual ~Exception() throw() {}
 
-	Exception &operator=(const Exception &inst);
+  Exception &operator=(const Exception &inst);
 
-    virtual const char* what(void) const throw();
-  
-    void ReportException (void) const;
+  /** Exception handling
+   * This is useful if an exception should be handled directly where it occurs e.g. by showing an error 
+   * message and the receiving instance of the forwarded exception should not report a message again.
+   */
+  //@{
+  /// Returns true if this exception was already handled, false otherwise.
+  bool isHandled() const
+  { return _handled; }
+  /// Sets the exception as handled.
+  void setHandled()
+  { _handled = true; }
+  //@}
 
-    inline void SetMessage(const char * sMessage);
+  virtual const char* what(void) const throw();
+  void ReportException (void) const;
+  inline void SetMessage(const char * sMessage);
   
 protected:
 #ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
+# pragma warning( disable : 4251 )
 #endif
-	std::string _sErrMsg;
+  std::string _sErrMsg;
+  bool _handled;
 };
 
 
@@ -65,7 +77,7 @@ class BaseExport AbortException : public Exception
 {
 public:
   /// Construction
-	AbortException(const char * sMessage);
+  AbortException(const char * sMessage);
   /// Construction
   AbortException();
   /// Construction
