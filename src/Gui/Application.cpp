@@ -697,8 +697,17 @@ QApplication* Application::_pcQApp = NULL ;
 
 void Application::initApplication(void)
 {
-  initTypes();
-  new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
+  try{
+    initTypes();
+    new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
+  }
+  catch (...)
+  {
+    // force to flush the log
+    App::Application::destructObserver();
+    throw;
+  }
+
 }
 
 void Application::initTypes(void)
@@ -867,8 +876,6 @@ void Application::runApplication(void)
   SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
 #endif
 
-  //SoDB::addProgressCallback(progressCallbackHandler,0);
-
   
   Console().Log("Init: Processing command line files\n");
   unsigned short count = 0;
@@ -897,8 +904,6 @@ void Application::runApplication(void)
     mw->showTipOfTheDay();
 
 
-  // run the Application event loop
-  Console().Log("Init: Entering event loop\n");
   // attach the console observer
   MessageBoxObserver* msgbox = new MessageBoxObserver(mw);
   Base::Console().AttachObserver( msgbox );
@@ -910,9 +915,22 @@ void Application::runApplication(void)
     App::GetApplication().newDocument();
   }
 
-  _pcQApp->exec();
-  Base::Console().DetachObserver( msgbox );
+  // run the Application event loop
+  Console().Log("Init: Entering event loop\n");
+
+  try{
+    _pcQApp->exec();
+  }catch(...){
+    // catching nasty stuff comming out of the event loop
+    App::Application::destructObserver();
+    //exit(1);
+    throw;
+  }
+
   Console().Log("Init: event loop left\n");
+
+  
+  Base::Console().DetachObserver( msgbox );
 }
 
 void Application::destruct(void)

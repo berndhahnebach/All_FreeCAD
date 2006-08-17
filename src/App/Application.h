@@ -251,13 +251,11 @@ private:
 	/// Minor version nummber
 	static const unsigned int VersionMinor;
 	/// Build nummber
-	static const unsigned int VersionBuild;
-	/// Build date
-	static const char *       VersionDate;
+	static const unsigned int VersionRevision;
 	/// Build time
-	static const char *    	  VersionTime;
+	static const char *    	  BuildTime;
 	/// Build time
-	static const char *    	  VersionDisDa;
+	static const char *    	  BuildDate;
 	//@}
 	
   //---------------------------------------------------------------------

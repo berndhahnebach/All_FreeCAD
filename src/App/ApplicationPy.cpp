@@ -394,14 +394,12 @@ PYFUNCIMP_S(Application,sGetVersion)
 	PyList_SetItem(pList, 0, pItem);
 	pItem = PyInt_FromLong(Application::VersionMinor);
 	PyList_SetItem(pList, 1, pItem);
-	pItem = PyInt_FromLong(Application::VersionBuild);
+	pItem = PyInt_FromLong(Application::VersionRevision);
 	PyList_SetItem(pList, 2, pItem);
-	pItem = PyString_FromString(Application::VersionDisDa);
+	pItem = PyString_FromString(Application::BuildTime);
 	PyList_SetItem(pList, 3, pItem);
-	pItem = PyString_FromString(Application::VersionTime);
+	pItem = PyString_FromString(Application::BuildDate);
 	PyList_SetItem(pList, 4, pItem);
-	pItem = PyString_FromString(Application::VersionDate);
-	PyList_SetItem(pList, 5, pItem);
 
 	return pList;
 }
