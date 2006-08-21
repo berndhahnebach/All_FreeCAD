@@ -66,18 +66,8 @@
 using namespace App;
 
 
-// static members
-#include "../Version.h"
-/// Major version nummber
-const unsigned int Application::VersionMajor = FCVersionMajor;
-/// Minor version nummber
-const unsigned int Application::VersionMinor = FCVersionMinor;
-/// Build nummber
-const unsigned int Application::VersionRevision = FCVersionBuild;
-/// Build date
-const char *       Application::BuildDate  = __DATE__;
-/// Build date
-const char *       Application::BuildTime  = __TIME__;
+// If you stumble here, run the target "BuildExtractRevision" which build src/Build/Version.h. Or create your own from src/Build/Version.h.in!
+#include "../Build/Version.h"
 
 // scriptings (scripts are build in but can be overriden by command line option)
 #include "InitScript.h"
@@ -649,6 +639,17 @@ void Application::init(int argc, char ** argv)
 
     initTypes();
 
+    // Version of the Application. Extractet of SubWCRef into src/Build/Version.h
+    mConfig["BuildVersionMajor"]  = FCVersionMajor;
+    mConfig["BuildVersionMinor"]  = FCVersionMinor;
+    mConfig["BuildRevision"]      = FCRevision;
+    mConfig["BuildRevisionRange"] = FCRevisionRange;
+    mConfig["BuildRepositoryURL"] = FCRepositoryURL;
+    mConfig["BuildRevisionDate"]  = FCRevisionDate;
+    mConfig["BuildCurrentDate"]   = FCCurrentDateT;
+    mConfig["BuildScrClean"]      = FCScrClean;
+    mConfig["BuildFCScrMixed"]    = FCScrMixed;
+
     if(argc==0)
     {
       char* buf = new char[256];
@@ -759,18 +760,18 @@ void Application::initConfig(int argc, char ** argv)
 	
 	// Banner ===========================================================
 	if(!(mConfig["Verbose"] == "Strict"))
-		Console().Message("%s %s, Libs: %d.%dB%d\n\n%s",mConfig["ExeName"].c_str(),
+		Console().Message("%s %s, Libs: %s.%sR%s\n\n%s",mConfig["ExeName"].c_str(),
                                                     mConfig["ExeVersion"].c_str(),
-                                                    Application::VersionMajor,
-                                                    Application::VersionMinor,
-                                                    Application::VersionRevision,
+                                                    mConfig["BuildVersionMajor"].c_str(),
+                                                    mConfig["BuildVersionMinor"].c_str(),
+                                                    mConfig["BuildRevision"].c_str(),
                                                     mConfig["ConsoleBanner"].c_str());
 	else
-		Console().Message("%s %s, Libs: %d.%dB%d\n\n",mConfig["ExeName"].c_str(),
+		Console().Message("%s %s, Libs: %s.%sB%s\n\n",mConfig["ExeName"].c_str(),
                                                   mConfig["ExeVersion"].c_str(),
-                                                  Application::VersionMajor,
-                                                  Application::VersionMinor,
-                                                  Application::VersionRevision);
+                                                  mConfig["BuildVersionMajor"].c_str(),
+                                                  mConfig["BuildVersionMinor"].c_str(),
+                                                  mConfig["BuildRevision"].c_str());
 
 	LoadParameters();
 

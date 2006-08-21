@@ -33,6 +33,9 @@ Package=<4>
     Project_Dep_Name AppPointsGui
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name App_TEMPLATE_Gui
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name AppTestGui
     End Project Dependency
 }}}
@@ -336,6 +339,72 @@ Package=<4>
 
 ###############################################################################
 
+Project: "App_TEMPLATE_"=.\Tools\_TEMPLATE_\App\App_TEMPLATE_.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "App_TEMPLATE_Gui"=.\Tools\_TEMPLATE_\Gui\App_TEMPLATE_Gui.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name FreeCADApp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADBase
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name FreeCADGui
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name App_TEMPLATE_
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "BuildExtractRevision"=.\BUILD\BuildExtractRevision.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "BuildSourceDoc"=.\BUILD\BuildSourceDoc.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "FreeCADApp"=.\App\FreeCADDoc.dsp - Package Owner=<4>
 
 Package=<5>
@@ -433,6 +502,21 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name FreeCADBase
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "Install"=.\Build\Install.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name All
     End Project Dependency
 }}}
 

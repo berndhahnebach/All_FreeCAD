@@ -51,8 +51,6 @@
 #include "../Gui/BitmapFactory.h"
 #include "../Gui/Icons/developers.h"
 #include "../Gui/Application.h"
-#include "../Version.h"
-
 
 void PrintInitHelp(void);
 
@@ -71,18 +69,10 @@ const char sBanner[] = "(c) Juergen Riegel 2001-2006\n"\
 int main( int argc, char ** argv )
 {
 
-  // Config ===============================================================
-  char szMajor[20]; sprintf(szMajor,"%d",FCVersionMajor);
-  char szMinor[20]; sprintf(szMinor,"%d",FCVersionMinor);
-  char szBuild[20]; sprintf(szBuild,"%d",FCVersionBuild);
 
   // Name and Version of the Application
   App::Application::Config()["ExeName"] = "FreeCAD";
   App::Application::Config()["ExeVersion"] = "0.3";
-  App::Application::Config()["MajorVersion"] = szMajor;
-  App::Application::Config()["MinorVersion"] = szMinor;
-  App::Application::Config()["BuildVersion"] = szBuild;
-  App::Application::Config()["DisDaVersion"] = FCVersionDisDa;
 
   // set the banner (for loging and console)
   App::Application::Config()["ConsoleBanner"] = sBanner;

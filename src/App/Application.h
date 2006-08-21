@@ -43,70 +43,9 @@ namespace App
 
   
 class Document;
-//class ApplicationOCC;
 class ApplicationObserver;
 
 
-
-//Standard_EXPORT Handle_Standard_Type& STANDARD_TYPE(ApplicationOCC);
-
-/**	Handle_ApplicationOCC provides the handle for the ApplicationOCC class.
-  *
-	* To learn more about the OpenCasCade handle mechanismus see the CasCade manual.
-  */
-/*
-class  Handle_ApplicationOCC : public Handle(TDocStd_Application) {
-  public:
-   Standard_EXPORT Handle_ApplicationOCC():Handle(TDocStd_Application)() {}
-   Standard_EXPORT Handle_ApplicationOCC(const Handle_ApplicationOCC& aHandle) : Handle(TDocStd_Application)(aHandle){}
-   Standard_EXPORT Handle_ApplicationOCC(const ApplicationOCC* anItem) : Handle(TDocStd_Application)((TDocStd_Application *)anItem){}
-   Standard_EXPORT Handle_ApplicationOCC& operator=(const Handle_ApplicationOCC& aHandle){
-      Assign(aHandle.Access());
-      return *this;
-     }
-   Standard_EXPORT Handle_ApplicationOCC& operator=(const ApplicationOCC* anItem){
-      Assign((Standard_Transient *)anItem);
-      return *this;
-     }
-   Standard_EXPORT ApplicationOCC* operator->(){
-      return (ApplicationOCC *)ControlAccess();
-     }
-
-   Standard_EXPORT ApplicationOCC* operator->() const{
-      return (ApplicationOCC *)ControlAccess();
-     }
-
-   Standard_EXPORT ~Handle_ApplicationOCC();
-   Standard_EXPORT static const Handle_ApplicationOCC DownCast(const Handle(Standard_Transient)& AnObject);
-};
-
-*/
-/**	ApplicationOCC provides the OpenCasCade Application functionality.
-  *
-  * ApplicationOCC inherits from TDocStd_Application and redefines some pure
-  * virtual functions, like:
-  * Format()        : gives information about the types of formates.
-  * ResourcesName() : Dont know much about what this function is doing ;-)
-  */
-
-/*
-class ApplicationOCC : public TDocStd_Application
-{
-public:
-	ApplicationOCC();
-	virtual ~ApplicationOCC();
-
-	// OpenCasCade application Stuff goes here +++++++++++++++++++++++++++++++++++
-	virtual  Standard_CString ResourcesName();
-	virtual  void Formats(TColStd_SequenceOfExtendedString& Formats);
-	friend Handle_Standard_Type&   ApplicationOCC_Type_();
-	const Handle(Standard_Type)&   DynamicType() const;
-	Standard_Boolean	           IsKind(const Handle(Standard_Type)&) const;
-protected:
-	virtual  void InitViewer(const Handle(TDocStd_Document)& aDoc) const;
-
-};
-*/
 
 /** transport the changes of the Application
  *  This class transport closer information what was changed in the
@@ -243,20 +182,6 @@ private:
 	static ParameterManager *_pcUserParamMngr;
 	//@}
 
-
-	/** @name static members for build time information, will be set bei the preprocesor. */
-	//@{
-	/// Major version nummber
-	static const unsigned int VersionMajor;
-	/// Minor version nummber
-	static const unsigned int VersionMinor;
-	/// Build nummber
-	static const unsigned int VersionRevision;
-	/// Build time
-	static const char *    	  BuildTime;
-	/// Build time
-	static const char *    	  BuildDate;
-	//@}
 	
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++
@@ -334,10 +259,6 @@ private:
 
   /// open ending information
   std::vector<OpenTypeItem> _mEndings;
-	/// Handle to the OCC Application
-	//Handle_ApplicationOCC _hApp;
-	/// Handles the App::Document (and python) objects;
-//	std::vector<App::Document*> _DocVector;
 
   /// map of all documents
   struct DocEntry {

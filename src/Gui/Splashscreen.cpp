@@ -206,10 +206,10 @@ void AboutDialog::languageChange()
   QString exeName = App::Application::Config()["ExeName"].c_str();
   QString banner  = App::Application::Config()["ConsoleBanner"].c_str();
   banner = banner.left( banner.find('\n') );
-  QString major  = App::Application::Config()["MajorVersion"].c_str();
-  QString minor  = App::Application::Config()["MinorVersion"].c_str();
-  QString build  = App::Application::Config()["BuildVersion"].c_str();
-  QString disda  = App::Application::Config()["DisDaVersion"].c_str();
+  QString major  = App::Application::Config()["BuildVersionMajor"].c_str();
+  QString minor  = App::Application::Config()["BuildVersionMinor"].c_str();
+  QString build  = App::Application::Config()["BuildRevision"].c_str();
+  QString disda  = App::Application::Config()["BuildRevisionDate"].c_str();
 
   pushButton1->setText( tr( "&Ok" ) );
   pushButton1->setAccel( QKeySequence( tr( "Alt+O" ) ) );
@@ -229,8 +229,8 @@ void AboutDialog::languageChange()
                            "<tr>"
                            "<td>"
                            "<p>Version&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>%3.%4 </b></p>"
-                           "<p>Build number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                             <b>%5</b></p>"
-                           "<p>Build date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>%6</b></p>"
+                           "<p>Revision number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                             <b>%5</b></p>"
+                           "<p>Revision date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>%6</b></p>"
                            "</td>"
                            "</tr>"
                            "<tr>"
