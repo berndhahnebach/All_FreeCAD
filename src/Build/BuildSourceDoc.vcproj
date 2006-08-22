@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="All Cmd Files"
-	ProjectGUID="{C4811D80-0A00-4EF2-A465-422B5257A64D}"
+	Name="BuildSourceDoc"
+	ProjectGUID="{2A5D463D-FD95-4D10-8312-99FEAC7A3A27}"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -15,9 +15,9 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			Name="Release|Win32"
+			OutputDirectory="."
+			IntermediateDirectory="."
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -31,19 +31,17 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Debug/AllCmdFiles.tlb"
+				TypeLibraryName="./BuildSourceDoc.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="copy"
-				CommandLine="mkdir ..\Mod\Test&#x0D;&#x0A;copy Mod\Test\*.py ..\Mod\Test&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			Name="Debug|Win32"
+			OutputDirectory="."
+			IntermediateDirectory="."
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -57,19 +55,41 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Release/AllCmdFiles.tlb"
+				TypeLibraryName="./BuildSourceDoc.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="copy"
-				CommandLine="mkdir ..\Mod\Test&#x0D;&#x0A;copy Mod\Test\*.py ..\Mod\Test&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
 	<References>
 	</References>
 	<Files>
+		<File
+			RelativePath="BuildDocDoxy.cfg"
+			>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Extract source documentation"
+					CommandLine="doxygen.exe BuildDocDoxy.cfg&#x0D;&#x0A;"
+					Outputs="dummy.txt"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Extract source documentation"
+					CommandLine="doxygen.exe BuildDocDoxy.cfg&#x0D;&#x0A;"
+					Outputs="dummy.txt"
+				/>
+			</FileConfiguration>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
