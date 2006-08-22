@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8,00"
-	Name="Install"
-	ProjectGUID="{5014730A-7F2C-4913-831C-33A55CD669BC}"
+	Name="BuildExtractRevision"
+	ProjectGUID="{E9E9BC92-651E-4AFC-ADDC-8390C7C8DE0C}"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>
@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug"
-			IntermediateDirectory=".\Debug"
+			OutputDirectory="."
+			IntermediateDirectory="."
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -31,7 +31,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Debug/Install.tlb"
+				TypeLibraryName="./BuildExtractRevision.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
@@ -40,8 +40,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory=".\Release"
-			IntermediateDirectory=".\Release"
+			OutputDirectory="."
+			IntermediateDirectory="."
 			ConfigurationType="10"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
@@ -55,13 +55,11 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				TypeLibraryName=".\Release/Install.tlb"
+				TypeLibraryName="./BuildExtractRevision.tlb"
 				HeaderFileName=""
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Light"
-				CommandLine="light.exe -out Release\FreeCAD.msi &quot;D:\Develop\Libs\Wix_20\ui\wixui_mondo.wixlib&quot; Release\*.wxobj&#x0D;&#x0A;mkdir ..\..\Install&#x0D;&#x0A;copy Release\FreeCAD.msi ..\..\Install&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -69,58 +67,48 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="FreeCAD.wxs"
+			RelativePath="Version.h.in"
 			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					Description="Extract revision number..."
+					CommandLine="SubWCRev.exe .. Version.h.in Version.h&#x0D;&#x0A;"
+					Outputs="dummy.txt"
+				/>
+			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					Description="Candle $(InputName)"
-					CommandLine="candle.exe -out &quot;$(InputDir)Release\$(InputName).wxobj&quot; &quot;$(InputDir)$(InputName).wxs&quot;&#x0D;&#x0A;"
-					Outputs="$(InputName).wxobj"
+					Description="Extract revision number..."
+					CommandLine="SubWCRev.exe .. Version.h.in Version.h&#x0D;&#x0A;"
+					Outputs="dummy.txt"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="FreeCADBase.wxs"
+			RelativePath="Version.wxi.in"
 			>
 			<FileConfiguration
-				Name="Release|Win32"
+				Name="Debug|Win32"
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					Description="Candle $(InputName)"
-					CommandLine="candle.exe -out &quot;$(InputDir)Release\$(InputName).wxobj&quot; &quot;$(InputDir)$(InputName).wxs&quot;&#x0D;&#x0A;"
-					Outputs="$(InputName).wxobj"
+					CommandLine="SubWCRev.exe .. Version.wxi.in Version.wxi&#x0D;&#x0A;"
+					Outputs="dummy2.txt"
 				/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="FreeCADDoc.wxs"
-			>
 			<FileConfiguration
 				Name="Release|Win32"
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					Description="Candle $(InputName)"
-					CommandLine="candle.exe -out &quot;$(InputDir)Release\$(InputName).wxobj&quot; &quot;$(InputDir)$(InputName).wxs&quot;&#x0D;&#x0A;"
-					Outputs="$(InputName).wxobj"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="FreeCADModules.wxs"
-			>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Candle $(InputName)"
-					CommandLine="candle.exe -out &quot;$(InputDir)Release\$(InputName).wxobj&quot; &quot;$(InputDir)$(InputName).wxs&quot;&#x0D;&#x0A;"
-					Outputs="$(InputName).wxobj"
+					CommandLine="SubWCRev.exe .. Version.wxi.in Version.wxi&#x0D;&#x0A;"
+					Outputs="dummy2.txt"
 				/>
 			</FileConfiguration>
 		</File>
