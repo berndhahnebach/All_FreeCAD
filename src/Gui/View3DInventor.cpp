@@ -95,7 +95,7 @@ View3DInventor::~View3DInventor()
 
 void View3DInventor::setViewerDefaults(void)
 {
-  Base::Console().Log("Acti: View3DInventor::setViewerDefaults()\n");
+  Base::Console().Log("Act: View3DInventor::setViewerDefaults()\n");
 
   _viewer->setStereoOffset(hGrp->GetFloat("EyeDistance"      ,65.0));
   _viewer->bDrawAxisCross = hGrp->GetBool("CornerCoordSystem",true);

@@ -84,7 +84,7 @@ public:
       msg = msg.mid(rx.matchedLength());
     } else {
       // ignore activation of commands
-      rx.setPattern("^\\s*(CmdG:)\\s*");
+      rx.setPattern("^\\s*(\\+App::|Create|CmdC:|CmdG:|Act:)\\s*");
       pos = rx.search(msg);
       if ( pos == 0 )
         return;
