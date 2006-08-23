@@ -150,6 +150,8 @@ public:
   //@{
   /** Calculates the surface area of the mesh object. */
   float GetSurface() const;
+  /** Calculates the surface area of the segment defined by \a aSegment. */
+  float GetSurface( const std::vector<unsigned long>& aSegment ) const;
   /** Calculates the volume of the mesh object. Therefore the mesh must be a solid, if not 0
    * is returned.
    */

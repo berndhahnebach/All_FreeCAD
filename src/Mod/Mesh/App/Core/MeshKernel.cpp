@@ -701,6 +701,20 @@ float MeshKernel::GetSurface() const
   return fSurface;
 }
 
+float MeshKernel::GetSurface( const std::vector<unsigned long>& aSegment ) const
+{
+  float fSurface = 0.0;
+  MeshFacetIterator cIter(*this);
+
+  for ( std::vector<unsigned long>::const_iterator it = aSegment.begin(); it != aSegment.end(); ++it )
+  {
+    cIter.Set(*it);
+    fSurface += cIter->Area();
+  }
+
+  return fSurface;
+}
+
 float MeshKernel::GetVolume() const
 {
   MeshEvalSolid cSolid(*this);
