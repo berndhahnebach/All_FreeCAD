@@ -103,7 +103,7 @@ void *Type::createInstanceByName(const char* TypeName, bool bLoadModule)
       if(pos == loadModuleSet.end())
       {
         Interpreter().loadModule(Mod.c_str());
-        Console().Log("Act : Module %s loaded through class %s \n",Mod.c_str(),TypeName);
+        Console().Log("Act: Module %s loaded through class %s \n",Mod.c_str(),TypeName);
         loadModuleSet.insert(Mod);
       }
     }
