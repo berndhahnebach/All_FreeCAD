@@ -34,7 +34,7 @@
 namespace App
 {
 
-
+/// The testing feature
 class FeatureTest :public AbstractFeature
 {
   PROPERTY_HEADER(App::FeatureTest);
@@ -70,6 +70,24 @@ public:
   //FIXME: Propably it makes sense to have a view provider for unittests (e.g. Gui::ViewProviderTest)
   virtual const char* getViewProviderName(void){return "Gui::ViewProviderDocumentObject";}
   //@}
+};
+
+/// The exception testing feature
+class FeatureTestException :public FeatureTest
+{
+  PROPERTY_HEADER(App::FeatureTestException);
+
+public:
+  FeatureTestException();
+
+  /// this property defines which kind of exceptio the feature throw on you
+  App::PropertyInteger ExceptionType;
+
+  /// recalculate the Feature and throw an exeption
+  virtual int execute(void);
+  /// returns the type name of the ViewProvider
+  virtual const char* getViewProviderName(void){return "Gui::ViewProviderDocumentObject";}
+
 };
 
 

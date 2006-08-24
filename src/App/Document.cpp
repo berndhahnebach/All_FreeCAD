@@ -21,6 +21,29 @@
  ***************************************************************************/
 
 
+/*! \class App::Document
+This is bisides the Application class the most importand class in FreeCAD
+It contains all the data of the opend, saved or newly created FreeCAD Document. 
+The Document manage the Undo and Redo mechanism and the linking of documents.
+
+Note: the documents are not free objects. They are completly handled by the
+App::Application. Only the Application can Open or destroy a document.
+
+\section Exception Exception handling
+As the document is the main data structure of FreeCAD we have to take a close
+look on how Exceptions affect the integratie of the App::Document. 
+
+\section UndoRedo Undo Redo an Transactions
+Undo Redo handling is one of the major machanism of an document in terms of
+user friendlines and speed (no on will whait for Undo to long).
+
+@see App::Application
+@see App::DocumentObject
+@see App::AbstractFeature
+*/
+
+
+
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
@@ -114,7 +137,7 @@ void Document::newCommand()
   openCommand();
 }
 
-void Document::openCommand()
+void Document::openCommand(const char* name)
 {
   if(_iUndoMode)
   {

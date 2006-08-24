@@ -27,6 +27,7 @@
 
 
 #include <Base/Console.h>
+#include <Base/Exception.h>
 #include "FeatureTest.h"
 
 
@@ -59,6 +60,25 @@ FeatureTest::FeatureTest()
 int FeatureTest::execute(void)
 {
 
+
+  return 0;
+}
+
+
+PROPERTY_SOURCE(App::FeatureTestException, App::FeatureTest)
+
+
+FeatureTestException::FeatureTestException()
+{
+  ADD_PROPERTY(ExceptionType,(Base::Exception::getClassTypeId().getKey())  );
+}
+
+
+int FeatureTestException::execute(void)
+{
+  ExceptionType;
+
+  throw Base::Exception("FeatureTestException::execute(): Testexception  ;-)");
 
   return 0;
 }
