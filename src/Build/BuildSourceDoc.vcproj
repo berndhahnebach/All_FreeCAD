@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8,00"
 	Name="BuildSourceDoc"
-	ProjectGUID="{2A5D463D-FD95-4D10-8312-99FEAC7A3A27}"
+	ProjectGUID="{5AC48109-1BE5-4D7B-984D-03C95731AFE8}"
 	Keyword="MakeFileProj"
 	>
 	<Platforms>

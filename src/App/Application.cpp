@@ -701,6 +701,7 @@ void Application::initTypes(void)
   App ::DocumentObject      ::init();
   App ::AbstractFeature     ::init();
   App ::FeatureTest         ::init();
+  App ::FeatureTestException::init();
   App ::FeaturePython       ::init();
   App ::Document            ::init();
   App ::DocumentObjectGroup ::init();
@@ -892,7 +893,7 @@ void Application::runApplication()
       Console().Error("Unknown exception in runing file:%s \n",mConfig["FileName"].c_str());
     }
     std::string text;
-    text += "FreeCAD Console mode after runing " + mConfig["FileName"];
+    text += "FreeCAD Console mode after runing:\n" + mConfig["FileName"] + "\n";
 		Interpreter().runCommandLine(text.c_str());
 	}
 	else if(mConfig["RunMode"] == "Module")

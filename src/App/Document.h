@@ -96,27 +96,18 @@ public:
 
 
 
-/** The Document
- *  This is bisides the Application class the most importand class in FreeCAD
- *  It wrapps the OCC Document and contains all the data of the opend, saved
- *  or newly created FreeCAD Document. The data are organized in trees with
- *  the FCLabel class.
- *  The Document manage the Undo and Redo mechanism and the linking of documents.
- *  Note: the documents are not free objects. They are completly handled by the
- *  Application. Only the Application can Open or destroy a document.
- *  The standard document can customiced by deriving a subclass in a application
- *  module. The custom document can handle different application specific behavior.
- *  @see Label
- */
+/// The document class
 class AppExport Document :public App::PropertyContainer, public Base::Subject<const DocChanges&>
 {
   PROPERTY_HEADER(App::Document);
 
 public:
 
-
+  /// holds the long name of the document (utf-8 coded)
   PropertyString Name;
+  /// full qualified (with path) file name (utf-8 coded)
   PropertyString FileName;
+  /// creators name (utf-8)
   PropertyString CreatedBy;
   PropertyString CreationDate;
   PropertyString LastModifiedBy;
@@ -129,12 +120,6 @@ public:
 	Document(void);
   /// Destruction
 	virtual ~Document();
-
-  //typedef  App::Document SubjectType;   
-
-	//---------------------------------------------------------------------
-	// exported functions goes here +++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
 
  	/** @name File handling of the document */
 	//@{
@@ -155,7 +140,7 @@ public:
   virtual void Save (Base::Writer &writer) const;
   virtual void Restore(Base::XMLReader &reader);
 
-  /// returns the complete document mermory consumption, including Undo Redo.
+  /// returns the complet document mermory consumption, including all managed DocObjects and Undo Redo.
   unsigned int getMemSize (void) const;
   
 
@@ -202,56 +187,41 @@ public:
 	//@}
 
 
-	/** @name methods for the UNDO REDO handling
-	 *  this methods are usaly used by the GUI document! Its not intended
-	 *  to use them directly. If the GUI is not up, there is usaly no UNDO / REDO
-	 *  nececary.
-	 */
+	/** @name methods for the UNDO REDO handling */
 	//@{
-  ///
+  /// switch the level of Undo/Redo
   void setUndoMode(int iMode);
 
 	/// New Command (Short cut for Commit and Open command)
 	void newCommand() ;
-	/** Open a new command transaction.
-	 *  Raise If a Command is already open.
-	 *  You may   check  it with the   previous method <HasOpenCommand>.
-	 */
-	void openCommand();
+	/// Open a new command Undo/Redo, an UTF-8 name can be specified
+	void openCommand(const char* name=0);
 	/// Commit the Command transaction. Do nothing If there is no Command transaction open.
 	void commitCommand();
 	/// Abort the  Command  transaction. Do nothing If there is no Command transaction open.
 	void abortCommand();
-	/// The current limit on the number of undos
-//	int GetUndoLimit() const;
-	/** Set the limit on the number of Undo Deltas stored.
-	 *  0 will disable Undo on the document A negative value
-	 *  means no limit. Note that by default Undo is disabled.
-	 *  Enabling it will take effect with the next call to
-	 *  NewCommand. Of course this limit is the same for Redo.
-	 */
-//	void SetUndoLimit(const int L);
+	/// Set the Undo limit in Byte!
+	void SetUndoLimit(unsigned int MemSize=0);
 	/// Remove all stored Undos and Redos
 	void clearUndos();
 	/// Returns the  number  of stored Undos. If greater than 0 Undo will be effective.
 	int getAvailableUndos() const;
+	/// Returns a list of the Undo names
+  std::vector<std::string> getAvailableUndoNames() const;
   /// Returns the actual memory consumption of the Undo redo stuff.
   unsigned int getUndoMemSize (void) const;
 	/// Will UNDO  one step, returns  False if no undo was done (Undos == 0).
 	bool undo();
-	/// Returns the number   of stored Redos. If greater than 0 Redo will be effective.
+	/// Returns the number of stored Redos. If greater than 0 Redo will be effective.
 	int getAvailableRedos() const;
+	/// Returns a list of the Redo names.
+	std::vector<std::string> getAvailableRedoNames() const;
 	/// Will REDO  one step, returns  False if no redo was done (Redos == 0).
 	bool redo() ;
 	//@}
 
 
- 	/** @name methods for the transaction handling
-   *  normaly the Transction system is used through the
-   *  Undo/Redo system. Direct acces you need e.g. reconstruction
-   *  of documents through transction logging or fine grain change
-   *  history!
-	 */
+ 	/** @name methods for the transaction handling*/
 	//@{
   /// starts a new transaction
   void setTransactionMode(int iMode);

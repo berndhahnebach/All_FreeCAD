@@ -88,6 +88,10 @@ class UndoRedoCases(unittest.TestCase):
         self.Doc.getObject("test1").Integer  = 1
         self.Doc.openCommand()
         self.Doc.getObject("test1").Integer  = 2
+        self.Doc.abortCommand()
+        self.assertEqual(self.Doc.getObject("test1").Integer, 1)
+        self.Doc.openCommand()
+        self.Doc.getObject("test1").Integer  = 2		
         self.Doc.undo()
         self.assertEqual(self.Doc.getObject("test1").Integer, 1)
         self.Doc.undo()
