@@ -112,13 +112,18 @@ PyMethodDef DocumentPy::Methods[] = {
 
 
   PYMETHODEDEF(setUndoMode)
-  PYMETHODEDEF(openCommand)
-  PYMETHODEDEF(commitCommand)
-  PYMETHODEDEF(abortCommand)
+  PYMETHODEDEF(openTransaction)
+  PYMETHODEDEF(commitTransaction)
+  PYMETHODEDEF(abortTransaction)
   PYMETHODEDEF(undo)
   PYMETHODEDEF(redo)
   PYMETHODEDEF(clearUndos)
-  PYMETHODEDEF(getUndoMemSize)
+  PYMETHODEDEF(getUndoMemSize)	
+  PYMETHODEDEF(getAvailableUndoNames)
+	PYMETHODEDEF(getAvailableRedoNames)
+	PYMETHODEDEF(getAvailableUndos)
+	PYMETHODEDEF(getAvailableRedos)
+
 
   PYMETHODEDEF(recompute)
 //  PYMETHODEDEF(Dump)
@@ -132,9 +137,9 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(getName)
   PYMETHODEDEF(getMemSize)
 
-  PYMETHODEDEF(beginTransaction)
-  PYMETHODEDEF(rollbackTransaction)
-  PYMETHODEDEF(endTransaction)
+  //PYMETHODEDEF(beginTransaction)
+  //PYMETHODEDEF(rollbackTransaction)
+  //PYMETHODEDEF(endTransaction)
   PYMETHODEDEF(setTransactionMode)
 
   {NULL, NULL}		/* Sentinel */
@@ -277,30 +282,85 @@ PYFUNCIMP_D(DocumentPy,clearUndos)
 	  Py_Return; 
   }PY_CATCH;
 } 
-PYFUNCIMP_D(DocumentPy,openCommand)
+PYFUNCIMP_D(DocumentPy,openTransaction)
 { 
+  char *pstr=0;
+  if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
+      return NULL;                             // NULL triggers exception 
+
   PY_TRY {
-	  _pcDoc->openCommand(); 
+	  _pcDoc->openTransaction(pstr); 
 	  Py_Return; 
   }PY_CATCH;
 } 
 	
-PYFUNCIMP_D(DocumentPy,commitCommand)
+PYFUNCIMP_D(DocumentPy,commitTransaction)
 { 
   PY_TRY {
-	  _pcDoc->commitCommand(); 
+	  _pcDoc->commitTransaction(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
 	
-PYFUNCIMP_D(DocumentPy,abortCommand)
+PYFUNCIMP_D(DocumentPy,abortTransaction)
 { 
   PY_TRY {
-	  _pcDoc->abortCommand(); 
+	  _pcDoc->abortTransaction(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
 
+
+PYFUNCIMP_D(DocumentPy,getAvailableUndoNames)
+{
+  if (!PyArg_ParseTuple(args, ""))  // convert args: Python->C 
+     return NULL;                   // NULL triggers exception 
+
+  PY_TRY {
+    std::vector<std::string> vList = _pcDoc->getAvailableUndoNames();
+	  PyObject* pList = PyList_New(vList.size());  
+    unsigned int i =0;
+    for (std::vector<std::string>::const_iterator It = vList.begin();It!=vList.end();++It,i++)
+      PyList_SetItem(pList, i, PyString_FromString(It->c_str()));
+
+	  return pList;
+
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(DocumentPy,getAvailableRedoNames)
+{
+ if (!PyArg_ParseTuple(args, ""))  // convert args: Python->C 
+     return NULL;                   // NULL triggers exception 
+
+  PY_TRY {
+    std::vector<std::string> vList = _pcDoc->getAvailableRedoNames();
+	  PyObject* pList = PyList_New(vList.size());  
+    unsigned int i =0;
+    for (std::vector<std::string>::const_iterator It = vList.begin();It!=vList.end();++It,i++)
+      PyList_SetItem(pList, i, PyString_FromString(It->c_str()));
+
+	  return pList;
+
+  }PY_CATCH;
+
+}
+
+PYFUNCIMP_D(DocumentPy,getAvailableUndos)
+{ 
+  PY_TRY {
+	   return Py_BuildValue("i",_pcDoc->getAvailableUndos()); 
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(DocumentPy,getAvailableRedos)
+{ 
+  PY_TRY {
+	   return Py_BuildValue("i",_pcDoc->getAvailableRedos()); 
+  }PY_CATCH;
+} 
+
+#if 0
 
 PYFUNCIMP_D(DocumentPy,beginTransaction)
 { 
@@ -325,6 +385,8 @@ PYFUNCIMP_D(DocumentPy,endTransaction)
 	   return Py_BuildValue("i",_pcDoc->endTransaction()); 
   }PY_CATCH;
 } 
+
+#endif
 
 
 PYFUNCIMP_D(DocumentPy,setTransactionMode)

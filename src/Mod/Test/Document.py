@@ -80,39 +80,174 @@ class UndoRedoCases(unittest.TestCase):
     def setUp(self):
         self.Doc = FreeCAD.newDocument("UndoTest")
         self.Doc.addObject("App::FeatureTest","Base")
-        self.Doc.setUndoMode(1)
 
     def testUndo(self):
-        self.Doc.openCommand()
+        # switch on the Undo
+        self.Doc.setUndoMode(1)
+        self.assertEqual(self.Doc.getAvailableUndoNames(),[])
+        self.assertEqual(self.Doc.getAvailableUndos(),0)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+        
+        # first transaction 
+        self.Doc.openTransaction("Transaction1")
         self.Doc.addObject("App::FeatureTest","test1")
         self.Doc.getObject("test1").Integer  = 1
-        self.Doc.openCommand()
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),1)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+        
+        # second transaction 
+        self.Doc.openTransaction("Transaction2")
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction2','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),2)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
         self.Doc.getObject("test1").Integer  = 2
-        self.Doc.abortCommand()
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction2','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),2)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+        
+        # abort second transaction 
+        self.Doc.abortTransaction()
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),1)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
         self.assertEqual(self.Doc.getObject("test1").Integer, 1)
-        self.Doc.openCommand()
-        self.Doc.getObject("test1").Integer  = 2		
+        
+        # again second transaction 
+        self.Doc.openTransaction("Transaction2")
+        self.Doc.getObject("test1").Integer  = 2	
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction2','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),2)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+
+        # third transaction
+        self.Doc.openTransaction("Transaction3")
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction3','Transaction2','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),3)
+        self.Doc.getObject("test1").Integer  = 3		
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+        
+        # fourth transaction
+        self.Doc.openTransaction("Transaction4")
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction4','Transaction3','Transaction2','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),4)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+        self.Doc.getObject("test1").Integer  = 4
+
+        # undo the fourth transaction 
+        self.Doc.undo()
+        self.assertEqual(self.Doc.getObject("test1").Integer, 3)
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction3','Transaction2','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),3)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),['Transaction4'])
+        self.assertEqual(self.Doc.getAvailableRedos(),1)
+
+        # undo the third transaction 
+        self.Doc.undo()
+        self.assertEqual(self.Doc.getObject("test1").Integer, 2)
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction2','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),2)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),['Transaction3','Transaction4'])
+        self.assertEqual(self.Doc.getAvailableRedos(),2)
+
+        # undo the second transaction 
         self.Doc.undo()
         self.assertEqual(self.Doc.getObject("test1").Integer, 1)
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),1)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),['Transaction2','Transaction3','Transaction4'])
+        self.assertEqual(self.Doc.getAvailableRedos(),3)
+
+        # undo the first transaction 
         self.Doc.undo()
         self.failUnless(self.Doc.getObject("test1") == None)
+        self.assertEqual(self.Doc.getAvailableUndoNames(),[])
+        self.assertEqual(self.Doc.getAvailableUndos(),0)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),['Transaction1','Transaction2','Transaction3','Transaction4'])
+        self.assertEqual(self.Doc.getAvailableRedos(),4)
+
+        # redo the first transaction 
         self.Doc.redo()
         self.assertEqual(self.Doc.getObject("test1").Integer, 1)
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),1)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),['Transaction2','Transaction3','Transaction4'])
+        self.assertEqual(self.Doc.getAvailableRedos(),3)
+
+        # redo the second transaction 
         self.Doc.redo()
         self.assertEqual(self.Doc.getObject("test1").Integer, 2)
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction2','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),2)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),['Transaction3','Transaction4'])
+        self.assertEqual(self.Doc.getAvailableRedos(),2)
+
+        # undo the second transaction 
         self.Doc.undo()
         self.assertEqual(self.Doc.getObject("test1").Integer, 1)
-        self.Doc.openCommand()
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),1)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),['Transaction2','Transaction3','Transaction4'])
+        self.assertEqual(self.Doc.getAvailableRedos(),3)
+
+        # new transaction eight
+        self.Doc.openTransaction("Transaction8")
         self.Doc.getObject("test1").Integer  = 8
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction8','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),2)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+        self.Doc.abortTransaction()
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),1)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+
+        # again new transaction eight
+        self.Doc.openTransaction("Transaction8")
+        self.Doc.getObject("test1").Integer  = 8
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction8','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),2)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+        
+        # again new transaction nine
+        self.Doc.openTransaction("Transaction9")
+        self.Doc.getObject("test1").Integer  = 9
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction9','Transaction8','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),3)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+        self.Doc.commitTransaction()
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction9','Transaction8','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),3)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+        self.assertEqual(self.Doc.getObject("test1").Integer, 9)
+
+        # undo the ninth transaction
+        self.Doc.undo()
         self.assertEqual(self.Doc.getObject("test1").Integer, 8)
-        self.Doc.undo()
-        self.assertEqual(self.Doc.getObject("test1").Integer, 1)
-        self.Doc.redo()
-        self.assertEqual(self.Doc.getObject("test1").Integer, 8)
-        self.Doc.undo()
-        self.assertEqual(self.Doc.getObject("test1").Integer, 1)
-        self.Doc.undo()
-        self.failUnless(self.Doc.getObject("test1") == None)
+        self.assertEqual(self.Doc.getAvailableUndoNames(),['Transaction8','Transaction1'])
+        self.assertEqual(self.Doc.getAvailableUndos(),2)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),['Transaction9'])
+        self.assertEqual(self.Doc.getAvailableRedos(),1)
+
+        # switch on the Undo OFF
+        self.Doc.setUndoMode(0)
+        self.assertEqual(self.Doc.getAvailableUndoNames(),[])
+        self.assertEqual(self.Doc.getAvailableUndos(),0)
+        self.assertEqual(self.Doc.getAvailableRedoNames(),[])
+        self.assertEqual(self.Doc.getAvailableRedos(),0)
+
 
     def tearDown(self):
         # closing doc

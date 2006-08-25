@@ -187,19 +187,18 @@ public:
 	//@}
 
 
-	/** @name methods for the UNDO REDO handling */
+	/** @name methods for the UNDO REDO and Transaction handling */
 	//@{
   /// switch the level of Undo/Redo
-  void setUndoMode(int iMode);
-
-	/// New Command (Short cut for Commit and Open command)
-	void newCommand() ;
+  void setUndoMode(int iMode);  
+  /// switch the tranaction mode
+  void setTransactionMode(int iMode);
 	/// Open a new command Undo/Redo, an UTF-8 name can be specified
-	void openCommand(const char* name=0);
+	void openTransaction(const char* name=0);
 	/// Commit the Command transaction. Do nothing If there is no Command transaction open.
-	void commitCommand();
-	/// Abort the  Command  transaction. Do nothing If there is no Command transaction open.
-	void abortCommand();
+	void commitTransaction();
+	/// Abort the  actually runing transaction. 
+	void abortTransaction();
 	/// Set the Undo limit in Byte!
 	void SetUndoLimit(unsigned int MemSize=0);
 	/// Remove all stored Undos and Redos
@@ -219,21 +218,6 @@ public:
 	/// Will REDO  one step, returns  False if no redo was done (Redos == 0).
 	bool redo() ;
 	//@}
-
-
- 	/** @name methods for the transaction handling*/
-	//@{
-  /// starts a new transaction
-  void setTransactionMode(int iMode);
-  /// starts a new transaction
-  int  beginTransaction(void);
-  /// revert all changes to the document since beginTransaction()
-  void rollbackTransaction(void);
-  /// ends the open Transaction
-  int  endTransaction(void);
-  /// returns the named Transaction
-  const Transaction *getTransaction(int pos = -1) const;
-  //@}
 
 
 	virtual Base::PyObjectBase *GetPyObject(void);
@@ -262,12 +246,13 @@ protected:
   int iTransactionCount;
   std::map<int,Transaction*> mTransactions;
   Transaction *activTransaction;
+  bool bRollback;
 
   int _iUndoMode;
-  std::stack<Transaction*> mUndoTransactions;
-  std::stack<Transaction*> mRedoTransactions;
+  std::list<Transaction*> mUndoTransactions;
+  std::list<Transaction*> mRedoTransactions;
   Transaction *activUndoTransaction;
-
+  void _clearRedos();
 
 
   DocumentObject* pActiveObject;
