@@ -91,20 +91,23 @@ bool Document::undo(void)
   if(_iUndoMode)
   {
     if(activUndoTransaction)
-      commitCommand();
-  
-    assert(mUndoTransactions.size()!=0);
+      commitTransaction();
+    else
+      assert(mUndoTransactions.size()!=0);
 
     // redo
     activUndoTransaction = new Transaction();
+    activUndoTransaction->Name = mUndoTransactions.back()->Name;
+
     // applieing the undo
-    mUndoTransactions.top()->apply(*this);
+    mUndoTransactions.back()->apply(*this);
+    
     // save the redo
-    mRedoTransactions.push(activUndoTransaction);
+    mRedoTransactions.push_back(activUndoTransaction);
     activUndoTransaction = 0;
     
-    delete mUndoTransactions.top();
-    mUndoTransactions.pop();
+    delete mUndoTransactions.back();
+    mUndoTransactions.pop_back();
   }
 
   return false; 
@@ -115,75 +118,115 @@ bool Document::redo(void)
   if(_iUndoMode)
   {
     if(activUndoTransaction)
-      commitCommand();
+      commitTransaction();
   
     assert(mRedoTransactions.size()!=0);
 
     // undo
     activUndoTransaction = new Transaction();
-    mRedoTransactions.top()->apply(*this);
-    mUndoTransactions.push(activUndoTransaction);
+    activUndoTransaction->Name = mRedoTransactions.back()->Name;
+
+    // do the redo
+    mRedoTransactions.back()->apply(*this);
+    mUndoTransactions.push_back(activUndoTransaction);
     activUndoTransaction = 0;
     
-    delete mRedoTransactions.top();
-    mRedoTransactions.pop();
+    delete mRedoTransactions.back();
+    mRedoTransactions.pop_back();
   }
 
   return false; 
 }
 
-void Document::newCommand() 
+std::vector<std::string> Document::getAvailableUndoNames() const
 {
-  openCommand();
+  std::vector<std::string> vList;
+  if(activUndoTransaction)
+    vList.push_back(this->activUndoTransaction->Name);
+  for(std::list<Transaction*>::const_reverse_iterator It=mUndoTransactions.rbegin();It!=mUndoTransactions.rend();++It)
+    vList.push_back((**It).Name);
+  return vList;
+}
+std::vector<std::string> Document::getAvailableRedoNames() const
+{
+  std::vector<std::string> vList;
+  for(std::list<Transaction*>::const_reverse_iterator It=mRedoTransactions.rbegin();It!=mRedoTransactions.rend();++It)
+    vList.push_back((**It).Name);
+  return vList;
 }
 
-void Document::openCommand(const char* name)
+
+void Document::openTransaction(const char* name)
 {
   if(_iUndoMode)
   {
     if(activUndoTransaction)
-      commitCommand();
+      commitTransaction();
+    _clearRedos();
 
     activUndoTransaction = new Transaction();
+    if(name)
+      activUndoTransaction->Name = name;
   }
   
 }
 
-void Document::commitCommand()
+void Document::_clearRedos()
+{
+  while(!mRedoTransactions.empty())
+  {
+    delete mRedoTransactions.back();
+    mRedoTransactions.pop_back();
+  }
+}
+
+void Document::commitTransaction()
 {
   if(activUndoTransaction)
   {
-    mUndoTransactions.push(activUndoTransaction);
+    mUndoTransactions.push_back(activUndoTransaction);
     activUndoTransaction = 0;
   }
   
 }
 
-void Document::abortCommand()
+void Document::abortTransaction()
 {
+  if(activUndoTransaction)
+  {
+    bRollback = true;
+   // applieing the so far made changes
+    activUndoTransaction->apply(*this);
+    bRollback = false;
+
+    // destroy the undo
+    delete activUndoTransaction;
+    activUndoTransaction = 0;
+ }
    
 }
 
 
 void Document::clearUndos()
 {
+  if(activUndoTransaction)
+    commitTransaction();
 
   while(!mUndoTransactions.empty())
   {
-    delete mUndoTransactions.top();
-    mUndoTransactions.pop();
+    delete mUndoTransactions.back();
+    mUndoTransactions.pop_back();
   }
 
-  while(!mRedoTransactions.empty())
-  {
-    delete mRedoTransactions.top();
-    mRedoTransactions.pop();
-  }
+  _clearRedos();
 }
 
 int Document::getAvailableUndos() const
 {
-  return mUndoTransactions.size();
+  if(activUndoTransaction)
+    return mUndoTransactions.size() + 1;
+  else
+    return mUndoTransactions.size();
 }
 
 int Document::getAvailableRedos() const
@@ -193,6 +236,9 @@ int Document::getAvailableRedos() const
 
 void Document::setUndoMode(int iMode)
 {
+  if(_iUndoMode && !iMode)
+    clearUndos();
+
   _iUndoMode = iMode;
 }
 
@@ -203,38 +249,30 @@ unsigned int Document::getUndoMemSize (void) const
 }
 void Document::onBevorChangeProperty(const DocumentObject *Who, const Property *What)
 {
-  if(activUndoTransaction)
-  {
+  if(activUndoTransaction && !bRollback)
     activUndoTransaction->addObjectChange(Who,What);
-
-  }else
-    // if the Undo is switched on, never do a change without openCommand()!
-    assert(_iUndoMode==0);
-
 }
 
 void Document::onChangedProperty(const DocumentObject *Who, const Property *What)
 {
-  if(this->activTransaction)
-  {
+  if(this->activTransaction && !bRollback)
     this->activTransaction->addObjectChange(Who,What);
-
-  }
 }
 
 void Document::setTransactionMode(int iMode)
 {
-  if(_iTransactionMode == 0 && iMode == 1)
+/*  if(_iTransactionMode == 0 && iMode == 1)
     beginTransaction();
    
   if(activTransaction && iMode == 0)
     endTransaction();
-  
+  */
   _iTransactionMode = iMode;
 
 }
 
 
+#if 0
 /// starts a new transaction
 int  Document::beginTransaction(void)
 {
@@ -280,7 +318,7 @@ const Transaction *Document::getTransaction(int pos) const
 }
 
 
-
+#endif
 
 
 
@@ -292,6 +330,7 @@ Document::Document(void)
 : _iTransactionMode(0),
   iTransactionCount(0),
   activTransaction(0),
+  bRollback(false),
   _iUndoMode(0),
   activUndoTransaction(0),
   pActiveObject(0),

@@ -79,6 +79,9 @@ public:
   /// apply the content to the document
   void apply(Document &Doc);
 
+  // the utf-8 name of the transaction
+  std::string Name; 
+
 
   virtual void Save (Base::Writer &writer) const;
   /// This method is used to restore properties from an XML document.

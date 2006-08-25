@@ -57,20 +57,26 @@ public:
 
 //	UndoRedo stuff
 	PYFUNCDEF_D(DocumentPy,setUndoMode)
-	PYFUNCDEF_D(DocumentPy,openCommand)
-	PYFUNCDEF_D(DocumentPy,commitCommand)
-	PYFUNCDEF_D(DocumentPy,abortCommand)
+	PYFUNCDEF_D(DocumentPy,setTransactionMode)
+	PYFUNCDEF_D(DocumentPy,openTransaction)
+	PYFUNCDEF_D(DocumentPy,commitTransaction)
+	PYFUNCDEF_D(DocumentPy,abortTransaction)
 	PYFUNCDEF_D(DocumentPy,undo)
 	PYFUNCDEF_D(DocumentPy,redo)
 	PYFUNCDEF_D(DocumentPy,clearUndos)
 	PYFUNCDEF_D(DocumentPy,getUndoMemSize)
+	PYFUNCDEF_D(DocumentPy,getAvailableUndoNames)
+	PYFUNCDEF_D(DocumentPy,getAvailableRedoNames)
+	PYFUNCDEF_D(DocumentPy,getAvailableUndos)
+	PYFUNCDEF_D(DocumentPy,getAvailableRedos)
+
 
 //	Transaction stuff
-	PYFUNCDEF_D(DocumentPy,beginTransaction)
-	PYFUNCDEF_D(DocumentPy,rollbackTransaction)
-	PYFUNCDEF_D(DocumentPy,endTransaction)
-	PYFUNCDEF_D(DocumentPy,setTransactionMode)
-	PYFUNCDEF_D(DocumentPy,recompute)
+	//PYFUNCDEF_D(DocumentPy,beginTransaction)
+	//PYFUNCDEF_D(DocumentPy,rollbackTransaction)
+	//PYFUNCDEF_D(DocumentPy,endTransaction)
+
+  PYFUNCDEF_D(DocumentPy,recompute)
 
 //	PYFUNCDEF_D(DocumentPy,Dump)
 

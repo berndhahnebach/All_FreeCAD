@@ -821,47 +821,30 @@ MDIView* Document::getActiveView(void) const
  */
 void Document::openCommand(const char* sName)
 {
-  // check on double open Commands
-//  assert(!getDocument()->HasOpenCommand());
-
-  listUndoNames.push_back(sName);
-
-  getDocument()->newCommand();
+  getDocument()->openTransaction(sName);
 }
 
 void Document::commitCommand(void)
 {
-  getDocument()->commitCommand();	
+  getDocument()->commitTransaction();	
 }
 
 void Document::abortCommand(void)
 {
-  listUndoNames.pop_back();
 
-  getDocument()->abortCommand();	
+  getDocument()->abortTransaction();	
 }
 
 /// Get an Undo string vector with the Undo names
 std::vector<std::string> Document::getUndoVector(void) const
 {
-  std::vector<std::string> vecTemp;
-
-  //std::copy(listUndoNames.begin(),listUndoNames.end(),vecTemp.begin());
-
-  for(std::list<std::string>::const_iterator It=listUndoNames.begin();It!=listUndoNames.end();It++)
-    vecTemp.push_back(*It);
-
-  return vecTemp;
+  return getDocument()->getAvailableUndoNames();
 }
 
 /// Get an Redo string vector with the Redo names
 std::vector<std::string> Document::getRedoVector(void) const
 {
-  std::vector<std::string> vecTemp;
-
-  std::copy(listRedoNames.begin(),listRedoNames.end(),vecTemp.begin());
-
-  return vecTemp;
+  return getDocument()->getAvailableRedoNames();
 }
 
 /// Will UNDO  one or more steps
@@ -883,34 +866,7 @@ void Document::redo(int iSteps)
 }
 
 
-/*
 
-Handle(V3d_Viewer) Document::Viewer(const Standard_CString aDisplay,
-                     const Standard_ExtString aName,
-                     const Standard_CString aDomain,
-                     const Standard_Real ViewSize,
-                     const V3d_TypeOfOrientation ViewProj,
-                     const Standard_Boolean ComputedMode,
-                     const Standard_Boolean aDefaultComputedMode )
-{
-# ifndef FC_OS_WIN32
-    static Handle(Graphic3d_GraphicDevice) defaultdevice;
-
-    if(defaultdevice.IsNull()) defaultdevice = new Graphic3d_GraphicDevice(aDisplay);
-    return new V3d_Viewer(defaultdevice,aName,aDomain,ViewSize,ViewProj,
-                Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
-                ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
-# else
-    static Handle(Graphic3d_WNTGraphicDevice) defaultdevice;
-
-    if(defaultdevice.IsNull()) defaultdevice = new Graphic3d_WNTGraphicDevice();
-    return new V3d_Viewer(defaultdevice,aName,aDomain,ViewSize,ViewProj,
-                Quantity_NOC_GRAY30,V3d_ZBUFFER,V3d_GOURAUD,V3d_WAIT,
-                ComputedMode,aDefaultComputedMode,V3d_TEX_NONE);
-# endif  // FC_OS_WIN32
-}
-
-  */
 
 PyObject* Document::getPyObject(void)
 {
