@@ -86,5 +86,32 @@ InputPath=.\BuildDocDoxy.cfg
 !ENDIF 
 
 # End Source File
+# Begin Source File
+
+SOURCE=.\BuildDocDoxyFull.cfg
+
+!IF  "$(CFG)" == "BuildSourceDoc - Win32 Release"
+
+# Begin Custom Build -
+InputPath=.\BuildDocDoxyFull.cfg
+
+"dummy3.txt" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	doxygen.exe BuildDocDoxyFull.cfg
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "BuildSourceDoc - Win32 Debug"
+
+# Begin Custom Build -
+InputPath=.\BuildDocDoxyFull.cfg
+
+"dummy3.txt" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	doxygen.exe BuildDocDoxyFull.cfg
+
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
 # End Target
 # End Project
