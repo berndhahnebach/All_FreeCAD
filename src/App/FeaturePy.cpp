@@ -300,7 +300,15 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
       Property *prop = _pcFeature->getPropertyByName(attr);
       if(prop)
       {
-        prop->setPyObject(value);
+        try {
+          prop->setPyObject(value);
+        } catch (Base::Exception &exc) {
+          PyErr_Format(PyExc_AttributeError, "Attribut (Name: %s) error: '%s' ", attr, exc.what());
+          return -1;
+        } catch (...) {
+          PyErr_Format(PyExc_AttributeError, "Unknown error in attribut %s", attr);
+          return -1;
+        }
       }else
 			  return DocumentObjectPy::_setattr(attr, value); 						
 //  }
