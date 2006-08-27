@@ -95,12 +95,15 @@ bool Document::undo(void)
     else
       assert(mUndoTransactions.size()!=0);
 
+    DocChanges DocChange;
+    DocChange.Why = DocChanges::UndoRedo;
+
     // redo
     activUndoTransaction = new Transaction();
     activUndoTransaction->Name = mUndoTransactions.back()->Name;
 
     // applieing the undo
-    mUndoTransactions.back()->apply(*this);
+    mUndoTransactions.back()->apply(*this,DocChange);
     
     // save the redo
     mRedoTransactions.push_back(activUndoTransaction);
@@ -108,6 +111,9 @@ bool Document::undo(void)
     
     delete mUndoTransactions.back();
     mUndoTransactions.pop_back();
+
+    // notiefy all the listeners (e.g. GuiDocument)
+    Notify(DocChange);
   }
 
   return false; 
@@ -122,17 +128,23 @@ bool Document::redo(void)
   
     assert(mRedoTransactions.size()!=0);
 
+    DocChanges DocChange;
+    DocChange.Why = DocChanges::UndoRedo;
+
     // undo
     activUndoTransaction = new Transaction();
     activUndoTransaction->Name = mRedoTransactions.back()->Name;
 
     // do the redo
-    mRedoTransactions.back()->apply(*this);
+    mRedoTransactions.back()->apply(*this,DocChange);
     mUndoTransactions.push_back(activUndoTransaction);
     activUndoTransaction = 0;
     
     delete mRedoTransactions.back();
     mRedoTransactions.pop_back();
+
+    // notiefy all the listeners (e.g. GuiDocument)
+    Notify(DocChange);
   }
 
   return false; 
@@ -192,11 +204,12 @@ void Document::commitTransaction()
 
 void Document::abortTransaction()
 {
+  DocChanges dummy;
   if(activUndoTransaction)
   {
     bRollback = true;
    // applieing the so far made changes
-    activUndoTransaction->apply(*this);
+    activUndoTransaction->apply(*this,dummy);
     bRollback = false;
 
     // destroy the undo

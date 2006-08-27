@@ -83,7 +83,7 @@
                                 <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Document save compression level
+                                <string>Document save compression level
 (0 = none, 9 = highest, 3 = default)</string>
                             </property>
                         </widget>
@@ -120,6 +120,20 @@
                         <enum>Horizontal</enum>
                     </property>
                 </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>prefCheckBox2</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Using Undo/Redo on documents (can be very memory consuming)</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>UsingUndo</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>Document</cstring>
+                    </property>
+                </widget>
                 <widget class="QLayoutWidget">
                     <property name="name">
                         <cstring>layout3</cstring>
@@ -146,8 +160,62 @@
                             <property name="value">
                                 <number>20</number>
                             </property>
+                            <property name="prefEntry" stdset="0">
+                                <cstring>MaxUndoSize</cstring>
+                            </property>
+                            <property name="prefPath" stdset="0">
+                                <cstring>Document</cstring>
+                            </property>
                         </widget>
                     </hbox>
+                </widget>
+                <widget class="Line">
+                    <property name="name">
+                        <cstring>line1_2_2</cstring>
+                    </property>
+                    <property name="frameShape">
+                        <enum>HLine</enum>
+                    </property>
+                    <property name="frameShadow">
+                        <enum>Sunken</enum>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>prefCheckBox2_2</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>Saving transactions (Autosave)</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>SaveTransactions</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>Document</cstring>
+                    </property>
+                </widget>
+                <widget class="Gui::PrefCheckBox">
+                    <property name="name">
+                        <cstring>prefCheckBox2_2_2</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>discard saved transaction after document saved</string>
+                    </property>
+                    <property name="prefEntry" stdset="0">
+                        <cstring>TransactionsDiscard</cstring>
+                    </property>
+                    <property name="prefPath" stdset="0">
+                        <cstring>Document</cstring>
+                    </property>
                 </widget>
             </vbox>
         </widget>
@@ -159,6 +227,9 @@
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
+    <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>
     <includehint>Gui/PrefWidgets.h</includehint>

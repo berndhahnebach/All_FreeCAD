@@ -366,7 +366,13 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
   }else if(strcmp("PerspectiveCamera",pMsg) == 0 ){
     _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
     return true;
-  }
+  }else  if(strcmp("Undo",pMsg) == 0 ){
+    getGuiDocument()->undo(1);
+    return true;
+  }else  if(strcmp("Redo",pMsg) == 0 ){
+    getGuiDocument()->redo(1);
+    return true;
+  }else 
 
   return false;
 }
@@ -374,7 +380,11 @@ bool View3DInventor::onMsg(const char* pMsg, const char** ppReturn)
 
 bool View3DInventor::onHasMsg(const char* pMsg) const
 {
-  if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
+  if(strcmp("Undo",pMsg) == 0 ){
+    return getAppDocument()->getAvailableUndos() > 0;
+  }else if(strcmp("Redo",pMsg) == 0 ){
+    return getAppDocument()->getAvailableRedos() > 0; 
+  }else if(strcmp("SetStereoRedGreen",pMsg) == 0 ){
     return true;
   }else if(strcmp("SetStereoQuadBuff",pMsg) == 0 ){
     return true;

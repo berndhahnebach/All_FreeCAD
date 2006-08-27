@@ -243,7 +243,9 @@ void Command::invoke (int i)
   // set the application module type for the macro
   getGuiApplication()->macroManager()->setModule(sAppModule);
   try{
-    activated( i );
+    // check if it realy works NOW (could be a delay between click deaktivation of the button)
+    if(isActive())
+      activated( i );
   }catch(Base::PyException &e){
     e.ReportException();
     Base::Console().Error("Stack Trace: %s\n",e.getStackTrace().c_str());
