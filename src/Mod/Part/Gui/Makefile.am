@@ -48,9 +48,15 @@ libPartGui_la_SOURCES=\
 libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPartGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
+if OCC_VERSION6
+libPartGui_la_LIBADD   = \
+		-lFreeCADGui \
+		-lPart -lTKMesh
+else
 libPartGui_la_LIBADD   = \
 		-lFreeCADGui \
 		-lPart
+endif
 
 #--------------------------------------------------------------------------------------
 # Loader of libPartGui
