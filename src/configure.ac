@@ -363,6 +363,20 @@ AC_TRY_LINK([#define HAVE_IOSTREAM 1
 	AC_MSG_RESULT(yes)],
 	AC_MSG_RESULT(no))])
 
+# Checking for version >= 6.1
+LIBS="-lTKernel -lTKMesh -lTKG2d -lTKG3d -lTKTopAlgo -lTKMath -lTKBRep -lTKGeomBase -lTKGeomAlgo"
+fc_cv_lib_occ_ver_6=no
+if test x"$fc_cv_lib_occ_avail" = xyes; then
+	AC_CHECK_HEADER(Standard.hxx,[
+	AC_MSG_CHECKING([whether OCC is >= 6.1])
+	AC_TRY_LINK([#define HAVE_IOSTREAM 1
+		#include <gp_Pnt.hxx>],
+		[gp_Pnt pt(0,0,0);],
+		[fc_cv_lib_occ_ver_6=yes
+		AC_MSG_RESULT(yes)],
+		AC_MSG_RESULT(no))])
+fi
+
 CPPFLAGS=$fc_occ_ac_save_cppflags
 LDFLAGS=$fc_occ_ac_save_ldflags
 LIBS=$fc_occ_ac_save_libs
@@ -378,6 +392,7 @@ else
 fi
 
 AM_CONDITIONAL(OCC_LIBRARY_FILES, test x"$fc_cv_lib_occ_avail" = xyes)
+AM_CONDITIONAL(OCC_VERSION6, test x"$fc_cv_lib_occ_ver_6" = xyes)
 
 dnl checking for WildMagic3
 dnl **************************************************************************

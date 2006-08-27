@@ -1,6 +1,5 @@
 SUBDIRS=Base App Gui Main Mod Tools debian
 
-
 EXTRA_DIST = \
 		Build/FreeCAD.wxs \
 		Build/FreeCADBase.wxs \
@@ -15,9 +14,21 @@ EXTRA_DIST = \
 		Build/ModPart.wxi \
 		Build/ModPoints.wxi \
 		Build/ModRaytracing.wxi \
+		Build/Version.h.in \
+		Build/Version.h \
+		Build/Version.wxi.in \
+		Build/BuildDocDoxy.cfg \
+		Build/BuildDocDoxyFull.cfg \
+		Build/BuildSourceDoc.dsp \
+		Build/BuildSourceDoc.vcproj \
+		Build/BuildExtractRevision.dsp \
+		Build/BuildExtractRevision.vcproj \
 		All.dsp \
 		All.vcproj \
+		AllCmdFiles.dsp \
+		AllCmdFiles.vcproj \
 		FreeCAD.dsw \
+		FreeCADDist.dsw \
 		FreeCAD.sln \
 		ChangeLog.txt \
 		copying.lib \
@@ -25,5 +36,4 @@ EXTRA_DIST = \
 		fc.sh \
 		README.Cygwin \
 		README.Linux \
-		FCConfig.h \
-		Version.h
+		FCConfig.h
