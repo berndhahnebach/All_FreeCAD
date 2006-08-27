@@ -28,10 +28,13 @@
 #***************************************************************************
 
 #!/usr/bin/python
-import os,sys,string,time
+import os,sys,string,re,time
 import xml.sax
 import xml.sax.handler
+import xml.sax.xmlreader
+import StringIO
 
+# SAX handler to parse the subversion output
 class SvnHandler(xml.sax.handler.ContentHandler):
   def __init__(self):
     self.inUrl = 0
@@ -42,7 +45,7 @@ class SvnHandler(xml.sax.handler.ContentHandler):
     if name == "entry":
       self.buffer = ""
       self.mapping["Rev"] = attributes["revision"]
-    elif name == "root":
+    elif name == "url":
       self.inUrl = 1
     elif name == "date":
       self.inDate = 1
@@ -54,7 +57,7 @@ class SvnHandler(xml.sax.handler.ContentHandler):
       self.buffer += data
  
   def endElement(self, name):
-    if name == "root":
+    if name == "url":
       self.inUrl = 0
       self.mapping["Url"] = self.buffer
       self.buffer = ""
@@ -71,14 +74,15 @@ parser=xml.sax.make_parser()
 handler=SvnHandler()
 parser.setContentHandler(handler)
 
-#Create an XML file with the required information and read in with a SAX parser
-os.system("svn info .. --xml > ../Build/Version.xml")
-parser.parse("../Build/Version.xml")
-os.remove("../Build/Version.xml")
+#Create an XML stream with the required information and read in with a SAX parser
+Ver=os.popen("svnversion .. -n").read()
+Info=os.popen("svn info .. --xml").read()
+inpsrc = xml.sax.InputSource()
+str=StringIO.StringIO(Info)
+inpsrc.setByteStream(str)
+parser.parse(inpsrc)
 
-file = open("../Build/Version.h.in")
-out  = open("../Build/Version.h","w");
-
+#Information of the Subversion stuff
 Url = handler.mapping["Url"]
 Rev = handler.mapping["Rev"]
 Date = handler.mapping["Date"]
@@ -86,17 +90,48 @@ Date = Date[:19]
 #Same format as SubWCRev does
 Date = string.replace(Date,'T',' ')
 Date = string.replace(Date,'-','/')
+
+#Date is given as GMT. Now we must convert to local date.
+m=time.strptime(Date,"%Y/%m/%d %H:%M:%S")
+#Copy the tuple and set tm_isdst to 0 because it's GMT
+l=(m.tm_year,m.tm_mon,m.tm_mday,m.tm_hour,m.tm_min,m.tm_sec,m.tm_wday,m.tm_yday,0)
+#Take timezone into account
+t=time.mktime(l)-time.timezone
+Date=time.strftime("%Y/%m/%d %H:%M:%S",time.localtime(t))
+
+#Get the current local date
 Time = time.strftime("%Y/%m/%d %H:%M:%S")
 
+Mods = 'Src not modified'
+Mixed = 'Src not mixed'
+Range = Rev
+
+# if version string ends with an 'M'
+r=re.search("M$",Ver)
+if r != None:
+    Mods = 'Src modified'
+
+# if version string contains a range
+r=re.match("^\\d+\\:\\d+",Ver)
+if r != None:
+    Mixed = 'Src mixed'
+    Range = Ver[:r.end()]
+
+# Open the template file and the version file
+file = open("../Build/Version.h.in")
 lines = file.readlines()
+file.close()
+out  = open("../Build/Version.h","w");
+
 for line in lines:
     line = string.replace(line,'$WCREV$',Rev)
     line = string.replace(line,'$WCDATE$',Date)
-    line = string.replace(line,'$WCRANGE$',Rev)
+    line = string.replace(line,'$WCRANGE$',Range)
     line = string.replace(line,'$WCURL$',Url)
     line = string.replace(line,'$WCNOW$',Time)
-    line = string.replace(line,'$WCMODS?Src modified:Src not modified$','Src not modified')
-    line = string.replace(line,'$WCMIXED?Src mixed:Src not mixed$','Src not mixed')
+    line = string.replace(line,'$WCMODS?Src modified:Src not modified$',Mods)
+    line = string.replace(line,'$WCMIXED?Src mixed:Src not mixed$',Mixed)
     # output
     out.write(line)
+
 out.write('\n')
