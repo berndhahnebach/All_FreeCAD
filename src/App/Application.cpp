@@ -66,7 +66,8 @@
 using namespace App;
 
 
-// If you stumble here, run the target "BuildExtractRevision" which build src/Build/Version.h. Or create your own from src/Build/Version.h.in!
+// If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
+// which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
 #include "../Build/Version.h"
 
 // scriptings (scripts are build in but can be overriden by command line option)

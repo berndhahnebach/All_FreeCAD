@@ -93,6 +93,7 @@ public:
   PYFUNCDEF_D(MeshPy,cutInner)
   PYFUNCDEF_D(MeshPy,flipNormals)
   PYFUNCDEF_D(MeshPy,harmonizeNormals)
+  PYFUNCDEF_D(MeshPy,countComponents)
 
 protected:
   MeshCore::MeshKernel _cMesh;

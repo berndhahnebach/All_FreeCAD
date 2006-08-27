@@ -63,11 +63,14 @@ public:
   void getRange( float& fMin, float& fMax) const;
   void setNumberOfLabels(int);
   int numberOfLabels() const;
+  void setNumberOfDecimals(int);
+  int numberOfDecimals() const;
   //@}
 
 protected:
   void onValidateMaximum();
   void onValidateMinimum();
+  void onSetDecimals(int);
 };
 
 } // namespace Dialog
