@@ -57,6 +57,10 @@ class DocumentBasicCases(unittest.TestCase):
     self.failUnless(L1.name== "Label_2","Invalid object name")
     self.Doc.removeObject("Label_1")
 
+  def testMem(self):
+    self.Doc.getMemSize()
+    
+    
 #    def testSaveAndRestore(self):
 #        # saving and restoring
 #        TempPath = os.getenv('TEMP')

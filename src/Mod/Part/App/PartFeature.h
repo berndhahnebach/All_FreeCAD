@@ -75,6 +75,12 @@ public:
 
   void SaveDocFile (Base::Writer &writer) const;
   void RestoreDocFile(Base::Reader &reader);
+
+  App::Property *Copy(void) const;
+  void Paste(const App::Property &from);
+  
+  virtual unsigned int getMemSize (void) const;
+
   //@}
 
 private:

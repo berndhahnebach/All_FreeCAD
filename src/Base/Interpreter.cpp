@@ -200,7 +200,7 @@ bool InterpreterSingleton::loadModule(const char* psModName)
 	module = PP_Load_Module(ModName.str);
 
 	if(!module ) 
-    throw PyException(/*"InterpreterSingleton::LoadModule(): Module not loaded!"*/);
+    throw PyException();
 
 	Py_XINCREF(module);
 

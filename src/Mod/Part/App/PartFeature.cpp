@@ -77,6 +77,28 @@ void PropertyPartShape::setPyObject(PyObject *value)
   }
 }
 
+App::Property *PropertyPartShape::Copy(void) const
+{
+  PropertyPartShape *p= new PropertyPartShape();
+  p->_Shape = _Shape;
+  return p;
+}
+
+void PropertyPartShape::Paste(const App::Property &from)
+{
+  aboutToSetValue();
+  _Shape = dynamic_cast<const PropertyPartShape&>(from)._Shape;
+  hasSetValue();
+
+}
+
+/// FIXME I have no Idea how to compute the size of a topoShape!
+unsigned int PropertyPartShape::getMemSize (void) const
+{
+  return 0;
+}
+
+
 void PropertyPartShape::Save (Base::Writer &writer) const
 {
 //  if( writer.isForceXML() )
