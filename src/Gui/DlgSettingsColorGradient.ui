@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>327</width>
+            <width>361</width>
             <height>332</height>
         </rect>
     </property>
@@ -38,10 +38,10 @@
                         <cstring>checkBoxGrayed</cstring>
                     </property>
                     <property name="text">
-                        <string>Out &amp;grayed</string>
+                        <string>Out g&amp;rayed</string>
                     </property>
                     <property name="accel">
-                        <string>Alt+G</string>
+                        <string>Alt+R</string>
                     </property>
                 </widget>
                 <widget class="QCheckBox">
@@ -240,26 +240,32 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLayoutWidget" row="0" column="0" rowspan="1" colspan="2">
+                <spacer row="0" column="1">
                     <property name="name">
-                        <cstring>layout4</cstring>
+                        <cstring>spacer9</cstring>
                     </property>
-                    <hbox>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>35</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QLayoutWidget" row="0" column="0">
+                    <property name="name">
+                        <cstring>layout6</cstring>
+                    </property>
+                    <grid>
                         <property name="name">
                             <cstring>unnamed</cstring>
                         </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabelMax</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Ma&amp;ximum:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>floatSpinBoxMax</cstring>
-                            </property>
-                        </widget>
-                        <widget class="Gui::FloatSpinBox">
+                        <widget class="Gui::FloatSpinBox" row="0" column="1">
                             <property name="name">
                                 <cstring>floatSpinBoxMax</cstring>
                             </property>
@@ -273,24 +279,21 @@
                                 <number>2</number>
                             </property>
                         </widget>
-                        <spacer>
+                        <widget class="Gui::FloatSpinBox" row="1" column="1">
                             <property name="name">
-                                <cstring>spacer9</cstring>
+                                <cstring>floatSpinBoxMin</cstring>
                             </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
+                            <property name="maxValue">
+                                <number>1000</number>
                             </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
+                            <property name="minValue">
+                                <number>-1000</number>
                             </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>16</width>
-                                    <height>20</height>
-                                </size>
+                            <property name="precision">
+                                <number>2</number>
                             </property>
-                        </spacer>
-                        <widget class="QLabel">
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
                             <property name="name">
                                 <cstring>textLabelMin</cstring>
                             </property>
@@ -301,40 +304,72 @@
                                 <cstring>floatSpinBoxMin</cstring>
                             </property>
                         </widget>
-                        <widget class="Gui::FloatSpinBox">
+                        <widget class="QLabel" row="0" column="0">
                             <property name="name">
-                                <cstring>floatSpinBoxMin</cstring>
+                                <cstring>textLabelMax</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Ma&amp;ximum:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>floatSpinBoxMax</cstring>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+                <widget class="QLayoutWidget" row="0" column="2">
+                    <property name="name">
+                        <cstring>layout7</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="Gui::SpinBox" row="0" column="1">
+                            <property name="name">
+                                <cstring>spinBoxLabel</cstring>
                             </property>
                             <property name="maxValue">
-                                <number>1000</number>
+                                <number>30</number>
+                            </property>
+                        </widget>
+                        <widget class="Gui::SpinBox" row="1" column="1">
+                            <property name="name">
+                                <cstring>spinBoxDecimals</cstring>
+                            </property>
+                            <property name="maxValue">
+                                <number>6</number>
                             </property>
                             <property name="minValue">
-                                <number>-1000</number>
+                                <number>1</number>
                             </property>
-                            <property name="precision">
+                            <property name="value">
                                 <number>2</number>
                             </property>
                         </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Number of labels:</string>
-                    </property>
-                    <property name="buddy" stdset="0">
-                        <cstring>spinBoxLabel</cstring>
-                    </property>
-                </widget>
-                <widget class="Gui::SpinBox" row="1" column="1">
-                    <property name="name">
-                        <cstring>spinBoxLabel</cstring>
-                    </property>
-                    <property name="maxValue">
-                        <number>30</number>
-                    </property>
+                        <widget class="QLabel" row="0" column="0">
+                            <property name="name">
+                                <cstring>textLabel1</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Labels:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>spinBoxLabel</cstring>
+                            </property>
+                        </widget>
+                        <widget class="QLabel" row="1" column="0">
+                            <property name="name">
+                                <cstring>textLabel1_2</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Decimals:</string>
+                            </property>
+                            <property name="buddy" stdset="0">
+                                <cstring>spinBoxDecimals</cstring>
+                            </property>
+                        </widget>
+                    </grid>
                 </widget>
             </grid>
         </widget>
@@ -367,6 +402,12 @@
         <receiver>Gui::Dialog::DlgSettingsColorGradientBase</receiver>
         <slot>onValidateMinimum()</slot>
     </connection>
+    <connection>
+        <sender>spinBoxDecimals</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>Gui::Dialog::DlgSettingsColorGradientBase</receiver>
+        <slot>onSetDecimals(int)</slot>
+    </connection>
 </connections>
 <tabstops>
     <tabstop>comboBoxModel</tabstop>
@@ -375,15 +416,18 @@
     <tabstop>checkBoxInvisible</tabstop>
     <tabstop>floatSpinBoxMax</tabstop>
     <tabstop>floatSpinBoxMin</tabstop>
+    <tabstop>spinBoxLabel</tabstop>
     <tabstop>buttonOk</tabstop>
     <tabstop>buttonCancel</tabstop>
 </tabstops>
 <slots>
     <slot access="protected">onValidateMaximum()</slot>
     <slot access="protected">onValidateMinimum()</slot>
+    <slot access="protected">onSetDecimals(int)</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 <includehints>
+    <includehint>Gui/SpinBox.h</includehint>
     <includehint>Gui/SpinBox.h</includehint>
     <includehint>Gui/SpinBox.h</includehint>
     <includehint>Gui/SpinBox.h</includehint>

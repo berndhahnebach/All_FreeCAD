@@ -318,6 +318,7 @@ bool SoFCColorGradient::customize()
   dlg.setOutGrayed( _cColGrad.isOutsideGrayed() );
   dlg.setOutInvisible( _bOutInvisible );
   dlg.setNumberOfLabels( _cColGrad.getCountColors() );
+  dlg.setNumberOfDecimals( 3 );
   float fMin, fMax;
   _cColGrad.getRange(fMin, fMax);
   dlg.setRange(fMin, fMax);
@@ -334,7 +335,8 @@ bool SoFCColorGradient::customize()
     _bOutInvisible = dlg.isOutInvisible();
     _cColGrad.setCountColors( dlg.numberOfLabels() );
     dlg.getRange( fMin, fMax );
-    setRange( fMin, fMax );
+    int dec = dlg.numberOfDecimals();
+    setRange( fMin, fMax, dec );
     rebuildGradient();
     
     return true;

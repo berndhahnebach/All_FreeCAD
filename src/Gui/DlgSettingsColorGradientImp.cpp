@@ -152,6 +152,16 @@ int DlgSettingsColorGradientImp::numberOfLabels() const
   return spinBoxLabel->value();
 }
 
+void DlgSettingsColorGradientImp::setNumberOfDecimals(int val)
+{
+  spinBoxDecimals->setValue( val );
+}
+
+int DlgSettingsColorGradientImp::numberOfDecimals() const
+{
+  return spinBoxDecimals->value();
+}
+
 void DlgSettingsColorGradientImp::onValidateMaximum()
 {
   double fMax = floatSpinBoxMax->value();
@@ -177,6 +187,13 @@ void DlgSettingsColorGradientImp::onValidateMinimum()
     floatSpinBoxMin->blockSignals(false);
   }
 }
+
+void DlgSettingsColorGradientImp::onSetDecimals(int dec)
+{
+  floatSpinBoxMax->setPrecision(dec);
+  floatSpinBoxMin->setPrecision(dec);
+}
+
 
 #include "DlgSettingsColorGradient.cpp"
 #include "moc_DlgSettingsColorGradient.cpp"

@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib coin2.lib qt-mtnc321.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\QtUnitGui.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Release\QtUnitGui.pyd    ..\..\..\..\Mod\Test\   	xcopy    /y    /f    qtunittest.py    ..\..\..\..\Mod\Test\ 
+PostBuild_Cmds=xcopy     /y     /f     Release\QtUnitGui.pyd     ..\..\..\..\Mod\Test\    	xcopy     /y     /f     qtunittest.py     ..\..\..\..\Mod\Test\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppTestGui - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib coin2d.lib qt-mtnc321.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\QtUnitGui_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Debug\QtUnitGui_d.pyd    ..\..\..\..\Mod\Test\   	xcopy    /y    /f    qtunittest.py    ..\..\..\..\Mod\Test\ 
+PostBuild_Cmds=xcopy     /y     /f     Debug\QtUnitGui_d.pyd     ..\..\..\..\Mod\Test\    	xcopy     /y     /f     qtunittest.py     ..\..\..\..\Mod\Test\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -98,10 +98,6 @@ PostBuild_Cmds=xcopy    /y    /f    Debug\QtUnitGui_d.pyd    ..\..\..\..\Mod\Tes
 # Begin Group "Dialogs"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=.\qtunittest.py
-# End Source File
 # Begin Source File
 
 SOURCE=.\UnitTest.ui

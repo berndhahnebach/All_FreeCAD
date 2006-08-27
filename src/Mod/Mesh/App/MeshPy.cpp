@@ -139,6 +139,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(cutInner)
   PYMETHODEDEF(flipNormals)
   PYMETHODEDEF(harmonizeNormals)
+  PYMETHODEDEF(countComponents)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -356,6 +357,20 @@ PYFUNCIMP_D(MeshPy,harmonizeNormals)
   } PY_CATCH;
 
   Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,countComponents)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  std::vector<std::vector<unsigned long> > segments;
+  PY_TRY {
+    MeshComponents comp(_cMesh);
+    comp.SearchForComponents(MeshComponents::OverEdge,segments);
+  } PY_CATCH;
+
+  return Py_BuildValue("i",segments.size());
 }
 
 PYFUNCIMP_D(MeshPy,coarsen)

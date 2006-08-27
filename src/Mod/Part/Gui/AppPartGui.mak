@@ -219,24 +219,24 @@ LINK32_OBJS= \
 "FreeCADGui - Win32 Release" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Gui"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADGui.mak CFG="FreeCADGui - Win32 Release" 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 "FreeCADGui - Win32 ReleaseCLEAN" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Gui"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADGui.mak CFG="FreeCADGui - Win32 Release" RECURSE=1 CLEAN 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
 "FreeCADGui - Win32 Debug" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Gui"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADGui.mak CFG="FreeCADGui - Win32 Debug" 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 "FreeCADGui - Win32 DebugCLEAN" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Gui"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADGui.mak CFG="FreeCADGui - Win32 Debug" RECURSE=1 CLEAN 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 !ENDIF 
 
@@ -245,24 +245,24 @@ LINK32_OBJS= \
 "FreeCADApp - Win32 Release" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\App"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADDoc.mak CFG="FreeCADApp - Win32 Release" 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 "FreeCADApp - Win32 ReleaseCLEAN" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\App"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADDoc.mak CFG="FreeCADApp - Win32 Release" RECURSE=1 CLEAN 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
 "FreeCADApp - Win32 Debug" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\App"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADDoc.mak CFG="FreeCADApp - Win32 Debug" 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 "FreeCADApp - Win32 DebugCLEAN" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\App"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADDoc.mak CFG="FreeCADApp - Win32 Debug" RECURSE=1 CLEAN 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 !ENDIF 
 
@@ -271,24 +271,24 @@ LINK32_OBJS= \
 "FreeCADBase - Win32 Release" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Base"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADBase.mak CFG="FreeCADBase - Win32 Release" 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 "FreeCADBase - Win32 ReleaseCLEAN" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Base"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADBase.mak CFG="FreeCADBase - Win32 Release" RECURSE=1 CLEAN 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
 "FreeCADBase - Win32 Debug" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Base"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADBase.mak CFG="FreeCADBase - Win32 Debug" 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 "FreeCADBase - Win32 DebugCLEAN" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Base"
    $(MAKE) /$(MAKEFLAGS) /F .\FreeCADBase.mak CFG="FreeCADBase - Win32 Debug" RECURSE=1 CLEAN 
-   cd "..\MOD\PART\GUI"
+   cd "..\Mod\Part\Gui"
 
 !ENDIF 
 
@@ -297,24 +297,24 @@ LINK32_OBJS= \
 "AppPart - Win32 Release" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Mod\Part\App"
    $(MAKE) /$(MAKEFLAGS) /F .\AppPart.mak CFG="AppPart - Win32 Release" 
-   cd "..\GUI"
+   cd "..\Gui"
 
 "AppPart - Win32 ReleaseCLEAN" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Mod\Part\App"
    $(MAKE) /$(MAKEFLAGS) /F .\AppPart.mak CFG="AppPart - Win32 Release" RECURSE=1 CLEAN 
-   cd "..\GUI"
+   cd "..\Gui"
 
 !ELSEIF  "$(CFG)" == "AppPartGui - Win32 Debug"
 
 "AppPart - Win32 Debug" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Mod\Part\App"
    $(MAKE) /$(MAKEFLAGS) /F .\AppPart.mak CFG="AppPart - Win32 Debug" 
-   cd "..\GUI"
+   cd "..\Gui"
 
 "AppPart - Win32 DebugCLEAN" : 
    cd "\Develop\Projekte\FreeCAD_0.1\src\Mod\Part\App"
    $(MAKE) /$(MAKEFLAGS) /F .\AppPart.mak CFG="AppPart - Win32 Debug" RECURSE=1 CLEAN 
-   cd "..\GUI"
+   cd "..\Gui"
 
 !ENDIF 
 
