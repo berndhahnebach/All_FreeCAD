@@ -67,10 +67,6 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   // new instance
   _iDocId = (++_iDocCount);
 
-  // keeping an Instance of this document as long as at least one window lives
-//  _pcDocument->IncRef();
-
-  //Handle(TDocStd_Document) hcOcafDoc = pcDocument->GetOCCDoc();
 
   _pcDocument->Attach(this);
   _pcDocument->installDocumentHook(this);
@@ -78,6 +74,10 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   // pointer to the python class
   // NOTE: As this Python object doesn't get returned to the interpreter we mustn't increment it (Werner Jan-12-2006)
   _pcDocPy = new Gui::DocumentPy(this);
+
+  if(App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Document")->GetBool("UsingUndo",false))
+    _pcDocument->setUndoMode(1);
+
 
 /*  // set the ViewProvider root
   pcSelection        = new SoSelection();

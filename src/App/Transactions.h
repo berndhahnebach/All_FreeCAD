@@ -31,6 +31,7 @@ namespace App
 
 class Document;
 class DocumentObject;
+class DocChanges;
 class Property;
 class Transaction;
 
@@ -77,7 +78,7 @@ public:
   virtual ~Transaction();
 
   /// apply the content to the document
-  void apply(Document &Doc);
+  void apply(Document &Doc, DocChanges &ChangeList);
 
   // the utf-8 name of the transaction
   std::string Name; 

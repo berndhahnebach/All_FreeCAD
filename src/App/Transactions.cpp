@@ -84,11 +84,20 @@ int Transaction::getPos(void) const
 // separator for other implemetation aspects
 
 
-void Transaction::apply(Document &Doc)
+void Transaction::apply(Document &Doc, DocChanges &ChangeList)
 {
   std::map<const DocumentObject*,TransactionObject*>::iterator It;
   for( It= _Objects.begin();It!=_Objects.end();++It)
+  {
     It->second->apply(Doc,const_cast<DocumentObject*>(It->first));
+    if(It->second->status == TransactionObject::Del)
+      ChangeList.DeletedObjects.insert(const_cast<DocumentObject*>(It->first));
+    else if(It->second->status == TransactionObject::New)
+      ChangeList.NewObjects.push_back(const_cast<DocumentObject*>(It->first));
+    else if(It->second->status == TransactionObject::Chn)
+      ChangeList.UpdatedObjects.insert(const_cast<DocumentObject*>(It->first));
+
+  }
 }
 
 void Transaction::addObjectNew(const DocumentObject *Obj)

@@ -54,12 +54,22 @@ void DlgSettingsDocumentImp::saveSettings()
 {
   prefCheckNewDoc->onSave();
   SpinBoxCompression->onSave();
+
+  prefCheckBox2->onSave();
+  prefSpinBox2->onSave();
+  prefCheckBox2_2->onSave();
+  prefCheckBox2_2_2->onSave();
 }
 
 void DlgSettingsDocumentImp::loadSettings()
 {
   prefCheckNewDoc->onRestore();
   SpinBoxCompression->onRestore();
+
+  prefCheckBox2->onRestore();
+  prefSpinBox2->onRestore();
+  prefCheckBox2_2->onRestore();
+  prefCheckBox2_2_2->onRestore();
 }
 
 #include "DlgSettingsDocument.cpp"
