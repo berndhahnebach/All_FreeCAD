@@ -375,8 +375,24 @@ void PropertyMatrix::setPyObject(PyObject *value)
   {
    	MatrixPy  *pcObject = (MatrixPy*)value;
     setValue( pcObject->value() );
+  }else if(PyTuple_Check(value)&&PyTuple_Size(value)==16) {
+    PyObject* item;
+    Base::Matrix4D cMatrix;
+    
+    for(int x=0; x<4;x++){
+      for(int y=0; y<4;y++){
+        item = PyTuple_GetItem(value,x+y*4);
+        if (PyFloat_Check(item))
+          cMatrix[x][y] = (float)PyFloat_AsDouble(item);
+        else if (PyInt_Check(item))
+          cMatrix[x][y] = (float)PyInt_AsLong(item);
+        else
+          throw Base::Exception("Not allowed type used in matrix tuple (a number expected)...");
+      }
+    }
+    setValue( cMatrix );
   }else
-    throw Base::Exception("Not allowed type used (Vector expected)...");
+    throw Base::Exception("Not allowed type used (Tuple (n=16) or App.Matrix expected)...");
 }
 
 void PropertyMatrix::Save (Base::Writer &writer) const

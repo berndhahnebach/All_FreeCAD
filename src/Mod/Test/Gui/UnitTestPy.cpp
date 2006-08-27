@@ -29,6 +29,7 @@
 
 
 #include <Base/PyExportImp.h>
+#include <Base/Exception.h>
 
 #include "UnitTestPy.h"
 #include "UnitTestImp.h"
@@ -167,8 +168,10 @@ int UnitTestPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: 
 
 PYFUNCIMP_D(UnitTestPy,clearErrorList)
 {
-  UnitTestDialog::instance()->clearErrorList();
-  Py_Return;
+  PY_TRY {
+    UnitTestDialog::instance()->clearErrorList();
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,insertError)
@@ -177,8 +180,10 @@ PYFUNCIMP_D(UnitTestPy,insertError)
   char *details=0;
   if (!PyArg_ParseTuple(args, "ss", &failure,&details))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
-  UnitTestDialog::instance()->insertError(failure,details);
-  Py_Return;
+  PY_TRY {
+    UnitTestDialog::instance()->insertError(failure,details);
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,setUnitTest)
@@ -186,13 +191,19 @@ PYFUNCIMP_D(UnitTestPy,setUnitTest)
   char *pstr=0;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
-  UnitTestDialog::instance()->setUnitTest(pstr);
-  Py_Return;
+  PY_TRY {
+    UnitTestDialog::instance()->setUnitTest(pstr);
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,getUnitTest)
 {
-  return Py_BuildValue("s", UnitTestDialog::instance()->getUnitTest().latin1());
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception
+  PY_TRY {
+    return Py_BuildValue("s", UnitTestDialog::instance()->getUnitTest().latin1());
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,setStatusText)
@@ -200,8 +211,10 @@ PYFUNCIMP_D(UnitTestPy,setStatusText)
   char *pstr=0;
   if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
-  UnitTestDialog::instance()->setStatusText(pstr);
-  Py_Return;
+  PY_TRY {
+    UnitTestDialog::instance()->setStatusText(pstr);
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,setProgressFraction)
@@ -211,11 +224,13 @@ PYFUNCIMP_D(UnitTestPy,setProgressFraction)
   if (!PyArg_ParseTuple(args, "f|s",&fraction, &pColor))     // convert args: Python->C
     return NULL;                       // NULL triggers exception
 
-  if (pColor)
-    UnitTestDialog::instance()->setProgressFraction(fraction,pColor);
-  else
-    UnitTestDialog::instance()->setProgressFraction(fraction);
-  Py_Return;
+  PY_TRY {
+    if (pColor)
+      UnitTestDialog::instance()->setProgressFraction(fraction,pColor);
+    else
+      UnitTestDialog::instance()->setProgressFraction(fraction);
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,errorDialog)
@@ -224,8 +239,10 @@ PYFUNCIMP_D(UnitTestPy,errorDialog)
   char *message=0;
   if (!PyArg_ParseTuple(args, "ss", &title, &message))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
-  UnitTestDialog::instance()->showErrorDialog(title,message);
-  Py_Return;
+  PY_TRY {
+    UnitTestDialog::instance()->showErrorDialog(title,message);
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,setRunCount)
@@ -233,8 +250,10 @@ PYFUNCIMP_D(UnitTestPy,setRunCount)
   int count;
   if (!PyArg_ParseTuple(args, "i", &count))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
-  UnitTestDialog::instance()->setRunCount(count);
-  Py_Return;
+  PY_TRY {
+    UnitTestDialog::instance()->setRunCount(count);
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,setFailCount)
@@ -242,8 +261,10 @@ PYFUNCIMP_D(UnitTestPy,setFailCount)
   int count;
   if (!PyArg_ParseTuple(args, "i", &count))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
-  UnitTestDialog::instance()->setFailCount(count);
-  Py_Return;
+  PY_TRY {
+    UnitTestDialog::instance()->setFailCount(count);
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,setErrorCount)
@@ -251,8 +272,10 @@ PYFUNCIMP_D(UnitTestPy,setErrorCount)
   int count;
   if (!PyArg_ParseTuple(args, "i", &count))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
-  UnitTestDialog::instance()->setErrorCount(count);
-  Py_Return;
+  PY_TRY {
+    UnitTestDialog::instance()->setErrorCount(count);
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,setRemainCount)
@@ -260,13 +283,17 @@ PYFUNCIMP_D(UnitTestPy,setRemainCount)
   int count;
   if (!PyArg_ParseTuple(args, "i", &count))     // convert args: Python->C 
     return NULL;                             // NULL triggers exception
-  UnitTestDialog::instance()->setRemainCount(count);
-  Py_Return;
+  PY_TRY {
+    UnitTestDialog::instance()->setRemainCount(count);
+    Py_Return;
+  }PY_CATCH;
 }
 
 PYFUNCIMP_D(UnitTestPy,updateGUI)
 {
-  qApp->processEvents();
-	Py_Return;
+  PY_TRY {
+    qApp->processEvents();
+	  Py_Return;
+  }PY_CATCH;
 }
 
