@@ -768,7 +768,7 @@ inline void MeshFacet::ReplaceNeighbour (unsigned long ulOrig, unsigned long ulN
 
 inline unsigned short MeshFacet::CountOpenEdges() const
 {
-  unsigned short ct;
+  unsigned short ct=0;
   for ( unsigned short i=0; i<3; i++ ) 
   { if ( !HasNeighbour(i) ) ct++; }
   return ct;
@@ -776,7 +776,7 @@ inline unsigned short MeshFacet::CountOpenEdges() const
 
 inline bool MeshFacet::HasOpenEdge() const
 {
-  return (CountOpenEdges() == 0);
+  return (CountOpenEdges() != 0);
 }
 
 inline unsigned short MeshFacet::Side (unsigned long ulNIndex) const
