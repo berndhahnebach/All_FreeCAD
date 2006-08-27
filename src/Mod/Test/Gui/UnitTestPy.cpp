@@ -30,6 +30,7 @@
 
 #include <Base/PyExportImp.h>
 #include <Base/Exception.h>
+#include <Base/Console.h>
 
 #include "UnitTestPy.h"
 #include "UnitTestImp.h"
