@@ -35,7 +35,10 @@
 #include "../Base/Interpreter.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
-
+#include "../App/Application.h"
+#include "DockWindow.h"
+#include "ReportView.h"
+#include "PythonConsole.h"
 
 using namespace Gui;
 
@@ -44,12 +47,25 @@ using namespace Gui;
 
 // here the implemataion! description should take place in the header file!
 MacroManager::MacroManager()
-:_bIsOpen(false), _bRecordGui(true), _bGuiAsComment(true)
+:_bIsOpen(false), _bRecordGui(true), _bGuiAsComment(true),_pyc(0)
 {
+  // Attach to the Parametergroup regarding macros
+  Params = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro");
+  Params->Attach( this );
+  Params->NotifyAll();
 }
 
 MacroManager::~MacroManager()
 {
+  Params->Detach( this );
+}
+
+void MacroManager::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
+{
+  //Params->GetASCII("MacroPath",
+  _bRecordGui         = Params->GetBool("RecordGui", true);
+  _bGuiAsComment      = Params->GetBool("GuiAsComment", true);
+  _bScriptToPyConsole = Params->GetBool("ScriptToPyConsole", false);
 }
 
 
@@ -73,11 +89,11 @@ void MacroManager::open(MacroType eType,const char *sName)
   Base::Console().Log("CmdM: Open macro: %s\n",_sName.latin1());
 }
 
-void MacroManager::setRecordGuiCommands(bool bRecord, bool bAsComment)
-{
-  _bRecordGui = bRecord;
-  _bGuiAsComment = bAsComment;
-}
+//void MacroManager::setRecordGuiCommands(bool bRecord, bool bAsComment)
+//{
+//  _bRecordGui = bRecord;
+//  _bGuiAsComment = bAsComment;
+//}
 
 /// close (and save) the recording sassion
 void MacroManager::commit(void)
@@ -151,6 +167,17 @@ void MacroManager::addLine(LineType Type,const char* sLine)
     _sMacroInProgress += sLine;
     _sMacroInProgress += "\n";
   }
+
+  if(_bScriptToPyConsole)
+    if(_pyc)
+      _pyc->printCommand2(sLine);
+    else {      
+      _pyc = static_cast<DockWnd::ReportView*> (DockWindowManager::instance()->getDockWindow("Report View"))->getPythonConsole();
+      // PythonConsole have to be there wenn Macro manager starts!
+      assert(_pyc);
+      _pyc->printCommand2(sLine);
+    }
+
 }
 
 void MacroManager::setModule(const char* sModule)

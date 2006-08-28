@@ -559,6 +559,22 @@ bool PythonConsole::printCommand( const QString& cmd )
   return ok;
 }
 
+bool PythonConsole::printCommand2( const char* cmd )
+{
+   // prompt
+  append(QString(cmd));
+  _history.append( cmd );
+  append(">>> ");
+
+  // go to last the paragraph as we don't know sure whether Python 
+  // has written something to the console
+  _startPara = paragraphs() - 1;
+  setCursorPosition(_startPara, 0);
+  moveCursor( MoveLineEnd, false );
+  _indent = false;
+
+  return true;
+}
 /**
  * Shows the Python window and sets the focus to set text cursor.
  */
