@@ -27,10 +27,13 @@
 // Std. configurations
 
 #include <qstring.h>
+#include <Base/Observer.h>
+#include "../Base/Parameter.h"
 
 
 namespace Gui {
 struct ApplicationP;
+class PythonConsole;
 
 /** Macro recording and play back management
  * The purpos of this class is to handle record 
@@ -38,7 +41,7 @@ struct ApplicationP;
  * a macro file (so far). 
  * \author Jürgen Riegel
  */
-class GuiExport MacroManager
+class GuiExport MacroManager: public Base::Observer<const char*> 
 {
 protected:
   /**
@@ -81,7 +84,7 @@ public:
   void open(MacroType eType,const char *sName);
 
   /// Sets how to handle Gui commands
-  void setRecordGuiCommands(bool bRecord, bool bAsComment);
+  //void setRecordGuiCommands(bool bRecord, bool bAsComment);
 
   /// close (and save) the recording session
   void commit(void);
@@ -106,14 +109,26 @@ public:
 
   friend struct ApplicationP;
 
+  /** Observes its parameter group. */
+  void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
+
+
 protected:
   /** Container for the macro */
   QString _sMacroInProgress;
   /// name of the macro
   QString _sName;
   bool _bIsOpen;
+
+  // settings
   bool _bRecordGui;
   bool _bGuiAsComment;
+  bool _bScriptToPyConsole;
+
+  // link to the python console
+  PythonConsole* _pyc;
+  // link to the Macro parameter group
+  FCHandle<ParameterGrp> Params;
 };
 
 } // namespace Gui

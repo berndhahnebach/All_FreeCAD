@@ -143,7 +143,6 @@ void DlgMacroRecordImp::start()
     }
 
     // open the macro recording
-    _pcMacroMngr->setRecordGuiCommands(getWindowParameter()->GetBool("RecordGui", true), getWindowParameter()->GetBool("GuiAsComment", true) );
     _pcMacroMngr->open(MacroManager::File,(_cMacroPath + LineEditPath->text().latin1()).c_str());
     accept();
   }

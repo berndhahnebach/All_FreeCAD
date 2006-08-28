@@ -53,6 +53,8 @@ public:
   ReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~ReportView();
 
+  PythonConsole* getPythonConsole(void){return pyc;}
+
 protected:
   void languageChange();
 

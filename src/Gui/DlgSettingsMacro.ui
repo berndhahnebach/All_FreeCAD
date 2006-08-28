@@ -157,6 +157,9 @@
                             <property name="name">
                                 <cstring>FileLogCheckBox</cstring>
                             </property>
+                            <property name="enabled">
+                                <bool>false</bool>
+                            </property>
                             <property name="text">
                                 <string>Log all commands issued by menus to file:</string>
                             </property>
@@ -170,6 +173,9 @@
                         <widget class="Gui::PrefFileChooser">
                             <property name="name">
                                 <cstring>MacroPath_2</cstring>
+                            </property>
+                            <property name="enabled">
+                                <bool>false</bool>
                             </property>
                             <property name="mode">
                                 <enum>File</enum>
@@ -190,8 +196,6 @@
         </widget>
     </vbox>
 </widget>
-<customwidgets>
-</customwidgets>
 <connections>
     <connection>
         <sender>PrefCheckBox_RecordGui</sender>
