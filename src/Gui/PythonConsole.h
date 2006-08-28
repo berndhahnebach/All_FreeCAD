@@ -78,7 +78,7 @@ public:
   void removeSelectedText ( int selNum = 0 );
 
   bool printCommand( const QString& cmd );
-  bool printCommand2( const char* cmd );
+  bool printStatement( const char* cmd );
 
 public slots:
   void onSaveHistoryAs();

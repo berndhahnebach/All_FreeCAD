@@ -170,12 +170,12 @@ void MacroManager::addLine(LineType Type,const char* sLine)
 
   if(_bScriptToPyConsole)
     if(_pyc)
-      _pyc->printCommand2(sLine);
+      _pyc->printStatement(sLine);
     else {      
       _pyc = static_cast<DockWnd::ReportView*> (DockWindowManager::instance()->getDockWindow("Report View"))->getPythonConsole();
       // PythonConsole have to be there wenn Macro manager starts!
       assert(_pyc);
-      _pyc->printCommand2(sLine);
+      _pyc->printStatement(sLine);
     }
 
 }

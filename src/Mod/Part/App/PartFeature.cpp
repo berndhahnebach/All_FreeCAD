@@ -30,6 +30,8 @@
 # include <STEPControl_Reader.hxx>
 #endif
 
+#include <BRepTools_ShapeSet.hxx>
+#include <locale>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Exception.h>
@@ -40,6 +42,8 @@
 #include "TopologyPy.h"
 
 using namespace Part;
+
+//#define PROPERTY_IO_BREP
 
 TYPESYSTEM_SOURCE(Part::PropertyPartShape , App::Property);
 
@@ -107,7 +111,12 @@ void PropertyPartShape::Save (Base::Writer &writer) const
 //    MeshCore::MeshDocXML saver(*_pcMesh);
 //    saver.Save(writer);
 //  }else{
+  //See SaveDocFile(), RestoreDocFile()
+#ifdef PROPERTY_IO_BREP
+    writer << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.brp", this) << "\"/>" << std::endl;
+#else
     writer << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.stp", this) << "\"/>" << std::endl;
+#endif
 //  }
 }
 
@@ -129,6 +138,14 @@ void PropertyPartShape::Restore(Base::XMLReader &reader)
 
 void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
 {
+  //FIXME: Test with several data!
+#ifdef PROPERTY_IO_BREP
+  // needed to avoid STL exception 'missing locale facet', but don't know whether this has side effects
+  writer.imbue(std::locale::empty());
+  // Before writing to the project we clean all triangulation data to save memory
+  BRepTools::Clean(_Shape);
+  BRepTools::Write(_Shape, writer);
+#else
   try {
     // create a temporary file and copy the content to the zip stream
     Base::FileInfo fi;
@@ -150,10 +167,18 @@ void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
   } catch( const Base::Exception& e) {
     throw e;
   }
+#endif
 }
 
 void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 {
+  //FIXME: Test with several data!
+#ifdef PROPERTY_IO_BREP
+  // needed to avoid STL exception 'missing locale facet', but don't know whether this has side effects
+  reader.imbue(std::locale::empty());
+  BRep_Builder builder;
+  BRepTools::Read(_Shape, reader, builder);
+#else
   try {
     // create a temporary file and copy the content from the zip stream
     Base::FileInfo fi;
@@ -195,6 +220,7 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
   } catch( const Base::Exception& e) {
     throw e;
   }
+#endif
 }
 
 //===========================================================================
