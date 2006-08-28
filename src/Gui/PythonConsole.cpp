@@ -559,22 +559,31 @@ bool PythonConsole::printCommand( const QString& cmd )
   return ok;
 }
 
-bool PythonConsole::printCommand2( const char* cmd )
+/**
+ * Prints the Python statement cmd to the console.
+ * @note The statement gets only printed but not invoked.
+ */
+bool PythonConsole::printStatement( const char* cmd )
 {
-   // prompt
-  append(QString(cmd));
-  _history.append( cmd );
-  append(">>> ");
-
-  // go to last the paragraph as we don't know sure whether Python 
-  // has written something to the console
-  _startPara = paragraphs() - 1;
-  setCursorPosition(_startPara, 0);
+  // go to the last paragraph before inserting new text 
+  int last = paragraphs() - 1;
+  setCursorPosition(last, 0);
   moveCursor( MoveLineEnd, false );
-  _indent = false;
+
+  QString line=cmd;
+  QStringList statements = QStringList::split( "\n", line );
+  for ( QStringList::Iterator it = statements.begin(); it != statements.end(); ++it )
+  {
+    // printed command
+    insert( *it );
+    _history.append( *it );
+    // prompt
+    printPrompt();
+  }
 
   return true;
 }
+
 /**
  * Shows the Python window and sets the focus to set text cursor.
  */
