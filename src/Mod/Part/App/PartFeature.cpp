@@ -116,11 +116,7 @@ void PropertyPartShape::Save (Base::Writer &writer) const
 //    saver.Save(writer);
 //  }else{
   //See SaveDocFile(), RestoreDocFile()
-#ifdef PROPERTY_IO_BREP
     writer << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.brp", this) << "\"/>" << std::endl;
-#else
-    writer << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.stp", this) << "\"/>" << std::endl;
-#endif
 //  }
 }
 
@@ -150,80 +146,55 @@ void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
   BRepTools::Clean(_Shape);
   BRepTools::Write(_Shape, writer);
 #else
-  try {
-    // create a temporary file and copy the content to the zip stream
-    Base::FileInfo fi;
-    std::string filename = fi.getTempFileName();
+  // create a temporary file and copy the content to the zip stream
+  Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
-    STEPControl_Writer aWriter;
-    aWriter.Transfer(_Shape, STEPControl_AsIs);
-    if (aWriter.Write((const Standard_CString)filename.c_str()) != IFSelect_RetDone)
-      return;
+  if (! BRepTools::Write(_Shape,(const Standard_CString)fi.filePath().c_str()))
+    throw Base::Exception("PropertyPartShape::SaveDocFile: Cant save file...");
 
-    std::ifstream file( filename.c_str(), std::ios::in | std::ios::binary );
-    if (file){
-      char line[200];
-      while (!file.eof()) {
-        file.getline(line,200);
-        writer << line << std::endl;
-      }
+  std::ifstream file( fi.filePath().c_str(), std::ios::in | std::ios::binary );
+  if (file){
+    char line[2000];
+    while (!file.eof()) {
+      file.getline(line,1999);
+      writer << line << std::endl;
     }
-  } catch( const Base::Exception& e) {
-    throw e;
   }
+  file.close();
+  // remove temp file
+  fi.deleteFile();
 #endif
 }
 
 void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 {
+  BRep_Builder builder;
   //FIXME: Test with several data!
 #ifdef PROPERTY_IO_BREP
   // needed to avoid STL exception 'missing locale facet', but don't know whether this has side effects
   reader.imbue(std::locale::empty());
-  BRep_Builder builder;
   BRepTools::Read(_Shape, reader, builder);
 #else
-  try {
-    // create a temporary file and copy the content from the zip stream
-    Base::FileInfo fi;
-    std::string filename = fi.getTempFileName();
+  // create a temporary file and copy the content from the zip stream
+  Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
-    std::ofstream file(filename.c_str(), std::ios::out | std::ios::binary);
-    if (file){
-      char line[200];
-      while (!reader.eof()) {
-        reader.getline(line,200);
-        file << line << std::endl;
-      }
-      file.close();
+  std::ofstream file(fi.filePath().c_str(), std::ios::out | std::ios::binary);
+  if (file){
+    char line[2000];
+    while (!reader.eof()) {
+      reader.getline(line,1999);
+      file << line << std::endl;
     }
-
-    STEPControl_Reader aReader;
-    Handle(TopTools_HSequenceOfShape) aHSequenceOfShape = new TopTools_HSequenceOfShape;
-    if (aReader.ReadFile((const Standard_CString)filename.c_str()) != IFSelect_RetDone)
-      return;
-  
-    // Root transfers
-    Standard_Integer nbr = aReader.NbRootsForTransfer();
-    for ( Standard_Integer n = 1; n<= nbr; n++)
-    {
-      // Collecting resulting entities
-      aReader.TransferRoot(n);
-      Standard_Integer nbs = aReader.NbShapes();
-      if (nbs == 0) {
-        aHSequenceOfShape.Nullify();
-        return;
-      } else {
-        for (Standard_Integer i =1; i<=nbs; i++) 
-        {
-          _Shape=aReader.Shape(i);
-          aHSequenceOfShape->Append(_Shape);
-        }
-      }
-    }
-  } catch( const Base::Exception& e) {
-    throw e;
+    file.close();
   }
+
+  // read the shape from the temp file
+  if (! BRepTools::Read(_Shape, (const Standard_CString)fi.filePath().c_str(), builder))
+    throw Base::Exception("PropertyPartShape::RestoreDocFile(): Cant read file...");
+
+  // delete the temp file
+  fi.deleteFile();
+
 #endif
 }
 

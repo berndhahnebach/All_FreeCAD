@@ -89,6 +89,8 @@ class BaseExport FileInfo
     static const char *getTempPath(void);
     /// get a unique File Name in the temp path
     static std::string getTempFileName(void);
+    /// delete the file
+    bool deleteFile(void);
 
   protected:
     std::string FileName;

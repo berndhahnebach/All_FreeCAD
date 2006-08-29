@@ -56,6 +56,7 @@ using namespace std;
 
 Base::XMLReader::XMLReader(const char* FileName, std::istream& str) : _File(FileName) 
 {
+  str.imbue(std::locale::empty());
   // create the parser
   parser = XMLReaderFactory::createXMLReader();
   //parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, false);
