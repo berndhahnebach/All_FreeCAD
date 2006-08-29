@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __FC_REPORT_VIEW_H__
-#define __FC_REPORT_VIEW_H__
+#ifndef GUI_DOCKWND_REPORT_VIEW_H
+#define GUI_DOCKWND_REPORT_VIEW_H
 
 #include <qsyntaxhighlighter.h>
 #include <qtextedit.h>
@@ -53,7 +53,7 @@ public:
   ReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~ReportView();
 
-  PythonConsole* getPythonConsole(void){return pyc;}
+  PythonConsole* getPythonConsole(void) const { return pyc; }
 
 protected:
   void languageChange();
@@ -190,4 +190,4 @@ private:
 } // namespace DockWnd
 } // namespace Gui
 
-#endif //__FC_REPORT_VIEW_H__
+#endif //GUI_DOCKWND_REPORT_VIEW_H
