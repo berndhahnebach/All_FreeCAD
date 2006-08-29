@@ -47,6 +47,8 @@ Writer::Writer(const char* FileName)
 : ZipOutputStream(FileName),indent(0),forceXML(false)
 {
   indBuf[0] = '\0';
+  imbue(std::locale::empty());
+
 }
 
 Writer::~Writer()

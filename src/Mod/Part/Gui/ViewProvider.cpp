@@ -297,7 +297,9 @@ void ViewProviderPart::updateData(void)
     computeVertices(VertexRoot,cShape);
   } catch (...){
     Base::Console().Error("ViewProviderPart::create() Cannot compute Inventor representation for the actual shape");
+    BRepTools::Clean(cShape); // rmove triangulation
   }
+  BRepTools::Clean(cShape);
 }
 
 
