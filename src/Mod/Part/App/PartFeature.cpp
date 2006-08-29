@@ -32,6 +32,7 @@
 
 #include <BRepTools_ShapeSet.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
+#include <BRepTools.hxx>
 
 #include <Base/Writer.h>
 #include <Base/Reader.h>
