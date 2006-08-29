@@ -31,6 +31,8 @@
 #endif
 
 #include <BRepTools_ShapeSet.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
+
 #include <locale>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
@@ -84,7 +86,9 @@ void PropertyPartShape::setPyObject(PyObject *value)
 App::Property *PropertyPartShape::Copy(void) const
 {
   PropertyPartShape *p= new PropertyPartShape();
-  p->_Shape = _Shape;
+  //p->_Shape = _Shape;
+  BRepBuilderAPI_Copy copy(_Shape);
+  p->_Shape = copy.Shape();
   return p;
 }
 
