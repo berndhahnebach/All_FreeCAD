@@ -150,7 +150,7 @@ inline void readByteSeq ( istream &is, vector < unsigned char > &vec, int count 
 }
 
 inline void writeByteSeq ( ostream &os, const vector < unsigned char > &vec ) {
-  if(vec.size())
+  if(!vec.empty())
     os.rdbuf()->sputn( reinterpret_cast< const char * >( &( vec[ 0 ] ) ), vec.size() ) ;
 }
 

@@ -33,7 +33,6 @@
 #include <BRepTools_ShapeSet.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
 
-#include <locale>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Exception.h>
@@ -44,8 +43,6 @@
 #include "TopologyPy.h"
 
 using namespace Part;
-
-//#define PROPERTY_IO_BREP
 
 TYPESYSTEM_SOURCE(Part::PropertyPartShape , App::Property);
 
@@ -86,7 +83,6 @@ void PropertyPartShape::setPyObject(PyObject *value)
 App::Property *PropertyPartShape::Copy(void) const
 {
   PropertyPartShape *p= new PropertyPartShape();
-  //p->_Shape = _Shape;
   BRepBuilderAPI_Copy copy(_Shape);
   p->_Shape = copy.Shape();
   return p;
@@ -100,12 +96,11 @@ void PropertyPartShape::Paste(const App::Property &from)
 
 }
 
-/// FIXME I have no Idea how to compute the size of a topoShape!
+///FIXME: I have no Idea how to compute the size of a topoShape!
 unsigned int PropertyPartShape::getMemSize (void) const
 {
   return 0;
 }
-
 
 void PropertyPartShape::Save (Base::Writer &writer) const
 {
@@ -115,7 +110,7 @@ void PropertyPartShape::Save (Base::Writer &writer) const
 //    MeshCore::MeshDocXML saver(*_pcMesh);
 //    saver.Save(writer);
 //  }else{
-  //See SaveDocFile(), RestoreDocFile()
+    //See SaveDocFile(), RestoreDocFile()
     writer << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.brp", this) << "\"/>" << std::endl;
 //  }
 }
@@ -138,19 +133,12 @@ void PropertyPartShape::Restore(Base::XMLReader &reader)
 
 void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
 {
-  //FIXME: Test with several data!
-#ifdef PROPERTY_IO_BREP
-  // needed to avoid STL exception 'missing locale facet', but don't know whether this has side effects
-  writer.imbue(std::locale::empty());
-  // Before writing to the project we clean all triangulation data to save memory
-  BRepTools::Clean(_Shape);
-  BRepTools::Write(_Shape, writer);
-#else
+#if defined(_MSC_VER) && _MSC_VER >= 1400
   // create a temporary file and copy the content to the zip stream
   Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
   if (! BRepTools::Write(_Shape,(const Standard_CString)fi.filePath().c_str()))
-    throw Base::Exception("PropertyPartShape::SaveDocFile: Cant save file...");
+    throw Base::Exception("PropertyPartShape::SaveDocFile: Can't save file...");
 
   std::ifstream file( fi.filePath().c_str(), std::ios::in | std::ios::binary );
   if (file){
@@ -163,18 +151,18 @@ void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
   file.close();
   // remove temp file
   fi.deleteFile();
+#else
+  // Before writing to the project we clean all triangulation data to save memory
+  BRepTools::Clean(_Shape);
+  BRepTools::Write(_Shape, writer);
 #endif
 }
 
 void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 {
   BRep_Builder builder;
-  //FIXME: Test with several data!
-#ifdef PROPERTY_IO_BREP
-  // needed to avoid STL exception 'missing locale facet', but don't know whether this has side effects
-  reader.imbue(std::locale::empty());
-  BRepTools::Read(_Shape, reader, builder);
-#else
+
+#if defined(_MSC_VER) && _MSC_VER >= 1400
   // create a temporary file and copy the content from the zip stream
   Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
@@ -194,7 +182,8 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 
   // delete the temp file
   fi.deleteFile();
-
+#else
+  BRepTools::Read(_Shape, reader, builder);
 #endif
 }
 

@@ -32,6 +32,7 @@
 #include "Exception.h"
 
 #include <algorithm>
+#include <locale>
 
 using namespace Base;
 using namespace std;

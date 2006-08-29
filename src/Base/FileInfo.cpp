@@ -42,7 +42,6 @@
 #include "FileInfo.h"
 #include <sys/types.h>
 #include <sys/stat.h>
-//#include <windows.h>
 #include <stdio.h>
 
 
@@ -260,13 +259,13 @@ unsigned int FileInfo::size () const
 
 bool FileInfo::deleteFile(void)
 {
-  #if defined (_MSC_VER)
-    return DeleteFile(FileName.c_str())>0;
-  #elif defined(__GNUC__)
-    error "DeleteFile() not implemented for this platform!"
-  #else
-  # error "DeleteFile() not implemented for this platform!"
-  #endif
+#if defined (_MSC_VER)
+  return DeleteFile(FileName.c_str())>0;
+#elif defined(__GNUC__)
+  return (::remove(FileName.c_str())==0);
+#else
+# error "DeleteFile() not implemented for this platform!"
+#endif
 }
 bool FileInfo::createDirectory( const char* directory ) const
 {

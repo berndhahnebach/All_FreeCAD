@@ -29,6 +29,8 @@
 # include <xercesc/sax2/XMLReaderFactory.hpp>
 #endif
 
+#include <locale>
+
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Reader.h"
 #include "Exception.h"
