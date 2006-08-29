@@ -48,8 +48,13 @@ Writer::Writer(const char* FileName)
 : ZipOutputStream(FileName),indent(0),forceXML(false)
 {
   indBuf[0] = '\0';
-  imbue(std::locale::empty());
 
+#ifdef _MSC_VER
+  imbue(std::locale::empty());
+#else
+  //FIXME: Check whether this is correct
+  imbue(std::locale::classic());
+#endif
 }
 
 Writer::~Writer()

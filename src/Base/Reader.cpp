@@ -58,7 +58,13 @@ using namespace std;
 
 Base::XMLReader::XMLReader(const char* FileName, std::istream& str) : _File(FileName) 
 {
+#ifdef _MSC_VER
   str.imbue(std::locale::empty());
+#else
+  //FIXME: Check whether this is correct
+  str.imbue(std::locale::classic());
+#endif
+
   // create the parser
   parser = XMLReaderFactory::createXMLReader();
   //parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, false);
