@@ -365,7 +365,14 @@ void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
     getGuiApplication()->macroManager()->addLine(MacroManager::Gui,format);
   else
     getGuiApplication()->macroManager()->addLine(MacroManager::Base,format);
-  Interpreter().runString(format);
+  
+  try { 
+    Interpreter().runString(format);
+  } catch (...) {
+    // free memory to avoid a leak if an exception occurred
+    free (format);
+    throw;
+  }
 
   //Base::Console().Log("#(%s): %s\n",sName.c_str(),format);
   Base::Console().Log("CmdC: %s\n",format);

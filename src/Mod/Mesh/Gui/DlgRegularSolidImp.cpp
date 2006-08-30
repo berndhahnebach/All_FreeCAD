@@ -51,7 +51,6 @@ using namespace MeshGui;
 MeshGui::DlgRegularSolidImp::DlgRegularSolidImp( QWidget* parent, const char* name, bool modal, WFlags fl )
  : DlgRegularSolid( parent, name, modal, fl )
 {
-  Gui::Application::Instance->activeDocument()->openCommand("Build regular solid");
   Gui::Command::doCommand(Gui::Command::Doc, "import Mesh,BuildRegularGeoms");
 }
 
@@ -61,7 +60,6 @@ MeshGui::DlgRegularSolidImp::DlgRegularSolidImp( QWidget* parent, const char* na
 MeshGui::DlgRegularSolidImp::~DlgRegularSolidImp()
 {
   // no need to delete child widgets, Qt does it all for us
-  Gui::Application::Instance->activeDocument()->commitCommand();
 }
 
 /**
@@ -70,10 +68,10 @@ MeshGui::DlgRegularSolidImp::~DlgRegularSolidImp()
 void MeshGui::DlgRegularSolidImp::buildSolid()
 {
   try {
-    QString cmd;
+    QString cmd; std::string name;
+    App::Document* doc = App::GetApplication().getActiveDocument();
     if ( comboBox1->currentItem() == 0 ) {         // cube
-      App::Document* doc = App::GetApplication().getActiveDocument();
-      std::string name = doc->getUniqueObjectName("Cube");
+      name = doc->getUniqueObjectName("Cube");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Cube\",\"%s\")\n"
           "App.activeDocument().%s.Length=%.2f\n"
@@ -83,8 +81,7 @@ void MeshGui::DlgRegularSolidImp::buildSolid()
            name.c_str(),boxWidth->value(),
            name.c_str(),boxHeight->value());
     } else if ( comboBox1->currentItem() == 1 ) {  // cylinder
-      App::Document* doc = App::GetApplication().getActiveDocument();
-      std::string name = doc->getUniqueObjectName("Cylinder");
+      name = doc->getUniqueObjectName("Cylinder");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Cylinder\",\"%s\")\n"
           "App.activeDocument().%s.Radius=%.2f\n"
@@ -98,8 +95,7 @@ void MeshGui::DlgRegularSolidImp::buildSolid()
            name.c_str(),(cylinderClosed->isChecked()?"True":"False"),
            name.c_str(),cylinderCount->value());
     } else if ( comboBox1->currentItem() == 2 ) {  // cone
-      App::Document* doc = App::GetApplication().getActiveDocument();
-      std::string name = doc->getUniqueObjectName("Cone");
+      name = doc->getUniqueObjectName("Cone");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Cone\",\"%s\")\n"
           "App.activeDocument().%s.Radius1=%.2f\n"
@@ -115,8 +111,7 @@ void MeshGui::DlgRegularSolidImp::buildSolid()
            name.c_str(),(coneClosed->isChecked()?"True":"False"),
            name.c_str(),coneCount->value());
     } else if ( comboBox1->currentItem() == 3 ) {  // sphere
-      App::Document* doc = App::GetApplication().getActiveDocument();
-      std::string name = doc->getUniqueObjectName("Sphere");
+      name = doc->getUniqueObjectName("Sphere");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Sphere\",\"%s\")\n"
           "App.activeDocument().%s.Radius=%.2f\n"
@@ -124,8 +119,7 @@ void MeshGui::DlgRegularSolidImp::buildSolid()
           ,name.c_str(),name.c_str(),sphereRadius->value(),
            name.c_str(),sphereCount->value());
     } else if ( comboBox1->currentItem() == 4 ) {  // ellipsoid
-      App::Document* doc = App::GetApplication().getActiveDocument();
-      std::string name = doc->getUniqueObjectName("Ellipsoid");
+      name = doc->getUniqueObjectName("Ellipsoid");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Ellipsoid\",\"%s\")\n"
           "App.activeDocument().%s.Radius1=%.2f\n"
@@ -135,8 +129,7 @@ void MeshGui::DlgRegularSolidImp::buildSolid()
            name.c_str(),ellipsoidRadius2->value(),
            name.c_str(),ellipsoidCount->value());
     } else if ( comboBox1->currentItem() == 5 ) {  // toroid
-      App::Document* doc = App::GetApplication().getActiveDocument();
-      std::string name = doc->getUniqueObjectName("Torus");
+      name = doc->getUniqueObjectName("Torus");
       cmd.sprintf(
           "App.activeDocument().addObject(\"Mesh::Torus\",\"%s\")\n"
           "App.activeDocument().%s.Radius1=%.2f\n"
@@ -148,10 +141,13 @@ void MeshGui::DlgRegularSolidImp::buildSolid()
     }
 
     // Execute the Python block
+    QString solid = QString("Create %1").arg(comboBox1->currentText());
+    Gui::Application::Instance->activeDocument()->openCommand( solid.ascii() );
     Gui::Command::doCommand(Gui::Command::Doc, cmd.ascii());
+    Gui::Application::Instance->activeDocument()->commitCommand();
     Gui::Application::Instance->activeDocument()->getDocument()->recompute();
   } catch (const Base::PyException& e) {
-    QMessageBox::warning(this, tr("Building solid"), e.what());
+    QMessageBox::warning(this, tr("Create %1").arg(comboBox1->currentText()), e.what());
   }
 }
 

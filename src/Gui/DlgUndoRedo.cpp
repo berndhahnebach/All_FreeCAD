@@ -189,7 +189,7 @@ void UndoRedoDialog::onFetchInfo()
   }
 }
 
-/** Sets the number of actons to undo/redo. */
+/** Sets the number of actions to undo/redo. */
 void UndoRedoDialog::onSelChangeUndoRedoStack() 
 {
   int pos = pListBox->currentItem() + 1;
@@ -217,7 +217,16 @@ UndoRedoDialog::TMode UndoRedoDialog::getMode() const
 void UndoRedoDialog::onSelected()
 {
   close();
-  emit clickedListBox();
+  //emit clickedListBox();
+
+  int pos = pListBox->currentItem() + 1;
+  if ( tMode == Undo ) {
+    for ( int i=0; i<pos; i++ )
+      Gui::Application::Instance->sendMsgToActiveView("Undo");
+  } else {
+    for ( int i=0; i<pos; i++ )
+      Gui::Application::Instance->sendMsgToActiveView("Redo");
+  }
 }
 
 #include "moc_DlgUndoRedo.cpp"

@@ -134,7 +134,9 @@ void PropertyPartShape::Restore(Base::XMLReader &reader)
 
 void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
 {
-#if defined(_MSC_VER) && _MSC_VER >= 1400
+  // Before writing to the project we clean all triangulation data to save memory
+  BRepTools::Clean(_Shape);
+
   // create a temporary file and copy the content to the zip stream
   Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
@@ -152,18 +154,12 @@ void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
   file.close();
   // remove temp file
   fi.deleteFile();
-#else
-  // Before writing to the project we clean all triangulation data to save memory
-  BRepTools::Clean(_Shape);
-  BRepTools::Write(_Shape, writer);
-#endif
 }
 
 void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 {
   BRep_Builder builder;
 
-#if defined(_MSC_VER) && _MSC_VER >= 1400
   // create a temporary file and copy the content from the zip stream
   Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
@@ -183,9 +179,6 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 
   // delete the temp file
   fi.deleteFile();
-#else
-  BRepTools::Read(_Shape, reader, builder);
-#endif
 }
 
 //===========================================================================
