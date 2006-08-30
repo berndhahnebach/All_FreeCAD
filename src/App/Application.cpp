@@ -66,10 +66,6 @@
 using namespace App;
 
 
-// If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
-// which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
-#include "../Build/Version.h"
-
 // scriptings (scripts are build in but can be overriden by command line option)
 #include "InitScript.h"
 #include "TestScript.h"
@@ -639,17 +635,6 @@ void Application::init(int argc, char ** argv)
     #endif
 
     initTypes();
-
-    // Version of the Application. Extractet of SubWCRef into src/Build/Version.h
-    mConfig["BuildVersionMajor"]  = FCVersionMajor;
-    mConfig["BuildVersionMinor"]  = FCVersionMinor;
-    mConfig["BuildRevision"]      = FCRevision;
-    mConfig["BuildRevisionRange"] = FCRevisionRange;
-    mConfig["BuildRepositoryURL"] = FCRepositoryURL;
-    mConfig["BuildRevisionDate"]  = FCRevisionDate;
-    mConfig["BuildCurrentDate"]   = FCCurrentDateT;
-    mConfig["BuildScrClean"]      = FCScrClean;
-    mConfig["BuildFCScrMixed"]    = FCScrMixed;
 
     if(argc==0)
     {
