@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+	<Module Name="GenerateTestDummy">
+		<Content>
+			<Feature Name="Test1">
+				<Documentation><Author EMail="juergen.riegel@web.de" Name="Jürgen Riegel"/></Documentation>
+				<Property Type="App::PropertyString" Name="Name"/>
+				<Property Type="App::PropertyInteger" Name="Zählerchen"/>
+				<Property Type="App::PropertyFloat" Name="Zählerchen"/>
+			</Feature>
+	    </Content>
+	</Module>
+</GenerateModel>
