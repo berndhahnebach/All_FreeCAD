@@ -561,7 +561,8 @@ void UndoRedoAction::addedTo ( QWidget * actionWidget, QWidget * container )
   if ( actionWidget->inherits("QToolButton") )
   {
     QToolButton* tb = (QToolButton*)actionWidget;
-    QPopupMenu* menu = new UndoRedoDialog( tb );
+    UndoRedoDialog* menu = new UndoRedoDialog( tb );
+    menu->setMode( tMode == Undo ? UndoRedoDialog::Undo : UndoRedoDialog::Redo );
 
     tb->setPopup( menu );
     tb->setPopupDelay(0);
@@ -576,6 +577,7 @@ void UndoRedoAction::addedTo ( QWidget * actionWidget, QWidget * container )
 UndoAction::UndoAction ( Command* pcCmd,QObject * parent, const char * name, bool toggle )
   : UndoRedoAction(pcCmd, parent, name, toggle)
 {
+  tMode = Undo;
 }
 
 UndoAction::~UndoAction()
@@ -587,6 +589,7 @@ UndoAction::~UndoAction()
 RedoAction::RedoAction ( Command* pcCmd,QObject * parent, const char * name, bool toggle )
   : UndoRedoAction(pcCmd, parent, name, toggle)
 {
+  tMode = Redo;
 }
 
 RedoAction::~RedoAction()

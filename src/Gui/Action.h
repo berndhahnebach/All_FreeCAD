@@ -299,10 +299,19 @@ class GuiExport UndoRedoAction : public Action
   Q_OBJECT
 
 public:
+  enum TMode 
+  {
+    Undo, /**< Undo mode */ 
+    Redo  /**< Redo mode */
+  };
+
   UndoRedoAction ( Command* pcCmd,QObject * parent = 0, const char * name = 0, bool toggle = FALSE );
   virtual ~UndoRedoAction();
   
   void addedTo ( QWidget * actionWidget, QWidget * container );
+
+protected:
+  TMode tMode; /**< Either it's a undo or a redo action. */
 };
 
 // --------------------------------------------------------------------
