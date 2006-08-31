@@ -94,6 +94,7 @@
 							<xs:extension base="xs:string">
 								<xs:attribute name="Name" type="xs:string" use="required"/>
 								<xs:attribute name="EMail" type="xs:string" use="required"/>
+								<xs:attribute name="Licence" type="xs:string" use="optional" default="LGPL"/>
 							</xs:extension>
 						</xs:simpleContent>
 					</xs:complexType>
@@ -109,7 +110,7 @@
 		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="Property"/>
+				<xs:element ref="Property" minOccurs="0" maxOccurs="unbounded"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
