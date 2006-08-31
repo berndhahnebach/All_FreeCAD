@@ -3,10 +3,13 @@
 	<Module Name="GenerateTestDummy">
 		<Content>
 			<Feature Name="Test1">
-				<Documentation><Author EMail="juergen.riegel@web.de" Name="Jürgen Riegel"/></Documentation>
+				<Documentation><Author EMail="juergen.riegel@web.de" Name="Juergen Riegel"/></Documentation>
 				<Property Type="App::PropertyString" Name="Name"/>
-				<Property Type="App::PropertyInteger" Name="Zählerchen"/>
-				<Property Type="App::PropertyFloat" Name="Zählerchen"/>
+				<Property Type="App::PropertyInteger" Name="Count"/>
+				<Property Type="App::PropertyFloat" Name="Distance"/>
+				<ViewProvider>
+					<Property Type="App::PropertyInt" Name="VisMode"></Property>
+				</ViewProvider>
 			</Feature>
 	    </Content>
 	</Module>
