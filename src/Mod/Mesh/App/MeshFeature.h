@@ -83,12 +83,9 @@ public:
 
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){
-    //FIXME: Until the implementation of 'ViewProviderMeshNode' is not completed we
-    //still use 'ViewProviderMesh' for meshes with less than 100.000 triangles.
-    if ( Mesh.getValue().CountFacets() > 100000 )
-      return "MeshGui::ViewProviderMeshNode";
-    else
-      return "MeshGui::ViewProviderMesh";
+    //FIXME: Fix bug in MeshGui::ViewProviderMeshFaceSet that crashes when the mesh is replaced in the feature.
+    //Uee MeshGui::ViewProviderMeshNode temporarily.
+    return "MeshGui::ViewProviderMeshNode";
   }
 
   /// handles the MeshPy object

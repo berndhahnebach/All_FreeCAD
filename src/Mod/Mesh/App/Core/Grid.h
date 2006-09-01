@@ -111,6 +111,15 @@ public:
   /** Returns a extended bounding box of the mesh object. */
   inline Base::BoundBox3f  GetMeshBoundBox (void) const;
   //@}
+  /** Returns an index for the given grid position. If the specified triple is not a valid grid position ULONG_MAX is returned. 
+   * If the index is valid than its value is between zero and the number of grid elements. For each different grid position
+   * a different index is returned.
+   */
+  unsigned long GetIndexToPosition(unsigned long ulX, unsigned long ulY, unsigned long ulZ) const;
+  /** Returns the grid position to the given index. If the index is equal to or higher than the number of grid elements false is returned
+   * and the triple is set to ULONG_MAX. 
+   */
+  bool GetPositionToIndex(unsigned long id, unsigned long& ulX, unsigned long& ulY, unsigned long& ulZ) const;
   /** Returns the number of elements in a given grid. */
   unsigned long GetCtElements(unsigned long ulX, unsigned long ulY, unsigned long ulZ) const
   { return _aulGrid[ulX][ulY][ulZ].size(); }
@@ -120,7 +129,7 @@ public:
   virtual bool Verify() const = 0;
 
 protected:
-  /** Returns the indices of the grid this point lies in. If the point is outside the grid the the indices of 
+  /** Returns the indices of the grid this point lies in. If the point is outside the grid the indices of 
    * the nearest grid element are taken.*/
   virtual void Position (const Base::Vector3f &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const;
   /** Checks if this is a valid grid position. */

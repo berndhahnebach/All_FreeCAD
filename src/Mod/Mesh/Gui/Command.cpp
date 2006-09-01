@@ -316,19 +316,21 @@ void CmdMeshImport::activated(int iMsg)
   //filter << "Nastran (*.nas *.bdf)";
   filter << "All Files (*.*)";
 
-  QString fn = Gui::FileDialog::getOpenFileName( dir, filter.join(";;"), Gui::getMainWindow() );
-  if (! fn.isEmpty() )
+  // Allow multi selection
+  QStringList fn = Gui::FileDialog::getOpenFileNames( filter.join(";;"), dir, Gui::getMainWindow(), 0, QObject::tr("Import mesh") );
+  for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it )
   {
     QFileInfo fi;
-    fi.setFile(fn);
+    fi.setFile(*it);
 
-    openCommand("Mesh ImportSTL Create");
+    openCommand("Import Mesh");
     doCommand(Doc,"f = App.document().addObject(\"Mesh::Import\",\"%s\")", fi.baseName().latin1());
-    doCommand(Doc,"f.FileName = \"%s\"",fn.ascii());
+    doCommand(Doc,"f.FileName = \"%s\"",(*it).ascii());
     commitCommand();
     updateActive();
 
-    Gui::FileDialog::setWorkingDirectory(fn);
+    if ( it == fn.begin() )
+      Gui::FileDialog::setWorkingDirectory(*it);
   }
 }
 

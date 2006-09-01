@@ -586,6 +586,30 @@ unsigned long MeshGrid::GetElements (unsigned long ulX, unsigned long ulY, unsig
   return 0;
 }
 
+unsigned long MeshGrid::GetIndexToPosition(unsigned long ulX, unsigned long ulY, unsigned long ulZ) const
+{
+  if ( !CheckPos(ulX, ulY, ulZ) )
+    return ULONG_MAX;
+  return (ulZ * _ulCtGridsY + ulY) * _ulCtGridsX + ulX;
+}
+
+bool MeshGrid::GetPositionToIndex(unsigned long id, unsigned long& ulX, unsigned long& ulY, unsigned long& ulZ) const
+{
+  ulX = id % _ulCtGridsX;
+  ulY = (id/_ulCtGridsX)%_ulCtGridsY;
+  ulZ = id/(_ulCtGridsX*_ulCtGridsY);
+
+  if ( !CheckPos(ulX, ulY, ulZ) )
+  {
+    ulX = ULONG_MAX;
+    ulY = ULONG_MAX;
+    ulZ = ULONG_MAX;
+    return false;
+  }
+
+  return true;
+}
+
 // ----------------------------------------------------------------
 
 MeshFacetGrid::MeshFacetGrid (const MeshKernel &rclM)
