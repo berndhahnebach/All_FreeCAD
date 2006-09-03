@@ -121,9 +121,7 @@ void DocItem::clearSelection(void)
 {
   for (std::map<string,ObjectItem*>::iterator pos = FeatMap.begin();pos!=FeatMap.end();++pos)
   {
-    pos->second->bSelected = false;
-    pos->second->setSelected(false);
-    pos->second->repaint();
+    pos->second->selectFeature(false);
   }
 }
 
@@ -349,7 +347,7 @@ void ObjectItem::highlightFeature(bool bOn)
 void ObjectItem::selectFeature(bool bOn)
 {
   setSelected(bOn);
-  bSelected =bOn;
+  bSelected = bOn;
   repaint();
 }
 
@@ -461,7 +459,6 @@ void TreeView::contextMenuEvent ( QContextMenuEvent * e )
   MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
   delete view;
   ContextMenu.exec( QCursor::pos() );
-
 }
 
 void TreeView::testStatus(void)

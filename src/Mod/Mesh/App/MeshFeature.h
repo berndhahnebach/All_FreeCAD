@@ -83,9 +83,7 @@ public:
 
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){
-    //FIXME: Fix bug in MeshGui::ViewProviderMeshFaceSet that crashes when the mesh is replaced in the feature.
-    //Uee MeshGui::ViewProviderMeshNode temporarily.
-    return "MeshGui::ViewProviderMeshNode";
+    return "MeshGui::ViewProviderMeshFaceSet";
   }
 
   /// handles the MeshPy object

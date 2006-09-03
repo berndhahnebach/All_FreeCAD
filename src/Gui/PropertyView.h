@@ -79,11 +79,6 @@ public:
 
   static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
-private:
-  void buildUp(App::PropertyContainer *cont);
-  void tearDown(void);
-
-
   Gui::PropertyEditor::EditableListView * _pPropEditorView;
   Gui::PropertyEditor::EditableListView * _pPropEditorData;
 };

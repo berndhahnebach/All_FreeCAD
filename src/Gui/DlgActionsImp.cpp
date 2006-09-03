@@ -88,6 +88,22 @@ void DlgCustomActionsImp::show()
   }
 }
 
+void DlgCustomActionsImp::reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt )
+{
+  DlgCustomActionsBase::reparent(parent, f, p, showIt);
+
+  // redirect signal to toplevel widget
+  QWidget* topLevel = parent ? parent->topLevelWidget():0;
+  if ( topLevel )
+  {
+    int index = topLevel->metaObject()->findSignal( "addMacroAction(const QString&)", TRUE );
+    if ( index >= 0 ) {
+      connect(this, SIGNAL(addMacroAction( const QString& )), topLevel, SIGNAL(addMacroAction( const QString& )));
+      connect(this, SIGNAL(removeMacroAction( const QString& )), topLevel, SIGNAL(removeMacroAction( const QString& )));
+    }
+  }
+}
+
 void DlgCustomActionsImp::showActions()
 {
   CommandManager& rclMan = Application::Instance->commandManager();
@@ -238,6 +254,20 @@ void DlgCustomActionsImp::onAddCustomAction()
     macro->setAccel( QAccel::stringToKey( actionAccel->text() ) );
   actionAccel->clear();
 
+  // check whether the macro is already in use
+  QAction* action = macro->getAction();
+  if ( action )
+  {
+    // does all the text related stuff
+    macro->languageChange();
+    if( macro->getPixmap() )
+      action->setIconSet(Gui::BitmapFactory().pixmap(macro->getPixmap()));
+    action->setAccel(macro->getAccel());
+  }
+
+  // emit signal to notify the container widget
+  emit addMacroAction( actionName->text() );
+
   newActionName();
 }
 
@@ -267,6 +297,8 @@ void DlgCustomActionsImp::onDelCustomAction()
   {
     if ( itemText == (*it2)->getName() )
     {
+      // emit signal to notify the container widget
+      emit removeMacroAction( itemText );
       // remove from manager and delete it immediately
       rclMan.removeCommand( *it2 );
       break;

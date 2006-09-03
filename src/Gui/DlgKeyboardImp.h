@@ -46,6 +46,7 @@ class DlgCustomKeyboardImp : public DlgCustomKeyboardBase
 public:
   DlgCustomKeyboardImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DlgCustomKeyboardImp();
+  void reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE );
 
 protected:
   void onDescription( const QString& );
@@ -54,6 +55,8 @@ protected:
   void onReset();
   void onResetAll();
   void onShortcutPressed(const QString&);
+  void onAddMacroAction(const QString&);
+  void onRemoveMacroAction(const QString&);
 
 private:
   QMap<QString, QString> _cmdGroups;

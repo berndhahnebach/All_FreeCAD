@@ -57,6 +57,7 @@ public:
   App::PropertyBool OpenEdges;
 
   void attach(App::DocumentObject *pcFeat);
+  virtual void updateData();
   virtual QPixmap getIcon() const;
   virtual void setMode(const char* ModeName);
   virtual std::list<std::string> getModes() const;

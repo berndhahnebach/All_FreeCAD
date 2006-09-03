@@ -67,6 +67,42 @@ void EditableListView::stopEdit()
   _editingItem = 0;
 }
 
+void EditableListView::buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct )
+{
+  // clears the content before rebuilding
+  this->stopEdit();
+  this->clear();
+
+  this->setUpdatesEnabled(FALSE);
+
+  // fill up the listview with the properties
+  EditableItem::parentView = this;
+  std::map<std::pair<std::string, int>, std::vector<App::Property*> >::const_reverse_iterator it;
+  for ( it = props.rbegin(); it != props.rend(); ++it )
+  {
+    // the property must be part of each selected object, i.e. the number of selected objects is equal 
+    // to the number of properties with same name and id
+    if ( it->second.size() == ct )
+    {
+      App::Property* prop = (it->second)[0];
+      QString editor = prop->getEditorName();
+      if ( !editor.isEmpty() )
+      {
+        EditableItem* item = (EditableItem*) Base::Type::createInstanceByName( prop->getEditorName(),true);
+        if ( item )
+        {
+          item->setText(0, QString(prop->getName()));
+          item->setProperty( it->second );
+        }
+      }
+    }
+  }
+
+  // enable update again
+  this->setUpdatesEnabled(TRUE);
+  this->repaint();
+}
+
 /*
 void EditableListView::drawContentsOffset ( QPainter * p, int ox, int oy, int cx, int cy, int cw, int ch )
 {

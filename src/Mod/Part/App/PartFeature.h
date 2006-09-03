@@ -84,6 +84,8 @@ public:
   //@}
 
 private:
+  /** Recursive counting of multiple referenced shape elements. */
+  unsigned int RefCountShapes(const TopoDS_Shape& aShape) const;
   TopoDS_Shape _Shape;
 };
 

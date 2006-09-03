@@ -60,6 +60,17 @@ DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags 
   AvailableActions->setSorting( -1 );
   ToolbarActions->setSorting( -1 );
 
+  refreshFullActionList();
+}
+
+/** Destroys the object and frees any allocated resources */
+DlgCustomToolbars::~DlgCustomToolbars()
+{
+  delete _toolBars; 
+}
+
+void DlgCustomToolbars::refreshFullActionList()
+{
   CommandManager & cCmdMgr = Application::Instance->commandManager();
   std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
   std::map<std::string, std::vector<Command*> > alCmdGroups;
@@ -69,13 +80,14 @@ DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags 
   }
 
   // force a special order
-  QStringList items; items << "Macros" << "Help" << "Window" << "Tools" << "Standard-View" << "View" << "Edit" << "File";
+  QStringList items; items << "Help" << "Window" << "Tools" << "Standard-View" << "View" << "Edit" << "File" << "Macros";
   for (std::map<std::string, std::vector<Command*> >::iterator it2 = alCmdGroups.begin(); it2 != alCmdGroups.end(); ++it2)
   {
     if ( items.find( it2->first.c_str() ) == items.end() )
       items.prepend(it2->first.c_str());
   }
 
+  AvailableActions->clear();
   for (QStringList::Iterator it3 = items.begin(); it3 != items.end(); ++it3)
   {
     QListViewItem* itemNode = new QListViewItem(AvailableActions, QObject::tr(*it3));
@@ -95,12 +107,6 @@ DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags 
   }
 
   AvailableActions->insertItem(new QListViewItem(AvailableActions, "<Separator>"));
-}
-
-/** Destroys the object and frees any allocated resources */
-DlgCustomToolbars::~DlgCustomToolbars()
-{
-  delete _toolBars; 
 }
 
 void DlgCustomToolbars::refreshActionList()
@@ -433,6 +439,33 @@ void DlgCustomToolbars::onDeleteToolbar()
 
     refreshToolBarList();
   }
+}
+
+void DlgCustomToolbars::reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt )
+{
+  DlgCustomToolbarsBase::reparent(parent, f, p, showIt);
+
+  // redirect signal to toplevel widget
+  QWidget* topLevel = parent ? parent->topLevelWidget():0;
+  if ( topLevel )
+  {
+    int index = topLevel->metaObject()->findSignal( "addMacroAction(const QString&)", TRUE );
+    if ( index >= 0 )
+    {
+      connect(topLevel, SIGNAL(addMacroAction( const QString& )), this, SLOT(onAddMacroAction( const QString& )));
+      connect(topLevel, SIGNAL(removeMacroAction( const QString& )), this, SLOT(onRemoveMacroAction( const QString& )));
+    }
+  }
+}
+
+void DlgCustomToolbars::onAddMacroAction(const QString& item)
+{
+  refreshFullActionList();
+}
+
+void DlgCustomToolbars::onRemoveMacroAction(const QString& item)
+{
+  refreshFullActionList();
 }
 
 // -------------------------------------------------------------

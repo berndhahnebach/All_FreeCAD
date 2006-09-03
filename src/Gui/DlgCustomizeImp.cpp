@@ -121,7 +121,7 @@ void DlgCustomizeImp::addPage( const QString& className )
 /** Inserts a new tab page with its caption */
 void DlgCustomizeImp::addPage ( QWidget* w )
 {
-  w->reparent(tabWidget, QPoint(0,0));
+  //w->reparent(tabWidget, QPoint(0,0));
   tabWidget->insertTab( w, w->caption() );
 }
 

@@ -154,83 +154,10 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
       }
     }
 
-    tearDown();
-
-    std::map<std::pair<std::string, int>, std::vector<App::Property*> >::const_iterator jt;
-    EditableItem::parentView = _pPropEditorData;
-    for ( jt = propDataMap.begin(); jt != propDataMap.end(); ++jt )
-    {
-      // the property must be part of each selected object, i.e. the number of selected objects is equal 
-      // to the number of properties with same name and id
-      if ( jt->second.size() == array.size() )
-      {
-        App::Property* prop = (jt->second)[0];
-        QString editor = prop->getEditorName();
-        if ( !editor.isEmpty() )
-        {
-          EditableItem* item = (EditableItem*) Base::Type::createInstanceByName( prop->getEditorName(),true);
-          if ( item )
-          {
-            item->setText(0, QString(prop->getName()));
-            item->setProperty( jt->second );
-          }
-        }
-      }
-    }
-
-    // fill up the tab with the view properties
-    EditableItem::parentView = _pPropEditorView;
-    for ( jt = propViewMap.begin(); jt != propViewMap.end(); ++jt )
-    {
-      // the property must be part of each selected object, i.e. the number of selected objects is equal 
-      // to the number of properties with same name and id
-      if ( jt->second.size() == array.size() )
-      {
-        App::Property* prop = (jt->second)[0];
-        QString editor = prop->getEditorName();
-        if ( !editor.isEmpty() )
-        {
-          EditableItem* item = (EditableItem*) Base::Type::createInstanceByName( prop->getEditorName(),true);
-          if ( item )
-          {
-            item->setText(0, QString(prop->getName()));
-            item->setProperty( jt->second );
-          }
-        }
-      }
-    }
+    _pPropEditorData->buildUp(propDataMap, array.size());
+    _pPropEditorView->buildUp(propViewMap, array.size());
   }
 }
-
-void PropertyView::buildUp(App::PropertyContainer *cont)
-{
-
-  tearDown();
-  
-  std::map<std::string,App::Property*> Map;
-  cont->getPropertyMap(Map);
-
-  std::map<std::string,App::Property*>::iterator it;
-  for(it = Map.begin(); it != Map.end(); ++it)
-  {
-    EditableItem* item = (EditableItem*) Base::Type::createInstanceByName( it->second->getEditorName(),true);
-    if ( item )
-    {
-      item->setText(0, QString(it->first.c_str()));
-//      item->setProperty( it->second );
-    }
-  }
-}
-
-
-void PropertyView::tearDown(void)
-{
-  _pPropEditorView->stopEdit();
-  _pPropEditorView->clear();
-  _pPropEditorData->stopEdit();
-  _pPropEditorData->clear();
-}
-
 
 void PropertyView::onUpdate(void)
 {

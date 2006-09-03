@@ -47,6 +47,11 @@ public:
   ~DlgCustomActionsImp();
 
   void show();
+  void reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE );
+
+signals:
+  void addMacroAction( const QString& );
+  void removeMacroAction( const QString& );
 
 protected:
   /** Enables/disables buttons for deletion */

@@ -24,9 +24,17 @@
 #ifndef PROPERTYEDITOR_H
 #define PROPERTYEDITOR_H
 
+#include <map>
+#include <string>
+#include <vector>
+
 #include "propertyeditoritem.h"
 
 #include <qpushbutton.h>
+
+namespace App {
+class Property;
+}
 
 namespace Gui {
 namespace PropertyEditor {
@@ -53,6 +61,8 @@ public:
    * happens.
    */
   void stopEdit();
+  /** Builds up the list view with the properties. */
+  void buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct );
 
 protected slots:
   /** This slot is connected with the clicked signal and calls itemChanged(). */

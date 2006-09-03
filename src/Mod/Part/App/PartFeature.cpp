@@ -25,14 +25,16 @@
 
 #ifndef _PreComp_
 # include <sstream>
+# include <BRepTools.hxx>
+# include <BRepTools_ShapeSet.hxx>
+# include <BRepBuilderAPI_Copy.hxx>
 # include <TopTools_HSequenceOfShape.hxx>
 # include <STEPControl_Writer.hxx>
 # include <STEPControl_Reader.hxx>
+# include <TopTools_MapOfShape.hxx>
+# include <TopoDS_Iterator.hxx>
 #endif
 
-#include <BRepTools_ShapeSet.hxx>
-#include <BRepBuilderAPI_Copy.hxx>
-#include <BRepTools.hxx>
 
 #include <Base/Writer.h>
 #include <Base/Reader.h>
@@ -97,10 +99,42 @@ void PropertyPartShape::Paste(const App::Property &from)
 
 }
 
-///FIXME: I have no Idea how to compute the size of a topoShape!
+unsigned int PropertyPartShape::RefCountShapes(const TopoDS_Shape& aShape) const
+{
+  unsigned int size = 1; // this shape
+  TopoDS_Iterator it;
+  // go through all direct children
+  for (it.Initialize(aShape, false, false);it.More(); it.Next())
+  {
+    size += RefCountShapes(it.Value());
+  }
+
+  return size;
+}
+
 unsigned int PropertyPartShape::getMemSize (void) const
 {
-  return 0;
+  if ( !_Shape.IsNull() )
+  {
+    // Count total amount of references of TopoDS_Shape objects
+    unsigned int memsize = sizeof(TopoDS_Shape) * RefCountShapes(_Shape);
+
+    // Now get a map of TopoDS_Shape objects without duplicates
+    TopTools_IndexedMapOfShape M;
+    TopExp::MapShapes(_Shape, M);
+    for (int i=0; i<M.Extent(); i++)
+    {
+      // add the size of the underlying geomtric data
+      Handle(TopoDS_TShape) sh = M(i+1).TShape();
+      memsize += sh->DynamicType()->Size();
+    }
+
+    // estimated memory usage
+    return memsize;
+  }
+
+  // in case the shape is invalid
+  return sizeof(TopoDS_Shape);
 }
 
 void PropertyPartShape::Save (Base::Writer &writer) const
