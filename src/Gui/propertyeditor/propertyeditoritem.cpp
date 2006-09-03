@@ -33,63 +33,68 @@
  
 using namespace Gui::PropertyEditor;
  
-/* XPM */
-static const char * applyproperty_xpm[] = {
-"14 14 3 1",
-"# c #000000",
-"b c #00FF00",
-". c None",
-"..............",
-"..............",
-"..........#...",
-".........#b#..",
-"........#bbb#.",
-"...#...#bbb#..",
-"..#b#.#bbb#...",
-".#bbb#bbb#....",
-"..#bbbbb#.....",
-"...#bbb#......",
-"....#b#.......",
-".....#........",
-"..............",
-".............."};
- 
 ///* XPM */
-//static const char * resetproperty_xpm[] = {
-//      "7 6 4 1",
-//      "   c None",
-//      ".  c #C00000",
-//      "+  c #FF0000",
-//      "@  c None",
-//      ".+@@@+.",
-//      "@.+@+.@",
-//      "@@.+.@@",
-//      "@@+.+@@",
-//      "@+.@.+@",
-//      "+.@@@.+"};
+//static const char * applyproperty_xpm[] = {
+//"14 14 3 1",
+//"# c #000000",
+//"b c #00FF00",
+//". c None",
+//"..............",
+//"..............",
+//"..........#...",
+//".........#b#..",
+//"........#bbb#.",
+//"...#...#bbb#..",
+//"..#b#.#bbb#...",
+//".#bbb#bbb#....",
+//"..#bbbbb#.....",
+//"...#bbb#......",
+//"....#b#.......",
+//".....#........",
+//"..............",
+//".............."};
+ 
+/* XPM */
+static const char * resetproperty_xpm[] = {
+      "7 6 4 1",
+      "   c None",
+      ".  c #C00000",
+      "+  c #FF0000",
+      "@  c None",
+      ".+@@@+.",
+      "@.+@+.@",
+      "@@.+.@@",
+      "@@+.+@@",
+      "@+.@.+@",
+      "+.@@@.+"};
 
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::PropertyEditor::EditableItem, Base::BaseClass);
 
 QListView* EditableItem::parentView = 0;
 
 EditableItem::EditableItem()
-    : QListViewItem( parentView, parentView->lastItem() ), _val(0), _newval(0), _modified(false), _readonly(false), _col(1), _editor(0)
+    : QListViewItem( parentView ), _val(0), _newval(0), _modified(false), _readonly(false), _col(1), _editor(0)
 {
   _apply = new QPushButton(listView()->viewport());
-  _apply->setPixmap( applyproperty_xpm );
+  _apply->setPixmap( resetproperty_xpm );
   _apply->hide();
 
-  connect( _apply, SIGNAL( clicked() ), this, SLOT( applyOverrideValue() ) );
+  connect( _apply, SIGNAL( clicked() ), this, SLOT( restoreOverrideValue() ) );
 }
 
 EditableItem::EditableItem( QListView* lv, const QVariant& value )
     : QListViewItem( lv ), _val(value), _newval(value), _modified(false), _readonly(false), _col(1), _editor(0)
 {
   _apply = new QPushButton(listView()->viewport());
-  _apply->setPixmap( applyproperty_xpm );
+  _apply->setPixmap( resetproperty_xpm );
   _apply->hide();
 
-  connect( _apply, SIGNAL( clicked() ), this, SLOT( applyOverrideValue() ) );
+  connect( _apply, SIGNAL( clicked() ), this, SLOT( restoreOverrideValue() ) );
+}
+
+EditableItem::~EditableItem()
+{
+  delete _apply;
 }
 
 void EditableItem::setup()
@@ -133,6 +138,10 @@ void EditableItem::onValueChanged()
 {
   setModified( true );
   QListViewItem::repaint();
+
+  // do immediately
+  QVariant var = currentEditorValue( _editor );
+  convertToProperty(var);
 }
 
 void EditableItem::update()
@@ -186,6 +195,10 @@ void EditableItem::restoreOverrideValue()
   }
   setModified( false );
   QListViewItem::repaint();
+
+  // do immediately
+  QVariant var = currentEditorValue( _editor );
+  convertToProperty(var);
 }
 
 void EditableItem::applyOverrideValue()

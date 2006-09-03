@@ -314,5 +314,36 @@ void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
     pushButtonAssign->setEnabled( false );
 }
 
+void DlgCustomKeyboardImp::reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt )
+{
+  DlgCustomKeyboardBase::reparent(parent, f, p, showIt);
+
+  // redirect signal to toplevel widget
+  QWidget* topLevel = parent ? parent->topLevelWidget():0;
+  if ( topLevel )
+  {
+    int index = topLevel->metaObject()->findSignal( "addMacroAction(const QString&)", TRUE );
+    if ( index >= 0 )
+    {
+      connect(topLevel, SIGNAL(addMacroAction( const QString& )), this, SLOT(onAddMacroAction( const QString& )));
+      connect(topLevel, SIGNAL(removeMacroAction( const QString& )), this, SLOT(onRemoveMacroAction( const QString& )));
+    }
+  }
+}
+
+void DlgCustomKeyboardImp::onAddMacroAction(const QString& item)
+{
+  const CommandManager& cCmdMgr = Application::Instance->commandManager();
+  Command* cmd = cCmdMgr.getCommandByName( item.ascii() );
+  _groupCommands[cmd->getGroupName()][cmd->getName()] = cmd;
+}
+
+void DlgCustomKeyboardImp::onRemoveMacroAction(const QString& item)
+{
+  const CommandManager& cCmdMgr = Application::Instance->commandManager();
+  Command* cmd = cCmdMgr.getCommandByName( item.ascii() );
+  _groupCommands[cmd->getGroupName()].remove(cmd->getName());
+}
+
 #include "DlgKeyboard.cpp"
 #include "moc_DlgKeyboard.cpp"

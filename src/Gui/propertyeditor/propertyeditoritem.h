@@ -52,6 +52,7 @@ class GuiExport EditableItem :public QObject, public QListViewItem, public Base:
 public:
   /** Constructs an property item. */
   EditableItem( QListView* lv, const QVariant& value );
+  virtual ~EditableItem();
 
   /** Gets the default value of this item. */
   const QVariant& value() const;
@@ -128,9 +129,6 @@ protected: // Interface for subclasses.
   /** Does a repaint of the cell. */
   virtual void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
 
-public:
-  static QListView* parentView;
-
 protected:
   std::vector<App::Property*> _prop;
 
@@ -156,6 +154,7 @@ private: // Interface for EditableListView
 
 private:
 //  std::vector<App::Property*> _prop;
+  static QListView* parentView;
   QVariant _val;
   QVariant _newval;
   bool _modified;

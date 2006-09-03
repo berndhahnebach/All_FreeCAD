@@ -1180,10 +1180,21 @@ void Application::ExtractUser()
   // kept. On Windows usually 'APPDATA' is set supplemented by 'FreeCAD'.
   // On Linux the directory '.FreeCAD' (with a leading dot) is created directly under
   // the home path.
+#if 0
+  // Actually the name of the directory where the parameters are stored should be the name of
+  // the application due to branding stuff. So make it active in one of the following releases.
+  // FIXME: When activating this we should copy the parameter file from FreeCAD to the actual
+  // directory (in case ExeName != FreeCAD)
+  if(getenv("APPDATA") == 0)
+    mConfig["UserAppData"] = mConfig["UserHomePath"] + "/." + mConfig["ExeName"] + "/";
+  else
+    mConfig["UserAppData"] = std::string(getenv("APPDATA")) + "/" + mConfig["ExeName"] + "/";
+#else
   if(getenv("APPDATA") == 0)
     mConfig["UserAppData"] = mConfig["UserHomePath"] + "/.FreeCAD/";
   else
     mConfig["UserAppData"] = std::string(getenv("APPDATA")) + "/FreeCAD/";
+#endif
 
   Base::FileInfo fi(mConfig["UserAppData"].c_str());
   if ( ! fi.exists() ) {

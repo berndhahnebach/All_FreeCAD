@@ -637,6 +637,9 @@ void MacroCommand::activated(int iMsg)
   QDir d( cMacroPath.c_str() );
   QFileInfo fi( d, scriptName );
   Application::Instance->macroManager()->run(MacroManager::File,( fi.filePath() ).latin1());
+  // after macro run recalculate the document
+  if ( Application::Instance->activeDocument() )
+    Application::Instance->activeDocument()->getDocument()->recompute();
 }
 
 QAction * MacroCommand::createAction(void)

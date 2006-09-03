@@ -201,6 +201,30 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
   addDisplayMode(pcFlatWireRoot, "FlatWireframe");
 }
 
+void ViewProviderMeshFaceSet::updateData(void)
+{
+  const Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcObject);
+  if ( pcHighlight->getNumChildren() > 2 )
+  {
+    SoNode* ch1 = pcHighlight->getChild(0);
+    if ( ch1->getTypeId() == SoFCMeshVertex::getClassTypeId() ) {
+      const MeshCore::MeshPointArray& rPAry = meshFeature->getMesh().GetPoints();
+      SoFCMeshVertex* vertex = (SoFCMeshVertex*)ch1;
+      vertex->point.setValue(rPAry);
+    }
+
+    SoNode* ch2 = pcHighlight->getChild(1);
+    if ( ch2->getTypeId() == SoFCMeshFacet::getClassTypeId() ) {
+      const MeshCore::MeshFacetArray& rFAry = meshFeature->getMesh().GetFacets();
+      SoFCMeshFacet* facet = (SoFCMeshFacet*)ch2;
+      facet->coordIndex.setValue(rFAry);
+    }
+
+    // Needs to update internal bounding box caches
+    pcFaceSet->touch();
+  }
+}
+
 QPixmap ViewProviderMeshFaceSet::getIcon() const
 {
   const char * Mesh_Feature_xpm[] = {
@@ -414,7 +438,8 @@ bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DIn
       Viewer.render();
       unsetEdit();
       if ( !ok ) // note: the mouse grabbing needs to be released
-        QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
+//        QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange results.");
+        Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
 
       return true;
     }

@@ -124,8 +124,10 @@
 #include <BRepBuilderAPI.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
 #include <BRepBuilderAPI_MakePolygon.hxx>
-
 #include <BRepTools.hxx>
+#include <BRepTools_ShapeSet.hxx>
+#include <BRepBuilderAPI_Copy.hxx>
+
 #include <Standard_DefineHandle.hxx> 
 #include <GCE2d_MakeSegment.hxx>
 #include <GCPnts_TangentialDeflection.hxx>
@@ -178,6 +180,7 @@
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
 #include <TopoDS_ListIteratorOfListOfShape.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Solid.hxx>
@@ -185,6 +188,7 @@
 #include <TopExp.hxx>
 #include <TopTools_ListIteratorOfListOfShape.hxx>
 #include <TopTools_HSequenceOfShape.hxx>
+#include <TopTools_MapOfShape.hxx>
 #include <UnitsAPI.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>

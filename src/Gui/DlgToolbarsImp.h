@@ -48,6 +48,7 @@ class DlgCustomToolbars : public DlgCustomToolbarsBase
 protected:
   DlgCustomToolbars( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   virtual ~DlgCustomToolbars();
+  void reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE );
 
 protected:
   virtual void refreshActionList();
@@ -65,6 +66,12 @@ protected slots:
   void onAllActionsChanged( QListViewItem *i );
   void onCreateToolbar();
   void onDeleteToolbar();
+  void onAddMacroAction(const QString&);
+  void onRemoveMacroAction(const QString&);
+
+private:
+  void refreshFullActionList();
+
 protected:
   /** List of all toolbars */
   ToolBarItem* _toolBars;

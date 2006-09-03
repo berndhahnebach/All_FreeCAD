@@ -59,6 +59,10 @@ public:
   static void addPage( const QString& className );
   void addPage ( QWidget* w );
 
+signals:
+  void addMacroAction( const QString& );
+  void removeMacroAction( const QString& );
+
 private:
   /** @name for internal use only */
   //@{

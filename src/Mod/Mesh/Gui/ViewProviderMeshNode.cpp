@@ -190,6 +190,12 @@ void ViewProviderMeshNode::attach(App::DocumentObject *pcFeat)
   addDisplayMode(pcFlatWireRoot, "FlatWireframe");
 }
 
+void ViewProviderMeshNode::updateData(void)
+{
+  // Needs to update internal bounding box caches
+  pcHighlight->touch();
+}
+
 QPixmap ViewProviderMeshNode::getIcon() const
 {
   const char * Mesh_Feature_xpm[] = {
