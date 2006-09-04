@@ -29,6 +29,7 @@
 # include <qkeysequence.h>
 # include <qlabel.h>
 # include <qlistbox.h>
+# include <qmetaobject.h>
 # include <qstringlist.h> 
 #endif
 

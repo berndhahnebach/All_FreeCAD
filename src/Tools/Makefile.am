@@ -13,6 +13,13 @@ EXTRA_DIST = \
 		fcbt/DistTools.py \
 		fcbt/FileTools.py \
 		fcbt/NextBuildNumber.py \
+		generate.py \
+		generateBase/generateModel_ModuleTest.xml \
+		generateBase/generateMetaModel_Module.xsd \
+		generateBase/__init__.py \
+		generateBase/generateModel_Module.py \
+		generateBase/generateDS.py \
+		generateTemplates/__init__.py \
 		ImageTools/ImageConv/CmdLine.cpp \
 		ImageTools/ImageConv/CmdLine.h \
 		ImageTools/ImageConv/cmdline.htm \
@@ -43,5 +50,6 @@ EXTRA_DIST = \
 		PythonToCPP.py \
 		tstocpp.py \
 		qembed.py \
+		SubWCRev.py \
 		WixFileTool.py
 

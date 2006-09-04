@@ -33,6 +33,7 @@
 # include <STEPControl_Reader.hxx>
 # include <TopTools_MapOfShape.hxx>
 # include <TopoDS_Iterator.hxx>
+# include <TopExp.hxx>
 #endif
 
 
