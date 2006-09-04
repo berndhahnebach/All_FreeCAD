@@ -130,6 +130,7 @@ protected: // Interface for subclasses.
   virtual void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
 
 protected:
+  static QListView* parentView;
   std::vector<App::Property*> _prop;
 
 private: // Interface for EditableListView
@@ -154,7 +155,6 @@ private: // Interface for EditableListView
 
 private:
 //  std::vector<App::Property*> _prop;
-  static QListView* parentView;
   QVariant _val;
   QVariant _newval;
   bool _modified;
