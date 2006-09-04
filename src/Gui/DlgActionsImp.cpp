@@ -25,11 +25,13 @@
 
 #ifndef _PreComp_
 # include <qaccel.h>
+# include <qaction.h>
 # include <qcombobox.h>
 # include <qdir.h>
 # include <qiconview.h>
 # include <qlabel.h>
 # include <qlayout.h>
+# include <qmetaobject.h>
 # include <qpushbutton.h>
 # include <qtoolbutton.h>
 #endif

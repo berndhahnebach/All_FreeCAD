@@ -27,6 +27,7 @@
 # include <qinputdialog.h>
 # include <qmap.h>
 # include <qobjectlist.h>
+# include <qmetaobject.h>
 # include <qpushbutton.h>
 # include <qstringlist.h>
 # include <vector>
