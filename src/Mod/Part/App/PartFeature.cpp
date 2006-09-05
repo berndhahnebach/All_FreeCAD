@@ -64,6 +64,15 @@ void PropertyPartShape::setValue(TopoDS_Shape m)
   aboutToSetValue();
   _Shape = m;
   hasSetValue();
+#if 0
+  if (!_Shape.IsNull())
+  {
+    App::Property* prop = Copy();
+    delete prop;
+    //FIXME: Not correct size
+    unsigned int ct=getMemSize();
+  }
+#endif
 }
 
 TopoDS_Shape PropertyPartShape::getValue(void)const 

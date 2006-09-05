@@ -331,11 +331,13 @@ public:
 
 	bool compute();
   void setPolygon(const std::vector<Base::Vector3f>& raclPoints);
-  std::vector<MeshGeomFacet> getFacets(){ return _aclFacets;};
+  const std::vector<MeshGeomFacet>& getFacets() const { return _aclFacets;};
+  const std::vector<MeshFacet>& getTopology() const { return _aclTopology;};
 
 private:
   std::vector<Base::Vector3f>        _aclPoints;
   std::vector<MeshGeomFacet> _aclFacets;
+  std::vector<MeshFacet> _aclTopology;
 
 	class Triangulate
 	{
