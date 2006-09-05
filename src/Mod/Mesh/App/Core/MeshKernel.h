@@ -252,8 +252,30 @@ public:
   //@{
   /** Adds a single facet to the data structure. */
   bool AddFacet(const MeshGeomFacet &rclSFacet);
-  /** Adds an array of facet to the data structure. */
+  /** Adds an array of facets to the data structure. This method is very slow but keeps temporarily 
+   * set properties and flags. If these flags are not important to keep then the += operator should
+   * be used.
+   */
   bool AddFacet(const std::vector<MeshGeomFacet> &rclVAry);
+  /**
+   * Adds an array of topologic facets to the data structure without inserting new points.
+   * Facets which would create non-manifolds are not inserted.
+   * The client programmer must make sure that the referenced point indices are correct and that
+   * no geometric overlaps can be created. The method returns the total number of facets.
+   * This method might be useful to close gaps or fill up holes in a mesh.
+   * @note This method is quite expensive and should be rarely used.
+   */
+  unsigned long AddFacet(const std::vector<MeshFacet> &rclVAry);
+  /**
+   * Adds all facets and referenced points to the underlying mesh structure. The client programmer
+   * must be sure that both meshes doesn't have geometric overlaps, otherwise the resulting mesh might
+   * be invalid.
+   * @note The method guarantees that the order of the arrays of the underlying mesh and of the given
+   * array is kept.
+   * @note Not all points of \a rPoints are necessarily appended to the underlying mesh but only these points which
+   * are referenced by \a rFaces.
+   */
+  void Merge( const MeshPointArray& rPoints, const MeshFacetArray& rFaces );
   /** Deletes the facet the iterator points to. The deletion of a facet requires
    * the following steps:
    * \li Mark the neighbour index of all neighbour facets to the deleted facet as invalid

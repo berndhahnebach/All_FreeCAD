@@ -97,6 +97,8 @@ PyTypeObject Gui::ViewProviderPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef Gui::ViewProviderPy::Methods[] = {
+  PYMETHODEDEF(show)
+  PYMETHODEDEF(hide)
 	{NULL, NULL}		/* Sentinel */
 };
 
@@ -199,3 +201,20 @@ int ViewProviderPy::_setattr(char *attr, PyObject *value) 	// __setattr__ functi
 
   return 0;
 } 
+
+PYFUNCIMP_D(ViewProviderPy,show)
+{ 
+  PY_TRY {
+    _pcViewProvider->show();  
+    Py_Return;
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(ViewProviderPy,hide)
+{ 
+  PY_TRY {
+    _pcViewProvider->hide();  
+    Py_Return;
+  }PY_CATCH;
+} 
+

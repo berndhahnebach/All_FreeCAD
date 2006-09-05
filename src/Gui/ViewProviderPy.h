@@ -49,6 +49,8 @@ public:
 	virtual PyObject *_repr(void);  				// the representation
 	PyObject *_getattr(char *attr);					// __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+	PYFUNCDEF_D(ViewProviderPy,hide)
+	PYFUNCDEF_D(ViewProviderPy,show)
 
   //---------------------------------------------------------------------
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++

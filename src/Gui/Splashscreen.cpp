@@ -111,7 +111,7 @@ SplashScreen::SplashScreen(  const QPixmap & pixmap , WFlags f )
 {
   // write the messages to splasher
   messages = new SplashObserver(this);
-
+/*
   // append also a progressbar for visual feedback
   progBar = new QProgressBar( this, "SplasherProgress" );
   progBar->setProperty( "progress", 0 );
@@ -120,7 +120,7 @@ SplashScreen::SplashScreen(  const QPixmap & pixmap , WFlags f )
 
   // make the splasher a bit higher
   resize(width(), height()+progBar->height());
-  progBar->move(3, height()-(progBar->height()));
+  progBar->move(3, height()-(progBar->height()));*/
 }
 
 /** Destruction. */

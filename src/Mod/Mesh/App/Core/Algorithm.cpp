@@ -1525,6 +1525,7 @@ MeshPolygonTriangulation::~MeshPolygonTriangulation()
 bool MeshPolygonTriangulation::compute()
 {
 	_aclFacets.clear();
+  _aclTopology.clear();
 /*
   float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
   sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
@@ -1579,6 +1580,7 @@ bool MeshPolygonTriangulation::compute()
 		return false; // no valid triangulation
 
 	MeshGeomFacet clFacet;
+	MeshFacet clTopFacet;
   for (unsigned long i=0; i<tcount; i++)
   {
     if ( Triangulate::_invert )
@@ -1586,15 +1588,22 @@ bool MeshPolygonTriangulation::compute()
       clFacet._aclPoints[0] = _aclPoints[result[i*3+0]];
       clFacet._aclPoints[2] = _aclPoints[result[i*3+1]];
       clFacet._aclPoints[1] = _aclPoints[result[i*3+2]];
+      clTopFacet._aulPoints[0] = result[i*3+0];
+      clTopFacet._aulPoints[2] = result[i*3+1];
+      clTopFacet._aulPoints[1] = result[i*3+2];
     }
     else
     {
       clFacet._aclPoints[0] = _aclPoints[result[i*3+0]];
       clFacet._aclPoints[1] = _aclPoints[result[i*3+1]];
       clFacet._aclPoints[2] = _aclPoints[result[i*3+2]];
+      clTopFacet._aulPoints[0] = result[i*3+0];
+      clTopFacet._aulPoints[1] = result[i*3+1];
+      clTopFacet._aulPoints[2] = result[i*3+2];
     }
 
 		_aclFacets.push_back(clFacet);
+		_aclTopology.push_back(clTopFacet);
   }
 
 	return ok;
