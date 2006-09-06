@@ -169,6 +169,10 @@ public:
    * points are not all different.
    */
   void DirectRemoveCorrupted(unsigned long index);
+  /**
+   *
+   */
+  bool Snap(unsigned long ulFacetPos, const Base::Vector3f& rP);
   //@}
 
 private:

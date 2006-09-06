@@ -25,6 +25,8 @@
 
 #ifndef _PreComp_
 # include <sstream>
+# include <BRepAdaptor_Curve.hxx>
+# include <BRepAdaptor_Surface.hxx>
 # include <BRepTools.hxx>
 # include <BRepTools_ShapeSet.hxx>
 # include <BRepBuilderAPI_Copy.hxx>
@@ -34,9 +36,27 @@
 # include <TopTools_MapOfShape.hxx>
 # include <TopoDS_Iterator.hxx>
 # include <TopExp.hxx>
+# include <Geom_BezierCurve.hxx>
+# include <Geom_BezierSurface.hxx>
+# include <Geom_BSplineCurve.hxx>
+# include <Geom_BSplineSurface.hxx>
+# include <Geom_SurfaceOfLinearExtrusion.hxx>
+# include <Geom_SurfaceOfRevolution.hxx>
+# include <Geom_Circle.hxx>
+# include <Geom_ConicalSurface.hxx>
+# include <Geom_CylindricalSurface.hxx>
+# include <Geom_Ellipse.hxx>
+# include <Geom_Hyperbola.hxx>
+# include <Geom_Line.hxx>
+# include <Geom_Parabola.hxx>
+# include <Geom_Plane.hxx>
+# include <Geom_CartesianPoint.hxx>
+# include <Geom_SphericalSurface.hxx>
+# include <Geom_ToroidalSurface.hxx>
 #endif
 
 
+#include <strstream>
 #include <Base/Writer.h>
 #include <Base/Reader.h>
 #include <Base/Exception.h>
@@ -64,15 +84,6 @@ void PropertyPartShape::setValue(TopoDS_Shape m)
   aboutToSetValue();
   _Shape = m;
   hasSetValue();
-#if 0
-  if (!_Shape.IsNull())
-  {
-    App::Property* prop = Copy();
-    delete prop;
-    //FIXME: Not correct size
-    unsigned int ct=getMemSize();
-  }
-#endif
 }
 
 TopoDS_Shape PropertyPartShape::getValue(void)const 
@@ -127,16 +138,117 @@ unsigned int PropertyPartShape::getMemSize (void) const
   if ( !_Shape.IsNull() )
   {
     // Count total amount of references of TopoDS_Shape objects
-    unsigned int memsize = sizeof(TopoDS_Shape) * RefCountShapes(_Shape);
+    unsigned int memsize = (sizeof(TopoDS_Shape)+sizeof(TopoDS_TShape)) * RefCountShapes(_Shape);
 
     // Now get a map of TopoDS_Shape objects without duplicates
     TopTools_IndexedMapOfShape M;
     TopExp::MapShapes(_Shape, M);
     for (int i=0; i<M.Extent(); i++)
     {
+      const TopoDS_Shape& shape = M(i+1);
       // add the size of the underlying geomtric data
-      Handle(TopoDS_TShape) sh = M(i+1).TShape();
-      memsize += sh->DynamicType()->Size();
+      Handle(TopoDS_TShape) tshape = shape.TShape();
+      memsize += tshape->DynamicType()->Size();
+
+      switch (shape.ShapeType())
+      {
+      case TopAbs_FACE:
+        {
+          // first, last, tolerance
+          memsize += 5*sizeof(Standard_Real);
+          TopoDS_Face face = TopoDS::Face(shape);
+          BRepAdaptor_Surface surface(face);
+          switch (surface.GetType())
+          {
+          case GeomAbs_Plane:
+            memsize += sizeof(Geom_Plane);
+            break;
+          case GeomAbs_Cylinder:
+            memsize += sizeof(Geom_CylindricalSurface);
+            break;
+          case GeomAbs_Cone:
+            memsize += sizeof(Geom_ConicalSurface);
+            break;
+          case GeomAbs_Sphere:
+            memsize += sizeof(Geom_SphericalSurface);
+            break;
+          case GeomAbs_Torus:
+            memsize += sizeof(Geom_ToroidalSurface);
+            break;
+          case GeomAbs_BezierSurface:
+            memsize += sizeof(Geom_BezierSurface);
+            memsize += (surface.NbUKnots()+surface.NbVKnots()) * sizeof(Standard_Real);
+            memsize += (surface.NbUPoles()*surface.NbVPoles()) * sizeof(Geom_CartesianPoint);
+            break;
+          case GeomAbs_BSplineSurface:
+            memsize += sizeof(Geom_BSplineSurface);
+            memsize += (surface.NbUKnots()+surface.NbVKnots()) * sizeof(Standard_Real);
+            memsize += (surface.NbUPoles()*surface.NbVPoles()) * sizeof(Geom_CartesianPoint);
+            break;
+          case GeomAbs_SurfaceOfRevolution:
+            memsize += sizeof(Geom_SurfaceOfRevolution);
+            break;
+          case GeomAbs_SurfaceOfExtrusion:
+            memsize += sizeof(Geom_SurfaceOfLinearExtrusion);
+            break;
+          case GeomAbs_OtherSurface:
+            // What kind of surface should this be?
+            memsize += sizeof(Geom_Surface);
+            break;
+          default:
+            break;
+          }
+        } break;
+      case TopAbs_EDGE:
+        {
+          // first, last, tolerance
+          memsize += 3*sizeof(Standard_Real);
+          TopoDS_Edge edge = TopoDS::Edge(shape);
+          BRepAdaptor_Curve curve(edge);
+          switch (curve.GetType())
+          {
+          case GeomAbs_Line:
+            memsize += sizeof(Geom_Line);
+            break;
+          case GeomAbs_Circle:
+            memsize += sizeof(Geom_Circle);
+            break;
+          case GeomAbs_Ellipse:
+            memsize += sizeof(Geom_Ellipse);
+            break;
+          case GeomAbs_Hyperbola:
+            memsize += sizeof(Geom_Hyperbola);
+            break;
+          case GeomAbs_Parabola:
+            memsize += sizeof(Geom_Parabola);
+            break;
+          case GeomAbs_BezierCurve:
+            memsize += sizeof(Geom_BezierCurve);
+            memsize += curve.NbKnots() * sizeof(Standard_Real);
+            memsize += curve.NbPoles() * sizeof(Geom_CartesianPoint);
+            break;
+          case GeomAbs_BSplineCurve:
+            memsize += sizeof(Geom_BSplineCurve);
+            memsize += curve.NbKnots() * sizeof(Standard_Real);
+            memsize += curve.NbPoles() * sizeof(Geom_CartesianPoint);
+            break;
+          case GeomAbs_OtherCurve:
+            // What kind of curve should this be?
+            memsize += sizeof(Geom_Curve);
+            break;
+          default:
+            break;
+          }
+        } break;
+      case TopAbs_VERTEX:
+        {
+          // tolerance
+          memsize += sizeof(Standard_Real);
+          memsize += sizeof(Geom_CartesianPoint);
+        } break;
+      default:
+        break;
+      }
     }
 
     // estimated memory usage
@@ -189,12 +301,21 @@ void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
 
   std::ifstream file( fi.filePath().c_str(), std::ios::in | std::ios::binary );
   if (file){
-    char line[2000];
-    while (!file.eof()) {
-      file.getline(line,1999);
-      writer << line << std::endl;
+    unsigned long ulSize = 0; 
+    std::streambuf* buf = file.rdbuf();
+    if ( buf ) {
+      unsigned long ulCurr;
+      ulCurr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
+      ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
+      buf->pubseekoff(ulCurr, std::ios::beg, std::ios::in);
     }
+
+    // read in the ASCII file and write back to the stream
+    std::strstreambuf sbuf(ulSize);
+    file >> &sbuf;
+    writer << &sbuf;
   }
+
   file.close();
   // remove temp file
   fi.deleteFile();
@@ -208,14 +329,39 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
   Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
   std::ofstream file(fi.filePath().c_str(), std::ios::out | std::ios::binary);
+#if 1
+  //FIXME: This is very unsafe because reading in might fail if a line has more than 2000 chars, though it
+  //       shoudln't.
   if (file){
     char line[2000];
-    while (!reader.eof()) {
+    while (reader&&!reader.eof()) {
       reader.getline(line,1999);
       file << line << std::endl;
     }
     file.close();
   }
+#else
+  //FIXME: This method is better than the prvious one. The problem here is that the ZipInputStreambuf class doesn't implement
+  //       seekoff(), so it is not possible to get the right file size. Reading in without setting the size of the strstreambuf
+  //       might take a very, very long time.
+  if (reader){
+    unsigned long ulSize = 0; 
+    std::streambuf* buf = reader.rdbuf();
+    if ( buf ) {
+      unsigned long ulCurr;
+      ulCurr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
+      ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
+      buf->pubseekoff(ulCurr, std::ios::beg, std::ios::in);
+    }
+
+    // read in the ASCII file and write back to the stream
+    std::strstreambuf sbuf(/*25000000*/ulSize);
+    reader >> &sbuf;
+    file << &sbuf;
+  }
+
+  file.close();
+#endif
 
   // read the shape from the temp file
   if (! BRepTools::Read(_Shape, (const Standard_CString)fi.filePath().c_str(), builder))
