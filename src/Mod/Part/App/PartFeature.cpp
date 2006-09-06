@@ -328,40 +328,11 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
   // create a temporary file and copy the content from the zip stream
   Base::FileInfo fi(Base::FileInfo::getTempFileName().c_str());
 
+  // read in the ASCII file and write back to the file stream
   std::ofstream file(fi.filePath().c_str(), std::ios::out | std::ios::binary);
-#if 1
-  //FIXME: This is very unsafe because reading in might fail if a line has more than 2000 chars, though it
-  //       shoudln't.
-  if (file){
-    char line[2000];
-    while (reader&&!reader.eof()) {
-      reader.getline(line,1999);
-      file << line << std::endl;
-    }
-    file.close();
-  }
-#else
-  //FIXME: This method is better than the prvious one. The problem here is that the ZipInputStreambuf class doesn't implement
-  //       seekoff(), so it is not possible to get the right file size. Reading in without setting the size of the strstreambuf
-  //       might take a very, very long time.
-  if (reader){
-    unsigned long ulSize = 0; 
-    std::streambuf* buf = reader.rdbuf();
-    if ( buf ) {
-      unsigned long ulCurr;
-      ulCurr = buf->pubseekoff(0, std::ios::cur, std::ios::in);
-      ulSize = buf->pubseekoff(0, std::ios::end, std::ios::in);
-      buf->pubseekoff(ulCurr, std::ios::beg, std::ios::in);
-    }
-
-    // read in the ASCII file and write back to the stream
-    std::strstreambuf sbuf(/*25000000*/ulSize);
-    reader >> &sbuf;
-    file << &sbuf;
-  }
-
+  if (reader)
+    reader >> file.rdbuf();
   file.close();
-#endif
 
   // read the shape from the temp file
   if (! BRepTools::Read(_Shape, (const Standard_CString)fi.filePath().c_str(), builder))
