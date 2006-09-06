@@ -34,6 +34,7 @@
 #include "MeshKernel.h"
 #include "Algorithm.h"
 #include "Evaluation.h"
+#include "triangle.h"
 
 
 using namespace MeshCore;
@@ -972,6 +973,47 @@ void MeshTopoAlgorithm::DirectRemoveCorrupted(unsigned long index)
       return;
     }
   }
+}
+
+bool MeshTopoAlgorithm::Snap(unsigned long ulFacetPos, const Base::Vector3f& rP)
+{
+  MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
+  if (!rFace.HasOpenEdge())
+    return false;
+  Base::Vector3f cNo1 = _rclMesh.GetNormal(rFace);
+  for (short i=0; i<3; i++)
+  {
+    if (rFace._aulNeighbours[i]==ULONG_MAX)
+    {
+      const Base::Vector3f& rPt1 = _rclMesh._aclPointArray[rFace._aulPoints[i]];
+      const Base::Vector3f& rPt2 = _rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]];
+      Base::Vector3f cNo2 = (rPt2 - rPt1) % cNo1;
+      Base::Vector3f cNo3 = (rP - rPt1) % (rPt2 - rPt1);
+      float fD2 = Base::DistanceP2(rPt1, rPt2);
+      float fTV = (rP-rPt1) * (rPt2-rPt1);
+
+      // Point is on the edge
+      if ( cNo3.Length() < FLOAT_EPS )
+      {
+        unsigned long uCt = _rclMesh.CountFacets();
+        DirectSplitFacetWithOpenEdge(ulFacetPos, i, rP);
+        return uCt < _rclMesh.CountFacets();
+      }
+      else if ( (rP - rPt1)*cNo2 > 0.0f && fD2 >= fTV && fTV >= 0.0f )
+      {
+        MeshFacet cTria;
+        cTria._aulPoints[0] = _rclMesh._aclPointArray.GetOrAddIndex(rP);
+        cTria._aulPoints[1] = rFace._aulPoints[(i+1)%3];
+        cTria._aulPoints[2] = rFace._aulPoints[i];
+        cTria._aulNeighbours[1] = ulFacetPos;
+        rFace._aulNeighbours[i] = _rclMesh.CountFacets();
+        _rclMesh._aclFacetArray.push_back(cTria);
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 //

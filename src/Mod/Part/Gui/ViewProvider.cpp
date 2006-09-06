@@ -688,7 +688,7 @@ void ViewProviderPart::transferToArray(const TopoDS_Face& aFace,SbVec3f** vertic
         (*vertexnormals)[i] = temp;
 
       }catch(...){}
-    }else{
+    }else if ((*vertexnormals)[i].sqrLength() > 0.001){
       (*vertexnormals)[i].normalize();
     }
   }
