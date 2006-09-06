@@ -45,6 +45,8 @@ def generate(filename):
   GenerateModelInst = generateBase.generateModel_Module.parse(filename)
   head,tail = os.path.split(filename)
   print head,tail
+  print GenerateModelInst.Module[0].Name
+  
   
 
 
