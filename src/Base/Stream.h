@@ -44,6 +44,7 @@ class BaseExport DataStream
 {
 public:
   DataStream (void);
+  virtual ~DataStream (void) {}
 
   unsigned long GetFlag (void);
   void SetFlag (unsigned long ulNewFlag);
