@@ -20,6 +20,11 @@ EXTRA_DIST = \
 		generateBase/generateModel_Module.py \
 		generateBase/generateDS.py \
 		generateTemplates/__init__.py \
+		generateTemplates/templateInitPy.py \
+		generateTemplates/templateCMakeFile.py \
+		generateTemplates/templateInitGuiPy.py \
+		generateTemplates/templateCPPFile.py \
+		generateTemplates/templateHeaderFile.py \
 		ImageTools/ImageConv/CmdLine.cpp \
 		ImageTools/ImageConv/CmdLine.h \
 		ImageTools/ImageConv/cmdline.htm \

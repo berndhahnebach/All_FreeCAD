@@ -34,6 +34,7 @@
 # include <STEPControl_Writer.hxx>
 # include <STEPControl_Reader.hxx>
 # include <TopTools_MapOfShape.hxx>
+# include <TopoDS.hxx>
 # include <TopoDS_Iterator.hxx>
 # include <TopExp.hxx>
 # include <Geom_BezierCurve.hxx>

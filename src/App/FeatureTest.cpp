@@ -76,7 +76,7 @@ FeatureTestException::FeatureTestException()
 
 int FeatureTestException::execute(void)
 {
-  ExceptionType;
+  //ExceptionType;
 
   throw Base::Exception("FeatureTestException::execute(): Testexception  ;-)");
 

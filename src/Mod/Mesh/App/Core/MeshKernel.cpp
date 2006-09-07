@@ -208,16 +208,17 @@ unsigned long MeshKernel::AddFacet(const std::vector<MeshFacet> &rclVAry)
   tmp.reserve(rclVAry.size());
 
   // validate the correct topology of the facets to be inserted
+#ifdef FC_DEBUG
   unsigned long countPoints = CountPoints();
+#endif
   std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > updateEdgeMap;
   for ( MeshFacetArray::_TConstIterator it = rclVAry.begin(); it != rclVAry.end(); ++it ) {
     bool canInsert = true;
     std::pair<unsigned long, unsigned long> edge[3];
-    std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator pI[3];
     for ( int i=0; i<3; i++ ) {
-
+#ifdef FC_DEBUG
       assert( it->_aulPoints[i] < countPoints );
-
+#endif
       unsigned long ulT0 = it->_aulPoints[i];
       unsigned long ulT1 = it->_aulPoints[(i+1)%3];
       unsigned long ulP0 = std::min<unsigned long>(ulT0, ulT1);
