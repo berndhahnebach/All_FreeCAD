@@ -59,7 +59,7 @@ protected:
   SoDrawStyle   * pcLineStyle;
 };
 
-/** The ViewProviderMeshOrientation class displays wrong oriented facets in orange. 
+/** The ViewProviderMeshOrientation class displays wrong oriented facets (i.e. flipped normals) in orange. 
  * @author Werner Mayer
  */
 class GuiMeshExport ViewProviderMeshOrientation : public ViewProviderMeshDefects
@@ -77,16 +77,16 @@ protected:
   SoFaceSet* pcFaces;
 };
 
-/** The ViewProviderMeshManifolds class displays edges with more than two faces attached in red. 
+/** The ViewProviderMeshNonManifolds class displays edges with more than two faces attached in red. 
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderMeshManifolds : public ViewProviderMeshDefects
+class GuiMeshExport ViewProviderMeshNonManifolds : public ViewProviderMeshDefects
 {
-  PROPERTY_HEADER(MeshGui::ViewProviderMeshManifolds);
+  PROPERTY_HEADER(MeshGui::ViewProviderMeshNonManifolds);
 
 public:
-  ViewProviderMeshManifolds();
-  virtual ~ViewProviderMeshManifolds();
+  ViewProviderMeshNonManifolds();
+  virtual ~ViewProviderMeshNonManifolds();
 
   void attach(App::DocumentObject* pcFeature);
   void showDefects();

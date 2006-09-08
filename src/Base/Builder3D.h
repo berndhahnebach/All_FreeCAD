@@ -178,6 +178,7 @@ public:
   //@{
   /// add a (filled) triangle defined by 3 vectors
   void addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1, const Vector3f& pt2, bool filled = true, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
+  void addSinglePlane(const Vector3f& base, const Vector3f& eX, const Vector3f& eY, float length, float width, bool filled = true, short lineSize=2, float color_r=1.0,float color_g=1.0,float color_b=1.0);
   //@}
 
   /** @name Transformation */

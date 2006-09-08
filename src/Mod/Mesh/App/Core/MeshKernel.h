@@ -178,7 +178,7 @@ public:
    * All methods expect a MeshFacetVisitor as argument that can decide to continue or to stop. 
    * If there is no topologic neighbour facet any more being not marked as "VISIT" the algorithm
    * stops anyway.
-   * @see MeshFacetVisitor, MeshWrongOrientation, MeshHarmonizer, MeshSearchNeighbourFacetsVisitor
+   * @see MeshFacetVisitor, MeshOrientationVisitor, MeshHarmonizer, MeshSearchNeighbourFacetsVisitor
    * and MeshTopFacetVisitor.
    */
   //@{

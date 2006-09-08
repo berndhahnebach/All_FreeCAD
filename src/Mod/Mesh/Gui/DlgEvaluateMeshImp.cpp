@@ -260,15 +260,16 @@ void DlgEvaluateMeshImp::onAnalyzeOrientation()
     qApp->setOverrideCursor(Qt::WaitCursor);
 
     const MeshKernel& rMesh = _meshFeature->getMesh();
-    MeshEvalNormals eval(rMesh);
+    MeshEvalOrientation eval(rMesh);
+    std::vector<unsigned long> inds = eval.GetIndices();
     
-    if ( eval.Evaluate() )
+    if ( inds.empty() )
     {
       textLabelOrientation->setText( tr("No flipped normals found") );
     }
     else
     {
-      textLabelOrientation->setText( tr("Flipped normals found") );
+      textLabelOrientation->setText( tr("%1 flipped normals found").arg(inds.size()) );
       textLabelOrientation->setChecked(true);
       repairOrientation->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshOrientation" );
@@ -295,7 +296,7 @@ void DlgEvaluateMeshImp::onRepairOrientation()
 
 void DlgEvaluateMeshImp::onCheckNonManifolds()
 {
-  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshManifolds");
+  std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.find("MeshGui::ViewProviderMeshNonManifolds");
   if ( it != _vp.end() )
   {
     if ( textLabelNonmanifolds->isChecked() )
@@ -325,7 +326,7 @@ void DlgEvaluateMeshImp::onAnalyzeNonManifolds()
       textLabelNonmanifolds->setText( tr("%1 non-manifolds found").arg(eval.CountManifolds()) );
       textLabelNonmanifolds->setChecked(true);
       repairNonmanifolds->setEnabled(true);
-      addViewProvider( "MeshGui::ViewProviderMeshManifolds" );
+      addViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
     }
 
     qApp->restoreOverrideCursor();

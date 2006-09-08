@@ -45,11 +45,11 @@
 using namespace MeshCore;
 
 
-MeshOrientationChecker::MeshOrientationChecker() : _wrongOrientation(false)
+MeshOrientationVisitor::MeshOrientationVisitor() : _nonuniformOrientation(false)
 {
 }
 
-bool MeshOrientationChecker::Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, 
+bool MeshOrientationVisitor::Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, 
                                     unsigned long ulFInd, unsigned long ulLevel)
 {
   // Normale an Vorgaenger-Facet angleichen => Umlaufrichtung gegenseitig
@@ -62,7 +62,7 @@ bool MeshOrientationChecker::Visit (const MeshFacet &rclFacet, const MeshFacet &
         if ((rclFrom._aulPoints[i+1]     == rclFacet._aulPoints[(j+1)%3]) ||
             (rclFrom._aulPoints[(i+2)%3] == rclFacet._aulPoints[(j+2)%3]))
         {
-          _wrongOrientation = true;
+          _nonuniformOrientation = true;
           return false;
         } 
       }
@@ -72,13 +72,13 @@ bool MeshOrientationChecker::Visit (const MeshFacet &rclFacet, const MeshFacet &
   return true;
 }
 
-bool MeshOrientationChecker::HasWrongOrientatedFacet() const
+bool MeshOrientationVisitor::HasNonUnifomOrientedFacets() const
 {
-  return _wrongOrientation;
+  return _nonuniformOrientation;
 }
 
-MeshOrientationCollector::MeshOrientationCollector(std::vector<unsigned long>& aulIndices)
- : _aulIndices(aulIndices)
+MeshOrientationCollector::MeshOrientationCollector(std::vector<unsigned long>& aulIndices, std::vector<unsigned long>& aulComplement)
+ : _aulIndices(aulIndices), _aulComplement(aulComplement)
 {
 }
 
@@ -86,7 +86,7 @@ bool MeshOrientationCollector::Visit (const MeshFacet &rclFacet, const MeshFacet
                                       unsigned long ulFInd, unsigned long ulLevel)
 {
   // different orientation of rclFacet and rclFrom
-  if ( !MeshOrientationChecker::Visit(rclFacet, rclFrom, ulFInd, ulLevel) )
+  if ( !MeshOrientationVisitor::Visit(rclFacet, rclFrom, ulFInd, ulLevel) )
   {
     // is not marked as false oriented
     if ( !rclFrom.IsFlag(MeshFacet::TMP0) )
@@ -95,6 +95,8 @@ bool MeshOrientationCollector::Visit (const MeshFacet &rclFacet, const MeshFacet
       rclFacet.SetFlag(MeshFacet::TMP0);
       _aulIndices.push_back( ulFInd );
     }
+    else
+      _aulComplement.push_back( ulFInd );
   }
   else
   {
@@ -105,6 +107,8 @@ bool MeshOrientationCollector::Visit (const MeshFacet &rclFacet, const MeshFacet
       rclFacet.SetFlag(MeshFacet::TMP0);
       _aulIndices.push_back( ulFInd );
     }
+    else
+      _aulComplement.push_back( ulFInd );
   }
 
   return true;
@@ -112,16 +116,16 @@ bool MeshOrientationCollector::Visit (const MeshFacet &rclFacet, const MeshFacet
 
 // ----------------------------------------------------
 
-MeshEvalNormals::MeshEvalNormals (const MeshKernel& rclM)
+MeshEvalOrientation::MeshEvalOrientation (const MeshKernel& rclM)
   :MeshEvaluation( rclM )
 {
 }
 
-MeshEvalNormals::~MeshEvalNormals()
+MeshEvalOrientation::~MeshEvalOrientation()
 {
 }
 
-bool MeshEvalNormals::Evaluate ()
+bool MeshEvalOrientation::Evaluate ()
 {
   unsigned long ulStartFacet, ulVisited;
 
@@ -138,14 +142,14 @@ bool MeshEvalNormals::Evaluate ()
 
   ulVisited = 0;
   ulStartFacet = 0;
-  MeshOrientationChecker clOrientation;
+  MeshOrientationVisitor clOrientation;
  
   while ( ulStartFacet !=  ULONG_MAX )
   {
     ulVisited += _rclMesh.VisitNeighbourFacets(clOrientation, ulStartFacet);
 
     // return immediately after having found one "wrong" facet
-    if ( clOrientation.HasWrongOrientatedFacet() )
+    if ( clOrientation.HasNonUnifomOrientedFacets() )
       return false;
 
     // if the mesh consists of several topologic independent components
@@ -162,7 +166,7 @@ bool MeshEvalNormals::Evaluate ()
   return true;
 }
 
-std::vector<unsigned long> MeshEvalNormals::GetIndices() const
+std::vector<unsigned long> MeshEvalOrientation::GetIndices() const
 {
   unsigned long ulStartFacet, ulVisited;
 
@@ -179,33 +183,28 @@ std::vector<unsigned long> MeshEvalNormals::GetIndices() const
   MeshFacetArray::_TConstIterator iBeg = rFAry.begin();
   MeshFacetArray::_TConstIterator iEnd = rFAry.end();
 
-  // common gravity center of all facet corners
-  Base::Vector3f clGravityPoint, clDir;
-  clGravityPoint.Set(0.0f, 0.0f, 0.0f);
-  for (MeshPointIterator clIter(_rclMesh); clIter.EndReached() == false; ++clIter)
-    clGravityPoint += *clIter; 
-  clGravityPoint *= 1.0f / float(_rclMesh.CountPoints());
-
   ulVisited = 0;
   ulStartFacet = 0;
 
-  std::vector<unsigned long> uIndices;
-  MeshOrientationCollector clHarmonizer(uIndices);
+  std::vector<unsigned long> uIndices, uComplement;
+  MeshOrientationCollector clHarmonizer(uIndices, uComplement);
  
   while ( ulStartFacet !=  ULONG_MAX )
   {
-    // set normal of the start facet that it points in opposite direction to
-    // the gravity center
-    clDir = _rclMesh.GetFacet(ulStartFacet).GetGravityPoint() - clGravityPoint;
-    MeshFacetIterator cF(_rclMesh);
-    cF.Set(ulStartFacet);
-    if (cF->GetNormal() * clDir < 0.0f )
-    {
-      (rFAry.begin()+ulStartFacet)->SetFlag(MeshFacet::TMP0);
-      uIndices.push_back(ulStartFacet);
-    }
+    unsigned long wrongFacets = uIndices.size();
 
-    ulVisited += _rclMesh.VisitNeighbourFacets(clHarmonizer, ulStartFacet);
+    uComplement.clear();
+    uComplement.push_back( ulStartFacet );
+    ulVisited = _rclMesh.VisitNeighbourFacets(clHarmonizer, ulStartFacet) + 1;
+
+    // In the currently visited component we have found less than 40% as correct
+    // oriented and the rest as false oriented. So, we decide that it should be the other
+    // way round and swap the indices of this component.
+    if ( uComplement.size() < (unsigned long)(0.4f*(float)ulVisited))
+    {
+      uIndices.erase(uIndices.begin()+wrongFacets, uIndices.end());
+      uIndices.insert(uIndices.end(), uComplement.begin(), uComplement.end());
+    }
 
     // if the mesh consists of several topologic independent components
     // We can search from position 'iTri' on because all elements _before_ are already visited
@@ -218,38 +217,22 @@ std::vector<unsigned long> MeshEvalNormals::GetIndices() const
       ulStartFacet = ULONG_MAX;
   }
 
-//  // As we cannot determine for sure whether the start facet has correct orientation
-//  unsigned long diff = _rclMesh.CountFacets()-uIndices.size();
-//  if ( uIndices.size() > diff )
-//  {
-//    // free memory
-//    { uIndices.clear(); std::vector<unsigned long>().swap(uIndices);}
-//    uIndices.reserve( diff );
-//
-//    const MeshFacetArray& rclFAry = _rclMesh.GetFacets();
-//    for (MeshFacetArray::_TConstIterator pI = rclFAry.begin(); pI != rclFAry.end(); pI++)
-//    {
-//      if ( !pI->IsFlag(MeshFacet::TMP0) )
-//        uIndices.push_back( pI-rclFAry.begin() );
-//    }
-//  }
-
   return uIndices;
 }
 
-MeshFixNormals::MeshFixNormals (MeshKernel& rclM)
+MeshFixOrientation::MeshFixOrientation (MeshKernel& rclM)
   :MeshValidation( rclM )
 {
 }
 
-MeshFixNormals::~MeshFixNormals()
+MeshFixOrientation::~MeshFixOrientation()
 {
 }
 
-bool MeshFixNormals::Fixup ()
+bool MeshFixOrientation::Fixup ()
 {
   MeshTopoAlgorithm(_rclMesh).HarmonizeNormals();
-  return MeshEvalNormals(_rclMesh).Evaluate();
+  return MeshEvalOrientation(_rclMesh).Evaluate();
 }
 
 // ----------------------------------------------------

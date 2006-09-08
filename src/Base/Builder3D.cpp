@@ -174,14 +174,16 @@ void Builder3D::addText(const Base::Vector3f &vec,const char * text, float color
 void Builder3D::addText(const Base::Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
 {
   // temp buffer
-  char* txt = (char*) malloc(strlen(format)+4024);
+  unsigned int txt_len = strlen(format)+4024;
+  char* txt = (char*) malloc(txt_len);
 
   va_list namelessVars;
   va_start(namelessVars, format);  // Get the "..." vars
-  vsprintf(txt, format, namelessVars);
+  vsnprintf(txt, txt_len, format, namelessVars);
   va_end(namelessVars);
 
   addText(vec, txt, color_r, color_g, color_b);
+  free(txt); // free memory
 }
 
 void Builder3D::clear ()
@@ -471,14 +473,16 @@ void InventorBuilder::addText(const Vector3f &vec,const char * text, float color
 void InventorBuilder::addText(const Vector3f &vec, float color_r, float color_g, float color_b, const char * format, ...)
 {
   // temp buffer
-  char* txt = (char*) malloc(strlen(format)+4024);
+  unsigned int txt_len = strlen(format)+4024;
+  char* txt = (char*) malloc(txt_len);
 
   va_list namelessVars;
   va_start(namelessVars, format);  // Get the "..." vars
-  vsprintf(txt, format, namelessVars);
+  vsnprintf(txt, txt_len, format, namelessVars);
   va_end(namelessVars);
 
   addText(vec, txt, color_r, color_g, color_b);
+  free(txt);
 }
 
 //**************************************************************************
@@ -606,6 +610,35 @@ void InventorBuilder::addSingleTriangle(const Vector3f& pt0, const Vector3f& pt1
            << "] " << std::endl
            << "    } " << std::endl
            << "    IndexedLineSet { coordIndex[ 0, 1, 2, 0, -1 ] } " << std::endl
+           << fs << std::endl
+           << "  } " << std::endl;
+}
+
+void InventorBuilder::addSinglePlane(const Vector3f& base, const Vector3f& eX, const Vector3f& eY, float length, float width, bool filled, short lineSize, 
+                                     float color_r,float color_g,float color_b)
+{
+  Vector3f pt0 = base;
+  Vector3f pt1 = base + length * eX;
+  Vector3f pt2 = base + length * eX + width * eY;
+  Vector3f pt3 = base + width * eY;
+  std::string fs = "";
+  if (filled)
+  {
+    fs = "    FaceSet { } ";
+  }
+
+    result << "  Separator { " << std::endl
+           << "    Material { diffuseColor " << color_r << " "<< color_g << " "<< color_b << "} "  << std::endl
+           << "    DrawStyle { lineWidth " << lineSize << "} " << std::endl
+           << "    Coordinate3 { " << std::endl
+           << "      point [ "
+           <<        pt0.x << " " << pt0.y << " " << pt0.z << ","
+           <<        pt1.x << " " << pt1.y << " " << pt1.z << ","
+           <<        pt2.x << " " << pt2.y << " " << pt2.z << ","
+           <<        pt3.x << " " << pt3.y << " " << pt3.z
+           << "] " << std::endl
+           << "    } " << std::endl
+           << "    IndexedLineSet { coordIndex[ 0, 1, 2, 3, 0, -1 ] } " << std::endl
            << fs << std::endl
            << "  } " << std::endl;
 }

@@ -795,7 +795,7 @@ void MeshTopoAlgorithm::HarmonizeNormals (void)
  
   Base::Sequencer().stop(); 
 #else
-  std::vector<unsigned long> uIndices = MeshEvalNormals(_rclMesh).GetIndices();
+  std::vector<unsigned long> uIndices = MeshEvalOrientation(_rclMesh).GetIndices();
   for ( std::vector<unsigned long>::iterator it = uIndices.begin(); it != uIndices.end(); ++it )
     _rclMesh._aclFacetArray[*it].FlipNormal();
 #endif
@@ -1014,6 +1014,96 @@ bool MeshTopoAlgorithm::Snap(unsigned long ulFacetPos, const Base::Vector3f& rP)
   }
 
   return false;
+}
+
+void MeshTopoAlgorithm::FillupHoles(unsigned long length)
+{
+  // get the mesh boundaries as an array of point indices
+  std::list<std::vector<unsigned long> > aBorders;
+  MeshAlgorithm cAlgo(_rclMesh);
+  cAlgo.GetMeshBorders(aBorders);
+
+  // get the facets to a point
+  MeshRefPointToFacets cPt2Fac(_rclMesh);
+  MeshFacetArray& rFacets = _rclMesh._aclFacetArray;
+  MeshPointArray& rPoints = _rclMesh._aclPointArray;
+
+  // reset VISIT flags
+  cAlgo.ResetFacetFlag(MeshFacet::VISIT);
+
+  MeshFacetArray newFacets;
+  for ( std::list<std::vector<unsigned long> >::iterator it = aBorders.begin(); it != aBorders.end(); ++it )
+  {
+    if ( it->size() <= length )
+    {
+      if ( it->size() < 3 )
+        continue; // something strange
+
+      // Get a facet as reference coordinate system
+      const MeshFacet& rFace = **cPt2Fac[it->front()].begin();
+      Base::Vector3f base = rPoints[rFace._aulPoints[0]];
+      Base::Vector3f eX = rPoints[rFace._aulPoints[1]]-rPoints[rFace._aulPoints[0]];
+      Base::Vector3f eY = rPoints[rFace._aulPoints[2]]-rPoints[rFace._aulPoints[0]];
+
+      // Make eX and eY perpendicular
+      Base::Vector3f eZ = eX % eY; eY = eZ % eX;
+      eX.Normalize(); eY.Normalize();
+
+      std::vector<Base::Vector3f> polygon;
+      for ( std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt )
+      {
+        Base::Vector3f pt = _rclMesh._aclPointArray[*jt];
+        pt.TransformToCoordinateSystem( base, eX, eY );
+        polygon.push_back( pt );
+      }
+
+      // There is no easy way to check whether the boundary is a hole or a silhoutte before performing triangulation.
+      // Afterwards we can compare the normals of the created triangles with the z-direction of our local coordinate system.
+      // If the scalar product is positive it was a hole, otherwise not.
+      MeshPolygonTriangulation cTria;
+      cTria.setPolygon( polygon );
+      if ( cTria.compute() )
+      {
+        std::vector<MeshFacet> faces = cTria.getTopology();
+        for ( std::vector<MeshCore::MeshFacet>::iterator kt = faces.begin(); kt != faces.end(); ++kt )
+        {
+          if (kt == faces.begin())
+          {
+            MeshGeomFacet triangle;
+            triangle._aclPoints[0] = polygon[kt->_aulPoints[0]];
+            triangle._aclPoints[1] = polygon[kt->_aulPoints[1]];
+            triangle._aclPoints[2] = polygon[kt->_aulPoints[2]];
+            // do not any of these triangles
+            if ( triangle.GetNormal() * eZ <= 0.0f )
+              break;
+          }
+
+          kt->_aulPoints[0] = (*it)[kt->_aulPoints[0]];
+          kt->_aulPoints[1] = (*it)[kt->_aulPoints[1]];
+          kt->_aulPoints[2] = (*it)[kt->_aulPoints[2]];
+          newFacets.push_back(*kt);
+        }
+      }
+    }
+  }
+
+  _rclMesh.AddFacet(newFacets);
+}
+
+void MeshTopoAlgorithm::RemoveComponents(unsigned long count)
+{
+  std::vector<std::vector<unsigned long> > segments;
+  MeshComponents comp(_rclMesh);
+  comp.SearchForComponents(MeshComponents::OverEdge,segments);
+
+  std::vector<unsigned long> removeFacets;
+  for ( std::vector<std::vector<unsigned long> >::iterator it = segments.begin(); it != segments.end(); ++it ) {
+    if ( it->size() <= (unsigned long)count )
+      removeFacets.insert( removeFacets.end(), it->begin(), it->end() );
+    }
+
+  if ( !removeFacets.empty() )
+    _rclMesh.DeleteFacets( removeFacets );
 }
 
 //

@@ -105,7 +105,8 @@ PyMethodDef MeshFeaturePy::Methods[] = {
 // MeshFeaturePy
   PYMETHODEDEF(countPoints)
   PYMETHODEDEF(countFacets)
-  PYMETHODEDEF(hasConsistentOrientation)
+  PYMETHODEDEF(hasNonUnifomOrientedFacets)
+  PYMETHODEDEF(countNonUnifomOrientedFacets)
   PYMETHODEDEF(isSolid)
   PYMETHODEDEF(hasNonManifolds)
 
@@ -186,11 +187,18 @@ PYFUNCIMP_D(MeshFeaturePy,countFacets)
   return Py_BuildValue("i",_pcFeature->Mesh.getValue().CountFacets()); 
 }
 
-PYFUNCIMP_D(MeshFeaturePy,hasConsistentOrientation)
+PYFUNCIMP_D(MeshFeaturePy,hasNonUnifomOrientedFacets)
 {
-  MeshCore::MeshEvalNormals cMeshEval( _pcFeature->Mesh.getValue() );
+  MeshCore::MeshEvalOrientation cMeshEval( _pcFeature->Mesh.getValue() );
   bool ok = cMeshEval.Evaluate();
-  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+  return Py_BuildValue("O", (ok ? Py_False : Py_True)); 
+}
+
+PYFUNCIMP_D(MeshFeaturePy,countNonUnifomOrientedFacets)
+{
+  MeshCore::MeshEvalOrientation cMeshEval( _pcFeature->Mesh.getValue() );
+  std::vector<unsigned long> inds = cMeshEval.GetIndices();
+  return Py_BuildValue("i", inds.size()); 
 }
 
 PYFUNCIMP_D(MeshFeaturePy,isSolid)

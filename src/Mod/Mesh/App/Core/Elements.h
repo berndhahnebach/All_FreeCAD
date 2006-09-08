@@ -240,7 +240,7 @@ public:
   inline unsigned short CountOpenEdges() const;
   /** Returns true if there is an edge without neighbour, otherwise false. */
   inline bool HasOpenEdge() const;
-  /** Flips the orientation of the facet. The edge array must be adjusted. */
+  /** Flips the orientation of the facet. */
   void FlipNormal (void)
   {
     std::swap(_aulPoints[1], _aulPoints[2]);

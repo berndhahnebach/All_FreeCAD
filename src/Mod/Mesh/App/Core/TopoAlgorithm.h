@@ -173,6 +173,8 @@ public:
    *
    */
   bool Snap(unsigned long ulFacetPos, const Base::Vector3f& rP);
+  void FillupHoles(unsigned long length);
+  void RemoveComponents(unsigned long count);
   //@}
 
 private:

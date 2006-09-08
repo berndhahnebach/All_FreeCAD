@@ -56,7 +56,7 @@ using namespace MeshGui;
 
 PROPERTY_SOURCE_ABSTRACT(MeshGui::ViewProviderMeshDefects, Gui::ViewProviderDocumentObject)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshOrientation, MeshGui::ViewProviderMeshDefects)
-PROPERTY_SOURCE(MeshGui::ViewProviderMeshManifolds, MeshGui::ViewProviderMeshDefects)
+PROPERTY_SOURCE(MeshGui::ViewProviderMeshNonManifolds, MeshGui::ViewProviderMeshDefects)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshDuplicatedFaces, MeshGui::ViewProviderMeshDefects)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshDuplicatedPoints, MeshGui::ViewProviderMeshDefects)
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshDegenerations, MeshGui::ViewProviderMeshDefects)
@@ -133,7 +133,7 @@ void ViewProviderMeshOrientation::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
   const MeshCore::MeshKernel & rMesh = f->getMesh();
-  MeshCore::MeshEvalNormals eval(rMesh);
+  MeshCore::MeshEvalOrientation eval(rMesh);
   
   std::vector<unsigned long> inds = eval.GetIndices();
 
@@ -158,18 +158,18 @@ void ViewProviderMeshOrientation::showDefects()
 
 // ----------------------------------------------------------------------
 
-ViewProviderMeshManifolds::ViewProviderMeshManifolds()
+ViewProviderMeshNonManifolds::ViewProviderMeshNonManifolds()
 {
   pcLines = new SoLineSet;
   pcLines->ref();
 }
 
-ViewProviderMeshManifolds::~ViewProviderMeshManifolds()
+ViewProviderMeshNonManifolds::~ViewProviderMeshNonManifolds()
 {
   pcLines->unref();
 }
 
-void ViewProviderMeshManifolds::attach(App::DocumentObject* pcFeat)
+void ViewProviderMeshNonManifolds::attach(App::DocumentObject* pcFeat)
 {
   ViewProviderDocumentObject::attach( pcFeat );
 
@@ -189,7 +189,7 @@ void ViewProviderMeshManifolds::attach(App::DocumentObject* pcFeat)
   addDisplayMode(pcLineRoot, "Line");
 }
 
-void ViewProviderMeshManifolds::showDefects()
+void ViewProviderMeshNonManifolds::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
   const MeshCore::MeshKernel & rMesh = f->getMesh();
