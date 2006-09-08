@@ -243,6 +243,219 @@ void MeshAlgorithm::GetMeshBorders (std::list<std::vector<Base::Vector3f> > &rcl
   GetFacetBorders(aulAllFacets, rclBorders);
 }
 
+void MeshAlgorithm::GetMeshBorders (std::list<std::vector<unsigned long> > &rclBorders) const
+{
+  std::vector<unsigned long> aulAllFacets(_rclMesh.CountFacets());
+  unsigned long k = 0;
+  for (std::vector<unsigned long>::iterator pI = aulAllFacets.begin(); pI != aulAllFacets.end(); pI++)
+    *pI = k++;
+
+  GetFacetBorders(aulAllFacets, rclBorders);
+}
+
+void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<Base::Vector3f> > &rclBorders) const
+{
+#if 0
+  //FIXME: Test this code!
+  const MeshPointArray &rclPAry = _rclMesh._aclPointArray;
+  std::list<std::vector<unsigned long> > aulBorders;
+
+  GetFacetBorders ( raulInd, aulBorders );
+  for ( std::list<std::vector<unsigned long> >::iterator it = aulBorders.begin(); it != aulBorders.end(); ++it )
+  {
+    std::vector<Base::Vector3f> boundary;
+    boundary.reserve( it->size() );
+
+    for ( std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt )
+      boundary.push_back(rclPAry[*jt]);
+
+    rclBorders.push_back( boundary );
+  }
+
+#else
+  const MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
+
+  // alle Facets markieren die in der Indizie-Liste vorkommen
+  ResetFacetFlag(MeshFacet::VISIT);
+  for (std::vector<unsigned long>::const_iterator pIter = raulInd.begin(); pIter != raulInd.end(); pIter++)
+    rclFAry[*pIter].SetFlag(MeshFacet::VISIT);
+
+  std::list<std::pair<unsigned long, unsigned long> >  aclEdges;
+  // alle Randkanten suchen und ablegen (unsortiert)
+  for (std::vector<unsigned long>::const_iterator pIter2 = raulInd.begin(); pIter2 != raulInd.end(); pIter2++)
+  {
+    const MeshFacet  &rclFacet = rclFAry[*pIter2];
+    for (int i = 0; i < 3; i++)
+    {
+      unsigned long ulNB = rclFacet._aulNeighbours[i];
+      if (ulNB != ULONG_MAX)
+      {
+        if (rclFAry[ulNB].IsFlag(MeshFacet::VISIT) == true)
+          continue;
+      }
+
+      aclEdges.push_back(rclFacet.GetEdge(i));
+    }
+  }
+
+  if (aclEdges.size() == 0)
+    return; // no borders found (=> solid)
+
+  // Kanten aus der unsortieren Kantenliste suchen
+  const MeshPointArray &rclPAry = _rclMesh._aclPointArray;
+  unsigned long              ulFirst, ulLast;
+  std::list<Base::Vector3f>   clBorder;
+  ulFirst = aclEdges.begin()->first;
+  ulLast  = aclEdges.begin()->second;
+
+  aclEdges.erase(aclEdges.begin());
+  clBorder.push_back(rclPAry[ulFirst]);
+  clBorder.push_back(rclPAry[ulLast]);
+
+  while (aclEdges.size() > 0)
+  {
+    // naechste anliegende Kante suchen
+    std::list<std::pair<unsigned long, unsigned long> >::iterator pEI;
+    for (pEI = aclEdges.begin(); pEI != aclEdges.end(); pEI++)
+    {
+      if (pEI->first == ulLast)
+      {
+        ulLast = pEI->second;
+        clBorder.push_back(rclPAry[ulLast]);
+        aclEdges.erase(pEI);
+        break;
+      }
+      else if (pEI->second == ulLast)
+      {
+        ulLast = pEI->first;
+        clBorder.push_back(rclPAry[ulLast]);
+        aclEdges.erase(pEI);
+        break;
+      }
+      else if (pEI->first == ulFirst)
+      {
+        ulFirst = pEI->second;
+        clBorder.push_front(rclPAry[ulFirst]);
+        aclEdges.erase(pEI);
+        break;
+      }
+      else if (pEI->second == ulFirst)
+      {
+        ulFirst = pEI->first;
+        clBorder.push_front(rclPAry[ulFirst]);
+        aclEdges.erase(pEI);
+        break;
+      }
+    }
+    if ((pEI == aclEdges.end()) || (ulLast == ulFirst))
+    {  // keine weitere Kante gefunden bzw. Polylinie geschlossen
+      rclBorders.push_back(std::vector<Base::Vector3f>(clBorder.begin(), clBorder.end()));
+      clBorder.clear();
+
+      if (aclEdges.size() > 0)
+      {  // neue Border anfangen
+        ulFirst = aclEdges.begin()->first;
+        ulLast  = aclEdges.begin()->second;
+        aclEdges.erase(aclEdges.begin());
+        clBorder.push_back(rclPAry[ulFirst]);
+        clBorder.push_back(rclPAry[ulLast]);
+      }
+    }
+  }
+#endif
+}
+
+void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<unsigned long> > &rclBorders) const
+{
+  const MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
+
+  // alle Facets markieren die in der Indizie-Liste vorkommen
+  ResetFacetFlag(MeshFacet::VISIT);
+  for (std::vector<unsigned long>::const_iterator pIter = raulInd.begin(); pIter != raulInd.end(); pIter++)
+    rclFAry[*pIter].SetFlag(MeshFacet::VISIT);
+
+  std::list<std::pair<unsigned long, unsigned long> >  aclEdges;
+  // alle Randkanten suchen und ablegen (unsortiert)
+  for (std::vector<unsigned long>::const_iterator pIter2 = raulInd.begin(); pIter2 != raulInd.end(); pIter2++)
+  {
+    const MeshFacet  &rclFacet = rclFAry[*pIter2];
+    for (int i = 0; i < 3; i++)
+    {
+      unsigned long ulNB = rclFacet._aulNeighbours[i];
+      if (ulNB != ULONG_MAX)
+      {
+        if (rclFAry[ulNB].IsFlag(MeshFacet::VISIT) == true)
+          continue;
+      }
+
+      aclEdges.push_back(rclFacet.GetEdge(i));
+    }
+  }
+
+  if (aclEdges.size() == 0)
+    return; // no borders found (=> solid)
+
+  // Kanten aus der unsortieren Kantenliste suchen
+  unsigned long              ulFirst, ulLast;
+  std::list<unsigned long>   clBorder;
+  ulFirst = aclEdges.begin()->first;
+  ulLast  = aclEdges.begin()->second;
+
+  aclEdges.erase(aclEdges.begin());
+  clBorder.push_back(ulFirst);
+  clBorder.push_back(ulLast);
+
+  while (aclEdges.size() > 0)
+  {
+    // naechste anliegende Kante suchen
+    std::list<std::pair<unsigned long, unsigned long> >::iterator pEI;
+    for (pEI = aclEdges.begin(); pEI != aclEdges.end(); pEI++)
+    {
+      if (pEI->first == ulLast)
+      {
+        ulLast = pEI->second;
+        clBorder.push_back(ulLast);
+        aclEdges.erase(pEI);
+        break;
+      }
+      else if (pEI->second == ulLast)
+      {
+        ulLast = pEI->first;
+        clBorder.push_back(ulLast);
+        aclEdges.erase(pEI);
+        break;
+      }
+      else if (pEI->first == ulFirst)
+      {
+        ulFirst = pEI->second;
+        clBorder.push_front(ulFirst);
+        aclEdges.erase(pEI);
+        break;
+      }
+      else if (pEI->second == ulFirst)
+      {
+        ulFirst = pEI->first;
+        clBorder.push_front(ulFirst);
+        aclEdges.erase(pEI);
+        break;
+      }
+    }
+    if ((pEI == aclEdges.end()) || (ulLast == ulFirst))
+    {  // keine weitere Kante gefunden bzw. Polylinie geschlossen
+      rclBorders.push_back(std::vector<unsigned long>(clBorder.begin(), clBorder.end()));
+      clBorder.clear();
+
+      if (aclEdges.size() > 0)
+      {  // neue Border anfangen
+        ulFirst = aclEdges.begin()->first;
+        ulLast  = aclEdges.begin()->second;
+        aclEdges.erase(aclEdges.begin());
+        clBorder.push_back(ulFirst);
+        clBorder.push_back(ulLast);
+      }
+    }
+  }
+}
 
 void MeshAlgorithm::SetFacetsProperty(const std::vector<unsigned long> &raulInds, const std::vector<unsigned long> &raulProps) const
 {
@@ -608,99 +821,6 @@ void MeshAlgorithm::CheckFacets(const MeshFacetGrid& rclGrid, const Base::ViewPr
     }
 }
 
-void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<Base::Vector3f> > &rclBorders) const
-{
-  const MeshFacetArray &rclFAry = _rclMesh._aclFacetArray;
-
-  // alle Facets markieren die in der Indizie-Liste vorkommen
-  ResetFacetFlag(MeshFacet::VISIT);
-  for (std::vector<unsigned long>::const_iterator pIter = raulInd.begin(); pIter != raulInd.end(); pIter++)
-    rclFAry[*pIter].SetFlag(MeshFacet::VISIT);
-
-  std::list<std::pair<unsigned long, unsigned long> >  aclEdges;
-  // alle Randkanten suchen und ablegen (unsortiert)
-  for (std::vector<unsigned long>::const_iterator pIter2 = raulInd.begin(); pIter2 != raulInd.end(); pIter2++)
-  {
-    const MeshFacet  &rclFacet = rclFAry[*pIter2];
-    for (int i = 0; i < 3; i++)
-    {
-      unsigned long ulNB = rclFacet._aulNeighbours[i];
-      if (ulNB != ULONG_MAX)
-      {
-        if (rclFAry[ulNB].IsFlag(MeshFacet::VISIT) == true)
-          continue;
-      }
-
-      aclEdges.push_back(rclFacet.GetEdge(i));
-    }
-  }
-
-  if (aclEdges.size() == 0)
-    return; // no borders found (=> solid)
-
-  // Kanten aus der unsortieren Kantenliste suchen
-  const MeshPointArray &rclPAry = _rclMesh._aclPointArray;
-  unsigned long              ulFirst, ulLast;
-  std::list<Base::Vector3f>   clBorder;
-  ulFirst = aclEdges.begin()->first;
-  ulLast  = aclEdges.begin()->second;
-
-  aclEdges.erase(aclEdges.begin());
-  clBorder.push_back(rclPAry[ulFirst]);
-  clBorder.push_back(rclPAry[ulLast]);
-
-  while (aclEdges.size() > 0)
-  {
-    // naechste anliegende Kante suchen
-    std::list<std::pair<unsigned long, unsigned long> >::iterator pEI;
-    for (pEI = aclEdges.begin(); pEI != aclEdges.end(); pEI++)
-    {
-      if (pEI->first == ulLast)
-      {
-        ulLast = pEI->second;
-        clBorder.push_back(rclPAry[ulLast]);
-        aclEdges.erase(pEI);
-        break;
-      }
-      else if (pEI->second == ulLast)
-      {
-        ulLast = pEI->first;
-        clBorder.push_back(rclPAry[ulLast]);
-        aclEdges.erase(pEI);
-        break;
-      }
-      else if (pEI->first == ulFirst)
-      {
-        ulFirst = pEI->second;
-        clBorder.push_front(rclPAry[ulFirst]);
-        aclEdges.erase(pEI);
-        break;
-      }
-      else if (pEI->second == ulFirst)
-      {
-        ulFirst = pEI->first;
-        clBorder.push_front(rclPAry[ulFirst]);
-        aclEdges.erase(pEI);
-        break;
-      }
-    }
-    if ((pEI == aclEdges.end()) || (ulLast == ulFirst))
-    {  // keine weitere Kante gefunden bzw. Polylinie geschlossen
-      std::vector<Base::Vector3f> clTmp(clBorder.begin(), clBorder.end());
-      rclBorders.push_back(std::vector<Base::Vector3f>(clBorder.begin(), clBorder.end()));
-      clBorder.clear();
-
-      if (aclEdges.size() > 0)
-      {  // neue Border anfangen
-        ulFirst = aclEdges.begin()->first;
-        ulLast  = aclEdges.begin()->second;
-        aclEdges.erase(aclEdges.begin());
-        clBorder.push_back(rclPAry[ulFirst]);
-        clBorder.push_back(rclPAry[ulLast]);
-      }
-    }
-  }
-}
 #if 0
 bool MeshAlgorithm::MeshTopoShape(TopoDS_Shape aShape, float fAccuracy, float fAngle) const
 {

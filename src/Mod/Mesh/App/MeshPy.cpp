@@ -130,7 +130,6 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(addFacets)
   PYMETHODEDEF(clear)
   PYMETHODEDEF(copy)
-  PYMETHODEDEF(hasConsistentOrientation)
   PYMETHODEDEF(isSolid)
   PYMETHODEDEF(hasNonManifolds)
   PYMETHODEDEF(testDelaunay)
@@ -138,8 +137,12 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(cutOuter)
   PYMETHODEDEF(cutInner)
   PYMETHODEDEF(flipNormals)
+  PYMETHODEDEF(hasNonUnifomOrientedFacets)
+  PYMETHODEDEF(countNonUnifomOrientedFacets)
   PYMETHODEDEF(harmonizeNormals)
   PYMETHODEDEF(countComponents)
+  PYMETHODEDEF(removeComponents)
+  PYMETHODEDEF(fillupHoles)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -371,6 +374,35 @@ PYFUNCIMP_D(MeshPy,countComponents)
   } PY_CATCH;
 
   return Py_BuildValue("i",segments.size());
+}
+
+PYFUNCIMP_D(MeshPy,removeComponents)
+{
+  int count;
+  if (! PyArg_ParseTuple(args, "i", &count))			 
+    return NULL;                         
+
+  PY_TRY {
+    if ( count > 0 ) {
+      MeshTopoAlgorithm(_cMesh).RemoveComponents( (unsigned long)count );
+    }
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,fillupHoles)
+{
+  int len;
+  if (! PyArg_ParseTuple(args, "i", &len))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshTopoAlgorithm topalg(_cMesh);
+    topalg.FillupHoles((unsigned long)len);
+  } PY_CATCH;
+
+  Py_Return; 
 }
 
 PYFUNCIMP_D(MeshPy,coarsen)
@@ -658,11 +690,18 @@ PYFUNCIMP_D(MeshPy,copy)
   } PY_CATCH;
 }
 
-PYFUNCIMP_D(MeshPy,hasConsistentOrientation)
+PYFUNCIMP_D(MeshPy,hasNonUnifomOrientedFacets)
 {
-  MeshEvalNormals cMeshEval( _cMesh );
+  MeshEvalOrientation cMeshEval( _cMesh );
   bool ok = cMeshEval.Evaluate();
-  return Py_BuildValue("O", (ok ? Py_True : Py_False)); 
+  return Py_BuildValue("O", (ok ? Py_False : Py_True)); 
+}
+
+PYFUNCIMP_D(MeshPy,countNonUnifomOrientedFacets)
+{
+  MeshCore::MeshEvalOrientation cMeshEval( _cMesh );
+  std::vector<unsigned long> inds = cMeshEval.GetIndices();
+  return Py_BuildValue("i", inds.size()); 
 }
 
 PYFUNCIMP_D(MeshPy,isSolid)

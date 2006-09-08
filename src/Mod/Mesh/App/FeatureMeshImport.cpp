@@ -102,7 +102,7 @@ int Import::execute(void)
 
     }catch ( Base::AbortException& e ){
       char szBuf[200];
-      sprintf(szBuf, "Import of file '%s' aborted.", FileName.getValue());
+      snprintf(szBuf, 200, "Import of file '%s' aborted.", FileName.getValue());
       e.SetMessage( szBuf );
       delete pcKernel;
       throw e;

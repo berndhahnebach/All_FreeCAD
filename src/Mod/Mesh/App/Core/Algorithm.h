@@ -102,9 +102,19 @@ public:
    */
   void GetMeshBorders (std::list<std::vector<Base::Vector3f> > &rclBorders) const;
   /**
+   * Returns all boundaries of the mesh. This method does basically the same as above unless that it returns the point indices
+   * of the boundaries.
+   */
+  void GetMeshBorders (std::list<std::vector<unsigned long> > &rclBorders) const;
+  /**
    * Returns all boundaries of a subset the mesh defined by \a raulInd.
    */
   void GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<Base::Vector3f> > &rclBorders) const;
+  /**
+   * Returns all boundaries of a subset the mesh defined by \a raulInd. This method does basically the same as above unless 
+   * that it returns the point indices of the boundaries.
+   */
+  void GetFacetBorders (const std::vector<unsigned long> &raulInd, std::list<std::vector<unsigned long> > &rclBorders) const;
   /** Sets to all facets in \a raulInds the properties in raulProps. 
    * \note Both arrays must have the same size.
    */

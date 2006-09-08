@@ -63,7 +63,8 @@ public:
   int _setattr(char *attr, PyObject *value);		// __setattr__ function
   PYFUNCDEF_D(MeshFeaturePy,countPoints)
   PYFUNCDEF_D(MeshFeaturePy,countFacets)
-  PYFUNCDEF_D(MeshFeaturePy,hasConsistentOrientation)
+  PYFUNCDEF_D(MeshFeaturePy,hasNonUnifomOrientedFacets)
+  PYFUNCDEF_D(MeshFeaturePy,countNonUnifomOrientedFacets)
   PYFUNCDEF_D(MeshFeaturePy,isSolid)
   PYFUNCDEF_D(MeshFeaturePy,hasNonManifolds)
 

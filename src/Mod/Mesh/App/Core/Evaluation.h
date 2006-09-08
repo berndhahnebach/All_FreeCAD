@@ -86,20 +86,20 @@ protected:
 // ----------------------------------------------------
 
 /**
- * This class searches for inconsistent orientation of neighboured facets.
+ * This class searches for nonuniform orientation of neighboured facets.
  * @author Werner Mayer
  */
-class AppMeshExport MeshOrientationChecker : public MeshFacetVisitor
+class AppMeshExport MeshOrientationVisitor : public MeshFacetVisitor
 {
 public:
-  MeshOrientationChecker();
+  MeshOrientationVisitor();
 
   /** Returns false after the first inconsistence is found, true otherwise. */
   bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long );
-  bool HasWrongOrientatedFacet() const;
+  bool HasNonUnifomOrientedFacets() const;
 
 private:
-  bool _wrongOrientation;
+  bool _nonuniformOrientation;
 };
 
 /**
@@ -107,40 +107,41 @@ private:
  * Note: The 'TMP0' flag for facets must be resetted before using this class.
  * @author Werner Mayer
  */
-class AppMeshExport MeshOrientationCollector : public MeshOrientationChecker
+class AppMeshExport MeshOrientationCollector : public MeshOrientationVisitor
 {
 public:
-  MeshOrientationCollector(std::vector<unsigned long>& aulIndices);
+  MeshOrientationCollector(std::vector<unsigned long>& aulIndices, std::vector<unsigned long>& aulComplement);
 
   /** Returns always true and collects the indices with wrong orientation. */
   bool Visit (const MeshFacet &, const MeshFacet &, unsigned long , unsigned long );
 
 private:
   std::vector<unsigned long>& _aulIndices;
+  std::vector<unsigned long>& _aulComplement;
 };
 
 /**
- * The MeshEvalNormals class checks the mesh kernel for consistent facet normals.
+ * The MeshEvalOrientation class checks the mesh kernel for consistent facet normals.
  * @author Werner Mayer
  */
-class AppMeshExport MeshEvalNormals : public MeshEvaluation
+class AppMeshExport MeshEvalOrientation : public MeshEvaluation
 {
 public:
-  MeshEvalNormals (const MeshKernel& rclM);
-  ~MeshEvalNormals();
+  MeshEvalOrientation (const MeshKernel& rclM);
+  ~MeshEvalOrientation();
   bool Evaluate ();
   std::vector<unsigned long> GetIndices() const;
 };
 
 /**
- * The MeshFixNormals class harmonizes the facet normals of the passed mesh kernel.
+ * The MeshFixOrientation class harmonizes the facet normals of the passed mesh kernel.
  * @author Werner Mayer
  */
-class AppMeshExport MeshFixNormals : public MeshValidation
+class AppMeshExport MeshFixOrientation : public MeshValidation
 {
 public:
-  MeshFixNormals (MeshKernel& rclM);
-  ~MeshFixNormals();
+  MeshFixOrientation (MeshKernel& rclM);
+  ~MeshFixOrientation();
   bool Fixup();
 };
 

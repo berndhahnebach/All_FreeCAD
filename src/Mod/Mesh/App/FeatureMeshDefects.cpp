@@ -78,7 +78,7 @@ int HarmonizeNormals::execute(void)
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
   MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
 
-  MeshCore::MeshFixNormals eval(*kernel);
+  MeshCore::MeshFixOrientation eval(*kernel);
   eval.Fixup();
   Mesh.setValue(kernel);
 

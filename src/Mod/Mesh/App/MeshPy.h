@@ -84,7 +84,6 @@ public:
   PYFUNCDEF_D(MeshPy,addFacets)
   PYFUNCDEF_D(MeshPy,clear)
   PYFUNCDEF_D(MeshPy,copy)
-  PYFUNCDEF_D(MeshPy,hasConsistentOrientation)
   PYFUNCDEF_D(MeshPy,isSolid)
   PYFUNCDEF_D(MeshPy,hasNonManifolds)
   PYFUNCDEF_D(MeshPy,testDelaunay)
@@ -92,8 +91,12 @@ public:
   PYFUNCDEF_D(MeshPy,cutOuter)
   PYFUNCDEF_D(MeshPy,cutInner)
   PYFUNCDEF_D(MeshPy,flipNormals)
+  PYFUNCDEF_D(MeshPy,hasNonUnifomOrientedFacets)
+  PYFUNCDEF_D(MeshPy,countNonUnifomOrientedFacets)
   PYFUNCDEF_D(MeshPy,harmonizeNormals)
   PYFUNCDEF_D(MeshPy,countComponents)
+  PYFUNCDEF_D(MeshPy,removeComponents)
+  PYFUNCDEF_D(MeshPy,fillupHoles)
 
 protected:
   MeshCore::MeshKernel _cMesh;
