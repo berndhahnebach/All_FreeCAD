@@ -43,6 +43,7 @@ using namespace Base;
 
 
 char format[4024];  //Warning! Can't go over 512 characters!!! 
+unsigned int format_len = 4024;
 
 
 //**************************************************************************
@@ -148,11 +149,11 @@ ConsoleMsgFlags ConsoleSingelton::SetEnabledMsgType(const char* sObs, ConsoleMsg
  */
 void ConsoleSingelton::Message( const char *pMsg, ... )
 {
-    va_list namelessVars;
-    va_start(namelessVars, pMsg);  // Get the "..." vars
-    vsprintf(format, pMsg, namelessVars);
-    va_end(namelessVars);
-	NotifyMessage(format);
+  va_list namelessVars;
+  va_start(namelessVars, pMsg);  // Get the "..." vars
+  vsnprintf(format, format_len, pMsg, namelessVars);
+  va_end(namelessVars);
+  NotifyMessage(format);
 }
 
 /** Prints a Message
@@ -172,11 +173,11 @@ void ConsoleSingelton::Message( const char *pMsg, ... )
  */
 void ConsoleSingelton::Warning( const char *pMsg, ... )
 {
-    va_list namelessVars;
-    va_start(namelessVars, pMsg);  // Get the "..." vars
-    vsprintf(format, pMsg, namelessVars);
-    va_end(namelessVars);
-	NotifyWarning(format);
+  va_list namelessVars;
+  va_start(namelessVars, pMsg);  // Get the "..." vars
+  vsnprintf(format, format_len, pMsg, namelessVars);
+  va_end(namelessVars);
+  NotifyWarning(format);
 }
 
 /** Prints a Message
@@ -196,11 +197,11 @@ void ConsoleSingelton::Warning( const char *pMsg, ... )
  */
 void ConsoleSingelton::Error( const char *pMsg, ... )
 {
-    va_list namelessVars;
-    va_start(namelessVars, pMsg);  // Get the "..." vars
-    vsprintf(format, pMsg, namelessVars);
-    va_end(namelessVars);
-	NotifyError(format);
+  va_list namelessVars;
+  va_start(namelessVars, pMsg);  // Get the "..." vars
+  vsnprintf(format, format_len, pMsg, namelessVars);
+  va_end(namelessVars);
+  NotifyError(format);
 }
 
 
@@ -223,14 +224,14 @@ void ConsoleSingelton::Error( const char *pMsg, ... )
 
 void ConsoleSingelton::Log( const char *pMsg, ... )
 {
-	if (!_bVerbose)
-	{
-		va_list namelessVars;
-		va_start(namelessVars, pMsg);  // Get the "..." vars
-		vsprintf(format, pMsg, namelessVars);
-		va_end(namelessVars);
-		NotifyLog(format);
-	}
+  if (!_bVerbose)
+  {
+    va_list namelessVars;
+    va_start(namelessVars, pMsg);  // Get the "..." vars
+    vsnprintf(format, format_len, pMsg, namelessVars);
+    va_end(namelessVars);
+    NotifyLog(format);
+  }
 }
 
 

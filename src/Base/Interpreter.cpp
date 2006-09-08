@@ -37,6 +37,7 @@
 #include "PyExportImp.h"
 
 char format2[1024];  //Warning! Can't go over 512 characters!!! 
+unsigned int format2_len = 1024;
 
 using namespace Base;
 
@@ -221,16 +222,17 @@ void InterpreterSingleton::finalize()
 
 void InterpreterSingleton::runStringArg(const char * psCom,...)
 {
-	// va stuff
-    va_list namelessVars;
-    va_start(namelessVars, psCom);  // Get the "..." vars
-    vsprintf(format2, psCom, namelessVars);
-    va_end(namelessVars);
-	assert(strlen(psCom) < 800);
-	// loging
-	//Console().Log("Run Com: %s\n",format2);
+  // va stuff
+  va_list namelessVars;
+  va_start(namelessVars, psCom);  // Get the "..." vars
+  int len = vsnprintf(format2, format2_len, psCom, namelessVars);
+  va_end(namelessVars);
+  if ( len == -1 ) {
+    // argument too long
+    assert(false);
+  }
 
-	runString(format2);
+  runString(format2);
 }
 
 

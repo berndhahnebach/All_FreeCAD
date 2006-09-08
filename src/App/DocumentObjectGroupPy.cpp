@@ -174,7 +174,7 @@ PYFUNCIMP_D(DocumentObjectGroupPy,addObject)
     return pcObj->GetPyObject();
   } else {
     char szBuf[200];
-    sprintf(szBuf, "Cannot create object of type '%s'", sType);
+    snprintf(szBuf, 200, "Cannot create object of type '%s'", sType);
 		Py_Error(PyExc_Exception,szBuf);
   }
 }

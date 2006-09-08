@@ -156,7 +156,7 @@ string FeaturePython::getUniquePropertyName(const char *Name) const
       }
     }
     char szName[200];
-    sprintf(szName, "%s%d", CleanName.c_str(), nSuff + 1);
+    snprintf(szName, 200, "%s%d", CleanName.c_str(), nSuff + 1);
 	
     return string(szName);
   }

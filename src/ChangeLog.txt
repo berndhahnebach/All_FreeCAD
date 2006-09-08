@@ -172,4 +172,4 @@ Version: V0.5B8 Date: Tue Aug 01 21:53:34 2006 +++++++++++++++++++++++++++++++
 + make MeshKernel::VisitNeighbourFacets() more robust against topologic errors in mesh
 + Option added to do one- or two-side rendering of meshes
 + Dialog to enter numbers higher than the maximum of int's, i.e numbers up to 4294967295
-
++ Bug 1449428 (Crash when output to console too long) fixed by replacing vsprintf by vsnprint

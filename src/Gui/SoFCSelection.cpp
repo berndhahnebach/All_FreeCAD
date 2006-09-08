@@ -221,7 +221,7 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
            highlighted = TRUE;
         }
       }
-      sprintf(buf,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
+      snprintf(buf,512,"Preselected: %s.%s.%s (%f,%f,%f)",documentName.getValue().getString()
                                                       ,objectName.getValue().getString()
                                                       ,subElementName.getValue().getString()
                                                       ,pp->getPoint()[0]

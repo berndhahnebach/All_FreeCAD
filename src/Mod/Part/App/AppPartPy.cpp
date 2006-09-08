@@ -130,7 +130,7 @@ insert(PyObject *self, PyObject *args)
       if (!pcDoc)
       {
         char szBuf[200];
-        sprintf(szBuf, "Import called to the non-existing document '%s'", DocName);
+        snprintf(szBuf, 200, "Import called to the non-existing document '%s'", DocName);
         Py_Error(PyExc_Exception,szBuf);
       }
 
