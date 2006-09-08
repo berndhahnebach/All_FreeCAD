@@ -77,7 +77,7 @@ QString Process::systemWarning( int code, const char* pMsg)
 
   if (pMsg)
   {
-    sprintf(szBuf, "'%s'", pMsg);
+    snprintf(szBuf, 512, "'%s'", pMsg);
     va_list pArguments = szBuf;
     FormatMessage( 
       FORMAT_MESSAGE_ALLOCATE_BUFFER | 

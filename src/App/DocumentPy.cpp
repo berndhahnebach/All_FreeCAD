@@ -490,7 +490,7 @@ PYFUNCIMP_D(DocumentPy,addObject)
 	  else
     {
       char szBuf[200];
-      sprintf(szBuf, "No feature found of type '%s'", sType);
+      snprintf(szBuf, 200, "No feature found of type '%s'", sType);
 		  Py_Error(PyExc_Exception,szBuf);
     }
 }
@@ -563,7 +563,7 @@ PYFUNCIMP_D(DocumentPy,removeObject)
     }
     else {
       char szBuf[200];
-      sprintf(szBuf, "No feature found with name '%s'", sName);
+      snprintf(szBuf, 200, "No feature found with name '%s'", sName);
       Py_Error(PyExc_Exception,szBuf);
     }
   } PY_CATCH;

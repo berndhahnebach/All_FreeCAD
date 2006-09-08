@@ -148,11 +148,12 @@ const char* AbstractFeature::getStatusString(void) const
 void AbstractFeature::setError(const char* pMsg,...)
 {
   // temp buffer
-  char* format = (char*) malloc(strlen(pMsg)+4024);
+  unsigned int format_len = strlen(pMsg)+4024;
+  char* format = (char*) malloc(format_len);
 
   va_list namelessVars;
   va_start(namelessVars, pMsg);  // Get the "..." vars
-  vsprintf(format, pMsg, namelessVars);
+  vsnprintf(format, format_len, pMsg, namelessVars);
   va_end(namelessVars);
 
   /*_eStatus = Error;*/

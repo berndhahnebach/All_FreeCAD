@@ -355,10 +355,11 @@ void Command::blockCommand(bool block)
 void Command::doCommand(DoCmd_Type eType,const char* sCmd,...)
 {
   // temp buffer
-  char* format = (char*) malloc(strlen(sCmd)+4024);
+  unsigned int format_len = strlen(sCmd)+4024;
+  char* format = (char*) malloc(format_len);
   va_list namelessVars;
   va_start(namelessVars, sCmd);  // Get the "..." vars
-  vsprintf(format, sCmd, namelessVars);
+  vsnprintf(format, format_len, sCmd, namelessVars);
   va_end(namelessVars);
 
   if(eType == Gui)

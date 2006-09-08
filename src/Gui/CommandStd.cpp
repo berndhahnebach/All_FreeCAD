@@ -194,7 +194,7 @@ bool StdCmdWorkbench::addTo(QWidget *w)
   {
 #ifdef FC_DEBUG
     char szBuf[200];
-    sprintf(szBuf, "Adding the command \"%s\" to this widget is not permitted!", getName());
+    snprintf(szBuf, 200, "Adding the command \"%s\" to this widget is not permitted!", getName());
     QMessageBox::information(getMainWindow(), "Warning", szBuf);
 #else
     Base::Console().Log("Cannot add '%s' to this widget.\n", sName);
@@ -357,7 +357,7 @@ void StdCmdMRU::save()
     {
       for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it, i++ )
       {
-        sprintf(szBuf, "MRU%d", i);
+        snprintf(szBuf, 200, "MRU%d", i);
         hGrp->SetASCII(szBuf, (*it).latin1());
       }
     }
