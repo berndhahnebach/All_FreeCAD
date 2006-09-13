@@ -1700,7 +1700,8 @@ bool MeshPolygonTriangulation::ComputeQuasiDelaunay()
   if ( Compute() == false )
     return false; // no valid triangulation
 
-  // for each internal edge get the adjacent facets
+  // For each internal edge get the adjacent facets. When doing an edge swap we must update
+  // this structure.
   std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> > aEdge2Face;
   for (std::vector<MeshFacet>::iterator pI = _aclFacets.begin(); pI != _aclFacets.end(); pI++)
   {
@@ -1714,63 +1715,100 @@ bool MeshPolygonTriangulation::ComputeQuasiDelaunay()
     }
   }
 
-  // Perform a swap edge where needed
+  // fill up this list with all internal edges and perform swap edges until this list is empty
+  std::list<std::pair<unsigned long, unsigned long> > aEdgeList;
   std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> >::iterator pE;
   for (pE = aEdge2Face.begin(); pE != aEdge2Face.end(); ++pE)
-  {
-    // should always be 2 because it's an internal edge
-    if ( pE->second.size() == 2 )
-    {
-      MeshFacet& rF1 = _aclFacets[pE->second[0]];
-      MeshFacet& rF2 = _aclFacets[pE->second[1]];
-      unsigned short side1 = rF1.Side(pE->first.first, pE->first.second);
+    aEdgeList.push_back(pE->first);
 
-      Base::Vector3f cP1 = _aclPoints[rF1._aulPoints[side1]];
-      Base::Vector3f cP2 = _aclPoints[rF1._aulPoints[(side1+1)%3]];
-      Base::Vector3f cP3 = _aclPoints[rF1._aulPoints[(side1+2)%3]];
+  // to be sure to avoid an endless loop
+  unsigned long uMaxIter = 5 * aEdge2Face.size();
 
-      unsigned short side2 = rF2.Side(pE->first.first, pE->first.second);
-      Base::Vector3f cP4 = _aclPoints[rF2._aulPoints[(side2+2)%3]];
+  // Perform a swap edge where needed
+  while ( !aEdgeList.empty() && uMaxIter > 0 ) {
+    // get the first edge and remove it from the list
+    std::pair<unsigned long, unsigned long> aEdge = aEdgeList.front();
+    aEdgeList.pop_front();
+    uMaxIter--;
 
-      MeshGeomFacet cT1(cP1, cP2, cP3); float fMax1 = cT1.MaximumAngle();
-      MeshGeomFacet cT2(cP2, cP1, cP4); float fMax2 = cT2.MaximumAngle();
-      MeshGeomFacet cT3(cP4, cP3, cP1); float fMax3 = cT3.MaximumAngle();
-      MeshGeomFacet cT4(cP3, cP4, cP2); float fMax4 = cT4.MaximumAngle();
+    // get the adjacent facets to this edge
+    pE = aEdge2Face.find( aEdge );
 
-      float fMax12 = std::max<float>(fMax1, fMax2);
-      float fMax34 = std::max<float>(fMax3, fMax4);
+    // this edge has been removed some iterations before
+    if( pE == aEdge2Face.end() )
+      continue;
 
-      // ok, here we should perform a swap edge to minimize the maximum angle
-      if ( fMax12 > fMax34 ) {
-        rF1._aulPoints[(side1+1)%3] = rF2._aulPoints[(side2+2)%3];
-        rF2._aulPoints[(side2+1)%3] = rF1._aulPoints[(side1+2)%3];
+    MeshFacet& rF1 = _aclFacets[pE->second[0]];
+    MeshFacet& rF2 = _aclFacets[pE->second[1]];
+    unsigned short side1 = rF1.Side(aEdge.first, aEdge.second);
 
-        // adjust the edge list
-        for ( int i=0; i<3; i++ ) {
-          std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> >::iterator it;
-          // first facet
-          unsigned long ulPt0 = std::min<unsigned long>(rF1._aulPoints[i],  rF1._aulPoints[(i+1)%3]);
-          unsigned long ulPt1 = std::max<unsigned long>(rF1._aulPoints[i],  rF1._aulPoints[(i+1)%3]);
-          it = aEdge2Face.find( std::make_pair(ulPt0, ulPt1) );
-          if ( it != aEdge2Face.end() ) {
-            if ( it->second[0] == pE->second[1] )
-              it->second[0] = pE->second[0];
-            else if ( it->second[1] == pE->second[1] )
-              it->second[1] = pE->second[0];
-          }
+    Base::Vector3f cP1 = _aclPoints[rF1._aulPoints[side1]];
+    Base::Vector3f cP2 = _aclPoints[rF1._aulPoints[(side1+1)%3]];
+    Base::Vector3f cP3 = _aclPoints[rF1._aulPoints[(side1+2)%3]];
 
-          // second facet
-          ulPt0 = std::min<unsigned long>(rF2._aulPoints[i],  rF2._aulPoints[(i+1)%3]);
-          ulPt1 = std::max<unsigned long>(rF2._aulPoints[i],  rF2._aulPoints[(i+1)%3]);
-          it = aEdge2Face.find( std::make_pair(ulPt0, ulPt1) );
-          if ( it != aEdge2Face.end() ) {
-            if ( it->second[0] == pE->second[0] )
-              it->second[0] = pE->second[1];
-            else if ( it->second[1] == pE->second[0] )
-              it->second[1] = pE->second[1];
-          }
+    unsigned short side2 = rF2.Side(aEdge.first, aEdge.second);
+    Base::Vector3f cP4 = _aclPoints[rF2._aulPoints[(side2+2)%3]];
+
+    MeshGeomFacet cT1(cP1, cP2, cP3); float fMax1 = cT1.MaximumAngle();
+    MeshGeomFacet cT2(cP2, cP1, cP4); float fMax2 = cT2.MaximumAngle();
+    MeshGeomFacet cT3(cP4, cP3, cP1); float fMax3 = cT3.MaximumAngle();
+    MeshGeomFacet cT4(cP3, cP4, cP2); float fMax4 = cT4.MaximumAngle();
+
+    float fMax12 = std::max<float>(fMax1, fMax2);
+    float fMax34 = std::max<float>(fMax3, fMax4);
+
+    // We must make sure that the two adjacent triangles builds a convex polygon, otherwise 
+    // the swap edge operation is illegal
+    Base::Vector3f cU = cP2-cP1;
+    Base::Vector3f cV = cP4-cP3;
+    // build a helper plane through cP1 that must separate cP3 and cP4
+    Base::Vector3f cN1 = (cU % cV) % cU;
+    if ( ((cP3-cP1)*cN1)*((cP4-cP1)*cN1) >= 0.0f )
+      continue; // not convex
+    // build a helper plane through cP3 that must separate cP1 and cP2
+    Base::Vector3f cN2 = (cU % cV) % cV;
+    if ( ((cP1-cP3)*cN2)*((cP2-cP3)*cN2) >= 0.0f )
+      continue; // not convex
+
+    // ok, here we should perform a swap edge to minimize the maximum angle
+    if ( fMax12 > fMax34 ) {
+      rF1._aulPoints[(side1+1)%3] = rF2._aulPoints[(side2+2)%3];
+      rF2._aulPoints[(side2+1)%3] = rF1._aulPoints[(side1+2)%3];
+
+      // adjust the edge list
+      for ( int i=0; i<3; i++ ) {
+        std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> >::iterator it;
+        // first facet
+        unsigned long ulPt0 = std::min<unsigned long>(rF1._aulPoints[i],  rF1._aulPoints[(i+1)%3]);
+        unsigned long ulPt1 = std::max<unsigned long>(rF1._aulPoints[i],  rF1._aulPoints[(i+1)%3]);
+        it = aEdge2Face.find( std::make_pair(ulPt0, ulPt1) );
+        if ( it != aEdge2Face.end() ) {
+          if ( it->second[0] == pE->second[1] )
+            it->second[0] = pE->second[0];
+          else if ( it->second[1] == pE->second[1] )
+            it->second[1] = pE->second[0];
+          aEdgeList.push_back( it->first );
+        }
+
+        // second facet
+        ulPt0 = std::min<unsigned long>(rF2._aulPoints[i],  rF2._aulPoints[(i+1)%3]);
+        ulPt1 = std::max<unsigned long>(rF2._aulPoints[i],  rF2._aulPoints[(i+1)%3]);
+        it = aEdge2Face.find( std::make_pair(ulPt0, ulPt1) );
+        if ( it != aEdge2Face.end() ) {
+          if ( it->second[0] == pE->second[0] )
+            it->second[0] = pE->second[1];
+          else if ( it->second[1] == pE->second[0] )
+            it->second[1] = pE->second[1];
+          aEdgeList.push_back( it->first );
         }
       }
+
+      // Now we must remove the edge and replace it through the new edge
+      unsigned long ulPt0 = std::min<unsigned long>(rF1._aulPoints[(side1+1)%3], rF2._aulPoints[(side2+1)%3]);
+      unsigned long ulPt1 = std::max<unsigned long>(rF1._aulPoints[(side1+1)%3], rF2._aulPoints[(side2+1)%3]);
+      std::pair<unsigned long, unsigned long> aNewEdge = std::make_pair(ulPt0, ulPt1);
+      aEdge2Face[aNewEdge] = pE->second;
+      aEdge2Face.erase(pE);
     }
   }
 
@@ -1787,7 +1825,7 @@ void MeshPolygonTriangulation::SetPolygon(const std::vector<Base::Vector3f>& rac
   }
 }
 
-void MeshPolygonTriangulation::TransformToFitPlane()
+Base::Vector3f MeshPolygonTriangulation::TransformToFitPlane()
 {
   float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
   sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
@@ -1823,4 +1861,6 @@ void MeshPolygonTriangulation::TransformToFitPlane()
 
   for ( it = _aclPoints.begin(); it!=_aclPoints.end(); ++it )
     it->TransformToCoordinateSystem(base, ex, ey);
+
+  return Base::Vector3f(W.X(), W.Y(), W.Z());
 }
