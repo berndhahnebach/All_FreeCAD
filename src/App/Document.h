@@ -182,6 +182,10 @@ public:
 	void PurgeModified();
 	/// Recompute if the document was  not valid and propagate the reccorded modification.
 	void recompute();
+  /// signal a DocObject as updated
+  void update(DocumentObject*);
+  void update(const char *name);
+
   /// Recompute only this feature
   void recomputeFeature(AbstractFeature* Feat);
 	//@}
