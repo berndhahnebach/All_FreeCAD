@@ -499,9 +499,9 @@ bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, cons
   // now create the lids
   std::vector<MeshGeomFacet> aLid;
   MeshPolygonTriangulation cTria;
-  cTria.setPolygon( top );
-  ok &= cTria.compute();
-  aLid = cTria.getFacets();
+  cTria.SetPolygon( top );
+  ok &= cTria.Compute();
+  aLid = cTria.GetTriangles();
 
   // front lid
   for ( std::vector<MeshGeomFacet>::iterator itF1 = aLid.begin(); itF1 != aLid.end(); ++itF1 )
@@ -514,9 +514,9 @@ bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, cons
     aFaces.push_back( *itF1 );
   }
 
-  cTria.setPolygon( bottom );
-  ok &= cTria.compute();
-  aLid = cTria.getFacets();
+  cTria.SetPolygon( bottom );
+  ok &= cTria.Compute();
+  aLid = cTria.GetTriangles();
 
   // back lid
   for ( std::vector<MeshGeomFacet>::iterator itF2 = aLid.begin(); itF2 != aLid.end(); ++itF2 )

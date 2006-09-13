@@ -268,3 +268,8 @@ SequencerLauncher::~SequencerLauncher()
 {
   SequencerBase::Instance().stop();
 }
+
+bool SequencerLauncher::next( bool canAbort )
+{
+  return SequencerBase::Instance().next( canAbort );
+}

@@ -59,6 +59,7 @@
 #include <qcheckbox.h>
 #include <qcursor.h>
 #include <qfiledialog.h>
+#include <qinputdialog.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistview.h>

@@ -1025,8 +1025,20 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
 
   // get the facets to a point
   MeshRefPointToFacets cPt2Fac(_rclMesh);
-  MeshFacetArray& rFacets = _rclMesh._aclFacetArray;
   MeshPointArray& rPoints = _rclMesh._aclPointArray;
+  MeshFacetArray& rFacets = _rclMesh._aclFacetArray;
+
+  // Count the number of open edges for each point
+  std::map<unsigned long, int> openPointDegree;
+  for ( MeshFacetArray::_TConstIterator jt = rFacets.begin(); jt != rFacets.end(); ++jt ) 
+  {
+    for ( int i=0; i<3; i++ ) {
+      if ( jt->_aulNeighbours[i] == ULONG_MAX ) {
+        openPointDegree[jt->_aulPoints[i]]++;
+        openPointDegree[jt->_aulPoints[(i+1)%3]]++;
+      }
+    }
+  }
 
   // reset VISIT flags
   cAlgo.ResetFacetFlag(MeshFacet::VISIT);
@@ -1049,22 +1061,34 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
       Base::Vector3f eZ = eX % eY; eY = eZ % eX;
       eX.Normalize(); eY.Normalize();
 
+      bool ok = true;
       std::vector<Base::Vector3f> polygon;
       for ( std::vector<unsigned long>::iterator jt = it->begin(); jt != it->end(); ++jt )
       {
+        // two (ore more) boundaries meet in one non-manifold point
+        //FIXME: Split up into several independant loops and retry again.
+        if ( openPointDegree[*jt] > 2) {
+          ok = false;
+          break;
+        }
+
         Base::Vector3f pt = _rclMesh._aclPointArray[*jt];
         pt.TransformToCoordinateSystem( base, eX, eY );
         polygon.push_back( pt );
       }
 
+      if (!ok)
+        continue;
+
       // There is no easy way to check whether the boundary is a hole or a silhoutte before performing triangulation.
       // Afterwards we can compare the normals of the created triangles with the z-direction of our local coordinate system.
       // If the scalar product is positive it was a hole, otherwise not.
       MeshPolygonTriangulation cTria;
-      cTria.setPolygon( polygon );
-      if ( cTria.compute() )
+      cTria.SetPolygon( polygon );
+      cTria.TransformToFitPlane();
+      if ( cTria.ComputeQuasiDelaunay() )
       {
-        std::vector<MeshFacet> faces = cTria.getTopology();
+        std::vector<MeshFacet> faces = cTria.GetFacets();
         for ( std::vector<MeshCore::MeshFacet>::iterator kt = faces.begin(); kt != faces.end(); ++kt )
         {
           if (kt == faces.begin())
@@ -1076,6 +1100,16 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
             // do not any of these triangles
             if ( triangle.GetNormal() * eZ <= 0.0f )
               break;
+            // Special case handling for a hole with tree edges: the resulting facet might be coincident with the 
+            // reference facet
+            else if (faces.size()==1){
+              MeshFacet first;
+              first._aulPoints[0] = (*it)[kt->_aulPoints[0]];
+              first._aulPoints[1] = (*it)[kt->_aulPoints[1]];
+              first._aulPoints[2] = (*it)[kt->_aulPoints[2]];
+              if ( first.IsEqual(rFace) )
+                break;
+            }
           }
 
           kt->_aulPoints[0] = (*it)[kt->_aulPoints[0]];

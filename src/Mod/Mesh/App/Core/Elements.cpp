@@ -820,7 +820,7 @@ bool MeshGeomFacet::IntersectWithFacet (const MeshGeomFacet& rclFacet, Base::Vec
   }
 }
 
-float MeshGeomFacet::CenterOfInnerCircle(Base::Vector3f& rclCenter) const
+float MeshGeomFacet::CenterOfInscribedCircle(Base::Vector3f& rclCenter) const
 {
   Base::Vector3f p0(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
   Base::Vector3f p1(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
@@ -840,7 +840,7 @@ float MeshGeomFacet::CenterOfInnerCircle(Base::Vector3f& rclCenter) const
   return fRadius;
 }
 
-float MeshGeomFacet::CenterOfOuterCircle(Base::Vector3f& rclCenter) const
+float MeshGeomFacet::CenterOfCircumCircle(Base::Vector3f& rclCenter) const
 {
   Base::Vector3f p0(_aclPoints[0].x, _aclPoints[0].y, _aclPoints[0].z);
   Base::Vector3f p1(_aclPoints[1].x, _aclPoints[1].y, _aclPoints[1].z);
@@ -1052,4 +1052,19 @@ float MeshGeomFacet::VolumeOfPrism (const MeshGeomFacet& rclF1) const
   fVol /= 6.0f;
 
   return fVol;;
+}
+
+float MeshGeomFacet::MaximumAngle () const
+{
+  float fMaxAngle = 0.0f;
+  
+  for ( int i=0; i<3; i++ ) {
+    Base::Vector3f dir1(_aclPoints[(i+1)%3]-_aclPoints[i]);
+    Base::Vector3f dir2(_aclPoints[(i+2)%3]-_aclPoints[i]);
+    float fAngle = dir1.GetAngle(dir2);
+    if (fAngle > fMaxAngle)
+      fMaxAngle = fAngle;
+  }
+
+  return fMaxAngle;
 }

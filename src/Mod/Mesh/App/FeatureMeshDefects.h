@@ -49,7 +49,7 @@ public:
   virtual const MeshCore::MeshKernel& getMesh() const;
   //@}
 
-  /** @name methods overide Feature */
+  /** @name methods override Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
@@ -72,7 +72,7 @@ public:
   HarmonizeNormals(void);
   virtual ~HarmonizeNormals();
 
-  /** @name methods overide Feature */
+  /** @name methods override Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
@@ -92,7 +92,7 @@ public:
   FlipNormals(void);
   virtual ~FlipNormals();
 
-  /** @name methods overide Feature */
+  /** @name methods override Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
@@ -112,7 +112,7 @@ public:
   FixNonManifolds(void);
   virtual ~FixNonManifolds();
 
-  /** @name methods overide Feature */
+  /** @name methods override Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
@@ -132,7 +132,7 @@ public:
   FixDuplicatedFaces(void);
   virtual ~FixDuplicatedFaces();
 
-  /** @name methods overide Feature */
+  /** @name methods override Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
@@ -152,7 +152,7 @@ public:
   FixDuplicatedPoints(void);
   virtual ~FixDuplicatedPoints();
 
-  /** @name methods overide Feature */
+  /** @name methods override Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
@@ -172,7 +172,7 @@ public:
   FixDegenerations(void);
   virtual ~FixDegenerations();
 
-  /** @name methods overide Feature */
+  /** @name methods override Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
@@ -192,7 +192,49 @@ public:
   FixIndices(void);
   virtual ~FixIndices();
 
-  /** @name methods overide Feature */
+  /** @name methods override Feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
+};
+
+/** .
+ * The FillHoles class tries to fill up holes in the internal mesh data structure.
+ * @author Werner Mayer
+ */
+class AppMeshExport FillHoles : public Mesh::FixDefects
+{
+  PROPERTY_HEADER(Mesh::FillHoles);
+
+public:
+  /// Constructor
+  FillHoles(void);
+  virtual ~FillHoles();
+  App::PropertyInteger FillupHolesOfLength;
+
+  /** @name methods override Feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
+};
+
+/** .
+ * The RemoveComponents class removes topologic indepentent components up to a certain size from the mesh data structure.
+ * @author Werner Mayer
+ */
+class AppMeshExport RemoveComponents : public Mesh::FixDefects
+{
+  PROPERTY_HEADER(Mesh::RemoveComponents);
+
+public:
+  /// Constructor
+  RemoveComponents(void);
+  virtual ~RemoveComponents();
+  App::PropertyInteger RemoveCompOfSize;
+
+  /** @name methods override Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);

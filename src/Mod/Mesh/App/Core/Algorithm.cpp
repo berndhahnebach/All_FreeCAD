@@ -33,6 +33,7 @@
 #include "Elements.h"
 #include "Iterator.h"
 #include "Grid.h"
+#include "triangle.h"
 
 #include <Base/Sequencer.h>
 
@@ -1634,7 +1635,7 @@ MeshPolygonTriangulation::MeshPolygonTriangulation()
 }
 
 MeshPolygonTriangulation::MeshPolygonTriangulation(const std::vector<Base::Vector3f>& raclPoints)
-	: _aclPoints(raclPoints)
+  : _aclPoints(raclPoints)
 {
 }
 
@@ -1642,52 +1643,17 @@ MeshPolygonTriangulation::~MeshPolygonTriangulation()
 {
 }
 
-bool MeshPolygonTriangulation::compute()
+bool MeshPolygonTriangulation::Compute()
 {
-	_aclFacets.clear();
-  _aclTopology.clear();
-/*
-  float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
-  sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
+  _aclFacets.clear();
+  _aclTriangles.clear();
 
-  for ( std::vector<Base::Vector3f>::iterator it = _aclPoints.begin(); it!=_aclPoints.end(); ++it)
-  {
-    sxx += it->x * it->x; sxy += it->x * it->y;
-    sxz += it->x * it->z; syy += it->y * it->y;
-    syz += it->y * it->z; szz += it->z * it->z;
-    mx += it->x; my += it->y; mz += it->z;
-  }
-
-  unsigned nSize = _aclPoints.size();
-  sxx = sxx - mx*mx/((float)nSize);
-  sxy = sxy - mx*my/((float)nSize);
-  sxz = sxz - mx*mz/((float)nSize);
-  syy = syy - my*my/((float)nSize);
-  syz = syz - my*mz/((float)nSize);
-  szz = szz - mz*mz/((float)nSize);
-
-  // Kovarianzmatrix
-  Wm3::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
-
-  Wm3::Matrix3<float> rkRot, rkDiag;
-  akMat.EigenDecomposition(rkRot, rkDiag);
-
-  Wm3::Vector3<float> U = rkRot.GetColumn(0);
-  Wm3::Vector3<float> V = rkRot.GetColumn(1);
-  Wm3::Vector3<float> W = rkRot.GetColumn(2);
-
-  Matrix4D clTMat;
-  clTMat[0][0] = U.X(); clTMat[0][1] = U.Y(); clTMat[0][2] = U.Z(); clTMat[0][3] = mx/(float)nSize;
-  clTMat[1][0] = V.X(); clTMat[1][1] = V.Y(); clTMat[1][2] = V.Z(); clTMat[1][3] = my/(float)nSize;
-  clTMat[2][0] = W.X(); clTMat[2][1] = W.Y(); clTMat[2][2] = W.Z(); clTMat[2][3] = mz/(float)nSize;
-  clTMat[3][0] = 0.0f;  clTMat[3][1] = 0.0f;  clTMat[3][2] = 0.0f;  clTMat[3][3] = 1.0f;
-*/
   std::vector<Base::Vector3f> pts;
   std::vector<unsigned long> result;
-	for ( std::vector<Base::Vector3f>::iterator it = _aclPoints.begin(); it != _aclPoints.end(); ++it)
-	{
-		pts.push_back(/*clTMat **/ (*it));
-	}
+  for ( std::vector<Base::Vector3f>::iterator it = _aclPoints.begin(); it != _aclPoints.end(); ++it)
+  {
+    pts.push_back(*it);
+  }
 
   //  Invoke the triangulator to triangulate this polygon.
   Triangulate::Process(pts,result);
@@ -1697,10 +1663,10 @@ bool MeshPolygonTriangulation::compute()
 
   bool ok = tcount+2 == _aclPoints.size();
   if  ( tcount > _aclPoints.size() )
-		return false; // no valid triangulation
+    return false; // no valid triangulation
 
-	MeshGeomFacet clFacet;
-	MeshFacet clTopFacet;
+  MeshGeomFacet clFacet;
+  MeshFacet clTopFacet;
   for (unsigned long i=0; i<tcount; i++)
   {
     if ( Triangulate::_invert )
@@ -1722,19 +1688,139 @@ bool MeshPolygonTriangulation::compute()
       clTopFacet._aulPoints[2] = result[i*3+2];
     }
 
-		_aclFacets.push_back(clFacet);
-		_aclTopology.push_back(clTopFacet);
+    _aclTriangles.push_back(clFacet);
+    _aclFacets.push_back(clTopFacet);
   }
 
-	return ok;
+  return ok;
 }
 
-void MeshPolygonTriangulation::setPolygon(const std::vector<Base::Vector3f>& raclPoints)
+bool MeshPolygonTriangulation::ComputeQuasiDelaunay()
 {
-	_aclPoints = raclPoints;
-	if (_aclPoints.size() > 0)
-	{
-		if (_aclPoints.front() == _aclPoints.back())
-			_aclPoints.pop_back();
-	}
+  if ( Compute() == false )
+    return false; // no valid triangulation
+
+  // for each internal edge get the adjacent facets
+  std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> > aEdge2Face;
+  for (std::vector<MeshFacet>::iterator pI = _aclFacets.begin(); pI != _aclFacets.end(); pI++)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+      unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
+      // ignore borderlines of the polygon
+      if ( abs(ulPt0-ulPt1)%(_aclPoints.size()-1) > 1 )
+        aEdge2Face[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_back(pI - _aclFacets.begin());
+    }
+  }
+
+  // Perform a swap edge where needed
+  std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> >::iterator pE;
+  for (pE = aEdge2Face.begin(); pE != aEdge2Face.end(); ++pE)
+  {
+    // should always be 2 because it's an internal edge
+    if ( pE->second.size() == 2 )
+    {
+      MeshFacet& rF1 = _aclFacets[pE->second[0]];
+      MeshFacet& rF2 = _aclFacets[pE->second[1]];
+      unsigned short side1 = rF1.Side(pE->first.first, pE->first.second);
+
+      Base::Vector3f cP1 = _aclPoints[rF1._aulPoints[side1]];
+      Base::Vector3f cP2 = _aclPoints[rF1._aulPoints[(side1+1)%3]];
+      Base::Vector3f cP3 = _aclPoints[rF1._aulPoints[(side1+2)%3]];
+
+      unsigned short side2 = rF2.Side(pE->first.first, pE->first.second);
+      Base::Vector3f cP4 = _aclPoints[rF2._aulPoints[(side2+2)%3]];
+
+      MeshGeomFacet cT1(cP1, cP2, cP3); float fMax1 = cT1.MaximumAngle();
+      MeshGeomFacet cT2(cP2, cP1, cP4); float fMax2 = cT2.MaximumAngle();
+      MeshGeomFacet cT3(cP4, cP3, cP1); float fMax3 = cT3.MaximumAngle();
+      MeshGeomFacet cT4(cP3, cP4, cP2); float fMax4 = cT4.MaximumAngle();
+
+      float fMax12 = std::max<float>(fMax1, fMax2);
+      float fMax34 = std::max<float>(fMax3, fMax4);
+
+      // ok, here we should perform a swap edge to minimize the maximum angle
+      if ( fMax12 > fMax34 ) {
+        rF1._aulPoints[(side1+1)%3] = rF2._aulPoints[(side2+2)%3];
+        rF2._aulPoints[(side2+1)%3] = rF1._aulPoints[(side1+2)%3];
+
+        // adjust the edge list
+        for ( int i=0; i<3; i++ ) {
+          std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> >::iterator it;
+          // first facet
+          unsigned long ulPt0 = std::min<unsigned long>(rF1._aulPoints[i],  rF1._aulPoints[(i+1)%3]);
+          unsigned long ulPt1 = std::max<unsigned long>(rF1._aulPoints[i],  rF1._aulPoints[(i+1)%3]);
+          it = aEdge2Face.find( std::make_pair(ulPt0, ulPt1) );
+          if ( it != aEdge2Face.end() ) {
+            if ( it->second[0] == pE->second[1] )
+              it->second[0] = pE->second[0];
+            else if ( it->second[1] == pE->second[1] )
+              it->second[1] = pE->second[0];
+          }
+
+          // second facet
+          ulPt0 = std::min<unsigned long>(rF2._aulPoints[i],  rF2._aulPoints[(i+1)%3]);
+          ulPt1 = std::max<unsigned long>(rF2._aulPoints[i],  rF2._aulPoints[(i+1)%3]);
+          it = aEdge2Face.find( std::make_pair(ulPt0, ulPt1) );
+          if ( it != aEdge2Face.end() ) {
+            if ( it->second[0] == pE->second[0] )
+              it->second[0] = pE->second[1];
+            else if ( it->second[1] == pE->second[0] )
+              it->second[1] = pE->second[1];
+          }
+        }
+      }
+    }
+  }
+
+  return true;
+}
+
+void MeshPolygonTriangulation::SetPolygon(const std::vector<Base::Vector3f>& raclPoints)
+{
+  _aclPoints = raclPoints;
+  if (_aclPoints.size() > 0)
+  {
+    if (_aclPoints.front() == _aclPoints.back())
+      _aclPoints.pop_back();
+  }
+}
+
+void MeshPolygonTriangulation::TransformToFitPlane()
+{
+  float sxx,sxy,sxz,syy,syz,szz,mx,my,mz;
+  sxx=sxy=sxz=syy=syz=szz=mx=my=mz=0.0f;
+
+  for ( std::vector<Base::Vector3f>::iterator it = _aclPoints.begin(); it!=_aclPoints.end(); ++it)
+  {
+    sxx += it->x * it->x; sxy += it->x * it->y;
+    sxz += it->x * it->z; syy += it->y * it->y;
+    syz += it->y * it->z; szz += it->z * it->z;
+    mx += it->x; my += it->y; mz += it->z;
+  }
+
+  unsigned int nSize = _aclPoints.size();
+  sxx = sxx - mx*mx/((float)nSize);
+  sxy = sxy - mx*my/((float)nSize);
+  sxz = sxz - mx*mz/((float)nSize);
+  syy = syy - my*my/((float)nSize);
+  syz = syz - my*mz/((float)nSize);
+  szz = szz - mz*mz/((float)nSize);
+
+  // Kovarianzmatrix
+  Wm3::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
+  Wm3::Matrix3<float> rkRot, rkDiag;
+  akMat.EigenDecomposition(rkRot, rkDiag);
+
+  Wm3::Vector3<float> U = rkRot.GetColumn(1);
+  Wm3::Vector3<float> V = rkRot.GetColumn(2);
+  Wm3::Vector3<float> W = rkRot.GetColumn(0);
+
+  Base::Vector3f base(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
+  Base::Vector3f ex(U.X(), U.Y(), U.Z());
+  Base::Vector3f ey(V.X(), V.Y(), V.Z());
+
+  for ( it = _aclPoints.begin(); it!=_aclPoints.end(); ++it )
+    it->TransformToCoordinateSystem(base, ex, ey);
 }
