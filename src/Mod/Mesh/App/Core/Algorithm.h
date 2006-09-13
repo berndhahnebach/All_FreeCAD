@@ -354,9 +354,10 @@ public:
   bool ComputeQuasiDelaunay();
   /** If the points of the polygon set by SetPolygon() doesn't lie in a plane this method
    * can be used to project the points in a common plane. This method must be called directly 
-   * after SetPolygon() and before Compute() or ComputeQuasiDelaunay().
+   * after SetPolygon() and before Compute() or ComputeQuasiDelaunay(). The method returns
+   * the normal of the fitted plane.
    */
-  void TransformToFitPlane();
+  Base::Vector3f TransformToFitPlane();
   /** Sets the polygon to be triangulated. */
   void SetPolygon(const std::vector<Base::Vector3f>& raclPoints);
   /** Returns the geometric triangles of the polygon. */

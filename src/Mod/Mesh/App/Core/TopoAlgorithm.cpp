@@ -1040,26 +1040,17 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
     }
   }
 
-  // reset VISIT flags
-  cAlgo.ResetFacetFlag(MeshFacet::VISIT);
-
   MeshFacetArray newFacets;
   for ( std::list<std::vector<unsigned long> >::iterator it = aBorders.begin(); it != aBorders.end(); ++it )
   {
-    if ( it->size() <= length )
+    // first and last vertex are identical
+    if ( it->size() < 4 )
+      continue; // something strange
+    if ( it->size()-1 <= length )
     {
-      if ( it->size() < 3 )
-        continue; // something strange
-
       // Get a facet as reference coordinate system
       const MeshFacet& rFace = **cPt2Fac[it->front()].begin();
-      Base::Vector3f base = rPoints[rFace._aulPoints[0]];
-      Base::Vector3f eX = rPoints[rFace._aulPoints[1]]-rPoints[rFace._aulPoints[0]];
-      Base::Vector3f eY = rPoints[rFace._aulPoints[2]]-rPoints[rFace._aulPoints[0]];
-
-      // Make eX and eY perpendicular
-      Base::Vector3f eZ = eX % eY; eY = eZ % eX;
-      eX.Normalize(); eY.Normalize();
+      MeshGeomFacet rTriangle = _rclMesh.GetFacet(rFace);
 
       bool ok = true;
       std::vector<Base::Vector3f> polygon;
@@ -1072,9 +1063,7 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
           break;
         }
 
-        Base::Vector3f pt = _rclMesh._aclPointArray[*jt];
-        pt.TransformToCoordinateSystem( base, eX, eY );
-        polygon.push_back( pt );
+        polygon.push_back( _rclMesh._aclPointArray[*jt] );
       }
 
       if (!ok)
@@ -1085,7 +1074,11 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
       // If the scalar product is positive it was a hole, otherwise not.
       MeshPolygonTriangulation cTria;
       cTria.SetPolygon( polygon );
-      cTria.TransformToFitPlane();
+      // Get the plane normal as result of the fit. The normal might be flipped so we adjust it to
+      // a reference triangle (which might have quite the same normal)
+      Base::Vector3f cPlaneNormal = cTria.TransformToFitPlane();
+      if ( rTriangle.GetNormal() * cPlaneNormal < 0.0f )
+        cPlaneNormal *= -1.0f;
       if ( cTria.ComputeQuasiDelaunay() )
       {
         std::vector<MeshFacet> faces = cTria.GetFacets();
@@ -1098,7 +1091,7 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
             triangle._aclPoints[1] = polygon[kt->_aulPoints[1]];
             triangle._aclPoints[2] = polygon[kt->_aulPoints[2]];
             // do not any of these triangles
-            if ( triangle.GetNormal() * eZ <= 0.0f )
+            if ( triangle.GetNormal() * cPlaneNormal <= 0.0f )
               break;
             // Special case handling for a hole with tree edges: the resulting facet might be coincident with the 
             // reference facet
