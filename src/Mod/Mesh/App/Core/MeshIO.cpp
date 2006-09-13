@@ -1660,8 +1660,6 @@ bool SaveMeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &r
   if (_pclVRMLInfo)
     WriteVRMLAnnotations(rstrOut);
 
-  Base::Sequencer().stop();
-
   return true;
 }
 

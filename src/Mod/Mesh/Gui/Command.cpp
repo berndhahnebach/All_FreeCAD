@@ -26,6 +26,7 @@
 # include <qaction.h>
 # include <qdir.h>
 # include <qfileinfo.h>
+# include <qinputdialog.h>
 # include <qmessagebox.h>
 # include <qstringlist.h>
 # include <gts.h>
@@ -909,6 +910,92 @@ bool CmdMeshBuildRegularSolid::isActive(void)
   return (!MeshGui::SingleDlgRegularSolidImp::hasInstance())&&hasActiveDocument();
 }
 
+DEF_STD_CMD_A(CmdMeshFillupHoles);
+
+CmdMeshFillupHoles::CmdMeshFillupHoles()
+  :Command("Mesh_FillupHoles")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Fill holes...");
+  sToolTipText  = QT_TR_NOOP("Fill holes of the mesh");
+  sWhatsThis    = QT_TR_NOOP("Fill holes of the mesh");
+  sStatusTip    = QT_TR_NOOP("Fill holes of the mesh");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshFillupHoles::activated(int iMsg)
+{
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  bool ok;
+  int FillupHolesOfLength = QInputDialog::getInteger( QObject::tr("Fill holes"), QObject::tr("Fill holes with maximum number of edges:"), 
+                                                      3, 3, 10000, 1, &ok, Gui::getMainWindow() );
+  if (!ok) return;
+
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    std::string fName = (*it)->name.getValue();
+    fName += "_fill";
+    fName = getUniqueObjectName(fName.c_str());
+    openCommand("Fill up holes");
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FillHoles\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.FillupHolesOfLength = %d",fName.c_str(), FillupHolesOfLength);
+    commitCommand();
+    updateActive();
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+  }
+}
+
+bool CmdMeshFillupHoles::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
+DEF_STD_CMD_A(CmdMeshRemoveComponents);
+
+CmdMeshRemoveComponents::CmdMeshRemoveComponents()
+  :Command("Mesh_RemoveComponents")
+{
+  sAppModule    = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Remove components...");
+  sToolTipText  = QT_TR_NOOP("Remove topologic independant components from the mesh");
+  sWhatsThis    = QT_TR_NOOP("Remove topologic independant components from the mesh");
+  sStatusTip    = QT_TR_NOOP("Remove topologic independant components from the mesh");
+//  sPixmap       = "curv_info";
+}
+
+void CmdMeshRemoveComponents::activated(int iMsg)
+{
+  std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  bool ok;
+  int RemoveCompOfSize = QInputDialog::getInteger( QObject::tr("Remove components"), QObject::tr("Removes components up to a maximum number of triangles:"), 
+                                                      3, 1, 10000000, 1, &ok, Gui::getMainWindow() );
+  if (!ok) return;
+
+  for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
+  {
+    std::string fName = (*it)->name.getValue();
+    fName += "_rem_comps";
+    fName = getUniqueObjectName(fName.c_str());
+    openCommand("Remove components");
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::RemoveComponents\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    doCommand(Doc,"App.activeDocument().%s.RemoveCompOfSize = %d",fName.c_str(), RemoveCompOfSize);
+    commitCommand();
+    updateActive();
+    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
+  }
+}
+
+bool CmdMeshRemoveComponents::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
+}
+
 void CreateMeshCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
@@ -933,4 +1020,6 @@ void CreateMeshCommands(void)
   rcCmdMgr.addCommand(new CmdMeshFixIndices());
   rcCmdMgr.addCommand(new CmdMeshBoundingBox());
   rcCmdMgr.addCommand(new CmdMeshBuildRegularSolid());
+  rcCmdMgr.addCommand(new CmdMeshFillupHoles());
+  rcCmdMgr.addCommand(new CmdMeshRemoveComponents());
 }

@@ -328,20 +328,15 @@ std::vector<unsigned long> MeshEvalDuplicateFacets::GetIndices() const
 {
   std::vector<unsigned long> aInds;
   const MeshFacetArray& rFaces = _rclMesh.GetFacets();
-  unsigned long ind=0;
+  unsigned long uIndex=0;
 
   // get all facets
-  std::map<MeshFacet, std::vector<unsigned long>, MeshFacet_Less > aFIndsMap;
-  for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, ind++ )
-    aFIndsMap[*it].push_back(ind);
-
-  // get all duplicated facets
-  for (std::map<MeshFacet, std::vector<unsigned long>, MeshFacet_Less >::iterator it2 = aFIndsMap.begin(); it2 != aFIndsMap.end(); ++it2) {
-    const std::vector<unsigned long>& idx = it2->second;
-    if (idx.size() > 1) {
-      for (std::vector<unsigned long>::const_iterator it3 = idx.begin(); it3 != idx.end(); ++it3)
-        aInds.push_back(*it3);
-    }
+  std::set<MeshFacet, MeshFacet_Less > aFaceSet;
+  for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++ )
+  {
+    std::pair<std::set<MeshFacet>::iterator, bool> pI = aFaceSet.insert(*it);
+    if ( !pI.second )
+      aInds.push_back(uIndex);
   }
 
   return aInds;
@@ -349,7 +344,22 @@ std::vector<unsigned long> MeshEvalDuplicateFacets::GetIndices() const
 
 bool MeshFixDuplicateFacets::Fixup()
 {
-  return false;
+  unsigned long uIndex=0;
+  std::vector<unsigned long> aRemoveFaces;
+  const MeshFacetArray& rFaces = _rclMesh.GetFacets();
+
+  // get all facets
+  std::set<MeshFacet, MeshFacet_Less > aFaceSet;
+  for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++ )
+  {
+    std::pair<std::set<MeshFacet>::iterator, bool> pI = aFaceSet.insert(*it);
+    if ( !pI.second )
+      aRemoveFaces.push_back(uIndex);
+  }
+
+  _rclMesh.DeleteFacets( aRemoveFaces );
+
+  return true;
 }
 
 // ----------------------------------------------------------------------

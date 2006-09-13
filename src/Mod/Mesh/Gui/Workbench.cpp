@@ -67,7 +67,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
   *analyze << "Mesh_Evaluation" << "Separator" << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
  
   mesh->setCommand( "&Mesh" );
-  *mesh << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" << "Mesh_BuildRegularSolid" << "Separator" 
+  *mesh << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" << "Mesh_FillupHoles" << "Mesh_RemoveComponents" << "Separator" << "Mesh_BuildRegularSolid" << "Separator" 
         << "Mesh_Import" << "Mesh_Export" << "Separator" 
         << "Mesh_PolyCut" << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
   return root;

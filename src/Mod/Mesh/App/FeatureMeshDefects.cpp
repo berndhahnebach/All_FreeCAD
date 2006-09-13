@@ -243,3 +243,55 @@ int FixIndices::execute(void)
 
   return 0;
 }
+
+// ----------------------------------------------------------------------
+
+PROPERTY_SOURCE(Mesh::FillHoles, Mesh::FixDefects)
+
+FillHoles::FillHoles()
+{
+  ADD_PROPERTY(FillupHolesOfLength,(0));
+}
+
+FillHoles::~FillHoles()
+{
+}
+
+int FillHoles::execute(void)
+{
+  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+
+  MeshCore::MeshTopoAlgorithm cTopAlg(*kernel);
+  cTopAlg.FillupHoles(FillupHolesOfLength.getValue());
+
+  Mesh.setValue(kernel);
+
+  return 0;
+}
+
+// ----------------------------------------------------------------------
+
+PROPERTY_SOURCE(Mesh::RemoveComponents, Mesh::FixDefects)
+
+RemoveComponents::RemoveComponents()
+{
+  ADD_PROPERTY(RemoveCompOfSize,(0));
+}
+
+RemoveComponents::~RemoveComponents()
+{
+}
+
+int RemoveComponents::execute(void)
+{
+  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+
+  MeshCore::MeshTopoAlgorithm cTopAlg(*kernel);
+  cTopAlg.RemoveComponents(RemoveCompOfSize.getValue());
+
+  Mesh.setValue(kernel);
+
+  return 0;
+}

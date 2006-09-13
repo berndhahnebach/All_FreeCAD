@@ -216,6 +216,11 @@ public:
    */
   inline unsigned short Side (const MeshFacet& rcFace) const;
   /**
+   * Returns true if this facet shares the same three points as \a rcFace.
+   * The orientation is not of interest in this case.
+   */
+  inline bool IsEqual (const MeshFacet& rcFace) const;
+  /**
    * Replaces the index of the corner point that is equal to \a ulOrig
    * by \a ulNew. If the facet does not have a corner point with this index
    * nothing happens.
@@ -344,6 +349,8 @@ public:
   inline float Perimeter() const;
   /** Calculates the area of a facet. */
   inline float Area () const;
+  /** Calculates the maximum angle of a facet. */
+  float MaximumAngle () const;
   /** Checks if the facet is inside the bounding box or intersects with it. */
   inline bool ContainedByOrIntersectBoundingBox (const Base::BoundBox3f &rcBB) const;
   /** Checks if the facet intersects with the given bounding box. */
@@ -408,10 +415,10 @@ public:
   float VolumeOfPrism (const MeshGeomFacet& rclF) const;
   /** Subsamples the facet into points with resolution \a fStep. */
   void SubSample (float fStep, std::vector<Base::Vector3f> &rclPoints) const;
-  /** Calculates the center and radius of the inner circle of the facet. */
-  float CenterOfInnerCircle(Base::Vector3f& rclCenter) const;
-  /** Calculates the center and radius of the outer circle of the facet. */
-  float CenterOfOuterCircle(Base::Vector3f& rclCenter) const;
+  /** Calculates the center and radius of the inscribed circle of the facet. */
+  float CenterOfInscribedCircle(Base::Vector3f& rclCenter) const;
+  /** Calculates the center and radius of the circum circle of the facet. */
+  float CenterOfCircumCircle(Base::Vector3f& rclCenter) const;
   /** Returns the edge number of the facet that is nearest to the point \a rclPt. */
   unsigned short NearestEdgeToPoint(const Base::Vector3f& rclPt) const;
   /** Returns the edge number \a side of the facet and the distance to the edge that is nearest to the point \a rclPt. */
@@ -828,6 +835,20 @@ inline unsigned short MeshFacet::Side (const MeshFacet& rFace) const
   }
   
   return USHRT_MAX;
+}
+
+inline bool MeshFacet::IsEqual (const MeshFacet& rcFace) const
+{
+  for ( int i=0; i<3; i++ ) {
+    if ( this->_aulPoints[0] == rcFace._aulPoints[i] ) {
+      if ( this->_aulPoints[1] == rcFace._aulPoints[(i+1)%3] && this->_aulPoints[2] == rcFace._aulPoints[(i+2)%3] )
+        return true;
+      else if ( this->_aulPoints[1] == rcFace._aulPoints[(i+2)%3] && this->_aulPoints[2] == rcFace._aulPoints[(i+1)%3] )
+        return true;
+    }
+  }
+
+  return false;
 }
 
 /**

@@ -355,9 +355,9 @@ bool ViewProviderMeshFaceSet::createPolygonMesh( const std::vector<SbVec2f>& rcl
   // now create the lids
   std::vector<MeshCore::MeshGeomFacet> aLid;
   MeshCore::MeshPolygonTriangulation cTria;
-  cTria.setPolygon( top );
-  ok &= cTria.compute();
-  aLid = cTria.getFacets();
+  cTria.SetPolygon( top );
+  ok &= cTria.Compute();
+  aLid = cTria.GetTriangles();
 
   // front lid
   for ( std::vector<MeshCore::MeshGeomFacet>::iterator itF1 = aLid.begin(); itF1 != aLid.end(); ++itF1 )
@@ -370,9 +370,9 @@ bool ViewProviderMeshFaceSet::createPolygonMesh( const std::vector<SbVec2f>& rcl
     aFaces.push_back( *itF1 );
   }
 
-  cTria.setPolygon( bottom );
-  ok &= cTria.compute();
-  aLid = cTria.getFacets();
+  cTria.SetPolygon( bottom );
+  ok &= cTria.Compute();
+  aLid = cTria.GetTriangles();
 
   // back lid
   for ( std::vector<MeshCore::MeshGeomFacet>::iterator itF2 = aLid.begin(); itF2 != aLid.end(); ++itF2 )

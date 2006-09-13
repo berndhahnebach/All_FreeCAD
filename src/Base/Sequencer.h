@@ -354,6 +354,7 @@ class BaseExport SequencerLauncher
 public:
   SequencerLauncher(const char* pszStr, unsigned long steps);
   ~SequencerLauncher();
+  bool next( bool canAbort = false );
 };
 
 /** Access to the only SequencerBase instance */

@@ -434,14 +434,15 @@ void DlgEvaluateMeshImp::onAnalyzeDegenerations()
 
     const MeshKernel& rMesh = _meshFeature->getMesh();
     MeshEvalDegeneratedFacets eval(rMesh);
+    std::vector<unsigned long> degen = eval.GetIndices();
     
-    if ( eval.Evaluate() )
+    if ( degen.empty() )
     {
       textLabelDegeneration->setText( tr("No degenerations found") );
     }
     else
     {
-      textLabelDegeneration->setText( tr("Degenerated faces found") );
+      textLabelDegeneration->setText( tr("%1 degenerated faces found").arg(degen.size()) );
       textLabelDegeneration->setChecked(true);
       repairDegenerated->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
@@ -488,14 +489,15 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedFaces()
 
     const MeshKernel& rMesh = _meshFeature->getMesh();
     MeshEvalDuplicateFacets eval(rMesh);
+    std::vector<unsigned long> dupl = eval.GetIndices();
     
-    if ( eval.Evaluate() )
+    if ( dupl.empty() )
     {
       textLabelDuplicatedFaces->setText( tr("No duplicated faces found") );
     }
     else
     {
-      textLabelDuplicatedFaces->setText( tr("Duplicated faces found") );
+      textLabelDuplicatedFaces->setText( tr("%1 duplicated faces found").arg(dupl.size()) );
       textLabelDuplicatedFaces->setChecked(true);
       repairDupFaces->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
