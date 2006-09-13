@@ -126,6 +126,7 @@ PyMethodDef DocumentPy::Methods[] = {
 
 
   PYMETHODEDEF(recompute)
+  PYMETHODEDEF(update)
 //  PYMETHODEDEF(Dump)
   PYMETHODEDEF(getActiveObject)
   PYMETHODEDEF(getObject)
@@ -470,6 +471,18 @@ PYFUNCIMP_D(DocumentPy,recompute)
 { 
   PY_TRY {
 	  _pcDoc->recompute(); 
+	  Py_Return; 
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(DocumentPy,update)
+{ 
+	char *sName;
+  if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C
+    return NULL;                             // NULL triggers exception 
+
+  PY_TRY {
+	  _pcDoc->update(sName); 
 	  Py_Return; 
   }PY_CATCH;
 } 

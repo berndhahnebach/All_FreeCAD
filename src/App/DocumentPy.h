@@ -77,6 +77,7 @@ public:
 	//PYFUNCDEF_D(DocumentPy,endTransaction)
 
   PYFUNCDEF_D(DocumentPy,recompute)
+  PYFUNCDEF_D(DocumentPy,update)
 
 //	PYFUNCDEF_D(DocumentPy,Dump)
 

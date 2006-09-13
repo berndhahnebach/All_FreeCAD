@@ -703,6 +703,22 @@ void Document::PurgeModified()
 {
   //_hDoc->PurgeModified(); 
 }
+void Document::update(DocumentObject* obj)
+{
+
+  DocChanges DocChange;
+  DocChange.Why = DocChanges::Recompute;
+  DocChange.UpdatedObjects.insert(obj);
+  Notify(DocChange);
+}
+
+void Document::update(const char *name)
+{
+  std::map<std::string,DocumentObject*>::iterator pos = ObjectMap.find(name);
+  if(pos != ObjectMap.end())
+    update(pos->second);
+}
+
 
 /// Recompute if the document was  not valid and propagate the reccorded modification.
 void Document::recompute()
