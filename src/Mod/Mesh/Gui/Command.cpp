@@ -932,19 +932,18 @@ void CmdMeshFillupHoles::activated(int iMsg)
                                                       3, 3, 10000, 1, &ok, Gui::getMainWindow() );
   if (!ok) return;
 
+  openCommand("Fill up holes");
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     std::string fName = (*it)->name.getValue();
     fName += "_fill";
     fName = getUniqueObjectName(fName.c_str());
-    openCommand("Fill up holes");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FillHoles\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.FillupHolesOfLength = %d",fName.c_str(), FillupHolesOfLength);
-    commitCommand();
-    updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
   }
+  commitCommand();
+  updateActive();
 }
 
 bool CmdMeshFillupHoles::isActive(void)
@@ -975,19 +974,18 @@ void CmdMeshRemoveComponents::activated(int iMsg)
                                                       3, 1, 10000000, 1, &ok, Gui::getMainWindow() );
   if (!ok) return;
 
+  openCommand("Remove components");
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     std::string fName = (*it)->name.getValue();
     fName += "_rem_comps";
     fName = getUniqueObjectName(fName.c_str());
-    openCommand("Remove components");
     doCommand(Doc,"App.activeDocument().addObject(\"Mesh::RemoveComponents\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     doCommand(Doc,"App.activeDocument().%s.RemoveCompOfSize = %d",fName.c_str(), RemoveCompOfSize);
-    commitCommand();
-    updateActive();
-    doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());
   }
+  commitCommand();
+  updateActive();
 }
 
 bool CmdMeshRemoveComponents::isActive(void)

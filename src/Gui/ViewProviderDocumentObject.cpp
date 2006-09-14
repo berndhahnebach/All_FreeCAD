@@ -137,12 +137,6 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
   // save Object pointer
   pcObject = pcObj;
 
-  // copy the material properties of the Object
-//  setMatFromObject();
-
-  // set viewing mode
-  //setMode(pcObject->getShowMode());
-
   // Retrieve the supported display modes of the view provider
   std::list<std::string> modes = getModes();
 
@@ -329,14 +323,14 @@ bool ViewProviderDocumentObject::testStatus(void)
   return true;
 }
 
-bool ViewProviderDocumentObject::ifDataNewer(void)
+bool ViewProviderDocumentObject::ifDataNewer(void) const
 {
   // first do attach
   assert(pcObject);
   return pcObject->getTouchTime() > calcData || pcObject->getTouchTime() == calcData; 
 }
 
-bool ViewProviderDocumentObject::ifMaterialNewer(void)
+bool ViewProviderDocumentObject::ifMaterialNewer(void) const
 {
   // first do attach
   assert(pcObject);
@@ -347,19 +341,21 @@ bool ViewProviderDocumentObject::ifMaterialNewer(void)
 
 void ViewProviderDocumentObject::update(void)
 {
-  if(ifDataNewer())
-  {
-    updateData();
-    
-    calcData.setToActual();
-  }
-
-  if(ifMaterialNewer())
-  {
-//    setMatFromObject();
-    calcMaterial.setToActual();
-  }
-
+  //FIXME: Leads to problems when using time stamps. It's basically the same problem as desribed in 
+  //       AbstractFeature::mustExecute().
+  updateData();
+//  if(ifDataNewer())
+//  {
+//    updateData();
+//    
+//    calcData.setToActual();
+//  }
+//
+//  if(ifMaterialNewer())
+//  {
+////    setMatFromObject();
+//    calcMaterial.setToActual();
+//  }
 }
 
 
@@ -368,48 +364,3 @@ std::list<std::string> ViewProviderDocumentObject::getModes(void) const
   // empty
   return std::list<std::string>();
 }
-
-
-//void ViewProviderDocumentObject::copy(const App::Material &Mat, SoMaterial* pcSoMat)
-//{
-//  pcSoMat->ambientColor.setValue(Mat.ambientColor.r,Mat.ambientColor.g,Mat.ambientColor.b);
-//  pcSoMat->diffuseColor.setValue(Mat.diffuseColor.r,Mat.diffuseColor.g,Mat.diffuseColor.b);
-//  pcSoMat->specularColor.setValue(Mat.specularColor.r,Mat.specularColor.g,Mat.specularColor.b);
-//  pcSoMat->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
-//  pcSoMat->shininess.setValue(Mat.shininess);
-//  pcSoMat->transparency.setValue(Mat.transparency);
-//
-//}
-
-//void ViewProviderDocumentObject::setMatFromObject(void)
-//{
-//  copy(pcObject->getSolidMaterial(),pcShapeMaterial);
-//  copy(pcObject->getLineMaterial(),pcLineMaterial);
-//  copy(pcObject->getPointMaterial(),pcPointMaterial);
-//  pcLineStyle->lineWidth  = pcObject->getLineSize();
-//  pcPointStyle->pointSize = pcObject->getPointSize();
-//
-//  // touch the material time
-//  calcMaterial.setToActual();
-//}
-
-//void ViewProviderDocumentObject::setTransparency(float trans)
-//{
-//  pcShapeMaterial->transparency = trans;
-//}
-
-//void ViewProviderDocumentObject::setColor(const App::Color &c)
-//{
-//  pcShapeMaterial->diffuseColor.setValue(c.r,c.g,c.b);
-//}
-
-//void ViewProviderDocumentObject::setPointSize(float val)
-//{
-//  pcPointStyle->pointSize.setValue( val );
-//}
-
-//void ViewProviderDocumentObject::setLineWidth(float val)
-//{
-//  pcLineStyle->lineWidth.setValue( val );
-//}
-

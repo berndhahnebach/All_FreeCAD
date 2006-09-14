@@ -907,21 +907,13 @@ void Application::runApplication()
 
 void Application::logStatus()
 {
-//#if defined(FC_OS_WIN32)
-//  SYSTEMTIME time;
-
-//  GetSystemTime(&time);
-
-//  Console().Log("Init: Time: %d-%d-%d %d:%d,%d\n",time.wYear,time.wMonth,time.wDay,time.wHour,time.wMinute,time.wSecond);
-//#elif defined(FC_OS_LINUX)
   time_t now;
   time(&now);
   Console().Log("Init: Time: %s\n", ctime(&now));
-//#endif
 
   for(std::map<std::string,std::string>::iterator It = mConfig.begin();It!= mConfig.end();It++)
 	{
-		Console().Log("  %s\t= %s\n",It->first.c_str(),It->second.c_str());
+		Console().Log("%s\t= %s\n",It->first.c_str(),It->second.c_str());
 	}
 }
 

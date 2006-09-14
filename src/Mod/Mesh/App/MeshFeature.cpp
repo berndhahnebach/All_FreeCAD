@@ -82,9 +82,17 @@ Base::PyObjectBase *Feature::GetPyObject(void)
 
 void Feature::onChanged(const App::Property* prop)
 {
-  // Ignore some properties
-  //
-  AbstractFeature::onChanged(prop);
+  // FIXME: What is to do if only the mesh property has changed? I think in this case no recomputation needs to be done
+  // for the owner feature because the mesh is the output of the previous recomputation and not an input parameter.
+  // But on the other hand all feature objects that depend on this mesh must be executed because for these ones it is
+  // an input parameter.
+  if ( prop == &Mesh ) {
+  // call for undo/redo only but do not set to be modified
+    DocumentObject::onChanged(prop);
+  } else {
+    // set to be modified
+    AbstractFeature::onChanged(prop);
+  }
 }
 
 const MeshCore::MeshKernel& Feature::getMesh() const

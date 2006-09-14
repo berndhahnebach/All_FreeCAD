@@ -125,21 +125,12 @@ public:
 
   
   /** @name direct handling methods
-    *  This group of methods is to direct influenc the 
-    *  apierence of the viewed content. Its only for fast
+    *  This group of methods is to direct influence the 
+    *  appearence of the viewed content. It's only for fast
     *  interactions! If you whant to set the visual parameters
-    *  you have to do it on the object viewed by this Provider!
+    *  you have to do it on the object viewed by this provider!
     */
   //@{
-  /// Set the transparency
-//  virtual void setTransparency(float)=0;
-  /// Set the color
-//  virtual void setColor(const App::Color &c)=0;
-  /// Set the point size
-//  virtual void setPointSize(float)=0;
-  /// Set the line width
-//  virtual void setLineWidth(float)=0;
-
   /// set the viewing transformation of the provider
   virtual void setTransformation(const Base::Matrix4D &rcMatrix);
   virtual void setTransformation(const SbMatrix &rcMatrix);

@@ -1025,12 +1025,10 @@ void MeshTopoAlgorithm::FillupHoles(unsigned long length)
 
   // get the facets to a point
   MeshRefPointToFacets cPt2Fac(_rclMesh);
-  MeshPointArray& rPoints = _rclMesh._aclPointArray;
-  MeshFacetArray& rFacets = _rclMesh._aclFacetArray;
 
   // Count the number of open edges for each point
   std::map<unsigned long, int> openPointDegree;
-  for ( MeshFacetArray::_TConstIterator jt = rFacets.begin(); jt != rFacets.end(); ++jt ) 
+  for ( MeshFacetArray::_TConstIterator jt = _rclMesh._aclFacetArray.begin(); jt != _rclMesh._aclFacetArray.end(); ++jt ) 
   {
     for ( int i=0; i<3; i++ ) {
       if ( jt->_aulNeighbours[i] == ULONG_MAX ) {

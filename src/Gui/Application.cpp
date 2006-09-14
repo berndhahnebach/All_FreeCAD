@@ -729,6 +729,7 @@ void Application::initTypes(void)
 
 void messageHandler( QtMsgType type, const char *msg )
 {
+#ifdef FC_DEBUG
   switch ( type )
   {
     case QtDebugMsg:
@@ -741,6 +742,10 @@ void messageHandler( QtMsgType type, const char *msg )
       Base::Console().Error( msg );
       abort();                    // deliberately core dump
   }
+#else
+  // do not stress user with Qt internals but write to log file if enabled
+  Base::Console().Log( "%s\n", msg );
+#endif
 }
 
 #ifdef FC_DEBUG // redirect Coin messages to FreeCAD

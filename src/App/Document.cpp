@@ -703,9 +703,9 @@ void Document::PurgeModified()
 {
   //_hDoc->PurgeModified(); 
 }
+
 void Document::update(DocumentObject* obj)
 {
-
   DocChanges DocChange;
   DocChange.Why = DocChanges::Recompute;
   DocChange.UpdatedObjects.insert(obj);

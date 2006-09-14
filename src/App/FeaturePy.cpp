@@ -243,75 +243,22 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
 
 int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-//	if (Base::streq(attr, "solidMaterial")){						// settable new state
-//    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
-//    {
-//      _pcFeature->_solidMaterial = *((MaterialPy*)value)->_pcMaterial;
-//      _pcFeature->TouchView();
-//    }else if( PyString_Check( value ))
-//    {
-//      _pcFeature->_solidMaterial = Material(PyString_AsString(value));
-//      _pcFeature->TouchView();
-//    }else if( PyTuple_Check( value ))
-//    {
-//      _pcFeature->_solidMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
-//      _pcFeature->TouchView();
-//    }else
-//      throw "material expected for that attribute";
-//  }else	if (Base::streq(attr, "lineMaterial")){	
-//    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
-//    {
-//      _pcFeature->_lineMaterial = *((MaterialPy*)value)->_pcMaterial;
-//      _pcFeature->TouchView();
-//    }else if( PyTuple_Check( value ))
-//    {
-//      _pcFeature->_lineMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
-//      _pcFeature->TouchView();
-//    }else
-//      throw "material expected for that attribute";
-//  }else	if (Base::streq(attr, "pointMaterial")){	
-//    if( PyObject_TypeCheck( value, &(MaterialPy::Type) ))
-//    {
-//      _pcFeature->_pointMaterial = *((MaterialPy*)value)->_pcMaterial;
-//      _pcFeature->TouchView();
-//    }else if( PyTuple_Check( value ))
-//    {
-//      _pcFeature->_pointMaterial.diffuseColor = MaterialPy::getColorFromPy(value);
-//      _pcFeature->TouchView();
-//    }else
-//      throw "material expected for that attribute";
-//  }else	if (Base::streq(attr, "lineSize")){	
-//    _pcFeature->_lineSize = getFloatFromPy(value);
-//    _pcFeature->TouchView();
-//  }else	if (Base::streq(attr, "pointSize")){	
-//    _pcFeature->_pointSize = getFloatFromPy(value);
-//    _pcFeature->TouchView();
-//  }else	if (Base::streq(attr, "transparency")){	
-//    _pcFeature->setTransparency(getFloatFromPy(value));
-//    _pcFeature->TouchView();
-//  }else	if (Base::streq(attr, "color")){	
-//    _pcFeature->setColor(MaterialPy::getColorFromPy(value));
-//    _pcFeature->TouchView();
-//  }else	if (Base::streq(attr, "showMode")){	
-//    _pcFeature->showMode.setValue(PyString_AsString(value));
-//    _pcFeature->TouchView();
-//  }else{
-       // search in PropertyList
-      Property *prop = _pcFeature->getPropertyByName(attr);
-      if(prop)
-      {
-        try {
-          prop->setPyObject(value);
-        } catch (Base::Exception &exc) {
-          PyErr_Format(PyExc_AttributeError, "Attribut (Name: %s) error: '%s' ", attr, exc.what());
-          return -1;
-        } catch (...) {
-          PyErr_Format(PyExc_AttributeError, "Unknown error in attribut %s", attr);
-          return -1;
-        }
-      }else
-			  return DocumentObjectPy::_setattr(attr, value); 						
-//  }
+   // search in PropertyList
+  Property *prop = _pcFeature->getPropertyByName(attr);
+  if(prop) { 
+    try {
+      prop->setPyObject(value);
+    } catch (Base::Exception &exc) {
+      PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
+      return -1;
+    } catch (...) {
+      PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
+      return -1;
+    }
+  } else {
+		return DocumentObjectPy::_setattr(attr, value);
+  }
+
   return 0;
 } 
 

@@ -428,9 +428,12 @@ bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DIn
       MeshCore::MeshFacetGrid cGrid(meshProp.getValue());
       MeshCore::MeshAlgorithm cAlg(meshProp.getValue());
       cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
-      meshProp.enableNotify(false);
+
+      //Remove the facets from the mesh and open a transaction object for the undo/redo stuff
+      Gui::Application::Instance->activeDocument()->openCommand("Cut");
       meshProp.deleteFacetIndices( indices );
-      meshProp.enableNotify(true);
+      Gui::Application::Instance->activeDocument()->commitCommand();
+      ((Mesh::Feature*)pcObject)->setModified(false);
 
       // notify the mesh shape node
       pcFaceSet->touch();
