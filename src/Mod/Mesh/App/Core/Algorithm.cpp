@@ -1859,8 +1859,8 @@ Base::Vector3f MeshPolygonTriangulation::TransformToFitPlane()
   Base::Vector3f ex(U.X(), U.Y(), U.Z());
   Base::Vector3f ey(V.X(), V.Y(), V.Z());
 
-  for ( it = _aclPoints.begin(); it!=_aclPoints.end(); ++it )
-    it->TransformToCoordinateSystem(base, ex, ey);
+  for ( std::vector<Base::Vector3f>::iterator jt = _aclPoints.begin(); jt!=_aclPoints.end(); ++jt )
+    jt->TransformToCoordinateSystem(base, ex, ey);
 
   return Base::Vector3f(W.X(), W.Y(), W.Z());
 }

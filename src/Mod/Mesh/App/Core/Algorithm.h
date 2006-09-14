@@ -372,7 +372,7 @@ private:
 
   /**
    * Static class to triangulate any contour/polygon (without holes) efficiently.
-  /* The original code snippet was submitted to FlipCode.com by John W. Ratcliff 
+   * The original code snippet was submitted to FlipCode.com by John W. Ratcliff 
    * (jratcliff@verant.com) on July 22, 2000.
    * The original vector of 2d points is replaced by a vector of 3d points where the
    * z-ccordinate is ignored. This is because the algorithm is often used for 3d points 
