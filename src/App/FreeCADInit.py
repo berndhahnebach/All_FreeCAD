@@ -59,7 +59,7 @@ def InitApplications():
 	sys.path.append( ModDir )
 	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'src\\Tools'):
 		sys.path.append( FreeCAD.ConfigGet("HomePath")+'src\\Tools' )
-	Log("   Using "+ModDir+" as module path!\n")
+	Log("Using "+ModDir+" as module path!\n")
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)
 	PathExtension = ""
@@ -79,7 +79,7 @@ def InitApplications():
 				except:
 					Err("Unexpected error in : " + InstallFile + " not initialized!\n")
 				else:
-					Log('Init:        done\n')
+					Log('done\n')
 			else:
 				Wrn("Init.py not found! "+Dir+" not initialized!\n")
 	os.environ["PATH"] += PathExtension

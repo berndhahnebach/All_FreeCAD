@@ -63,6 +63,7 @@ public:
 
   virtual void onChanged(const Property* prop);
   void setModified(bool);
+  bool isModified() const;
 
 
 	/** @name methods to overide with a new feature type */

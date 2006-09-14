@@ -81,16 +81,12 @@ Base::PyObjectBase *AbstractFeature::GetPyObject(void)
 
 void AbstractFeature::onChanged(const Property* prop)
 {
-  // call father for Undo/Redo....
+  // call father for Undo/Redo...
   DocumentObject::onChanged(prop);
 
   // Ignore some properties
   if ( prop == &status )
     return;
-//  else if ( prop == &showMode )
-//    return;
-//  else if ( prop == &visibility )
-//    return;
   else if ( prop == &name )
     return;
   touchPropertyTime.setToActual();
@@ -100,6 +96,11 @@ void AbstractFeature::onChanged(const Property* prop)
 void AbstractFeature::setModified(bool b)
 {
   _execute = b;
+}
+
+bool AbstractFeature::isModified() const
+{
+  return _execute;
 }
 
 bool AbstractFeature::mustExecute(void)

@@ -391,15 +391,18 @@ void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
 
 App::Property *PropertyMeshKernel::Copy(void) const
 {
+  //NOTE: We must not copy the pointer to the mesh but the mesh data itself 
   PropertyMeshKernel *p= new PropertyMeshKernel();
-  p->_pcMesh = _pcMesh;
+  *(p->_pcMesh) = *_pcMesh;
   return p;
 }
 
 void PropertyMeshKernel::Paste(const App::Property &from)
 {
+  //NOTE: We must not restore the pointer to the mesh but the mesh data itself 
   aboutToSetValue();
-  _pcMesh = dynamic_cast<const PropertyMeshKernel&>(from)._pcMesh;
+  const PropertyMeshKernel& p = dynamic_cast<const PropertyMeshKernel&>(from);
+  *_pcMesh = *p._pcMesh;
   hasSetValue();
 }
 

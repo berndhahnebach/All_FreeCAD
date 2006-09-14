@@ -82,9 +82,9 @@ public:
   void setActiveMode();
 
   /// check if the Data has to be recalculated
-  bool ifDataNewer(void);
+  bool ifDataNewer(void) const;
   /// check if the matrial has to be recalculated
-  bool ifMaterialNewer(void); 
+  bool ifMaterialNewer(void) const; 
 
   virtual void update(void);
 
@@ -95,21 +95,6 @@ public:
     return dynamic_cast<App::AbstractFeature *>(pcObject);
   }
   
-
-  /// helper to copy material from a feature to a SoMeterial Node
-//  void copy(const App::Material&, SoMaterial*);
-  /// helper to set the materials
-//  void setMatFromObject(void);
-
-  /// Set the transparency
-//  virtual void setTransparency(float);
-  /// Set the color
-//  virtual void setColor(const App::Color &c);
-  /// Set the point size
-//  virtual void setPointSize(float);
-  /// Set the line width
-//  virtual void setLineWidth(float);
-
   /// freqently called by the framework to check status changes in the data
   virtual bool testStatus(void);
 
@@ -127,10 +112,6 @@ protected:
 
 protected:
   SoMaterial  *pcShapeMaterial;
-//  SoMaterial  *pcLineMaterial;
-//  SoMaterial  *pcPointMaterial;
-//  SoDrawStyle *pcLineStyle;
-//  SoDrawStyle *pcPointStyle;
 
   App::DocumentObject *pcObject;
 
