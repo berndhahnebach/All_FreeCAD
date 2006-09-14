@@ -75,8 +75,8 @@ handler=SvnHandler()
 parser.setContentHandler(handler)
 
 #Create an XML stream with the required information and read in with a SAX parser
-Ver=os.popen("svnversion .. -n").read()
-Info=os.popen("svn info .. --xml").read()
+Ver=os.popen("svnversion . -n").read()
+Info=os.popen("svn info . --xml").read()
 inpsrc = xml.sax.InputSource()
 str=StringIO.StringIO(Info)
 inpsrc.setByteStream(str)
@@ -118,10 +118,10 @@ if r != None:
     Range = Ver[:r.end()]
 
 # Open the template file and the version file
-file = open("../Build/Version.h.in")
+file = open("./Build/Version.h.in")
 lines = file.readlines()
 file.close()
-out  = open("../Build/Version.h","w");
+out  = open("./Build/Version.h","w");
 
 for line in lines:
     line = string.replace(line,'$WCREV$',Rev)

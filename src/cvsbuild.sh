@@ -12,6 +12,10 @@ chmod u+x depcomp
 chmod u+x install-sh
 chmod u+x ltmain.sh
 
+# Create Version.h with Python script
+echo "creating Version.h"
+python Tools/SubWCRev.py
+
 #aclocal
 #autoheader
 #automake --add-missing
