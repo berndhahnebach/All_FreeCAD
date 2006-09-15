@@ -334,7 +334,7 @@ std::vector<unsigned long> MeshEvalDuplicateFacets::GetIndices() const
   std::set<MeshFacet, MeshFacet_Less > aFaceSet;
   for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++ )
   {
-    std::pair<std::set<MeshFacet>::iterator, bool> pI = aFaceSet.insert(*it);
+    std::pair<std::set<MeshFacet, MeshFacet_Less>::iterator, bool> pI = aFaceSet.insert(*it);
     if ( !pI.second )
       aInds.push_back(uIndex);
   }
@@ -352,7 +352,7 @@ bool MeshFixDuplicateFacets::Fixup()
   std::set<MeshFacet, MeshFacet_Less > aFaceSet;
   for ( MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it, uIndex++ )
   {
-    std::pair<std::set<MeshFacet>::iterator, bool> pI = aFaceSet.insert(*it);
+    std::pair<std::set<MeshFacet, MeshFacet_Less>::iterator, bool> pI = aFaceSet.insert(*it);
     if ( !pI.second )
       aRemoveFaces.push_back(uIndex);
   }

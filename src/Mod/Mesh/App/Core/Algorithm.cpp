@@ -1710,7 +1710,7 @@ bool MeshPolygonTriangulation::ComputeQuasiDelaunay()
       unsigned long ulPt0 = std::min<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
       unsigned long ulPt1 = std::max<unsigned long>(pI->_aulPoints[i],  pI->_aulPoints[(i+1)%3]);
       // ignore borderlines of the polygon
-      if ( abs(ulPt0-ulPt1)%(_aclPoints.size()-1) > 1 )
+      if ( (ulPt1-ulPt0)%(_aclPoints.size()-1) > 1 )
         aEdge2Face[std::pair<unsigned long, unsigned long>(ulPt0, ulPt1)].push_back(pI - _aclFacets.begin());
     }
   }
