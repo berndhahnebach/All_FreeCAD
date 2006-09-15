@@ -106,7 +106,7 @@ void CmdRaytracingWriteCamera::activated(int iMsg)
   SbVec3f pos = Cam->position.getValue();
   float Dist = Cam->focalDistance.getValue();
 
-  // geting standard parameter
+  // getting standard parameter
   ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
   std::string cDir             = hGrp->GetASCII("ProjectPath", "");
   std::string cCameraName      = hGrp->GetASCII("CameraName", "TempCamera.inc");
@@ -160,7 +160,7 @@ void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** verte
     return;
   }
 
-  // geting the transformation of the shape/face
+  // getting the transformation of the shape/face
 	gp_Trsf myTransf;
 	Standard_Boolean identity = true;
 	if(!aLoc.IsIdentity())  {
@@ -169,7 +169,7 @@ void transferToArray(const TopoDS_Face& aFace,SbVec3f** vertices,SbVec3f** verte
   }
 
   Standard_Integer i;
-  // geting size and create the array
+  // getting size and create the array
 	nbNodesInFace = aPoly->NbNodes();
 	nbTriInFace = aPoly->NbTriangles();
 	*vertices = new SbVec3f[nbNodesInFace];
@@ -338,11 +338,22 @@ CmdRaytracingNewProject::CmdRaytracingNewProject()
 
 void CmdRaytracingNewProject::activated(int iMsg)
 {
-  const char* tmp = getenv("TMP");
-  std::string tempPath = tmp ? tmp : "";
+  // getting standard parameter
+  ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");
+  std::string cDir             = hGrp->GetASCII("ProjectPath", "");
+  // xorx: The following has to be implemented as a setting
+  std::string cPovRayName      = hGrp->GetASCII("SceneFilename", "PovrayScene.pov");
+  // HACK: This is the workaround
+  //std::string cPovRayName="PovrayScene.pov";
 
+  if(cDir!="" && cDir[cDir.size()-1] != PATHSEP)
+    cDir += PATHSEP;
+  std::string cFullName = cDir+cPovRayName;
+
+  // Open RayTracing module
   doCommand(Doc,"import Raytracing");
-  doCommand(Doc,"Raytracing.copyResource(\"FCSimple.pov\",\"%s\")",tempPath.c_str());
+  // Get the default scene file and write it to the Project directory
+  doCommand(Doc,"Raytracing.copyResource(\"FCSimple.pov\",\"%s\")",strToPython(cFullName).c_str());
 }
 
 bool CmdRaytracingNewProject::isActive(void)

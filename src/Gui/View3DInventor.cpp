@@ -27,6 +27,7 @@
 # include <qapplication.h>
 # include <qdragobject.h>
 # include <qfileinfo.h>
+# include <qtimer.h>
 # include <qvbox.h>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/actions/SoGetPrimitiveCountAction.h>
@@ -85,6 +86,9 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
   else
     _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
   _viewer->show();
+
+  stopSpinTimer = new QTimer(this);
+  connect(stopSpinTimer, SIGNAL(timeout()), this, SLOT(stopSpinning()));
 }
 
 View3DInventor::~View3DInventor()
@@ -514,6 +518,41 @@ void View3DInventor::dump(const char* filename)
     _viewer->dumpToFile(filename,true);
   else
     _viewer->dumpToFile(filename,false);
+}
+
+void View3DInventor::setActiveView(bool act)
+{
+  //fixes bug 1558658 (maybe insert a checkbox in viewer settings)
+  //
+  // Check whether this window is in toplevel mode
+  bool canStart = (!act && !isTopLevel());
+  if ( canStart ) {
+    //Note: If a window becomes deactivated then we have no chance to query its state, i.e. whether
+    //it is in minimized, in maximized or in fullscreen mode. The only way here is to get the state of
+    //the currently active window. Only if this active window is maximized and both windows are not in
+    //toplevel mode the deactivated window is hidden for sure and we can start the timer. 
+    //
+    // active window is maximized
+    QWidget* active = getMainWindow()->activeWindow();
+    canStart = active ? (active->isMaximized()&&!active->isTopLevel()) : true;
+
+    if ( canStart ) {
+      // do a sinlge shot event
+      int msecs = hGrp->GetInt("StopSpinningIfDeactivated", 3000);
+      if (msecs >= 0) // if < 0 do not stop rotation
+        stopSpinTimer->start(msecs, true);
+    }
+  } else if ( stopSpinTimer->isActive() ) {
+    // if the window becomes active before the timeout event is emitted we stop the timer
+    stopSpinTimer->stop();
+  }
+
+  MDIView::setActiveView(act);
+}
+
+void View3DInventor::stopSpinning()
+{
+  _viewer->stopSpinning();
 }
 
 /**

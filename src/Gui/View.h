@@ -157,8 +157,8 @@ public:
   /// MDI view mode enum
   enum ViewMode {
     Normal,     /**< Normal viewing, view is docked inside the MDI application window */  
-    TopLevel,   /**< The view becomes a top level window and can moved outsinde the Application windwo */  
-    FullScreen  /**< the view go to full screen viewing */
+    TopLevel,   /**< The view becomes a top level window and can be moved outsinde the application window */  
+    FullScreen  /**< The view goes to full screen viewing */
   };
   /**
    * If \a b is set to \a FullScreen the MDI view is displayed in full screen mode, if \a b
@@ -173,7 +173,7 @@ signals:
   void message(const QString&, int );
 
 public slots:
-  void setActive(void);
+  virtual void setActiveView(bool);
 
 protected:
   void windowActivationChange( bool oldActive );

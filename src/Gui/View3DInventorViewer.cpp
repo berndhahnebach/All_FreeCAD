@@ -296,6 +296,11 @@ void View3DInventorViewer::setEnabledFPSCounter(bool b)
 #endif
 }
 
+void View3DInventorViewer::stopSpinning()
+{
+  _bSpining = false;
+}
+
 View3DInventorViewer::~View3DInventorViewer()
 {
   this->backgroundroot->unref();

@@ -173,3 +173,7 @@ Version: V0.5B8 Date: Tue Aug 01 21:53:34 2006 +++++++++++++++++++++++++++++++
 + Option added to do one- or two-side rendering of meshes
 + Dialog to enter numbers higher than the maximum of int's, i.e numbers up to 4294967295
 + Bug 1449428 (Crash when output to console too long) fixed by replacing vsprintf by vsnprint
++ Bug 1558658 (A hidden view with a spinning part consumes CPU-Time) fixed
++ Bug 1558622 (Version.h is not generated with a normal build) fixed
++ Patches 1559380, 1559154 applied
+
