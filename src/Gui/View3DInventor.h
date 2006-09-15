@@ -24,17 +24,17 @@
 #ifndef __VIEW3DINVENTOR__
 #define __VIEW3DINVENTOR__
 
-#include "View.h"
-
-#include "Inventor/Qt/viewers/SoQtViewer.h"
+#include <Inventor/Qt/viewers/SoQtViewer.h>
 
 #include <Base/Parameter.h>
+#include "View.h"
 
 class QMouseEvent;
 class QSplitter;
 class QWidget;
 class QPushButton;
 class QTabBar;
+class QTimer;
 class QVBox;
 class SoQtViewer;
 
@@ -101,10 +101,14 @@ public:
   static const std::string &View3DInventor::writeNodesToString(SoNode * root);
 
   View3DInventorViewer *getViewer(void) {return _viewer;}
+  void setActiveView(bool);
 
 public slots:
   void setCursor(const QCursor&);
   void dump(const char* filename);
+
+protected slots:
+  void stopSpinning();
 
 protected:
   void dropEvent        ( QDropEvent      * e );
@@ -117,6 +121,7 @@ protected:
 
 private:
   View3DInventorViewer * _viewer;
+  QTimer * stopSpinTimer;
 };
 
 } // namespace Gui

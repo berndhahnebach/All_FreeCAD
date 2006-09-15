@@ -28,6 +28,7 @@
 # include <qdragobject.h>
 # include <qeventloop.h>
 # include <qfileinfo.h>
+# include <qguardedptr.h>
 # include <qlabel.h>
 # include <qmenubar.h>
 # include <qstatusbar.h>
@@ -104,6 +105,7 @@ struct MainWindowP
   QTimer *		 _pcActivityTimer; 
   QWorkspace* _pWorkspace;
   QTabBar* _tabs;
+  QGuardedPtr<MDIView> _lastActiveView;
   QMap<int, MDIView*> _mdiIds;
 };
 
@@ -165,6 +167,7 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   d->_tabs = new MDITabbar( vb, "tabBar" );
   d->_tabs->setShape( QTabBar::RoundedBelow );
   d->_pWorkspace->setScrollBarsEnabled( true );
+  d->_lastActiveView = 0;
   setCentralWidget( vb );
   connect( d->_pWorkspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
   connect( d->_tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
@@ -495,9 +498,8 @@ void MainWindow::onWindowActivated( QWidget* w )
   // Result: So, we accept the first problem to be sure to avoid the second one.
   if ( !mdi /*|| !mdi->isActiveWindow()*/ ) 
     return; // either no MDIView or no valid object or no top-level window
-
-  mdi->setActive();
-
+  
+  // set the appropriate tab to the new active window
   for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
   {
     if ( it.data() == mdi )
@@ -508,6 +510,14 @@ void MainWindow::onWindowActivated( QWidget* w )
       break;
     }
   }
+
+  // that's the previously active view that becomes inactive now
+  if ( d->_lastActiveView )
+    d->_lastActiveView->setActiveView(false);
+
+  // set active the appropriate window (it needs not to be part of _mdiIds, e.g. directly after creation)
+  mdi->setActiveView(true);
+  d->_lastActiveView = mdi;
 }
 
 void MainWindow::onTabSelected( int i)
