@@ -119,7 +119,7 @@ public:
 	/// get a vector of all bool values in this group
 	std::vector<bool> GetBools(const char * sFilter = NULL) const;
 	/// get a map with all bool values and the keys of this group
-	std::map<std::string,bool> ParameterGrp::GetBoolMap(const char * sFilter = NULL) const;
+	std::map<std::string,bool> GetBoolMap(const char * sFilter = NULL) const;
 	/// remove a bool value from this group
 	void RemoveBool(const char* Name);
 	//@}
@@ -197,7 +197,7 @@ public:
 	 */
 	std::vector<std::string> GetASCIIs(const char * sFilter = NULL) const;
 	/// Same as GetASCIIs() but with key,value map
-	std::map<std::string,std::string> ParameterGrp::GetASCIIMap(const char * sFilter = NULL) const;
+	std::map<std::string,std::string> GetASCIIMap(const char * sFilter = NULL) const;
 	//@}
 
 	static void Init(void);
@@ -234,7 +234,7 @@ protected:
 	 *  element of Type and with the attribute Name=Name. On success it returns
 	 *  the pointer to that element, otherwise it creates the element and returns the pointer.
 	 */
-	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *ParameterGrp::FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name) const;
+	XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *FindOrCreateElement(XERCES_CPP_NAMESPACE_QUALIFIER DOMElement *Start, const char* Type, const char* Name) const;
 
 
 	/// DOM Node of the Base node of this group
