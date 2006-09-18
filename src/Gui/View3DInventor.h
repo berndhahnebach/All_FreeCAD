@@ -101,7 +101,6 @@ public:
   static const std::string &View3DInventor::writeNodesToString(SoNode * root);
 
   View3DInventorViewer *getViewer(void) {return _viewer;}
-  void setActiveView(bool);
 
 public slots:
   void setCursor(const QCursor&);
@@ -111,6 +110,7 @@ protected slots:
   void stopSpinning();
 
 protected:
+  void showActiveView( MDIView* );
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
   void keyPressEvent    ( QKeyEvent       * e );

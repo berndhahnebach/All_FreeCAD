@@ -29,6 +29,7 @@
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoFaceSet.h>
 # include <Inventor/nodes/SoLineSet.h>
+# include <Inventor/nodes/SoMarkerSet.h>
 # include <Inventor/nodes/SoShapeHints.h>
 #endif
 
@@ -117,13 +118,22 @@ void ViewProviderMeshOrientation::attach(App::DocumentObject* pcFeat)
   flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
   pcFaceRoot->addChild(flathints);
 
-  // Draw lines
+  // Draw faces
   SoSeparator* linesep = new SoSeparator;
   SoBaseColor * basecol = new SoBaseColor;
   basecol->rgb.setValue( 1.0f, 0.5f, 0.0f );
   linesep->addChild(basecol);
   linesep->addChild(pcCoords);
   linesep->addChild(pcFaces);
+
+  // Draw markers
+  SoBaseColor * markcol = new SoBaseColor;
+  markcol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  SoMarkerSet* marker = new SoMarkerSet;
+  marker->markerIndex=SoMarkerSet::PLUS_7_7;
+  linesep->addChild(markcol);
+  linesep->addChild(marker);
+
   pcFaceRoot->addChild(linesep);
 
   addDisplayMode(pcFaceRoot, "Face");
@@ -185,6 +195,14 @@ void ViewProviderMeshNonManifolds::attach(App::DocumentObject* pcFeat)
   linesep->addChild(pcCoords);
   linesep->addChild(pcLines);
   pcLineRoot->addChild(linesep);
+
+  // Draw markers
+  SoBaseColor * markcol = new SoBaseColor;
+  markcol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  SoMarkerSet* marker = new SoMarkerSet;
+  marker->markerIndex=SoMarkerSet::PLUS_7_7;
+  linesep->addChild(markcol);
+  linesep->addChild(marker);
 
   addDisplayMode(pcLineRoot, "Line");
 }
@@ -250,6 +268,14 @@ void ViewProviderMeshDuplicatedFaces::attach(App::DocumentObject* pcFeat)
   linesep->addChild(pcCoords);
   linesep->addChild(pcFaces);
   pcFaceRoot->addChild(linesep);
+
+  // Draw markers
+  SoBaseColor * markcol = new SoBaseColor;
+  markcol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  SoMarkerSet* marker = new SoMarkerSet;
+  marker->markerIndex=SoMarkerSet::PLUS_7_7;
+  linesep->addChild(markcol);
+  linesep->addChild(marker);
 
   addDisplayMode(pcFaceRoot, "Face");
 }
@@ -328,6 +354,14 @@ void ViewProviderMeshDegenerations::attach(App::DocumentObject* pcFeat)
   linesep->addChild(pcCoords);
   linesep->addChild(pcLines);
   pcLineRoot->addChild(linesep);
+
+  // Draw markers
+  SoBaseColor * markcol = new SoBaseColor;
+  markcol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  SoMarkerSet* marker = new SoMarkerSet;
+  marker->markerIndex=SoMarkerSet::PLUS_7_7;
+  linesep->addChild(markcol);
+  linesep->addChild(marker);
 
   addDisplayMode(pcLineRoot, "Line");
 }
@@ -424,6 +458,14 @@ void ViewProviderMeshIndices::attach(App::DocumentObject* pcFeat)
   linesep->addChild(pcCoords);
   linesep->addChild(pcFaces);
   pcFaceRoot->addChild(linesep);
+
+  // Draw markers
+  SoBaseColor * markcol = new SoBaseColor;
+  markcol->rgb.setValue( 1.0f, 1.0f, 0.0f );
+  SoMarkerSet* marker = new SoMarkerSet;
+  marker->markerIndex=SoMarkerSet::PLUS_7_7;
+  linesep->addChild(markcol);
+  linesep->addChild(marker);
 
   addDisplayMode(pcFaceRoot, "Face");
 }

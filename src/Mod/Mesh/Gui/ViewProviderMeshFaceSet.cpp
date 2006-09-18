@@ -371,7 +371,7 @@ bool ViewProviderMeshFaceSet::createPolygonMesh( const std::vector<SbVec2f>& rcl
   }
 
   cTria.SetPolygon( bottom );
-  ok &= cTria.Compute();
+  /*ok &= */cTria.Compute();
   aLid = cTria.GetTriangles();
 
   // back lid

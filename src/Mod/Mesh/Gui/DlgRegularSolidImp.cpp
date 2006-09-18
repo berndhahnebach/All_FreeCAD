@@ -146,6 +146,7 @@ void MeshGui::DlgRegularSolidImp::buildSolid()
     Gui::Command::doCommand(Gui::Command::Doc, cmd.ascii());
     Gui::Application::Instance->activeDocument()->commitCommand();
     Gui::Application::Instance->activeDocument()->getDocument()->recompute();
+    Gui::Application::Instance->sendMsgToActiveView("ViewFit");
   } catch (const Base::PyException& e) {
     QMessageBox::warning(this, tr("Create %1").arg(comboBox1->currentText()), e.what());
   }

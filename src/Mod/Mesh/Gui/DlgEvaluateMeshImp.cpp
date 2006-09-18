@@ -266,6 +266,7 @@ void DlgEvaluateMeshImp::onAnalyzeOrientation()
     if ( inds.empty() )
     {
       textLabelOrientation->setText( tr("No flipped normals found") );
+      removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
     }
     else
     {
@@ -391,6 +392,7 @@ void DlgEvaluateMeshImp::onAnalyzeIndices()
     }
     else {
       textLabelIndices->setText( tr("No invalid indices found") );
+      removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
     }
 
     qApp->restoreOverrideCursor();
@@ -439,6 +441,7 @@ void DlgEvaluateMeshImp::onAnalyzeDegenerations()
     if ( degen.empty() )
     {
       textLabelDegeneration->setText( tr("No degenerations found") );
+      removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
     }
     else
     {
@@ -494,6 +497,7 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedFaces()
     if ( dupl.empty() )
     {
       textLabelDuplicatedFaces->setText( tr("No duplicated faces found") );
+      removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
     }
     else
     {
@@ -548,6 +552,7 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedPoints()
     if ( eval.Evaluate() )
     {
       textLabelDuplPoints->setText( tr("No duplicated points found") );
+      removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
     }
     else
     {

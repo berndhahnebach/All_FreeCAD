@@ -37,13 +37,13 @@ using namespace Gui::PropertyEditor;
 EditableListView::EditableListView( QWidget* parent, const char* name )
   :QListView( parent, name ), _editingItem( 0 )
 {
-  setRootIsDecorated(true);
-  header()->setClickEnabled ( FALSE, header()->count() - 1 );
-  header()->setResizeEnabled( FALSE, header()->count() - 1 );
-
-  setSorting( -1, false );
+  // disconnects the sectionHandleDoubleClicked signal to prevent the columns to be adjusted
+  disconnect( header(), SIGNAL(sectionHandleDoubleClicked( int )), this, SLOT(adjustColumn( int )) );
+  
+  //setRootIsDecorated(true);
   setAllColumnsShowFocus( TRUE );
   setResizeMode(AllColumns);
+
   connect( this, SIGNAL( clicked( QListViewItem* ) ),
            this, SLOT( mouseClick( QListViewItem* ) ) );
   connect( this, SIGNAL( currentChanged( QListViewItem*  ) ),
@@ -58,6 +58,12 @@ void EditableListView::setOpen ( QListViewItem * item, bool open )
 {
   stopEdit();
   QListView::setOpen( item, open );
+}
+
+void EditableListView::setSorting ( int column, bool ascending )
+{
+  stopEdit();
+  QListView::setSorting( column, ascending );
 }
 
 void EditableListView::stopEdit()
