@@ -173,7 +173,10 @@ signals:
   void message(const QString&, int );
 
 public slots:
-  virtual void setActiveView(bool);
+  void setActiveView();
+
+protected slots:
+  virtual void showActiveView( MDIView* );
 
 protected:
   void windowActivationChange( bool oldActive );

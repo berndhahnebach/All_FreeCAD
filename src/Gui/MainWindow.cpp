@@ -28,7 +28,6 @@
 # include <qdragobject.h>
 # include <qeventloop.h>
 # include <qfileinfo.h>
-# include <qguardedptr.h>
 # include <qlabel.h>
 # include <qmenubar.h>
 # include <qstatusbar.h>
@@ -105,7 +104,6 @@ struct MainWindowP
   QTimer *		 _pcActivityTimer; 
   QWorkspace* _pWorkspace;
   QTabBar* _tabs;
-  QGuardedPtr<MDIView> _lastActiveView;
   QMap<int, MDIView*> _mdiIds;
 };
 
@@ -167,7 +165,6 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   d->_tabs = new MDITabbar( vb, "tabBar" );
   d->_tabs->setShape( QTabBar::RoundedBelow );
   d->_pWorkspace->setScrollBarsEnabled( true );
-  d->_lastActiveView = 0;
   setCentralWidget( vb );
   connect( d->_pWorkspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
   connect( d->_tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
@@ -376,11 +373,31 @@ void MainWindow::activatePrevWindow ()
   d->_pWorkspace->activatePrevWindow();
 }
 
+bool MainWindow::eventFilter ( QObject* o, QEvent* e )
+{
+  if ( o != this ) {
+    if ( e->type() == QEvent::ShowMaximized || e->type() == QEvent::ShowMinimized || e->type() == QEvent::ShowNormal || e->type() == QEvent::ShowFullScreen ) {
+      MDIView * view = (MDIView*)o->qt_cast("Gui::MDIView");
+
+      // notify all mdi views when the active view receives a show normal, show minimized or show maximized event 
+      if ( view )
+        emit showActiveView( view );
+    }
+  }
+
+  return QMainWindow::eventFilter( o, e );
+}
+
 void MainWindow::addWindow( MDIView* view )
 {
   // make workspace parent of view
   view->reparent( d->_pWorkspace, QPoint() );
   connect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( message(const QString&, int )) );
+  connect( this, SIGNAL( showActiveView(MDIView*) ), view, SLOT( showActiveView(MDIView*) ) );
+
+  // listen to the incoming events of the view
+  view->installEventFilter(this);
+
   // show the very first window in maximized mode
   if ( d->_pWorkspace->windowList().isEmpty() )
     view->showMaximized();
@@ -417,6 +434,8 @@ void MainWindow::removeWindow( Gui::MDIView* view )
 {
   // free all connections
   disconnect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( message(const QString&, int )) );
+  disconnect( this, SIGNAL( showActiveView(MDIView*) ), view, SLOT( showActiveView(MDIView*) ) );
+  view->removeEventFilter(this);
 
   for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
   {
@@ -498,7 +517,10 @@ void MainWindow::onWindowActivated( QWidget* w )
   // Result: So, we accept the first problem to be sure to avoid the second one.
   if ( !mdi /*|| !mdi->isActiveWindow()*/ ) 
     return; // either no MDIView or no valid object or no top-level window
-  
+
+  // set active the appropriate window (it needs not to be part of _mdiIds, e.g. directly after creation)
+  mdi->setActiveView();
+
   // set the appropriate tab to the new active window
   for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
   {
@@ -510,14 +532,6 @@ void MainWindow::onWindowActivated( QWidget* w )
       break;
     }
   }
-
-  // that's the previously active view that becomes inactive now
-  if ( d->_lastActiveView )
-    d->_lastActiveView->setActiveView(false);
-
-  // set active the appropriate window (it needs not to be part of _mdiIds, e.g. directly after creation)
-  mdi->setActiveView(true);
-  d->_lastActiveView = mdi;
 }
 
 void MainWindow::onTabSelected( int i)

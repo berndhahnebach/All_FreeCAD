@@ -67,6 +67,10 @@ public:
   MainWindow( QWidget * parent = 0, const char * name = 0, WFlags f = WType_TopLevel );
   /** Destroys the object and frees any allocated resources. */
   ~MainWindow();
+  /**
+   * Filters events if this object has been installed as an event filter for the watched object.
+   */
+  bool eventFilter ( QObject* o, QEvent* e );
   /** 
    * Adds an MDI window \a view to the main window's workspace and adds a new tab
    * to the tab bar.
@@ -245,6 +249,7 @@ private slots:
 
 signals:
   void timeEvent();
+  void showActiveView( MDIView* );
 
 private:
   /// some kind of singleton

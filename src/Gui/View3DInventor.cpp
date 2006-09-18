@@ -520,34 +520,23 @@ void View3DInventor::dump(const char* filename)
     _viewer->dumpToFile(filename,false);
 }
 
-void View3DInventor::setActiveView(bool act)
+void View3DInventor::showActiveView( MDIView* view )
 {
-  //fixes bug 1558658 (maybe insert a checkbox in viewer settings)
-  //
-  // Check whether this window is in toplevel mode
-  bool canStart = (!act && !isTopLevel());
-  if ( canStart ) {
-    //Note: If a window becomes deactivated then we have no chance to query its state, i.e. whether
-    //it is in minimized, in maximized or in fullscreen mode. The only way here is to get the state of
-    //the currently active window. Only if this active window is maximized and both windows are not in
-    //toplevel mode the deactivated window is hidden for sure and we can start the timer. 
-    //
-    // active window is maximized
-    QWidget* active = getMainWindow()->activeWindow();
-    canStart = active ? (active->isMaximized()&&!active->isTopLevel()) : true;
-
-    if ( canStart ) {
-      // do a sinlge shot event
+  if ( view != this ) {
+    bool canStartTimer = (!isTopLevel() && (view->isMaximized() || view->isFullScreen()));
+    if ( canStartTimer ) {
+      // do a sinlge shot event (maybe insert a checkbox in viewer settings)
       int msecs = hGrp->GetInt("StopSpinningIfDeactivated", 3000);
       if (msecs >= 0) // if < 0 do not stop rotation
         stopSpinTimer->start(msecs, true);
+    } else if ( stopSpinTimer->isActive() ) {
+      // If the active is not maximized anymore we can also stop the timer
+      stopSpinTimer->stop();
     }
   } else if ( stopSpinTimer->isActive() ) {
     // if the window becomes active before the timeout event is emitted we stop the timer
     stopSpinTimer->stop();
   }
-
-  MDIView::setActiveView(act);
 }
 
 void View3DInventor::stopSpinning()

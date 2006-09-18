@@ -183,10 +183,13 @@ void MDIView::closeEvent(QCloseEvent *e)
   }
 }
 
-void MDIView::setActiveView(bool act)
+void MDIView::setActiveView()
 {
-  if ( act )
-    Application::Instance->viewActivated(this);
+  Application::Instance->viewActivated(this);
+}
+
+void MDIView::showActiveView( MDIView* )
+{
 }
 
 void MDIView::print( QPrinter* printer )

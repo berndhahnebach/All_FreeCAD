@@ -63,6 +63,10 @@ public:
   void stopEdit();
   /** Builds up the list view with the properties. */
   void buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct );
+  /** Sets the list view to be sorted by column in ascending order if ascending is TRUE or descending 
+   * order if it is FALSE. It stops also the current editor.
+   */
+  void setSorting ( int column, bool ascending = TRUE );
 
 protected slots:
   /** This slot is connected with the clicked signal and calls itemChanged(). */
