@@ -419,20 +419,6 @@ void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, 
         aclEdges.erase(pEI);
         break;
       }
-      else if (pEI->second == ulLast)
-      {
-        ulLast = pEI->first;
-        clBorder.push_back(ulLast);
-        aclEdges.erase(pEI);
-        break;
-      }
-      else if (pEI->first == ulFirst)
-      {
-        ulFirst = pEI->second;
-        clBorder.push_front(ulFirst);
-        aclEdges.erase(pEI);
-        break;
-      }
       else if (pEI->second == ulFirst)
       {
         ulFirst = pEI->first;
@@ -440,6 +426,22 @@ void MeshAlgorithm::GetFacetBorders (const std::vector<unsigned long> &raulInd, 
         aclEdges.erase(pEI);
         break;
       }
+      //FIXME: Using this might result into boundaries with wrong orientation. But if the mesh has some facets with wrong orientation
+      //we might get broken boundary curves.
+//      else if (pEI->second == ulLast)
+//      {
+//        ulLast = pEI->first;
+//        clBorder.push_back(ulLast);
+//        aclEdges.erase(pEI);
+//        break;
+//      }
+//      else if (pEI->first == ulFirst)
+//      {
+//        ulFirst = pEI->second;
+//        clBorder.push_front(ulFirst);
+//        aclEdges.erase(pEI);
+//        break;
+//      }
     }
     if ((pEI == aclEdges.end()) || (ulLast == ulFirst))
     {  // keine weitere Kante gefunden bzw. Polylinie geschlossen

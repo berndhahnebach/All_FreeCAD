@@ -223,7 +223,7 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
     for( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
     {
       const MeshGeomFacet& rFace = *cFIt;
-      MeshFacet aFace = cFIt.GetIndicies();
+      MeshFacet aFace = cFIt.GetIndices();
 
       for ( int i=0; i<3; i++ )
       {
@@ -276,7 +276,7 @@ void ViewProviderMesh::createMesh( const MeshCore::MeshKernel& rcMesh )
   MeshFacetIterator cFIt(rcMesh);
   for ( cFIt.Init(); cFIt.More(); cFIt.Next(), j++ )
   {
-    MeshFacet aFace = cFIt.GetIndicies();
+    const MeshFacet& aFace = cFIt.GetReference();
 
     for ( int i=0; i<3; i++ )
     {

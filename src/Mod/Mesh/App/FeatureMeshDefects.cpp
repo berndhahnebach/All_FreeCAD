@@ -200,6 +200,31 @@ int FixDegenerations::execute(void)
 
 // ----------------------------------------------------------------------
 
+PROPERTY_SOURCE(Mesh::FixDeformations, Mesh::FixDefects)
+
+FixDeformations::FixDeformations()
+{
+  ADD_PROPERTY(MaxAngle  ,(0.1f));
+}
+
+FixDeformations::~FixDeformations()
+{
+}
+
+int FixDeformations::execute(void)
+{
+  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+
+  MeshCore::MeshFixDeformedFacets eval(*kernel, MaxAngle.getValue());
+  eval.Fixup();
+  Mesh.setValue(kernel);
+
+  return 0;
+}
+
+// ----------------------------------------------------------------------
+
 PROPERTY_SOURCE(Mesh::FixIndices, Mesh::FixDefects)
 
 FixIndices::FixIndices()

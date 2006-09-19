@@ -311,6 +311,18 @@ public:
    */
   void ProjectFacetToPlane (MeshGeomFacet &rclFacet) const;
   /**
+   * Checks whether the triangle is degenerated. A triangle is degenerated if its area
+   * is less than epsilon (~0.0001).
+   */
+  bool IsDegenerated() const;
+  /**
+   * Checks whether the triangle is deformed. The definition of a deformed triangles is not as strong
+   * as the definition of a degenerated triangle. A triangle is deformed if the maximum angle exceeds 120°
+   * or the minimum angle falls below 30°.
+   * A degenerated triangle is also a deformed triangle.
+   */
+  bool IsDeformed() const;
+  /**
    * Enlarges the triangle.
    */
   void Enlarge (float fDist);
@@ -531,11 +543,11 @@ public:
   /**
    * Checks and flips the point indices if needed. @see MeshFacet::Transpose().
    */
-  void TransposeIndicies (unsigned long ulOrig, unsigned long ulNew);
+  void TransposeIndices (unsigned long ulOrig, unsigned long ulNew);
   /**
    * Decrements all point indices that are higher than \a ulIndex.
    */
-  void DecrementIndicies (unsigned long ulIndex);
+  void DecrementIndices (unsigned long ulIndex);
 };
 
 inline MeshPoint::MeshPoint (const Base::Vector3f &rclPt)

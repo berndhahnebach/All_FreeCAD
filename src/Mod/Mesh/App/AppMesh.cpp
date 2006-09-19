@@ -81,6 +81,7 @@ void AppMeshExport initMesh() {
   Mesh::FixDuplicatedFaces    ::init();
   Mesh::FixDuplicatedPoints   ::init();
   Mesh::FixDegenerations      ::init();
+  Mesh::FixDeformations       ::init();
   Mesh::FixIndices            ::init();
   Mesh::FillHoles             ::init();
   Mesh::RemoveComponents      ::init();

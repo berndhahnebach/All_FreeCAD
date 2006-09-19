@@ -119,7 +119,10 @@ public:
   /// Sets the iterator to a given position.
   inline bool Set (unsigned long ulIndex);
   /// Returns the topologic facet.
-  inline MeshFacet GetIndicies (void) const
+  inline MeshFacet GetIndices (void) const
+  { return *_clIter; }
+  /// Returns the topologic facet.
+  inline const MeshFacet& GetReference (void) const
   { return *_clIter; }
   /// Returns iterators pointing to the current facet's neighbours.
   inline void GetNeighbours (MeshFacetIterator &rclN0, MeshFacetIterator &rclN1, MeshFacetIterator &rclN2) const;

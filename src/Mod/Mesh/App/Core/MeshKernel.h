@@ -178,7 +178,7 @@ public:
    * All methods expect a MeshFacetVisitor as argument that can decide to continue or to stop. 
    * If there is no topologic neighbour facet any more being not marked as "VISIT" the algorithm
    * stops anyway.
-   * @see MeshFacetVisitor, MeshOrientationVisitor, MeshHarmonizer, MeshSearchNeighbourFacetsVisitor
+   * @see MeshFacetVisitor, MeshOrientationVisitor, MeshSearchNeighbourFacetsVisitor
    * and MeshTopFacetVisitor.
    */
   //@{
@@ -363,6 +363,8 @@ protected:
 
   /** Calculates the normal to the given facet. */
   inline Base::Vector3f GetNormal (const MeshFacet &rclFacet) const;
+  /** Calculates the gravity point to the given facet. */
+  inline Base::Vector3f GetGravityPoint (const MeshFacet &rclFacet) const;
 
   MeshPointArray   _aclPointArray; /**< Holds the array of geometric points. */
   MeshFacetArray   _aclFacetArray; /**< Holds the array of facets. */
@@ -451,6 +453,11 @@ inline Base::Vector3f MeshKernel::GetNormal (const MeshFacet &rclFacet) const
                  (_aclPointArray[rclFacet._aulPoints[2]] - _aclPointArray[rclFacet._aulPoints[0]]);
   clN.Normalize();
   return clN;
+}
+
+inline Base::Vector3f MeshKernel::GetGravityPoint (const MeshFacet &rclFacet) const
+{
+  return (_aclPointArray[rclFacet._aulPoints[0]]+_aclPointArray[rclFacet._aulPoints[1]]+_aclPointArray[rclFacet._aulPoints[2]])/3.0f;
 }
 
 inline void MeshKernel::GetFacetPoints (unsigned long ulFaIndex, unsigned long &rclP0, unsigned long &rclP1, unsigned long &rclP2) const

@@ -111,7 +111,7 @@ void MeshFacetArray::Erase (_TIterator pIter)
   }
 }
 
-void MeshFacetArray::TransposeIndicies (unsigned long ulOrig, unsigned long ulNew)
+void MeshFacetArray::TransposeIndices (unsigned long ulOrig, unsigned long ulNew)
 {
   _TIterator  pIter = begin(), pEnd = end();
 
@@ -122,7 +122,7 @@ void MeshFacetArray::TransposeIndicies (unsigned long ulOrig, unsigned long ulNe
   }
 }
 
-void MeshFacetArray::DecrementIndicies (unsigned long ulIndex)
+void MeshFacetArray::DecrementIndices (unsigned long ulIndex)
 {
   _TIterator  pIter = begin(), pEnd = end();
 
@@ -387,6 +387,33 @@ void MeshGeomFacet::Enlarge (float fDist)
   _aclPoints[0] = clPNew[0];
   _aclPoints[1] = clPNew[1];
   _aclPoints[2] = clPNew[2];
+}
+
+bool MeshGeomFacet::IsDegenerated() const
+{
+  return (Area() < FLOAT_EPS);
+}
+
+bool MeshGeomFacet::IsDeformed() const
+{
+  float fCosAngle;
+  Base::Vector3f u,v;
+
+  for (int i=0; i<3; i++)
+  {
+    u = _aclPoints[(i+1)%3]-_aclPoints[i];
+    v = _aclPoints[(i+2)%3]-_aclPoints[i];
+    u.Normalize();
+    v.Normalize();
+
+    fCosAngle = u * v;
+
+    // x < 30° => cos(x) > sqrt(3)/2 or x > 120° => cos(x) < -0.5
+    if (fCosAngle > 0.86f || fCosAngle < -0.5f)
+      return true;
+  }
+
+  return false;
 }
 
 bool MeshGeomFacet::IntersectBoundingBox ( const Base::BoundBox3f &rclBB ) const

@@ -420,7 +420,7 @@ bool MeshEvalSelfIntersection::Evaluate ()
   //Contains bounding boxes for every facet 
   std::vector<BoundBox3D> cvBB;
 
-  //Set of neighbour facet indicies for every facet
+  //Set of neighbour facet indices for every facet
   std::vector<std::vector<unsigned long> > ulvFacetNeighbours;
 
   MeshFacetIterator cMFI(_rclMesh);
@@ -436,7 +436,7 @@ bool MeshEvalSelfIntersection::Evaluate ()
   {
     cvBB.push_back((*cMFI).GetBoundBox());
     std::set<unsigned long> ulsNeighbourFacets;
-    MeshFacet cFacet = cMFI.GetIndicies();
+    MeshFacet cFacet = cMFI.GetIndices();
     for (int i=0; i<3; i++)
     {
       std::set<unsigned long>ulsNeighbourFacetsForPoint;
@@ -455,7 +455,7 @@ bool MeshEvalSelfIntersection::Evaluate ()
   Base::SequencerLauncher seq("calculating self intersections...", ulGridX*ulGridY*ulGridZ );
   for (clGridIter.Init(); clGridIter.More(); clGridIter.Next())
   {
-    //Get the facet indicies, belonging to the current grid unit
+    //Get the facet indices, belonging to the current grid unit
     std::vector<unsigned long> aulGridElements;
     clGridIter.GetElements(aulGridElements);
     if (aulGridElements.size()==0)

@@ -180,6 +180,30 @@ public:
 };
 
 /** .
+ * The FixDeformations class tries to repair deformed faces by swapping edge operations.
+ * @author Werner Mayer
+ */
+class AppMeshExport FixDeformations : public Mesh::FixDefects
+{
+  PROPERTY_HEADER(Mesh::FixDeformations);
+
+public:
+  /// Constructor
+  FixDeformations(void);
+  virtual ~FixDeformations();
+
+  /** @name Properties */
+  //@{
+  App::PropertyFloat MaxAngle; /**< Maximum allowed angle */
+  //@}
+  /** @name methods override Feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
+};
+
+/** .
  * The FixIndices class tries to validate invalid indices of the internal mesh data structure.
  * @author Werner Mayer
  */
