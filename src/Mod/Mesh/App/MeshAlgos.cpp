@@ -461,8 +461,6 @@ void MeshAlgos::cutByCurve(MeshCore::MeshKernel* pMesh,const std::vector<CurvePr
   {
     cTopAlg.SplitFacet( it->ulFaceIndex, it->p1, it->p2 );
   }
-
-  cTopAlg.Commit();
 }
 
 class _VertexCompare

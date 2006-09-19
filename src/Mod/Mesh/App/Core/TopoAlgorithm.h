@@ -39,25 +39,10 @@
 
 namespace MeshCore {
 
-class MeshKernel;
-class MeshFacet;
-
 /**
- * Most of the provided methods don't modify the data structure directly but the changes are buffered in an array of facets.
- * To perform the changes on the data structure 'Commit' must be called.
- * E.g. if you want to insert a node to any triangles you have to do the following:
- * \code
- * MeshTopoAlgorithm cTopAlg(...);
- * cTopAlg.InsertNode(0, point1);
- * cTopAlg.InsertNode(4, point2);
- * cTopAlg.InsertNode(5, point4);
- * 
- * // the data structure is not yet modified...
- * 
- * cTopAlg.Commit(); // now the data structure is modified
- * \endcode
- *
- * All methods with the prefix 'Direct' modify the structure directly. 
+ * The MeshTopoAlgorithm class provides several algorithms to manipulate a mesh.
+ * It supports various mesh operations like inserting a new vertex, swapping the common edge of two
+ * adjacent facets, split a facet, ...
  * @author Werner Mayer
  */
 class AppMeshExport MeshTopoAlgorithm
@@ -68,196 +53,128 @@ public:
   virtual ~MeshTopoAlgorithm (void);
 
 public:
-  /** 
-   * Applies the changes.
-   */
-  void Commit ();
   /**
-   * Discard all changes.
-   */
-  void Discard();
-  /**
-   * Tries to make a more beautiful mesh.
-   */
-  void OptimizeTopology();
-  /**
-   * Inserts a new vertex in the given triangle.
+   * Inserts a new vertex in the given triangle so that is splitted into three triangles.
    * The given point must lie inside the triangle not outside or on an edge.
    */
-  void InsertNode(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint);
+  bool InsertVertex(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint);
   /**
-   * If the given point references three facets only (the point must not be a border point, 
-   * this is not checked) then each pair of the three facets must be neighbours.
-   * The three facets are replaced by one facet. 
-   * This operation is exactly the inverse operation of InsertNode().
+   * Creates a new triangle with neighbour facet \a ulFacetPos and the vertex \a rclPoint whereat it must
+   * lie outside the given facet. 
+   * @note The vertex \a rclPoint doesn't necessarily need to be a new vertex it can already be part
+   * of another triangle but the client programmer must make sure that no overlaps are created.
+   * @note This operation might be useful to close gaps in a mesh.
    */
-  bool InverseInsertNode(unsigned long ulPointPos);
+  bool SnapVertex(unsigned long ulFacetPos, const Base::Vector3f& rP);
   /**
-   * Swaps the common edge of the facet and its neighbour.
-   * You have to make sure that the two triangles build a convex
-   * polygon and the facets should lie in the same plane..
+   * Tries to make a more beautiful mesh by swapping the common edge of two adjacent facets where needed. 
+   * \a fMaxAngle is the maximum allowed angle between the normals of two adjacent facets to allow
+   * swapping the common edge. A too high value might result into folds on the surface.
+   * @note This is a high-lvel operations and tries to optimze the mesh as a whole.
    */
-  void SwapEdge(unsigned long ulFacetPos, int iSide);
+  void OptimizeTopology(float fMaxAngle);
   /**
-   * Insert a new edge. Each concerned triangle is broken into two
-   * new triangles.
+   * This method is provided for convenience. It inserts a new vertex to the mesh and tries to
+   * swap the common edges of the newly created facets with their neighbours.
+   * Just inserting a new vertex leads to very acute-angled triangles which might be problematic
+   * for some algorithms. This method tries to swap the edges to build more well-formed triangles.
+   * @see InsertVertex(), ShouldSwapEdge(), SwapEdge().
    */
-  void SplitEdge(unsigned long ulFacetPos, int iSide, const Base::Vector3f& rclPoint);
+  bool InsertVertexAndSwapEdge(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint, float fMaxAngle);
   /**
-   * Splits the facet with index \a ulFacetPos into several facets. The points \a rP1 and \a
-   * rP2 must lie at two different edges of the facets.
-   * @note In this algorithm the neighbour facets of \a ulFacetIndex are not modified. So the
-   * caller has to take care that SplitFacet() gets invoked for these facets, too; otherwise
-   * the topology of the mesh gets broken after the call of Commit()
+   * Checks whether a swap edge operation is legel that is fulfilled if the two adjacent
+   * facets builds a convex polygon. If this operation is legal true is returned, false is
+   * returned if this operation is illegal or if \a ulFacetPos and \a ulNeighbour are not
+   * adjacent facets.
+   */
+  bool IsSwapEdgeLegal(unsigned long ulFacetPos, unsigned long ulNeighbour) const;
+  /**
+   * Checks whether the swap edge operation is legal and whether it makes sense. This operation 
+   * only makes sense if the maximum angle of both facets is decreased and if the angle between
+   * the facet normals does not exceed \a fMaxAngle.  
+   */
+  bool ShouldSwapEdge(unsigned long ulFacetPos, unsigned long ulNeighbour, float fMaxAngle) const;
+  /**
+   * Swaps the common edge of two adjacent facets even if the operation might be illegal. To be sure
+   * that this operation is legal check either with IsSwapEdgeLegal() or ShouldSwapEdge() before.
+   * An illegel swap edge operation doesn't invalidate the topology of a mesh but it creates a fold on
+   * the surface, i.e. geometric overlaps of several triangles. 
+   */
+  void SwapEdge(unsigned long ulFacetPos, unsigned long ulNeighbour);
+  /**
+   * Splits the common edge of the two adjacent facets with index \a ulFacetPos and \a ulNeighbour. The point \a rP
+   * must lie inside of one the given facets are on the common edge. The two facets get broken into four facets, i.e.
+   * that two new facets get created. If \a rP is coincident with a corner point nothing happens.
+   */
+  void SplitEdge(unsigned long ulFacetPos, unsigned long ulNeighbour, const Base::Vector3f& rP);
+  /**
+   * Splits the facet with index \a ulFacetPos on the edge side \a uSide into two facets. This side
+   * must be an open edge otherwise nothing is done. The point \a rP must be near to this edge and must
+   * not be coincident with any corner vertices of the facet.
+   */
+  void SplitOpenEdge(unsigned long ulFacetPos, unsigned short uSide, const Base::Vector3f& rP);
+  /**
+   * Collapses the common edge of two adjacent facets. This operations removes a point and the facets 
+   * \a ulFacetPos and \a ulNeighbour.
+   * @note The client programmer must make sure that this is a legal operation and no overlaps are created.
+   */
+  bool CollapseEdge(unsigned long ulFacetPos, unsigned long ulNeighbour);
+  /**
+   * Removes the facet with index \a ulFacetPos and all its neighbour facets.
+   */
+  bool CollapseFacet(unsigned long ulFacetPos);
+  /**
+   * Splits the facet with index \a ulFacetPos into up to three facets. The points \a rP1 and \a rP2 must lie on (or near to) 
+   * two different edges of the facet. This method splits up the both neighbour facets as well.
+   * If either \a rP1 or \a rP2 (probably due to a previous call of SplitFacet()) is already part of the mesh then SplitEdge()
+   * or SplitOpenEdge() is invoked. If both points are already part of the mesh nothing is done.
    */
   void SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1, const Base::Vector3f& rP2);
-  /**
-   * Insert a new edge. Each concerned triangle is broken into two
-   * new triangles. Unlike SplitEdge this method allows to split a facet several
-   * times, e.g you can call this method several times for the same facet.
-   *
-   * Attention!: 
-   * the specified side of the facet must be an open edge because the algorithm 
-   * does not check for neighbours if it is not an open edge.
-   */
-  bool MultiSplitOpenEdge(unsigned long ulFacetPos, int iSide, const Base::Vector3f& rclPoint, float fTol = FLOAT_EPS);
-  /**
-   * Removes a vertex and retriangulates the arising hole.
-   */
-  bool CollapseNode(unsigned long ulPointPos);
-  /**
-   * Removes the triangles to the given edge (p0 <=> p1) and fills the
-   * arising hole by tighting the remaining facets.
-   */
-  bool CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdgeP1);
-  /**
-   * Inserts several new facets.
-   */
-  void InsertFacets(const std::vector<MeshGeomFacet>& raclFacets);
-  /**
-   * Harmonizes the normals. The changes are done immediately.
-   */
-  void HarmonizeNormals (void);
-  /** 
-   * Flips the normals. The changes are done immediately.
-   */
-  void FlipNormals (void);
-
-  /** @name Direct manipulation 
-   * All these methods manipulate the mesh structure directly. 
-   */
-  //@{
-  /**
-   * Splits the facet at position \a ulFacetPos in the mesh array into two facets. The point \a rP must lie on the 
-   * edge with at \a side of the given facet. The adjacent facet that shares the same edge where \a rP lies on gets 
-   * broken, too.
-   * If the number of facets is less than \a ulFacetPos+1 or if \a rP is coincident with a corner point nothing happens.
-   */
-  void DirectSplitFacet(unsigned long ulFacetPos, unsigned short side, const Base::Vector3f& rP);
-  /**
-   * Does basically the same as DirectSplitFacet() unless that the facet at position \a ulFacetPos has no adjacent
-   * facet at its \a side.
-   */
-  void DirectSplitFacetWithOpenEdge(unsigned long ulFacetPos, unsigned short side, const Base::Vector3f& rP);
   /**
    * Removes the degenerated facet at position \a index from the mesh structure. A facet is degenerated if its corner
    * points are collinear.
    */
-  void DirectRemoveDegenerated(unsigned long index);
+  void RemoveDegeneratedFacet(unsigned long index);
   /**
    * Removes the corrupted facet at position \a index from the mesh structure. A facet is corrupted if the indices of its corner
    * points are not all different.
    */
-  void DirectRemoveCorrupted(unsigned long index);
+  void RemoveCorruptedFacet(unsigned long index);
   /**
-   *
+   * Fills up holes with maximum \a length vertices. This method doesn't create new vertices but just connects vertices of open edges
+   * with new facets to close the holes.
    */
-  bool Snap(unsigned long ulFacetPos, const Base::Vector3f& rP);
   void FillupHoles(unsigned long length);
+  /**
+   * Removes topologic indepentent components with maximum \a count facets.
+   */
   void RemoveComponents(unsigned long count);
-  //@}
+  /**
+   * Harmonizes the normals.
+   */
+  void HarmonizeNormals (void);
+  /** 
+   * Flips the normals.
+   */
+  void FlipNormals (void);
 
 private:
-  void RefPointToFacet();
   /**
-   * Checks if the polygon is convex
+   * Boundaries that consist of several loops must be splitted in several independant boundaries
+   * to perfoom e.g. a polygon triangulation algorithm on them.
    */
-  bool IsConvexPolygon(const std::vector<unsigned long>& raulPoly);
-  /**
-   * Returns the circumjacent polygon the the point.
+  void SplitBoundaryLoops( std::list<std::vector<unsigned long> >& aBorders );
+  /** 
+   * Splits the boundary \a rBound in several loops and append this loops to the list of borders.
    */
-  bool GetPolygonOfNeighbours(unsigned long ulPointPos, std::vector<unsigned long>& raulPoly);
-  /**
-   * Retriangulates the polygon.
-   */
-  bool TriangulatePolygon(const std::vector<unsigned long>& raulPoly, std::vector<MeshGeomFacet>& raclFacets);
-  /** @deprecated
-   * The facet \a ulFacetInd is rearranged so that the neighbour at side \a iSide becomes neighbour 0. 
-   */
-  void RotateFacet(unsigned long ulFacetInd, int iSide);
-  /** @deprecated
-   * Inserts the edges associated to the facet \a ulFacetPos if needed. This method
-   * is safe if the facet has already associated edges.
-   */
-
-  void ClearFlag (void)
-  { _rclMesh._aclFacetArray.ResetFlag(MeshFacet::INVALID); }
-
-  void SetFlag (unsigned long ulPos)
-  { _rclMesh._aclFacetArray[ulPos].SetFlag(MeshFacet::INVALID); }
-
-  void ResetFlag (unsigned long ulPos)
-  { _rclMesh._aclFacetArray[ulPos].ResetFlag(MeshFacet::INVALID); }
-
-  bool IsFlag (unsigned long ulPos) const
-  { return _rclMesh._aclFacetArray[ulPos].IsFlag(MeshFacet::INVALID); }
+  void SplitBoundaryLoops( const std::vector<unsigned long>& rBound, std::list<std::vector<unsigned long> >& aBorders );
 
 private:
   MeshKernel& _rclMesh;
-  MeshRefPointToFacets * _pclRefPt2Fac;
-  std::vector<MeshGeomFacet> _aclNewFacets;
-  std::map<unsigned long, std::vector<MeshGeomFacet> > _aclMultiSplitted;
 };
 
 /**
- * The MeshHarmonizer class adjusts the orientation of all facets to the
- * orientation of a start facet.
- */
-class AppMeshExport MeshHarmonizer: virtual public MeshFacetVisitor
-{
-public:
-  MeshHarmonizer( std::vector<unsigned long>& uIndices ) : _uIndices(uIndices) {}
-  /** Adjusts the orientation of facet \a rclFacet to that one of \a rclFrom. */
-  bool Visit (const MeshFacet &rclFacet, const MeshFacet &rclFrom, unsigned long ulFInd, unsigned long)
-  {
-    unsigned long i, j;
-    Base::Sequencer().next();
-  
-    // Normale an Vorgaenger-Facet angleichen => Umlaufrichtung gegenseitig
-    for (i = 0; i < 2; i++)
-    {
-      for (j = 0; j < 3; j++)
-      {
-        if (rclFrom._aulPoints[i] == rclFacet._aulPoints[j])
-        {  // gemeinsamer Punkt
-          if ((rclFrom._aulPoints[i+1]     == rclFacet._aulPoints[(j+1)%3]) ||
-              (rclFrom._aulPoints[(i+2)%3] == rclFacet._aulPoints[(j+2)%3]))
-          {
-            _uIndices.push_back(ulFInd);
-          } 
-          return true;
-        }
-      }
-    }
-    return true;
-  }
-
-private:
-  std::vector<unsigned long>& _uIndices;
-};
-
-/**
- * The MeshComponents class searches for topologic independent "isles" of the 
+ * The MeshComponents class searches for topologic independent segments of the 
  * given mesh structure. 
  *
  * @author Werner Mayer
@@ -284,8 +201,7 @@ public:
 
 protected:
   // for sorting of elements
-  struct CNofFacetsCompare : public std::binary_function<const std::vector<unsigned long>&, 
-                                                         const std::vector<unsigned long>&, bool>
+  struct CNofFacetsCompare : public std::binary_function<const std::vector<unsigned long>&, const std::vector<unsigned long>&, bool>
   {
     bool operator () (const std::vector<unsigned long> &rclC1, const std::vector<unsigned long> &rclC2)
     {

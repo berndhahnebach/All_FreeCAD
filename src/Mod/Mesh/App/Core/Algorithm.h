@@ -348,7 +348,7 @@ public:
    */
   bool Compute();
   /** The Compute() method returns a valid triangulation of a polygon though it might produce
-   * sometimes degenrated triangles. So this method performs several "swap edge" operations to 
+   * sometimes degenerated triangles. So this method performs several "swap edge" operations to 
    * the output of Compute() to get more regular triangles.
    */
   bool ComputeQuasiDelaunay();

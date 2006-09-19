@@ -143,6 +143,9 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(countComponents)
   PYMETHODEDEF(removeComponents)
   PYMETHODEDEF(fillupHoles)
+  PYMETHODEDEF(refine)
+  PYMETHODEDEF(optimizeTopology)
+  PYMETHODEDEF(splitEdge)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -400,6 +403,75 @@ PYFUNCIMP_D(MeshPy,fillupHoles)
   PY_TRY {
     MeshTopoAlgorithm topalg(_cMesh);
     topalg.FillupHoles((unsigned long)len);
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,refine)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    unsigned long cnt = _cMesh.CountFacets();
+    MeshFacetIterator cF(_cMesh);
+    MeshTopoAlgorithm topalg(_cMesh);
+    for ( unsigned long i=0; i<cnt; i++ ) {
+      cF.Set(i);
+      if ( !cF->IsDeformed() )
+        topalg.InsertVertexAndSwapEdge(i, cF->GetGravityPoint(), 0.1f);
+    }
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,optimizeTopology)
+{
+  float fMaxAngle;
+  if (! PyArg_ParseTuple(args, "f; specify the maximum allowed angle between the normals of two adjacent facets", &fMaxAngle))			 
+    return NULL;                         
+
+  PY_TRY {
+    MeshTopoAlgorithm topalg(_cMesh);
+    topalg.OptimizeTopology(fMaxAngle);
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,splitEdge)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    std::vector<std::pair<unsigned long, unsigned long> > adjacentFacet;
+    MeshAlgorithm alg(_cMesh);
+    alg.ResetFacetFlag(MeshFacet::VISIT);
+    const MeshFacetArray& rFacets = _cMesh.GetFacets();
+    for ( MeshFacetArray::_TConstIterator pF = rFacets.begin(); pF != rFacets.end(); ++pF )
+    {
+      int id=2;
+      if ( pF->_aulNeighbours[id] != ULONG_MAX ) {
+        const MeshFacet& rFace = rFacets[pF->_aulNeighbours[id]];
+        if ( !pF->IsFlag(MeshFacet::VISIT) && !rFace.IsFlag(MeshFacet::VISIT) ) {
+          pF->SetFlag(MeshFacet::VISIT);
+          rFace.SetFlag(MeshFacet::VISIT);
+          adjacentFacet.push_back(std::make_pair(pF-rFacets.begin(), pF->_aulNeighbours[id]));
+        }
+      }
+    }
+    
+    MeshFacetIterator cIter(_cMesh);
+    MeshTopoAlgorithm topalg(_cMesh);
+    for ( std::vector<std::pair<unsigned long, unsigned long> >::iterator it = adjacentFacet.begin(); it != adjacentFacet.end(); ++it )
+    {
+      cIter.Set(it->first);
+      Base::Vector3f mid = 0.5f*(cIter->_aclPoints[0]+cIter->_aclPoints[2]);
+      topalg.SplitEdge(it->first, it->second, mid);
+    }
   } PY_CATCH;
 
   Py_Return; 

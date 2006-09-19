@@ -97,6 +97,9 @@ public:
   PYFUNCDEF_D(MeshPy,countComponents)
   PYFUNCDEF_D(MeshPy,removeComponents)
   PYFUNCDEF_D(MeshPy,fillupHoles)
+  PYFUNCDEF_D(MeshPy,refine)
+  PYFUNCDEF_D(MeshPy,optimizeTopology)
+  PYFUNCDEF_D(MeshPy,splitEdge)
 
 protected:
   MeshCore::MeshKernel _cMesh;

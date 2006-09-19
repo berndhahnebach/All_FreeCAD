@@ -1282,9 +1282,9 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
     rstrOut.write(szBuf, strlen(szBuf));
 
 #ifdef __GNUC__
-    fcvt ((float)clTIter.GetIndicies()._aulPoints[1]+1, iCount, &iDec, &iSign);
+    fcvt ((float)clTIter.GetIndices()._aulPoints[1]+1, iCount, &iDec, &iSign);
 #else
-    _fcvt ((float)clTIter.GetIndicies()._aulPoints[1]+1, iCount, &iDec, &iSign);
+    _fcvt ((float)clTIter.GetIndices()._aulPoints[1]+1, iCount, &iDec, &iSign);
 #endif
     for (i = iDec; i <= 7; i++)
     {
@@ -1292,13 +1292,13 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
       rstrOut.write(szBuf, strlen(szBuf));
     }
 
-    sprintf(szBuf, "%lu", clTIter.GetIndicies()._aulPoints[1]+1);
+    sprintf(szBuf, "%lu", clTIter.GetIndices()._aulPoints[1]+1);
     rstrOut.write(szBuf, strlen(szBuf));
 
 #ifdef __GNUC__
-    fcvt ((float)clTIter.GetIndicies()._aulPoints[0]+1, iCount, &iDec, &iSign);
+    fcvt ((float)clTIter.GetIndices()._aulPoints[0]+1, iCount, &iDec, &iSign);
 #else
-    _fcvt ((float)clTIter.GetIndicies()._aulPoints[0]+1, iCount, &iDec, &iSign);
+    _fcvt ((float)clTIter.GetIndices()._aulPoints[0]+1, iCount, &iDec, &iSign);
 #endif
     for (i = iDec; i <= 7; i++)
     {
@@ -1306,13 +1306,13 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
       rstrOut.write(szBuf, strlen(szBuf));
     }
 
-    sprintf(szBuf, "%lu", clTIter.GetIndicies()._aulPoints[0]+1);
+    sprintf(szBuf, "%lu", clTIter.GetIndices()._aulPoints[0]+1);
     rstrOut.write(szBuf, strlen(szBuf));
 
 #ifdef __GNUC__
-    fcvt ((float)clTIter.GetIndicies()._aulPoints[2]+1, iCount, &iDec, &iSign);
+    fcvt ((float)clTIter.GetIndices()._aulPoints[2]+1, iCount, &iDec, &iSign);
 #else
-    _fcvt ((float)clTIter.GetIndicies()._aulPoints[2]+1, iCount, &iDec, &iSign);
+    _fcvt ((float)clTIter.GetIndices()._aulPoints[2]+1, iCount, &iDec, &iSign);
 #endif
     for (i = iDec; i <= 7; i++)
     {
@@ -1320,10 +1320,10 @@ bool MeshOutput::SaveNastran (std::ostream &rstrOut) const
       rstrOut.write(szBuf, strlen(szBuf));
     }
 
-    sprintf(szBuf, "%lu\n", clTIter.GetIndicies()._aulPoints[2]+1);
+    sprintf(szBuf, "%lu\n", clTIter.GetIndices()._aulPoints[2]+1);
     rstrOut.write(szBuf, strlen(szBuf));
 
-//    sprintf(szBuf, "CTRIA3 %d 0 %d %d %d\n", iIndx, clTIter.GetIndicies()._aulPoints[0]+1, clTIter.GetIndicies()._aulPoints[1]+1, clTIter.GetIndicies()._aulPoints[2]+1);
+//    sprintf(szBuf, "CTRIA3 %d 0 %d %d %d\n", iIndx, clTIter.GetIndices()._aulPoints[0]+1, clTIter.GetIndices()._aulPoints[1]+1, clTIter.GetIndices()._aulPoints[2]+1);
 //    rstrOut.write(szBuf, strlen(szBuf));
     iIndx++;
     Base::Sequencer().next();
@@ -1521,7 +1521,7 @@ bool SaveMeshVRML::Save (std::ostream &rstrOut, const std::vector<App::Color> &r
   i = 0, k = _rclMesh.CountFacets();
   for (pFIter.Init(); pFIter.More(); pFIter.Next())
   {
-    MeshFacet clFacet = pFIter.GetIndicies();
+    MeshFacet clFacet = pFIter.GetIndices();
     sprintf(szBuf, "      %lu, %lu, %lu, -1", clFacet._aulPoints[0], clFacet._aulPoints[1], clFacet._aulPoints[2]);
     if (i++ < (k-1))
       strcat(szBuf, ",\n");
