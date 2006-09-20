@@ -67,6 +67,9 @@
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
 
+#include "View.h"
+#include "View3DInventor.h"
+
 #include "ViewProvider.h"
 #include "ViewProviderExtern.h"
 #include "ViewProviderFeature.h"
@@ -712,6 +715,10 @@ void Application::initApplication(void)
 
 void Application::initTypes(void)
 {
+  // views
+  Gui::BaseView                              ::init();
+  Gui::MDIView                               ::init();
+  Gui::View3DInventor                        ::init();
   // View Provider
   Gui::ViewProvider                          ::init();
   Gui::ViewProviderExtern                    ::init();

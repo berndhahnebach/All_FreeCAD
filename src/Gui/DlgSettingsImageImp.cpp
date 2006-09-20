@@ -64,57 +64,6 @@ DlgSettingsImageImp::~DlgSettingsImageImp()
     // no need to delete child widgets, Qt does it all for us
 }
 
-void DlgSettingsImageImp::onInsertMIBA()
-{
-  std::stringstream com;
-/*  
-	float aspect;
-  if( (aspect = _height/_width) > 1.0f)
-	  _Matrix[1][1] *= 1.0f / (aspect);
-	else
-	  _Matrix[0][0] *= (aspect); 
-*/
- 
-  com << setw(7) << setfill(' ') << fixed;
-  com << "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n" ;
-  com << "<MIBA xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://juergen-riegel.net/Miba/Miba2.xsd\" Version=\"2\"> \n" ;
-  com << " <View>\n"; 
-  com << "  <Matrix \n"; 
-  com << "     a11=\"" << _Matrix[0][0] <<"\" a12=\"" << _Matrix[1][0] <<"\" a13=\"" << _Matrix[2][0] <<"\" a14=\"" << _Matrix[3][0] << "\"\n";
-  com << "     a21=\"" << _Matrix[0][1] <<"\" a22=\"" << _Matrix[1][1] <<"\" a23=\"" << _Matrix[2][1] <<"\" a24=\"" << _Matrix[3][1] << "\"\n";
-  com << "     a31=\"" << _Matrix[0][2] <<"\" a32=\"" << _Matrix[1][2] <<"\" a33=\"" << _Matrix[2][2] <<"\" a34=\"" << _Matrix[3][2] << "\"\n";
-  com << "     a41=\"" << _Matrix[0][3] <<"\" a42=\"" << _Matrix[1][3] <<"\" a43=\"" << _Matrix[2][3] <<"\" a44=\"" << _Matrix[3][3] << "\"\n";
-  com << "   />\n" ; 
-  com << " </View>\n" ; 
-  com << " <Source>\n" ; 
-  com << "  <Creator>riegel</Creator>\n" ;  
-  com << "  <CreationDate>2006-07-05T01:11:00</CreationDate>\n" ;  
-  com << "  <CreatingSystem>FreeCAD 0.5</CreatingSystem>\n" ;
-  com << "  <PartNumber>Unknown</PartNumber>\n";
-  com << "  <Revision>1.0</Revision>\n";
-  com << " </Source>\n" ;
-  com << "</MIBA>\n" ;
-
-  textEditComment->setText(QString(com.str().c_str()));
-
-}
-
-void DlgSettingsImageImp::onInsertViewMatrix()
-{
-  std::stringstream com;
-  com << "Matrix=[" << _Matrix[0][0] <<"," << _Matrix[0][1] <<"," << _Matrix[0][2] <<"," << _Matrix[0][3] << ",";
-  com << _Matrix[1][0] <<"," << _Matrix[1][1] <<"," << _Matrix[1][2] <<"," << _Matrix[1][3] << ",";
-  com << _Matrix[2][0] <<"," << _Matrix[2][1] <<"," << _Matrix[2][2] <<"," << _Matrix[2][3] << ",";
-  com << _Matrix[3][0] <<"," << _Matrix[3][1] <<"," << _Matrix[3][2] <<"," << _Matrix[3][3] << "]";
-
-  textEditComment->setText(QString(com.str().c_str()));
-}
-
-void DlgSettingsImageImp::onInsertDateTime()
-{
-  textEditComment->setText( QDateTime::currentDateTime().toString() );
-}
-
 /**
  * Sets the image size to (\a w, \a h).
  */
@@ -168,127 +117,16 @@ int DlgSettingsImageImp::imageHeight() const
 }
 
 /**
- * Sets the value of pixel per inch to \r. 
- */
-void DlgSettingsImageImp::setPixelsPerInch ( float r )
-{
-  spinResolution->setValue( r );
-}
-
-/**
- * Returns the current value for pixel per inch.
- */
-float DlgSettingsImageImp::pixelsPerInch() const
-{
-  return spinResolution->value();
-}
-
-/**
  * Sets the background color of the image to \a c.
  */
-void DlgSettingsImageImp::setImageBackgroundColor( const QColor& c )
-{
-  QMap<int, QColor> colormap;
-  colormap[1] = Qt::white;
-  colormap[2] = Qt::black;
-  colormap[3] = Qt::red;
-  colormap[4] = Qt::green;
-  colormap[5] = Qt::blue;
-  colormap[6] = Qt::cyan;
-  colormap[7] = Qt::magenta;
-  colormap[8] = Qt::yellow;
-  colormap[9] = Qt::gray;
 
-  comboColor->setCurrentItem(0);
-  for ( QMap<int, QColor>::Iterator it = colormap.begin(); it != colormap.end(); ++it )
-  {
-    if ( it.data() == c )
-    {
-      comboColor->setCurrentItem(it.key());
-      break;
-    }
-  }
-}
 
-/**
- * Returns the current background color.
- */
-QColor DlgSettingsImageImp::imageBackgroundColor() const
-{
-  QMap<int, QColor> colormap;
-  colormap[1] = Qt::white;
-  colormap[2] = Qt::black;
-  colormap[3] = Qt::red;
-  colormap[4] = Qt::green;
-  colormap[5] = Qt::blue;
-  colormap[6] = Qt::cyan;
-  colormap[7] = Qt::magenta;
-  colormap[8] = Qt::yellow;
-  colormap[9] = Qt::gray;
 
-  if ( !checkTransparent->isChecked() && colormap.find( comboColor->currentItem() ) != colormap.end() )
-    return colormap[comboColor->currentItem()];
-
-  // either default viewer background or transparent background
-  return QColor();
-}
-
-/**
- * Sets the type of image format to \a f.
- */
-void DlgSettingsImageImp::setImageFormat( SoOffscreenRenderer::Components f )
-{
-  switch ( f )
-  {
-  case SoOffscreenRenderer::LUMINANCE:
-    comboImageType->setCurrentItem(0);
-    checkTransparent->setChecked(false);
-    break;
-  case SoOffscreenRenderer::RGB:
-    comboImageType->setCurrentItem(1);
-    checkTransparent->setChecked(false);
-    break;
-  case SoOffscreenRenderer::LUMINANCE_TRANSPARENCY:
-    comboImageType->setCurrentItem(0);
-    checkTransparent->setChecked(true);
-    break;
-  case SoOffscreenRenderer::RGB_TRANSPARENCY:
-    comboImageType->setCurrentItem(1);
-    checkTransparent->setChecked(true);
-    break;
-  default:
-    break;
-  }
-}
-
-/**
- * Returns the current image format.
- */
-SoOffscreenRenderer::Components DlgSettingsImageImp::imageFormat() const
-{
-  if ( !checkTransparent->isChecked() )
-  {
-    if ( comboImageType->currentItem() == 0 )
-      return SoOffscreenRenderer::LUMINANCE;
-    else
-      return SoOffscreenRenderer::RGB;
-  }
-  else // transparent background
-  {
-    if ( comboImageType->currentItem() == 0 )
-      return SoOffscreenRenderer::LUMINANCE_TRANSPARENCY;
-    else
-      return SoOffscreenRenderer::RGB_TRANSPARENCY;
-  }
-}
 
 void DlgSettingsImageImp::onSelectedFilter( const QString& filter )
 {
   bool ok = ( filter.startsWith("JPG") || filter.startsWith("JPEG") || filter.startsWith("PNG") );	
-  textEditComment->setEnabled( ok );
-  pushButtonInsertTimeDate->setEnabled( ok );
-  pushButtonInsertMatrix->setEnabled( ok );
-  pushButtonInsertMIBA->setEnabled( ok );
+  buttonGroupComment->setEnabled( ok );
 }
 
 void DlgSettingsImageImp::adjustImageSize(float fRatio)

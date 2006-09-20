@@ -189,11 +189,11 @@ public:
 	PyObjectBase(PyTypeObject *T);
 	/// Wrapper for the Python destructor
 	static void PyDestructor(PyObject *P)				// python wrapper
-		{  delete ((PyObjectBase *) P);  };
+		{  delete ((PyObjectBase *) P);  }
 	/// incref method wrapper (see python extending manual)
-	void IncRef(void) {Py_INCREF(this);};
+	PyObjectBase* IncRef(void) {Py_INCREF(this);return this;}
 	/// decref method wrapper (see python extending manual)	
-	void DecRef(void) {Py_DECREF(this);};
+	PyObjectBase* DecRef(void) {Py_DECREF(this);return this;}
 
 	/** GetAttribute implementation
 	 *  This method implements the retriavel of object attributes.

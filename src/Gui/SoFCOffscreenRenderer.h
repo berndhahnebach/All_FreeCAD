@@ -56,7 +56,7 @@ public:
 	 * Writes the rendered image buffer directly into a QImage object
 	 * instead of an image file.
 	 */
-	SbBool writeToImage (QImage&, const char * filetypeext="PNG") const;
+	SbBool writeToImage (QImage& /*, const char * filetypeext="PNG"*/) const;
 	/** 
    * Saves the buffer to \a filename, in the filetype specified by \a filetypeextensions.
    *
@@ -67,11 +67,16 @@ public:
    * directly supported by Coin3D.
    */
 	SbBool writeToImageFile (const SbString &  filename, const SbName &  filetypeextension ) const;
+  void writeToImageFile (const char *filename, const char* comment) const;  
   /**
    * This method returns all image file formats supported by Coin3D (see getWriteFiletypeInfo()) with all QImage file formats that are 
    * not directly supported by Coin3D, if so.
    */
   QStringList getWriteImageFiletypeInfo();
+
+  std::string createMIBA() const;
+
+  SbMatrix _Matrix;
 };
 
 } // namespace Gui

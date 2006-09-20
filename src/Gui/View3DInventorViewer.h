@@ -77,6 +77,17 @@ public:
    * Creates also a XML stream regarding MIBA standard. To embed in a picture comment field (e.g. JPEG).
    */
   bool makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& ) const;
+  /// Background modes for the makeScreenShot methode
+  enum eBackgroundType { 
+    Current     = 0,  /**< Use the current viewer Background */
+    Black       = 1,  /**< Black background */
+    White       = 2,  /**< White background  */ 
+    Transparent = 3,  /**< Transparent background  */
+  };
+  /**
+   * New simple form of the screenshoot
+   */
+  void makeScreenShot( const char* filename, int w, int h, int eBackgroundType, const char *comment ) const;
   /**
    * Writes the current scenegraph to an Inventor file, either in ascii or binary. 
    */

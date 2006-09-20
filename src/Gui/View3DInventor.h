@@ -50,6 +50,7 @@ class View3DInventor;
 class View3DInventorViewer;
 class MyView3DInventor;
 class ViewProviderFeature;
+class View3DPy;
 
 
 /** The 3D View Window
@@ -58,7 +59,9 @@ class ViewProviderFeature;
  */
 class GuiExport View3DInventor: public MDIView,public ParameterGrp::ObserverType
 {
-  Q_OBJECT
+  Q_OBJECT;
+
+  TYPESYSTEM_HEADER();
 
 public:
   View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
@@ -75,6 +78,8 @@ public:
 
   /// handle dropt files on this document
   void import(const char* FileName);
+
+  virtual PyObject *getPyObject(void);
 
   virtual const char *getName(void) const;
 
@@ -101,6 +106,9 @@ public:
   static const std::string &View3DInventor::writeNodesToString(SoNode * root);
 
   View3DInventorViewer *getViewer(void) {return _viewer;}
+  
+  friend View3DPy;
+  void setActiveView(bool);
 
 public slots:
   void setCursor(const QCursor&);
@@ -110,7 +118,6 @@ protected slots:
   void stopSpinning();
 
 protected:
-  void showActiveView( MDIView* );
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
   void keyPressEvent    ( QKeyEvent       * e );
@@ -121,6 +128,7 @@ protected:
 
 private:
   View3DInventorViewer * _viewer;
+  PyObject *_pcViwer3DPy;
   QTimer * stopSpinTimer;
 };
 

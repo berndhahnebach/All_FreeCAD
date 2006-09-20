@@ -51,25 +51,17 @@ public:
   int imageWidth() const;
   int imageHeight() const;
 
-  void setPixelsPerInch ( float );
-  float pixelsPerInch() const;
+  //void setPixelsPerInch ( float );
+  //float pixelsPerInch() const;
   //@}
 
   /** @name Image background */
   //@{
-  void setImageBackgroundColor( const QColor& );
-  QColor imageBackgroundColor() const;
-  void setImageFormat( SoOffscreenRenderer::Components  );
-  SoOffscreenRenderer::Components imageFormat() const;
+  //void setImageBackgroundColor( const QColor& );
+  //QColor imageBackgroundColor() const;
+  //void setImageFormat( SoOffscreenRenderer::Components  );
+  //SoOffscreenRenderer::Components imageFormat() const;
   void onSelectedFilter( const QString& );
-  //@}
-
-  /** @name Matrix handling (MIBA) */
-  //@{
-  void setMatrix(const SbMatrix &Matrix){_Matrix = Matrix;}
-  virtual void onInsertDateTime();
-  virtual void onInsertMIBA();
-  virtual void onInsertViewMatrix();
   //@}
 
 

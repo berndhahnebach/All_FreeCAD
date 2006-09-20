@@ -581,12 +581,12 @@ StdCmdViewFitAll::StdCmdViewFitAll()
 
 void StdCmdViewFitAll::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewFit\")");
+  doCommand(Command::Gui,"Gui.document().view().fitAll()");
 }
 
 bool StdCmdViewFitAll::isActive(void)
 {
-  return getGuiApplication()->sendHasMsgToActiveView("ViewFit");
+  return isViewOfType(Gui::View3DInventor::getClassTypeId());
 }
 
 //===========================================================================
@@ -696,9 +696,9 @@ void StdViewScreenShot::activated(int iMsg)
     DlgSettingsImageImp* opt = new DlgSettingsImageImp(&fd);
     SbVec2s sz = vp.getWindowSize();
     opt->setImageSize((int)sz[0], (int)sz[1]);
-    opt->setPixelsPerInch( vp.getPixelsPerInch() );
-    opt->setImageFormat( SoFCOffscreenRenderer::RGB );
-    opt->setMatrix(view->getViewer()->getCamera()->getViewVolume().getMatrix());
+    //opt->setPixelsPerInch( vp.getPixelsPerInch() );
+    //opt->setImageFormat( SoFCOffscreenRenderer::RGB );
+    //opt->setMatrix(view->getViewer()->getCamera()->getViewVolume().getMatrix());
 
     fd.setOptionsWidget(FileOptionsDialog::Right, opt);
     opt->onSelectedFilter(fd.selectedFilter());
@@ -707,15 +707,15 @@ void StdViewScreenShot::activated(int iMsg)
     {
       selFilter = fd.selectedFilter();
       QString fn = fd.selectedFile();
-      QApplication::setOverrideCursor( Qt::WaitCursor );
+      //QApplication::setOverrideCursor( Qt::WaitCursor );
 
       // get the defined values
       int w = opt->imageWidth();
       int h = opt->imageHeight();
-      float r = opt->pixelsPerInch();
+      //float r = opt->pixelsPerInch();
 
       // search for the matching format
-      bool ok = false;
+      
       QString format = formats.front(); // take the first as default
       for ( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
       {
@@ -726,42 +726,30 @@ void StdViewScreenShot::activated(int iMsg)
         }
       }
 
-      if ( !opt->textEditComment->text().isEmpty() && (format == "JPG" || format == "JPEG") )
-      {
-        std::string tempFileName = Base::FileInfo::getTempFileName();
-        ok = view->getViewer()->makeScreenShot( tempFileName.c_str(), format.latin1(), w, h, r, (int)opt->imageFormat(), opt->imageBackgroundColor() );
-        writeJPEGComment(tempFileName.c_str(),fn.latin1() ,opt->textEditComment->text());   
-      }else{
-        ok = view->getViewer()->makeScreenShot( fn.latin1(), format.latin1(), w, h, r, (int)opt->imageFormat(), opt->imageBackgroundColor() );
-        // Reopen PNG images and embed information into
-        if ( ok && format == "PNG" )
-        {
-          QFileInfo fi(fn);
-          QImage img;
-          img.load( fn, "PNG" );
-          img.setText("Title", 0, fi.baseName() );
-          img.setText("Author", 0, "FreeCAD (http://free-cad.sourceforge.net)");
-          if ( opt->textEditComment->text().isEmpty() )
-            img.setText("Description", 0, "Screenshot created by FreeCAD");
-          else
-            img.setText("Description", 0, opt->textEditComment->text() );
-          img.setText("Creation Time", 0, QDateTime::currentDateTime().toString());
-          img.setText("Software", 0, App::Application::Config()["ExeName"].c_str());
-          img.save( fn, "PNG" );
-        }
+      // which background choosen
+      const char* background;
+      switch(opt->comboBackground->currentItem()){
+        case 0: background="Current"; break;
+        case 1: background="White"; break;
+        case 2: background="Black"; break;
+        case 3: background="Transparent"; break;
       }
 
-      QApplication::restoreOverrideCursor();
+      if ( !opt->textEditComment->text().isEmpty())
+      {
+        doCommand(Gui,"Gui.document().view().saveImage('%s',%d,%d,'%s')",fn.latin1(),w,h,background);
+      }else{
+        doCommand(Gui,"Gui.document().view().saveImage('%s',%d,%d)",fn.latin1(),w,h,background);
+      }
 
-      if ( !ok )
-        QMessageBox::warning(getMainWindow(), QObject::tr("Save picture"), QObject::tr("Couldn't save the screenshot '%1'").arg(fn));
+      //QApplication::restoreOverrideCursor();
     }
   }
 }
 
 bool StdViewScreenShot::isActive(void)
 {
-  return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()) != 0);
+  return isViewOfType(Gui::View3DInventor::getClassTypeId());
 }
 
 
@@ -1235,6 +1223,8 @@ void CreateViewStdCommands(void)
 } // namespace Gui
 
 
+#if 0
+
 //===========================================================================
 // helper from wrjpgcom.c
 //===========================================================================
@@ -1653,5 +1643,5 @@ void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comme
 
 }
 
-
+#endif
 

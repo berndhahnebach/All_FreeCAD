@@ -41,6 +41,9 @@ using namespace Gui;
 // BaseView
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+TYPESYSTEM_SOURCE_ABSTRACT(Gui::BaseView,Base::BaseClass);
+
+
 BaseView::BaseView( Gui::Document* pcDocument)
   :_pcDocument(pcDocument), bIsDetached(false)
 {
@@ -111,6 +114,7 @@ App::Document* BaseView::getAppDocument() const
 // MDIView
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+TYPESYSTEM_SOURCE_ABSTRACT(Gui::MDIView,Gui::BaseView);
 
 
 MDIView::MDIView( Gui::Document* pcDocument,QWidget* parent, const char* name, int wflags )

@@ -55,6 +55,7 @@ public:
 	PYFUNCDEF_D(DocumentPy,update)
   PYFUNCDEF_D(DocumentPy,activeObject)
 	PYFUNCDEF_D(DocumentPy,getObject)
+	PYFUNCDEF_D(DocumentPy,view)
  
 private:
   Gui::Document *_pcDoc;

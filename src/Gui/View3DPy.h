@@ -52,6 +52,8 @@ public:
 //	PyObject *PyDocType(PyObject *args);		// Python wrapper
 //	static PyObject *sPyDocType(PyObject *self, PyObject *args, PyObject *kwd){return ((View3DPy*)self)->PyDocType(args);};
 	PYFUNCDEF_D(View3DPy,message)
+	PYFUNCDEF_D(View3DPy,fitAll)
+	PYFUNCDEF_D(View3DPy,saveImage)
 
 private:
   Gui::View3DInventor *_pcView;
