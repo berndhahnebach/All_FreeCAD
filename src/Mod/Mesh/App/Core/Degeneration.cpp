@@ -596,12 +596,12 @@ bool MeshFixDeformedFacets::Fixup()
         if (fCosAngle > 0.86f) {
           const MeshFacet& face = it.GetReference();
 
-          unsigned long uNeighbour = face._aulNeighbours[i];
+          unsigned long uNeighbour = face._aulNeighbours[j];
           if (uNeighbour!=ULONG_MAX && cTopAlg.ShouldSwapEdge(it.Position(), uNeighbour, fMaxAngle)) {
             cTopAlg.SwapEdge(it.Position(), uNeighbour);
             break;
           }
-          uNeighbour = face._aulNeighbours[(i+2)%3];
+          uNeighbour = face._aulNeighbours[(j+2)%3];
           if (uNeighbour!=ULONG_MAX && cTopAlg.ShouldSwapEdge(it.Position(), uNeighbour, fMaxAngle)) {
             cTopAlg.SwapEdge(it.Position(), uNeighbour);
             break;
