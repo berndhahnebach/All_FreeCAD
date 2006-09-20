@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <qmainwindow.h>
+#include <Base/Base.h>
 
 namespace App
 {
@@ -53,8 +54,10 @@ class ViewProvider;
  *  @see Application
  *  @author Jürgen Riegel
  */
-class GuiExport BaseView
+class GuiExport BaseView: public Base::BaseClass
 {
+  TYPESYSTEM_HEADER();
+
 public:
   /** View constructor
    * Atach the view to the given document. If the document is NULL
@@ -122,6 +125,9 @@ protected:
 class GuiExport MDIView : public QMainWindow,public BaseView
 {
   Q_OBJECT;
+
+  TYPESYSTEM_HEADER();
+
 
 public:
   /** View constructor

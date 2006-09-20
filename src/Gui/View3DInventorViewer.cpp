@@ -432,6 +432,67 @@ bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbNam
   return ok;
 }
 
+void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, int eBackgroundType, const char *comment ) const
+{
+  // if no valid color use the current background
+  bool useBackground = false;
+  SbViewportRegion vp(getViewportRegion());
+  if(w>0 && h>0)
+    vp.setWindowSize( (short)w, (short)h );
+
+  SoFCOffscreenRenderer renderer(vp);
+  SoCallback* cb = 0;
+
+  // if we use transparency then we must not set a background color
+  switch(eBackgroundType){
+    case Current:
+      useBackground = true;
+      cb = new SoCallback;
+      cb->setCallback(clearBuffer);
+      break;
+    case White:
+      renderer.setBackgroundColor( SbColor(1.0, 1.0, 1.0) );
+      break;
+    case Black:
+      renderer.setBackgroundColor( SbColor(0.0, 0.0, 0.0) );
+      break;
+    case Transparent:
+      renderer.setComponents(SoOffscreenRenderer::RGB_TRANSPARENCY );
+      break;
+    default:
+      throw Base::Exception("View3DInventorViewer::makeScreenShot(): Unknown parameter");
+  }
+
+
+  SoSeparator* root = new SoSeparator;
+  root->ref();
+
+  SoCamera* camera = getCamera();
+  if ( useBackground )
+  {
+    root->addChild(backgroundroot);
+    root->addChild(cb);
+  }
+  root->addChild(getHeadlight());
+  root->addChild(camera);
+  root->addChild(pcViewProviderRoot);
+  if ( useBackground )
+    root->addChild(cb);
+  root->addChild(foregroundroot);
+
+  // render the scene
+  renderer.render( root );
+
+  // set matrix for miba
+  renderer._Matrix = camera->getViewVolume().getMatrix();
+
+  //bool ok = renderer.writeToImageFile( filename, filetypeextension );
+  renderer.writeToImageFile( filename, comment);
+
+  root->unref();
+
+}
+
 bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
 {
   bool ret = false;

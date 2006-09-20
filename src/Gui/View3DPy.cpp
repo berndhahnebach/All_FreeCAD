@@ -34,6 +34,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include "Application.h"
+#include "View3DInventorViewer.h"
 
 using Base::Console;
 using Base::streq;
@@ -69,7 +70,7 @@ PyTypeObject View3DPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About PyObjectBase",                             /*tp_doc */
+  "About PyView3D",                                 /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
@@ -102,6 +103,8 @@ PyTypeObject View3DPy::Type = {
 PyMethodDef View3DPy::Methods[] = {
 //  {"DocType",      (PyCFunction) sPyDocType,         Py_NEWARGS},
   PYMETHODEDEF(message)
+  PYMETHODEDEF(fitAll)
+  PYMETHODEDEF(saveImage)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -109,7 +112,7 @@ PyMethodDef View3DPy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject View3DPy::Parents[] = {&PyObjectBase::Type, NULL};     
+PyParentObject View3DPy::Parents[] = {&View3DPy::Type,&PyObjectBase::Type, NULL};     
 
 //--------------------------------------------------------------------------
 //t constructor
@@ -138,7 +141,7 @@ View3DPy::~View3DPy()						// Everything handled in parent
 //--------------------------------------------------------------------------
 PyObject *View3DPy::_repr(void)
 {
-	return Py_BuildValue("s", "FreeCAD Document");
+	return Py_BuildValue("s", "FreeCAD 3DView");
 }
 //--------------------------------------------------------------------------
 // View3DPy Attributes
@@ -158,12 +161,7 @@ int View3DPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: no
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-/*
-PyObject *View3DPy::PyDocType(PyObject *args)
-{ 
-	return _pcDoc->GetDocType()->GetPyObject();
-}
- */
+
 PYFUNCIMP_D(View3DPy,message)
 { 
   const char **ppReturn = 0;
@@ -178,6 +176,47 @@ PYFUNCIMP_D(View3DPy,message)
       // create string out of ppReturn....
       Py_Return;
     }
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(View3DPy,fitAll)
+{ 
+ if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+   
+    _pcView->_viewer->viewAll();
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(View3DPy,saveImage)
+{ 
+  char *cFileName,*cImageType="Current",*cComment="$MIBA";
+  int w=-1,h=-1,t;
+
+  if (!PyArg_ParseTuple(args, "s|iiss",&cFileName,&w,&h,&cImageType,&cComment))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+
+    if(_stricmp(cImageType,"Current")==0)
+      t=0;
+    else if(_stricmp(cImageType,"Black")==0)
+      t=1;
+    else if(_stricmp(cImageType,"White")==0)
+      t=2;
+    else if(_stricmp(cImageType,"Transparent")==0)
+      t=3;
+    else 
+      Py_Error(PyExc_Exception,"Parameter 4 have to be (Current|Black|White|Transparent)");
+
+    QColor c;
+    _pcView->_viewer->makeScreenShot(cFileName,w,h,t,cComment);
     Py_Return;
 
   }PY_CATCH;

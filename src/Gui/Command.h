@@ -31,7 +31,8 @@
 #include <string>
 #include <vector>
 
-#include "../Base/PyExport.h"
+#include <Base/PyExport.h>
+#include <Base/Type.h>
 
 class QAction;
 class QActionGroup;
@@ -178,6 +179,8 @@ public:
    *  when the name does not exist or no document is active!
    */
   App::Document*  getDocument(const char* Name=0);
+  /// checks if the activ view is of a special type or derived
+  bool isViewOfType(Base::Type t);
   /// returns the named feature or the active one from the active document or NULL
   App::AbstractFeature* getFeature(const char* Name);
   App::DocumentObject*  getObject(const char* Name);

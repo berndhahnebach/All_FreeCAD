@@ -58,15 +58,17 @@
 #include "View3DInventorExamples.h"
 #include "ViewProviderFeature.h"
 #include "SoFCSelectionAction.h"
+#include "View3DPy.h"
 
 #include <locale>
 
 
 using namespace Gui;
 
+TYPESYSTEM_SOURCE_ABSTRACT(Gui::View3DInventor,Gui::BaseView);
 
 View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags )
-    :MDIView( pcDocument,parent, name, wflags)
+    :MDIView( pcDocument,parent, name, wflags),_pcViwer3DPy(0)
 {
   // important for highlighting 
   setMouseTracking(true);
@@ -94,8 +96,21 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
 View3DInventor::~View3DInventor()
 {
   hGrp->Detach(this);
+  if(_pcViwer3DPy)
+    Py_DECREF(_pcViwer3DPy);
   delete _viewer;
 }
+
+PyObject *View3DInventor::getPyObject(void)
+{
+  if(!_pcViwer3DPy)
+  {
+    _pcViwer3DPy = new View3DPy(this);
+    Py_INCREF(_pcViwer3DPy);
+  }
+  return _pcViwer3DPy;
+}
+
 
 void View3DInventor::setViewerDefaults(void)
 {

@@ -113,6 +113,7 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(update)
   PYMETHODEDEF(activeObject)
   PYMETHODEDEF(getObject)
+  PYMETHODEDEF(view)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -285,6 +286,26 @@ PYFUNCIMP_D(DocumentPy,getObject)
     ViewProvider *pcView = _pcDoc->getViewProviderByName(sName);
 	  if(pcView)
 		  return pcView->getPyObject();
+	  else
+    {
+      Py_Return;
+    }
+  } PY_CATCH;
+} 
+
+PYFUNCIMP_D(DocumentPy,view)
+{
+  char *pstr=0;
+  if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
+
+  PY_TRY {
+    Gui::MDIView  *pcView = _pcDoc->getActiveView();
+    if(pcView){
+      PyObject *o = pcView->getPyObject();
+      Py_INCREF(o);
+		  return o;
+    }
 	  else
     {
       Py_Return;

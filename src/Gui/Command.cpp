@@ -179,6 +179,18 @@ Command::~Command()
 {
 }
 
+bool Command::isViewOfType(Base::Type t)
+{
+  Gui::Document *d = getGuiApplication()->activeDocument();
+  if(!d) return false;
+  Gui::BaseView *v = d->getActiveView();
+  if(!v) return false;
+  if(v->getTypeId().isDerivedFrom(t))
+    return true;
+  else
+    return false;
+}
+
 bool Command::addTo(QWidget *pcWidget)
 {
   if (!_pcAction)
