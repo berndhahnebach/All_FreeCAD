@@ -118,6 +118,7 @@ protected slots:
   void stopSpinning();
 
 protected:
+  void showActiveView( MDIView* );
   void dropEvent        ( QDropEvent      * e );
   void dragEnterEvent   ( QDragEnterEvent * e );
   void keyPressEvent    ( QKeyEvent       * e );
