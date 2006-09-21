@@ -319,117 +319,12 @@ View3DInventorViewer::~View3DInventorViewer()
   Gui::Selection().Detach(this);
 }
 
-
 void View3DInventorViewer::clearBuffer(void * userdata, SoAction * action)
 {
   if (action->isOfType(SoGLRenderAction::getClassTypeId())) {
     // do stuff specific for GL rendering here.
     glClear(GL_DEPTH_BUFFER_BIT);
   }
-}
-
-QImage View3DInventorViewer::makeScreenShot( int w, int h, float r, int c, const QColor& col ) const
-{
-  // if no valid color use the current background
-  bool useBackground = !col.isValid();
-  SbViewportRegion vp(getViewportRegion());
-  vp.setWindowSize( (short)w, (short)h );
-  vp.setPixelsPerInch( r );
-
-  SoFCOffscreenRenderer renderer(vp);
-  // if we use transparency then we must not set a background color
-  renderer.setComponents(SoOffscreenRenderer::Components(c));
-  if ( c != (int)SoOffscreenRenderer::RGB_TRANSPARENCY && c != (int)SoOffscreenRenderer::LUMINANCE_TRANSPARENCY )
-  {
-    if ( useBackground )
-      renderer.setBackgroundColor(getBackgroundColor());
-    else
-      renderer.setBackgroundColor( SbColor((float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f) );
-  }
-  else // we want a transparent background
-    useBackground = false;
-
-  SoCallback* cb = 0;
-  if ( useBackground )
-  {
-    cb = new SoCallback;
-    cb->setCallback(clearBuffer);
-  }
-
-  SoSeparator* root = new SoSeparator;
-  root->ref();
-
-  SoCamera* camera = getCamera();
-  if ( useBackground )
-  {
-    root->addChild(backgroundroot);
-    root->addChild(cb);
-  }
-  root->addChild(getHeadlight());
-  root->addChild(camera);
-  root->addChild(pcViewProviderRoot);
-  if ( useBackground )
-    root->addChild(cb);
-  root->addChild(foregroundroot);
-
-  QImage img;
-  renderer.render( root );
-  renderer.writeToImage(img);
-  root->unref();
-
-  return img;
-}
-
-bool View3DInventorViewer::makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& col ) const
-{
-  // if no valid color use the current background
-  bool useBackground = !col.isValid();
-  SbViewportRegion vp(getViewportRegion());
-  vp.setWindowSize( (short)w, (short)h );
-  vp.setPixelsPerInch( r );
-
-  SoFCOffscreenRenderer renderer(vp);
-
-  // if we use transparency then we must not set a background color
-  renderer.setComponents(SoOffscreenRenderer::Components(c));
-  if ( c != (int)SoOffscreenRenderer::RGB_TRANSPARENCY && c != (int)SoOffscreenRenderer::LUMINANCE_TRANSPARENCY )
-  {
-    if ( useBackground )
-      renderer.setBackgroundColor(getBackgroundColor());
-    else
-      renderer.setBackgroundColor( SbColor((float)col.red()/255.0f, (float)col.green()/255.0f, (float)col.blue()/255.0f) );
-  }
-  else // we want a transparent background
-    useBackground = false;
-
-  SoCallback* cb = 0;
-  if ( useBackground )
-  {
-    cb = new SoCallback;
-    cb->setCallback(clearBuffer);
-  }
-
-  SoSeparator* root = new SoSeparator;
-  root->ref();
-
-  SoCamera* camera = getCamera();
-  if ( useBackground )
-  {
-    root->addChild(backgroundroot);
-    root->addChild(cb);
-  }
-  root->addChild(getHeadlight());
-  root->addChild(camera);
-  root->addChild(pcViewProviderRoot);
-  if ( useBackground )
-    root->addChild(cb);
-  root->addChild(foregroundroot);
-
-  renderer.render( root );
-  bool ok = renderer.writeToImageFile( filename, filetypeextension );
-  root->unref();
-
-  return ok;
 }
 
 void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, int eBackgroundType, const char *comment ) const
@@ -440,6 +335,10 @@ void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, i
   if(w>0 && h>0)
     vp.setWindowSize( (short)w, (short)h );
 
+  //NOTE: To support pixels per inch we must use SbViewportRegion::setPixelsPerInch( ppi );
+  //The default value is 72.0.
+  //If we need to support grayscale images with must either use SoOffscreenRenderer::LUMINANCE or 
+  //SoOffscreenRenderer::LUMINANCE_TRANSPARENCY. 
   SoFCOffscreenRenderer renderer(vp);
   SoCallback* cb = 0;
 
@@ -462,7 +361,6 @@ void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, i
     default:
       throw Base::Exception("View3DInventorViewer::makeScreenShot(): Unknown parameter");
   }
-
 
   SoSeparator* root = new SoSeparator;
   root->ref();
@@ -490,7 +388,6 @@ void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, i
   renderer.writeToImageFile( filename, comment);
 
   root->unref();
-
 }
 
 bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const

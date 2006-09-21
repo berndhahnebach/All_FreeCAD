@@ -96,8 +96,29 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
 View3DInventor::~View3DInventor()
 {
   hGrp->Detach(this);
-  if(_pcViwer3DPy)
+
+  //FIXME: This workaround can be removed after we have done the redesign with BaseView.
+  //If we destroy this viewer by calling 'delete' directly the focus proxy widget which is defined 
+  //by a widget in SoQtViewer isn't resetted. This widget becomes to a dangling pointer and makes
+  //the application crash. (Probably it's better to destroy this viewer by calling close().)
+  //See also Gui::Document::~Document().
+  QWidget* foc = qApp->focusWidget();
+  if (foc) {
+    QWidget* par = foc->parentWidget();
+    while ( par ) {
+      if ( par == this ) { 
+        foc->setFocusProxy(0); foc->clearFocus(); break;
+      } else {
+        par = par->parentWidget();
+      }
+    }
+  }
+
+  if(_pcViwer3DPy) {
+    _pcViwer3DPy->setInvalid();
     Py_DECREF(_pcViwer3DPy);
+  }
+
   delete _viewer;
 }
 
@@ -106,8 +127,9 @@ PyObject *View3DInventor::getPyObject(void)
   if(!_pcViwer3DPy)
   {
     _pcViwer3DPy = new View3DPy(this);
-    Py_INCREF(_pcViwer3DPy);
   }
+
+  Py_INCREF(_pcViwer3DPy);
   return _pcViwer3DPy;
 }
 
@@ -120,34 +142,16 @@ void View3DInventor::setViewerDefaults(void)
   _viewer->bDrawAxisCross = hGrp->GetBool("CornerCoordSystem",true);
   _viewer->bAllowSpining =  hGrp->GetBool("UseAutoRotation"  ,true);
   _viewer->setGradientBackgroud( (hGrp->GetBool("Gradient",true)) );
-#ifndef OLD_COLOR_STYLE
   unsigned long col = hGrp->GetUnsigned("BackgroundColor",0);
-#else
-  long col = hGrp->GetInt("BackgroundColor",0);
-#endif
   float r,g,b;
-#ifndef OLD_COLOR_STYLE
   r = ((col >> 24) & 0xff) / 255.0; g = ((col >> 16) & 0xff) / 255.0; b = ((col >> 8) & 0xff) / 255.0;
-#else
-  r = (col & 0xff) / 255.0; g = ((col >> 8) & 0xff) / 255.0; b = ((col >> 16) & 0xff) / 255.0;
-#endif
   _viewer->setBackgroundColor(SbColor(r, g, b));
 
-#ifndef OLD_COLOR_STYLE
   unsigned long col2 = hGrp->GetUnsigned("BackgroundColor2",2139082239); // default color (lila)
   unsigned long col3 = hGrp->GetUnsigned("BackgroundColor3",ULONG_MAX); // default color (white)
-#else
-  long col2 = hGrp->GetInt("BackgroundColor2",13467519); // default color (lila)
-  long col3 = hGrp->GetInt("BackgroundColor3",16777215); // default color (white)
-#endif
   float r2,g2,b2,r3,g3,b3;
-#ifndef OLD_COLOR_STYLE
   r2 = ((col2 >> 24) & 0xff) / 255.0; g2 = ((col2 >> 16) & 0xff) / 255.0; b2 = ((col2 >> 8) & 0xff) / 255.0;
   r3 = ((col3 >> 24) & 0xff) / 255.0; g3 = ((col3 >> 16) & 0xff) / 255.0; b3 = ((col3 >> 8) & 0xff) / 255.0;
-#else
-  r2 = (col2 & 0xff) / 255.0; g2 = ((col2 >> 8) & 0xff) / 255.0; b2 = ((col2 >> 16) & 0xff) / 255.0;
-  r3 = (col3 & 0xff) / 255.0; g3 = ((col3 >> 8) & 0xff) / 255.0; b3 = ((col3 >> 16) & 0xff) / 255.0;
-#endif
   _viewer->setGradientBackgroudColor( SbColor(r2, g2, b2), SbColor(r3, g3, b3) );
 
   if(hGrp->GetBool("UseAntialiasing"  ,false))
@@ -171,52 +175,22 @@ void View3DInventor::OnChange(ParameterGrp::SubjectType &rCaller,ParameterGrp::M
   } else if ( strcmp(Reason,"HighlightColor") == 0) {
     float transparency;
     SbColor highlightColor(0.1f, 0.1f, 0.8f);
-#ifndef OLD_COLOR_STYLE
     unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
     int a = (highlight)&0xff;
     highlight = hGrp->GetUnsigned("HighlightColor", highlight);
     highlight += a;
     highlightColor.setPackedValue((uint32_t)highlight, transparency);
-#else
-    unsigned long highlight = (unsigned long)(highlightColor.getPackedValue());
-    int r = (highlight >> 24)&0xff;
-    int g = (highlight >> 16)&0xff;
-    int b = (highlight >>  8)&0xff;
-    int a = (highlight)&0xff;
-    highlight = (b << 16) | (g << 8) | r;
-    highlight = hGrp->GetInt("HighlightColor", highlight);
-    b = (highlight >> 16)&0xff;
-    g = (highlight >>  8)&0xff;
-    r = (highlight)&0xff;
-    highlight = (r << 24) | (g << 16) | (b << 8) | a;
-    highlightColor.setPackedValue((uint32_t)highlight, transparency);
-#endif
     SoSFColor col; col.setValue(highlightColor);
     SoFCHighlightColorAction cAct( col );
     cAct.apply(_viewer->getSceneGraph());
   } else if ( strcmp(Reason,"SelectionColor") == 0) {
     float transparency;
     SbColor selectionColor(0.1f, 0.5f, 0.1f);
-#ifndef OLD_COLOR_STYLE
     unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
     int a = (selection)&0xff;
     selection = hGrp->GetUnsigned("SelectionColor", selection);
     selection += a;
     selectionColor.setPackedValue((uint32_t)selection, transparency);
-#else
-    unsigned long selection = (unsigned long)(selectionColor.getPackedValue());
-    int r = (selection >> 24)&0xff;
-    int g = (selection >> 16)&0xff;
-    int b = (selection >>  8)&0xff;
-    int a = (selection)&0xff;
-    selection = (b << 16) | (g << 8) | r;
-    selection = hGrp->GetInt("SelectionColor", selection);
-    b = (selection >> 16)&0xff;
-    g = (selection >>  8)&0xff;
-    r = (selection)&0xff;
-    selection = (r << 24) | (g << 16) | (b << 8) | a;
-    selectionColor.setPackedValue((uint32_t)selection, transparency);
-#endif
     SoSFColor col; col.setValue(selectionColor);
     SoFCSelectionColorAction cAct( col );
     cAct.apply(_viewer->getSceneGraph());

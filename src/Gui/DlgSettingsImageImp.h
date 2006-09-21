@@ -50,20 +50,13 @@ public:
   QSize imageSize() const;
   int imageWidth() const;
   int imageHeight() const;
-
-  //void setPixelsPerInch ( float );
-  //float pixelsPerInch() const;
   //@}
 
-  /** @name Image background */
+  /** @name Image meta information */
   //@{
-  //void setImageBackgroundColor( const QColor& );
-  //QColor imageBackgroundColor() const;
-  //void setImageFormat( SoOffscreenRenderer::Components  );
-  //SoOffscreenRenderer::Components imageFormat() const;
+  QString comment() const;
   void onSelectedFilter( const QString& );
   //@}
-
 
 protected:
   virtual void onRatioScreen();

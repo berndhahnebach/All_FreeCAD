@@ -67,16 +67,6 @@ public:
   void addViewProvider(ViewProvider*);
   /// remove a ViewProvider
   void removeViewProvider(ViewProvider*);
-  /**
-   * Creates an image with width \a w and height \a h of the current scene graph. Pixels per inch is set to \a r.
-   */
-  QImage makeScreenShot( int w, int h, float r, int c, const QColor& ) const;
-  /**
-   * An overloaded method that does basically the same as the method above unless it exports the rendered scenegraph directly
-   * to file \a filename with the extension \a filetypeextension.
-   * Creates also a XML stream regarding MIBA standard. To embed in a picture comment field (e.g. JPEG).
-   */
-  bool makeScreenShot( const SbString& filename, const SbName& filetypeextension, int w, int h, float r, int c, const QColor& ) const;
   /// Background modes for the makeScreenShot methode
   enum eBackgroundType { 
     Current     = 0,  /**< Use the current viewer Background */
@@ -85,7 +75,10 @@ public:
     Transparent = 3,  /**< Transparent background  */
   };
   /**
-   * New simple form of the screenshoot
+   * Creates an image with width \a w and height \a h of the current scene graph and exports the rendered scenegraph directly
+   * to file \a filename.
+   * If \a comment is set to '$MIBA' information regarding the MIBA standard is embedded to the picture, otherwise the \a comment is embedded as is.
+   * The appropriate file format must support embedding meta information which is provided by JPEG or PNG.
    */
   void makeScreenShot( const char* filename, int w, int h, int eBackgroundType, const char *comment ) const;
   /**

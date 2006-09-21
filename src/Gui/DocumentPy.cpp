@@ -114,6 +114,7 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(activeObject)
   PYMETHODEDEF(getObject)
   PYMETHODEDEF(view)
+  PYMETHODEDEF(activeView)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -302,15 +303,27 @@ PYFUNCIMP_D(DocumentPy,view)
   PY_TRY {
     Gui::MDIView  *pcView = _pcDoc->getActiveView();
     if(pcView){
+      // already incremented in getPyObject().
       PyObject *o = pcView->getPyObject();
-      Py_INCREF(o);
-		  return o;
-    }
-	  else
-    {
+      return o;
+    } else {
       Py_Return;
     }
   } PY_CATCH;
 } 
 
+PYFUNCIMP_D(DocumentPy,activeView)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
 
+  PY_TRY {
+    Gui::MDIView  *pcView = _pcDoc->getActiveView();
+    if(pcView){
+      // already incremented in getPyObject().
+      return pcView->getPyObject();
+    } else {
+      Py_Return;
+    }
+  } PY_CATCH;
+} 

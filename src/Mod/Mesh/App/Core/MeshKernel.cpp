@@ -648,8 +648,11 @@ void MeshKernel::Write (std::ostream &rclOut) const
   rclOut.write((const char*)&uCtPts, sizeof(unsigned long));
   rclOut.write((const char*)&uCtFts, sizeof(unsigned long));
 
-  rclOut.write((const char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
-  rclOut.write((const char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
+  // the mesh kernel might be empty
+  if ( uCtPts > 0 )
+    rclOut.write((const char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
+  if ( uCtFts > 0 )
+    rclOut.write((const char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
   rclOut.write((const char*)&_clBoundBox, sizeof(Base::BoundBox3f));
 }
 
@@ -660,11 +663,16 @@ void MeshKernel::Read (std::istream &rclIn)
   unsigned long uCtPts=ULONG_MAX, uCtFts=ULONG_MAX;
   rclIn.read((char*)&uCtPts, sizeof(unsigned long));
   rclIn.read((char*)&uCtFts, sizeof(unsigned long));
-  _aclPointArray.resize(uCtPts);
-  _aclFacetArray.resize(uCtFts);
 
-  rclIn.read((char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
-  rclIn.read((char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
+  // the stored mesh kernel might be empty
+  if ( uCtPts > 0 ) {
+    _aclPointArray.resize(uCtPts);
+    rclIn.read((char*)&(_aclPointArray[0]), uCtPts*sizeof(MeshPoint));
+  }
+  if ( uCtFts > 0 ) {
+    _aclFacetArray.resize(uCtFts);
+    rclIn.read((char*)&(_aclFacetArray[0]), uCtFts*sizeof(MeshFacet));
+  }
   rclIn.read((char*)&_clBoundBox, sizeof(Base::BoundBox3f));
 }
 

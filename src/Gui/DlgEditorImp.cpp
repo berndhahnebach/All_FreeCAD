@@ -67,11 +67,7 @@ void DlgSettingsEditorImp::onDisplayColor(const QString& name)
   // foreground color
   QString org = _trMap[ name ];
   unsigned long col = _mColors[ org ];
-#ifndef OLD_COLOR_STYLE
   ColorBtn->setColor(QColor((col >> 24) & 0xff, (col >> 16) & 0xff, (col >> 8) & 0xff));
-#else
-  ColorBtn->setColor(QColor(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff));
-#endif
 }
 
 /** Updates the color map if a color was changed */
@@ -84,12 +80,7 @@ void DlgSettingsEditorImp::onChosenColor()
     return;
 
   QColor col = ColorBtn->color();
-#ifndef OLD_COLOR_STYLE
   unsigned long lcol = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
-#else
-  unsigned long lcol = (col.blue() << 16) | (col.green() << 8) | col.red();
-#endif
-
   
   _mColors[text] = lcol;
   pythonSyntax->setColor( text, col );
@@ -133,11 +124,7 @@ void DlgSettingsEditorImp::loadSettings()
     _mColors[*it] = hGrp->GetUnsigned( (*it).latin1(), GetDefCol().color(*it));
     unsigned long col = GetDefCol().color( *it );
     QColor color;
-#ifndef OLD_COLOR_STYLE
     color.setRgb((col >> 24) & 0xff, (col >> 16) & 0xff, (col >> 8) & 0xff);
-#else
-    color.setRgb(col & 0xff, (col >> 8) & 0xff, (col >> 16) & 0xff);
-#endif
     pythonSyntax->setColor( *it, color );
   }
 
@@ -190,7 +177,6 @@ DefColorMap::DefColorMap(void)
 {
   QColor col;
 
-#ifndef OLD_COLOR_STYLE
   col = Qt::black; 
   unsigned long lText             = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
   m_clDefColors["Text"]           = lText;
@@ -236,52 +222,6 @@ DefColorMap::DefColorMap(void)
   col = Qt::red; 
   unsigned long lPyError          = (col.red() << 24) | (col.green() << 16) | (col.blue() << 8);
   m_clDefColors["Python error"]   = lPyError;
-#else
-  col = Qt::black; long lText     = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Text"]           = lText;
-
-  col = Qt::gray; long lTextSel   = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Text Selection"] = lTextSel;
-
-  col = Qt::cyan; long lBookmarks = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Bookmark"]       = lBookmarks;
-
-  col = Qt::red; long lBreakpnts  = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Breakpoint"]     = lBreakpnts;
-
-  col = Qt::blue; long lKeywords  = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Keyword"]        = lKeywords;
-
-  col.setRgb(0, 170, 0); long lComments = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Comment"]        = lComments;
-
-  col.setRgb(160, 160, 164); long lBlockCom  = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Block comment"]   = lBlockCom;
-
-  col = Qt::red; long lCharacter  = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Character"]   = lCharacter;
-
-  col.setRgb(255, 170, 0); long lClass  = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Class name"]  = lClass;
-
-  col.setRgb(255, 170, 0); long lDefine = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Define name"]  = lDefine;
-
-  col.setRgb(160, 160, 164); long lOperat = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Operator"]    = lOperat;
-
-  col = Qt::blue; long lNumbers   = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Number"]         = lNumbers;
-
-  col = Qt::red; long lStrings    = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["String"]         = lStrings;
-
-  col.setRgb(170, 170, 127); long lPyOutput = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Python output"] = lPyOutput;
-
-  col = Qt::red; long lPyError = (col.blue() << 16) | (col.green() << 8) | col.red();
-  m_clDefColors["Python error"] = lPyError;
-#endif
 }
 
 /** Destruction */

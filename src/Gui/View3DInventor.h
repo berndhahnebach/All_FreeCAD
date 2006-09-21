@@ -105,11 +105,8 @@ public:
   /// helper to apply a SoWriteAction to a node and write it to a string
   static const std::string &View3DInventor::writeNodesToString(SoNode * root);
 
-  View3DInventorViewer *getViewer(void) {return _viewer;}
+  View3DInventorViewer *getViewer(void) const {return _viewer;}
   
-  friend View3DPy;
-  void setActiveView(bool);
-
 public slots:
   void setCursor(const QCursor&);
   void dump(const char* filename);
@@ -129,8 +126,11 @@ protected:
 
 private:
   View3DInventorViewer * _viewer;
-  PyObject *_pcViwer3DPy;
+  View3DPy *_pcViwer3DPy;
   QTimer * stopSpinTimer;
+
+  // friends
+  friend class View3DPy;
 };
 
 } // namespace Gui

@@ -42,22 +42,22 @@ public:
    * Constructor. Argument is the \a viewportregion we should use when rendering. An internal 
    * SoGLRenderAction will be constructed. 
    */
-	SoFCOffscreenRenderer (const SbViewportRegion &viewportregion);
+  SoFCOffscreenRenderer (const SbViewportRegion &viewportregion);
   /**
    * Constructor. Argument is the \a action we should apply to the scene graph when rendering the 
    * scene. Information about the viewport is extracted from the \a action. 
    */
-	SoFCOffscreenRenderer (SoGLRenderAction *action);
+  SoFCOffscreenRenderer (SoGLRenderAction *action);
   /**
    * Destructor. 
    */
-	~SoFCOffscreenRenderer();
-	/** 
-	 * Writes the rendered image buffer directly into a QImage object
-	 * instead of an image file.
-	 */
-	SbBool writeToImage (QImage& /*, const char * filetypeext="PNG"*/) const;
-	/** 
+  ~SoFCOffscreenRenderer();
+  /** 
+   * Writes the rendered image buffer directly into a QImage object
+   * instead of an image file.
+   */
+  SbBool writeToImage (QImage& /*, const char * filetypeext="PNG"*/) const;
+  /** 
    * Saves the buffer to \a filename, in the filetype specified by \a filetypeextensions.
    *
    * Note that you must still specify the full filename for the first argument, i.e. the second argument will 
@@ -66,7 +66,7 @@ public:
    * This does basically the same as writeToFile() unless that all QImage file formats are supported if not
    * directly supported by Coin3D.
    */
-	SbBool writeToImageFile (const SbString &  filename, const SbName &  filetypeextension ) const;
+  SbBool writeToImageFile (const SbString &  filename, const SbName &  filetypeextension ) const;
   void writeToImageFile (const char *filename, const char* comment) const;  
   /**
    * This method returns all image file formats supported by Coin3D (see getWriteFiletypeInfo()) with all QImage file formats that are 
