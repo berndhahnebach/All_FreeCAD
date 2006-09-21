@@ -38,12 +38,14 @@
 using namespace MeshCore;
 
 MeshTopoAlgorithm::MeshTopoAlgorithm (MeshKernel &rclM)
-: _rclMesh(rclM)
+: _rclMesh(rclM), _needsCleanup(false)
 {
 }
 
 MeshTopoAlgorithm::~MeshTopoAlgorithm (void)
 {
+  if ( _needsCleanup )
+    Cleanup();
 }
 
 bool MeshTopoAlgorithm::InsertVertex(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint)
@@ -454,85 +456,96 @@ void MeshTopoAlgorithm::SplitOpenEdge(unsigned long ulFacetPos, unsigned short u
   _rclMesh._aclFacetArray.push_back(cNew);
 }
 
-/// FIXME: Implement
-bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulEdgeP0, unsigned long ulEdgeP1)
+std::vector<unsigned long> MeshTopoAlgorithm::GetFacetsToPoint(unsigned long uFacetPos, unsigned long uPointPos) const
 {
-#if 0
-  RefPointToFacet();
-  std::set<MeshFacetArray::_TConstIterator> aclNeighbours0 = (*_pclRefPt2Fac)[ulEdgeP0];
-  std::set<MeshFacetArray::_TConstIterator> aclNeighbours1 = (*_pclRefPt2Fac)[ulEdgeP1];
-
-  if (aclNeighbours0.size() < 3 || aclNeighbours1.size() < 3)
-    return false; // this must be a border point => must not remove
-
-  Base::Vector3f clNew = 0.5f*(_rclMesh._aclPointArray[ulEdgeP0]+_rclMesh._aclPointArray[ulEdgeP1]);
-
-  // check point 0
-  std::vector<unsigned long> clPoly;
-  if ( !GetPolygonOfNeighbours(ulEdgeP0, clPoly) )
-    return false;
-  if ( !IsConvexPolygon(clPoly) )
-    return false;
-
-  // check point 1
-  clPoly.clear();
-  if ( !GetPolygonOfNeighbours(ulEdgeP1, clPoly) )
-    return false;
-  if ( !IsConvexPolygon(clPoly) )
-    return false;
-
-  MeshGeomFacet clFacet;
-  for (std::set<MeshFacetArray::_TConstIterator>::iterator it0 = aclNeighbours0.begin(); it0 != aclNeighbours0.end(); ++it0)
+  // get all facets this point is referenced by
+  std::list<unsigned long> aReference;
+  aReference.push_back(uFacetPos);
+  std::set<unsigned long> aRefFacet;
+  while ( !aReference.empty() )
   {
-    (*it0)->SetFlag(MeshFacet::INVALID); // mark for deletion
-
-    bool remove = false;
-    for (int i=0; i<3; ++i)
-    {
-      if ((*it0)->_aulPoints[i] == ulEdgeP1)
-      {
-        remove = true;
+    unsigned long uIndex = aReference.front();
+    aReference.pop_front();
+    aRefFacet.insert(uIndex);
+    MeshFacet& rFace = _rclMesh._aclFacetArray[uIndex];
+    for ( int i=0; i<3; i++ ) {
+      if ( rFace._aulPoints[i] == uPointPos ) {
+        if ( rFace._aulNeighbours[i] != ULONG_MAX )
+        {
+          if ( aRefFacet.find(rFace._aulNeighbours[i]) == aRefFacet.end() )
+            aReference.push_back( rFace._aulNeighbours[i] );
+        }
+        if ( rFace._aulNeighbours[(i+2)%3] != ULONG_MAX )
+        {
+          if ( aRefFacet.find(rFace._aulNeighbours[(i+2)%3]) == aRefFacet.end() )
+            aReference.push_back( rFace._aulNeighbours[(i+2)%3] );
+        }
         break;
       }
-
-      if ((*it0)->_aulPoints[i] == ulEdgeP0)
-        clFacet._aclPoints[i] = clNew;
-      else
-        clFacet._aclPoints[i] = _rclMesh._aclPointArray[(*it0)->_aulPoints[i]];
-    }
-
-    if (!remove)
-    {
-      clFacet.CalcNormal();
-      _aclNewFacets.push_back(clFacet);
     }
   }
-  for (std::set<MeshFacetArray::_TConstIterator>::iterator it1 = aclNeighbours1.begin(); it1 != aclNeighbours1.end(); ++it1)
+
+  //copy the items
+  std::vector<unsigned long> aRefs;
+  aRefs.insert(aRefs.end(), aRefFacet.begin(), aRefFacet.end());
+  return aRefs;
+}
+
+void MeshTopoAlgorithm::Cleanup()
+{
+  _rclMesh.RemoveInvalids();
+  _needsCleanup = false;
+}
+
+bool MeshTopoAlgorithm::CollapseEdge(unsigned long ulFacetPos, unsigned long ulNeighbour)
+{
+  MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
+  MeshFacet& rclN = _rclMesh._aclFacetArray[ulNeighbour];
+
+  unsigned short uFSide = rclF.Side(rclN);
+  unsigned short uNSide = rclN.Side(rclF);
+
+  if (uFSide == USHRT_MAX || uNSide == USHRT_MAX) 
+    return false; // not neighbours
+
+  if (!rclF.IsValid() || !rclN.IsValid())
+    return false; // the facets are marked invalid from a previous run
+
+  // get the point index we want to remove
+  unsigned long ulPointPos = rclF._aulPoints[uFSide];
+  unsigned long ulPointNew = rclN._aulPoints[uNSide];
+
+  // get all facets this point is referenced by
+  std::vector<unsigned long> aRefs = GetFacetsToPoint(ulFacetPos, ulPointPos);
+  for ( std::vector<unsigned long>::iterator it = aRefs.begin(); it != aRefs.end(); ++it )
   {
-    (*it1)->SetFlag(MeshFacet::INVALID); // mark for deletion
-
-    bool remove = false;
-    for (int i=0; i<3; ++i)
-    {
-      if ((*it1)->_aulPoints[i] == ulEdgeP0)
-      {
-        remove = true;
-        break;
-      }
-
-      if ((*it1)->_aulPoints[i] == ulEdgeP1)
-        clFacet._aclPoints[i] = clNew;
-      else
-        clFacet._aclPoints[i] = _rclMesh._aclPointArray[(*it1)->_aulPoints[i]];
-    }
-
-    if (!remove)
-    {
-      clFacet.CalcNormal();
-      _aclNewFacets.push_back(clFacet);
-    }
+    MeshFacet& rFace = _rclMesh._aclFacetArray[*it];
+    rFace.Transpose( ulPointPos, ulPointNew );
   }
-#endif
+
+  // set the new neighbourhood
+  if (rclF._aulNeighbours[(uFSide+1)%3] != ULONG_MAX)
+    _rclMesh._aclFacetArray[rclF._aulNeighbours[(uFSide+1)%3]].ReplaceNeighbour(ulFacetPos, rclF._aulNeighbours[(uFSide+2)%3]);
+  if (rclF._aulNeighbours[(uFSide+2)%3] != ULONG_MAX)
+    _rclMesh._aclFacetArray[rclF._aulNeighbours[(uFSide+2)%3]].ReplaceNeighbour(ulFacetPos, rclF._aulNeighbours[(uFSide+1)%3]);
+  if (rclN._aulNeighbours[(uNSide+1)%3] != ULONG_MAX)
+    _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+1)%3]].ReplaceNeighbour(ulNeighbour, rclN._aulNeighbours[(uNSide+2)%3]);
+  if (rclN._aulNeighbours[(uNSide+2)%3] != ULONG_MAX)
+    _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+2)%3]].ReplaceNeighbour(ulNeighbour, rclN._aulNeighbours[(uNSide+1)%3]);
+
+  // isolate the both facets and the point
+  rclF._aulNeighbours[0] = ULONG_MAX;
+  rclF._aulNeighbours[1] = ULONG_MAX;
+  rclF._aulNeighbours[2] = ULONG_MAX;
+  rclF.SetInvalid();
+  rclN._aulNeighbours[0] = ULONG_MAX;
+  rclN._aulNeighbours[1] = ULONG_MAX;
+  rclN._aulNeighbours[2] = ULONG_MAX;
+  rclN.SetInvalid();
+  _rclMesh._aclPointArray[ulPointPos].SetInvalid();
+
+  _needsCleanup = true;
+
   return true;
 }
 ///FIXME: Creates non-manifolds
@@ -584,45 +597,165 @@ bool MeshTopoAlgorithm::CollapseFacet(unsigned long ulFacetPos)
 /// FIXME: Implement
 void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1, const Base::Vector3f& rP2)
 {
-  // search for the matching edges
-  unsigned short iEdgeNo1=USHRT_MAX, iEdgeNo2=USHRT_MAX;
-  const MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
-  for ( unsigned short i=0; i<3; i++ )
-  {
-    Base::Vector3f cBase(_rclMesh._aclPointArray[rFace._aulPoints[i]]);
-    Base::Vector3f cEnd (_rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]);
-    Base::Vector3f cDir = cEnd - cBase;
+  float fEps = MESH_MIN_EDGE_LEN;
+  MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
+  MeshPoint& rVertex0 = _rclMesh._aclPointArray[rFace._aulPoints[0]];
+  MeshPoint& rVertex1 = _rclMesh._aclPointArray[rFace._aulPoints[1]];
+  MeshPoint& rVertex2 = _rclMesh._aclPointArray[rFace._aulPoints[2]];
 
-    if ( rP1.DistanceToLine(cBase, cDir) < /*MESH_MIN_PT_DIST*/0.05f )
+  unsigned short equalP1=USHRT_MAX, equalP2=USHRT_MAX;
+  if ( Base::Distance(rVertex0, rP1) < fEps )
+    equalP1=0;
+  else if ( Base::Distance(rVertex1, rP1) < fEps )
+    equalP1=1;
+  else if ( Base::Distance(rVertex2, rP1) < fEps )
+    equalP1=2;
+  if ( Base::Distance(rVertex0, rP2) < fEps )
+    equalP2=0;
+  else if ( Base::Distance(rVertex1, rP2) < fEps )
+    equalP2=1;
+  else if ( Base::Distance(rVertex2, rP2) < fEps )
+    equalP2=2;
+
+  // both points are coincident with the corner points
+  if ( equalP1 != USHRT_MAX && equalP2 != USHRT_MAX )
+    return; // must not split the facet
+
+  if ( equalP1 != USHRT_MAX )
+  {
+    // get the edge to the second given point and perform a split edge operation
+    float fMinDist = FLOAT_MAX;
+    unsigned short iEdgeNo=USHRT_MAX;
+    for ( unsigned short i=0; i<3; i++ )
     {
-      iEdgeNo1 = i;
+      Base::Vector3f cBase(_rclMesh._aclPointArray[rFace._aulPoints[i]]);
+      Base::Vector3f cEnd (_rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]);
+      Base::Vector3f cDir = cEnd - cBase;
+
+      float fDist = rP2.DistanceToLine(cBase, cDir);
+      if ( fMinDist < fDist )
+      {
+        fMinDist = fDist;
+        iEdgeNo = i;
+      }
     }
-    else if ( rP2.DistanceToLine(cBase, cDir) < /*MESH_MIN_PT_DIST*/0.05f )
+    if ( fMinDist < 0.05f )
     {
-      iEdgeNo2 = i;
+      if ( rFace._aulNeighbours[iEdgeNo] != ULONG_MAX )
+        SplitEdge(ulFacetPos, rFace._aulNeighbours[iEdgeNo], rP2);
+      else
+        SplitOpenEdge(ulFacetPos, iEdgeNo, rP2);
     }
   }
+  else if ( equalP2 != USHRT_MAX )
+  {
+    // get the edge to the first given point and perform a split edge operation
+    float fMinDist = FLOAT_MAX;
+    unsigned short iEdgeNo=USHRT_MAX;
+    for ( unsigned short i=0; i<3; i++ )
+    {
+      Base::Vector3f cBase(_rclMesh._aclPointArray[rFace._aulPoints[i]]);
+      Base::Vector3f cEnd (_rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]);
+      Base::Vector3f cDir = cEnd - cBase;
 
-  if ( iEdgeNo1 == USHRT_MAX || iEdgeNo2 == USHRT_MAX )
-    return; // no two different edge
+      float fDist = rP1.DistanceToLine(cBase, cDir);
+      if ( fMinDist < fDist )
+      {
+        fMinDist = fDist;
+        iEdgeNo = i;
+      }
+    }
+    if ( fMinDist < 0.05f )
+    {
+      if ( rFace._aulNeighbours[iEdgeNo] != ULONG_MAX )
+        SplitEdge(ulFacetPos, rFace._aulNeighbours[iEdgeNo], rP1);
+      else
+        SplitOpenEdge(ulFacetPos, iEdgeNo, rP1);
+    }
+  }
+  else
+  {
+    // search for the matching edges
+    unsigned short iEdgeNo1=USHRT_MAX, iEdgeNo2=USHRT_MAX;
+    float fMinDist1 = FLOAT_MAX, fMinDist2 = FLOAT_MAX;
+    const MeshFacet& rFace = _rclMesh._aclFacetArray[ulFacetPos];
+    for ( unsigned short i=0; i<3; i++ )
+    {
+      Base::Vector3f cBase(_rclMesh._aclPointArray[rFace._aulPoints[i]]);
+      Base::Vector3f cEnd (_rclMesh._aclPointArray[rFace._aulPoints[(i+1)%3]]);
+      Base::Vector3f cDir = cEnd - cBase;
+
+      float fDist = rP1.DistanceToLine(cBase, cDir);
+      if ( fMinDist1 < fDist )
+      {
+        fMinDist1 = fDist;
+        iEdgeNo1 = i;
+      }
+      fDist = rP2.DistanceToLine(cBase, cDir);
+      if ( fMinDist2 < fDist )
+      {
+        fMinDist2 = fDist;
+        iEdgeNo2 = i;
+      }
+    }
+
+    if ( iEdgeNo1 == iEdgeNo2 || fMinDist1 >= 0.05f || fMinDist2 >= 0.05f ) 
+      return; // no valid configuration
+
+    // make first point lying on the previous edge
+    Base::Vector3f cP1 = rP1;
+    Base::Vector3f cP2 = rP2;
+    if ( (iEdgeNo2+1)%3 == iEdgeNo1 )
+    {
+      unsigned short tmp = iEdgeNo1;
+      iEdgeNo1 = iEdgeNo2;
+      iEdgeNo2 = tmp;
+      cP1 = rP2;
+      cP2 = rP1;
+    }
+
+    // split up the facet now
+    if ( rFace._aulNeighbours[iEdgeNo1] != ULONG_MAX )
+      SplitNeighbourFacet(ulFacetPos, iEdgeNo1, cP1);
+    if ( rFace._aulNeighbours[iEdgeNo2] != ULONG_MAX )
+      SplitNeighbourFacet(ulFacetPos, iEdgeNo2, cP1);
+  }
+}
+
+void MeshTopoAlgorithm::SplitNeighbourFacet(unsigned long ulFacetPos, unsigned short uFSide, const Base::Vector3f rPoint)
+{
+  MeshFacet& rclF = _rclMesh._aclFacetArray[ulFacetPos];
+
+  unsigned long ulNeighbour = rclF._aulNeighbours[uFSide];
+  MeshFacet& rclN = _rclMesh._aclFacetArray[ulNeighbour];
+
+  unsigned short uNSide = rclN.Side(rclF);
+
+  unsigned long uPtCnt = _rclMesh._aclPointArray.size();
+  unsigned long uPtInd = _rclMesh._aclPointArray.GetOrAddIndex(rPoint);
+  unsigned long ulSize = _rclMesh._aclFacetArray.size();
+
+  // adjust the neighbourhood
+  if (rclN._aulNeighbours[(uNSide+1)%3] != ULONG_MAX)
+    _rclMesh._aclFacetArray[rclN._aulNeighbours[(uNSide+1)%3]].ReplaceNeighbour(ulNeighbour, ulSize);
+
+  MeshFacet cNew;
+  cNew._aulPoints[0] = uPtInd;
+  cNew._aulPoints[1] = rclN._aulPoints[(uNSide+1)%3];
+  cNew._aulPoints[2] = rclN._aulPoints[(uNSide+2)%3];
+  cNew._aulNeighbours[0] = ulFacetPos;
+  cNew._aulNeighbours[1] = rclN._aulNeighbours[(uNSide+1)%3];
+  cNew._aulNeighbours[2] = ulNeighbour;
+
+  // adjust the facet
+  rclN._aulPoints[(uNSide+1)%3] = uPtInd;
+  rclN._aulNeighbours[(uNSide+1)%3] = ulSize;
+
+  // insert new facet
+  _rclMesh._aclFacetArray.push_back(cNew);
+}
 
 #if 0
-  // rP1 should lie at the edge with the previous index
-  Base::Vector3f cP1 = rP1;
-  Base::Vector3f cP2 = rP2;
-
-  if ( (iEdgeNo2+1)%3 == iEdgeNo2 )
-  {
-    int tmp = iEdgeNo1;
-    iEdgeNo1 = iEdgeNo2;
-    iEdgeNo2 = tmp;
-    cP1 = rP2;
-    cP2 = rP1;
-  }
-
-  if (IsFlag(ulFacetPos)) return; // already marked as INVALID
-  SetFlag(ulFacetPos); // mark for deletion
-
   // create 3 new facets
   MeshGeomFacet clFacet;
 
@@ -645,7 +778,6 @@ void MeshTopoAlgorithm::SplitFacet(unsigned long ulFacetPos, const Base::Vector3
   clFacet.CalcNormal();
   _aclNewFacets.push_back(clFacet);
 #endif
-}
 
 void MeshTopoAlgorithm::RemoveDegeneratedFacet(unsigned long index)
 {
