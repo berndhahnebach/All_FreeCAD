@@ -55,6 +55,7 @@ public:
   /** @name Image meta information */
   //@{
   QString comment() const;
+  int backgroundType() const;
   void onSelectedFilter( const QString& );
   //@}
 

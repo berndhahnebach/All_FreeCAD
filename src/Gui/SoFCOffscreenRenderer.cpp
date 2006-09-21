@@ -23,12 +23,15 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <iomanip>
 # include <stdlib.h>
+# include <qdatetime.h>
 # include <qimage.h>
 # include <qstrlist.h>
 # include <Inventor/lists/SbList.h>
 # include <Inventor/lists/SbPList.h>
 # include <Inventor/SbString.h>
+# include <Inventor/SbMatrix.h>
 #endif
 
 #include <Base/FileInfo.h>
@@ -45,7 +48,7 @@ using namespace std;
 #define MAX_EXT_LEN 255
 
 void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comment);
-
+/*
 static int qimage_set_save_format(const char * ext, char * buf)
 {
   strncpy(buf, ext, MAX_EXT_LEN);
@@ -70,7 +73,7 @@ static int qimage_set_save_format(const char * ext, char * buf)
   // clear save format
   buf[0] = 0;
   return 0;
-}
+}*/
 
 // ---------------------------------------------------------------
 

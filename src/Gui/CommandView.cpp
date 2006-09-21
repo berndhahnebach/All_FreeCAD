@@ -725,7 +725,7 @@ void StdViewScreenShot::activated(int iMsg)
 
       // which background chosen
       const char* background;
-      switch(opt->comboBackground->currentItem()){
+      switch(opt->backgroundType()){
         case 0:  background="Current"; break;
         case 1:  background="White"; break;
         case 2:  background="Black"; break;
