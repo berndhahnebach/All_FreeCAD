@@ -204,6 +204,18 @@ PYFUNCIMP_D(View3DPy,saveImage)
 
   PY_TRY {
 
+#ifdef __GNUC__
+    if(strcasecmp(cImageType,"Current")==0)
+      t=0;
+    else if(strcasecmp(cImageType,"Black")==0)
+      t=1;
+    else if(strcasecmp(cImageType,"White")==0)
+      t=2;
+    else if(strcasecmp(cImageType,"Transparent")==0)
+      t=3;
+    else 
+      Py_Error(PyExc_Exception,"Parameter 4 have to be (Current|Black|White|Transparent)");
+#else
     if(_stricmp(cImageType,"Current")==0)
       t=0;
     else if(_stricmp(cImageType,"Black")==0)
@@ -214,6 +226,7 @@ PYFUNCIMP_D(View3DPy,saveImage)
       t=3;
     else 
       Py_Error(PyExc_Exception,"Parameter 4 have to be (Current|Black|White|Transparent)");
+#endif
 
     QColor c;
     _pcView->_viewer->makeScreenShot(cFileName,w,h,t,cComment);

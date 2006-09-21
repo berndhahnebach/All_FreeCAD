@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qbuttongroup.h>
 # include <qcheckbox.h>
 # include <qcombobox.h>
 # include <qdatetime.h>
@@ -126,6 +127,11 @@ QString DlgSettingsImageImp::comment() const
     return QString::null;
   else
     return textEditComment->text();
+}
+
+int DlgSettingsImageImp::backgroundType() const
+{
+  return comboBackground->currentItem();
 }
 
 void DlgSettingsImageImp::onSelectedFilter( const QString& filter )
