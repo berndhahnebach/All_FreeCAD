@@ -99,8 +99,8 @@ SbBool 	SoFCOffscreenRenderer::writeToImage (QImage& img /* , const char * filet
 	const unsigned char * bytes = getBuffer();
   SbVec2s size = getViewportRegion().getViewportSizePixels();
   int numcomponents = (int) this->getComponents();
-	int width  = (int)size[0];
-	int height = (int)size[1];;
+  int width  = (int)size[0];
+  int height = (int)size[1];;
 
   QImage image(width, height, 32);
   if (numcomponents == 2 || numcomponents == 4) image.setAlphaBuffer(TRUE);
@@ -135,7 +135,7 @@ SbBool 	SoFCOffscreenRenderer::writeToImage (QImage& img /* , const char * filet
   return true;
 }
 
-SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const SbName &  filetypeextension )const
+SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const SbName &  filetypeextension ) const
 {
   if ( isWriteSupported( filetypeextension ) )
   {
@@ -161,8 +161,6 @@ SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const
   return false;
 }
 
-
-
 void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* c) const
 {
   Base::FileInfo file(filename);
@@ -171,9 +169,9 @@ void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* 
     QImage img;
     writeToImage ( img ) ;
 
-    const char* formate = "JPEG";;
+    const char* format = "JPEG";;
     
-    if(! img.save( (file.filePath()+"_temp").c_str(), formate ))
+    if(! img.save( (file.filePath()+"_temp").c_str(), format ))
       throw Base::Exception();
 
     // writing comment in case of jpeg (QT ignore setText() in case of jpeg.....)
@@ -187,8 +185,26 @@ void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* 
     // deletee temporary file
     Base::FileInfo tmp((file.filePath()+"_temp").c_str());
     tmp.deleteFile();
-
-
+  }
+  else if ( file.hasExtension("PNG") )
+  {
+    QImage img;
+    if ( writeToImage ( img/*, "PNG"*/  ) )
+    {
+      img.setText("Title", 0, filename );
+      img.setText("Author", 0, "FreeCAD (http://free-cad.sourceforge.net)");
+      if(strcmp(c,"")==0)
+        img.setText("Description", 0, "Screenshot created by FreeCAD");   
+      else if(strcmp(c,"$MIBA")==0)
+        img.setText("Description", 0, createMIBA().c_str());   
+      else 
+        img.setText("Description", 0, c);
+      img.setText("Creation Time", 0, QDateTime::currentDateTime().toString());
+      img.setText("Software", 0, App::Application::Config()["ExeName"].c_str());
+      
+      if ( !img.save( filename, "PNG" ) )
+        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with Qt...");
+    }
   }
   else if ( isWriteSupported( file.extension().c_str() ) )
   {
@@ -211,19 +227,8 @@ void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* 
     if ( writeToImage ( img/*, filetypeextension.getString()*/  ) )
     {
       QString ext = file.extension().c_str();
-      //comment and meta (depends on the format)
-      if(strcmp(c,"")==0)
-        img.setText("Description", 0, "Screenshot created by FreeCAD");   
-      else if(strcmp(c,"$MIBA")==0)
-        img.setText("Description", 0, createMIBA().c_str());   
-      else 
-        img.setText("Description", 0, c);      img.setText("Description", 0, "Screenshot created by FreeCAD");
-      img.setText("Creation Time", 0, QDateTime::currentDateTime().toString());
-      img.setText("Software", 0, App::Application::Config()["ExeName"].c_str());
-      
-      if(! img.save( filename,  ext.upper() ))
-        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
-
+      if ( !img.save( filename,  ext.upper() ) )
+        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with Qt...");
     }
   }
 }

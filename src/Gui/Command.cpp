@@ -179,7 +179,7 @@ Command::~Command()
 {
 }
 
-bool Command::isViewOfType(Base::Type t)
+bool Command::isViewOfType(Base::Type t) const
 {
   Gui::Document *d = getGuiApplication()->activeDocument();
   if(!d) return false;

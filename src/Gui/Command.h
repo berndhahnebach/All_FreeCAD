@@ -180,7 +180,7 @@ public:
    */
   App::Document*  getDocument(const char* Name=0);
   /// checks if the activ view is of a special type or derived
-  bool isViewOfType(Base::Type t);
+  bool isViewOfType(Base::Type t) const;
   /// returns the named feature or the active one from the active document or NULL
   App::AbstractFeature* getFeature(const char* Name);
   App::DocumentObject*  getObject(const char* Name);

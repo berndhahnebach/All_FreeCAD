@@ -117,11 +117,16 @@ int DlgSettingsImageImp::imageHeight() const
 }
 
 /**
- * Sets the background color of the image to \a c.
+ * Returns the comment of the picture. If for the currently selected image format no comments are supported
+ * QString::null is returned.
  */
-
-
-
+QString DlgSettingsImageImp::comment() const
+{
+  if ( !textEditComment->isEnabled() )
+    return QString::null;
+  else
+    return textEditComment->text();
+}
 
 void DlgSettingsImageImp::onSelectedFilter( const QString& filter )
 {
