@@ -97,8 +97,8 @@ public:
   /**
    * Swaps the common edge of two adjacent facets even if the operation might be illegal. To be sure
    * that this operation is legal check either with IsSwapEdgeLegal() or ShouldSwapEdge() before.
-   * An illegel swap edge operation doesn't invalidate the topology of a mesh but it creates a fold on
-   * the surface, i.e. geometric overlaps of several triangles. 
+   * An illegel swap edge operation can produce non-manifolds, degenrated facets or it might create a 
+   * fold on the surface, i.e. geometric overlaps of several triangles. 
    */
   void SwapEdge(unsigned long ulFacetPos, unsigned long ulNeighbour);
   /**
@@ -114,9 +114,19 @@ public:
    */
   void SplitOpenEdge(unsigned long ulFacetPos, unsigned short uSide, const Base::Vector3f& rP);
   /**
-   * Collapses the common edge of two adjacent facets. This operations removes a point and the facets 
-   * \a ulFacetPos and \a ulNeighbour.
-   * @note The client programmer must make sure that this is a legal operation and no overlaps are created.
+   * Collapses the common edge of two adjacent facets. This operation removes one common point of the
+   * collapsed edge and the facets \a ulFacetPos and \a ulNeighbour from the data structure.
+   * @note If \a ulNeighbour is the neighbour facet on the i-th side then the i-th point is removed
+   * whereat i is 0, 1 or 2. If the other common point should be removed then CollapseEdge() should be
+   * invoked with transposed arguments of \a ulFacetPos and \a ulNeighbour, i.e. CollapseEdge( \a ulNeighbour, \a ulFacetPos ).
+   *
+   * @note The client programmer must make sure that this is a legal operation.
+   *
+   * @note This method marks the facets and the point as 'invalid' but does not remove them from the mesh structure, i.e. 
+   * the mesh structure gets into an inconsistent stage. To make the structure consistent again Cleanup() should be called. 
+   * The reason why this cannot be done automatically is that it would become quite slow if a lot of edges should be collapsed.
+   *
+   * @note While the mesh structure has invalid elements the client programmer must take care not to use such elements.
    */
   bool CollapseEdge(unsigned long ulFacetPos, unsigned long ulNeighbour);
   /**
@@ -124,10 +134,14 @@ public:
    */
   bool CollapseFacet(unsigned long ulFacetPos);
   /**
-   * Splits the facet with index \a ulFacetPos into up to three facets. The points \a rP1 and \a rP2 must lie on (or near to) 
+   * Removes all invalid marked elements from the mesh structure.
+   */
+  void Cleanup();
+  /**
+   * Splits the facet with index \a ulFacetPos into up to three facets. The points \a rP1 and \a rP2 should lie on  
    * two different edges of the facet. This method splits up the both neighbour facets as well.
-   * If either \a rP1 or \a rP2 (probably due to a previous call of SplitFacet()) is already part of the mesh then SplitEdge()
-   * or SplitOpenEdge() is invoked. If both points are already part of the mesh nothing is done.
+   * If either \a rP1 or \a rP2 (probably due to a previous call of SplitFacet()) is coincident with a corner point then the
+   * facet is splitted into two facets. If both both points are coincident with corner points of this facet nothing is done.
    */
   void SplitFacet(unsigned long ulFacetPos, const Base::Vector3f& rP1, const Base::Vector3f& rP2);
   /**
@@ -168,9 +182,19 @@ private:
    * Splits the boundary \a rBound in several loops and append this loops to the list of borders.
    */
   void SplitBoundaryLoops( const std::vector<unsigned long>& rBound, std::list<std::vector<unsigned long> >& aBorders );
+  /**
+   * Splits the neighbour facet of \a ulFacetPos on side \a uSide.
+   */
+  void SplitNeighbourFacet(unsigned long ulFacetPos, unsigned short uSide, const Base::Vector3f rPoint);
+  /**
+   * Returns all facets that references the point index \a uPointPos. \a uFacetPos is a facet that must
+   * reference this point and is added to the list as well.
+   */
+  std::vector<unsigned long> GetFacetsToPoint(unsigned long uFacetPos, unsigned long uPointPos) const;
 
 private:
   MeshKernel& _rclMesh;
+  bool _needsCleanup;
 };
 
 /**

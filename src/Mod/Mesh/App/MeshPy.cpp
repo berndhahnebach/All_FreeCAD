@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <sstream>
+# include <Wm3MeshCurvature.h>
 # include <Wm3Delaunay3.h>
 # include <Wm3Vector3.h>
 #endif
@@ -145,6 +146,7 @@ PyMethodDef MeshPy::Methods[] = {
   PYMETHODEDEF(fillupHoles)
   PYMETHODEDEF(refine)
   PYMETHODEDEF(optimizeTopology)
+  PYMETHODEDEF(optimizeEdges)
   PYMETHODEDEF(splitEdge)
   {NULL, NULL}    /* Sentinel */
 };
@@ -436,6 +438,98 @@ PYFUNCIMP_D(MeshPy,optimizeTopology)
   PY_TRY {
     MeshTopoAlgorithm topalg(_cMesh);
     topalg.OptimizeTopology(fMaxAngle);
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PYFUNCIMP_D(MeshPy,optimizeEdges)
+{
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
+
+  PY_TRY {
+    std::vector< Wm3::Vector3<float> > aPnts;
+    MeshPointIterator cPIt( _cMesh );
+    aPnts.reserve(_cMesh.CountPoints());
+    for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
+      aPnts.push_back( Wm3::Vector3<float>( cPIt->x, cPIt->y, cPIt->z ) );
+
+    // get all point connections
+    std::vector<int> aIdx;
+    const MeshFacetArray& raFts = _cMesh.GetFacets();
+    aIdx.reserve( 3*raFts.size() );
+
+    // Build map of edges to the referencing facets
+    unsigned long k = 0;
+    std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > aclEdgeMap;
+    for ( std::vector<MeshFacet>::const_iterator jt = raFts.begin(); jt != raFts.end(); ++jt, k++ )
+    {
+      for (int i=0; i<3; i++)
+      {
+        unsigned long ulT0 = jt->_aulPoints[i];
+        unsigned long ulT1 = jt->_aulPoints[(i+1)%3];
+        unsigned long ulP0 = std::min<unsigned long>(ulT0, ulT1);
+        unsigned long ulP1 = std::max<unsigned long>(ulT0, ulT1);
+        aclEdgeMap[std::make_pair<unsigned long, unsigned long>(ulP0, ulP1)].push_front(k);
+        aIdx.push_back( (int)jt->_aulPoints[i] );
+      }
+    }
+
+    // compute vertex based curvatures
+    Wm3::MeshCurvature<float> meshCurv(_cMesh.CountPoints(), &(aPnts[0]), _cMesh.CountFacets(), &(aIdx[0]));
+
+    // get curvature information now
+    const Wm3::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
+    const Wm3::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
+    const float* aMaxCurv = meshCurv.GetMaxCurvatures();
+    const float* aMinCurv = meshCurv.GetMinCurvatures();
+
+    raFts.ResetFlag(MeshFacet::VISIT);
+    const MeshPointArray& raPts = _cMesh.GetPoints();
+    MeshTopoAlgorithm cTopAlg(_cMesh);
+    for ( std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator kt = aclEdgeMap.begin(); kt != aclEdgeMap.end(); ++kt )
+    {
+      if ( kt->second.size() == 2 ) {
+        unsigned long uPt1 = kt->first.first;
+        unsigned long uPt2 = kt->first.second;
+        unsigned long uFt1 = kt->second.front();
+        unsigned long uFt2 = kt->second.back();
+
+        const MeshFacet& rFace1 = raFts[uFt1];
+        const MeshFacet& rFace2 = raFts[uFt2];
+        if ( rFace1.IsFlag(MeshFacet::VISIT) || rFace2.IsFlag(MeshFacet::VISIT) )
+          continue;
+
+        unsigned long uPt3, uPt4;
+        unsigned short side = rFace1.Side(uPt1, uPt2);
+        uPt3 = rFace1._aulPoints[(side+2)%3];
+        side = rFace2.Side(uPt1, uPt2);
+        uPt4 = rFace2._aulPoints[(side+2)%3];
+        
+        Wm3::Vector3<float> dir;
+        if ( fabs(aMinCurv[uPt1]) > fabs(aMaxCurv[uPt1]) )
+          dir = aMaxCurvDir[uPt1];
+        else
+          dir = aMinCurvDir[uPt1];
+
+        Base::Vector3f cMinDir(dir.X(), dir.Y(), dir.Z());
+        Base::Vector3f cEdgeDir1 = raPts[uPt1] - raPts[uPt2];
+        Base::Vector3f cEdgeDir2 = raPts[uPt3] - raPts[uPt4];
+        cMinDir.Normalize(); cEdgeDir1.Normalize(); cEdgeDir2.Normalize();
+
+        float fLength12 = Base::Distance(raPts[uPt1], raPts[uPt2]);
+        float fLength34 = Base::Distance(raPts[uPt3], raPts[uPt4]);
+        if ( fabs(cEdgeDir1*cMinDir) < fabs(cEdgeDir2*cMinDir) )
+        {
+          if ( cTopAlg.IsSwapEdgeLegal(uFt1, uFt2) && fLength34 < 1.05f*fLength12) {
+            cTopAlg.SwapEdge(uFt1, uFt2);
+            rFace1.SetFlag(MeshFacet::VISIT);
+            rFace2.SetFlag(MeshFacet::VISIT);
+          }
+        }
+      }
+    }
   } PY_CATCH;
 
   Py_Return; 

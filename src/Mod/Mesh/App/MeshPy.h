@@ -99,6 +99,7 @@ public:
   PYFUNCDEF_D(MeshPy,fillupHoles)
   PYFUNCDEF_D(MeshPy,refine)
   PYFUNCDEF_D(MeshPy,optimizeTopology)
+  PYFUNCDEF_D(MeshPy,optimizeEdges)
   PYFUNCDEF_D(MeshPy,splitEdge)
 
 protected:
