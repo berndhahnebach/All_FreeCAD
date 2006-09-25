@@ -76,14 +76,23 @@ public:
   float z;
 };
 
+} //namespace Gui
+
 
 
 // Export an instance of the base class (to avoid warnning C4275, see also 
 // C++ Language Reference/General Rules and Limitations on MSDN for more details.)
-template class GuiExport Base::Subject<const SelectionChanges&>;
+//
+// For compiler gcc4.1 we need to define the template class outside namespace 'Gui' otherwise we get the compiler error: 
+// 'explicit instantiation of 'class Base::Subject<const Gui::SelectionChanges&>' in namespace 'Gui' 
+// (which does not enclose namespace 'Base')
+
+template class GuiExport Base::Subject<const Gui::SelectionChanges&>;
+
+namespace Gui
+{
 
 /** The Selcetion singleton class
- 
  */
 class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>, public App::Document::ObserverType
 {

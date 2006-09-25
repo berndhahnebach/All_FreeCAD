@@ -25,6 +25,8 @@
 
 #ifndef _PreComp_
 # include <algorithm>
+# include <Wm3MeshCurvature.h>
+# include <Wm3Vector3.h>
 #endif
 
 #include "TopoAlgorithm.h"
@@ -228,6 +230,99 @@ void MeshTopoAlgorithm::OptimizeTopology(float fMaxAngle)
   }
 }
 
+void MeshTopoAlgorithm::AdjustEdgesToCurvatureDirection()
+{
+  std::vector< Wm3::Vector3<float> > aPnts;
+  MeshPointIterator cPIt( _rclMesh );
+  aPnts.reserve(_rclMesh.CountPoints());
+  for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
+    aPnts.push_back( Wm3::Vector3<float>( cPIt->x, cPIt->y, cPIt->z ) );
+
+  // get all point connections
+  std::vector<int> aIdx;
+  const MeshFacetArray& raFts = _rclMesh.GetFacets();
+  aIdx.reserve( 3*raFts.size() );
+
+  // Build map of edges to the referencing facets
+  unsigned long k = 0;
+  std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> > aclEdgeMap;
+  for ( std::vector<MeshFacet>::const_iterator jt = raFts.begin(); jt != raFts.end(); ++jt, k++ )
+  {
+    for (int i=0; i<3; i++)
+    {
+      unsigned long ulT0 = jt->_aulPoints[i];
+      unsigned long ulT1 = jt->_aulPoints[(i+1)%3];
+      unsigned long ulP0 = std::min<unsigned long>(ulT0, ulT1);
+      unsigned long ulP1 = std::max<unsigned long>(ulT0, ulT1);
+      aclEdgeMap[std::make_pair<unsigned long, unsigned long>(ulP0, ulP1)].push_front(k);
+      aIdx.push_back( (int)jt->_aulPoints[i] );
+    }
+  }
+
+  // compute vertex based curvatures
+  Wm3::MeshCurvature<float> meshCurv(_rclMesh.CountPoints(), &(aPnts[0]), _rclMesh.CountFacets(), &(aIdx[0]));
+
+  // get curvature information now
+  const Wm3::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
+  const Wm3::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
+  const float* aMaxCurv = meshCurv.GetMaxCurvatures();
+  const float* aMinCurv = meshCurv.GetMinCurvatures();
+
+  raFts.ResetFlag(MeshFacet::VISIT);
+  const MeshPointArray& raPts = _rclMesh.GetPoints();
+  for ( std::map<std::pair<unsigned long, unsigned long>, std::list<unsigned long> >::iterator kt = aclEdgeMap.begin(); kt != aclEdgeMap.end(); ++kt )
+  {
+    if ( kt->second.size() == 2 ) {
+      unsigned long uPt1 = kt->first.first;
+      unsigned long uPt2 = kt->first.second;
+      unsigned long uFt1 = kt->second.front();
+      unsigned long uFt2 = kt->second.back();
+
+      const MeshFacet& rFace1 = raFts[uFt1];
+      const MeshFacet& rFace2 = raFts[uFt2];
+      if ( rFace1.IsFlag(MeshFacet::VISIT) || rFace2.IsFlag(MeshFacet::VISIT) )
+        continue;
+
+      unsigned long uPt3, uPt4;
+      unsigned short side = rFace1.Side(uPt1, uPt2);
+      uPt3 = rFace1._aulPoints[(side+2)%3];
+      side = rFace2.Side(uPt1, uPt2);
+      uPt4 = rFace2._aulPoints[(side+2)%3];
+      
+      Wm3::Vector3<float> dir;
+      float fActCurvature;
+      if ( fabs(aMinCurv[uPt1]) > fabs(aMaxCurv[uPt1]) ) {
+        fActCurvature = aMinCurv[uPt1];
+        dir = aMaxCurvDir[uPt1];
+      } else {
+        fActCurvature = aMaxCurv[uPt1];
+        dir = aMinCurvDir[uPt1];
+      }
+
+      Base::Vector3f cMinDir(dir.X(), dir.Y(), dir.Z());
+      Base::Vector3f cEdgeDir1 = raPts[uPt1] - raPts[uPt2];
+      Base::Vector3f cEdgeDir2 = raPts[uPt3] - raPts[uPt4];
+      cMinDir.Normalize(); cEdgeDir1.Normalize(); cEdgeDir2.Normalize();
+    
+      // get the plane and calculate the distance to the fourth point
+      MeshGeomFacet cPlane(raPts[uPt1], raPts[uPt2], raPts[uPt3]);
+      // positive or negative distance
+      float fDist = raPts[uPt4].DistanceToPlane(cPlane._aclPoints[0], cPlane.GetNormal());
+
+      float fLength12 = Base::Distance(raPts[uPt1], raPts[uPt2]);
+      float fLength34 = Base::Distance(raPts[uPt3], raPts[uPt4]);
+      if ( fabs(cEdgeDir1*cMinDir) < fabs(cEdgeDir2*cMinDir) )
+      {
+        if ( IsSwapEdgeLegal(uFt1, uFt2) && fLength34 < 1.05f*fLength12 && fActCurvature*fDist > 0.0f) {
+          SwapEdge(uFt1, uFt2);
+          rFace1.SetFlag(MeshFacet::VISIT);
+          rFace2.SetFlag(MeshFacet::VISIT);
+        }
+      }
+    }
+  }
+}
+
 bool MeshTopoAlgorithm::InsertVertexAndSwapEdge(unsigned long ulFacetPos, const Base::Vector3f&  rclPoint, float fMaxAngle)
 {
   if ( !InsertVertex(ulFacetPos, rclPoint) )
@@ -297,6 +392,14 @@ bool MeshTopoAlgorithm::IsSwapEdgeLegal(unsigned long ulFacetPos, unsigned long 
   Base::Vector3f cP2 = _rclMesh._aclPointArray[rclF._aulPoints[(uFSide+1)%3]];
   Base::Vector3f cP3 = _rclMesh._aclPointArray[rclF._aulPoints[(uFSide+2)%3]];
   Base::Vector3f cP4 = _rclMesh._aclPointArray[rclN._aulPoints[(uNSide+2)%3]];
+
+  // do not allow to create degenerated triangles
+  MeshGeomFacet cT3(cP4, cP3, cP1);
+  if ( cT3.IsDegenerated() )
+    return false;
+  MeshGeomFacet cT4(cP3, cP4, cP2);
+  if ( cT4.IsDegenerated() )
+    return false;
 
   // We must make sure that the two adjacent triangles builds a convex polygon, otherwise 
   // the swap edge operation is illegal
@@ -1131,7 +1234,7 @@ void MeshComponents::SearchForComponents(TMode tMode, const std::vector<unsigned
       ulStartFacet = iTri - iBeg;
     else
       ulStartFacet = ULONG_MAX;
-	}
+  }
 
   // sort components by size (descending order)
   std::sort(aclConnectComp.begin(), aclConnectComp.end(), CNofFacetsCompare());  
