@@ -391,7 +391,7 @@ StdCmdSetMaterial::StdCmdSetMaterial()
   :Command("Std_SetMaterial")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Display properties...");
+  sMenuText     = QT_TR_NOOP("Display...");
   sToolTipText  = QT_TR_NOOP("Sets the display properties of the selected object");
   sWhatsThis    = QT_TR_NOOP("Sets the display properties of the selected object");
   sStatusTip    = QT_TR_NOOP("Sets the display properties of the selected object");

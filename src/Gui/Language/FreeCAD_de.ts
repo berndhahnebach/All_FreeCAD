@@ -2334,8 +2334,8 @@ Wollen Sie wirklich fortfahren?</translation>
             <translation>Standardansicht</translation>
         </message>
         <message>
-            <source>Display properties...</source>
-            <translation>Anzeigeeigenschaften...</translation>
+            <source>Display...</source>
+            <translation>Anzeige...</translation>
         </message>
         <message>
             <source>Sets the display properties of the selected object</source>
