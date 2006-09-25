@@ -127,7 +127,7 @@ public:
   /** @name direct handling methods
     *  This group of methods is to direct influence the 
     *  appearence of the viewed content. It's only for fast
-    *  interactions! If you whant to set the visual parameters
+    *  interactions! If you want to set the visual parameters
     *  you have to do it on the object viewed by this provider!
     */
   //@{
