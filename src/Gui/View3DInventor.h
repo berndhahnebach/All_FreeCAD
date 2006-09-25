@@ -103,7 +103,7 @@ public:
   bool hasClippingPlane() const;
 
   /// helper to apply a SoWriteAction to a node and write it to a string
-  static const std::string &View3DInventor::writeNodesToString(SoNode * root);
+  static const std::string& writeNodesToString(SoNode * root);
 
   View3DInventorViewer *getViewer(void) const {return _viewer;}
   
