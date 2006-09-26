@@ -28,6 +28,7 @@ libImageGui_la_LIBADD   = \
 		-lFreeCADApp \
 		-lFreeCADGui \
 		-lGLU \
+		-lGL \
 		-lImage
 
 #--------------------------------------------------------------------------------------
