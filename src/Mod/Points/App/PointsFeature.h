@@ -82,7 +82,7 @@ public:
   //@}
 
   // handling the PointsPy object
-  virtual Base::PyObjectBase *Feature::GetPyObject(void);
+  virtual Base::PyObjectBase* GetPyObject(void);
 
 protected:
   PointsWithProperty _Points;
