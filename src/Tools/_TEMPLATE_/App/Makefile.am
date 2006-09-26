@@ -11,6 +11,8 @@ lib_TEMPLATE__la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -vers
 lib_TEMPLATE__la_CPPFLAGS = -D_TEMPLATE_AppExport=
 
 lib_TEMPLATE__la_LIBADD   = \
+		-l@PYTHON_LIB@ \
+		-lxerces-c \
 		-lFreeCADBase \
 		-lFreeCADApp
 
@@ -25,6 +27,7 @@ _TEMPLATE__la_LDFLAGS = $(lib_TEMPLATE__la_LDFLAGS) -module -avoid-version
 _TEMPLATE__la_CPPFLAGS = $(lib_TEMPLATE__la_CPPFLAGS)
 
 _TEMPLATE__la_LIBADD   = \
+		$(lib_TEMPLATE__la_LIBADD) \
 		-l_TEMPLATE_
 
 #--------------------------------------------------------------------------------------
