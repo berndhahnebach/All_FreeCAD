@@ -87,7 +87,6 @@ protected:
 
 
 private:
-  bool createPolygonMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& ) const;
   Gui::AbstractMouseModel* _mouseModel;
   bool m_bEdit;
   QTime _timer;
