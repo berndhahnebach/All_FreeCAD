@@ -63,6 +63,7 @@
 #include <Mod/Mesh/App/MeshFeature.h>
 #include <Mod/Mesh/Gui/SoFCMeshNode.h>
 
+#include "ViewProvider.h"
 #include "ViewProviderMeshNode.h"
 
 
@@ -273,92 +274,6 @@ const char* ViewProviderMeshNode::getEditModeName(void)
   return "Polygon picking";
 }
 
-bool ViewProviderMeshNode::createPolygonMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces) const
-{
-  float fX, fY, fZ;
-  SbVec3f pt1, pt2, pt3, pt4;
-  MeshCore::MeshGeomFacet face;
-  std::vector<Base::Vector3f> top, bottom;
-
-  for ( std::vector<SbVec2f>::const_iterator it = rclPoly.begin(); it != rclPoly.end(); ++it )
-  {
-    // the following element
-    std::vector<SbVec2f>::const_iterator nt = it + 1;
-    if ( nt == rclPoly.end() )
-      nt = rclPoly.begin();
-    else if ( *it == *nt )
-      continue; // two adjacent verteces are equal
-
-    vol.projectPointToLine( *it, pt1, pt2 );
-    vol.projectPointToLine( *nt, pt3, pt4 );
-
-    // 1st facet
-    pt1.getValue(fX, fY, fZ);
-    face._aclPoints[0].Set(fX, fY, fZ);
-    pt4.getValue(fX, fY, fZ);
-    face._aclPoints[1].Set(fX, fY, fZ);
-    pt3.getValue(fX, fY, fZ);
-    face._aclPoints[2].Set(fX, fY, fZ);
-    if ( face.Area() > 0 )
-      aFaces.push_back( face );
-
-    // 2nd facet
-    pt1.getValue(fX, fY, fZ);
-    face._aclPoints[0].Set(fX, fY, fZ);
-    pt2.getValue(fX, fY, fZ);
-    face._aclPoints[1].Set(fX, fY, fZ);
-    pt4.getValue(fX, fY, fZ);
-    face._aclPoints[2].Set(fX, fY, fZ);
-    if ( face.Area() > 0 )
-      aFaces.push_back( face );
-
-    if ( it+1 < rclPoly.end() )
-    {
-      pt1.getValue(fX, fY, fZ);
-      top.push_back( Base::Vector3f(fX, fY, fZ) );
-      pt2.getValue(fX, fY, fZ);
-      bottom.push_back( Base::Vector3f(fX, fY, fZ) );
-    }
-  }
-
-  bool ok=true;
-
-  // now create the lids
-  std::vector<MeshCore::MeshGeomFacet> aLid;
-  MeshCore::MeshPolygonTriangulation cTria;
-  cTria.SetPolygon( top );
-  ok &= cTria.Compute();
-  aLid = cTria.GetTriangles();
-
-  // front lid
-  for ( std::vector<MeshCore::MeshGeomFacet>::iterator itF1 = aLid.begin(); itF1 != aLid.end(); ++itF1 )
-  {
-    if ( itF1->GetNormal() * rcNormal < 0 )
-    {
-      std::swap( itF1->_aclPoints[1], itF1->_aclPoints[2]);
-      itF1->CalcNormal();
-    }
-    aFaces.push_back( *itF1 );
-  }
-
-  cTria.SetPolygon( bottom );
-  ok &= cTria.Compute();
-  aLid = cTria.GetTriangles();
-
-  // back lid
-  for ( std::vector<MeshCore::MeshGeomFacet>::iterator itF2 = aLid.begin(); itF2 != aLid.end(); ++itF2 )
-  {
-    if ( itF2->GetNormal() * rcNormal > 0 )
-    {
-      std::swap( itF2->_aclPoints[1], itF2->_aclPoints[2]);
-      itF2->CalcNormal();
-    }
-    aFaces.push_back( *itF2 );
-  }
-
-  return ok;
-}
-
 bool ViewProviderMeshNode::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
 {
   if ( m_bEdit && !_mouseModel )
@@ -387,7 +302,7 @@ bool ViewProviderMeshNode::handleEvent(const SoEvent * const ev,Gui::View3DInven
 
       // create a tool shape from these points
       std::vector<MeshCore::MeshGeomFacet> aFaces;
-      bool ok = createPolygonMesh( clPoly, vol, cNormal, aFaces );
+      bool ok = ViewProviderMesh::createToolMesh( clPoly, vol, cNormal, aFaces );
 
       // Get the attached mesh property
       Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
@@ -413,7 +328,8 @@ bool ViewProviderMeshNode::handleEvent(const SoEvent * const ev,Gui::View3DInven
       Viewer.render();
       unsetEdit();
       if ( !ok ) // note: the mouse grabbing needs to be released
-        QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
+        //QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
+        Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
 
       return true;
     }

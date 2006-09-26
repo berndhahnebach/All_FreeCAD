@@ -446,12 +446,12 @@ const char* ViewProviderMesh::getEditModeName(void)
   return "Polygon picking";
 }
 
-bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces) const
+bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& aFaces)
 {
   float fX, fY, fZ;
   SbVec3f pt1, pt2, pt3, pt4;
   MeshGeomFacet face;
-  std::vector<Base::Vector3f> top, bottom;
+  std::vector<Base::Vector3f> top, bottom, polygon;
 
   for ( std::vector<SbVec2f>::const_iterator it = rclPoly.begin(); it != rclPoly.end(); ++it )
   {
@@ -460,7 +460,7 @@ bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, cons
     if ( nt == rclPoly.end() )
       nt = rclPoly.begin();
     else if ( *it == *nt )
-      continue; // two adjacent verteces are equal
+      continue; // two adjacent vertices are equal
 
     vol.projectPointToLine( *it, pt1, pt2 );
     vol.projectPointToLine( *nt, pt3, pt4 );
@@ -491,42 +491,42 @@ bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, cons
       top.push_back( Base::Vector3f(fX, fY, fZ) );
       pt2.getValue(fX, fY, fZ);
       bottom.push_back( Base::Vector3f(fX, fY, fZ) );
+      // polygon we need to triangulate (in x,y-plane)
+      it->getValue(fX, fY);
+      polygon.push_back( Base::Vector3f(fX, fY, 0.0f) );
     }
   }
-
-  bool ok=true;
 
   // now create the lids
   std::vector<MeshGeomFacet> aLid;
   MeshPolygonTriangulation cTria;
-  cTria.SetPolygon( top );
-  ok &= cTria.Compute();
-  aLid = cTria.GetTriangles();
-
-  // front lid
-  for ( std::vector<MeshGeomFacet>::iterator itF1 = aLid.begin(); itF1 != aLid.end(); ++itF1 )
+  cTria.SetPolygon( polygon );
+  bool ok = cTria.Compute();
+  
+  std::vector<MeshFacet> faces = cTria.GetFacets();
+  for ( std::vector<MeshFacet>::iterator itF = faces.begin(); itF != faces.end(); ++itF )
   {
-    if ( itF1->GetNormal() * rcNormal < 0 )
+    MeshGeomFacet topFacet;
+    topFacet._aclPoints[0] = top[itF->_aulPoints[0]];
+    topFacet._aclPoints[1] = top[itF->_aulPoints[1]];
+    topFacet._aclPoints[2] = top[itF->_aulPoints[2]];
+    if ( topFacet.GetNormal() * rcNormal < 0 )
     {
-      std::swap( itF1->_aclPoints[1], itF1->_aclPoints[2]);
-      itF1->CalcNormal();
+      std::swap( topFacet._aclPoints[1], topFacet._aclPoints[2]);
+      topFacet.CalcNormal();
     }
-    aFaces.push_back( *itF1 );
-  }
+    aFaces.push_back( topFacet );
 
-  cTria.SetPolygon( bottom );
-  ok &= cTria.Compute();
-  aLid = cTria.GetTriangles();
-
-  // back lid
-  for ( std::vector<MeshGeomFacet>::iterator itF2 = aLid.begin(); itF2 != aLid.end(); ++itF2 )
-  {
-    if ( itF2->GetNormal() * rcNormal > 0 )
+    MeshGeomFacet botFacet;
+    botFacet._aclPoints[0] = bottom[itF->_aulPoints[0]];
+    botFacet._aclPoints[1] = bottom[itF->_aulPoints[1]];
+    botFacet._aclPoints[2] = bottom[itF->_aulPoints[2]];
+    if ( botFacet.GetNormal() * rcNormal > 0 )
     {
-      std::swap( itF2->_aclPoints[1], itF2->_aclPoints[2]);
-      itF2->CalcNormal();
+      std::swap( botFacet._aclPoints[1], botFacet._aclPoints[2]);
+      botFacet.CalcNormal();
     }
-    aFaces.push_back( *itF2 );
+    aFaces.push_back( botFacet );
   }
 
   return ok;

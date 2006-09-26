@@ -121,13 +121,14 @@ public:
   const char* getEditModeName(void);
 	//@}
 
+  /// Creates a tool mesh from the previous picked polygon on the viewer
+  static bool createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& );
+
 protected:
   /// get called by the container whenever a proptery has been changed
   void onChanged(const App::Property* prop);
   /// helper methode to build up the FaceSet
   void createMesh( const MeshCore::MeshKernel& pcMesh );
-  /// Creates a tool mesh from the previous picked polygon on the viewer
-  bool createToolMesh( const std::vector<SbVec2f>& rclPoly, const SbViewVolume& vol, const Base::Vector3f& rcNormal, std::vector<MeshCore::MeshGeomFacet>& ) const;
   void showOpenEdges( bool );
   void setOpenEdgeColorFrom( const App::Color& col );
 
