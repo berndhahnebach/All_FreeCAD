@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 # prerm script for freecad
 #
 # see: dh_installdeb(1)
@@ -19,7 +19,6 @@ set -e
 
 case "$1" in
     remove|upgrade|deconfigure)
-#       install-info --quiet --remove /usr/info/freecad.info.gz
         ;;
     failed-upgrade)
         ;;
