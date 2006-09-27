@@ -37,7 +37,7 @@ class CurveNet :public Part::Feature
   PROPERTY_HEADER(Part::FeaturePartCurveNet);
 
 public:
-  CurveNet::CurveNet();
+  CurveNet();
 
   App::PropertyString FileName;
 

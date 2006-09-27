@@ -77,7 +77,7 @@ public:
   /** makes a boolean add
    * The int Type stears the boolean oberation: 0=add;1=intersection;2=diff
   */
-  static MeshCore::MeshKernel* MeshAlgos::boolean(MeshCore::MeshKernel* Mesh1, MeshCore::MeshKernel* Mesh2, MeshCore::MeshKernel* pResult, int Type=0);
+  static MeshCore::MeshKernel* boolean(MeshCore::MeshKernel* Mesh1, MeshCore::MeshKernel* Mesh2, MeshCore::MeshKernel* pResult, int Type=0);
 
   /** Creates a GTS Surface from a MeshKernel
   */
