@@ -45,17 +45,56 @@ libPartGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libPartGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libPartGui_la_CPPFLAGS = -DAppPartExport= -DAppPartGuiExport=
 
 if OCC_VERSION6
 libPartGui_la_LIBADD   = \
+		-lxerces-c \
+		-l@PYTHON_LIB@ \
+		-lFreeCADBase \
+		-lFreeCADApp \
 		-lFreeCADGui \
-		-lPart -lTKMesh
+		-lTKernel \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
+		-lTKService \
+		-lTKSTEP \
+		-lTKIGES \
+		-lTKShHealing \
+		-lTKXSBase \
+		-lTKBool \
+		-lTKBO \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKGeomAlgo \
+		-lTKPrim \
+		-lTKMesh \
+		-lPart 
 else
 libPartGui_la_LIBADD   = \
+		-lxerces-c \
+		-l@PYTHON_LIB@ \
+		-lFreeCADBase \
+		-lFreeCADApp \
 		-lFreeCADGui \
-		-lPart
+		-lTKernel \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
+		-lTKService \
+		-lTKSTEP \
+		-lTKIGES \
+		-lTKShHealing \
+		-lTKXSBase \
+		-lTKBool \
+		-lTKBO \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKGeomAlgo \
+		-lTKPrim \
+		-lPart 
 endif
 
 #--------------------------------------------------------------------------------------
@@ -69,6 +108,7 @@ PartGui_la_LDFLAGS = $(libPartGui_la_LDFLAGS) -module -avoid-version
 PartGui_la_CPPFLAGS = $(libPartGui_la_CPPFLAGS)
 
 PartGui_la_LIBADD   = \
+		$(libPartGui_la_LIBADD) \
 		-lPartGui
 
 #--------------------------------------------------------------------------------------

@@ -85,16 +85,20 @@ libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -L$(OCC_LIB
 libMesh_la_CPPFLAGS = -DAppMeshExport= -DWM3_VERSION=$(WM3_VERSION)
 
 libMesh_la_LIBADD   = \
+		-lxerces-c \
+		-l@PYTHON_LIB@ \
+		-lFreeCADBase \
+		-lFreeCADApp \
 		$(WM3_LIBS) \
 		-lTKernel \
+		-lTKG2d \
+		-lTKG3d \
 		-lTKMath \
 		-lTKService \
 		-lTKGeomAlgo \
 		-lTKGeomBase \
 		-lTKBRep \
-		-lTKTopAlgo \
-		-lFreeCADBase \
-		-lFreeCADApp
+		-lTKTopAlgo
 
 #--------------------------------------------------------------------------------------
 # Loader of libMesh
@@ -107,6 +111,7 @@ Mesh_la_LDFLAGS = $(libMesh_la_LDFLAGS) -module -avoid-version
 Mesh_la_CPPFLAGS = $(libMesh_la_CPPFLAGS)
 
 Mesh_la_LIBADD   = \
+		$(libMesh_la_LIBADD) \
 		-lMesh
 
 #--------------------------------------------------------------------------------------

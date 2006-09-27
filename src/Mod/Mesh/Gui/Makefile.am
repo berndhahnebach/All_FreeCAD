@@ -48,10 +48,12 @@ libMeshGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libMeshGui_la_CPPFLAGS = -DAppMeshExport= -DGuiMeshExport=
 
 libMeshGui_la_LIBADD   = \
+		-lFreeCADBase \
+		-lFreeCADApp \
 		-lFreeCADGui \
 		-lMesh
 
@@ -66,6 +68,8 @@ MeshGui_la_LDFLAGS = $(libMeshGui_la_LDFLAGS) -module -avoid-version
 MeshGui_la_CPPFLAGS = $(libMeshGui_la_CPPFLAGS)
 
 MeshGui_la_LIBADD   = \
+		$(libMeshGui_la_LIBADD) \
+		-l@PYTHON_LIB@ \
 		-lMeshGui
 
 #--------------------------------------------------------------------------------------
