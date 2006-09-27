@@ -4,10 +4,7 @@ EXTRA_DIST = \
 		control \
 		copyright \
 		docs \
-		freecad.desktop \
 		freecad.doc-base \
-		freecad.links \
-		freecad.1 \
 		menu \
 		postinst \
 		postrm \
