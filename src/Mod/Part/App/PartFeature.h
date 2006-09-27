@@ -127,7 +127,7 @@ public:
 	//@}
 
 
-  virtual Base::PyObjectBase *Feature::GetPyObject(void);
+  virtual Base::PyObjectBase* GetPyObject(void);
 
 private:
   PartFeaturePy* _featurePy;
