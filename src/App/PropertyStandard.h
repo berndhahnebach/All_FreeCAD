@@ -91,9 +91,76 @@ public:
   virtual void Paste(const Property &from);
 
   virtual unsigned int getMemSize (void) const{return sizeof(long);}
-private:
+
+protected:
 
 	long _lValue;
+
+};
+
+/** Enum properties
+ * This property fullfill the need of enumarations. It holds basicly a 
+ * state (integer) and a list of valid state names. If the valid state
+ * list is not set it act basicly like a IntegerProperty and do no checking.
+ * If the list is set it checks on the range and if you set the state with
+ * a string if its included in the enumarations.
+ * In DEBUG the bounderies get checked, otherwise the caller of setValue()
+ * has the responsebility to check the correctnes.
+ * This mean if you set by setValue(const char*) with an not included value
+ * and not using isPartOf()bevor,
+ * in DEBUG you get an assert() in release its set to 0.
+ */
+class AppExport PropertyEnumeration: public PropertyInteger
+{
+  TYPESYSTEM_HEADER();
+
+public:
+
+       
+	/// Standard constructor
+	PropertyEnumeration();
+
+	/// destructor
+	~PropertyEnumeration();
+
+  /// Enumeration methodes 
+  //@{
+  /** seting the enumaration string list
+    * The list is a NULL terminated array of pointers to a const char* string
+    * \code
+    * const char enums[] = {"Black","White","Other",NULL}
+    * \endcode
+    */
+  void setEnums(const char** plEnums);
+  /** set the enum by a string
+    * is slower the setValue(long). Use long if possible
+    */
+  void setValue(const char* value);
+  /** set directly the enum value
+    * In DEBUG checks for bounderies.
+    * Is faster then using setValue(const char*).
+    */
+  void setValue(long);
+  /// checks if the property is set to a certain string value
+  bool isValue(const char* value);
+  /// checks if a string is included in the enumeration
+  bool isPartOf(const char* value);
+  /// get the value as string
+  const char* getValueAsString(void);
+  /// get all possible enum values as vector of strings
+  std::vector<std::string> getEnumVector(void);
+  /// get the pointer to the enum list
+  const char** getEnums(void);
+  //@}
+
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::IntEditorItem"; }
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+private:
+
+	const char** _EnumArray;
 
 };
 

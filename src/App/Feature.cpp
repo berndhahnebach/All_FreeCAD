@@ -52,12 +52,13 @@ PROPERTY_SOURCE_ABSTRACT(App::AbstractFeature, App::DocumentObject)
 // Feature
 //===========================================================================
 
+const char* FeatEnums[]= {"Valid","New","Inactive","Recompute","Error",NULL};
+
 AbstractFeature::AbstractFeature(void)
 :pcFeaturePy(0), _execute(false)
 {
-
-
-  ADD_PROPERTY(status,(New));
+  ADD_PROPERTY(status,(1));
+  status.setEnums(FeatEnums);
 }
 
 AbstractFeature::~AbstractFeature(void)

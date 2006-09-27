@@ -671,6 +671,7 @@ void Application::initTypes(void)
   App ::PropertyFloat       ::init();
   App ::PropertyFloatList   ::init();
   App ::PropertyInteger     ::init();
+  App ::PropertyEnumeration ::init();
   App ::PropertyIntegerList ::init();
   App ::PropertyString      ::init();
   App ::PropertyStringList  ::init();
