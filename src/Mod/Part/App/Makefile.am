@@ -36,13 +36,25 @@ libPart_la_LDFLAGS = -L../../../Base -L../../../App -L/usr/X11R6/lib -L$(OCC_LIB
 libPart_la_CPPFLAGS = -DAppPartExport=
 
 libPart_la_LIBADD   = \
+		-lxerces-c \
+		-l@PYTHON_LIB@ \
 		-lFreeCADBase \
 		-lFreeCADApp \
+		-lTKernel \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
 		-lTKService \
 		-lTKSTEP \
 		-lTKIGES \
 		-lTKShHealing \
 		-lTKXSBase \
+		-lTKBool \
+		-lTKBO \
+		-lTKBRep \
+		-lTKTopAlgo \
+		-lTKGeomAlgo \
+		-lTKPrim \
 		-lXmu   # Required by TKService and OCC 6.1 on some platforms (located in /usr/X11R6/lib/)
 
 #--------------------------------------------------------------------------------------
@@ -56,6 +68,7 @@ Part_la_LDFLAGS = $(libPart_la_LDFLAGS) -module -avoid-version
 Part_la_CPPFLAGS = $(libPart_la_CPPFLAGS)
 
 Part_la_LIBADD   = \
+		$(libPart_la_LIBADD) \
 		-lPart
 
 #--------------------------------------------------------------------------------------
