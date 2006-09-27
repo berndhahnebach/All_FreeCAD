@@ -40,11 +40,23 @@ class DocumentBasicCases(unittest.TestCase):
   def testObjects(self):
     L1 = self.Doc.addObject("App::FeatureTest","Label_1")
     self.Doc.recompute()
-    self.failUnless(L1.Integer == 4711,    "Different value to '4711'")
-    self.failUnless(L1.Float-47.11<0.001,   "Different value to '47.11'")
-    self.failUnless(L1.Bool    == True,    "Different value to 'True'")
-    self.failUnless(L1.String  == "empty",  "Different value to '4711'")
+    self.failUnless(L1.Integer == 4711)
+    self.failUnless(L1.Float-47.11<0.001)
+    self.failUnless(L1.Bool    == True)
+    self.failUnless(L1.String  == "empty")
 
+    # test enum property
+    self.failUnless(L1.Enum  == "Four")
+    L1.Enum = "One"
+    L1.Enum = 2
+    self.failUnless(L1.Enum  == "Two",     "Different value to 'Two'")
+    try:
+      L1.Enum = "SurlyNotInThere!"
+    except:
+      FreeCAD.PrintLog("   exception thrown, OK\n")
+    else:
+      self.fail("no exeption thrown")
+      
     #self.failUnless(L1.IntegerList  == [4711]   )
     #f = L1.FloatList 
     #self.failUnless(f -47.11<0.001    )

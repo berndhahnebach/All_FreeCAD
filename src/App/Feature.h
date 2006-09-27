@@ -54,7 +54,7 @@ class AppExport AbstractFeature: public App::DocumentObject
 
 public:
 
-  PropertyInteger status;
+  PropertyEnumeration status;
 
 
 	/// Constructor
@@ -87,11 +87,11 @@ public:
   /// status types
   enum Status 
   {
-    Valid,    /**< enum The Feature is Valid */
-    New,      /**< enum The Feature is new */
-    Inactive ,/**< enum Will not recalculated */
-    Recompute,/**< enum Fetature is in recomputation*/
-    Error     /**< enum Feture is in error state */
+    Valid =0   ,/**< enum The Feature is Valid */
+    New=1      ,/**< enum The Feature is new */
+    Inactive=2 ,/**< enum Will not recalculated */
+    Recompute=3,/**< enum Fetature is in recomputation*/
+    Error=4     /**< enum Feture is in error state */
   };
 
   /// gets the status

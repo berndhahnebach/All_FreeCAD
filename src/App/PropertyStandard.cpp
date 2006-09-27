@@ -93,7 +93,7 @@ void PropertyInteger::setPyObject(PyObject *value)
     _lValue = PyInt_AsLong(value);
     hasSetValue();
   }else
-    throw Base::Exception("Not allowed type used (float or int expected)...");
+    throw Base::Exception("Not allowed type used (Integer expected)...");
 
 }
 
@@ -123,6 +123,175 @@ void PropertyInteger::Paste(const Property &from)
   _lValue = dynamic_cast<const PropertyInteger&>(from)._lValue;
   hasSetValue();
 }
+
+//**************************************************************************
+//**************************************************************************
+// PropertyEnumeration
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(PropertyEnumeration, App::PropertyInteger);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyEnumeration::PropertyEnumeration()
+:_EnumArray(0)
+{
+
+}
+
+
+PropertyEnumeration::~PropertyEnumeration()
+{
+
+}
+
+void PropertyEnumeration::setEnums(const char** plEnums)
+{
+  _EnumArray = plEnums;
+# ifdef FC_DEBUG
+  // check for NULL termination
+  const char* p = *plEnums;
+  unsigned int i=0;
+  while(*(p++) != NULL)i++;
+  // very unlikely to have enums with more then 5000 entries!
+  assert(i<5000);
+# endif
+}
+
+void PropertyEnumeration::setValue(const char* value)
+{
+  // using string methodes without set, use setEnums(const char** plEnums) first!
+  assert(_EnumArray);
+
+  // set zero if there is no enum array
+  if(!_EnumArray){
+    PropertyInteger::setValue(0);
+    return;
+  }
+
+  unsigned int i=0;
+  const char** plEnums = _EnumArray;
+
+  // search for the right entry
+  while(1){
+    // end of list? set zero
+    if(*plEnums==NULL){
+      PropertyInteger::setValue(0);
+      break;
+    }
+    if(strcmp(*plEnums,value)==0){
+      PropertyInteger::setValue(i);
+      break;
+    }
+    plEnums++;
+    i++;
+  }
+}
+
+void PropertyEnumeration::setValue(long value)
+{
+# ifdef FC_DEBUG
+  assert(value>=0 && value<5000);
+  if(_EnumArray){
+    const char** plEnums = _EnumArray;
+    unsigned int i=0;
+    while(*(plEnums++) != NULL)i++;
+    // very unlikely to have enums with more then 5000 entries!
+    assert(i>value);
+  }
+# endif
+  PropertyInteger::setValue(value);
+}
+
+/// checks if the property is set to a certain string value
+bool PropertyEnumeration::isValue(const char* value)
+{
+  // using string methodes without set, use setEnums(const char** plEnums) first!
+  assert(_EnumArray);
+  return strcmp(_EnumArray[getValue()],value)==0;
+}
+
+/// checks if a string is included in the enumeration
+bool PropertyEnumeration::isPartOf(const char* value)
+{
+  // using string methodes without set, use setEnums(const char** plEnums) first!
+  assert(_EnumArray);
+
+  const char** plEnums = _EnumArray;
+
+  // search for the right entry
+  while(1){
+    // end of list?
+    if(*plEnums==NULL) 
+      return false;
+    if(strcmp(*plEnums,value)==0) 
+      return true;
+    plEnums++;
+  }
+
+}
+
+/// get the value as string
+const char* PropertyEnumeration::getValueAsString(void)
+{
+  // using string methodes without set, use setEnums(const char** plEnums) first!
+  assert(_EnumArray);
+
+  return _EnumArray[getValue()];
+}
+
+std::vector<std::string> PropertyEnumeration::getEnumVector(void)
+{
+  // using string methodes without set, use setEnums(const char** plEnums) first!
+  assert(_EnumArray);
+
+  std::vector<std::string> result;
+
+  const char** plEnums = _EnumArray;
+
+  // search for the right entry
+  while(1){
+    // end of list?
+    if(*plEnums==NULL) 
+      break;
+    result.push_back(*plEnums); 
+  }
+
+  return result;
+}
+const char** PropertyEnumeration::getEnums(void)
+{
+  return _EnumArray;
+}
+
+
+//**************************************************************************
+// Base class implementer
+
+
+
+PyObject *PropertyEnumeration::getPyObject(void)
+{
+  return Py_BuildValue("s", getValueAsString());
+}
+
+void PropertyEnumeration::setPyObject(PyObject *value)
+{ 
+  if(PyInt_Check( value) )
+    setValue(PyInt_AsLong(value));
+  else if(PyString_Check( value) ){
+    const char* str = PyString_AsString (value);
+    if(isPartOf(str))
+      setValue(PyString_AsString (value));
+    else
+      throw Base::Exception("Not a member of the enum");
+  }
+  else
+    throw Base::Exception("Not allowed type used (float or int expected)...");
+}
+
 
 
 //**************************************************************************

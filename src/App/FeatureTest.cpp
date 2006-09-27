@@ -36,6 +36,8 @@ using namespace App;
 
 PROPERTY_SOURCE(App::FeatureTest, App::AbstractFeature)
 
+const char* enums[]= {"Zero","One","Two","Three","Four",NULL};
+
 
 FeatureTest::FeatureTest()
 {
@@ -43,6 +45,8 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(Float  ,(47.11f) );
   ADD_PROPERTY(Bool   ,(true)  );
   ADD_PROPERTY(String ,("4711"));
+  ADD_PROPERTY(Enum   ,(4));
+  Enum.setEnums(enums);
 
   ADD_PROPERTY(IntegerList,(4711)  );
   ADD_PROPERTY(FloatList  ,(47.11f) );

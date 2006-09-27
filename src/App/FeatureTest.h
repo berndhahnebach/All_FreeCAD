@@ -43,10 +43,11 @@ public:
   FeatureTest();
 
   // Standard Properties (PorpertyStandard.h)
-  App::PropertyInteger Integer;
-  App::PropertyFloat   Float;
-  App::PropertyBool    Bool;
-  App::PropertyString  String;
+  App::PropertyInteger      Integer;
+  App::PropertyFloat        Float;
+  App::PropertyBool         Bool;
+  App::PropertyString       String;
+  App::PropertyEnumeration  Enum;
  
   // Standard Properties (PorpertyStandard.h)
   App::PropertyIntegerList IntegerList;
