@@ -58,6 +58,7 @@
 #include <Inventor/SoInput.h>
 #include <Inventor/actions/SoHandleEventAction.h> 
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
+#include <Inventor/actions/SoGetBoundingBoxAction.h>
 #include <Inventor/actions/SoGetPrimitiveCountAction.h>
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/actions/SoToVRML2Action.h>
