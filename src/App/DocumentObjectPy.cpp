@@ -187,15 +187,22 @@ PyObject *DocumentObjectPy::_getattr(char *attr)				// __getattr__ function: not
 
 int DocumentObjectPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-  {
-       // search in PropertyList
-      Property *prop = _pcDocumentObject->getPropertyByName(attr);
-      if(prop)
-      {
-        prop->setPyObject(value);
-      }else
-			  return PyObjectBase::_setattr(attr, value); 						
+   // search in PropertyList
+  Property *prop = _pcDocumentObject->getPropertyByName(attr);
+  if (prop) {
+    try {
+      prop->setPyObject(value);
+    } catch (Base::Exception &exc) {
+      PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
+      return -1;
+    } catch (...) {
+      PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
+      return -1;
+    }
+  } else {
+		return PyObjectBase::_setattr(attr, value);
   }
+
   return 0;
 } 
 

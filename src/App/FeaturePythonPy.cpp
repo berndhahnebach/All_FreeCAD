@@ -231,7 +231,17 @@ int FeaturePythonPy::_setattr(char *attr, PyObject *value) 	// __setattr__ funct
   else
   {
     Property *prop = reinterpret_cast<FeaturePython*>(_pcFeature)->objectProperties[attr];
-    prop->setPyObject(value);
+
+    try {
+      prop->setPyObject(value);
+    } catch (Base::Exception &exc) {
+      PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
+      return -1;
+    } catch (...) {
+      PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
+      return -1;
+    }
+
     return 0;
   }
 } 
