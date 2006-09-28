@@ -78,7 +78,7 @@ public:
 
 
   /** update the content of the ViewProvider
-    * this methode have to implement the recalcualtion
+    * this method have to implement the recalcualtion
     * of the ViewProvider. There are different reasons to 
     * update. E.g. only the view attribute has changed, or
     * the data has manipulated.
@@ -138,7 +138,7 @@ public:
 
   /** event handling if the feature is in edit mode
     * The Viewer will cast all left and right mouse 
-    * events to that methode. If return true it will
+    * events to that method. If return true it will
     * also handled by the viewer (selection & context menue)
     */
   virtual bool handleEvent(const SoEvent * const ev,View3DInventorViewer &Viewer){return false;}

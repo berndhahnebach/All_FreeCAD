@@ -162,7 +162,7 @@ void PropertyEnumeration::setEnums(const char** plEnums)
 
 void PropertyEnumeration::setValue(const char* value)
 {
-  // using string methodes without set, use setEnums(const char** plEnums) first!
+  // using string methods without set, use setEnums(const char** plEnums) first!
   assert(_EnumArray);
 
   // set zero if there is no enum array
@@ -196,7 +196,7 @@ void PropertyEnumeration::setValue(long value)
   assert(value>=0 && value<5000);
   if(_EnumArray){
     const char** plEnums = _EnumArray;
-    unsigned int i=0;
+    long i=0;
     while(*(plEnums++) != NULL)i++;
     // very unlikely to have enums with more then 5000 entries!
     assert(i>value);
@@ -206,17 +206,17 @@ void PropertyEnumeration::setValue(long value)
 }
 
 /// checks if the property is set to a certain string value
-bool PropertyEnumeration::isValue(const char* value)
+bool PropertyEnumeration::isValue(const char* value) const
 {
-  // using string methodes without set, use setEnums(const char** plEnums) first!
+  // using string methods without set, use setEnums(const char** plEnums) first!
   assert(_EnumArray);
   return strcmp(_EnumArray[getValue()],value)==0;
 }
 
 /// checks if a string is included in the enumeration
-bool PropertyEnumeration::isPartOf(const char* value)
+bool PropertyEnumeration::isPartOf(const char* value) const
 {
-  // using string methodes without set, use setEnums(const char** plEnums) first!
+  // using string methods without set, use setEnums(const char** plEnums) first!
   assert(_EnumArray);
 
   const char** plEnums = _EnumArray;
@@ -234,43 +234,36 @@ bool PropertyEnumeration::isPartOf(const char* value)
 }
 
 /// get the value as string
-const char* PropertyEnumeration::getValueAsString(void)
+const char* PropertyEnumeration::getValueAsString(void) const
 {
-  // using string methodes without set, use setEnums(const char** plEnums) first!
+  // using string methods without set, use setEnums(const char** plEnums) first!
   assert(_EnumArray);
 
   return _EnumArray[getValue()];
 }
 
-std::vector<std::string> PropertyEnumeration::getEnumVector(void)
+std::vector<std::string> PropertyEnumeration::getEnumVector(void) const
 {
-  // using string methodes without set, use setEnums(const char** plEnums) first!
+  // using string methods without set, use setEnums(const char** plEnums) first!
   assert(_EnumArray);
 
   std::vector<std::string> result;
 
   const char** plEnums = _EnumArray;
 
-  // search for the right entry
-  while(1){
-    // end of list?
-    if(*plEnums==NULL) 
-      break;
-    result.push_back(*plEnums); 
+  // end of list?
+  while(*plEnums!=NULL){ 
+    result.push_back(*plEnums);
+    plEnums++;
   }
 
   return result;
 }
-const char** PropertyEnumeration::getEnums(void)
+
+const char** PropertyEnumeration::getEnums(void) const
 {
   return _EnumArray;
 }
-
-
-//**************************************************************************
-// Base class implementer
-
-
 
 PyObject *PropertyEnumeration::getPyObject(void)
 {
@@ -289,9 +282,8 @@ void PropertyEnumeration::setPyObject(PyObject *value)
       throw Base::Exception("Not a member of the enum");
   }
   else
-    throw Base::Exception("Not allowed type used (float or int expected)...");
+    throw Base::Exception("Not allowed type used (string or int expected)...");
 }
-
 
 
 //**************************************************************************

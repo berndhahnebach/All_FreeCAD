@@ -127,7 +127,7 @@ public:
 protected:
   /// get called by the container whenever a proptery has been changed
   void onChanged(const App::Property* prop);
-  /// helper methode to build up the FaceSet
+  /// helper method to build up the FaceSet
   void createMesh( const MeshCore::MeshKernel& pcMesh );
   void showOpenEdges( bool );
   void setOpenEdgeColorFrom( const App::Color& col );

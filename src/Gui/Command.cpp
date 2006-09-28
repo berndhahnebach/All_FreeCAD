@@ -328,7 +328,7 @@ std::string Command::getUniqueObjectName(const char *BaseName)
 // UNDO REDO transaction handling  
 //--------------------------------------------------------------------------
 /** Open a new Undo transaction on the active document
- *  This methode open a new UNDO transaction on the active document. This transaction
+ *  This method opens a new UNDO transaction on the active document. This transaction
  *  will later apear in the UNDO REDO dialog with the name of the command. If the user 
  *  recall the transaction everything changed on the document between OpenCommand() and 
  *  CommitCommand will be undone (or redone). You can use an alternetive name for the 
@@ -779,7 +779,7 @@ PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand)
 
   // call the method "GetResources()" of the command object
   _pcPyResourceDict = Interpreter().runMethodObject(_pcPyCommand, "GetResources");
-  // check if the "GetResources()" methode returns a Dict object
+  // check if the "GetResources()" method returns a Dict object
   if(! PyDict_Check(_pcPyResourceDict) )
     throw Base::Exception("PythonCommand::PythonCommand(): Method GetResources() of the Python command object returns the wrong type (has to be Py Dictonary)");
 }

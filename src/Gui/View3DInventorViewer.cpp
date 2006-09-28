@@ -39,6 +39,7 @@
 # endif
 # include <GL/gl.h>
 # include <Inventor/SbBox.h>
+# include <Inventor/actions/SoGetBoundingBoxAction.h>
 # include <Inventor/actions/SoHandleEventAction.h> 
 # include <Inventor/actions/SoToVRML2Action.h>
 # include <Inventor/actions/SoWriteAction.h>
@@ -1079,6 +1080,76 @@ void View3DInventorViewer::boxZoom( const SbBox2f& box )
     return;
   // global ln function
   zoom(getCamera(), ::log(max));
+}
+
+void View3DInventorViewer::viewAll()
+{
+#if 1
+  SoQtViewer::viewAll();
+#else
+  //FIXME: Do some tests
+  // Get the bounding box of the scene
+  SoGetBoundingBoxAction action(this->getViewportRegion());
+  action.apply(this->getSceneGraph());
+  SbBox3f box = action.getBoundingBox();
+  if (box.isEmpty()) return;
+
+  // Get the radius of the bounding sphere.
+  SbSphere bs;
+  bs.circumscribe(box);
+  float radius = bs.getRadius();
+  
+  SoCamera* cam = this->getCamera();
+  if (!cam) return;
+  SbViewVolume  vol = cam->getViewVolume ();
+
+  // get the front clipping plane and its normal direction
+  SbVec3f z = vol.zVector();
+  Base::Vector3f p,n;
+  getFrontClippingPlane(p,n);
+
+  float minx, miny, minz, maxx, maxy, maxz;
+  box.getBounds(minx, miny, minz, maxx, maxy, maxz);
+
+  // these are the corner points of the box
+  SbVec3f pt[8] = { SbVec3f(minx, miny, minz), SbVec3f(minx, miny, maxz),
+                    SbVec3f(minx, maxy, minz), SbVec3f(minx, maxy, maxz),
+                    SbVec3f(maxx, miny, minz), SbVec3f(maxx, miny, maxz),
+                    SbVec3f(maxx, maxy, minz), SbVec3f(maxx, maxy, maxz) };
+
+  // get the point with most positive distance to the front clipping plane
+  SbVec3f base;
+  float fMaxDist=-FLT_MAX;
+  for ( int i=0; i<8; i++ ) {
+    Base::Vector3f pnt(pt[i][0],pt[i][1],pt[i][2]);
+    float fDist = pnt.DistanceToPlane(p,n);
+    if ( fDist > fMaxDist ) {
+      fMaxDist = fDist;
+      base = pt[i];
+    }
+  }
+
+  // create a faked scene for the camera to do a view fit
+  SoCoordinate3* coord = new SoCoordinate3();
+
+  // project all points onto the plane
+   int pos=0;
+  for ( int j=0; j<8; j++ ) {
+    float s = (base-pt[j]).dot(z);
+    pt[j] = pt[j] + s*z;
+    coord->point.set1Value(pos++,pt[j]);
+    pt[j] = pt[j] - 2*radius*z;
+    coord->point.set1Value(pos++,pt[j]);
+  }
+
+  SoSeparator* sep = new SoSeparator();
+  sep->addChild(coord);
+  sep->addChild(new SoPointSet());
+
+  sep->ref();
+  cam->viewAll(sep, this->getViewportRegion());
+  sep->unref();
+#endif
 }
 
 void View3DInventorViewer::panToCenter(const SbPlane & panningplane, const SbVec2f & currpos)

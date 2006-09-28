@@ -143,7 +143,7 @@ protected:
   //@{
   /// Methods which gets called when activated, needs to be reimplemented!
   virtual void activated(int iMsg)=0;
-  /// Overite this methode if your Cmd is not always active
+  /// Overite this method if your Cmd is not always active
   virtual bool isActive(void){return true;} 
   /// Creates the used QAction
   virtual QAction * createAction(void);

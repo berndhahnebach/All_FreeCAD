@@ -65,11 +65,11 @@ public:
   /** This method is used to get the size of objects
     * Its not ment to have the exact size, is more or less an estimation which run fast!
     * Is it two byte or an GB?
-    * This methode is defined in Base::Persistance
+    * This method is defined in Base::Persistance
     * @see Base::Persistance
     */
   virtual unsigned int getMemSize (void) const{
-    // you have to implement this methode in all Property classes!
+    // you have to implement this method in all Property classes!
     assert(0);
     return 0;
   } 
@@ -126,7 +126,7 @@ private:
  *  e.g. features and ist grafical output. They also used to 
  *  gain acces from the scripting facility.
  *  /par
- *  This abstract base class defines all methodes shared by all
+ *  This abstract base class defines all methods shared by all
  *  possible properties. Its also possible to define user properties
  *  and use them in the frame work....
  */

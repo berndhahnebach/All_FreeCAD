@@ -108,7 +108,7 @@ public:
   /// returns the user parameter
 	ParameterManager &                                GetUserParameter(void) ;
   /** Gets a parameter group by a full qualified path
-    * It's a easy methode to get a group:
+    * It's a easy method to get a group:
     * \code
     * // geting standard parameter
     * ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");

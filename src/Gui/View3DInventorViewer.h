@@ -67,7 +67,7 @@ public:
   void addViewProvider(ViewProvider*);
   /// remove a ViewProvider
   void removeViewProvider(ViewProvider*);
-  /// Background modes for the makeScreenShot methode
+  /// Background modes for the makeScreenShot method
   enum eBackgroundType { 
     Current     = 0,  /**< Use the current viewer Background */
     Black       = 1,  /**< Black background */
@@ -113,6 +113,10 @@ public:
    * FIXME: This method is due to testing purposes public but should become protected later on.
    */
   void boxZoom( const SbBox2f& );
+  /**
+   * Reposition the current camera so we can see the complete scene.
+   */
+  void viewAll();
 
   /** @name Modus handling of the viewer
     * Here the you can switch on/off several features

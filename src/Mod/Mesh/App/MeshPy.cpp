@@ -623,6 +623,8 @@ PYFUNCIMP_D(MeshPy,rotate)
 
 PYFUNCIMP_D(MeshPy,transformToEigen)
 {
+  if (! PyArg_ParseTuple(args, ""))			 
+    return NULL;                         
   MeshEigensystem cMeshEval( _cMesh );
   cMeshEval.Evaluate();
   _cMesh.Transform(cMeshEval.Transform());

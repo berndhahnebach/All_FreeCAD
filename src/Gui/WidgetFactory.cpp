@@ -359,7 +359,7 @@ void PyResource::load( const char* name )
 /**
  * Makes a connection between the sender widget \a sender and its signal \a signal
  * of the created resource and Python callback function \a cb.
- * If the sender widget does not exist or no resource has been loaded this methode returns FALSE, 
+ * If the sender widget does not exist or no resource has been loaded this method returns FALSE, 
  * otherwise it returns TRUE.
  */
 bool PyResource::connect(const char* sender, const char* signal, PyObject* cb)

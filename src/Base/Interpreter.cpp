@@ -271,7 +271,7 @@ int InterpreterSingleton::runCommandLine(const char *prompt)
 }
 
 /**
- *  Runs a member methode of an object with no parameter and no return value
+ *  Runs a member method of an object with no parameter and no return value
  *  void (void). There are other methods to run with returns
  */
 void InterpreterSingleton::runMethodVoid(PyObject *pobject, const char *method)
@@ -285,7 +285,7 @@ void InterpreterSingleton::runMethodVoid(PyObject *pobject, const char *method)
 				     0,		       // so no return object
 					 "()")		   // no arguments
 					 != 0)
-		throw PyException(/*"Error running InterpreterSingleton::RunMethodeVoid()"*/);
+		throw PyException(/*"Error running InterpreterSingleton::RunMethodVoid()"*/);
 
 }
 
@@ -302,7 +302,7 @@ PyObject* InterpreterSingleton::runMethodObject(PyObject *pobject, const char *m
 				     &pcO,		   // return object
 					 "()")		   // no arguments
 					 != 0)
-		throw PyException(/*"Error runing InterpreterSingleton::RunMethodeObject()"*/);
+		throw PyException(/*"Error runing InterpreterSingleton::RunMethodObject()"*/);
 	
 	return pcO;
 }
@@ -318,7 +318,7 @@ void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
 
     pmeth = PyObject_GetAttrString(pobject, cMethod.str);  
     if (pmeth == NULL)                             /* get callable object */
-        throw Exception("Error runing InterpreterSingleton::RunMethod() methode not defined");                                 /* bound method? has self */
+        throw Exception("Error runing InterpreterSingleton::RunMethod() method not defined");                                 /* bound method? has self */
 
 	pargs = Py_VaBuildValue(cArgfmt.str, argslist);     /* args: c->python */
 
@@ -335,7 +335,7 @@ void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
 	{
     if ( PyErr_Occurred() )
       PyErr_Print();
-		throw Exception("Error runing InterpreterSingleton::RunMethod() exception in called methode");
+		throw Exception("Error runing InterpreterSingleton::RunMethod() exception in called method");
 	}
 }
 

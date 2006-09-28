@@ -220,7 +220,7 @@ QVariant ListEditorItem::convertFromProperty(const std::vector<App::Property*>& 
 {
   if ( props.size() > 0 )
   {
-    // We want to get all common modes of the properties and also want to prevent the order of them
+    // We want to get all common modes of the properties and also want to keep the order of them
     // So, we need a string list therefore (not a map)
     QStringList commonModeList;
     for ( std::vector<App::Property*>::const_iterator it = props.begin(); it != props.end(); ++it )
@@ -271,6 +271,163 @@ void ListEditorItem::convertToProperty(const QVariant& val)
     App::PropertyStringList* pPropList = (App::PropertyStringList*)*it;
     // Set the current active item (last item)
     pPropList->setValue(value.ascii());
+  }
+}
+
+// ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::ComboEditorItem, Gui::PropertyEditor::EditableItem);
+
+ComboEditorItem::ComboEditorItem()
+{
+}
+
+ComboEditorItem::ComboEditorItem( QListView* lv, const QString& text, const QVariant& value )
+  :EditableItem( lv, value )
+{
+  setText( 0, text);
+  setText( 1, value.toStringList().front());
+}
+
+QWidget* ComboEditorItem::createEditor( int column, QWidget* parent )
+{
+  if ( column == 0 )
+    return 0;
+
+  QStringList items = overrideValue().toStringList();
+  QComboBox* editor = new QComboBox( parent, "ComboEditorItem::combo" );
+  connect(editor, SIGNAL( activated(int) ), this, SLOT( onValueChanged() ) );
+
+  if ( !items.isEmpty() )
+  {
+    QString txt = items.front();
+    items.pop_front();
+    editor->insertStringList( items );
+
+    int cur = 0;
+    for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
+    {
+      if ( txt == *it)
+      {
+        editor->setCurrentItem( cur );
+        break;
+      }
+
+      cur++;
+    }
+  }
+  else
+  {
+    // all the selected objects don't share a common value
+    editor->setDisabled(true);
+  }
+
+  return editor;
+}
+
+void ComboEditorItem::stopEdit( int column )
+{
+  QStringList items = overrideValue().toStringList();
+  if ( !items.isEmpty() )
+    setText( column, items.front() );
+}
+
+void ComboEditorItem::setDefaultEditorValue( QWidget* editor )
+{
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
+
+  QStringList items = value().toStringList();
+
+  if ( !items.isEmpty() )
+  {
+    QString txt = items.front();
+    items.pop_front();
+
+    int cur = 0;
+    for ( QStringList::Iterator it = items.begin(); it != items.end(); ++it )
+    {
+      if ( txt == *it)
+      {
+        combo->setCurrentItem( cur );
+        break;
+      }
+
+      cur++;
+    }
+  }
+}
+
+QVariant ComboEditorItem::currentEditorValue( QWidget* editor ) const
+{
+  QComboBox* combo = dynamic_cast<QComboBox*>(editor);
+
+  QVariant var = overrideValue();
+  QStringList& items = var.asStringList();
+  if ( !items.isEmpty() )
+    items.front() = combo->currentText();
+  return var;
+}
+
+QVariant ComboEditorItem::convertFromProperty(const std::vector<App::Property*>& props)
+{
+  if ( props.size() > 0 )
+  {
+    // We want to get all common modes of the properties and also want to keep the order of them
+    // So, we need a string list therefore (not a map)
+    QStringList commonModeList;
+    QString current;
+    for ( std::vector<App::Property*>::const_iterator it = props.begin(); it != props.end(); ++it )
+    {
+      if ( it == props.begin() )
+      {
+        App::PropertyEnumeration* pPropEnum = (App::PropertyEnumeration*)*it;
+        const std::vector<std::string>& modes = pPropEnum->getEnumVector();
+        for ( std::vector<std::string>::const_iterator jt = modes.begin(); jt != modes.end(); ++jt )
+          commonModeList << jt->c_str();
+        current = pPropEnum->getValueAsString();
+      }
+      else
+      {
+        QStringList modeList;
+        App::PropertyEnumeration* pPropEnum = (App::PropertyEnumeration*)*it;
+        const std::vector<std::string>& modes = pPropEnum->getEnumVector();
+        for ( std::vector<std::string>::const_iterator jt = modes.begin(); jt != modes.end(); ++jt ){
+          if ( commonModeList.find(jt->c_str()) != commonModeList.end() )
+            modeList << jt->c_str();
+        }
+
+        // intersection of both lists
+        commonModeList = modeList;
+      }
+    }
+
+    // As we must store the internals as a QVariant we need to define the first element
+    // in the list is the current item.
+    commonModeList.prepend(current);
+    QVariant value( commonModeList );
+    setText( 1, current );
+    return value;
+  }
+  else
+  {
+    QVariant value( "" );
+    setText( 1, value.toString() );
+    setReadOnly(true);
+    return value;
+  }
+}
+
+void ComboEditorItem::convertToProperty(const QVariant& val)
+{
+  QStringList items = val.toStringList();
+  if ( !items.isEmpty() ) {
+    QString value = items.front();
+    for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
+    {
+      App::PropertyEnumeration* pPropEnum = (App::PropertyEnumeration*)*it;
+      // Set the current active item (last item)
+      pPropEnum->setValue(value.ascii());
+    }
   }
 }
 
