@@ -79,7 +79,7 @@ public:
   /**
    * This method can be reimplemented from the concrete Observer
    * and returns the name of the observer. Needed to use the Get 
-   * Methode of the Subject.
+   * Method of the Subject.
    */
   virtual const char *Name(void){return 0L;}
 };

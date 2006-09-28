@@ -50,7 +50,7 @@ public:
     * Is it two byte or an GB?
     */
   virtual unsigned int getMemSize (void) const{
-    // you have to implement this methode in all descenting classes!
+    // you have to implement this method in all descenting classes!
     assert(0);
     return 0;
   } 
@@ -66,7 +66,7 @@ public:
     * @see Base::Writer
     */
   virtual void Save (Writer &writer) const {
-    // you have to implement this methode in all descenting classes!
+    // you have to implement this method in all descenting classes!
     assert(0);
   } 
   /** This method is used to restore properties from an XML document.
@@ -85,7 +85,7 @@ public:
     * \endcode
     */
   virtual void Restore(XMLReader &reader){
-    // you have to implement this methode in all descenting classes!
+    // you have to implement this method in all descenting classes!
     assert(0);
   } 
   /** This method is used to save large amounts of data to a binary file.
@@ -109,19 +109,19 @@ public:
     * \endcode
     * The writer.isForceXML() is an indication to force you to write XML. Regardles to size and effectivness.
     * The second part inform the Base::writer through writer.addFile("MeshKernel.bms", this) that this object whants to 
-    * write a file with the given name. The methode addFile() returns a unique name that then is written in the XML stream.
-    * This allows your RestoreDocFile() methode to identify and read the file again.
-    * Later your SaveDocFile() methode is called as many times you issued the addFile() call:
+    * write a file with the given name. The method addFile() returns a unique name that then is written in the XML stream.
+    * This allows your RestoreDocFile() method to identify and read the file again.
+    * Later your SaveDocFile() method is called as many times you issued the addFile() call:
     * \code
     * void PropertyMeshKernel::SaveDocFile (Base::Writer &writer) const
     * {
     *     _pcMesh->Write( writer );
     * }
     * \endcode
-    * In this methode you can simply stream your content to the file (Base::Writer inheriting from ostream).
+    * In this method you can simply stream your content to the file (Base::Writer inheriting from ostream).
     */
   virtual void SaveDocFile (Writer &writer) const{
-    // you have to implement this methode in all descenting classes!
+    // you have to implement this method in all descenting classes!
     assert(0);
   } 
   /** This method is used to restore large amounts of data from a file
@@ -154,7 +154,7 @@ public:
     * @see Base::Reader,Base::XMLReader
     */
   virtual void RestoreDocFile(Reader &reader){
-    // you have to implement this methode in all descenting classes!
+    // you have to implement this method in all descenting classes!
     assert(0);
   } 
 

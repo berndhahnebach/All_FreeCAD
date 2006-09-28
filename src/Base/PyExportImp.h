@@ -239,7 +239,7 @@ public:
   }
 
 	/** _repr method
-    * Overide this methode to return a string object with some
+    * Overide this method to return a string object with some
     * invormation about the object.
     * \code
     * PyObject *MeshFeaturePy::_repr(void)
@@ -331,8 +331,8 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
 
 
 
-/** Python dynamic class macro for the methode list
- * used to fill the methode list of a class derived from PyObjectBase.
+/** Python dynamic class macro for the method list
+ * used to fill the method list of a class derived from PyObjectBase.
  * Its a pure confiniance macro. You can also do
  * it by hand if you want. It looks like that:
  * \code

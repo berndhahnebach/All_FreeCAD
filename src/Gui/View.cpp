@@ -198,7 +198,7 @@ void MDIView::showActiveView( MDIView* )
 
 void MDIView::print( QPrinter* printer )
 {
-  // print command specified but print methode not overriden!
+  // print command specified but print method not overriden!
   assert(0);
 }
 

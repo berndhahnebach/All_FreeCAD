@@ -177,3 +177,5 @@ Version: V0.5B8 Date: Tue Aug 01 21:53:34 2006 +++++++++++++++++++++++++++++++
 + Bug 1558622 (Version.h is not generated with a normal build) fixed
 + Patches 1559380, 1559154 applied
 + Bug 1564726 fixed (Does not compile with GCC 4.1.1)
++ Bug 1566863 fixed (Float Property is has limited range [0..12])
++ RFE 1566398 impl. (Property editor for App::PropertyEnumeration)

@@ -141,7 +141,7 @@ writeCameraFile(PyObject *self, PyObject *args)
       }
     }
 
-    // call the write methode of PovTools....
+    // call the write method of PovTools....
     PovTools::writeCamera(FileName,CamDef(gp_Vec(vecs[0][0],vecs[0][1],vecs[0][2]),
                                           gp_Vec(vecs[1][0],vecs[1][1],vecs[1][2]),
                                           gp_Vec(vecs[2][0],vecs[2][1],vecs[2][2]),

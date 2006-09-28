@@ -135,7 +135,9 @@ QWidget* IntEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
+  //FIXME: Allow to define range and stepsize in property class
   QSpinBox* editor = new QSpinBox( parent, "IntEditorItem::spin" );
+  editor->setMaxValue(100);
   editor->setValue( overrideValue().toInt() );
   connect(editor, SIGNAL( valueChanged(int) ), this, SLOT( onValueChanged() ) );
   return editor;
@@ -197,8 +199,10 @@ QWidget* FloatEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
+  //FIXME: Allow to define range, precision and stepsize in property class
   FloatSpinBox* editor = new FloatSpinBox( 0 /*min*/, 12 /*max*/, 0.05 /*step*/, 5.5 /*value*/, 3 /*digits*/,
                                              parent, "FloatEditorItem::spin" );
+  editor->setRange(0.0, 100.0, 0.01, 2);
   editor->setValue( (float)overrideValue().toDouble() );
   connect(editor, SIGNAL( valueChanged(int) ), this, SLOT( onValueChanged() ) );
   return editor;

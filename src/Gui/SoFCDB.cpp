@@ -79,6 +79,7 @@ void Gui::SoFCDB::init()
   FloatEditorItem          ::init();
   BoolEditorItem           ::init();
   ListEditorItem           ::init();
+  ComboEditorItem          ::init();
   CursorEditorItem         ::init();
 }
 

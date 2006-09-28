@@ -115,17 +115,15 @@ class AppExport PropertyEnumeration: public PropertyInteger
   TYPESYSTEM_HEADER();
 
 public:
-
-       
 	/// Standard constructor
 	PropertyEnumeration();
 
 	/// destructor
 	~PropertyEnumeration();
 
-  /// Enumeration methodes 
+  /// Enumeration methods 
   //@{
-  /** seting the enumaration string list
+  /** setting the enumaration string list
     * The list is a NULL terminated array of pointers to a const char* string
     * \code
     * const char enums[] = {"Black","White","Other",NULL}
@@ -142,26 +140,24 @@ public:
     */
   void setValue(long);
   /// checks if the property is set to a certain string value
-  bool isValue(const char* value);
+  bool isValue(const char* value) const;
   /// checks if a string is included in the enumeration
-  bool isPartOf(const char* value);
+  bool isPartOf(const char* value) const;
   /// get the value as string
-  const char* getValueAsString(void);
+  const char* getValueAsString(void) const;
   /// get all possible enum values as vector of strings
-  std::vector<std::string> getEnumVector(void);
+  std::vector<std::string> getEnumVector(void) const;
   /// get the pointer to the enum list
-  const char** getEnums(void);
+  const char** getEnums(void) const;
   //@}
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::IntEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::ComboEditorItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
 
 private:
-
 	const char** _EnumArray;
-
 };
 
 /** Integer list properties
