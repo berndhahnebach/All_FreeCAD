@@ -69,6 +69,7 @@ libPartGui_la_LIBADD   = \
 		-lTKBRep \
 		-lTKTopAlgo \
 		-lTKGeomAlgo \
+		-lTKGeomBase \
 		-lTKPrim \
 		-lTKMesh \
 		-lPart 
@@ -93,6 +94,7 @@ libPartGui_la_LIBADD   = \
 		-lTKBRep \
 		-lTKTopAlgo \
 		-lTKGeomAlgo \
+		-lTKGeomBase \
 		-lTKPrim \
 		-lPart 
 endif

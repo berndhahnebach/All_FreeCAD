@@ -25,14 +25,34 @@ libRaytracing_la_CPPFLAGS = -DAppPartExport= -DAppRaytracingExport= -DFeatureRay
 
 if OCC_VERSION6
 libRaytracing_la_LIBADD   = \
+		-lxerces-c \
+		-l@PYTHON_LIB@ \
 		-lFreeCADBase \
 		-lFreeCADApp \
+		-lTKernel \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
+		-lTKBool \
+		-lTKBRep \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
 		-lTKMesh \
 		-lPart
 else
 libRaytracing_la_LIBADD   = \
+		-lxerces-c \
+		-l@PYTHON_LIB@ \
 		-lFreeCADBase \
 		-lFreeCADApp \
+		-lTKernel \
+		-lTKG2d \
+		-lTKG3d \
+		-lTKMath \
+		-lTKBool \
+		-lTKBRep \
+		-lTKGeomAlgo \
+		-lTKGeomBase \
 		-lPart
 endif
 
@@ -47,6 +67,7 @@ Raytracing_la_LDFLAGS = $(libRaytracing_la_LDFLAGS) -module -avoid-version
 Raytracing_la_CPPFLAGS = $(libRaytracing_la_CPPFLAGS)
 
 Raytracing_la_LIBADD   = \
+		$(libRaytracing_la_LIBADD) \
 		-lRaytracing
 
 #--------------------------------------------------------------------------------------
