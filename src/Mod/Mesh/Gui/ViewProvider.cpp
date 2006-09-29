@@ -93,9 +93,9 @@ ViewProviderExport::~ViewProviderExport()
 {
 }
 
-std::list<std::string> ViewProviderExport::getModes(void) const
+std::vector<std::string> ViewProviderExport::getDisplayModes(void) const
 {
-  return std::list<std::string>();
+  return std::vector<std::string>();
 }
 
 QPixmap ViewProviderExport::getIcon() const
@@ -321,13 +321,13 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 
   pcFlatRoot->addChild(pcShapeMaterial);
   pcFlatRoot->addChild(pcHighlight);
-  addDisplayMode(pcFlatRoot, "Flat");
+  addDisplayMaskMode(pcFlatRoot, "Flat");
 
   // points part ---------------------------------------------
   SoGroup* pcPointRoot = new SoGroup();
   pcPointRoot->addChild(pcPointStyle);
   pcPointRoot->addChild(pcFlatRoot);
-  addDisplayMode(pcPointRoot, "Point");
+  addDisplayMaskMode(pcPointRoot, "Point");
 
   // wire part ----------------------------------------------
   SoLightModel* pcLightModel = new SoLightModel();
@@ -337,13 +337,13 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   pcWireRoot->addChild(pcLightModel);
   pcWireRoot->addChild(pcShapeMaterial);
   pcWireRoot->addChild(pcHighlight);
-  addDisplayMode(pcWireRoot, "Wireframe");
+  addDisplayMaskMode(pcWireRoot, "Wireframe");
 
   // wire shaded  ------------------------------------------
   SoGroup* pcFlatWireRoot = new SoGroup();
   pcFlatWireRoot->addChild(pcFlatRoot);
   pcFlatWireRoot->addChild(pcWireRoot);
-  addDisplayMode(pcFlatWireRoot, "FlatWireframe");
+  addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
 
   // Turns on backface culling
   SoShapeHints * wirehints = new SoShapeHints;
@@ -353,7 +353,7 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
   SoGroup* pcHiddenLineRoot = new SoGroup();
   pcHiddenLineRoot->addChild(wirehints);
   pcHiddenLineRoot->addChild(pcWireRoot);
-  addDisplayMode(pcHiddenLineRoot, "HiddenLine");
+  addDisplayMaskMode(pcHiddenLineRoot, "HiddenLine");
 
   // create the mesh core nodes
   updateData();
@@ -393,26 +393,26 @@ QPixmap ViewProviderMesh::getIcon() const
   return px;
 }
 
-void ViewProviderMesh::setMode(const char* ModeName)
+void ViewProviderMesh::setDisplayMode(const char* ModeName)
 {
   if ( strcmp("Shaded",ModeName)==0 )
-    setDisplayMode("Flat");
+    setDisplayMaskMode("Flat");
   else if ( strcmp("Wireframe",ModeName)==0 )
-    setDisplayMode("Wireframe");
+    setDisplayMaskMode("Wireframe");
   else if ( strcmp("Points",ModeName)==0 )
-    setDisplayMode("Point");
+    setDisplayMaskMode("Point");
   else if ( strcmp("Shaded+Wireframe",ModeName)==0 )
-    setDisplayMode("FlatWireframe");
+    setDisplayMaskMode("FlatWireframe");
   else if ( strcmp("Hidden line",ModeName)==0 )
-    setDisplayMode("HiddenLine");
+    setDisplayMaskMode("HiddenLine");
 
-  ViewProviderDocumentObject::setMode( ModeName );
+  ViewProviderDocumentObject::setDisplayMode( ModeName );
 }
 
-std::list<std::string> ViewProviderMesh::getModes(void) const
+std::vector<std::string> ViewProviderMesh::getDisplayModes(void) const
 {
   // get the modes of the father
-  std::list<std::string> StrList;
+  std::vector<std::string> StrList;
 
   // add your own modes
   StrList.push_back("Shaded");

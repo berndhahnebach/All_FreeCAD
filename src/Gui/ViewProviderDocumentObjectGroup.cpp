@@ -88,10 +88,10 @@ void ViewProviderDocumentObjectGroup::attach(App::DocumentObject *pcObj)
   ViewProviderDocumentObject::attach(pcObj);
 }
 
-std::list<std::string> ViewProviderDocumentObjectGroup::getModes(void) const
+std::vector<std::string> ViewProviderDocumentObjectGroup::getDisplayModes(void) const
 {
   // empty
-  return std::list<std::string>();
+  return std::vector<std::string>();
 }
 
 bool ViewProviderDocumentObjectGroup::isShow(void) const

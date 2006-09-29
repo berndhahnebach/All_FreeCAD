@@ -199,7 +199,9 @@ void PropertyEnumeration::setValue(long value)
     long i=0;
     while(*(plEnums++) != NULL)i++;
     // very unlikely to have enums with more then 5000 entries!
-    assert(i>value);
+    // Note: Do NOT call assert() because this code might be executed from Python console!
+    if ( value < 0 || i <= value )
+      throw Base::Exception("Out of range");
   }
 # endif
   PropertyInteger::setValue(value);

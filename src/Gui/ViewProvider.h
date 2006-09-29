@@ -88,31 +88,32 @@ public:
   PyObject* getPyObject();
 
 protected:
-	/** @name Display modes
-   * Mainly controls a SoSwitch which selects the display modes.
-   * The number of display modes doesn't necessarily match with the number of view modes.
-   * E.g. various modes like Gaussian curvature, mean curvature or gray values are displayed
-   * by one display mode that handles color values.
+	/** @name Display mask modes
+   * Mainly controls an SoSwitch node which selects the display mask modes.
+   * The number of display mask modes doesn't necessarily match with the number of display modes.
+   * E.g. various display modes like Gaussian curvature, mean curvature or gray values are displayed
+   * by one display mask mode that handles color values.
    */
 	//@{
-  /// Adds a new display mode 
-  void addDisplayMode( SoNode *node, const char* type );
-  /// Activates the display mode \a type
-  void setDisplayMode( const char* type );
-  /// Returns a list of added display modes
-  std::vector<std::string> getDisplayModes() const;
+  /// Adds a new display mask mode 
+  void addDisplayMaskMode( SoNode *node, const char* type );
+  /// Activates the display mask mode \a type
+  void setDisplayMaskMode( const char* type );
+  /// Returns a list of added display mask modes
+  std::vector<std::string> getDisplayMaskModes() const;
   //@}
 
 public:
-	/** @name mode methods of the feature 
+	/** @name Display mode methods 
     */
 	//@{
-  /// set the viewing mode
-  virtual void setMode(const char* ModeName);
-  /// get the viewing mode name
-  std::string getModeName(void) const;
-  /// returns a list of all possible modes
-  virtual std::list<std::string> getModes(void) const=0;
+  std::string getActiveDisplayMode(void) const;
+  /// set the display mode
+  virtual void setDisplayMode(const char* ModeName);
+  /// get the default display mode
+  virtual const char* getDefaultDisplayMode() const=0;
+  /// returns a list of all possible display modes
+  virtual std::vector<std::string> getDisplayModes(void) const=0;
 
   virtual void setEdit(void){};
   virtual void unsetEdit(void){};
@@ -160,7 +161,7 @@ protected:
 private:
   int _iActualMode;
   std::string _sCurrentMode;
-  std::map<std::string, int> _sDisplayModes;
+  std::map<std::string, int> _sDisplayMaskModes;
   ViewProviderPy* _pyObject;
 };
 

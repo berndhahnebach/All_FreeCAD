@@ -136,7 +136,7 @@ void ViewProviderMeshOrientation::attach(App::DocumentObject* pcFeat)
 
   pcFaceRoot->addChild(linesep);
 
-  addDisplayMode(pcFaceRoot, "Face");
+  addDisplayMaskMode(pcFaceRoot, "Face");
 }
 
 void ViewProviderMeshOrientation::showDefects()
@@ -163,7 +163,7 @@ void ViewProviderMeshOrientation::showDefects()
     pcFaces->numVertices.set1Value(j++, 3);
   }
 
-  setDisplayMode("Face");
+  setDisplayMaskMode("Face");
 }
 
 // ----------------------------------------------------------------------
@@ -204,7 +204,7 @@ void ViewProviderMeshNonManifolds::attach(App::DocumentObject* pcFeat)
   linesep->addChild(markcol);
   linesep->addChild(marker);
 
-  addDisplayMode(pcLineRoot, "Line");
+  addDisplayMaskMode(pcLineRoot, "Line");
 }
 
 void ViewProviderMeshNonManifolds::showDefects()
@@ -229,7 +229,7 @@ void ViewProviderMeshNonManifolds::showDefects()
     pcLines->numVertices.set1Value(j++, 2);
   }
 
-  setDisplayMode("Line");
+  setDisplayMaskMode("Line");
 }
 
 // ----------------------------------------------------------------------
@@ -277,7 +277,7 @@ void ViewProviderMeshDuplicatedFaces::attach(App::DocumentObject* pcFeat)
   linesep->addChild(markcol);
   linesep->addChild(marker);
 
-  addDisplayMode(pcFaceRoot, "Face");
+  addDisplayMaskMode(pcFaceRoot, "Face");
 }
 
 void ViewProviderMeshDuplicatedFaces::showDefects()
@@ -304,7 +304,7 @@ void ViewProviderMeshDuplicatedFaces::showDefects()
     pcFaces->numVertices.set1Value(j++, 3);
   }
 
-  setDisplayMode("Face");
+  setDisplayMaskMode("Face");
 }
 
 // ----------------------------------------------------------------------
@@ -363,7 +363,7 @@ void ViewProviderMeshDegenerations::attach(App::DocumentObject* pcFeat)
   linesep->addChild(markcol);
   linesep->addChild(marker);
 
-  addDisplayMode(pcLineRoot, "Line");
+  addDisplayMaskMode(pcLineRoot, "Line");
 }
 
 void ViewProviderMeshDegenerations::showDefects()
@@ -419,7 +419,7 @@ void ViewProviderMeshDegenerations::showDefects()
     pcLines->numVertices.set1Value(j++, 2);
   }
 
-  setDisplayMode("Line");
+  setDisplayMaskMode("Line");
 }
 
 // ----------------------------------------------------------------------
@@ -467,7 +467,7 @@ void ViewProviderMeshIndices::attach(App::DocumentObject* pcFeat)
   linesep->addChild(markcol);
   linesep->addChild(marker);
 
-  addDisplayMode(pcFaceRoot, "Face");
+  addDisplayMaskMode(pcFaceRoot, "Face");
 }
 
 void ViewProviderMeshIndices::showDefects()
@@ -497,7 +497,7 @@ void ViewProviderMeshIndices::showDefects()
       pcFaces->numVertices.set1Value(j++, 3);
     }
 
-    setDisplayMode("Face");
+    setDisplayMaskMode("Face");
   }
   else if ( !rf.Evaluate() ) {
   }

@@ -85,13 +85,13 @@ void ViewProviderExtern::setModeBySoInput(const char* name, SoInput &ivFileInput
   SoSeparator * root = SoDB::readAll(&ivFileInput);
   if (root) {
 
-    std::list<string>::iterator pos = std::find<list<string>::iterator,string>(modes.begin(),modes.end(),string(name));
+    std::vector<std::string>::iterator pos = std::find<std::vector<std::string>::iterator,string>(modes.begin(),modes.end(),string(name));
 
     if(pos == modes.end())
     { // new mode
       modes.push_back(name);
-      addDisplayMode(root, name);
-      setDisplayMode(name);
+      addDisplayMaskMode(root, name);
+      setDisplayMaskMode(name);
     }else
     { // existing mode
       // not implemented yet
@@ -125,7 +125,13 @@ void ViewProviderExtern::adjustRecursiveDocumentName(SoNode* child, const char* 
   }
 }
 
-std::list<std::string> ViewProviderExtern::getModes(void) const
+const char* ViewProviderExtern::getDefaultDisplayMode() const
+{
+  // returns the first item of the available modes
+  return (modes.empty() ? "" : modes.front().c_str());
+}
+
+std::vector<std::string> ViewProviderExtern::getDisplayModes(void) const
 {
   return modes;
 }

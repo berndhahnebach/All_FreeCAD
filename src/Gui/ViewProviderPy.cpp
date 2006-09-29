@@ -180,21 +180,6 @@ int ViewProviderPy::_setattr(char *attr, PyObject *value) 	// __setattr__ functi
   App::Property *prop = _pcViewProvider->getPropertyByName(attr);
   if(prop){
     try {
-      // Do not allow to change the list of display modes except of the active one
-      if ( strcmp(attr, "Display") == 0 ) {
-        App::PropertyStringList p;
-        p.setPyObject(value);
-        std::vector<std::string> modeNew = p.getValues();
-        // Check wether the specified modes are supported
-        std::list<std::string> modeOld = _pcViewProvider->getModes();
-        for ( std::vector<std::string>::iterator it = modeNew.begin(); it != modeNew.end(); ++it ) {
-          if ( std::find(modeOld.begin(), modeOld.end(), *it) == modeOld.end() ) {
-            PyErr_Format(PyExc_ValueError, "ViewProvider '%s' does not support the mode '%s'", _pcViewProvider->getTypeId().getName(), it->c_str());
-            return -1;
-          }
-        }
-      }
-
       prop->setPyObject(value);
     } catch (Base::Exception &exc) {
       PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());

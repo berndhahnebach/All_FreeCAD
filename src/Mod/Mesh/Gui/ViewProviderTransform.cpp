@@ -85,7 +85,7 @@ void ViewProviderMeshTransform::attach(App::DocumentObject *pcFeat)
   pcEditRoot->addChild(pcHighlight);
 
   // adding to the switch
-  addDisplayMode(pcEditRoot, "Edit");
+  addDisplayMaskMode(pcEditRoot, "Edit");
 }
 
 void ViewProviderMeshTransform::updateData(void)
@@ -93,17 +93,22 @@ void ViewProviderMeshTransform::updateData(void)
   ViewProviderMesh::updateData();
 }
 
-void ViewProviderMeshTransform::setMode(const char* ModeName)
+void ViewProviderMeshTransform::setDisplayMode(const char* ModeName)
 {
   if ( strcmp("Transform",ModeName) == 0 )
-    setDisplayMode("Edit");
-  ViewProviderMesh::setMode(ModeName);
+    setDisplayMaskMode("Edit");
+  ViewProviderMesh::setDisplayMode(ModeName);
 }
 
-std::list<std::string> ViewProviderMeshTransform::getModes(void) const
+const char* ViewProviderMeshTransform::getDefaultDisplayMode() const
 {
-  std::list<std::string> StrList = ViewProviderMesh::getModes();
-  StrList.push_front("Transform");
+  return "Transform";
+}
+
+std::vector<std::string> ViewProviderMeshTransform::getDisplayModes(void) const
+{
+  std::vector<std::string> StrList = ViewProviderMesh::getDisplayModes();
+  StrList.push_back("Transform");
   return StrList;
 }
 
