@@ -370,6 +370,7 @@ QVariant ComboEditorItem::currentEditorValue( QWidget* editor ) const
 
 QVariant ComboEditorItem::convertFromProperty(const std::vector<App::Property*>& props)
 {
+  i18n2Native.clear();
   if ( props.size() > 0 )
   {
     // We want to get all common modes of the properties and also want to keep the order of them
@@ -382,8 +383,12 @@ QVariant ComboEditorItem::convertFromProperty(const std::vector<App::Property*>&
       {
         App::PropertyEnumeration* pPropEnum = (App::PropertyEnumeration*)*it;
         const std::vector<std::string>& modes = pPropEnum->getEnumVector();
-        for ( std::vector<std::string>::const_iterator jt = modes.begin(); jt != modes.end(); ++jt )
-          commonModeList << jt->c_str();
+        for ( std::vector<std::string>::const_iterator jt = modes.begin(); jt != modes.end(); ++jt ) {
+          QString i18n = QObject::tr( jt->c_str() ); // i18n stuff
+          commonModeList << i18n;
+          i18n2Native[ i18n ] = jt->c_str();
+        }
+        
         current = pPropEnum->getValueAsString();
       }
       else
@@ -392,8 +397,10 @@ QVariant ComboEditorItem::convertFromProperty(const std::vector<App::Property*>&
         App::PropertyEnumeration* pPropEnum = (App::PropertyEnumeration*)*it;
         const std::vector<std::string>& modes = pPropEnum->getEnumVector();
         for ( std::vector<std::string>::const_iterator jt = modes.begin(); jt != modes.end(); ++jt ){
-          if ( commonModeList.find(jt->c_str()) != commonModeList.end() )
-            modeList << jt->c_str();
+           // i18n stuff
+          QString i18n = QObject::tr( jt->c_str() );
+          if ( commonModeList.find( i18n ) != commonModeList.end() )
+            modeList << i18n;
         }
 
         // intersection of both lists
@@ -421,7 +428,7 @@ void ComboEditorItem::convertToProperty(const QVariant& val)
 {
   QStringList items = val.toStringList();
   if ( !items.isEmpty() ) {
-    QString value = items.front();
+    QString value = i18n2Native[ items.front() ];
     for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
     {
       App::PropertyEnumeration* pPropEnum = (App::PropertyEnumeration*)*it;
