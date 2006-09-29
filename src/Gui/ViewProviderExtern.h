@@ -55,14 +55,15 @@ public:
   void setModeBySoInput(const char* name, SoInput &ivFileInput);
   void adjustDocumentName(const char* docname);
   
-  virtual std::list<std::string> getModes(void) const;
+  virtual const char* getDefaultDisplayMode() const;
+  virtual std::vector<std::string> getDisplayModes(void) const;
   virtual void update(void){}
 
 private:
   void adjustRecursiveDocumentName(SoNode*, const char* docname);
 
 protected:
-  std::list<std::string> modes;
+  std::vector<std::string> modes;
 };
 
 

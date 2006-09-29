@@ -68,9 +68,11 @@ public:
   /// Handles pick events to write curvature value to the status bar.
   bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
   /// Sets the viewing mode
-  void setMode(const char* ModeName);
+  void setDisplayMode(const char* ModeName);
+  /// get the default display mode
+  virtual const char* getDefaultDisplayMode() const;
   /// Returns a list of all possible modes
-  std::list<std::string> getModes(void) const;
+  std::vector<std::string> getDisplayModes(void) const;
   /// Updates the mesh feature representation
   void updateData();
   /// Returns a pixmap for the associated feature type

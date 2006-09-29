@@ -44,7 +44,7 @@ public:
   virtual QPixmap getOpenedGroupIcon() const;
   virtual QPixmap getClosedGroupIcon() const;
   /// returns a list of all possible modes
-  virtual std::list<std::string> getModes(void) const;
+  virtual std::vector<std::string> getDisplayModes(void) const;
   bool isShow(void) const;
 
 protected:

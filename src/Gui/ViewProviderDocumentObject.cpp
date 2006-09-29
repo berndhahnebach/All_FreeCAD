@@ -56,7 +56,7 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
   : pcObject(0), pcObjItem(0), _cLastStatus(-1)
 {
   ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
-  ADD_PROPERTY(Display,("Flat"));
+  ADD_PROPERTY(Display,((long)0));
   ADD_PROPERTY(Transparency,(0));
   ADD_PROPERTY(Visibility,(true));
   App::Material mat(App::Material::DEFAULT);
@@ -65,20 +65,6 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
   pcShapeMaterial = new SoMaterial;
   pcShapeMaterial->ref();
   ShapeMaterial.touch();
-//  pcLineMaterial   = new SoMaterial;
-//  pcLineMaterial->ref();
-//  pcPointMaterial  = new SoMaterial;
-//  pcPointMaterial->ref();
-
-//  pcLineStyle = new SoDrawStyle();
-//  pcLineStyle->ref();
-//  pcLineStyle->style = SoDrawStyle::LINES;
-//  pcLineStyle->lineWidth = 1;
-
-//  pcPointStyle = new SoDrawStyle();
-//  pcPointStyle->ref();
-//  pcPointStyle->style = SoDrawStyle::POINTS;
-//  pcPointStyle->pointSize = 1;
 
   sPixmap = "Feature";
 
@@ -88,10 +74,6 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
 ViewProviderDocumentObject::~ViewProviderDocumentObject()
 {
   pcShapeMaterial->unref();
-//  pcLineMaterial->unref();
-//  pcPointMaterial->unref();
-//  pcLineStyle->unref();
-//  pcPointStyle->unref();
 }
 
 void ViewProviderDocumentObject::onChanged(const App::Property* prop)
@@ -138,24 +120,30 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
   pcObject = pcObj;
 
   // Retrieve the supported display modes of the view provider
-  std::list<std::string> modes = getModes();
+  std::vector<std::string> modes = this->getDisplayModes();
 
-  // In the 'Display' property the first item is duplicated and always specifies the active mode. 
-  if ( modes.size() > 0 ) {
-    // Has getModes() already defined the active mode?
-    std::list<std::string>::iterator sp = modes.begin();
-    std::list<std::string>::iterator it = std::find(++sp, modes.end(), modes.front());
-    if ( it == modes.end() )
-      modes.push_front(modes.front());
-    Display.enableNotify(false);
-    Display.setValue(modes);
-    Display.enableNotify(true);
-  } else {
-    // default
-    Display.enableNotify(false);
-    Display.setValue(modes); // empty mode list
-    Display.enableNotify(true);
+  assert( !modes.empty() );
+
+  // We must convert the array of strings into an array of const char*
+  std::vector<const char*>* enums = new std::vector<const char*>;
+  for ( std::vector<std::string>::iterator it = modes.begin(); it != modes.end(); ++it ) {
+    // We must duplicate the string literals because the vector gets deleted later on all its content is lost
+#if defined (_MSC_VER)
+    const char* mode = _strdup( it->c_str() );
+#else
+    const char* mode = strdup( it->c_str() );
+#endif
+    enums->push_back( mode );
   }
+  enums->push_back(0); // null termination
+
+  Display.enableNotify(false);
+  Display.setEnums(&((*enums)[0]));
+  // set the active mode
+  const char* defmode = this->getDefaultDisplayMode();
+  if ( defmode )
+    Display.setValue(defmode);
+  Display.enableNotify(true);
 
 
   calcMaterial = pcObject->getTouchViewTime();
@@ -188,9 +176,9 @@ SoSeparator* ViewProviderDocumentObject::findFrontRootOfType( const SoType& type
 
 void ViewProviderDocumentObject::setActiveMode()
 {
-  const std::vector<std::string>& modes = Display.getValues();
-  if ( !modes.empty() )
-    setMode(modes.front().c_str());
+  const char* mode = Display.getValueAsString();
+  if ( mode )
+    setDisplayMode(mode);
   if ( !Visibility.getValue() )
     ViewProvider::hide();
 }
@@ -358,9 +346,14 @@ void ViewProviderDocumentObject::update(void)
 //  }
 }
 
+const char* ViewProviderDocumentObject::getDefaultDisplayMode() const
+{
+  // We use the first item then
+  return 0;
+}
 
-std::list<std::string> ViewProviderDocumentObject::getModes(void) const
+std::vector<std::string> ViewProviderDocumentObject::getDisplayModes(void) const
 {
   // empty
-  return std::list<std::string>();
+  return std::vector<std::string>();
 }

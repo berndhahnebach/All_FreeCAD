@@ -66,7 +66,7 @@ public:
 
   // Display properties
   App::PropertyColor ShapeColor;
-  App::PropertyStringList Display;
+  App::PropertyEnumeration Display;
   App::PropertyInteger Transparency;
   App::PropertyBool Visibility;
   App::PropertyMaterial ShapeMaterial;
@@ -76,8 +76,10 @@ public:
   ObjectItem* getTreeItem(QListViewItem* parent);
 
   virtual void attach(App::DocumentObject *pcObject);
+  /// get the default display mode
+  virtual const char* getDefaultDisplayMode() const;
   /// returns a list of all possible modes
-  virtual std::list<std::string> getModes(void) const;
+  virtual std::vector<std::string> getDisplayModes(void) const;
   /// Sets the active mode, i.e. the first item of the 'Display' property.
   void setActiveMode();
 

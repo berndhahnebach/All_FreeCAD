@@ -177,13 +177,13 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
 
   pcFlatRoot->addChild(pcShapeMaterial);
   pcFlatRoot->addChild(pcHighlight);
-  addDisplayMode(pcFlatRoot, "Flat");
+  addDisplayMaskMode(pcFlatRoot, "Flat");
 
   // points
   SoGroup* pcPointRoot = new SoGroup();
   pcPointRoot->addChild(pcPointStyle);
   pcPointRoot->addChild(pcFlatRoot);
-  addDisplayMode(pcPointRoot, "Point");
+  addDisplayMaskMode(pcPointRoot, "Point");
 
   // wires
   SoLightModel* pcLightModel = new SoLightModel();
@@ -193,13 +193,13 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
   pcWireRoot->addChild(pcLightModel);
   pcWireRoot->addChild(pcShapeMaterial);
   pcWireRoot->addChild(pcHighlight);
-  addDisplayMode(pcWireRoot, "Wireframe");
+  addDisplayMaskMode(pcWireRoot, "Wireframe");
 
   // faces+wires
   SoGroup* pcFlatWireRoot = new SoGroup();
   pcFlatWireRoot->addChild(pcFlatRoot);
   pcFlatWireRoot->addChild(pcWireRoot);
-  addDisplayMode(pcFlatWireRoot, "FlatWireframe");
+  addDisplayMaskMode(pcFlatWireRoot, "FlatWireframe");
 }
 
 void ViewProviderMeshFaceSet::updateData(void)
@@ -254,23 +254,23 @@ QPixmap ViewProviderMeshFaceSet::getIcon() const
   return px;
 }
 
-void ViewProviderMeshFaceSet::setMode(const char* ModeName)
+void ViewProviderMeshFaceSet::setDisplayMode(const char* ModeName)
 {
   if ( strcmp("Shaded",ModeName)==0 )
-    setDisplayMode("Flat");
+    setDisplayMaskMode("Flat");
   else if ( strcmp("Points",ModeName)==0 )
-    setDisplayMode("Point");
+    setDisplayMaskMode("Point");
   else if ( strcmp("Shaded+Wireframe",ModeName)==0 )
-    setDisplayMode("FlatWireframe");
+    setDisplayMaskMode("FlatWireframe");
   else if ( strcmp("Wireframe",ModeName)==0 )
-    setDisplayMode("Wireframe");
+    setDisplayMaskMode("Wireframe");
 
-  ViewProviderDocumentObject::setMode( ModeName );
+  ViewProviderDocumentObject::setDisplayMode( ModeName );
 }
 
-std::list<std::string> ViewProviderMeshFaceSet::getModes(void) const
+std::vector<std::string> ViewProviderMeshFaceSet::getDisplayModes(void) const
 {
-  std::list<std::string> StrList;
+  std::vector<std::string> StrList;
 
   // add your own modes
   StrList.push_back("Shaded");

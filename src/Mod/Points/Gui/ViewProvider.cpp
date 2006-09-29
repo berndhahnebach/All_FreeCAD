@@ -201,16 +201,16 @@ void ViewProviderPoints::attach(App::DocumentObject* pcObj)
   pcColorShadedRoot->addChild(pcHighlight);
 
   // putting all together with a switch
-  addDisplayMode(pcPointRoot, "Point");
-  addDisplayMode(pcColorShadedRoot, "Color");
-  addDisplayMode(pcPointShadedRoot, "Shaded");
+  addDisplayMaskMode(pcPointRoot, "Point");
+  addDisplayMaskMode(pcColorShadedRoot, "Color");
+  addDisplayMaskMode(pcPointShadedRoot, "Shaded");
 
   // get and save the feature
   Points::Feature* ptFea = dynamic_cast<Points::Feature*>(pcObj);
   createPoints( ptFea );
 }
 
-void ViewProviderPoints::setMode(const char* ModeName)
+void ViewProviderPoints::setDisplayMode(const char* ModeName)
 {
   if ( strcmp("Color",ModeName)==0 )
   {
@@ -222,7 +222,7 @@ void ViewProviderPoints::setMode(const char* ModeName)
       if ( t==App::PropertyColorList::getClassTypeId() )
       {
         setVertexColorMode((App::PropertyColorList*)it->second);
-        setDisplayMode("Color");
+        setDisplayMaskMode("Color");
         break;
       }
     }
@@ -238,14 +238,14 @@ void ViewProviderPoints::setMode(const char* ModeName)
       if ( t==Points::PropertyGreyValueList::getClassTypeId() )
       {
         setVertexGreyvalueMode((Points::PropertyGreyValueList*)it->second);
-        setDisplayMode("Color");
+        setDisplayMaskMode("Color");
         ok=true;
         break;
       }
     }
     // Intensity mode is not possible then set the default () mode instead.
     if (!ok) {
-      setMode("Point");
+      setDisplayMode("Point");
       return;
     }
   }
@@ -262,26 +262,26 @@ void ViewProviderPoints::setMode(const char* ModeName)
         if ( pcPointsCoord->point.getNum() != normals->getSize() ) {
           Base::Console().Message("No normals defined");
           // Try to set the 'Intensity' mode instead
-          setMode("Intensity");
+          setDisplayMode("Intensity");
           return;
         }
         setVertexNormalMode(normals);
-        setDisplayMode("Shaded");
+        setDisplayMaskMode("Shaded");
         break;
       }
     }
   }
   else if ( strcmp("Point",ModeName)==0 )
   {
-    setDisplayMode("Point");
+    setDisplayMaskMode("Point");
   }
 
-  ViewProviderDocumentObject::setMode(ModeName);
+  ViewProviderDocumentObject::setDisplayMode(ModeName);
 }
 
-std::list<std::string> ViewProviderPoints::getModes(void) const
+std::vector<std::string> ViewProviderPoints::getDisplayModes(void) const
 {
-  std::list<std::string> StrList;
+  std::vector<std::string> StrList;
   StrList.push_back("Point");
 
   if ( pcObject )

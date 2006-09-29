@@ -108,26 +108,26 @@ void ViewProvider::setTransformation(const SbMatrix &rcMatrix)
   pcTransform->setMatrix(rcMatrix);
 }
 
-void ViewProvider::addDisplayMode( SoNode *node, const char* type )
+void ViewProvider::addDisplayMaskMode( SoNode *node, const char* type )
 {
-  _sDisplayModes[ type ] = pcModeSwitch->getNumChildren();
+  _sDisplayMaskModes[ type ] = pcModeSwitch->getNumChildren();
   pcModeSwitch->addChild( node );
 }
 
-void ViewProvider::setDisplayMode( const char* type )
+void ViewProvider::setDisplayMaskMode( const char* type )
 {
-  std::map<std::string, int>::const_iterator it = _sDisplayModes.find( type );
-  if ( it != _sDisplayModes.end() )
+  std::map<std::string, int>::const_iterator it = _sDisplayMaskModes.find( type );
+  if ( it != _sDisplayMaskModes.end() )
     pcModeSwitch->whichChild = it->second;
   else
     pcModeSwitch->whichChild = -1;
   _iActualMode = pcModeSwitch->whichChild.getValue();
 }
 
-std::vector<std::string> ViewProvider::getDisplayModes() const
+std::vector<std::string> ViewProvider::getDisplayMaskModes() const
 {
   std::vector<std::string> types;
-  for ( std::map<std::string, int>::const_iterator it = _sDisplayModes.begin(); it != _sDisplayModes.end(); ++it )
+  for ( std::map<std::string, int>::const_iterator it = _sDisplayMaskModes.begin(); it != _sDisplayMaskModes.end(); ++it )
     types.push_back( it->first );
   return types;
 }
@@ -136,26 +136,13 @@ std::vector<std::string> ViewProvider::getDisplayModes() const
  * If you add new viewing modes in @ref getModes() then you need to reimplement also setMode() to handle these
  * new modes by setting the appropriate display mode.
  */
-void ViewProvider::setMode(const char* ModeName)
+void ViewProvider::setDisplayMode(const char* ModeName)
 {
   _sCurrentMode = ModeName;
-  // collect all modes (with subclasses)
-/*  vector<string> modes = getModes();
-  vector<string>::iterator p;
-
-  p = find(modes.begin(),modes.end(),ModeName);
-
-  if(p!=modes.end())
-    setMode(p-modes.begin());
-  else
-    Base::Console().Warning("Unknown mode '%s' in ViewProvider::setMode(), ignored\n", ModeName);
-*/
 }
 
-std::string ViewProvider::getModeName(void) const
+std::string ViewProvider::getActiveDisplayMode(void) const
 {
-  // this doesn't really work as expected
-//  return getModes()[getMode()];
   return _sCurrentMode;
 }
 

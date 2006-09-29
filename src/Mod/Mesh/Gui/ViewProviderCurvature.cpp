@@ -184,7 +184,7 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
   pcColorShadedRoot->addChild(pcMatBinding);
   pcColorShadedRoot->addChild(pcHighlight);
 
-  addDisplayMode(pcColorShadedRoot, "ColorShaded");
+  addDisplayMaskMode(pcColorShadedRoot, "ColorShaded");
 
   // Check for an already existing color bar
   Gui::SoFCColorBar* pcBar = ((Gui::SoFCColorBar*)findFrontRootOfType( Gui::SoFCColorBar::getClassTypeId() ));
@@ -278,54 +278,59 @@ QPixmap ViewProviderMeshCurvature::getIcon() const
   return px;
 }
 
-void ViewProviderMeshCurvature::setMode(const char* ModeName)
+void ViewProviderMeshCurvature::setDisplayMode(const char* ModeName)
 {
   if ( strcmp("Mean curvature",ModeName)==0 )
   {
     setVertexCurvatureMode(Mesh::PropertyCurvatureList::MeanCurvature);
-    setDisplayMode("ColorShaded");
+    setDisplayMaskMode("ColorShaded");
   }
   else if ( strcmp("Gaussian curvature",ModeName)==0  )
   {
     setVertexCurvatureMode(Mesh::PropertyCurvatureList::GaussCurvature);
-    setDisplayMode("ColorShaded");
+    setDisplayMaskMode("ColorShaded");
   }
   else if ( strcmp("Maximum curvature",ModeName)==0  )
   {
     setVertexCurvatureMode(Mesh::PropertyCurvatureList::MaxCurvature);
-    setDisplayMode("ColorShaded");
+    setDisplayMaskMode("ColorShaded");
   }
   else if ( strcmp("Minimum curvature",ModeName)==0  )
   {
     setVertexCurvatureMode(Mesh::PropertyCurvatureList::MinCurvature);
-    setDisplayMode("ColorShaded");
+    setDisplayMaskMode("ColorShaded");
   }
   else if ( strcmp("Absolute curvature",ModeName)==0  )
   {
     setVertexCurvatureMode(Mesh::PropertyCurvatureList::AbsCurvature);
-    setDisplayMode("ColorShaded");
+    setDisplayMaskMode("ColorShaded");
   }
 
-  inherited::setMode(ModeName);
+  inherited::setDisplayMode(ModeName);
 }
 
-std::list<std::string> ViewProviderMeshCurvature::getModes(void) const
+const char* ViewProviderMeshCurvature::getDefaultDisplayMode() const
 {
-  std::list<std::string> StrList = inherited::getModes();
+  return "Absolute curvature";
+}
+
+std::vector<std::string> ViewProviderMeshCurvature::getDisplayModes(void) const
+{
+  std::vector<std::string> StrList = inherited::getDisplayModes();
 
   // add modes
-  StrList.push_front("Minimum curvature");
-  StrList.push_front("Maximum curvature");
-  StrList.push_front("Gaussian curvature");
-  StrList.push_front("Mean curvature");
-  StrList.push_front("Absolute curvature");
+  StrList.push_back("Absolute curvature");
+  StrList.push_back("Mean curvature");
+  StrList.push_back("Gaussian curvature");
+  StrList.push_back("Maximum curvature");
+  StrList.push_back("Minimum curvature");
 
   return StrList;
 }
 
 void ViewProviderMeshCurvature::OnChange(Base::Subject<int> &rCaller,int rcReason)
 {
-  setMode(this->getModeName().c_str());
+  setDisplayMode(this->getActiveDisplayMode().c_str());
 }
 
 bool ViewProviderMeshCurvature::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
@@ -363,7 +368,7 @@ bool ViewProviderMeshCurvature::handleEvent(const SoEvent * const ev,Gui::View3D
             
             bool print=true;
             ret = true;
-            QString mode = getModeName().c_str();
+            QString mode = getActiveDisplayMode().c_str();
             if ( mode == "Minimum curvature" ) {
               fVal1 = cVal1.fMinCurvature;
               fVal2 = cVal1.fMinCurvature;

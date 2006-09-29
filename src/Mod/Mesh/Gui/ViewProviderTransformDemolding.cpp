@@ -116,7 +116,7 @@ void ViewProviderMeshTransformDemolding::attach(App::DocumentObject *pcFeat)
   pcDemoldRoot->addChild(pcHighlight);
 
   // adding to the switch
-  addDisplayMode(pcDemoldRoot, "Demold");
+  addDisplayMaskMode(pcDemoldRoot, "Demold");
 
   calcNormalVector();
   calcMaterialIndex(SbRotation());
@@ -202,16 +202,21 @@ void ViewProviderMeshTransformDemolding::valueChangedCallback(void)
   pcTransformDrag->setMatrix( temp );
 }
 
-void ViewProviderMeshTransformDemolding::setMode(const char* ModeName)
+void ViewProviderMeshTransformDemolding::setDisplayMode(const char* ModeName)
 {
   if ( strcmp("Demold",ModeName) == 0 )
-    setDisplayMode("Demold");
-  ViewProviderMesh::setMode(ModeName);
+    setDisplayMaskMode("Demold");
+  ViewProviderMesh::setDisplayMode(ModeName);
 }
 
-std::list<std::string> ViewProviderMeshTransformDemolding::getModes(void) const
+const char* ViewProviderMeshTransformDemolding::getDefaultDisplayMode() const
 {
-  std::list<std::string> StrList = ViewProviderMesh::getModes();
-  StrList.push_front("Demold");
+  return "Demold";
+}
+
+std::vector<std::string> ViewProviderMeshTransformDemolding::getDisplayModes(void) const
+{
+  std::vector<std::string> StrList = ViewProviderMesh::getDisplayModes();
+  StrList.push_back("Demold");
   return StrList;
 }

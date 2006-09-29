@@ -74,7 +74,7 @@ class GuiMeshExport ViewProviderExport : public Gui::ViewProviderFeature
 public:
   ViewProviderExport();
   virtual ~ViewProviderExport();
-  std::list<std::string> getModes(void) const;
+  std::vector<std::string> getDisplayModes(void) const;
   virtual QPixmap getIcon() const;
 };
 
@@ -102,9 +102,9 @@ public:
    */
   virtual void attach(App::DocumentObject *);
   /// Sets the correct display mode
-  virtual void setMode(const char* ModeName);
+  virtual void setDisplayMode(const char* ModeName);
   /// returns a list of all possible modes
-  virtual std::list<std::string> getModes(void) const;
+  virtual std::vector<std::string> getDisplayModes(void) const;
   /// Update the Mesh representation
   virtual void updateData();
   virtual QPixmap getIcon() const;

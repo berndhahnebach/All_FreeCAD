@@ -228,33 +228,33 @@ void ViewProviderPart::attach(App::DocumentObject *pcFeat)
   pcPointsRoot->addChild(VertexRoot);
 
    // putting all together with the switch
-  addDisplayMode(pcNormalRoot, "Normal");
-  addDisplayMode(pcFlatRoot, "Flat");
-  addDisplayMode(pcWireframeRoot, "Wireframe");
-  addDisplayMode(pcPointsRoot, "Point");
+  addDisplayMaskMode(pcNormalRoot, "Normal");
+  addDisplayMaskMode(pcFlatRoot, "Flat");
+  addDisplayMaskMode(pcWireframeRoot, "Wireframe");
+  addDisplayMaskMode(pcPointsRoot, "Point");
 
   // Build up the view represetation from the shape
   updateData();
 }
 
-void ViewProviderPart::setMode(const char* ModeName)
+void ViewProviderPart::setDisplayMode(const char* ModeName)
 {
   if ( strcmp("Normal",ModeName)==0 )
-    setDisplayMode("Normal");
+    setDisplayMaskMode("Normal");
   else if ( strcmp("Flat",ModeName)==0 )
-    setDisplayMode("Flat");
+    setDisplayMaskMode("Flat");
   else if ( strcmp("Wireframe",ModeName)==0 )
-    setDisplayMode("Wireframe");
+    setDisplayMaskMode("Wireframe");
   else if ( strcmp("Points",ModeName)==0 )
-    setDisplayMode("Point");
+    setDisplayMaskMode("Point");
 
-  ViewProviderDocumentObject::setMode( ModeName );
+  ViewProviderDocumentObject::setDisplayMode( ModeName );
 }
 
-std::list<std::string> ViewProviderPart::getModes(void) const
+std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
 {
   // get the modes of the father
-  std::list<std::string> StrList = ViewProviderDocumentObject::getModes();
+  std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
 
   // add your own modes
   StrList.push_back("Flat");

@@ -66,9 +66,11 @@ public:
   virtual void attach(App::DocumentObject *);
 
   /// set the viewing mode
-  virtual void setMode(const char* ModeName);
+  virtual void setDisplayMode(const char* ModeName);
+  /// get the default display mode
+  virtual const char* getDefaultDisplayMode() const;
   /// returns a list of all possible modes
-  virtual std::list<std::string> getModes(void) const;
+  virtual std::vector<std::string> getDisplayModes(void) const;
   /// Update the Mesh representation
   //virtual void updateData(void);
 
