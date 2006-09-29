@@ -25,6 +25,7 @@
 #define PROPERTYEDITORLIST_H
 
 #include "propertyeditoritem.h"
+#include <qmap.h>
 
 
 namespace Gui {
@@ -97,6 +98,7 @@ protected:
 
 private:
   ComboEditorItem();
+  QMap<QString, QString> i18n2Native; /**< Needed for i18n and to go back from a translated to the native literal */
 };
 
 /**
