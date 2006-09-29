@@ -51,6 +51,7 @@ public:
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
 	PYFUNCDEF_D(ViewProviderPy,hide)
 	PYFUNCDEF_D(ViewProviderPy,show)
+	PYFUNCDEF_D(ViewProviderPy,listDisplayModes)
 
   //---------------------------------------------------------------------
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++

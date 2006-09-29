@@ -99,6 +99,7 @@ PyTypeObject Gui::ViewProviderPy::Type = {
 PyMethodDef Gui::ViewProviderPy::Methods[] = {
   PYMETHODEDEF(show)
   PYMETHODEDEF(hide)
+  PYMETHODEDEF(listDisplayModes)
 	{NULL, NULL}		/* Sentinel */
 };
 
@@ -208,6 +209,25 @@ PYFUNCIMP_D(ViewProviderPy,hide)
   PY_TRY {
     _pcViewProvider->hide();  
     Py_Return;
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(ViewProviderPy,listDisplayModes)
+{ 
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+  PY_TRY {
+    std::vector<std::string> modes = _pcViewProvider->getDisplayModes();  
+    PyObject* pyList = PyList_New(modes.size()); 
+    int i=0;
+
+    for ( std::vector<std::string>::iterator it = modes.begin(); it != modes.end(); ++it )
+    {
+      PyObject* str = PyString_FromString(it->c_str());
+      PyList_SetItem(pyList, i++, str);
+    }
+
+    return pyList;
   }PY_CATCH;
 } 
 
