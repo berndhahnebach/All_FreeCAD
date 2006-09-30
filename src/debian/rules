@@ -8,6 +8,8 @@
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
+SOURCEOCCDIR = /home/user/Projects/OCC6.1.0/ros/lin/lib
+DESTOCCDIR = $(shell pwd)/debian/freecad/usr/lib/freecad/lib
 
 
 # These are used for cross-compiling and for saving the configure script
@@ -27,7 +29,7 @@ endif
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	./configure --disable-debug --with-wildmagic-includes=/home/user/Projects/Wm3/include --with-wildmagic-libs=/home/user/Projects/Wm3/lib --with-OCC-includes=/home/user/Projects/OCC6.1.0/ros/inc --with-OCC-libs=/home/user/Projects/OCC6.1.0/ros/lin/lib --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
+	./configure --disable-debug --with-wildmagic-includes=/home/user/Projects/Wm3/include --with-wildmagic-libs=/home/user/Projects/Wm3/lib --with-OCC-includes=/home/user/Projects/OCC6.1.0/ros/inc --with-OCC-libs=/home/user/Projects/OCC6.1.0/ros/lin/lib --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr/lib/freecad --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
 
 
 build: build-stamp
@@ -80,7 +82,7 @@ binary-arch: build install
 	dh_installdocs
 	dh_installexamples
 #	dh_install
-#	dh_installmenu
+	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
 #	dh_installemacsen
@@ -92,6 +94,31 @@ binary-arch: build install
 #	dh_installinfo
 	dh_installman
 	dh_link
+	install -m777 $(SOURCEOCCDIR)/libTKernel.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKMath.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKService.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKG2d.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKG3d.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKGeomBase.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKBRep.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKGeomAlgo.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKTopAlgo.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKPrim.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKBO.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKBool.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKShHealing.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKXSBase.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKSTEPBase.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKSTEPAttr.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKSTEP209.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKSTEP.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKFillet.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKOffset.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKIGES.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKMesh.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKMeshVS.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKHLR.so $(DESTOCCDIR)
+	install -m777 $(SOURCEOCCDIR)/libTKSTL.so $(DESTOCCDIR)
 	dh_strip
 	dh_compress
 	dh_fixperms

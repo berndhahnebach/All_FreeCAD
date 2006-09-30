@@ -1,2 +1,2 @@
 ?package(freecad):needs="X11" section="Apps/Science"\
-  title="FreeCAD" command="/usr/bin/FreeCAD" icon="/usr/share/FCIcon.xpm"
+  title="FreeCAD" command="/usr/lib/freecad/bin/FreeCAD" icon="/usr/lib/freecad/share/FCIcon.xpm"
