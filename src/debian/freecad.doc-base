@@ -7,4 +7,4 @@ Abstract: An extensible Open Source CAx program for Unix/X11
  to run as a server and dynamically loadable application extensions and
  it is designed to be platform independent.
  For more details see http://sourceforge.net/projects/free-cad
-Section: science
+Section: graphics
