@@ -29,7 +29,7 @@ endif
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	./configure --disable-debug --with-wildmagic-includes=/home/user/Projects/Wm3/include --with-wildmagic-libs=/home/user/Projects/Wm3/lib --with-OCC-includes=/home/user/Projects/OCC6.1.0/ros/inc --with-OCC-libs=/home/user/Projects/OCC6.1.0/ros/lin/lib --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr/lib/freecad --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
+	./configure --disable-debug --with-wildmagic-includes=/home/user/Projects/Wm3/include --with-wildmagic-libs=/home/user/Projects/Wm3/lib --with-OCC-includes=/home/user/Projects/OCC6.1.0/ros/inc --with-OCC-libs=/home/user/Projects/OCC6.1.0/ros/lin/lib --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr/lib/freecad --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --datadir=/usr/share/freecad CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
 
 
 build: build-stamp
@@ -68,6 +68,9 @@ install: build
 
 	# Add here commands to install the package into debian/freecad.
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/freecad
+
+	# Make the Python script executable
+	#chmod a+x $(CURDIR)/debian/freecad/usr/lib/freecad/Mod/Test/unittestgui.py
 
 
 # Build architecture-independent files here.

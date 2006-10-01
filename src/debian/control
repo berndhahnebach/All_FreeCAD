@@ -1,5 +1,5 @@
 Source: freecad
-Section: science
+Section: graphics
 Priority: optional
 Maintainer: Werner Mayer <werner.wm.mayer@gmx.de>
 Build-Depends: debhelper (>= 5), autotools-dev, libc6-dev (>= 2.1.3), libstdc++6, python2.4-dev, libqt3-mt-dev, zlib1g-dev, libxerces27-dev, libxt-dev, libsoqt-dev, libxmu-dev, libxi-dev, libcoin40-dev, libgl1-mesa-dev, libx11-dev, libxext-dev

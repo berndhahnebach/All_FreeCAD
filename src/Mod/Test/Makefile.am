@@ -10,7 +10,6 @@ data_DATA = \
 		Menu.py \
 		TestApp.py \
 		TestGui.py \
-		unittestgui.py \
 		Workbench.py
 
 EXTRA_DIST = \
