@@ -24,6 +24,7 @@
 
 #ifndef _PreComp_
 # include <iomanip>
+# include <sstream>
 # include <stdlib.h>
 # include <qdatetime.h>
 # include <qimage.h>

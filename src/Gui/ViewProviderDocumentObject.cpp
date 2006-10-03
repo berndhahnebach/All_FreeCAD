@@ -56,7 +56,7 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
   : pcObject(0), pcObjItem(0), _cLastStatus(-1)
 {
   ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
-  ADD_PROPERTY(Display,((long)0));
+  ADD_PROPERTY(DisplayMode,((long)0));
   ADD_PROPERTY(Transparency,(0));
   ADD_PROPERTY(Visibility,(true));
   App::Material mat(App::Material::DEFAULT);
@@ -107,7 +107,7 @@ void ViewProviderDocumentObject::onChanged(const App::Property* prop)
     pcShapeMaterial->emissiveColor.setValue(Mat.emissiveColor.r,Mat.emissiveColor.g,Mat.emissiveColor.b);
     pcShapeMaterial->shininess.setValue(Mat.shininess);
     pcShapeMaterial->transparency.setValue(Mat.transparency);
-  } else if ( prop == &Display ) {
+  } else if ( prop == &DisplayMode ) {
     setActiveMode();
   } else if ( prop == &Visibility ) {
     Visibility.getValue() ? show() : hide();
@@ -137,13 +137,13 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
   }
   enums->push_back(0); // null termination
 
-  Display.enableNotify(false);
-  Display.setEnums(&((*enums)[0]));
+  DisplayMode.enableNotify(false);
+  DisplayMode.setEnums(&((*enums)[0]));
   // set the active mode
   const char* defmode = this->getDefaultDisplayMode();
   if ( defmode )
-    Display.setValue(defmode);
-  Display.enableNotify(true);
+    DisplayMode.setValue(defmode);
+  DisplayMode.enableNotify(true);
 
 
   calcMaterial = pcObject->getTouchViewTime();
@@ -176,7 +176,7 @@ SoSeparator* ViewProviderDocumentObject::findFrontRootOfType( const SoType& type
 
 void ViewProviderDocumentObject::setActiveMode()
 {
-  const char* mode = Display.getValueAsString();
+  const char* mode = DisplayMode.getValueAsString();
   if ( mode )
     setDisplayMode(mode);
   if ( !Visibility.getValue() )

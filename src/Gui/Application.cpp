@@ -29,7 +29,7 @@
 # include <qeventloop.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
-# include <strstream>
+# include <sstream>
 # include <map>
 #endif
 
@@ -179,7 +179,7 @@ void Application::open(const char* FileName)
         activeDocument()->setModified(false);
       // ViewFit
       if ( !File.hasExtension("FCStd") && sendHasMsgToActiveView("ViewFit") )
-          Command::doCommand(Command::Gui, "Gui.SendMsgToActiveView(\"ViewFit\")");
+          Command::doCommand(Command::Gui, "Gui.activeDocument().activeView().fitAll()");
       // the original file name is required
       getMainWindow()->appendRecentFile( File.filePath().c_str() );
     } catch (const Base::PyException& e){

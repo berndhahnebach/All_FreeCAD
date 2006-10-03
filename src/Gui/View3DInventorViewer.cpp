@@ -1085,8 +1085,11 @@ void View3DInventorViewer::boxZoom( const SbBox2f& box )
 void View3DInventorViewer::viewAll()
 {
 #if 1
+  SoCamera* cam = this->getCamera();
   SoQtViewer::viewAll();
-#else
+  float dit = cam->nearDistance.getValue();
+  cam->nearDistance = dit;
+#elif 0
   //FIXME: Do some tests
   // Get the bounding box of the scene
   SoGetBoundingBoxAction action(this->getViewportRegion());
@@ -1133,7 +1136,7 @@ void View3DInventorViewer::viewAll()
   SoCoordinate3* coord = new SoCoordinate3();
 
   // project all points onto the plane
-   int pos=0;
+  int pos=0;
   for ( int j=0; j<8; j++ ) {
     float s = (base-pt[j]).dot(z);
     pt[j] = pt[j] + s*z;
@@ -1149,6 +1152,81 @@ void View3DInventorViewer::viewAll()
   sep->ref();
   cam->viewAll(sep, this->getViewportRegion());
   sep->unref();
+#else
+  // Get the bounding box of the scene
+  SoGetBoundingBoxAction action(this->getViewportRegion());
+  action.apply(this->getSceneGraph());
+  SbBox3f box = action.getBoundingBox();
+  if (box.isEmpty()) return;
+  
+  SoCamera* cam = this->getCamera();
+  if (!cam) return;
+  SbViewVolume  vol = cam->getViewVolume ();
+
+  // get the front clipping plane and its normal direction
+  SbVec3f z = vol.zVector();
+  Base::Vector3f p,n;
+  getFrontClippingPlane(p,n);
+
+  float minx, miny, minz, maxx, maxy, maxz;
+  box.getBounds(minx, miny, minz, maxx, maxy, maxz);
+
+  float aspect = cam->aspectRatio.getValue(), slack=1.0f;
+
+  // First, we want to move the camera in such a way that it is
+  // pointing straight at the center of the scene bounding box -- but
+  // without modifiying the rotation value.
+  SbVec3f cameradirection;
+  cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), cameradirection);
+  cam->position.setValue(box.getCenter() + -cameradirection);
+
+  // Get the radius of the bounding sphere.
+  SbSphere bs;
+  bs.circumscribe(box);
+  float radius = bs.getRadius();
+
+  if (cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
+    SoPerspectiveCamera* pcam = (SoPerspectiveCamera *)cam;  // safe downward cast, knows the type
+    // Make sure that everything will still be inside the viewing volume
+    // even if the aspect ratio "favorizes" width over height.
+    float aspectradius = radius / (aspect < 1.0f ? aspect : 1.0f);
+
+    // Move the camera to the edge of the bounding sphere, while still
+    // pointing at the scene.
+    SbVec3f direction = pcam->position.getValue() - box.getCenter();
+    direction.normalize();
+    float movelength =
+      aspectradius + (aspectradius/float(atan(pcam->heightAngle.getValue())));
+    pcam->position.setValue(box.getCenter() + direction * movelength);
+  }else if (cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+    SoOrthographicCamera* ocam = (SoOrthographicCamera *)cam;  // safe downward cast, knows the type
+    // Make sure that everything will still be inside the viewing volume
+    // even if the aspect ratio "favorizes" width over height.
+    if (aspect < 1.0f)
+      ocam->height = 2 * radius / aspect;
+    else
+      ocam->height = 2 * radius;
+
+    // Move the camera to the edge of the bounding sphere, while still
+    // pointing at the scene.
+    SbVec3f direction = ocam->position.getValue() - box.getCenter();
+    direction.normalize();
+    ocam->position.setValue(box.getCenter() + direction * radius);
+  }
+
+  // Set up the clipping planes according to the slack value (a value
+  // of 1.0 will yield clipping planes that are tangent to the
+  // bounding sphere of the scene).
+  float distance_to_midpoint =
+    (cam->position.getValue() - box.getCenter()).length();
+  cam->nearDistance = distance_to_midpoint - radius * slack;
+  cam->farDistance = distance_to_midpoint + radius * slack;
+
+  // The focal distance is simply the distance from the camera to the
+  // scene midpoint. This field is not used in rendering, it's just
+  // provided to make it easier for the user to do calculations based
+  // on the distance between the camera and the scene.
+  cam->focalDistance = distance_to_midpoint;
 #endif
 }
 

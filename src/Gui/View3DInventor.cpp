@@ -41,6 +41,8 @@
 # include <Inventor/fields/SoSFColor.h>
 #endif
 
+#include <Base/Exception.h>
+
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
 #include "Document.h"
@@ -423,8 +425,9 @@ bool View3DInventor::setCamera(const char* pCamera)
 {
   SoCamera * CamViewer = _viewer->getCamera();
   if(!CamViewer) {
-    Base::Console().Warning("No camera set so far...");
-    return false;
+    throw Base::Exception("No camera set so far...");
+    //Base::Console().Warning("No camera set so far...");
+    //return false;
   }
 
   SoInput in;
@@ -434,8 +437,9 @@ bool View3DInventor::setCamera(const char* pCamera)
   SoDB::read(&in,(SoNode*&)Cam);
 
   if (!Cam){
-    Base::Console().Error("Camera settings failed to read: %s\n",pCamera);
-    return false;
+    throw Base::Exception("Camera settings failed to read");
+//    Base::Console().Error("Camera settings failed to read: %s\n",pCamera);
+//    return false;
   }
 
   // toogle between persepective and orthographic camera
@@ -462,8 +466,10 @@ bool View3DInventor::setCamera(const char* pCamera)
       CamViewerP->farDistance   = ((SoPerspectiveCamera *)Cam)->farDistance;
       CamViewerP->focalDistance = ((SoPerspectiveCamera *)Cam)->focalDistance;
     }
-    else
-      Base::Console().Error("Camera type missmatch");
+    else {
+      throw Base::Exception("Camera type mismatch");
+      //Base::Console().Error("Camera type mismatch");
+    }
   }else if (Cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
     if(CamViewerO){
       CamViewerO->viewportMapping  = ((SoOrthographicCamera *)Cam)->viewportMapping;
@@ -475,8 +481,10 @@ bool View3DInventor::setCamera(const char* pCamera)
       CamViewerO->aspectRatio      = ((SoOrthographicCamera *)Cam)->aspectRatio ;
       CamViewerO->height           = ((SoOrthographicCamera *)Cam)->height;
     }
-    else
-      Base::Console().Error("Camera type missmatch");
+    else {
+      throw Base::Exception("Camera type mismatch");
+      //Base::Console().Error("Camera type mismatch");
+    }
   }
 
   return true;

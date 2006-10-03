@@ -24,6 +24,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Inventor/actions/SoWriteAction.h>
+# include <Inventor/nodes/SoCamera.h>
 #endif
 
 
@@ -104,7 +106,20 @@ PyMethodDef View3DPy::Methods[] = {
 //  {"DocType",      (PyCFunction) sPyDocType,         Py_NEWARGS},
   PYMETHODEDEF(message)
   PYMETHODEDEF(fitAll)
+  PYMETHODEDEF(viewBottom)
+  PYMETHODEDEF(viewFront)
+  PYMETHODEDEF(viewLeft)
+  PYMETHODEDEF(viewRear)
+  PYMETHODEDEF(viewRight)
+  PYMETHODEDEF(viewTop)
+  PYMETHODEDEF(viewAxometric)
   PYMETHODEDEF(saveImage)
+  PYMETHODEDEF(getCamera)
+  PYMETHODEDEF(setCamera)
+  PYMETHODEDEF(dumpSceneToFile)
+  PYMETHODEDEF(setStereoType)
+  PYMETHODEDEF(getStereoType)
+  PYMETHODEDEF(listStereoTypes)
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -182,12 +197,113 @@ PYFUNCIMP_D(View3DPy,message)
 } 
 
 PYFUNCIMP_D(View3DPy,fitAll)
-{ 
+{
  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;  // NULL triggers exception 
 
   PY_TRY {
    
+    _pcView->_viewer->viewAll();
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(View3DPy,viewBottom)
+{
+ if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    SoCamera* cam = _pcView->_viewer->getCamera();
+    cam->orientation.setValue(-1, 0, 0, 0);
+    _pcView->_viewer->viewAll();
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(View3DPy,viewFront)
+{
+ if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    float root = (float)(sqrt(2.0)/2.0);
+    SoCamera* cam = _pcView->_viewer->getCamera();
+    cam->orientation.setValue(-root, 0, 0, -root);
+    _pcView->_viewer->viewAll();
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(View3DPy,viewLeft)
+{
+ if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    SoCamera* cam = _pcView->_viewer->getCamera();
+    cam->orientation.setValue(0.5, 0.5, 0.5, 0.5);
+    _pcView->_viewer->viewAll();
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(View3DPy,viewRear)
+{
+ if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    float root = (float)(sqrt(2.0)/2.0);
+    SoCamera* cam = _pcView->_viewer->getCamera();
+    cam->orientation.setValue(0, root, root, 0);
+    _pcView->_viewer->viewAll();
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(View3DPy,viewRight)
+{
+ if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    SoCamera* cam = _pcView->_viewer->getCamera();
+    cam->orientation.setValue(-0.5, 0.5, 0.5, -0.5);
+    _pcView->_viewer->viewAll();
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(View3DPy,viewTop)
+{
+ if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    SoCamera* cam = _pcView->_viewer->getCamera();
+    cam->orientation.setValue(0, 0, 0, 1);
+    _pcView->_viewer->viewAll();
+    Py_Return;
+
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(View3DPy,viewAxometric)
+{
+ if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    float root = (float)(sqrt(3.0)/4.0);
+    SoCamera* cam = _pcView->_viewer->getCamera();
+    cam->orientation.setValue(-0.333333f, -0.166666f, -0.333333f, -root);
     _pcView->_viewer->viewAll();
     Py_Return;
 
@@ -233,5 +349,114 @@ PYFUNCIMP_D(View3DPy,saveImage)
     Py_Return;
 
   }PY_CATCH;
-} 
+}
 
+PYFUNCIMP_D(View3DPy,getCamera)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    SoOutput out;
+    char buffer[512];
+    out.setBuffer(buffer, 512, 0);
+
+    SoWriteAction wa(&out);
+    SoCamera * cam = _pcView->_viewer->getCamera();
+    wa.apply(cam);
+    return Py_BuildValue("s", buffer);
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(View3DPy,setCamera)
+{
+  char* buffer;
+  if (!PyArg_ParseTuple(args, "s", &buffer))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    _pcView->setCamera(buffer);
+    Py_Return;
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(View3DPy,dumpSceneToFile)
+{
+  char* filename;
+  if (!PyArg_ParseTuple(args, "s", &filename))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    _pcView->dump(filename);
+    Py_Return;
+  }PY_CATCH;
+}
+
+//FIXME: Once View3DInventor inherits from PropertyContainer we can use PropertyEnumeration.
+const char* StereoTypeEnums[]= {"None","Anaglyph","QuadBuffer","InterleavedRows","InterleavedColumns",NULL};
+
+PYFUNCIMP_D(View3DPy,setStereoType)
+{
+  int stereomode=-1;
+  if (!PyArg_ParseTuple(args, "i", &stereomode)) {    // convert args: Python->C 
+    char* modename;
+    PyErr_Clear();
+    if (!PyArg_ParseTuple(args, "s", &modename))
+      return NULL;  // NULL triggers exception
+    for ( int i=0; i<5; i++ ) {
+      if ( strncmp(StereoTypeEnums[i],modename,20) == 0 ) {
+        stereomode = i;
+        break;
+      }
+    }
+
+    if ( stereomode < 0 ) {
+      PyErr_Format(PyExc_NameError, "Unknown stereo type '%s'", modename);
+      return NULL;
+    }
+  }
+
+  PY_TRY {
+#if (SOQT_MAJOR_VERSION >= 1 && SOQT_MINOR_VERSION >= 2)
+    if (stereomode < 0 || stereomode > 4)
+      throw Base::Exception("Out of range");
+    SoQtViewer::StereoType mode = SoQtViewer::StereoType(stereomode);
+    _pcView->_viewer->setStereoType(mode);
+#else
+    throw Base::Exception("Stereo types not supported. Use SoQt 1.2.x or later!");
+#endif
+    Py_Return;
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(View3DPy,getStereoType)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception
+
+  PY_TRY {
+#if (SOQT_MAJOR_VERSION >= 1 && SOQT_MINOR_VERSION >= 2)
+    int mode = (int)(_pcView->_viewer->getStereoType()); 
+    return Py_BuildValue("s", StereoTypeEnums[mode]);
+#else
+    throw Base::Exception("Stereo types not supported. Use SoQt 1.2.x or later!");
+#endif
+    Py_Return;
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(View3DPy,listStereoTypes)
+{ 
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+  PY_TRY {
+    PyObject* pyList = PyList_New(5);
+    for ( int i=0; i<5; i++ )
+    {
+      PyObject* str = PyString_FromString(StereoTypeEnums[i]);
+      PyList_SetItem(pyList, i, str);
+    }
+
+    return pyList;
+  }PY_CATCH;
+} 
