@@ -26,7 +26,7 @@
 #ifndef _PreComp_
 # include <qstringlist.h>
 #endif
-
+#include <Base/Console.h>
 #include "WorkbenchManager.h"
 #include "Workbench.h"
 
@@ -61,7 +61,8 @@ Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QStrin
     {
       wb->setName( name );
       _workbenches[ name ] = wb;
-    }
+    }else
+      Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create Workbench instatnce with type: %s\n",className.latin1());
   }
   
   return wb;
