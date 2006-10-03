@@ -21,13 +21,13 @@ typedef std::ostringstream OutputStringStream ;
     strstream.h. In this case OutputStringStream specializes the str()
     method, such that the caller does not have to concern himself with
     null-terminating the string and unfreezing the ostrstream. */
-class OutputStringStream : public ostrstream {
+class OutputStringStream : public std::ostrstream {
 public:
 
   /** Specialization of ostrstream::str() that takes care of
       null-terminating the string and unfreezing the ostrstream.  */
   inline string str() {
-    *this << ends ; // null terminate ostrstream
+    *this << std::ends ; // null terminate ostrstream
     string o_str( ostrstream::str() ) ;
     freeze( 0 ) ;
     return o_str ;

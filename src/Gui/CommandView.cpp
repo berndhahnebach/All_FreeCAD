@@ -429,7 +429,7 @@ StdCmdViewBottom::StdCmdViewBottom()
 
 void StdCmdViewBottom::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewBottom\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().viewBottom()");
 }
 
 //===========================================================================
@@ -451,7 +451,7 @@ StdCmdViewFront::StdCmdViewFront()
 
 void StdCmdViewFront::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewFront\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().viewFront()");
 }
 
 //===========================================================================
@@ -473,7 +473,7 @@ StdCmdViewLeft::StdCmdViewLeft()
 
 void StdCmdViewLeft::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewLeft\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().viewLeft()");
 }
 
 //===========================================================================
@@ -495,7 +495,7 @@ StdCmdViewRear::StdCmdViewRear()
 
 void StdCmdViewRear::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewRear\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().viewRear()");
 }
 
 //===========================================================================
@@ -517,7 +517,7 @@ StdCmdViewRight::StdCmdViewRight()
 
 void StdCmdViewRight::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewRight\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().viewRight()");
 }
 
 //===========================================================================
@@ -539,7 +539,7 @@ StdCmdViewTop::StdCmdViewTop()
 
 void StdCmdViewTop::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewTop\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().viewTop()");
 }
 
 //===========================================================================
@@ -561,7 +561,7 @@ StdCmdViewAxo::StdCmdViewAxo()
 
 void StdCmdViewAxo::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"ViewAxo\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().viewAxometric()");
 }
 
 //===========================================================================
@@ -583,7 +583,7 @@ StdCmdViewFitAll::StdCmdViewFitAll()
 
 void StdCmdViewFitAll::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.document().view().fitAll()");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().fitAll()");
 }
 
 bool StdCmdViewFitAll::isActive(void)
@@ -881,7 +881,7 @@ StdCmdViewIvStereoOff::StdCmdViewIvStereoOff()
 
 void StdCmdViewIvStereoOff::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoOff\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().setStereoType(\"None\")");
 }
 
 bool StdCmdViewIvStereoOff::isActive(void)
@@ -909,7 +909,7 @@ StdCmdViewIvStereoRedGreen::StdCmdViewIvStereoRedGreen()
 
 void StdCmdViewIvStereoRedGreen::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoRedGreen\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().setStereoType(\"Anaglyph\")");
 }
 
 bool StdCmdViewIvStereoRedGreen::isActive(void)
@@ -936,7 +936,7 @@ StdCmdViewIvStereoQuadBuff::StdCmdViewIvStereoQuadBuff()
 
 void StdCmdViewIvStereoQuadBuff::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoQuadBuff\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().setStereoType(\"QuadBuffer\")");
 }
 
 bool StdCmdViewIvStereoQuadBuff::isActive(void)
@@ -963,7 +963,7 @@ StdCmdViewIvStereoInterleavedRows::StdCmdViewIvStereoInterleavedRows()
 
 void StdCmdViewIvStereoInterleavedRows::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoInterleavedRows\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().setStereoType(\"InterleavedRows\")");
 }
 
 bool StdCmdViewIvStereoInterleavedRows::isActive(void)
@@ -990,7 +990,7 @@ StdCmdViewIvStereoInterleavedColumns::StdCmdViewIvStereoInterleavedColumns()
 
 void StdCmdViewIvStereoInterleavedColumns::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"SetStereoInterleavedColumns\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().setStereoType(\"InterleavedColumns\")");
 }
 
 bool StdCmdViewIvStereoInterleavedColumns::isActive(void)

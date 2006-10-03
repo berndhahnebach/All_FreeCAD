@@ -116,9 +116,13 @@ void PropertyContainer::Restore(Base::XMLReader &reader)
   for(int i=0 ;i<Cnt ;i++)
   {
     reader.readElement("Property");
-    string PropName = reader.getAttribute("name");
-    Property* prop = getPropertyByName(PropName.c_str());
-    if(prop)
+    const char* PropName = reader.getAttribute("name");
+    const char* TypeName = reader.getAttribute("type");
+    Property* prop = getPropertyByName(PropName);
+    //NOTE: We must also check the type of the current property because a subclass of PropertyContainer might 
+    //change the type of a property but not its name. In this case we would force to read-in a wrong property type
+    //and the behaviour would be undefined.
+    if( prop && strcmp(prop->getTypeId().getName(), TypeName) == 0 )
       prop->Restore(reader);
 
     reader.readEndElement("Property");

@@ -32,7 +32,7 @@ EXTRA_DIST = \
 		FreeCAD.sln \
 		ChangeLog.txt \
 		copying.lib \
-		cvsbuild.sh \
+		autogen.sh \
 		fc.sh \
 		README.Cygwin \
 		README.Linux \

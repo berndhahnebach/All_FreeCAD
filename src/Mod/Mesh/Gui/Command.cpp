@@ -177,7 +177,7 @@ void CmdMeshExMakeMesh::activated(int iMsg)
     "App.document().MeshBox.Mesh=mb\n"
     "App.document().recompute()" );
 
-  doCommand(Gui,"Gui.SendMsgToActiveView(\"ViewFit\")");
+  doCommand(Gui,"Gui.activeDocument().activeView().fitAll()");
   commitCommand();
 
   updateActive();

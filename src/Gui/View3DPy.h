@@ -53,7 +53,20 @@ public:
 //	static PyObject *sPyDocType(PyObject *self, PyObject *args, PyObject *kwd){return ((View3DPy*)self)->PyDocType(args);};
 	PYFUNCDEF_D(View3DPy,message)
 	PYFUNCDEF_D(View3DPy,fitAll)
+	PYFUNCDEF_D(View3DPy,viewBottom)
+	PYFUNCDEF_D(View3DPy,viewFront)
+	PYFUNCDEF_D(View3DPy,viewLeft)
+	PYFUNCDEF_D(View3DPy,viewRear)
+	PYFUNCDEF_D(View3DPy,viewRight)
+	PYFUNCDEF_D(View3DPy,viewTop)
+	PYFUNCDEF_D(View3DPy,viewAxometric)
+	PYFUNCDEF_D(View3DPy,dumpSceneToFile)
+	PYFUNCDEF_D(View3DPy,setStereoType)
+	PYFUNCDEF_D(View3DPy,getStereoType)
+	PYFUNCDEF_D(View3DPy,listStereoTypes)
 	PYFUNCDEF_D(View3DPy,saveImage)
+	PYFUNCDEF_D(View3DPy,getCamera)
+	PYFUNCDEF_D(View3DPy,setCamera)
 
 private:
   Gui::View3DInventor *_pcView;
