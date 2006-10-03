@@ -257,9 +257,9 @@ std::vector<std::string> ViewProviderPart::getDisplayModes(void) const
   std::vector<std::string> StrList = ViewProviderDocumentObject::getDisplayModes();
 
   // add your own modes
+  StrList.push_back("Normal");
   StrList.push_back("Flat");
   StrList.push_back("Wireframe");
-  StrList.push_back("Normal");
   StrList.push_back("Points");
 
   return StrList;
