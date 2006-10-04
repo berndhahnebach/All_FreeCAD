@@ -340,7 +340,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
     if ( pcProvider )
     {
       // type not derived from ViewProviderDocumentObject!!!
-      assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
+      assert(pcProvider->getTypeId().isDerivedFrom(Gui::ViewProviderDocumentObject::getClassTypeId()));
       _ViewProviderMap[*it] = pcProvider;
 
       try{

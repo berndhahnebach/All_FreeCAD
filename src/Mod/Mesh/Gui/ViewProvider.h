@@ -67,15 +67,19 @@ namespace MeshGui {
  * The ViewProviderExport class creates an empty node.
  * @author Werner Mayer
  */
-class GuiMeshExport ViewProviderExport : public Gui::ViewProviderFeature
+class GuiMeshExport ViewProviderExport : public Gui::ViewProviderDocumentObject
 {
   PROPERTY_HEADER(MeshGui::ViewProviderExport);
 
 public:
   ViewProviderExport();
   virtual ~ViewProviderExport();
-  std::vector<std::string> getDisplayModes(void) const;
+
   virtual QPixmap getIcon() const;
+  void update();
+  SoSeparator* getRoot(void){return 0;}
+  std::vector<std::string> getDisplayModes(void) const;
+  const char* getDefaultDisplayMode() const;
 };
 
 /**
