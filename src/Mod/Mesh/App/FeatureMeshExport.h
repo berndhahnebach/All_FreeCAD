@@ -49,7 +49,7 @@ public:
   App::PropertyString Format;
   /// Get the mesh kernel of the feature of 'Source'.
   const MeshCore::MeshKernel& getMesh() const;
-  //const char* getViewProviderName(void){return "MeshGui::ViewProviderExport";}
+  const char* getViewProviderName(void){return "MeshGui::ViewProviderExport";}
 
   /** @name methods override Feature */
   //@{

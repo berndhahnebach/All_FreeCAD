@@ -135,22 +135,20 @@ void View3DInventorViewer::OnChange(Gui::SelectionSingleton::SubjectType &rCalle
 /// adds an ViewProvider to the view, e.g. from a feature
 void View3DInventorViewer::addViewProvider(ViewProvider* pcProvider)
 {
-  pcViewProviderRoot->addChild(pcProvider->getRoot());
-
+  SoSeparator* root = pcProvider->getRoot();
+  if ( root ) pcViewProviderRoot->addChild( root );
   SoSeparator* fore = pcProvider->getFrontRoot();
   if ( fore ) foregroundroot->addChild( fore );
   SoSeparator* back = pcProvider->getBackRoot ();
   if ( back ) backgroundroot->addChild( back );
   
   _ViewProviderSet.insert(pcProvider);
-
-  //sizeChanged( getSize() );
 }
 
 void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 {
-  pcViewProviderRoot->removeChild(pcProvider->getRoot());
- 
+  SoSeparator* root = pcProvider->getRoot();
+  if ( root ) pcViewProviderRoot->removeChild( root );
   SoSeparator* fore = pcProvider->getFrontRoot();
   if ( fore ) foregroundroot->removeChild( fore );
   SoSeparator* back = pcProvider->getBackRoot ();

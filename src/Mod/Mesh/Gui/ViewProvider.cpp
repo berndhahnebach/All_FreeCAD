@@ -83,7 +83,7 @@ using MeshCore::MeshFacetGrid;
 using MeshCore::MeshPolygonTriangulation;
 using MeshCore::MeshEvalSolid;
 
-PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderFeature)
+PROPERTY_SOURCE(MeshGui::ViewProviderExport, Gui::ViewProviderDocumentObject)
 
 ViewProviderExport::ViewProviderExport()
 {
@@ -95,7 +95,14 @@ ViewProviderExport::~ViewProviderExport()
 
 std::vector<std::string> ViewProviderExport::getDisplayModes(void) const
 {
-  return std::vector<std::string>();
+  std::vector<std::string> mode;
+  mode.push_back("");
+  return mode;
+}
+
+const char* ViewProviderExport::getDefaultDisplayMode() const
+{
+  return "";
 }
 
 QPixmap ViewProviderExport::getIcon() const
@@ -124,6 +131,10 @@ QPixmap ViewProviderExport::getIcon() const
     "................"};
   QPixmap px(Mesh_Feature_xpm);
   return px;
+}
+
+void ViewProviderExport::update()
+{
 }
 
 // ======================================================================
