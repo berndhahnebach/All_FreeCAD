@@ -122,7 +122,8 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
   // Retrieve the supported display modes of the view provider
   std::vector<std::string> modes = this->getDisplayModes();
 
-  assert( !modes.empty() );
+  if( modes.empty() )
+    modes.push_back("");
 
   // We must convert the array of strings into an array of const char*
   std::vector<const char*>* enums = new std::vector<const char*>;

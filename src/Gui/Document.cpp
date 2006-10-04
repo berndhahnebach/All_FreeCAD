@@ -370,7 +370,7 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
       pcTreeItem->addViewProviderDocumentObject(pcProvider);
 
     }else{
-      Base::Console().Warning("Gui::Document::OnChange() no view provider for the object %s found\n",(*It)->getViewProviderName());
+      Base::Console().Warning("Gui::Document::OnChange() no view provider for the object %s found\n",cName.c_str());
     }
   }
 

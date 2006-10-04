@@ -84,7 +84,7 @@ StdCmdOrthographicCamera::StdCmdOrthographicCamera()
 
 void StdCmdOrthographicCamera::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"OrthographicCamera\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Orthographic\")");
 }
 
 bool StdCmdOrthographicCamera::isActive(void)
@@ -110,7 +110,7 @@ StdCmdPerspectiveCamera::StdCmdPerspectiveCamera()
 
 void StdCmdPerspectiveCamera::activated(int iMsg)
 {
-  doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"PerspectiveCamera\")");
+  doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Perspective\")");
 }
 
 bool StdCmdPerspectiveCamera::isActive(void)
@@ -138,9 +138,9 @@ StdCameraType::StdCameraType()
 void StdCameraType::activated(int iMsg)
 {
   if (iMsg == 0)
-    doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"OrthographicCamera\")");
+    doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Orthographic\")");
   else if (iMsg == 1)
-    doCommand(Command::Gui,"Gui.SendMsgToActiveView(\"PerspectiveCamera\")");
+    doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Perspective\")");
 }
 
 bool StdCameraType::isActive(void)
@@ -154,8 +154,12 @@ bool StdCameraType::isActive(void)
     {
       int index = pActGrp->currentActive();
       int type = (view->getViewer()->getCameraType() == SoOrthographicCamera::getClassTypeId() ? 0 : 1);
-      if ( type != index )
+      // mark the appropriate menu item but do not invoke the command 
+      if ( type != index ) {
+        pActGrp->blockSignals(true);
         pActGrp->setCurrentActive( type );
+        pActGrp->blockSignals(false);
+      }
     }
 
     return true;
@@ -645,7 +649,9 @@ bool StdViewDockUndockFullscreen::isActive(void)
       if ( index != mode )
       {
         // active window has changed with another view mode
+        pActGrp->blockSignals(true);
         pActGrp->setCurrentActive( mode );
+        pActGrp->blockSignals(false);
       }
     }
 

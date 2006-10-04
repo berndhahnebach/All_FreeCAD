@@ -26,6 +26,8 @@
 #ifndef _PreComp_
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/nodes/SoCamera.h>
+# include <Inventor/nodes/SoOrthographicCamera.h>
+# include <Inventor/nodes/SoPerspectiveCamera.h>
 #endif
 
 
@@ -116,7 +118,10 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(saveImage)
   PYMETHODEDEF(getCamera)
   PYMETHODEDEF(setCamera)
-  PYMETHODEDEF(dumpSceneToFile)
+  PYMETHODEDEF(getCameraType)
+  PYMETHODEDEF(setCameraType)
+  PYMETHODEDEF(listCameraTypes)
+  PYMETHODEDEF(dump)
   PYMETHODEDEF(setStereoType)
   PYMETHODEDEF(getStereoType)
   PYMETHODEDEF(listStereoTypes)
@@ -380,7 +385,78 @@ PYFUNCIMP_D(View3DPy,setCamera)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(View3DPy,dumpSceneToFile)
+//FIXME: Once View3DInventor inherits from PropertyContainer we can use PropertyEnumeration.
+const char* CameraTypeEnums[]= {"Orthographic","Perspective",NULL};
+
+PYFUNCIMP_D(View3DPy,getCameraType)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;  // NULL triggers exception 
+
+  PY_TRY {
+    SoCamera* cam = _pcView->_viewer->getCamera();
+    if (!cam) {
+      PyErr_SetString(PyExc_AssertionError, "No camera set!");
+      return NULL;
+    } else if ( cam->getTypeId() == SoOrthographicCamera::getClassTypeId() ) {
+      return Py_BuildValue("s", CameraTypeEnums[0]);
+    } else if ( cam->getTypeId() == SoPerspectiveCamera::getClassTypeId() ) {
+      return Py_BuildValue("s", CameraTypeEnums[1]);
+    } else {
+      return Py_BuildValue("s", "Unknown camera type");
+    }
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(View3DPy,setCameraType)
+{
+  int cameratype=-1;
+  if (!PyArg_ParseTuple(args, "i", &cameratype)) {    // convert args: Python->C 
+    char* modename;
+    PyErr_Clear();
+    if (!PyArg_ParseTuple(args, "s", &modename))
+      return NULL;  // NULL triggers exception
+    for ( int i=0; i<2; i++ ) {
+      if ( strncmp(CameraTypeEnums[i],modename,20) == 0 ) {
+        cameratype = i;
+        break;
+      }
+    }
+
+    if ( cameratype < 0 ) {
+      PyErr_Format(PyExc_NameError, "Unknown camera type '%s'", modename);
+      return NULL;
+    }
+  }
+
+  PY_TRY {
+    if (cameratype < 0 || cameratype > 1)
+      throw Base::Exception("Out of range");
+    if (cameratype==0)
+      _pcView->_viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
+    else
+      _pcView->_viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
+    Py_Return;
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(View3DPy,listCameraTypes)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+  PY_TRY {
+    PyObject* pyList = PyList_New(2);
+    for ( int i=0; i<2; i++ )
+    {
+      PyObject* str = PyString_FromString(CameraTypeEnums[i]);
+      PyList_SetItem(pyList, i, str);
+    }
+
+    return pyList;
+  }PY_CATCH;
+}
+
+PYFUNCIMP_D(View3DPy,dump)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename))     // convert args: Python->C 
@@ -446,7 +522,7 @@ PYFUNCIMP_D(View3DPy,getStereoType)
 }
 
 PYFUNCIMP_D(View3DPy,listStereoTypes)
-{ 
+{
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                       // NULL triggers exception 
   PY_TRY {
