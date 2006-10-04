@@ -60,13 +60,16 @@ public:
 	PYFUNCDEF_D(View3DPy,viewRight)
 	PYFUNCDEF_D(View3DPy,viewTop)
 	PYFUNCDEF_D(View3DPy,viewAxometric)
-	PYFUNCDEF_D(View3DPy,dumpSceneToFile)
+	PYFUNCDEF_D(View3DPy,dump)
 	PYFUNCDEF_D(View3DPy,setStereoType)
 	PYFUNCDEF_D(View3DPy,getStereoType)
 	PYFUNCDEF_D(View3DPy,listStereoTypes)
 	PYFUNCDEF_D(View3DPy,saveImage)
 	PYFUNCDEF_D(View3DPy,getCamera)
 	PYFUNCDEF_D(View3DPy,setCamera)
+	PYFUNCDEF_D(View3DPy,getCameraType)
+	PYFUNCDEF_D(View3DPy,setCameraType)
+	PYFUNCDEF_D(View3DPy,listCameraTypes)
 
 private:
   Gui::View3DInventor *_pcView;
