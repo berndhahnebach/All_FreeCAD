@@ -28,6 +28,5 @@ EXTRA_DIST = \
 		AllCmdFiles.dsp \
 		AllCmdFiles.vcproj \
 		FreeCADDist.dsw \
-		ChangeLog.txt \
 		fc.sh \
 		FCConfig.h
