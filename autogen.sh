@@ -4,7 +4,7 @@
 
 # Create Version.h with Python script
 echo "creating Version.h"
-python Tools/SubWCRev.py
+python src/Tools/SubWCRev.py
 
 echo "calling aclocal"
 aclocal

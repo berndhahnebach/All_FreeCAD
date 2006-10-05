@@ -118,10 +118,10 @@ if r != None:
     Range = Ver[:r.end()]
 
 # Open the template file and the version file
-file = open("./Build/Version.h.in")
+file = open("./src/Build/Version.h.in")
 lines = file.readlines()
 file.close()
-out  = open("./Build/Version.h","w");
+out  = open("./src/Build/Version.h","w");
 
 for line in lines:
     line = string.replace(line,'$WCREV$',Rev)

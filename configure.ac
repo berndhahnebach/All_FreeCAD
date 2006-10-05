@@ -581,29 +581,34 @@ dnl **************************************************************************
 CXX=g++
 CXXFLAGS="-Wno-deprecated -frtti"
 
-AC_CONFIG_FILES([Makefile App/Makefile Base/Makefile Gui/Makefile Main/Makefile
-Mod/Makefile
-Mod/Part/Makefile
-Mod/Part/App/Makefile
-Mod/Part/Gui/Makefile
-Mod/Raytracing/Makefile
-Mod/Raytracing/App/Makefile
-Mod/Raytracing/Gui/Makefile
-Mod/Mesh/Makefile
-Mod/Mesh/App/Makefile
-Mod/Mesh/Gui/Makefile
-Mod/Points/Makefile
-Mod/Points/App/Makefile
-Mod/Points/Gui/Makefile
-Mod/Image/Makefile
-Mod/Image/App/Makefile
-Mod/Image/Gui/Makefile
-Mod/Test/Makefile
-Mod/Test/Gui/Makefile
-Tools/Makefile
-Tools/_TEMPLATE_/Makefile
-Tools/_TEMPLATE_/App/Makefile
-Tools/_TEMPLATE_/Gui/Makefile
+AC_CONFIG_FILES([Makefile 
+src/Makefile 
+src/Base/Makefile 
+src/App/Makefile 
+src/Gui/Makefile 
+src/Main/Makefile
+src/Mod/Makefile
+src/Mod/Part/Makefile
+src/Mod/Part/App/Makefile
+src/Mod/Part/Gui/Makefile
+src/Mod/Raytracing/Makefile
+src/Mod/Raytracing/App/Makefile
+src/Mod/Raytracing/Gui/Makefile
+src/Mod/Mesh/Makefile
+src/Mod/Mesh/App/Makefile
+src/Mod/Mesh/Gui/Makefile
+src/Mod/Points/Makefile
+src/Mod/Points/App/Makefile
+src/Mod/Points/Gui/Makefile
+src/Mod/Image/Makefile
+src/Mod/Image/App/Makefile
+src/Mod/Image/Gui/Makefile
+src/Mod/Test/Makefile
+src/Mod/Test/Gui/Makefile
+src/Tools/Makefile
+src/Tools/_TEMPLATE_/Makefile
+src/Tools/_TEMPLATE_/App/Makefile
+src/Tools/_TEMPLATE_/Gui/Makefile
 debian/Makefile
 ])
 
