@@ -16,7 +16,7 @@ libRaytracing_la_SOURCES=\
 
 
 FreeCADpov.h: FreeCADpov
-	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) ../../../Tools/PythonToCPP.py $(<F) $@
 
 
 # the library search path.
