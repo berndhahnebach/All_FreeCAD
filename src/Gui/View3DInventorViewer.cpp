@@ -1014,7 +1014,17 @@ void View3DInventorViewer::toggleClippingPlane()
   }
   else
   {
-    pcViewProviderRoot->insertChild(new SoClipPlaneManip,0);
+    SoClipPlaneManip* clip = new SoClipPlaneManip;
+
+    SoGetBoundingBoxAction action(this->getViewportRegion());
+    action.apply(this->getSceneGraph());
+    SbBox3f box = action.getBoundingBox();
+
+    if (!box.isEmpty()) {
+      clip->setValue(box, SbVec3f(0.0f,0.0f,1.0f), 1.0f);
+    }
+
+    pcViewProviderRoot->insertChild(clip,0);
   }
 }
 
