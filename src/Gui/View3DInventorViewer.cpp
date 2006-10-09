@@ -1021,6 +1021,7 @@ void View3DInventorViewer::toggleClippingPlane()
     SbBox3f box = action.getBoundingBox();
 
     if (!box.isEmpty()) {
+      // adjust to overall bounding box of the scene
       clip->setValue(box, SbVec3f(0.0f,0.0f,1.0f), 1.0f);
     }
 
@@ -1092,150 +1093,52 @@ void View3DInventorViewer::boxZoom( const SbBox2f& box )
 
 void View3DInventorViewer::viewAll()
 {
-#if 1
-  SoCamera* cam = this->getCamera();
+  // call the default implementation first to make sure everything is visible
   SoQtViewer::viewAll();
-  float dit = cam->nearDistance.getValue();
-  cam->nearDistance = dit;
-#elif 0
-  //FIXME: Do some tests
+  
   // Get the bounding box of the scene
   SoGetBoundingBoxAction action(this->getViewportRegion());
   action.apply(this->getSceneGraph());
   SbBox3f box = action.getBoundingBox();
   if (box.isEmpty()) return;
 
-  // Get the radius of the bounding sphere.
-  SbSphere bs;
-  bs.circumscribe(box);
-  float radius = bs.getRadius();
-  
+  // check whether the box is very wide or tall, if not do nothing
+  float box_width, box_height, box_depth;
+  box.getSize( box_width, box_height, box_depth );
+  if ( box_width < 5.0f*box_height && box_width < 5.0f*box_depth && 
+       box_height < 5.0f*box_width && box_height < 5.0f*box_depth && 
+       box_depth < 5.0f*box_width && box_depth < 5.0f*box_height )
+    return;
+
   SoCamera* cam = this->getCamera();
   if (!cam) return;
-  SbViewVolume  vol = cam->getViewVolume ();
 
-  // get the front clipping plane and its normal direction
-  SbVec3f z = vol.zVector();
-  Base::Vector3f p,n;
-  getFrontClippingPlane(p,n);
+  SbViewVolume  vol = cam->getViewVolume();
+  SbVec2f s = vol.projectBox(box);
+  SbVec2s size = getSize();
 
-  float minx, miny, minz, maxx, maxy, maxz;
-  box.getBounds(minx, miny, minz, maxx, maxy, maxz);
+  SbVec3f pt1, pt2, pt3, tmp;
+  vol.projectPointToLine( SbVec2f(0.0f,0.0f), pt1, tmp );
+  vol.projectPointToLine( SbVec2f(s[0],0.0f), pt2, tmp );
+  vol.projectPointToLine( SbVec2f(0.0f,s[1]), pt3, tmp );
 
-  // these are the corner points of the box
-  SbVec3f pt[8] = { SbVec3f(minx, miny, minz), SbVec3f(minx, miny, maxz),
-                    SbVec3f(minx, maxy, minz), SbVec3f(minx, maxy, maxz),
-                    SbVec3f(maxx, miny, minz), SbVec3f(maxx, miny, maxz),
-                    SbVec3f(maxx, maxy, minz), SbVec3f(maxx, maxy, maxz) };
+  float cam_width = (pt2-pt1).length();
+  float cam_height = (pt3-pt1).length();
 
-  // get the point with most positive distance to the front clipping plane
-  SbVec3f base;
-  float fMaxDist=-FLT_MAX;
-  for ( int i=0; i<8; i++ ) {
-    Base::Vector3f pnt(pt[i][0],pt[i][1],pt[i][2]);
-    float fDist = pnt.DistanceToPlane(p,n);
-    if ( fDist > fMaxDist ) {
-      fMaxDist = fDist;
-      base = pt[i];
-    }
-  }
+  // add a small border
+  cam_height = 1.02f * std::max<float>((cam_width*(float)size[1])/(float)size[0],cam_height);
 
-  // create a faked scene for the camera to do a view fit
-  SoCoordinate3* coord = new SoCoordinate3();
-
-  // project all points onto the plane
-  int pos=0;
-  for ( int j=0; j<8; j++ ) {
-    float s = (base-pt[j]).dot(z);
-    pt[j] = pt[j] + s*z;
-    coord->point.set1Value(pos++,pt[j]);
-    pt[j] = pt[j] - 2*radius*z;
-    coord->point.set1Value(pos++,pt[j]);
-  }
-
-  SoSeparator* sep = new SoSeparator();
-  sep->addChild(coord);
-  sep->addChild(new SoPointSet());
-
-  sep->ref();
-  cam->viewAll(sep, this->getViewportRegion());
-  sep->unref();
-#else
-  // Get the bounding box of the scene
-  SoGetBoundingBoxAction action(this->getViewportRegion());
-  action.apply(this->getSceneGraph());
-  SbBox3f box = action.getBoundingBox();
-  if (box.isEmpty()) return;
-  
-  SoCamera* cam = this->getCamera();
-  if (!cam) return;
-  SbViewVolume  vol = cam->getViewVolume ();
-
-  // get the front clipping plane and its normal direction
-  SbVec3f z = vol.zVector();
-  Base::Vector3f p,n;
-  getFrontClippingPlane(p,n);
-
-  float minx, miny, minz, maxx, maxy, maxz;
-  box.getBounds(minx, miny, minz, maxx, maxy, maxz);
-
-  float aspect = cam->aspectRatio.getValue(), slack=1.0f;
-
-  // First, we want to move the camera in such a way that it is
-  // pointing straight at the center of the scene bounding box -- but
-  // without modifiying the rotation value.
-  SbVec3f cameradirection;
-  cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), cameradirection);
-  cam->position.setValue(box.getCenter() + -cameradirection);
-
-  // Get the radius of the bounding sphere.
-  SbSphere bs;
-  bs.circumscribe(box);
-  float radius = bs.getRadius();
+  float aspect = cam->aspectRatio.getValue();
 
   if (cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
-    SoPerspectiveCamera* pcam = (SoPerspectiveCamera *)cam;  // safe downward cast, knows the type
-    // Make sure that everything will still be inside the viewing volume
-    // even if the aspect ratio "favorizes" width over height.
-    float aspectradius = radius / (aspect < 1.0f ? aspect : 1.0f);
-
-    // Move the camera to the edge of the bounding sphere, while still
-    // pointing at the scene.
-    SbVec3f direction = pcam->position.getValue() - box.getCenter();
-    direction.normalize();
-    float movelength =
-      aspectradius + (aspectradius/float(atan(pcam->heightAngle.getValue())));
-    pcam->position.setValue(box.getCenter() + direction * movelength);
-  }else if (cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
+    return; // let the default
+  } else if (cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
     SoOrthographicCamera* ocam = (SoOrthographicCamera *)cam;  // safe downward cast, knows the type
-    // Make sure that everything will still be inside the viewing volume
-    // even if the aspect ratio "favorizes" width over height.
     if (aspect < 1.0f)
-      ocam->height = 2 * radius / aspect;
+      ocam->height = cam_height / aspect;
     else
-      ocam->height = 2 * radius;
-
-    // Move the camera to the edge of the bounding sphere, while still
-    // pointing at the scene.
-    SbVec3f direction = ocam->position.getValue() - box.getCenter();
-    direction.normalize();
-    ocam->position.setValue(box.getCenter() + direction * radius);
+      ocam->height = cam_height;
   }
-
-  // Set up the clipping planes according to the slack value (a value
-  // of 1.0 will yield clipping planes that are tangent to the
-  // bounding sphere of the scene).
-  float distance_to_midpoint =
-    (cam->position.getValue() - box.getCenter()).length();
-  cam->nearDistance = distance_to_midpoint - radius * slack;
-  cam->farDistance = distance_to_midpoint + radius * slack;
-
-  // The focal distance is simply the distance from the camera to the
-  // scene midpoint. This field is not used in rendering, it's just
-  // provided to make it easier for the user to do calculations based
-  // on the distance between the camera and the scene.
-  cam->focalDistance = distance_to_midpoint;
-#endif
 }
 
 void View3DInventorViewer::panToCenter(const SbPlane & panningplane, const SbVec2f & currpos)
