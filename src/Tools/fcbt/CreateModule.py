@@ -60,6 +60,7 @@ DirFilter = ["^.*\\.o$",
           "^ReleasePy$",
           "^Attic$",
           "^CVS$",
+          "^\\.svn$",
           "^\\.deps$",
           "^\\.libs$"]
 
