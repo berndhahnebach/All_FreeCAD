@@ -142,8 +142,8 @@ private:
   virtual ~SoFCMeshFaceSet() {};
   virtual void notify(SoNotList * list);
   // Draw faces
-  void drawFaces(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool needNormals) const;
-  void drawPoints(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool needNormals) const;
+  void drawFaces(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool needNormals, SbBool ccw) const;
+  void drawPoints(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool needNormals, SbBool ccw) const;
   unsigned int countTriangles(SoAction * action) const;
   void createRoughModel(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool simplest);
 

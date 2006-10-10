@@ -609,11 +609,15 @@ void SoFCMeshFaceSet::GLRender(SoGLRenderAction *action)
 
     SbBool needNormals = !mb.isColorOnly()/* || tb.isFunction()*/;
     mb.sendFirst();  // make sure we have the correct material
+    
+    SbBool ccw = TRUE;
+    if (SoShapeHintsElement::getVertexOrdering(state) == SoShapeHintsElement::CLOCKWISE) 
+      ccw = FALSE;
 
     if ( mode == false || index->size() <= this->MaximumTriangles )
-      drawFaces(coords, index, needNormals);
+      drawFaces(coords, index, needNormals, ccw);
     else
-      drawPoints(coords, index, needNormals);
+      drawPoints(coords, index, needNormals, ccw);
 
     // Disable caching for this node
     SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
@@ -624,27 +628,49 @@ void SoFCMeshFaceSet::GLRender(SoGLRenderAction *action)
  * Renders the triangles of the complete mesh.
  */
 void SoFCMeshFaceSet::drawFaces(const MeshCore::MeshPointArray * rPoints, 
-                                const MeshCore::MeshFacetArray* rFacets, SbBool needNormals) const
+                                const MeshCore::MeshFacetArray* rFacets, SbBool needNormals, SbBool ccw) const
 {
   if (needNormals)
   {
     glBegin(GL_TRIANGLES);
-    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets->begin(); it != rFacets->end(); ++it )
-    {
-      const MeshCore::MeshPoint& v0 = (*rPoints)[it->_aulPoints[0]];
-      const MeshCore::MeshPoint& v1 = (*rPoints)[it->_aulPoints[1]];
-      const MeshCore::MeshPoint& v2 = (*rPoints)[it->_aulPoints[2]];
+    if ( ccw ) {
+      // counterclockwise ordering
+      for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets->begin(); it != rFacets->end(); ++it )
+      {
+        const MeshCore::MeshPoint& v0 = (*rPoints)[it->_aulPoints[0]];
+        const MeshCore::MeshPoint& v1 = (*rPoints)[it->_aulPoints[1]];
+        const MeshCore::MeshPoint& v2 = (*rPoints)[it->_aulPoints[2]];
 
-      // Calculate the normal n = (v1-v0)x(v2-v0)
-      float n[3];
-      n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
-      n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
-      n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
-      
-      glNormal(n);
-      glVertex(v0);
-      glVertex(v1);
-      glVertex(v2);
+        // Calculate the normal n = (v1-v0)x(v2-v0)
+        float n[3];
+        n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
+        n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
+        n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
+    
+        glNormal(n);
+        glVertex(v0);
+        glVertex(v1);
+        glVertex(v2);
+      }
+    } else {
+      // clockwise ordering
+      for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets->begin(); it != rFacets->end(); ++it )
+      {
+        const MeshCore::MeshPoint& v0 = (*rPoints)[it->_aulPoints[0]];
+        const MeshCore::MeshPoint& v1 = (*rPoints)[it->_aulPoints[1]];
+        const MeshCore::MeshPoint& v2 = (*rPoints)[it->_aulPoints[2]];
+
+        // Calculate the normal n = -(v1-v0)x(v2-v0)
+        float n[3];
+        n[0] = -((v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y));
+        n[1] = -((v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z));
+        n[2] = -((v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x));
+    
+        glNormal(n);
+        glVertex(v0);
+        glVertex(v1);
+        glVertex(v2);
+      }
     }
     glEnd();
   }
@@ -665,7 +691,7 @@ void SoFCMeshFaceSet::drawFaces(const MeshCore::MeshPointArray * rPoints,
  * Renders the gravity points of a subset of triangles.
  */
 void SoFCMeshFaceSet::drawPoints(const MeshCore::MeshPointArray * rPoints, 
-                                 const MeshCore::MeshFacetArray* rFacets, SbBool needNormals) const
+                                 const MeshCore::MeshFacetArray* rFacets, SbBool needNormals, SbBool ccw) const
 {
   int mod = rFacets->size()/MaximumTriangles+1;
 
@@ -676,26 +702,51 @@ void SoFCMeshFaceSet::drawPoints(const MeshCore::MeshPointArray * rPoints,
   {
     glBegin(GL_POINTS);
     int ct=0;
-    for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets->begin(); it != rFacets->end(); ++it, ct++ )
-    {
-      if ( ct%mod==0 ) {
-        const MeshCore::MeshPoint& v0 = (*rPoints)[it->_aulPoints[0]];
-        const MeshCore::MeshPoint& v1 = (*rPoints)[it->_aulPoints[1]];
-        const MeshCore::MeshPoint& v2 = (*rPoints)[it->_aulPoints[2]];
+    if ( ccw ) {
+      for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets->begin(); it != rFacets->end(); ++it, ct++ )
+      {
+        if ( ct%mod==0 ) {
+          const MeshCore::MeshPoint& v0 = (*rPoints)[it->_aulPoints[0]];
+          const MeshCore::MeshPoint& v1 = (*rPoints)[it->_aulPoints[1]];
+          const MeshCore::MeshPoint& v2 = (*rPoints)[it->_aulPoints[2]];
 
-        // Calculate the normal n = (v1-v0)x(v2-v0)
-        float n[3];
-        n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
-        n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
-        n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
+          // Calculate the normal n = (v1-v0)x(v2-v0)
+          float n[3];
+          n[0] = (v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y);
+          n[1] = (v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z);
+          n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
       
-        // Calculate the center point p=(v0+v1+v2)/3
-        float p[3];
-        p[0] = (v0.x+v1.x+v2.x)/3.0f;
-        p[1] = (v0.y+v1.y+v2.y)/3.0f;
-        p[2] = (v0.z+v1.z+v2.z)/3.0f;
-        glNormal3fv(n);
-        glVertex3fv(p);
+          // Calculate the center point p=(v0+v1+v2)/3
+          float p[3];
+          p[0] = (v0.x+v1.x+v2.x)/3.0f;
+          p[1] = (v0.y+v1.y+v2.y)/3.0f;
+          p[2] = (v0.z+v1.z+v2.z)/3.0f;
+          glNormal3fv(n);
+          glVertex3fv(p);
+        }
+      }
+    } else {
+      for ( MeshCore::MeshFacetArray::_TConstIterator it = rFacets->begin(); it != rFacets->end(); ++it, ct++ )
+      {
+        if ( ct%mod==0 ) {
+          const MeshCore::MeshPoint& v0 = (*rPoints)[it->_aulPoints[0]];
+          const MeshCore::MeshPoint& v1 = (*rPoints)[it->_aulPoints[1]];
+          const MeshCore::MeshPoint& v2 = (*rPoints)[it->_aulPoints[2]];
+
+          // Calculate the normal n = -(v1-v0)x(v2-v0)
+          float n[3];
+          n[0] = -((v1.y-v0.y)*(v2.z-v0.z)-(v1.z-v0.z)*(v2.y-v0.y));
+          n[1] = -((v1.z-v0.z)*(v2.x-v0.x)-(v1.x-v0.x)*(v2.z-v0.z));
+          n[2] = -((v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x));
+      
+          // Calculate the center point p=(v0+v1+v2)/3
+          float p[3];
+          p[0] = (v0.x+v1.x+v2.x)/3.0f;
+          p[1] = (v0.y+v1.y+v2.y)/3.0f;
+          p[2] = (v0.z+v1.z+v2.z)/3.0f;
+          glNormal3fv(n);
+          glVertex3fv(p);
+        }
       }
     }
     glEnd();
