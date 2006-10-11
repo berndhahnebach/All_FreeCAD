@@ -94,9 +94,9 @@ int main( int argc, char ** argv )
   App::Application::Config()["StartWorkbench"] = "Part design";
   //App::Application::Config()["HiddenDockWindow"] = "Property editor";
 
-#ifndef FC_DEBUG
+//#ifndef FC_DEBUG
   try{
-#endif
+//#endif
 
 	// Init phase ===========================================================
 	// sets the default run mode for FC, starts with gui if not overridden in InitConfig...
@@ -109,7 +109,7 @@ int main( int argc, char ** argv )
  
   Gui::Application::initApplication();
 
-#ifndef FC_DEBUG
+//#ifndef FC_DEBUG
   } catch(const Base::Exception& e) {
     // Popup an own dialog box instead of that one of Windows
     QApplication app(argc,argv);
@@ -140,7 +140,7 @@ int main( int argc, char ** argv )
     QMessageBox::critical(0, QObject::tr("Initialization of %1 failed").arg(appName), msg);
     exit(101);
   }
-#endif
+//#endif
 
 	// Run phase ===========================================================
 

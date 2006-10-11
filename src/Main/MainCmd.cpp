@@ -25,6 +25,7 @@
 
 #ifdef _PreComp_
 # undef _PreComp_
+# include <sstream>
 #endif
 
 #ifdef FC_LINUX
@@ -68,7 +69,6 @@ const char sBanner[] = "(c) Juergen Riegel 2001-2006\n"\
 
 int main( int argc, char ** argv )
 {
-
   // Name and Version of the Application
   App::Application::Config()["ExeName"] = "FreeCAD";
   App::Application::Config()["ExeVersion"] = "0.3";
@@ -87,19 +87,42 @@ int main( int argc, char ** argv )
   // set the banner (for loging and console)
   App::Application::Config()["ConsoleBanner"] = sBanner;
 
-  // Init phase ===========================================================
-	// sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
-  App::Application::Config()["RunMode"] = "Cmd";
-  // set the banner (for loging and console)
-  App::Application::Config()["ConsoleBanner"] = sBanner;
+  try{
+    // Init phase ===========================================================
+	  // sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
+    App::Application::Config()["RunMode"] = "Cmd";
 
-	// Inits the Application 
-	App::Application::init(argc,argv);
+	  // Inits the Application 
+	  App::Application::init(argc,argv);
+  } catch(const Base::Exception& e) {
+    std::string appName = App::Application::Config()["ExeName"];
+    std::stringstream msg;
+    msg << "While initializing " << appName << " the  following exception occurred: '" << e.what() << "'\n\n";
+    msg << "Python is searching for its runtime files in the following directories:\n" << Py_GetPath() << "\n\n";
+    msg << "Python version information:\n" << Py_GetVersion() << "\n";
+    const char* pythonhome = getenv("PYTHONHOME");
+    if ( pythonhome )
+    {
+      msg << "\nThe environment variable PYTHONHOME is set to '" << pythonhome << "'.";
+      msg << "\nSetting this environment variable might cause Python to fail. Please contact your administrator to unset it on your system.\n\n";
+    }
+    else
+    {
+      msg << "\nPlease contact the application's support team for more information.\n\n";
+    }
 
+    printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
+    exit(100);
+  } catch(...) {
+    std::string appName = App::Application::Config()["ExeName"];
+    std::stringstream msg;
+    msg << "Unknown runtime error occurred while initializing " << appName <<".\n\n";
+    msg << "Please contact the application's support team for more information.\n\n";
+    printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
+    exit(101);
+  }
 
 	// Run phase ===========================================================
-
-
 	Application::runApplication();
 
 
