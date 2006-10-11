@@ -74,7 +74,7 @@ using namespace MeshGui;
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, Gui::ViewProviderFeature)
 
-ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), _mouseModel(0), m_bEdit(false)
+ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(false)
 {
   ADD_PROPERTY(LineWidth,(2.0f));
   ADD_PROPERTY(PointSize,(2.0f));
@@ -284,18 +284,12 @@ std::vector<std::string> ViewProviderMeshFaceSet::getDisplayModes(void) const
 void ViewProviderMeshFaceSet::setEdit(void)
 {
   if ( m_bEdit ) return;
-//  ViewProviderFeature::setEdit();
   m_bEdit = true;
-  _timer.start();
 }
 
 void ViewProviderMeshFaceSet::unsetEdit(void)
 {
-//  ViewProviderFeature::unsetEdit();
   m_bEdit = false;
-  //_mouseModel->releaseMouseModel();
-  delete _mouseModel;
-  _mouseModel = 0;
 }
 
 const char* ViewProviderMeshFaceSet::getEditModeName(void)
@@ -305,68 +299,49 @@ const char* ViewProviderMeshFaceSet::getEditModeName(void)
 
 bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
 {
-  if ( m_bEdit && !_mouseModel )
+  if ( m_bEdit )
   {
-    _mouseModel = new Gui::PolyPickerMouseModel();
-    _mouseModel->grabMouseModel(&Viewer);
-  }
+    unsetEdit();
+    std::vector<SbVec2f> clPoly = Viewer.getPickedPolygon();
+    if ( clPoly.size() < 3 )
+      return false;
+    if ( clPoly.front() != clPoly.back() )
+      clPoly.push_back(clPoly.front());
 
-  if ( m_bEdit && _mouseModel )
-  {
-    // double click event
-    int hd = _mouseModel->handleEvent(ev, Viewer.getViewportRegion());
-    if ( hd == Gui::AbstractMouseModel::Finish )
-    {
-      std::vector<SbVec2f> clPoly = _mouseModel->getPolygon();
-      if ( clPoly.size() < 3 )
-        return true;
-      if ( clPoly.front() != clPoly.back() )
-        clPoly.push_back(clPoly.front());
+    // get the normal of the front clipping plane
+    Base::Vector3f cPoint, cNormal;
+    Viewer.getFrontClippingPlane(cPoint, cNormal);
+    SoCamera* pCam = Viewer.getCamera();  
+    SbViewVolume  vol = pCam->getViewVolume (); 
 
-      // get the normal of the front clipping plane
-      Base::Vector3f cPoint, cNormal;
-      Viewer.getFrontClippingPlane(cPoint, cNormal);
-      SoCamera* pCam = Viewer.getCamera();  
-      SbViewVolume  vol = pCam->getViewVolume (); 
+    // create a tool shape from these points
+    std::vector<MeshCore::MeshGeomFacet> aFaces;
+    bool ok = ViewProviderMesh::createToolMesh( clPoly, vol, cNormal, aFaces );
 
-      // create a tool shape from these points
-      std::vector<MeshCore::MeshGeomFacet> aFaces;
-      bool ok = ViewProviderMesh::createToolMesh( clPoly, vol, cNormal, aFaces );
+    // Get the attached mesh property
+    Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
 
-      // Get the attached mesh property
-      Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
+    // Get the facet indices inside the tool mesh
+    std::vector<unsigned long> indices;
+    MeshCore::MeshKernel cToolMesh;
+    cToolMesh = aFaces;
+    MeshCore::MeshFacetGrid cGrid(meshProp.getValue());
+    MeshCore::MeshAlgorithm cAlg(meshProp.getValue());
+    cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
 
-      // Get the facet indices inside the tool mesh
-      std::vector<unsigned long> indices;
-      MeshCore::MeshKernel cToolMesh;
-      cToolMesh = aFaces;
-      MeshCore::MeshFacetGrid cGrid(meshProp.getValue());
-      MeshCore::MeshAlgorithm cAlg(meshProp.getValue());
-      cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
+    //Remove the facets from the mesh and open a transaction object for the undo/redo stuff
+    Gui::Application::Instance->activeDocument()->openCommand("Cut");
+    meshProp.deleteFacetIndices( indices );
+    Gui::Application::Instance->activeDocument()->commitCommand();
+    ((Mesh::Feature*)pcObject)->setModified(false);
 
-      //Remove the facets from the mesh and open a transaction object for the undo/redo stuff
-      Gui::Application::Instance->activeDocument()->openCommand("Cut");
-      meshProp.deleteFacetIndices( indices );
-      Gui::Application::Instance->activeDocument()->commitCommand();
-      ((Mesh::Feature*)pcObject)->setModified(false);
-
-      // notify the mesh shape node
-      pcFaceSet->touch();
-
-      Viewer.render();
-      unsetEdit();
-      if ( !ok ) // note: the mouse grabbing needs to be released
-//        QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange results.");
-        Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
-
-      return true;
-    }
-    else if ( hd == Gui::AbstractMouseModel::Cancel )
-    {
-      unsetEdit();
-    }
-
-    return true;
+    // notify the mesh shape node
+    pcFaceSet->touch();
+    Viewer.render();
+    
+    if ( !ok ) // note: the mouse grabbing needs to be released
+//      QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange results.");
+      Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
   }
 
   return false;

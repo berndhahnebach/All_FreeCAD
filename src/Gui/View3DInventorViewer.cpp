@@ -98,6 +98,7 @@
 #include "MainWindow.h"
 #include "MenuManager.h"
 #include "Application.h"
+#include "Mousemodel.h"
 
 #include "ViewProvider.h"
 // build in Inventor
@@ -158,7 +159,7 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 }
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
-  :inherited (parent, name, embed, type, build), MenuEnabled(TRUE)
+  :inherited (parent, name, embed, type, build), MenuEnabled(TRUE), pcMouseModel(0)
 {
   Gui::Selection().Attach(this);
 
@@ -278,7 +279,6 @@ void View3DInventorViewer::setGradientBackgroud(bool b)
     backgroundroot->addChild( pcBackGround );
   else if(!b && backgroundroot->findChild(pcBackGround) != -1)
     backgroundroot->removeChild( pcBackGround );
-  //sizeChanged(getSize());
 }
 
 void View3DInventorViewer::setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor )
@@ -387,6 +387,30 @@ void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, i
   renderer.writeToImageFile( filename, comment);
 
   root->unref();
+}
+
+void View3DInventorViewer::startPicking( View3DInventorViewer::ePickMode mode )
+{
+  if (pcMouseModel)
+    return;
+  
+  switch (mode)
+  {
+  case Lasso:
+    pcMouseModel = new PolyPickerMouseModel();
+    break;
+  case Rectangle:
+    pcMouseModel = new SelectionMouseModel();
+    break;
+  case Circle:
+    pcMouseModel = new CirclePickerMouseModel();
+    break;
+  default:
+    break;
+  }
+
+  if ( pcMouseModel )
+    pcMouseModel->grabMouseModel(this);
 }
 
 bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
@@ -861,9 +885,23 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   // give the viewprovider the chance to handle the event
   if(!processed && !MoveMode && !RotMode)
   {
-    std::set<ViewProvider*>::iterator It;
-    for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
-      processed = (*It)->handleEvent(ev,*this);
+    if (pcMouseModel) {
+      int hd=pcMouseModel->handleEvent(ev,this->getViewportRegion());
+      if (hd==AbstractMouseModel::Continue||hd==AbstractMouseModel::Restart) {
+        processed = true;
+      } else if (hd==AbstractMouseModel::Finish) {
+        pcPolygon = pcMouseModel->getPolygon();
+        delete pcMouseModel; pcMouseModel = 0;
+      } else if (hd==AbstractMouseModel::Cancel) {
+        pcPolygon.clear();
+        delete pcMouseModel; pcMouseModel = 0;
+      }
+    }
+    if (!processed) {
+      std::set<ViewProvider*>::iterator It;
+      for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
+        processed = (*It)->handleEvent(ev,*this);
+    }
   }
 
   // give the nodes in the foreground root the chance to handle events (e.g color bar)
@@ -1102,6 +1140,7 @@ void View3DInventorViewer::viewAll()
   SbBox3f box = action.getBoundingBox();
   if (box.isEmpty()) return;
 
+#if 0
   // check whether the box is very wide or tall, if not do nothing
   float box_width, box_height, box_depth;
   box.getSize( box_width, box_height, box_depth );
@@ -1109,11 +1148,14 @@ void View3DInventorViewer::viewAll()
        box_height < 5.0f*box_width && box_height < 5.0f*box_depth && 
        box_depth < 5.0f*box_width && box_depth < 5.0f*box_height )
     return;
+#endif
 
   SoCamera* cam = this->getCamera();
   if (!cam) return;
 
   SbViewVolume  vol = cam->getViewVolume();
+  if (vol.ulf == vol.llf)
+    return; // empty frustum (no view up vector defined)
   SbVec2f s = vol.projectBox(box);
   SbVec2s size = getSize();
 
@@ -1131,7 +1173,19 @@ void View3DInventorViewer::viewAll()
   float aspect = cam->aspectRatio.getValue();
 
   if (cam->getTypeId() == SoPerspectiveCamera::getClassTypeId()) {
-    return; // let the default
+    // set the new camera position dependent on the occupied space of projected bounding box
+    //SbVec3f direction = cam->position.getValue() - box.getCenter();
+    //float movelength = direction.length();
+    //direction.normalize();
+    //float fRatio = getViewportRegion().getViewportAspectRatio();
+    //if ( fRatio > 1.0f ) {
+    //  float factor = std::max<float>(s[0]/fRatio,s[1]);
+    //  movelength = factor * movelength;
+    //} else {
+    //  float factor = std::max<float>(s[0],s[1]/fRatio);
+    //  movelength = factor * movelength;
+    //}
+    //cam->position.setValue(box.getCenter() + direction * movelength);
   } else if (cam->getTypeId() == SoOrthographicCamera::getClassTypeId()) {
     SoOrthographicCamera* ocam = (SoOrthographicCamera *)cam;  // safe downward cast, knows the type
     if (aspect < 1.0f)

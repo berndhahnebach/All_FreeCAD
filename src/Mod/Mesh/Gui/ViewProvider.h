@@ -145,9 +145,7 @@ protected:
   SoDrawStyle       *pcPointStyle;
 
 private:
-  Gui::AbstractMouseModel* _mouseModel;
   bool m_bEdit;
-  QTime _timer;
 };
 
 } // namespace MeshGui

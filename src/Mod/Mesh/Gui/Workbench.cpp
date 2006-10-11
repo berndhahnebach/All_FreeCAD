@@ -78,7 +78,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* mesh = new Gui::ToolBarItem(root);
   mesh->setCommand( "Mesh Tools" );
-  *mesh << "Mesh_Import" << "Mesh_Export" << "Separator" << "Mesh_PolyPick" << "Mesh_VertexCurvature" << "Separator"
+  *mesh << "Mesh_Import" << "Mesh_Export" << "Separator" << "Mesh_PolyCut" << "Mesh_VertexCurvature" << "Separator"
         << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
   return root;
 }
@@ -91,7 +91,7 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
 
   mesh = new Gui::ToolBarItem( root );
   mesh->setCommand( "Mesh Tools" );
-  *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_PolyPick" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool"
+  *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_PolyCut" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool"
         << "Mesh_ExMakeUnion";
 
   mesh = new Gui::ToolBarItem( root );

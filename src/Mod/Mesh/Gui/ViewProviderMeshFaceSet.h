@@ -90,11 +90,8 @@ protected:
   SoSeparator    * pcOpenEdge;
   SoBaseColor    * pOpenColor;
 
-
 private:
-  Gui::AbstractMouseModel* _mouseModel;
   bool m_bEdit;
-  QTime _timer;
 };
 
 } // namespace MeshGui

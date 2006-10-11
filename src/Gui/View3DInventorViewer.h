@@ -45,6 +45,7 @@ namespace Gui {
 
 class ViewProvider;
 class SoFCBackgroundGradient;
+class AbstractMouseModel;
 
 
 /** The Inventor viewer
@@ -81,6 +82,14 @@ public:
    * The appropriate file format must support embedding meta information which is provided by JPEG or PNG.
    */
   void makeScreenShot( const char* filename, int w, int h, int eBackgroundType, const char *comment ) const;
+  /// Pick modes for picking points in the scene
+  enum ePickMode {
+    Lasso       = 0,  /**< Select objects using a lasso. */
+    Rectangle   = 1,  /**< Select objects using a rectangle. */
+    Circle      = 2,  /**< Select objects using a circle. */
+  };
+  void startPicking( ePickMode = Lasso );
+  const std::vector<SbVec2f>& getPickedPolygon() const { return pcPolygon; }
   /**
    * Writes the current scenegraph to an Inventor file, either in ascii or binary. 
    */
@@ -229,6 +238,8 @@ private:
 
   SoSeparator * pcViewProviderRoot;
   QCursor _oldCursor;
+  AbstractMouseModel* pcMouseModel;
+  std::vector<SbVec2f> pcPolygon;
 };
 
 } // namespace Gui

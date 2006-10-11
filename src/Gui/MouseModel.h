@@ -159,6 +159,8 @@ public:
   /// do nothing
   virtual void terminate();
 
+  virtual void redraw();
+
 protected:
   virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
   virtual int locationEvent   ( const SoLocation2Event   * const e, const QPoint& pos );
@@ -187,6 +189,8 @@ public:
   virtual void initialize();
   /// call the @ref draw() method to clear the view
   virtual void terminate();
+
+  virtual void redraw();
 
 protected:
   virtual int mouseButtonEvent( const SoMouseButtonEvent * const e, const QPoint& pos );
