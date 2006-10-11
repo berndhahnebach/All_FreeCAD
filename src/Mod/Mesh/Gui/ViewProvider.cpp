@@ -142,7 +142,7 @@ void ViewProviderExport::update()
 PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderFeature)
 
 
-ViewProviderMesh::ViewProviderMesh() : _mouseModel(0), m_bEdit(false)
+ViewProviderMesh::ViewProviderMesh() : m_bEdit(false)
 {
   ADD_PROPERTY(LineWidth,(2.0f));
   ADD_PROPERTY(PointSize,(2.0f));
@@ -438,18 +438,12 @@ std::vector<std::string> ViewProviderMesh::getDisplayModes(void) const
 void ViewProviderMesh::setEdit(void)
 {
   if ( m_bEdit ) return;
-//  ViewProviderFeature::setEdit();
   m_bEdit = true;
-  _timer.start();
 }
 
 void ViewProviderMesh::unsetEdit(void)
 {
-//  ViewProviderFeature::unsetEdit();
   m_bEdit = false;
-  //_mouseModel->releaseMouseModel();
-  delete _mouseModel;
-  _mouseModel = 0;
 }
 
 const char* ViewProviderMesh::getEditModeName(void)
@@ -545,103 +539,83 @@ bool ViewProviderMesh::createToolMesh( const std::vector<SbVec2f>& rclPoly, cons
 
 bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
 {
-  if ( m_bEdit && !_mouseModel )
+  if ( m_bEdit )
   {
-    _mouseModel = new Gui::PolyPickerMouseModel();
-    _mouseModel->grabMouseModel(&Viewer);
-  }
-
-  if ( m_bEdit && _mouseModel )
-  {
-    // double click event
-    int hd = _mouseModel->handleEvent(ev, Viewer.getViewportRegion());
-    if ( hd == Gui::AbstractMouseModel::Finish )
-    {
-      std::vector<SbVec2f> clPoly = _mouseModel->getPolygon();
-      if ( clPoly.size() < 3 )
-        return true;
-      if ( clPoly.front() != clPoly.back() )
-        clPoly.push_back(clPoly.front());
-
-      // get the normal of the front clipping plane
-      Base::Vector3f cPoint, cNormal;
-      Viewer.getFrontClippingPlane(cPoint, cNormal);
-      SoCamera* pCam = Viewer.getCamera();  
-      SbViewVolume  vol = pCam->getViewVolume (); 
-
-      // create a tool shape from these points
-      std::vector<MeshGeomFacet> aFaces;
-      bool ok = createToolMesh( clPoly, vol, cNormal, aFaces );
-
-      Gui::Document* pGDoc = Gui::Application::Instance->activeDocument();
-      App::Document* pDoc = pGDoc->getDocument();
-
-      pGDoc->openCommand("Poly pick");
-      Gui::Command::doCommand(Gui::Command::Doc, "import Mesh\n");
-      Gui::Command::doCommand(Gui::Command::Gui, "import MeshGui\n");
-
-      // create a mesh feature and append it to the document
-      std::string fTool = pDoc->getUniqueObjectName("Toolmesh");
-      Gui::Command::doCommand(Gui::Command::Doc, "App.document().addObject(\"Mesh::Feature\", \"%s\")\n", fTool.c_str());
-
-      // replace the mesh from feature
-      Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().getObject(\"%s\").Mesh\n", fTool.c_str());
-      for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
-      {
-        Gui::Command::doCommand(Gui::Command::Doc, "m.addFacet(%.6f,%.6f,%.6f, %.6f,%.6f,%.6f, %.6f,%.6f,%.6f)",
-          itF->_aclPoints[0].x, itF->_aclPoints[0].y, itF->_aclPoints[0].z,
-          itF->_aclPoints[1].x, itF->_aclPoints[1].y, itF->_aclPoints[1].z,
-          itF->_aclPoints[2].x, itF->_aclPoints[2].y, itF->_aclPoints[2].z);
-      }
-
-      Gui::Command::doCommand(Gui::Command::Doc, "App.document().getObject(\"%s\").Mesh=m\n", fTool.c_str());
-      Gui::Command::doCommand(Gui::Command::Doc, "App.document().recompute()\n");
-
-#ifndef FC_DEBUG
-      Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
-#endif
-
-      // now intersect with each selected mesh feature
-      std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-
-      for ( std::vector<App::DocumentObject*>::iterator it = fea.begin(); it != fea.end(); ++it )
-      {
-        // check type
-        std::string fName = pDoc->getUniqueObjectName("MeshSegment");
-        Feature* meshFeature = dynamic_cast<Feature*>(*it);
-        if ( !meshFeature ) continue; // no mesh
-
-        Gui::Command::doCommand(Gui::Command::Doc,
-            "f = App.document().addObject(\"Mesh::SegmentByMesh\",\"%s\")\n"
-            "f.Source   = App.document().%s\n"
-            "f.Tool     = App.document().%s\n"
-            "f.Base     = (%.6f,%.6f,%.6f)\n"
-            "f.Normal   = (%.6f,%.6f,%.6f)\n"
-            , fName.c_str(),  meshFeature->name.getValue(), fTool.c_str(), 
-              cPoint.x, cPoint.y, cPoint.z, cNormal.x, cNormal.y, cNormal.z );
-      }
-
-      pGDoc->commitCommand();
-      pDoc->recompute();
-
-#ifndef FC_DEBUG
-      // make sure that toolmesh is still hidden
-      Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
-#endif
-
-      unsetEdit();
-
-      if ( !ok ) // note: the mouse grabbing needs to be released
-        QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
-
+    unsetEdit();
+    std::vector<SbVec2f> clPoly = Viewer.getPickedPolygon();
+    if ( clPoly.size() < 3 )
       return true;
-    }
-    else if ( hd == Gui::AbstractMouseModel::Cancel )
+    if ( clPoly.front() != clPoly.back() )
+      clPoly.push_back(clPoly.front());
+
+    // get the normal of the front clipping plane
+    Base::Vector3f cPoint, cNormal;
+    Viewer.getFrontClippingPlane(cPoint, cNormal);
+    SoCamera* pCam = Viewer.getCamera();  
+    SbViewVolume  vol = pCam->getViewVolume (); 
+
+    // create a tool shape from these points
+    std::vector<MeshGeomFacet> aFaces;
+    bool ok = createToolMesh( clPoly, vol, cNormal, aFaces );
+
+    Gui::Document* pGDoc = Gui::Application::Instance->activeDocument();
+    App::Document* pDoc = pGDoc->getDocument();
+
+    pGDoc->openCommand("Poly pick");
+    Gui::Command::doCommand(Gui::Command::Doc, "import Mesh\n");
+    Gui::Command::doCommand(Gui::Command::Gui, "import MeshGui\n");
+
+    // create a mesh feature and append it to the document
+    std::string fTool = pDoc->getUniqueObjectName("Toolmesh");
+    Gui::Command::doCommand(Gui::Command::Doc, "App.document().addObject(\"Mesh::Feature\", \"%s\")\n", fTool.c_str());
+
+    // replace the mesh from feature
+    Gui::Command::doCommand(Gui::Command::Doc, "m=App.document().getObject(\"%s\").Mesh\n", fTool.c_str());
+    for ( std::vector<MeshGeomFacet>::iterator itF = aFaces.begin(); itF != aFaces.end(); ++itF )
     {
-      unsetEdit();
+      Gui::Command::doCommand(Gui::Command::Doc, "m.addFacet(%.6f,%.6f,%.6f, %.6f,%.6f,%.6f, %.6f,%.6f,%.6f)",
+        itF->_aclPoints[0].x, itF->_aclPoints[0].y, itF->_aclPoints[0].z,
+        itF->_aclPoints[1].x, itF->_aclPoints[1].y, itF->_aclPoints[1].z,
+        itF->_aclPoints[2].x, itF->_aclPoints[2].y, itF->_aclPoints[2].z);
     }
 
-    return true;
+    Gui::Command::doCommand(Gui::Command::Doc, "App.document().getObject(\"%s\").Mesh=m\n", fTool.c_str());
+    Gui::Command::doCommand(Gui::Command::Doc, "App.document().recompute()\n");
+
+#ifndef FC_DEBUG
+    Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
+#endif
+
+    // now intersect with each selected mesh feature
+    std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+
+    for ( std::vector<App::DocumentObject*>::iterator it = fea.begin(); it != fea.end(); ++it )
+    {
+      // check type
+      std::string fName = pDoc->getUniqueObjectName("MeshSegment");
+      Feature* meshFeature = dynamic_cast<Feature*>(*it);
+      if ( !meshFeature ) continue; // no mesh
+
+      Gui::Command::doCommand(Gui::Command::Doc,
+          "f = App.document().addObject(\"Mesh::SegmentByMesh\",\"%s\")\n"
+          "f.Source   = App.document().%s\n"
+          "f.Tool     = App.document().%s\n"
+          "f.Base     = (%.6f,%.6f,%.6f)\n"
+          "f.Normal   = (%.6f,%.6f,%.6f)\n"
+          , fName.c_str(),  meshFeature->name.getValue(), fTool.c_str(), 
+            cPoint.x, cPoint.y, cPoint.z, cNormal.x, cNormal.y, cNormal.z );
+    }
+
+    pGDoc->commitCommand();
+    pDoc->recompute();
+
+#ifndef FC_DEBUG
+    // make sure that toolmesh is still hidden
+    Gui::Command::doCommand(Gui::Command::Gui, "Gui.hide(\"%s\")\n", fTool.c_str());
+#endif
+
+    if ( !ok ) // note: the mouse grabbing needs to be released
+      QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange rersults.");
   }
 
   return false;

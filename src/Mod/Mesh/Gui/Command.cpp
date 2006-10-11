@@ -47,6 +47,8 @@
 #include <Gui/FileDialog.h>
 #include <Gui/Selection.h>
 #include <Gui/ViewProvider.h>
+#include <Gui/View3DInventor.h>
+#include <Gui/View3DInventorViewer.h>
 
 #include "DlgEvaluateMeshImp.h"
 #include "DlgRegularSolidImp.h"
@@ -490,10 +492,21 @@ CmdMeshPolyCut::CmdMeshPolyCut()
 
 void CmdMeshPolyCut::activated(int iMsg)
 {
-  std::vector<App::DocumentObject*> fea = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
-  if ( fea.size() == 1 )
+  std::vector<App::DocumentObject*> docObj = Gui::Selection().getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::iterator it = docObj.begin(); it != docObj.end(); ++it )
   {
-    Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider(fea.front());
+    if ( it == docObj.begin() ) {
+      Gui::Document* doc = getActiveGuiDocument();
+      Gui::MDIView* view = doc->getActiveView();
+      if ( view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId()) ) {
+        Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
+        viewer->startPicking( Gui::View3DInventorViewer::Lasso );
+      } else {
+        return;
+      }
+    }
+
+    Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider( *it );
     pVP->setEdit();
   }
 }
@@ -501,7 +514,7 @@ void CmdMeshPolyCut::activated(int iMsg)
 bool CmdMeshPolyCut::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1;
+  return getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0;
 }
 
 DEF_STD_CMD_A(CmdMeshToolMesh);

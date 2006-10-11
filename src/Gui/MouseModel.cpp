@@ -391,6 +391,10 @@ void SelectionMouseModel::terminate()
 {
 }
 
+void SelectionMouseModel::redraw()
+{
+}
+
 void SelectionMouseModel::draw ()
 {
   if (m_bWorking)
@@ -513,6 +517,10 @@ void CirclePickerMouseModel::initialize()
 void CirclePickerMouseModel::terminate()
 {
   draw();
+}
+
+void CirclePickerMouseModel::redraw()
+{
 }
 
 void CirclePickerMouseModel::draw ()
