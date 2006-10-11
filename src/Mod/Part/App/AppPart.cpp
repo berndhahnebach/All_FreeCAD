@@ -24,14 +24,25 @@
 #include "FeaturePartCurveNet.h"
 #include "FeaturePartLine.h"
 #include "FeaturePartPolygon.h"
+#include "TopologyPy.h"
 
 extern struct PyMethodDef Part_methods[];
+
+PyDoc_STRVAR(module_part_doc,
+"This is a module working with shapes.");
 
 extern "C" {
 void AppPartExport initPart() {
 
   Base::Console().Log("Mod: Loading Part module... done\n");
-	(void) Py_InitModule("Part", Part_methods);   /* mod name, table ptr */
+  PyObject* partModule = Py_InitModule3("Part", Part_methods, module_part_doc);   /* mod name, table ptr */
+
+  // NOTE: To finish the initialization of our own type objects we must
+  // call PyType_Ready, otherwise we run into a segmentation fault, later on.
+  // This function is responsible for adding inherited slots from a type's base class.
+  PyObject* pyPartType = (PyObject *)&Part::TopoShapePy::Type;
+  if(PyType_Ready(&Part::TopoShapePy::Type) < 0) return;
+  PyModule_AddObject(partModule, "shape", pyPartType);
 
   Part::Feature   ::init();
   Part::Box       ::init();

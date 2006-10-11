@@ -62,9 +62,11 @@ protected:
 public:
 
 	/// Constructer 
+  TopoShapePy(PyTypeObject *T = &Type);
   TopoShapePy(const TopoDS_Shape &cShape, PyTypeObject *T = &TopoShapePy::Type);
 	/// for Construction in python 
-	static PyObject *PyMake(PyObject *, PyObject *);
+  static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
+  static int PyInit(PyObject*, PyObject*, PyObject*);
 
 
 	//---------------------------------------------------------------------
@@ -84,16 +86,14 @@ public:
 	int _setattr(char *attr, PyObject *value);	// __setattr__ function
 
 	// methods
-	PYFUNCDEF_D (TopoShapePy,PyHasChild);
+	PYFUNCDEF_D (TopoShapePy,hasChild);
+	PYFUNCDEF_D (TopoShapePy,readIges);
+	PYFUNCDEF_D (TopoShapePy,writeIges);
 
   TopoDS_Shape &getShape(void){return _cTopoShape;}
 
 
 protected:
-
-#ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#endif
 	/// The OCC Label
 	TopoDS_Shape _cTopoShape;
 
