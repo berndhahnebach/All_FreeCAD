@@ -225,6 +225,7 @@
 #include <IGESControl_Controller.hxx>
 #include <IGESControl_Writer.hxx>
 #include <IGESControl_Reader.hxx>
+#include <Interface_Static.hxx>
 
 
 #endif //_PreComp_
