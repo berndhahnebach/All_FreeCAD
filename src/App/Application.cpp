@@ -74,6 +74,10 @@ using namespace App;
 using namespace std;
 #endif
 
+
+#define new DEBUG_CLIENTBLOCK
+
+
 //using Base::GetConsole;
 using namespace Base;
 using namespace App;
@@ -584,6 +588,9 @@ void Application::destruct(void)
   destructObserver();
 
   Base::Interpreter().finalize();
+
+  ScriptFactorySingleton::Destruct();
+  InterpreterSingleton::Destruct();
 }
 
 void Application::destructObserver(void)
