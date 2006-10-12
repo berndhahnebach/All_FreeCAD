@@ -94,20 +94,22 @@
 #endif
 
 //**************************************************************************
-// Crt Memory debuging
+// Crt Memory debugging
 
-/** Memory Crt debuging on
+/** Memory Crt debugging on
   * This switches the debug CRT on Windows on. This is mostly located in
-  * MemDebug.cpp and .h in src/Base. With this on a Fiel (MemLog.txt) is 
-  * written on exit which report e.g. unfreed memory.
+  * MemDebug.cpp and .h in src/Base. With this on a file (MemLog.txt) is 
+  * written on exit which reports e.g. unfreed memory.
   */
-#define MemDebugOn
+#if defined(_DEBUG) && defined(_MSC_VER)
+# define MemDebugOn
+#endif
 
 #if defined(MemDebugOn) && defined(FC_OS_WIN32)
-   #define DEBUG_CLIENTBLOCK   new( _CLIENT_BLOCK, __FILE__, __LINE__)
+# define DEBUG_CLIENTBLOCK   new( _CLIENT_BLOCK, __FILE__, __LINE__)
 #else
-   #define DEBUG_CLIENTBLOCK   new
-#endif // _DEBUG
+# define DEBUG_CLIENTBLOCK   new
+#endif // MemDebugOn
 
 //**************************************************************************
 // STLport
@@ -119,7 +121,7 @@
 //#	define _STLP_BROKEN_USING_DIRECTIVE
 #	define _STLP_NO_OWN_IOSTREAMS 1
 #	define _STLP_USE_ABBREVS
-// switch on StlPort debuging, need the libs build!
+// switch on StlPort debugging, need the libs build!
 //#	define __STL_DEBUG
 #	define _CRT_SECURE_NO_DEPRECATE 
 // Uncomment _STLP_USE_NEWALLOC to force allocator<T> to use plain "new"

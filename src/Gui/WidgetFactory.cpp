@@ -54,8 +54,9 @@ WidgetFactoryInst& WidgetFactoryInst::instance()
 
 void WidgetFactoryInst::destruct ()
 {
-  if (_pcSingleton != NULL)
+  if (_pcSingleton != 0)
     delete _pcSingleton;
+  _pcSingleton = 0;
 }
 
 /**

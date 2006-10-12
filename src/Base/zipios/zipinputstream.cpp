@@ -7,8 +7,15 @@
 #include "zipinputstreambuf.h"
 #include "zipinputstream.h"
 
+#ifdef FC_OS_WIN32
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
+#  include <crtdbg.h>
+#endif
+
 using std::istream;
 #define new DEBUG_CLIENTBLOCK
+
 namespace zipios {
 
 ZipInputStream::ZipInputStream( std::istream &is, std::streampos pos ) 

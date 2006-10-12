@@ -230,6 +230,7 @@ void CommandLineBase::Destruct(void)
   // not initialized or double destruct!
   assert(_pcSingleton);
   delete _pcSingleton;
+  _pcSingleton = 0;
 }
 
 CommandLineBase & CommandLineBase::Instance(void)

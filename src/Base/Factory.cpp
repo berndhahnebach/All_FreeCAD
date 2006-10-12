@@ -92,8 +92,9 @@ ScriptFactorySingleton& ScriptFactorySingleton::Instance(void)
 
 void ScriptFactorySingleton::Destruct (void)
 {
-  if (_pcSingleton != NULL)
+  if (_pcSingleton != 0)
     delete _pcSingleton;
+  _pcSingleton = 0;
 }
 
 const char* ScriptFactorySingleton::ProduceScript (const char* sScriptName) const

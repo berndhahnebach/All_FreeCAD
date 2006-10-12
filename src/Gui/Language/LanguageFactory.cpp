@@ -57,8 +57,9 @@ LanguageFactoryInst& LanguageFactoryInst::Instance(void)
 
 void LanguageFactoryInst::Destruct (void)
 {
-  if (_pcSingleton != NULL)
+  if (_pcSingleton)
     delete _pcSingleton;
+  _pcSingleton=0;
 }
 
 LanguageProducer::LanguageProducer (const QString& language, const unsigned char* data, const unsigned int& len)

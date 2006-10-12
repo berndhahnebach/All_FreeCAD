@@ -83,7 +83,9 @@ using namespace std;
 using namespace zipios ;
 
 
-#define new DEBUG_CLIENTBLOCK
+#ifdef MemDebugOn
+# define new DEBUG_CLIENTBLOCK
+#endif
 
 
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)

@@ -6,7 +6,15 @@
 
 #include "collcoll.h"
 #include "zipios_common.h"
+
+#ifdef FC_OS_WIN32
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
+#  include <crtdbg.h>
+#endif
+
 #define new DEBUG_CLIENTBLOCK
+
 namespace zipios {
 
 using std::ifstream ;

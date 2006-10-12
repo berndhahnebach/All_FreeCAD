@@ -6,8 +6,16 @@
 
 #include "zipoutputstreambuf.h"
 #include "zipoutputstream.h"
+
+#ifdef FC_OS_WIN32
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
+#  include <crtdbg.h>
+#endif
+
 using std::ostream;
 #define new DEBUG_CLIENTBLOCK
+
 namespace zipios {
 
 ZipOutputStream::ZipOutputStream( std::ostream &os ) 
