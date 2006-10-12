@@ -32,7 +32,7 @@
 
 #include "../Base/Console.h"
 #include "Process.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 Process::Process( QObject *parent, const char *name)

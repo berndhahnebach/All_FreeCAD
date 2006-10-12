@@ -39,7 +39,7 @@
 #include "../Base/Console.h"
 #include "../Base/Parameter.h"
 #include "../App/Application.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 LanguageFactoryInst* LanguageFactoryInst::_pcSingleton = NULL;

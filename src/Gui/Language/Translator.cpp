@@ -36,7 +36,7 @@
 #include "LanguageFactory.h"
 
 #include "../../Base/Console.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 /** \defgroup i18n Internationalization with FreeCAD

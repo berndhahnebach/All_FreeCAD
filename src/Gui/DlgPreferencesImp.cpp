@@ -42,7 +42,7 @@
 #ifdef FC_DEBUG
 # include "../Base/Console.h" 
 #endif
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 // --------------------------------------------------

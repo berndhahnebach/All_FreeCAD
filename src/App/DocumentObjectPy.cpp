@@ -36,7 +36,7 @@ using Base::Console;
 #include "DocumentObject.h"
 #include "Property.h"
 #include "DocumentObjectPy.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

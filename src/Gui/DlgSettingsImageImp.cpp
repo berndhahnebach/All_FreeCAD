@@ -37,7 +37,7 @@
 
 #include "DlgSettingsImageImp.h"
 #include "SpinBox.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 using namespace std;
 

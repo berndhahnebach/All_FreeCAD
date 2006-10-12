@@ -10,7 +10,7 @@
 #include "zipheadio.h"
 
 #include "outputstringstream.h"
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 std::istream& operator>> ( std::istream &is, ZipLocalEntry &zlh         ) {

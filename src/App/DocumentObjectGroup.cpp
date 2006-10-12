@@ -29,7 +29,7 @@
 #include "DocumentObjectGroup.h"
 #include "DocumentObjectGroupPy.h"
 #include "Document.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 PROPERTY_SOURCE(App::DocumentObjectGroup, App::AbstractFeature)

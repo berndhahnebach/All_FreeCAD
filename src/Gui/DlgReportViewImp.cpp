@@ -29,7 +29,7 @@
 #include "DlgReportViewImp.h"
 #include "PrefWidgets.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /**

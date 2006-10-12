@@ -27,7 +27,7 @@
 #endif
 
 #include "propertyeditordate.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::PropertyEditor;
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::TimeEditorItem, Gui::PropertyEditor::EditableItem);

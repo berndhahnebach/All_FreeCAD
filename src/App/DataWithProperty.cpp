@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 #include "DataWithProperty.h"
 
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

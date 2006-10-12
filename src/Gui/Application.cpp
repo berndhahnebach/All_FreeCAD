@@ -83,6 +83,7 @@ using namespace Gui;
 using namespace Gui::DockWnd;
 using namespace std;
 
+#define new DEBUG_CLIENTBLOCK
 
 Application* Application::Instance = 0L;
 

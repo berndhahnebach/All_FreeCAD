@@ -39,7 +39,7 @@
 #include "../Base/Exception.h"
 #include "../App/Document.h"
 #include "Macro.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 

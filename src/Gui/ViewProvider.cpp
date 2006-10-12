@@ -42,7 +42,7 @@
 
 # include <Inventor/nodes/SoSwitch.h>
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace std;
 using namespace Gui;
 

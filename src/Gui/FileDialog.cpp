@@ -40,7 +40,7 @@
 
 #include "FileDialog.h"
 #include "BitmapFactory.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 

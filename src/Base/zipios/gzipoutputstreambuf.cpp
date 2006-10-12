@@ -10,7 +10,7 @@
 #include <zlib.h>
 
 #include "gzipoutputstreambuf.h"
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 using std::ios ;

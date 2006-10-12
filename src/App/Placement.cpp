@@ -29,7 +29,7 @@
 #include <Base/Placement.h>
 
 #include "Placement.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

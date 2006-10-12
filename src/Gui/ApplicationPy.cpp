@@ -39,7 +39,7 @@
 #include "WorkbenchManager.h"
 
 #include <Base/Interpreter.h>
-
+#define new DEBUG_CLIENTBLOCK
 using Base::Console;
 using Base::Interpreter;
 using namespace Gui;

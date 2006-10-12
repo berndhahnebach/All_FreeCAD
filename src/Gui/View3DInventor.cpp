@@ -64,7 +64,7 @@
 
 #include <locale>
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::View3DInventor,Gui::BaseView);

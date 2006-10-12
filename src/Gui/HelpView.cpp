@@ -50,7 +50,7 @@
 #include "WhatsThis.h"
 #include "Action.h"
 #include "Command.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using namespace Gui::DockWnd;
 

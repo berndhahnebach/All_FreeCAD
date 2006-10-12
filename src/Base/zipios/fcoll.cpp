@@ -7,7 +7,7 @@
 #include <vector>
 
 #include "fcoll.h"
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 using std::find_if ;

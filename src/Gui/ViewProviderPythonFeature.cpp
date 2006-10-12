@@ -30,7 +30,7 @@
 #include "ViewProviderPythonFeature.h"
 #include "Tree.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 

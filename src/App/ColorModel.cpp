@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 #include "ColorModel.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

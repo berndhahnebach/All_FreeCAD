@@ -33,7 +33,7 @@
 #endif
 
 #include "Tools.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 QPixmap Tools::resize(int w, int h, const QPixmap& p)

@@ -42,7 +42,7 @@
 
 #include "../App/Application.h"
 #include "../Base/Console.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using Gui::Dialog::DlgAuthorization;
 

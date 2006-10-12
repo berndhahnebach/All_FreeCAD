@@ -40,7 +40,7 @@
 #include "MouseModel.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui; 
 
 AbstractMouseModel::AbstractMouseModel() : _pcView3D(0)

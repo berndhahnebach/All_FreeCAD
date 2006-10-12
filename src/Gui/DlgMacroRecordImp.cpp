@@ -35,7 +35,7 @@
 #include "DlgMacroRecordImp.h"
 #include "FileDialog.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgMacroRecordImp */

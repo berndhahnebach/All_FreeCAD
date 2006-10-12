@@ -35,7 +35,7 @@
 #include "MainWindow.h"
 
 #include "../Base/Exception.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::DockWnd;
 
 /**

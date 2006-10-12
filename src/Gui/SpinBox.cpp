@@ -34,7 +34,7 @@
 #endif
 
 #include "SpinBox.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 

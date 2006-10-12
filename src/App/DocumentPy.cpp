@@ -35,7 +35,7 @@
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 #include "Application.h"
-
+#define new DEBUG_CLIENTBLOCK
 using Base::Console;
 using Base::streq;
 using namespace App;

@@ -29,7 +29,7 @@
 #include "DlgSettings3DViewImp.h"
 #include "PrefWidgets.h"
 #include "../Base/Console.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /**

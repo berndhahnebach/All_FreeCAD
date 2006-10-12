@@ -30,7 +30,7 @@
 #include <Base/Exception.h>
 #include "FeatureTest.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

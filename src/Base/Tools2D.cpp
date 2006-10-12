@@ -30,6 +30,8 @@
 #include "Tools2D.h"
 #include "Vector3D.h"
 
+#define new DEBUG_CLIENTBLOCK
+
 using namespace Base;
 
 float Vector2D::GetAngle (const Vector2D &rclVect) const

@@ -6,7 +6,7 @@
 
 #include "collcoll.h"
 #include "zipios_common.h"
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 using std::ifstream ;

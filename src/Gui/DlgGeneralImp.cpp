@@ -40,7 +40,7 @@
 #include "Language/Translator.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgGeneralImp */

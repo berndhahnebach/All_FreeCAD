@@ -30,7 +30,7 @@
 #include "DlgSettingsMacroImp.h"
 #include "PrefWidgets.h"
 #include "Application.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /**

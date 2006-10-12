@@ -56,7 +56,7 @@
 #include "Widgets.h"
 #include "NetworkRetriever.h"
 #include "GuiConsole.h"
-
+#define new DEBUG_CLIENTBLOCK
 using Base::Console;
 using Base::Sequencer;
 using namespace Gui;

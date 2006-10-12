@@ -8,7 +8,7 @@
 #include "gzipoutputstream.h"
 
 using std::ostream;
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 GZIPOutputStream::GZIPOutputStream( std::ostream &os )

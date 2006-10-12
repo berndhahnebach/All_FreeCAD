@@ -24,7 +24,7 @@
 // -------------------------------------------------------------------------- 
 
 #include "meta-iostreams.h"
-
+#define new DEBUG_CLIENTBLOCK
 #include "directory.h"
 
 #if defined(unix) || defined(__unix) || defined(__unix__)

@@ -27,7 +27,7 @@
 #endif
 
 #include "PropertyPage.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /** Construction */

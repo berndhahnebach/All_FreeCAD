@@ -26,6 +26,8 @@
 #include "Rotation.h"
 #include "Matrix.h"
 
+#define new DEBUG_CLIENTBLOCK
+
 using namespace Base;
 
 Rotation::Rotation()

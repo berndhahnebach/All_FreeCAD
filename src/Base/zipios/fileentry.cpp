@@ -6,7 +6,7 @@
 #include <string>
 
 #include "fileentry.h"
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 ostream &operator<< ( ostream &os, const FileEntry &entry ) {

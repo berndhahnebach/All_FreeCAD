@@ -45,7 +45,7 @@
 #include "BitmapFactory.h"
 #include "Selection.h"
 #include "DlgProjectInformationImp.h"
-
+#define new DEBUG_CLIENTBLOCK
 using Base::Console;
 using Base::Sequencer;
 using namespace Gui;

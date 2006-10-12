@@ -44,7 +44,7 @@
 #include "Macro.h"
 #include "Document.h"
 #include "PythonEditor.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using namespace Gui::Dialog;
 

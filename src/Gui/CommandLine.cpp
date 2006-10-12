@@ -39,7 +39,7 @@
 #include "../Base/Interpreter.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
-
+#define new DEBUG_CLIENTBLOCK
 using Base::Interpreter;
 using namespace Gui;
 

@@ -32,7 +32,7 @@
 
 #include "Action.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 QTextBrowser* WhatsThis::_helpViewer = 0L;

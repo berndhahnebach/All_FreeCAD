@@ -36,7 +36,7 @@
 #include "Document.h"
 #include "Application.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 SplitView3DInventor::SplitView3DInventor( int views, Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags )

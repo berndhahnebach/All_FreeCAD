@@ -30,7 +30,7 @@
 #include "DlgEditorImp.h"
 #include "PrefWidgets.h"
 #include "PythonEditor.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using namespace Gui::Dialog;
 

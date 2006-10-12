@@ -35,7 +35,7 @@
 #include "Icons/Icons.h"
 #include "Icons/Document.xpm"
 #include "Icons/BmpFactoryIcons.cpp"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 BitmapFactoryInst* BitmapFactoryInst::_pcSingleton = NULL;

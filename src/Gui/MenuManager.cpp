@@ -33,7 +33,7 @@
 #include "MainWindow.h"
 #include "Command.h"
 #include "CustomWidgets.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 

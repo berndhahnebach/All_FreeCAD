@@ -7,7 +7,7 @@
 #include "zipoutputstreambuf.h"
 #include "zipoutputstream.h"
 using std::ostream;
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 ZipOutputStream::ZipOutputStream( std::ostream &os ) 

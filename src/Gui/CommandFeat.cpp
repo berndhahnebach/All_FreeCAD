@@ -34,7 +34,7 @@
 #include "Selection.h"
 #include "ViewProvider.h"
 #include "ViewProviderDocumentObject.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 

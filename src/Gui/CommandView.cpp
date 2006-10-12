@@ -58,7 +58,7 @@
 #include <Base/Reader.h>
 #include <App/Document.h>
 #include <App/Feature.h>
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using Gui::Dialog::DlgSettingsImageImp;
 

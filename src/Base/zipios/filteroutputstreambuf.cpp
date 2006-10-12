@@ -3,7 +3,7 @@
 #include "zipios-config.h"
 
 #include "filteroutputstreambuf.h"
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 FilterOutputStreambuf::FilterOutputStreambuf( streambuf *outbuf, bool del_outbuf ) 

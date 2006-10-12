@@ -39,6 +39,7 @@ using Base::Console;
 #include "FeaturePy.h"
 #include "Property.h"
 
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 using std::vector;

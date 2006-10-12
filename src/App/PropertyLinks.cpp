@@ -40,7 +40,7 @@
 #include "Document.h"
 
 #include "PropertyLinks.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 using namespace Base;
 using namespace std;

@@ -44,7 +44,7 @@
 #include "Application.h"
 #include "MainWindow.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using Base::Console;
 
 using namespace Gui;
