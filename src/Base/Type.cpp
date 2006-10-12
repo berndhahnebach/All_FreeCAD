@@ -32,6 +32,7 @@
 #include "Interpreter.h"
 #include "Console.h"
 
+#define new DEBUG_CLIENTBLOCK
 
 using namespace Base;
 using namespace std;
