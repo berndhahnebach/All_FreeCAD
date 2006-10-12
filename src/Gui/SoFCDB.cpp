@@ -43,7 +43,7 @@
 #include "propertyeditor/propertyeditorinput.h"
 #include "propertyeditor/propertyeditoritem.h"
 #include "propertyeditor/propertyeditorlist.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using namespace Gui::PropertyEditor;
 

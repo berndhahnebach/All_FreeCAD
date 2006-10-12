@@ -8,7 +8,7 @@
 #include "zipinputstream.h"
 
 using std::istream;
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 ZipInputStream::ZipInputStream( std::istream &is, std::streampos pos ) 

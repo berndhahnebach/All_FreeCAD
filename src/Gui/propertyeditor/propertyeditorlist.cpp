@@ -32,7 +32,7 @@
 #include <App/PropertyStandard.h>
 
 #include "propertyeditorlist.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::PropertyEditor;
 
 

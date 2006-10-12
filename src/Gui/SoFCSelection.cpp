@@ -46,7 +46,7 @@
 #include "Selection.h"
 #include "SoFCSelectionAction.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 SoFullPath * Gui::SoFCSelection::currenthighlight = NULL;

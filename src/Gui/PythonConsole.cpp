@@ -43,7 +43,7 @@
 
 #include <Base/Interpreter.h>
 #include <Base/Exception.h>
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using Gui::Dialog::GetDefCol;
 

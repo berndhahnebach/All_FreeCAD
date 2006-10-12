@@ -35,7 +35,7 @@
 #include "Application.h"
 
 #include "../Base/Parameter.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /**

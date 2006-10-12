@@ -39,7 +39,7 @@
 #include <App/DocumentObject.h>
 #include "Application.h"
 #include "ViewProviderExtern.h"
-
+#define new DEBUG_CLIENTBLOCK
 using Base::Console;
 using Base::streq;
 using namespace Gui;

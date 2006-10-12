@@ -33,7 +33,7 @@
 
 #include "ProgressBar.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -42,7 +42,7 @@
 #include "Language/Translator.h"
 
 #include "../Base/Exception.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 /* TRANSLATOR Gui::CheckMessageBox */

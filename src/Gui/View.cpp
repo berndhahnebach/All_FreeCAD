@@ -34,7 +34,7 @@
 #include "Document.h"
 #include "Application.h"
 #include "MainWindow.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 //**************************************************************************

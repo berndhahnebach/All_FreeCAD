@@ -25,6 +25,8 @@
 
 #include "Swap.h"
 
+#define new DEBUG_CLIENTBLOCK
+
 unsigned short Base::SwapOrder (void)
 {
   unsigned short usDummy = 1;

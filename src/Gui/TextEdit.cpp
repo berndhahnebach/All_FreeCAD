@@ -31,7 +31,7 @@
 #endif
 
 #include "TextEdit.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 /**

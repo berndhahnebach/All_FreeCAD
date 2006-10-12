@@ -31,7 +31,7 @@
 #include "FeaturePython.h"
 #include "FeaturePythonPy.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 using namespace std;
 

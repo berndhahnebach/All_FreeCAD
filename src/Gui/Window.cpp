@@ -29,7 +29,7 @@
 
 #include "../Base/Console.h"
 #include "../App/Application.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 //**************************************************************************

@@ -27,6 +27,6 @@
 
 
 #include "Placement.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Base;
 

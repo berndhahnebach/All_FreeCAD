@@ -44,6 +44,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 
+#define new DEBUG_CLIENTBLOCK
 
 using namespace Base;
 using namespace std;

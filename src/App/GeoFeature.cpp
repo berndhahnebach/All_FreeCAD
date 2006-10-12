@@ -29,7 +29,7 @@
 #include <Base/Console.h>
 using Base::Console;
 #include "GeoFeature.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

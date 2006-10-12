@@ -39,7 +39,7 @@ using Base::Console;
 #include "MaterialPy.h"
 #include "MatrixPy.h"
 #include "VectorPy.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

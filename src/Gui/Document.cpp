@@ -54,7 +54,7 @@
 #include "Selection.h"
 #include "SoFCSelection.h"
 #include "WaitCursor.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 /* TRANSLATOR Gui::Document */

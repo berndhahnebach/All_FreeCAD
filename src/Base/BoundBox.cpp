@@ -32,6 +32,7 @@
 
 #include "BoundBox.h"
 
+#define new DEBUG_CLIENTBLOCK
 
 using namespace Base;
 

@@ -33,7 +33,7 @@
 
 #include "propertyeditorfont.h"
 #include "Widgets.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::PropertyEditor;
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::FontEditorItem, Gui::PropertyEditor::EditableItem);

@@ -62,7 +62,7 @@
 #include <Inventor/nodes/SoCube.h>
 #include <Inventor/sensors/SoTimerSensor.h>
 
-
+#define new DEBUG_CLIENTBLOCK
 
 unsigned char * generateTexture(int w, int h, int d)
 {

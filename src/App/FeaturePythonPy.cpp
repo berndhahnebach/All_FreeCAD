@@ -37,7 +37,7 @@ using Base::Console;
 #include "Property.h"
 #include "FeaturePythonPy.h"
 #include "FeaturePython.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

@@ -29,7 +29,7 @@
 #endif
 
 #include "ToolBox.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::DockWnd;
 
 

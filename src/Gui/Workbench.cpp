@@ -45,7 +45,7 @@
 
 #include <Base/Parameter.h>
 #include <Base/Interpreter.h>
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 /** \defgroup workbench Workbench Framework

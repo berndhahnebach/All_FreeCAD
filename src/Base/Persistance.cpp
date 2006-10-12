@@ -29,6 +29,8 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Persistance.h"
 
+#define new DEBUG_CLIENTBLOCK
+
 using namespace Base;
 
 TYPESYSTEM_SOURCE(Base::Persistance,Base::BaseClass);

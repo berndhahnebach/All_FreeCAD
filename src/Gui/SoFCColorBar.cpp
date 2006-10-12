@@ -45,7 +45,7 @@
 #include "SoFCColorBar.h"
 #include "SoFCColorGradient.h"
 #include "SoFCColorLegend.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 SO_NODE_ABSTRACT_SOURCE(SoFCColorBarBase);

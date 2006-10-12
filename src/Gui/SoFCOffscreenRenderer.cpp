@@ -41,7 +41,7 @@
 #include <App/Application.h>
 #include <Inventor/C/basic.h>
 #include "SoFCOffscreenRenderer.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using namespace std;
 

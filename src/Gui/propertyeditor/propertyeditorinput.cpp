@@ -36,7 +36,7 @@
 
 #include "propertyeditorinput.h"
 #include "../SpinBox.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::PropertyEditor;
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::TextEditorItem, Gui::PropertyEditor::EditableItem);

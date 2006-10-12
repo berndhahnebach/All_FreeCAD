@@ -33,7 +33,7 @@
 #include "Command.h"
 #include "BitmapFactory.h"
 #include "Widgets.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /**

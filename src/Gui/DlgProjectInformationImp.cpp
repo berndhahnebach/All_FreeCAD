@@ -35,7 +35,7 @@
 
 #include "DlgProjectInformationImp.h"
 #include "Document.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /**

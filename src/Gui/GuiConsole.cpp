@@ -36,7 +36,7 @@
 #endif
 
 #include "GuiConsole.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 #ifdef FC_OS_WIN32

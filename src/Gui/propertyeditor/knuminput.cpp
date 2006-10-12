@@ -60,7 +60,7 @@
 
 #include "knumvalidator.h"
 #include "knuminput.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 static inline int calcDiffByTen( int x, int y ) {

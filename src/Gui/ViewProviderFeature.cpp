@@ -41,7 +41,7 @@
 #include "ViewProviderFeature.h"
 #include "View3DInventorViewer.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 

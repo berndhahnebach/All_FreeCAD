@@ -43,7 +43,7 @@
 using std::vector;
 using std::string;
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 PROPERTY_SOURCE(Gui::ViewProviderExtern, Gui::ViewProvider)

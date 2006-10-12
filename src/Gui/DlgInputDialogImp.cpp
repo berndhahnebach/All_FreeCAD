@@ -34,7 +34,7 @@
 #include "DlgInputDialogImp.h"
 #include "SpinBox.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /**

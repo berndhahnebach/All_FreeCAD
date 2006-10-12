@@ -13,7 +13,7 @@
 #include "zipios_defs.h"
 
 #include "outputstringstream.h"
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 using std::ios ;

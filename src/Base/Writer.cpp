@@ -34,6 +34,8 @@
 #include <algorithm>
 #include <locale>
 
+#define new DEBUG_CLIENTBLOCK
+
 using namespace Base;
 using namespace std;
 using namespace zipios ;

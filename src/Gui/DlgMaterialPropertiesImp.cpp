@@ -30,7 +30,7 @@
 #include "Widgets.h"
 #include "SpinBox.h"
 #include "ViewProvider.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 

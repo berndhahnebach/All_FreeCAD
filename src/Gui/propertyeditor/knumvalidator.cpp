@@ -38,7 +38,7 @@
 //#include <klocale.h>
 //#include <kglobal.h>
 //#include <kdebug.h>
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 ///////////////////////////////////////////////////////////////

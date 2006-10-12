@@ -38,7 +38,7 @@
 #include "SoFCBackgroundGradient.h"
 
 #include <Inventor/nodes/SoText2.h>
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 SO_NODE_SOURCE(SoFCBackgroundGradient);

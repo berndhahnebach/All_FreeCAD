@@ -105,6 +105,8 @@
 
 //#define FC_LOGGING_CB
 
+#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 /** \defgroup View3D 3d Viewer

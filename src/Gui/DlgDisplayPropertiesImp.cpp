@@ -49,7 +49,7 @@
 #include <App/Application.h>
 #include <App/Feature.h>
 #include <App/Material.h>
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 using namespace std;
 

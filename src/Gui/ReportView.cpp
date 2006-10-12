@@ -32,7 +32,7 @@
 #include "ReportView.h"
 #include "FileDialog.h"
 #include "PythonConsole.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using namespace Gui::DockWnd;
 

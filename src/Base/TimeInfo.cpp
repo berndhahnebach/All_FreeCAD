@@ -29,6 +29,7 @@
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "TimeInfo.h"
 
+#define new DEBUG_CLIENTBLOCK
 
 using namespace Base;
 

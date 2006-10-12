@@ -34,7 +34,7 @@
 #include "DlgUndoRedo.h"
 #include "ToolBoxBar.h"
 #include "WhatsThis.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using namespace Gui::Dialog;
 

@@ -39,7 +39,7 @@
 #include "DockWindow.h"
 #include "ReportView.h"
 #include "PythonConsole.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 //**************************************************************************

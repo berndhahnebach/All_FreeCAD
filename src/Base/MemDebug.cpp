@@ -185,7 +185,7 @@ int __cdecl MemDebug::sAllocHook(
    int      nLine
    )
 {
-   char *operation[] = { "", "allocating", "re-allocating", "freeing" };
+  char *operation[] = { "       :", "Alloc  :", "Realloc:", "Free   :" };
    char *blockType[] = { "Free", "Normal", "CRT", "Ignore", "Client" };
 
    if ( nBlockUse == _CRT_BLOCK )   // Ignore internal C runtime library allocations
@@ -196,11 +196,10 @@ int __cdecl MemDebug::sAllocHook(
 
    if( nBlockUse !=4 )
      return(7);
-
+   
    fprintf( logFile, 
-            "Memory operation in %s, line %d: %s a %d-byte '%s' block (#%ld)",
-            szFileName, nLine, operation[nAllocType], nSize, 
-            blockType[nBlockUse], lRequest );
+            "%s (#%7d) %12ld byte (%s) in %s line %d",
+            operation[nAllocType],lRequest, nSize, blockType[nBlockUse],szFileName, nLine);
    if ( pvData != NULL )
       fprintf( logFile, " at %p\n", pvData );
    else
@@ -224,6 +223,6 @@ void __cdecl MemDebug::sDumpClientHook(
 {
    long requestNumber;
   _CrtIsMemoryBlock(pUserData,(unsigned int)nBytes,&requestNumber,NULL,NULL);
-  fprintf( logFile, "Unfread memory: %p (%d bytes) (#%d)\n", pUserData,nBytes,requestNumber );
+  fprintf( logFile, "Leak   : (#%7d) %12ld bytes (%p)  \n", requestNumber, nBytes, pUserData );
 
 }

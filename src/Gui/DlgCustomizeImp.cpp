@@ -32,7 +32,7 @@
 #include "DlgCustomizeImp.h"
 #include "MainWindow.h"
 #include "WidgetFactory.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 QStringList DlgCustomizeImp::_pages;

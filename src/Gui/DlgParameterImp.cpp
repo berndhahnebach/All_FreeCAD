@@ -44,7 +44,7 @@
 #include <Base/Exception.h>
 #include <App/Application.h>
 
-
+#define new DEBUG_CLIENTBLOCK
 
 using namespace Gui::Dialog;
 

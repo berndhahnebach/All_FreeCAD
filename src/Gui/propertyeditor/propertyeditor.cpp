@@ -30,7 +30,7 @@
 #endif
 
 #include "propertyeditor.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::PropertyEditor;
 
 

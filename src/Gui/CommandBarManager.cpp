@@ -33,7 +33,7 @@
 #include "Command.h"
 #include "ToolBox.h"
 #include "ToolBoxBar.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using DockWnd::ToolBox;
 using DockWnd::ToolBoxBar;

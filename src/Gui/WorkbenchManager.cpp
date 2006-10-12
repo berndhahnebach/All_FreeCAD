@@ -29,7 +29,7 @@
 #include <Base/Console.h>
 #include "WorkbenchManager.h"
 #include "Workbench.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 WorkbenchManager* WorkbenchManager::_instance = 0;

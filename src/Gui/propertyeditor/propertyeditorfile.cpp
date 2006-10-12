@@ -40,7 +40,7 @@
 #include "propertyeditorfile.h"
 #include "propertyeditorlist.h"
 #include "propertyeditorinput.h"
-
+#define new DEBUG_CLIENTBLOCK
 using Gui::PreviewLabel;
 using namespace Gui::PropertyEditor;
 

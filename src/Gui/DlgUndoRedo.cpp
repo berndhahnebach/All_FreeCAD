@@ -32,7 +32,7 @@
 #include "MainWindow.h"
 #include "Document.h"
 #include "PythonEditor.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /**

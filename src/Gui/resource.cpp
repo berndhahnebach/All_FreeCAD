@@ -36,6 +36,8 @@
 #include "Language/FreeCAD_de.h"
 #include "Language/qt_de.h"
 
+#define new DEBUG_CLIENTBLOCK
+
 /**
  * Register all languages to switch between them at any later time.
  */

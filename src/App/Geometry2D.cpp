@@ -40,6 +40,7 @@
 #include "../Base/Exception.h"
 #include "../Base/Console.h"
 
+#define new DEBUG_CLIENTBLOCK
 
 
 //===========================================================================

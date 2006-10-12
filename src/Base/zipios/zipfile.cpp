@@ -10,7 +10,7 @@
 #include "zipios_defs.h"
 
 #include "backbuffer.h"
-
+#define new DEBUG_CLIENTBLOCK
 namespace zipios {
 
 //

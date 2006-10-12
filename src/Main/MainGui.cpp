@@ -56,6 +56,8 @@
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
 #include "../Build/Version.h"
 
+#define new DEBUG_CLIENTBLOCK
+
 void PrintInitHelp(void);
 
 const char sBanner[] = "(c) Juergen Riegel 2001-2006\n"\

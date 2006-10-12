@@ -29,7 +29,7 @@
 #include "Document.h"
 #include "DocumentObject.h"
 #include "DocumentObjectPy.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

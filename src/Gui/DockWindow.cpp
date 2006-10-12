@@ -32,7 +32,7 @@
 
 #include "DockWindow.h"
 #include "MainWindow.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 DockWindow::DockWindow( Gui::Document* pcDocument, QWidget *parent, const char *name, WFlags f)

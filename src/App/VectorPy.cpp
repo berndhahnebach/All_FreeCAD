@@ -34,7 +34,7 @@ using Base::Console;
 
 
 #include "VectorPy.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 
 

@@ -36,7 +36,7 @@ using Base::XMLReader;
 #include "Property.h"
 #include "Document.h"
 #include "DocumentObject.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace App;
 using namespace std;
 

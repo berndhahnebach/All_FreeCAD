@@ -35,7 +35,7 @@
 #endif
 
 #include "ButtonGroup.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::DockWnd;
 
 /* TRANSLATOR Gui::DockWnd::ButtonGroup */

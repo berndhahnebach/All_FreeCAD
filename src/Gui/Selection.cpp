@@ -36,7 +36,7 @@
 #include <App/Document.h>
 #include <App/DocumentObject.h>
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 using namespace std;
 

@@ -42,7 +42,7 @@
 #include "Tools.h"
 #include "Widgets.h"
 #include "Window.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgCustomKeyboardImp */

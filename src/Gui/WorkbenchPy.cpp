@@ -31,7 +31,7 @@
 #include "WorkbenchManager.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 

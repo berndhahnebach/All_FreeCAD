@@ -41,7 +41,7 @@
 #include "DlgSettingsColorGradientImp.h"
 #include "MainWindow.h"
 #include "View.h"
-
+#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 SO_NODE_SOURCE(SoFCColorGradient);

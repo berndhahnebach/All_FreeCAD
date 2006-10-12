@@ -52,7 +52,7 @@
 #include "propertyeditor/propertyeditorinput.h"
 #include "propertyeditor/propertyeditordate.h"
 
-
+#define new DEBUG_CLIENTBLOCK
 using namespace std;
 using namespace Gui;
 using namespace Gui::DockWnd;

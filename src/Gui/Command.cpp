@@ -119,6 +119,8 @@ using namespace Gui::DockWnd;
  * @see Gui::Command, Gui::ToggleCommand, Gui::CommandGroup, Gui::CommandManager
  */
 
+#define new DEBUG_CLIENTBLOCK
+
 CommandBase::CommandBase( const char* sMenu, const char* sToolTip, const char* sWhat, 
                           const char* sStatus, const char* sPixmap, int iAcc)
   : sMenuText(sMenu), sToolTipText(sToolTip), sWhatsThis(sWhat?sWhat:sToolTip), 

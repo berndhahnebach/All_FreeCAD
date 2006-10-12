@@ -29,7 +29,7 @@
 #include "PrefWidgets.h"
 #include "FileDialog.h"
 #include "../Base/Console.h"
-
+#define new DEBUG_CLIENTBLOCK
 using Base::Console;
 using namespace Gui;
 

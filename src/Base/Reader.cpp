@@ -48,6 +48,8 @@
 
 XERCES_CPP_NAMESPACE_USE
 
+#define new DEBUG_CLIENTBLOCK
+
 using namespace std;
 
 
