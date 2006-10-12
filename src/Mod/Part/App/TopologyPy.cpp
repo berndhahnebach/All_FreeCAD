@@ -28,8 +28,12 @@
 #ifndef _PreComp_
 #	include <assert.h>
 #	include <sstream>
+# include <BRepTools.hxx>
+# include <BRep_Builder.hxx>
 # include <IGESControl_Writer.hxx>
 # include <IGESControl_Reader.hxx>
+# include <STEPControl_Writer.hxx>
+# include <STEPControl_Reader.hxx>
 # include <Interface_Static.hxx>
 #endif
 
@@ -342,7 +346,7 @@ PyObject *TopoShapePy::writeIGES(PyObject *args)
   PY_TRY {
 
     // write iges file
-    IGESControl_Controller::Init();
+    //IGESControl_Controller::Init();
     IGESControl_Writer aWriter;
 
 #if 0

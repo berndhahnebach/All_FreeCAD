@@ -98,7 +98,7 @@
 #include "MainWindow.h"
 #include "MenuManager.h"
 #include "Application.h"
-#include "Mousemodel.h"
+#include "MouseModel.h"
 
 #include "ViewProvider.h"
 // build in Inventor

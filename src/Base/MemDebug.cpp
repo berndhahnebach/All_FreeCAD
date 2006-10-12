@@ -47,6 +47,7 @@
 
 using namespace Base;
 
+#if defined(_MSC_VER)
 
 
 /** Memory debugging class
@@ -116,20 +117,20 @@ MemDebug::MemDebug()
    // Open a log file for the hook functions to use 
    if ( logFile != NULL )
      throw "Base::MemDebug::MemDebug():38: Dont call the constructor by your self!";
-#if defined(_MSC_VER) && (_MSC_VER >= 1400)
+#if (_MSC_VER >= 1400)
    fopen_s( &logFile, "MemLog.txt", "w" );
    if ( logFile == NULL )
      throw "Base::MemDebug::MemDebug():41: File IO Error. Canot open log file...";
    _strtime_s( timeStr, 15 );
    _strdate_s( dateStr, 15 );
-#elif defined(_MSC_VER) && (_MSC_VER >= 1200)
+#elif (_MSC_VER >= 1200)
    logFile = fopen( "MemLog.txt", "w" );
    if ( logFile == NULL )
      throw "Base::MemDebug::MemDebug():41: File IO Error. Canot open log file...";
    _strtime( timeStr );
    _strdate( dateStr );
 #endif
-   fprintf( logFile, 
+   fprintf( logFile,
             "Memory Allocation Log File for FreeCAD, run at %s on %s.\n",
             timeStr, dateStr );
    fputs( "-------------------------------------------------------------------\n", logFile );
@@ -234,3 +235,5 @@ void __cdecl MemDebug::sDumpClientHook(
   fprintf( logFile, "Leak   : (#%7d) %12ld bytes (%p)  \n", requestNumber, nBytes, pUserData );
 
 }
+
+#endif
