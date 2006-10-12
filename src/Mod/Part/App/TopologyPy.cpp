@@ -36,6 +36,7 @@
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 #include <Base/Console.h>
+#include <Base/Sequencer.h>
 #include "TopologyPy.h"
 
 using Base::Console;
@@ -108,8 +109,12 @@ PyTypeObject TopoShapePy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef TopoShapePy::Methods[] = {
   {"hasChild",         (PyCFunction) shasChild,         Py_NEWARGS},
-  {"readIges",         (PyCFunction) sreadIges,         Py_NEWARGS},
-  {"writeIges",        (PyCFunction) swriteIges,        Py_NEWARGS},
+  {"readIGES",         (PyCFunction) sreadIGES,         Py_NEWARGS},
+  {"writeIGES",        (PyCFunction) swriteIGES,        Py_NEWARGS},
+  {"readSTEP",         (PyCFunction) sreadSTEP,         Py_NEWARGS},
+  {"writeSTEP",        (PyCFunction) swriteSTEP,        Py_NEWARGS},
+  {"readBREP",         (PyCFunction) sreadBREP,         Py_NEWARGS},
+  {"writeBREP",        (PyCFunction) swriteBREP,        Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -212,7 +217,59 @@ PyObject *TopoShapePy::hasChild(PyObject *args)
 	Py_Return; 
 }
 
-PyObject *TopoShapePy::readIges(PyObject *args)
+#if 0 // need a define for version of OCC
+//#include <Message_ProgressIndicator.hxx>
+//#include <Message_ProgressScale.hxx>
+#include <MoniTool_ProgressIndicator.hxx>
+#include <MoniTool_ProgressScale.hxx>
+#include <Transfer_FinderProcess.hxx>
+#include <Handle_TCollection_HAsciiString.hxx>
+#include <TCollection_HAsciiString.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <IGESData_IGESEntity.hxx>
+#include <Handle_XSControl_TransferReader.hxx>
+#include <XSControl_TransferReader.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <Interface_InterfaceModel.hxx>
+
+class ProgressIndicator : public MoniTool_ProgressIndicator
+//class ProgressIndicator : public Message_ProgressIndicator
+{
+public:
+  ProgressIndicator() {}
+  virtual ~ProgressIndicator() 
+  {
+    Base::Sequencer().stop();
+  }
+  
+  virtual  void Reset()
+  {
+  }
+  virtual  Standard_Boolean UserBreak()
+  {
+    return Base::Sequencer().wasCanceled();
+  }
+  virtual  Standard_Boolean Show(const Standard_Boolean force = Standard_True)
+  {
+    Standard_Real min, max, step; Standard_Boolean isInf;
+    GetScale(min, max, step, isInf);
+    Standard_Real val = GetValue();
+    Standard_Integer scopes = GetNbScopes();
+
+    const MoniTool_ProgressScale& scale = GetScope(scopes);
+    Handle_TCollection_HAsciiString name = scale.GetName();
+
+    if ( val < 2.0 )
+      Base::Sequencer().start(name->ToCString(), (unsigned long)max);
+    else
+      Base::Sequencer().next();
+
+    return false;
+  }
+};
+#endif
+
+PyObject *TopoShapePy::readIGES(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -227,7 +284,7 @@ PyObject *TopoShapePy::readIges(PyObject *args)
       return NULL;
     }
 
-    // read iges-file
+    // read iges file
     IGESControl_Reader aReader;
 
     if (aReader.ReadFile((const Standard_CString)filename) != IFSelect_RetDone) {
@@ -235,6 +292,25 @@ PyObject *TopoShapePy::readIges(PyObject *args)
       return NULL;
     }
 
+#if 0
+    // get all root shapes 
+    Handle(TColStd_HSequenceOfTransient) aList=aReader.GiveList("xst-transferrable-roots");
+    for (Standard_Integer j=1; j<=aList->Length(); j++) {
+      Handle(IGESData_IGESEntity) igesEntity=Handle(IGESData_IGESEntity)::DownCast(aList->Value(j));
+      // get names 
+      Handle_TCollection_HAsciiString name = igesEntity->NameValue();
+      if ( !name.IsNull() ) {
+        const char* cname = name->ToCString();
+      }
+      if (igesEntity->HasShortLabel()) {
+        name = igesEntity->ShortLabel();
+        if ( !name.IsNull() ) {
+          const char* cname = name->ToCString();
+        }
+      }
+      const char* type = igesEntity->DynamicType()->Name();
+    }
+ 
     //Standard_Integer val = Interface_Static::IVal("read.iges.bspline.continuity");
     //Interface_Static::SetIVal("read.iges.bspline.continuity", 2);
     //Standard_Integer ic = Interface_Static::IVal("read.precision.mode");
@@ -245,6 +321,7 @@ PyObject *TopoShapePy::readIges(PyObject *args)
     //int ct = aList->Length();
     //Reader.TransferList(aList);
     //ct = aReader.NbShapes();
+#endif
 
     // one shape that contains all subshapes
     aReader.TransferRoots();
@@ -256,7 +333,7 @@ PyObject *TopoShapePy::readIges(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::writeIges(PyObject *args)
+PyObject *TopoShapePy::writeIGES(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -264,14 +341,24 @@ PyObject *TopoShapePy::writeIges(PyObject *args)
 
   PY_TRY {
 
-    // write iges-file
+    // write iges file
+    IGESControl_Controller::Init();
     IGESControl_Writer aWriter;
 
-    //Standard_CString byvalue = Interface_Static::CVal("write.iges.header.author");
-    //Interface_Static::SetCVal ("write.iges.header.author", "FreeCAD");
+#if 0
+    Handle(Transfer_FinderProcess) proc = aWriter.TransferProcess();
+    Handle(MoniTool_ProgressIndicator) prog = new ProgressIndicator();
+    proc->SetProgress(prog);
+
+    Standard_CString byvalue = Interface_Static::CVal("write.iges.header.author");
+    Interface_Static::SetCVal ("write.iges.header.author", "FreeCAD");
     //Interface_Static::SetCVal ("write.iges.header.company", "FreeCAD");
+#endif
 
     aWriter.AddShape(_cTopoShape);
+#if 0
+    aWriter.ComputeModel();
+#endif
 
     if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone) {
       PyErr_SetString(PyExc_Exception,"Writing IGES failed");
@@ -283,3 +370,141 @@ PyObject *TopoShapePy::writeIges(PyObject *args)
   Py_Return; 
 }
 
+PyObject *TopoShapePy::readSTEP(PyObject *args)
+{
+  char* filename;
+  if (!PyArg_ParseTuple(args, "s", &filename ))   
+    return NULL;
+
+  PY_TRY {
+    // checking for the file
+    Base::FileInfo File(filename);
+    if(!File.isReadable()) {
+      PyErr_SetString(PyExc_Exception,"File to read does not exist or is not readable");
+      return NULL;
+    }
+
+    // read step file
+    STEPControl_Reader aReader;
+    if (aReader.ReadFile((const Standard_CString)filename) != IFSelect_RetDone) {
+      PyErr_SetString(PyExc_Exception,"Reading STEP failed");
+      return NULL;
+    }
+
+#if 0 // Some interesting stuff
+    Handle(TColStd_HSequenceOfTransient) aList=aReader.GiveList("xst-transferrable-roots");
+    for (Standard_Integer j=1; j<=aList->Length(); j++) {
+      Handle(IGESData_IGESEntity) igesEntity=Handle(IGESData_IGESEntity)::DownCast(aList->Value(j));
+      // get names 
+      Handle_TCollection_HAsciiString name = igesEntity->NameValue();
+      if ( !name.IsNull() ) {
+        const char* cname = name->ToCString();
+      }
+      if (igesEntity->HasShortLabel()) {
+        name = igesEntity->ShortLabel();
+        if ( !name.IsNull() ) {
+          const char* cname = name->ToCString();
+        }
+      }
+      const char* type = igesEntity->DynamicType()->Name();
+    }
+#endif
+
+    aReader.TransferRoots();
+    _cTopoShape = aReader.OneShape();
+
+#if 0 // Some interesting stuff
+	  Handle_XSControl_WorkSession ws = aReader.WS();
+	  //SetModel( reader.StepModel() );
+	  Handle_XSControl_TransferReader tr = ws->TransferReader();
+	  Handle_Standard_Transient ent = tr->EntityFromShapeResult(_cTopoShape, 3);
+	  if ( ! ent.IsNull() ) {
+		  //printf( "Name of STEP-Model: %s\n", ws->Model()->StringLabel(ent)->String() );
+	  }
+	  TopTools_IndexedMapOfShape smap;
+	  TopExp::MapShapes( _cTopoShape, smap);
+	  for ( Standard_Integer k = 1; k <= smap.Extent(); k++ ) {
+		  const TopoDS_Shape& tsh = smap(k);
+		  Handle_Standard_Transient ent = tr->EntityFromShapeResult(tsh, 3);
+		  if ( ! ent.IsNull() ) {
+			  //printf( "Part %s ", ws->Model()->StringLabel(ent)->String() );
+			  //printf( "is a %s\n", ws->Model()->TypeName(ent) );
+        //MoniTool_DataMapOfShapeTransient map;
+			  //map.Bind(tsh, ws->Model()->StringLabel(ent)->ShallowCopy() );
+		  }
+	  }
+#endif
+
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PyObject *TopoShapePy::writeSTEP(PyObject *args)
+{
+  char* filename;
+  if (!PyArg_ParseTuple(args, "s", &filename ))   
+    return NULL;
+
+  PY_TRY {
+
+    // write step file
+    STEPControl_Writer aWriter;
+
+    //FIXME: Does not work this way!!!
+    if (aWriter.Transfer(_cTopoShape, STEPControl_AsIs)) {
+      PyErr_SetString(PyExc_Exception,"Transferring STEP failed");
+      return NULL;
+    }
+
+    if (aWriter.Write((const Standard_CString)filename) != IFSelect_RetDone) {
+      PyErr_SetString(PyExc_Exception,"Writing STEP failed");
+      return NULL;
+    }
+        
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PyObject *TopoShapePy::readBREP(PyObject *args)
+{
+  char* filename;
+  if (!PyArg_ParseTuple(args, "s", &filename ))   
+    return NULL;
+
+  PY_TRY {
+    // checking for the file
+    Base::FileInfo File(filename);
+    if(!File.isReadable()) {
+      PyErr_SetString(PyExc_Exception,"File to read does not exist or is not readable");
+      return NULL;
+    }
+    
+    // read brep file
+    BRep_Builder aBuilder;
+    if (!BRepTools::Read(_cTopoShape,(const Standard_CString)filename,aBuilder)) {
+      PyErr_SetString(PyExc_Exception,"Reading BREP failed");
+      return NULL;
+    }
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PyObject *TopoShapePy::writeBREP(PyObject *args)
+{
+  char* filename;
+  if (!PyArg_ParseTuple(args, "s", &filename ))
+    return NULL;
+
+  PY_TRY {
+    // read brep file
+    if (!BRepTools::Write(_cTopoShape,(const Standard_CString)filename)) {
+      PyErr_SetString(PyExc_Exception,"Writing BREP failed");
+      return NULL;
+    }
+  } PY_CATCH;
+
+  Py_Return; 
+}

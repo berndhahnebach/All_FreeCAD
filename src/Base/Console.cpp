@@ -331,6 +331,7 @@ void ConsoleSingelton::Destruct(void)
 	// not initialized or doubel destruct!
 	assert(_pcSingelton);
 	delete _pcSingelton;
+  _pcSingelton=0;
 }
 
 ConsoleSingelton & ConsoleSingelton::Instance(void)

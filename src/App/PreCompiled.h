@@ -18,7 +18,12 @@
 #include <assert.h>
 #include <time.h>
 #include <direct.h>
-#include <windows.h>
+
+#ifdef FC_OS_WIN32
+#  define WIN32_LEAN_AND_MEAN
+#  include <windows.h>
+#  include <crtdbg.h>
+#endif
 
 
 // Streams

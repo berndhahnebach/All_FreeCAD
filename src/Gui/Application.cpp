@@ -952,6 +952,7 @@ void Application::destruct(void)
   MainWindow::destruct();
   SelectionSingleton::destruct();
   delete Instance;
+  Instance = 0;
 
   delete _pcQApp;
 }

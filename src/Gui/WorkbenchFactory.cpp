@@ -44,6 +44,7 @@ void WorkbenchFactoryInst::destruct ()
 {
   if ( _pcSingleton != 0 )
     delete _pcSingleton;
+  _pcSingleton = 0;
 }
 
 Workbench* WorkbenchFactoryInst::createWorkbench ( const char* sName ) const

@@ -70,12 +70,15 @@ using namespace App;
 #include "InitScript.h"
 #include "TestScript.h"
 
-#ifdef FC_OS_LINUX
-using namespace std;
+#ifdef _MSC_VER // New handler for Microsoft Visual C++ compiler
+# include <new.h>
+#else // Ansi C/C++ new handler
+# include <new>
 #endif
 
-
-#define new DEBUG_CLIENTBLOCK
+#ifdef MemDebugOn
+# define new DEBUG_CLIENTBLOCK
+#endif
 
 
 //using Base::GetConsole;
@@ -613,7 +616,6 @@ void Application::destructObserver(void)
  * prints an error message and throws an exception
  */
 #ifdef _MSC_VER // New handler for Microsoft Visual C++ compiler
-#include <new.h>
 int __cdecl freecadNewHandler(size_t size )
 {
   // throw an exception
@@ -621,7 +623,6 @@ int __cdecl freecadNewHandler(size_t size )
   return 0;
 }
 #else // Ansi C/C++ new handler
-#include <new>
 static void freecadNewHandler ()
 {
   // throw an exception

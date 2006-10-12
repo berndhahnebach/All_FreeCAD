@@ -22,18 +22,18 @@
  *   Juergen Riegel 2006                                                   *
  ***************************************************************************/
 
-/** \defgroup MemDebug Memory debuging
+/** \defgroup MemDebug Memory debugging
  * \section Overview
  * In C++ applications are a lot ways to handle memory allocation and deallocation.
  * As many ways to do it wrong or simply forget to free memory. One way to overcome
  * this problem is e.g. handle classes (like OpenCasCade) or us a lot factories.
  * But all of them has drawbacks or performance penalties. One goog way to get memory
- * problems hunted down is the MSCRT Heap debuging facility. This set of function
+ * problems hunted down is the MSCRT Heap debugging facility. This set of function
  * opens the possibility to track and locate all kind of memory problems, e.g.
  * Memory leaks.
  *
  * \section Implementation
- * The FreeCAD memory debuging is located in the Base::MemDebug class.
+ * The FreeCAD memory debugging is located in the Base::MemDebug class.
  */
 
 #include "PreCompiled.h"
@@ -49,8 +49,8 @@ using namespace Base;
 
 
 
-/** Memory debuging class
- * This class is an interface to the Windows CRT debuging
+/** Memory debugging class
+ * This class is an interface to the Windows CRT debugging
  * facility. If the define MemDebugOn in the src/FCConfig.h is 
  * set the class get intatiated 
  * globally and tracks all memory allocations on the heap. The 
@@ -116,11 +116,19 @@ MemDebug::MemDebug()
    // Open a log file for the hook functions to use 
    if ( logFile != NULL )
      throw "Base::MemDebug::MemDebug():38: Dont call the constructor by your self!";
+#if defined(_MSC_VER) && (_MSC_VER >= 1400)
    fopen_s( &logFile, "MemLog.txt", "w" );
    if ( logFile == NULL )
      throw "Base::MemDebug::MemDebug():41: File IO Error. Canot open log file...";
    _strtime_s( timeStr, 15 );
    _strdate_s( dateStr, 15 );
+#elif defined(_MSC_VER) && (_MSC_VER >= 1200)
+   logFile = fopen( "MemLog.txt", "w" );
+   if ( logFile == NULL )
+     throw "Base::MemDebug::MemDebug():41: File IO Error. Canot open log file...";
+   _strtime( timeStr );
+   _strdate( dateStr );
+#endif
    fprintf( logFile, 
             "Memory Allocation Log File for FreeCAD, run at %s on %s.\n",
             timeStr, dateStr );
@@ -221,7 +229,7 @@ void __cdecl MemDebug::sDumpClientHook(
    size_t nBytes
    )
 {
-   long requestNumber;
+   long requestNumber=0;
   _CrtIsMemoryBlock(pUserData,(unsigned int)nBytes,&requestNumber,NULL,NULL);
   fprintf( logFile, "Leak   : (#%7d) %12ld bytes (%p)  \n", requestNumber, nBytes, pUserData );
 

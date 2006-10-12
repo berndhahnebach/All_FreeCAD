@@ -432,6 +432,7 @@ void SelectionSingleton::destruct (void)
 {
   if (_pcSingleton != NULL)
     delete _pcSingleton;
+  _pcSingleton = 0;
 }
 /*
 void SelectionSingleton::addObject(App::DocumentObject *f)

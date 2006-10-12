@@ -251,9 +251,10 @@ InterpreterSingleton & InterpreterSingleton::Instance(void)
 
 void InterpreterSingleton::Destruct(void)
 {
-	// not initialized or doubel destruct!
+	// not initialized or double destruct!
 	assert(_pcSingelton);
 	delete _pcSingelton;
+  _pcSingelton = 0;
 }
 
 const char* InterpreterSingleton::init(int argc,char *argv[])

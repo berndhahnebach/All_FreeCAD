@@ -1,12 +1,3 @@
-/** \file FileTemplate.h
- *  \brief FileTemplate example header
- *  \author $Author: wmayer $
- *  \version $Revision: 2.2 $
- *  \date    $Date: 2006/01/13 16:59:41 $
- *  Here a example of a file layout for FreeCAD.
- *  @see Parameter.cpp
- */
-
 /***************************************************************************
  *   (c) Jürgen Riegel (juergen.riegel@web.de) 2002                        *   
  *                                                                         *
@@ -87,8 +78,12 @@ public:
 
 	// methods
 	PYFUNCDEF_D (TopoShapePy,hasChild);
-	PYFUNCDEF_D (TopoShapePy,readIges);
-	PYFUNCDEF_D (TopoShapePy,writeIges);
+	PYFUNCDEF_D (TopoShapePy,readIGES);
+	PYFUNCDEF_D (TopoShapePy,writeIGES);
+	PYFUNCDEF_D (TopoShapePy,readSTEP);
+	PYFUNCDEF_D (TopoShapePy,writeSTEP);
+	PYFUNCDEF_D (TopoShapePy,readBREP);
+	PYFUNCDEF_D (TopoShapePy,writeBREP);
 
   TopoDS_Shape &getShape(void){return _cTopoShape;}
 

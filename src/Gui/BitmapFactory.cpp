@@ -56,8 +56,9 @@ BitmapFactoryInst& BitmapFactoryInst::instance(void)
 
 void BitmapFactoryInst::destruct (void)
 {
-  if (_pcSingleton != NULL)
+  if (_pcSingleton != 0)
     delete _pcSingleton;
+  _pcSingleton = 0;
 }
 
 void BitmapFactoryInst::addPath(const char* sPath)
