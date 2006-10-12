@@ -29,6 +29,8 @@
 
 #include "Vector3D.h"
 
+#define new DEBUG_CLIENTBLOCK
+
 using namespace Base;
 
 /* Moved to .h because of Template

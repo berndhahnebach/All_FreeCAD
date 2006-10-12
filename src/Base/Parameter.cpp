@@ -60,7 +60,6 @@
 #include "Exception.h"
 #include "Console.h"
 
-
 //#ifdef XERCES_HAS_CPP_NAMESPACE
 //	using namespace xercesc;
 //#endif

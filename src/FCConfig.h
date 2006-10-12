@@ -93,6 +93,21 @@
 #	define PATHSEP '/'
 #endif
 
+//**************************************************************************
+// Crt Memory debuging
+
+/** Memory Crt debuging on
+  * This switches the debug CRT on Windows on. This is mostly located in
+  * MemDebug.cpp and .h in src/Base. With this on a Fiel (MemLog.txt) is 
+  * written on exit which report e.g. unfreed memory.
+  */
+#define MemDebugOn
+
+#if defined(MemDebugOn) && defined(FC_OS_WIN32)
+   #define DEBUG_CLIENTBLOCK   new( _CLIENT_BLOCK, __FILE__, __LINE__)
+#else
+   #define DEBUG_CLIENTBLOCK   new
+#endif // _DEBUG
 
 //**************************************************************************
 // STLport

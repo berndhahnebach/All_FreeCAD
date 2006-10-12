@@ -83,6 +83,9 @@ using namespace std;
 using namespace zipios ;
 
 
+#define new DEBUG_CLIENTBLOCK
+
+
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
 
 
