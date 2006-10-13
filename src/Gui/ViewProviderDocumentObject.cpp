@@ -73,20 +73,8 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
 
 ViewProviderDocumentObject::~ViewProviderDocumentObject()
 {
-  //FIXME: Probably it's best to define std::vector<const char*> getDisplayModes(void) const
-  //instead of std::vector<std::string> getDisplayModes(void) const.
-  //
-  // Cleanup the display mode in our property class.
-  // This cannot be done in PropertyEnumeration because instances of this class might have built-in
-  // arrays which mustn't be deleted in the destructor there.
-  //const char** enums = DisplayMode.getEnums();
-  //delete [] enums;
-//  std::vector<const char*>* enums = (std::vector<const char*>*)DisplayMode.getEnums();
-//  for ( std::vector<const char*>::iterator it = enums->begin(); it != enums->end(); ++it ) {
-//    char* buffer = (char*)(*it);
-//    free( buffer ); // we used 'strdup' (which used malloc) to create the literal
-//  }
-//  delete enums;
+  // Make sure that the property class does not destruct our string list
+  DisplayMode.setEnums(0);
   pcShapeMaterial->unref();
 }
 
@@ -134,11 +122,21 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
   pcObject = pcObj;
 
   // Retrieve the supported display modes of the view provider
-  std::vector<std::string> modes = this->getDisplayModes();
+  aDisplayModesArray = this->getDisplayModes();
 
-  if( modes.empty() )
-    modes.push_back("");
+  if( aDisplayModesArray.empty() )
+    aDisplayModesArray.push_back("");
 
+#if 1
+  // We must collect the const char* of the strings and give it to PropertyEnumeration,
+  // but we are still responsible for them, i.e. the property class must not delete the literals.
+  for ( std::vector<std::string>::iterator it = aDisplayModesArray.begin(); it != aDisplayModesArray.end(); ++it ) {
+    aDisplayEnumsArray.push_back( it->c_str() );
+  }
+  aDisplayEnumsArray.push_back(0); // null termination
+  DisplayMode.enableNotify(false);
+  DisplayMode.setEnums(&(aDisplayEnumsArray[0]));
+#else
   // We must convert the array of strings into an array of const char*
   std::vector<const char*>* enums = new std::vector<const char*>;
   for ( std::vector<std::string>::iterator it = modes.begin(); it != modes.end(); ++it ) {
@@ -154,6 +152,7 @@ void ViewProviderDocumentObject::attach(App::DocumentObject *pcObj)
 
   DisplayMode.enableNotify(false);
   DisplayMode.setEnums(&((*enums)[0]));
+#endif  
   // set the active mode
   const char* defmode = this->getDefaultDisplayMode();
   if ( defmode )
