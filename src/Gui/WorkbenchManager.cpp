@@ -29,6 +29,10 @@
 #include <Base/Console.h>
 #include "WorkbenchManager.h"
 #include "Workbench.h"
+#include "MenuManager.h"
+#include "ToolBarManager.h"
+#include "CommandBarManager.h"
+
 #define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
@@ -41,12 +45,26 @@ WorkbenchManager* WorkbenchManager::instance()
   return _instance;
 }
 
+void WorkbenchManager::destruct()
+{
+  delete _instance;
+  _instance = 0;
+}
+
 WorkbenchManager::WorkbenchManager() : _activeWorkbench(0)
 {
 }
 
 WorkbenchManager::~WorkbenchManager()
 {
+  for ( QMap<QString, Workbench*>::Iterator it = _workbenches.begin(); it != _workbenches.end(); ++it ) {
+    Workbench* wb = it.data();
+    delete wb;
+  }
+
+  MenuManager::destruct();
+  ToolBarManager::destruct();
+  CommandBarManager::destruct();
 }
 
 Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QString& className )

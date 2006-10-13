@@ -71,6 +71,7 @@ class GuiExport ToolBarManager
 public:
   /// The one and only instance.
   static ToolBarManager* getInstance();
+  static void destruct();
   /** Sets up the toolbars of a given workbench. */
   void setup( ToolBarItem* ) const;
   /** Sets up the custom toolbars defined by the user of a given workbench. */

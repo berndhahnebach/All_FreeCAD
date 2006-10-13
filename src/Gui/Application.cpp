@@ -950,6 +950,7 @@ void Application::destruct(void)
 {
   Console().Log("Destruct GuiApplication\n");
   MainWindow::destruct();
+  WorkbenchManager::destruct();
   SelectionSingleton::destruct();
   delete Instance;
   Instance = 0;

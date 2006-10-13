@@ -173,6 +173,12 @@ MenuManager* MenuManager::getInstance()
   return _instance;
 }
 
+void MenuManager::destruct()
+{
+  delete _instance;
+  _instance = 0;
+}
+
 MenuManager::MenuManager()
 {
 }

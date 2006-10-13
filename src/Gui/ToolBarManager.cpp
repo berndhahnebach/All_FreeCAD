@@ -165,6 +165,12 @@ ToolBarManager* ToolBarManager::getInstance()
   return _instance;
 }
 
+void ToolBarManager::destruct()
+{
+  delete _instance;
+  _instance = 0;
+}
+
 ToolBarManager::ToolBarManager()
 {
 }
