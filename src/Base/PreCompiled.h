@@ -33,6 +33,7 @@
 #include <set>
 #include <stack>
 #include <queue>
+#include <memory>
 
 //streams
 #include <iostream>

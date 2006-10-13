@@ -117,6 +117,7 @@ public:
 
   static Type badType(void);
   static void init(void);
+  static void destruct(void);
 
 protected:
   static std::string getModuleName(const char* ClassName);
