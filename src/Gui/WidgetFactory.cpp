@@ -157,6 +157,14 @@ WidgetFactorySupplier & WidgetFactorySupplier::instance()
   return *_pcSingleton;
 }
 
+void WidgetFactorySupplier::destruct()
+{
+  // delete the widget factory and all its producers first
+  WidgetFactoryInst::destruct();
+  delete _pcSingleton;
+  _pcSingleton=0;
+}
+
 // ----------------------------------------------------
 
 /* TRANSLATOR Gui::ContainerDialog */

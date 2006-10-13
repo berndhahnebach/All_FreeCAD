@@ -569,7 +569,11 @@ CommandGroup::CommandGroup(const char* name, bool exclusive, bool dropdown)
 
 CommandGroup::~CommandGroup()
 {
-  _aCommands.clear();
+  while ( !_aCommands.empty() ) {
+    CommandItem* item = _aCommands.back();
+    delete item;
+    _aCommands.pop_back();
+  }
 }
 
 void CommandGroup::languageChange()

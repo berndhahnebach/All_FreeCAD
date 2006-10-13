@@ -199,6 +199,12 @@ DockWindowManager* DockWindowManager::instance()
   return _instance;
 }
 
+void DockWindowManager::destruct()
+{
+  delete _instance;
+  _instance = 0;
+}
+
 DockWindowManager::DockWindowManager()
 {
   d = new DockWindowManagerP;

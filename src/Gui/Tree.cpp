@@ -434,6 +434,7 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 TreeView::~TreeView()
 {
   Gui::Selection().Detach(this);
+  delete pcDocumentPixmap;
 }
 
 void TreeView::contextMenuEvent ( QContextMenuEvent * e )

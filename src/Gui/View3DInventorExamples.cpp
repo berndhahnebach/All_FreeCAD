@@ -348,7 +348,8 @@ double cr = 0.33;
 double ci = 0.43;
 
 // Global pointer
-unsigned char * bitmap = new unsigned char[texturewidth*textureheight];
+//unsigned char * bitmap = new unsigned char[texturewidth*textureheight];
+unsigned char bitmap[texturewidth*textureheight];
 
 // Function to generate a julia set
 // Parameters:

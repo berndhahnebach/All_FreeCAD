@@ -39,19 +39,20 @@
 #endif
 
 // FreeCAD Base header
-#include "../Base/Console.h"
-#include "../Base/Interpreter.h"
-#include "../Base/Parameter.h"
-#include "../Base/Exception.h"
-#include "../Base/Factory.h"
-#include "../Base/FileInfo.h"
-#include "../App/Application.h"
-#include "../App/Feature.h"
-#include "../App/Document.h"
+#include <Base/Console.h>
+#include <Base/Interpreter.h>
+#include <Base/Parameter.h>
+#include <Base/Exception.h>
+#include <Base/Factory.h>
+#include <Base/FileInfo.h>
+#include <App/Application.h>
+#include <App/Feature.h>
+#include <App/Document.h>
 
 #include "MainWindow.h"
 #include "Application.h"
 #include "Document.h"
+#include "DlgEditorImp.h"
 #include "View.h"
 
 #include "Icons/developers.h"
@@ -234,6 +235,14 @@ MainWindow::~MainWindow()
   //       a valid instance of StdCmdMRU to do this
   StdCmdMRU::save();
   saveWindowSettings();
+
+  delete d;
+  DockWindowManager::destruct();
+  Dialog::DefColorMap::destruct();
+
+  SoFCDB::finish();
+  SoQt::done();
+  SoDB::finish();
 }
 
 MainWindow* MainWindow::getInstance()

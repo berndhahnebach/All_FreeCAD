@@ -187,6 +187,7 @@ class GuiExport DockWindowManager
 public:
   /** Creates the only instance of the DockWindowManager. */
   static DockWindowManager* instance();
+  static void destruct();
 
   DockWindow* getDockWindow( const QString& name );
   QPtrList<DockWindow> getDockWindows();

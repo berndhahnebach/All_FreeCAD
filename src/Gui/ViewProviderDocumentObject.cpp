@@ -73,6 +73,20 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
 
 ViewProviderDocumentObject::~ViewProviderDocumentObject()
 {
+  //FIXME: Probably it's best to define std::vector<const char*> getDisplayModes(void) const
+  //instead of std::vector<std::string> getDisplayModes(void) const.
+  //
+  // Cleanup the display mode in our property class.
+  // This cannot be done in PropertyEnumeration because instances of this class might have built-in
+  // arrays which mustn't be deleted in the destructor there.
+  //const char** enums = DisplayMode.getEnums();
+  //delete [] enums;
+//  std::vector<const char*>* enums = (std::vector<const char*>*)DisplayMode.getEnums();
+//  for ( std::vector<const char*>::iterator it = enums->begin(); it != enums->end(); ++it ) {
+//    char* buffer = (char*)(*it);
+//    free( buffer ); // we used 'strdup' (which used malloc) to create the literal
+//  }
+//  delete enums;
   pcShapeMaterial->unref();
 }
 

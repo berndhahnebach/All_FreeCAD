@@ -77,6 +77,11 @@ public:
     http = new QHttp;
     ftp  = new QFtp;
   }
+  
+  ~TextBrowserPrivate()
+  {
+    delete http; delete ftp;
+  }
 };
 
 // --------------------------------------------------------------------------
@@ -223,6 +228,8 @@ TextBrowser::TextBrowser(QWidget * parent, const char * name)
 TextBrowser::~TextBrowser()
 {
   delete d;
+  QMimeSourceFactory* hs = mimeSourceFactory ();
+  delete hs;
 }
 
 void TextBrowser::setSource (const QString & name)

@@ -304,6 +304,7 @@ void View3DInventorViewer::stopSpinning()
 
 View3DInventorViewer::~View3DInventorViewer()
 {
+  // cleanup
   this->backgroundroot->unref();
   this->backgroundroot = 0;
   this->foregroundroot->unref();
@@ -314,6 +315,11 @@ View3DInventorViewer::~View3DInventorViewer()
   setSceneGraph(0);
   this->pcViewProviderRoot->unref();
   this->pcViewProviderRoot = 0;
+
+  delete log.position;
+  delete log.time;
+
+  delete spinprojector;
 
   getMainWindow()->setPaneText(2, "");
 

@@ -41,9 +41,9 @@ public:
   /** @name singleton stuff */
   //@{
   /// Creates an instance
-  static LanguageFactoryInst& Instance(void);
+  static LanguageFactoryInst& instance(void);
   /// Destroys the instance
-  static void Destruct (void);
+  static void destruct (void);
   //@}
 
   /** Installs a new producer for a language*/
@@ -81,7 +81,7 @@ private:
 /** Returns the global LanguageFactoryInst object */
 inline GuiExport LanguageFactoryInst& LanguageFactory(void)
 {
-  return LanguageFactoryInst::Instance();
+  return LanguageFactoryInst::instance();
 }
 
 // --------------------------------------------------------------------
@@ -129,7 +129,8 @@ private:
   static LanguageFactorySupplier *_pcSingleton;
 
 public:
-  static LanguageFactorySupplier &Instance(void);
+  static LanguageFactorySupplier &instance(void);
+  static void destruct(void);
 };
 
 } // namespace Gui

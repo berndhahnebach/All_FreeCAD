@@ -44,22 +44,27 @@ using namespace Gui;
 
 LanguageFactoryInst* LanguageFactoryInst::_pcSingleton = NULL;
 
-LanguageFactoryInst& LanguageFactoryInst::Instance(void)
+LanguageFactoryInst& LanguageFactoryInst::instance(void)
 {
   if (_pcSingleton == NULL)
   {
     _pcSingleton = new LanguageFactoryInst;
     // make sure that producers are created
-    LanguageFactorySupplier::Instance();
+    LanguageFactorySupplier::instance();
   }
   return *_pcSingleton;
 }
 
-void LanguageFactoryInst::Destruct (void)
+void LanguageFactoryInst::destruct (void)
 {
+  // remove all translators
+  Translator::removeLanguage();
+  
   if (_pcSingleton)
     delete _pcSingleton;
   _pcSingleton=0;
+
+  LanguageFactorySupplier::destruct();
 }
 
 LanguageProducer::LanguageProducer (const QString& language, const unsigned char* data, const unsigned int& len)
@@ -67,7 +72,7 @@ LanguageProducer::LanguageProducer (const QString& language, const unsigned char
   mLanguageData.data = data;
   mLanguageData.size = len;
 
-  LanguageFactoryInst& f = LanguageFactoryInst::Instance();
+  LanguageFactoryInst& f = LanguageFactoryInst::instance();
   f.installProducer(language, this);
 }
 
@@ -107,70 +112,7 @@ bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
 }
 
 bool LanguageFactoryInst::installTranslator ( const QString& lang ) const
-{/*
-  LanguageEmbed* tv = (LanguageEmbed*)Produce(lang.latin1());
-
-  bool ok=false;
-  if ( !tv )
-    return false; // no data
-
-  QDir path = QDir::current();
-  QFileInfo fi( path.absPath() );
-  bool canDo = fi.permission( QFileInfo::WriteUser );
-#ifdef FC_OS_WIN32
-  const char* tmp = getenv("TMP");
-  if ( canDo==false && tmp )
-  {
-    path.setPath( tmp );
-    fi.setFile( path.absPath() );
-    canDo = fi.permission( QFileInfo::WriteUser );
-  }
-#endif
-  if ( canDo==false )
-  {
-    path = QDir::home();
-    fi.setFile( path.absPath() );
-    canDo = fi.permission( QFileInfo::WriteUser );
-  }
-
-  if ( canDo==false )
-    return false; // give up
-
-  // create temporary files
-  QString ts = "Language.ts";
-  fi.setFile( path, ts );
-  ts = fi.absFilePath();
-  QString qm = "Language.qm";
-  fi.setFile( path, qm );
-  qm = fi.absFilePath();
-  QFile file( ts );
-  if ( !file.open( IO_WriteOnly ) )
-    return false;
-
-  QTextStream out( &file );
-  out.writeRawBytes((const char*)tv->data, tv->size);
-
-  // all messages written
-  file.close();
-
-  // and delete the files again
-  QDir dir;
-  if ( file.size() > 0 )
-  {
-    // build the translator messages
-    MetaTranslator mt;
-    mt.load( ts );
-    mt.release( qm );
-    QTranslator* t = new Translator( lang );
-    t->load( qm, "." );
-    dir.remove( qm );
-
-    qApp->installTranslator( t );
-    ok = true;
-  }
-
-  dir.remove( ts );
-  return ok;*/
+{
   QValueList<QTranslatorMessage> msgs = messages( lang );
   bool ok=false;
   if ( msgs.size() > 0 )
@@ -270,7 +212,7 @@ void* LanguageProducer::Produce (void) const
 
 LanguageFactorySupplier* LanguageFactorySupplier::_pcSingleton = 0L;
 
-LanguageFactorySupplier & LanguageFactorySupplier::Instance(void)
+LanguageFactorySupplier & LanguageFactorySupplier::instance(void)
 {
   // not initialized?
   if(!_pcSingleton)
@@ -279,6 +221,12 @@ LanguageFactorySupplier & LanguageFactorySupplier::Instance(void)
   }
 
   return *_pcSingleton;
+}
+
+void LanguageFactorySupplier::destruct(void)
+{
+  delete _pcSingleton;
+  _pcSingleton = 0;
 }
 
 #include "linguist/metatranslator.cpp"

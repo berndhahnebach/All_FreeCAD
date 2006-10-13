@@ -106,6 +106,9 @@ PropertyView::PropertyView(Gui::Document* pcDocument,QWidget *parent,const char 
 PropertyView::~PropertyView()
 {
   Gui::Selection().Detach(this);
+  delete pcLabelOpen;
+  delete pcLabelClosed;
+  delete pcAttribute;
 }
 
 
