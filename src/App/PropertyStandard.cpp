@@ -151,12 +151,14 @@ void PropertyEnumeration::setEnums(const char** plEnums)
 {
   _EnumArray = plEnums;
 # ifdef FC_DEBUG
-  // check for NULL termination
-  const char* p = *plEnums;
-  unsigned int i=0;
-  while(*(p++) != NULL)i++;
-  // very unlikely to have enums with more then 5000 entries!
-  assert(i<5000);
+  if (_EnumArray) {
+    // check for NULL termination
+    const char* p = *_EnumArray;
+    unsigned int i=0;
+    while(*(p++) != NULL)i++;
+    // very unlikely to have enums with more then 5000 entries!
+    assert(i<5000);
+  }
 # endif
 }
 

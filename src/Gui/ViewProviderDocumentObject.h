@@ -121,6 +121,10 @@ protected:
 
   int _cLastStatus;
   Base::TimeInfo calcMaterial,calcData;
+
+private:
+  std::vector<const char*> aDisplayEnumsArray;
+  std::vector<std::string> aDisplayModesArray;
 };
 
 
