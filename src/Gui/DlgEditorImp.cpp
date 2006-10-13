@@ -230,7 +230,7 @@ DefColorMap::~DefColorMap(void)
 }
 
 /** Destroys the DefColorMap singleton */
-void DefColorMap::Destruct(void)
+void DefColorMap::destruct(void)
 {
   // not initialized or double destruct!
   assert(_pcSingleton);
@@ -239,7 +239,7 @@ void DefColorMap::Destruct(void)
 }
 
 /** Creates the DefColorMap singleton */
-DefColorMap &DefColorMap::Instance(void)
+DefColorMap &DefColorMap::instance(void)
 {
   // not initialized?
   if(!_pcSingleton)

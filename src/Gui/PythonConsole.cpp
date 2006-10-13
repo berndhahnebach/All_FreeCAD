@@ -121,6 +121,9 @@ PythonConsole::~PythonConsole()
 {
   getWindowParameter()->Detach( this );
   delete pythonSyntax;
+  Py_XDECREF(_stdoutPy);
+  Py_XDECREF(_stderrPy);
+  Py_XDECREF(_stdinPy);
 }
 
 // PythonConsole Methods						// Methods structure

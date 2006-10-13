@@ -54,9 +54,9 @@ public:
   static bool setLanguage ( const QString& );
   static void installLanguage();
   static QString currentLanguage();
+  static void removeLanguage();
 
 private:
-  static void clear();
   static void updateProperty( QObject* obj );
 
   static QPtrList<Translator> _instances; /**< A list of all created instances */ 

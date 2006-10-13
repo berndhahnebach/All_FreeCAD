@@ -175,6 +175,7 @@ private:
 
 public:
   static WidgetFactorySupplier &instance();
+  static void destruct();
   friend WidgetFactorySupplier &GetWidgetFactorySupplier();
 };
 

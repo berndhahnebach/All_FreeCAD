@@ -83,3 +83,8 @@ void Gui::SoFCDB::init()
   CursorEditorItem         ::init();
 }
 
+void Gui::SoFCDB::finish()
+{
+  // Coin <= 2.4.4 doesn't free static members of own data types. We must check this with Coin 2.4.5 (or higher) whether
+  // this 'static' memory leak is fixed, since the cleanup stuff has been improved.
+}

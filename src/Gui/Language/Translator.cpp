@@ -183,7 +183,7 @@ void Translator::installLanguage()
  */
 bool Translator::setLanguage ( const QString& lang )
 {
-  clear();
+  removeLanguage();
 
   bool ok = LanguageFactory().installLanguage( lang );
 /*
@@ -246,7 +246,7 @@ void Translator::updateProperty( QObject* obj )
 /**
  * Uninstalls all translators.
  */
-void Translator::clear()
+void Translator::removeLanguage()
 {
   // Note: Use here a "while" instead of a "for" loop since we remove the translator 
   // in its destructor from the global list, otherwise the iterator will become invalid

@@ -37,15 +37,15 @@
 #include <Inventor/Qt/SoQt.h> 
 
 // FreeCAD Base header
-#include "../Base/Console.h"
-#include "../Base/Interpreter.h"
-#include "../Base/Parameter.h"
-#include "../Base/Exception.h"
-#include "../Base/Factory.h"
-#include "../Base/FileInfo.h"
-#include "../App/Application.h"
-#include "../App/Feature.h"
-#include "../App/Document.h"
+#include <Base/Console.h>
+#include <Base/Interpreter.h>
+#include <Base/Parameter.h>
+#include <Base/Exception.h>
+#include <Base/Factory.h>
+#include <Base/FileInfo.h>
+#include <App/Application.h>
+#include <App/Feature.h>
+#include <App/Document.h>
 
 #include "Application.h"
 #include "MainWindow.h"
@@ -63,8 +63,10 @@
 #include "MenuManager.h"
 #include "Window.h"
 #include "Selection.h"
+#include "BitmapFactory.h"
 
 #include "Language/Translator.h"
+#include "Language/LanguageFactory.h"
 #include "GuiInitScript.h"
 
 #include "View.h"
@@ -944,6 +946,7 @@ void Application::runApplication(void)
 
   
   Base::Console().DetachObserver( msgbox );
+  delete msgbox;
 }
 
 void Application::destruct(void)
@@ -952,6 +955,9 @@ void Application::destruct(void)
   MainWindow::destruct();
   WorkbenchManager::destruct();
   SelectionSingleton::destruct();
+  LanguageFactoryInst::destruct();
+  WidgetFactorySupplier::destruct();
+  BitmapFactoryInst::destruct();
   delete Instance;
   Instance = 0;
 

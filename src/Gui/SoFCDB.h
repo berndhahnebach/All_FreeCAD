@@ -33,6 +33,7 @@ class SoFCDB
 {
 public:
   static void init();
+  static void finish();
 };
 
 } // namespace Gui

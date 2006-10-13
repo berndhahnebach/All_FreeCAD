@@ -88,14 +88,14 @@ protected:
 public:
   QStringList types() const;
   unsigned long color(const QString& name);
-  static void Destruct(void);
-  static DefColorMap &Instance(void);
+  static void destruct(void);
+  static DefColorMap &instance(void);
 };
 
 /** Returns the @ref DefColorMap instance */
 inline DefColorMap &GetDefCol(void)
 {
-  return DefColorMap::Instance();
+  return DefColorMap::instance();
 }
 
 } // namespace Dialog

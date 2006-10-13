@@ -52,6 +52,7 @@ EXTRA_DIST = \
 		MakeAppTools.py \
 		MakeNewBuildNbr.py \
 		post_moc.py \
+		MemoryLeaks.py \
 		PythonToCPP.py \
 		tstocpp.py \
 		qembed.py \
