@@ -163,6 +163,12 @@ void Type::init(void)
 
 }
 
+void Type::destruct(void)
+{
+  for(std::vector<TypeData*>::const_iterator it = typedata.begin();it!= typedata.end();++it)
+    delete *it;
+}
+
 Type Type::fromName(const char *name)
 {
   std::map<std::string,unsigned int>::const_iterator pos;
