@@ -79,6 +79,7 @@ public:
 
   /// The one and only instance.
   static MenuManager* getInstance();
+  static void destruct();
 
 protected:
   MenuManager();

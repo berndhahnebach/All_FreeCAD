@@ -40,6 +40,7 @@ class GuiExport WorkbenchManager
 public:
   /** Creates the only instance of the WorkbenchManager. */
   static WorkbenchManager* instance();
+  static void destruct();
 
   /** Searches for and returns an existing workbench object with name \a name. If no
    * such workbench exists then a workbench of class \a className gets created, if possible.

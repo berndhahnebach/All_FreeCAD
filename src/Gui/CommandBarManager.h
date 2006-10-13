@@ -51,6 +51,7 @@ class GuiExport CommandBarManager
 public:
   /// The one and only instance.
   static CommandBarManager* getInstance();
+  static void destruct();
   /** Sets up the command bars of a given workbench. */
   void setup( ToolBarItem* ) const;
   /** Sets up the custom command bars defined by the user of a given workbench. */

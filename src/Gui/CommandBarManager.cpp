@@ -47,6 +47,12 @@ CommandBarManager* CommandBarManager::getInstance()
   return _instance;
 }
 
+void CommandBarManager::destruct()
+{
+  delete _instance;
+  _instance = 0;
+}
+
 CommandBarManager::CommandBarManager() : _toolBox(0L)
 {
 }

@@ -696,8 +696,10 @@ void PythonWorkbench::appendMenu( const QStringList& menu, const QStringList& it
 void PythonWorkbench::removeMenu( const QString& menu ) const
 {
   MenuItem* item = _menuBar->findItem( menu );
-  if ( item )
+  if ( item ) {
     _menuBar->removeItem( item );
+    delete item;
+  }
 }
 
 QStringList PythonWorkbench::listMenus() const
@@ -734,8 +736,10 @@ void PythonWorkbench::appendToolbar( const QString& bar, const QStringList& item
 void PythonWorkbench::removeToolbar( const QString& bar) const
 {
   ToolBarItem* item = _toolBar->findItem( bar );
-  if ( item )
+  if ( item ) {
     _toolBar->removeItem( item );
+    delete item;
+  }
 }
 
 QStringList PythonWorkbench::listToolbars() const
@@ -764,8 +768,10 @@ void PythonWorkbench::appendCommandbar( const QString& bar, const QStringList& i
 void PythonWorkbench::removeCommandbar( const QString& bar ) const
 {
   ToolBarItem* item = _commandBar->findItem( bar );
-  if ( item )
+  if ( item ) {
     _commandBar->removeItem( item );
+    delete item;
+  }
 }
 
 QStringList PythonWorkbench::listCommandbars() const
