@@ -102,7 +102,7 @@
   * written on exit which reports e.g. unfreed memory.
   */
 #if defined(_DEBUG) && defined(_MSC_VER)
-# define MemDebugOn
+//# define MemDebugOn
 #endif
 
 #if defined(MemDebugOn) && defined(FC_OS_WIN32)

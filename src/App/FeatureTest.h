@@ -47,7 +47,15 @@ public:
   App::PropertyFloat        Float;
   App::PropertyBool         Bool;
   App::PropertyString       String;
-  App::PropertyEnumeration  Enum;
+
+  // special types
+  App::PropertyDistance     Distance;
+  App::PropertyAngle        Angle;
+
+  // Constraint types
+  App::PropertyEnumeration       Enum;
+  App::PropertyIntegerConstraint ConstraintInt;
+  App::PropertyFloatConstraint   ConstraintFloat;
  
   // Standard Properties (PorpertyStandard.h)
   App::PropertyIntegerList IntegerList;

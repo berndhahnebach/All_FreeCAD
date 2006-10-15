@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="FreeCADGui"
 	ProjectGUID="{FEEF8FBE-392E-48EA-B727-203A340E66D0}"
+	RootNamespace="FreeCADGui"
 	>
 	<Platforms>
 		<Platform
@@ -59,6 +60,7 @@
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
+				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"

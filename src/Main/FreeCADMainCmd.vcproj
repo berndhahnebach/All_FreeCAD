@@ -57,6 +57,7 @@
 				AssemblerListingLocation=".\DebugCmd/"
 				ObjectFile=".\DebugCmd/"
 				ProgramDataBaseFileName=".\DebugCmd/"
+				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"

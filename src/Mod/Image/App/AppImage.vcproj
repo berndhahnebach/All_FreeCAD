@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="AppImage"
 	ProjectGUID="{13A8CC2D-2347-43E5-BA24-A1D9AB19F31B}"
+	RootNamespace="AppImage"
 	>
 	<Platforms>
 		<Platform
@@ -58,7 +59,7 @@
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
+				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"

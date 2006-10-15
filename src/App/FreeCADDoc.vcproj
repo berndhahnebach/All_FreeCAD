@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="FreeCADApp"
 	ProjectGUID="{CEFC0332-EDFD-4DAC-BD01-10B6E5D18E5D}"
+	RootNamespace="FreeCADApp"
 	>
 	<Platforms>
 		<Platform
@@ -157,6 +158,7 @@
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
+				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"

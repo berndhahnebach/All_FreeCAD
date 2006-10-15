@@ -37,6 +37,8 @@ using namespace App;
 PROPERTY_SOURCE(App::FeatureTest, App::AbstractFeature)
 
 const char* enums[]= {"Zero","One","Two","Three","Four",NULL};
+const PropertyIntegerConstraint::Constrains intPercent = {0,100,1};
+const PropertyFloatConstraint::Constrains floatPercent = {0.0,100.0,1.0};
 
 
 FeatureTest::FeatureTest()
@@ -45,8 +47,16 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(Float  ,(47.11f) );
   ADD_PROPERTY(Bool   ,(true)  );
   ADD_PROPERTY(String ,("4711"));
+
   ADD_PROPERTY(Enum   ,(4));
   Enum.setEnums(enums);
+  ADD_PROPERTY(ConstraintInt ,(5));
+  ConstraintInt.setConstrains(&intPercent);
+  ADD_PROPERTY(ConstraintFloat ,(5.0));
+  ConstraintFloat.setConstrains(&floatPercent);
+
+  ADD_PROPERTY(Distance,(47.11f) );
+  ADD_PROPERTY(Angle   ,(3.0f) );
 
   ADD_PROPERTY(IntegerList,(4711)  );
   ADD_PROPERTY(FloatList  ,(47.11f) );
