@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="AppRaytracingGui"
 	ProjectGUID="{7B8E34F9-2DED-460A-B147-E7E5610F1FAC}"
+	RootNamespace="AppRaytracingGui"
 	>
 	<Platforms>
 		<Platform
@@ -58,7 +59,7 @@
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
+				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"

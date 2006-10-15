@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="AppImageGui"
 	ProjectGUID="{9846ED8B-E634-4D4F-B3E7-5A55F294ACB6}"
+	RootNamespace="AppImageGui"
 	>
 	<Platforms>
 		<Platform
@@ -58,7 +59,7 @@
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
+				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"

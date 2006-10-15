@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="AppPoints"
 	ProjectGUID="{0CACF33F-FE40-4FA4-BE5D-B06614630156}"
+	RootNamespace="AppPoints"
 	>
 	<Platforms>
 		<Platform
@@ -157,7 +158,7 @@
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="1"
+				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"

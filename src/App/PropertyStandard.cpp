@@ -289,6 +289,81 @@ void PropertyEnumeration::setPyObject(PyObject *value)
     throw Base::Exception("Not allowed type used (string or int expected)...");
 }
 
+//**************************************************************************
+//**************************************************************************
+// PropertyIntegerConstraint
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(PropertyIntegerConstraint, App::PropertyInteger);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyIntegerConstraint::PropertyIntegerConstraint()
+:_ConstStruct(0)
+{
+
+}
+
+
+PropertyIntegerConstraint::~PropertyIntegerConstraint()
+{
+
+}
+
+void PropertyIntegerConstraint::setConstrains(const Constrains* sConstrain)
+{
+  _ConstStruct = sConstrain;
+}
+
+const PropertyIntegerConstraint::Constrains*  PropertyIntegerConstraint::getConstrains(void)
+{
+  return _ConstStruct;
+}
+
+void PropertyIntegerConstraint::setPyObject(PyObject *value)
+{ 
+  if(PyInt_Check( value) )
+  {
+    long temp = PyInt_AsLong(value);
+    if(_ConstStruct)
+    {
+      if(temp > _ConstStruct->UpperBound)
+        temp = _ConstStruct->UpperBound;
+      else if(temp < _ConstStruct->LowerBound)
+        temp = _ConstStruct->LowerBound;
+    }
+    aboutToSetValue();
+    _lValue = temp;
+    hasSetValue();
+  }else
+    throw Base::Exception("Not allowed type used (Integer expected)...");
+}
+
+//**************************************************************************
+//**************************************************************************
+// PropertyPercent
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyPercent , App::PropertyIntegerConstraint);
+
+const PropertyIntegerConstraint::Constrains percent = {0,100,1};
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyPercent::PropertyPercent()
+//:_ConstStruct(&percent)
+{
+  _ConstStruct = &percent;
+}
+
+
+PropertyPercent::~PropertyPercent()
+{
+}
 
 //**************************************************************************
 //**************************************************************************
@@ -498,6 +573,72 @@ void PropertyFloat::Paste(const Property &from)
   _dValue = dynamic_cast<const PropertyFloat&>(from)._dValue;
   hasSetValue();
 }
+
+//**************************************************************************
+//**************************************************************************
+// PropertyFloatConstraint
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(PropertyFloatConstraint, App::PropertyFloat);
+
+//**************************************************************************
+// Construction/Destruction
+
+
+PropertyFloatConstraint::PropertyFloatConstraint()
+:_ConstStruct(0)
+{
+
+}
+
+
+PropertyFloatConstraint::~PropertyFloatConstraint()
+{
+
+}
+
+void PropertyFloatConstraint::setConstrains(const Constrains* sConstrain)
+{
+  _ConstStruct = sConstrain;
+}
+
+const PropertyFloatConstraint::Constrains*  PropertyFloatConstraint::getConstrains(void)
+{
+  return _ConstStruct;
+}
+
+void PropertyFloatConstraint::setPyObject(PyObject *value)
+{ 
+  if(PyFloat_Check( value) )
+  {
+    float temp = (float)PyFloat_AsDouble(value);
+    if(_ConstStruct)
+    {
+      if(temp > _ConstStruct->UpperBound)
+        temp = _ConstStruct->UpperBound;
+      else if(temp < _ConstStruct->LowerBound)
+        temp = _ConstStruct->LowerBound;
+    }
+    aboutToSetValue();
+    _dValue = temp;
+    hasSetValue();
+  }else
+    throw Base::Exception("Not allowed type used (Integer expected)...");
+}
+
+//**************************************************************************
+//**************************************************************************
+// PropertyDistance
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(PropertyDistance, App::PropertyFloat);
+
+//**************************************************************************
+//**************************************************************************
+// PropertyAngle
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(PropertyAngle, App::PropertyFloat);
 
 
 //**************************************************************************

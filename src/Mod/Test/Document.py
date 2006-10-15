@@ -44,7 +44,21 @@ class DocumentBasicCases(unittest.TestCase):
     self.failUnless(L1.Float-47.11<0.001)
     self.failUnless(L1.Bool    == True)
     self.failUnless(L1.String  == "empty")
+    self.failUnless(L1.Angle-3.0<0.001)
+    self.failUnless(L1.Distance-47.11<0.001)
 
+    # test the constraint types ( both are constraint to percent range)
+    self.failUnless(L1.ConstraintInt == 5)
+    self.failUnless(L1.ConstraintFloat-5.0<0.001)
+    L1.ConstraintInt = 500
+    L1.ConstraintFloat = 500.0
+    self.failUnless(L1.ConstraintInt == 100)
+    self.failUnless(L1.ConstraintFloat - 100.0 < 0.001)
+    L1.ConstraintInt = -500
+    L1.ConstraintFloat = -500.0
+    self.failUnless(L1.ConstraintInt == 0)
+    self.failUnless(L1.ConstraintFloat - 0.0 < 0.001)
+    
     # test enum property
     self.failUnless(L1.Enum  == "Four")
     L1.Enum = "One"

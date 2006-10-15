@@ -57,18 +57,8 @@ class AppExport PropertyInteger: public Property
   TYPESYSTEM_HEADER();
 
 public:
-
-       
-	/**
-	 * A constructor.
-	 * A more elaborate description of the constructor.
-	 */
+  
 	PropertyInteger();
-
-	/**
-	 * A destructor.
-	 * A more elaborate description of the destructor.
-	 */
 	~PropertyInteger();
 
 	/** Sets the property 
@@ -159,6 +149,67 @@ public:
 private:
 	const char** _EnumArray;
 };
+/** Constraint integer properties
+ * This property fullfill the need of constraint integer. It holds basicly a 
+ * state (integer) and a struct of bounderies. If the bounderies
+ * is not set it act basicly like a IntegerProperty and do no checking.
+ * The constraints struct can be created on the heap or build in.
+ */
+
+class AppExport PropertyIntegerConstraint: public PropertyInteger
+{
+  TYPESYSTEM_HEADER();
+
+public:
+	/// Standard constructor
+	PropertyIntegerConstraint();
+
+	/// destructor
+	~PropertyIntegerConstraint();
+
+  /// Constraint methods 
+  //@{
+  /// the boundery struct
+  struct Constrains {
+    long LowerBound, UpperBound, StepSize;
+  };
+  /** setting the bounderies
+    * This sets the constriant struct. It can be dynamcly 
+    * allocated or set as an static in the class the property
+    * blongs to:
+    * \code
+    * const Constrains percent = {0,100,1}
+    * \endcode
+    */
+  void setConstrains(const Constrains* sConstrain);
+  /// get the constriant struct
+  const Constrains*  getConstrains(void);
+  //@}
+
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::IntEditorItem"; }
+
+  virtual void setPyObject(PyObject *);
+
+protected:
+	const Constrains* _ConstStruct;
+};
+
+/** Percent property
+ * This property is a special interger property and holds only
+ * numbers between 0 and 100.
+ */
+
+class AppExport PropertyPercent: public PropertyIntegerConstraint
+{
+  TYPESYSTEM_HEADER();
+
+public:
+	/// Standard constructor
+	PropertyPercent();
+
+	/// destructor
+	~PropertyPercent();
+};
 
 /** Integer list properties
  * 
@@ -214,8 +265,8 @@ private:
 };
 
 
-/** Integer properties
- * This is the father of all properties handling Integers.
+/** Float properties
+ * This is the father of all properties handling floats.
  */
 class AppExport PropertyFloat: public Property
 {
@@ -252,11 +303,93 @@ public:
 
   virtual unsigned int getMemSize (void) const{return sizeof(float);}
 
-private:
+protected:
 
 	float _dValue;
 
 };
+
+/** Constraint float properties
+ * This property fullfill the need of constraint float. It holds basicly a 
+ * state (float) and a struct of bounderies. If the bounderies
+ * is not set it act basicly like a IntegerProperty and do no checking.
+ * The constraints struct can be created on the heap or build in.
+ */
+class AppExport PropertyFloatConstraint: public PropertyFloat
+{
+  TYPESYSTEM_HEADER();
+
+public:
+
+       
+	/** Value Constructor
+	 *  Construct with explicite Values
+	 */
+	PropertyFloatConstraint(void);
+
+	/**
+	 * A destructor.
+	 * A more elaborate description of the destructor.
+	 */
+	virtual ~PropertyFloatConstraint();
+
+
+ /// Constraint methods 
+  //@{
+  /// the boundery struct
+  struct Constrains {
+    float LowerBound, UpperBound, StepSize;
+  };
+  /** setting the bounderies
+    * This sets the constriant struct. It can be dynamcly 
+    * allocated or set as an static in the class the property
+    * blongs to:
+    * \code
+    * const Constrains percent = {0.0,100.0,1.0}
+    * \endcode
+    */
+  void setConstrains(const Constrains* sConstrain);
+  /// get the constriant struct
+  const Constrains*  getConstrains(void);
+  //@}
+
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatEditorItem"; }
+
+  virtual void setPyObject(PyObject *);
+
+
+protected:
+	const Constrains* _ConstStruct;
+
+
+};
+
+/** Distance property
+ * This is a property for representing distances. It basicly a float
+ * property. On the Gui it has a quantity like m or mm.
+ */
+class AppExport PropertyDistance: public PropertyFloat
+{
+  TYPESYSTEM_HEADER();
+public:
+  PropertyDistance(void){}
+  virtual ~PropertyDistance(){}
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatEditorItem"; }
+};
+
+/** Angle property
+ * This is a property for representing angles. It basicly a float
+ * property. On the Gui it has a quantity like RAD.
+ */
+class AppExport PropertyAngle: public PropertyFloat
+{
+  TYPESYSTEM_HEADER();
+public:
+  PropertyAngle(void){}
+  virtual ~PropertyAngle(){}
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatEditorItem"; }
+};
+
 
 class AppExport PropertyFloatList: public PropertyLists
 {

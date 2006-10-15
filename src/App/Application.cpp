@@ -680,7 +680,11 @@ void Application::initTypes(void)
   App ::PropertyBool        ::init();
   App ::PropertyFloat       ::init();
   App ::PropertyFloatList   ::init();
+  App ::PropertyFloatConstraint::init();
+  App ::PropertyAngle       ::init();
+  App ::PropertyDistance    ::init();
   App ::PropertyInteger     ::init();
+  App ::PropertyIntegerConstraint::init();
   App ::PropertyEnumeration ::init();
   App ::PropertyIntegerList ::init();
   App ::PropertyString      ::init();
