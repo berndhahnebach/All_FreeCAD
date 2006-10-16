@@ -76,7 +76,9 @@ void Gui::SoFCDB::init()
   ColorEditorItem          ::init();
   TextEditorItem           ::init();
   IntEditorItem            ::init();
+  IntConstraintEditorItem  ::init();
   FloatEditorItem          ::init();
+  FloatConstraintEditorItem::init();
   BoolEditorItem           ::init();
   ListEditorItem           ::init();
   ComboEditorItem          ::init();

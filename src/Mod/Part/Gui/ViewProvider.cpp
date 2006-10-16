@@ -87,6 +87,7 @@ PROPERTY_SOURCE(PartGui::ViewProviderPart, Gui::ViewProviderDocumentObject)
 //**************************************************************************
 // Construction/Destruction
 
+App::PropertyFloatConstraint::Constrains ViewProviderPart::floatRange = {0.0f,20.0f,0.1f};
        
 ViewProviderPart::ViewProviderPart()
 {
@@ -102,6 +103,8 @@ ViewProviderPart::ViewProviderPart()
   ADD_PROPERTY(LineColor,(mat.diffuseColor));
   ADD_PROPERTY(PointColor,(mat.diffuseColor));
   ADD_PROPERTY(LineWidth,(2.0f));
+  LineWidth.setConstrains(&floatRange);
+  PointSize.setConstrains(&floatRange);
   ADD_PROPERTY(PointSize,(2.0f));
 
   EdgeRoot = new SoSeparator();

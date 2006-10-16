@@ -67,7 +67,7 @@ public:
   // Display properties
   App::PropertyColor ShapeColor;
   App::PropertyEnumeration DisplayMode;
-  App::PropertyInteger Transparency;
+  App::PropertyPercent Transparency;
   App::PropertyBool Visibility;
   App::PropertyMaterial ShapeMaterial;
 

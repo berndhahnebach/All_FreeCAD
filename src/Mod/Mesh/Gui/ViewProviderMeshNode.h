@@ -52,8 +52,8 @@ public:
   virtual ~ViewProviderMeshNode();
   
   // Display properties
-  App::PropertyFloat LineWidth;
-  App::PropertyFloat PointSize;
+  App::PropertyFloatConstraint LineWidth;
+  App::PropertyFloatConstraint PointSize;
   App::PropertyBool OpenEdges;
 
   void attach(App::DocumentObject *pcFeat);
@@ -87,6 +87,8 @@ protected:
 
 private:
   bool m_bEdit;
+
+  static App::PropertyFloatConstraint::Constrains floatRange;
 };
 
 } // namespace MeshGui

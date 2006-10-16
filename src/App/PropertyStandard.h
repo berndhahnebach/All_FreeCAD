@@ -186,7 +186,7 @@ public:
   const Constrains*  getConstrains(void);
   //@}
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::IntEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::IntConstraintEditorItem"; }
 
   virtual void setPyObject(PyObject *);
 
@@ -353,7 +353,7 @@ public:
   const Constrains*  getConstrains(void);
   //@}
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatConstraintEditorItem"; }
 
   virtual void setPyObject(PyObject *);
 

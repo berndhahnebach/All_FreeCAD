@@ -46,8 +46,8 @@ public:
   virtual ~ViewProviderPart();
 
   // Display properties
-  App::PropertyFloat LineWidth;
-  App::PropertyFloat PointSize;
+  App::PropertyFloatConstraint LineWidth;
+  App::PropertyFloatConstraint PointSize;
   App::PropertyColor LineColor;
   App::PropertyColor PointColor;
   App::PropertyMaterial LineMaterial;
@@ -89,7 +89,8 @@ protected:
 //  long  lHilightColor;      
   bool  bQualityNormals;    
 
-
+private:
+  static App::PropertyFloatConstraint::Constrains floatRange;
 };
 
 } // namespace PartGui

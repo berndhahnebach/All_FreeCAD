@@ -72,12 +72,16 @@
 using namespace MeshGui;
 
 
+App::PropertyFloatConstraint::Constrains ViewProviderMeshFaceSet::floatRange = {0.0f,20.0f,0.1f};
+
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, Gui::ViewProviderFeature)
 
 ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(false)
 {
   ADD_PROPERTY(LineWidth,(2.0f));
+  LineWidth.setConstrains(&floatRange);
   ADD_PROPERTY(PointSize,(2.0f));
+  PointSize.setConstrains(&floatRange);
   ADD_PROPERTY(OpenEdges,(false));
 
   pOpenColor = new SoBaseColor();
