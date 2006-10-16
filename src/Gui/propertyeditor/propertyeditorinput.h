@@ -75,8 +75,23 @@ protected:
   virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
-private:
+protected:
   IntEditorItem();
+};
+
+/**
+ * Change a number.
+ * \author Werner Mayer
+ */
+class GuiExport IntConstraintEditorItem: public IntEditorItem
+{
+  TYPESYSTEM_HEADER();
+
+  Q_OBJECT
+
+protected:
+  QWidget* createEditor( int column, QWidget* parent );
+  IntConstraintEditorItem();
 };
 
 /**
@@ -99,8 +114,23 @@ protected:
   virtual QVariant convertFromProperty(const std::vector<App::Property*>&);
   virtual void convertToProperty(const QVariant&);
 
-private:
+protected:
   FloatEditorItem();
+};
+
+/**
+ * Change a floating point number.
+ * \author Werner Mayer
+ */
+class GuiExport FloatConstraintEditorItem: public FloatEditorItem
+{
+  TYPESYSTEM_HEADER();
+
+  Q_OBJECT
+
+protected:
+  QWidget* createEditor( int column, QWidget* parent );
+  FloatConstraintEditorItem();
 };
 
 } // namespace PropertyEditor

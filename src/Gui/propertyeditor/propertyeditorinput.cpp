@@ -135,9 +135,9 @@ QWidget* IntEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  //FIXME: Allow to define range and stepsize in property class
   QSpinBox* editor = new QSpinBox( parent, "IntEditorItem::spin" );
-  editor->setMaxValue(100);
+  editor->setMaxValue(INT_MAX);
+  editor->setMinValue(INT_MIN+1);
   editor->setValue( overrideValue().toInt() );
   connect(editor, SIGNAL( valueChanged(int) ), this, SLOT( onValueChanged() ) );
   return editor;
@@ -145,7 +145,10 @@ QWidget* IntEditorItem::createEditor( int column, QWidget* parent )
 
 void IntEditorItem::stopEdit( int column )
 {
-  setText( column, QString("%1").arg( overrideValue().toInt() ) );
+  QSpinBox* editor = (QSpinBox*)getEditor();
+  QString txt = QString("%1").arg( overrideValue().toInt() );
+  txt += editor->suffix();
+  setText( column, txt );
 }
 
 void IntEditorItem::setDefaultEditorValue( QWidget* editor )
@@ -165,7 +168,10 @@ QVariant IntEditorItem::convertFromProperty(const std::vector<App::Property*>& p
 {
   App::PropertyInteger* pPropInt = (App::PropertyInteger*)prop.front();
   QVariant value( (int)pPropInt->getValue() );
-  setText( 1, value.toString() );
+  QString txt = value.toString();
+  if ( pPropInt->getTypeId().isDerivedFrom(App::PropertyPercent::getClassTypeId()) )
+    txt += " %";
+  setText( 1, txt );
   return value;
 }
 
@@ -177,6 +183,32 @@ void IntEditorItem::convertToProperty(const QVariant& val)
     App::PropertyInteger* pPropInt = (App::PropertyInteger*)*it;
     pPropInt->setValue( value );
   }
+}
+
+// ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::IntConstraintEditorItem, Gui::PropertyEditor::IntEditorItem);
+
+IntConstraintEditorItem::IntConstraintEditorItem()
+{
+}
+
+QWidget* IntConstraintEditorItem::createEditor( int column, QWidget* parent )
+{
+  QSpinBox* editor = (QSpinBox*)IntEditorItem::createEditor( column, parent );
+  if ( editor == 0 )
+    return 0;
+
+  App::PropertyIntegerConstraint* prop = (App::PropertyIntegerConstraint*)_prop.front();
+  const App::PropertyIntegerConstraint::Constrains*  range = prop->getConstrains();
+  if ( range ) {
+    editor->setMaxValue( (int)range->UpperBound );
+    editor->setMinValue( (int)range->LowerBound );
+    editor->setLineStep( (int)range->StepSize );
+  }
+  if ( prop->getTypeId().isDerivedFrom(App::PropertyPercent::getClassTypeId()) )
+    editor->setSuffix(" %");
+  return editor;
 }
 
 // ======================================================================
@@ -199,18 +231,26 @@ QWidget* FloatEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  //FIXME: Allow to define range, precision and stepsize in property class
-  FloatSpinBox* editor = new FloatSpinBox( 0 /*min*/, 12 /*max*/, 0.05 /*step*/, 5.5 /*value*/, 3 /*digits*/,
-                                             parent, "FloatEditorItem::spin" );
-  editor->setRange(0.0, 100.0, 0.01, 2);
+  FloatSpinBox* editor = new FloatSpinBox( parent, "FloatEditorItem::spin" );
+  editor->setRange(-2147483647, -2147483647, 0.01, 2);
   editor->setValue( (float)overrideValue().toDouble() );
   connect(editor, SIGNAL( valueChanged(int) ), this, SLOT( onValueChanged() ) );
+
+  App::PropertyFloat* prop = (App::PropertyFloat*)_prop.front();
+  if ( prop->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()) )
+    editor->setSuffix(" mm");
+  else if ( prop->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()) )
+    editor->setSuffix(" °");
+  
   return editor;
 }
 
 void FloatEditorItem::stopEdit( int column )
 {
-  setText( column, QString("%1").arg( overrideValue().toDouble() ) );
+  FloatSpinBox* editor = (FloatSpinBox*)getEditor();
+  QString txt = QString("%1").arg( overrideValue().toDouble() );
+  txt += editor->suffix();
+  setText( column, txt );
 }
 
 void FloatEditorItem::setDefaultEditorValue( QWidget* editor )
@@ -231,7 +271,12 @@ QVariant FloatEditorItem::convertFromProperty(const std::vector<App::Property*>&
   App::PropertyFloat* pPropFloat = (App::PropertyFloat*)prop.front();
   QVariant value( (double)pPropFloat->getValue() );
   QString txt;
-  setText( 1, txt.sprintf("%.3f", value.toDouble()) );
+  txt.sprintf("%.2f", value.toDouble());
+  if ( pPropFloat->getTypeId().isDerivedFrom(App::PropertyDistance::getClassTypeId()) )
+    txt += " mm";
+  else if ( pPropFloat->getTypeId().isDerivedFrom(App::PropertyAngle::getClassTypeId()) )
+    txt += " °";
+  setText( 1, txt );
   return value;
 }
 
@@ -243,6 +288,31 @@ void FloatEditorItem::convertToProperty(const QVariant& val)
     App::PropertyFloat* pPropFloat = (App::PropertyFloat*)*it;
     pPropFloat->setValue( value );
   }
+}
+
+// ======================================================================
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::FloatConstraintEditorItem, Gui::PropertyEditor::FloatEditorItem);
+
+FloatConstraintEditorItem::FloatConstraintEditorItem()
+{
+}
+
+QWidget* FloatConstraintEditorItem::createEditor( int column, QWidget* parent )
+{
+  FloatSpinBox* editor = (FloatSpinBox*)FloatEditorItem::createEditor( column, parent );
+  if ( editor == 0 )
+    return 0;
+
+  App::PropertyFloatConstraint* prop = (App::PropertyFloatConstraint*)_prop.front();
+  const App::PropertyFloatConstraint::Constrains*  range = prop->getConstrains();
+  if ( range ) {
+    editor->setMaxValue( range->UpperBound );
+    editor->setMinValue( range->LowerBound );
+    editor->setLineStep( range->StepSize );
+  }
+
+  return editor;
 }
 
 #include "moc_propertyeditorinput.cpp"

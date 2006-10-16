@@ -131,6 +131,7 @@ protected: // Interface for subclasses.
 
 protected:
   static QListView* parentView;
+  QWidget* getEditor() const { return _editor; }
   std::vector<App::Property*> _prop;
 
 private: // Interface for EditableListView
