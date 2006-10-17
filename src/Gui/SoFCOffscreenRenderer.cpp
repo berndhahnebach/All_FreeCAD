@@ -78,6 +78,28 @@ static int qimage_set_save_format(const char * ext, char * buf)
 
 // ---------------------------------------------------------------
 
+SoFCOffscreenRenderer* SoFCOffscreenRenderer::_instance = 0;
+
+SoFCOffscreenRenderer& SoFCOffscreenRenderer::instance(const SbViewportRegion &viewportregion)
+{
+  if (!_instance)
+    _instance = new SoFCOffscreenRenderer(viewportregion);
+  return *_instance;
+}
+
+SoFCOffscreenRenderer& SoFCOffscreenRenderer::instance(SoGLRenderAction *action)
+{
+  if (!_instance)
+    _instance = new SoFCOffscreenRenderer(action);
+  return *_instance;
+}
+
+void SoFCOffscreenRenderer::destruct()
+{
+  delete _instance;
+  _instance=0;
+}
+
 SoFCOffscreenRenderer::SoFCOffscreenRenderer (const SbViewportRegion &viewportregion)
   : SoOffscreenRenderer(viewportregion)
 {

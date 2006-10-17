@@ -77,7 +77,6 @@
 #include "Workbench.h"
 #include "WorkbenchManager.h"
 #include "CommandBarManager.h"
-#include "SoFCDB.h"
 
 #include "Inventor/Qt/SoQt.h"
 #include "Language/Translator.h"
@@ -151,11 +150,6 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   d = new MainWindowP;
   // global access 
   instance = this;
-
-  // init the Inventor subsystem
-  SoQt::init(this);
-  SoDB::init();
-  SoFCDB::init();
 
   QVBox* vb = new QVBox( this );
   vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
@@ -237,12 +231,6 @@ MainWindow::~MainWindow()
   saveWindowSettings();
 
   delete d;
-  DockWindowManager::destruct();
-  Dialog::DefColorMap::destruct();
-
-  SoFCDB::finish();
-  SoQt::done();
-  SoDB::finish();
 }
 
 MainWindow* MainWindow::getInstance()
@@ -253,8 +241,13 @@ MainWindow* MainWindow::getInstance()
 
 void MainWindow::destruct()
 {
-  delete instance;
+  DockWindowManager::destruct();
+  Dialog::DefColorMap::destruct();
+
+  // make sure that getInstance() doesn't return a dangling pointer
+  MainWindow* tmp = instance;
   instance = 0;
+  delete tmp;
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

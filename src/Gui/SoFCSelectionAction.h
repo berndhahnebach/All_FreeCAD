@@ -35,8 +35,8 @@ namespace Gui {
 class SelectionChanges;
 
 /**
- * The SoFCOffscreenRenderer class is used for rendering scenes in offscreen buffers. 
- * @author Werner Mayer
+ * The SoFCSelectionAction class is used to inform an SoFCSelection node whether an object gets selected. 
+ * @author Jürgen Riegel
  */
 class GuiExport SoFCSelectionAction : public SoAction
 {
@@ -61,7 +61,7 @@ private:
 };
 
 /**
- * The SoFCEnableSelectionAction class is used to inform an SoFCSelection node whether selecton is enabled or disabled. 
+ * The SoFCEnableSelectionAction class is used to inform an SoFCSelection node whether selection is enabled or disabled. 
  * @author Werner Mayer
  */
 class GuiExport SoFCEnableSelectionAction : public SoAction
@@ -85,7 +85,7 @@ private:
 };
 
 /**
- * The SoFCEnableHighlightAction class is used to inform an SoFCSelection node whether preselecton is enabled or disabled. 
+ * The SoFCEnableHighlightAction class is used to inform an SoFCSelection node whether preselection is enabled or disabled. 
  * @author Werner Mayer
  */
 class GuiExport SoFCEnableHighlightAction : public SoAction

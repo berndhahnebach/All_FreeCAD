@@ -64,6 +64,7 @@
 #include "Window.h"
 #include "Selection.h"
 #include "BitmapFactory.h"
+#include "SoFCDB.h"
 
 #include "Language/Translator.h"
 #include "Language/LanguageFactory.h"
@@ -863,10 +864,16 @@ void Application::runApplication(void)
 
   Application * app = new Application();
   MainWindow* mw = new MainWindow;
+
+  // init the Inventor subsystem
+  SoDB::init();
+  SoQt::init(mw);
+  SoFCDB::init();
+
   mw->startSplasher();
   _pcQApp->setMainWidget(mw);
 
-  // runing the Gui init script
+  // running the Gui init script
   Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
   // show the main window
   Console().Log("Init: Showing main window\n");
@@ -960,6 +967,11 @@ void Application::destruct(void)
   BitmapFactoryInst::destruct();
   delete Instance;
   Instance = 0;
+
+  // finish akso Inventor subsystem
+  SoFCDB::finish();
+  SoQt::done();
+  SoDB::finish();
 
   delete _pcQApp;
 }
