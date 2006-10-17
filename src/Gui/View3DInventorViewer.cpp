@@ -321,7 +321,9 @@ View3DInventorViewer::~View3DInventorViewer()
 
   delete spinprojector;
 
-  getMainWindow()->setPaneText(2, "");
+  // Note: When closing the application the main window doesn't exists any more.
+  if (getMainWindow()) 
+    getMainWindow()->setPaneText(2, "");
 
   Gui::Selection().Detach(this);
 }
@@ -346,7 +348,7 @@ void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, i
   //The default value is 72.0.
   //If we need to support grayscale images with must either use SoOffscreenRenderer::LUMINANCE or 
   //SoOffscreenRenderer::LUMINANCE_TRANSPARENCY. 
-  SoFCOffscreenRenderer renderer(vp);
+  SoFCOffscreenRenderer& renderer = SoFCOffscreenRenderer::instance(vp);
   SoCallback* cb = 0;
 
   // if we use transparency then we must not set a background color
