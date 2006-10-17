@@ -50,34 +50,6 @@
                         <string>Add</string>
                     </property>
                 </widget>
-                <widget class="QPushButton" row="9" column="2" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>buttonDelete</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Remove</string>
-                    </property>
-                </widget>
-                <spacer row="9" column="4">
-                    <property name="name">
-                        <cstring>Spacer8</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
                 <widget class="QListView" row="0" column="0" rowspan="10" colspan="1">
                     <column>
                         <property name="text">
@@ -149,7 +121,7 @@
                         <string>Menu text:</string>
                     </property>
                 </widget>
-                <widget class="Gui::AccelLineEdit" row="6" column="2" rowspan="1" colspan="3">
+                <widget class="Gui::AccelLineEdit" row="6" column="2" rowspan="1" colspan="4">
                     <property name="name">
                         <cstring>actionAccel</cstring>
                     </property>
@@ -168,7 +140,7 @@
                         <string>Status text:</string>
                     </property>
                 </widget>
-                <spacer row="7" column="4">
+                <spacer row="7" column="4" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>Spacer7_2</cstring>
                     </property>
@@ -185,7 +157,7 @@
                         </size>
                     </property>
                 </spacer>
-                <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="3">
+                <widget class="QLineEdit" row="2" column="2" rowspan="1" colspan="4">
                     <property name="name">
                         <cstring>actionMenu</cstring>
                     </property>
@@ -196,7 +168,7 @@
                         <enum>Sunken</enum>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="3" column="2" rowspan="1" colspan="3">
+                <widget class="QLineEdit" row="3" column="2" rowspan="1" colspan="4">
                     <property name="name">
                         <cstring>actionToolTip</cstring>
                     </property>
@@ -231,7 +203,7 @@
                         <string>Pixmap</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="5" column="2" rowspan="1" colspan="3">
+                <widget class="QLineEdit" row="5" column="2" rowspan="1" colspan="4">
                     <property name="name">
                         <cstring>actionWhatsThis</cstring>
                     </property>
@@ -244,7 +216,7 @@
                         <string>Name:</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="0" column="2" rowspan="1" colspan="3">
+                <widget class="QLineEdit" row="0" column="2" rowspan="1" colspan="4">
                     <property name="name">
                         <cstring>actionName</cstring>
                     </property>
@@ -303,14 +275,53 @@
                         <bool>true</bool>
                     </property>
                 </widget>
-                <widget class="QComboBox" row="1" column="2" rowspan="1" colspan="3">
+                <widget class="QComboBox" row="1" column="2" rowspan="1" colspan="4">
                     <property name="name">
                         <cstring>actionMacros</cstring>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="4" column="2" rowspan="1" colspan="3">
+                <widget class="QLineEdit" row="4" column="2" rowspan="1" colspan="4">
                     <property name="name">
                         <cstring>actionStatus</cstring>
+                    </property>
+                </widget>
+                <widget class="QPushButton" row="9" column="2" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>buttonDelete</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>Remove</string>
+                    </property>
+                </widget>
+                <spacer row="9" column="5">
+                    <property name="name">
+                        <cstring>Spacer8</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                    <property name="sizeHint">
+                        <size>
+                            <width>30</width>
+                            <height>20</height>
+                        </size>
+                    </property>
+                </spacer>
+                <widget class="QPushButton" row="9" column="4">
+                    <property name="name">
+                        <cstring>buttonEdit</cstring>
+                    </property>
+                    <property name="enabled">
+                        <bool>false</bool>
+                    </property>
+                    <property name="text">
+                        <string>Edit</string>
                     </property>
                 </widget>
             </grid>
@@ -330,7 +341,7 @@
         <sender>buttonDelete</sender>
         <signal>clicked()</signal>
         <receiver>Gui::Dialog::DlgCustomActionsBase</receiver>
-        <slot>onDelCustomAction()</slot>
+        <slot>onRemoveCustomAction()</slot>
     </connection>
     <connection>
         <sender>actionPixmapButton</sender>
@@ -342,13 +353,19 @@
         <sender>CustomActions</sender>
         <signal>clicked(QListViewItem*)</signal>
         <receiver>Gui::Dialog::DlgCustomActionsBase</receiver>
-        <slot>onCustomActionsCanDelete(QListViewItem*)</slot>
+        <slot>onCanRemoveCustomAction(QListViewItem*)</slot>
     </connection>
     <connection>
         <sender>CustomActions</sender>
         <signal>doubleClicked(QListViewItem*)</signal>
         <receiver>Gui::Dialog::DlgCustomActionsBase</receiver>
-        <slot>onCustomActionsDoubleClicked(QListViewItem*)</slot>
+        <slot>onEditCustomAction()</slot>
+    </connection>
+    <connection>
+        <sender>buttonEdit</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgCustomActionsBase</receiver>
+        <slot>onEditCustomAction()</slot>
     </connection>
 </connections>
 <tabstops>
@@ -364,10 +381,10 @@
     <tabstop>buttonDelete</tabstop>
 </tabstops>
 <slots>
-    <slot access="protected">onCustomActionsCanDelete( QListViewItem* )</slot>
-    <slot access="protected">onCustomActionsDoubleClicked( QListViewItem* )</slot>
+    <slot access="protected">onCanRemoveCustomAction( QListViewItem* )</slot>
+    <slot access="protected">onEditCustomAction()</slot>
     <slot access="protected">onAddCustomAction()</slot>
-    <slot access="protected">onDelCustomAction()</slot>
+    <slot access="protected">onRemoveCustomAction()</slot>
     <slot access="protected">onCustomActionPixmap()</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>

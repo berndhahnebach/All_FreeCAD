@@ -245,6 +245,10 @@
             <translation>Entfernen</translation>
         </message>
         <message>
+            <source>Edit</source>
+            <translation>Bearbeiten</translation>
+        </message>
+        <message>
             <source>Custom Macros</source>
             <translation>Benutzerdefinierte Makros</translation>
         </message>
@@ -290,6 +294,14 @@
         <message>
             <source>Choose pixmap</source>
             <translation>Wähle Symbol aus</translation>
+        </message>
+        <message>
+            <source>Add</source>
+            <translation>Hinzufügen</translation>
+        </message>
+        <message>
+            <source>Replace</source>
+            <translation>Ersetzen</translation>
         </message>
         <message>
             <source>&amp;OK</source>

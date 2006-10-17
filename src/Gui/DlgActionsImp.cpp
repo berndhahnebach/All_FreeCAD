@@ -63,9 +63,7 @@ DlgCustomActionsImp::DlgCustomActionsImp( QWidget* parent, const char* name, WFl
     ->GetASCII("MacroPath",App::GetApplication().GetHomePath());
 
   QDir d(cMacroPath.c_str(),"*.FCMacro");
-  actionMacros->clear();
-  for (unsigned int i=0; i<d.count(); i++ )
-    actionMacros->insertItem(d[i]);
+  actionMacros->insertStringList(d.entryList());
 
   showActions();
   newActionName();
@@ -121,7 +119,7 @@ void DlgCustomActionsImp::showActions()
   }
 }
 
-void DlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
+void DlgCustomActionsImp::onCanRemoveCustomAction( QListViewItem *i )
 {
   bool canDelete = FALSE;
   QListViewItemIterator it = CustomActions->firstChild();
@@ -135,11 +133,14 @@ void DlgCustomActionsImp::onCustomActionsCanDelete( QListViewItem *i )
     }
   }
 
+  // ready for deletion or changing menu text, ...
   buttonDelete->setEnabled( canDelete || ( i && i->isSelected() ) );
+  buttonEdit->setEnabled( canDelete || ( i && i->isSelected() ) );
 }
 
-void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
+void DlgCustomActionsImp::onEditCustomAction()
 {
+  QListViewItem* i = CustomActions->currentItem();
   if ( !i ) return; // no valid item
 
   actionName->setText(i->text(0));
@@ -159,6 +160,7 @@ void DlgCustomActionsImp::onCustomActionsDoubleClicked( QListViewItem *i )
       {
         bFound = true;
         actionMacros->setCurrentItem(i);
+        buttonNew->setText( tr("Replace") );
         break;
       }
     }
@@ -271,9 +273,10 @@ void DlgCustomActionsImp::onAddCustomAction()
   emit addMacroAction( actionName->text() );
 
   newActionName();
+  buttonNew->setText( tr("Add") );
 }
 
-void DlgCustomActionsImp::onDelCustomAction()
+void DlgCustomActionsImp::onRemoveCustomAction()
 {
   // remove item from list view
   QString itemText;
