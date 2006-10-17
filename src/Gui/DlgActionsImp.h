@@ -55,13 +55,13 @@ signals:
 
 protected:
   /** Enables/disables buttons for deletion */
-  void onCustomActionsCanDelete( QListViewItem *i );
+  void onCanRemoveCustomAction( QListViewItem *i );
   /** Shows the setup of the action */
-  void onCustomActionsDoubleClicked( QListViewItem *i );
+  void onEditCustomAction();
   /** Adds a custom action */
   void onAddCustomAction();
   /** Deletes a custom action */
-  void onDelCustomAction();
+  void onRemoveCustomAction();
   /** Opens a iconview to select a pixmap */
   void onCustomActionPixmap();
 
