@@ -38,20 +38,6 @@ namespace Gui {
 class GuiExport SoFCOffscreenRenderer : public SoOffscreenRenderer
 {
 public:
-  /** @name Singleton
-   * Note: In the current implementation of SoOffscreenRenderer seems to be a memory leak somewhere. Implementing the
-   * sub-class as a singleton reduces this leak enormously.
-   */
-  //@{
-  /** Contructs the global renderer object. */
-  static SoFCOffscreenRenderer& instance(const SbViewportRegion &viewportregion);
-  /** Contructs the global renderer object. */
-  static SoFCOffscreenRenderer& instance(SoGLRenderAction *action);
-  /** Destructs the global renderer object. */
-  static void destruct();
-  //@}
-
-private:
   /**
    * Constructor. Argument is the \a viewportregion we should use when rendering. An internal 
    * SoGLRenderAction will be constructed. 
@@ -66,14 +52,6 @@ private:
    * Destructor. 
    */
   ~SoFCOffscreenRenderer();
-
-  static SoFCOffscreenRenderer* _instance;
-
-  // do not allow copying
-  SoFCOffscreenRenderer( const SoFCOffscreenRenderer& );
-  SoFCOffscreenRenderer& operator=( const SoFCOffscreenRenderer& );
-
-public:
   /** 
    * Writes the rendered image buffer directly into a QImage object
    * instead of an image file.

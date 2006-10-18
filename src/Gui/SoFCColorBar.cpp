@@ -72,6 +72,11 @@ void SoFCColorBarBase::initClass(void)
   SO_NODE_INIT_ABSTRACT_CLASS(SoFCColorBarBase,SoSeparator,"Separator");
 }
 
+void SoFCColorBarBase::finish()
+{
+  atexit_cleanup();
+}
+
 void SoFCColorBarBase::GLRenderBelowPath  (  SoGLRenderAction *  action   )
 {
   const SbViewportRegion& vp = action->getViewportRegion();
@@ -122,6 +127,11 @@ SoFCColorBar::~SoFCColorBar()
 void SoFCColorBar::initClass(void)
 {
   SO_NODE_INIT_CLASS(SoFCColorBar,SoFCColorBarBase,"Separator");
+}
+
+void SoFCColorBar::finish()
+{
+  atexit_cleanup();
 }
 
 SoFCColorBarBase* SoFCColorBar::getActiveBar() const

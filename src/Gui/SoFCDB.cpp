@@ -87,6 +87,18 @@ void Gui::SoFCDB::init()
 
 void Gui::SoFCDB::finish()
 {
-  // Coin <= 2.4.4 doesn't free static members of own data types. We must check this with Coin 2.4.5 (or higher) whether
-  // this 'static' memory leak is fixed, since the cleanup stuff has been improved.
+  // Coin doesn't provide a mechanism to free static members of own data types. Hence, we need to define a static method e.g. 'finish()' for all new types 
+  // to invoke the private member function 'atexit_cleanup()'.
+  SoFCColorBarBase         ::finish();
+  SoFCColorBar             ::finish();
+  SoFCColorLegend          ::finish();
+  SoFCColorGradient        ::finish();
+  SoFCBackgroundGradient   ::finish();
+  SoFCSelection            ::finish();
+  SoFCSelectionAction      ::finish();
+  SoFCDocumentAction       ::finish();
+  SoFCEnableSelectionAction::finish();
+  SoFCEnableHighlightAction::finish();
+  SoFCSelectionColorAction ::finish();
+  SoFCHighlightColorAction ::finish();
 }

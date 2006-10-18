@@ -112,6 +112,11 @@ SoFCSelection::initClass(void)
   SO_NODE_INIT_CLASS(SoFCSelection,SoSeparator,"Separator");
 }
 
+void SoFCSelection::finish()
+{
+  atexit_cleanup();
+}
+
 /*!
   Static method that can be used to turn off the current highlight.
 */

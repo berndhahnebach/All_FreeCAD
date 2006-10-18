@@ -41,6 +41,7 @@ class GuiExport SoFCBackgroundGradient : public SoSeparator {
 
 public:
   static void initClass(void);
+  static void finish(void);
   SoFCBackgroundGradient(void);
 
   void GLRenderBelowPath ( SoGLRenderAction *action );

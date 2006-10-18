@@ -48,6 +48,7 @@ public:
 	~SoFCSelectionAction();
 
   static void initClass();
+  static void finish(void);
 
   const SelectionChanges &SelChange;
 
@@ -76,6 +77,7 @@ public:
   const SbBool& selection;
 
   static void initClass();
+  static void finish(void);
 
 protected:
   virtual void beginTraversal(SoNode *node);
@@ -100,6 +102,7 @@ public:
   const SbBool& highlight;
 
   static void initClass();
+  static void finish(void);
 
 protected:
   virtual void beginTraversal(SoNode *node);
@@ -124,6 +127,7 @@ public:
   const SoSFColor& selectionColor;
 
   static void initClass();
+  static void finish(void);
 
 protected:
   virtual void beginTraversal(SoNode *node);
@@ -148,6 +152,7 @@ public:
   const SoSFColor& highlightColor;
 
   static void initClass();
+  static void finish(void);
 
 protected:
   virtual void beginTraversal(SoNode *node);
@@ -172,6 +177,7 @@ public:
   const SoSFString& documentName;
 
   static void initClass();
+  static void finish(void);
 
 protected:
   virtual void beginTraversal(SoNode *node);

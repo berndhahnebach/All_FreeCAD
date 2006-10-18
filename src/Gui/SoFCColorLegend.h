@@ -41,6 +41,7 @@ class GuiExport SoFCColorLegend : public SoFCColorBarBase {
 
 public:
   static void initClass(void);
+  static void finish(void);
   SoFCColorLegend(void);
 
   void setMarkerLabel( const SoMFString& label );
