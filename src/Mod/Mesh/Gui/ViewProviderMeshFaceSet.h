@@ -32,6 +32,7 @@
 
 class SbViewVolume;
 class SoBaseColor;
+class SoShapeHints;
 
 namespace Gui {
   class SoFCSelection;
@@ -59,6 +60,7 @@ public:
   App::PropertyFloatConstraint LineWidth;
   App::PropertyFloatConstraint PointSize;
   App::PropertyBool OpenEdges;
+  App::PropertyEnumeration Lighting;
 
   void attach(App::DocumentObject *pcFeat);
   virtual void updateData();
@@ -89,11 +91,13 @@ protected:
   SoDrawStyle    * pcPointStyle;
   SoSeparator    * pcOpenEdge;
   SoBaseColor    * pOpenColor;
+  SoShapeHints   * pShapeHints;
 
 private:
   bool m_bEdit;
 
   static App::PropertyFloatConstraint::Constrains floatRange;
+  static const char* LightingEnums[];
 };
 
 } // namespace MeshGui

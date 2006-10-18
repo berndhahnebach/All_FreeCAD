@@ -73,6 +73,7 @@ using namespace MeshGui;
 
 
 App::PropertyFloatConstraint::Constrains ViewProviderMeshFaceSet::floatRange = {0.0f,20.0f,0.1f};
+const char* ViewProviderMeshFaceSet::LightingEnums[]= {"One side","Two side",NULL};
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, Gui::ViewProviderFeature)
 
@@ -83,6 +84,8 @@ ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(fals
   ADD_PROPERTY(PointSize,(2.0f));
   PointSize.setConstrains(&floatRange);
   ADD_PROPERTY(OpenEdges,(false));
+  ADD_PROPERTY(Lighting,(1));
+  Lighting.setEnums(LightingEnums);
 
   pOpenColor = new SoBaseColor();
   setOpenEdgeColorFrom(ShapeColor.getValue());
@@ -97,6 +100,11 @@ ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(fals
   pcPointStyle->ref();
   pcPointStyle->style = SoDrawStyle::POINTS;
   pcPointStyle->pointSize = PointSize.getValue();
+
+  pShapeHints = new SoShapeHints;
+  pShapeHints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
+  pShapeHints->ref();
+  Lighting.touch();
 
   // read the correct shape color from the preferences
   FCHandle<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
@@ -115,6 +123,7 @@ ViewProviderMeshFaceSet::~ViewProviderMeshFaceSet()
   pOpenColor->unref();
   pcLineStyle->unref();
   pcPointStyle->unref();
+  pShapeHints->unref();
 }
 
 void ViewProviderMeshFaceSet::onChanged(const App::Property* prop)
@@ -125,6 +134,11 @@ void ViewProviderMeshFaceSet::onChanged(const App::Property* prop)
     pcPointStyle->pointSize = PointSize.getValue();
   } else if ( prop == &OpenEdges ) {
     showOpenEdges( OpenEdges.getValue() );
+  } else if ( prop == &Lighting ) {
+    if ( Lighting.getValue() == 0 )
+      pShapeHints->vertexOrdering = SoShapeHints::UNKNOWN_ORDERING;
+    else
+      pShapeHints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
   } else {
     // Set the inverse color for open edges
     if ( prop == &ShapeColor ) {
@@ -167,18 +181,7 @@ void ViewProviderMeshFaceSet::attach(App::DocumentObject *pcFeat)
   // faces
   SoGroup* pcFlatRoot = new SoGroup();
 
-  // read the correct shape color from the preferences
-  FCHandle<ParameterGrp> hGrp = Gui::WindowParameter::getDefaultParameter()->GetGroup("Mod/Mesh");
-  bool twoSide = hGrp->GetBool("TwoSideRendering", true);
-  if ( twoSide )
-  {
-    // enable two-side rendering
-    SoShapeHints * flathints = new SoShapeHints;
-    flathints->vertexOrdering = SoShapeHints::COUNTERCLOCKWISE;
-    flathints->shapeType = SoShapeHints::UNKNOWN_SHAPE_TYPE;
-    pcFlatRoot->addChild(flathints);
-  }
-
+  pcFlatRoot->addChild(pShapeHints);
   pcFlatRoot->addChild(pcShapeMaterial);
   pcFlatRoot->addChild(pcHighlight);
   addDisplayMaskMode(pcFlatRoot, "Flat");
