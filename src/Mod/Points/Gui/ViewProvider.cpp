@@ -37,12 +37,14 @@
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
 #include <Base/Sequencer.h>
+#include <Base/Tools2D.h>
 #include <Base/Vector3D.h>
 #include <App/Application.h>
 #include <App/Document.h>
 #include <Gui/Selection.h>
 #include <Gui/SoFCSelection.h>
 
+#include <Gui/View3DInventorViewer.h>
 #include <Mod/Points/App/PointsFeature.h>
 
 #include "ViewProvider.h"
@@ -55,7 +57,7 @@ using namespace Points;
 PROPERTY_SOURCE(PointsGui::ViewProviderPoints, Gui::ViewProviderDocumentObject)
 
 
-ViewProviderPoints::ViewProviderPoints()
+ViewProviderPoints::ViewProviderPoints() : _bEdit(false)
 {
   ADD_PROPERTY(PointSize,(2.0f));
 
@@ -338,4 +340,63 @@ QPixmap ViewProviderPoints::getIcon() const
     "rr.......rr..rr."};
   QPixmap px(Points_Feature_xpm);
   return px;
+}
+
+void ViewProviderPoints::setEdit(void)
+{
+  if ( _bEdit ) return;
+  _bEdit = true;
+}
+
+void ViewProviderPoints::unsetEdit(void)
+{
+  _bEdit = false;
+}
+
+bool ViewProviderPoints::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
+{
+  if ( _bEdit )
+  {
+    unsetEdit();
+    std::vector<SbVec2f> clPoly = Viewer.getPickedPolygon();
+    if ( clPoly.size() < 3 )
+      return false;
+    if ( clPoly.front() != clPoly.back() )
+      clPoly.push_back(clPoly.front());
+
+    cut( clPoly, Viewer );
+  }
+
+  return false;
+}
+
+void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer)
+{
+  // create the polygon from the picked points
+  Base::Polygon2D cPoly;
+  for (std::vector<SbVec2f>::const_iterator it = picked.begin(); it != picked.end(); ++it) {
+    cPoly.Add(Base::Vector2D((*it)[0],(*it)[1]));
+  }
+
+  // get a reference to the point kernel
+  Points::Feature* fea = (Points::Feature*)pcObject;
+  Points::PointKernel& points = fea->getPoints().getKernel();
+
+  SoCamera* pCam = Viewer.getCamera();  
+  SbViewVolume  vol = pCam->getViewVolume(); 
+
+  // search for all points inside/outside the polygon
+  Points::PointKernel newKernel;
+  for ( std::vector<Base::Vector3f>::const_iterator jt = points.begin(); jt != points.end(); ++jt ) {
+    SbVec3f pt(jt->x,jt->y,jt->z);
+
+    // project from 3d to 2d
+    vol.projectToScreen( pt, pt );
+    if ( !cPoly.Contains(Base::Vector2D(pt[0],pt[1])) )
+      newKernel.push_back(*jt);
+  }
+
+  // sets the points outside the polygon and update the Inventor node
+  points = newKernel;
+  updateData();
 }
