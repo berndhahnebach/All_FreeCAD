@@ -37,6 +37,9 @@
 #include <Gui/Command.h>
 #include <Gui/FileDialog.h>
 #include <Gui/Selection.h>
+#include <Gui/ViewProvider.h>
+#include <Gui/View3DInventor.h>
+#include <Gui/View3DInventorViewer.h>
 
 #include "../App/PointsFeature.h"
 #include "DlgPointsReadImp.h"
@@ -186,10 +189,52 @@ bool CmdPointsTransform::isActive(void)
   return getSelection().countObjectsOfType(Points::Feature::getClassTypeId()) > 0;
 }
 
+DEF_STD_CMD_A(CmdPointsPolyCut);
+
+CmdPointsPolyCut::CmdPointsPolyCut()
+  :Command("Points_PolyCut")
+{
+  sAppModule    = "Points";
+  sGroup        = QT_TR_NOOP("Points");
+  sMenuText     = QT_TR_NOOP("Cut point cloud");
+  sToolTipText  = QT_TR_NOOP("Cuts a point cloud with a picked polygon");
+  sWhatsThis    = QT_TR_NOOP("Cuts a point cloud with a picked polygon");
+  sStatusTip    = QT_TR_NOOP("Cuts a point cloud with a picked polygon");
+  sPixmap       = "PolygonPick";
+}
+
+void CmdPointsPolyCut::activated(int iMsg)
+{
+  std::vector<App::DocumentObject*> docObj = Gui::Selection().getObjectsOfType(Points::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::iterator it = docObj.begin(); it != docObj.end(); ++it )
+  {
+    if ( it == docObj.begin() ) {
+      Gui::Document* doc = getActiveGuiDocument();
+      Gui::MDIView* view = doc->getActiveView();
+      if ( view->getTypeId().isDerivedFrom(Gui::View3DInventor::getClassTypeId()) ) {
+        Gui::View3DInventorViewer* viewer = ((Gui::View3DInventor*)view)->getViewer();
+        viewer->startPicking( Gui::View3DInventorViewer::Lasso );
+      } else {
+        return;
+      }
+    }
+
+    Gui::ViewProvider* pVP = getActiveGuiDocument()->getViewProvider( *it );
+    pVP->setEdit();
+  }
+}
+
+bool CmdPointsPolyCut::isActive(void)
+{
+  // Check for the selected mesh feature (all Mesh types)
+  return getSelection().countObjectsOfType(Points::Feature::getClassTypeId()) > 0;
+}
+
 void CreatePointsCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
   rcCmdMgr.addCommand(new CmdPointsImport());
   rcCmdMgr.addCommand(new CmdPointsExport());
   rcCmdMgr.addCommand(new CmdPointsTransform());
+  rcCmdMgr.addCommand(new CmdPointsPolyCut());
 }

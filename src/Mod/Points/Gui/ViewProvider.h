@@ -24,6 +24,7 @@
 #define POINTSGUI_VIEWPROVIDERPOINTS_H
 
 #include <Gui/ViewProviderFeature.h>
+#include <Inventor/SbVec2f.h>
 
 
 class SoSwitch;
@@ -76,12 +77,20 @@ public:
   virtual void updateData();
   virtual QPixmap getIcon() const;
 
+  /// Sets the edit mnode
+  void setEdit(void);
+  /// Unsets the edit mode
+  void unsetEdit(void);
+
+  bool handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer);
+
 protected:
   void onChanged(const App::Property* prop);
   void createPoints(Points::Feature *pcFeature);
   void setVertexColorMode(App::PropertyColorList*);
   void setVertexGreyvalueMode(Points::PropertyGreyValueList*);
   void setVertexNormalMode(Points::PropertyNormalList*);
+  virtual void cut( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
 
 protected:
   SoCoordinate3     *pcPointsCoord;
@@ -89,6 +98,9 @@ protected:
   SoMaterial        *pcColorMat;
   SoNormal          *pcPointsNormal;
   SoDrawStyle       *pcPointStyle;
+
+private:
+  bool _bEdit;
 };
 
 } // namespace PointsGui

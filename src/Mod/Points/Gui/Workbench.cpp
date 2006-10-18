@@ -47,7 +47,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
   pnt->setCommand( "PointsTools" );
-  *pnt << "Points_Import" << "Points_Export";
+  *pnt << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
   return root;
 }
 
@@ -73,7 +73,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
   *test << "Points_Transform";
  
   pnts->setCommand( "&Points" );
-  *pnts << test << "Separator" << "Points_Import" << "Points_Export";
+  *pnts << test << "Separator" << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
   return root;
 }
 
