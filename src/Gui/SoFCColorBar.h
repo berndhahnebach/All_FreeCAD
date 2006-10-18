@@ -51,6 +51,7 @@ class GuiExport SoFCColorBarBase : public SoSeparator, public App::ValueFloatToR
 
 public:
   static void initClass(void);
+  static void finish(void);
 
   virtual void GLRenderBelowPath ( SoGLRenderAction *action );
 
@@ -126,6 +127,7 @@ class GuiExport SoFCColorBar : public SoFCColorBarBase, public Base::Subject<int
 
 public:
   static void initClass(void);
+  static void finish(void);
   SoFCColorBar(void);
 
   /**

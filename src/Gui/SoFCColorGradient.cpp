@@ -78,6 +78,11 @@ void SoFCColorGradient::initClass(void)
   SO_NODE_INIT_CLASS(SoFCColorGradient,SoFCColorBarBase,"Separator");
 }
 
+void SoFCColorGradient::finish()
+{
+  atexit_cleanup();
+}
+
 void SoFCColorGradient::setMarkerLabel( const SoMFString& label )
 {
   labels->removeAllChildren();

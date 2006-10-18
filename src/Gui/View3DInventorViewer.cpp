@@ -348,7 +348,7 @@ void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, i
   //The default value is 72.0.
   //If we need to support grayscale images with must either use SoOffscreenRenderer::LUMINANCE or 
   //SoOffscreenRenderer::LUMINANCE_TRANSPARENCY. 
-  SoFCOffscreenRenderer& renderer = SoFCOffscreenRenderer::instance(vp);
+  SoFCOffscreenRenderer renderer(vp);
   SoCallback* cb = 0;
 
   // if we use transparency then we must not set a background color
@@ -365,7 +365,7 @@ void View3DInventorViewer::makeScreenShot( const char* filename, int w, int h, i
       renderer.setBackgroundColor( SbColor(0.0, 0.0, 0.0) );
       break;
     case Transparent:
-      renderer.setComponents(SoOffscreenRenderer::RGB_TRANSPARENCY );
+      renderer.setComponents(SoFCOffscreenRenderer::RGB_TRANSPARENCY );
       break;
     default:
       throw Base::Exception("View3DInventorViewer::makeScreenShot(): Unknown parameter");

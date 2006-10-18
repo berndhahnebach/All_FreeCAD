@@ -43,6 +43,11 @@ using namespace Gui;
 
 SO_NODE_SOURCE(SoFCBackgroundGradient);
 
+void SoFCBackgroundGradient::finish()
+{
+  atexit_cleanup();
+}
+
 /*!
   Constructor.
 */

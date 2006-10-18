@@ -131,6 +131,11 @@ void SoFCSelectionAction::initClass()
   SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
+void SoFCSelectionAction::finish()
+{
+  atexit_cleanup();
+}
+
 
 SoFCSelectionAction::SoFCSelectionAction (const SelectionChanges &SelCh)
 :SelChange(SelCh)
@@ -206,6 +211,11 @@ void SoFCEnableSelectionAction::initClass()
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
   SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
+}
+
+void SoFCEnableSelectionAction::finish()
+{
+  atexit_cleanup();
 }
 
 
@@ -285,6 +295,11 @@ void SoFCEnableHighlightAction::initClass()
   SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
+void SoFCEnableHighlightAction::finish()
+{
+  atexit_cleanup();
+}
+
 
 SoFCEnableHighlightAction::SoFCEnableHighlightAction (const SbBool& sel)
   : highlight(sel)
@@ -360,6 +375,11 @@ void SoFCSelectionColorAction::initClass()
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
   SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
+}
+
+void SoFCSelectionColorAction::finish()
+{
+  atexit_cleanup();
 }
 
 
@@ -439,6 +459,11 @@ void SoFCHighlightColorAction::initClass()
   SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
 }
 
+void SoFCHighlightColorAction::finish()
+{
+  atexit_cleanup();
+}
+
 
 SoFCHighlightColorAction::SoFCHighlightColorAction (const SoSFColor& col)
   : highlightColor(col)
@@ -514,6 +539,11 @@ void SoFCDocumentAction::initClass()
 
   SO_ACTION_ADD_METHOD(SoSeparator,callDoAction);
   SO_ACTION_ADD_METHOD(SoFCSelection,callDoAction);
+}
+
+void SoFCDocumentAction::finish()
+{
+  atexit_cleanup();
 }
 
 

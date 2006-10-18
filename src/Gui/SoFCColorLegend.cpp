@@ -74,6 +74,11 @@ void SoFCColorLegend::initClass(void)
   SO_NODE_INIT_CLASS(SoFCColorLegend,SoFCColorBarBase,"Separator");
 }
 
+void SoFCColorLegend::finish()
+{
+  atexit_cleanup();
+}
+
 void SoFCColorLegend::setMarkerLabel( const SoMFString& label )
 {
   labels->removeAllChildren();

@@ -50,6 +50,7 @@ class GuiExport SoFCSelection : public SoSeparator {
 
 public:
   static void initClass(void);
+  static void finish(void);
   SoFCSelection(void);
 
   enum HighlightModes {

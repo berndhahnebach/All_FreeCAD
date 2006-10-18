@@ -42,6 +42,7 @@ class GuiExport SoFCColorGradient : public SoFCColorBarBase {
 
 public:
   static void initClass(void);
+  static void finish(void);
   SoFCColorGradient(void);
 
   /**
