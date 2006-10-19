@@ -178,6 +178,18 @@ void DlgParameterImp::onParameterSetChange(const QString& rcString)
   ParamGrp->triggerUpdate(); 
 }
 
+void DlgParameterImp::onSaveToDisk()
+{
+  ParameterManager* sys = App::GetApplication().GetParameterSet("System parameter");
+  if (sys) {
+    sys->SaveDocument(App::Application::Config()["SystemParameter"].c_str());
+  }
+  ParameterManager* user = App::GetApplication().GetParameterSet("User parameter");
+  if (user) {
+    user->SaveDocument(App::Application::Config()["UserParameter"].c_str());
+  }
+}
+
 // --------------------------------------------------------------------
 
 /* TRANSLATOR Gui::Dialog::ParameterGroup */
