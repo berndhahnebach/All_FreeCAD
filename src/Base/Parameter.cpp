@@ -1219,6 +1219,9 @@ int  ParameterManager::LoadDocument(const char* sFileName)
 	_pDocument = parser->getDocument();
 	DOMElement* rootElem = _pDocument->getDocumentElement();
 
+  if(!rootElem) 
+    throw Exception("Malformed Parameter document: Root group not found");
+
 	_pGroupNode = FindElement(rootElem,"FCParamGroup","Root");
 
 	if(!_pGroupNode) 

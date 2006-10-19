@@ -54,6 +54,7 @@ public:
 
 public slots:
   virtual void onParameterSetChange(const QString& rcString);
+  virtual void onSaveToDisk();
 
 protected slots:
   virtual void languageChange();

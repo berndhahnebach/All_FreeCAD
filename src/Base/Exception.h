@@ -58,7 +58,7 @@ public:
 
   virtual const char* what(void) const throw();
   void ReportException (void) const;
-  inline void SetMessage(const char * sMessage);
+  inline void setMessage(const char * sMessage);
   
 protected:
 #ifdef _MSC_VER
@@ -113,7 +113,7 @@ public:
 };
 
 
-inline void Exception::SetMessage(const char * sMessage)
+inline void Exception::setMessage(const char * sMessage)
 {
   _sErrMsg = sMessage;
 }

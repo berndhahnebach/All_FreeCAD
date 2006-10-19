@@ -945,22 +945,36 @@ void Application::LoadParameters(void)
 	mConfig["SystemParameter"] = mConfig["UserAppData"] + "system.cfg";
 
 
-	if(_pcSysParamMngr->LoadOrCreateDocument(mConfig["SystemParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
-	{
-		Console().Warning("   Parameter not existing, write initial one\n");
-		Console().Message("   This Warning means normaly FreeCAD running the first time or the\n"
-		                     "   configuration was deleted or moved.Build up the standard configuration.\n");
+  try {
+	  if(_pcSysParamMngr->LoadOrCreateDocument(mConfig["SystemParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
+	  {
+		  Console().Warning("   Parameter not existing, write initial one\n");
+		  Console().Message("   This Warning means normaly FreeCAD running the first time or the\n"
+		                       "   configuration was deleted or moved.Build up the standard configuration.\n");
 
-	}
+	  }
+  } catch (Base::Exception& e) {
+    char szBuf[200];
+    snprintf(szBuf, 200, "Malformed parameter file '%s'", mConfig["SystemParameter"].c_str());
+    e.setMessage( szBuf );
+    throw e;
+  }
 
-	if(_pcUserParamMngr->LoadOrCreateDocument(mConfig["UserParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
-	{
-		Console().Warning("   User settings not existing, write initial one\n");
-		Console().Message("   This Warning means normaly you running FreeCAD the first time\n"
-		                     "   or your configuration was deleted or moved. The system defaults\n"
-		                     "   will be reestablished for you.\n");
+  try {
+	  if(_pcUserParamMngr->LoadOrCreateDocument(mConfig["UserParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
+	  {
+		  Console().Warning("   User settings not existing, write initial one\n");
+		  Console().Message("   This Warning means normaly you running FreeCAD the first time\n"
+		                       "   or your configuration was deleted or moved. The system defaults\n"
+		                       "   will be reestablished for you.\n");
 
-	}
+	  }
+  } catch(Base::Exception& e) {
+    char szBuf[200];
+    snprintf(szBuf, 200, "Malformed parameter file '%s'", mConfig["UserParameter"].c_str());
+    e.setMessage( szBuf );
+    throw e;
+  }
 }
 
 

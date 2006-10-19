@@ -171,7 +171,7 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
 
     Exception exc; // do not use PyException since this clears the error indicator
     if ( PyString_Check( errdata ) )
-      exc.SetMessage( PyString_AsString( errdata ) );
+      exc.setMessage( PyString_AsString( errdata ) );
     PyErr_Restore(errobj, errdata, errtraceback);
     if ( PyErr_Occurred() )
       PyErr_Print();

@@ -22,20 +22,47 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
+        <widget class="QSplitter" row="1" column="0">
+            <property name="name">
+                <cstring>splitter3</cstring>
+            </property>
+            <property name="orientation">
+                <enum>Horizontal</enum>
+            </property>
+        </widget>
+        <widget class="QComboBox" row="0" column="0">
+            <property name="name">
+                <cstring>SetNameComboBox</cstring>
+            </property>
+        </widget>
         <widget class="QLayoutWidget" row="2" column="0">
             <property name="name">
-                <cstring>Layout1</cstring>
+                <cstring>layout2</cstring>
             </property>
             <hbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
+                <widget class="QPushButton">
+                    <property name="name">
+                        <cstring>buttonSave</cstring>
+                    </property>
+                    <property name="text">
+                        <string>&amp;Save to disk</string>
+                    </property>
+                    <property name="accel">
+                        <string>Alt+S</string>
+                    </property>
+                    <property name="autoDefault">
+                        <bool>true</bool>
+                    </property>
+                    <property name="default">
+                        <bool>true</bool>
+                    </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Saves user and system parameter immediately to disk</string>
+                    </property>
+                </widget>
                 <spacer>
                     <property name="name">
                         <cstring>Horizontal Spacing2</cstring>
@@ -48,7 +75,7 @@
                     </property>
                     <property name="sizeHint">
                         <size>
-                            <width>20</width>
+                            <width>390</width>
                             <height>20</height>
                         </size>
                     </property>
@@ -72,19 +99,6 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QSplitter" row="1" column="0">
-            <property name="name">
-                <cstring>splitter3</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Horizontal</enum>
-            </property>
-        </widget>
-        <widget class="QComboBox" row="0" column="0">
-            <property name="name">
-                <cstring>SetNameComboBox</cstring>
-            </property>
-        </widget>
     </grid>
 </widget>
 <connections>
@@ -94,6 +108,15 @@
         <receiver>Gui::Dialog::DlgParameter</receiver>
         <slot>accept()</slot>
     </connection>
+    <connection>
+        <sender>buttonSave</sender>
+        <signal>clicked()</signal>
+        <receiver>Gui::Dialog::DlgParameter</receiver>
+        <slot>onSaveToDisk()</slot>
+    </connection>
 </connections>
+<slots>
+    <slot>onSaveToDisk()</slot>
+</slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
