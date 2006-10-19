@@ -1,4 +1,4 @@
-﻿#! python
+#! python
 # -*- coding: utf-8 -*-
 # (c) 2006 Juergen Riegel 
 
@@ -36,6 +36,7 @@ Version:
 
 import os,sys,string,re,getopt,codecs,binascii
 import generateBase.generateModel_Module
+import generateTemplates.templateModule
 
 
 # Globals
@@ -45,7 +46,13 @@ def generate(filename):
   GenerateModelInst = generateBase.generateModel_Module.parse(filename)
   head,tail = os.path.split(filename)
   print head,tail
-  print GenerateModelInst.Module[0].Name
+
+  Module= generateTemplates.templateModule.TemplateModule()
+  Module.path = head
+  Module.module = GenerateModelInst.Module
+  Module.Generate()
+  
+  print "Done generating: " + GenerateModelInst.Module[0].Name
   
   
 
@@ -67,7 +74,8 @@ def main():
 
 	# runing through the files
 	if (len(args) ==0):
-		sys.stderr.write(Usage)
+		#sys.stderr.write(Usage)
+                generate("../Mod/PartDesign/PartDesign_Model.xml")                  
 	else:
 		for i in args:
 			generate(i)
