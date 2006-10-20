@@ -369,6 +369,8 @@ void StdCmdMRU::save()
 // Std_About
 //===========================================================================
 
+/* TRANSLATOR Gui::StdCmdAbout */
+
 StdCmdAbout::StdCmdAbout()
   :Command("Std_About")
 {
