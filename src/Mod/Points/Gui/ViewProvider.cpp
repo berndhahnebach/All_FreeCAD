@@ -30,9 +30,10 @@
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoMaterialBinding.h>
 # include <Inventor/nodes/SoNormal.h>
+# include <Inventor/errors/SoDebugError.h> 
 #endif
 
-/// Here the FreeCAD includes sorted by Base,App,Gui......
+/// Here the FreeCAD includes sorted by Base,App,Gui,...
 #include <Base/Console.h>
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
@@ -214,6 +215,8 @@ void ViewProviderPoints::attach(App::DocumentObject* pcObj)
 
 void ViewProviderPoints::setDisplayMode(const char* ModeName)
 {
+  int numPoints = pcPointsCoord->point.getNum();
+
   if ( strcmp("Color",ModeName)==0 )
   {
     std::map<std::string,App::Property*> Map;
@@ -223,8 +226,18 @@ void ViewProviderPoints::setDisplayMode(const char* ModeName)
       Base::Type t = it->second->getTypeId();
       if ( t==App::PropertyColorList::getClassTypeId() )
       {
-        setVertexColorMode((App::PropertyColorList*)it->second);
-        setDisplayMaskMode("Color");
+        App::PropertyColorList* colors = (App::PropertyColorList*)it->second;
+        if ( numPoints != colors->getSize() ) {
+#ifdef FC_DEBUG
+          SoDebugError::postWarning("ViewProviderPoints::setDisplayMode",
+                                    "The number of points (%d) doesn't match with the number of colors (%d).", numPoints, colors->getSize());
+#endif
+          // fallback 
+          setDisplayMaskMode("Point");
+        } else {
+          setVertexColorMode(colors);
+          setDisplayMaskMode("Color");
+        }
         break;
       }
     }
@@ -233,22 +246,25 @@ void ViewProviderPoints::setDisplayMode(const char* ModeName)
   {
     std::map<std::string,App::Property*> Map;
     pcObject->getPropertyMap(Map);
-    bool ok=false;
     for( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
     {
       Base::Type t = it->second->getTypeId();
       if ( t==Points::PropertyGreyValueList::getClassTypeId() )
       {
-        setVertexGreyvalueMode((Points::PropertyGreyValueList*)it->second);
-        setDisplayMaskMode("Color");
-        ok=true;
+        Points::PropertyGreyValueList* greyValues = (Points::PropertyGreyValueList*)it->second;
+        if ( numPoints != greyValues->getSize() ) {
+#ifdef FC_DEBUG
+          SoDebugError::postWarning("ViewProviderPoints::setDisplayMode",
+                                    "The number of points (%d) doesn't match with the number of grey values (%d).", numPoints, greyValues->getSize());
+#endif
+          // Intensity mode is not possible then set the default () mode instead.
+          setDisplayMaskMode("Point");
+        } else {
+          setVertexGreyvalueMode((Points::PropertyGreyValueList*)it->second);
+          setDisplayMaskMode("Color");
+        }
         break;
       }
-    }
-    // Intensity mode is not possible then set the default () mode instead.
-    if (!ok) {
-      setDisplayMode("Point");
-      return;
     }
   }
   else if ( strcmp("Shaded",ModeName)==0 )
@@ -261,14 +277,17 @@ void ViewProviderPoints::setDisplayMode(const char* ModeName)
       if ( t==Points::PropertyNormalList::getClassTypeId() )
       {
         Points::PropertyNormalList* normals = (Points::PropertyNormalList*)it->second;
-        if ( pcPointsCoord->point.getNum() != normals->getSize() ) {
-          Base::Console().Message("No normals defined");
-          // Try to set the 'Intensity' mode instead
-          setDisplayMode("Intensity");
-          return;
+        if ( numPoints != normals->getSize() ) {
+#ifdef FC_DEBUG
+          SoDebugError::postWarning("ViewProviderPoints::setDisplayMode",
+                                    "The number of points (%d) doesn't match with the number of normals (%d).", numPoints, normals->getSize());
+#endif
+          // fallback 
+          setDisplayMaskMode("Point");
+        } else {
+          setVertexNormalMode(normals);
+          setDisplayMaskMode("Shaded");
         }
-        setVertexNormalMode(normals);
-        setDisplayMaskMode("Shaded");
         break;
       }
     }
@@ -365,6 +384,7 @@ bool ViewProviderPoints::handleEvent(const SoEvent * const ev,Gui::View3DInvento
       clPoly.push_back(clPoly.front());
 
     cut( clPoly, Viewer );
+    updateData();
   }
 
   return false;
@@ -396,7 +416,6 @@ void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInv
       newKernel.push_back(*jt);
   }
 
-  // sets the points outside the polygon and update the Inventor node
+  // sets the points outside the polygon to update the Inventor node
   points = newKernel;
-  updateData();
 }

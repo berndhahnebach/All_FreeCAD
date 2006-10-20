@@ -69,6 +69,11 @@ public:
   virtual ~PropertyGreyValueList()
   {
   }
+
+  /** @name Modify */
+  //@{
+  void removeIndices( const std::vector<unsigned long>& );
+  //@}
 };
 
 /**
@@ -85,7 +90,12 @@ public:
   virtual ~PropertyNormalList()
   {
   }
+
+  /** @name Modify */
+  //@{
   void transform(const Matrix4D &rclMat);
+  void removeIndices( const std::vector<unsigned long>& );
+  //@}
 };
 
 /** Curvature information. */
@@ -117,19 +127,25 @@ public:
   void setSize(int newSize){_lValueList.resize(newSize);}   
   int getSize(void) const {return _lValueList.size();}   
 	void setValue(const CurvatureInfo&);
+  void setValues(const std::vector<CurvatureInfo>&);
   std::vector<float> getCurvature( int tMode) const;
   
   /// index operator
   const CurvatureInfo& operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
   void  set1Value (const int idx, const CurvatureInfo& value){_lValueList.operator[] (idx) = value;}
   const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
-  void transform(const Matrix4D &rclMat);
 
   void Save (Base::Writer &writer) const;
   void Restore(Base::XMLReader &reader);
 
   void SaveDocFile (Base::Writer &writer) const;
   void RestoreDocFile(Base::Reader &reader);
+
+  /** @name Modify */
+  //@{
+  void transform(const Matrix4D &rclMat);
+  void removeIndices( const std::vector<unsigned long>& );
+  //@}
 
 private:
   std::vector<CurvatureInfo> _lValueList;

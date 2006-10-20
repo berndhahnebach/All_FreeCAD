@@ -312,12 +312,12 @@ PropertyIntegerConstraint::~PropertyIntegerConstraint()
 
 }
 
-void PropertyIntegerConstraint::setConstrains(const Constrains* sConstrain)
+void PropertyIntegerConstraint::setConstraints(const Constraints* sConstrain)
 {
   _ConstStruct = sConstrain;
 }
 
-const PropertyIntegerConstraint::Constrains*  PropertyIntegerConstraint::getConstrains(void)
+const PropertyIntegerConstraint::Constraints*  PropertyIntegerConstraint::getConstraints(void) const
 {
   return _ConstStruct;
 }
@@ -348,7 +348,7 @@ void PropertyIntegerConstraint::setPyObject(PyObject *value)
 
 TYPESYSTEM_SOURCE(App::PropertyPercent , App::PropertyIntegerConstraint);
 
-const PropertyIntegerConstraint::Constrains percent = {0,100,1};
+const PropertyIntegerConstraint::Constraints percent = {0,100,1};
 
 //**************************************************************************
 // Construction/Destruction
@@ -597,12 +597,12 @@ PropertyFloatConstraint::~PropertyFloatConstraint()
 
 }
 
-void PropertyFloatConstraint::setConstrains(const Constrains* sConstrain)
+void PropertyFloatConstraint::setConstraints(const Constraints* sConstrain)
 {
   _ConstStruct = sConstrain;
 }
 
-const PropertyFloatConstraint::Constrains*  PropertyFloatConstraint::getConstrains(void)
+const PropertyFloatConstraint::Constraints*  PropertyFloatConstraint::getConstraints(void) const
 {
   return _ConstStruct;
 }
@@ -674,6 +674,12 @@ void PropertyFloatList::setValue(float lValue)
   hasSetValue();
 }
 
+void PropertyFloatList::setValues(const std::vector<float>& values)
+{
+  aboutToSetValue();
+  _lValueList = values;
+  hasSetValue();
+}
 
 PyObject *PropertyFloatList::getPyObject(void)
 {

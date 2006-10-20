@@ -147,7 +147,7 @@ protected:
 private:
   bool m_bEdit;
 
-  static App::PropertyFloatConstraint::Constrains floatRange;
+  static App::PropertyFloatConstraint::Constraints floatRange;
 };
 
 } // namespace MeshGui

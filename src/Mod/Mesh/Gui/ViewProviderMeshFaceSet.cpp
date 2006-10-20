@@ -72,7 +72,7 @@
 using namespace MeshGui;
 
 
-App::PropertyFloatConstraint::Constrains ViewProviderMeshFaceSet::floatRange = {0.0f,20.0f,0.1f};
+App::PropertyFloatConstraint::Constraints ViewProviderMeshFaceSet::floatRange = {0.0f,20.0f,0.1f};
 const char* ViewProviderMeshFaceSet::LightingEnums[]= {"One side","Two side",NULL};
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, Gui::ViewProviderFeature)
@@ -80,9 +80,9 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMeshFaceSet, Gui::ViewProviderFeature)
 ViewProviderMeshFaceSet::ViewProviderMeshFaceSet() : pcOpenEdge(0), m_bEdit(false)
 {
   ADD_PROPERTY(LineWidth,(2.0f));
-  LineWidth.setConstrains(&floatRange);
+  LineWidth.setConstraints(&floatRange);
   ADD_PROPERTY(PointSize,(2.0f));
-  PointSize.setConstrains(&floatRange);
+  PointSize.setConstraints(&floatRange);
   ADD_PROPERTY(OpenEdges,(false));
   ADD_PROPERTY(Lighting,(1));
   Lighting.setEnums(LightingEnums);

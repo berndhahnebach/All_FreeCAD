@@ -50,7 +50,7 @@ using namespace Gui;
 
 PROPERTY_SOURCE(Gui::ViewProviderDocumentObject, Gui::ViewProvider)
 
-const App::PropertyIntegerConstraint::Constrains intPercent = {0,100,1};
+const App::PropertyIntegerConstraint::Constraints intPercent = {0,100,1};
       
 ViewProviderDocumentObject::ViewProviderDocumentObject()
   : pcObject(0), pcObjItem(0), _cLastStatus(-1)
@@ -58,7 +58,7 @@ ViewProviderDocumentObject::ViewProviderDocumentObject()
   ADD_PROPERTY(ShapeColor,(0.8f,0.8f,0.8f));
   ADD_PROPERTY(DisplayMode,((long)0));
   ADD_PROPERTY(Transparency,(0));
-  Transparency.setConstrains(&intPercent);
+  Transparency.setConstraints(&intPercent);
   ADD_PROPERTY(Visibility,(true));
   App::Material mat(App::Material::DEFAULT);
   ADD_PROPERTY(ShapeMaterial,(mat));

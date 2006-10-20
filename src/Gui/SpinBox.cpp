@@ -170,10 +170,8 @@ void SpinBox::stepDown()
  */
 void SpinBox::mouseMoveEvent ( QMouseEvent* e )
 {
-#ifndef FC_DEBUG
   if (QWidget::mouseGrabber() == 0 && !rect().contains(e->pos()) && d->pressed )
     grabMouse( QCursor(IbeamCursor) );
-#endif
 
   if (QWidget::mouseGrabber() == this)
   {

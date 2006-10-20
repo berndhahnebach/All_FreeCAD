@@ -34,6 +34,11 @@
 #include "MeshPy.h"
 
 
+namespace Mesh {
+  const App::PropertyIntegerConstraint::Constraints intSampling = {0,1000,1};
+  const App::PropertyFloatConstraint::Constraints floatRange = {0.0,1000.0,1.0};
+}
+
 using namespace Mesh;
 using namespace MeshCore;
 
@@ -43,6 +48,8 @@ Sphere::Sphere(void)
 {
   ADD_PROPERTY(Radius  ,(5.0));
   ADD_PROPERTY(Sampling  ,(50));
+  Radius.setConstraints(&floatRange);
+  Sampling.setConstraints(&intSampling);
 }
 
 int Sphere::execute(void)
@@ -84,6 +91,9 @@ Ellipsoid::Ellipsoid(void)
   ADD_PROPERTY(Radius1  ,(2.0));
   ADD_PROPERTY(Radius2  ,(4.0));
   ADD_PROPERTY(Sampling  ,(50));
+  Radius1.setConstraints(&floatRange);
+  Radius2.setConstraints(&floatRange);
+  Sampling.setConstraints(&intSampling);
 }
 
 int Ellipsoid::execute(void)
@@ -127,6 +137,10 @@ Cylinder::Cylinder(void)
   ADD_PROPERTY(EdgeLength,(1.0));
   ADD_PROPERTY(Closed  ,(true));
   ADD_PROPERTY(Sampling  ,(50));
+  Radius.setConstraints(&floatRange);
+  Length.setConstraints(&floatRange);
+  EdgeLength.setConstraints(&floatRange);
+  Sampling.setConstraints(&intSampling);
 }
 
 int Cylinder::execute(void)
@@ -172,6 +186,11 @@ Cone::Cone(void)
   ADD_PROPERTY(EdgeLength,(1.0));
   ADD_PROPERTY(Closed  ,(true));
   ADD_PROPERTY(Sampling  ,(50));
+  Radius1.setConstraints(&floatRange);
+  Radius2.setConstraints(&floatRange);
+  Length.setConstraints(&floatRange);
+  EdgeLength.setConstraints(&floatRange);
+  Sampling.setConstraints(&intSampling);
 }
 
 int Cone::execute(void)
@@ -214,6 +233,9 @@ Torus::Torus(void)
   ADD_PROPERTY(Radius1  ,(10.0));
   ADD_PROPERTY(Radius2  ,(2.0));
   ADD_PROPERTY(Sampling  ,(50));
+  Radius1.setConstraints(&floatRange);
+  Radius2.setConstraints(&floatRange);
+  Sampling.setConstraints(&intSampling);
 }
 
 int Torus::execute(void)
@@ -255,6 +277,9 @@ Cube::Cube(void)
   ADD_PROPERTY(Length  ,(10.0));
   ADD_PROPERTY(Width  ,(10.0));
   ADD_PROPERTY(Height  ,(10.0));
+  Length.setConstraints(&floatRange);
+  Width.setConstraints(&floatRange);
+  Height.setConstraints(&floatRange);
 }
 
 int Cube::execute(void)

@@ -44,6 +44,35 @@ TYPESYSTEM_SOURCE(Points::PropertyNormalList, App::PropertyVectorList);
 TYPESYSTEM_SOURCE(Points::PropertyCurvatureList , App::PropertyLists);
 TYPESYSTEM_SOURCE(Points::PropertyPointKernel , App::Property);
 
+void PropertyGreyValueList::removeIndices( const std::vector<unsigned long>& uIndices )
+{
+  // We need a sorted array
+  std::vector<unsigned long> uSortedInds = uIndices;
+  std::sort(uSortedInds.begin(), uSortedInds.end());
+
+  const std::vector<float>& rValueList = getValues();
+
+  assert( uSortedInds.size() <= rValueList.size() );
+  if ( uSortedInds.size() > rValueList.size() )
+    return;
+
+  std::vector<float> remainValue;
+  remainValue.reserve(rValueList.size() - uSortedInds.size());
+
+  std::vector<unsigned long>::iterator pos = uSortedInds.begin();
+  for ( std::vector<float>::const_iterator it = rValueList.begin(); it != rValueList.end(); ++it ) {
+    unsigned long index = it - rValueList.begin();
+    if (pos == uSortedInds.end())
+      remainValue.push_back( *it );
+    else if (index != *pos)
+      remainValue.push_back( *it );
+    else 
+      pos++;
+  }
+
+  setValues(remainValue);
+}
+
 void PropertyNormalList::transform(const Matrix4D &mat)
 {
   // A normal vector is only a direction with unit length, so we only need to rotate it
@@ -73,6 +102,35 @@ void PropertyNormalList::transform(const Matrix4D &mat)
   }
 }
 
+void PropertyNormalList::removeIndices( const std::vector<unsigned long>& uIndices )
+{
+  // We need a sorted array
+  std::vector<unsigned long> uSortedInds = uIndices;
+  std::sort(uSortedInds.begin(), uSortedInds.end());
+
+  const std::vector<Base::Vector3f>& rValueList = getValues();
+
+  assert( uSortedInds.size() <= rValueList.size() );
+  if ( uSortedInds.size() > rValueList.size() )
+    return;
+
+  std::vector<Base::Vector3f> remainValue;
+  remainValue.reserve(rValueList.size() - uSortedInds.size());
+
+  std::vector<unsigned long>::iterator pos = uSortedInds.begin();
+  for ( std::vector<Base::Vector3f>::const_iterator it = rValueList.begin(); it != rValueList.end(); ++it ) {
+    unsigned long index = it - rValueList.begin();
+    if (pos == uSortedInds.end())
+      remainValue.push_back( *it );
+    else if (index != *pos)
+      remainValue.push_back( *it );
+    else 
+      pos++;
+  }
+
+  setValues(remainValue);
+}
+
 PropertyCurvatureList::PropertyCurvatureList()
 {
 
@@ -88,6 +146,13 @@ void PropertyCurvatureList::setValue(const CurvatureInfo& lValue)
   aboutToSetValue();
   _lValueList.resize(1);
 	_lValueList[0]=lValue;
+  hasSetValue();
+}
+
+void PropertyCurvatureList::setValues(const std::vector<CurvatureInfo>& lValues)
+{
+  aboutToSetValue();
+	_lValueList=lValues;
   hasSetValue();
 }
 
@@ -174,6 +239,33 @@ void PropertyCurvatureList::transform(const Matrix4D &mat)
     ci.cMinCurvDir = rot * ci.cMinCurvDir;
     set1Value(ii, ci);
   }
+}
+
+void PropertyCurvatureList::removeIndices( const std::vector<unsigned long>& uIndices )
+{
+  // We need a sorted array
+  std::vector<unsigned long> uSortedInds = uIndices;
+  std::sort(uSortedInds.begin(), uSortedInds.end());
+
+  assert( uSortedInds.size() <= _lValueList.size() );
+  if ( uSortedInds.size() > _lValueList.size() )
+    return;
+
+  std::vector<CurvatureInfo> remainValue;
+  remainValue.reserve(_lValueList.size() - uSortedInds.size());
+
+  std::vector<unsigned long>::iterator pos = uSortedInds.begin();
+  for ( std::vector<CurvatureInfo>::const_iterator it = _lValueList.begin(); it != _lValueList.end(); ++it ) {
+    unsigned long index = it - _lValueList.begin();
+    if (pos == uSortedInds.end())
+      remainValue.push_back( *it );
+    else if (index != *pos)
+      remainValue.push_back( *it );
+    else 
+      pos++;
+  }
+
+  setValues(remainValue);
 }
 
 void PropertyCurvatureList::Save (Base::Writer &writer) const
