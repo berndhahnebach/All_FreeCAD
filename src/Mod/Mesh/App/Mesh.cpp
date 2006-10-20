@@ -96,7 +96,7 @@ void PropertyNormalList::transform(const Base::Matrix4D &mat)
   // Rotate the normal vectors
   for (int ii=0; ii<getSize(); ii++)
   {
-    _lValueList[ii] =  rot * _lValueList[ii];
+    set1Value(ii, rot * operator[](ii));
   }
 
   hasSetValue();

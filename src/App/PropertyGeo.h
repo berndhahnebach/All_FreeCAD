@@ -127,7 +127,8 @@ public:
   const Base::Vector3f& operator[] (const int idx) const {return _lValueList.operator[] (idx);}
   
   
-  void  set1Value (const int idx, const Base::Vector3f& value){_lValueList.operator[] (idx) = value;}
+  void set1Value (const int idx, const Base::Vector3f& value){_lValueList.operator[] (idx) = value;}
+  void setValues (const std::vector<Base::Vector3f>& values);
 
   const std::vector<Base::Vector3f> &getValues(void) const{return _lValueList;}
 
@@ -145,10 +146,8 @@ public:
 
   virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(Base::Vector3f);}
 
-protected:
-
+private:
   std::vector<Base::Vector3f> _lValueList;
-
 };
 
 /** Vector properties

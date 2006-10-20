@@ -170,7 +170,7 @@ public:
   /// Constraint methods 
   //@{
   /// the boundery struct
-  struct Constrains {
+  struct Constraints {
     long LowerBound, UpperBound, StepSize;
   };
   /** setting the bounderies
@@ -178,12 +178,12 @@ public:
     * allocated or set as an static in the class the property
     * blongs to:
     * \code
-    * const Constrains percent = {0,100,1}
+    * const Constraints percent = {0,100,1}
     * \endcode
     */
-  void setConstrains(const Constrains* sConstrain);
+  void setConstraints(const Constraints* sConstraint);
   /// get the constriant struct
-  const Constrains*  getConstrains(void);
+  const Constraints*  getConstraints(void) const;
   //@}
 
   virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::IntConstraintEditorItem"; }
@@ -191,7 +191,7 @@ public:
   virtual void setPyObject(PyObject *);
 
 protected:
-	const Constrains* _ConstStruct;
+	const Constraints* _ConstStruct;
 };
 
 /** Percent property
@@ -337,7 +337,7 @@ public:
  /// Constraint methods 
   //@{
   /// the boundery struct
-  struct Constrains {
+  struct Constraints {
     float LowerBound, UpperBound, StepSize;
   };
   /** setting the bounderies
@@ -345,12 +345,12 @@ public:
     * allocated or set as an static in the class the property
     * blongs to:
     * \code
-    * const Constrains percent = {0.0,100.0,1.0}
+    * const Constraints percent = {0.0,100.0,1.0}
     * \endcode
     */
-  void setConstrains(const Constrains* sConstrain);
+  void setConstraints(const Constraints* sConstrain);
   /// get the constriant struct
-  const Constrains*  getConstrains(void);
+  const Constraints*  getConstraints(void) const;
   //@}
 
   virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatConstraintEditorItem"; }
@@ -359,7 +359,7 @@ public:
 
 
 protected:
-	const Constrains* _ConstStruct;
+	const Constraints* _ConstStruct;
 
 
 };
@@ -421,7 +421,8 @@ public:
   float operator[] (const int idx) const {return _lValueList.operator[] (idx);} 
   
   
-  void  set1Value (const int idx, float value){_lValueList.operator[] (idx) = value;}
+  void set1Value (const int idx, float value){_lValueList.operator[] (idx) = value;}
+  void setValues (const std::vector<float>& values);
 
   const std::vector<float> &getValues(void) const{return _lValueList;}
 
@@ -440,9 +441,7 @@ public:
   virtual unsigned int getMemSize (void) const{return _lValueList.size() * sizeof(float);}
 
 private:
-
   std::vector<float> _lValueList;
-
 };
 
 

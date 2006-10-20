@@ -135,9 +135,8 @@ QWidget* IntEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  QSpinBox* editor = new QSpinBox( parent, "IntEditorItem::spin" );
-  editor->setMaxValue(INT_MAX);
-  editor->setMinValue(INT_MIN+1);
+  SpinBox* editor = new SpinBox( parent, "IntEditorItem::spin" );
+  editor->setRange(INT_MIN, INT_MAX);
   editor->setValue( overrideValue().toInt() );
   connect(editor, SIGNAL( valueChanged(int) ), this, SLOT( onValueChanged() ) );
   return editor;
@@ -200,7 +199,7 @@ QWidget* IntConstraintEditorItem::createEditor( int column, QWidget* parent )
     return 0;
 
   App::PropertyIntegerConstraint* prop = (App::PropertyIntegerConstraint*)_prop.front();
-  const App::PropertyIntegerConstraint::Constrains*  range = prop->getConstrains();
+  const App::PropertyIntegerConstraint::Constraints*  range = prop->getConstraints();
   if ( range ) {
     editor->setMaxValue( (int)range->UpperBound );
     editor->setMinValue( (int)range->LowerBound );
@@ -232,7 +231,8 @@ QWidget* FloatEditorItem::createEditor( int column, QWidget* parent )
     return 0;
 
   FloatSpinBox* editor = new FloatSpinBox( parent, "FloatEditorItem::spin" );
-  editor->setRange(-2147483647, -2147483647, 0.01, 2);
+  editor->QSpinBox::setRange(INT_MIN/10, INT_MAX/10);
+  editor->setRange(editor->minValue(), editor->maxValue(), 0.01, 2);
   editor->setValue( (float)overrideValue().toDouble() );
   connect(editor, SIGNAL( valueChanged(int) ), this, SLOT( onValueChanged() ) );
 
@@ -305,7 +305,7 @@ QWidget* FloatConstraintEditorItem::createEditor( int column, QWidget* parent )
     return 0;
 
   App::PropertyFloatConstraint* prop = (App::PropertyFloatConstraint*)_prop.front();
-  const App::PropertyFloatConstraint::Constrains*  range = prop->getConstrains();
+  const App::PropertyFloatConstraint::Constraints*  range = prop->getConstraints();
   if ( range ) {
     editor->setMaxValue( range->UpperBound );
     editor->setMinValue( range->LowerBound );

@@ -194,6 +194,13 @@ void PropertyVectorList::setValue(const Base::Vector3f& lValue)
   hasSetValue();
 }
 
+void PropertyVectorList::setValues(const std::vector<Base::Vector3f>& values)
+{
+  aboutToSetValue();
+  _lValueList = values;
+  hasSetValue();
+}
+
 PyObject *PropertyVectorList::getPyObject(void)
 {
   PyObject* list = PyList_New(	getSize() );

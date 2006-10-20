@@ -42,8 +42,8 @@ class Sphere : public Mesh::Feature
 public:
   Sphere();
 
-  App::PropertyFloat Radius;
-  App::PropertyInteger Sampling;
+  App::PropertyFloatConstraint Radius;
+  App::PropertyIntegerConstraint Sampling;
 
   /** @name methods override Feature */
   //@{
@@ -61,9 +61,9 @@ class Ellipsoid : public Mesh::Feature
 public:
   Ellipsoid();
 
-  App::PropertyFloat Radius1;
-  App::PropertyFloat Radius2;
-  App::PropertyInteger Sampling;
+  App::PropertyFloatConstraint Radius1;
+  App::PropertyFloatConstraint Radius2;
+  App::PropertyIntegerConstraint Sampling;
 
   /** @name methods override Feature */
   //@{
@@ -81,11 +81,11 @@ class Cylinder : public Mesh::Feature
 public:
   Cylinder();
 
-  App::PropertyFloat Radius;
-  App::PropertyFloat Length;
-  App::PropertyFloat EdgeLength;
+  App::PropertyFloatConstraint Radius;
+  App::PropertyFloatConstraint Length;
+  App::PropertyFloatConstraint EdgeLength;
   App::PropertyBool Closed;
-  App::PropertyInteger Sampling;
+  App::PropertyIntegerConstraint Sampling;
 
   /** @name methods override Feature */
   //@{
@@ -103,12 +103,12 @@ class Cone : public Mesh::Feature
 public:
   Cone();
 
-  App::PropertyFloat Radius1;
-  App::PropertyFloat Radius2;
-  App::PropertyFloat Length;
-  App::PropertyFloat EdgeLength;
+  App::PropertyFloatConstraint Radius1;
+  App::PropertyFloatConstraint Radius2;
+  App::PropertyFloatConstraint Length;
+  App::PropertyFloatConstraint EdgeLength;
   App::PropertyBool Closed;
-  App::PropertyInteger Sampling;
+  App::PropertyIntegerConstraint Sampling;
 
   /** @name methods override Feature */
   //@{
@@ -126,9 +126,9 @@ class Torus : public Mesh::Feature
 public:
   Torus();
 
-  App::PropertyFloat Radius1;
-  App::PropertyFloat Radius2;
-  App::PropertyInteger Sampling;
+  App::PropertyFloatConstraint Radius1;
+  App::PropertyFloatConstraint Radius2;
+  App::PropertyIntegerConstraint Sampling;
 
   /** @name methods override Feature */
   //@{
@@ -146,9 +146,9 @@ class Cube : public Mesh::Feature
 public:
   Cube();
 
-  App::PropertyFloat Length;
-  App::PropertyFloat Width;
-  App::PropertyFloat Height;
+  App::PropertyFloatConstraint Length;
+  App::PropertyFloatConstraint Width;
+  App::PropertyFloatConstraint Height;
 
   /** @name methods override Feature */
   //@{

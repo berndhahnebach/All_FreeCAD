@@ -139,7 +139,7 @@ void ViewProviderExport::update()
 
 // ======================================================================
 
-App::PropertyFloatConstraint::Constrains ViewProviderMesh::floatRange = {0.0f,20.0f,0.1f};
+App::PropertyFloatConstraint::Constraints ViewProviderMesh::floatRange = {0.0f,20.0f,0.1f};
 
 PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderFeature)
 
@@ -147,9 +147,9 @@ PROPERTY_SOURCE(MeshGui::ViewProviderMesh, Gui::ViewProviderFeature)
 ViewProviderMesh::ViewProviderMesh() : m_bEdit(false)
 {
   ADD_PROPERTY(LineWidth,(2.0f));
-  LineWidth.setConstrains(&floatRange);
+  LineWidth.setConstraints(&floatRange);
   ADD_PROPERTY(PointSize,(2.0f));
-  PointSize.setConstrains(&floatRange);
+  PointSize.setConstraints(&floatRange);
   ADD_PROPERTY(OpenEdges,(false));
 
   // create the mesh core nodes
