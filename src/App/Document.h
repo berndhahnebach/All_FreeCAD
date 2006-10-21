@@ -128,7 +128,7 @@ public:
 	/// Save the document under the name its been opened
 	bool save (void);
 	/// Opens the document from its file name
-	bool open (void);
+	void open (void);
 	/// Is the document already saved to a file
 	bool isSaved() const;
 	/// Get the document name of a saved document 

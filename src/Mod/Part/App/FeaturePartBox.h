@@ -40,7 +40,7 @@ class Box :public Part::Feature
 public:
   Box();
 
-  App::PropertyFloat x,y,z,l,h,w;
+  App::PropertyDistance x,y,z,l,h,w;
 
 
   /** @name methods overide Feature */

@@ -95,6 +95,34 @@ const char* AbortException::what() const throw()
 
 // ---------------------------------------------------------
 
+FileException::FileException(const char * sMessage, const char * sFileName)
+  : Exception( sMessage ),file(sFileName)
+{
+}
+
+FileException::FileException(const char * sMessage, const FileInfo& File)
+  : Exception( sMessage ),file(File)
+{
+}
+
+FileException::FileException()
+  : Exception( "Unknown file exeption happened" )
+{
+}
+
+FileException::FileException(const FileException &inst)
+  : Exception( inst._sErrMsg.c_str() ),file(inst.file)
+{
+}
+
+
+const char* FileException::what() const throw()
+{
+  return Exception::what();
+}
+
+// ---------------------------------------------------------
+
 MemoryException::MemoryException()
 {
   _sErrMsg = "Not enough memory available";

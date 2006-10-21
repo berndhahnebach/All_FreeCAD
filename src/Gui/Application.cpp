@@ -374,7 +374,16 @@ Gui::Document* Application::activeDocument(void) const
 void Application::setActiveDocument(Gui::Document* pcDocument)
 {
   d->_pcActiveDocument=pcDocument;
-  App::GetApplication().setActiveDocument( pcDocument ? pcDocument->getDocument() : 0 );
+
+  if(pcDocument){
+    string name("App.setActiveDocument(\"");
+    name += pcDocument->getDocument()->getName(); 
+    name +=  ")";
+    macroManager()->addLine(MacroManager::Gui,name.c_str());
+  }else
+    macroManager()->addLine(MacroManager::Gui,"App.setActiveDocument(\"\")");
+
+  //App::GetApplication().setActiveDocument( pcDocument ? pcDocument->getDocument() : 0 );
 
 #ifdef FC_LOGUPDATECHAIN
   Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);

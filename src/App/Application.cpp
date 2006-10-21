@@ -143,13 +143,13 @@ Application::~Application()
 /// get called by the document when the name is changing
 void Application::renameDocument(const char *OldName, const char *NewName)
 {
-  std::map<std::string,DocEntry>::iterator pos;
+  std::map<std::string,Document*>::iterator pos;
   pos = DocMap.find(OldName);
 
   if(pos != DocMap.end())
   {
-    DocEntry temp;
-    temp.pDoc = pos->second.pDoc; 
+    Document* temp;
+    temp = pos->second; 
     DocMap.erase(pos);
     DocMap[NewName] = temp;
   } else 
@@ -158,88 +158,78 @@ void Application::renameDocument(const char *OldName, const char *NewName)
 }
 
 
-Document* Application::newDocument(const char * Name)
+Document* Application::newDocument(const char * Name, const char * UserName)
 {
-
-  DocEntry newDoc;
-
   // get anyway a valid name!
   if(!Name)
     Name = "Unnamed";
   string name = getUniqueDocumentName(Name);
 
   // create the FreeCAD document
-  newDoc.pDoc = new Document();
-  newDoc.pDoc->Name.setValue(name);
+  auto_ptr<Document> newDoc(new Document() );
+
+  // set the UserName
+  if(UserName)
+    newDoc->Name.setValue(UserName);
+  else
+    newDoc->Name.setValue(Name);
 
 	// add the document to the internal list
-	DocMap[name] = newDoc;
-	_pActiveDoc = newDoc.pDoc;
-
-
-	//newDoc.pDoc->Init();
-	// trigger Observers (open windows and so on)
+	DocMap[name] = newDoc.release(); // now owned by the Application
+	_pActiveDoc = DocMap[name];
 
   AppChanges Reason;
-  Reason.Doc = newDoc.pDoc;
+  Reason.Doc = _pActiveDoc;
   Reason.Why = AppChanges::New;
   Notify(Reason);
-	//NotifyDocNew(newDoc.pDoc);
 
-	return newDoc.pDoc;
+  return _pActiveDoc;
 }
 
 bool Application::closeDocument(const char* name)
 {
-  //int oldDoc = _hApp->NbDocuments();
-
-  /// @todo Remove the document properly from OCAF
-  DocEntry delDoc;
-  map<string,DocEntry>::iterator pos = DocMap.find( name );
+  map<string,Document*>::iterator pos = DocMap.find( name );
   if (pos == DocMap.end()) // no such document
     return false;
 
-  delDoc = pos->second;
-
+  auto_ptr<Document> delDoc (pos->second);
   DocMap.erase( pos );
 
 	// trigger observers
   AppChanges Reason;
-  Reason.Doc = delDoc.pDoc;
+  Reason.Doc = delDoc.get();
   Reason.Why = AppChanges::Del;
   Notify(Reason);
-  //NotifyDocDelete(delDoc.pDoc);
 
-  if ( _pActiveDoc == delDoc.pDoc)
-    _pActiveDoc = 0;
-  delete delDoc.pDoc;
-
-  /*
-  int newDoc = _hApp->NbDocuments();
-
-  if ( newDoc >= oldDoc)
-    Base::Console().Warning("OCC Document of '%s' couldn't be closed.", name );
-*/
   return true;
 }
 
 App::Document* Application::getDocument(const char *Name) const
 {
-  map<string,DocEntry>::const_iterator pos;
+  map<string,Document*>::const_iterator pos;
 
   pos = DocMap.find(Name);
 
   if (pos == DocMap.end())
     return 0;
 
-  return pos->second.pDoc;
+  return pos->second;
+}
+
+const char * Application::getDocumentName(const App::Document* doc) const
+{
+  for ( map<string,Document*>::const_iterator it = DocMap.begin(); it != DocMap.end(); ++it )
+    if(it->second == doc) 
+      return it->first.c_str();
+
+  return 0;
 }
 
 std::vector<App::Document*> Application::getDocuments() const
 {
   std::vector<App::Document*> docs;
-  for ( map<string,DocEntry>::const_iterator it = DocMap.begin(); it != DocMap.end(); ++it )
-    docs.push_back( it->second.pDoc );
+  for ( map<string,Document*>::const_iterator it = DocMap.begin(); it != DocMap.end(); ++it )
+    docs.push_back( it->second );
   return docs;
 }
 
@@ -273,7 +263,7 @@ string Application::getUniqueDocumentName(const char *Name) const
     It++;
   }
 
-  map<string,DocEntry>::const_iterator pos;
+  map<string,Document*>::const_iterator pos;
 
   // name in use?
   pos = DocMap.find(CleanName);
@@ -309,63 +299,34 @@ string Application::getUniqueDocumentName(const char *Name) const
 
 Document* Application::openDocument(const char * FileName)
 {
-  DocEntry newDoc;
   FileInfo File(FileName);
 
-  // checking on the extension
-  if(File.hasExtension("FCStd") || File.hasExtension("std") )
-  {
-    if ( !File.exists() ) {
-      std::stringstream str;
-      str << "File '" << FileName << "' does not exist!";
-      throw Base::Exception(str.str().c_str());
-    }
-
-    // Before creating a new document we check whether the document is already open
-    std::string filepath = File.filePath();
-    for ( std::map<std::string,DocEntry>::iterator it = DocMap.begin(); it != DocMap.end(); ++it )
-    {
-      Document* doc = it->second.pDoc;
-      if ( filepath == doc->FileName.getValue() )
-      {
-        std::stringstream str;
-        str << "The project '" << FileName << "' is already open!";
-        throw Base::Exception(str.str().c_str());
-      }
-    }
-
-    // Creating a FreeCAD Document
-    newDoc.pDoc = new Document();
-    string name = getUniqueDocumentName(File.fileNamePure().c_str());
-    newDoc.pDoc->Name.setValue(name);
-    newDoc.pDoc->FileName.setValue(File.filePath());
-    // Use the filename as preliminary name. This name might change within
-    // document's open() method. We must already insert the document here to
-    // guarantee that all observers of application can rely that the document
-    // is available.
-    DocMap[newDoc.pDoc->getName()] = newDoc;
-
-    // trigger Observers (open windows and so on)
-    AppChanges Reason;
-    Reason.Doc = newDoc.pDoc;
-    Reason.Why = AppChanges::New;
-    Notify(Reason);
-
-    // read the document
-    bool ok = newDoc.pDoc->open();
-    if ( !ok )
-    {
-      std::stringstream str;
-      str << "Invalid document structure in file '" << FileName << "'";
-      throw Base::Exception(str.str().c_str());
-    }
-
-    _pActiveDoc = newDoc.pDoc;
-  }else{
-    throw Base::Exception("Unknown file extension");
+  if ( !File.exists() ) {
+    std::stringstream str;
+    str << "File '" << FileName << "' does not exist!";
+    throw Base::Exception(str.str().c_str());
   }
 
-	return newDoc.pDoc;
+  // Before creating a new document we check whether the document is already open
+  std::string filepath = File.filePath();
+  for ( std::map<std::string,Document*>::iterator it = DocMap.begin(); it != DocMap.end(); ++it )
+  {
+    if ( filepath == it->second->FileName.getValue() )
+    {
+      std::stringstream str;
+      str << "The project '" << FileName << "' is already open!";
+      throw Base::Exception(str.str().c_str());
+    }
+  }
+
+  Document* newDoc = newDocument(File.fileNamePure().c_str());
+
+  newDoc->FileName.setValue(File.filePath());
+
+  // read the document
+  newDoc->open();
+
+  return newDoc;
 }
 
 
@@ -381,11 +342,11 @@ void Application::setActiveDocument(Document* pDoc)
 
 void Application::setActiveDocument(const char *Name)
 {
-  std::map<std::string,DocEntry>::iterator pos;
+  std::map<std::string,Document*>::iterator pos;
   pos = DocMap.find(Name);
 
   if(pos != DocMap.end())
-	  _pActiveDoc = pos->second.pDoc;
+	  _pActiveDoc = pos->second;
   else
     Base::Console().Warning("try to set unknown document active (ignored)!");
 }

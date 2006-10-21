@@ -609,7 +609,7 @@ bool Document::save (void)
 }
 
 // Open the document
-bool Document::open (void)
+void Document::open (void)
 {
   std::string FilePath = FileName.getValue();
   std::string OrigName = Name.getValue();
@@ -617,71 +617,68 @@ bool Document::open (void)
   zipios::ZipInputStream zipstream(FileName.getValue());
   Base::XMLReader reader(FileName.getValue(), zipstream);
 
-  if ( reader.isValid() )
+  if ( ! reader.isValid() )
+    throw Base::FileException("Document::open(): Error reading file",FilePath.c_str()); 
+
+  Document::Restore(reader);
+
+  // We must restore the correct 'FileName' property again because the stored value could be invalid.
+  FileName.setValue(FilePath.c_str());
+
+  // When this document has been created it got a preliminary name which might have changed now,
+  // because the document XML file can contain a name different from the original name.
+  // So firstly we must make sure that the new name is unique and secondly we must notify the 
+  // application and the observers of this.
+  std::string NewName = Name.getValue();
+  if ( NewName != OrigName )
   {
-    Document::Restore(reader);
-
-    // We must restore the correct 'FileName' property again because the stored value could be invalid.
-    FileName.setValue(FilePath.c_str());
-
-    // When this document has been created it got a preliminary name which might have changed now,
-    // because the document XML file can contain a name different from the original name.
-    // So firstly we must make sure that the new name is unique and secondly we must notify the 
-    // application and the observers of this.
-    std::string NewName = Name.getValue();
-    if ( NewName != OrigName )
-    {
-      // The document's name has changed. We make sure that this new name is unique then.
-      std::string NewUniqueName = GetApplication().getUniqueDocumentName(NewName.c_str());
-      Name.setValue(NewUniqueName);
-      // Notify the application and all observers
-      GetApplication().renameDocument(OrigName.c_str(), NewUniqueName.c_str());
-      DocChanges DocChange;
-      DocChange.Why = DocChanges::Rename;
-      Notify(DocChange);
-    }
-
-    reader.readFiles(zipstream);
-
-    // notify all as new
+    // The document's name has changed. We make sure that this new name is unique then.
+    std::string NewUniqueName = GetApplication().getUniqueDocumentName(NewName.c_str());
+    Name.setValue(NewUniqueName);
+    // Notify the application and all observers
+    GetApplication().renameDocument(OrigName.c_str(), NewUniqueName.c_str());
     DocChanges DocChange;
-    DocChange.NewObjects = ObjectArray;
-    for(std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
-      if(It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) )
-      {
-        AbstractFeature* feat = dynamic_cast<AbstractFeature*>(It->second);
-        feat->touchTime.setToActual();
-        feat->setModified(false);
-        if ( feat->status.getValue() == AbstractFeature::New )
-          feat->status.setValue( AbstractFeature::Valid );
-      }
-    }
-
+    DocChange.Why = DocChanges::Rename;
     Notify(DocChange);
-
-    // Special handling for Gui document, the view representations must already
-    // exist, what is done in Notify().
-    if (pDocumentHook) {
-      pDocumentHook->Restore( reader );
-      const std::vector<std::string>& files = reader.getFilenames();
-      if ( !files.empty() ) {
-        // That's the name of the GUI related stuff
-        std::string GuiDocument = files.back();
-        zipios::ConstEntryPointer entry = zipstream.getNextEntry();
-        // If this file is there then we search for it. 
-        // Note: This file doesn't need to be available if the document has been created
-        // without GUI. But if available then it's the last file inside the ZIP.  
-        while ( entry->isValid() && entry->getName() != GuiDocument )
-          entry = zipstream.getNextEntry();
-        // Okay, the file is available
-        if ( entry->isValid() )
-          pDocumentHook->RestoreDocFile( zipstream );
-      }
-    }
-
-    return true;
   }
-  return false;
+
+  reader.readFiles(zipstream);
+
+  // notify all as new
+  DocChanges DocChange;
+  DocChange.NewObjects = ObjectArray;
+  for(std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
+    if(It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) )
+    {
+      AbstractFeature* feat = dynamic_cast<AbstractFeature*>(It->second);
+      feat->touchTime.setToActual();
+      feat->setModified(false);
+      if ( feat->status.getValue() == AbstractFeature::New )
+        feat->status.setValue( AbstractFeature::Valid );
+    }
+  }
+
+  Notify(DocChange);
+
+  // Special handling for Gui document, the view representations must already
+  // exist, what is done in Notify().
+  if (pDocumentHook) {
+    pDocumentHook->Restore( reader );
+    const std::vector<std::string>& files = reader.getFilenames();
+    if ( !files.empty() ) {
+      // That's the name of the GUI related stuff
+      std::string GuiDocument = files.back();
+      zipios::ConstEntryPointer entry = zipstream.getNextEntry();
+      // If this file is there then we search for it. 
+      // Note: This file doesn't need to be available if the document has been created
+      // without GUI. But if available then it's the last file inside the ZIP.  
+      while ( entry->isValid() && entry->getName() != GuiDocument )
+        entry = zipstream.getNextEntry();
+      // Okay, the file is available
+      if ( entry->isValid() )
+        pDocumentHook->RestoreDocFile( zipstream );
+    }
+  }
 }
 
 bool Document::isSaved() const
@@ -693,7 +690,8 @@ bool Document::isSaved() const
 /// Get the document name of a saved document
 const char* Document::getName() const
 {
-  return Name.getValue();
+  return GetApplication().getDocumentName(this);
+  //return Name.getValue();
 }
 
 /// Get the path of a saved document

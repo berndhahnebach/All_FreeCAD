@@ -80,8 +80,16 @@ public:
 
   /** @name methods for document handling */
   //@{
-  /// Creates a new document
-  App::Document* newDocument(const char * Name=0l);
+  /** Creates a new document
+    * The first name is a the Identifier and some kind of an internal (english)
+    * name. It have do by like an Identifier in a programming language, with no
+    * spaces and not startign with a number. This name gets also forced to be unique
+    * in this Application. You can avoid the renaming by using getUniqueDocumentName()
+    * to get a unique name bevore calling newDoucument().
+    * The second name is a UTF8 name of any kind. Its that name normaly showed to 
+    * the user and stored in the App::Document::Name Property.
+    */
+  App::Document* newDocument(const char * Name=0l, const char * UserName=0l);
   /// Closes the document \a name and removes it from the application.
   bool closeDocument(const char* name);
   /// find a unique docuement name
@@ -92,6 +100,9 @@ public:
   App::Document* getActiveDocument(void);
   /// Retrive a named document
   App::Document* getDocument(const char *Name) const;
+  /// gets the (internal) name of the document
+  const char * getDocumentName(const App::Document* ) const;
+  /// get a list of all documents in the application
   std::vector<App::Document*> getDocuments() const;
   /// Set the active document
   void setActiveDocument(App::Document* pDoc);
@@ -213,6 +224,7 @@ private:
   PYFUNCDEF_S(sNewDocument);
   PYFUNCDEF_S(sCloseDocument);
   PYFUNCDEF_S(sActiveDocument);
+  PYFUNCDEF_S(sSetActiveDocument);
   PYFUNCDEF_S(sGetDocument);
   PYFUNCDEF_S(sListDocuments);
 
@@ -260,17 +272,9 @@ private:
   /// open ending information
   std::vector<OpenTypeItem> _mEndings;
 
-  /// map of all documents
-  struct DocEntry {
-//    Handle_TDocStd_Document hDoc;
-    Document*  pDoc;
-  };
-  std::map<std::string,DocEntry> DocMap;
-
+  std::map<std::string,Document*> DocMap;
 
 	std::map<std::string,ParameterManager *> mpcPramManager;
-	// map for Template objects
-//	PyObject*		 _pcTemplateDictionary;
 
 	std::map<std::string,std::string> &_mConfig;
 	App::Document* _pActiveDoc;

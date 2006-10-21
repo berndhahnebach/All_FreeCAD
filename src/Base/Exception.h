@@ -26,6 +26,7 @@
 
 #include <exception>
 #include <string>
+#include "FileInfo.h"
 #include "Base.h"
 
 namespace Base
@@ -86,6 +87,29 @@ public:
   virtual ~AbortException() throw() {}
   /// Description of the exception
   virtual const char* what() const throw();
+};
+
+/** File exception handling class
+ * This class is specialized to go with exception thrown in case of File IO Problems.
+ * @author Juergen Riegel
+ */
+class BaseExport FileException : public Exception
+{
+public:
+  /// With massage and file name
+  FileException(const char * sMessage, const char * sFileName=0);
+  /// With massage and file name
+  FileException(const char * sMessage, const FileInfo& File);
+  /// standard construction
+  FileException();
+  /// Construction
+  FileException(const FileException &inst);
+  /// Destruction
+  virtual ~FileException() throw() {}
+  /// Description of the exception
+  virtual const char* what() const throw();
+protected:
+  FileInfo file;
 };
 
 /**

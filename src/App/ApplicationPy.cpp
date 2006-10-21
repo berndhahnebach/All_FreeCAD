@@ -54,7 +54,7 @@ using namespace App;
 PyMethodDef Application::Methods[] = {
   {"New",            (PyCFunction) Application::sNew,            1},
   {"open",           (PyCFunction) Application::sOpen,           1},
-  {"Close",          (PyCFunction) Application::sClose,          1},
+//  {"Close",          (PyCFunction) Application::sClose,          1},
   {"Import"  ,       (PyCFunction) Application::sImport,         1},
   {"save",           (PyCFunction) Application::sSave,           1},
   {"saveAs",         (PyCFunction) Application::sSaveAs,         1},
@@ -74,6 +74,7 @@ PyMethodDef Application::Methods[] = {
   {"newDocument",    (PyCFunction) Application::sNewDocument,    1},
   {"closeDocument",  (PyCFunction) Application::sCloseDocument,  1},
   {"activeDocument", (PyCFunction) Application::sActiveDocument, 1},
+  {"setActiveDocument",(PyCFunction) Application::sSetActiveDocument, 1},
   {"getDocument",    (PyCFunction) Application::sGetDocument,    1},
   {"listDocuments",  (PyCFunction) Application::sListDocuments  ,1},
 
@@ -151,6 +152,18 @@ PYFUNCIMP_S(Application,sClose)
 		PyErr_Format(PyExc_NameError, "Unknown document '%s'", pstr);
 		return NULL;
   }
+
+  Py_Return;
+}
+
+
+PYFUNCIMP_S(Application,sSetActiveDocument)
+{
+  char *pstr = 0;
+  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
+      return NULL;                             // NULL triggers exception 
+
+  GetApplication().setActiveDocument(pstr);
 
   Py_Return;
 }
@@ -461,11 +474,11 @@ PYFUNCIMP_S(Application,sListDocuments)
     PyObject *pDict = PyDict_New();
     PyObject *pKey; Base::PyObjectBase* pValue;
     
-    for (std::map<std::string,DocEntry>::const_iterator It = GetApplication().DocMap.begin();It != GetApplication().DocMap.end();++It)
+    for (std::map<std::string,Document*>::const_iterator It = GetApplication().DocMap.begin();It != GetApplication().DocMap.end();++It)
     {
       pKey   = PyString_FromString(It->first.c_str());
       // GetPyObject() increments
-      pValue = It->second.pDoc->GetPyObject();
+      pValue = It->second->GetPyObject();
       PyDict_SetItem(pDict, pKey, pValue); 
       // now we can decrement again as PyDict_SetItem also has incremented
       pValue->DecRef();
