@@ -44,6 +44,7 @@
 <File Id='DLL79'    Name='ERR79' LongName='zlib1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL80'    Name='ERR80' LongName='python23.zip' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL81'    Name='ERR81' LongName='zlib.pyd' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+<File Id='DLL81'    Name='ERR85' LongName='_sre.pyd' src='$(env.FREECADLIB)\dll\' DiskId='1' />
 <File Id='DLL82'    Name='ERR82' LongName='Msvcr71.dll' src='C:\WINDOWS\system32\' DiskId='1' />
 <File Id='DLL83'    Name='ERR83' LongName='msvcp60.dll' src='C:\WINDOWS\system32\' DiskId='1' />
 <File Id='DLL84'    Name='ERR84' LongName='msvcp71.dll' src='C:\WINDOWS\system32\' DiskId='1' />
