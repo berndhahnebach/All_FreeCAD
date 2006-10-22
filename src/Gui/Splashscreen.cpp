@@ -211,7 +211,7 @@ void AboutDialog::languageChange()
   QString build  = App::Application::Config()["BuildRevision"].c_str();
   QString disda  = App::Application::Config()["BuildRevisionDate"].c_str();
 
-  pushButton1->setText( tr( "&Ok" ) );
+  pushButton1->setText( tr( "&OK" ) );
   pushButton1->setAccel( QKeySequence( tr( "Alt+O" ) ) );
   QString SplasherText = QString(
                            "<!DOCTYPE HTML PUBLIC ""-//W3C//DTD HTML 4.0 Transitional//EN"">"

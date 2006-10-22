@@ -189,33 +189,41 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   statusBar()->addWidget(&CommandLine(), 0, true);
   statusBar()->message( tr("Ready"), 2001 );
 
+  static const char* dockWindows[] = {
+    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Toolbox" ),
+    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Help view" ),
+    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Tree view" ),
+    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Property editor" ),
+    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Report View" )
+  };
+
   // Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
   d->_pcStackBar = new ToolBox(this,"Cmd_Group");
   CommandBarManager::getInstance()->setToolBox( d->_pcStackBar );
   DockWindowManager* pDockMgr = DockWindowManager::instance();
-  pDockMgr->addDockWindow( "Toolbox",d->_pcStackBar, Qt::DockRight );
+  pDockMgr->addDockWindow( dockWindows[0],d->_pcStackBar, Qt::DockRight );
 
   // Help View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
   QString home = DlgOnlineHelpImp::getStartpage();
   HelpView* pcHelpView = new HelpView( home, this, "HelpViewer" );
-  pDockMgr->addDockWindow("Help view", pcHelpView, Qt::DockRight );
+  pDockMgr->addDockWindow(dockWindows[1], pcHelpView, Qt::DockRight );
 
-  // Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+  // Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++
   pcTree = new TreeView(0,this,"TreeView");
   pcTree->setMinimumWidth(210);
-  pDockMgr->addDockWindow("Tree view", pcTree, Qt::DockLeft );
+  pDockMgr->addDockWindow(dockWindows[2], pcTree, Qt::DockLeft );
 
-  // PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++	
+  // PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++
   PropertyView* pcPropView = new PropertyView(0,0,"PropertyView");
   pcPropView->setMinimumWidth(210);
-  pDockMgr->addDockWindow("Property editor", pcPropView, Qt::DockLeft );
+  pDockMgr->addDockWindow(dockWindows[3], pcPropView, Qt::DockLeft );
 
   // Report View
   Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
-  pDockMgr->addDockWindow("Report View", pcOutput, Qt::DockBottom );
+  pDockMgr->addDockWindow(dockWindows[4], pcOutput, Qt::DockBottom );
 
 
-  // accept drops on the window, get handled in dropEvent, dragEnterEvent   
+  // accept drops on the window, get handled in dropEvent, dragEnterEvent
   setAcceptDrops(true);
 
   // misc stuff

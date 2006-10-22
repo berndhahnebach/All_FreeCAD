@@ -102,6 +102,8 @@ void PrefGroupItem::paint( QPainter *p )
     p->drawPixmap( (w-pm_Unsel.width())/2+10, 10, pm_Unsel );
 }
 
+/* TRANSLATOR Gui::Dialog::DlgPreferencesImp */
+
 /**
  *  Constructs a DlgPreferencesImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'

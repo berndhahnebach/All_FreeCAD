@@ -415,18 +415,29 @@ void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
 
 MenuItem* StdWorkbench::setupMenuBar() const
 {
+  static const char* menuItems[] = {
+    QT_TRANSLATE_NOOP( "Gui::MenuManager", "&File" ),
+    QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Edit" ),
+    QT_TRANSLATE_NOOP( "Gui::MenuManager", "&View" ),
+    QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Tools" ),
+    QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Windows" ),
+    QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Help" ),
+    QT_TRANSLATE_NOOP( "Gui::MenuManager", "&3D View" ),
+    QT_TRANSLATE_NOOP( "Gui::MenuManager", "&Zoom" )
+  };
+
   // Setup the default menu bar
   MenuItem* menuBar = new MenuItem;
 
   // File
   MenuItem* file = new MenuItem( menuBar );
-  file->setCommand( "&File" );
+  file->setCommand( menuItems[0] );
   *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_SaveAs" << "Std_ProjectInfo" << "Separator" << "Std_Print"
         << "Separator" << "Std_MRU" << "Separator" << "Std_Quit";
 
   // Edit
   MenuItem* edit = new MenuItem( menuBar );
-  edit->setCommand( "&Edit" );
+  edit->setCommand( menuItems[1] );
   *edit << "Std_Undo" << "Std_Redo" << "Separator" << "Std_Cut" << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Refresh" << "Std_Delete"
         << "Separator" << "Std_DlgPreferences";
 
@@ -438,32 +449,32 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
   // stereo
   MenuItem* view3d = new MenuItem;
-  view3d->setCommand( "&3D View" );
+  view3d->setCommand( menuItems[6] );
   *view3d << "Std_ViewIvStereoRedGreen" << "Std_ViewIvStereoQuadBuff" << "Std_ViewIvStereoInterleavedRows" << "Std_ViewIvStereoInterleavedColumns" << "Std_ViewIvStereoOff" << "Separator" << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3";
 
   // zoom
   MenuItem* zoom = new MenuItem;
-  zoom->setCommand( "&Zoom" );
+  zoom->setCommand( menuItems[7] );
   *zoom << "Std_ViewZoomIn" << "Std_ViewZoomOut" << "Separator" << "Std_ViewBoxZoom";
 
   // View
   MenuItem* view = new MenuItem( menuBar );
-  view->setCommand( "&View" );
+  view->setCommand( menuItems[2] );
   *view << "Std_ViewCreate" << "Std_CameraType" << "Separator" << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
         << "Std_ToggleVisibility" << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator"
         << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
 
   // Tools
   MenuItem* tool = new MenuItem( menuBar );
-  tool->setCommand( "&Tools" );
+  tool->setCommand( menuItems[3] );
   *tool << "Std_CommandLine" << "Std_DlgParameter" << "Separator" << "Std_DlgMacroRecord"
         << "Std_DlgMacroStop" << "Std_DlgMacroExecute" << "Std_DlgMacroExecuteDirect" << "Separator" << "Std_ViewScreenShot" << "Separator" << "Std_DlgCustomize";
 
   // Windows
   MenuItem* wnd = new MenuItem( menuBar );
-  wnd->setCommand( "&Windows" );
-  *wnd << "Std_CloseActiveWindow" << "Std_CloseAllWindows" << "Separator" << "Std_ActivateNextWindow" 
-       << "Std_ActivatePrevWindow" << "Separator" << "Std_TilePragmatic" << "Std_TileHoricontal" 
+  wnd->setCommand( menuItems[4] );
+  *wnd << "Std_CloseActiveWindow" << "Std_CloseAllWindows" << "Separator" << "Std_ActivateNextWindow"
+       << "Std_ActivatePrevWindow" << "Separator" << "Std_TilePragmatic" << "Std_TileHoricontal"
        << "Std_TileVertical" << "Std_WindowsMenu" << "Separator" << "Std_Windows";
 
   // Separator
@@ -472,7 +483,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
   // Help
   MenuItem* help = new MenuItem( menuBar );
-  help->setCommand( "&Help" );
+  help->setCommand( menuItems[5] );
   *help << "Std_OnlineHelp" << "Std_TipOfTheDay" << "Separator" << "Std_About" << "Std_AboutQt"
         << "Separator" << "Std_WhatsThis" << "Std_DescriptionMode";
 
@@ -481,23 +492,29 @@ MenuItem* StdWorkbench::setupMenuBar() const
 
 ToolBarItem* StdWorkbench::setupToolBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "file operations" ),
+    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Macro recording" ),
+    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Standard views" )
+  };
+
   ToolBarItem* root = new ToolBarItem;
-  
+
   // File
   ToolBarItem* file = new ToolBarItem( root );
-  file->setCommand( "file operations" );
+  file->setCommand( toolItems[0] );
   *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
         << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
         << "Std_Refresh" << "Separator" << "Std_Workbench" << "Std_WhatsThis";
 
   // Macro
   ToolBarItem* macro = new ToolBarItem( root );
-  macro->setCommand( "Macro recording" );
+  macro->setCommand( toolItems[1] );
   *macro << "Std_DlgMacroRecord" << "Std_DlgMacroStop" << "Std_DlgMacroExecute"<< "Std_DlgMacroExecuteDirect";
 
   // View
   ToolBarItem* view = new ToolBarItem( root );
-  view->setCommand( "Standard views" );
+  view->setCommand( toolItems[2] );
   *view << "Separator" << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
         << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
 
@@ -506,16 +523,21 @@ ToolBarItem* StdWorkbench::setupToolBars() const
 
 ToolBarItem* StdWorkbench::setupCommandBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Standard views" ),
+    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Special Ops" )
+  };
+
   ToolBarItem* root = new ToolBarItem;
-  
+
   // View
   ToolBarItem* view = new ToolBarItem( root );
-  view->setCommand( "Standard views" );
+  view->setCommand( toolItems[0] );
   *view << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
         << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
   // Special Ops
   ToolBarItem* macro = new ToolBarItem( root );
-  macro->setCommand( "Special Ops" );
+  macro->setCommand( toolItems[1] );
   *macro << "Std_DlgParameter" << "Std_DlgPreferences" << "Std_DlgMacroRecord" << "Std_DlgMacroStop" << "Std_DlgMacroExecute"
          << "Std_DlgCustomize" << "Std_CommandLine";
 
@@ -548,14 +570,14 @@ MenuItem* TestWorkbench::setupMenuBar() const
   MenuItem* test = new MenuItem;
   menuBar->insertItem( item, test );
   test->setCommand( "Test &Commands" );
-  *test << "Std_Test1" << "Std_Test2" << "Std_Test3" << "Std_Test4" << "Std_Test5" 
+  *test << "Std_Test1" << "Std_Test2" << "Std_Test3" << "Std_Test4" << "Std_Test5"
         << "Std_Test6" << "Std_Test7" << "Std_Test8";
 
   // Inventor View
   MenuItem* opiv = new MenuItem;
   menuBar->insertItem( item, opiv );
   opiv->setCommand( "&Inventor View" );
-  *opiv << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3" << "Std_ViewIvDecorationOn" 
+  *opiv << "Std_ViewExample1" << "Std_ViewExample2" << "Std_ViewExample3" << "Std_ViewIvDecorationOn"
         << "Std_ViewIvDecorationOff" << "Std_ViewIvStereoOn" << "Std_ViewIvStereoOff" << "Std_ViewIvIssueCamPos";
 
   return menuBar;
@@ -624,7 +646,7 @@ ToolBarItem* PythonWorkbench::setupToolBars() const
   {
     ToolBarItem* nbar = new ToolBarItem(root);
     nbar->setCommand(bar->command());
-    QPtrList<ToolBarItem> items = bar->getItems(); 
+    QPtrList<ToolBarItem> items = bar->getItems();
 
     ToolBarItem* item;
     for ( item = items.first(); item; item = items.next() )
@@ -649,7 +671,7 @@ ToolBarItem* PythonWorkbench::setupCommandBars() const
   {
     ToolBarItem* nbar = new ToolBarItem(root);
     nbar->setCommand(bar->command());
-    QPtrList<ToolBarItem> items = bar->getItems(); 
+    QPtrList<ToolBarItem> items = bar->getItems();
 
     ToolBarItem* item;
     for ( item = items.first(); item; item = items.next() )
@@ -666,7 +688,7 @@ void PythonWorkbench::appendMenu( const QStringList& menu, const QStringList& it
 {
   if ( menu.empty() || items.empty() )
     return;
-  
+
   QStringList::ConstIterator jt=menu.begin();
   MenuItem* item = _menuBar->findItem( *jt );
   if ( !item )
@@ -677,7 +699,7 @@ void PythonWorkbench::appendMenu( const QStringList& menu, const QStringList& it
     _menuBar->insertItem( wnd, item );
   }
 
-  // create sub menus   
+  // create sub menus
   for ( jt++; jt != menu.end(); jt++ )
   {
     MenuItem* subitem = item->findItem( *jt );
@@ -688,7 +710,7 @@ void PythonWorkbench::appendMenu( const QStringList& menu, const QStringList& it
     }
     item = subitem;
   }
-  
+
   for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
     *item << *it;
 }

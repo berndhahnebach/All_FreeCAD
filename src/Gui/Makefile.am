@@ -386,7 +386,6 @@ EXTRA_DIST = \
 		DlgKeyboard.ui \
 		DlgMacroExecute.ui \
 		DlgMacroRecord.ui \
-		DlgMacros.ui \
 		DlgMaterialProperties.ui \
 		DlgOnlineHelp.ui \
 		DlgParameter.ui \
