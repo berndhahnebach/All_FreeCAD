@@ -81,13 +81,13 @@ public:
   /** @name methods for document handling */
   //@{
   /** Creates a new document
-    * The first name is a the Identifier and some kind of an internal (english)
-    * name. It have do by like an Identifier in a programming language, with no
-    * spaces and not startign with a number. This name gets also forced to be unique
+    * The first name is a the identifier and some kind of an internal (english)
+    * name. It has to be like an identifier in a programming language, with no
+    * spaces and not starting with a number. This name gets also forced to be unique
     * in this Application. You can avoid the renaming by using getUniqueDocumentName()
-    * to get a unique name bevore calling newDoucument().
-    * The second name is a UTF8 name of any kind. Its that name normaly showed to 
-    * the user and stored in the App::Document::Name Property.
+    * to get a unique name before calling newDoucument().
+    * The second name is a UTF8 name of any kind. It's that name normally shown to 
+    * the user and stored in the App::Document::Name property.
     */
   App::Document* newDocument(const char * Name=0l, const char * UserName=0l);
   /// Closes the document \a name and removes it from the application.

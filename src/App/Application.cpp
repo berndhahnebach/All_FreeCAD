@@ -193,13 +193,16 @@ bool Application::closeDocument(const char* name)
     return false;
 
   auto_ptr<Document> delDoc (pos->second);
-  DocMap.erase( pos );
 
-	// trigger observers
+  // trigger observers
   AppChanges Reason;
   Reason.Doc = delDoc.get();
   Reason.Why = AppChanges::Del;
   Notify(Reason);
+
+  // Note: We must not remove the document from the internal map before notifying all observers because they must
+  // rely on getting information from the application for this document.
+  DocMap.erase( pos );
 
   return true;
 }
