@@ -321,7 +321,7 @@ void Application::onLastWindowClosed(Gui::Document* pcDoc)
   {
     try {
       // call the closing mechanism from Python
-      Command::doCommand(Command::Doc, "App.Close(\"%s\")", pcDoc->getDocument()->getName());
+      Command::doCommand(Command::Doc, "App.closeDocument(\"%s\")", pcDoc->getDocument()->getName());
     } catch (const Base::PyException& e) {
       e.ReportException();
     }
@@ -375,15 +375,17 @@ void Application::setActiveDocument(Gui::Document* pcDocument)
 {
   d->_pcActiveDocument=pcDocument;
 
+  // This adds just a line to the macro file but does not set the active document
   if(pcDocument){
     string name("App.setActiveDocument(\"");
     name += pcDocument->getDocument()->getName(); 
-    name +=  ")";
+    name +=  "\")";
     macroManager()->addLine(MacroManager::Gui,name.c_str());
   }else
     macroManager()->addLine(MacroManager::Gui,"App.setActiveDocument(\"\")");
 
-  //App::GetApplication().setActiveDocument( pcDocument ? pcDocument->getDocument() : 0 );
+  // Sets the currently active document
+  App::GetApplication().setActiveDocument( pcDocument ? pcDocument->getDocument() : 0 );
 
 #ifdef FC_LOGUPDATECHAIN
   Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);
@@ -437,18 +439,21 @@ void Application::onUpdate(void)
   }
 }
 
-/// get calld if a view gets activated, this manage the whole activation scheme
+/// Gets called if a view gets activated, this manages the whole activation scheme
 void Application::viewActivated(MDIView* pcView)
 {
 #ifdef FC_LOGUPDATECHAIN
   Console().Log("Acti: %s,%p\n",pcView->getName(),pcView);
 #endif
 
-  // set the new active document
-  if(pcView->isPassive())
-    setActiveDocument(0);
-  else
+  //FIXME: If a view without document gets activated why should we set the active document to 0, then?
+  if (pcView->getGuiDocument())
     setActiveDocument(pcView->getGuiDocument());
+//  // set the new active document
+//  if(pcView->isPassive())
+//    setActiveDocument(0);
+//  else
+//    setActiveDocument(pcView->getGuiDocument());
 }
 
 
@@ -980,7 +985,14 @@ void Application::destruct(void)
   // finish akso Inventor subsystem
   SoFCDB::finish();
   SoQt::done();
+
+#if (COIN_MAJOR_VERSION >= 2) && (COIN_MINOR_VERSION >= 4)
   SoDB::finish();
+#elif (COIN_MAJOR_VERSION >= 3)
+  SoDB::finish();
+#else
+  SoDB::cleanup();
+#endif
 
   delete _pcQApp;
 }

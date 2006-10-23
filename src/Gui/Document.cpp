@@ -427,7 +427,7 @@ bool Document::save(void)
 /// Save the document under a new file name
 bool Document::saveAs(void)
 {
-  getMainWindow()->statusBar()->message(QObject::tr("Saving file under new filename..."));
+  getMainWindow()->statusBar()->message(QObject::tr("Save document under new filename..."));
 
   QString dir = Gui::FileDialog::getWorkingDirectory();
 #ifdef FC_OS_WIN32

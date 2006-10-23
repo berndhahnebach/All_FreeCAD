@@ -691,7 +691,6 @@ bool Document::isSaved() const
 const char* Document::getName() const
 {
   return GetApplication().getDocumentName(this);
-  //return Name.getValue();
 }
 
 /// Get the path of a saved document

@@ -1,4 +1,4 @@
-<!DOCTYPE TS><TS>
+﻿<!DOCTYPE TS><TS>
 <defaultcodec>iso8859-1</defaultcodec>
 <context>
     <name>DlgSplasherBase</name>
@@ -10,12 +10,8 @@
 <context>
     <name>Gui::AboutDialog</name>
     <message>
-        <source>Alt+O</source>
-        <translation>Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
+        <source>OK</source>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -959,15 +955,15 @@ Diese Datei ist bereits vorhanden.</translation>
     </message>
     <message>
         <source>Diffuse color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Streufarbe:</translation>
     </message>
     <message>
         <source>Specular color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Glanzfarbe:</translation>
     </message>
     <message>
         <source>Shininess:</source>
-        <translation type="unfinished"></translation>
+        <translation>Glanz:</translation>
     </message>
     <message>
         <source>%</source>
@@ -975,7 +971,7 @@ Diese Datei ist bereits vorhanden.</translation>
     </message>
     <message>
         <source>Ambient color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Umgebungsfarbe:</translation>
     </message>
 </context>
 <context>
@@ -1097,11 +1093,11 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     </message>
     <message>
         <source>&amp;Apply</source>
-        <translation type="unfinished">Über&amp;nehmen</translation>
+        <translation>An&amp;wenden</translation>
     </message>
     <message>
         <source>Alt+A</source>
-        <translation type="unfinished">Alt+N</translation>
+        <translation>Alt+W</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -1233,11 +1229,11 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     </message>
     <message>
         <source>Selection color:</source>
-        <translation>Auswahlfarbe:</translation>
+        <translation>Farbe für Auswahl:</translation>
     </message>
     <message>
         <source>Highlight color:</source>
-        <translation>Farbe für Hervorhebung:</translation>
+        <translation>Farbe für Vorauswahl:</translation>
     </message>
     <message>
         <source>Show counter of frames per second</source>
@@ -1245,7 +1241,7 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     </message>
     <message>
         <source>Eye to eye distance for stereo modes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Augabstand für Stereomodus:</translation>
     </message>
     <message>
         <source>Selection</source>
@@ -1288,63 +1284,63 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     <name>Gui::Dialog::DlgSettingsColorGradientBase</name>
     <message>
         <source>Colorgradient settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen für Farbverlauf</translation>
     </message>
     <message>
         <source>Visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Sichtbarkeit</translation>
     </message>
     <message>
         <source>Out g&amp;rayed</source>
-        <translation type="unfinished"></translation>
+        <translation>Außerhalb geg&amp;raut</translation>
     </message>
     <message>
         <source>Alt+R</source>
-        <translation type="unfinished">Alt+R</translation>
+        <translation>Alt+R</translation>
     </message>
     <message>
         <source>Out &amp;invisible</source>
-        <translation type="unfinished"></translation>
+        <translation>Außerhalb uns&amp;ichtbar</translation>
     </message>
     <message>
         <source>Alt+I</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+I</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil</translation>
     </message>
     <message>
         <source>&amp;Flow</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Fließend</translation>
     </message>
     <message>
         <source>Alt+F</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+F</translation>
     </message>
     <message>
         <source>&amp;Zero</source>
-        <translation type="unfinished"></translation>
+        <translation>N&amp;ull-basiert</translation>
     </message>
     <message>
         <source>Alt+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+U</translation>
     </message>
     <message>
         <source>Color model</source>
-        <translation type="unfinished"></translation>
+        <translation>Farbmodell</translation>
     </message>
     <message>
         <source>&amp;Gradient:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Verlauf:</translation>
     </message>
     <message>
         <source>red-yellow-green-cyan-blue</source>
-        <translation type="unfinished">Rot-gelb-grün-</translation>
+        <translation>Rot-Gelb-Grün-Türkis-Blau</translation>
     </message>
     <message>
         <source>blue-cyan-green-yellow-red</source>
-        <translation type="unfinished"></translation>
+        <translation>Blau-Türkis-Grün-Gelb-Rot</translation>
     </message>
     <message>
         <source>white-black</source>
@@ -1376,11 +1372,11 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     </message>
     <message>
         <source>&amp;Labels:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Beschriftungen:</translation>
     </message>
     <message>
         <source>&amp;Decimals:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nach&amp;kommastellen:</translation>
     </message>
 </context>
 <context>
@@ -1413,121 +1409,121 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
         <translation>Neues Dokument beim Start erzeugen</translation>
     </message>
     <message>
-        <source>Document save compression level<byte value="xd"/><byte value="xd"/>
+        <source>Document save compression level
 (0 = none, 9 = highest, 3 = default)</source>
         <translation>Kompressionsstufe beim Speichern des Dokuments 
 (0 = keine, 9 = höchste, 3 = standardmäßige Kompression)</translation>
     </message>
     <message>
         <source>Using Undo/Redo on documents (can be very memory consuming)</source>
-        <translation type="unfinished"></translation>
+        <translation>Undo/Redo für Dokumente verwenden (kann sehr speicheraufwendig sein)</translation>
     </message>
     <message>
         <source>Undo Redo Size (in Megabyte)</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximaler Speicherverbrauch (in Megabyte)</translation>
     </message>
     <message>
         <source>Saving transactions (Autosave)</source>
-        <translation type="unfinished"></translation>
+        <translation>Transaktionen speichern (Automatisches Speichern)</translation>
     </message>
     <message>
         <source>discard saved transaction after document saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Gespeicherte Transaktionen verwerfen nachdem Dokument gespeichert wurde</translation>
     </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgSettingsImage</name>
     <message>
         <source>Image settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildparameter</translation>
     </message>
     <message>
         <source>Image dimensions</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildabmessungen</translation>
     </message>
     <message>
         <source>&amp;Width:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Breite:</translation>
     </message>
     <message>
         <source> Pixel</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixel</translation>
     </message>
     <message>
         <source>&amp;Height:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Höhe:</translation>
     </message>
     <message>
         <source>Aspect ratio:</source>
-        <translation type="unfinished"></translation>
+        <translation>Seitenverhältnis:</translation>
     </message>
     <message>
         <source>&amp;Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild&amp;schirm</translation>
     </message>
     <message>
         <source>Alt+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+S</translation>
     </message>
     <message>
         <source>&amp;4:3</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;4:3</translation>
     </message>
     <message>
         <source>Alt+4</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+4</translation>
     </message>
     <message>
         <source>1&amp;6:9</source>
-        <translation type="unfinished">1&amp;6:9</translation>
+        <translation>1&amp;6:9</translation>
     </message>
     <message>
         <source>Alt+6</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+6</translation>
     </message>
     <message>
         <source>&amp;1:1</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;1:1</translation>
     </message>
     <message>
         <source>Alt+1</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt+1</translation>
     </message>
     <message>
         <source>Image properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Bildeigenschaften</translation>
     </message>
     <message>
         <source>Back&amp;ground:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hinter&amp;grund:</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuell</translation>
     </message>
     <message>
         <source>White</source>
-        <translation type="unfinished"></translation>
+        <translation>Weiß</translation>
     </message>
     <message>
         <source>Black</source>
-        <translation type="unfinished"></translation>
+        <translation>Schwarz</translation>
     </message>
     <message>
         <source>Transperent</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparent</translation>
     </message>
     <message>
         <source>Image comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommentar zum Bild</translation>
     </message>
     <message>
         <source>Insert MIBA</source>
-        <translation type="unfinished"></translation>
+        <translation>MIBA-Informationen einfügen</translation>
     </message>
     <message>
         <source>Insert comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Kommentar einfügen</translation>
     </message>
 </context>
 <context>
@@ -2361,36 +2357,36 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Neue positive Ganzzahl</translation>
     </message>
     <message>
-        <source>Saving file under new filename...</source>
-        <translation type="unfinished">Speichern unter...</translation>
+        <source>Save document under new filename...</source>
+        <translation>Dokument unter neuem Dateinamen speichern...</translation>
     </message>
     <message>
         <source>Overwrite file &apos;%1&apos; ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Datei &apos;%1&apos; überschreiben?</translation>
     </message>
     <message>
         <source>File overwrite confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>Überschreiben von Datei bestätigen</translation>
     </message>
     <message>
         <source>Saving aborted</source>
-        <translation type="unfinished">Speichern abgebrochen</translation>
+        <translation>Speichern abgebrochen</translation>
     </message>
     <message>
         <source>Unsaved document</source>
-        <translation type="unfinished">Nicht gespeichertes Dokument</translation>
+        <translation>Nicht gespeichertes Dokument</translation>
     </message>
     <message>
         <source>Save document before close?</source>
-        <translation type="unfinished">Soll das Dokument vorher gespeichert werden?</translation>
+        <translation>Soll das Dokument vorher gespeichert werden?</translation>
     </message>
     <message>
         <source>Not enough memory available to display the data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nicht genüged Speicher verfügbar, um die Daten darstellen zu können.</translation>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3024,11 +3020,11 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Clipping plane</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittebene</translation>
     </message>
     <message>
         <source>Toggles clipping plane for active view</source>
-        <translation type="unfinished"></translation>
+        <translation>Schnittebene für aktive Ansicht ein- und ausblenden</translation>
     </message>
 </context>
 <context>
@@ -3148,7 +3144,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Shows spheres an dragglights</source>
-        <translation type="unfinished">Shows spheres an dragglights</translation>
+        <translation>Kugeln mit verschiebbarer Lichtquelle</translation>
     </message>
 </context>
 <context>
@@ -3204,11 +3200,11 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
     <message>
         <source>Issue camera position</source>
-        <translation>Kameraposition</translation>
+        <translation>Kameraposition ausgeben</translation>
     </message>
     <message>
         <source>Issue the camera position to the console and to a macro, to easily recall this position</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgeben der Kameraposition auf die Konsole und in ein Makro, um diese Position einfach wiederherstellen zu können</translation>
     </message>
 </context>
 <context>
