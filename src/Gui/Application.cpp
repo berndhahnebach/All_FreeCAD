@@ -446,14 +446,14 @@ void Application::viewActivated(MDIView* pcView)
   Console().Log("Acti: %s,%p\n",pcView->getName(),pcView);
 #endif
 
-  //FIXME: If a view without document gets activated why should we set the active document to 0, then?
-  if (pcView->getGuiDocument())
-    setActiveDocument(pcView->getGuiDocument());
-//  // set the new active document
-//  if(pcView->isPassive())
-//    setActiveDocument(0);
-//  else
+//  //FIXME: If a view without document gets activated why should we set the active document to 0, then?
+//  if (pcView->getGuiDocument())
 //    setActiveDocument(pcView->getGuiDocument());
+  // set the new active document
+  if(pcView->isPassive())
+    setActiveDocument(0);
+  else
+    setActiveDocument(pcView->getGuiDocument());
 }
 
 

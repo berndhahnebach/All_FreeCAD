@@ -154,6 +154,19 @@ int DocumentObjectGroup::countObjectsOfType(const Base::Type& typeId) const
   return ct;
 }
 
+DocumentObjectGroup* DocumentObjectGroup::getGroupOfObject(DocumentObject* obj)
+{
+  const Document& doc = obj->getDocument();
+  std::vector<DocumentObject*> grps = doc.getObjectsOfType( DocumentObjectGroup::getClassTypeId() );
+  for ( std::vector<DocumentObject*>::iterator it = grps.begin(); it != grps.end(); ++it ) {
+    DocumentObjectGroup* grp = (DocumentObjectGroup*)(*it);
+    if ( grp->hasObject( obj ) )
+      return grp;
+  }
+
+  return 0;
+}
+
 int DocumentObjectGroup::execute()
 {
   return 0;

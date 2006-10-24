@@ -68,6 +68,10 @@ public:
   /** Returns the number of objects of \a typeId this group does have.
    */
   int countObjectsOfType(const Base::Type& typeId) const;
+  /** Returns the object group of the document which the given object \a obj is part of.
+   * In case this object is not part of a group 0 is returned.
+   */
+  static DocumentObjectGroup* getGroupOfObject(DocumentObject* obj);
 	//@}
 
   int execute(void);

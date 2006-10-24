@@ -169,25 +169,29 @@ void DocItem::addViewProviderDocumentObject(ViewProviderDocumentObject* Provider
 {
   std::string name = Provider->getObject()->name.getValue();
   std::map<std::string,ObjectItem*>::iterator it = FeatMap.find( name );
-  if ( it == FeatMap.end() )
-  {
-    ObjectItem* item = Provider->getTreeItem(this);
 
+  if ( it == FeatMap.end() ) {
+    
+    // get the associated document object
+    App::DocumentObject* obj = Provider->getObject();
+    
+    // is the object part of a group?
     ObjectItem* groupItem=0;
-    for ( it = FeatMap.begin(); it != FeatMap.end(); ++it )
-    {
-      App::DocumentObject* obj = it->second->_pcViewProvider->getObject();
-      if ( obj->getTypeId().isDerivedFrom(App::DocumentObjectGroup::getClassTypeId()) )
-      {
-        App::DocumentObjectGroup* grp = (App::DocumentObjectGroup*)obj;
-        if ( grp->hasObject(Provider->getObject()) )
-        {
-          groupItem = it->second;
-          break;
-        }
-      }
+    App::DocumentObjectGroup* grp = App::DocumentObjectGroup::getGroupOfObject( obj );
+    if ( grp ) {
+      std::string grpname = grp->name.getValue();
+      std::map<std::string,ObjectItem*>::iterator jt = FeatMap.find( grpname );
+
+      if ( jt != FeatMap.end() )
+        groupItem = jt->second;
+
+#ifdef FC_DEBUG
+      else
+        Base::Console().Warning("DocItem::addViewProviderDocumentObject: try to insert a group object before the group itself is inserted\n");
+#endif
     }
 
+    ObjectItem* item = Provider->getTreeItem(this);
     QListViewItem* child=0;
     QListViewItem* sibling=0;
     if ( groupItem )
@@ -217,18 +221,59 @@ void DocItem::addViewProviderDocumentObject(ViewProviderDocumentObject* Provider
 
     if(FeatMap.size() == 1)
       setOpen(true);
+  } else {
+#ifdef FC_DEBUG
+    Base::Console().Warning("DocItem::addViewProviderDocumentObject: cannot add view provider twice\n");
+#endif
   }
 }
 
 void DocItem::removeViewProviderDocumentObject(ViewProviderDocumentObject* Provider)
 {
+  //FIXME: 
+#if 1
+  // If we remove an item from the list view all its children would get removed, too. Thus we must
+  // move all children items one level up. 
   QString name = Provider->getObject()->name.getValue();
   std::map<std::string,ObjectItem*>::iterator it = FeatMap.find(name.latin1());
   if ( it != FeatMap.end() )
   {
-    delete it->second;
+    ObjectItem* item = it->second;
     FeatMap.erase(it);
+
+    ObjectItem *child = (ObjectItem*)item->firstChild();
+    QListViewItem* parent = item->parent();
+    while ( child ) {
+      // move the items to the parent item
+      ObjectItem* sibling = (ObjectItem*)child->nextSibling();
+      item->takeItem(child);
+      parent->insertItem(child);
+      child = sibling;
+    }
+
+    delete item;
   }
+#else
+  // If we remove an item from the list view all its children get removed, too. Thus we must
+  // make sure to´remove properly all concerning elements from our map, too. 
+  QString name = Provider->getObject()->name.getValue();
+  std::map<std::string,ObjectItem*>::iterator it = FeatMap.find(name.latin1());
+  if ( it != FeatMap.end() )
+  {
+    ObjectItem* item = it->second;
+    FeatMap.erase(it);
+
+    ObjectItem *child = (ObjectItem*)item->firstChild();
+    while ( child ) {
+      ObjectItem* sibling = (ObjectItem*)child->nextSibling();
+      // call recursively
+      removeViewProviderDocumentObject( child->_pcViewProvider );
+      child = sibling;
+    }
+
+    delete item;
+  }
+#endif
 }
 
 void DocItem::update(void)
