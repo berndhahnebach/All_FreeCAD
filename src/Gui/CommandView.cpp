@@ -171,7 +171,17 @@ bool StdCameraType::isActive(void)
 //===========================================================================
 // Std_FreezeViews
 //===========================================================================
-DEF_STD_CMD_AC(StdCmdFreezeViews);
+class StdCmdFreezeViews : public Gui::Command
+{
+public:
+  StdCmdFreezeViews();
+  virtual ~StdCmdFreezeViews(){}
+protected: 
+  virtual void activated(int iMsg);
+  virtual bool isActive(void);
+  virtual QAction * createAction(void);
+  virtual void languageChange();
+};
 
 StdCmdFreezeViews::StdCmdFreezeViews()
   :Command("Std_FreezeViews")
@@ -196,10 +206,10 @@ QAction * StdCmdFreezeViews::createAction(void)
   if(sPixmap)
     pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
 
-  pcAction->addActionData( QT_TR_NOOP("Save views") );
-  pcAction->addActionData( QT_TR_NOOP("Restore views") );
+  pcAction->addActionData( QObject::tr("Save views") );
+  pcAction->addActionData( QObject::tr("Restore views") );
   pcAction->addSeparator();
-  pcAction->addActionData( QT_TR_NOOP("Freeze view") );
+  pcAction->addActionData( QObject::tr("Freeze view") );
   QAction* action = pcAction->getAction(2);
   if (action)
     action->setAccel(iAccel);
@@ -215,7 +225,7 @@ void StdCmdFreezeViews::activated(int iMsg)
   if ( iMsg == 0 ) {
     // Save the views to an XML file
     QString dir = FileDialog::getWorkingDirectory();
-    QString file = FileDialog::getSaveFileName(dir, "Frozen views (*.cam)", getMainWindow(),0,QT_TR_NOOP("Save frozen views"));
+    QString file = FileDialog::getSaveFileName(dir, QObject::tr("Frozen views (*.cam)"), getMainWindow(),0,QObject::tr("Save frozen views"));
     std::ofstream str( file.latin1(), std::ios::out );
     if ( str && str.is_open() )
     {
@@ -245,7 +255,7 @@ void StdCmdFreezeViews::activated(int iMsg)
   } else if ( iMsg == 1 ) {
     // Restore the views from an XML file
     QString dir = FileDialog::getWorkingDirectory();
-    QString file = FileDialog::getOpenFileName(dir, "Frozen views (*.cam)", getMainWindow(),0,QT_TR_NOOP("Save frozen views"));
+    QString file = FileDialog::getOpenFileName(dir, QObject::tr("Frozen views (*.cam)"), getMainWindow(),0,QObject::tr("Save frozen views"));
     std::ifstream str( file.latin1(), std::ios::in | std::ios::binary );
     Base::XMLReader xmlReader(file.latin1(), str);
     xmlReader.readElement("FrozenViews");
@@ -261,7 +271,7 @@ void StdCmdFreezeViews::activated(int iMsg)
       {
         xmlReader.readElement("Camera");
         const char* camera = xmlReader.getAttribute("settings");
-        QString viewnr = QString(QT_TR_NOOP("Restore view &%1")).arg(ctViews+i);
+        QString viewnr = QString(QObject::tr("Restore view &%1")).arg(ctViews+i);
         pcAction->addActionData( viewnr, camera );
         if ( ctViews+i < 10 ) {
           int accel = Qt::CTRL+Qt::Key_1;
@@ -281,7 +291,7 @@ void StdCmdFreezeViews::activated(int iMsg)
     const char* ppReturn=0;
     getGuiApplication()->sendMsgToActiveView("GetCamera",&ppReturn);
     int ctViews = pcAction->countActions()-3+1;
-    QString viewnr = QString(QT_TR_NOOP("Restore view &%1")).arg(ctViews);
+    QString viewnr = QString(QObject::tr("Restore view &%1")).arg(ctViews);
     pcAction->addActionData( viewnr, ppReturn );
     if ( ctViews < 10 ) {
       int accel = Qt::CTRL+Qt::Key_1;
@@ -294,6 +304,31 @@ void StdCmdFreezeViews::activated(int iMsg)
     QString data = pcAction->getData(iMsg-2);
     QString send = QString("SetCamera %1").arg(data);
     getGuiApplication()->sendMsgToActiveView(send.latin1());
+  }
+}
+
+void StdCmdFreezeViews::languageChange()
+{
+  Command::languageChange();
+  ListActionGroup* pcAction = (ListActionGroup*)getAction();
+
+  if (pcAction)
+  {
+    QAction* action;
+    action = pcAction->getAction(0);
+    action->setMenuText(QObject::tr("Save views"));
+    action = pcAction->getAction(1);
+    action->setMenuText(QObject::tr("Restore views"));
+    action = pcAction->getAction(2);
+    action->setMenuText(QObject::tr("Freeze view"));
+
+    int ctViews = pcAction->countActions()-3+1;
+    for(int i=1; i<ctViews; i++)
+    {
+      QString viewnr = QString(QObject::tr("Restore view &%1")).arg(i);
+      action = pcAction->getAction(2+i);
+      action->setMenuText(viewnr);
+    }
   }
 }
 
@@ -609,9 +644,9 @@ StdViewDockUndockFullscreen::StdViewDockUndockFullscreen()
   sWhatsThis  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
   sStatusTip  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
   
-  _aCommands.push_back( new CommandItem(this, "Docked",    0,0,0,0,Qt::Key_D) );
-  _aCommands.push_back( new CommandItem(this, "Undocked",  0,0,0,0,Qt::Key_U) );
-  _aCommands.push_back( new CommandItem(this, "Fullscreen",0,0,0,0,Qt::Key_F) );
+  _aCommands.push_back( new CommandItem(this, QT_TR_NOOP("Docked"),    0,0,0,0,Qt::Key_D) );
+  _aCommands.push_back( new CommandItem(this, QT_TR_NOOP("Undocked"),  0,0,0,0,Qt::Key_U) );
+  _aCommands.push_back( new CommandItem(this, QT_TR_NOOP("Fullscreen"),0,0,0,0,Qt::Key_F) );
 }
 
 void StdViewDockUndockFullscreen::activated(int iMsg)

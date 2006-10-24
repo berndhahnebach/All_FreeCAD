@@ -96,7 +96,7 @@ public:
   std::string getUniqueDocumentName(const char *Name) const;
   /// Open an existing document from a file
   App::Document* openDocument(const char * FileName=0l);
-  /// Retrive the active document
+  /// Retrieve the active document
   App::Document* getActiveDocument(void);
   /// Retrive a named document
   App::Document* getDocument(const char *Name) const;
@@ -107,8 +107,6 @@ public:
   /// Set the active document
   void setActiveDocument(App::Document* pDoc);
   void setActiveDocument(const char *Name);
-  /// Geter for the OCC Aplication
-//	Handle_ApplicationOCC GetOCCApp(void) {return _hApp;}
   //@}
 
 

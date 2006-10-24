@@ -1,25 +1,5 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name>DlgOnlineHelpImp</name>
-    <message>
-        <source>Missing permission</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You don&apos;t have write permission to &apos;%1&apos;
-
-Specify another directory, please.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>DlgPreferencesImp</name>
-    <message>
-        <source>Wrong parameter</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>DlgSplasherBase</name>
     <message>
         <source>FreeCAD Startup</source>
@@ -27,56 +7,9 @@ Specify another directory, please.</source>
     </message>
 </context>
 <context>
-    <name>Form1</name>
-    <message>
-        <source>Form1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Macro name:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Macro destination:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Execute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete macro</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Record</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>Gui::AboutDialog</name>
     <message>
-        <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -158,10 +91,6 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Special Ops</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Command bar</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1081,6 +1010,19 @@ This file already exists.</source>
     </message>
 </context>
 <context>
+    <name>Gui::Dialog::DlgOnlineHelpImp</name>
+    <message>
+        <source>Missing permission</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You don&apos;t have write permission to &apos;%1&apos;
+
+Specify another directory, please.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui::Dialog::DlgParameter</name>
     <message>
         <source>Parameter Editor</source>
@@ -1146,6 +1088,13 @@ This file already exists.</source>
     </message>
     <message>
         <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgPreferencesImp</name>
+    <message>
+        <source>Wrong parameter</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1447,11 +1396,6 @@ This file already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Document save compression level<byte value="xd"/><byte value="xd"/>
-(0 = none, 9 = highest, 3 = default)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Using Undo/Redo on documents (can be very memory consuming)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1465,6 +1409,11 @@ This file already exists.</source>
     </message>
     <message>
         <source>discard saved transaction after document saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Document save compression level
+(0 = none, 9 = highest, 3 = default)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2030,6 +1979,14 @@ Replace existing file?</source>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&amp;3D View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Zoom</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Gui::NetworkRetriever</name>
@@ -2374,10 +2331,6 @@ Do you want to specify another directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Saving file under new filename...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Overwrite file &apos;%1&apos; ?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2403,6 +2356,34 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save document under new filename...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save views</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore views</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Freeze view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Frozen views (*.cam)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save frozen views</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore view &amp;%1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2688,26 +2669,6 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Freezes the current view position</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save views</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Restore views</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Freeze view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save frozen views</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Restore view &amp;%1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3423,6 +3384,18 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Display the active view either in fullscreen, in undocked or docked mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Docked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undocked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

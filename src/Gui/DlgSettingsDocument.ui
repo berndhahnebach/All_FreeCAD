@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>390</width>
+            <width>470</width>
             <height>497</height>
         </rect>
     </property>
@@ -83,7 +83,7 @@
                                 <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Document save compression level
+                                <string>Document save compression level
 (0 = none, 9 = highest, 3 = default)</string>
                             </property>
                         </widget>
@@ -221,6 +221,8 @@
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <slots>
     <slot access="protected">saveSettings()</slot>
     <slot access="protected">loadSettings()</slot>

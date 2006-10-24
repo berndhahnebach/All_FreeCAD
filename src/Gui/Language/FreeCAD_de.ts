@@ -1,4 +1,4 @@
-﻿<!DOCTYPE TS><TS>
+<!DOCTYPE TS><TS>
 <defaultcodec>iso8859-1</defaultcodec>
 <context>
     <name>DlgSplasherBase</name>
@@ -1409,12 +1409,6 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
         <translation>Neues Dokument beim Start erzeugen</translation>
     </message>
     <message>
-        <source>Document save compression level
-(0 = none, 9 = highest, 3 = default)</source>
-        <translation>Kompressionsstufe beim Speichern des Dokuments 
-(0 = keine, 9 = höchste, 3 = standardmäßige Kompression)</translation>
-    </message>
-    <message>
         <source>Using Undo/Redo on documents (can be very memory consuming)</source>
         <translation>Undo/Redo für Dokumente verwenden (kann sehr speicheraufwendig sein)</translation>
     </message>
@@ -1429,6 +1423,12 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     <message>
         <source>discard saved transaction after document saved</source>
         <translation>Gespeicherte Transaktionen verwerfen nachdem Dokument gespeichert wurde</translation>
+    </message>
+    <message>
+        <source>Document save compression level
+(0 = none, 9 = highest, 3 = default)</source>
+        <translation>Kompressionsstufe beim Speichern des Dokuments
+(0 = keine, 9 = höchste, 3 = standardmäßige Kompression)</translation>
     </message>
 </context>
 <context>
@@ -2388,6 +2388,30 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <source></source>
         <translation></translation>
     </message>
+    <message>
+        <source>Save views</source>
+        <translation>Ansichten speichern</translation>
+    </message>
+    <message>
+        <source>Restore views</source>
+        <translation>Ansichten wiederherstellen</translation>
+    </message>
+    <message>
+        <source>Freeze view</source>
+        <translation>Ansicht einfrieren</translation>
+    </message>
+    <message>
+        <source>Frozen views (*.cam)</source>
+        <translation>Feste Kamerapositionen (*.cam)</translation>
+    </message>
+    <message>
+        <source>Save frozen views</source>
+        <translation>Eingefrorene Ansichten speichern</translation>
+    </message>
+    <message>
+        <source>Restore view &amp;%1</source>
+        <translation>Ansicht &amp;%1 wiederherstellen</translation>
+    </message>
 </context>
 <context>
     <name>StdCameraType</name>
@@ -2672,26 +2696,6 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Freezes the current view position</source>
         <translation>Aktuelle Ansicht einfrieren</translation>
-    </message>
-    <message>
-        <source>Save views</source>
-        <translation>Ansichten speichern</translation>
-    </message>
-    <message>
-        <source>Restore views</source>
-        <translation>Ansichten wiederherstellen</translation>
-    </message>
-    <message>
-        <source>Freeze view</source>
-        <translation>Ansicht einfrieren</translation>
-    </message>
-    <message>
-        <source>Save frozen views</source>
-        <translation>Eingefrorene Ansichten speichern</translation>
-    </message>
-    <message>
-        <source>Restore view &amp;%1</source>
-        <translation>Ansicht &amp;%1 wiederherstellen</translation>
     </message>
 </context>
 <context>
@@ -3407,6 +3411,18 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Display the active view either in fullscreen, in undocked or docked mode</source>
         <translation>Aktives Fenster im Vollbild-Modus, im abgedockten oder angedockten Modus anzeigen</translation>
+    </message>
+    <message>
+        <source>Docked</source>
+        <translation>Angedockt</translation>
+    </message>
+    <message>
+        <source>Undocked</source>
+        <translation>Abgedockt</translation>
+    </message>
+    <message>
+        <source>Fullscreen</source>
+        <translation>Vollbild</translation>
     </message>
 </context>
 <context>
