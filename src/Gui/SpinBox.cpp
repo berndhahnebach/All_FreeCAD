@@ -101,7 +101,7 @@ class SpinBoxPrivate
 public:
   SpinBoxPrivate();
   bool pressed;
-  int nY, nStep;
+  int nX, nY, nStep;
 };
 
 SpinBoxPrivate::SpinBoxPrivate()
@@ -175,23 +175,30 @@ void SpinBox::mouseMoveEvent ( QMouseEvent* e )
 
   if (QWidget::mouseGrabber() == this)
   {
-    // get "speed" of mouse move
-    int val = value();
-    int step = (d->nY - e->y()) * d->nStep;
-    if ( wrapping() ) {
-      setValue( val + step );
-    } else {
-      // avoid overflow of integer
-      int diff=INT_MAX;
-      if ( val < 0 )
-        diff = INT_MIN - val;
-      else if ( val > 0 )
-        diff = INT_MAX - val;
-      // only allowed if no overflow occurs
-      if ( !( ( val > 0 && step > diff ) || ( val < 0 && step < diff) ) )
+    int dx = d->nX - e->x();
+    int dy = d->nY - e->y();
+
+    // decompose in vertical and horizontal movement where vertical part must exceed the horizontal part
+    if ( abs(dy) > abs(dx) ) {
+      // get "speed" of mouse move
+      int val = value();
+      int step = dy * d->nStep;
+      if ( wrapping() ) {
         setValue( val + step );
+      } else {
+        // avoid overflow of integer
+        int diff=INT_MAX;
+        if ( val < 0 )
+          diff = INT_MIN - val;
+        else if ( val > 0 )
+          diff = INT_MAX - val;
+        // only allowed if no overflow occurs
+        if ( !( ( val > 0 && step > diff ) || ( val < 0 && step < diff) ) )
+          setValue( val + step );
+      }
     }
 
+    d->nX = e->x();
     d->nY = e->y();
   }
   else
@@ -222,6 +229,7 @@ void SpinBox::mousePressEvent   ( QMouseEvent* e )
       d->nStep = 1;
   }
 
+  d->nX = e->x();
   d->nY = e->y();
 }
 
@@ -485,6 +493,57 @@ public:
   double mValue, mLineStep;
   double mMinValue, mMaxValue;
   QDoubleValidator * mValidator;
+};
+
+class FloatSpinBoxValidator : public QDoubleValidator
+{
+public:
+  FloatSpinBoxValidator( FloatSpinBox *sb, const char *name )
+	: QDoubleValidator( sb, name ), spinBox( sb ) { }
+
+  virtual State validate( QString& str, int& pos ) const
+  {
+    QString pref = spinBox->prefix();
+    QString suff = spinBox->suffix();
+    QString suffStriped = suff.stripWhiteSpace();
+    uint overhead = pref.length() + suff.length();
+    State state = Invalid;
+
+    ((QDoubleValidator *)this)->setRange( spinBox->minValue(), spinBox->maxValue(), (int)spinBox->precision() );
+    
+    if ( overhead == 0 ) {
+	    state = QDoubleValidator::validate( str, pos );
+    } else {
+	    bool stripedVersion = false;
+	    if ( str.length() >= overhead && str.startsWith(pref) && (str.endsWith(suff) || (stripedVersion = str.endsWith(suffStriped))) ) {
+	      if ( stripedVersion )
+		      overhead = pref.length() + suffStriped.length();
+  	    QString core = str.mid( pref.length(), str.length() - overhead );
+	      int corePos = pos - pref.length();
+	      state = QDoubleValidator::validate( core, corePos );
+	      pos = corePos + pref.length();
+	      str.replace( pref.length(), str.length() - overhead, core );
+	    } else {
+	      state = QDoubleValidator::validate( str, pos );
+	      if ( state == Invalid ) {
+		      QString special = spinBox->specialValueText().stripWhiteSpace();
+		      QString candidate = str.stripWhiteSpace();
+
+		      if ( special.startsWith(candidate) ) {
+		        if ( candidate.length() == special.length() ) {
+			        state = Acceptable;
+		        } else {
+			        state = Intermediate;
+		        }
+		      }
+	      }
+	    }
+    }
+    return state;
+  }
+
+private:
+  FloatSpinBox *spinBox;
 };
 
 } // namespace Gui
@@ -756,8 +815,8 @@ void FloatSpinBox::updateValidator()
 {
   if ( !d->mValidator ) 
   {
-    d->mValidator =  new QDoubleValidator( minValue(), maxValue(), precision(),
-             this, "d->mValidator" );
+    d->mValidator = new FloatSpinBoxValidator(this, "doubleValidator");
+    d->mValidator->setRange( minValue(), maxValue(), precision() );
     SpinBox::setValidator( d->mValidator );
   } 
   else
