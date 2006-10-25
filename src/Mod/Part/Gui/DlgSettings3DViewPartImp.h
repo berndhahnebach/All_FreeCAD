@@ -42,7 +42,6 @@ public:
   ~DlgSettings3DViewPartImp();
 
 protected:
-  virtual void warnInventor(bool);
   void saveSettings();
   void loadSettings();
 };

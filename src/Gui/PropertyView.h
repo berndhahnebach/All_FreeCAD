@@ -53,6 +53,8 @@ namespace DockWnd {
  */
 class PropertyView :public Gui::DockView, public Gui::SelectionSingleton::ObserverType
 {
+  Q_OBJECT
+
 public:
   /**
    * A constructor.

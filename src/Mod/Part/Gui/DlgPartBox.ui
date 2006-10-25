@@ -30,7 +30,7 @@
                 <cstring>GroupBox5</cstring>
             </property>
             <property name="title">
-                <string>Position:</string>
+                <string>Position</string>
             </property>
             <grid>
                 <property name="name">
@@ -103,7 +103,7 @@
                 <cstring>GroupBox5_2</cstring>
             </property>
             <property name="title">
-                <string>Size:</string>
+                <string>Dimension</string>
             </property>
             <grid>
                 <property name="name">

@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>Part Viewing Settings</string>
+        <string>Part view</string>
     </property>
     <vbox>
         <property name="name">
@@ -30,7 +30,7 @@
                 <cstring>GroupBox12</cstring>
             </property>
             <property name="title">
-                <string>3DViewPart settings</string>
+                <string>Part view settings</string>
             </property>
             <vbox>
                 <property name="name">
@@ -95,7 +95,13 @@
                                 <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Max deviation of view mesh (smaller means nicer but slower):</string>
+                                <string>Maximum deviation of tessellated view mesh</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Defines the deviation of tessellation to the surface</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>&lt;b&gt;Tessellation&lt;/b&gt;&lt;p&gt;Defines the maximum deviation of the tessellated mesh to the surface. The smaller the value is the slower the render speed and the nicer the appearance are.&lt;/p&gt;</string>
                             </property>
                         </widget>
                         <widget class="Gui::PrefFloatSpinBox">
@@ -171,7 +177,7 @@
                         <cstring>prefCheckBox8</cstring>
                     </property>
                     <property name="text">
-                        <string>Not using per vertex normals (using flat shading)</string>
+                        <string>Not using per vertex normals (Flat shading)</string>
                     </property>
                     <property name="prefEntry" stdset="0">
                         <cstring>NoPerVertexNormals</cstring>
@@ -179,13 +185,19 @@
                     <property name="prefPath" stdset="0">
                         <cstring>Mod/Part</cstring>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>Defines the appearance of surfaces</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>&lt;b&gt;Flat shading&lt;/b&gt;&lt;p&gt;The surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces. Disabling this option leads to a more realistic appearance.&lt;/p&gt;</string>
+                    </property>
                 </widget>
                 <widget class="Gui::PrefCheckBox">
                     <property name="name">
                         <cstring>prefCheckBox3</cstring>
                     </property>
                     <property name="text">
-                        <string>Using high qualiti normals (slower but nicer)</string>
+                        <string>Using high-quality normals</string>
                     </property>
                     <property name="prefEntry" stdset="0">
                         <cstring>QualityNormals</cstring>
@@ -193,13 +205,20 @@
                     <property name="prefPath" stdset="0">
                         <cstring>Mod/Part</cstring>
                     </property>
+                    <property name="toolTip" stdset="0">
+                        <string>This will slow down render speed but will lead to nicer results</string>
+                    </property>
+                    <property name="whatsThis" stdset="0">
+                        <string>&lt;b&gt;High-quality normals&lt;/b&gt;&lt;p&gt;This will slow down render speed but will lead to nicer results.&lt;/p&gt;</string>
+                    </property>
                 </widget>
             </vbox>
         </widget>
     </vbox>
 </widget>
+<customwidgets>
+</customwidgets>
 <slots>
-    <slot>warnInventor(bool)</slot>
     <slot access="protected">loadSettings()</slot>
     <slot access="protected">saveSettings()</slot>
 </slots>
