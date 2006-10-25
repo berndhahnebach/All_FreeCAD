@@ -575,7 +575,27 @@ dnl **************************************************************************
 #    esac
 #  ])
 #AM_CONDITIONAL(PCH, test "$PCH" = "yes")
+enableval=no
+AC_MSG_CHECKING([whether to use precompiled headers])
+AC_ARG_ENABLE(pch,
+  AC_HELP_STRING([--enable-pch],
+    [use precompiled headers, if available]))
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  COMP_FLAGS="$COMP_FLAGS -Winvalid-pch"
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-pch, needs yes or no])
+  ;;
+esac
+AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
 
+CFLAGS="$COMP_FLAGS $OPT_FLAGS"
+CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 dnl **************************************************************************
 
 CXX=g++
