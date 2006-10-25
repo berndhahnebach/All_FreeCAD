@@ -44,11 +44,15 @@ Workbench::~Workbench()
 
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
+  static const char* menuItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "&Part" )
+  };
+
   Gui::MenuItem* root = StdWorkbench::setupMenuBar();
   Gui::MenuItem* item = root->findItem( "&Windows" );
   Gui::MenuItem* part = new Gui::MenuItem;
   root->insertItem( item, part );
-  part->setCommand( "&Part" );
+  part->setCommand( menuItems[0] );
   *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
         << "Separator" << "Part_Test1" << "Part_Test2";
   return root;
@@ -56,9 +60,13 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "Part tools" ),
+  };
+
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
-  part->setCommand( "PartTools" );
+  part->setCommand( toolItems[0] );
   *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
         << "Separator" << "Part_Test1" << "Part_Test2";
   return root;
@@ -66,19 +74,25 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "Import" ),
+    QT_TRANSLATE_NOOP( "QObject", "Boolean Operators" ),
+    QT_TRANSLATE_NOOP( "QObject", "Testing" ),
+  };
+
   // Part tools
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
 
   Gui::ToolBarItem* imp = new Gui::ToolBarItem( root );
-  imp->setCommand( "Import" );
-  *imp << "Part_NewDoc" << "Part_Import" << "Part_ImportCurveNet";
+  imp->setCommand( toolItems[0] );
+  *imp << "Part_Import" << "Part_ImportCurveNet";
 
   Gui::ToolBarItem* bol = new Gui::ToolBarItem( root );
-  bol->setCommand( "Boolean" );
-  *bol << "Part_NewDoc" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
+  bol->setCommand( toolItems[1] );
+  *bol << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
 
   Gui::ToolBarItem* test = new Gui::ToolBarItem( root );
-  test->setCommand( "Testing" );
+  test->setCommand( toolItems[2] );
   *test << "Part_Test1" << "Part_Test2";
   
   return root;

@@ -54,6 +54,7 @@ BUILT_SOURCES=\
 		moc_PrefWidgets.cpp \
 		moc_Process.cpp \
 		moc_ProgressBar.cpp \
+		moc_PropertyView.cpp \
 		moc_PythonConsole.cpp \
 		moc_PythonEditor.cpp \
 		moc_ReportView.cpp \

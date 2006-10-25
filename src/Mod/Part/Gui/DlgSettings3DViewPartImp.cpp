@@ -27,8 +27,8 @@
 #endif
 
 #include "DlgSettings3DViewPartImp.h"
-#include "../../../Gui/PrefWidgets.h"
-#include "../../../Base/Console.h"
+#include <Gui/PrefWidgets.h>
+#include <Base/Console.h>
 
 using namespace PartGui;
 
@@ -47,15 +47,6 @@ DlgSettings3DViewPartImp::DlgSettings3DViewPartImp( QWidget* parent,  const char
 DlgSettings3DViewPartImp::~DlgSettings3DViewPartImp()
 {
   // no need to delete child widgets, Qt does it all for us
-}
-
-/**
- * Print warning if OpenInventor viewer is used.
- */
-void DlgSettings3DViewPartImp::warnInventor(bool b)
-{
-  if ( b )
-    Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
 }
 
 void DlgSettings3DViewPartImp::saveSettings()

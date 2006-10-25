@@ -57,9 +57,9 @@ CmdPartPickCurveNet::CmdPartPickCurveNet()
   :Command("Part_PickCurveNet")
 {
   sAppModule    = "Part";
-  sGroup        = "Part";
-  sMenuText     = "Pick a cruve network";
-  sToolTipText  = "Pick a cruve network";
+  sGroup        = QT_TR_NOOP("Part");
+  sMenuText     = QT_TR_NOOP("Pick a cruve network");
+  sToolTipText  = QT_TR_NOOP("Pick a cruve network");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Test1";
@@ -80,9 +80,9 @@ CmdPartTest1::CmdPartTest1()
   :Command("Part_Test1")
 {
   sAppModule  = "Part";
-  sGroup      = "Part";
-  sMenuText   = "Test1";
-  sToolTipText= "Part Test function 1";
+  sGroup      = QT_TR_NOOP("Part");
+  sMenuText   = QT_TR_NOOP("Test1");
+  sToolTipText= QT_TR_NOOP("Part Test function 1");
   sWhatsThis  = sToolTipText;
   sStatusTip  = sToolTipText;
   sPixmap     = "Test1";
@@ -105,9 +105,9 @@ CmdPartTest2::CmdPartTest2()
   :Command("Part_Test2")
 {
   sAppModule  = "Part";
-  sGroup      = "Part";
-  sMenuText   = "Test2";
-  sToolTipText= "Part Test function 2";
+  sGroup      = QT_TR_NOOP("Part");
+  sMenuText   = QT_TR_NOOP("Test2");
+  sToolTipText= QT_TR_NOOP("Part Test function 2");
   sWhatsThis  = sToolTipText;
   sStatusTip  = sToolTipText;
   sPixmap     = "Test2";
@@ -122,31 +122,6 @@ void CmdPartTest2::activated(int iMsg)
   updateActive();
 }
 
-//===========================================================================
-// Part_NewDoc
-//===========================================================================
-DEF_STD_CMD(CmdPartNewDoc);
-
-CmdPartNewDoc::CmdPartNewDoc()
-  :Command("Part_NewDoc")
-{
-  sAppModule    = "Part";
-  sGroup        = "Part";
-  sMenuText     = "New document";
-  sToolTipText  = "Create a empty part document";
-  sWhatsThis    = sToolTipText;
-  sStatusTip    = sToolTipText;
-  sPixmap       = "New";
-  iAccel        = 0;
-}
-
-void CmdPartNewDoc::activated(int iMsg)
-{
-  doCommand(Doc,"d = App.New()");
-
-  updateActive();
-}
-
 
 //===========================================================================
 // Part_Box
@@ -157,9 +132,9 @@ CmdPartBox::CmdPartBox()
   :Command("Part_Box")
 {
   sAppModule    = "Part";
-  sGroup        = "Part";
-  sMenuText     = "Box";
-  sToolTipText  = "Create or change a Box feature";
+  sGroup        = QT_TR_NOOP("Part");
+  sMenuText     = QT_TR_NOOP("Box");
+  sToolTipText  = QT_TR_NOOP("Create or change a Box feature");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Part_Box";
@@ -203,9 +178,9 @@ CmdPartBox2::CmdPartBox2()
   :Command("Part_Box2")
 {
   sAppModule    = "Part";
-  sGroup        = "Part";
-  sMenuText     = "Box fix 1";
-  sToolTipText  = "Create a Box feature without Dialog";
+  sGroup        = QT_TR_NOOP("Part");
+  sMenuText     = QT_TR_NOOP("Box fix 1");
+  sToolTipText  = QT_TR_NOOP("Create a Box feature without Dialog");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Part_Box";
@@ -247,9 +222,9 @@ CmdPartBox3::CmdPartBox3()
   :Command("Part_Box3")
 {
   sAppModule    = "Part";
-  sGroup        = "Part";
-  sMenuText     = "Box fix 2";
-  sToolTipText  = "Create a Box feature without Dialog";
+  sGroup        = QT_TR_NOOP("Part");
+  sMenuText     = QT_TR_NOOP("Box fix 2");
+  sToolTipText  = QT_TR_NOOP("Create a box feature without dialog");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Part_Box";
@@ -291,9 +266,9 @@ CmdPartCut::CmdPartCut()
   :Command("Part_Cut")
 {
   sAppModule    = "Part";
-  sGroup        = "Part";
-  sMenuText		  = "Cut";
-  sToolTipText  = "Create or change a Cut feature";
+  sGroup        = QT_TR_NOOP("Part");
+  sMenuText		  = QT_TR_NOOP("Cut");
+  sToolTipText  = QT_TR_NOOP("Create or change a Cut feature");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Part_Box";
@@ -338,9 +313,9 @@ CmdPartImport::CmdPartImport()
   :Command("Part_Import")
 {
   sAppModule    = "Part";
-  sGroup        = "Part";
-  sMenuText     = "Import CAD";
-  sToolTipText  = "Imports a CAD file";
+  sGroup        = QT_TR_NOOP("Part");
+  sMenuText     = QT_TR_NOOP("Import CAD");
+  sToolTipText  = QT_TR_NOOP("Imports a CAD file");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Part_Box";
@@ -383,9 +358,9 @@ CmdPartImportCurveNet::CmdPartImportCurveNet()
   :Command("Part_ImportCurveNet")
 {
   sAppModule  = "Part";
-  sGroup      = "Part";
-  sMenuText   = "Import a curve network";
-  sToolTipText= "Import a curve network";
+  sGroup      = QT_TR_NOOP("Part");
+  sMenuText   = QT_TR_NOOP("Import a curve network");
+  sToolTipText= QT_TR_NOOP("Import a curve network");
   sWhatsThis  = sToolTipText;
   sStatusTip  = sToolTipText;
   sPixmap     = "Part_Box";
@@ -434,9 +409,5 @@ void CreatePartCommands(void)
   rcCmdMgr.addCommand(new CmdPartImport());
   rcCmdMgr.addCommand(new CmdPartImportCurveNet());
   rcCmdMgr.addCommand(new CmdPartPickCurveNet());
-
-  rcCmdMgr.addCommand(new CmdPartNewDoc());
-}
-
-
+} 
 

@@ -300,7 +300,7 @@ void ViewProviderPart::updateData(void)
     computeEdges   (EdgeRoot,cShape);
     computeVertices(VertexRoot,cShape);
   } catch (...){
-    Base::Console().Error("ViewProviderPart::create() Cannot compute Inventor representation for the actual shape");
+    Base::Console().Error("ViewProviderPart::create() Cannot compute Inventor representation for the current shape");
   }
 
   BRepTools::Clean(cShape); // remove triangulation
@@ -505,7 +505,7 @@ Standard_Boolean ViewProviderPart::computeFaces(SoSeparator* FaceRoot, const Top
   // counting faces and start sequencer
   int l = 1;
   for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),l++) {}
-  Base::SequencerLauncher cSeq("creating view representation", l);
+  Base::SequencerLauncher cSeq("Creating view representation...", l);
 
   int i = 0;
   for (ex.Init(myShape, TopAbs_FACE); ex.More(); ex.Next(),i++) {

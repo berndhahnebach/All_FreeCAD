@@ -26,8 +26,8 @@
 # include <qlineedit.h>
 #endif
 
-#include "../../../Gui/FileDialog.h"
-#include "../../../Gui/MainWindow.h"
+#include <Gui/FileDialog.h>
+#include <Gui/MainWindow.h>
 #include "DlgPartImportStepImp.h"
 
 using namespace PartGui;

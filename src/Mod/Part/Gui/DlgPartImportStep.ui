@@ -13,7 +13,7 @@
         </rect>
     </property>
     <property name="caption">
-        <string>Step input file</string>
+        <string>STEP input file</string>
     </property>
     <vbox>
         <property name="name">
@@ -30,7 +30,7 @@
                 <cstring>GroupBox5</cstring>
             </property>
             <property name="title">
-                <string>File Name</string>
+                <string>File name</string>
             </property>
             <hbox>
                 <property name="name">

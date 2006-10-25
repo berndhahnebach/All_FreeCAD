@@ -30,7 +30,7 @@
                 <cstring>GroupBox5</cstring>
             </property>
             <property name="title">
-                <string>File Name</string>
+                <string>File name</string>
             </property>
             <hbox>
                 <property name="name">
