@@ -29,6 +29,7 @@
 #include <Base/Console.h>
 
 #include "Points.h"
+#include "PropertyPointKernel.h"
 #include "FeaturePointsImportAscii.h"
 
 
@@ -50,6 +51,7 @@ void PointsAppExport initPoints() {
   Points::PropertyGreyValueList ::init();
   Points::PropertyNormalList    ::init();
   Points::PropertyCurvatureList ::init();
+  Points::PropertyPointKernel   ::init();
 
   // add data types
   Points::Feature               ::init();

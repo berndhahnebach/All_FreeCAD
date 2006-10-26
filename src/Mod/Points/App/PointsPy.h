@@ -25,12 +25,11 @@
 #define POINTS_PY_H
 
 #include <Base/PyExportImp.h>
+#include "Points.h"
 
 
 namespace Points
 {
-
-class PointsWithProperty;
 
 //===========================================================================
 // PointsPy - Python wrapper 
@@ -47,12 +46,11 @@ protected:
 
 public:
   PointsPy(PyTypeObject *T = &Type);
-  PointsPy(const PointsWithProperty& rcPoints, PyTypeObject *T = &Type);
+  PointsPy(const PointKernel& rcPoints, PyTypeObject *T = &Type);
   static PyObject *PyMake(PyObject *, PyObject *);
 
-  void setPoints(const PointsWithProperty& rcPoints);
-  const PointsWithProperty& getPoints(void) const;
-  PointsWithProperty& refToPoints(void);
+  void setPoints(const PointKernel& rcPoints);
+  const PointKernel& getPoints(void) const;
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
@@ -74,7 +72,7 @@ public:
   PYFUNCDEF_D(PointsPy,copy)
 
 protected:
-  PointsWithProperty *_pcPoints;
+  PointKernel _cPoints;
 };
 
 } //namespace Points

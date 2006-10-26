@@ -121,29 +121,6 @@ insert(PyObject *self, PyObject *args)
 	Py_Return;    
 }
 
-/* module functions */
-static PyObject *                        
-read(PyObject *self, PyObject *args)
-{
-  const char* Name;
-  if (! PyArg_ParseTuple(args, "s",&Name))			 
-    return NULL;                         
-
-  Base::FileInfo File(Name);
-  
-  // checking on the file
-  if(!File.isReadable())
-    Py_Error(PyExc_Exception,"File to load not existing or not readable");
-
-  PY_TRY {
-    PointsPy* points = new PointsPy();
-    // load the mesh and create a mesh python object with it
-    PointsAlgos::Load(points->refToPoints(), File.filePath().c_str());
-    return points;
-  } PY_CATCH;
-  Py_Return;
-}
-
 static PyObject *                        
 create(PyObject *self, PyObject *args)
 {
@@ -160,7 +137,6 @@ create(PyObject *self, PyObject *args)
 struct PyMethodDef Points_Import_methods[] = {
     {"open",  open,   1},				/* method name, C func ptr, always-tuple */
     {"insert",insert, 1},
-    {"read",  read,   1},
     {"create",create, 1},
 
     {NULL, NULL}                /* end of table marker */

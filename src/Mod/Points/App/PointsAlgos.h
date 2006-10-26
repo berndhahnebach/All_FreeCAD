@@ -24,26 +24,26 @@
 #ifndef _PointsAlgos_h_
 #define _PointsAlgos_h_
 
+#include "Points.h"
 
 namespace Points
 {
-class PointsWithProperty;
 
 /** The Points algorithems container class
  */
 class PointsAppExport PointsAlgos
 {
 public:
-  /** Load a Points
+  /** Load a point cloud
    */
-  static void Load(PointsWithProperty&, const char *FileName);
-  /** Load a Points
+  static void Load(PointKernel&, const char *FileName);
+  /** Load a point cloud
    */
-  static void LoadAscii(PointsWithProperty&, const char *FileName);
+  static void LoadAscii(PointKernel&, const char *FileName);
 
 };
 
-
-
 } // namespace Points
+
+
 #endif 

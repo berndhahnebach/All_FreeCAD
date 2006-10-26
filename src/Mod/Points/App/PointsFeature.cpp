@@ -46,6 +46,7 @@ PROPERTY_SOURCE(Points::Feature, App::AbstractFeature)
 
 Feature::Feature() : _featurePy(0)
 {
+  ADD_PROPERTY(Points, (PointKernel()));
 }
 
 Feature::~Feature()
@@ -57,62 +58,9 @@ Feature::~Feature()
   }
 }
 
-void Feature::Save (Base::Writer &writer) const
-{
-  // save parent
-  AbstractFeature::Save(writer);
-
-  if(writer.isForceXML())
-  {
-  }else{
-    writer << writer.ind() << "<Points file=\"" << writer.addFile(name.getValue(), this) << "\"/>" << std::endl;
-  }
-}
-
-void Feature::Restore(Base::XMLReader &reader)
-{
-  // load parent
-  AbstractFeature::Restore(reader);
-  reader.readElement("Points");
-  std::string file (reader.getAttribute("file") );
-
-  if (file == "")
-  {
-  }else{
-    // initate a file read
-    reader.addFile(file.c_str(),this);
-  }
-}
-
-void Feature::SaveDocFile (Base::Writer &writer) const
-{
-  const PointKernel& kernel = _Points.getKernel();
-  unsigned long uCtPts = kernel.size();
-  writer.write((const char*)&uCtPts, sizeof(unsigned long));
-  writer.write((const char*)&(kernel[0]), uCtPts*sizeof(Base::Vector3f));
-}
-
-void Feature::RestoreDocFile(Base::Reader &reader)
-{
-  PointKernel& kernel = _Points.getKernel();
-  kernel.clear();
-
-  unsigned long uCtPts;
-  reader.read((char*)&uCtPts, sizeof(unsigned long));
-  kernel.resize(uCtPts);
-  reader.read((char*)&(kernel[0]), uCtPts*sizeof(Base::Vector3f));
-}
-
-
 int Feature::execute(void)
 {
   return 0;
-}
-
-void Feature::setPoints(const PointsWithProperty& New)
-{
-  _Points = New;
-  Touch();
 }
 
 Base::PyObjectBase *Feature::GetPyObject(void)
@@ -140,7 +88,7 @@ int Export::execute(void)
   // ask for write permission
   Base::FileInfo fi(FileName.getValue());
   Base::FileInfo di(fi.dirPath().c_str());
-	if ( fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false )
+  if ( fi.exists() && fi.isWritable() == false || di.exists() == false || di.isWritable() == false )
   {
     setError("No write permission for file '%s'",FileName.getValue());
     return 1;
@@ -154,7 +102,7 @@ int Export::execute(void)
     for ( std::vector<App::DocumentObject*>::const_iterator it = features.begin(); it != features.end(); ++it )
     {
       Feature *pcFeat  = dynamic_cast<Feature*>(*it);
-      const PointKernel& kernel = pcFeat->getPoints().getKernel();
+      const PointKernel& kernel = pcFeat->Points.getValue();
 
       str << "# " << pcFeat->name.getValue() << " Number of points: " << kernel.size() << std::endl;
       for ( PointKernel::const_iterator it = kernel.begin(); it != kernel.end(); ++it )
@@ -187,8 +135,8 @@ Transform::~Transform()
 int Transform::execute(void)
 {
   Feature *pcPoints  = dynamic_cast<Feature*>(Source.getValue());
-  _Points = pcPoints->getPoints();
-  _Points.transform( Trnsfrm.getValue() );
+  Points.setValue(pcPoints->Points.getValue());
+  Points.transform( Trnsfrm.getValue() );
 
   const Base::Matrix4D& cMat = Trnsfrm.getValue();
   Base::Console().Message("Transform [[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f],[%.2f, %.2f, %.2f, %.2f]]\n",

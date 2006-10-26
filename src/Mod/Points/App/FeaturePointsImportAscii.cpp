@@ -27,8 +27,9 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
-#include "../App/PointsAlgos.h"
-#include "../App/Points.h"
+
+#include "PointsAlgos.h"
+#include "Points.h"
 #include "FeaturePointsImportAscii.h"
 
 
@@ -46,17 +47,18 @@ int ImportAscii::execute(void)
 
   // ask for read permisson
 #if defined (__GNUC__)
-	if ( access(FileName.getValue(), 4) != 0 )
+  if ( access(FileName.getValue(), 4) != 0 )
 #else
-	if ( _access(FileName.getValue(), 4) != 0 )
+  if ( _access(FileName.getValue(), 4) != 0 )
 #endif
   {
     Base::Console().Log("FeaturePointsImportAscii::Execute() not able to open %s!\n",FileName.getValue());
     return 1;
   }
 
-   PointsAlgos::Load(_Points,FileName.getValue());
-
+  PointKernel kernel;
+  PointsAlgos::Load(kernel,FileName.getValue());
+  Points.setValue(kernel);
 
   return 0;
 }
