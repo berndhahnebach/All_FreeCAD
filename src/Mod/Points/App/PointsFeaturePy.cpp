@@ -104,8 +104,6 @@ PyMethodDef PointsFeaturePy::Methods[] = {
 	PYMETHODEDEF(setModified)
 	PYMETHODEDEF(isValid)
 // PointsFeaturePy
-  PYMETHODEDEF(getPoints)
-  PYMETHODEDEF(setPoints)
   {NULL, NULL}    /* Sentinel */
 };
 
@@ -174,24 +172,3 @@ int PointsFeaturePy::_setattr(char *attr, PyObject *value) // __setattr__ functi
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-
-PYFUNCIMP_D(PointsFeaturePy,getPoints)
-{
-  // get a copy of the points
-  return new PointsPy(_pcFeature->getPoints());
-}
-
-PYFUNCIMP_D(PointsFeaturePy,setPoints)
-{
- 	PointsPy *pcObject;
-  PyObject *pcObj;
-  if (!PyArg_ParseTuple(args, "O!", &(PointsPy::Type), &pcObj))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  pcObject = (PointsPy*)pcObj;
-
-  // copy points to feature
-  _pcFeature->setPoints( pcObject->getPoints() );
-
-  Py_Return;
-}

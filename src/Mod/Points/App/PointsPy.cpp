@@ -87,15 +87,15 @@ PyParentObject PointsPy::Parents[] = {&Base::PyObjectBase::Type, NULL};
 //--------------------------------------------------------------------------
 // constructor
 //--------------------------------------------------------------------------
-PointsPy::PointsPy(const PointsWithProperty& rcPoints, PyTypeObject *T)
-: Base::PyObjectBase(T), _pcPoints(new PointsWithProperty())
+PointsPy::PointsPy(const PointKernel& rcPoints, PyTypeObject *T)
+: Base::PyObjectBase(T)
 {
   Base::Console().Log("Create PointsPy: %p \n",this);
-  (*_pcPoints) = rcPoints;
+  _cPoints = rcPoints;
 }
 
 PointsPy::PointsPy(PyTypeObject *T)
-: Base::PyObjectBase(T), _pcPoints(new PointsWithProperty())
+: Base::PyObjectBase(T)
 {
   Base::Console().Log("Create PointsPy: %p \n",this);
 }
@@ -112,7 +112,6 @@ PyObject *PointsPy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
 PointsPy::~PointsPy()           // Everything handled in parent
 {
   Base::Console().Log("Destroy PointsPy: %p \n",this);
-  delete _pcPoints;
 } 
 
 //--------------------------------------------------------------------------
@@ -121,7 +120,7 @@ PointsPy::~PointsPy()           // Everything handled in parent
 PyObject *PointsPy::_repr(void)
 {
   std::stringstream a;
-  a << _pcPoints->getKernel().size() << " points";
+  a << _cPoints.size() << " points";
   return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
@@ -147,19 +146,14 @@ int PointsPy::_setattr(char *attr, PyObject *value) // __setattr__ function: not
     return PyObjectBase::_setattr(attr, value); 
 }
 
-void PointsPy::setPoints(const PointsWithProperty& rcPoints)
+void PointsPy::setPoints(const PointKernel& rcPoints)
 {
-  (*_pcPoints) = rcPoints;
+  _cPoints = rcPoints;
 }
 
-const PointsWithProperty& PointsPy::getPoints(void) const
+const PointKernel& PointsPy::getPoints(void) const
 {
-  return *_pcPoints;
-}
-
-PointsWithProperty& PointsPy::refToPoints(void)
-{
-  return *_pcPoints;
+  return _cPoints;
 }
 
 //--------------------------------------------------------------------------
@@ -168,7 +162,7 @@ PointsWithProperty& PointsPy::refToPoints(void)
 
 PYFUNCIMP_D(PointsPy,count)
 {
-  return Py_BuildValue("i",_pcPoints->getKernel().size()); 
+  return Py_BuildValue("i",_cPoints.size()); 
 }
 
 PYFUNCIMP_D(PointsPy,write)
@@ -195,7 +189,7 @@ PYFUNCIMP_D(PointsPy,read)
     Py_Error(PyExc_Exception,"File to load not existing or not readable");
 
   PY_TRY {
-    PointsAlgos::Load(*_pcPoints,Name);
+    PointsAlgos::Load(_cPoints,Name);
   } PY_CATCH;
 
   Py_Return; 
@@ -210,7 +204,7 @@ PYFUNCIMP_D(PointsPy,translate)
   PY_TRY {
     Matrix4D m;
     m.move(x,y,z);
-    _pcPoints->transform(m);  
+//    _pcPoints->transform(m);  
   } PY_CATCH;
 
   Py_Return;
@@ -227,7 +221,7 @@ PYFUNCIMP_D(PointsPy,rotate)
     m.rotX(x);
     m.rotY(y);
     m.rotZ(z);
-    _pcPoints->transform(m);  
+//    _pcPoints->transform(m);  
   } PY_CATCH;
 
   Py_Return;
@@ -242,7 +236,7 @@ PYFUNCIMP_D(PointsPy,scale)
   PY_TRY {
     Matrix4D m;
     m.scale(s,s,s);
-    _pcPoints->transform(m);  
+//    _pcPoints->transform(m);  
   } PY_CATCH;
 
   Py_Return;
@@ -255,7 +249,7 @@ PYFUNCIMP_D(PointsPy,addPoint)
     return NULL;                         
 
   PY_TRY {
-    _pcPoints->getKernel().push_back(Base::Vector3f(x,y,z));
+    _cPoints.push_back(Base::Vector3f(x,y,z));
   } PY_CATCH;
 
   Py_Return;
@@ -264,7 +258,7 @@ PYFUNCIMP_D(PointsPy,addPoint)
 PYFUNCIMP_D(PointsPy,clear)
 {
   PY_TRY {
-    _pcPoints->clear();
+    _cPoints.clear();
   } PY_CATCH;
 
   Py_Return;
@@ -273,6 +267,6 @@ PYFUNCIMP_D(PointsPy,clear)
 PYFUNCIMP_D(PointsPy,copy)
 {
   PY_TRY {
-   return new PointsPy(*_pcPoints);
+   return new PointsPy(_cPoints);
   } PY_CATCH;
 }

@@ -107,7 +107,7 @@ bool Document::undo(void)
     activUndoTransaction = new Transaction();
     activUndoTransaction->Name = mUndoTransactions.back()->Name;
 
-    // applieing the undo
+    // applying the undo
     mUndoTransactions.back()->apply(*this,DocChange);
     
     // save the redo
@@ -117,7 +117,7 @@ bool Document::undo(void)
     delete mUndoTransactions.back();
     mUndoTransactions.pop_back();
 
-    // notiefy all the listeners (e.g. GuiDocument)
+    // notify all the listeners (e.g. GuiDocument)
     Notify(DocChange);
   }
 

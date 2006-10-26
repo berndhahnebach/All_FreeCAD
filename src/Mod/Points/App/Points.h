@@ -151,44 +151,6 @@ private:
   std::vector<CurvatureInfo> _lValueList;
 };
 
-/** The point kernel property
- */
-class PointsAppExport PropertyPointKernel : public App::Property
-{
-  TYPESYSTEM_HEADER();
-
-public:
-	PropertyPointKernel();
-	~PropertyPointKernel();
-
-  /** @name Getter/setter */
-  //@{
-  /// COPIES the points to the property
-  void setValue( const PointKernel& m);
-  /// REPLACE the point in the property
-  void setValue( PointKernel* m);
-  /// get the points (only const possible!)
-  const PointKernel &getValue(void) const;
-  //@}
-
-  /** @name Python interface */
-  //@{
-  PyObject* getPyObject(void);
-  void setPyObject(PyObject *value);
-  //@}
-
-  /** @name Save/restore */
-  //@{
-  void Save (Base::Writer &writer) const;
-  void Restore(Base::XMLReader &reader);
-
-  void SaveDocFile (Base::Writer &writer) const;
-  void RestoreDocFile(Base::Reader &reader);
-  //@}
-
-private:
-  PointKernel *_pcPoints;
-};
 
 
 
@@ -198,165 +160,15 @@ private:
 
 
 
-/** Vertex color property bag
- * This property bag holds normal vectors of the points.
- * @deprecated Use App::PropertyColorList
- */
-class PointsAppExport PointsPropertyColor: public App::PropertyBag
-{
-public:
-	/// Constructor
-	PointsPropertyColor(void)
-    :PropertyBag() {}
 
-  virtual const char* GetType(void) {return "VertexColor";}
 
-  /// struct to save the color as float r,g,b
-  struct fColor
-  {
-    float r,g,b;
-  };
 
-  /// clears the property
-  virtual void resizePoints(void)
-  {
-    setInvalid();
-    Color.clear();
-  }
 
-  /// color vector
-  std::vector<fColor> Color;
 
-};
 
-/** Vertex grey value property bag
- * This property bag holds grey values of the points.
- * @deprecated Use PropertyGreyValueList
- */
-class PointsAppExport PointsPropertyGreyvalue: public App::PropertyBag
-{
-public:
-	/// Constructor
-	PointsPropertyGreyvalue(void)
-    :PropertyBag() {}
 
-  virtual const char* GetType(void) {return "VertexGreyvalue";}
 
-  /// clears the property
-  virtual void resizePoints(void)
-  {
-    setInvalid();
-    aGreyvalue.clear();
-  }
 
-  /// greyvalue vector
-  std::vector<float> aGreyvalue;
-
-};
-
-/** Vertex normal property bag
- * This property bag holds normals of the points.
- * @deprecated Use PropertyNormalList.
- */
-class PointsAppExport PointsPropertyNormal : public App::PropertyBag
-{
-public:
-	/// Constructor
-	PointsPropertyNormal(void)
-    :PropertyBag() {}
-
-  virtual const char* GetType(void) {return "VertexNormal";}
-
-  /// clears the property
-  virtual void resizePoints(void)
-  {
-    setInvalid();
-    aVertexNormal.clear();
-  }
-
-  virtual void transform(const Matrix4D &rclMat);
-
-  /// normal vector
-  std::vector<Base::Vector3f> aVertexNormal;
-
-};
-
-/**
- * The PointsPropertyCurvature class holds curvature information for each point.
- * @author Werner Mayer
- * @deprecated Use PropertyCurvatureList
- */
-class PointsAppExport PointsPropertyCurvature: public App::PropertyBag
-{
-public:
-  /** Helper class. */
-  struct fCurvature
-  {
-    float fMaxCurvature, fMinCurvature;
-    Base::Vector3f cMaxCurvDir, cMinCurvDir;
-  };
-
-  enum Mode { 
-    MaxCurvature,  /**< Maximum curvature */ 
-    MinCurvature,  /**< Minimum curvature */
-    MeanCurvature, /**< Mean curvature */
-    GaussCurvature /**< Gaussian curvature */
-  };
-
-public:
-	PointsPropertyCurvature(int size=0);
-  virtual ~PointsPropertyCurvature();
-
-  const char* GetType() {return "VertexCurvature";}
-
-  void resizePoints();
-  void transform(const Matrix4D &rclMat);
-
-  std::vector<float> getCurvature( Mode tMode) const;
-  /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
-   * for \c MeanCurvature or \c GaussCurvature an empty list is returned.
-   */
-  std::vector<Base::Vector3f> getCurvatureDir( Mode tMode) const;
-  /** Returns the principal curvature directions either for \c MaxCurvature or \c MinCurvature.
-   * for \c MeanCurvature or \c GaussCurvature an empty list is returned.
-   */
-  std::vector<Base::Vector3f> getAbsCurvatureDir( Mode tMode) const;
-  void setValue(unsigned long pos, const fCurvature& val)
-  { Curvature[pos] = val; }
-
-private:
-  std::vector<fCurvature> Curvature;
-};
-
-/** A single Point
- *  This is a single Point of the point datastructure. Note:
- *  No additional data will be attached to this basic point. 
- *  All the aditional data go by PointsPropertyBacks.
- *  @see PointsPropertyBack
- *  @see Points
- */
-/*
-  class PointsAppExport Point: puplic Base::Vector3f
-{
-public:
-    // construction
-    Point ();
-    Point (float fX, float fY, float fZ);
-    Point (float Coord[3]);
-    Point (const Point& rPt);
-
-    // member access (allows V.x or V[0], V.y or V[1], V.z or V[2])
-    float x, y, z;
-    float& operator[] (int i) const;
-    operator float* ();
-
-    // assignment and comparison
-    Point& operator= (const Point& rPt);
-    bool operator== (const Point& rPt) const;
-    bool operator!= (const Point& rPt) const;
-};
-
-*/
 
 /** Points with property backs
  */
@@ -367,13 +179,13 @@ public:
 	PointsWithProperty(void){}
 
   /// transform the points and all their properties
-  void transform(const Matrix4D &rclMat);
+  //void transform(const Matrix4D &rclMat);
 
   PointKernel &getKernel(void){return _Points;}
   const PointKernel &getKernel(void) const{return _Points;}
 
-  virtual void Save (Base::Writer &writer) const;
-  virtual void Restore(Base::XMLReader &reader);
+//  virtual void Save (Base::Writer &writer) const;
+//  virtual void Restore(Base::XMLReader &reader);
 
 private:
   PointKernel _Points;

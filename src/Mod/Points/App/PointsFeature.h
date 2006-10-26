@@ -28,6 +28,7 @@
 #include <App/Feature.h>
 #include <App/PropertyLinks.h>
 #include "Points.h"
+#include "PropertyPointKernel.h"
 
 
 namespace Base{
@@ -57,35 +58,20 @@ public:
   Feature(void);
   virtual ~Feature(void);
 
-  virtual void Save (Base::Writer &writer) const;
-  virtual void Restore(Base::XMLReader &reader);
-
-  virtual void SaveDocFile (Base::Writer &writer) const;
-  virtual void RestoreDocFile(Base::Reader &reader);
-
   /** @name methods overide Feature */
   //@{
   /// recalculate the Feature
   virtual int execute(void);
-  //@}
-
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "PointsGui::ViewProviderPoints";}
-
-
-  /** @name methods for convenient handling of parameter (properties) */
-  //@{
-  /** Get the actual result Points. */
-  virtual /*const*/ PointsWithProperty &getPoints(void){return _Points;}
-  /// sets the points 
-  void setPoints(const PointsWithProperty&);
-  //@}
-
   // handling the PointsPy object
   virtual Base::PyObjectBase* GetPyObject(void);
+  //@}
 
-protected:
-  PointsWithProperty _Points;
+public:
+  PropertyPointKernel Points; /**< The point kernel property. */
+
+private:
   PointsFeaturePy* _featurePy;
 };
 

@@ -43,7 +43,8 @@
 #include <Base/Vector3D.h>
 #include <App/Application.h>
 #include <App/Document.h>
-#include <Gui/Selection.h>
+#include <Gui/Application.h>
+#include <Gui/Document.h>
 #include <Gui/SoFCSelection.h>
 
 #include <Gui/View3DInventorViewer.h>
@@ -99,7 +100,7 @@ void ViewProviderPoints::onChanged(const App::Property* prop)
 void ViewProviderPoints::createPoints(Points::Feature *pFeature)
 {
   if ( !pFeature ) return;
-  const PointKernel& cPts = pFeature->getPoints().getKernel();
+  const PointKernel& cPts = pFeature->Points.getValue();
 
   // disable the notification, otherwise whenever a point is inserted SoPointSet gets notified
   pcPointsCoord->enableNotify(false);
@@ -399,9 +400,9 @@ void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInv
     cPoly.Add(Base::Vector2D((*it)[0],(*it)[1]));
   }
 
-  // get a reference to the point kernel
+  // get a reference to the point feature
   Points::Feature* fea = (Points::Feature*)pcObject;
-  Points::PointKernel& points = fea->getPoints().getKernel();
+  const Points::PointKernel& points = fea->Points.getValue();
 
   SoCamera* pCam = Viewer.getCamera();  
   SbViewVolume  vol = pCam->getViewVolume(); 
@@ -417,6 +418,16 @@ void ViewProviderPoints::cut( const std::vector<SbVec2f>& picked, Gui::View3DInv
       newKernel.push_back(*jt);
   }
 
+  if ( newKernel.size() == points.size() )
+    return; // nothing needs to be done
+
+  //Remove the points from the cloud and open a transaction object for the undo/redo stuff
+  Gui::Application::Instance->activeDocument()->openCommand("Cut points");
+
   // sets the points outside the polygon to update the Inventor node
-  points = newKernel;
+  fea->Points.setValue(newKernel);
+
+  // unset the modified flag because we don't need the features' execute() to be called
+  Gui::Application::Instance->activeDocument()->commitCommand();
+  fea->setModified(false);
 }

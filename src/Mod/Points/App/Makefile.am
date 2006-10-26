@@ -17,6 +17,8 @@ libPoints_la_SOURCES=\
 		PointsFeaturePy.h \
 		PointsGrid.cpp \
 		PointsGrid.h \
+		PropertyPointKernel.cpp \
+		PropertyPointKernel.h \
 		PreCompiled.cpp \
 		PreCompiled.h
 

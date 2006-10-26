@@ -42,7 +42,7 @@
 using namespace Points;
 
 
-void PointsAlgos::Load(PointsWithProperty &points, const char *FileName)
+void PointsAlgos::Load(PointKernel &points, const char *FileName)
 {
   Base::FileInfo File(FileName);
   
@@ -58,15 +58,13 @@ void PointsAlgos::Load(PointsWithProperty &points, const char *FileName)
   }else{
     throw Base::Exception("Unknown ending");
   }
-  
 }
 
-void PointsAlgos::LoadAscii(PointsWithProperty &points, const char *FileName)
+void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
 {
   char buff[512];
   float x,y,z;
   std::ifstream file(FileName);
-  PointKernel &Kernel = points.getKernel();
 
   int LineCnt=0;
 
@@ -79,7 +77,7 @@ void PointsAlgos::LoadAscii(PointsWithProperty &points, const char *FileName)
   
     
   // resize the PointKernel
-  Kernel.resize(LineCnt);
+  points.resize(LineCnt);
 
   Base::Sequencer().start( "Loading points...", LineCnt );
   
@@ -98,27 +96,25 @@ void PointsAlgos::LoadAscii(PointsWithProperty &points, const char *FileName)
       if(buff[0]>='0'&&buff[0]<='9' || buff[1]>='0'&&buff[1]<='9')
       {
         sscanf(buff,"%f %f %f",&x,&y,&z);
-        Kernel[LineCnt] = Base::Vector3f(x,y,z);
+        points[LineCnt] = Base::Vector3f(x,y,z);
         Base::Sequencer().next();
         LineCnt++;
       }
     }
   }catch(...){
     Base::Console().Error("Points read failed\n");
-    Kernel.clear();
+    points.clear();
   }
 
   // now remove the last points from the kernel
   // Note: first we allocate memory corresponding to the number of lines (points and comments)
   //       and read in the file twice. But then the size of the kernel is too high
-  if ( LineCnt < (int)Kernel.size() )
+  if ( LineCnt < (int)points.size() )
   {
-    Kernel.erase( Kernel.begin()+LineCnt, Kernel.end() );
+    points.erase( points.begin()+LineCnt, points.end() );
   }
 
   Base::Sequencer().stop();
-
-
 }
 
 

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,53 +21,67 @@
  ***************************************************************************/
 
 
-#ifndef Points_FEATURE_PY_H
-#define Points_FEATURE_PY_H
+#ifndef POINTS_PROPERTYPOINTKERNEL_H
+#define POINTS_PROPERTYPOINTKERNEL_H
 
-#include <Base/PyExportImp.h>
-#include <App/FeaturePy.h>
-
-namespace Base{
-  class PyObjectBase;
-}
+#include "Points.h"
 
 namespace Points
 {
 
-class PointsFeature;
-class PointsPy;
-
-//===========================================================================
-// PointsFeaturePy - Python wrapper 
-//===========================================================================
-
-// The DocTypeStd python class 
-class PointsAppExport PointsFeaturePy :public App::FeaturePy
+/** The point kernel property
+ */
+class PointsAppExport PropertyPointKernel : public App::Property
 {
-  /// always start with Py_Header
-  Py_Header;
-
-protected:
-  ~PointsFeaturePy();
+  TYPESYSTEM_HEADER();
 
 public:
-  PointsFeaturePy(Points::Feature *pcFeature, PyTypeObject *T = &Type);
-  static PyObject *PyMake(PyObject *, PyObject *);
+  PropertyPointKernel();
+  ~PropertyPointKernel();
 
-  //---------------------------------------------------------------------
-  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-  //---------------------------------------------------------------------
+  /** @name Getter/setter */
+  //@{
+  /// Sets the points to the property
+  void setValue( const PointKernel& m);
+  /// get the points (only const possible!)
+  const PointKernel &getValue(void) const;
+  //@}
 
-  virtual PyObject *_repr(void);  				// the representation
-  PyObject *_getattr(char *attr);					// __getattr__ function
-  int _setattr(char *attr, PyObject *value);		// __setattr__ function
+  /** @name Python interface */
+  //@{
+  PyObject* getPyObject(void);
+  void setPyObject(PyObject *value);
+  //@}
+
+  /** @name Undo/Redo */
+  //@{
+  /// returns a new copy of the property (mainly for Undo/Redo and transactions)
+  App::Property *Copy(void) const;
+  /// paste the value from the property (mainly for Undo/Redo and transactions)
+  void Paste(const App::Property &from);
+  unsigned int getMemSize (void) const;
+  //@}
+
+  /** @name Save/restore */
+  //@{
+  void Save (Base::Writer &writer) const;
+  void Restore(Base::XMLReader &reader);
+
+  void SaveDocFile (Base::Writer &writer) const;
+  void RestoreDocFile(Base::Reader &reader);
+  //@}
+
+  /** @name Modify */
+  //@{
+  void removeIndices( const std::vector<unsigned long>& );
+  void transform(const Base::Matrix4D &rclMat);
+  //@}
 
 private:
-  Points::Feature *_pcFeature;
+  PointKernel _cPoints;
 };
 
-} //namespace Points
+} // namespace Points
 
 
-
-#endif // Points_FEATURE_PY_H 
+#endif // POINTS_PROPERTYPOINTKERNEL_H 
