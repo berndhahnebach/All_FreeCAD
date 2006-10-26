@@ -49,7 +49,7 @@ def generate(filename):
 
   Module= generateTemplates.templateModule.TemplateModule()
   Module.path = head
-  Module.module = GenerateModelInst.Module
+  Module.module = GenerateModelInst.Module[0]
   Module.Generate()
   
   print "Done generating: " + GenerateModelInst.Module[0].Name

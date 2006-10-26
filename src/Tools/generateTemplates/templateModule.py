@@ -6,11 +6,11 @@ import template, templateModuleApp,templateModuleGui
 import generateBase.generateModel_Module
 
 class TemplateModule (template.ModelTemplate):
-    def Generate():
+    def Generate(self):
         print "generateBase.generateModel_Module.Genertate()\n"
-        App= generateTemplates.templateModuleApp.TemplateModuleApp()
-        App.path = head + "/App"
-        App.module = GenerateModelInst.Module
+        App= templateModuleApp.TemplateModuleApp()
+        App.path   = self.path 
+        App.module = self.module
         App.Generate()
 
         

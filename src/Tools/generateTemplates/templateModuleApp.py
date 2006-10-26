@@ -2,10 +2,23 @@
 # -*- coding: utf-8 -*-
 # (c) 2006 Juergen Riegel 
 
-import template
+import template, templateModuleAppMain
 import generateBase.generateModel_Module
+import generateBase.generateTools
 
-class TemplateModule (template.ModelTemplate):
-    def Generate(Module):
-        print "Genertate() needs to be implemented in a Template class!"
+class TemplateModuleApp (template.ModelTemplate):
+  def Generate(self):
+    AppPath = self.path + "/App/"
+    generateBase.generateTools.ensureDir(AppPath)
+    
+    # the main module files
+    AppMain= templateModuleAppMain.TemplateModuleAppMain()
+    AppMain.path   = AppPath 
+    AppMain.module = self.module
+    AppMain.Generate()
+
+    # Features
+    if(len(self.module.Content.Feature) != 0):
+      generateBase.generateTools.ensureDir(AppPath + "Features")
+    print "Genertate() App Dir"
 
