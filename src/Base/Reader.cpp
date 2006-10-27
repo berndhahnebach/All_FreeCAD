@@ -277,6 +277,20 @@ const std::vector<std::string>& Base::XMLReader::getFilenames() const
   return FileNames;
 }
 
+bool Base::XMLReader::isRegistered(Base::Persistance *Object) const
+{
+  if ( Object )
+  {
+    for ( std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it )
+    {
+      if ( it->Object == Object )
+        return true;
+    }
+  }
+
+  return false;
+}
+
 // ---------------------------------------------------------------------------
 //  Base::XMLReader: Implementation of the SAX DocumentHandler interface
 // ---------------------------------------------------------------------------

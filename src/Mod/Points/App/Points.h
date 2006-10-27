@@ -135,11 +135,23 @@ public:
   void  set1Value (const int idx, const CurvatureInfo& value){_lValueList.operator[] (idx) = value;}
   const std::vector<CurvatureInfo> &getValues(void) const{return _lValueList;}
 
+  /** @name Save/restore */
+  //@{
   void Save (Base::Writer &writer) const;
   void Restore(Base::XMLReader &reader);
 
   void SaveDocFile (Base::Writer &writer) const;
   void RestoreDocFile(Base::Reader &reader);
+  //@}
+
+  /** @name Undo/Redo */
+  //@{
+  /// returns a new copy of the property (mainly for Undo/Redo and transactions)
+  App::Property *Copy(void) const;
+  /// paste the value from the property (mainly for Undo/Redo and transactions)
+  void Paste(const App::Property &from);
+  unsigned int getMemSize (void) const;
+  //@}
 
   /** @name Modify */
   //@{
@@ -149,47 +161,6 @@ public:
 
 private:
   std::vector<CurvatureInfo> _lValueList;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/** Points with property backs
- */
-class PointsAppExport PointsWithProperty: public App::DataWithPropertyBag
-{
-public:
-	/// Constructor
-	PointsWithProperty(void){}
-
-  /// transform the points and all their properties
-  //void transform(const Matrix4D &rclMat);
-
-  PointKernel &getKernel(void){return _Points;}
-  const PointKernel &getKernel(void) const{return _Points;}
-
-//  virtual void Save (Base::Writer &writer) const;
-//  virtual void Restore(Base::XMLReader &reader);
-
-private:
-  PointKernel _Points;
-
 };
 
 } // namespace Points
