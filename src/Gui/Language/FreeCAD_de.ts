@@ -1103,6 +1103,14 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
         <source>&amp;Cancel</source>
         <translation>A&amp;bbrechen</translation>
     </message>
+    <message>
+        <source>&amp;Help</source>
+        <translation>&amp;Hilfe</translation>
+    </message>
+    <message>
+        <source>Alt+H</source>
+        <translation>Alt+H</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgPreferencesImp</name>

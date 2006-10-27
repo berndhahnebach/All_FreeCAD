@@ -58,8 +58,8 @@ CmdPartPickCurveNet::CmdPartPickCurveNet()
 {
   sAppModule    = "Part";
   sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Pick a cruve network");
-  sToolTipText  = QT_TR_NOOP("Pick a cruve network");
+  sMenuText     = QT_TR_NOOP("Pick curve network");
+  sToolTipText  = QT_TR_NOOP("Pick a curve network");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Test1";
@@ -81,7 +81,7 @@ CmdPartTest1::CmdPartTest1()
 {
   sAppModule  = "Part";
   sGroup      = QT_TR_NOOP("Part");
-  sMenuText   = QT_TR_NOOP("Test1");
+  sMenuText   = QT_TR_NOOP("Test1...");
   sToolTipText= QT_TR_NOOP("Part Test function 1");
   sWhatsThis  = sToolTipText;
   sStatusTip  = sToolTipText;
@@ -133,8 +133,8 @@ CmdPartBox::CmdPartBox()
 {
   sAppModule    = "Part";
   sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Box");
-  sToolTipText  = QT_TR_NOOP("Create or change a Box feature");
+  sMenuText     = QT_TR_NOOP("Create box...");
+  sToolTipText  = QT_TR_NOOP("Create a Box feature");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Part_Box";
@@ -180,7 +180,7 @@ CmdPartBox2::CmdPartBox2()
   sAppModule    = "Part";
   sGroup        = QT_TR_NOOP("Part");
   sMenuText     = QT_TR_NOOP("Box fix 1");
-  sToolTipText  = QT_TR_NOOP("Create a Box feature without Dialog");
+  sToolTipText  = QT_TR_NOOP("Create a Box feature without dialog");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Part_Box";
@@ -268,7 +268,7 @@ CmdPartCut::CmdPartCut()
   sAppModule    = "Part";
   sGroup        = QT_TR_NOOP("Part");
   sMenuText		  = QT_TR_NOOP("Cut");
-  sToolTipText  = QT_TR_NOOP("Create or change a Cut feature");
+  sToolTipText  = QT_TR_NOOP("Create a Cut feature");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Part_Box";
@@ -314,7 +314,7 @@ CmdPartImport::CmdPartImport()
 {
   sAppModule    = "Part";
   sGroup        = QT_TR_NOOP("Part");
-  sMenuText     = QT_TR_NOOP("Import CAD");
+  sMenuText     = QT_TR_NOOP("Import CAD...");
   sToolTipText  = QT_TR_NOOP("Imports a CAD file");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
@@ -359,7 +359,7 @@ CmdPartImportCurveNet::CmdPartImportCurveNet()
 {
   sAppModule  = "Part";
   sGroup      = QT_TR_NOOP("Part");
-  sMenuText   = QT_TR_NOOP("Import a curve network");
+  sMenuText   = QT_TR_NOOP("Import curve network...");
   sToolTipText= QT_TR_NOOP("Import a curve network");
   sWhatsThis  = sToolTipText;
   sStatusTip  = sToolTipText;

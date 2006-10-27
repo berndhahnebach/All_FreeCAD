@@ -7,11 +7,19 @@
     </message>
     <message>
         <source>Box</source>
-        <translation>Quader</translation>
+        <translation type="obsolete">Quader</translation>
     </message>
     <message>
         <source>Create or change a Box feature</source>
-        <translation>Erstellt oder ändert ein Box-Feature</translation>
+        <translation type="obsolete">Erstellt oder ändert ein Box-Feature</translation>
+    </message>
+    <message>
+        <source>Create box...</source>
+        <translation>Quader erstellen...</translation>
+    </message>
+    <message>
+        <source>Create a Box feature</source>
+        <translation>Erstellt ein Box-Feature</translation>
     </message>
 </context>
 <context>
@@ -26,6 +34,10 @@
     </message>
     <message>
         <source>Create a Box feature without Dialog</source>
+        <translation type="obsolete">Erstellt oder ändert ein Box-Feature ohne Dialog</translation>
+    </message>
+    <message>
+        <source>Create a Box feature without dialog</source>
         <translation>Erstellt oder ändert ein Box-Feature ohne Dialog</translation>
     </message>
 </context>
@@ -56,7 +68,11 @@
     </message>
     <message>
         <source>Create or change a Cut feature</source>
-        <translation>Erstellt oder ändert ein Cut-Feature</translation>
+        <translation type="obsolete">Erstellt oder ändert ein Cut-Feature</translation>
+    </message>
+    <message>
+        <source>Create a Cut feature</source>
+        <translation>Erstellt ein Cut-Feature</translation>
     </message>
 </context>
 <context>
@@ -67,11 +83,15 @@
     </message>
     <message>
         <source>Import CAD</source>
-        <translation>CAD importieren</translation>
+        <translation type="obsolete">CAD importieren</translation>
     </message>
     <message>
         <source>Imports a CAD file</source>
         <translation>Importiert einen CAD-Datensatz</translation>
+    </message>
+    <message>
+        <source>Import CAD...</source>
+        <translation>CAD importieren...</translation>
     </message>
 </context>
 <context>
@@ -82,7 +102,11 @@
     </message>
     <message>
         <source>Import a curve network</source>
-        <translation>Importiert ein Kurvennetzwerk</translation>
+        <translation>Importiert ein Kurvennetz</translation>
+    </message>
+    <message>
+        <source>Import curve network...</source>
+        <translation>Kurvennetz importieren...</translation>
     </message>
 </context>
 <context>
@@ -92,8 +116,12 @@
         <translation>Part</translation>
     </message>
     <message>
-        <source>Pick a cruve network</source>
-        <translation>Wählt ein Kurvennetzwerk aus</translation>
+        <source>Pick curve network</source>
+        <translation>Kurvennetz aufbauen</translation>
+    </message>
+    <message>
+        <source>Pick a curve network</source>
+        <translation>Ein Kurvennetz aufbauen</translation>
     </message>
 </context>
 <context>
@@ -108,7 +136,11 @@
     </message>
     <message>
         <source>Test1</source>
-        <translation>Test1</translation>
+        <translation type="obsolete">Test1</translation>
+    </message>
+    <message>
+        <source>Test1...</source>
+        <translation>Test1...</translation>
     </message>
 </context>
 <context>

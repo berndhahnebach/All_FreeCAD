@@ -31,11 +31,13 @@
 # include <qpainter.h>
 # include <qmessagebox.h>
 # include <qmetaobject.h>
+# include <qpushbutton.h>
 #endif
 
 #include "DlgPreferencesImp.h"
 #include "WidgetFactory.h"
 #include "BitmapFactory.h"
+#include "MainWindow.h"
 
 #include <Base/Exception.h>
 
@@ -114,6 +116,7 @@ void PrefGroupItem::paint( QPainter *p )
 DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
     : DlgPreferences( parent, name, modal, fl ), _pCurTab(0L)
 {
+  connect( buttonHelp,  SIGNAL ( clicked() ), getMainWindow(), SLOT ( whatsThis() ));
   tabWidgetStack->removeWidget( WStackPage ); // remove the damned dummy widget
 
   // make sure that pages are ready to create
