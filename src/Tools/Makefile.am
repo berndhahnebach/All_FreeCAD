@@ -29,6 +29,7 @@ EXTRA_DIST = \
 		generateTemplates/templateModule.py \
 		generateTemplates/templateModuleApp.py \
 		generateTemplates/templateModuleGui.py \
+		generateTemplates/templateModuleAppMain.py \
 		ImageTools/ImageConv/CmdLine.cpp \
 		ImageTools/ImageConv/CmdLine.h \
 		ImageTools/ImageConv/cmdline.htm \

@@ -63,6 +63,33 @@ int Feature::execute(void)
   return 0;
 }
 
+void Feature::Restore(Base::XMLReader &reader)
+{
+  // Note: In a previous version we have saved the points directly from this feature class instead of using an appropriate property
+  // class. To keep old project files working we must do a special check for this case.
+  AbstractFeature::Restore(reader);
+
+  if ( !reader.isRegistered(&Points) )
+  {
+    // The PointKernelProperty is not registered yet, so we can make sure that an element "Point" after "Properties"
+    // inside the XML file is available.
+    reader.readElement("Points");
+    std::string file (reader.getAttribute("file") );
+    if (file == "")
+    {
+    }else{
+      // initate a file read
+      reader.addFile(file.c_str(),this);
+    }
+  }
+}
+
+void Feature::RestoreDocFile(Base::Reader &reader)
+{
+  // This gets only invoked if a points file has been added from Restore()
+  Points.RestoreDocFile(reader);
+}
+
 Base::PyObjectBase *Feature::GetPyObject(void)
 {
   if (!_featurePy) {

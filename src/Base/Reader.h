@@ -155,6 +155,7 @@ public:
   void readFiles(zipios::ZipInputStream &zipstream);
   /// get all registered file names
   const std::vector<std::string>& getFilenames() const;
+  bool isRegistered(Base::Persistance *Object) const;
   //@}
 
 private:

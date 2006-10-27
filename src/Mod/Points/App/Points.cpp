@@ -313,63 +313,22 @@ void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
   }
 }
 
-// ----------------------------------------------------------------------------
-
-
-
-
-
-
-
-
-
-/*
-void PointsWithProperty::transform(const Matrix4D &rclMat)
+App::Property *PropertyCurvatureList::Copy(void) const 
 {
-  DataWithPropertyBag::transform(rclMat);
-  for (std::vector<Base::Vector3f>::iterator it = _Points.begin(); it != _Points.end(); ++it)
-  {
-    *it = rclMat * (*it);
-  }
-}*/
-/*
-void PointsWithProperty::Save (Base::Writer &writer) const
-{
-  writer << writer.ind() << "<Points Count=\"" << _Points.size() << "\">" << std::endl;
-
-  writer.incInd();
-  for (PointKernel::const_iterator itp = _Points.begin(); itp != _Points.end(); ++itp)
-  {
-    writer << writer.ind() << "<P "
-                            << "x=\"" <<  itp->x << "\" "
-                            << "y=\"" <<  itp->y << "\" "
-                            << "z=\"" <<  itp->z << "\"/>" 
-                            << std::endl;
-  }
-  writer.decInd();
-  writer << writer.ind() << "</Points>" << std::endl;
-
-}
-*//*
-void PointsWithProperty::Restore(Base::XMLReader &reader)
-{ 
-  int Cnt,i;
- 
-  reader.readElement("Points");
-  Cnt = reader.getAttributeAsInteger("Count");
-
-  _Points.resize(Cnt);
-  for(i=0 ;i<Cnt ;i++)
-  {
-    reader.readElement("P");
-    _Points[i].x = (float) reader.getAttributeAsFloat("x");
-    _Points[i].y = (float) reader.getAttributeAsFloat("y");
-    _Points[i].z = (float) reader.getAttributeAsFloat("z");
-     
-
-  }
-  reader.readEndElement("Points");
-
+  PropertyCurvatureList* prop = new PropertyCurvatureList();
+  prop->_lValueList = this->_lValueList;
+  return prop;
 }
 
-*/
+void PropertyCurvatureList::Paste(const App::Property &from)
+{
+  aboutToSetValue();
+  const PropertyCurvatureList& prop = dynamic_cast<const PropertyCurvatureList&>(from);
+  this->_lValueList = prop._lValueList;
+  hasSetValue();
+}
+
+unsigned int PropertyCurvatureList::getMemSize (void) const
+{
+  return sizeof(CurvatureInfo) * this->_lValueList.size();
+}

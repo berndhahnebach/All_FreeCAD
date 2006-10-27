@@ -42,7 +42,6 @@ namespace App{
 
 namespace Points
 {
-class PointsWithProperty;
 class Property;
 class PointsFeaturePy;
 
@@ -60,6 +59,8 @@ public:
 
   /** @name methods overide Feature */
   //@{
+  void Restore(Base::XMLReader &reader);
+  void RestoreDocFile(Base::Reader &reader);
   /// recalculate the Feature
   virtual int execute(void);
   /// returns the type name of the ViewProvider
