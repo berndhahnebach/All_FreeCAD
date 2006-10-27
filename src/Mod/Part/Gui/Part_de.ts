@@ -369,16 +369,16 @@
         <translation>Legt das Erscheinungsbild von Flächen fest</translation>
     </message>
     <message>
-        <source>&lt;b&gt;Flat shading&lt;/b&gt;&lt;p&gt;The surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces. Disabling this option leads to a more realistic appearance.&lt;/p&gt;</source>
-        <translation>&lt;b&gt;Flat shading&lt;/b&gt;&lt;p&gt;Die Flächennormalen sind nicht pro Vertex angegeben, was zu einer unrealistischeren Darstellung bei gekrümmten Oberflächen führt. Das deaktivieren dieser Option führt zu einer realistischeren Darstellung.&lt;/p&gt;</translation>
-    </message>
-    <message>
         <source>&lt;b&gt;Tessellation&lt;/b&gt;&lt;p&gt;Defines the maximum deviation of the tessellated mesh to the surface. The smaller the value is the slower the render speed and the nicer the appearance are.&lt;/p&gt;</source>
         <translation>&lt;b&gt;Tessellierung&lt;/b&gt;&lt;p&gt;Legt die maximale Abweichung der Tessellierung zur Oberfläche fest. Je kleiner dieser Wert ist, desto langsamer, aber desto schöner ist die Darstellung .&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Defines the deviation of tessellation to the surface</source>
         <translation>Legt die Abweichung der Tessellierung zur Fläche fest</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Flat shading/Phong shading&lt;/b&gt;&lt;p&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. If this option is unset Phong shading is used, if it is set flat shading is used.&lt;/p&gt;</source>
+        <translation>&lt;b&gt;Flat-Shading/Phong-Shading&lt;/b&gt;&lt;p&gt;Beim Flat-Shading werden die Flächennormalen nicht pro Vertex angegeben, was zu einer unrealistischeren Darstellung bei gekrümmten Oberflächen führt, während das Phong-Shading zu einer weicheren Darstellung führt. Falls diese Option nicht gesetzt ist, wird Phong-Shading verwendet, ist sie gesetzt, wird Flat-Shading verwendet.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
