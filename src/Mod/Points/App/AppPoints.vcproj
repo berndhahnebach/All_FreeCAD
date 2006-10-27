@@ -524,6 +524,14 @@
 			RelativePath="PreCompiled.h"
 			>
 		</File>
+		<File
+			RelativePath=".\PropertyPointKernel.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\PropertyPointKernel.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>

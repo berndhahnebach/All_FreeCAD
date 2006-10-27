@@ -48,14 +48,6 @@
 <XPD:OBJ name="OwnedElements[0]" type="UMLModel" guid="blbSfC1PfkC3qn5ViNlRDgAA">
 <XPD:ATTR name="Name" type="string">Business Type Model</XPD:ATTR>
 <XPD:REF name="Namespace">8sfg5yxI3UisAJ4GHDmt5wAA</XPD:REF>
-<XPD:ATTR name="#OwnedDiagrams" type="integer">1</XPD:ATTR>
-<XPD:OBJ name="OwnedDiagrams[0]" type="UMLClassDiagram" guid="95F7cnyW6UO9o/PMF2cFegAA">
-<XPD:ATTR name="Name" type="string">Business Type Model Diagram</XPD:ATTR>
-<XPD:REF name="DiagramOwner">blbSfC1PfkC3qn5ViNlRDgAA</XPD:REF>
-<XPD:OBJ name="DiagramView" type="UMLClassDiagramView" guid="AcMIyVegIUio3v0vYNxfMAAA">
-<XPD:REF name="Diagram">95F7cnyW6UO9o/PMF2cFegAA</XPD:REF>
-</XPD:OBJ>
-</XPD:OBJ>
 </XPD:OBJ>
 <XPD:OBJ name="OwnedElements[1]" type="UMLModel" guid="rK2AS5tAKUiEozGMg/UfnwAA">
 <XPD:ATTR name="Name" type="string">Interface Specifications</XPD:ATTR>
@@ -580,7 +572,7 @@
 <XPD:REF name="Model">Er0i46U+nESL37D/1ggRsAAA</XPD:REF>
 <XPD:OBJ name="NameCompartment" type="UMLNameCompartmentView" guid="kb+bJQxkGkCyQS2ZOOMHNwAA">
 <XPD:OBJ name="NameLabel" type="LabelView" guid="1xuivGkYJUiPwG7Nruts3QAA">
-<XPD:ATTR name="Text" type="string">OCC 5.2</XPD:ATTR>
+<XPD:ATTR name="Text" type="string">OCC 6.1</XPD:ATTR>
 </XPD:OBJ>
 <XPD:OBJ name="StereotypeLabel" type="LabelView" guid="TNdX/B3qhECWPyyYIONjowAA">
 <XPD:ATTR name="Visible" type="boolean">False</XPD:ATTR>
@@ -1440,7 +1432,7 @@
 <XPD:REF name="Views[0]">OmPCeoaMvkuIy4D1qHN+AAAA</XPD:REF>
 <XPD:ATTR name="#OwnedElements" type="integer">1</XPD:ATTR>
 <XPD:OBJ name="OwnedElements[0]" type="UMLPackage" guid="Er0i46U+nESL37D/1ggRsAAA">
-<XPD:ATTR name="Name" type="string">OCC 5.2</XPD:ATTR>
+<XPD:ATTR name="Name" type="string">OCC 6.1</XPD:ATTR>
 <XPD:REF name="Namespace">YbZ/dMmtjUy9Hqv7S1VnJgAA</XPD:REF>
 <XPD:ATTR name="#Views" type="integer">1</XPD:ATTR>
 <XPD:REF name="Views[0]">0/U6zOArnUuYHi5+RQeiPAAA</XPD:REF>
@@ -5952,6 +5944,11 @@
 <XPD:ATTR name="StereotypeProfile" type="string">UMLStandard</XPD:ATTR>
 <XPD:ATTR name="StereotypeName" type="string">implementationModel</XPD:ATTR>
 <XPD:REF name="Namespace">awvaj03DeUqT6nocqs7eKQAA</XPD:REF>
+<XPD:ATTR name="#OwnedElements" type="integer">1</XPD:ATTR>
+<XPD:OBJ name="OwnedElements[0]" type="UMLModel" guid="UNVzN7YJkEC8gRwqYXOM3QAA">
+<XPD:ATTR name="Name" type="string">Model1</XPD:ATTR>
+<XPD:REF name="Namespace">GGvjFKkBOkmadE11Ta6lSQAA</XPD:REF>
+</XPD:OBJ>
 </XPD:OBJ>
 </XPD:OBJ>
 </XPD:BODY>
