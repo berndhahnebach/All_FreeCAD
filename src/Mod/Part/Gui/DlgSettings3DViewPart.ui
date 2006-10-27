@@ -189,7 +189,7 @@
                         <string>Defines the appearance of surfaces</string>
                     </property>
                     <property name="whatsThis" stdset="0">
-                        <string>&lt;b&gt;Flat shading&lt;/b&gt;&lt;p&gt;The surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces. Disabling this option leads to a more realistic appearance.&lt;/p&gt;</string>
+                        <string>&lt;b&gt;Flat shading/Phong shading&lt;/b&gt;&lt;p&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. If this option is unset Phong shading is used, if it is set flat shading is used.&lt;/p&gt;</string>
                     </property>
                 </widget>
                 <widget class="Gui::PrefCheckBox">
