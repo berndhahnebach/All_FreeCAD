@@ -54,7 +54,7 @@ using namespace App;
 PyMethodDef Application::Methods[] = {
   {"New",            (PyCFunction) Application::sNew,            1},
   {"open",           (PyCFunction) Application::sOpen,           1},
-//  {"Close",          (PyCFunction) Application::sClose,          1},
+  {"Close",          (PyCFunction) Application::sClose,          1},
   {"Import"  ,       (PyCFunction) Application::sImport,         1},
   {"save",           (PyCFunction) Application::sSave,           1},
   {"saveAs",         (PyCFunction) Application::sSaveAs,         1},

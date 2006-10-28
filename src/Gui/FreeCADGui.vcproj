@@ -78,7 +78,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB xerces-c_2.lib python23_d.lib coin2d.lib qt-mtnc321.lib qui.lib soqt1d.lib opengl32.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB xerces-c_2.lib python25_d.lib coin2d.lib qt-mtnc321.lib qui.lib soqt1d.lib opengl32.lib"
 				OutputFile="Debug/FreeCADGuiD.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -179,7 +179,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB xerces-c_2.lib python23.lib coin2.lib qt-mtnc321.lib qui.lib soqt1.lib opengl32.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB xerces-c_2.lib python25.lib coin2.lib qt-mtnc321.lib qui.lib soqt1.lib opengl32.lib"
 				OutputFile=".\Release/FreeCADGui.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -232,7 +232,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -242,7 +242,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -282,7 +282,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -292,7 +292,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -306,7 +306,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -316,7 +316,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -352,7 +352,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -362,7 +362,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -376,7 +376,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -386,7 +386,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -426,7 +426,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -436,7 +436,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -472,7 +472,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -482,7 +482,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -496,7 +496,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -506,7 +506,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -542,7 +542,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -552,7 +552,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -566,7 +566,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -576,7 +576,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -616,7 +616,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -626,7 +626,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -662,7 +662,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -672,7 +672,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -686,7 +686,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -696,7 +696,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -736,7 +736,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -746,7 +746,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
-						CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -808,7 +808,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -818,7 +818,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -861,7 +861,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -871,7 +871,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -907,7 +907,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%QTDIR%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -917,7 +917,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%QTDIR%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -931,7 +931,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -941,7 +941,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -977,7 +977,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -987,7 +987,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1001,7 +1001,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1011,7 +1011,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1047,7 +1047,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1057,7 +1057,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1071,7 +1071,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1081,7 +1081,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1117,7 +1117,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1127,7 +1127,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1141,7 +1141,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1151,7 +1151,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1191,7 +1191,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1201,7 +1201,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1237,7 +1237,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1247,7 +1247,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1261,7 +1261,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1271,7 +1271,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1311,7 +1311,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1321,7 +1321,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1357,7 +1357,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1367,7 +1367,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1381,7 +1381,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1391,7 +1391,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1431,7 +1431,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1441,7 +1441,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1477,7 +1477,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1487,7 +1487,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1505,7 +1505,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1515,7 +1515,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1551,7 +1551,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1561,7 +1561,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1597,7 +1597,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1607,7 +1607,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1621,7 +1621,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1631,7 +1631,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1667,7 +1667,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1677,7 +1677,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1713,7 +1713,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1723,7 +1723,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1737,7 +1737,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1747,7 +1747,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1787,7 +1787,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1797,7 +1797,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Uic&apos;ing $(InputName).ui ..."
-							CommandLine="&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;uic.exe&quot; &quot;$(InputPath)&quot; -o &quot;$(InputDir)$(InputName).h&quot;&#x0D;&#x0A;&quot;uic.exe&quot; &quot;$(InputPath)&quot; -i &quot;$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).cpp&quot;&#x0D;&#x0A;&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)$(InputName).h;$(InputDir)$(InputName).cpp;$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1833,7 +1833,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1843,7 +1843,7 @@
 						<Tool
 							Name="VCCustomBuildTool"
 							Description="Moc&apos;ing $(InputName).h ..."
-							CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+							CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 							Outputs="$(InputDir)moc_$(InputName).cpp"
 						/>
 					</FileConfiguration>
@@ -1884,7 +1884,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -1894,7 +1894,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2092,7 +2092,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2102,7 +2102,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2138,7 +2138,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2148,7 +2148,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2184,7 +2184,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2194,7 +2194,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2230,7 +2230,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2240,7 +2240,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2276,7 +2276,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2286,7 +2286,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2348,7 +2348,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2358,7 +2358,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2394,7 +2394,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2404,7 +2404,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2440,7 +2440,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2450,7 +2450,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2486,7 +2486,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2496,7 +2496,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2796,7 +2796,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2806,7 +2806,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2846,7 +2846,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Mocing $(InputPath)"
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).moc&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).moc&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).moc"
 					/>
 				</FileConfiguration>
@@ -2856,7 +2856,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Mocing $(InputPath)"
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).moc&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).moc&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).moc"
 					/>
 				</FileConfiguration>
@@ -2892,7 +2892,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Mocing $(InputPath)"
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).moc&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).moc&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).moc"
 					/>
 				</FileConfiguration>
@@ -2902,7 +2902,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Mocing $(InputPath)"
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).moc&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)$(InputName).moc&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)$(InputName).moc"
 					/>
 				</FileConfiguration>
@@ -2938,7 +2938,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -2948,7 +2948,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3010,7 +3010,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3020,7 +3020,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3056,7 +3056,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3066,7 +3066,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3102,7 +3102,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3112,7 +3112,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3148,7 +3148,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3158,7 +3158,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3224,7 +3224,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3234,7 +3234,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3270,7 +3270,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3280,7 +3280,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3316,7 +3316,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3326,7 +3326,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3362,7 +3362,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3372,7 +3372,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3408,7 +3408,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3418,7 +3418,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3454,7 +3454,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3464,7 +3464,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3500,7 +3500,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3510,7 +3510,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3546,7 +3546,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3556,7 +3556,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3592,7 +3592,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3602,7 +3602,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3638,7 +3638,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3648,7 +3648,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3684,7 +3684,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3694,7 +3694,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3730,7 +3730,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3740,7 +3740,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3910,7 +3910,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -3920,7 +3920,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)moc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -4629,7 +4629,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -4639,7 +4639,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -4703,7 +4703,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -4713,7 +4713,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -4823,7 +4823,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -4833,7 +4833,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -4869,7 +4869,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>
@@ -4879,7 +4879,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="&quot;%qtdir%\bin\moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+					CommandLine="&quot;moc.exe&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)moc_$(InputName).cpp"
 				/>
 			</FileConfiguration>

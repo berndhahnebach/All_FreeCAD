@@ -123,7 +123,7 @@
 #	define _STLP_USE_ABBREVS
 // switch on StlPort debugging, need the libs build!
 //#	define __STL_DEBUG
-#	define _CRT_SECURE_NO_DEPRECATE 
+#	define _CRT_SECURE_NO_DEPRECATE 1
 // Uncomment _STLP_USE_NEWALLOC to force allocator<T> to use plain "new"
 // instead of STLport optimized node allocator engine.
 // Note: This is needed to free memory used e.g. in std::set

@@ -78,7 +78,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib"
 				OutputFile="Debug\Part_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -178,7 +178,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib"
 				OutputFile="Release\Part.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

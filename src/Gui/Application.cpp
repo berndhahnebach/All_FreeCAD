@@ -329,11 +329,11 @@ void Application::onLastWindowClosed(Gui::Document* pcDoc)
     // check if the last document has been closed?
     // Note: in case there were further existing documents then we needn't worry about it
     //       because the active view at this moment does this for us
-    if (d->lpcDocuments.size() == 0 )
-    {
-      // there is no active document any more
-      setActiveDocument(0);
-    }
+    //if (d->lpcDocuments.size() == 0 )
+    //{
+    //  // there is no active document any more
+    //  setActiveDocument(0);
+    //}
   }
 }
 
@@ -374,15 +374,19 @@ Gui::Document* Application::activeDocument(void) const
 void Application::setActiveDocument(Gui::Document* pcDocument)
 {
   d->_pcActiveDocument=pcDocument;
-
+  string name;
+ 
   // This adds just a line to the macro file but does not set the active document
   if(pcDocument){
-    string name("App.setActiveDocument(\"");
+    name += "App.setActiveDocument(\"";
     name += pcDocument->getDocument()->getName(); 
     name +=  "\")";
     macroManager()->addLine(MacroManager::Gui,name.c_str());
-  }else
-    macroManager()->addLine(MacroManager::Gui,"App.setActiveDocument(\"\")");
+  }else{
+    name += "App.setActiveDocument(\"\")";
+    macroManager()->addLine(MacroManager::Gui,name.c_str());
+  }
+  Interpreter().runString(name.c_str());
 
   // Sets the currently active document
   App::GetApplication().setActiveDocument( pcDocument ? pcDocument->getDocument() : 0 );
