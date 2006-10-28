@@ -76,7 +76,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB  python23_d.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB  python25_d.lib"
 				OutputFile="DebugCmd\FreeCADCmdD.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -175,7 +175,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB  python23.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB  python25.lib"
 				OutputFile="ReleaseCmd\FreeCADCmd.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

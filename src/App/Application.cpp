@@ -192,16 +192,14 @@ bool Application::closeDocument(const char* name)
   if (pos == DocMap.end()) // no such document
     return false;
 
-  auto_ptr<Document> delDoc (pos->second);
 
   // trigger observers
   AppChanges Reason;
-  Reason.Doc = delDoc.get();
+  Reason.Doc = pos->second;
   Reason.Why = AppChanges::Del;
   Notify(Reason);
 
-  // Note: We must not remove the document from the internal map before notifying all observers because they must
-  // rely on getting information from the application for this document.
+  auto_ptr<Document> delDoc (pos->second);
   DocMap.erase( pos );
 
   return true;
@@ -345,6 +343,11 @@ void Application::setActiveDocument(Document* pDoc)
 
 void Application::setActiveDocument(const char *Name)
 {
+  if(*Name == '\0'){
+    _pActiveDoc = 0;
+    return;
+  }
+
   std::map<std::string,Document*>::iterator pos;
   pos = DocMap.find(Name);
 
