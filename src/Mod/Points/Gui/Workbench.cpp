@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qobject.h>
 #endif
 
 #include "Workbench.h"
@@ -44,25 +45,37 @@ Workbench::~Workbench()
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "Points tools" ),
+  };
+
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
-  pnt->setCommand( "PointsTools" );
+  pnt->setCommand( toolItems[0] );
   *pnt << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
   return root;
 }
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "Points tools" ),
+  };
+
   // point tools
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
   Gui::ToolBarItem* pnt = new Gui::ToolBarItem( root );
-  pnt->setCommand( "PointsTools" );
+  pnt->setCommand( toolItems[0] );
   *pnt << "Points_Import" << "Points_Export";
   return root;
 }
 
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
+  static const char* menuItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "&Points" ),
+  };
+
   Gui::MenuItem* root = StdWorkbench::setupMenuBar();
   Gui::MenuItem* item = root->findItem( "&Windows" );
   Gui::MenuItem* pnts = new Gui::MenuItem;
@@ -72,7 +85,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
   test->setCommand( "Test" );
   *test << "Points_Transform";
  
-  pnts->setCommand( "&Points" );
+  pnts->setCommand( menuItems[0] );
   *pnts << test << "Separator" << "Points_Import" << "Points_Export" << "Separator" << "Points_PolyCut";
   return root;
 }

@@ -62,9 +62,9 @@ CmdRaytracingWriteCamera::CmdRaytracingWriteCamera()
   :Command("Raytracing_WriteCamera")
 {
   sAppModule    = "Raytracing";
-  sGroup        = "Raytracing";
-  sMenuText     = "Write camera position";
-  sToolTipText  = "Write the camera positon of the active 3D view in PovRay format to a file";
+  sGroup        = QT_TR_NOOP("Raytracing");
+  sMenuText     = QT_TR_NOOP("Write camera position");
+  sToolTipText  = QT_TR_NOOP("Write the camera positon of the active 3D view in PovRay format to a file");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Test1";
@@ -270,9 +270,9 @@ CmdRaytracingWritePart::CmdRaytracingWritePart()
   :Command("Raytracing_WritePart")
 {
   sAppModule    = "Raytracing";
-  sGroup        = "Raytracing";
-  sMenuText     = "Write the part";
-  sToolTipText  = "Write the Part (object) of the active 3D view in PovRay format to a file";
+  sGroup        = QT_TR_NOOP("Raytracing");
+  sMenuText     = QT_TR_NOOP("Write the part");
+  sToolTipText  = QT_TR_NOOP("Write the Part (object) of the active 3D view in PovRay format to a file");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Test1";
@@ -327,9 +327,9 @@ CmdRaytracingNewProject::CmdRaytracingNewProject()
   :Command("Raytracing_NewProject")
 {
   sAppModule    = "Raytracing";
-  sGroup        = "Raytracing";
-  sMenuText     = "New render project";
-  sToolTipText  = "Write the initial povray file to render a part";
+  sGroup        = QT_TR_NOOP("Raytracing");
+  sMenuText     = QT_TR_NOOP("New project");
+  sToolTipText  = QT_TR_NOOP("Write the initial povray file to render a part");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Test1";
@@ -373,9 +373,9 @@ CmdRaytracingQuickRender::CmdRaytracingQuickRender()
   :Command("Raytracing_QuickRender")
 {
   sAppModule    = "Raytracing";
-  sGroup        = "Raytracing";
-  sMenuText     = "Render";
-  sToolTipText  = "Renders the actual view";
+  sGroup        = QT_TR_NOOP("Raytracing");
+  sMenuText     = QT_TR_NOOP("Render");
+  sToolTipText  = QT_TR_NOOP("Renders the actual view");
   sWhatsThis    = sToolTipText;
   sStatusTip    = sToolTipText;
   sPixmap       = "Test1";

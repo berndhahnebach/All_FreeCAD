@@ -26,6 +26,7 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qcheckbox.h>
+# include <qcombobox.h>
 # include <qcursor.h>
 # include <qlabel.h>
 # include <qlineedit.h>
@@ -70,7 +71,7 @@ void CleanupHandler::cleanup()
 
 // -------------------------------------------------------------
 
-/* TRANSLATOR Gui::Dialog::DlgEvaluateMeshImp */
+/* TRANSLATOR MeshGui::DlgEvaluateMeshImp */
 
 void DlgEvaluateMeshImp::OnChange(App::Document::SubjectType &rCaller,App::Document::MessageType Reason)
 {
@@ -83,8 +84,21 @@ void DlgEvaluateMeshImp::OnChange(App::Document::SubjectType &rCaller,App::Docum
 
     _vp.clear();
 
-    _meshFeature = 0;
+    QStringList items;
+    std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for ( std::vector<App::DocumentObject*>::iterator jt = objs.begin(); jt != objs.end(); ++jt )
+    {
+      if ( _meshFeature != *jt )
+        items.push_back( (*jt)->name.getValue() );
+    }
+
+    comboBoxName->clear();
+    comboBoxName->insertItem(tr("No selection"));
+    comboBoxName->insertStringList(items);
+    comboBoxName->setDisabled(items.empty());
     cleanInformation();
+
+    _meshFeature = 0;
   }
 }
 
@@ -102,7 +116,7 @@ void DlgEvaluateMeshImp::OnChange(App::Application::SubjectType &rCaller, App::A
     
     _pDoc->Detach(this);
     _pDoc = 0;
-    cleanInformation();
+    onRefreshInfo();
   }
 }
 
@@ -146,7 +160,17 @@ DlgEvaluateMeshImp::~DlgEvaluateMeshImp()
 void DlgEvaluateMeshImp::setMesh( Mesh::Feature* m )
 {
   _meshFeature = m;
+  
   onRefreshInfo();
+
+  int ct = comboBoxName->count();
+  for (int i=1; i<ct; i++) {
+    if ( comboBoxName->text(i) == _meshFeature->name.getValue() ) {
+      comboBoxName->setCurrentItem(i);
+      onMeshSelected(i);
+      break;
+    }
+  }
 }
 
 void DlgEvaluateMeshImp::setFixedMesh()
@@ -156,7 +180,6 @@ void DlgEvaluateMeshImp::setFixedMesh()
     Mesh::FixDefects* fix = dynamic_cast<Mesh::FixDefects*>(*it);
     if ( fix && fix->Source.getValue() == _meshFeature ) {
       setMesh(fix);
-      Gui::Selection().addSelection(_pDoc->getName(), fix->name.getValue());
       break;
     }
   }
@@ -183,9 +206,40 @@ void DlgEvaluateMeshImp::removeViewProvider( const char* name )
   }
 }
 
+void DlgEvaluateMeshImp::onMeshSelected(int i)
+{
+  QString item = comboBoxName->text(i);
+
+  _meshFeature = 0;
+  std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
+  for ( std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it ) {
+    if ( item == (*it)->name.getValue() ) {
+      _meshFeature = (Mesh::Feature*)(*it);
+      break;
+    }
+  }
+
+  if ( i== 0) {
+    cleanInformation();
+  } else if ( !_meshFeature ) {
+    onRefreshInfo();
+  } else {
+    analyzeOrientation->setEnabled(true);
+    analyzeDupFaces->setEnabled(true);
+    analyzeDupPts->setEnabled(true);
+    analyzeNonmanifolds->setEnabled(true);
+    analyzeDegenerated->setEnabled(true);
+    analyzeIndices->setEnabled(true);
+
+    const MeshKernel& rMesh = _meshFeature->getMesh();
+    textLabel4->setText( QString("%1").arg(rMesh.CountFacets()) );
+    textLabel5->setText( QString("%1").arg(rMesh.CountEdges()) );
+    textLabel6->setText( QString("%1").arg(rMesh.CountPoints()) );
+  }
+}
+
 void DlgEvaluateMeshImp::cleanInformation()
 {
-  lineEditName->setText( tr("No information") );
   textLabel4->setText( tr("No information") );
   textLabel5->setText( tr("No information") );
   textLabel6->setText( tr("No information") );
@@ -195,7 +249,6 @@ void DlgEvaluateMeshImp::cleanInformation()
   textLabelNonmanifolds->setText( tr("No information") );
   textLabelDegeneration->setText( tr("No information") );
   textLabelIndices->setText( tr("No information") );
-  pushButtonRefresh->setDisabled(true);
   analyzeOrientation->setDisabled(true);
   repairOrientation->setDisabled(true);
   analyzeDupFaces->setDisabled(true);
@@ -212,31 +265,30 @@ void DlgEvaluateMeshImp::cleanInformation()
 
 void DlgEvaluateMeshImp::onRefreshInfo()
 {
-  if ( _meshFeature )
-  {
-    lineEditName->setText( _meshFeature->name.getValue() );
-    const MeshKernel& rMesh = _meshFeature->getMesh();
-    textLabel4->setText( QString("%1").arg(rMesh.CountFacets()) );
-    textLabel6->setText( QString("%1").arg(rMesh.CountPoints()) );
-  
-    unsigned long ulCtEd=0;
-    unsigned long openEdges = 0, closedEdges = 0;
+  QStringList items;
+  App::Document* doc = App::GetApplication().getActiveDocument();
 
-    const MeshFacetArray& rFacets = rMesh.GetFacets();
-    for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); it++)
-    {
-      for (int i = 0; i < 3; i++)
-      {
-        if (it->_aulNeighbours[i] == ULONG_MAX)
-          openEdges++;
-        else
-          closedEdges++;
-      }
-    }
-
-    ulCtEd = openEdges + (closedEdges / 2);
-    textLabel5->setText( QString("%1").arg(ulCtEd) );
+  // switch to the active document
+  if (doc && doc != _pDoc) {
+    if ( _pDoc )
+      _pDoc->Detach(this);
+    _pDoc = doc;
+    _pDoc->Attach(this);
   }
+
+  if ( _pDoc ) {
+    std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
+    for ( std::vector<App::DocumentObject*>::iterator it = objs.begin(); it != objs.end(); ++it )
+    {
+      items.push_back( (*it)->name.getValue() );
+    }
+  }
+
+  comboBoxName->clear();
+  comboBoxName->insertItem(tr("No selection"));
+  comboBoxName->insertStringList(items);
+  comboBoxName->setDisabled(items.empty());
+  cleanInformation();
 }
 
 void DlgEvaluateMeshImp::onCheckOrientation()
@@ -265,12 +317,12 @@ void DlgEvaluateMeshImp::onAnalyzeOrientation()
     
     if ( inds.empty() )
     {
-      textLabelOrientation->setText( tr("No flipped normals found") );
+      textLabelOrientation->setText( tr("No flipped normals") );
       removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
     }
     else
     {
-      textLabelOrientation->setText( tr("%1 flipped normals found").arg(inds.size()) );
+      textLabelOrientation->setText( tr("%1 flipped normals").arg(inds.size()) );
       textLabelOrientation->setChecked(true);
       repairOrientation->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshOrientation" );
@@ -285,9 +337,14 @@ void DlgEvaluateMeshImp::onRepairOrientation()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection(_pDoc->getName());
-    Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
-    Base::Interpreter().runString("Gui.RunCommand(\"Mesh_HarmonizeNormals\")");
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    doc->openCommand("Removed duplicated faces");
+    Gui::Command::doCommand(Gui::Command::Doc,
+      "App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\").Source = App.activeDocument().%s",
+      _meshFeature->name.getValue(),_meshFeature->name.getValue());
+    doc->commitCommand();
+    doc->getDocument()->recompute();
+    
     repairOrientation->setEnabled(false);
     textLabelOrientation->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshOrientation" );
@@ -320,11 +377,11 @@ void DlgEvaluateMeshImp::onAnalyzeNonManifolds()
     
     if ( eval.Evaluate() )
     {
-      textLabelNonmanifolds->setText( tr("No non-manifolds found") );
+      textLabelNonmanifolds->setText( tr("No non-manifolds") );
     }
     else
     {
-      textLabelNonmanifolds->setText( tr("%1 non-manifolds found").arg(eval.CountManifolds()) );
+      textLabelNonmanifolds->setText( tr("%1 non-manifolds").arg(eval.CountManifolds()) );
       textLabelNonmanifolds->setChecked(true);
       repairNonmanifolds->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshNonManifolds" );
@@ -337,7 +394,7 @@ void DlgEvaluateMeshImp::onAnalyzeNonManifolds()
 
 void DlgEvaluateMeshImp::onRepairNonManifolds()
 {
-  QMessageBox::warning(this, "Non-manifolds", "Cannot remove non-manifolds");
+  QMessageBox::warning(this, tr("Non-manifolds"), tr("Cannot remove non-manifolds"));
 }
 
 void DlgEvaluateMeshImp::onCheckIndices()
@@ -391,7 +448,7 @@ void DlgEvaluateMeshImp::onAnalyzeIndices()
       addViewProvider( "MeshGui::ViewProviderMeshIndices" );
     }
     else {
-      textLabelIndices->setText( tr("No invalid indices found") );
+      textLabelIndices->setText( tr("No invalid indices") );
       removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
     }
 
@@ -404,9 +461,14 @@ void DlgEvaluateMeshImp::onRepairIndices()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection(_pDoc->getName());
-    Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
-    Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixIndices\")");
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    doc->openCommand("Removed duplicated faces");
+    Gui::Command::doCommand(Gui::Command::Doc,
+      "App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\").Source = App.activeDocument().%s",
+      _meshFeature->name.getValue(),_meshFeature->name.getValue());
+    doc->commitCommand();
+    doc->getDocument()->recompute();
+    
     repairIndices->setEnabled(false);
     textLabelIndices->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshIndices" );
@@ -440,12 +502,12 @@ void DlgEvaluateMeshImp::onAnalyzeDegenerations()
     
     if ( degen.empty() )
     {
-      textLabelDegeneration->setText( tr("No degenerations found") );
+      textLabelDegeneration->setText( tr("No degenerations") );
       removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
     }
     else
     {
-      textLabelDegeneration->setText( tr("%1 degenerated faces found").arg(degen.size()) );
+      textLabelDegeneration->setText( tr("%1 degenerated faces").arg(degen.size()) );
       textLabelDegeneration->setChecked(true);
       repairDegenerated->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
@@ -460,9 +522,14 @@ void DlgEvaluateMeshImp::onRepairDegenerations()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection(_pDoc->getName());
-    Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
-    Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixDegenerations\")");
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    doc->openCommand("Removed duplicated faces");
+    Gui::Command::doCommand(Gui::Command::Doc,
+      "App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\").Source = App.activeDocument().%s",
+      _meshFeature->name.getValue(),_meshFeature->name.getValue());
+    doc->commitCommand();
+    doc->getDocument()->recompute();
+    
     repairDegenerated->setEnabled(false);
     textLabelDegeneration->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshDegenerations" );
@@ -496,12 +563,12 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedFaces()
     
     if ( dupl.empty() )
     {
-      textLabelDuplicatedFaces->setText( tr("No duplicated faces found") );
+      textLabelDuplicatedFaces->setText( tr("No duplicated faces") );
       removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
     }
     else
     {
-      textLabelDuplicatedFaces->setText( tr("%1 duplicated faces found").arg(dupl.size()) );
+      textLabelDuplicatedFaces->setText( tr("%1 duplicated faces").arg(dupl.size()) );
       textLabelDuplicatedFaces->setChecked(true);
       repairDupFaces->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
@@ -516,9 +583,14 @@ void DlgEvaluateMeshImp::onRepairDuplicatedFaces()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection(_pDoc->getName());
-    Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
-    Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixDuplicateFaces\")");
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    doc->openCommand("Removed duplicated faces");
+    Gui::Command::doCommand(Gui::Command::Doc,
+      "App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\").Source = App.activeDocument().%s",
+      _meshFeature->name.getValue(),_meshFeature->name.getValue());
+    doc->commitCommand();
+    doc->getDocument()->recompute();
+    
     repairDupFaces->setEnabled(false);
     textLabelDuplicatedFaces->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedFaces" );
@@ -551,12 +623,12 @@ void DlgEvaluateMeshImp::onAnalyzeDuplicatedPoints()
     
     if ( eval.Evaluate() )
     {
-      textLabelDuplPoints->setText( tr("No duplicated points found") );
+      textLabelDuplPoints->setText( tr("No duplicated points") );
       removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
     }
     else
     {
-      textLabelDuplPoints->setText( tr("Duplicated points found") );
+      textLabelDuplPoints->setText( tr("Duplicated points") );
       textLabelDuplPoints->setChecked(true);
       repairDupPts->setEnabled(true);
       addViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
@@ -571,9 +643,14 @@ void DlgEvaluateMeshImp::onRepairDuplicatedPoints()
 {
   if ( _meshFeature )
   {
-    Gui::Selection().clearSelection(_pDoc->getName());
-    Gui::Selection().addSelection(_pDoc->getName(), _meshFeature->name.getValue());
-    Base::Interpreter().runString("Gui.RunCommand(\"Mesh_FixDuplicatePoints\")");
+    Gui::Document* doc = Gui::Application::Instance->activeDocument();
+    doc->openCommand("Removed duplicated points");
+    Gui::Command::doCommand(Gui::Command::Doc,
+      "App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\").Source = App.activeDocument().%s",
+      _meshFeature->name.getValue(),_meshFeature->name.getValue());
+    doc->commitCommand();
+    doc->getDocument()->recompute();
+    
     repairDupPts->setEnabled(false);
     textLabelDuplPoints->setChecked(false);
     removeViewProvider( "MeshGui::ViewProviderMeshDuplicatedPoints" );
@@ -595,7 +672,9 @@ DockEvaluateMeshImp* DockEvaluateMeshImp::instance()
     // embed this dialog into a dockable widget container
     Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
     Gui::DockContainer* pDockDlg = new Gui::DockContainer( Gui::getMainWindow(), "Evaluate Mesh" );
-    pDockMgr->addDockWindow("Evaluate Mesh", pDockDlg, Qt::DockRight );
+
+    // use Qt macro for preparing for translation stuff (but not translating yet)
+    pDockMgr->addDockWindow(QT_TRANSLATE_NOOP("Gui::DockWindow", "Evaluate Mesh"), pDockDlg, Qt::DockRight );
 
     // do not allow to hide
     pDockDlg->dockWindow()->setCloseMode(QDockWindow::Never);

@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib coin2.lib qt-mtnc321.lib soqt1.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\PointsGui.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy   /y   /f   Release\PointsGui.pyd   ..\..\..\..\Mod\Points\  	xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Points\  	xcopy   /y   /f   Release\PointsGui.lib   ..\..\..\..\Mod\Points\ 
+PostBuild_Cmds=xcopy    /y    /f    Release\PointsGui.pyd    ..\..\..\..\Mod\Points\   	xcopy    /y    /f    ..\InitGui.py    ..\..\..\..\Mod\Points\   	xcopy    /y    /f    Release\PointsGui.lib    ..\..\..\..\Mod\Points\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppPointsGui - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib coin2d.lib qt-mtnc321.lib soqt1d.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\PointsGui_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy   /y   /f   Debug\PointsGui_d.pyd   ..\..\..\..\Mod\Points\  	xcopy   /y   /f   ..\InitGui.py   ..\..\..\..\Mod\Points\  	xcopy   /y   /f   Debug\PointsGui_d.lib   ..\..\..\..\Mod\Points\ 
+PostBuild_Cmds=xcopy    /y    /f    Debug\PointsGui_d.pyd    ..\..\..\..\Mod\Points\   	xcopy    /y    /f    ..\InitGui.py    ..\..\..\..\Mod\Points\   	xcopy    /y    /f    Debug\PointsGui_d.lib    ..\..\..\..\Mod\Points\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -276,6 +276,37 @@ SOURCE=.\AppPointsGui.cpp
 # Begin Source File
 
 SOURCE=.\Command.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Points_de.ts
+
+!IF  "$(CFG)" == "AppPointsGui - Win32 Release"
+
+# Begin Custom Build - Building $(InputName).h
+InputDir=.
+InputPath=.\Points_de.ts
+InputName=Points_de
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\..\..\Tools\qembed.py "$(InputDir)\$(InputName).ts" "$(InputDir)\$(InputName).h" "$(InputName)"
+
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "AppPointsGui - Win32 Debug"
+
+# Begin Custom Build - Building $(InputName).h
+InputDir=.
+InputPath=.\Points_de.ts
+InputName=Points_de
+
+"$(InputDir)\$(InputName).h" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+	python ..\..\..\Tools\qembed.py "$(InputDir)\$(InputName).ts" "$(InputDir)\$(InputName).h" "$(InputName)"
+
+# End Custom Build
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 

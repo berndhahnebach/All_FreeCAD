@@ -11,7 +11,8 @@ BUILT_SOURCES=\
 		DlgRegularSolid.h \
 		moc_DlgEvaluateMesh.cpp \
 		moc_DlgEvaluateMeshImp.cpp \
-		moc_DlgRegularSolid.cpp
+		moc_DlgRegularSolid.cpp \
+		Mesh_de.h
 
 libMeshGui_la_SOURCES=\
 		Command.cpp \
@@ -89,6 +90,10 @@ moc_%.cpp: %.h
 %.cpp: %.h %.ui
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
+# rule for translation files using python script :
+%.h: %.ts
+	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
+
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(WM3_CFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I../../../ -I../App
 
@@ -105,5 +110,6 @@ EXTRA_DIST = \
 		AppMeshGui.vcproj \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \
+		Mesh_de.ts \
 		Libs.cpp \
 		images.h

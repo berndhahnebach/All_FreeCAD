@@ -60,6 +60,8 @@ public slots:
  */
 class DlgEvaluateMeshImp : public DlgEvaluateMesh, public App::Document::ObserverType, public App::Application::ObserverType
 { 
+  Q_OBJECT
+
 public:
   DlgEvaluateMeshImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
   ~DlgEvaluateMeshImp();
@@ -91,6 +93,7 @@ public:
   void onRepairDuplicatedPoints();
 
 protected:
+  void onMeshSelected(int);
   void cleanInformation();
   void setFixedMesh();
   void addViewProvider( const char* vp );
@@ -109,6 +112,8 @@ private:
  */
 class DockEvaluateMeshImp : public DlgEvaluateMeshImp
 { 
+  Q_OBJECT
+
 protected:
   DockEvaluateMeshImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
   ~DockEvaluateMeshImp();

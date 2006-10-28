@@ -85,6 +85,9 @@ public:
   unsigned long CountFacets (void) const
   { return (unsigned long)(_aclFacetArray.size()); }
 
+  /// Returns the number of edge
+  unsigned long CountEdges (void) const;
+
   // Returns the number of points
   unsigned long CountPoints (void) const
   { return (unsigned long)(_aclPointArray.size()); }
