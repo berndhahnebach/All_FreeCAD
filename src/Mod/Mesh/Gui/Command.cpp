@@ -66,11 +66,11 @@ CmdMeshTransform::CmdMeshTransform()
   :Command("Mesh_Transform")
 {
   sAppModule    = "Mesh";
-  sGroup        = "Mesh";
-  sMenuText     = QT_TR_NOOP("Transformation (moving) of a mesh");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
-  sStatusTip    = sMenuText;
+  sGroup        = QT_TR_NOOP("Mesh");
+  sMenuText     = QT_TR_NOOP("Transform mesh");
+  sToolTipText  = QT_TR_NOOP("Rotate or move a mesh");
+  sWhatsThis    = QT_TR_NOOP("Rotate or move a mesh");
+  sStatusTip    = QT_TR_NOOP("Rotate or move a mesh");
   sPixmap       = "Std_Tool1";
   iAccel        = 0;
 }
@@ -107,7 +107,7 @@ CmdMeshDemolding::CmdMeshDemolding()
   :Command("Mesh_Demolding")
 {
   sAppModule    = "Mesh";
-  sGroup        = "Mesh";
+  sGroup        = QT_TR_NOOP("Mesh");
   sMenuText     = QT_TR_NOOP("Interactive demolding direction");
   sToolTipText  = sMenuText;
   sWhatsThis    = sMenuText;
@@ -413,7 +413,7 @@ CmdMeshVertexCurvature::CmdMeshVertexCurvature()
 {
   sAppModule    = "Mesh";
   sGroup        = QT_TR_NOOP("Mesh");
-  sMenuText     = QT_TR_NOOP("Curvature info");
+  sMenuText     = QT_TR_NOOP("Curvature plot");
   sToolTipText  = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
   sWhatsThis    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
   sStatusTip    = QT_TR_NOOP("Calculates the curvature of the vertices of a mesh");
@@ -597,7 +597,7 @@ void CmdMeshEvaluation::activated(int iMsg)
 bool CmdMeshEvaluation::isActive(void)
 {
   // Check for the selected mesh feature (all Mesh types)
-  return (!MeshGui::DockEvaluateMeshImp::hasInstance()) && (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) == 1);
+  return (!MeshGui::DockEvaluateMeshImp::hasInstance()) && (getSelection().countObjectsOfType(Mesh::Feature::getClassTypeId()) > 0);
 }
 
 DEF_STD_CMD_A(CmdMeshEvaluateSolid);
@@ -805,8 +805,8 @@ void CmdMeshFixDuplicatePoints::activated(int iMsg)
     std::string fName = (*it)->name.getValue();
     fName += "_Fixed";
     fName = getUniqueObjectName(fName.c_str());
-    openCommand("Mesh Harmonize Normals");
-    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\")",fName.c_str());
+    openCommand("Remove duplicated points");
+    doCommand(Doc,"App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\")",fName.c_str());
     doCommand(Doc,"App.activeDocument().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();

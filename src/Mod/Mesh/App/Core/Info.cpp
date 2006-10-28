@@ -48,22 +48,7 @@ std::ostream& MeshInfo::GeneralInformation (std::ostream &rclStream) const
   unsigned long ulCtPt, ulCtEd, ulCtFc;
   ulCtPt = _rclMesh.CountPoints();
   ulCtFc = _rclMesh.CountFacets();
-  ulCtEd = 0;
-  unsigned long openEdges = 0, closedEdges = 0;
-
-  const MeshFacetArray& rFacets = _rclMesh.GetFacets();
-  for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); it++)
-  {
-    for (int i = 0; i < 3; i++)
-    {
-      if (it->_aulNeighbours[i] == ULONG_MAX)
-        openEdges++;
-      else
-        closedEdges++;
-    }
-  }
-
-  ulCtEd = openEdges + (closedEdges / 2);
+  ulCtEd = _rclMesh.CountEdges();
 
   rclStream << "Mesh: ["
             << ulCtFc << " Faces, ";

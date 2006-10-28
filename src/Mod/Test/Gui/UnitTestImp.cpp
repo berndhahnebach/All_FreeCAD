@@ -42,6 +42,8 @@
 using namespace TestGui;
 
 
+/* TRANSLATOR TestGui::UnitTest */
+
 UnitTestDialog* UnitTestDialog::_instance=0;
 
 /**
@@ -133,11 +135,11 @@ void UnitTestDialog::showSelectedError(QListViewItem* item)
  */
 void UnitTestDialog::showHelpDialog()
 {
-  QMessageBox::information(this, "Help", 
+  QMessageBox::information(this, UnitTest::tr("Help"), UnitTest::tr(
     "Enter the name of a callable object which, when called, will return a TestCase."
     "Click 'start', and the test thus produced will be run.\n\n"
     "Double click on an error in the listbox to see more information about it,"
-    "including the stack trace.");
+    "including the stack trace."));
 }
 
 /**
@@ -145,10 +147,10 @@ void UnitTestDialog::showHelpDialog()
  */
 void UnitTestDialog::showAboutDialog()
 {
-  QMessageBox::information(this, "About FreeCAD UnitTest", 
+  QMessageBox::information(this, UnitTest::tr("About FreeCAD UnitTest"), UnitTest::tr( 
     "Copyright (c) Werner Mayer\n\n"
     "FreeCAD UnitTest is part of FreeCAD and supports writing Unit Tests for "
-    "own modules.");
+    "own modules."));
 }
 
 /**

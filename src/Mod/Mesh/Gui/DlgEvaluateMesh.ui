@@ -111,21 +111,9 @@
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
-                <widget class="QLineEdit" row="0" column="0" rowspan="1" colspan="2">
+                <widget class="QComboBox" row="0" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>lineEditName</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>LineEditPanel</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="text">
-                        <string>No information</string>
-                    </property>
-                    <property name="readOnly">
-                        <bool>true</bool>
+                        <cstring>comboBoxName</cstring>
                     </property>
                 </widget>
                 <widget class="QLayoutWidget" row="0" column="2" rowspan="2" colspan="1">
@@ -241,7 +229,7 @@
                                 <cstring>textLabel1</cstring>
                             </property>
                             <property name="text">
-                                <string>Number of faces</string>
+                                <string>Number of faces:</string>
                             </property>
                         </widget>
                     </grid>
@@ -738,9 +726,15 @@
         <receiver>MeshGui::DlgEvaluateMesh</receiver>
         <slot>onCheckIndices()</slot>
     </connection>
+    <connection>
+        <sender>comboBoxName</sender>
+        <signal>activated(int)</signal>
+        <receiver>MeshGui::DlgEvaluateMesh</receiver>
+        <slot>onMeshSelected(int)</slot>
+    </connection>
 </connections>
 <tabstops>
-    <tabstop>lineEditName</tabstop>
+    <tabstop>comboBoxName</tabstop>
     <tabstop>pushButtonRefresh</tabstop>
     <tabstop>analyzeOrientation</tabstop>
     <tabstop>repairOrientation</tabstop>
@@ -777,6 +771,7 @@
     <slot>onCheckDuplicatedPoints()</slot>
     <slot>onCheckNonManifolds()</slot>
     <slot>onCheckIndices()</slot>
+    <slot access="protected">onMeshSelected(int)</slot>
 </slots>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>

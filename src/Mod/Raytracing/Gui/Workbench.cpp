@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qobject.h>
 #endif
 
 #include "Workbench.h"
@@ -43,19 +44,27 @@ Workbench::~Workbench()
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "Raytracing tools" ),
+  };
+
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* ray = new Gui::ToolBarItem( root );
-  ray->setCommand( "RaytracingTools" );
+  ray->setCommand( toolItems[0] );
   *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
   return root;
 }
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "Raytracing tools" ),
+  };
+
   // Part tools
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
   Gui::ToolBarItem* ray = new Gui::ToolBarItem( root );
-  ray->setCommand( "RaytracingTools" );
+  ray->setCommand( toolItems[0] );
   *ray << "Raytracing_NewProject" << "Raytracing_WriteCamera" << "Raytracing_WritePart";
   return root;
 }

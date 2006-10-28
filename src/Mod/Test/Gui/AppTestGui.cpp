@@ -28,6 +28,8 @@
 
 #include "UnitTestPy.h"
 #include "UnitTestImp.h"
+#include "Test_de.h"
+#include <Gui/Language/LanguageFactory.h>
 
 static PyObject* addTest(PyObject *self, PyObject *args)          
 {
@@ -73,6 +75,9 @@ void AppTestGuiExport initQtUnitGui() {
   if(PyType_Ready(&TestGui::UnitTestPy::Type) < 0) return;;
   
   PyModule_AddObject(pyModule, "UnitTest", pyDlgType);
+
+  // Language
+  new Gui::LanguageProducer("Deutsch", Test_de_h_data, Test_de_h_len);
   return;
 }
 

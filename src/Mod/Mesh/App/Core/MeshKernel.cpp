@@ -972,3 +972,22 @@ void MeshKernel::GetEdges (std::vector<MeshGeomEdge>& edges) const
     edges.push_back(edge);
   }
 }
+
+unsigned long MeshKernel::CountEdges (void) const
+{
+  unsigned long openEdges = 0, closedEdges = 0;
+
+  for (MeshFacetArray::_TConstIterator it = _aclFacetArray.begin(); it != _aclFacetArray.end(); it++)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      if (it->_aulNeighbours[i] == ULONG_MAX)
+        openEdges++;
+      else
+        closedEdges++;
+    }
+  }
+
+  return (openEdges + (closedEdges / 2));
+}
+

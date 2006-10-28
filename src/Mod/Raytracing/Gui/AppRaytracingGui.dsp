@@ -1,24 +1,24 @@
 # Microsoft Developer Studio Project File - Name="AppRaytracingGui" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
-# ** NICHT BEARBEITEN **
+# ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
 CFG=AppRaytracingGui - Win32 Debug
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
 !MESSAGE 
 !MESSAGE NMAKE /f "AppRaytracingGui.mak".
 !MESSAGE 
-!MESSAGE Sie können beim Ausführen von NMAKE eine Konfiguration angeben
-!MESSAGE durch Definieren des Makros CFG in der Befehlszeile. Zum Beispiel:
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
 !MESSAGE NMAKE /f "AppRaytracingGui.mak" CFG="AppRaytracingGui - Win32 Debug"
 !MESSAGE 
-!MESSAGE Für die Konfiguration stehen zur Auswahl:
+!MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "AppRaytracingGui - Win32 Release" (basierend auf  "Win32 (x86) Dynamic-Link Library")
-!MESSAGE "AppRaytracingGui - Win32 Debug" (basierend auf  "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppRaytracingGui - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "AppRaytracingGui - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB python23.lib coin2.lib kernel32.lib qt-mtnc321.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKMesh.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\RaytracingGui.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Release\RaytracingGui.pyd    ..\..\..\..\Mod\Raytracing\   	xcopy    /y    /f    ..\InitGui.py    ..\..\..\..\Mod\Raytracing\ 
+PostBuild_Cmds=xcopy     /y     /f     Release\RaytracingGui.pyd     ..\..\..\..\Mod\Raytracing\    	xcopy     /y     /f     ..\InitGui.py     ..\..\..\..\Mod\Raytracing\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "AppRaytracingGui - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib coin2d.lib kernel32.lib qt-mtnc321.lib TKernel.lib TKMath.lib TKService.lib TKGeomAlgo.lib TKGeomBase.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKMesh.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\RaytracingGui_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy    /y    /f    Debug\RaytracingGui_d.pyd    ..\..\..\..\Mod\Raytracing\   	xcopy    /y    /f    ..\InitGui.py    ..\..\..\..\Mod\Raytracing\ 
+PostBuild_Cmds=xcopy     /y     /f     Debug\RaytracingGui_d.pyd     ..\..\..\..\Mod\Raytracing\    	xcopy     /y     /f     ..\InitGui.py     ..\..\..\..\Mod\Raytracing\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -98,15 +98,6 @@ PostBuild_Cmds=xcopy    /y    /f    Debug\RaytracingGui_d.pyd    ..\..\..\..\Mod
 # Begin Group "Dialogs"
 
 # PROP Default_Filter ""
-# End Group
-# Begin Source File
-
-SOURCE=.\AppRaytracingGui.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Command.cpp
-# End Source File
 # Begin Source File
 
 SOURCE=.\DlgSettingsRay.ui
@@ -194,6 +185,15 @@ InputName=DlgSettingsRayImp
 
 !ENDIF 
 
+# End Source File
+# End Group
+# Begin Source File
+
+SOURCE=.\AppRaytracingGui.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Command.cpp
 # End Source File
 # Begin Source File
 

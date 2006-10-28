@@ -30,7 +30,9 @@
 
 #include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
+#include <Gui/Language/LanguageFactory.h>
 
+#include "Mesh_de.h"
 #include "images.h"
 #include "DlgEvaluateMeshImp.h"
 #include "PropertyEditorMesh.h"
@@ -75,6 +77,9 @@ void GuiMeshExport initMeshGui() {
   Gui::BitmapFactory().addXPM("import_mesh", import_mesh);
   Gui::BitmapFactory().addXPM("export_mesh", export_mesh);
   Gui::BitmapFactory().addXPM("solid_mesh", solid_mesh);
+
+  // resources
+  new Gui::LanguageProducer("Deutsch", Mesh_de_h_data, Mesh_de_h_len);
 
   // instanciating the commands
   CreateMeshCommands();

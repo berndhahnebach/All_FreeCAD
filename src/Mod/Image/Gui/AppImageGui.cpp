@@ -17,7 +17,9 @@
 
 #include <Base/Console.h>
 #include <Gui/Application.h>
+#include <Gui/Language/LanguageFactory.h>
 
+#include "Image_de.h"
 #include "Workbench.h"
 
 // use a different name to CreateCommand()
@@ -42,6 +44,9 @@ void ImageGuiExport initImageGui() {
   // instanciating the commands
   CreateImageCommands();
   ImageGui::Workbench::init();
+
+  // resources
+  new Gui::LanguageProducer("Deutsch", Image_de_h_data, Image_de_h_len);
 
   return;
 }

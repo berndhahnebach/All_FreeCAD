@@ -57,6 +57,7 @@
 #include <qaction.h>
 #include <qapplication.h>
 #include <qcheckbox.h>
+#include <qcombobox.h>
 #include <qcursor.h>
 #include <qfiledialog.h>
 #include <qinputdialog.h>

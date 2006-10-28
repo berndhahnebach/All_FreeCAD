@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <qobject.h>
 #endif
 
 #include "Workbench.h"
@@ -56,6 +57,11 @@ void Workbench::setupContextMenu(const char* recipient,Gui::MenuItem* item) cons
 
 Gui::MenuItem* Workbench::setupMenuBar() const
 {
+  static const char* menuItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "&Meshes" ),
+    QT_TRANSLATE_NOOP( "QObject", "Analyze" ),
+  };
+
   Gui::MenuItem* root = StdWorkbench::setupMenuBar();
   Gui::MenuItem* item = root->findItem( "&Windows" );
   Gui::MenuItem* mesh = new Gui::MenuItem;
@@ -63,10 +69,10 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
   // analyze
   Gui::MenuItem* analyze = new Gui::MenuItem;
-  analyze->setCommand( "Analyze" );
+  analyze->setCommand( menuItems[1] );
   *analyze << "Mesh_Evaluation" << "Separator" << "Mesh_EvaluateSolid" << "Mesh_BoundingBox";
  
-  mesh->setCommand( "&Mesh" );
+  mesh->setCommand( menuItems[0] );
   *mesh << analyze << "Mesh_HarmonizeNormals" << "Mesh_FlipNormals" << "Separator" << "Mesh_FillupHoles" << "Mesh_RemoveComponents" << "Separator" << "Mesh_BuildRegularSolid" << "Separator" 
         << "Mesh_Import" << "Mesh_Export" << "Separator" 
         << "Mesh_PolyCut" << "Mesh_PolyPick" << "Mesh_ToolMesh" << "Mesh_VertexCurvature" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
@@ -75,9 +81,13 @@ Gui::MenuItem* Workbench::setupMenuBar() const
 
 Gui::ToolBarItem* Workbench::setupToolBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "Mesh tools" ),
+  };
+
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* mesh = new Gui::ToolBarItem(root);
-  mesh->setCommand( "Mesh Tools" );
+  mesh->setCommand( toolItems[0] );
   *mesh << "Mesh_Import" << "Mesh_Export" << "Separator" << "Mesh_PolyCut" << "Mesh_VertexCurvature" << "Separator"
         << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool" << "Mesh_ExMakeUnion";
   return root;
@@ -85,17 +95,22 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
 
 Gui::ToolBarItem* Workbench::setupCommandBars() const
 {
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "QObject", "Mesh tools" ),
+    QT_TRANSLATE_NOOP( "QObject", "Mesh test suite" ),
+  };
+
   // Mesh tools
   Gui::ToolBarItem* root = new Gui::ToolBarItem;
   Gui::ToolBarItem* mesh;
 
   mesh = new Gui::ToolBarItem( root );
-  mesh->setCommand( "Mesh Tools" );
+  mesh->setCommand( toolItems[0] );
   *mesh << "Mesh_Import" << "Mesh_Export" << "Mesh_PolyCut" << "Separator" << "Mesh_ExMakeMesh" << "Mesh_ExMakeTool"
         << "Mesh_ExMakeUnion";
 
   mesh = new Gui::ToolBarItem( root );
-  mesh->setCommand( "Mesh test site" );
+  mesh->setCommand( toolItems[1] );
   *mesh << "Mesh_Demolding" << "Mesh_Transform" << "Separator" ;
 
   return root;

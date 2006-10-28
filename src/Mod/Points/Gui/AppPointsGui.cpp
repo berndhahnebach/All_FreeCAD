@@ -28,9 +28,11 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
+#include <Gui/Language/LanguageFactory.h>
 
 #include "ViewProvider.h"
 #include "Workbench.h"
+#include "Points_de.h"
 
 // use a different name to CreateCommand()
 void CreatePointsCommands(void);
@@ -59,8 +61,10 @@ void PointsGuiExport initPointsGui() {
   CreatePointsCommands();
 
   PointsGui::ViewProviderPoints::init();
-
   PointsGui::Workbench         ::init();
+
+  // resources
+  new Gui::LanguageProducer("Deutsch", Points_de_h_data, Points_de_h_len);
 
   return;
 }

@@ -4,7 +4,8 @@ lib_LTLIBRARIES=libQtUnitGui.la QtUnitGui.la
 BUILT_SOURCES=\
 		UnitTest.cpp \
 		UnitTest.h \
-		moc_UnitTest.cpp
+		moc_UnitTest.cpp \
+		Test_de.h
 
 libQtUnitGui_la_SOURCES=\
 		PreCompiled.cpp \
@@ -56,6 +57,10 @@ moc_%.cpp: %.h
 %.cpp: %.h %.ui
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
+# rule for translation files using python script :
+%.h: %.ts
+	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
+
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
@@ -73,4 +78,5 @@ EXTRA_DIST = \
 		AppTestGui.dsp \
 		AppTestGui.vcproj \
 		UnitTest.ui \
+		Test_de.ts \
 		qtunittest.py
