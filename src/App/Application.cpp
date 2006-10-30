@@ -192,13 +192,14 @@ bool Application::closeDocument(const char* name)
   if (pos == DocMap.end()) // no such document
     return false;
 
-
-  // trigger observers
+  // Trigger observers before removing the document from the internal map.
+  // Some observers might rely on that this document is still there.
   AppChanges Reason;
   Reason.Doc = pos->second;
   Reason.Why = AppChanges::Del;
   Notify(Reason);
 
+  // For exception-safety use a smart pointer
   auto_ptr<Document> delDoc (pos->second);
   DocMap.erase( pos );
 
@@ -343,6 +344,7 @@ void Application::setActiveDocument(Document* pDoc)
 
 void Application::setActiveDocument(const char *Name)
 {
+  // Allows that no active document is set.
   if(*Name == '\0'){
     _pActiveDoc = 0;
     return;
