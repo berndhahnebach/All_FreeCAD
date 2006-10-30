@@ -320,20 +320,11 @@ void Application::onLastWindowClosed(Gui::Document* pcDoc)
   if(!d->_bIsClosing && pcDoc)
   {
     try {
-      // call the closing mechanism from Python
+      // Call the closing mechanism from Python. This also checks whether pcDoc is the last open document.
       Command::doCommand(Command::Doc, "App.closeDocument(\"%s\")", pcDoc->getDocument()->getName());
     } catch (const Base::PyException& e) {
       e.ReportException();
     }
-
-    // check if the last document has been closed?
-    // Note: in case there were further existing documents then we needn't worry about it
-    //       because the active view at this moment does this for us
-    //if (d->lpcDocuments.size() == 0 )
-    //{
-    //  // there is no active document any more
-    //  setActiveDocument(0);
-    //}
   }
 }
 
@@ -386,10 +377,9 @@ void Application::setActiveDocument(Gui::Document* pcDocument)
     name += "App.setActiveDocument(\"\")";
     macroManager()->addLine(MacroManager::Gui,name.c_str());
   }
-  Interpreter().runString(name.c_str());
 
   // Sets the currently active document
-  App::GetApplication().setActiveDocument( pcDocument ? pcDocument->getDocument() : 0 );
+  Interpreter().runString(name.c_str());
 
 #ifdef FC_LOGUPDATECHAIN
   Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);
