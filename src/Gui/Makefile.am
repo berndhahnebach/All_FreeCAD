@@ -126,6 +126,7 @@ BUILT_SOURCES=\
 		propertyeditor/knumvalidator.moc \
 		Language/FreeCAD_de.h \
 		Language/qt_de.h \
+		Language/qt_tr.h \
 		Language/moc_Translator.cpp \
 		GuiInitScript.h
 

@@ -85,6 +85,7 @@ protected:
   void onChanged(const App::Property* prop);
   void showOpenEdges( bool );
   void setOpenEdgeColorFrom( const App::Color& col );
+  virtual void cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer);
 
   SoFCMeshFaceSet* pcFaceSet;
   SoDrawStyle    * pcLineStyle;

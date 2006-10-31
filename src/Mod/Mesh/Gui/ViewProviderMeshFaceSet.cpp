@@ -315,40 +315,7 @@ bool ViewProviderMeshFaceSet::handleEvent(const SoEvent * const ev,Gui::View3DIn
     if ( clPoly.front() != clPoly.back() )
       clPoly.push_back(clPoly.front());
 
-    // get the normal of the front clipping plane
-    Base::Vector3f cPoint, cNormal;
-    Viewer.getFrontClippingPlane(cPoint, cNormal);
-    SoCamera* pCam = Viewer.getCamera();  
-    SbViewVolume  vol = pCam->getViewVolume (); 
-
-    // create a tool shape from these points
-    std::vector<MeshCore::MeshGeomFacet> aFaces;
-    bool ok = ViewProviderMesh::createToolMesh( clPoly, vol, cNormal, aFaces );
-
-    // Get the attached mesh property
-    Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
-
-    // Get the facet indices inside the tool mesh
-    std::vector<unsigned long> indices;
-    MeshCore::MeshKernel cToolMesh;
-    cToolMesh = aFaces;
-    MeshCore::MeshFacetGrid cGrid(meshProp.getValue());
-    MeshCore::MeshAlgorithm cAlg(meshProp.getValue());
-    cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
-
-    //Remove the facets from the mesh and open a transaction object for the undo/redo stuff
-    Gui::Application::Instance->activeDocument()->openCommand("Cut");
-    meshProp.deleteFacetIndices( indices );
-    Gui::Application::Instance->activeDocument()->commitCommand();
-    ((Mesh::Feature*)pcObject)->setModified(false);
-
-    // notify the mesh shape node
-    pcFaceSet->touch();
-    Viewer.render();
-    
-    if ( !ok ) // note: the mouse grabbing needs to be released
-//      QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange results.");
-      Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
+    cutMesh(clPoly, Viewer);
   }
 
   return false;
@@ -371,4 +338,42 @@ void ViewProviderMeshFaceSet::showOpenEdges(bool show)
     pcHighlight->removeChild(pcOpenEdge);
     pcOpenEdge = 0;
   }
+}
+
+void ViewProviderMeshFaceSet::cutMesh( const std::vector<SbVec2f>& picked, Gui::View3DInventorViewer &Viewer)
+{
+  // get the normal of the front clipping plane
+  Base::Vector3f cPoint, cNormal;
+  Viewer.getFrontClippingPlane(cPoint, cNormal);
+  SoCamera* pCam = Viewer.getCamera();  
+  SbViewVolume  vol = pCam->getViewVolume (); 
+
+  // create a tool shape from these points
+  std::vector<MeshCore::MeshGeomFacet> aFaces;
+  bool ok = ViewProviderMesh::createToolMesh( picked, vol, cNormal, aFaces );
+
+  // Get the attached mesh property
+  Mesh::PropertyMeshKernel& meshProp = ((Mesh::Feature*)pcObject)->Mesh;
+
+  // Get the facet indices inside the tool mesh
+  std::vector<unsigned long> indices;
+  MeshCore::MeshKernel cToolMesh;
+  cToolMesh = aFaces;
+  MeshCore::MeshFacetGrid cGrid(meshProp.getValue());
+  MeshCore::MeshAlgorithm cAlg(meshProp.getValue());
+  cAlg.GetFacetsFromToolMesh(cToolMesh, cNormal, cGrid, indices);
+
+  //Remove the facets from the mesh and open a transaction object for the undo/redo stuff
+  Gui::Application::Instance->activeDocument()->openCommand("Cut");
+  meshProp.deleteFacetIndices( indices );
+  Gui::Application::Instance->activeDocument()->commitCommand();
+  ((Mesh::Feature*)pcObject)->setModified(false);
+
+  // notify the mesh shape node
+  pcFaceSet->touch();
+  Viewer.render();
+  
+  if ( !ok ) // note: the mouse grabbing needs to be released
+//      QMessageBox::warning(Viewer.getWidget(),"Invalid polygon","The picked polygon seems to have self-overlappings.\n\nThis could lead to strange results.");
+    Base::Console().Message("The picked polygon seems to have self-overlappings. This could lead to strange results.");
 }
