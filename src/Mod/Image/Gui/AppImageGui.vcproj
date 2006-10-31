@@ -544,6 +544,28 @@
 			Name="Dialogs"
 			>
 		</Filter>
+		<File
+			RelativePath=".\Image_de.ts"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;"
+					Outputs="$(InputDir)$(InputName).h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;"
+					Outputs="$(InputDir)$(InputName).h"
+				/>
+			</FileConfiguration>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
