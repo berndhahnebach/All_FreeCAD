@@ -35,6 +35,8 @@
 //
 #include "Language/FreeCAD_de.h"
 #include "Language/qt_de.h"
+//#include "Language/FreeCAD_tr.h"
+//#include "Language/qt_tr.h"
 
 #define new DEBUG_CLIENTBLOCK
 
@@ -53,6 +55,8 @@ Gui::LanguageFactorySupplier::LanguageFactorySupplier()
   //
   new Gui::LanguageProducer("Deutsch", FreeCAD_de_h_data, FreeCAD_de_h_len);
   new Gui::LanguageProducer("Deutsch", qt_de_h_data, qt_de_h_len);
+  //new Gui::LanguageProducer("Turkce", FreeCAD_tr_h_data, FreeCAD_tr_h_len);
+  //new Gui::LanguageProducer("Turkce", qt_tr_h_data, qt_tr_h_len);
 }
 
 // ----------------------------------------------------

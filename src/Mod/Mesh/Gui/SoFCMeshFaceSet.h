@@ -28,6 +28,7 @@
 #include <Mod/Mesh/App/Core/Elements.h>
 
 
+#include <Inventor/elements/SoReplacedElement.h>
 #include <Inventor/nodes/SoNode.h>
 #include <Inventor/nodes/SoShape.h>
 #include <Inventor/fields/SoMFVec3f.h>
