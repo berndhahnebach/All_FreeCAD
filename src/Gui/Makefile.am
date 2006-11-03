@@ -377,6 +377,7 @@ EXTRA_DIST = \
 		Language/FreeCAD_de.ts \
 		Language/FreeCAD_fr.ts \
 		Language/qt_de.ts \
+		Language/qt_tr.ts \
 		DllMain.cpp \
 		Libs.cpp \
 		DlgActions.ui \

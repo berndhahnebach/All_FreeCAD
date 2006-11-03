@@ -27,7 +27,11 @@
 #include <Inventor/lists/SoPickedPointList.h> 
 #include "ViewProviderDocumentObject.h"
 
+class SbVec2s;
+
 namespace Gui {
+
+class View3DInventorViewer;
 
 //FIXME: At the moment the class ViewProviderDocumentObject has properties like ShapeColor, Transparency, ... which are rather
 //related to a geometric data type. So, we should removed these properties from there and use ViewProviderGeometryObject as 

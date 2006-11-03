@@ -933,7 +933,7 @@ void Document::remObject(const char* sName)
 
   DocChange.DeletedObjects.insert(pos->second);
 
-  if(pActiveObject = pos->second)
+  if(pActiveObject == pos->second)
     pActiveObject = 0;
 
   Notify(DocChange);

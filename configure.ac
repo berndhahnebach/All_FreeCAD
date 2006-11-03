@@ -6,7 +6,7 @@ dnl **************************************************************************
 dnl release version number info
 m4_define([FREECAD_MAJOR], [0])
 m4_define([FREECAD_MINOR], [5])
-m4_define([FREECAD_MICRO], [258])
+m4_define([FREECAD_MICRO], [332])
 
 AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[werner.wm.mayer@gmx.de], FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
@@ -351,7 +351,7 @@ fc_occ_ac_save_ldflags=$LDFLAGS
 fc_occ_ac_save_libs=$LIBS
 CPPFLAGS="$CPPFLAGS -I$fc_occ_incs"
 LDFLAGS="$LDFLAGS -L$fc_occ_libs"
-LIBS="-lTKernel"
+LIBS="-ldl -lTKernel"
 
 fc_cv_lib_occ_avail=no
 AC_CHECK_HEADER(Standard.hxx,[
@@ -364,7 +364,7 @@ AC_TRY_LINK([#define HAVE_IOSTREAM 1
 	AC_MSG_RESULT(no))])
 
 # Checking for version >= 6.1
-LIBS="-lTKernel -lTKMesh -lTKG2d -lTKG3d -lTKTopAlgo -lTKMath -lTKBRep -lTKGeomBase -lTKGeomAlgo"
+LIBS="-ldl -lTKernel -lTKMesh -lTKG2d -lTKG3d -lTKTopAlgo -lTKMath -lTKBRep -lTKGeomBase -lTKGeomAlgo"
 fc_cv_lib_occ_ver_6=no
 if test x"$fc_cv_lib_occ_avail" = xyes; then
 	AC_CHECK_HEADER(Standard.hxx,[
