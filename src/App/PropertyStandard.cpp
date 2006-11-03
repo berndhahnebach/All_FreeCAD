@@ -294,7 +294,7 @@ void PropertyEnumeration::setPyObject(PyObject *value)
 // PropertyIntegerConstraint
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-TYPESYSTEM_SOURCE(PropertyIntegerConstraint, App::PropertyInteger);
+TYPESYSTEM_SOURCE(App::PropertyIntegerConstraint, App::PropertyInteger);
 
 //**************************************************************************
 // Construction/Destruction

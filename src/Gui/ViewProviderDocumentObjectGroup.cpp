@@ -63,24 +63,27 @@ void ViewProviderDocumentObjectGroup::onChanged(const App::Property* prop)
 {
   ViewProviderDocumentObject::onChanged(prop);
 
-  std::vector<ViewProviderDocumentObject*> vp;
-  getViewProviders(vp);
-  for ( std::vector<ViewProviderDocumentObject*>::iterator it = vp.begin(); it != vp.end(); ++it )
-  {
-    if ( prop == &ShapeColor ) {
-      const App::Color& c = ShapeColor.getValue();
-      (*it)->ShapeColor.setValue(c);
-    } else if ( prop == &Transparency ) {
-      int trans = Transparency.getValue();
-      (*it)->Transparency.setValue(trans);
-    } else if ( prop == &ShapeMaterial ) {
-      const App::Material& Mat = ShapeMaterial.getValue();
-      (*it)->ShapeMaterial.setValue(Mat);
-    } else if ( prop == &Visibility ) {
-      bool val = Visibility.getValue();
-      (*it)->Visibility.setValue(val);
-    }
-  }
+  //FIXME: Do this changes only in the specialized Gui commands otherwise loading of project files leads to strange effects.
+  //But changing from within property editor doesn't affect the child objects!?
+  //Probably it's best to remove the properties from the base class.
+//  std::vector<ViewProviderDocumentObject*> vp;
+//  getViewProviders(vp);
+//  for ( std::vector<ViewProviderDocumentObject*>::iterator it = vp.begin(); it != vp.end(); ++it )
+//  {
+//    if ( prop == &ShapeColor ) {
+//      const App::Color& c = ShapeColor.getValue();
+//      (*it)->ShapeColor.setValue(c);
+//    } else if ( prop == &Transparency ) {
+//      int trans = Transparency.getValue();
+//      (*it)->Transparency.setValue(trans);
+//    } else if ( prop == &ShapeMaterial ) {
+//      const App::Material& Mat = ShapeMaterial.getValue();
+//      (*it)->ShapeMaterial.setValue(Mat);
+//    } else if ( prop == &Visibility ) {
+//      bool val = Visibility.getValue();
+//      (*it)->Visibility.setValue(val);
+//    }
+//  }
 }
 
 void ViewProviderDocumentObjectGroup::attach(App::DocumentObject *pcObj)
