@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib"
 				OutputFile="Debug\_TEMPLATE__d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"

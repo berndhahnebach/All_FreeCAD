@@ -76,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python23_d.lib coin2d.lib qt-mtnc321.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib coin2d.lib qt-mtnc321.lib"
 				OutputFile="Debug\_TEMPLATE_Gui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
