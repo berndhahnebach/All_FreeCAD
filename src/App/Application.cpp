@@ -638,43 +638,44 @@ void Application::init(int argc, char ** argv)
 void Application::initTypes(void)
 {
   // Base types
-  Base::Type                ::init();
-  Base::BaseClass           ::init();
-  Base::Exception           ::init();
-  Base::Persistance         ::init();
+  Base::Type                      ::init();
+  Base::BaseClass                 ::init();
+  Base::Exception                 ::init();
+  Base::Persistance               ::init();
   // Properties
-  App ::Property            ::init();
-  App ::PropertyContainer   ::init();
-  App ::PropertyLists       ::init();
-  App ::PropertyBool        ::init();
-  App ::PropertyFloat       ::init();
-  App ::PropertyFloatList   ::init();
-  App ::PropertyFloatConstraint::init();
-  App ::PropertyAngle       ::init();
-  App ::PropertyDistance    ::init();
-  App ::PropertyInteger     ::init();
-  App ::PropertyIntegerConstraint::init();
-  App ::PropertyEnumeration ::init();
-  App ::PropertyIntegerList ::init();
-  App ::PropertyString      ::init();
-  App ::PropertyStringList  ::init();
-  App ::PropertyLink        ::init();
-  App ::PropertyLinkList    ::init();
-  App ::PropertyMatrix      ::init();
-  App ::PropertyVector      ::init();
-  App ::PropertyVectorList  ::init();
-  App ::PropertyColor       ::init();
-  App ::PropertyColorList   ::init();
-  App ::PropertyMaterial    ::init();
-  App ::PropertyFile        ::init();
+  App ::Property                  ::init();
+  App ::PropertyContainer         ::init();
+  App ::PropertyLists             ::init();
+  App ::PropertyBool              ::init();
+  App ::PropertyFloat             ::init();
+  App ::PropertyFloatList         ::init();
+  App ::PropertyFloatConstraint   ::init();
+  App ::PropertyAngle             ::init();
+  App ::PropertyDistance          ::init();
+  App ::PropertyInteger           ::init();
+  App ::PropertyIntegerConstraint ::init();
+  App ::PropertyPercent           ::init();
+  App ::PropertyEnumeration       ::init();
+  App ::PropertyIntegerList       ::init();
+  App ::PropertyString            ::init();
+  App ::PropertyStringList        ::init();
+  App ::PropertyLink              ::init();
+  App ::PropertyLinkList          ::init();
+  App ::PropertyMatrix            ::init();
+  App ::PropertyVector            ::init();
+  App ::PropertyVectorList        ::init();
+  App ::PropertyColor             ::init();
+  App ::PropertyColorList         ::init();
+  App ::PropertyMaterial          ::init();
+  App ::PropertyFile              ::init();
   // Document classes
-  App ::DocumentObject      ::init();
-  App ::AbstractFeature     ::init();
-  App ::FeatureTest         ::init();
-  App ::FeatureTestException::init();
-  App ::FeaturePython       ::init();
-  App ::Document            ::init();
-  App ::DocumentObjectGroup ::init();
+  App ::DocumentObject            ::init();
+  App ::AbstractFeature           ::init();
+  App ::FeatureTest               ::init();
+  App ::FeatureTestException      ::init();
+  App ::FeaturePython             ::init();
+  App ::Document                  ::init();
+  App ::DocumentObjectGroup       ::init();
 
   // test code
   /*

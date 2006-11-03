@@ -474,6 +474,9 @@ bool Document::saveAs(void)
   }
 }
 
+/** 
+ * Adds a separate XML file to the projects file that contains information about the view providers.
+ */
 void Document::Save (Base::Writer &writer) const
 {
   // It's only possible to add extra information if force of XML is disabled
@@ -481,11 +484,17 @@ void Document::Save (Base::Writer &writer) const
     writer.addFile("GuiDocument.xml", this);
 }
 
+/** 
+ * Loads a separate XML file from the projects file with information about the view providers.
+ */
 void Document::Restore(Base::XMLReader &reader)
 {
   reader.addFile("GuiDocument.xml",this);
 }
 
+/**
+ * Restores the properties of the view providers.
+ */
 void Document::RestoreDocFile(Base::Reader &reader)
 {
   // We must create an XML parser to read from the input stream
@@ -537,6 +546,9 @@ void Document::RestoreDocFile(Base::Reader &reader)
   xmlReader.readEndElement("Document");
 }
 
+/**
+ * Saves the properties of the view providers.
+ */
 void Document::SaveDocFile (Base::Writer &writer) const
 {
   writer << "<?xml version='1.0' encoding='utf-8'?>" << endl
@@ -548,7 +560,7 @@ void Document::SaveDocFile (Base::Writer &writer) const
 
   std::map<App::DocumentObject*,ViewProvider*>::const_iterator it;
   
-  // writing the features itself
+  // writing the view provider names itself
   writer.incInd(); // indention for 'ViewProviderData Count'
   writer << writer.ind() << "<ViewProviderData Count=\"" << _ViewProviderMap.size() <<"\">" << endl;
 

@@ -110,21 +110,18 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent,  const char* 
       // 'Display' property
       if ( bDisplay )
       {
-        App::Property* prop = pcProv->getPropertyByName("Display");
-        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyStringList::getClassTypeId()))
+        App::Property* prop = pcProv->getPropertyByName("DisplayMode");
+        if (prop && prop->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()))
         {
-          App::PropertyStringList* Display = (App::PropertyStringList*)prop;
-          const std::vector<std::string>& modes = Display->getValues();
+          App::PropertyEnumeration* Display = (App::PropertyEnumeration*)prop;
+          const std::vector<std::string>& modes = Display->getEnumVector();
 
           if ( commonModeList.isEmpty() ) {
             for ( std::vector<std::string>::const_iterator it = modes.begin(); it != modes.end(); ++it )
               commonModeList << it->c_str();
             // currently active mode is the first item and can be popped
             if ( !commonModeList.isEmpty() ) {
-              activeMode = commonModeList.front();
-              commonModeList.pop_front();
-              if ( commonModeList.isEmpty() )
-                bDisplay = false;
+              activeMode = Display->getValueAsString();
             } else {
               bDisplay = false;
             }
@@ -137,9 +134,6 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent,  const char* 
 
             // intersection of both lists
             if ( !modeList.isEmpty() ) {
-              modeList.pop_front();
-              if ( modeList.isEmpty() )
-                bDisplay = false;
               commonModeList = modeList;
             } else {
               bDisplay = false;
@@ -363,12 +357,11 @@ void DlgDisplayPropertiesImp::onChangeMode(const QString& s)
   Gui::WaitCursor wc;
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
-    App::Property* prop = (*It)->getPropertyByName("Display");
-    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyStringList::getClassTypeId()))
+    App::Property* prop = (*It)->getPropertyByName("DisplayMode");
+    if (prop && prop->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()))
     {
-      App::PropertyStringList* Display = (App::PropertyStringList*)prop;
-      Display->set1Value(0,s.latin1());
-      Display->touch();
+      App::PropertyEnumeration* Display = (App::PropertyEnumeration*)prop;
+      Display->setValue(s.latin1());
     }
   }
 }

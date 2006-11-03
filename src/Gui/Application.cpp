@@ -78,6 +78,7 @@
 #include "ViewProviderFeature.h"
 #include "ViewProviderPythonFeature.h"
 #include "ViewProviderDocumentObjectGroup.h"
+#include "ViewProviderGeometryObject.h"
 
 
 using Base::Console;
@@ -738,6 +739,7 @@ void Application::initTypes(void)
   Gui::ViewProviderFeature                   ::init();
   Gui::ViewProviderPythonFeature             ::init();
   Gui::ViewProviderDocumentObjectGroup       ::init();
+  Gui::ViewProviderGeometryObject            ::init();
 
   // Workbench
   Gui::Workbench                             ::init();

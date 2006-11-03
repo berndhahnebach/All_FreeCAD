@@ -56,7 +56,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib xerces-c_2.lib python23.lib coin2.lib qt-mtnc321.lib qui.lib soqt1.lib opengl32.lib user32.lib /nologo /dll /machine:I386 /nodefaultlib
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy                 /y                 /f                 Release\FreeCADGui.dll                 ..\..\bin\                	xcopy                 /y                 /f                 Release\FreeCADGui.lib                 ..\..\lib\ 
+PostBuild_Cmds=xcopy                  /y                  /f                  Release\FreeCADGui.dll                  ..\..\bin\                 	xcopy                  /y                  /f                  Release\FreeCADGui.lib                  ..\..\lib\ 
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "FreeCADGui - Win32 Debug"
@@ -86,7 +86,7 @@ LINK32=link.exe
 # ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib xerces-c_2.lib python23_d.lib coin2d.lib qt-mtnc321.lib qui.lib soqt1d.lib opengl32.lib user32.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug/FreeCADGuiD.dll"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
-PostBuild_Cmds=xcopy                 /y                 /f                 Debug\FreeCADGuiD.dll                 ..\..\bin                	xcopy                 /y                 /f                 Debug\FreeCADGuiD.lib                 ..\..\lib\ 
+PostBuild_Cmds=xcopy                  /y                  /f                  Debug\FreeCADGuiD.dll                  ..\..\bin                 	xcopy                  /y                  /f                  Debug\FreeCADGuiD.lib                  ..\..\lib\ 
 # End Special Build Tool
 
 !ENDIF 
@@ -2532,6 +2532,22 @@ SOURCE=.\SoFCOffscreenRenderer.cpp
 
 SOURCE=.\SoFCOffscreenRenderer.h
 # End Source File
+# Begin Source File
+
+SOURCE=.\SoFCSelection.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SoFCSelection.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SoFCSelectionAction.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SoFCSelectionAction.h
+# End Source File
 # End Group
 # Begin Group "Language"
 
@@ -3393,22 +3409,6 @@ SOURCE=.\MouseModel.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\SoFCSelection.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\SoFCSelection.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\SoFCSelectionAction.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\SoFCSelectionAction.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\SplitView3DInventor.cpp
 # End Source File
 # Begin Source File
@@ -3475,62 +3475,6 @@ SOURCE=.\View3DPy.cpp
 
 SOURCE=.\View3DPy.h
 # End Source File
-# Begin Source File
-
-SOURCE=.\ViewProvider.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProvider.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderDocumentObject.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderDocumentObject.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderDocumentObjectGroup.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderDocumentObjectGroup.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderExtern.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderExtern.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderFeature.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderFeature.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderPy.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderPy.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderPythonFeature.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\ViewProviderPythonFeature.h
-# End Source File
 # End Group
 # Begin Group "Workbench"
 
@@ -3590,6 +3534,74 @@ SOURCE=.\WorkbenchPy.cpp
 # Begin Source File
 
 SOURCE=.\WorkbenchPy.h
+# End Source File
+# End Group
+# Begin Group "ViewProvider"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=.\ViewProvider.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProvider.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderDocumentObject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderDocumentObject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderDocumentObjectGroup.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderDocumentObjectGroup.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderExtern.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderExtern.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderFeature.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderFeature.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderGeometryObject.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderGeometryObject.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderPy.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderPy.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderPythonFeature.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\ViewProviderPythonFeature.h
 # End Source File
 # End Group
 # Begin Source File
