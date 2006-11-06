@@ -176,7 +176,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib"
 				OutputFile="Release\_TEMPLATE_.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
