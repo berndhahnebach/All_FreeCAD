@@ -176,7 +176,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python23.lib coin2.lib qt-mtnc321.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib coin2.lib qt-mtnc321.lib"
 				OutputFile="Release\_TEMPLATE_Gui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
