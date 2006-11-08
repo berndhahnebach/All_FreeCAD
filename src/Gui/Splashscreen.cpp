@@ -51,9 +51,40 @@ class SplashObserver : public Base::ConsoleObserver
 {
 public:
   SplashObserver(QSplashScreen* splasher=0, const char* name=0)
-      : splash(splasher)
+    : splash(splasher), alignment(Qt::AlignBottom|Qt::AlignLeft), textColor(Qt::black)
   {
     Base::Console().AttachObserver(this);
+
+    // allow to customize text position and color
+    const std::map<std::string,std::string>& cfg = App::GetApplication().Config();
+    std::map<std::string,std::string>::const_iterator al = cfg.find("SplashAlignment");
+    if ( al != cfg.end() ) {
+      QString alt = al->second.c_str();
+      int align=0;
+      if ( alt.startsWith("VCenter") )
+        align = Qt::AlignVCenter;
+      else if ( alt.startsWith("Top") )
+        align = Qt::AlignTop;
+      else
+        align = Qt::AlignBottom;
+
+      if ( alt.endsWith("HCenter") )
+        align += Qt::AlignHCenter;
+      else if ( alt.endsWith("Right") )
+        align += Qt::AlignRight;
+      else
+        align += Qt::AlignLeft;
+
+      alignment = align;
+    }
+
+    // choose text color
+    std::map<std::string,std::string>::const_iterator tc = cfg.find("SplashTextColor");
+    if ( tc != cfg.end() ) {
+      QColor col; col.setNamedColor(tc->second.c_str());
+      if ( col.isValid() )
+        textColor = col;
+    }
   }
 
   virtual ~SplashObserver()
@@ -91,13 +122,15 @@ public:
     }
 
     msg = QString("\n %1").arg(msg);
-    splash->message( msg, Qt::AlignBottom|Qt::AlignLeft, Qt::black );
+    splash->message( msg, alignment, textColor );
 //    qApp->processEvents();
     QWaitCondition().wait(50);
   }
 
 private:
   QSplashScreen* splash;
+  int alignment;
+  QColor textColor;
 };
 } // namespace Gui
 
