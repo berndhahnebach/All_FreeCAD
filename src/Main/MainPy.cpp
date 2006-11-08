@@ -25,6 +25,7 @@
 
 #ifdef _PreComp_
 # undef _PreComp_
+# include <sstream>
 #endif
 
 #ifdef FC_LINUX
@@ -80,10 +81,26 @@ extern "C" {
   App::Application::Config()["BuildScrClean"]      = FCScrClean;
   App::Application::Config()["BuildFCScrMixed"]    = FCScrMixed;
 
-	// Inits the Application 
-	App::Application::init(0,NULL);
+  int    argc=1;
+  char** argv;
+  argv = (char**)malloc(sizeof(char*)* (argc+1));
+  argv[0] = (char*)malloc(1024);
+  strcpy(argv[0],"FreeCAD");
+  argv[argc] = 0;
 
+  try {
+	  // Inits the Application 
+	  App::Application::init(argc,argv);
+  } catch (const Base::Exception& e) {
+    std::string appName = App::Application::Config()["ExeName"];
+    std::stringstream msg;
+    msg << "While initializing " << appName << " the  following exception occurred: '" << e.what() << "'\n\n";
+    msg << "\nPlease contact the application's support team for more information.\n\n";
+    printf("Initialization of %s failed:\n%s", appName.c_str(), msg.str().c_str());
+  }
 
+  free(argv[0]);
+  free(argv);
 
 		return;
 	} //InitFreeCAD....
