@@ -81,7 +81,7 @@
 				OutputFile="Debug/ImageGui_d.pyd"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				AdditionalLibraryDirectories=""
 				IgnoreAllDefaultLibraries="true"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/ImageGui_d.pdb"
@@ -182,7 +182,7 @@
 				OutputFile="Release/ImageGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(QTDIR)\lib"
+				AdditionalLibraryDirectories=""
 				IgnoreAllDefaultLibraries="true"
 				ProgramDatabaseFile=".\Release/ImageGui.pdb"
 				ImportLibrary=".\Release/ImageGui.lib"
@@ -552,7 +552,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;"
+					CommandLine="python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
@@ -561,7 +561,7 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;"
+					CommandLine="python ..\..\..\Tools\qembed.py &quot;$(InputDir)$(InputName).ts&quot; &quot;$(InputDir)$(InputName).h&quot; &quot;$(InputName)&quot;&#x0D;&#x0A;"
 					Outputs="$(InputDir)$(InputName).h"
 				/>
 			</FileConfiguration>
