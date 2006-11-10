@@ -77,7 +77,8 @@ int Sphere::execute(void)
       Py_DECREF(mesh);
       Py_DECREF(result);
     }
-  }
+  } else if ( PyErr_Occurred() )
+    PyErr_Print();
 
   return 0;
 }
@@ -121,7 +122,8 @@ int Ellipsoid::execute(void)
       Py_DECREF(mesh);
       Py_DECREF(result);
     }
-  }
+  } else if ( PyErr_Occurred() )
+    PyErr_Print();
 
   return 0;
 }
@@ -169,7 +171,8 @@ int Cylinder::execute(void)
       Py_DECREF(mesh);
       Py_DECREF(result);
     }
-  }
+  } else if ( PyErr_Occurred() )
+    PyErr_Print();
 
   return 0;
 }
@@ -219,7 +222,8 @@ int Cone::execute(void)
       Py_DECREF(mesh);
       Py_DECREF(result);
     }
-  }
+  } else if ( PyErr_Occurred() )
+    PyErr_Print();
 
   return 0;
 }
@@ -263,7 +267,8 @@ int Torus::execute(void)
       Py_DECREF(mesh);
       Py_DECREF(result);
     }
-  }
+  } else if ( PyErr_Occurred() )
+    PyErr_Print();
 
   return 0;
 }
@@ -307,7 +312,8 @@ int Cube::execute(void)
       Py_DECREF(mesh);
       Py_DECREF(result);
     }
-  }
+  } else if ( PyErr_Occurred() )
+    PyErr_Print();
 
   return 0;
 }
