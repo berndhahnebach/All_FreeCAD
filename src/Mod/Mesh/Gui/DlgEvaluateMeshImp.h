@@ -98,6 +98,7 @@ protected:
   void setFixedMesh();
   void addViewProvider( const char* vp );
   void removeViewProvider( const char* vp );
+  void removeViewProviders();
 
 private:
   std::map<std::string, ViewProviderMeshDefects*> _vp;

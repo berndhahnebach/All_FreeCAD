@@ -887,7 +887,11 @@ void MainWindow::dropEvent ( QDropEvent      * e )
       QFileInfo info(*it);
       if ( info.exists() && info.isFile() )
       {
+        // First check the complete extension
         if ( App::GetApplication().hasOpenType( info.extension().latin1() ) )
+          Application::Instance->open(info.absFilePath().latin1());
+        // Don't get the complete extension
+        else if ( App::GetApplication().hasOpenType( info.extension(false).latin1() ) )
           Application::Instance->open(info.absFilePath().latin1());
       }
     }

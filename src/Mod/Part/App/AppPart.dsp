@@ -54,7 +54,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\Part.pyd"
+# ADD LINK32 MSVCRT.LIB MSVCPRT.LIB kernel32.lib python23.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib /nologo /dll /machine:I386 /nodefaultlib /out:"Release\Part.pyd"
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=xcopy    /y    /f    Release\Part.pyd    ..\..\..\..\Mod\Part\   	xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Part\   	xcopy    /y    /f    Release\Part.lib    ..\..\..\..\Mod\Part\ 
@@ -84,7 +84,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\Part_d.pyd" /pdbtype:sept
+# ADD LINK32 MSVCRTD.LIB MSVCPRTD.LIB kernel32.lib python23_d.lib TKernel.lib TKBRep.lib TKMath.lib TKGeomAlgo.lib TKGeomBase.lib TKBool.lib TKBO.lib TKG2d.lib TKG3d.lib TKBRep.lib TKTopAlgo.lib TKPrim.lib TKXSBase.lib TKIGES.lib TKShHealing.lib TKSTEP.lib TKSTL.lib /nologo /dll /debug /machine:I386 /nodefaultlib /out:"Debug\Part_d.pyd" /pdbtype:sept
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PostBuild_Cmds=xcopy    /y    /f    Debug\Part_d.pyd    ..\..\..\..\Mod\Part\   	xcopy    /y    /f    ..\Init.py    ..\..\..\..\Mod\Part\   	xcopy    /y    /f    Debug\Part_d.lib    ..\..\..\..\Mod\Part\ 

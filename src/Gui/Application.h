@@ -126,9 +126,6 @@ public:
   /// true when the application shuting down
   bool isClosing(void);
 
-  /// Reference to the command manager
-  Gui::CommandManager &commandManager(void);
-
   /** @name workbench handling */
   //@{	
   /// Activate a named workbench
@@ -139,11 +136,17 @@ public:
   void setupContextMenu(const char* recipient, MenuItem*) const;
   //@}
 
+  /** @name User Commands */
+  //@{
   /// Get macro manager
   Gui::MacroManager *macroManager(void);
-
+  /// Reference to the command manager
+  Gui::CommandManager &commandManager(void);
+  /// Run a Python command
+  void runCommand(bool bForce, const char* sCmd,...);
   /// helper which create the commands
   void createStandardOperations();
+  //@}
 
   /** @name Init, Destruct an Access methods */
   //@{

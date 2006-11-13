@@ -77,12 +77,7 @@ void DlgEvaluateMeshImp::OnChange(App::Document::SubjectType &rCaller,App::Docum
 {
   if ( std::find(Reason.DeletedObjects.begin(), Reason.DeletedObjects.end(), _meshFeature) != Reason.DeletedObjects.end() )
   {
-    for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
-      _viewer->removeViewProvider( it->second );
-      delete it->second;
-    }
-
-    _vp.clear();
+    removeViewProviders();
 
     QStringList items;
     std::vector<App::DocumentObject*> objs = _pDoc->getObjectsOfType(Mesh::Feature::getClassTypeId());
@@ -109,13 +104,13 @@ void DlgEvaluateMeshImp::OnChange(App::Application::SubjectType &rCaller, App::A
     // the view is already destroyed
     for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
       delete it->second;
-      _viewer = 0;
     }
 
     _vp.clear();    
     
     _pDoc->Detach(this);
     _pDoc = 0;
+    _viewer = 0;
     onRefreshInfo();
   }
 }
@@ -205,6 +200,16 @@ void DlgEvaluateMeshImp::removeViewProvider( const char* name )
     _vp.erase( it );
   }
 }
+void DlgEvaluateMeshImp::removeViewProviders()
+{
+  if (_viewer) {
+    for ( std::map<std::string, ViewProviderMeshDefects*>::iterator it = _vp.begin(); it != _vp.end(); ++it ) {
+      _viewer->removeViewProvider( it->second );
+      delete it->second;
+    }
+    _vp.clear();
+  }
+}
 
 void DlgEvaluateMeshImp::onMeshSelected(int i)
 {
@@ -274,6 +279,9 @@ void DlgEvaluateMeshImp::onRefreshInfo()
       _pDoc->Detach(this);
     _pDoc = doc;
     _pDoc->Attach(this);
+    removeViewProviders();
+    Gui::Document* pGui = Gui::Application::Instance->activeDocument();
+    _viewer = dynamic_cast<Gui::View3DInventor*>(pGui->getActiveView())->getViewer();
   }
 
   if ( _pDoc ) {
@@ -339,8 +347,8 @@ void DlgEvaluateMeshImp::onRepairOrientation()
   {
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     doc->openCommand("Removed duplicated faces");
-    Gui::Command::doCommand(Gui::Command::Doc,
-      "App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\").Source = App.activeDocument().%s",
+    Gui::Application::Instance->runCommand(
+      true, "App.activeDocument().addObject(\"Mesh::HarmonizeNormals\",\"%s\").Source = App.activeDocument().%s",
       _meshFeature->name.getValue(),_meshFeature->name.getValue());
     doc->commitCommand();
     doc->getDocument()->recompute();
@@ -463,8 +471,8 @@ void DlgEvaluateMeshImp::onRepairIndices()
   {
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     doc->openCommand("Removed duplicated faces");
-    Gui::Command::doCommand(Gui::Command::Doc,
-      "App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\").Source = App.activeDocument().%s",
+    Gui::Application::Instance->runCommand(
+      true, "App.activeDocument().addObject(\"Mesh::FixIndices\",\"%s\").Source = App.activeDocument().%s",
       _meshFeature->name.getValue(),_meshFeature->name.getValue());
     doc->commitCommand();
     doc->getDocument()->recompute();
@@ -524,8 +532,8 @@ void DlgEvaluateMeshImp::onRepairDegenerations()
   {
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     doc->openCommand("Removed duplicated faces");
-    Gui::Command::doCommand(Gui::Command::Doc,
-      "App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\").Source = App.activeDocument().%s",
+    Gui::Application::Instance->runCommand(
+      true, "App.activeDocument().addObject(\"Mesh::FixDegenerations\",\"%s\").Source = App.activeDocument().%s",
       _meshFeature->name.getValue(),_meshFeature->name.getValue());
     doc->commitCommand();
     doc->getDocument()->recompute();
@@ -585,8 +593,8 @@ void DlgEvaluateMeshImp::onRepairDuplicatedFaces()
   {
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     doc->openCommand("Removed duplicated faces");
-    Gui::Command::doCommand(Gui::Command::Doc,
-      "App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\").Source = App.activeDocument().%s",
+    Gui::Application::Instance->runCommand(
+      true, "App.activeDocument().addObject(\"Mesh::FixDuplicatedFaces\",\"%s\").Source = App.activeDocument().%s",
       _meshFeature->name.getValue(),_meshFeature->name.getValue());
     doc->commitCommand();
     doc->getDocument()->recompute();
@@ -645,8 +653,8 @@ void DlgEvaluateMeshImp::onRepairDuplicatedPoints()
   {
     Gui::Document* doc = Gui::Application::Instance->activeDocument();
     doc->openCommand("Removed duplicated points");
-    Gui::Command::doCommand(Gui::Command::Doc,
-      "App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\").Source = App.activeDocument().%s",
+    Gui::Application::Instance->runCommand(
+      true, "App.activeDocument().addObject(\"Mesh::FixDuplicatedPoints\",\"%s\").Source = App.activeDocument().%s",
       _meshFeature->name.getValue(),_meshFeature->name.getValue());
     doc->commitCommand();
     doc->getDocument()->recompute();

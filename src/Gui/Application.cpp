@@ -706,6 +706,33 @@ CommandManager &Application::commandManager(void)
   return d->_cCommandManager;
 }
 
+void Application::runCommand(bool bForce, const char* sCmd,...)
+{
+  // temp buffer
+  unsigned int format_len = strlen(sCmd)+4024;
+  char* format = (char*) malloc(format_len);
+  va_list namelessVars;
+  va_start(namelessVars, sCmd);  // Get the "..." vars
+  vsnprintf(format, format_len, sCmd, namelessVars);
+  va_end(namelessVars);
+
+  if (bForce)
+    d->_pcMacroMngr->addLine(MacroManager::Base,format);
+  else
+    d->_pcMacroMngr->addLine(MacroManager::Gui,format);
+  Base::Console().Log("CmdC: %s\n",format);
+
+  try { 
+    Interpreter().runString(format);
+  } catch (...) {
+    // free memory to avoid a leak if an exception occurred
+    free (format);
+    throw;
+  }
+
+  free (format);
+}
+
 //**************************************************************************
 // Init, Destruct and singelton
 
