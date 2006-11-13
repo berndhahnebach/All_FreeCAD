@@ -101,6 +101,8 @@ PyTypeObject Gui::ViewProviderPy::Type = {
 PyMethodDef Gui::ViewProviderPy::Methods[] = {
   PYMETHODEDEF(show)
   PYMETHODEDEF(hide)
+  PYMETHODEDEF(isVisible)
+  PYMETHODEDEF(update)
   PYMETHODEDEF(listDisplayModes)
 	{NULL, NULL}		/* Sentinel */
 };
@@ -210,6 +212,21 @@ PYFUNCIMP_D(ViewProviderPy,hide)
 { 
   PY_TRY {
     _pcViewProvider->hide();  
+    Py_Return;
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(ViewProviderPy,isVisible)
+{ 
+  PY_TRY {
+    return Py_BuildValue("O", (_pcViewProvider->isShow() ? Py_True : Py_False));
+  }PY_CATCH;
+} 
+
+PYFUNCIMP_D(ViewProviderPy,update)
+{ 
+  PY_TRY {
+    _pcViewProvider->update();  
     Py_Return;
   }PY_CATCH;
 } 

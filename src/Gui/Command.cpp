@@ -257,7 +257,7 @@ void Command::invoke (int i)
   // set the application module type for the macro
   getGuiApplication()->macroManager()->setModule(sAppModule);
   try{
-    // check if it realy works NOW (could be a delay between click deaktivation of the button)
+    // check if it really works NOW (could be a delay between click deactivation of the button)
     if(isActive())
       activated( i );
   }catch(Base::PyException &e){

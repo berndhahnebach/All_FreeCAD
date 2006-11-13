@@ -61,24 +61,40 @@ int Sphere::execute(void)
     PyObject* dict = PyModule_GetDict(module);
     PyObject* func = PyDict_GetItemString(dict, "Sphere");
     // Create the mesh
-    PyObject* args = Py_BuildValue("(fi)",Radius.getValue(),Sampling.getValue());
-    PyObject* result = PyEval_CallObject(func,args);
-    // decrement the args and module reference
-    Py_DECREF(args);
-    Py_DECREF(module);
-
-    // We know it's a list of facets
-    if ( result ) {
-      MeshPy* mesh = new MeshPy;
-      PyObject* args = Py_BuildValue("(O)",result);
-      mesh->addFacets(args);
-      Mesh.setValue( mesh->getMesh() );
+    if ( func ) {
+      PyObject* args = Py_BuildValue("(fi)",Radius.getValue(),Sampling.getValue());
+      PyObject* result = PyEval_CallObject(func,args);
+      // decrement the args and module reference
       Py_DECREF(args);
-      Py_DECREF(mesh);
-      Py_DECREF(result);
+      Py_DECREF(module);
+
+      // We know it's a list of facets
+      if ( result ) {
+        MeshPy* mesh = new MeshPy;
+        PyObject* args = Py_BuildValue("(O)",result);
+        mesh->addFacets(args);
+        Mesh.setValue( mesh->getMesh() );
+        Py_DECREF(args);
+        Py_DECREF(mesh);
+        Py_DECREF(result);
+      }
+    } else {
+      PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Sphere'");
     }
-  } else if ( PyErr_Occurred() )
+  } 
+
+  // Check for internal Python errors
+  if ( PyErr_Occurred() ) {
+    Base::Exception e; // do not use PyException since this clears the error indicator
+    PyObject *errobj, *errdata, *errtraceback;
+    PyErr_Fetch(&errobj, &errdata, &errtraceback);
+    if ( PyString_Check( errdata ) )
+      e.setMessage( PyString_AsString( errdata ) );
+    PyErr_Restore(errobj, errdata, errtraceback);
+    // Prints message to console window if we are in interactive mode
     PyErr_Print();
+    throw e;
+  }
 
   return 0;
 }
@@ -106,24 +122,40 @@ int Ellipsoid::execute(void)
     PyObject* dict = PyModule_GetDict(module);
     PyObject* func = PyDict_GetItemString(dict, "Ellipsoid");
     // Create the mesh
-    PyObject* args = Py_BuildValue("(ffi)",Radius1.getValue(),Radius2.getValue(),Sampling.getValue());
-    PyObject* result = PyEval_CallObject(func,args);
-    // decrement the args and module reference
-    Py_DECREF(args);
-    Py_DECREF(module);
-
-    // We know it's a list of facets
-    if ( result ) {
-      MeshPy* mesh = new MeshPy;
-      PyObject* args = Py_BuildValue("(O)",result);
-      mesh->addFacets(args);
-      Mesh.setValue( mesh->getMesh() );
+    if ( func ) {
+      PyObject* args = Py_BuildValue("(ffi)",Radius1.getValue(),Radius2.getValue(),Sampling.getValue());
+      PyObject* result = PyEval_CallObject(func,args);
+      // decrement the args and module reference
       Py_DECREF(args);
-      Py_DECREF(mesh);
-      Py_DECREF(result);
+      Py_DECREF(module);
+
+      // We know it's a list of facets
+      if ( result ) {
+        MeshPy* mesh = new MeshPy;
+        PyObject* args = Py_BuildValue("(O)",result);
+        mesh->addFacets(args);
+        Mesh.setValue( mesh->getMesh() );
+        Py_DECREF(args);
+        Py_DECREF(mesh);
+        Py_DECREF(result);
+      }
+    } else {
+      PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Ellipsoid'");
     }
-  } else if ( PyErr_Occurred() )
+  } 
+
+  // Check for internal Python errors
+  if ( PyErr_Occurred() ) {
+    Base::Exception e; // do not use PyException since this clears the error indicator
+    PyObject *errobj, *errdata, *errtraceback;
+    PyErr_Fetch(&errobj, &errdata, &errtraceback);
+    if ( PyString_Check( errdata ) )
+      e.setMessage( PyString_AsString( errdata ) );
+    PyErr_Restore(errobj, errdata, errtraceback);
+    // Prints message to console window if we are in interactive mode
     PyErr_Print();
+    throw e;
+  }
 
   return 0;
 }
@@ -154,25 +186,41 @@ int Cylinder::execute(void)
     PyObject* dict = PyModule_GetDict(module);
     PyObject* func = PyDict_GetItemString(dict, "Cylinder");
     // Create the mesh
-    PyObject* args = Py_BuildValue("(ffifi)",Radius.getValue(),Length.getValue(),
-      Closed.getValue(),EdgeLength.getValue(),Sampling.getValue());
-    PyObject* result = PyEval_CallObject(func,args);
-    // decrement the args and module reference
-    Py_DECREF(args);
-    Py_DECREF(module);
-
-    // We know it's a list of facets
-    if ( result ) {
-      MeshPy* mesh = new MeshPy;
-      PyObject* args = Py_BuildValue("(O)",result);
-      mesh->addFacets(args);
-      Mesh.setValue( mesh->getMesh() );
+    if ( func ) {
+      PyObject* args = Py_BuildValue("(ffifi)",Radius.getValue(),Length.getValue(),
+        Closed.getValue(),EdgeLength.getValue(),Sampling.getValue());
+      PyObject* result = PyEval_CallObject(func,args);
+      // decrement the args and module reference
       Py_DECREF(args);
-      Py_DECREF(mesh);
-      Py_DECREF(result);
+      Py_DECREF(module);
+
+      // We know it's a list of facets
+      if ( result ) {
+        MeshPy* mesh = new MeshPy;
+        PyObject* args = Py_BuildValue("(O)",result);
+        mesh->addFacets(args);
+        Mesh.setValue( mesh->getMesh() );
+        Py_DECREF(args);
+        Py_DECREF(mesh);
+        Py_DECREF(result);
+      }
+    } else {
+      PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Cylinder'");
     }
-  } else if ( PyErr_Occurred() )
+  } 
+  
+  // Check for internal Python errors
+  if ( PyErr_Occurred() ) {
+    Base::Exception e; // do not use PyException since this clears the error indicator
+    PyObject *errobj, *errdata, *errtraceback;
+    PyErr_Fetch(&errobj, &errdata, &errtraceback);
+    if ( PyString_Check( errdata ) )
+      e.setMessage( PyString_AsString( errdata ) );
+    PyErr_Restore(errobj, errdata, errtraceback);
+    // Prints message to console window if we are in interactive mode
     PyErr_Print();
+    throw e;
+  }
 
   return 0;
 }
@@ -205,25 +253,41 @@ int Cone::execute(void)
     PyObject* dict = PyModule_GetDict(module);
     PyObject* func = PyDict_GetItemString(dict, "Cone");
     // Create the mesh
-    PyObject* args = Py_BuildValue("(fffifi)",Radius1.getValue(),Radius2.getValue(),Length.getValue(),
-      Closed.getValue(),EdgeLength.getValue(),Sampling.getValue());
-    PyObject* result = PyEval_CallObject(func,args);
-    // decrement the args and module reference
-    Py_DECREF(args);
-    Py_DECREF(module);
-
-    // We know it's a list of facets
-    if ( result ) {
-      MeshPy* mesh = new MeshPy;
-      PyObject* args = Py_BuildValue("(O)",result);
-      mesh->addFacets(args);
-      Mesh.setValue( mesh->getMesh() );
+    if ( func ) {
+      PyObject* args = Py_BuildValue("(fffifi)",Radius1.getValue(),Radius2.getValue(),Length.getValue(),
+        Closed.getValue(),EdgeLength.getValue(),Sampling.getValue());
+      PyObject* result = PyEval_CallObject(func,args);
+      // decrement the args and module reference
       Py_DECREF(args);
-      Py_DECREF(mesh);
-      Py_DECREF(result);
+      Py_DECREF(module);
+
+      // We know it's a list of facets
+      if ( result ) {
+        MeshPy* mesh = new MeshPy;
+        PyObject* args = Py_BuildValue("(O)",result);
+        mesh->addFacets(args);
+        Mesh.setValue( mesh->getMesh() );
+        Py_DECREF(args);
+        Py_DECREF(mesh);
+        Py_DECREF(result);
+      }
+    } else {
+      PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Cone'");
     }
-  } else if ( PyErr_Occurred() )
+  } 
+  
+  // Check for internal Python errors
+  if ( PyErr_Occurred() ) {
+    Base::Exception e; // do not use PyException since this clears the error indicator
+    PyObject *errobj, *errdata, *errtraceback;
+    PyErr_Fetch(&errobj, &errdata, &errtraceback);
+    if ( PyString_Check( errdata ) )
+      e.setMessage( PyString_AsString( errdata ) );
+    PyErr_Restore(errobj, errdata, errtraceback);
+    // Prints message to console window if we are in interactive mode
     PyErr_Print();
+    throw e;
+  }
 
   return 0;
 }
@@ -251,24 +315,40 @@ int Torus::execute(void)
     PyObject* dict = PyModule_GetDict(module);
     PyObject* func = PyDict_GetItemString(dict, "Toroid");
     // Create the mesh
-    PyObject* args = Py_BuildValue("(ffi)",Radius1.getValue(),Radius2.getValue(),Sampling.getValue());
-    PyObject* result = PyEval_CallObject(func,args);
-    // decrement the args and module reference
-    Py_DECREF(args);
-    Py_DECREF(module);
-
-    // We know it's a list of facets
-    if ( result ) {
-      MeshPy* mesh = new MeshPy;
-      PyObject* args = Py_BuildValue("(O)",result);
-      mesh->addFacets(args);
-      Mesh.setValue( mesh->getMesh() );
+    if ( func ) {
+      PyObject* args = Py_BuildValue("(ffi)",Radius1.getValue(),Radius2.getValue(),Sampling.getValue());
+      PyObject* result = PyEval_CallObject(func,args);
+      // decrement the args and module reference
       Py_DECREF(args);
-      Py_DECREF(mesh);
-      Py_DECREF(result);
+      Py_DECREF(module);
+
+      // We know it's a list of facets
+      if ( result ) {
+        MeshPy* mesh = new MeshPy;
+        PyObject* args = Py_BuildValue("(O)",result);
+        mesh->addFacets(args);
+        Mesh.setValue( mesh->getMesh() );
+        Py_DECREF(args);
+        Py_DECREF(mesh);
+        Py_DECREF(result);
+      }
+    } else {
+      PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Toroid'");
     }
-  } else if ( PyErr_Occurred() )
+  } 
+  
+  // Check for internal Python errors
+  if ( PyErr_Occurred() ) {
+    Base::Exception e; // do not use PyException since this clears the error indicator
+    PyObject *errobj, *errdata, *errtraceback;
+    PyErr_Fetch(&errobj, &errdata, &errtraceback);
+    if ( PyString_Check( errdata ) )
+      e.setMessage( PyString_AsString( errdata ) );
+    PyErr_Restore(errobj, errdata, errtraceback);
+    // Prints message to console window if we are in interactive mode
     PyErr_Print();
+    throw e;
+  }
 
   return 0;
 }
@@ -296,24 +376,40 @@ int Cube::execute(void)
     PyObject* dict = PyModule_GetDict(module);
     PyObject* func = PyDict_GetItemString(dict, "Cube");
     // Create the mesh
-    PyObject* args = Py_BuildValue("(fff)",Length.getValue(),Width.getValue(),Height.getValue());
-    PyObject* result = PyEval_CallObject(func,args);
-    // decrement the args and module reference
-    Py_DECREF(args);
-    Py_DECREF(module);
-
-    // We know it's a list of facets
-    if ( result ) {
-      MeshPy* mesh = new MeshPy;
-      PyObject* args = Py_BuildValue("(O)",result);
-      mesh->addFacets(args);
-      Mesh.setValue( mesh->getMesh() );
+    if ( func ) {
+      PyObject* args = Py_BuildValue("(fff)",Length.getValue(),Width.getValue(),Height.getValue());
+      PyObject* result = PyEval_CallObject(func,args);
+      // decrement the args and module reference
       Py_DECREF(args);
-      Py_DECREF(mesh);
-      Py_DECREF(result);
+      Py_DECREF(module);
+
+      // We know it's a list of facets
+      if ( result ) {
+        MeshPy* mesh = new MeshPy;
+        PyObject* args = Py_BuildValue("(O)",result);
+        mesh->addFacets(args);
+        Mesh.setValue( mesh->getMesh() );
+        Py_DECREF(args);
+        Py_DECREF(mesh);
+        Py_DECREF(result);
+      }
+    } else {
+      PyErr_SetString(PyExc_AttributeError, "'BuildRegularGeoms' object has no attribute 'Cube'");
     }
-  } else if ( PyErr_Occurred() )
+  } 
+  
+  // Check for internal Python errors
+  if ( PyErr_Occurred() ) {
+    Base::Exception e; // do not use PyException since this clears the error indicator
+    PyObject *errobj, *errdata, *errtraceback;
+    PyErr_Fetch(&errobj, &errdata, &errtraceback);
+    if ( PyString_Check( errdata ) )
+      e.setMessage( PyString_AsString( errdata ) );
+    PyErr_Restore(errobj, errdata, errtraceback);
+    // Prints message to console window if we are in interactive mode
     PyErr_Print();
+    throw e;
+  }
 
   return 0;
 }

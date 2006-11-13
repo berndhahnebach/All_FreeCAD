@@ -34,6 +34,7 @@
 # include <IGESControl_Reader.hxx>
 # include <STEPControl_Writer.hxx>
 # include <STEPControl_Reader.hxx>
+# include <StlAPI_Writer.hxx>
 # include <Interface_Static.hxx>
 #endif
 
@@ -113,12 +114,13 @@ PyTypeObject TopoShapePy::Type = {
 //--------------------------------------------------------------------------
 PyMethodDef TopoShapePy::Methods[] = {
   {"hasChild",         (PyCFunction) shasChild,         Py_NEWARGS},
-  {"readIGES",         (PyCFunction) sreadIGES,         Py_NEWARGS},
-  {"writeIGES",        (PyCFunction) swriteIGES,        Py_NEWARGS},
-  {"readSTEP",         (PyCFunction) sreadSTEP,         Py_NEWARGS},
-  {"writeSTEP",        (PyCFunction) swriteSTEP,        Py_NEWARGS},
-  {"readBREP",         (PyCFunction) sreadBREP,         Py_NEWARGS},
-  {"writeBREP",        (PyCFunction) swriteBREP,        Py_NEWARGS},
+  {"importIGES",       (PyCFunction) simportIGES,       Py_NEWARGS},
+  {"exportIGES",       (PyCFunction) sexportIGES,       Py_NEWARGS},
+  {"importSTEP",       (PyCFunction) simportSTEP,       Py_NEWARGS},
+  {"exportSTEP",       (PyCFunction) sexportSTEP,       Py_NEWARGS},
+  {"importBREP",       (PyCFunction) simportBREP,       Py_NEWARGS},
+  {"exportBREP",       (PyCFunction) sexportBREP,       Py_NEWARGS},
+  {"exportSTL",        (PyCFunction) sexportSTL,        Py_NEWARGS},
 
   {NULL, NULL}		/* Sentinel */
 };
@@ -273,7 +275,7 @@ public:
 };
 #endif
 
-PyObject *TopoShapePy::readIGES(PyObject *args)
+PyObject *TopoShapePy::importIGES(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -337,13 +339,23 @@ PyObject *TopoShapePy::readIGES(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::writeIGES(PyObject *args)
+PyObject *TopoShapePy::exportIGES(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
     return NULL;
 
   PY_TRY {
+
+#if 0
+    // An OCC example
+    IGESControl_Controller::Init();
+	  IGESControl_Writer writer( Interface_Static::CVal( "XSTEP.iges.unit" ),
+                               Interface_Static::IVal( "XSTEP.iges.writebrep.mode" ) );
+		writer.AddShape ( _cTopoShape );
+	  writer.ComputeModel();
+	  writer.Write( (const Standard_CString)filename );
+#endif
 
     // write iges file
     //IGESControl_Controller::Init();
@@ -374,7 +386,7 @@ PyObject *TopoShapePy::writeIGES(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::readSTEP(PyObject *args)
+PyObject *TopoShapePy::importSTEP(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -444,7 +456,7 @@ PyObject *TopoShapePy::readSTEP(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::writeSTEP(PyObject *args)
+PyObject *TopoShapePy::exportSTEP(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -471,7 +483,7 @@ PyObject *TopoShapePy::writeSTEP(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::readBREP(PyObject *args)
+PyObject *TopoShapePy::importBREP(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))   
@@ -496,7 +508,7 @@ PyObject *TopoShapePy::readBREP(PyObject *args)
   Py_Return; 
 }
 
-PyObject *TopoShapePy::writeBREP(PyObject *args)
+PyObject *TopoShapePy::exportBREP(PyObject *args)
 {
   char* filename;
   if (!PyArg_ParseTuple(args, "s", &filename ))
@@ -508,6 +520,21 @@ PyObject *TopoShapePy::writeBREP(PyObject *args)
       PyErr_SetString(PyExc_Exception,"Writing BREP failed");
       return NULL;
     }
+  } PY_CATCH;
+
+  Py_Return; 
+}
+
+PyObject *TopoShapePy::exportSTL(PyObject *args)
+{
+  char* filename;
+  if (!PyArg_ParseTuple(args, "s", &filename ))
+    return NULL;
+
+  PY_TRY {
+    // write STL file
+  	StlAPI_Writer writer;
+	  writer.Write( _cTopoShape, (const Standard_CString)filename );
   } PY_CATCH;
 
   Py_Return; 

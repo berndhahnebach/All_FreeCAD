@@ -39,6 +39,7 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <App/Document.h>
+#include <App/DocumentObjectGroup.h>
 #include <App/Feature.h>
 #include <Gui/Application.h>
 #include <Gui/MainWindow.h>
@@ -430,8 +431,12 @@ void CmdMeshVertexCurvature::activated(int iMsg)
     fName = getUniqueObjectName(fName.c_str());
 
     openCommand("Mesh VertexCurvature");
-    doCommand(Doc,"App.document().addObject(\"Mesh::Curvature\",\"%s\")",fName.c_str());
-    doCommand(Doc,"App.document().%s.Source = App.document().%s",fName.c_str(),(*it)->name.getValue());
+    App::DocumentObjectGroup* grp = App::DocumentObjectGroup::getGroupOfObject( *it );
+    if (grp)
+      doCommand(Doc,"App.activeDocument().getObject(\"%s\").addObject(\"Mesh::Curvature\",\"%s\")",grp->name.getValue(), fName.c_str());
+    else
+      doCommand(Doc,"App.activeDocument().addObject(\"Mesh::Curvature\",\"%s\")",fName.c_str());
+    doCommand(Doc,"App.activeDocument().%s.Source = App.activeDocument().%s",fName.c_str(),(*it)->name.getValue());
     commitCommand();
     updateActive();
     doCommand(Gui,"Gui.hide(\"%s\")",(*it)->name.getValue());

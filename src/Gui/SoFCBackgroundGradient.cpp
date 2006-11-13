@@ -51,7 +51,7 @@ void SoFCBackgroundGradient::finish()
 /*!
   Constructor.
 */
-SoFCBackgroundGradient::SoFCBackgroundGradient()
+SoFCBackgroundGradient::SoFCBackgroundGradient() : viewsize(0,0)
 {
   SO_NODE_CONSTRUCTOR(SoFCBackgroundGradient);
 

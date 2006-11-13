@@ -78,12 +78,13 @@ public:
 
 	// methods
 	PYFUNCDEF_D (TopoShapePy,hasChild);
-	PYFUNCDEF_D (TopoShapePy,readIGES);
-	PYFUNCDEF_D (TopoShapePy,writeIGES);
-	PYFUNCDEF_D (TopoShapePy,readSTEP);
-	PYFUNCDEF_D (TopoShapePy,writeSTEP);
-	PYFUNCDEF_D (TopoShapePy,readBREP);
-	PYFUNCDEF_D (TopoShapePy,writeBREP);
+	PYFUNCDEF_D (TopoShapePy,importIGES);
+	PYFUNCDEF_D (TopoShapePy,exportIGES);
+	PYFUNCDEF_D (TopoShapePy,importSTEP);
+	PYFUNCDEF_D (TopoShapePy,exportSTEP);
+	PYFUNCDEF_D (TopoShapePy,importBREP);
+	PYFUNCDEF_D (TopoShapePy,exportBREP);
+	PYFUNCDEF_D (TopoShapePy,exportSTL);
 
   TopoDS_Shape &getShape(void){return _cTopoShape;}
 
