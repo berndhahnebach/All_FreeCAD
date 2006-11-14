@@ -1,6 +1,6 @@
 #!/bin/sh
 # autogen.sh
-# Run this to generate all initial makefiles.
+# Run this script to generate all initial makefiles.
 
 # Create Version.h with Python script
 echo "creating Version.h"
