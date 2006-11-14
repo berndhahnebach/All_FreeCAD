@@ -47,6 +47,7 @@ libPart_la_LIBADD   = \
 		-lTKService \
 		-lTKSTEP \
 		-lTKIGES \
+		-lTKSTL \
 		-lTKShHealing \
 		-lTKXSBase \
 		-lTKBool \
