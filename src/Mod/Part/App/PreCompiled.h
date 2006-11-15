@@ -129,6 +129,9 @@
 #include <BRepTools.hxx>
 #include <BRepTools_ShapeSet.hxx>
 #include <BRepBuilderAPI_Copy.hxx>
+#include <BRepCheck_Analyzer.hxx>
+#include <BRepCheck_Result.hxx>
+#include <BRepCheck_ListIteratorOfListOfStatus.hxx>
 
 #include <Standard_DefineHandle.hxx> 
 #include <GCE2d_MakeSegment.hxx>
