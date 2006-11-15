@@ -78,6 +78,9 @@ public:
 
 	// methods
 	PYFUNCDEF_D (TopoShapePy,hasChild);
+	PYFUNCDEF_D (TopoShapePy,isNull);
+	PYFUNCDEF_D (TopoShapePy,isValid);
+	PYFUNCDEF_D (TopoShapePy,analyze);
 	PYFUNCDEF_D (TopoShapePy,importIGES);
 	PYFUNCDEF_D (TopoShapePy,exportIGES);
 	PYFUNCDEF_D (TopoShapePy,importSTEP);
