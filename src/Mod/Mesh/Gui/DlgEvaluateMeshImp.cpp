@@ -185,6 +185,7 @@ void DlgEvaluateMeshImp::addViewProvider( const char* name )
   removeViewProvider( name );
 
   ViewProviderMeshDefects* vp = (ViewProviderMeshDefects*)Base::Type::createInstanceByName( name );
+  assert(vp->getTypeId().isDerivedFrom(Gui::ViewProvider::getClassTypeId()));
   vp->attach( _meshFeature );
   _viewer->addViewProvider( vp );
   vp->showDefects();

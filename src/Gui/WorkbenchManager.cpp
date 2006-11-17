@@ -27,6 +27,7 @@
 # include <qstringlist.h>
 #endif
 #include <Base/Console.h>
+#include <Base/Exception.h>
 #include "WorkbenchManager.h"
 #include "Workbench.h"
 #include "MenuManager.h"
@@ -77,6 +78,14 @@ Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QStrin
     wb = (Workbench*) Base::Type::createInstanceByName(className.latin1(),false);
     if ( wb )
     {
+      if (!wb->getTypeId().isDerivedFrom(Gui::Workbench::getClassTypeId()))
+      {
+        delete wb;
+        char szBuf[200];
+        snprintf(szBuf, 200, "'%s' is not a workbench type", className.latin1());
+        throw Base::Exception(szBuf);
+      }
+
       wb->setName( name );
       _workbenches[ name ] = wb;
     }else

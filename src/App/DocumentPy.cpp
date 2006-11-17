@@ -503,7 +503,7 @@ PYFUNCIMP_D(DocumentPy,addObject)
 	  else
     {
       char szBuf[200];
-      snprintf(szBuf, 200, "No feature found of type '%s'", sType);
+      snprintf(szBuf, 200, "No document object found of type '%s'", sType);
 		  Py_Error(PyExc_Exception,szBuf);
     }
 }

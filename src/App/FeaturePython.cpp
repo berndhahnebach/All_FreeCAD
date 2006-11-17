@@ -80,15 +80,18 @@ const char* FeaturePython::getName(const Property* prop) const
 void FeaturePython::addDynamicProperty(const char* type, const char* name)
 {  
   Property* pcObject = (Property*) Base::Type::createInstanceByName(type,true);
-
-
-  string ObjectName;
-
-	if(pcObject)
+	if (pcObject)
 	{
-    assert(pcObject->getTypeId().isDerivedFrom(App::Property::getClassTypeId()));
+    if (!pcObject->getTypeId().isDerivedFrom(Property::getClassTypeId()))
+    {
+      delete pcObject;
+      char szBuf[200];
+      snprintf(szBuf, 200, "'%s' is not a property type", type);
+      throw Base::Exception(szBuf);
+    }
 
     // get Unique name
+    string ObjectName;
     if(name)
       ObjectName = getUniquePropertyName(name);
     else
@@ -96,7 +99,6 @@ void FeaturePython::addDynamicProperty(const char* type, const char* name)
 
     pcObject->setContainer(this);
     objectProperties[name] = pcObject;
-
   }  
 }
 

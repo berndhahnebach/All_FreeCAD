@@ -97,6 +97,7 @@ void EditableListView::buildUp( const std::map<std::pair<std::string, int>, std:
         EditableItem* item = (EditableItem*) Base::Type::createInstanceByName( prop->getEditorName(),true);
         if ( item )
         {
+          assert(item->getTypeId().isDerivedFrom(EditableItem::getClassTypeId()));
           item->setText(0, QString(prop->getName()));
           item->setProperty( it->second );
         }

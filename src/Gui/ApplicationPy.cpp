@@ -338,22 +338,32 @@ PYFUNCIMP_S(Application,sListWorkbenches)
 
 PYFUNCIMP_S(Application,sCreateWorkbench)
 {
-  char*       psKey;
-  if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
+  char* psName;
+  char* psType="Gui::PythonWorkbench";
+  if (!PyArg_ParseTuple(args, "s|s", &psName, &psType))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
-  if ( WorkbenchManager::instance()->getWorkbench(psKey) )
+  if ( WorkbenchManager::instance()->getWorkbench(psName) )
   {
-    PyErr_Format(PyExc_KeyError, "Workbench '%s' already exists", psKey);
+    PyErr_Format(PyExc_KeyError, "Workbench '%s' already exists", psName);
     return NULL;
   }
 
-  //WorkbenchFactory().AddProducer(psKey, new WorkbenchProducer<PythonWorkbench>);
-  Workbench* wb = WorkbenchManager::instance()->createWorkbench( psKey, PythonWorkbench::getClassTypeId().getName() );
-  
-  // object get incremented
-  Base::PyObjectBase* pyObj = wb->GetPyObject();
-  return pyObj;
+  PY_TRY {
+    // create a workbench of specified type (default PythonWorkbench)
+    Workbench* wb = WorkbenchManager::instance()->createWorkbench( psName, psType );
+    
+    // object get incremented
+    if (wb) {
+      Base::PyObjectBase* pyObj = wb->GetPyObject();
+      return pyObj;
+    } else {
+      PyErr_Format(PyExc_KeyError, "Cannot create workbench '%s'", psName);
+      return NULL;
+    }
+  } PY_CATCH;
+
+  Py_Return;    
 } 
 
 PYFUNCIMP_S(Application,sActiveWorkbench)
@@ -407,8 +417,7 @@ PYFUNCIMP_S(Application,sGetWorkbench)
   }
 
   // object get incremented
-  Base::PyObjectBase* pyObj = wb->GetPyObject();
-  return pyObj ? pyObj : Py_None;
+  return wb->GetPyObject();
 } 
 
 PYFUNCIMP_S(Application,sHasWorkbench)
