@@ -872,6 +872,15 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 	if(pcObject)
 	{
     assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()));
+    // Note: A simple assert() is not sufficient since the user is able to create a wrong
+    // object e.g. from the Python console and the application crashes in Release mode.
+    if (!pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()))
+    {
+      delete pcObject;
+      char szBuf[200];
+      snprintf(szBuf, 200, "'%s' is not a document object type", sType);
+      throw Base::Exception(szBuf);
+    }
 
     pcObject->setDocument(this);
      
