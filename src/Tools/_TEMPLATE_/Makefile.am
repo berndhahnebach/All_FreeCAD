@@ -6,4 +6,5 @@ data_DATA = Init.py InitGui.py
 
 EXTRA_DIST = \
 		$(data_DATA) \
-		App_TEMPLATE_.dsw
+		App_TEMPLATE_.dsw \
+		App_TEMPLATE_.sln
