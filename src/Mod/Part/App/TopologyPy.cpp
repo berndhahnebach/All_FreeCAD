@@ -26,8 +26,8 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-#	include <assert.h>
-#	include <sstream>
+# include <assert.h>
+# include <sstream>
 # include <BRepTools.hxx>
 # include <BRep_Builder.hxx>
 # include <BRepCheck_Analyzer.hxx>
@@ -39,6 +39,7 @@
 # include <STEPControl_Reader.hxx>
 # include <StlAPI_Writer.hxx>
 # include <Interface_Static.hxx>
+# include <TopoDS_Iterator.hxx>
 #endif
 
 #include <Base/Exception.h>
