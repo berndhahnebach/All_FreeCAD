@@ -245,6 +245,7 @@ public:
   
   
   void  set1Value (const int idx, long value){_lValueList.operator[] (idx) = value;}
+  void setValues (const std::vector<long>& values);
 
   const std::vector<long> &getValues(void) const{return _lValueList;}
 

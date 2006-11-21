@@ -399,6 +399,12 @@ void PropertyIntegerList::setValue(long lValue)
   hasSetValue();
 }
 
+void PropertyIntegerList::setValues(const std::vector<long>& values)
+{
+  aboutToSetValue();
+  _lValueList = values;
+  hasSetValue();
+}
 
 PyObject *PropertyIntegerList::getPyObject(void)
 {
