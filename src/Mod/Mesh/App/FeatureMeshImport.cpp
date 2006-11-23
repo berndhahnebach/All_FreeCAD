@@ -82,6 +82,8 @@ int Import::execute(void)
         ok = aReader.LoadSTL( str );
       } else if ( fi.hasExtension("iv") ) {
         ok = aReader.LoadInventor( str );
+        if ( ok && pcKernel->CountFacets() == 0 )
+          Base::Console().Warning("No usable mesh found in file '%s'", FileName.getValue());
       } else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") ) {
         ok = aReader.LoadNastran( str );
       } else {
