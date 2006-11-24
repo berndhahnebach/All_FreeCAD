@@ -238,6 +238,7 @@ void StdCmdMRU::activated(int iMsg)
   QFileInfo fi(f);
   if ( !fi.exists() || !fi.isFile())
   {
+    QMessageBox::critical(getMainWindow(), QObject::tr("File not found"), QObject::tr("The file '%1' cannot be opened.").arg(f));
     removeRecentFile( f );
     // rebuild the recent file list
     dynamic_cast<MRUActionGroup*>(pcAction)->setRecentFiles(_vMRU);
