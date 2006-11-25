@@ -161,6 +161,7 @@ public:
   //@{
   inline MeshFacet (void);
   inline MeshFacet(const MeshFacet &rclF);
+  inline MeshFacet(unsigned long p1,unsigned long p2,unsigned long p3,unsigned long n1,unsigned long n2,unsigned long n3);
   ~MeshFacet (void) { }
   //@}
 
@@ -729,6 +730,18 @@ inline MeshFacet::MeshFacet(const MeshFacet &rclF)
   _aulNeighbours[0] = rclF._aulNeighbours[0];
   _aulNeighbours[1] = rclF._aulNeighbours[1];
   _aulNeighbours[2] = rclF._aulNeighbours[2];
+}
+inline MeshFacet::MeshFacet(unsigned long p1,unsigned long p2,unsigned long p3,unsigned long n1=0,unsigned long n2=0,unsigned long n3=0)
+: _ucFlag(0),
+  _ulProp(0)
+{
+  _aulPoints[0] = p1;
+  _aulPoints[1] = p2;
+  _aulPoints[2] = p3;
+
+  _aulNeighbours[0] = n1;
+  _aulNeighbours[1] = n2;
+  _aulNeighbours[2] = n3;
 }
 
 inline MeshFacet& MeshFacet::operator = (const MeshFacet &rclF)

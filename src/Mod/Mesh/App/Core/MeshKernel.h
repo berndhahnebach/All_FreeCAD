@@ -342,6 +342,9 @@ public:
                   bool bCutInner, std::vector<unsigned long> &raclCutted);
   //@}
 
+  /// Rebuilds the neighbour indices for all facets.
+  void RebuildNeighbours (void);
+
 protected:
   /** Adds new edges and updates the available edges respectively. All edges
    * of the facets get checked if they have an associated MeshEdge. If needed 
@@ -358,8 +361,6 @@ protected:
    */
   void ErasePoint (unsigned long ulIndex, unsigned long ulFacetIndex, bool bOnlySetInvalid = false);
 
-  /// Rebuilds the neighbour indices for all facets.
-  void RebuildNeighbours (void);
 
   /** Adjusts the facet's orierntation to the given normal direction. */
   inline void AdjustNormal (MeshFacet &rclFacet, const Base::Vector3f &rclNormal);

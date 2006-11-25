@@ -312,10 +312,11 @@ void CmdMeshImport::activated(int iMsg)
   QString dir = Gui::FileDialog::getWorkingDirectory();
 
   QStringList filter;
-  filter << "All Mesh Files (*.stl *.ast *.bms)";
+  filter << "All Mesh Files (*.stl *.ast *.bms *.obj)";
   filter << "Binary STL (*.stl)";
   filter << "ASCII STL (*.ast)";
-  filter << "Binary Mesh (*.bms)";
+  filter << "Binary mesh (*.bms)";
+  filter << "Alias mesh (*.obj)";
   filter << "Inventor V2.1 ascii (*.iv)";
   //filter << "Nastran (*.nas *.bdf)";
   filter << "All Files (*.*)";

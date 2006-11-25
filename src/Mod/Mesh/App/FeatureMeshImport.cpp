@@ -86,6 +86,8 @@ int Import::execute(void)
           Base::Console().Warning("No usable mesh found in file '%s'", FileName.getValue());
       } else if ( fi.hasExtension("nas") || fi.hasExtension("bdf") ) {
         ok = aReader.LoadNastran( str );
+      } else if ( fi.hasExtension("obj") ) {
+        ok = aReader.LoadOBJ( str );
       } else {
         setError("File format '%s' not supported", fi.extension().c_str());
         delete pcKernel;
