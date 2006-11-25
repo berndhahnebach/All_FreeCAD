@@ -324,6 +324,47 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
 }
 
 /** Loads an ASCII STL file. */
+bool MeshInput::LoadOBJ (std::istream &rstrIn)
+{
+  MeshPointArray meshPoints;
+  MeshFacetArray meshFacets;
+
+  char szLine[200], szKey1[200], szKey2[200];
+  unsigned long ulVertexCt, ulFacetCt=0;
+  float fX, fY, fZ;
+  unsigned int  i1=0,i2=0,i3=0;
+  MeshGeomFacet clFacet;
+
+  if ( !rstrIn || rstrIn.bad() == true )
+    return false;
+
+  long ulSize=ULONG_MAX;
+  std::streambuf* buf = rstrIn.rdbuf();
+  if ( !buf )
+    return false;
+
+  while ((rstrIn.eof() == false) && (rstrIn.bad() == false))
+  {
+    rstrIn.getline(szLine, 200);
+    upper(ltrim(szLine));
+    if (strncmp(szLine, "V ", 2) == 0)  // normale
+    {
+      if (sscanf(szLine, "%s %f %f %f", szKey1, &fX, &fY, &fZ) == 4)
+        meshPoints.push_back(MeshPoint(Base::Vector3f(fX, fY, fZ)));
+    }
+    else if (strncmp(szLine, "F ", 2) == 0)  // vertex
+    {
+      if (sscanf(szLine, "%s %u/%u %u/%u %u/%u ", szKey1, &i1,&i1,&i2,&i2,&i3,&i3) == 7)
+        meshFacets.push_back(MeshFacet(i1-1,i2-1,i3-1));
+    }
+  }
+
+  this->_rclMesh.Merge(meshPoints,meshFacets);
+  this->_rclMesh.RebuildNeighbours();
+
+  return true;
+}
+/** Loads an ASCII STL file. */
 bool MeshInput::LoadAsciiSTL (std::istream &rstrIn)
 {
   char szLine[200], szKey1[200], szKey2[200];

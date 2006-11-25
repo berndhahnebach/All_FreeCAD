@@ -61,7 +61,7 @@ open(PyObject *self, PyObject *args)
     if(file.extension() == "")
       Py_Error(PyExc_Exception,"no file ending");
 
-    if(file.hasExtension("stl") || file.hasExtension("ast") || file.hasExtension("bms"))
+    if(file.hasExtension("stl") || file.hasExtension("ast") || file.hasExtension("bms")|| file.hasExtension("obj"))
     {
       // create new document and add Import feature
       App::Document *pcDoc = App::GetApplication().newDocument("Unnamed");
@@ -98,7 +98,7 @@ insert(PyObject *self, PyObject *args)
     if(file.extension() == "")
       Py_Error(PyExc_Exception,"no file ending");
 
-    if(file.hasExtension("stl") || file.hasExtension("ast") || file.hasExtension("bms"))
+    if(file.hasExtension("stl") || file.hasExtension("ast") || file.hasExtension("bms")|| file.hasExtension("obj"))
     {
       // add Import feature
       App::Document *pcDoc = App::GetApplication().getDocument(DocName);

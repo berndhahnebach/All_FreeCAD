@@ -55,6 +55,8 @@ public:
   bool LoadAsciiSTL (std::istream &rstrIn);
   /** Loads a binary STL file. */
   bool LoadBinarySTL (std::istream &rstrIn);
+  /** Loads an OBJ Mesh file. */
+  bool LoadOBJ (std::istream &rstrIn);
   /** Loads the mesh object from an XML file. */
   void LoadXML (Base::XMLReader &reader);
   /** Loads an OpenInventor file. */
