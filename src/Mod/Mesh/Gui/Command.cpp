@@ -315,8 +315,8 @@ void CmdMeshImport::activated(int iMsg)
   filter << "All Mesh Files (*.stl *.ast *.bms *.obj)";
   filter << "Binary STL (*.stl)";
   filter << "ASCII STL (*.ast)";
-  filter << "Binary mesh (*.bms)";
-  filter << "Alias mesh (*.obj)";
+  filter << "Binary Mesh (*.bms)";
+  filter << "Alias Mesh (*.obj)";
   filter << "Inventor V2.1 ascii (*.iv)";
   //filter << "Nastran (*.nas *.bdf)";
   filter << "All Files (*.*)";

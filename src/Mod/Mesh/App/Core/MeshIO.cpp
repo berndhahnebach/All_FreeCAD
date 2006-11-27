@@ -323,7 +323,7 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
   return true;
 }
 
-/** Loads an ASCII STL file. */
+/** Loads an OBJ file. */
 bool MeshInput::LoadOBJ (std::istream &rstrIn)
 {
   MeshPointArray meshPoints;
@@ -359,8 +359,10 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
     }
   }
 
+  this->_rclMesh.Clear(); // remove all data before
+  // Don't use Assign() because Merge() checks which points are really needed.
+  // This method sets already the correct neighbourhood
   this->_rclMesh.Merge(meshPoints,meshFacets);
-  this->_rclMesh.RebuildNeighbours();
 
   return true;
 }
