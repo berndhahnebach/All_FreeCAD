@@ -409,9 +409,9 @@ void StdCmdToggleVisibility::activated(int iMsg)
     for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
     {
       if ( pcDoc && pcDoc->isShow((*ft)->name.getValue()) )
-        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").hide()", (*it)->getName(), (*ft)->name.getValue());
+        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=False", (*it)->getName(), (*ft)->name.getValue());
       else
-        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").show()", (*it)->getName(), (*ft)->name.getValue());
+        doCommand(Gui,"Gui.getDocument(\"%s\").getObject(\"%s\").Visibility=True", (*it)->getName(), (*ft)->name.getValue());
     }
   }
 }
