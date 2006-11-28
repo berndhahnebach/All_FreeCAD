@@ -329,6 +329,17 @@ void PropertyMeshKernel::deleteFacetIndices( const std::vector<unsigned long>& i
   hasSetValue();
 }
 
+/**
+ * Clears the mesh kernel and frees any allocated memory.
+ * \note If you replace the current with an empty mesh kernel with setValue() then the memory doesn't get freed.
+ */
+void PropertyMeshKernel::clear()
+{
+  aboutToSetValue();
+  _pcMesh->Clear();
+  hasSetValue();
+}
+
 PyObject *PropertyMeshKernel::getPyObject(void)
 {
   return new MeshPy(*_pcMesh);
