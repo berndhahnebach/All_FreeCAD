@@ -158,6 +158,7 @@ public:
   //@{
   void deletePointIndices( const std::vector<unsigned long>& );
   void deleteFacetIndices( const std::vector<unsigned long>& );
+  void clear();
   //@}
 
   /** @name Python interface */
