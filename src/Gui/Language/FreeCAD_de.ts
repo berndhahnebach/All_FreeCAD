@@ -1,4 +1,4 @@
-<!DOCTYPE TS><TS>
+﻿<!DOCTYPE TS><TS>
 <defaultcodec>iso8859-1</defaultcodec>
 <context>
     <name>DlgSplasherBase</name>
@@ -235,8 +235,8 @@
         <translation>Geben Sie bitte den Menütext an.</translation>
     </message>
     <message>
-        <source>Sorry, couldn&apos;t find macro file.</source>
-        <translation>Das Makro konnte nicht gefunden werden.</translation>
+        <source>Sorry, couldn&apos;t find macro file &apos;%1&apos;.</source>
+        <translation>Das Makro &apos;%1&apos; konnte nicht gefunden werden.</translation>
     </message>
     <message>
         <source>Choose pixmap</source>
