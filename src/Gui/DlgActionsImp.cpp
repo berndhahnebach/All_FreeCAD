@@ -167,7 +167,8 @@ void DlgCustomActionsImp::onEditCustomAction()
 
     if (!bFound)
     {
-      Base::Console().Error(tr("Sorry, couldn't find macro file.").latin1());
+      QString msg = tr("Sorry, couldn't find macro file '%1'.").arg(pScript->getScriptName());
+      Base::Console().Error(msg.latin1());
     }
 
     // fill up labels with the command's data
