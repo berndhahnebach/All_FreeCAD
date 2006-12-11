@@ -132,5 +132,6 @@ SoPickedPoint* ViewProviderFeature::getPickedPoint(const SbVec2s& pos, const Vie
 
   // returns a copy of the point
   SoPickedPoint* pick = rp.getPickedPoint();
-  return (pick ? pick->copy() : 0);
+  //return (pick ? pick->copy() : 0); // needs the same instance of CRT under MS Windows
+  return (pick ? new SoPickedPoint(*pick) : 0);
 }

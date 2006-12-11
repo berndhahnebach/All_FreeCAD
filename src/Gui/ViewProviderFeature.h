@@ -50,6 +50,7 @@ public:
    * Attaches the document object to this view provider.
    */
   virtual void attach(App::DocumentObject *pcObj);
+  SoFCSelection* getHighlightNode() const { return pcHighlight; }
 
   /**
    * Returns a list of picked points from the geometry under \a pcHighlight.
