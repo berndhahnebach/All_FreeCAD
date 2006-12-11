@@ -1121,7 +1121,8 @@ SoPickedPoint* View3DInventorViewer::pickPoint(const SbVec2s& pos) const
 
   // returns a copy of the point
   SoPickedPoint* pick = rp.getPickedPoint();
-  return (pick ? pick->copy() : 0);
+  //return (pick ? pick->copy() : 0); // needs the same instance of CRT under MS Windows
+  return (pick ? new SoPickedPoint(*pick) : 0);
 }
 
 void View3DInventorViewer::boxZoom( const SbBox2f& box )
