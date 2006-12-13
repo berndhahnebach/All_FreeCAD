@@ -34,6 +34,8 @@
 #include <Inventor/fields/SoMFVec3f.h>
 #include <Inventor/fields/SoMFInt32.h>
 
+class SoMaterialBundle;
+
 namespace Mesh {
 class Feature;
 }
@@ -139,11 +141,20 @@ protected:
                                           SoPickedPoint * pp);
 
 private:
+  enum Binding {
+    OVERALL = 0,
+    PER_FACE_INDEXED,
+    PER_VERTEX_INDEXED,
+    NONE = OVERALL
+  };
+
+private:
   // Force using the reference count mechanism.
   virtual ~SoFCMeshFaceSet() {};
   virtual void notify(SoNotList * list);
+  Binding findMaterialBinding(SoState * const state) const;
   // Draw faces
-  void drawFaces(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool needNormals, SbBool ccw) const;
+  void drawFaces(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SoMaterialBundle* mb, SbBool needNormals, SbBool ccw) const;
   void drawPoints(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool needNormals, SbBool ccw) const;
   unsigned int countTriangles(SoAction * action) const;
   void createRoughModel(const MeshCore::MeshPointArray *, const MeshCore::MeshFacetArray*, SbBool simplest);
