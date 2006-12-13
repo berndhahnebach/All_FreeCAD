@@ -604,6 +604,8 @@ void SoFCMeshFaceSet::GLRender(SoGLRenderAction *action)
     const MeshCore::MeshPointArray * coords = SoFCMeshVertexElement::get(state);
     const MeshCore::MeshFacetArray * index = SoFCMeshFacetElement::get(state);
 
+    Binding mbind = this->findMaterialBinding(state);
+
     SoMaterialBundle mb(action);
     //SoTextureCoordinateBundle tb(action, true, false);
 
@@ -614,10 +616,14 @@ void SoFCMeshFaceSet::GLRender(SoGLRenderAction *action)
     if (SoShapeHintsElement::getVertexOrdering(state) == SoShapeHintsElement::CLOCKWISE) 
       ccw = FALSE;
 
-    if ( mode == false || index->size() <= this->MaximumTriangles )
-      drawFaces(coords, index, needNormals, ccw);
-    else
+    if ( mode == false || index->size() <= this->MaximumTriangles ) {
+      if ( mbind == PER_VERTEX_INDEXED )
+        drawFaces(coords, index, &mb, needNormals, ccw);
+      else
+        drawFaces(coords, index, 0, needNormals, ccw);
+    } else {
       drawPoints(coords, index, needNormals, ccw);
+    }
 
     // Disable caching for this node
     SoGLCacheContextElement::shouldAutoCache(state, SoGLCacheContextElement::DONT_AUTO_CACHE);
@@ -625,10 +631,44 @@ void SoFCMeshFaceSet::GLRender(SoGLRenderAction *action)
 }
 
 /**
+ * Translates current material binding into the internal Binding enum.
+ */
+SoFCMeshFaceSet::Binding SoFCMeshFaceSet::findMaterialBinding(SoState * const state) const
+{
+  Binding binding = OVERALL;
+  SoMaterialBindingElement::Binding matbind = SoMaterialBindingElement::get(state);
+
+  switch (matbind) {
+  case SoMaterialBindingElement::OVERALL:
+    binding = OVERALL;
+    break;
+  case SoMaterialBindingElement::PER_VERTEX:
+    binding = PER_VERTEX_INDEXED;
+    break;
+  case SoMaterialBindingElement::PER_VERTEX_INDEXED:
+    binding = PER_VERTEX_INDEXED;
+    break;
+  case SoMaterialBindingElement::PER_PART:
+  case SoMaterialBindingElement::PER_FACE:
+    binding = PER_FACE_INDEXED;
+    break;
+  case SoMaterialBindingElement::PER_PART_INDEXED:
+  case SoMaterialBindingElement::PER_FACE_INDEXED:
+    binding = PER_FACE_INDEXED;
+    break;
+  default:
+    break;
+  }
+  return binding;
+}
+
+/**
  * Renders the triangles of the complete mesh.
+ * FIXME: Do it the same way as Coin did to have only one implementation which is controled by defines
+ * FIXME: Implement using different values of transparency for each vertex or face
  */
 void SoFCMeshFaceSet::drawFaces(const MeshCore::MeshPointArray * rPoints, 
-                                const MeshCore::MeshFacetArray* rFacets, SbBool needNormals, SbBool ccw) const
+                                const MeshCore::MeshFacetArray* rFacets, SoMaterialBundle* mb, SbBool needNormals, SbBool ccw) const
 {
   if (needNormals)
   {
@@ -648,8 +688,14 @@ void SoFCMeshFaceSet::drawFaces(const MeshCore::MeshPointArray * rPoints,
         n[2] = (v1.x-v0.x)*(v2.y-v0.y)-(v1.y-v0.y)*(v2.x-v0.x);
     
         glNormal(n);
+        if(mb)
+        mb->send(it->_aulPoints[0], TRUE);
         glVertex(v0);
+        if(mb)
+        mb->send(it->_aulPoints[1], TRUE);
         glVertex(v1);
+        if(mb)
+        mb->send(it->_aulPoints[2], TRUE);
         glVertex(v2);
       }
     } else {
@@ -783,6 +829,10 @@ void SoFCMeshFaceSet::generatePrimitives(SoAction* action)
   SoState*  state = action->getState();
   const MeshCore::MeshPointArray * rPoints = SoFCMeshVertexElement::get(state);
   const MeshCore::MeshFacetArray * rFacets = SoFCMeshFacetElement::get(state);
+  if ( !rPoints || rPoints->size() < 3 )
+    return;
+  if ( !rFacets || rPoints->size() < 1 )
+    return;
 
   // In case we have too many triangles we just create a rough model of the original mesh
   if ( this->MaximumTriangles < rFacets->size() ) {
@@ -819,6 +869,9 @@ void SoFCMeshFaceSet::generatePrimitives(SoAction* action)
     }
     endShape();
   } else {
+    // get material binding
+    Binding mbind = this->findMaterialBinding(state);
+
     // Create the information when moving over or picking into the scene
     SoPrimitiveVertex vertex;
     SoPointDetail pointDetail;
@@ -843,16 +896,28 @@ void SoFCMeshFaceSet::generatePrimitives(SoAction* action)
       vertex.setNormal(n);
 
       // Vertex 0
+      if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
+        pointDetail.setMaterialIndex(it->_aulPoints[0]);
+        vertex.setMaterialIndex(it->_aulPoints[0]);
+      }
       pointDetail.setCoordinateIndex(it->_aulPoints[0]);
       vertex.setPoint(sbvec3f(v0));
       shapeVertex(&vertex);
 
       // Vertex 1
+      if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
+        pointDetail.setMaterialIndex(it->_aulPoints[1]);
+        vertex.setMaterialIndex(it->_aulPoints[1]);
+      }
       pointDetail.setCoordinateIndex(it->_aulPoints[1]);
       vertex.setPoint(sbvec3f(v1));
       shapeVertex(&vertex);
 
       // Vertex 2
+      if (mbind == PER_VERTEX_INDEXED || mbind == PER_FACE_INDEXED) {
+        pointDetail.setMaterialIndex(it->_aulPoints[2]);
+        vertex.setMaterialIndex(it->_aulPoints[2]);
+      }
       pointDetail.setCoordinateIndex(it->_aulPoints[2]);
       vertex.setPoint(sbvec3f(v2));
       shapeVertex(&vertex);
