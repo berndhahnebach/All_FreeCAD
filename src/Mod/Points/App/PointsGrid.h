@@ -114,11 +114,13 @@ public:
   virtual void Validate (void);
   /** Verifies the grid structure and returns false if inconsistencies are found. */
   virtual bool Verify() const;
-
-protected:
-  /** Returns the indices of the grid this point lies in. If the point is outside the grid the the indices of 
+  /** Returns the indices of the grid this point lies in. If the point is outside the grid then the indices of 
    * the nearest grid element are taken.*/
   virtual void Position (const Base::Vector3f &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const;
+  /** Returns the indices of the elements in the given grid. */
+  unsigned long GetElements (unsigned long ulX, unsigned long ulY, unsigned long ulZ,  std::set<unsigned long> &raclInd) const;
+
+protected:
   /** Checks if this is a valid grid position. */
   inline bool CheckPos (unsigned long ulX, unsigned long ulY, unsigned long ulZ) const;
   /** Initializes the size of the internal structure. */
@@ -136,8 +138,6 @@ protected:
   { return _pclPoints->size(); }
   /** Get the indices of all elements lying in the grids around a given grid with distance \a ulDistance. */
   void GetHull (unsigned long ulX, unsigned long ulY, unsigned long ulZ, unsigned long ulDistance, std::set<unsigned long> &raclInd) const;
-  /** Returns the indices of the elements in the given grid. */
-  unsigned long GetElements (unsigned long ulX, unsigned long ulY, unsigned long ulZ,  std::set<unsigned long> &raclInd) const;
 
 protected:
   std::vector<std::vector<std::vector<std::set<unsigned long> > > >  _aulGrid;   /**< Grid data structure. */
