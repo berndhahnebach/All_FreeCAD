@@ -330,7 +330,7 @@ std::vector<std::string> ViewProviderMeshCurvature::getDisplayModes(void) const
 
 void ViewProviderMeshCurvature::OnChange(Base::Subject<int> &rCaller,int rcReason)
 {
-  setDisplayMode(this->getActiveDisplayMode().c_str());
+  setActiveMode();
 }
 
 bool ViewProviderMeshCurvature::handleEvent(const SoEvent * const ev,Gui::View3DInventorViewer &Viewer)
