@@ -231,6 +231,18 @@ unsigned long MeshGrid::Inside (const Base::BoundBox3f &rclBB, std::set<unsigned
   return raulElements.size();
 }
 
+bool MeshGrid::CheckPosition (const Base::Vector3f &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const
+{
+  rulX = unsigned long((rclPoint.x - _fMinX) / _fGridLenX);
+  rulY = unsigned long((rclPoint.y - _fMinY) / _fGridLenY);
+  rulZ = unsigned long((rclPoint.z - _fMinZ) / _fGridLenZ);
+
+  if ( (rulX < _ulCtGridsX) && (rulY < _ulCtGridsY) && (rulZ < _ulCtGridsZ) )
+    return true;
+
+  return false;
+}
+
 void MeshGrid::Position (const Base::Vector3f &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const
 {
   if (rclPoint.x <= _fMinX)
@@ -584,6 +596,18 @@ unsigned long MeshGrid::GetElements (unsigned long ulX, unsigned long ulY, unsig
   }
 
   return 0;
+}
+
+unsigned long MeshGrid::GetElements(const Base::Vector3f &rclPoint, std::vector<unsigned long>& aulFacets) const
+{
+  unsigned long ulX, ulY, ulZ;
+  if (!CheckPosition(rclPoint, ulX, ulY, ulZ))
+    return 0;
+
+  aulFacets.resize(_aulGrid[ulX][ulY][ulZ].size());
+
+  std::copy(_aulGrid[ulX][ulY][ulZ].begin(), _aulGrid[ulX][ulY][ulZ].end(), aulFacets.begin());
+  return aulFacets.size();
 }
 
 unsigned long MeshGrid::GetIndexToPosition(unsigned long ulX, unsigned long ulY, unsigned long ulZ) const

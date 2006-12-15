@@ -93,6 +93,7 @@ public:
   //@{
   /** Returns the indices of the elements in the given grid. */
   unsigned long GetElements (unsigned long ulX, unsigned long ulY, unsigned long ulZ,  std::set<unsigned long> &raclInd) const;
+  unsigned long GetElements (const Base::Vector3f &rclPoint, std::vector<unsigned long>& aulFacets) const;
   //@}
 
   /** Returns the lengths of the grid elements in x,y and z direction. */
@@ -129,6 +130,10 @@ public:
   virtual bool Verify() const = 0;
 
 protected:
+  /** Checks whether the point is inside the grid. In case it is inside true is returned with the grid position,
+   * otherwise false is returned and the grid position is undefined.
+   */
+  bool CheckPosition (const Base::Vector3f &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const;
   /** Returns the indices of the grid this point lies in. If the point is outside the grid the indices of 
    * the nearest grid element are taken.*/
   virtual void Position (const Base::Vector3f &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const;
