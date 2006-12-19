@@ -646,6 +646,7 @@ void Document::open (void)
 
   // notify all as new
   DocChanges DocChange;
+  DocChange.Why = DocChanges::Recompute;
   DocChange.NewObjects = ObjectArray;
   for(std::map<std::string,DocumentObject*>::iterator It = ObjectMap.begin();It != ObjectMap.end();++It) {
     if(It->second->getTypeId().isDerivedFrom(AbstractFeature::getClassTypeId()) )
