@@ -670,6 +670,13 @@ void View3DInventorViewer::processEvent(QEvent * event)
 
 SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
+  static bool SelectionMode=false;
+  static bool PanMode=false;
+  static bool ZoomMode=false;
+  static bool RotMode =false;
+  static bool dCliBut3=false;
+  static SbVec2s posMidPress;
+
   //Base::Console().Log("Evnt: %s\n",ev->getTypeId().getName().getString());
   bool processed = false;
   if ( !isSeekMode() && isViewing() )
@@ -678,11 +685,23 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   // Keybooard handling
   if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
     SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
+    int State = ke->getState();
     switch (ke->getKey()) {
     case SoKeyboardEvent::LEFT_ALT:
     case SoKeyboardEvent::RIGHT_ALT:
+      break;
     case SoKeyboardEvent::LEFT_CONTROL:
     case SoKeyboardEvent::RIGHT_CONTROL:
+      if(State == SoButtonEvent::UP)
+        SelectionMode = false;
+      else{
+        PanMode = false;
+        ZoomMode = false;
+        _bSpining = false;
+        SelectionMode =true;
+        getWidget()->setCursor(QCursor( Qt::ArrowCursor ));
+      }
+      break;
     case SoKeyboardEvent::LEFT_SHIFT:
     case SoKeyboardEvent::RIGHT_SHIFT:
       break;
@@ -708,16 +727,13 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     }
   }
 
-  static bool MoveMode=false;
-  static bool ZoomMode=false;
-  static bool RotMode =false;
-  static bool dCliBut3=false;
 
   const SbVec2s size(this->getGLSize());
   const SbVec2f prevnormalized = lastmouseposition;
   const SbVec2s pos(ev->getPosition());
   const SbVec2f posn((float) pos[0] / (float) SoQtMax((int)(size[0] - 1), 1),
                      (float) pos[1] / (float) SoQtMax((int)(size[1] - 1), 1));
+  
 //  SbVec2s MovePos;
   lastmouseposition = posn;
 
@@ -731,79 +747,70 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     // SoDebugError::postInfo("processSoEvent", "button = %d", button);
     switch (button) {
     case SoMouseButtonEvent::BUTTON1:
+      if(SelectionMode){
+        PanMode = false;
+        ZoomMode = false;
+        _bSpining = false;
+        break;
+      }
+
       if(press)
       {
-        _bRejectSelection = false;
-        if(MoveMode)
-        {
-          RotMode = true;
-          ZoomMode = false;
-          MoveTime = ev->getTime();
+        RotMode = true;
+        ZoomMode = false;
+        _bSpining = false;
+
+        MoveTime = ev->getTime();
 
         // Set up initial projection point for the projector object when
         // first starting a drag operation.
-          spinprojector->project(lastmouseposition);
-          //interactiveCountInc();
-          clearLog();
+        spinprojector->project(lastmouseposition);
+        //interactiveCountInc();
+        clearLog();
 
-          getWidget()->setCursor( QCursor( Qt::PointingHandCursor ) );
-          processed = true;
-        }
+        getWidget()->setCursor( QCursor( Qt::PointingHandCursor ) );
+        processed = true;
+        
       }
       else
       {
-        // if you come out of rotation dont deselect anything
-        if(_bRejectSelection || MoveMode)
-        {
-          _bRejectSelection=false;
-          processed = true;
-        }
-        if(MoveMode){
-          RotMode = false; 
+        RotMode = false; 
+        ZoomMode = false;
 
-          SbTime tmp = (ev->getTime() - MoveTime);
+        getWidget()->setCursor(QCursor( Qt::ArrowCursor ));
+
+        SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+        panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+       
+        // check on start spining
+        SbTime stoptime = (ev->getTime() - log.time[0]);
+        if (bAllowSpining && stoptime.getValue() < 0.100) {
+          const SbVec2s glsize(this->getGLSize());
+          SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
+                                                        float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
+          SbVec3f to = spinprojector->project(posn);
+          SbRotation rot = spinprojector->getRotation(from, to);
+
+          SbTime delta = (log.time[0] - log.time[2]);
+          double deltatime = delta.getValue();
+          rot.invert();
+          rot.scaleAngle(float(0.200 / deltatime));
+
+          SbVec3f axis;
+          float radians;
+          rot.getValue(axis, radians);
           float dci = (float)QApplication::doubleClickInterval()/1000.0f;
-          if (tmp.getValue() < dci/*0.300*/)
-          {
-            ZoomMode = true;
-            getWidget()->setCursor( QCursor( Qt::SizeVerCursor ) );
-          }else{
-       
-            ZoomMode = false;
-            getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
-
-            SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
-            panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
-       
-            // check on start spining
-            SbTime stoptime = (ev->getTime() - log.time[0]);
-            if (bAllowSpining && stoptime.getValue() < 0.100) {
-              const SbVec2s glsize(this->getGLSize());
-              SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
-                                                            float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
-              SbVec3f to = spinprojector->project(posn);
-              SbRotation rot = spinprojector->getRotation(from, to);
-
-              SbTime delta = (log.time[0] - log.time[2]);
-              double deltatime = delta.getValue();
-              rot.invert();
-              rot.scaleAngle(float(0.200 / deltatime));
-
-              SbVec3f axis;
-              float radians;
-              rot.getValue(axis, radians);
-              float dci = (float)QApplication::doubleClickInterval()/1000.0f;
-              if ((radians > 0.01f) && (deltatime < dci/*0.300*/)) {
-                _bSpining = true;
-                spinRotation = rot;
-                MoveMode = false;
-                // restore the previous cursor
-                getWidget()->setCursor( _oldCursor /*QCursor( Qt::ArrowCursor )*/);
-              }
-            }
+          if ((radians > 0.01f) && (deltatime < dci/*0.300*/)) {
+            _bSpining = true;
+            spinRotation = rot;
+            //MoveMode = false;
+            // restore the previous cursor
+            getWidget()->setCursor(QCursor( Qt::ArrowCursor ));
           }
-          processed = true;
         }
+        
+        processed = true;
+       
       }
       break;
     case SoMouseButtonEvent::BUTTON2:
@@ -811,32 +818,27 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     case SoMouseButtonEvent::BUTTON3:
       if(press)
       {
-        // check on double click
-        SbTime tmp = (ev->getTime() - CenterTime);
-        float dci = (float)QApplication::doubleClickInterval()/1000.0f;
-        if (tmp.getValue() < dci/*0.300*/)
-        {
-          dCliBut3 = true;
-          if(!seekToPoint(pos))
-            panToCenter(panningplane, posn);
-        }else{
-          CenterTime = ev->getTime();
-          MoveMode = true;
-          _bSpining = false;
-          dCliBut3 = false;
-          SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
-          panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
-          // save the current cursor before overriding
-          _oldCursor = getWidget()->cursor();
-          getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
-        }
+        PanMode = true;
+        _bSpining = false;
+        posMidPress = pos;
+        //dCliBut3 = false;
+        SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
+        panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
+        getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
+        
       }else{
-        MoveMode = false;
+        PanMode = false;
         RotMode = false;
         ZoomMode = false;
+        // check if Fly to
+        float dist = sqrt(pow((float)posMidPress[0]-pos[0],2)+pow((float)posMidPress[1]-pos[1],2));
+        if(dist < 5.0)
+          if(!seekToPoint(pos))
+            panToCenter(panningplane, posn);
+
         // restore the previous cursor
-        getWidget()->setCursor( _oldCursor /*QCursor( Qt::ArrowCursor )*/);
-        _bRejectSelection = true;
+        getWidget()->setCursor(QCursor( Qt::ArrowCursor ));
+        //_bRejectSelection = true;
       }
       processed = true;
       break;
@@ -861,15 +863,15 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
 //    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
 
-    if(MoveMode && ZoomMode){
+    if(ZoomMode){
       zoom(getCamera(),(posn[1] - prevnormalized[1]) * 10.0f);
       processed = true;
-    }else if(MoveMode && RotMode) {
+    }else if(RotMode) {
       addToLog(ev->getPosition(), ev->getTime());
       spin(posn);
 
       processed = true;
-    }else if(MoveMode) {
+    }else if(PanMode) {
       pan(getCamera(),getGLAspectRatio(),panningplane, posn, prevnormalized);
       processed = true;
 
@@ -893,7 +895,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   // give the viewprovider the chance to handle the event
-  if(!processed && !MoveMode && !RotMode)
+  if(!processed && !PanMode && !RotMode && !ZoomMode)
   {
     if (pcMouseModel) {
       int hd=pcMouseModel->handleEvent(ev,this->getViewportRegion());
@@ -925,7 +927,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   // right mouse button pressed
-  if (!processed && !MoveMode && !RotMode)
+  if (!processed && !PanMode && !RotMode && !ZoomMode)
   {
     if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
       SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
@@ -943,7 +945,7 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   // invokes the appropriate callback function when user interaction has started or finished
-  bool bInteraction = (MoveMode||ZoomMode||RotMode|_bSpining);
+  bool bInteraction = (PanMode||ZoomMode||RotMode|_bSpining);
   if (bInteraction && getInteractiveCount()==0)
     interactiveCountInc();
   // must not be in seek mode because it gets decremented in setSeekMode(FALSE)
@@ -952,14 +954,14 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 
 
   bool baseProcessed;
-  if(!processed)
+  if(SelectionMode && !processed)
     baseProcessed = inherited::processSoEvent(ev);
   else 
     return true;
 
 
   // check for left click without selecting something
-  if (!baseProcessed)
+  if (SelectionMode && !baseProcessed)
   {
     if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
       SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
