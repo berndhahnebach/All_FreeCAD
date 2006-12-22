@@ -156,8 +156,9 @@ public:
 
   /** @name Modify */
   //@{
-  void deletePointIndices( const std::vector<unsigned long>& );
-  void deleteFacetIndices( const std::vector<unsigned long>& );
+  void applyTransformation( const Base::Matrix4D& rclTrf );
+  void deletePointIndices ( const std::vector<unsigned long>& );
+  void deleteFacetIndices ( const std::vector<unsigned long>& );
   void clear();
   //@}
 

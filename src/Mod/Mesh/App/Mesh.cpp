@@ -315,6 +315,15 @@ unsigned int PropertyMeshKernel::getMemSize (void) const
   return size;
 }
 
+//FIXME: This is the provisional solution to allow to transform meshes.
+//At a later stage we want to use a so called Placement object instead.
+void PropertyMeshKernel::applyTransformation( const Base::Matrix4D& rclTrf )
+{
+  aboutToSetValue();
+  _pcMesh->Transform(rclTrf);
+  hasSetValue();
+}
+
 void PropertyMeshKernel::deletePointIndices( const std::vector<unsigned long>& inds )
 {
   aboutToSetValue();
