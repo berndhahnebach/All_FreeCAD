@@ -456,7 +456,7 @@ void Application::addOpenType(const char* Type, const char* ModuleName)
   item.module = ModuleName;
 
   // Extract each file type from 'Type' literal
-  unsigned int pos = item.filter.find("*.");
+  std::string::size_type pos = item.filter.find("*.");
   while ( pos != std::string::npos )
   {
     unsigned int next = item.filter.find_first_of(" )", pos+1);
