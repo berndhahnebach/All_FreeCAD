@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,34 +21,61 @@
  ***************************************************************************/
 
 
-#ifndef PART_FEATUREPARTLINE_H
-#define PART_FEATUREPARTLINE_H
+#ifndef PART_LINEPY_H
+#define PART_LINEPY_H
 
-#include <App/PropertyGeo.h>
-
-#include "PartFeature.h"
+#include <Base/PyExportImp.h>
+#include "PropertyLine.h"
 
 namespace Part
 {
 
-class Line : public Part::Feature
+/** The PropertyLine wrapper class for Python.
+ * @author Werner Mayer
+ */
+class AppPartExport LinePy : public Base::PyObjectBase
 {
-  PROPERTY_HEADER(Part::Line);
+	/** always start with Py_Header */
+	Py_Header;
+
+protected:
+	/// Destruction 
+	~LinePy();
 
 public:
-  Line();
-  virtual ~Line();
-
-  App::PropertyVector b;
-  App::PropertyVector e;
-
-  /** @name methods override feature */
+  /** @name Construction */
   //@{
-  /// recalculate the Feature
-  virtual int execute(void);
+	/// Constructor 
+  LinePy(PyTypeObject *T = &Type);
+	/// Constructor 
+  LinePy(const Line3f& cLine, PyTypeObject *T = &LinePy::Type);
+  /// For construction in Python 
+  static PyObject *PyMake(PyTypeObject*, PyObject*, PyObject*);
+  /// For initialization in Python 
+  static int PyInit(PyObject*, PyObject*, PyObject*);
   //@}
+
+  //---------------------------------------------------------------------
+  // Python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
+  //---------------------------------------------------------------------
+
+  /** @name Python export */
+  //@{
+  /// Representation
+  PyObject *_repr(void);  				
+  /// Get attributes
+	PyObject *_getattr(char *attr);
+  /// Set attributes
+	int _setattr(char *attr, PyObject *value);
+  //@}
+
+	const Line3f value(void) const {return _Line;}
+	void setValue(const Line3f& line) {_Line = line;}
+
+protected:
+	Line3f _Line;
 };
 
 } //namespace Part
 
-#endif // PART_FEATUREPARTLINE_H
+#endif // PART_LINEPY_H
