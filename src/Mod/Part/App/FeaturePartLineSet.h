@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,26 +21,26 @@
  ***************************************************************************/
 
 
-#ifndef PART_FEATUREPARTLINE_H
-#define PART_FEATUREPARTLINE_H
+#ifndef PART_FEATUREPARTLINESET_H
+#define PART_FEATUREPARTLINESET_H
 
 #include <App/PropertyGeo.h>
 
 #include "PartFeature.h"
+#include "PropertyLine.h"
 
 namespace Part
 {
 
-class Line : public Part::Feature
+class LineSet : public Part::Feature
 {
-  PROPERTY_HEADER(Part::Line);
+  PROPERTY_HEADER(Part::LineSet);
 
 public:
-  Line();
-  virtual ~Line();
+  LineSet();
+  virtual ~LineSet();
 
-  App::PropertyVector b;
-  App::PropertyVector e;
+  PropertyLineSet Lines;
 
   /** @name methods override feature */
   //@{
@@ -51,4 +51,4 @@ public:
 
 } //namespace Part
 
-#endif // PART_FEATUREPARTLINE_H
+#endif // PART_FEATUREPARTLINESET_H

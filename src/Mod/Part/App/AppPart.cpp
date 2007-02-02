@@ -23,8 +23,11 @@
 #include "FeaturePartImportBrep.h"
 #include "FeaturePartCurveNet.h"
 #include "FeaturePartLine.h"
+#include "FeaturePartLineSet.h"
 #include "FeaturePartPolygon.h"
+#include "PropertyLine.h"
 #include "TopologyPy.h"
+#include "LinePy.h"
 
 extern struct PyMethodDef Part_methods[];
 
@@ -43,16 +46,25 @@ void AppPartExport initPart() {
   PyObject* pyPartType = (PyObject *)&Part::TopoShapePy::Type;
   if(PyType_Ready(&Part::TopoShapePy::Type) < 0) return;
   PyModule_AddObject(partModule, "shape", pyPartType);
+  // Append line() method
+  PyObject* pyLineType = (PyObject *)&Part::LinePy::Type;
+  if(PyType_Ready(&Part::LinePy::Type) < 0) return;
+  PyModule_AddObject(partModule, "line", pyLineType);
 
-  Part::Feature   ::init();
-  Part::Box       ::init();
-  Part::Cut       ::init();
-  Part::ImportStep::init();
-  Part::ImportIges::init();
-  Part::ImportBrep::init();
-  Part::CurveNet  ::init();
-  Part::Line      ::init();
-  Part::Polygon   ::init();
+  Part::PropertyPartShape   ::init();
+  Part::PropertyLine        ::init();
+  Part::PropertyLineSet     ::init();
+
+  Part::Feature             ::init();
+  Part::Box                 ::init();
+  Part::Cut                 ::init();
+  Part::ImportStep          ::init();
+  Part::ImportIges          ::init();
+  Part::ImportBrep          ::init();
+  Part::CurveNet            ::init();
+  Part::Line                ::init();
+  Part::LineSet             ::init();
+  Part::Polygon             ::init();
 
 	return;
 }
