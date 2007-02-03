@@ -233,9 +233,9 @@ unsigned long MeshGrid::Inside (const Base::BoundBox3f &rclBB, std::set<unsigned
 
 bool MeshGrid::CheckPosition (const Base::Vector3f &rclPoint, unsigned long &rulX, unsigned long &rulY, unsigned long &rulZ) const
 {
-  rulX = unsigned long((rclPoint.x - _fMinX) / _fGridLenX);
-  rulY = unsigned long((rclPoint.y - _fMinY) / _fGridLenY);
-  rulZ = unsigned long((rclPoint.z - _fMinZ) / _fGridLenZ);
+  rulX = (unsigned long)((rclPoint.x - _fMinX) / _fGridLenX);
+  rulY = (unsigned long)((rclPoint.y - _fMinY) / _fGridLenY);
+  rulZ = (unsigned long)((rclPoint.z - _fMinZ) / _fGridLenZ);
 
   if ( (rulX < _ulCtGridsX) && (rulY < _ulCtGridsY) && (rulZ < _ulCtGridsZ) )
     return true;

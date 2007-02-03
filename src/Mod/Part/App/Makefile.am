@@ -18,8 +18,12 @@ libPart_la_SOURCES=\
 		FeaturePartImportStep.h \
 		FeaturePartLine.cpp \
 		FeaturePartLine.h \
+		FeaturePartLineSet.cpp \
+		FeaturePartLineSet.h \
 		FeaturePartPolygon.cpp \
 		FeaturePartPolygon.h \
+		LinePy.cpp \
+		LinePy.h \
 		PartAlgos.cpp \
 		PartAlgos.h \
 		PartFeature.cpp \
@@ -28,6 +32,8 @@ libPart_la_SOURCES=\
 		PartFeaturePy.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		PropertyLine.cpp \
+		PropertyLine.h \
 		TopologyPy.cpp \
 		TopologyPy.h
 

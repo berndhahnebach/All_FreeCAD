@@ -91,7 +91,7 @@ unsigned int PropertyLine::getMemSize (void) const
 void PropertyLine::Save (Base::Writer &writer) const
 {
   writer << writer.ind() << "<PropertyVector bX=\"" <<  _line.b.x << "\" bY=\"" <<  _line.b.y << "\" bZ=\"" <<  _line.b.z 
-         << writer.ind() << "\" eX=\"" <<  _line.e.x << "\" eY=\"" <<  _line.e.y << "\" eZ=\"" <<  _line.e.z <<"\"/>" << endl;
+         << writer.ind() << "\" eX=\"" <<  _line.e.x << "\" eY=\"" <<  _line.e.y << "\" eZ=\"" <<  _line.e.z <<"\"/>" << std::endl;
 }
 
 void PropertyLine::Restore(Base::XMLReader &reader)
