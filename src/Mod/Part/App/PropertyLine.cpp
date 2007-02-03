@@ -65,7 +65,7 @@ void PropertyLine::setPyObject(PyObject *value)
    	LinePy  *pcObject = (LinePy*)value;
     setValue( pcObject->value() );
   } else {
-    throw Base::Exception("Type error: Argument must be Line");
+    throw Base::Exception("Argument must be Line");
   }
 }
 
