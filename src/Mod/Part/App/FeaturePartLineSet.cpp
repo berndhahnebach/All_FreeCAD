@@ -28,6 +28,7 @@
 # include <BRepBuilderAPI_MakeEdge.hxx>
 # include <Geom_Line.hxx>
 # include <gp_Pnt.hxx>
+# include <TopoDS_Compound.hxx>
 # include <TopoDS_Edge.hxx>
 #endif
 
