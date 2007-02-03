@@ -1,996 +1,845 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>MeshGui::DlgRegularSolid</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>MeshGui::DlgRegularSolid</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>265</width>
-            <height>319</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Regular Solid</string>
-    </property>
-    <property name="sizeGripEnabled">
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>MeshGui::DlgRegularSolid</class>
+ <widget class="QDialog" name="MeshGui::DlgRegularSolid" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>265</width>
+    <height>319</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Regular Solid</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>10</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="createSolidButton" >
+       <property name="text" >
+        <string>&amp;Create</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+C</string>
+       </property>
+       <property name="autoDefault" >
         <bool>true</bool>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonClose" >
+       <property name="text" >
+        <string>Cl&amp;ose</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+O</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="groupBox1" >
+     <property name="title" >
+      <string>Solid:</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>10</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QComboBox" name="comboBox1" >
+        <item>
+         <property name="text" >
+          <string>Cube</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Cylinder</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Cone</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Sphere</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Ellipsoid</string>
+         </property>
+        </item>
+        <item>
+         <property name="text" >
+          <string>Torus</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QStackedWidget" name="widgetStack2" >
+        <property name="currentIndex" >
+         <number>0</number>
         </property>
-        <widget class="QLayoutWidget" row="1" column="0">
-            <property name="name">
-                <cstring>Layout1</cstring>
+        <widget class="QWidget" name="WStackPage1" >
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
             </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <spacer>
-                    <property name="name">
-                        <cstring>Horizontal Spacing2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonCreate</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Create</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonClose</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cl&amp;ose</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+O</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item row="2" column="0" >
+             <widget class="QLabel" name="textLabel4" >
+              <property name="text" >
+               <string>Height:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" >
+             <widget class="QDoubleSpinBox" name="boxHeight" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
+              <property name="value" >
+               <double>10</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="boxLength" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
+              <property name="minimum" >
+               <double>0</double>
+              </property>
+              <property name="value" >
+               <double>10</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="textLabel2" >
+              <property name="text" >
+               <string>Length:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" >
+             <widget class="QDoubleSpinBox" name="boxWidth" >
+              <property name="maximum" >
+               <double>1000</double>
+              </property>
+              <property name="value" >
+               <double>10</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="textLabel3" >
+              <property name="text" >
+               <string>Width:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>51</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </widget>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>groupBox1</cstring>
+        <widget class="QWidget" name="WStackPage2" >
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
             </property>
-            <property name="title">
-                <string>Solid:</string>
+            <property name="spacing" >
+             <number>6</number>
             </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QComboBox" row="0" column="0">
-                    <item>
-                        <property name="text">
-                            <string>Cube</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Cylinder</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Cone</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Sphere</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Ellipsoid</string>
-                        </property>
-                    </item>
-                    <item>
-                        <property name="text">
-                            <string>Torus</string>
-                        </property>
-                    </item>
-                    <property name="name">
-                        <cstring>comboBox1</cstring>
-                    </property>
-                </widget>
-                <widget class="QWidgetStack" row="1" column="0">
-                    <property name="name">
-                        <cstring>widgetStack2</cstring>
-                    </property>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>0</number>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout2</cstring>
-                                </property>
-                                <grid>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel" row="2" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel4</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Height:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="2" column="1">
-                                        <property name="name">
-                                            <cstring>boxHeight</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>10</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="0" column="1">
-                                        <property name="name">
-                                            <cstring>boxLength</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>10</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="0" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel2</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Length:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="1" column="1">
-                                        <property name="name">
-                                            <cstring>boxWidth</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>10</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="1" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel3</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Width:</string>
-                                        </property>
-                                    </widget>
-                                </grid>
-                            </widget>
-                            <spacer row="1" column="0">
-                                <property name="name">
-                                    <cstring>spacer5</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>51</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </grid>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>1</number>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout7</cstring>
-                                </property>
-                                <grid>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel" row="0" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel5</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Radius:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="0" column="1">
-                                        <property name="name">
-                                            <cstring>cylinderRadius</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>2</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="1" column="1">
-                                        <property name="name">
-                                            <cstring>cylinderLength</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>10</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="1" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel6</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Length:</string>
-                                        </property>
-                                    </widget>
-                                </grid>
-                            </widget>
-                            <widget class="Line" row="1" column="0">
-                                <property name="name">
-                                    <cstring>line1</cstring>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>HLine</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Sunken</enum>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget" row="2" column="0">
-                                <property name="name">
-                                    <cstring>layout10</cstring>
-                                </property>
-                                <grid>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QCheckBox" row="2" column="0" rowspan="1" colspan="2">
-                                        <property name="name">
-                                            <cstring>cylinderClosed</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Closed</string>
-                                        </property>
-                                        <property name="checked">
-                                            <bool>true</bool>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::SpinBox" row="1" column="1">
-                                        <property name="name">
-                                            <cstring>cylinderCount</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>429496729</number>
-                                        </property>
-                                        <property name="minValue">
-                                            <number>3</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>50</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="1" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel8</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Sampling:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="0" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel7</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Edge length:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="0" column="1">
-                                        <property name="name">
-                                            <cstring>cylinderEdgeLength</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>1</number>
-                                        </property>
-                                    </widget>
-                                </grid>
-                            </widget>
-                            <spacer row="3" column="0">
-                                <property name="name">
-                                    <cstring>spacer6</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>31</width>
-                                        <height>81</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </grid>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>2</number>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout4</cstring>
-                                </property>
-                                <grid>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="Gui::FloatSpinBox" row="1" column="1" rowspan="2" colspan="1">
-                                        <property name="name">
-                                            <cstring>coneRadius2</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>4</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="2" column="0" rowspan="2" colspan="1">
-                                        <property name="name">
-                                            <cstring>textLabel11</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Length:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="3" column="1">
-                                        <property name="name">
-                                            <cstring>coneLength</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>10</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="0" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel9</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Radius 1:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="1" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel10</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Radius 2:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="0" column="1">
-                                        <property name="name">
-                                            <cstring>coneRadius1</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>2</number>
-                                        </property>
-                                    </widget>
-                                </grid>
-                            </widget>
-                            <widget class="Line" row="1" column="0">
-                                <property name="name">
-                                    <cstring>line2</cstring>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>HLine</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Sunken</enum>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget" row="2" column="0">
-                                <property name="name">
-                                    <cstring>layout9</cstring>
-                                </property>
-                                <grid>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="Gui::FloatSpinBox" row="0" column="1">
-                                        <property name="name">
-                                            <cstring>coneEdgeLength</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>1</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="1" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel13</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Sampling:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QCheckBox" row="2" column="0">
-                                        <property name="name">
-                                            <cstring>coneClosed</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Closed</string>
-                                        </property>
-                                        <property name="checked">
-                                            <bool>true</bool>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::SpinBox" row="1" column="1">
-                                        <property name="name">
-                                            <cstring>coneCount</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>429496729</number>
-                                        </property>
-                                        <property name="minValue">
-                                            <number>3</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>50</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="0" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel12</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Edge length:</string>
-                                        </property>
-                                    </widget>
-                                </grid>
-                            </widget>
-                            <spacer row="3" column="0">
-                                <property name="name">
-                                    <cstring>spacer7</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>31</width>
-                                        <height>91</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </grid>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>3</number>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout13</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel14</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Radius:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox">
-                                        <property name="name">
-                                            <cstring>sphereRadius</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>5</number>
-                                        </property>
-                                    </widget>
-                                </hbox>
-                            </widget>
-                            <widget class="Line" row="1" column="0">
-                                <property name="name">
-                                    <cstring>line3</cstring>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>HLine</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Sunken</enum>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget" row="2" column="0">
-                                <property name="name">
-                                    <cstring>layout14</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel15</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Sampling:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::SpinBox">
-                                        <property name="name">
-                                            <cstring>sphereCount</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>429496729</number>
-                                        </property>
-                                        <property name="minValue">
-                                            <number>3</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>50</number>
-                                        </property>
-                                    </widget>
-                                </hbox>
-                            </widget>
-                            <spacer row="3" column="0">
-                                <property name="name">
-                                    <cstring>spacer8</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>21</width>
-                                        <height>151</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </grid>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>4</number>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout5</cstring>
-                                </property>
-                                <grid>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="Gui::FloatSpinBox" row="1" column="1">
-                                        <property name="name">
-                                            <cstring>ellipsoidRadius2</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>4</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="1" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel17</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Radius 2:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="0" column="1">
-                                        <property name="name">
-                                            <cstring>ellipsoidRadius1</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>2</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="0" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel16</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Radius 1:</string>
-                                        </property>
-                                    </widget>
-                                </grid>
-                            </widget>
-                            <widget class="Line" row="1" column="0">
-                                <property name="name">
-                                    <cstring>line4</cstring>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>HLine</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Sunken</enum>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget" row="2" column="0">
-                                <property name="name">
-                                    <cstring>layout11</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel18</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Sampling:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::SpinBox">
-                                        <property name="name">
-                                            <cstring>ellipsoidCount</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>429496729</number>
-                                        </property>
-                                        <property name="minValue">
-                                            <number>3</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>50</number>
-                                        </property>
-                                    </widget>
-                                </hbox>
-                            </widget>
-                            <spacer row="3" column="0">
-                                <property name="name">
-                                    <cstring>spacer9</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>31</width>
-                                        <height>81</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </grid>
-                    </widget>
-                    <widget class="QWidget">
-                        <property name="name">
-                            <cstring>WStackPage</cstring>
-                        </property>
-                        <attribute name="id">
-                            <number>5</number>
-                        </attribute>
-                        <grid>
-                            <property name="name">
-                                <cstring>unnamed</cstring>
-                            </property>
-                            <widget class="QLayoutWidget" row="0" column="0">
-                                <property name="name">
-                                    <cstring>layout6</cstring>
-                                </property>
-                                <grid>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel" row="1" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel20</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Radius 2:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="QLabel" row="0" column="0">
-                                        <property name="name">
-                                            <cstring>textLabel19</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Radius 1:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="1" column="1">
-                                        <property name="name">
-                                            <cstring>toroidRadius2</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>2</number>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::FloatSpinBox" row="0" column="1">
-                                        <property name="name">
-                                            <cstring>toroidRadius1</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>1000</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>10</number>
-                                        </property>
-                                    </widget>
-                                </grid>
-                            </widget>
-                            <widget class="Line" row="1" column="0">
-                                <property name="name">
-                                    <cstring>line5</cstring>
-                                </property>
-                                <property name="frameShape">
-                                    <enum>HLine</enum>
-                                </property>
-                                <property name="frameShadow">
-                                    <enum>Sunken</enum>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Horizontal</enum>
-                                </property>
-                            </widget>
-                            <widget class="QLayoutWidget" row="2" column="0">
-                                <property name="name">
-                                    <cstring>layout12</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>textLabel21</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Sampling:</string>
-                                        </property>
-                                    </widget>
-                                    <widget class="Gui::SpinBox">
-                                        <property name="name">
-                                            <cstring>toroidCount</cstring>
-                                        </property>
-                                        <property name="maxValue">
-                                            <number>429496729</number>
-                                        </property>
-                                        <property name="minValue">
-                                            <number>3</number>
-                                        </property>
-                                        <property name="value">
-                                            <number>50</number>
-                                        </property>
-                                    </widget>
-                                </hbox>
-                            </widget>
-                            <spacer row="3" column="0">
-                                <property name="name">
-                                    <cstring>spacer10</cstring>
-                                </property>
-                                <property name="orientation">
-                                    <enum>Vertical</enum>
-                                </property>
-                                <property name="sizeType">
-                                    <enum>Expanding</enum>
-                                </property>
-                                <property name="sizeHint">
-                                    <size>
-                                        <width>20</width>
-                                        <height>91</height>
-                                    </size>
-                                </property>
-                            </spacer>
-                        </grid>
-                    </widget>
-                </widget>
-            </grid>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="textLabel5" >
+              <property name="text" >
+               <string>Radius:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="cylinderRadius" >
+              <property name="value" >
+               <double>2</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" >
+             <widget class="QDoubleSpinBox" name="cylinderLength" >
+              <property name="value" >
+               <double>10</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="textLabel6" >
+              <property name="text" >
+               <string>Length:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line1" >
+            <property name="frameShape" >
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item row="2" column="0" colspan="2" >
+             <widget class="QCheckBox" name="cylinderClosed" >
+              <property name="text" >
+               <string>Closed</string>
+              </property>
+              <property name="checked" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" >
+             <widget class="Gui::SpinBox" name="cylinderCount" >
+              <property name="value" >
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="textLabel8" >
+              <property name="text" >
+               <string>Sampling:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="textLabel7" >
+              <property name="text" >
+               <string>Edge length:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="cylinderEdgeLength" >
+              <property name="maximum" >
+               <double>10</double>
+              </property>
+              <property name="value" >
+               <double>1</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>31</width>
+              <height>81</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </widget>
-    </grid>
-</widget>
-<customwidgets>
-</customwidgets>
-<connections>
-    <connection>
-        <sender>buttonClose</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgRegularSolid</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>comboBox1</sender>
-        <signal>activated(int)</signal>
-        <receiver>widgetStack2</receiver>
-        <slot>raiseWidget(int)</slot>
-    </connection>
-    <connection>
-        <sender>buttonCreate</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgRegularSolid</receiver>
-        <slot>buildSolid()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>comboBox1</tabstop>
-    <tabstop>boxLength</tabstop>
-    <tabstop>boxWidth</tabstop>
-    <tabstop>boxHeight</tabstop>
-    <tabstop>cylinderRadius</tabstop>
-    <tabstop>cylinderLength</tabstop>
-    <tabstop>cylinderEdgeLength</tabstop>
-    <tabstop>cylinderCount</tabstop>
-    <tabstop>cylinderClosed</tabstop>
-    <tabstop>coneRadius1</tabstop>
-    <tabstop>coneRadius2</tabstop>
-    <tabstop>coneLength</tabstop>
-    <tabstop>coneEdgeLength</tabstop>
-    <tabstop>coneCount</tabstop>
-    <tabstop>coneClosed</tabstop>
-    <tabstop>sphereRadius</tabstop>
-    <tabstop>sphereCount</tabstop>
-    <tabstop>ellipsoidRadius1</tabstop>
-    <tabstop>ellipsoidRadius2</tabstop>
-    <tabstop>ellipsoidCount</tabstop>
-    <tabstop>toroidRadius1</tabstop>
-    <tabstop>toroidRadius2</tabstop>
-    <tabstop>toroidCount</tabstop>
-    <tabstop>buttonCreate</tabstop>
-    <tabstop>buttonClose</tabstop>
-</tabstops>
-<slots>
-    <slot>buildSolid()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-</includehints>
-</UI>
+        <widget class="QWidget" name="WStackPage3" >
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item rowspan="2" row="1" column="1" >
+             <widget class="QDoubleSpinBox" name="coneRadius2" >
+              <property name="value" >
+               <double>4</double>
+              </property>
+             </widget>
+            </item>
+            <item rowspan="2" row="2" column="0" >
+             <widget class="QLabel" name="textLabel11" >
+              <property name="text" >
+               <string>Length:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1" >
+             <widget class="QDoubleSpinBox" name="coneLength" >
+              <property name="value" >
+               <double>10</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="textLabel9" >
+              <property name="text" >
+               <string>Radius 1:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="textLabel10" >
+              <property name="text" >
+               <string>Radius 2:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="coneRadius1" >
+              <property name="value" >
+               <double>2</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line2" >
+            <property name="frameShape" >
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="coneEdgeLength" >
+              <property name="value" >
+               <double>1</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="textLabel13" >
+              <property name="text" >
+               <string>Sampling:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" >
+             <widget class="QCheckBox" name="coneClosed" >
+              <property name="text" >
+               <string>Closed</string>
+              </property>
+              <property name="checked" >
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" >
+             <widget class="Gui::SpinBox" name="coneCount" >
+              <property name="value" >
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="textLabel12" >
+              <property name="text" >
+               <string>Edge length:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>31</width>
+              <height>91</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="WStackPage4" >
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="textLabel14" >
+              <property name="text" >
+               <string>Radius:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="sphereRadius" >
+              <property name="value" >
+               <double>5</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line3" >
+            <property name="frameShape" >
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="textLabel15" >
+              <property name="text" >
+               <string>Sampling:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Gui::SpinBox" name="sphereCount" >
+              <property name="value" >
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>21</width>
+              <height>151</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="WStackPage5" >
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item row="1" column="1" >
+             <widget class="QDoubleSpinBox" name="ellipsoidRadius2" >
+              <property name="value" >
+               <double>4</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="textLabel17" >
+              <property name="text" >
+               <string>Radius 2:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="ellipsoidRadius1" >
+              <property name="value" >
+               <double>2</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="textLabel16" >
+              <property name="text" >
+               <string>Radius 1:</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line4" >
+            <property name="frameShape" >
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="textLabel18" >
+              <property name="text" >
+               <string>Sampling:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Gui::SpinBox" name="ellipsoidCount" >
+              <property name="value" >
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>31</width>
+              <height>81</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="WStackPage6" >
+         <layout class="QGridLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item row="0" column="0" >
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="textLabel20" >
+              <property name="text" >
+               <string>Radius 2:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="textLabel19" >
+              <property name="text" >
+               <string>Radius 1:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" >
+             <widget class="QDoubleSpinBox" name="toroidRadius2" >
+              <property name="value" >
+               <double>2</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="toroidRadius1" >
+              <property name="value" >
+               <double>10</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" >
+           <widget class="Line" name="line5" >
+            <property name="frameShape" >
+             <enum>QFrame::HLine</enum>
+            </property>
+            <property name="frameShadow" >
+             <enum>QFrame::Sunken</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" >
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="textLabel21" >
+              <property name="text" >
+               <string>Sampling:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="Gui::SpinBox" name="toroidCount" >
+              <property name="value" >
+               <number>50</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="3" column="0" >
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType" >
+             <enum>QSizePolicy::Expanding</enum>
+            </property>
+            <property name="sizeHint" >
+             <size>
+              <width>20</width>
+              <height>91</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::SpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>Gui/SpinBox.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>comboBox1</tabstop>
+  <tabstop>boxLength</tabstop>
+  <tabstop>boxWidth</tabstop>
+  <tabstop>boxHeight</tabstop>
+  <tabstop>cylinderRadius</tabstop>
+  <tabstop>cylinderLength</tabstop>
+  <tabstop>cylinderEdgeLength</tabstop>
+  <tabstop>cylinderCount</tabstop>
+  <tabstop>cylinderClosed</tabstop>
+  <tabstop>coneRadius1</tabstop>
+  <tabstop>coneRadius2</tabstop>
+  <tabstop>coneLength</tabstop>
+  <tabstop>coneEdgeLength</tabstop>
+  <tabstop>coneCount</tabstop>
+  <tabstop>coneClosed</tabstop>
+  <tabstop>sphereRadius</tabstop>
+  <tabstop>sphereCount</tabstop>
+  <tabstop>ellipsoidRadius1</tabstop>
+  <tabstop>ellipsoidRadius2</tabstop>
+  <tabstop>ellipsoidCount</tabstop>
+  <tabstop>toroidRadius1</tabstop>
+  <tabstop>toroidRadius2</tabstop>
+  <tabstop>toroidCount</tabstop>
+  <tabstop>createSolidButton</tabstop>
+  <tabstop>buttonClose</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>comboBox1</sender>
+   <signal>activated(int)</signal>
+   <receiver>widgetStack2</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>74</x>
+     <y>48</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>230</x>
+     <y>116</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonClose</sender>
+   <signal>clicked()</signal>
+   <receiver>MeshGui::DlgRegularSolid</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>222</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>52</x>
+     <y>296</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

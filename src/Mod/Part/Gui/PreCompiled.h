@@ -89,93 +89,13 @@
 
  
 // Qt Toolkit
-#include <qaccel.h>
-#include <qaction.h>
-#include <qapplication.h>
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qclipboard.h>
-#include <qcolordialog.h>
-#include <qcombobox.h>
-#include <qdatetimeedit.h>
-#include <qdragobject.h>
-#include <qdrawutil.h>
-#include <qevent.h>
-#include <qfile.h>
-#include <qfiledialog.h>
-#include <qframe.h>
-#include <qfontdatabase.h>
-#include <qfontdialog.h>
-#include <qftp.h>
-#include <qgl.h>
-#include <qhbox.h>
-#include <qheader.h>
-#include <qhttp.h>
-#include <qiconview.h>
-#include <qimage.h>
-#include <qinputdialog.h>
-#include <qkeycode.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qlistbox.h>
-#include <qlistview.h>
-#include <qmainwindow.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <qmetaobject.h>
-#include <qmime.h>
-#include <qmovie.h>
-#include <qmultilineedit.h>
-#include <qnamespace.h>
-#include <qobjectlist.h>
-#include <qpaintdevicemetrics.h>
-#include <qpainter.h>
-#include <qpalette.h>
-#include <qpixmap.h>
-#include <qpopupmenu.h>
-#include <qprinter.h>
-#include <qprocess.h>
-#include <qprogressbar.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qrangecontrol.h>
-#include <qrect.h>
-#include <qregexp.h>
-#include <qscrollbar.h>
-#include <qsimplerichtext.h>
-#include <qslider.h>
-#include <qspinbox.h>
-#include <qsplashscreen.h>
-#include <qsplitter.h>
-#include <qstatusbar.h>
-#include <qstyle.h>
-#include <qstylefactory.h>
-#include <qstylesheet.h>
-#include <qsyntaxhighlighter.h>
-#include <qtabbar.h>
-#include <qtabwidget.h>
-#include <qtextcodec.h>
-#include <qtextedit.h>
-#include <qtextbrowser.h>
-#include <qtextstream.h>
-#include <qthread.h>
-#include <qtimer.h>
-#include <qtoolbar.h>
-#include <qtoolbox.h>
-#include <qtoolbutton.h>
-#include <qtooltip.h>
-#include <qtranslator.h>
-#include <qurl.h>
-#include <qvalidator.h>
-#include <qvaluestack.h>
-#include <qvariant.h>
-#include <qvbox.h>
-#include <qwhatsthis.h>
-#include <qwidget.h>
-#include <qwidgetfactory.h>
-#include <qwidgetstack.h>
-#include <qworkspace.h>
+#ifndef __Qt4All__
+# include <Gui/Qt4All.h>
+#endif
+
+#ifndef __Qt3All__
+# include <Gui/Qt3All.h>
+#endif
 
 
 

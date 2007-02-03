@@ -24,8 +24,8 @@
 #ifndef TOOLS_H__
 #define TOOLS_H__
 
-#include <qstring.h>
-#include <qpixmap.h>
+#include <QtCore/qstring.h>
+#include <QtGui/qpixmap.h>
 #include <Inventor/fields/SoSFImage.h>
 
 namespace Gui {

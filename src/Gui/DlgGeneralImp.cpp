@@ -22,25 +22,17 @@
 
 
 #include "PreCompiled.h"
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qstyle.h>
-# include <qstylefactory.h>
-# include <qtabwidget.h>
-#endif
 
 #include "DlgGeneralImp.h"
 #include "Application.h"
 #include "Command.h"
-#include "CommandLine.h"
 #include "DockWindow.h"
 #include "MainWindow.h"
 #include "PrefWidgets.h"
-#include "Language/LanguageFactory.h"
-#include "Language/Translator.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
-#define new DEBUG_CLIENTBLOCK
+#include "Language/Translator.h"
+
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgGeneralImp */
@@ -52,9 +44,10 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
-    : DlgGeneralBase( parent, name, fl )
+DlgGeneralImp::DlgGeneralImp( QWidget* parent )
+  : PreferencePage( parent ), watched(0)
 {
+  this->setupUi(this);
   // fills the combo box with all available workbenches
   QStringList work = Application::Instance->workbenches();
   work.sort();
@@ -79,11 +72,12 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
   DockWindow* dw = DockWindowManager::instance()->getDockWindow("Report View");
   if ( dw )
   {
-    QTabWidget* tab = (QTabWidget*)(dw->child ( "TabWidget", "QTabWidget" ));
-    if ( tab )
+    watched = dw->findChild<QTabWidget*>();
+    if ( watched )
     {
-      for (int i=0; i<tab->count(); i++)
-        AutoloadTabCombo->insertItem( tab->label(i) );
+      for (int i=0; i<watched->count(); i++)
+        AutoloadTabCombo->insertItem( watched->label(i) );
+      watched->installEventFilter(this);
     }
   }
 }
@@ -93,34 +87,23 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent,  const char* name, WFlags fl )
  */
 DlgGeneralImp::~DlgGeneralImp()
 {
-    // no need to delete child widgets, Qt does it all for us
+  // no need to delete child widgets, Qt does it all for us
+  if (watched)
+    watched->removeEventFilter(this);
 }
 
 /** Sets the size of the recent file list (MRU) in the
  * user parameters.
  * @see StdCmdMRU
  */
-void DlgGeneralImp::setMRUSize()
+void DlgGeneralImp::setRecentFileSize()
 {
   CommandManager& rclMan = Application::Instance->commandManager();
-  Command* pCmd = rclMan.getCommandByName("Std_MRU");
+  Command* pCmd = rclMan.getCommandByName("Std_RecentFiles");
   if (pCmd)
   {
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("RecentFiles");
-    ((StdCmdMRU*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
-  }
-}
-
-/** Searches for all registered languages and insert them into a combo box */
-void DlgGeneralImp::insertLanguages()
-{
-  QStringList list = Gui::LanguageFactory().getRegisteredLanguages();
-
-  Languages->insertItem("English");
-
-  for ( QStringList::Iterator it = list.begin(); it != list.end(); ++it )
-  {
-    Languages->insertItem(*it);
+    ((StdCmdRecentFiles*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
   }
 }
 
@@ -130,24 +113,19 @@ void DlgGeneralImp::saveSettings()
   AutoloadTabCombo->onSave();
   RecentFiles->onSave();
   SplashScreen->onSave();
-  ShowCmdLine->onSave();
-  SizeCmdLine->onSave();
   AllowDragMenu->onSave();
-  UsesBigPixmaps->onSave();
 
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
   hGrp->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
 
   getMainWindow()->updateStyle();
-  getMainWindow()->updatePixmapsSize();
-  setMRUSize();
-  CommandLine().show();
+  setRecentFileSize();
 
   QString language = hGrp->GetASCII("Language", "English").c_str();
   if ( QString::compare( Languages->currentText(), language ) != 0 )
   {
     hGrp->SetASCII("Language", Languages->currentText().latin1());
-    Gui::Translator::setLanguage( Languages->currentText() );
+    Translator::instance()->installLanguage( Languages->currentText() );
   }
 }
 
@@ -162,45 +140,53 @@ void DlgGeneralImp::loadSettings()
   AutoloadTabCombo->onRestore();
   RecentFiles->onRestore();
   SplashScreen->onRestore();
-  ShowCmdLine->onRestore();
-  SizeCmdLine->onRestore();
   AllowDragMenu->onRestore();
-  UsesBigPixmaps->onRestore();
 
   // fill up styles
   //
   QStringList styles = QStyleFactory::keys ();
   WindowStyle->insertStringList( styles );
-  QString style = QApplication::style().name();
-  WindowStyle->setCurrentText( style );
+  QString style = QApplication::style()->objectName();
+  int i=0;
+  for (QStringList::ConstIterator it = styles.begin(); it != styles.end(); ++it, i++) {
+    if (style == (*it).toLower()) {
+      WindowStyle->setCurrentIndex( i );
+      break;
+    }
+  }
 
   // search for the language files
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
   QString language = hGrp->GetASCII("Language", "English").c_str();
-  insertLanguages();
-  Languages->setCurrentText( language );
-}
-
-void DlgGeneralImp::languageChange()
-{
-  DlgGeneralBase::languageChange();
-
-  // do not save the content but the current item only
-  int pos = AutoloadTabCombo->currentItem();
-  AutoloadTabCombo->clear();
-  DockWindow* dw = DockWindowManager::instance()->getDockWindow("Report View");
-  if ( dw )
-  {
-    QTabWidget* tab = (QTabWidget*)(dw->child ( "TabWidget", "QTabWidget" ));
-    if ( tab )
-    {
-      for (int i=0; i<tab->count(); i++)
-        AutoloadTabCombo->insertItem( tab->label(i) );
-      AutoloadTabCombo->setCurrentItem( pos );
+  Languages->addItem("English"); 
+  Languages->addItems(Translator::instance()->supportedLanguages());
+  int ct=Languages->count();
+  for (int i=0; i<ct; i++) {
+    if (Languages->text(i) == language) {
+      Languages->setCurrentIndex(i);
+      break;
     }
   }
 }
 
-#include "DlgGeneral.cpp"
-#include "moc_DlgGeneral.cpp"
+void DlgGeneralImp::changeEvent(QEvent *e)
+{
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi(this);
+  } else {
+    QWidget::changeEvent(e);
+  }
+}
+
+bool DlgGeneralImp::eventFilter(QObject* o, QEvent* e)
+{
+  // make sure that report tabs have been translated
+  if (o == watched && e->type() == QEvent::LanguageChange) {
+    for (int i=0; i<watched->count(); i++)
+      AutoloadTabCombo->setItemText( i, watched->tabText(i) );
+  }
+
+  return QWidget::eventFilter(o, e);
+}
+
 #include "moc_DlgGeneralImp.cpp"

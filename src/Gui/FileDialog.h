@@ -24,9 +24,13 @@
 #ifndef GUI_FILEDIALOG_H
 #define GUI_FILEDIALOG_H
 
-#include <qfiledialog.h>
-#include <qpixmap.h>
-#include <qscrollview.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 class QCheckBox;
 class QLineEdit;
@@ -38,7 +42,7 @@ namespace Gui {
  * The FileDialog class provides dialogs that allow users to select files or directories.
  * \author Werner Mayer
  */
-class GuiExport FileDialog : public QFileDialog
+class GuiExport FileDialog : public Q3FileDialog
 {
   Q_OBJECT
 
@@ -70,39 +74,43 @@ public:
 protected:
   QString selectedFileName();
 
-protected slots:
+protected Q_SLOTS:
   virtual void accept();
 };
 
 // ======================================================================
 
 /**
- * The FileOptionsDialog class provides an extensible file dialog with an additonal withat either at the right 
- * or at the bottom, that can be shown or hidden with the option button.
+ * The FileOptionsDialog class provides an extensible file dialog with an additonal widget either at the right 
+ * or at the bottom, that can be shown or hidden with the 'Extended' button.
  * @author Werner Mayer
  */
-class GuiExport FileOptionsDialog : public FileDialog
+class GuiExport FileOptionsDialog : public QFileDialog
 {
   Q_OBJECT
 
 public:
-  enum Place { Right, Bottom };
+  enum ExtensionPosition {
+      ExtensionRight    = 0,
+      ExtensionBottom   = 1
+  };
 
-  FileOptionsDialog ( QWidget* parent = 0, const char* name = 0, bool modal = false );
-  FileOptionsDialog ( const QString& dirName, const QString& filter = QString::null, 
-               QWidget* parent = 0, const char* name = 0, bool modal = false );
+  FileOptionsDialog ( QWidget* parent, Qt::WFlags );
   virtual ~FileOptionsDialog();
 
-  void setOptionsWidget( Place pos , QWidget*, bool show = false );
+  void accept();
+
+  void setOptionsWidget( ExtensionPosition pos , QWidget*, bool show = false );
   QWidget* getOptionsWidget() const;
 
-protected slots:
+protected Q_SLOTS:
   void toggleExtension();
 
+Q_SIGNALS:
+  void filterSelected(const QString&);
+
 private:
-  void init();
-  QPushButton* optionsButton;
-  bool _extensionShown;
+  QPushButton* extensionButton;
 };
 
 // ======================================================================
@@ -111,7 +119,7 @@ private:
  * The ImagePreview class draws a pixmap on an area.
  * \author Werner Mayer
  */
-class ImagePreview : public QScrollView
+class ImagePreview : public Q3ScrollView
 {
 public:
   ImagePreview( QWidget *parent=0, const char* name=0 );
@@ -129,14 +137,14 @@ private:
  * The PreviewLabel class is a preview widget that can be used with FileDialogs.
  * \author Werner Mayer
  */
-class PreviewLabel : public QWidget, public QFilePreview
+class PreviewLabel : public QWidget, public Q3FilePreview
 {
   Q_OBJECT
 
 public:
   PreviewLabel( QWidget *parent=0, const char* name =0 );
 
-  void previewUrl( const QUrl &u );
+  void previewUrl( const Q3Url &u );
 
 private:
   ImagePreview* _preview;
@@ -149,7 +157,7 @@ private:
  * The FileIconProvider class provides icons for FileDialog to use.
  * \author Werner Mayer
  */
-class FileIconProvider : public QFileIconProvider
+class FileIconProvider : public Q3FileIconProvider
 {
 public:
   FileIconProvider( QObject * parent = 0, const char * name = 0 );
@@ -178,7 +186,7 @@ class GuiExport FileChooser : public QWidget
 public:
   enum Mode { File, Directory };
 
-  FileChooser ( QWidget * parent = 0, const char * name = 0 );
+  FileChooser ( QWidget * parent = 0 );
   virtual ~FileChooser();
 
   /** 
@@ -202,17 +210,17 @@ public:
    */
   QString buttonText() const;
 
-public slots:
+public Q_SLOTS:
   virtual void setFileName( const QString &fn );
   virtual void setMode( Mode m );
   virtual void setFilter ( const QString & );
   virtual void setButtonText ( const QString & );
 
-signals:
+Q_SIGNALS:
   void fileNameChanged( const QString & );
   void fileNameSelected( const QString & );
 
-private slots:
+private Q_SLOTS:
   void chooseFile();
 
 private:

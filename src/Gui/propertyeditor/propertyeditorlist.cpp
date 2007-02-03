@@ -32,7 +32,7 @@
 #include <App/PropertyStandard.h>
 
 #include "propertyeditorlist.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::PropertyEditor;
 
 
@@ -42,7 +42,7 @@ BoolEditorItem::BoolEditorItem()
 {
 }
 
-BoolEditorItem::BoolEditorItem( QListView* lv, const QString& text, const QVariant& value )
+BoolEditorItem::BoolEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   : EditableItem( lv, value )
 {
   setText( 0, text);
@@ -137,7 +137,7 @@ ListEditorItem::ListEditorItem()
 {
 }
 
-ListEditorItem::ListEditorItem( QListView* lv, const QString& text, const QVariant& value )
+ListEditorItem::ListEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setText( 0, text);
@@ -282,7 +282,7 @@ ComboEditorItem::ComboEditorItem()
 {
 }
 
-ComboEditorItem::ComboEditorItem( QListView* lv, const QString& text, const QVariant& value )
+ComboEditorItem::ComboEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setText( 0, text);
@@ -444,46 +444,48 @@ TYPESYSTEM_SOURCE(Gui::PropertyEditor::CursorEditorItem, Gui::PropertyEditor::Ed
 
 CursorEditorItem::CursorEditorItem()
 {
-  _lst[ QObject::ArrowCursor        ] = QString("Arrow");
-  _lst[ QObject::UpArrowCursor      ] = QString("Up Arrow");
-  _lst[ QObject::CrossCursor        ] = QString("Cross");
-  _lst[ QObject::WaitCursor         ] = QString("Waiting");
-  _lst[ QObject::IbeamCursor        ] = QString("iBeam");
-  _lst[ QObject::SizeVerCursor      ] = QString("Size Vertical");
-  _lst[ QObject::SizeHorCursor      ] = QString("Size Horizontal");
-  _lst[ QObject::SizeBDiagCursor    ] = QString("Size Slash");
-  _lst[ QObject::SizeFDiagCursor    ] = QString("Size Backslash");
-  _lst[ QObject::SizeAllCursor      ] = QString("Size All");
-  _lst[ QObject::BlankCursor        ] = QString("Blank");
-  _lst[ QObject::SplitVCursor       ] = QString("Split Vertical");
-  _lst[ QObject::SplitHCursor       ] = QString("Split Horizontal");
-  _lst[ QObject::PointingHandCursor ] = QString("Pointing Hand");
-  _lst[ QObject::ForbiddenCursor    ] = QString("Forbidden");
-  _lst[ QObject::WhatsThisCursor    ] = QString("What's this");
+  _lst[ Qt::ArrowCursor        ] = QString("Arrow");
+  _lst[ Qt::UpArrowCursor      ] = QString("Up Arrow");
+  _lst[ Qt::CrossCursor        ] = QString("Cross");
+  _lst[ Qt::WaitCursor         ] = QString("Waiting");
+  _lst[ Qt::IBeamCursor        ] = QString("iBeam");
+  _lst[ Qt::SizeVerCursor      ] = QString("Size Vertical");
+  _lst[ Qt::SizeHorCursor      ] = QString("Size Horizontal");
+  _lst[ Qt::SizeBDiagCursor    ] = QString("Size Slash");
+  _lst[ Qt::SizeFDiagCursor    ] = QString("Size Backslash");
+  _lst[ Qt::SizeAllCursor      ] = QString("Size All");
+  _lst[ Qt::BlankCursor        ] = QString("Blank");
+  _lst[ Qt::SplitVCursor       ] = QString("Split Vertical");
+  _lst[ Qt::SplitHCursor       ] = QString("Split Horizontal");
+  _lst[ Qt::PointingHandCursor ] = QString("Pointing Hand");
+  _lst[ Qt::ForbiddenCursor    ] = QString("Forbidden");
+  _lst[ Qt::WhatsThisCursor    ] = QString("What's this");
 }
 
-CursorEditorItem::CursorEditorItem( QListView* lv, const QString& text, const QVariant& value )
+CursorEditorItem::CursorEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
-  _lst[ QObject::ArrowCursor        ] = QString("Arrow");
-  _lst[ QObject::UpArrowCursor      ] = QString("Up Arrow");
-  _lst[ QObject::CrossCursor        ] = QString("Cross");
-  _lst[ QObject::WaitCursor         ] = QString("Waiting");
-  _lst[ QObject::IbeamCursor        ] = QString("iBeam");
-  _lst[ QObject::SizeVerCursor      ] = QString("Size Vertical");
-  _lst[ QObject::SizeHorCursor      ] = QString("Size Horizontal");
-  _lst[ QObject::SizeBDiagCursor    ] = QString("Size Slash");
-  _lst[ QObject::SizeFDiagCursor    ] = QString("Size Backslash");
-  _lst[ QObject::SizeAllCursor      ] = QString("Size All");
-  _lst[ QObject::BlankCursor        ] = QString("Blank");
-  _lst[ QObject::SplitVCursor       ] = QString("Split Vertical");
-  _lst[ QObject::SplitHCursor       ] = QString("Split Horizontal");
-  _lst[ QObject::PointingHandCursor ] = QString("Pointing Hand");
-  _lst[ QObject::ForbiddenCursor    ] = QString("Forbidden");
-  _lst[ QObject::WhatsThisCursor    ] = QString("What's this");
+  _lst[ Qt::ArrowCursor        ] = QString("Arrow");
+  _lst[ Qt::UpArrowCursor      ] = QString("Up Arrow");
+  _lst[ Qt::CrossCursor        ] = QString("Cross");
+  _lst[ Qt::WaitCursor         ] = QString("Waiting");
+  _lst[ Qt::IBeamCursor        ] = QString("iBeam");
+  _lst[ Qt::SizeVerCursor      ] = QString("Size Vertical");
+  _lst[ Qt::SizeHorCursor      ] = QString("Size Horizontal");
+  _lst[ Qt::SizeBDiagCursor    ] = QString("Size Slash");
+  _lst[ Qt::SizeFDiagCursor    ] = QString("Size Backslash");
+  _lst[ Qt::SizeAllCursor      ] = QString("Size All");
+  _lst[ Qt::BlankCursor        ] = QString("Blank");
+  _lst[ Qt::SplitVCursor       ] = QString("Split Vertical");
+  _lst[ Qt::SplitHCursor       ] = QString("Split Horizontal");
+  _lst[ Qt::PointingHandCursor ] = QString("Pointing Hand");
+  _lst[ Qt::ForbiddenCursor    ] = QString("Forbidden");
+  _lst[ Qt::WhatsThisCursor    ] = QString("What's this");
 
   setText( 0, text);
-  setText( 1, _lst[value.toCursor().shape()]);
+  assert(value.canConvert<QCursor>());
+  QCursor sh = value.value<QCursor>();
+  setText( 1, _lst[sh.shape()]);
 }
 
 QWidget* CursorEditorItem::createEditor( int column, QWidget* parent )
@@ -494,38 +496,54 @@ QWidget* CursorEditorItem::createEditor( int column, QWidget* parent )
   QComboBox* editor = new QComboBox( parent, "CursorEditorItem::combo" );
   editor->setEditable(false);
   connect(editor, SIGNAL( activated(int) ), this, SLOT( onValueChanged() ) );
-  for ( QMapConstIterator<int, QString> it = _lst.begin(); it != _lst.end(); ++it )
-  {
-    editor->insertItem(it.data(), it.key());
-  }
+  QStringList items;
+  for ( QMap<Qt::CursorShape, QString>::ConstIterator it = _lst.begin(); it != _lst.end(); ++it )
+    items << it.data();
+  editor->insertItems(0, items);
 
-  editor->setCurrentItem(overrideValue().toCursor().shape());
+  assert(overrideValue().canConvert<QCursor>());
+  QCursor sh = overrideValue().value<QCursor>();
+  editor->setCurrentItem(sh.shape());
 
   return editor;
 }
 
 void CursorEditorItem::stopEdit( int column )
 {
-  setText( column, _lst[overrideValue().toCursor().shape()] );
+  assert(overrideValue().canConvert<QCursor>());
+  QCursor sh = overrideValue().value<QCursor>();
+  setText( column, _lst[sh.shape()] );
 }
 
 void CursorEditorItem::setDefaultEditorValue( QWidget* editor )
 {
   QComboBox* combo = dynamic_cast<QComboBox*>(editor);
-  combo->setCurrentItem(value().toCursor().shape());
+  assert(value().canConvert<QCursor>());
+  QCursor sh = value().value<QCursor>();
+  combo->setCurrentItem(sh.shape());
 }
 
 QVariant CursorEditorItem::currentEditorValue( QWidget* editor ) const
 {
+  int pos = dynamic_cast<QComboBox*>(editor)->currentItem();
+  QMap<Qt::CursorShape, QString>::ConstIterator it = _lst.begin();
+  while (pos > 0) {
+    pos--;
+    it++;
+  }
+  
   QVariant var;
-  var.asCursor().setShape( dynamic_cast<QComboBox*>(editor)->currentItem() );
+  QCursor sh;
+  sh.setShape(it.key());
+  var.setValue<QCursor>(sh);
   return var;
 }
 
 QVariant CursorEditorItem::convertFromProperty(const std::vector<App::Property*>&)
 {
   QVariant var;
-  var.asCursor().setShape( 0 );
+  QCursor sh(Qt::ArrowCursor);
+  var.setValue<QCursor>(sh);
   return var;
 }
 

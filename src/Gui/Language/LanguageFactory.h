@@ -26,9 +26,13 @@
 
 #include <Base/Factory.h>
 
-#include <qtranslator.h>
-#include <qvaluelist.h>
-#include <vector>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 
@@ -51,7 +55,8 @@ public:
   /** Installs the specified language \a lang if available */
   bool installLanguage ( const QString& lang ) const;
   /** Gets all translated messages to language \a lang. */
-  QValueList<QTranslatorMessage> messages( const QString& lang ) const;
+  // TODO QTranslatorMessage not there anymore
+  //Q3ValueList<QTranslatorMessage> messages( const QString& lang ) const;
   /**
    * Creates a unique ID (QString) for the specified language.
    * This makes possible to register several files for the same language for example

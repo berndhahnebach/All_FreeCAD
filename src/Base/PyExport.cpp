@@ -39,8 +39,6 @@
 #include "PyExport.h"
 #include "PyExportImp.h"
 
-#define new DEBUG_CLIENTBLOCK
-
 using namespace Base;
 
 PyHandler::~PyHandler()

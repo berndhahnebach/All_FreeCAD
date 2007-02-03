@@ -152,6 +152,7 @@ void Application::renameDocument(const char *OldName, const char *NewName)
     temp = pos->second; 
     DocMap.erase(pos);
     DocMap[NewName] = temp;
+    signalRenameDocument(*temp);
   } else 
     Base::Exception("Application::renameDocument(): no document with this name to rename!");
 
@@ -182,6 +183,7 @@ Document* Application::newDocument(const char * Name, const char * UserName)
   Reason.Doc = _pActiveDoc;
   Reason.Why = AppChanges::New;
   Notify(Reason);
+  signalNewDocument(*_pActiveDoc);
 
   return _pActiveDoc;
 }
@@ -198,6 +200,7 @@ bool Application::closeDocument(const char* name)
   Reason.Doc = pos->second;
   Reason.Why = AppChanges::Del;
   Notify(Reason);
+  signalDeletedDocument(*pos->second);
 
   // For exception-safety use a smart pointer
   auto_ptr<Document> delDoc (pos->second);

@@ -23,20 +23,13 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qobjectlist.h>
-# include <qmap.h>
-# include <qmetaobject.h>
-# include <qstrlist.h>
-# include <qvariant.h>
-#endif
-
 #include "Translator.h"
-#include "LanguageFactory.h"
 
-#include "../../Base/Console.h"
-#define new DEBUG_CLIENTBLOCK
+#include <Base/Console.h>
+#include <Base/Console.h>
+#include <Base/Parameter.h>
+#include <App/Application.h>
+
 using namespace Gui;
 
 /** \defgroup i18n Internationalization with FreeCAD
@@ -68,176 +61,150 @@ using namespace Gui;
  *
  * \remark To get most of the literals translated you should have removed all
  * special characters (like &, !, ?, ...). Otherwise the translation could fail.
+ * After having translated all literals you can load the .ts file into QtLinguist and 
+ * invoke the menu item \a Release which generates the binary .qm file.
  *
- * \subsection usets Integration of the .ts file
- * The .ts file should now be integrated into the GUI library (either of FreeCAD
- * itself or its application module). The .ts file will be embedded into the
- * resulting binary file. So, at runtime you don't need any .ts or .qm files any
+ * \subsection usets Integration of the .qm file
+ * The .qm file should now be integrated into the GUI library (either of FreeCAD
+ * itself or its application module). The .qm file will be embedded into the
+ * resulting binary file. So, at runtime you don't need any .qm files any
  * more. Indeed you will have a bigger binary file but you haven't any troubles
- * concerning missing .ts or .qm files.
+ * concerning missing .qm files.
  *
- * To integrate the .ts file into the Visual Studio project file you have to add the
- * file to the project and define the following as custom build:
+ * To integrate the .qm file into the executable you have to create a resource file (.qrc), first.
+ * This is an XML file where you can append the .qm file. For the .qrc file you have to define the following
+ * curstom build step inside the Visual Studio project file:
  *
- * python ..\\Tools\\qembed.py "$(InputDir)\$(InputName).ts" "$(InputDir)\$(InputName).h" "$(InputName)" 
- * For the gcc build system you just have to add the line <Outputofyourtsfile>.h to the BUILT_SOURCES
+ * Command Line: rcc.exe -name $(InputName) $(InputPath) -o "$(InputDir)qrc_$(InputName).cpp"
+ * Outputs:      $(InputDir)qrc_$(InputName).cpp
+ * 
+ * For the gcc build system you just have to add the line <resourcefile>.qrc to the BUILT_SOURCES
  * sources section of the Makefile.am, run automake and configure (or ./confog.status) afterwards.
  *
- * Finally, you have to add a few lines to resource.cpp.
+ * Finally, you have to add a the line
  * \code
  * 
- * #include "Language/<Outputofyourtsfile>.h"
+ * Q_INIT_RESOURCE(resource);
  *
- * Gui::LanguageFactorySupplier::LanguageFactorySupplier()
- * {
- *   Gui::BitmapFactory();
- * 
- *   new Gui::LanguageProducer("<your language>", <functionname()>);
- * }
- * 
  * \endcode
- *
- * That's all.
+ * 
+ * where \a resource is the name of the .qrc file. That's all!
  */
 
-QPtrList<Translator> Translator::_instances;
+/* TRANSLATOR Gui::Translator */
 
-Translator::Translator( const QString& lang, QObject * parent, const char * name )
-: QTranslator( parent, name ), _language( lang )
+Translator* Translator::_pcSingleton = 0;
+
+Translator* Translator::instance(void)
 {
-//  QT_TR_NOOP( "dummy" ); // this is just a dummy entry to force an entry in .ts file by lupdate
-  _instances.append( this );
+  if (!_pcSingleton)
+    _pcSingleton = new Translator;
+  return _pcSingleton;
+}
+
+void Translator::destruct (void)
+{
+  if (_pcSingleton)
+    delete _pcSingleton;
+  _pcSingleton=0;
+}
+
+Translator::Translator()
+{
+  findQmFiles();
 }
 
 Translator::~Translator()
 {
-  _instances.remove( this );
-}
-
-/**
- * Returns language.
- */
-const QString& Translator::language() const
-{
-  return _language;
-}
-
-/** 
- * Searches for the source text of the messgage \a msg.
- * If none is found, \a msg is returned.
- */
-QString Translator::findSourceText( const QString& msg ) const
-{
-  QString result = msg;
-
-  QValueList<QTranslatorMessage> msgs = LanguageFactory().messages( _language );
-  for ( QValueList<QTranslatorMessage>::Iterator it = msgs.begin(); it != msgs.end(); it++ )
-  {
-    if ( msg == (*it).translation() )
-    {
-      if ( (*it).sourceText() != 0 )
-        result = (*it).sourceText();
-      break;
-    }
-  }
-
-  return result;
-}
-
-/** 
- * Searches for the original messgage of \a msg over all installed translators.
- * The function returns after the first found message. If none is found, \a msg is returned.
- */
-QString Translator::getFindSourceText( const QString& msg )
-{
-  if ( msg.isEmpty() )
-	  return msg;
-
-  Translator* mf;
-  QString res;
-  for ( mf = _instances.first(); mf; mf = _instances.next() )
-  {
-    res = mf->findSourceText( msg );
-    if ( res != msg )
-      return res;
-	}
-
-  return msg;
-}
-
-/**
- * Creates the one and only language factory instance if not already created and installs
- * the matching translator objects to the specified language in the preferences.
- */
-void Translator::installLanguage()
-{
-  LanguageFactory();
-}
-
-/**
- * \remark It seems to be sufficient to update QAction objects and QMenuBar items only.
- * The languageChange() method of Qt designer generated dialogs is called automatically.
- * \bug When we try to update all kind of QObject class and have pressed the "Apply" button
- * in Gui::Dialog::DlgPreferencesImp the text of all spin boxes disappears and value of 
- * Gui::FloatSpinBox objects is set to 0. Hence we update QAction and QMenuBar objects only.
- */
-bool Translator::setLanguage ( const QString& lang )
-{
   removeLanguage();
-
-  bool ok = LanguageFactory().installLanguage( lang );
-/*
-  QWidget* mw = qApp->mainWidget();
-
-  // try to update all relevant properties
-  if ( mw )
-  {
-
-    if ( !mw ) return ok;
-    QObjectList  *list = mw->queryList("QAction");
-    if ( !list) return ok;
-
-    QObjectListIt it( *list );         // iterate over the widgets
-    QObject * obj;
-    while ( (obj=it.current()) != 0 ) {  // for each widget...
-      ++it;
-      updateProperty( obj );
-    }
-
-    delete list; // delete the list, not the objects
-  }
-*/
-  return ok;
 }
 
-/** 
- * Searches for all properties holding QString by searching for in its meta object
- * and reassigns them.
- */
-void Translator::updateProperty( QObject* obj )
+void Translator::findQmFiles()
 {
-  // get all properties for this object
-  bool super = true;
-  QMetaObject* meta = obj->metaObject();
-  QStrList obj_prop;
-  obj_prop = meta->propertyNames( super );
-  for ( QStrList::Iterator prop = obj_prop.begin(); prop != obj_prop.end(); ++prop ) 
-  {
-    // search for QString properties
-    QVariant var = obj->property( *prop );
-    if ( var.type() == QVariant::String )
-    {
-      int idx = meta->findProperty( *prop, super );
-      // get more information about the property
-      const QMetaProperty* mp = meta->property( idx, super );
-      if ( mp && mp->writable() )
-      {
-        obj->setProperty( (*prop), tr( var.toString() ) );
-/*
-#ifdef FC_DEBUG
-        Base::Console().Log("Update '%s'\n  Class: %s\n  Property: %s\n  Type: %s\n", 
-            obj->name(), obj->className(), *prop, QVariant::typeToName(var.type()) );
-#endif*/
+  // List all .qm files
+  QDir dir(":/translations");
+  QStringList fileNames = dir.entryList(QStringList("*.qm"), QDir::Files, QDir::Name);
+  
+  // For every language we support we translate the literal into the actual language name,
+  // i.e. to support German we translate 'English' to 'Deutsch'.
+  for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it) {
+    QTranslator translator;
+    QString absName = dir.filePath(*it);
+    if (translator.load(absName)) {
+      // use the context of this class name
+      QString lang = translator.translate(this->className(), QT_TR_NOOP("English"));
+      if (!lang.isEmpty())
+        languages[lang] = absName;
+    }
+  }
+}
+
+QStringList Translator::supportedLanguages() const
+{
+  return languages.keys();
+}
+
+void Translator::installLanguage ( const QString& lang )
+{
+  removeLanguage(); // remove the currently active translators
+  
+  QMap<QString, QString>::ConstIterator it = languages.find(lang);
+  if (it != languages.end()) {
+    this->language = lang;
+    QDir dir(":/translations");
+    QString suffix = it.data().right(6);
+    suffix.prepend('*');
+    QStringList fileNames = dir.entryList(QStringList(suffix), QDir::Files, QDir::Name);
+    for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
+      QTranslator* translator = new QTranslator;
+      translator->setObjectName(*it);
+      if (translator->load(dir.filePath(*it))) {
+        qApp->installTranslator(translator);
+        translators.push_back(translator);
+      } else {
+        delete translator;
+      }
+    }
+  }
+}
+
+QString Translator::installedLanguage() const
+{
+  return this->language;
+}
+
+/**
+ * This method checks for newly added (internal) .qm files which might be added at runtime. This e.g. happens if a plugin
+ * gets loaded at runtime. For each newly added files that supports the currently set language a new translator object is created 
+ * to load the file.
+ */
+void Translator::reinstallLanguage()
+{
+  QMap<QString, QString>::ConstIterator it = languages.find(this->language);
+  if (it != languages.end()) {
+    QDir dir(":/translations");
+    QString suffix = it.data().right(6);
+    suffix.prepend('*');
+    QStringList fileNames = dir.entryList(QStringList(suffix), QDir::Files, QDir::Name);
+    for (QStringList::Iterator it = fileNames.begin(); it != fileNames.end(); ++it){
+      bool ok=false;
+      for (QList<QTranslator*>::ConstIterator tt = translators.begin(); tt != translators.end(); ++tt) {
+        if ( (*tt)->objectName() == *it ) {
+          ok = true; // this file is already installed
+          break;
+        }
+      }
+
+      // okay, we need to install this file
+      if ( !ok ) {
+        QTranslator* translator = new QTranslator;
+        translator->setObjectName(*it);
+        if (translator->load(dir.filePath(*it))) {
+          qApp->installTranslator(translator);
+          translators.push_back(translator);
+        } else {
+          delete translator;
+        }
       }
     }
   }
@@ -248,29 +215,13 @@ void Translator::updateProperty( QObject* obj )
  */
 void Translator::removeLanguage()
 {
-  // Note: Use here a "while" instead of a "for" loop since we remove the translator 
-  // in its destructor from the global list, otherwise the iterator will become invalid
-  Translator* mf;
-  while ( _instances.count() > 0 )
+  for (QList<QTranslator*>::Iterator it = translators.begin(); it != translators.end(); ++it)
   {
-    mf = _instances.first();
-    qApp->removeTranslator( mf );
-    // remove also from the list
-    delete mf;
+    qApp->removeTranslator( *it );
+    delete *it;
   }
-}
 
-/** 
- * Returns the language of the currently installed translator. If none is
- * installed QString::null is returned.
- */
-QString Translator::currentLanguage()
-{
-  Translator* t = _instances.last();
-  if ( t )
-    return t->language();
-
-  return QString::null;
+  translators.clear();
 }
 
 #include "moc_Translator.cpp"

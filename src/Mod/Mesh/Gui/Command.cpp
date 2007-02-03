@@ -592,12 +592,19 @@ CmdMeshEvaluation::CmdMeshEvaluation()
 
 void CmdMeshEvaluation::activated(int iMsg)
 {
+  MeshGui::DlgEvaluateMeshImp* dlg = new MeshGui::DlgEvaluateMeshImp(Gui::getMainWindow());
+  dlg->setAttribute(Qt::WA_DeleteOnClose);
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
+    dlg->setMesh((Mesh::Feature*)(*it));
+#if 0
     MeshGui::DockEvaluateMeshImp::instance()->setMesh( (Mesh::Feature*)(*it) );
+#endif
     break;
   }
+
+  dlg->show();
 }
 
 bool CmdMeshEvaluation::isActive(void)

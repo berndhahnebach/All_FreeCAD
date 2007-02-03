@@ -26,9 +26,9 @@
 
 #include "../Base/Factory.h"
 
-#include <qmap.h>
-#include <qpixmap.h>
-#include <qstringlist.h>
+#include <QtCore/qmap.h>
+#include <QtGui/qpixmap.h>
+#include <QtCore/qstringlist.h>
 
 namespace Gui {
 
@@ -70,7 +70,7 @@ public:
    * specifying also the name and possition of a smaller pixmap.
    * The the smaller pixmap is drawn into the bigger pixmap.
    */
-  QPixmap pixmap(const char* sName, const char* sMask, Position pos = BottomLeft);
+  QPixmap pixmap(const char* sName, const char* sMask, Position pos = BitmapFactoryInst::BottomLeft);
   /** Returns the names of all registered pixmaps.
    * To get the appropriate pixmaps call pixmap() for each name.
    */

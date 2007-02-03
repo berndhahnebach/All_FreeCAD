@@ -23,15 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-#endif
-
 #include "PropertyPage.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /** Construction */
-PropertyPage::PropertyPage() 
+PropertyPage::PropertyPage(QWidget* parent) : QWidget(parent) 
 {
   bChanged = false;
 }
@@ -92,3 +89,56 @@ void PropertyPage::onReset()
 {
   reset();
 }
+
+// ----------------------------------------------------------------
+
+/** Construction */
+PreferencePage::PreferencePage(QWidget* parent) : QWidget(parent) 
+{
+}
+
+/** Destruction */
+PreferencePage::~PreferencePage() 
+{
+}
+
+// ----------------------------------------------------------------
+
+/** Construction */
+CustomizeActionPage::CustomizeActionPage(QWidget* parent) : QWidget(parent) 
+{
+}
+
+/** Destruction */
+CustomizeActionPage::~CustomizeActionPage() 
+{
+}
+
+bool CustomizeActionPage::event(QEvent* e)
+{
+  bool ok = QWidget::event(e);
+
+  if (e->type() == QEvent::ParentChange || e->type() == QEvent::ParentAboutToChange)
+  {
+    QWidget* topLevel = this->parentWidget();
+    while (topLevel && !topLevel->inherits("QDialog"))
+      topLevel = topLevel->parentWidget();
+    if ( topLevel )
+    {
+      int index = topLevel->metaObject()->indexOfSignal( QMetaObject::normalizedSignature("addMacroAction(const QString&)") );
+      if ( index >= 0 ) {
+        if ( e->type() == QEvent::ParentChange ) {
+          connect(topLevel, SIGNAL(addMacroAction( const QString& )), this, SLOT(onAddMacroAction( const QString& )));
+          connect(topLevel, SIGNAL(removeMacroAction( const QString& )), this, SLOT(onRemoveMacroAction( const QString& )));
+        } else {
+          disconnect(topLevel, SIGNAL(addMacroAction( const QString& )), this, SLOT(onAddMacroAction( const QString& )));
+          disconnect(topLevel, SIGNAL(removeMacroAction( const QString& )), this, SLOT(onRemoveMacroAction( const QString& )));
+        }
+      }
+    }
+  }
+
+  return ok;
+}
+
+#include "moc_PropertyPage.cpp"

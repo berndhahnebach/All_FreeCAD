@@ -23,29 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <Inventor/SbViewportRegion.h>
-# include <Inventor/actions/SoGLRenderAction.h>
-# include <Inventor/events/SoMouseButtonEvent.h>
-# include <Inventor/nodes/SoBaseColor.h>
-# include <Inventor/nodes/SoCoordinate3.h>
-# include <Inventor/nodes/SoMaterial.h>
-# include <Inventor/nodes/SoMaterialBinding.h>
-# include <Inventor/nodes/SoIndexedFaceSet.h>
-# include <Inventor/nodes/SoSwitch.h>
-# include <Inventor/nodes/SoTransform.h>
-# include <qapplication.h>
-# include <qcursor.h>
-# include <qstring.h>
-# include <qpopupmenu.h>
-#endif
-
 #include <Inventor/nodes/SoEventCallback.h>
 
 #include "SoFCColorBar.h"
 #include "SoFCColorGradient.h"
 #include "SoFCColorLegend.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 SO_NODE_ABSTRACT_SOURCE(SoFCColorBarBase);
@@ -252,25 +235,26 @@ void SoFCColorBar::handleEvent (SoHandleEventAction *action)
         action->setHandled();
 
         SoFCColorBarBase* current = getActiveBar();
-        QPopupMenu menu;
-        menu.setCheckable( true );
+        QMenu menu;
         int i=0;
         for ( std::vector<SoFCColorBarBase*>::const_iterator it = _colorBars.begin(); it != _colorBars.end(); ++it )
         {
-          int id = menu.insertItem( (*it)->getColorBarName(), i++ );
-          menu.setItemChecked( id, (*it) == current );
+          QAction* item = menu.addAction( (*it)->getColorBarName() );
+          item->setCheckable(true);
+          item->setChecked((*it) == current);
+          item->setData(QVariant(i++));
         }
+        
+        menu.addSeparator();
+        QAction* option = menu.addAction(QObject::tr("Options..."));
+        QAction* action = menu.exec(QCursor::pos());
 
-        menu.insertSeparator();
-        int opt = menu.insertItem("Options...");
-        int id = menu.exec( QCursor::pos() );
-
-        if ( id > -1 && pColorMode->whichChild.getValue() != id )
-          pColorMode->whichChild = id;
-        else if ( id == opt )
-        {
+        if ( action == option ) {
           if ( customize() )
             Notify(0);
+        } else if ( action ) {
+          int id = action->data().toInt();
+          pColorMode->whichChild = id;
         }
       }
     }

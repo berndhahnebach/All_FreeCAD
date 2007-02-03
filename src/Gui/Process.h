@@ -24,7 +24,13 @@
 #ifndef PROCESS__H__
 #define PROCESS__H__
 
-#include <qprocess.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 #include "../Base/Observer.h"
 
@@ -35,7 +41,7 @@ namespace Gui {
  * For further information refer to the documentation of QProcess.
  * \author Werner Mayer
  */
-class Process : public QProcess, public Base::Subject <int>
+class Process : public Q3Process, public Base::Subject <int>
 {
   Q_OBJECT
 
@@ -92,7 +98,7 @@ public:
   /** Unsets the environment \a var. */
   void unsetEnvironment ( const QString& var);
 
-private slots:
+private Q_SLOTS:
   void onNotifyReadyReadStdout();
   void onNotifyReadyReadStderr();
   void onNotifyProcessExited();

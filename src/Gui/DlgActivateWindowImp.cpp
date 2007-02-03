@@ -23,13 +23,18 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qlistbox.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
 #endif
 
 #include "DlgActivateWindowImp.h"
 #include "MainWindow.h"
-#define new DEBUG_CLIENTBLOCK
+#include "View.h"
+
 using namespace Gui::Dialog;
 
 /**
@@ -39,27 +44,32 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgActivateWindowImp::DlgActivateWindowImp( QWidget* parent, const char* name, bool modal, WFlags fl )
-  : DlgActivateWindowBase( parent, name, modal, fl )
+DlgActivateWindowImp::DlgActivateWindowImp( QWidget* parent, Qt::WFlags fl )
+  : QDialog( parent, fl )
 {
-  QWidgetList windows = getMainWindow()->windows();
-  QWidget* activeWnd = getMainWindow()->windows( QWorkspace::StackingOrder ).last();
+  // create widgets
+  setupUi(this);
 
-  int active = -1;
-  for ( int i=0; i<(int)windows.count(); i++ )
+  QList<QWidget*> windows = getMainWindow()->windows();
+  if (windows.isEmpty())
   {
-    listBox2->insertItem( windows.at(i)->caption() );
-    if ( windows.at(i) == activeWnd )
+    this->buttonOk->setDisabled(true);
+    return;
+  }
+
+  QWidget* activeWnd = getMainWindow()->activeWindow();
+
+  int active=-1, i=0;
+  for (QList<QWidget*>::ConstIterator it = windows.begin(); it != windows.end(); ++it, ++i) {
+    listBox->insertItem((*it)->windowTitle());
+    if ( *it == activeWnd )
       active = i;
   }
 
-  if ( active > -1 )
-    listBox2->setCurrentItem( active );
+  if ( active != -1 )
+    listBox->setCurrentItem( active );
 
-  listBox2->setFocus();
-
-  connect( listBox2, SIGNAL( doubleClicked ( QListBoxItem * ) ), this, SLOT( accept() ) );
-  connect( listBox2, SIGNAL( returnPressed ( QListBoxItem * ) ), this, SLOT( accept() ) );
+  listBox->setFocus();
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -72,20 +82,11 @@ DlgActivateWindowImp::~DlgActivateWindowImp()
  */
 void DlgActivateWindowImp::accept()
 {
-  QString activated = listBox2->currentText();
+  int item = listBox->currentItem ();
+  QList<QWidget*> windows = getMainWindow()->windows();
 
-  QWidgetList windows = getMainWindow()->windows();
-  for ( int i=0; i<(int)windows.count(); i++ )
-  {
-    if( windows.at(i)->caption() == activated )
-    {
-      windows.at(i)->setFocus();
-      break;
-    }
-  }
+  if (item != -1 && item < windows.size())
+    getMainWindow()->setActiveWindow((MDIView*)windows.at(item));
 
-  DlgActivateWindowBase::accept();
+  QDialog::accept();
 }
-
-#include "DlgActivateWindow.cpp"
-#include "moc_DlgActivateWindow.cpp"

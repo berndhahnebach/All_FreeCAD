@@ -24,7 +24,11 @@
 #ifndef GUI_DIALOG_DLGPROJECTINFORMATIONIMP_H
 #define GUI_DIALOG_DLGPROJECTINFORMATIONIMP_H
 
-#include "DlgProjectInformation.h"
+#include "ui_DlgProjectInformation.h"
+
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
 namespace App {
 class Document;
@@ -34,10 +38,10 @@ namespace Gui {
 
 namespace Dialog {
 
-class DlgProjectInformationImp : public DlgProjectInformation
+class DlgProjectInformationImp : public QDialog, public Ui_DlgProjectInformation
 {
 public:
-  DlgProjectInformationImp( App::Document* doc, QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgProjectInformationImp( App::Document* doc, QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgProjectInformationImp();
 
 protected:

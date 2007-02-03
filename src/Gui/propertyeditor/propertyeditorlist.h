@@ -25,7 +25,6 @@
 #define PROPERTYEDITORLIST_H
 
 #include "propertyeditoritem.h"
-#include <qmap.h>
 
 
 namespace Gui {
@@ -40,7 +39,7 @@ class GuiExport BoolEditorItem: public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  BoolEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  BoolEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
@@ -63,7 +62,7 @@ class GuiExport ListEditorItem : public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  ListEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  ListEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
@@ -86,7 +85,7 @@ class GuiExport ComboEditorItem : public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  ComboEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  ComboEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
@@ -110,7 +109,7 @@ class GuiExport CursorEditorItem : public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  CursorEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  CursorEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
@@ -124,7 +123,7 @@ private:
   CursorEditorItem();
 
 private:
-  QMap<int, QString> _lst;
+  QMap<Qt::CursorShape, QString> _lst;
 };
 
 } //namespace PropertyEditor

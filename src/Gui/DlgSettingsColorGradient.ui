@@ -1,435 +1,405 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>Gui::Dialog::DlgSettingsColorGradientBase</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>Gui::Dialog::DlgSettingsColorGradientBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>361</width>
-            <height>332</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Colorgradient settings</string>
-    </property>
-    <property name="sizeGripEnabled">
-        <bool>true</bool>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>Gui::Dialog::DlgSettingsColorGradient</class>
+ <widget class="QDialog" name="Gui::Dialog::DlgSettingsColorGradient" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>361</width>
+    <height>342</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Colorgradient settings</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="groupBoxModel" >
+     <property name="title" >
+      <string>Color model</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
         </property>
-        <widget class="QGroupBox" row="2" column="0">
-            <property name="name">
-                <cstring>groupBoxVisible</cstring>
-            </property>
-            <property name="title">
-                <string>Visibility</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>checkBoxGrayed</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Out g&amp;rayed</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+R</string>
-                    </property>
-                </widget>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>checkBoxInvisible</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Out &amp;invisible</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+I</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QButtonGroup" row="1" column="0">
-            <property name="name">
-                <cstring>buttonGroupStyle</cstring>
-            </property>
-            <property name="title">
-                <string>Style</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>radioButtonFlow</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Flow</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+F</string>
-                    </property>
-                    <property name="checked">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QRadioButton">
-                    <property name="name">
-                        <cstring>radioButtonZero</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Zero</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+Z</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>groupBoxModel</cstring>
-            </property>
-            <property name="title">
-                <string>Color model</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout12</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel5</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Gradient:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>comboBoxModel</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QComboBox">
-                            <item>
-                                <property name="text">
-                                    <string>red-yellow-green-cyan-blue</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>blue-cyan-green-yellow-red</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>white-black</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>black-white</string>
-                                </property>
-                            </item>
-                            <property name="name">
-                                <cstring>comboBoxModel</cstring>
-                            </property>
-                        </widget>
-                        <spacer>
-                            <property name="name">
-                                <cstring>spacer10</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>100</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                    </hbox>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QLayoutWidget" row="4" column="0">
-            <property name="name">
-                <cstring>layout9</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonOk</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;OK</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Horizontal Spacing2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>170</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonCancel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Cancel</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox" row="3" column="0">
-            <property name="name">
-                <cstring>groupBoxRange</cstring>
-            </property>
-            <property name="title">
-                <string>Parameter range</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <spacer row="0" column="1">
-                    <property name="name">
-                        <cstring>spacer9</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>35</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QLayoutWidget" row="0" column="0">
-                    <property name="name">
-                        <cstring>layout6</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="Gui::FloatSpinBox" row="0" column="1">
-                            <property name="name">
-                                <cstring>floatSpinBoxMax</cstring>
-                            </property>
-                            <property name="maxValue">
-                                <number>1000</number>
-                            </property>
-                            <property name="minValue">
-                                <number>-1000</number>
-                            </property>
-                            <property name="precision">
-                                <number>2</number>
-                            </property>
-                        </widget>
-                        <widget class="Gui::FloatSpinBox" row="1" column="1">
-                            <property name="name">
-                                <cstring>floatSpinBoxMin</cstring>
-                            </property>
-                            <property name="maxValue">
-                                <number>1000</number>
-                            </property>
-                            <property name="minValue">
-                                <number>-1000</number>
-                            </property>
-                            <property name="precision">
-                                <number>2</number>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabelMin</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Mi&amp;nimum:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>floatSpinBoxMin</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabelMax</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Ma&amp;ximum:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>floatSpinBoxMax</cstring>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QLayoutWidget" row="0" column="2">
-                    <property name="name">
-                        <cstring>layout7</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="Gui::SpinBox" row="0" column="1">
-                            <property name="name">
-                                <cstring>spinBoxLabel</cstring>
-                            </property>
-                            <property name="maxValue">
-                                <number>30</number>
-                            </property>
-                        </widget>
-                        <widget class="Gui::SpinBox" row="1" column="1">
-                            <property name="name">
-                                <cstring>spinBoxDecimals</cstring>
-                            </property>
-                            <property name="maxValue">
-                                <number>6</number>
-                            </property>
-                            <property name="minValue">
-                                <number>1</number>
-                            </property>
-                            <property name="value">
-                                <number>2</number>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Labels:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>spinBoxLabel</cstring>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel1_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>&amp;Decimals:</string>
-                            </property>
-                            <property name="buddy" stdset="0">
-                                <cstring>spinBoxDecimals</cstring>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-            </grid>
-        </widget>
-    </grid>
-</widget>
-<customwidgets>
-</customwidgets>
-<connections>
-    <connection>
-        <sender>buttonOk</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgSettingsColorGradientBase</receiver>
-        <slot>accept()</slot>
-    </connection>
-    <connection>
-        <sender>buttonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgSettingsColorGradientBase</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>floatSpinBoxMax</sender>
-        <signal>valueChanged(double)</signal>
-        <receiver>Gui::Dialog::DlgSettingsColorGradientBase</receiver>
-        <slot>onValidateMaximum()</slot>
-    </connection>
-    <connection>
-        <sender>floatSpinBoxMin</sender>
-        <signal>valueChanged(double)</signal>
-        <receiver>Gui::Dialog::DlgSettingsColorGradientBase</receiver>
-        <slot>onValidateMinimum()</slot>
-    </connection>
-    <connection>
-        <sender>spinBoxDecimals</sender>
-        <signal>valueChanged(int)</signal>
-        <receiver>Gui::Dialog::DlgSettingsColorGradientBase</receiver>
-        <slot>onSetDecimals(int)</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>comboBoxModel</tabstop>
-    <tabstop>radioButtonFlow</tabstop>
-    <tabstop>checkBoxGrayed</tabstop>
-    <tabstop>checkBoxInvisible</tabstop>
-    <tabstop>floatSpinBoxMax</tabstop>
-    <tabstop>floatSpinBoxMin</tabstop>
-    <tabstop>spinBoxLabel</tabstop>
-    <tabstop>buttonOk</tabstop>
-    <tabstop>buttonCancel</tabstop>
-</tabstops>
-<slots>
-    <slot access="protected">onValidateMaximum()</slot>
-    <slot access="protected">onValidateMinimum()</slot>
-    <slot access="protected">onSetDecimals(int)</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-    <includehint>Gui/SpinBox.h</includehint>
-</includehints>
-</UI>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabel5" >
+          <property name="text" >
+           <string>&amp;Gradient:</string>
+          </property>
+          <property name="buddy" >
+           <cstring>comboBoxModel</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="comboBoxModel" >
+          <item>
+           <property name="text" >
+            <string>red-yellow-green-cyan-blue</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>blue-cyan-green-yellow-red</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>white-black</string>
+           </property>
+          </item>
+          <item>
+           <property name="text" >
+            <string>black-white</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>100</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QGroupBox" name="groupBoxVisible" >
+     <property name="title" >
+      <string>Visibility</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkBoxGrayed" >
+        <property name="text" >
+         <string>Out g&amp;rayed</string>
+        </property>
+        <property name="shortcut" >
+         <string>Alt+R</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxInvisible" >
+        <property name="text" >
+         <string>Out &amp;invisible</string>
+        </property>
+        <property name="shortcut" >
+         <string>Alt+I</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="buttonGroupStyle" >
+     <property name="title" >
+      <string>Style</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="1" >
+       <widget class="QRadioButton" name="radioButtonZero" >
+        <property name="text" >
+         <string>&amp;Zero</string>
+        </property>
+        <property name="shortcut" >
+         <string>Alt+Z</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QRadioButton" name="radioButtonFlow" >
+        <property name="text" >
+         <string>&amp;Flow</string>
+        </property>
+        <property name="shortcut" >
+         <string>Alt+F</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>41</width>
+         <height>27</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonOk" >
+       <property name="text" >
+        <string>&amp;OK</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCancel" >
+       <property name="text" >
+        <string>&amp;Cancel</string>
+       </property>
+       <property name="shortcut" >
+        <string/>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QGroupBox" name="groupBoxRange" >
+     <property name="title" >
+      <string>Parameter range</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>35</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" >
+       <layout class="QGridLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item row="0" column="1" >
+         <widget class="QDoubleSpinBox" name="floatSpinBoxMax" >
+          <property name="maximum" >
+           <double>1000</double>
+          </property>
+          <property name="minimum" >
+           <double>-1000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" >
+         <widget class="QDoubleSpinBox" name="floatSpinBoxMin" >
+          <property name="maximum" >
+           <double>1000</double>
+          </property>
+          <property name="minimum" >
+           <double>-1000</double>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="textLabelMin" >
+          <property name="text" >
+           <string>Mi&amp;nimum:</string>
+          </property>
+          <property name="buddy" >
+           <cstring>floatSpinBoxMin</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" >
+         <widget class="QLabel" name="textLabelMax" >
+          <property name="text" >
+           <string>Ma&amp;ximum:</string>
+          </property>
+          <property name="buddy" >
+           <cstring>floatSpinBoxMax</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="2" >
+       <layout class="QGridLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item row="0" column="1" >
+         <widget class="QSpinBox" name="spinBoxLabel" />
+        </item>
+        <item row="1" column="1" >
+         <widget class="QSpinBox" name="spinBoxDecimals" >
+          <property name="value" >
+           <number>2</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" >
+         <widget class="QLabel" name="textLabel1" >
+          <property name="text" >
+           <string>&amp;Labels:</string>
+          </property>
+          <property name="buddy" >
+           <cstring>spinBoxLabel</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="textLabel1_2" >
+          <property name="text" >
+           <string>&amp;Decimals:</string>
+          </property>
+          <property name="buddy" >
+           <cstring>spinBoxDecimals</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>comboBoxModel</tabstop>
+  <tabstop>radioButtonFlow</tabstop>
+  <tabstop>checkBoxGrayed</tabstop>
+  <tabstop>checkBoxInvisible</tabstop>
+  <tabstop>floatSpinBoxMax</tabstop>
+  <tabstop>floatSpinBoxMin</tabstop>
+  <tabstop>spinBoxLabel</tabstop>
+  <tabstop>buttonOk</tabstop>
+  <tabstop>buttonCancel</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonOk</sender>
+   <signal>clicked()</signal>
+   <receiver>Gui::Dialog::DlgSettingsColorGradient</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>Gui::Dialog::DlgSettingsColorGradient</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

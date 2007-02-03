@@ -24,18 +24,20 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qheader.h>
+# include <q3header.h>
 # include <qpainter.h>
 # include <qstyle.h>
+//Added by qt3to4:
+#include <QResizeEvent>
 #endif
 
 #include "propertyeditor.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::PropertyEditor;
 
 
-EditableListView::EditableListView( QWidget* parent, const char* name )
-  :QListView( parent, name ), _editingItem( 0 )
+EditableListView::EditableListView( QWidget* parent )
+  :Q3ListView( parent ), _editingItem( 0 )
 {
   // disconnects the sectionHandleDoubleClicked signal to prevent the columns to be adjusted
   disconnect( header(), SIGNAL(sectionHandleDoubleClicked( int )), this, SLOT(adjustColumn( int )) );
@@ -43,27 +45,26 @@ EditableListView::EditableListView( QWidget* parent, const char* name )
   //setRootIsDecorated(true);
   setAllColumnsShowFocus( TRUE );
   setResizeMode(AllColumns);
-
-  connect( this, SIGNAL( clicked( QListViewItem* ) ),
-           this, SLOT( mouseClick( QListViewItem* ) ) );
-  connect( this, SIGNAL( currentChanged( QListViewItem*  ) ),
-           this, SLOT( itemChanged( QListViewItem* ) ) );
+  connect( this, SIGNAL( clicked( Q3ListViewItem* ) ),
+           this, SLOT( mouseClick( Q3ListViewItem* ) ) );
+  connect( this, SIGNAL( currentChanged( Q3ListViewItem*  ) ),
+           this, SLOT( itemChanged( Q3ListViewItem* ) ) );
   connect( header(), SIGNAL( sizeChange ( int, int, int ) ),
            this, SLOT( updateItem() ) );
   connect( header(), SIGNAL( indexChange ( int , int , int ) ),
            this, SLOT( updateItem() ) );
 }
 
-void EditableListView::setOpen ( QListViewItem * item, bool open )
+void EditableListView::setOpen ( Q3ListViewItem * item, bool open )
 {
   stopEdit();
-  QListView::setOpen( item, open );
+  Q3ListView::setOpen( item, open );
 }
 
 void EditableListView::setSorting ( int column, bool ascending )
 {
   stopEdit();
-  QListView::setSorting( column, ascending );
+  Q3ListView::setSorting( column, ascending );
 }
 
 void EditableListView::stopEdit()
@@ -147,13 +148,13 @@ void EditableListView::drawContentsOffset ( QPainter * p, int ox, int oy, int cx
   }
 }
 */
-void EditableListView::mouseClick( QListViewItem* item )
+void EditableListView::mouseClick( Q3ListViewItem* item )
 {
   if ( !_editingItem )
     itemChanged( item );
 }
 
-void EditableListView::itemChanged( QListViewItem* item )
+void EditableListView::itemChanged( Q3ListViewItem* item )
 {
   if ( _editingItem )
     _editingItem->stopEdit();
@@ -169,7 +170,7 @@ void EditableListView::itemChanged( QListViewItem* item )
 void EditableListView::resizeEvent( QResizeEvent* e )
 {
   updateItem();
-  QListView::resizeEvent( e );
+  Q3ListView::resizeEvent( e );
 }
 
 void EditableListView::updateItem()

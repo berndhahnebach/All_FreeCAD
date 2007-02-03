@@ -21,22 +21,22 @@
  ***************************************************************************/
 
 
-#ifndef __DLGREADPOINTS_H__
-#define __DLGREADPOINTS_H__
+#ifndef POINTSGUI_DLGREADPOINTS_H
+#define POINTSGUI_DLGREADPOINTS_H
 
 #include <string>
-#include "DlgPointsRead.h"
+#include "ui_DlgPointsRead.h"
 
 namespace PointsGui {
 
 /** The points read dialog
  */
-class DlgPointsReadImp : public DlgPointsRead
+class DlgPointsReadImp : public QDialog, public Ui_DlgPointsRead
 { 
   Q_OBJECT
 
 public:
-  DlgPointsReadImp(const char *FileName, QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgPointsReadImp(const char *FileName, QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgPointsReadImp();
 
 private:
@@ -45,4 +45,4 @@ private:
 
 } // namespace PointsGui
 
-#endif // __DLGREADPOINTS_H__
+#endif // POINTSGUI_DLGREADPOINTS_H

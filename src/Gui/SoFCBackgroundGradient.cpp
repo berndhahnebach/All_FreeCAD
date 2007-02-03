@@ -23,22 +23,10 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <Inventor/SbViewportRegion.h>
-# include <Inventor/actions/SoGLRenderAction.h>
-# include <Inventor/nodes/SoBaseColor.h>
-# include <Inventor/nodes/SoCoordinate3.h>
-# include <Inventor/nodes/SoDirectionalLight.h>
-# include <Inventor/nodes/SoMaterial.h>
-# include <Inventor/nodes/SoMaterialBinding.h>
-# include <Inventor/nodes/SoIndexedFaceSet.h>
-# include <Inventor/nodes/SoTransform.h>
-#endif
-
 #include "SoFCBackgroundGradient.h"
 
 #include <Inventor/nodes/SoText2.h>
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 SO_NODE_SOURCE(SoFCBackgroundGradient);

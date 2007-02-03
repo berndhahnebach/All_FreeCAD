@@ -21,10 +21,10 @@
  ***************************************************************************/
 
 
-#ifndef DLGMACRORECORDIMP_H
-#define DLGMACRORECORDIMP_H
+#ifndef GUI_DIALOG_DLGMACRORECORDIMP_H
+#define GUI_DIALOG_DLGMACRORECORDIMP_H
 
-#include "DlgMacroRecord.h"
+#include "ui_DlgMacroRecord.h"
 #include "Window.h"
 
 
@@ -36,22 +36,18 @@ namespace Dialog {
  * The DlgMacroRecordImp class implements a dialog to record a macro.
  * \author Jürgen Riegel
  */
-class DlgMacroRecordImp : public DlgMacroRecord, public Gui::WindowParameter
+class DlgMacroRecordImp : public QDialog, public Ui_DlgMacroRecord, public Gui::WindowParameter
 { 
     Q_OBJECT
 
 public:
-  DlgMacroRecordImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgMacroRecordImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   virtual ~DlgMacroRecordImp();
 
-public:
-  virtual void onTieCommandBar();
-  virtual void onTieToolBar();
-  virtual void onTieKeyboard();
-  virtual void cancel();
-  virtual void start();
-  virtual void stop();
-  virtual void onSaveMacro();
+protected Q_SLOTS:
+  void on_buttonStart_clicked();
+  void on_buttonStop_clicked();
+  void on_buttonCancel_clicked();
 
 protected:
   /// conviniance pointer
@@ -62,4 +58,4 @@ protected:
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DLGMACRORECORDIMP_H
+#endif // GUI_DIALOG_DLGMACRORECORDIMP_H

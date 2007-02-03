@@ -30,21 +30,21 @@
 # include <qlineedit.h>
 # include <qmessagebox.h>
 # include <qtimer.h>
-# include <qurl.h>
+# include <q3url.h>
 #endif
 
 #include "NetworkRetriever.h"
 #include "Action.h"
 #include "BitmapFactory.h"
 #include "MainWindow.h"
-#include "DlgAuthorization.h"
+#include "ui_DlgAuthorization.h"
 #include "FileDialog.h"
 
 #include "../App/Application.h"
 #include "../Base/Console.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
-using Gui::Dialog::DlgAuthorization;
+using namespace Gui::Dialog;
 
 namespace Gui {
 
@@ -147,7 +147,7 @@ void NetworkRetriever::OnChange (Base::Subject<Gui::Process::MessageType> &rCall
       }
       else
       {
-        QUrl url( d->startUrl );
+        Q3Url url( d->startUrl );
         QString err = tr("Cannot find host '%1'.").arg( url.host() );
         Base::Console().Error( err + "\n" );
       }
@@ -306,7 +306,7 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
   if ( !d->dir.isEmpty() )
   {
     QDir dir(d->dir);
-    if ( dir.exists( d->dir, true ) == false )
+    if ( dir.exists( d->dir ) == false )
     {
       if ( dir.mkdir( d->dir, true ) == false)
       {
@@ -404,7 +404,7 @@ void NetworkRetriever::abort()
  */
 bool NetworkRetriever::testWget()
 {
-  QProcess proc;
+  Q3Process proc;
   proc.addArgument("wget");
   return proc.start();
 }
@@ -442,19 +442,18 @@ StdCmdOnlineHelp::~StdCmdOnlineHelp()
   delete wget;
 }
 
-QAction * StdCmdOnlineHelp::createAction(void)
+Action * StdCmdOnlineHelp::createAction(void)
 {
-  QAction *pcAction;
+  Action *pcAction;
 
   QString exe = App::Application::Config()["ExeName"].c_str();
-  pcAction = new Action(this,getMainWindow(),sName);
+  pcAction = new Action(this,getMainWindow());
   pcAction->setText      ( tr(sMenuText) );
-  pcAction->setMenuText  ( tr(sMenuText) );
   pcAction->setToolTip   ( tr(sToolTipText).arg(exe) );
   pcAction->setStatusTip ( tr(sStatusTip).arg(exe)   );
   pcAction->setWhatsThis ( tr(sWhatsThis).arg(exe)   );
-  pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setAccel(iAccel);
+  pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setShortcut(iAccel);
 
   return pcAction;
 }
@@ -465,7 +464,6 @@ void StdCmdOnlineHelp::languageChange()
   {
     QString exe = App::Application::Config()["ExeName"].c_str();
     _pcAction->setText      ( tr(sMenuText) );
-    _pcAction->setMenuText  ( tr(sMenuText) );
     _pcAction->setToolTip   ( tr(sToolTipText).arg(exe) );
     _pcAction->setStatusTip ( tr(sStatusTip).arg(exe)   );
     _pcAction->setWhatsThis ( tr(sWhatsThis).arg(exe)   );
@@ -490,12 +488,14 @@ void StdCmdOnlineHelp::activated(int iMsg)
 
       if ( bAuthor )
       {
-        DlgAuthorization dlg( getMainWindow() );
+        QDialog dlg(getMainWindow(), 0, true);
+        Ui_DlgAuthorization ui;
+        ui.setupUi(&dlg);
 
         if ( dlg.exec() == QDialog::Accepted )
         {
-          username = dlg.username->text();
-          password = dlg.password->text();
+          username = ui.username->text();
+          password = ui.password->text();
         }
       }
 
@@ -532,7 +532,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
         }
       }
 
-      if ( !fi.permission( QFileInfo::WriteUser ) )
+      if ( !fi.permission( QFile::WriteUser ) )
       {
         if ( QMessageBox::critical(getMainWindow(), tr("Missing permission"), tr("You don't have write permission to '%1'\n\n"
                                                        "Do you want to specify another directory?").arg( fi.filePath() ), 
@@ -562,7 +562,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
       if ( ok == false )
         Base::Console().Error("The tool 'wget' couldn't be found. Please check your installation.");
       else if ( wget->isDownloading() && _pcAction )
-        _pcAction->setMenuText(tr("Stop downloading"));
+        _pcAction->setText(tr("Stop downloading"));
     }
   }
   else // kill the process now
@@ -574,11 +574,8 @@ void StdCmdOnlineHelp::activated(int iMsg)
 void StdCmdOnlineHelp::wgetExit()
 {
   if ( _pcAction )
-    _pcAction->setMenuText( tr( sMenuText ) );
+    _pcAction->setText( tr( sMenuText ) );
 }
 
 #include "moc_NetworkRetriever.cpp"
-
-#include "DlgAuthorization.cpp"
-#include "moc_DlgAuthorization.cpp"
 

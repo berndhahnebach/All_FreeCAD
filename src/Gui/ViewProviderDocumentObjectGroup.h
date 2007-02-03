@@ -24,6 +24,15 @@
 #ifndef GUI_VIEWPROVIDER_DOCUMENTOBJECTGROUP_H
 #define GUI_VIEWPROVIDER_DOCUMENTOBJECTGROUP_H
 
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+
 #include "ViewProviderDocumentObject.h"
 
 namespace Gui {
@@ -40,7 +49,7 @@ public:
   virtual ~ViewProviderDocumentObjectGroup();
 
   virtual void attach(App::DocumentObject *pcObject);
-  virtual ObjectItem* createTreeItem(QListViewItem* parent);
+  virtual ObjectItem* createTreeItem(Q3ListViewItem* parent);
   virtual QPixmap getOpenedGroupIcon() const;
   virtual QPixmap getClosedGroupIcon() const;
   /// returns a list of all possible modes

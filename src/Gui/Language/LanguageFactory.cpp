@@ -23,23 +23,14 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qbuffer.h>
-# include <qstring.h>
-# include <qstringlist.h>
-# include <qfile.h>
-# include <qdir.h>
-# include <map>
-#endif
 
 #include "LanguageFactory.h"
 #include "Translator.h"
-#include "linguist/metatranslator.h"
+//#include "linguist/metatranslator.h"
 #include "../Base/Console.h"
 #include "../Base/Parameter.h"
 #include "../App/Application.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 LanguageFactoryInst* LanguageFactoryInst::_pcSingleton = NULL;
@@ -112,24 +103,88 @@ bool LanguageFactoryInst::installLanguage ( const QString& lang ) const
 }
 
 bool LanguageFactoryInst::installTranslator ( const QString& lang ) const
-{
-  QValueList<QTranslatorMessage> msgs = messages( lang );
+{/*
+  LanguageEmbed* tv = (LanguageEmbed*)Produce(lang.latin1());
+
   bool ok=false;
-  if ( msgs.size() > 0 )
+  if ( !tv )
+    return false; // no data
+
+  QDir path = QDir::current();
+  QFileInfo fi( path.absPath() );
+  bool canDo = fi.permission( QFileInfo::WriteUser );
+#ifdef FC_OS_WIN32
+  const char* tmp = getenv("TMP");
+  if ( canDo==false && tmp )
+  {
+    path.setPath( tmp );
+    fi.setFile( path.absPath() );
+    canDo = fi.permission( QFileInfo::WriteUser );
+  }
+#endif
+  if ( canDo==false )
+  {
+    path = QDir::home();
+    fi.setFile( path.absPath() );
+    canDo = fi.permission( QFileInfo::WriteUser );
+  }
+
+  if ( canDo==false )
+    return false; // give up
+
+  // create temporary files
+  QString ts = "Language.ts";
+  fi.setFile( path, ts );
+  ts = fi.absFilePath();
+  QString qm = "Language.qm";
+  fi.setFile( path, qm );
+  qm = fi.absFilePath();
+  QFile file( ts );
+  if ( !file.open( IO_WriteOnly ) )
+    return false;
+
+  QTextStream out( &file );
+  out.writeRawBytes((const char*)tv->data, tv->size);
+
+  // all messages written
+  file.close();
+
+  // and delete the files again
+  QDir dir;
+  if ( file.size() > 0 )
+  {
+    // build the translator messages
+    MetaTranslator mt;
+    mt.load( ts );
+    mt.release( qm );
+    QTranslator* t = new Translator( lang );
+    t->load( qm, "." );
+    dir.remove( qm );
+
+    qApp->installTranslator( t );
+    ok = true;
+  }
+
+  dir.remove( ts );
+  return ok;*/
+  // TODO rewrite
+  //Q3ValueList<QTranslatorMessage> msgs = messages( lang );
+  bool ok=false;
+ /* if ( msgs.size() > 0 )
   {
     QTranslator* t = new Translator( lang );
-    for ( QValueList<QTranslatorMessage>::Iterator it = msgs.begin(); it != msgs.end(); it++ )
+    for ( Q3ValueList<QTranslatorMessage>::Iterator it = msgs.begin(); it != msgs.end(); it++ )
 	    t->insert( *it );
     t->squeeze( QTranslator::Stripped );
     qApp->installTranslator( t );
     ok = true;
-  }
+  }*/
   return ok;
 }
-
-QValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lang ) const
+/*
+Q3ValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lang ) const
 {
-  QValueList<QTranslatorMessage> msgs;
+  Q3ValueList<QTranslatorMessage> msgs;
   LanguageEmbed* tv = (LanguageEmbed*)Produce(lang.latin1());
 
   if ( tv )
@@ -137,7 +192,7 @@ QValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lan
     QByteArray buf;
     QBuffer out(buf);
 
-    if ( out.open( IO_WriteOnly ) )
+    if ( out.open( QIODevice::WriteOnly ) )
     {
       out.writeBlock((const char*)tv->data, tv->size);
 
@@ -149,8 +204,8 @@ QValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lan
       if ( out.size() > 0 )
         mt.load( &out );
 
-      QValueList<MetaTranslatorMessage> mtmsg = mt.messages();
-      for ( QValueList<MetaTranslatorMessage>::Iterator it2 = mtmsg.begin(); it2 != mtmsg.end(); it2++ )
+      Q3ValueList<MetaTranslatorMessage> mtmsg = mt.messages();
+      for ( Q3ValueList<MetaTranslatorMessage>::Iterator it2 = mtmsg.begin(); it2 != mtmsg.end(); it2++ )
       {
         msgs.append( *it2 );
       }
@@ -159,6 +214,7 @@ QValueList<QTranslatorMessage> LanguageFactoryInst::messages( const QString& lan
 
   return msgs;
 }
+*/
 
 QString LanguageFactoryInst::createUniqueID(const QString& sName)
 {
@@ -229,4 +285,5 @@ void LanguageFactorySupplier::destruct(void)
   _pcSingleton = 0;
 }
 
-#include "linguist/metatranslator.cpp"
+// TODO Replace
+//#include "linguist/metatranslator.cpp"

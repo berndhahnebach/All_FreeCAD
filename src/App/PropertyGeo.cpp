@@ -38,7 +38,7 @@
 #include "Placement.h"
 
 #include "PropertyGeo.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace App;
 using namespace Base;
 using namespace std;

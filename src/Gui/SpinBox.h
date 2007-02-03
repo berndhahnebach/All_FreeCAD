@@ -24,8 +24,21 @@
 #ifndef GUI_SPINBOX_H
 #define GUI_SPINBOX_H
 
-#include <qspinbox.h>
-#include <qvalidator.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+//#include <qspinbox.h>
+//#include <qvalidator.h>
+////Added by qt3to4:
+//#include <QtGui/QWheelEvent>
+//#include <QtCore/QEvent>
+//#include <QtGui/QMouseEvent>
+//#include <QtGui/QFocusEvent>
 
 namespace Gui {
 
@@ -114,10 +127,10 @@ public:
 
   void setValidator( const QValidator * );
 
-signals:
+Q_SIGNALS:
   void valueChanged( uint value );
 
-public slots:
+public Q_SLOTS:
   void setValue( uint value );
 
 protected:
@@ -172,11 +185,11 @@ public:
 
   void setValidator( const QValidator * );
 
-signals:
+Q_SIGNALS:
   /** Emitted whenever @ref QSpinBox::valueChanged( int ) is emitted. */
   void valueChanged( double value );
 
-public slots:
+public Q_SLOTS:
   virtual void setValue( double value );
 
 protected:

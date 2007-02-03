@@ -1,34 +1,18 @@
 
 lib_LTLIBRARIES=lib_TEMPLATE_Gui.la _TEMPLATE_Gui.la
 
+# BUILT_SOURCES=\
+#
 lib_TEMPLATE_Gui_la_SOURCES=\
 		Command.cpp \
 		PreCompiled.cpp \
+		PreCompiled.h \
 		Workbench.cpp \
 		Workbench.h
 
-include_HEADERS = PreCompiled.h
-
-if USE_PRECOMPILED_HEADERS
-PreCompiled.h.gch: PreCompiled.h
-	$(CXXCOMPILE) -xc++-header -o $@ $<
-
-PRECOMPILED = PreCompiled.h.gch
-else
-PRECOMPILED =
-endif
-
-BUILT_SOURCES=\
-		$(PRECOMPILED)
-
 # the library search path.
 lib_TEMPLATE_Gui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-
-if USE_PRECOMPILED_HEADERS
-lib_TEMPLATE_Gui_la_CPPFLAGS = -D_TEMPLATE_AppExport= -D_TEMPLATE_GuiExport= -D_PreComp_=
-else
 lib_TEMPLATE_Gui_la_CPPFLAGS = -D_TEMPLATE_AppExport= -D_TEMPLATE_GuiExport=
-endif
 
 lib_TEMPLATE_Gui_la_LIBADD   = \
 		-l@PYTHON_LIB@ \

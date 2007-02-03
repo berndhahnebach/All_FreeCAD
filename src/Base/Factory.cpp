@@ -33,8 +33,6 @@
 #include "Factory.h"
 #include "Console.h"
 
-#define new DEBUG_CLIENTBLOCK
-
 using namespace Base;
 
 

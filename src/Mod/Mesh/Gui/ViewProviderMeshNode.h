@@ -26,7 +26,6 @@
 #include <Gui/ViewProviderFeature.h>
 #include <Mod/Mesh/App/Core/Elements.h>
 
-#include <qdatetime.h>
 #include <vector>
 #include <Inventor/fields/SoSFVec2f.h>
 

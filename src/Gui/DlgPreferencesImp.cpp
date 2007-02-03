@@ -23,28 +23,18 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qlayout.h>
-# include <qlistbox.h>
-# include <qwidgetstack.h>
-# include <qtabwidget.h>
-# include <qpainter.h>
-# include <qmessagebox.h>
-# include <qmetaobject.h>
-# include <qpushbutton.h>
-#endif
+#include <Base/Exception.h>
 
 #include "DlgPreferencesImp.h"
+#include "PropertyPage.h"
 #include "WidgetFactory.h"
 #include "BitmapFactory.h"
 #include "MainWindow.h"
 
-#include <Base/Exception.h>
-
 #ifdef FC_DEBUG
-# include "../Base/Console.h" 
+# include <Base/Console.h> 
 #endif
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 // --------------------------------------------------
@@ -52,13 +42,15 @@ using namespace Gui::Dialog;
 namespace Gui {
 namespace Dialog {
 
-class PrefGroupItem : public QListBoxItem 
+class PrefGroupItem : public Q3ListBoxItem 
 {
 public:
-  PrefGroupItem( QListBox *parent, const QPixmap &p1, const QPixmap &p2, const QString &name);
+  PrefGroupItem( Q3ListBox *parent, const QPixmap &p1, const QPixmap &p2, const QString &name, int index);
 
-  virtual int height( const QListBox * ) const;
-  virtual int width( const QListBox * )  const;
+  virtual int height( const Q3ListBox * ) const;
+  virtual int width( const Q3ListBox * )  const;
+  virtual int rtti() const { return 10001; }
+  int index() const { return stack_index; }
 
 protected:
   virtual void paint( QPainter * );
@@ -66,13 +58,14 @@ protected:
 private:
   QPixmap pm_Sel;
   QPixmap pm_Unsel;
+  int stack_index;
 };
 
 } // namespace Dialog
 } // namespace Gui
 
-PrefGroupItem::PrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixmap &p2, const QString &name )
-    : QListBoxItem( parent ), pm_Sel( p1 ), pm_Unsel( p2 )
+PrefGroupItem::PrefGroupItem( Q3ListBox * parent, const QPixmap &p1, const QPixmap &p2, const QString &name, int index )
+    : Q3ListBoxItem( parent ), pm_Sel( p1 ), pm_Unsel( p2 ), stack_index(index)
 {
   setText( name );
   QPalette pal = parent->palette();
@@ -80,12 +73,12 @@ PrefGroupItem::PrefGroupItem( QListBox * parent, const QPixmap &p1, const QPixma
   parent->setPalette( pal );
 }
 
-int PrefGroupItem::height( const QListBox * ) const
+int PrefGroupItem::height( const Q3ListBox * ) const
 {
   return 50;
 }
 
-int PrefGroupItem::width( const QListBox * )  const
+int PrefGroupItem::width( const Q3ListBox * )  const
 {
   return 75;
 }
@@ -113,11 +106,11 @@ void PrefGroupItem::paint( QPainter *p )
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgPreferences( parent, name, modal, fl ), _pCurTab(0L)
+DlgPreferencesImp::DlgPreferencesImp( QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl ), _pCurTab(0L)
 {
+  this->setupUi(this);
   connect( buttonHelp,  SIGNAL ( clicked() ), getMainWindow(), SLOT ( whatsThis() ));
-  tabWidgetStack->removeWidget( WStackPage ); // remove the damned dummy widget
 
   // make sure that pages are ready to create
   GetWidgetFactorySupplier();
@@ -137,7 +130,7 @@ DlgPreferencesImp::DlgPreferencesImp( QWidget* parent,  const char* name, bool m
         addPreferenceGroup( group, "PrefTree_GroupOpen", "PrefTree_GroupClosed" );
       }
 
-      addPreferencePage( WidgetFactory().createWidget( className ) );
+      addPreferencePage( WidgetFactory().createPreferencePage( className ) );
     }
   }
 
@@ -179,7 +172,7 @@ void DlgPreferencesImp::activatePageOfGroup( int pos, const char* groupName )
   {
     QTabWidget* tab = getPreferenceGroup( it.data() );
     listBox->setCurrentItem( it.data() );
-    tab->setCurrentPage( pos );
+    tab->setCurrentIndex( pos );
   }
 }
 
@@ -194,17 +187,13 @@ void DlgPreferencesImp::addPreferenceGroup(const QString& name, const char* Pixm
  * Before the first call of this method @ref addPreferenceGroup must be called
  * otherwise the preference pages will be lost.
  */
-void DlgPreferencesImp::addPreferencePage( QWidget* page )
+void DlgPreferencesImp::addPreferencePage( PreferencePage* page )
 {
   if ( _pCurTab && page )
   {
-    _pCurTab->addTab( page, page->caption() );
-
-    page->hide();
-
-  	int index = page->metaObject()->findSlot( "loadSettings()", TRUE );
-	  if ( index >= 0 )
-		  page->qt_invoke( index, 0 );
+    _pCurTab->addTab( page, page->windowTitle() );
+    //page->hide();
+    page->loadSettings();
   }
 }
 
@@ -224,35 +213,34 @@ QTabWidget* DlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, cons
   QPixmap pixSel   = Gui::BitmapFactory().pixmap(Pixmap);
   QPixmap pixUnsel = Gui::BitmapFactory().pixmap(Pixmap2);
 
-  int iSize = _mGroupIDs.size();
-  _mGroupIDs[ name ] = iSize;
   QTabWidget* tabWidget = new QTabWidget;
-  tabWidgetStack->addWidget(tabWidget, iSize);
+  int index = tabWidgetStack->addWidget(tabWidget);
+  _mGroupIDs[ name ] = index;
 
-  (void) new PrefGroupItem(listBox, pixSel, pixUnsel, name);
-
+  PrefGroupItem* item = new PrefGroupItem(listBox, pixSel, pixUnsel, name, index);
   return tabWidget;
 }
 
-void DlgPreferencesImp::onPrefPageClicked(int item)
+void DlgPreferencesImp::on_listBox_highlighted(int index)
 {
-  _pCurTab = getPreferenceGroup(item);
-
+  PrefGroupItem* item = (PrefGroupItem*)listBox->item(index);
+  if (item->rtti() != 10001)
+    return;
+  _pCurTab = getPreferenceGroup(item->index());
   if (!_pCurTab)
     return;
-
-  tabWidgetStack->raiseWidget( _pCurTab );
+  tabWidgetStack->setCurrentWidget( _pCurTab );
 }
 
 void DlgPreferencesImp::accept()
 {
   _invalidParameter = false;
-  apply();
+  on_buttonApply_clicked();
   if ( _invalidParameter == false )
-    DlgPreferences::accept();
+    QDialog::accept();
 }
 
-void DlgPreferencesImp::apply()
+void DlgPreferencesImp::on_buttonApply_clicked()
 {
   try
   {
@@ -265,10 +253,10 @@ void DlgPreferencesImp::apply()
       for ( int i=0; i<ct; i++ )
       {
         QWidget* page = tab->page( i );
-  		  int index = page->metaObject()->findSlot( "checkSettings()", TRUE );
+  		  int index = page->metaObject()->indexOfMethod( "checkSettings()" );
         try{
 	  	  if ( index >= 0 )
-		      page->qt_invoke( index, 0 );
+          page->qt_metacall( QMetaObject::InvokeMetaMethod, index, 0 );
         } catch ( const Base::Exception& e ) {
           listBox->setCurrentItem( it.data() );
           tab->setCurrentPage( i );
@@ -289,32 +277,29 @@ void DlgPreferencesImp::apply()
 
     for ( int i=0; i<ct; i++ )
     {
-      QWidget* page = tab->page( i );
-  		int index = page->metaObject()->findSlot( "saveSettings()", TRUE );
-	  	if ( index >= 0 )
-		    page->qt_invoke( index, 0 );
+      PreferencePage* page = (PreferencePage*)(tab->widget( i )->qt_metacast("Gui::Dialog::PreferencePage"));
+	  	if ( page )
+        page->saveSettings();
     }
   }
 }
 
-void DlgPreferencesImp::languageChange()
+void DlgPreferencesImp::changeEvent(QEvent *e)
 {
-  DlgPreferences::languageChange();
-
-  // update the widget's tabs
-  for ( QMap<QString, int>::Iterator it = _mGroupIDs.begin(); it != _mGroupIDs.end(); ++it )
-  {
-    QTabWidget* tab = getPreferenceGroup( it.data() );
-    int ct = tab->count();
-
-    for ( int i=0; i<ct; i++ )
-    {
-      QWidget* page = tab->page( i );
-      tab->changeTab( page, page->caption() );
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi(this);
+    // update the widget's tabs
+    for ( QMap<QString, int>::Iterator it = _mGroupIDs.begin(); it != _mGroupIDs.end(); ++it ) {
+      QTabWidget* tab = getPreferenceGroup( it.data() );
+      int ct = tab->count();
+      for ( int i=0; i<ct; i++ ) {
+        QWidget* page = tab->widget( i );
+        tab->setTabText( i, page->windowTitle() );
+      }
     }
+  } else {
+    QWidget::changeEvent(e);
   }
 }
 
-#include "DlgPreferences.cpp"
-#include "moc_DlgPreferences.cpp"
 #include "moc_DlgPreferencesImp.cpp"

@@ -23,15 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-#endif
-
 #include "WorkbenchPy.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
-#define new DEBUG_CLIENTBLOCK
+#include <Base/Console.h>
+#include <Base/Exception.h>
+
 using namespace Gui;
 
 
@@ -62,8 +59,8 @@ PyTypeObject WorkbenchPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef WorkbenchPy::Methods[] = {
-  PYMETHODEDEF(Name)
-  PYMETHODEDEF(Activate)
+  PYMETHODEDEF(name)
+  PYMETHODEDEF(activate)
   {NULL, NULL}          /* Sentinel */
 };
 
@@ -118,7 +115,7 @@ int WorkbenchPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function:
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
-PYFUNCIMP_D(WorkbenchPy,Name)
+PYFUNCIMP_D(WorkbenchPy,name)
 {
   PY_TRY {
     QString name = _pcWorkbench->name(); 
@@ -127,7 +124,7 @@ PYFUNCIMP_D(WorkbenchPy,Name)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(WorkbenchPy,Activate)
+PYFUNCIMP_D(WorkbenchPy,activate)
 {
   PY_TRY {
     QString name = _pcWorkbench->name(); 
@@ -197,19 +194,19 @@ PyTypeObject PythonWorkbenchPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef PythonWorkbenchPy::Methods[] = {
-  PYMETHODEDEF(Name)
-  PYMETHODEDEF(Activate)
-  PYMETHODEDEF(AppendMenu)
-  PYMETHODEDEF(RemoveMenu)
-  PYMETHODEDEF(ListMenus)
-  PYMETHODEDEF(AppendContextMenu)
-  PYMETHODEDEF(RemoveContextMenu)
-  PYMETHODEDEF(AppendToolbar)
-  PYMETHODEDEF(RemoveToolbar)
-  PYMETHODEDEF(ListToolbars)
-  PYMETHODEDEF(AppendCommandbar)
-  PYMETHODEDEF(RemoveCommandbar)
-  PYMETHODEDEF(ListCommandbars)
+  PYMETHODEDEF(name)
+  PYMETHODEDEF(activate)
+  PYMETHODEDEF(appendMenu)
+  PYMETHODEDEF(removeMenu)
+  PYMETHODEDEF(listMenus)
+  PYMETHODEDEF(appendContextMenu)
+  PYMETHODEDEF(removeContextMenu)
+  PYMETHODEDEF(appendToolbar)
+  PYMETHODEDEF(removeToolbar)
+  PYMETHODEDEF(listToolbars)
+  PYMETHODEDEF(appendCommandbar)
+  PYMETHODEDEF(removeCommandbar)
+  PYMETHODEDEF(listCommandbars)
   {NULL, NULL}          /* Sentinel */
 };
 
@@ -265,7 +262,7 @@ int PythonWorkbenchPy::_setattr(char *attr, PyObject *value) 	// __setattr__ fun
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PYFUNCIMP_D(PythonWorkbenchPy,AppendMenu)
+PYFUNCIMP_D(PythonWorkbenchPy,appendMenu)
 {
   PY_TRY {
     PyObject* pPath;
@@ -333,7 +330,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,AppendMenu)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(PythonWorkbenchPy,RemoveMenu)
+PYFUNCIMP_D(PythonWorkbenchPy,removeMenu)
 { 
   PY_TRY {
     char *psMenu;
@@ -345,7 +342,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,RemoveMenu)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(PythonWorkbenchPy,ListMenus)
+PYFUNCIMP_D(PythonWorkbenchPy,listMenus)
 { 
   PY_TRY {
     QStringList menus = _pcWorkbench->listMenus();
@@ -361,7 +358,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,ListMenus)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(PythonWorkbenchPy,AppendContextMenu)
+PYFUNCIMP_D(PythonWorkbenchPy,appendContextMenu)
 { 
   PY_TRY {
     PyObject* pObject;
@@ -393,7 +390,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,AppendContextMenu)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(PythonWorkbenchPy,RemoveContextMenu)
+PYFUNCIMP_D(PythonWorkbenchPy,removeContextMenu)
 { 
   PY_TRY {
     char *psMenu;
@@ -405,7 +402,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,RemoveContextMenu)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(PythonWorkbenchPy,AppendToolbar)
+PYFUNCIMP_D(PythonWorkbenchPy,appendToolbar)
 { 
   PY_TRY {
     PyObject* pObject;
@@ -437,7 +434,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,AppendToolbar)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(PythonWorkbenchPy,RemoveToolbar)
+PYFUNCIMP_D(PythonWorkbenchPy,removeToolbar)
 { 
   PY_TRY {
     char *psToolBar;
@@ -449,7 +446,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,RemoveToolbar)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(PythonWorkbenchPy,ListToolbars)
+PYFUNCIMP_D(PythonWorkbenchPy,listToolbars)
 { 
   PY_TRY {
     QStringList bars = _pcWorkbench->listToolbars();
@@ -465,7 +462,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,ListToolbars)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(PythonWorkbenchPy,AppendCommandbar)
+PYFUNCIMP_D(PythonWorkbenchPy,appendCommandbar)
 { 
   PY_TRY {
     PyObject* pObject;
@@ -497,7 +494,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,AppendCommandbar)
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(PythonWorkbenchPy,RemoveCommandbar)
+PYFUNCIMP_D(PythonWorkbenchPy,removeCommandbar)
 { 
   PY_TRY {
     char *psToolBar;
@@ -509,7 +506,7 @@ PYFUNCIMP_D(PythonWorkbenchPy,RemoveCommandbar)
   }PY_CATCH;
 }
 
-PYFUNCIMP_D(PythonWorkbenchPy,ListCommandbars)
+PYFUNCIMP_D(PythonWorkbenchPy,listCommandbars)
 { 
   PY_TRY {
     QStringList bars = _pcWorkbench->listCommandbars();

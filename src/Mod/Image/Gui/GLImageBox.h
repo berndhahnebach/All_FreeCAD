@@ -19,7 +19,6 @@
 #ifndef GLIMAGEBOX_H
 #define GLIMAGEBOX_H
 
-#include <qgl.h>
 #include "../App/ImageBase.h"
 
 
@@ -75,7 +74,7 @@ public:
     int setColorMapAlphaValue(int index, float value);
     unsigned int pixValToMapIndex(double PixVal);
 
-signals:
+Q_SIGNALS:
   void drawGraphics();
 
 private:

@@ -24,7 +24,15 @@
 #ifndef GUI_COMMAND_H
 #define GUI_COMMAND_H
 
-#include <qstringlist.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+
 
 #include <list>
 #include <map>
@@ -34,8 +42,6 @@
 #include <Base/PyExport.h>
 #include <Base/Type.h>
 
-class QAction;
-class QActionGroup;
 class QWidget;
 
 namespace App
@@ -47,6 +53,7 @@ namespace App
 
 namespace Gui {
 
+class Action;
 class Application;
 class CommandManager;
 class Command;
@@ -77,15 +84,15 @@ public:
   virtual ~CommandBase();
 
   /**
-   * Returns the QAction object of this command, or 0 if it doesn't exist.
+   * Returns the Action object of this command, or 0 if it doesn't exist.
    */
-  QAction*  getAction();
+  Action*  getAction();
 
   /** @name Methods to override when creating a new command */
   //@{
 protected:
-  /// Creates the used QAction when adding to a widget. The default implementation does nothing.
-  virtual QAction * createAction(void);
+  /// Creates the used Action when adding to a widget. The default implementation does nothing.
+  virtual Action * createAction(void);
 public:
   /// Reassigns QAction stuff after the language has changed. 
   virtual void languageChange();
@@ -116,7 +123,7 @@ protected:
   int         iAccel;
   //@}
 protected:
-  QAction *_pcAction; /**< The QAction item. */
+  Action *_pcAction; /**< The Action item. */
 };
 
 /** The Command class
@@ -145,12 +152,12 @@ protected:
   virtual void activated(int iMsg)=0;
   /// Overite this method if your Cmd is not always active
   virtual bool isActive(void){return true;} 
-  /// Creates the used QAction
-  virtual QAction * createAction(void);
+  /// Creates the used Action
+  virtual Action * createAction(void);
   //@}
 
 public:
-  /** @name interface used by the CommandManager and the QAction */
+  /** @name interface used by the CommandManager and the Action */
   //@{
   /// CommandManager is a friend
   friend class CommandManager;
@@ -159,9 +166,7 @@ public:
   /// get called by the QAction
   void invoke (int); 
   /// adds this command to arbitrary widgets
-  virtual bool addTo(QWidget *);
-  /// removes this command from arbitrary widgets
-  virtual bool removeFrom(QWidget *pcWidget);
+  void addTo(QWidget *);
   //@}
 
 
@@ -266,110 +271,6 @@ private:
   static bool _blockCmd;
 };
 
-/** The ToggleCommand class
- * This class does basically the same as its base class Command unless that it is intended to perform toggle actions.
- * E.g. the command to hide or show the status bar of an application is done by a toggle action. If such a command is
- * added to a popup menu then the menu item is checked if the status bar is visible, otherwise the item is unchecked.
- * @author Werner Mayer
- */
-class GuiExport ToggleCommand : public Command
-{
-public:
-  ToggleCommand(const char* name);
-  virtual ~ToggleCommand() {}
-
-protected:
-  /** @name methods to override when creating a new command  */
-  //@{
-  /// Creates the used QAction
-  virtual QAction* createAction(void);
-  //@}
-};
-
-/** The CommandItem class represents an item of a group of commands and is used therefore in
- * @ref CommandGroup.
- * @author Werner Mayer
- */
-class CommandGroup;
-class GuiExport CommandItem : public CommandBase 
-{
-public:
-  CommandItem( CommandGroup* parent, const char* sMenu, const char* sToolTip=0, const char* sWhat=0, 
-               const char* sStatus=0, const char* sPixmap=0, int accel=0 );
-  virtual ~CommandItem();
-
-  /** @name Methods to override when creating a new command */
-  //@{
-protected:
-  /// Creates the used toggle QAction object for the QActionGroup.
-  QAction * createAction(void);
-public:
-  /// Reassigns QAction stuff after the language has changed. 
-  void languageChange();
-  //@}
-
-private:
-  CommandGroup* _parent;
-  // friends
-  friend class CommandGroup;
-};
-
-/** \brief The CommandGroup class groups command items together.
- *
- * In some situations it is useful to group command items together. For example, if you have a
- * command to set the resolution of a geometry object with several predefined values, such as
- * 10%, 20%, ..., 100%, only one of these resolutions should be active at any one time, and one
- * simple way of achieving this is to group the command items together in one command group.
- *
- * @note The different states must be known at creation time of the action group (@ref createAction()) to create
- * the correct number of command items. Later on it is not possible to append or remove items to this group.
- *
- * @note The corresponding actions to the command items are always toggle actions. If you want to group non-toogle
- * commands together then you should use the Command class instead of the CommandGroup class by adding the wanted
- * number of Command objects to a sub-widget. for more details refer to the @ref workbench.
- *
- * A command group can be added to a menu or a toolbar as a single unit, with all the command items
- * within the command group appearing as separate menu options and toolbar buttons.
- * @author Werner Mayer
- */
-class GuiExport CommandGroup : public Command
-{
-public:
-  /** If \a exclusive is true only one action be active at any one time, otherwise several actions can be active.
-   * If \a dropdown is true then a subwidget for the command items gets created, otherwise they will be added
-   * to the same widget the action group is added to.
-   */
-  CommandGroup( const char* name, bool exclusive=true, bool dropdown=false );
-  virtual ~CommandGroup();
-
-  /// Reassigns QActionGroup stuff after the language has changed. 
-  void languageChange();
-  /// adds this command to arbitrary widgets
-  bool addTo(QWidget *);
-  /// removes this command from arbitrary widgets
-  bool removeFrom(QWidget *pcWidget);
-  /// returns an array of items
-  std::vector<CommandItem*> getItems() const { return _aCommands; }
-
-protected:
-  /** @name methods to override when creating a new command */
-  //@{
-  /// Creates the used QAction
-  virtual QAction* createAction(void);
-  //@}
-
-protected:
-  /**
-   * A list of subcommands where the first parameter is the menu text
-   * and the second parameter defines the pixmap.
-   */
-  std::vector<CommandItem*> _aCommands;
-  bool _exclusive; /**< This property holds whether the action group does exclusive toggling. */
-  /** This property holds whether the group's actions are displayed in a subwidget of the widgets the action group is added to. */
-  bool _dropdown; 
-};
-
-
 /** The Python command class
  * This is a special type of command class. It's used to bind a Python command class into the 
  * FreeCAD command framework.
@@ -394,8 +295,8 @@ protected:
   virtual bool isActive(void);
   /// Get the help URL
   const char* getHelpUrl(void);
-  /// Creates the used QAction
-  virtual QAction * createAction(void);
+  /// Creates the used Action
+  virtual Action * createAction(void);
   //@}
 
 public:
@@ -441,8 +342,8 @@ protected:
   //@{
   /// Method which get called when activated
   void activated(int iMsg);
-  /// Creates the used QAction
-  QAction * createAction(void);
+  /// Creates the used Action
+  Action * createAction(void);
   //@}
 
 public:
@@ -505,8 +406,6 @@ public:
 
   /// Adds the given command to a given widget
   void addTo(const char* Name,QWidget *pcWidget);
-  /// Removes the given command from the widget
-  void removeFrom(const char* Name,QWidget *pcWidget);
 
   /** Returns all commands of a special App Module
    *  delivers a vector of all comands in the given application module. When no 
@@ -548,25 +447,7 @@ private:
   std::map<std::string,Command*> _sCommands;
 };
 
-/**
- * Shows information about the application.
- * @author Werner Mayer
- */
-class StdCmdAbout : public Command
-{
-public:
-  StdCmdAbout();
-
-  /** i18n stuff of the command. */
-  void languageChange();
-
-protected:
-  /** Creates the action object. */
-  QAction* createAction();
-  /** Invokes the about-dialog. */
-  void activated(int iMsg);
-};
-
+#if 0
 /**
  *  The workbench command
  *  @author Werner Mayer
@@ -594,25 +475,25 @@ protected:
   /** The item at position \a iMsg is activated. */
   void activated(int iMsg);
 
-  /** Creates the accompanying QAction object to the command. */
-  QAction * createAction(void);
+  /** Creates the accompanying Q3Action object to the command. */
+  Q3Action * createAction(void);
 
 private:
   /** Appends a new workbench \a item. */
   void addWorkbench ( const QString& item );
 
-  QActionGroup *pcAction;
+  Q3ActionGroup *pcAction;
 };
-
+#endif
 
 /**
- *  The MRU command which does the handling of recent files.
+ *  This command which does the handling of recent files.
  *  @author Werner Mayer
  */
-class StdCmdMRU : public Command
+class StdCmdRecentFiles : public Command
 {
 public:
-  StdCmdMRU();
+  StdCmdRecentFiles();
   
   /** Adds the new item to the recent files. */
   void addRecentFile ( const QString& item );
@@ -620,7 +501,7 @@ public:
   void removeRecentFile ( const QString& item );
 
   /** Refreshes the recent file list. */
-  void refreshRecentFileWidgets();
+  void refreshRecentFileList();
 
   int  maxCount() const { return _nMaxItems; }
   void setMaxCount (int i) { _nMaxItems = i;    }
@@ -641,12 +522,11 @@ protected:
   /** The item at position \a iMsg is activated. */
   void activated(int iMsg);
 
-  /** Creates the accompanying QAction object to the command. */
-  QAction * createAction(void);
+  /** Creates the accompanying Action object to the command. */
+  Action * createAction(void);
 
 private:
   QStringList _vMRU;
-  QActionGroup *pcAction;
   int _nMaxItems;
 };
 
@@ -694,7 +574,7 @@ public:\
   virtual ~X(){}\
 protected: \
   virtual void activated(int iMsg);\
-  virtual QAction * createAction(void);\
+  virtual Action * createAction(void);\
 };
 
 /** The Command Macro Standard + isActive() + createAction()
@@ -710,125 +590,25 @@ public:\
 protected: \
   virtual void activated(int iMsg);\
   virtual bool isActive(void);\
-  virtual QAction * createAction(void);\
+  virtual Action * createAction(void);\
 };
 
-/** The Command Macro Standard for toggle commands.
- *  This macro makes it easier to define a new command.
- *  The parameters are the class name.
- *  @author Werner Mayer
- */
-#define DEF_STD_CMD_TOGGLE(X) class X : public Gui::ToggleCommand \
-{\
-public:\
-  X();\
-protected: \
-  virtual void activated(int iMsg);\
-};
-
-/** The Command Macro Standard for toggle commands + isActive()
+/** The Command Macro Standard + isActive() + createAction()
+ *  + languageChange()
  *  This macro makes it easier to define a new command.
  *  The parameters are the class name
  *  @author Werner Mayer
  */
-#define DEF_STD_CMD_TOGGLE_A(X) class X : public Gui::ToggleCommand \
+#define DEF_STD_CMD_ACL(X) class X : public Gui::Command \
 {\
 public:\
   X();\
   virtual ~X(){}\
+  virtual void languageChange(); \
 protected: \
   virtual void activated(int iMsg);\
   virtual bool isActive(void);\
-};
-
-/** The Command Macro Standard for toggle commands + createAction()
- *  This macro makes it easier to define a new command.
- *  The parameters are the class name
- *  @author Werner Mayer
- */
-#define DEF_STD_CMD_TOGGLE_C(X) class X : public Gui::ToggleCommand \
-{\
-public:\
-  X();\
-  virtual ~X(){}\
-protected: \
-  virtual void activated(int iMsg);\
-  virtual QAction * createAction(void);\
-};
-
-/** The Command Macro Standard for toggle commands + isActive() + createAction()
- *  This macro makes it easier to define a new command.
- *  The parameters are the class name
- *  @author Werner Mayer
- */
-#define DEF_STD_CMD_TOGGLE_AC(X) class X : public Gui::ToggleCommand \
-{\
-public:\
-  X();\
-  virtual ~X(){}\
-protected: \
-  virtual void activated(int iMsg);\
-  virtual bool isActive(void);\
-  virtual QAction * createAction(void);\
-};
-
-/** The Command Macro Standard for group commands.
- *  This macro makes it easier to define a new command.
- *  The parameters are the class name.
- *  @author Werner Mayer
- */
-#define DEF_STD_CMD_GROUP(X) class X : public Gui::CommandGroup \
-{\
-public:\
-  X();\
-protected: \
-  virtual void activated(int iMsg);\
-};
-
-/** The Command Macro Standard for group commands + isActive()
- *  This macro makes it easier to define a new command.
- *  The parameters are the class name
- *  @author Werner Mayer
- */
-#define DEF_STD_CMD_GROUP_A(X) class X : public Gui::CommandGroup \
-{\
-public:\
-  X();\
-  virtual ~X(){}\
-protected: \
-  virtual void activated(int iMsg);\
-  virtual bool isActive(void);\
-};
-
-/** The Command Macro Standard for group commands + createAction()
- *  This macro makes it easier to define a new command.
- *  The parameters are the class name
- *  @author Werner Mayer
- */
-#define DEF_STD_CMD_GROUP_C(X) class X : public Gui::CommandGroup \
-{\
-public:\
-  X();\
-  virtual ~X(){}\
-protected: \
-  virtual void activated(int iMsg);\
-  virtual QAction * createAction(void);\
-};
-
-/** The Command Macro Standard for group commands + isActive() + createAction()
- *  This macro makes it easier to define a new command.
- *  The parameters are the class name
- *  @author Werner Mayer
- */
-#define DEF_STD_CMD_GROUP_AC(X) class X : public Gui::CommandGroup \
-{\
-public:\
-  X();\
-  virtual ~X(){}\
-protected: \
-  virtual void activated(int iMsg);\
-  virtual bool isActive(void);\
-  virtual QAction * createAction(void);\
+  virtual Action * createAction(void);\
 };
 
 /** The Command Macro view

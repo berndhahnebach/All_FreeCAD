@@ -21,22 +21,16 @@
  ***************************************************************************/
 
 
-#ifndef ___WIDGETS_H__
-#define ___WIDGETS_H__
+#ifndef GUI_WIDGETS_H
+#define GUI_WIDGETS_H
 
-#include <qiconview.h>
-#include <qlineedit.h>
-#include <qlistview.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-class QAction;
-class QHBoxLayout;
-class QGridLayout;
-class QCheckBox;
-class QGroupBox;
-class QLabel;
-class QPushButton;
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 class PrefCheckBox;
@@ -80,7 +74,7 @@ protected:
 
   // protected constructor
   CheckMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
-               int button2, QWidget * parent=0, const char * name=0, bool modal=TRUE, WFlags f=WStyle_DialogBorder);
+               int button2, QWidget * parent=0, const char * name=0, bool modal=TRUE, Qt::WFlags f=Qt::WStyle_DialogBorder);
 
 private:
   static int _msg( Icon icon, QWidget * parent, const QString & caption, const QString & text,
@@ -88,26 +82,7 @@ private:
                    const QString & button2Text = QString::null, int defaultButtonNumber = 0, int escapeButtonNumber = -1);
 
   Gui::PrefCheckBox* checkBox;
-  QGridLayout* layout;
-};
-
-// ------------------------------------------------------------------------------
-
-/**
- *  Icon items used by the 'CommandIconView' and 'DlgCustomizeImp' classes.
- * \author Werner Mayer
- */
-class GuiExport CommandViewItem : public QIconViewItem
-{
-public:
-  CommandViewItem ( QIconView * parent, const QString& action, const QString& toolTip, const QPixmap& pPixmap );
-  virtual ~CommandViewItem ();
-
-  QString text() const;
-  QString commandName();
-
-private:
-  CommandViewItemPrivate* d;
+  Q3GridLayout* layout;
 };
 
 // ------------------------------------------------------------------------------
@@ -119,21 +94,21 @@ private:
  * @see CommandViewItem, Command
  * \author Werner Mayer
  */
-class GuiExport CommandIconView : public QIconView
+class CommandIconView : public QListWidget
 {
   Q_OBJECT
 
 public:
-  CommandIconView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+  CommandIconView ( QWidget * parent = 0 );
   virtual ~CommandIconView ();
 
 protected:
-  QDragObject * dragObject ();
+  void startDrag ( Qt::DropActions supportedActions );
 
-protected slots:
-  void onSelectionChanged( QIconViewItem * item );
+protected Q_SLOTS:
+  void onSelectionChanged( QListWidgetItem * item, QListWidgetItem * );
 
-signals:
+Q_SIGNALS:
   /** Emits this signal if selection has changed. */
   void emitSelectionChanged( const QString& );
 };
@@ -149,7 +124,7 @@ class GuiExport AccelLineEdit : public QLineEdit
   Q_OBJECT
 
 public:
-  AccelLineEdit ( QWidget * parent=0, const char * name=0 );
+  AccelLineEdit ( QWidget * parent=0 );
 
 protected:
   void keyPressEvent ( QKeyEvent * e);
@@ -170,11 +145,11 @@ class GuiExport CheckListDialog : public QDialog
   Q_OBJECT
 
 public:
-  CheckListDialog( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  CheckListDialog( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
   ~CheckListDialog();
 
   void setCheckableItems( const QStringList& items );
-  void setCheckableItems( const QValueList<CheckListItem>& items );
+  void setCheckableItems( const Q3ValueList<CheckListItem>& items );
   QStringList getCheckedItems() const;
 
   void accept ();
@@ -184,11 +159,11 @@ private:
 
   QPushButton* buttonOk;
   QPushButton* buttonCancel;
-  QGroupBox* GroupBox1;
-  QListView* ListView;
-  QGridLayout* CheckListDialogLayout;
-  QHBoxLayout* Layout2;
-  QGridLayout* GroupBox1Layout;
+  Q3GroupBox* GroupBox1;
+  Q3ListView* ListView;
+  Q3GridLayout* CheckListDialogLayout;
+  Q3HBoxLayout* Layout2;
+  Q3GridLayout* GroupBox1Layout;
 };
 
 // ------------------------------------------------------------------------------
@@ -204,21 +179,21 @@ class GuiExport ColorButton : public QPushButton
   Q_PROPERTY( QColor color READ color WRITE setColor )
 
 public:
-  ColorButton( QWidget* parent = 0, const char* name = 0 );
+  ColorButton( QWidget* parent = 0 );
   ~ColorButton();
 
   void setColor( const QColor& );
   QColor color() const;
 
-public slots:
+public Q_SLOTS:
   virtual void onChooseColor();
 
-signals:
+Q_SIGNALS:
   /** Emits this signal when color has changed */
   void changed();
 
 protected:
-  void drawButtonLabel( QPainter* );
+  void paintEvent ( QPaintEvent* );
 
 private:
   QColor _col;
@@ -226,4 +201,4 @@ private:
 
 } // namespace Gui
 
-#endif // __FC_WIDGETS_H__
+#endif // GUI_WIDGETS_H

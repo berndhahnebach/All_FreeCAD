@@ -115,7 +115,7 @@ protected:
     QAction* _pShowBrightAct;
 
     // Menus
-    QPopupMenu* _pContextMenu;
+    QMenu* _pContextMenu;
 
     // Toolbars
     QToolBar* _pStdToolBar;

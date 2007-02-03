@@ -31,7 +31,6 @@
 #include <assert.h>
 #include <string>  // for memcpy
 
-#define new DEBUG_CLIENTBLOCK
 
 namespace Base {
 

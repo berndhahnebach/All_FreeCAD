@@ -23,16 +23,11 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qlayout.h>
-# include <qpopupmenu.h>
-# include <qtabwidget.h>
-#endif
-
 #include "ReportView.h"
 #include "FileDialog.h"
 #include "PythonConsole.h"
-#define new DEBUG_CLIENTBLOCK
+#include "BitmapFactory.h"
+
 using namespace Gui;
 using namespace Gui::DockWnd;
 
@@ -42,36 +37,38 @@ using namespace Gui::DockWnd;
  *  Constructs a ReportView which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-ReportView::ReportView( QWidget* parent,  const char* name, WFlags fl )
-  : DockWindow( 0L, parent, name, fl )
+ReportView::ReportView( QWidget* parent )
+  : DockWindow( 0L, parent )
 {
-  if ( !name )
-    setName( "ReportOutput" );
+  setObjectName( "ReportOutput" );
 
   resize( 529, 162 );
   QGridLayout* tabLayout = new QGridLayout( this );
   tabLayout->setSpacing( 0 );
   tabLayout->setMargin( 0 );
 
-  tab = new QTabWidget( this, "TabWidget" );
-  tab->setProperty( "tabPosition", (int)QTabWidget::Bottom );
-  tab->setProperty( "tabShape", (int)QTabWidget::Triangular );
-  tabLayout->addWidget( tab, 0, 0 );
+  tabWidget = new QTabWidget( this );
+  tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
+  tabWidget->setTabPosition(QTabWidget::South);
+  tabWidget->setTabShape(QTabWidget::Rounded);
+  tabLayout->addWidget( tabWidget, 0, 0 );
 
+  tabOutput = new ReportOutput();
+  int output = tabWidget->addTab(tabOutput, trUtf8("Output"));
+  tabWidget->setTabIcon(output, BitmapFactory().pixmap("MacroEditor"));
 
-  mle = new ReportOutput( tab, "LogOutput" );
-  tab->insertTab( mle, tr( "Output" ) );
-
-  pyc = new PythonConsole(tab, "PythonConsole");
-  tab->insertTab(pyc, tr("Python console") );
+  tabPython = new PythonConsole();
+  int python = tabWidget->addTab(tabPython, trUtf8("Python console"));
+  tabWidget->setTabIcon(python, BitmapFactory().pixmap("python_small"));
+  tabWidget->setCurrentIndex(0);
 
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General")->GetGroup("AutoloadTab");
   std::string txt = hGrp->GetASCII("currentText");
-  for (int i=0; i<tab->count(); i++)
+  for (int i=0; i<tabWidget->count(); i++)
   {
-    if ( tab->label(i) == txt.c_str() )
+    if ( tabWidget->tabText(i) == txt.c_str() )
     {
-      tab->setCurrentPage( i );
+      tabWidget->setCurrentPage( i );
       break;
     }
   }
@@ -85,17 +82,19 @@ ReportView::~ReportView()
   // no need to delete child widgets, Qt does it all for us
 }
 
-void ReportView::languageChange()
+void ReportView::changeEvent(QEvent *e)
 {
-  DockWindow::languageChange();
-  tab->changeTab( mle, tr( "Output" ) );
-  tab->changeTab( pyc, tr("Python console") );
+  DockWindow::changeEvent(e);
+  if (e->type() == QEvent::LanguageChange) {
+    tabWidget->setTabText( tabWidget->indexOf(tabOutput), trUtf8( "Output" ) );
+    tabWidget->setTabText( tabWidget->indexOf(tabPython), trUtf8("Python console") );
+  }
 }
 
 // ----------------------------------------------------------
 
 ReportHighlighter::ReportHighlighter(QTextEdit* edit)
-: QSyntaxHighlighter(edit), type(Message), lastPos(0), lastPar(0)
+  : QSyntaxHighlighter(edit), type(Message)
 {
   txtCol = Qt::black;
   logCol = Qt::blue;
@@ -107,35 +106,24 @@ ReportHighlighter::~ReportHighlighter()
 {
 }
 
-int ReportHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
+void ReportHighlighter::highlightBlock ( const QString & text )
 {
-  int curPar = currentParagraph();
-  if (curPar > lastPar)
-  {
-    lastPos = 0;
-  }
-
   if (type == Message)
   {
-    setFormat(lastPos, text.length()-lastPos, txtCol);
+    setFormat(0, text.length(), txtCol);
   }
   else if (type == Warning)
   {
-    setFormat(lastPos, text.length()-lastPos, warnCol);
+    setFormat(0, text.length(), warnCol);
   }
   else if (type == Error)
   {
-    setFormat(lastPos, text.length()-lastPos, errCol);
+    setFormat(0, text.length(), errCol);
   }
-  else if (type == LogText)
+  else if (type == Qt::LogText)
   {
-    setFormat(lastPos, text.length()-lastPos, logCol);
+    setFormat(0, text.length(), logCol);
   }
-
-  lastPos = text.length()-1;
-  lastPar = curPar;
-  
-  return 0;
 }
 
 void ReportHighlighter::setParagraphType(ReportHighlighter::Paragraph t)
@@ -171,8 +159,8 @@ void ReportHighlighter::setErrorColor( const QColor& col )
  *  Constructs a ReportOutput which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-ReportOutput::ReportOutput(QWidget* parent, const char* name)
- : QTextEdit(parent, name), WindowParameter("OutputWindow")
+ReportOutput::ReportOutput(QWidget* parent)
+ : QTextEdit(parent), WindowParameter("OutputWindow")
 {
   bLog = false;
   reportHl = new ReportHighlighter(this);
@@ -180,16 +168,15 @@ ReportOutput::ReportOutput(QWidget* parent, const char* name)
   restoreFont();
   setReadOnly(true);
   clear();
-  setHScrollBarMode(QScrollView::AlwaysOff);
+  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-//  insert("FreeCAD output.\n");
   Base::Console().AttachObserver(this);
   getWindowParameter()->Attach( this );
 
   getWindowParameter()->NotifyAll();
 
   // scroll to bottom at startup to make sure that last appended text is visible
-  scrollToBottom();
+  ensureCursorVisible();
 }
 
 /**
@@ -202,14 +189,6 @@ ReportOutput::~ReportOutput()
   delete reportHl;
 }
 
-void ReportOutput::append ( const QString & text )
-{
-  QTextEdit::append( text );
-
-  if ( !isVisible() )
-    scrollToBottom();
-}
-
 void ReportOutput::restoreFont()
 {
   QFont _font(  font() );
@@ -219,82 +198,101 @@ void ReportOutput::restoreFont()
 #else
   _font.setPointSize( 10 );
 #endif
-//  _font.setBold( TRUE );
   setFont( _font ); 
 }
 
 void ReportOutput::Warning(const char * s)
 {
   reportHl->setParagraphType(ReportHighlighter::Warning);
-  append(s);
+
+  QTextCursor cursor(this->document());
+  cursor.beginEditBlock();
+  cursor.movePosition(QTextCursor::End);
+  cursor.insertText(s);
+  cursor.endEditBlock();
+  ensureCursorVisible();
 }
 
 void ReportOutput::Message(const char * s)
 {
   reportHl->setParagraphType(ReportHighlighter::Message);
-  append(s);
+
+  QTextCursor cursor(this->document());
+  cursor.beginEditBlock();
+  cursor.movePosition(QTextCursor::End);
+  cursor.insertText(s);
+  cursor.endEditBlock();
+  ensureCursorVisible();
 }
 
 void ReportOutput::Error  (const char * s)
 {
   reportHl->setParagraphType(ReportHighlighter::Error);
-  append(s);
+
+  QTextCursor cursor(this->document());
+  cursor.beginEditBlock();
+  cursor.movePosition(QTextCursor::End);
+  cursor.insertText(s);
+  cursor.endEditBlock();
+  ensureCursorVisible();
 }
 
 void ReportOutput::Log (const char * s)
 {
   reportHl->setParagraphType(ReportHighlighter::LogText);
-  append(s);
+
+  QTextCursor cursor(this->document());
+  cursor.beginEditBlock();
+  cursor.movePosition(QTextCursor::End);
+  cursor.insertText(s);
+  cursor.endEditBlock();
+  ensureCursorVisible();
 }
 
-bool ReportOutput::event( QEvent* ev )
+void ReportOutput::contextMenuEvent ( QContextMenuEvent * e )
 {
-  bool ret = QWidget::event( ev ); 
-  if ( ev->type() == QEvent::ApplicationFontChange ) 
-  {
-    restoreFont();
-  }
+  QMenu* menu = createStandardContextMenu();
+  QAction* first = menu->actions().front();
 
-  return ret;
-}
+  QMenu* submenu = new QMenu( menu );
+  QAction* logAct = submenu->addAction(tr("Logging"), this, SLOT(onToggleLogging()));
+  logAct->setCheckable(true);
+  logAct->setChecked(bLog);
 
-QPopupMenu * ReportOutput::createPopupMenu ( const QPoint & pos )
-{
-  QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
-  
-  QPopupMenu* sub = new QPopupMenu( menu );
-  int id;
-  id = sub->insertItem( tr("Logging"), this, SLOT( onToggleLogging() ) );
-  sub->setItemChecked( id, bLog );
-  id = sub->insertItem( tr("Warning"), this, SLOT( onToggleWarning() ) );
-  sub->setItemChecked( id, bWrn );
-  id = sub->insertItem( tr("Error"  ), this, SLOT( onToggleError  () ) );
-  sub->setItemChecked( id, bErr );
-  menu->insertItem( tr("Options"), sub, -1, 0 );
-  menu->insertSeparator( 1 );
+  QAction* wrnAct = submenu->addAction(tr("Warning"), this, SLOT(onToggleWarning()));
+  wrnAct->setCheckable(true);
+  wrnAct->setChecked(bWrn);
 
-  menu->insertItem(tr("Clear"), this, SLOT(clear()));
-  menu->insertSeparator();
-  menu->insertItem(tr("Save As..."), this, SLOT(onSaveAs()));
-  return menu;
+  QAction* errAct = submenu->addAction(tr("Error"), this, SLOT(onToggleError()));
+  errAct->setCheckable(true);
+  errAct->setChecked(bErr);
+
+  submenu->setTitle(tr("Options"));
+  menu->insertMenu(first, submenu);
+  menu->insertSeparator(first);
+
+  menu->addAction(tr("Clear"), this, SLOT(clear()));
+  menu->addSeparator();
+  menu->addAction(tr("Save As..."), this, SLOT(onSaveAs()));
+
+  menu->exec(e->globalPos());
+  delete menu;
 }
 
 void ReportOutput::onSaveAs()
 {
-  QString fn = FileDialog::getSaveFileName(QString::null,"Plain Text Files (*.txt *.log)", 
-                                           this, QObject::tr("Save Report Output"));
+  QString fn = QFileDialog::getSaveFileName(this, tr("Save Report Output"), QString(), tr("Plain Text Files (*.txt *.log)"));
   if (!fn.isEmpty())
   {
-    int dot = fn.find('.');
-    if (dot != -1)
+    QFileInfo fi(fn);
+    if (fi.extension().isEmpty())
+      fn += ".log";
+    QFile f(fn);
+    if (f.open(QIODevice::WriteOnly))
     {
-      QFile f(fn);
-      if (f.open(IO_WriteOnly))
-      {
-        QTextStream t (&f);
-        t << text();
-        f.close();
-      }
+      QTextStream t (&f);
+      t << text();
+      f.close();
     }
   }
 }
@@ -313,7 +311,6 @@ bool ReportOutput::isLogging() const
 {
   return bLog;
 }
-
 
 void ReportOutput::onToggleError()
 {

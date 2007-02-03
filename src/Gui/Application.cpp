@@ -23,35 +23,19 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qcursor.h>
-# include <qeventloop.h>
-# include <qmessagebox.h>
-# include <qstatusbar.h>
-# include <sstream>
-# include <map>
-#endif
-
-#include <Inventor/errors/SoDebugError.h> 
-#include <Inventor/Qt/SoQt.h> 
 
 // FreeCAD Base header
-#include <Base/Console.h>
 #include <Base/Interpreter.h>
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
 #include <Base/Factory.h>
 #include <Base/FileInfo.h>
-#include <App/Application.h>
-#include <App/Feature.h>
 #include <App/Document.h>
 
 #include "Application.h"
 #include "MainWindow.h"
 #include "Document.h"
 #include "View.h"
-#include "Icons/developers.h"
 #include "WidgetFactory.h"
 #include "Command.h"
 #include "Macro.h"
@@ -66,19 +50,16 @@
 #include "BitmapFactory.h"
 #include "SoFCDB.h"
 
-#include "Language/Translator.h"
-#include "Language/LanguageFactory.h"
-#include "GuiInitScript.h"
-
-#include "View.h"
 #include "View3DInventor.h"
-
 #include "ViewProvider.h"
 #include "ViewProviderExtern.h"
 #include "ViewProviderFeature.h"
 #include "ViewProviderPythonFeature.h"
 #include "ViewProviderDocumentObjectGroup.h"
 #include "ViewProviderGeometryObject.h"
+
+#include "Language/Translator.h"
+#include "GuiInitScript.h"
 
 
 using Base::Console;
@@ -87,7 +68,6 @@ using namespace Gui;
 using namespace Gui::DockWnd;
 using namespace std;
 
-#define new DEBUG_CLIENTBLOCK
 
 Application* Application::Instance = 0L;
 
@@ -96,8 +76,7 @@ namespace Gui {
 // Pimpl class
 struct ApplicationP
 {
-  ApplicationP()
-    : _pcActiveDocument(0L), _bIsClosing(false)
+  ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false)
   {
     // create the macro manager
     _pcMacroMngr = new MacroManager();
@@ -116,7 +95,7 @@ struct ApplicationP
   /// List of all registered views
   list<Gui::BaseView*>					_LpcViews;
   bool _bIsClosing;
-  /// Handels all commands 
+  /// Handles all commands 
   CommandManager _cCommandManager;
 };
 
@@ -126,10 +105,13 @@ Application::Application()
 {
   App::GetApplication().Attach(this);
 
-  Gui::Translator::installLanguage();
+  // install the last active language
+  ParameterGrp::handle hPGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+  hPGrp = hPGrp->GetGroup("Preferences")->GetGroup("General");
+  Translator::instance()->installLanguage(hPGrp->GetASCII("Language", "English").c_str());
   GetWidgetFactorySupplier();
 
-  // seting up Python binding
+  // setting up Python binding
   (void) Py_InitModule("FreeCADGui", Application::Methods);
 
   d = new ApplicationP;
@@ -146,13 +128,32 @@ Application::Application()
 
 Application::~Application()
 {
+  Console().Log("Destruct Gui::Application\n");
+  WorkbenchManager::destruct();
+  SelectionSingleton::destruct();
+  Translator::destruct();
+  WidgetFactorySupplier::destruct();
+  BitmapFactoryInst::destruct();
+
+  // finish also Inventor subsystem
+  SoFCDB::finish();
+  SoQt::done();
+
+#if (COIN_MAJOR_VERSION >= 2) && (COIN_MINOR_VERSION >= 4)
+  SoDB::finish();
+#elif (COIN_MAJOR_VERSION >= 3)
+  SoDB::finish();
+#else
+  SoDB::cleanup();
+#endif
+
   // save macros
   MacroCommand::save();
-  delete d;
-
   App::GetApplication().Detach(this);
-}
 
+  delete d;
+  Instance = 0;
+}
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // creating std commands
@@ -303,17 +304,13 @@ void Application::OnDocDelete(App::Document* pcDoc)
   // We must clear the selection here to notify all observers
   Gui::Selection().clearSelection(doc->second->getDocument()->getName());
 
+  // If the active document gets destructed we must set it to 0. If there are further existing documents then the 
+  // view that becomes active sets the active document again. So, we needn't worry about this.
+  if ( d->_pcActiveDocument == doc->second )
+    d->_pcActiveDocument = 0;
+
   delete doc->second; // destroy the Gui document
   d->lpcDocuments.erase(doc);
-
-  // check if the last document has been closed?
-  // Note: in case there were further existing documents then we needn't worry about it
-  //       because the active view at this moment does this for us
-  if (d->lpcDocuments.size() == 0 )
-  {
-    // there is no active document any more
-    setActiveDocument(0);
-  }
 }
 
 void Application::onLastWindowClosed(Gui::Document* pcDoc)
@@ -365,6 +362,8 @@ Gui::Document* Application::activeDocument(void) const
 
 void Application::setActiveDocument(Gui::Document* pcDocument)
 {
+  //FIXME: Fix this bug
+  //return;
   d->_pcActiveDocument=pcDocument;
   string name;
  
@@ -441,9 +440,6 @@ void Application::viewActivated(MDIView* pcView)
   Console().Log("Acti: %s,%p\n",pcView->getName(),pcView);
 #endif
 
-//  //FIXME: If a view without document gets activated why should we set the active document to 0, then?
-//  if (pcView->getGuiDocument())
-//    setActiveDocument(pcView->getGuiDocument());
   // set the new active document
   if(pcView->isPassive())
     setActiveDocument(0);
@@ -476,7 +472,7 @@ void Application::tryClose ( QCloseEvent * e )
     }
   }
 
-  // ask all passiv views if closable
+  // ask all passive views if closable
   for (list<Gui::BaseView*>::iterator It2 = d->_LpcViews.begin();It2!=d->_LpcViews.end();It2++)
   {
     if((*It2)->canClose() )
@@ -580,6 +576,7 @@ bool Application::activateWorkbench( const char* name )
     ok = true;
 
   // update the Std_Workbench command and its action object
+#if 0 //TODO
   StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
   if ( pCmd && pCmd->getAction() )
   {
@@ -587,17 +584,20 @@ bool Application::activateWorkbench( const char* name )
     QString curName = (curWb ? curWb->name() : QString(name));
     pCmd->notify( curName );
   }
+#endif
 
   return ok;
 }
 
 void Application::refreshWorkbenchList()
 {
+#if 0 //TODO
   StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
 
   if ( pCmd && pCmd->getAction() )
   {
     pCmd->refresh();
+#endif
     Workbench* curWb = WorkbenchManager::instance()->active();
     QString curWbName = curWb ? curWb->name() : "<none>";
     PyObject* wb = PyDict_GetItemString(_pcWorkbenchDictionary,curWbName.latin1()); 
@@ -614,9 +614,11 @@ void Application::refreshWorkbenchList()
         activateWorkbench( name );
       }
     }
+#if 0
     else
       pCmd->notify( curWbName );
   }
+#endif
 }
 
 QPixmap Application::workbenchIcon( const QString& wb ) const
@@ -736,21 +738,16 @@ void Application::runCommand(bool bForce, const char* sCmd,...)
 //**************************************************************************
 // Init, Destruct and singelton
 
-QApplication* Application::_pcQApp = NULL ;
-
 void Application::initApplication(void)
 {
-  try{
+  try {
     initTypes();
     new Base::ScriptProducer( "FreeCADGuiInit", FreeCADGuiInit );
-  }
-  catch (...)
-  {
+  } catch (...) {
     // force to flush the log
     App::Application::destructObserver();
     throw;
   }
-
 }
 
 void Application::initTypes(void)
@@ -847,76 +844,36 @@ SbBool progressCallbackHandler(const SbName & itemid, float fraction, SbBool int
   return true;
 }*/
 
-/**
- * A modal dialog has its own event loop and normally gets shown with QDialog::exec().
- * If an exception is thrown from within the dialog and this exception is caught in the calling
- * instance then the main event loop from the application gets terminated, because the implementation
- * of QDialog seems not be exception-safe..
- *
- * This class is an attempt to solve the problem with Qt's event loop. The trick is that the method
- * QEventLoop::exit() gets called when the application is about to being closed. But if the error above
- * occurs then QEventLoop::exit() is skipped. So this a possibility to determine if the application
- * should continue or not.
- * @author Werner Mayer
- */
-class MainEventLoop : public QEventLoop
-{
-public:
-  MainEventLoop ( QObject * parent = 0, const char * name = 0 )
-    : QEventLoop ( parent, name ), _exited(false)
-  {
-  }
-  virtual void exit ( int retcode = 0 )
-  {
-    _exited = true;
-    QEventLoop::exit(retcode);
-  }
-  virtual int exec ()
-  {
-    int ret = QEventLoop::exec();
-    // do we really want to exit?
-    if ( !_exited )
-    {
-#ifdef FC_DEBUG
-      Base::Console().Log("Error in event loop\n");
-#endif
-      exec(); // recursive call
-    }
-    return ret;
-  }
-private:
-  bool _exited;
-};
-
 void Application::runApplication(void)
 {
-  // register own event loop
-  MainEventLoop loop;
+  // add resources
+  Q_INIT_RESOURCE(resource);
+  Q_INIT_RESOURCE(translation);
+
   // A new QApplication
   Console().Log("Init: Creating Gui::Application and QApplication\n");
   // if application not yet created by the splasher
   int argc = App::Application::GetARGC();
   qInstallMsgHandler( messageHandler );
-  if (!_pcQApp)  _pcQApp = new QApplication (argc, App::Application::GetARGV());
+  QApplication mainApp(argc, App::Application::GetARGV());
 
-  Application * app = new Application();
-  MainWindow* mw = new MainWindow;
+  Application app;
+  MainWindow mw;
 
   // init the Inventor subsystem
   SoDB::init();
-  SoQt::init(mw);
+  SoQt::init(&mw);
   SoFCDB::init();
 
-  mw->startSplasher();
-  _pcQApp->setMainWidget(mw);
+  mw.startSplasher();
 
   // running the Gui init script
   Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+  // misc stuff
+  mw.loadWindowSettings();
   // show the main window
   Console().Log("Init: Showing main window\n");
-  mw->show();
-
-  _pcQApp->connect( _pcQApp, SIGNAL(lastWindowClosed()), _pcQApp, SLOT(quit()) );
+  mw.show();
 
   Console().Log("Init: Activating default workbench\n");
   std::string hidden = App::Application::Config()["HiddenWorkbench"];
@@ -928,14 +885,13 @@ void Application::runApplication(void)
   if ( hidden.find( defWb ) != std::string::npos )
     defWb = start;
 
-  app->activateWorkbench( defWb.c_str() );
+  app.activateWorkbench( defWb.c_str() );
 
 #ifdef FC_DEBUG // redirect Coin messages to FreeCAD
   SoDebugError::setHandlerCallback( messageHandlerCoin, 0 );
   SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
 #endif
 
-  
   Console().Log("Init: Processing command line files\n");
   unsigned short count = 0;
   count = atoi(App::Application::Config()["OpenFileCount"].c_str());
@@ -951,26 +907,22 @@ void Application::runApplication(void)
 
     // try to open
     try{
-      app->open(File.c_str());
+      app.open(File.c_str());
     }catch(...){
       Console().Error("Can't open file %s \n",File.c_str());
     }
   }
 
-  mw->stopSplasher();
-
-  if(!count)
-    mw->showTipOfTheDay();
-
+  // Stop splash screen and open the 'Iip of the day' dialog if needed
+  mw.stopSplasher();
+  mw.showTipOfTheDay();
 
   // attach the console observer
-  MessageBoxObserver* msgbox = new MessageBoxObserver(mw);
-  Base::Console().AttachObserver( msgbox );
+  MessageBoxObserver msgbox(&mw);
 
   // Create new document?
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
-  if ( hGrp->GetBool("CreateNewDoc", false) )
-  {
+  if ( hGrp->GetBool("CreateNewDoc", false) ) {
     App::GetApplication().newDocument();
   }
 
@@ -978,46 +930,15 @@ void Application::runApplication(void)
   Console().Log("Init: Entering event loop\n");
 
   try{
-    _pcQApp->exec();
+    mainApp.exec();
   }catch(...){
     // catching nasty stuff comming out of the event loop
     App::Application::destructObserver();
-    //exit(1);
     throw;
   }
 
   Console().Log("Init: event loop left\n");
-
-  
-  Base::Console().DetachObserver( msgbox );
-  delete msgbox;
-}
-
-void Application::destruct(void)
-{
-  Console().Log("Destruct GuiApplication\n");
-  MainWindow::destruct();
-  WorkbenchManager::destruct();
-  SelectionSingleton::destruct();
-  LanguageFactoryInst::destruct();
-  WidgetFactorySupplier::destruct();
-  BitmapFactoryInst::destruct();
-  delete Instance;
-  Instance = 0;
-
-  // finish akso Inventor subsystem
-  SoFCDB::finish();
-  SoQt::done();
-
-#if (COIN_MAJOR_VERSION >= 2) && (COIN_MINOR_VERSION >= 4)
-  SoDB::finish();
-#elif (COIN_MAJOR_VERSION >= 3)
-  SoDB::finish();
-#else
-  SoDB::cleanup();
-#endif
-
-  delete _pcQApp;
+  mw.saveWindowSettings();
 }
 
 // -------------------------------------------------------------
@@ -1029,13 +950,15 @@ MessageBoxObserver::MessageBoxObserver(MainWindow *pcAppWnd)
   this->bErr = false;
   this->bWrn = false;
 #endif
+  Base::Console().AttachObserver( this );
 }
 
 MessageBoxObserver::~MessageBoxObserver()
 {
+  Base::Console().DetachObserver( this );
 }
 
-/// get called when a Warning is issued
+/// get called when a warning is issued
 void MessageBoxObserver::Warning(const char *m)
 {
   WaitCursor::lock();
@@ -1054,13 +977,13 @@ void MessageBoxObserver::Warning(const char *m)
   WaitCursor::unlock();
 }
 
-/// get called when a Message is issued
+/// get called when a message is issued
 void MessageBoxObserver::Message(const char * m)
 {
   _pcAppWnd->statusBar()->message( m, 2001 );
 }
 
-/// get called when a Error is issued
+/// get called when an error is issued
 void MessageBoxObserver::Error  (const char *m)
 {
   WaitCursor::lock();
@@ -1082,7 +1005,7 @@ void MessageBoxObserver::Error  (const char *m)
   WaitCursor::unlock();
 }
 
-/// get called when a Log Message is issued
+/// get called when a log message is issued
 void MessageBoxObserver::Log    (const char *log)
 {
 #ifdef FC_DEBUG

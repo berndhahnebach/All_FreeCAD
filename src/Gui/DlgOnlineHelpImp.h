@@ -21,10 +21,11 @@
  ***************************************************************************/
 
 
-#ifndef DLG_ONLINE_HELP_IMP_H
-#define DLG_ONLINE_HELP_IMP_H
+#ifndef GUI_DIALOG_DLGONLINEHELP_IMP_H
+#define GUI_DIALOG_DLGONLINEHELP_IMP_H
 
-#include "DlgOnlineHelp.h"
+#include "ui_DlgOnlineHelp.h"
+#include "PropertyPage.h"
 
 namespace Gui {
 namespace Dialog {
@@ -34,23 +35,27 @@ namespace Dialog {
  * Here you can specify to use a proxy if necessary and some more stuff.
  * \author Werner Mayer
  */
-class DlgOnlineHelpImp : public DlgOnlineHelpBase
+class DlgOnlineHelpImp : public PreferencePage, public Ui_DlgOnlineHelp
 {
 Q_OBJECT
 
 public:
-  DlgOnlineHelpImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgOnlineHelpImp( QWidget* parent = 0 );
   ~DlgOnlineHelpImp();
 
   static QString getStartpage();
 
-protected:
   void saveSettings();
   void loadSettings();
-  void onCheckLocation(const QString&);
+
+protected:
+  void changeEvent(QEvent *e);
+
+protected Q_SLOTS:
+  void on_lineEditDownload_fileNameSelected(const QString&);
 };
 
 } // namespace Dialog
 } // namespace Gui
 
-#endif //DLG_ONLINE_HELP_IMP_H
+#endif //GUI_DIALOG_DLGONLINEHELP_IMP_H

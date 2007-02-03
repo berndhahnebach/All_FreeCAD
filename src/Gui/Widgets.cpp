@@ -23,26 +23,13 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qaccel.h>
-# include <qcolordialog.h>
-# include <qcursor.h>
-# include <qgroupbox.h>
-# include <qlabel.h>
-# include <qlayout.h>
-# include <qpainter.h>
-# include <qstyle.h>
-#endif
+#include <Base/Exception.h>
 
 #include "Widgets.h"
 #include "Application.h"
 #include "Action.h"
-#include "CustomWidgets.h"
+#include "PrefWidgets.h"
 
-#include "Language/Translator.h"
-
-#include "../Base/Exception.h"
-#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 /* TRANSLATOR Gui::CheckMessageBox */
@@ -62,19 +49,17 @@ CheckMessageBox::CheckMessageBox(QWidget * parent, const char * name)
  * Constructs a message box with a \a caption, a \a text, an \a icon, and up to three buttons.
  */
 CheckMessageBox::CheckMessageBox(const QString & caption, const QString & text, Icon icon, int button0, int button1,
-                           int button2, QWidget * parent, const char * name, bool modal, WFlags f)
+                           int button2, QWidget * parent, const char * name, bool modal, Qt::WFlags f)
     : QMessageBox(caption, text, icon, button0, button1, button2, parent, name, modal, f),
     checkBox(0L), layout(0L)
 {
-  QString txt = Translator::getFindSourceText( text );
-
   QString msg = tr("Never show this message again.");
-  QString entry = txt;
+  QString entry = text;
   QString cn = parent ? parent->className() : "Unknown";
   QString path  = QString("General/NeverShowDialog/%1").arg( cn );
 
 
-  checkBox = new Gui::PrefCheckBox(this, "PrefCheckBox");
+  checkBox = new Gui::PrefCheckBox(this);
   checkBox->setText( msg );
   checkBox->setEntryName( entry.latin1() );
   checkBox->setParamGrpPath( path.latin1() );
@@ -90,7 +75,7 @@ CheckMessageBox::CheckMessageBox(const QString & caption, const QString & text, 
     throw Base::Exception("Do not show dialog.");
   }
 
-  layout = new QGridLayout(this, 1, 1, 50);
+  layout = new Q3GridLayout(this, 1, 1, 50);
   layout->addWidget(checkBox, 0, 0);
 }
 
@@ -235,70 +220,14 @@ int CheckMessageBox::_msg( Icon icon, QWidget * parent, const QString & caption,
 
 // ------------------------------------------------------------------------------
 
-namespace Gui{
-class CommandViewItemPrivate
-{
-public:
-  QString sAction;
-  QString description;
-};
-} // namespace Gui
-
 /**
- * Constructs a command view item and inserts it into the icon view \a parent using 
- * the action's text as the text and the actoin's icon as the icon.
+ * Constructs an empty command view with parent \a parent.
  */
-CommandViewItem::CommandViewItem ( QIconView * parent, const QString& action, const QString& toolTip, const QPixmap& pPixmap )
-  : QIconViewItem(parent, action, pPixmap)
+CommandIconView::CommandIconView ( QWidget * parent )
+  : QListWidget(parent)
 {
-  d = new CommandViewItemPrivate;
-  d->sAction = action;
-  d->description = toolTip;
-}
-
-/**
- * Destroys the icon view item and tells the parent icon view that the item has been destroyed.
- */
-CommandViewItem::~CommandViewItem ()
-{
-  delete d;
-}
-
-/**
- * Returns the description text of the command view item.
- */
-QString CommandViewItem::text() const
-{
-  return d->description;
-}
-
-/**
- * Returns the command name of the command view item.
- */
-QString CommandViewItem::commandName()
-{
-  return d->sAction;
-}
-
-// ------------------------------------------------------------------------------
-
-/**
- * Constructs an empty command view called \a name, with parent \a parent and using the widget flags \a f.
- */
-CommandIconView::CommandIconView ( QWidget * parent, const char * name, WFlags f )
-    : QIconView(parent, name, f)
-{
-  // settings for the view showing the icons
-  setResizeMode(Adjust);
-  setItemsMovable(false);
-  setWordWrapIconText(false);
-  setGridX(50);
-  setGridY(50);
-
-  setSelectionMode(Extended);
-
-  // clicking on a icon a signal with its description will be emitted
-  connect(this, SIGNAL ( currentChanged ( QIconViewItem * ) ), this, SLOT ( onSelectionChanged(QIconViewItem * ) ) );
+  connect(this, SIGNAL (currentItemChanged(QListWidgetItem *, QListWidgetItem *)), 
+          this, SLOT (onSelectionChanged(QListWidgetItem *, QListWidgetItem *)) );
 }
 
 /**
@@ -309,46 +238,41 @@ CommandIconView::~CommandIconView ()
 }
 
 /**
+ * Stores the name of the selected commands for drag and drop. 
+ */
+void CommandIconView::startDrag ( Qt::DropActions supportedActions )
+{
+  QList<QListWidgetItem*> items = selectedItems();
+  QByteArray itemData;
+  QDataStream dataStream(&itemData, QIODevice::WriteOnly);
+
+  QPixmap pixmap;
+  dataStream << items.count();
+  for (QList<QListWidgetItem*>::ConstIterator it = items.begin(); it != items.end(); ++it) {
+    if (it == items.begin())
+      pixmap = qVariantValue<QPixmap>((*it)->data(Qt::UserRole));
+    dataStream << (*it)->text();
+  }
+
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData("text/x-action-items", itemData);
+
+  QDrag *drag = new QDrag(this);
+  drag->setMimeData(mimeData);
+  drag->setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
+  drag->setPixmap(pixmap);
+  drag->start(Qt::MoveAction);
+}
+
+/**
  * This slot is called when a new item becomes current. \a item is the new current item 
  * (or 0 if no item is now current). This slot emits the emitSelectionChanged()
  * signal for its part.
  */
-void CommandIconView::onSelectionChanged(QIconViewItem * item)
+void CommandIconView::onSelectionChanged(QListWidgetItem * item, QListWidgetItem *)
 {
-  emit emitSelectionChanged(item->text());
-}
-
-/**
- * Returns the QDragObject that should be used for drag-and-drop. This function is called 
- * by the icon view when starting a drag to get the dragobject that should be used for the drag. 
- */
-QDragObject * CommandIconView::dragObject ()
-{
-  ActionDrag::actions.clear();
-  if ( !currentItem() )
-    return 0;
-
-  bool bFirst = true;
-  ActionDrag *ad=NULL;
-  //  QPoint orig = viewportToContents( viewport()->mapFromGlobal( QCursor::pos() ) );
-  for ( QIconViewItem *item = firstItem(); item; item = item->nextItem() )
-  {
-    if ( item->isSelected() )
-    {
-      if (typeid(*item) == typeid(CommandViewItem))
-      {
-        ad = new ActionDrag( ((CommandViewItem*)item)->commandName(), this );
-        if (bFirst)
-        {
-          bFirst = false;
-          ad->setPixmap( *currentItem()->pixmap(), QPoint( currentItem()->pixmapRect().width() / 2,
-                         currentItem()->pixmapRect().height() / 2 ) );
-        }
-      }
-    }
-  }
-
-  return ad;
+  if (item)
+    emitSelectionChanged(item->toolTip());
 }
 
 // ------------------------------------------------------------------------------
@@ -359,8 +283,8 @@ QDragObject * CommandIconView::dragObject ()
  * Constructs a line edit with no text.
  * The \a parent and \a name arguments are sent to the QLineEdit constructor.
  */
-AccelLineEdit::AccelLineEdit ( QWidget * parent, const char * name )
-  : QLineEdit(parent, name)
+AccelLineEdit::AccelLineEdit ( QWidget * parent )
+  : QLineEdit(parent)
 {
   setText(tr("none"));
 }
@@ -374,53 +298,67 @@ void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
   setText(tr("none"));
 
   int key = e->key();
-  int state = e->state();
+  Qt::KeyboardModifiers state = e->modifiers();
 
-  if ( key == Key_Control )
+  if ( key == Qt::Key_Control )
     return;
-  else if ( key == Key_Shift )
+  else if ( key == Qt::Key_Shift )
     return;
-  else if ( key == Key_Alt )
+  else if ( key == Qt::Key_Alt )
     return;
-  else if ( state == NoButton && key == Key_Backspace )
+  else if ( state == Qt::NoModifier && key == Qt::Key_Backspace )
     return; // clears the edit field
 
   switch( state )
   {
-  case ControlButton:
-    txt += QAccel::keyToString(CTRL+key);
-    setText(txt);
-    break;
-  case AltButton:
-    txt += QAccel::keyToString(ALT+key);
-    setText(txt);
-    break;
-  case ShiftButton:
-    txt += QAccel::keyToString(SHIFT+key);
-    setText(txt);
-    break;
-  case ControlButton+AltButton:
-    txt += QAccel::keyToString(CTRL+ALT+key);
-    setText(txt);
-    break;
-  case ControlButton+ShiftButton:
-    txt += QAccel::keyToString(CTRL+SHIFT+key);
-    setText(txt);
-    break;
-  case ShiftButton+AltButton:
-    txt += QAccel::keyToString(SHIFT+ALT+key);
-    setText(txt);
-    break;
-  case ControlButton+AltButton+ShiftButton:
-    txt += QAccel::keyToString(CTRL+ALT+SHIFT+key);
-    setText(txt);
-    break;
+  case Qt::ControlModifier:
+    {
+      QKeySequence key(Qt::CTRL+key);
+      txt += (QString)(key);
+      setText(txt);
+    } break;
+  case Qt::AltModifier:
+    {
+      QKeySequence key(Qt::ALT+key);
+      txt += (QString)(key);
+      setText(txt);
+    } break;
+  case Qt::ShiftModifier:
+    {
+      QKeySequence key(Qt::SHIFT+key);
+      txt += (QString)(key);
+      setText(txt);
+    } break;
+  case Qt::ControlModifier+Qt::AltModifier:
+    {
+      QKeySequence key(Qt::CTRL+Qt::ALT+key);
+      txt += (QString)(key);
+      setText(txt);
+    } break;
+  case Qt::ControlModifier+Qt::ShiftModifier:
+    {
+      QKeySequence key(Qt::CTRL+Qt::SHIFT+key);
+      txt += (QString)(key);
+      setText(txt);
+    } break;
+  case Qt::ShiftModifier+Qt::AltModifier:
+    {
+      QKeySequence key(Qt::SHIFT+Qt::ALT+key);
+      txt += (QString)(key);
+      setText(txt);
+    } break;
+  case Qt::ControlModifier+Qt::AltModifier+Qt::ShiftModifier:
+    {
+      QKeySequence key(Qt::CTRL+Qt::ALT+Qt::SHIFT+key);
+      txt += (QString)(key);
+      setText(txt);
+    } break;
   default:
-    if ( e->stateAfter()&(ControlButton+AltButton+ShiftButton) )
-      return; // if only the meta keys CTRL,ALT or SHIFT are pressed
-    txt += QAccel::keyToString(key);
-    setText(txt);
-    break;
+    {
+      QKeySequence key(key);
+      txt += (QString)(key);
+      setText(txt);
+    } break;
   }
 }
 
@@ -435,46 +373,46 @@ void AccelLineEdit::keyPressEvent ( QKeyEvent * e)
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-CheckListDialog::CheckListDialog( QWidget* parent,  const char* name, bool modal, WFlags fl )
+CheckListDialog::CheckListDialog( QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
     : QDialog( parent, name, modal, fl )
 {
   if ( !name )
     setName( "CheckListDialog" );
   resize( 402, 270 );
-  setProperty( "sizeGripEnabled", QVariant( TRUE, 0 ) );
-  CheckListDialogLayout = new QGridLayout( this );
+  setProperty( "sizeGripEnabled", QVariant( (int) 0 ) );
+  CheckListDialogLayout = new Q3GridLayout( this );
   CheckListDialogLayout->setSpacing( 6 );
   CheckListDialogLayout->setMargin( 11 );
 
-  Layout2 = new QHBoxLayout;
+  Layout2 = new Q3HBoxLayout;
   Layout2->setSpacing( 6 );
   Layout2->setMargin( 0 );
 
   buttonOk = new QPushButton( this, "buttonOk" );
   buttonOk->setProperty( "text", tr( "&OK" ) );
-  buttonOk->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
-  buttonOk->setProperty( "default", QVariant( TRUE, 0 ) );
+  buttonOk->setProperty( "autoDefault", QVariant((int) 0 ) );
+  buttonOk->setProperty( "default", QVariant( (int) 0 ) );
   Layout2->addWidget( buttonOk );
   QSpacerItem* spacer = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
   Layout2->addItem( spacer );
 
   buttonCancel = new QPushButton( this, "buttonCancel" );
   buttonCancel->setProperty( "text", tr( "&Cancel" ) );
-  buttonCancel->setProperty( "autoDefault", QVariant( TRUE, 0 ) );
+  buttonCancel->setProperty( "autoDefault", QVariant( (int) 0 ) );
   Layout2->addWidget( buttonCancel );
 
   CheckListDialogLayout->addLayout( Layout2, 1, 0 );
 
-  GroupBox1 = new QGroupBox( this, "GroupBox1" );
+  GroupBox1 = new Q3GroupBox( this, "GroupBox1" );
   GroupBox1->setColumnLayout(0, Qt::Vertical );
   GroupBox1->layout()->setSpacing( 0 );
   GroupBox1->layout()->setMargin( 0 );
-  GroupBox1Layout = new QGridLayout( GroupBox1->layout() );
+  GroupBox1Layout = new Q3GridLayout( GroupBox1->layout() );
   GroupBox1Layout->setAlignment( Qt::AlignTop );
   GroupBox1Layout->setSpacing( 6 );
   GroupBox1Layout->setMargin( 11 );
 
-  ListView = new QListView( GroupBox1, "ListView" );
+  ListView = new Q3ListView( GroupBox1, "ListView" );
   ListView->addColumn( "Items" );
   ListView->setRootIsDecorated( TRUE );
 
@@ -502,7 +440,7 @@ void CheckListDialog::setCheckableItems( const QStringList& items )
 {
   for ( QStringList::ConstIterator it = items.begin(); it != items.end(); ++it )
   {
-    QCheckListItem* item = new QCheckListItem( ListView, *it, QCheckListItem::CheckBox );
+    Q3CheckListItem* item = new Q3CheckListItem( ListView, *it, Q3CheckListItem::CheckBox );
     item->setEnabled( false );
   }
 }
@@ -511,11 +449,11 @@ void CheckListDialog::setCheckableItems( const QStringList& items )
  * Sets the items to the dialog's list view. If the boolean type of a CheckListItem
  * is set to false the item is not checkable any more.
  */
-void CheckListDialog::setCheckableItems( const QValueList<CheckListItem>& items )
+void CheckListDialog::setCheckableItems( const Q3ValueList<CheckListItem>& items )
 {
-  for ( QValueList<CheckListItem>::ConstIterator it = items.begin(); it!=items.end(); ++it )
+  for ( Q3ValueList<CheckListItem>::ConstIterator it = items.begin(); it!=items.end(); ++it )
   {
-    QCheckListItem* item = new QCheckListItem( ListView, (*it).first, QCheckListItem::CheckBox );
+    Q3CheckListItem* item = new Q3CheckListItem( ListView, (*it).first, Q3CheckListItem::CheckBox );
     item->setEnabled( (*it).second );
   }
 }
@@ -533,13 +471,13 @@ QStringList CheckListDialog::getCheckedItems() const
  */
 void CheckListDialog::accept ()
 {
-  QListViewItemIterator it = ListView->firstChild();
+  Q3ListViewItemIterator it = ListView->firstChild();
 
   for ( ; it.current(); it++)
   {
-    if ( ((QCheckListItem*)it.current())->isOn() )
+    if ( ((Q3CheckListItem*)it.current())->isOn() )
     {
-      checked.push_back(((QCheckListItem*)it.current())->text().latin1());
+      checked.push_back(((Q3CheckListItem*)it.current())->text().latin1());
     }
   }
 
@@ -551,8 +489,8 @@ void CheckListDialog::accept ()
 /**
  * Constructs a colored button called \a name with parent \a parent.
  */
-ColorButton::ColorButton(QWidget* parent, const char* name)
-    : QPushButton( parent, name )
+ColorButton::ColorButton( QWidget* parent )
+    : QPushButton( parent )
 {
   connect( this, SIGNAL( clicked() ), SLOT( onChooseColor() ));
 }
@@ -584,14 +522,17 @@ QColor ColorButton::color() const
 /**
  * Draws the button label.
  */
-void ColorButton::drawButtonLabel( QPainter *paint )
+void ColorButton::paintEvent ( QPaintEvent * e )
 {
-  QColor pen = isEnabled() ? hasFocus() ? palette().active().buttonText() : palette().inactive().buttonText()
-                   : palette().disabled().buttonText();
-  paint->setPen( pen );
-  paint->setBrush( QBrush( _col ) );
+  QPushButton::paintEvent( e );
+  
+  QPalette::ColorGroup group = isEnabled() ? hasFocus() ? QPalette::Active : QPalette::Inactive : QPalette::Disabled;
+  QColor pen = palette().color(group,QPalette::ButtonText);
 
-  paint->drawRect( width()/4, height()/4, width()/2, height()/2 );
+  QPainter paint(this);
+  paint.setPen( pen );
+  paint.setBrush( QBrush( _col ) );
+  paint.drawRect( width()/4, height()/4, width()/2, height()/2 );
 }
 
 /**
@@ -603,7 +544,7 @@ void ColorButton::onChooseColor()
   if ( c.isValid() )
   {
     setColor( c );
-    emit changed();
+    changed();
   }
 }
 

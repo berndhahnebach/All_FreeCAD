@@ -23,85 +23,22 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qlabel.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
 #endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 #include "DlgUndoRedo.h"
 #include "Application.h"
 #include "MainWindow.h"
 #include "Document.h"
 #include "PythonEditor.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
-
-/**
- *  Constructs a UndoRedoStack which is a child of 'parent', with the
- *  name 'name' and widget flags set to 'f'
- *
- *  The dialog will by default be modeless, unless you set 'modal' to
- *  TRUE to construct a modal dialog.
- */
-UndoRedoStack::UndoRedoStack( QWidget * parent, const char * name, WFlags f)
-  : QListBox(parent, name, f)
-{
-}
-
-/** Destroys the object and frees any allocated resources */
-UndoRedoStack::~UndoRedoStack()
-{
-}
-
-/** 
- * If the left mouse button is pressed and depending on the moving direction
- * the items are selected or deselected.
- */
-void UndoRedoStack::mouseMoveEvent ( QMouseEvent * e )
-{
-  if (e->state() == NoButton)
-    return;
-
-  QListBox::mouseMoveEvent(e);
-
-  QListBoxItem* item = itemAt (e->pos());
-  int pos = -1;
-  if (item != NULL)
-    pos = index(item);
-  if (pos != -1)
-  {
-    int i;
-    for (i=pos+1; i < (int)count(); i++)
-    {
-      setSelected(i, false);
-    }
-    for (i=0; i<=pos; i++)
-    {
-      setSelected(i, true);
-    }
-  }
-}
-
-/** Select all items above the selected one */
-void UndoRedoStack::mousePressEvent (QMouseEvent* e)
-{
-  QListBox::mousePressEvent(e);
-
-  int pos = currentItem();
-  if (pos != -1)
-  {
-    int i;
-    for (i=pos+1; i < (int)count(); i++)
-    {
-      setSelected(i, false);
-    }
-    for (i=0; i<=pos; i++)
-    {
-      setSelected(i, true);
-    }
-  }
-}
-
-// ------------------------------------------------------------
 
 /* TRANSLATOR Gui::Dialog::UndoRedoDialog */
 
@@ -109,41 +46,16 @@ void UndoRedoStack::mousePressEvent (QMouseEvent* e)
  *  Constructs a UndoRedoDialog which is a child of 'parent', with the 
  *  name 'name'.' 
  */
-UndoRedoDialog::UndoRedoDialog( QWidget* parent,  const char* name, TMode mode )
-    : QPopupMenu( parent, name ), tMode(mode)
+UndoDialog::UndoDialog( QWidget* parent )
+  : QMenu( parent )
 {
-  if ( !name )
-    setName( "UndoRedoDialog" );
-  resize( 160, 140 ); 
-
-  setFrameStyle( WinPanel | Raised );
-
-  pTextLabel = new QLabel( this, "TextLabel" );
-  pTextLabel->setGeometry( QRect( 5, 110, 150, 25 ) ); 
-  pTextLabel->setFrameStyle(QFrame::Sunken);
-  pTextLabel->setProperty( "focusPolicy", (int)QLabel::NoFocus );
-  pTextLabel->setProperty( "frameShape", (int)QLabel::StyledPanel );
-  pTextLabel->setProperty( "frameShadow", (int)QLabel::Sunken );
-
-
-  pListBox = new UndoRedoStack( this, "ListBox" );
-  pListBox->setGeometry( QRect( 5, 5, 150, 100 ) ); 
-  pListBox->setProperty( "frameShadow", (int)QLabel::Sunken );
-  pListBox->setSelectionMode(QListBox::Multi);
-
-  connect(pListBox, SIGNAL( highlighted ( QListBoxItem * )), this, SLOT(onSelChangeUndoRedoStack()));
-  connect(pListBox, SIGNAL( returnPressed ( QListBoxItem * )), this, SLOT(close()));
-  connect(pListBox, SIGNAL( mouseButtonClicked ( int, QListBoxItem *, const QPoint & )), this, SLOT(onSelected()));
   connect(this, SIGNAL(aboutToShow()), this, SLOT(onFetchInfo()));
-
-  insertItem( pListBox );
-  insertItem( pTextLabel );
 }
 
 /** 
  *  Destroys the object and frees any allocated resources.
  */
-UndoRedoDialog::~UndoRedoDialog()
+UndoDialog::~UndoDialog()
 {
   // no need to delete child widgets, Qt does it all for us
 }
@@ -152,82 +64,76 @@ UndoRedoDialog::~UndoRedoDialog()
  *  This method fetches the undo / redo information from the 
  *  active document and shows it in the undo / redo dialog.
  */
-void UndoRedoDialog::onFetchInfo() 
+void UndoDialog::onFetchInfo() 
 {
-  pTextLabel->clear();
-  pListBox->clear();
-
-  std::vector<std::string> vecReUndos;
+  clear(); // Remove first all items
   Gui::Document* pcDoc = Application::Instance->activeDocument();
-
   if ( pcDoc )
   {
-    if ( tMode == Undo ) 
-      vecReUndos = pcDoc->getUndoVector();
-    else
-      vecReUndos = pcDoc->getRedoVector();
-
-    for (std::vector<std::string>::iterator i=vecReUndos.begin(); i!=vecReUndos.end(); i++)
-      pListBox->insertItem((*i).c_str());
-    pTextLabel->setProperty( "text", tr( "Cancel" ) );
+    std::vector<std::string> vecUndos = pcDoc->getUndoVector();
+    for (std::vector<std::string>::iterator i=vecUndos.begin(); i!=vecUndos.end(); i++)
+      addAction((*i).c_str(), this, SLOT(onSelected()));
   }
-  else if ( dynamic_cast<PythonEditView*>(getMainWindow()->activeWindow()) )
-  {
-    PythonEditView* edit = dynamic_cast<PythonEditView*>(getMainWindow()->activeWindow());
-    QStringList reundolist;
-    if ( tMode == Undo ) 
-      reundolist = edit->undoActions();
-    else
-      reundolist = edit->redoActions();
-    for ( QStringList::Iterator i=reundolist.begin(); i!=reundolist.end(); i++)
-      pListBox->insertItem((*i));
-    pTextLabel->setText( tr( "No info" ) );
-  }
-  else
-  {
-    pTextLabel->setText( tr( "No Undo" ) );
-  }
-}
-
-/** Sets the number of actions to undo/redo. */
-void UndoRedoDialog::onSelChangeUndoRedoStack() 
-{
-  int pos = pListBox->currentItem() + 1;
-  QString text;
-  if ( tMode == Undo )
-    text = tr("Undoes %1 action(s)").arg(pos);
-  else
-    text = tr("Redoes %1 action(s)").arg(pos);
-  pTextLabel->setText(text);
-}
-
-/** Switch to the mode \a tMode (either Undo or Redo). */
-void UndoRedoDialog::setMode(TMode mode)
-{
-  tMode = mode;
-}
-
-/** Returns the current mode. */
-UndoRedoDialog::TMode UndoRedoDialog::getMode() const
-{
-  return tMode;
 }
 
 /** Closes the dialog and emits the @ref clickedListBox() signal. */
-void UndoRedoDialog::onSelected()
+void UndoDialog::onSelected()
 {
-  close();
-  //emit clickedListBox();
+  QAction* a = (QAction*)sender();
+  QList<QAction*> acts = this->actions();
+  for ( QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it ) {
+    Gui::Application::Instance->sendMsgToActiveView("Undo");
+    if ( *it == a )
+      break;
+  }
+}
 
-  int pos = pListBox->currentItem() + 1;
-  if ( tMode == Undo ) {
-    for ( int i=0; i<pos; i++ )
-      Gui::Application::Instance->sendMsgToActiveView("Undo");
-  } else {
-    for ( int i=0; i<pos; i++ )
-      Gui::Application::Instance->sendMsgToActiveView("Redo");
+/* TRANSLATOR Gui::Dialog::RedoDialog */
+
+/**
+ *  Constructs a UndoRedoDialog which is a child of 'parent', with the 
+ *  name 'name'.' 
+ */
+RedoDialog::RedoDialog( QWidget* parent )
+  : QMenu( parent )
+{
+  connect(this, SIGNAL(aboutToShow()), this, SLOT(onFetchInfo()));
+}
+
+/** 
+ *  Destroys the object and frees any allocated resources.
+ */
+RedoDialog::~RedoDialog()
+{
+  // no need to delete child widgets, Qt does it all for us
+}
+
+/** 
+ *  This method fetches the undo / redo information from the 
+ *  active document and shows it in the undo / redo dialog.
+ */
+void RedoDialog::onFetchInfo() 
+{
+  clear(); // Remove first all items
+  Gui::Document* pcDoc = Application::Instance->activeDocument();
+  if ( pcDoc )
+  {
+    std::vector<std::string> vecRedos = pcDoc->getRedoVector();
+    for (std::vector<std::string>::iterator i=vecRedos.begin(); i!=vecRedos.end(); i++)
+      addAction((*i).c_str(), this, SLOT(onSelected()));
+  }
+}
+
+/** Closes the dialog and emits the @ref clickedListBox() signal. */
+void RedoDialog::onSelected()
+{
+  QAction* a = (QAction*)sender();
+  QList<QAction*> acts = this->actions();
+  for ( QList<QAction*>::ConstIterator it = acts.begin(); it != acts.end(); ++it ) {
+    Gui::Application::Instance->sendMsgToActiveView("Redo");
+    if ( *it == a )
+      break;
   }
 }
 
 #include "moc_DlgUndoRedo.cpp"
-

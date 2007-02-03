@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __TOOLBOX_H__
-#define __TOOLBOX_H__
+#ifndef GUI_DOCKWND_TOOLBOX_H
+#define GUI_DOCKWND_TOOLBOX_H
 
 #include "DockWindow.h"
 
@@ -59,47 +59,47 @@ class GuiExport ToolBox : public Gui::DockWindow
   Q_OBJECT
 
 public:
-  ToolBox( QWidget *parent=0, const char *name=0, WFlags f = 0 );
+  ToolBox( QWidget *parent=0, Qt::WFlags f = 0 );
   virtual ~ToolBox();
 
   int addItem ( QWidget * w, const QString & label );
-  int addItem ( QWidget * item, const QIconSet & iconSet, const QString & label );
+  int addItem ( QWidget * item, const QIcon & iconSet, const QString & label );
   int insertItem ( int index, QWidget * item, const QString & label );
-  int insertItem ( int index, QWidget * item, const QIconSet & iconSet, const QString & label );
+  int insertItem ( int index, QWidget * item, const QIcon & iconSet, const QString & label );
 
-  int removeItem ( QWidget * item );
+  void removeItem ( int index );
 
   void setItemEnabled ( int index, bool enabled );
   bool isItemEnabled ( int index ) const;
 
-  void setItemLabel ( int index, const QString & label );
-  QString itemLabel ( int index ) const;
+  void setItemText ( int index, const QString & label );
+  QString itemText ( int index ) const;
   
-  void setItemIconSet ( int index, const QIconSet & iconSet );
-  QIconSet itemIconSet ( int index ) const;
+  void setItemIcon ( int index, const QIcon & iconSet );
+  QIcon itemIcon ( int index ) const;
   
   void setItemToolTip ( int index, const QString & toolTip );
   QString itemToolTip ( int index ) const;
   
-  QWidget * currentItem () const;
-  void setCurrentItem ( QWidget * item );
-  
+  QWidget * currentWidget () const;
+
   int currentIndex () const;
-  QWidget * item ( int index ) const;
+  QWidget * widget ( int index ) const;
   int indexOf ( QWidget * item ) const;
   int count () const;
 
-public slots:
+public Q_SLOTS:
   void setCurrentIndex ( int index );
+  void setCurrentWidget ( QWidget * item );
 
-signals:
+protected:
+  void changeEvent(QEvent *e);
+
+Q_SIGNALS:
   /** This signal is emitted when the current item changed. 
    * The new current item's index is passed in index, or -1 if there is no current item.
    */
   void currentChanged ( int index );
-
-protected slots:
-  void languageChange();
 
 private:
   QToolBox* _pToolBox;
@@ -108,5 +108,5 @@ private:
 } // namespace DockWnd
 } // namespace Gui
 
-#endif // __TOOLBOX_H__
+#endif // GUI_DOCKWND_TOOLBOX_H
 

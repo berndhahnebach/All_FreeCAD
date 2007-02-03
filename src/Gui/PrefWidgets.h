@@ -21,27 +21,22 @@
  ***************************************************************************/
 
 
-#ifndef PREF_WIDGETS_H__
-#define PREF_WIDGETS_H__
+#ifndef GUI_PREFWIDGETS_H
+#define GUI_PREFWIDGETS_H
 
-#include "../Base/Parameter.h"
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+#include <Base/Parameter.h>
 #include "Widgets.h"
 #include "Window.h"
 #include "SpinBox.h"
 #include "FileDialog.h"
-
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qlistbox.h>
-#include <qradiobutton.h>
-#include <qslider.h>
-
-// forward declarations
-class QDoubleValidator;
-class QAction;
-class QMainWindow;
 
 namespace Gui {
 class CommandManager;
@@ -64,11 +59,11 @@ class WidgetFactoryInst;
 class GuiExport PrefWidget : public WindowParameter
 {
 public:
-  virtual void setEntryName( const QCString& name );
-  virtual QCString entryName() const;
+  virtual void setEntryName( const QByteArray& name );
+  virtual QByteArray entryName() const;
 
-  virtual void setParamGrpPath( const QCString& path );
-  virtual QCString paramGrpPath() const;
+  virtual void setParamGrpPath( const QByteArray& path );
+  virtual QByteArray paramGrpPath() const;
 
   virtual void OnChange(Base::Subject<const char*> &rCaller, const char * sReason);
   void onSave();
@@ -91,8 +86,8 @@ protected:
   virtual ~PrefWidget();
 
 private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
   bool m_bKeepPref;
 
   // friends
@@ -106,20 +101,20 @@ class GuiExport PrefSpinBox : public SpinBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefSpinBox ( QWidget * parent = 0, const char * name = 0 );
+  PrefSpinBox ( QWidget * parent = 0 );
   virtual ~PrefSpinBox();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -127,27 +122,27 @@ protected:
   void savePreferences();
 };
 
-/** The PrefFloatSpinBox class.
+/** The PrefDoubleSpinBox class.
  * \author Werner Mayer
  */
-class GuiExport PrefFloatSpinBox : public FloatSpinBox, public PrefWidget
+class GuiExport PrefDoubleSpinBox : public QDoubleSpinBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefFloatSpinBox ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~PrefFloatSpinBox();
+  PrefDoubleSpinBox ( QWidget * parent = 0 );
+  virtual ~PrefDoubleSpinBox();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -163,20 +158,20 @@ class GuiExport PrefLineEdit : public QLineEdit, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefLineEdit ( QWidget * parent = 0, const char * name = 0 );
+  PrefLineEdit ( QWidget * parent = 0 );
   virtual ~PrefLineEdit();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -192,20 +187,20 @@ class GuiExport PrefFileChooser : public FileChooser, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefFileChooser ( QWidget * parent = 0, const char * name = 0 );
+  PrefFileChooser ( QWidget * parent = 0 );
   virtual ~PrefFileChooser();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -221,20 +216,20 @@ class GuiExport PrefComboBox : public QComboBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefComboBox ( QWidget * parent = 0, const char * name = 0 );
+  PrefComboBox ( QWidget * parent = 0 );
   virtual ~PrefComboBox();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -246,24 +241,24 @@ protected:
  * The PrefListBox class.
  * \author Werner Mayer
  */
-class GuiExport PrefListBox : public QListBox, public PrefWidget
+class GuiExport PrefListBox : public Q3ListBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefListBox ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+  PrefListBox ( QWidget * parent = 0 );
   virtual ~PrefListBox();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -279,20 +274,20 @@ class GuiExport PrefCheckBox : public QCheckBox, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefCheckBox ( QWidget * parent = 0, const char * name = 0 );
+  PrefCheckBox ( QWidget * parent = 0 );
   virtual ~PrefCheckBox();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -308,49 +303,20 @@ class GuiExport PrefRadioButton : public QRadioButton, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefRadioButton ( QWidget * parent = 0, const char * name = 0 );
+  PrefRadioButton ( QWidget * parent = 0 );
   virtual ~PrefRadioButton();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
-
-protected:
-  // restore from/save to parameters
-  void restorePreferences();
-  void savePreferences();
-};
-
-/**
- * The PrefButtonGroup class.
- * \author Werner Mayer
- */
-class GuiExport PrefButtonGroup : public QButtonGroup, public PrefWidget
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefButtonGroup ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~PrefButtonGroup();
-
-  // PROPERTIES
-  // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -366,20 +332,20 @@ class GuiExport PrefSlider : public QSlider, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefSlider ( QWidget * parent = 0, const char * name = 0 );
+  PrefSlider ( QWidget * parent = 0 );
   virtual ~PrefSlider();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -395,20 +361,20 @@ class GuiExport PrefColorButton : public ColorButton, public PrefWidget
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefColorButton ( QWidget * parent = 0, const char * name = 0 );
+  PrefColorButton ( QWidget * parent = 0 );
   virtual ~PrefColorButton();
 
   // PROPERTIES
   // getters
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
   // setters
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 protected:
   // restore from/save to parameters
@@ -418,4 +384,4 @@ protected:
 
 } // namespace Gui
 
-#endif // __FC_PREF_WIDGETS_H__
+#endif // GUI_PREFWIDGETS_H

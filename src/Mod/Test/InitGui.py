@@ -39,31 +39,31 @@ class TestWorkbench ( Workbench ):
 				w = Gui.CreateWorkbench('Test framework')
 
 				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
-				w.AppendToolbar("TestTools",list)
+				w.appendToolbar("TestTools",list)
 
 				menu = ["Test &Commands","TestToolsGui"]
 				list = ["Test_Test","Test_TestAll","Test_TestDoc","Test_TestBase"]
-				w.AppendCommandbar("TestToolsGui",list)
-				w.AppendMenu(menu,list)
+				w.appendCommandbar("TestToolsGui",list)
+				w.appendMenu(menu,list)
 
 				menu = ["Test &Commands","TestToolsText"]
 				list = ["Test_TestAllText","Test_TestDocText","Test_TestBaseText"]
-				w.AppendCommandbar("TestToolsText",list)
-				w.AppendMenu(menu,list)
+				w.appendCommandbar("TestToolsText",list)
+				w.appendMenu(menu,list)
 
 				menu = ["Test &Commands","TestToolsMenu"]
 				list = ["Test_TestCreateMenu", "Test_TestDeleteMenu"]
-				w.AppendCommandbar("TestToolsMenu",list)
-				w.AppendMenu(menu,list)
+				w.appendCommandbar("TestToolsMenu",list)
+				w.appendMenu(menu,list)
 
 				menu = ["Test &Commands","Progress bar"]
 				list = ["Std_TestProgress1", "Std_TestProgress2", "Std_TestProgress3"]
-				w.AppendMenu(menu,list)
+				w.appendMenu(menu,list)
 
 				list = ["Std_ViewExample1", "Std_ViewExample2", "Std_ViewExample3", 
 				"Separator", "Std_ViewIvStereoRedGreen", "Std_ViewIvStereoQuadBuff", "Std_ViewIvStereoInterleavedRows", 
 				"Std_ViewIvStereoInterleavedColumns", "Std_ViewIvStereoOff", "Std_ViewIvIssueCamPos"]
-				w.AppendMenu("Inventor View",list)
+				w.appendMenu("Inventor View",list)
 
 				Log ('Setup Test menues...\n')
 			Log ('Loading GUI of Test module... done\n')

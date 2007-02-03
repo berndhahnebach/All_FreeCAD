@@ -21,14 +21,14 @@
  ***************************************************************************/
 
 
-#ifndef DLGACTIONS_IMP_H
-#define DLGACTIONS_IMP_H
+#ifndef GUI_DIALOG_DLGACTIONS_IMP_H
+#define GUI_DIALOG_DLGACTIONS_IMP_H
 
-#include "DlgActions.h"
+#include "ui_DlgActions.h"
+#include "PropertyPage.h"
 
 
 namespace Gui {
-
 namespace Dialog {
 
 /** This class implements the creation of user defined actions executing a recorded macro.
@@ -38,38 +38,43 @@ namespace Dialog {
  * @see Command
  * \author Werner Mayer
  */
-class DlgCustomActionsImp : public DlgCustomActionsBase
+class DlgCustomActionsImp : public CustomizeActionPage, public Ui_DlgCustomActions
 { 
 Q_OBJECT
 
 public:
-  DlgCustomActionsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgCustomActionsImp( QWidget* parent = 0 );
   ~DlgCustomActionsImp();
 
-  void show();
-  void reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE );
-
-signals:
+Q_SIGNALS:
   void addMacroAction( const QString& );
   void removeMacroAction( const QString& );
+  void replaceMacroAction( const QString& );
 
 protected:
+  /** Trigger for reparent event. */
+  bool event(QEvent* e);
+  void showEvent(QShowEvent* e);
+
+protected Q_SLOTS:
   /** Enables/disables buttons for deletion */
-  void onCanRemoveCustomAction( QListViewItem *i );
-  /** Shows the setup of the action */
-  void onEditCustomAction();
-  /** Adds a custom action */
-  void onAddCustomAction();
-  /** Deletes a custom action */
-  void onRemoveCustomAction();
+  void on_listBoxActions_highlighted( Q3ListBoxItem *i );
   /** Opens a iconview to select a pixmap */
-  void onCustomActionPixmap();
+  void on_buttonChoosePixmap_clicked();
+  /** Adds a custom action */
+  void on_buttonAddAction_clicked();
+  /** Deletes a custom action */
+  void on_buttonRemoveAction_clicked();
+  /** Shows the setup of the action */
+  void on_buttonReplaceAction_clicked();
+  void onAddMacroAction(const QString&);
+  void onRemoveMacroAction(const QString&);
 
 private:
   /** Shows all actions and their pixmaps if available  */
   void showActions();
    /** Name for the new created action */
-  void newActionName();
+  QString newActionName();
 
 private:
   bool bShown; /**< For internal use only*/
@@ -79,4 +84,4 @@ private:
 } // namespace Dialog
 } // namespace Gui
 
-#endif
+#endif // GUI_DIALOG_DLGACTIONS_IMP_H

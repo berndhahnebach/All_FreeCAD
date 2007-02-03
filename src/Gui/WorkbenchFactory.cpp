@@ -23,12 +23,9 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-#endif
-
 #include "WorkbenchFactory.h"
 #include "Workbench.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 Gui::WorkbenchFactoryInst* Gui::WorkbenchFactoryInst::_pcSingleton = 0;

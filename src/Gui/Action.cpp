@@ -23,95 +23,51 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qguardedptr.h>
-# include <qobjectlist.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
 #endif
 
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+
 #include "Action.h"
+#include "Application.h"
 #include "Command.h"
 #include "DlgUndoRedo.h"
-#include "ToolBoxBar.h"
+#include "MainWindow.h"
 #include "WhatsThis.h"
-#define new DEBUG_CLIENTBLOCK
+#include "Workbench.h"
+#include "WorkbenchManager.h"
+
+#include <Base/Exception.h>
+
 using namespace Gui;
 using namespace Gui::Dialog;
-
-QStringList ActionDrag::actions;
-
-ActionDrag::ActionDrag ( QString action, QWidget * dragSource , const char * name  )
-  : QStoredDrag("Gui::ActionDrag", dragSource, name)
-{
-  // store the QAction name
-  actions.push_back(action);
-}
-
-ActionDrag::~ActionDrag ()
-{
-}
-
-bool ActionDrag::canDecode ( const QMimeSource * e )
-{
-  return e->provides( "Gui::ActionDrag" );
-}
-
-bool ActionDrag::decode ( const QMimeSource * e, QString&  action )
-{
-  if (actions.size() > 0)
-  {
-    action = *actions.begin();
-    return true;
-  }
-
-  return false;
-}
-
-// --------------------------------------------------------------------
 
 /**
  * Constructs an action called \a name with parent \a parent. It also stores a pointer
  * to the command object.
  */
-Action::Action ( Command* pcCmd,QObject * parent, const char * name, bool toggle)
-:QAction(parent, name, toggle),_pcCmd(pcCmd)
+Action::Action ( Command* pcCmd,QObject * parent )
+  : QObject(parent), _pcCmd(pcCmd), _action(0)
 {
-  connect( this, SIGNAL( activated() ) ,  this, SLOT( onActivated()   ) );
-  connect( this, SIGNAL( toggled(bool) ), this, SLOT( onToggled(bool) ) );
+  _action = new QAction( this );
+  connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
 }
 
 Action::~Action()
 { 
-}
-
-void Action::addedTo ( QWidget * actionWidget, QWidget * container )
-{
-  if ( container->inherits("Gui::DockWnd::CommandBar") )
-  {
-    QToolButton* tb = (QToolButton*) actionWidget;
-    tb->setTextPosition( QToolButton::BesideIcon );
-    tb->setTextLabel( menuText() );
-    tb->setUsesTextLabel( true );
-    tb->setFixedHeight( 30 );
-
-    ((Gui::DockWnd::CommandBar*)container)->setDummyToLastItem();
-  }
+  delete _action;
 }
 
 /**
  * Adds this action to widget \a w.
  */
-bool Action::addTo(QWidget *w)
+void Action::addTo(QWidget *w)
 {
-  return QAction::addTo( w );
-}
-
-/**
- * Removes the action from widget \a w.
- */
-bool Action::removeFrom ( QWidget * w )
-{
-  return QAction::removeFrom( w );
+  w->addAction(_action);
 }
 
 /**
@@ -121,7 +77,7 @@ void Action::onActivated ()
 {
   if ( StdCmdDescription::inDescriptionMode () )
     StdCmdDescription::setSource( _pcCmd->getHelpUrl() );
-  else if ( !isToggleAction() ) // no toggle action
+  else
     _pcCmd->invoke(0);
 }
 
@@ -133,12 +89,94 @@ void Action::onToggled ( bool b)
   _pcCmd->invoke( b ? 1 : 0 );
 } 
 
+void Action::setCheckable ( bool b )
+{
+  _action->setCheckable(b);
+  if ( b ) {
+    disconnect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
+    connect(_action, SIGNAL(toggled(bool)), this, SLOT(onToggled(bool)));
+  } else {
+    connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
+    disconnect(_action, SIGNAL(toggled(bool)), this, SLOT(onToggled(bool)));
+  }
+}
+
+void Action::setChecked ( bool b )
+{
+  _action->setChecked(b);
+}
+
+bool Action::isChecked() const
+{
+  return _action->isChecked();
+}
+
 /**
  * Sets whether the action is enabled.
  */
 void Action::setEnabled ( bool b) 
 {
-  QAction::setEnabled( b );
+  _action->setEnabled(b);
+}
+
+void Action::setVisible ( bool b) 
+{
+  _action->setVisible( b );
+}
+
+void Action::setShortcut ( const QKeySequence & key )
+{
+  _action->setShortcut(key);
+}
+
+QKeySequence Action::shortcut() const
+{
+  return _action->shortcut();
+}
+
+void Action::setIcon ( const QIcon & icon)
+{
+  _action->setIcon(icon);
+}
+
+void Action::setStatusTip ( const QString & s)
+{
+  _action->setStatusTip(s);
+}
+
+QString Action::statusTip() const
+{
+  return _action->statusTip();
+}
+
+void Action::setText ( const QString & s)
+{
+  _action->setText(s);
+}
+
+QString Action::text() const
+{
+  return _action->text();
+}
+
+void Action::setToolTip ( const QString & s)
+{
+  _action->setToolTip(s);
+}
+  
+QString Action::toolTip() const
+{
+  return _action->toolTip();
+}
+
+void Action::setWhatsThis ( const QString & s)
+{
+  _action->setWhatsThis(s);
+}
+
+QString Action::whatsThis() const
+{
+  return _action->whatsThis();
 }
 
 // --------------------------------------------------------------------
@@ -147,563 +185,396 @@ void Action::setEnabled ( bool b)
  * Constructs an action called \a name with parent \a parent. It also stores a pointer
  * to the command object.
  */
-ActionGroup::ActionGroup ( Command* pcCmd,QObject * parent, const char * name )
-  : QActionGroup(parent, name),_pcCmd(pcCmd)
+ActionGroup::ActionGroup ( Command* pcCmd,QObject * parent)
+  : Action(pcCmd, parent), _group(0), _dropDown(false)
 {
-  connect( this, SIGNAL ( selected ( QAction * ) ), this, SLOT ( onActivated( QAction * ) ) );
+  _group = new QActionGroup( this );
+  connect(_group, SIGNAL(triggered(QAction*)), this, SLOT(onActivated (QAction*)));
 }
 
 ActionGroup::~ActionGroup()
 { 
+  delete _group;
 }
 
 /**
- * Returns the index of the currently active action, or -1 of no such action can be found.
- * This function is only useful if the action group is in exclusive mode.
+ * Adds this action to widget \a w.
  */
-int ActionGroup::currentActive() const
+void ActionGroup::addTo(QWidget *w)
 {
-  int id=-1;
-  if ( children() ) {
-    int index=0;
-    const QObjectList *l = children();
-    QObjectListIt it(*l);
-    QObject* obj;
-    while ( (obj=it.current()) != 0 ) {
-      QAction* act = (QAction*)obj->qt_cast("QAction");
-      if ( act ) {
-        if ( act->isOn() ) {
-          id = index;
-          break;
-        }
-        index++;
-      }
-      ++it;
+  // When adding an action that has defined a menu then shortcuts
+  // of the menu actions don't work. To make this working we must 
+  // set the menu explicitly. This means calling QAction::setMenu()
+  // and adding this action to the widget doesn't work.
+  if ( _dropDown ) {
+    if (w->inherits("QMenu")) {
+      QMenu* menu = qobject_cast<QMenu*>(w);
+      menu = menu->addMenu(_action->menuText());
+      menu->addActions(_group->actions());
+    } else if (w->inherits("QToolBar")) {
+      w->addAction(_action);
+      QToolButton* tb = w->findChildren<QToolButton*>().last();
+      tb->setPopupMode(QToolButton::MenuButtonPopup);
+      tb->addActions(_group->actions());
+    } else {
+      w->addActions(_group->actions()); // no drop-down 
     }
+  } else {
+    w->addActions(_group->actions());
   }
-
-  return id;
 }
 
-/**
- * Sets the current active action to \a index.
- * This function is only useful if the action group is in exclusive mode.
- */
-void ActionGroup::setCurrentActive(int index)
+void ActionGroup::setEnabled( bool b )
 {
-  if ( children() ) {
-    int id=0;
-    const QObjectList *l = children();
-    QObjectListIt it(*l);
-    QObject* obj;
-    while ( (obj=it.current()) != 0 ) {
-      QAction* act = (QAction*)obj->qt_cast("QAction");
-      if ( act ) {
-        if ( id == index ) {
-          act->setOn( true );
-          break;
-        }
-        id++;
-      }
-      ++it;
-    }
-  }
+  Action::setEnabled(b);
+  _group->setEnabled(b);
+}
+
+void ActionGroup::setVisible( bool b )
+{
+  Action::setVisible(b);
+  _group->setVisible(b);
+}
+
+QAction* ActionGroup::addAction(const QString& text)
+{
+  int index = _group->actions().size();
+  QAction* action = _group->addAction(text);
+  action->setData(QVariant(index));
+  return action;
+}
+
+QList<QAction*> ActionGroup::actions() const
+{
+  return _group->actions();
+}
+
+int ActionGroup::checkedAction() const
+{
+  QAction* checked = _group->checkedAction();
+  return checked ? checked->data().toInt() : -1;
+}
+
+void ActionGroup::setCheckedAction(int i)
+{
+  _group->actions()[i]->setChecked(true);
 }
 
 /**
  * Activates the command.
  */
-void ActionGroup::onActivated ( QAction* action ) 
+void ActionGroup::onActivated (QAction* a) 
 {
   if ( StdCmdDescription::inDescriptionMode () )
     StdCmdDescription::setSource( _pcCmd->getHelpUrl() );
-  else if ( children() ) {
-    int id=0;
-    const QObjectList *l = children();
-    QObjectListIt it(*l);
-    QObject* obj;
-    while ( (obj=it.current()) != 0 ) {
-      QAction* act = (QAction*)obj->qt_cast("QAction");
-      if ( act ) {
-        if ( act == action ) {
-          _pcCmd->invoke( id );
-          break;
-        }
-        id++;
+  else
+    _pcCmd->invoke(a->data().toInt());
+}
+
+// --------------------------------------------------------------------
+
+WorkbenchComboBox::WorkbenchComboBox(QWidget* parent) : QComboBox(parent)
+{
+  connect(this, SIGNAL(activated(int)), this, SLOT(onActivated(int)));
+}
+
+WorkbenchComboBox::~WorkbenchComboBox()
+{
+}
+
+void WorkbenchComboBox::actionEvent ( QActionEvent* e )
+{
+  QAction *action = e->action();
+  switch (e->type()) {
+  case QEvent::ActionAdded:
+    {
+      if (action->isVisible()) {
+        QIcon icon = action->icon();
+        if (icon.isNull())
+          this->addItem(action->text(), action->data());
+        else
+          this->addItem(icon, action->text(), action->data());
+        if (action->isChecked())
+          this->setCurrentIndex(action->data().toInt());
       }
-      ++it;
+      break;
     }
+  case QEvent::ActionChanged:
+    {
+      //TODO
+      break;
+    }
+  case QEvent::ActionRemoved:
+    {
+      //TODO
+      break;
+    }
+  default:
+    break;
   }
 }
 
-// --------------------------------------------------------------------
-
-WorkbenchAction::WorkbenchAction (  StdCmdWorkbench* pcCmd, QObject * parent, const char * name )
-  : QAction( parent, name, false ), _pcCmd(pcCmd)
+void WorkbenchComboBox::onActivated(int i)
 {
-  connect(this, SIGNAL(activated()), SLOT(onActivated()));
+  this->actions()[i]->trigger();
 }
 
-WorkbenchAction::~WorkbenchAction()
+void WorkbenchComboBox::onActivated(QAction* a)
 {
+  setCurrentItem(a->data().toInt());
 }
 
-/** 
- * This slot is connected to the activated() signal and gets called whenever the user 
- * clicks a menu or combobox option or a toolbar button or presses an action's accelerator 
- * key combination.
- */
-void WorkbenchAction::onActivated()
+WorkbenchGroup::WorkbenchGroup (  Command* pcCmd, QObject * parent )
+  : ActionGroup( pcCmd, parent )
 {
-  _pcCmd->activate( text() );
-}
-
-// --------------------------------------------------------------------
-
-WorkbenchGroup::WorkbenchGroup ( QObject * parent, const char * name, bool exclusive )
-  :QActionGroup( parent, name, exclusive )
-{
+  for (int i=0; i<50; i++) {
+    QAction* action = _group->addAction("");
+    action->setVisible(false);
+    action->setCheckable(true);
+  }
 }
 
 WorkbenchGroup::~WorkbenchGroup()
-{ 
+{
 }
 
-/**
- * If the workbench has changed this method notifies its actions to set
- * the active one if it is added to a combobox.
- */
-void WorkbenchGroup::activate( const QString& name )
+void WorkbenchGroup::addTo(QWidget *w)
 {
-  const QObjectList *l = children();
-  if ( l )
+  refreshWorkbenchList();
+  if (w->inherits("QToolBar"))
   {
-    QObjectListIt it(*l);
-    QObject * obj;
-    while ( (obj=it.current()) != 0 ) 
-    {
-      QAction* act = dynamic_cast<QAction*>(obj);
-      if ( act && act->text() == name )
-      {
-        act->setOn( true );
-        break;
-      }
-      ++it;
-    }
+    QToolBar* bar = qobject_cast<QToolBar*>(w);
+    QComboBox* box = new WorkbenchComboBox(w);
+    box->addActions(_group->actions());
+    connect(_group, SIGNAL(triggered(QAction*)), box, SLOT(onActivated (QAction*)));
+    bar->addWidget(box);
+  }
+  else if (w->inherits("QMenu"))
+  {
+    QMenu* menu = qobject_cast<QMenu*>(w);
+    menu = menu->addMenu(_action->menuText());
+    menu->addActions(_group->actions());
   }
 }
 
-// --------------------------------------------------------------------
-
-MRUAction::MRUAction ( QObject * parent, const char * name, bool toggle )
-  : QAction( parent, name, toggle ), _idx(-1)
+void WorkbenchGroup::refreshWorkbenchList()
 {
-}
+  QString active = WorkbenchManager::instance()->active()->name();
+  QStringList items = Application::Instance->workbenches();
+  items.sort();
 
-MRUAction::~MRUAction()
-{
-}
+  QList<QAction*> workbenches = _group->actions();
+  int numWorkbenches = std::min<int>(workbenches.count(), items.count());
+  for ( int index = 0; index < numWorkbenches; index++ ) {
+    QPixmap px = Application::Instance->workbenchIcon( items[index] );
+    workbenches[index]->setIcon(px);
+    workbenches[index]->setText(items[index]);
+    workbenches[index]->setStatusTip(tr("Select the '%1' workbench").arg(items[index]));
+    workbenches[index]->setData(QVariant(index));
+    workbenches[index]->setVisible(true);
+    workbenches[index]->setCheckable(true);
+    if ( items[index] == active )
+    workbenches[index]->setChecked(true);
+  }
 
-/**
- * Sets the index for this action to \a index. \a index + 1 is the number that 
- * is prepended to the "menuText" property ofthis action. 
- */
-void MRUAction::addedTo ( int index, QPopupMenu * menu )
-{
-  _idx = index;
-  QString item = recentFileItem( text() );
-  item.prepend( QString("&%1 ").arg( _idx + 1 ) );
-  setMenuText( item );
-}
-
-/**
- * Returns the index number.
- */
-int MRUAction::index() const
-{
-  return _idx;
-}
-
-/**
- * Returns the file name of \a fn if the \a fn is in the current
- * working directory, otherwise \a fn is returned.
- */
-QString MRUAction::recentFileItem( const QString& fn )
-{
-  QFileInfo fi(fn);
-  QString dir = fi.dirPath( true );
-  QString cur = QDir::currentDirPath();
-  if ( dir == cur )
-    return fi.fileName();
-  else
-    return fn;
+  // if less workbenches than actions
+  for (int index = numWorkbenches; index < workbenches.count(); index++)
+    workbenches[index]->setVisible(false);
 }
 
 // --------------------------------------------------------------------
 
-MRUActionGroup::MRUActionGroup ( Command* pcCmd, QObject * parent, const char * name, bool exclusive )
-  :QActionGroup( parent, name, exclusive ), _pcCmd( pcCmd )
+RecentFilesAction::RecentFilesAction ( Command* pcCmd, int maxRecentFiles, QObject * parent )
+  : ActionGroup( pcCmd, parent )
 {
+  for (int i=0; i<maxRecentFiles; i++) {
+    _group->addAction("")->setVisible(false);
+  }
 }
 
-MRUActionGroup::~MRUActionGroup()
-{ 
+RecentFilesAction::~RecentFilesAction()
+{
 }
 
 /**
  * Set the list of recent files. For each item an action object is
  * created and added to this action group. 
  */
-void MRUActionGroup::setRecentFiles( const QStringList& files )
+void RecentFilesAction::setRecentFiles( const QStringList& files )
 {
-  clear();
+  QList<QAction*> recentFiles = _group->actions();
 
-  for ( QStringList::ConstIterator it = files.begin(); it != files.end(); it++ )
-  {
-    // This is a trick to fool Qt's QAction handling.
-    // To the QAction constructor a null pointer is given to delay the addition to a QActionGroup.
-    // Reason: If the parent QActionGroup is already added to a widget then it isn't possible to
-    // get called our own addedTo() method but the QAction::addedTo() is called instead.
-    MRUAction* action = new MRUAction( 0, *it );
-    insertChild(action);
-    action->setText( *it );
-  
-    connect( action, SIGNAL( activated() ), this, SLOT( onActivated() ));
-
-    // now addedTo() is called whenever a new action is added to this action group
-    add( action );
-  }
-}
-
-void MRUActionGroup::clear()
-{
-  QObjectList *l = queryList( "QAction" );
-  QObjectListIt it( *l );
-  QObject *obj;
-  while ( (obj = it.current()) != 0 ) 
-  {
-    disconnect( obj, SIGNAL( activated() ), this, SLOT( onActivated() ));
-    removeChild( obj );
-    delete obj;
-    ++it;
+  int numRecentFiles = std::min<int>(recentFiles.count(), files.count());
+  for ( int index = 0; index < numRecentFiles; index++ ) {
+    QFileInfo fi(files[index]);
+    recentFiles[index]->setText(QString("&%1 %2").arg(index+1).arg(fi.fileName()));
+    recentFiles[index]->setStatusTip(tr("Open file %1").arg(files[index]));
+    recentFiles[index]->setData(QVariant(index));
+    recentFiles[index]->setVisible(true);
   }
 
-  delete l; // delete the list, not the objects
-}
-
-void MRUActionGroup::onActivated ()
-{
-  const QObject* o = sender();
-
-  if ( o->inherits("Gui::MRUAction") )
-  {
-    MRUAction* act = (MRUAction*)o;
-    if ( act )
-      _pcCmd->invoke( act->index() );
-  }
+  // if less file names than actions
+  for (int index = numRecentFiles; index < recentFiles.count(); index++)
+    recentFiles[index]->setVisible(false);
 }
 
 // --------------------------------------------------------------------
 
-SepAction::SepAction ( QObject * parent, const char * name, bool toggle )
-  : QAction( parent, name, toggle )
+UndoAction::UndoAction ( Command* pcCmd,QObject * parent )
+  : Action(pcCmd, parent)
 {
-}
-
-SepAction::~SepAction()
-{
-}
-
-bool SepAction::addTo(QWidget* w)
-{
-  QAction::addTo(w);
-  QAction::removeFrom(w);
-  return true;
-}
-
-/**
- * Sets the index for this action to \a index. 
- */
-void SepAction::addedTo ( int index, QPopupMenu * menu )
-{
-  menu->insertSeparator();
-}
-
-ListAction::ListAction ( QObject * parent, const char * name, bool toggle )
-  : QAction( parent, name, toggle ), _idx(-1)
-{
-}
-
-ListAction::~ListAction()
-{
-}
-
-/**
- * Sets the index for this action to \a index. 
- */
-void ListAction::addedTo ( int index, QPopupMenu * menu )
-{
-  _idx = index;
-}
-
-/**
- * Returns the index number.
- */
-int ListAction::index() const
-{
-  return _idx;
-}
-
-// --------------------------------------------------------------------
-
-ListActionGroup::ListActionGroup ( Command* pcCmd, QObject * parent, const char * name, bool exclusive )
-  :QActionGroup( parent, name, exclusive ), _pcCmd( pcCmd )
-{
-}
-
-ListActionGroup::~ListActionGroup()
-{ 
-}
-
-/**
- * Adds a ListAction object to this group.
- */
-void ListActionGroup::addActionData( const QString& item, const QString& data)
-{
-  // This is a trick to fool Qt's QAction handling.
-  // To the QAction constructor a null pointer is given to delay the addition to a QActionGroup.
-  // Reason: If the parent QActionGroup is already added to a widget then it isn't possible to
-  // get called our own addedTo() method but the QAction::addedTo() is called instead.
-  QAction* action = 0;
-  if ( item == "Separator" )
-    action = new SepAction(0,item);
-  else
-    action = new ListAction( 0, item );
-  insertChild(action);
-  action->setText( data );
-  action->setMenuText( item );
-
-  connect( action, SIGNAL( activated() ), this, SLOT( onActivated() ));
-
-  // now addedTo() is called whenever a new action is added to this action group
-  add( action );
-}
-
-QString ListActionGroup::getData(int idx) const
-{
-  int pos=0;
-  QObjectList *l = queryList( "Gui::ListAction" );
-  QObjectListIt it( *l );
-  QObject *obj;
-  while ( (obj = it.current()) != 0 ) 
-  {
-    if ( pos == idx )
-      return ((QAction*)obj)->text();
-    ++pos;
-    ++it;
-  }
-
-  delete l; // delete the list, not the objects
-  return QString::null;
-}
-
-QAction* ListActionGroup::getAction(int idx) const
-{
-  int pos=0;
-  QObjectList *l = queryList( "Gui::ListAction" );
-  QObjectListIt it( *l );
-  QObject *obj;
-  while ( (obj = it.current()) != 0 ) 
-  {
-    if ( pos == idx )
-      return ((QAction*)obj);
-    ++pos;
-    ++it;
-  }
-
-  delete l; // delete the list, not the objects
-  return 0;
-}
-
-int ListActionGroup::countActions() const
-{
-  QObjectList *l = queryList( "Gui::ListAction" );
-  int ct = l->count();
-  delete l; // delete the list, not the objects
-  return ct;
-}
-
-void ListActionGroup::onActivated ()
-{
-  const QObject* o = sender();
-
-  if ( o->inherits("Gui::ListAction") )
-  {
-    ListAction* act = (ListAction*)o;
-    if ( act )
-      _pcCmd->invoke( act->index() );
-  }
-}
-
-// --------------------------------------------------------------------
-
-UndoRedoAction::UndoRedoAction ( Command* pcCmd,QObject * parent, const char * name, bool toggle )
-  : Action(pcCmd, parent, name, toggle)
-{
-}
-
-UndoRedoAction::~UndoRedoAction()
-{
-}
-
-void UndoRedoAction::addedTo ( QWidget * actionWidget, QWidget * container )
-{
-  if ( actionWidget->inherits("QToolButton") )
-  {
-    QToolButton* tb = (QToolButton*)actionWidget;
-    UndoRedoDialog* menu = new UndoRedoDialog( tb );
-    menu->setMode( tMode == Undo ? UndoRedoDialog::Undo : UndoRedoDialog::Redo );
-
-    tb->setPopup( menu );
-    tb->setPopupDelay(0);
-    tb->setAutoRaise(true);
-  }
-
-  Action::addedTo( actionWidget, container );
-}
-
-// --------------------------------------------------------------------
-
-UndoAction::UndoAction ( Command* pcCmd,QObject * parent, const char * name, bool toggle )
-  : UndoRedoAction(pcCmd, parent, name, toggle)
-{
-  tMode = Undo;
+  _toolAction = new QAction(this);
+  _toolAction->setMenu(new UndoDialog());
+  connect(_toolAction, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
 }
 
 UndoAction::~UndoAction()
 {
+  QMenu* menu = _toolAction->menu();
+  delete menu;
+  delete _toolAction;
+}
+
+void UndoAction::addTo ( QWidget * w )
+{
+  if (w->inherits("QToolBar")) {
+    _toolAction->setText(_action->text());
+    _toolAction->setToolTip(_action->toolTip());
+    _toolAction->setStatusTip(_action->statusTip());
+    _toolAction->setWhatsThis(_action->whatsThis());
+    _toolAction->setShortcut(_action->shortcut());
+    _toolAction->setIcon(_action->icon());
+    w->addAction(_toolAction);
+  } else {
+    w->addAction(_action);
+  }
+}
+
+void UndoAction::setEnabled  ( bool b )
+{
+  Action::setEnabled(b);
+  _toolAction->setEnabled(b);
+}
+
+void UndoAction::setVisible ( bool b )
+{
+  Action::setVisible(b);
+  _toolAction->setVisible(b);
 }
 
 // --------------------------------------------------------------------
 
-RedoAction::RedoAction ( Command* pcCmd,QObject * parent, const char * name, bool toggle )
-  : UndoRedoAction(pcCmd, parent, name, toggle)
+RedoAction::RedoAction ( Command* pcCmd,QObject * parent )
+  : Action(pcCmd, parent)
 {
-  tMode = Redo;
+  _toolAction = new QAction(this);
+  _toolAction->setMenu(new RedoDialog());
+  connect(_toolAction, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
 }
 
 RedoAction::~RedoAction()
 {
+  QMenu* menu = _toolAction->menu();
+  delete menu;
+  delete _toolAction;
+}
+
+void RedoAction::addTo ( QWidget * w )
+{
+  if (w->inherits("QToolBar")) {
+    _toolAction->setText(_action->text());
+    _toolAction->setToolTip(_action->toolTip());
+    _toolAction->setStatusTip(_action->statusTip());
+    _toolAction->setWhatsThis(_action->whatsThis());
+    _toolAction->setShortcut(_action->shortcut());
+    _toolAction->setIcon(_action->icon());
+    w->addAction(_toolAction);
+  } else {
+    w->addAction(_action);
+  }
+}
+
+void RedoAction::setEnabled  ( bool b )
+{
+  Action::setEnabled(b);
+  _toolAction->setEnabled(b);
+}
+
+void RedoAction::setVisible ( bool b )
+{
+  Action::setVisible(b);
+  _toolAction->setVisible(b);
 }
 
 // --------------------------------------------------------------------
 
-namespace Gui
+DockWidgetAction::DockWidgetAction ( Command* pcCmd, QObject * parent )
+  : Action(pcCmd, parent), _menu(0)
 {
-  struct DockWindowActionP
-  {
-    QGuardedPtr<QPopupMenu> menu;
-    int id;
-    QMainWindow::DockWindows dw;
-  };
-};
-
-DockWindowAction::DockWindowAction ( QMainWindow::DockWindows dw, QObject * parent, const char * name )
-  :QAction(parent, name)
-{
-  d = new DockWindowActionP;
-  d->dw = dw;
-  d->menu = 0;
-  d->id = 0;
 }
 
-DockWindowAction::~DockWindowAction()
+DockWidgetAction::~DockWidgetAction()
 {
-  delete d;
+  delete _menu;
 }
 
-bool DockWindowAction::addTo ( QWidget * w )
+void DockWidgetAction::addTo ( QWidget * w )
 {
-  QPopupMenu* menu = (QPopupMenu*)w->qt_cast("QPopupMenu");
-  QWidget* widget = qApp->mainWidget();
-  QMainWindow* mw = widget ? (QMainWindow*)widget->qt_cast("QMainWindow") : 0;
-
-  if ( menu && mw )
-  {
-    d->menu = menu;
-    d->id = menu->insertItem( menuText(), mw->createDockWindowMenu( d->dw ) );
-    connect( menu, SIGNAL( aboutToShow()), mw, SLOT( menuAboutToShow() ) );
-    return true;
+  if (!_menu) {
+    _menu = new QMenu();
+    _action->setMenu(_menu);
   }
-  else
-  {
-    return false;
+
+  w->addAction(_action);
+
+  QList<QDockWidget*> dock = getMainWindow()->findChildren<QDockWidget*>();
+  for (QList<QDockWidget*>::Iterator it = dock.begin(); it != dock.end(); ++it) {
+    QAction* action = (*it)->toggleViewAction();
+    action->setToolTip(tr("Toogles this dockable window"));
+    action->setStatusTip(tr("Toogles this dockable window"));
+    action->setWhatsThis(tr("Toogles this dockable window"));
+    _menu->addAction(action);
   }
-}
-
-bool DockWindowAction::removeFrom ( QWidget * w )
-{
-  QPopupMenu* menu = (QPopupMenu*)w->qt_cast("QPopupMenu");
-  QWidget* widget = qApp->mainWidget();
-  QMainWindow* mw = widget ? (QMainWindow*)widget->qt_cast("QMainWindow") : 0;
-
-  if ( menu && mw )
-  {
-    uint cnt = menu->count();
-    for ( uint i=0; i<cnt; i++ )
-    {
-      int id = menu->idAt( i );
-      if ( menu->text( id ) == menuText() )
-      {
-        menu->removeItem( id );
-      }
-    }
-
-    if (menu==d->menu)
-      d->menu = 0;
-
-    disconnect( menu, SIGNAL( aboutToShow()), mw, SLOT( menuAboutToShow() ) );
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-void DockWindowAction::setMenuText ( const QString & txt )
-{
-  QAction::setMenuText( txt );
-  if ( d->menu )
-    d->menu->changeItem( d->id, txt );
 }
 
 // --------------------------------------------------------------------
 
-DockViewAction::DockViewAction ( QObject * parent, const char * name )
-  :DockWindowAction(QMainWindow::NoToolBars, parent, name)
-{
-}
-
-DockViewAction::~DockViewAction()
-{
-}
-
-// --------------------------------------------------------------------
-
-ToolBarAction::ToolBarAction ( QObject * parent, const char * name )
-  :DockWindowAction(QMainWindow::OnlyToolBars, parent, name)
+ToolBarAction::ToolBarAction ( Command* pcCmd, QObject * parent )
+  : Action(pcCmd, parent), _menu(0)
 {
 }
 
 ToolBarAction::~ToolBarAction()
 {
+  delete _menu;
+}
+
+void ToolBarAction::addTo ( QWidget * w )
+{
+  if (!_menu) {
+    _menu = new QMenu();
+    _action->setMenu(_menu);
+  }
+
+  w->addAction(_action);
+
+  QWidget* mw = getMainWindow();
+  QList<QToolBar*> dock = mw->findChildren<QToolBar*>();
+  for (QList<QToolBar*>::Iterator it = dock.begin(); it != dock.end(); ++it) {
+    if ((*it)->parentWidget() == mw) {
+      QAction* action = (*it)->toggleViewAction();
+      action->setToolTip(tr("Toogles this toolbar"));
+      action->setStatusTip(tr("Toogles this toolbar"));
+      action->setWhatsThis(tr("Toogles this toolbar"));
+      _menu->addAction(action);
+    }
+  }
 }
 
 // --------------------------------------------------------------------
 
-WindowAction::WindowAction ( QObject * parent, const char * name )
-  :QAction(parent, name)
+WindowAction::WindowAction ( Command* pcCmd, QObject * parent )
+  : ActionGroup(pcCmd, parent), _menu(0)
 {
 }
 
@@ -711,33 +582,21 @@ WindowAction::~WindowAction()
 {
 }
 
-bool WindowAction::addTo ( QWidget * w )
+void WindowAction::addTo ( QWidget * w )
 {
-  QPopupMenu* menu = (QPopupMenu*)w->qt_cast("QPopupMenu");
-  if ( menu )
-  {
-    QWidget* mainWindow = qApp->mainWidget();
-    connect( menu, SIGNAL( aboutToShow()), mainWindow, SLOT( onWindowsMenuAboutToShow() ) );
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-bool WindowAction::removeFrom ( QWidget * w )
-{
-  QPopupMenu* menu = (QPopupMenu*)w->qt_cast("QPopupMenu");
-  if ( menu )
-  {
-    QWidget* mainWindow = qApp->mainWidget();
-    disconnect( menu, SIGNAL( aboutToShow()), mainWindow, SLOT( onWindowsMenuAboutToShow() ) );
-    return true;
-  }
-  else
-  {
-    return false;
+  QMenu* menu = qobject_cast<QMenu*>(w);
+  if ( !menu ) {
+    if (!_menu) {
+      _menu = new QMenu();
+      _action->setMenu(_menu);
+      _menu->addActions(_group->actions());
+      connect( _menu, SIGNAL( aboutToShow()), getMainWindow(), SLOT( onWindowsMenuAboutToShow() ) );
+    }
+    
+    w->addAction(_action);
+  } else {
+    menu->addActions(_group->actions());
+    connect( menu, SIGNAL( aboutToShow()), getMainWindow(), SLOT( onWindowsMenuAboutToShow() ) );
   }
 }
 

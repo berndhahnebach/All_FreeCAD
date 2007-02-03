@@ -27,7 +27,13 @@
 # include <qlayout.h>
 # include <qmessagebox.h>
 # include <qpainter.h>
-# include <qscrollview.h>
+# include <q3scrollview.h>
+//Added by qt3to4:
+#include <Q3PointArray>
+#include <QTimerEvent>
+#include <Q3Frame>
+#include <QMouseEvent>
+#include <Q3VBoxLayout>
 #endif
 
 #include "StackBar.h"
@@ -35,7 +41,7 @@
 #include "MainWindow.h"
 
 #include "../Base/Exception.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::DockWnd;
 
 /**
@@ -47,7 +53,7 @@ using namespace Gui::DockWnd;
 StackBarButton::StackBarButton( QWidget *object, StackBar *parent, const char *name ) 
  : QToolButton( parent, name ), bIsSelected( false ), w(object), pStackBar(parent)
 {
-  setBackgroundMode( PaletteLight ); 
+  setBackgroundMode( Qt::PaletteLight ); 
 }
 
 /**
@@ -59,7 +65,7 @@ StackBarButton::StackBarButton( QWidget *object, StackBar *parent, const char *n
 StackBarButton::StackBarButton( StackBar *parent, const char *name ) 
  : QToolButton( parent, name ), bIsSelected( false ), pStackBar(parent)
 {
-  setBackgroundMode( PaletteLight ); 
+  setBackgroundMode( Qt::PaletteLight ); 
 }
 
 /**
@@ -126,7 +132,7 @@ void StackBarButton::drawButton( QPainter *p )
   }
 
 
-  QPointArray a( 7 );
+  Q3PointArray a( 7 );
   a.setPoint( 0, -1, h + 1 );
   a.setPoint( 1, -1, 1 );
   a.setPoint( 2, w - d, 1 );
@@ -147,13 +153,13 @@ void StackBarButton::drawButton( QPainter *p )
   p->drawLine( 0, 2, w - d, 2 );
   p->drawLine( w - d - 1, 2, w - 21, h - 1 );
   p->drawLine( w - 20, h - 1, w, h - 1 );
-  p->setBrush( NoBrush );
+  p->setBrush( Qt::NoBrush );
 
   p->setPen( colorGroup().buttonText() );
 
   if ( p->fontMetrics().width( text() ) < w - d - 5 ) 
   {
-    p->drawText( 2, 2, w, h - 2, AlignVCenter | AlignLeft, text() );
+    p->drawText( 2, 2, w, h - 2, Qt::AlignVCenter | Qt::AlignLeft, text() );
   } 
   else 
   {
@@ -163,13 +169,13 @@ void StackBarButton::drawButton( QPainter *p )
     while ( p->fontMetrics().width( s ) + ew + p->fontMetrics().width( text()[i] )  < w - d - 5 )
       s += text()[i++];
     s += "...";
-    p->drawText( 2, 2, w, h - 2, AlignVCenter | AlignLeft, s );
+    p->drawText( 2, 2, w, h - 2, Qt::AlignVCenter | Qt::AlignLeft, s );
   }
 }
 
 void StackBarButton::mousePressEvent ( QMouseEvent * e )
 {
-  if (e->button() == RightButton)
+  if (e->button() == Qt::RightButton)
   {
   }
   else
@@ -189,7 +195,7 @@ StackBar::StackBar( QWidget *parent, const char *name )
 {
   m_pCurPage  = NULL;
   m_pLastBtn = NULL,
-  m_pLayout   = new QVBoxLayout( this );
+  m_pLayout   = new Q3VBoxLayout( this );
   m_lAnimCount = 0;
   m_bAnimated = false;
 
@@ -236,18 +242,18 @@ bool StackBar::addItem(QWidget* page, const QString &name)
   if (m_mButtonView.size() == 0)
     show(); //show again
 
-  page->setBackgroundMode( PaletteBackground );
+  page->setBackgroundMode( Qt::PaletteBackground );
   StackBarButton *button = new StackBarButton( this, name.latin1() );
   button->setWidget(page);
   button->setText( tr(name) );
   button->setFixedHeight( button->sizeHint().height() );
   connect( button, SIGNAL( clicked() ), this, SLOT( buttonClicked() ) );
-  QScrollView *sv = new QScrollView( this );
-  sv->setHScrollBarMode(QScrollView::AlwaysOff);
-  sv->setVScrollBarMode(QScrollView::AlwaysOff);
-  sv->setResizePolicy( QScrollView::AutoOneFit );
+  Q3ScrollView *sv = new Q3ScrollView( this );
+  sv->setHScrollBarMode(Q3ScrollView::AlwaysOff);
+  sv->setVScrollBarMode(Q3ScrollView::AlwaysOff);
+  sv->setResizePolicy( Q3ScrollView::AutoOneFit );
   sv->addChild( page );
-  sv->setFrameStyle( QFrame::NoFrame );
+  sv->setFrameStyle( Q3Frame::NoFrame );
   page->show();
   m_mButtonView[button] = sv;
   m_pLayout->addWidget( button );
@@ -282,7 +288,7 @@ bool StackBar::addItem(QWidget* page, const QString &name)
 int StackBar::indexOf( QWidget* w ) const
 {
   int idx = 0;
-  for (std::map <StackBarButton*,QScrollView*>::const_iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it, ++idx)
+  for (std::map <StackBarButton*,Q3ScrollView*>::const_iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it, ++idx)
   {
     StackBarButton* b = (it)->first;
     if (b->widget() == w)
@@ -302,7 +308,7 @@ int StackBar::indexOf( QWidget* w ) const
 bool StackBar::removeItem(QWidget* w)
 {
   bool bSucceed = false;
-  for (std::map <StackBarButton*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  for (std::map <StackBarButton*,Q3ScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
     if (it->first->widget() == w)
     {
@@ -310,7 +316,7 @@ bool StackBar::removeItem(QWidget* w)
       StackBarButton* bt = it->first;
       if (bt == m_pLastBtn)
         m_pLastBtn = NULL;
-      QScrollView* sv = it->second;
+      Q3ScrollView* sv = it->second;
       if (sv == m_pCurPage)
         m_pCurPage = NULL;
       sv->removeChild(w);
@@ -335,7 +341,7 @@ bool StackBar::removeItem(QWidget* w)
  */
 void StackBar::setCurrentItem(QWidget* w)
 {
-  for (std::map <StackBarButton*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  for (std::map <StackBarButton*,Q3ScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
     if (it->first->widget() == w)
     {
@@ -359,7 +365,7 @@ void StackBar::setCurrentItem(QWidget* w)
  */
 QWidget* StackBar::currentItem() const
 {
-  for (std::map <StackBarButton*,QScrollView*>::const_iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  for (std::map <StackBarButton*,Q3ScrollView*>::const_iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
     if (it->first->isSelected())
     {
@@ -380,7 +386,7 @@ void StackBar::setItemVisible( QWidget* w, bool b )
 {
   if ( b )
   {
-    for (std::map <StackBarButton*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+    for (std::map <StackBarButton*,Q3ScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
     {
       if (it->first->widget() == w)
       {
@@ -398,7 +404,7 @@ void StackBar::setItemVisible( QWidget* w, bool b )
   }
   else
   {
-    for (std::map <StackBarButton*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+    for (std::map <StackBarButton*,Q3ScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
     {
       if (it->first->widget() == w)
       {
@@ -422,7 +428,7 @@ void StackBar::setItemVisible( QWidget* w, bool b )
  */
 bool StackBar::isItemVisible(QWidget* w) const
 {
-  for (std::map <StackBarButton*,QScrollView*>::const_iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  for (std::map <StackBarButton*,Q3ScrollView*>::const_iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
     if (it->first->widget() == w)
     {
@@ -435,7 +441,7 @@ bool StackBar::isItemVisible(QWidget* w) const
 
 StackBarButton* StackBar::firstPageVisible()
 {
-  for (std::map <StackBarButton*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  for (std::map <StackBarButton*,Q3ScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
     if (it->first->isVisible())
     {
@@ -449,7 +455,7 @@ StackBarButton* StackBar::firstPageVisible()
 void StackBar::buttonClicked()
 {
   StackBarButton *tb = (StackBarButton*)sender();
-  QScrollView *page = NULL;
+  Q3ScrollView *page = NULL;
   if (m_mButtonView.find( tb ) != m_mButtonView.end())
     page = m_mButtonView[tb];
 
@@ -489,9 +495,9 @@ void StackBar::buttonClicked()
 void StackBar::updatePages()
 {
   bool after = false;
-  for (std::map <StackBarButton*,QScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
+  for (std::map <StackBarButton*,Q3ScrollView*>::iterator it = m_mButtonView.begin(); it != m_mButtonView.end(); ++it)
   {
-    (it)->first->setBackgroundMode( /*!after ? */PaletteBackground /*: PaletteLight*/ );
+    (it)->first->setBackgroundMode( /*!after ? */Qt::PaletteBackground /*: PaletteLight*/ );
     (it)->first->update();
     after = (it->first) == m_pLastBtn;
   }
@@ -515,8 +521,8 @@ void StackBar::timerEvent ( QTimerEvent * )
     m_pAnimCurPage->setMinimumHeight(0);
     m_pAnimNewPage->setMaximumHeight(1000);
     m_pAnimNewPage->setMinimumHeight(0);
-    m_pAnimCurPage->setVScrollBarMode(QScrollView::Auto);
-    m_pAnimNewPage->setVScrollBarMode(QScrollView::Auto);
+    m_pAnimCurPage->setVScrollBarMode(Q3ScrollView::Auto);
+    m_pAnimNewPage->setVScrollBarMode(Q3ScrollView::Auto);
     m_pAnimCurPage->hide();
     m_pAnimNewPage->show();
     m_pCurPage = m_pAnimNewPage;
@@ -527,7 +533,7 @@ void StackBar::timerEvent ( QTimerEvent * )
 /** 
  * Delays the change of a page after a new was set to active. 
  */
-void StackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
+void StackBar::animatePageScroll(Q3ScrollView* pCurPage, Q3ScrollView* pNewPage)
 {
   if (!pCurPage || !pNewPage)
     return; // one page is invalid
@@ -536,8 +542,8 @@ void StackBar::animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage)
   m_iCurHeight   = m_pAnimCurPage->height();
   m_iNewHeight   = m_pAnimNewPage->height();
 
-  m_pAnimCurPage->setVScrollBarMode(QScrollView::AlwaysOff);
-  m_pAnimNewPage->setVScrollBarMode(QScrollView::AlwaysOff);
+  m_pAnimCurPage->setVScrollBarMode(Q3ScrollView::AlwaysOff);
+  m_pAnimNewPage->setVScrollBarMode(Q3ScrollView::AlwaysOff);
   m_pAnimCurPage->show();
   m_pAnimNewPage->setFixedHeight(0);
   m_pAnimNewPage->show();

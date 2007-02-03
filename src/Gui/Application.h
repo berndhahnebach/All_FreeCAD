@@ -27,13 +27,11 @@
 
 #include <string>
 #include <vector>
-#include <qpixmap.h>
-#include <qstringlist.h>
 
 #define  putpix()
 
-#include "../Base/Console.h"
-#include "../App/Application.h"
+#include <Base/Console.h>
+#include <App/Application.h>
 
 class QCloseEvent;
 
@@ -155,7 +153,6 @@ public:
   static void initApplication(void);
   static void initTypes(void);
   static void runApplication(void);
-  static void destruct(void);
   void tryClose( QCloseEvent * e );
   //@}
 
@@ -197,7 +194,6 @@ public:
 
 private:
   struct ApplicationP* d;
-  static  QApplication* _pcQApp ;
   /// workbench python dictionary
   PyObject*		 _pcWorkbenchDictionary;
 };

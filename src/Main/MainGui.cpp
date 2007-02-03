@@ -37,9 +37,13 @@
 
 #include <stdio.h>
 
-#include <qapplication.h>
-#include <qmessagebox.h>
+#ifndef __Qt4All__
+# include <Gui/Qt4All.h>
+#endif
 
+#ifndef __Qt3All__
+# include <Gui/Qt3All.h>
+#endif
 
 // FreeCAD header
 #include "../Base/Console.h"
@@ -55,8 +59,6 @@
 // If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
 #include "../Build/Version.h"
-
-#define new DEBUG_CLIENTBLOCK
 
 void PrintInitHelp(void);
 
@@ -143,18 +145,12 @@ int main( int argc, char ** argv )
 
 	// Run phase ===========================================================
 
-  if(App::Application::Config()["RunMode"] == "Gui")
-	{
-	// run GUI
+  if(App::Application::Config()["RunMode"] == "Gui") {
+	  // run GUI
     Gui::Application::runApplication();
-
-    Gui::Application::destruct();
-
 	} else {
-
 		App::Application::runApplication();
 	}
-
 
 	// Destruction phase ===========================================================
 	Base::Console().Log("%s terminating...\n\n",App::Application::Config()["ExeName"].c_str());

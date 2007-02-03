@@ -23,26 +23,17 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qaction.h>
-# include <qcombobox.h>
-# include <qkeysequence.h>
-# include <qlabel.h>
-# include <qlistbox.h>
-# include <qmetaobject.h>
-# include <qstringlist.h> 
-#endif
-
 #include <Base/Parameter.h>
 
 #include "DlgKeyboardImp.h"
+#include "Action.h"
 #include "Application.h"
 #include "BitmapFactory.h"
 #include "Command.h"
 #include "Tools.h"
 #include "Widgets.h"
 #include "Window.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgCustomKeyboardImp */
@@ -54,9 +45,11 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent, const char* name, WFlags fl  )
-: DlgCustomKeyboardBase(parent, name, fl)
+DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent  )
+  : CustomizeActionPage(parent)
 {
+  this->setupUi(this);
+  
   const CommandManager& cCmdMgr = Application::Instance->commandManager();
   const std::map<std::string,Command*>& sCommands = cCmdMgr.getCommands();
 
@@ -67,6 +60,7 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent, const char* name, W
     if ( _cmdGroups.find( lang ) == _cmdGroups.end() )
       _cmdGroups[ lang ] = natv;
 
+#if 0 //TODO Reimplement
     CommandGroup* cmdGrp = dynamic_cast<CommandGroup*>(it->second);
     if ( cmdGrp )
     {
@@ -79,6 +73,7 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent, const char* name, W
       }
     }
     else
+#endif
     {
       _groupCommands[it->second->getGroupName()][it->second->getName()] = it->second;
     }
@@ -96,7 +91,7 @@ DlgCustomKeyboardImp::DlgCustomKeyboardImp( QWidget* parent, const char* name, W
 
   comboBoxCategory->insertStringList( items );
 
-  onGroupSelected( comboBoxCategory->currentText() );
+  on_comboBoxCategory_activated( comboBoxCategory->currentText() );
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -105,7 +100,7 @@ DlgCustomKeyboardImp::~DlgCustomKeyboardImp()
 }
 
 /** Shows the description for the corresponding command */
-void DlgCustomKeyboardImp::onDescription(const QString& txt)
+void DlgCustomKeyboardImp::on_listBoxCommands_highlighted(const QString& txt)
 {
   CommandBase* cmd = 0;
   QMap<QString, QString>::ConstIterator It = _cmdGroups.find( comboBoxCategory->currentText() );
@@ -125,17 +120,17 @@ void DlgCustomKeyboardImp::onDescription(const QString& txt)
   // is QAction already created?
   if ( cmd->getAction() )
   {
-    QKeySequence ks = cmd->getAction()->accel();
+    QKeySequence ks = cmd->getAction()->shortcut();
     QKeySequence ks2 = cmd->getAccel();
-    QKeySequence ks3 = accelLineEdit1NewShortcut->text();
+    QKeySequence ks3 = editShortcut->text();
 
     if ( ks.isEmpty() )
       accelLineEditShortcut->setText( tr("Not defined") );
     else
       accelLineEditShortcut->setText( ks );
 
-    pushButtonAssign->setEnabled( !ks3.isEmpty() && ( ks != ks3 ) );
-    pushButtonReset->setEnabled( (ks != ks2) );
+    buttonAssign->setEnabled( !ks3.isEmpty() && ( ks != ks3 ) );
+    buttonReset->setEnabled( (ks != ks2) );
   }
   else
   {
@@ -144,19 +139,37 @@ void DlgCustomKeyboardImp::onDescription(const QString& txt)
       accelLineEditShortcut->setText( tr("Not defined") );
     else
       accelLineEditShortcut->setText( ks );
-    pushButtonAssign->setEnabled( false );
-    pushButtonReset->setEnabled( false );
+    buttonAssign->setEnabled( false );
+    buttonReset->setEnabled( false );
   }
 
   textLabelDescription->setText( QObject::tr( cmd->getToolTipText() ) );
 }
 
 /** Shows all commands of this category */
-void DlgCustomKeyboardImp::onGroupSelected(const QString & group)
+void DlgCustomKeyboardImp::on_comboBoxCategory_activated(const QString & group)
 {
+#if 0
   listBoxCommands->clear();
-  pushButtonAssign->setEnabled( false );
-  pushButtonReset->setEnabled( false );
+  buttonAssign->setEnabled( false );
+  buttonReset->setEnabled( false );
+
+  QMap<QString, QString>::ConstIterator It = _cmdGroups.find( group );
+
+  if ( It != _cmdGroups.end() )
+  {
+    CommandManager & cCmdMgr = Application::Instance->commandManager();
+    std::vector<Command*> aCmds = cCmdMgr.getGroupCommands( It.data().latin1() );
+    for (std::vector<Command*>::iterator it = aCmds.begin(); it != aCmds.end(); ++it)
+    {
+      QPixmap px = ((*it)->getPixmap() ? BitmapFactory().pixmap( (*it)->getPixmap() ) : QPixmap() );
+      listBoxCommands->insertItem( Tools::fillUp(24,24,px), (*it)->getName() );
+    }
+  }
+#else //FIXME Implement
+  listBoxCommands->clear();
+  buttonAssign->setEnabled( false );
+  buttonReset->setEnabled( false );
 
   QMap<QString, QString>::ConstIterator It = _cmdGroups.find( group );
 
@@ -173,10 +186,11 @@ void DlgCustomKeyboardImp::onGroupSelected(const QString & group)
       }
     }
   }
+#endif
 }
 
 /** Assigns a new accelerator to the selected command. */
-void DlgCustomKeyboardImp::onAssign()
+void DlgCustomKeyboardImp::on_buttonAssign_clicked()
 {
   CommandBase* cmd = 0;
   QMap<QString, QString>::ConstIterator It = _cmdGroups.find( comboBoxCategory->currentText() );
@@ -193,20 +207,20 @@ void DlgCustomKeyboardImp::onAssign()
 
   if ( cmd && cmd->getAction() )
   {
-    QKeySequence shortcut = accelLineEdit1NewShortcut->text();
-    cmd->getAction()->setAccel( shortcut );
-    accelLineEditShortcut->setText( accelLineEdit1NewShortcut->text() );
+    QKeySequence shortcut = editShortcut->text();
+    cmd->getAction()->setShortcut( shortcut );
+    accelLineEditShortcut->setText( editShortcut->text() );
 
     const char* curText = listBoxCommands->currentText().latin1();
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Shortcut");
-    hGrp->SetASCII( curText, accelLineEdit1NewShortcut->text().latin1() );
+    hGrp->SetASCII( curText, editShortcut->text().latin1() );
 
-    pushButtonReset->setEnabled( true );
+    buttonReset->setEnabled( true );
   }
 }
 
 /** Resets the accelerator of the selected command to the default. */
-void DlgCustomKeyboardImp::onReset()
+void DlgCustomKeyboardImp::on_buttonReset_clicked()
 {
   CommandBase* cmd = 0;
   QMap<QString, QString>::ConstIterator It = _cmdGroups.find( comboBoxCategory->currentText() );
@@ -223,19 +237,19 @@ void DlgCustomKeyboardImp::onReset()
 
   if ( cmd && cmd->getAction() )
   {
-    cmd->getAction()->setAccel( cmd->getAccel() );
-    QString txt = cmd->getAction()->accel();
+    cmd->getAction()->setShortcut( cmd->getAccel() );
+    QString txt = cmd->getAction()->shortcut();
     accelLineEditShortcut->setText( (txt.isEmpty() ? tr("Not defined") : txt) );
     ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Shortcut");
     const char* curText = listBoxCommands->currentText().latin1();
     hGrp->RemoveASCII( curText );
   }
 
-  pushButtonReset->setEnabled( false );
+  buttonReset->setEnabled( false );
 }
 
 /** Resets the accelerator of all commands to the default. */
-void DlgCustomKeyboardImp::onResetAll()
+void DlgCustomKeyboardImp::on_buttonResetAll_clicked()
 {
   for ( QMap<QString, QMap<QString, CommandBase*> >::ConstIterator it = _groupCommands.begin(); it != _groupCommands.end(); ++it )
   {
@@ -244,17 +258,17 @@ void DlgCustomKeyboardImp::onResetAll()
     {
       if ( ci.data()->getAction() )
       {
-        ci.data()->getAction()->setAccel( ci.data()->getAccel() );
+        ci.data()->getAction()->setShortcut( ci.data()->getAccel() );
       }
     }
   }
 
   WindowParameter::getDefaultParameter()->RemoveGrp("Shortcut");
-  pushButtonReset->setEnabled( false );
+  buttonReset->setEnabled( false );
 }
 
 /** Checks for an already occupied shortcut. */
-void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
+void DlgCustomKeyboardImp::on_editShortcut_textChanged( const QString& sc )
 {
   listBoxAssigned->clear();
 
@@ -263,13 +277,13 @@ void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
   QKeySequence ks(sc);
   if ( !ks.isEmpty() )
   {
-    pushButtonAssign->setEnabled( true );
+    buttonAssign->setEnabled( true );
     for ( QMap<QString, QMap<QString, CommandBase*> >::ConstIterator it = _groupCommands.begin(); it != _groupCommands.end(); ++it )
     {
       const QMap<QString, CommandBase*>& items = it.data();
       for ( QMap<QString, CommandBase*>::ConstIterator ci = items.begin(); ci != items.end(); ++ci )
       {
-        if ( ci.data()->getAction() && ci.data()->getAction()->accel() == ks )
+        if ( ci.data()->getAction() && ci.data()->getAction()->shortcut() == ks )
         {
           i++;
           cmdName = ci.key(); // store the last one
@@ -282,15 +296,15 @@ void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
     {
       QMessageBox::warning( this, tr("Multiple defined shortcut"),
                             tr("The shortcut '%1' is defined more than once. This could result into unexpected behaviour.").arg(sc) );
-      accelLineEdit1NewShortcut->setFocus();
-      pushButtonAssign->setEnabled( false );
+      editShortcut->setFocus();
+      buttonAssign->setEnabled( false );
     }
     else if ( i == 1 && cmdName != listBoxCommands->currentText() )
     {
       QMessageBox::warning( this, tr("Already defined shortcut"),
                             tr("The shortcut '%1' is already assigned to '%2'.\n\nPlease define another shortcut.").arg(sc).arg(cmdName) );
-      accelLineEdit1NewShortcut->setFocus();
-      pushButtonAssign->setEnabled( false );
+      editShortcut->setFocus();
+      buttonAssign->setEnabled( false );
     }
     else // check if the current selected command has already this shortcut defined
     {
@@ -304,32 +318,15 @@ void DlgCustomKeyboardImp::onShortcutPressed( const QString& sc )
           if ( e != ci.data().end() )
           {
             CommandBase* cmd = e.data();
-            if ( cmd && cmd->getAction() && cmd->getAction()->accel() == ks )
-              pushButtonAssign->setEnabled( false );
+            if ( cmd && cmd->getAction() && cmd->getAction()->shortcut() == ks )
+              buttonAssign->setEnabled( false );
           }
         }
       }
     }
   }
   else
-    pushButtonAssign->setEnabled( false );
-}
-
-void DlgCustomKeyboardImp::reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt )
-{
-  DlgCustomKeyboardBase::reparent(parent, f, p, showIt);
-
-  // redirect signal to toplevel widget
-  QWidget* topLevel = parent ? parent->topLevelWidget():0;
-  if ( topLevel )
-  {
-    int index = topLevel->metaObject()->findSignal( "addMacroAction(const QString&)", TRUE );
-    if ( index >= 0 )
-    {
-      connect(topLevel, SIGNAL(addMacroAction( const QString& )), this, SLOT(onAddMacroAction( const QString& )));
-      connect(topLevel, SIGNAL(removeMacroAction( const QString& )), this, SLOT(onRemoveMacroAction( const QString& )));
-    }
-  }
+    buttonAssign->setEnabled( false );
 }
 
 void DlgCustomKeyboardImp::onAddMacroAction(const QString& item)
@@ -346,5 +343,4 @@ void DlgCustomKeyboardImp::onRemoveMacroAction(const QString& item)
   _groupCommands[cmd->getGroupName()].remove(cmd->getName());
 }
 
-#include "DlgKeyboard.cpp"
-#include "moc_DlgKeyboard.cpp"
+#include "moc_DlgKeyboardImp.cpp"

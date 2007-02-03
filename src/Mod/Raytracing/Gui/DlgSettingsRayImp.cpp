@@ -23,9 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-#endif
-
 #include "DlgSettingsRayImp.h"
 #include <Gui/PrefWidgets.h>
 #include <Base/Console.h>
@@ -36,9 +33,10 @@ using namespace RaytracingGui;
  *  Constructs a DlgSettings3DViewImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-DlgSettingsRayImp::DlgSettingsRayImp( QWidget* parent,  const char* name, WFlags fl )
-    : DlgSettingsRay( parent, name, fl )
+DlgSettingsRayImp::DlgSettingsRayImp( QWidget* parent )
+  : PreferencePage( parent )
 {
+  this->setupUi(this);
 }
 
 /** 
@@ -70,6 +68,4 @@ void DlgSettingsRayImp::loadSettings()
   prefCheckBox9->onRestore();
 }
 
-#include "DlgSettingsRay.cpp"
-#include "moc_DlgSettingsRay.cpp"
 #include "moc_DlgSettingsRayImp.cpp"

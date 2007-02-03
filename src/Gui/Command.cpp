@@ -23,7 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
 #endif
 
 #include "Command.h"
@@ -31,7 +36,6 @@
 #include "Application.h"
 #include "Document.h"
 #include "Selection.h"
-#include "ToolBoxBar.h"
 #include "HelpView.h"
 #include "Macro.h"
 #include "MainWindow.h"
@@ -48,6 +52,7 @@
 #include <App/Document.h>
 #include <App/Feature.h>
 #include <App/DocumentObject.h>
+
 
 using Base::Interpreter;
 using namespace Gui;
@@ -119,8 +124,6 @@ using namespace Gui::DockWnd;
  * @see Gui::Command, Gui::ToggleCommand, Gui::CommandGroup, Gui::CommandManager
  */
 
-#define new DEBUG_CLIENTBLOCK
-
 CommandBase::CommandBase( const char* sMenu, const char* sToolTip, const char* sWhat, 
                           const char* sStatus, const char* sPixmap, int iAcc)
   : sMenuText(sMenu), sToolTipText(sToolTip), sWhatsThis(sWhat?sWhat:sToolTip), 
@@ -135,12 +138,12 @@ CommandBase::~CommandBase()
   //delete _pcAction;
 }
 
-QAction* CommandBase::getAction() 
+Action* CommandBase::getAction() 
 { 
   return _pcAction; 
 }
 
-QAction * CommandBase::createAction()
+Action * CommandBase::createAction()
 {
   // does nothing
   return 0;
@@ -151,7 +154,6 @@ void CommandBase::languageChange()
   if ( _pcAction )
   {
     _pcAction->setText       ( QObject::tr( sMenuText    ) );
-    _pcAction->setMenuText   ( QObject::tr( sMenuText    ) );
     _pcAction->setToolTip    ( QObject::tr( sToolTipText ) );
     if ( sStatusTip )
      _pcAction->setStatusTip ( QObject::tr( sStatusTip   ) );
@@ -193,19 +195,12 @@ bool Command::isViewOfType(Base::Type t) const
     return false;
 }
 
-bool Command::addTo(QWidget *pcWidget)
+void Command::addTo(QWidget *pcWidget)
 {
   if (!_pcAction)
     _pcAction = createAction();
 
-  return _pcAction->addTo(pcWidget);
-}
-
-bool Command::removeFrom(QWidget *pcWidget)
-{
-  if (!_pcAction)
-    return false;
-  return _pcAction->removeFrom(pcWidget);
+  _pcAction->addTo(pcWidget);
 }
 
 Application *Command::getGuiApplication(void)
@@ -443,13 +438,12 @@ const char * Command::endCmdHelp(void)
   return "</body></html>\n\n";
 }
 
-QAction * Command::createAction(void)
+Action * Command::createAction(void)
 {
-  QAction *pcAction;
+  Action *pcAction;
 
-  pcAction = new Action(this,getMainWindow(),sName);
+  pcAction = new Action(this,getMainWindow());
   pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
   if ( sStatusTip )
     pcAction->setStatusTip(QObject::tr(sStatusTip));
@@ -460,173 +454,8 @@ QAction * Command::createAction(void)
   else
     pcAction->setWhatsThis(QObject::tr(sToolTipText));
   if(sPixmap)
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setAccel(iAccel);
-
-  return pcAction;
-}
-
-// -------------------------------------------------------------------------
-
-ToggleCommand::ToggleCommand(const char* name)
-  : Command(name)
-{
-}
-
-QAction * ToggleCommand::createAction(void)
-{
-  QAction *pcAction = Command::createAction();
-  pcAction->setToggleAction ( true );
-  return pcAction;
-}
-
-// -------------------------------------------------------------------------
-
-CommandItem::CommandItem( CommandGroup* parent, const char* sMenu, const char* sToolTip, const char* sWhat, 
-                          const char* sStatus, const char* sPixmap, int iAcc)
-  : CommandBase( sMenu, sToolTip, sWhat, sStatus, sPixmap, iAcc ), _parent(parent)
-{
-}
-
-CommandItem::~CommandItem()
-{
-}
-
-QAction * CommandItem::createAction()
-{
-  // use the QActionGroup of the parent CommandGroup as parent for the QAction
-  QAction *pcAction;
-  pcAction = new QAction( _parent->getAction() );
-  pcAction->setToggleAction( true );
-  pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setMenuText(QObject::tr(sMenuText));
-
-  // use the tooltip, status tip and what's this text of the parent group if not set
-  // 
-  // set tool tip
-  if ( sToolTipText )
-    pcAction->setToolTip   ( QObject::tr( sToolTipText ) );
-  else
-    pcAction->setToolTip   ( QObject::tr( _parent->getToolTipText() ) );
-  // set status tip
-  if ( sStatusTip )
-    pcAction->setStatusTip ( QObject::tr( sStatusTip ) );
-  else if ( sToolTipText )
-    pcAction->setStatusTip ( QObject::tr( sToolTipText ) );
-  else
-    pcAction->setStatusTip ( QObject::tr( _parent->getStatusTip() ) );
-  // set what's this
-  if ( sWhatsThis )
-    pcAction->setWhatsThis ( QObject::tr( sWhatsThis ) );
-  else if ( sToolTipText )
-    pcAction->setWhatsThis ( QObject::tr( sToolTipText ) );
-  else
-    pcAction->setWhatsThis ( QObject::tr( _parent->getWhatsThis() ) );
-  if( sPixmap )
-    pcAction->setIconSet( Gui::BitmapFactory().pixmap( sPixmap ) );
-  pcAction->setAccel( iAccel );
-
-  return pcAction;
-}
-
-void CommandItem::languageChange()
-{
-  if ( _pcAction )
-  {
-    _pcAction->setText       ( QObject::tr( sMenuText ) );
-    _pcAction->setMenuText   ( QObject::tr( sMenuText ) );
-
-    // use the tooltip, status tip and what's this text of the parent group if not set
-    // 
-    // set tool tip
-    if ( sToolTipText )
-      _pcAction->setToolTip  ( QObject::tr( sToolTipText ) );
-    else
-      _pcAction->setToolTip  ( QObject::tr( _parent->getToolTipText() ) );
-    // set status tip
-    if ( sStatusTip )
-      _pcAction->setStatusTip( QObject::tr( sStatusTip ) );
-    else if ( sToolTipText )
-      _pcAction->setStatusTip( QObject::tr( sToolTipText ) );
-    else
-      _pcAction->setStatusTip( QObject::tr( _parent->getStatusTip() ) );
-    // set what's this
-    if ( sWhatsThis )
-      _pcAction->setWhatsThis( QObject::tr( sWhatsThis ) );
-    else if ( sToolTipText )
-      _pcAction->setWhatsThis( QObject::tr( sToolTipText ) );
-    else
-      _pcAction->setWhatsThis( QObject::tr( _parent->getWhatsThis() ) );
-  }
-}
-
-// -------------------------------------------------------------------------
-
-CommandGroup::CommandGroup(const char* name, bool exclusive, bool dropdown)
-  :Command(name), _exclusive(exclusive), _dropdown(dropdown)
-{
-}
-
-CommandGroup::~CommandGroup()
-{
-  while ( !_aCommands.empty() ) {
-    CommandItem* item = _aCommands.back();
-    delete item;
-    _aCommands.pop_back();
-  }
-}
-
-void CommandGroup::languageChange()
-{
-  Command::languageChange();
-  for ( std::vector<CommandItem*>::iterator it = _aCommands.begin(); it != _aCommands.end(); ++it )
-    (*it)->languageChange();
-}
-
-bool CommandGroup::addTo(QWidget* w)
-{
-  // first create the QActionGroup assign to _pcAction and then create the QActions.
-  if (!_pcAction)
-  {
-    _pcAction = createAction();
-    QActionGroup* pcAction = reinterpret_cast<QActionGroup*>(_pcAction);
-    for ( std::vector<CommandItem*>::iterator it = _aCommands.begin(); it != _aCommands.end(); ++it )
-    {
-      if ( strcmp((*it)->getMenuText(), "Separator") == 0)
-      {
-        pcAction->addSeparator();
-      }
-      else if ( !(*it)->_pcAction )
-      {
-        (*it)->_pcAction = (*it)->createAction();
-      }
-    }
-  }
-
-  return _pcAction->addTo( w );
-}
-
-bool CommandGroup::removeFrom(QWidget* w)
-{
-  if (!_pcAction)
-    return false;
-  return _pcAction->removeFrom( w );
-}
-
-QAction * CommandGroup::createAction(void)
-{
-  QActionGroup *pcAction;
-  pcAction = new ActionGroup( this, getMainWindow(), sName );
-  pcAction->setExclusive( _exclusive );
-  pcAction->setUsesDropDown( _dropdown );
-  pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setMenuText(QObject::tr(sMenuText));
-  pcAction->setToolTip(QObject::tr(sToolTipText));
-  pcAction->setStatusTip(QObject::tr(sStatusTip));
-  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  if(sPixmap)
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setAccel(iAccel);
+    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setShortcut(iAccel);
 
   return pcAction;
 }
@@ -661,18 +490,17 @@ void MacroCommand::activated(int iMsg)
     Application::Instance->activeDocument()->getDocument()->recompute();
 }
 
-QAction * MacroCommand::createAction(void)
+Action * MacroCommand::createAction(void)
 {
-  QAction *pcAction;
-  pcAction = new Action(this,getMainWindow(),sName);
+  Action *pcAction;
+  pcAction = new Action(this,getMainWindow());
   pcAction->setText     ( sMenuText    );
-  pcAction->setMenuText ( sMenuText    );
   pcAction->setToolTip  ( sToolTipText );
   pcAction->setStatusTip( sStatusTip   );
   pcAction->setWhatsThis( sWhatsThis   );
   if( sPixmap )
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setAccel(iAccel);
+    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setShortcut(iAccel);
   return pcAction;
 }
 
@@ -826,7 +654,6 @@ void PythonCommand::languageChange()
   if ( _pcAction )
   {
     _pcAction->setText       ( QObject::tr( getMenuText()    ) );
-    _pcAction->setMenuText   ( QObject::tr( getMenuText()    ) );
     _pcAction->setToolTip    ( QObject::tr( getToolTipText() ) );
     _pcAction->setStatusTip  ( QObject::tr( getStatusTip()   ) );
     _pcAction->setWhatsThis  ( QObject::tr( getWhatsThis()   ) );
@@ -844,19 +671,18 @@ const char* PythonCommand::getHelpUrl(void)
   return PyString_AsString(pcTemp);
 }
 
-QAction * PythonCommand::createAction(void)
+Action * PythonCommand::createAction(void)
 {
-  QAction *pcAction;
+  Action *pcAction;
 
-  pcAction = new Action(this,getMainWindow(),sName);
+  pcAction = new Action(this,getMainWindow());
 //  pcAction->setText(sName);
   pcAction->setText(getResource("MenuText"));
-  pcAction->setMenuText(getResource("MenuText"));
   pcAction->setToolTip(getResource("ToolTip"));
   pcAction->setStatusTip(getResource("StatusTip"));
   pcAction->setWhatsThis(getResource("WhatsThis"));
   if(getResource("Pixmap") != "")
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
+    pcAction->setIcon(Gui::BitmapFactory().pixmap(getResource("Pixmap")));
 
   if ( pcAction->statusTip().isEmpty() )
     pcAction->setStatusTip(getResource("ToolTip"));
@@ -946,15 +772,6 @@ void CommandManager::addTo(const char* Name,QWidget *pcWidget)
   {
     Command* pCom = _sCommands[Name];
     pCom->addTo(pcWidget);
-  }
-}
-
-void CommandManager::removeFrom(const char* Name,QWidget *pcWidget)
-{
-  if (_sCommands.find(Name) != _sCommands.end())
-  {
-    Command* pCom = _sCommands[Name];
-    pCom->removeFrom(pcWidget);
   }
 }
 

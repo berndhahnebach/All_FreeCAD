@@ -24,8 +24,13 @@
 #ifndef PYTHON_CONSOLE_H
 #define PYTHON_CONSOLE_H
 
-#include <qstringlist.h>
-#include <qsyntaxhighlighter.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 #include "PythonEditor.h"
 
@@ -66,21 +71,21 @@ class GuiExport PythonConsole : public TextEdit, public WindowParameter
   Q_OBJECT
 
 public:
-  PythonConsole(QWidget *parent = 0,const char *name = 0);
+  PythonConsole(QWidget *parent = 0);
   ~PythonConsole();
 
   void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
   void doKeyboardAction ( KeyboardAction action );
   void clear ();
   void paste();
-  void pasteSubType( const QCString &subtype );
+  void pasteSubType( const QByteArray &subtype );
   void cut();
   void removeSelectedText ( int selNum = 0 );
 
   bool printCommand( const QString& cmd );
   bool printStatement( const char* cmd );
 
-public slots:
+public Q_SLOTS:
   void onSaveHistoryAs();
   void onInsertFileName();
 
@@ -96,7 +101,7 @@ protected:
   bool isBlockComment( const QString& ) const;
 
   /** Pops up the context menu with some extensions */
-  QPopupMenu * createPopupMenu ( const QPoint & pos );
+  Q3PopupMenu * createPopupMenu ( const QPoint & pos );
 
   PYFUNCDEF_S(sStdoutPy);
   PYFUNCDEF_S(sStderrPy);
@@ -120,6 +125,7 @@ private:
   bool _blockComment;
   ConsoleHistory _history;
   QString _output, _error;
+  struct PythonConsoleP* d;
 
   static PythonConsole* _instance;
   static PyObject* _stdoutPy;
@@ -143,7 +149,7 @@ private:
 class GuiExport PythonConsoleHighlighter : public PythonSyntaxHighlighter
 {
 public:
-  PythonConsoleHighlighter(QTextEdit* );
+  PythonConsoleHighlighter(Q3TextEdit* );
   ~PythonConsoleHighlighter();
 
   int highlightParagraph ( const QString & text, int endStateOfLastPara );

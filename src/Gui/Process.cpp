@@ -32,23 +32,23 @@
 
 #include "../Base/Console.h"
 #include "Process.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 Process::Process( QObject *parent, const char *name)
-: QProcess( parent, name )
+: Q3Process( parent, name )
 {
   init();
 }
 
 Process::Process( const QString& arg0, QObject *parent, const char *name )
-: QProcess( arg0, parent, name )
+: Q3Process( arg0, parent, name )
 {
   init();
 }
 
 Process::Process( const QStringList& args, QObject *parent, const char *name )
-: QProcess( args, parent, name )
+: Q3Process( args, parent, name )
 {
   init();
 }
@@ -165,7 +165,7 @@ bool Process::start( QStringList *e )
   if (env.size() > 0)
     setupEnvironment();
 
-  if ( QProcess::start() )
+  if ( Q3Process::start() )
   {
     Notify( Process::processStarted );
     return true;

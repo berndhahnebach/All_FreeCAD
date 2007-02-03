@@ -30,11 +30,16 @@
 # include <qcursor.h>
 # include <qlineedit.h>
 # include <qvalidator.h>
+//Added by qt3to4:
+#include <QWheelEvent>
+#include <QFocusEvent>
+#include <QMouseEvent>
+#include <QEvent>
 # include <cmath>
 #endif
 
 #include "SpinBox.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 
@@ -171,7 +176,7 @@ void SpinBox::stepDown()
 void SpinBox::mouseMoveEvent ( QMouseEvent* e )
 {
   if (QWidget::mouseGrabber() == 0 && !rect().contains(e->pos()) && d->pressed )
-    grabMouse( QCursor(IbeamCursor) );
+    grabMouse( QCursor(Qt::IBeamCursor) );
 
   if (QWidget::mouseGrabber() == this)
   {
@@ -263,32 +268,33 @@ void SpinBox::wheelEvent ( QWheelEvent* e )
  */
 bool SpinBox::eventFilter ( QObject* o, QEvent* e )
 {
-  if ( o != editor() )
-    return false;
+  // TODO have to be reworked
+  //if ( o != editor() )
+  //  return false;
 
-  // get the editor's mouse events
-  switch (e->type())
-  {
-    // redirect the events to spin box (itself)
-  case QEvent::MouseButtonPress:
-    mousePressEvent ((QMouseEvent*)e);
-    break;
+  //// get the editor's mouse events
+  //switch (e->type())
+  //{
+  //  // redirect the events to spin box (itself)
+  //case QEvent::MouseButtonPress:
+  //  mousePressEvent ((QMouseEvent*)e);
+  //  break;
 
-  case QEvent::MouseButtonRelease:
-    mouseReleaseEvent ((QMouseEvent*)e);
-    break;
+  //case QEvent::MouseButtonRelease:
+  //  mouseReleaseEvent ((QMouseEvent*)e);
+  //  break;
 
-  case QEvent::MouseMove:
-    mouseMoveEvent ((QMouseEvent*)e);
-    break;
+  //case QEvent::MouseMove:
+  //  mouseMoveEvent ((QMouseEvent*)e);
+  //  break;
 
-  case QEvent::FocusOut:
-    focusOutEvent ((QFocusEvent*)e);
-    break;
+  //case QEvent::FocusOut:
+  //  focusOutEvent ((QFocusEvent*)e);
+  //  break;
 
-  default:
-    break;
-  }
+  //default:
+  //  break;
+  //}
 
   return QSpinBox::eventFilter(o, e);
 }
@@ -397,13 +403,13 @@ void UIntSpinBox::setValidator( const QValidator * )
 
 void UIntSpinBox::valueChange()
 {
-  QSpinBox::valueChange();
-  emit valueChanged( d->mapToUInt( QSpinBox::value() ) );
+  //TODO QSpinBox::valueChanged();
+  valueChanged( d->mapToUInt( QSpinBox::value() ) );
 }
 
 void UIntSpinBox::rangeChange()
 {
-  QSpinBox::rangeChange();
+  //TODO QSpinBox::rangeChanged();
   updateValidator();
 }
 
@@ -419,7 +425,7 @@ int UIntSpinBox::mapTextToValue ( bool * ok )
 {
   QString s = text();
   uint newVal = s.toUInt( ok );
-  if ( !(*ok) && !( !prefix() && !suffix() ) ) {
+  if ( !(*ok) && !( prefix().isEmpty() && suffix().isEmpty() ) ) {
     s = cleanText();
     newVal = s.toUInt( ok );
   }
@@ -429,13 +435,14 @@ int UIntSpinBox::mapTextToValue ( bool * ok )
 
 void UIntSpinBox::updateValidator() 
 {
-  if ( !d->mValidator ) 
+  // TODO seams to be no validator animore....
+  /*if ( !d->mValidator ) 
   {
     d->mValidator =  new UnsignedValidator( this->minValue(), this->maxValue(), this, "d->mValidator" );
     QSpinBox::setValidator( d->mValidator );
   } 
   else
-    d->mValidator->setRange( this->minValue(), this->maxValue() );
+    d->mValidator->setRange( this->minValue(), this->maxValue() );*/
 }
 
 // -------------------------------------------------------------
@@ -506,7 +513,7 @@ public:
     QString pref = spinBox->prefix();
     QString suff = spinBox->suffix();
     QString suffStriped = suff.stripWhiteSpace();
-    uint overhead = pref.length() + suff.length();
+    int overhead = pref.length() + suff.length();
     State state = Invalid;
 
     ((QDoubleValidator *)this)->setRange( spinBox->minValue(), spinBox->maxValue(), (int)spinBox->precision() );
@@ -745,7 +752,8 @@ void FloatSpinBox::setMaxValue( double value )
 /** @return the current step size */
 double FloatSpinBox::lineStep() const 
 {
-  return d->mapToDouble( SpinBox::lineStep() );
+  return 0;
+  //return d->mapToDouble( SpinBox::lineStep() );
 }
 
 /** Sets the step size for clicking the up/down buttons to @p step,
@@ -793,8 +801,8 @@ int FloatSpinBox::mapTextToValue( bool * ok )
  */
 void FloatSpinBox::valueChange()
 {
-  SpinBox::valueChange();
-  emit valueChanged( d->mapToDouble( SpinBox::value() ) );
+  //TODO SpinBox::valueChanged();
+  valueChanged( d->mapToDouble( SpinBox::value() ) );
 }
 
 /**
@@ -802,7 +810,8 @@ void FloatSpinBox::valueChange()
  */
 void FloatSpinBox::stepChange ()
 {
-  SpinBox::stepChange();
+  // TODO needs to be done somhowe else
+  //SpinBox::stepChange();
 }
 
 /** Overridden to ignore any setValidator() calls. */
@@ -813,14 +822,15 @@ void FloatSpinBox::setValidator( const QValidator * )
 
 void FloatSpinBox::updateValidator() 
 {
-  if ( !d->mValidator ) 
-  {
-    d->mValidator = new FloatSpinBoxValidator(this, "doubleValidator");
-    d->mValidator->setRange( minValue(), maxValue(), precision() );
-    SpinBox::setValidator( d->mValidator );
-  } 
-  else
-    d->mValidator->setRange( minValue(), maxValue(), precision() );
+  // TODO now validators...
+  //if ( !d->mValidator ) 
+  //{
+  //  d->mValidator =  new QDoubleValidator( minValue(), maxValue(), precision(),
+  //           this, "d->mValidator" );
+  //  SpinBox::setValidator( d->mValidator );
+  //} 
+  //else
+  //  d->mValidator->setRange( minValue(), maxValue(), precision() );
 }
 
 #include "moc_SpinBox.cpp"

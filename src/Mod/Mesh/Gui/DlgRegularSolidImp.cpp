@@ -48,9 +48,10 @@ using namespace MeshGui;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-MeshGui::DlgRegularSolidImp::DlgRegularSolidImp( QWidget* parent, const char* name, bool modal, WFlags fl )
- : DlgRegularSolid( parent, name, modal, fl )
+MeshGui::DlgRegularSolidImp::DlgRegularSolidImp( QWidget* parent, Qt::WFlags fl )
+ : QDialog( parent, fl )
 {
+  this->setupUi(this);
   Gui::Command::doCommand(Gui::Command::Doc, "import Mesh,BuildRegularGeoms");
 }
 
@@ -65,7 +66,7 @@ MeshGui::DlgRegularSolidImp::~DlgRegularSolidImp()
 /**
  * Builds a mesh solid from the currently active solid type.
  */
-void MeshGui::DlgRegularSolidImp::buildSolid()
+void MeshGui::DlgRegularSolidImp::on_createSolidButton_clicked()
 {
   try {
     QString cmd; std::string name;
@@ -161,7 +162,7 @@ SingleDlgRegularSolidImp* SingleDlgRegularSolidImp::instance()
   // not initialized?
   if(!_instance)
   {
-    _instance = new SingleDlgRegularSolidImp( Gui::getMainWindow(), "Regular solid",Qt::WDestructiveClose);
+    _instance = new SingleDlgRegularSolidImp( Gui::getMainWindow(), Qt::WDestructiveClose);
   }
 
   return _instance;
@@ -186,8 +187,8 @@ bool SingleDlgRegularSolidImp::hasInstance()
  *  Constructs a SingleDlgRegularSolidImp which is a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'
  */
-SingleDlgRegularSolidImp::SingleDlgRegularSolidImp( QWidget* parent,  const char* name, WFlags fl )
-    : DlgRegularSolidImp( parent, name, false, fl )
+SingleDlgRegularSolidImp::SingleDlgRegularSolidImp( QWidget* parent, Qt::WFlags fl )
+  : DlgRegularSolidImp( parent, fl )
 {
 }
 
@@ -199,6 +200,4 @@ SingleDlgRegularSolidImp::~SingleDlgRegularSolidImp()
   _instance = 0;
 }
 
-#include "DlgRegularSolid.cpp"
-#include "moc_DlgRegularSolid.cpp"
-
+#include "moc_DlgRegularSolidImp.cpp"

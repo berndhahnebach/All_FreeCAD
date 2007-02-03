@@ -37,6 +37,12 @@ look on how Exceptions affect the integratie of the App::Document.
 Undo Redo handling is one of the major machanism of an document in terms of
 user friendlines and speed (no on will whait for Undo to long).
 
+\section Dependency Graph and dependency handling
+The FreeCAD document handles the dependencies of its DocumentObjects with 
+a adjacence list. This gives the opertunetie to calculate the shortest 
+recompute path. Also enabels more complicated dependencies beond trees.
+
+
 @see App::Application
 @see App::DocumentObject
 @see App::AbstractFeature
@@ -48,6 +54,13 @@ user friendlines and speed (no on will whait for Undo to long).
 
 #ifndef _PreComp_
 #endif
+
+#include <boost/graph/topological_sort.hpp>
+#include <boost/graph/depth_first_search.hpp>
+#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/graph/visitors.hpp>
+#include <boost/graph/graphviz.hpp>
+#include <boost/bind.hpp>
 
 
 #include "Document.h"
@@ -79,13 +92,16 @@ using Base::streq;
 using Base::Writer;
 using namespace App;
 using namespace std;
-
+using namespace boost;
 using namespace zipios ;
 
 
 #ifdef MemDebugOn
 # define new DEBUG_CLIENTBLOCK
 #endif
+
+
+using namespace zipios ;
 
 
 PROPERTY_SOURCE(App::Document, App::PropertyContainer)
@@ -372,6 +388,7 @@ Document::Document(void)
   ADD_PROPERTY(LastModifiedDate,("Unknown"));
   ADD_PROPERTY(Company,(""));
   ADD_PROPERTY(Comment,(""));
+
 }
 
 Document::~Document()
@@ -713,6 +730,7 @@ void Document::update(DocumentObject* obj)
   DocChange.Why = DocChanges::Recompute;
   DocChange.UpdatedObjects.insert(obj);
   Notify(DocChange);
+  signalChangedObject(*obj);
 }
 
 void Document::update(const char *name)
@@ -784,6 +802,14 @@ void Document::recompute()
     DocChange.UpdatedObjects.erase(*it);
 
   Notify(DocChange);
+
+  // signal new objects
+  for(std::vector<App::DocumentObject*>::iterator it = DocChange.NewObjects.begin();it!=DocChange.NewObjects.end();++it)
+      signalNewObject(**it);
+
+  // signal updated objects
+  for(std::set<App::DocumentObject*>::iterator it = DocChange.UpdatedObjects.begin();it!=DocChange.UpdatedObjects.end();++it)
+      signalChangedObject(**it);
 
   for(l = DocChange.ErrorFeatures.begin();l!=DocChange.ErrorFeatures.end();++l)
     Base::Console().Log("Error in Feature \"%s\": %s\n",(*l)->name.getValue(),(*l)->getErrorString());
@@ -900,8 +926,12 @@ DocumentObject *Document::addObject(const char* sType, const char* pObjectName)
 
 		pActiveObject = pcObject;
 
+    // insert in the name map
     ObjectMap[ObjectName] = pcObject;
+    // insert in the vector
     ObjectArray.push_back(pcObject);
+    // insert in the adjacence list
+    add_vertex(pcObject,_DepList);
 
     pcObject->name.setValue( ObjectName );
 	
@@ -947,6 +977,7 @@ void Document::remObject(const char* sName)
     pActiveObject = 0;
 
   Notify(DocChange);
+  signalDeletedObject(*(pos->second));
 
   // Before deleting we must nullify all dependant objects
   for ( std::map<std::string,DocumentObject*>::iterator it = ObjectMap.begin(); it != ObjectMap.end(); ++it )

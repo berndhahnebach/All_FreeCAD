@@ -23,15 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qcursor.h>
-# include <qmessagebox.h>
-# include <qpopupmenu.h>
-# include <qregexp.h>
-# include <qwhatsthis.h>
-#endif
-
 #include "CommandLine.h"
 #include "Application.h"
 #include "Action.h"
@@ -39,7 +30,7 @@
 #include "../Base/Interpreter.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
-#define new DEBUG_CLIENTBLOCK
+
 using Base::Interpreter;
 using namespace Gui;
 
@@ -86,7 +77,7 @@ CommandLineBase::CommandLineBase(void)
 
   connect(lineEdit(), SIGNAL(returnPressed ()), this, SLOT(onLaunchCommand()));
 
-  QWhatsThis::add(this, tr("Simple Python console"));
+  Q3WhatsThis::add(this, tr("Simple Python console"));
 
   loadHistory();
   getWindowParameter()->Attach( this );
@@ -263,11 +254,11 @@ void CommandLineBase::keyPressEvent ( QKeyEvent * e )
 {
   int c = currentItem();
 
-  if ( e->key() == Key_Up && currentText().isEmpty() && count() > 0 )
+  if ( e->key() == Qt::Key_Up && currentText().isEmpty() && count() > 0 )
   {
     setCurrentItem( c );
   }
-  else if ( e->key() == Key_Down && ++c == count() )
+  else if ( e->key() == Qt::Key_Down && ++c == count() )
   {
     clearEdit();
   }
@@ -283,7 +274,7 @@ void CommandLineBase::keyPressEvent ( QKeyEvent * e )
 void CommandLineBase::contextMenuEvent ( QContextMenuEvent * e )
 {
   // context menu
-  QPopupMenu popup;
+  Q3PopupMenu popup;
   int iOpen  = popup.insertItem (tr( "Open Console" ), this,  SLOT(onShowHistory ())); 
   int iClear = popup.insertItem (tr( "Clear Console" ), this, SLOT(onClearHistory())); 
   popup.setItemEnabled(iOpen,  count() > 0);

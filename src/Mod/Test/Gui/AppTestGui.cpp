@@ -28,8 +28,8 @@
 
 #include "UnitTestPy.h"
 #include "UnitTestImp.h"
-#include "Test_de.h"
-#include <Gui/Language/LanguageFactory.h>
+#include <Gui/Language/Translator.h>
+#include "qrc_translation.cpp"
 
 static PyObject* addTest(PyObject *self, PyObject *args)          
 {
@@ -76,8 +76,9 @@ void AppTestGuiExport initQtUnitGui() {
   
   PyModule_AddObject(pyModule, "UnitTest", pyDlgType);
 
-  // Language
-  new Gui::LanguageProducer("Deutsch", Test_de_h_data, Test_de_h_len);
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(translation);
+  Gui::Translator::instance()->reinstallLanguage();
   return;
 }
 

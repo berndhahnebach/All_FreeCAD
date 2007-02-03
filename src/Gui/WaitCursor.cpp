@@ -32,7 +32,7 @@
 #endif
 
 #include "WaitCursor.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 namespace Gui {

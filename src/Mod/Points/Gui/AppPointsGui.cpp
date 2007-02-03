@@ -28,11 +28,11 @@
 #include <Base/Console.h>
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
-#include <Gui/Language/LanguageFactory.h>
+#include <Gui/Language/Translator.h>
 
 #include "ViewProvider.h"
 #include "Workbench.h"
-#include "Points_de.h"
+#include "qrc_Points.cpp"
 
 // use a different name to CreateCommand()
 void CreatePointsCommands(void);
@@ -63,8 +63,9 @@ void PointsGuiExport initPointsGui() {
   PointsGui::ViewProviderPoints::init();
   PointsGui::Workbench         ::init();
 
-  // resources
-  new Gui::LanguageProducer("Deutsch", Points_de_h_data, Points_de_h_len);
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(Points);
+  Gui::Translator::instance()->reinstallLanguage();
 
   return;
 }

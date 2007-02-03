@@ -54,24 +54,13 @@
 #endif
 
 // Qt Toolkit
-#include <qaction.h>
-#include <qapplication.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qcursor.h>
-#include <qfiledialog.h>
-#include <qinputdialog.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qlistview.h>
-#include <qmainwindow.h>
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qpushbutton.h>
-#include <qscrollview.h>
-#include <qthread.h>
-#include <qvariant.h>
-#include <qworkspace.h>
+#ifndef __Qt4All__
+# include <Gui/Qt4All.h>
+#endif
+
+#ifndef __Qt3All__
+# include <Gui/Qt3All.h>
+#endif
 
 // Open Inventor
 #include <GL/gl.h>

@@ -21,10 +21,11 @@
  ***************************************************************************/
 
 
-#ifndef DLGTOOLBARS_IMP_H
-#define DLGTOOLBARS_IMP_H
+#ifndef GUI_DIALOG_DLGTOOLBARS_IMP_H
+#define GUI_DIALOG_DLGTOOLBARS_IMP_H
 
-#include "DlgToolbars.h"
+#include "ui_DlgToolbars.h"
+#include "PropertyPage.h"
 
 namespace Gui {
 class Command;
@@ -41,31 +42,29 @@ namespace Dialog {
  * 
  * \author Werner Mayer
  */
-class DlgCustomToolbars : public DlgCustomToolbarsBase
+class DlgCustomToolbars : public CustomizeActionPage, public Ui_DlgCustomToolbars
 { 
   Q_OBJECT
 
 protected:
-  DlgCustomToolbars( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgCustomToolbars( QWidget* parent = 0 );
   virtual ~DlgCustomToolbars();
-  void reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE );
 
 protected:
   virtual void refreshActionList();
-  virtual void cancel();
   virtual void refreshToolBarList();
 
-protected slots:
-  void onItemActivated(const QString &);
-  void onDoubleClickedAction(QListViewItem*);
-  void onAddAction();
-  void onRemoveAction();
-  void onMoveUpAction();
-  void onMoveDownAction();
-  void onNewActionChanged( QListViewItem *i );
-  void onAllActionsChanged( QListViewItem *i );
-  void onCreateToolbar();
-  void onDeleteToolbar();
+protected Q_SLOTS:
+  void on_toolbarsCombobox_activated(const QString &);
+  void on_availableActions_doubleClicked(Q3ListViewItem*);
+  void on_moveActionRightButton_clicked();
+  void on_moveActionLeftButton_clicked();
+  void on_moveActionUpButton_clicked();
+  void on_moveActionDownButton_clicked();
+  void on_toolbarActions_clicked( Q3ListViewItem *i );
+  void on_availableActions_clicked( Q3ListViewItem *i );
+  void on_createToolbarButton_clicked();
+  void on_deleteToolbarButton_clicked();
   void onAddMacroAction(const QString&);
   void onRemoveMacroAction(const QString&);
 
@@ -87,14 +86,11 @@ class DlgCustomToolbarsImp : public DlgCustomToolbars
   Q_OBJECT
 
 public:
-  DlgCustomToolbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgCustomToolbarsImp( QWidget* parent = 0 );
   ~DlgCustomToolbarsImp();
-
-protected:
-  void cancel();
 };
 
 } // namespace Dialog
 } // namespace Gui
 
-#endif
+#endif // GUI_DIALOG_DLGTOOLBARS_IMP_H

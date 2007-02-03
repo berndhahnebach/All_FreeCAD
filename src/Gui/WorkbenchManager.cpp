@@ -23,9 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qstringlist.h>
-#endif
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include "WorkbenchManager.h"
@@ -33,8 +30,8 @@
 #include "MenuManager.h"
 #include "ToolBarManager.h"
 #include "CommandBarManager.h"
+#include "DockWindow.h"
 
-#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 WorkbenchManager* WorkbenchManager::_instance = 0;
@@ -66,6 +63,7 @@ WorkbenchManager::~WorkbenchManager()
   MenuManager::destruct();
   ToolBarManager::destruct();
   CommandBarManager::destruct();
+  DockWindowManager::destruct();
 }
 
 Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QString& className )
@@ -89,7 +87,7 @@ Workbench* WorkbenchManager::createWorkbench ( const QString& name, const QStrin
       wb->setName( name );
       _workbenches[ name ] = wb;
     }else
-      Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create Workbench instatnce with type: %s\n",className.latin1());
+      Base::Console().Log("WorkbenchManager::createWorkbench(): Can not create Workbench instance with type: %s\n",className.latin1());
   }
   
   return wb;

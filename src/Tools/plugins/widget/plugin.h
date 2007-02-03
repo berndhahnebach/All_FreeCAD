@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,19 +21,19 @@
  ***************************************************************************/
 
 
-#include <qwidgetplugin.h>
+#include <QtDesigner/QDesignerContainerExtension>
+#include <QtDesigner/QDesignerCustomWidgetCollectionInterface>
 
-class CustomWidgetPlugin : public QWidgetPlugin
+#include <QtCore/qplugin.h>
+#include <QtGui/QIcon>
+
+class QDesignerFormEditorInterface;
+
+class CustomWidgetPlugin : public QObject, public QDesignerCustomWidgetCollectionInterface
 {
+    Q_OBJECT
+    Q_INTERFACES(QDesignerCustomWidgetCollectionInterface)
 public:
-    CustomWidgetPlugin();
-
-    QStringList keys() const;
-    QWidget* create( const QString &classname, QWidget* parent = 0, const char* name = 0 );
-    QString group( const QString& ) const;
-    QIconSet iconSet( const QString& ) const;
-    QString includeFile( const QString& ) const;
-    QString toolTip( const QString& ) const;
-    QString whatsThis( const QString& ) const;
-    bool isContainer( const QString& ) const;
+    CustomWidgetPlugin(QObject *parent = 0);
+    QList<QDesignerCustomWidgetInterface *> customWidgets () const;
 };

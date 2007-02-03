@@ -28,7 +28,7 @@
 # include <qlineedit.h>
 # include <qvalidator.h>
 # include <qinputdialog.h>
-# include <qpopupmenu.h>
+# include <q3popupmenu.h>
 # include <qcursor.h>
 #endif
 
@@ -36,7 +36,7 @@
 
 #include "propertyeditorinput.h"
 #include "../SpinBox.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::PropertyEditor;
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::TextEditorItem, Gui::PropertyEditor::EditableItem);
@@ -45,7 +45,7 @@ TextEditorItem::TextEditorItem()
 {
 }
 
-TextEditorItem::TextEditorItem( QListView* lv, const QString& text, const QVariant& value )
+TextEditorItem::TextEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setText( 0, text );
@@ -123,7 +123,7 @@ IntEditorItem::IntEditorItem()
 {
 }
 
-IntEditorItem::IntEditorItem( QListView* lv, const QString& text, const QVariant& value )
+IntEditorItem::IntEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   : EditableItem( lv, value )
 {
   setText( 0, text );
@@ -218,7 +218,7 @@ FloatEditorItem::FloatEditorItem()
 {
 }
 
-FloatEditorItem::FloatEditorItem( QListView* lv, const QString& text, const QVariant& value )
+FloatEditorItem::FloatEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   : EditableItem( lv, value )
 {
   setText( 0, text );

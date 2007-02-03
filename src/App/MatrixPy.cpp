@@ -38,7 +38,7 @@ using Base::Console;
 #include "VectorPy.h"
 using Base::Matrix4D;
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace App;
 
 

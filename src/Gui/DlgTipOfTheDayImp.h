@@ -21,13 +21,19 @@
  ***************************************************************************/
 
 
-#ifndef DLG_TIP_OF_THE_DAY_IMP_H__
-#define DLG_TIP_OF_THE_DAY_IMP_H__
+#ifndef GUI_DIALOG_DLGTIPOFTHEDAY_IMP_H
+#define GUI_DIALOG_DLGTIPOFTHEDAY_IMP_H
 
-#include "DlgTipOfTheDay.h"
+#include "ui_DlgTipOfTheDay.h"
 #include "Window.h"
 
-#include <qstringlist.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 namespace Dialog {
@@ -49,14 +55,18 @@ namespace Dialog {
  *
  * \author Werner Mayer
  */
-class DlgTipOfTheDayImp : public DlgTipOfTheDayBase, public WindowParameter
+class DlgTipOfTheDayImp : public QDialog, public Ui_DlgTipOfTheDay, public WindowParameter
 {
+  Q_OBJECT
+
 public:
-  DlgTipOfTheDayImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgTipOfTheDayImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgTipOfTheDayImp();
 
   void reload();
-  void onNext();
+
+public Q_SLOTS:
+  void on_buttonNextTip_clicked();
 
 private:
   QStringList _lTips;
@@ -66,4 +76,4 @@ private:
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DLG_TIP_OF_THE_DAY_IMP_H__
+#endif // GUI_DIALOG_DLGTIPOFTHEDAY_IMP_H

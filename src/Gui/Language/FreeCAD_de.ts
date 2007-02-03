@@ -1,20 +1,6 @@
 ﻿<!DOCTYPE TS><TS>
 <defaultcodec>iso8859-1</defaultcodec>
 <context>
-    <name>DlgSplasherBase</name>
-    <message>
-        <source>FreeCAD Startup</source>
-        <translation>FreeCAD Start</translation>
-    </message>
-</context>
-<context>
-    <name>Gui::AboutDialog</name>
-    <message>
-        <source>OK</source>
-        <translation>OK</translation>
-    </message>
-</context>
-<context>
     <name>Gui::AccelLineEdit</name>
     <message>
         <source>none</source>
@@ -79,24 +65,59 @@
 <context>
     <name>Gui::CustomToolBar</name>
     <message>
-        <source>Macro recording</source>
-        <translation>Makroaufzeichnung</translation>
-    </message>
-    <message>
         <source>Standard views</source>
         <translation>Standardansichten</translation>
-    </message>
-    <message>
-        <source>file operations</source>
-        <translation>Dateiwerkzeuge</translation>
     </message>
     <message>
         <source>Special Ops</source>
         <translation>Spezialfunktionen</translation>
     </message>
+    <message>
+        <source>File</source>
+        <translation>Datei</translation>
+    </message>
+    <message>
+        <source>Macro</source>
+        <translation>Makro</translation>
+    </message>
+    <message>
+        <source>View</source>
+        <translation>Ansicht</translation>
+    </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgActivateWindowBase</name>
+    <name>Gui::Dialog::AboutApplication</name>
+    <message>
+        <source>About</source>
+        <translation>Über</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt; Unknown Application (c) Unknown Author&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline; color:#0000ff;&quot;&gt; Unknown Application (c) Unknown Author&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Revision date</source>
+        <translation>Erstelldatum</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot; white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Unknown&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Revision number</source>
+        <translation>Revisionsnummer</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Version</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgActivateWindow</name>
     <message>
         <source>Choose Window</source>
         <translation>Fenster auswählen</translation>
@@ -138,7 +159,22 @@
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgCustomActionsBase</name>
+    <name>Gui::Dialog::DlgChooseIcon</name>
+    <message>
+        <source>Choose Icon</source>
+        <translation>Symbol auswählen</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>OK</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbrechen</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgCustomActions</name>
     <message>
         <source>Setup Custom Macros</source>
         <translation>Benutzdefinierte Makros</translation>
@@ -172,10 +208,6 @@
         <translation>Symbol</translation>
     </message>
     <message>
-        <source>Name:</source>
-        <translation>Name:</translation>
-    </message>
-    <message>
         <source>Macro:</source>
         <translation>Makro:</translation>
     </message>
@@ -192,12 +224,8 @@
         <translation>Entfernen</translation>
     </message>
     <message>
-        <source>Edit</source>
-        <translation>Bearbeiten</translation>
-    </message>
-    <message>
-        <source>Custom Macros</source>
-        <translation>Benutzerdefinierte Makros</translation>
+        <source>Replace</source>
+        <translation>Ersetzen</translation>
     </message>
 </context>
 <context>
@@ -209,14 +237,6 @@
     <message>
         <source>No macros found.</source>
         <translation>Keine Makros gefunden.</translation>
-    </message>
-    <message>
-        <source>Empty name</source>
-        <translation>Leeres Namensfeld</translation>
-    </message>
-    <message>
-        <source>Please specify an action name first.</source>
-        <translation>Geben Sie bitte einen Namen an.</translation>
     </message>
     <message>
         <source>Empty macro</source>
@@ -239,24 +259,12 @@
         <translation>Das Makro &apos;%1&apos; konnte nicht gefunden werden.</translation>
     </message>
     <message>
-        <source>Choose pixmap</source>
-        <translation>Symbol auswählen</translation>
+        <source>No item selected</source>
+        <translation>Kein Element ausgewählt</translation>
     </message>
     <message>
-        <source>Add</source>
-        <translation>Hinzufügen</translation>
-    </message>
-    <message>
-        <source>Replace</source>
-        <translation>Ersetzen</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation>&amp;OK</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation>A&amp;bbrechen</translation>
+        <source>Please select a macro item first.</source>
+        <translation>Wählen Sie bitte vorher ein Makroelement aus.</translation>
     </message>
 </context>
 <context>
@@ -267,7 +275,7 @@
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgCustomCommandsBase</name>
+    <name>Gui::Dialog::DlgCustomCommands</name>
     <message>
         <source>Commands</source>
         <translation>Befehle</translation>
@@ -278,7 +286,7 @@
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgCustomKeyboardBase</name>
+    <name>Gui::Dialog::DlgCustomKeyboard</name>
     <message>
         <source>Keyboard</source>
         <translation>Tastatur</translation>
@@ -313,7 +321,7 @@
     </message>
     <message>
         <source>&amp;Category:</source>
-        <translation>&amp;Kategorie</translation>
+        <translation>&amp;Kategorie:</translation>
     </message>
     <message>
         <source>C&amp;ommands:</source>
@@ -325,7 +333,7 @@
     </message>
     <message>
         <source>Press &amp;new shortcut:</source>
-        <translation>&amp;Neue Tastenkombination drücken</translation>
+        <translation>&amp;Neue Tastenkombination drücken:</translation>
     </message>
     <message>
         <source>Currently assigned to:</source>
@@ -372,24 +380,21 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <source>Delete selected bars</source>
         <translation>Ausgewählte Symbolleisten entfernen</translation>
     </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgCustomToolbarsBase</name>
     <message>
-        <source>Create bar</source>
+        <source>Toolbars</source>
+        <translation>Symbolleisten</translation>
+    </message>
+    <message>
+        <source>Setup Toolbar</source>
+        <translation>Symbolleiste einrichten</translation>
+    </message>
+    <message>
+        <source>Create</source>
         <translation>Erstellen</translation>
     </message>
     <message>
-        <source>Delete bar</source>
+        <source>Delete</source>
         <translation>Löschen</translation>
-    </message>
-    <message>
-        <source>Current commands</source>
-        <translation>Verwendete Befehle</translation>
-    </message>
-    <message>
-        <source>Available commands</source>
-        <translation>Verfügbare Befehle</translation>
     </message>
     <message>
         <source>Move right</source>
@@ -424,12 +429,12 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
         <translation>&lt;b&gt;Ausgewähltes Element nach unten verschieben.&lt;/b&gt;&lt;p&gt;Das Element wird innerhalb der Hierarchiestufe verschoben.&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>Toolbars</source>
-        <translation>Symbolleisten</translation>
+        <source>Available commands</source>
+        <translation>Verfügbare Befehle</translation>
     </message>
     <message>
-        <source>Setup Toolbar</source>
-        <translation>Symbolleiste einrichten</translation>
+        <source>Current commands</source>
+        <translation>Verwendete Befehle</translation>
     </message>
 </context>
 <context>
@@ -495,26 +500,7 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgDocTemplates</name>
-    <message>
-        <source>Document templates</source>
-        <translation>Dokumententypen</translation>
-    </message>
-    <message>
-        <source>Other ...</source>
-        <translation>Andere...</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation>Abbrechen</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation>OK</translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgEditorSettingsBase</name>
+    <name>Gui::Dialog::DlgEditorSettings</name>
     <message>
         <source>Editor</source>
         <translation>Editor</translation>
@@ -546,58 +532,6 @@ Wählen Sie bitte eine andere Tastenkombination.</translation>
     <message>
         <source>Colors</source>
         <translation>Farben</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation>Farbe:</translation>
-    </message>
-    <message>
-        <source>Text</source>
-        <translation>Text</translation>
-    </message>
-    <message>
-        <source>Bookmark</source>
-        <translation>Lesezeichen</translation>
-    </message>
-    <message>
-        <source>Breakpoint</source>
-        <translation>Haltepunkt</translation>
-    </message>
-    <message>
-        <source>Keyword</source>
-        <translation>Schlüsselwort</translation>
-    </message>
-    <message>
-        <source>Comment</source>
-        <translation>Kommentar</translation>
-    </message>
-    <message>
-        <source>Block comment</source>
-        <translation>Blockkommentar</translation>
-    </message>
-    <message>
-        <source>Number</source>
-        <translation>Ziffer</translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation>Zeichenkette</translation>
-    </message>
-    <message>
-        <source>Character</source>
-        <translation>Zeichen</translation>
-    </message>
-    <message>
-        <source>Class name</source>
-        <translation>Klassenname</translation>
-    </message>
-    <message>
-        <source>Define name</source>
-        <translation>Define-Name</translation>
-    </message>
-    <message>
-        <source>Operator</source>
-        <translation>Operator</translation>
     </message>
     <message>
         <source>5</source>
@@ -679,24 +613,17 @@ def foo(begin, end):
 
 foo(0, 20)
 </source>
-        <translation># Short Python sample(new line)
-import sys(new line)
-def foo(begin, end):(new line)
-(tab)i=begin(new line)
-(tab)while (i&lt;end):(new line)
-(tab)(tab)print i(new line)
-(tab)(tab)i=i+1(new line)
-(tab)(tab)print &quot;Text&quot;(new line)
-(new line)
-foo(0, 20)(new line)</translation>
-    </message>
-    <message>
-        <source>Python output</source>
-        <translation>Pythonausgabe</translation>
-    </message>
-    <message>
-        <source>Python error</source>
-        <translation>Pythonfehler</translation>
+        <translation># Short Python sample
+import sys
+def foo(begin, end):
+<byte value="x9"/>i=begin
+<byte value="x9"/>while (i&lt;end):
+<byte value="x9"/><byte value="x9"/>print i
+<byte value="x9"/><byte value="x9"/>i=i+1
+<byte value="x9"/><byte value="x9"/>print &quot;Text&quot;
+
+foo(0, 20)
+</translation>
     </message>
     <message>
         <source>Tabs</source>
@@ -720,7 +647,7 @@ foo(0, 20)(new line)</translation>
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgGeneralBase</name>
+    <name>Gui::Dialog::DlgGeneral</name>
     <message>
         <source>General</source>
         <translation>Allgemein</translation>
@@ -734,28 +661,12 @@ foo(0, 20)(new line)</translation>
         <translation>Anzahl der zuletzt benutzten Dateien</translation>
     </message>
     <message>
-        <source>Command line</source>
-        <translation>Kommandozeile</translation>
-    </message>
-    <message>
-        <source>Show command line</source>
-        <translation>Kommandozeile anzeigen</translation>
-    </message>
-    <message>
-        <source>Size of history</source>
-        <translation>Puffergröße Verlauf</translation>
-    </message>
-    <message>
         <source>Drag and drop</source>
         <translation>Drag and drop</translation>
     </message>
     <message>
         <source>Main window</source>
         <translation>Hauptfenster</translation>
-    </message>
-    <message>
-        <source>Use big pixmaps</source>
-        <translation>Große Symbole verwenden</translation>
     </message>
     <message>
         <source>Window style:</source>
@@ -808,10 +719,6 @@ foo(0, 20)(new line)</translation>
         <translation>Erstellen</translation>
     </message>
     <message>
-        <source>Delete macro</source>
-        <translation>Makro löschen</translation>
-    </message>
-    <message>
         <source>Execute</source>
         <translation>Ausführen</translation>
     </message>
@@ -820,32 +727,20 @@ foo(0, 20)(new line)</translation>
         <translation>Bearbeiten</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Abbrechen</translation>
-    </message>
-    <message>
         <source>Macro name:</source>
         <translation>Makroname:</translation>
-    </message>
-    <message>
-        <source>Macros</source>
-        <translation>Makros</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation>Typ</translation>
     </message>
     <message>
         <source>Macro destination:</source>
         <translation>Makro-Zielpfad:</translation>
     </message>
     <message>
-        <source>...</source>
-        <translation>...</translation>
+        <source>Close</source>
+        <translation>Schließen</translation>
     </message>
     <message>
-        <source>Done</source>
-        <translation>Fertig</translation>
+        <source>Delete</source>
+        <translation>Löschen</translation>
     </message>
 </context>
 <context>
@@ -886,22 +781,6 @@ Diese Datei ist bereits vorhanden.</translation>
     <message>
         <source>Macro name:</source>
         <translation>Makroname:</translation>
-    </message>
-    <message>
-        <source>Tie macro:</source>
-        <translation>Makro Menü zuweisen:</translation>
-    </message>
-    <message>
-        <source>Tool bar</source>
-        <translation>Symbolleiste</translation>
-    </message>
-    <message>
-        <source>Command bar</source>
-        <translation>Befehlsleiste</translation>
-    </message>
-    <message>
-        <source>Keyboard</source>
-        <translation>Tastatur</translation>
     </message>
     <message>
         <source>Start</source>
@@ -975,7 +854,7 @@ Diese Datei ist bereits vorhanden.</translation>
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgOnlineHelpBase</name>
+    <name>Gui::Dialog::DlgOnlineHelp</name>
     <message>
         <source>http://free-cad.sourceforge.net/index.html</source>
         <translation>http://free-cad.sourceforge.net/index.html</translation>
@@ -1024,15 +903,20 @@ Diese Datei ist bereits vorhanden.</translation>
 <context>
     <name>Gui::Dialog::DlgOnlineHelpImp</name>
     <message>
-        <source>Missing permission</source>
-        <translation>Fehlende Berechtigung</translation>
+        <source>Access denied</source>
+        <translation>Zugriff verweigert</translation>
     </message>
     <message>
-        <source>You don&apos;t have write permission to &apos;%1&apos;
+        <source>Access denied to &apos;%1&apos;
 
 Specify another directory, please.</source>
-        <translation>Sie haben keine Schreibrechte für &apos;%1&apos;. 
-Wählen Sie bitte ein anderes Verzeichnis.</translation>
+        <translation>Zugriff auf &apos;%1&apos; verweigert
+
+Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
+    </message>
+    <message>
+        <source>Html files (*.html *.htm)</source>
+        <translation>Html-Dateien (*.html *.htm)</translation>
     </message>
 </context>
 <context>
@@ -1050,16 +934,8 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
         <translation>Alt+S</translation>
     </message>
     <message>
-        <source>&amp;Save to disk</source>
-        <translation>&amp;Auf Platte speichern</translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <translation>Alt+A</translation>
-    </message>
-    <message>
-        <source>Saves user and system parameter immediately to disk</source>
-        <translation>Speichert Benutzer- und Systemeinstellungen sofort auf die Festplatte</translation>
+        <source>Save to disk</source>
+        <translation>Speichern</translation>
     </message>
 </context>
 <context>
@@ -1171,7 +1047,7 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgReportViewBase</name>
+    <name>Gui::Dialog::DlgReportView</name>
     <message>
         <source>Output window</source>
         <translation>Ausgabefenster</translation>
@@ -1289,10 +1165,34 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgSettingsColorGradientBase</name>
+    <name>Gui::Dialog::DlgSettingsColorGradient</name>
     <message>
         <source>Colorgradient settings</source>
         <translation>Einstellungen für Farbverlauf</translation>
+    </message>
+    <message>
+        <source>Color model</source>
+        <translation>Farbmodell</translation>
+    </message>
+    <message>
+        <source>&amp;Gradient:</source>
+        <translation>&amp;Verlauf:</translation>
+    </message>
+    <message>
+        <source>red-yellow-green-cyan-blue</source>
+        <translation>Rot-Gelb-Grün-Türkis-Blau</translation>
+    </message>
+    <message>
+        <source>blue-cyan-green-yellow-red</source>
+        <translation>Blau-Türkis-Grün-Gelb-Rot</translation>
+    </message>
+    <message>
+        <source>white-black</source>
+        <translation>Weiß-Schwarz</translation>
+    </message>
+    <message>
+        <source>black-white</source>
+        <translation>Schwarz-Weiß</translation>
     </message>
     <message>
         <source>Visibility</source>
@@ -1319,14 +1219,6 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
         <translation>Stil</translation>
     </message>
     <message>
-        <source>&amp;Flow</source>
-        <translation>&amp;Fließend</translation>
-    </message>
-    <message>
-        <source>Alt+F</source>
-        <translation>Alt+F</translation>
-    </message>
-    <message>
         <source>&amp;Zero</source>
         <translation>N&amp;ull-basiert</translation>
     </message>
@@ -1335,28 +1227,12 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
         <translation>Alt+U</translation>
     </message>
     <message>
-        <source>Color model</source>
-        <translation>Farbmodell</translation>
+        <source>&amp;Flow</source>
+        <translation>&amp;Fließend</translation>
     </message>
     <message>
-        <source>&amp;Gradient:</source>
-        <translation>&amp;Verlauf:</translation>
-    </message>
-    <message>
-        <source>red-yellow-green-cyan-blue</source>
-        <translation>Rot-Gelb-Grün-Türkis-Blau</translation>
-    </message>
-    <message>
-        <source>blue-cyan-green-yellow-red</source>
-        <translation>Blau-Türkis-Grün-Gelb-Rot</translation>
-    </message>
-    <message>
-        <source>white-black</source>
-        <translation>Weiß-Schwarz</translation>
-    </message>
-    <message>
-        <source>black-white</source>
-        <translation>Schwarz-Weiß</translation>
+        <source>Alt+F</source>
+        <translation>Alt+F</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -1437,6 +1313,65 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
 (0 = none, 9 = highest, 3 = default)</source>
         <translation>Kompressionsstufe beim Speichern des Dokuments
 (0 = keine, 9 = höchste, 3 = standardmäßige Kompression)</translation>
+    </message>
+</context>
+<context>
+    <name>Gui::Dialog::DlgSettingsEditorImp</name>
+    <message>
+        <source>Text</source>
+        <translation>Text</translation>
+    </message>
+    <message>
+        <source>Bookmark</source>
+        <translation>Lesezeichen</translation>
+    </message>
+    <message>
+        <source>Breakpoint</source>
+        <translation>Haltepunkt</translation>
+    </message>
+    <message>
+        <source>Keyword</source>
+        <translation>Schlüsselwort</translation>
+    </message>
+    <message>
+        <source>Comment</source>
+        <translation>Kommentar</translation>
+    </message>
+    <message>
+        <source>Block comment</source>
+        <translation>Blockkommentar</translation>
+    </message>
+    <message>
+        <source>Number</source>
+        <translation>Ziffer</translation>
+    </message>
+    <message>
+        <source>String</source>
+        <translation>Zeichenkette</translation>
+    </message>
+    <message>
+        <source>Character</source>
+        <translation>Zeichen</translation>
+    </message>
+    <message>
+        <source>Class name</source>
+        <translation>Klassenname</translation>
+    </message>
+    <message>
+        <source>Define name</source>
+        <translation>Define-Name</translation>
+    </message>
+    <message>
+        <source>Operator</source>
+        <translation>Operator</translation>
+    </message>
+    <message>
+        <source>Python output</source>
+        <translation>Pythonausgabe</translation>
+    </message>
+    <message>
+        <source>Python error</source>
+        <translation>Pythonfehler</translation>
     </message>
 </context>
 <context>
@@ -1578,7 +1513,7 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     </message>
 </context>
 <context>
-    <name>Gui::Dialog::DlgTipOfTheDayBase</name>
+    <name>Gui::Dialog::DlgTipOfTheDay</name>
     <message>
         <source>Tip of the day</source>
         <translation>Tipp des Tages</translation>
@@ -1615,10 +1550,6 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
 <context>
     <name>Gui::Dialog::ParameterGroup</name>
     <message>
-        <source>Expand</source>
-        <translation>Erweitern</translation>
-    </message>
-    <message>
         <source>Add sub-group</source>
         <translation>Gruppe hinzufügen</translation>
     </message>
@@ -1637,10 +1568,6 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     <message>
         <source>Import parameter</source>
         <translation>Parameter importieren</translation>
-    </message>
-    <message>
-        <source>Collapse</source>
-        <translation>Reduzieren</translation>
     </message>
     <message>
         <source>Do really want to remove this parameter group?</source>
@@ -1678,13 +1605,17 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
         <source>Reading of &apos;%1&apos; failed.</source>
         <translation>Lesen von &apos;%1&apos; fehlgeschlagen.</translation>
     </message>
+    <message>
+        <source>Expand</source>
+        <translation>Erweitern</translation>
+    </message>
+    <message>
+        <source>Collapse</source>
+        <translation>Reduzieren</translation>
+    </message>
 </context>
 <context>
     <name>Gui::Dialog::ParameterValue</name>
-    <message>
-        <source>Change value</source>
-        <translation>Wert ändern</translation>
-    </message>
     <message>
         <source>Remove key</source>
         <translation>Schlüssel entfernen</translation>
@@ -1720,6 +1651,10 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
     <message>
         <source>New unsigned item</source>
         <translation>Neue positive Ganzzahl</translation>
+    </message>
+    <message>
+        <source>Change value</source>
+        <translation>Wert ändern</translation>
     </message>
 </context>
 <context>
@@ -1790,16 +1725,8 @@ Wählen Sie bitte ein anderes Verzeichnis.</translation>
 <context>
     <name>Gui::DockWnd::HelpView</name>
     <message>
-        <source>Backward</source>
-        <translation>Zurück</translation>
-    </message>
-    <message>
         <source>Previous</source>
         <translation>Zurück</translation>
-    </message>
-    <message>
-        <source>Forward</source>
-        <translation>Vor</translation>
     </message>
     <message>
         <source>Next</source>
@@ -1931,8 +1858,12 @@ Möchten Sie stattdessen einen externen Browser auswählen?</translation>
 <context>
     <name>Gui::FileChooser</name>
     <message>
-        <source>Select file</source>
-        <translation>Datei auswählen</translation>
+        <source>Select a file</source>
+        <translation>Wählen Sie eine Datei aus</translation>
+    </message>
+    <message>
+        <source>Select a directory</source>
+        <translation>Wählen Sie ein Verzeichnis aus</translation>
     </message>
 </context>
 <context>
@@ -1959,8 +1890,8 @@ Möchten Sie die Datei überschreiben?</translation>
 <context>
     <name>Gui::FileOptionsDialog</name>
     <message>
-        <source>&amp;Options </source>
-        <translation>&amp;Einstellungen</translation>
+        <source>Extended</source>
+        <translation>Erweitert</translation>
     </message>
 </context>
 <context>
@@ -1975,6 +1906,10 @@ Möchten Sie die Datei überschreiben?</translation>
     <message>
         <source>Ready</source>
         <translation>Bereit</translation>
+    </message>
+    <message>
+        <source>Dimension</source>
+        <translation>Abmessung</translation>
     </message>
 </context>
 <context>
@@ -2146,6 +2081,17 @@ Diese Datei wurde außerhalb des Editors verändert. Wollen Sie sie erneut laden
     </message>
 </context>
 <context>
+    <name>Gui::PythonEditor</name>
+    <message>
+        <source>Comment</source>
+        <translation>Kommentieren</translation>
+    </message>
+    <message>
+        <source>Uncomment</source>
+        <translation>Entkommentieren</translation>
+    </message>
+</context>
+<context>
     <name>Gui::StdCmdAbout</name>
     <message>
         <source>Help</source>
@@ -2249,21 +2195,17 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
+    <name>Gui::Translator</name>
+    <message>
+        <source>English</source>
+        <translation>Deutsch</translation>
+    </message>
+</context>
+<context>
     <name>Gui::TreeView</name>
     <message>
         <source>Labels &amp; Attributes</source>
         <translation>Bezeichnungen &amp; Eigenschaften</translation>
-    </message>
-</context>
-<context>
-    <name>PythonEditor</name>
-    <message>
-        <source>Comment</source>
-        <translation>Kommentieren</translation>
-    </message>
-    <message>
-        <source>Uncomment</source>
-        <translation>Entkommentieren</translation>
     </message>
 </context>
 <context>
@@ -2420,6 +2362,14 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <source>Restore view &amp;%1</source>
         <translation>Ansicht &amp;%1 wiederherstellen</translation>
     </message>
+    <message>
+        <source>File not found</source>
+        <translation>Datei nicht gefunden</translation>
+    </message>
+    <message>
+        <source>The file &apos;%1&apos; cannot be opened.</source>
+        <translation>Die Datei &apos;%1&apos; kann nicht geöffnet werden.</translation>
+    </message>
 </context>
 <context>
     <name>StdCameraType</name>
@@ -2479,6 +2429,21 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     <message>
         <source>Activate previous window</source>
         <translation>Vorheriges Fenster aktivieren</translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdArrangeIcons</name>
+    <message>
+        <source>Window</source>
+        <translation>Fenster</translation>
+    </message>
+    <message>
+        <source>Arrange &amp;Icons</source>
+        <translation>&amp;Symbole anordnen</translation>
+    </message>
+    <message>
+        <source>Arrange Icons</source>
+        <translation>Symbole anordnen</translation>
     </message>
 </context>
 <context>
@@ -2773,12 +2738,20 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Datei</translation>
     </message>
     <message>
-        <source>&amp;Open</source>
-        <translation>&amp;Öffnen</translation>
+        <source>&amp;Open...</source>
+        <translation>&amp;Öffnen...</translation>
     </message>
     <message>
-        <source>Open a Document or import Files</source>
+        <source>Open a document or import files</source>
         <translation>Öffnen eines Dokuments/Importieren von Dateien</translation>
+    </message>
+    <message>
+        <source>Supported formats</source>
+        <translation>Unterstützte Formate</translation>
+    </message>
+    <message>
+        <source>All files (*.*)</source>
+        <translation>Alle Dateien (*.*)</translation>
     </message>
 </context>
 <context>
@@ -2829,8 +2802,8 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>&amp;Drucken...</translation>
     </message>
     <message>
-        <source>Print the window</source>
-        <translation>Drucken</translation>
+        <source>Print the document</source>
+        <translation>Dokument drucken</translation>
     </message>
 </context>
 <context>
@@ -2885,7 +2858,7 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Wieder&amp;herstellen</translation>
     </message>
     <message>
-        <source>Redoes a previously undid action</source>
+        <source>Redoes a previously undone action</source>
         <translation>Zuletzt rückgängig gemachte Aktion wiederherstellen</translation>
     </message>
 </context>
@@ -2965,21 +2938,6 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
     </message>
 </context>
 <context>
-    <name>StdCmdTileHor</name>
-    <message>
-        <source>Window</source>
-        <translation>Fenster</translation>
-    </message>
-    <message>
-        <source>Tile &amp;Horizontally</source>
-        <translation>&amp;Horizontal anordnen</translation>
-    </message>
-    <message>
-        <source>Tile the windows horizontally</source>
-        <translation>Fenster horizontal anordnen</translation>
-    </message>
-</context>
-<context>
     <name>StdCmdTilePra</name>
     <message>
         <source>Window</source>
@@ -3001,12 +2959,12 @@ Möchten Sie ein anderes Verzeichnis angeben?</translation>
         <translation>Fenster</translation>
     </message>
     <message>
-        <source>&amp;Tile Vertically</source>
-        <translation>&amp;Vertikal anordnen</translation>
+        <source>&amp;Tile</source>
+        <translation>&amp;Anordnen</translation>
     </message>
     <message>
-        <source>Tile the windows vertically</source>
-        <translation>Fenster vertikal anordnen</translation>
+        <source>Tile the windows</source>
+        <translation>Fenster anordnen</translation>
     </message>
 </context>
 <context>

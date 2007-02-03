@@ -21,12 +21,16 @@
  ***************************************************************************/
 
 
-#ifndef TOOLBAR_MANAGER_H
-#define TOOLBAR_MANAGER_H
+#ifndef GUI_TOOLBARMANAGER_H
+#define GUI_TOOLBARMANAGER_H
 
-#include <qstring.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-class QToolBar;
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 
@@ -45,18 +49,18 @@ public:
   ToolBarItem* copy() const;
   uint count() const;
 
-  void appendItem( const ToolBarItem* );
-  bool insertItem( const ToolBarItem*, const ToolBarItem* );
-  void removeItem( const ToolBarItem* );
+  void appendItem( ToolBarItem* );
+  bool insertItem( ToolBarItem*, ToolBarItem* );
+  void removeItem( ToolBarItem* );
   void clear();
 
-  ToolBarItem& operator<< ( const ToolBarItem* item );
+  ToolBarItem& operator<< ( ToolBarItem* item );
   ToolBarItem& operator<< ( const QString& command );
-  QPtrList<ToolBarItem> getItems() const;
+  QList<ToolBarItem*> getItems() const;
 
 private:
   QString _name;
-  QPtrList<ToolBarItem> _items;
+  QList<ToolBarItem*> _items;
 };
 
 /**
@@ -77,11 +81,9 @@ public:
   /** Sets up the custom toolbars defined by the user of a given workbench. */
   void customSetup( ToolBarItem* ) const;
   /** Returns a list of all currently existing toolbars. */
-  QPtrList<QToolBar> toolBars() const;
+  QList<QToolBar*> toolBars() const;
 
 protected:
-  /// Returns the toolbar with \a name and creates it if necessary.
-  QToolBar* getOrCreateToolBar( const QString& name, bool modify=false ) const;
   ToolBarManager();
   ~ToolBarManager();
 
@@ -92,4 +94,4 @@ private:
 } // namespace Gui
 
 
-#endif // TOOLBAR_MANAGER_H 
+#endif // GUI_TOOLBARMANAGER_H 

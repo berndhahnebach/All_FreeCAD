@@ -24,16 +24,30 @@
 #ifndef CUSTOM_WIDGETS_H__
 #define CUSTOM_WIDGETS_H__
 
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 #include "../Base/Parameter.h"
 #include "PrefWidgets.h"
 
-#include <qpopupmenu.h>
-#include <qtoolbar.h>
+//#include <q3popupmenu.h>
+//#include <q3toolbar.h>
+////Added by qt3to4:
+//#include <QtGui/QMouseEvent>
+//#include <QtGui/QDragMoveEvent>
+//#include <QtGui/QDragLeaveEvent>
+//#include <QtGui/QDropEvent>
+//#include <QtGui/QDragEnterEvent>
 
 // forward declarations
-class QDoubleValidator;
-class QAction;
-class QMainWindow;
+//class QDoubleValidator;
+//class QAction;
+//class Q3MainWindow;
 
 namespace Gui {
 class DockWindow;
@@ -70,13 +84,13 @@ private:
  * The CustomToolbar class provides method to customize toolbars.
  * \author Werner Mayer
  */
-class GuiExport CustomToolBar : public QToolBar, public CustomWidget
+class GuiExport CustomToolBar : public Q3ToolBar, public CustomWidget
 {
   Q_OBJECT
 
 public:
-  CustomToolBar ( const QString & label, QMainWindow *, QWidget *, bool newLine = FALSE, const char * name = 0, WFlags f = 0, const char* type = "Toolbars" );
-  CustomToolBar ( QMainWindow * parent = 0, const char * name = 0, const char* type = "Toolbars" );
+  CustomToolBar ( const QString & label, Q3MainWindow *, QWidget *, bool newLine = FALSE, const char * name = 0, Qt::WFlags f = 0, const char* type = "Toolbars" );
+  CustomToolBar ( Q3MainWindow * parent = 0, const char * name = 0, const char* type = "Toolbars" );
   virtual ~CustomToolBar();
 
   void setCanModify( bool b );
@@ -87,7 +101,7 @@ protected:
   void dragLeaveEvent  ( QDragLeaveEvent * );
   void dragMoveEvent   ( QDragMoveEvent  * );
 
-protected slots:
+protected Q_SLOTS:
   void languageChange();
 };
 
@@ -95,25 +109,25 @@ protected slots:
  * The CustomToolbar class provides method to customize toolbars.
  * \author Werner Mayer
  */
-class GuiExport CustomPopupMenu : public QPopupMenu, public CustomWidget, public ParameterGrp::ObserverType
-{
-  Q_OBJECT
-
-public:
-  CustomPopupMenu ( QWidget * parent=0, const char * name=0, const char* menu = 0 );
-  virtual ~CustomPopupMenu();
-  virtual void OnChange( Base::Subject<const char*> &rCaller, const char * sReason );
-
-protected:
-  void dropEvent        ( QDropEvent      * );
-  void dragEnterEvent   ( QDragEnterEvent * );
-  void dragLeaveEvent   ( QDragLeaveEvent * );
-  void dragMoveEvent    ( QDragMoveEvent  * );
-  void mouseMoveEvent   ( QMouseEvent     * );
-
-private:
-  bool    _bAllowDrag;
-};
+//class GuiExport CustomPopupMenu : public Q3PopupMenu, public CustomWidget, public ParameterGrp::ObserverType
+//{
+//  Q_OBJECT
+//
+//public:
+//  CustomPopupMenu ( QWidget * parent=0, const char * name=0, const char* menu = 0 );
+//  virtual ~CustomPopupMenu();
+//  virtual void OnChange( Base::Subject<const char*> &rCaller, const char * sReason );
+//
+//protected:
+//  void dropEvent        ( QDropEvent      * );
+//  void dragEnterEvent   ( QDragEnterEvent * );
+//  void dragLeaveEvent   ( QDragLeaveEvent * );
+//  void dragMoveEvent    ( QDragMoveEvent  * );
+//  void mouseMoveEvent   ( QMouseEvent     * );
+//
+//private:
+//  bool    _bAllowDrag;
+//};
 
 } // namespace Gui
 

@@ -24,7 +24,13 @@
 #ifndef __TREE_H_
 #define __TREE_H_
 
-#include <qlistview.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 #include <Base/PyExport.h>
 #include <App/Document.h>
@@ -54,11 +60,11 @@ struct GUIDDefs {
  *  and the functions of the Document.
  *  \author Jürgen Riegel
  */
-class ObjectItem : public QListViewItem
+class ObjectItem : public Q3ListViewItem
 {
 public:
   /// Constructor
-  ObjectItem( QListViewItem* parent,Gui::ViewProviderDocumentObject* pcViewProvider);
+  ObjectItem( Q3ListViewItem* parent,Gui::ViewProviderDocumentObject* pcViewProvider);
   virtual ~ObjectItem();
 
   /// This is the class Id to distinguish from QListViewItem itself or from other QListViewItem-subclasses. 
@@ -109,11 +115,11 @@ protected:
  *  and the functions of the Document.
  *  \author Jürgen Riegel
  */
-class DocItem : public QListViewItem//, public App::Document::ObserverType
+class DocItem : public Q3ListViewItem//, public App::Document::ObserverType
 {
 public:
   /// Constructor
-  DocItem( QListViewItem* parent,QListViewItem * after,Gui::Document* doc);
+  DocItem( Q3ListViewItem* parent,Q3ListViewItem * after,Gui::Document* doc);
   virtual ~DocItem();
 
   /// This is the class Id to distinguish from QListViewItem itself or from other QListViewItem-subclasses. 
@@ -209,21 +215,22 @@ public:
 	/// This method get called when a new doc will be deleted
   void DeleteDoc(Gui::Document*);
 
-  QListViewItem* getMainItem(void){return _pcMainItem;}
+  Q3ListViewItem* getMainItem(void) const {return _pcMainItem;}
 
   void testStatus(void);
 
-public slots:
+public Q_SLOTS:
 
   void onSelectionChanged(void);
-  void onItem(QListViewItem*);
+  void onItem(Q3ListViewItem*);
 
 protected:
 
   void contextMenuEvent ( QContextMenuEvent * e );
+  void changeEvent(QEvent *e);
 
-  QListView*  _pcListView;
-  QListViewItem*  _pcMainItem;
+  Q3ListView*  _pcListView;
+  Q3ListViewItem*  _pcMainItem;
 
   static QPixmap *pcDocumentPixmap;
 
@@ -232,7 +239,7 @@ protected:
   bool bFromOutside;
 
 private:
-  QListViewItem* _lastDocItem;
+  Q3ListViewItem* _lastDocItem;
 };
 
 } // namespace Gui

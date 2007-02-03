@@ -24,10 +24,15 @@
 #ifndef __FC_WIDGET_FACTORY_H__
 #define __FC_WIDGET_FACTORY_H__
 
-#include <qdialog.h>
-#include <vector>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-# include <qwidgetfactory.h>
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+#include <vector>
 
 #include <Base/Factory.h>
 #include <Base/PyExportImp.h>
@@ -35,10 +40,12 @@
 #include "DlgCustomizeImp.h"
 
 class QPushButton;
-class QGridLayout;
+class Q3GridLayout;
 
 namespace Gui {
-
+  namespace Dialog{
+    class PreferencePage;
+  }
 /** 
  * The widget factory provides methods for the dynamic creation of widgets.
  * To create these widgets once they must be registered to the factory.
@@ -53,6 +60,7 @@ public:
   static void destruct ();
 
   QWidget* createWidget (const char* sName, QWidget* parent=0) const;
+  Gui::Dialog::PreferencePage* createPreferencePage (const char* sName, QWidget* parent=0) const;
   QWidget* createPrefWidget(const char* sName, QWidget* parent, const char* sPref);
 
 private:
@@ -204,7 +212,7 @@ public:
   QPushButton* buttonCancel; /**< The cancel button. */
 
 private:
-  QGridLayout* MyDialogLayout;
+  Q3GridLayout* MyDialogLayout;
 };
 
 // ----------------------------------------------------
@@ -310,7 +318,7 @@ public:
   SignalConnect( Base::PyObjectBase* res, PyObject* cb, QObject* sender);
   ~SignalConnect();
 
-public slots:
+public Q_SLOTS:
   void onExecute();
 
 private:
@@ -325,10 +333,10 @@ private:
  * the QWidgetFactory by the creation of FreeCAD specific widgets.
  * \author Werner Mayer
  */
-class QtWidgetFactory : public QWidgetFactory
+class QtWidgetFactory : public QFormBuilder
 {
 public:
-  QtWidgetFactory() : QWidgetFactory(){}
+  QtWidgetFactory() : QFormBuilder(){}
   ~QtWidgetFactory(){}
 
   /**
@@ -337,8 +345,10 @@ public:
    */
   QWidget* createWidget( const QString & className, QWidget * parent, const char * name ) const
   {
-    QString cname = QString("class %1").arg(className);
-    return WidgetFactory().createWidget( cname.latin1(), parent );
+    // TODO replace with an new mechanismus
+    //QString cname = QString("class %1").arg(className);
+    //return WidgetFactory().createWidget( cname.latin1(), parent );
+    return 0;
   }
 };
 

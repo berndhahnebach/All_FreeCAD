@@ -42,7 +42,6 @@ unsigned int format2_len = 1024;
 using namespace Base;
 
 
-#define new DEBUG_CLIENTBLOCK
 
 PyException::PyException(void)
 {

@@ -25,10 +25,13 @@
 
 #ifndef _PreComp_
 # include <qdir.h>
-# include <qfiledialog.h>
+# include <q3filedialog.h>
 # include <qfileinfo.h>
 # include <qmessagebox.h>
 # include <qstatusbar.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <QCloseEvent>
 #endif
 
 
@@ -54,7 +57,7 @@
 #include "Selection.h"
 #include "SoFCSelection.h"
 #include "WaitCursor.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 /* TRANSLATOR Gui::Document */
@@ -430,11 +433,7 @@ bool Document::saveAs(void)
   getMainWindow()->statusBar()->message(QObject::tr("Save document under new filename..."));
 
   QString dir = Gui::FileDialog::getWorkingDirectory();
-#ifdef FC_OS_WIN32
-  QString fn = QFileDialog::getSaveFileName(dir, "FreeCAD document (*.FCStd)", getMainWindow());
-#else
-  QString fn = FileDialog::getSaveFileName(dir, "FreeCAD document (*.FCStd)", getMainWindow());
-#endif
+  QString fn = QFileDialog::getSaveFileName(getMainWindow(), QObject::tr("Save FreeCAD Document"), dir, QObject::tr("FreeCAD document (*.FCStd)") );
   if (!fn.isEmpty())
   {
     if ( !fn.endsWith(".FCStd"))
@@ -442,22 +441,6 @@ bool Document::saveAs(void)
 
     QFileInfo fi;
     fi.setFile(fn);
-
-    // Workaround for Qt bug in QFileDialog::getSaveFileName().
-#ifdef FC_OS_WIN32
-    if ( fi.exists() )
-    {
-      // Get user confirmation
-      QString msg = QObject::tr("Overwrite file '%1' ?").arg(fn);
-      int ret = QMessageBox::question( getMainWindow(), QObject::tr("File overwrite confirmation"), msg,
-                                       QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape );
-      if ( ret != QMessageBox::Yes )
-      {
-        getMainWindow()->statusBar()->message(QObject::tr("Saving aborted"), 2000);
-        return false;
-      }
-    }
-#endif
 
     // save as new file name
     Gui::WaitCursor wc;

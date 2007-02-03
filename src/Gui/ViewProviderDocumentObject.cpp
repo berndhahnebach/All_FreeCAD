@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlistview.h>
+# include <q3listview.h>
 # include <qpixmap.h>
 # include <Inventor/nodes/SoDrawStyle.h>
 # include <Inventor/nodes/SoMaterial.h>
@@ -44,7 +44,7 @@
 
 
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 
@@ -198,14 +198,14 @@ void ViewProviderDocumentObject::setActiveMode()
     ViewProvider::hide();
 }
 
-ObjectItem* ViewProviderDocumentObject::getTreeItem(QListViewItem* parent)
+ObjectItem* ViewProviderDocumentObject::getTreeItem(Q3ListViewItem* parent)
 {
   if ( !pcObjItem )
     pcObjItem = createTreeItem(parent);
   return pcObjItem;
 }
 
-ObjectItem* ViewProviderDocumentObject::createTreeItem(QListViewItem* parent)
+ObjectItem* ViewProviderDocumentObject::createTreeItem(Q3ListViewItem* parent)
 {
   ObjectItem* item = new ObjectItem(parent,this);
   item->setPixmap(0, this->getIcon());
@@ -247,21 +247,21 @@ bool ViewProviderDocumentObject::testStatus(void)
         "######.",
         "###a###"};
       px = new QPixmap(feature_warning_xpm);
-      pcObjItem->BaseColor =Qt::yellow.light();
-      pcObjItem->TextColor =Qt::black;
+      pcObjItem->BaseColor = QColor(Qt::yellow).light();
+      pcObjItem->TextColor = Qt::black;
     }else{
-      pcObjItem->BaseColor =Qt::white;
-      pcObjItem->TextColor =Qt::black;
+      pcObjItem->BaseColor = Qt::white;
+      pcObjItem->TextColor = Qt::black;
     } break;
   case App::AbstractFeature::New:
     {
-      pcObjItem->BaseColor =Qt::white;
-      pcObjItem->TextColor =Qt::gray;
+      pcObjItem->BaseColor = Qt::white;
+      pcObjItem->TextColor = Qt::gray;
     } break;
   case App::AbstractFeature::Inactive:
     {
-      pcObjItem->BaseColor =Qt::white;
-      pcObjItem->TextColor =Qt::gray;
+      pcObjItem->BaseColor = Qt::white;
+      pcObjItem->TextColor = Qt::gray;
     } break;
   case App::AbstractFeature::Recompute:
     {

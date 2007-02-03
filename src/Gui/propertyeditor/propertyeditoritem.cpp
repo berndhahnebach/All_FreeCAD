@@ -24,13 +24,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qheader.h>
+# include <q3header.h>
 # include <qpainter.h>
 # include <qpushbutton.h>
 #endif
 
 #include "propertyeditoritem.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::PropertyEditor;
  
 ///* XPM */
@@ -70,10 +70,10 @@ static const char * resetproperty_xpm[] = {
 
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::PropertyEditor::EditableItem, Base::BaseClass);
 
-QListView* EditableItem::parentView = 0;
+Q3ListView* EditableItem::parentView = 0;
 
 EditableItem::EditableItem()
-    : QListViewItem( parentView ), _val(0), _newval(0), _modified(false), _readonly(false), _col(1), _editor(0)
+    : Q3ListViewItem( parentView, parentView->lastItem() ), _val(0), _newval(0), _modified(false), _readonly(false), _col(1), _editor(0)
 {
   _apply = new QPushButton(listView()->viewport());
   _apply->setPixmap( resetproperty_xpm );
@@ -82,8 +82,8 @@ EditableItem::EditableItem()
   connect( _apply, SIGNAL( clicked() ), this, SLOT( restoreOverrideValue() ) );
 }
 
-EditableItem::EditableItem( QListView* lv, const QVariant& value )
-    : QListViewItem( lv ), _val(value), _newval(value), _modified(false), _readonly(false), _col(1), _editor(0)
+EditableItem::EditableItem( Q3ListView* lv, const QVariant& value )
+    : Q3ListViewItem( lv ), _val(value), _newval(value), _modified(false), _readonly(false), _col(1), _editor(0)
 {
   _apply = new QPushButton(listView()->viewport());
   _apply->setPixmap( resetproperty_xpm );
@@ -99,7 +99,7 @@ EditableItem::~EditableItem()
 
 void EditableItem::setup()
 {
-  QListViewItem::setup();
+  Q3ListViewItem::setup();
   setHeight(20);
 }
 
@@ -137,7 +137,7 @@ void EditableItem::stopEdit()
 void EditableItem::onValueChanged()
 {
   setModified( true );
-  QListViewItem::repaint();
+  Q3ListViewItem::repaint();
 
   // do immediately
   QVariant var = currentEditorValue( _editor );
@@ -194,7 +194,7 @@ void EditableItem::restoreOverrideValue()
     setDefaultEditorValue( _editor );
   }
   setModified( false );
-  QListViewItem::repaint();
+  Q3ListViewItem::repaint();
 
   // do immediately
   QVariant var = currentEditorValue( _editor );
@@ -207,7 +207,7 @@ void EditableItem::applyOverrideValue()
   setValue( var );
   convertToProperty(var);
   setModified( false );
-  QListViewItem::repaint();
+  Q3ListViewItem::repaint();
 }
 
 void EditableItem::setProperty( const std::vector<App::Property*>& prop )
@@ -242,9 +242,9 @@ void EditableItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int
 {
   bool withColor = false;
   
-  for( QListViewItemIterator it( listView() ); it.current(); ++it ) 
+  for( Q3ListViewItemIterator it( listView() ); it.current(); ++it ) 
   {
-    QListViewItem* father = it.current()->QListViewItem::parent();
+    Q3ListViewItem* father = it.current()->Q3ListViewItem::parent();
     if ( father )
     {
       bool open = father->isOpen();
@@ -272,15 +272,15 @@ void EditableItem::paintCell(QPainter* p, const QColorGroup& cg, int column, int
 
   QColorGroup cgcopy(cg);
   cgcopy.setColor( QColorGroup::Highlight, QColor(230, 230, 230));
-  cgcopy.setColor( QColorGroup::HighlightedText, QObject::black);
-  cgcopy.setColor( QColorGroup::Text, QObject::black );
+  cgcopy.setColor( QColorGroup::HighlightedText, Qt::black);
+  cgcopy.setColor( QColorGroup::Text, Qt::black );
 
   if ( withColor )               
     cgcopy.setColor( QColorGroup::Base, QColor(250, 248, 235) );
   else
     cgcopy.setColor( QColorGroup::Base, cg.base() );
 
-  QListViewItem::paintCell(p, cgcopy, column, width, align);
+  Q3ListViewItem::paintCell(p, cgcopy, column, width, align);
 
   if ( isModified() && column == 0 ) 
   {

@@ -23,28 +23,25 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qcombobox.h>
-# include <qdir.h>
-# include <qfileinfo.h>
-# include <qinputdialog.h>
-# include <qlineedit.h>
-# include <qlistview.h>
-# include <qmessagebox.h>
-# include <qpushbutton.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
 #endif
 
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 #include "DlgMacroExecuteImp.h"
-#include "../App/Application.h"
-#include "../App/Document.h"
 #include "Application.h"
 #include "MainWindow.h"
 #include "FileDialog.h"
 #include "Macro.h"
 #include "Document.h"
 #include "PythonEditor.h"
-#define new DEBUG_CLIENTBLOCK
+
+#include <App/Application.h>
+#include <App/Document.h>
+
 using namespace Gui;
 using namespace Gui::Dialog;
 
@@ -57,12 +54,13 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgMacroExecute( parent, name, modal, fl ), WindowParameter( "Macro" )
+DlgMacroExecuteImp::DlgMacroExecuteImp( QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl ), WindowParameter( "Macro" )
 {
+  this->setupUi(this);
   // retrieve the macro path from parameter or use the home path as default
   _cMacroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
-  ComboBoxPath->insertItem(_cMacroPath.c_str());
+  fileChooser->setFileName(_cMacroPath.c_str());
 
   // Fill the List box
   fillUpList();
@@ -85,38 +83,38 @@ void DlgMacroExecuteImp::fillUpList(void)
   QDir d( _cMacroPath.c_str(),"*.FCMacro" );
 
   // clean old entries
-  MacrosListView->clear();
+  macroListBox->clear();
   
   // fill up with the directory
   for (unsigned int i=0; i<d.count(); i++ )
-    (void)new QListViewItem( MacrosListView, d[i], "FCMacro file" );
+    macroListBox->insertItem(d[i]);
 }
 
 /** 
  * Selects a macro file in the list view.
  */
-void DlgMacroExecuteImp::onNewListItemPicked(QListViewItem* pcListViewItem)
+void DlgMacroExecuteImp::on_macroListBox_selectionChanged(Q3ListBoxItem* pcListViewItem)
 {
-  LineEditMacroName->setText(pcListViewItem->text(0));
+  LineEditMacroName->setText(pcListViewItem->text());
 
-  ExecuteButton->setEnabled(true);
-  EditButton->setEnabled(true);
-  DeleteButton->setEnabled(true);
+  executeButton->setEnabled(true);
+  editButton->setEnabled(true);
+  deleteButton->setEnabled(true);
 }
 
 /**
  * Executes the selected macro file.
  */
-void DlgMacroExecuteImp::onListDoubleClicked(QListViewItem* pcListViewItem)
+void DlgMacroExecuteImp::on_macroListBox_doubleClicked(Q3ListBoxItem* pcListViewItem)
 {
-  LineEditMacroName->setText(pcListViewItem->text(0));
-  onExecute();
+  LineEditMacroName->setText(pcListViewItem->text());
+  on_executeButton_clicked();
 }
 
 /**
  * Executes the selected macro file.
  */
-void DlgMacroExecuteImp::onExecute()
+void DlgMacroExecuteImp::on_executeButton_clicked()
 {
   if(!(LineEditMacroName->text().isEmpty() ) )
   {
@@ -134,16 +132,12 @@ void DlgMacroExecuteImp::onExecute()
 /**
  * Specify the location of your macro files. The default location is FreeCAD's home path.
  */
-void DlgMacroExecuteImp::onNewFolder()
+void DlgMacroExecuteImp::on_fileChooser_fileNameChanged(const QString& fn)
 {
-  QString fn = FileDialog::getExistingDirectory (_cMacroPath.c_str(), getMainWindow());
   if (!fn.isEmpty())
   {
-    _cMacroPath = fn.latin1();
-    // combo box
-    ComboBoxPath->insertItem(fn);
-    ComboBoxPath->setCurrentText(fn);
     // save the path in the parameters
+    _cMacroPath = fn.latin1();
     getWindowParameter()->SetASCII("MacroPath",fn.latin1());
     // fill the list box
     fillUpList();
@@ -153,20 +147,20 @@ void DlgMacroExecuteImp::onNewFolder()
 /** 
  * Opens the macro file in an editor.
  */
-void DlgMacroExecuteImp::onEdit()
+void DlgMacroExecuteImp::on_editButton_clicked()
 {
-  QListViewItem* item = MacrosListView->selectedItem();
-  if (!item) return;
+  int item = macroListBox->currentItem();
+  if (item<0) return;
 
   QDir dir(_cMacroPath.c_str());
-  QString file = QString("%1/%2").arg(dir.absPath()).arg(item->text(0));
+  QString file = QString("%1/%2").arg(dir.absPath()).arg(macroListBox->text(item));
 
   Application::Instance->open( file );
   accept();
 }
 
 /** Creates a new macro file. */
-void DlgMacroExecuteImp::onCreate()
+void DlgMacroExecuteImp::on_createButton_clicked()
 {
   // query file name
   QString fn = QInputDialog::getText( tr("Macro file"), tr("Enter a file name, please:"), QLineEdit::Normal,
@@ -185,7 +179,7 @@ void DlgMacroExecuteImp::onCreate()
     {
       QString file = QString("%1/%2").arg(dir.absPath()).arg( fn );
       PythonEditView* edit = new PythonEditView( file, getMainWindow(), "Editor" );
-      edit->setCaption( fn );
+      edit->setWindowTitle( fn );
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
   
@@ -195,22 +189,20 @@ void DlgMacroExecuteImp::onCreate()
 }
 
 /** Deletes the selected macro file from your harddisc. */
-void DlgMacroExecuteImp::onDelete()
+void DlgMacroExecuteImp::on_deleteButton_clicked()
 {
-  QListViewItem* item = MacrosListView->selectedItem();
-  if (!item) return;
+  int item = macroListBox->currentItem();
+  if (item<0) return;
 
-  QString fn = item->text(0);
+  QString fn = macroListBox->text(item);
   int ret = QMessageBox::question( this, tr("Delete macro"), tr("Do you really want to delete the macro '%1'?").arg( fn ), 
                                    QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape );
   if ( ret == QMessageBox::Yes )
   {
     QDir dir(_cMacroPath.c_str());
     dir.remove( fn );
-    MacrosListView->takeItem( item );
+    macroListBox->takeItem( macroListBox->item(item) );
   }
 }
 
-#include "DlgMacroExecute.cpp"
-#include "moc_DlgMacroExecute.cpp"
 #include "moc_DlgMacroExecuteImp.cpp"

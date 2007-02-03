@@ -36,8 +36,8 @@ using namespace PartGui;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgPartBoxImp::DlgPartBoxImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgPartBox( parent, name, modal, fl )
+DlgPartBoxImp::DlgPartBoxImp( QWidget* parent, Qt::WFlags fl )
+  : QDialog( parent, fl )
 {
 }
 
@@ -57,6 +57,4 @@ void DlgPartBoxImp::OnApply()
     qWarning( "DlgPartBox::OnApply() not yet implemented!" ); 
 }
 
-#include "DlgPartBox.cpp"
-#include "moc_DlgPartBox.cpp"
 #include "moc_DlgPartBoxImp.cpp"

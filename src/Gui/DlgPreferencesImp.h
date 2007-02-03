@@ -21,18 +21,23 @@
  ***************************************************************************/
 
 
-#ifndef DLGPREFERENCESIMP_H
-#define DLGPREFERENCESIMP_H
+#ifndef GUI_DIALOG_DLGPREFERENCESIMP_H
+#define GUI_DIALOG_DLGPREFERENCESIMP_H
 
-#include "DlgPreferences.h"
+#include "ui_DlgPreferences.h"
 
-// forward declaration
-class QTabWidget;
-class QListBox;
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 namespace Gui {
 namespace Dialog {
-
+class PreferencePage;
 /**
  * This class implements a dialog containing several preference pages.
  * 
@@ -83,7 +88,7 @@ namespace Dialog {
  *    MyPrefPageImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 )
  *    {
  *    }
- *  protected slots:
+ *  protected Q_SLOTS:
  *    void saveSettings()
  *    {
  *      myLineEdit->onSave();
@@ -103,30 +108,31 @@ namespace Dialog {
  * \see PrefWidget
  * \author Werner Mayer, Jürgen Riegel
  */
-class GuiExport DlgPreferencesImp : public DlgPreferences
+class GuiExport DlgPreferencesImp : public QDialog,public Ui_DlgPreferences
 { 
 Q_OBJECT
 
 public:
   static void addPage( const QString& className, const QString& group );
 
-  DlgPreferencesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgPreferencesImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgPreferencesImp();
 
   void activatePageOfGroup( int pos, const char* groupName );
 
 protected:
   void accept();
-  void apply();
-  void languageChange();
+  void changeEvent(QEvent *e);
+
+protected Q_SLOTS:
+  void on_listBox_highlighted(int item );
+  void on_buttonApply_clicked();
 
 private:
   /** @name for internal use only */
   //@{
-  void onPrefPageClicked(int item );
-
   void addPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
-  void addPreferencePage( QWidget* page );
+  void addPreferencePage( PreferencePage* page );
   QTabWidget* getPreferenceGroup(int id);
   QTabWidget* getOrAddPreferenceGroup(const QString& name, const char* Pixmap, const char* Pixmap2);
   //@}
@@ -141,4 +147,4 @@ private:
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DLGPREFERENCESIMP_H
+#endif // GUI_DIALOG_DLGPREFERENCESIMP_H

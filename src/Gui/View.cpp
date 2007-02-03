@@ -26,6 +26,9 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qregexp.h>
+//Added by qt3to4:
+#include <QEvent>
+#include <QCloseEvent>
 #endif
 
 
@@ -34,7 +37,7 @@
 #include "Document.h"
 #include "Application.h"
 #include "MainWindow.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 //**************************************************************************
@@ -117,7 +120,7 @@ App::Document* BaseView::getAppDocument() const
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::MDIView,Gui::BaseView);
 
 
-MDIView::MDIView( Gui::Document* pcDocument,QWidget* parent, const char* name, int wflags )
+MDIView::MDIView( Gui::Document* pcDocument,QWidget* parent, const char* name, Qt::WFlags wflags )
   :QMainWindow(parent, name, wflags), BaseView(pcDocument),_actualMode(Normal)
 {
 }
@@ -196,7 +199,7 @@ void MDIView::showActiveView( MDIView* )
 {
 }
 
-void MDIView::print( QPrinter* printer )
+void MDIView::print()
 {
   // print command specified but print method not overriden!
   assert(0);
@@ -204,7 +207,7 @@ void MDIView::print( QPrinter* printer )
 
 QSize MDIView::minimumSizeHint () const
 {
-  return QSize(100, 80);
+  return QSize(400, 300);
 }
 
 void MDIView::setCaption ( const QString& cap )
@@ -234,7 +237,9 @@ void MDIView::setCurrentViewMode( ViewMode b )
     if(_actualMode == FullScreen)
     {
       showNormal();
-      clearWFlags ( WType_TopLevel );
+      //TODO setWindowFlags()
+      setWindowFlags( windowFlags() & ~Qt::WType_TopLevel );
+      //clearWFlags ( Qt::WType_TopLevel );
       getMainWindow()->addWindow( this );
     }else if(_actualMode == TopLevel)
     {/*
@@ -257,7 +262,9 @@ void MDIView::setCurrentViewMode( ViewMode b )
 #endif
 
     setActiveWindow();*/
-      clearWFlags ( WType_TopLevel );
+      //TODO setWindowFlags()
+      setWindowFlags( windowFlags() & ~Qt::WType_TopLevel );
+      //clearWFlags ( Qt::WType_TopLevel );
       getMainWindow()->addWindow( this );
     }
     _actualMode = Normal;
@@ -265,8 +272,7 @@ void MDIView::setCurrentViewMode( ViewMode b )
   }else if ( b == FullScreen ){
     if(_actualMode == Normal)
     {
-      WFlags f = getWFlags();
-      setWFlags( f | WType_TopLevel );
+      setWindowFlags( windowFlags() | Qt::WType_TopLevel );
       showFullScreen();
     }else if(_actualMode == TopLevel)
     {
@@ -280,18 +286,19 @@ void MDIView::setCurrentViewMode( ViewMode b )
       showNormal();
     }else if(_actualMode == Normal)
     {
-      WFlags f = getWFlags();
-      setWFlags( f | WType_TopLevel );
-    reparent( 0, WType_TopLevel | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu | WStyle_Minimize | WStyle_Maximize |
+      setWindowFlags( windowFlags() | Qt::WType_TopLevel );
+    reparent( 0, Qt::WType_TopLevel | Qt::WStyle_Customize | Qt::WStyle_NormalBorder | Qt::WStyle_Title | Qt::WStyle_SysMenu | Qt::WStyle_Minimize | Qt::WStyle_Maximize |
 	      // preserve some widget flags
-	      (getWFlags() & 0xffff0000),
+	      (windowFlags() & 0xffff0000),
 	      mapToGlobal( QPoint( 0, 0) ));
     //const QRect screen = qApp->desktop()->screenGeometry( qApp->desktop()->screenNumber( this ) );
     //move( screen.topLeft() );
     //resize( screen.size() );
     raise();
     show();
-    QEvent e( QEvent::ShowNormal );
+    //TODO What kind of event is this now? Try QEvent::Show
+    QEvent e( QEvent::Show );
+    //QEvent e( QEvent::ShowNormal );
     QApplication::sendEvent( this, &e );
 #if defined(Q_WS_X11)
     extern void qt_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp

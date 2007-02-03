@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef __PYTHON_CONSOLE_PY_H__
-#define __PYTHON_CONSOLE_PY_H__
+#ifndef GUI_PYTHON_CONSOLE_PY_H
+#define GUI_PYTHON_CONSOLE_PY_H
 
 #include <Base/PyExportImp.h>
 
@@ -133,4 +133,4 @@ private:
 
 } // namespace Gui
 
-#endif // __PYTHON_CONSOLE_PY_H__
+#endif // GUI_PYTHON_CONSOLE_PY_H

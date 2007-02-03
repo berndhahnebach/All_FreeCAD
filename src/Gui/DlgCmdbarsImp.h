@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef DLGCMDBARS_IMP_H
-#define DLGCMDBARS_IMP_H
+#ifndef GUI_DIALOG_DLGCMDBARS_IMP_H
+#define GUI_DIALOG_DLGCMDBARS_IMP_H
 
 #include "DlgToolbarsImp.h"
 
@@ -47,14 +47,11 @@ class DlgCustomCmdbarsImp : public DlgCustomToolbars
   Q_OBJECT
 
 public:
-  DlgCustomCmdbarsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgCustomCmdbarsImp( QWidget* parent = 0 );
   ~DlgCustomCmdbarsImp();
-
-protected:
-  void cancel();
 };
 
 } // namespace Dialog
 } // namespace Gui
 
-#endif
+#endif // GUI_DIALOG_DLGCMDBARS_IMP_H

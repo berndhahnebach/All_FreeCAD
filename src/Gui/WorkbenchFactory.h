@@ -21,10 +21,16 @@
  ***************************************************************************/
 
 
-#ifndef WORKBENCH_FACTORY_H
-#define WORKBENCH_FACTORY_H
+#ifndef GUI_WORKBENCHFACTORY_H
+#define GUI_WORKBENCHFACTORY_H
 
-#include <qstringlist.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 #include <Base/Factory.h>
 
@@ -90,4 +96,4 @@ public:
 
 } // namespace Gui 
 
-#endif // WORKBENCH_FACTORY_H 
+#endif // GUI_WORKBENCHFACTORY_H 

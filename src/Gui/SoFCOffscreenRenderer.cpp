@@ -22,26 +22,13 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <iomanip>
-# include <sstream>
-# include <stdlib.h>
-# include <qdatetime.h>
-# include <qimage.h>
-# include <qstrlist.h>
-# include <Inventor/lists/SbList.h>
-# include <Inventor/lists/SbPList.h>
-# include <Inventor/SbString.h>
-# include <Inventor/SbMatrix.h>
-#endif
-
 #include <Base/FileInfo.h>
 #include <Base/Exception.h>
 #include <Base/Console.h>
 #include <App/Application.h>
-#include <Inventor/C/basic.h>
+
 #include "SoFCOffscreenRenderer.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 using namespace std;
 
@@ -269,11 +256,11 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
   }
 
   // add now all further QImage formats
-  QStringList qtformats = QImage::outputFormatList();
-  for ( QStringList::Iterator it = qtformats.begin(); it != qtformats.end(); ++it )
+  QList<QByteArray> qtformats = QImageWriter::supportedImageFormats();
+  for ( QList<QByteArray>::Iterator it = qtformats.begin(); it != qtformats.end(); ++it )
   {
     // not supported? then append
-    if ( isWriteSupported( (*it).latin1() ) == false && formats.findIndex(*it) == -1 )
+    if ( isWriteSupported( (*it).data() ) == false && formats.findIndex(*it) == -1 )
       formats << *it;
   }
 

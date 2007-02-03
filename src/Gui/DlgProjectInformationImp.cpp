@@ -23,19 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qdatetime.h>
-# include <qlabel.h>
-# include <qlineedit.h>
-# include <qtextedit.h>
-#endif
-
 #include <App/Document.h>
 #include <App/PropertyStandard.h>
 
 #include "DlgProjectInformationImp.h"
 #include "Document.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /**
@@ -45,9 +38,10 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgProjectInformationImp::DlgProjectInformationImp( App::Document* doc, QWidget* parent, const char* name, bool modal, WFlags fl )
-  : DlgProjectInformation( parent, name, modal, fl ), _doc(doc)
+DlgProjectInformationImp::DlgProjectInformationImp( App::Document* doc, QWidget* parent, Qt::WFlags fl )
+  : QDialog( parent, fl ), _doc(doc)
 {
+  this->setupUi(this);
   lineEditName->setText( doc->Name.getValue() );
   lineEditPath->setText( doc->FileName.getValue() );
   lineEditCreator->setText( doc->CreatedBy.getValue() );
@@ -85,9 +79,6 @@ void DlgProjectInformationImp::accept()
   QString text = lines.join("\\n");
   _doc->Comment.setValue( text.isEmpty() ? "" : text.latin1() );
   
-  DlgProjectInformation::accept();
+  QDialog::accept();
 }
-
-#include "DlgProjectInformation.cpp"
-#include "moc_DlgProjectInformation.cpp"
 

@@ -21,48 +21,61 @@
  ***************************************************************************/
 
 
-#ifndef TRANSLATOR_H__
-#define TRANSLATOR_H__
+#ifndef GUI_TRANSLATOR_H
+#define GUI_TRANSLATOR_H
 
-#include <qptrlist.h>
-#include <qtranslator.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 
 /**
- * The Translator class is an extension to Qt's QTranslator class.
- * The class provides the possibility to get the original source text
- * of an already translated text. Furthermore it provides a static method
- * to change language on the fly.
+ * The Translator class uses Qt's QTranslator objects to change the language of the application
+ * on the fly.
  * For more details see the \link i18n.html Internationalization with FreeCAD \endlink
  * documentation.
  *
  * \author Werner Mayer
  */
-class Translator : public QTranslator
+class GuiExport Translator : public QObject
 {
   Q_OBJECT
 
 public:
-  Translator( const QString& lang, QObject * parent = 0, const char * name = 0 );
-  virtual ~Translator();
+  /** @name singleton stuff */
+  //@{
+  /// Creates an instance
+  static Translator* instance(void);
+  /// Destroys the instance
+  static void destruct (void);
+  //@}
 
-  const QString& language() const;
-  QString findSourceText( const QString& ) const;
-
-  static QString getFindSourceText( const QString& );
-  static bool setLanguage ( const QString& );
-  static void installLanguage();
-  static QString currentLanguage();
-  static void removeLanguage();
+  /** Installs the specified language \a lang if available. */
+  void installLanguage ( const QString& lang );
+  /* Reloads the translators */
+  void reinstallLanguage();
+  /** Returns the currently installed language. If no language is installed an empty string is returned. */
+  QString installedLanguage() const;
+  /** Returns a list of supported languages. */
+  QStringList supportedLanguages() const;
 
 private:
-  static void updateProperty( QObject* obj );
+  Translator();
+  ~Translator();
+  void findQmFiles();
+  void removeLanguage();
 
-  static QPtrList<Translator> _instances; /**< A list of all created instances */ 
-  QString _language;
+  static Translator* _pcSingleton;
+  QString language; /**< Active language */
+  QMap<QString, QString> languages; /**< Language associated to filename containing the translated literal */
+  QList<QTranslator*> translators; /**< A list of all created translators */
 };
 
 } // namespace Gui
 
-#endif // TRANSLATOR_H__
+#endif // GUI_TRANSLATOR_H

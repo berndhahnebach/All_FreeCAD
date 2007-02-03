@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -24,22 +24,21 @@
 #ifndef GUI_CUSTOMWIDGETS_H
 #define GUI_CUSTOMWIDGETS_H
 
-#include <qbuttongroup.h>
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qiconview.h>
-#include <qlineedit.h>
-#include <qlistbox.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qslider.h>
-#include <qspinbox.h>
-#include <qwidgetplugin.h>
+#include <QButtonGroup>
+#include <QWidget>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSpinBox>
+#include <QDoubleSpinBox>
+#include <QComboBox>
+#include <QCheckBox>
 
 namespace Gui
 {
 
-class QT_WIDGET_PLUGIN_EXPORT FileChooser : public QWidget
+class FileChooser : public QWidget
 {
   Q_OBJECT
 
@@ -52,7 +51,7 @@ class QT_WIDGET_PLUGIN_EXPORT FileChooser : public QWidget
 public:
   enum Mode { File, Directory };
 
-  FileChooser ( QWidget * parent = 0, const char * name = 0 );
+  FileChooser (QWidget *parent = 0);
   virtual ~FileChooser();
 
 
@@ -83,35 +82,35 @@ private:
 
 // ------------------------------------------------------------------------------
 
-class QT_WIDGET_PLUGIN_EXPORT PrefFileChooser : public FileChooser
+class PrefFileChooser : public FileChooser
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefFileChooser ( QWidget * parent = 0, const char * name = 0 );
+  PrefFileChooser ( QWidget * parent = 0 );
   virtual ~PrefFileChooser();
 
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
 };
 
 // ------------------------------------------------------------------------------
 
-class QT_WIDGET_PLUGIN_EXPORT AccelLineEdit : public QLineEdit
+class AccelLineEdit : public QLineEdit
 {
   Q_OBJECT
 
 public:
-  AccelLineEdit ( QWidget * parent=0, const char * name=0 );
+  AccelLineEdit ( QWidget * parent=0 );
 
 protected:
   void keyPressEvent ( QKeyEvent * e);
@@ -119,35 +118,34 @@ protected:
 
 // ------------------------------------------------------------------------------
 
-class QT_WIDGET_PLUGIN_EXPORT CommandIconView : public QIconView
+class CommandIconView : public QListWidget
 {
   Q_OBJECT
 
 public:
-  CommandIconView ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+  CommandIconView ( QWidget * parent = 0 );
   virtual ~CommandIconView ();
 
-protected slots:
-  void onSelectionChanged( QIconViewItem * item );
+protected:
+  void startDrag ( Qt::DropActions supportedActions );
 
-signals:
+protected Q_SLOTS:
+  void onSelectionChanged( QListWidgetItem * item, QListWidgetItem * );
+
+Q_SIGNALS:
   void emitSelectionChanged( const QString& );
 };
 
-// ------------------------------------------------------------------------------
+// -------------------------------------------------------------
 
 class SpinBoxPrivate;
-class QT_WIDGET_PLUGIN_EXPORT SpinBox : public QSpinBox
+class SpinBox : public QSpinBox
 {
   Q_OBJECT
 
 public:
-  SpinBox ( QWidget* parent, const char* name = 0 );
-  SpinBox ( int minValue, int maxValue, int step, QWidget* parent, const char* name = 0 );
+  SpinBox ( QWidget* parent );
   virtual ~SpinBox();
-
-  void stepUp();
-  void stepDown();
 
 protected:
   void mouseMoveEvent    ( QMouseEvent* e );
@@ -162,7 +160,7 @@ private:
 };
 
 // -------------------------------------------------------------
-
+/*
 class UIntSpinBoxPrivate;
 class QT_WIDGET_PLUGIN_EXPORT UIntSpinBox : public SpinBox
 {
@@ -200,278 +198,40 @@ private:
   void updateValidator();
   UIntSpinBoxPrivate * d;
 };
-
+*/
 // -------------------------------------------------------------
 
-class FloatSpinBoxPrivate;
-class QT_WIDGET_PLUGIN_EXPORT FloatSpinBox : public SpinBox 
-{
-  Q_OBJECT
-  Q_OVERRIDE( double maxValue READ maxValue WRITE setMaxValue )
-  Q_OVERRIDE( double minValue READ minValue WRITE setMinValue )
-  Q_OVERRIDE( double lineStep READ lineStep WRITE setLineStep )
-  Q_OVERRIDE( double value READ value WRITE setValue )
-  Q_PROPERTY( uint precision READ precision WRITE setPrecision )
-
-public:
-  FloatSpinBox( QWidget * parent=0, const char * name=0 );
-  FloatSpinBox( double minValue, double maxValue, double step, double value,
-                uint precision=2, QWidget * parent=0, const char * name=0 );
-  virtual ~FloatSpinBox();
-
-  void setRange( double lower, double upper, double step=0.01, uint precision=2 );
-
-  uint precision() const;
-  void setPrecision( uint precision );
-  virtual void setPrecision( uint precision, bool force );
-
-  double value() const;
-  double minValue() const;
-  void setMinValue( double value );
-  double maxValue() const;
-  void setMaxValue( double value );
-
-  double lineStep() const;
-  void setLineStep( double step );
-
-  void setValidator( const QValidator * );
-
-signals:
-  void valueChanged( double value );
-
-public slots:
-  virtual void setValue( double value );
-
-protected:
-  virtual void valueChange();
-  virtual void stepChange();
-  virtual QString mapValueToText(int);
-  virtual int mapTextToValue(bool*);
-
-private:
-  void updateValidator();
-  uint maxPrecision() const;
-
-  FloatSpinBoxPrivate * d;
-};
-
-// -------------------------------------------------------------
-
-class QT_WIDGET_PLUGIN_EXPORT PrefSpinBox : public SpinBox
+class PrefSpinBox : public SpinBox
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefSpinBox ( QWidget * parent = 0, const char * name = 0 );
+  PrefSpinBox ( QWidget * parent = 0 );
   virtual ~PrefSpinBox();
 
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
 };
 
 // ------------------------------------------------------------------------------
 
-class QT_WIDGET_PLUGIN_EXPORT PrefFloatSpinBox : public FloatSpinBox
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefFloatSpinBox ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~PrefFloatSpinBox();
-
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
-
-private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
-};
-
-// ------------------------------------------------------------------------------
-
-class QT_WIDGET_PLUGIN_EXPORT PrefLineEdit : public QLineEdit
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefLineEdit ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~PrefLineEdit();
-
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
-
-private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
-};
-
-// ------------------------------------------------------------------------------
-
-class QT_WIDGET_PLUGIN_EXPORT PrefComboBox : public QComboBox
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefComboBox ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~PrefComboBox();
-
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
-
-private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
-};
-
-// ------------------------------------------------------------------------------
-
-class QT_WIDGET_PLUGIN_EXPORT PrefListBox : public QListBox
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefListBox ( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
-  virtual ~PrefListBox();
-
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
-
-private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
-};
-
-// ------------------------------------------------------------------------------
-
-class QT_WIDGET_PLUGIN_EXPORT PrefCheckBox : public QCheckBox
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefCheckBox ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~PrefCheckBox();
-
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
-
-private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
-};
-
-// ------------------------------------------------------------------------------
-
-class QT_WIDGET_PLUGIN_EXPORT PrefRadioButton : public QRadioButton
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefRadioButton ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~PrefRadioButton();
-
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
-
-private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
-};
-
-// ------------------------------------------------------------------------------
-
-class QT_WIDGET_PLUGIN_EXPORT PrefButtonGroup : public QButtonGroup
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefButtonGroup ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~PrefButtonGroup();
-
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
-
-private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
-};
-
-// ------------------------------------------------------------------------------
-
-class QT_WIDGET_PLUGIN_EXPORT PrefSlider : public QSlider
-{
-  Q_OBJECT
-
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
-
-public:
-  PrefSlider ( QWidget * parent = 0, const char * name = 0 );
-  virtual ~PrefSlider();
-
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
-
-private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
-};
-
-// ------------------------------------------------------------------------------
-
-class QT_WIDGET_PLUGIN_EXPORT ColorButton : public QPushButton
+class ColorButton : public QPushButton
 {
   Q_OBJECT
 
   Q_PROPERTY( QColor color READ color WRITE setColor )
 
 public:
-  ColorButton( QWidget* parent = 0, const char* name = 0 );
+  ColorButton( QWidget* parent = 0 );
   ~ColorButton();
 
   void setColor( const QColor& );
@@ -484,7 +244,7 @@ signals:
   void changed();
 
 protected:
-  void drawButtonLabel( QPainter* );
+  void paintEvent ( QPaintEvent* );
 
 private:
   QColor _col;
@@ -492,25 +252,186 @@ private:
 
 // ------------------------------------------------------------------------------
 
-class QT_WIDGET_PLUGIN_EXPORT PrefColorButton : public ColorButton
+class PrefColorButton : public ColorButton
 {
   Q_OBJECT
 
-  Q_PROPERTY( QCString prefEntry READ entryName     WRITE setEntryName     )
-  Q_PROPERTY( QCString prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
 
 public:
-  PrefColorButton ( QWidget * parent = 0, const char * name = 0 );
+  PrefColorButton ( QWidget * parent = 0 );
   virtual ~PrefColorButton();
 
-  QCString entryName    () const;
-  QCString paramGrpPath () const;
-  void  setEntryName     ( const QCString& name );
-  void  setParamGrpPath  ( const QCString& name );
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
 
 private:
-  QCString m_sPrefName;
-  QCString m_sPrefGrp;
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
+};
+
+// ------------------------------------------------------------------------------
+
+class PrefDoubleSpinBox : public QDoubleSpinBox
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefDoubleSpinBox ( QWidget * parent = 0 );
+  virtual ~PrefDoubleSpinBox();
+
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
+
+private:
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
+};
+
+// ------------------------------------------------------------------------------
+
+class PrefLineEdit : public QLineEdit
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefLineEdit ( QWidget * parent = 0 );
+  virtual ~PrefLineEdit();
+
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
+
+private:
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
+};
+
+// ------------------------------------------------------------------------------
+
+class PrefComboBox : public QComboBox
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefComboBox ( QWidget * parent = 0 );
+  virtual ~PrefComboBox();
+
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
+
+private:
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
+};
+
+// ------------------------------------------------------------------------------
+/*
+class PrefListBox : public QListBox
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefListBox ( QWidget * parent = 0 );
+  virtual ~PrefListBox();
+
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
+
+private:
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
+};
+*/
+// ------------------------------------------------------------------------------
+
+class PrefCheckBox : public QCheckBox
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefCheckBox ( QWidget * parent = 0 );
+  virtual ~PrefCheckBox();
+
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
+
+private:
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
+};
+
+// ------------------------------------------------------------------------------
+
+class PrefRadioButton : public QRadioButton
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefRadioButton ( QWidget * parent = 0 );
+  virtual ~PrefRadioButton();
+
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
+
+private:
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
+};
+
+// ------------------------------------------------------------------------------
+
+class PrefSlider : public QSlider
+{
+  Q_OBJECT
+
+  Q_PROPERTY( QByteArray prefEntry READ entryName     WRITE setEntryName     )
+  Q_PROPERTY( QByteArray prefPath  READ paramGrpPath  WRITE setParamGrpPath  )
+
+public:
+  PrefSlider ( QWidget * parent = 0 );
+  virtual ~PrefSlider();
+
+  QByteArray entryName    () const;
+  QByteArray paramGrpPath () const;
+  void  setEntryName     ( const QByteArray& name );
+  void  setParamGrpPath  ( const QByteArray& name );
+
+private:
+  QByteArray m_sPrefName;
+  QByteArray m_sPrefGrp;
 };
 
 } // namespace Gui

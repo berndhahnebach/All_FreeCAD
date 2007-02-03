@@ -21,78 +21,53 @@
  ***************************************************************************/
 
 
-#ifndef UNDOREDODLG_H
-#define UNDOREDODLG_H
+#ifndef GUI_DIALOG_DLGUNDOREDO_H
+#define GUI_DIALOG_DLGUNDOREDO_H
 
-#include <qlistbox.h>
-#include <qpopupmenu.h>
-#include <qtoolbutton.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-// forward declarations
-class QVBoxLayout; 
-class QHBoxLayout; 
-class QGridLayout; 
-class QLabel;
-class QListBox;
-class QListBoxItem;
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 namespace Dialog {
 
-/** This class implements an extension of QListBox.
- * If you select an item all items above are selected automatically.
- * This behaviour is known of the Undo/Redo dialog of a lot of applications.
- * @see UndoRedoDialog
- * \author Werner Mayer.
- */
-class UndoRedoStack : public QListBox
-{
-public:
-  UndoRedoStack( QWidget * parent=0, const char * name=0, WFlags f=0);
-  virtual ~UndoRedoStack();
-
-  void mouseMoveEvent ( QMouseEvent * e );
-  void mousePressEvent (QMouseEvent* e);
-};
-
-// ------------------------------------------------------------
-
-/** This class implements the undo/redo dialog.
+/** This class implements the undo dialog.
  * \author Werner Mayer
  */
-class UndoRedoDialog : public QPopupMenu
+class UndoDialog : public QMenu
 { 
     Q_OBJECT
 
 public:
-  enum TMode 
-  {
-    Undo, /**< Undo mode */ 
-    Redo  /**< Redo mode */
-  };
+  UndoDialog( QWidget* parent = 0 );
+  virtual ~UndoDialog();
 
-  UndoRedoDialog( QWidget* parent = 0, const char* name = 0, TMode tMode = Undo );
-  virtual ~UndoRedoDialog();
-
-  void setMode(TMode tMode);
-  TMode getMode() const;
-
-signals:
-  /** This signal is emitted by the @ref onSelected() slot */
-  void clickedListBox();
-
-protected slots:
-  void onSelChangeUndoRedoStack();
+protected Q_SLOTS:
   void onSelected();
   void onFetchInfo();
+};
 
-protected:
-  QLabel*          pTextLabel; /**< Text label to show the number of onSelected items. */
-  UndoRedoStack*   pListBox; /**< List containing the undo/redo information. */
-  TMode            tMode; /**< Either it's a undo or a redo list. */
+/** This class implements the redo dialog.
+ * \author Werner Mayer
+ */
+class RedoDialog : public QMenu
+{ 
+    Q_OBJECT
+
+public:
+  RedoDialog( QWidget* parent = 0 );
+  virtual ~RedoDialog();
+
+protected Q_SLOTS:
+  void onSelected();
+  void onFetchInfo();
 };
 
 } // namespace Dialog
 } // namespace Gui
 
-#endif
+#endif // GUI_DIALOG_DLGUNDOREDO_H

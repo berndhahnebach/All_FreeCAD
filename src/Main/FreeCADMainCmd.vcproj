@@ -4,7 +4,6 @@
 	Version="8,00"
 	Name="FreeCADMainCmd"
 	ProjectGUID="{AEB0B137-FB5F-408F-BBD3-BCE1DA1658FD}"
-	RootNamespace="FreeCADMainCmd"
 	>
 	<Platforms>
 		<Platform
@@ -57,7 +56,6 @@
 				AssemblerListingLocation=".\DebugCmd/"
 				ObjectFile=".\DebugCmd/"
 				ProgramDataBaseFileName=".\DebugCmd/"
-				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -76,7 +74,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB  python25_d.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB python25_d.lib"
 				OutputFile="DebugCmd\FreeCADCmdD.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -175,7 +173,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB  python25.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib"
 				OutputFile="ReleaseCmd\FreeCADCmd.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

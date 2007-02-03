@@ -25,6 +25,8 @@
 #ifndef _PreComp_
 # include <qdir.h>
 # include <qpainter.h>
+//Added by qt3to4:
+#include <QPixmap>
 #endif
 
 #include "BitmapFactory.h"
@@ -35,7 +37,7 @@
 #include "Icons/Icons.h"
 #include "Icons/Document.xpm"
 #include "Icons/BmpFactoryIcons.cpp"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 BitmapFactoryInst* BitmapFactoryInst::_pcSingleton = NULL;
@@ -137,15 +139,15 @@ QPixmap BitmapFactoryInst::pixmap(const char* sName, const char* sMask, Position
 
   switch (pos)
   {
-    case TopLeft:
+    case Qt::TopLeftCorner:
       break;
-    case TopRight:
+    case Qt::TopRightCorner:
       x = p1.width () - p2.width ();
       break;
-    case BottomLeft:
+    case Qt::BottomLeftCorner:
       y = p1.height() - p2.height();
       break;
-    case BottomRight:
+    case Qt::BottomRightCorner:
       x = p1.width () - p2.width ();
       y = p1.height() - p2.height();
       break;

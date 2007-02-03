@@ -92,7 +92,7 @@ CmdPartTest1::CmdPartTest1()
 
 void CmdPartTest1::activated(int iMsg)
 {
-  PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow(),"Part Box",true);
+  PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow());
   cDlg.exec();
 }
 
@@ -122,6 +122,31 @@ void CmdPartTest2::activated(int iMsg)
   updateActive();
 }
 
+//===========================================================================
+// Part_NewDoc
+//===========================================================================
+DEF_STD_CMD(CmdPartNewDoc);
+
+CmdPartNewDoc::CmdPartNewDoc()
+  :Command("Part_NewDoc")
+{
+  sAppModule    = "Part";
+  sGroup        = "Part";
+  sMenuText     = "New document";
+  sToolTipText  = "Create a empty part document";
+  sWhatsThis    = sToolTipText;
+  sStatusTip    = sToolTipText;
+  sPixmap       = "New";
+  iAccel        = 0;
+}
+
+void CmdPartNewDoc::activated(int iMsg)
+{
+  doCommand(Doc,"d = App.New()");
+
+  updateActive();
+}
+
 
 //===========================================================================
 // Part_Box
@@ -144,7 +169,7 @@ CmdPartBox::CmdPartBox()
 
 void CmdPartBox::activated(int iMsg)
 {
-  PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow(),"Part Box",true);
+  PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow());
   if ( cDlg.exec()== QDialog::Accepted )
   {
     openCommand("Part Box Create");

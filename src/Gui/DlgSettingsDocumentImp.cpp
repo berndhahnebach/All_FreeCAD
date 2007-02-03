@@ -23,22 +23,19 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-#endif
-
 #include "DlgSettingsDocumentImp.h"
 #include "PrefWidgets.h"
-#include "../Base/Console.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /**
  *  Constructs a DlgSettingsDocumentImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-DlgSettingsDocumentImp::DlgSettingsDocumentImp( QWidget* parent,  const char* name, WFlags fl )
-    : DlgSettingsDocument( parent, name, fl )
+DlgSettingsDocumentImp::DlgSettingsDocumentImp( QWidget* parent )
+    : PreferencePage( parent )
 {
+  this->setupUi(this);
 }
 
 /** 
@@ -72,6 +69,16 @@ void DlgSettingsDocumentImp::loadSettings()
   prefCheckBox2_2_2->onRestore();
 }
 
-#include "DlgSettingsDocument.cpp"
-#include "moc_DlgSettingsDocument.cpp"
+/**
+ * Sets the strings of the subwidgets using the current language.
+ */
+void DlgSettingsDocumentImp::changeEvent(QEvent *e)
+{
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi(this);
+  } else {
+    QWidget::changeEvent(e);
+  }
+}
+
 #include "moc_DlgSettingsDocumentImp.cpp"

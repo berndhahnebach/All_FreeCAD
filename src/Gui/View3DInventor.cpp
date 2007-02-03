@@ -25,10 +25,14 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
-# include <qdragobject.h>
+# include <q3dragobject.h>
 # include <qfileinfo.h>
-# include <qtimer.h>
-# include <qvbox.h>
+# include <q3vbox.h>
+//Added by qt3to4:
+#include <QDropEvent>
+#include <QKeyEvent>
+#include <QEvent>
+#include <QDragEnterEvent>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/actions/SoGetPrimitiveCountAction.h>
 # include <Inventor/nodes/SoMaterial.h>
@@ -64,12 +68,11 @@
 
 #include <locale>
 
-#define new DEBUG_CLIENTBLOCK
 using namespace Gui;
 
 TYPESYSTEM_SOURCE_ABSTRACT(Gui::View3DInventor,Gui::BaseView);
 
-View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags )
+View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, Qt::WFlags wflags )
     :MDIView( pcDocument,parent, name, wflags),_pcViwer3DPy(0)
 {
   // important for highlighting 
@@ -89,7 +92,9 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
     _viewer->setCameraType(SoOrthographicCamera::getClassTypeId());
   else
     _viewer->setCameraType(SoPerspectiveCamera::getClassTypeId());
-  _viewer->show();
+
+  // Do not show the Inventor viewer here because it flickers when we change its size
+  //_viewer->show();
 
   stopSpinTimer = new QTimer(this);
   connect(stopSpinTimer, SIGNAL(timeout()), this, SLOT(stopSpinning()));
@@ -546,10 +551,10 @@ void View3DInventor::stopSpinning()
  */
 void View3DInventor::dropEvent ( QDropEvent * e )
 {
-  if ( QUriDrag::canDecode(e) )
+  if ( Q3UriDrag::canDecode(e) )
   {
     QStringList fn;
-    QUriDrag::decodeLocalFiles(e, fn);
+    Q3UriDrag::decodeLocalFiles(e, fn);
 
     App::Document* pDoc = getAppDocument();
     if ( pDoc ) 
@@ -575,7 +580,7 @@ void View3DInventor::dropEvent ( QDropEvent * e )
 void View3DInventor::dragEnterEvent ( QDragEnterEvent * e )
 {
   // Here we must allow uri drafs and check them in dropEvent
-  if ( QUriDrag::canDecode(e) )
+  if ( Q3UriDrag::canDecode(e) )
     e->accept();
   else
     e->ignore();
@@ -609,7 +614,7 @@ bool View3DInventor::eventFilter(QObject* o, QEvent* e)
   // As long as this widget is a top-level widget (either 'TopLevel' or 'Fullscrenn' mode) we 
   // redirect any accel event to the main window that handles such events.
   // In case the event isn't handled by any widget we receive it again as a key event.
-  if ( _actualMode != Normal && o == this && e->type() == QEvent::Accel ) {
+  if ( _actualMode != Normal && o == this && e->type() == QEvent::Shortcut ) {
     QApplication::sendEvent(getMainWindow(),e);
     return true;
   } else {
@@ -623,7 +628,7 @@ void View3DInventor::keyPressEvent ( QKeyEvent* e )
   {
     // If the widget is in fullscreen mode then we can return to normal mode either
     // by pressing the matching accelerator or ESC. 
-    if ( e->key() == Key_Escape )
+    if ( e->key() == Qt::Key_Escape )
     {
       setCurrentViewMode(Normal);
     }

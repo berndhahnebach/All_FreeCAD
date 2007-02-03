@@ -23,19 +23,19 @@
 #ifndef DLGPARTBOXIMP_H
 #define DLGPARTBOXIMP_H
 
-#include "DlgPartBox.h"
+#include "ui_DlgPartBox.h"
 
 namespace PartGui {
 
-class DlgPartBoxImp : public DlgPartBox
+class DlgPartBoxImp : public QDialog, public Ui_DlgPartBox
 { 
     Q_OBJECT
 
 public:
-    DlgPartBoxImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgPartBoxImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~DlgPartBoxImp();
 
-public slots:
+public Q_SLOTS:
     void OnApply();
 
 };

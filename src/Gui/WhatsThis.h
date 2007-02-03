@@ -21,14 +21,20 @@
  ***************************************************************************/
 
 
-#ifndef WHATS_THIS_H
-#define WHATS_THIS_H
+#ifndef GUI_WHATSTHIS_H
+#define GUI_WHATSTHIS_H
 
-#include <qwhatsthis.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 #include "Command.h"
 
-class QTextBrowser;
+class Q3TextBrowser;
 
 namespace Gui {
 
@@ -38,7 +44,7 @@ namespace Gui {
  * @see Gui::HelpView
  * \author Werner Mayer
  */
-class WhatsThis : public QWhatsThis
+class WhatsThis : public Q3WhatsThis
 {
 public:
   WhatsThis( QWidget *);
@@ -49,14 +55,14 @@ public:
   void setText( const QString& txt );
   virtual QString text( const QPoint & );
 
-  static void setHelpView( QTextBrowser* );
+  static void setHelpView( Q3TextBrowser* );
 
 private:
   QWidget* _widget; /**< Corresponding widget to object. */
   QString _url; /**< URL of the Html document. */
   QString _txt; /**< Description of the widget. */
 
-  static QTextBrowser* _helpViewer; /**< global HelpViewer to display help. */
+  static Q3TextBrowser* _helpViewer; /**< global HelpViewer to display help. */
 };
 
 // --------------------------------------------------------------------
@@ -64,7 +70,7 @@ private:
 /**
  * @author Werner Mayer
  */
-class StdCmdDescription : public ToggleCommand
+class StdCmdDescription : public Command
 {
 public:
   StdCmdDescription();
@@ -74,17 +80,18 @@ public:
   static void enterDescriptionMode();
   static void leaveDescriptionMode();
 
-  static void setHelpView( QTextBrowser* );
+  static void setHelpView( Q3TextBrowser* );
   static void setSource( const QString& );
 
 protected:
+  Action* createAction(void);
   void activated(int iMsg);
 
 private:
   static bool _descrMode;
-  static QTextBrowser* _helpViewer; /**< global HelpViewer to display help. */
+  static Q3TextBrowser* _helpViewer; /**< global HelpViewer to display help. */
 };
 
 } // namespace Gui
 
-#endif // WHATS_THIS_H
+#endif // GUI_WHATSTHIS_H

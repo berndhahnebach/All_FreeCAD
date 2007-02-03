@@ -40,9 +40,9 @@ class GuiExport FileEditorItem: public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  FileEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  FileEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
-protected slots:
+protected Q_SLOTS:
   void onChangeFile();
 
 protected:
@@ -67,9 +67,9 @@ class GuiExport PixmapEditorItem: public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  PixmapEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  PixmapEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
-protected slots:
+protected Q_SLOTS:
   void onChangePixmap();
 
 protected:
@@ -93,7 +93,7 @@ class GuiExport ChildrenEditorItem: public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  ChildrenEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  ChildrenEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );

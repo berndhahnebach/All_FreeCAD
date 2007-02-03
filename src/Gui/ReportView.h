@@ -21,11 +21,17 @@
  ***************************************************************************/
 
 
-#ifndef GUI_DOCKWND_REPORT_VIEW_H
-#define GUI_DOCKWND_REPORT_VIEW_H
+#ifndef GUI_DOCKWND_REPORTVIEW_H
+#define GUI_DOCKWND_REPORTVIEW_H
 
-#include <qsyntaxhighlighter.h>
-#include <qtextedit.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 #include <Base/Console.h>
 #include "DockWindow.h"
@@ -50,18 +56,18 @@ class ReportView : public Gui::DockWindow
   Q_OBJECT
 
 public:
-  ReportView( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  ReportView( QWidget* parent = 0);
   ~ReportView();
 
-  PythonConsole* getPythonConsole(void) const { return pyc; }
+  PythonConsole* getPythonConsole(void) const { return tabPython; }
 
 protected:
-  void languageChange();
+  void changeEvent(QEvent *e);
 
 private:
-  QTabWidget* tab;
-  ReportOutput* mle; /**< Output window */
-  PythonConsole* pyc; /**< Python console */
+  QTabWidget* tabWidget;
+  ReportOutput* tabOutput; /**< Output window */
+  PythonConsole* tabPython; /**< Python console */
 };
 
 /** Syntax highlighter to write log or normal messages, warnings and errors in different colors.
@@ -82,7 +88,7 @@ public:
   ~ReportHighlighter();
 
   /** Parses the given text and highlight it in the right colors. */
-  int highlightParagraph ( const QString & text, int endStateOfLastPara );
+  void highlightBlock ( const QString & text );
   /** 
    * Sets the current paragraph type used in ReportOutput
    * @see ReportOutput::Message
@@ -115,8 +121,6 @@ private:
   /** @name for internal use only */
   //@{
   Paragraph type;
-  int lastPos;
-  int lastPar;
   QColor txtCol, logCol, warnCol, errCol;
   //@}
 };
@@ -131,7 +135,7 @@ class GuiExport ReportOutput : public QTextEdit, public WindowParameter, public 
   Q_OBJECT
 
 public:
-  ReportOutput(QWidget* parent=0, const char* name=0);
+  ReportOutput(QWidget* parent=0);
   virtual ~ReportOutput();
 
   /** Observes its parameter group. */
@@ -145,14 +149,6 @@ public:
   void Error  (const char * s);
   /** Does not do anything */
   void Log (const char * s);
-
-  /** 
-   * Appends new text \a text and scrolls to bottom if the widget itself is not visible.
-   * \Renark Normally a scrollToBottom() call in the constructor should be sufficient
-   * but works with WindowsXP style only but not for all other styles, at least on 
-   * WindowsXP.
-   */
-  virtual void append ( const QString & text );
 
   /// returns the name for observer handling
   const char* Name(void){return "ReportOutput";}
@@ -168,12 +164,10 @@ public:
   bool isLogging() const;
 
 protected:
-  /** For internal use only */
-  bool event( QEvent* ev );
   /** Pops up the context menu with some extensions */
-  QPopupMenu * createPopupMenu ( const QPoint & pos );
+  void contextMenuEvent ( QContextMenuEvent* e );
 
-public slots:
+public Q_SLOTS:
   /** Save the report messages into a file. */
   void onSaveAs();
   /** Toggles the report of errors. */
@@ -190,4 +184,4 @@ private:
 } // namespace DockWnd
 } // namespace Gui
 
-#endif //GUI_DOCKWND_REPORT_VIEW_H
+#endif //GUI_DOCKWND_REPORTVIEW_H

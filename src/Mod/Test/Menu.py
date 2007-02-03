@@ -47,15 +47,15 @@ class MenuCreateCases(unittest.TestCase):
         FreeCAD.PrintLog ('Setup Test menu...\n')
         list = ["Test_TestAll","Test_TestDoc","Test_TestBase","Test_TestWork"]
         w = FreeCADGui.GetWorkbench('Test framework')
-        w.AppendMenu("TestMenu",list)
-        w.Activate()
+        w.appendMenu("TestMenu",list)
+        w.activate()
         FreeCADGui.UpdateGui()
 
     def testMenu(self):
         # check menu for items
         FreeCAD.PrintLog ('Checking Test menu...\n')
         w = FreeCADGui.GetWorkbench('Test framework')
-        list = w.ListMenus()
+        list = w.listMenus()
         self.b = False
         for i in list:
           if i == 'TestMenu': self.b=True
@@ -73,15 +73,15 @@ class MenuDeleteCases(unittest.TestCase):
     def setUp(self):
         FreeCAD.PrintLog ('Remove Test menu...\n')
         w = FreeCADGui.GetWorkbench('Test framework')
-        w.RemoveMenu("TestMenu")
-        w.Activate()
+        w.removeMenu("TestMenu")
+        w.activate()
         FreeCADGui.UpdateGui()
 
     def testMenu(self):
         # check menu for items
         FreeCAD.PrintLog ('Checking Test menu...\n')
         w = FreeCADGui.GetWorkbench('Test framework')
-        list = w.ListMenus()
+        list = w.listMenus()
         self.b = True
         for i in list:
           if i == 'TestMenu': self.b=False

@@ -1,13 +1,9 @@
-SOURCES  += plugin.cpp customwidgets.cpp
-HEADERS  += plugin.h customwidgets.h
-DESTDIR   = plugin
-TARGET    = FreeCAD_widgets
 
-target.path=$$plugins.path
+TEMPLATE = app
+TARGET = FreeCAD_widgets
+DEPENDPATH += .
+INCLUDEPATH += .
 
-#INSTALLS    += target
-TEMPLATE     = lib
-CONFIG      += qt warn_on release plugin thread
-INCLUDEPATH += $$QT_SOURCE_TREE/tools/designer/interfaces
-DBFILE       = plugin.db
-LANGUAGE     = C++
+# Input
+HEADERS += customwidgets.h plugin.h
+SOURCES += customwidgets.cpp plugin.cpp

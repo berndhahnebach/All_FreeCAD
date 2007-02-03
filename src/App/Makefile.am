@@ -64,7 +64,7 @@ libFreeCADApp_la_SOURCES=\
 		VectorPy.h
 
 %Script.h: FreeCAD%.py
-	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
 
 # the library search path.
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
@@ -73,7 +73,7 @@ libFreeCADApp_la_LIBADD   = \
 		-lFreeCADBase -l@PYTHON_LIB@ -lxerces-c
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I..
+INCLUDES= $(all_includes)
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCApp

@@ -38,6 +38,7 @@ class BaseExport Exception : public BaseClass
 
 public:
   Exception(const char * sMessage);
+  Exception(const std::string& sMessage);
   Exception(void);
   Exception(const Exception &inst);
   virtual ~Exception() throw() {}

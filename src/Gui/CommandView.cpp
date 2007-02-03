@@ -23,16 +23,16 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qmessagebox.h>
-# include <qstringlist.h>
-# include <qtextedit.h>
-# include <Inventor/SbBox.h>
-# include <Inventor/SbViewportRegion.h>
-# include <Inventor/nodes/SoOrthographicCamera.h>
-# include <Inventor/nodes/SoPerspectiveCamera.h>
-# include <Inventor/events/SoMouseButtonEvent.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+#ifndef __InventorAll__
+# include "InventorAll.h"
 #endif
 
 
@@ -58,81 +58,23 @@
 #include <Base/Reader.h>
 #include <App/Document.h>
 #include <App/Feature.h>
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 using Gui::Dialog::DlgSettingsImageImp;
 
 void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comment);
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//===========================================================================
-// Std_OrthographicCamera
-//===========================================================================
-DEF_STD_CMD_A(StdCmdOrthographicCamera);
-
-StdCmdOrthographicCamera::StdCmdOrthographicCamera()
-  :Command("Std_OrthographicCamera")
-{
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Orthographic view");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
-  sStatusTip    = sMenuText;
-  sPixmap       = "Std_Tool1";
-  iAccel        = 0;
-}
-
-void StdCmdOrthographicCamera::activated(int iMsg)
-{
-  doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Orthographic\")");
-}
-
-bool StdCmdOrthographicCamera::isActive(void)
-{
-  return true;
-}
-//===========================================================================
-// Std_PerspectiveCamera
-//===========================================================================
-DEF_STD_CMD_A(StdCmdPerspectiveCamera);
-
-StdCmdPerspectiveCamera::StdCmdPerspectiveCamera()
-  :Command("Std_PerspectiveCamera")
-{
-  sGroup        = QT_TR_NOOP("Standard-View");
-  sMenuText     = QT_TR_NOOP("Perspective view");
-  sToolTipText  = sMenuText;
-  sWhatsThis    = sMenuText;
-  sStatusTip    = sMenuText;
-  sPixmap       = "Std_Tool1";
-  iAccel        = 0;
-}
-
-void StdCmdPerspectiveCamera::activated(int iMsg)
-{
-  doCommand(Command::Gui,"Gui.activeDocument().activeView().setCameraType(\"Perspective\")");
-}
-
-bool StdCmdPerspectiveCamera::isActive(void)
-{
-  return true;
-}
 
 //===========================================================================
 // Std_CameraType
 //===========================================================================
-DEF_STD_CMD_GROUP_A(StdCameraType);
+DEF_STD_CMD_AC(StdCameraType);
 
 StdCameraType::StdCameraType()
- : CommandGroup("Std_CameraType")
+  : Command("Std_CameraType")
 {
-  sGroup        = QT_TR_NOOP("Standard-View");
-
-  const char* sMenuText1  = QT_TR_NOOP("Orthographic view");
-  const char* sMenuText2  = QT_TR_NOOP("Perspective view");
-  
-  _aCommands.push_back( new CommandItem(this, sMenuText1,sMenuText1,sMenuText1,sMenuText1/*,"ortho_xpm"*/,      0,Qt::Key_O) );
-  _aCommands.push_back( new CommandItem(this, sMenuText2,sMenuText2,sMenuText2,sMenuText2/*,"perspective_xpm"*/,0,Qt::Key_P) );
+  sGroup = QT_TR_NOOP("Standard-View");
 }
 
 void StdCameraType::activated(int iMsg)
@@ -145,20 +87,18 @@ void StdCameraType::activated(int iMsg)
 
 bool StdCameraType::isActive(void)
 {
-  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
   if ( view )
   {
     // update the action group if needed
-    ActionGroup* pActGrp = reinterpret_cast<ActionGroup*>(_pcAction->qt_cast("Gui::ActionGroup"));
+    ActionGroup* pActGrp = qobject_cast<ActionGroup*>(_pcAction);
     if ( pActGrp )
     {
-      int index = pActGrp->currentActive();
+      int index = pActGrp->checkedAction();
       int type = (view->getViewer()->getCameraType() == SoOrthographicCamera::getClassTypeId() ? 0 : 1);
       // mark the appropriate menu item but do not invoke the command 
       if ( type != index ) {
-        pActGrp->blockSignals(true);
-        pActGrp->setCurrentActive( type );
-        pActGrp->blockSignals(false);
+        pActGrp->setCheckedAction( type );
       }
     }
 
@@ -166,6 +106,29 @@ bool StdCameraType::isActive(void)
   }
 
   return false;
+}
+
+Action * StdCameraType::createAction(void)
+{
+  const char* orthograph = QT_TR_NOOP("Orthographic view");
+  const char* perspectiv = QT_TR_NOOP("Perspective view");
+  const char* orthoInfo = QT_TR_NOOP("Switches to orthographic view mode");
+  const char* perspInfo = QT_TR_NOOP("Switches to perspective view mode");
+  ActionGroup* pcAction = new ActionGroup(this, getMainWindow());
+  QAction* ortho = pcAction->addAction(QObject::tr(orthograph));
+  ortho->setToolTip(QObject::tr(orthoInfo));
+  ortho->setStatusTip(QObject::tr(orthoInfo));
+  ortho->setWhatsThis(QObject::tr(orthoInfo));
+  ortho->setShortcut(Qt::Key_O);
+  ortho->setCheckable(true);
+  QAction* persp = pcAction->addAction(QObject::tr(perspectiv));
+  persp->setToolTip(QObject::tr(perspInfo));
+  persp->setStatusTip(QObject::tr(perspInfo));
+  persp->setWhatsThis(QObject::tr(perspInfo));
+  persp->setShortcut(Qt::Key_P);
+  persp->setCheckable(true);
+  persp->setChecked(true);
+  return pcAction;
 }
 
 //===========================================================================
@@ -179,12 +142,20 @@ public:
 protected: 
   virtual void activated(int iMsg);
   virtual bool isActive(void);
-  virtual QAction * createAction(void);
+  virtual Action * createAction(void);
   virtual void languageChange();
+private:
+  const int maxViews;
+  int savedViews;
+  int offset;
+  QAction* saveView;
+  QAction* freezeView;
+  QAction* clearView;
+  QAction* separator;
 };
 
 StdCmdFreezeViews::StdCmdFreezeViews()
-  :Command("Std_FreezeViews")
+  : Command("Std_FreezeViews"), maxViews(50), savedViews(0)
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Freeze display");
@@ -194,33 +165,36 @@ StdCmdFreezeViews::StdCmdFreezeViews()
   iAccel        = Qt::SHIFT+Qt::Key_F;
 }
 
-QAction * StdCmdFreezeViews::createAction(void)
+Action * StdCmdFreezeViews::createAction(void)
 {
-  ListActionGroup* pcAction = new ListActionGroup( this, getMainWindow(),sName, false );
-  pcAction->setUsesDropDown( true );
+  ActionGroup* pcAction = new ActionGroup(this, getMainWindow());
+  pcAction->setDropDownMenu(true);
   pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
   pcAction->setStatusTip(QObject::tr(sStatusTip));
   pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  if(sPixmap)
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
+  
+  // add the action items
+  saveView = pcAction->addAction(QObject::tr("Save views"));
+  pcAction->addAction(QObject::tr("Restore views"));
+  pcAction->addAction("")->setSeparator(true);
+  freezeView = pcAction->addAction(QObject::tr("Freeze view"));
+  freezeView->setShortcut(iAccel);
+  clearView = pcAction->addAction(QObject::tr("Clear views"));
+  separator = pcAction->addAction("");
+  separator->setSeparator(true);
+  offset = pcAction->actions().count();
 
-  pcAction->addActionData( QObject::tr("Save views") );
-  pcAction->addActionData( QObject::tr("Restore views") );
-  pcAction->addSeparator();
-  pcAction->addActionData( QObject::tr("Freeze view") );
-  QAction* action = pcAction->getAction(2);
-  if (action)
-    action->setAccel(iAccel);
-  pcAction->addSeparator();
+  // allow up to 50 views
+  for (int i=0; i<maxViews; i++)
+    pcAction->addAction("")->setVisible(false);
 
   return pcAction;
 }
 
 void StdCmdFreezeViews::activated(int iMsg)
 {
-  ListActionGroup* pcAction = dynamic_cast<ListActionGroup*>(_pcAction);
+  ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
   
   if ( iMsg == 0 ) {
     // Save the views to an XML file
@@ -229,13 +203,15 @@ void StdCmdFreezeViews::activated(int iMsg)
     std::ofstream str( file.latin1(), std::ios::out );
     if ( str && str.is_open() )
     {
-      int ct = pcAction->countActions()-3;
+      QList<QAction*> acts = pcAction->actions();      
       str << "<?xml version='1.0' encoding='utf-8'?>" << std::endl
           << "<FrozenViews SchemaVersion=\"1\">" << std::endl;
-      str << "  <Views Count=\"" << ct <<"\">" << std::endl;
-      for ( int i=0; i<ct; i++ )
-      {
-        QString data = pcAction->getData(i+3);
+      str << "  <Views Count=\"" << savedViews <<"\">" << std::endl;
+
+      for (QList<QAction*>::ConstIterator it = acts.begin()+offset; it != acts.end(); ++it) {
+        if ( !(*it)->isVisible() )
+          break;
+        QString data = (*it)->toolTip();
 
         // remove the first line because it's a comment like '#Inventor V2.1 ascii'
         QString viewPos="";
@@ -249,10 +225,20 @@ void StdCmdFreezeViews::activated(int iMsg)
 
         str << "    <Camera settings=\"" << viewPos.latin1() << "\"/>" << std::endl;
       }
+
       str << "  </Views>" << std::endl;
       str << "</FrozenViews>" << std::endl;
     }
   } else if ( iMsg == 1 ) {
+    // Should we clear the already saved views
+    if ( savedViews > 0 ) {
+      int ret = QMessageBox::question(getMainWindow(), QObject::tr("Restore views"), 
+        QObject::tr("Importing the restored views would clear the already stored views.\n"
+        "Do you want to continue?"), QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape); 
+      if (ret!=QMessageBox::Yes)
+        return;
+    }
+
     // Restore the views from an XML file
     QString dir = FileDialog::getWorkingDirectory();
     QString file = FileDialog::getOpenFileName(dir, QObject::tr("Frozen views (*.cam)"), getMainWindow(),0,QObject::tr("Save frozen views"));
@@ -260,90 +246,118 @@ void StdCmdFreezeViews::activated(int iMsg)
     Base::XMLReader xmlReader(file.latin1(), str);
     xmlReader.readElement("FrozenViews");
     long scheme = xmlReader.getAttributeAsInteger("SchemaVersion");
-    int ctViews = pcAction->countActions()-3+1;
-
     // SchemeVersion "1"
     if ( scheme == 1 ) {
       // read the views itself
       xmlReader.readElement("Views");
       int ct = xmlReader.getAttributeAsInteger("Count");
-      for(int i=0; i<ct; i++)
+      QList<QAction*> acts = pcAction->actions();      
+
+      int numRestoredViews = std::min<int>(ct, acts.size()-offset);
+      savedViews = numRestoredViews;
+      
+      if (numRestoredViews > 0)
+        separator->setVisible(true);
+      for(int i=0; i<numRestoredViews; i++)
       {
         xmlReader.readElement("Camera");
         const char* camera = xmlReader.getAttribute("settings");
-        QString viewnr = QString(QObject::tr("Restore view &%1")).arg(ctViews+i);
-        pcAction->addActionData( viewnr, camera );
-        if ( ctViews+i < 10 ) {
+        QString viewnr = QString(QObject::tr("Restore view &%1")).arg(i+1);
+        acts[i+offset]->setText(viewnr);
+        acts[i+offset]->setToolTip(camera);
+        acts[i+offset]->setVisible(true);
+        if ( i < 9 ) {
           int accel = Qt::CTRL+Qt::Key_1;
-          QAction* action = pcAction->getAction(ctViews+2+i);
-          if (action)
-            action->setAccel(accel+ctViews+i-1);
+          acts[i+offset]->setShortcut(accel+i);
         }
       }
 
       xmlReader.readEndElement("Views");
+
+      // if less views than actions
+      for (int index = numRestoredViews+offset; index < acts.count(); index++)
+        acts[index]->setVisible(false);
     }
  
     xmlReader.readEndElement("FrozenViews");
-  }
-  else if ( iMsg == 3 ) {
+  } else if ( iMsg == 3 ) {
     // Create a new view
     const char* ppReturn=0;
     getGuiApplication()->sendMsgToActiveView("GetCamera",&ppReturn);
-    int ctViews = pcAction->countActions()-3+1;
-    QString viewnr = QString(QObject::tr("Restore view &%1")).arg(ctViews);
-    pcAction->addActionData( viewnr, ppReturn );
-    if ( ctViews < 10 ) {
-      int accel = Qt::CTRL+Qt::Key_1;
-      QAction* action = pcAction->getAction(ctViews+2);
-      if (action)
-        action->setAccel(accel+ctViews-1);
+
+    QList<QAction*> acts = pcAction->actions();
+    int index = 0;
+    for (QList<QAction*>::ConstIterator it = acts.begin()+offset; it != acts.end(); ++it, index++) {
+      if ( !(*it)->isVisible() ) {
+        savedViews++;
+        QString viewnr = QString(QObject::tr("Restore view &%1")).arg(index+1);
+        (*it)->setText(viewnr);
+        (*it)->setToolTip(ppReturn);
+        (*it)->setVisible(true);
+        if ( index < 9 ) {
+          int accel = Qt::CTRL+Qt::Key_1;
+          (*it)->setShortcut(accel+index);
+        }
+        break;
+      }
     }
-  } else {
+  } else if ( iMsg == 4 ) {
+    savedViews = 0;
+    QList<QAction*> acts = pcAction->actions();   
+    for (QList<QAction*>::ConstIterator it = acts.begin()+offset; it != acts.end(); ++it)
+      (*it)->setVisible(false);
+  } else if ( iMsg >= offset ) {
     // Activate a view
-    QString data = pcAction->getData(iMsg-2);
+    QList<QAction*> acts = pcAction->actions();
+    QString data = acts[iMsg]->toolTip();
     QString send = QString("SetCamera %1").arg(data);
     getGuiApplication()->sendMsgToActiveView(send.latin1());
   }
 }
 
+bool StdCmdFreezeViews::isActive(void)
+{
+  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  if (view) {
+    saveView->setEnabled(savedViews > 0);
+    freezeView->setEnabled(savedViews < maxViews);
+    clearView->setEnabled(savedViews > 0);
+    separator->setVisible(savedViews > 0);
+    return true;
+  } else {
+    separator->setVisible(savedViews > 0);
+  }
+
+  return false;
+}
+
 void StdCmdFreezeViews::languageChange()
 {
   Command::languageChange();
-  ListActionGroup* pcAction = (ListActionGroup*)getAction();
 
-  if (pcAction)
-  {
-    QAction* action;
-    action = pcAction->getAction(0);
-    action->setMenuText(QObject::tr("Save views"));
-    action = pcAction->getAction(1);
-    action->setMenuText(QObject::tr("Restore views"));
-    action = pcAction->getAction(2);
-    action->setMenuText(QObject::tr("Freeze view"));
-
-    int ctViews = pcAction->countActions()-3+1;
-    for(int i=1; i<ctViews; i++)
-    {
-      QString viewnr = QString(QObject::tr("Restore view &%1")).arg(i);
-      action = pcAction->getAction(2+i);
-      action->setMenuText(viewnr);
+  ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
+  QList<QAction*> acts = pcAction->actions();
+  acts[0]->setText(QObject::tr("Save views"));
+  acts[1]->setText(QObject::tr("Restore views"));
+  acts[3]->setText(QObject::tr("Freeze view"));
+  acts[4]->setText(QObject::tr("Clear views"));
+  int index=1;
+  for (QList<QAction*>::ConstIterator it = acts.begin()+5; it != acts.end(); ++it, index++) {
+    if ( (*it)->isVisible() ) {
+      QString viewnr = QString(QObject::tr("Restore view &%1")).arg(index);
+      (*it)->setText(viewnr);
     }
   }
-}
-
-bool StdCmdFreezeViews::isActive(void)
-{
-  return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()));
 }
 
 //===========================================================================
 // Std_ToggleClipPlane
 //===========================================================================
-DEF_STD_CMD_TOGGLE_A(StdCmdToggleClipPlane);
+
+DEF_STD_CMD_AC(StdCmdToggleClipPlane);
 
 StdCmdToggleClipPlane::StdCmdToggleClipPlane()
-  :ToggleCommand("Std_ToggleClipPlane")
+  : Command("Std_ToggleClipPlane")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Clipping plane");
@@ -352,31 +366,36 @@ StdCmdToggleClipPlane::StdCmdToggleClipPlane()
   sStatusTip    = QT_TR_NOOP("Toggles clipping plane for active view");
 }
 
+Action * StdCmdToggleClipPlane::createAction(void)
+{
+  Action *pcAction = (Action*)Command::createAction();
+  pcAction->setCheckable( true );
+  return pcAction;
+}
+
 void StdCmdToggleClipPlane::activated(int iMsg)
 {
-  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
-  if (view)
-  {
-    view->toggleClippingPlane();
+  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  if (view) {
+    if (iMsg > 0 && !view->hasClippingPlane())
+      view->toggleClippingPlane();
+    else if (iMsg == 0 && view->hasClippingPlane())
+      view->toggleClippingPlane();
   }
 }
 
 bool StdCmdToggleClipPlane::isActive(void)
 {
-  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
   if (view){
-    if (_pcAction->isOn() != view->hasClippingPlane()){
-      _pcAction->blockSignals(true);
-      _pcAction->setOn(view->hasClippingPlane());
-      _pcAction->blockSignals(false);
-    }
+    Action* action = qobject_cast<Action*>(_pcAction);
+    if (action->isChecked() != view->hasClippingPlane())
+      action->setChecked(view->hasClippingPlane());
     return true;
   } else {
-    if (_pcAction->isOn()){
-      _pcAction->blockSignals(true);
-      _pcAction->setOn(false);
-      _pcAction->blockSignals(false);
-    }
+    Action* action = qobject_cast<Action*>(_pcAction);
+    if (action->isChecked())
+      action->setChecked(false);
     return false;
   }
 }
@@ -387,7 +406,7 @@ bool StdCmdToggleClipPlane::isActive(void)
 DEF_STD_CMD_A(StdCmdToggleVisibility);
 
 StdCmdToggleVisibility::StdCmdToggleVisibility()
-  :Command("Std_ToggleVisibility")
+  : Command("Std_ToggleVisibility")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Toggle visibility");
@@ -427,7 +446,7 @@ bool StdCmdToggleVisibility::isActive(void)
 DEF_STD_CMD_A(StdCmdSetMaterial);
 
 StdCmdSetMaterial::StdCmdSetMaterial()
-  :Command("Std_SetMaterial")
+  : Command("Std_SetMaterial")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Display...");
@@ -440,7 +459,7 @@ StdCmdSetMaterial::StdCmdSetMaterial()
 
 void StdCmdSetMaterial::activated(int iMsg)
 {
-  Gui::Dialog::DlgDisplayPropertiesImp dlg(getMainWindow()->activeWindow(), "Display", true );
+  Gui::Dialog::DlgDisplayPropertiesImp dlg(getMainWindow()->activeWindow());
   dlg.exec();
 }
 
@@ -455,7 +474,7 @@ bool StdCmdSetMaterial::isActive(void)
 DEF_3DV_CMD(StdCmdViewBottom)
 
 StdCmdViewBottom::StdCmdViewBottom()
-  :Command("Std_ViewBottom")
+  : Command("Std_ViewBottom")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Bottom");
@@ -477,7 +496,7 @@ void StdCmdViewBottom::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewFront);
 
 StdCmdViewFront::StdCmdViewFront()
-  :Command("Std_ViewFront")
+  : Command("Std_ViewFront")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Front");
@@ -499,7 +518,7 @@ void StdCmdViewFront::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewLeft);
 
 StdCmdViewLeft::StdCmdViewLeft()
-  :Command("Std_ViewLeft")
+  : Command("Std_ViewLeft")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Left");
@@ -521,7 +540,7 @@ void StdCmdViewLeft::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewRear);
 
 StdCmdViewRear::StdCmdViewRear()
-  :Command("Std_ViewRear")
+  : Command("Std_ViewRear")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Rear");
@@ -543,7 +562,7 @@ void StdCmdViewRear::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewRight);
 
 StdCmdViewRight::StdCmdViewRight()
-  :Command("Std_ViewRight")
+  : Command("Std_ViewRight")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Right");
@@ -565,7 +584,7 @@ void StdCmdViewRight::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewTop);
 
 StdCmdViewTop::StdCmdViewTop()
-  :Command("Std_ViewTop")
+  : Command("Std_ViewTop")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Top");
@@ -587,7 +606,7 @@ void StdCmdViewTop::activated(int iMsg)
 DEF_3DV_CMD(StdCmdViewAxo);
 
 StdCmdViewAxo::StdCmdViewAxo()
-  :Command("Std_ViewAxo")
+  : Command("Std_ViewAxo")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Axometric");
@@ -609,7 +628,7 @@ void StdCmdViewAxo::activated(int iMsg)
 DEF_STD_CMD_A(StdCmdViewFitAll);
 
 StdCmdViewFitAll::StdCmdViewFitAll()
-  :Command("Std_ViewFitAll")
+  : Command("Std_ViewFitAll")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Fit all");
@@ -633,20 +652,46 @@ bool StdCmdViewFitAll::isActive(void)
 //===========================================================================
 // Std_ViewDockUndockFullscreen
 //===========================================================================
-DEF_STD_CMD_GROUP_A(StdViewDockUndockFullscreen);
+DEF_STD_CMD_AC(StdViewDockUndockFullscreen);
 
 StdViewDockUndockFullscreen::StdViewDockUndockFullscreen()
-    : CommandGroup("Std_ViewDockUndockFullscreen", true, true)
+  : Command("Std_ViewDockUndockFullscreen")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Display mode");
   sToolTipText= QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
   sWhatsThis  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
   sStatusTip  = QT_TR_NOOP("Display the active view either in fullscreen, in undocked or docked mode");
-  
-  _aCommands.push_back( new CommandItem(this, QT_TR_NOOP("Docked"),    0,0,0,0,Qt::Key_D) );
-  _aCommands.push_back( new CommandItem(this, QT_TR_NOOP("Undocked"),  0,0,0,0,Qt::Key_U) );
-  _aCommands.push_back( new CommandItem(this, QT_TR_NOOP("Fullscreen"),0,0,0,0,Qt::Key_F) );
+}
+
+Action * StdViewDockUndockFullscreen::createAction(void)
+{
+  ActionGroup* pcAction = new ActionGroup(this, getMainWindow());
+  pcAction->setDropDownMenu(true);
+  pcAction->setText(QObject::tr(sMenuText));
+
+  QAction* docked = pcAction->addAction(QObject::tr(QT_TR_NOOP("Docked")));
+  docked->setToolTip(QObject::tr(sToolTipText));
+  docked->setStatusTip(QObject::tr(sStatusTip));
+  docked->setWhatsThis(QObject::tr(sWhatsThis));
+  docked->setShortcut(Qt::Key_D);
+  docked->setCheckable(true);
+
+  QAction* undocked = pcAction->addAction(QObject::tr(QT_TR_NOOP("Undocked")));
+  undocked->setToolTip(QObject::tr(sToolTipText));
+  undocked->setStatusTip(QObject::tr(sStatusTip));
+  undocked->setWhatsThis(QObject::tr(sWhatsThis));
+  undocked->setShortcut(Qt::Key_U);
+  undocked->setCheckable(true);
+
+  QAction* fullscr = pcAction->addAction(QObject::tr(QT_TR_NOOP("Fullscreen")));
+  fullscr->setToolTip(QObject::tr(sToolTipText));
+  fullscr->setStatusTip(QObject::tr(sStatusTip));
+  fullscr->setWhatsThis(QObject::tr(sWhatsThis));
+  fullscr->setShortcut(Qt::Key_F);
+  fullscr->setCheckable(true);
+
+  return pcAction;
 }
 
 void StdViewDockUndockFullscreen::activated(int iMsg)
@@ -676,17 +721,15 @@ bool StdViewDockUndockFullscreen::isActive(void)
   if ( view )
   {
     // update the action group if needed
-    ActionGroup* pActGrp = reinterpret_cast<ActionGroup*>(_pcAction->qt_cast("Gui::ActionGroup"));
+    ActionGroup* pActGrp = qobject_cast<ActionGroup*>(_pcAction);
     if ( pActGrp )
     {
-      int index = pActGrp->currentActive();
+      int index = pActGrp->checkedAction();
       int mode = (int)(view->currentViewMode());
       if ( index != mode )
       {
         // active window has changed with another view mode
-        pActGrp->blockSignals(true);
-        pActGrp->setCurrentActive( mode );
-        pActGrp->blockSignals(false);
+        pActGrp->setCheckedAction( mode );
       }
     }
 
@@ -702,7 +745,7 @@ bool StdViewDockUndockFullscreen::isActive(void)
 DEF_STD_CMD_A(StdViewScreenShot);
 
 StdViewScreenShot::StdViewScreenShot()
-  :Command("Std_ViewScreenShot")
+  : Command("Std_ViewScreenShot")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Save picture...");
@@ -714,7 +757,7 @@ StdViewScreenShot::StdViewScreenShot()
 
 void StdViewScreenShot::activated(int iMsg)
 {
-  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
   if ( view )
   {
     QStringList formats;
@@ -724,25 +767,28 @@ void StdViewScreenShot::activated(int iMsg)
       formats = rd.getWriteImageFiletypeInfo();
     }
 
-    QString filter, selFilter;
+    QStringList filter;
+    QString selFilter;
     for( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
     {
-      filter += QString("%1 %2 (*.%3);;").arg( *it ).arg( QObject::tr("files") ).arg( (*it).lower() );
+      filter << QString("%1 %2 (*.%3)").arg( (*it).upper() ).arg( QObject::tr("files") ).arg( (*it).lower() );
     }
 
-    FileOptionsDialog fd( QString::null, filter, getMainWindow(), 0, true );
-    fd.setMode( QFileDialog::AnyFile );
+    FileOptionsDialog fd(getMainWindow(), 0);
+    fd.setFileMode( QFileDialog::AnyFile );
+    fd.setAcceptMode( QFileDialog::AcceptSave );
     fd.setCaption( QObject::tr("Save picture") );
-    fd.setFilter( selFilter );
+    fd.setFilters( filter );
 
     // create the image options widget
     DlgSettingsImageImp* opt = new DlgSettingsImageImp(&fd);
     SbVec2s sz = vp.getWindowSize();
     opt->setImageSize((int)sz[0], (int)sz[1]);
 
-    fd.setOptionsWidget(FileOptionsDialog::Right, opt);
+    fd.setOptionsWidget(FileOptionsDialog::ExtensionRight, opt);
     opt->onSelectedFilter(fd.selectedFilter());
-    QObject::connect(&fd, SIGNAL(filterSelected ( const QString & )), opt, SLOT(onSelectedFilter ( const QString & )));
+    QObject::connect(&fd, SIGNAL(filterSelected(const QString&)), opt, SLOT(onSelectedFilter(const QString&)));
+
     if ( fd.exec() == QDialog::Accepted )
     {
       selFilter = fd.selectedFilter();
@@ -757,7 +803,7 @@ void StdViewScreenShot::activated(int iMsg)
       QString format = formats.front(); // take the first as default
       for ( QStringList::Iterator it = formats.begin(); it != formats.end(); ++it )
       {
-        if ( selFilter.startsWith( *it ) )
+        if ( selFilter.startsWith( (*it).upper() ) )
         {
           format = *it;
           break;
@@ -801,7 +847,7 @@ bool StdViewScreenShot::isActive(void)
 DEF_STD_CMD_A(StdCmdViewCreate);
 
 StdCmdViewCreate::StdCmdViewCreate()
-  :Command("Std_ViewCreate")
+  : Command("Std_ViewCreate")
 {
   sGroup      = QT_TR_NOOP("Standard-View");
   sMenuText   = QT_TR_NOOP("Create new view");
@@ -828,7 +874,7 @@ bool StdCmdViewCreate::isActive(void)
 DEF_STD_CMD_A(StdCmdViewExample1);
 
 StdCmdViewExample1::StdCmdViewExample1()
-  :Command("Std_ViewExample1")
+  : Command("Std_ViewExample1")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Inventor example #1");
@@ -854,7 +900,7 @@ bool StdCmdViewExample1::isActive(void)
 DEF_STD_CMD_A(StdCmdViewExample2);
 
 StdCmdViewExample2::StdCmdViewExample2()
-  :Command("Std_ViewExample2")
+  : Command("Std_ViewExample2")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Inventor example #2");
@@ -881,7 +927,7 @@ bool StdCmdViewExample2::isActive(void)
 DEF_STD_CMD_A(StdCmdViewExample3);
 
 StdCmdViewExample3::StdCmdViewExample3()
-  :Command("Std_ViewExample3")
+  : Command("Std_ViewExample3")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Inventor example #3");
@@ -909,7 +955,7 @@ bool StdCmdViewExample3::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoOff);
 
 StdCmdViewIvStereoOff::StdCmdViewIvStereoOff()
-  :Command("Std_ViewIvStereoOff")
+  : Command("Std_ViewIvStereoOff")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo Off");
@@ -937,7 +983,7 @@ bool StdCmdViewIvStereoOff::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoRedGreen);
 
 StdCmdViewIvStereoRedGreen::StdCmdViewIvStereoRedGreen()
-  :Command("Std_ViewIvStereoRedGreen")
+  : Command("Std_ViewIvStereoRedGreen")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo red/green");
@@ -964,7 +1010,7 @@ bool StdCmdViewIvStereoRedGreen::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoQuadBuff);
 
 StdCmdViewIvStereoQuadBuff::StdCmdViewIvStereoQuadBuff()
-  :Command("Std_ViewIvStereoQuadBuff")
+  : Command("Std_ViewIvStereoQuadBuff")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo quad buffer");
@@ -991,7 +1037,7 @@ bool StdCmdViewIvStereoQuadBuff::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoInterleavedRows);
 
 StdCmdViewIvStereoInterleavedRows::StdCmdViewIvStereoInterleavedRows()
-  :Command("Std_ViewIvStereoInterleavedRows")
+  : Command("Std_ViewIvStereoInterleavedRows")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo Interleaved Rows");
@@ -1018,7 +1064,7 @@ bool StdCmdViewIvStereoInterleavedRows::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvStereoInterleavedColumns);
 
 StdCmdViewIvStereoInterleavedColumns::StdCmdViewIvStereoInterleavedColumns()
-  :Command("Std_ViewIvStereoInterleavedColumns")
+  : Command("Std_ViewIvStereoInterleavedColumns")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Stereo Interleaved Columns");
@@ -1046,7 +1092,7 @@ bool StdCmdViewIvStereoInterleavedColumns::isActive(void)
 DEF_STD_CMD_A(StdCmdViewIvIssueCamPos);
 
 StdCmdViewIvIssueCamPos::StdCmdViewIvIssueCamPos()
-  :Command("Std_ViewIvIssueCamPos")
+  : Command("Std_ViewIvIssueCamPos")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Issue camera position");
@@ -1098,7 +1144,7 @@ bool StdCmdViewIvIssueCamPos::isActive(void)
 DEF_STD_CMD_A(StdViewZoomIn);
 
 StdViewZoomIn::StdViewZoomIn()
-  :Command("Std_ViewZoomIn")
+  : Command("Std_ViewZoomIn")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Zoom In");
@@ -1110,7 +1156,7 @@ StdViewZoomIn::StdViewZoomIn()
 
 void StdViewZoomIn::activated(int iMsg)
 {
-  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
   if ( view ) {
     View3DInventorViewer* viewer = view->getViewer();
 #if 0
@@ -1132,7 +1178,7 @@ void StdViewZoomIn::activated(int iMsg)
 
 bool StdViewZoomIn::isActive(void)
 {
-  return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+  return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
 }
 
 //===========================================================================
@@ -1141,7 +1187,7 @@ bool StdViewZoomIn::isActive(void)
 DEF_STD_CMD_A(StdViewZoomOut);
 
 StdViewZoomOut::StdViewZoomOut()
-  :Command("Std_ViewZoomOut")
+  : Command("Std_ViewZoomOut")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Zoom Out");
@@ -1153,7 +1199,7 @@ StdViewZoomOut::StdViewZoomOut()
 
 void StdViewZoomOut::activated(int iMsg)
 {
-  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
   if ( view ) {
     View3DInventorViewer* viewer = view->getViewer();
 #if 0
@@ -1172,7 +1218,7 @@ void StdViewZoomOut::activated(int iMsg)
 
 bool StdViewZoomOut::isActive(void)
 {
-  return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+  return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
 }
 
 //===========================================================================
@@ -1181,7 +1227,7 @@ bool StdViewZoomOut::isActive(void)
 DEF_STD_CMD_A(StdViewBoxZoom);
 
 StdViewBoxZoom::StdViewBoxZoom()
-  :Command("Std_ViewBoxZoom")
+  : Command("Std_ViewBoxZoom")
 {
   sGroup        = QT_TR_NOOP("Standard-View");
   sMenuText     = QT_TR_NOOP("Box zoom");
@@ -1193,7 +1239,7 @@ StdViewBoxZoom::StdViewBoxZoom()
 
 void StdViewBoxZoom::activated(int iMsg)
 {
-  View3DInventor* view = dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow());
+  View3DInventor* view = qobject_cast<View3DInventor*>(getMainWindow()->activeWindow());
   if ( view ) {
     View3DInventorViewer* viewer = view->getViewer();
 
@@ -1208,7 +1254,7 @@ void StdViewBoxZoom::activated(int iMsg)
 bool StdViewBoxZoom::isActive(void)
 {
   return false; // tmp. deactivated
-  //return (dynamic_cast<View3DInventor*>(getMainWindow()->activeWindow()));
+  //return (qobject_cast<View3DInventor*>(getMainWindow()->activeWindow()));
 }
 
 
@@ -1252,8 +1298,6 @@ void CreateViewStdCommands(void)
   rcCmdMgr.addCommand(new StdViewDockUndockFullscreen());
   rcCmdMgr.addCommand(new StdCmdSetMaterial());
   rcCmdMgr.addCommand(new StdCmdToggleVisibility());
-  rcCmdMgr.addCommand(new StdCmdPerspectiveCamera());
-  rcCmdMgr.addCommand(new StdCmdOrthographicCamera());
   rcCmdMgr.addCommand(new StdCameraType());
   rcCmdMgr.addCommand(new StdCmdToggleClipPlane());
   rcCmdMgr.addCommand(new StdCmdFreezeViews());

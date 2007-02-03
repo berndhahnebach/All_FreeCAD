@@ -23,24 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <assert.h>
-# include <qbuttongroup.h>
-# include <qftp.h>
-# include <qhttp.h>
-# include <qlayout.h>
-# include <qdragobject.h>
-# include <qmessagebox.h>
-# include <qpopupmenu.h>
-# include <qtoolbutton.h>
-# include <qtooltip.h>
-# include <qurl.h>
-# include <qvaluestack.h>
-# ifdef FC_OS_WIN32
-# include <windows.h>
-# endif
-#endif
-
 #include "HelpView.h"
 #include "Process.h"
 #include "Application.h"
@@ -50,7 +32,8 @@
 #include "WhatsThis.h"
 #include "Action.h"
 #include "Command.h"
-#define new DEBUG_CLIENTBLOCK
+
+
 using namespace Gui;
 using namespace Gui::DockWnd;
 
@@ -64,18 +47,18 @@ class TextBrowserPrivate
 public:
   enum TMode {Backward, Forward, None};
 
-  QValueStack<QString> fwStack;
-  QValueStack<QString> bwStack;
+  Q3ValueStack<QString> fwStack;
+  Q3ValueStack<QString> bwStack;
 
   bool bw, fw;
   TMode tMode;
-  QHttp* http;
-  QFtp* ftp;
+  Q3Http* http;
+  Q3Ftp* ftp;
 
   TextBrowserPrivate() : bw( false ), fw( false ), tMode( None ) 
   {
-    http = new QHttp;
-    ftp  = new QFtp;
+    http = new Q3Http;
+    ftp  = new Q3Ftp;
   }
   
   ~TextBrowserPrivate()
@@ -86,18 +69,17 @@ public:
 
 // --------------------------------------------------------------------------
 
-class DocumentationSource : public QStoredDrag
+class DocumentationSource : public Q3StoredDrag
 {
 public:
   DocumentationSource( const char * mimeType, const QString& path )
-      : QStoredDrag(mimeType, 0L, 0), _path(path)
+      : Q3StoredDrag(mimeType, 0L, 0), _path(path)
   {
   }
 
   QByteArray encodedData (const char* data) const
   {
-    QCString test;
-    test = QString(
+    QString test(
      "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
      "<html>"
      "<head>"
@@ -115,7 +97,7 @@ public:
      "</tr>"
      "</table>"
      "</body></html>");
-    return test;
+    return test.toUtf8();
   }
 
 private:
@@ -128,7 +110,7 @@ private:
 // --------------------------------------------------------------------------
 
 HelpSourceFactory::HelpSourceFactory()
-    : QMimeSourceFactory()
+    : Q3MimeSourceFactory()
 {
 }
 
@@ -138,7 +120,7 @@ HelpSourceFactory::~HelpSourceFactory()
 
 const QMimeSource* HelpSourceFactory::data(const QString& abs_name) const
 {
-  const QMimeSource* mime = QMimeSourceFactory::data(abs_name);
+  const QMimeSource* mime = Q3MimeSourceFactory::data(abs_name);
 
   if ( mime )
   {
@@ -154,55 +136,55 @@ const QMimeSource* HelpSourceFactory::data(const QString& abs_name) const
 QString HelpSourceFactory::makeAbsolute(const QString& abs_or_rel_name, const QString& context) const
 {
   // check if local file or data over network
-  QUrl url(abs_or_rel_name);
+  Q3Url url(abs_or_rel_name);
   QString pro = url.protocol();
 
   if ( pro != "file")
     return abs_or_rel_name; // no local file, so let abs_or_rel_name unchanged
   else
-    return QMimeSourceFactory::makeAbsolute(abs_or_rel_name, context);
+    return Q3MimeSourceFactory::makeAbsolute(abs_or_rel_name, context);
 }
 
 void HelpSourceFactory::setText( const QString& abs_name, const QString& text )
 {
-  QMimeSourceFactory::setText(abs_name, text);
+  Q3MimeSourceFactory::setText(abs_name, text);
 }
 
 void HelpSourceFactory::setImage( const QString& abs_name, const QImage& im )
 {
-  QMimeSourceFactory::setImage(abs_name, im);
+  Q3MimeSourceFactory::setImage(abs_name, im);
 }
 
 void HelpSourceFactory::setPixmap( const QString& abs_name, const QPixmap& pm )
 {
-  QMimeSourceFactory::setPixmap(abs_name, pm);
+  Q3MimeSourceFactory::setPixmap(abs_name, pm);
 }
 
 void HelpSourceFactory::setData( const QString& abs_name, QMimeSource* data )
 {
-  QMimeSourceFactory::setData(abs_name, data);
+  Q3MimeSourceFactory::setData(abs_name, data);
 }
 
 void HelpSourceFactory::setFilePath( const QStringList& s)
 {
-  QMimeSourceFactory::setFilePath(s);
+  Q3MimeSourceFactory::setFilePath(s);
 }
 
 QStringList HelpSourceFactory::filePath() const
 {
-  return QMimeSourceFactory::filePath();
+  return Q3MimeSourceFactory::filePath();
 }
 
 void HelpSourceFactory::setExtensionType( const QString& ext, const char* mimetype )
 {
-  QMimeSourceFactory::setExtensionType(ext, mimetype);
+  Q3MimeSourceFactory::setExtensionType(ext, mimetype);
 }
 
 // --------------------------------------------------------------------------
 
 /* TRANSLATOR Gui::DockWnd::TextBrowser */
 TextBrowser::TextBrowser(QWidget * parent, const char * name)
-  : QTextBrowser(parent, name)
+  : Q3TextBrowser(parent, name)
 {
   WhatsThis::setHelpView( this );
   StdCmdDescription::setHelpView( this );
@@ -211,8 +193,8 @@ TextBrowser::TextBrowser(QWidget * parent, const char * name)
 
   setMimeSourceFactory(new HelpSourceFactory);
 
-  setHScrollBarMode(QScrollView::AlwaysOff);
-  setVScrollBarMode(QScrollView::AlwaysOff);
+  setHScrollBarMode(Q3ScrollView::AlwaysOff);
+  setVScrollBarMode(Q3ScrollView::AlwaysOff);
   mimeSourceFactory()->setExtensionType("HTML", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("HTM", "text/html;charset=iso8859-1");
   mimeSourceFactory()->setExtensionType("FCParam", "text/xml;charset=UTF-8");
@@ -228,12 +210,17 @@ TextBrowser::TextBrowser(QWidget * parent, const char * name)
 TextBrowser::~TextBrowser()
 {
   delete d;
-  QMimeSourceFactory* hs = mimeSourceFactory ();
+  Q3MimeSourceFactory* hs = mimeSourceFactory ();
   delete hs;
 }
 
 void TextBrowser::setSource (const QString & name)
 {
+  ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
+                                                                       ConsoleMsgType::MsgType_Err, false);
+  Q3TextBrowser::setSource(name);
+  Base::Console().SetEnabledMsgType("MessageBox", ret, true);
+#if 0
   QString source = name;
   QString mark;
   int hash = name.find('#');
@@ -251,7 +238,7 @@ void TextBrowser::setSource (const QString & name)
     if ( mime == 0 )
     {
       // check if local file or data over network
-      QUrl url(source);
+      Q3Url url(source);
       QString pro = url.protocol();
 /*
       if ( pro == "http" )
@@ -290,7 +277,7 @@ void TextBrowser::setSource (const QString & name)
     else
     {
       QString txt;
-      if (QTextDrag::decode(mime, txt) == false)
+      if (Q3TextDrag::decode(mime, txt) == false)
       {
         QString msg = tr("Can't decode '%1'").arg(source);
         QMessageBox::information(this, "FreeCAD", msg);
@@ -315,21 +302,22 @@ void TextBrowser::setSource (const QString & name)
   if (d->tMode == TextBrowserPrivate::None)
     d->fwStack.clear();
   int fwStackCount = (int)d->fwStack.count();
-  if ( d->fwStack.top() == url )
+  if ( fwStackCount > 0 && d->fwStack.top() == url )
     fwStackCount--;
 
   ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
                                                                        ConsoleMsgType::MsgType_Err, false);
-  QTextBrowser::setSource(name);
+  setSource(name);
   Base::Console().SetEnabledMsgType("MessageBox", ret, true);
 
   emit backwardAvailable( bwStackCount > 0 );
   emit forwardAvailable( fwStackCount > 0 );
+#endif
 }
 
 void TextBrowser::setText (const QString & contents, const QString & context)
 {
-  QTextBrowser::setText(contents, context);
+  Q3TextBrowser::setText(contents, context);
 }
 
 void TextBrowser::done( bool err )
@@ -348,7 +336,7 @@ void TextBrowser::backward()
   d->tMode = TextBrowserPrivate::Backward;
   setSource( d->bwStack.pop() );
   d->tMode = TextBrowserPrivate::None;
-  emit forwardAvailable( true );
+  forwardAvailable( true );
 }
 
 void TextBrowser::forward()
@@ -359,7 +347,7 @@ void TextBrowser::forward()
   d->tMode = TextBrowserPrivate::Forward;
   setSource( d->fwStack.pop() );
   d->tMode = TextBrowserPrivate::None;
-  emit forwardAvailable( !d->fwStack.isEmpty() );
+  forwardAvailable( !d->fwStack.isEmpty() );
 }
 
 void TextBrowser::setBackwardAvailable( bool b )
@@ -376,7 +364,7 @@ void TextBrowser::viewportContextMenuEvent ( QContextMenuEvent * e )
 {
   // create and show up your context menu
   //
-  QPopupMenu menu;
+  Q3PopupMenu menu;
   if ( hasSelectedText() )
   {
     menu.insertItem(tr("Copy"), this, SLOT(copy()));
@@ -399,71 +387,78 @@ void TextBrowser::viewportContextMenuEvent ( QContextMenuEvent * e )
 
 void TextBrowser::contentsDropEvent(QDropEvent  * e)
 {
-  if ( QUriDrag::canDecode(e) )
-  {
+  const QMimeData* mimeData = e->mimeData();
+  if ( mimeData->hasFormat("text/x-action-items") ) {
+    QByteArray itemData = mimeData->data("text/x-action-items");
+    QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+
+    int ctActions; dataStream >> ctActions;
+
+    // handle the first item only
+    QString action;
+    dataStream >> action;
+
+    CommandManager& rclMan = Application::Instance->commandManager();
+    Command* pCmd = rclMan.getCommandByName(action.latin1());
+    if (pCmd)
+    {
+      QString url = pCmd->getHelpUrl();
+      if ( url.isEmpty() )
+      {
+        // cannot show help to this command
+        QString txt = QString(
+        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
+        "<html>"
+        "<body bgcolor=white text=black alink=red link=darkblue vlink=darkmagenta>"
+        "<h2>"
+        "  No description for '%1'"
+        "</h2>"
+        "<hr>"
+        "</body>"
+        "</html>" ).arg( action );
+
+        setText( txt );
+      }
+      else
+        setSource( pCmd->getHelpUrl() );
+    }
+
+    e->setDropAction(Qt::CopyAction);
+    e->accept();
+  } else if ( Q3UriDrag::canDecode(e) ) {
     QStringList fn;
-    QUriDrag::decodeLocalFiles(e, fn);
+    Q3UriDrag::decodeLocalFiles(e, fn);
     QString file = fn.first();
     QFileInfo info(file);
     if ( info.exists() && info.isFile() )
       setSource(file);
-  }
-  else if ( QTextDrag::canDecode(e) )
-  {
-    QString text;
-    QTextDrag::decode(e, text);
-    if ( QStyleSheet::mightBeRichText(text) )
-      setText(text);
-  }
-  else if ( ActionDrag::canDecode(e) )
-  {
-    // extracts the appropriate command's help url
-    QString action;
-    if ( ActionDrag::decode(e, action) )
-    {
-      if ( !action.isEmpty() )
-      {
-        ActionDrag::actions.clear();
-        CommandManager& rclMan = Application::Instance->commandManager();
-        Command* pCmd = rclMan.getCommandByName(action.latin1());
-        if (pCmd)
-        {
-          QString url = pCmd->getHelpUrl();
-          if ( url.isEmpty() )
-          {
-            // cannot show help to this command
-            QString txt = QString(
-            "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
-            "<html>"
-            "<body bgcolor=white text=black alink=red link=darkblue vlink=darkmagenta>"
-            "<h2>"
-            "  No description for '%1'"
-            "</h2>"
-            "<hr>"
-            "</body>"
-            "</html>" ).arg( action );
 
-            setText( txt );
-          }
-          else
-            setSource( pCmd->getHelpUrl() );
-        }
-      }
-    }
+    e->setDropAction(Qt::CopyAction);
+    e->accept();
+  } else {
+    e->ignore();
   }
 }
 
 void TextBrowser::contentsDragEnterEvent  (QDragEnterEvent * e)
 {
-  bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e) || ActionDrag::canDecode(e);
-  if ( !can )
+  const QMimeData* mimeData = e->mimeData();
+  if ( mimeData->hasFormat("text/x-action-items") )
+    e->accept();
+  else if (Q3UriDrag::canDecode(e))
+    e->accept();
+  else
     e->ignore();
 }
 
 void TextBrowser::contentsDragMoveEvent( QDragMoveEvent *e )
 {
-  bool can = QUriDrag::canDecode(e) || QTextDrag::canDecode(e) || ActionDrag::canDecode(e);
-  if ( !can )
+  const QMimeData* mimeData = e->mimeData();
+  if ( mimeData->hasFormat("text/x-action-items") )
+    e->accept();
+  else if (Q3UriDrag::canDecode(e))
+    e->accept();
+  else
     e->ignore();
 }
 
@@ -475,51 +470,46 @@ void TextBrowser::contentsDragMoveEvent( QDragMoveEvent *e )
  *  Constructs a HelpView which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'. \a home is the start page to show.
  */
-HelpView::HelpView( const QString& start,  QWidget* parent,  const char* name, WFlags fl )
+HelpView::HelpView( const QString& start,  QWidget* parent,  const char* name, Qt::WFlags fl )
   : DockWindow( 0L, parent, name, fl )
 {
   TextBrowser* browser = new TextBrowser(this, "HelpViewer");
-  browser->setFrameStyle( QFrame::Panel | QFrame::Sunken );
+  browser->setFrameStyle( Q3Frame::Panel | Q3Frame::Sunken );
   // set the path where the factory is looking for if you set a new source
   browser->mimeSourceFactory()->setFilePath( start );
 
   // set the start page now
   if (!start.isEmpty())
     browser->setSource( start );
-
-  // create the button group for the layout
-  QButtonGroup* btnGrp = new QButtonGroup(this, "ButtonGroup");
-  btnGrp->setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  btnGrp->setTitle( "" );
-  btnGrp->setColumnLayout(0, Qt::Vertical);
-  btnGrp->layout()->setSpacing(0);
-  btnGrp->layout()->setMargin (0);
   
-  QHBoxLayout* grpLayout = new QHBoxLayout(btnGrp->layout());
-  grpLayout->setAlignment(Qt::AlignTop);
-  grpLayout->setSpacing(1);
-  grpLayout->setMargin (1);
+  QHBoxLayout* layout = new QHBoxLayout();
+  layout->setAlignment(Qt::AlignTop);
+  layout->setSpacing(1);
+  layout->setMargin (1);
+
+  // create the group box for the layout
+  QGroupBox* groupBox = new QGroupBox(this);
 
   // the 'Backward' button
-  QToolButton* back = new QToolButton(btnGrp, tr("Backward"));
+  QToolButton* back = new QToolButton( groupBox );
   back->setPixmap( Gui::BitmapFactory().pixmap("back_pixmap") );
   back->setAutoRaise(true);
   QToolTip::add(back, tr("Previous"));
 
   // the 'Forward' button
-  QToolButton* forward = new QToolButton( btnGrp, tr("Forward") );
+  QToolButton* forward = new QToolButton( groupBox );
   forward->setPixmap( Gui::BitmapFactory().pixmap("forward_pixmap") );
   forward->setAutoRaise(true);
   QToolTip::add( forward, tr("Next"));
 
   // the 'Home' button
-  QToolButton* home = new QToolButton( btnGrp, tr("Home") );
+  QToolButton* home = new QToolButton( groupBox );
   home->setPixmap( Gui::BitmapFactory().pixmap("home_pixmap") );
   home->setAutoRaise(true);
   QToolTip::add( home, tr("Home"));
 
   // the 'Open' button
-  QToolButton* open = new QToolButton( btnGrp, tr("Open") );
+  QToolButton* open = new QToolButton( groupBox );
   open->setPixmap( Gui::BitmapFactory().pixmap("helpopen") );
   open->setAutoRaise(true);
   QToolTip::add( open, tr("Open"));
@@ -529,16 +519,17 @@ HelpView::HelpView( const QString& start,  QWidget* parent,  const char* name, W
   formLayout->setMargin ( 1 );
 
   // add the buttons and the space
-  grpLayout->addWidget( back );
-  grpLayout->addWidget( forward );
-  grpLayout->addWidget( home );
-  grpLayout->addWidget( open );
+  layout->addWidget( back );
+  layout->addWidget( forward );
+  layout->addWidget( home );
+  layout->addWidget( open );
   QSpacerItem* spacer = new QSpacerItem( 0, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
-  grpLayout->addItem( spacer );
+  layout->addItem( spacer );
+  groupBox->setLayout(layout);
 
   // add the button group with its elements and the browser to the layout
-  formLayout->addWidget( btnGrp, 0, 0 );
-  formLayout->addWidget( browser,   1, 0 );
+  formLayout->addWidget( groupBox, 0, 0 );
+  formLayout->addWidget( browser, 1, 0 );
 
   connect( this, SIGNAL(setSource( const QString& )), browser, SLOT(setSource( const QString& )));
   connect( browser, SIGNAL(backwardAvailable(bool)), back, SLOT(setEnabled(bool)));
@@ -568,7 +559,7 @@ HelpView::~HelpView()
  */
 void HelpView::setFileSource( const QString& src )
 {
-  emit setSource( src );
+  setSource( src );
 }
 
 /**
@@ -576,10 +567,9 @@ void HelpView::setFileSource( const QString& src )
  */
 void HelpView::openHelpFile()
 {
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, 
-    "All Html files (*.html *.htm)", this, 0, tr("Open file"));
+  QString fn = QFileDialog::getOpenFileName(this, tr("Open file"), QString(), tr("All Html files (*.html *.htm)"));
   if ( !fn.isEmpty() )
-    emit setSource( fn );
+    setSource( fn );
 }
 
 /** 

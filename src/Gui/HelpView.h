@@ -21,20 +21,19 @@
  ***************************************************************************/
 
 
-#ifndef __HELP_VIEW_H__
-#define __HELP_VIEW_H__
+#ifndef GUI_DOCKWND_HELP_VIEW_H
+#define GUI_DOCKWND_HELP_VIEW_H
 
-#include <qmime.h>
-#include <qtextbrowser.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 #include "DockWindow.h"
 #include "Window.h"
-
-class QHBoxLayout;
-class QButtonGroup;
-class QToolButton;
-class QGridLayout;
-class QPopupMenu;
 
 namespace Gui {
 namespace DockWnd {
@@ -46,7 +45,7 @@ class HelpViewPrivate;
  * an error page if given data cannot be decoded.
  * \author Werner Mayer
  */
-class HelpSourceFactory : public QMimeSourceFactory
+class HelpSourceFactory : public Q3MimeSourceFactory
 {
 public:
   HelpSourceFactory();
@@ -71,7 +70,7 @@ public:
  * \author Werner Mayer
  */
 class TextBrowserPrivate;
-class TextBrowser : public QTextBrowser
+class TextBrowser : public Q3TextBrowser
 {
   Q_OBJECT
 
@@ -85,7 +84,7 @@ public:
   virtual void backward();
   virtual void forward();
 
-signals:
+Q_SIGNALS:
   /// start an external browser to display complex web sites
   void startExternalBrowser( const QString& );
 
@@ -95,7 +94,7 @@ protected:
   virtual void contentsDragMoveEvent   (QDragMoveEvent  * e );
   virtual void viewportContextMenuEvent( QContextMenuEvent * );
 
-private slots:
+private Q_SLOTS:
   void setBackwardAvailable( bool b);
   void setForwardAvailable( bool b);
   void done( bool );
@@ -114,15 +113,15 @@ class GuiExport HelpView : public Gui::DockWindow
   Q_OBJECT
 
 public:
-  HelpView( const QString& home_, QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  HelpView( const QString& home_, QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
   ~HelpView();
 
   void setFileSource( const QString& );
 
-signals:
+Q_SIGNALS:
   void setSource( const QString& );
 
-protected slots:
+protected Q_SLOTS:
   void openHelpFile();
   void startExternalBrowser( const QString& );
 };
@@ -130,4 +129,4 @@ protected slots:
 } // namespace DockWnd
 } // namespace Gui
 
-#endif // __HELP_VIEW_H__
+#endif // GUI_DOCKWND_HELP_VIEW_H

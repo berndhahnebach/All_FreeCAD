@@ -21,10 +21,13 @@
  ***************************************************************************/
 
 
-#ifndef DLG_GENERAL_IMP_H
-#define DLG_GENERAL_IMP_H
+#ifndef GUI_DIALOG_DLGGENERALIMP_H
+#define GUI_DIALOG_DLGGENERALIMP_H
 
-#include "DlgGeneral.h"
+#include "ui_DlgGeneral.h"
+#include "PropertyPage.h"
+
+class QTabWidget;
 
 namespace Gui {
 namespace Dialog {
@@ -33,25 +36,27 @@ namespace Dialog {
  *  You can change window style, size of pixmaps, size of recent file list and so on
  *  \author Werner Mayer
  */
-class DlgGeneralImp : public DlgGeneralBase
+class DlgGeneralImp : public PreferencePage, public Ui_DlgGeneral
 {
   Q_OBJECT
 
 public:
-  DlgGeneralImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgGeneralImp( QWidget* parent = 0 );
   ~DlgGeneralImp();
 
-protected:
   void saveSettings();
   void loadSettings();
-  void languageChange();
+  bool eventFilter ( QObject* o, QEvent* e );
+
+protected:
+  void changeEvent(QEvent *e);
 
 private:
-  void setMRUSize();
-  void insertLanguages();
+  void setRecentFileSize();
+  QTabWidget* watched;
 };
 
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DLG_GENERAL_IMP_H
+#endif // GUI_DIALOG_DLGGENERALIMP_H

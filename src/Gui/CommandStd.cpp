@@ -23,17 +23,20 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qobjectlist.h>
-# include <qmessagebox.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
 #endif
 
 
-#include "../Base/Exception.h"
-#include "../Base/Interpreter.h"
-#include "../Base/Sequencer.h"
-#include "../App/Document.h"
+
+#include <Base/Exception.h>
+#include <Base/Interpreter.h>
+#include <Base/Sequencer.h>
+#include <App/Document.h>
 #include "Action.h"
 #include "Process.h"
 #include "Application.h"
@@ -46,7 +49,6 @@
 #include "BitmapFactory.h"
 #include "View.h"
 
-//#include "DlgDocTemplatesImp.h"
 #include "DlgParameterImp.h"
 #include "DlgMacroExecuteImp.h"
 #include "DlgMacroRecordImp.h"
@@ -56,7 +58,7 @@
 #include "Widgets.h"
 #include "NetworkRetriever.h"
 #include "GuiConsole.h"
-#define new DEBUG_CLIENTBLOCK
+
 using Base::Console;
 using Base::Sequencer;
 using namespace Gui;
@@ -69,42 +71,7 @@ using namespace Gui;
 //===========================================================================
 
 /* TRANSLATOR Gui::StdCmdWorkbench */
-
-StdCmdWorkbench::StdCmdWorkbench()
-  :Command("Std_Workbench"), pcAction(NULL)
-{
-  sGroup        = QT_TR_NOOP("View");
-  sMenuText     = QT_TR_NOOP("Workbench");
-  sToolTipText  = QT_TR_NOOP("Switch between workbenches");
-  sWhatsThis    = QT_TR_NOOP("Switch between workbenches");
-  sStatusTip    = QT_TR_NOOP("Switch between workbenches");
-  sPixmap       = "FCIcon";
-  iAccel        = 0;
-}
-
-/**
- * Activates the workbench at the position \a pos.
- */
-void StdCmdWorkbench::activated( int pos )
-{
-  QStringList wb = Application::Instance->workbenches();
-  if (pos >= 0 && pos < int(wb.size()))
-    activate( wb[pos] );
-}
-
-/**
- * Activates the workbench with the name \a item.
- */
-void StdCmdWorkbench::activate ( const QString& item )
-{
-  try{
-    doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", item.latin1());
-  }
-  catch(const Base::Exception&)
-  {
-    // just do nothing because for sure the exception has already been reported
-  }
-}
+#if 0
 
 void StdCmdWorkbench::notify( const QString& item )
 {
@@ -115,7 +82,7 @@ void StdCmdWorkbench::notify( const QString& item )
 /**
  * Creates the QAction object containing all workbenches.
  */
-QAction * StdCmdWorkbench::createAction(void)
+Q3Action * StdCmdWorkbench::createAction(void)
 {
   pcAction = new WorkbenchGroup( getMainWindow(), sName, true );
   pcAction->setExclusive( true );
@@ -142,7 +109,7 @@ void StdCmdWorkbench::addWorkbench ( const QString& item )
 {
   if ( pcAction )
   {
-    QAction* action = new WorkbenchAction( this, pcAction, item );
+    Q3Action* action = new WorkbenchAction( this, pcAction, item );
     action->setText( item ); // native literal
     action->setMenuText( item );
     action->setToggleAction( true );
@@ -160,10 +127,18 @@ void StdCmdWorkbench::addWorkbench ( const QString& item )
  */
 void StdCmdWorkbench::refresh ()
 {
+  //TODO Remove all WorkbenchActions
   if ( pcAction )
   {
     // remove all workbench actions and rebuild it
-    QObjectList *childs = pcAction->queryList( "Gui::WorkbenchAction" );
+    const QObjectList& childs = pcAction->queryList( "Gui::WorkbenchAction" );
+    for (QObjectList::const_iterator it = childs.begin(); it != childs.end(); ++it)
+    {
+      pcAction->removeChild( *it );
+      delete *it;
+    }
+
+#if 0
     QObjectListIt it( *childs ); // iterate over the actions
     QObject *obj;
 
@@ -174,6 +149,7 @@ void StdCmdWorkbench::refresh ()
       ++it;
     }
     delete childs; // delete the list, not the objects  
+#endif
 
     // sort the workbenches
     QStringList items = Application::Instance->workbenches();
@@ -182,38 +158,63 @@ void StdCmdWorkbench::refresh ()
       addWorkbench( *item );
   }
 }
-
-/** 
- * Can only be added to the "file operations" toolbar or any other kind of widgets. This is because this 
- * command changes the workbenches and so there will several toolbars/cmdbars be deleted. If the 
- * corresponding combobox were inside such a toolbar/cmdbar FreeCAD would crash.
- */
-bool StdCmdWorkbench::addTo(QWidget *w)
-{
-  if (w->inherits("QToolBar") && QString(w->name()) != QString("file operations"))
-  {
-#ifdef FC_DEBUG
-    char szBuf[200];
-    snprintf(szBuf, 200, "Adding the command \"%s\" to this widget is not permitted!", getName());
-    QMessageBox::information(getMainWindow(), "Warning", szBuf);
-#else
-    Base::Console().Log("Cannot add '%s' to this widget.\n", sName);
 #endif
-    return false;
-  }
+DEF_STD_CMD_AC(StdCmdWorkbench);
 
-  // either add to the "file operations" toolbar or another widget type (e.g. popup menu)
-  return Command::addTo(w);
+StdCmdWorkbench::StdCmdWorkbench()
+  : Command("Std_Workbench")
+{
+  sGroup        = QT_TR_NOOP("View");
+  sMenuText     = QT_TR_NOOP("Workbench");
+  sToolTipText  = QT_TR_NOOP("Switch between workbenches");
+  sWhatsThis    = QT_TR_NOOP("Switch between workbenches");
+  sStatusTip    = QT_TR_NOOP("Switch between workbenches");
+  sPixmap       = "FCIcon";
+  iAccel        = 0;
+}
+
+void StdCmdWorkbench::activated(int iMsg)
+{
+  try{
+    QStringList wb = Application::Instance->workbenches();
+    wb.sort();
+    doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", wb[iMsg].latin1());
+  }
+  catch(const Base::Exception&)
+  {
+    // just do nothing because for sure the exception has already been reported
+  }
+}
+
+bool StdCmdWorkbench::isActive(void)
+{
+  return true;
+}
+
+Action * StdCmdWorkbench::createAction(void)
+{
+  Action *pcAction;
+
+  pcAction = new WorkbenchGroup(this,getMainWindow());
+  pcAction->setText(QObject::tr(sMenuText));
+  pcAction->setToolTip(QObject::tr(sToolTipText));
+  pcAction->setStatusTip(QObject::tr(sStatusTip));
+  pcAction->setWhatsThis(QObject::tr(sWhatsThis));
+  if(sPixmap)
+    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setShortcut(iAccel);
+
+  return pcAction;
 }
 
 //===========================================================================
-// Std_MRU
+// Std_RecentFiles
 //===========================================================================
 
-/* TRANSLATOR Gui::StdCmdMRU */
+/* TRANSLATOR Gui::StdCmdRecentFiles */
 
-StdCmdMRU::StdCmdMRU()
-  :Command("Std_MRU"), pcAction(0), _nMaxItems(4)
+StdCmdRecentFiles::StdCmdRecentFiles()
+  :Command("Std_RecentFiles"), _nMaxItems(4)
 {
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("Recent files");
@@ -229,7 +230,7 @@ StdCmdMRU::StdCmdMRU()
  * If the file does not exist or cannot be loaded this item is removed
  * from the list.
  */
-void StdCmdMRU::activated(int iMsg)
+void StdCmdRecentFiles::activated(int iMsg)
 {
   if (iMsg < 0 || iMsg >= int(_vMRU.size()))
     return; // not in range
@@ -241,7 +242,7 @@ void StdCmdMRU::activated(int iMsg)
     QMessageBox::critical(getMainWindow(), QObject::tr("File not found"), QObject::tr("The file '%1' cannot be opened.").arg(f));
     removeRecentFile( f );
     // rebuild the recent file list
-    dynamic_cast<MRUActionGroup*>(pcAction)->setRecentFiles(_vMRU);
+    qobject_cast<RecentFilesAction*>(_pcAction)->setRecentFiles(_vMRU);
   }
   else
   {
@@ -252,22 +253,22 @@ void StdCmdMRU::activated(int iMsg)
 /**
  * Creates the QAction object containing the recent files.
  */
-QAction * StdCmdMRU::createAction(void)
+Action * StdCmdRecentFiles::createAction(void)
 {
-  pcAction = new MRUActionGroup( this, getMainWindow(),sName, false );
-  pcAction->setUsesDropDown( true );
+  // load recent file list
+  StdCmdRecentFiles::load();
+
+  RecentFilesAction* pcAction = new RecentFilesAction( this, _nMaxItems, getMainWindow() );
+  pcAction->setDropDownMenu(true);
   pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
   pcAction->setStatusTip(QObject::tr(sStatusTip));
   pcAction->setWhatsThis(QObject::tr(sWhatsThis));
   if(sPixmap)
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setAccel(iAccel);
+    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setShortcut(iAccel);
 
-  // load recent file list
-  StdCmdMRU::load();
-  dynamic_cast<MRUActionGroup*>(pcAction)->setRecentFiles( _vMRU );
+  pcAction->setRecentFiles( _vMRU );
 
   return pcAction;
 }
@@ -275,7 +276,7 @@ QAction * StdCmdMRU::createAction(void)
 /**
  * Adds the recent file item with name \a item.
  */
-void StdCmdMRU::addRecentFile ( const QString& item )
+void StdCmdRecentFiles::addRecentFile ( const QString& item )
 {
   if ( _vMRU.contains( item ) )
     removeRecentFile( item ); // already inserted
@@ -294,7 +295,7 @@ void StdCmdMRU::addRecentFile ( const QString& item )
 /**
  * Removes the recent file item with name \a item.
  */
-void StdCmdMRU::removeRecentFile ( const QString& item )
+void StdCmdRecentFiles::removeRecentFile ( const QString& item )
 {
   QStringList::Iterator it = _vMRU.find(item);
   if ( it != _vMRU.end() )
@@ -304,28 +305,26 @@ void StdCmdMRU::removeRecentFile ( const QString& item )
 }
 
 /** Refreshes the recent file list. */
-void StdCmdMRU::refreshRecentFileWidgets()
+void StdCmdRecentFiles::refreshRecentFileList()
 {
-  MRUActionGroup* recfiles = dynamic_cast<MRUActionGroup*>(pcAction);
-  if ( recfiles )
-    recfiles->setRecentFiles( _vMRU );
+  qobject_cast<RecentFilesAction*>(_pcAction)->setRecentFiles( _vMRU );
 }
 
 /** 
  * Returns a list of the recent files.
  */
-QStringList StdCmdMRU::recentFiles() const
+QStringList StdCmdRecentFiles::recentFiles() const
 {
   return _vMRU;
 }
 
-void StdCmdMRU::load()
+void StdCmdRecentFiles::load()
 {
   ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
   if (hGrp->HasGroup("RecentFiles"))
   {
     hGrp = hGrp->GetGroup("RecentFiles");
-    StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(Application::Instance->commandManager().getCommandByName("Std_MRU"));
+    StdCmdRecentFiles* pCmd = dynamic_cast<StdCmdRecentFiles*>(Application::Instance->commandManager().getCommandByName("Std_RecentFiles"));
     if (pCmd)
     {
       int maxCnt = hGrp->GetInt("RecentFiles", 4);
@@ -341,19 +340,19 @@ void StdCmdMRU::load()
   }
 }
 
-void StdCmdMRU::save()
+void StdCmdRecentFiles::save()
 {
   // save recent file list
-  Command* pCmd = Application::Instance->commandManager().getCommandByName("Std_MRU");
+  Command* pCmd = Application::Instance->commandManager().getCommandByName("Std_RecentFiles");
   if (pCmd)
   {
     char szBuf[200];
     int i=0;
     ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
     hGrp->Clear();
-    hGrp->SetInt("RecentFiles", ((StdCmdMRU*)pCmd)->maxCount());
+    hGrp->SetInt("RecentFiles", ((StdCmdRecentFiles*)pCmd)->maxCount());
 
-    QStringList files = ((StdCmdMRU*)pCmd)->recentFiles();
+    QStringList files = ((StdCmdRecentFiles*)pCmd)->recentFiles();
     if ( files.size() > 0 )
     {
       for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it, i++ )
@@ -371,6 +370,7 @@ void StdCmdMRU::save()
 //===========================================================================
 
 /* TRANSLATOR Gui::StdCmdAbout */
+DEF_STD_CMD_ACL(StdCmdAbout)
 
 StdCmdAbout::StdCmdAbout()
   :Command("Std_About")
@@ -383,27 +383,34 @@ StdCmdAbout::StdCmdAbout()
   sPixmap       = App::Application::Config()["AppIcon"].c_str();
 }
 
-QAction * StdCmdAbout::createAction(void)
+Action * StdCmdAbout::createAction(void)
 {
-  QAction *pcAction;
+  Action *pcAction;
 
   QString exe = App::Application::Config()["ExeName"].c_str();
-  pcAction = new Action(this,getMainWindow(),sName);
+  pcAction = new Action(this,getMainWindow());
   pcAction->setText( QObject::tr(sMenuText).arg(exe) );
-  pcAction->setMenuText( QObject::tr(sMenuText).arg(exe) );
   pcAction->setToolTip( QObject::tr(sToolTipText).arg(exe) );
   pcAction->setStatusTip( QObject::tr(sStatusTip).arg(exe) );
   pcAction->setWhatsThis( QObject::tr(sWhatsThis).arg(exe) );
   if(sPixmap)
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setAccel(iAccel);
+    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setShortcut(iAccel);
 
   return pcAction;
 }
 
+bool StdCmdAbout::isActive()
+{
+  return true;
+}
+
+/**
+ * Shows information about the application.
+ */
 void StdCmdAbout::activated(int iMsg)
 {
-  AboutDialog dlg( getMainWindow() );
+  Gui::Dialog::AboutDialog dlg( getMainWindow() );
   dlg.exec();
 }
 
@@ -413,7 +420,6 @@ void StdCmdAbout::languageChange()
   {
     QString exe = App::Application::Config()["ExeName"].c_str();
     _pcAction->setText( QObject::tr(sMenuText).arg(exe) );
-    _pcAction->setMenuText( QObject::tr(sMenuText).arg(exe) );
     _pcAction->setToolTip( QObject::tr(sToolTipText).arg(exe) );
     _pcAction->setStatusTip( QObject::tr(sStatusTip).arg(exe) );
     _pcAction->setWhatsThis( QObject::tr(sWhatsThis).arg(exe) );
@@ -503,7 +509,7 @@ StdCmdDlgParameter::StdCmdDlgParameter()
 
 void StdCmdDlgParameter::activated(int iMsg)
 {
-  Gui::Dialog::DlgParameterImp cDlg(getMainWindow(),"ParameterDialog",true);
+  Gui::Dialog::DlgParameterImp cDlg(getMainWindow());
   cDlg.exec();
 }
 
@@ -526,7 +532,7 @@ StdCmdDlgPreferences::StdCmdDlgPreferences()
 
 void StdCmdDlgPreferences::activated(int iMsg)
 {
-  Gui::Dialog::DlgPreferencesImp cDlg(getMainWindow(),"Preferences Dialog",true);
+  Gui::Dialog::DlgPreferencesImp cDlg(getMainWindow());
   cDlg.exec();
 }
 
@@ -549,7 +555,7 @@ StdCmdDlgMacroRecord::StdCmdDlgMacroRecord()
 
 void StdCmdDlgMacroRecord::activated(int iMsg)
 {
-  Gui::Dialog::DlgMacroRecordImp cDlg(getMainWindow(),"ParameterDialog",true);
+  Gui::Dialog::DlgMacroRecordImp cDlg(getMainWindow());
   cDlg.exec();
 }
 
@@ -577,7 +583,7 @@ StdCmdDlgMacroExecute::StdCmdDlgMacroExecute()
 
 void StdCmdDlgMacroExecute::activated(int iMsg)
 {
-  Gui::Dialog::DlgMacroExecuteImp cDlg(getMainWindow(),"Macro Execute",true);
+  Gui::Dialog::DlgMacroExecuteImp cDlg(getMainWindow());
   cDlg.exec();
 }
 
@@ -659,8 +665,9 @@ StdCmdDlgCustomize::StdCmdDlgCustomize()
 
 void StdCmdDlgCustomize::activated(int iMsg)
 {
-  Gui::Dialog::DlgCustomizeImp cDlg(getMainWindow(),"CustomizeDialog",true);
-  cDlg.exec();
+  Gui::Dialog::DlgCustomizeImp* cDlg = new Gui::Dialog::DlgCustomizeImp(getMainWindow() );
+  cDlg->setAttribute(Qt::WA_DeleteOnClose);
+  cDlg->show();
 }
 
 //===========================================================================
@@ -729,7 +736,7 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdDlgCustomize());
   rcCmdMgr.addCommand(new StdCmdCommandLine());
   rcCmdMgr.addCommand(new StdCmdWorkbench());
-  rcCmdMgr.addCommand(new StdCmdMRU());
+  rcCmdMgr.addCommand(new StdCmdRecentFiles());
   rcCmdMgr.addCommand(new StdCmdWhatsThis());
   rcCmdMgr.addCommand(new StdCmdOnlineHelp());
   rcCmdMgr.addCommand(new StdCmdTipOfTheDay());

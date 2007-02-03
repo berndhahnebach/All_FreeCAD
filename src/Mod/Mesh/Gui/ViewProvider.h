@@ -23,7 +23,6 @@
 #ifndef __VIEWPROVIDERMESH_H__
 #define __VIEWPROVIDERMESH_H__
 
-#include <qdatetime.h>
 #include <vector>
 #include <Inventor/fields/SoSFVec2f.h>
 

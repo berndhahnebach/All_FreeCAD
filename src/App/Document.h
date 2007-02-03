@@ -39,6 +39,10 @@
 #include <vector>
 #include <stack>
 
+#include <boost/signals.hpp>
+#include <boost/graph/adjacency_list.hpp>
+
+
 #ifdef _MSC_VER
 #	pragma warning( disable : 4251 )
 #	pragma warning( disable : 4503 )
@@ -115,11 +119,31 @@ public:
   PropertyString Company;
   PropertyString Comment;
 
+  /** @name Signals of the document */
+	//@{
+  /// signal on new Object
+  boost::signal<void (App::DocumentObject&)> signalNewObject;
+  //boost::signal<void (const App::DocumentObject&)>     m_sig;
+  /// signal on deleted Object
+  boost::signal<void (App::DocumentObject&)> signalDeletedObject;
+  /// signal on changed Object
+  boost::signal<void (App::DocumentObject&)> signalChangedObject;
+  /// signal on renamed Object
+  boost::signal<void (App::DocumentObject&)> signalRenamedObject;
+  //@}
 
-  /// Construction
-	Document(void);
-  /// Destruction
-	virtual ~Document();
+  typedef boost::property<boost::vertex_root_t, DocumentObject* > VertexProperty;
+
+  typedef boost::adjacency_list <
+   boost::vecS,           // class OutEdgeListS  : a Sequence or an AssociativeContainer
+   boost::vecS,           // class VertexListS   : a Sequence or a RandomAccessContainer
+   boost::directedS,      // class DirectedS     : This is a directed graph
+   VertexProperty,        // class VertexProperty: 
+   boost::no_property,    // class EdgeProperty: 
+   boost::no_property,    // class GraphProperty:
+   boost::listS           // class EdgeListS:
+  > DependencyList;
+
 
  	/** @name File handling of the document */
 	//@{
@@ -235,7 +259,16 @@ public:
 	friend class Transaction;
 	friend class TransactionObject;
 
+  /// Destruction 
+	virtual ~Document();
+
 protected:
+
+  /// Construction
+	Document(void);
+
+  DependencyList _DepList;
+
   void _remObject(DocumentObject* pcObject);
   void _addObject(DocumentObject* pcObject, const char* pObjectName);
 
@@ -271,6 +304,5 @@ protected:
 
 
 } //namespace App
-
 
 #endif // __Document_h__

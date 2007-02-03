@@ -24,7 +24,9 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlistview.h>
+# include <q3listview.h>
+//Added by qt3to4:
+#include <QPixmap>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoTransform.h>
 #endif
@@ -42,7 +44,7 @@
 
 # include <Inventor/nodes/SoSwitch.h>
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace std;
 using namespace Gui;
 

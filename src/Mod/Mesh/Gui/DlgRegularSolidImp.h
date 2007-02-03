@@ -24,16 +24,19 @@
 #ifndef MESHGUI_DLGREGULARSOLID_IMP_H
 #define MESHGUI_DLGREGULARSOLID_IMP_H
 
-#include "DlgRegularSolid.h"
+#include "ui_DlgRegularSolid.h"
 
 namespace MeshGui {
-class DlgRegularSolidImp : public DlgRegularSolid
+class DlgRegularSolidImp : public QDialog, public Ui_DlgRegularSolid
 {
+  Q_OBJECT
+
 public:
-  DlgRegularSolidImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgRegularSolidImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgRegularSolidImp();
 
-  void buildSolid();
+public Q_SLOTS:
+  void on_createSolidButton_clicked();
 };
 
 /**
@@ -43,7 +46,7 @@ public:
 class SingleDlgRegularSolidImp : public DlgRegularSolidImp
 { 
 protected:
-  SingleDlgRegularSolidImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  SingleDlgRegularSolidImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~SingleDlgRegularSolidImp();
 
 public:
