@@ -23,9 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-#endif
-
 #include <App/DocumentObject.h>
 
 #include "Application.h"
@@ -34,7 +31,7 @@
 #include "Selection.h"
 #include "ViewProvider.h"
 #include "ViewProviderDocumentObject.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 
@@ -85,19 +82,15 @@ void StdCmdRandomColor::activated(int iMsg)
   // get the complete selection
   std::vector<SelectionSingleton::SelObj> sel = Selection().getCompleteSelection();
   for ( std::vector<SelectionSingleton::SelObj>::iterator it = sel.begin(); it != sel.end(); ++it ) {
-    // get the Gui related document of an object
-    Gui::Document* doc = Gui::Application::Instance->getDocument(it->pDoc);
-    // get the view provider of an object over its Gui document
-    ViewProvider* vp = doc->getViewProvider(it->pObject);
-    if ( vp && vp->getTypeId().isDerivedFrom(ViewProviderDocumentObject::getClassTypeId()) ) {
-      // set the <r,g,b> color triples for each object
-      ViewProviderDocumentObject* obj = (ViewProviderDocumentObject*)vp;
-      float fMax = (float)RAND_MAX;
-      float fRed = (float)rand();
-      float fGrn = (float)rand();
-      float fBlu = (float)rand();
-      obj->ShapeColor.setValue(fRed/fMax, fGrn/fMax, fBlu/fMax);
-    }
+    const char* docName = it->pDoc->getName();
+    const char* objName = it->pObject->name.getValue();
+    float fMax = (float)RAND_MAX;
+    float fRed = (float)rand()/fMax;
+    float fGrn = (float)rand()/fMax;
+    float fBlu = (float)rand()/fMax;
+
+    // get the view provider of the selected object and set the shape color
+    doCommand(Gui, "Gui.getDocument(\"%s\").getObject(\"%s\").ShapeColor=(%.2f,%.2f,%.2f)", docName, objName, fRed, fGrn, fBlu);
   }
 }
 

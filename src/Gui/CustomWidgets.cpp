@@ -23,21 +23,14 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qlayout.h>
-# include <qmenubar.h>
-# include <qobjectlist.h>
-#endif
-
 #include "CustomWidgets.h"
 #include "Action.h"
 #include "Application.h"
-#include "ToolBoxBar.h"
 #include "ToolBox.h"
 #include "Command.h"
 #include "WhatsThis.h"
 #include "../Base/Console.h"
-#define new DEBUG_CLIENTBLOCK
+
 using Base::Console;
 using namespace Gui;
 using namespace Gui::DockWnd;
@@ -84,9 +77,9 @@ bool CustomWidget::canModify() const
  * Use this constructor if you want to create torn-off (undocked, floating) toolbars or toolbars
  * in the status bar.
  */
-CustomToolBar::CustomToolBar ( const QString & label, QMainWindow *mainWindow, QWidget *parent,
-                               bool newLine, const char * name, WFlags f, const char* type )
-  : QToolBar(label, mainWindow, parent, newLine, name, f)
+CustomToolBar::CustomToolBar ( const QString & label, Q3MainWindow *mainWindow, QWidget *parent,
+                               bool newLine, const char * name, Qt::WFlags f, const char* type )
+  : Q3ToolBar(label, mainWindow, parent, newLine, name, f)
 {
   // allow drag and drop
 //  setAcceptDrops(true);
@@ -96,8 +89,8 @@ CustomToolBar::CustomToolBar ( const QString & label, QMainWindow *mainWindow, Q
  * Constructs an empty toolbar called \a name, of the type \a type, with parent \a parent, in its
  * parent's top dock area, without any label and without requiring a newline.
  */
-CustomToolBar::CustomToolBar ( QMainWindow * parent, const char * name, const char* type )
-    : QToolBar(parent, name)
+CustomToolBar::CustomToolBar ( Q3MainWindow * parent, const char * name, const char* type )
+    : Q3ToolBar(parent, name)
 {
   // allow drag and drop
 //  setAcceptDrops(true);
@@ -158,127 +151,127 @@ void CustomToolBar::dragMoveEvent ( QDragMoveEvent * )
  * Constructs a popup menu called \a name with parent \a parent and the parameter group 
  * \a menu to store its content to.
  */
-CustomPopupMenu::CustomPopupMenu(QWidget * parent, const char * name, const char* menu )
-  : QPopupMenu(parent, name), _bAllowDrag(false)
-{
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
-  hGrp->Attach(this);
-  _bAllowDrag = hGrp->GetBool("AllowDrag", _bAllowDrag);
-}
-
-CustomPopupMenu::~CustomPopupMenu()
-{
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
-  hGrp->Detach(this);
-}
-
-void CustomPopupMenu::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
-{
-  if (strcmp(sReason, "AllowDrag") == 0)
-  {
-    ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
-    _bAllowDrag = rclGrp.GetBool("AllowDrag", false);
-  }
-}
-
-void CustomPopupMenu::dropEvent ( QDropEvent * e)
-{
-  // create a new button
-  CommandManager & cCmdMgr = Application::Instance->commandManager();
-  Command* pCom = NULL;
-
-  QStringList actions = ActionDrag::actions;
-  for ( QStringList::Iterator it = actions.begin(); it != actions.end(); ++it )
-  {
-    pCom = cCmdMgr.getCommandByName( (*it).latin1() );
-    if (pCom != NULL)
-    {
-      pCom->addTo(this);
-    }
-  }
-
-  ActionDrag::actions.clear();
-}
-
-void CustomPopupMenu::dragEnterEvent ( QDragEnterEvent * e)
-{
-  e->accept(/*ActionDrag::canDecode(e)*/false);
-}
-
-void CustomPopupMenu::dragLeaveEvent ( QDragLeaveEvent * )
-{
-}
-
-void CustomPopupMenu::dragMoveEvent ( QDragMoveEvent * )
-{
-}
-
-void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
-{
-  std::map<std::string, Command*>::const_iterator it;
-  
-  if ( e->state() == LeftButton && _bAllowDrag)
-  {
-    // try to find out the correct menu item
-    // in most cases this should work correctly
-    //
-    //
-    int id = idAt(e->pos());
-    if (id == -1)
-      return; // out of range
-
-    ActionDrag::actions.clear();
-
-    // get pixmap and text of this item
-    QPixmap* pix = pixmap(id);
-    QString txt = text(id);
-
-    // find the corresponding command to this item
-    const std::map<std::string, Command*>& rclCmds = Application::Instance->commandManager().getCommands();
-
-    // search item with same text first
-    for (it = rclCmds.begin(); it != rclCmds.end(); ++it)
-    {
-      QAction* a = it->second->getAction();
-      if (a != 0)
-      {
-        if ( a->menuText() == txt )
-        {
-          ActionDrag *ad = new ActionDrag( it->second->getName(), this );
-
-          if (pix)
-            ad->setPixmap(QPixmap(*pix),QPoint(8,8));
-          ad->dragCopy();
-          return;
-        }
-      }
-    }
-
-    // if nothing found search item with similar text
-    for (it = rclCmds.begin(); it != rclCmds.end(); ++it)
-    {
-      QAction* a = it->second->getAction();
-      if (a != 0)
-      {
-        // check if menu item starts with txt
-        // both strings need not to be equal (because of accelarators)
-        if ( txt.startsWith(a->menuText()) )
-        {
-          ActionDrag *ad = new ActionDrag( it->second->getName(), this );
-
-          if (pix)
-            ad->setPixmap(QPixmap(*pix),QPoint(8,8));
-          ad->dragCopy();
-          return;
-        }
-      }
-    }
-
-    // error
-    Console().Log("No corresponding Action object found\n");
-  }
-  else
-    QPopupMenu::mouseMoveEvent(e);
-}
+//CustomPopupMenu::CustomPopupMenu(QWidget * parent, const char * name, const char* menu )
+//  : Q3PopupMenu(parent, name), _bAllowDrag(false)
+//{
+//  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
+//  hGrp->Attach(this);
+//  _bAllowDrag = hGrp->GetBool("AllowDrag", _bAllowDrag);
+//}
+//
+//CustomPopupMenu::~CustomPopupMenu()
+//{
+//  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
+//  hGrp->Detach(this);
+//}
+//
+//void CustomPopupMenu::OnChange(Base::Subject<const char*> &rCaller, const char * sReason)
+//{
+//  if (strcmp(sReason, "AllowDrag") == 0)
+//  {
+//    ParameterGrp& rclGrp = ((ParameterGrp&)rCaller);
+//    _bAllowDrag = rclGrp.GetBool("AllowDrag", false);
+//  }
+//}
+//
+//void CustomPopupMenu::dropEvent ( QDropEvent * e)
+//{
+//  // create a new button
+//  CommandManager & cCmdMgr = Application::Instance->commandManager();
+//  Command* pCom = NULL;
+//
+//  QStringList actions = ActionDrag::actions;
+//  for ( QStringList::Iterator it = actions.begin(); it != actions.end(); ++it )
+//  {
+//    pCom = cCmdMgr.getCommandByName( (*it).latin1() );
+//    if (pCom != NULL)
+//    {
+//      pCom->addTo(this);
+//    }
+//  }
+//
+//  ActionDrag::actions.clear();
+//}
+//
+//void CustomPopupMenu::dragEnterEvent ( QDragEnterEvent * e)
+//{
+//  e->accept(/*ActionDrag::canDecode(e)*/false);
+//}
+//
+//void CustomPopupMenu::dragLeaveEvent ( QDragLeaveEvent * )
+//{
+//}
+//
+//void CustomPopupMenu::dragMoveEvent ( QDragMoveEvent * )
+//{
+//}
+//
+//void CustomPopupMenu::mouseMoveEvent ( QMouseEvent * e)
+//{
+//  std::map<std::string, Command*>::const_iterator it;
+//  
+//  if ( e->state() == Qt::LeftButton && _bAllowDrag)
+//  {
+//    // try to find out the correct menu item
+//    // in most cases this should work correctly
+//    //
+//    //
+//    int id = idAt(e->pos());
+//    if (id == -1)
+//      return; // out of range
+//
+//    ActionDrag::actions.clear();
+//
+//    // get pixmap and text of this item
+//    QPixmap* pix = pixmap(id);
+//    QString txt = text(id);
+//
+//    // find the corresponding command to this item
+//    const std::map<std::string, Command*>& rclCmds = Application::Instance->commandManager().getCommands();
+//
+//    // search item with same text first
+//    for (it = rclCmds.begin(); it != rclCmds.end(); ++it)
+//    {
+//      QAction* a = it->second->getAction();
+//      if (a != 0)
+//      {
+//        if ( a->menuText() == txt )
+//        {
+//          ActionDrag *ad = new ActionDrag( it->second->getName(), this );
+//
+//          if (pix)
+//            ad->setPixmap(QPixmap(*pix),QPoint(8,8));
+//          ad->dragCopy();
+//          return;
+//        }
+//      }
+//    }
+//
+//    // if nothing found search item with similar text
+//    for (it = rclCmds.begin(); it != rclCmds.end(); ++it)
+//    {
+//      QAction* a = it->second->getAction();
+//      if (a != 0)
+//      {
+//        // check if menu item starts with txt
+//        // both strings need not to be equal (because of accelarators)
+//        if ( txt.startsWith(a->menuText()) )
+//        {
+//          ActionDrag *ad = new ActionDrag( it->second->getName(), this );
+//
+//          if (pix)
+//            ad->setPixmap(QPixmap(*pix),QPoint(8,8));
+//          ad->dragCopy();
+//          return;
+//        }
+//      }
+//    }
+//
+//    // error
+//    Console().Log("No corresponding Action object found\n");
+//  }
+//  else
+//    Q3PopupMenu::mouseMoveEvent(e);
+//}
 
 #include "moc_CustomWidgets.cpp"

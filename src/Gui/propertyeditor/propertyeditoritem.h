@@ -24,8 +24,14 @@
 #ifndef PROPERTYEDITORITEM_H
 #define PROPERTYEDITORITEM_H
 
-#include <qlistview.h>
-#include <qvariant.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 #include <vector>
 
 #include <Base/Type.h>
@@ -43,7 +49,7 @@ namespace PropertyEditor {
  *
  * \author Werner Mayer
  */
-class GuiExport EditableItem :public QObject, public QListViewItem, public Base::BaseClass
+class GuiExport EditableItem :public QObject, public Q3ListViewItem, public Base::BaseClass
 {
   TYPESYSTEM_HEADER();
 
@@ -51,7 +57,7 @@ class GuiExport EditableItem :public QObject, public QListViewItem, public Base:
 
 public:
   /** Constructs an property item. */
-  EditableItem( QListView* lv, const QVariant& value );
+  EditableItem( Q3ListView* lv, const QVariant& value );
   virtual ~EditableItem();
 
   /** Gets the default value of this item. */
@@ -79,13 +85,13 @@ public:
   /** Returns true if the item was modified, otherwise returns false. */
   bool isModified() const;
 
-public slots:
+public Q_SLOTS:
   /** Undoes the changes performed by setOverrideValue(). */
   void restoreOverrideValue();
   /** Applies the changes performed by setOverrideValue(). */
   void applyOverrideValue();
 
-protected slots:
+protected Q_SLOTS:
   /**
    * Sets the item to be modified and does a repaint of itself.
    * You should connect this slot with an appropriate signal of your editor widget.
@@ -130,7 +136,7 @@ protected: // Interface for subclasses.
   virtual void paintCell(QPainter* p, const QColorGroup& cg, int column, int width, int align);
 
 protected:
-  static QListView* parentView;
+  static Q3ListView* parentView;
   QWidget* getEditor() const { return _editor; }
   std::vector<App::Property*> _prop;
 

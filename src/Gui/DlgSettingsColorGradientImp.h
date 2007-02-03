@@ -24,8 +24,12 @@
 #ifndef GUI_DIALOG_DLGSETTINGSCOLORGRADIENT_IMP_H
 #define GUI_DIALOG_DLGSETTINGSCOLORGRADIENT_IMP_H
 
-#include "DlgSettingsColorGradient.h"
+#include "ui_DlgSettingsColorGradient.h"
 #include <App/ColorModel.h>
+
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
 namespace Gui {
 namespace Dialog {
@@ -34,10 +38,12 @@ namespace Dialog {
  * for the color gradient bar.
  * @author Werner Mayer
  */
-class DlgSettingsColorGradientImp : public DlgSettingsColorGradientBase
+class DlgSettingsColorGradientImp : public QDialog, public Ui_DlgSettingsColorGradient
 {
+  Q_OBJECT
+
 public:
-  DlgSettingsColorGradientImp( QWidget* parent = 0, const char* name = 0, bool modal = false, WFlags fl = 0 );
+  DlgSettingsColorGradientImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgSettingsColorGradientImp();
 
   /** @name Color model */
@@ -67,7 +73,7 @@ public:
   int numberOfDecimals() const;
   //@}
 
-protected:
+protected Q_SLOTS:
   void onValidateMaximum();
   void onValidateMinimum();
   void onSetDecimals(int);

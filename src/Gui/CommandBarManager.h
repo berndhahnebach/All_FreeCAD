@@ -21,13 +21,18 @@
  ***************************************************************************/
 
 
-#ifndef COMMANDBAR_MANAGER_H
-#define COMMANDBAR_MANAGER_H
+#ifndef GUI_COMMANDBARMANAGER_H
+#define GUI_COMMANDBARMANAGER_H
 
-#include <qstring.h>
-#include <qptrlist.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-class QToolBar;
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+class Q3ToolBar;
 
 namespace Gui {
 
@@ -59,10 +64,6 @@ public:
   void setToolBox( DockWnd::ToolBox* );
 
 protected:
-  /// Returns a list of all currently existing command bars.
-  QPtrList<QToolBar> commandBars() const;
-  /// Returns the command bar with \a name and creates it if necessary.
-  QToolBar* getOrCreateCommandBar( const QString& name, bool activate=false, bool modify=false ) const;
   CommandBarManager();
   ~CommandBarManager();
 
@@ -74,4 +75,4 @@ private:
 } // namespace Gui
 
 
-#endif // COMMANDBAR_MANAGER_H 
+#endif // GUI_COMMANDBARMANAGER_H 

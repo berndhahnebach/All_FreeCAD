@@ -24,18 +24,24 @@
 #ifndef __VIEW3DINVENTOR__
 #define __VIEW3DINVENTOR__
 
-#include <Inventor/Qt/viewers/SoQtViewer.h>
+#include "View.h"
+
+#include "Inventor/Qt/viewers/SoQtViewer.h"
 
 #include <Base/Parameter.h>
-#include "View.h"
+//Added by qt3to4:
+#include <QtCore/QEvent>
+#include <QtGui/QDragEnterEvent>
+#include <QtGui/QDropEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QKeyEvent>
 
 class QMouseEvent;
 class QSplitter;
 class QWidget;
 class QPushButton;
 class QTabBar;
-class QTimer;
-class QVBox;
+class Q3VBox;
 class SoQtViewer;
 
 class SoSeparator;
@@ -64,7 +70,7 @@ class GuiExport View3DInventor: public MDIView,public ParameterGrp::ObserverType
   TYPESYSTEM_HEADER();
 
 public:
-  View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+  View3DInventor( Gui::Document* pcDocument, QWidget* parent, const char* name, Qt::WFlags wflags=Qt::WDestructiveClose );
   ~View3DInventor();
 
   /// Mesage handler
@@ -107,11 +113,11 @@ public:
 
   View3DInventorViewer *getViewer(void) const {return _viewer;}
   
-public slots:
+public Q_SLOTS:
   void setCursor(const QCursor&);
   void dump(const char* filename);
 
-protected slots:
+protected Q_SLOTS:
   void stopSpinning();
 
 protected:

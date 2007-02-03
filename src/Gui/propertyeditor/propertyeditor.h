@@ -30,8 +30,6 @@
 
 #include "propertyeditoritem.h"
 
-#include <qpushbutton.h>
-
 namespace App {
 class Property;
 }
@@ -46,17 +44,17 @@ namespace PropertyEditor {
  *
  * \author Werner Mayer
  */
-class EditableListView :public QListView
+class EditableListView :public Q3ListView
 {
     Q_OBJECT
 public:
   /** Constructs a list view. */
-  EditableListView( QWidget* parent, const char* name = 0 );
+  EditableListView( QWidget* parent=0);
   /** Sets \a item to be open if \a open is true and \a item is expandable, 
    * and to be closed if \a open is false. Deletes the current editor and 
    * repaints accordingly.
    */
-  void setOpen ( QListViewItem * item, bool open );
+  void setOpen ( Q3ListViewItem * item, bool open );
   /** Stops the editor of the current active item. If no editor is open nothing
    * happens.
    */
@@ -68,13 +66,13 @@ public:
    */
   void setSorting ( int column, bool ascending = TRUE );
 
-protected slots:
+protected Q_SLOTS:
   /** This slot is connected with the clicked signal and calls itemChanged(). */
-  void mouseClick(QListViewItem * item );
+  void mouseClick(Q3ListViewItem * item );
   /** Deletes the editor of the last selected item and creates a new one
    * for the curreent item \a item.
    */
-  void itemChanged(QListViewItem * item );
+  void itemChanged(Q3ListViewItem * item );
   /** Updates the current editable item. */
   void updateItem();
 

@@ -32,8 +32,6 @@
 #include "Stream.h"
 #include "Swap.h"
 
-#define new DEBUG_CLIENTBLOCK
-
 using namespace Base;
 
 /** Initializes the stream data. This method should be called before 

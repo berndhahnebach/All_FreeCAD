@@ -27,9 +27,13 @@
 #include "DockWindow.h"
 
 #include <qtoolbutton.h>
+//Added by qt3to4:
+#include <Q3VBoxLayout>
+#include <QMouseEvent>
+#include <QTimerEvent>
 
-class QScrollView;
-class QVBoxLayout;
+class Q3ScrollView;
+class Q3VBoxLayout;
 
 namespace Gui {
 namespace DockWnd {
@@ -120,27 +124,27 @@ public:
   bool isItemVisible(QWidget* w) const;
   //@}
 
-private slots:
+private Q_SLOTS:
   void buttonClicked();
 
 private:
   void updatePages();
   StackBarButton* firstPageVisible();
   void timerEvent ( QTimerEvent * e);
-  void animatePageScroll(QScrollView* pCurPage, QScrollView* pNewPage);
+  void animatePageScroll(Q3ScrollView* pCurPage, Q3ScrollView* pNewPage);
 
 private:
   bool                           m_bAnimated;
   long                           m_lAnimCount;
   int                            m_iCurHeight;
   int                            m_iNewHeight;
-  QVBoxLayout                  * m_pLayout;
-  QScrollView                  * m_pCurPage;
-  QScrollView                  * m_pAnimNewPage;
-  QScrollView                  * m_pAnimCurPage;
+  Q3VBoxLayout                  * m_pLayout;
+  Q3ScrollView                  * m_pCurPage;
+  Q3ScrollView                  * m_pAnimNewPage;
+  Q3ScrollView                  * m_pAnimCurPage;
   StackBarButton               * m_pLastBtn;
   std::map <StackBarButton*, 
-            QScrollView*>        m_mButtonView;
+            Q3ScrollView*>        m_mButtonView;
 };
 
 } // namespace DockWnd

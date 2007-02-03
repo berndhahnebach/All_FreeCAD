@@ -24,7 +24,7 @@
 #ifndef GUI_DIALOG_DLGINPUTDIALOGIMP_H
 #define GUI_DIALOG_DLGINPUTDIALOGIMP_H
 
-#include "DlgInputDialog.h"
+#include "ui_DlgInputDialog.h"
 
 namespace Gui {
 namespace Dialog {
@@ -36,27 +36,30 @@ namespace Dialog {
  * the flexibility.
  * \author Werner Mayer
  */
-class GuiExport DlgInputDialogImp : public DlgInputDialog
+class GuiExport DlgInputDialogImp : public QDialog, public Ui_DlgInputDialog
 {
+  Q_OBJECT
+
 public:
   enum Type { LineEdit, SpinBox, UIntBox, FloatSpinBox, ComboBox };
 
-  DlgInputDialogImp( const QString& label, QWidget* parent = 0, const char* name = 0, 
-    bool modal = TRUE, Type = LineEdit );
+  DlgInputDialogImp( const QString& label, QWidget* parent = 0, bool modal = TRUE, Type = LineEdit );
   ~DlgInputDialogImp();
 
   void setType( Type t );
   Type type() const;
 
   Gui::SpinBox *getSpinBox() const;
-  Gui::UIntSpinBox *getUIntBox() const;
-  Gui::FloatSpinBox *getFloatSpinBox() const;
+  Gui::SpinBox *getUIntBox() const;
+  QDoubleSpinBox *getFloatSpinBox() const;
   QLineEdit *getLineEdit() const;
   QComboBox *getComboBox() const;
 
-protected:
+protected Q_SLOTS:
   void textChanged( const QString &s );
   void tryAccept();
+
+protected:
   Type inputtype;
 };
 

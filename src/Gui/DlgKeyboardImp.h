@@ -21,13 +21,19 @@
  ***************************************************************************/
 
 
-#ifndef DLGKEYBOARD_IMP_H
-#define DLGKEYBOARD_IMP_H
+#ifndef GUI_DIALOG_DLGKEYBOARD_IMP_H
+#define GUI_DIALOG_DLGKEYBOARD_IMP_H
 
-#include "DlgKeyboard.h"
+#include "ui_DlgKeyboard.h"
+#include "PropertyPage.h"
 
-#include <qmap.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 class Command;
@@ -37,24 +43,25 @@ namespace Dialog {
 /** Shows an overview of all available commands of all groups and modules.
  * You can customize your workbenches just by drag&dropping any commands
  * onto the toolbars or commandbars. But you cannot modify any standard toolbars or
- * commandbars such as "File operations, Standard views, ...". It is only poosible to
+ * commandbars such as "File, View, ...". It is only poosible to
  * customize your own toolbars or commandbars.
  * \author Werner Mayer
  */
-class DlgCustomKeyboardImp : public DlgCustomKeyboardBase
-{ 
-public:
-  DlgCustomKeyboardImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
-  ~DlgCustomKeyboardImp();
-  void reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt = FALSE );
+class DlgCustomKeyboardImp : public CustomizeActionPage, public Ui_DlgCustomKeyboard
+{
+  Q_OBJECT;
 
-protected:
-  void onDescription( const QString& );
-  void onGroupSelected( const QString& );
-  void onAssign();
-  void onReset();
-  void onResetAll();
-  void onShortcutPressed(const QString&);
+public:
+  DlgCustomKeyboardImp( QWidget* parent = 0 );
+  ~DlgCustomKeyboardImp();
+
+protected Q_SLOTS:
+  void on_comboBoxCategory_activated( const QString& );
+  void on_listBoxCommands_highlighted( const QString& );
+  void on_buttonAssign_clicked();
+  void on_buttonReset_clicked();
+  void on_buttonResetAll_clicked();
+  void on_editShortcut_textChanged(const QString&);
   void onAddMacroAction(const QString&);
   void onRemoveMacroAction(const QString&);
 
@@ -66,4 +73,4 @@ private:
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DLGKEYBOARD_IMP_H
+#endif // GUI_DIALOG_DLGKEYBOARD_IMP_H

@@ -23,16 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qpopupmenu.h>
-#endif
-
 #include "ToolBarManager.h"
 #include "MainWindow.h"
 #include "Application.h"
 #include "Command.h"
-#include "CustomWidgets.h"
-#define new DEBUG_CLIENTBLOCK
+#include "BitmapFactory.h"
+
 using namespace Gui;
 
 ToolBarItem::ToolBarItem()
@@ -73,11 +69,10 @@ ToolBarItem* ToolBarItem::findItem( const QString& name )
   }
   else
   {
-    ToolBarItem* item;
-    for ( item = _items.first(); item; item = _items.next() )
-    {
-      if ( item->_name == name )
-        return item;
+    for ( QList<ToolBarItem*>::ConstIterator it = _items.begin(); it != _items.end(); ++it ) {
+      if ( (*it)->_name == name ) {
+        return *it;
+      }
     }
   }
 
@@ -89,11 +84,9 @@ ToolBarItem* ToolBarItem::copy() const
   ToolBarItem* root = new ToolBarItem;
   root->setCommand( command() );
 
-  QPtrList<ToolBarItem> items = getItems();
-  ToolBarItem* item;
-  for ( item=items.first(); item; item=items.next() )
-  {
-    root->appendItem( item->copy() );
+  QList<ToolBarItem*> items = getItems();
+  for ( QList<ToolBarItem*>::ConstIterator it = items.begin(); it != items.end(); ++it ) {
+    root->appendItem( (*it)->copy() );
   }
 
   return root;
@@ -104,39 +97,40 @@ uint ToolBarItem::count() const
   return _items.count();
 }
 
-void ToolBarItem::appendItem( const ToolBarItem* item )
+void ToolBarItem::appendItem( ToolBarItem* item )
 {
-  _items.append( item );
+  _items.push_back( item );
 }
 
-bool ToolBarItem::insertItem( const ToolBarItem* before, const ToolBarItem* item)
+bool ToolBarItem::insertItem( ToolBarItem* before, ToolBarItem* item)
 {
-  int pos = _items.find( before );
-  if ( pos > -1 )
+  QList<ToolBarItem*>::Iterator it = _items.find( before );
+  if ( it != _items.end() )
   {
-    return _items.insert( pos, item );
+    _items.insert( it, item );
+    return true;
   }
   else
     return false;
 }
 
-void ToolBarItem::removeItem( const ToolBarItem* item )
+void ToolBarItem::removeItem( ToolBarItem* item )
 {
-  _items.remove( item );
+  QList<ToolBarItem*>::Iterator it = _items.find( item );
+  if ( it != _items.end() )
+    _items.erase( it );
 }
 
 void ToolBarItem::clear()
 {
-  ToolBarItem* item;
-  for ( item = _items.first(); item; item = _items.next() )
-  {
-    delete item;
+  for ( QList<ToolBarItem*>::Iterator it = _items.begin(); it != _items.end(); ++it ) {
+    delete *it;
   }
 
   _items.clear();
 }
 
-ToolBarItem& ToolBarItem::operator<< ( const ToolBarItem* item )
+ToolBarItem& ToolBarItem::operator<< ( ToolBarItem* item )
 {
   appendItem(item);
   return *this;
@@ -149,7 +143,7 @@ ToolBarItem& ToolBarItem::operator<< ( const QString& command )
   return *this;
 }
 
-QPtrList<ToolBarItem> ToolBarItem::getItems() const
+QList<ToolBarItem*> ToolBarItem::getItems() const
 {
   return _items;
 }
@@ -184,137 +178,54 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
   if ( !toolBar )
     return; // empty menu bar
 
-  QPtrList<QToolBar> tbs;
-  QPtrList<QDockWindow> dws = getMainWindow()->dockWindows();
-  QDockWindow* dw;
-  for ( dw = dws.first(); dw; dw = dws.next() )
+  QList<QToolBar*> tbs = toolBars();
+  bool ok = true;
+  QString file = "File";
+  for ( QList<QToolBar*>::Iterator it = tbs.begin(); it != tbs.end(); ++it )
   {
-    if ( dw->inherits("QToolBar") )
-    {
-      if ( toolBar->findItem( dw->name() ) && strcmp(dw->name(), "file operations") == 0 )
-      {
-        tbs.append( reinterpret_cast<QToolBar*>(dw) );
-      }
-      else
-      {
-        getMainWindow()->removeDockWindow( dw );
-        delete dw;
-      }
+    if ((*it)->objectName() != file) {
+      getMainWindow()->removeToolBar( *it );
+      delete *it;
+    } else {
+      ok = false;
     }
   }
 
   CommandManager& mgr = Application::Instance->commandManager();
-  QPtrList<ToolBarItem> items = toolBar->getItems();
+  QList<ToolBarItem*> items = toolBar->getItems();
 
-  ToolBarItem* item;
-  for ( item = items.first(); item; item = items.next() )
+  for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item ) 
   {
-    QToolBar* bar;
-    for ( bar = tbs.first(); bar; bar = tbs.next() )
-    {
-      if ( bar->name() == item->command() )
-        break;
-    }
+    if (!ok && (*item)->command() == file)
+      continue;
+    QToolBar* bar = getMainWindow()->addToolBar(QObject::tr((*item)->command())); // i18n
+    bar->setObjectName((*item)->command());
 
-    if ( !bar )
-    {
-      bar = getOrCreateToolBar( item->command(), false );
-
-      QPtrList<ToolBarItem> subitems = item->getItems();
-      ToolBarItem* subitem;
-      for ( subitem = subitems.first(); subitem; subitem = subitems.next() )
-      {
-        if ( subitem->command() == "Separator" )
-          bar->addSeparator();
-        else
-          mgr.addTo( subitem->command().latin1(), bar );
-      }
+    QList<ToolBarItem*> subitems = (*item)->getItems();
+    for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem ) {
+      if ( (*subitem)->command() == "Separator" )
+        bar->addSeparator();
+      else
+        mgr.addTo( (*subitem)->command().latin1(), bar );
     }
   }
 }
 
 void ToolBarManager::customSetup( ToolBarItem* toolBar ) const
 {
-  if ( !toolBar )
-    return; // empty menu bar
-
-  QPtrList<QDockWindow> dws = getMainWindow()->dockWindows();
-  QDockWindow* dw;
-  for ( dw = dws.first(); dw; dw = dws.next() )
-  {
-    // search for changable bars
-    if ( dw->inherits("Gui::CustomToolBar") )
-    {
-      CustomToolBar* cw = dynamic_cast<CustomToolBar*>(dw);
-      if ( cw && cw->canModify() )
-      {
-        getMainWindow()->removeDockWindow( cw );
-        delete cw;
-      }
-    }
-  }
-
-  CommandManager& mgr = Application::Instance->commandManager();
-  QPtrList<ToolBarItem> items = toolBar->getItems();
-
-  ToolBarItem* item;
-  for ( item = items.first(); item; item = items.next() )
-  {
-    QToolBar* bar = getOrCreateToolBar( item->command(), true );
-    CustomToolBar* cw = dynamic_cast<CustomToolBar*>(bar);
-    if ( !(cw && cw->canModify()) )
-      continue; // standard toolbar (not user defined)
-
-    QPtrList<ToolBarItem> subitems = item->getItems();
-    ToolBarItem* subitem;
-    for ( subitem = subitems.first(); subitem; subitem = subitems.next() )
-    {
-      if ( subitem->command() == "Separator" )
-        bar->addSeparator();
-      else
-        mgr.addTo( subitem->command().latin1(), bar );
-    }
-  }
+#if 0 //TODO
+#endif
 }
 
-QPtrList<QToolBar> ToolBarManager::toolBars() const
+QList<QToolBar*> ToolBarManager::toolBars() const
 {
-  QPtrList<QToolBar> tbs;
-  QPtrList<QDockWindow> dws = getMainWindow()->dockWindows();
-  QDockWindow* dw;
-  for ( dw = dws.first(); dw; dw = dws.next() )
-  {
-    if ( dw->inherits("QToolBar") )
-    {
-      tbs.append( reinterpret_cast<QToolBar*>(dw) );
-    }
+  QWidget* mw = getMainWindow();
+  QList<QToolBar*> tb;
+  QList<QToolBar*> bars = getMainWindow()->findChildren<QToolBar*>();
+  for (QList<QToolBar*>::ConstIterator it = bars.begin(); it != bars.end(); ++it) {
+    if ((*it)->parentWidget() == mw)
+      tb.push_back(*it);
   }
 
-  return tbs;
+  return tb;
 }
-
-QToolBar* ToolBarManager::getOrCreateToolBar( const QString& name, bool modify ) const
-{
-  QPtrList<QToolBar> bars = toolBars();
-  QToolBar* bar=0;
-  for ( bar = bars.first(); bar; bar = bars.next() )
-  {
-    if ( strcmp(bar->name(), name.latin1()) == 0 )
-    {
-      break;
-    }
-  }
-  
-  if ( !bar )
-  {
-    CustomToolBar* cw = new CustomToolBar( name, getMainWindow(), getMainWindow(), false, name.latin1() );
-    cw->setCanModify( modify );
-    bar = cw;
-    bar->setLabel( QObject::tr( name ) ); // i18n
-    getMainWindow()->addDockWindow( bar );
-  }
-
-  return bar;
-}
-
-

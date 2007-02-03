@@ -52,7 +52,6 @@
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
 #include "../Build/Version.h"
 
-#define new DEBUG_CLIENTBLOCK
 using Base::Console;
 using App::Application;
 

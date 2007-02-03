@@ -62,10 +62,10 @@ public:
 
   static bool testWget();
 
-signals:
+Q_SIGNALS:
   void wgetExited();
 
-private slots:
+private Q_SLOTS:
   void testFailure();
 
 private:
@@ -89,9 +89,9 @@ protected:
   virtual void activated(int iMsg);
 
   /** Creates the action object. */
-  virtual QAction* createAction();
+  virtual Action* createAction();
 
-private slots:
+private Q_SLOTS:
   void wgetExit();
 
 private:

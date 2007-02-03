@@ -21,14 +21,25 @@
  ***************************************************************************/
 
 
-#ifndef DlgDisplayPropertiesImp_H
-#define DlgDisplayPropertiesImp_H
+#ifndef GUI_DIALOG_DLGDISPLAYPROPERTIES_IMP_H
+#define GUI_DIALOG_DLGDISPLAYPROPERTIES_IMP_H
 
 #include <vector>
-#include <Inventor/SbLinear.h>
-#include <qmap.h>
 
-#include "DlgDisplayProperties.h"
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+#ifndef __InventorAll__
+# include "InventorAll.h"
+#endif
+
+
+#include "ui_DlgDisplayProperties.h"
 #include <App/Material.h>
 
 namespace App
@@ -48,27 +59,27 @@ namespace Dialog {
  * templates to create a new document.
  * \author Jürgen Riegel
  */
-class DlgDisplayPropertiesImp : public DlgDisplayProperties
+class DlgDisplayPropertiesImp : public QDialog, public Ui_DlgDisplayProperties
 {
     Q_OBJECT
 
 public:
-  DlgDisplayPropertiesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgDisplayPropertiesImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgDisplayPropertiesImp();
 
-public slots:
-  virtual void onChangeMaterial(const QString&);
-  virtual void onChangeMode(const QString&);
-  virtual void onChangePlot(const QString&);
-  virtual void onColorChange();
-  virtual void onChangeTrans(int);
-  virtual void onChangePointSize(double);
-  virtual void onChangeLineWidth(double);
-  virtual void onUserDefinedMaterial();
+public Q_SLOTS:
+  void on_changeMaterial_activated(const QString&);
+  void on_changeMode_activated(const QString&);
+  void on_changePlot_activated(const QString&);
+  void on_buttonColor_changed();
+  void on_spinTransparency_valueChanged(int);
+  void on_spinPointSize_valueChanged(double);
+  void on_spinLineWidth_valueChanged(double);
+  void on_buttonUserDefinedMaterial_clicked();
 
 protected:
-  virtual void accept();
-  virtual void reject();
+  void accept();
+  void reject();
 
 protected:
   std::vector<ViewProvider*> Provider;
@@ -78,4 +89,4 @@ protected:
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DlgDisplayPropertiesImp_H
+#endif // GUI_DIALOG_DLGDISPLAYPROPERTIES_IMP_H

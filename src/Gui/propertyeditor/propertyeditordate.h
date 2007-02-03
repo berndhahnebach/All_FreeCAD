@@ -39,7 +39,7 @@ class GuiExport TimeEditorItem: public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  TimeEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  TimeEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
@@ -62,7 +62,7 @@ class GuiExport DateEditorItem: public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  DateEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  DateEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
@@ -85,7 +85,7 @@ class GuiExport DateTimeEditorItem: public EditableItem
   TYPESYSTEM_HEADER();
 
 public:
-  DateTimeEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  DateTimeEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );

@@ -25,10 +25,14 @@
 
 #ifndef _PreComp_
 # include <qcursor.h>
-#	include <qheader.h>
+#	include <q3header.h>
 # include <qlayout.h>
-# include <qpopupmenu.h>
+# include <q3popupmenu.h>
 # include <qstatusbar.h>
+//Added by qt3to4:
+#include <QContextMenuEvent>
+#include <Q3GridLayout>
+#include <QPixmap>
 #endif
 
 #include <Base/Console.h>
@@ -44,7 +48,7 @@
 #include "Application.h"
 #include "MainWindow.h"
 
-#define new DEBUG_CLIENTBLOCK
+
 using Base::Console;
 
 using namespace Gui;
@@ -60,8 +64,8 @@ using namespace Gui;
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-DocItem::DocItem( QListViewItem* parent,QListViewItem * after,Gui::Document* doc)
-    : QListViewItem( parent, after ), _pcDocument(doc)
+DocItem::DocItem( Q3ListViewItem* parent,Q3ListViewItem * after,Gui::Document* doc)
+    : Q3ListViewItem( parent, after ), _pcDocument(doc)
 {
   setPixmap(0,*TreeView::pcDocumentPixmap);
   setText(0,QString(_pcDocument->getDocument()->getName()));
@@ -159,7 +163,7 @@ void DocItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, int 
    if ( bHighlight && !isOpen() )
        _cg.setColor( QColorGroup::Base , QColor (200,200,255));
 
-   QListViewItem::paintCell( p, _cg, column, width, align );
+   Q3ListViewItem::paintCell( p, _cg, column, width, align );
 
    _cg.setColor( QColorGroup::Text, c );
 
@@ -192,8 +196,8 @@ void DocItem::addViewProviderDocumentObject(ViewProviderDocumentObject* Provider
     }
 
     ObjectItem* item = Provider->getTreeItem(this);
-    QListViewItem* child=0;
-    QListViewItem* sibling=0;
+    Q3ListViewItem* child=0;
+    Q3ListViewItem* sibling=0;
     if ( groupItem )
     {
       // set the newly created item at the end of the group
@@ -242,7 +246,7 @@ void DocItem::removeViewProviderDocumentObject(ViewProviderDocumentObject* Provi
     FeatMap.erase(it);
 
     ObjectItem *child = (ObjectItem*)item->firstChild();
-    QListViewItem* parent = item->parent();
+    Q3ListViewItem* parent = item->parent();
     while ( child ) {
       // move the items to the parent item
       ObjectItem* sibling = (ObjectItem*)child->nextSibling();
@@ -289,13 +293,13 @@ void DocItem::buildUp(void)
 
 void DocItem::setOpen( bool o )
 {
-  QListViewItem::setOpen ( o );
+  Q3ListViewItem::setOpen ( o );
 }
 
 void DocItem::setup()
 {
   //setExpandable( TRUE );
-  QListViewItem::setup();
+  Q3ListViewItem::setup();
 }
 
 void DocItem::activate ()
@@ -319,8 +323,8 @@ void DocItem::rename(void)
  *  acociated FCLabel.
  *  @return Const string with the date/time
  */
-ObjectItem::ObjectItem( QListViewItem* parent,Gui::ViewProviderDocumentObject* pcViewProvider)
-    : QListViewItem( parent ),
+ObjectItem::ObjectItem( Q3ListViewItem* parent,Gui::ViewProviderDocumentObject* pcViewProvider)
+    : Q3ListViewItem( parent ),
   _pcViewProvider(pcViewProvider)
 {
   BaseColor = Qt::white;
@@ -377,7 +381,7 @@ void ObjectItem::paintCell ( QPainter * p, const QColorGroup & cg, int column, i
 
    _cg.setColor( QColorGroup::Text , TextColor);
    
-   QListViewItem::paintCell( p, _cg, column, width, align );
+   Q3ListViewItem::paintCell( p, _cg, column, width, align );
 
    _cg.setColor( QColorGroup::Text, c );
 
@@ -410,14 +414,14 @@ void ObjectItem::buildUp(void)
 void ObjectItem::setOpen( bool o )
 {
 
-  QListViewItem::setOpen ( o );
+  Q3ListViewItem::setOpen ( o );
 }
 
 
 void ObjectItem::setup()
 {
   //setExpandable( TRUE );
-  QListViewItem::setup();
+  Q3ListViewItem::setup();
 }
 
 void ObjectItem::activate ()
@@ -432,16 +436,16 @@ QPixmap* TreeView::pcDocumentPixmap=0;
 
 /* TRANSLATOR Gui::TreeView */
 TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
-  :DockView(pcDocument,parent,name),bFromOutside(false), _lastDocItem(0)
+  : DockView(pcDocument,parent,name),bFromOutside(false), _lastDocItem(0)
 {
-  QGridLayout* layout = new QGridLayout( this );
-  _pcListView = new QListView(this,name);
+  Q3GridLayout* layout = new Q3GridLayout( this );
+  _pcListView = new Q3ListView(this,name);
   layout->addWidget( _pcListView, 0, 0 );
 
   // set defaults and the colums
   _pcListView->setSortColumn(-1);
   _pcListView->addColumn(tr("Labels & Attributes"));
-  _pcListView->setColumnWidthMode(0,QListView::Maximum);
+  _pcListView->setColumnWidthMode(0,Q3ListView::Maximum);
   //_pcListView->setSorting(0,true);
 //  _pcListView->addColumn(tr("Value"));
 //  _pcListView->setColumnWidthMode(1,QListView::Manual );
@@ -453,14 +457,14 @@ TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
 
 
   // Add the first main label
-  _pcMainItem = new QListViewItem(_pcListView,"Application");
+  _pcMainItem = new Q3ListViewItem(_pcListView,"Application");
   _pcMainItem->setOpen(true);
 
   //_pcListView->setRootIsDecorated(true);
 
-  _pcListView->setSelectionMode(QListView::Extended );
+  _pcListView->setSelectionMode(Q3ListView::Extended );
   connect( _pcListView, SIGNAL( selectionChanged() ), this, SLOT( onSelectionChanged() ) );
-  connect( _pcListView, SIGNAL( onItem(QListViewItem*) ), this, SLOT( onItem(QListViewItem*) ) );
+  connect( _pcListView, SIGNAL( onItem(Q3ListViewItem*) ), this, SLOT( onItem(Q3ListViewItem*) ) );
 
 
   QPalette pal = _pcListView->palette();
@@ -486,8 +490,8 @@ void TreeView::contextMenuEvent ( QContextMenuEvent * e )
 {
   // check for selected feature items
   bool selected = false;
-  QListViewItem* item;
-  for ( QListViewItemIterator it = _pcListView->firstChild(); (item=it.current())!=0; it++ ) {
+  Q3ListViewItem* item;
+  for ( Q3ListViewItemIterator it = _pcListView->firstChild(); (item=it.current())!=0; it++ ) {
     if ( item->isSelected() && item->rtti() == 3100 ) {
       selected = true;
       break;
@@ -501,10 +505,19 @@ void TreeView::contextMenuEvent ( QContextMenuEvent * e )
   // ask workbenches and view provider, ...
   Gui::Application::Instance->setupContextMenu("Tree", view);
 
-  QPopupMenu ContextMenu;
+  Q3PopupMenu ContextMenu;
   MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
   delete view;
   ContextMenu.exec( QCursor::pos() );
+}
+
+void TreeView::changeEvent(QEvent *e)
+{
+  if (e->type() == QEvent::LanguageChange) {
+    _pcListView->setColumnText(0, tr("Labels & Attributes"));
+  } else {
+    DockView::changeEvent(e);
+  }
 }
 
 void TreeView::testStatus(void)
@@ -581,7 +594,7 @@ void TreeView::onSelectionChanged ()
 
 }
 
-void TreeView::onItem(QListViewItem* item)
+void TreeView::onItem(Q3ListViewItem* item)
 {
   // feature item selected
   if ( item && item->rtti() == 3100 )
@@ -633,8 +646,8 @@ void TreeView::DeleteDoc( Gui::Document* pDoc )
   if ( it != DocMap.end() )
   {
     // now we must search for the matching listview item
-    QListViewItem* item = _pcMainItem->firstChild();
-    QListViewItem* sibling=0;
+    Q3ListViewItem* item = _pcMainItem->firstChild();
+    Q3ListViewItem* sibling=0;
     while ( item ) {
       // make sure that we have a ObjectItem
       if ( item == it->second )

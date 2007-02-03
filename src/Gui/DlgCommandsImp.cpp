@@ -23,17 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qlabel.h>
-# include <qlistbox.h>
-#endif
-
 #include "DlgCommandsImp.h"
 #include "Application.h"
 #include "Command.h"
 #include "BitmapFactory.h"
 #include "Widgets.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /**
@@ -43,18 +38,18 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, WFlags fl  )
-: DlgCustomCommandsBase(parent, name, fl)
+DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent  )
+  : CustomizeActionPage(parent)
 {
-  IconView1->setHScrollBarMode( QScrollView::AlwaysOff );
-
+  this->setupUi(this);
+  
   // paints for active and inactive the same color
-  QPalette pal = ComboBoxCategory->palette();
+  QPalette pal = listBoxCategory->palette();
   pal.setInactive( pal.active() );
-  ComboBoxCategory->setPalette( pal );
+  listBoxCategory->setPalette( pal );
 
   connect(IconView1, SIGNAL(emitSelectionChanged(const QString &)), this, SLOT(onDescription(const QString &)));
-  connect(ComboBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(onGroupSelected(const QString &)));
+  connect(listBoxCategory, SIGNAL(highlighted ( const QString & )), this, SLOT(onGroupSelected(const QString &)));
 
   CommandManager & cCmdMgr = Application::Instance->commandManager();
   std::map<std::string,Command*> sCommands = cCmdMgr.getCommands();
@@ -77,9 +72,9 @@ DlgCustomCommandsImp::DlgCustomCommandsImp( QWidget* parent, const char* name, W
       items << it2.key();
   }
 
-  ComboBoxCategory->insertStringList( items );
-
-  ComboBoxCategory->setCurrentItem( 0 );
+  for ( QStringList::Iterator It = items.begin(); It != items.end(); ++It )
+    listBoxCategory->insertItem(*It);
+  listBoxCategory->setCurrentItem( 0 );
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -109,11 +104,63 @@ void DlgCustomCommandsImp::onGroupSelected(const QString & group)
       QPixmap pix;
       if ( (*it)->getPixmap() )
         pix = BitmapFactory().pixmap( (*it)->getPixmap() );
-      (void) new Gui::CommandViewItem(IconView1, (*it)->getName(), QObject::tr( (*it)->getToolTipText() ), pix);
+      else 
+        pix = BitmapFactory().pixmap( "px" );
+      QListWidgetItem* item = new QListWidgetItem(IconView1);
+      item->setText((*it)->getName());
+      item->setToolTip(QObject::tr((*it)->getToolTipText()));
+      item->setIcon(pix);
+      //IconView1->addItem(item);
     }
   }
 }
 
-#include "DlgCommands.cpp"
-#include "moc_DlgCommands.cpp"
+void DlgCustomCommandsImp::onAddMacroAction(const QString& item)
+{
+  onGroupSelected(listBoxCategory->currentText());
+#if 0 //TODO
+  QMap<QString, QString>::ConstIterator It = _cmdGroups.find( "Macros" );
+  int index = listBoxCategory->currentItem();
+  QString current = listBoxCategory->text(index);
+  if ( It == _cmdGroups.end() || It.data() != current )
+    return;
+  CommandManager & cCmdMgr = Application::Instance->commandManager();
+  Command* pCmd = cCmdMgr.getCommandByName(item.ascii());
+  QPixmap pix;
+  if ( pCmd->getPixmap() )
+    pix = BitmapFactory().pixmap( pCmd->getPixmap() );
+  else 
+    pix = BitmapFactory().pixmap( "px" );
+  QListWidgetItem* viewItem = new QListWidgetItem(IconView1);
+  viewItem->setText(pCmd->getName());
+  viewItem->setToolTip(QObject::tr(pCmd->getToolTipText()));
+  viewItem->setIcon(pix);
+  IconView1->sortItems();
+//  (void) new Gui::CommandViewItem(IconView1, item, QObject::tr( pCmd->getToolTipText() ), pix);
+//  IconView1->sort();
+#endif
+}
+
+void DlgCustomCommandsImp::onRemoveMacroAction(const QString& item)
+{
+  onGroupSelected(listBoxCategory->currentText());
+#if 0
+  QMap<QString, QString>::ConstIterator It = _cmdGroups.find( "Macros" );
+  int index = listBoxCategory->currentItem();
+  QString current = listBoxCategory->text(index);
+  if ( It.data() != current )
+    return;
+  //Q3IconViewItem* icon = IconView1->firstItem();
+  //while (icon) {
+  //  if (icon->Q3IconViewItem::text() == item) {
+  //    IconView1->takeItem(icon);
+  //    IconView1->sort();
+  //    break;
+  //  } else {
+  //    icon = icon->nextItem();
+  //  }
+  //}
+#endif
+}
+
 #include "moc_DlgCommandsImp.cpp"

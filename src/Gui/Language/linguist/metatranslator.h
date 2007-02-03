@@ -17,11 +17,13 @@
 #ifndef METATRANSLATOR_H
 #define METATRANSLATOR_H
 
-#include <qmap.h>
-#include <qstring.h>
-#include <qtranslator.h>
-#include <qvaluelist.h>
-#include <qiodevice.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 class MetaTranslatorMessage : public QTranslatorMessage
 {
@@ -79,14 +81,14 @@ public:
     void setCodec( const char *name ) { codec = name; }
     QString toUnicode( const char *str ) const;
 
-    QValueList<MetaTranslatorMessage> messages() const;
+    Q3ValueList<MetaTranslatorMessage> messages() const;
 
 private:
     typedef QMap<MetaTranslatorMessage, int> TMM;
     typedef QMap<int, MetaTranslatorMessage> TMMInv;
 
     TMM mm;
-    QCString codec;
+    Q3CString codec;
 };
 
 #endif

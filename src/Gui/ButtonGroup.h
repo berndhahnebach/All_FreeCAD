@@ -26,11 +26,14 @@
 
 #include <map>
 
-#include <qbuttongroup.h>
-#include <qpixmap.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-class QScrollView;
-class QPopupMenu;
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 namespace Gui {
 namespace DockWnd {
@@ -38,15 +41,15 @@ namespace DockWnd {
 /** The ButtonGroup widget organizes buttons in a group.
  * \author Werner Mayer
  */
-class GuiExport ButtonGroup : public QButtonGroup
+class GuiExport ButtonGroup : public Q3ButtonGroup
 {
   Q_OBJECT
 
 public:
   ButtonGroup(QWidget * parent=0, const char * name=0);
   ButtonGroup(const QString & title, QWidget * parent=0, const char * name=0);
-  ButtonGroup(int strips, Orientation o, QWidget * parent=0, const char * name=0);
-  ButtonGroup(int strips, Orientation o, const QString & title, QWidget * parent=0, const char * name=0);
+  ButtonGroup(int strips, Qt::Orientation o, QWidget * parent=0, const char * name=0);
+  ButtonGroup(int strips, Qt::Orientation o, const QString & title, QWidget * parent=0, const char * name=0);
   virtual ~ButtonGroup(void);
 
 protected:
@@ -54,7 +57,7 @@ protected:
   void resizeEvent (QResizeEvent * e);
   void mousePressEvent( QMouseEvent * );
 
-protected slots:
+protected Q_SLOTS:
   void onPopupMenuAboutToShow();
   void onSetNewBackgroundColor();
   void onResetBackgroundColor();
@@ -70,9 +73,9 @@ private:
   int m_iChildHeight;
   int m_iWidth, m_iHeight;
   QColor       m_Color;
-  QPopupMenu*  m_Popup;
+  Q3PopupMenu*  m_Popup;
   std::map<int, QPixmap> m_Pixmaps;
-  QScrollView *pScrollWidget;
+  Q3ScrollView *pScrollWidget;
 };
 
 } // namespace DockWnd

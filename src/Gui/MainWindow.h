@@ -21,20 +21,20 @@
  ***************************************************************************/
 
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef GUI_MAINWINDOW_H
+#define GUI_MAINWINDOW_H
 
 #include <string>
 #include <vector>
-#include <qstringlist.h>
-#include <qmainwindow.h>
-#include <qworkspace.h>
 
-class QComboBox;
-class QToolBar;
-class QPopupMenu;
-class QToolBar;
-class QSplashScreen;
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 namespace Gui {
 
@@ -64,7 +64,7 @@ public:
    * Constructs an empty main window. For default \a parent is 0, as there usually is
    * no toplevel window there.
    */
-  MainWindow( QWidget * parent = 0, const char * name = 0, WFlags f = WType_TopLevel );
+  MainWindow( QWidget * parent = 0, Qt::WFlags f = Qt::WType_TopLevel );
   /** Destroys the object and frees any allocated resources. */
   ~MainWindow();
   /**
@@ -92,7 +92,7 @@ public:
   /**
    * Returns a list of all MDI windows in the worpspace.
    */
-  QWidgetList windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;
+  QList<QWidget*> windows( QWorkspace::WindowOrder order = QWorkspace::CreationOrder ) const;
   /**
    * Returns the active MDI window or 0 if there is none.
    */
@@ -101,9 +101,6 @@ public:
    * Sets the active window to \a view.
    */
   void setActiveWindow( MDIView* view );
-  /** Calls update to the pixmaps' size.
-   */
-  void updatePixmapsSize(void);
   /** Calls update to style.
    */
   void updateStyle(void);
@@ -118,37 +115,40 @@ public:
   /**
    * Returns true that the context menu contains the 'Customize...' menu item.
    */
-  bool isCustomizable () const;
-  /**
-   * Opens a dialog to customize the main window.
-   */
-  void customize ();
+  QMenu * createPopupMenu();
 
   /** @name Splasher and access methods */
   //@{
   /** Gets the one and only instance. */
   static MainWindow* getInstance();
-  /** Destroys the main window and frees any allocated resources. */
-  static void destruct();
   /** Starts the splasher at startup. */
-  static void startSplasher(void);
+  void startSplasher(void);
   /** Stops the splasher after startup. */
-  static void stopSplasher(void);
+  void stopSplasher(void);
   /** Shows the Tip-of-the-day dialog after startup. */
-  static void showTipOfTheDay(bool force=false);
+  void showTipOfTheDay(bool force=false);
   //@}
 
-  TreeView* getTreeView(void){return pcTree;}
+  /** @name Layout Methods 
+   */
+  //@{
+  /// Loads the main window settings.
+  void loadWindowSettings();
+  /// Saves the main window settings.
+  void saveWindowSettings();
+  /// Loads the dock windows and toolbar settings.
+  void loadLayoutSettings();
+  /// Saves the dock windows and toolbar settings.
+  void saveLayoutSettings();
+  //@}
 
-public slots:
+  TreeView* getTreeView(void) const {return pcTree;}
+
+public Q_SLOTS:
   /**
    * Arranges all child windows in a horizontal tile pattern.
    */
-  void tileHorizontal();
-  /**
-   * Arranges all child windows in a complex tile pattern.
-   */
-  void tileComplex();
+  void arrangeIcons();
   /**
    * Arranges all child windows in a tile pattern.
    */
@@ -173,36 +173,24 @@ public slots:
   /**
    * Activates the previous window in the child window chain.
    */
-  void activatePrevWindow ();
+  void activatePreviousWindow ();
+  /**
+   * Starts the what's this mode.
+   */
+  void whatsThis();
   /** 
    * This method gets frequently activated and test the commands if they are still active.
    */
-  void updateCmdActivity();
-
-  /** @name Methods for the undo/redo handling 
-   *  This methods are usally used by the GUI document! Its not intended
-   *  to use them directly. If the GUI is not up, there is usaly no undo/redo 
-   *  necessary.
-   */
-  //@{
-  void onUndo();
-  void onRedo();
-  //@}
-
-protected slots:
-  /**
-   * This method is called from the Qt framework automatically whenever a
-   * QTranslator object has been installed. This allows to translate all
-   * relevant user visible text.
-   */
-  void languageChange();
+  void updateActions();
+  void switchToTopLevelMode();
+  void switchToDockedMode();
 
 protected:
   /**
    * This method checks if the main window can be closed by checking all open documents and views.
    */
   void closeEvent ( QCloseEvent * e );
-  void timerEvent( QTimerEvent * e){emit timeEvent();}
+  void timerEvent( QTimerEvent * e){ timeEvent();}
   /**
    * Try to interpret dropped elements.
    */
@@ -211,21 +199,14 @@ protected:
    * Checks if a mime source object can be interpreted.
    */
   void dragEnterEvent   ( QDragEnterEvent   * e );
-
-  /** @name Layout Methods 
+  /**
+   * This method is called from the Qt framework automatically whenever a
+   * QTranslator object has been installed. This allows to translate all
+   * relevant user visible text.
    */
-  //@{
-  /// Loads the main window settings.
-  void loadWindowSettings();
-  /// Saves the main window settings.
-  void saveWindowSettings();
-  /// Loads the dock windows settings.
-  void loadDockWndSettings();
-  /// Saves the dock windows settings.
-  void saveDockWndSettings();
-  //@}
+  void changeEvent( QEvent *e );
 
-private slots:
+private Q_SLOTS:
   /**
    * Activates the associated tab to this widget.
    */
@@ -235,10 +216,6 @@ private slots:
    */
   void onWindowsMenuAboutToShow();
   /**
-   * Activates the window with \a id.
-   */
-  void onWindowsMenuActivated( int id );
-  /**
    * Removes the associated tab to the window when it gets destroyed from outside.
    */
   void onWindowDestroyed();
@@ -247,7 +224,7 @@ private slots:
    */
   void onTabSelected( int i);
 
-signals:
+Q_SIGNALS:
   void timeEvent();
   void showActiveView( MDIView* );
 
@@ -255,7 +232,6 @@ private:
   /// some kind of singleton
   static MainWindow* instance;
   struct MainWindowP* d;
-  static QSplashScreen *_splash;
   TreeView* pcTree;
 };
 
@@ -266,4 +242,4 @@ inline GuiExport MainWindow* getMainWindow()
 
 } // namespace Gui
 
-#endif // MAIN_WINDOW_H
+#endif // GUI_MAINWINDOW_H

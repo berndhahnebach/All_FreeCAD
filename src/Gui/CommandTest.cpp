@@ -23,8 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qwaitcondition.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
 #endif
 
 #include "Application.h"
@@ -33,7 +37,7 @@
 
 #include "ProgressBar.h"
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -243,13 +247,15 @@ void CmdTestProgress1::activated(int iMsg)
 {
 	try
 	{
+    QMutex mutex;
+    mutex.lock();
 		unsigned long steps = 1000;
 		Base::Sequencer().start("Starting progress bar", steps);
 		
 		for (unsigned long i=0; i<steps;i++)
 		{
 			Base::Sequencer().next(true);
-			QWaitCondition().wait(30);
+			QWaitCondition().wait(&mutex, 30);
 		}
 
 		Base::Sequencer().stop();
@@ -285,13 +291,15 @@ void CmdTestProgress2::activated(int iMsg)
 {
 	try
 	{
+    QMutex mutex;
+    mutex.lock();
 		unsigned long steps = 1000;
 		Base::Sequencer().start("Starting progress bar", steps);
 		
 		for (unsigned long i=0; i<steps;i++)
 		{
 			Base::Sequencer().next(false);
-			QWaitCondition().wait(10);
+			QWaitCondition().wait(&mutex, 10);
 		}
 
 		Base::Sequencer().stop();
@@ -328,11 +336,13 @@ void CmdTestProgress3::activated(int iMsg)
 	try
 	{
     // level 1
+    QMutex mutex;
+    mutex.lock();
 		unsigned long steps = 5;
 		Base::Sequencer().start("Starting progress bar", steps);
 		for (unsigned long i=0; i<steps;i++)
 		{
-      QWaitCondition().wait(200);
+			QWaitCondition().wait(&mutex, 200);
 			Base::Sequencer().next(true);
 
       // level 2
@@ -340,7 +350,7 @@ void CmdTestProgress3::activated(int iMsg)
       Base::Sequencer().start("Starting progress bar", steps);
       for (unsigned long j=0; j<steps;j++)
       {
-        QWaitCondition().wait(150);
+			  QWaitCondition().wait(&mutex, 150);
         Base::Sequencer().next(true);
 
         // level 3
@@ -348,7 +358,7 @@ void CmdTestProgress3::activated(int iMsg)
         Base::Sequencer().start("Starting progress bar", steps);
         for (unsigned long k=0; k<steps;k++)
         {
-          QWaitCondition().wait(100);
+			    QWaitCondition().wait(&mutex, 100);
           Base::Sequencer().next(true);
 
           // level 4
@@ -356,7 +366,7 @@ void CmdTestProgress3::activated(int iMsg)
           Base::Sequencer().start("Starting progress bar", steps);
           for (unsigned long l=0; l<steps;l++)
           {
-            QWaitCondition().wait(5);
+			      QWaitCondition().wait(&mutex, 5);
             Base::Sequencer().next(true);
           }
           Base::Sequencer().stop();

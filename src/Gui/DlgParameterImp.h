@@ -21,18 +21,20 @@
  ***************************************************************************/
 
 
-#ifndef DlgParameter_H
-#define DlgParameter_H
+#ifndef GUI_DIALOG_DLGPARAMETER_H
+#define GUI_DIALOG_DLGPARAMETER_H
 
-#include "DlgParameter.h"
-#include "../Base/Parameter.h"
+#include "ui_DlgParameter.h"
+#include <Base/Parameter.h>
 
-#include <qlistview.h>
-#include <qmap.h>
-#include <qmenudata.h>
-#include <qpainter.h>
 
-class QPopupMenu;
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 namespace Dialog {
@@ -44,25 +46,27 @@ class ParameterGroupItem;
  * The DlgParameterImp class implements a dialog showing all parameters in a list view.
  * \author Jürgen Riegel
  */
-class DlgParameterImp : public DlgParameter
+class DlgParameterImp : public QDialog, public Ui_DlgParameter
 { 
     Q_OBJECT
 
 public:
-  DlgParameterImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgParameterImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgParameterImp();
 
-public slots:
+public Q_SLOTS:
   virtual void onParameterSetChange(const QString& rcString);
-  virtual void onSaveToDisk();
+  void on_buttonSaveToDisk_clicked();
 
-protected slots:
-  virtual void languageChange();
-  virtual void onGroupSelected(QListViewItem *);
+protected Q_SLOTS:
+  virtual void onGroupSelected(Q3ListViewItem *);
 
 protected:
-  QListView* ParamGrp;
-  QListView* ParamVal;
+  void changeEvent(QEvent *e);
+
+protected:
+  Q3ListView* ParamGrp;
+  Q3ListView* ParamVal;
 };
 
 // --------------------------------------------------------------------
@@ -72,16 +76,16 @@ protected:
  * The leaves represented by ParameterValueItem are displayed in ParameterValue.
  * @author Werner Mayer
  */
-class ParameterGroup : public QListView
+class ParameterGroup : public Q3ListView
 {
   Q_OBJECT
 
 public:
-  ParameterGroup( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+  ParameterGroup( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
   virtual ~ParameterGroup();
 
   /** Makes sure that always exactly one item is selected. */
-  void setSelected ( QListViewItem * item, bool selected );
+  void setSelected ( Q3ListViewItem * item, bool selected );
 
 protected:
   /** Shows the context menu. */
@@ -89,7 +93,7 @@ protected:
   /** Triggers the "Del" key. */
   void keyPressEvent (QKeyEvent* event);
 
-protected slots:
+protected Q_SLOTS:
   /** Removes the underlying parameter group and its sub-groups from the
    * parameter tree structure.
    */
@@ -107,10 +111,17 @@ protected slots:
   /** Changes the name of the leaf of the selected item. */
   void onRenameSelectedItem();
 
+protected:
+  void changeEvent(QEvent *e);
+
 private:
-  QPopupMenu* menuEdit;
-  CustomMenuItem* custom;
-  int _expandId, _importId;
+  QMenu* menuEdit;
+  QAction* expandAct;
+  QAction* subGrpAct;
+  QAction* removeAct;
+  QAction* renameAct;
+  QAction* exportAct;
+  QAction* importAct;
 };
 
 // --------------------------------------------------------------------
@@ -120,18 +131,18 @@ private:
  * by the ParameterValueItem class.
  * @author Werner Mayer
  */
-class ParameterValue : public QListView
+class ParameterValue : public Q3ListView
 {
   Q_OBJECT
 
 public:
-  ParameterValue( QWidget * parent = 0, const char * name = 0, WFlags f = 0 );
+  ParameterValue( QWidget * parent = 0, const char * name = 0, Qt::WFlags f = 0 );
   virtual ~ParameterValue();
   
   /** Removes the underlying leaf from the parameter group and removes
    * also \i from the list view.
    */
-  void takeItem ( QListViewItem * i );
+  void takeItem ( Q3ListViewItem * i );
 
   /** Sets the current parameter group that is displayed. */
   void setCurrentGroup( const FCHandle<ParameterGrp>& _hcGrp );
@@ -142,7 +153,7 @@ protected:
   /** Invokes onDeleteSelectedItem() if the "Del" key was pressed. */
   void keyPressEvent (QKeyEvent* event);
 
-protected slots:
+protected Q_SLOTS:
   /** Changes the value of the leaf of the selected item. */
   void onChangeSelectedItem();
   /** Remove the underlying leaf from the parameter group. The selected item is also
@@ -163,8 +174,16 @@ protected slots:
   void onCreateBoolItem();
 
 private:
-  QPopupMenu* menuEdit;
-  QPopupMenu* menuNew;
+  QMenu* menuEdit;
+  QMenu* menuNew;
+  QAction* changeAct;
+  QAction* removeAct;
+  QAction* renameAct;
+  QAction* newStrAct;
+  QAction* newFltAct;
+  QAction* newIntAct;
+  QAction* newUlgAct;
+  QAction* newBlnAct;
   FCHandle<ParameterGrp> _hcGrp;
 };
 
@@ -175,17 +194,17 @@ private:
  *
  * \author Jürgen Riegel
  */
-class ParameterGroupItem : public QListViewItem
+class ParameterGroupItem : public Q3ListViewItem
 {
 public:
   /// Constructor
   ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<ParameterGrp> &hcGrp );
-  ParameterGroupItem( QListView* parent, const FCHandle<ParameterGrp> &hcGrp);
+  ParameterGroupItem( Q3ListView* parent, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterGroupItem();
 
   void setSelected ( bool o );
   int rtti () const { return 2000; }
-  void takeItem ( QListViewItem * item );
+  void takeItem ( Q3ListViewItem * item );
   void startRename ( int col );
 
   void fillUp(void);
@@ -205,11 +224,11 @@ protected:
  * parameter group.
  * @author Werner Mayer
  */
-class ParameterValueItem : public QListViewItem
+class ParameterValueItem : public Q3ListViewItem
 {
 public:
   /// Constructor
-  ParameterValueItem ( QListView * parent, QString label1, const FCHandle<ParameterGrp> &hcGrp);
+  ParameterValueItem ( Q3ListView * parent, QString label1, const FCHandle<ParameterGrp> &hcGrp);
   virtual ~ParameterValueItem();
 
   /** This is the class Id to distinguish from QListViewItem itself or 
@@ -242,7 +261,7 @@ class ParameterText : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterText ( QListView * parent, QString label1, QString value, const FCHandle<ParameterGrp> &hcGrp);
+  ParameterText ( Q3ListView * parent, QString label1, QString value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterText();
 
   void changeValue();
@@ -261,7 +280,7 @@ class ParameterInt : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterInt ( QListView * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp);
+  ParameterInt ( Q3ListView * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterInt();
 
   void changeValue();
@@ -280,7 +299,7 @@ class ParameterUInt : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterUInt ( QListView * parent, QString label1, unsigned long value, const FCHandle<ParameterGrp> &hcGrp);
+  ParameterUInt ( Q3ListView * parent, QString label1, unsigned long value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterUInt();
 
   void changeValue();
@@ -299,7 +318,7 @@ class ParameterFloat : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterFloat ( QListView * parent, QString label1, double value, const FCHandle<ParameterGrp> &hcGrp);
+  ParameterFloat ( Q3ListView * parent, QString label1, double value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterFloat();
 
   void changeValue();
@@ -318,7 +337,7 @@ class ParameterBool : public ParameterValueItem
 {
 public:
   /// Constructor
-  ParameterBool ( QListView * parent, QString label1, bool value, const FCHandle<ParameterGrp> &hcGrp);
+  ParameterBool ( Q3ListView * parent, QString label1, bool value, const FCHandle<ParameterGrp> &hcGrp);
   ~ParameterBool();
 
   void changeValue();
@@ -329,28 +348,7 @@ protected:
   void replace( const QString& oldName, const QString& newName );
 };
 
-// --------------------------------------------------------------------
-
-/**
- * Custom menu item to display bold items in a popup menu.
- * @author Werner Mayer
- */
-class CustomMenuItem : public QCustomMenuItem
-{
-public:
-  CustomMenuItem( const QString& s, const QFont& f );
-  ~CustomMenuItem();
-
-  void paint( QPainter* p, const QColorGroup&, bool, bool, int x, int y, int w, int h );
-  QSize sizeHint();
-  void setText( const QString& text );
-
-private:
-  QString string;
-  QFont font;
-};
-
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DlgParameter_H
+#endif // GUI_DIALOG_DLGPARAMETER_H

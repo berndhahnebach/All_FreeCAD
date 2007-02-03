@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2006 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#include "plugin.h"
 #include "customwidgets.h"
+#include "plugin.h"
 
 static const char *filechooser_pixmap[] = {
     "22 22 8 1",
@@ -58,39 +58,89 @@ static const char *filechooser_pixmap[] = {
     "++++++++++++++++++++++"
 };
 
-/* XPM */
-static char *combobox_pixmap[]={
-"22 22 8 1",
-"a c #000000",
-"# c #000080",
-"e c #008080",
-"f c #800000",
-"b c #808080",
-"c c #c0c0c0",
-"d c #ff0000",
-". c #ffffff",
-".#aaaaaaaaaaaaaaaaaa#.",
-"#bbccccccccccccccccdd#",
-"accee#########e.addfaa",
-"#c..............a.fa.#",
-"e#aaaaaaaaaaaaaaaaaa#e",
-"....#c...............#",
-"....ac...............a",
-"....ac.ccbbbbbbbbeb..a",
-"....ac.bbbeeeeeee##c.a",
-"....ac.bee########ac.a",
-"....ac..cccccccccccc.a",
-"....ac.ccccccccccbec.a",
-"....ac.cccccccccbbec.a",
-"....ac.bcbbbbbbbbbec.a",
-"....ac..cccccccccccc.a",
-"....ac.cbbeeeeeee#bc.a",
-"....ac.bee########ac.a",
-"....ab.b##aaaaaaaaacca",
-"....#bc.ccccccccccccc#",
-".....ab............ca.",
-".....eacc.........ca#.",
-".......#aaaaaaaaaa#..."};
+class FileChooserPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    FileChooserPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::FileChooser(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Input Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( filechooser_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/FileDialog.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("File Chooser");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("A widget to choose a file or directory.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+//    QString codeTemplate() const;
+//    QString domXml() const;
+    QString name() const
+    {
+      return QLatin1String("Gui::FileChooser");
+    }
+};
+
+class PrefFileChooserPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    PrefFileChooserPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::PrefFileChooser(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Preference Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( filechooser_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/PrefWidgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("File Chooser");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("A widget to choose a file or directory.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::PrefFileChooser");
+    }
+};
 
 /* XPM */
 static char *lineedit_pixmap[]={
@@ -124,36 +174,46 @@ static char *lineedit_pixmap[]={
 "......................",
 "......................"};
 
-
-/* XPM */
-static char *checkbox_pixmap[]={
-"22 22 4 1",
-"# c #000000",
-"a c #808080",
-"b c #c0c0c0",
-". c #ffffff",
-"......................",
-"......................",
-"......................",
-"......................",
-"....###########aaa....",
-"....##aaaaaaaaaabb....",
-"....#aabbbbbbbbbbb....",
-"....#abbbbbbbbaa......",
-"....#abbbbbbba#a......",
-"....#ababbbba##a......",
-"....#ab#abba###a......",
-"....#ab##aa###ab......",
-"....#ab######abb......",
-"....#abb####abbb......",
-"....#abbb##abbbb......",
-"....aabbbbabbbb.......",
-"....abb......b........",
-"....abb...............",
-"......................",
-"......................",
-"......................",
-"......................"};
+class AccelLineEditPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    AccelLineEditPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::AccelLineEdit(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Input Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( lineedit_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/Widgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Accelerator Line Edit");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("A widget to specify accelerator keys.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::AccelLineEdit");
+    }
+};
 
 /* XPM */
 static char *iconview_pixmap[]={
@@ -191,99 +251,46 @@ static char *iconview_pixmap[]={
 ".a#cc............cc##.",
 "...################..."};
 
-/* XPM */
-static char *listbox_pixmap[]={
-"22 22 6 1",
-"# c #000000",
-"c c #800000",
-"d c #808000",
-"a c #808080",
-"b c #c0c0c0",
-". c #ffffff",
-".####################.",
-"#aabbbbbbbbbbbbb#abb.#",
-"#abcccccccccccdb#b#a.#",
-"#b..............#....#",
-"c####################c",
-"#b...............#...#",
-"#b...............#...#",
-"#b.###########a..#...#",
-"#b...............#.#.#",
-"#b.cccccccccccd..#.#.#",
-"#b...............#.#.#",
-"#b.cccccccccccd..#.#.#",
-"#b...............#.#.#",
-"#b.###########a..#.#.#",
-"#b...............#...#",
-"#b.###########a..#...#",
-"#b...............#...#",
-"#a.###########a..#..b#",
-"#a...............#..b#",
-".#a..............#.b#.",
-".c#bb............#b##.",
-"...################..."};
-
-/* XPM */
-static char *radiobutton_pixmap[]={
-"22 22 4 1",
-"b c #000000",
-"# c #808080",
-"a c #c0c0c0",
-". c #ffffff",
-"......................",
-"......................",
-"......................",
-"......................",
-".......########.......",
-"......#####aaa##......",
-".....#b##a...aaa#.....",
-"....###aa.aa....a#....",
-"....###a.####a...a....",
-"....##a.####bba..a....",
-"....##.a###bbb#.......",
-"....#a.a##bbbb#.......",
-"....#a..bbbbbba.......",
-"....#aa.abbbb#...a....",
-"....##a..a##a....a....",
-".....#a.........a.....",
-"......#a.......a......",
-".......#aa...aa.......",
-"......................",
-"......................",
-"......................",
-"......................"};
-
-
-/* XPM */
-static char *slider_pixmap[]={
-"22 22 5 1",
-"b c #000000",
-"c c #008080",
-"# c #808080",
-"a c #c0c0c0",
-". c #ffffff",
-"......................",
-"......................",
-"......................",
-"......................",
-"......................",
-".........#............",
-"........a##...........",
-"........a##...........",
-"........a##...........",
-"..bbbb..a#bbbbbbbbbb..",
-".bbbbb..a#bbbbbbbbbbc.",
-".bb###..a#b########c#.",
-".bbb##..a#b########aa.",
-"..cc##..a#b########a..",
-"........a##...........",
-"........a##...........",
-"........a##...........",
-"......#####...........",
-".......####...........",
-"......................",
-"......................",
-"......................"};
+class CommandIconViewPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    CommandIconViewPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::CommandIconView(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("View Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( iconview_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/Widgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Command View");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("Area with movable and labeled icons.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::CommandIconView");
+    }
+};
 
 /* XPM */
 static char *spinbox_pixmap[]={
@@ -317,6 +324,88 @@ static char *spinbox_pixmap[]={
 ".badd............dda#.",
 "...#aaaaaaaaaaaaaa#..."};
 
+class SpinBoxPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    SpinBoxPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::SpinBox(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Input Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( spinbox_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/SpinBox.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Spin Box");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("Spin box widget (spin button).");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::SpinBox");
+    }
+};
+
+class PrefSpinBoxPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    PrefSpinBoxPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::PrefSpinBox(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Preference Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( spinbox_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/PrefWidgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Spin Box");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("Spin box widget (spin button).");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::PrefSpinBox");
+    }
+};
+
 /* XPM */
 static char *colorbutton_pixmap[]={
 "21 21 7 1",
@@ -349,288 +438,536 @@ static char *colorbutton_pixmap[]={
 "c#cccccccccccccccc##.",
 ".cccccccccccccccccc.."};
 
+class ColorButtonPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    ColorButtonPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::ColorButton(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Buttons");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( colorbutton_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/Widgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Color Button");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("A button to choose a color.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::ColorButton");
+    }
+};
+
+class PrefColorButtonPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    PrefColorButtonPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::PrefColorButton(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Preference Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( colorbutton_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/PrefWidgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Color Button");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("A button to choose a color.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::PrefColorButton");
+    }
+};
+
 /* XPM */
-static char *buttongroup_pixmap[]={
-"22 22 16 1",
-"# c #000000",
-"i c #10a44a",
-"n c #292929",
-"a c #3d3d3d",
-"b c #4a4a4a",
-"j c #626262",
-"g c #838383",
-"f c #a0a0a0",
-"e c #b9b9b9",
-"h c #cacaca",
-"c c #d6d6d6",
-"m c #dedede",
-"l c #e7e7e7",
-"k c #efefef",
-"d c #f7f7f7",
+static char *slider_pixmap[]={
+"22 22 5 1",
+"b c #000000",
+"c c #008080",
+"# c #808080",
+"a c #c0c0c0",
 ". c #ffffff",
 "......................",
-"....###########.......",
-".#####################",
-"#aabbbbbbbbbbbbbbbbaa#",
-"#ac................ca#",
-"#bddeefgdd##hdddddddb#",
-"#bddeiijdddg#dddddddb#",
-"#bkkfiijkk#k#kkkkkkkb#",
-"#bkkgjjbkkj##gkgkgkkb#",
-"#bllllllllllllllllllb#",
-"#blleffgll#lllllllllb#",
-"#bmmfiijmm##gmmmmmmmb#",
-"#bmmfiibmm#m#mmmmmmmb#",
-"#bccgjbbcc##gcgcgcgcb#",
-"#bccccccccccccccccccb#",
-"#bhhfffjhhf#ghhhhhhhb#",
-"#bhhfiibhh#hhhhhhhhhb#",
-"#bhhgiibhh#hhhhhhhhhb#",
-"#beejbbbeef#jejejejeb#",
-"#afeeeeeeeeeeeeeeeefa#",
-"#aabbbbbbbbbbbbbbbban#",
-"######################"};
+"......................",
+"......................",
+"......................",
+"......................",
+".........#............",
+"........a##...........",
+"........a##...........",
+"........a##...........",
+"..bbbb..a#bbbbbbbbbb..",
+".bbbbb..a#bbbbbbbbbbc.",
+".bb###..a#b########c#.",
+".bbb##..a#b########aa.",
+"..cc##..a#b########a..",
+"........a##...........",
+"........a##...........",
+"........a##...........",
+"......#####...........",
+".......####...........",
+"......................",
+"......................",
+"......................"};
 
-CustomWidgetPlugin::CustomWidgetPlugin()
+class PrefSliderPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    PrefSliderPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::PrefSlider(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Preference Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( slider_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/PrefWidgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Slider");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("Vertical or horizontal slider.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::PrefSlider");
+    }
+};
+
+/* XPM */
+static char *radiobutton_pixmap[]={
+"22 22 4 1",
+"b c #000000",
+"# c #808080",
+"a c #c0c0c0",
+". c #ffffff",
+"......................",
+"......................",
+"......................",
+"......................",
+".......########.......",
+"......#####aaa##......",
+".....#b##a...aaa#.....",
+"....###aa.aa....a#....",
+"....###a.####a...a....",
+"....##a.####bba..a....",
+"....##.a###bbb#.......",
+"....#a.a##bbbb#.......",
+"....#a..bbbbbba.......",
+"....#aa.abbbb#...a....",
+"....##a..a##a....a....",
+".....#a.........a.....",
+"......#a.......a......",
+".......#aa...aa.......",
+"......................",
+"......................",
+"......................",
+"......................"};
+
+class PrefRadioButtonPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    PrefRadioButtonPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::PrefRadioButton(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Preference Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( radiobutton_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/PrefWidgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Radio Button");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("Radio button with a text or pixmap label.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::PrefRadioButton");
+    }
+};
+
+/* XPM */
+static char *checkbox_pixmap[]={
+"22 22 4 1",
+"# c #000000",
+"a c #808080",
+"b c #c0c0c0",
+". c #ffffff",
+"......................",
+"......................",
+"......................",
+"......................",
+"....###########aaa....",
+"....##aaaaaaaaaabb....",
+"....#aabbbbbbbbbbb....",
+"....#abbbbbbbbaa......",
+"....#abbbbbbba#a......",
+"....#ababbbba##a......",
+"....#ab#abba###a......",
+"....#ab##aa###ab......",
+"....#ab######abb......",
+"....#abb####abbb......",
+"....#abbb##abbbb......",
+"....aabbbbabbbb.......",
+"....abb......b........",
+"....abb...............",
+"......................",
+"......................",
+"......................",
+"......................"};
+
+class PrefCheckBoxPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    PrefCheckBoxPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::PrefCheckBox(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Preference Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( checkbox_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/PrefWidgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Check Box");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("Checkbox with a text label.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::PrefCheckBox");
+    }
+};
+
+/* XPM */
+static char *combobox_pixmap[]={
+"22 22 8 1",
+"a c #000000",
+"# c #000080",
+"e c #008080",
+"f c #800000",
+"b c #808080",
+"c c #c0c0c0",
+"d c #ff0000",
+". c #ffffff",
+".#aaaaaaaaaaaaaaaaaa#.",
+"#bbccccccccccccccccdd#",
+"accee#########e.addfaa",
+"#c..............a.fa.#",
+"e#aaaaaaaaaaaaaaaaaa#e",
+"....#c...............#",
+"....ac...............a",
+"....ac.ccbbbbbbbbeb..a",
+"....ac.bbbeeeeeee##c.a",
+"....ac.bee########ac.a",
+"....ac..cccccccccccc.a",
+"....ac.ccccccccccbec.a",
+"....ac.cccccccccbbec.a",
+"....ac.bcbbbbbbbbbec.a",
+"....ac..cccccccccccc.a",
+"....ac.cbbeeeeeee#bc.a",
+"....ac.bee########ac.a",
+"....ab.b##aaaaaaaaacca",
+"....#bc.ccccccccccccc#",
+".....ab............ca.",
+".....eacc.........ca#.",
+".......#aaaaaaaaaa#..."};
+
+class PrefComboBoxPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    PrefComboBoxPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::PrefComboBox(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Preference Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( combobox_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/PrefWidgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Combo Box");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("Combined button and popup list.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::PrefComboBox");
+    }
+};
+
+class PrefLineEditPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    PrefLineEditPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::PrefLineEdit(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Preference Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( lineedit_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/PrefWidgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Line Edit");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("One-line text editor.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::PrefLineEdit");
+    }
+};
+
+class PrefDoubleSpinBoxPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    PrefDoubleSpinBoxPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::PrefDoubleSpinBox(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Preference Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( spinbox_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/PrefWidgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Double Spin Box");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("Spin box widget that can work with doubles.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+    QString name() const
+    {
+      return QLatin1String("Gui::PrefDoubleSpinBox");
+    }
+};
+
+/* XPM */
+/*
+static char *listbox_pixmap[]={
+"22 22 6 1",
+"# c #000000",
+"c c #800000",
+"d c #808000",
+"a c #808080",
+"b c #c0c0c0",
+". c #ffffff",
+".####################.",
+"#aabbbbbbbbbbbbb#abb.#",
+"#abcccccccccccdb#b#a.#",
+"#b..............#....#",
+"c####################c",
+"#b...............#...#",
+"#b...............#...#",
+"#b.###########a..#...#",
+"#b...............#.#.#",
+"#b.cccccccccccd..#.#.#",
+"#b...............#.#.#",
+"#b.cccccccccccd..#.#.#",
+"#b...............#.#.#",
+"#b.###########a..#.#.#",
+"#b...............#...#",
+"#b.###########a..#...#",
+"#b...............#...#",
+"#a.###########a..#..b#",
+"#a...............#..b#",
+".#a..............#.b#.",
+".c#bb............#b##.",
+"...################..."};
+*/
+CustomWidgetPlugin::CustomWidgetPlugin(QObject *parent)
+  : QObject(parent)
 {
 }
 
-QStringList CustomWidgetPlugin::keys() const
+QList<QDesignerCustomWidgetInterface *> CustomWidgetPlugin::customWidgets () const
 {
-  QStringList list;
-  list << "Gui::FileChooser" << "Gui::PrefFileChooser" 
-       << "Gui::AccelLineEdit" 
-       << "Gui::CommandIconView"
-       << "Gui::SpinBox" << "Gui::UIntSpinBox" << "Gui::FloatSpinBox" 
-       << "Gui::PrefSpinBox" << "Gui::PrefFloatSpinBox"
-       << "Gui::PrefLineEdit" 
-       << "Gui::PrefComboBox"
-       << "Gui::PrefListBox"
-       << "Gui::PrefCheckBox"
-       << "Gui::PrefRadioButton" << "Gui::PrefButtonGroup"
-       << "Gui::PrefSlider"
-       << "Gui::ColorButton" << "Gui::PrefColorButton";
-  return list;
+  QList<QDesignerCustomWidgetInterface *> cw;
+  cw.append(new FileChooserPlugin);
+  cw.append(new AccelLineEditPlugin);
+  cw.append(new CommandIconViewPlugin);
+  cw.append(new SpinBoxPlugin);
+  cw.append(new ColorButtonPlugin);
+  cw.append(new PrefFileChooserPlugin);
+  cw.append(new PrefSpinBoxPlugin);
+  cw.append(new PrefColorButtonPlugin);
+  cw.append(new PrefSliderPlugin);
+  cw.append(new PrefRadioButtonPlugin);
+  cw.append(new PrefCheckBoxPlugin);
+  cw.append(new PrefComboBoxPlugin);
+  cw.append(new PrefLineEditPlugin);
+  cw.append(new PrefDoubleSpinBoxPlugin);
+  return cw;
 }
 
-QWidget* CustomWidgetPlugin::create( const QString &key, QWidget* parent, const char* name )
-{
-  if ( key == "Gui::FileChooser" )
-  	return new Gui::FileChooser( parent, name );
-  else if ( key == "Gui::PrefFileChooser" )
-  	return new Gui::PrefFileChooser( parent, name );
-  else if ( key == "Gui::AccelLineEdit" )
-    return new Gui::AccelLineEdit( parent, name );
-  else if ( key == "Gui::CommandIconView" )
-    return new Gui::CommandIconView( parent, name );
-  else if ( key == "Gui::SpinBox" )
-    return new Gui::SpinBox( parent, name );
-  else if ( key == "Gui::UIntSpinBox" )
-    return new Gui::UIntSpinBox( parent, name );
-  else if ( key == "Gui::FloatSpinBox" )
-    return new Gui::FloatSpinBox( parent, name );
-  else if ( key == "Gui::PrefSpinBox" )
-    return new Gui::PrefSpinBox( parent, name );
-  else if ( key == "Gui::PrefFloatSpinBox" )
-    return new Gui::PrefFloatSpinBox( parent, name );
-  else if ( key == "Gui::PrefLineEdit" )
-    return new Gui::PrefLineEdit( parent, name );
-  else if ( key == "Gui::PrefComboBox" )
-    return new Gui::PrefComboBox( parent, name );
-  else if ( key == "Gui::PrefListBox" )
-    return new Gui::PrefListBox( parent, name );
-  else if ( key == "Gui::PrefCheckBox" )
-    return new Gui::PrefCheckBox( parent, name );
-  else if ( key == "Gui::PrefRadioButton" )
-    return new Gui::PrefRadioButton( parent, name );
-  else if ( key == "Gui::PrefButtonGroup" )
-    return new Gui::PrefButtonGroup( parent, name );
-  else if ( key == "Gui::PrefSlider" )
-    return new Gui::PrefSlider( parent, name );
-  else if ( key == "Gui::ColorButton" )
-    return new Gui::ColorButton( parent, name );
-  else if ( key == "Gui::PrefColorButton" )
-    return new Gui::PrefColorButton( parent, name );
+//QString CustomWidgetPlugin::domXml() const
+//{
+//    return QLatin1String("<widget class=\"AnalogClock\" name=\"analogClock\">\n"
+//                         " <property name=\"geometry\">\n"
+//                         "  <rect>\n"
+//                         "   <x>0</x>\n"
+//                         "   <y>0</y>\n"
+//                         "   <width>100</width>\n"
+//                         "   <height>100</height>\n"
+//                         "  </rect>\n"
+//                         " </property>\n"
+//                         " <property name=\"toolTip\" >\n"
+//                         "  <string>The current time</string>\n"
+//                         " </property>\n"
+//                         " <property name=\"whatsThis\" >\n"
+//                         "  <string>The analog clock widget displays "
+//                         "the current time.</string>\n"
+//                         " </property>\n"
+//                         "</widget>\n");
+//}
 
-  return 0;
-}
-
-QString CustomWidgetPlugin::group( const QString& feature ) const
-{
-  if ( feature.startsWith( "Gui::Pref" ) )
-    return "Preference";
-  else if ( feature == "Gui::FileChooser" )
-  	return "Input";
-  else if ( feature == "Gui::AccelLineEdit" )
-    return "Input";
-  else if ( feature == "Gui::CommandIconView" )
-    return "Views";
-  else if ( feature == "Gui::SpinBox" )
-    return "Input";
-  else if ( feature == "Gui::UIntSpinBox" )
-    return "Input";
-  else if ( feature == "Gui::FloatSpinBox" )
-    return "Input";
-  else if ( feature == "Gui::ColorButton" )
-    return "Buttons";
-
-  return QString::null;
-}
-
-QIconSet CustomWidgetPlugin::iconSet( const QString& feature ) const
-{
-  if ( feature == "Gui::FileChooser" )
-    return QIconSet( QPixmap( filechooser_pixmap ) );
-  else if ( feature == "Gui::PrefFileChooser" )
-    return QIconSet( QPixmap( filechooser_pixmap ) );
-  else if ( feature == "Gui::AccelLineEdit" )
-    return QIconSet( QPixmap( lineedit_pixmap ) );
-  else if ( feature == "Gui::CommandIconView" )
-    return QIconSet( QPixmap( iconview_pixmap ) );
-  else if ( feature == "Gui::SpinBox" )
-    return QIconSet( QPixmap( spinbox_pixmap ) );
-  else if ( feature == "Gui::UIntSpinBox" )
-    return QIconSet( QPixmap( spinbox_pixmap ) );
-  else if ( feature == "Gui::FloatSpinBox" )
-    return QIconSet( QPixmap( spinbox_pixmap ) );
-  else if ( feature == "Gui::PrefSpinBox" )
-    return QIconSet( QPixmap( spinbox_pixmap ) );
-  else if ( feature == "Gui::PrefFloatSpinBox" )
-    return QIconSet( QPixmap( spinbox_pixmap ) );
-  else if ( feature == "Gui::PrefLineEdit" )
-    return QIconSet( QPixmap( lineedit_pixmap ) );
-  else if ( feature == "Gui::PrefComboBox" )
-    return QIconSet( QPixmap( combobox_pixmap ) );
-  else if ( feature == "Gui::PrefListBox" )
-    return QIconSet( QPixmap( listbox_pixmap ) );
-  else if ( feature == "Gui::PrefCheckBox" )
-    return QIconSet( QPixmap( checkbox_pixmap ) );
-  else if ( feature == "Gui::PrefRadioButton" )
-    return QIconSet( QPixmap( radiobutton_pixmap ) );
-  else if ( feature == "Gui::PrefButtonGroup" )
-    return QIconSet( QPixmap( buttongroup_pixmap ) );
-  else if ( feature == "Gui::PrefSlider" )
-    return QIconSet( QPixmap( slider_pixmap ) );
-  else if ( feature == "Gui::ColorButton" )
-    return QIconSet( QPixmap( colorbutton_pixmap ) );
-  else if ( feature == "Gui::PrefColorButton" )
-    return QIconSet( QPixmap( colorbutton_pixmap ) );
-
-  return QIconSet();
-}
-
-QString CustomWidgetPlugin::includeFile( const QString& feature ) const
-{
-  if ( feature.startsWith( "Gui::Pref" ) )
-    return "Gui/PrefWidgets.h";
-  else if ( feature == "Gui::FileChooser" )
-  	return "Gui/FileDialog.h";
-  else if ( feature == "Gui::AccelLineEdit" )
-    return "Gui/Widgets.h";
-  else if ( feature == "Gui::CommandIconView" )
-  	return "Gui/Widgets.h";
-  else if ( feature == "Gui::SpinBox" )
-  	return "Gui/SpinBox.h";
-  else if ( feature == "Gui::UIntSpinBox" )
-  	return "Gui/SpinBox.h";
-  else if ( feature == "Gui::FloatSpinBox" )
-  	return "Gui/SpinBox.h";
-  else if ( feature == "Gui::ColorButton" )
-  	return "Gui/Widgets.h";
-
-  return QString::null;
-}
-
-QString CustomWidgetPlugin::toolTip( const QString& feature ) const
-{
-  if ( feature == "Gui::FileChooser" )
-  	return "File Chooser";
-  else if ( feature == "Gui::PrefFileChooser" )
-  	return "File Chooser";
-  else if ( feature == "Gui::AccelLineEdit" )
-  	return "Accelerator Line Edit";
-  else if ( feature == "Gui::CommandIconView" )
-  	return "Command View";
-  else if ( feature == "Gui::SpinBox" )
-  	return "Spin Box";
-  else if ( feature == "Gui::UIntSpinBox" )
-  	return "Unsigned Spin Box";
-  else if ( feature == "Gui::FloatSpinBox" )
-  	return "Double Spin Box";
-  else if ( feature == "Gui::PrefSpinBox" )
-  	return "Spin Box";
-  else if ( feature == "Gui::PrefFloatSpinBox" )
-    return "Double Spin Box";
-  else if ( feature == "Gui::PrefLineEdit" )
-  	return "Line Edit";
-  else if ( feature == "Gui::PrefComboBox" )
-  	return "Combo Box";
-  else if ( feature == "Gui::PrefListBox" )
-  	return "List Box";
-  else if ( feature == "Gui::PrefCheckBox" )
-  	return "Check Box";
-  else if ( feature == "Gui::PrefRadioButton" )
-  	return "Radio Button";
-  else if ( feature == "Gui::PrefButtonGroup" )
-  	return "Button Group";
-  else if ( feature == "Gui::PrefSlider" )
-  	return "Slider";
-  else if ( feature == "Gui::ColorButton" )
-  	return "Color Button";
-  else if ( feature == "Gui::PrefColorButton" )
-  	return "Color Button";
-
-  return QString::null;
-}
-
-QString CustomWidgetPlugin::whatsThis( const QString& feature ) const
-{
-  if ( feature == "Gui::FileChooser" )
-  	return "A widget to choose a file or directory.";
-  else if ( feature == "Gui::PrefFileChooser" )
-  	return "A widget to choose a file or directory.";
-  else if ( feature == "Gui::AccelLineEdit" )
-  	return "A widget to specify accelerator keys.";
-  else if ( feature == "Gui::CommandIconView" )
-  	return "Area with movable and labeled icons.";
-  else if ( feature == "Gui::SpinBox" )
-  	return "Spin box widget (spin button).";
-  else if ( feature == "Gui::UIntSpinBox" )
-  	return "Spin box widget that can work with unsigned int.";
-  else if ( feature == "Gui::FloatSpinBox" )
-  	return "Spin box widget that can work with doubles.";
-  else if ( feature == "Gui::PrefSpinBox" )
-    return "Spin box widget (spin button).";
-  else if ( feature == "Gui::PrefFloatSpinBox" )
-  	return "Spin box widget that can work with doubles.";
-  else if ( feature == "Gui::PrefLineEdit" )
-  	return "One-line text editor.";
-  else if ( feature == "Gui::PrefComboBox" )
-  	return "Combined button and popup list.";
-  else if ( feature == "Gui::PrefListBox" )
-  	return "List of selectable, read-only items.";
-  else if ( feature == "Gui::PrefCheckBox" )
-  	return "Checkbox with a text label.";
-  else if ( feature == "Gui::PrefRadioButton" )
-  	return "Radio button with a text or pixmap label.";
-  else if ( feature == "Gui::PrefButtonGroup" )
-  	return "Organizes QButton widgets in a group.";
-  else if ( feature == "Gui::PrefSlider" )
-  	return "Vertical or horizontal slider.";
-  else if ( feature == "Gui::ColorButton" )
-  	return "A button to choose a color.";
-  else if ( feature == "Gui::PrefColorButton" )
-  	return "A button to choose a color.";
-
-  return QString::null;
-}
-
-bool CustomWidgetPlugin::isContainer( const QString& feature ) const
-{
-  if ( feature == "Gui::PrefButtonGroup" )
-  	return TRUE;
-  return FALSE;
-}
-
-
-Q_EXPORT_PLUGIN( CustomWidgetPlugin ) 
+Q_EXPORT_PLUGIN(CustomWidgetPlugin)

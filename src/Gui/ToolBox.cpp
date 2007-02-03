@@ -23,23 +23,18 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qlayout.h>
-# include <qtoolbox.h>
-#endif
-
 #include "ToolBox.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::DockWnd;
 
 
 /**
  * Constructs a toolbox called \a name with parent \a parent and flags \a f.
  */
-ToolBox::ToolBox( QWidget *parent, const char *name, WFlags f )
-  : DockWindow( 0, parent, name, f)
+ToolBox::ToolBox( QWidget *parent, Qt::WFlags f )
+  : DockWindow( 0, parent, "", f)
 {
-  _pToolBox = new QToolBox( this, name, f);
+  _pToolBox = new QToolBox( this, f);
   connect( _pToolBox, SIGNAL( currentChanged(int) ), this, SIGNAL( currentChanged(int) ) );
 
   QGridLayout* pGrid = new QGridLayout(this);
@@ -64,7 +59,7 @@ int ToolBox::addItem ( QWidget * w, const QString & label )
  * Adds the widget \a item in a new tab at bottom of the toolbox. The new tab's label is set to \a label, and 
  * the \a iconSet is displayed to the left of the \a label. Returns the new tab's index.
  */
-int ToolBox::addItem ( QWidget * item, const QIconSet & iconSet, const QString & label )
+int ToolBox::addItem ( QWidget * item, const QIcon & iconSet, const QString & label )
 {
   return _pToolBox->addItem( item, iconSet, label );
 }
@@ -85,7 +80,7 @@ int ToolBox::insertItem ( int index, QWidget * item, const QString & label )
  * The new item's label is set to \a label, and the \a iconSet is displayed to the left of the \a label. 
  * Returns the new item's index.
  */
-int ToolBox::insertItem ( int index, QWidget * item, const QIconSet & iconSet, const QString & label )
+int ToolBox::insertItem ( int index, QWidget * item, const QIcon & iconSet, const QString & label )
 {
   return _pToolBox->insertItem( index, item, iconSet, label );
 }
@@ -94,9 +89,9 @@ int ToolBox::insertItem ( int index, QWidget * item, const QIconSet & iconSet, c
  * Removes the widget \a item from the toolbox.
  * Returns the removed widget's index, or -1 if the widget was not in this tool box.
  */
-int ToolBox::removeItem ( QWidget * item )
+void ToolBox::removeItem ( int index )
 {
-  return _pToolBox->removeItem( item );
+  _pToolBox->removeItem( index );
 }
 
 /**
@@ -118,33 +113,33 @@ bool ToolBox::isItemEnabled ( int index ) const
 /**
  * Sets the label of the item at position \a index to \a label.
  */
-void ToolBox::setItemLabel ( int index, const QString & label )
+void ToolBox::setItemText ( int index, const QString & label )
 {
-  _pToolBox->setItemLabel( index, label );
+  _pToolBox->setItemText( index, label );
 }
 
 /**
  * Returns the label of the item at position \a index, or a null string if \a index is out of range.
  */
-QString ToolBox::itemLabel ( int index ) const
+QString ToolBox::itemText ( int index ) const
 {
-  return _pToolBox->itemLabel( index );
+  return _pToolBox->itemText( index );
 }
 
 /**
  * Sets the icon of the item at position \a index to \a iconSet.
  */
-void ToolBox::setItemIconSet ( int index, const QIconSet & iconSet )
+void ToolBox::setItemIcon ( int index, const QIcon & iconSet )
 {
-  _pToolBox->setItemIconSet( index, iconSet );
+  _pToolBox->setItemIcon( index, iconSet );
 }
 
 /**
  * Returns the icon of the item at position \a index, or a null icon if \a index is out of range.
  */
-QIconSet ToolBox::itemIconSet ( int index ) const
+QIcon ToolBox::itemIcon ( int index ) const
 {
-  return _pToolBox->itemIconSet( index );
+  return _pToolBox->itemIcon( index );
 }
 
 /**
@@ -166,17 +161,17 @@ QString ToolBox::itemToolTip ( int index ) const
 /**
  * Returns the toolbox's current item, or 0 if the toolbox is empty.
  */
-QWidget * ToolBox::currentItem () const
+QWidget * ToolBox::currentWidget () const
 {
-  return _pToolBox->currentItem();
+  return _pToolBox->currentWidget();
 }
 
 /**
  * Sets the current item to be \a item.
  */
-void ToolBox::setCurrentItem ( QWidget * item )
+void ToolBox::setCurrentWidget ( QWidget * item )
 {
-  _pToolBox->setCurrentItem( item );
+  _pToolBox->setCurrentWidget( item );
 }
 
 /**
@@ -190,9 +185,9 @@ int ToolBox::currentIndex () const
 /**
  * Returns the item at position \a index, or 0 if there is no such item.
  */
-QWidget * ToolBox::item ( int index ) const
+QWidget * ToolBox::widget ( int index ) const
 {
-  return _pToolBox->item( index );
+  return _pToolBox->widget( index );
 }
 
 /**
@@ -222,18 +217,18 @@ void ToolBox::setCurrentIndex ( int index )
 /**
  * If to a new language is switched this method gets called.
  */
-void ToolBox::languageChange()
+void ToolBox::changeEvent(QEvent *e)
 {
-  DockWindow::languageChange();
-  
-  int ct = count();
-  for ( int i=0; i<ct; i++ )
-  {
-    QWidget* w = item( i );
-    if ( w )
-    {
-      setItemLabel( i, w->caption() );
+  if (e->type() == QEvent::LanguageChange) {
+    DockWindow::changeEvent(e);
+    int ct = count();
+    for ( int i=0; i<ct; i++ ) {
+      QWidget* w = widget( i );
+      if ( w )
+        setItemText( i, w->windowTitle() );
     }
+  } else {
+    QWidget::changeEvent(e);
   }
 }
 

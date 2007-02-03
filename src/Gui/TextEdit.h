@@ -27,12 +27,23 @@
 #include "View.h"
 #include "Window.h"
 
-#include <qlistbox.h>
-#include <qtextedit.h>
-#include <private/qrichtext_p.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-class QListBox;
-class QListBoxItem;
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+//#include <q3listbox.h>
+//#include <q3textedit.h>
+////#include <q3textdocument.h>
+////Added by qt3to4:
+//#include <QtGui/QMouseEvent>
+////#include <private/qrichtext_p.h>
+
+//class Q3ListBox;
+//class Q3ListBoxItem;
 
 namespace Gui {
 class CompletionBox;
@@ -54,7 +65,7 @@ class CompletionBox;
  * \remark The original sources are taken from Qt Quarterly (Customizing for Completion).
  * \author Werner Mayer
  */
-class GuiExport TextEdit : public QTextEdit
+class GuiExport TextEdit : public Q3TextEdit
 {
   Q_OBJECT
 
@@ -62,11 +73,14 @@ public:
   TextEdit(QWidget *parent = 0,const char *name = 0);
   virtual ~TextEdit();
 
-  QTextDocument *document() const { return QTextEdit::document(); }
+  Q3TextDocument *document() const 
+  { 
+    return Q3TextEdit::document(); 
+  }
 
-private slots:
+private Q_SLOTS:
   void complete();
-  void itemChosen( QListBoxItem *item );
+  void itemChosen( Q3ListBoxItem *item );
 
 private:
   void createListBox();
@@ -83,7 +97,7 @@ private:
  * an accelerator to complete the current word he is typing in..
  * @author Werner Mayer
  */
-class CompletionBox : public QListBox
+class CompletionBox : public Q3ListBox
 {
 public:
   /// Construction

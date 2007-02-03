@@ -24,7 +24,14 @@
 #ifndef MOUSEMODEL_H
 #define MOUSEMODEL_H
 
-#include <qcursor.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 #include <vector>
 #include <Inventor/SbLinear.h>
 #include <Inventor/SbVec2f.h>

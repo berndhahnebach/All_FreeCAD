@@ -23,13 +23,10 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-#endif
-
 #include "DlgReportViewImp.h"
 #include "PrefWidgets.h"
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /**
@@ -39,9 +36,10 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgReportViewImp::DlgReportViewImp( QWidget* parent, const char* name, WFlags fl )
-: DlgReportViewBase(parent, name, fl)
+DlgReportViewImp::DlgReportViewImp( QWidget* parent )
+  : PreferencePage(parent)
 {
+  this->setupUi(this);
 }
 
 /** 
@@ -73,5 +71,15 @@ void DlgReportViewImp::loadSettings()
   colorError->onRestore();
 }
 
-#include "DlgReportView.cpp"
-#include "moc_DlgReportView.cpp"
+/**
+ * Sets the strings of the subwidgets using the current language.
+ */
+void DlgReportViewImp::changeEvent(QEvent *e)
+{
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi(this);
+  } else {
+    QWidget::changeEvent(e);
+  }
+}
+

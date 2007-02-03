@@ -26,29 +26,31 @@
 #ifndef _PreComp_
 # include <qapplication.h>
 # include <qlabel.h>
-# include <qmainwindow.h>
-# include <qobjectlist.h>
+# include <q3mainwindow.h>
+# include <qobject.h>
 # include <qtoolbutton.h>
+//Added by qt3to4:
+#include <Q3Frame>
 #endif
 
 #include "ToolBoxBar.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 using namespace Gui::DockWnd;
 
 /**
  * Constructs an empty vertical toolbar.
  */
-CommandBar::CommandBar ( const QString & label, QWidget *w, const char * name, WFlags f )
+CommandBar::CommandBar ( const QString & label, QWidget *w, const char * name, Qt::WFlags f )
 : CustomToolBar(label, /*getMainWindow()*/0, w, false, name, f, "Commandbars")
 {
   // remove immediately from main window again
 //  getMainWindow()->removeToolBar(this);
-  QWidget* widget = qApp->mainWidget();
-  QMainWindow* mw = widget ? (QMainWindow*)widget->qt_cast("QMainWindow") : 0;
+  QWidget* widget = QApplication::activeWindow();
+  Q3MainWindow* mw = widget ? (Q3MainWindow*)widget->qt_metacast("Q3MainWindow") : 0;
   if ( mw ) // avoid to show in dock menu
     mw->setAppropriate(this, false);
-  setFrameStyle( QFrame::NoFrame );
+  setFrameStyle( Q3Frame::NoFrame );
   setOrientation( Qt::Vertical );
   setPalette(QPalette(Qt::white, Qt::white));
   setStretchableWidget( ( m_Dummy = new QWidget( this ) ) );
@@ -81,7 +83,7 @@ void CommandBar::setDummyToLastItem()
 
 // --------------------------------------------------------------------
 
-ToolBoxBar::ToolBoxBar ( const QString & label, QWidget *w, const char * name, WFlags f )
+ToolBoxBar::ToolBoxBar ( const QString & label, QWidget *w, const char * name, Qt::WFlags f )
 : CommandBar(label, w, name, f)
 {
 }
@@ -95,11 +97,10 @@ ToolBoxBar::~ToolBoxBar ()
  */
 void ToolBoxBar::setTextToLastItem( const QString& text )
 {
-  const QObjectList *l = children();
-  QObjectListIt it(*l);
-  QObject* o = it.toLast();
-  if (o)
+  const QObjectList& l = children();
+  if (!l.empty())
   {
+    QObject* o = l.back();
     if (o->inherits("QToolButton"))
     {
       ((QToolButton*)o)->setTextPosition(QToolButton::BesideIcon);
@@ -114,7 +115,7 @@ void ToolBoxBar::setTextToLastItem( const QString& text )
 
 // --------------------------------------------------------------------
 
-OutlookBar::OutlookBar ( const QString & label, QWidget *w, const char * name, WFlags f )
+OutlookBar::OutlookBar ( const QString & label, QWidget *w, const char * name, Qt::WFlags f )
 : CommandBar(label, w, name, f)
 {
 }
@@ -128,16 +129,15 @@ OutlookBar::~OutlookBar ()
  */
 void OutlookBar::setTextToLastItem( const QString& text )
 {
-  const QObjectList *l = children();
-  QObjectListIt it(*l);
-  QObject* o = it.toLast();
-  if (o)
+  const QObjectList& l = children();
+  if (!l.empty())
   {
+    QObject* o = l.back();
     if (o->inherits("QToolButton"))
     {
       QLabel* label = new QLabel(this);
       label->setText(text);
-      label->setAlignment(AlignHCenter);
+      label->setAlignment(Qt::AlignHCenter);
       ((QWidget*)o)->setFixedSize(48,48);
     }
   }

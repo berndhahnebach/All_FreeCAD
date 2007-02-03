@@ -24,9 +24,15 @@
 #ifndef PROGRESS_BAR_H
 #define PROGRESS_BAR_H
 
-#include <qprogressbar.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-#include "../Base/Sequencer.h"
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+#include <Base/Sequencer.h>
 
 namespace Gui {
 
@@ -88,7 +94,7 @@ struct ProgressBarPrivate;
  * just a busy indicator instead of percentage steps.
  * \author Werner Mayer
  */
-class ProgressBar : public QProgressBar, public Base::SequencerBase
+class ProgressBar : public Q3ProgressBar, public Base::SequencerBase
 {
   Q_OBJECT
 
@@ -113,7 +119,7 @@ public:
   /** This sets the wait cursor again and grabs the keyboard. @see pause() */
   void resume();
 
-public slots:
+public Q_SLOTS:
   /** Sets the time that must pass before the progress bar appears to \a ms.
    */
   void setMinimumDuration ( int ms );
@@ -125,7 +131,7 @@ protected:
   void nextStep(bool canAbort);
   void showEvent( QShowEvent* );
 
-protected slots:
+protected Q_SLOTS:
   /* Shows the progress bar if it is still hidden after the operation has been started
    * and minimumDuration milliseconds have passed.
    */
@@ -133,7 +139,7 @@ protected slots:
 
 protected:
   /** Construction */
-  ProgressBar ( QWidget * parent=0, const char * name=0, WFlags f=0 );
+  ProgressBar ( QWidget * parent=0, const char * name=0, Qt::WFlags f=0 );
   /** Destruction */
   ~ProgressBar ();
 

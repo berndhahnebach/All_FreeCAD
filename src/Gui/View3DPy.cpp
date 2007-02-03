@@ -44,7 +44,6 @@ using Base::Console;
 using Base::streq;
 using namespace Gui;
 
-#define new DEBUG_CLIENTBLOCK
 
 //--------------------------------------------------------------------------
 // Type structure

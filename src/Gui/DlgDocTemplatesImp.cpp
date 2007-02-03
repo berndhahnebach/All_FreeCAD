@@ -24,9 +24,11 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qiconview.h> 
-# include <qfiledialog.h>
+# include <q3iconview.h> 
+# include <q3filedialog.h>
 # include <qlineedit.h>
+//Added by qt3to4:
+#include <QPixmap>
 #endif
 
 //#include "DlgDocTemplatesImp.h"
@@ -45,7 +47,7 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgDocTemplatesImp::DlgDocTemplatesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, WFlags fl )
+DlgDocTemplatesImp::DlgDocTemplatesImp(  Gui::Command* pcCmd, QWidget* parent,  const char* name, bool modal, Qt::WFlags fl )
     : DlgDocTemplates( parent, name, modal, fl ), _pcCmd(pcCmd)
 {
   std::vector<std::string> vTemplates = App::GetApplication().GetAllTemplates();
@@ -57,7 +59,7 @@ DlgDocTemplatesImp::DlgDocTemplatesImp(  Gui::Command* pcCmd, QWidget* parent,  
   {
     str = (*i).c_str();
     if(str != "")
-      (void)new QIconViewItem ( TemplateIconView ,str,pixmap );
+      (void)new Q3IconViewItem ( TemplateIconView ,str,pixmap );
   }
 }
 
@@ -74,7 +76,7 @@ DlgDocTemplatesImp::~DlgDocTemplatesImp()
  */
 void DlgDocTemplatesImp::onChooseFile()
 {
-  QString s ( QFileDialog::getOpenFileName( QString::null, "FreeCAD Templates (*.FCTempl)", this ) );
+  QString s ( Q3FileDialog::getOpenFileName( QString::null, "FreeCAD Templates (*.FCTempl)", this ) );
   if ( s.isEmpty() )
     return;
   puts(s);
@@ -98,7 +100,7 @@ void DlgDocTemplatesImp::onValidate()
 /**
  * \internal
  */
-void DlgDocTemplatesImp::onIconDoubleClicked( QIconViewItem* Item )
+void DlgDocTemplatesImp::onIconDoubleClicked( Q3IconViewItem* Item )
 {
   LineEdit1->setText(Item->text());
   onValidate();
@@ -107,7 +109,7 @@ void DlgDocTemplatesImp::onIconDoubleClicked( QIconViewItem* Item )
 /**
  * \internal
  */
-void DlgDocTemplatesImp::onViewChanged( QIconViewItem* Item )
+void DlgDocTemplatesImp::onViewChanged( Q3IconViewItem* Item )
 {
   LineEdit1->setText(Item->text());
 }

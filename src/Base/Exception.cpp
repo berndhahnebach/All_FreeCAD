@@ -29,8 +29,6 @@
 #include "Exception.h"
 #include "Console.h"
 
-#define new DEBUG_CLIENTBLOCK
-
 using namespace Base;
 
 
@@ -53,6 +51,10 @@ Exception::Exception(const char * sMessage)
 {
 }
 
+Exception::Exception(const std::string& sMessage)
+ : _sErrMsg(sMessage), _handled(false)
+{
+}
 
 Exception &Exception::operator=(const Exception &inst)
 {

@@ -23,12 +23,8 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <Inventor/actions/SoGLRenderAction.h>
-#endif
-
 #include "SoFCInteractiveElement.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 SO_ELEMENT_SOURCE(SoFCInteractiveElement);

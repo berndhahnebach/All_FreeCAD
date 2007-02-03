@@ -23,16 +23,10 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qlayout.h>
-# include <qpushbutton.h>
-# include <qtabwidget.h>
-#endif
-
 #include "DlgCustomizeImp.h"
 #include "MainWindow.h"
 #include "WidgetFactory.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 QStringList DlgCustomizeImp::_pages;
@@ -46,14 +40,13 @@ QStringList DlgCustomizeImp::_pages;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : QDialog( parent, name, modal, fl )
+DlgCustomizeImp::DlgCustomizeImp( QWidget* parent, Qt::WFlags fl )
+  : QDialog( parent, fl )
 {
-  if ( !name )
-    setName( "DlgCustomizeImp" );
+  setModal(false);
   resize( 434, 365 ); 
 
-  setCaption( tr( "Customize" ) );
+  setWindowTitle( tr( "Customize" ) );
   setSizeGripEnabled( true );
 
   customLayout = new QGridLayout( this ); 
@@ -96,7 +89,7 @@ DlgCustomizeImp::DlgCustomizeImp( QWidget* parent,  const char* name, bool modal
   // connections
   //
   connect( buttonHelp,  SIGNAL ( clicked() ), getMainWindow(), SLOT ( whatsThis() ));
-  connect( buttonClose, SIGNAL ( clicked() ), this, SLOT ( reject() ) );
+  connect( buttonClose, SIGNAL ( clicked() ), this, SLOT ( close() ) );
 }
 
 /**
@@ -121,8 +114,7 @@ void DlgCustomizeImp::addPage( const QString& className )
 /** Inserts a new tab page with its caption */
 void DlgCustomizeImp::addPage ( QWidget* w )
 {
-  //w->reparent(tabWidget, QPoint(0,0));
-  tabWidget->insertTab( w, w->caption() );
+  tabWidget->addTab( w, w->windowTitle() );
 }
 
 #include "moc_DlgCustomizeImp.cpp"

@@ -28,9 +28,20 @@
 #include "../Base/Parameter.h"
 #include "View.h"
 
-class QDockWindow;
-class QScrollView;
-class QStringList;
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+////Added by qt3to4:
+//#include <Qt3Support/Q3PtrList>
+//
+//class Q3DockWindow;
+//class Q3ScrollView;
+//class QStringList;
 
 namespace Gui {
 
@@ -45,7 +56,7 @@ class GuiExport DockWindow : public QWidget, public BaseView
   Q_OBJECT;
 
 public:
-  DockWindow ( Gui::Document* pcDocument=0l, QWidget *parent=0, const char *name=0, WFlags f=0 );
+  DockWindow ( Gui::Document* pcDocument=0l, QWidget *parent=0, const char *name=0, Qt::WFlags f=0 );
   ~DockWindow();
 
   /** @name methods to overrride 
@@ -67,7 +78,8 @@ public:
    * @note A valid pointer is not returned before this widget has been docked with DockWindowManager::addDockWindow().
    * Otherwise 0 is returned.
    */
-  QDockWindow* dockWindow() const;
+  QDockWidget* dockWindow() const;
+#if 0
   /**
    * Sets the dock window's preferred width for its fixed extent (size) to \a w.
    * All other dock windows in the same dock arae get enlarged then. If there is 
@@ -80,12 +92,13 @@ public:
    * no other dock window then this method has no effect.
    */
   void setFixedExtentHeight(int h);
+#endif
 
-protected slots:
+protected Q_SLOTS:
   virtual void languageChange();
 
 private:
-  QDockWindow* _dw;
+  QDockWidget* _dw;
   QString _caption;
 
   friend class DockWindowManager;
@@ -112,7 +125,7 @@ public:
     * the view will attach to the active document. Be aware! there isn't
     * allways a active document!
     */
-  DockView( Gui::Document* pcDocument, QWidget* parent, const char* name, WFlags f=0 );
+  DockView( Gui::Document* pcDocument, QWidget* parent, const char* name, Qt::WFlags f=0 );
   /** View destructor
     * Detach the view from the document, if Atached!
     */
@@ -127,7 +140,7 @@ public:
   virtual bool onHasMsg(const char* pMsg) const;
 
 
-signals:
+Q_SIGNALS:
   /// sends a message to the document
   void sendCloseView(MDIView* theView);
 };
@@ -168,13 +181,13 @@ class GuiExport DockContainer : public DockWindow
   Q_OBJECT
 
 public:
-  DockContainer( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DockContainer( QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
   ~DockContainer();
 
   void setDockedWidget( QWidget* w );
 
 private:
-  QScrollView* sv;
+  Q3ScrollView* sv;
 };
 
 /**
@@ -190,12 +203,11 @@ public:
   static void destruct();
 
   DockWindow* getDockWindow( const QString& name );
-  QPtrList<DockWindow> getDockWindows();
+  Q3PtrList<DockWindow> getDockWindows();
   void removeDockWindow( const QString& name );
   void removeDockWindow( DockWindow* dock );
   void removeDockedWidget( QWidget* docked );
-  void addDockWindow( const QString& name, DockWindow *pcDocWindow, Qt::Dock pos = Qt::DockUnmanaged,
-                      bool stretch=false, int extWidth=0, int extHeight=0 );
+  void addDockWindow( const QString& name, DockWindow *pcDocWindow,  Qt::DockWidgetArea pos = Qt::AllDockWidgetAreas );
   void showDockWindows( const QStringList& );
   void hideDockWindows( const QStringList& );
 

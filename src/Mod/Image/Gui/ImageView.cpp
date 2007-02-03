@@ -17,15 +17,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <math.h>
-# include <qaction.h>
-# include <qapplication.h>
-# include <qpopupmenu.h>
-# include <qslider.h>
-# include <qstatusbar.h>
-#endif
-
 #include "ImageView.h"
 #include "GLImageBox.h"
 #include "../App/ImageBase.h"
@@ -34,125 +25,125 @@
 using namespace ImageGui;
 
 
+/* TRANSLATOR ImageGui::ImageView */
+
 ImageView::ImageView(QWidget* parent, const char* name)
-    : MDIView(0, parent, name, WDestructiveClose)
+  : MDIView(0, parent, name, Qt::WDestructiveClose)
 {
-    // enable mouse tracking when moving even if no buttons are pressed
-    setMouseTracking(true);
+  // enable mouse tracking when moving even if no buttons are pressed
+  setMouseTracking(true);
 
-	// enable the mouse events
-	_mouseEventsEnabled = true; 
+  // enable the mouse events
+  _mouseEventsEnabled = true; 
 
-    // Create the default status bar for displaying messages
-	EnableStatusBar(true);
+  // Create the default status bar for displaying messages
+  EnableStatusBar(true);
 
-    // Create an OpenGL widget for displaying images
-    _pGLImageBox = new GLImageBox(this, "ImageView glimagebox");
-    setCentralWidget(_pGLImageBox);
+  // Create an OpenGL widget for displaying images
+  _pGLImageBox = new GLImageBox(this, "ImageView glimagebox");
+  setCentralWidget(_pGLImageBox);
 
-    _currMode = nothing;
-    _currX = 0;
-    _currY = 0;
+  _currMode = nothing;
+  _currX = 0;
+  _currY = 0;
 
-    // Create the actions, menus and toolbars
-    createActions();
+  // Create the actions, menus and toolbars
+  createActions();
 
-    // connect other slots
-    connect(_pGLImageBox, SIGNAL(drawGraphics()), this, SLOT(drawGraphics()));
+  // connect other slots
+  connect(_pGLImageBox, SIGNAL(drawGraphics()), this, SLOT(drawGraphics()));
 }
 
 ImageView::~ImageView()
 {
-    // No need to delete _pGLImageBox or other widgets as this gets done automatically by QT
+  // No need to delete _pGLImageBox or other widgets as this gets done automatically by QT
 }
 
 // Create the action groups, actions, menus and toolbars
 void ImageView::createActions()
 {
-    // Create actions
-    _pFitAct = new QAction(this);
-    _pFitAct->setMenuText(tr("&Fit image"));
-    _pFitAct->setIconSet(QPixmap(image_stretch));
-    _pFitAct->setStatusTip(tr("Stretch the image to fit the view"));
-    connect(_pFitAct, SIGNAL(activated()), this, SLOT(fitImage()));
+  // Create actions
+  _pFitAct = new QAction(this);
+  _pFitAct->setText(tr("&Fit image"));
+  _pFitAct->setIcon(QPixmap(image_stretch));
+  _pFitAct->setStatusTip(tr("Stretch the image to fit the view"));
+  connect(_pFitAct, SIGNAL(triggered()), this, SLOT(fitImage()));
 
-    _pOneToOneAct = new QAction(this);
-    _pOneToOneAct->setMenuText(tr("&1:1 scale"));
-    _pOneToOneAct->setIconSet(QPixmap(image_oneToOne));
-    _pOneToOneAct->setStatusTip(tr("Display the image at a 1:1 scale"));
-    connect(_pOneToOneAct, SIGNAL(activated()), this, SLOT(oneToOneImage()));
+  _pOneToOneAct = new QAction(this);
+  _pOneToOneAct->setText(tr("&1:1 scale"));
+  _pOneToOneAct->setIcon(QPixmap(image_oneToOne));
+  _pOneToOneAct->setStatusTip(tr("Display the image at a 1:1 scale"));
+  connect(_pOneToOneAct, SIGNAL(triggered()), this, SLOT(oneToOneImage()));
 
-    // Create an action group for the exclusive color actions
-    _pShowColActGrp = new QActionGroup (this);
-    _pShowColActGrp->setExclusive(true);
-    connect(_pShowColActGrp, SIGNAL(selected(QAction*)), this, SLOT(handleColorAct(QAction*)));
+  // Create an action group for the exclusive color actions
+  _pShowColActGrp = new QActionGroup (this);
+  _pShowColActGrp->setExclusive(true);
+  connect(_pShowColActGrp, SIGNAL(triggered(QAction*)), this, SLOT(handleColorAct(QAction*)));
 
-    _pShowOrigAct = new QAction(_pShowColActGrp);
-    _pShowOrigAct->setToggleAction(true);
-    _pShowOrigAct->setMenuText(tr("&Original color"));
-    _pShowOrigAct->setIconSet(QPixmap(image_orig));
-    _pShowOrigAct->setStatusTip(tr("Display the image with its original color(s)"));
+  _pShowOrigAct = new QAction(_pShowColActGrp);
+  _pShowOrigAct->setCheckable(true);
+  _pShowOrigAct->setText(tr("&Original color"));
+  _pShowOrigAct->setIcon(QPixmap(image_orig));
+  _pShowOrigAct->setStatusTip(tr("Display the image with its original color(s)"));
 
-    _pShowBrightAct = new QAction(_pShowColActGrp);
-    _pShowBrightAct->setToggleAction(true);
-    _pShowBrightAct->setMenuText(tr("&Brightened color"));
-    _pShowBrightAct->setIconSet(QPixmap(image_bright));
-    _pShowBrightAct->setStatusTip(tr("Display the image with brightened color(s)"));
+  _pShowBrightAct = new QAction(_pShowColActGrp);
+  _pShowBrightAct->setCheckable(true);
+  _pShowBrightAct->setText(tr("&Brightened color"));
+  _pShowBrightAct->setIcon(QPixmap(image_bright));
+  _pShowBrightAct->setStatusTip(tr("Display the image with brightened color(s)"));
 
-    // Create the menus and add the actions
-    _pContextMenu = new QPopupMenu(this);
-    _pFitAct->addTo(_pContextMenu);
-    _pOneToOneAct->addTo(_pContextMenu);
-    _pShowOrigAct->addTo(_pContextMenu);
-    _pShowBrightAct->addTo(_pContextMenu);
+  // Create the menus and add the actions
+  _pContextMenu = new QMenu(this);
+  _pContextMenu->addAction(_pFitAct);
+  _pContextMenu->addAction(_pOneToOneAct);
+  _pContextMenu->addAction(_pShowOrigAct);
+  _pContextMenu->addAction(_pShowBrightAct);
 
-    // Create the toolbars and add the actions
-    _pStdToolBar = new QToolBar(tr("Standard"), this);
-    _pFitAct->addTo(_pStdToolBar);
-    _pOneToOneAct->addTo(_pStdToolBar);
-    _pShowOrigAct->addTo(_pStdToolBar);
-    _pShowBrightAct->addTo(_pStdToolBar);
+  // Create the toolbars and add the actions
+  _pStdToolBar = this->addToolBar(tr("Standard"));
+  _pStdToolBar->addAction(_pFitAct);
+  _pStdToolBar->addAction(_pOneToOneAct);
+  _pStdToolBar->addAction(_pShowOrigAct);
+  _pStdToolBar->addAction(_pShowBrightAct);
 
-    // Add a slider to the toolbar (for brightness adjustment)
-    _sliderBrightAdjVal = 10;
-    _pSliderBrightAdj = new QSlider(0, 100, 10, _sliderBrightAdjVal, Qt::Horizontal, _pStdToolBar);
-    connect(_pSliderBrightAdj, SIGNAL(valueChanged(int)), this, SLOT(sliderValueAdjusted(int)));
-    _pSliderBrightAdj->hide();
+  // Add a slider to the toolbar (for brightness adjustment)
+  _sliderBrightAdjVal = 10;
+  _pSliderBrightAdj = new QSlider(Qt::Horizontal, _pStdToolBar);
+  _pSliderBrightAdj->setRange(0, 100);
+  _pSliderBrightAdj->setValue(_sliderBrightAdjVal);
+  _pSliderBrightAdj->setPageStep(10);
+  _pStdToolBar->addWidget(_pSliderBrightAdj);
+  _pSliderBrightAdj->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+  _pSliderBrightAdj->setEnabled(false);
+  connect(_pSliderBrightAdj, SIGNAL(valueChanged(int)), this, SLOT(sliderValueAdjusted(int)));
 
-    // Set the original color action to ON
-    _pShowOrigAct->setOn(true);
+  // Set the original color action to ON
+  _pShowOrigAct->setChecked(true);
 }
 
 // Enable or disable the status bar
 void ImageView::EnableStatusBar(bool Enable)
 {
-    if (Enable == true)
-    {
-        // Create the default status bar for displaying messages and disable the gripper
-        _statusBarEnabled = true;
-        statusBar()->setSizeGripEnabled( false );
-        statusBar()->message(tr("Ready..."));
-    }
-    else
-    {
-        // Delete the status bar
-        _statusBarEnabled = false;
-        QStatusBar *pStatusBar = statusBar();
-        delete pStatusBar;
-    }
+  if (Enable == true)
+  {
+    // Create the default status bar for displaying messages and disable the gripper
+    _statusBarEnabled = true;
+    statusBar()->setSizeGripEnabled( false );
+    statusBar()->message(tr("Ready..."));
+  }
+  else
+  {
+    // Delete the status bar
+    _statusBarEnabled = false;
+    QStatusBar *pStatusBar = statusBar();
+    delete pStatusBar;
+  }
 }
 
 // Enable or disable the toolbar
 void ImageView::EnableToolBar(bool Enable)
 {
-    if (Enable == true)
-    {
-		addDockWindow(_pStdToolBar);
-	}
-	else
-	{
-		removeDockWindow(_pStdToolBar);
-	}
+  _pStdToolBar->setShown(Enable);
 }
 
 // Enable or disable the mouse events
@@ -165,14 +156,14 @@ void ImageView::EnableMouseEvents(bool Enable)
 // Current state (zoom, position) is left unchanged
 void ImageView::EnableOneToOneAction(bool Enable)
 {
-    _pOneToOneAct->setVisible(Enable);
+  _pOneToOneAct->setVisible(Enable);
 }
 
 // Enable (show) or disable (hide) the 'fit image' action
 // Current state (zoom, position) is left unchanged
 void ImageView::EnableFitImageAction(bool Enable)
 {
-    _pFitAct->setVisible(Enable);
+  _pFitAct->setVisible(Enable);
 }
 
 // Enable (show) or disable (hide) the color actions (_pShowOrigAct and _pShowBrightAct)
@@ -183,50 +174,50 @@ void ImageView::EnableFitImageAction(bool Enable)
 // This function should be used to hide the color actions when a derived class implements its own color map scheme
 void ImageView::EnableColorActions(bool Enable)
 {
-    if (Enable == true)
-    {
-        _pShowOrigAct->setVisible(true);
-        _pShowBrightAct->setVisible(true);
-        if (_pShowBrightAct->isOn() == true)
-            showBrightened();
-        else
-            showOriginalColors();
-    }
+  if (Enable == true)
+  {
+    _pShowOrigAct->setVisible(true);
+    _pShowBrightAct->setVisible(true);
+    if (_pShowBrightAct->isOn() == true)
+      showBrightened();
     else
-    {
-        _pShowOrigAct->setVisible(false);
-        _pShowBrightAct->setVisible(false);
-        _pSliderBrightAdj->hide();
-    }
+      showOriginalColors();
+  }
+  else
+  {
+    _pShowOrigAct->setVisible(false);
+    _pShowBrightAct->setVisible(false);
+    _pSliderBrightAdj->setVisible(false);
+  }
 }
 
 // Slot function to fit (stretch/shrink) the image to the view size
 void ImageView::fitImage()
 {
-    _pGLImageBox->stretchToFit();
+  _pGLImageBox->stretchToFit();
 }
 
 
 // Slot function to display the image at a 1:1 scale"
 void ImageView::oneToOneImage()
 {
-    _pGLImageBox->setNormal();
-    _pGLImageBox->redraw();
+  _pGLImageBox->setNormal();
+  _pGLImageBox->redraw();
 }
 
 // Slot function to handle the color actions
 void ImageView::handleColorAct( QAction* act)
 {
-    if (act == _pShowOrigAct)
-    {
-        _pSliderBrightAdj->hide();
-	    showOriginalColors();
-    }
-    else if (act == _pShowBrightAct)
-    {
-        _pSliderBrightAdj->show();
-        showBrightened();
-    }
+  if (act == _pShowOrigAct)
+  {
+    _pSliderBrightAdj->setEnabled(false);
+    showOriginalColors();
+  }
+  else if (act == _pShowBrightAct)
+  {
+    _pSliderBrightAdj->setEnabled(true);
+    showBrightened();
+  }
 }
 
 // Show the original colors (no enhancement)
@@ -234,8 +225,8 @@ void ImageView::handleColorAct( QAction* act)
 // (i.e if 12 significant bits (in 16-bit image) a value of 4095 will be shown as white)
 void ImageView::showOriginalColors()
 {
-    _pGLImageBox->clearColorMap();
-    _pGLImageBox->redraw();
+  _pGLImageBox->clearColorMap();
+  _pGLImageBox->redraw();
 }
 
 // Show the image with a brightness adjustment
@@ -414,9 +405,9 @@ void ImageView::mousePressEvent(QMouseEvent* cEvent)
               _currMode = panning;
               startDrag();
               break;
-          case Qt::LeftButton | Qt::MidButton:
-              _currMode = zooming;
-              break;
+          //case Qt::LeftButton | Qt::MidButton:
+          //    _currMode = zooming;
+          //    break;
           case Qt::LeftButton:
               _currMode = selection;
               break;

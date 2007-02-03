@@ -23,15 +23,17 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qaccel.h>
-# include <qapplication.h>
-# include <qlistbox.h>
-# include <qregexp.h>
-#endif
+//#ifndef _PreComp_
+//# include <q3accel.h>
+//# include <qapplication.h>
+//# include <q3listbox.h>
+//# include <qregexp.h>
+////Added by qt3to4:
+//#include <QMouseEvent>
+//#endif
 
 #include "TextEdit.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 /**
@@ -39,10 +41,10 @@ using namespace Gui;
  *  name 'name' and installs the Python syntax highlighter.
  */
 TextEdit::TextEdit(QWidget *parent,const char *name)
-    : QTextEdit(parent, name), listBox( 0 )
+    : Q3TextEdit(parent, name), listBox( 0 )
 {
-  QAccel *accel = new QAccel(this);
-  accel->connectItem(accel->insertItem(CTRL+Key_Space), this, SLOT(complete()));
+  Q3Accel *accel = new Q3Accel(this);
+  accel->connectItem(accel->insertItem(Qt::CTRL+Qt::Key_Space), this, SLOT(complete()));
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -114,7 +116,7 @@ QPoint TextEdit::textCursorPoint() const
  * If an item was chosen (either by clicking or pressing enter) the rest of the word is completed.
  * The listbox is closed without destroying it.
  */
-void TextEdit::itemChosen(QListBoxItem *item)
+void TextEdit::itemChosen(Q3ListBoxItem *item)
 {
   if (item)
     insert(item->text().mid(wordPrefix.length()));
@@ -129,14 +131,14 @@ void TextEdit::itemChosen(QListBoxItem *item)
 void TextEdit::createListBox()
 {
   listBox = new CompletionBox(this, "listBox");
-  QAccel *accel = new QAccel(listBox);
-  accel->connectItem(accel->insertItem(Key_Escape), listBox, SLOT(close()));
+  Q3Accel *accel = new Q3Accel(listBox);
+  accel->connectItem(accel->insertItem(Qt::Key_Escape), listBox, SLOT(close()));
 
-  connect(listBox, SIGNAL(clicked(QListBoxItem *)),
-            this, SLOT(itemChosen(QListBoxItem *)));
+  connect(listBox, SIGNAL(clicked(Q3ListBoxItem *)),
+            this, SLOT(itemChosen(Q3ListBoxItem *)));
   connect(listBox,
-            SIGNAL(returnPressed(QListBoxItem *)),
-            this, SLOT(itemChosen(QListBoxItem *)));
+            SIGNAL(returnPressed(Q3ListBoxItem *)),
+            this, SLOT(itemChosen(Q3ListBoxItem *)));
 }
 
 void TextEdit::adjustListBoxSize(int maxHeight, int maxWidth)
@@ -150,13 +152,13 @@ void TextEdit::adjustListBoxSize(int maxHeight, int maxWidth)
       totalHeight += listBox->itemHeight(i);
    }
    listBox->setFixedHeight(QMIN(totalHeight+20, maxHeight));
-   listBox->setFixedWidth(QMIN(listBox->maxItemWidth()+20, maxWidth));
+   listBox->setFixedWidth(qMin<int>(listBox->maxItemWidth()+20, maxWidth));
 }
 
 // ------------------------------------------------------------------------------
 
 CompletionBox::CompletionBox( QWidget* parent, const char*  name )
-  :  QListBox( parent, name, WType_Popup )
+  :  Q3ListBox( parent, name, Qt::WType_Popup )
 {
   setFrameStyle( WinPanel|Raised );
   setMouseTracking( true );
@@ -179,7 +181,7 @@ void CompletionBox::popup( const QPoint& pos )
 
 void CompletionBox::mousePressEvent( QMouseEvent* e )
 {
-  QListBox::mousePressEvent( e );
+  Q3ListBox::mousePressEvent( e );
   // if the mouse button was pressed outside
   if  (!rect().contains( e->pos() ))
   {

@@ -35,7 +35,7 @@
 #include "Application.h"
 
 #include "../Base/Parameter.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /**
@@ -45,20 +45,22 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, const char* name, bool modal, WFlags fl )
-  : DlgTipOfTheDayBase( parent, name, modal, fl | WStyle_Customize | WStyle_NormalBorder | WStyle_Title | WStyle_SysMenu ),
+DlgTipOfTheDayImp::DlgTipOfTheDayImp( QWidget* parent, Qt::WFlags fl )
+  : QDialog( parent, fl | Qt::WStyle_Customize | Qt::WStyle_NormalBorder | Qt::WStyle_Title | Qt::WStyle_SysMenu ),
   WindowParameter("General")
 {
+  setupUi(this);
+
   bool tips = getWindowParameter()->GetBool("Tipoftheday", true);
   checkShowTips->setChecked(tips);
 
   // Since the resize mode of DlgTipOfTheDayBase does not
   // work properly so set this by hand 
   setMinimumSize(QSize(320, 250));
-  layout()->setResizeMode( QLayout::FreeResize );
+  layout()->setResizeMode( QLayout::SetNoConstraint );
 
   reload();
-  onNext();
+  on_buttonNextTip_clicked();
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -68,7 +70,7 @@ DlgTipOfTheDayImp::~DlgTipOfTheDayImp()
 }
 
 /** Shows next tip taken from the Tip-of-the-day site. */
-void DlgTipOfTheDayImp::onNext()
+void DlgTipOfTheDayImp::on_buttonNextTip_clicked()
 {
   _iCurrentTip = ( _iCurrentTip + 1 ) % _lTips.size();
   textTip->setText( _lTips[_iCurrentTip] );
@@ -85,7 +87,7 @@ void DlgTipOfTheDayImp::reload()
   QFile f ( file );
   QTextStream txt( &f );
 
-  if ( f.open( IO_ReadOnly ) )
+  if ( f.open( QIODevice::ReadOnly ) )
   {
     do
     {
@@ -95,7 +97,8 @@ void DlgTipOfTheDayImp::reload()
         _lTips << inp;
       }
     }
-    while ( !txt.eof() );
+    //HACK Not sure this works (was  while ( !txt.eof()) )
+    while ( !txt.atEnd() );
   }
 
   _iCurrentTip = 0;
@@ -110,5 +113,4 @@ void DlgTipOfTheDayImp::reload()
   }
 }
 
-#include "DlgTipOfTheDay.cpp"
-#include "moc_DlgTipOfTheDay.cpp"
+#include "moc_DlgTipOfTheDayImp.cpp"

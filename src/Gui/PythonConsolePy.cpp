@@ -23,8 +23,8 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qinputdialog.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
 #endif
 
 #include "PythonConsolePy.h"
@@ -32,7 +32,7 @@
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 //--------------------------------------------------------------------------

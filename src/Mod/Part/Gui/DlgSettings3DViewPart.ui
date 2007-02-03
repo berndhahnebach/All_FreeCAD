@@ -1,231 +1,203 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>PartGui::DlgSettings3DViewPart</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>PartGui::DlgSettings3DViewPart</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>544</width>
-            <height>520</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Part view</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>PartGui::DlgSettings3DViewPart</class>
+ <widget class="QWidget" name="PartGui::DlgSettings3DViewPart" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>544</width>
+    <height>240</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Part Viewing Settings</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>11</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="GroupBox12" >
+     <property name="title" >
+      <string>3DViewPart settings</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
         </property>
-        <property name="margin">
-            <number>11</number>
+        <property name="spacing" >
+         <number>6</number>
         </property>
-        <property name="spacing">
-            <number>6</number>
+        <item>
+         <widget class="QLabel" name="textLabel1_3" >
+          <property name="text" >
+           <string>View accuracy / Performance</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line2" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>3</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShape" >
+           <enum>QFrame::HLine</enum>
+          </property>
+          <property name="frameShadow" >
+           <enum>QFrame::Sunken</enum>
+          </property>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
         </property>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>GroupBox12</cstring>
-            </property>
-            <property name="title">
-                <string>Part view settings</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout14</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1_3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>View accuracy / Performance</string>
-                            </property>
-                        </widget>
-                        <widget class="Line">
-                            <property name="name">
-                                <cstring>line2</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="frameShape">
-                                <enum>HLine</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout1</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Maximum deviation of tessellated view mesh</string>
-                            </property>
-                            <property name="toolTip" stdset="0">
-                                <string>Defines the deviation of tessellation to the surface</string>
-                            </property>
-                            <property name="whatsThis" stdset="0">
-                                <string>&lt;b&gt;Tessellation&lt;/b&gt;&lt;p&gt;Defines the maximum deviation of the tessellated mesh to the surface. The smaller the value is the slower the render speed and the nicer the appearance are.&lt;/p&gt;</string>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefFloatSpinBox">
-                            <property name="name">
-                                <cstring>prefFloatSpinBox1</cstring>
-                            </property>
-                            <property name="maxValue">
-                                <number>100</number>
-                            </property>
-                            <property name="minValue">
-                                <number>0.01</number>
-                            </property>
-                            <property name="lineStep">
-                                <number>0.01</number>
-                            </property>
-                            <property name="value">
-                                <number>0.5</number>
-                            </property>
-                            <property name="precision">
-                                <number>2</number>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>MeshDeviation</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Mod/Part</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout14_2_2</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1_3_3_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>View smooting</string>
-                            </property>
-                        </widget>
-                        <widget class="Line">
-                            <property name="name">
-                                <cstring>line2_2_2</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="frameShape">
-                                <enum>HLine</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>prefCheckBox8</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Not using per vertex normals (Flat shading)</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>NoPerVertexNormals</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>Mod/Part</cstring>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>Defines the appearance of surfaces</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>&lt;b&gt;Flat shading/Phong shading&lt;/b&gt;&lt;p&gt;With flat shading the surface normals are not defined per vertex that leads to a unreal appearance for curved surfaces while using Phong shading leads to a smoother appearance. If this option is unset Phong shading is used, if it is set flat shading is used.&lt;/p&gt;</string>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>prefCheckBox3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Using high-quality normals</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>QualityNormals</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>Mod/Part</cstring>
-                    </property>
-                    <property name="toolTip" stdset="0">
-                        <string>This will slow down render speed but will lead to nicer results</string>
-                    </property>
-                    <property name="whatsThis" stdset="0">
-                        <string>&lt;b&gt;High-quality normals&lt;/b&gt;&lt;p&gt;This will slow down render speed but will lead to nicer results.&lt;/p&gt;</string>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-    </vbox>
-</widget>
-<customwidgets>
-</customwidgets>
-<slots>
-    <slot access="protected">loadSettings()</slot>
-    <slot access="protected">saveSettings()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-</includehints>
-</UI>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabel1" >
+          <property name="text" >
+           <string>Max deviation of view mesh (smaller means nicer but slower):</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefDoubleSpinBox" name="prefFloatSpinBox1" >
+          <property name="maximum" >
+           <double>100</double>
+          </property>
+          <property name="minimum" >
+           <double>0.01</double>
+          </property>
+          <property name="singleStep" >
+           <double>0.01</double>
+          </property>
+          <property name="value" >
+           <double>0.5</double>
+          </property>
+          <property name="prefEntry" stdset="0" >
+           <cstring>MeshDeviation</cstring>
+          </property>
+          <property name="prefPath" stdset="0" >
+           <cstring>Mod/Part</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabel1_3_3_2" >
+          <property name="text" >
+           <string>View smooting</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line2_2_2" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>3</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShape" >
+           <enum>QFrame::HLine</enum>
+          </property>
+          <property name="frameShadow" >
+           <enum>QFrame::Sunken</enum>
+          </property>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Gui::PrefCheckBox" name="prefCheckBox8" >
+        <property name="text" >
+         <string>Not using per vertex normals (using flat shading)</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>NoPerVertexNormals</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Mod/Part</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="Gui::PrefCheckBox" name="prefCheckBox3" >
+        <property name="text" >
+         <string>Using high qualiti normals (slower but nicer)</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>QualityNormals</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Mod/Part</cstring>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

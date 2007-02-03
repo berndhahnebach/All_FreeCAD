@@ -7,9 +7,56 @@
     </message>
 </context>
 <context>
+    <name>Form1</name>
+    <message>
+        <source>Form1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Macro name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Macro destination:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Execute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete macro</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui::AboutDialog</name>
     <message>
-        <source>OK</source>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alt+O</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -91,6 +138,10 @@
     </message>
     <message>
         <source>Special Ops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Command bar</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -194,10 +245,6 @@
         <source>Macro:</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgCustomActionsImp</name>
@@ -249,14 +296,6 @@
         <source>&amp;Cancel</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Replace</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgCustomCmdbarsImp</name>
@@ -273,86 +312,6 @@
     </message>
     <message>
         <source>Category</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgCustomKeyboardBase</name>
-    <message>
-        <source>Keyboard</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Category:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>C&amp;ommands:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Current shortcut:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Press &amp;new shortcut:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Currently assigned to:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Assign</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Reset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Re&amp;set All</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Description:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgCustomKeyboardImp</name>
-    <message>
-        <source>Not defined</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Multiple defined shortcut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The shortcut &apos;%1&apos; is defined more than once. This could result into unexpected behaviour.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Already defined shortcut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The shortcut &apos;%1&apos; is already assigned to &apos;%2&apos;.
-
-Please define another shortcut.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -379,6 +338,10 @@ Please define another shortcut.</source>
     </message>
     <message>
         <source>Setup Toolbar</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Available Actions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -422,11 +385,7 @@ Please define another shortcut.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Available commands</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Current commands</source>
+        <source>Current Actions</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -456,6 +415,10 @@ Please define another shortcut.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Visual mode:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Plot mode:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -468,27 +431,11 @@ Please define another shortcut.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Display mode:</source>
+        <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Point size:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Line width:</source>
+        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -687,26 +634,6 @@ foo(0, 20)
 </source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Tabs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tab size:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Indent size:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Keep tabs</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Insert spaces</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgGeneralBase</name>
@@ -764,25 +691,6 @@ foo(0, 20)
     </message>
     <message>
         <source>Enable splashscreen at startup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Switch to tab of report window:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgInputDialog</name>
-    <message>
-        <source>Input</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cancel</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -914,53 +822,6 @@ This file already exists.</source>
         <source>Specify first a place to save.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Existing macro</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The macro &apos;%1&apos; already exists. Do you want to overwrite?</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgMaterialProperties</name>
-    <message>
-        <source>Material properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Material</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Diffuse color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Specular color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Shininess:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ambient color:</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::DlgOnlineHelpBase</name>
@@ -993,32 +854,15 @@ This file already exists.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Download online help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Enable user authorization</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Use proxy</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download online help from:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>To:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgOnlineHelpImp</name>
-    <message>
-        <source>Missing permission</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You don&apos;t have write permission to &apos;%1&apos;
-
-Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1034,18 +878,6 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>Alt+C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Save to disk</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saves user and system parameter immediately to disk</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1088,72 +920,6 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+H</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgPreferencesImp</name>
-    <message>
-        <source>Wrong parameter</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgProjectInformation</name>
-    <message>
-        <source>Project information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Creation &amp;date:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Last &amp;modification date:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Com&amp;pany:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Created &amp;by:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Last modified by:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Path:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Commen&amp;t:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Name:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1211,7 +977,15 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Use simple background (sometimes faster)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Show coordinate system in the corner</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show FPS Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1223,300 +997,15 @@ Specify another directory, please.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Don&apos;t use highlighting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Selection color:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Highlight color:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show counter of frames per second</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Eye to eye distance for stereo modes:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Disable preselection highlighting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Disable selection highlighting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Background color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Simple color</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Color gradient</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Camera type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Perspective rendering</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Orthographic rendering</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgSettingsColorGradientBase</name>
-    <message>
-        <source>Colorgradient settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Visibility</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Out g&amp;rayed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+R</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Out &amp;invisible</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+I</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Style</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Flow</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+F</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Zero</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+Z</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Color model</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Gradient:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>red-yellow-green-cyan-blue</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>blue-cyan-green-yellow-red</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>white-black</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>black-white</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Parameter range</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mi&amp;nimum:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Ma&amp;ximum:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Labels:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Decimals:</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgSettingsColorGradientImp</name>
-    <message>
-        <source>Wrong parameter</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The maximum value must be higher than &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The minimum value must be lower than &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgSettingsDocument</name>
-    <message>
-        <source>Document</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create new document at startup</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Using Undo/Redo on documents (can be very memory consuming)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Undo Redo Size (in Megabyte)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving transactions (Autosave)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>discard saved transaction after document saved</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Document save compression level
-(0 = none, 9 = highest, 3 = default)</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::Dialog::DlgSettingsImage</name>
-    <message>
-        <source>Image settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Image dimensions</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Width:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> Pixel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Height:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Aspect ratio:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Screen</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;4:3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+4</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>1&amp;6:9</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+6</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;1:1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Alt+1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Image properties</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Back&amp;ground:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Current</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>White</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Black</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Transperent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Image comment</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Insert MIBA</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Insert comment</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1652,18 +1141,6 @@ Specify another directory, please.</source>
         <source>Reading of &apos;%1&apos; failed.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Collapse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Export</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::Dialog::ParameterValue</name>
@@ -1701,10 +1178,6 @@ Specify another directory, please.</source>
     </message>
     <message>
         <source>The item &apos;%1&apos; already exists.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New unsigned item</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1822,22 +1295,6 @@ Specify another directory, please.</source>
         <source>Property View</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Data</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::DockWnd::ReportOutput</name>
@@ -1870,10 +1327,6 @@ Specify another directory, please.</source>
     <name>Gui::DockWnd::ReportView</name>
     <message>
         <source>Output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python console</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1914,6 +1367,29 @@ Do you want to start your favourite external browser instead?</source>
     </message>
 </context>
 <context>
+    <name>Gui::Document</name>
+    <message>
+        <source>Saving file under new filename...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Saving aborted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 : %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unsaved document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save document before close?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Gui::FileChooser</name>
     <message>
         <source>Select file</source>
@@ -1929,21 +1405,6 @@ Replace existing file?</source>
     </message>
     <message>
         <source>Existing file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save as</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::FileOptionsDialog</name>
-    <message>
-        <source>&amp;Options </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1985,14 +1446,6 @@ Replace existing file?</source>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;3D View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Zoom</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2081,10 +1534,6 @@ Replace existing file?</source>
         <source>Save History</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Insert file name...</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::PythonEditView</name>
@@ -2112,34 +1561,13 @@ Replace existing file?</source>
         <source>File %1 saved</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Modified file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%1.
-
-This has been modified outside of the source editor. Do you want to reload it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::StdCmdAbout</name>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;About %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>About %1</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::StdCmdDescription</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Des&amp;cription</source>
         <translation type="unfinished"></translation>
@@ -2148,13 +1576,13 @@ This has been modified outside of the source editor. Do you want to reload it?</
         <source>Long description of commands</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::StdCmdMRU</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Recent files</source>
         <translation type="unfinished"></translation>
@@ -2163,62 +1591,19 @@ This has been modified outside of the source editor. Do you want to reload it?</
         <source>Recent file list</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Gui::StdCmdOnlineHelp</name>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download online help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download %1&apos;s online help</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Non-existing directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The directory &apos;%1&apos; does not exist.
-
-Do you want to specify an existing directory?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Missing permission</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You don&apos;t have write permission to &apos;%1&apos;
-
-Do you want to specify another directory?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stop downloading</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>Gui::StdCmdWorkbench</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Workbench</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Switch between workbenches</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>View</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2230,13 +1615,13 @@ Do you want to specify another directory?</source>
     </message>
 </context>
 <context>
-    <name>PythonEditor</name>
+    <name>Gui::ViewAction</name>
     <message>
-        <source>Comment</source>
+        <source>Tool&amp;bars</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Uncomment</source>
+        <source>Vie&amp;ws</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2248,6 +1633,15 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Critical Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fullscreen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have a resolution of %1x%2 pixels which could lead to performance problems.
+ Do you really want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2315,6 +1709,18 @@ Do you want to specify another directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>FreeCAD</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Viewer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard views</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>True</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2326,92 +1732,28 @@ Do you want to specify another directory?</source>
         <source>Qt Linguist</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save picture</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New unsigned item</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Overwrite file &apos;%1&apos; ?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File overwrite confirmation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving aborted</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unsaved document</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save document before close?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Not enough memory available to display the data.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source></source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save document under new filename...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save views</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Restore views</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Freeze view</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Frozen views (*.cam)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save frozen views</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Restore view &amp;%1</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
-    <name>StdCameraType</name>
+    <name>StdCmdAbout</name>
     <message>
-        <source>Standard-View</source>
+        <source>Standard</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Orthographic view</source>
+        <source>&amp;About FreeCAD</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Perspective view</source>
+        <source>About FreeCAD</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>StdCmdAboutQt</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>About &amp;Qt</source>
         <translation type="unfinished"></translation>
@@ -2420,13 +1762,13 @@ Do you want to specify another directory?</source>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdActivateNextWindow</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Ne&amp;xt</source>
         <translation type="unfinished"></translation>
@@ -2435,13 +1777,13 @@ Do you want to specify another directory?</source>
         <source>Activate next window</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdActivatePrevWindow</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Pre&amp;vious</source>
         <translation type="unfinished"></translation>
@@ -2450,13 +1792,13 @@ Do you want to specify another directory?</source>
         <source>Activate previous window</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdCloseActiveWindow</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Cl&amp;ose</source>
         <translation type="unfinished"></translation>
@@ -2465,13 +1807,13 @@ Do you want to specify another directory?</source>
         <source>Close active window</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdCloseAllWindows</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Close Al&amp;l</source>
         <translation type="unfinished"></translation>
@@ -2480,13 +1822,13 @@ Do you want to specify another directory?</source>
         <source>Close all windows</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdCommandLine</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Start command &amp;line...</source>
         <translation type="unfinished"></translation>
@@ -2495,13 +1837,13 @@ Do you want to specify another directory?</source>
         <source>Opens the command line in the console</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdCopy</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>C&amp;opy</source>
         <translation type="unfinished"></translation>
@@ -2510,13 +1852,13 @@ Do you want to specify another directory?</source>
         <source>Copy operation</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdCut</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Cut</source>
         <translation type="unfinished"></translation>
@@ -2525,28 +1867,13 @@ Do you want to specify another directory?</source>
         <source>Cut out</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdDelete</name>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Deletes the selected objects</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdDlgCustomize</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Cu&amp;stomize...</source>
         <translation type="unfinished"></translation>
@@ -2555,13 +1882,13 @@ Do you want to specify another directory?</source>
         <source>Customize toolbars and commandbars</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdDlgMacroExecute</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>E&amp;xecute macro ...</source>
         <translation type="unfinished"></translation>
@@ -2570,28 +1897,13 @@ Do you want to specify another directory?</source>
         <source>Opens a Dialog let you execute a recorded macro</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdDlgMacroExecuteDirect</name>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Execute &amp;editor</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Execute the macro/script in the editor</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdDlgMacroRecord</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Macro recording ...</source>
         <translation type="unfinished"></translation>
@@ -2600,13 +1912,13 @@ Do you want to specify another directory?</source>
         <source>Opens a Dialog to record a macro</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdDlgParameter</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>E&amp;dit parameters ...</source>
         <translation type="unfinished"></translation>
@@ -2615,13 +1927,13 @@ Do you want to specify another directory?</source>
         <source>Opens a Dialog to edit the parameters</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdDlgPreferences</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Preferences ...</source>
         <translation type="unfinished"></translation>
@@ -2630,58 +1942,13 @@ Do you want to specify another directory?</source>
         <source>Opens a Dialog to edit the preferences</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdDockViewMenu</name>
-    <message>
-        <source>View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Vie&amp;ws</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Toggles this window</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdFeatRecompute</name>
-    <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Recompute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Recompute feature or document</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdFreezeViews</name>
-    <message>
-        <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Freeze display</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Freezes the current view position</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdMDITabbed</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>MDI tabbed</source>
         <translation type="unfinished"></translation>
@@ -2690,13 +1957,13 @@ Do you want to specify another directory?</source>
         <source>Set the tabbed MDI mode</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdMDIToplevel</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>MDI seperate windows</source>
         <translation type="unfinished"></translation>
@@ -2705,13 +1972,13 @@ Do you want to specify another directory?</source>
         <source>Set the seperate window MDI mode</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdMacroStop</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>S&amp;top macro recording</source>
         <translation type="unfinished"></translation>
@@ -2720,13 +1987,13 @@ Do you want to specify another directory?</source>
         <source>Stop the a running macro recording sassion</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Tools</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdNew</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;New</source>
         <translation type="unfinished"></translation>
@@ -2735,23 +2002,41 @@ Do you want to specify another directory?</source>
         <source>Create a new empty Document</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>StdCmdOCAFBrowse</name>
     <message>
-        <source>File</source>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start &amp;raw document browser...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Starts a new window to deeply examine the document structure</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdOnlineHelp</name>
+    <message>
+        <source>Stop %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>StdCmdOpen</name>
     <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Open</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Open a Document or import Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2769,15 +2054,15 @@ Do you want to specify another directory?</source>
 <context>
     <name>StdCmdPaste</name>
     <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Paste</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Paste operation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2795,6 +2080,10 @@ Do you want to specify another directory?</source>
 <context>
     <name>StdCmdPrint</name>
     <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Print...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2802,28 +2091,13 @@ Do you want to specify another directory?</source>
         <source>Print the window</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdProjectInfo</name>
-    <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Project i&amp;nformation...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Show details of the currently active project</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdQuit</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
@@ -2832,24 +2106,13 @@ Do you want to specify another directory?</source>
         <source>Quits the application</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdRandomColor</name>
-    <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Random color</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdRedo</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Redo</source>
         <translation type="unfinished"></translation>
@@ -2858,28 +2121,13 @@ Do you want to specify another directory?</source>
         <source>Redoes a previously undid action</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdRefresh</name>
-    <message>
-        <source>Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Refresh</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Recomputes the current active document</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdSave</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Save</source>
         <translation type="unfinished"></translation>
@@ -2888,23 +2136,19 @@ Do you want to specify another directory?</source>
         <source>Save the active document</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>File</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdSaveAs</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Save &amp;As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Save the active document under a new file name</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>File</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2915,16 +2159,20 @@ Do you want to specify another directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Display...</source>
+        <source>Material</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Sets the display properties of the selected object</source>
+        <source>Set the material properties of the selcted feature</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>StdCmdStatusBar</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Status bar</source>
         <translation type="unfinished"></translation>
@@ -2933,13 +2181,13 @@ Do you want to specify another directory?</source>
         <source>Toggles the status bar</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>View</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdTileHor</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>Tile &amp;Horizontally</source>
         <translation type="unfinished"></translation>
@@ -2948,13 +2196,13 @@ Do you want to specify another directory?</source>
         <source>Tile the windows horizontally</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdTilePra</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Cascade</source>
         <translation type="unfinished"></translation>
@@ -2963,13 +2211,13 @@ Do you want to specify another directory?</source>
         <source>Tile pragmatic</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdTileVer</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Tile Vertically</source>
         <translation type="unfinished"></translation>
@@ -2978,38 +2226,19 @@ Do you want to specify another directory?</source>
         <source>Tile the windows vertically</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdTipOfTheDay</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Tip of the day...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Tip of the day</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdToggleClipPlane</name>
-    <message>
-        <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clipping plane</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Toggles clipping plane for active view</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3029,32 +2258,17 @@ Do you want to specify another directory?</source>
     </message>
 </context>
 <context>
-    <name>StdCmdToolBarMenu</name>
-    <message>
-        <source>View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tool&amp;bars</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Toggles this window</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>StdCmdUndo</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Undo</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Undo exactly one action</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3089,17 +2303,32 @@ Do you want to specify another directory?</source>
     </message>
 </context>
 <context>
-    <name>StdCmdViewCreate</name>
+    <name>StdCmdViewCreateInventor</name>
     <message>
         <source>Standard-View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Create new view</source>
+        <source>Create new Inventor View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Creates a new  view window for the active document</source>
+        <source>Creates a new Inventor view window for the active document</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdViewCreateOCC</name>
+    <message>
+        <source>Standard-View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create new OCC View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Creates a new OpenCasCade view window for the active document</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3179,6 +2408,36 @@ Do you want to specify another directory?</source>
     </message>
 </context>
 <context>
+    <name>StdCmdViewIvDecorationOff</name>
+    <message>
+        <source>Standard-View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decoration Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Examiner viewer decoration Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdViewIvDecorationOn</name>
+    <message>
+        <source>Standard-View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decoration on</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Examiner viewer decoration on</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>StdCmdViewIvIssueCamPos</name>
     <message>
         <source>Standard-View</source>
@@ -3189,37 +2448,7 @@ Do you want to specify another directory?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Issue the camera position to the console and to a macro, to easily recall this position</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdViewIvStereoInterleavedColumns</name>
-    <message>
-        <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stereo Interleaved Columns</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Switch stereo viewing to Interleaved Columns</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdViewIvStereoInterleavedRows</name>
-    <message>
-        <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stereo Interleaved Rows</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Switch stereo viewing to Interleaved Rows</source>
+        <source>Issue the camera posiotion to the console and to a macro, to easily recall this position</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3239,32 +2468,17 @@ Do you want to specify another directory?</source>
     </message>
 </context>
 <context>
-    <name>StdCmdViewIvStereoQuadBuff</name>
+    <name>StdCmdViewIvStereoOn</name>
     <message>
         <source>Standard-View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Stereo quad buffer</source>
+        <source>Stereo On</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Switch stereo viewing to quad buffer</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdCmdViewIvStereoRedGreen</name>
-    <message>
-        <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Stereo red/green</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Switch stereo viewing to red/green</source>
+        <source>Switch stereo viewing on</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3280,6 +2494,17 @@ Do you want to specify another directory?</source>
     </message>
     <message>
         <source>Set to left view</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>StdCmdViewMenu</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggles this window</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3331,6 +2556,10 @@ Do you want to specify another directory?</source>
 <context>
     <name>StdCmdWhatsThis</name>
     <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;What&apos;s This?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3338,13 +2567,13 @@ Do you want to specify another directory?</source>
         <source>What&apos;s This</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Help</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdWindows</name>
+    <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message>
         <source>&amp;Windows...</source>
         <translation type="unfinished"></translation>
@@ -3353,94 +2582,30 @@ Do you want to specify another directory?</source>
         <source>Windows list</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>StdCmdWindowsMenu</name>
     <message>
+        <source>Standard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Activates this window</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Window</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
-    <name>StdViewBoxZoom</name>
+    <name>StdViewFullScreen</name>
     <message>
         <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Box zoom</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdViewDockUndockFullscreen</name>
-    <message>
-        <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Display mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Display the active view either in fullscreen, in undocked or docked mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Docked</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Undocked</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>StdViewScreenShot</name>
     <message>
-        <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save picture...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Creates a screenshot of the active view</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdViewZoomIn</name>
-    <message>
-        <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom In</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>StdViewZoomOut</name>
-    <message>
-        <source>Standard-View</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Zoom Out</source>
+        <source>Display the active view in fullscreen</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -21,10 +21,11 @@
  ***************************************************************************/
 
 
-#ifndef __DlgSettingsRayImp_H
-#define __DlgSettingsRayImp_H
+#ifndef RAYTRACINGGUI_DLGSETTINGSRAYIMP_H
+#define RAYTRACINGGUI_DLGSETTINGSRAYIMP_H
 
-#include "DlgSettingsRay.h"
+#include "ui_DlgSettingsRay.h"
+#include <Gui/PropertyPage.h>
 
 namespace RaytracingGui {
 
@@ -33,12 +34,12 @@ namespace RaytracingGui {
  * for the Inventor viewer.
  * \author Jürgen Riegel
  */
-class DlgSettingsRayImp : public DlgSettingsRay
+class DlgSettingsRayImp : public Gui::Dialog::PreferencePage, public Ui_DlgSettingsRay
 { 
   Q_OBJECT
 
 public:
-  DlgSettingsRayImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgSettingsRayImp( QWidget* parent = 0 );
   ~DlgSettingsRayImp();
 
 protected:
@@ -48,4 +49,4 @@ protected:
 
 } // namespace RaytracingGui
 
-#endif // __DlgSettingsRayImp_H
+#endif // RAYTRACINGGUI_DLGSETTINGSRAYIMP_H

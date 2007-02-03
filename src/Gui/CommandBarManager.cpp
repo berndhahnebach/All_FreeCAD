@@ -23,20 +23,14 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qpopupmenu.h>
-#endif
-
 #include "CommandBarManager.h"
 #include "ToolBarManager.h"
 #include "Application.h"
 #include "Command.h"
 #include "ToolBox.h"
-#include "ToolBoxBar.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 using DockWnd::ToolBox;
-using DockWnd::ToolBoxBar;
 
 CommandBarManager* CommandBarManager::_instance=0;
 
@@ -71,159 +65,89 @@ void CommandBarManager::setup( ToolBarItem* toolBar ) const
   if ( !toolBar || !_toolBox )
     return; // empty tool bar
 
-  QPtrList<QToolBar> tbs;
-  QPtrList<QWidget> rem;
   int ct = _toolBox->count();
   for ( int i=0; i<ct; i++ )
   {
-    QWidget* w = _toolBox->item( i );
-    if ( w && w->inherits("QToolBar") )
-    {
-      // if the bar already exists keep it unchanged
-      if ( toolBar->findItem( w->name() ) && strcmp(w->name(), "file operations") == 0 )
-      {
-        tbs.append( reinterpret_cast<QToolBar*>(w) );
-      }
-      else
-      {
-        // first save all widgets to remove in a temporary list
-        rem.append( w );
-      }
-    }
-  }
-
-  // now remove the widgets
-  QWidget* w;
-  for ( w = rem.first(); w; w = rem.next() )
-  {
-     _toolBox->removeItem( w );
-     delete w;
+    // get always the first item widget
+    QWidget* w = _toolBox->widget(0);
+    _toolBox->removeItem(0);
+    delete w;
   }
 
   CommandManager& mgr = Application::Instance->commandManager();
-  QPtrList<ToolBarItem> items = toolBar->getItems();
+  QList<ToolBarItem*> items = toolBar->getItems();
 
-  ToolBarItem* item;
-  for ( item = items.first(); item; item = items.next() )
+  for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
   {
-    QToolBar* bar;
-    for ( bar = tbs.first(); bar; bar = tbs.next() )
+    QToolBar* bar = new QToolBar();
+    bar->setOrientation(Qt::Vertical);
+    bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+
+    bar->setWindowTitle( QObject::tr( (*item)->command() ) ); // i18n
+    _toolBox->addItem( bar, bar->windowTitle() );
+
+    QList<ToolBarItem*> subitems = (*item)->getItems();
+    for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem )
     {
-      if ( bar->name() == item->command() )
-        break;
+      if ( (*subitem)->command() == "Separator" ) {
+        //bar->addSeparator();
+      } else {
+        mgr.addTo( (*subitem)->command().latin1(), bar );
+      }
     }
 
-    if ( !bar )
-    {
-      bar = getOrCreateCommandBar( item->command(), false, false );
-//      bar = new ToolBoxBar( item->command(), _toolBox, item->command().latin1() );
-//      bar->setLabel( QObject::tr( item->command() ) ); // i18n
-//      _toolBox->addItem( bar, bar->label() );
-
-      QPtrList<ToolBarItem> subitems = item->getItems();
-      ToolBarItem* subitem;
-      for ( subitem = subitems.first(); subitem; subitem = subitems.next() )
+    // Now set the right size policy for each tool button
+    QList<QToolButton*> tool = bar->findChildren<QToolButton*>();
+    for (QList<QToolButton*>::Iterator it = tool.begin(); it != tool.end(); ++it) {
+      (*it)->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+      // When setting the horizontal size policy but no icon is set we use the following trick
+      // to make the button text left aligned.
+      QIcon icon = (*it)->icon();
+      if (icon.isNull())
       {
-        if ( subitem->command() == "Separator" )
-          bar->addSeparator();
-        else
-          mgr.addTo( subitem->command().latin1(), bar );
+        // Create an icon filled with the button color
+        int size = QApplication::style()->pixelMetric(QStyle::PM_SmallIconSize);
+        QPixmap p(size, size);
+        p.fill(Qt::transparent);
+        (*it)->setIcon(p);
       }
     }
   }
-
-  // resize to required height
-  _toolBox->hide();
-  _toolBox->show();
 }
 
 void CommandBarManager::customSetup( ToolBarItem* toolBar ) const
-{
+{return;
   if ( !toolBar || !_toolBox )
     return; // empty menu bar
 
   int ct = _toolBox->count();
   for ( int i=0; i<ct; i++ )
   {
-    QWidget* w = _toolBox->item( i );
-    if ( w && w->inherits("Gui::CustomToolBar") )
-    {
-      CustomToolBar* cw = dynamic_cast<CustomToolBar*>(w);
-      if ( cw && cw->canModify() )
-      {
-        _toolBox->removeItem( cw );
-        delete cw;
-      }
-    }
+    // get always the first item widget
+    QWidget* w = _toolBox->widget(0);
+    _toolBox->removeItem(0);
+    delete w;
   }
 
   CommandManager& mgr = Application::Instance->commandManager();
-  QPtrList<ToolBarItem> items = toolBar->getItems();
+  QList<ToolBarItem*> items = toolBar->getItems();
 
-  ToolBarItem* item;
-  for ( item = items.first(); item; item = items.next() )
+  for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
   {
-    QToolBar* bar = getOrCreateCommandBar( item->command(), true, true );
-    CustomToolBar* cw = dynamic_cast<CustomToolBar*>(bar);
-    if ( !(cw && cw->canModify()) )
-      continue; // standard toolbar (not user defined)
+    QToolBar* bar = new QToolBar();
+    bar->setOrientation(Qt::Vertical);
+    bar->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 
-    QPtrList<ToolBarItem> subitems = item->getItems();
-    ToolBarItem* subitem;
-    for ( subitem = subitems.first(); subitem; subitem = subitems.next() )
+    bar->setWindowTitle( QObject::tr( (*item)->command() ) ); // i18n
+    _toolBox->addItem( bar, bar->windowTitle() );
+
+    QList<ToolBarItem*> subitems = (*item)->getItems();
+    for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem )
     {
-      if ( subitem->command() == "Separator" )
+      if ( (*subitem)->command() == "Separator" )
         bar->addSeparator();
       else
-        mgr.addTo( subitem->command().latin1(), bar );
+        mgr.addTo( (*subitem)->command().latin1(), bar );
     }
   }
-}
-
-QPtrList<QToolBar> CommandBarManager::commandBars() const
-{
-  QPtrList<QToolBar> bars;
-  int ct = _toolBox->count();
-  for ( int i=0; i<ct; i++ )
-  {
-    QWidget* w = _toolBox->item( i );
-    if ( w && w->inherits("QToolBar") )
-    {
-      bars.append( reinterpret_cast<QToolBar*>(w) );
-    }
-  }
-
-  return bars;
-}
-
-QToolBar* CommandBarManager::getOrCreateCommandBar( const QString& name, bool activate, bool modify ) const
-{
-  QToolBar* bar=0;
-  int ct = _toolBox->count();
-  for ( int i=0; i<ct; i++ )
-  {
-    QWidget* w = _toolBox->item( i );
-    if ( w && w->inherits("QToolBar") )
-    {
-      if ( strcmp(w->name(), name.latin1()) == 0 )
-      {
-        bar = reinterpret_cast<QToolBar*>(w);
-        break;
-      }
-    }
-  }
-  
-  if ( !bar )
-  {
-    ToolBoxBar* cw = new ToolBoxBar( name, _toolBox, name.latin1() );
-    cw->setCanModify( modify );
-    bar = cw;
-    bar->setLabel( QObject::tr( name ) ); // i18n
-    _toolBox->addItem( bar, bar->label() );
-  }
-
-  if ( activate )
-    _toolBox->setCurrentItem( bar );
-
-  return bar;
 }

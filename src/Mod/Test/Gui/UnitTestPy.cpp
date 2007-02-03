@@ -23,10 +23,9 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
+#ifndef __Qt3All__
+# include <Gui/Qt3All.h>
 #endif
-
 
 #include <Base/PyExportImp.h>
 #include <Base/Exception.h>

@@ -15,14 +15,14 @@
     </message>
 </context>
 <context>
-    <name>GLImageBox</name>
+    <name>ImageGui::GLImageBox</name>
     <message>
         <source>Undefined type of colour space for image viewing</source>
         <translation>Unbekannter Farbraumtyp</translation>
     </message>
 </context>
 <context>
-    <name>ImageView</name>
+    <name>ImageGui::ImageView</name>
     <message>
         <source>&amp;Fit image</source>
         <translation>Bild ein&amp;passen</translation>

@@ -5,8 +5,7 @@ BUILT_SOURCES=\
 		DlgPointsRead.cpp \
 		DlgPointsRead.h \
 		moc_DlgPointsRead.cpp \
-		moc_DlgPointsReadImp.cpp \
-		Points_de.h
+		moc_DlgPointsReadImp.cpp
 
 libPointsGui_la_SOURCES=\
 		Command.cpp \
@@ -62,10 +61,6 @@ moc_%.cpp: %.h
 %.cpp: %.h %.ui
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
-# rule for translation files using python script :
-%.h: %.ts
-	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
-
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
 
@@ -77,5 +72,4 @@ EXTRA_DIST = \
 		DlgPointsRead.ui \
 		AppPointsGui.dsp \
 		AppPointsGui.vcproj \
-		Points_de.ts \
 		Libs.cpp

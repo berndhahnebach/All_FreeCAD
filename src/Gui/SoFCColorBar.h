@@ -24,11 +24,20 @@
 #ifndef COIN_SOFCCOLORBAR_H
 #define COIN_SOFCCOLORBAR_H
 
-#include <Inventor/nodes/SoSeparator.h>
-#include <Inventor/SbLinear.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+#ifndef __InventorAll__
+# include "InventorAll.h"
+#endif
+
 #include <Base/Observer.h>
 #include <App/ColorModel.h>
-#include <qdatetime.h>
 #include <vector>
 
 class SoSwitch;

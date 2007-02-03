@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/translations" >
+        <file>FreeCAD_de.qm</file>
+        <file>qt_de.qm</file>
+    </qresource>
+</RCC>

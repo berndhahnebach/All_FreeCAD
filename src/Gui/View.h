@@ -24,9 +24,19 @@
 #ifndef __FCVIEW_H__
 #define __FCVIEW_H__
 
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 #include <vector>
-#include <qmainwindow.h>
+//#include <Qt3Support/q3mainwindow.h>
+////Added by qt3to4:
+//#include <QtGui/QCloseEvent>
 #include <Base/Base.h>
 
 namespace App
@@ -135,7 +145,7 @@ public:
    * the view will attach to the active document. Be aware! there isn't
    * allways a active document!
    */
-  MDIView( Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags=WDestructiveClose );
+  MDIView( Gui::Document* pcDocument, QWidget* parent, const char* name, Qt::WFlags wflags=Qt::WDestructiveClose );
   /** View destructor
    * Detach the view from the document, if Atached!
    */
@@ -153,7 +163,7 @@ public:
   /// overvrit when checking on close state
   virtual bool canClose(void){return true;}
   /// print function of the view
-  virtual void print( QPrinter* printer );
+  virtual void print();
 
   QSize minimumSizeHint () const;
 
@@ -175,13 +185,13 @@ public:
   virtual void setCurrentViewMode( ViewMode b );
   ViewMode currentViewMode() const { return _actualMode; }
 
-signals:
+Q_SIGNALS:
   void message(const QString&, int );
 
-public slots:
+public Q_SLOTS:
   void setActiveView();
 
-protected slots:
+protected Q_SLOTS:
   virtual void showActiveView( MDIView* );
 
 protected:

@@ -23,19 +23,8 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qbutton.h>
-# include <qcolordialog.h>
-# include <qcursor.h>
-# include <qdragobject.h>
-# include <qlayout.h>
-# include <qobjectlist.h>
-# include <qpopupmenu.h>
-# include <qscrollview.h>
-#endif
-
 #include "ButtonGroup.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::DockWnd;
 
 /* TRANSLATOR Gui::DockWnd::ButtonGroup */
@@ -44,13 +33,14 @@ using namespace Gui::DockWnd;
  * Constructs a button group with no title. 
  */
 ButtonGroup::ButtonGroup(QWidget * parent, const char * name)
-: QButtonGroup(parent, name), m_iChildWidth(32), m_iChildHeight(32)
+: Q3ButtonGroup(parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
-  pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
-  setFrameStyle(QFrame::NoFrame);
-  pScrollWidget->setFrameStyle(QFrame::NoFrame);
+  pScrollWidget = new Q3ScrollView(parent, "Scroll", Qt::WPaintClever);
+  // TODO find replacement
+  //setFrameStyle(Q3Frame::NoFrame);
+  pScrollWidget->setFrameStyle(Q3Frame::NoFrame);
   pScrollWidget->addChild(this);
-  pScrollWidget->setResizePolicy(QScrollView::AutoOneFit);
+  pScrollWidget->setResizePolicy(Q3ScrollView::AutoOneFit);
   initialize();
 }
 
@@ -58,13 +48,14 @@ ButtonGroup::ButtonGroup(QWidget * parent, const char * name)
  * Constructs a button group with the title \a title.
  */
 ButtonGroup::ButtonGroup(const QString & title, QWidget * parent, const char * name)
-: QButtonGroup(title, parent, name), m_iChildWidth(32), m_iChildHeight(32)
+: Q3ButtonGroup(title, parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
-  pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
-  setFrameStyle(QFrame::NoFrame);
-  pScrollWidget->setFrameStyle(QFrame::NoFrame);
+  pScrollWidget = new Q3ScrollView(parent, "Scroll", Qt::WPaintClever);
+// TODO find replacement
+  //  setFrameStyle(Q3Frame::NoFrame);
+  pScrollWidget->setFrameStyle(Q3Frame::NoFrame);
   pScrollWidget->addChild(this);
-  pScrollWidget->setResizePolicy(QScrollView::AutoOneFit);
+  pScrollWidget->setResizePolicy(Q3ScrollView::AutoOneFit);
   initialize();
 }
 
@@ -72,14 +63,15 @@ ButtonGroup::ButtonGroup(const QString & title, QWidget * parent, const char * n
  * Constructs a button group with no title. Child widgets will be arranged in \a strips rows 
  * or columns (depending on \a orientation).
  */
-ButtonGroup::ButtonGroup(int strips, Orientation o, QWidget * parent, const char * name)
-: QButtonGroup(strips, o, parent, name), m_iChildWidth(32), m_iChildHeight(32)
+ButtonGroup::ButtonGroup(int strips, Qt::Orientation o, QWidget * parent, const char * name)
+: Q3ButtonGroup(strips, o, parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
-  pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
-  setFrameStyle(QFrame::NoFrame);
-  pScrollWidget->setFrameStyle(QFrame::NoFrame);
+  pScrollWidget = new Q3ScrollView(parent, "Scroll", Qt::WPaintClever);
+  // TODO find replacement
+  //setFrameStyle(Q3Frame::NoFrame);
+  pScrollWidget->setFrameStyle(Q3Frame::NoFrame);
   pScrollWidget->addChild(this);
-  pScrollWidget->setResizePolicy(QScrollView::AutoOneFit);
+  pScrollWidget->setResizePolicy(Q3ScrollView::AutoOneFit);
   initialize();
 }
 
@@ -87,14 +79,15 @@ ButtonGroup::ButtonGroup(int strips, Orientation o, QWidget * parent, const char
  * Constructs a button group with title \a title. Child widgets will be arranged in \a strips rows 
  * or columns (depending on \a orientation).
  */
-ButtonGroup::ButtonGroup(int strips, Orientation o, const QString & title, QWidget * parent, const char * name)
-: QButtonGroup(strips, o, title, parent, name), m_iChildWidth(32), m_iChildHeight(32)
+ButtonGroup::ButtonGroup(int strips, Qt::Orientation o, const QString & title, QWidget * parent, const char * name)
+: Q3ButtonGroup(strips, o, title, parent, name), m_iChildWidth(32), m_iChildHeight(32)
 {
-  pScrollWidget = new QScrollView(parent, "Scroll", QWidget::WPaintClever);
-  setFrameStyle(QFrame::NoFrame);
-  pScrollWidget->setFrameStyle(QFrame::NoFrame);
+  pScrollWidget = new Q3ScrollView(parent, "Scroll", Qt::WPaintClever);
+  // TODO find replacement
+  //setFrameStyle(Q3Frame::NoFrame);
+  pScrollWidget->setFrameStyle(Q3Frame::NoFrame);
   pScrollWidget->addChild(this);
-  pScrollWidget->setResizePolicy(QScrollView::AutoOneFit);
+  pScrollWidget->setResizePolicy(Q3ScrollView::AutoOneFit);
   initialize();
 }
 
@@ -107,19 +100,19 @@ void ButtonGroup::initialize()
   m_Color = backgroundColor();
 
   resizeColumns();
-  setFocusPolicy (ClickFocus);
+  setFocusPolicy (Qt::ClickFocus);
 
-  m_Popup = new QPopupMenu(0L);
+  m_Popup = new Q3PopupMenu(0L);
   m_Popup->setCheckable(true);
   connect(m_Popup, SIGNAL(aboutToShow()), this, SLOT(onPopupMenuAboutToShow()));
 }
 
 /**
- * Reimplememted from QButtonGroup.
+ * Reimplememted from Q3ButtonGroup.
  */
 void ButtonGroup::resizeEvent (QResizeEvent * e)
 {
-  QButtonGroup::resizeEvent(e);
+  Q3ButtonGroup::resizeEvent(e);
 
   QSize size = e->size();
 
@@ -174,24 +167,24 @@ void ButtonGroup::resizeColumns(void)
 }
 
 /**
- * Reimplememted from QButtonGroup.
+ * Reimplememted from Q3ButtonGroup.
  */
 void ButtonGroup::mousePressEvent( QMouseEvent * e )
 {
-  if (e->button() == LeftButton)
+  if (e->button() == Qt::LeftButton)
   {
     if (acceptDrops() == true)
     {
-      QDragObject *drobj;
-      drobj = new QTextDrag( title(), this );
+      Q3DragObject *drobj;
+      drobj = new Q3TextDrag( title(), this );
       drobj->dragCopy();
     }
   }
-  else if (e->button() == RightButton)
+  else if (e->button() == Qt::RightButton)
   {
     m_Popup->exec(QCursor::pos());
   }
-  else if (e->button() == MidButton)
+  else if (e->button() == Qt::MidButton)
   {
   }
 }
@@ -252,7 +245,8 @@ void ButtonGroup::onShowIcons()
   {
     if (it->first < cnt)
     {
-      QButton* button = find(it->first);
+      //Q3Button* button = dynamic_cast<Q3Button*>(find(it->first));
+      QAbstractButton* button = find(it->first);
       if (button != NULL)
         button->setPixmap(it->second);
     }
@@ -270,7 +264,7 @@ void ButtonGroup::onShowText()
   int cnt = count();
   for (int i=0; i<cnt; i++)
   {
-    QButton* button = find(i);
+    QAbstractButton* button = find(i);
     if (button != NULL)
     {
       const QPixmap* pic = button->pixmap();

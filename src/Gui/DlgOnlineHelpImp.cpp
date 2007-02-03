@@ -22,18 +22,21 @@
 
 
 #include "PreCompiled.h"
-#ifndef _PreComp_
-# include <qfileinfo.h>
-# include <qdir.h>
-# include <qmessagebox.h>
+
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
 #endif
 
 #include "DlgOnlineHelpImp.h"
 #include "PrefWidgets.h"
 
-#include "../Base/Parameter.h"
-#include "../App/Application.h"
-#define new DEBUG_CLIENTBLOCK
+#include <Base/Parameter.h>
+#include <App/Application.h>
+
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgOnlineHelpImp */
@@ -45,22 +48,23 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent, const char* name, WFlags fl )
-: DlgOnlineHelpBase(parent, name, fl)
+DlgOnlineHelpImp::DlgOnlineHelpImp( QWidget* parent )
+  : PreferencePage(parent)
 {
-  prefStartPage->setFilter( "All Html files (*.html *.htm)" );
+  this->setupUi(this);
+  prefStartPage->setFilter( tr("Html files (*.html *.htm)") );
   if ( prefStartPage->fileName().isEmpty() )
   {
     prefStartPage->setFileName( getStartpage() );
   }
 
-  if ( DownloadLoc->fileName().isEmpty() )
+  if ( lineEditDownload->fileName().isEmpty() )
   {
     // set output directory
     QString path = App::GetApplication().GetHomePath();
     path += "/doc/";
     QDir dir(path);
-    DownloadLoc->setFileName( dir.absPath() );
+    lineEditDownload->setFileName( dir.absPath() );
   }
 }
 
@@ -109,7 +113,7 @@ void DlgOnlineHelpImp::saveSettings()
   prefExtBrowser->onSave();
   prefStartPage->onSave();
   prefAuthorize->onSave();
-  DownloadLoc->onSave();
+  lineEditDownload->onSave();
 }
 
 void DlgOnlineHelpImp::loadSettings()
@@ -120,19 +124,29 @@ void DlgOnlineHelpImp::loadSettings()
   prefExtBrowser->onRestore();
   prefStartPage->onRestore();
   prefAuthorize->onRestore();
-  DownloadLoc->onRestore();
+  lineEditDownload->onRestore();
 }
 
-void DlgOnlineHelpImp::onCheckLocation( const QString& url )
+/**
+ * Sets the strings of the subwidgets using the current language.
+ */
+void DlgOnlineHelpImp::changeEvent(QEvent *e)
 {
-  QFileInfo fi( url );
-  if ( !fi.permission( QFileInfo::WriteUser ) )
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi(this);
+  } else {
+    QWidget::changeEvent(e);
+  }
+}
+
+void DlgOnlineHelpImp::on_lineEditDownload_fileNameSelected( const QString& url )
+{
+  QDir dir( url );
+  if ( dir.exists() && dir.count() == 0 )
   {
-    QMessageBox::critical(this, tr("Missing permission"), tr("You don't have write permission to '%1'\n\n"
+    QMessageBox::critical(this, tr("Access denied"), tr("Access denied to '%1'\n\n"
       "Specify another directory, please.").arg(url));
   }
 }
 
-#include "DlgOnlineHelp.cpp"
-#include "moc_DlgOnlineHelp.cpp"
 #include "moc_DlgOnlineHelpImp.cpp"

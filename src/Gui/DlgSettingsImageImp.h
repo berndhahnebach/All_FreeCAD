@@ -24,11 +24,18 @@
 #ifndef GUI_DIALOG_DLGSETTINGSIMAGE_IMP_H
 #define GUI_DIALOG_DLGSETTINGSIMAGE_IMP_H
 
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 #include <Inventor/SoOffscreenRenderer.h> 
 #include <Inventor/SbMatrix.h> 
-#include <qcolor.h>
 
-#include "DlgSettingsImage.h"
+#include "ui_DlgSettingsImage.h"
 
 namespace Gui {
 namespace Dialog {
@@ -37,10 +44,12 @@ namespace Dialog {
  * for the Inventor viewer.
  * @author Werner Mayer
  */
-class DlgSettingsImageImp : public DlgSettingsImage
+class DlgSettingsImageImp : public QWidget, public Ui::DlgSettingsImage
 {
+  Q_OBJECT
+
 public:
-  DlgSettingsImageImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgSettingsImageImp( QWidget* parent = 0 );
   ~DlgSettingsImageImp();
 
   /** @name Image dimensions */
@@ -56,15 +65,18 @@ public:
   //@{
   QString comment() const;
   int backgroundType() const;
-  void onSelectedFilter( const QString& );
   //@}
 
-protected:
-  virtual void onRatioScreen();
-  virtual void onRatio4x3();
-  virtual void onRatio16x9();
-  virtual void onRatio1x1();
+public Q_SLOTS:
+  void onSelectedFilter( const QString& );
 
+protected Q_SLOTS:
+  void on_buttonRatioScreen_clicked();
+  void on_buttonRatio4x3_clicked();
+  void on_buttonRatio16x9_clicked();
+  void on_buttonRatio1x1_clicked();
+
+protected:
   // helper to force an aspect ratio
   void adjustImageSize(float fRatio);
 

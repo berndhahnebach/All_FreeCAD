@@ -23,20 +23,15 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qinputdialog.h>
-#endif
-
 #include "DlgCmdbarsImp.h"
 #include "Application.h"
 #include "Command.h"
-#include "CustomWidgets.h"
 #include "CommandBarManager.h"
 #include "Tools.h"
 #include "ToolBarManager.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgCustomCmdbarsImp */
@@ -48,8 +43,8 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgCustomCmdbarsImp::DlgCustomCmdbarsImp( QWidget* parent, const char* name, WFlags fl )
-  : DlgCustomToolbars(parent, name, fl)
+DlgCustomCmdbarsImp::DlgCustomCmdbarsImp( QWidget* parent )
+  : DlgCustomToolbars(parent)
 {
   setCaption( tr( "Commandbars" ) );
   if ( WorkbenchManager::instance()->active() )
@@ -65,11 +60,6 @@ DlgCustomCmdbarsImp::~DlgCustomCmdbarsImp()
     CommandBarManager::getInstance()->customSetup(_toolBars);
     WorkbenchManager::instance()->active()->exportCustomBars(_toolBars, "Commandbars");
   }
-}
-
-/** Discards all changes */
-void DlgCustomCmdbarsImp::cancel()
-{
 }
 
 #include "moc_DlgCmdbarsImp.cpp"

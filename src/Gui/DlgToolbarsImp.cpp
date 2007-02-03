@@ -23,15 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qinputdialog.h>
-# include <qmap.h>
-# include <qobjectlist.h>
-# include <qmetaobject.h>
-# include <qpushbutton.h>
-# include <qstringlist.h>
-# include <vector>
-# include <map>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
 #endif
 
 #include "DlgToolbarsImp.h"
@@ -39,11 +36,11 @@
 #include "BitmapFactory.h"
 #include "Tools.h"
 #include "Command.h"
-#include "CustomWidgets.h"
 #include "ToolBarManager.h"
+#include "Widgets.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgCustomToolbars */
@@ -55,11 +52,19 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgCustomToolbars::DlgCustomToolbars( QWidget* parent, const char* name, WFlags fl )
-: DlgCustomToolbarsBase(parent, name, fl), _toolBars(0) 
+DlgCustomToolbars::DlgCustomToolbars( QWidget* parent )
+: CustomizeActionPage(parent), _toolBars(0) 
 {
-  AvailableActions->setSorting( -1 );
-  ToolbarActions->setSorting( -1 );
+  this->setupUi(this);
+  availableActions->addColumn(trUtf8("Available commands"));
+  toolbarActions->addColumn(trUtf8("Current commands"));
+  moveActionRightButton->setIcon(Gui::BitmapFactory().pixmap("button_right"));
+  moveActionLeftButton->setIcon(Gui::BitmapFactory().pixmap("button_left"));
+  moveActionUpButton->setIcon(Gui::BitmapFactory().pixmap("button_up"));
+  moveActionDownButton->setIcon(Gui::BitmapFactory().pixmap("button_down"));
+  
+  availableActions->setSorting( -1 );
+  toolbarActions->setSorting( -1 );
 
   refreshFullActionList();
 }
@@ -88,15 +93,15 @@ void DlgCustomToolbars::refreshFullActionList()
       items.prepend(it2->first.c_str());
   }
 
-  AvailableActions->clear();
+  availableActions->clear();
   for (QStringList::Iterator it3 = items.begin(); it3 != items.end(); ++it3)
   {
-    QListViewItem* itemNode = new QListViewItem(AvailableActions, QObject::tr(*it3));
+    Q3ListViewItem* itemNode = new Q3ListViewItem(availableActions, QObject::tr(*it3));
     itemNode->setOpen(true);
     const std::vector<Command*>& rCmds = alCmdGroups[ (*it3).latin1() ];
     for (std::vector<Command*>::const_iterator it4 = rCmds.begin(); it4 != rCmds.end(); ++it4)
     {
-      QListViewItem* item = new QListViewItem(itemNode,AvailableActions->lastItem(), (*it4)->getName());
+      Q3ListViewItem* item = new Q3ListViewItem(itemNode,availableActions->lastItem(), (*it4)->getName());
       QPixmap pix;
       if ( (*it4)->getPixmap() )
         pix = BitmapFactory().pixmap((*it4)->getPixmap());
@@ -104,21 +109,21 @@ void DlgCustomToolbars::refreshFullActionList()
       itemNode->insertItem(item);
     }
 
-    AvailableActions->insertItem(itemNode);
+    availableActions->insertItem(itemNode);
   }
 
-  AvailableActions->insertItem(new QListViewItem(AvailableActions, "<Separator>"));
+  availableActions->insertItem(new Q3ListViewItem(availableActions, "<Separator>"));
 }
 
 void DlgCustomToolbars::refreshActionList()
 {
   if ( !_toolBars ) return; // no valid pointer
-  QString text = ComboToolbars->currentText();
+  QString text = toolbarsCombobox->currentText();
   ToolBarItem* bar = _toolBars->findItem( text );
   bar->clear();
 
-  QListViewItem* item = ToolbarActions->firstChild();
-  for (int i=0; i < ToolbarActions->childCount(); item = item->itemBelow(), i++)
+  Q3ListViewItem* item = toolbarActions->firstChild();
+  for (int i=0; i < toolbarActions->childCount(); item = item->itemBelow(), i++)
   {
     if (item->text(0) == "<Separator>")
     {
@@ -131,39 +136,34 @@ void DlgCustomToolbars::refreshActionList()
   }
 }
 
-void DlgCustomToolbars::cancel()
-{
-}
-
 void DlgCustomToolbars::refreshToolBarList()
 {
   if ( !_toolBars ) return;
-  ComboToolbars->clear();
-  ToolbarActions->clear();
+  toolbarsCombobox->clear();
+  toolbarActions->clear();
 
-  QPtrList<ToolBarItem> bars = _toolBars->getItems();
-  ToolBarItem* bar;
-  for ( bar=bars.first(); bar; bar=bars.next() )
+  QList<ToolBarItem*> bars = _toolBars->getItems();
+  for ( QList<ToolBarItem*>::ConstIterator bar = bars.begin(); bar != bars.end(); ++bar )
   {
-    ComboToolbars->insertItem( bar->command() );
+    toolbarsCombobox->insertItem( (*bar)->command() );
   }
 
-  if (ComboToolbars->count() > 0)
+  if (toolbarsCombobox->count() > 0)
   {
-    onItemActivated( ComboToolbars->text( 0 ) );
+    on_toolbarsCombobox_activated( toolbarsCombobox->text( 0 ) );
   }
   else
   {
-    ToolbarActions->setEnabled(false);
-    ComboToolbars->setEnabled (false);
+    toolbarActions->setEnabled(false);
+    toolbarsCombobox->setEnabled (false);
   }
 }
 
 /** Enables/disables buttons for change */
-void DlgCustomToolbars::onAllActionsChanged( QListViewItem *i )
+void DlgCustomToolbars::on_availableActions_clicked( Q3ListViewItem *i )
 {
   bool canAdd = FALSE;
-  QListViewItemIterator it = AvailableActions->firstChild();
+  Q3ListViewItemIterator it = availableActions->firstChild();
 
   for ( ; it.current(); it++ ) 
   {
@@ -174,17 +174,17 @@ void DlgCustomToolbars::onAllActionsChanged( QListViewItem *i )
     }
   }
 
-  buttonRight->setEnabled( ( canAdd || ( i && i->isSelected() ) ) && ComboToolbars->isEnabled() );
+  moveActionRightButton->setEnabled( ( canAdd || ( i && i->isSelected() ) ) && toolbarsCombobox->isEnabled() );
 }
 
 /** Enables/disables buttons for change */
-void DlgCustomToolbars::onNewActionChanged( QListViewItem *i )
+void DlgCustomToolbars::on_toolbarActions_clicked( Q3ListViewItem *i )
 {
-  buttonUp->setEnabled( (bool) (i && i->itemAbove()) );
-  buttonDown->setEnabled( (bool) (i && i->itemBelow()) );
+  moveActionUpButton->setEnabled( (bool) (i && i->itemAbove()) );
+  moveActionDownButton->setEnabled( (bool) (i && i->itemBelow()) );
 
   bool canRemove = FALSE;
-  QListViewItemIterator it = ToolbarActions->firstChild();
+  Q3ListViewItemIterator it = toolbarActions->firstChild();
   for ( ; it.current(); it++ ) 
   {
     if ( it.current()->isSelected() ) 
@@ -194,39 +194,38 @@ void DlgCustomToolbars::onNewActionChanged( QListViewItem *i )
     }
   }
 
-  buttonLeft->setEnabled( canRemove || ( i && i->isSelected() ) );
+  moveActionLeftButton->setEnabled( canRemove || ( i && i->isSelected() ) );
 }
 
 /** Shows all buttons of the toolbar */
-void DlgCustomToolbars::onItemActivated(const QString & name)
+void DlgCustomToolbars::on_toolbarsCombobox_activated(const QString & name)
 {
   if ( !_toolBars ) return;
   CommandManager & cCmdMgr = Application::Instance->commandManager();
 
-  ToolbarActions->clear();
-  ToolBarItem* bar;
-  QPtrList<ToolBarItem> bars = _toolBars->getItems();
-  for ( bar=bars.first(); bar; bar=bars.next() )
+  toolbarActions->clear();
+
+  QList<ToolBarItem*> bars = _toolBars->getItems();
+  for ( QList<ToolBarItem*>::ConstIterator bar = bars.begin(); bar != bars.end(); ++bar )
   {
-    if ( bar->command() == name )
+    if ( (*bar)->command() == name )
     {
-      QPtrList<ToolBarItem> items = bar->getItems();
-      ToolBarItem* item;
-      for ( item=items.first(); item; item=items.next() )
+      QList<ToolBarItem*> items = (*bar)->getItems();
+      for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
       {
-        if ( item->command() == "Separator" )
-          ToolbarActions->insertItem(new QListViewItem(ToolbarActions,ToolbarActions->lastItem(), "<Separator>"));
+        if ( (*item)->command() == "Separator" )
+          toolbarActions->insertItem(new Q3ListViewItem(toolbarActions,toolbarActions->lastItem(), "<Separator>"));
         else
         {
-          Command* pCom = cCmdMgr.getCommandByName( item->command().latin1() );
+          Command* pCom = cCmdMgr.getCommandByName( (*item)->command().latin1() );
           if (pCom)
           {
-            QListViewItem* item = new QListViewItem(ToolbarActions,ToolbarActions->lastItem(), pCom->getName());
+            Q3ListViewItem* item = new Q3ListViewItem(toolbarActions,toolbarActions->lastItem(), pCom->getName());
             QPixmap pix;
             if ( pCom->getPixmap() )
               pix = BitmapFactory().pixmap(pCom->getPixmap());
             item->setPixmap(0, Tools::fillUp(24,24,pix));
-            ToolbarActions->insertItem(item);
+            toolbarActions->insertItem(item);
           }
         }
       }
@@ -236,14 +235,14 @@ void DlgCustomToolbars::onItemActivated(const QString & name)
 }
 
 /** Adds a new action */
-void DlgCustomToolbars::onAddAction()
+void DlgCustomToolbars::on_moveActionRightButton_clicked()
 {
-  QListView *src = AvailableActions;
+  Q3ListView *src = availableActions;
 
   bool addKids = FALSE;
-  QListViewItem *nextSibling = 0;
-  QListViewItem *nextParent = 0;
-  QListViewItemIterator it = src->firstChild();
+  Q3ListViewItem *nextSibling = 0;
+  Q3ListViewItem *nextParent = 0;
+  Q3ListViewItemIterator it = src->firstChild();
   for ( ; it.current(); it++ ) 
   {
     if ( it.current() == nextSibling )
@@ -254,15 +253,15 @@ void DlgCustomToolbars::onAddAction()
       if ( it.current()->childCount() == 0 ) 
       {
         // Selected, no children
-        QListViewItem *i = new QListViewItem( ToolbarActions, ToolbarActions->lastItem() );
+        Q3ListViewItem *i = new Q3ListViewItem( toolbarActions, toolbarActions->lastItem() );
         i->setText( 0, it.current()->text(0) );
         if (it.current()->pixmap(0) != NULL)
         {
           QPixmap pix = *(it.current()->pixmap(0));
           i->setPixmap( 0,  Tools::fillUp(24,24,pix));
         }
-        ToolbarActions->setCurrentItem( i );
-        ToolbarActions->ensureItemVisible( i );
+        toolbarActions->setCurrentItem( i );
+        toolbarActions->ensureItemVisible( i );
       } 
       else if ( !addKids ) 
       {
@@ -279,15 +278,15 @@ void DlgCustomToolbars::onAddAction()
     else if ( (it.current()->childCount() == 0) && addKids ) 
     {
       // Leaf node, and we _do_ process children
-      QListViewItem *i = new QListViewItem( ToolbarActions, ToolbarActions->lastItem() );
+      Q3ListViewItem *i = new Q3ListViewItem( toolbarActions, toolbarActions->lastItem() );
       i->setText( 0, it.current()->text(0) );
       if (it.current()->pixmap(0) != NULL)
       {
         QPixmap pix = *(it.current()->pixmap(0));
         i->setPixmap( 0, Tools::fillUp(24,24,pix) );
       }
-      ToolbarActions->setCurrentItem( i );
-      ToolbarActions->ensureItemVisible( i );
+      toolbarActions->setCurrentItem( i );
+      toolbarActions->ensureItemVisible( i );
     }
   }
 
@@ -295,9 +294,9 @@ void DlgCustomToolbars::onAddAction()
 }
 
 /** Removes an action */
-void DlgCustomToolbars::onRemoveAction()
+void DlgCustomToolbars::on_moveActionLeftButton_clicked()
 {
-  QListViewItemIterator it = ToolbarActions->firstChild();
+  Q3ListViewItemIterator it = toolbarActions->firstChild();
   while ( it.current() ) 
   {
     if ( it.current()->isSelected() )
@@ -306,20 +305,20 @@ void DlgCustomToolbars::onRemoveAction()
      it++;
   }
 
-  buttonLeft->setEnabled (ToolbarActions->childCount() > 0);
+  moveActionLeftButton->setEnabled (toolbarActions->childCount() > 0);
 
   refreshActionList();
 }
 
 /** Noves up an action */
-void DlgCustomToolbars::onMoveUpAction()
+void DlgCustomToolbars::on_moveActionUpButton_clicked()
 {
   bool up = true;
   bool down = true;
-  QListViewItem *next = 0;
-  QListViewItem *item = ToolbarActions->firstChild();
+  Q3ListViewItem *next = 0;
+  Q3ListViewItem *item = toolbarActions->firstChild();
 
-  for ( int i = 0; i < ToolbarActions->childCount(); ++i ) 
+  for ( int i = 0; i < toolbarActions->childCount(); ++i ) 
   {
     next = item->itemBelow();
  
@@ -332,20 +331,20 @@ void DlgCustomToolbars::onMoveUpAction()
     item = next;
   }
 
-  buttonUp->setEnabled (up);
-  buttonDown->setEnabled (down);
+  moveActionUpButton->setEnabled (up);
+  moveActionDownButton->setEnabled (down);
 
   refreshActionList();
 }
 
 /** Moves down an action */
-void DlgCustomToolbars::onMoveDownAction()
+void DlgCustomToolbars::on_moveActionDownButton_clicked()
 {
   bool up = true;
   bool down = true;
-  int count = ToolbarActions->childCount();
-  QListViewItem *next = 0;
-  QListViewItem *item = ToolbarActions->lastItem();
+  int count = toolbarActions->childCount();
+  Q3ListViewItem *next = 0;
+  Q3ListViewItem *item = toolbarActions->lastItem();
 
   for ( int i = 0; i < count; ++i ) 
   {
@@ -359,20 +358,20 @@ void DlgCustomToolbars::onMoveDownAction()
     item = next;
   }
 
-  buttonUp->setEnabled (up);
-  buttonDown->setEnabled (down);
+  moveActionUpButton->setEnabled (up);
+  moveActionDownButton->setEnabled (down);
 
   refreshActionList();
 }
 
 /** Adds a new action by double click */
-void DlgCustomToolbars::onDoubleClickedAction(QListViewItem* item)
+void DlgCustomToolbars::on_availableActions_doubleClicked(Q3ListViewItem* item)
 {
-  if (item && item->childCount()==0 && ComboToolbars->isEnabled())
-    onAddAction();
+  if (item && item->childCount()==0 && toolbarsCombobox->isEnabled())
+    on_moveActionRightButton_clicked();
 }
 
-void DlgCustomToolbars::onCreateToolbar()
+void DlgCustomToolbars::on_createToolbarButton_clicked()
 {
   if ( !_toolBars ) return;
   Workbench* cur = WorkbenchManager::instance()->active();
@@ -383,43 +382,41 @@ void DlgCustomToolbars::onCreateToolbar()
 
   if (!text.isNull() && !text.isEmpty())
   {
-    int ct = ComboToolbars->count(), pos = -1;
+    int ct = toolbarsCombobox->count(), pos = -1;
     for (int i=0; i<ct; i++)
     {
-      if ( ComboToolbars->text(i) == text )
+      if ( toolbarsCombobox->text(i) == text )
         pos = i;
     }
 
     if ( pos != -1 )
     {
-      ComboToolbars->setCurrentItem(pos);
-      onItemActivated(ComboToolbars->currentText());
+      toolbarsCombobox->setCurrentItem(pos);
+      on_toolbarsCombobox_activated(toolbarsCombobox->currentText());
     }
     else
     {
-      ComboToolbars->insertItem(text);
-      ComboToolbars->setCurrentItem( ComboToolbars->count()-1 );
+      toolbarsCombobox->insertItem(text);
+      toolbarsCombobox->setCurrentItem( toolbarsCombobox->count()-1 );
       ToolBarItem* bar = new ToolBarItem(_toolBars);
       bar->setCommand( text );
-      onItemActivated(ComboToolbars->currentText());
+      on_toolbarsCombobox_activated(toolbarsCombobox->currentText());
     }
 
     // enable the widgets
-    ToolbarActions->setEnabled(true);
-    ComboToolbars->setEnabled (true);
+    toolbarActions->setEnabled(true);
+    toolbarsCombobox->setEnabled (true);
   }
 }
 
-void DlgCustomToolbars::onDeleteToolbar()
+void DlgCustomToolbars::on_deleteToolbarButton_clicked()
 {
   if ( !_toolBars ) return;
-  QValueList<CheckListItem> items;
-  QPtrList<ToolBarItem> bars = _toolBars->getItems();
-  ToolBarItem* bar;
-
-  for ( bar=bars.first(); bar; bar=bars.next() )
+  Q3ValueList<CheckListItem> items;
+  QList<ToolBarItem*> bars = _toolBars->getItems();
+  for ( QList<ToolBarItem*>::ConstIterator bar = bars.begin(); bar != bars.end(); ++bar )
   {
-    items.append( qMakePair( bar->command(), true ) );
+    items.append( qMakePair( (*bar)->command(), true ) );
   }
 
   CheckListDialog checklists(this, "", true) ;
@@ -439,23 +436,6 @@ void DlgCustomToolbars::onDeleteToolbar()
     }
 
     refreshToolBarList();
-  }
-}
-
-void DlgCustomToolbars::reparent ( QWidget * parent, WFlags f, const QPoint & p, bool showIt )
-{
-  DlgCustomToolbarsBase::reparent(parent, f, p, showIt);
-
-  // redirect signal to toplevel widget
-  QWidget* topLevel = parent ? parent->topLevelWidget():0;
-  if ( topLevel )
-  {
-    int index = topLevel->metaObject()->findSignal( "addMacroAction(const QString&)", TRUE );
-    if ( index >= 0 )
-    {
-      connect(topLevel, SIGNAL(addMacroAction( const QString& )), this, SLOT(onAddMacroAction( const QString& )));
-      connect(topLevel, SIGNAL(removeMacroAction( const QString& )), this, SLOT(onRemoveMacroAction( const QString& )));
-    }
   }
 }
 
@@ -480,8 +460,8 @@ void DlgCustomToolbars::onRemoveMacroAction(const QString& item)
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgCustomToolbarsImp::DlgCustomToolbarsImp( QWidget* parent, const char* name, WFlags fl )
-  : DlgCustomToolbars(parent, name, fl)
+DlgCustomToolbarsImp::DlgCustomToolbarsImp( QWidget* parent )
+  : DlgCustomToolbars(parent)
 {
   if ( WorkbenchManager::instance()->active() )
     _toolBars = WorkbenchManager::instance()->active()->importCustomBars("Toolbars"); 
@@ -498,12 +478,5 @@ DlgCustomToolbarsImp::~DlgCustomToolbarsImp()
   }
 }
 
-/** Discards all changes */
-void DlgCustomToolbarsImp::cancel()
-{
-}
 
-
-#include "DlgToolbars.cpp"
-#include "moc_DlgToolbars.cpp"
 #include "moc_DlgToolbarsImp.cpp"

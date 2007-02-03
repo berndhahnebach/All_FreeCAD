@@ -23,16 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qcombobox.h>
-# include <qlabel.h>
-# include <qlistview.h>
-# include <qmessagebox.h>
-# include <qprogressbar.h>
-# include <qpushbutton.h>
-#endif
-
 #include <Base/PyExportImp.h>
 #include <Base/Interpreter.h>
 #include "UnitTestImp.h"
@@ -42,7 +32,7 @@
 using namespace TestGui;
 
 
-/* TRANSLATOR TestGui::UnitTest */
+/* TRANSLATOR TestGui::UnitTestDialog */
 
 UnitTestDialog* UnitTestDialog::_instance=0;
 
@@ -88,16 +78,19 @@ bool UnitTestDialog::hasInstance()
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-UnitTestDialog::UnitTestDialog( QWidget* parent, const char* name, bool modal, WFlags f )
-  : UnitTest( parent, name, modal, f )
+UnitTestDialog::UnitTestDialog( QWidget* parent, Qt::WFlags f )
+  : QDialog( parent, f )
 {
+  this->setupUi(this);
   // As it doesn't seem to be able to change the "Highlight" color for the active colorgroup
-  // we force e.g. the "Motif" style only for the progressbar to change the color to green.
-  this->progressBar1->setStyle("Motif");
+  // we force e.g. the "Motif" style only for the progressbar to change the color to green or red.
+  this->progressBar->setStyle(QStyleFactory::create("Motif"));
   setProgressColor(QColor(40,210,43)); // a darker green
 
   // red items
-  listViewFailure->setPaletteForegroundColor(Qt::red);
+  QPalette palette;
+  palette.setColor(treeViewFailure->foregroundRole(), Qt::red);
+  treeViewFailure->setPalette(palette);
 }
 
 /**
@@ -112,42 +105,38 @@ UnitTestDialog::~UnitTestDialog()
  */
 void UnitTestDialog::setProgressColor( const QColor& col)
 {
-  QPalette pl = this->progressBar1->palette();
-  QColorGroup cg = pl.active();
-  cg.setColor(QColorGroup::Highlight, col);
-  pl.setActive(cg);
-  cg = pl.inactive();
-  cg.setColor(QColorGroup::Highlight, col); 
-  pl.setInactive(cg);
-  this->progressBar1->setPalette(pl);
+  QPalette pl = this->progressBar->palette();
+  pl.setColor(QPalette::Active, QPalette::Highlight, col);
+  pl.setColor(QPalette::Inactive, QPalette::Highlight, col);
+  this->progressBar->setPalette(pl);
 }
 
 /**
  * Opens a dialog to display a detailed description about the error.
  */
-void UnitTestDialog::showSelectedError(QListViewItem* item)
+void UnitTestDialog::on_treeViewFailure_itemDoubleClicked( QTreeWidgetItem * item, int column )
 {
-  QMessageBox::information(this, item->text(0), item->text(1));
+  QMessageBox::information(this, item->text(0), item->data(0, Qt::UserRole).toString());
 }
 
 /**
  * Shows the help dialog.
  */
-void UnitTestDialog::showHelpDialog()
+void UnitTestDialog::on_helpButton_clicked()
 {
-  QMessageBox::information(this, UnitTest::tr("Help"), UnitTest::tr(
+  QMessageBox::information(this, tr("Help"), tr(
     "Enter the name of a callable object which, when called, will return a TestCase."
     "Click 'start', and the test thus produced will be run.\n\n"
-    "Double click on an error in the listbox to see more information about it,"
+    "Double click on an error in the tree view to see more information about it,"
     "including the stack trace."));
 }
 
 /**
  * Shows the about dialog.
  */
-void UnitTestDialog::showAboutDialog()
+void UnitTestDialog::on_aboutButton_clicked()
 {
-  QMessageBox::information(this, UnitTest::tr("About FreeCAD UnitTest"), UnitTest::tr( 
+  QMessageBox::information(this, tr("About FreeCAD UnitTest"), tr( 
     "Copyright (c) Werner Mayer\n\n"
     "FreeCAD UnitTest is part of FreeCAD and supports writing Unit Tests for "
     "own modules."));
@@ -156,11 +145,11 @@ void UnitTestDialog::showAboutDialog()
 /**
  * Runs the unit tests.
  */
-void UnitTestDialog::startTest()
+void UnitTestDialog::on_startButton_clicked()
 {
   reset();
   setProgressColor(QColor(40,210,43)); // a darker green
-  this->buttonStart->setDisabled(true);
+  this->startButton->setDisabled(true);
   try {
     Base::Interpreter().runString("import qtunittest");
     Base::Interpreter().runString("g=qtunittest.QtTestRunner(0,\"\")");
@@ -170,7 +159,7 @@ void UnitTestDialog::startTest()
   } catch ( const Base::Exception& e ) {
     showErrorDialog("Exception", e.what());
   }
-  this->buttonStart->setEnabled(true);
+  this->startButton->setEnabled(true);
 }
 
 /**
@@ -187,7 +176,7 @@ void UnitTestDialog::showErrorDialog(const char* title, const char* message)
 void UnitTestDialog::reject()
 {
   reset();
-  UnitTest::reject();
+  QDialog::reject();
 }
 
 /**
@@ -195,8 +184,8 @@ void UnitTestDialog::reject()
  */
 void UnitTestDialog::reset()
 {
-  this->progressBar1->reset();
-  this->listViewFailure->clear();
+  this->progressBar->reset();
+  this->treeViewFailure->clear();
   this->textLabelRunCt->setText ("<font color=\"#0000ff\">0</font>");
   this->textLabelFailCt->setText("<font color=\"#0000ff\">0</font>");
   this->textLabelErrCt->setText ("<font color=\"#0000ff\">0</font>");
@@ -211,9 +200,7 @@ void UnitTestDialog::addUnitTest( const QString& unit )
   int ct = this->comboTests->count();
   for ( int i=0; i<ct; i++ ) {
     if ( this->comboTests->text(i) == unit )
-    {
       return;
-    }
   }
 
   this->comboTests->insertItem( unit );
@@ -252,13 +239,13 @@ void UnitTestDialog::setStatusText( const QString& text )
 void UnitTestDialog::setProgressFraction( float fraction, const QString& color )
 {
   if (fraction==0.0f) {
-    this->progressBar1->setTotalSteps(100);
+    this->progressBar->setRange(0, 100);
   } else {
-    if ( color == "red" ){
+    if ( color == "red" ) {
       setProgressColor(Qt::red);
     }
 
-    this->progressBar1->setProgress((int)(100*fraction));
+    this->progressBar->setValue((int)(100*fraction));
   }
 }
 
@@ -267,7 +254,7 @@ void UnitTestDialog::setProgressFraction( float fraction, const QString& color )
  */
 void UnitTestDialog::clearErrorList()
 {
-  this->listViewFailure->clear();
+  this->treeViewFailure->clear();
 }
 
 /**
@@ -276,10 +263,10 @@ void UnitTestDialog::clearErrorList()
  */
 void UnitTestDialog::insertError( const QString& failure, const QString& details )
 {
-  QListViewItem* item = new QListViewItem(this->listViewFailure);
+  QTreeWidgetItem* item = new QTreeWidgetItem(treeViewFailure);
   item->setText(0,failure);
-  item->setText(1,details);
-  this->listViewFailure->insertItem(item);
+  item->setTextColor(0, Qt::red);
+  item->setData(0, Qt::UserRole, QVariant(details));
 }
 
 /**
@@ -314,6 +301,4 @@ void UnitTestDialog::setRemainCount(int ct)
   this->textLabelRemCt->setText(QString("<font color=\"#0000ff\">%1</font>").arg(ct));
 }
 
-#include "UnitTest.cpp"
-#include "moc_UnitTest.cpp"
-
+#include "moc_UnitTestImp.cpp"

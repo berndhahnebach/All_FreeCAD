@@ -27,7 +27,7 @@
 #include <map>
 #include <App/Application.h>
 #include <App/Document.h>
-#include "DlgEvaluateMesh.h"
+#include "ui_DlgEvaluateMesh.h"
 
 namespace Gui {
 class View3DInventorViewer;
@@ -58,12 +58,12 @@ public slots:
 /**
  * \author Werner Mayer
  */
-class DlgEvaluateMeshImp : public DlgEvaluateMesh, public App::Document::ObserverType, public App::Application::ObserverType
+class DlgEvaluateMeshImp : public QDialog, public Ui_DlgEvaluateMesh, public App::Document::ObserverType, public App::Application::ObserverType
 { 
   Q_OBJECT
 
 public:
-  DlgEvaluateMeshImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgEvaluateMeshImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgEvaluateMeshImp();
 
   /// Checks if the current feature is about to be removed
@@ -72,28 +72,36 @@ public:
   void OnChange(App::Application::SubjectType &rCaller, App::Application::MessageType rcReason);
 
   void setMesh( Mesh::Feature* );
-  void onRefreshInfo();
-  void onCheckOrientation();
-  void onAnalyzeOrientation();
-  void onRepairOrientation();
-  void onCheckNonManifolds();
-  void onAnalyzeNonManifolds();
-  void onRepairNonManifolds();
-  void onCheckIndices();
-  void onAnalyzeIndices();
-  void onRepairIndices();
-  void onCheckDegenerations();
-  void onAnalyzeDegenerations();
-  void onRepairDegenerations();
-  void onCheckDuplicatedFaces();
-  void onAnalyzeDuplicatedFaces();
-  void onRepairDuplicatedFaces();
-  void onCheckDuplicatedPoints();
-  void onAnalyzeDuplicatedPoints();
-  void onRepairDuplicatedPoints();
+
+protected Q_SLOTS:
+  void on_checkOrientationButton_clicked();
+  void on_analyzeOrientationButton_clicked();
+  void on_repairOrientationButton_clicked();
+
+  void on_checkDuplicatedFacesButton_clicked();
+  void on_analyzeDuplicatedFacesButton_clicked();
+  void on_repairDuplicatedFacesButton_clicked();
+
+  void on_checkDuplicatedPointsButton_clicked();
+  void on_analyzeDuplicatedPointsButton_clicked();
+  void on_repairDuplicatedPointsButton_clicked();
+
+  void on_checkNonmanifoldsButton_clicked();
+  void on_analyzeNonmanifoldsButton_clicked();
+  void on_repairNonmanifoldsButton_clicked();
+
+  void on_checkDegenerationButton_clicked();
+  void on_analyzeDegeneratedButton_clicked();
+  void on_repairDegeneratedButton_clicked();
+
+  void on_checkIndicesButton_clicked();
+  void on_analyzeIndicesButton_clicked();
+  void on_repairIndicesButton_clicked();
+
+  void on_refreshButton_clicked();
+  void on_meshNameButton_activated(int);
 
 protected:
-  void onMeshSelected(int);
   void cleanInformation();
   void setFixedMesh();
   void addViewProvider( const char* vp );
@@ -116,7 +124,7 @@ class DockEvaluateMeshImp : public DlgEvaluateMeshImp
   Q_OBJECT
 
 protected:
-  DockEvaluateMeshImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DockEvaluateMeshImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DockEvaluateMeshImp();
   void reject();
 

@@ -23,17 +23,11 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qmenubar.h>
-# include <qpopupmenu.h>
-#endif
-
 #include "MenuManager.h"
 #include "Application.h"
 #include "MainWindow.h"
 #include "Command.h"
-#include "CustomWidgets.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 
@@ -49,13 +43,7 @@ MenuItem::MenuItem( MenuItem* item )
 
 MenuItem::~MenuItem()
 {
-  MenuItem* item;
-  for ( item = _items.first(); item; item = _items.next() )
-  {
-    delete item;
-  }
-
-  _items.clear();
+  clear();
 }
 
 void MenuItem::setCommand( const QString& name )
@@ -81,11 +69,10 @@ MenuItem* MenuItem::findItem( const QString& name )
   }
   else
   {
-    MenuItem* item;
-    for ( item = _items.first(); item; item = _items.next() )
+    for ( QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it )
     {
-      if ( item->_name == name )
-        return item;
+      if ( (*it)->_name == name )
+        return *it;
     }
   }
 
@@ -97,11 +84,10 @@ MenuItem* MenuItem::copy() const
   MenuItem* root = new MenuItem;
   root->setCommand( command() );
 
-  QPtrList<MenuItem> items = getItems();
-  MenuItem* item;
-  for ( item=items.first(); item; item=items.next() )
+  QList<MenuItem*> items = getItems();
+  for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
   {
-    root->appendItem( item->copy() );
+    root->appendItem( (*it)->copy() );
   }
 
   return root;
@@ -112,35 +98,34 @@ uint MenuItem::count() const
   return _items.count();
 }
 
-void MenuItem::appendItem( const MenuItem* item )
+void MenuItem::appendItem( MenuItem* item )
 {
-  _items.append( item );
+  _items.push_back( item );
 }
 
-bool MenuItem::insertItem( const MenuItem* before, const MenuItem* item)
+bool MenuItem::insertItem( MenuItem* before, MenuItem* item)
 {
-  int pos = _items.find( before );
-  if ( pos > -1 )
+  QList<MenuItem*>::Iterator it = _items.find( before );
+  if ( it != _items.end() )
   {
-    return _items.insert( pos, item );
+    _items.insert( it, item );
+    return true;
   }
   else
     return false;
 }
 
-void MenuItem::removeItem( const MenuItem* item )
+void MenuItem::removeItem( MenuItem* item )
 {
-  _items.remove( item );
+  QList<MenuItem*>::Iterator it = _items.find( item );
+  if ( it != _items.end() )
+    _items.erase( it );
 }
 
 void MenuItem::clear()
 {
-  MenuItem* item;
-  for ( item = _items.first(); item; item = _items.next() )
-  {
-    delete item;
-  }
-
+  for ( QList<MenuItem*>::Iterator it = _items.begin(); it != _items.end(); ++it )
+    delete *it;
   _items.clear();
 }
 
@@ -151,13 +136,13 @@ MenuItem& MenuItem::operator<< ( const QString& command )
   return *this;
 }
 
-MenuItem& MenuItem::operator<< ( const MenuItem* item )
+MenuItem& MenuItem::operator<< ( MenuItem* item )
 {
   appendItem(item);
   return *this;
 }
 
-QPtrList<MenuItem> MenuItem::getItems() const
+QList<MenuItem*> MenuItem::getItems() const
 {
   return _items;
 }
@@ -192,126 +177,47 @@ void MenuManager::setup( MenuItem* menuBar ) const
   if ( !menuBar )
     return; // empty menu bar
 
+  // clear menubar
   QMenuBar* bar = getMainWindow()->menuBar();
-  // Cannot call QMenuBar::clear() to prevent the icon and window buttons from being removed ( e.g if a window is in fullscreen mode )
-  bool ok = false;
-  do {
-    ok = false;
-    uint ct = bar->count();
-    for ( uint i=0; i<ct; i++ )
-    {
-      int id = bar->idAt( i );
-      QMenuItem* item = bar->findItem( id );
-      if ( !item )
-        continue;
+  bar->clear();
 
-      QWidget* w = item->widget();
-      // remove all popup menus and (empty) separators
-      if ( item->popup() || (item->isSeparator() && !w) )
-      {
-        bar->removeItem( id );
-        ok = true;
-      }
-    }
-  } while ( ok );
-
-  QPtrList<MenuItem> items = menuBar->getItems();
-
-  MenuItem* item;
-  for ( item = items.first(); item; item = items.next() )
+  QList<MenuItem*> items = menuBar->getItems();
+  for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
   {
-    if ( item->command() == "Separator" )
-      bar->insertSeparator();
-    else
-      setup( item, bar );
+    if ( (*it)->command() == "Separator" ) {
+      bar->addSeparator();
+    } else {
+      QMenu* menu = bar->addMenu(QObject::tr((*it)->command()));
+      menu->setObjectName((*it)->command());
+      setup(*it, menu);
+    }
   }
 }
 
-void MenuManager::setup( MenuItem* item, QMenuData* data ) const
+void MenuManager::setup( MenuItem* item, QMenu* menu ) const
 {
   CommandManager& mgr = Application::Instance->commandManager();
 
-  QPopupMenu* menu = findMenu( data, item->command() );
-  if ( !menu )
+  QList<MenuItem*> items = item->getItems();
+  for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
   {
-    menu = new CustomPopupMenu( getMainWindow(), item->command() );
-    data->insertItem( QObject::tr(item->command()), menu);
-  }
-  else
-  {
-    menu->clear();
-  }
-
-  QPtrList<MenuItem> items = item->getItems();
-  MenuItem* subitem;
-  for ( subitem = items.first(); subitem; subitem = items.next() )
-  {
-    if ( subitem->hasItems() )
+    if ( (*it)->hasItems() )
     {
-      setup( subitem, menu );
+      QMenu* submenu = menu->addMenu(QObject::tr((*it)->command()));
+      submenu->setObjectName((*it)->command());
+      setup( (*it), submenu );
     }
     else
     {
-      if ( subitem->command() == "Separator" )
-        menu->insertSeparator();
+      if ( (*it)->command() == "Separator" )
+        menu->addSeparator();
       else
-        mgr.addTo( subitem->command().latin1(), menu );
+        mgr.addTo( (*it)->command().latin1(), menu );
     }
   }
 }
 
-void MenuManager::setupContextMenu( MenuItem* item, QPopupMenu &menu ) const
+void MenuManager::setupContextMenu( MenuItem* item, QMenu &menu ) const
 {
-  CommandManager& mgr = Application::Instance->commandManager();
-
-  QPtrList<MenuItem> items = item->getItems();
-  MenuItem* subitem;
-  for ( subitem = items.first(); subitem; subitem = items.next() )
-  {
-    if ( subitem->hasItems() )
-    {
-      setup( subitem, &menu );
-    }
-    else
-    {
-      if ( subitem->command() == "Separator" )
-        menu.insertSeparator();
-      else
-        mgr.addTo( subitem->command().latin1(), &menu );
-    }
-  }
-}
-
-QPopupMenu* MenuManager::findMenu( QMenuData* menu, const QString& name ) const
-{
-  uint cnt = menu->count();
-  for ( uint i=0; i<cnt; i++ )
-  {
-    int id = menu->idAt( i );
-    QMenuItem* item = menu->findItem( id );
-    if ( item && item->popup() )
-    {
-      if ( menu->text( id ) == name )
-      {
-        return item->popup();
-      }
-    }
-  }
-
-  return 0;
-}
-
-void MenuManager::languageChange() const
-{
-  QMenuBar* mb = getMainWindow()->menuBar();
-  uint ct = mb->count();
-  for ( uint i=0; i<ct; i++ )
-  {
-    int id = mb->idAt( i );
-    QMenuItem* item = mb->findItem( id );
-    if ( item && item->popup() )
-    {
-      mb->changeItem( id, QObject::tr( item->popup()->name() ) );
-    }
-  }
+  setup(item, &menu);
 }

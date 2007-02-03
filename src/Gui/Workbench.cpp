@@ -23,18 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qaction.h>
-# include <qkeysequence.h>
-# include <qpopupmenu.h>
-# include <qtoolbar.h>
-#endif
-
 #include "Workbench.h"
 #include "WorkbenchPy.h"
 #include "MenuManager.h"
 #include "ToolBarManager.h"
 #include "Application.h"
+#include "Action.h"
 #include "Command.h"
 #include "CommandBarManager.h"
 #include "Window.h"
@@ -42,10 +36,9 @@
 
 #include <App/Application.h>
 #include <App/DocumentObject.h>
-
 #include <Base/Parameter.h>
 #include <Base/Interpreter.h>
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 /** \defgroup workbench Workbench Framework
@@ -268,23 +261,21 @@ void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
   ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetGroup( szName )->GetGroup( node );
   hGrp->Clear();
 
-  QPtrList<ToolBarItem> items = toolBar->getItems();
+  QList<ToolBarItem*> items = toolBar->getItems();
 
-  ToolBarItem* item;
-  for ( item = items.first(); item; item = items.next() )
+  for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
   {
-    ParameterGrp::handle hSubGrp = hGrp->GetGroup( item->command().latin1() );
-    QPtrList<ToolBarItem> subitems = item->getItems();
-    ToolBarItem* subitem;
+    ParameterGrp::handle hSubGrp = hGrp->GetGroup( (*item)->command().latin1() );
+    QList<ToolBarItem*> subitems = (*item)->getItems();
 
     int pos = 0;
-    for ( subitem = subitems.first(); subitem; subitem = subitems.next() )
+    for ( QList<ToolBarItem*>::ConstIterator subitem = subitems.begin(); subitem != subitems.end(); ++subitem )
     {
-      Command* pCmd = rMgr.getCommandByName( subitem->command().latin1() );
+      Command* pCmd = rMgr.getCommandByName( (*subitem)->command().latin1() );
       QString mod = "unknown";
       if ( pCmd )
         mod = pCmd->getAppModuleName();
-      QString key; key.sprintf("%.2d%s", pos++, subitem->command().latin1() );
+      QString key; key.sprintf("%.2d%s", pos++, (*subitem)->command().latin1() );
       hSubGrp->SetASCII( key.latin1(), mod.latin1() );
     }
   }
@@ -292,23 +283,24 @@ void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
 
 void Workbench::showOrHideToolBars( bool read ) const
 {
-  QPtrList<QToolBar> bars = ToolBarManager::getInstance()->toolBars();
-  QToolBar* bar;
+#if 1 //TODO
+  QList<QToolBar*> bars = ToolBarManager::getInstance()->toolBars();
   if ( read )
   {
-    for ( bar=bars.first(); bar; bar=bars.next() )
+    for ( QList<QToolBar*>::Iterator it=bars.begin(); it != bars.end(); ++it )
     {
-      if ( !App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetBool( bar->name(), true) )
-        bar->hide();
+      if ( !App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetBool( (*it)->name(), true) )
+        (*it)->hide();
     }
   }
   else // write
   {
-    for ( bar=bars.first(); bar; bar=bars.next() )
+    for ( QList<QToolBar*>::Iterator it=bars.begin(); it != bars.end(); ++it )
     {
-      App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->SetBool( bar->name(), !bar->isHidden() );
+      App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->SetBool( (*it)->name(), !(*it)->isHidden() );
     }
   }
+#endif
 }
 
 void Workbench::setupContextMenu(const char* recipient,MenuItem* item) const
@@ -330,6 +322,7 @@ bool Workbench::activate()
 
     for (std::map<std::string,Command*>::const_iterator ci = sCommands.begin(); ci != sCommands.end(); ++ci)
     {
+#if 0 // TODO Reimplement
       CommandGroup* cmdGrp = dynamic_cast<CommandGroup*>(ci->second);
       if ( cmdGrp )
       {
@@ -342,6 +335,7 @@ bool Workbench::activate()
         }
       }
       else
+#endif
       {
         nameCommands[ci->second->getName()] = ci->second;
       }
@@ -354,17 +348,13 @@ bool Workbench::activate()
       {
         QString str = it->second.c_str();
         QKeySequence shortcut = str;
-        cmd->getAction()->setAccel( shortcut );
+        cmd->getAction()->setShortcut( shortcut );
       }
     }
   }
 
   // just checks the toolbars if they must be hidden
   showOrHideToolBars( false );
-
-  MenuItem* mb = setupMenuBar();
-  MenuManager::getInstance()->setup( mb );
-  delete mb;
 
   ToolBarItem* tb = setupToolBars();
   ToolBarManager::getInstance()->setup( tb );
@@ -379,6 +369,10 @@ bool Workbench::activate()
   ToolBarItem* cc = importCustomBars("Commandbars");
   CommandBarManager::getInstance()->customSetup(cc);
   delete cc;
+
+  MenuItem* mb = setupMenuBar();
+  MenuManager::getInstance()->setup( mb );
+  delete mb;
   
   // just checks the toolbars if they must be hidden
   showOrHideToolBars( true );
@@ -433,7 +427,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
   MenuItem* file = new MenuItem( menuBar );
   file->setCommand( menuItems[0] );
   *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_SaveAs" << "Std_ProjectInfo" << "Separator" << "Std_Print"
-        << "Separator" << "Std_MRU" << "Separator" << "Std_Quit";
+        << "Separator" << "Std_RecentFiles" << "Separator" << "Std_Quit";
 
   // Edit
   MenuItem* edit = new MenuItem( menuBar );
@@ -444,7 +438,7 @@ MenuItem* StdWorkbench::setupMenuBar() const
   // Standard views
   MenuItem* stdviews = new MenuItem;
   stdviews->setCommand( "Standard views" );
-  *stdviews << "Separator" << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
+  *stdviews << "Std_ViewFitAll" << "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewRight"
             << "Std_ViewTop" << "Separator" << "Std_ViewRear" << "Std_ViewLeft" << "Std_ViewBottom";
 
   // stereo
@@ -461,8 +455,9 @@ MenuItem* StdWorkbench::setupMenuBar() const
   MenuItem* view = new MenuItem( menuBar );
   view->setCommand( menuItems[2] );
   *view << "Std_ViewCreate" << "Std_CameraType" << "Separator" << stdviews << "Std_FreezeViews" << "Separator" << view3d << zoom
-        << "Std_ToggleVisibility" << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator"
-        << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar";
+        << "Std_ViewDockUndockFullscreen" << "Std_ToggleClipPlane" << "Separator"
+    	  << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" 
+        << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar" << "Std_UserInterface";
 
   // Tools
   MenuItem* tool = new MenuItem( menuBar );
@@ -474,8 +469,8 @@ MenuItem* StdWorkbench::setupMenuBar() const
   MenuItem* wnd = new MenuItem( menuBar );
   wnd->setCommand( menuItems[4] );
   *wnd << "Std_CloseActiveWindow" << "Std_CloseAllWindows" << "Separator" << "Std_ActivateNextWindow"
-       << "Std_ActivatePrevWindow" << "Separator" << "Std_TilePragmatic" << "Std_TileHoricontal"
-       << "Std_TileVertical" << "Std_WindowsMenu" << "Separator" << "Std_Windows";
+       << "Std_ActivatePrevWindow" << "Separator" << "Std_TileWindows" << "Std_CascadeWindows"
+       << "Std_ArrangeIcons" << "Separator" << "Std_WindowsMenu" << "Std_Windows";
 
   // Separator
   MenuItem* sep = new MenuItem( menuBar );
@@ -493,9 +488,9 @@ MenuItem* StdWorkbench::setupMenuBar() const
 ToolBarItem* StdWorkbench::setupToolBars() const
 {
   static const char* toolItems[] = {
-    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "file operations" ),
-    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Macro recording" ),
-    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Standard views" )
+    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "File" ),
+    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "Macro" ),
+    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "View" )
   };
 
   ToolBarItem* root = new ToolBarItem;
@@ -639,20 +634,18 @@ ToolBarItem* PythonWorkbench::setupToolBars() const
   return _toolBar->copy();
   ToolBarItem* root = new ToolBarItem;
   root->setCommand(_toolBar->command());
-  QPtrList<ToolBarItem> bars = _toolBar->getItems();
+  QList<ToolBarItem*> bars = _toolBar->getItems();
 
-  ToolBarItem* bar;
-  for ( bar = bars.first(); bar; bar = bars.next() )
+  for ( QList<ToolBarItem*>::ConstIterator bar = bars.begin(); bar != bars.end(); ++bar )
   {
     ToolBarItem* nbar = new ToolBarItem(root);
-    nbar->setCommand(bar->command());
-    QPtrList<ToolBarItem> items = bar->getItems();
+    nbar->setCommand((*bar)->command());
+    QList<ToolBarItem*> items = (*bar)->getItems(); 
 
-    ToolBarItem* item;
-    for ( item = items.first(); item; item = items.next() )
+    for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
     {
       ToolBarItem* nitem = new ToolBarItem(nbar);
-      nitem->setCommand(item->command());
+      nitem->setCommand((*item)->command());
     }
   }
 
@@ -664,20 +657,18 @@ ToolBarItem* PythonWorkbench::setupCommandBars() const
   return _commandBar->copy();
   ToolBarItem* root = new ToolBarItem;
   root->setCommand(_commandBar->command());
-  QPtrList<ToolBarItem> bars = _commandBar->getItems();
+  QList<ToolBarItem*> bars = _commandBar->getItems();
 
-  ToolBarItem* bar;
-  for ( bar = bars.first(); bar; bar = bars.next() )
+  for ( QList<ToolBarItem*>::ConstIterator bar = bars.begin(); bar != bars.end(); ++bar )
   {
     ToolBarItem* nbar = new ToolBarItem(root);
-    nbar->setCommand(bar->command());
-    QPtrList<ToolBarItem> items = bar->getItems();
+    nbar->setCommand((*bar)->command());
+    QList<ToolBarItem*> items = (*bar)->getItems(); 
 
-    ToolBarItem* item;
-    for ( item = items.first(); item; item = items.next() )
+    for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
     {
       ToolBarItem* nitem = new ToolBarItem(nbar);
-      nitem->setCommand(item->command());
+      nitem->setCommand((*item)->command());
     }
   }
 
@@ -727,10 +718,9 @@ void PythonWorkbench::removeMenu( const QString& menu ) const
 QStringList PythonWorkbench::listMenus() const
 {
   QStringList menus;
-  QPtrList<MenuItem> items = _menuBar->getItems();
-  MenuItem* item;
-  for ( item=items.first(); item; item=items.next() )
-    menus << item->command();
+  QList<MenuItem*> items = _menuBar->getItems();
+  for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
+    menus << (*it)->command();
   return menus;
 }
 
@@ -767,10 +757,9 @@ void PythonWorkbench::removeToolbar( const QString& bar) const
 QStringList PythonWorkbench::listToolbars() const
 {
   QStringList bars;
-  QPtrList<ToolBarItem> items = _toolBar->getItems();
-  ToolBarItem* item;
-  for ( item=items.first(); item; item=items.next() )
-    bars << item->command();
+  QList<ToolBarItem*> items = _toolBar->getItems();
+  for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
+    bars << (*item)->command();
   return bars;
 }
 
@@ -799,9 +788,8 @@ void PythonWorkbench::removeCommandbar( const QString& bar ) const
 QStringList PythonWorkbench::listCommandbars() const
 {
   QStringList bars;
-  QPtrList<ToolBarItem> items = _commandBar->getItems();
-  ToolBarItem* item;
-  for ( item=items.first(); item; item=items.next() )
-    bars << item->command();
+  QList<ToolBarItem*> items = _commandBar->getItems();
+  for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item )
+    bars << (*item)->command();
   return bars;
 }

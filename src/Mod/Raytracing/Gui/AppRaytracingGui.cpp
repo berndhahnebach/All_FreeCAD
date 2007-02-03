@@ -29,13 +29,12 @@
 #include <Base/Interpreter.h>
 #include <Gui/Application.h>
 #include <Gui/WidgetFactory.h>
-#include <Gui/Language/LanguageFactory.h>
+#include <Gui/Language/Translator.h>
 
 
 #include "DlgSettingsRayImp.h"
 #include "Workbench.h"
-
-#include "Raytracing_de.h"
+#include "qrc_translation.cpp"
 
 // use a different name to CreateCommand()
 void CreateRaytracingCommands(void);
@@ -67,7 +66,10 @@ void AppRaytracingGuiExport initRaytracingGui() {
 
   // register preferences pages
   new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );
-  new Gui::LanguageProducer("Deutsch", Raytracing_de_h_data, Raytracing_de_h_len);
+
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(translation);
+  Gui::Translator::instance()->reinstallLanguage();
 
   return;
 }

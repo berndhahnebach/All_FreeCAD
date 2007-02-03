@@ -23,22 +23,20 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-#endif
-
 #include "DlgSettings3DViewImp.h"
 #include "PrefWidgets.h"
-#include "../Base/Console.h"
-#define new DEBUG_CLIENTBLOCK
+#include <Base/Console.h>
+
 using namespace Gui::Dialog;
 
 /**
  *  Constructs a DlgSettings3DViewImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-DlgSettings3DViewImp::DlgSettings3DViewImp( QWidget* parent,  const char* name, WFlags fl )
-    : DlgSettings3DView( parent, name, fl )
+DlgSettings3DViewImp::DlgSettings3DViewImp( QWidget* parent )
+    : PreferencePage( parent )
 {
+  this->setupUi(this);
 }
 
 /** 
@@ -89,6 +87,16 @@ void DlgSettings3DViewImp::loadSettings()
   SelectionColor->onRestore();
 }
 
-#include "DlgSettings3DView.cpp"
-#include "moc_DlgSettings3DView.cpp"
+/**
+ * Sets the strings of the subwidgets using the current language.
+ */
+void DlgSettings3DViewImp::changeEvent(QEvent *e)
+{
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi(this);
+  } else {
+    QWidget::changeEvent(e);
+  }
+}
+
 #include "moc_DlgSettings3DViewImp.cpp"

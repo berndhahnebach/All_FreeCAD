@@ -21,12 +21,19 @@
  ***************************************************************************/
 
 
-#ifndef DLG_EDITOR_IMP_H
-#define DLG_EDITOR_IMP_H
+#ifndef GUI_DIALOG_DLGEDITORSETTINGSIMP_H
+#define GUI_DIALOG_DLGEDITORSETTINGSIMP_H
 
-#include <qmap.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-#include "DlgEditor.h"
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+#include "ui_DlgEditor.h"
+#include "PropertyPage.h"
 
 namespace Gui {
 class PythonSyntaxHighlighter;
@@ -37,68 +44,35 @@ namespace Dialog {
  *  Here you can change different color settings and font for editors.
  *  @author Werner Mayer
  */
-class DlgSettingsEditorImp : public DlgEditorSettingsBase
+struct DlgSettingsEditorP;
+class DlgSettingsEditorImp : public PreferencePage, public Ui_DlgEditorSettings
 {
-Q_OBJECT
+  Q_OBJECT
 
 public:
-  DlgSettingsEditorImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgSettingsEditorImp( QWidget* parent = 0 );
   ~DlgSettingsEditorImp();
 
-public slots:
-  void onDisplayColor(const QString& name);
+public Q_SLOTS:
+  void onDisplayColor(int);
   void onChosenColor();
 
-protected:
+public:
   void saveSettings();
   void loadSettings();
 
-  void languageChange();
+protected:
+  void changeEvent(QEvent *e);
 
 private:
-  void trToOrig();
-  QMap<QString, unsigned long> _mColors; /**< Color map containing color settings. */
-  QMap<QString, QString> _trMap; /**< Holds the original text to each translated text. */
+  DlgSettingsEditorP* d;
   Gui::PythonSyntaxHighlighter* pythonSyntax;
 
   DlgSettingsEditorImp( const DlgSettingsEditorImp & );
   DlgSettingsEditorImp& operator=( const DlgSettingsEditorImp & );
 };
 
-
-/** This class implements a color map of string->color.
- * The string represents the type of word (text, keywords, operators, ...).
- * To each type a special color is assigned to. These types and their colors
- * are used within the Python syntax highlighing. The colors are stored as unsigned long,
- * not as QColor objects. 
- * To get back the (r,g,b) values from a long head the statement as follows:
- * unsigned long col = ...
- * QColor color((col>>24) & 0xff, (col >> 16) & 0xff, (col >> 8) & 0xff);
- * @author Werner Mayer
- */
-class DefColorMap
-{
-protected:
-  DefColorMap(void);
-  ~DefColorMap(void);
-
-  static DefColorMap *_pcSingleton;
-  QMap<QString, unsigned long> m_clDefColors;
-
-public:
-  QStringList types() const;
-  unsigned long color(const QString& name);
-  static void destruct(void);
-  static DefColorMap &instance(void);
-};
-
-/** Returns the @ref DefColorMap instance */
-inline DefColorMap &GetDefCol(void)
-{
-  return DefColorMap::instance();
-}
-
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DLG_EDITOR_IMP_H
+#endif // GUI_DIALOG_DLGEDITORSETTINGSIMP_H

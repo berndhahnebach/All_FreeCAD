@@ -15,12 +15,15 @@
 **********************************************************************/
 
 #include <qapplication.h>
-#include <qcstring.h>
+#include <q3cstring.h>
 #include <qfile.h>
 #include <qmessagebox.h>
 #include <qtextcodec.h>
 #include <qtextstream.h>
 #include <qxml.h>
+//Added by qt3to4:
+#include <Q3ValueList>
+#include <QTranslator>
 
 #include "metatranslator.h"
 
@@ -43,10 +46,10 @@ private:
     MetaTranslator *tor;
     MetaTranslatorMessage::Type type;
     bool inMessage;
-    QCString codec;
-    QCString context;
-    QCString source;
-    QCString comment;
+    Q3CString codec;
+    Q3CString context;
+    Q3CString source;
+    Q3CString comment;
     QString translation;
 
     QString accum;
@@ -133,7 +136,7 @@ bool TsHandler::fatalError( const QXmlParseException& exception )
     return FALSE;
 }
 
-static QCString protect( const QCString& str )
+static Q3CString protect( const Q3CString& str )
 {
     // evil conversion back and forth... still likely to be faster because
     // of all the appending going on.
@@ -166,12 +169,12 @@ static QCString protect( const QCString& str )
     return result.ascii();
 }
 
-static QCString evilBytes( const QCString& str )
+static Q3CString evilBytes( const Q3CString& str )
 {
     // ditto
     int k = 0;
     QString result;
-    QCString tmp = protect( str );
+    Q3CString tmp = protect( str );
     int l = (int) tmp.length();
     while( k < l ) {
 	if ( (uchar)(tmp[k]) > 127 )
@@ -227,7 +230,7 @@ bool MetaTranslator::load( const QString& filename )
     mm.clear();
 
     QFile f( filename );
-    if ( !f.open(IO_ReadOnly) )
+    if ( !f.open(QIODevice::ReadOnly) )
 	return FALSE;
 
     QTextStream t( &f );
@@ -256,7 +259,7 @@ bool MetaTranslator::load( QIODevice* dev )
 {
     mm.clear();
 
-    if ( !dev || !dev->open(IO_ReadOnly) )
+    if ( !dev || !dev->open(QIODevice::ReadOnly) )
 	return FALSE;
 
     QXmlInputSource in( dev );
@@ -283,7 +286,7 @@ bool MetaTranslator::load( QIODevice* dev )
 bool MetaTranslator::save( const QString& filename ) const
 {
     QFile f( filename );
-    if ( !f.open(IO_WriteOnly) )
+    if ( !f.open(QIODevice::WriteOnly) )
 	return FALSE;
 
     QTextStream t( &f );
@@ -295,15 +298,15 @@ bool MetaTranslator::save( const QString& filename ) const
     while ( m != mm.end() ) {
 	TMMInv inv;
 	TMMInv::Iterator i;
-	QCString context = m.key().context();
-	QCString comment = "";
+	Q3CString context = m.key().context();
+	Q3CString comment = "";
 
 	do {
-	    if ( QCString(m.key().sourceText()).isEmpty() )
-		comment += QCString( m.key().comment() );
+	    if ( Q3CString(m.key().sourceText()).isEmpty() )
+		comment += Q3CString( m.key().comment() );
 	    else
 		inv.insert( *m, m.key() );
-	} while ( ++m != mm.end() && QCString(m.key().context()) == context );
+	} while ( ++m != mm.end() && Q3CString(m.key().context()) == context );
 
 	t << "<context>\n";
 	t << "    <name>" << evilBytes( context ) << "</name>\n";
@@ -314,7 +317,7 @@ bool MetaTranslator::save( const QString& filename ) const
 	    t << "    <message>\n"
 	      << "        <source>" << evilBytes( (*i).sourceText() )
 	      << "</source>\n";
-	    if ( !QCString((*i).comment()).isEmpty() )
+	    if ( !Q3CString((*i).comment()).isEmpty() )
 		t << "        <comment>" << evilBytes( (*i).comment() )
 		  << "</comment>\n";
 	    t << "        <translation";
@@ -367,7 +370,7 @@ QString MetaTranslator::toUnicode( const char *str ) const
 	return c->toUnicode( str );
 }
 
-QValueList<MetaTranslatorMessage> MetaTranslator::messages() const
+Q3ValueList<MetaTranslatorMessage> MetaTranslator::messages() const
 {
     int n = mm.count();
     TMM::ConstIterator *t = new TMM::ConstIterator[n + 1];
@@ -375,7 +378,7 @@ QValueList<MetaTranslatorMessage> MetaTranslator::messages() const
     for ( m = mm.begin(); m != mm.end(); ++m )
 	t[*m] = m;
 
-    QValueList<MetaTranslatorMessage> val;
+    Q3ValueList<MetaTranslatorMessage> val;
     for ( int i = 0; i < n; i++ )
 	val.append( t[i].key() );
 

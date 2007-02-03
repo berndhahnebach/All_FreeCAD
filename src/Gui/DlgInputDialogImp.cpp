@@ -23,18 +23,18 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qpushbutton.h>
-# include <qlabel.h>
-# include <qwidgetstack.h>
-# include <qlineedit.h>
-# include <qcombobox.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
 #endif
 
 #include "DlgInputDialogImp.h"
 #include "SpinBox.h"
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /**
@@ -44,9 +44,11 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgInputDialogImp::DlgInputDialogImp( const QString& labelTxt, QWidget* parent, const char* name, bool modal, Type type )
-  : DlgInputDialog( parent, name, modal )
+DlgInputDialogImp::DlgInputDialogImp( const QString& labelTxt, QWidget* parent, bool modal, Type type )
+  : QDialog( parent )
 {
+  this->setModal(modal);
+  this->setupUi(this);
   label->setText(labelTxt);
   
   QSize bs = buttonOk->sizeHint().expandedTo( buttonCancel->sizeHint() );
@@ -56,6 +58,9 @@ DlgInputDialogImp::DlgInputDialogImp( const QString& labelTxt, QWidget* parent, 
   QSize sh = sizeHint();
   setType( type );
   resize( QMAX( sh.width(), 400 ), 1 );
+
+  connect(lineEdit, SIGNAL(returnPressed()), this, SLOT(tryAccept()));
+  connect(lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(textChanged(const QString&)));
 }
 
 /**
@@ -114,7 +119,7 @@ void DlgInputDialogImp::setType( DlgInputDialogImp::Type t )
   }
 
   if ( input ) {
-	  stack->raiseWidget( input->parentWidget() );
+    stack->setCurrentWidget(input->parentWidget());
 	  stack->setFixedHeight( input->sizeHint().height() );
 	  input->setFocus();
 	  label->setBuddy( input );
@@ -131,12 +136,15 @@ Gui::SpinBox *DlgInputDialogImp::getSpinBox() const
   return spinBox;
 }
 
-Gui::UIntSpinBox *DlgInputDialogImp::getUIntBox() const
+//Gui::UIntSpinBox *DlgInputDialogImp::getUIntBox() const
+Gui::SpinBox *DlgInputDialogImp::getUIntBox() const
 {
+  //TODO Reimplement UIntSpinBox
   return uIntSpinBox;
 }
 
-Gui::FloatSpinBox *DlgInputDialogImp::getFloatSpinBox() const
+//Gui::FloatSpinBox *DlgInputDialogImp::getFloatSpinBox() const
+QDoubleSpinBox *DlgInputDialogImp::getFloatSpinBox() const
 {
   return floatSpinBox;
 }
@@ -151,6 +159,4 @@ QComboBox *DlgInputDialogImp::getComboBox() const
   return comboBox;
 }
 
-#include "DlgInputDialog.cpp"
-#include "moc_DlgInputDialog.cpp"
-
+#include "moc_DlgInputDialogImp.cpp"

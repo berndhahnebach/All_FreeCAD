@@ -24,14 +24,24 @@
 #ifndef TESTGUI_UNITTESTIMP_H
 #define TESTGUI_UNITTESTIMP_H
 
-#include "UnitTest.h"
+#include "ui_UnitTest.h"
 
 #include <Base/PyExportImp.h>
 
+// Qt Toolkit
+#ifndef __Qt4All__
+# include <Gui/Qt4All.h>
+#endif
+
+#ifndef __Qt3All__
+# include <Gui/Qt3All.h>
+#endif
 namespace TestGui {
 
-class UnitTestDialog : public UnitTest
+class UnitTestDialog : public QDialog, public Ui_UnitTest
 {
+  Q_OBJECT
+
 public:
   void showErrorDialog(const char* title, const char* message);
   void addUnitTest( const QString& unit );
@@ -46,22 +56,22 @@ public:
   void setErrorCount(int);
   void setRemainCount(int);
   void reset();
+  void reject();
 
   static UnitTestDialog* instance();
   static void destruct();
   static bool hasInstance();
 
 protected:
-  UnitTestDialog( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags f = 0 );
+  UnitTestDialog( QWidget* parent = 0, Qt::WFlags f = 0 );
   ~UnitTestDialog();
-  
-  void showSelectedError(QListViewItem* item);
-  void showHelpDialog();
-  void showAboutDialog();
-  void startTest();
   void setProgressColor( const QColor& col);
-
-  void reject();
+  
+public Q_SLOTS:
+  void on_treeViewFailure_itemDoubleClicked ( QTreeWidgetItem * item, int column );
+  void on_helpButton_clicked();
+  void on_aboutButton_clicked();
+  void on_startButton_clicked();
 
 private:
   static UnitTestDialog* _instance;

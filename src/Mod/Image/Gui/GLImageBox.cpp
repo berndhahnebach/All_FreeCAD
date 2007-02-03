@@ -18,12 +18,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <math.h>
-# include <qmessagebox.h>
-# include <algorithm>
-#endif
-
 #include "GLImageBox.h"
 
 using namespace ImageGui;
@@ -31,6 +25,8 @@ using namespace ImageGui;
 #if defined(Q_CC_MSVC)
 #pragma warning(disable:4305) // init: truncation from const double to float
 #endif
+
+/* TRANSLATOR ImageGui::GLImageBox */
 
 // Constructor
 GLImageBox::GLImageBox(QWidget* parent, const char* name, const QGLWidget* shareWidget )
@@ -66,7 +62,7 @@ GLImageBox::~GLImageBox()
 // Set up the OpenGL rendering state
 void GLImageBox::initializeGL()
 {
-    qglClearColor( black );		// Let OpenGL clear to black
+  qglClearColor( Qt::black );		// Let OpenGL clear to black
 }
 
 
@@ -99,7 +95,7 @@ void GLImageBox::paintGL()
 
     // Emit a signal for owners to draw any graphics that is needed.
     if (_image.hasValidData() == true)
-        emit drawGraphics();
+        drawGraphics();
 
     // flush the OpenGL graphical pipeline
     glFinish();

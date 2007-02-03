@@ -21,13 +21,19 @@
  ***************************************************************************/
 
 
-#ifndef DLGCOMMANDS_IMP_H
-#define DLGCOMMANDS_IMP_H
+#ifndef GUI_DIALOG_DLGCOMMANDS_IMP_H
+#define GUI_DIALOG_DLGCOMMANDS_IMP_H
 
-#include "DlgCommands.h"
+#include "ui_DlgCommands.h"
+#include "PropertyPage.h"
 
-#include <qmap.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 class Command;
@@ -36,21 +42,23 @@ namespace Dialog {
 /** Shows an overview of all available commands of all groups and modules.
  * You can customize your workbenches just by drag&dropping any commands
  * onto the toolbars or commandbars. But you cannot modify any standard toolbars or
- * commandbars such as "File operations, Standard views, ...". It is only poosible to
+ * commandbars such as "File, View, ...". It is only poosible to
  * customize your own toolbars or commandbars.
  * \author Werner Mayer
  */
-class DlgCustomCommandsImp : public DlgCustomCommandsBase
+class DlgCustomCommandsImp : public CustomizeActionPage, public Ui_DlgCustomCommands
 {
   Q_OBJECT
 
 public:
-  DlgCustomCommandsImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgCustomCommandsImp( QWidget* parent = 0 );
   ~DlgCustomCommandsImp();
 
-protected slots:
+protected Q_SLOTS:
   void onDescription( const QString& );
   void onGroupSelected( const QString& );
+  void onAddMacroAction(const QString&);
+  void onRemoveMacroAction(const QString&);
 
 private:
   QMap<QString, QString> _cmdGroups;
@@ -59,4 +67,4 @@ private:
 } // namespace Dialog
 } // namespace Gui
 
-#endif
+#endif // GUI_DIALOG_DLGCOMMANDS_IMP_H

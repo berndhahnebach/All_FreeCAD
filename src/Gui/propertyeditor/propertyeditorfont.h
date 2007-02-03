@@ -26,8 +26,6 @@
 
 #include "propertyeditoritem.h"
 
-#include <qpushbutton.h>
-
 
 namespace Gui {
 namespace PropertyEditor {
@@ -43,9 +41,9 @@ class GuiExport FontEditorItem: public EditableItem
   Q_OBJECT 
 
 public:
-  FontEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  FontEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
-protected slots:
+protected Q_SLOTS:
   void onChangeFont();
 
 protected:
@@ -71,7 +69,7 @@ class GuiExport ColorEditorItem: public EditableItem
   Q_OBJECT 
 
 public:
-  ColorEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  ColorEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );

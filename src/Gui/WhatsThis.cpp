@@ -25,17 +25,17 @@
 
 #ifndef _PreComp_
 # include <qapplication.h>
-# include <qtextbrowser.h>
+# include <q3textbrowser.h>
 #endif
 
 #include "WhatsThis.h"
 
 #include "Action.h"
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
-QTextBrowser* WhatsThis::_helpViewer = 0L;
+Q3TextBrowser* WhatsThis::_helpViewer = 0L;
 
 /**
  * Constructs a dynamic "What's this?" object for \a widget. The object is deleted when 
@@ -45,7 +45,7 @@ QTextBrowser* WhatsThis::_helpViewer = 0L;
  * called to provide the appropriate text, rather than using the text assigned by add().
  */
 WhatsThis::WhatsThis( QWidget * widget)
-  : QWhatsThis( widget ), _widget( widget ), _url( QString::null ), _txt( QString::null )
+  : Q3WhatsThis( widget ), _widget( widget ), _url( QString::null ), _txt( QString::null )
 {
 }
 
@@ -57,7 +57,7 @@ WhatsThis::WhatsThis( QWidget * widget)
  * called to provide the appropriate text, rather than using the text assigned by add().
  */
 WhatsThis::WhatsThis( QWidget * widget, const QString& url)
- : QWhatsThis( widget ), _widget( widget ), _url( url ), _txt( QString::null )
+ : Q3WhatsThis( widget ), _widget( widget ), _url( url ), _txt( QString::null )
 {
 }
 
@@ -99,7 +99,7 @@ QString WhatsThis::text( const QPoint & )
 /**
  * Shows the help text in the specified browser.  
  */
-void WhatsThis::setHelpView( QTextBrowser* browser )
+void WhatsThis::setHelpView( Q3TextBrowser* browser )
 {
   _helpViewer = browser;
 }
@@ -113,11 +113,11 @@ void WhatsThis::setHelpView( QTextBrowser* browser )
 
 bool StdCmdDescription::_descrMode = false;
 
-QTextBrowser* StdCmdDescription::_helpViewer = 0L;
+Q3TextBrowser* StdCmdDescription::_helpViewer = 0L;
 
 
 StdCmdDescription::StdCmdDescription()
-  : ToggleCommand("Std_DescriptionMode")
+  : Command("Std_DescriptionMode")
 {
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("Des&cription");
@@ -129,6 +129,13 @@ StdCmdDescription::StdCmdDescription()
 
 StdCmdDescription::~StdCmdDescription()
 {
+}
+
+Action * StdCmdDescription::createAction(void)
+{
+  Action *pcAction = (Action*)Command::createAction();
+  pcAction->setCheckable( true );
+  return pcAction;
 }
 
 void StdCmdDescription::activated(int iMsg)
@@ -147,7 +154,7 @@ bool StdCmdDescription::inDescriptionMode()
 /**
  * Shows the help text in the specified browser.  
  */
-void StdCmdDescription::setHelpView( QTextBrowser* browser )
+void StdCmdDescription::setHelpView( Q3TextBrowser* browser )
 {
   _helpViewer = browser;
 }

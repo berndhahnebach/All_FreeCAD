@@ -37,7 +37,7 @@
 #include "Document.h"
 #include "Tree.h"
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 
@@ -126,7 +126,7 @@ class GroupItem : public ObjectItem
 {
 public:
   /// Constructor
-  GroupItem( QListViewItem* parent,Gui::ViewProviderDocumentObject* pcViewProvider,const QPixmap &p1, const QPixmap &p2)
+  GroupItem( Q3ListViewItem* parent,Gui::ViewProviderDocumentObject* pcViewProvider,const QPixmap &p1, const QPixmap &p2)
     : ObjectItem( parent, pcViewProvider ), openPix(p1), closePix(p2) 
   {
 
@@ -170,7 +170,7 @@ QPixmap ViewProviderDocumentObjectGroup::getClosedGroupIcon() const
 /**
  * Returns a newly created list item for an object group.
  */
-ObjectItem* ViewProviderDocumentObjectGroup::createTreeItem(QListViewItem* parent)
+ObjectItem* ViewProviderDocumentObjectGroup::createTreeItem(Q3ListViewItem* parent)
 {
   GroupItem* item = new GroupItem(parent,this, getOpenedGroupIcon(), getClosedGroupIcon());
   item->setText(0,QString(pcObject->name.getValue()));

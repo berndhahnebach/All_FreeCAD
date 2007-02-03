@@ -21,10 +21,11 @@
  ***************************************************************************/
 
 
-#ifndef __DlgSettingsDocumentImp_H
-#define __DlgSettingsDocumentImp_H
+#ifndef GUI_DIALOG_DLGSETTINGSDOCUMENT_IMP_H
+#define GUI_DIALOG_DLGSETTINGSDOCUMENT_IMP_H
 
-#include "DlgSettingsDocument.h"
+#include "ui_DlgSettingsDocument.h"
+#include "PropertyPage.h"
 
 namespace Gui {
 namespace Dialog {
@@ -34,20 +35,22 @@ namespace Dialog {
  * for the Inventor viewer.
  * \author Jürgen Riegel
  */
- class DlgSettingsDocumentImp:public DlgSettingsDocument
+ class DlgSettingsDocumentImp : public PreferencePage, public Ui_DlgSettingsDocument
 { 
   Q_OBJECT
 
 public:
-  DlgSettingsDocumentImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgSettingsDocumentImp( QWidget* parent = 0 );
   ~DlgSettingsDocumentImp();
 
-protected:
   void saveSettings();
   void loadSettings();
+
+protected:
+  void changeEvent(QEvent *e);
 };
 
 } // namespace Dialog
 } // namespace Gui
 
-#endif // __DlgSettingsDocumentImp_H
+#endif // GUI_DIALOG_DLGSETTINGSDOCUMENT_IMP_H

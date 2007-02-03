@@ -23,23 +23,13 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qcursor.h>
-# include <qpainter.h>
-# include <qstatusbar.h>
-# include <qdatetime.h>
-# include <qmessagebox.h>
-# include <qtimer.h>
-# include <qwidgetlist.h>
-#endif
+#include <Base/Console.h>
 
 #include "ProgressBar.h"
 #include "MainWindow.h"
 #include "WaitCursor.h"
 
-#include <Base/Console.h>
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 
@@ -72,8 +62,8 @@ ProgressBar* ProgressBar::instance()
   return _pclSingleton;
 }
 
-ProgressBar::ProgressBar ( QWidget * parent, const char * name, WFlags f )
-    : QProgressBar (parent, name, f), SequencerBase()
+ProgressBar::ProgressBar ( QWidget * parent, const char * name, Qt::WFlags f )
+    : Q3ProgressBar (parent, name, f), SequencerBase()
 {
   d = new Gui::ProgressBarPrivate;
   d->cWaitCursor = 0L;
@@ -84,7 +74,8 @@ ProgressBar::ProgressBar ( QWidget * parent, const char * name, WFlags f )
   setFixedWidth(120);
 
   // write percentage to the center
-  setIndicatorFollowsStyle(false);
+  // TODO not there anymore
+  //setIndicatorFollowsStyle(false);
   setCenterIndicator(true);
   hide();
 }
@@ -120,7 +111,7 @@ void ProgressBar::forceShow()
 
 void ProgressBar::showEvent( QShowEvent* e )
 {
-  QProgressBar::showEvent( e );
+  Q3ProgressBar::showEvent( e );
   d->forceTimer->stop();
 }
 
@@ -157,7 +148,7 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
           if ( d->observeEventFilter > 50 )
           {
             // tries to unlock the application if it hangs (propably due to incorrect usage of Base::Sequencer)
-            if (ke->state() & ( ControlButton | AltButton ) )
+            if (ke->state() & ( Qt::ControlModifier | Qt::AltModifier ) )
             {
               resetData();
               return true;
@@ -205,7 +196,7 @@ bool ProgressBar::eventFilter(QObject* o, QEvent* e)
     d->observeEventFilter++;
   }
 
-  return QProgressBar::eventFilter(o, e);
+  return Q3ProgressBar::eventFilter(o, e);
 }
 
 void ProgressBar::pause()
@@ -229,12 +220,12 @@ void ProgressBar::setProgress( int progr )
     if ( d->oneStep )
     {
       d->oneStep = false;
-      QProgressBar::setProgress(progress()+1);
+      Q3ProgressBar::setProgress(progress()+1);
     }
   }
   else
   {
-    QProgressBar::setProgress(progr);
+    Q3ProgressBar::setProgress(progr);
   }
 }
 
@@ -376,7 +367,7 @@ bool ProgressBar::setIndicator ( QString & indicator, int progress, int totalSte
   if ( isVisible() )
     getMainWindow()->setPaneText( 1, txt );
 
-  return QProgressBar::setIndicator ( indicator, progress, totalSteps );
+  return Q3ProgressBar::setIndicator ( indicator, progress, totalSteps );
 }
 
 #include "moc_ProgressBar.cpp"

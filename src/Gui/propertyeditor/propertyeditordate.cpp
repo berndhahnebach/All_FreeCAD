@@ -23,11 +23,11 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <qdatetimeedit.h>
+# include <q3datetimeedit.h>
 #endif
 
 #include "propertyeditordate.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::PropertyEditor;
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::TimeEditorItem, Gui::PropertyEditor::EditableItem);
@@ -36,7 +36,7 @@ TimeEditorItem::TimeEditorItem()
 {
 }
 
-TimeEditorItem::TimeEditorItem( QListView* lv, const QString& text, const QVariant& value )
+TimeEditorItem::TimeEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setText( 0, text );
@@ -48,7 +48,7 @@ QWidget* TimeEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  QTimeEdit* editor = new QTimeEdit( parent, "TimeEditorItem::spin" );
+  Q3TimeEdit* editor = new Q3TimeEdit( parent, "TimeEditorItem::spin" );
   editor->setTime( overrideValue().toTime() );
   connect(editor, SIGNAL( valueChanged(const QTime&) ), this, SLOT( onValueChanged() ) );
   return editor;
@@ -61,14 +61,14 @@ void TimeEditorItem::stopEdit( int column )
 
 void TimeEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QTimeEdit* edit = dynamic_cast<QTimeEdit*>(editor);
+  Q3TimeEdit* edit = dynamic_cast<Q3TimeEdit*>(editor);
   edit->setTime( value().toTime() );
 }
 
 QVariant TimeEditorItem::currentEditorValue( QWidget* editor ) const
 {
   QVariant var;
-  var.asTime() = dynamic_cast<QTimeEdit*>(editor)->time();
+  var.asTime() = dynamic_cast<Q3TimeEdit*>(editor)->time();
   return var;
 }
 
@@ -90,7 +90,7 @@ DateEditorItem::DateEditorItem()
 {
 }
 
-DateEditorItem::DateEditorItem( QListView* lv, const QString& text, const QVariant& value )
+DateEditorItem::DateEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setText( 0, text );
@@ -102,7 +102,7 @@ QWidget* DateEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  QDateEdit* editor = new QDateEdit( parent, "TimeEditorItem::spin" );
+  Q3DateEdit* editor = new Q3DateEdit( parent, "TimeEditorItem::spin" );
   editor->setDate( overrideValue().toDate() );
   connect(editor, SIGNAL( valueChanged(const QDate&) ), this, SLOT( onValueChanged() ) );
   return editor;
@@ -115,14 +115,14 @@ void DateEditorItem::stopEdit( int column )
 
 void DateEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QDateEdit* edit = dynamic_cast<QDateEdit*>(editor);
+  Q3DateEdit* edit = dynamic_cast<Q3DateEdit*>(editor);
   edit->setDate( value().toDate() );
 }
 
 QVariant DateEditorItem::currentEditorValue( QWidget* editor ) const
 {
   QVariant var;
-  var.asDate() = dynamic_cast<QDateEdit*>(editor)->date();
+  var.asDate() = dynamic_cast<Q3DateEdit*>(editor)->date();
   return var;
 }
 
@@ -144,7 +144,7 @@ DateTimeEditorItem::DateTimeEditorItem()
 {
 }
 
-DateTimeEditorItem::DateTimeEditorItem( QListView* lv, const QString& text, const QVariant& value )
+DateTimeEditorItem::DateTimeEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setText( 0, text );
@@ -156,7 +156,7 @@ QWidget* DateTimeEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  QDateTimeEdit* editor = new QDateTimeEdit( parent, "TimeEditorItem::spin" );
+  Q3DateTimeEdit* editor = new Q3DateTimeEdit( parent, "TimeEditorItem::spin" );
   editor->setDateTime( overrideValue().toDateTime() );
   connect(editor, SIGNAL( valueChanged(const QDateTime&) ), this, SLOT( onValueChanged() ) );
   return editor;
@@ -169,14 +169,14 @@ void DateTimeEditorItem::stopEdit( int column )
 
 void DateTimeEditorItem::setDefaultEditorValue( QWidget* editor )
 {
-  QDateTimeEdit* edit = dynamic_cast<QDateTimeEdit*>(editor);
+  Q3DateTimeEdit* edit = dynamic_cast<Q3DateTimeEdit*>(editor);
   edit->setDateTime( value().toDateTime() );
 }
 
 QVariant DateTimeEditorItem::currentEditorValue( QWidget* editor ) const
 {
   QVariant var;
-  var.asDateTime() = dynamic_cast<QDateTimeEdit*>(editor)->dateTime();
+  var.asDateTime() = dynamic_cast<Q3DateTimeEdit*>(editor)->dateTime();
   return var;
 }
 

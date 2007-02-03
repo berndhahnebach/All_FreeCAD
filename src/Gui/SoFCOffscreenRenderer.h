@@ -24,10 +24,19 @@
 #ifndef COIN_SOFCOFFSCREENRENDERER_H
 #define COIN_SOFCOFFSCREENRENDERER_H
 
-#include <Inventor/SoOffscreenRenderer.h> 
-#include <qstringlist.h>
 
-class QImage;
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+#ifndef __InventorAll__
+# include "InventorAll.h"
+#endif
+
 
 namespace Gui {
 

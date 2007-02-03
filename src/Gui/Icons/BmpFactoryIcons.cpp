@@ -106,4 +106,8 @@ void RegisterIcons()
   rclBmpFactory.addXPM("PolygonPick", PolygonPick);
   rclBmpFactory.addXPM("perspective_xpm", perspective_xpm);
   rclBmpFactory.addXPM("ortho_xpm", ortho_xpm);
+  rclBmpFactory.addXPM("button_up", button_up);
+  rclBmpFactory.addXPM("button_down", button_down);
+  rclBmpFactory.addXPM("button_left", button_left);
+  rclBmpFactory.addXPM("button_right", button_right);
 }

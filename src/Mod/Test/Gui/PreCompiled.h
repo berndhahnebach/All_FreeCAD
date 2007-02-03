@@ -40,14 +40,13 @@
 #endif
 
 // Qt Toolkit
-#include <qapplication.h>
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qlistview.h>
-#include <qmessagebox.h>
-#include <qprogressbar.h>
-#include <qpushbutton.h>
+#ifndef __Qt4All__
+# include <Gui/Qt4All.h>
+#endif
+
+#ifndef __Qt3All__
+# include <Gui/Qt3All.h>
+#endif
 
 #endif  //_PreComp_
 

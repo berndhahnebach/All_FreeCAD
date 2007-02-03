@@ -23,23 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qaccel.h>
-# include <qapplication.h>
-# include <qclipboard.h>
-# include <qfile.h>
-# include <qhbox.h>
-# include <qmessagebox.h>
-# include <qpaintdevicemetrics.h>
-# include <qpainter.h>
-# include <qpopupmenu.h>
-# include <qprinter.h>
-# include <qregexp.h>
-# include <qsimplerichtext.h>
-# include <qtimer.h>
-# include <private/qrichtext_p.h>
-#endif
-
 #include "PythonEditor.h"
 #include "Application.h"
 #include "BitmapFactory.h"
@@ -47,12 +30,37 @@
 #include "DlgEditorImp.h"
 #include "Macro.h"
 
-#include "../Base/Interpreter.h"
-#include "../Base/Exception.h"
-#include "../Base/Parameter.h"
-#define new DEBUG_CLIENTBLOCK
+#include <Base/Interpreter.h>
+#include <Base/Exception.h>
+#include <Base/Parameter.h>
+
 using namespace Gui;
-using Gui::Dialog::GetDefCol;
+
+namespace Gui {
+struct PythonEditorP
+{
+  QMap<QString, QColor> colormap; // Color map
+  PythonEditorP()
+  {
+    colormap["Text"] = Qt::black;
+    colormap["Bookmark"] = Qt::cyan;
+    colormap["Breakpoint"] = Qt::red;
+    colormap["Keyword"] = Qt::blue;
+    colormap["Comment"] = QColor(0, 170, 0);
+    colormap["Block comment"] = QColor(160, 160, 164);
+    colormap["Number"] = Qt::blue;
+    colormap["String"] = Qt::red;
+    colormap["Character"] = Qt::red;
+    colormap["Class name"] = QColor(255, 170, 0);
+    colormap["Define name"] = QColor(255, 170, 0);
+    colormap["Operator"] = QColor(160, 160, 164);
+    colormap["Python output"] = QColor(170, 170, 127);
+    colormap["Python error"] = Qt::red;
+  }
+};
+} // namespace Gui
+
+/* TRANSLATOR Gui::PythonEditor */
 
 /**
  *  Constructs a PythonEditor which is a child of 'parent', with the
@@ -61,6 +69,7 @@ using Gui::Dialog::GetDefCol;
 PythonEditor::PythonEditor(QWidget *parent,const char *name)
     : TextEdit(parent, name), WindowParameter( "Editor" )
 {
+  d = new PythonEditorP();
   pythonSyntax = new PythonSyntaxHighlighter(this);
 
   ParameterGrp::handle hPrefGrp = getWindowParameter();
@@ -72,10 +81,10 @@ PythonEditor::PythonEditor(QWidget *parent,const char *name)
   hPrefGrp->NotifyAll();
 
   // set acelerators
-  QAccel*  accelComment = new QAccel( this );
-  accelComment->connectItem( accelComment->insertItem( ALT + Key_C ),  this, SLOT( onComment() ) );
-  QAccel*  accelUncomment = new QAccel( this );
-  accelUncomment->connectItem( accelUncomment->insertItem( ALT + Key_U ), this, SLOT( onUncomment() ) );
+  Q3Accel*  accelComment = new Q3Accel( this );
+  accelComment->connectItem( accelComment->insertItem( Qt::ALT + Qt::Key_C ),  this, SLOT( onComment() ) );
+  Q3Accel*  accelUncomment = new Q3Accel( this );
+  accelUncomment->connectItem( accelUncomment->insertItem( Qt::ALT + Qt::Key_U ), this, SLOT( onUncomment() ) );
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -83,6 +92,7 @@ PythonEditor::~PythonEditor()
 {
   getWindowParameter()->Detach( this );
   delete pythonSyntax;
+  delete d;
 }
 
 void PythonEditor::keyPressEvent ( QKeyEvent * e )
@@ -108,7 +118,7 @@ void PythonEditor::keyPressEvent ( QKeyEvent * e )
   }
 
   if ( ok )
-    QTextEdit::keyPressEvent( e );
+    Q3TextEdit::keyPressEvent( e );
 }
 
 /** Sets the new color for \a rcColor. */  
@@ -137,10 +147,14 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
   }
   else
   {
-    unsigned long col = hPrefGrp->GetUnsigned( sReason, GetDefCol().color( sReason ));
-    QColor color;
-    color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    pythonSyntax->setColor( sReason, color );
+    QMap<QString, QColor>::ConstIterator it = d->colormap.find(sReason);
+    if (it != d->colormap.end()) {
+      QColor color = it.data();
+      unsigned long col = (color.red() << 24) | (color.green() << 16) | (color.blue() << 8);
+      col = hPrefGrp->GetUnsigned( sReason, col);
+      color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
+      pythonSyntax->setColor( sReason, color );
+    }
   }
   if (strcmp(sReason, "TabSize") == 0 || strcmp(sReason, "FontSize") == 0)
   {
@@ -153,17 +167,18 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
   }
 }
 
-QPopupMenu * PythonEditor::createPopupMenu ( const QPoint & pos )
+Q3PopupMenu * PythonEditor::createPopupMenu ( const QPoint & pos )
 {
-  QPopupMenu* menu = TextEdit::createPopupMenu(pos);
+  Q3PopupMenu* menu = TextEdit::createPopupMenu(pos);
   
   menu->insertSeparator();
-  menu->insertItem( tr("Comment"), this, SLOT( onComment() ), ALT + Key_C );
-  menu->insertItem( tr("Uncomment"), this, SLOT( onUncomment() ), ALT + Key_U );
+  menu->insertItem( tr("Comment"), this, SLOT( onComment() ), Qt::ALT + Qt::Key_C );
+  menu->insertItem( tr("Uncomment"), this, SLOT( onUncomment() ), Qt::ALT + Qt::Key_U );
 
   return menu;
 }
 
+#if 0 //TODO Reimplement
 class PythonComment : public QTextCommand
 {
 public:
@@ -185,7 +200,7 @@ public:
 
   virtual QTextCursor *execute( QTextCursor *c )
   {
-    for ( QValueList<int>::Iterator it = para.begin(); it != para.end(); ++it )
+    for ( Q3ValueList<int>::Iterator it = para.begin(); it != para.end(); ++it )
     {
       QTextParagraph* paragr = doc->paragAt(*it);
       paragr->insert( 0, "#" );
@@ -197,7 +212,7 @@ public:
 
   virtual QTextCursor *unexecute( QTextCursor *c )
   {
-    for ( QValueList<int>::Iterator it = para.begin(); it != para.end(); ++it )
+    for ( Q3ValueList<int>::Iterator it = para.begin(); it != para.end(); ++it )
     {
       QTextParagraph* paragr = doc->paragAt(*it);
       if ( paragr->at( 0 )->c == '#' )
@@ -209,7 +224,7 @@ public:
   }
 
 protected:
-  QValueList<int> para;
+  Q3ValueList<int> para;
 };
 
 class PythonUncomment : public PythonComment
@@ -228,9 +243,10 @@ public:
   QTextCursor *execute( QTextCursor *c ) { return PythonComment::unexecute( c ); }
   QTextCursor *unexecute( QTextCursor *c ) { return PythonComment::execute( c ); }
 };
-
+#endif
 void PythonEditor::onComment()
 {
+#if 0 //TODO Reimplement
   PythonComment* cmd = new PythonComment(document());
   document()->addCommand(cmd);
 
@@ -251,10 +267,12 @@ void PythonEditor::onComment()
   document()->removeSelection( QTextDocument::Standard );
   repaintChanged();
   setModified( true );
+#endif
 }
 
 void PythonEditor::onUncomment()
 {
+#if 0 //TODO Reimplement
   PythonComment* cmd = new PythonUncomment(document());
   document()->addCommand(cmd);
 
@@ -276,6 +294,7 @@ void PythonEditor::onUncomment()
   document()->removeSelection( QTextDocument::Standard );
   repaintChanged();
   setModified( true );
+#endif
 }
 
 // ------------------------------------------------------------------------
@@ -291,28 +310,12 @@ public:
     "if" << "import" << "in" << "is" << "lambda" << "None" << "not" << "or" << "pass" << "print" <<
     "raise" << "return" << "try" << "while" << "yield";
 
-    unsigned long col = GetDefCol().color( "Text" );
-    cNormalText     = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "Comment" );
-    cComment        = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "Block comment" );
-    cBlockcomment   = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "String" );
-    cLiteral        = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "Number" );
-    cNumber         = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "Operator" );
-    cOperator       = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "Keyword" );
-    cKeyword        = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "Class name" );
-    cClassName      = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "Define name" );
-    cDefineName     = QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "Python output" );
-    cOutput        =  QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    col = GetDefCol().color( "Python error" );
-    cError         =  QColor((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
+    cNormalText.setRgb(0, 0, 0); cComment.setRgb(0, 170, 0);
+    cBlockcomment.setRgb(160, 160, 164); cLiteral.setRgb(255, 0, 0);
+    cNumber.setRgb(0, 0, 255); cOperator.setRgb(160, 160, 164);
+    cKeyword.setRgb(0, 0, 255); cClassName.setRgb(255, 170, 0);
+    cDefineName.setRgb(255, 170, 0); cOutput.setRgb(170, 170, 127); 
+    cError.setRgb(255, 0, 0);
   }
 
   QStringList keywords;
@@ -325,8 +328,8 @@ public:
 /**
  * Constructs a Python syntax highlighter.
  */
-PythonSyntaxHighlighter::PythonSyntaxHighlighter(QTextEdit* edit)
-    : QSyntaxHighlighter(edit)
+PythonSyntaxHighlighter::PythonSyntaxHighlighter(Q3TextEdit* edit)
+    : Q3SyntaxHighlighter(edit)
 {
   d = new PythonSyntaxHighlighterP;
 }
@@ -412,7 +415,7 @@ void PythonSyntaxHighlighter::colorChanged( const QString& type, const QColor& c
  */
 int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
 {
-  uint i = 0;
+  int i = 0;
   QChar prev, ch;
   QString buffer;
 
@@ -437,7 +440,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
     {
     case Standard:
       {
-        switch ( ch )
+        switch ( ch.unicode() )
         {
         case '#':
           {
@@ -635,9 +638,9 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
  *  name 'name'.
  */
 PythonEditView::PythonEditView( const QString& file, QWidget* parent, const char* name)
-    : MDIView(0,parent, name, WDestructiveClose), WindowParameter( "Editor" )
+    : MDIView(0,parent, name, Qt::WDestructiveClose), WindowParameter( "Editor" )
 {
-  QHBox* hbox = new QHBox( this );
+  Q3HBox* hbox = new Q3HBox( this );
 
   // create the editor first
   _textEdit = new PythonEditor(this);
@@ -645,7 +648,7 @@ PythonEditView::PythonEditView( const QString& file, QWidget* parent, const char
   // and reparent it 
   _textEdit->reparent(hbox, QPoint());
   _lineMarker->show();
-  _textEdit->setWordWrap( QTextEdit::NoWrap );
+  _textEdit->setWordWrap( Q3TextEdit::NoWrap );
   setIcon( Gui::BitmapFactory().pixmap("python_small") );
 
 
@@ -867,7 +870,7 @@ bool PythonEditView::saveAs(void)
   }
   else
   {
-    emit message( tr("Saving aborted"), 2000 );
+    message( tr("Saving aborted"), 2000 );
     return false;
   }
 }
@@ -881,7 +884,7 @@ void PythonEditView::openFile (const QString& fileName)
   _fileName = fileName;
   QFile file(fileName);
 
-  if( !file.open(IO_ReadOnly))
+  if( !file.open(QIODevice::ReadOnly))
     return;
 
   QTextStream in(&file);
@@ -896,7 +899,7 @@ void PythonEditView::openFile (const QString& fileName)
   _textEdit->setModified(false);
   setCaption(fileName);
 
-  emit message( tr("Loaded document %1").arg( fileName ), 2000 );
+  message( tr("Loaded document %1").arg( fileName ), 2000 );
 }
 
 /**
@@ -954,26 +957,27 @@ void PythonEditView::redo(void)
 /**
  * Shows the printer dialog.
  */
-void PythonEditView::print( QPrinter* printer )
+void PythonEditView::print()
 {
 #ifndef QT_NO_PRINTER
+  QPrinter printer( QPrinter::HighResolution );
   int pageNo = 1;
 
-  if ( printer->setup(this) ) 
+  if ( printer.setup(this) ) 
   {
     // printer dialog
-    printer->setFullPage( TRUE );
-    emit message( tr("Printing..."), 0 );
+    printer.setFullPage( TRUE );
+    message( tr("Printing..."), 0 );
 
     QPainter p;
-    if ( !p.begin( printer ) )
+    if ( !p.begin( &printer ) )
       return; // paint on printer
 
-    QPaintDeviceMetrics metrics( p.device() );
+    Q3PaintDeviceMetrics metrics( p.device() );
     int dpiy = metrics.logicalDpiY();
     int margin = (int) ( (2/2.54)*dpiy ); // 2 cm margins
     QRect body( margin, margin, metrics.width() - 2*margin, metrics.height() - 2*margin );
-    QSimpleRichText richText( QStyleSheet::convertFromPlainText(_textEdit->text()),
+    Q3SimpleRichText richText( Q3StyleSheet::convertFromPlainText(_textEdit->text()),
           QFont(),
           _textEdit->context(),
           _textEdit->styleSheet(),
@@ -995,8 +999,8 @@ void PythonEditView::print( QPrinter* printer )
       QString msg( "Printing (page " );
       msg += QString::number( ++pageNo );
       msg += ")...";
-      emit message( msg, 0 );
-      printer->newPage();
+      message( msg, 0 );
+      printer.newPage();
       page++;
     } while (true);
 
@@ -1011,7 +1015,7 @@ void PythonEditView::print( QPrinter* printer )
 void PythonEditView::saveFile()
 {
   QFile file(_fileName);
-  if( !file.open(IO_WriteOnly))
+  if( !file.open(QIODevice::WriteOnly))
     return;
 
   QTextStream out(&file);
@@ -1024,7 +1028,7 @@ void PythonEditView::saveFile()
 
   setCaption(_fileName);
 
-  emit message( tr( "File %1 saved" ).arg( _fileName ), 2000 );
+  message( tr( "File %1 saved" ).arg( _fileName ), 2000 );
 
   return;
 }
@@ -1042,6 +1046,7 @@ bool PythonEditView::isSavedOnce()
  */
 QStringList PythonEditView::undoActions() const
 {
+#if 0 //TODO Reimplement
   QTextDocument* doc = dynamic_cast<TextEdit*>(_textEdit)->document();
   QTextCommandHistory* hist = doc->commands();
 
@@ -1054,6 +1059,9 @@ QStringList PythonEditView::undoActions() const
       lst << "Modified";
   }
   return lst;
+#else
+  return QStringList();
+#endif
 }
 
 /**
@@ -1061,6 +1069,7 @@ QStringList PythonEditView::undoActions() const
  */
 QStringList PythonEditView::redoActions() const
 {
+#if 0 //TODO Reimplement
   QTextDocument* doc = dynamic_cast<TextEdit*>(_textEdit)->document();
   QTextCommandHistory* hist = doc->commands();
 
@@ -1073,11 +1082,14 @@ QStringList PythonEditView::redoActions() const
       lst << "Modified";
   }
   return lst;
+#else
+  return QStringList();
+#endif
 }
 
 
 LineMarker::LineMarker( TextEdit* textEdit, QWidget* parent, const char* name )
-	: QWidget( parent, name, WRepaintNoErase | WStaticContents | WResizeNoErase ),
+	: QWidget( parent, name, Qt::WNoAutoErase | Qt::WStaticContents | Qt::WResizeNoErase ),
 	  _textEdit( textEdit )
 {
 	connect( _textEdit->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( onRepaint() ) );
@@ -1105,6 +1117,7 @@ void LineMarker::resizeEvent( QResizeEvent *e )
 
 void LineMarker::paintEvent( QPaintEvent* /*e*/ )
 {
+#if 0 //TODO Reimplement
 	_buffer.fill();
 
 	QTextParagraph *p = _textEdit->document()->firstParagraph();
@@ -1130,7 +1143,7 @@ void LineMarker::paintEvent( QPaintEvent* /*e*/ )
     painter.setFont( _font );
 		painter.drawText( 0, p->rect().y() - y,
 				  _buffer.width() - 10, p->rect().height(),
-				  AlignRight | AlignTop,
+				  Qt::AlignRight | Qt::AlignTop,
 				  QString::number(p->paragId()+1) );
 /*    if (p->paragId()==5)
     {
@@ -1166,6 +1179,7 @@ void LineMarker::paintEvent( QPaintEvent* /*e*/ )
 
 	painter.end();
 	bitBlt( this, 0, 0, &_buffer );
+#endif
 }
 
 

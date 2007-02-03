@@ -25,6 +25,8 @@
 #ifndef _Application_
 #define _Application_
 
+#include <boost/signal.hpp>
+
 #include <vector>
 
 #include <Base/PyExportImp.h>
@@ -109,6 +111,16 @@ public:
   void setActiveDocument(const char *Name);
   //@}
 
+  /** @name Signals of the Application */
+	//@{
+  /// signal on new Document
+  boost::signal<void (const Document&)> signalNewDocument;
+  /// signal on deleted Document
+  boost::signal<void (const Document&)> signalDeletedDocument;
+  /// signal on renaming Document
+  boost::signal<void (const Document&)> signalRenameDocument;
+  //@}
+
 
 	/** @name methods for parameter handling */
 	//@{
@@ -117,7 +129,7 @@ public:
   /// returns the user parameter
 	ParameterManager &                                GetUserParameter(void) ;
   /** Gets a parameter group by a full qualified path
-    * It's a easy method to get a group:
+    * It's an easy method to get a group:
     * \code
     * // geting standard parameter
     * ParameterGrp::handle hGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Mod/Raytracing");

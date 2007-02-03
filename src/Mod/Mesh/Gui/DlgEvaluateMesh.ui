@@ -1,777 +1,622 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>MeshGui::DlgEvaluateMesh</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>MeshGui::DlgEvaluateMesh</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>371</width>
-            <height>579</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Evaluate Mesh</string>
-    </property>
-    <property name="sizeGripEnabled">
-        <bool>true</bool>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>MeshGui::DlgEvaluateMesh</class>
+ <widget class="QDialog" name="MeshGui::DlgEvaluateMesh" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>371</width>
+    <height>603</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Evaluate Mesh</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="7" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>70</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="groupBoxInfo" >
+     <property name="title" >
+      <string>Mesh information</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item rowspan="2" row="0" column="2" >
+       <layout class="QGridLayout" >
+        <property name="margin" >
+         <number>0</number>
         </property>
-        <spacer row="7" column="0">
-            <property name="name">
-                <cstring>spacer11</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>70</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QLayoutWidget" row="8" column="0">
-            <property name="name">
-                <cstring>Layout1</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonHelp</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Help</string>
-                    </property>
-                    <property name="accel">
-                        <string>F1</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Horizontal Spacing2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>buttonCancel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>&amp;Close</string>
-                    </property>
-                    <property name="accel">
-                        <string>Alt+C</string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>groupBoxInfo</cstring>
-            </property>
-            <property name="title">
-                <string>Mesh information</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QComboBox" row="0" column="0" rowspan="1" colspan="2">
-                    <property name="name">
-                        <cstring>comboBoxName</cstring>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget" row="0" column="2" rowspan="2" colspan="1">
-                    <property name="name">
-                        <cstring>layout3</cstring>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <spacer row="2" column="2">
-                            <property name="name">
-                                <cstring>spacer5</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>31</width>
-                                    <height>20</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <spacer row="0" column="2">
-                            <property name="name">
-                                <cstring>spacer3</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>51</width>
-                                    <height>21</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QLabel" row="0" column="3">
-                            <property name="name">
-                                <cstring>textLabel4</cstring>
-                            </property>
-                            <property name="text">
-                                <string>No information</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="2" column="0" rowspan="1" colspan="2">
-                            <property name="name">
-                                <cstring>textLabel3</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Number of points:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>textLabel2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Number of edges:</string>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="3">
-                            <property name="name">
-                                <cstring>textLabel5</cstring>
-                            </property>
-                            <property name="text">
-                                <string>No information</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <spacer row="1" column="1" rowspan="1" colspan="2">
-                            <property name="name">
-                                <cstring>spacer4</cstring>
-                            </property>
-                            <property name="orientation">
-                                <enum>Horizontal</enum>
-                            </property>
-                            <property name="sizeType">
-                                <enum>Expanding</enum>
-                            </property>
-                            <property name="sizeHint">
-                                <size>
-                                    <width>51</width>
-                                    <height>21</height>
-                                </size>
-                            </property>
-                        </spacer>
-                        <widget class="QLabel" row="2" column="3">
-                            <property name="name">
-                                <cstring>textLabel6</cstring>
-                            </property>
-                            <property name="text">
-                                <string>No information</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignVCenter|AlignRight</set>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="0" column="0">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Number of faces:</string>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QPushButton" row="1" column="0">
-                    <property name="name">
-                        <cstring>pushButtonRefresh</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Refresh</string>
-                    </property>
-                </widget>
-                <spacer row="1" column="1">
-                    <property name="name">
-                        <cstring>spacer15</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>121</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-            </grid>
-        </widget>
-        <widget class="QGroupBox" row="3" column="0">
-            <property name="name">
-                <cstring>groupBox2_2</cstring>
-            </property>
-            <property name="title">
-                <string>Duplicate points</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>textLabelDuplPoints</cstring>
-                    </property>
-                    <property name="text">
-                        <string>No information</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer8</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>240</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>analyzeDupPts</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Analyze</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>repairDupPts</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Repair</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox" row="4" column="0">
-            <property name="name">
-                <cstring>groupBox2_3</cstring>
-            </property>
-            <property name="title">
-                <string>Non-Manifolds</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>textLabelNonmanifolds</cstring>
-                    </property>
-                    <property name="text">
-                        <string>No information</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer9</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>270</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>analyzeNonmanifolds</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Analyze</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>repairNonmanifolds</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Repair</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox" row="2" column="0">
-            <property name="name">
-                <cstring>groupBox2</cstring>
-            </property>
-            <property name="title">
-                <string>Duplicate faces</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>textLabelDuplicatedFaces</cstring>
-                    </property>
-                    <property name="text">
-                        <string>No information</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer7</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>290</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>analyzeDupFaces</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Analyze</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>repairDupFaces</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Repair</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox" row="1" column="0">
-            <property name="name">
-                <cstring>groupBox2_4</cstring>
-            </property>
-            <property name="title">
-                <string>Orientation</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>textLabelOrientation</cstring>
-                    </property>
-                    <property name="text">
-                        <string>No information</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer7_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>290</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>analyzeOrientation</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Analyze</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>repairOrientation</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Repair</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox" row="5" column="0">
-            <property name="name">
-                <cstring>groupBox2_3_2_2</cstring>
-            </property>
-            <property name="title">
-                <string>Degenerated faces</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>textLabelDegeneration</cstring>
-                    </property>
-                    <property name="text">
-                        <string>No information</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer9_2_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>296</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>analyzeDegenerated</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Analyze</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>repairDegenerated</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Repair</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-        <widget class="QGroupBox" row="6" column="0">
-            <property name="name">
-                <cstring>groupBox2_3_2</cstring>
-            </property>
-            <property name="title">
-                <string>Face indices</string>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QCheckBox">
-                    <property name="name">
-                        <cstring>textLabelIndices</cstring>
-                    </property>
-                    <property name="text">
-                        <string>No information</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>spacer9_2</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>290</width>
-                            <height>20</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>analyzeIndices</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Analyze</string>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>repairIndices</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Repair</string>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>buttonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>pushButtonRefresh</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onRefreshInfo()</slot>
-    </connection>
-    <connection>
-        <sender>analyzeDupFaces</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onAnalyzeDuplicatedFaces()</slot>
-    </connection>
-    <connection>
-        <sender>repairDupFaces</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onRepairDuplicatedFaces()</slot>
-    </connection>
-    <connection>
-        <sender>analyzeDupPts</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onAnalyzeDuplicatedPoints()</slot>
-    </connection>
-    <connection>
-        <sender>repairDupPts</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onRepairDuplicatedPoints()</slot>
-    </connection>
-    <connection>
-        <sender>analyzeNonmanifolds</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onAnalyzeNonManifolds()</slot>
-    </connection>
-    <connection>
-        <sender>repairNonmanifolds</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onRepairNonManifolds()</slot>
-    </connection>
-    <connection>
-        <sender>analyzeIndices</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onAnalyzeIndices()</slot>
-    </connection>
-    <connection>
-        <sender>repairIndices</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onRepairIndices()</slot>
-    </connection>
-    <connection>
-        <sender>analyzeDegenerated</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onAnalyzeDegenerations()</slot>
-    </connection>
-    <connection>
-        <sender>repairDegenerated</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onRepairDegenerations()</slot>
-    </connection>
-    <connection>
-        <sender>analyzeOrientation</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onAnalyzeOrientation()</slot>
-    </connection>
-    <connection>
-        <sender>repairOrientation</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onRepairOrientation()</slot>
-    </connection>
-    <connection>
-        <sender>textLabelOrientation</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onCheckOrientation()</slot>
-    </connection>
-    <connection>
-        <sender>textLabelDuplicatedFaces</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onCheckDuplicatedFaces()</slot>
-    </connection>
-    <connection>
-        <sender>textLabelDuplPoints</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onCheckDuplicatedPoints()</slot>
-    </connection>
-    <connection>
-        <sender>textLabelNonmanifolds</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onCheckNonManifolds()</slot>
-    </connection>
-    <connection>
-        <sender>textLabelDegeneration</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onCheckDegenerations()</slot>
-    </connection>
-    <connection>
-        <sender>textLabelIndices</sender>
-        <signal>clicked()</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onCheckIndices()</slot>
-    </connection>
-    <connection>
-        <sender>comboBoxName</sender>
-        <signal>activated(int)</signal>
-        <receiver>MeshGui::DlgEvaluateMesh</receiver>
-        <slot>onMeshSelected(int)</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>comboBoxName</tabstop>
-    <tabstop>pushButtonRefresh</tabstop>
-    <tabstop>analyzeOrientation</tabstop>
-    <tabstop>repairOrientation</tabstop>
-    <tabstop>analyzeDupFaces</tabstop>
-    <tabstop>repairDupFaces</tabstop>
-    <tabstop>analyzeDupPts</tabstop>
-    <tabstop>repairDupPts</tabstop>
-    <tabstop>analyzeNonmanifolds</tabstop>
-    <tabstop>repairNonmanifolds</tabstop>
-    <tabstop>analyzeIndices</tabstop>
-    <tabstop>repairIndices</tabstop>
-    <tabstop>analyzeDegenerated</tabstop>
-    <tabstop>repairDegenerated</tabstop>
-    <tabstop>buttonHelp</tabstop>
-    <tabstop>buttonCancel</tabstop>
-</tabstops>
-<slots>
-    <slot>onRefreshInfo()</slot>
-    <slot>onAnalyzeDuplicatedFaces()</slot>
-    <slot>onRepairDuplicatedFaces()</slot>
-    <slot>onRepairDuplicatedPoints()</slot>
-    <slot>onAnalyzeDuplicatedPoints()</slot>
-    <slot>onAnalyzeNonManifolds()</slot>
-    <slot>onRepairNonManifolds()</slot>
-    <slot>onAnalyzeDegenerations()</slot>
-    <slot>onRepairDegenerations()</slot>
-    <slot>onAnalyzeIndices()</slot>
-    <slot>onRepairIndices()</slot>
-    <slot>onAnalyzeOrientation()</slot>
-    <slot>onRepairOrientation()</slot>
-    <slot>onCheckOrientation()</slot>
-    <slot>onCheckDegenerations()</slot>
-    <slot>onCheckDuplicatedFaces()</slot>
-    <slot>onCheckDuplicatedPoints()</slot>
-    <slot>onCheckNonManifolds()</slot>
-    <slot>onCheckIndices()</slot>
-    <slot access="protected">onMeshSelected(int)</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item row="2" column="0" >
+         <widget class="QLabel" name="textLabel3" >
+          <property name="text" >
+           <string>Number of points:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2" >
+         <widget class="QLabel" name="textLabel4" >
+          <property name="text" >
+           <string>No information</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" >
+         <widget class="QLabel" name="textLabel1" >
+          <property name="text" >
+           <string>Number of faces:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="2" >
+         <widget class="QLabel" name="textLabel6" >
+          <property name="text" >
+           <string>No information</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="textLabel2" >
+          <property name="text" >
+           <string>Number of edges:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>16</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="1" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>26</width>
+            <height>21</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="1" column="2" >
+         <widget class="QLabel" name="textLabel5" >
+          <property name="text" >
+           <string>No information</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType" >
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>16</width>
+            <height>21</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>121</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QPushButton" name="refreshButton" >
+        <property name="text" >
+         <string>Refresh</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2" >
+       <widget class="QComboBox" name="meshNameButton" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="6" column="0" >
+    <widget class="QGroupBox" name="groupBox2_3_2" >
+     <property name="title" >
+      <string>Face indices</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkIndicesButton" >
+        <property name="text" >
+         <string>No information</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>290</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="analyzeIndicesButton" >
+        <property name="text" >
+         <string>Analyze</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="repairIndicesButton" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Repair</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0" >
+    <widget class="QGroupBox" name="groupBox2_3_2_2" >
+     <property name="title" >
+      <string>Degenerated faces</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkDegenerationButton" >
+        <property name="text" >
+         <string>No information</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>296</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="analyzeDegeneratedButton" >
+        <property name="text" >
+         <string>Analyze</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="repairDegeneratedButton" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Repair</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupBox2_4" >
+     <property name="title" >
+      <string>Orientation</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkOrientationButton" >
+        <property name="text" >
+         <string>No information</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>290</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="analyzeOrientationButton" >
+        <property name="text" >
+         <string>Analyze</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="repairOrientationButton" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Repair</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QGroupBox" name="groupBox2" >
+     <property name="title" >
+      <string>Duplicate faces</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkDuplicatedFacesButton" >
+        <property name="text" >
+         <string>No information</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>290</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="analyzeDuplicatedFacesButton" >
+        <property name="text" >
+         <string>Analyze</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="repairDuplicatedFacesButton" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Repair</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" >
+    <widget class="QGroupBox" name="groupBox2_3" >
+     <property name="title" >
+      <string>Non-Manifolds</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkNonmanifoldsButton" >
+        <property name="text" >
+         <string>No information</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>270</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="analyzeNonmanifoldsButton" >
+        <property name="text" >
+         <string>Analyze</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="repairNonmanifoldsButton" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Repair</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QGroupBox" name="groupBox2_2" >
+     <property name="title" >
+      <string>Duplicate points</string>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkDuplicatedPointsButton" >
+        <property name="text" >
+         <string>No information</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>240</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="analyzeDuplicatedPointsButton" >
+        <property name="text" >
+         <string>Analyze</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="repairDuplicatedPointsButton" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Repair</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="8" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QPushButton" name="buttonHelp" >
+       <property name="text" >
+        <string>&amp;Help</string>
+       </property>
+       <property name="shortcut" >
+        <string>F1</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType" >
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton" >
+       <property name="text" >
+        <string>&amp;Close</string>
+       </property>
+       <property name="shortcut" >
+        <string>Alt+C</string>
+       </property>
+       <property name="autoDefault" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <tabstops>
+  <tabstop>refreshButton</tabstop>
+  <tabstop>checkOrientationButton</tabstop>
+  <tabstop>analyzeOrientationButton</tabstop>
+  <tabstop>repairOrientationButton</tabstop>
+  <tabstop>checkDuplicatedFacesButton</tabstop>
+  <tabstop>analyzeDuplicatedFacesButton</tabstop>
+  <tabstop>repairDuplicatedFacesButton</tabstop>
+  <tabstop>checkDuplicatedPointsButton</tabstop>
+  <tabstop>analyzeDuplicatedPointsButton</tabstop>
+  <tabstop>repairDuplicatedPointsButton</tabstop>
+  <tabstop>checkNonmanifoldsButton</tabstop>
+  <tabstop>analyzeNonmanifoldsButton</tabstop>
+  <tabstop>repairNonmanifoldsButton</tabstop>
+  <tabstop>checkDegenerationButton</tabstop>
+  <tabstop>analyzeDegeneratedButton</tabstop>
+  <tabstop>repairDegeneratedButton</tabstop>
+  <tabstop>checkIndicesButton</tabstop>
+  <tabstop>analyzeIndicesButton</tabstop>
+  <tabstop>repairIndicesButton</tabstop>
+  <tabstop>buttonHelp</tabstop>
+  <tabstop>closeButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
+   <receiver>MeshGui::DlgEvaluateMesh</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>326</x>
+     <y>615</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>189</x>
+     <y>337</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

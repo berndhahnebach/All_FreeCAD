@@ -23,16 +23,9 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qbuttongroup.h>
-# include <qcheckbox.h>
-# include <qcombobox.h>
-# include <qmessagebox.h>
-#endif
-
 #include "DlgSettingsColorGradientImp.h"
 #include "SpinBox.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgSettingsColorGradientImp */
@@ -41,9 +34,13 @@ using namespace Gui::Dialog;
  *  Constructs a DlgSettingsColorGradientImp as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-DlgSettingsColorGradientImp::DlgSettingsColorGradientImp( QWidget* parent, const char* name, bool modal, WFlags fl )
-  : DlgSettingsColorGradientBase( parent, name, modal, fl )
+DlgSettingsColorGradientImp::DlgSettingsColorGradientImp( QWidget* parent, Qt::WFlags fl )
+  : QDialog( parent, fl )
 {
+  this->setupUi(this);
+  connect(floatSpinBoxMin, SIGNAL(valueChanged(double)), this, SLOT(onValidateMinimum()));
+  connect(floatSpinBoxMax, SIGNAL(valueChanged(double)), this, SLOT(onValidateMaximum()));
+  connect(spinBoxDecimals, SIGNAL(valueChanged(int)), this, SLOT(onSetDecimals(int)));
 }
 
 /**
@@ -91,21 +88,17 @@ void DlgSettingsColorGradientImp::setColorStyle( App::ColorGradient::TStyle tSty
   switch ( tStyle )
   {
   case App::ColorGradient::FLOW:
-    buttonGroupStyle->setButton(0);
+    radioButtonFlow->setChecked(true);
     break;
   case App::ColorGradient::ZERO_BASED:
-    buttonGroupStyle->setButton(1);
+    radioButtonZero->setChecked(true);
     break;
   }
 }
 
 App::ColorGradient::TStyle DlgSettingsColorGradientImp::colorStyle() const
 {
-  int id = buttonGroupStyle->selectedId();
-  if ( id == 0 )
-    return App::ColorGradient::FLOW;
-  else
-    return App::ColorGradient::ZERO_BASED;
+  return radioButtonZero->isChecked() ? App::ColorGradient::ZERO_BASED : App::ColorGradient::FLOW;
 }
 
 void DlgSettingsColorGradientImp::setOutGrayed( bool grayed )
@@ -192,10 +185,8 @@ void DlgSettingsColorGradientImp::onValidateMinimum()
 
 void DlgSettingsColorGradientImp::onSetDecimals(int dec)
 {
-  floatSpinBoxMax->setPrecision(dec);
-  floatSpinBoxMin->setPrecision(dec);
+  floatSpinBoxMax->setDecimals(dec);
+  floatSpinBoxMin->setDecimals(dec);
 }
 
-
-#include "DlgSettingsColorGradient.cpp"
-#include "moc_DlgSettingsColorGradient.cpp"
+#include "moc_DlgSettingsColorGradientImp.cpp"

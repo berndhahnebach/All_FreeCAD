@@ -21,11 +21,16 @@
  ***************************************************************************/
 
 
-#ifndef WORKBENCH_MANAGER_H
-#define WORKBENCH_MANAGER_H
+#ifndef GUI_WORKBENCHMANAGER_H
+#define GUI_WORKBENCHMANAGER_H
 
-#include <qmap.h>
-#include <qstring.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 
@@ -71,4 +76,4 @@ private:
 } // namespace Gui
 
 
-#endif // WORKBENCH_MANAGER_H 
+#endif // GUI_WORKBENCHMANAGER_H 

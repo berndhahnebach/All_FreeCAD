@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qlistview.h>
+# include <q3listview.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoSeparator.h>
 # include <Inventor/nodes/SoSwitch.h>
@@ -43,7 +43,7 @@
 using std::vector;
 using std::string;
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 PROPERTY_SOURCE(Gui::ViewProviderExtern, Gui::ViewProvider)

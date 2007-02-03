@@ -33,8 +33,6 @@
 #include "Handle.h"
 #include "Exception.h"
 
-#define new DEBUG_CLIENTBLOCK
-
 using namespace Base;
 
 //**************************************************************************

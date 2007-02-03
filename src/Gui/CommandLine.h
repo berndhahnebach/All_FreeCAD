@@ -24,12 +24,15 @@
 #ifndef __COMMAND_LINE_H__
 #define __COMMAND_LINE_H__
 
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 #include "Window.h"
-
-#include <qcombobox.h>
-#include <qlineedit.h>
-#include <qvalidator.h>
 
 namespace Gui {
 
@@ -79,7 +82,7 @@ public:
   static void Destruct(void);
   static CommandLineBase &Instance(void);
 
-protected slots:
+protected Q_SLOTS:
   void onClearHistory();
   void onShowHistory();
   void onLaunchCommand();

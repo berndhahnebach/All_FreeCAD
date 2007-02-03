@@ -23,15 +23,14 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qcombobox.h>
-# include <qiconview.h>
-# include <qlabel.h>
-# include <qlineedit.h>
-# include <qspinbox.h>
-# include <qstringlist.h>
-# include <qpushbutton.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
 #endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 #include "DlgDisplayPropertiesImp.h"
 #include "DlgMaterialPropertiesImp.h"
@@ -49,7 +48,7 @@
 #include <App/Application.h>
 #include <App/Feature.h>
 #include <App/Material.h>
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 using namespace std;
 
@@ -63,9 +62,10 @@ using namespace std;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-  : DlgDisplayProperties( parent, name, modal, fl )
+DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent, Qt::WFlags fl )
+  : QDialog( parent, fl )
 {
+  this->setupUi(this);
   QStringList commonModeList;
   QString activeMode;
   int transparency = -1;
@@ -219,49 +219,49 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent,  const char* 
   // set dialog stuff
   //
   if ( !bDisplay ) {
-    ModeBox->setDisabled(true);
+    changeMode->setDisabled(true);
   } else {
-    ModeBox->insertStringList(commonModeList);
-    ModeBox->setCurrentText(activeMode);
+    changeMode->insertStringList(commonModeList);
+    changeMode->setCurrentText(activeMode);
   }
 
   if ( !bTransparency ) {
-    TransBar->setDisabled(true);
-    TransSpin->setDisabled(true);
+    horizontalSlider->setDisabled(true);
+    spinTransparency->setDisabled(true);
     textLabel1_2->setDisabled(true);
   } else {
-    TransBar->setValue(transparency);
-    TransSpin->setValue(transparency);
+    horizontalSlider->setValue(transparency);
+    spinTransparency->setValue(transparency);
   }
 
   if ( bShapeColor ) {
-    ColorButton->setColor(shapeColor);
+    buttonColor->setColor(shapeColor);
   } else {
-    ColorButton->setDisabled(true);
+    buttonColor->setDisabled(true);
   }
 
   if ( !bPointSize ) {
-    pointSizeSpin->setDisabled(true);
+    spinPointSize->setDisabled(true);
     textLabel2->setDisabled(true);
   } else {
-    pointSizeSpin->blockSignals(true);
-    pointSizeSpin->setMaxValue(pointSizeRange[1]);
-    pointSizeSpin->setMinValue(pointSizeRange[0]);
-    pointSizeSpin->setLineStep(fPointSizeGranularity);
-    pointSizeSpin->setValue(pointsize);
-    pointSizeSpin->blockSignals(false);
+    spinPointSize->blockSignals(true);
+    spinPointSize->setMaximum(pointSizeRange[1]);
+    spinPointSize->setMinimum(pointSizeRange[0]);
+    spinPointSize->setSingleStep(fPointSizeGranularity);
+    spinPointSize->setValue(pointsize);
+    spinPointSize->blockSignals(false);
   }
 
   if ( !bLineWidth ) {
-    lineWidthSpin->setDisabled(true);
+    spinLineWidth->setDisabled(true);
     textLabel3->setDisabled(true);
   } else {
-    lineWidthSpin->blockSignals(true);
-    lineWidthSpin->setMaxValue(lineWidthRange[1]);
-    lineWidthSpin->setMinValue(lineWidthRange[0]);
-    lineWidthSpin->setLineStep(fLineWidthGranularity);
-    lineWidthSpin->setValue(linewidth);
-    lineWidthSpin->blockSignals(false);
+    spinLineWidth->blockSignals(true);
+    spinLineWidth->setMaximum(lineWidthRange[1]);
+    spinLineWidth->setMinimum(lineWidthRange[0]);
+    spinLineWidth->setSingleStep(fLineWidthGranularity);
+    spinLineWidth->setValue(linewidth);
+    spinLineWidth->blockSignals(false);
   }
 
   if ( bShapeMaterial )
@@ -290,21 +290,21 @@ DlgDisplayPropertiesImp::DlgDisplayPropertiesImp( QWidget* parent,  const char* 
 
     QStringList material = Materials.keys();
     material.sort();
-    MaterialCombo->insertItem("Default");
-    MaterialCombo->insertStringList(material);
+    changeMaterial->insertItem("Default");
+    changeMaterial->insertStringList(material);
     Materials["Default"]       = App::Material::DEFAULT;
     for (QMap<QString, App::Material::MaterialType>::ConstIterator it = Materials.begin(); it != Materials.end(); ++it)
     {
       if (it.data() == cMatType) {
-        MaterialCombo->setCurrentText(it.key());
+        changeMaterial->setCurrentText(it.key());
         break;
       }
     }
   }
   else
   {
-    MaterialCombo->setDisabled(true);
-    pushButton2->setDisabled(true);
+    changeMaterial->setDisabled(true);
+    buttonUserDefinedMaterial->setDisabled(true);
   }
 }
 
@@ -319,32 +319,31 @@ DlgDisplayPropertiesImp::~DlgDisplayPropertiesImp()
 /**
  * Opens a dialog that allows to modify the 'ShapeMaterial' property of all selected view providers.
  */
-void DlgDisplayPropertiesImp::onUserDefinedMaterial()
+void DlgDisplayPropertiesImp::on_buttonUserDefinedMaterial_clicked()
 {
   DlgMaterialPropertiesImp dlg(this);
   dlg.setViewProviders(Provider);
   dlg.exec();
 
-  ColorButton->setColor(dlg.diffuseColor->color());
+  buttonColor->setColor(dlg.diffuseColor->color());
 }
 
 /**
  * Sets the 'ShapeMaterial' property of all selected view providers.
  */
-void DlgDisplayPropertiesImp::onChangeMaterial(const QString& material)
+void DlgDisplayPropertiesImp::on_changeMaterial_activated(const QString& material)
 {
-  App::Material::MaterialType type = Materials[material];
+  App::Material mat(Materials[material]);
+  App::Color diffuseColor = mat.diffuseColor;
+  buttonColor->setColor(QColor( (int)(diffuseColor.r*255.0f), (int)(diffuseColor.g*255.0f), (int)(diffuseColor.b*255.0f) ));
+
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
     App::Property* prop = (*It)->getPropertyByName("ShapeMaterial");
     if (prop && prop->getTypeId().isDerivedFrom(App::PropertyMaterial::getClassTypeId()))
     {
       App::PropertyMaterial* ShapeMaterial = (App::PropertyMaterial*)prop;
-      App::Material mat;
-      mat.setType(type);
       ShapeMaterial->setValue(mat);
-      App::Color diffuseColor = mat.diffuseColor;
-      ColorButton->setColor(QColor( (int)(diffuseColor.r*255.0f), (int)(diffuseColor.g*255.0f), (int)(diffuseColor.b*255.0f) ));
     }
   }
 }
@@ -352,7 +351,7 @@ void DlgDisplayPropertiesImp::onChangeMaterial(const QString& material)
 /**
  * Sets the 'Display' property of all selected view providers.
  */
-void DlgDisplayPropertiesImp::onChangeMode(const QString& s)
+void DlgDisplayPropertiesImp::on_changeMode_activated(const QString& s)
 {
   Gui::WaitCursor wc;
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
@@ -366,7 +365,7 @@ void DlgDisplayPropertiesImp::onChangeMode(const QString& s)
   }
 }
 
-void DlgDisplayPropertiesImp::onChangePlot(const QString&s)
+void DlgDisplayPropertiesImp::on_changePlot_activated(const QString&s)
 {
   Base::Console().Log("Plot = %s\n",s.latin1());
 }
@@ -374,9 +373,9 @@ void DlgDisplayPropertiesImp::onChangePlot(const QString&s)
 /**
  * Sets the 'ShapeColor' property of all selected view providers.
  */
-void DlgDisplayPropertiesImp::onColorChange()
+void DlgDisplayPropertiesImp::on_buttonColor_changed()
 {
-  QColor s = ColorButton->color();
+  QColor s = buttonColor->color();
   App::Color c(s.red()/255.0,s.green()/255.0,s.blue()/255.0);
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
@@ -392,7 +391,7 @@ void DlgDisplayPropertiesImp::onColorChange()
 /**
  * Sets the 'Transparency' property of all selected view providers.
  */
-void DlgDisplayPropertiesImp::onChangeTrans(int transparency)
+void DlgDisplayPropertiesImp::on_spinTransparency_valueChanged(int transparency)
 {
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
@@ -408,7 +407,7 @@ void DlgDisplayPropertiesImp::onChangeTrans(int transparency)
 /**
  * Sets the 'PointSize' property of all selected view providers.
  */
-void DlgDisplayPropertiesImp::onChangePointSize(double pointsize)
+void DlgDisplayPropertiesImp::on_spinPointSize_valueChanged(double pointsize)
 {
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
@@ -424,7 +423,7 @@ void DlgDisplayPropertiesImp::onChangePointSize(double pointsize)
 /**
  * Sets the 'LineWidth' property of all selected view providers.
  */
-void DlgDisplayPropertiesImp::onChangeLineWidth(double linewidth)
+void DlgDisplayPropertiesImp::on_spinLineWidth_valueChanged(double linewidth)
 {
   for( std::vector<ViewProvider*>::iterator It= Provider.begin();It!=Provider.end();It++)
   {
@@ -439,16 +438,14 @@ void DlgDisplayPropertiesImp::onChangeLineWidth(double linewidth)
 
 void DlgDisplayPropertiesImp::accept()
 {
-  DlgDisplayProperties::accept();
+  QDialog::accept();
 }
 
 void DlgDisplayPropertiesImp::reject()
 {
-  DlgDisplayProperties::reject();
+  QDialog::reject();
 }
 
 
-#include "DlgDisplayProperties.cpp"
-#include "moc_DlgDisplayProperties.cpp"
 #include "moc_DlgDisplayPropertiesImp.cpp"
 

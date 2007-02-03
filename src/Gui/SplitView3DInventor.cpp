@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qdragobject.h>
+# include <q3dragobject.h>
 # include <qfileinfo.h>
 # include <qsplitter.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
@@ -36,10 +36,10 @@
 #include "Document.h"
 #include "Application.h"
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
-SplitView3DInventor::SplitView3DInventor( int views, Gui::Document* pcDocument, QWidget* parent, const char* name, int wflags )
+SplitView3DInventor::SplitView3DInventor( int views, Gui::Document* pcDocument, QWidget* parent, const char* name, Qt::WFlags wflags )
     :MDIView( pcDocument,parent, name, wflags)
 {
   // important for highlighting 
@@ -52,15 +52,15 @@ SplitView3DInventor::SplitView3DInventor( int views, Gui::Document* pcDocument, 
   QSplitter* mainSplitter=0;
 
   if ( views <= 3 ) {
-    mainSplitter = new QSplitter( QSplitter::Horizontal, this, "main" );
+    mainSplitter = new QSplitter( Qt::Horizontal, this, "main" );
     _viewer.push_back(new View3DInventorViewer(mainSplitter));
     _viewer.push_back(new View3DInventorViewer(mainSplitter));
     if (views==3)
       _viewer.push_back(new View3DInventorViewer(mainSplitter));
   } else {
-    mainSplitter = new QSplitter( QSplitter::Vertical, this , "main" );
-    QSplitter *topSplitter = new QSplitter( QSplitter::Horizontal, mainSplitter, "top" );
-    QSplitter *botSplitter = new QSplitter( QSplitter::Horizontal, mainSplitter, "bottom" );
+    mainSplitter = new QSplitter( Qt::Vertical, this , "main" );
+    QSplitter *topSplitter = new QSplitter( Qt::Horizontal, mainSplitter, "top" );
+    QSplitter *botSplitter = new QSplitter( Qt::Horizontal, mainSplitter, "bottom" );
     _viewer.push_back(new View3DInventorViewer(topSplitter));
     _viewer.push_back(new View3DInventorViewer(topSplitter));
     for (int i=2;i<views;i++)

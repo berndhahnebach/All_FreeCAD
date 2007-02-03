@@ -21,10 +21,10 @@
  ***************************************************************************/
 
 
-#ifndef DLG_ACTIVATE_WINDOW_IMP_H__
-#define DLG_ACTIVATE_WINDOW_IMP_H__
+#ifndef GUI_DIALOG_DLGACTIVATEWINDOW_IMP_H
+#define GUI_DIALOG_DLGACTIVATEWINDOW_IMP_H
 
-#include "DlgActivateWindow.h"
+#include "ui_DlgActivateWindow.h"
 
 namespace Gui {
 namespace Dialog {
@@ -35,10 +35,10 @@ namespace Dialog {
  * an application you cannot put all of them into the "Windows" popup menu.
  * \author Werner Mayer
  */
-class DlgActivateWindowImp : public DlgActivateWindowBase
+class DlgActivateWindowImp : public QDialog, public Ui_DlgActivateWindow
 {
 public:
-  DlgActivateWindowImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgActivateWindowImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DlgActivateWindowImp();
 
 protected:
@@ -48,4 +48,4 @@ protected:
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DLG_ACTIVATE_WINDOW_IMP_H__
+#endif // GUI_DIALOG_DLGACTIVATEWINDOW_IMP_H

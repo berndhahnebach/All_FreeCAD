@@ -30,9 +30,8 @@
 
 #include <Gui/Application.h>
 #include <Gui/BitmapFactory.h>
-#include <Gui/Language/LanguageFactory.h>
+#include <Gui/Language/Translator.h>
 
-#include "Mesh_de.h"
 #include "images.h"
 #include "DlgEvaluateMeshImp.h"
 #include "PropertyEditorMesh.h"
@@ -47,6 +46,7 @@
 #include "ViewProviderTransformDemolding.h"
 #include "ViewProviderDefects.h"
 #include "Workbench.h"
+#include "qrc_Mesh.cpp"
 
 
 // use a different name to CreateCommand()
@@ -78,9 +78,6 @@ void GuiMeshExport initMeshGui() {
   Gui::BitmapFactory().addXPM("export_mesh", export_mesh);
   Gui::BitmapFactory().addXPM("solid_mesh", solid_mesh);
 
-  // resources
-  new Gui::LanguageProducer("Deutsch", Mesh_de_h_data, Mesh_de_h_len);
-
   // instanciating the commands
   CreateMeshCommands();
   new MeshGui::CleanupHandler;
@@ -111,6 +108,10 @@ void GuiMeshExport initMeshGui() {
   MeshGui::ViewProviderMeshDegenerations     ::init();
   MeshGui::ViewProviderMeshIndices           ::init();
   MeshGui::Workbench                         ::init();
+
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(Mesh);
+  Gui::Translator::instance()->reinstallLanguage();
 
   return;
 }

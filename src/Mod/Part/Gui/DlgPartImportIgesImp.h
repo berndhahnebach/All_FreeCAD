@@ -23,22 +23,22 @@
 #ifndef DlgPartImportIgesImp_H
 #define DlgPartImportIgesImp_H
 
-#include "DlgPartImportIges.h"
+#include "ui_DlgPartImportIges.h"
 
 
 namespace PartGui {
 
-class DlgPartImportIgesImp : public DlgPartImportIges
+class DlgPartImportIgesImp : public QDialog, public Ui_DlgPartImportIges
 { 
     Q_OBJECT
 
 public:
-    DlgPartImportIgesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-    ~DlgPartImportIgesImp();
+  DlgPartImportIgesImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+  ~DlgPartImportIgesImp();
 
-public slots:
-    virtual void OnApply();
-    virtual void onChooseFileName();
+public Q_SLOTS:
+  virtual void OnApply();
+  virtual void onChooseFileName();
 
 };
 

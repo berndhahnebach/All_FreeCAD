@@ -1,220 +1,221 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>Gui::Dialog::DlgSettingsMacro</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>Gui::Dialog::DlgSettingsMacro</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>372</width>
-            <height>384</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Macro</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>Gui::Dialog::DlgSettingsMacro</class>
+ <widget class="QWidget" name="Gui::Dialog::DlgSettingsMacro" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>384</width>
+    <height>388</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Macro</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="GroupBox6" >
+     <property name="title" >
+      <string>Macro recording settings</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="3" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
         </property>
-        <property name="margin">
-            <number>11</number>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
         </property>
-        <property name="spacing">
-            <number>6</number>
+       </spacer>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QGroupBox" name="groupBox4" >
+        <property name="title" >
+         <string>Logging Commands</string>
         </property>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>GroupBox6</cstring>
-            </property>
-            <property name="title">
-                <string>Macro recording settings</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>GroupBox8</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Macro path</string>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>11</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="Gui::PrefFileChooser" row="0" column="0">
-                            <property name="name">
-                                <cstring>MacroPath</cstring>
-                            </property>
-                            <property name="mode">
-                                <enum>Directory</enum>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>MacroPath</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Macro</cstring>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>GroupBox7</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Gui commands</string>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>11</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="Gui::PrefCheckBox" row="0" column="0">
-                            <property name="name">
-                                <cstring>PrefCheckBox_RecordGui</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Recording gui commands</string>
-                            </property>
-                            <property name="checked">
-                                <bool>true</bool>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>RecordGui</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Macro</cstring>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefCheckBox" row="1" column="0">
-                            <property name="name">
-                                <cstring>PrefCheckBox_GuiAsComment</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Record as comment</string>
-                            </property>
-                            <property name="checked">
-                                <bool>true</bool>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>GuiAsComment</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Macro</cstring>
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>groupBox4</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Logging Commands</string>
-                    </property>
-                    <vbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="Gui::PrefCheckBox">
-                            <property name="name">
-                                <cstring>PConsoleCheckBox</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Show script commands in python console</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>ScriptToPyConsole</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Macro</cstring>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefCheckBox">
-                            <property name="name">
-                                <cstring>FileLogCheckBox</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>false</bool>
-                            </property>
-                            <property name="text">
-                                <string>Log all commands issued by menus to file:</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>ScriptToFile</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Macro</cstring>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefFileChooser">
-                            <property name="name">
-                                <cstring>MacroPath_2</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>false</bool>
-                            </property>
-                            <property name="mode">
-                                <enum>File</enum>
-                            </property>
-                            <property name="fileName">
-                                <string>FullScript.FCScript</string>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>ScriptFile</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Macro</cstring>
-                            </property>
-                        </widget>
-                    </vbox>
-                </widget>
-            </vbox>
-        </widget>
-    </vbox>
-</widget>
-<connections>
-    <connection>
-        <sender>PrefCheckBox_RecordGui</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>PrefCheckBox_GuiAsComment</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-</connections>
-<slots>
-    <slot access="protected">loadSettings()</slot>
-    <slot access="protected">saveSettings()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-</includehints>
-</UI>
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>11</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <widget class="Gui::PrefCheckBox" name="PConsoleCheckBox" >
+           <property name="text" >
+            <string>Show script commands in python console</string>
+           </property>
+           <property name="prefEntry" stdset="0" >
+            <cstring>ScriptToPyConsole</cstring>
+           </property>
+           <property name="prefPath" stdset="0" >
+            <cstring>Macro</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Gui::PrefCheckBox" name="FileLogCheckBox" >
+           <property name="text" >
+            <string>Log all commands issued by menus to file:</string>
+           </property>
+           <property name="prefEntry" stdset="0" >
+            <cstring>ScriptToFile</cstring>
+           </property>
+           <property name="prefPath" stdset="0" >
+            <cstring>Macro</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="Gui::PrefFileChooser" name="MacroPath_2" >
+           <property name="fileName" >
+            <string>FullScript.FCScript</string>
+           </property>
+           <property name="prefEntry" stdset="0" >
+            <cstring>ScriptFile</cstring>
+           </property>
+           <property name="prefPath" stdset="0" >
+            <cstring>Macro</cstring>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QGroupBox" name="GroupBox7" >
+        <property name="title" >
+         <string>Gui commands</string>
+        </property>
+        <layout class="QGridLayout" >
+         <property name="margin" >
+          <number>11</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item row="0" column="0" >
+          <widget class="Gui::PrefCheckBox" name="PrefCheckBox_RecordGui" >
+           <property name="text" >
+            <string>Recording gui commands</string>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
+           </property>
+           <property name="prefEntry" stdset="0" >
+            <cstring>RecordGui</cstring>
+           </property>
+           <property name="prefPath" stdset="0" >
+            <cstring>Macro</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="Gui::PrefCheckBox" name="PrefCheckBox_GuiAsComment" >
+           <property name="text" >
+            <string>Record as comment</string>
+           </property>
+           <property name="checked" >
+            <bool>true</bool>
+           </property>
+           <property name="prefEntry" stdset="0" >
+            <cstring>GuiAsComment</cstring>
+           </property>
+           <property name="prefPath" stdset="0" >
+            <cstring>Macro</cstring>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QGroupBox" name="GroupBox8" >
+        <property name="title" >
+         <string>Macro path</string>
+        </property>
+        <layout class="QGridLayout" >
+         <property name="margin" >
+          <number>11</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item row="0" column="0" >
+          <widget class="Gui::PrefFileChooser" name="MacroPath" >
+           <property name="mode" >
+            <enum>Gui::FileChooser::Directory</enum>
+           </property>
+           <property name="prefEntry" stdset="0" >
+            <cstring>MacroPath</cstring>
+           </property>
+           <property name="prefPath" stdset="0" >
+            <cstring>Macro</cstring>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefFileChooser</class>
+   <extends>Gui::FileChooser</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>PrefCheckBox_RecordGui</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PrefCheckBox_GuiAsComment</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

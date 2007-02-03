@@ -24,7 +24,7 @@
 #ifndef GUI_DIALOG_DLGMATERIALPROPERTIES_IMP_H
 #define GUI_DIALOG_DLGMATERIALPROPERTIES_IMP_H
 
-#include "DlgMaterialProperties.h"
+#include "ui_DlgMaterialProperties.h"
 #include <vector>
 
 namespace Gui {
@@ -32,18 +32,20 @@ class ViewProvider;
 
 namespace Dialog {
 
-class DlgMaterialPropertiesImp : public DlgMaterialProperties
+class DlgMaterialPropertiesImp : public QDialog, public Ui_DlgMaterialProperties
 {
-public:
-  DlgMaterialPropertiesImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-  ~DlgMaterialPropertiesImp();
+  Q_OBJECT
 
 public:
-  virtual void onAmbientColorChanged();
-  virtual void onDiffuseColorChanged();
-  virtual void onSpecularColorChanged();
-  virtual void onShininessChanged(int);
+  DlgMaterialPropertiesImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+  ~DlgMaterialPropertiesImp();
   void setViewProviders( const std::vector<Gui::ViewProvider*>&);
+
+public Q_SLOTS:
+  void on_ambientColor_changed();
+  void on_diffuseColor_changed();
+  void on_specularColor_changed();
+  void on_shininess_valueChanged(int);
 
 private:
   std::vector<Gui::ViewProvider*> Objects;

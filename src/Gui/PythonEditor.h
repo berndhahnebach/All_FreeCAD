@@ -21,18 +21,20 @@
  ***************************************************************************/
 
 
-#ifndef __PYTHON_EDITOR_H__
-#define __PYTHON_EDITOR_H__
+#ifndef GUI_PYTHONEDITOR_H
+#define GUI_PYTHONEDITOR_H
 
-#include <qsyntaxhighlighter.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 #include "View.h"
 #include "Window.h"
 #include "TextEdit.h"
-
-class QListBox;
-class QListBoxItem;
-class QPrinter;
 
 namespace Gui {
 
@@ -54,7 +56,7 @@ public:
 
   void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
 
-public slots:
+public Q_SLOTS:
   /** Inserts a '#' at the beginning of each selected line or the current line if 
    * nothing is selected
    */
@@ -69,20 +71,21 @@ public slots:
 protected:
   void keyPressEvent ( QKeyEvent * e );
   /** Pops up the context menu with some extensions */
-  QPopupMenu * createPopupMenu ( const QPoint & pos );
+  Q3PopupMenu * createPopupMenu ( const QPoint & pos );
 
 private:
   PythonSyntaxHighlighter* pythonSyntax;
+  struct PythonEditorP* d;
 };
 
 /**
  * Syntax highlighter for Python.
  * \author Werner Mayer
  */
-class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
+class GuiExport PythonSyntaxHighlighter : public Q3SyntaxHighlighter
 {
 public:
-  PythonSyntaxHighlighter(QTextEdit* );
+  PythonSyntaxHighlighter(Q3TextEdit* );
   virtual ~PythonSyntaxHighlighter();
 
   int highlightParagraph ( const QString & text, int endStateOfLastPara );
@@ -105,7 +108,7 @@ public:
   LineMarker(TextEdit* textEdit, QWidget* parent, const char* name );
   virtual ~LineMarker();
 
-public slots:
+public Q_SLOTS:
   void onRepaint() { repaint( FALSE ); }
   void setFont( QFont f );
 
@@ -133,7 +136,7 @@ public:
   ~PythonEditView();
 
   void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
-  QTextEdit* editor() const { return _textEdit; }
+  Q3TextEdit* editor() const { return _textEdit; }
 
   const char *getName(void) const {return "PythonEditView";}
   void onUpdate(void){};
@@ -142,7 +145,7 @@ public:
   bool onHasMsg(const char* pMsg) const;
 
   bool canClose(void);
-  void print( QPrinter* printer );
+  void print();
   void openFile (const QString& fileName);
 
   /** @name Standard actions of the editor */
@@ -162,7 +165,7 @@ public:
   QStringList undoActions() const;
   QStringList redoActions() const;
 
-private slots:
+private Q_SLOTS:
   void checkTimestamp();
   void onModified(bool);
 
@@ -171,7 +174,7 @@ private:
 
 private:
   LineMarker* _lineMarker;
-  QTextEdit* _textEdit;
+  Q3TextEdit* _textEdit;
   QString _fileName;
   QTimer*  _pcActivityTimer;
   uint _timeStamp;
@@ -179,4 +182,4 @@ private:
 
 } // namespace Gui
 
-#endif // __PYTHON_EDITOR_H__
+#endif // GUI_PYTHONEDITOR_H

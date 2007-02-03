@@ -1,272 +1,277 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>Gui::Dialog::DlgOnlineHelpBase</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>Gui::Dialog::DlgOnlineHelpBase</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>395</width>
-            <height>419</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Online help</string>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>Gui::Dialog::DlgOnlineHelp</class>
+ <widget class="QWidget" name="Gui::Dialog::DlgOnlineHelp" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>395</width>
+    <height>440</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Online help</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>11</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="2" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Expanding</enum>
+     </property>
+     <property name="sizeHint" >
+      <size>
+       <width>20</width>
+       <height>50</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="groupBox6" >
+     <property name="title" >
+      <string>Download</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="0" >
+       <widget class="Gui::PrefLineEdit" name="PrefLineEdit2" >
+        <property name="enabled" >
+         <bool>false</bool>
         </property>
-        <property name="margin">
-            <number>11</number>
+        <property name="prefEntry" stdset="0" >
+         <cstring>ProxyText</cstring>
         </property>
-        <property name="spacing">
-            <number>6</number>
+        <property name="prefPath" stdset="0" >
+         <cstring>OnlineHelp</cstring>
         </property>
-        <spacer row="2" column="0">
-            <property name="name">
-                <cstring>spacer6</cstring>
-            </property>
-            <property name="orientation">
-                <enum>Vertical</enum>
-            </property>
-            <property name="sizeType">
-                <enum>Expanding</enum>
-            </property>
-            <property name="sizeHint">
-                <size>
-                    <width>20</width>
-                    <height>50</height>
-                </size>
-            </property>
-        </spacer>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>groupBox6</cstring>
-            </property>
-            <property name="title">
-                <string>Download</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="Gui::PrefLineEdit" row="1" column="0">
-                    <property name="name">
-                        <cstring>PrefLineEdit2</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>ProxyText</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>OnlineHelp</cstring>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox" row="3" column="0">
-                    <property name="name">
-                        <cstring>prefAuthorize</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Enable user authorization</string>
-                    </property>
-                    <property name="checked">
-                        <bool>false</bool>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>Authorize</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>OnlineHelp</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="4" column="0">
-                    <property name="name">
-                        <cstring>TextLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Download online help from:</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="6" column="0">
-                    <property name="name">
-                        <cstring>textLabel1_2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>To:</string>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefLineEdit" row="5" column="0">
-                    <property name="name">
-                        <cstring>DownloadURL</cstring>
-                    </property>
-                    <property name="minimumSize">
-                        <size>
-                            <width>250</width>
-                            <height>0</height>
-                        </size>
-                    </property>
-                    <property name="text">
-                        <string>http://free-cad.sourceforge.net/index.html</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>DownloadURL</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>OnlineHelp</cstring>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefFileChooser" row="7" column="0">
-                    <property name="name">
-                        <cstring>DownloadLoc</cstring>
-                    </property>
-                    <property name="mode">
-                        <enum>Directory</enum>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>DownloadLocation</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>OnlineHelp</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>textLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Proxy server:</string>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox" row="2" column="0">
-                    <property name="name">
-                        <cstring>UseProxy</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Use proxy</string>
-                    </property>
-                    <property name="checked">
-                        <bool>false</bool>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>UseProxy</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>OnlineHelp</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-        <widget class="QGroupBox" row="1" column="0">
-            <property name="name">
-                <cstring>GroupBoxOther</cstring>
-            </property>
-            <property name="title">
-                <string>Help viewer</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="Gui::PrefFileChooser" row="3" column="0">
-                    <property name="name">
-                        <cstring>prefExtBrowser</cstring>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>ExternalBrowser</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>OnlineHelp</cstring>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefFileChooser" row="1" column="0">
-                    <property name="name">
-                        <cstring>prefStartPage</cstring>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>Startpage</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>OnlineHelp</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="2" column="0">
-                    <property name="name">
-                        <cstring>TextLabelBrowser</cstring>
-                    </property>
-                    <property name="text">
-                        <string>External browser</string>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>TextLabelURL</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Location of start page</string>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
-    </grid>
-</widget>
-<customwidgets>
-</customwidgets>
-<connections>
-    <connection>
-        <sender>UseProxy</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>PrefLineEdit2</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>UseProxy</sender>
-        <signal>toggled(bool)</signal>
-        <receiver>prefAuthorize</receiver>
-        <slot>setEnabled(bool)</slot>
-    </connection>
-    <connection>
-        <sender>DownloadLoc</sender>
-        <signal>fileNameSelected(const QString&amp;)</signal>
-        <receiver>Gui::Dialog::DlgOnlineHelpBase</receiver>
-        <slot>onCheckLocation(const QString&amp;)</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>PrefLineEdit2</tabstop>
-    <tabstop>UseProxy</tabstop>
-    <tabstop>prefAuthorize</tabstop>
-    <tabstop>DownloadURL</tabstop>
-    <tabstop>DownloadLoc</tabstop>
-    <tabstop>prefStartPage</tabstop>
-    <tabstop>prefExtBrowser</tabstop>
-</tabstops>
-<slots>
-    <slot access="protected">saveSettings()</slot>
-    <slot access="protected">loadSettings()</slot>
-    <slot access="protected">onCheckLocation(const QString&amp;)</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-</includehints>
-</UI>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="Gui::PrefCheckBox" name="prefAuthorize" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Enable user authorization</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>Authorize</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>OnlineHelp</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="QLabel" name="TextLabel1" >
+        <property name="text" >
+         <string>Download online help from:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" >
+       <widget class="QLabel" name="textLabel1_2" >
+        <property name="text" >
+         <string>To:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" >
+       <widget class="Gui::PrefLineEdit" name="DownloadURL" >
+        <property name="minimumSize" >
+         <size>
+          <width>250</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string>http://free-cad.sourceforge.net/index.html</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>DownloadURL</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>OnlineHelp</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" >
+       <widget class="Gui::PrefFileChooser" name="lineEditDownload" >
+        <property name="mode" >
+         <enum>Gui::FileChooser::Directory</enum>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>DownloadLocation</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>OnlineHelp</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabel1" >
+        <property name="text" >
+         <string>Proxy server:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="Gui::PrefCheckBox" name="UseProxy" >
+        <property name="text" >
+         <string>Use proxy</string>
+        </property>
+        <property name="checked" >
+         <bool>false</bool>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>UseProxy</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>OnlineHelp</cstring>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="GroupBoxOther" >
+     <property name="title" >
+      <string>Help viewer</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="3" column="0" >
+       <widget class="Gui::PrefFileChooser" name="prefExtBrowser" >
+        <property name="prefEntry" stdset="0" >
+         <cstring>ExternalBrowser</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>OnlineHelp</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="Gui::PrefFileChooser" name="prefStartPage" >
+        <property name="prefEntry" stdset="0" >
+         <cstring>Startpage</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>OnlineHelp</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="TextLabelBrowser" >
+        <property name="text" >
+         <string>External browser</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="TextLabelURL" >
+        <property name="text" >
+         <string>Location of start page</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefFileChooser</class>
+   <extends>Gui::FileChooser</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>PrefLineEdit2</tabstop>
+  <tabstop>UseProxy</tabstop>
+  <tabstop>prefAuthorize</tabstop>
+  <tabstop>DownloadURL</tabstop>
+  <tabstop>lineEditDownload</tabstop>
+  <tabstop>prefStartPage</tabstop>
+  <tabstop>prefExtBrowser</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>UseProxy</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>PrefLineEdit2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>UseProxy</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>prefAuthorize</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -21,10 +21,12 @@
  ***************************************************************************/
 
 
-#ifndef __PROPERTY_PAGE__H__
-#define __PROPERTY_PAGE__H__
+#ifndef GUI_DIALOG_PROPERTYPAGE_H
+#define GUI_DIALOG_PROPERTYPAGE_H
 
-#include "CustomWidgets.h"
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
 namespace Gui {
 namespace Dialog {
@@ -32,13 +34,14 @@ namespace Dialog {
 /** Base class for property pages.
  * \author Werner Mayer
  */
-class GuiExport PropertyPage
+class GuiExport PropertyPage : public QWidget
 {
-protected:
-  PropertyPage();
-  virtual ~PropertyPage();
+  Q_OBJECT
 
 public:
+  PropertyPage(QWidget* parent = 0);
+  virtual ~PropertyPage();
+
   bool isModified();
   void setModified(bool b);
   void onApply();
@@ -52,9 +55,48 @@ protected:
 
 private:
   bool bChanged; /**< for internal use only */
+
+protected Q_SLOTS:
+  virtual void loadSettings()=0;
+  virtual void saveSettings()=0;
+};
+
+/** Base class for preferences pages.
+ * \author Werner Mayer
+ */
+class GuiExport PreferencePage : public QWidget
+{
+  Q_OBJECT
+
+public:
+  PreferencePage(QWidget* parent = 0);
+  virtual ~PreferencePage();
+
+public Q_SLOTS:
+  virtual void loadSettings()=0;
+  virtual void saveSettings()=0;
+};
+
+/** Base class for custom pages.
+ * \author Werner Mayer
+ */
+class GuiExport CustomizeActionPage : public QWidget
+{
+  Q_OBJECT
+
+public:
+  CustomizeActionPage(QWidget* parent = 0);
+  virtual ~CustomizeActionPage();
+
+protected:
+  bool event(QEvent* e);
+
+protected Q_SLOTS:
+  virtual void onAddMacroAction(const QString&)=0;
+  virtual void onRemoveMacroAction(const QString&)=0;
 };
 
 } // namespace Dialog
 } // namespace Gui
 
-#endif // __PROPERTY_PAGE__H__
+#endif // GUI_DIALOG_PROPERTYPAGE_H

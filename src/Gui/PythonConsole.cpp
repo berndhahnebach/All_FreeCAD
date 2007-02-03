@@ -23,14 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qclipboard.h>
-# include <qmime.h>
-# include <qpopupmenu.h>
-# include <qregexp.h>
-#endif
-
 #include "PythonConsole.h"
 #include "PythonConsolePy.h"
 #include "Application.h"
@@ -43,9 +35,32 @@
 
 #include <Base/Interpreter.h>
 #include <Base/Exception.h>
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
-using Gui::Dialog::GetDefCol;
+
+namespace Gui {
+struct PythonConsoleP
+{
+  QMap<QString, QColor> colormap; // Color map
+  PythonConsoleP()
+  {
+    colormap["Text"] = Qt::black;
+    colormap["Bookmark"] = Qt::cyan;
+    colormap["Breakpoint"] = Qt::red;
+    colormap["Keyword"] = Qt::blue;
+    colormap["Comment"] = QColor(0, 170, 0);
+    colormap["Block comment"] = QColor(160, 160, 164);
+    colormap["Number"] = Qt::blue;
+    colormap["String"] = Qt::red;
+    colormap["Character"] = Qt::red;
+    colormap["Class name"] = QColor(255, 170, 0);
+    colormap["Define name"] = QColor(255, 170, 0);
+    colormap["Operator"] = QColor(160, 160, 164);
+    colormap["Python output"] = QColor(170, 170, 127);
+    colormap["Python error"] = Qt::red;
+  }
+};
+} // namespace Gui
 
 PythonConsole * PythonConsole::_instance = 0;
 PyObject      * PythonConsole::_stdoutPy = 0;
@@ -61,9 +76,10 @@ PyObject      * PythonConsole::_stdin    = 0;
  *  Constructs a PythonConsole which is a child of 'parent', with the
  *  name 'name'. 
  */
-PythonConsole::PythonConsole(QWidget *parent,const char *name)
-  : TextEdit(parent, name), WindowParameter( "Editor" ), _startPara(0), _indent(false), _autoTabs(true), _blockComment(false)
+PythonConsole::PythonConsole(QWidget *parent)
+  : TextEdit(parent), WindowParameter( "Editor" ), _startPara(0), _indent(false), _autoTabs(true), _blockComment(false)
 {
+  d = new PythonConsoleP();
   _instance = this;
   _stdoutPy = new PythonStdoutPy( _instance );
   _stderrPy = new PythonStderrPy( _instance );
@@ -124,6 +140,7 @@ PythonConsole::~PythonConsole()
   Py_XDECREF(_stdoutPy);
   Py_XDECREF(_stderrPy);
   Py_XDECREF(_stdinPy);
+  delete d;
 }
 
 // PythonConsole Methods						// Methods structure
@@ -207,10 +224,14 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
   }
   else
   {
-    unsigned long col = hPrefGrp->GetUnsigned( sReason, GetDefCol().color( sReason ));
-    QColor color;
-    color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-    pythonSyntax->setColor( sReason, color );
+    QMap<QString, QColor>::ConstIterator it = d->colormap.find(sReason);
+    if (it != d->colormap.end()) {
+      QColor color = it.data();
+      unsigned long col = (color.red() << 24) | (color.green() << 16) | (color.blue() << 8);
+      col = hPrefGrp->GetUnsigned( sReason, col);
+      color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
+      pythonSyntax->setColor( sReason, color );
+    }
   }
 }
 
@@ -298,12 +319,13 @@ void PythonConsole::paste()
  * simulate a "return" event to let decide keyPressEvent() how to continue. This
  * is to run the Python interpreter if needed.
  */
-void PythonConsole::pasteSubType( const QCString &subtype )
+void PythonConsole::pasteSubType( const QByteArray &subtype )
 {
+#if 0 //TODO Reimplement for Qt4
   QMimeSource* mime = QApplication::clipboard()->data( QClipboard::Clipboard );
   if ( !mime )
     return; // no valid data
-  QCString st = subtype;
+  Q3CString st = subtype;
   st.prepend( "text/" );
 
   if ( document()->hasSelection( QTextDocument::Standard ) )
@@ -312,9 +334,9 @@ void PythonConsole::pasteSubType( const QCString &subtype )
     return;
 
   QString t;
-  if ( !QTextDrag::canDecode( mime) )
+  if ( !Q3TextDrag::canDecode( mime) )
     return; // cannot decode
-  if ( !QTextDrag::decode( mime, t ) )
+  if ( !Q3TextDrag::decode( mime, t ) )
     return;
 #if defined(Q_OS_WIN32)
   // Need to convert CRLF to LF
@@ -341,13 +363,14 @@ void PythonConsole::pasteSubType( const QCString &subtype )
       if ( i < ct )
       {
         // emulate an key return event to let decide keyPressEvent() how to continue
-        QKeyEvent ke( QEvent::KeyPress, Key_Return, '\n', Qt::NoButton );
+        QKeyEvent ke( QEvent::KeyPress, Qt::Key_Return, '\n', Qt::NoButton );
         _autoTabs = false; // do insert tabs automatically
         QApplication::sendEvent( this, &ke );
         _autoTabs = true;
       }
     }
   }
+#endif
 }
 
 /** Allows cutting in the active line only. */
@@ -391,8 +414,8 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
   switch (e->key())
   {
   // running Python interpreter?
-  case Key_Return:
-  case Key_Enter:
+  case Qt::Key_Return:
+  case Qt::Key_Enter:
     {
       // get the last paragraph text
       int para; int idx;
@@ -428,7 +451,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
       {
         _blockComment = false;
         // recursive call to invoke performPythonCommand()
-        QKeyEvent ke( QEvent::KeyPress, Key_Return, '\n', Qt::NoButton );
+        QKeyEvent ke( QEvent::KeyPress, Qt::Key_Return, '\n', Qt::NoButton );
         QApplication::sendEvent( this, &ke );
       }
       else if ( tabs > 0 )
@@ -452,8 +475,8 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
         performPythonCommand();
       }
     } break;
-  case Key_Up:
-    if ( e->state() & ControlButton )
+  case Qt::Key_Up:
+    if ( e->state() & Qt::ControlModifier )
     {
       if ( !_history.isEmpty() )
       {
@@ -465,8 +488,8 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
       }
     }
     break;
-  case Key_Down:
-    if ( e->state() & ControlButton )
+  case Qt::Key_Down:
+    if ( e->state() & Qt::ControlModifier )
     {
       if ( !_history.isEmpty() )
       {
@@ -598,40 +621,43 @@ void PythonConsole::showEvent ( QShowEvent * e )
  */
 void PythonConsole::contentsDropEvent ( QDropEvent * e )
 {
-  QString action;
-  if ( ActionDrag::decode(e, action) )
-  {
-    if (!action.isEmpty())
-    {
-      ActionDrag::actions.clear();
-      CommandManager& rclMan = Application::Instance->commandManager();
-      Command* pCmd = rclMan.getCommandByName(action.latin1());
+  const QMimeData* mimeData = e->mimeData();
+  if ( mimeData->hasFormat("text/x-action-items") ) {
+    QByteArray itemData = mimeData->data("text/x-action-items");
+    QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
-      if (pCmd)
-      {
-        printCommand( QString("Gui.RunCommand(\"%1\")").arg(pCmd->getName() ) );
-      }
+    int ctActions; dataStream >> ctActions;
+    for (int i=0; i<ctActions; i++) {
+      QString action;
+      dataStream >> action;
+      printCommand( QString("Gui.RunCommand(\"%1\")").arg(action));
     }
-  }
 
-  TextEdit::dropEvent(e);
+    e->setDropAction(Qt::CopyAction);
+    e->accept();
+  } else {
+    e->ignore();
+  }
 }
 
 /** Dragging of action objects is allowed. */ 
 void PythonConsole::contentsDragMoveEvent( QDragMoveEvent *e )
 {
-  bool can = QTextDrag::canDecode(e) || ActionDrag::canDecode(e);
-  if ( !can )
+  const QMimeData* mimeData = e->mimeData();
+  if ( mimeData->hasFormat("text/x-action-items") )
+    e->accept();
+  else
     e->ignore();
 }
 
 /** Dragging of action objects is allowed. */ 
 void PythonConsole::contentsDragEnterEvent ( QDragEnterEvent * e )
 {
-  if ( ActionDrag::canDecode( e ) )
-    e->accept(true);
+  const QMimeData* mimeData = e->mimeData();
+  if ( mimeData->hasFormat("text/x-action-items") )
+    e->accept();
   else
-    TextEdit::dragEnterEvent( e );
+    e->ignore();
 }
 
 /** Figures out how many tabs must be set next paragraph. 0 indicates that
@@ -754,7 +780,7 @@ void PythonConsole::overwriteParagraph( int para, const QString& txt )
  */
 bool PythonConsole::isComment( const QString& text ) const
 {
-  uint i = 0;
+  int i = 0;
   QChar ch;
   bool ok=false;
   while ( i < text.length() )
@@ -792,9 +818,9 @@ bool PythonConsole::isBlockComment( const QString& ) const
     return false;
 }
 
-QPopupMenu * PythonConsole::createPopupMenu ( const QPoint & pos )
+Q3PopupMenu * PythonConsole::createPopupMenu ( const QPoint & pos )
 {
-  QPopupMenu* menu = QTextEdit::createPopupMenu(pos);
+  Q3PopupMenu* menu = Q3TextEdit::createPopupMenu(pos);
   menu->insertItem( tr("Save history as..."), this, SLOT(onSaveHistoryAs()));
   menu->insertItem( tr("Insert file name..."), this, SLOT(onInsertFileName()));
   return menu;
@@ -810,7 +836,7 @@ void PythonConsole::onSaveHistoryAs()
     if (dot != -1)
     {
       QFile f(fn);
-      if (f.open(IO_WriteOnly))
+      if (f.open(QIODevice::WriteOnly))
       {
         QTextStream t (&f);
         for ( _history.first(); _history.more(); _history.next() )
@@ -834,7 +860,7 @@ void PythonConsole::onInsertFileName()
 
 // ---------------------------------------------------------------------
 
-PythonConsoleHighlighter::PythonConsoleHighlighter(QTextEdit* edit)
+PythonConsoleHighlighter::PythonConsoleHighlighter(Q3TextEdit* edit)
   : PythonSyntaxHighlighter(edit),_output(false), _error(false), _endState(-2)
 {
 }

@@ -26,7 +26,14 @@
 #define __PROPTERYVIEW_H__
 
 
-#include <qptrlist.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 #include "DockWindow.h"
 #include "Selection.h"
@@ -83,6 +90,12 @@ public:
 
   Gui::PropertyEditor::EditableListView * _pPropEditorView;
   Gui::PropertyEditor::EditableListView * _pPropEditorData;
+
+protected:
+  void changeEvent( QEvent *e );
+
+private:
+  QTabWidget* tabs;
 };
 
 } // namespace DockWnd

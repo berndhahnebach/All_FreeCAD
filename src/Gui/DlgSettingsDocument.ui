@@ -1,239 +1,233 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>Gui::Dialog::DlgSettingsDocument</class>
-<widget class="QWidget">
-    <property name="name">
-        <cstring>Gui::Dialog::DlgSettingsDocument</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>470</width>
-            <height>497</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Document</string>
-    </property>
-    <vbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>Gui::Dialog::DlgSettingsDocument</class>
+ <widget class="QWidget" name="Gui::Dialog::DlgSettingsDocument" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>470</width>
+    <height>497</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Document</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="GroupBox5" >
+     <property name="title" >
+      <string>General</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="9" column="0" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
         </property>
-        <property name="margin">
-            <number>11</number>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
         </property>
-        <property name="spacing">
-            <number>6</number>
+       </spacer>
+      </item>
+      <item row="8" column="0" >
+       <widget class="Gui::PrefCheckBox" name="prefCheckBox2_2_2" >
+        <property name="enabled" >
+         <bool>false</bool>
         </property>
-        <widget class="QGroupBox">
-            <property name="name">
-                <cstring>GroupBox5</cstring>
-            </property>
-            <property name="title">
-                <string>General</string>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>11</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>prefCheckNewDoc</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Create new document at startup</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>CreateNewDoc</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>Document</cstring>
-                    </property>
-                </widget>
-                <widget class="Line">
-                    <property name="name">
-                        <cstring>line1</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout8</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Document save compression level
+        <property name="text" >
+         <string>discard saved transaction after document saved</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>TransactionsDiscard</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Document</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" >
+       <widget class="Gui::PrefCheckBox" name="prefCheckBox2_2" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Saving transactions (Autosave)</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>SaveTransactions</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Document</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0" >
+       <widget class="Line" name="line1_2_2" >
+        <property name="frameShape" >
+         <enum>QFrame::HLine</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="Gui::PrefCheckBox" name="prefCheckBox2" >
+        <property name="text" >
+         <string>Using Undo/Redo on documents (can be very memory consuming)</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>UsingUndo</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Document</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="Line" name="line1_2" >
+        <property name="frameShape" >
+         <enum>QFrame::HLine</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="Line" name="line1" >
+        <property name="frameShape" >
+         <enum>QFrame::HLine</enum>
+        </property>
+        <property name="frameShadow" >
+         <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="Gui::PrefCheckBox" name="prefCheckNewDoc" >
+        <property name="text" >
+         <string>Create new document at startup</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>CreateNewDoc</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Document</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" >
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabel1_2" >
+          <property name="text" >
+           <string>Undo Redo Size (in Megabyte)</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefSpinBox" name="prefSpinBox2" >
+          <property name="value" >
+           <number>20</number>
+          </property>
+          <property name="prefEntry" stdset="0" >
+           <cstring>MaxUndoSize</cstring>
+          </property>
+          <property name="prefPath" stdset="0" >
+           <cstring>Document</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0" >
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="textLabel1" >
+          <property name="text" >
+           <string>Document save compression level
 (0 = none, 9 = highest, 3 = default)</string>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefSpinBox">
-                            <property name="name">
-                                <cstring>SpinBoxCompression</cstring>
-                            </property>
-                            <property name="maxValue">
-                                <number>9</number>
-                            </property>
-                            <property name="value">
-                                <number>3</number>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>CompressionLevel</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Document</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="Line">
-                    <property name="name">
-                        <cstring>line1_2</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>prefCheckBox2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Using Undo/Redo on documents (can be very memory consuming)</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>UsingUndo</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>Document</cstring>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>layout3</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <widget class="QLabel">
-                            <property name="name">
-                                <cstring>textLabel1_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Undo Redo Size (in Megabyte)</string>
-                            </property>
-                        </widget>
-                        <widget class="Gui::PrefSpinBox">
-                            <property name="name">
-                                <cstring>prefSpinBox2</cstring>
-                            </property>
-                            <property name="maxValue">
-                                <number>4096</number>
-                            </property>
-                            <property name="value">
-                                <number>20</number>
-                            </property>
-                            <property name="prefEntry" stdset="0">
-                                <cstring>MaxUndoSize</cstring>
-                            </property>
-                            <property name="prefPath" stdset="0">
-                                <cstring>Document</cstring>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="Line">
-                    <property name="name">
-                        <cstring>line1_2_2</cstring>
-                    </property>
-                    <property name="frameShape">
-                        <enum>HLine</enum>
-                    </property>
-                    <property name="frameShadow">
-                        <enum>Sunken</enum>
-                    </property>
-                    <property name="orientation">
-                        <enum>Horizontal</enum>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>prefCheckBox2_2</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>Saving transactions (Autosave)</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>SaveTransactions</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>Document</cstring>
-                    </property>
-                </widget>
-                <widget class="Gui::PrefCheckBox">
-                    <property name="name">
-                        <cstring>prefCheckBox2_2_2</cstring>
-                    </property>
-                    <property name="enabled">
-                        <bool>false</bool>
-                    </property>
-                    <property name="text">
-                        <string>discard saved transaction after document saved</string>
-                    </property>
-                    <property name="prefEntry" stdset="0">
-                        <cstring>TransactionsDiscard</cstring>
-                    </property>
-                    <property name="prefPath" stdset="0">
-                        <cstring>Document</cstring>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-    </vbox>
-</widget>
-<customwidgets>
-</customwidgets>
-<slots>
-    <slot access="protected">saveSettings()</slot>
-    <slot access="protected">loadSettings()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-<includehints>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-    <includehint>Gui/PrefWidgets.h</includehint>
-</includehints>
-</UI>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="Gui::PrefSpinBox" name="SpinBoxCompression" >
+          <property name="value" >
+           <number>3</number>
+          </property>
+          <property name="prefEntry" stdset="0" >
+           <cstring>CompressionLevel</cstring>
+          </property>
+          <property name="prefPath" stdset="0" >
+           <cstring>Document</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
+ <customwidgets>
+  <customwidget>
+   <class>Gui::PrefCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+  <customwidget>
+   <class>Gui::PrefSpinBox</class>
+   <extends>Gui::SpinBox</extends>
+   <header>Gui/PrefWidgets.h</header>
+   <container>0</container>
+   <pixmap></pixmap>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

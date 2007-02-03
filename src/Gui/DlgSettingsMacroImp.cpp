@@ -23,23 +23,20 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qdir.h>
-#endif
-
 #include "DlgSettingsMacroImp.h"
 #include "PrefWidgets.h"
 #include "Application.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /**
  *  Constructs a DlgSettingsMacroImp which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 
  */
-DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent,  const char* name, WFlags fl )
-  : DlgSettingsMacro( parent, name, fl )
+DlgSettingsMacroImp::DlgSettingsMacroImp( QWidget* parent )
+  : PreferencePage( parent )
 {
+  this->setupUi(this);
   if ( MacroPath->fileName().isEmpty() )
   {
     QDir d(App::GetApplication().GetHomePath());
@@ -75,7 +72,16 @@ void DlgSettingsMacroImp::loadSettings()
   MacroPath_2->onRestore();
 }
 
+/**
+ * Sets the strings of the subwidgets using the current language.
+ */
+void DlgSettingsMacroImp::changeEvent(QEvent *e)
+{
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi(this);
+  } else {
+    QWidget::changeEvent(e);
+  }
+}
 
-#include "DlgSettingsMacro.cpp"
-#include "moc_DlgSettingsMacro.cpp"
 #include "moc_DlgSettingsMacroImp.cpp"

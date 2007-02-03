@@ -23,36 +23,14 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qdragobject.h>
-# include <qeventloop.h>
-# include <qfileinfo.h>
-# include <qlabel.h>
-# include <qmenubar.h>
-# include <qstatusbar.h>
-# include <qstyle.h>
-# include <qstylefactory.h>
-# include <qtabbar.h>
-# include <qtimer.h>
-# include <qvbox.h>
-#endif
-
 // FreeCAD Base header
-#include <Base/Console.h>
-#include <Base/Interpreter.h>
 #include <Base/Parameter.h>
-#include <Base/Exception.h>
-#include <Base/Factory.h>
 #include <Base/FileInfo.h>
 #include <App/Application.h>
-#include <App/Feature.h>
-#include <App/Document.h>
 
 #include "MainWindow.h"
 #include "Application.h"
-#include "Document.h"
-#include "DlgEditorImp.h"
+#include "Action.h"
 #include "View.h"
 
 #include "Icons/developers.h"
@@ -64,7 +42,6 @@
 #include "Splashscreen.h"
 #include "MenuManager.h"
 
-#include "CommandLine.h"
 #include "DlgTipOfTheDayImp.h"
 #include "DlgUndoRedo.h"
 #include "DlgOnlineHelpImp.h"
@@ -78,16 +55,12 @@
 #include "WorkbenchManager.h"
 #include "CommandBarManager.h"
 
-#include "Inventor/Qt/SoQt.h"
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
 
-#define new DEBUG_CLIENTBLOCK
-using Base::Console;
-using Base::Interpreter;
+
 using namespace Gui;
 using namespace Gui::DockWnd;
-using Gui::Dialog::DlgOnlineHelpImp;
 using namespace std;
 
 
@@ -98,45 +71,52 @@ namespace Gui {
 // Pimpl class
 struct MainWindowP
 {
-  QValueList<int> wndIDs;
-  QLabel *         _pclSizeLabel, *_pclActionLabel;
-  ToolBox*        _pcStackBar;
-  QTimer *		 _pcActivityTimer; 
-  QWorkspace* _pWorkspace;
-  QTabBar* _tabs;
-  QMap<int, MDIView*> _mdiIds;
+  QLabel* sizeLabel;
+  QLabel* actionLabel;
+  QTimer* activityTimer; 
+  QWorkspace* workspace;
+  QTabBar* tabs;
+  QSignalMapper* windowMapper;
+  QSplashScreen* splashscreen;
 };
 
 class MDITabbar : public QTabBar
 {
 public:
-  MDITabbar( QWidget * parent = 0, const char * name = 0 ) : QTabBar(parent, name)
+  MDITabbar( QWidget * parent = 0 ) : QTabBar(parent)
   {
-    menu = new QPopupMenu(this);
+    menu = new QMenu(this);
+    // For Qt 4.2.x the tabs might be very wide
+#if QT_VERSION >= 0x040200
+    setDrawBase(false);
+    setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+#endif
+  }
+
+  ~MDITabbar()
+  {
+    delete menu;
   }
 
 protected:
   void contextMenuEvent ( QContextMenuEvent * e )
   {
-    QTab* sel = selectTab(e->pos());
     menu->clear();
     CommandManager& cMgr = Application::Instance->commandManager();
-    cMgr.getCommandByName("Std_New")->addTo(menu);
-    menu->insertSeparator();
-    if ( sel == tab(currentTab()) )
+    if ( tabRect(currentIndex()).contains(e->pos()) )
       cMgr.getCommandByName("Std_CloseActiveWindow")->addTo(menu);
     cMgr.getCommandByName("Std_CloseAllWindows")->addTo(menu);
     menu->insertSeparator();
-    cMgr.getCommandByName("Std_TilePragmatic")->addTo(menu);
-    cMgr.getCommandByName("Std_TileHoricontal")->addTo(menu);
-    cMgr.getCommandByName("Std_TileVertical")->addTo(menu);
+    cMgr.getCommandByName("Std_CascadeWindows")->addTo(menu);
+    cMgr.getCommandByName("Std_ArrangeIcons")->addTo(menu);
+    cMgr.getCommandByName("Std_TileWindows")->addTo(menu);
     menu->insertSeparator();
     cMgr.getCommandByName("Std_Windows")->addTo(menu);
     menu->popup(e->globalPos());
   }
 
 private:
-  QPopupMenu* menu;
+  QMenu* menu;
 };
 
 } // namespace Gui
@@ -144,51 +124,59 @@ private:
 
 /* TRANSLATOR Gui::MainWindow */
 
-MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
-    : QMainWindow( parent, "Main window", f/*WDestructiveClose*/ )
+MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
+  : QMainWindow( parent, f/*WDestructiveClose*/ )
 {
   d = new MainWindowP;
+  d->splashscreen = 0;
+
   // global access 
   instance = this;
 
-  QVBox* vb = new QVBox( this );
-  vb->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-  d->_pWorkspace = new QWorkspace( vb, "workspace" );
+  // Create the layout containing the workspace and a tab bar
+  QFrame* vbox = new QFrame(this);
+  vbox->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+  QVBoxLayout* layout = new QVBoxLayout();
+  layout->setMargin(1);
+  vbox->setLayout(layout);
 
+  d->workspace = new QWorkspace();
+  d->workspace->setScrollBarsEnabled( true );
   QPixmap backgnd(( const char** ) background );
-  d->_pWorkspace->setPaletteBackgroundPixmap( backgnd );
-  d->_tabs = new MDITabbar( vb, "tabBar" );
-  d->_tabs->setShape( QTabBar::RoundedBelow );
-  d->_pWorkspace->setScrollBarsEnabled( true );
-  setCentralWidget( vb );
-  connect( d->_pWorkspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
-  connect( d->_tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
+  d->workspace->setBackground( backgnd );
+  d->tabs = new MDITabbar();
+  d->tabs->setShape( QTabBar:: RoundedSouth );
 
-  // caption and icon of the main window
-  setCaption( App::Application::Config()["ExeName"].c_str() );
+  layout->addWidget(d->workspace);
+  layout->addWidget(d->tabs);
+  setCentralWidget( vbox );
+
+  // window title and icon of the main window
+  setWindowTitle( App::Application::Config()["ExeName"].c_str() );
   setIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
 
   // labels and progressbar
-  d->_pclActionLabel = new QLabel("", statusBar(), "Action");
-  d->_pclActionLabel->setMinimumWidth(120);
-  statusBar()->addWidget(d->_pclActionLabel,0,true);
-  statusBar()->addWidget(ProgressBar::instance(),0,true);
-  //ProgressBar::Instance().setFixedWidth(200);
-  d->_pclSizeLabel = new QLabel("Dimension", statusBar(), "Dimension");
-  d->_pclSizeLabel->setMinimumWidth(120);
-  statusBar()->addWidget(d->_pclSizeLabel,0,true);
+  d->actionLabel = new QLabel(statusBar());
+  d->actionLabel->setMinimumWidth(120);
+  d->sizeLabel = new QLabel(tr("Dimension"), statusBar());
+  d->sizeLabel->setMinimumWidth(120);
+  statusBar()->addWidget(d->actionLabel,0 , true);
+  statusBar()->addWidget(ProgressBar::instance(), 0, true);
+  statusBar()->addWidget(d->sizeLabel, 0, true);
 
   // update gui timer
-  d->_pcActivityTimer = new QTimer( this );
-  connect( d->_pcActivityTimer, SIGNAL(timeout()),this, SLOT(updateCmdActivity()) );
-  d->_pcActivityTimer->start( 300, TRUE );
+  d->activityTimer = new QTimer( this );
+  connect( d->activityTimer, SIGNAL(timeout()),this, SLOT(updateActions()) );
+  d->activityTimer->start( 300, TRUE );
 
+  d->windowMapper = new QSignalMapper(this);
 
-  // Command Line +++++++++++++++++++++++++++++++++++++++++++++++++++
-  CommandLine().reparent(statusBar());
-  statusBar()->addWidget(&CommandLine(), 0, true);
-  statusBar()->message( tr("Ready"), 2001 );
+  // connection between workspace, window menu and tab bar
+  connect( d->windowMapper, SIGNAL( mapped(QWidget *) ), d->workspace, SLOT( setActiveWindow( QWidget* ) ) );
+  connect( d->workspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
+  connect( d->tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
 
+  //TODO Show all dockable windows over the workbench facility
   static const char* dockWindows[] = {
     QT_TRANSLATE_NOOP( "Gui::DockWindow", "Toolbox" ),
     QT_TRANSLATE_NOOP( "Gui::DockWindow", "Help view" ),
@@ -198,47 +186,46 @@ MainWindow::MainWindow(QWidget * parent, const char * name, WFlags f)
   };
 
   // Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
-  d->_pcStackBar = new ToolBox(this,"Cmd_Group");
-  CommandBarManager::getInstance()->setToolBox( d->_pcStackBar );
+  ToolBox* toolBox = new ToolBox(this);
+  CommandBarManager::getInstance()->setToolBox( toolBox );
   DockWindowManager* pDockMgr = DockWindowManager::instance();
-  pDockMgr->addDockWindow( dockWindows[0],d->_pcStackBar, Qt::DockRight );
+  pDockMgr->addDockWindow( dockWindows[0],toolBox, Qt::RightDockWidgetArea );
 
   // Help View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  QString home = DlgOnlineHelpImp::getStartpage();
+  QString home = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
   HelpView* pcHelpView = new HelpView( home, this, "HelpViewer" );
-  pDockMgr->addDockWindow(dockWindows[1], pcHelpView, Qt::DockRight );
+  pDockMgr->addDockWindow(dockWindows[1], pcHelpView, Qt::RightDockWidgetArea );
 
   // Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++
   pcTree = new TreeView(0,this,"TreeView");
   pcTree->setMinimumWidth(210);
-  pDockMgr->addDockWindow(dockWindows[2], pcTree, Qt::DockLeft );
+  pDockMgr->addDockWindow(dockWindows[2], pcTree, Qt::LeftDockWidgetArea );
 
   // PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++
   PropertyView* pcPropView = new PropertyView(0,0,"PropertyView");
   pcPropView->setMinimumWidth(210);
-  pDockMgr->addDockWindow(dockWindows[3], pcPropView, Qt::DockLeft );
+  pDockMgr->addDockWindow(dockWindows[3], pcPropView, Qt::LeftDockWidgetArea );
 
   // Report View
-  Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this,"ReportView");
-  pDockMgr->addDockWindow(dockWindows[4], pcOutput, Qt::DockBottom );
+  Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this);
+  pDockMgr->addDockWindow(dockWindows[4], pcOutput, Qt::BottomDockWidgetArea );
 
 
   // accept drops on the window, get handled in dropEvent, dragEnterEvent
   setAcceptDrops(true);
-
-  // misc stuff
-  loadWindowSettings();
+  statusBar()->message( tr("Ready"), 2001 );
 }
 
 MainWindow::~MainWindow()
 {
+  //TODO Redesign StdCmdRecentFiles
   // save recent file list
-  // Note: the recent files are restored in StdCmdMRU::createAction(), because we need
-  //       a valid instance of StdCmdMRU to do this
-  StdCmdMRU::save();
-  saveWindowSettings();
+  // Note: the recent files are restored in StdCmdRecentFiles::createAction(), because we need
+  //       a valid instance of StdCmdRecentFiles to do this
+  StdCmdRecentFiles::save();
 
   delete d;
+  instance = 0;
 }
 
 MainWindow* MainWindow::getInstance()
@@ -247,153 +234,79 @@ MainWindow* MainWindow::getInstance()
   return instance;
 }
 
-void MainWindow::destruct()
+QMenu* MainWindow::createPopupMenu ()
 {
-  DockWindowManager::destruct();
-  Dialog::DefColorMap::destruct();
-
-  // make sure that getInstance() doesn't return a dangling pointer
-  MainWindow* tmp = instance;
-  instance = 0;
-  delete tmp;
-}
-
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// creating std commands
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-bool MainWindow::isCustomizable () const
-{
-  return true;
-}
-
-void MainWindow::customize ()
-{
-  Application::Instance->commandManager().runCommandByName("Std_DlgCustomize");
-}
-
-void MainWindow::tileHorizontal()
-{
-  // primitive horizontal tiling
-  QWidgetList windows = d->_pWorkspace->windowList();
-  if ( !windows.count() )
-    return;
-    
-  int heightForEach = d->_pWorkspace->height() / windows.count();
-  int y = 0;
-  for ( int i = 0; i < int(windows.count()); ++i ) 
-  {
-    QWidget *window = windows.at(i);
-    if ( window->testWState( WState_Maximized ) ) 
-    {
-      // prevent flicker
-      window->hide();
-      window->showNormal();
-    }
-
-    int preferredHeight = window->minimumHeight()+window->parentWidget()->baseSize().height();
-    int actHeight = QMAX(heightForEach, preferredHeight);
-  
-    window->parentWidget()->setGeometry( 0, y, d->_pWorkspace->width(), actHeight );
-    y += actHeight;
-  }
-}
-
-void MainWindow::tileComplex()
-{
-  QWorkspace* ws=d->_pWorkspace;
-  QWidgetList windows = ws->windowList();
-  if ( windows.count() < 2 )
-  {
-    // primitive vetical tiling
-    getMainWindow()->tile();
-    return;
+  Command* cmd = Application::Instance->commandManager().getCommandByName("Std_DlgCustomize");
+  QMenu* menu = QMainWindow::createPopupMenu();
+  if (cmd) { 
+    menu->addSeparator();
+    cmd->addTo(menu);
   }
 
-  // we want all windows except of the last to put at the left side with same size
-  int ctWnds = windows.count() > 2 ? windows.count()-1 : 2;
-  int heightForEach = ws->height() / ctWnds;
-  int y = 0;
-  for ( int i = 0; i < int(windows.count()); ++i ) 
-  {
-    QWidget *window = windows.at(i);
-    if ( window->testWState( Qt::WState_Maximized ) ) 
-    {
-      // prevent flicker
-      window->hide();
-      window->showNormal();
-    }
+  return menu;
+}
 
-    int preferredHeight = window->minimumHeight()+window->parentWidget()->baseSize().height();
-    int actHeight = QMAX(heightForEach, preferredHeight);
-
-    if ( i<ctWnds )
-    {
-  
-      window->parentWidget()->setGeometry( 0, y, actHeight, actHeight );
-      y += actHeight;
-    }
-    else
-    {
-      // the last window then must fillup the remaining area
-      window->parentWidget()->setGeometry( actHeight, 0, ws->width()-actHeight, ws->height() );
-    }
-  }
+void MainWindow::arrangeIcons()
+{
+  d->workspace->arrangeIcons();
 }
 
 void MainWindow::tile()
 {
-  d->_pWorkspace->tile();
+  d->workspace->tile();
 }
 
 void MainWindow::cascade()
 {
-  d->_pWorkspace->cascade();
+  d->workspace->cascade();
 }
 
 void MainWindow::closeActiveWindow ()
 {
-  d->_pWorkspace->closeActiveWindow();
+  d->workspace->closeActiveWindow();
 }
 
 void MainWindow::closeAllWindows ()
 {
-#ifdef FC_DEBUG
-  d->_pWorkspace->closeAllWindows();
-#else
-  bool closed = true;
-  MDIView* p = 0;
-  MDIView* w = activeWindow();
-  while ( w && w != p && closed )
-  {
-    p = w;
-    closed = w->close();
-    w = activeWindow();
-  }
-#endif
+  d->workspace->closeAllWindows();
 }
 
 void MainWindow::activateNextWindow ()
 {
-  d->_pWorkspace->activateNextWindow();
+  d->workspace->activateNextWindow();
 }
 
-void MainWindow::activatePrevWindow ()
+void MainWindow::activatePreviousWindow ()
 {
-  d->_pWorkspace->activatePrevWindow();
+  d->workspace->activatePreviousWindow();
+}
+
+void MainWindow::whatsThis()
+{
+  QWhatsThis::enterWhatsThisMode();
 }
 
 bool MainWindow::eventFilter ( QObject* o, QEvent* e )
 {
   if ( o != this ) {
+    if ( e->type() == QEvent::WindowStateChange ) {
+      // notify all mdi views when the active view receives a show normal, show minimized or show maximized event 
+      MDIView * view = (MDIView*)o->qt_metacast("Gui::MDIView");
+      if ( view )
+        showActiveView( view );
+    }
+  }
+#if 0 //TODO Check eventFilter
+  if ( o != this ) {
     if ( e->type() == QEvent::ShowMaximized || e->type() == QEvent::ShowMinimized || e->type() == QEvent::ShowNormal || e->type() == QEvent::ShowFullScreen ) {
-      MDIView * view = (MDIView*)o->qt_cast("Gui::MDIView");
+      MDIView * view = (MDIView*)o->qt_metacast("Gui::MDIView");
 
       // notify all mdi views when the active view receives a show normal, show minimized or show maximized event 
       if ( view )
         emit showActiveView( view );
     }
   }
+#endif
 
   return QMainWindow::eventFilter( o, e );
 }
@@ -401,7 +314,7 @@ bool MainWindow::eventFilter ( QObject* o, QEvent* e )
 void MainWindow::addWindow( MDIView* view )
 {
   // make workspace parent of view
-  view->reparent( d->_pWorkspace, QPoint() );
+  d->workspace->addWindow(view);
   connect( view, SIGNAL( message(const QString&, int) ), statusBar(), SLOT( message(const QString&, int )) );
   connect( this, SIGNAL( showActiveView(MDIView*) ), view, SLOT( showActiveView(MDIView*) ) );
 
@@ -409,15 +322,14 @@ void MainWindow::addWindow( MDIView* view )
   view->installEventFilter(this);
 
   // show the very first window in maximized mode
-  if ( d->_pWorkspace->windowList().isEmpty() )
+  if ( d->workspace->windowList().isEmpty() )
     view->showMaximized();
   else
     view->show();
 
   // look if the window was already inserted
-  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
-  {
-    if ( it.data() == view )
+  for ( int i=0; i < d->tabs->count(); i++ ) {
+    if ( d->tabs->tabData(i).value<QWidget*>() == view )
       return;
   }
 
@@ -425,19 +337,20 @@ void MainWindow::addWindow( MDIView* view )
   connect( view, SIGNAL( destroyed() ), this, SLOT( onWindowDestroyed() ) );
 
   // add a new tab to our tabbar
-  QTab* tab = new QTab;
-
+  int index=-1;
   if ( view->icon() )
-    tab->setIconSet( *view->icon() );
-  d->_tabs->setToolTip( d->_tabs->count(), view->caption() );
+    index = d->tabs->addTab(*view->icon(), view->caption());
+  else
+    index = d->tabs->addTab(view->caption());
+  d->tabs->setTabToolTip( index, view->caption() );
+  QVariant var; var.setValue<QWidget*>(view);
+  d->tabs->setTabData( index, var);
 
-  int id = d->_tabs->addTab( tab );
-  d->_mdiIds[ id ] = view;
   tabChanged( view );
-  if ( d->_tabs->count() == 1 )
-    d->_tabs->show(); // invoke show() for the first tab
-  d->_tabs->update();
-  d->_tabs->setCurrentTab( tab );
+  if ( d->tabs->count() == 1 )
+    d->tabs->show(); // invoke show() for the first tab
+  d->tabs->update();
+  d->tabs->setCurrentIndex( index );
 }
 
 void MainWindow::removeWindow( Gui::MDIView* view )
@@ -447,15 +360,11 @@ void MainWindow::removeWindow( Gui::MDIView* view )
   disconnect( this, SIGNAL( showActiveView(MDIView*) ), view, SLOT( showActiveView(MDIView*) ) );
   view->removeEventFilter(this);
 
-  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
-  {
-    if ( it.data() == view )
-    {
-      QTab* tab = d->_tabs->tab( it.key() );
-      d->_tabs->removeTab( tab );
-      d->_mdiIds.remove( it );
-      if ( d->_tabs->count() == 0 )
-        d->_tabs->hide(); // no view open any more
+  for ( int i = 0; i < d->tabs->count(); i++ ) {
+    if ( d->tabs->tabData(i).value<QWidget*>() == view ) {
+      d->tabs->removeTab( i );
+      if ( d->tabs->count() == 0 )
+        d->tabs->hide(); // no view open any more
       break;
     }
   }
@@ -466,18 +375,15 @@ void MainWindow::removeWindow( Gui::MDIView* view )
 
 void MainWindow::tabChanged( MDIView* view )
 {
-  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
-  {
-    if ( it.data() == view )
-    {
+  for ( int i = 0; i < d->tabs->count(); i++ ) {
+    if ( d->tabs->tabData(i).value<QWidget*>() == view ) {
       // remove file separators
       QString cap = view->caption();
       int pos = cap.findRev('/');
       cap = cap.mid( pos+1 );
       pos = cap.findRev('\\');
       cap = cap.mid( pos+1 );
-      QTab* tab = d->_tabs->tab( it.key() );
-      tab->setText( cap );
+      d->tabs->setTabText(i, cap );
       break;
     }
   }
@@ -485,10 +391,11 @@ void MainWindow::tabChanged( MDIView* view )
 
 MDIView* MainWindow::getWindowWithCaption( const QString& cap ) const
 {
-  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
-  {
-    if ( it.data()->caption() == cap )
-      return it.data();
+  for ( int i = 0; i < d->tabs->count(); i++ ) {
+    MDIView* view = qobject_cast<MDIView*>(d->tabs->tabData(i).value<QWidget*>());
+    if ( view->windowTitle() == cap ) {
+      return view;
+    }
   }
 
   return 0;
@@ -496,16 +403,14 @@ MDIView* MainWindow::getWindowWithCaption( const QString& cap ) const
 
 void MainWindow::onWindowDestroyed()
 {
-  QObject* obj = (QObject*)sender();
-  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
+  QObject* view = (QObject*)sender();
+  for ( int i = 0; i < d->tabs->count(); i++ )
   {
-    if ( it.data() == obj )
+    if ( d->tabs->tabData(i).value<QWidget*>() == view )
     {
-      QTab* tab = d->_tabs->tab( it.key() );
-      d->_tabs->removeTab( tab );
-      d->_mdiIds.remove( it );
-      if ( d->_tabs->count() == 0 )
-        d->_tabs->hide(); // no view open any more
+      d->tabs->removeTab( i );
+      if ( d->tabs->count() == 0 )
+        d->tabs->hide(); // no view open any more
       break;
     }
   }
@@ -513,7 +418,7 @@ void MainWindow::onWindowDestroyed()
 
 void MainWindow::onWindowActivated( QWidget* w )
 {
-  MDIView* mdi = dynamic_cast<MDIView*>(w);
+  MDIView* view = dynamic_cast<MDIView*>(w);
 
   // Even if windowActivated() signal is emitted mdi doesn't need to be a top-level window.
   // This happens e.g. if two windows are top-level and one of them gets docked again.
@@ -525,20 +430,20 @@ void MainWindow::onWindowActivated( QWidget* w )
   // at least under Linux. It seems to be a problem with the window manager.
   // Under Windows it seems to work though it's not really sure that it works reliably.
   // Result: So, we accept the first problem to be sure to avoid the second one.
-  if ( !mdi /*|| !mdi->isActiveWindow()*/ ) 
+  if ( !view /*|| !mdi->isActiveWindow()*/ ) 
     return; // either no MDIView or no valid object or no top-level window
 
-  // set active the appropriate window (it needs not to be part of _mdiIds, e.g. directly after creation)
-  mdi->setActiveView();
+  // set active the appropriate window (it needs not to be part of mdiIds, e.g. directly after creation)
+  view->setActiveView();
 
   // set the appropriate tab to the new active window
-  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
+  for ( int i = 0; i < d->tabs->count(); i++ )
   {
-    if ( it.data() == mdi )
+    if ( d->tabs->tabData(i).value<QWidget*>() == view )
     {
-      d->_tabs->blockSignals( true );
-      d->_tabs->setCurrentTab( it.key() );
-      d->_tabs->blockSignals( false );
+      d->tabs->blockSignals( true );
+      d->tabs->setCurrentTab( i );
+      d->tabs->blockSignals( false );
       break;
     }
   }
@@ -546,82 +451,69 @@ void MainWindow::onWindowActivated( QWidget* w )
 
 void MainWindow::onTabSelected( int i)
 {
-  QMap<int, MDIView*>::Iterator it = d->_mdiIds.find( i );
-  if ( it != d->_mdiIds.end() )
-  {
-    if ( !it.data()->hasFocus() )
-      it.data()->setFocus();
+  QVariant var = d->tabs->tabData(i);
+  if ( var.isValid() && var.canConvert<QWidget*>() ) {
+    QWidget* view = var.value<QWidget*>();
+    if ( view && !view->hasFocus() )
+      view->setFocus();
   }
 }
 
 void MainWindow::onWindowsMenuAboutToShow()
 {
-  QPopupMenu* windowsMenu = (QPopupMenu*)sender();
-  QWidgetList windows = d->_pWorkspace->windowList( QWorkspace::CreationOrder );
+  QList<QWidget*> windows = d->workspace->windowList( QWorkspace::CreationOrder );
+  QWidget* active = d->workspace->activeWindow();
 
-  // remove old window items first
-  while ( d->wndIDs.size() > 0 )
-  {
-    int id = d->wndIDs.front();
-    d->wndIDs.pop_front();
-    windowsMenu->removeItem( id );
+  // We search for the 'Std_WindowsMenu' command that provides the list of actions
+  CommandManager& cMgr = Application::Instance->commandManager();
+  Command* cmd = cMgr.getCommandByName("Std_WindowsMenu");
+  QList<QAction*> actions = qobject_cast<ActionGroup*>(cmd->getAction())->actions();
+
+  int numWindows = std::min<int>(actions.count()-1, windows.count());
+  for ( int index = 0; index < numWindows; index++ ) {
+    QWidget* child = windows.at(index);
+    QAction* action = actions.at(index);
+    QString text;
+    if (index < 9)
+      text = QString("&%1 %2").arg( index+1 ).arg(child->windowTitle());
+    else
+      text = QString("%1 %2").arg( index+1 ).arg(child->windowTitle());
+    action->setText(text);
+    action->setVisible(true);
+    action->setChecked(child == active);
+    connect(action, SIGNAL(triggered()), d->windowMapper, SLOT(map()));
+    d->windowMapper->setMapping(action, child);
   }
 
-  // append new window items
-  if ( windows.count() > 0 )
-  {
-    // insert separator before last item 
-    int idx = windowsMenu->count() - 2;
-    int pos = windowsMenu->insertSeparator( idx );
-    d->wndIDs.push_back( pos );
-
-    bool act = false;
-    for ( int i = 0; i < int(windows.count()); ++i ) 
-    {
-      QString txt = QString("&%1 %2").arg( i+1 ).arg( windows.at(i)->caption() );
-      idx = windowsMenu->count() - 2;
-
-      act |= (d->_pWorkspace->activeWindow() == windows.at(i));
-
-      if ( (act && d->wndIDs.size() < 10) || (!act && d->wndIDs.size() < 9))
-      {
-        int id = windowsMenu->insertItem( txt, this, SLOT( onWindowsMenuActivated( int ) ), 0, -1, idx );
-        windowsMenu->setItemParameter( id, i );
-        windowsMenu->setItemChecked( id, d->_pWorkspace->activeWindow() == windows.at(i) );
-        d->wndIDs.push_back( id );
-      }
-    }
-  }
+  // if less windows than actions
+  for (int index = numWindows; index < actions.count(); index++)
+    actions[index]->setVisible(false);
+  // show the separator
+  if ( numWindows > 0 )
+    actions.last()->setVisible(true);
 }
 
-void MainWindow::onWindowsMenuActivated( int id )
+QList<QWidget*> MainWindow::windows( QWorkspace::WindowOrder order ) const
 {
-  QWidget* w = d->_pWorkspace->windowList().at( id );
-  if ( w )
-    w->showNormal();
-  w->setFocus();
-}
-
-QWidgetList MainWindow::windows( QWorkspace::WindowOrder order ) const
-{
-  return d->_pWorkspace->windowList( order );
+  return d->workspace->windowList( order );
 }
 
 // set text to the pane
 void MainWindow::setPaneText(int i, QString text)
 {
   if (i==1)
-    d->_pclActionLabel->setText(text);
+    d->actionLabel->setText(text);
   else if (i==2)
-    d->_pclSizeLabel->setText(text);
+    d->sizeLabel->setText(text);
 }
 
+//TODO Redo the active window stuff
 MDIView* MainWindow::activeWindow(void) const
 {/*
   // redirect all meesages to the view in fullscreen mode, if so
   MDIView* pView = 0;
   MDIView* pTmp = 0;
-  for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); it++ )
+  for ( QMap<int, MDIView*>::Iterator it = d->mdiIds.begin(); it != d->mdiIds.end(); it++ )
   {
     if ( it.data()->isFullScreen() )
     {
@@ -635,7 +527,7 @@ MDIView* MainWindow::activeWindow(void) const
   // if no fullscreen window then look in workspace
   if ( !pView )
   {
-    pView = reinterpret_cast <MDIView *> ( d->_pWorkspace->activeWindow() );
+    pView = reinterpret_cast <MDIView *> ( d->workspace->activeWindow() );
     if ( !pView && pTmp )
       pView = pTmp;
   }
@@ -643,78 +535,105 @@ MDIView* MainWindow::activeWindow(void) const
   return pView;*/
 
   // the corresponding window to the current tab is active
-  MDIView* pView = 0;
-  int id = d->_tabs->currentTab();
-  QMap<int, MDIView*>::ConstIterator it = d->_mdiIds.find( id );
-  if ( it != d->_mdiIds.end() )
-    pView = it.data();
-  return pView;
+  int id = d->tabs->currentIndex();
+  if ( id < 0 )
+    return 0;
+  return qobject_cast<MDIView*>(d->tabs->tabData(id).value<QWidget*>());
 }
 
 void MainWindow::setActiveWindow( MDIView* view )
 {
-  onWindowActivated( view );
-}
-
-void MainWindow::onUndo()
-{
-  puts("MainWindow::slotUndo()");
-}
-
-void MainWindow::onRedo()
-{
-  puts("MainWindow::slotRedo()");
+  d->workspace->setActiveWindow(view);
 }
 
 void MainWindow::closeEvent ( QCloseEvent * e )
 {
+  //TODO Reimplement the fullscreen mode stuff
   Application::Instance->tryClose( e );
   if( e->isAccepted() )
   {
     // Before closing the main window we must make sure that all views are in 'Normal' mode otherwise the 'lastWindowClosed()' signal
     // doesn't get emitted from QApplication later on. Just destroying these views doesn't work either.
-    for ( QMap<int, MDIView*>::Iterator it = d->_mdiIds.begin(); it != d->_mdiIds.end(); ++it )
+    for ( int i = 0; i < d->tabs->count(); i++ )
     {
-      if ( it.data()->currentViewMode() != MDIView::Normal )
-        it.data()->setCurrentViewMode(MDIView::Normal);
+      MDIView* view = qobject_cast<MDIView*>(d->tabs->tabData(i).value<QWidget*>());
+      if ( view->currentViewMode() != MDIView::Normal )
+        view ->setCurrentViewMode(MDIView::Normal);
     }
 
-    d->_pcActivityTimer->stop();
+    d->activityTimer->stop();
     QMainWindow::closeEvent( e );
   }
 }
 
 void MainWindow::appendRecentFile(const char* file)
 {
-  StdCmdMRU* pCmd = dynamic_cast<StdCmdMRU*>(Application::Instance->commandManager().getCommandByName("Std_MRU"));
+  StdCmdRecentFiles* pCmd = dynamic_cast<StdCmdRecentFiles*>(Application::Instance->commandManager().getCommandByName("Std_RecentFiles"));
   if (pCmd)
   {
     pCmd->addRecentFile( file );
-    pCmd->refreshRecentFileWidgets();
+    pCmd->refreshRecentFileList();
   }
 }
 
-void MainWindow::updateCmdActivity()
+void MainWindow::updateActions()
 {
   static QTime cLastCall;
 
-  if(cLastCall.elapsed() > 250 && isVisible () )
+  if ( cLastCall.elapsed() > 250 && isVisible() )
   {
-    //puts("testActive");
     Application::Instance->commandManager().testActive();
-
     pcTree->testStatus();
-
     // remember last call
     cLastCall.start();
   }
 
-  d->_pcActivityTimer->start( 300, TRUE );	
+  d->activityTimer->start( 300, true );	
+}
+
+void MainWindow::switchToTopLevelMode()
+{
+  QList<QDockWidget*> dw = this->findChildren<QDockWidget*>();
+  for (QList<QDockWidget*>::Iterator it = dw.begin(); it != dw.end(); ++it) {
+    (*it)->setParent(0, Qt::Window);
+    (*it)->show();
+  }
+  QList<QWidget*> mdi = getMainWindow()->windows();
+  for (QList<QWidget*>::Iterator it = mdi.begin(); it != mdi.end(); ++it) {
+    (*it)->setParent(0, Qt::Window);
+    (*it)->show();
+  }
+}
+
+void MainWindow::switchToDockedMode()
+{
+  // TODO
+  QMessageBox::critical(getMainWindow(), "Not implemented yet", "Not implemented yet");
+}
+
+void MainWindow::updateStyle(void)
+{
+  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
+  hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
+
+  QStyle* curStyle = QApplication::style();
+  QString curStyleName = curStyle->objectName();
+  QString newStyleName = hGrp->GetASCII( "WindowStyle", curStyleName.ascii() ).c_str();
+  curStyleName = curStyleName.toLower();
+  newStyleName = newStyleName.toLower();
+  if ( curStyleName == newStyleName )
+    return; // already set
+  
+  QStyle* newStyle = QStyleFactory::create( newStyleName );
+  if ( newStyle != 0 )
+  {
+    QApplication::setStyle( newStyle );
+  }
 }
 
 void MainWindow::loadWindowSettings()
 {
-  loadDockWndSettings();
+  loadLayoutSettings();
 
   ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
   int w = hGrp->GetInt("Width", 1024);
@@ -725,36 +644,8 @@ void MainWindow::loadWindowSettings()
   resize( w, h );
   move(x, y);
   if (max) showMaximized();
-  //setBackgroundPixmap(QPixmap((const char*)FCBackground));
 
-  updatePixmapsSize();
   updateStyle();
-}
-
-void MainWindow::updatePixmapsSize(void)
-{
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
-  bool bigPixmaps = hGrp->GetBool("BigPixmaps", false);
-  if (bigPixmaps != usesBigPixmaps())
-    setUsesBigPixmaps (bigPixmaps);
-}
-
-void MainWindow::updateStyle(void)
-{
-  QStyle& curStyle = QApplication::style();
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
-
-  QString style = hGrp->GetASCII( "WindowStyle", curStyle.name() ).c_str();
-  if ( style == QString( curStyle.name() ) )
-    return; // already set
-  
-  QStyle* newStyle = QStyleFactory::create( style );
-  if ( newStyle != 0 )
-  {
-    QApplication::setStyle( newStyle );
-  }
 }
 
 void MainWindow::saveWindowSettings()
@@ -773,54 +664,63 @@ void MainWindow::saveWindowSettings()
     hGrp->SetBool("Maximized", false);
   }
 
-  saveDockWndSettings();
+  saveLayoutSettings();
 }
 
-void MainWindow::loadDockWndSettings()
+void MainWindow::loadLayoutSettings()
 {
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
-  QString str = hGrp->GetASCII("Layout", "").c_str();
+  std::string path = App::GetApplication().Config()["UserHomePath"];
+  std::string name = App::GetApplication().Config()["ExeName"];
+  if(getenv("APPDATA"))
+    path = std::string(getenv("APPDATA"));
+  else
+    name = std::string(".") + name;
 
-  if ( !str.isEmpty() )
-  {
-    QTextStream ts( &str, IO_ReadOnly );
-    ts >> *this;
+  QByteArray state;
+  QDir dir(path.c_str());
+  if (dir.exists() && dir.cd(name.c_str())) {
+    QString filename = dir.filePath("layout.bin");
+    QFile file(filename);
+    if (file.open(QIODevice::ReadOnly)) {
+      QDataStream str(&file);
+      str >> state;
+      file.close();
+    }
   }
 
   QString hidden = App::Application::Config()["HiddenDockWindow"].c_str();
   QStringList hiddenDW = QStringList::split ( ';', hidden, false );
   DockWindowManager::instance()->hideDockWindows( hiddenDW );
+
+  restoreState(state);
 }
 
-void MainWindow::saveDockWndSettings()
+void MainWindow::saveLayoutSettings()
 {
-  QString str;
-  QTextStream ts( &str, IO_WriteOnly );
-  ts << *this;
+  std::string path = App::GetApplication().Config()["UserHomePath"];
+  std::string name = App::GetApplication().Config()["ExeName"];
+  if(getenv("APPDATA"))
+    path = std::string(getenv("APPDATA"));
+  else
+    name = std::string(".") + name;
 
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("MainWindow");
-  hGrp->SetASCII("Layout", str.latin1());
-}
+  QDir dir(path.c_str());
 
-void MainWindow::languageChange()
-{
-  CommandManager& rclMan = Application::Instance->commandManager();
-  vector<Command*> cmd = rclMan.getAllCommands();
-  for ( vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
-  {
-    (*it)->languageChange();
+  if (dir.exists()) {
+    if (!dir.exists(name.c_str()))
+      dir.mkdir(name.c_str());
+    if (dir.cd(name.c_str())) {
+      QString filename = dir.filePath("layout.bin");
+      QFile file(filename);
+      if (file.open(QIODevice::WriteOnly)) {
+        QByteArray state = saveState();
+        QDataStream str(&file);
+        str << state;
+        file.close();
+      }
+    }
   }
-
-  //MenuManager::getInstance()->languageChange();
-  // reload current workbench to translate root items of submenus
-  Workbench* wb = WorkbenchManager::instance()->active();
-  if (wb) wb->activate();
 }
-
-//**************************************************************************
-// Init, Destruct and singelton
-
-QSplashScreen *MainWindow::_splash = NULL;
 
 void MainWindow::startSplasher(void)
 {
@@ -836,19 +736,22 @@ void MainWindow::startSplasher(void)
 #endif
     if (hGrp->GetBool("AllowSplasher", splash))
     {
-      _splash = new SplashScreen( Gui::BitmapFactory().pixmap(App::Application::Config()["SplashPicture"].c_str()) );
-      _splash->show();
-    }
+      d->splashscreen = new SplashScreen( Gui::BitmapFactory().pixmap(App::Application::Config()["SplashPicture"].c_str()) );
+      d->splashscreen->show();
+    }else
+      d->splashscreen = 0;
+
+
   }
 }
 
 void MainWindow::stopSplasher(void)
 {
-  if ( _splash )
+  if ( d->splashscreen )
   {
-    _splash->finish( instance );
-    delete _splash;
-    _splash = 0L;
+    d->splashscreen->finish( this );
+    delete d->splashscreen;
+    d->splashscreen = 0;
   }
 }
 
@@ -867,26 +770,22 @@ void MainWindow::showTipOfTheDay( bool force )
   tip = hGrp->GetBool("Tipoftheday", tip);
   if ( tip || force)
   {
-    Gui::Dialog::DlgTipOfTheDayImp dlg(instance, "Tipofday");
+    Gui::Dialog::DlgTipOfTheDayImp dlg(instance);
     dlg.exec();
   }
 }
 
 /**
- * Drops the event \a e and writes the right Python command.
+ * Drops the event \a e and tries to open the files.
  */
-void MainWindow::dropEvent ( QDropEvent      * e )
+void MainWindow::dropEvent ( QDropEvent* e )
 {
-  if ( QUriDrag::canDecode(e) )
-  {
-    QStringList fn;
-    QUriDrag::decodeLocalFiles(e, fn);
-
-    for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it ) {
-
-      QFileInfo info(*it);
-      if ( info.exists() && info.isFile() )
-      {
+  const QMimeData* data = e->mimeData();
+  if ( data->hasUrls() ) {
+    QList<QUrl> uri = data->urls();
+    for ( QList<QUrl>::ConstIterator it = uri.begin(); it != uri.end(); ++it ) {
+      QFileInfo info((*it).toLocalFile());
+      if ( info.exists() && info.isFile() ) {
         // First check the complete extension
         if ( App::GetApplication().hasOpenType( info.extension().latin1() ) )
           Application::Instance->open(info.absFilePath().latin1());
@@ -895,17 +794,38 @@ void MainWindow::dropEvent ( QDropEvent      * e )
           Application::Instance->open(info.absFilePath().latin1());
       }
     }
-  }else
-    MainWindow::dropEvent(e);
+  } else {
+    QMainWindow::dropEvent(e);
+  }
 }
 
 void MainWindow::dragEnterEvent ( QDragEnterEvent * e )
 {
   // Here we must allow uri drafs and check them in dropEvent
-  if ( QUriDrag::canDecode(e) )
+  const QMimeData* data = e->mimeData();
+  if ( data->hasUrls() )
     e->accept();
   else
     e->ignore();
+}
+
+void MainWindow::changeEvent(QEvent *e)
+{
+  if (e->type() == QEvent::LanguageChange) {
+    d->sizeLabel->setText(tr("Dimension"));
+    
+    CommandManager& rclMan = Application::Instance->commandManager();
+    vector<Command*> cmd = rclMan.getAllCommands();
+    for ( vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
+      (*it)->languageChange();
+
+    //MenuManager::getInstance()->languageChange();
+    // reload current workbench to translate root items of submenus
+    Workbench* wb = WorkbenchManager::instance()->active();
+    if (wb) wb->activate();
+  } else {
+    QMainWindow::changeEvent(e);
+  }
 }
 
 

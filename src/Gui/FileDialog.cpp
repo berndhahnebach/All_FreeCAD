@@ -23,24 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qcheckbox.h>
-# include <qdir.h>
-# include <qfileinfo.h>
-# include <qlabel.h>
-# include <qlayout.h>
-# include <qlineedit.h>
-# include <qmessagebox.h>
-# include <qpainter.h>
-# include <qpushbutton.h>
-#endif
-
 #include <Base/Parameter.h>
 #include <App/Application.h>
 
 #include "FileDialog.h"
 #include "BitmapFactory.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 
@@ -58,7 +46,7 @@ QString FileDialog::getOpenFileName ( const QString & startWith, const QString &
   QString dirName = startWith;
   QString selName = QString::null;
   if ( !startWith.isEmpty() ) {
-    QUrlOperator u( startWith );
+    Q3UrlOperator u( startWith );
     if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
       dirName = startWith;
     } else {
@@ -119,7 +107,7 @@ QString FileDialog::getSaveFileName ( const QString & startWith, const QString &
   QString dirName = startWith;
   QString selName = QString::null;
   if ( !startWith.isEmpty() ) {
-    QUrlOperator u( startWith );
+    Q3UrlOperator u( startWith );
     if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
       dirName = startWith;
     } else {
@@ -176,7 +164,7 @@ QString FileDialog::getExistingDirectory( const QString & dir, QWidget *parent, 
                                           const QString& caption, bool dirOnly, bool resolveSymlinks,
                                           bool * ok )
 {
-  QString path = QFileDialog::getExistingDirectory( dir, parent, name, caption, dirOnly, resolveSymlinks );
+  QString path = Q3FileDialog::getExistingDirectory( dir, parent, name, caption, dirOnly, resolveSymlinks );
   // valid path was selected
   if ( !path.isEmpty() )
   {
@@ -248,7 +236,7 @@ void FileDialog::setWorkingDirectory( const QString& dir )
 {
   QString dirName = dir;
   if ( !dir.isEmpty() ) {
-    QUrlOperator u( dir );
+    Q3UrlOperator u( dir );
     if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
       dirName = dir;
     } else {
@@ -273,7 +261,7 @@ void FileDialog::setWorkingDirectory( const QString& dir )
  * If \a modal is TRUE then the file dialog is modal; otherwise it is modeless. 
  */
 FileDialog::FileDialog ( QWidget* parent, const char* name, bool modal)
-    : QFileDialog(parent, name, modal )
+    : Q3FileDialog(parent, name, modal )
 {
 }
 
@@ -287,7 +275,7 @@ FileDialog::FileDialog ( QWidget* parent, const char* name, bool modal)
  */
 FileDialog::FileDialog ( const QString& dirName, const QString& filter,
                         QWidget* parent, const char* name, bool modal)
-    : QFileDialog(dirName, filter, parent, name, modal )
+    : Q3FileDialog(dirName, filter, parent, name, modal )
 {
 }
 
@@ -316,7 +304,7 @@ void FileDialog::accept()
     setSelection( fn );
   }
 
-  QFileDialog::accept();
+  Q3FileDialog::accept();
 }
 
 /**
@@ -364,62 +352,87 @@ QString FileDialog::selectedFileName()
 
 /* TRANSLATOR Gui::FileOptionsDialog */
 
-FileOptionsDialog::FileOptionsDialog( QWidget* parent, const char* name , bool modal )
-  : FileDialog( parent, name, modal), _extensionShown(false)
+FileOptionsDialog::FileOptionsDialog( QWidget* parent, Qt::WFlags fl )
+  : QFileDialog( parent, fl )
 {
-  init();
-}
+  extensionButton = new QPushButton( this );
+  extensionButton->setText( tr( "Extended" ) );
 
-FileOptionsDialog::FileOptionsDialog ( const QString& dirName, const QString& filter, QWidget* parent, const char* name, bool modal )
-  : FileDialog( dirName, filter, parent, name, modal ), _extensionShown(false)
-{
-  init();
+  //search for the grid layout and add the new button
+  QGridLayout* grid = this->findChild<QGridLayout*>();
+  grid->addWidget(extensionButton, 4, 5, Qt::AlignLeft);
+
+  connect(extensionButton, SIGNAL(clicked()), this, SLOT(toggleExtension()));
+
+  // get the filter combobox to connect its activated() signal with our filterSelected() signal
+  QComboBox* box = this->findChildren<QComboBox*>().last();
+  connect(box, SIGNAL(activated(const QString&)), this, SIGNAL(filterSelected(const QString&)));
 }
 
 FileOptionsDialog::~FileOptionsDialog()
 {
 }
 
-void FileOptionsDialog::init()
+void FileOptionsDialog::accept()
 {
-  // search for the OK button
-  QObject* btn = child( "OK", "QPushButton", true );
-  optionsButton = new QPushButton( this );
-  
-  if ( btn )
-  {
-    optionsButton->setFixedWidth( static_cast<QPushButton*>(btn)->width() );
+  // Fixes a bug of the default implementation when entering an asterik
+  QLineEdit* filename = this->findChild<QLineEdit*>();
+  QString filter = filename->text();
+  if (filter.contains('*')) {
+    QFileInfo fi(filter);
+    QString ext = fi.suffix();
+    ext.prepend("*.");
+    QStringList filters = this->filters();
+    bool ok=false;
+    // Compare the given suffix with the suffixes of all filters
+    for (QStringList::ConstIterator it = filters.begin(); it != filters.end(); ++it) {
+      if ((*it).contains(ext)) {
+        filter = *it;
+        ok = true;
+        break;
+      }
+    }
+
+    // if no appropriate filter was found the add the 'All files' filter
+    if (!ok) {
+      filter = tr("All files (*.*)");
+      filters << filter;
+      setFilters(filters);
+    }
+
+    // empty the line edit
+    filename->blockSignals(true);
+    filename->clear();
+    filename->blockSignals(false);
+    selectFilter(filter);
+
+    return;
   }
 
-  QString text = tr( "&Options " );
-  text += ">>>";
-  optionsButton->setText( text );
-  addWidgets(0, 0, optionsButton);
-  connect(optionsButton, SIGNAL(clicked()), this, SLOT(toggleExtension()));
+  QFileDialog::accept();
 }
 
 void FileOptionsDialog::toggleExtension()
 {
-  _extensionShown = !_extensionShown;
-  showExtension( _extensionShown );
-  QString text = tr( "&Options " );
-  text += _extensionShown ? "<<<" : ">>>";
-  optionsButton->setText( text );
+  QWidget* w = extension();
+  if (w)
+    showExtension(!w->isVisible());
 }
 
-void FileOptionsDialog::setOptionsWidget( FileOptionsDialog::Place pos, QWidget* w, bool show )
+void FileOptionsDialog::setOptionsWidget( FileOptionsDialog::ExtensionPosition pos, QWidget* w, bool show )
 {
-  if ( pos == Right )
+  if ( pos == ExtensionRight )
   {
     setExtension( w );
-    setOrientation( Horizontal );
+    setOrientation( Qt::Horizontal );
   }
-  else if ( pos == Bottom )
+  else if ( pos == ExtensionBottom )
   {
     setExtension( w );
-    setOrientation( Vertical );
+    setOrientation( Qt::Vertical );
   }
 
+  w->hide();
   if ( show )
     toggleExtension();
 }
@@ -434,9 +447,9 @@ QWidget* FileOptionsDialog::getOptionsWidget() const
 /**
  * Constructs a image preview widget called \a name with the parent \a parent.
  */
-ImagePreview::ImagePreview( QWidget *parent, const char* name ) : QScrollView( parent, name ) 
+ImagePreview::ImagePreview( QWidget *parent, const char* name ) : Q3ScrollView( parent, name ) 
 {
-  viewport()->setBackgroundMode( PaletteBase );
+  viewport()->setBackgroundMode( Qt::PaletteBase );
 }
 
 /**
@@ -484,7 +497,7 @@ void ImagePreview::drawContents( QPainter *p, int clipx, int clipy, int clipw, i
  */
 PreviewLabel::PreviewLabel( QWidget *parent, const char* name ) : QWidget( parent, name ) 
 {
-  QGridLayout* layout = new QGridLayout( this, 1, 1, 0, -1, "PreviewLabel"); 
+  Q3GridLayout* layout = new Q3GridLayout( this, 1, 1, 0, -1, "PreviewLabel"); 
   _preview = new ImagePreview( this );
   _cbview = new QCheckBox( this );
   _cbview->setText( tr("Preview") );
@@ -497,7 +510,7 @@ PreviewLabel::PreviewLabel( QWidget *parent, const char* name ) : QWidget( paren
 /**
  * Previews the pixmap if \a u is an image file.
  */
-void PreviewLabel::previewUrl( const QUrl &u )
+void PreviewLabel::previewUrl( const Q3Url &u )
 {
   QString path = u.path();
   QPixmap pix( path );
@@ -514,14 +527,14 @@ void PreviewLabel::previewUrl( const QUrl &u )
  * Constructs an empty file icon provider called \a name, with the parent \a parent.
  */
 FileIconProvider::FileIconProvider( QObject * parent, const char * name )
-  : QFileIconProvider( parent, name )
+  : Q3FileIconProvider( parent, name )
 {
-  QFileDialog::setIconProvider( this );
+  Q3FileDialog::setIconProvider( this );
 }
 
 FileIconProvider::~FileIconProvider()
 {
-  QFileDialog::setIconProvider( 0L );
+  Q3FileDialog::setIconProvider( 0L );
 }
 
 /**
@@ -535,23 +548,24 @@ const QPixmap * FileIconProvider::pixmap ( const QFileInfo & info )
   b=info.isFile();
   if ( info.exists() && info.isFile() )
   {
-    const char* ext = QPixmap::imageFormat( fn );
-    
-    // seems to be valid image file
-    if ( ext )
-    {
+    // TODO Not sure what happens here...
+    //const char* ext = QPixmap::imageFormat( fn );
+    //
+    //// seems to be valid image file
+    //if ( ext )
+    //{
       return BitmapFactory().fileFormat( "image_xpm" );
-    }
-    else // other file formats 
-    {
-      QString ext = info.extension().upper();
-      QPixmap* px = BitmapFactory().fileFormat( ext.latin1() );
-      if ( px )
-        return px;
-    }
+    //}
+    //else // other file formats 
+    //{
+    //  QString ext = info.extension().upper();
+    //  QPixmap* px = BitmapFactory().fileFormat( ext.latin1() );
+    //  if ( px )
+    //    return px;
+    //}
   }
 
-  return QFileIconProvider::pixmap( info );
+  return Q3FileIconProvider::pixmap( info );
 }
 
 // --------------------------------------------------------------------
@@ -561,20 +575,20 @@ const QPixmap * FileIconProvider::pixmap ( const QFileInfo & info )
 /**
  * Constructs a file chooser called \a name with the parent \a parent.
  */
-FileChooser::FileChooser ( QWidget * parent, const char * name )
-: QWidget(parent, name), md( File ), _filter( QString::null )
+FileChooser::FileChooser ( QWidget * parent )
+  : QWidget(parent), md( File ), _filter( QString::null )
 {
   QHBoxLayout *layout = new QHBoxLayout( this );
   layout->setMargin( 0 );
   layout->setSpacing( 6 );
 
-  lineEdit = new QLineEdit( this, "filechooser_lineedit" );
+  lineEdit = new QLineEdit( this );
   layout->addWidget( lineEdit );
 
   connect( lineEdit, SIGNAL( textChanged( const QString & ) ),
 	     this, SIGNAL( fileNameChanged( const QString & ) ) );
 
-  button = new QPushButton( "...", this, "filechooser_button" );
+  button = new QPushButton( "...", this );
   button->setFixedWidth( 2*button->fontMetrics().width( " ... " ) );
   layout->addWidget( button );
 
@@ -616,18 +630,14 @@ void FileChooser::chooseFile()
 {
   QString fn;
   if ( mode() == File )
-  {
-    fn = Gui::FileDialog::getOpenFileName( lineEdit->text(), _filter, this, 0, tr( "Select file" ));
-  }
+  	fn = QFileDialog::getOpenFileName( this, tr( "Select a file" ), lineEdit->text(), _filter );
   else
-  {
-    fn = Gui::FileDialog::getExistingDirectory( lineEdit->text(), this );
-  }
+  	fn = QFileDialog::getExistingDirectory( this, tr( "Select a directory" ), lineEdit->text() );
 
   if ( !fn.isEmpty() ) 
   {
   	lineEdit->setText( fn );
-	  emit fileNameSelected( fn );
+	  fileNameSelected( fn );
   }
 }
 

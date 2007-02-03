@@ -4,7 +4,6 @@
 	Version="8,00"
 	Name="FreeCADBase"
 	ProjectGUID="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
-	RootNamespace="FreeCADBase"
 	>
 	<Platforms>
 		<Platform
@@ -58,7 +57,6 @@
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
 				ProgramDataBaseFileName=".\Debug/"
-				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"
@@ -1136,14 +1134,6 @@
 		</File>
 		<File
 			RelativePath="Matrix.h"
-			>
-		</File>
-		<File
-			RelativePath=".\MemDebug.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\MemDebug.h"
 			>
 		</File>
 		<File

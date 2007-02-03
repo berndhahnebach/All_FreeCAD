@@ -33,7 +33,7 @@
 
 #include "propertyeditorfont.h"
 #include "Widgets.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::PropertyEditor;
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::FontEditorItem, Gui::PropertyEditor::EditableItem);
@@ -42,11 +42,13 @@ FontEditorItem::FontEditorItem()
 {
 }
 
-FontEditorItem::FontEditorItem( QListView* lv, const QString& text, const QVariant& value )
+FontEditorItem::FontEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setText( 0, text );
-  setText( 1, value.toFont().family() );
+  assert(value.canConvert<QFont>());
+  const QFont& ft = value.value<QFont>();
+  setText( 1, ft.family() );
 }
 
 QWidget* FontEditorItem::createEditor( int column, QWidget* parent )
@@ -55,20 +57,26 @@ QWidget* FontEditorItem::createEditor( int column, QWidget* parent )
     return 0;
 
   QPushButton* editor = new QPushButton( parent, "FontEditorItem::edit" );
-  editor->setText( overrideValue().toFont().family() );
+  assert(overrideValue().canConvert<QFont>());
+  const QFont& ft = overrideValue().value<QFont>();
+  editor->setText( ft.family() );
   connect(editor, SIGNAL(clicked()), this, SLOT(onChangeFont()));
   return editor;
 }
 
 void FontEditorItem::stopEdit( int column )
 {
-  setText( column, overrideValue().toFont().family() );
+  assert(overrideValue().canConvert<QFont>());
+  const QFont& ft = overrideValue().value<QFont>();
+  setText( column, ft.family() );
 }
 
 void FontEditorItem::setDefaultEditorValue( QWidget* editor )
 {
   QPushButton* btn = dynamic_cast<QPushButton*>(editor);
-  btn->setText( value().toFont().family() );
+  assert(value().canConvert<QFont>());
+  const QFont& ft = value().value<QFont>();
+  btn->setText( ft.family() );
 }
 
 QVariant FontEditorItem::currentEditorValue( QWidget* editor ) const
@@ -76,7 +84,8 @@ QVariant FontEditorItem::currentEditorValue( QWidget* editor ) const
   QPushButton* btn = dynamic_cast<QPushButton*>(editor);
 
   QVariant var;
-  var.asFont().setFamily( btn->text() );
+  QFont ft( btn->text() );
+  var.setValue<QFont>(ft);
   return var;
 }
 
@@ -101,7 +110,8 @@ void FontEditorItem::onChangeFont()
 QVariant FontEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
   QVariant var;
-  var.asFont().setFamily( "" );
+  QFont ft("");
+  var.setValue<QFont>(ft);
   return var;
 }
 
@@ -117,11 +127,12 @@ ColorEditorItem::ColorEditorItem()
 {
 }
 
-ColorEditorItem::ColorEditorItem( QListView* lv, const QString& text, const QVariant& value )
+ColorEditorItem::ColorEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
     :EditableItem( lv, value )
 {
   setText( 0, text );
-  _color = value.toColor();
+  assert(value.canConvert<QColor>());
+  _color = value.value<QColor>();
 }
 
 QWidget* ColorEditorItem::createEditor( int column, QWidget* parent )
@@ -129,7 +140,7 @@ QWidget* ColorEditorItem::createEditor( int column, QWidget* parent )
   if ( column == 0 )
     return 0;
 
-  Gui::ColorButton* editor = new Gui::ColorButton( parent, "ColorEditorItem::edit" );
+  Gui::ColorButton* editor = new Gui::ColorButton( parent );
 
   editor->setColor( _color );
 
@@ -139,13 +150,15 @@ QWidget* ColorEditorItem::createEditor( int column, QWidget* parent )
 
 void ColorEditorItem::stopEdit( int column )
 {
-  _color = overrideValue().toColor();
+  assert(overrideValue().canConvert<QColor>());
+  _color = overrideValue().value<QColor>();
 }
 
 void ColorEditorItem::setDefaultEditorValue( QWidget* editor )
 {
   Gui::ColorButton* btn = dynamic_cast<Gui::ColorButton*>(editor);
-  btn->setColor( value().toColor() );
+  assert(value().canConvert<QColor>());
+  btn->setColor( value().value<QColor>() );
 }
 
 QVariant ColorEditorItem::currentEditorValue( QWidget* editor ) const
@@ -153,7 +166,7 @@ QVariant ColorEditorItem::currentEditorValue( QWidget* editor ) const
   Gui::ColorButton* btn = dynamic_cast<Gui::ColorButton*>(editor);
 
   QVariant var;
-  var.asColor() = btn->color();
+  var.setValue<QColor>( btn->color() );
   return var;
 }
 
@@ -165,7 +178,7 @@ void ColorEditorItem::paintCell(QPainter* p, const QColorGroup& cg, int column, 
   {
     p->fillRect( 2, 2, width-5, height()-4, _color );
     p->save();
-    p->setPen( QPen( QObject::black, 1 ) );
+    p->setPen( QPen( Qt::black, 1 ) );
     p->drawRect( 2, 2, width-5, height()-4 );
     p->restore();
     p->save();
@@ -183,8 +196,8 @@ QVariant ColorEditorItem::convertFromProperty(const std::vector<App::Property*>&
   {
     App::PropertyColor* pPropColor = (App::PropertyColor*)prop.front();
     App::Color col = pPropColor->getValue();
-    value.asColor() = QColor((int)(255.0f*col.r),(int)(255.0f*col.g),(int)(255.0f*col.b));
-    _color = value.toColor();
+    _color.setRgb((int)(255.0f*col.r),(int)(255.0f*col.g),(int)(255.0f*col.b));
+    value.setValue<QColor>( _color );
   }
 
   return value;
@@ -192,7 +205,8 @@ QVariant ColorEditorItem::convertFromProperty(const std::vector<App::Property*>&
 
 void ColorEditorItem::convertToProperty(const QVariant& val)
 {
-  QColor col = val.toColor();
+  assert(val.canConvert<QColor>());
+  QColor col = val.value<QColor>();
   for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
   {
     App::PropertyColor* pPropColor = (App::PropertyColor*)*it;

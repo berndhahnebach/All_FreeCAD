@@ -22,10 +22,14 @@
 #ifndef __KNUMVALIDATOR_H
 #define __KNUMVALIDATOR_H
 
-#include <qvalidator.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-class QWidget;
-class QString;
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 namespace Gui {
 

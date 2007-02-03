@@ -22,20 +22,13 @@
 
 
 #include "PreCompiled.h"
-#ifndef _PreComp_
-# include <qobjectlist.h>
-# include <qdockarea.h>
-# include <qdockwindow.h>
-# include <qscrollview.h>
-# include <qstringlist.h>
-#endif
 
 #include "DockWindow.h"
 #include "MainWindow.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
-DockWindow::DockWindow( Gui::Document* pcDocument, QWidget *parent, const char *name, WFlags f)
+DockWindow::DockWindow( Gui::Document* pcDocument, QWidget *parent, const char *name, Qt::WFlags f)
   :QWidget( parent,name,f ), BaseView( pcDocument ), _dw( 0L )
 {
 }
@@ -51,26 +44,26 @@ void DockWindow::setCaption ( const QString & s )
   _caption = s;
 }
 
-QDockWindow* DockWindow::dockWindow() const
+QDockWidget* DockWindow::dockWindow() const
 {
   return _dw;
 }
-
+#if 0
 void DockWindow::setFixedExtentWidth(int w)
 {
   if (!_dw||!_dw->area())
     return; // not yet attached to a dock area
-  QDockArea* area = _dw->area();
-  QPtrList<QDockWindow> dws = area->dockWindowList();
-  QDockWindow* dw;
+  Q3DockArea* area = _dw->area();
+  QList<Q3DockWindow *> dws = area->dockWindowList();
+
   int ct=0;
   int sum=0;
-  for (dw=dws.first(); dw; dw=dws.next())
+  for (QList<Q3DockWindow *>::const_iterator dw = dws.begin(); dw != dws.end(); ++dw)
   {
-    if ( dw->isVisible() && dw != _dw )
+    if ( (*dw)->isVisible() && (*dw) != _dw )
     {
       ct++;
-      sum += dw->width();
+      sum += (*dw)->width();
     }
   }
 
@@ -78,10 +71,10 @@ void DockWindow::setFixedExtentWidth(int w)
     return; // sorry, cannot enlarge other windows
 
   int lw = (sum - w)/ct;
-  for (dw=dws.first(); dw; dw=dws.next())
+  for (QList<Q3DockWindow *>::const_iterator dw = dws.begin(); dw != dws.end(); ++dw)
   {
-    if ( dw->isVisible() && dw != _dw )
-      dw->setFixedExtentWidth( lw );
+    if ( (*dw)->isVisible() && (*dw) != _dw )
+      (*dw)->setFixedExtentWidth( lw );
   }
 
   _dw->setFixedExtentWidth(w);
@@ -93,17 +86,17 @@ void DockWindow::setFixedExtentHeight(int h)
 {
   if (!_dw||!_dw->area())
     return; // not yet attached to a dock area
-  QDockArea* area = _dw->area();
-  QPtrList<QDockWindow> dws = area->dockWindowList();
-  QDockWindow* dw;
+  Q3DockArea* area = _dw->area();
+  QList<Q3DockWindow *> dws = area->dockWindowList();
+
   int ct=0;
   int sum=0;
-  for (dw=dws.first(); dw; dw=dws.next())
+  for (QList<Q3DockWindow *>::const_iterator dw = dws.begin(); dw != dws.end(); ++dw)
   {
-    if ( dw->isVisible() && dw != _dw )
+    if ( (*dw)->isVisible() && (*dw) != _dw )
     {
       ct++;
-      sum += dw->height();
+      sum += (*dw)->height();
     }
   }
 
@@ -111,17 +104,17 @@ void DockWindow::setFixedExtentHeight(int h)
     return; // sorry, cannot enlarge other windows
 
   int lh = (sum - h)/ct;
-  for (dw=dws.first(); dw; dw=dws.next())
+  for (QList<Q3DockWindow *>::const_iterator dw = dws.begin(); dw != dws.end(); ++dw)
   {
-    if ( dw->isVisible() && dw != _dw )
-      dw->setFixedExtentHeight( lh );
+    if ( (*dw)->isVisible() && (*dw) != _dw )
+      (*dw)->setFixedExtentHeight( lh );
   }
 
   _dw->setFixedExtentHeight(h);
   area->QWidget::layout()->invalidate();
   area->QWidget::layout()->activate();
 }
-
+#endif
 void DockWindow::languageChange()
 {
   if ( _dw )
@@ -133,7 +126,7 @@ void DockWindow::languageChange()
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-DockView::DockView( Gui::Document* pcDocument,QWidget* parent, const char* name, WFlags f )
+DockView::DockView( Gui::Document* pcDocument,QWidget* parent, const char* name, Qt::WFlags f )
   :DockWindow( pcDocument, parent, name, f)
 {
 }
@@ -156,14 +149,14 @@ bool DockView::onHasMsg(const char* pMsg) const
 
 // --------------------------------------------------------------------
 
-DockContainer::DockContainer( QWidget* parent, const char* name, WFlags fl )
+DockContainer::DockContainer( QWidget* parent, const char* name, Qt::WFlags fl )
   : DockWindow( 0L, parent, name, fl )
 {
-  sv = new QScrollView( this );
-  sv->setResizePolicy( QScrollView::AutoOneFit );
-  sv->setFrameStyle( QFrame::NoFrame );
-  sv->viewport()->setBackgroundMode( PaletteBase );
-  QGridLayout* pGrid = new QGridLayout(this);
+  sv = new Q3ScrollView( this );
+  sv->setResizePolicy( Q3ScrollView::AutoOneFit );
+  sv->setFrameStyle( Q3Frame::NoFrame );
+  sv->viewport()->setBackgroundMode( Qt::PaletteBase );
+  Q3GridLayout* pGrid = new Q3GridLayout(this);
   pGrid->addWidget(sv, 0, 0);
 }
 
@@ -219,54 +212,20 @@ DockWindowManager::~DockWindowManager()
 /**
  * Adds a new dock window.
  */
-void DockWindowManager::addDockWindow( const QString& name, DockWindow *pcDocWindow, Qt::Dock pos, 
-                                       bool stretch, int extWidth, int extHeight )
+void DockWindowManager::addDockWindow( const QString& name, DockWindow *pcDocWindow, Qt::DockWidgetArea pos )
 {
   MainWindow* pApp = getMainWindow();
   d->_clDocWindows[ name ] = pcDocWindow;
 
-  QDockWindow* dw = new QDockWindow(pApp);
-  dw->setCloseMode(QDockWindow::Always);
+  QDockWidget* dw = new QDockWidget(pApp);
+  dw->setObjectName(name);
+  dw->setFeatures(QDockWidget::AllDockWidgetFeatures);
   pcDocWindow->_dw = dw;
   pcDocWindow->setCaption( name );
   pcDocWindow->reparent(dw, QPoint());
   dw->setWidget( pcDocWindow );
-  dw->setResizeEnabled(true);
 
-  if ( extWidth > 0 )
-    dw->setFixedExtentWidth( extWidth );
-
-  if ( extHeight > 0 )
-    dw->setFixedExtentHeight( extHeight );
-
-  switch (pos)
-  {
-  case Qt::DockTop:
-    dw->setHorizontallyStretchable( stretch );
-    break;
-  case Qt::DockLeft:
-    dw->setVerticallyStretchable( stretch );
-    pApp->setDockEnabled ( dw, Qt::DockTop, false );
-    pApp->setDockEnabled ( dw, Qt::DockBottom, false );
-    break;
-  case Qt::DockRight:
-    dw->setVerticallyStretchable( stretch );
-    pApp->setDockEnabled ( dw, Qt::DockTop, false );
-    pApp->setDockEnabled ( dw, Qt::DockBottom, false );
-    break;
-  case Qt::DockBottom:
-    dw->setHorizontallyStretchable( stretch );
-    pApp->setDockEnabled ( dw, Qt::DockTop, false );
-    pApp->setDockEnabled ( dw, Qt::DockLeft, false );
-    pApp->setDockEnabled ( dw, Qt::DockRight, false );
-    break;
-  default:
-    dw->setHorizontallyStretchable( stretch );
-    dw->setVerticallyStretchable( stretch );
-    pApp->setDockEnabled ( dw, Qt::DockTop, false );
-    break;
-  }
-  pApp->addDockWindow( dw, pos );
+  pApp->addDockWidget( pos, dw );
 }
 
 /**
@@ -286,9 +245,9 @@ DockWindow* DockWindowManager::getDockWindow( const QString& name )
 /**
  * Returns a vector of all dock windows.
  */
-QPtrList<DockWindow> DockWindowManager::getDockWindows()
+Q3PtrList<DockWindow> DockWindowManager::getDockWindows()
 {
-  QPtrList<DockWindow> dockWindows;
+  Q3PtrList<DockWindow> dockWindows;
   for ( QMap <QString,DockWindow*>::Iterator It = d->_clDocWindows.begin(); It!=d->_clDocWindows.end(); ++It)
     dockWindows.append( It.data() );
 
@@ -303,8 +262,8 @@ void DockWindowManager::removeDockWindow( const QString& name )
   QMap <QString,DockWindow*>::Iterator It = d->_clDocWindows.find( name );
   if( It!=d->_clDocWindows.end() )
   {
-    QDockWindow* dw = It.data()->dockWindow();
-    getMainWindow()->removeDockWindow( dw );
+    QDockWidget* dw = It.data()->dockWindow();
+    getMainWindow()->removeDockWidget( dw );
     // avoid to destruct the DockWindow object
     dw->removeChild( It.data() );
     d->_clDocWindows.erase(It);
@@ -320,8 +279,8 @@ void DockWindowManager::removeDockWindow( DockWindow* dock )
 {
   for ( QMap <QString,DockWindow*>::Iterator It = d->_clDocWindows.begin(); It != d->_clDocWindows.end(); ++It ) {
     if ( It.data() == dock ) {
-      QDockWindow* dw = dock->dockWindow();
-      getMainWindow()->removeDockWindow( dw );
+      QDockWidget* dw = dock->dockWindow();
+      getMainWindow()->removeDockWidget( dw );
       // avoid to destruct the DockWindow object
       dw->removeChild( dock );
       d->_clDocWindows.erase(It);
@@ -339,23 +298,23 @@ void DockWindowManager::removeDockedWidget( QWidget* docked )
 {
   for ( QMap <QString,DockWindow*>::Iterator It = d->_clDocWindows.begin(); It != d->_clDocWindows.end(); ++It ) {
     bool ok = false;
-    QObjectList *l = It.data()->queryList( docked->className(), docked->name() );
-    QObjectListIt it( *l ); // iterate over the widgets of the same type and name as 'docked'
+    QObjectList l = It.data()->queryList( docked->className(), docked->name() );
+    QObjectList::const_iterator it( l.begin() ); // iterate over the widgets of the same type and name as 'docked'
     QObject *obj;
-    while ( (obj = it.current()) != 0 ) {
+    while ( *it != 0 ) {
         // for each found object...
-        if ( obj == docked ) {
+        if ( *it == docked ) {
           ok = true;
+          obj = *it;
           break;
         }
         ++it;
     }
-    delete l; // delete the list, not the objects
 
     // if we have a DockWindow containing 'docked'
     if ( It.data() == docked || ok ) {
-      QDockWindow* dw = It.data()->dockWindow();
-      getMainWindow()->removeDockWindow( dw );
+      QDockWidget* dw = It.data()->dockWindow();
+      getMainWindow()->removeDockWidget( dw );
       d->_clDocWindows.erase(It);
       // destruct the QDockWindow and all its children, especially 'docked'
       delete dw;

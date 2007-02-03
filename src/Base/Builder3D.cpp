@@ -37,8 +37,6 @@
 #include "Matrix.h"
 #include "Console.h"
 
-#define new DEBUG_CLIENTBLOCK
-
 using namespace Base;
 
 
@@ -663,3 +661,4 @@ void InventorBuilder::addTransformation(const Vector3f& translation, const Vecto
   result << "    rotation " << rotationaxis.x << " " << rotationaxis.y << " " << rotationaxis.z << " " << fAngle << std::endl;
   result << "  }" << std::endl;
 }
+

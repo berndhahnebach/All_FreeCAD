@@ -28,7 +28,7 @@
 # include <qevent.h>
 # include <qpainter.h>
 # include <qpixmap.h>
-# include <qpopupmenu.h>
+# include <q3popupmenu.h>
 # include <Inventor/events/SoEvent.h>
 # include <Inventor/events/SoKeyboardEvent.h>
 # include <Inventor/events/SoLocation2Event.h>
@@ -40,7 +40,7 @@
 #include "MouseModel.h"
 #include "View3DInventor.h"
 #include "View3DInventorViewer.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui; 
 
 AbstractMouseModel::AbstractMouseModel() : _pcView3D(0)
@@ -296,7 +296,7 @@ int PolyPickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e, 
         _pcView3D->getWidget()->setCursor(m_cPrevCursor);
 //        _pcView3D->getGLWidget()->releaseMouse();
       
-        QPopupMenu menu;
+        Q3PopupMenu menu;
         int fi = menu.insertItem("Finish");
         int ca = menu.insertItem("Cancel");
         if ( getPolygon().size() < 3 )
@@ -577,7 +577,7 @@ int CirclePickerMouseModel::mouseButtonEvent( const SoMouseButtonEvent * const e
         QCursor cur = _pcView3D->getWidget()->cursor();
         _pcView3D->getWidget()->setCursor(m_cPrevCursor);
       
-        QPopupMenu menu;
+        Q3PopupMenu menu;
         int fi = menu.insertItem("Finish");
         int ca = menu.insertItem("Cancel");
         int id = menu.exec(QCursor::pos());

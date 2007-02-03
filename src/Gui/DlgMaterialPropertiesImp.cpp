@@ -30,7 +30,7 @@
 #include "Widgets.h"
 #include "SpinBox.h"
 #include "ViewProvider.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 
@@ -43,9 +43,10 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgMaterialPropertiesImp::DlgMaterialPropertiesImp( QWidget* parent, const char* name, bool modal, WFlags fl )
-  : DlgMaterialProperties(parent, name, modal, fl)
+DlgMaterialPropertiesImp::DlgMaterialPropertiesImp( QWidget* parent, Qt::WFlags fl )
+  : QDialog(parent, fl)
 {
+  this->setupUi(this);
 }
 
 /**
@@ -58,7 +59,7 @@ DlgMaterialPropertiesImp::~DlgMaterialPropertiesImp()
 /**
  * Sets the current ambient color.
  */
-void DlgMaterialPropertiesImp::onAmbientColorChanged()
+void DlgMaterialPropertiesImp::on_ambientColor_changed()
 {
   QColor col = ambientColor->color();
   float r = (float)col.red()/255.0f;
@@ -82,7 +83,7 @@ void DlgMaterialPropertiesImp::onAmbientColorChanged()
 /**
  * Sets the diffuse ambient color.
  */
-void DlgMaterialPropertiesImp::onDiffuseColorChanged()
+void DlgMaterialPropertiesImp::on_diffuseColor_changed()
 {
   QColor col = diffuseColor->color();
   float r = (float)col.red()/255.0f;
@@ -106,7 +107,7 @@ void DlgMaterialPropertiesImp::onDiffuseColorChanged()
 /**
  * Sets the current specular color.
  */
-void DlgMaterialPropertiesImp::onSpecularColorChanged()
+void DlgMaterialPropertiesImp::on_specularColor_changed()
 {
   QColor col = specularColor->color();
   float r = (float)col.red()/255.0f;
@@ -130,7 +131,7 @@ void DlgMaterialPropertiesImp::onSpecularColorChanged()
 /**
  * Sets the current shininess.
  */
-void DlgMaterialPropertiesImp::onShininessChanged(int sh)
+void DlgMaterialPropertiesImp::on_shininess_valueChanged(int sh)
 {
   float shininess = (float)sh/100.0f;
   for( std::vector<ViewProvider*>::iterator it= Objects.begin();it!=Objects.end();it++)
@@ -172,14 +173,12 @@ void DlgMaterialPropertiesImp::setViewProviders( const std::vector<Gui::ViewProv
       g = int(mat.specularColor.g * 255.0f);
       b = int(mat.specularColor.b * 255.0f);
       specularColor->setColor( QColor(r,g,b) );
-      shininessSpin->blockSignals(true);
-      shininessSpin->setValue((int)(100.0f * (mat.shininess+0.001f)));
-      shininessSpin->blockSignals(false);
+      shininess->blockSignals(true);
+      shininess->setValue((int)(100.0f * (mat.shininess+0.001f)));
+      shininess->blockSignals(false);
       break;
     }
   }
 }
 
-#include "DlgMaterialProperties.cpp"
-#include "moc_DlgMaterialProperties.cpp"
-
+#include "moc_DlgMaterialPropertiesImp.cpp"

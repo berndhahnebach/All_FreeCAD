@@ -17,10 +17,9 @@
 
 #include <Base/Console.h>
 #include <Gui/Application.h>
-#include <Gui/Language/LanguageFactory.h>
-
-#include "Image_de.h"
+#include <Gui/Language/Translator.h>
 #include "Workbench.h"
+#include "qrc_translation.cpp"
 
 // use a different name to CreateCommand()
 void CreateImageCommands(void);
@@ -45,8 +44,9 @@ void ImageGuiExport initImageGui() {
   CreateImageCommands();
   ImageGui::Workbench::init();
 
-  // resources
-  new Gui::LanguageProducer("Deutsch", Image_de_h_data, Image_de_h_len);
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(translation);
+  Gui::Translator::instance()->reinstallLanguage();
 
   return;
 }

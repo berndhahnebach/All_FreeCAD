@@ -25,12 +25,15 @@
 
 #ifndef _PreComp_
 # include <qpushbutton.h>
-# include <qfiledialog.h>
+# include <q3filedialog.h>
 # include <qcombobox.h>
 # include <qpainter.h>
-# include <qheader.h>
+# include <q3header.h>
 # include <qcheckbox.h>
 # include <qlayout.h>
+//Added by qt3to4:
+#include <QPixmap>
+#include <Q3CString>
 #endif
 
 #include <App/PropertyStandard.h>
@@ -40,7 +43,7 @@
 #include "propertyeditorfile.h"
 #include "propertyeditorlist.h"
 #include "propertyeditorinput.h"
-#define new DEBUG_CLIENTBLOCK
+
 using Gui::PreviewLabel;
 using namespace Gui::PropertyEditor;
 
@@ -52,7 +55,7 @@ FileEditorItem::FileEditorItem()
 {
 }
 
-FileEditorItem::FileEditorItem( QListView* lv, const QString& text, const QVariant& value )
+FileEditorItem::FileEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setText( 0, text );
@@ -131,7 +134,7 @@ QVariant FileEditorItem::convertFromProperty(const std::vector<App::Property*>& 
 
 void FileEditorItem::convertToProperty(const QVariant& val)
 {
-  QCString value = val.toCString();
+  Q3CString value = val.toCString();
   QString file = value;
   for (std::vector<App::Property*>::iterator it = _prop.begin(); it != _prop.end(); ++it)
   {
@@ -150,11 +153,12 @@ PixmapEditorItem::PixmapEditorItem()
 {
 }
 
-PixmapEditorItem::PixmapEditorItem( QListView* lv, const QString& text, const QVariant& value )
+PixmapEditorItem::PixmapEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setText( 0, text );
-  setPixmap(1, overrideValue().toPixmap());
+  assert(overrideValue().canConvert<QPixmap>());
+  setPixmap(1, overrideValue().value<QPixmap>());
 }
 
 QWidget* PixmapEditorItem::createEditor( int column, QWidget* parent )
@@ -164,7 +168,8 @@ QWidget* PixmapEditorItem::createEditor( int column, QWidget* parent )
 
   QPushButton* editor = new QPushButton( parent, "PixmapEditorItem::button" );
 
-  editor->setPixmap( overrideValue().toPixmap() );
+  assert(overrideValue().canConvert<QPixmap>());
+  editor->setPixmap( overrideValue().value<QPixmap>() );
 
   connect(editor, SIGNAL(clicked()), this, SLOT(onChangePixmap()));
   return editor;
@@ -172,13 +177,15 @@ QWidget* PixmapEditorItem::createEditor( int column, QWidget* parent )
 
 void PixmapEditorItem::stopEdit( int column )
 {
-  setPixmap( column, overrideValue().toPixmap() );
+  assert(overrideValue().canConvert<QPixmap>());
+  setPixmap( column, overrideValue().value<QPixmap>() );
 }
 
 void PixmapEditorItem::setDefaultEditorValue( QWidget* editor )
 {
   QPushButton* btn = dynamic_cast<QPushButton*>(editor);
-  btn->setPixmap( value().toPixmap() );
+  assert(value().canConvert<QPixmap>());
+  btn->setPixmap( value().value<QPixmap>() );
 }
 
 QVariant PixmapEditorItem::currentEditorValue( QWidget* editor ) const
@@ -187,7 +194,7 @@ QVariant PixmapEditorItem::currentEditorValue( QWidget* editor ) const
   const QPixmap* p = dynamic_cast<QPushButton*>(editor)->pixmap();
   if ( p )
   {
-    var.asPixmap() = *p;
+    var.setValue<QPixmap>(*p);
   }
 
   return var;
@@ -201,11 +208,11 @@ void PixmapEditorItem::onChangePixmap()
   {
     PreviewLabel* p = new PreviewLabel;
 
-    QFileDialog dlg( QString::null, QString("*.png *.xpm *.bmp *.jpg Pixmap Files"), listView(), 0, true );
+    Q3FileDialog dlg( QString::null, QString("*.png *.xpm *.bmp *.jpg Pixmap Files"), listView(), 0, true );
     dlg.setContentsPreviewEnabled( true );
     dlg.setContentsPreview( p, p );
-    dlg.setViewMode( QFileDialog::List );
-    dlg.setPreviewMode( QFileDialog::Contents );
+    dlg.setViewMode( Q3FileDialog::List );
+    dlg.setPreviewMode( Q3FileDialog::Contents );
     dlg.setCaption( tr( "Choose a Pixmap..." ) );
 
     if ( dlg.exec() == QDialog::Accepted )
@@ -228,7 +235,7 @@ void PixmapEditorItem::onChangePixmap()
 QVariant PixmapEditorItem::convertFromProperty(const std::vector<App::Property*>& prop)
 {
   QVariant var;
-  var.asPixmap() = QPixmap();
+  var.setValue<QPixmap>(QPixmap());
   return var;
 }
 
@@ -244,7 +251,7 @@ ChildrenEditorItem::ChildrenEditorItem()
 {
 }
 
-ChildrenEditorItem::ChildrenEditorItem( QListView* lv, const QString& text, const QVariant& value )
+ChildrenEditorItem::ChildrenEditorItem( Q3ListView* lv, const QString& text, const QVariant& value )
   :EditableItem( lv, value )
 {
   setExpandable( true );

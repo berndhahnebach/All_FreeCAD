@@ -23,16 +23,14 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qiconview.h>
-# include <qcombobox.h>
-# include <qfontmetrics.h>
-# include <qheader.h>
-# include <qinputdialog.h>
-# include <qmessagebox.h>
-# include <qpopupmenu.h>
-# include <qsplitter.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
 #endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 #include "DlgParameterImp.h"
 #include "DlgInputDialogImp.h"
@@ -44,7 +42,7 @@
 #include <Base/Exception.h>
 #include <App/Application.h>
 
-#define new DEBUG_CLIENTBLOCK
+
 
 using namespace Gui::Dialog;
 
@@ -57,13 +55,14 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgParameter( parent, name, modal, fl|WStyle_MinMax )
+DlgParameterImp::DlgParameterImp( QWidget* parent,  Qt::WFlags fl )
+  : QDialog( parent, fl|Qt::WStyle_MinMax )
 {
+  this->setupUi(this);
   ParamGrp = new ParameterGroup( splitter3, "ParameterGroup" );
   ParamGrp->addColumn( tr( "Group" ) );
   ParamGrp->header()->setClickEnabled( FALSE, ParamGrp->header()->count() - 1 );
-  ParamGrp->setResizeMode( QListView::AllColumns );
+  ParamGrp->setResizeMode( Q3ListView::AllColumns );
 
   ParamVal = new ParameterValue( splitter3, "ParameterValue" );
   ParamVal->addColumn( tr( "Name" ) );
@@ -72,7 +71,7 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal
   ParamVal->header()->setClickEnabled( FALSE, ParamVal->header()->count() - 1 );
   ParamVal->addColumn( tr( "Value" ) );
   ParamVal->header()->setClickEnabled( FALSE, ParamVal->header()->count() - 1 );
-  ParamVal->setResizeMode( QListView::AllColumns );
+  ParamVal->setResizeMode( Q3ListView::AllColumns );
 
   const std::map<std::string,ParameterManager *> rcList = App::GetApplication().GetParameterSetList();
 
@@ -87,8 +86,8 @@ DlgParameterImp::DlgParameterImp( QWidget* parent,  const char* name, bool modal
   onParameterSetChange(cStr);
   connect( SetNameComboBox, SIGNAL( activated( const QString& ) ), 
            this, SLOT( onParameterSetChange( const QString& ) ) );
-  connect( ParamGrp, SIGNAL( currentChanged( QListViewItem* ) ), 
-           this, SLOT( onGroupSelected(QListViewItem *) ) );
+  connect( ParamGrp, SIGNAL( currentChanged( Q3ListViewItem* ) ), 
+           this, SLOT( onGroupSelected(Q3ListViewItem *) ) );
   onGroupSelected(ParamGrp->currentItem());
 }
 
@@ -104,17 +103,20 @@ DlgParameterImp::~DlgParameterImp()
  *  Sets the strings of the subwidgets using the current
  *  language.
  */
-void DlgParameterImp::languageChange()
+void DlgParameterImp::changeEvent(QEvent *e)
 {
-  DlgParameter::languageChange();
-
-  ParamGrp->header()->setLabel( 0, tr( "Group" ) );
-  ParamVal->header()->setLabel( 0, tr( "Name" ) );
-  ParamVal->header()->setLabel( 1, tr( "Type" ) );
-  ParamVal->header()->setLabel( 2, tr( "Value" ) );
+  if (e->type() == QEvent::LanguageChange) {
+    retranslateUi(this);
+    ParamGrp->header()->setLabel( 0, tr( "Group" ) );
+    ParamVal->header()->setLabel( 0, tr( "Name" ) );
+    ParamVal->header()->setLabel( 1, tr( "Type" ) );
+    ParamVal->header()->setLabel( 2, tr( "Value" ) );
+  } else {
+    QDialog::changeEvent(e);
+  }
 }
 
-void DlgParameterImp::onGroupSelected( QListViewItem * item )
+void DlgParameterImp::onGroupSelected( Q3ListViewItem * item )
 {
   if ( item && item->rtti() == 2000 )
   {
@@ -171,14 +173,14 @@ void DlgParameterImp::onParameterSetChange(const QString& rcString)
   // root labels
   std::vector<FCHandle<ParameterGrp> > grps = rcParMngr->GetGroups();
   for ( std::vector<FCHandle<ParameterGrp> >::iterator it = grps.begin(); it != grps.end(); ++it ) {
-    QListViewItem* item = new ParameterGroupItem(ParamGrp,*it);
+    Q3ListViewItem* item = new ParameterGroupItem(ParamGrp,*it);
     item->setOpen(true);
   }
 
   ParamGrp->triggerUpdate(); 
 }
 
-void DlgParameterImp::onSaveToDisk()
+void DlgParameterImp::on_buttonSaveToDisk_clicked()
 {
   ParameterManager* sys = App::GetApplication().GetParameterSet("System parameter");
   if (sys) {
@@ -194,8 +196,8 @@ void DlgParameterImp::onSaveToDisk()
 
 /* TRANSLATOR Gui::Dialog::ParameterGroup */
 
-ParameterGroup::ParameterGroup( QWidget * parent, const char * name, WFlags f )
-  : QListView(parent, name, f)
+ParameterGroup::ParameterGroup( QWidget * parent, const char * name, Qt::WFlags f )
+  : Q3ListView(parent, name, f)
 {
 #ifdef FC_OS_WIN32
   QPalette pal = palette();
@@ -206,43 +208,41 @@ ParameterGroup::ParameterGroup( QWidget * parent, const char * name, WFlags f )
   setPalette( pal );
 #endif
 
-  menuEdit = new QPopupMenu(this);
-  QFont font = menuEdit->font();
-  font.setBold( true );
-  custom = new CustomMenuItem( tr("Expand"), font );
-  _expandId = menuEdit->insertItem( custom );
-  menuEdit->connectItem( _expandId, this, SLOT( onToggleSelectedItem() ) );
-  menuEdit->insertSeparator();
-  menuEdit->insertItem( tr("Add sub-group"), this, SLOT( onCreateSubgroup() ) );
-  menuEdit->insertItem( tr("Remove group"), this, SLOT( onDeleteSelectedItem() ) );
-  menuEdit->insertItem( tr("Rename group"), this, SLOT( onRenameSelectedItem() ) );
-  menuEdit->insertSeparator();
-  menuEdit->insertItem( tr("Export parameter"), this, SLOT( onExportToFile() ) );
-  _importId = menuEdit->insertItem( tr("Import parameter"), this, SLOT( onImportFromFile() ) );
+  menuEdit = new QMenu(this);
+
+  expandAct = menuEdit->addAction(tr("Expand"), this, SLOT(onToggleSelectedItem()));
+  menuEdit->addSeparator();
+  subGrpAct = menuEdit->addAction(tr("Add sub-group"), this, SLOT(onCreateSubgroup()));
+  removeAct = menuEdit->addAction(tr("Remove group"), this, SLOT(onDeleteSelectedItem()));
+  renameAct = menuEdit->addAction(tr("Rename group"), this, SLOT(onRenameSelectedItem()));
+  menuEdit->addSeparator();
+  exportAct = menuEdit->addAction(tr("Export parameter"), this, SLOT(onExportToFile()));
+  importAct = menuEdit->addAction(tr("Import parameter"), this, SLOT(onImportFromFile()));
+  menuEdit->setDefaultAction(expandAct);
 }
 
 ParameterGroup::~ParameterGroup()
 {
 }
 
-void ParameterGroup::setSelected ( QListViewItem * item, bool selected )
+void ParameterGroup::setSelected ( Q3ListViewItem * item, bool selected )
 {
   if ( selected )
-    QListView::setSelected( item, selected );
+    Q3ListView::setSelected( item, selected );
 }
 
 void ParameterGroup::contentsContextMenuEvent ( QContextMenuEvent* event )
 {
   if ( selectedItem () )
   {
-    menuEdit->setItemEnabled( _expandId, selectedItem()->childCount() > 0 );
+    expandAct->setEnabled(selectedItem()->childCount() > 0);
     // do not allow to import parameters from a non-empty parameter group
-    menuEdit->setItemEnabled( _importId, selectedItem()->childCount() == 0 );
+    importAct->setEnabled(selectedItem()->childCount() == 0);
 
     if ( selectedItem()->isOpen() )
-      custom->setText( tr("Collapse") );
+      expandAct->setText( tr("Collapse") );
     else
-      custom->setText( tr("Expand") );
+      expandAct->setText( tr("Expand") );
     menuEdit->popup(event->globalPos());
   }
 }
@@ -256,16 +256,16 @@ void ParameterGroup::keyPressEvent (QKeyEvent* event)
       onDeleteSelectedItem();
     } break;
 		default:
-			QListView::keyPressEvent(event);
+			Q3ListView::keyPressEvent(event);
   }
 }
 
 void ParameterGroup::onDeleteSelectedItem()
 {
-  QListViewItem* sel = selectedItem();
+  Q3ListViewItem* sel = selectedItem();
   if ( sel && sel->parent() )
   {
-    QListViewItem* item = sel->itemBelow();
+    Q3ListViewItem* item = sel->itemBelow();
     if ( !item || item->parent() != sel->parent() )
       item = sel->itemAbove();
     if ( !item )
@@ -275,7 +275,7 @@ void ParameterGroup::onDeleteSelectedItem()
                                QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) == 
                                QMessageBox::Yes )
     {
-      QListViewItem* parent = sel->parent();
+      Q3ListViewItem* parent = sel->parent();
       parent->takeItem( sel );
       setSelected( item, true );
       delete sel;
@@ -304,7 +304,7 @@ void ParameterGroup::onCreateSubgroup()
 
   if ( ok && !name.isEmpty() )
   {
-    QListViewItem* item = selectedItem();
+    Q3ListViewItem* item = selectedItem();
     if ( item && item->rtti() == 2000 )
     {
       ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
@@ -331,7 +331,7 @@ void ParameterGroup::onExportToFile()
                                               tr("Export parameter to file"), 0, true, tr("Export"), &ok);
   if ( ok )
   {
-    QListViewItem* item = selectedItem();
+    Q3ListViewItem* item = selectedItem();
     if ( item && item->rtti() == 2000 )
     {
       ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
@@ -349,14 +349,14 @@ void ParameterGroup::onImportFromFile()
   if ( ok )
   {
     QFileInfo fi(file);
-    QListViewItem* item = selectedItem();
+    Q3ListViewItem* item = selectedItem();
     if ( item && item->rtti() == 2000 )
     {
       ParameterGroupItem* para = reinterpret_cast<ParameterGroupItem*>(item);
       FCHandle<ParameterGrp> hGrp = para->_hcGrp;
 
-      QListViewItem* child;
-      QPtrList<QListViewItem> remChild;
+      Q3ListViewItem* child;
+      Q3PtrList<Q3ListViewItem> remChild;
       if ( (child=para->firstChild()) != 0 )
       {
         remChild.append( child );
@@ -396,10 +396,24 @@ void ParameterGroup::onImportFromFile()
 
 void ParameterGroup::onRenameSelectedItem()
 {
-  QListViewItem* sel = selectedItem();
+  Q3ListViewItem* sel = selectedItem();
   if ( sel && sel->rtti() == 2000 )
   {
      sel->startRename(0);
+  }
+}
+
+void ParameterGroup::changeEvent(QEvent *e)
+{
+  if (e->type() == QEvent::LanguageChange) {
+    expandAct->setText(tr("Expand"));
+    subGrpAct->setText(tr("Add sub-group"));
+    removeAct->setText(tr("Remove group"));
+    renameAct->setText(tr("Rename group"));
+    exportAct->setText(tr("Export parameter"));
+    importAct->setText(tr("Import parameter"));
+  } else {
+    Q3ListView::changeEvent(e);
   }
 }
 
@@ -407,25 +421,24 @@ void ParameterGroup::onRenameSelectedItem()
 
 /* TRANSLATOR Gui::Dialog::ParameterValue */
 
-ParameterValue::ParameterValue( QWidget * parent, const char * name, WFlags f )
-  : QListView(parent, name, f)
+ParameterValue::ParameterValue( QWidget * parent, const char * name, Qt::WFlags f )
+  : Q3ListView(parent, name, f)
 {
-  menuEdit = new QPopupMenu(this);
-  QFont font = menuEdit->font();
-  font.setBold( true );
-  int id = menuEdit->insertItem( new CustomMenuItem( tr("Change value"), font ) );
-  menuEdit->connectItem( id, this, SLOT( onChangeSelectedItem() ) );
-  menuEdit->insertSeparator();
-  menuEdit->insertItem( tr("Remove key"), this, SLOT( onDeleteSelectedItem() ) );
-  menuEdit->insertItem( tr("Rename key"), this, SLOT( onRenameSelectedItem() ) );
-  menuNew = new QPopupMenu(this);
-  menuNew->insertItem( tr("New string item"), this, SLOT( onCreateTextItem() ) );
-  menuNew->insertItem( tr("New float item"), this, SLOT( onCreateFloatItem() ) );
-  menuNew->insertItem( tr("New integer item"), this, SLOT( onCreateIntItem() ) );
-  menuNew->insertItem( tr("New unsigned item"), this, SLOT( onCreateUIntItem() ) );
-  menuNew->insertItem( tr("New boolean item"), this, SLOT( onCreateBoolItem() ) );
+  menuEdit = new QMenu(this);
+  changeAct = menuEdit->addAction(tr("Change value"), this, SLOT(onChangeSelectedItem()));
+  menuEdit->addSeparator();
+  removeAct = menuEdit->addAction(tr("Remove key"), this, SLOT(onDeleteSelectedItem()));
+  renameAct = menuEdit->addAction(tr("Rename key"), this, SLOT(onRenameSelectedItem()));
+  menuEdit->setDefaultAction(changeAct);
 
-  connect(this, SIGNAL(doubleClicked(QListViewItem*)), this, SLOT(onChangeSelectedItem()));
+  menuNew = new QMenu(this);
+  newStrAct = menuNew->addAction(tr("New string item"), this, SLOT(onCreateTextItem()));
+  newFltAct = menuNew->addAction(tr("New float item"), this, SLOT(onCreateFloatItem()));
+  newIntAct = menuNew->addAction(tr("New integer item"), this, SLOT(onCreateIntItem()));
+  newUlgAct = menuNew->addAction(tr("New unsigned item"), this, SLOT(onCreateUIntItem()));
+  newBlnAct = menuNew->addAction(tr("New boolean item"), this, SLOT(onCreateBoolItem()));
+
+  connect(this, SIGNAL(doubleClicked(Q3ListViewItem*)), this, SLOT(onChangeSelectedItem()));
 }
 
 ParameterValue::~ParameterValue()
@@ -437,14 +450,14 @@ void ParameterValue::setCurrentGroup( const FCHandle<ParameterGrp>& hGrp )
   _hcGrp = hGrp;
 }
 
-void ParameterValue::takeItem ( QListViewItem * i )
+void ParameterValue::takeItem ( Q3ListViewItem * i )
 {
   if ( i && i->rtti() == 2100 )
   {
     reinterpret_cast<ParameterValueItem*>(i)->removeFromGroup();
   }
 
-  QListView::takeItem( i );
+  Q3ListView::takeItem( i );
 }
 
 void ParameterValue::contentsContextMenuEvent ( QContextMenuEvent* event )
@@ -464,13 +477,13 @@ void ParameterValue::keyPressEvent (QKeyEvent* event)
       onDeleteSelectedItem();
     } break;
 		default:
-			QListView::keyPressEvent(event);
+			Q3ListView::keyPressEvent(event);
   }
 }
 
 void ParameterValue::onChangeSelectedItem()
 {
-  QListViewItem* sel = selectedItem();
+  Q3ListViewItem* sel = selectedItem();
   if ( sel && sel->rtti() == 2100 )
   {
     reinterpret_cast<ParameterValueItem*>(sel)->changeValue();
@@ -479,10 +492,10 @@ void ParameterValue::onChangeSelectedItem()
 
 void ParameterValue::onDeleteSelectedItem()
 {
-  QListViewItem* sel = selectedItem();
+  Q3ListViewItem* sel = selectedItem();
   if ( sel )
   {
-    QListViewItem* next = sel->itemBelow();
+    Q3ListViewItem* next = sel->itemBelow();
     if ( !next )
       next = sel->itemAbove();
     takeItem( sel );
@@ -494,7 +507,7 @@ void ParameterValue::onDeleteSelectedItem()
 
 void ParameterValue::onRenameSelectedItem()
 {
-  QListViewItem* sel = selectedItem();
+  Q3ListViewItem* sel = selectedItem();
   if ( sel )
   {
     sel->startRename(0);
@@ -556,6 +569,7 @@ void ParameterValue::onCreateIntItem()
 
 void ParameterValue::onCreateUIntItem()
 {
+#if 0 //TODO Port class UIntSpinBox
   bool ok;
   QString name = QInputDialog::getText(QObject::tr("New unsigned item"), QObject::tr("Enter the name:"), 
                                       QLineEdit::Normal, QString::null, &ok, this);
@@ -585,6 +599,7 @@ void ParameterValue::onCreateUIntItem()
       pcItem->appendToGroup();
     }
   }
+#endif
 }
 
 void ParameterValue::onCreateFloatItem()
@@ -643,14 +658,14 @@ void ParameterValue::onCreateBoolItem()
 // ---------------------------------------------------------------------------
 
 ParameterGroupItem::ParameterGroupItem( ParameterGroupItem * parent, const FCHandle<ParameterGrp> &hcGrp )
-    : QListViewItem( parent ), _hcGrp(hcGrp)
+    : Q3ListViewItem( parent ), _hcGrp(hcGrp)
 {
   setRenameEnabled(0,true);
   fillUp();
 }
 
-ParameterGroupItem::ParameterGroupItem( QListView* parent, const FCHandle<ParameterGrp> &hcGrp)
-    : QListViewItem( parent ), _hcGrp(hcGrp)
+ParameterGroupItem::ParameterGroupItem( Q3ListView* parent, const FCHandle<ParameterGrp> &hcGrp)
+    : Q3ListViewItem( parent ), _hcGrp(hcGrp)
 {
   setRenameEnabled(0,true);
   fillUp();
@@ -685,10 +700,10 @@ void ParameterGroupItem::setSelected ( bool o )
   }else{
     setPixmap(0,Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
   }
-  QListViewItem::setSelected ( o );
+  Q3ListViewItem::setSelected ( o );
 }
 
-void ParameterGroupItem::takeItem ( QListViewItem * item )
+void ParameterGroupItem::takeItem ( Q3ListViewItem * item )
 {
   if ( item && item->rtti() == 2000 )
   {
@@ -696,15 +711,15 @@ void ParameterGroupItem::takeItem ( QListViewItem * item )
     _hcGrp->RemoveGrp(child->text(0).latin1());
   }
 
-  QListViewItem::takeItem( item );
+  Q3ListViewItem::takeItem( item );
 }
 
 void ParameterGroupItem::startRename ( int col )
 {
-  QListViewItem* par = this->parent();
+  Q3ListViewItem* par = this->parent();
   if ( par && par->rtti() == 2000 )
   {
-    QListViewItem::startRename( col );
+    Q3ListViewItem::startRename( col );
   }
   else
   {
@@ -714,11 +729,11 @@ void ParameterGroupItem::startRename ( int col )
 
 void ParameterGroupItem::okRename ( int col )
 {
-  QListViewItem* item = parent();
+  Q3ListViewItem* item = parent();
   if ( item && item->rtti() == 2000 )
   {
     QString oldName = text(0);
-    QListViewItem::okRename( 0 );
+    Q3ListViewItem::okRename( 0 );
     QString newName = text(0);
 
     // name has changed
@@ -747,8 +762,8 @@ void ParameterGroupItem::okRename ( int col )
 
 // --------------------------------------------------------------------
 
-ParameterValueItem::ParameterValueItem ( QListView * parent, QString label1, const FCHandle<ParameterGrp> &hcGrp)
-  : QListViewItem( parent, label1 ), _hcGrp(hcGrp)
+ParameterValueItem::ParameterValueItem ( Q3ListView * parent, QString label1, const FCHandle<ParameterGrp> &hcGrp)
+  : Q3ListViewItem( parent, label1 ), _hcGrp(hcGrp)
 {
   setRenameEnabled(0,true);
 }
@@ -759,20 +774,20 @@ ParameterValueItem::~ParameterValueItem()
 
 void ParameterValueItem::startRename ( int col )
 {
-  QListViewItem::startRename( col );
+  Q3ListViewItem::startRename( col );
 }
 
 void ParameterValueItem::okRename ( int col )
 {
   if ( col != 0 )
   {
-    QListViewItem::okRename( col );
+    Q3ListViewItem::okRename( col );
     return;
   }
   else
   {
     QString oldName = text(0);
-    QListViewItem::okRename( 0 );
+    Q3ListViewItem::okRename( 0 );
     QString newName = text(0);
 
     // name has changed
@@ -785,7 +800,7 @@ void ParameterValueItem::okRename ( int col )
 
 // --------------------------------------------------------------------
 
-ParameterText::ParameterText ( QListView * parent, QString label1, QString value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterText::ParameterText ( Q3ListView * parent, QString label1, QString value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, label1, hcGrp)
 {
   setPixmap(0,BitmapFactory().pixmap("Param_Text") );
@@ -832,7 +847,7 @@ void ParameterText::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterInt::ParameterInt ( QListView * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterInt::ParameterInt ( Q3ListView * parent, QString label1, long value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, label1, hcGrp)
 {
   setPixmap(0,BitmapFactory().pixmap("Param_Int") );
@@ -879,7 +894,7 @@ void ParameterInt::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterUInt::ParameterUInt ( QListView * parent, QString label1, unsigned long value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterUInt::ParameterUInt ( Q3ListView * parent, QString label1, unsigned long value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, label1, hcGrp)
 {
   setPixmap(0,BitmapFactory().pixmap("Param_UInt") );
@@ -893,6 +908,7 @@ ParameterUInt::~ParameterUInt()
 
 void ParameterUInt::changeValue()
 {
+#if 0 //TODO Port class UIntSpinBox
   const char* name = text(0).latin1();
   bool ok;
 
@@ -912,6 +928,7 @@ void ParameterUInt::changeValue()
       _hcGrp->SetUnsigned(name, (unsigned long)num);
     }
   }
+#endif
 }
 
 void ParameterUInt::removeFromGroup ()
@@ -935,7 +952,7 @@ void ParameterUInt::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterFloat::ParameterFloat ( QListView * parent, QString label1, double value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterFloat::ParameterFloat ( Q3ListView * parent, QString label1, double value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, label1, hcGrp)
 {
   setPixmap(0,BitmapFactory().pixmap("Param_Float") );
@@ -982,7 +999,7 @@ void ParameterFloat::appendToGroup()
 
 // --------------------------------------------------------------------
 
-ParameterBool::ParameterBool ( QListView * parent, QString label1, bool value, const FCHandle<ParameterGrp> &hcGrp)
+ParameterBool::ParameterBool ( Q3ListView * parent, QString label1, bool value, const FCHandle<ParameterGrp> &hcGrp)
   :ParameterValueItem( parent, label1, hcGrp)
 {
   setPixmap(0,BitmapFactory().pixmap("Param_Bool") );
@@ -1030,33 +1047,4 @@ void ParameterBool::appendToGroup()
   _hcGrp->SetBool(name, val );
 }
 
-// --------------------------------------------------------------------
-
-CustomMenuItem::CustomMenuItem( const QString& s, const QFont& f )
-	: string( s ), font( f )
-{
-}
-
-CustomMenuItem::~CustomMenuItem()
-{
-}
-
-void CustomMenuItem::paint( QPainter* p, const QColorGroup&, bool, bool, int x, int y, int w, int h )
-{
-  p->setFont ( font );
-  p->drawText( x, y, w, h, AlignLeft | AlignVCenter | DontClip | ShowPrefix, string );
-}
-
-QSize CustomMenuItem::sizeHint()
-{
-  return QFontMetrics( font ).size( AlignLeft | AlignVCenter | ShowPrefix | DontClip,  string );
-}
-
-void CustomMenuItem::setText( const QString& text )
-{
-  string = text;
-}
-
-#include "DlgParameter.cpp"
-#include "moc_DlgParameter.cpp"
 #include "moc_DlgParameterImp.cpp"

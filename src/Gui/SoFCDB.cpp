@@ -23,10 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <Inventor/SoInteraction.h>
-#endif
-
 #include "SoFCDB.h"
 #include "SoFCColorBar.h"
 #include "SoFCColorLegend.h"
@@ -43,7 +39,7 @@
 #include "propertyeditor/propertyeditorinput.h"
 #include "propertyeditor/propertyeditoritem.h"
 #include "propertyeditor/propertyeditorlist.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 using namespace Gui::PropertyEditor;
 

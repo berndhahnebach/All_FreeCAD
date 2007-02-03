@@ -30,10 +30,12 @@
 # include <qimage.h>
 # include <qpainter.h>
 # include <qpalette.h>
+//Added by qt3to4:
+#include <QPixmap>
 #endif
 
 #include "Tools.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 QPixmap Tools::resize(int w, int h, const QPixmap& p)
@@ -76,9 +78,11 @@ QPixmap Tools::fillUp(int w, int h, const QPixmap& p)
   QBitmap mask (w,h);
   mask.fill(Qt::color0);
 
-  if (pix.mask())
+  QBitmap bm = pix.mask();
+  if (!bm.isNull())
   {
-    bitBlt(&mask, x, y, pix.mask(), 0, 0, pix.width(), pix.height(), Qt::CopyROP, false);
+    //TODO Search for the Qt4 counterpart
+    bitBlt(&mask, x, y, &bm, 0, 0, pix.width(), pix.height(), /*Qt::CopyROP,*/ false);
     pm.setMask(mask);
   }
   else
@@ -96,11 +100,11 @@ QPixmap Tools::fillUp(int w, int h, const QPixmap& p)
 
 QPixmap Tools::fillOpaqueRect(int x, int y, int w, int h, const QPixmap& p)
 {
-  if (!p.mask())
+  QBitmap b = p.mask();
+  if (b.isNull())
     return p; // sorry, but cannot do anything
 
   QPixmap pix = p;
-  QBitmap b = *p.mask();
 
   // modify the mask
   QPainter pt;
@@ -115,11 +119,11 @@ QPixmap Tools::fillOpaqueRect(int x, int y, int w, int h, const QPixmap& p)
 
 QPixmap Tools::fillTransparentRect(int x, int y, int w, int h, const QPixmap& p)
 {
-  if (!p.mask())
+  QBitmap b = p.mask();
+  if (b.isNull())
     return p; // sorry, but cannot do anything
 
   QPixmap pix = p;
-  QBitmap b = *p.mask();
 
   // modify the mask
   QPainter pt;
@@ -155,13 +159,15 @@ QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
 
   QPixmap res( width, height );
   QBitmap mask( width, height );
+  QBitmap mask1 = p1.mask();
+  QBitmap mask2 = p2.mask();
   mask.fill( Qt::color0 );
 
   bitBlt( &res,  0, 0, &p1 );
-  bitBlt( &mask, 0, 0, p1.mask() );
+  bitBlt( &mask, 0, 0, &mask1 );
 
-  bitBlt( &res, x, y, &p2 );
-  bitBlt( &mask, x, y, p2.mask() );
+  bitBlt( &res,  x, y, &p2 );
+  bitBlt( &mask, x, y, &mask2 );
 
   res.setMask( mask );
   return res;
@@ -169,16 +175,18 @@ QPixmap Tools::merge( const QPixmap& p1, const QPixmap& p2, bool vertical )
 
 QPixmap Tools::disabled( const QPixmap& p )
 {
-  QBitmap mask;
+  QStyleOption opt;
+  opt.palette = QApplication::palette();
+  return QApplication::style()->generatedIconPixmap(QIcon::Disabled, p, &opt);
+#if 0
+  QBitmap mask = p.mask();
   QImage img = p.convertToImage();
 
   // create the mask if needed
   if ( p.isNull() )
     return QPixmap();
 
-  if ( p.mask() ) {
-    mask = *p.mask();
-  } else {
+  if ( mask.isNull() ) {
     mask.convertFromImage( img.createHeuristicMask(), Qt::MonoOnly | Qt::ThresholdDither );
   }
 
@@ -203,6 +211,7 @@ QPixmap Tools::disabled( const QPixmap& p )
   res.setMask( mask );
 
   return res;
+#endif
 }
 
 void Tools::convert( const QImage& p, SoSFImage& img )

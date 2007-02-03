@@ -23,10 +23,12 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qlineedit.h>
-# include <qmessagebox.h>
-# include <qpushbutton.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
 #endif
 
 #include "Macro.h"
@@ -35,7 +37,7 @@
 #include "DlgMacroRecordImp.h"
 #include "FileDialog.h"
 
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 
 /* TRANSLATOR Gui::Dialog::DlgMacroRecordImp */
@@ -47,9 +49,10 @@ using namespace Gui::Dialog;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgMacroRecord( parent, name, modal, fl ), WindowParameter("Macro")
+DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl ), WindowParameter("Macro")
 {
+  this->setupUi(this);
   // get the macro home path
   _cMacroPath = getWindowParameter()->GetASCII("MacroPath",App::GetApplication().GetHomePath());
   // check on PATHSEP at the end
@@ -62,14 +65,7 @@ DlgMacroRecordImp::DlgMacroRecordImp( QWidget* parent,  const char* name, bool m
   _pcMacroMngr = Application::Instance->macroManager();
 
   // check if a macro recording is in progress
-  if(_pcMacroMngr->isOpen())
-  {
-    PushButtonStart->setEnabled(false);
-  }
-  else
-  {
-    PushButtonStop->setEnabled(false);
-  }
+  _pcMacroMngr->isOpen() ? buttonStart->setEnabled(false) : buttonStop->setEnabled(false);
 }
 
 /** 
@@ -81,100 +77,60 @@ DlgMacroRecordImp::~DlgMacroRecordImp()
 }
 
 /**
- * \todo
+ * Starts the record of the macro.
  */
-void DlgMacroRecordImp::onTieCommandBar()
+void DlgMacroRecordImp::on_buttonStart_clicked()
 {
-  qWarning( "DlgMacroRecordImp::OnTieCommandBar() not yet implemented!" ); 
-}
+  // test if the path already set
+  if(lineEditPath->text().isEmpty())
+  {
+    QMessageBox::information( getMainWindow(), tr("FreeCAD - Macro recorder"),
+                                         tr("Specify first a place to save."));
+    return;
+  }
 
-/**
- * \todo
- */
-void DlgMacroRecordImp::onTieToolBar()
-{
-  qWarning( "DlgMacroRecordImp::OnTieToolBar() not yet implemented!" ); 
-}
+  // search in the macro path first for an already existing macro
+  QString fn = (_cMacroPath + lineEditPath->text().latin1()).c_str();
+  if ( !fn.endsWith(".FCMacro") ) fn += ".FCMacro";
+  QFileInfo fi(fn);
+  if ( fi.isFile() && fi.exists() )
+  {
+    if ( QMessageBox::question( this, tr("Existing macro"), tr("The macro '%1' already exists. Do you want to overwrite?").arg(fn),
+                                QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape ) == QMessageBox::No )
+    return;
+  }
 
-/**
- * \todo
- */
-void DlgMacroRecordImp::onTieKeyboard()
-{
-  qWarning( "DlgMacroRecordImp::OnTieKeyboard() not yet implemented!" ); 
+  // open the macro recording
+  _pcMacroMngr->open(MacroManager::File,(_cMacroPath + lineEditPath->text().latin1()).c_str());
+  accept();
 }
 
 /**
  * Abort the macro.
  */
-void DlgMacroRecordImp::cancel()
+void DlgMacroRecordImp::on_buttonCancel_clicked()
 {
   if(_pcMacroMngr->isOpen())
   {
     _pcMacroMngr->cancel();
   }
   
-  reject();
-}
-
-/**
- * Starts the record of the macro.
- */
-void DlgMacroRecordImp::start()
-{
-  // test if the path already set
-  if(LineEditPath->text().isEmpty())
-  {
-    QMessageBox::information( getMainWindow(), tr("FreeCAD - Macro recorder"),
-                                         tr("Specify first a place to save."));
-    reject();
-  }
-  else
-  {
-    // search in the macro path first for an already existing macro
-    QString fn = (_cMacroPath + LineEditPath->text().latin1()).c_str();
-    if ( !fn.endsWith(".FCMacro") ) fn += ".FCMacro";
-    QFileInfo fi(fn);
-    if ( fi.isFile() && fi.exists() )
-    {
-      if ( QMessageBox::question( this, tr("Existing macro"), tr("The macro '%1' already exists. Do you want to overwrite?").arg(fn),
-                                  QMessageBox::Yes, QMessageBox::No|QMessageBox::Default|QMessageBox::Escape ) == QMessageBox::No )
-      return;
-    }
-
-    // open the macro recording
-    _pcMacroMngr->open(MacroManager::File,(_cMacroPath + LineEditPath->text().latin1()).c_str());
-    accept();
-  }
+  QDialog::reject();
 }
 
 /**
  * Stops the record of the macro.and save to the file.
  */
-void DlgMacroRecordImp::stop()
+void DlgMacroRecordImp::on_buttonStop_clicked()
 {
   if(_pcMacroMngr->isOpen())
   {
     // ends the macrorecording and save the file...
     _pcMacroMngr->commit();
-    accept();
   }
+
+  QDialog::accept();
 }
 
-/**
- * Specify the location to save the macro to.
- */
-void DlgMacroRecordImp::onSaveMacro()
-{
-  QString fn = FileDialog::getSaveFileName(0, "FreeCAD script (*.FCScript)", getMainWindow());
-
-  if (!fn.isEmpty())
-  {
-    LineEditPath->setText ( fn );
-  }
-}
-
-#include "DlgMacroRecord.cpp"
-#include "moc_DlgMacroRecord.cpp"
 #include "moc_DlgMacroRecordImp.cpp"
 

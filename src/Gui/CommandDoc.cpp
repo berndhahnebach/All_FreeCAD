@@ -23,11 +23,14 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qstatusbar.h>
-# include <qfiledialog.h>
-# include <qprinter.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
 #endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 
 
 #include <Base/Exception.h>
@@ -45,7 +48,7 @@
 #include "BitmapFactory.h"
 #include "Selection.h"
 #include "DlgProjectInformationImp.h"
-#define new DEBUG_CLIENTBLOCK
+
 using Base::Console;
 using Base::Sequencer;
 using namespace Gui;
@@ -59,14 +62,14 @@ using namespace Gui;
 DEF_STD_CMD(StdCmdOpen);
 
 StdCmdOpen::StdCmdOpen()
-  :Command("Std_Open")
+  : Command("Std_Open")
 {
   // seting the
   sGroup        = QT_TR_NOOP("File");
-  sMenuText     = QT_TR_NOOP("&Open");
-  sToolTipText  = QT_TR_NOOP("Open a Document or import Files");
-  sWhatsThis    = QT_TR_NOOP("Open a Document or import Files");
-  sStatusTip    = QT_TR_NOOP("Open a Document or import Files");
+  sMenuText     = QT_TR_NOOP("&Open...");
+  sToolTipText  = QT_TR_NOOP("Open a document or import files");
+  sWhatsThis    = QT_TR_NOOP("Open a document or import files");
+  sStatusTip    = QT_TR_NOOP("Open a document or import files");
   sPixmap       = "Open";
   iAccel        = Qt::CTRL+Qt::Key_O;
 }
@@ -74,32 +77,33 @@ StdCmdOpen::StdCmdOpen()
 void StdCmdOpen::activated(int iMsg)
 {
   // fill the list of registered endings
-  std::string EndingList;
-  EndingList = "All suported formats (";
+  QString formatList;
+  const char* supported = QT_TR_NOOP("Supported formats");
+  const char* allFiles = QT_TR_NOOP("All files (*.*)");
+  formatList = QObject::tr(supported);
+  formatList += " (";
   
   std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
   std::map<std::string,std::string>::const_iterator It;
   for(It=EndingMap.begin();It != EndingMap.end();It++)
   {
-    EndingList += " *." + It->first;
+    formatList += " *.";
+    formatList += It->first.c_str();
   }
 
-  EndingList += ");;";
+  formatList += ");;";
 
   std::vector<std::string> FilterList = App::GetApplication().getOpenFilter();
   std::vector<std::string>::const_iterator Jt;
   for(Jt=FilterList.begin();Jt != FilterList.end();Jt++)
   {
-    EndingList += (*Jt) + ";;";
+    formatList += (*Jt).c_str();
+    formatList += ";;";
   }
-  EndingList += "All files (*.*)";
-  
+  formatList += QObject::tr(allFiles);
+
   QString dir = FileDialog::getWorkingDirectory();
-#ifdef FC_OS_WIN32
-  QStringList FileList = QFileDialog::getOpenFileNames( EndingList.c_str(),dir, getMainWindow() );
-#else
-  QStringList FileList = FileDialog::getOpenFileNames( EndingList.c_str(),dir, getMainWindow() );
-#endif
+  QStringList FileList = QFileDialog::getOpenFileNames( formatList,dir, getMainWindow() );
 
   int n=0;
   for ( QStringList::Iterator it = FileList.begin(); it != FileList.end(); ++it ) {
@@ -120,7 +124,6 @@ DEF_STD_CMD(StdCmdNew);
 StdCmdNew::StdCmdNew()
   :Command("Std_New")
 {
-  // seting the 
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("&New");
   sToolTipText  = QT_TR_NOOP("Create a new empty Document");
@@ -132,7 +135,7 @@ StdCmdNew::StdCmdNew()
 
 void StdCmdNew::activated(int iMsg)
 {
-  doCommand(Command::Doc,"App.New()");
+  doCommand(Command::Doc,"App.newDocument()");
 }
 
 //===========================================================================
@@ -240,9 +243,9 @@ StdCmdPrint::StdCmdPrint()
 {
   sGroup        = QT_TR_NOOP("File");
   sMenuText     = QT_TR_NOOP("&Print...");
-  sToolTipText  = QT_TR_NOOP("Print the window");
-  sWhatsThis    = QT_TR_NOOP("Print the window");
-  sStatusTip    = QT_TR_NOOP("Print the window");
+  sToolTipText  = QT_TR_NOOP("Print the document");
+  sWhatsThis    = QT_TR_NOOP("Print the document");
+  sStatusTip    = QT_TR_NOOP("Print the document");
   sPixmap       = "Print";
   iAccel        = Qt::CTRL+Qt::Key_P;;
 }
@@ -252,8 +255,7 @@ void StdCmdPrint::activated(int iMsg)
   if ( getMainWindow()->activeWindow() )
   {
     getMainWindow()->statusBar()->message("Printing...");
-    QPrinter printer( QPrinter::HighResolution );
-    getMainWindow()->activeWindow()->print( &printer );
+    getMainWindow()->activeWindow()->print();
   }
 }
 
@@ -313,19 +315,18 @@ bool StdCmdUndo::isActive(void)
   return getGuiApplication()->sendHasMsgToActiveView("Undo");
 }
 
-QAction * StdCmdUndo::createAction(void)
+Action * StdCmdUndo::createAction(void)
 {
-  QAction *pcAction;
+  Action *pcAction;
 
-  pcAction = new UndoAction(this,getMainWindow(),sName);
+  pcAction = new UndoAction(this,getMainWindow());
   pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
   pcAction->setStatusTip(QObject::tr(sStatusTip));
   pcAction->setWhatsThis(QObject::tr(sWhatsThis));
   if(sPixmap)
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setAccel(iAccel);
+    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setShortcut(iAccel);
 
   return pcAction;
 }
@@ -341,9 +342,9 @@ StdCmdRedo::StdCmdRedo()
 {
   sGroup        = QT_TR_NOOP("Edit");
   sMenuText     = QT_TR_NOOP("&Redo");
-  sToolTipText  = QT_TR_NOOP("Redoes a previously undid action");
-  sWhatsThis    = QT_TR_NOOP("Redoes a previously undid action");
-  sStatusTip    = QT_TR_NOOP("Redoes a previously undid action");
+  sToolTipText  = QT_TR_NOOP("Redoes a previously undone action");
+  sWhatsThis    = QT_TR_NOOP("Redoes a previously undone action");
+  sStatusTip    = QT_TR_NOOP("Redoes a previously undone action");
   sPixmap       = "Redo";
   iAccel        = Qt::CTRL+Qt::Key_Y;
 }
@@ -359,19 +360,18 @@ bool StdCmdRedo::isActive(void)
   return getGuiApplication()->sendHasMsgToActiveView("Redo");
 }
 
-QAction * StdCmdRedo::createAction(void)
+Action * StdCmdRedo::createAction(void)
 {
-  QAction *pcAction;
+  Action *pcAction;
 
-  pcAction = new RedoAction(this,getMainWindow(),sName);
+  pcAction = new RedoAction(this,getMainWindow());
   pcAction->setText(QObject::tr(sMenuText));
-  pcAction->setMenuText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
   pcAction->setStatusTip(QObject::tr(sStatusTip));
   pcAction->setWhatsThis(QObject::tr(sWhatsThis));
   if(sPixmap)
-    pcAction->setIconSet(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setAccel(iAccel);
+    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
+  pcAction->setShortcut(iAccel);
 
   return pcAction;
 }
@@ -482,11 +482,10 @@ void StdCmdDelete::activated(int iMsg)
   const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
   for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it )
   {
-    doCommand(Doc,"d=App.getDocument(\"%s\")",(*it)->getName());
     const std::vector<App::DocumentObject*> sel = rSel.getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->getName());
     for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
     {
-      doCommand(Doc,"d.removeObject(\"%s\")",(*ft)->name.getValue());
+      doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")",(*it)->getName(), (*ft)->name.getValue());
     }
   }
 

@@ -111,24 +111,6 @@
 # define DEBUG_CLIENTBLOCK   new
 #endif // MemDebugOn
 
-//**************************************************************************
-// STLport
-
-#ifdef FC_OS_WIN32
-//#	define _STLP_USE_OWN_NAMESPACE
-//#	define __STLP_USE_DECLSPEC
-//#	define _STLP_NO_NEW_IOSTREAMS 1
-//#	define _STLP_BROKEN_USING_DIRECTIVE
-#	define _STLP_NO_OWN_IOSTREAMS 1
-#	define _STLP_USE_ABBREVS
-// switch on StlPort debugging, need the libs build!
-//#	define __STL_DEBUG
-#	define _CRT_SECURE_NO_DEPRECATE 1
-// Uncomment _STLP_USE_NEWALLOC to force allocator<T> to use plain "new"
-// instead of STLport optimized node allocator engine.
-// Note: This is needed to free memory used e.g. in std::set
-# define   _STLP_USE_NEWALLOC   1
-#endif //FC_OS_WIN32
 
 
 //**************************************************************************
@@ -188,6 +170,8 @@
 
 //**************************************************************************
 // Qt
+#define QT3_SUPPORT
+#define QT_NO_KEYWORDS
 
 #if defined (FC_OS_WIN32) || defined(FC_OS_CYGWIN)
 # ifndef QT_DLL
@@ -203,10 +187,6 @@
 # define QT_ALTERNATE_QTSMANIP
 #endif
 
-#ifdef _MSC_VER
-#	define QTLIBNAME "qt-mtnc321.lib"
-//#define QTLIBNAME "qt-mt.lib"
-#endif
 
 //**************************************************************************
 // Coin3D

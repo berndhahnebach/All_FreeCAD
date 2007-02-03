@@ -1,308 +1,117 @@
-<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
-<class>Gui::Dialog::DlgMacroRecord</class>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>Gui::Dialog::DlgMacroRecord</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>316</width>
-            <height>171</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>Macro recording</string>
-    </property>
-    <hbox>
-        <property name="name">
-            <cstring>unnamed</cstring>
+<ui version="4.0" >
+ <author></author>
+ <comment></comment>
+ <exportmacro></exportmacro>
+ <class>Gui::Dialog::DlgMacroRecord</class>
+ <widget class="QDialog" name="Gui::Dialog::DlgMacroRecord" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>292</width>
+    <height>113</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Macro recording</string>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Macro name:</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>6</number>
+      </property>
+      <property name="spacing" >
+       <number>0</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QLineEdit" name="lineEditPath" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>3</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
-        <property name="margin">
-            <number>11</number>
-        </property>
-        <property name="spacing">
-            <number>6</number>
-        </property>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>Layout9</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>TextLabel1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Macro name:</string>
-                    </property>
-                </widget>
-                <widget class="QLayoutWidget">
-                    <property name="name">
-                        <cstring>Layout8</cstring>
-                    </property>
-                    <hbox>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>0</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QLineEdit">
-                            <property name="name">
-                                <cstring>LineEditPath</cstring>
-                            </property>
-                            <property name="sizePolicy">
-                                <sizepolicy>
-                                    <hsizetype>3</hsizetype>
-                                    <vsizetype>0</vsizetype>
-                                    <horstretch>0</horstretch>
-                                    <verstretch>0</verstretch>
-                                </sizepolicy>
-                            </property>
-                            <property name="frameShape">
-                                <enum>LineEditPanel</enum>
-                            </property>
-                            <property name="frameShadow">
-                                <enum>Sunken</enum>
-                            </property>
-                        </widget>
-                    </hbox>
-                </widget>
-                <widget class="QGroupBox">
-                    <property name="name">
-                        <cstring>GroupBox4</cstring>
-                    </property>
-                    <property name="title">
-                        <string>Tie macro:</string>
-                    </property>
-                    <grid>
-                        <property name="name">
-                            <cstring>unnamed</cstring>
-                        </property>
-                        <property name="margin">
-                            <number>11</number>
-                        </property>
-                        <property name="spacing">
-                            <number>6</number>
-                        </property>
-                        <widget class="QPushButton" row="0" column="0">
-                            <property name="name">
-                                <cstring>PushButton9</cstring>
-                            </property>
-                            <property name="enabled">
-                                <bool>true</bool>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                            <property name="pixmap">
-                                <pixmap>image0</pixmap>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="0" column="2">
-                            <property name="name">
-                                <cstring>PushButton10</cstring>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                            <property name="pixmap">
-                                <pixmap>image1</pixmap>
-                            </property>
-                        </widget>
-                        <widget class="QPushButton" row="0" column="1">
-                            <property name="name">
-                                <cstring>PushButton9_2</cstring>
-                            </property>
-                            <property name="text">
-                                <string></string>
-                            </property>
-                            <property name="pixmap">
-                                <pixmap>image0</pixmap>
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="0">
-                            <property name="name">
-                                <cstring>TextLabel4</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Tool bar</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
-                            </property>
-                            <property name="hAlign" stdset="0">
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="1">
-                            <property name="name">
-                                <cstring>TextLabel5</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Command bar</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
-                            </property>
-                            <property name="hAlign" stdset="0">
-                            </property>
-                        </widget>
-                        <widget class="QLabel" row="1" column="2">
-                            <property name="name">
-                                <cstring>TextLabel6</cstring>
-                            </property>
-                            <property name="text">
-                                <string>Keyboard</string>
-                            </property>
-                            <property name="alignment">
-                                <set>AlignCenter</set>
-                            </property>
-                            <property name="hAlign" stdset="0">
-                            </property>
-                        </widget>
-                    </grid>
-                </widget>
-            </vbox>
-        </widget>
-        <widget class="QLayoutWidget">
-            <property name="name">
-                <cstring>Layout5</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <property name="margin">
-                    <number>0</number>
-                </property>
-                <property name="spacing">
-                    <number>6</number>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>PushButtonStart</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Start</string>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>PushButtonStop</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Stop</string>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>Spacer3</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Fixed</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>20</width>
-                            <height>50</height>
-                        </size>
-                    </property>
-                </spacer>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>PushButtonCancel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Cancel</string>
-                    </property>
-                </widget>
-            </vbox>
-        </widget>
-    </hbox>
-</widget>
-<images>
-    <image name="image0">
-        <data format="XPM.GZ" length="5208">789cdd96db5222491086ef7d0a62f26e622307688eb1b117a202ce784211958dbde86e0e1ec01308cac6befbfe959955332a3323eb5c6d5460f7d759f557566656959f3e664e0f76331f3fad4da6f1f422cda4e7f17de663ef613c7efaf3af3ffe5efb1055335139938ba24cfec36f6b1f5ad34c9ad9bbb9ee3ba02300e5b2d94ab622fc59d935e11de10a9af224b0f63f739ccfe573ca5cf29ccf893d275c0d7a5d65d784e79e23edbfee38824359edbfa9ecfbf38db2fb22f681671b4f81b57fd6b8aa4c2c5c0dfa63e5c8e6e77a60e91f93e782048f4e940b79d397f514f25e8f3794c37cfb9e753c1f2b87f133cfa6df0a1c8bbd281c077f0f9443ff6160e94fa9716cf3cd03abdea5e7a28edf552ee62dbe5f8c63f35fb8982f7a7f2e3ceb783e148ec3face958ba6cfc3c0ea5fc97329129e2a9722cb5f23b0ce7fe8d9f4a43e4b5129d2fae28e67cbdfad67d5e7f5c089e8d58c13f587f39ecd1fe524c4bba9eceb832e95f145b9eed9f4ae3cdbfc5b81657e2e2b97bdbffb9ecdbf8ae7b28edf09acf647c76eb4edd76de3aaedaf9967d3af06d6fcb69451b13afeceb38ee753cf367ea01cfcb90facebd9354eccfe1058fdd5fe2e9e3adf9672e4f7ff9eb2df0fd456f6f3d17160d57b32f6f38d02abbdeab95210fb8172a560e755d9b3f5bf324e2dff8bc0ba3e39df2a85500f23e5e0efa9716cf14a95bd3e373dab3fb4619c5abca3c07a7e563c5bfd9c78b6f5de79b6f51584d3e05f3fb0ea3594fdfcdc33b6f194044ee5bc63cf55b53f28577dbc64ff570b55af771d58c653c7b38def05163bef19a77151ecb25fab69b027c6363f4f02ab3de759c7f391725c543bc58edd7163fd373d5bff47e39eb1d41b084d785b19db5998e4be498a9e79e13951ff8bc63de558e64fc2f83831f6fa7dcfda9fa781d53e5646f9a95dea1de4ed3565f745e6cf7a4e4bc2d7c67d63398f7b25d764bcf8d7eb0726e3be321502ebff07529ffdb26bb21ea9effe6050ee0f1cb7a6bfb2fdbf1499f08b7f9d22279c5aeb71dfa9bf4f117a031ef2395fa05df2158f78fc1e45bee61bbee53ba8def384a7fcc033bcbf47f18ae7a15df0233ff182d73147ff3d7134ed1a6f60d577bc094f07bcb54c73d5eae13afc6c70139adbd01cbdd65cd1c76bfecc5f78078a4d89e89077dfa3c87bbccf07dce243e4a6c147dc86c7c72fb3be42854fb8c3277cca67dce52cbc6be3cb0c2d7dbef23757788ef31cc1bf0217b904dfead0bcc7da1f91fddeea8a885f992b5ce5023111c95e74954409df524af1aa8ad4d3f8519fbb34f0e39169a739e484ce5753a40bbaa42b1ab9f8d19827e1fb356fc1bf846b14d3cddb15e9d6f94777742ff9785c1291014d78f45645ac684a0f34433eba34a7a567193c75bba7f61645c40ff9a5473e23466e97f8177a3e4173f1334589df02f557a0f5aff9f8ee6a469cfc5891f7a8461b7427f5b2f9351fdff5f2fac7ab56ff684bf6479d377fa6f76d5ba6c839aa3bff5c7ee1df4a7acf15b55291df06f2db94fc0eb0cbe82df7d5771463b49ec46f5bf6c7676470823be6ad6df15c11b5ff85766817feedc9fe98d33e1dc8e932e339b5dcbbf006223bf3147aa051f2d2476ed221f607fc43bd1ce16c19b9466dec609cd6742ccf264eb10575e47d203df4b989bba7f6c2c73e9dd0139dbaf38aceb062775ecda88bd987f0519ed8c75dea104e47dac729e6bed6cdda781d47dc4a33ca51deed0fecff3a621a711bb969e3b980ade39e44f0720af509457403bd119e5977db52f67566b09e191d617f74b0863a940aee49453ac72d35874601cf3a62538482b3a23fe89cdd59b954d19dfc3497f80d719e6ce179416712a521ceed5bf8530237c5a75b2aa357176b1fe13e2ff1c0ef9b178a538c9b87dcb5f03bb1e77ef8764459aad8fb46e8db595a8f1dc4af897b6ee47ec8f1e875a32a25d2eba5a51133b7bf554434faa8c701663dfe419bc584c88ec5b767dfdd5d46723f7ceb631ce3ffb8ffd8e2047f6b2f571da7ef6b16c77f7e5ffb1751549a3f</data>
-    </image>
-    <image name="image1">
-        <data format="XPM.GZ" length="4846">789ced96db5222491086ef7d0ac2ba9bd8c8915303b1b117c228880a0a0c3a6eec45d38da29c0405c5897df7fdf350351331b8e36e78399161757ef56765576527dd7efc90b93c3bcd7cf8b8f3f0183fde269964142f331fd2d574baf9f3af3fbeeeec16f632f92893cd6633b9dddf7676cf1f3349a6359f0d19dc2780cbeeb1091f0897c165e117e3b2f1b3722e6bbc6266ca6599e940994df49670055c11bd615c51761be5bce9aec9cc94d77c4b6536e1b1b15fbf2f5ce119d11f8c6dbd4b036bfcda73418ae10e950b39d3b9388e49752a2a7b9dba9e6d7ddd3836ee08c741ef068e85cf8c2d9efa81554f3c17757dac5cf4eb079e4d97f3b26afa9167d5e946b998d3e74be79e359e22cf96efd4d8dfff4498efa7f19e7dfe7a60d58f3c477961e9af281ff48532cf081f7bb678397f348806b6bf43cfa637030f647f4eb99457a63b6626dbdf17cfa65f2b97f27bd2bf74e6d9f489e792de4ffaa13480297702ebfd1bcae582f1133353b920f1a9326674fd4560bd5fcfb3c6bbe3c089e89f8593a02f03abfe649cd8fdda81457743e58ac53ba97fa5c0267c6f9c18d784139e917c2363d3a91558f3dd29c7458b9f32733b189f7a8e8bc265e3d4f48a67d34bc2a98f77d5c0a9e86b631fbf09acfa8bf2c0af9f0616dd113393f1dcf340f33d2bfbf5741b58f3df7bb678e9bf411a7860ecf733f36cfa3cb0ea59e52452ddcd02ab9e634e22afd32ab0eab1e724121e1a0f4dbf141e06def7acf16e1258be0794574e23e33d6626e32be5d4dfaf1658bf27379e53cd3f321e1a5f07d678a92f93ea540dac7a5b795852a602f3b0e4d98d3d0f4bc2f27e1b5e83aff563f7bef62be7af9c6f357214bf6f4e1a5042290ddf35674ad77443a377cd794b7734a6094d61b3f7c989ac73baa7052de981de699f967785fdae91f9e9ad396946cf1463dc60ed1cabd95f8bff8291e7f7a94a35e47cd33eb1624a9fe8800ea94e0d3aa226fc633a917121635dd4536a21aefdf39cc87846e7d4c1ba2ef5b0be0b7f81f1b3f94d9967b50fbba0cb37e4fc821dac70aa2b64afc15638654dfc3dcaca98c398c70cdb15157e9613952b5284b184eaad6d5c53d9ae6c15fbf3343543b5b7e574e41c9fc9c5722e33269d116f10e613b99e1ba5a8cdecc79c74e2865475d7ee06e38d1bd99f1866d8bf151a9936b248b63b64ed6cc9d9a7961bbb899ba0a7635ca734c72af1d13db1cccfd97733efbb39fa2c8fb18d9c675b729e4b4ebefbb1bbc718511b5d78ec16f0fb6e01bfee963c2f33753cff6af0fbdb73ba07ce89aeeba0ffba6e4907ee11eb96d23d98c11d1a58d9732b51d96fcb7c07fe1ad76dfbd4b33fe1da75a97b965507c88cd16d30f36233cbeffc0662f741dded395d8c13733d5179548f7734436453c6b6cc74503deff7e04788e15a630fafe5947d565d0d577eef702553a924fb358c11eeca5dd3825fc74c17956ce11ecbd7f6a967c75ebaa8184ee63ec9f8f29d2f9510ff907de9ccbaccbf9613cf9d0adc79d843033578a40ec623d7d073e3947dbc8bb52a13a9ca988deb81d87f7b4677c8d784dfe6fa73dfb9ba76023235e5291f88ba94cab651d79e9d7db22da73c237e9771bfbd20b22f4ffc446660ee144f45d567a9740ba3c6be7ef6113f77fcdec672b6b69c1627441f54f95768d7b6a87c7e7eee72f6577be90ce7e69af6c41ac8d7b313f6bca1b67add6077e853feada1a31185aedf9a539e4313d9d89658b7744d8c8d6fe6545dfa1899db4867a55beb79a1ef2ed7715d7b83d995bae10d5797537eff2e14c2effadc2db6be932f9033fa5f76f2edbf881fbf716efce3d7e0bfd9eedfbfeffc0336e136cc</data>
-    </image>
-</images>
-<connections>
-    <connection>
-        <sender>PushButton9</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
-        <slot>onTieToolBar()</slot>
-    </connection>
-    <connection>
-        <sender>PushButton9_2</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
-        <slot>onTieCommandBar()</slot>
-    </connection>
-    <connection>
-        <sender>PushButton10</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
-        <slot>onTieKeyboard()</slot>
-    </connection>
-    <connection>
-        <sender>PushButtonStart</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
-        <slot>start()</slot>
-    </connection>
-    <connection>
-        <sender>PushButtonStop</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
-        <slot>stop()</slot>
-    </connection>
-    <connection>
-        <sender>PushButtonCancel</sender>
-        <signal>clicked()</signal>
-        <receiver>Gui::Dialog::DlgMacroRecord</receiver>
-        <slot>cancel()</slot>
-    </connection>
-</connections>
-<tabstops>
-    <tabstop>LineEditPath</tabstop>
-    <tabstop>PushButton9</tabstop>
-    <tabstop>PushButton9_2</tabstop>
-    <tabstop>PushButton10</tabstop>
-    <tabstop>PushButtonStart</tabstop>
-    <tabstop>PushButtonStop</tabstop>
-    <tabstop>PushButtonCancel</tabstop>
-</tabstops>
-<slots>
-    <slot>cancel()</slot>
-    <slot>onTieCommandBar()</slot>
-    <slot>onTieKeyboard()</slot>
-    <slot>onTieToolBar()</slot>
-    <slot>start()</slot>
-    <slot>stop()</slot>
-    <slot>onSaveMacro()</slot>
-</slots>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" >
+        <size>
+         <width>16</width>
+         <height>27</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonStart" >
+       <property name="text" >
+        <string>Start</string>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonStop" >
+       <property name="text" >
+        <string>Stop</string>
+       </property>
+       <property name="default" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonCancel" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <pixmapfunction></pixmapfunction>
+ <tabstops>
+  <tabstop>lineEditPath</tabstop>
+  <tabstop>buttonStart</tabstop>
+  <tabstop>buttonStop</tabstop>
+  <tabstop>buttonCancel</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

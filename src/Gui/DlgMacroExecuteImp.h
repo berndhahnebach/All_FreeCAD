@@ -21,10 +21,10 @@
  ***************************************************************************/
 
 
-#ifndef DLGMACROEXECUTEIMP_H
-#define DLGMACROEXECUTEIMP_H
+#ifndef GUI_DIALOG_DLGMACROEXECUTEIMP_H
+#define GUI_DIALOG_DLGMACROEXECUTEIMP_H
 
-#include "DlgMacroExecute.h"
+#include "ui_DlgMacroExecute.h"
 #include "Window.h"
 
 namespace Gui {
@@ -35,25 +35,27 @@ namespace Dialog {
  * recorded macro. 
  * \author Jürgen Riegel
  */
-class DlgMacroExecuteImp : public DlgMacroExecute, public Gui::WindowParameter
+class DlgMacroExecuteImp : public QDialog, public Ui_DlgMacroExecute, public Gui::WindowParameter
 { 
     Q_OBJECT
 
 public:
-  DlgMacroExecuteImp( QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
-  virtual ~DlgMacroExecuteImp();
+  DlgMacroExecuteImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
+  ~DlgMacroExecuteImp();
 
-public:
-  virtual void onExecute();
-  virtual void onNewFolder();
-  virtual void onCreate();
-  virtual void onEdit();
-  virtual void onDelete();
+public Q_SLOTS:
+  void on_executeButton_clicked();
+  void on_fileChooser_fileNameChanged(const QString&);
+  void on_createButton_clicked();
+  void on_deleteButton_clicked();
+  void on_editButton_clicked();
+
+protected Q_SLOTS:
+  void on_macroListBox_doubleClicked( Q3ListBoxItem* );
+  void on_macroListBox_selectionChanged( Q3ListBoxItem* );
 
 protected:
   void fillUpList(void);
-  virtual void onListDoubleClicked( QListViewItem* );
-  virtual void onNewListItemPicked( QListViewItem* );
 
 protected:
   std::string _cMacroPath;
@@ -62,4 +64,4 @@ protected:
 } // namespace Dialog
 } // namespace Gui
 
-#endif // DLGMACROEXECUTEIMP_H
+#endif // GUI_DIALOG_DLGMACROEXECUTEIMP_H

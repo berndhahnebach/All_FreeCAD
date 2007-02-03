@@ -23,22 +23,27 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qdir.h>
-# include <qfileinfo.h>
-# include <qlayout.h>
-# include <qobjectlist.h>
-# include <qpushbutton.h>
-#endif
+#include <App/Application.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
+
+
+//#ifndef _PreComp_
+//# include <qapplication.h>
+//# include <qdir.h>
+//# include <qfileinfo.h>
+//# include <qlayout.h>
+//# include <qobject.h>
+//# include <qpushbutton.h>
+////Added by qt3to4:
+//#include <Q3GridLayout>
+//#endif
 
 #include "WidgetFactory.h"
 #include "PrefWidgets.h"
+#include "PropertyPage.h"
 
-#include "../App/Application.h"
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
-#define new DEBUG_CLIENTBLOCK
+
 using Base::Console;
 using namespace Gui;
 
@@ -105,6 +110,45 @@ QWidget* WidgetFactoryInst::createWidget (const char* sName, QWidget* parent) co
 }
 
 /**
+ * Creates a widget with the name \a sName which is a child of \a parent.
+ * To create an instance of this widget once it must has been registered. 
+ * If there is no appropriate widget registered 0 is returned.
+ */
+Gui::Dialog::PreferencePage* WidgetFactoryInst::createPreferencePage (const char* sName, QWidget* parent) const
+{
+  Gui::Dialog::PreferencePage* w = (Gui::Dialog::PreferencePage*)Produce(sName);
+
+  // this widget class is not registered
+  if (!w)
+  {
+#ifdef FC_DEBUG
+    Console().Warning("\"%s\" is not registered\n", sName);
+#else
+    Console().Log("\"%s\" is not registered\n", sName);
+#endif
+    return 0;
+  }
+
+  if ( qobject_cast<Gui::Dialog::PreferencePage*>(w) ) {
+#ifdef FC_DEBUG
+    Console().Log("Preference page of type '%s' created.\n", w->className());
+#endif
+  } else {
+#ifdef FC_DEBUG
+    Console().Error("%s does not inherit from 'Gui::Dialog::PreferencePage'\n", sName);
+#endif
+    delete w;
+    return 0;
+  }
+
+  // set the parent to the widget
+  if (parent)
+    w->setParent(parent);
+
+  return w;
+}
+
+/**
  * Creates a preference widget with the name \a sName and the preference name \a sPref 
  * which is a child of \a parent.
  * To create an instance of this widget once it must has been registered. 
@@ -150,7 +194,7 @@ WidgetFactorySupplier & WidgetFactorySupplier::instance()
     _pcSingleton = new WidgetFactorySupplier;
 
 #if QT_VERSION >= 300
-    QWidgetFactory::addWidgetFactory(new QtWidgetFactory);
+    //TODO QWidgetFactory::addWidgetFactory(new QtWidgetFactory);
 #endif
   }
 
@@ -174,14 +218,13 @@ void WidgetFactorySupplier::destruct()
  *  The dialog will be modal.
  */
 ContainerDialog::ContainerDialog( QWidget* templChild )
-    : QDialog( qApp->mainWidget(), 0L, true, 0 )
-
+  : QDialog( QApplication::activeWindow(), 0L, true, 0 )
 {
   setCaption( templChild->name() );
   setName( templChild->name() );
 
   setSizeGripEnabled( TRUE );
-  MyDialogLayout = new QGridLayout( this, 1, 1, 11, 6, "MyDialogLayout");
+  MyDialogLayout = new Q3GridLayout( this, 1, 1, 11, 6, "MyDialogLayout");
 
   buttonOk = new QPushButton( this, "buttonOk" );
   buttonOk->setText( tr( "&OK" ) );
@@ -347,7 +390,8 @@ void PyResource::load( const char* name )
 
   QWidget* w=0;
   try{
-    w = QWidgetFactory::create( fn, 0, qApp->mainWidget() );
+    // TODO needs to be replaced
+    //w = QWidgetFactory::create( fn, 0, QApplication::activeWindow() );
   }catch(...){
     throw Base::Exception("Cannot create resource");
   }
@@ -377,12 +421,13 @@ bool PyResource::connect(const char* sender, const char* signal, PyObject* cb)
     return false;
 
   QObject* objS=0L;
-  QObjectList *l = myDlg->queryList( "QWidget" );
-  QObjectListIt it( *l );
+  QObjectList l = myDlg->queryList( "QWidget" );
+  QObjectList::const_iterator  it=l.begin() ;
   QObject *obj;
   QString sigStr = QString("2%1").arg(signal);
 
-  while ( (obj = it.current()) != 0 ) {
+  while ( it != l.end() ) {
+    obj = *it;
     ++it;
     if (strcmp(obj->name(), sender) == 0)
     {
@@ -390,8 +435,6 @@ bool PyResource::connect(const char* sender, const char* signal, PyObject* cb)
       break;
     }
   }
-
-  delete l; // delete the list, not the objects
 
   if (objS)
   {
@@ -484,12 +527,13 @@ PyObject *PyResource::value(PyObject *args)
   QVariant v;
   if (myDlg)
   {
-    QObjectList *l = myDlg->queryList( "QWidget" );
-    QObjectListIt it( *l );
+    QObjectList l = myDlg->queryList( "QWidget" );
+    QObjectList::const_iterator it = l.begin( );
     QObject *obj;
 
     bool fnd = false;
-    while ( (obj = it.current()) != 0 ) {
+    while ( it != l.end() ) {
+      obj = *it;
       ++it;
       if (strcmp(obj->name(), psName) == 0)
       {
@@ -498,7 +542,6 @@ PyObject *PyResource::value(PyObject *args)
         break;
       }
     }
-    delete l; // delete the list, not the objects
 
     if ( !fnd )
       qWarning( "'%s' not found.\n", psName );
@@ -600,12 +643,13 @@ PyObject *PyResource::setValue(PyObject *args)
 
   if (myDlg)
   {
-    QObjectList *l = myDlg->queryList( "QWidget" );
-    QObjectListIt it( *l );
+    QObjectList l = myDlg->queryList( "QWidget" );
+    QObjectList::const_iterator it = l.begin( );
     QObject *obj;
 
     bool fnd = false;
-    while ( (obj = it.current()) != 0 ) {
+    while ( it != l.end() ) {
+      obj = *it;
       ++it;
       if (strcmp(obj->name(), psName) == 0)
       {
@@ -614,7 +658,6 @@ PyObject *PyResource::setValue(PyObject *args)
         break;
       }
     }
-    delete l; // delete the list, not the objects
 
     if ( !fnd )
       qWarning( "'%s' not found.\n", psName );

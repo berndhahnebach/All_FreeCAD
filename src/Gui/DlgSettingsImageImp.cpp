@@ -23,21 +23,9 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qbuttongroup.h>
-# include <qcheckbox.h>
-# include <qcombobox.h>
-# include <qdatetime.h>
-# include <qmap.h>
-# include <qpushbutton.h>
-# include <qtextedit.h>
-# include <iomanip>
-# include <sstream>
-#endif
-
 #include "DlgSettingsImageImp.h"
 #include "SpinBox.h"
-#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui::Dialog;
 using namespace std;
 
@@ -45,9 +33,10 @@ using namespace std;
  *  Constructs a DlgSettingsImageImp as a child of 'parent', with the
  *  name 'name' and widget flags set to 'f'.
  */
-DlgSettingsImageImp::DlgSettingsImageImp( QWidget* parent, const char* name, WFlags fl )
-  : DlgSettingsImage( parent, name, fl )
+DlgSettingsImageImp::DlgSettingsImageImp( QWidget* parent )
+  : QWidget( parent )
 {
+  this->setupUi(this);
   SbVec2s res = SoOffscreenRenderer::getMaximumResolution();
   spinWidth->setMaxValue((int)res[0]);
   spinHeight->setMaxValue((int)res[1]);
@@ -156,26 +145,24 @@ void DlgSettingsImageImp::adjustImageSize(float fRatio)
   }
 }
 
-void DlgSettingsImageImp::onRatioScreen()
+void DlgSettingsImageImp::on_buttonRatioScreen_clicked()
 {
   adjustImageSize(_fRatio);
 }
 
-void DlgSettingsImageImp::onRatio4x3()
+void DlgSettingsImageImp::on_buttonRatio4x3_clicked()
 {
   adjustImageSize(4.0f/3.0f);
 }
 
-void DlgSettingsImageImp::onRatio16x9()
+void DlgSettingsImageImp::on_buttonRatio16x9_clicked()
 {
   adjustImageSize(16.0f/9.0f);
 }
 
-void DlgSettingsImageImp::onRatio1x1()
+void DlgSettingsImageImp::on_buttonRatio1x1_clicked()
 {
   adjustImageSize(1.0f);
 }
 
-
-#include "DlgSettingsImage.cpp"
-#include "moc_DlgSettingsImage.cpp"
+#include "moc_DlgSettingsImageImp.cpp"

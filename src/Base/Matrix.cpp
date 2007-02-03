@@ -28,7 +28,6 @@
 # include <memory>
 #endif
 
-#define new DEBUG_CLIENTBLOCK
 
 #include "Matrix.h"
 

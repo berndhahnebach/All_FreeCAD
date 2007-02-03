@@ -4,7 +4,6 @@
 	Version="8,00"
 	Name="FreeCADMainPy"
 	ProjectGUID="{6C4943B1-DA0A-4F05-BD63-1909EC1D215C}"
-	RootNamespace="FreeCADMainPy"
 	>
 	<Platforms>
 		<Platform
@@ -57,7 +56,6 @@
 				AssemblerListingLocation=".\DebugPy/"
 				ObjectFile=".\DebugPy/"
 				ProgramDataBaseFileName=".\DebugPy/"
-				BrowseInformation="0"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="4"

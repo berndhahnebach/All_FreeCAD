@@ -39,8 +39,8 @@ using namespace PartGui;
  *  The dialog will by default be modeless, unless you set 'modal' to
  *  TRUE to construct a modal dialog.
  */
-DlgPartImportStepImp::DlgPartImportStepImp( QWidget* parent,  const char* name, bool modal, WFlags fl )
-    : DlgPartImportStep( parent, name, modal, fl )
+DlgPartImportStepImp::DlgPartImportStepImp( QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
 
 }
@@ -71,6 +71,4 @@ void DlgPartImportStepImp::onChooseFileName()
 }
 
 
-#include "DlgPartImportStep.cpp"
-#include "moc_DlgPartImportStep.cpp"
 #include "moc_DlgPartImportStepImp.cpp"

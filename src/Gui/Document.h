@@ -24,6 +24,14 @@
 #ifndef __GUIDOCUMENT_h__
 #define __GUIDOCUMENT_h__
 
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
 #include "View.h"
 
 #include <list>
@@ -33,6 +41,8 @@
 #include <Base/PyExport.h>
 #include <Base/Persistance.h>
 #include <App/Document.h>
+//Added by qt3to4:
+//#include <QtGui/QCloseEvent>
 
 #ifdef _MSC_VER
 # pragma warning( disable : 4251 )

@@ -41,7 +41,7 @@ class DlgDocTemplatesImp : virtual public DlgDocTemplates
     Q_OBJECT
 
 public:
-  DlgDocTemplatesImp( Gui::Command* pcCmd,QWidget* parent = 0, const char* name = 0, bool modal = FALSE, WFlags fl = 0 );
+  DlgDocTemplatesImp( Gui::Command* pcCmd,QWidget* parent = 0, const char* name = 0, bool modal = FALSE, Qt::WFlags fl = 0 );
   ~DlgDocTemplatesImp();
 
 public:
@@ -50,8 +50,8 @@ public:
   virtual void onEditFile();
 
 protected:
-  virtual void onViewChanged( QIconViewItem* );
-  virtual void onIconDoubleClicked( QIconViewItem* );
+  virtual void onViewChanged( Q3IconViewItem* );
+  virtual void onIconDoubleClicked( Q3IconViewItem* );
 
 protected:
   Gui::Command* _pcCmd;

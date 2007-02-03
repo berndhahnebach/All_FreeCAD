@@ -21,13 +21,16 @@
  ***************************************************************************/
 
 
-#ifndef MENUMANAGER_H
-#define MENUMANAGER_H
+#ifndef GUI_MENUMANAGER_H
+#define GUI_MENUMANAGER_H
 
-#include <qstring.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-class QPopupMenu;
-class QMenuData;
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 
@@ -48,18 +51,18 @@ public:
   MenuItem* copy() const;
   uint count() const;
 
-  void appendItem( const MenuItem* );
-  bool insertItem( const MenuItem*, const MenuItem* );
-  void removeItem( const MenuItem* );
+  void appendItem( MenuItem* );
+  bool insertItem( MenuItem*, MenuItem* );
+  void removeItem( MenuItem* );
   void clear();
 
-  MenuItem& operator<< ( const MenuItem* item );
+  MenuItem& operator<< ( MenuItem* item );
   MenuItem& operator<< ( const QString& command );
-  QPtrList<MenuItem> getItems() const;
+  QList<MenuItem*> getItems() const;
 
 private:
   QString _name;
-  QPtrList<MenuItem> _items;
+  QList<MenuItem*> _items;
 };
 
 /**
@@ -75,7 +78,7 @@ public:
   /** Sets up the menus of a given workbench. */
   void setup( MenuItem* ) const;
   /// sets up a context menu out of item
-  void setupContextMenu( MenuItem* item, QPopupMenu &menu ) const;
+  void setupContextMenu( MenuItem* item, QMenu &menu ) const;
 
   /// The one and only instance.
   static MenuManager* getInstance();
@@ -84,11 +87,9 @@ public:
 protected:
   MenuManager();
   ~MenuManager();
-  void languageChange() const;
 
 private:
-  QPopupMenu* findMenu( QMenuData*, const QString& menu ) const;
-  void setup( MenuItem*, QMenuData* ) const;
+  void setup( MenuItem*, QMenu* ) const;
 
 private:
   static MenuManager* _instance;
@@ -99,4 +100,4 @@ private:
 } // namespace Gui
 
 
-#endif // MENUMANAGER_H 
+#endif // GUI_MENUMANAGER_H 

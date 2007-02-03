@@ -22,14 +22,12 @@
 
 
 #include "PreCompiled.h"
-#ifndef _PreComp_
-#endif
 
 #include "Window.h"
 
-#include "../Base/Console.h"
-#include "../App/Application.h"
-#define new DEBUG_CLIENTBLOCK
+#include <Base/Console.h>
+#include <App/Application.h>
+
 using namespace Gui;
 
 //**************************************************************************

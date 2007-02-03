@@ -33,7 +33,9 @@
 # include <qmessagebox.h>
 # include <qpainter.h>
 # include <qpen.h>
-# include <qpopupmenu.h>
+# include <q3popupmenu.h>
+//Added by qt3to4:
+#include <QEvent>
 # ifdef FC_OS_WIN32
 #  include <windows.h>
 # endif
@@ -104,8 +106,6 @@
 // build in Inventor
 
 //#define FC_LOGGING_CB
-
-#define new DEBUG_CLIENTBLOCK
 
 using namespace Gui;
 
@@ -1002,7 +1002,7 @@ void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
   // ask workbenches and view provider, ...
   Gui::Application::Instance->setupContextMenu("View", view);
 
-  QPopupMenu ContextMenu(this->getGLWidget());
+  QMenu ContextMenu(this->getGLWidget());
   MenuManager::getInstance()->setupContextMenu(view,ContextMenu);
   delete view;
   ContextMenu.exec( QCursor::pos() );
@@ -1699,6 +1699,7 @@ void View3DInventorViewer::addToLog(const SbVec2s pos, const SbTime time)
 // Draw routines
 void View3DInventorViewer::drawRect( int x, int y, int w, int h, QPainter* p )
 {
+#if 0 //TODO
   if (p)
     p->drawRect( QRect( QPoint( QMIN( x, w ), QMIN( y, h ) ),
          QPoint( QMAX( x, w ), QMAX( y, h ) ) ) );
@@ -1714,10 +1715,12 @@ void View3DInventorViewer::drawRect( int x, int y, int w, int h, QPainter* p )
     p.setRasterOp( QPainter::XorROP );
     drawRect( x, y, w, h, &p );
   }
+#endif
 }
 
 void View3DInventorViewer::drawNode ( int x, int y, int w, int h, QPainter* p )
 {
+#if 0 //TODO
   if (p)
     p->drawEllipse( x, y, w, h );
   else
@@ -1732,10 +1735,12 @@ void View3DInventorViewer::drawNode ( int x, int y, int w, int h, QPainter* p )
     p.setRasterOp( QPainter::XorROP );
     drawNode( x, y, w, h, &p );
   }
+#endif
 }
 
 void View3DInventorViewer::drawLine ( int x1, int y1, int x2, int y2, QPainter* p )
 {
+#if 0 //TODO
   if (p)
     p->drawLine( x1, y1, x2, y2 );
   else
@@ -1750,10 +1755,12 @@ void View3DInventorViewer::drawLine ( int x1, int y1, int x2, int y2, QPainter* 
     p.setRasterOp( QPainter::XorROP );
     drawLine( x1, y1, x2, y2, &p );
   }
+#endif
 }
 
 void View3DInventorViewer::drawCircle ( int x, int y, int r, QPainter* p )
 {
+#if 0 //TODO
   if (p)
   {
     QPoint center(x-r/2, y-r/2);
@@ -1766,10 +1773,12 @@ void View3DInventorViewer::drawCircle ( int x, int y, int r, QPainter* p )
     p.setRasterOp( QPainter::XorROP );
     drawCircle( x, y, r, &p );
   }
+#endif
 }
 
 void View3DInventorViewer::drawText ( int x, int y, const QString & str, QPainter* p )
 {
+#if 0 //TODO
   if (p)
     p->drawText( x, y, str);
   else
@@ -1779,6 +1788,7 @@ void View3DInventorViewer::drawText ( int x, int y, const QString & str, QPainte
     p.setRasterOp( QPainter::XorROP );
     drawText( x, y, str, &p );
   }
+#endif
 }
 
 

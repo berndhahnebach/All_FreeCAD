@@ -24,7 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <qvbox.h>
+# include <q3vbox.h>
 # include <Inventor/nodes/SoMaterial.h>
 # include <Inventor/nodes/SoShapeHints.h>
 # include <Inventor/SbClip.h>
@@ -62,7 +62,7 @@
 #include <Inventor/nodes/SoCube.h>
 #include <Inventor/sensors/SoTimerSensor.h>
 
-#define new DEBUG_CLIENTBLOCK
+
 
 unsigned char * generateTexture(int w, int h, int d)
 {

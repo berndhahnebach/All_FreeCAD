@@ -26,7 +26,14 @@
 
 #include "propertyeditoritem.h"
 
-#include <qspinbox.h>
+
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
 namespace Gui {
 namespace PropertyEditor {
@@ -41,7 +48,7 @@ class GuiExport TextEditorItem: public EditableItem
 
   Q_OBJECT
 public:
-  TextEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  TextEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
@@ -65,7 +72,7 @@ class GuiExport IntEditorItem: public EditableItem
 
   Q_OBJECT
 public:
-  IntEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  IntEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );
@@ -104,7 +111,7 @@ class GuiExport FloatEditorItem: public EditableItem
 
   Q_OBJECT
 public:
-  FloatEditorItem( QListView* lv, const QString& text, const QVariant& value );
+  FloatEditorItem( Q3ListView* lv, const QString& text, const QVariant& value );
 
 protected:
   QWidget* createEditor( int column, QWidget* parent );

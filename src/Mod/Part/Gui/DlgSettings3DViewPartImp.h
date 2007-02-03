@@ -24,7 +24,8 @@
 #ifndef __DLGSETTINGS3DVIEWIMP_H
 #define __DLGSETTINGS3DVIEWIMP_H
 
-#include "DlgSettings3DViewPart.h"
+#include "ui_DlgSettings3DViewPart.h"
+#include <Gui/PropertyPage.h>
 
 namespace PartGui {
 
@@ -33,15 +34,16 @@ namespace PartGui {
  * for the Inventor viewer.
  * \author Jürgen Riegel
  */
-class DlgSettings3DViewPartImp : public DlgSettings3DViewPart
+class DlgSettings3DViewPartImp : public Gui::Dialog::PreferencePage, public Ui_DlgSettings3DViewPart
 { 
   Q_OBJECT
 
 public:
-  DlgSettings3DViewPartImp( QWidget* parent = 0, const char* name = 0, WFlags fl = 0 );
+  DlgSettings3DViewPartImp( QWidget* parent = 0 );
   ~DlgSettings3DViewPartImp();
 
 protected:
+  virtual void warnInventor(bool);
   void saveSettings();
   void loadSettings();
 };

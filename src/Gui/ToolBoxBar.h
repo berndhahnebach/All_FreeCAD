@@ -45,7 +45,7 @@ public:
   void clear();
 
 protected:
-  CommandBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+  CommandBar ( const QString & label, QWidget *, const char * name = 0, Qt::WFlags f = 0 );
   virtual ~CommandBar ();
 
 private:
@@ -63,7 +63,7 @@ class GuiExport ToolBoxBar : public CommandBar
   Q_OBJECT
 
 public:
-  ToolBoxBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+  ToolBoxBar ( const QString & label, QWidget *, const char * name = 0, Qt::WFlags f = 0 );
   virtual ~ToolBoxBar ();
   virtual void setTextToLastItem( const QString& );
 };
@@ -77,7 +77,7 @@ class GuiExport OutlookBar : public CommandBar
   Q_OBJECT
 
 public:
-  OutlookBar ( const QString & label, QWidget *, const char * name = 0, WFlags f = 0 );
+  OutlookBar ( const QString & label, QWidget *, const char * name = 0, Qt::WFlags f = 0 );
   virtual ~OutlookBar ();
   virtual void setTextToLastItem( const QString& );
 };

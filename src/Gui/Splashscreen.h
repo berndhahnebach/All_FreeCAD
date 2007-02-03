@@ -21,18 +21,18 @@
  ***************************************************************************/
 
 
-#ifndef __SPLASHSCREEN_H__
-#define __SPLASHSCREEN_H__
+#ifndef GUI_SPLASHSCREEN_H
+#define GUI_SPLASHSCREEN_H
 
-#include <qsplashscreen.h>
-#include <qdialog.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
-class QHBoxLayout;
-class QGridLayout;
-class QLabel;
-class QProgressBar;
-class QPushButton;
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
 
+#include "ui_AboutApplication.h"
 
 namespace Gui {
 
@@ -44,17 +44,21 @@ class SplashObserver;
  */
 class SplashScreen : public QSplashScreen
 {
+  Q_OBJECT
+
 public:
-  SplashScreen(  const QPixmap & pixmap = QPixmap ( ), WFlags f = 0 );
+  SplashScreen(  const QPixmap & pixmap = QPixmap ( ), Qt::WFlags f = 0 );
   ~SplashScreen();
 
 protected:
   void drawContents ( QPainter * painter );
 
 private:
-  QProgressBar* progBar;
+  Q3ProgressBar* progBar;
   SplashObserver* messages;
 };
+
+namespace Dialog {
 
 /** This widget provides the "About dialog" of an application. 
  * This shows the current version, the build number and date. 
@@ -65,22 +69,18 @@ class AboutDialog : public QDialog
   Q_OBJECT
 
 public:
-  AboutDialog( QWidget* parent = 0, const char* name = 0 );
+  AboutDialog( QWidget* parent = 0 );
   ~AboutDialog();
 
-protected slots:
-  void languageChange();
+protected:
+  void setupLabels();
 
 private:
-  QPixmap image0;
-  QLabel* pixmapLabel1;
-  QPushButton* pushButton1;
-  QLabel* textLabel1;
-  QGridLayout* Form1Layout;
-  QHBoxLayout* layout1;
+  Ui_AboutApplication ui;
 };
 
+} // namespace Dialog
 } // namespace Gui
 
 
-#endif // __SPLASHSCREEN_H__
+#endif // GUI_SPLASHSCREEN_H

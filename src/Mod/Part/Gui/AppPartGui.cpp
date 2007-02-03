@@ -28,8 +28,8 @@
 #include "DlgSettings3DViewPartImp.h"
 #include "Workbench.h"
 
-#include "Part_de.h"
-#include <Gui/Language/LanguageFactory.h>
+#include <Gui/Language/Translator.h>
+#include "qrc_Part.cpp"
 
 #include "Icons/PartFeature.xpm"
 #include "Icons/PartFeatureImport.xpm"
@@ -68,7 +68,10 @@ void AppPartGuiExport initPartGui() {
 
   // register preferences pages
   new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ( "Part design" );
-  new Gui::LanguageProducer("Deutsch", Part_de_h_data, Part_de_h_len);
+
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(Part);
+  Gui::Translator::instance()->reinstallLanguage();
 
   // register bitmaps
   Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();

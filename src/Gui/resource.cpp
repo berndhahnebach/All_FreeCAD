@@ -24,42 +24,8 @@
 #include "PreCompiled.h"
 
 #include "BitmapFactory.h"
-#include "CustomWidgets.h"
 #include "WidgetFactory.h"
 #include "Workbench.h"
-#include "Language/LanguageFactory.h"
-
-// ----------------------------------------------------
-
-// INCLUDE YOUR LANGUAGE FILES HERE
-//
-#include "Language/FreeCAD_de.h"
-#include "Language/qt_de.h"
-//#include "Language/FreeCAD_tr.h"
-//#include "Language/qt_tr.h"
-
-#define new DEBUG_CLIENTBLOCK
-
-/**
- * Register all languages to switch between them at any later time.
- */
-Gui::LanguageFactorySupplier::LanguageFactorySupplier()
-{
-  // ADD ALL PIXMAPS TO THE FACTORY AUTOMATICALLY
-  //
-  //
-  Gui::BitmapFactory();
-
-  // ADD YOUR LANGUAGES HERE
-  //
-  //
-  new Gui::LanguageProducer("Deutsch", FreeCAD_de_h_data, FreeCAD_de_h_len);
-  new Gui::LanguageProducer("Deutsch", qt_de_h_data, qt_de_h_len);
-  //new Gui::LanguageProducer("Turkce", FreeCAD_tr_h_data, FreeCAD_tr_h_len);
-  //new Gui::LanguageProducer("Turkce", qt_tr_h_data, qt_tr_h_len);
-}
-
-// ----------------------------------------------------
 
 // INCLUDE YOUR PREFERENCFE PAGES HERE
 //

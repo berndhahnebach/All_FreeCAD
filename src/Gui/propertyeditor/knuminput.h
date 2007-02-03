@@ -27,14 +27,21 @@
 #ifndef K_NUMINPUT_H
 #define K_NUMINPUT_H
 
-#include <qwidget.h>
-#include <qspinbox.h>
 
-class QLabel;
-class QSlider;
-class QLineEdit;
-class QLayout;
-class QValidator;
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
+#ifndef __Qt3All__
+# include "Qt3All.h"
+#endif
+
+
+//class QLabel;
+//class QSlider;
+//class QLineEdit;
+//class QLayout;
+//class QValidator;
 
 namespace Gui {
 
@@ -83,7 +90,7 @@ public:
      *     @li @p AlignBottom  The label is placed below the edit/slider
      *
      */
-    virtual void setLabel(const QString & label, int a = AlignLeft | AlignTop);
+    virtual void setLabel(const QString & label, int a = Qt::AlignLeft | Qt::AlignTop);
 
     /**
      * @return the text of the label.
@@ -307,7 +314,7 @@ public:
     /**
      * @reimplemented
      */
-    virtual void setLabel(const QString & label, int a = AlignLeft | AlignTop);
+    virtual void setLabel(const QString & label, int a = Qt::AlignLeft | Qt::AlignTop);
 
     /**
      * This method returns the minimum size necessary to display the
@@ -318,7 +325,7 @@ public:
      */
     virtual QSize minimumSizeHint() const;
 
-public slots:
+public Q_SLOTS:
     /**
      * Sets the value of the control.
      */
@@ -362,7 +369,7 @@ public slots:
      */
     void setEditFocus( bool mark = true );
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted every time the value changes (by calling @ref setValue() or
      * by user interaction).
@@ -376,7 +383,7 @@ signals:
      */
     void relativeValueChanged(double);
 
-private slots:
+private Q_SLOTS:
     void spinValueChanged(int);
     void slotEmitRelativeValueChanged(int); 
 
@@ -591,7 +598,7 @@ public:
     /**
      * @reimplemented
      */
-    virtual void setLabel(const QString & label, int a = AlignLeft | AlignTop);
+    virtual void setLabel(const QString & label, int a = Qt::AlignLeft | Qt::AlignTop);
     /**
      * @reimplemented
      */
@@ -601,7 +608,7 @@ public:
      */
     virtual bool eventFilter(QObject*, QEvent*);
 
-public slots:
+public Q_SLOTS:
     /**
      * Sets the value of the control.
      */
@@ -638,7 +645,7 @@ public slots:
      */
     void setPrefix(const QString &prefix);
 
-signals:
+Q_SIGNALS:
     /**
      * Emitted every time the value changes (by calling @ref setValue() or
      * by user interaction).
@@ -653,7 +660,7 @@ signals:
      */
     void relativeValueChanged(double);
 
-private slots:
+private Q_SLOTS:
     void sliderMoved(int);
     void slotEmitRelativeValueChanged(double);
 
@@ -918,11 +925,11 @@ public:
   /** Overridden to ignore any setValidator() calls. */
   void setValidator( const QValidator * );
 
-signals:
+Q_SIGNALS:
   /** Emitted whenever @ref QSpinBox::valueChanged( int ) is emitted. */
   void valueChanged( double value );
 
-public slots:
+public Q_SLOTS:
   /** Sets the current value to @p value, cubject to the constraints
       that @p value is frist rounded to the current precision and then
       clipped to the interval [@p minvalue(),@p maxValue()]. */
@@ -932,7 +939,7 @@ protected:
   virtual QString mapValueToText(int);
   virtual int mapTextToValue(bool*);
 
-protected slots:
+protected Q_SLOTS:
   void slotValueChanged( int value );
 
 protected:

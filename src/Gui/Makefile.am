@@ -54,7 +54,6 @@ BUILT_SOURCES=\
 		moc_PrefWidgets.cpp \
 		moc_Process.cpp \
 		moc_ProgressBar.cpp \
-		moc_PropertyView.cpp \
 		moc_PythonConsole.cpp \
 		moc_PythonEditor.cpp \
 		moc_ReportView.cpp \
@@ -126,7 +125,6 @@ BUILT_SOURCES=\
 		propertyeditor/knumvalidator.moc \
 		Language/FreeCAD_de.h \
 		Language/qt_de.h \
-		Language/qt_tr.h \
 		Language/moc_Translator.cpp \
 		GuiInitScript.h
 
@@ -335,8 +333,6 @@ libFreeCADGui_la_SOURCES=\
 		ViewProviderExtern.h \
 		ViewProviderFeature.cpp \
 		ViewProviderFeature.h \
-		ViewProviderGeometryObject.cpp \
-		ViewProviderGeometryObject.h \
 		ViewProviderPy.cpp \
 		ViewProviderPy.h \
 		ViewProviderPythonFeature.cpp \
@@ -377,7 +373,6 @@ EXTRA_DIST = \
 		Language/FreeCAD_de.ts \
 		Language/FreeCAD_fr.ts \
 		Language/qt_de.ts \
-		Language/qt_tr.ts \
 		DllMain.cpp \
 		Libs.cpp \
 		DlgActions.ui \
@@ -391,6 +386,7 @@ EXTRA_DIST = \
 		DlgKeyboard.ui \
 		DlgMacroExecute.ui \
 		DlgMacroRecord.ui \
+		DlgMacros.ui \
 		DlgMaterialProperties.ui \
 		DlgOnlineHelp.ui \
 		DlgParameter.ui \
@@ -438,14 +434,14 @@ moc_%.cpp: %.h
 
 # rule for translation files using python script :
 %.h: %.ts
-	cd $(@D) && $(PYTHON) $(top_srcdir)/../src/Tools/qembed.py $(<F)  $(@F) $(*F)
+	cd $(@D) && $(PYTHON) $(top_srcdir)/../Tools/qembed.py $(<F)  $(@F) $(*F)
 
 %Script.h: FreeCAD%.py
-	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) $(top_srcdir)/Tools/PythonToCPP.py $(<F) $@
 
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I.. $(QT_CXXFLAGS) -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCGui

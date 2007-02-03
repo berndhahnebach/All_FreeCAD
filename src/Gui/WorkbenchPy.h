@@ -21,10 +21,10 @@
  ***************************************************************************/
 
 
-#ifndef WORKBENCH_PY_H
-#define WORKBENCH_PY_H
+#ifndef GUI_WORKBENCHPY_H
+#define GUI_WORKBENCHPY_H
 
-#include "../Base/PyExportImp.h"
+#include <Base/PyExportImp.h>
 
 namespace Gui {
 class Workbench;
@@ -61,9 +61,9 @@ public:
   /** @name Basic methods */
   //@{
   /// Retrieves the workbench name
-  PYFUNCDEF_D(WorkbenchPy,Name)
+  PYFUNCDEF_D(WorkbenchPy,name)
   /// Activates the workbench object
-  PYFUNCDEF_D(WorkbenchPy,Activate)
+  PYFUNCDEF_D(WorkbenchPy,activate)
   //@}
 
 protected:
@@ -102,33 +102,33 @@ public:
   //@{
   // menu stuff
   /// Appends a new menu
-  PYFUNCDEF_D(PythonWorkbenchPy,AppendMenu)
+  PYFUNCDEF_D(PythonWorkbenchPy,appendMenu)
   /// Removes a menu
-  PYFUNCDEF_D(PythonWorkbenchPy,RemoveMenu)
+  PYFUNCDEF_D(PythonWorkbenchPy,removeMenu)
   //// Shows a list of all menus
-  PYFUNCDEF_D(PythonWorkbenchPy,ListMenus)
+  PYFUNCDEF_D(PythonWorkbenchPy,listMenus)
 
   // context menu stuff
   /// Appends new context menu items
-  PYFUNCDEF_D(PythonWorkbenchPy,AppendContextMenu)
+  PYFUNCDEF_D(PythonWorkbenchPy,appendContextMenu)
   /// Removes a context menu
-  PYFUNCDEF_D(PythonWorkbenchPy,RemoveContextMenu)
+  PYFUNCDEF_D(PythonWorkbenchPy,removeContextMenu)
 
   // toolbar stuff
   /// Appends a new toolbar
-  PYFUNCDEF_D(PythonWorkbenchPy,AppendToolbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,appendToolbar)
   /// Removes a toolbar
-  PYFUNCDEF_D(PythonWorkbenchPy,RemoveToolbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,removeToolbar)
   //// Shows a list of all toolbars
-  PYFUNCDEF_D(PythonWorkbenchPy,ListToolbars)
+  PYFUNCDEF_D(PythonWorkbenchPy,listToolbars)
 
   // commandbar stuff
   /// Appends a new command bar
-  PYFUNCDEF_D(PythonWorkbenchPy,AppendCommandbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,appendCommandbar)
   /// Removes a command bar
-  PYFUNCDEF_D(PythonWorkbenchPy,RemoveCommandbar)
+  PYFUNCDEF_D(PythonWorkbenchPy,removeCommandbar)
   //// Shows a list of all command bars
-  PYFUNCDEF_D(PythonWorkbenchPy,ListCommandbars)
+  PYFUNCDEF_D(PythonWorkbenchPy,listCommandbars)
   //@}
 
 protected:
@@ -137,4 +137,4 @@ protected:
 
 } // namespace Gui 
 
-#endif // WORKBENCH_PY_H 
+#endif // GUI_WORKBENCHPY_H 
