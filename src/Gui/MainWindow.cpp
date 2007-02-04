@@ -193,16 +193,16 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
 
   // Help View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
   QString home = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
-  HelpView* pcHelpView = new HelpView( home, this, "HelpViewer" );
+  HelpView* pcHelpView = new HelpView( home, this );
   pDockMgr->addDockWindow(dockWindows[1], pcHelpView, Qt::RightDockWidgetArea );
 
   // Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  pcTree = new TreeView(0,this,"TreeView");
+  pcTree = new TreeView(0,this);
   pcTree->setMinimumWidth(210);
   pDockMgr->addDockWindow(dockWindows[2], pcTree, Qt::LeftDockWidgetArea );
 
   // PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  PropertyView* pcPropView = new PropertyView(0,0,"PropertyView");
+  PropertyView* pcPropView = new PropertyView(0);
   pcPropView->setMinimumWidth(210);
   pDockMgr->addDockWindow(dockWindows[3], pcPropView, Qt::LeftDockWidgetArea );
 
@@ -813,6 +813,8 @@ void MainWindow::changeEvent(QEvent *e)
 {
   if (e->type() == QEvent::LanguageChange) {
     d->sizeLabel->setText(tr("Dimension"));
+
+    DockWindowManager::instance()->languageChanged();
     
     CommandManager& rclMan = Application::Instance->commandManager();
     vector<Command*> cmd = rclMan.getAllCommands();

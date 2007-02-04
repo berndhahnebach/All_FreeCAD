@@ -54,12 +54,12 @@ namespace DockWnd
  * which also deletes the item to be removed.
  * \author Werner Mayer
  */
-class GuiExport ToolBox : public Gui::DockWindow
+class GuiExport ToolBox : public QWidget
 {
   Q_OBJECT
 
 public:
-  ToolBox( QWidget *parent=0, Qt::WFlags f = 0 );
+  ToolBox( QWidget *parent=0 );
   virtual ~ToolBox();
 
   int addItem ( QWidget * w, const QString & label );

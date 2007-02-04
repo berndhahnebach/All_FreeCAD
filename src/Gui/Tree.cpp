@@ -435,11 +435,11 @@ void ObjectItem::activate ()
 QPixmap* TreeView::pcDocumentPixmap=0;
 
 /* TRANSLATOR Gui::TreeView */
-TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent,const char *name)
-  : DockView(pcDocument,parent,name),bFromOutside(false), _lastDocItem(0)
+TreeView::TreeView(Gui::Document* pcDocument,QWidget *parent)
+  : DockWindow(pcDocument,parent),bFromOutside(false), _lastDocItem(0)
 {
   Q3GridLayout* layout = new Q3GridLayout( this );
-  _pcListView = new Q3ListView(this,name);
+  _pcListView = new Q3ListView(this);
   layout->addWidget( _pcListView, 0, 0 );
 
   // set defaults and the colums
@@ -515,9 +515,9 @@ void TreeView::changeEvent(QEvent *e)
 {
   if (e->type() == QEvent::LanguageChange) {
     _pcListView->setColumnText(0, tr("Labels & Attributes"));
-  } else {
-    DockView::changeEvent(e);
   }
+
+  DockWindow::changeEvent(e);
 }
 
 void TreeView::testStatus(void)

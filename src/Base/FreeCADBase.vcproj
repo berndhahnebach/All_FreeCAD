@@ -1137,6 +1137,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\MemDebug.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\MemDebug.h"
+			>
+		</File>
+		<File
 			RelativePath="Observer.h"
 			>
 		</File>

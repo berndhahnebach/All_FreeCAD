@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COIN_SOFCBACKGROUNDGRADIENT_H
-#define COIN_SOFCBACKGROUNDGRADIENT_H
+#ifndef GUI_SOFCBACKGROUNDGRADIENT_H
+#define GUI_SOFCBACKGROUNDGRADIENT_H
 
 #include <Inventor/nodes/SoSeparator.h>
 
@@ -58,5 +58,5 @@ protected:
 } // namespace Gui
 
 
-#endif // COIN_SOFCBACKGROUNDGRADIENT_H
+#endif // GUI_SOFCBACKGROUNDGRADIENT_H
 

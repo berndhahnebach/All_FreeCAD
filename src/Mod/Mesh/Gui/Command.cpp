@@ -587,20 +587,16 @@ CmdMeshEvaluation::CmdMeshEvaluation()
   sToolTipText  = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
   sWhatsThis    = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
   sStatusTip    = QT_TR_NOOP("Opens a dialog to analyze and repair a mesh");
-//  sPixmap       = "curv_info";
 }
 
 void CmdMeshEvaluation::activated(int iMsg)
 {
-  MeshGui::DlgEvaluateMeshImp* dlg = new MeshGui::DlgEvaluateMeshImp(Gui::getMainWindow());
+  MeshGui::DlgEvaluateMeshImp* dlg = MeshGui::DockEvaluateMeshImp::instance();
   dlg->setAttribute(Qt::WA_DeleteOnClose);
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
     dlg->setMesh((Mesh::Feature*)(*it));
-#if 0
-    MeshGui::DockEvaluateMeshImp::instance()->setMesh( (Mesh::Feature*)(*it) );
-#endif
     break;
   }
 

@@ -59,7 +59,7 @@ FileEditorItem::FileEditorItem( Q3ListView* lv, const QString& text, const QVari
   :EditableItem( lv, value )
 {
   setText( 0, text );
-  setText(1, overrideValue().toCString());
+  setText(1, overrideValue().toString());
 }
 
 QWidget* FileEditorItem::createEditor( int column, QWidget* parent )
@@ -69,7 +69,7 @@ QWidget* FileEditorItem::createEditor( int column, QWidget* parent )
 
   QPushButton* editor = new QPushButton( parent, "FileEditorItem::edit" );
 
-  editor->setText( overrideValue().toCString() );
+  editor->setText( overrideValue().toString() );
 
   connect(editor, SIGNAL(clicked()), this, SLOT(onChangeFile()));
   return editor;
@@ -77,19 +77,19 @@ QWidget* FileEditorItem::createEditor( int column, QWidget* parent )
 
 void FileEditorItem::stopEdit( int column )
 {
-  setText( column, overrideValue().toCString() );
+  setText( column, overrideValue().toString() );
 }
 
 void FileEditorItem::setDefaultEditorValue( QWidget* editor )
 {
   QPushButton* btn = dynamic_cast<QPushButton*>(editor);
-  btn->setText( value().toCString() );
+  btn->setText( value().toString() );
 }
 
 QVariant FileEditorItem::currentEditorValue( QWidget* editor ) const
 {
   QVariant var;
-  var.asCString() = dynamic_cast<QPushButton*>(editor)->text();
+  var.setValue(dynamic_cast<QPushButton*>(editor)->text());
   return var;
 }
 
@@ -127,8 +127,7 @@ QVariant FileEditorItem::convertFromProperty(const std::vector<App::Property*>& 
 
   setText( 1, txt );
 
-  QVariant var;
-  var.asCString() = txt;
+  QVariant var(txt);
   return var;
 }
 

@@ -11,7 +11,8 @@
 #include <Inventor/SoInteraction.h> 
 #include <Inventor/SbLinear.h>
 #include <Inventor/SoOffscreenRenderer.h> 
-#include <Inventor/SoPickedPoint.h> 
+#include <Inventor/SoPickedPoint.h>
+#include <Inventor/SoPrimitiveVertex.h>
 #include <Inventor/SbViewportRegion.h>
 #include <Inventor/actions/SoBoxHighlightRenderAction.h>
 #include <Inventor/actions/SoGetBoundingBoxAction.h>
@@ -22,9 +23,17 @@
 #include <Inventor/actions/SoRayPickAction.h> 
 #include <Inventor/actions/SoToVRML2Action.h>
 #include <Inventor/actions/SoWriteAction.h>
+#include <Inventor/bundles/SoMaterialBundle.h>
+#include <Inventor/bundles/SoTextureCoordinateBundle.h>
+#include <Inventor/details/SoFaceDetail.h>
+#include <Inventor/details/SoLineDetail.h>
+#include <Inventor/details/SoPointDetail.h>
 #include <Inventor/draggers/SoTransformerDragger.h>
+#include <Inventor/draggers/SoTrackballDragger.h>
+#include <Inventor/elements/SoGLCacheContextElement.h>
 #include <Inventor/elements/SoReplacedElement.h>
 #include <Inventor/errors/SoDebugError.h> 
+#include <Inventor/errors/SoReadError.h>
 #include <Inventor/events/SoEvent.h>
 #include <Inventor/events/SoKeyboardEvent.h>
 #include <Inventor/events/SoLocation2Event.h>
@@ -34,6 +43,7 @@
 #include <Inventor/fields/SoSFVec3f.h>
 #include <Inventor/manips/SoClipPlaneManip.h>
 #include <Inventor/manips/SoTransformerManip.h> 
+#include <Inventor/nodes/SoAntiSquish.h>
 #include <Inventor/nodes/SoBaseColor.h>
 #include <Inventor/nodes/SoCallback.h> 
 #include <Inventor/nodes/SoComplexity.h>
@@ -51,10 +61,12 @@
 #include <Inventor/nodes/SoFont.h>
 #include <Inventor/nodes/SoImage.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
+#include <Inventor/nodes/SoIndexedLineSet.h>
 #include <Inventor/nodes/SoIndexedTriangleStripSet.h>
 #include <Inventor/nodes/SoLightModel.h>
 #include <Inventor/nodes/SoLineSet.h>
 #include <Inventor/nodes/SoLocateHighlight.h>
+#include <Inventor/nodes/SoMarkerSet.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoMaterialBinding.h>
 #include <Inventor/nodes/SoNormal.h>
@@ -71,6 +83,8 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoShape.h>
 #include <Inventor/nodes/SoShapeHints.h>
+#include <Inventor/nodes/SoSphere.h>
+#include <Inventor/nodes/SoSurroundScale.h>
 #include <Inventor/nodes/SoSwitch.h>
 #include <Inventor/nodes/SoText2.h>
 #include <Inventor/nodes/SoTexture2.h>

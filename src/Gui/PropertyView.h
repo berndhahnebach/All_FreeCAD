@@ -22,8 +22,8 @@
 
 
 
-#ifndef __PROPTERYVIEW_H__
-#define __PROPTERYVIEW_H__
+#ifndef GUI_DOCKWND_PROPTERYVIEW_H
+#define GUI_DOCKWND_PROPTERYVIEW_H
 
 
 #ifndef __Qt4All__
@@ -58,7 +58,7 @@ namespace DockWnd {
 
 /** A test class. A more elaborate class description.
  */
-class PropertyView :public Gui::DockView, public Gui::SelectionSingleton::ObserverType
+class PropertyView :public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
 {
   Q_OBJECT
 
@@ -67,7 +67,7 @@ public:
    * A constructor.
    * A more elaborate description of the constructor.
    */
-  PropertyView(Gui::Document*  pcDocument,QWidget *parent=0,const char *name=0);
+  PropertyView(Gui::Document*  pcDocument, QWidget *parent=0);
 
   /**
    * A destructor.
@@ -101,4 +101,4 @@ private:
 } // namespace DockWnd
 } // namespace Gui
 
-#endif // __PROPTERYVIEW_H__
+#endif // GUI_DOCKWND_PROPTERYVIEW_H

@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COIN_SOFCDB_H
-#define COIN_SOFCDB_H
+#ifndef GUI_SOFCDB_H
+#define GUI_SOFCDB_H
 
 namespace Gui {
 /**
@@ -38,4 +38,4 @@ public:
 
 } // namespace Gui
 
-#endif // COIN_SOFCDB_H
+#endif // GUI_SOFCDB_H

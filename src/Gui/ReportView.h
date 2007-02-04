@@ -51,7 +51,7 @@ class ReportHighlighter;
  * @see PythonConsole
  * \author Werner Mayer
  */
-class ReportView : public Gui::DockWindow
+class ReportView : public QWidget
 { 
   Q_OBJECT
 

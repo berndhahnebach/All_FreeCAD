@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COIN_SOFCINTERACTIVEELEMENT_H
-#define COIN_SOFCINTERACTIVEELEMENT_H
+#ifndef GUI_SOFCINTERACTIVEELEMENT_H
+#define GUI_SOFCINTERACTIVEELEMENT_H
 
 #include <Inventor/elements/SoReplacedElement.h>
 
@@ -54,4 +54,4 @@ private:
 
 } // namespace Gui
 
-#endif // COIN_SOFCINTERACTIVEELEMENT_H
+#endif // GUI_SOFCINTERACTIVEELEMENT_H

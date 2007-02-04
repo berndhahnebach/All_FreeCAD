@@ -31,10 +31,10 @@ using namespace Gui::DockWnd;
 /**
  * Constructs a toolbox called \a name with parent \a parent and flags \a f.
  */
-ToolBox::ToolBox( QWidget *parent, Qt::WFlags f )
-  : DockWindow( 0, parent, "", f)
+ToolBox::ToolBox( QWidget *parent )
+  : QWidget(parent)
 {
-  _pToolBox = new QToolBox( this, f);
+  _pToolBox = new QToolBox( this );
   connect( _pToolBox, SIGNAL( currentChanged(int) ), this, SIGNAL( currentChanged(int) ) );
 
   QGridLayout* pGrid = new QGridLayout(this);
@@ -220,7 +220,7 @@ void ToolBox::setCurrentIndex ( int index )
 void ToolBox::changeEvent(QEvent *e)
 {
   if (e->type() == QEvent::LanguageChange) {
-    DockWindow::changeEvent(e);
+    QWidget::changeEvent(e);
     int ct = count();
     for ( int i=0; i<ct; i++ ) {
       QWidget* w = widget( i );

@@ -176,7 +176,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib coin2.lib soqt1.lib QtCored4.lib QtGuid4.lib QtNetworkd4.lib QtOpenGLd4.lib Qt3Supportd4.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB python25.lib coin2.lib soqt1.lib QtCore4.lib QtGui4.lib QtNetwork4.lib QtOpenGL4.lib Qt3Support4.lib"
 				OutputFile="Release\PointsGui.pyd"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

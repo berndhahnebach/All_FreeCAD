@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COIN_SOFCCOLORGRADIENT_H
-#define COIN_SOFCCOLORGRADIENT_H
+#ifndef GUI_SOFCCOLORGRADIENT_H
+#define GUI_SOFCCOLORGRADIENT_H
 
 #include <Inventor/nodes/SoSeparator.h>
 #include "SoFCColorBar.h"
@@ -109,5 +109,5 @@ private:
 } // namespace Gui
 
 
-#endif // COIN_SOFCCOLORGRADIENT_H
+#endif // GUI_SOFCCOLORGRADIENT_H
 

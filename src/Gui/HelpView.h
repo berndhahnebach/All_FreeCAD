@@ -38,66 +38,50 @@
 namespace Gui {
 namespace DockWnd {
 
-class HelpViewPrivate;
-
-/**
- * The HelpSourceFactory class is an extension of QMimeSourceFactory showing
- * an error page if given data cannot be decoded.
- * \author Werner Mayer
- */
-class HelpSourceFactory : public Q3MimeSourceFactory
-{
-public:
-  HelpSourceFactory();
-  virtual ~HelpSourceFactory();
-
-  virtual const QMimeSource* data(const QString& abs_name) const;
-  virtual QString makeAbsolute(const QString& abs_or_rel_name, const QString& context) const;
-  virtual void setText( const QString& abs_name, const QString& text );
-  virtual void setImage( const QString& abs_name, const QImage& im );
-  virtual void setPixmap( const QString& abs_name, const QPixmap& pm );
-  virtual void setData( const QString& abs_name, QMimeSource* data );
-  virtual void setFilePath( const QStringList& );
-  virtual QStringList filePath() const;
-  virtual void setExtensionType( const QString& ext, const char* mimetype );
-};
-
 /**
  * The TextBrowser class is an extension of Qt's QTextBrowser providing
  * a context menu and the possibility to render files via drag and drop.
- * Since the backward/forward stuff of QTextBrowser doesn't work properly 
- * it is reimplemented.
- * \author Werner Mayer
+ * @author Werner Mayer
  */
 class TextBrowserPrivate;
-class TextBrowser : public Q3TextBrowser
+class TextBrowser : public QTextBrowser
 {
   Q_OBJECT
 
 public:
-  TextBrowser(QWidget * parent=0, const char * name=0);
+  TextBrowser(QWidget * parent=0);
   virtual ~TextBrowser();
 
-  virtual void setText (const QString & contents, const QString & context=QString::null);
-  virtual void setSource (const QString & name);
+  void setSource (const QUrl& url);
+  QVariant loadResource (int type, const QUrl& name);
 
-  virtual void backward();
-  virtual void forward();
+  void backward();
+  void forward();
 
 Q_SIGNALS:
   /// start an external browser to display complex web sites
   void startExternalBrowser( const QString& );
+  void stateChanged(const QString&);
 
 protected:
-  virtual void contentsDropEvent       (QDropEvent  * e);
-  virtual void contentsDragEnterEvent  (QDragEnterEvent * e);
-  virtual void contentsDragMoveEvent   (QDragMoveEvent  * e );
-  virtual void viewportContextMenuEvent( QContextMenuEvent * );
+  void dropEvent       (QDropEvent  * e);
+  void dragEnterEvent  (QDragEnterEvent * e);
+  void dragMoveEvent   (QDragMoveEvent  * e );
+  void contextMenuEvent(QContextMenuEvent * );
+  void timerEvent      (QTimerEvent * e );
 
 private Q_SLOTS:
   void setBackwardAvailable( bool b);
   void setForwardAvailable( bool b);
   void done( bool );
+  void onStateChanged ( int state );
+  void onResponseHeaderReceived(const QHttpResponseHeader &);
+  void onHighlighted(const QString&);
+
+private:
+  QString findUrl(const QUrl &name) const;
+  QVariant loadFileResource(int type, const QUrl& name);
+  QVariant loadHttpResource(int type, const QUrl& name);
 
 private:
   TextBrowserPrivate* d;
@@ -105,25 +89,33 @@ private:
 
 /**
  * The help viewer class embeds a textbrowser to render help files.
- * \author Wenrer Mayer
+ * @author Wenrer Mayer
  */
 class HelpViewViewPrivate;
-class GuiExport HelpView : public Gui::DockWindow
+class GuiExport HelpView : public QWidget
 {
   Q_OBJECT
 
 public:
-  HelpView( const QString& home_, QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = 0 );
+  HelpView( const QString& home_, QWidget* parent = 0 );
   ~HelpView();
 
   void setFileSource( const QString& );
+  /**
+   * Filters events if this object has been installed as an event filter for the watched object.
+   */
+  bool eventFilter ( QObject* o, QEvent* e );
 
 Q_SIGNALS:
-  void setSource( const QString& );
+  void setSource( const QUrl& );
 
-protected Q_SLOTS:
+private Q_SLOTS:
   void openHelpFile();
   void startExternalBrowser( const QString& );
+  void onStateChanged(const QString& state);
+
+private:
+  QLabel* label;
 };
 
 } // namespace DockWnd

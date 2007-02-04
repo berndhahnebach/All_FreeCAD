@@ -51,6 +51,7 @@
 #include <QtGui/qpalette.h>
 #include <QtGui/qpixmap.h>
 #include <QtGui/qprinter.h>
+#include <QtGui/QProgressBar>
 #include <QtGui/qpushbutton.h>
 #include <QtGui/qradiobutton.h>
 #include <QtGui/qscrollbar.h>
@@ -62,17 +63,21 @@
 #include <QtGui/qstyle.h>
 #include <QtGui/qstylefactory.h>
 #include <QtGui/QSyntaxHighlighter>
+#include <QtGui/qtabbar.h>
 #include <QtGui/qtabwidget.h>
+#include <QtGui/QTextBrowser>
 #include <QtGui/QTextDocument>
 #include <QtGui/QTextEdit>
 #include <QtGui/QToolBar>
-#include <QtGui/qtooltip.h>
-#include <QtGui/qvalidator.h>
-#include <QtGui/qwidget.h>
-#include <QtGui/qworkspace.h>
-#include <QtOpenGl/qgl.h>
-#include <QtGui/qtabbar.h>
 #include <QtGui/qtoolbox.h>
 #include <QtGui/qtoolbutton.h>
+#include <QtGui/qtooltip.h>
+#include <QtGui/qvalidator.h>
+#include <QtGui/QWhatsThisClickedEvent>
+#include <QtGui/qwidget.h>
+#include <QtGui/qworkspace.h>
+#include <QtNetwork/QFtp>
+#include <QtNetwork/QHttp>
+#include <QtOpenGl/qgl.h>
 
 #endif

@@ -23,17 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <qcheckbox.h>
-# include <qcombobox.h>
-# include <qcursor.h>
-# include <qlabel.h>
-# include <qlineedit.h>
-# include <qmessagebox.h>
-# include <qpushbutton.h>
-#endif
-
 #include "DlgEvaluateMeshImp.h"
 
 #include <Base/Interpreter.h>
@@ -45,10 +34,10 @@
 #include <Gui/View3DInventor.h>
 #include <Gui/View3DInventorViewer.h>
 
-#include "../App/Core/Evaluation.h"
-#include "../App/Core/Degeneration.h"
-#include "../App/MeshFeature.h"
-#include "../App/FeatureMeshDefects.h"
+#include <Mod/Mesh/App/Core/Evaluation.h>
+#include <Mod/Mesh/App/Core/Degeneration.h>
+#include <Mod/Mesh/App/MeshFeature.h>
+#include <Mod/Mesh/App/FeatureMeshDefects.h>
 #include "ViewProviderDefects.h"
 
 using namespace MeshCore;
@@ -679,23 +668,6 @@ DockEvaluateMeshImp* DockEvaluateMeshImp::instance()
   {
     _instance = new DockEvaluateMeshImp(Gui::getMainWindow());
     _instance->setSizeGripEnabled(false);
-    // embed this dialog into a dockable widget container
-    Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
-    Gui::DockContainer* pDockDlg = new Gui::DockContainer( Gui::getMainWindow(), "Evaluate Mesh" );
-
-    //TODO
-    // use Qt macro for preparing for translation stuff (but not translating yet)
-    pDockMgr->addDockWindow(QT_TRANSLATE_NOOP("Gui::DockWindow", "Evaluate Mesh"), pDockDlg/*, Qt::DockRight*/ );
-
-    //TODO
-    // do not allow to hide
-    //pDockDlg->dockWindow()->setCloseMode(QDockWindow::Never);
-    pDockDlg->setDockedWidget(_instance);
-
-    //TODO
-    // try to set an appropriate width
-    //pDockDlg->setFixedExtentWidth( _instance->width() );
-    pDockDlg->show();
   }
 
   return _instance;
@@ -723,6 +695,12 @@ bool DockEvaluateMeshImp::hasInstance()
 DockEvaluateMeshImp::DockEvaluateMeshImp( QWidget* parent, Qt::WFlags fl )
   : DlgEvaluateMeshImp( parent, fl )
 {
+  // save the current layout of the main window and restore it when we close this window
+  state = Gui::getMainWindow()->saveState(1000);
+  // embed this dialog into a dockable widget container
+  Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
+  // use Qt macro for preparing for translation stuff (but not translating yet)
+  pDockMgr->addDockWindow(QT_TRANSLATE_NOOP("Gui::DockWindow", "Evaluate Mesh"), this, Qt::RightDockWidgetArea);
 }
 
 /**
@@ -734,12 +712,14 @@ DockEvaluateMeshImp::~DockEvaluateMeshImp()
 }
 
 /**
- * Destroys the dock window this object is embedded into thus it destroys itself.
+ * Destroys the dock window this object is embedded into without destroying itself.
  */
-void DockEvaluateMeshImp::reject()
+void DockEvaluateMeshImp::closeEvent(QCloseEvent* e)
 {
+  // closes the dock window and restores the former layout of the main window
   Gui::DockWindowManager* pDockMgr = Gui::DockWindowManager::instance();
-  pDockMgr->removeDockedWidget(this);
+  pDockMgr->removeDockWindow(this);
+  Gui::getMainWindow()->restoreState(this->state, 1000);
 }
 
 /**
