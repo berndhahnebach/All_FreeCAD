@@ -39,12 +39,6 @@
 #include <Gui/View.h>
 #include <Gui/ProgressBar.h>
 
-
-#include <Inventor/SoInput.h>
-//#include <Inventor/SoCamera.h>
-#include <Inventor/nodes/SoOrthographicCamera.h>
-
-
 #include <Mod/Part/App/PartFeature.h>
   
 #include "FreeCADpov.h"

@@ -23,19 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
-#ifndef __InventorAll__
-# include "InventorAll.h"
-#endif
-
-
 #include "Command.h"
 #include "Action.h"
 #include "Application.h"
@@ -793,6 +780,9 @@ void StdViewScreenShot::activated(int iMsg)
     {
       selFilter = fd.selectedFilter();
       QString fn = fd.selectedFile();
+      // We must convert '\' path separators to '/' before otherwise Python would interpret them as escape sequences.
+      fn.replace('\\', '/');
+
       Gui::WaitCursor wc;
 
       // get the defined values

@@ -23,16 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
-
-
 #include <Base/Exception.h>
 #include <Base/Interpreter.h>
 #include <Base/Sequencer.h>
@@ -457,9 +447,9 @@ StdCmdTipOfTheDay::StdCmdTipOfTheDay()
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("&Tip of the day...");
   sToolTipText  = QT_TR_NOOP("Tip of the day");
-  sWhatsThis    = QT_TR_NOOP("Tip of the day");
+  sWhatsThis    = QT_TR_NOOP("<p>Opens a dialog that shows a list of useful tips.</p>"
+    "See <a href=\"index.php@TipOfTheDay.html\"><b>Tip of the day</b></a> for more details.");
   sStatusTip    = QT_TR_NOOP("Tip of the day");
-  sHelpUrl      = "TipOfTheDay.html";
 }
 
 void StdCmdTipOfTheDay::activated(int iMsg)

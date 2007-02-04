@@ -111,7 +111,10 @@
 # include <Gui/Qt3All.h>
 #endif
 
-
+// Inventor
+#ifndef __InventorAll__
+# include <Gui/InventorAll.h>
+#endif
 
 #endif  //_PreComp_
 

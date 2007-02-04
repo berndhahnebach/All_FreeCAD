@@ -23,15 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
-
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
-
 #include "Action.h"
 #include "Application.h"
 #include "Command.h"
@@ -345,6 +336,9 @@ void WorkbenchGroup::addTo(QWidget *w)
   {
     QToolBar* bar = qobject_cast<QToolBar*>(w);
     QComboBox* box = new WorkbenchComboBox(w);
+    box->setToolTip(_action->toolTip());
+    box->setStatusTip(_action->statusTip());
+    box->setWhatsThis(_action->whatsThis());
     box->addActions(_group->actions());
     connect(_group, SIGNAL(triggered(QAction*)), box, SLOT(onActivated (QAction*)));
     bar->addWidget(box);

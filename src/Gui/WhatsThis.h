@@ -34,38 +34,7 @@
 
 #include "Command.h"
 
-class Q3TextBrowser;
-
 namespace Gui {
-
-/**
- * The WhatsThis class provides a simple description of any widget, i.e. answering the 
- * question "What's this?". The description is shown in the help viewer.
- * @see Gui::HelpView
- * \author Werner Mayer
- */
-class WhatsThis : public Q3WhatsThis
-{
-public:
-  WhatsThis( QWidget *);
-  WhatsThis( QWidget *, const QString& url);
-  virtual ~WhatsThis();
-
-  void setUrl( const QString& url );
-  void setText( const QString& txt );
-  virtual QString text( const QPoint & );
-
-  static void setHelpView( Q3TextBrowser* );
-
-private:
-  QWidget* _widget; /**< Corresponding widget to object. */
-  QString _url; /**< URL of the Html document. */
-  QString _txt; /**< Description of the widget. */
-
-  static Q3TextBrowser* _helpViewer; /**< global HelpViewer to display help. */
-};
-
-// --------------------------------------------------------------------
 
 /**
  * @author Werner Mayer
@@ -80,7 +49,6 @@ public:
   static void enterDescriptionMode();
   static void leaveDescriptionMode();
 
-  static void setHelpView( Q3TextBrowser* );
   static void setSource( const QString& );
 
 protected:
@@ -89,7 +57,6 @@ protected:
 
 private:
   static bool _descrMode;
-  static Q3TextBrowser* _helpViewer; /**< global HelpViewer to display help. */
 };
 
 } // namespace Gui

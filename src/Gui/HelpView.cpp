@@ -37,172 +37,56 @@
 using namespace Gui;
 using namespace Gui::DockWnd;
 
-// --------------------------------------------------------------------------
-
 namespace Gui {
 namespace DockWnd {
+
+struct TextBrowserResources
+{
+  QUrl url;
+  int type;
+};
 
 class TextBrowserPrivate
 {
 public:
-  enum TMode {Backward, Forward, None};
-
-  Q3ValueStack<QString> fwStack;
-  Q3ValueStack<QString> bwStack;
-
   bool bw, fw;
-  TMode tMode;
-  Q3Http* http;
-  Q3Ftp* ftp;
+  int toolTipId;
+  QString toolTip;
+  QHttp* http;
+  QUrl source;
+  QList<TextBrowserResources> resources;
 
-  TextBrowserPrivate() : bw( false ), fw( false ), tMode( None ) 
+  TextBrowserPrivate() : bw(false), fw(false), toolTipId(0)
   {
-    http = new Q3Http;
-    ftp  = new Q3Ftp;
+    http = new QHttp;
   }
   
   ~TextBrowserPrivate()
   {
-    delete http; delete ftp;
+    delete http;
   }
-};
-
-// --------------------------------------------------------------------------
-
-class DocumentationSource : public Q3StoredDrag
-{
-public:
-  DocumentationSource( const char * mimeType, const QString& path )
-      : Q3StoredDrag(mimeType, 0L, 0), _path(path)
-  {
-  }
-
-  QByteArray encodedData (const char* data) const
-  {
-    QString test(
-     "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
-     "<html>"
-     "<head>"
-     "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">"
-     "<title>FreeCAD Main Index</title>"
-     "</head>"
-     "<body bgcolor=\"#ffffff\">"
-     "<table cellpadding=2 cellspacing=1 border=0  width=100% bgcolor=#E5E5E5 >"
-     "<tr>"
-     "<th bgcolor=#FFCC66 width=33%%>"
-     "<h1>:-(</h1>"
-     "<h2>Sorry, but cannot load the file because the doc manager failed to convert it into HTML.</h2>"
-     "<h1>:-(</h1>"
-     "</th>"
-     "</tr>"
-     "</table>"
-     "</body></html>");
-    return test.toUtf8();
-  }
-
-private:
-  QString  _path;
 };
 
 } // namespace DockWnd
 } // namespace Gui
 
-// --------------------------------------------------------------------------
-
-HelpSourceFactory::HelpSourceFactory()
-    : Q3MimeSourceFactory()
-{
-}
-
-HelpSourceFactory::~HelpSourceFactory()
-{
-}
-
-const QMimeSource* HelpSourceFactory::data(const QString& abs_name) const
-{
-  const QMimeSource* mime = Q3MimeSourceFactory::data(abs_name);
-
-  if ( mime )
-  {
-    const char* fm = mime->format();
-    // cannot decode this
-    if ( strcmp(fm, "application/octet-stream") == 0)
-      return new DocumentationSource( "text/html;charset=iso8859-1", abs_name );
-  }
-
-  return mime;
-}
-
-QString HelpSourceFactory::makeAbsolute(const QString& abs_or_rel_name, const QString& context) const
-{
-  // check if local file or data over network
-  Q3Url url(abs_or_rel_name);
-  QString pro = url.protocol();
-
-  if ( pro != "file")
-    return abs_or_rel_name; // no local file, so let abs_or_rel_name unchanged
-  else
-    return Q3MimeSourceFactory::makeAbsolute(abs_or_rel_name, context);
-}
-
-void HelpSourceFactory::setText( const QString& abs_name, const QString& text )
-{
-  Q3MimeSourceFactory::setText(abs_name, text);
-}
-
-void HelpSourceFactory::setImage( const QString& abs_name, const QImage& im )
-{
-  Q3MimeSourceFactory::setImage(abs_name, im);
-}
-
-void HelpSourceFactory::setPixmap( const QString& abs_name, const QPixmap& pm )
-{
-  Q3MimeSourceFactory::setPixmap(abs_name, pm);
-}
-
-void HelpSourceFactory::setData( const QString& abs_name, QMimeSource* data )
-{
-  Q3MimeSourceFactory::setData(abs_name, data);
-}
-
-void HelpSourceFactory::setFilePath( const QStringList& s)
-{
-  Q3MimeSourceFactory::setFilePath(s);
-}
-
-QStringList HelpSourceFactory::filePath() const
-{
-  return Q3MimeSourceFactory::filePath();
-}
-
-void HelpSourceFactory::setExtensionType( const QString& ext, const char* mimetype )
-{
-  Q3MimeSourceFactory::setExtensionType(ext, mimetype);
-}
-
-// --------------------------------------------------------------------------
-
 /* TRANSLATOR Gui::DockWnd::TextBrowser */
-TextBrowser::TextBrowser(QWidget * parent, const char * name)
-  : Q3TextBrowser(parent, name)
-{
-  WhatsThis::setHelpView( this );
-  StdCmdDescription::setHelpView( this );
 
+TextBrowser::TextBrowser(QWidget * parent)
+  : QTextBrowser(parent)
+{
   d = new TextBrowserPrivate;
 
-  setMimeSourceFactory(new HelpSourceFactory);
-
-  setHScrollBarMode(Q3ScrollView::AlwaysOff);
-  setVScrollBarMode(Q3ScrollView::AlwaysOff);
-  mimeSourceFactory()->setExtensionType("HTML", "text/html;charset=iso8859-1");
-  mimeSourceFactory()->setExtensionType("HTM", "text/html;charset=iso8859-1");
-  mimeSourceFactory()->setExtensionType("FCParam", "text/xml;charset=UTF-8");
+  setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+  setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
   setAcceptDrops( TRUE );
   viewport()->setAcceptDrops( TRUE );
 
   connect( d->http, SIGNAL(done(bool)), this, SLOT(done(bool)));
+  connect( d->http, SIGNAL(stateChanged(int)), this, SLOT(onStateChanged(int)));
+  connect( d->http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)), this, SLOT(onResponseHeaderReceived(const QHttpResponseHeader &)));
+  connect( this, SIGNAL(highlighted(const QString&)), this, SLOT(onHighlighted(const QString&)));
   connect( this, SIGNAL(backwardAvailable(bool)), this, SLOT(setBackwardAvailable(bool)));
   connect( this, SIGNAL(forwardAvailable (bool)), this, SLOT(setForwardAvailable (bool)));
 }
@@ -210,144 +94,309 @@ TextBrowser::TextBrowser(QWidget * parent, const char * name)
 TextBrowser::~TextBrowser()
 {
   delete d;
-  Q3MimeSourceFactory* hs = mimeSourceFactory ();
-  delete hs;
 }
 
-void TextBrowser::setSource (const QString & name)
+QString TextBrowser::findUrl(const QUrl &name) const
 {
-  ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
-                                                                       ConsoleMsgType::MsgType_Err, false);
-  Q3TextBrowser::setSource(name);
-  Base::Console().SetEnabledMsgType("MessageBox", ret, true);
-#if 0
-  QString source = name;
-  QString mark;
-  int hash = name.find('#');
-  if ( hash != -1)
-  {
-    source  = name.left( hash );
-    mark = name.mid( hash+1 );
+  QString fileName = name.toLocalFile();
+  QFileInfo fi(fileName);
+  if (fi.isAbsolute())
+    return fileName;
+
+  QString slash("/");
+  QStringList spaths = searchPaths();
+  for (QStringList::ConstIterator it = spaths.begin(); it != spaths.end(); ++it) {
+    QString path = *it;
+    if (!path.endsWith(slash))
+      path.append(slash);
+    path.append(fileName);
+    fi.setFile(path);
+    if (fi.isReadable())
+      return path;
   }
 
-  QString url = mimeSourceFactory()->makeAbsolute( source, context() );
+  QUrl src = source();
+  if (src.isEmpty())
+    return fileName;
 
-  if (!source.isEmpty())
-  {
-    const QMimeSource* mime = mimeSourceFactory()->data(source, context());
-    if ( mime == 0 )
-    {
-      // check if local file or data over network
-      Q3Url url(source);
-      QString pro = url.protocol();
-/*
-      if ( pro == "http" )
-      {
-        QFile file("testfile");
-        if (!file.open(IO_WriteOnly))
-          return;
-        d->http->setHost( url.host() );
-        d->http->get( url.fileName(), &file );
-      }
-      else if ( pro == "ftp" )
-      {
-        QFile file("testfile");
-        if (!file.open(IO_WriteOnly))
-          return;
-        d->ftp->connectToHost( url.host() );
-        d->ftp->login();
-        d->ftp->cd( url.path() );
-        d->ftp->get( url.fileName(), &file );
-        d->ftp->close();
-      }
-      else
-      {
-        qDebug( "Not supported protocol '%s'\n", pro.latin1() );
-      }
-*/
-      if ( pro != "file")
-      {
-        QString msg = tr("Can't load '%1'.\nDo you want to start your favourite external browser instead?").arg(source);
-        if ( QMessageBox::information(this, "FreeCAD", msg, QMessageBox::Yes|QMessageBox::Default, 
-             QMessageBox::No|QMessageBox::Escape ) == QMessageBox::Yes )
-          emit startExternalBrowser(name);
-        return;
+  QFileInfo path(QFileInfo(src.toLocalFile()).absolutePath(), fileName);
+  return path.absoluteFilePath();
+}
+
+/**
+ * Checks whether the resource data must be downloaded via http or
+ * it is a file resource on the disk.
+ */
+QVariant TextBrowser::loadResource ( int type, const QUrl& url )
+{
+  QString name = url.toString();
+  if (url.scheme() == "http" || d->source.scheme() == "http") {
+    return loadHttpResource(type, url);
+  } else { // file scheme
+    return loadFileResource(type, url);
+  }
+}
+
+/**
+ * Supports only rendering of local files and resources that can be downloaded over
+ * the http protocol. In the latter case the download gets started.
+ */
+void TextBrowser::setSource (const QUrl& url)
+{
+  bool relativeUrl = url.isRelative();
+  if (!relativeUrl)
+    d->source = url; // last set absolute url
+  QString name = url.toString();
+  if (url.scheme() == "http") {
+    // start the download but do not call setSource() of the base
+    // class because we must wait until the data are available.
+    // The slot done() is invoked automatically then. 
+    d->http->setHost(url.host());
+    d->http->get(url.path(), 0);
+  } else if (d->source.scheme() == "http") {
+    // relative hyperlink in previously downloaded a HTML page 
+    d->source = d->source.resolved(url);
+    d->http->get(url.path(), 0);
+  } else {
+    QUrl resolved = url;
+#if defined (Q_OS_WIN)
+    if (url.scheme() == "file" && !url.isRelative()) {
+      QString auth = url.authority();
+      QString path = url.path();
+      //If we click on a hyperlink with a reference to an absolute file name
+      //then we get a string that cannot be used to open the file. So we try 
+      //to reproduce the original url.
+      if (!auth.isEmpty() && !path.isEmpty()) {
+        QString fileName = auth + ':' + path;
+        resolved = QUrl::fromLocalFile(fileName);
       }
     }
-    else
-    {
-      QString txt;
-      if (Q3TextDrag::decode(mime, txt) == false)
-      {
-        QString msg = tr("Can't decode '%1'").arg(source);
-        QMessageBox::information(this, "FreeCAD", msg);
-        return;
-      }
-    }
-  }
-
-  if ( !mark.isEmpty() )
-  {
-    url += "#";
-    url += mark;
-  }
-
-  if (d->bwStack.isEmpty() || d->bwStack.top() != url)
-    d->bwStack.push(url);
-
-  int bwStackCount = (int)d->bwStack.count();
-  if ( d->bwStack.top() == url )
-    bwStackCount--;
-
-  if (d->tMode == TextBrowserPrivate::None)
-    d->fwStack.clear();
-  int fwStackCount = (int)d->fwStack.count();
-  if ( fwStackCount > 0 && d->fwStack.top() == url )
-    fwStackCount--;
-
-  ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
-                                                                       ConsoleMsgType::MsgType_Err, false);
-  setSource(name);
-  Base::Console().SetEnabledMsgType("MessageBox", ret, true);
-
-  emit backwardAvailable( bwStackCount > 0 );
-  emit forwardAvailable( fwStackCount > 0 );
 #endif
+    QTextBrowser::setSource(resolved);
+  }
 }
 
-void TextBrowser::setText (const QString & contents, const QString & context)
+/**
+ * The URL \a name must be a local file and its contents is returned to the caller. If the file doesn't exist
+ * an error message in HTML format or an empty image -- depending on \a type -- is returned to the caller. 
+ */
+QVariant TextBrowser::loadFileResource(int type, const QUrl& name)
 {
-  Q3TextBrowser::setText(contents, context);
+  QVariant data;
+  QUrl resolved = name;
+  if (!QFileInfo(name.toLocalFile()).isAbsolute() && QFileInfo(d->source.toLocalFile()).isAbsolute())
+    resolved = d->source.resolved(name);
+  QString fileName = findUrl(resolved);
+  QFile file(fileName);
+  if (file.open(QFile::ReadOnly)) {
+    data = file.readAll();
+    file.close();
+  } else if (type == QTextDocument::HtmlResource) {
+    data = QString(
+      "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
+      "<html>"
+      "<head>"
+      "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-16\">"
+      "<title>Error</title>"
+      "</head>"
+      "<body>"
+      "<h1>%1</h1>"
+      "<div><p><strong>%2</strong></p>"
+      "</div></body>"
+      "</html>").arg(tr("Could not open file.")).arg(tr("You tried to access the address %1 which is currently unavailable. "
+      "Please make sure that the URL exists and try reloading the page.").arg(name.toString()));
+  } else if (type == QTextDocument::ImageResource) {
+    static const char * empty_xpm[] = {
+          "24 24 1 1",
+          ". c #C0C0C0",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................"};
+    QPixmap px(empty_xpm);
+    data.setValue<QPixmap>(px);
+  }
+
+  return data;
 }
 
-void TextBrowser::done( bool err )
+/**
+ * Returns the downloaded resource to the caller. In case the resource contains
+ * references to further resources (e.g. referenced images in HTML text) we store
+ * the URLs in a list and start the download afterwards.
+ */
+QVariant TextBrowser::loadHttpResource(int type, const QUrl& name)
 {
-  if ( !err )
-    setText( d->http->readAll() );
+  QVariant data;
+  if (type == QTextDocument::ImageResource) {
+    TextBrowserResources res;
+    res.url = name;
+    res.type = type;
+    d->resources.push_back(res);
+    
+    static const char * empty_xpm[] = {
+          "24 24 1 1",
+          ". c #C0C0C0",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................",
+          "........................"};
+    QPixmap px(empty_xpm);
+    data.setValue<QPixmap>(px);
+    return data;
+  }
+
+  if (d->http->error() == QHttp::NoError) {
+    return d->http->readAll();
+  } else {
+    if (type == QTextDocument::HtmlResource) {
+      data = QString(
+        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01//EN\">"
+        "<html>"
+        "<head>"
+        "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-16\">"
+        "<title>Error</title>"
+        "</head>"
+        "<body>"
+        "<h1>%1</h1>"
+        "<div><p><strong>%2</strong></p>"
+        "</div></body>"
+        "</html>").arg(d->http->errorString()).arg(tr("You tried to access the address %1 which is currently unavailable. "
+        "Please make sure that the URL exists and try reloading the page.").arg(name.toString()));
+    }
+  }
+
+  return data;
+}
+
+/**
+ * The download has finished. We add the resource to the document now.
+ */
+void TextBrowser::done( bool /*err*/ )
+{
+  if (d->resources.isEmpty()/* && d->requestId == d->http->currentId()*/) {
+    // set the HTML text
+    QTextBrowser::setSource(d->source);
+  } else {
+    // add the referenced resource to the document
+    TextBrowserResources res = d->resources.front();
+
+    QVariant data(d->http->readAll());
+    document()->addResource(res.type, res.url, data);
+    viewport()->repaint();
+    d->resources.pop_front();
+  }
+
+  // if we need to download further resources start a http request
+  if (!d->resources.isEmpty()) {
+    TextBrowserResources res = d->resources.front();
+    d->http->get(res.url);
+  } else {
+    stateChanged(d->source.toString());
+  }
+}
+
+/**
+ * Prints some status information.
+ */
+void TextBrowser::onStateChanged ( int state )
+{
+  switch (state) {
+    case QHttp::Connecting:
+      stateChanged(tr("Connecting to %1").arg(d->source.host()));
+      break;
+    case QHttp::Sending:
+      stateChanged(tr("Sending to %1").arg(d->source.host()));
+      break;
+    case QHttp::Reading:
+      stateChanged(tr("Reading from %1").arg(d->source.host()));
+      break;
+    case QHttp::Closing:
+    case QHttp::Unconnected:
+      if (d->http->error() == QHttp::NoError)
+        stateChanged(d->source.toString());
+      else
+        stateChanged(d->http->errorString());
+      break;
+    default:
+      break;
+  }
+}
+
+/**
+ * Checks for the status code and aborts the request if needed.
+ */
+void TextBrowser::onResponseHeaderReceived(const QHttpResponseHeader &responseHeader)
+{
+  if (responseHeader.statusCode() != 200) {
+    stateChanged(tr("Download failed: %1.").arg(responseHeader.reasonPhrase()));
+    d->http->abort();
+  }
+}
+
+void TextBrowser::onHighlighted(const QString& url)
+{
+  if (url.isEmpty() && d->toolTipId != 0) {
+    killTimer(d->toolTipId);
+    d->toolTipId = 0;
+  } else if (!url.isEmpty()) {
+    d->toolTip = url;
+    d->toolTipId = startTimer(1000);
+  } else {
+    QToolTip::showText(QCursor::pos(), url, this);
+  }
 }
 
 void TextBrowser::backward()
 {
-  if ( d->bwStack.count() <= 1)
-    return;
-
-  d->fwStack.push( d->bwStack.pop() );
-
-  d->tMode = TextBrowserPrivate::Backward;
-  setSource( d->bwStack.pop() );
-  d->tMode = TextBrowserPrivate::None;
-  forwardAvailable( true );
+  QTextBrowser::backward();
+  reload();
 }
 
 void TextBrowser::forward()
 {
-  if ( d->fwStack.isEmpty() )
-    return;
-
-  d->tMode = TextBrowserPrivate::Forward;
-  setSource( d->fwStack.pop() );
-  d->tMode = TextBrowserPrivate::None;
-  forwardAvailable( !d->fwStack.isEmpty() );
+  QTextBrowser::forward();
+  reload();
 }
 
 void TextBrowser::setBackwardAvailable( bool b )
@@ -360,32 +409,37 @@ void TextBrowser::setForwardAvailable( bool b )
   d->fw = b;
 }
 
-void TextBrowser::viewportContextMenuEvent ( QContextMenuEvent * e )
+void TextBrowser::timerEvent ( QTimerEvent * e )
 {
-  // create and show up your context menu
-  //
-  Q3PopupMenu menu;
-  if ( hasSelectedText() )
-  {
-    menu.insertItem(tr("Copy"), this, SLOT(copy()));
+  if (d->toolTipId == e->timerId()) {
+    QToolTip::showText(QCursor::pos(), d->toolTip, this);
+    killTimer(d->toolTipId);
+    d->toolTipId = 0;
   }
-  else
-  {
-    int id = menu.insertItem(Gui::BitmapFactory().pixmap("back_pixmap"), tr("Previous"), this, SLOT(backward()));
-    menu.setItemEnabled( id, d->bw );
-    id = menu.insertItem( Gui::BitmapFactory().pixmap("forward_pixmap"), tr("Forward"), this, SLOT(forward()));
-    menu.setItemEnabled( id, d->fw );
-    menu.insertItem(Gui::BitmapFactory().pixmap("home_pixmap"), tr("Home"), this, SLOT(home()));
-    menu.insertSeparator();
-    menu.insertItem(tr("Refresh"), this, SLOT(reload()));
-    menu.insertSeparator();
-  }
-
-  menu.insertItem(tr("Select all"), this, SLOT(selectAll()));
-  menu.exec(QCursor::pos());
 }
 
-void TextBrowser::contentsDropEvent(QDropEvent  * e)
+void TextBrowser::contextMenuEvent ( QContextMenuEvent * e )
+{
+  QMenu* menu = new QMenu(this);
+
+  QAction* prev = menu->addAction(Gui::BitmapFactory().pixmap("back_pixmap"), tr("Previous"), this, SLOT(backward()));
+  prev->setEnabled(d->bw);
+
+  QAction* next = menu->addAction(Gui::BitmapFactory().pixmap("forward_pixmap"), tr("Forward"), this, SLOT(forward()));
+  next->setEnabled(d->fw);
+
+  menu->addSeparator();
+  menu->addAction(Gui::BitmapFactory().pixmap("home_pixmap"), tr("Home"), this, SLOT(home()));
+  menu->addAction(tr("Refresh"), this, SLOT(reload()));
+  menu->addSeparator();
+  menu->addAction(tr("Copy"), this, SLOT(copy()));
+  menu->addAction(tr("Select all"), this, SLOT(selectAll()));
+
+  menu->exec(e->globalPos());
+  delete menu;
+}
+
+void TextBrowser::dropEvent(QDropEvent  * e)
 {
   const QMimeData* mimeData = e->mimeData();
   if ( mimeData->hasFormat("text/x-action-items") ) {
@@ -400,38 +454,39 @@ void TextBrowser::contentsDropEvent(QDropEvent  * e)
 
     CommandManager& rclMan = Application::Instance->commandManager();
     Command* pCmd = rclMan.getCommandByName(action.latin1());
-    if (pCmd)
-    {
-      QString url = pCmd->getHelpUrl();
-      if ( url.isEmpty() )
-      {
+    if ( pCmd ) {
+      QString info = pCmd->getAction()->whatsThis();
+      if ( !info.isEmpty() ) {
         // cannot show help to this command
-        QString txt = QString(
+        info = QString(
+        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
+        "<html>"
+        "<body bgcolor=white text=black alink=red link=darkblue vlink=darkmagenta>"
+        "%1"
+        "</body>"
+        "</html>" ).arg( info );
+      } else {
+        info = QString(
         "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
         "<html>"
         "<body bgcolor=white text=black alink=red link=darkblue vlink=darkmagenta>"
         "<h2>"
-        "  No description for '%1'"
+        "  %1 '%2'"
         "</h2>"
         "<hr>"
         "</body>"
-        "</html>" ).arg( action );
-
-        setText( txt );
+        "</html>" ).arg(tr("No description for")).arg(action);
       }
-      else
-        setSource( pCmd->getHelpUrl() );
+
+      setHtml( info );
     }
 
     e->setDropAction(Qt::CopyAction);
     e->accept();
-  } else if ( Q3UriDrag::canDecode(e) ) {
-    QStringList fn;
-    Q3UriDrag::decodeLocalFiles(e, fn);
-    QString file = fn.first();
-    QFileInfo info(file);
-    if ( info.exists() && info.isFile() )
-      setSource(file);
+  } else if ( mimeData->hasUrls() ) {
+    QList<QUrl> uri = mimeData->urls();
+    QUrl url = uri.front();
+    setSource(url);
 
     e->setDropAction(Qt::CopyAction);
     e->accept();
@@ -440,27 +495,28 @@ void TextBrowser::contentsDropEvent(QDropEvent  * e)
   }
 }
 
-void TextBrowser::contentsDragEnterEvent  (QDragEnterEvent * e)
+void TextBrowser::dragEnterEvent  (QDragEnterEvent * e)
 {
   const QMimeData* mimeData = e->mimeData();
   if ( mimeData->hasFormat("text/x-action-items") )
     e->accept();
-  else if (Q3UriDrag::canDecode(e))
+  else if (mimeData->hasUrls())
     e->accept();
   else
     e->ignore();
 }
 
-void TextBrowser::contentsDragMoveEvent( QDragMoveEvent *e )
+void TextBrowser::dragMoveEvent( QDragMoveEvent *e )
 {
   const QMimeData* mimeData = e->mimeData();
   if ( mimeData->hasFormat("text/x-action-items") )
     e->accept();
-  else if (Q3UriDrag::canDecode(e))
+  else if (mimeData->hasUrls())
     e->accept();
   else
     e->ignore();
 }
+
 
 // --------------------------------------------------------------------
 
@@ -470,17 +526,14 @@ void TextBrowser::contentsDragMoveEvent( QDragMoveEvent *e )
  *  Constructs a HelpView which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f'. \a home is the start page to show.
  */
-HelpView::HelpView( const QString& start,  QWidget* parent,  const char* name, Qt::WFlags fl )
-  : DockWindow( 0L, parent, name, fl )
+HelpView::HelpView( const QString& start,  QWidget* parent )
+  : QWidget(parent)
 {
-  TextBrowser* browser = new TextBrowser(this, "HelpViewer");
-  browser->setFrameStyle( Q3Frame::Panel | Q3Frame::Sunken );
-  // set the path where the factory is looking for if you set a new source
-  browser->mimeSourceFactory()->setFilePath( start );
-
+  TextBrowser* browser = new TextBrowser(this);
+  browser->setFrameStyle( QFrame::Panel | QFrame::Sunken );
   // set the start page now
   if (!start.isEmpty())
-    browser->setSource( start );
+    browser->setSource(QUrl::fromLocalFile(start));
   
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setAlignment(Qt::AlignTop);
@@ -527,11 +580,17 @@ HelpView::HelpView( const QString& start,  QWidget* parent,  const char* name, Q
   layout->addItem( spacer );
   groupBox->setLayout(layout);
 
+  label = new QLabel(this);
+  label->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+  label->setText(start);
+
   // add the button group with its elements and the browser to the layout
   formLayout->addWidget( groupBox, 0, 0 );
   formLayout->addWidget( browser, 1, 0 );
+  formLayout->addWidget( label, 2, 0 );
 
-  connect( this, SIGNAL(setSource( const QString& )), browser, SLOT(setSource( const QString& )));
+  connect( this, SIGNAL(setSource( const QUrl& )), browser, SLOT(setSource( const QUrl& )));
+  connect( browser, SIGNAL(stateChanged(const QString&)), this, SLOT(onStateChanged(const QString&)));
   connect( browser, SIGNAL(backwardAvailable(bool)), back, SLOT(setEnabled(bool)));
   connect( browser, SIGNAL(forwardAvailable (bool)), forward, SLOT(setEnabled(bool)));
   connect( browser, SIGNAL(startExternalBrowser(const QString&)), 
@@ -544,6 +603,7 @@ HelpView::HelpView( const QString& start,  QWidget* parent,  const char* name, Q
   connect( open,    SIGNAL(clicked()), this, SLOT(openHelpFile()));
   forward->setEnabled( false );
   back->setEnabled( false );
+  qApp->installEventFilter(this);
 }
 
 /**
@@ -552,6 +612,7 @@ HelpView::HelpView( const QString& start,  QWidget* parent,  const char* name, Q
 HelpView::~HelpView()
 {
   // no need to delete child widgets, Qt does it all for us
+  qApp->removeEventFilter(this);
 }
 
 /**
@@ -569,7 +630,7 @@ void HelpView::openHelpFile()
 {
   QString fn = QFileDialog::getOpenFileName(this, tr("Open file"), QString(), tr("All Html files (*.html *.htm)"));
   if ( !fn.isEmpty() )
-    setSource( fn );
+    setSource( QUrl::fromLocalFile(fn) );
 }
 
 /** 
@@ -596,6 +657,24 @@ void HelpView::startExternalBrowser( const QString& url )
   {
     QMessageBox::critical( this, tr("External browser"), tr("Starting of %1 failed").arg( browser ) );
   }
+}
+
+void HelpView::onStateChanged(const QString& state)
+{
+  label->setText(state);
+}
+
+bool HelpView::eventFilter ( QObject* o, QEvent* e )
+{
+  // Handles What's This click events
+  if (e->type() == QEvent::WhatsThisClicked) {
+    QString url = static_cast<QWhatsThisClickedEvent*>(e)->href();
+    setSource(QUrl::fromLocalFile(url));
+    QWhatsThis::hideText();
+    return true;
+  }
+
+  return QWidget::eventFilter( o, e );
 }
 
 #include "moc_HelpView.cpp"

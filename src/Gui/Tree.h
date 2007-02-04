@@ -182,12 +182,12 @@ protected:
 /** 
  *  \author Jürgen Riegel
  */
-class TreeView :public Gui::DockView, public Gui::SelectionSingleton::ObserverType
+class TreeView :public Gui::DockWindow, public Gui::SelectionSingleton::ObserverType
 {
   Q_OBJECT
 
 public:
-  TreeView(Gui::Document*  pcDocument,QWidget *parent=0,const char *name=0);
+  TreeView(Gui::Document*  pcDocument,QWidget *parent=0);
   // App_Tree();
 
   ~TreeView();

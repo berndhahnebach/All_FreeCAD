@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COIN_SOFCOFFSCREENRENDERER_H
-#define COIN_SOFCOFFSCREENRENDERER_H
+#ifndef GUI_SOFCOFFSCREENRENDERER_H
+#define GUI_SOFCOFFSCREENRENDERER_H
 
 
 #ifndef __Qt4All__
@@ -65,7 +65,7 @@ public:
    * Writes the rendered image buffer directly into a QImage object
    * instead of an image file.
    */
-  SbBool writeToImage (QImage& /*, const char * filetypeext="PNG"*/) const;
+  void writeToImage (QImage&) const;
   /** 
    * Saves the buffer to \a filename, in the filetype specified by \a filetypeextensions.
    *
@@ -91,4 +91,4 @@ public:
 } // namespace Gui
 
 
-#endif // COIN_SOFCOFFSCREENRENDERER_H 
+#endif // GUI_SOFCOFFSCREENRENDERER_H 

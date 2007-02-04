@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COIN_SOFCCOLORLEGEND_H
-#define COIN_SOFCCOLORLEGEND_H
+#ifndef GUI_SOFCCOLORLEGEND_H
+#define GUI_SOFCCOLORLEGEND_H
 
 #include <Inventor/nodes/SoSeparator.h>
 #include "SoFCColorBar.h"
@@ -87,5 +87,5 @@ private:
 } // namespace Gui
 
 
-#endif // COIN_SOFCCOLORLEGEND_H
+#endif // GUI_SOFCCOLORLEGEND_H
 

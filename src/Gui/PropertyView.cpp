@@ -23,16 +23,6 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qcursor.h>
-# include <qdatetime.h>
-# include <qlayout.h>
-# include <qtabwidget.h>
-//Added by qt3to4:
-#include <QPixmap>
-#include <Q3GridLayout>
-#endif
-
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 
 #include <App/PropertyStandard.h>
@@ -68,12 +58,12 @@ QPixmap* PropertyView::pcAttribute=0;
 
 /* TRANSLATOR Gui::DockWnd::PropertyView */
 
-PropertyView::PropertyView(Gui::Document* pcDocument,QWidget *parent,const char *name)
-  : DockView(pcDocument,parent,name)
+PropertyView::PropertyView(Gui::Document* pcDocument, QWidget *parent)
+  : DockWindow(pcDocument,parent)
 {
-  setCaption( tr( "Property View" ) );
+  setWindowTitle( tr( "Property View" ) );
 
-  Q3GridLayout* pLayout = new Q3GridLayout( this ); 
+  QGridLayout* pLayout = new QGridLayout( this ); 
   pLayout->setSpacing( 0 );
   pLayout->setMargin ( 0 );
 
@@ -104,7 +94,6 @@ PropertyView::PropertyView(Gui::Document* pcDocument,QWidget *parent,const char 
   onUpdate();
 
   Gui::Selection().Attach(this);
-
 }
 
 PropertyView::~PropertyView()
@@ -168,45 +157,6 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
 
 void PropertyView::onUpdate(void)
 {
-
-/*
-  PropertyBuffer* buf = new PropertyBuffer(_pPropEditor, "Test");
-
-  // append sample properties
-  buf->add(new Property("Boolean", QVariant(true,1)));
-  buf->add(new Property("Integer", 9));
-  buf->add(new Property("String", QString("Hallo")));
-  buf->add(new Property("Double", 3.14));
-  buf->add(new Property("Font", QFont()));
-  buf->add(new Property("Pixmap", QPixmap()));
-  buf->add(new Property("Color", Qt::blue));
-  buf->add(new Property("Time", QTime()));
-  buf->add(new Property("Cursor", QCursor()));
-  buf->add(new Property("CString", QCString("Hallo")));
-  buf->add(new Property("Date time", QDateTime()));
-  buf->add(new Property("Date", QDate()));
-  QStringList l; l << "Hallo" << "Hallo2";
-  buf->add(new Property("List", "Test", l, l, "Descr."));
-  _pPropEditor->setBuffer(buf);
-  if ( _pPropEditor->childCount() > 0)
-    return;
-  QStringList lst; lst << QString("This") << QString("is") << QString("my") << QString("first") << QString("list") << QString("first");
-  new ListEditorItem(_pPropEditor, QString("List"), lst);
-  new DateEditorItem(_pPropEditor, QString("Date"), QDate::currentDate ());
-  new DateTimeEditorItem(_pPropEditor, QString("Datetime"), QDateTime::currentDateTime ());
-  new FileEditorItem(_pPropEditor, QString("File name"), QCString());
-  new CursorEditorItem(_pPropEditor, QString("Cursor"), QCursor(Qt::SplitVCursor));
-  new TimeEditorItem(_pPropEditor, QString("Time"), QTime::currentTime ());
-  new ColorEditorItem(_pPropEditor, QString("Color"), Qt::red);
-  new ChildrenEditorItem(_pPropEditor, QString("Children"), 1);
-  new PixmapEditorItem( _pPropEditor, QString("Pixmap"), QPixmap() );
-  new FontEditorItem( _pPropEditor, QString("Font"), QFont() );
-  new FloatEditorItem( _pPropEditor, QString("Float"), 0.85f );
-  new TextEditorItem( _pPropEditor, QString("Text"), QString("Example text") );
-  new IntEditorItem( _pPropEditor, QString("Integer"), 2 );
-  new BoolEditorItem( _pPropEditor, QString("Boolean"), QVariant(true, 0) );
-*/
-//  Base::Console().Log("Property Updated\n");
 }
 
 bool PropertyView::onMsg(const char* pMsg)
@@ -224,9 +174,9 @@ void PropertyView::changeEvent(QEvent *e)
     _pPropEditorData->setColumnText(1, trUtf8("Value"));
     tabs->setTabText(0, trUtf8("View"));
     tabs->setTabText(1, trUtf8("Data"));
-  } else {
-    DockView::changeEvent(e);
   }
+
+  DockWindow::changeEvent(e);
 }
 
 #include "moc_PropertyView.cpp"

@@ -36,32 +36,6 @@ using namespace std;
 #define MAX_EXT_LEN 255
 
 void writeJPEGComment(const char* InFile, const char* OutFile, const char* Comment);
-/*
-static int qimage_set_save_format(const char * ext, char * buf)
-{
-  strncpy(buf, ext, MAX_EXT_LEN);
-  buf[MAX_EXT_LEN] = 0;
-  
-  int i = 0;
-  // convert to upper case
-  while (buf[i] != 0) {
-    buf[i] = toupper(buf[i]);
-    i++;
-  }
-  
-  // Qt specifies the jpg extension as JPEG
-  if (strcmp(buf, "JPG") == 0) strcpy(buf, "JPEG");
-  
-  QStrList olist = QImage::outputFormats();
-  const char * qtext = olist.getFirst();
-  while (qtext) {
-    if (strcmp(buf, qtext) == 0) return 1;
-    qtext = olist.next(); 
-  }
-  // clear save format
-  buf[0] = 0;
-  return 0;
-}*/
 
 // ---------------------------------------------------------------
 
@@ -79,19 +53,13 @@ SoFCOffscreenRenderer::~SoFCOffscreenRenderer()
 {
 }
 
-SbBool 	SoFCOffscreenRenderer::writeToImage (QImage& img /* , const char * filetypeext*/) const
+void SoFCOffscreenRenderer::writeToImage (QImage& img) const
 {
-  //char ext[MAX_EXT_LEN+1];  
-  //qimage_set_save_format(filetypeext, ext);  
-  //if (ext[0] == 0) {
-  //  return false;
-  //}
-
 	const unsigned char * bytes = getBuffer();
   SbVec2s size = getViewportRegion().getViewportSizePixels();
   int numcomponents = (int) this->getComponents();
   int width  = (int)size[0];
-  int height = (int)size[1];;
+  int height = (int)size[1];
 
   QImage image(width, height, 32);
   if (numcomponents == 2 || numcomponents == 4) image.setAlphaBuffer(TRUE);
@@ -122,11 +90,9 @@ SbBool 	SoFCOffscreenRenderer::writeToImage (QImage& img /* , const char * filet
   }
 
 	img=image;
-
-  return true;
 }
 
-SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const SbName &  filetypeextension ) const
+SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const SbName& filetypeextension) const
 {
   if ( isWriteSupported( filetypeextension ) )
   {
@@ -143,83 +109,93 @@ SbBool SoFCOffscreenRenderer::writeToImageFile (const SbString&  filename, const
   else // try to convert into a QImage and save then
   {
     QImage img;
-    if ( writeToImage ( img/*, filetypeextension.getString()*/  ) )
-    {
-      return img.save( filename.getString(), filetypeextension.getString());
-    }
+    writeToImage(img);
+    return img.save(filename.getString(), filetypeextension.getString());
   }
 
   return false;
 }
 
-void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* c) const
+void SoFCOffscreenRenderer::writeToImageFile (const char *filename, const char* comment) const
 {
   Base::FileInfo file(filename);
-  if ( file.hasExtension("JPG") || file.hasExtension("JPEG")  )
-  {
+  if (file.hasExtension("JPG") || file.hasExtension("JPEG")) {
     QImage img;
-    writeToImage ( img ) ;
+    writeToImage(img);
 
     const char* format = "JPEG";;
-    
-    if(! img.save( (file.filePath()+"_temp").c_str(), format ))
+    if (!img.save((file.filePath()+"_temp").c_str(), format))
       throw Base::Exception();
 
-    // writing comment in case of jpeg (QT ignore setText() in case of jpeg.....)
-    if(strcmp(c,"")==0)
-      writeJPEGComment( (file.filePath()+"_temp").c_str(),file.filePath().c_str() ,"Screenshop from FreeCAD");   
-    else if(strcmp(c,"$MIBA")==0)
-      writeJPEGComment( (file.filePath()+"_temp").c_str(),file.filePath().c_str() ,createMIBA().c_str());   
+    // writing comment in case of jpeg (Qt ignores setText() in case of jpeg)
+    if (strcmp(comment,"")==0)
+      writeJPEGComment( (file.filePath()+"_temp").c_str(),file.filePath().c_str(), "Screenshot created by FreeCAD");   
+    else if (strcmp(comment,"$MIBA")==0)
+      writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), createMIBA().c_str());   
     else 
-      writeJPEGComment( (file.filePath()+"_temp").c_str(),file.filePath().c_str() ,c);
+      writeJPEGComment((file.filePath()+"_temp").c_str(),file.filePath().c_str(), comment);
 
-    // deletee temporary file
+    // delete temporary file
     Base::FileInfo tmp((file.filePath()+"_temp").c_str());
     tmp.deleteFile();
-  }
-  else if ( file.hasExtension("PNG") )
-  {
-    QImage img;
-    if ( writeToImage ( img/*, "PNG"*/  ) )
-    {
-      img.setText("Title", 0, filename );
-      img.setText("Author", 0, "FreeCAD (http://free-cad.sourceforge.net)");
-      if(strcmp(c,"")==0)
-        img.setText("Description", 0, "Screenshot created by FreeCAD");   
-      else if(strcmp(c,"$MIBA")==0)
-        img.setText("Description", 0, createMIBA().c_str());   
-      else 
-        img.setText("Description", 0, c);
-      img.setText("Creation Time", 0, QDateTime::currentDateTime().toString());
-      img.setText("Software", 0, App::Application::Config()["ExeName"].c_str());
-      
-      if ( !img.save( filename, "PNG" ) )
-        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with Qt...");
+  } else {
+    // check for all QImage formats
+    bool supported = false;
+    QByteArray format;
+    QList<QByteArray> qtformats = QImageWriter::supportedImageFormats();
+    for (QList<QByteArray>::Iterator it = qtformats.begin(); it != qtformats.end(); ++it) {
+      if (file.hasExtension((*it).data())) {
+        format = *it;
+        supported = true;
+        break;
+      }
     }
-  }
-  else if ( isWriteSupported( file.extension().c_str() ) )
-  {
-    if (! writeToFile( filename, file.extension().c_str() ))
-      throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
-  }
-  else if ( file.hasExtension("EPS")  || file.hasExtension("PS") )
-  {
-    if(! writeToPostScript( filename ))
-      throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
-  }
-  else if ( file.hasExtension("RGB") || file.hasExtension("SGI") )
-  {
-    if(! writeToRGB( filename ))
-      throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
-  }
-  else // try to convert into a QImage and save then
-  {
-    QImage img;
-    if ( writeToImage ( img/*, filetypeextension.getString()*/  ) )
-    {
-      QString ext = file.extension().c_str();
-      if ( !img.save( filename,  ext.upper() ) )
-        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with Qt...");
+    
+    // Supported by Qt
+    if (supported) {
+      QImage img;
+      writeToImage(img);
+      // set keywords for PNG format
+      if (file.hasExtension("PNG")) {
+        img.setText("Title", filename);
+        img.setText("Author", "FreeCAD (http://free-cad.sourceforge.net)");
+        if(strcmp(comment,"")==0)
+          img.setText("Description", "Screenshot created by FreeCAD");   
+        else if(strcmp(comment,"$MIBA")==0)
+          img.setText("Description", createMIBA().c_str());   
+        else 
+          img.setText("Description", comment);
+        img.setText("Creation Time", QDateTime::currentDateTime().toString());
+        img.setText("Software", App::Application::Config()["ExeName"].c_str());
+      }
+
+      QFile f(filename);
+      if (f.open(QFile::WriteOnly)) {
+        if (img.save(&f, format.data())) {
+          f.close();
+        } else {
+          f.close();
+          std::stringstream str;
+          str << "Cannot save image to file '" << filename << "'.";
+          throw Base::Exception(str.str());
+        }
+      } else {
+        std::stringstream str;
+        str << "Cannot open file '" << filename << "' for writing.";
+        throw Base::Exception(str.str());
+      }
+    } else if (isWriteSupported(file.extension().c_str())) {
+      // Any format which is supported by Coin only
+      if (!writeToFile( filename, file.extension().c_str()))
+        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
+    } else if (file.hasExtension("EPS") || file.hasExtension("PS")) {
+      // Any format which is supported by Coin only
+      if(! writeToPostScript( filename ))
+        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
+    } else if (file.hasExtension("RGB") || file.hasExtension("SGI")) {
+      // Any format which is supported by Coin only
+      if(!writeToRGB(filename))
+        throw Base::Exception("SoFCOffscreenRenderer::writeToImageFile(): Error writing file with SoOffscreenRenerer...");
     }
   }
 }
@@ -267,7 +243,7 @@ QStringList SoFCOffscreenRenderer::getWriteImageFiletypeInfo()
   // now add PostScript and SGI RGB
   if ( formats.findIndex("EPS") == -1 )
     formats << "EPS";
-  if ( formats.findIndex("SGI") == -1 )
+  else if ( formats.findIndex("SGI") == -1 )
     formats << "SGI";
 
   formats.sort();
@@ -279,14 +255,6 @@ std::string SoFCOffscreenRenderer::createMIBA() const
 {
   std::stringstream com;
 
-/*  
-	float aspect;
-  if( (aspect = _height/_width) > 1.0f)
-	  _Matrix[1][1] *= 1.0f / (aspect);
-	else
-	  _Matrix[0][0] *= (aspect); 
-*/
- 
   com << setw(7) << setfill(' ') << fixed;
   com << "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n" ;
   com << "<MIBA xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://juergen-riegel.net/Miba/Miba2.xsd\" Version=\"2\"> \n" ;
@@ -307,11 +275,9 @@ std::string SoFCOffscreenRenderer::createMIBA() const
   com << " </Source>\n" ;
   com << "</MIBA>\n" ;
 
-  Base::Console().Log("MIBA Size=%d\n",com.str().size());
-
   return com.str();
-
 }
+
 //===========================================================================
 // helper from wrjpgcom.c
 //===========================================================================

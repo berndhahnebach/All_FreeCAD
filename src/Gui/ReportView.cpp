@@ -38,7 +38,7 @@ using namespace Gui::DockWnd;
  *  name 'name' and widget flags set to 'f' 
  */
 ReportView::ReportView( QWidget* parent )
-  : DockWindow( 0L, parent )
+  : QWidget(parent)
 {
   setObjectName( "ReportOutput" );
 
@@ -84,7 +84,7 @@ ReportView::~ReportView()
 
 void ReportView::changeEvent(QEvent *e)
 {
-  DockWindow::changeEvent(e);
+  QWidget::changeEvent(e);
   if (e->type() == QEvent::LanguageChange) {
     tabWidget->setTabText( tabWidget->indexOf(tabOutput), trUtf8( "Output" ) );
     tabWidget->setTabText( tabWidget->indexOf(tabPython), trUtf8("Python console") );

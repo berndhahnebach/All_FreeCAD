@@ -206,7 +206,8 @@ void SoFCColorLegend::setColorModel( App::ColorGradient::TColorModel tModel )
   }
 
   SoMaterial* mat = new SoMaterial;
-  mat->transparency = 0.3f;
+  //FIXME: From Coin 2.4.5 on this transparency makes trouble
+  //mat->transparency = 0.3f;
   mat->diffuseColor.setNum(2*uCtColors);
   for ( int k=0; k<uCtColors; k++ )
   {

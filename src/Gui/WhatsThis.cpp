@@ -23,98 +23,17 @@
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-# include <qapplication.h>
-# include <q3textbrowser.h>
-#endif
-
 #include "WhatsThis.h"
-
+#include "MainWindow.h"
 #include "Action.h"
 
 
 using namespace Gui;
 
-Q3TextBrowser* WhatsThis::_helpViewer = 0L;
-
-/**
- * Constructs a dynamic "What's this?" object for \a widget. The object is deleted when 
- * the \a widget is destroyed.
- *
- * When the widget is queried by the user the text() function of this QWhatsThis will be 
- * called to provide the appropriate text, rather than using the text assigned by add().
- */
-WhatsThis::WhatsThis( QWidget * widget)
-  : Q3WhatsThis( widget ), _widget( widget ), _url( QString::null ), _txt( QString::null )
-{
-}
-
-/**
- * Constructs a dynamic "What's this?" object for \a widget. The object is deleted when 
- * the \a widget is destroyed.
- *
- * When the widget is queried by the user the text() function of this QWhatsThis will be 
- * called to provide the appropriate text, rather than using the text assigned by add().
- */
-WhatsThis::WhatsThis( QWidget * widget, const QString& url)
- : Q3WhatsThis( widget ), _widget( widget ), _url( url ), _txt( QString::null )
-{
-}
-
-/**
- * Destroys the object and frees any allocated resources.
- */
-WhatsThis::~WhatsThis()
-{
-}
-
-/**
- * Sets the URL of Html document to \a url.
- * The document is shown in the text browser specified by \ref setHelpView().
- */
-void WhatsThis::setUrl( const QString& url )
-{
-  _url = url;
-}
-
-/**
- * Sets the description to the widget specified in the constructor
- * to \a txt. The description is shown in a bubble help.
- */
-void WhatsThis::setText( const QString& txt )
-{
-  _txt = txt;
-}
-
-/** 
- * Shows the specified URL inside the text browser 
- * and returns the specified text with @ref setText(). 
- */
-QString WhatsThis::text( const QPoint & )
-{
-  _helpViewer->setSource( _url );
-  return _txt;
-}
-
-/**
- * Shows the help text in the specified browser.  
- */
-void WhatsThis::setHelpView( Q3TextBrowser* browser )
-{
-  _helpViewer = browser;
-}
-
-
-// --------------------------------------------------------------------
-
-
 /* TRANSLATOR Gui::StdCmdDescription */
 
 
 bool StdCmdDescription::_descrMode = false;
-
-Q3TextBrowser* StdCmdDescription::_helpViewer = 0L;
-
 
 StdCmdDescription::StdCmdDescription()
   : Command("Std_DescriptionMode")
@@ -133,7 +52,7 @@ StdCmdDescription::~StdCmdDescription()
 
 Action * StdCmdDescription::createAction(void)
 {
-  Action *pcAction = (Action*)Command::createAction();
+  Action *pcAction = Command::createAction();
   pcAction->setCheckable( true );
   return pcAction;
 }
@@ -151,21 +70,12 @@ bool StdCmdDescription::inDescriptionMode()
   return _descrMode;
 }
 
-/**
- * Shows the help text in the specified browser.  
- */
-void StdCmdDescription::setHelpView( Q3TextBrowser* browser )
-{
-  _helpViewer = browser;
-}
-
 void StdCmdDescription::setSource( const QString& src )
 {
-  if ( _helpViewer && !src.isEmpty() )
+  if ( !src.isEmpty() )
   {
-    QString url = "index.php@";
-    url.append( src );
-    _helpViewer->setSource( url );
+    QWhatsThisClickedEvent e(src);
+    QApplication::sendEvent(getMainWindow(), &e);
   }
 }
 

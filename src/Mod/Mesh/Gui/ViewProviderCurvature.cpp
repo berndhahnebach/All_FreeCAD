@@ -249,7 +249,7 @@ void ViewProviderMeshCurvature::setVertexCurvatureMode(int mode)
 
 QPixmap ViewProviderMeshCurvature::getIcon() const
 {
-  const char * Mesh_Feature_xpm[] = {
+  static const char * Mesh_Feature_xpm[] = {
     "16 16 7 1",
     ".	c None",
     "#	c #000000",
@@ -269,7 +269,7 @@ QPixmap ViewProviderMeshCurvature::getIcon() const
     "#bbbb##rrrr#ss..",
     ".#b##b#rrrr#s...",
     ".##bbb#rrr#ss...",
-    ".##bbb#r#ss....",
+    ".##bbb#r#ss.....",
     "..s#####r#s.....",
     "....sss##ss.....",
     "........ss......",

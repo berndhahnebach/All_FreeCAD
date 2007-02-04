@@ -126,7 +126,7 @@ class DockEvaluateMeshImp : public DlgEvaluateMeshImp
 protected:
   DockEvaluateMeshImp( QWidget* parent = 0, Qt::WFlags fl = 0 );
   ~DockEvaluateMeshImp();
-  void reject();
+  void closeEvent(QCloseEvent* e);
 
 public:
   static DockEvaluateMeshImp* instance();
@@ -137,6 +137,7 @@ public:
 
 private:
   static DockEvaluateMeshImp* _instance;
+  QByteArray state;
 };
 
 } // namespace MeshGui

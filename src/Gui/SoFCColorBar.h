@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef COIN_SOFCCOLORBAR_H
-#define COIN_SOFCCOLORBAR_H
+#ifndef GUI_SOFCCOLORBAR_H
+#define GUI_SOFCCOLORBAR_H
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
@@ -198,5 +198,5 @@ private:
 } // namespace Gui
 
 
-#endif // COIN_SOFCCOLORBAR_H
+#endif // GUI_SOFCCOLORBAR_H
 
