@@ -73,7 +73,16 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
 
   _pcDocument->Attach(this);
   _pcDocument->installDocumentHook(this);
+  // connect signal
 
+  //pcDocument->m_sig.connect(boost::bind(&Gui::Document::refresh, this, _1));
+  //boost::bind(&Gui::Document::slotNewObject, this, _1)
+
+  //App::Document::connection_t  m_connection;
+  //m_connection = pcDocument->connect(boost::bind(&Document::slotNewObject, this, _1));
+  pcDocument->signalNewObject.connect(boost::bind(&Gui::Document::slotNewObject, this, _1));
+  //pcDocument->signalNewObject.connect(&(this->slotNewObject));
+  
   // pointer to the python class
   // NOTE: As this Python object doesn't get returned to the interpreter we mustn't increment it (Werner Jan-12-2006)
   _pcDocPy = new Gui::DocumentPy(this);
@@ -93,6 +102,11 @@ Document::Document(App::Document* pcDocument,Application * app, const char * nam
   pcTreeItem = Gui::getMainWindow()->getTreeView()->NewDoc(this);
   // open at least one viewer
   createView("View3DIv");
+}
+
+void Document::slotNewObject(/*const App::Document&,*/const App::DocumentObject&)
+{
+  Base::Console().Log("Document::slotNewObject() called");
 }
 
 Document::~Document()
