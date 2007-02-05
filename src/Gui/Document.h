@@ -99,6 +99,12 @@ public:
   Document(App::Document* pcDocument, Application * app, const char * name=0);
   ~Document();
 
+ 	/** @name I/O of the document */
+	//@{
+  /// This slot is connected to the App::Document::signalNewObject(...)
+  void slotNewObject(const App::DocumentObject&);
+  virtual void refresh(const App::DocumentObject&) const {};
+  //@}
 
  	/** @name I/O of the document */
 	//@{
