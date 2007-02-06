@@ -58,7 +58,7 @@ using namespace MeshCore;
 PyTypeObject MeshPy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "MeshObject",        /*tp_name*/
+  "Mesh.Mesh",        /*tp_name*/
   sizeof(MeshPy),  /*tp_basicsize*/
   0,                      /*tp_itemsize*/
                           /* methods */
@@ -80,7 +80,7 @@ PyTypeObject MeshPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
-  "About MeshObject",                               /*tp_doc */
+  "About Mesh",                                     /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
@@ -107,14 +107,26 @@ PyTypeObject MeshPy::Type = {
   0                                                 /*tp_weaklist */
 };
 
+PyDoc_STRVAR(mesh_pointCount_doc,
+"Returns the number of vertices of the mesh object.");
+
+PyDoc_STRVAR(mesh_faceCount_doc,
+"Returns the number of faces of the mesh object.");
+
+PyDoc_STRVAR(mesh_read_doc,
+"Read in a mesh object from an STL file.");
+
+PyDoc_STRVAR(mesh_write_doc,
+"Writes the mesh object into an STL file.");
+
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef MeshPy::Methods[] = {
-  PYMETHODEDEF(pointCount)
-  PYMETHODEDEF(faceCount)
-  PYMETHODEDEF(read)
-  PYMETHODEDEF(write)
+  {"pointCount", (PyCFunction) spointCount, Py_NEWARGS, mesh_pointCount_doc},
+  {"faceCount", (PyCFunction) sfaceCount, Py_NEWARGS, mesh_faceCount_doc},
+  {"read", (PyCFunction) sread, Py_NEWARGS, mesh_read_doc},
+  {"write", (PyCFunction) swrite, Py_NEWARGS, mesh_write_doc},
   PYMETHODEDEF(offset)
   PYMETHODEDEF(offsetSpecial)
   PYMETHODEDEF(unite)

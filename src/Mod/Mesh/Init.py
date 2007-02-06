@@ -28,7 +28,7 @@
 
 
 # Get the Parameter Group of this module
-ParGrp = App.ParamGet("System parameter:Modules").GetGroup("Mesh")
+ParGrp = FreeCAD.ParamGet("System parameter:Modules").GetGroup("Mesh")
 
 # Append the open handler
 FreeCAD.EndingAdd("Mesh formats (*.stl *.ast *.bms *.obj)","Mesh")
