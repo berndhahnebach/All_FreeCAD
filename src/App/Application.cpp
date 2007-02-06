@@ -102,6 +102,36 @@ AppExport std::map<std::string,std::string> Application::mConfig;
 //**************************************************************************
 // Construction and destruction
 
+PyDoc_STRVAR(FreeCAD_doc,
+"The functions in the FreeCAD module allow working with documents.\n"
+"The FreeCAD instance provides a list of references of documents which\n"
+"can be addressed by a string. Hence the document name must be unique.\n"
+"\n"
+"openDocument(string) -- Create a document and load the project file into the document.\n"
+"\n"
+"The string argument must point to an existing file. If the file doesn't not exist or\n"
+"the file cannot be loaded an I/O exception is thrown. In this case the document is kept alive.\n"
+"\n"
+"saveDocument(string) -- Save the document to a file.\n"
+"\n"
+"The document has the read-only attribute FileName which points to the file the document should\n"
+"be stored to.\n"
+"\n"
+"saveDocumentAs() -- bla bla bla\n"
+"\n"
+"newDocument() -- bla bla bla\n"
+"\n"
+"closeDocument() -- bla bla bla\n"
+"\n"
+"activeDocument() -- bla bla bla\n"
+"\n"
+"setActiveDocument() -- bla bla bla\n"
+"\n"
+"getDocument() -- bla bla bla\n"
+"\n"
+"listDocuments() -- bla bla bla\n"
+);
+
 Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcUserParamMngr,std::map<std::string,std::string> &mConfig)
 	://_pcSysParamMngr(pcSysParamMngr),
 	 //_pcUserParamMngr(pcUserParamMngr),
@@ -115,7 +145,7 @@ Application::Application(ParameterManager *pcSysParamMngr, ParameterManager *pcU
 
 
 	// seting up Python binding
-	_pcAppModule = Py_InitModule("FreeCAD", Application::Methods);
+	_pcAppModule = Py_InitModule3("FreeCAD", Application::Methods, FreeCAD_doc);
 
   // introducing additional classes
 

@@ -34,11 +34,11 @@
 #include "Document.h"
 
 // FreeCAD Base header
-#include "../Base/Interpreter.h"
-#include "../Base/Exception.h"
-#include "../Base/Parameter.h"
-#include "../Base/Console.h"
-#include "../Base/Factory.h"
+#include <Base/Interpreter.h>
+#include <Base/Exception.h>
+#include <Base/Parameter.h>
+#include <Base/Console.h>
+#include <Base/Factory.h>
 
 #define new DEBUG_CLIENTBLOCK
 //using Base::GetConsole;
@@ -49,6 +49,10 @@ using namespace App;
 
 //**************************************************************************
 // Python stuff
+
+PyDoc_STRVAR(App_newDocument_doc,
+"Creates a new document with a given name.\n"
+"The document name must be unique which is checked automatically.");
 
 // Application Methods						// Methods structure
 PyMethodDef Application::Methods[] = {
@@ -71,7 +75,7 @@ PyMethodDef Application::Methods[] = {
   {"openDocument",   (PyCFunction) Application::sOpenDocument,   1},
   {"saveDocument",   (PyCFunction) Application::sSaveDocument,   1},
   {"saveDocumentAs", (PyCFunction) Application::sSaveDocumentAs, 1},
-  {"newDocument",    (PyCFunction) Application::sNewDocument,    1},
+  {"newDocument",    (PyCFunction) Application::sNewDocument,    1, App_newDocument_doc},
   {"closeDocument",  (PyCFunction) Application::sCloseDocument,  1},
   {"activeDocument", (PyCFunction) Application::sActiveDocument, 1},
   {"setActiveDocument",(PyCFunction) Application::sSetActiveDocument, 1},

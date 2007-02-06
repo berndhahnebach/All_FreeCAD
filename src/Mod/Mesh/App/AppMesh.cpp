@@ -45,7 +45,14 @@ extern struct PyMethodDef Mesh_Import_methods[];
 
 
 PyDoc_STRVAR(module_doc,
-"This is a module working with meshes.");
+"The functions in this module allow working with mesh objects.\n"
+"A set of functions are provided that allow to read in registered mesh file formats\n"
+"to either an newly created or already exising document.\n"
+"\n"
+"open(string) -- Create a new document and a Mesh::Import feature to load the file into the document.\n"
+"insert(string, string) -- Create a Mesh::Import feature to load the file into the given document.\n"
+"mesh() -- Create an empty mesh object.\n"
+"\n");
 
 /* Python entry */
 extern "C" {

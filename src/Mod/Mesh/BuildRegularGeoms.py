@@ -1,18 +1,24 @@
-###################################################################
-### Copyright (c) Berthold Grupp          2005                  ###
-###                                                             ###
-### Python Module for building solid regular geometric objects  ###
-### Return value are list of vectors, 3 vectors define a facet  ###
-###                                                             ###
-### Samplecode for creating mesh:                               ###
-### facets = Cube(3.0, 4.0, 5.0)                                ###
-### m = Mesh.newMesh()                                          ###
-### m.addFacets(facets)                                         ###
-###################################################################
+"""Python Module for building solid regular geometric objects.
+
+Return value are list of vectors, 3 vectors define a facet.
+
+Copyright (c) Berthold Grupp          2005
+
+Sample code for creating a mesh:
+	facets = Cube(3.0, 4.0, 5.0)
+	m = Mesh.newMesh()
+	m.addFacets(facets)
+"""
+
 
 import math
 
 def Sphere (radius, count):
+    """Creates a sphere with a given radius.
+    
+    bla bla bla
+    
+    """
     return Ellipsoid(radius, radius, count)
 
 def Ellipsoid (lenX, lenY, count):
@@ -74,9 +80,12 @@ def Toroid (radius1, radius2, count):
     return RotationBody(polyline, count)
          
 
-# build a rotation body from a given (closed) polyline, rotation axis is the X-Axis
-# parameter: polyline: list of tuple of 2 floats (2d vector)
 def RotationBody (polyline, count):
+    """Build a rotation body from a given (closed) polyline, rotation axis is the X-Axis.
+    
+    Parameter: polyline: list of tuple of 2 floats (2d vector)
+    
+    """
     facets = []
 
     step = math.pi * 2.0 / count
