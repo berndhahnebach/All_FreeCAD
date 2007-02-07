@@ -24,7 +24,7 @@
 #*                                                                         *
 #***************************************************************************
 
-import pydoc, sys, os, dircache, FreeCAD
+import pydoc, sys, os, dircache, zipfile, FreeCAD
 
 ModDir = FreeCAD.ConfigGet("HomePath")+'Mod'
 ModDirs = dircache.listdir(ModDir)
@@ -34,13 +34,36 @@ ModDirs = dircache.listdir(ModDir)
 #	if (Dir != '__init__.py'):
 #		sys.path.append( os.path.join(ModDir,Dir) )
 
-print 'Write documentation for module FreeCAD\n'
+print 'Write documentation for module FreeCAD'
 pydoc.writedoc(FreeCAD)
+print ''
 
 # walk through the module paths again and try loading the modules to create HTML files 
 for Dir in ModDirs:
 	dest = os.path.join(ModDir,Dir)
-	print 'Write documentation for module ' + dest + '\n'
+	print 'Write documentation for module ' + dest
 	if (Dir != '__init__.py'):
 		pydoc.writedocs(dest)
+		print ''
+
+# create a ZIP archive from all HTML files
+print 'Creating ZIP archive \'docs.zip\'...'
+zip = zipfile.ZipFile('docs.zip', 'w')
+for file in os.listdir('.'):
+	if not os.path.isdir(file):
+		if file.find('.html') > 0:
+			print '  Adding file ' + file + ' to archive'
+			zip.write(file)
+
+print 'done.'
+zip.close()
+
+print 'Cleaning up HTML files...'
+for file in os.listdir('.'):
+	if not os.path.isdir(file):
+		if file.find('.html') > 0:
+			print '  Removing ' + file
+			os.remove(file)
+
+print 'done.'
 
