@@ -84,7 +84,20 @@ extern "C" {
   char** argv;
   argv = (char**)malloc(sizeof(char*)* (argc+1));
   argv[0] = (char*)malloc(1024);
+
+#if defined(FC_OS_WIN32)
+#ifdef FC_DEBUG
+  strcpy(argv[0],"FreeCAD_d.pyd");
+#else
+  strcpy(argv[0],"FreeCAD.pyd");
+#endif
+#else
+#ifdef FC_DEBUG
+  strcpy(argv[0],"FreeCAD_d");
+#else
   strcpy(argv[0],"FreeCAD");
+#endif
+#endif
   argv[argc] = 0;
 
   try {

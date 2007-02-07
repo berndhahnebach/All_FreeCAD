@@ -24,7 +24,15 @@
 #*                                                                         *
 #***************************************************************************
 
-import pydoc, sys, os, dircache, zipfile, FreeCAD
+import pydoc, sys, os, dircache, zipfile
+
+# Get the path to the FreeCAD module relative to this directory
+path = __file__[:-12] + "../../bin"
+print path
+sys.path.append(path)
+os.chdir(path)
+
+import FreeCAD
 
 ModDir = FreeCAD.ConfigGet("HomePath")+'Mod'
 ModDirs = dircache.listdir(ModDir)
