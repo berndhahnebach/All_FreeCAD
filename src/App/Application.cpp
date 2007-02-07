@@ -728,9 +728,8 @@ void Application::initTypes(void)
 
 void Application::initConfig(int argc, char ** argv)
 {
-	// find the home path....
-
-    mConfig["HomePath"] = FindHomePath(argv[0]);
+  // find the home path....
+  mConfig["HomePath"] = FindHomePath(argv[0]);
 
 	_argc = argc;
 	_argv = argv;
@@ -1375,10 +1374,15 @@ std::string Application::FindHomePath(const char* sCall)
 //std::string FindHomePathWin32(HANDLE hModule)
 std::string Application::FindHomePath(const char* sCall)
 {
+  // We have three ways to start this application either use one of the both executables or
+  // import the FreeCAD.pyd module from a running Python session. In the latter case the 
+  // Python interpreter is already initialized.
 	char  szFileName [MAX_PATH] ;
-	GetModuleFileName(0,
-		               szFileName,
-					         MAX_PATH-1);
+  if (Py_IsInitialized()) {
+	  GetModuleFileName(GetModuleHandle(sCall),szFileName, MAX_PATH-1);
+  } else {
+	  GetModuleFileName(0, szFileName, MAX_PATH-1);
+  }
 
 	std::string Call(szFileName), TempHomePath;
 	std::string::size_type pos = Call.find_last_of(PATHSEP);
@@ -1387,12 +1391,12 @@ std::string Application::FindHomePath(const char* sCall)
 	TempHomePath.assign(TempHomePath,0,pos+1);
 
   // switch to posix style
-  for(std::string::iterator i=TempHomePath.begin();i!=TempHomePath.end();++i)
+  for(std::string::iterator i=TempHomePath.begin();i!=TempHomePath.end();++i) {
     if(*i == '\\')
       *i = '/';
+  }
 
 	return TempHomePath;
-
 }
 #endif
 
