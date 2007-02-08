@@ -764,18 +764,18 @@ void Application::initConfig(int argc, char ** argv)
 	
 	// Banner ===========================================================
 	if(!(mConfig["Verbose"] == "Strict"))
-		Console().Message("%s %s, Libs: %s.%sR%s\n\n%s",mConfig["ExeName"].c_str(),
-                                                    mConfig["ExeVersion"].c_str(),
-                                                    mConfig["BuildVersionMajor"].c_str(),
-                                                    mConfig["BuildVersionMinor"].c_str(),
-                                                    mConfig["BuildRevision"].c_str(),
-                                                    mConfig["ConsoleBanner"].c_str());
-	else
-		Console().Message("%s %s, Libs: %s.%sB%s\n\n",mConfig["ExeName"].c_str(),
+		Console().Message("%s %s, Libs: %s.%sR%s\n%s",mConfig["ExeName"].c_str(),
                                                   mConfig["ExeVersion"].c_str(),
                                                   mConfig["BuildVersionMajor"].c_str(),
                                                   mConfig["BuildVersionMinor"].c_str(),
-                                                  mConfig["BuildRevision"].c_str());
+                                                  mConfig["BuildRevision"].c_str(),
+                                                  mConfig["ConsoleBanner"].c_str());
+	else
+		Console().Message("%s %s, Libs: %s.%sB%s\n",mConfig["ExeName"].c_str(),
+                                                mConfig["ExeVersion"].c_str(),
+                                                mConfig["BuildVersionMajor"].c_str(),
+                                                mConfig["BuildVersionMinor"].c_str(),
+                                                mConfig["BuildRevision"].c_str());
 
 	LoadParameters();
 
@@ -1231,9 +1231,7 @@ void Application::ExtractUser()
   }
 }
 
-
 #if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
-
 void SimplifyPath(std::string& sPath)
 {
 	// remove all unnecessary '/./' from sPath
@@ -1267,90 +1265,106 @@ std::string Application::FindHomePath(const char* sCall)
 	char szDir[1024];
 	if ( getcwd(szDir, sizeof(szDir)) == NULL)
 		return homePath;
-
 	cwd = szDir;
 
-	// absolute path
-	if ( argv[0] == PATHSEP )
-	{
-		absPath = argv;
-#ifdef FC_DEBUG
-		printf("Absolute path: %s\n", absPath.c_str());
-#endif
-	}
-	// relative path
-	else if ( argv.find(PATHSEP) != std::string::npos )
-	{
-		absPath = cwd + PATHSEP + argv;
-#ifdef FC_DEBUG
-		printf("Relative path: %s\n", argv.c_str());
-		printf("Absolute path: %s\n", absPath.c_str());
-#endif
-	}
-	// check PATH
-	else
-	{
-#ifdef FC_DEBUG
-		printf("Searching in PATH variable...");
-#endif
-		const char *pEnv = getenv( "PATH" );
+  // Called from Python
+  if (Py_IsInitialized()) {
+    PyObject* path_importer_cache = PySys_GetObject("path_importer_cache");
+    if (path_importer_cache && PyDict_Check(path_importer_cache)) {
+      PyObject *key, *value;
+      int pos = 0;
+      while (PyDict_Next(path_importer_cache, &pos, &key, &value)) {
+        const char* KeyName = PyString_AsString(key);
+			  std::string test = std::string(KeyName) + PATHSEP + argv;
 
-		if ( pEnv )
-		{
-			std::string path = pEnv;
-			std::vector<std::string> paths;
-
-			// split into each component
-			std::string::size_type start = 0;
-			std::string::size_type npos = path.find(':', start);
-			while ( npos != std::string::npos )
-			{
-				std::string tmp = path.substr(start, npos - start);
-				paths.push_back( path.substr(start, npos - start) );
-				start = npos + 1;
-				npos = path.find(':', start);
-			}
-
-			// append also last component
-			paths.push_back( path.substr(start) );
-
-			for (std::vector<std::string>::const_iterator it = paths.begin(); it != paths.end(); ++it)
-			{
-				std::string test = *it + PATHSEP + argv;
-
-				// no abs. path
-				if ( test[0] != PATHSEP )
-					test = cwd + PATHSEP + test;
-
-				// does it exist?
+			  // does it exist?
 #if defined (__GNUC__)
-				if ( access(test.c_str(), 0) == 0 )
+ 				if ( access(test.c_str(), 0) == 0 )
 #else
-				if ( _access(test.c_str(), 0) == 0 )
+ 				if ( _access(test.c_str(), 0) == 0 )
 #endif
-				{
-					absPath = test;
-#ifdef FC_DEBUG
-					printf("found.\n");
-					printf("Absolute path: %s\n", absPath.c_str());
-#endif
-					break;
+			  {
+				  absPath = test;
+          if (KeyName == "")
+            absPath = cwd + PATHSEP + absPath;
+  			  break;
 				}
-			}
-		}
-	}
+      }
+    }
+  } else {
+	  // absolute path
+	  if ( argv[0] == PATHSEP )
+	  {
+		  absPath = argv;
+#ifdef FC_DEBUG
+  		printf("Absolute path: %s\n", absPath.c_str());
+#endif
+	  }
+	  // relative path
+	  else if ( argv.find(PATHSEP) != std::string::npos )
+	  {
+		  absPath = cwd + PATHSEP + argv;
+#ifdef FC_DEBUG
+		  printf("Relative path: %s\n", argv.c_str());
+		  printf("Absolute path: %s\n", absPath.c_str());
+#endif
+	  }
+	  // check PATH
+	  else
+	  {
+#ifdef FC_DEBUG
+  		printf("Searching in PATH variable...");
+#endif
+		  const char *pEnv = getenv( "PATH" );
 
-  // neither an absolute path in the specified call nor a relative path nor a call in PATH (maybe called from within Python)
-  if ( absPath.empty() )
-  {
-  	// get the current working directory
-    absPath = cwd;
-		std::string::size_type pos = absPath.find_last_of(PATHSEP);
-		homePath.assign(absPath,0,pos);
-    homePath += PATHSEP;
+		  if ( pEnv )
+		  {
+			  std::string path = pEnv;
+			  std::vector<std::string> paths;
+
+			  // split into each component
+			  std::string::size_type start = 0;
+			  std::string::size_type npos = path.find(':', start);
+			  while ( npos != std::string::npos )
+			  {
+				  std::string tmp = path.substr(start, npos - start);
+				  paths.push_back( path.substr(start, npos - start) );
+				  start = npos + 1;
+				  npos = path.find(':', start);
+			  }
+
+			  // append also last component
+			  paths.push_back( path.substr(start) );
+
+			  for (std::vector<std::string>::const_iterator it = paths.begin(); it != paths.end(); ++it)
+			  {
+				  std::string test = *it + PATHSEP + argv;
+
+				  // no abs. path
+				  if ( test[0] != PATHSEP )
+					  test = cwd + PATHSEP + test;
+
+				  // does it exist?
+#if defined (__GNUC__)
+  				if ( access(test.c_str(), 0) == 0 )
+#else
+  				if ( _access(test.c_str(), 0) == 0 )
+#endif
+				  {
+					  absPath = test;
+#ifdef FC_DEBUG
+					  printf("found.\n");
+					  printf("Absolute path: %s\n", absPath.c_str());
+#endif
+					  break;
+				  }
+			  }
+		  }
+	  }
   }
+
 	// should be an absolute path now
-	else if (absPath[0] == PATHSEP)
+	if (absPath[0] == PATHSEP)
 	{
 		SimplifyPath( absPath );
 		std::string::size_type pos = absPath.find_last_of(PATHSEP);
@@ -1360,18 +1374,14 @@ std::string Application::FindHomePath(const char* sCall)
 	}
 	else
 	{
+    // neither an absolute path in the specified call nor a relative path nor a call in PATH or PYTHONPATH
 		printf("ERROR: no valid home path! (%s)\n", absPath.c_str());
 		exit(0);
 	}
 
 	return homePath;
 }
-
-
-#endif
-
-#ifdef FC_OS_WIN32
-//std::string FindHomePathWin32(HANDLE hModule)
+#elif defined (FC_OS_WIN32)
 std::string Application::FindHomePath(const char* sCall)
 {
   // We have three ways to start this application either use one of the both executables or
@@ -1398,71 +1408,6 @@ std::string Application::FindHomePath(const char* sCall)
 
 	return TempHomePath;
 }
+#else
+# error "std::string Application::FindHomePath(const char*) not implemented"
 #endif
-
-
-
-
-//void Application::CheckEnv(void)
-//{
-//	// set the OpenCasCade plugin variables to the FreeCAD bin path.
-//	EnvMacro::SetPluginDefaults(mConfig["HomePath"].c_str());
-//
-//	// sets all needed varables if a FreeCAD LibPack is found
-//	if(mConfig["FreeCADLib"] != "")
-//	{
-//		// sets the python environment variables if the FREECADLIB variable is defined
-//		EnvMacro::SetPythonToFreeCADLib(mConfig["FreeCADLib"].c_str());
-//
-//		// sets the OpenCasCade environment variables if the FREECADLIB variable is defined
-//		EnvMacro::SetCasCadeToFreeCADLib(mConfig["FreeCADLib"].c_str());
-//	}
-//
-//	cout << flush;
-//
-//	bool bFailure=false;
-///*
-//  //TODO: Do we need this OCC stuff? (Werner)
-//  //
-//	EnvMacro::TestEnvExists("CSF_MDTVFontDirectory",bFailure);
-//	EnvMacro::TestEnvExists("CSF_MDTVTexturesDirectory",bFailure);
-//	EnvMacro::TestEnvExists("CSF_UnitsDefinition",bFailure);
-//	EnvMacro::TestEnvExists("CSF_UnitsLexicon",bFailure);
-//*/
-//
-//  if (bFailure) {
-//     		cerr<<"Environment Error(s)"<<endl<<sEnvErrorText1;
-//		exit(1);
-//	}
-//}
-
-//**************************************************************************
-// Observer stuff
-
-/*
-void Application::AttachObserver(ApplicationObserver *pcObserver)
-{
-	// double insert !!
-	assert(_aclObservers.find(pcObserver) == _aclObservers.end() );
-
-	_aclObservers.insert(pcObserver);
-}
-
-void Application::DetachObserver(ApplicationObserver *pcObserver)
-{
-	_aclObservers.erase(pcObserver);
-}
-
-void Application::NotifyDocNew(Document* pcDoc)
-{
-	for(std::set<ApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
-        (*Iter)->OnDocNew(pcDoc);   // send doc to the listener
-}
-
-void Application::NotifyDocDelete(Document* pcDoc)
-{
-	for(std::set<ApplicationObserver * >::iterator Iter=_aclObservers.begin();Iter!=_aclObservers.end();Iter++)
-        (*Iter)->OnDocDelete(pcDoc);   // send doc to the listener
-}
-*/ 
-
