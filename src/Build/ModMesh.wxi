@@ -28,6 +28,7 @@
 		  <File Id='MeshInitGuiPy' Name='InitGui.py'   DiskId='1' />
 		  <File Id='Meshpyd'       Name='Mesh.pyd'    DiskId='1' />
 		  <File Id='MeshGuipyd'    Name='MeshGui.pyd' DiskId='1' />
+		  <File Id='BuildRegpy'    Name='BldRegGe.py' LongName='BuildRegularGeoms.py' DiskId='1' />
 	   </Component>
 	</Directory>
 </Include>
