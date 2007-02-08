@@ -92,6 +92,8 @@ extern "C" {
 #else
   strcpy(argv[0],"FreeCAD.pyd");
 #endif
+#elif defined(FC_OS_LINUX)
+  strcpy(argv[0],"FreeCAD.so");
 #else
   strcpy(argv[0],"FreeCAD");
 #endif
