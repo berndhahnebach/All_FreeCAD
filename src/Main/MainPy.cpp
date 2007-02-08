@@ -68,6 +68,7 @@ extern "C" {
 
 	// Init phase ===========================================================
   App::Application::Config()["ExeName"] = "FreeCAD";
+  App::Application::Config()["ExeVersion"] = "0.3";
 
   // Version of the Application. Extractet of SubWCRef into src/Build/Version.h
   App::Application::Config()["BuildVersionMajor"]  = FCVersionMajor;
@@ -92,11 +93,7 @@ extern "C" {
   strcpy(argv[0],"FreeCAD.pyd");
 #endif
 #else
-#ifdef FC_DEBUG
-  strcpy(argv[0],"FreeCAD_d");
-#else
   strcpy(argv[0],"FreeCAD");
-#endif
 #endif
   argv[argc] = 0;
 
