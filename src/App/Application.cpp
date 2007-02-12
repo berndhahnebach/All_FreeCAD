@@ -31,6 +31,7 @@
 # include <sstream>
 # ifdef FC_OS_LINUX
 # include <time.h>
+# include <unistd.h>
 # endif
 #endif
 
@@ -1231,7 +1232,43 @@ void Application::ExtractUser()
   }
 }
 
-#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+#if defined (FC_OS_LINUX)
+std::string Application::FindHomePath(const char* sCall)
+{
+  // We have three ways to start this application either use one of the both executables or
+  // import the FreeCAD.pyd module from a running Python session. In the latter case the 
+  // Python interpreter is already initialized.
+  std::string Call, TempHomePath;
+  if (Py_IsInitialized()) {
+    // sCall must already be the right path. See also MainPy.cpp
+    // Possibly we get only a relative path then we need to prepend the cwd
+    if (sCall[0] != '/') {
+      // get the current working directory
+      char szDir[PATH_MAX];
+      getcwd(szDir, sizeof(szDir));
+      Call = szDir;
+      Call += '/';
+      Call += sCall;
+    } else {
+      Call = sCall;
+    }
+  } else {
+    // Find the path of the executable
+    char szDir[PATH_MAX];
+    int n = readlink("/proc/self/exe", szDir, PATH_MAX);
+    if (n != -1) {
+      Call = szDir;
+    }
+  }
+
+  std::string::size_type pos = Call.find_last_of(PATHSEP);
+  TempHomePath.assign(Call,0,pos);
+  pos = TempHomePath.find_last_of(PATHSEP);
+  TempHomePath.assign(TempHomePath,0,pos+1);
+
+  return TempHomePath;
+}
+#elif defined(FC_OS_CYGWIN)
 void SimplifyPath(std::string& sPath)
 {
 	// remove all unnecessary '/./' from sPath

@@ -62,14 +62,14 @@ PyTypeObject App::DocumentObjectGroupPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About DocumentObjectGroup",                             /*tp_doc */
+  "About DocumentObjectGroup",                      /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  0,                                                /*tp_methods */
+  App::DocumentObjectGroupPy::Methods,              /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
   &App::FeaturePy::Type,                            /*tp_base */

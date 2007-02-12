@@ -72,7 +72,7 @@ PyTypeObject MeshFeaturePy::Type = {
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  0,                                                /*tp_methods */
+  MeshFeaturePy::Methods,                           /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
   &App::FeaturePy::Type,                            /*tp_base */
@@ -116,7 +116,7 @@ PyMethodDef MeshFeaturePy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject MeshFeaturePy::Parents[] = {&PyObjectBase::Type,&App::FeaturePy::Type, NULL};     
+PyParentObject MeshFeaturePy::Parents[] = {&PyObjectBase::Type, &App::DocumentObjectPy::Type, &App::FeaturePy::Type, NULL};     
 
 //--------------------------------------------------------------------------
 // constructor
