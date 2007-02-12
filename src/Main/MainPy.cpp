@@ -21,7 +21,7 @@
  *                                                                         *
  *   Juergen Riegel 2002                                                   *
  ***************************************************************************/
-#include "../FCConfig.h"
+#include <FCConfig.h>
 
 #ifdef _PreComp_
 # undef _PreComp_
@@ -40,22 +40,43 @@
 
 
 // FreeCAD Base header
-#include "../Base/Console.h"
-#include "../Base/Interpreter.h"
-#include "../Base/Parameter.h"
-#include "../Base/Exception.h"
-#include "../Base/Factory.h"
+#include <Base/Exception.h>
+#include <App/Application.h>
 
-// FreeCAD doc header
-#include "../App/Application.h"
-
-// If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
-// which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
-#include "../Build/Version.h"
-
-using App::Application;
+// If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script 
+// "SubWCRev.py" on Linux based systems which builds src/Build/Version.h. Or create your own from 
+// src/Build/Version.h.in!
+#include <Build/Version.h>
 
 
+#if defined(FC_OS_WIN32)
+# include <windows.h>
+
+/** DllMain is called when DLL is loaded
+ */
+BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserved)
+{
+    switch (ul_reason_for_call) {
+    case DLL_PROCESS_ATTACH:
+      {
+        // This name is preliminary, we pass it to Application::init() in initFreeCAD()
+        // which does the rest.
+	      char  szFileName [MAX_PATH];
+	      GetModuleFileName((HMODULE)hModule, szFileName, MAX_PATH-1);
+        App::Application::Config()["HomePath"] = szFileName;
+      } break;
+    default:
+      break;
+    }
+    
+    return TRUE;
+}
+#elif defined(FC_OS_LINUX)
+# ifndef GNU_SOURCE
+#   define GNU_SOURCE
+# endif
+# include <dlfcn.h>
+#endif
 
 #ifdef FC_OS_WIN32
 #	define MainExport __declspec(dllexport)
@@ -87,15 +108,19 @@ extern "C" {
   argv[0] = (char*)malloc(1024);
 
 #if defined(FC_OS_WIN32)
-#ifdef FC_DEBUG
-  strcpy(argv[0],"FreeCAD_d.pyd");
-#else
-  strcpy(argv[0],"FreeCAD.pyd");
-#endif
+  strcpy(argv[0],App::Application::Config()["HomePath"].c_str());
 #elif defined(FC_OS_LINUX)
-  strcpy(argv[0],"FreeCAD.so");
+  // get whole path of the library
+  Dl_info info;
+  int ret = dladdr((void*)initFreeCAD, &info);
+  if ((ret == 0) || (!info.dli_fname)) {
+    PyErr_SetString(PyExc_ImportError, "Cannot get path of the FreeCAD module!");
+    return;
+  }
+
+  strcpy(argv[0], info.dli_fname);
 #else
-  strcpy(argv[0],"FreeCAD");
+# error "Implement: Retrieve the path of the module for your platform."
 #endif
   argv[argc] = 0;
 

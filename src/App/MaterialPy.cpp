@@ -27,9 +27,9 @@
 # include <sstream>
 #endif
 
-#include "../Base/PyExportImp.h"
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
+#include <Base/PyExportImp.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
 using Base::Console;
 
 #include "Material.h"
@@ -62,15 +62,52 @@ PyTypeObject App::MaterialPy::Type = {
 	0,						/*tp_as_mapping*/
 	0,						/*tp_hash*/
 	0,						/*tp_call */
+  0,                                                /*tp_str  */
+  0,                                                /*tp_getattro*/
+  0,                                                /*tp_setattro*/
+  /* --- Functions to access object as input/output buffer ---------*/
+  0,                                                /* tp_as_buffer */
+  /* --- Flags to define presence of optional/expanded features */
+  Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
+  "About Material",                                 /*tp_doc */
+  0,                                                /*tp_traverse */
+  0,                                                /*tp_clear */
+  0,                                                /*tp_richcompare */
+  0,                                                /*tp_weaklistoffset */
+  0,                                                /*tp_iter */
+  0,                                                /*tp_iternext */
+  MaterialPy::Methods,                              /*tp_methods */
+  0,                                                /*tp_members */
+  0,                                                /*tp_getset */
+  &Base::PyObjectBase::Type,                        /*tp_base */
+  0,                                                /*tp_dict */
+  0,                                                /*tp_descr_get */
+  0,                                                /*tp_descr_set */
+  0,                                                /*tp_dictoffset */
+  0,                                                /*tp_init */
+  0,                                                /*tp_alloc */
+  0,                                                /*tp_new */
+  0,                                                /*tp_free   Low-level free-memory routine */
+  0,                                                /*tp_is_gc  For PyObject_IS_GC */
+  0,                                                /*tp_bases */
+  0,                                                /*tp_mro    method resolution order */
+  0,                                                /*tp_cache */
+  0,                                                /*tp_subclasses */
+  0                                                 /*tp_weaklist */
 };
+
+PyDoc_STRVAR(Material_set_doc,
+"Set(string) -- Set the material.\n"
+"\n"
+"The material must be one of the following values:\n"
+"Brass, Bronze, Copper, Gold, Pewter, Plaster, Plastic, Silver, Steel, Stone, Shiny plastic,\n"
+"Satin, Metalized, Neon GNC, Chrome, Aluminium, Obsidian, Neon PHC, Jade, Ruby or Emerald.\n");
 
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef App::MaterialPy::Methods[] = {
-//  {"Undo",         (PyCFunction) sPyUndo,         Py_NEWARGS},
-	PYMETHODEDEF(set)
-
+  {"set", (PyCFunction) sset, 1, Material_set_doc},
 	{NULL, NULL}		/* Sentinel */
 };
 

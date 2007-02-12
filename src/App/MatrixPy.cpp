@@ -80,7 +80,7 @@ PyTypeObject App::MatrixPy::Type = {
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  0,                                                /*tp_methods */
+  MatrixPy::Methods,                                /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
   &Base::PyObjectBase::Type,                        /*tp_base */
