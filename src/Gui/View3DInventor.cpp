@@ -97,7 +97,7 @@ View3DInventor::View3DInventor( Gui::Document* pcDocument, QWidget* parent, cons
   //_viewer->show();
 
   stopSpinTimer = new QTimer(this);
-  connect(stopSpinTimer, SIGNAL(timeout()), this, SLOT(stopSpinning()));
+  connect(stopSpinTimer, SIGNAL(timeout()), this, SLOT(stopAnimating()));
 }
 
 View3DInventor::~View3DInventor()
@@ -528,7 +528,7 @@ void View3DInventor::showActiveView( MDIView* view )
     bool canStartTimer = (!isTopLevel() && (view->isMaximized() || view->isFullScreen()));
     if ( canStartTimer ) {
       // do a sinlge shot event (maybe insert a checkbox in viewer settings)
-      int msecs = hGrp->GetInt("StopSpinningIfDeactivated", 3000);
+      int msecs = hGrp->GetInt("stopAnimatingIfDeactivated", 3000);
       if (msecs >= 0) // if < 0 do not stop rotation
         stopSpinTimer->start(msecs, true);
     } else if ( stopSpinTimer->isActive() ) {
@@ -541,9 +541,9 @@ void View3DInventor::showActiveView( MDIView* view )
   }
 }
 
-void View3DInventor::stopSpinning()
+void View3DInventor::stopAnimating()
 {
-  _viewer->stopSpinning();
+  _viewer->stopAnimating();
 }
 
 /**

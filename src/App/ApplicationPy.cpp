@@ -369,22 +369,15 @@ PYFUNCIMP_S(Application,sGetConfig)
 
 PYFUNCIMP_S(Application,sDumpConfig)
 {
+  if (!PyArg_ParseTuple(args, "") )    // convert args: Python->C 
+    return NULL;                             // NULL triggers exception 
 
-    if (!PyArg_ParseTuple(args, "") )    // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-
-	std::string str;
+  PyObject *dict = PyDict_New();
 	for(std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();It!=GetApplication()._mConfig.end();It++)
 	{
-		str += It->first ;
-		int size = It->first.size();
-		for(int l = 0; l < (28-size) ; l++)
-			str += " ";
-
-		str += "= " + It->second + "\r\n";
+    PyDict_SetItemString(dict,It->first.c_str(), PyString_FromString(It->second.c_str()));
 	}
-	return Py_BuildValue("s",str.c_str());
-		
+	return dict;		
 }
 
 PYFUNCIMP_S(Application,sSetConfig)

@@ -25,17 +25,6 @@
  
 #ifndef _PreComp_
 # include <float.h>
-# include <qapplication.h>
-# include <qcursor.h>
-# include <qfile.h>
-# include <qfileinfo.h>
-# include <qimage.h>
-# include <qmessagebox.h>
-# include <qpainter.h>
-# include <qpen.h>
-# include <q3popupmenu.h>
-//Added by qt3to4:
-#include <QEvent>
 # ifdef FC_OS_WIN32
 #  include <windows.h>
 # endif
@@ -107,6 +96,8 @@
 
 //#define FC_LOGGING_CB
 
+#define new DEBUG_CLIENTBLOCK
+
 using namespace Gui;
 
 /** \defgroup View3D 3d Viewer
@@ -161,7 +152,7 @@ void View3DInventorViewer::removeViewProvider(ViewProvider* pcProvider)
 }
 
 View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, SbBool embed, Type type, SbBool build) 
-  :inherited (parent, name, embed, type, build), MenuEnabled(TRUE), pcMouseModel(0)
+  : inherited (parent, name, embed, type, build), MenuEnabled(TRUE), pcMouseModel(0), editing(FALSE)
 {
   Gui::Selection().Attach(this);
 
@@ -169,34 +160,14 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   // is not removed.
   this->setClearBeforeRender(FALSE);
   
-  // seting up the defaults for the spin roatation
-  prevRedrawTime = SbTime::getTimeOfDay();
-  spinanimatingallowed = TRUE;
-  spinsamplecounter = 0;
-  spinincrement = SbRotation::identity();
+  // setting up the defaults for the spin rotation
+  initialize();
 
-  spinprojector = new SbSphereSheetProjector(SbSphere(SbVec3f(0, 0, 0), 0.8f));
-  SbViewVolume volume;
-  volume.ortho(-1, 1, -1, 1, -1, 1);
-  spinprojector->setViewVolume(volume);
-
-  _bSpining = false;
   _bRejectSelection = false;
-
-  axiscrossEnabled = true;
-  axiscrossSize = 10;
-
-  spinRotation.setValue(SbVec3f(0, 0, -1), 0);
-
-  log.size = 16;
-  log.position = new SbVec2s [ 16 ];
-  log.time = new SbTime [ 16 ];
-  log.historysize = 0;
 
   SoOrthographicCamera * cam = new SoOrthographicCamera;
   cam->position = SbVec3f(0, 0, 1);
   cam->height = 1;
-  // SoImage will be at z==0.0.
   cam->nearDistance = 0.5;
   cam->farDistance = 1.5;
 
@@ -233,18 +204,12 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   this->foregroundroot->addChild(bc);
 
   // set the ViewProvider root
-  /*
-  pcSelection        = new SoSelection();
-  pcSelection->addFinishCallback(View3DInventorViewer::sFinishSelectionCallback,this);
-  pcSelection->addSelectionCallback( View3DInventorViewer::sMadeSelection, this );
-  pcSelection->addDeselectionCallback( View3DInventorViewer::sUnmadeSelection, this );
-*/
   pcViewProviderRoot = new SoSeparator();
 
   // increase refcount before passing it to setScenegraph(), to avoid
   // premature destruction
   pcViewProviderRoot->ref();
-  // is not realy working with Coin3D. 
+  // is not really working with Coin3D. 
 //  redrawOverlayOnSelectionChange(pcSelection);
   setSceneGraph(pcViewProviderRoot);
 
@@ -266,6 +231,7 @@ View3DInventorViewer::View3DInventorViewer (QWidget *parent, const char *name, S
   if ( isSeekValuePercentage() == false )
     setSeekValueAsPercentage(true);
   setSeekDistance(50);
+  setViewing(false);
 
   setBackgroundColor(SbColor(0.1f, 0.1f, 0.1f));
   setGradientBackgroud(true);
@@ -297,11 +263,6 @@ void View3DInventorViewer::setEnabledFPSCounter(bool b)
 #endif
 }
 
-void View3DInventorViewer::stopSpinning()
-{
-  _bSpining = false;
-}
-
 View3DInventorViewer::~View3DInventorViewer()
 {
   // cleanup
@@ -316,16 +277,52 @@ View3DInventorViewer::~View3DInventorViewer()
   this->pcViewProviderRoot->unref();
   this->pcViewProviderRoot = 0;
 
-  delete log.position;
-  delete log.time;
-
-  delete spinprojector;
+  finalize();
 
   // Note: When closing the application the main window doesn't exists any more.
   if (getMainWindow()) 
     getMainWindow()->setPaneText(2, "");
 
   Gui::Selection().Detach(this);
+}
+
+void View3DInventorViewer::initialize()
+{
+  this->currentmode = View3DInventorViewer::IDLE;
+
+  this->prevRedrawTime = SbTime::getTimeOfDay();
+  this->spinanimatingallowed = TRUE;
+  this->spinsamplecounter = 0;
+  this->spinincrement = SbRotation::identity();
+
+  // FIXME: use a smaller sphere than the default one to have a larger
+  // area close to the borders that gives us "z-axis rotation"?
+  // 19990425 mortene.
+  this->spinprojector = new SbSphereSheetProjector(SbSphere(SbVec3f(0, 0, 0), 0.8f));
+  SbViewVolume volume;
+  volume.ortho(-1, 1, -1, 1, -1, 1);
+  this->spinprojector->setViewVolume(volume);
+
+  this->axiscrossEnabled = TRUE;
+  this->axiscrossSize = 10;
+
+  this->spinRotation.setValue(SbVec3f(0, 0, -1), 0);
+
+  this->log.size = 16;
+  this->log.position = new SbVec2s [ 16 ];
+  this->log.time = new SbTime [ 16 ];
+  this->log.historysize = 0;
+  this->button1down = FALSE;
+  this->button3down = FALSE;
+  this->ctrldown = FALSE;
+  this->shiftdown = FALSE;
+}
+
+void View3DInventorViewer::finalize()
+{
+  delete this->spinprojector;
+  delete[] this->log.position;
+  delete[] this->log.time;
 }
 
 void View3DInventorViewer::clearBuffer(void * userdata, SoAction * action)
@@ -494,30 +491,6 @@ bool View3DInventorViewer::dumpToFile( const char* filename, bool binary ) const
   return ret;
 }
 
-void View3DInventorViewer::sizeChanged( const SbVec2s& size )
-{
-  // searching in the background node
-//  if ( this->backgroundroot->getNumChildren() > 1 ) {
-//    SoNode* child = this->backgroundroot->getChild(1);
-//    if ( child && child->getTypeId() == SoFCBackgroundGradient::getClassTypeId() )
-//    {
-//      reinterpret_cast<SoFCBackgroundGradient*>(child)->setViewerSize( size );
-//    }
-//  }
-//  
-//  // searching in the foreground node
-//  for ( int i=0; i<this->foregroundroot->getNumChildren(); i++ )
-//  {
-//    SoNode* child = this->foregroundroot->getChild(i);
-//    if ( child && child->getTypeId().isDerivedFrom( SoFCColorBarBase::getClassTypeId() ) )
-//    {
-//      reinterpret_cast<SoFCColorBarBase*>(child)->setViewerSize( size );
-//    }
-//  }
-
-  inherited::sizeChanged( size );
-}
-
 /**
  * Sets the SoFCInteractiveElement to \a true.
  */
@@ -545,6 +518,9 @@ void View3DInventorViewer::interactionLoggerCB(void * ud, SoAction* action)
   Base::Console().Log("%s\n", action->getTypeId().getName().getString());
 }
 
+// Documented in superclass. Overrides this method to be able to draw
+// the axis cross, if selected, and to keep a continuous animation
+// upon spin.
 void View3DInventorViewer::actualRedraw(void)
 {
   // Must set up the OpenGL viewport manually, as upon resize
@@ -568,10 +544,10 @@ void View3DInventorViewer::actualRedraw(void)
   double secs = now.getValue() -  prevRedrawTime.getValue();
   prevRedrawTime = now;
 
-  if (_bSpining) {
-    SbRotation deltaRotation = spinRotation;
+  if (this->isAnimating()) {
+    SbRotation deltaRotation = this->spinRotation;
     deltaRotation.scaleAngle(secs * 5.0);
-    reorientCamera(deltaRotation);
+    this->reorientCamera(deltaRotation);
   }
 
   try {
@@ -585,18 +561,32 @@ void View3DInventorViewer::actualRedraw(void)
     QMessageBox::warning(getParentWidget(), e.what(), QObject::tr("Not enough memory available to display the data."));
   }
 
-
   // Render overlay front scenegraph.
   glClear(GL_DEPTH_BUFFER_BIT);
   glra->apply(this->foregroundroot);
 
-  if(bDrawAxisCross)
-    drawAxisCross();
-  
-  if (_bSpining)
-    scheduleRedraw();  
+  if (bDrawAxisCross) { this->drawAxisCross(); }
+
+  // Immediately reschedule to get continous spin animation.
+  if (this->isAnimating()) { this->scheduleRedraw(); }
+
   printDimension();
-} 
+}
+
+void View3DInventorViewer::setSeekMode(SbBool on)
+{
+  // Overrides this method to make sure any animations are stopped
+  // before we go into seek mode.
+
+  // Note: this method is almost identical to the setSeekMode() in the
+  // SoQtFlyViewer and SoQtPlaneViewer, so migrate any changes.
+
+  if (this->isAnimating()) { this->stopAnimating(); }
+  inherited::setSeekMode(on);
+  this->setMode(on ? View3DInventorViewer::SEEK_WAIT_MODE :
+                     (this->isViewing() ?
+                     View3DInventorViewer::IDLE : View3DInventorViewer::INTERACT));
+}
 
 void View3DInventorViewer::printDimension()
 {
@@ -670,50 +660,84 @@ void View3DInventorViewer::processEvent(QEvent * event)
 
 SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
 {
-  static bool SelectionMode=false;
-  static bool PanMode=false;
-  static bool ZoomMode=false;
-  static bool RotMode =false;
-  static bool dCliBut3=false;
-  static SbVec2s posMidPress;
+  // If we're in picking mode then all events must be redirected to the
+  // appropriate mouse model.
+  if (pcMouseModel) {
+    int hd=pcMouseModel->handleEvent(ev,this->getViewportRegion());
+    if (hd==AbstractMouseModel::Continue||hd==AbstractMouseModel::Restart) {
+      return TRUE;
+    } else if (hd==AbstractMouseModel::Finish) {
+      pcPolygon = pcMouseModel->getPolygon();
+      delete pcMouseModel; pcMouseModel = 0;
+    } else if (hd==AbstractMouseModel::Cancel) {
+      pcPolygon.clear();
+      delete pcMouseModel; pcMouseModel = 0;
+    }
+  }
+  // Events when in "ready-to-seek" mode are ignored, except those
+  // which influence the seek mode itself -- these are handled further
+  // up the inheritance hierarchy.
+  if (this->isSeekMode()) { return inherited::processSoEvent(ev); }
 
-  //Base::Console().Log("Evnt: %s\n",ev->getTypeId().getName().getString());
-  bool processed = false;
-  if ( !isSeekMode() && isViewing() )
-    setViewing( false ); // by default disable viewing mode to render the scene
+  const SoType type(ev->getTypeId());
 
-  // Keybooard handling
-  if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
-    SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
-    int State = ke->getState();
-    switch (ke->getKey()) {
-    case SoKeyboardEvent::LEFT_ALT:
-    case SoKeyboardEvent::RIGHT_ALT:
-      break;
+  const SbVec2s size(this->getGLSize());
+  const SbVec2f prevnormalized = this->lastmouseposition;
+  const SbVec2s pos(ev->getPosition());
+  const SbVec2f posn((float) pos[0] / (float) SoQtMax((int)(size[0] - 1), 1),
+                     (float) pos[1] / (float) SoQtMax((int)(size[1] - 1), 1));
+
+  this->lastmouseposition = posn;
+
+  // Set to TRUE if any event processing happened. Note that it is not
+  // necessary to restrict ourselves to only do one "action" for an
+  // event, we only need this flag to see if any processing happened
+  // at all.
+  SbBool processed = FALSE;
+
+  // If we are in editing mode then all events must be redirected to the view providers
+  if (this->editing) {
+    std::set<ViewProvider*>::iterator It;
+    for (It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
+      processed = (*It)->handleEvent(ev,*this);
+  }
+
+  if (processed)
+    return TRUE;
+
+  const ViewerMode currentmode = this->currentmode;
+  ViewerMode newmode = currentmode;
+
+  // Mismatches in state of the modifier keys happens if the user
+  // presses or releases them outside the viewer window.
+  if (this->ctrldown != ev->wasCtrlDown()) {
+    this->ctrldown = ev->wasCtrlDown();
+  }
+  if (this->shiftdown != ev->wasShiftDown()) {
+    this->shiftdown = ev->wasShiftDown();
+  }
+
+  // Keyboard handling
+  if (type.isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
+    const SoKeyboardEvent * const event = (const SoKeyboardEvent *) ev;
+    const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
+    switch (event->getKey()) {
     case SoKeyboardEvent::LEFT_CONTROL:
     case SoKeyboardEvent::RIGHT_CONTROL:
-      if(State == SoButtonEvent::UP)
-        SelectionMode = false;
-      else{
-        PanMode = false;
-        ZoomMode = false;
-        _bSpining = false;
-        SelectionMode =true;
-        getWidget()->setCursor(QCursor( Qt::ArrowCursor ));
-      }
+      this->ctrldown = press;
       break;
     case SoKeyboardEvent::LEFT_SHIFT:
     case SoKeyboardEvent::RIGHT_SHIFT:
+      this->shiftdown = press;
       break;
     case SoKeyboardEvent::H:
+      processed = TRUE;
       this->saveHomePosition();
-      processed = true;
       break;
     case SoKeyboardEvent::Q: // ignore 'Q' keys (to prevent app from being closed)
-      processed = true;
+      processed = TRUE;
       break;
     case SoKeyboardEvent::S:
-      // processSoEvent() of the base class sets the seekMode() if needed
     case SoKeyboardEvent::HOME:
     case SoKeyboardEvent::LEFT_ARROW:
     case SoKeyboardEvent::UP_ARROW:
@@ -727,18 +751,9 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     }
   }
 
-
-  const SbVec2s size(this->getGLSize());
-  const SbVec2f prevnormalized = lastmouseposition;
-  const SbVec2s pos(ev->getPosition());
-  const SbVec2f posn((float) pos[0] / (float) SoQtMax((int)(size[0] - 1), 1),
-                     (float) pos[1] / (float) SoQtMax((int)(size[1] - 1), 1));
-  
-//  SbVec2s MovePos;
-  lastmouseposition = posn;
-
-  // switching the mouse modes
-  if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+  // Mouse Button / Spaceball Button handling
+  if (type.isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
+    processed = TRUE;
 
     const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
     const int button = event->getButton();
@@ -747,112 +762,37 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     // SoDebugError::postInfo("processSoEvent", "button = %d", button);
     switch (button) {
     case SoMouseButtonEvent::BUTTON1:
-      if(SelectionMode){
-        PanMode = false;
-        ZoomMode = false;
-        _bSpining = false;
-        break;
-      }
-
-      if(press)
-      {
-        RotMode = true;
-        ZoomMode = false;
-        _bSpining = false;
-
-        MoveTime = ev->getTime();
-
-        // Set up initial projection point for the projector object when
-        // first starting a drag operation.
-        spinprojector->project(lastmouseposition);
-        //interactiveCountInc();
-        clearLog();
-
-        getWidget()->setCursor( QCursor( Qt::PointingHandCursor ) );
-        processed = true;
-        
-      }
-      else
-      {
-        RotMode = false; 
-        ZoomMode = false;
-
-        getWidget()->setCursor(QCursor( Qt::ArrowCursor ));
-
-        SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
-        panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
-       
-        // check on start spining
-        SbTime stoptime = (ev->getTime() - log.time[0]);
-        if (bAllowSpining && stoptime.getValue() < 0.100) {
-          const SbVec2s glsize(this->getGLSize());
-          SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
-                                                        float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
-          SbVec3f to = spinprojector->project(posn);
-          SbRotation rot = spinprojector->getRotation(from, to);
-
-          SbTime delta = (log.time[0] - log.time[2]);
-          double deltatime = delta.getValue();
-          rot.invert();
-          rot.scaleAngle(float(0.200 / deltatime));
-
-          SbVec3f axis;
-          float radians;
-          rot.getValue(axis, radians);
-          float dci = (float)QApplication::doubleClickInterval()/1000.0f;
-          if ((radians > 0.01f) && (deltatime < dci/*0.300*/)) {
-            _bSpining = true;
-            spinRotation = rot;
-            //MoveMode = false;
-            // restore the previous cursor
-            getWidget()->setCursor(QCursor( Qt::ArrowCursor ));
-          }
-        }
-        
-        processed = true;
-       
+      this->button1down = press;
+      if (press && (this->currentmode == View3DInventorViewer::SEEK_WAIT_MODE)) {
+        newmode = View3DInventorViewer::SEEK_MODE;
+        this->seekToPoint(pos); // implicitly calls interactiveCountInc()
+      } else if (press && (this->currentmode == View3DInventorViewer::IDLE)) {
+        setViewing(true);
+      } else if (!press && (this->currentmode == View3DInventorViewer::DRAGGING)) {
+        setViewing(false);
+      } else if (this->currentmode == View3DInventorViewer::SELECTION) {
+        processed = FALSE;
       }
       break;
     case SoMouseButtonEvent::BUTTON2:
-      break;
+      // If we are in zoom or pan mode ignore RMB events otherwise
+      // the canvas doesn't get any release events 
+      if (this->currentmode != View3DInventorViewer::ZOOMING && 
+        this->currentmode != View3DInventorViewer::PANNING) {
+        if (this->isPopupMenuEnabled()) {
+          if (!press) { // release right mouse button
+            this->openPopupMenu(event->getPosition());
+          }
+        }
+      } break;
     case SoMouseButtonEvent::BUTTON3:
-      if(press)
-      {
-        PanMode = true;
-        _bSpining = false;
-        posMidPress = pos;
-        //dCliBut3 = false;
-        SbViewVolume vv = getCamera()->getViewVolume(getGLAspectRatio());
-        panningplane = vv.getPlane(getCamera()->focalDistance.getValue());
-        getWidget()->setCursor( QCursor( Qt::SizeAllCursor ) );
-        
-      }else{
-        PanMode = false;
-        RotMode = false;
-        ZoomMode = false;
-        // check if Fly to
-        float dist = sqrt(pow((float)posMidPress[0]-pos[0],2)+pow((float)posMidPress[1]-pos[1],2));
-        if(dist < 5.0)
-          if(!seekToPoint(pos))
-            panToCenter(panningplane, posn);
-
-        // restore the previous cursor
-        getWidget()->setCursor(QCursor( Qt::ArrowCursor ));
-        //_bRejectSelection = true;
-      }
-      processed = true;
+      this->button3down = press;
       break;
     case SoMouseButtonEvent::BUTTON4:
-      if (press) 
-        View3DInventorViewer::zoom(getCamera(), 0.05f);
-
-      processed = true;
+      if (press) zoom(this->getCamera(), 0.05f);
       break;
     case SoMouseButtonEvent::BUTTON5:
-      if (press) 
-        View3DInventorViewer::zoom(getCamera(), -0.05f);
-
-      processed = true;
+      if (press) zoom(this->getCamera(), -0.05f);
       break;
     default:
       break;
@@ -860,28 +800,26 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
   }
 
   // Mouse Movement handling
-  if (ev->getTypeId().isDerivedFrom(SoLocation2Event::getClassTypeId())) {
-//    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
+  if (type.isDerivedFrom(SoLocation2Event::getClassTypeId())) {
+    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
 
-    if(ZoomMode){
-      zoom(getCamera(),(posn[1] - prevnormalized[1]) * 10.0f);
-      processed = true;
-    }else if(RotMode) {
-      addToLog(ev->getPosition(), ev->getTime());
-      spin(posn);
+    processed = TRUE;
 
-      processed = true;
-    }else if(PanMode) {
-      pan(getCamera(),getGLAspectRatio(),panningplane, posn, prevnormalized);
-      processed = true;
-
-    }else if(_bSpining) {
-      processed = true;
+    if (this->currentmode == View3DInventorViewer::ZOOMING) {
+      this->zoomByCursor(posn, prevnormalized);
+    } else if (this->currentmode == View3DInventorViewer::PANNING) {
+      pan(this->getCamera(), this->getGLAspectRatio(), this->panningplane, posn, prevnormalized);
+    } else if (this->currentmode == View3DInventorViewer::DRAGGING) {
+      this->addToLog(event->getPosition(), event->getTime());
+      this->spin(posn);
+    }
+    else {
+      processed = FALSE;
     }
   }
 
   // Spaceball & Joystick handling
-  if (ev->getTypeId().isDerivedFrom(SoMotion3Event::getClassTypeId())) {
+  if (type.isDerivedFrom(SoMotion3Event::getClassTypeId())) {
     SoMotion3Event * const event = (SoMotion3Event *) ev;
     SoCamera * const camera = this->getCamera();
     if (camera) {
@@ -894,31 +832,90 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     }
   }
 
-  // give the viewprovider the chance to handle the event
-  if(!processed && !PanMode && !RotMode && !ZoomMode)
-  {
-    if (pcMouseModel) {
-      int hd=pcMouseModel->handleEvent(ev,this->getViewportRegion());
-      if (hd==AbstractMouseModel::Continue||hd==AbstractMouseModel::Restart) {
-        processed = true;
-      } else if (hd==AbstractMouseModel::Finish) {
-        pcPolygon = pcMouseModel->getPolygon();
-        delete pcMouseModel; pcMouseModel = 0;
-      } else if (hd==AbstractMouseModel::Cancel) {
-        pcPolygon.clear();
-        delete pcMouseModel; pcMouseModel = 0;
+  enum {
+    BUTTON1DOWN = 1 << 0,
+    BUTTON3DOWN = 1 << 1,
+    CTRLDOWN =    1 << 2,
+    SHIFTDOWN =   1 << 3
+  };
+  unsigned int combo =
+    (this->button1down ? BUTTON1DOWN : 0) |
+    (this->button3down ? BUTTON3DOWN : 0) |
+    (this->ctrldown ? CTRLDOWN : 0) |
+    (this->shiftdown ? SHIFTDOWN : 0);
+
+  switch (combo) {
+  case 0:
+    if (currentmode == View3DInventorViewer::SPINNING) { break; }
+    newmode = View3DInventorViewer::IDLE;
+
+
+    if ((currentmode == View3DInventorViewer::DRAGGING) && (this->log.historysize >= 3)) {
+      SbTime stoptime = (ev->getTime() - this->log.time[0]);
+      if (bAllowSpining && stoptime.getValue() < 0.100) {
+        const SbVec2s glsize(this->getGLSize());
+        SbVec3f from = this->spinprojector->project(SbVec2f(float(this->log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
+                                                            float(this->log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
+        SbVec3f to = this->spinprojector->project(posn);
+        SbRotation rot = this->spinprojector->getRotation(from, to);
+
+        SbTime delta = (this->log.time[0] - this->log.time[2]);
+        double deltatime = delta.getValue();
+        rot.invert();
+        rot.scaleAngle(float(0.200 / deltatime));
+
+        SbVec3f axis;
+        float radians;
+        rot.getValue(axis, radians);
+        if ((radians > 0.01f) && (deltatime < 0.300)) {
+          newmode = View3DInventorViewer::SPINNING;
+          this->spinRotation = rot;
+        }
       }
     }
-    if (!processed) {
-      std::set<ViewProvider*>::iterator It;
-      for(It=_ViewProviderSet.begin();It!=_ViewProviderSet.end() && !processed;It++)
-        processed = (*It)->handleEvent(ev,*this);
+    break;
+  case BUTTON1DOWN:
+    newmode = View3DInventorViewer::DRAGGING;
+    break;
+  case BUTTON3DOWN:
+  case SHIFTDOWN|BUTTON1DOWN:
+    newmode = View3DInventorViewer::PANNING;
+    break;
+  case CTRLDOWN:
+  case CTRLDOWN|BUTTON1DOWN:
+  case CTRLDOWN|SHIFTDOWN:
+  case CTRLDOWN|SHIFTDOWN|BUTTON1DOWN:
+    newmode = View3DInventorViewer::SELECTION;
+    break;
+  case BUTTON1DOWN|BUTTON3DOWN:
+  case CTRLDOWN|BUTTON3DOWN:
+    newmode = View3DInventorViewer::ZOOMING;
+    break;
+
+    // There are many cases we don't handle that just falls through to
+    // the default case, like SHIFTDOWN, CTRLDOWN, CTRLDOWN|SHIFTDOWN,
+    // SHIFTDOWN|BUTTON3DOWN, SHIFTDOWN|CTRLDOWN|BUTTON3DOWN, etc.
+    // This is a feature, not a bug. :-)
+    //
+    // mortene.
+
+  default:
+    // The default will make a spin stop and otherwise not do
+    // anything.
+    if ((currentmode != View3DInventorViewer::SEEK_WAIT_MODE) &&
+        (currentmode != View3DInventorViewer::SEEK_MODE)) {
+      newmode = View3DInventorViewer::IDLE;
     }
+    break;
+  }
+
+  if (newmode != currentmode) {
+    this->setMode(newmode);
   }
 
   // give the nodes in the foreground root the chance to handle events (e.g color bar)
-  // Note: this must be done _before_ ceding to the viewer  
-  if ( !processed )
+  // Note: this must be done _before_ ceding to the base class  
+  if (!processed)
   {
     SoHandleEventAction action(getViewportRegion());
     action.setEvent(ev);
@@ -926,56 +923,24 @@ SbBool View3DInventorViewer::processSoEvent(const SoEvent * const ev)
     processed = action.isHandled();
   }
 
-  // right mouse button pressed
-  if (!processed && !PanMode && !RotMode && !ZoomMode)
-  {
-    if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-      SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
-      if ((e->getButton() == SoMouseButtonEvent::BUTTON2) && e->getState() == SoButtonEvent::UP) {
-        if (this->isPopupMenuEnabled()) {
-          if (e->getState() == SoButtonEvent::UP) {
-            this->openPopupMenu(e->getPosition());
-          }
-
-          // Steal all RMB-events if the viewer uses the popup-menu.
-          processed = TRUE;
-        }
-      }
-    }
-  }
-
-  // invokes the appropriate callback function when user interaction has started or finished
-  bool bInteraction = (PanMode||ZoomMode||RotMode|_bSpining);
-  if (bInteraction && getInteractiveCount()==0)
-    interactiveCountInc();
-  // must not be in seek mode because it gets decremented in setSeekMode(FALSE)
-  else if (!bInteraction&&!dCliBut3&&getInteractiveCount()>0&&!isSeekMode())
-    interactiveCountDec();
-
-
-  bool baseProcessed;
-  if(SelectionMode && !processed)
-    baseProcessed = inherited::processSoEvent(ev);
-  else 
-    return true;
-
+  // If not handled in this class, pass on upwards in the inheritance
+  // hierarchy.
+  if (this->currentmode == View3DInventorViewer::SELECTION && !processed)
+    processed = inherited::processSoEvent(ev);
+  else
+    return TRUE;
 
   // check for left click without selecting something
-  if (SelectionMode && !baseProcessed)
-  {
+  if (this->currentmode == View3DInventorViewer::SELECTION && !processed) {
     if (ev->getTypeId().isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
       SoMouseButtonEvent * const e = (SoMouseButtonEvent *) ev;
       if (SoMouseButtonEvent::isButtonReleaseEvent(e,SoMouseButtonEvent::BUTTON1)) {
-        //Base::Console().Log("unhandled left button click!");
         Gui::Selection().clearSelection();
-      }
-      
+      }      
     }
-    
   }
-  
 
-  return false;
+  return FALSE;
 }
 
 void View3DInventorViewer::setPopupMenuEnabled(const SbBool on)
@@ -1311,391 +1276,6 @@ void View3DInventorViewer::zoom(SoCamera * cam, const float diffvalue)
   }
 }
 
-// Uses the sphere sheet projector to map the mouseposition unto
-// a 3D point and find a rotation from this and the last calculated point.
-void View3DInventorViewer::spin(const SbVec2f & pointerpos)
-{
-  if (this->log.historysize < 2) return;
-  assert(this->spinprojector != NULL);
-
-  SbVec2s glsize(getGLSize());
-  SbVec2f lastpos;
-  lastpos[0] = float(this->log.position[1][0]) / float(SoQtMax((int)(glsize[0]-1), 1));
-  lastpos[1] = float(this->log.position[1][1]) / float(SoQtMax((int)(glsize[1]-1), 1));
-
-  this->spinprojector->project(lastpos);
-  SbRotation r;
-  this->spinprojector->projectAndGetRotation(pointerpos, r);
-  r.invert();
-  this->reorientCamera(r);
-
-  // Calculate an average angle magnitude value to make the transition
-  // to a possible spin animation mode appear smooth.
-
-  SbVec3f dummy_axis, newaxis;
-  float acc_angle, newangle;
-  this->spinincrement.getValue(dummy_axis, acc_angle);
-  acc_angle *= this->spinsamplecounter; // weight
-  r.getValue(newaxis, newangle);
-  acc_angle += newangle;
-
-  this->spinsamplecounter++;
-  acc_angle /= this->spinsamplecounter;
-  // FIXME: accumulate and average axis vectors aswell? 19990501 mortene.
-  this->spinincrement.setValue(newaxis, acc_angle);
-
-  // Don't carry too much baggage, as that'll give unwanted results
-  // when the user quickly trigger (as in "click-drag-release") a spin
-  // animation.
-  if (this->spinsamplecounter > 3) this->spinsamplecounter = 3;
-  
-}
-
-
-#if 0
-void View3DInventorViewer::sFinishSelectionCallback(void *viewer,SoSelection *path)
-{
-  static_cast<View3DInventorViewer*>(viewer)->finishSelectionCallback(path);
-}
-
-void View3DInventorViewer::finishSelectionCallback(SoSelection *)
-{
-//  Base::Console().Log("SelectionCallback\n");
-}
-
-
-void View3DInventorViewer::sMadeSelection(void *viewer,SoPath *path)
-{
-  static_cast<View3DInventorViewer*>(viewer)->madeSelection(path);
-}
-
-// Callback function triggered for selection / deselection.
-void View3DInventorViewer::madeSelection(  SoPath * path )
-{
-  for(int i = 0; i<path->getLength();i++)
-  {
-    SoNode *node = path->getNodeFromTail(i);
-    if (node->getTypeId() == SoFCSelection::getClassTypeId()) 
-    {
-      SoFCSelection * SelNode = (SoFCSelection *)node;  // safe downward cast, knows the type
-      Base::Console().Log("Select:%s.%s.%s \n",SelNode->documentName.getValue().getString(),
-                                               SelNode->featureName.getValue().getString(),
-                                               SelNode->subElementName.getValue().getString());
-
-      SelNode->selected = SoFCSelection::SELECTED;
-
-      Gui::Selection().addSelection(SelNode->documentName.getValue().getString(),
-                                    SelNode->featureName.getValue().getString(),
-                                    SelNode->subElementName.getValue().getString());
-    
-    }
-
-  }
-
-
-
-/*
-  for(std::set<ViewProvider*>::iterator It = _ViewProviderSet.begin();It!=_ViewProviderSet.end();It++)
-    for(int i = 0; i<path->getLength();i++)
-      if((*It)->getRoot() == path->getNodeFromTail(i))
-      {
-        (*It)->selected(this,path);
-        return;
-      }
-*/
-
-}
-
-void View3DInventorViewer::sUnmadeSelection(void *viewer,SoPath *path)
-{
-  static_cast<View3DInventorViewer*>(viewer)->unmadeSelection(path);
-}
-
-// Callback function triggered for deselection.
-void View3DInventorViewer::unmadeSelection(  SoPath * path )
-{
-  for(int i = 0; i<path->getLength();i++)
-  {
-    SoNode *node = path->getNodeFromTail(i);
-    if (node->getTypeId() == SoFCSelection::getClassTypeId()) 
-    {
-      SoFCSelection * SelNode = (SoFCSelection *)node;  // safe downward cast, knows the type
-      Base::Console().Log("Unselect:%s.%s.%s \n",SelNode->documentName.getValue().getString(),
-                                               SelNode->featureName.getValue().getString(),
-                                               SelNode->subElementName.getValue().getString());
-      SelNode->selected = SoFCSelection::NOTSELECTED;
-
-      Gui::Selection().rmvSelection(SelNode->documentName.getValue().getString(),
-                                    SelNode->featureName.getValue().getString(),
-                                    SelNode->subElementName.getValue().getString());
-    
-
-
-    }
-
-  }
-}
-
-#endif
-
-
-
-//****************************************************************************
-
-// Bitmap representations of an "X", a "Y" and a "Z" for the axis cross.
-static GLubyte xbmp[] = { 0x11,0x11,0x0a,0x04,0x0a,0x11,0x11 };
-static GLubyte ybmp[] = { 0x04,0x04,0x04,0x04,0x0a,0x11,0x11 };
-static GLubyte zbmp[] = { 0x1f,0x10,0x08,0x04,0x02,0x01,0x1f };
-
-void View3DInventorViewer::drawAxisCross(void)
-{
-  // FIXME: convert this to a superimposition scenegraph instead of
-  // OpenGL calls. 20020603 mortene.
-
-  // Store GL state.
-  glPushAttrib(GL_ALL_ATTRIB_BITS);
-  GLfloat depthrange[2];
-  glGetFloatv(GL_DEPTH_RANGE, depthrange);
-  GLdouble projectionmatrix[16];
-  glGetDoublev(GL_PROJECTION_MATRIX, projectionmatrix);
-
-  glDepthFunc(GL_ALWAYS);
-  glDepthMask(GL_TRUE);
-  glDepthRange(0, 0);
-  glEnable(GL_DEPTH_TEST);
-  glDisable(GL_LIGHTING);
-  glEnable(GL_COLOR_MATERIAL);
-  glDisable(GL_BLEND); // Kills transparency.
-
-  // Set the viewport in the OpenGL canvas. Dimensions are calculated
-  // as a percentage of the total canvas size.
-  SbVec2s view = getGLSize();
-  const int pixelarea =
-    int(float(this->axiscrossSize)/100.0f * SoQtMin(view[0], view[1]));
-#if 0 // middle of canvas
-  SbVec2s origin(view[0]/2 - pixelarea/2, view[1]/2 - pixelarea/2);
-#endif // middle of canvas
-#if 1 // lower right of canvas
-  SbVec2s origin(view[0] - pixelarea, 0);
-#endif // lower right of canvas
-  glViewport(origin[0], origin[1], pixelarea, pixelarea);
-
-
-
-  // Set up the projection matrix.
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-
-  const float NEARVAL = 0.1f;
-  const float FARVAL = 10.0f;
-  const float dim = NEARVAL * float(tan(M_PI / 8.0)); // FOV is 45° (45/360 = 1/8)
-  glFrustum(-dim, dim, -dim, dim, NEARVAL, FARVAL);
-
-
-  // Set up the model matrix.
-  glMatrixMode(GL_MODELVIEW);
-  glPushMatrix();
-  SbMatrix mx;
-  SoCamera * cam = getCamera();
-
-  // If there is no camera (like for an empty scene, for instance),
-  // just use an identity rotation.
-  if (cam) { mx = cam->orientation.getValue(); }
-  else { mx = SbMatrix::identity(); }
-
-  mx = mx.inverse();
-  mx[3][2] = -3.5; // Translate away from the projection point (along z axis).
-  glLoadMatrixf((float *)mx);
-
-
-  // Find unit vector end points.
-  SbMatrix px;
-  glGetFloatv(GL_PROJECTION_MATRIX, (float *)px);
-  SbMatrix comb = mx.multRight(px);
-
-  SbVec3f xpos;
-  comb.multVecMatrix(SbVec3f(1,0,0), xpos);
-  xpos[0] = (1 + xpos[0]) * view[0]/2;
-  xpos[1] = (1 + xpos[1]) * view[1]/2;
-  SbVec3f ypos;
-  comb.multVecMatrix(SbVec3f(0,1,0), ypos);
-  ypos[0] = (1 + ypos[0]) * view[0]/2;
-  ypos[1] = (1 + ypos[1]) * view[1]/2;
-  SbVec3f zpos;
-  comb.multVecMatrix(SbVec3f(0,0,1), zpos);
-  zpos[0] = (1 + zpos[0]) * view[0]/2;
-  zpos[1] = (1 + zpos[1]) * view[1]/2;
-
-
-  // Render the cross.
-  {
-    glLineWidth(2.0);
-
-    enum { XAXIS, YAXIS, ZAXIS };
-    int idx[3] = { XAXIS, YAXIS, ZAXIS };
-    float val[3] = { xpos[2], ypos[2], zpos[2] };
-
-    // Bubble sort.. :-}
-    if (val[0] < val[1]) { SoQtSwap(val[0], val[1]); SoQtSwap(idx[0], idx[1]); }
-    if (val[1] < val[2]) { SoQtSwap(val[1], val[2]); SoQtSwap(idx[1], idx[2]); }
-    if (val[0] < val[1]) { SoQtSwap(val[0], val[1]); SoQtSwap(idx[0], idx[1]); }
-    assert((val[0] >= val[1]) && (val[1] >= val[2])); // Just checking..
-
-    for (int i=0; i < 3; i++) {
-      glPushMatrix();
-      if (idx[i] == XAXIS) {                       // X axis.
-        if(isStereoViewing())
-          glColor3f(0.500f, 0.125f, 0.125f);
-        else
-          glColor3f(0.500f, 0.5f, 0.5f);
-      } else if (idx[i] == YAXIS) {                // Y axis.
-        glRotatef(90, 0, 0, 1);
-        if(isStereoViewing())
-          glColor3f(0.400f, 0.4f, 0.4f);
-        else
-          glColor3f(0.125f, 0.500f, 0.125f);
-      } else {                                     // Z axis.
-        glRotatef(-90, 0, 1, 0);
-        if(isStereoViewing())
-          glColor3f(0.300f, 0.3f, 0.3f);
-        else
-          glColor3f(0.125f, 0.125f, 0.500f);
-      }
-      this->drawArrow(); 
-      glPopMatrix();
-    }
-  }
-
-  // Render axis notation letters ("X", "Y", "Z").
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(0, view[0], 0, view[1], -1, 1);
-
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-
-  GLint unpack;
-  glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-  if(isStereoViewing())
-    glColor3fv(SbVec3f(1.0f, 1.0f, 1.0f).getValue());
-  else
-    glColor3fv(SbVec3f(0.0f, 0.0f, 0.0f).getValue());
-
-  glRasterPos2d(xpos[0], xpos[1]);
-  glBitmap(8, 7, 0, 0, 0, 0, xbmp);
-  glRasterPos2d(ypos[0], ypos[1]);
-  glBitmap(8, 7, 0, 0, 0, 0, ybmp);
-  glRasterPos2d(zpos[0], zpos[1]);
-  glBitmap(8, 7, 0, 0, 0, 0, zbmp);
-
-  glPixelStorei(GL_UNPACK_ALIGNMENT, unpack);
-  glPopMatrix();
-
-  // Reset original state.
-
-  // FIXME: are these 3 lines really necessary, as we push
-  // GL_ALL_ATTRIB_BITS at the start? 20000604 mortene.
-  glDepthRange(depthrange[0], depthrange[1]);
-  glMatrixMode(GL_PROJECTION);
-  glLoadMatrixd(projectionmatrix);
-
-  glPopAttrib();
-}
-
-// Draw an arrow for the axis representation directly through OpenGL.
-void
-View3DInventorViewer::drawArrow(void)
-{
-  glBegin(GL_LINES);
-  glVertex3f(0.0f, 0.0f, 0.0f);
-  glVertex3f(1.0f, 0.0f, 0.0f);
-  glEnd();
-  glDisable(GL_CULL_FACE);
-  glBegin(GL_TRIANGLES);
-  glVertex3f(1.0f, 0.0f, 0.0f);
-  glVertex3f(1.0f - 1.0f / 3.0f, +0.5f / 4.0f, 0.0f);
-  glVertex3f(1.0f - 1.0f / 3.0f, -0.5f / 4.0f, 0.0f);
-  glVertex3f(1.0f, 0.0f, 0.0f);
-  glVertex3f(1.0f - 1.0f / 3.0f, 0.0f, +0.5f / 4.0f);
-  glVertex3f(1.0f - 1.0f / 3.0f, 0.0f, -0.5f / 4.0f);
-  glEnd();
-  glBegin(GL_QUADS);
-  glVertex3f(1.0f - 1.0f / 3.0f, +0.5f / 4.0f, 0.0f);
-  glVertex3f(1.0f - 1.0f / 3.0f, 0.0f, +0.5f / 4.0f);
-  glVertex3f(1.0f - 1.0f / 3.0f, -0.5f / 4.0f, 0.0f);
-  glVertex3f(1.0f - 1.0f / 3.0f, 0.0f, -0.5f / 4.0f);
-  glEnd();
-}
-
-
-
-// Rotate the camera by the given amount, then reposition it so we're
-// still pointing at the same focal point.
-void
-View3DInventorViewer::reorientCamera(const SbRotation & rot)
-{
-  SoCamera * cam = getCamera();
-  if (cam == NULL) return;
-
-  // Find global coordinates of focal point.
-  SbVec3f direction;
-  cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
-  SbVec3f focalpoint = cam->position.getValue() +
-    cam->focalDistance.getValue() * direction;
-
-  // Set new orientation value by accumulating the new rotation.
-  cam->orientation = rot * cam->orientation.getValue();
-
-  // Reposition camera so we are still pointing at the same old focal point.
-  cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
-  cam->position = focalpoint - cam->focalDistance.getValue() * direction;
-}
-
-
-// *************************************************************************
-// Methods used for spin animation tracking.
-
-// This method "clears" the mouse location log, used for spin
-// animation calculations.
-void View3DInventorViewer::clearLog(void)
-{
-  this->log.historysize = 0;
-}
-
-// This method adds another point to the mouse location log, used for spin
-// animation calculations.
-void View3DInventorViewer::addToLog(const SbVec2s pos, const SbTime time)
-{
-  // In case someone changes the const size setting at the top of this
-  // file too small.
-  assert (this->log.size > 2 && "mouse log too small!");
-
-  if (this->log.historysize > 0 && pos == this->log.position[0]) {
-#if SOQt_DEBUG && 0 // debug
-    // This can at least happen under SoQt.
-    SoDebugError::postInfo("SoGuiExaminerViewerP::addToLog", "got position already!");
-#endif // debug
-    return;
-  }
-
-  int lastidx = this->log.historysize;
-  // If we've filled up the log, we should throw away the last item:
-  if (lastidx == this->log.size) { lastidx--; }
-
-  assert(lastidx < this->log.size);
-  for (int i = lastidx; i > 0; i--) {
-    this->log.position[i] = this->log.position[i-1];
-    this->log.time[i] = this->log.time[i-1];
-  }
-
-  this->log.position[0] = pos;
-  this->log.time[0] = time;
-  if (this->log.historysize < this->log.size)
-    this->log.historysize += 1;
-}
-
 // Draw routines
 void View3DInventorViewer::drawRect( int x, int y, int w, int h, QPainter* p )
 {
@@ -1791,346 +1371,507 @@ void View3DInventorViewer::drawText ( int x, int y, const QString & str, QPainte
 #endif
 }
 
+/*!
+  Query if the model in the viewer is currently in spinning mode after
+  a user drag.
+*/
+SbBool View3DInventorViewer::isAnimating(void) const
+{
+  return this->currentmode == View3DInventorViewer::SPINNING;
+}
 
-#if 0
+void View3DInventorViewer::stopAnimating(void)
+{
+  if (this->currentmode != View3DInventorViewer::SPINNING) {
+    return;
+  }
+  this->setMode(this->isViewing() ? View3DInventorViewer::IDLE : View3DInventorViewer::INTERACT);
+}
 
 /*!
-  Call this method to initiate a seek action towards the 3D
-  intersection of the scene and the ray from the screen coordinate's
-  point and in the same direction as the camera is pointing.
-
-  Returns \c TRUE if the ray from the \a screenpos position intersect
-  with any parts of the onscreen geometry, otherwise \c FALSE.
+  Decide whether or not the mouse pointer cursor should be visible in
+  the rendering canvas.
 */
-SbBool
-So@Gui@Viewer::seekToPoint(const SbVec2s screenpos)
+void View3DInventorViewer::setCursorEnabled(SbBool enable)
 {
-  if (! PRIVATE(this)->camera)
-    return FALSE;
-
-  SoRayPickAction rpaction(this->getViewportRegion());
-  rpaction.setPoint(screenpos);
-  rpaction.setRadius(2);
-  rpaction.apply(PRIVATE(this)->sceneroot);
-
-  SoPickedPoint * picked = rpaction.getPickedPoint();
-  if (!picked) {
-    // FIXME: this inc seems bogus, but is needed now due to buggy
-    // code in for instance the examinerviewer
-    // processSoEvent(). 20020510 mortene.
-#if 1
-    this->interactiveCountInc(); // decremented in setSeekMode(FALSE)
-#endif // FIXME
-    this->setSeekMode(FALSE);
-    return FALSE;
-  }
-
-  SbVec3f hitpoint;
-  if (PRIVATE(this)->seektopoint) {
-    hitpoint = picked->getPoint();
-  } 
-  else {
-    SoGetBoundingBoxAction bbaction(this->getViewportRegion());
-    bbaction.apply(picked->getPath());
-    SbBox3f bbox = bbaction.getBoundingBox();
-    hitpoint = bbox.getCenter();
-  }
-
-  PRIVATE(this)->camerastartposition = PRIVATE(this)->camera->position.getValue();
-  PRIVATE(this)->camerastartorient = PRIVATE(this)->camera->orientation.getValue();
-
-  // move point to the camera coordinate system, consider
-  // transformations before camera in the scene graph
-  SbMatrix cameramatrix, camerainverse;
-  PRIVATE(this)->getCameraCoordinateSystem(PRIVATE(this)->camera,
-                                           PRIVATE(this)->sceneroot,
-                                           cameramatrix,
-                                           camerainverse);
-  camerainverse.multVecMatrix(hitpoint, hitpoint);
-
-  float fd = PRIVATE(this)->seekdistance;
-  if (!PRIVATE(this)->seekdistanceabs)
-    fd *= (hitpoint - PRIVATE(this)->camera->position.getValue()).length()/100.0f;
-  PRIVATE(this)->camera->focalDistance = fd;
-
-  SbVec3f dir = hitpoint - PRIVATE(this)->camerastartposition;
-  dir.normalize();
-
-  // find a rotation that rotates current camera direction into new
-  // camera direction.
-  SbVec3f olddir;
-  PRIVATE(this)->camera->orientation.getValue().multVec(SbVec3f(0, 0, -1), olddir);
-  SbRotation diffrot(olddir, dir);
-  PRIVATE(this)->cameraendposition = hitpoint - fd * dir;
-  PRIVATE(this)->cameraendorient = PRIVATE(this)->camera->orientation.getValue() * diffrot;
-
-  if (PRIVATE(this)->seeksensor->isScheduled()) {
-    PRIVATE(this)->seeksensor->unschedule();
-    this->interactiveCountDec();
-  }
-
-  PRIVATE(this)->seeksensor->setBaseTime(SbTime::getTimeOfDay());
-  PRIVATE(this)->seeksensor->schedule();
-  this->interactiveCountInc();
-
-  return TRUE;
+  inherited::setCursorEnabled(enable);
+  this->setCursorRepresentation(this->currentmode);
 }
 
-
-
-
-
-
-SbBool
-SoQtExaminerViewer::processSoEvent(const SoEvent * const ev)
+void View3DInventorViewer::afterRealizeHook(void)
 {
-#if SOQt_DEBUG && 0 // debug
-  SoDebugError::postInfo("SoQtExaminerViewer::processSoEvent",
-                          "[invoked], event '%s'",
-                          ev->getTypeId().getName().getString());
-#endif // debug
+  inherited::afterRealizeHook();
+  this->setCursorRepresentation(this->currentmode);
+}
 
-  // Let the end-user toggle between camera-interaction mode
-  // ("viewing") and scenegraph-interaction mode with ALT key(s).
-  if (ev->getTypeId().isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
-    SoKeyboardEvent * ke = (SoKeyboardEvent *)ev;
-    switch (ke->getKey()) {
-    case SoKeyboardEvent::LEFT_ALT:
-    case SoKeyboardEvent::RIGHT_ALT:
-      if (this->isViewing() && (ke->getState() == SoButtonEvent::DOWN)) {
-        this->setViewing(FALSE);
-        return TRUE;
-      }
-      else if (!this->isViewing() && (ke->getState() == SoButtonEvent::UP)) {
-        this->setViewing(TRUE);
-        return TRUE;
-      }
-    default:
-      break;
-    }
+// Documented in superclass. This method overridden from parent class
+// to make sure the mouse pointer cursor is updated.
+void View3DInventorViewer::setViewing(SbBool enable)
+{
+  if (this->isViewing() == enable) {
+    return;
   }
 
-  // We're in "interact" mode (ie *not* the camera modification mode),
-  // so don't handle the event here. It should either be forwarded to
-  // the scenegraph, or caught by SoQtViewer::processSoEvent() if
-  // it's an ESC press (to switch modes).
-  if (!this->isViewing()) { return inherited::processSoEvent(ev); }
-    
-  // Events when in "ready-to-seek" mode are ignored, except those
-  // which influence the seek mode itself -- these are handled further
-  // up the inheritance hierarchy.
-  if (this->isSeekMode()) { return inherited::processSoEvent(ev); }
+  this->setMode(enable ? View3DInventorViewer::IDLE : View3DInventorViewer::INTERACT);
+  inherited::setViewing(enable);
+}
 
-  const SoType type(ev->getTypeId());
+// The viewer is a state machine, and all changes to the current state
+// are made through this call.
+void View3DInventorViewer::setMode(const ViewerMode newmode)
+{
+  const ViewerMode oldmode = this->currentmode;
+  if (newmode == oldmode) { return; }
 
-  const SbVec2s size(this->getGLSize());
-  const SbVec2f prevnormalized = lastmouseposition;
-  const SbVec2s pos(ev->getPosition());
-  const SbVec2f posn((float) pos[0] / (float) SoQtMax((int)(size[0] - 1), 1),
-                     (float) pos[1] / (float) SoQtMax((int)(size[1] - 1), 1));
+  switch (newmode) {
+  case DRAGGING:
+    // Set up initial projection point for the projector object when
+    // first starting a drag operation.
+    this->spinprojector->project(this->lastmouseposition);
+    this->interactiveCountInc();
+    this->clearLog();
+    break;
 
-  lastmouseposition = posn;
+  case SPINNING:
+    this->interactiveCountInc();
+    this->scheduleRedraw();
+    break;
 
-  // Set to TRUE if any event processing happened. Note that it is not
-  // necessary to restrict ourselves to only do one "action" for an
-  // event, we only need this flag to see if any processing happened
-  // at all.
-  SbBool processed = FALSE;
-
-  const SoGuiExaminerViewerP::ViewerMode currentmode = currentmode;
-  SoGuiExaminerViewerP::ViewerMode newmode = currentmode;
-
-  // Mismatches in state of the modifier keys happens if the user
-  // presses or releases them outside the viewer window.
-  if (ctrldown != ev->wasCtrlDown()) {
-    ctrldown = ev->wasCtrlDown();
-  }
-  if (shiftdown != ev->wasShiftDown()) {
-    shiftdown = ev->wasShiftDown();
-  }
-
-  // Mouse Button / Spaceball Button handling
-
-  if (type.isDerivedFrom(SoMouseButtonEvent::getClassTypeId())) {
-    processed = TRUE;
-
-    const SoMouseButtonEvent * const event = (const SoMouseButtonEvent *) ev;
-    const int button = event->getButton();
-    const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
-
-    // SoDebugError::postInfo("processSoEvent", "button = %d", button);
-    switch (button) {
-    case SoMouseButtonEvent::BUTTON1:
-      button1down = press;
-      if (press && (currentmode == SoGuiExaminerViewerP::SEEK_WAIT_MODE)) {
-        newmode = SoGuiExaminerViewerP::SEEK_MODE;
-        this->seekToPoint(pos); // implicitly calls interactiveCountInc()
-      }
-      break;
-    case SoMouseButtonEvent::BUTTON2:
-      processed = FALSE; // pass on to superclass, so popup menu is shown
-      break;
-    case SoMouseButtonEvent::BUTTON3:
-      button3down = press;
-      break;
-#ifdef HAVE_SOMOUSEBUTTONEVENT_BUTTON5
-    case SoMouseButtonEvent::BUTTON4:
-      if (press) SoGuiFullViewerP::zoom(this->getCamera(), 0.1f);
-      break;
-    case SoMouseButtonEvent::BUTTON5:
-      if (press) SoGuiFullViewerP::zoom(this->getCamera(), -0.1f);
-      break;
-#endif // HAVE_SOMOUSEBUTTONEVENT_BUTTON5
-    default:
-      break;
-    }
-  }
-
-  // Keyboard handling
-  if (type.isDerivedFrom(SoKeyboardEvent::getClassTypeId())) {
-    const SoKeyboardEvent * const event = (const SoKeyboardEvent *) ev;
-    const SbBool press = event->getState() == SoButtonEvent::DOWN ? TRUE : FALSE;
-    switch (event->getKey()) {
-    case SoKeyboardEvent::LEFT_CONTROL:
-    case SoKeyboardEvent::RIGHT_CONTROL:
-      processed = TRUE;
-      ctrldown = press;
-      break;
-    case SoKeyboardEvent::LEFT_SHIFT:
-    case SoKeyboardEvent::RIGHT_SHIFT:
-      processed = TRUE;
-      shiftdown = press;
-      break;
-    default:
-      break;
-    }
-  }
-
-  // Mouse Movement handling
-  if (type.isDerivedFrom(SoLocation2Event::getClassTypeId())) {
-    const SoLocation2Event * const event = (const SoLocation2Event *) ev;
-
-    processed = TRUE;
-
-    if (currentmode == SoGuiExaminerViewerP::ZOOMING) {
-      zoomByCursor(posn, prevnormalized);
-    }
-    else if (currentmode == SoGuiExaminerViewerP::PANNING) {
-      SoGuiFullViewerP::pan(this->getCamera(), this->getGLAspectRatio(),
-                            panningplane, posn, prevnormalized);
-    }
-    else if (currentmode == SoGuiExaminerViewerP::DRAGGING) {
-      addToLog(event->getPosition(), event->getTime());
-      spin(posn);
-    }
-    else {
-      processed = FALSE;
-    }
-  }
-
-  // Spaceball & Joystick handling
-  if (type.isDerivedFrom(SoMotion3Event::getClassTypeId())) {
-    SoMotion3Event * const event = (SoMotion3Event *) ev;
-    SoCamera * const camera = this->getCamera();
-    if (camera) {
-      if (motion3OnCamera) {
-        SbVec3f dir = event->getTranslation();
-        camera->orientation.getValue().multVec(dir,dir);
-        camera->position = camera->position.getValue() + dir;
-        camera->orientation = 
-          event->getRotation() * camera->orientation.getValue();
-        processed = TRUE;
+  case PANNING:
+    {
+      // The plane we're projecting the mouse coordinates to get 3D
+      // coordinates should stay the same during the whole pan
+      // operation, so we should calculate this value here.
+      SoCamera * cam = this->getCamera();
+      if (cam == NULL) { // can happen for empty scenegraph
+        this->panningplane = SbPlane(SbVec3f(0, 0, 1), 0);
       }
       else {
-        // FIXME: move/rotate model
-#if SOQt_DEBUG
-        SoDebugError::postInfo("SoQtExaminerViewer::processSoEvent",
-                               "SoMotion3Event for model movement is not implemented yet");
-#endif // SOQt_DEBUG
-        processed = TRUE;
+        SbViewVolume vv = cam->getViewVolume(this->getGLAspectRatio());
+        this->panningplane = vv.getPlane(cam->focalDistance.getValue());
       }
     }
+    this->interactiveCountInc();
+    break;
+
+  case ZOOMING:
+    this->interactiveCountInc();
+    break;
+
+  default: // include default to avoid compiler warnings.
+    break;
   }
 
-  enum {
-    BUTTON1DOWN = 1 << 0,
-    BUTTON3DOWN = 1 << 1,
-    CTRLDOWN =    1 << 2,
-    SHIFTDOWN =   1 << 3
-  };
-  unsigned int combo =
-    (button1down ? BUTTON1DOWN : 0) |
-    (button3down ? BUTTON3DOWN : 0) |
-    (ctrldown ? CTRLDOWN : 0) |
-    (shiftdown ? SHIFTDOWN : 0);
-
-  switch (combo) {
-  case 0:
-    if (currentmode == SoGuiExaminerViewerP::SPINNING) { break; }
-    newmode = SoGuiExaminerViewerP::IDLE;
-    if ((currentmode == SoGuiExaminerViewerP::DRAGGING) &&
-        this->isAnimationEnabled() && (log.historysize >= 3)) {
-      SbTime stoptime = (ev->getTime() - log.time[0]);
-      if (stoptime.getValue() < 0.100) {
-        const SbVec2s glsize(this->getGLSize());
-        SbVec3f from = spinprojector->project(SbVec2f(float(log.position[2][0]) / float(SoQtMax(glsize[0]-1, 1)),
-                                                                     float(log.position[2][1]) / float(SoQtMax(glsize[1]-1, 1))));
-        SbVec3f to = spinprojector->project(posn);
-        SbRotation rot = spinprojector->getRotation(from, to);
-
-        SbTime delta = (log.time[0] - log.time[2]);
-        double deltatime = delta.getValue();
-        rot.invert();
-        rot.scaleAngle(float(0.200 / deltatime));
-
-        SbVec3f axis;
-        float radians;
-        rot.getValue(axis, radians);
-        if ((radians > 0.01f) && (deltatime < 0.300)) {
-          newmode = SoGuiExaminerViewerP::SPINNING;
-          spinRotation = rot;
-        }
-      }
-    }
+  switch (oldmode) {
+  case SPINNING:
+  case DRAGGING:
+  case PANNING:
+  case ZOOMING:
+    this->interactiveCountDec();
     break;
-  case BUTTON1DOWN:
-    newmode = SoGuiExaminerViewerP::DRAGGING;
-    break;
-  case BUTTON3DOWN:
-  case CTRLDOWN|BUTTON1DOWN:
-  case SHIFTDOWN|BUTTON1DOWN:
-    newmode = SoGuiExaminerViewerP::PANNING;
-    break;
-  case BUTTON1DOWN|BUTTON3DOWN:
-  case CTRLDOWN|BUTTON3DOWN:
-  case CTRLDOWN|SHIFTDOWN|BUTTON1DOWN:
-    newmode = SoGuiExaminerViewerP::ZOOMING;
-    break;
-
-    // There are many cases we don't handle that just falls through to
-    // the default case, like SHIFTDOWN, CTRLDOWN, CTRLDOWN|SHIFTDOWN,
-    // SHIFTDOWN|BUTTON3DOWN, SHIFTDOWN|CTRLDOWN|BUTTON3DOWN, etc.
-    // This is a feature, not a bug. :-)
-    //
-    // mortene.
 
   default:
-    // The default will make a spin stop and otherwise not do
-    // anything.
-    if ((currentmode != SoGuiExaminerViewerP::SEEK_WAIT_MODE) &&
-        (currentmode != SoGuiExaminerViewerP::SEEK_MODE)) {
-      newmode = SoGuiExaminerViewerP::IDLE;
-    }
     break;
   }
 
-  if (newmode != currentmode) {
-    setMode(newmode);
-  }
-
-  // If not handled in this class, pass on upwards in the inheritance
-  // hierarchy.
-  return processed || inherited::processSoEvent(ev);
+  this->setCursorRepresentation(newmode);
+  this->currentmode = newmode;
 }
 
-#endif
+//****************************************************************************
+
+// Bitmap representations of an "X", a "Y" and a "Z" for the axis cross.
+static GLubyte xbmp[] = { 0x11,0x11,0x0a,0x04,0x0a,0x11,0x11 };
+static GLubyte ybmp[] = { 0x04,0x04,0x04,0x04,0x0a,0x11,0x11 };
+static GLubyte zbmp[] = { 0x1f,0x10,0x08,0x04,0x02,0x01,0x1f };
+
+void View3DInventorViewer::drawAxisCross(void)
+{
+  // FIXME: convert this to a superimposition scenegraph instead of
+  // OpenGL calls. 20020603 mortene.
+
+  // Store GL state.
+  glPushAttrib(GL_ALL_ATTRIB_BITS);
+  GLfloat depthrange[2];
+  glGetFloatv(GL_DEPTH_RANGE, depthrange);
+  GLdouble projectionmatrix[16];
+  glGetDoublev(GL_PROJECTION_MATRIX, projectionmatrix);
+
+  glDepthFunc(GL_ALWAYS);
+  glDepthMask(GL_TRUE);
+  glDepthRange(0, 0);
+  glEnable(GL_DEPTH_TEST);
+  glDisable(GL_LIGHTING);
+  glEnable(GL_COLOR_MATERIAL);
+  glDisable(GL_BLEND); // Kills transparency.
+
+  // Set the viewport in the OpenGL canvas. Dimensions are calculated
+  // as a percentage of the total canvas size.
+  SbVec2s view = this->getGLSize();
+  const int pixelarea =
+    int(float(this->axiscrossSize)/100.0f * SoQtMin(view[0], view[1]));
+#if 0 // middle of canvas
+  SbVec2s origin(view[0]/2 - pixelarea/2, view[1]/2 - pixelarea/2);
+#endif // middle of canvas
+#if 1 // lower right of canvas
+  SbVec2s origin(view[0] - pixelarea, 0);
+#endif // lower right of canvas
+  glViewport(origin[0], origin[1], pixelarea, pixelarea);
+
+
+
+  // Set up the projection matrix.
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+
+  const float NEARVAL = 0.1f;
+  const float FARVAL = 10.0f;
+  const float dim = NEARVAL * float(tan(M_PI / 8.0)); // FOV is 45° (45/360 = 1/8)
+  glFrustum(-dim, dim, -dim, dim, NEARVAL, FARVAL);
+
+
+  // Set up the model matrix.
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  SbMatrix mx;
+  SoCamera * cam = this->getCamera();
+
+  // If there is no camera (like for an empty scene, for instance),
+  // just use an identity rotation.
+  if (cam) { mx = cam->orientation.getValue(); }
+  else { mx = SbMatrix::identity(); }
+
+  mx = mx.inverse();
+  mx[3][2] = -3.5; // Translate away from the projection point (along z axis).
+  glLoadMatrixf((float *)mx);
+
+
+  // Find unit vector end points.
+  SbMatrix px;
+  glGetFloatv(GL_PROJECTION_MATRIX, (float *)px);
+  SbMatrix comb = mx.multRight(px);
+
+  SbVec3f xpos;
+  comb.multVecMatrix(SbVec3f(1,0,0), xpos);
+  xpos[0] = (1 + xpos[0]) * view[0]/2;
+  xpos[1] = (1 + xpos[1]) * view[1]/2;
+  SbVec3f ypos;
+  comb.multVecMatrix(SbVec3f(0,1,0), ypos);
+  ypos[0] = (1 + ypos[0]) * view[0]/2;
+  ypos[1] = (1 + ypos[1]) * view[1]/2;
+  SbVec3f zpos;
+  comb.multVecMatrix(SbVec3f(0,0,1), zpos);
+  zpos[0] = (1 + zpos[0]) * view[0]/2;
+  zpos[1] = (1 + zpos[1]) * view[1]/2;
+
+
+  // Render the cross.
+  {
+    glLineWidth(2.0);
+
+    enum { XAXIS, YAXIS, ZAXIS };
+    int idx[3] = { XAXIS, YAXIS, ZAXIS };
+    float val[3] = { xpos[2], ypos[2], zpos[2] };
+
+    // Bubble sort.. :-}
+    if (val[0] < val[1]) { SoQtSwap(val[0], val[1]); SoQtSwap(idx[0], idx[1]); }
+    if (val[1] < val[2]) { SoQtSwap(val[1], val[2]); SoQtSwap(idx[1], idx[2]); }
+    if (val[0] < val[1]) { SoQtSwap(val[0], val[1]); SoQtSwap(idx[0], idx[1]); }
+    assert((val[0] >= val[1]) && (val[1] >= val[2])); // Just checking..
+
+    for (int i=0; i < 3; i++) {
+      glPushMatrix();
+      if (idx[i] == XAXIS) {                       // X axis.
+        if (isStereoViewing())
+          glColor3f(0.500f, 0.5f, 0.5f);
+        else
+          glColor3f(0.500f, 0.125f, 0.125f);
+      } else if (idx[i] == YAXIS) {                // Y axis.
+        glRotatef(90, 0, 0, 1);
+        if (isStereoViewing())
+          glColor3f(0.400f, 0.4f, 0.4f);
+        else
+          glColor3f(0.125f, 0.500f, 0.125f);
+      } else {                                     // Z axis.
+        glRotatef(-90, 0, 1, 0);
+        if (isStereoViewing())
+          glColor3f(0.300f, 0.3f, 0.3f);
+        else
+          glColor3f(0.125f, 0.125f, 0.500f);
+      }
+      this->drawArrow(); 
+      glPopMatrix();
+    }
+  }
+
+  // Render axis notation letters ("X", "Y", "Z").
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glOrtho(0, view[0], 0, view[1], -1, 1);
+
+  glMatrixMode(GL_MODELVIEW);
+  glLoadIdentity();
+
+  GLint unpack;
+  glGetIntegerv(GL_UNPACK_ALIGNMENT, &unpack);
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+  if(isStereoViewing())
+    glColor3fv(SbVec3f(1.0f, 1.0f, 1.0f).getValue());
+  else
+    glColor3fv(SbVec3f(0.0f, 0.0f, 0.0f).getValue());
+
+  glRasterPos2d(xpos[0], xpos[1]);
+  glBitmap(8, 7, 0, 0, 0, 0, xbmp);
+  glRasterPos2d(ypos[0], ypos[1]);
+  glBitmap(8, 7, 0, 0, 0, 0, ybmp);
+  glRasterPos2d(zpos[0], zpos[1]);
+  glBitmap(8, 7, 0, 0, 0, 0, zbmp);
+
+  glPixelStorei(GL_UNPACK_ALIGNMENT, unpack);
+  glPopMatrix();
+
+  // Reset original state.
+
+  // FIXME: are these 3 lines really necessary, as we push
+  // GL_ALL_ATTRIB_BITS at the start? 20000604 mortene.
+  glDepthRange(depthrange[0], depthrange[1]);
+  glMatrixMode(GL_PROJECTION);
+  glLoadMatrixd(projectionmatrix);
+
+  glPopAttrib();
+}
+
+// Draw an arrow for the axis representation directly through OpenGL.
+void View3DInventorViewer::drawArrow(void)
+{
+  glBegin(GL_LINES);
+  glVertex3f(0.0f, 0.0f, 0.0f);
+  glVertex3f(1.0f, 0.0f, 0.0f);
+  glEnd();
+  glDisable(GL_CULL_FACE);
+  glBegin(GL_TRIANGLES);
+  glVertex3f(1.0f, 0.0f, 0.0f);
+  glVertex3f(1.0f - 1.0f / 3.0f, +0.5f / 4.0f, 0.0f);
+  glVertex3f(1.0f - 1.0f / 3.0f, -0.5f / 4.0f, 0.0f);
+  glVertex3f(1.0f, 0.0f, 0.0f);
+  glVertex3f(1.0f - 1.0f / 3.0f, 0.0f, +0.5f / 4.0f);
+  glVertex3f(1.0f - 1.0f / 3.0f, 0.0f, -0.5f / 4.0f);
+  glEnd();
+  glBegin(GL_QUADS);
+  glVertex3f(1.0f - 1.0f / 3.0f, +0.5f / 4.0f, 0.0f);
+  glVertex3f(1.0f - 1.0f / 3.0f, 0.0f, +0.5f / 4.0f);
+  glVertex3f(1.0f - 1.0f / 3.0f, -0.5f / 4.0f, 0.0f);
+  glVertex3f(1.0f - 1.0f / 3.0f, 0.0f, -0.5f / 4.0f);
+  glEnd();
+}
+
+// Rotate the camera by the given amount, then reposition it so we're
+// still pointing at the same focal point.
+void View3DInventorViewer::reorientCamera(const SbRotation & rot)
+{
+  SoCamera * cam = getCamera();
+  if (cam == NULL) return;
+
+  // Find global coordinates of focal point.
+  SbVec3f direction;
+  cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+  SbVec3f focalpoint = cam->position.getValue() +
+    cam->focalDistance.getValue() * direction;
+
+  // Set new orientation value by accumulating the new rotation.
+  cam->orientation = rot * cam->orientation.getValue();
+
+  // Reposition camera so we are still pointing at the same old focal point.
+  cam->orientation.getValue().multVec(SbVec3f(0, 0, -1), direction);
+  cam->position = focalpoint - cam->focalDistance.getValue() * direction;
+}
+
+// Uses the sphere sheet projector to map the mouseposition unto
+// a 3D point and find a rotation from this and the last calculated point.
+void View3DInventorViewer::spin(const SbVec2f & pointerpos)
+{
+  if (this->log.historysize < 2) return;
+  assert(this->spinprojector != NULL);
+
+  SbVec2s glsize(getGLSize());
+  SbVec2f lastpos;
+  lastpos[0] = float(this->log.position[1][0]) / float(SoQtMax((int)(glsize[0]-1), 1));
+  lastpos[1] = float(this->log.position[1][1]) / float(SoQtMax((int)(glsize[1]-1), 1));
+
+  this->spinprojector->project(lastpos);
+  SbRotation r;
+  this->spinprojector->projectAndGetRotation(pointerpos, r);
+  r.invert();
+  this->reorientCamera(r);
+
+  // Calculate an average angle magnitude value to make the transition
+  // to a possible spin animation mode appear smooth.
+
+  SbVec3f dummy_axis, newaxis;
+  float acc_angle, newangle;
+  this->spinincrement.getValue(dummy_axis, acc_angle);
+  acc_angle *= this->spinsamplecounter; // weight
+  r.getValue(newaxis, newangle);
+  acc_angle += newangle;
+
+  this->spinsamplecounter++;
+  acc_angle /= this->spinsamplecounter;
+  // FIXME: accumulate and average axis vectors aswell? 19990501 mortene.
+  this->spinincrement.setValue(newaxis, acc_angle);
+
+  // Don't carry too much baggage, as that'll give unwanted results
+  // when the user quickly trigger (as in "click-drag-release") a spin
+  // animation.
+  if (this->spinsamplecounter > 3) this->spinsamplecounter = 3;
+  
+}
+
+// ************************************************************************
+
+// Calculate a zoom/dolly factor from the difference of the current
+// cursor position and the last.
+void View3DInventorViewer::zoomByCursor(const SbVec2f & thispos, const SbVec2f & prevpos)
+{
+  // There is no "geometrically correct" value, 20 just seems to give
+  // about the right "feel".
+  zoom(this->getCamera(), (thispos[1] - prevpos[1]) * 10.0f);
+}
+
+// *************************************************************************
+// Methods used for spin animation tracking.
+
+// This method "clears" the mouse location log, used for spin
+// animation calculations.
+void View3DInventorViewer::clearLog(void)
+{
+  this->log.historysize = 0;
+}
+
+// This method adds another point to the mouse location log, used for spin
+// animation calculations.
+void View3DInventorViewer::addToLog(const SbVec2s pos, const SbTime time)
+{
+  // In case someone changes the const size setting at the top of this
+  // file too small.
+  assert (this->log.size > 2 && "mouse log too small!");
+
+  if (this->log.historysize > 0 && pos == this->log.position[0]) {
+#if SOQt_DEBUG && 0 // debug
+    // This can at least happen under SoQt.
+    SoDebugError::postInfo("SoGuiExaminerViewerP::addToLog", "got position already!");
+#endif // debug
+    return;
+  }
+
+  int lastidx = this->log.historysize;
+  // If we've filled up the log, we should throw away the last item:
+  if (lastidx == this->log.size) { lastidx--; }
+
+  assert(lastidx < this->log.size);
+  for (int i = lastidx; i > 0; i--) {
+    this->log.position[i] = this->log.position[i-1];
+    this->log.time[i] = this->log.time[i-1];
+  }
+
+  this->log.position[0] = pos;
+  this->log.time[0] = time;
+  if (this->log.historysize < this->log.size)
+    this->log.historysize += 1;
+}
+
+// ************************************************************************
+
+#define HAND_WITH 24
+#define HAND_HEIGHT 24
+#define HAND_HOT_X 9
+#define HAND_HOT_Y 0
+
+static unsigned char hand_bitmap[] = {
+ 0x00,0x03,0x00,0x80,0x04,0x00,0x80,0x04,0x00,0x80,0x04,0x00,0x80,0x04,0x00,
+ 0x80,0x1c,0x00,0x80,0xe4,0x00,0x80,0x24,0x01,0x80,0x24,0x07,0x8e,0x24,0x09,
+ 0x92,0x24,0x09,0xa4,0x00,0x09,0xc4,0x00,0x08,0x08,0x00,0x08,0x08,0x00,0x08,
+ 0x10,0x00,0x08,0x10,0x00,0x04,0x20,0x00,0x04,0x20,0x00,0x04,0x40,0x00,0x02,
+ 0x80,0x00,0x02,0x00,0x01,0x01,0x00,0xff,0x01,0x00,0x00,0x00,0x00,0xab,0xab,
+ 0xab,0xab,0xab,0xab,0xab,0xab,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x02,
+ 0x00,0x1b,0x00,0xee,0x04,0xee };
+
+static unsigned char hand_mask_bitmap[] = {
+ 0x00,0x03,0x00,0x80,0x07,0x00,0x80,0x07,0x00,0x80,0x07,0x00,0x80,0x07,0x00,
+ 0x80,0x1f,0x00,0x80,0xff,0x00,0x80,0xff,0x01,0x80,0xff,0x07,0x8e,0xff,0x0f,
+ 0x9e,0xff,0x0f,0xbc,0xff,0x0f,0xfc,0xff,0x0f,0xf8,0xff,0x0f,0xf8,0xff,0x0f,
+ 0xf0,0xff,0x0f,0xf0,0xff,0x07,0xe0,0xff,0x07,0xe0,0xff,0x07,0xc0,0xff,0x03,
+ 0x80,0xff,0x03,0x00,0xff,0x01,0x00,0xff,0x01,0x00,0x00,0x00,0x00,0xab,0xab,
+ 0xab,0xab,0xab,0xab,0xab,0xab,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x05,
+ 0x00,0x1b,0x00,0xd5,0x07,0x1c };
+
+// Set cursor graphics according to mode.
+void View3DInventorViewer::setCursorRepresentation(int modearg)
+{
+  if (!this->isCursorEnabled()) {
+    this->setComponentCursor(SoQtCursor::getBlankCursor());
+    return;
+  }
+
+  switch (modearg) {
+  case View3DInventorViewer::IDLE:
+  case View3DInventorViewer::INTERACT:
+    if (isEditing())
+      this->getWidget()->setCursor(this->editCursor);
+    else
+      this->setComponentCursor(SoQtCursor(SoQtCursor::DEFAULT));
+    break;
+
+  case View3DInventorViewer::DRAGGING:
+  case View3DInventorViewer::SPINNING:
+    this->setComponentCursor(SoQtCursor::getRotateCursor());
+    break;
+
+  case View3DInventorViewer::ZOOMING:
+    {
+    this->setComponentCursor(SoQtCursor::getZoomCursor());
+    const SoQtCursor& z = SoQtCursor::getZoomCursor();
+    SoQtCursor::Shape sh = z.getShape();
+    int i=0;
+    }break;
+
+  case View3DInventorViewer::SEEK_MODE:
+  case View3DInventorViewer::SEEK_WAIT_MODE:
+    this->setComponentCursor(SoQtCursor(SoQtCursor::CROSSHAIR));
+    break;
+
+  case View3DInventorViewer::PANNING:
+    this->setComponentCursor(SoQtCursor::getPanCursor());
+    break;
+
+  case View3DInventorViewer::SELECTION:
+    {
+      SoQtCursor::CustomCursor custom;
+      custom.dim.setValue(HAND_WITH, HAND_HEIGHT);
+      custom.hotspot.setValue(HAND_HOT_X, HAND_HOT_Y);
+      custom.bitmap = hand_bitmap;
+      custom.mask = hand_mask_bitmap;
+      this->setComponentCursor(SoQtCursor(&custom));
+    }
+    break;
+
+  default: assert(0); break;
+  }
+}
+
+void View3DInventorViewer::setEditing(SbBool edit) 
+{ 
+  this->editing = edit; 
+  this->setComponentCursor(SoQtCursor(SoQtCursor::DEFAULT));
+  this->editCursor = QCursor();
+}
+
+void View3DInventorViewer::setEditingCursor (const SoQtCursor& cursor)
+{
+  //Note: Coin caches the pointer to the CustomCursor instance with
+  //the QCursor instance in a dictionary. So we must not store the
+  //SoQtCursor object here but the QCursor object, otherwise we might
+  //restore the wrong QCursor from the dictionary. 
+  this->setComponentCursor(cursor);
+  this->editCursor = this->getWidget()->cursor();
+}

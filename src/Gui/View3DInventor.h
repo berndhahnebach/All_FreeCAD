@@ -118,7 +118,7 @@ public Q_SLOTS:
   void dump(const char* filename);
 
 protected Q_SLOTS:
-  void stopSpinning();
+  void stopAnimating();
 
 protected:
   void showActiveView( MDIView* );
