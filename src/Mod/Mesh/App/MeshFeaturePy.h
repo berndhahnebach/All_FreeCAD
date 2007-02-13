@@ -34,7 +34,7 @@ namespace Base{
 namespace Mesh
 {
 
-class MeshFeature;
+class Feature;
 class MeshPy;
 
 //===========================================================================
@@ -52,7 +52,7 @@ protected:
 
 public:
   MeshFeaturePy(Feature *pcFeature, PyTypeObject *T = &Type);
-  static PyObject *PyMake(PyObject *, PyObject *);
+  static PyObject *PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwds);
 
   //---------------------------------------------------------------------
   // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
