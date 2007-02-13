@@ -30,6 +30,7 @@
 
 #include "Mesh.h"
 #include "MeshPy.h"
+#include "MeshFeaturePy.h"
 #include "FeatureMeshImport.h"
 #include "FeatureMeshExport.h"
 #include "FeatureMeshTransform.h"
@@ -67,7 +68,10 @@ void AppMeshExport initMesh() {
   // This function is responsible for adding inherited slots from a type's base class.
   PyObject* pyMeshType = (PyObject *)&Mesh::MeshPy::Type;
   if(PyType_Ready(&Mesh::MeshPy::Type) < 0) return;
-  PyModule_AddObject(meshModule, "mesh", pyMeshType);
+  PyModule_AddObject(meshModule, "Mesh", pyMeshType);
+  PyObject* pyMeshFeatureType = (PyObject *)&Mesh::MeshFeaturePy::Type;
+  if(PyType_Ready(&Mesh::MeshFeaturePy::Type) < 0) return; // needed to generate documentation
+  PyModule_AddObject(meshModule, "__MeshFeature__", pyMeshFeatureType);
 
   Mesh::PropertyNormalList    ::init();
   Mesh::PropertyCurvatureList ::init();
@@ -99,7 +103,7 @@ void AppMeshExport initMesh() {
   Mesh::Cone                  ::init();
   Mesh::Torus                 ::init();
   Mesh::Cube                  ::init();
-    
+
   return;
 }
 

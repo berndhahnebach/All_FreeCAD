@@ -42,22 +42,22 @@ using namespace Mesh;
 
 PyTypeObject MeshFeaturePy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
-  0,                      /*ob_size*/
-  "Mesh::Feature",        /*tp_name*/
-  sizeof(MeshFeaturePy),  /*tp_basicsize*/
-  0,                      /*tp_itemsize*/
-                          /* methods */
-  PyDestructor,           /*tp_dealloc*/
-  0,                      /*tp_print*/
-  __getattr,              /*tp_getattr*/
-  __setattr,              /*tp_setattr*/
-  0,                      /*tp_compare*/
-  __repr,                 /*tp_repr*/
-  0,                      /*tp_as_number*/
-  0,                      /*tp_as_sequence*/
-  0,                      /*tp_as_mapping*/
-  0,                      /*tp_hash*/
-  0,                      /*tp_call */
+  0,                                                /*ob_size*/
+  "Mesh.Mesh::Feature",                             /*tp_name*/
+  sizeof(MeshFeaturePy),                            /*tp_basicsize*/
+  0,                                                /*tp_itemsize*/
+                                                    /* methods */
+  PyDestructor,                                     /*tp_dealloc*/
+  0,                                                /*tp_print*/
+  __getattr,                                        /*tp_getattr*/
+  __setattr,                                        /*tp_setattr*/
+  0,                                                /*tp_compare*/
+  __repr,                                           /*tp_repr*/
+  0,                                                /*tp_as_number*/
+  0,                                                /*tp_as_sequence*/
+  0,                                                /*tp_as_mapping*/
+  0,                                                /*tp_hash*/
+  0,                                                /*tp_call */
   0,                                                /*tp_str  */
   0,                                                /*tp_getattro*/
   0,                                                /*tp_setattro*/
@@ -65,7 +65,10 @@ PyTypeObject MeshFeaturePy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "The Mesh::Feature class handles meshes",         /*tp_doc */
+  "The Mesh::Feature class handles meshes.\n"
+  "The Mesh.MeshFeature() function is for internal use only and cannot be used to create instances of this class.\n"
+  "Therefore you must have a reference to a document, e.g. 'd' then you can create an instance with "
+  "d.addObject(\"Mesh::Feature\").",                 /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
@@ -82,7 +85,7 @@ PyTypeObject MeshFeaturePy::Type = {
   0,                                                /*tp_dictoffset */
   0,                                                /*tp_init */
   0,                                                /*tp_alloc */
-  0,                                                /*tp_new */
+  PyMake,                                           /*tp_new */
   0,                                                /*tp_free   Low-level free-memory routine */
   0,                                                /*tp_is_gc  For PyObject_IS_GC */
   0,                                                /*tp_bases */
@@ -127,9 +130,10 @@ MeshFeaturePy::MeshFeaturePy(Feature *pcFeature, PyTypeObject *T)
   Base::Console().Log("Create Mesh::Feature: %p \n",this);
 }
 
-PyObject *MeshFeaturePy::PyMake(PyObject *ignored, PyObject *args)  // Python wrapper
+PyObject *MeshFeaturePy::PyMake(PyTypeObject  *ignored, PyObject *args, PyObject *kwds)  // Python wrapper
 {
-  //return new MeshFeaturePy(name, n, tau, gamma);      // Make new Python-able object
+  PyErr_SetString(PyExc_RuntimeError, "You cannot create directly an instance of 'Mesh::Feature'.\n"
+    "You must have created a document where you can create an instance with addObject(\"Mesh::Feature\").");
   return 0;
 }
 
