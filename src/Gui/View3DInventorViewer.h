@@ -24,6 +24,7 @@
 #ifndef __VIEW3DINVENTORVIEWER__
 #define __VIEW3DINVENTORVIEWER__
 
+
 #ifndef __Qt4All__
 # include "Qt4All.h"
 #endif
@@ -32,15 +33,12 @@
 # include "Qt3All.h"
 #endif
 
-//#include <qcursor.h>
-////Added by qt3to4:
-//#include <QtCore/QEvent>
-
 #include <set>
 #include <stack>
 
 #include <Base/Vector3D.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>
+#include <Inventor/Qt/SoQtCursor.h>
 #include "Selection.h"
 
 
@@ -64,7 +62,6 @@ class AbstractMouseModel;
  */
 class GuiExport View3DInventorViewer: public SoQtViewer, public Gui::SelectionSingleton::ObserverType
 {
-
   SOQT_OBJECT_ABSTRACT_HEADER(View3DInventorViewer, SoQtViewer);
 
 public:
@@ -74,6 +71,11 @@ public:
   /// Observer message from the Selection
   virtual void OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::SelectionSingleton::MessageType Reason);
 
+  void stopAnimating(void);
+  SbBool isAnimating(void) const;
+
+  virtual void setViewing(SbBool enable);
+  virtual void setCursorEnabled(SbBool enable);
 
   /// adds an ViewProvider to the view, e.g. from a feature
   void addViewProvider(ViewProvider*);
@@ -101,6 +103,11 @@ public:
   };
   void startPicking( ePickMode = Lasso );
   const std::vector<SbVec2f>& getPickedPolygon() const { return pcPolygon; }
+
+  void setEditing(SbBool edit);
+  SbBool isEditing() const { return this->editing; }
+  void setEditingCursor (const SoQtCursor& cursor);
+
   /**
    * Writes the current scenegraph to an Inventor file, either in ascii or binary. 
    */
@@ -143,7 +150,6 @@ public:
     * and modies of the Viewer
     */
   //@{
-
   enum ViewerMod {
       ShowCoord=1,       /**< Enables the Coordinate system in the corner. */
       ShowFPS  =2,       /**< Enables the Frams per Second counter. */
@@ -170,20 +176,11 @@ public:
   void setGradientBackgroud(bool b);
   void setGradientBackgroudColor( const SbColor& fromColor, const SbColor& toColor );
   void setEnabledFPSCounter(bool b);
-  void stopSpinning();
 
 protected:
   unsigned long             currMod;
   std::stack<unsigned long> ModStack;
 
-  /*
-  static void sFinishSelectionCallback(void *,SoSelection *);
-  virtual void finishSelectionCallback(SoSelection *);
-  static void sMadeSelection(void *,SoPath *);
-  virtual void madeSelection(SoPath *);
-  static void sUnmadeSelection(void *,SoPath *);
-  virtual void unmadeSelection(SoPath *);
-*/
   virtual void openPopupMenu(const SbVec2s& position);
   void setPopupMenuEnabled(const SbBool on);
   SbBool isPopupMenuEnabled(void) const;
@@ -191,15 +188,11 @@ protected:
   std::set<ViewProvider*> _ViewProviderSet;
 
   virtual void actualRedraw(void);
+  virtual void setSeekMode(SbBool enable);
+  virtual void afterRealizeHook(void);
   virtual void processEvent(QEvent * event);
   virtual SbBool processSoEvent(const SoEvent * const ev);
-  /// gets called when the container widget's size  has changed
-  virtual void sizeChanged  ( const SbVec2s& );
 
-  void reorientCamera(const SbRotation & rotation);
-  void pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);
-  void zoom(SoCamera * cam, const float diffvalue);
-  void spin(const SbVec2f & pointerpos);
   void panToCenter(const SbPlane & panningplane, const SbVec2f & currpos);
   void printDimension();
 
@@ -208,33 +201,6 @@ protected:
   static void interactionFinishCB(void * data, SoQtViewer * viewer);
   static void interactionLoggerCB(void * ud, SoAction* action);
 
-  SbVec2f lastmouseposition;
-  SbPlane panningplane;
-
-  SbBool spinanimatingallowed;
-  SbVec2f lastspinposition;
-  int spinsamplecounter;
-  SbRotation spinincrement;
-  SbSphereSheetProjector * spinprojector;
-  SbTime prevRedrawTime;
-  SbRotation spinRotation;
-  void clearLog(void);
-  void addToLog(const SbVec2s pos, const SbTime time);
-
-  struct { // tracking mouse movement in a log
-    short size;
-    short historysize;
-    SbVec2s * position;
-    SbTime * time;
-  } log;
-
-
-  SbBool axiscrossEnabled;
-  int axiscrossSize;
-  void drawAxisCross(void);
-  static void drawArrow(void);
-
-  bool _bSpining;
   bool _bRejectSelection;
   SbBool MenuEnabled;
   SbTime MoveTime;
@@ -248,9 +214,69 @@ private:
   SoRotationXYZ * arrowrotation;
 
   SoSeparator * pcViewProviderRoot;
-  QCursor _oldCursor;
   AbstractMouseModel* pcMouseModel;
   std::vector<SbVec2f> pcPolygon;
+
+
+  void initialize();
+  void finalize();
+  void reorientCamera(const SbRotation & rotation);
+  void spin(const SbVec2f & pointerpos);
+  void pan(SoCamera * cam,float aspectratio, const SbPlane & panningplane, const SbVec2f & currpos, const SbVec2f & prevpos);
+  void zoom(SoCamera * cam, const float diffvalue);
+  void zoomByCursor(const SbVec2f & mousepos, const SbVec2f & prevpos);
+
+  SbVec2f lastmouseposition;
+  SbPlane panningplane;
+
+  SbBool spinanimatingallowed;
+  SbVec2f lastspinposition;
+  int spinsamplecounter;
+  SbRotation spinincrement;
+  SbSphereSheetProjector * spinprojector;
+
+  SbRotation spinRotation;
+
+  SbBool axiscrossEnabled;
+  int axiscrossSize;
+
+  void drawAxisCross(void);
+  static void drawArrow(void);
+
+  struct { // tracking mouse movement in a log
+    short size;
+    short historysize;
+    SbVec2s * position;
+    SbTime * time;
+  } log;
+
+  SbBool button1down;
+  SbBool button3down;
+  SbBool ctrldown, shiftdown;
+  SbBool editing;
+  QCursor editCursor;
+
+  void clearLog(void);
+  void addToLog(const SbVec2s pos, const SbTime time);
+
+  SbTime prevRedrawTime;
+
+  enum ViewerMode {
+    IDLE,
+    INTERACT,
+    ZOOMING,
+    PANNING,
+    DRAGGING,
+    SPINNING,
+    SEEK_WAIT_MODE,
+    SEEK_MODE,
+    SELECTION
+  };
+
+  ViewerMode currentmode;
+  void setMode(const ViewerMode mode);
+
+  void setCursorRepresentation(int mode);
 };
 
 } // namespace Gui
