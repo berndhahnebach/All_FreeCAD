@@ -86,6 +86,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="res/FreeCAD.exe.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -185,6 +186,7 @@
 			/>
 			<Tool
 				Name="VCManifestTool"
+				AdditionalManifestFiles="res/FreeCADD.exe.manifest"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -212,15 +214,15 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{CEFC0332-EDFD-4DAC-BD01-10B6E5D18E5D}"
-			RelativePathToProject=".\App\FreeCADDoc.vcproj"
+			RelativePathToProject=".\src\App\FreeCADDoc.vcproj"
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
-			RelativePathToProject=".\Base\FreeCADBase.vcproj"
+			RelativePathToProject=".\src\Base\FreeCADBase.vcproj"
 		/>
 		<ProjectReference
 			ReferencedProjectIdentifier="{FEEF8FBE-392E-48EA-B727-203A340E66D0}"
-			RelativePathToProject=".\Gui\FreeCADGui.vcproj"
+			RelativePathToProject=".\src\Gui\FreeCADGui.vcproj"
 		/>
 	</References>
 	<Files>
