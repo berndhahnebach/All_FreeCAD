@@ -531,11 +531,9 @@ bool Application::activateWorkbench( const char* name )
   Workbench* oldWb = WorkbenchManager::instance()->active();
   if ( oldWb && oldWb->name() == name )
     return false; // already active
-  // net buffer because of char* <-> const char*
-  Base::PyBuf Name(name);
   // get the python workbench object from the dictionary
   PyObject* pcWorkbench = 0;
-  pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, Name.str);
+  pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, name);
   // test if the workbench exists
   if ( !pcWorkbench )
     return false;
@@ -623,10 +621,8 @@ void Application::refreshWorkbenchList()
 
 QPixmap Application::workbenchIcon( const QString& wb ) const
 {
-  // net buffer because of char* <-> const char*
-  Base::PyBuf Name(wb.latin1());
   // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, Name.str);
+  PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.latin1());
   // test if the workbench exists
   if ( pcWorkbench )
   {

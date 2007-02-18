@@ -78,18 +78,7 @@ int main( int argc, char ** argv )
 {
   // Name and Version of the Application
   App::Application::Config()["ExeName"] = "FreeCAD";
-  App::Application::Config()["ExeVersion"] = "0.3";
-
-  // Version of the Application. Extractet of SubWCRef into src/Build/Version.h
-  App::Application::Config()["BuildVersionMajor"]  = FCVersionMajor;
-  App::Application::Config()["BuildVersionMinor"]  = FCVersionMinor;
-  App::Application::Config()["BuildRevision"]      = FCRevision;
-  App::Application::Config()["BuildRevisionRange"] = FCRevisionRange;
-  App::Application::Config()["BuildRepositoryURL"] = FCRepositoryURL;
-  App::Application::Config()["BuildRevisionDate"]  = FCRevisionDate;
-  App::Application::Config()["BuildCurrentDate"]   = FCCurrentDateT;
-  App::Application::Config()["BuildScrClean"]      = FCScrClean;
-  App::Application::Config()["BuildFCScrMixed"]    = FCScrMixed;
+  App::Application::Config()["ExeVersion"] = "0.7";
 
   // set the banner (for loging and console)
   App::Application::Config()["ConsoleBanner"] = sBanner;

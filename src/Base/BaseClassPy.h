@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) Juergen Riegel         <juergen.riegel@web.de>          *
+ *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -20,54 +20,62 @@
  *                                                                         *
  ***************************************************************************/
 
+ 
 
-#ifndef Points_FEATURE_PY_H
-#define Points_FEATURE_PY_H
 
-#include <Base/PyObjectBase.h>
-#include <App/FeaturePy.h>
+#ifndef _BaseClassPy_h_
+#define _BaseClassPy_h_
 
-namespace Base{
-  class PyObjectBase;
-}
+#include "PyObjectBase.h"
 
-namespace Points
+namespace Base
 {
 
-class PointsFeature;
-class PointsPy;
+class BaseClass;
+
 
 //===========================================================================
-// PointsFeaturePy - Python wrapper 
+// BaseClassPy - Python wrapper
 //===========================================================================
 
-// The DocTypeStd python class 
-class PointsAppExport PointsFeaturePy :public App::FeaturePy
+/** The DocTypeStd python class
+ */
+class BaseExport BaseClassPy :public Base::PyObjectBase
 {
-  /// always start with Py_Header
-  Py_Header;
-
-protected:
-  ~PointsFeaturePy();
+	/// always start with Py_Header
+	Py_Header;
 
 public:
-  PointsFeaturePy(Points::Feature *pcFeature, PyTypeObject *T = &Type);
-  static PyObject *PyMake(PyObject *, PyObject *);
+	BaseClassPy(BaseClass *pcBaseClass, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
+	~BaseClassPy();
 
-  //---------------------------------------------------------------------
-  // python exports goes here +++++++++++++++++++++++++++++++++++++++++++	
-  //---------------------------------------------------------------------
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
 
-  virtual PyObject *_repr(void);  				// the representation
-  PyObject *_getattr(char *attr);					// __getattr__ function
-  int _setattr(char *attr, PyObject *value);		// __setattr__ function
+	virtual PyObject *_repr(void);  				// the representation
+	PyObject *_getattr(char *attr);					// __getattr__ function
+	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+//	PYFUNCDEF_D(FeaturePy,setModified)
 
-private:
-  Points::Feature *_pcFeature;
+
+	//---------------------------------------------------------------------
+	// helpers for python exports goes here +++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+  BaseClass *getBaseClassObject(void){return _pcBaseClass;}
+  
+
+protected:
+  BaseClass *_pcBaseClass;
+
+
 };
 
-} //namespace Points
+
+
+} //namespace App
 
 
 
-#endif // Points_FEATURE_PY_H 
+#endif

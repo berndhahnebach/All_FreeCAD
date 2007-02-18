@@ -26,7 +26,7 @@
 #ifndef _MaterialPy_h_
 #define _MaterialPy_h_
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 
 namespace App
 {

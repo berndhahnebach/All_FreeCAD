@@ -41,24 +41,24 @@ except:
 
 def InitDocumentation():
 	# Checking on FreeCAD documentation path ++++++++++++++++++++++++++++++++++++++++++
-	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Doc'):
-		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Doc\\free-cad.sourceforge.net'):
-			FreeCAD.ConfigSet("DocPath",FreeCAD.ConfigGet("HomePath")+'Doc\\free-cad.sourceforge.net')
+	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'Doc'):
+		if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'Doc\\free-cad.sourceforge.net'):
+			FreeCAD.ConfigSet("DocPath",FreeCAD.ConfigGet("AppHomePath")+'Doc\\free-cad.sourceforge.net')
 
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = FreeCAD.ConfigGet("HomePath")+'src/Mod'
-	#print FreeCAD.ConfigGet("HomePath")
-	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Mod'):
-		ModDir = FreeCAD.ConfigGet("HomePath")+'Mod'
+	ModDir = FreeCAD.ConfigGet("AppHomePath")+'src/Mod'
+	#print FreeCAD.ConfigGet("AppHomePath")
+	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'Mod'):
+		ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
 	else:
-		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'src\\Mod'):
-			ModDir = FreeCAD.ConfigGet("HomePath")+'src\\Mod'
+		if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Mod'):
+			ModDir = FreeCAD.ConfigGet("AppHomePath")+'src\\Mod'
 	sys.path.append( '..\\bin' )
 	sys.path.append( ModDir )
-	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'src\\Tools'):
-		sys.path.append( FreeCAD.ConfigGet("HomePath")+'src\\Tools' )
+	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools'):
+		sys.path.append( FreeCAD.ConfigGet("AppHomePath")+'src\\Tools' )
 	Log("Using "+ModDir+" as module path!\n")
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)

@@ -27,7 +27,7 @@
 # include <sstream>
 #endif
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Vector3D.h>

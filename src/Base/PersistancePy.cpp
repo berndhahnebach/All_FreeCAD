@@ -27,28 +27,26 @@
 # include <sstream>
 #endif
 
-#include <Base/PyObjectBase.h>
-#include <Base/Console.h>
-#include <Base/Exception.h>
+#include "../Base/PyObjectBase.h"
+#include "../Base/Console.h"
+#include "../Base/Exception.h"
 using Base::Console;
 
-#include "Material.h"
-#include "MaterialPy.h"
+#include "Persistance.h"
+#include "PersistancePy.h"
 #define new DEBUG_CLIENTBLOCK
-using namespace App;
 
-
-
+using namespace Base;
 
 //--------------------------------------------------------------------------
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject App::MaterialPy::Type = {
+PyTypeObject Base::PersistancePy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"Material",				/*tp_name*/
-	sizeof(MaterialPy),			/*tp_basicsize*/
+	"Persistance",				/*tp_name*/
+	sizeof(PersistancePy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -68,15 +66,15 @@ PyTypeObject App::MaterialPy::Type = {
   /* --- Functions to access object as input/output buffer ---------*/
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
-  Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
-  "About Material",                                 /*tp_doc */
+  Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
+  "About Persistance",                           /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  MaterialPy::Methods,                              /*tp_methods */
+  Base::PersistancePy::Methods,                   /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
   &Base::PyObjectBase::Type,                        /*tp_base */
@@ -96,173 +94,95 @@ PyTypeObject App::MaterialPy::Type = {
   0                                                 /*tp_weaklist */
 };
 
-PyDoc_STRVAR(Material_set_doc,
-"Set(string) -- Set the material.\n"
-"\n"
-"The material must be one of the following values:\n"
-"Brass, Bronze, Copper, Gold, Pewter, Plaster, Plastic, Silver, Steel, Stone, Shiny plastic,\n"
-"Satin, Metalized, Neon GNC, Chrome, Aluminium, Obsidian, Neon PHC, Jade, Ruby or Emerald.\n");
-
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef App::MaterialPy::Methods[] = {
-  {"set", (PyCFunction) sset, 1, Material_set_doc},
+PyMethodDef Base::PersistancePy::Methods[] = {
+// PyObjectBase
+//  PYMETHODEDEF(isA)
+// PersistancePy 
+//	PYMETHODEDEF(setModified)
+
 	{NULL, NULL}		/* Sentinel */
 };
 
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject App::MaterialPy::Parents[] = {&PyObjectBase::Type, NULL};
+PyParentObject Base::PersistancePy::Parents[] = { &PersistancePy::Type, &PyObjectBase::Type, NULL};
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-App::MaterialPy::MaterialPy(Material *pcMaterial, PyTypeObject *T)
-: PyObjectBase( T), _pcMaterial(pcMaterial)
+Base::PersistancePy::PersistancePy(Persistance *pcPersistance, PyTypeObject *T)
+: BaseClassPy(pcPersistance, T)
 {
-	Base::Console().Log("Create MaterialPy: %p \n",this);
+//	Base::Console().Log("Create PersistancePy: %p \n",this);
 }
 
-PyObject *MaterialPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *PersistancePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  //return new MaterialPy(name, n, tau, gamma);			// Make new Python-able object
+  //return new PersistancePy(name, n, tau, gamma);			// Make new Python-able object
 	return 0;
 }
 
 //--------------------------------------------------------------------------
 // destructor
 //--------------------------------------------------------------------------
-MaterialPy::~MaterialPy()						// Everything handled in parent
+PersistancePy::~PersistancePy()						// Everything handled in parent
 {
-	Base::Console().Log("Destroy MaterialPy: %p \n",this);
+//	Base::Console().Log("Destroy PersistancePy: %p \n",this);
+
 }
 
-
 //--------------------------------------------------------------------------
-// MaterialPy representation
+// PersistancePy representation
 //--------------------------------------------------------------------------
-PyObject *MaterialPy::_repr(void)
+PyObject *PersistancePy::_repr(void)
 {
   std::stringstream a;
-  a << "Material: [ ";
-/*  for(std::map<std::string,int>::const_iterator It = _pcMaterial->_PropertiesMap.begin();It!=_pcMaterial->_PropertiesMap.end();It++)
-  {
-    a << It->first << "=" << _pcMaterial->GetProperty(It->first.c_str()).GetAsString() << "; ";
-  }*/
+  a << "Feature: [ ";
+//  for(std::map<std::string,int>::const_iterator It = _pcFeature->_PropertiesMap.begin();It!=_pcFeature->_PropertiesMap.end();It++)
+//  {
+//    a << It->first << "=" << _pcFeature->GetProperty(It->first.c_str()).GetAsString() << "; ";
+//  }
   a << "]" << std::endl;
 	return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
-// MaterialPy Attributes
+// PersistancePy Attributes
 //--------------------------------------------------------------------------
-PyObject *MaterialPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{
-    if (Base::streq(attr, "__dict__")) {
-      PyObject *dict = PyDict_New();
-      if (dict) {
-        PyDict_SetItem(dict, PyString_FromString("ambientColor"),  PyString_FromString(""));
-        PyDict_SetItem(dict, PyString_FromString("diffuseColor"),  PyString_FromString(""));
-        PyDict_SetItem(dict, PyString_FromString("specularColor"), PyString_FromString(""));
-        PyDict_SetItem(dict, PyString_FromString("shininess"),     PyString_FromString(""));
-        PyDict_SetItem(dict, PyString_FromString("transparency"),  PyString_FromString(""));
-        if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
-      }
-      return dict;
-    }else if (Base::streq(attr, "ambientColor"))
-    {
-      if(_pcMaterial->ambientColor.a == 0.0)
-			  return Py_BuildValue("(fff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b);
-      else
-			  return Py_BuildValue("(ffff)",_pcMaterial->ambientColor.r,_pcMaterial->ambientColor.g,_pcMaterial->ambientColor.b,_pcMaterial->ambientColor.a);
-    }else	if (Base::streq(attr, "diffuseColor"))
-    {
-      if(_pcMaterial->diffuseColor.a == 0.0)
-			  return Py_BuildValue("(fff)",_pcMaterial->diffuseColor.r,_pcMaterial->diffuseColor.g,_pcMaterial->diffuseColor.b); 
-      else
-			  return Py_BuildValue("(ffff)",_pcMaterial->diffuseColor.r,_pcMaterial->diffuseColor.g,_pcMaterial->diffuseColor.b,_pcMaterial->diffuseColor.a); 
-    }else	if (Base::streq(attr, "specularColor"))
-    {
-      if(_pcMaterial->specularColor.a == 0.0)			
-			  return Py_BuildValue("(fff)",_pcMaterial->specularColor.r,_pcMaterial->specularColor.g,_pcMaterial->specularColor.b); 
-      else
-			  return Py_BuildValue("(ffff)",_pcMaterial->specularColor.r,_pcMaterial->specularColor.g,_pcMaterial->specularColor.b,_pcMaterial->specularColor.a); 
-    }else	if (Base::streq(attr, "shininess"))
-    {
-			return Py_BuildValue("f",_pcMaterial->shininess); 
-    }else	if (Base::streq(attr, "transparency"))
-    {
-			return Py_BuildValue("f",_pcMaterial->transparency); 
-    }else
-
-	    _getattr_up(PyObjectBase); 						
-} 
-
-
-Color MaterialPy::getColorFromPy(PyObject *value)
-{
-  Color c;
-
-  if(PyTuple_Check(value))
-  {
-    int size = PyTuple_Size( value);
-
-    if( size != 4 && size != 3)
-      throw Base::Exception("wrong Tuple size. Only Tuple with 3 (r,g,b) or 4 (r,g,b,a) floats are allowed...");
-
-    c.r = getFloatFromPy(PyTuple_GetItem( value, 0));
-    c.g = getFloatFromPy(PyTuple_GetItem( value, 1));
-    c.b = getFloatFromPy(PyTuple_GetItem( value, 2));
-    if(size > 3)
-      c.a = getFloatFromPy(PyTuple_GetItem( value, 3));
-
-  }else
-    throw Base::Exception("wrong type for color. Only Tuple with 3 (r,g,b) or 4 (r,g,b,a) floats are allowed...");
-
-
-  return c;
-
-}
-
-int MaterialPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+PyObject *PersistancePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
-	if (Base::streq(attr, "ambientColor")){						// settable new state
-		_pcMaterial->ambientColor = getColorFromPy(value); 
-		return 0;
-  }else if (Base::streq(attr, "diffuseColor")){						// settable new state
-		_pcMaterial->diffuseColor = getColorFromPy(value); 
-		return 0;
-  }else if (Base::streq(attr, "specularColor")){						// settable new state
-		_pcMaterial->specularColor = getColorFromPy(value); 
-		return 0;
-  }else if (Base::streq(attr, "shininess")){						// settable new state
-		_pcMaterial->shininess = getFloatFromPy(value); 
-		return 0;
-  }else if (Base::streq(attr, "transparency")){						// settable new state
-		_pcMaterial->transparency = getFloatFromPy(value); 
-		return 0;
-  }else
+	PY_TRY{
+    {
+  	  _getattr_up(PyObjectBase); 						
+    }
+	}PY_CATCH;
 
-	  return PyObjectBase::_setattr(attr, value); 						
+  return Py_None;
 } 
+
+int PersistancePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+{ 
+	return PyObjectBase::_setattr(attr, value);
+} 
+
+Persistance *PersistancePy::getPersistanceObject(void)
+{
+  return dynamic_cast<Persistance *>(_pcBaseClass);
+}
 
 
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
 
-PYFUNCIMP_D(MaterialPy,set)
+/*
+PYFUNCIMP_D(PersistancePy,setModified)
 {
-	char *pstr;
-  if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  PY_TRY{
-    _pcMaterial->set(pstr);
-	}PY_CATCH;
+  _pcFeature->Touch();
 
 	Py_Return;
 }
-
-
+*/

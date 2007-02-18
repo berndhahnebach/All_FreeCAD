@@ -27,7 +27,7 @@
 # include <sstream>
 #endif
 
-#include "../Base/PyExportImp.h"
+#include "../Base/PyObjectBase.h"
 #include "../Base/Console.h"
 #include "../Base/Exception.h"
 using Base::Console;
@@ -244,7 +244,7 @@ PyObject *FeaturePy::_getattr(char *attr)				// __getattr__ function: note only 
 int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
    // search in PropertyList
-  Property *prop = _pcFeature->getPropertyByName(attr);
+ Property *prop = _pcFeature->getPropertyByName(attr);
   if(prop) { 
     try {
       prop->setPyObject(value);
@@ -256,7 +256,7 @@ int FeaturePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: n
       return -1;
     }
   } else {
-		return DocumentObjectPy::_setattr(attr, value);
+		return PyObjectBase::_setattr(attr, value);
   }
 
   return 0;

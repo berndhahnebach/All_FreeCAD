@@ -62,7 +62,12 @@
 #include "PropertyLinks.h"
 #include "Document.h"
 #include "DocumentObjectGroup.h"
+// If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
+// which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
+#include "../Build/Version.h"
 
+#include <Shlobj.h>
+#include <Shfolder.h>
 
 using namespace App;
 
@@ -395,7 +400,7 @@ void Application::setActiveDocument(const char *Name)
 
 const char* Application::GetHomePath(void)
 {
-  return _mConfig["HomePath"].c_str();
+  return _mConfig["AppHomePath"].c_str();
 }
 
 
@@ -730,7 +735,19 @@ void Application::initTypes(void)
 void Application::initConfig(int argc, char ** argv)
 {
   // find the home path....
-  mConfig["HomePath"] = FindHomePath(argv[0]);
+  mConfig["AppHomePath"] = FindHomePath(argv[0]);
+
+  // Version of the Application. Extractet of SubWCRef into src/Build/Version.h
+  App::Application::Config()["BuildVersionMajor"]  = FCVersionMajor;
+  App::Application::Config()["BuildVersionMinor"]  = FCVersionMinor;
+  App::Application::Config()["BuildRevision"]      = FCRevision;
+  App::Application::Config()["BuildRevisionRange"] = FCRevisionRange;
+  App::Application::Config()["BuildRepositoryURL"] = FCRepositoryURL;
+  App::Application::Config()["BuildRevisionDate"]  = FCRevisionDate;
+  App::Application::Config()["BuildCurrentDate"]   = FCCurrentDateT;
+  App::Application::Config()["BuildScrClean"]      = FCScrClean;
+  App::Application::Config()["BuildScrMixed"]    = FCScrMixed;
+
 
 	_argc = argc;
 	_argv = argv;
@@ -1170,11 +1187,11 @@ void Application::ParseOptions(int argc, char ** argv)
 void Application::ExtractUser()
 {
 	// std paths
-	mConfig["BinPath"] = mConfig["HomePath"] + "bin" + PATHSEP;
-	mConfig["DocPath"] = mConfig["HomePath"] + "doc" + PATHSEP;
+	mConfig["BinPath"] = mConfig["AppHomePath"] + "bin" + PATHSEP;
+	mConfig["DocPath"] = mConfig["AppHomePath"] + "doc" + PATHSEP;
 
 	// try to figure out if using FreeCADLib
-	//mConfig["FreeCADLib"] = EnvMacro::GetFreeCADLib(mConfig["HomePath"].c_str());
+	//mConfig["FreeCADLib"] = EnvMacro::GetFreeCADLib(mConfig["AppHomePath"].c_str());
 
 	// try to figure out the user
 	char* user = getenv("USERNAME");
@@ -1189,21 +1206,36 @@ void Application::ExtractUser()
   // In the rare case that none of them are set we get the directory where FreeCAD is
   // installed as a fallback solution.
   //
-  // Default paths for the user depending on the platform
+  // Default paths for the user depending on the platform 
 #if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
   if(getenv("HOME") != 0)
     mConfig["UserHomePath"] = getenv("HOME");
+  mConfig["UserAppData"] = mConfig["UserHomePath"] + "/.FreeCAD/";
 #elif defined(FC_OS_WIN32)
-  if(getenv("HOMEDRIVE") != 0 && getenv("HOMEPATH") != 0 )
-    mConfig["UserHomePath"] = std::string(getenv("HOMEDRIVE")) + getenv("HOMEPATH");
-#endif
-  else
-    mConfig["UserHomePath"] = mConfig["HomePath"];
-
+  TCHAR szPath[MAX_PATH];
+  if(SUCCEEDED(SHGetFolderPath(NULL, 
+                               CSIDL_MYDOCUMENTS , 
+                               NULL, 
+                               0, 
+                               szPath))) 
+      mConfig["UserHomePath"] = szPath;
   // In the second step we want the directory where user settings of FreeCAD can be
   // kept. On Windows usually 'APPDATA' is set supplemented by 'FreeCAD'.
   // On Linux the directory '.FreeCAD' (with a leading dot) is created directly under
   // the home path.
+  if(SUCCEEDED(SHGetFolderPath(NULL, 
+                               CSIDL_APPDATA , 
+                               NULL, 
+                               0, 
+                               szPath))) {
+      mConfig["UserAppData"] = szPath;
+      mConfig["UserAppData"] += "/FreeCAD/";
+  }
+
+#endif
+  else
+    mConfig["UserHomePath"] = mConfig["AppHomePath"];
+
 #if 0
   // Actually the name of the directory where the parameters are stored should be the name of
   // the application due to branding stuff. So make it active in one of the following releases.

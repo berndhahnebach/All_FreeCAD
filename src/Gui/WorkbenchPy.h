@@ -24,7 +24,7 @@
 #ifndef GUI_WORKBENCHPY_H
 #define GUI_WORKBENCHPY_H
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 
 namespace Gui {
 class Workbench;

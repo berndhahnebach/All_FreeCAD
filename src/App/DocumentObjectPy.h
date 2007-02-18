@@ -26,7 +26,7 @@
 #ifndef _DocumentObjectPy_h_
 #define _DocumentObjectPy_h_
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 
 namespace App
 {

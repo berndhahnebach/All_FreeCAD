@@ -24,7 +24,7 @@
 #ifndef MESH_PY_H
 #define MESH_PY_H
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include "Core/MeshKernel.h"
 
 namespace MeshCore {

@@ -29,7 +29,7 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Base.h"
-#include "PyExportImp.h"
+#include "PyObjectBase.h"
 
 #define new DEBUG_CLIENTBLOCK
 

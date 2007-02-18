@@ -37,7 +37,7 @@
 #endif
 
 #include "PyExport.h"
-#include "PyExportImp.h"
+#include "PyObjectBase.h"
 
 using namespace Base;
 

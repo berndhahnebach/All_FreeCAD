@@ -24,7 +24,7 @@
 #ifndef GUI_VIEWPROVIDER_PY_H
 #define GUI_VIEWPROVIDER_PY_H
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 
 namespace Gui {
 class ViewProvider;

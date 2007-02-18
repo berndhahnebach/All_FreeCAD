@@ -24,7 +24,7 @@
 #ifndef PART_LINEPY_H
 #define PART_LINEPY_H
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include "PropertyLine.h"
 
 namespace Part

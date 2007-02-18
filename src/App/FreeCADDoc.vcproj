@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="FreeCADApp"
 	ProjectGUID="{CEFC0332-EDFD-4DAC-BD01-10B6E5D18E5D}"
+	RootNamespace="FreeCADApp"
 	>
 	<Platforms>
 		<Platform
@@ -75,7 +76,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB xerces-c_2.lib python25.lib boost_signals-vc80-mt.lib"
+				AdditionalDependencies="MSVCRT.LIB MSVCPRT.LIB SHFolder.lib Shell32.lib xerces-c_2.lib python25.lib boost_signals-vc80-mt.lib"
 				OutputFile="Release/FreeCADApp.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -174,7 +175,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB xerces-c_2D.lib python25_d.lib boost_signals-vc80-mt-gd.lib"
+				AdditionalDependencies="MSVCRTD.LIB MSVCPRTD.LIB SHFolder.lib Shell32.lib xerces-c_2D.lib python25_d.lib boost_signals-vc80-mt-gd.lib"
 				OutputFile="Debug/FreeCADAppD.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -216,7 +217,7 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
-			RelativePathToProject=".\Base\FreeCADBase.vcproj"
+			RelativePathToProject=".\src\Base\FreeCADBase.vcproj"
 		/>
 	</References>
 	<Files>

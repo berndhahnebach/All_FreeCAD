@@ -63,7 +63,7 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserv
         // which does the rest.
 	      char  szFileName [MAX_PATH];
 	      GetModuleFileName((HMODULE)hModule, szFileName, MAX_PATH-1);
-        App::Application::Config()["HomePath"] = szFileName;
+        App::Application::Config()["AppHomePath"] = szFileName;
       } break;
     default:
       break;
@@ -91,16 +91,6 @@ extern "C" {
   App::Application::Config()["ExeName"] = "FreeCAD";
   App::Application::Config()["ExeVersion"] = "0.3";
 
-  // Version of the Application. Extractet of SubWCRef into src/Build/Version.h
-  App::Application::Config()["BuildVersionMajor"]  = FCVersionMajor;
-  App::Application::Config()["BuildVersionMinor"]  = FCVersionMinor;
-  App::Application::Config()["BuildRevision"]      = FCRevision;
-  App::Application::Config()["BuildRevisionRange"] = FCRevisionRange;
-  App::Application::Config()["BuildRepositoryURL"] = FCRepositoryURL;
-  App::Application::Config()["BuildRevisionDate"]  = FCRevisionDate;
-  App::Application::Config()["BuildCurrentDate"]   = FCCurrentDateT;
-  App::Application::Config()["BuildScrClean"]      = FCScrClean;
-  App::Application::Config()["BuildFCScrMixed"]    = FCScrMixed;
 
   int    argc=1;
   char** argv;
@@ -108,7 +98,7 @@ extern "C" {
   argv[0] = (char*)malloc(1024);
 
 #if defined(FC_OS_WIN32)
-  strcpy(argv[0],App::Application::Config()["HomePath"].c_str());
+  strcpy(argv[0],App::Application::Config()["AppHomePath"].c_str());
 #elif defined(FC_OS_LINUX)
   // get whole path of the library
   Dl_info info;
