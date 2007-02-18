@@ -26,7 +26,7 @@
 #ifndef _MatrixPy_h_
 #define _MatrixPy_h_
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 
 
 #include <Base/Matrix.h>

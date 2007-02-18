@@ -301,10 +301,9 @@ PYFUNCIMP_S(Application,sGetWorkbenchHandler)
   if (!PyArg_ParseTuple(args, "s", &psKey))     // convert args: Python->C 
     return NULL;                                // NULL triggers exception 
 
-  Base::PyBuf Name(psKey);
-  
+   
   // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, Name.str);
+  PyObject* pcWorkbench = PyDict_GetItemString(Instance->_pcWorkbenchDictionary, psKey);
   if ( !pcWorkbench )
   {
     PyErr_Format(PyExc_KeyError, "No such workbench handler '%s'", psKey);

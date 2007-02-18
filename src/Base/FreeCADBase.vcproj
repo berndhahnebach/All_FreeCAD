@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="FreeCADBase"
 	ProjectGUID="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
+	RootNamespace="FreeCADBase"
 	>
 	<Platforms>
 		<Platform
@@ -821,6 +822,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\BaseClassPy.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\BaseClassPy.h"
+			>
+		</File>
+		<File
 			RelativePath="BoundBox.cpp"
 			>
 			<FileConfiguration
@@ -1217,6 +1226,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\PersistancePy.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\PersistancePy.h"
+			>
+		</File>
+		<File
 			RelativePath="Placement.cpp"
 			>
 			<FileConfiguration
@@ -1291,27 +1308,11 @@
 			>
 		</File>
 		<File
-			RelativePath="PyExportImp.cpp"
+			RelativePath=".\PyObjectBase.cpp"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="PyExportImp.h"
+			RelativePath=".\PyObjectBase.h"
 			>
 		</File>
 		<File

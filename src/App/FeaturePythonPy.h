@@ -26,7 +26,7 @@
 #ifndef _FeaturePropertyPy_h_
 #define _FeaturePropertyPy_h_
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include "FeaturePy.h"
 
 namespace App

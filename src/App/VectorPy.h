@@ -26,7 +26,7 @@
 #ifndef _VectorPy_h_
 #define _VectorPy_h_
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include <Base/Vector3D.h>
 
 namespace App

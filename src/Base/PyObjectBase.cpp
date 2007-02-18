@@ -28,7 +28,7 @@
 #	include <stdlib.h>
 #endif
 
-#include "PyExportImp.h"
+#include "PyObjectBase.h"
 #include "Console.h"
 
 using namespace Base;

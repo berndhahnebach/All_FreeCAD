@@ -26,7 +26,7 @@
 
 #include "ui_UnitTest.h"
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 
 // Qt Toolkit
 #ifndef __Qt4All__

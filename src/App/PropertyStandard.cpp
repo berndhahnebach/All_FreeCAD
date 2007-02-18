@@ -862,12 +862,21 @@ const char* PropertyString::getValue(void) const
 
 PyObject *PropertyString::getPyObject(void)
 {
-  return Py_BuildValue("s", _cValue.c_str());
+  PyObject *p = PyUnicode_DecodeUTF8(_cValue.c_str(),_cValue.size(),0);
+  if(!p)
+    throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
+  Py_INCREF(p);
+  return p;
+
+  //return Py_BuildValue("s", _cValue.c_str());
 
 }
 
 void PropertyString::setPyObject(PyObject *value)
 {
+  if(PyUnicode_Check( value ))
+    value = PyUnicode_AsUTF8String(value);
+
   if(PyString_Check( value) )
   {
     aboutToSetValue();

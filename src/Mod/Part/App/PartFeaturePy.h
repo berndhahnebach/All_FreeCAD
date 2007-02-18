@@ -27,7 +27,7 @@
 #define _PartFeaturePy_h_
 
 //#include <Base/Factory.h>
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include <App/FeaturePy.h>
 
 namespace Base{

@@ -87,11 +87,11 @@ typedef enum {
 /*  ppembed-modules.c: load,access module objects  */
 /***************************************************/
 
-extern char *PP_Init(char *modname);
-extern int       PP_Make_Dummy_Module(char *modname);
-extern PyObject *PP_Load_Module(char *modname);
-extern PyObject *PP_Load_Attribute(char *modname, char *attrname);
-extern int       PP_Run_Command_Line(char *prompt);
+extern const char *PP_Init(const char *modname);
+extern int         PP_Make_Dummy_Module(const char *modname);
+extern PyObject   *PP_Load_Module(const char *modname);
+extern PyObject   *PP_Load_Attribute(const char *modname, const char *attrname);
+extern int         PP_Run_Command_Line(const char *prompt);
 
 
 /**********************************************************/
@@ -99,13 +99,13 @@ extern int       PP_Run_Command_Line(char *prompt);
 /**********************************************************/
 
 extern int
-    PP_Convert_Result(PyObject *presult, char *resFormat, void *resTarget);
+    PP_Convert_Result(PyObject *presult, const char *resFormat, void *resTarget);
 
 extern int 
-    PP_Get_Global(char *modname, char *varname, char *resfmt, void *cresult);
+    PP_Get_Global(const char *modname, const char *varname, const char *resfmt, void *cresult);
 
 extern int
-    PP_Set_Global(char *modname, char *varname, char *valfmt, ... /*val*/);
+    PP_Set_Global(const char *modname, const char *varname, const char *valfmt, ... /*val*/);
 
 
 /***************************************************/
@@ -114,21 +114,21 @@ extern int
 
 extern int                                         /* run C string of code */
     PP_Run_Codestr(PPStringModes mode,             /* code=expr or stmt?  */
-                   char *code,   char *modname,    /* codestr, modnamespace */
-                   char *resfmt, void *cresult);   /* result type, target */
+                   const char *code,   const char *modname,    /* codestr, modnamespace */
+                   const char *resfmt, void *cresult);   /* result type, target */
 
 extern PyObject*
     PP_Debug_Codestr(PPStringModes mode,           /* run string in pdb */
-                     char *codestring, PyObject *moddict);
+                     const char *codestring, PyObject *moddict);
 
 extern PyObject *
     PP_Compile_Codestr(PPStringModes mode, 
-                       char *codestr);             /* precompile to bytecode */
+                       const char *codestr);             /* precompile to bytecode */
 
 extern int
     PP_Run_Bytecode(PyObject *codeobj,             /* run a bytecode object */
-                    char     *modname, 
-                    char     *resfmt, void *restarget);
+                    const char     *modname, 
+                    const char     *resfmt, void *restarget);
 
 extern PyObject *                                  /* run bytecode under pdb */
     PP_Debug_Bytecode(PyObject *codeobject, PyObject *moddict); 
@@ -139,17 +139,17 @@ extern PyObject *                                  /* run bytecode under pdb */
 /*******************************************************/
 
 extern BaseExport int                                       /* mod.func(args) */
-    PP_Run_Function(char *modname, char *funcname,          /* func|classname */
-                    char *resfmt,  void *cresult,           /* result target  */
-                    char *argfmt,  ... /* arg, arg... */ ); /* input arguments*/
+    PP_Run_Function(const char *modname, const char *funcname,          /* func|classname */
+                    const char *resfmt,  void *cresult,           /* result target  */
+                    const char *argfmt,  ... /* arg, arg... */ ); /* input arguments*/
 
 extern PyObject*
     PP_Debug_Function(PyObject *func, PyObject *args);   /* call func in pdb */
 
 extern int
     PP_Run_Known_Callable(PyObject *object,              /* func|class|method */
-                          char *resfmt, void *restarget, /* skip module fetch */
-                          char *argfmt, ... /* arg,.. */ );
+                          const char *resfmt, void *restarget, /* skip module fetch */
+                          const char *argfmt, ... /* arg,.. */ );
 
 
 /**************************************************************/
@@ -157,17 +157,17 @@ extern int
 /**************************************************************/
 
 extern int 
-    PP_Run_Method(PyObject *pobject, char *method,     /* uses Debug_Function */
-                      char *resfmt,  void *cresult,              /* output */
-                      char *argfmt,  ... /* arg, arg... */ );    /* inputs */
+    PP_Run_Method(PyObject *pobject, const char *method,     /* uses Debug_Function */
+                      const char *resfmt,  void *cresult,              /* output */
+                      const char *argfmt,  ... /* arg, arg... */ );    /* inputs */
 
 extern int 
-    PP_Get_Member(PyObject *pobject, char *attrname,
-                      char *resfmt,  void *cresult);             /* output */
+    PP_Get_Member(PyObject *pobject, const char *attrname,
+                      const char *resfmt,  void *cresult);             /* output */
 
 extern int 
-    PP_Set_Member(PyObject *pobject, char *attrname,
-                      char *valfmt,  ... /* val, val... */ );    /* input */
+    PP_Set_Member(PyObject *pobject, const char *attrname,
+                      const char *valfmt,  ... /* val, val... */ );    /* input */
 
 
 /**********************************************************/

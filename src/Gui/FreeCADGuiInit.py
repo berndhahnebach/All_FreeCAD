@@ -79,13 +79,13 @@ class StandardWorkbench ( Workbench ):
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = FreeCAD.ConfigGet("HomePath")+'src/Mod'
-	#print FreeCAD.ConfigGet("HomePath")
-	if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'Mod'):
-		ModDir = FreeCAD.ConfigGet("HomePath")+'Mod'
+	ModDir = FreeCAD.ConfigGet("AppHomePath")+'src/Mod'
+	#print FreeCAD.ConfigGet("AppHomePath")
+	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'Mod'):
+		ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
 	else:
-		if os.path.isdir(FreeCAD.ConfigGet("HomePath")+'src\\Mod'):
-			ModDir = FreeCAD.ConfigGet("HomePath")+'src\\Mod'
+		if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Mod'):
+			ModDir = FreeCAD.ConfigGet("AppHomePath")+'src\\Mod'
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs

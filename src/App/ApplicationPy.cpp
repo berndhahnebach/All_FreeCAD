@@ -359,8 +359,7 @@ PYFUNCIMP_S(Application,sGetConfig)
 		PyObject *pDict = PyDict_New();
 		for(std::map<std::string,std::string>::iterator It= GetApplication()._mConfig.begin();It!=GetApplication()._mConfig.end();It++)
 		{
-			PyBuf Buf(It->second.c_str()),Buf2(It->first.c_str());
-			PyDict_SetItemString(pDict,Buf2.str,PyString_FromString(Buf.str));
+			PyDict_SetItemString(pDict,It->first.c_str(),PyString_FromString(It->second.c_str()));
 		}
 		return pDict;
 		
@@ -416,7 +415,7 @@ PYFUNCIMP_S(Application,sGetVersion)
 	PyList_SetItem(pList, 6, pItem);
 	pItem = PyString_FromString(Application::Config()["BuildScrClean"].c_str());
 	PyList_SetItem(pList, 7, pItem);
-	pItem = PyString_FromString(Application::Config()["BuildFCScrMixed"].c_str());
+	pItem = PyString_FromString(Application::Config()["BuildScrMixed"].c_str());
 	PyList_SetItem(pList, 8, pItem);
 
 	return pList;

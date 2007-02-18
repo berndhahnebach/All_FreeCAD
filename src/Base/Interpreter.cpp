@@ -34,7 +34,7 @@
 #include "Interpreter.h"
 #include "PyTools.h"
 #include "Exception.h"
-#include "PyExportImp.h"
+#include "PyObjectBase.h"
 
 char format2[1024];  //Warning! Can't go over 512 characters!!! 
 unsigned int format2_len = 1024;
@@ -72,8 +72,6 @@ InterpreterSingleton::~InterpreterSingleton()
 
 std::string InterpreterSingleton::runString(const char *sCmd)
 {
-  PyBuf buf(sCmd);
-
   PyObject *module, *dict, *presult;          /* "exec code in d, d" */
 
   module = PP_Load_Module("__main__");         /* get module, init python */
@@ -84,7 +82,7 @@ std::string InterpreterSingleton::runString(const char *sCmd)
     throw PyException();                           /* not incref'd */
 
 
-  presult = PyRun_String(buf.str, Py_file_input, dict, dict); /* eval direct */
+  presult = PyRun_String(sCmd, Py_file_input, dict, dict); /* eval direct */
   if(!presult)
   {
     throw PyException();
@@ -147,7 +145,6 @@ void InterpreterSingleton::systemExit(void)
 
 void InterpreterSingleton::runInteractiveString(const char *sCmd)
 {
-  PyBuf buf(sCmd);
   PyObject *module, *dict, *presult;          /* "exec code in d, d" */
 
   module = PP_Load_Module("__main__");         /* get module, init python */
@@ -157,7 +154,7 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
   if (dict == NULL) 
     throw PyException();                           /* not incref'd */
 
-  presult = PyRun_String(buf.str, Py_single_input, dict, dict); /* eval direct */
+  presult = PyRun_String(sCmd, Py_single_input, dict, dict); /* eval direct */
   if(!presult)
   {
 	  if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
@@ -195,10 +192,10 @@ void InterpreterSingleton::runFile(const char*pxFileName)
 bool InterpreterSingleton::loadModule(const char* psModName)
 {
 	// buffer acrobatics
-	PyBuf ModName(psModName);
+	//PyBuf ModName(psModName);
 	PyObject *module;
 
-	module = PP_Load_Module(ModName.str);
+	module = PP_Load_Module(psModName);
 
 	if(!module ) 
     throw PyException();
@@ -266,9 +263,7 @@ const char* InterpreterSingleton::init(int argc,char *argv[])
 
 int InterpreterSingleton::runCommandLine(const char *prompt)
 {
-  PyBuf buf(prompt);
-
-	return PP_Run_Command_Line(buf.str);
+  	return PP_Run_Command_Line(prompt);
 }
 
 /**
@@ -277,32 +272,26 @@ int InterpreterSingleton::runCommandLine(const char *prompt)
  */
 void InterpreterSingleton::runMethodVoid(PyObject *pobject, const char *method)
 {
-	// net buffer because of char* <-> const char*
-	PyBuf Methode (method);
-
 	if(PP_Run_Method(pobject ,     // object
-		             Methode.str,  // run method 
-			         0,			   // no return type
-				     0,		       // so no return object
-					 "()")		   // no arguments
-					 != 0)
-		throw PyException(/*"Error running InterpreterSingleton::RunMethodVoid()"*/);
+		               method,  // run method 
+			             0,			   // no return type
+				           0,		       // so no return object
+					         "()")		   // no arguments
+					         != 0)
+		 throw PyException(/*"Error running InterpreterSingleton::RunMethodVoid()"*/);
 
 }
 
 PyObject* InterpreterSingleton::runMethodObject(PyObject *pobject, const char *method)
 {
-	// net buffer because of char* <-> const char*
-	PyBuf Methode (method);
-
 	PyObject *pcO;
 
 	if(PP_Run_Method(pobject ,     // object
-		             Methode.str,  // run method 
-			         "O",		   // return type
-				     &pcO,		   // return object
-					 "()")		   // no arguments
-					 != 0)
+		               method,  // run method 
+			             "O",		   // return type
+				           &pcO,		   // return object
+					         "()")		   // no arguments
+					         != 0)
 		throw PyException(/*"Error runing InterpreterSingleton::RunMethodObject()"*/);
 	
 	return pcO;
@@ -312,16 +301,15 @@ void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
                               const char *resfmt,   void *cresult,        /* convert to c/c++ */
                               const char *argfmt,   ...  )                /* convert to python */
 {
-	PyBuf cMethod(method),cResfmt(resfmt),cArgfmt(argfmt);
     PyObject *pmeth, *pargs, *presult;
     va_list argslist;                              /* "pobject.method(args)" */
     va_start(argslist, argfmt);
 
-    pmeth = PyObject_GetAttrString(pobject, cMethod.str);  
+    pmeth = PyObject_GetAttrString(pobject, method);  
     if (pmeth == NULL)                             /* get callable object */
         throw Exception("Error runing InterpreterSingleton::RunMethod() method not defined");                                 /* bound method? has self */
 
-	pargs = Py_VaBuildValue(cArgfmt.str, argslist);     /* args: c->python */
+	pargs = Py_VaBuildValue(argfmt, argslist);     /* args: c->python */
 
     if (pargs == NULL) {
         Py_DECREF(pmeth);
@@ -332,7 +320,7 @@ void InterpreterSingleton::runMethod(PyObject *pobject, const char *method,
 
     Py_DECREF(pmeth);
     Py_DECREF(pargs);
-	if(PP_Convert_Result(presult, cResfmt.str, cresult)!= 0)
+	if(PP_Convert_Result(presult, resfmt, cresult)!= 0)
 	{
     if ( PyErr_Occurred() )
       PyErr_Print();

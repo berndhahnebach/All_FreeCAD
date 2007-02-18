@@ -24,7 +24,7 @@
 #ifndef TESTGUI_UNITTESTPY_H
 #define TESTGUI_UNITTESTPY_H
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 
 
 namespace TestGui

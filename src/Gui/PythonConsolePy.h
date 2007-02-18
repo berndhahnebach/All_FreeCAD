@@ -24,7 +24,7 @@
 #ifndef GUI_PYTHON_CONSOLE_PY_H
 #define GUI_PYTHON_CONSOLE_PY_H
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 
 #include "PythonEditor.h"
 

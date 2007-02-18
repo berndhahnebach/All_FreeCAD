@@ -621,10 +621,9 @@ PythonCommand::PythonCommand(const char* name,PyObject * pcPyCommand)
 const char* PythonCommand::getResource(const char* sName) const
 {
   PyObject* pcTemp;
-  Base::PyBuf ResName(sName);
-
+  
   // get the "MenuText" resource string
-  pcTemp = PyDict_GetItemString(_pcPyResourceDict,ResName.str);
+  pcTemp = PyDict_GetItemString(_pcPyResourceDict,sName);
   if(! pcTemp )
     return "";
   if(! PyString_Check(pcTemp) )

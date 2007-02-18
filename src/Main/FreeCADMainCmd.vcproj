@@ -4,6 +4,7 @@
 	Version="8,00"
 	Name="FreeCADMainCmd"
 	ProjectGUID="{AEB0B137-FB5F-408F-BBD3-BCE1DA1658FD}"
+	RootNamespace="FreeCADMainCmd"
 	>
 	<Platforms>
 		<Platform
@@ -109,7 +110,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy   /y   /f   DebugCmd\FreeCADCmdD.exe   ..\..\bin\"
+				CommandLine="xcopy   /y   /f   DebugCmd\FreeCADCmdD.exe   ..\..\bin\&#x0D;&#x0A;xcopy   /y   /f   DebugCmd\FreeCADCmdD.pdb   ..\..\bin\"
 			/>
 		</Configuration>
 		<Configuration

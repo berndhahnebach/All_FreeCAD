@@ -32,7 +32,7 @@
 #include <Python.h>
 
 #include <Base/Console.h>
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 #include <App/Application.h>

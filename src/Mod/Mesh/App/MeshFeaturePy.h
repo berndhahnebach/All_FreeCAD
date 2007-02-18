@@ -24,7 +24,7 @@
 #ifndef MESH_FEATURE_PY_H
 #define MESH_FEATURE_PY_H
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include <App/FeaturePy.h>
 
 namespace Base{

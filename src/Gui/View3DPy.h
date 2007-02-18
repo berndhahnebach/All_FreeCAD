@@ -21,7 +21,7 @@
  ***************************************************************************/
 
 
-#include "../Base/PyExportImp.h"
+#include "../Base/PyObjectBase.h"
 
 
 namespace Gui {

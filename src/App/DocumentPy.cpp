@@ -238,7 +238,26 @@ int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: 
 //		_pcDoc->changeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
 //		return 1;
 //	}else  
-		return PyObjectBase::_setattr(attr, value); 	// send up to parent
+    // search in object PropertyList
+
+    // search in PropertyList
+ Property *prop = _pcDoc->getPropertyByName(attr);
+  if(prop) { 
+    try {
+      prop->setPyObject(value);
+    } catch (Base::Exception &exc) {
+      PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
+      return -1;
+    } catch (...) {
+      PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
+      return -1;
+    }
+  } else {
+		return PyObjectBase::_setattr(attr, value);
+  }
+  return 0;
+
+		//return PyObjectBase::_setattr(attr, value); 	// send up to parent
 } 
 
 

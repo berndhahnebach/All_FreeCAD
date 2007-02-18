@@ -29,7 +29,7 @@
 
 #include <vector>
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include <Base/Parameter.h>
 #include <Base/Observer.h>
 

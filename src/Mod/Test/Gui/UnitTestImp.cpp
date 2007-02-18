@@ -23,7 +23,7 @@
 
 #include "PreCompiled.h"
 
-#include <Base/PyExportImp.h>
+#include <Base/PyObjectBase.h>
 #include <Base/Interpreter.h>
 #include "UnitTestImp.h"
 #include "UnitTestPy.h"

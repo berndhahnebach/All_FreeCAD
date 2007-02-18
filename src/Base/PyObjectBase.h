@@ -37,6 +37,7 @@
 #include <iostream>
 
 #include<typeinfo>
+#include "Exception.h"
 
 
 
@@ -439,58 +440,29 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
 
 
 
-
-
-
-
-
-
-/** Python buffer helper class (const char* -> char*)
- *  This class has the only purpos to handle non const char* in
- *  python methods. Unfortenatly python only use non const strings which
- *  makes some problems when got only const strings. This class create 
- *  a non const buffer from the const input and offer it outside. 
- *  This is used often in methods which use python function calls....
+/** Python helper class 
+ *  This class encapsulate the Decoding of UTF8 to a python object.
+ *  Including exception handling.
  */
-class PyBuf
+
+inline PyObject * PyAsUnicodeObject(const char *str)
 {
-public:
-	/// default construction
-	PyBuf() : str(0) {}
+  PyObject *p = PyUnicode_DecodeUTF8(str,strlen(str),0);
+  if(!p)
+    throw Base::Exception("UTF8 conversion failure at PyAsUnicodeString()");
+  Py_INCREF(p);
+  return p;
+}
 
-	/// construction with NULL terminated const string
-	PyBuf(const char* sString)
-	{
-		str = (char *) malloc(strlen(sString)+1);
-		strcpy(str,sString);
-	}
-
-	/// construction with arbitrary size (dangorous!!)
-	PyBuf(const void* sString, int size)
-	{
-		str = (char *) malloc(size+1);
-		strncpy(str,(const char*) sString,size);
-	}
-
-	PyBuf &operator =(const char* sString)
-	{
-		if(str) free(str);
-		str = (char *) malloc(strlen(sString)+1);
-		strcpy(str,sString);
-		return *this;
-	}
-
-	~PyBuf()
-	{
-		free(str);
-	}
-
-	char *c_str(){return str;}
-
-	char *str;
-};
+inline PyObject * PyAsUnicodeObject(const std::string &str)
+{
+  return PyAsUnicodeObject(str.c_str());
+}
 
 
 } // namespace Base
+
+
+
 
 #endif // __PYEXPORTIMP_H__
