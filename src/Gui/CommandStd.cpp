@@ -47,6 +47,7 @@
 #include "DlgCustomizeImp.h"
 #include "Widgets.h"
 #include "NetworkRetriever.h"
+#include "OnlineDocumentation.h"
 #include "GuiConsole.h"
 
 using Base::Console;
@@ -729,6 +730,7 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdRecentFiles());
   rcCmdMgr.addCommand(new StdCmdWhatsThis());
   rcCmdMgr.addCommand(new StdCmdOnlineHelp());
+  rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
   rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
   rcCmdMgr.addCommand(new StdCmdDescription());
 }

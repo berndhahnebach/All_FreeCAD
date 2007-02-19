@@ -11,6 +11,7 @@
 #include <QtCore/qregexp.h>
 #include <QtCore/QSet>
 #include <QtCore/QSignalMapper>
+#include <QtCore/QTemporaryFile>
 #include <QtCore/qtextcodec.h>
 #include <QtCore/qtextstream.h>
 #include <QtCore/qthread.h>
@@ -78,6 +79,10 @@
 #include <QtGui/qworkspace.h>
 #include <QtNetwork/QFtp>
 #include <QtNetwork/QHttp>
+#include <QtNetwork/QHttpResponseHeader>
+#include <QtNetwork/QHttpRequestHeader>
+#include <QtNetwork/QTcpServer>
+#include <QtNetwork/QTcpSocket>
 #include <QtOpenGl/qgl.h>
 
 #endif

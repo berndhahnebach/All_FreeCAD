@@ -2252,32 +2252,6 @@
 					/>
 				</FileConfiguration>
 			</File>
-			<File
-				RelativePath="WhatsThis.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="WhatsThis.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Dock windows"
@@ -4739,6 +4713,110 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="Help"
+			>
+			<File
+				RelativePath="NetworkRetriever.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="NetworkRetriever.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\OnlineDocumentation.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\OnlineDocumentation.h"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						Description="Moc&apos;ing $(InputName).h ..."
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;"
+						Outputs="$(InputDir)moc_$(InputName).cpp"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="WhatsThis.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="WhatsThis.h"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="Application.cpp"
 			>
@@ -4968,52 +5046,6 @@
 		<File
 			RelativePath="Macro.h"
 			>
-		</File>
-		<File
-			RelativePath="NetworkRetriever.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					AdditionalIncludeDirectories=""
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="NetworkRetriever.h"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-					Outputs="$(InputDir)moc_$(InputName).cpp"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					Description="Moc&apos;ing $(InputName).h ..."
-					CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
-					Outputs="$(InputDir)moc_$(InputName).cpp"
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="PreCompiled.cpp"

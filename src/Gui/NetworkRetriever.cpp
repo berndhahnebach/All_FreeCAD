@@ -411,10 +411,10 @@ bool NetworkRetriever::testWget()
 
 // --------------------------------------------------------------------
 
-/* TRANSLATOR Gui::StdCmdOnlineHelp */
+/* TRANSLATOR Gui::StdCmdDownloadOnlineHelp */
 
-StdCmdOnlineHelp::StdCmdOnlineHelp( QObject * parent, const char * name )
-  : QObject( parent, name ), Command("Std_OnlineHelp")
+StdCmdDownloadOnlineHelp::StdCmdDownloadOnlineHelp( QObject * parent, const char * name )
+  : QObject( parent, name ), Command("Std_DownloadOnlineHelp")
 {
   sGroup        = QT_TR_NOOP("Help");
   sMenuText     = QT_TR_NOOP("Download online help");
@@ -437,12 +437,12 @@ StdCmdOnlineHelp::StdCmdOnlineHelp( QObject * parent, const char * name )
   connect( wget, SIGNAL( wgetExited() ), this, SLOT( wgetExit() ) );
 }
 
-StdCmdOnlineHelp::~StdCmdOnlineHelp()
+StdCmdDownloadOnlineHelp::~StdCmdDownloadOnlineHelp()
 {
   delete wget;
 }
 
-Action * StdCmdOnlineHelp::createAction(void)
+Action * StdCmdDownloadOnlineHelp::createAction(void)
 {
   Action *pcAction;
 
@@ -458,7 +458,7 @@ Action * StdCmdOnlineHelp::createAction(void)
   return pcAction;
 }
 
-void StdCmdOnlineHelp::languageChange()
+void StdCmdDownloadOnlineHelp::languageChange()
 {
   if ( _pcAction )
   {
@@ -470,7 +470,7 @@ void StdCmdOnlineHelp::languageChange()
   }
 }
 
-void StdCmdOnlineHelp::activated(int iMsg)
+void StdCmdDownloadOnlineHelp::activated(int iMsg)
 {
   if ( !wget->isDownloading() )
   {
@@ -571,7 +571,7 @@ void StdCmdOnlineHelp::activated(int iMsg)
   }
 }
 
-void StdCmdOnlineHelp::wgetExit()
+void StdCmdDownloadOnlineHelp::wgetExit()
 {
   if ( _pcAction )
     _pcAction->setText( tr( sMenuText ) );

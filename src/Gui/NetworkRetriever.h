@@ -21,11 +21,12 @@
  ***************************************************************************/
 
 
-#ifndef TOOLS_H__
-#define TOOLS_H__
+#ifndef GUI_NETWORKRETRIEVER_H
+#define GUI_NETWORKRETRIEVER_H
 
 #include "Process.h"
 #include "Command.h"
+
 
 namespace Gui {
 
@@ -75,13 +76,13 @@ private:
 
 // --------------------------------------------------------------------
 
-class StdCmdOnlineHelp : public QObject, public Command
+class StdCmdDownloadOnlineHelp : public QObject, public Command
 {
   Q_OBJECT
 
 public:
-  StdCmdOnlineHelp( QObject * parent = 0, const char * name = 0 );
-  virtual ~StdCmdOnlineHelp();
+  StdCmdDownloadOnlineHelp( QObject * parent = 0, const char * name = 0 );
+  virtual ~StdCmdDownloadOnlineHelp();
   /** i18n stuff of the command. */
   virtual void languageChange();
 
@@ -100,4 +101,4 @@ private:
 
 } // namespace Gui
 
-#endif // TOOLS_H__
+#endif // GUI_NETWORKRETRIEVER_H
