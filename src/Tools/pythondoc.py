@@ -70,6 +70,9 @@ def generateDoc():
 				if (Dir != '__init__.py'):
 						writedocs(dest)
 						print ''
+						
+		# Now we must create a document and create instances of all Python classes which
+		# cannot be directly created by a module.
 
 		# Create a ZIP archive from all HTML files
 		print 'Creating ZIP archive \'docs.zip\'...'
