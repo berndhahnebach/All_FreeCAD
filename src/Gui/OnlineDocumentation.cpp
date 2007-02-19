@@ -173,6 +173,7 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
     // load the startpage
     QString header = QString(
       "<!doctype html PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">"
+      "<link rel=\"shortcut icon\" href=\"/favicon.ico\" type=\"image/x-icon\">"
       "<html><head><title>Python: Index of Modules</title>"
       "</head><body bgcolor=\"#f0f0f8\">"
       ""
