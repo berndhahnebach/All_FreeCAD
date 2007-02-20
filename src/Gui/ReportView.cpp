@@ -153,6 +153,35 @@ void ReportHighlighter::setErrorColor( const QColor& col )
 
 // ----------------------------------------------------------
 
+#define QT_CUSTOM_EVENT_REPORT_OUTPUT  10001
+
+/**
+ * The CustomReportEvent class is used to send report events in the methods Log(), 
+ * Error(), Warning() and Message() of the ReportOutput class to itself instead of
+ * printing the messages directly in its text view.
+ *
+ * This makes the methods Log(), Error(), Warning() and Message() thread-safe.
+ * @author Werner Mayer
+ */
+class CustomReportEvent : public QEvent
+{
+public:
+  CustomReportEvent(ReportHighlighter::Paragraph p, const QString& s)
+    : QEvent(QEvent::Type(QT_CUSTOM_EVENT_REPORT_OUTPUT)) 
+  { par = p; msg = s;}
+  ~CustomReportEvent()
+  { }
+  const QString& message() const
+  { return msg; }
+  ReportHighlighter::Paragraph messageType() const
+  { return par; }
+private:
+  ReportHighlighter::Paragraph par;
+  QString msg;
+};
+
+// ----------------------------------------------------------
+
 /* TRANSLATOR Gui::DockWnd::ReportOutput */
 
 /**
@@ -203,50 +232,46 @@ void ReportOutput::restoreFont()
 
 void ReportOutput::Warning(const char * s)
 {
-  reportHl->setParagraphType(ReportHighlighter::Warning);
-
-  QTextCursor cursor(this->document());
-  cursor.beginEditBlock();
-  cursor.movePosition(QTextCursor::End);
-  cursor.insertText(s);
-  cursor.endEditBlock();
-  ensureCursorVisible();
+  // Send the event to itself to allow thread-safety. Qt will delete it when done.
+  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Warning, s);
+  QApplication::postEvent(this, ev);
 }
 
 void ReportOutput::Message(const char * s)
 {
-  reportHl->setParagraphType(ReportHighlighter::Message);
-
-  QTextCursor cursor(this->document());
-  cursor.beginEditBlock();
-  cursor.movePosition(QTextCursor::End);
-  cursor.insertText(s);
-  cursor.endEditBlock();
-  ensureCursorVisible();
+  // Send the event to itself to allow thread-safety. Qt will delete it when done.
+  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Message, s);
+  QApplication::postEvent(this, ev);
 }
 
 void ReportOutput::Error  (const char * s)
 {
-  reportHl->setParagraphType(ReportHighlighter::Error);
-
-  QTextCursor cursor(this->document());
-  cursor.beginEditBlock();
-  cursor.movePosition(QTextCursor::End);
-  cursor.insertText(s);
-  cursor.endEditBlock();
-  ensureCursorVisible();
+  // Send the event to itself to allow thread-safety. Qt will delete it when done.
+  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::Error, s);
+  QApplication::postEvent(this, ev);
 }
 
 void ReportOutput::Log (const char * s)
 {
-  reportHl->setParagraphType(ReportHighlighter::LogText);
+  // Send the event to itself to allow thread-safety. Qt will delete it when done.
+  CustomReportEvent* ev = new CustomReportEvent(ReportHighlighter::LogText, s);
+  QApplication::postEvent(this, ev);
+}
 
-  QTextCursor cursor(this->document());
-  cursor.beginEditBlock();
-  cursor.movePosition(QTextCursor::End);
-  cursor.insertText(s);
-  cursor.endEditBlock();
-  ensureCursorVisible();
+void ReportOutput::customEvent ( QEvent* ev )
+{
+  // Appends the text stored in the event to the text view
+  if ( ev->type() ==  QT_CUSTOM_EVENT_REPORT_OUTPUT ) {
+    CustomReportEvent* ce = (CustomReportEvent*)ev;
+    reportHl->setParagraphType(ce->messageType());
+
+    QTextCursor cursor(this->document());
+    cursor.beginEditBlock();
+    cursor.movePosition(QTextCursor::End);
+    cursor.insertText(ce->message());
+    cursor.endEditBlock();
+    ensureCursorVisible();
+  }
 }
 
 void ReportOutput::contextMenuEvent ( QContextMenuEvent * e )

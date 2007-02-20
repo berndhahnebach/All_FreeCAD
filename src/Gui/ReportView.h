@@ -164,6 +164,8 @@ public:
   bool isLogging() const;
 
 protected:
+  /** For internal use only */
+  void customEvent ( QEvent* ev );
   /** Pops up the context menu with some extensions */
   void contextMenuEvent ( QContextMenuEvent* e );
 
