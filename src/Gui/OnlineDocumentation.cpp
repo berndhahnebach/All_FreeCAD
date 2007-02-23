@@ -266,8 +266,10 @@ StdCmdOnlineHelp::StdCmdOnlineHelp()
 
 StdCmdOnlineHelp::~StdCmdOnlineHelp()
 {
-  server->close();
-  delete server;
+  if (server) {
+    server->close();
+    delete server;
+  }
 }
 
 void StdCmdOnlineHelp::activated(int iMsg)
