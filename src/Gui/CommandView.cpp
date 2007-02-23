@@ -40,6 +40,7 @@
 #include "View3DInventorViewer.h"
 #include "WaitCursor.h"
 
+#include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/FileInfo.h>
 #include <Base/Reader.h>

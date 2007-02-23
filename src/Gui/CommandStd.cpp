@@ -681,8 +681,6 @@ StdCmdCommandLine::StdCmdCommandLine()
 void StdCmdCommandLine::activated(int iMsg)
 {
   bool show = getMainWindow()->isMaximized ();
-  ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
-                                                                       ConsoleMsgType::MsgType_Err, false);
 
   // pop up the Gui command window
   GUIConsole Wnd;
@@ -706,7 +704,6 @@ void StdCmdCommandLine::activated(int iMsg)
   // pop up the main window
   show ? getMainWindow()->showMaximized () : getMainWindow()->showNormal () ;
   qApp->processEvents();
-  Base::Console().SetEnabledMsgType("MessageBox", ret, true);
 }
 
 namespace Gui {

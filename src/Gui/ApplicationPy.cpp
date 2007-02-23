@@ -39,9 +39,8 @@
 #include "WorkbenchManager.h"
 
 #include <Base/Interpreter.h>
+#include <Base/Console.h>
 
-using Base::Console;
-using Base::Interpreter;
 using namespace Gui;
 
 // FCApplication Methods						// Methods structure

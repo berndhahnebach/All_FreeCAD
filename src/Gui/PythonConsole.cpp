@@ -732,9 +732,6 @@ bool PythonConsole::performPythonCommand()
 
   if ( !pyCmd.isEmpty() )
   {
-    // switch off warnings and errors to avoid pop-up dialogs
-    ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
-                                                                         ConsoleMsgType::MsgType_Err, false);
     try
     {
       // launch the command now
@@ -752,9 +749,6 @@ bool PythonConsole::performPythonCommand()
       Base::Interpreter().runString("PyConsole.restoreStderr()");
       ok = false;
     }
-
-    // restore observer settings
-    Base::Console().SetEnabledMsgType("MessageBox", ret, true);
   }
 
   printPrompt();

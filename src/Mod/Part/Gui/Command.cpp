@@ -306,7 +306,7 @@ void CmdPartCut::activated(int iMsg)
   unsigned int n = getSelection().countObjectsOfType(Part::Feature::getClassTypeId());
   if(n != 2)
   {
-    Base::Console().Warning("Please, select two shapes (Part Feature)");
+    QMessageBox::warning(Gui::getMainWindow(), QObject::tr("Wrong selection"), QObject::tr("Select two shapes please."));
     return;
   }
 

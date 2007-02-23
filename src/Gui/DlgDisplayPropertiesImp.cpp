@@ -45,6 +45,7 @@
 #include "WaitCursor.h"
 #include "SpinBox.h"
 
+#include <Base/Console.h>
 #include <App/Application.h>
 #include <App/Feature.h>
 #include <App/Material.h>

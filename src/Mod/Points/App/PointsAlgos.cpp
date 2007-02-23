@@ -102,8 +102,8 @@ void PointsAlgos::LoadAscii(PointKernel &points, const char *FileName)
       }
     }
   }catch(...){
-    Base::Console().Error("Points read failed\n");
     points.clear();
+    throw Base::Exception("Reading in points failed.");
   }
 
   // now remove the last points from the kernel

@@ -26,22 +26,10 @@ import FreeCAD, os, unittest
 
 class ConsoleTestCase(unittest.TestCase):
     def testPrint(self):
-#        sLog = FreeCAD.GetStatus("MessageBox","Log")
-#        sErr = FreeCAD.GetStatus("MessageBox","Err")
-#        sWrn = FreeCAD.GetStatus("MessageBox","Wrn")
-#        sMsg = FreeCAD.GetStatus("MessageBox","Msg")
-#        FreeCAD.SetStatus("MessageBox","Log",0)
-#        FreeCAD.SetStatus("MessageBox","Err",0)
-#        FreeCAD.SetStatus("MessageBox","Wrn",0)
-#        FreeCAD.SetStatus("MessageBox","Msg",0)
         FreeCAD.PrintMessage("   Printing message\n")
         FreeCAD.PrintError("   Printing error\n")
         FreeCAD.PrintWarning("   Printing warning\n")
         FreeCAD.PrintLog("   Printing Log\n")
-#        FreeCAD.SetStatus("MessageBox","Log",sLog)
-#        FreeCAD.SetStatus("MessageBox","Err",sErr)
-#        FreeCAD.SetStatus("MessageBox","Wrn",sWrn)
-#        FreeCAD.SetStatus("MessageBox","Msg",sMsg)
 
 #    def testStatus(self):
 #        SLog = FreeCAD.GetStatus("Console","Log")

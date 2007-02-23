@@ -39,7 +39,6 @@
 #include "Selection.h"
 #include "DlgProjectInformationImp.h"
 
-using Base::Console;
 using Base::Sequencer;
 using namespace Gui;
 

@@ -26,7 +26,7 @@
 # include <qobject.h>
 #endif
 
-#include <Base/Exception.h>
+#include <Base/Console.h>
 #include <App/Document.h>
 #include <Gui/Application.h>
 #include <Gui/Command.h>
