@@ -24,6 +24,7 @@
 #ifndef GUI_MAINWINDOW_H
 #define GUI_MAINWINDOW_H
 
+#include <Base/Console.h>
 #include <string>
 #include <vector>
 
@@ -191,6 +192,7 @@ protected:
    */
   void closeEvent ( QCloseEvent * e );
   void timerEvent( QTimerEvent * e){ timeEvent();}
+  void customEvent( QEvent* e );
   /**
    * Try to interpret dropped elements.
    */
@@ -239,6 +241,34 @@ inline GuiExport MainWindow* getMainWindow()
 {
   return MainWindow::getInstance();
 }
+
+// -------------------------------------------------------------
+
+/** The status bar observer displays the text on the status bar of the main window
+ * in an appropriate color. Normal text messages are black, warnings are orange and
+ * error messages are in red. Log messages are completely ignored.
+ * The class is implemented to be thread-safe.
+ * @see Console
+ * @see ConsoleObserver
+ * @author Werner Mayer
+ */
+class StatusBarObserver: public Base::ConsoleObserver
+{
+public:
+  StatusBarObserver();
+  virtual ~StatusBarObserver();
+
+  /// get called when a Warning is issued
+  virtual void Warning(const char *m);
+  /// get called when a Message is issued
+  virtual void Message(const char * m);
+  /// get called when a Error is issued
+  virtual void Error  (const char *m);
+  /// get called when a Log Message is issued
+  virtual void Log    (const char *);
+  /// name of the observer
+  virtual const char *Name(void){return "StatusBar";}
+};
 
 } // namespace Gui
 

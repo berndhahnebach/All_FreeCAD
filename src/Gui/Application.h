@@ -30,7 +30,6 @@
 
 #define  putpix()
 
-#include <Base/Console.h>
 #include <App/Application.h>
 
 class QCloseEvent;
@@ -196,36 +195,6 @@ private:
   struct ApplicationP* d;
   /// workbench python dictionary
   PyObject*		 _pcWorkbenchDictionary;
-};
-
-
-
-/** The message box observer opens an appropriate dialog for warnings and errors
- * and writes the text also to the status bar of the main window. Normal text message
- * are written only to the status bar and log messages are ignored completely.
- * @see Console
- * @see ConsoleObserver
- * @author Jürgen Riegel
- */
-class MessageBoxObserver: public Base::ConsoleObserver
-{
-public:
-  MessageBoxObserver(MainWindow *pcAppWnd);
-  virtual ~MessageBoxObserver();
-
-  /// get calles when a Warning is issued
-  virtual void Warning(const char *m);
-  /// get calles when a Message is issued
-  virtual void Message(const char * m);
-  /// get calles when a Error is issued
-  virtual void Error  (const char *m);
-  /// get calles when a Log Message is issued
-  virtual void Log    (const char *);
-  /// name of the observer
-  virtual const char *Name(void){return "MessageBox";}
-
-protected:
-  MainWindow* _pcAppWnd;
 };
 
 } //namespace Gui

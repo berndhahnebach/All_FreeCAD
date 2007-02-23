@@ -160,8 +160,7 @@ void DlgCustomActionsImp::on_listBoxActions_highlighted( Q3ListBoxItem *i )
 
     if (!bFound)
     {
-      QString msg = tr("Sorry, couldn't find macro file '%1'.").arg(pScript->getScriptName());
-      Base::Console().Error(msg.latin1());
+      QMessageBox::critical(this, tr("Macro not found"), tr("Sorry, couldn't find macro file '%1'.").arg(pScript->getScriptName()));
     }
 
     // fill up labels with the command's data

@@ -46,11 +46,18 @@ using namespace Base;
 PyException::PyException(void)
 {
   PP_Fetch_Error_Text();    /* fetch (and clear) exception */
-  std::string temp = PP_last_error_type; /* exception name text */
-  temp += ": ";
-  temp += PP_last_error_info;            /* exception data text */
+  std::string prefix = PP_last_error_type; /* exception name text */
+  prefix += ": ";
+  std::string error = PP_last_error_info;            /* exception data text */
 
-  _sErrMsg = temp;
+  // The Python exceptions might be thrown from nested functions, so take
+  // into account not to add the same prefix several times
+  std::string::size_type pos = error.find(prefix);
+  if (pos == std::string::npos)
+    _sErrMsg = prefix + error;
+  else
+    _sErrMsg = error;
+
 
   _stackTrace = PP_last_error_trace;     /* exception traceback text */
 

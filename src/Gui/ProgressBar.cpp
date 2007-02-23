@@ -23,8 +23,6 @@
 
 #include "PreCompiled.h"
 
-#include <Base/Console.h>
-
 #include "ProgressBar.h"
 #include "MainWindow.h"
 #include "WaitCursor.h"
@@ -320,11 +318,7 @@ void ProgressBar::abort()
 {
   //resets
   resetData();
-
-  ConsoleMsgFlags ret = Base::Console().SetEnabledMsgType("MessageBox",ConsoleMsgType::MsgType_Wrn|
-                                                                       ConsoleMsgType::MsgType_Err, false);
   Base::AbortException exc("Aborting...");
-  Base::Console().SetEnabledMsgType("MessageBox",ret, true);
   throw exc;
 }
 

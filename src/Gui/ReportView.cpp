@@ -153,8 +153,6 @@ void ReportHighlighter::setErrorColor( const QColor& col )
 
 // ----------------------------------------------------------
 
-#define QT_CUSTOM_EVENT_REPORT_OUTPUT  10001
-
 /**
  * The CustomReportEvent class is used to send report events in the methods Log(), 
  * Error(), Warning() and Message() of the ReportOutput class to itself instead of
@@ -167,7 +165,7 @@ class CustomReportEvent : public QEvent
 {
 public:
   CustomReportEvent(ReportHighlighter::Paragraph p, const QString& s)
-    : QEvent(QEvent::Type(QT_CUSTOM_EVENT_REPORT_OUTPUT)) 
+    : QEvent(QEvent::Type(QEvent::User)) 
   { par = p; msg = s;}
   ~CustomReportEvent()
   { }
@@ -261,7 +259,7 @@ void ReportOutput::Log (const char * s)
 void ReportOutput::customEvent ( QEvent* ev )
 {
   // Appends the text stored in the event to the text view
-  if ( ev->type() ==  QT_CUSTOM_EVENT_REPORT_OUTPUT ) {
+  if ( ev->type() ==  QEvent::User ) {
     CustomReportEvent* ce = (CustomReportEvent*)ev;
     reportHl->setParagraphType(ce->messageType());
 

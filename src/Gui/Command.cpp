@@ -261,6 +261,8 @@ void Command::invoke (int i)
   }catch(Base::AbortException&){
   }catch(Base::Exception &e){
     e.ReportException();
+    // Pop-up a dialog for FreeCAD-specific exceptions
+    QMessageBox::critical(Gui::getMainWindow(), QObject::tr("Exception"), e.what());
   }catch(std::exception &e){
     std::string str;
     str += "C++ exception thrown (";

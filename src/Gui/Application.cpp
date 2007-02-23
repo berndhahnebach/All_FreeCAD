@@ -25,6 +25,7 @@
 
 
 // FreeCAD Base header
+#include <Base/Console.h>
 #include <Base/Interpreter.h>
 #include <Base/Parameter.h>
 #include <Base/Exception.h>
@@ -62,8 +63,6 @@
 #include "GuiInitScript.h"
 
 
-using Base::Console;
-using Base::Interpreter;
 using namespace Gui;
 using namespace Gui::DockWnd;
 using namespace std;
@@ -76,7 +75,7 @@ namespace Gui {
 // Pimpl class
 struct ApplicationP
 {
-  ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false)
+  ApplicationP() : _pcActiveDocument(0L), _bIsClosing(false), _bStartingUp(true)
   {
     // create the macro manager
     _pcMacroMngr = new MacroManager();
@@ -95,6 +94,7 @@ struct ApplicationP
   /// List of all registered views
   list<Gui::BaseView*>					_LpcViews;
   bool _bIsClosing;
+  bool _bStartingUp;
   /// Handles all commands 
   CommandManager _cCommandManager;
 };
@@ -128,7 +128,7 @@ Application::Application()
 
 Application::~Application()
 {
-  Console().Log("Destruct Gui::Application\n");
+  Base::Console().Log("Destruct Gui::Application\n");
   WorkbenchManager::destruct();
   SelectionSingleton::destruct();
   Translator::destruct();
@@ -193,7 +193,7 @@ void Application::open(const char* FileName)
       e.ReportException();
     }
   }else{
-    Base::Console().Error("Application::open() try to open unknown file type .%s\n",te.c_str());
+    QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"), QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
     return;
   }
 }
@@ -240,7 +240,7 @@ void Application::import(const char* FileName, const char* DocName)
     }
 
   }else{
-    Base::Console().Error("Application::import() try to open unknowne file type .%s\n",te.c_str());
+    QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"), QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
     return;
   }
 }
@@ -379,7 +379,7 @@ void Application::setActiveDocument(Gui::Document* pcDocument)
   }
 
   // Sets the currently active document
-  Interpreter().runString(name.c_str());
+  Base::Interpreter().runString(name.c_str());
 
 #ifdef FC_LOGUPDATECHAIN
   Console().Log("Acti: Gui::Document,%p\n",d->_pcActiveDocument);
@@ -527,7 +527,6 @@ void Application::tryClose ( QCloseEvent * e )
  */
 bool Application::activateWorkbench( const char* name )
 {
-  WaitCursor wc;
   Workbench* oldWb = WorkbenchManager::instance()->active();
   if ( oldWb && oldWb->name() == name )
     return false; // already active
@@ -540,13 +539,23 @@ bool Application::activateWorkbench( const char* name )
 
   try{
     // import the matching module first
-    Interpreter().runMethodVoid(pcWorkbench, "Activate");
-#ifdef FC_DEBUG
+    Base::Interpreter().runMethodVoid(pcWorkbench, "Activate");
   } catch (const Base::Exception& e) {
     Base::Console().Error("%s\n", e.what() );
-#else
-  } catch (const Base::Exception&) {
-#endif
+    if (!d->_bStartingUp) {
+      QString msg(e.what());
+      QRegExp rx;
+      // ignore '<type 'exceptions.ImportError'>' prefixes
+      rx.setPattern("^\\s*<type 'exceptions.ImportError'>:\\s*");
+      int pos = rx.search(msg);
+      while ( pos != -1 ) {
+        msg = msg.mid(rx.matchedLength());
+        pos = rx.search(msg);
+      }
+
+      QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
+        QObject::tr("The workbench %1 couldn't be loaded due to following error:\n\n%2").arg(name).arg(msg));
+    }
     // clears the error flag if needed (coming from a Python file)
     if ( PyErr_Occurred() )
       PyErr_Clear();
@@ -557,7 +566,7 @@ bool Application::activateWorkbench( const char* name )
   // call its GetClassName method if possible
   QString className;
   try{
-    PyObject* res = Interpreter().runMethodObject(pcWorkbench, "GetClassName");
+    PyObject* res = Base::Interpreter().runMethodObject(pcWorkbench, "GetClassName");
     if ( PyString_Check( res) )
      className = PyString_AsString(res);
   } catch ( const Base::Exception& e ) {
@@ -628,7 +637,7 @@ QPixmap Application::workbenchIcon( const QString& wb ) const
   {
     // call its GetIcon method if possible
     try{
-      PyObject* res = Interpreter().runMethodObject(pcWorkbench, "GetIcon");
+      PyObject* res = Base::Interpreter().runMethodObject(pcWorkbench, "GetIcon");
       if ( PyList_Check(res) )
       {
         // create temporary buffer
@@ -721,7 +730,7 @@ void Application::runCommand(bool bForce, const char* sCmd,...)
   Base::Console().Log("CmdC: %s\n",format);
 
   try { 
-    Interpreter().runString(format);
+    Base::Interpreter().runString(format);
   } catch (...) {
     // free memory to avoid a leak if an exception occurred
     free (format);
@@ -847,7 +856,7 @@ void Application::runApplication(void)
   Q_INIT_RESOURCE(translation);
 
   // A new QApplication
-  Console().Log("Init: Creating Gui::Application and QApplication\n");
+  Base::Console().Log("Init: Creating Gui::Application and QApplication\n");
   // if application not yet created by the splasher
   int argc = App::Application::GetARGC();
   qInstallMsgHandler( messageHandler );
@@ -864,14 +873,14 @@ void Application::runApplication(void)
   mw.startSplasher();
 
   // running the Gui init script
-  Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
+  Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
   // misc stuff
   mw.loadWindowSettings();
   // show the main window
-  Console().Log("Init: Showing main window\n");
+  Base::Console().Log("Init: Showing main window\n");
   mw.show();
 
-  Console().Log("Init: Activating default workbench\n");
+  Base::Console().Log("Init: Activating default workbench\n");
   std::string hidden = App::Application::Config()["HiddenWorkbench"];
   const char* start = App::Application::Config()["StartWorkbench"].c_str();
   std::string defWb = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->
@@ -888,7 +897,7 @@ void Application::runApplication(void)
   SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
 #endif
 
-  Console().Log("Init: Processing command line files\n");
+  Base::Console().Log("Init: Processing command line files\n");
   unsigned short count = 0;
   count = atoi(App::Application::Config()["OpenFileCount"].c_str());
 
@@ -905,16 +914,14 @@ void Application::runApplication(void)
     try{
       app.open(File.c_str());
     }catch(...){
-      Console().Error("Can't open file %s \n",File.c_str());
+      Base::Console().Error("Can't open file %s \n",File.c_str());
     }
   }
 
   // Stop splash screen and open the 'Iip of the day' dialog if needed
   mw.stopSplasher();
   mw.showTipOfTheDay();
-
-  // attach the console observer
-  MessageBoxObserver msgbox(&mw);
+  Instance->d->_bStartingUp = false;
 
   // Create new document?
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
@@ -923,7 +930,7 @@ void Application::runApplication(void)
   }
 
   // run the Application event loop
-  Console().Log("Init: Entering event loop\n");
+  Base::Console().Log("Init: Entering event loop\n");
 
   try{
     mainApp.exec();
@@ -933,92 +940,5 @@ void Application::runApplication(void)
     throw;
   }
 
-  Console().Log("Init: event loop left\n");
-  mw.saveWindowSettings();
-}
-
-// -------------------------------------------------------------
-
-MessageBoxObserver::MessageBoxObserver(MainWindow *pcAppWnd)
-  :_pcAppWnd(pcAppWnd)
-{
-#ifdef FC_DEBUG
-  this->bErr = false;
-  this->bWrn = false;
-#endif
-  Base::Console().AttachObserver( this );
-}
-
-MessageBoxObserver::~MessageBoxObserver()
-{
-  Base::Console().DetachObserver( this );
-}
-
-/// get called when a warning is issued
-void MessageBoxObserver::Warning(const char *m)
-{
-  WaitCursor::lock();
-  QCursor* cursor = QApplication::overrideCursor();
-  bool ok = Base::Sequencer().isRunning();
-  if ( ok )
-    Base::Sequencer().pause();
-  else if ( cursor )
-    QApplication::setOverrideCursor(QCursor(Qt::ArrowCursor));
-  QMessageBox::warning( qApp->activeWindow(), QObject::tr("Warning"),m);
-  if ( ok )
-    Base::Sequencer().resume();
-  else if ( cursor )
-    QApplication::restoreOverrideCursor();
-  _pcAppWnd->statusBar()->message( m, 2001 );
-  WaitCursor::unlock();
-}
-
-/// get called when a message is issued
-void MessageBoxObserver::Message(const char * m)
-{
-  _pcAppWnd->statusBar()->message( m, 2001 );
-}
-
-/// get called when an error is issued
-void MessageBoxObserver::Error  (const char *m)
-{
-  WaitCursor::lock();
-  QCursor* cursor = QApplication::overrideCursor();
-  bool ok = ProgressBar::instance()->isRunning();
-  if ( ok )
-    ProgressBar::instance()->pause();
-  else if ( cursor )
-    QApplication::setOverrideCursor(Qt::ArrowCursor);
-  QWidget* parent = qApp->activeWindow();
-  if ( !parent )
-    parent = getMainWindow();
-  QMessageBox::critical( parent, QObject::tr("Critical Error"),m);
-  if ( ok )
-    ProgressBar::instance()->resume();
-  else if ( cursor )
-    QApplication::restoreOverrideCursor();
-  _pcAppWnd->statusBar()->message( m, 2001 );
-  WaitCursor::unlock();
-}
-
-/// get called when a log message is issued
-void MessageBoxObserver::Log    (const char *log)
-{
-#ifdef FC_DEBUG
-  if(log[0] == 'V' && log[1] == 'd' && log[2] == 'b' && log[3] == 'g' &&  log[4] == ':')
-  {
-    std::string str;
-    str += "#Inventor V2.1 ascii \n";
-    str += (log + 5);
-
-    Gui::Document *d = Application::Instance->activeDocument();
-    if(d)
-    {
-      ViewProviderExtern *pcExt = new ViewProviderExtern();
-      pcExt->setModeByString("1",str.c_str());
-
-      d->setAnotationViewProvider("Vdbg",pcExt);
-    }
-  }
-#endif
+  Base::Console().Log("Init: event loop left\n");
 }

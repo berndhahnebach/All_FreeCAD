@@ -30,6 +30,7 @@
 # include <TopoDS_Face.hxx>
 #endif
 
+#include <Base/Console.h>
 #include <Base/Exception.h>
 #include <App/Document.h>
 #include <Gui/Application.h>

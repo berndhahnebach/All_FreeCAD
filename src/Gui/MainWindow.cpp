@@ -73,11 +73,13 @@ struct MainWindowP
 {
   QLabel* sizeLabel;
   QLabel* actionLabel;
+  QTimer* actionTimer;
   QTimer* activityTimer; 
   QWorkspace* workspace;
   QTabBar* tabs;
   QSignalMapper* windowMapper;
   QSplashScreen* splashscreen;
+  StatusBarObserver* status;
 };
 
 class MDITabbar : public QTabBar
@@ -156,13 +158,18 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
   setIcon(Gui::BitmapFactory().pixmap(App::Application::Config()["AppIcon"].c_str()));
 
   // labels and progressbar
+  d->status = new StatusBarObserver();
   d->actionLabel = new QLabel(statusBar());
   d->actionLabel->setMinimumWidth(120);
   d->sizeLabel = new QLabel(tr("Dimension"), statusBar());
   d->sizeLabel->setMinimumWidth(120);
-  statusBar()->addWidget(d->actionLabel,0 , true);
+  statusBar()->addWidget(d->actionLabel,0 , false);
   statusBar()->addWidget(ProgressBar::instance(), 0, true);
   statusBar()->addWidget(d->sizeLabel, 0, true);
+
+  // clears the action label
+  d->actionTimer = new QTimer( this );
+  connect(d->actionTimer, SIGNAL(timeout()), d->actionLabel, SLOT(clear()));
 
   // update gui timer
   d->activityTimer = new QTimer( this );
@@ -224,6 +231,7 @@ MainWindow::~MainWindow()
   //       a valid instance of StdCmdRecentFiles to do this
   StdCmdRecentFiles::save();
 
+  delete d->status;
   delete d;
   instance = 0;
 }
@@ -501,10 +509,12 @@ QList<QWidget*> MainWindow::windows( QWorkspace::WindowOrder order ) const
 // set text to the pane
 void MainWindow::setPaneText(int i, QString text)
 {
-  if (i==1)
+  if (i==1) {
     d->actionLabel->setText(text);
-  else if (i==2)
+    d->actionTimer->start(5000, true);
+  } else if (i==2) {
     d->sizeLabel->setText(text);
+  }
 }
 
 //TODO Redo the active window stuff
@@ -828,6 +838,94 @@ void MainWindow::changeEvent(QEvent *e)
   } else {
     QMainWindow::changeEvent(e);
   }
+}
+
+// -------------------------------------------------------------
+
+namespace Gui {
+
+/**
+ * The CustomMessageEvent class is used to send messages as events in the methods  
+ * Error(), Warning() and Message() of the StatusBarObserver class to the main window 
+ * to display them on the status bar instead of printing them directly to the status bar.
+ *
+ * This makes the usage of StatusBarObserver thread-safe.
+ * @author Werner Mayer
+ */
+class CustomMessageEvent : public QEvent
+{
+public:
+  CustomMessageEvent(const QString& s)
+    : QEvent(QEvent::User), msg(s)
+  { }
+  ~CustomMessageEvent()
+  { }
+  const QString& message() const
+  { return msg; }
+private:
+  QString msg;
+};
+}
+
+void MainWindow::customEvent( QEvent* e )
+{
+  if (e->type() == QEvent::User) {
+    Gui::CustomMessageEvent* ce = (Gui::CustomMessageEvent*)e;
+    d->actionLabel->setText(ce->message());
+    d->actionTimer->start(5000, true);
+  }
+}
+
+// ----------------------------------------------------------
+
+StatusBarObserver::StatusBarObserver()
+{
+  Base::Console().AttachObserver(this);
+}
+
+StatusBarObserver::~StatusBarObserver()
+{
+  Base::Console().DetachObserver(this);
+}
+
+/** Get called when a message is issued. 
+ * The message is displayed on the ststus bar. 
+ */
+void StatusBarObserver::Message(const char * m)
+{
+  // Send the event to the main window to allow thread-safety. Qt will delete it when done.
+  QString msg = QString("<font color=\"#000000\">%1</font>").arg(m);
+  CustomMessageEvent* ev = new CustomMessageEvent(msg);
+  QApplication::postEvent(getMainWindow(), ev);
+}
+
+/** Get called when a warning is issued. 
+ * The message is displayed on the ststus bar. 
+ */
+void StatusBarObserver::Warning(const char *m)
+{
+  // Send the event to the main window to allow thread-safety. Qt will delete it when done.
+  QString msg = QString("<font color=\"#ffaa00\">%1</font>").arg(m);
+  CustomMessageEvent* ev = new CustomMessageEvent(msg);
+  QApplication::postEvent(getMainWindow(), ev);
+}
+
+/** Get called when an error is issued. 
+ * The message is displayed on the ststus bar. 
+ */
+void StatusBarObserver::Error  (const char *m)
+{
+  // Send the event to the main window to allow thread-safety. Qt will delete it when done.
+  QString msg = QString("<font color=\"#ff0000\">%1</font>").arg(m);
+  CustomMessageEvent* ev = new CustomMessageEvent(msg);
+  QApplication::postEvent(getMainWindow(), ev);
+}
+
+/** Get called when a log message is issued. 
+ * Log messages are completely ignored.
+ */
+void StatusBarObserver::Log(const char *log)
+{
 }
 
 
