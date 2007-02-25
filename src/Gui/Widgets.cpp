@@ -548,4 +548,57 @@ void ColorButton::onChooseColor()
   }
 }
 
+// ------------------------------------------------------------------------------
+
+UrlLabel::UrlLabel ( QWidget * parent, Qt::WFlags f )
+  : QLabel("TextLabel", parent, f)
+{
+  _url = "http://localhost";
+  setToolTip(this->_url);
+}
+
+UrlLabel::~UrlLabel()
+{
+}
+
+void UrlLabel::enterEvent ( QEvent * )
+{
+  setCursor(Qt::PointingHandCursor);
+}
+
+void UrlLabel::leaveEvent ( QEvent * )
+{
+  setCursor(Qt::ArrowCursor);
+}
+
+void UrlLabel::mouseReleaseEvent ( QMouseEvent * )
+{
+  // The webbrowser Python module allows to start the system browser in an OS-independent way
+  PyObject* module = PyImport_ImportModule("webbrowser");
+  if ( module ) {
+    // get the methods dictionary and search for the 'open' method
+    PyObject* dict = PyModule_GetDict(module);
+    PyObject* func = PyDict_GetItemString(dict, "open");
+    if ( func ) {
+      PyObject* args = Py_BuildValue("(s)", this->_url.ascii());
+      PyObject* result = PyEval_CallObject(func,args);
+      // decrement the args and module reference
+      Py_XDECREF(result);
+      Py_DECREF(args);
+      Py_DECREF(module);
+    }
+  } 
+}
+
+QString UrlLabel::url() const
+{
+  return this->_url;
+}
+
+void UrlLabel::setUrl(const QString& u)
+{
+  this->_url = u;
+  setToolTip(this->_url);
+}
+
 #include "moc_Widgets.cpp"

@@ -24,10 +24,49 @@
 #include <QtGui>
 #include <QCursor>
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include "customwidgets.h"
 
 using namespace Gui;
+
+
+UrlLabel::UrlLabel ( QWidget * parent, Qt::WFlags f )
+  : QLabel("TextLabel", parent, f)
+{
+  _url = "http://localhost";
+  setToolTip(this->_url);
+}
+
+UrlLabel::~UrlLabel()
+{
+}
+
+void UrlLabel::enterEvent ( QEvent * )
+{
+  setCursor(Qt::PointingHandCursor);
+}
+
+void UrlLabel::leaveEvent ( QEvent * )
+{
+  setCursor(Qt::ArrowCursor);
+}
+
+void UrlLabel::mouseReleaseEvent ( QMouseEvent * )
+{
+  QMessageBox::information(this, "Browser", QString("This starts your browser with url %1").arg(_url));
+}
+
+QString UrlLabel::url() const
+{
+  return this->_url;
+}
+
+void UrlLabel::setUrl(const QString& u)
+{
+  this->_url = u;
+  setToolTip(this->_url);
+}
 
 FileChooser::FileChooser( QWidget *parent )
   : QWidget( parent ), md( File ), _filter( QString::null )
