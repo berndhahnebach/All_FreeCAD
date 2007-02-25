@@ -24,6 +24,79 @@
 #include "customwidgets.h"
 #include "plugin.h"
 
+
+/* XPM */
+static char *urllabel_pixmap[]={
+"22 22 3 1",
+"# c #000000",
+"x c #ffffff",
+". c None",
+"......................",
+".......##.............",
+"......#xx#............",
+"......#xx#............",
+"......#xx#............",
+"......#xx#............",
+"......#xx###..........",
+"......#xx#xx###.......",
+"......#xx#xx#xx##.....",
+"...##.#xx#xx#xx#x#....",
+"..#xx##xx#xx#xx#x#....",
+"..#xxx#xxxxxxxxxx#....",
+"...#xxxxxxxxxxxxx#....",
+"....#xxxxxxxxxxxx#....",
+"....#xxxxxxxxxxxx#....",
+".....#xxxxxxxxxx#.....",
+".....#xxxxxxxxxx#.....",
+"......#xxxxxxxx#......",
+"......#xxxxxxxx#......",
+"......##########......",
+"......##########......",
+"......##########......"};
+
+class UrlLabelPlugin : public QDesignerCustomWidgetInterface
+{
+    Q_INTERFACES(QDesignerCustomWidgetInterface)
+public:
+    UrlLabelPlugin()
+    {
+    }
+    QWidget *createWidget(QWidget *parent)
+    {
+      return new Gui::UrlLabel(parent);
+    }
+    QString group() const
+    {
+      return QLatin1String("Display Widgets");
+    }
+    QIcon icon() const
+    {
+      return QIcon( QPixmap( urllabel_pixmap ) );
+    }
+    QString includeFile() const
+    {
+      return QLatin1String("Gui/Widgets.h");
+    }
+    QString toolTip() const
+    {
+      return QLatin1String("Url label");
+    }
+    QString whatsThis() const
+    {
+      return QLatin1String("A widget to display a url in a text label.");
+    }
+    bool isContainer() const
+    {
+      return false;
+    }
+//    QString codeTemplate() const;
+//    QString domXml() const;
+    QString name() const
+    {
+      return QLatin1String("Gui::UrlLabel");
+    }
+};
+
 static const char *filechooser_pixmap[] = {
     "22 22 8 1",
     "  c Gray100",
@@ -932,6 +1005,7 @@ CustomWidgetPlugin::CustomWidgetPlugin(QObject *parent)
 QList<QDesignerCustomWidgetInterface *> CustomWidgetPlugin::customWidgets () const
 {
   QList<QDesignerCustomWidgetInterface *> cw;
+  cw.append(new UrlLabelPlugin);
   cw.append(new FileChooserPlugin);
   cw.append(new AccelLineEditPlugin);
   cw.append(new CommandIconViewPlugin);

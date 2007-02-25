@@ -34,9 +34,33 @@
 #include <QDoubleSpinBox>
 #include <QComboBox>
 #include <QCheckBox>
+#include <QLabel>
 
 namespace Gui
 {
+
+class UrlLabel : public QLabel
+{
+  Q_OBJECT
+  Q_PROPERTY( QString  url    READ url   WRITE setUrl)
+
+public:
+  UrlLabel ( QWidget * parent = 0, Qt::WFlags f = 0 );
+  virtual ~UrlLabel();
+
+  QString url() const;
+
+public Q_SLOTS:
+  void setUrl( const QString &u );
+
+protected:
+  void enterEvent ( QEvent * );
+  void leaveEvent ( QEvent * );
+  void mouseReleaseEvent ( QMouseEvent * );
+
+private:
+  QString _url;
+};
 
 class FileChooser : public QWidget
 {
@@ -60,17 +84,17 @@ public:
   Mode mode() const;
   QString buttonText() const;
 
-public slots:
+public Q_SLOTS:
   void setFileName( const QString &fn );
   void setMode( Mode m );
   void setFilter ( const QString & );
   void setButtonText ( const QString & );
 
-signals:
+Q_SIGNALS:
   void fileNameChanged( const QString & );
   void fileNameSelected( const QString & );
 
-private slots:
+private Q_SLOTS:
   void chooseFile();
 
 private:
@@ -237,10 +261,10 @@ public:
   void setColor( const QColor& );
   QColor color() const;
 
-public slots:
+public Q_SLOTS:
   virtual void onChooseColor();
 
-signals:
+Q_SIGNALS:
   void changed();
 
 protected:

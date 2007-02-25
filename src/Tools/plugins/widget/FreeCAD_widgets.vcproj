@@ -227,7 +227,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Release\moc_$(InputName).cpp&quot;"
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Release\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies=""
 						Outputs="$(InputDir)Release\moc_$(InputName).cpp"
 					/>
@@ -238,7 +238,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Debug\moc_$(InputName).cpp&quot;"
+						CommandLine="moc.exe &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Debug\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies=""
 						Outputs="$(InputDir)Debug\moc_$(InputName).cpp"
 					/>
@@ -253,7 +253,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot; -I&quot;$(QTDIR)\include&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Release\moc_$(InputName).cpp&quot;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot; -I&quot;$(QTDIR)\include&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Release\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies=""
 						Outputs="$(InputDir)Release\moc_$(InputName).cpp"
 					/>
@@ -264,7 +264,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Moc&apos;ing $(InputName).h ..."
-						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot; -I&quot;$(QTDIR)\include&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Release\moc_$(InputName).cpp&quot;"
+						CommandLine="&quot;$(QTDIR)\bin\moc.exe&quot; -I&quot;$(QTDIR)\include&quot; &quot;$(InputDir)$(InputName).h&quot; -o &quot;$(InputDir)Debug\moc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						AdditionalDependencies=""
 						Outputs="$(InputDir)Debug\moc_$(InputName).cpp"
 					/>
@@ -276,18 +276,6 @@
 			Filter="cpp;c;cxx;moc;h;def;odl;idl;res;"
 			UniqueIdentifier="{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}"
 			>
-			<File
-				RelativePath="release\moc_customwidgets.cpp"
-				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					ExcludedFromBuild="true"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-					/>
-				</FileConfiguration>
-			</File>
 			<File
 				RelativePath="debug\moc_customwidgets.cpp"
 				>
@@ -301,7 +289,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="release\moc_plugin.cpp"
+				RelativePath="release\moc_customwidgets.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -317,6 +305,18 @@
 				>
 				<FileConfiguration
 					Name="Release|Win32"
+					ExcludedFromBuild="true"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="release\moc_plugin.cpp"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
 					ExcludedFromBuild="true"
 					>
 					<Tool

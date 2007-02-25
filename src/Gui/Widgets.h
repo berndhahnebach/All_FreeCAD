@@ -199,6 +199,39 @@ private:
   QColor _col;
 };
 
+// ------------------------------------------------------------------------------
+
+/**
+ * A text label where a url can specified. When the user clicks on the text label the system browser
+ * gets opened with the specified url. 
+ *
+ * This can be used for e.g. in the about dialog where the url of the maintainer of an application
+ * can be specified.
+ * @author Werner Mayer
+ */
+class GuiExport UrlLabel : public QLabel
+{
+  Q_OBJECT
+  Q_PROPERTY( QString  url    READ url   WRITE setUrl)
+
+public:
+  UrlLabel ( QWidget * parent = 0, Qt::WFlags f = 0 );
+  virtual ~UrlLabel();
+
+  QString url() const;
+
+public Q_SLOTS:
+  void setUrl( const QString &u );
+
+protected:
+  void enterEvent ( QEvent * );
+  void leaveEvent ( QEvent * );
+  void mouseReleaseEvent ( QMouseEvent * );
+
+private:
+  QString _url;
+};
+
 } // namespace Gui
 
 #endif // GUI_WIDGETS_H

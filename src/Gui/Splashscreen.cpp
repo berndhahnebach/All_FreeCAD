@@ -201,6 +201,7 @@ void AboutDialog::setupLabels()
   QString minor  = App::Application::Config()["BuildVersionMinor"].c_str();
   QString build  = App::Application::Config()["BuildRevision"].c_str();
   QString disda  = App::Application::Config()["BuildRevisionDate"].c_str();
+  QString mturl  = App::Application::Config()["MaintainerUrl"].c_str();
 
   QString author = QString("<html><head><meta name=\"qrichtext\" content=\"1\" /></head>"
                            "<body style=\" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; "
@@ -224,6 +225,7 @@ void AboutDialog::setupLabels()
                          "margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">"
                          "<span style=\" font-size:8pt; font-weight:600;\">%1</span></p></body></html>").arg(disda);
   ui.labelAuthor->setText(author);
+  ui.labelAuthor->setUrl(mturl);
   ui.labelBuildVersion->setText(version);
   ui.labelBuildRevision->setText(revision);
   ui.labelBuildDate->setText(date);
