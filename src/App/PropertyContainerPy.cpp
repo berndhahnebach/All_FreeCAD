@@ -32,21 +32,25 @@
 #include "../Base/Exception.h"
 using Base::Console;
 
-#include "Persistance.h"
-#include "PersistancePy.h"
+#include "Document.h"
+#include "PropertyContainer.h"
+#include "Property.h"
+#include "PropertyContainerPy.h"
 #define new DEBUG_CLIENTBLOCK
+using namespace App;
 
-using namespace Base;
+
+
 
 //--------------------------------------------------------------------------
 // Type structure
 //--------------------------------------------------------------------------
 
-PyTypeObject Base::PersistancePy::Type = {
+PyTypeObject App::PropertyContainerPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"Persistance",				/*tp_name*/
-	sizeof(PersistancePy),			/*tp_basicsize*/
+	"PropertyContainer",				/*tp_name*/
+	sizeof(PropertyContainerPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
 	PyDestructor,	  		/*tp_dealloc*/
@@ -67,17 +71,17 @@ PyTypeObject Base::PersistancePy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About Persistance",                           /*tp_doc */
+  "About PropertyContainer",                        /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  Base::PersistancePy::Methods,                   /*tp_methods */
+  App::PropertyContainerPy::Methods,                /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
-  &Base::PyObjectBase::Type,                        /*tp_base */
+  &Base::PersistancePy::Type,                       /*tp_base */
   0,                                                /*tp_dict */
   0,                                                /*tp_descr_get */
   0,                                                /*tp_descr_set */
@@ -97,11 +101,11 @@ PyTypeObject Base::PersistancePy::Type = {
 //--------------------------------------------------------------------------
 // Methods structure
 //--------------------------------------------------------------------------
-PyMethodDef Base::PersistancePy::Methods[] = {
+PyMethodDef App::PropertyContainerPy::Methods[] = {
 // PyObjectBase
 //  PYMETHODEDEF(isA)
-// PersistancePy 
-	PYMETHODEDEF(getMemSize)
+// PropertyContainerPy 
+//	PYMETHODEDEF(setModified)
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -109,39 +113,40 @@ PyMethodDef Base::PersistancePy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject Base::PersistancePy::Parents[] = { &PersistancePy::Type,
-                                                  &BaseClassPy  ::Type, 
-                                                  &PyObjectBase ::Type, 
-                                                  NULL};
+PyParentObject App::PropertyContainerPy::Parents[] = { &PropertyContainerPy ::Type, 
+                                                       &PersistancePy       ::Type, 
+                                                       &BaseClassPy         ::Type, 
+                                                       &PyObjectBase        ::Type, 
+                                                       NULL};
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-Base::PersistancePy::PersistancePy(Persistance *pcPersistance, PyTypeObject *T)
-: BaseClassPy(pcPersistance, T)
+App::PropertyContainerPy::PropertyContainerPy(PropertyContainer *pcPropertyContainer, PyTypeObject *T)
+: PersistancePy(pcPropertyContainer, T)
 {
-//	Base::Console().Log("Create PersistancePy: %p \n",this);
+//	Base::Console().Log("Create PropertyContainerPy: %p \n",this);
 }
 
-PyObject *PersistancePy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
+PyObject *PropertyContainerPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  //return new PersistancePy(name, n, tau, gamma);			// Make new Python-able object
+  //return new PropertyContainerPy(name, n, tau, gamma);			// Make new Python-able object
 	return 0;
 }
 
 //--------------------------------------------------------------------------
 // destructor
 //--------------------------------------------------------------------------
-PersistancePy::~PersistancePy()						// Everything handled in parent
+PropertyContainerPy::~PropertyContainerPy()						// Everything handled in parent
 {
-//	Base::Console().Log("Destroy PersistancePy: %p \n",this);
+//	Base::Console().Log("Destroy PropertyContainerPy: %p \n",this);
 
 }
 
 //--------------------------------------------------------------------------
-// PersistancePy representation
+// PropertyContainerPy representation
 //--------------------------------------------------------------------------
-PyObject *PersistancePy::_repr(void)
+PyObject *PropertyContainerPy::_repr(void)
 {
   std::stringstream a;
   a << "Feature: [ ";
@@ -153,27 +158,61 @@ PyObject *PersistancePy::_repr(void)
 	return Py_BuildValue("s", a.str().c_str());
 }
 //--------------------------------------------------------------------------
-// PersistancePy Attributes
+// PropertyContainerPy Attributes
 //--------------------------------------------------------------------------
-PyObject *PersistancePy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
+PyObject *PropertyContainerPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 { 
 	PY_TRY{
     {
-  	  _getattr_up(PyObjectBase); 						
+      // search in PropertyList
+      Property *prop = getPropertyContainer()->getPropertyByName(attr);
+      if(prop)
+      {
+        return prop->getPyObject();
+      } else if (Base::streq(attr, "__dict__")) {
+        // get the properties to the C++ PropertyContainer class
+        std::map<std::string,App::Property*> Map;
+        getPropertyContainer()->getPropertyMap(Map);
+        PyObject *dict = PyDict_New();
+        if (dict) { 
+          for ( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
+            PyDict_SetItem(dict, PyString_FromString(it->first.c_str()), PyString_FromString(""));
+          if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
+        }
+        return dict;
+      }
+      else
+			  _getattr_up(PyObjectBase); 						
     }
 	}PY_CATCH;
 
   return Py_None;
 } 
 
-int PersistancePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int PropertyContainerPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-	return PyObjectBase::_setattr(attr, value);
+   // search in PropertyList
+  Property *prop = getPropertyContainer()->getPropertyByName(attr);
+  if (prop) {
+    try {
+      prop->setPyObject(value);
+    } catch (Base::Exception &exc) {
+      PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
+      return -1;
+    } catch (...) {
+      PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
+      return -1;
+    }
+  } else {
+		return PyObjectBase::_setattr(attr, value);
+  }
+
+  return 0;
 } 
 
-Persistance *PersistancePy::getPersistanceObject(void) const
+PropertyContainer *PropertyContainerPy::getPropertyContainer(void)
 {
-  return dynamic_cast<Persistance *>(_pcBaseClass);
+  return dynamic_cast<PropertyContainer *>(_pcBaseClass);
 }
 
 
@@ -182,17 +221,10 @@ Persistance *PersistancePy::getPersistanceObject(void) const
 //--------------------------------------------------------------------------
 
 /*
-PYFUNCIMP_D(PersistancePy,setModified)
+PYFUNCIMP_D(PropertyContainerPy,setModified)
 {
   _pcFeature->Touch();
 
 	Py_Return;
 }
 */
-
-PYFUNCIMP_D(PersistancePy,getMemSize)
-{ 
-  PY_TRY {
-	   return Py_BuildValue("i",getPersistanceObject()->getMemSize()); 
-  }PY_CATCH;
-} 

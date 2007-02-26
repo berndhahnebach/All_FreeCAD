@@ -23,15 +23,15 @@
  
 
 
-#ifndef _DocumentObjectPy_h_
-#define _DocumentObjectPy_h_
+#ifndef _PropertyContainerPy_h_
+#define _PropertyContainerPy_h_
 
-#include "PropertyContainerPy.h"
+#include <Base/PersistancePy.h>
 
 namespace App
 {
 
-class DocumentObject;
+class PropertyContainer;
 
 
 //===========================================================================
@@ -40,15 +40,15 @@ class DocumentObject;
 
 /** The DocTypeStd python class
  */
-class AppExport DocumentObjectPy :public App::PropertyContainerPy
+class AppExport PropertyContainerPy :public Base::PersistancePy
 {
 	/// always start with Py_Header
 	Py_Header;
 
 public:
-	DocumentObjectPy(DocumentObject *pcDocumentObject, PyTypeObject *T = &Type);
+	PropertyContainerPy(PropertyContainer *pcPropertyContainer, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
-	~DocumentObjectPy();
+	~PropertyContainerPy();
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
@@ -63,8 +63,9 @@ public:
 	//---------------------------------------------------------------------
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
-  DocumentObject *getDocumentObject(void) const;
+  PropertyContainer *getPropertyContainer(void);
   
+
 };
 
 

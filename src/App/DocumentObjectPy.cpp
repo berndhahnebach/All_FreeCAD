@@ -81,7 +81,7 @@ PyTypeObject App::DocumentObjectPy::Type = {
   App::DocumentObjectPy::Methods,                   /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
-  &Base::PyObjectBase::Type,                        /*tp_base */
+  &App::PropertyContainerPy::Type,                 /*tp_base */
   0,                                                /*tp_dict */
   0,                                                /*tp_descr_get */
   0,                                                /*tp_descr_set */
@@ -113,13 +113,18 @@ PyMethodDef App::DocumentObjectPy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject App::DocumentObjectPy::Parents[] = { &DocumentObjectPy::Type, &PyObjectBase::Type, NULL};
+PyParentObject App::DocumentObjectPy::Parents[] = { &DocumentObjectPy    ::Type, 
+                                                    &PropertyContainerPy ::Type, 
+                                                    &PersistancePy       ::Type, 
+                                                    &BaseClassPy         ::Type, 
+                                                    &PyObjectBase        ::Type, 
+                                                    NULL};
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
 App::DocumentObjectPy::DocumentObjectPy(DocumentObject *pcDocumentObject, PyTypeObject *T)
-: PyObjectBase( T), _pcDocumentObject(pcDocumentObject)
+: PropertyContainerPy(pcDocumentObject, T)
 {
 //	Base::Console().Log("Create DocumentObjectPy: %p \n",this);
 }
@@ -157,54 +162,30 @@ PyObject *DocumentObjectPy::_repr(void)
 // DocumentObjectPy Attributes
 //--------------------------------------------------------------------------
 PyObject *DocumentObjectPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{ 
-	PY_TRY{
-    {
-      // search in PropertyList
-      Property *prop = _pcDocumentObject->getPropertyByName(attr);
-      if(prop)
-      {
-        return prop->getPyObject();
-      } else if (Base::streq(attr, "__dict__")) {
-        // get the properties to the C++ DocumentObject class
-        std::map<std::string,App::Property*> Map;
-        _pcDocumentObject->getPropertyMap(Map);
-        PyObject *dict = PyDict_New();
-        if (dict) { 
-          for ( std::map<std::string,App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it )
-            PyDict_SetItem(dict, PyString_FromString(it->first.c_str()), PyString_FromString(""));
-          if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
-        }
-        return dict;
-      }
-      else
-			  _getattr_up(PyObjectBase); 						
-    }
-	}PY_CATCH;
-
-  return Py_None;
+{
+  try{
+    if (Base::streq(attr, "Document"))
+      return getDocumentObject()->getPyObject(); 
+    else
+        _getattr_up(PropertyContainerPy);
+  }catch(...){
+    Py_Error(PyExc_AttributeError,"Error in get Attribute");
+  }
+ 
 } 
 
 int DocumentObjectPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
-{ 
-   // search in PropertyList
-  Property *prop = _pcDocumentObject->getPropertyByName(attr);
-  if (prop) {
-    try {
-      prop->setPyObject(value);
-    } catch (Base::Exception &exc) {
-      PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
-      return -1;
-    } catch (...) {
-      PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
-      return -1;
-    }
-  } else {
-		return PyObjectBase::_setattr(attr, value);
-  }
-
-  return 0;
+{
+  if (Base::streq(attr, "Document"))           
+    return 1;
+  else 
+    return PropertyContainerPy::_setattr(attr, value);
 } 
+
+DocumentObject *DocumentObjectPy::getDocumentObject(void) const
+{
+  return dynamic_cast<DocumentObject *>(_pcBaseClass);
+}
 
 
 //--------------------------------------------------------------------------

@@ -277,6 +277,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PropertyContainerPy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PropertyContainerPy.h"
+				>
+			</File>
+			<File
 				RelativePath="PropertyGeo.cpp"
 				>
 				<FileConfiguration

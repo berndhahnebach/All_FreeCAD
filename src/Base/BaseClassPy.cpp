@@ -98,10 +98,7 @@ PyTypeObject Base::BaseClassPy::Type = {
 // Methods structure
 //--------------------------------------------------------------------------
 PyMethodDef Base::BaseClassPy::Methods[] = {
-// PyObjectBase
-//  PYMETHODEDEF(isA)
-// BaseClassPy 
-//	PYMETHODEDEF(setModified)
+  PYMETHODEDEF(isA)
 
 	{NULL, NULL}		/* Sentinel */
 };
@@ -173,11 +170,10 @@ int BaseClassPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function:
 // Python wrappers
 //--------------------------------------------------------------------------
 
-/*
-PYFUNCIMP_D(BaseClassPy,setModified)
-{
-  _pcFeature->Touch();
 
-	Py_Return;
+PYFUNCIMP_D(BaseClassPy,isA)
+{
+  return Py_BuildValue("s", _pcBaseClass->getTypeId().getName());
+
 }
-*/
+
