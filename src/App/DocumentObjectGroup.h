@@ -24,7 +24,7 @@
 #ifndef APP_DOCUMENTOBJECTGROUP_H
 #define APP_DOCUMENTOBJECTGROUP_H
 
-#include "Feature.h"
+#include "DocumentObject.h"
 #include "PropertyLinks.h"
 #include <vector>
 
@@ -33,7 +33,7 @@ namespace App
 {
 class DocumentObjectGroupPy;
 
-class AppExport DocumentObjectGroup : public AbstractFeature
+class AppExport DocumentObjectGroup : public DocumentObject
 {
   PROPERTY_HEADER(App::DocumentObjectGroup);
 
@@ -74,7 +74,7 @@ public:
   static DocumentObjectGroup* getGroupOfObject(DocumentObject* obj);
 	//@}
 
-  int execute(void);
+  //int execute(void);
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "Gui::ViewProviderDocumentObjectGroup";}
   virtual Base::PyObjectBase *GetPyObject(void);
@@ -88,8 +88,6 @@ protected:
    * Removes the object \a obj from this group.
    */
   void removeObject(DocumentObject* obj);
-
-  virtual void onChanged(const Property* prop);
 
 private:
   DocumentObjectGroupPy* pcGroupPy;

@@ -32,10 +32,11 @@
 #define new DEBUG_CLIENTBLOCK
 using namespace App;
 
-PROPERTY_SOURCE(App::DocumentObjectGroup, App::AbstractFeature)
+PROPERTY_SOURCE(App::DocumentObjectGroup, App::DocumentObject)
 
 
-DocumentObjectGroup::DocumentObjectGroup() : pcGroupPy(0)
+DocumentObjectGroup::DocumentObjectGroup() 
+: pcGroupPy(0)
 {
   ADD_PROPERTY(Group,(0));
 
@@ -48,11 +49,6 @@ DocumentObjectGroup::DocumentObjectGroup() : pcGroupPy(0)
 
 DocumentObjectGroup::~DocumentObjectGroup()
 {
-}
-
-void DocumentObjectGroup::onChanged(const Property* prop)
-{
-  AbstractFeature::onChanged(prop);
 }
 
 DocumentObject* DocumentObjectGroup::addObject(const char* sType, const char* pObjectName)
@@ -167,10 +163,6 @@ DocumentObjectGroup* DocumentObjectGroup::getGroupOfObject(DocumentObject* obj)
   return 0;
 }
 
-int DocumentObjectGroup::execute()
-{
-  return 0;
-}
 
 Base::PyObjectBase *DocumentObjectGroup::GetPyObject()
 {

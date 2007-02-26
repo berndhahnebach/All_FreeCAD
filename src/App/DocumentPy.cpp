@@ -83,7 +83,7 @@ PyTypeObject DocumentPy::Type = {
   App::DocumentPy::Methods,                         /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
-  &Base::PyObjectBase::Type,                        /*tp_base */
+  &App::PropertyContainerPy::Type,                  /*tp_base */
   0,                                                /*tp_dict */
   0,                                                /*tp_descr_get */
   0,                                                /*tp_descr_set */
@@ -136,7 +136,6 @@ PyMethodDef DocumentPy::Methods[] = {
   PYMETHODEDEF(removeObject)
   PYMETHODEDEF(listObjects)
   PYMETHODEDEF(getName)
-  PYMETHODEDEF(getMemSize)
 
   //PYMETHODEDEF(beginTransaction)
   //PYMETHODEDEF(rollbackTransaction)
@@ -149,13 +148,18 @@ PyMethodDef DocumentPy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject DocumentPy::Parents[] = {&PyObjectBase::Type, NULL};     
+PyParentObject DocumentPy::Parents[] = {&DocumentPy          ::Type,
+                                        &PropertyContainerPy ::Type, 
+                                        &PersistancePy       ::Type, 
+                                        &BaseClassPy         ::Type, 
+                                        &PyObjectBase        ::Type, 
+                                        NULL};     
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
 DocumentPy::DocumentPy(Document *pcDoc, PyTypeObject *T)
- : PyObjectBase( T), _pcDoc(pcDoc)
+ : PropertyContainerPy(pcDoc, T)
 {
 }
 
@@ -180,53 +184,59 @@ PyObject *DocumentPy::_repr(void)
 {
 	return Py_BuildValue("s", "FreeCAD Document");
 }
+
+Document *DocumentPy::getDocument(void) const 
+{
+  return dynamic_cast<Document *>(_pcBaseClass);
+}
+
 //--------------------------------------------------------------------------
 // DocumentPy Attributes
 //--------------------------------------------------------------------------
 PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
 {
-    if (Base::streq(attr, "__dict__")) {
-      PyObject *dict = PyDict_New();
-      if (dict) {
-//        PyDict_SetItemString(dict,"UndoLimit",      Py_BuildValue("i",_pcDoc->GetUndoLimit()));
-        PyDict_SetItemString(dict,"AvailableUndos", Py_BuildValue("i",_pcDoc->getAvailableUndos()));
-        PyDict_SetItemString(dict,"AvailableRedos", Py_BuildValue("i",_pcDoc->getAvailableRedos()));
-//        PyDict_SetItemString(dict,"HasOpenCommand", Py_BuildValue("i",_pcDoc->HasOpenCommand()?1:0));
-        PyDict_SetItemString(dict,"Name",           Py_BuildValue("s",_pcDoc->getName()));
-        PyDict_SetItemString(dict,"Path",           Py_BuildValue("s",_pcDoc->getPath()));
-        if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
-      }
-      return dict;
-    }
-//		else if (streq(attr, "UndoLimit"))
-//			return Py_BuildValue("i", _pcDoc->GetUndoLimit());
-		else if (streq(attr, "AvailableUndos"))
-			return Py_BuildValue("i", _pcDoc->getAvailableUndos()); 
-		else if (streq(attr, "AvailableRedos"))
-			return Py_BuildValue("i", _pcDoc->getAvailableRedos()); 
-		else if (streq(attr, "Name"))
-			return Py_BuildValue("s", _pcDoc->getName());
-		else if (streq(attr, "Path"))
-			return Py_BuildValue("s", _pcDoc->getPath());
-//		else if (streq(attr, "Main")){
-//			//_pcDoc->Main()->IncRef();
-//			return new LabelPy(_pcDoc->_hDoc->Main());
-//		}
-//		else if (streq(attr, "IsEmpty"))
-//			return Py_BuildValue("u", _pcDoc->IsEmpty()?1:0);
-//		else if (streq(attr, "IsValid"))
-//			return Py_BuildValue("u", _pcDoc->IsValid()?1:0);
-//		else if (streq(attr, "HasOpenCommand"))
-//			return Py_BuildValue("i", _pcDoc->HasOpenCommand()?1:0);
-//		else if (streq(attr, "StorageFormat"))						
-//			return Py_BuildValue("u", _pcDoc->storageFormat()); 
-    else{
-      DocumentObject *pObject = _pcDoc->getObject(attr);
+//    if (Base::streq(attr, "__dict__")) {
+//      PyObject *dict = PyDict_New();
+//      if (dict) {
+////        PyDict_SetItemString(dict,"UndoLimit",      Py_BuildValue("i",getDocument()->GetUndoLimit()));
+//        PyDict_SetItemString(dict,"AvailableUndos", Py_BuildValue("i",getDocument()->getAvailableUndos()));
+//        PyDict_SetItemString(dict,"AvailableRedos", Py_BuildValue("i",getDocument()->getAvailableRedos()));
+////        PyDict_SetItemString(dict,"HasOpenCommand", Py_BuildValue("i",getDocument()->HasOpenCommand()?1:0));
+//        PyDict_SetItemString(dict,"Name",           Py_BuildValue("s",getDocument()->getName()));
+//        PyDict_SetItemString(dict,"Path",           Py_BuildValue("s",getDocument()->getPath()));
+//        if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
+//      }
+//      return dict;
+//    }
+////		else if (streq(attr, "UndoLimit"))
+////			return Py_BuildValue("i", getDocument()->GetUndoLimit());
+//		else if (streq(attr, "AvailableUndos"))
+//			return Py_BuildValue("i", getDocument()->getAvailableUndos()); 
+//		else if (streq(attr, "AvailableRedos"))
+//			return Py_BuildValue("i", _pcDoc->getAvailableRedos()); 
+//	  //else if (streq(attr, "Name"))
+//		 // return Py_BuildValue("s", _pcDoc->getName());
+//	  //else if (streq(attr, "Path"))
+//		 // return Py_BuildValue("s", _pcDoc->getPath());
+////		else if (streq(attr, "Main")){
+////			//_pcDoc->Main()->IncRef();
+////			return new LabelPy(_pcDoc->_hDoc->Main());
+////		}
+////		else if (streq(attr, "IsEmpty"))
+////			return Py_BuildValue("u", _pcDoc->IsEmpty()?1:0);
+////		else if (streq(attr, "IsValid"))
+////			return Py_BuildValue("u", _pcDoc->IsValid()?1:0);
+////		else if (streq(attr, "HasOpenCommand"))
+////			return Py_BuildValue("i", _pcDoc->HasOpenCommand()?1:0);
+////		else if (streq(attr, "StorageFormat"))						
+////			return Py_BuildValue("u", _pcDoc->storageFormat()); 
+//    else{
+      DocumentObject *pObject = getDocument()->getObject(attr);
       if(pObject)
         return pObject->GetPyObject();
       else
-			 _getattr_up(PyObjectBase); 						
-    }
+			 _getattr_up(PropertyContainerPy); 						
+//    }
 } 
 
 int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
@@ -241,21 +251,21 @@ int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: 
     // search in object PropertyList
 
     // search in PropertyList
- Property *prop = _pcDoc->getPropertyByName(attr);
-  if(prop) { 
-    try {
-      prop->setPyObject(value);
-    } catch (Base::Exception &exc) {
-      PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
-      return -1;
-    } catch (...) {
-      PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
-      return -1;
-    }
-  } else {
-		return PyObjectBase::_setattr(attr, value);
-  }
-  return 0;
+ //Property *prop = _pcDoc->getPropertyByName(attr);
+ // if(prop) { 
+ //   try {
+ //     prop->setPyObject(value);
+ //   } catch (Base::Exception &exc) {
+ //     PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
+ //     return -1;
+ //   } catch (...) {
+ //     PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
+ //     return -1;
+ //   }
+ // } else {
+		return PropertyContainerPy::_setattr(attr, value);
+  //}
+  //return 0;
 
 		//return PyObjectBase::_setattr(attr, value); 	// send up to parent
 } 
@@ -273,7 +283,7 @@ PYFUNCIMP_D(DocumentPy,setUndoMode)
     return NULL;                             // NULL triggers exception 
 
   PY_TRY {
-	  _pcDoc->setUndoMode(Int); 
+	  getDocument()->setUndoMode(Int); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -282,7 +292,7 @@ PYFUNCIMP_D(DocumentPy,setUndoMode)
 PYFUNCIMP_D(DocumentPy,undo)
 { 
   PY_TRY {
-	  _pcDoc->undo(); 
+	  getDocument()->undo(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -290,7 +300,7 @@ PYFUNCIMP_D(DocumentPy,undo)
 PYFUNCIMP_D(DocumentPy,redo)
 { 
   PY_TRY {
-	  _pcDoc->redo(); 
+	  getDocument()->redo(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -298,7 +308,7 @@ PYFUNCIMP_D(DocumentPy,redo)
 PYFUNCIMP_D(DocumentPy,clearUndos)
 { 
   PY_TRY {
-	  _pcDoc->clearUndos(); 
+	  getDocument()->clearUndos(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -309,7 +319,7 @@ PYFUNCIMP_D(DocumentPy,openTransaction)
       return NULL;                             // NULL triggers exception 
 
   PY_TRY {
-	  _pcDoc->openTransaction(pstr); 
+	  getDocument()->openTransaction(pstr); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -317,7 +327,7 @@ PYFUNCIMP_D(DocumentPy,openTransaction)
 PYFUNCIMP_D(DocumentPy,commitTransaction)
 { 
   PY_TRY {
-	  _pcDoc->commitTransaction(); 
+	  getDocument()->commitTransaction(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -325,7 +335,7 @@ PYFUNCIMP_D(DocumentPy,commitTransaction)
 PYFUNCIMP_D(DocumentPy,abortTransaction)
 { 
   PY_TRY {
-	  _pcDoc->abortTransaction(); 
+	  getDocument()->abortTransaction(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -337,7 +347,7 @@ PYFUNCIMP_D(DocumentPy,getAvailableUndoNames)
      return NULL;                   // NULL triggers exception 
 
   PY_TRY {
-    std::vector<std::string> vList = _pcDoc->getAvailableUndoNames();
+    std::vector<std::string> vList = getDocument()->getAvailableUndoNames();
 	  PyObject* pList = PyList_New(vList.size());  
     unsigned int i =0;
     for (std::vector<std::string>::const_iterator It = vList.begin();It!=vList.end();++It,i++)
@@ -354,7 +364,7 @@ PYFUNCIMP_D(DocumentPy,getAvailableRedoNames)
      return NULL;                   // NULL triggers exception 
 
   PY_TRY {
-    std::vector<std::string> vList = _pcDoc->getAvailableRedoNames();
+    std::vector<std::string> vList = getDocument()->getAvailableRedoNames();
 	  PyObject* pList = PyList_New(vList.size());  
     unsigned int i =0;
     for (std::vector<std::string>::const_iterator It = vList.begin();It!=vList.end();++It,i++)
@@ -369,14 +379,14 @@ PYFUNCIMP_D(DocumentPy,getAvailableRedoNames)
 PYFUNCIMP_D(DocumentPy,getAvailableUndos)
 { 
   PY_TRY {
-	   return Py_BuildValue("i",_pcDoc->getAvailableUndos()); 
+	   return Py_BuildValue("i",getDocument()->getAvailableUndos()); 
   }PY_CATCH;
 } 
 
 PYFUNCIMP_D(DocumentPy,getAvailableRedos)
 { 
   PY_TRY {
-	   return Py_BuildValue("i",_pcDoc->getAvailableRedos()); 
+	   return Py_BuildValue("i",getDocument()->getAvailableRedos()); 
   }PY_CATCH;
 } 
 
@@ -416,7 +426,7 @@ PYFUNCIMP_D(DocumentPy,setTransactionMode)
     return NULL;                             // NULL triggers exception 
 
   PY_TRY {
-	  _pcDoc->setTransactionMode(Int); 
+	  getDocument()->setTransactionMode(Int); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -454,7 +464,7 @@ PYFUNCIMP_D(DocumentPy,SaveAs)
 PYFUNCIMP_D(DocumentPy,save)
 { 
   PY_TRY {
-	  _pcDoc->save(); 
+	  getDocument()->save(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -489,7 +499,7 @@ PYFUNCIMP_D(DocumentPy,NewCommand)
 PYFUNCIMP_D(DocumentPy,recompute)
 { 
   PY_TRY {
-	  _pcDoc->recompute(); 
+	  getDocument()->recompute(); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -501,7 +511,7 @@ PYFUNCIMP_D(DocumentPy,update)
     return NULL;                             // NULL triggers exception 
 
   PY_TRY {
-	  _pcDoc->update(sName); 
+	  getDocument()->update(sName); 
 	  Py_Return; 
   }PY_CATCH;
 } 
@@ -515,7 +525,7 @@ PYFUNCIMP_D(DocumentPy,addObject)
   DocumentObject *pcFtr;
   
   PY_TRY {
-	  pcFtr = _pcDoc->addObject(sType,sName);
+	  pcFtr = getDocument()->addObject(sType,sName);
   }PY_CATCH;
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
@@ -535,7 +545,7 @@ PYFUNCIMP_D(DocumentPy,getActiveObject)
     return NULL;                       // NULL triggers exception 
 
   PY_TRY {
-	  DocumentObject *pcFtr = _pcDoc->getActiveObject();
+	  DocumentObject *pcFtr = getDocument()->getActiveObject();
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
@@ -550,7 +560,7 @@ PYFUNCIMP_D(DocumentPy,activeObject)
     return NULL;                       // NULL triggers exception 
 
   PY_TRY {
-	  DocumentObject *pcFtr = _pcDoc->getActiveObject();
+	  DocumentObject *pcFtr = getDocument()->getActiveObject();
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
@@ -566,7 +576,7 @@ PYFUNCIMP_D(DocumentPy,getObject)
     return NULL;                             // NULL triggers exception 
 
   PY_TRY {
-	  DocumentObject *pcFtr = _pcDoc->getObject(sName);
+	  DocumentObject *pcFtr = getDocument()->getObject(sName);
 	  if(pcFtr)
 		  return pcFtr->GetPyObject();
 	  else
@@ -588,9 +598,9 @@ PYFUNCIMP_D(DocumentPy,removeObject)
     return NULL;                             // NULL triggers exception
 
   PY_TRY {
-    DocumentObject *pcFtr = _pcDoc->getObject(sName);
+    DocumentObject *pcFtr = getDocument()->getObject(sName);
     if(pcFtr) {
-      _pcDoc->remObject( sName );
+      getDocument()->remObject( sName );
       Py_Return;
     }
     else {
@@ -607,7 +617,7 @@ PYFUNCIMP_D(DocumentPy,listObjects)
     return NULL;                       // NULL triggers exception 
 
   PY_TRY {
-    std::map<std::string,DocumentObject*> features = _pcDoc->ObjectMap;
+    std::map<std::string,DocumentObject*> features = getDocument()->ObjectMap;
     PyObject *pDict = PyDict_New();
     PyObject *pKey; Base::PyObjectBase* pValue;
     
@@ -630,20 +640,14 @@ PYFUNCIMP_D(DocumentPy,getName)
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
     return NULL;                       // NULL triggers exception 
   PY_TRY {
-    return PyString_FromString(_pcDoc->getName());
+    return PyString_FromString(getDocument()->getName());
   } PY_CATCH;
 }
 
 PYFUNCIMP_D(DocumentPy,getUndoMemSize)
 { 
   PY_TRY {
-	   return Py_BuildValue("i",_pcDoc->getUndoMemSize()); 
+	   return Py_BuildValue("i",getDocument()->getUndoMemSize()); 
   }PY_CATCH;
 } 
 
-PYFUNCIMP_D(DocumentPy,getMemSize)
-{ 
-  PY_TRY {
-	   return Py_BuildValue("i",_pcDoc->getMemSize()); 
-  }PY_CATCH;
-} 

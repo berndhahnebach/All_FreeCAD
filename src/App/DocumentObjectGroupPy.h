@@ -31,7 +31,7 @@ namespace App
 {
 class DocumentObjectGroup;
 
-class AppExport DocumentObjectGroupPy : public FeaturePy
+class AppExport DocumentObjectGroupPy : public DocumentObjectPy
 {
   Py_Header;
 
@@ -57,10 +57,7 @@ public:
 	//---------------------------------------------------------------------
 	// helpers for python exports goes here +++++++++++++++++++++++++++++++
 	//---------------------------------------------------------------------
-  DocumentObjectGroup *getDocumentObjectGroup(void) const {return _pcGroup;}
-
-protected:
-  DocumentObjectGroup *_pcGroup;
+  DocumentObjectGroup *getDocumentObjectGroup(void) const;
 };
 
 } //namespace App

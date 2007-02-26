@@ -104,13 +104,18 @@ PyMethodDef App::DocumentObjectGroupPy::Methods[] = {
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject App::DocumentObjectGroupPy::Parents[] = { &PyObjectBase::Type,&App::FeaturePy::Type, NULL };
-
+PyParentObject App::DocumentObjectGroupPy::Parents[] = {  &DocumentObjectGroupPy::Type,
+                                                          &DocumentObjectPy    ::Type, 
+                                                          &PropertyContainerPy ::Type, 
+                                                          &PersistancePy       ::Type, 
+                                                          &BaseClassPy         ::Type, 
+                                                          &PyObjectBase        ::Type, 
+                                                          NULL};
 //--------------------------------------------------------------------------
 // Constructor
 //--------------------------------------------------------------------------
 App::DocumentObjectGroupPy::DocumentObjectGroupPy(DocumentObjectGroup *pcGroup, PyTypeObject *T)
-  : FeaturePy(pcGroup, T), _pcGroup(pcGroup)
+  : DocumentObjectPy(pcGroup, T)
 {
 }
 
@@ -132,7 +137,7 @@ DocumentObjectGroupPy::~DocumentObjectGroupPy()						// Everything handled in pa
 PyObject *DocumentObjectGroupPy::_repr(void)
 {
   std::stringstream a;
-  a << _pcGroup->getTypeId().getName() << std::endl;
+  a << getDocumentObjectGroup()->getTypeId().getName() << std::endl;
 	return Py_BuildValue("s", a.str().c_str());
 }
 
@@ -145,9 +150,9 @@ PyObject *DocumentObjectGroupPy::_getattr(char *attr)     // __getattr__ functio
     if (Base::streq(attr, "XXXX"))
       return Py_BuildValue("i",1); 
     else
-        _getattr_up(FeaturePy);
+        _getattr_up(DocumentObjectPy);
   }catch(...){
-    Py_Error(PyExc_Exception,"Error in get Attribute");
+    Py_Error(PyExc_AttributeError,"Error in get Attribute");
   }
 } 
 
@@ -156,9 +161,14 @@ int DocumentObjectGroupPy::_setattr(char *attr, PyObject *value) // __setattr__ 
   if (Base::streq(attr, "XXXX"))           // settable new state
     return 1;
   else 
-    return FeaturePy::_setattr(attr, value); 
+    return DocumentObjectPy::_setattr(attr, value); 
 } 
 
+DocumentObjectGroup *DocumentObjectGroupPy::getDocumentObjectGroup(void) const 
+{
+  return dynamic_cast<DocumentObjectGroup *>(_pcBaseClass);
+}
+ 
 //--------------------------------------------------------------------------
 // Python wrappers
 //--------------------------------------------------------------------------
@@ -169,7 +179,7 @@ PYFUNCIMP_D(DocumentObjectGroupPy,addObject)
   if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
     return NULL;
 
-  DocumentObject *pcObj = _pcGroup->addObject(sType, sName);
+  DocumentObject *pcObj = getDocumentObjectGroup()->addObject(sType, sName);
   if ( pcObj ) {
     return pcObj->GetPyObject();
   } else {
@@ -185,7 +195,7 @@ PYFUNCIMP_D(DocumentObjectGroupPy,removeObject)
   if (!PyArg_ParseTuple(args, "s", &pcName)) 
     return false;
 
-  _pcGroup->removeObject(pcName);
+  getDocumentObjectGroup()->removeObject(pcName);
 
   Py_Return;
 }
@@ -196,7 +206,7 @@ PYFUNCIMP_D(DocumentObjectGroupPy,hasObject)
   if (!PyArg_ParseTuple(args, "s", &pcName))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
-  DocumentObject* obj = _pcGroup->getObject(pcName);
+  DocumentObject* obj = getDocumentObjectGroup()->getObject(pcName);
 
   if ( obj ) {
     Py_INCREF(Py_True);
@@ -213,7 +223,7 @@ PYFUNCIMP_D(DocumentObjectGroupPy,getObject)
   if (!PyArg_ParseTuple(args, "s", &pcName))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
-  DocumentObject* obj = _pcGroup->getObject(pcName);
+  DocumentObject* obj = getDocumentObjectGroup()->getObject(pcName);
   if ( obj ) {
     return obj->GetPyObject();
   } else {

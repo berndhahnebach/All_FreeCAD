@@ -23,13 +23,13 @@
 #ifndef __DocumentPy_H__
 #define __DocumentPy_H__
 
-#include "../Base/PyObjectBase.h"
+#include "PropertyContainerPy.h"
 
 
 namespace App {
 /** The Document python class
  */
-class AppExport DocumentPy :public Base::PyObjectBase
+class AppExport DocumentPy :public App::PropertyContainerPy
 {
 	/// always start with Py_Header
 	Py_Header;
@@ -40,6 +40,8 @@ protected:
 public:
 	DocumentPy(Document *pcDoc, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
+
+  App::Document *getDocument(void) const;
 
 	//---------------------------------------------------------------------
 	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
@@ -87,13 +89,9 @@ public:
 	PYFUNCDEF_D(DocumentPy,removeObject)
 	PYFUNCDEF_D(DocumentPy,listObjects)
 	PYFUNCDEF_D(DocumentPy,getName)
-	PYFUNCDEF_D(DocumentPy,getMemSize)
 
    // deprecated methods
 	PYFUNCDEF_D(DocumentPy,getActiveObject)
-
-private:
-	Document *_pcDoc;
 
 };
 
