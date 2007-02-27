@@ -1,30 +1,16 @@
 #! python
 # -*- coding: utf-8 -*-
-# (c) 2006 Juergen Riegel 
+# (c) 2006 Jürgen Riegel 
 
 Usage = """generate - generates a FreeCAD Module out of an XML model
 
 Usage:
-   generate [Optionen] Model1.xml Model2.xml Model3.xml ...
+   generate [Optionen] Model.xml Model2.xml Model3.xml ...
    
 Options:
- -q, --qmlout=FILENAME    write the parsed file as QML to FileName
- -p  --path=BASPATH       use this base path for inspection plan
- -n, --noout              Pars the file but generate no output
- -i, --iplan              Generates only an inspection plan
- -w, --woff	              Dont print Warnings
  -h, --help               print this help
  
-Exit:
- 0      No Error or Warning found
- 1      Argument error, wrong or less Arguments given
- 2      Run delivers Warnings (printed on standard error)
- 10     Run stops with an error (printed on standard error)
- 
-
-Examples:
-  Als Filter:
-   cat  AuditLog.txt | robfit2qml > Test3.qml
+Generate source code out of an model definition.
    
 Autor:
   (c) 2006 Juergen Riegel
@@ -75,7 +61,7 @@ def main():
 	# runing through the files
 	if (len(args) ==0):
 		#sys.stderr.write(Usage)
-                generate("../Mod/PartDesign/PartDesign_Model.xml")                  
+		generate("../Mod/PartDesign/PartDesign_Model.xml")                  
 	else:
 		for i in args:
 			generate(i)
