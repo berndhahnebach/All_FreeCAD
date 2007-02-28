@@ -1,5 +1,5 @@
 <Include>
    <?define FCVersionMajor =0 ?>
-   <?define FCVersionMinor =5 ?>
+   <?define FCVersionMinor =7 ?>
    <?define FCVersionRevision =$WCREV$ ?>
 </Include> 
