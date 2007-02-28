@@ -30,6 +30,8 @@ import generateTemplates.templateModule
 def generate(filename):
   # load model
   GenerateModelInst = generateBase.generateModel_Module.parse(filename)
+  # Convert filename to an absolute path
+  filename = os.path.abspath(filename)
   head,tail = os.path.split(filename)
   print head,tail
 
