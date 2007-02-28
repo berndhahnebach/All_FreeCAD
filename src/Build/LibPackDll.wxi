@@ -1,51 +1,69 @@
 <Include>
-<File Id='DLL1'    Name='ERR1' LongName='TKMesh.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL2'    Name='ERR2' LongName='coin2.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL3'    Name='ERR3' LongName='TKSTEPBase.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL5'    Name='ERR5' LongName='glib-1.3.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL6'    Name='ERR6' LongName='gmodule-1.3.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL7'    Name='ERR7' LongName='gthread-1.3.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL8'    Name='ERR8' LongName='gts-0.7.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL9'    Name='ERR9' LongName='iconv.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL10'    Name='ERR10' LongName='libgplugin_a.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL11'    Name='ERR11' LongName='libgplugin_b.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL12'    Name='ERR12' LongName='mscmd.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL14'    Name='ERR14' LongName='pthread.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL16'    Name='ERR16' LongName='python23.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL18'    Name='ERR18' LongName='qt-mtnc321.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL19'    Name='ERR19' LongName='simage1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL21'    Name='ERR21' LongName='soqt1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL22'    Name='ERR22' LongName='TKSTEP209.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL23'    Name='ERR23' LongName='TKMeshVS.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL25'    Name='ERR25' LongName='TKBO.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL26'    Name='ERR26' LongName='TKBool.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL27'    Name='ERR27' LongName='TKBRep.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL36'    Name='ERR36' LongName='TKernel.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL37'    Name='ERR37' LongName='TKSTEPAttr.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL38'    Name='ERR38' LongName='TKFillet.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL39'    Name='ERR39' LongName='TKG2d.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL40'    Name='ERR40' LongName='TKG3d.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL41'    Name='ERR41' LongName='TKGeomAlgo.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL42'    Name='ERR42' LongName='TKGeomBase.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL43'    Name='ERR43' LongName='TKHLR.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL45'    Name='ERR45' LongName='TKIGES.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL46'    Name='ERR46' LongName='TKMath.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL47'    Name='ERR47' LongName='TKMeshVS.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL49'    Name='ERR49' LongName='TKOffset.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL54'    Name='ERR54' LongName='TKService.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL56'    Name='ERR56' LongName='TKShHealing.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL58'    Name='ERR58' LongName='TKSTEP.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL59'    Name='ERR59' LongName='TKSTL.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL61'    Name='ERR61' LongName='TKTopAlgo.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL62'    Name='ERR62' LongName='wget.exe' src='$(env.FREECADLIB)\bin\' DiskId='1' />
-<File Id='DLL72'    Name='ERR72' LongName='TKXSBase.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL73'    Name='ERR73' LongName='TKPrim.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL75'    Name='ERR75' LongName='xerces-c_2_6.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL79'    Name='ERR79' LongName='zlib1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL80'    Name='ERR80' LongName='python23.zip' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL81'    Name='ERR81' LongName='zlib.pyd' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL85'    Name='ERR85' LongName='_sre.pyd' src='$(env.FREECADLIB)\dll\' DiskId='1' />
-<File Id='DLL82'    Name='ERR82' LongName='Msvcr71.dll' src='C:\WINDOWS\system32\' DiskId='1' />
-<File Id='DLL83'    Name='ERR83' LongName='msvcp60.dll' src='C:\WINDOWS\system32\' DiskId='1' />
-<File Id='DLL84'    Name='ERR84' LongName='msvcp71.dll' src='C:\WINDOWS\system32\' DiskId='1' />
+	<File Id='DLL1'    Name='ERR1' LongName='boost_date_time-vc80-mt-1_33_1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL2'    Name='ERR2' LongName='boost_filesystem-vc80-mt-1_33_1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL3'    Name='ERR3' LongName='boost_iostreams-vc80-mt-1_33_1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL4'    Name='ERR4' LongName='boost_program_options-vc80-mt-1_33_1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL5'    Name='ERR5' LongName='boost_regex-vc80-mt-1_33_1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL6'    Name='ERR6' LongName='boost_serialization-vc80-mt-1_33_1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL7'    Name='ERR7' LongName='boost_signals-vc80-mt-1_33_1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL8'    Name='ERR8' LongName='boost_thread-vc80-mt-1_33_1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL9'    Name='ERR9' LongName='boost_wserialization-vc80-mt-1_33_1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL13'    Name='ERR13' LongName='coin2.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL14'    Name='ERR14' LongName='glib-1.3.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL15'    Name='ERR15' LongName='gmodule-1.3.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL16'    Name='ERR16' LongName='gthread-1.3.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL17'    Name='ERR17' LongName='gts-0.7.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL18'    Name='ERR18' LongName='iconv.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL19'    Name='ERR19' LongName='libgplugin_a.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL20'    Name='ERR20' LongName='libgplugin_b.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL21'    Name='ERR21' LongName='mscmd.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL22'    Name='ERR22' LongName='msvcp60.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL23'    Name='ERR23' LongName='msvcp71.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL24'    Name='ERR24' LongName='Msvcr71.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL25'    Name='ERR25' LongName='pthread.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL26'    Name='ERR26' LongName='python25.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL27'    Name='ERR27' LongName='python25.zip' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL28'    Name='ERR28' LongName='simage1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL29'    Name='ERR29' LongName='soqt1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL40'    Name='ERR40' LongName='Qt3Support4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL41'    Name='ERR41' LongName='QtCore4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL42'    Name='ERR42' LongName='QtDesigner4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL43'    Name='ERR43' LongName='QtDesignerComponents4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL44'    Name='ERR44' LongName='QtGui4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL45'    Name='ERR45' LongName='QtNetwork4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL46'    Name='ERR46' LongName='QtOpenGL4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL47'    Name='ERR47' LongName='QtSql4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL48'    Name='ERR48' LongName='QtSvg4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL49'    Name='ERR49' LongName='QtTest4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL50'    Name='ERR50' LongName='QtXml4.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL61'    Name='ERR61' LongName='TKBO.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL62'    Name='ERR62' LongName='TKBool.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL63'    Name='ERR63' LongName='TKBRep.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL64'    Name='ERR64' LongName='TKernel.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL65'    Name='ERR65' LongName='TKFillet.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL66'    Name='ERR66' LongName='TKG2d.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL67'    Name='ERR67' LongName='TKG3d.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL68'    Name='ERR68' LongName='TKGeomAlgo.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL69'    Name='ERR69' LongName='TKGeomBase.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL70'    Name='ERR70' LongName='TKHLR.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL71'    Name='ERR71' LongName='TKIGES.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL72'    Name='ERR72' LongName='TKMath.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL73'    Name='ERR73' LongName='TKMesh.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL74'    Name='ERR74' LongName='TKMeshVS.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL75'    Name='ERR75' LongName='TKOffset.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL76'    Name='ERR76' LongName='TKPrim.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL77'    Name='ERR77' LongName='TKService.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL78'    Name='ERR78' LongName='TKShHealing.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL79'    Name='ERR79' LongName='TKSTEP209.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL80'    Name='ERR80' LongName='TKSTEP.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL81'    Name='ERR81' LongName='TKSTEPAttr.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL82'    Name='ERR82' LongName='TKSTEPBase.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL83'    Name='ERR83' LongName='TKSTL.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL84'    Name='ERR84' LongName='TKTopAlgo.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL85'    Name='ERR85' LongName='TKXSBase.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL86'    Name='ERR86' LongName='Wm3Foundation80.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL87'    Name='ERR87' LongName='xerces-c_2_6.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL88'    Name='ERR88' LongName='zlib1.dll' src='$(env.FREECADLIB)\dll\' DiskId='1' />
+	<File Id='DLL90'    Name='ERR90' LongName='wget.exe' src='$(env.FREECADLIB)\bin\' DiskId='1' />
+<!--<File Id='DLL91'    Name='ERR91' LongName='_sre.pyd' src='$(env.FREECADLIB)\dll\' DiskId='1' /> -->
 </Include>

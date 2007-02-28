@@ -61,7 +61,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Light"
-				CommandLine="light.exe -out Release\FreeCAD.msi &quot;D:\Develop\Libs\Wix_20\ui\wixui_mondo.wixlib&quot; Release\*.wxobj&#x0D;&#x0A;mkdir ..\..\Install&#x0D;&#x0A;copy Release\FreeCAD.msi ..\..\Install&#x0D;&#x0A;"
+				CommandLine="light.exe -out Release\FreeCAD.msi &quot;$(FREECADLIB)\ui\wixui_mondo.wixlib&quot; Release\*.wxobj&#x0D;&#x0A;mkdir ..\..\Install&#x0D;&#x0A;copy Release\FreeCAD.msi ..\..\Install&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
