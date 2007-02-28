@@ -1,11 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
+<!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="GenerateModel">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="Module" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="PythonExport" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element ref="Documentation" minOccurs="0"/>
+							<xs:element name="Methode" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element ref="Documentation" minOccurs="0"/>
+										<xs:element name="Parameter" minOccurs="0" maxOccurs="unbounded">
+											<xs:complexType>
+												<xs:attribute name="Name" type="xs:string" use="required"/>
+												<xs:attribute name="Tye" use="required">
+													<xs:simpleType>
+														<xs:restriction base="xs:string">
+															<xs:enumeration value="Integer"/>
+															<xs:enumeration value="Number"/>
+															<xs:enumeration value="String"/>
+															<xs:enumeration value="Object"/>
+														</xs:restriction>
+													</xs:simpleType>
+												</xs:attribute>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+							<xs:element name="Attribute" minOccurs="0" maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:attribute name="Name" type="xs:string" use="required"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="Name" type="xs:string" use="required"/>
+						<xs:attribute name="Father"/>
+					</xs:complexType>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
