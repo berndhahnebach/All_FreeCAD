@@ -28,19 +28,19 @@ namespace @self.module.Name@
 {
 
 
-class @self.feature.Name@ :public App::Feature
+class @self.feature.Name@ : public App::Feature
 {
   PROPERTY_HEADER(@self.module.Name@::@self.feature.Name@);
 
 public:
   @self.feature.Name@();
 + for i in self.feature.Property:
-    @i.Type@ @i.Name@;
+  @i.Type@ @i.Name@;
 -
 
-  /** @name methods overide Feature */
+  /** @name Methods override feature */
   //@{
-  /// recalculate the Feature
+  /// recalculate the feature
   virtual int execute(void);
   /// returns the type name of the ViewProvider
   virtual const char* getViewProviderName(void){return "@self.module.Name@Gui::ViewProviderBox";}
@@ -75,7 +75,7 @@ PROPERTY_SOURCE(@self.module.Name@::Box, App::Feature)
 #include "@self.feature.Name@.h"
 using namespace @self.module.Name@;
 
-// TODO This methode implement the function of the Feature
+// TODO This method implements the function of the feature
 int @self.feature.Name@::execute(void)
 {
    return 0;

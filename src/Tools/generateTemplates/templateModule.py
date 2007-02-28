@@ -7,7 +7,7 @@ import generateBase.generateModel_Module
 
 class TemplateModule (template.ModelTemplate):
     def Generate(self):
-        print "generateBase.generateModel_Module.Genertate()\n"
+        print "generateBase.generateModel_Module.Generate()\n"
         App= templateModuleApp.TemplateModuleApp()
         App.path   = self.path 
         App.module = self.module
