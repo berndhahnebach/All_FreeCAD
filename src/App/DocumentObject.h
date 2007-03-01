@@ -48,9 +48,9 @@ public:
   PropertyString name;
 
   /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void){return "";}
-
-
+  virtual const char* getViewProviderName(void) const {
+    return "";
+  }
 	/// Constructor
 	DocumentObject(void);
   virtual ~DocumentObject();

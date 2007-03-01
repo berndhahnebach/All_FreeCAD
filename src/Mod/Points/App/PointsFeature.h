@@ -64,7 +64,9 @@ public:
   /// recalculate the Feature
   virtual int execute(void);
   /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void){return "PointsGui::ViewProviderPoints";}
+  virtual const char* getViewProviderName(void) const {
+    return "PointsGui::ViewProviderPoints";
+  }
   // handling the PointsPy object
   virtual Base::PyObjectBase* GetPyObject(void);
   //@}

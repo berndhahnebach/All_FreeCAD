@@ -45,7 +45,9 @@ public:
   /// recalculate the Feature
   virtual int execute(void);
   /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void){return "Gui::ViewProviderPythonFeature";}
+  virtual const char* getViewProviderName(void) const {
+    return "Gui::ViewProviderPythonFeature";
+  }
   /// get all properties of the class (including parent)
   virtual void getPropertyMap(std::map<std::string,Property*> &Map) const;
   /// find a property by its name

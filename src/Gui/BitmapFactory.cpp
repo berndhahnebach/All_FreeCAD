@@ -22,16 +22,12 @@
 
 
 #include "PreCompiled.h"
-#ifndef _PreComp_
-# include <qdir.h>
-# include <qpainter.h>
-//Added by qt3to4:
-#include <QPixmap>
-#endif
+
+#include <Base/Console.h>
+#include <App/Application.h>
 
 #include "BitmapFactory.h"
 #include "Tools.h"
-#include "../Base/Console.h"
 #include "Icons/images.cpp"
 #include "Icons/Feature.xpm"
 #include "Icons/Icons.h"
@@ -47,8 +43,8 @@ BitmapFactoryInst& BitmapFactoryInst::instance(void)
   if (_pcSingleton == NULL)
   {
     _pcSingleton = new BitmapFactoryInst;
-    _pcSingleton->addPath("../../FreeCADIcons");
     _pcSingleton->addPath("../Icons");
+    _pcSingleton->addPath(App::GetApplication().GetHomePath());
 
     RegisterIcons();
   }
@@ -78,56 +74,42 @@ void BitmapFactoryInst::addXPM(const char* sName, const char** pXPM)
   _mpXPM[sName] = pXPM;
 }
 
-void BitmapFactoryInst::addFileFormat(const char* sFormat, const char** pXPM)
-{
-  QString format(sFormat);
-  _mpXPM[format.upper()] = pXPM;
-}
-
 void BitmapFactoryInst::removeXPM(const char* sName)
 {
   _mpXPM.erase(sName);
 }
 
-QPixmap* BitmapFactoryInst::fileFormat(const char* sFormat)
-{
-  // first try to find it in the build in XPM
-  QMap<QString,const char**>::ConstIterator It = _mpXPM.find( sFormat );
-
-  QPixmap* px=0;
-  if(It != _mpXPM.end())
-  {
-    px = new QPixmap( It.data() );
-  }
-
-  return px;
-}
-
 QPixmap BitmapFactoryInst::pixmap(const char* sName)
 {
-  // first try to find it in the build in XPM
+  // first try to find it in the built-in XPM
   QMap<QString,const char**>::ConstIterator It = _mpXPM.find(sName);
 
   if(It != _mpXPM.end())
     return QPixmap( It.data() );
 
-  // try to find it in the given directorys
-  for ( QStringList::ConstIterator It2 = _vsPaths.begin(); It2 != _vsPaths.end(); It2++ )
-  {
-    // list dir
-    QDir d( *It2 );
-    if( QFile(d.path()+QDir::separator() + sName +".bmp").exists() )
-      return QPixmap(d.path()+QDir::separator()+ sName + ".bmp");
-    if( QFile(d.path()+QDir::separator()+ sName + ".png").exists() )
-      return QPixmap(d.path()+QDir::separator()+ sName + ".png");
-    if( QFile(d.path()+QDir::separator()+ sName + ".gif").exists() )
-      return QPixmap(d.path()+QDir::separator()+ sName + ".gif");
+  // If an absolute path is given
+  if (QFile(sName).exists())
+    return QPixmap(sName);
+
+  // try to find it in the given directories
+  QList<QByteArray> formats = QImageReader::supportedImageFormats();
+  for (QStringList::ConstIterator pt = _vsPaths.begin(); pt != _vsPaths.end(); ++pt) {
+    QDir d(*pt);
+    QString fileName = d.path() + QDir::separator() + sName;
+    if (QFile(fileName).exists()) {
+      return QPixmap(fileName);
+    } else {
+      for (QList<QByteArray>::iterator fm = formats.begin(); fm != formats.end(); ++fm) {
+        QString path = fileName + "." + QString((*fm).lower().data());
+        if (QFile(path).exists())
+          return QPixmap(path);
+      }
+    }
   }
 
   Base::Console().Warning("Can't find Pixmap:%s\n",sName);
 
   return QPixmap(px);
-
 }
 
 QPixmap BitmapFactoryInst::pixmap(const char* sName, const char* sMask, Position pos)

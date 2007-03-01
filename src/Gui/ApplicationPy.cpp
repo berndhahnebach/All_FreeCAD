@@ -30,6 +30,7 @@
 
 
 #include "Application.h"
+#include "BitmapFactory.h"
 #include "Command.h"
 #include "Document.h"
 #include "MainWindow.h"
@@ -55,6 +56,7 @@ PyMethodDef Application::Methods[] = {
   {"ListWorkbenches",         (PyCFunction) Application::sListWorkbenches,         1},
   {"GetWorkbench",            (PyCFunction) Application::sGetWorkbench,            1},
   {"HasWorkbench",            (PyCFunction) Application::sHasWorkbench,            1},
+  {"addIconPath",             (PyCFunction) Application::sAddIconPath,             1},
   {"UpdateGui",               (PyCFunction) Application::sUpdateGui,               1},
   {"CreateDialog",            (PyCFunction) Application::sCreateDialog,            1},
   {"AddCommand",              (PyCFunction) Application::sAddCommand,              1},
@@ -433,6 +435,23 @@ PYFUNCIMP_S(Application,sHasWorkbench)
     return Py_False;
   }
 } 
+
+PYFUNCIMP_S(Application,sAddIconPath)
+{
+  char* filePath;
+  if (!PyArg_ParseTuple(args, "s", &filePath))     // convert args: Python->C 
+    return NULL;                    // NULL triggers exception 
+  std::string path(filePath);
+  if (QDir::isRelativePath(filePath)) {
+    // Home path ends with '/'
+    path = App::GetApplication().GetHomePath();
+    path += filePath;
+  }
+
+  BitmapFactory().addPath(path.c_str());  
+  Py_INCREF(Py_None);
+  return Py_None;
+}
 
 PYFUNCIMP_S(Application,sAddCommand)
 {

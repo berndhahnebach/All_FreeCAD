@@ -554,7 +554,7 @@ const QPixmap * FileIconProvider::pixmap ( const QFileInfo & info )
     //// seems to be valid image file
     //if ( ext )
     //{
-      return BitmapFactory().fileFormat( "image_xpm" );
+    //  return BitmapFactory().fileFormat( "image_xpm" );
     //}
     //else // other file formats 
     //{

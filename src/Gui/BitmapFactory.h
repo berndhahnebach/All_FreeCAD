@@ -21,14 +21,14 @@
  ***************************************************************************/
 
 
-#ifndef __BITMAP_FACTORY_H__
-#define __BITMAP_FACTORY_H__
+#ifndef GUI_BITMAPFACTORY_H
+#define GUI_BITMAPFACTORY_H
 
-#include "../Base/Factory.h"
+#include <Base/Factory.h>
 
-#include <QtCore/qmap.h>
-#include <QtGui/qpixmap.h>
-#include <QtCore/qstringlist.h>
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
 
 namespace Gui {
 
@@ -58,12 +58,8 @@ public:
   void removePath(const char* sPath);
   /// Adds a build in XPM pixmap under a given name
   void addXPM(const char* sName, const char** pXPM);
-  /// Adds a build in XPM pixmap under a given file format
-  void addFileFormat(const char* sFormat, const char** pXPM);
   /// Removes a build in pixmap by a given name
   void removeXPM(const char* sName);
-  /// Retrieves a pixmap by file format
-  QPixmap* fileFormat(const char* sFormat);
   /// Retrieves a pixmap by name
   QPixmap pixmap(const char* sName);
   /** Retrieves a pixmap by name
@@ -94,4 +90,4 @@ inline GuiExport BitmapFactoryInst& BitmapFactory(void)
 
 } // namespace Gui
 
-#endif // __BITMAP_FACTORY_H__
+#endif // GUI_BITMAPFACTORY_H
