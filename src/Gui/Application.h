@@ -170,6 +170,7 @@ public:
   PYFUNCDEF_S(sListWorkbenches);         // retrieves a list of all workbench objects
   PYFUNCDEF_S(sGetWorkbench);            // retrieves a workbench object
   PYFUNCDEF_S(sHasWorkbench);            // checks for a workbench object
+  PYFUNCDEF_S(sAddIconPath);             // adds a path to an icon file
 
   PYFUNCDEF_S(sSendActiveView);
 

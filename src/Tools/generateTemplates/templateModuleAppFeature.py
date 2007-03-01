@@ -17,8 +17,8 @@ class TemplateFeature (template.ModelTemplate):
 		#file.write( generateBase.generateTools.replace(self.Template,locals()))
 
 	TemplateHeader = """
-#ifndef __FEATURE@self.module.Name@@self.feature.Name@_H__
-#define __FEATURE@self.module.Name@@self.feature.Name@_H__
+#ifndef @self.module.Name.upper()@_FEATURE_@self.feature.Name.upper()@_H
+#define @self.module.Name.upper()@_FEATURE_@self.feature.Name.upper()@_H
 
 #include <App/PropertyStandard.h>
 
@@ -40,22 +40,25 @@ public:
 
   /** @name Methods override feature */
   //@{
-  /// recalculate the feature
+  /// Recalculate the feature
   virtual int execute(void);
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void){return "@self.module.Name@Gui::ViewProviderBox";}
+  /// Return the type name of the ViewProvider
+  virtual const char* getViewProviderName(void) const {
+    return "@self.module.Name@Gui::ViewProviderBox";
+  }
   //@}
 };
 
 } //namespace @self.module.Name@
 
-#endif // __FEATURE@self.module.Name@@self.feature.Name@_H__
+#endif // @self.module.Name.upper()@_FEATURE_@self.feature.Name.upper()@_H
 
 """
 	TemplateModule = """
 #include "PreCompiled.h"
 
 #include "@self.feature.Name@.h"
+
 using namespace @self.module.Name@;
 
 PROPERTY_SOURCE(@self.module.Name@::Box, App::Feature)
@@ -73,6 +76,7 @@ PROPERTY_SOURCE(@self.module.Name@::Box, App::Feature)
 #include "PreCompiled.h"
 
 #include "@self.feature.Name@.h"
+
 using namespace @self.module.Name@;
 
 // TODO This method implements the function of the feature

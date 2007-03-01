@@ -77,7 +77,9 @@ public:
   virtual int execute(void);
   /// returns the type name of the ViewProvider
   //FIXME: Propably it makes sense to have a view provider for unittests (e.g. Gui::ViewProviderTest)
-  virtual const char* getViewProviderName(void){return "Gui::ViewProviderDocumentObject";}
+  virtual const char* getViewProviderName(void) const {
+    return "Gui::ViewProviderDocumentObject";
+  }
   //@}
 };
 
@@ -95,8 +97,9 @@ public:
   /// recalculate the Feature and throw an exeption
   virtual int execute(void);
   /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void){return "Gui::ViewProviderDocumentObject";}
-
+  virtual const char* getViewProviderName(void) const {
+    return "Gui::ViewProviderDocumentObject";
+  }
 };
 
 
