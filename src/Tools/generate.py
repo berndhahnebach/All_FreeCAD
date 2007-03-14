@@ -23,6 +23,7 @@ Version:
 import os,sys,string,re,getopt,codecs,binascii
 import generateBase.generateModel_Module
 import generateTemplates.templateModule
+import generateTemplates.templateClassPyExport
 
 
 # Globals
@@ -35,12 +36,21 @@ def generate(filename):
   head,tail = os.path.split(filename)
   print head,tail
 
-  Module= generateTemplates.templateModule.TemplateModule()
-  Module.path = head
-  Module.module = GenerateModelInst.Module[0]
-  Module.Generate()
+  if(len(GenerateModelInst.Module)!=0): 
+    Module= generateTemplates.templateModule.TemplateModule()
+    Module.path = head
+    Module.module = GenerateModelInst.Module[0]
+    Module.Generate()
+    print "Done generating: " + GenerateModelInst.Module[0].Name
+  else:
+    Export = generateTemplates.templateClassPyExport.TemplateClassPyExport()
+    Export.path = head+"/"
+    Export.export = GenerateModelInst.PythonExport[0]
+    Export.Generate()
+    print "Done generating: " + GenerateModelInst.PythonExport[0].Name
+    
   
-  print "Done generating: " + GenerateModelInst.Module[0].Name
+  
   
   
 
