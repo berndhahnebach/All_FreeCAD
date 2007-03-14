@@ -6,77 +6,83 @@ import template
 import generateBase.generateModel_Module
 import generateBase.generateTools
 
-class TemplateFeature (template.ModelTemplate):
+class TemplateClassPyExport (template.ModelTemplate):
 	def Generate(self):
-		file = open(self.path + self.feature.Name + "Imp.cpp",'w')
+		print "TemplateClassPyExport",self.path + self.export.Name
+		file = open(self.path + self.export.Name + "Imp.cpp",'w')
 		generateBase.generateTools.replace(self.TemplateImplement,locals(),file)
-		file = open(self.path + self.feature.Name + ".cpp",'w')
+		file = open(self.path + self.export.Name + ".cpp",'w')
 		generateBase.generateTools.replace(self.TemplateModule,locals(),file)
-		file = open(self.path + self.feature.Name + ".h",'w')
+		file = open(self.path + self.export.Name + ".h",'w')
 		generateBase.generateTools.replace(self.TemplateHeader,locals(),file)
 		#file.write( generateBase.generateTools.replace(self.Template,locals()))
 
 	TemplateHeader = """
-#ifndef __FEATURE@self.module.Name@@self.feature.Name@_H__
-#define __FEATURE@self.module.Name@@self.feature.Name@_H__
+// This file is generated out of ... Every change you make here get lost at the next full rebuild!
+#ifndef _PersistancePy_h_
+#define _PersistancePy_h_
 
-#include <App/PropertyStandard.h>
+#include "BaseClassPy.h"
 
-#include <App/Feature.h>
-
-namespace @self.module.Name@
+namespace Base
 {
 
+class Persistance;
 
-class @self.feature.Name@ :public App::Feature
+
+//===========================================================================
+// PersistancePy - Python wrapper
+//===========================================================================
+
+/** The DocTypeStd python class
+ */
+class BaseExport PersistancePy :public Base::BaseClassPy
 {
-  PROPERTY_HEADER(@self.module.Name@::@self.feature.Name@);
+	/// always start with Py_Header
+	Py_Header;
 
 public:
-  @self.feature.Name@();
-+ for i in self.feature.Property:
-    @i.Type@ @i.Name@;
--
+	PersistancePy(Persistance *pcDocumentObject, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
+	~PersistancePy();
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual int execute(void);
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void){return "@self.module.Name@Gui::ViewProviderBox";}
-  //@}
+	//---------------------------------------------------------------------
+	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+
+	virtual PyObject *_repr(void);  				// the representation
+	PyObject *_getattr(char *attr);					// __getattr__ function
+	int _setattr(char *attr, PyObject *value);		// __setattr__ function
+	PYFUNCDEF_D(PersistancePy,getMemSize)
+
+  
+
+	//---------------------------------------------------------------------
+	// helpers for python exports goes here +++++++++++++++++++++++++++++++
+	//---------------------------------------------------------------------
+  Persistance *getPersistanceObject(void) const;
+  
 };
-
-} //namespace @self.module.Name@
-
-#endif // __FEATURE@self.module.Name@@self.feature.Name@_H__
-
-"""
-	TemplateModule = """
-#include "PreCompiled.h"
-
-#include "@self.feature.Name@.h"
-using namespace @self.module.Name@;
-
-PROPERTY_SOURCE(@self.module.Name@::Box, App::Feature)
-
-@self.feature.Name@::@self.feature.Name@()
-{
-+ for i in self.feature.Property:
-  ADD_PROPERTY(@i.Name@,(0.0));
--
-}
+} //namespace Base
+#endif	
+	
 """	
+
+	TemplateModule = """
+
+	
+"""	
+
 	# here the template for the user part of the implementation. This gets NOT overrite when allready exist
 	TemplateImplement = """
 // 
 #include "PreCompiled.h"
 
-#include "@self.feature.Name@.h"
-using namespace @self.module.Name@;
+#include "@self.export.Name@.h"
+using namespace @self.export.Name@;
 
 // TODO This methode implement the function of the Feature
-int @self.feature.Name@::execute(void)
+int @self.export.Name@::execute(void)
 {
    return 0;
 }
