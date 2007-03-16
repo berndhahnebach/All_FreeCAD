@@ -192,7 +192,9 @@ void Application::open(const char* FileName)
       e.ReportException();
     }
   } else {
+    wc.restoreCursor();
     QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"), QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
+    wc.setWaitCursor();
     return;
   }
 }
@@ -237,7 +239,9 @@ void Application::import(const char* FileName, const char* DocName)
       e.ReportException();
     }
   } else {
+    wc.restoreCursor();
     QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"), QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
+    wc.setWaitCursor();
     return;
   }
 }
