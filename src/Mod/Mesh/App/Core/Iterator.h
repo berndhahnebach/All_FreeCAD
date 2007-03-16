@@ -134,6 +134,18 @@ public:
   inline bool IsValid (void) const
   { return (_clIter >= _rclFAry.begin()) && (_clIter < _rclFAry.end()); }
   //@}
+  /** @name Flag state
+   */
+  //@{
+  void SetFlag (MeshFacet::TFlagType tF) const
+  { this->_clIter->SetFlag(tF); }
+  void ResetFlag (MeshFacet::TFlagType tF) const
+  { this->_clIter->ResetFlag(tF); }
+  bool IsFlag (MeshFacet::TFlagType tF) const
+  { return this->_clIter->IsFlag(tF); }
+  void SetProperty(unsigned long uP) const
+  { this->_clIter->SetProperty(uP); }
+  //@}
 
 protected:
   inline const MeshGeomFacet& Dereference (void);
@@ -224,6 +236,18 @@ public:
   /// Checks if the iterator points to a valid element inside the array.
   inline bool IsValid (void) const
   { return (_clIter >= _rclPAry.begin()) && (_clIter < _rclPAry.end()); }
+  //@}
+  /** @name Flag state
+   */
+  //@{
+  void SetFlag (MeshPoint::TFlagType tF) const
+  { this->_clIter->SetFlag(tF); }
+  void ResetFlag (MeshPoint::TFlagType tF) const
+  { this->_clIter->ResetFlag(tF); }
+  bool IsFlag (MeshPoint::TFlagType tF) const
+  { return this->_clIter->IsFlag(tF); }
+  void SetProperty(unsigned long uP) const
+  { this->_clIter->SetProperty(uP); }
   //@}
 
 protected:

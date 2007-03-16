@@ -24,10 +24,13 @@
 #include "FeaturePartCurveNet.h"
 #include "FeaturePartLine.h"
 #include "FeaturePartLineSet.h"
+#include "FeaturePartCircle.h"
 #include "FeaturePartPolygon.h"
 #include "PropertyLine.h"
+#include "PropertyCircle.h"
 #include "TopologyPy.h"
 #include "LinePy.h"
+#include "CirclePy.h"
 
 extern struct PyMethodDef Part_methods[];
 
@@ -50,10 +53,15 @@ void AppPartExport initPart() {
   PyObject* pyLineType = (PyObject *)&Part::LinePy::Type;
   if(PyType_Ready(&Part::LinePy::Type) < 0) return;
   PyModule_AddObject(partModule, "line", pyLineType);
+  // Append circle() method
+  PyObject* pyCircType = (PyObject *)&Part::CirclePy::Type;
+  if(PyType_Ready(&Part::CirclePy::Type) < 0) return;
+  PyModule_AddObject(partModule, "circle", pyCircType);
 
   Part::PropertyPartShape   ::init();
   Part::PropertyLine        ::init();
   Part::PropertyLineSet     ::init();
+  Part::PropertyCircle      ::init();
 
   Part::Feature             ::init();
   Part::Box                 ::init();
@@ -65,6 +73,7 @@ void AppPartExport initPart() {
   Part::Line                ::init();
   Part::LineSet             ::init();
   Part::Polygon             ::init();
+  Part::Circle              ::init();
 
 	return;
 }

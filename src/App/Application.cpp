@@ -67,7 +67,7 @@ namespace po = boost::program_options;
 #include "DocumentObjectGroup.h"
 // If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
-#include "../Build/Version.h"
+#include <Build/Version.h>
 
 #include <Shlobj.h>
 #include <Shfolder.h>
@@ -508,7 +508,7 @@ void Application::addOpenType(const char* Type, const char* ModuleName)
     pos = item.filter.find("*.", next);
   }
 
-  // Due to branding stuuf replace FreeCAD through the application name
+  // Due to branding stuff replace FreeCAD through the application name
   if ( strncmp(Type, "FreeCAD", 7) == 0 ) {
     std::string AppName = Config()["ExeName"];
     AppName += item.filter.substr(7);
@@ -1299,51 +1299,42 @@ void Application::ExtractUser()
   // installed as a fallback solution.
   //
   // Default paths for the user depending on the platform 
-#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
   if(getenv("HOME") != 0)
     mConfig["UserHomePath"] = getenv("HOME");
-  mConfig["UserAppData"] = mConfig["UserHomePath"] + "/.FreeCAD/";
+  mConfig["UserAppData"] = mConfig["UserHomePath"];
+
+  // Actually the name of the directory where the parameters are stored should be the name of
+  // the application due to branding reasons.
+  mConfig["UserAppData"] += "/." + mConfig["ExeName"] + "/";
 #elif defined(FC_OS_WIN32)
   TCHAR szPath[MAX_PATH];
-  if(SUCCEEDED(SHGetFolderPath(NULL, 
-                               CSIDL_MYDOCUMENTS , 
-                               NULL, 
-                               0, 
-                               szPath))) 
-      mConfig["UserHomePath"] = szPath;
+  if (SUCCEEDED(SHGetFolderPath(NULL, 
+                                CSIDL_MYDOCUMENTS , 
+                                NULL, 
+                                0, 
+                                szPath))) 
+    mConfig["UserHomePath"] = szPath;
+  else
+    mConfig["UserHomePath"] = mConfig["AppHomePath"];
   // In the second step we want the directory where user settings of FreeCAD can be
   // kept. On Windows usually 'APPDATA' is set supplemented by 'FreeCAD'.
   // On Linux the directory '.FreeCAD' (with a leading dot) is created directly under
   // the home path.
-  if(SUCCEEDED(SHGetFolderPath(NULL, 
-                               CSIDL_APPDATA , 
-                               NULL, 
-                               0, 
-                               szPath))) {
-      mConfig["UserAppData"] = szPath;
-      mConfig["UserAppData"] += "/FreeCAD/";
+  if (SUCCEEDED(SHGetFolderPath(NULL, 
+                                CSIDL_APPDATA , 
+                                NULL, 
+                                0, 
+                                szPath))) {
+    mConfig["UserAppData"] = szPath;
+
+    // Actually the name of the directory where the parameters are stored should be the name of
+    // the application due to branding reasons.
+    mConfig["UserAppData"] += "/" + mConfig["ExeName"] + "/";
   }
-
-#endif
-  else
-    mConfig["UserHomePath"] = mConfig["AppHomePath"];
-
-#if 0
-  // Actually the name of the directory where the parameters are stored should be the name of
-  // the application due to branding stuff. So make it active in one of the following releases.
-  // FIXME: When activating this we should copy the parameter file from FreeCAD to the actual
-  // directory (in case ExeName != FreeCAD)
-  if(getenv("APPDATA") == 0)
-    mConfig["UserAppData"] = mConfig["UserHomePath"] + "/." + mConfig["ExeName"] + "/";
-  else
-    mConfig["UserAppData"] = std::string(getenv("APPDATA")) + "/" + mConfig["ExeName"] + "/";
-#else
-  if(getenv("APPDATA") == 0)
-    mConfig["UserAppData"] = mConfig["UserHomePath"] + "/.FreeCAD/";
-  else
-    mConfig["UserAppData"] = std::string(getenv("APPDATA")) + "/FreeCAD/";
 #endif
 
+  // Try to write into our data path
   Base::FileInfo fi(mConfig["UserAppData"].c_str());
   if ( ! fi.exists() ) {
  	  if ( ! fi.createDirectory( mConfig["UserAppData"].c_str() ) )
@@ -1392,7 +1383,28 @@ std::string Application::FindHomePath(const char* sCall)
 
   return TempHomePath;
 }
-#elif defined(FC_OS_CYGWIN)
+//FIXME: Use API of MacOSX instead (as below)
+//#elif defined(FC_OS_MACOSX)
+//#include <sys/param.h> 
+//#include <mach-o/dyld.h> 
+//std::string Application::FindHomePath(const char* call) 
+//{
+//  char str[PATH_MAX]; // on error try MAX_PATH or 1024 
+//  size_t size; 
+// 
+//  if (_NSGetExecutablePath( str, &size ) == 0) 
+//  { 
+//    std::string Call(str), TempHomePath; 
+//    std::string::size_type pos = Call.find_last_of(PATHSEP); 
+//    TempHomePath.assign(Call,0,pos); 
+//    pos = TempHomePath.find_last_of(PATHSEP); 
+//    TempHomePath.assign(TempHomePath,0,pos+1); 
+//    return TempHomePath; 
+//  } 
+//
+//  return call; // error 
+//} 
+#elif defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
 void SimplifyPath(std::string& sPath)
 {
 	// remove all unnecessary '/./' from sPath

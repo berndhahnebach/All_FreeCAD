@@ -34,7 +34,7 @@
 #define new DEBUG_CLIENTBLOCK
 #include "directory.h"
 
-#if defined(unix) || defined(__unix) || defined(__unix__)
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
 #  define BOOST_UNIX 1
 #elif defined(_WINDOWS)
 #  define BOOST_WINNT 1

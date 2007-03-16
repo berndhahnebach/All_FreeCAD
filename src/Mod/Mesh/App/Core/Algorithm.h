@@ -69,14 +69,15 @@ public:
   /**
    * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
    * the intersection point with the ray and the nearest facet with index \a rulFacet.
-   * \note This method is optimized by using a grid. So this method be used for a lot of tests..
+   * \note This method is optimized by using a grid. So this method can be used for a lot of tests.
    */
   bool NearestFacetOnRay (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, const MeshFacetGrid &rclGrid,
                           Base::Vector3f &rclRes, unsigned long &rulFacet) const;
   /**
    * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
    * the intersection point with the ray and the nearest facet with index \a rulFacet.
-   * \note This method tests all facets taken from \a raulFacets so it should only be used occassionally.
+   * \note This method tests all facets taken from \a raulFacets instaed of the attached mesh. 
+   * So the caller must ensure that the indices are valid facets.
    */
   bool NearestFacetOnRay (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, const std::vector<unsigned long> &raulFacets,
                           Base::Vector3f &rclRes, unsigned long &rulFacet) const;
@@ -84,10 +85,16 @@ public:
    * Searches for the nearest facet to the ray defined by (\arclPt, \a rclDir). The point \a rclRes holds
    * the intersection point with the ray and the nearest facet with index \a rulFacet.
    * More a search radius around the ray of \a fMaxSearchArea is defined.
-   * \note This method is optimized by using a grid. So this method be used for a lot of tests..
+   * \note This method is optimized by using a grid. So this method can be used for a lot of tests.
    */
   bool NearestFacetOnRay (const Base::Vector3f &rclPt, const Base::Vector3f &rclDir, float fMaxSearchArea,
                           const MeshFacetGrid &rclGrid, Base::Vector3f &rclRes, unsigned long &rulFacet) const;
+  /**
+   * Searches for the first facet of the grid element (\a rclGrid) in that the point \a rclPt lies into which is a distance not
+   * higher than \a fMaxDistance. Of no such facet is found \a rulFacet is undefined and false is returned, otherwise true.
+   * \note If the point \a rclPt is outside of the grid \a rclGrid nothing is done.
+   */
+  bool FirstFacetToVertex(const Base::Vector3f &rclPt, float fMaxDistance, const MeshFacetGrid &rclGrid, unsigned long &rulFacet) const;
   /**
    * Checks from the viewpoint \a rcView if the vertex \a rcVertex is visible or it is hidden by a facet. 
    * If the vertex is visible true is returned, false otherwise.
@@ -226,6 +233,11 @@ public:
    * If this restriction is met \a rfDistance is set to the actual distance, otherwise false is returned.
    */
   bool Distance (const Base::Vector3f &rclPt, unsigned long ulFacetIdx, float fMaxDistance, float &rfDistance) const;
+  /**
+   * Calculates the minimum grid length so that not more elements than \a maxElements will be created when the grid gets
+   * built up. The minimum grid length must be at least \a fLength.
+   */
+  float CalculateMinimumGridLength(float fLength, const Base::BoundBox3f& rBBox, unsigned long maxElements) const;
    
 protected:
   /** Helper method to connect the intersection points to polylines. */

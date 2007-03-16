@@ -134,6 +134,31 @@ protected:
   virtual ToolBarItem* setupCommandBars() const;
 };
 
+/**
+ * The NoneWorkbench class defines a slim workbench. 
+ * @author Werner Mayer
+ */
+class GuiExport NoneWorkbench : public StdWorkbench
+{
+    TYPESYSTEM_HEADER();
+
+public:
+  NoneWorkbench();
+  virtual ~NoneWorkbench();
+
+public:
+  /** Defines the standard context menu. */
+  virtual void setupContextMenu(const char* recipient,MenuItem*) const;
+
+protected:
+  /** Defines the standard menus. */
+  virtual MenuItem* setupMenuBar() const;
+  /** Defines the standard toolbars. */
+  virtual ToolBarItem* setupToolBars() const;
+  /** Defines the standard command bars. */
+  virtual ToolBarItem* setupCommandBars() const;
+};
+
 class GuiExport TestWorkbench : public StdWorkbench
 {
     TYPESYSTEM_HEADER();

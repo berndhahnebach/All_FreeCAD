@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,60 +21,54 @@
  ***************************************************************************/
 
 
-#ifndef GUI_WAIT_CURSOR_H
-#define GUI_WAIT_CURSOR_H
+#ifndef PART_PROPERTYCIRCLE_H
+#define PART_PROPERTYCIRCLE_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <App/PropertyGeo.h>
+#include <gp_Circ.hxx>
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
+namespace Part
+{
 
-
-namespace Gui {
-
-/**
- * This class sets a waitcursor automatically while a  slow operation is running. 
- * Therefore you just have to create an instance of WaitCursor before the time 
- * consuming operation starts.
- *
- * \code:
- * WaitCursor ac;
- * ...
- * ...                   // slow operation
- * ...
- * \endcode
- *  
- * Sometimes you have two slow operations with some user interactions in between them.
- * Avoiding to show the waiting cursor then you have to call the methods @ref restoreCursor()
- * and setWaitCursor manually, like:
- *
- * \code:
- * WaitCursor ac;
- * ...
- * ...                   // 1st slow operation
- * ac.restoreCursor();
- * ...
- * ...                  // some dialog stuff
- * ac.setWaitCursor();
- * ...
- * ...                  // 2nd slow operation
- * \endcode
- *  
+/** The line property class.
  * @author Werner Mayer
  */
-class GuiExport WaitCursor
+class AppPartExport PropertyCircle : public App::Property
 {
+  TYPESYSTEM_HEADER();
+
 public:
-  WaitCursor();
-  ~WaitCursor();
-  void setWaitCursor();
-  void restoreCursor();
+	PropertyCircle();
+	~PropertyCircle();
+
+  /** @name Getter/setter */
+  //@{
+  /// set the line
+  void setValue( const gp_Circ& circle );
+  /// get the line
+  const gp_Circ& getValue(void) const;
+  //@}
+
+  /** @name Python interface */
+  //@{
+  PyObject* getPyObject(void);
+  void setPyObject(PyObject *value);
+  //@}
+
+  /** @name Save/restore */
+  //@{
+  void Save (Base::Writer &writer) const;
+  void Restore(Base::XMLReader &reader);
+
+  App::Property *Copy(void) const;
+  void Paste(const App::Property &from);
+  unsigned int getMemSize (void) const;
+  //@}
+
+private:
+  gp_Circ _circle;
 };
 
-} // namespace Gui
+} // namespace Part
 
-#endif // GUI_WAIT_CURSOR_H 
-
+#endif // PART_PROPERTYCIRCLE_H

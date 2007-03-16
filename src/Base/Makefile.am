@@ -81,6 +81,8 @@ libFreeCADBase_la_SOURCES=\
 		Interpreter.h \
 		Matrix.cpp \
 		Matrix.h \
+		MemDebug.cpp \
+		MemDebug.h \
 		Observer.cpp \
 		Observer.h \
 		Parameter.cpp \

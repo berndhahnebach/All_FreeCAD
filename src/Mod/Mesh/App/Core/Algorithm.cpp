@@ -220,6 +220,41 @@ bool MeshAlgorithm::RayNearestField (const Base::Vector3f &rclPt, const Base::Ve
   return bSol;
 }
 
+bool MeshAlgorithm::FirstFacetToVertex(const Base::Vector3f &rPt, float fMaxDistance, const MeshFacetGrid &rGrid, unsigned long &uIndex) const
+{
+  const float fEps = 0.001f;
+
+  bool found = false;
+  std::vector<unsigned long> facets;
+
+  // get the facets of the grid the point lies into
+  rGrid.GetElements(rPt, facets);
+
+  // Check all facets inside the grid if the point is part of it
+  for (std::vector<unsigned long>::iterator it = facets.begin(); it != facets.end(); ++it) {
+    MeshGeomFacet cFacet = this->_rclMesh.GetFacet(*it);
+    if (cFacet.IsPointOfFace(rPt, fMaxDistance)) {
+      found = true;
+      uIndex = *it;
+      break;
+    } else {
+      // if not then check the distance to the border of the triangle
+      Base::Vector3f res = rPt;
+      float fDist;
+      unsigned short uSide;
+      cFacet.ProjectPointToPlane(res);
+      cFacet.NearestEdgeToPoint(res, fDist, uSide);
+      if ( fDist < fEps ) {
+        found = true;
+        uIndex = *it;
+        break;
+      }
+    }
+  }
+
+  return found;
+}
+
 float MeshAlgorithm::GetAverageEdgeLength() const
 {
   float fLen = 0.0f;
@@ -1386,6 +1421,16 @@ bool MeshAlgorithm::Distance (const Base::Vector3f &rclPt, unsigned long ulFacet
   rfDistance = _rclMesh.GetFacet(ulFacetIdx).DistanceToPoint(rclPt);
 
   return rfDistance < fMaxDistance;
+}
+
+float MeshAlgorithm::CalculateMinimumGridLength(float fLength, const Base::BoundBox3f& rBBox, unsigned long maxElements) const
+{
+  // Max. limit of grid elements
+  float fMaxGridElements=(float)maxElements;
+
+  // estimate the minimum allowed grid length
+  float fMinGridLen = (float)pow((rBBox.LengthX()*rBBox.LengthY()*rBBox.LengthZ()/fMaxGridElements), 0.3333f);
+  return std::max<float>(fMinGridLen, fLength);
 }
 
 // ----------------------------------------------------

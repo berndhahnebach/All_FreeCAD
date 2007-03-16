@@ -48,13 +48,11 @@ def InitDocumentation():
 
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = FreeCAD.ConfigGet("AppHomePath")+'src/Mod'
+	ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
 	#print FreeCAD.ConfigGet("AppHomePath")
-	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'Mod'):
-		ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
-	else:
-		if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Mod'):
-			ModDir = FreeCAD.ConfigGet("AppHomePath")+'src\\Mod'
+	if not os.path.isdir(ModDir):
+		print "No modules found in " + ModDir
+		return
 	sys.path.append( '..\\bin' )
 	sys.path.append( ModDir )
 	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Tools'):

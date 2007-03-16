@@ -166,8 +166,7 @@ void Application::open(const char* FileName)
   string te = File.extension();
   const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
 
-  if ( Mod != 0 )
-  {
+  if (Mod != 0) {
     // issue module loading
     Command::doCommand(Command::App, "import %s", Mod);
 
@@ -178,7 +177,7 @@ void Application::open(const char* FileName)
       // ignore this type of exception (e.g. if Mod is already a Gui module)
     }
 
-    try{
+    try {
       // load the file with the module
       Command::doCommand(Command::App, "%s.open(\"%s\")", Mod, File.filePath().c_str());
       if ( activeDocument() )
@@ -192,7 +191,7 @@ void Application::open(const char* FileName)
       // Usually thrown if the file is invalid somehow
       e.ReportException();
     }
-  }else{
+  } else {
     QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"), QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
     return;
   }
@@ -205,8 +204,7 @@ void Application::import(const char* FileName, const char* DocName)
   string te = File.extension();
   const char* Mod = App::GetApplication().hasOpenType( te.c_str() );
 
-  if ( Mod != 0 )
-  {
+  if (Mod != 0) {
     // issue module loading
     Command::doCommand(Command::App, "import %s", Mod);
 
@@ -217,7 +215,7 @@ void Application::import(const char* FileName, const char* DocName)
       // ignore this type of exception (e.g. if Mod is already a Gui module)
     }
 
-    try{
+    try {
       // load the file with the module
       if ( File.hasExtension("FCStd") )
       {
@@ -238,8 +236,7 @@ void Application::import(const char* FileName, const char* DocName)
       // Usually thrown if the file is invalid somehow
       e.ReportException();
     }
-
-  }else{
+  } else {
     QMessageBox::warning(getMainWindow(), QObject::tr("Unknown file type"), QObject::tr("Cannot open unknown file type: %1").arg(te.c_str()));
     return;
   }
@@ -526,7 +523,8 @@ void Application::tryClose ( QCloseEvent * e )
  * active or if the switch fails false is returned. 
  */
 bool Application::activateWorkbench( const char* name )
-{
+{ 
+  WaitCursor wc;
   Workbench* oldWb = WorkbenchManager::instance()->active();
   if ( oldWb && oldWb->name() == name )
     return false; // already active
@@ -553,8 +551,10 @@ bool Application::activateWorkbench( const char* name )
         pos = rx.search(msg);
       }
 
+      wc.restoreCursor();
       QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
         QObject::tr("The workbench %1 couldn't be loaded due to following error:\n\n%2").arg(name).arg(msg));
+      wc.setWaitCursor();
     }
     // clears the error flag if needed (coming from a Python file)
     if ( PyErr_Occurred() )
@@ -668,10 +668,27 @@ QPixmap Application::workbenchIcon( const QString& wb ) const
   return QPixmap();
 }
 
-QStringList Application::workbenches(void)
+QStringList Application::workbenches(void) const
 {
-  std::string hidden = App::Application::Config()["HiddenWorkbench"];
-  const char* start = App::Application::Config()["StartWorkbench"].c_str();
+  // If neither 'HiddenWorkbench' nor 'ExtraWorkbench' is set then all workbenches are returned.
+  const std::map<std::string,std::string>& config = App::Application::Config();
+  std::map<std::string, std::string>::const_iterator ht = config.find("HiddenWorkbench");
+  std::map<std::string, std::string>::const_iterator et = config.find("ExtraWorkbench");
+  std::map<std::string, std::string>::const_iterator st = config.find("StartWorkbench");
+  const char* start = (st != config.end() ? st->second.c_str() : "<none>");
+  QStringList hidden, extra;
+  if (ht != config.end()) { 
+    QString items = ht->second.c_str();
+    hidden = QStringList::split(';', items, false);
+    if (hidden.isEmpty())
+      hidden.push_back("");
+  }
+  if (et != config.end()) { 
+    QString items = et->second.c_str();
+    extra = QStringList::split(';', items, false);
+    if (extra.isEmpty())
+      extra.push_back("");
+  }
 
   PyObject *key, *value;
   int pos = 0;
@@ -681,11 +698,21 @@ QStringList Application::workbenches(void)
     /* do something interesting with the values... */
     const char* wbName = PyString_AsString(key);
     // add only allowed workbenches
-    if ( hidden.find( wbName ) == std::string::npos )
+    bool ok = true;
+    if (!extra.isEmpty()&&ok) {
+      ok = (extra.find(wbName) != extra.end());
+    }
+    if (!hidden.isEmpty()&&ok) {
+      ok = (hidden.find(wbName) == hidden.end());
+    }
+    
+    // okay the item is visible
+    if (ok)
       wb.push_back( wbName );
     else if ( strcmp(wbName, start) == 0 ) // also allow start workbench in case it is hidden
       wb.push_back( wbName );
   }
+
   return wb;
 }
 
@@ -773,6 +800,7 @@ void Application::initTypes(void)
   // Workbench
   Gui::Workbench                             ::init();
   Gui::StdWorkbench                          ::init();
+  Gui::NoneWorkbench                         ::init();
   Gui::TestWorkbench                         ::init();
   Gui::PythonWorkbench                       ::init();
 }
@@ -874,34 +902,39 @@ void Application::runApplication(void)
 
   // running the Gui init script
   Base::Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADGuiInit"));
-  // misc stuff
-  mw.loadWindowSettings();
-  // show the main window
-  Base::Console().Log("Init: Showing main window\n");
-  mw.show();
 
+  // Activate the correct workbench
   Base::Console().Log("Init: Activating default workbench\n");
-  std::string hidden = App::Application::Config()["HiddenWorkbench"];
+  QStringList visible = Instance->workbenches();
   const char* start = App::Application::Config()["StartWorkbench"].c_str();
   std::string defWb = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/General/AutoloadModule")->
                            GetASCII("currentText",App::Application::Config()["StartWorkbench"].c_str());
 
   // in case the user defined workbench is hidden then we take the default StartWorkbench 
-  if ( hidden.find( defWb ) != std::string::npos )
+  if (visible.find(defWb.c_str()) == visible.end())
     defWb = start;
-
   app.activateWorkbench( defWb.c_str() );
+
+  // show the main window
+  Base::Console().Log("Init: Showing main window\n");
+  mw.loadWindowSettings();
+  mw.show();
 
 #ifdef FC_DEBUG // redirect Coin messages to FreeCAD
   SoDebugError::setHandlerCallback( messageHandlerCoin, 0 );
   SoQt::setFatalErrorHandler( messageHandlerSoQt, 0 );
 #endif
 
+  // Stop splash screen and open the 'Iip of the day' dialog if needed
+  mw.stopSplasher();
+  mw.showTipOfTheDay();
+  Instance->d->_bStartingUp = false;
+
   Base::Console().Log("Init: Processing command line files\n");
   unsigned short count = 0;
   count = atoi(App::Application::Config()["OpenFileCount"].c_str());
 
-  string File;
+  std::string File;
   for (unsigned short i=0; i<count; i++)
   {
     // getting file name
@@ -911,17 +944,12 @@ void Application::runApplication(void)
     File = App::Application::Config()[temp.str()];
 
     // try to open
-    try{
+    try {
       app.open(File.c_str());
-    }catch(...){
+    } catch(...) {
       Base::Console().Error("Can't open file %s \n",File.c_str());
     }
   }
-
-  // Stop splash screen and open the 'Iip of the day' dialog if needed
-  mw.stopSplasher();
-  mw.showTipOfTheDay();
-  Instance->d->_bStartingUp = false;
 
   // Create new document?
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");
@@ -932,10 +960,10 @@ void Application::runApplication(void)
   // run the Application event loop
   Base::Console().Log("Init: Entering event loop\n");
 
-  try{
+  try {
     mainApp.exec();
-  }catch(...){
-    // catching nasty stuff comming out of the event loop
+  } catch(...) {
+    // catching nasty stuff coming out of the event loop
     App::Application::destructObserver();
     throw;
   }

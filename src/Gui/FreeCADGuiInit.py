@@ -77,15 +77,21 @@ class StandardWorkbench ( Workbench ):
 	def GetClassName(self):
 		return "Gui::StdWorkbench"
 
+class NoneWorkbench ( Workbench ):
+	"Standard workbench object"
+	def Activate(self):
+		# load the module
+		Log ('Init: Loading FreeCAD GUI')
+	def GetClassName(self):
+		return "Gui::NoneWorkbench"
+
 def InitApplications():
 	# Checking on FreeCAD Module path ++++++++++++++++++++++++++++++++++++++++++
-	ModDir = FreeCAD.ConfigGet("AppHomePath")+'src/Mod'
+	ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
 	#print FreeCAD.ConfigGet("AppHomePath")
-	if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'Mod'):
-		ModDir = FreeCAD.ConfigGet("AppHomePath")+'Mod'
-	else:
-		if os.path.isdir(FreeCAD.ConfigGet("AppHomePath")+'src\\Mod'):
-			ModDir = FreeCAD.ConfigGet("AppHomePath")+'src\\Mod'
+	if not os.path.isdir(ModDir):
+		print "No modules found in " + ModDir
+		return
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)
 	#print ModDirs
@@ -114,7 +120,7 @@ Log ('Init: Running FreeCADGuiInit.py start script...\n')
 App.GuiUp = 1
 App.Gui = FreeCADGui
 
-Gui.AddWorkbenchHandler("<none>",StandardWorkbench())
+Gui.AddWorkbenchHandler("<none>",NoneWorkbench())
 
 # init modules
 InitApplications()

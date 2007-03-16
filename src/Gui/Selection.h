@@ -87,12 +87,16 @@ public:
 // 'explicit instantiation of 'class Base::Subject<const Gui::SelectionChanges&>' in namespace 'Gui' 
 // (which does not enclose namespace 'Base')
 
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#if ((__GNUC__)*100+(__GNUC_MINOR__)*10) >= 410
 template class GuiExport Base::Subject<const Gui::SelectionChanges&>;
+#endif
+#endif
 
 namespace Gui
 {
 
-/** The Selcetion singleton class
+/** The Selection singleton class
  */
 class GuiExport SelectionSingleton : public Base::Subject<const SelectionChanges&>, public App::Document::ObserverType
 {

@@ -232,7 +232,7 @@ namespace boost
 
 #endif
 
-#if defined(unix) || defined(__unix) || defined(__unix__)
+#if defined(unix) || defined(__unix) || defined(__unix__) || defined(__APPLE__)
 
 		struct is_link { typedef bool value_type; };
 		template <> bool get<is_link>(dir_it const &);

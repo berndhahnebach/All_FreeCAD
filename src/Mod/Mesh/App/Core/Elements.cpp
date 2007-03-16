@@ -1095,3 +1095,31 @@ float MeshGeomFacet::MaximumAngle () const
 
   return fMaxAngle;
 }
+
+bool MeshGeomFacet::IsPointOfSphere(const Base::Vector3f& rP) const
+{
+  float radius;
+  Base::Vector3f center;
+  radius = CenterOfCircumCircle(center);
+  radius *= radius;
+
+  float dist = Base::DistanceP2(rP, center);
+  return dist < radius;
+}
+
+bool MeshGeomFacet::IsPointOfSphere(const MeshGeomFacet& rFacet) const
+{
+  float radius;
+  Base::Vector3f center;
+  radius = CenterOfCircumCircle(center);
+  radius *= radius;
+
+  for (int i=0; i<3; i++) {
+    float dist = Base::DistanceP2(rFacet._aclPoints[i], center);
+    if (dist < radius)
+      return true;
+  }
+
+  return false;
+}
+
