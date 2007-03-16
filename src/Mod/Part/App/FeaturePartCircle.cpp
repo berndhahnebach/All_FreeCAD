@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,60 +21,39 @@
  ***************************************************************************/
 
 
-#ifndef GUI_WAIT_CURSOR_H
-#define GUI_WAIT_CURSOR_H
-
-#ifndef __Qt4All__
-# include "Qt4All.h"
+#include "PreCompiled.h"
+#ifndef _PreComp_
+# include <BRepBuilderAPI_MakeEdge.hxx>
+# include <Geom_Circle.hxx>
+# include <TopoDS.hxx>
+# include <TopoDS_Edge.hxx>
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
+#include "FeaturePartCircle.h"
+
+using namespace Part;
+
+PROPERTY_SOURCE(Part::Circle, Part::Feature)
 
 
-namespace Gui {
-
-/**
- * This class sets a waitcursor automatically while a  slow operation is running. 
- * Therefore you just have to create an instance of WaitCursor before the time 
- * consuming operation starts.
- *
- * \code:
- * WaitCursor ac;
- * ...
- * ...                   // slow operation
- * ...
- * \endcode
- *  
- * Sometimes you have two slow operations with some user interactions in between them.
- * Avoiding to show the waiting cursor then you have to call the methods @ref restoreCursor()
- * and setWaitCursor manually, like:
- *
- * \code:
- * WaitCursor ac;
- * ...
- * ...                   // 1st slow operation
- * ac.restoreCursor();
- * ...
- * ...                  // some dialog stuff
- * ac.setWaitCursor();
- * ...
- * ...                  // 2nd slow operation
- * \endcode
- *  
- * @author Werner Mayer
- */
-class GuiExport WaitCursor
+Circle::Circle()
 {
-public:
-  WaitCursor();
-  ~WaitCursor();
-  void setWaitCursor();
-  void restoreCursor();
-};
+  ADD_PROPERTY(Angle0,(0.0f));
+  ADD_PROPERTY(Angle1,(2*F_PI));
+  ADD_PROPERTY(Circ,(gp_Circ()));
+}
 
-} // namespace Gui
+Circle::~Circle()
+{
+}
 
-#endif // GUI_WAIT_CURSOR_H 
+int Circle::execute(void)
+{
+  Handle_Geom_Circle hCircle = new Geom_Circle (Circ.getValue());
+  BRepBuilderAPI_MakeEdge clMakeEdge(hCircle, this->Angle0.getValue(), this->Angle1.getValue());
+  TopoDS_Edge edge = TopoDS::Edge(clMakeEdge.Shape());
+  setShape(edge);
+
+  return 0;
+}
 

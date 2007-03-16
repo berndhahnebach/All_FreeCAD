@@ -402,6 +402,14 @@ void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
 {
   if ( strcmp(recipient,"View") == 0 )
   {
+    MenuItem* StdViews = new MenuItem;
+    StdViews->setCommand( "Standard views" );
+
+    *StdViews<< "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewTop" << "Std_ViewRight"
+             << "Std_ViewRear" << "Std_ViewBottom" << "Std_ViewLeft";
+
+    *item << "Std_ViewFitAll" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
+
     if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
     	*item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" << "Std_Delete";
   }
@@ -537,6 +545,75 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
          << "Std_DlgCustomize" << "Std_CommandLine";
 
 
+  return root;
+}
+
+// --------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::NoneWorkbench, Gui::StdWorkbench)
+
+NoneWorkbench::NoneWorkbench()
+  : StdWorkbench()
+{
+}
+
+NoneWorkbench::~NoneWorkbench()
+{
+}
+
+void NoneWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
+{
+}
+
+MenuItem* NoneWorkbench::setupMenuBar() const
+{
+  // Setup the default menu bar
+  MenuItem* menuBar = new MenuItem;
+
+  // File
+  MenuItem* file = new MenuItem( menuBar );
+  file->setCommand( "&File" );
+  *file << "Std_Quit";
+
+  // Edit
+  MenuItem* edit = new MenuItem( menuBar );
+  edit->setCommand( "&Edit" );
+  *edit << "Std_DlgPreferences";
+
+  // Separator
+  MenuItem* sep = new MenuItem( menuBar );
+  sep->setCommand( "Separator" );
+
+  // Help
+  MenuItem* help = new MenuItem( menuBar );
+  help->setCommand( "&Help" );
+  *help << "Std_OnlineHelp" << "Std_TipOfTheDay" << "Separator" << "Std_About" << "Std_AboutQt"
+        << "Separator" << "Std_WhatsThis" << "Std_DescriptionMode";
+
+  return menuBar;
+}
+
+ToolBarItem* NoneWorkbench::setupToolBars() const
+{
+  static const char* toolItems[] = {
+    QT_TRANSLATE_NOOP( "Gui::CustomToolBar", "File" ),
+  };
+
+  ToolBarItem* root = new ToolBarItem;
+
+  // File
+  ToolBarItem* file = new ToolBarItem( root );
+  file->setCommand( toolItems[0] );
+  *file << "Std_New" << "Std_Open" << "Std_Save" << "Std_Print" << "Separator" << "Std_Cut"
+        << "Std_Copy" << "Std_Paste" << "Separator" << "Std_Undo" << "Std_Redo" << "Separator"
+        << "Std_Refresh" << "Separator" << "Std_Workbench" << "Std_WhatsThis";
+
+  return root;
+}
+
+ToolBarItem* NoneWorkbench::setupCommandBars() const
+{
+  ToolBarItem* root = new ToolBarItem;
   return root;
 }
 

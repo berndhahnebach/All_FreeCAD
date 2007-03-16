@@ -83,6 +83,10 @@
 //#	define FC_OS_AIX
 //#elif defined(__GNU__)
 //#	define FC_OS_GNU
+#elif defined(__APPLE__)
+#	ifndef FC_OS_MACOSX
+#	define FC_OS_MACOSX
+#	endif
 #else
 #	error "FreeCAD is not ported to this OS yet. For help see free-cad.sourceforge.net"
 #endif

@@ -9,6 +9,7 @@ FreeCAD_SOURCES= \
 FreeCAD_LDFLAGS = -L../Base -L../App -L../Gui $(all_libraries)
 
 FreeCAD_LDADD=\
+	-l@PYTHON_LIB@ \
 	-lFreeCADBase \
 	-lFreeCADApp \
 	-lFreeCADGui
@@ -21,6 +22,7 @@ FreeCADCmd_SOURCES= \
 FreeCADCmd_LDFLAGS = -L../Base -L../App $(all_libraries)
 
 FreeCADCmd_LDADD=\
+	-l@PYTHON_LIB@ \
 	-lFreeCADBase \
 	-lFreeCADApp
 
@@ -32,13 +34,15 @@ FreeCAD_la_SOURCES= \
 FreeCAD_la_LDFLAGS = -L../Base -L../App $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@ -module -avoid-version
 
 FreeCAD_la_LIBADD=\
+	-ldl \
+	-l@PYTHON_LIB@ \
 	-lFreeCADBase \
 	-lFreeCADApp
 
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS)
+INCLUDES= $(all_includes) -I.. $(QT_CXXFLAGS)
 
 EXTRA_DIST = \
 		freecad.rc \

@@ -323,6 +323,8 @@ void StdCmdFreezeViews::languageChange()
 {
   Command::languageChange();
 
+  if (!_pcAction)
+    return;
   ActionGroup* pcAction = qobject_cast<ActionGroup*>(_pcAction);
   QList<QAction*> acts = pcAction->actions();
   acts[0]->setText(QObject::tr("Save views"));

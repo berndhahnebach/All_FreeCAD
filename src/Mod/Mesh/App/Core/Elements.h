@@ -87,7 +87,7 @@ public:
 
 public:
   /** @name Flag state
-   * @note All flag methods are const as they do NOT change the actual properties of the object
+   * @note All flag methods are const as they do NOT change the actual behaviour of the object
    */
   //@{
   void SetFlag (TFlagType tF) const
@@ -166,7 +166,7 @@ public:
   //@}
 
   /** @name Flag state
-   * @note All flag methods are const as they do NOT change the actual properties of the object
+   * @note All flag methods are const as they do NOT change the actual behaviour of the object
    */
   //@{
   void SetFlag (TFlagType tF) const
@@ -436,6 +436,14 @@ public:
   unsigned short NearestEdgeToPoint(const Base::Vector3f& rclPt) const;
   /** Returns the edge number \a side of the facet and the distance to the edge that is nearest to the point \a rclPt. */
   void NearestEdgeToPoint(const Base::Vector3f& rclPt, float& fDistance, unsigned short& side) const;
+  /** The center and radius of the circum circle define a sphere in 3D. If the point \a rP is part of this sphere true is
+   * returned, otherwise false.
+   */
+  bool IsPointOfSphere(const Base::Vector3f& rP) const;
+  /** This is an overloaded member function, provided for convenience. It behaves essentially like the above function.
+   * If one of the facet's points is inside the sphere true is returned, otherwise false.
+   */
+  bool IsPointOfSphere(const MeshGeomFacet& rFacet) const;
 
 protected:
   Base::Vector3f  _clNormal; /**< Normal of the facet. */

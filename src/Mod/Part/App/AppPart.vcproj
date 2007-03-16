@@ -223,6 +223,14 @@
 			Name="Properties"
 			>
 			<File
+				RelativePath=".\PropertyCircle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\PropertyCircle.h"
+				>
+			</File>
+			<File
 				RelativePath=".\PropertyLine.cpp"
 				>
 			</File>
@@ -258,6 +266,14 @@
 			</File>
 			<File
 				RelativePath="FeaturePartBox.h"
+				>
+			</File>
+			<File
+				RelativePath=".\FeaturePartCircle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\FeaturePartCircle.h"
 				>
 			</File>
 			<File
@@ -480,6 +496,14 @@
 		<Filter
 			Name="Python"
 			>
+			<File
+				RelativePath=".\CirclePy.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\CirclePy.h"
+				>
+			</File>
 			<File
 				RelativePath=".\LinePy.cpp"
 				>

@@ -36,36 +36,63 @@
 using namespace Gui;
 
 namespace Gui {
-struct WaitCursorP
+class WaitCursorP : public QObject
 {
-  bool wait;
-  static bool override;
-  static bool locked;
-  int minimumDuration;
-  uint main_threadid;
-  QTime measure;
+public:
+  static void setBusy( bool );
+
+protected:
+  bool eventFilter( QObject*, QEvent* );
+
+private:
+  WaitCursorP(); // Disable constructor
+  static WaitCursorP* _instance;
+  bool _isOn;
 };
 } // namespace Gui
 
-/* We cannot use Qt's QMutex as we locks/unlocks from different threads, which
- * is not allowed. So, we use a simple boolean.
- */
-bool WaitCursorP::override = false;
-bool WaitCursorP::locked = false;
+WaitCursorP* WaitCursorP::_instance = 0;
+
+WaitCursorP::WaitCursorP() : QObject(0), _isOn( false )
+{
+}
+
+void WaitCursorP::setBusy( bool on )
+{
+  if ( _instance == 0 )
+    _instance = new WaitCursorP();
+
+  if( on == _instance->_isOn )
+	  return;
+
+  if ( on ) {
+    qApp->installEventFilter( _instance );
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+  }
+  else {
+    qApp->removeEventFilter( _instance );
+    QApplication::restoreOverrideCursor();
+  }
+
+  _instance->_isOn = on;
+}
+
+bool WaitCursorP::eventFilter( QObject*, QEvent* e)
+{
+  if ( e->type() == QEvent::KeyPress ||
+       e->type() == QEvent::KeyRelease ||
+       e->type() == QEvent::MouseButtonPress ||
+       e->type() == QEvent::MouseButtonRelease ||
+       e->type() == QEvent::MouseButtonDblClick )
+    return true;
+  return false;
+}
 
 /**
- * Constructs this object and starts the thread immediately.
- * The minimum duration time is set to 1.500 ms. 
+ * Constructs this object and shows the wait cursor immediately.
  */
 WaitCursor::WaitCursor()
 {
-  d = new WaitCursorP;
-  d->minimumDuration = 1500;
-  d->wait = false;
-#ifdef FC_OS_WIN32
-  d->main_threadid = GetCurrentThreadId();
-#endif
-
   setWaitCursor();
 }
 
@@ -73,108 +100,20 @@ WaitCursor::WaitCursor()
 WaitCursor::~WaitCursor()
 {
   restoreCursor();
-  delete d;
-}
-
-/** 
- * Either this method is living as long as the instance is existing or until the
- * minimum duration time is reached. In the second case the waitcursor is set and the
- * thread terminates.
- */
-void WaitCursor::run()
-{
-#if defined(_MSC_VER) && _MSC_VER < 1400
-  AttachThreadInput(GetCurrentThreadId(), d->main_threadid, true);
-#endif
-
-  while (true)
-  {
-    // set the thread sleeping
-    msleep(100);
-    // just wait if locked
-    if ( !WaitCursorP::locked )
-    {
-      if ( d->measure.elapsed() > d->minimumDuration )
-      {
-        if ( !WaitCursorP::override )
-        {
-          // prevent application from setting wait cursor twice
-          WaitCursorP::override = true;
-          QApplication::setOverrideCursor(Qt::waitCursor);
-          d->wait = true;
-        }
-        break;
-      }
-    }
-  }
-
-#if defined(_MSC_VER) && _MSC_VER < 1400
-  AttachThreadInput(GetCurrentThreadId(), d->main_threadid, false);
-#endif
 }
 
 /**
- * Starts the thread unless the thread is already running or the waitcursor is set.
+ * Sets the wait cursor if needed.
  */
 void WaitCursor::setWaitCursor()
 {
-  // wait cursor already set
-  if ( d->wait ) return;
-  // thread is already running
-  if ( running() ) return;
-  d->measure.start();
-  start();
+  WaitCursorP::setBusy(true);
 }
 
 /**
- * Terminates the running thread and restores the cursor.
+ * Restores the last cursor if needed.
  */
 void WaitCursor::restoreCursor()
 {
-  // if running just terminate it
-  if ( running() )
-  {
-    terminate();
-    wait(100);
-  }
-
-  // check whether this instance has overridden the cursor
-  if ( d->wait )
-  {
-    // do not restore twice
-    QApplication::restoreOverrideCursor();
-    d->wait = false;
-    WaitCursorP::override = false;
-  }
-}
-
-/**
- * Returns the minimum duration time.
- */
-int WaitCursor::minimumDuration()
-{
-  return d->minimumDuration;
-}
-
-/**
- * Sets the minimum duration time to \a ms milliseconds. 
- */
-void WaitCursor::setMinimumDuration ( int ms )
-{
-  d->minimumDuration = ms;
-}
-
-void WaitCursor::lock()
-{
-  WaitCursorP::locked = true;
-}
-
-void WaitCursor::unlock()
-{
-  WaitCursorP::locked = false;
-}
-
-bool WaitCursor::locked()
-{
-  return WaitCursorP::locked;
+  WaitCursorP::setBusy(false);
 }

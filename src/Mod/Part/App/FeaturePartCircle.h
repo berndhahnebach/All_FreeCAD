@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,60 +21,35 @@
  ***************************************************************************/
 
 
-#ifndef GUI_WAIT_CURSOR_H
-#define GUI_WAIT_CURSOR_H
+#ifndef PART_FEATUREPARTCIRCLE_H
+#define PART_FEATUREPARTCIRCLE_H
 
-#ifndef __Qt4All__
-# include "Qt4All.h"
-#endif
+#include <App/PropertyStandard.h>
+#include "PropertyCircle.h"
+#include "PartFeature.h"
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
-
-namespace Gui {
-
-/**
- * This class sets a waitcursor automatically while a  slow operation is running. 
- * Therefore you just have to create an instance of WaitCursor before the time 
- * consuming operation starts.
- *
- * \code:
- * WaitCursor ac;
- * ...
- * ...                   // slow operation
- * ...
- * \endcode
- *  
- * Sometimes you have two slow operations with some user interactions in between them.
- * Avoiding to show the waiting cursor then you have to call the methods @ref restoreCursor()
- * and setWaitCursor manually, like:
- *
- * \code:
- * WaitCursor ac;
- * ...
- * ...                   // 1st slow operation
- * ac.restoreCursor();
- * ...
- * ...                  // some dialog stuff
- * ac.setWaitCursor();
- * ...
- * ...                  // 2nd slow operation
- * \endcode
- *  
- * @author Werner Mayer
- */
-class GuiExport WaitCursor
+namespace Part
 {
+
+class Circle : public Part::Feature
+{
+  PROPERTY_HEADER(Part::Circle);
+
 public:
-  WaitCursor();
-  ~WaitCursor();
-  void setWaitCursor();
-  void restoreCursor();
+  Circle();
+  virtual ~Circle();
+
+  App::PropertyAngle Angle0;
+  App::PropertyAngle Angle1;
+  PropertyCircle Circ;
+
+  /** @name methods override feature */
+  //@{
+  /// recalculate the Feature
+  virtual int execute(void);
+  //@}
 };
 
-} // namespace Gui
+} //namespace Part
 
-#endif // GUI_WAIT_CURSOR_H 
-
+#endif // PART_FEATUREPARTCIRCLE_H

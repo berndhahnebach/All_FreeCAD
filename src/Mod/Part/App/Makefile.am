@@ -4,8 +4,12 @@ lib_LTLIBRARIES=libPart.la Part.la
 
 libPart_la_SOURCES=\
 		AppPartPy.cpp \
+		CirclePy.cpp \
+		CirclePy.h \
 		FeaturePartBox.cpp \
 		FeaturePartBox.h \
+		FeaturePartCircle.cpp \
+		FeaturePartCircle.h \
 		FeaturePartCurveNet.cpp \
 		FeaturePartCurveNet.h \
 		FeaturePartCut.cpp \
@@ -32,6 +36,8 @@ libPart_la_SOURCES=\
 		PartFeaturePy.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
+		PropertyCircle.cpp \
+		PropertyCircle.h \
 		PropertyLine.cpp \
 		PropertyLine.h \
 		TopologyPy.cpp \

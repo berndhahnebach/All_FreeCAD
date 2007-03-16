@@ -11,7 +11,8 @@ BUILT_SOURCES=\
 		DlgRegularSolid.h \
 		moc_DlgEvaluateMesh.cpp \
 		moc_DlgEvaluateMeshImp.cpp \
-		moc_DlgRegularSolid.cpp
+		moc_DlgRegularSolid.cpp \
+		Mesh_de.h
 
 libMeshGui_la_SOURCES=\
 		Command.cpp \
@@ -48,10 +49,12 @@ libMeshGui_la_SOURCES=\
 		Workbench.h
 
 # the library search path.
-libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMeshGui_la_LDFLAGS = -L../../../Base -L../../../App -L../../../Gui -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) -L$(OCC_LIB) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libMeshGui_la_CPPFLAGS = -DAppMeshExport= -DGuiMeshExport=
 
 libMeshGui_la_LIBADD   = \
+		-lFreeCADBase \
+		-lFreeCADApp \
 		-lFreeCADGui \
 		-lMesh
 
@@ -66,6 +69,8 @@ MeshGui_la_LDFLAGS = $(libMeshGui_la_LDFLAGS) -module -avoid-version
 MeshGui_la_CPPFLAGS = $(libMeshGui_la_CPPFLAGS)
 
 MeshGui_la_LIBADD   = \
+		$(libMeshGui_la_LIBADD) \
+		-l@PYTHON_LIB@ \
 		-lMeshGui
 
 #--------------------------------------------------------------------------------------
@@ -85,6 +90,10 @@ moc_%.cpp: %.h
 %.cpp: %.h %.ui
 	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
+# rule for translation files using python script :
+%.h: %.ts
+	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
+
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(WM3_CFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I../../../ -I../App
 
@@ -101,5 +110,6 @@ EXTRA_DIST = \
 		AppMeshGui.vcproj \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \
+		Mesh_de.ts \
 		Libs.cpp \
 		images.h

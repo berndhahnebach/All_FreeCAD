@@ -89,7 +89,7 @@ extern "C" {
 
 	// Init phase ===========================================================
   App::Application::Config()["ExeName"] = "FreeCAD";
-  App::Application::Config()["ExeVersion"] = "0.3";
+  App::Application::Config()["ExeVersion"] = "0.7";
 
 
   int    argc=1;

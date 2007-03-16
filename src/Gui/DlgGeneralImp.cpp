@@ -62,7 +62,7 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
       AutoloadModuleCombo->insertItem( px, *it );
   }
   // set the current workbench as default, AutoloadModuleCombo->onRestore() will change
-  // it, if it is set in the preferences
+  // it, if it is set by the user
   Workbench* curWb = WorkbenchManager::instance()->active();
   QString curWbName = curWb ? curWb->name() : "<none>";
   AutoloadModuleCombo->setCurrentText( curWbName );
@@ -131,11 +131,12 @@ void DlgGeneralImp::saveSettings()
 
 void DlgGeneralImp::loadSettings()
 {
-  // in case the user defined workbench as hidden
-  std::string hidden = App::Application::Config()["HiddenWorkbench"];
+  // in case the user defined workbench is hidden
+  QStringList work = Application::Instance->workbenches();
   QString curWbName = AutoloadModuleCombo->currentText();
   AutoloadModuleCombo->onRestore();
-  if ( hidden.find( AutoloadModuleCombo->currentText().latin1() ) != std::string::npos )
+  QString newWbName = AutoloadModuleCombo->currentText();
+  if (work.find(newWbName) == work.end())
     AutoloadModuleCombo->setCurrentText( curWbName );
   AutoloadTabCombo->onRestore();
   RecentFiles->onRestore();

@@ -28,7 +28,11 @@
 # ifdef FC_OS_WIN32
 #  include <windows.h>
 # endif
+# ifdef FC_OS_MACOSX //FIXME: Do we need the whole path or should we add it to the include path list?
+# include </System/Library/Frameworks/OpenGL.Framework/Versions/A/Headers/gl.h>
+# else
 # include <GL/gl.h>
+# endif
 # include <Inventor/SbBox.h>
 # include <Inventor/actions/SoGetBoundingBoxAction.h>
 # include <Inventor/actions/SoHandleEventAction.h> 
@@ -955,16 +959,8 @@ SbBool View3DInventorViewer::isPopupMenuEnabled(void) const
 
 void View3DInventorViewer::openPopupMenu(const SbVec2s& position)
 {
-  MenuItem* StdViews = new MenuItem;
-  StdViews->setCommand( "Standard views" );
-
-  *StdViews<< "Std_ViewAxo" << "Separator" << "Std_ViewFront" << "Std_ViewTop" << "Std_ViewRight"
-           << "Std_ViewRear" << "Std_ViewBottom" << "Std_ViewLeft";
-
-  MenuItem* view = new MenuItem;
-  *view << "Std_ViewFitAll" << StdViews << "Separator" << "Std_ViewDockUndockFullscreen" ;
-
   // ask workbenches and view provider, ...
+  MenuItem* view = new MenuItem;
   Gui::Application::Instance->setupContextMenu("View", view);
 
   QMenu ContextMenu(this->getGLWidget());
