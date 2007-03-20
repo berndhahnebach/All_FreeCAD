@@ -25,18 +25,23 @@
 
 #ifdef _PreComp_
 # undef _PreComp_
-# include <sstream>
 #endif
 
 #ifdef FC_LINUX
 #	include <unistd.h>
 #endif
 
+#ifdef FC_OS_MACOSX
+# include <mach-o/dyld.h>
+# include <string>
+#endif 
+
 #if HAVE_CONFIG_H
 #	include <config.h>
 #endif // HAVE_CONFIG_H
 
 #include <stdio.h>
+#include <sstream>
 
 
 // FreeCAD Base header
@@ -109,6 +114,20 @@ extern "C" {
   }
 
   strcpy(argv[0], info.dli_fname);
+#elif defined(FC_OS_MACOSX)
+  uint32_t sz = 0;
+  char *buf;
+
+  _NSGetExecutablePath(NULL, &sz);
+  buf = (char*) malloc(++sz);
+  int err=_NSGetExecutablePath(buf, &sz);
+  if (err != 0){
+    PyErr_SetString(PyExc_ImportError, "Cannot get path of the FreeCAD module!");
+    return;
+  }
+  
+  strcpy(argv[0], buf); 
+  free(buf);
 #else
 # error "Implement: Retrieve the path of the module for your platform."
 #endif
