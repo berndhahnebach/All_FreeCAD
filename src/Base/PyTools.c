@@ -447,9 +447,9 @@ PP_Run_Command_Line(const char *prompt)
     int res;               /* interact with python, in "__main__" */
     Py_Initialize();       /* in the program's "stdio" window     */
     if (prompt != NULL)
-#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN)
+#if defined (FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
         printf("[%s <Use Ctrl-D (i.e. EOF) to exit.>]\n", prompt);
-#else
+#elif defined (FC_OS_WIN32)
         printf("[%s <Use Ctrl-Z plus Return to exit.>]\n", prompt);
 #endif
     res = PyRun_InteractiveLoop(stdin, "<stdin>");

@@ -62,6 +62,7 @@ struct NetworkRetrieverP
   bool recurse;
   bool folRel;
   bool html;
+  bool nop;
   // wget argument
   QString startUrl;
 
@@ -86,6 +87,7 @@ NetworkRetriever::NetworkRetriever( QObject * parent, const char * name )
   d->convert = true;
   d->recurse = false;
   d->folRel = false;
+  d->nop = false;
 
   wget = new Process( this, "wget" );
   wget->Attach(this);
@@ -163,7 +165,7 @@ void NetworkRetriever::OnChange (Base::Subject<Gui::Process::MessageType> &rCall
     case Gui::Process::processKilled:
     {
       d->fail = true;
-      Base::Console().Warning( tr("Download was canceled.\n") );
+      Base::Console().Message( tr("Download was canceled.\n") );
     } break;
 
     // 'output' signal or 'error output' signal
@@ -268,6 +270,14 @@ void NetworkRetriever::setEnableHTMLExtension( bool html )
 }
 
 /**
+ * Do not ever ascend to the parent directory when retrieving recursively.
+ */
+void NetworkRetriever::setNoParent( bool nop )
+{
+  d->nop = nop;
+}
+
+/**
  * Sets the output directory to \a dir where all downloaded are written into.
  */
 void NetworkRetriever::setOutputDirectory( const QString& dir )
@@ -348,6 +358,9 @@ bool NetworkRetriever::startDownload( const QString& startUrl )
     (*wget) << "-r";
     (*wget) << QString("--level=%1").arg( d->level );
   }
+
+  if ( d->nop )
+    (*wget) << "-np";
 
   // convert absolute links in to relative
   if ( d->convert )
@@ -433,6 +446,7 @@ StdCmdDownloadOnlineHelp::StdCmdDownloadOnlineHelp( QObject * parent, const char
   wget->setEnableTimestamp( true );
   wget->setFetchImages( true );
   wget->setFollowRelative( false );
+  wget->setNoParent( true );
 
   connect( wget, SIGNAL( wgetExited() ), this, SLOT( wgetExit() ) );
 }
@@ -476,7 +490,7 @@ void StdCmdDownloadOnlineHelp::activated(int iMsg)
   {
     ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
     hGrp = hGrp->GetGroup("Preferences")->GetGroup("OnlineHelp");
-    std::string url = hGrp->GetASCII("DownloadURL", "http://free-cad.sourceforge.net/index.html");
+    std::string url = hGrp->GetASCII("DownloadURL", "http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page");
     std::string prx = hGrp->GetASCII("ProxyText", "");
     bool bUseProxy  = hGrp->GetBool ("UseProxy", false);
     bool bAuthor    = hGrp->GetBool ("Authorize", false);

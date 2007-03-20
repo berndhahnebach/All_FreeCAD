@@ -53,6 +53,7 @@ public:
   void setEnableConvert( bool );
   void setFetchImages( bool );
   void setEnableHTMLExtension( bool );
+  void setNoParent( bool );
 
   void setOutputDirectory( const QString& );
   bool startDownload( const QString& );

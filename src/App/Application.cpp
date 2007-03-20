@@ -1383,27 +1383,39 @@ std::string Application::FindHomePath(const char* sCall)
 
   return TempHomePath;
 }
-//FIXME: Use API of MacOSX instead (as below)
-//#elif defined(FC_OS_MACOSX)
-//#include <sys/param.h> 
-//#include <mach-o/dyld.h> 
-//std::string Application::FindHomePath(const char* call) 
-//{
-//  char str[PATH_MAX]; // on error try MAX_PATH or 1024 
-//  size_t size; 
-// 
-//  if (_NSGetExecutablePath( str, &size ) == 0) 
-//  { 
-//    std::string Call(str), TempHomePath; 
-//    std::string::size_type pos = Call.find_last_of(PATHSEP); 
-//    TempHomePath.assign(Call,0,pos); 
-//    pos = TempHomePath.find_last_of(PATHSEP); 
-//    TempHomePath.assign(TempHomePath,0,pos+1); 
-//    return TempHomePath; 
-//  } 
-//
-//  return call; // error 
-//} 
+
+#elif defined(FC_OS_MACOSX)
+#include <mach-o/dyld.h>
+#include <string>
+
+std::string Application::FindHomePath(const char* call)
+{
+  uint32_t sz = 0;
+  char *buf;
+
+  _NSGetExecutablePath(NULL, &sz); //function only returns "sz" if first arg is to small to hold value
+  buf = (char*) malloc(++sz);
+
+  if (_NSGetExecutablePath(buf, &sz) == 0)
+  {
+    //char *sl;
+    // sl = strrchr(buf, '/');
+    //*(sl + 1) = '\0';
+    //
+    //std::string ret(buf);
+    //return ret;
+    std::string Call(buf), TempHomePath; 
+    free(buf);
+    std::string::size_type pos = Call.find_last_of(PATHSEP); 
+    TempHomePath.assign(Call,0,pos); 
+    pos = TempHomePath.find_last_of(PATHSEP); 
+    TempHomePath.assign(TempHomePath,0,pos+1); 
+    return TempHomePath; 
+  }
+
+  return call; // error
+} 
+
 #elif defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
 void SimplifyPath(std::string& sPath)
 {
@@ -1554,6 +1566,7 @@ std::string Application::FindHomePath(const char* sCall)
 
 	return homePath;
 }
+
 #elif defined (FC_OS_WIN32)
 std::string Application::FindHomePath(const char* sCall)
 {
@@ -1581,6 +1594,7 @@ std::string Application::FindHomePath(const char* sCall)
 
 	return TempHomePath;
 }
+
 #else
 # error "std::string Application::FindHomePath(const char*) not implemented"
 #endif

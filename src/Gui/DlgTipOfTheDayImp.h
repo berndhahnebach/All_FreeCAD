@@ -48,7 +48,7 @@ namespace Dialog {
  * also possible to use the program \a wget specifying the options -r, -k, -E and the
  * URL of the homepage of FreeCAD.
  *
- * For more details have a look at the FreeCAD homepage (http://free-cad.sourceforge.net/index.html).
+ * For more details have a look at the FreeCAD homepage (http://freecad.juergen-riegel.net/Docu/).
  *
  * You can simply append a new tip by clicking the "EditText" hyperlink
  * and writing a text, e.g: "** this is a new tip"

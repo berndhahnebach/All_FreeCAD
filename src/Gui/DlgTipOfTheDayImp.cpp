@@ -107,8 +107,8 @@ void DlgTipOfTheDayImp::reload()
   if ( _lTips.empty() )
   {
     _lTips << QString("If you want to make use of the Tip-of-the-day you must download "
-                      "FreeCAD's online help from <a href=""http://free-cad.sourceforge.net/index.html"">"
-                      "http://free-cad.sourceforge.net/index.html</a>."
+                      "FreeCAD's online help from <a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
+                      "http://freecad.juergen-riegel.net/Docu/</a>."
                       "To download the online help press Help -> Download online help.");
   }
 }
