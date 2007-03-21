@@ -726,8 +726,9 @@ void CreateStdCommands(void)
   rcCmdMgr.addCommand(new StdCmdWorkbench());
   rcCmdMgr.addCommand(new StdCmdRecentFiles());
   rcCmdMgr.addCommand(new StdCmdWhatsThis());
+  rcCmdMgr.addCommand(new StdCmdPythonHelp());
   rcCmdMgr.addCommand(new StdCmdOnlineHelp());
-  rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
+  //rcCmdMgr.addCommand(new StdCmdDownloadOnlineHelp());
   rcCmdMgr.addCommand(new StdCmdTipOfTheDay());
   rcCmdMgr.addCommand(new StdCmdDescription());
 }

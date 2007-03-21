@@ -220,11 +220,10 @@ QStringList FileDialog::getOpenFileNames ( const QString & filter, const QString
  */
 QString FileDialog::getWorkingDirectory()
 {
-  QString path = QDir::currentDirPath();
+  std::string path = App::GetApplication().Config()["UserHomePath"];
   FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
-  path = hPath->GetASCII("FileOpenSavePath", path.latin1()).c_str();
-  return path;
+  return hPath->GetASCII("FileOpenSavePath", path.c_str()).c_str();
 }
 
 /**

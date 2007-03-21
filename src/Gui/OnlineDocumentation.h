@@ -77,11 +77,11 @@ private:
 
 // --------------------------------------------------------------------
 
-class StdCmdOnlineHelp : public Command
+class StdCmdPythonHelp : public Command
 {
 public:
-  StdCmdOnlineHelp();
-  ~StdCmdOnlineHelp();
+  StdCmdPythonHelp();
+  ~StdCmdPythonHelp();
 
 protected:
   void activated(int iMsg);
@@ -89,6 +89,10 @@ protected:
 private:
   HttpServer* server;
 };
+
+// --------------------------------------------------------------------
+
+DEF_STD_CMD(StdCmdOnlineHelp);
 
 }
 
