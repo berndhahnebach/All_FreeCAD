@@ -62,7 +62,10 @@ public:
     *     writer << writer.ind() << "<PropertyVector valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
     *  }
     * \endcode
-    * The writer.ind() expresion writes the indention, just for preaty printing of the XML.
+    * The writer.ind() expresion writes the indention, just for prety printing of the XML.
+    * As you see, the writing of the XML document is not done with a DOM implementation because
+    * of performance reasons. There fore the programmer has to take care that a valid XML document
+    * is writen. That means closing tags and writing UTF8. 
     * @see Base::Writer
     */
   virtual void Save (Writer &writer) const {

@@ -50,7 +50,7 @@ namespace Base
  * base class and implement the Restore() mthode.
  *  \par
  * The reader gets mainly initialized by the App::Document on retriving a 
- * document out of a file. From there supsequentli the Restore() mthode will
+ * document out of a file. From there supsequentli the Restore() methode will
  * by called on all object stored. 
  *  \par
  * A simple Example is the Restore of App::PropertyString:
