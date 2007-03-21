@@ -35,6 +35,11 @@
 # endif
 #endif
 
+#ifdef FC_OS_WIN32
+# include <Shlobj.h>
+# include <Shfolder.h>
+#endif
+
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
@@ -68,9 +73,6 @@ namespace po = boost::program_options;
 // If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
 #include <Build/Version.h>
-
-#include <Shlobj.h>
-#include <Shfolder.h>
 
 using namespace App;
 

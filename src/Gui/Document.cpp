@@ -34,6 +34,9 @@
 #include <QCloseEvent>
 #endif
 
+//gcc
+#include <boost/bind.hpp>
+
 
 #include <Base/Console.h>
 #include <Base/Exception.h>

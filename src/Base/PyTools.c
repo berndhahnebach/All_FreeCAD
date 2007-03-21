@@ -8,6 +8,10 @@
 #include <eval.h>
 
 
+#if PY_VERSION_HEX <= 0x02050000
+#error "Use Python2.5.x or higher"
+#endif
+
 
 /*****************************************************************************
  * RUN EMBEDDED OBJECT METHODS, ACCESS OBJECT ATTRIBUTES 

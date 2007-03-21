@@ -54,6 +54,8 @@ libFreeCADBase_la_SOURCES=\
 		zipios/zipoutputstream.h \
 		Base.cpp \
 		Base.h \
+		BaseClassPy.cpp \
+		BaseClassPy.h \
 		BoundBox.h \
 		Builder3D.cpp \
 		Builder3D.h \
@@ -90,14 +92,16 @@ libFreeCADBase_la_SOURCES=\
 		ParameterPy.cpp \
 		Persistance.cpp \
 		Persistance.h \
+		PersistancePy.cpp \
+		PersistancePy.h \
 		Placement.cpp \
 		Placement.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PyExport.cpp \
 		PyExport.h \
-		PyExportImp.cpp \
-		PyExportImp.h \
+		PyObjectBase.cpp \
+		PyObjectBase.h \
 		PyTools.c \
 		PyTools.h \
 		Reader.cpp \

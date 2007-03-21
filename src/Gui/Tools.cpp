@@ -34,6 +34,11 @@
 #include <QPixmap>
 #endif
 
+// gcc
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
 #include "Tools.h"
 
 using namespace Gui;

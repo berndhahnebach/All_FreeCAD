@@ -4,46 +4,27 @@ BUILT_SOURCES=\
 		moc_Action.cpp \
 		moc_ButtonGroup.cpp \
 		moc_CommandLine.cpp \
-		moc_CustomWidgets.cpp \
-		moc_DlgActions.cpp \
 		moc_DlgActionsImp.cpp \
-		moc_DlgActivateWindow.cpp \
-		moc_DlgAuthorization.cpp \
 		moc_DlgCmdbarsImp.cpp \
-		moc_DlgCommands.cpp \
 		moc_DlgCommandsImp.cpp \
 		moc_DlgCustomizeImp.cpp \
-		moc_DlgDisplayProperties.cpp \
 		moc_DlgDisplayPropertiesImp.cpp \
-		moc_DlgEditor.cpp \
 		moc_DlgEditorImp.cpp \
-		moc_DlgGeneral.cpp \
 		moc_DlgGeneralImp.cpp \
-		moc_DlgInputDialog.cpp \
-		moc_DlgKeyboard.cpp \
-		moc_DlgMacroExecute.cpp \
+		moc_DlgInputDialogImp.cpp \
+		moc_DlgKeyboardImp.cpp \
 		moc_DlgMacroExecuteImp.cpp \
-		moc_DlgMacroRecord.cpp \
 		moc_DlgMacroRecordImp.cpp \
-		moc_DlgMaterialProperties.cpp \
-		moc_DlgOnlineHelp.cpp \
+		moc_DlgMaterialPropertiesImp.cpp \
 		moc_DlgOnlineHelpImp.cpp \
-		moc_DlgParameter.cpp \
 		moc_DlgParameterImp.cpp \
-		moc_DlgPreferences.cpp \
 		moc_DlgPreferencesImp.cpp \
-		moc_DlgProjectInformation.cpp \
-		moc_DlgReportView.cpp \
-		moc_DlgSettings3DView.cpp \
 		moc_DlgSettings3DViewImp.cpp \
-		moc_DlgSettingsColorGradient.cpp \
-		moc_DlgSettingsDocument.cpp \
+		moc_DlgSettingsColorGradientImp.cpp \
 		moc_DlgSettingsDocumentImp.cpp \
-		moc_DlgSettingsImage.cpp \
-		moc_DlgSettingsMacro.cpp \
+		moc_DlgSettingsImageImp.cpp \
 		moc_DlgSettingsMacroImp.cpp \
-		moc_DlgTipOfTheDay.cpp \
-		moc_DlgToolbars.cpp \
+		moc_DlgTipOfTheDayImp.cpp \
 		moc_DlgToolbarsImp.cpp \
 		moc_DlgUndoRedo.cpp \
 		moc_DockWindow.cpp \
@@ -51,9 +32,11 @@ BUILT_SOURCES=\
 		moc_HelpView.cpp \
 		moc_MainWindow.cpp \
 		moc_NetworkRetriever.cpp \
+		moc_OnlineDocumentation.cpp \
 		moc_PrefWidgets.cpp \
 		moc_Process.cpp \
 		moc_ProgressBar.cpp \
+		moc_PropertyPage.cpp \
 		moc_PropertyView.cpp \
 		moc_PythonConsole.cpp \
 		moc_PythonEditor.cpp \
@@ -63,60 +46,37 @@ BUILT_SOURCES=\
 		moc_StackBar.cpp \
 		moc_TextEdit.cpp \
 		moc_ToolBox.cpp \
-		moc_ToolBoxBar.cpp \
 		moc_Tree.cpp \
 		moc_View.cpp\
 		moc_View3DInventor.cpp \
 		moc_WidgetFactory.cpp \
 		moc_Widgets.cpp \
-		DlgActions.cpp \
-		DlgActions.h \
-		DlgActivateWindow.cpp \
-		DlgActivateWindow.h \
-		DlgAuthorization.cpp \
-		DlgAuthorization.h \
-		DlgCommands.cpp \
-		DlgCommands.h \
-		DlgDisplayProperties.cpp \
-		DlgDisplayProperties.h \
-		DlgEditor.cpp \
-		DlgEditor.h \
-		DlgInputDialog.cpp \
-		DlgInputDialog.h \
-		DlgKeyboard.cpp \
-		DlgKeyboard.h \
-		DlgGeneral.cpp \
-		DlgGeneral.h \
-		DlgMacroExecute.cpp \
-		DlgMacroExecute.h \
-		DlgMacroRecord.cpp \
-		DlgMacroRecord.h \
-		DlgMaterialProperties.cpp \
-		DlgMaterialProperties.h \
-		DlgOnlineHelp.cpp \
-		DlgOnlineHelp.h \
-		DlgParameter.cpp \
-		DlgParameter.h \
-		DlgPreferences.cpp \
-		DlgPreferences.h \
-		DlgProjectInformation.cpp \
-		DlgProjectInformation.h \
-		DlgReportView.cpp \
-		DlgReportView.h \
-		DlgSettings3DView.cpp \
-		DlgSettings3DView.h \
-		DlgSettingsColorGradient.cpp \
-		DlgSettingsColorGradient.h \
-		DlgSettingsDocument.cpp \
-		DlgSettingsDocument.h \
-		DlgSettingsImage.cpp \
-		DlgSettingsImage.h \
-		DlgSettingsMacro.cpp \
-		DlgSettingsMacro.h \
-		DlgTipOfTheDay.cpp \
-		DlgTipOfTheDay.h \
-		DlgToolbars.cpp \
-		DlgToolbars.h \
+		ui_AboutApplication.h \
+		ui_DlgActions.h \
+		ui_DlgActivateWindow.h \
+		ui_DlgAuthorization.h \
+		ui_DlgChooseIcon.h \
+		ui_DlgCommands.h \
+		ui_DlgDisplayProperties.h \
+		ui_DlgEditor.h \
+		ui_DlgInputDialog.h \
+		ui_DlgKeyboard.h \
+		ui_DlgGeneral.h \
+		ui_DlgMacroExecute.h \
+		ui_DlgMacroRecord.h \
+		ui_DlgMaterialProperties.h \
+		ui_DlgOnlineHelp.h \
+		ui_DlgParameter.h \
+		ui_DlgPreferences.h \
+		ui_DlgProjectInformation.h \
+		ui_DlgReportView.h \
+		ui_DlgSettings3DView.h \
+		ui_DlgSettingsColorGradient.h \
+		ui_DlgSettingsDocument.h \
+		ui_DlgSettingsImage.h \
+		ui_DlgSettingsMacro.h \
+		ui_DlgTipOfTheDay.h \
+		ui_DlgToolbars.h \
 		propertyeditor/moc_propertyeditor.cpp \
 		propertyeditor/moc_propertyeditorfile.cpp \
 		propertyeditor/moc_propertyeditorfont.cpp \
@@ -127,6 +87,8 @@ BUILT_SOURCES=\
 		Language/FreeCAD_de.h \
 		Language/qt_de.h \
 		Language/moc_Translator.cpp \
+		Icons/qrc_resource.cpp \
+		Language/qrc_translation.cpp \
 		GuiInitScript.h
 
 
@@ -145,13 +107,7 @@ libFreeCADGui_la_SOURCES=\
 		propertyeditor/propertyeditorinput.h \
 		propertyeditor/propertyeditorlist.cpp \
 		propertyeditor/propertyeditorlist.h \
-		propertyeditor/knuminput.cpp \
-		propertyeditor/knuminput.h \
-		propertyeditor/knumvalidator.cpp \
-		propertyeditor/knumvalidator.h \
 		\
-		Language/LanguageFactory.cpp \
-		Language/LanguageFactory.h \
 		Language/Translator.cpp \
 		Language/Translator.h \
 		\
@@ -162,10 +118,6 @@ libFreeCADGui_la_SOURCES=\
 		Application.h \
 		BitmapFactory.cpp \
 		BitmapFactory.h \
-		ButtonGroup.cpp \
-		ButtonGroup.h \
-		CommandLine.cpp \
-		CommandLine.h \
 		Command.cpp \
 		Command.h \
 		CommandBarManager.cpp \
@@ -176,8 +128,6 @@ libFreeCADGui_la_SOURCES=\
 		CommandWindow.cpp  \
 		CommandTest.cpp \
 		CommandView.cpp \
-		CustomWidgets.cpp \
-		CustomWidgets.h \
 		DlgActionsImp.cpp \
 		DlgActionsImp.h \
 		DlgActivateWindowImp.cpp \
@@ -253,6 +203,8 @@ libFreeCADGui_la_SOURCES=\
 		MouseModel.h \
 		NetworkRetriever.cpp \
 		NetworkRetriever.h \
+		OnlineDocumentation.cpp \
+		OnlineDocumentation.h \
 		PreCompiled.cpp \
 		PreCompiled.h \
 		PrefWidgets.cpp \
@@ -300,16 +252,12 @@ libFreeCADGui_la_SOURCES=\
 		Splashscreen.h \
 		SplitView3DInventor.cpp \
 		SplitView3DInventor.h \
-		StackBar.cpp \
-		StackBar.h \
 		TextEdit.cpp \
 		TextEdit.h \
 		ToolBarManager.cpp \
 		ToolBarManager.h \
 		ToolBox.cpp \
 		ToolBox.h \
-		ToolBoxBar.cpp \
-		ToolBoxBar.h \
 		Tools.cpp \
 		Tools.h \
 		Tree.cpp \
@@ -415,6 +363,9 @@ libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) 
 libFreeCADGui_la_LIBADD   =\
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lQt3Support\
+		-lQtCore\
+		-lQtGui\
 		-lqui\
 		-lFreeCADBase \
 		-lFreeCADApp
@@ -429,10 +380,13 @@ moc_%.cpp: %.h
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
-%.h: %.ui
+ui_%.h: %.ui
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui
-	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
+
+# rules for Qt Resource Compiler:
+# (it adds path to #include automatically, so cd before calling it)
+qrc_%.cpp: %.qrc
+	cd $(@D) && $(QT_RCC) -name $(<F) $(<F) -o $(@F)
 
 # rule for translation files using python script :
 %.h: %.ts
