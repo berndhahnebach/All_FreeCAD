@@ -254,17 +254,17 @@ void HttpServer::discardClient()
 
 // --------------------------------------------------------------------
 
-StdCmdOnlineHelp::StdCmdOnlineHelp()
-  : Command("Std_OnlineHelp"), server(0)
+StdCmdPythonHelp::StdCmdPythonHelp()
+  : Command("Std_PythonHelp"), server(0)
 {
   sGroup        = QT_TR_NOOP("Tools");
-  sMenuText     = QT_TR_NOOP("Help");
-  sToolTipText  = QT_TR_NOOP("Opens a browser to show the online help");
-  sWhatsThis    = QT_TR_NOOP("Opens a browser to show the online help");
-  sStatusTip    = QT_TR_NOOP("Opens a browser to show the online help");
+  sMenuText     = QT_TR_NOOP("Python Help");
+  sToolTipText  = QT_TR_NOOP("Opens a browser to show the Python help");
+  sWhatsThis    = QT_TR_NOOP("Opens a browser to show the Python help");
+  sStatusTip    = QT_TR_NOOP("Opens a browser to show the Python help");
 }
 
-StdCmdOnlineHelp::~StdCmdOnlineHelp()
+StdCmdPythonHelp::~StdCmdPythonHelp()
 {
   if (server) {
     server->close();
@@ -272,7 +272,7 @@ StdCmdOnlineHelp::~StdCmdOnlineHelp()
   }
 }
 
-void StdCmdOnlineHelp::activated(int iMsg)
+void StdCmdPythonHelp::activated(int iMsg)
 {
   // try to open a connection over this port
   qint16 port = 7465;
@@ -314,6 +314,48 @@ void StdCmdOnlineHelp::activated(int iMsg)
   } else {
     QMessageBox::critical(Gui::getMainWindow(), HttpServer::tr("No Server"), 
       HttpServer::tr("Unable to start the server to port %1: %2.").arg(port).arg(server->errorString()));
+  }
+}
+
+StdCmdOnlineHelp::StdCmdOnlineHelp()
+  :Command("Std_OnlineHelp")
+{
+  sGroup        = QT_TR_NOOP("Help");
+  sMenuText     = QT_TR_NOOP("Help");
+  sToolTipText  = QT_TR_NOOP("Show help to the application");
+  sWhatsThis    = QT_TR_NOOP("Help");
+  sStatusTip    = QT_TR_NOOP("Help");
+  sPixmap       = "help";
+}
+
+void StdCmdOnlineHelp::activated(int iMsg)
+{
+  // The webbrowser Python module allows to start the system browser in an OS-independent way
+  bool failed = true;
+  PyObject* module = PyImport_ImportModule("webbrowser");
+  if ( module ) {
+    // get the methods dictionary and search for the 'open' method
+    PyObject* dict = PyModule_GetDict(module);
+    PyObject* func = PyDict_GetItemString(dict, "open");
+    if ( func ) {
+      ParameterGrp::handle hURLGrp = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/OnlineHelp");
+      std::string url = hURLGrp->GetASCII("DownloadURL", "http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page");
+      PyObject* args = Py_BuildValue("(s)", url.c_str());
+      PyObject* result = PyEval_CallObject(func,args);
+      if (result)
+        failed = false;
+        
+      // decrement the args and module reference
+      Py_XDECREF(result);
+      Py_DECREF(args);
+      Py_DECREF(module);
+    }
+  } 
+
+  // print error message on failure
+  if (failed) {
+    QMessageBox::critical(Gui::getMainWindow(), QObject::tr("No Browser"), 
+      QObject::tr("Unable to open your system browser."));
   }
 }
 

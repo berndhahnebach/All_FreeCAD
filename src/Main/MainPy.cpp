@@ -94,6 +94,7 @@ extern "C" {
 
 	// Init phase ===========================================================
   App::Application::Config()["ExeName"] = "FreeCAD";
+  App::Application::Config()["ExeVendor"] = "FreeCAD";
   App::Application::Config()["ExeVersion"] = "0.7";
 
 

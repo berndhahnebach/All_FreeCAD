@@ -756,7 +756,7 @@ void Application::initConfig(int argc, char ** argv)
 	_argv = argv;
 
 	// extract home paths
-	ExtractUser();
+	ExtractUserPath();
 
 #	ifdef FC_DEBUG
 		mConfig["Debug"] = "1";
@@ -972,8 +972,9 @@ void Application::LoadParameters(void)
 	  if(_pcSysParamMngr->LoadOrCreateDocument(mConfig["SystemParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
 	  {
 		  Console().Warning("   Parameter not existing, write initial one\n");
-		  Console().Message("   This Warning means normaly FreeCAD running the first time or the\n"
-		                       "   configuration was deleted or moved.Build up the standard configuration.\n");
+		  Console().Message("   This warning normally means that FreeCAD is running the first time\n"
+		                    "   or the configuration was deleted or moved. Build up the standard\n"
+		                    "   configuration.\n");
 
 	  }
   } catch (Base::Exception& e) {
@@ -987,9 +988,9 @@ void Application::LoadParameters(void)
 	  if(_pcUserParamMngr->LoadOrCreateDocument(mConfig["UserParameter"].c_str()) && !(mConfig["Verbose"] == "Strict"))
 	  {
 		  Console().Warning("   User settings not existing, write initial one\n");
-		  Console().Message("   This Warning means normaly you running FreeCAD the first time\n"
-		                       "   or your configuration was deleted or moved. The system defaults\n"
-		                       "   will be reestablished for you.\n");
+		  Console().Message("   This warning normally means that FreeCAD is running the first time\n"
+		                    "   or your configuration was deleted or moved. The system defaults\n"
+		                    "   will be reestablished for you.\n");
 
 	  }
   } catch(Base::Exception& e) {
@@ -1276,75 +1277,97 @@ void Application::ParseOptions(int argc, char ** argv)
 
 #endif
 
-void Application::ExtractUser()
+void Application::ExtractUserPath()
 {
 	// std paths
 	mConfig["BinPath"] = mConfig["AppHomePath"] + "bin" + PATHSEP;
 	mConfig["DocPath"] = mConfig["AppHomePath"] + "doc" + PATHSEP;
 
-	// try to figure out if using FreeCADLib
-	//mConfig["FreeCADLib"] = EnvMacro::GetFreeCADLib(mConfig["AppHomePath"].c_str());
-
-	// try to figure out the user
-	char* user = getenv("USERNAME");
-	if (user == NULL)
-		user = getenv("USER");
-	if (user == NULL)
-		user = "Anonymous";
-	mConfig["UserName"] = user;
-
-  // On Linux systems the environment variable 'HOME' is set while Windows systems
-  // have set 'HOMEDRIVE' and 'HOMEPATH' to get the user's home directory.
-  // In the rare case that none of them are set we get the directory where FreeCAD is
-  // installed as a fallback solution.
+#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
+  // On Linux systems the environment variable 'HOME' points to the user home path.
   //
   // Default paths for the user depending on the platform 
-#if defined(FC_OS_LINUX) || defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
   if(getenv("HOME") != 0)
     mConfig["UserHomePath"] = getenv("HOME");
-  mConfig["UserAppData"] = mConfig["UserHomePath"];
+  
+  // Try to write into our data path
+  std::string appData = mConfig["UserHomePath"];
+  appData += PATHSEP; appData += "."; appData += mConfig["ExeVendor"];
+  Base::FileInfo fi(appData.c_str());
+  if (!fi.exists()) {
+    if (!fi.createDirectory(appData.c_str())) {
+      // Want more details on console
+      printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
+      // FIXME: Who should catch this exception?
+      throw Base::Exception("Application::ExtractUserPath(): could not write in AppData directory!");
+    }
+  }
+
+  appData += PATHSEP; appData += mConfig["ExeName"];
+  fi.setFile(appData.c_str());
+  if (!fi.exists()) {
+    if (!fi.createDirectory(appData.c_str())) {
+      // Want more details on console
+      printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
+      // FIXME: Who should catch this exception?
+      throw Base::Exception("Application::ExtractUserPath(): could not write in AppData directory!");
+    }
+  }
 
   // Actually the name of the directory where the parameters are stored should be the name of
   // the application due to branding reasons.
-  mConfig["UserAppData"] += "/." + mConfig["ExeName"] + "/";
+  appData += PATHSEP;
+  mConfig["UserAppData"] = appData;
+
 #elif defined(FC_OS_WIN32)
   TCHAR szPath[MAX_PATH];
-  if (SUCCEEDED(SHGetFolderPath(NULL, 
-                                CSIDL_MYDOCUMENTS , 
-                                NULL, 
-                                0, 
-                                szPath))) 
+  // Get the default path where we can save our documents. It seems that 
+  // 'CSIDL_MYDOCUMENTS' doesn't work on all machines, so we use 'CSIDL_PERSONAL'
+  // which does the same.
+  if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_MYDOCUMENTS, NULL, 0, szPath))) 
+    mConfig["UserHomePath"] = szPath;
+  else if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL, NULL, 0, szPath))) 
     mConfig["UserHomePath"] = szPath;
   else
     mConfig["UserHomePath"] = mConfig["AppHomePath"];
-  // In the second step we want the directory where user settings of FreeCAD can be
-  // kept. On Windows usually 'APPDATA' is set supplemented by 'FreeCAD'.
-  // On Linux the directory '.FreeCAD' (with a leading dot) is created directly under
-  // the home path.
-  if (SUCCEEDED(SHGetFolderPath(NULL, 
-                                CSIDL_APPDATA , 
-                                NULL, 
-                                0, 
-                                szPath))) {
-    mConfig["UserAppData"] = szPath;
+  
+  // In the second step we want the directory where user settings of the application can be
+  // kept. There we create a directory with name of the vendor and a sub-directory with name
+  // of the application.
+  if (SUCCEEDED(SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, szPath))) {
+    std::string appData = szPath;
+
+    // Try to write into our data path
+    appData += PATHSEP; appData += mConfig["ExeVendor"];
+    Base::FileInfo fi(appData.c_str());
+    if (!fi.exists()) {
+ 	    if (!fi.createDirectory(appData.c_str())) {
+        // Want more details on console
+        printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
+        std::string error = "Cannot create directory "; error += appData;
+        throw Base::Exception(error);
+      }
+    }
+
+    appData += PATHSEP; appData += mConfig["ExeName"];
+    fi.setFile(appData.c_str());
+    if (!fi.exists()) {
+ 	    if (!fi.createDirectory(appData.c_str())) {
+        // Want more details on console
+        printf("Application::ExtractUserPath(): Could not create directory '%s'\n", appData.c_str());
+        std::string error = "Cannot create directory "; error += appData;
+        throw Base::Exception(error);
+      }
+    }
 
     // Actually the name of the directory where the parameters are stored should be the name of
     // the application due to branding reasons.
-    mConfig["UserAppData"] += "/" + mConfig["ExeName"] + "/";
+    appData += PATHSEP;
+    mConfig["UserAppData"] = appData;
   }
+#else
+# error "Implement ExtractUserPath() for your platform."
 #endif
-
-  // Try to write into our data path
-  Base::FileInfo fi(mConfig["UserAppData"].c_str());
-  if ( ! fi.exists() ) {
- 	  if ( ! fi.createDirectory( mConfig["UserAppData"].c_str() ) )
-    {
-      // Want more details on console
-      printf("Application::ExtractUser(): Could not create directory '%s'\n", mConfig["UserAppData"].c_str());
-      // FIXME: Who should catch this exception?
-      throw Base::Exception("Application::ExtractUser(): could not write in AppData directory!");
-    }
-  }
 }
 
 #if defined (FC_OS_LINUX)

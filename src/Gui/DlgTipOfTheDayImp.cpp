@@ -106,10 +106,13 @@ void DlgTipOfTheDayImp::reload()
   // show standard tip if site is not found
   if ( _lTips.empty() )
   {
-    _lTips << QString("If you want to make use of the Tip-of-the-day you must download "
-                      "FreeCAD's online help from <a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
-                      "http://freecad.juergen-riegel.net/Docu/</a>."
-                      "To download the online help press Help -> Download online help.");
+    //_lTips << QString("If you want to make use of the Tip-of-the-day you must download "
+    //                  "FreeCAD's online help from <a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
+    //                  "http://freecad.juergen-riegel.net/Docu/</a>."
+    //                  "To download the online help press Help -> Download online help.");
+    _lTips << QString("If you want to learn more about FreeCAD you must go to "
+                      "<a href=\"http://juergen-riegel.net/FreeCAD/Docu/index.php?title=Main_Page\">"
+                      "http://freecad.juergen-riegel.net/Docu/</a> or press the Help item in the Help menu.");
   }
 }
 

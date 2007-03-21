@@ -262,7 +262,7 @@ private:
 	/// print the help massage
 	static void PrintInitHelp(void);
 	/// figure out some things
-	static void ExtractUser();
+	static void ExtractUserPath();
 	/// load the user and system parameter set
 	static void LoadParameters(void);
 	/// puts the given env variable in the config
