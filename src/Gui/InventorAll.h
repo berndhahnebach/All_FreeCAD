@@ -7,6 +7,7 @@
 #include <Inventor/SbBox.h>
 #include <Inventor/SbClip.h>
 #include <Inventor/SbColor.h>
+#include <Inventor/SoDB.h>
 #include <Inventor/SoInput.h>
 #include <Inventor/SoInteraction.h> 
 #include <Inventor/SbLinear.h>

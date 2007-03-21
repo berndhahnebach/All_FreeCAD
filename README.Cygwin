@@ -8,11 +8,11 @@ Prerequisites
 To compile FreeCAD, you will need, besides functioning Cygwin environment
 and programming tools (like compiler), the following libraries:
 
-o Python (http://www.python.org), I have 2.3
-o Qt (http://www.trolltech.no), >= 3.2.x, I have 3.2.1
-o Coin3D (http://www.coin3d.org), >= 2.x, I have 2.2.1
-o SoQt (http://www.coin3d.org), >= 1.x, I have 1.0.2
-o Xerces-c (http://xml.apache.org/dist/xerces-c/), mine is 2.4
+o Python (http://www.python.org), >= 2.5.x
+o Qt (http://www.trolltech.no), >= 4.1.x
+o Coin3D (http://www.coin3d.org), >= 2.4.x
+o SoQt (http://www.coin3d.org), >= 1.2.x
+o Xerces-c (http://xml.apache.org/dist/xerces-c/)
 o zlib (http://www.zlib.net/)
 
 As far as I know, except of Coin3D and SoQt all libraries are available as prebuilt
@@ -30,16 +30,16 @@ There are various problems with X11 functions and Windows API functions which I
 don't know how to solve.
 
 And for the Mesh module of FreeCAD the additional libraries
-o GTS Library (http://gts.sourceforge.net), I have 0.7.3
-o Wild Magic (http://www.geometrictools.com), I have 3.3
-o OpenCASCADE (http://www.opencascade.org), you need >=5.1 here, I have 5.2
+o GTS Library (http://gts.sourceforge.net)
+o Wild Magic (http://www.geometrictools.com)
+o OpenCASCADE (http://www.opencascade.org), you need >=5.2 here
 are required. OpenCASCADE is also needed by the Part and Raytracing modules.
 
 Note: As OpenCASCADE that is also required by the Mesh, Part and Raytracing
       modules is not available for Cygwin it is not possible to build them
       for this platform. It is planned for the future to move all OpenCASCADE
       dependencies of the Mesh module into a separate module so that at least
-      this module can bebuilt under Cygwin.
+      this module can be built under Cygwin.
 
 Note: All libraries listed above must be built as shared library. Refer to their
       documentation to see how to do.

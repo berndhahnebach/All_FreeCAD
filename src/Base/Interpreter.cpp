@@ -41,6 +41,9 @@ unsigned int format2_len = 1024;
 
 using namespace Base;
 
+#if PY_VERSION_HEX <= 0x02050000
+#error "Use Python2.5.x or higher"
+#endif
 
 
 PyException::PyException(void)

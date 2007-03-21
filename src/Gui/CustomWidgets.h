@@ -19,7 +19,7 @@
  *   Suite 330, Boston, MA  02111-1307, USA                                *
  *                                                                         *
  ***************************************************************************/
-
+#error "Do not include"
 
 #ifndef CUSTOM_WIDGETS_H__
 #define CUSTOM_WIDGETS_H__

@@ -28,7 +28,7 @@
 #include <QtGui/qcolordialog.h>
 #include <QtGui/qcombobox.h>
 #include <QtGui/qcursor.h>
-#include <QtGui/QDesktopWidget.h> 
+#include <QtGui/QDesktopWidget> 
 #include <QtGui/QDockWidget>
 #include <QtGui/qdrawutil.h>
 #include <QtGui/qevent.h>
@@ -83,6 +83,6 @@
 #include <QtNetwork/QHttpRequestHeader>
 #include <QtNetwork/QTcpServer>
 #include <QtNetwork/QTcpSocket>
-#include <QtOpenGl/qgl.h>
+#include <QtOpenGL/qgl.h>
 
 #endif

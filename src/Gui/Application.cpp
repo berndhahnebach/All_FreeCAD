@@ -23,6 +23,9 @@
 
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+# include "InventorAll.h"
+#endif
 
 // FreeCAD Base header
 #include <Base/Console.h>

@@ -24,7 +24,9 @@
 #ifndef GUI_SOFCBACKGROUNDGRADIENT_H
 #define GUI_SOFCBACKGROUNDGRADIENT_H
 
-#include <Inventor/nodes/SoSeparator.h>
+#ifndef __InventorAll__
+# include "InventorAll.h"
+#endif
 
 class SoCoordinate3;
 class SoMFString;

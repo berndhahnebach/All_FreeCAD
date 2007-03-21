@@ -24,7 +24,9 @@
 #ifndef GUI_SOFCINTERACTIVEELEMENT_H
 #define GUI_SOFCINTERACTIVEELEMENT_H
 
-#include <Inventor/elements/SoReplacedElement.h>
+#ifndef __InventorAll__
+# include "InventorAll.h"
+#endif
 
 
 namespace Gui {

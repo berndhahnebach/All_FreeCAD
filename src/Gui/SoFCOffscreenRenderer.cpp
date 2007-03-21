@@ -22,6 +22,10 @@
 
 #include "PreCompiled.h"
 
+//gcc
+# include <iomanip>
+# include <ios>
+
 #include <Base/FileInfo.h>
 #include <Base/Exception.h>
 #include <Base/Console.h>
