@@ -2,8 +2,6 @@ lib_LTLIBRARIES=libFreeCADGui.la
 
 BUILT_SOURCES=\
 		moc_Action.cpp \
-		moc_ButtonGroup.cpp \
-		moc_CommandLine.cpp \
 		moc_DlgActionsImp.cpp \
 		moc_DlgCmdbarsImp.cpp \
 		moc_DlgCommandsImp.cpp \
@@ -43,7 +41,6 @@ BUILT_SOURCES=\
 		moc_ReportView.cpp \
 		moc_SpinBox.cpp \
 		moc_Splashscreen.cpp \
-		moc_StackBar.cpp \
 		moc_TextEdit.cpp \
 		moc_ToolBox.cpp \
 		moc_Tree.cpp \
@@ -82,13 +79,14 @@ BUILT_SOURCES=\
 		propertyeditor/moc_propertyeditorfont.cpp \
 		propertyeditor/moc_propertyeditorinput.cpp \
 		propertyeditor/moc_propertyeditoritem.cpp \
-		propertyeditor/knuminput.moc \
-		propertyeditor/knumvalidator.moc \
 		Language/moc_Translator.cpp \
 		Icons/qrc_resource.cpp \
 		Language/qrc_translation.cpp \
 		GuiInitScript.h
 
+SOURCES=\
+		Icons/qrc_resource.cpp \
+		Language/qrc_translation.cpp
 
 libFreeCADGui_la_SOURCES=\
 		propertyeditor/propertyeditor.cpp \
@@ -309,15 +307,20 @@ EXTRA_DIST = \
 		Icons/BmpFactoryIcons.cpp \
 		Icons/default_background.xpm \
 		Icons/developers.h \
+		Icons/bulb.xpm \
+		Icons/button_down.xpm \
+		Icons/button_left.xpm \
+		Icons/button_right.xpm \
+		Icons/button_up.xpm \
 		Icons/Document.xpm \
 		Icons/FCIcon.xpm \
 		Icons/Feature.xpm \
+		Icons/SplashScreen.xpm \
 		Icons/images.cpp \
 		Icons/Icons.h \
 		Icons/ParamDlgImgs.h \
-		Language/linguist/LICENSE \
-		Language/linguist/metatranslator.cpp \
-		Language/linguist/metatranslator.h \
+		Icons/resource.qrc \
+		Language/translation.qrc \
 		Language/FreeCAD.po \
 		Language/FreeCAD_de.qm \
 		Language/FreeCAD_de.ts \
@@ -326,9 +329,14 @@ EXTRA_DIST = \
 		Language/qt_de.ts \
 		DllMain.cpp \
 		Libs.cpp \
+		Qt3All.h \
+		Qt4All.h \
+		InventorAll.h \
+		AboutApplication.ui \
 		DlgActions.ui \
 		DlgActivateWindow.ui \
 		DlgAuthorization.ui \
+		DlgChooseIcon.ui \
 		DlgCommands.ui \
 		DlgDisplayProperties.ui \
 		DlgEditor.ui \

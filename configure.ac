@@ -296,6 +296,12 @@ if test x$QT_UIC = x; then
 	AC_MSG_ERROR([Cannot find Qt user interface compiler (uic), bye...])
 fi;
 
+QT_CXXFLAGS="-I/usr/include/qt4 -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4/Qt3Support -DQT_THREAD_SUPPORT"
+QT_UIC=/usr/share/qt4/bin/uic
+QT_MOC=/usr/share/qt4/bin/moc
+QT_RCC=/usr/share/qt4/bin/rcc
+AC_SUBST(QT_RCC)
+
 dnl checking for Coin
 dnl **************************************************************************
 

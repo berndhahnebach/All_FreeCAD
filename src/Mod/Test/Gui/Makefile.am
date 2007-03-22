@@ -75,6 +75,7 @@ EXTRA_DIST = \
 		$(data_DATA) \
 		AppTestGui.vcproj \
 		UnitTest.ui \
+		translation.qrc \
 		Test_de.qm \
 		Test_de.ts \
 		qtunittest.py

@@ -87,6 +87,7 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		DlgSettingsRay.ui \
 		FreeCADpov \
+		translation.qrc \
 		Raytracing_de.qm \
 		Raytracing_de.ts \
 		AppRaytracingGui.vcproj \

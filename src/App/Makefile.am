@@ -78,7 +78,7 @@ libFreeCADApp_la_LIBADD   = \
 		-lboost_signals
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I..
+INCLUDES= $(all_includes) -I$(top_srcdir)/src
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCApp

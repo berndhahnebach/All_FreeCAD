@@ -73,6 +73,7 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		DlgPointsRead.ui \
 		AppPointsGui.vcproj \
+		Points.qrc \
 		Points_de.qm \
 		Points_de.ts \
 		Libs.cpp
