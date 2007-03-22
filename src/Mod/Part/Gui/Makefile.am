@@ -141,6 +141,7 @@ EXTRA_DIST = \
 		DlgPartImportIges.ui \
 		DlgPartImportStep.ui \
 		DlgSettings3DViewPart.ui \
+		Part.qrc \
 		Part_de.qm \
 		Part_de.ts \
 		Part.qrc \

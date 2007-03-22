@@ -105,6 +105,7 @@ EXTRA_DIST = \
 		AppMeshGui.vcproj \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \
+		Mesh.qrc \
 		Mesh_de.qm \
 		Mesh_de.ts \
 		Libs.cpp \
