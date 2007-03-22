@@ -35,7 +35,6 @@ EXTRA_DIST = \
 		ImageTools/ImageConv/cmdline.htm \
 		ImageTools/ImageConv/imageconv.cpp \
 		ImageTools/ImageConv/imageconv.h \
-		ImageTools/ImageConv/ImageConv.dsp \
 		ImageTools/ImageConv/ImageConv.pro \
 		ImageTools/ImageConv/main.cpp \
 		plugins/widget/customwidgets.cpp \

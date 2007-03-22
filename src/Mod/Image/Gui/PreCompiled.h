@@ -1,7 +1,7 @@
 #ifndef __PRECOMPILED_GUI__
 #define __PRECOMPILED_GUI__
 
-#include "../../../FCConfig.h"
+#include <FCConfig.h>
 
 // Importing of App classes
 #ifdef FC_OS_WIN32
@@ -12,21 +12,20 @@
 # define ImageGuiExport
 #endif
 
-#ifdef _PreComp_
+
 /// here get the warnings of to long specifieres disabled (needed for VC6)
 #ifdef _MSC_VER
-#	pragma warning( disable : 4251 )
-#	pragma warning( disable : 4503 )
-#	pragma warning( disable : 4786 )  // specifier longer then 255 chars
+# pragma warning( disable : 4251 )
+# pragma warning( disable : 4503 )
+# pragma warning( disable : 4786 )  // specifier longer then 255 chars
 #endif
+
+// Python
+#include <Python.h>
 
 // standard
 #include <iostream>
-//#include <stdio.h>
 #include <assert.h>
-//#include <io.h>
-//#include <fcntl.h>
-//#include <ctype.h>
 #include <math.h>
 
 // STL
@@ -37,12 +36,9 @@
 #include <set>
 #include <algorithm>
 #include <stack>
-#include <queue>
-
- 
-#include <Python.h>
+#include <queue> 
 #ifdef FC_OS_WIN32
-#	include <windows.h>
+# include <windows.h>
 #endif
 
 // Qt Toolkit
@@ -57,5 +53,4 @@
 #include <xercesc/util/XercesDefs.hpp>
 
 
-#endif
-#endif
+#endif // __PRECOMPILED_GUI__

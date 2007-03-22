@@ -84,8 +84,6 @@ BUILT_SOURCES=\
 		propertyeditor/moc_propertyeditoritem.cpp \
 		propertyeditor/knuminput.moc \
 		propertyeditor/knumvalidator.moc \
-		Language/FreeCAD_de.h \
-		Language/qt_de.h \
 		Language/moc_Translator.cpp \
 		Icons/qrc_resource.cpp \
 		Language/qrc_translation.cpp \
@@ -321,8 +319,10 @@ EXTRA_DIST = \
 		Language/linguist/metatranslator.cpp \
 		Language/linguist/metatranslator.h \
 		Language/FreeCAD.po \
+		Language/FreeCAD_de.qm \
 		Language/FreeCAD_de.ts \
 		Language/FreeCAD_fr.ts \
+		Language/qt_de.qm \
 		Language/qt_de.ts \
 		DllMain.cpp \
 		Libs.cpp \
@@ -352,7 +352,6 @@ EXTRA_DIST = \
 		DlgTipOfTheDay.ui \
 		DlgToolbars.ui \
 		FreeCADGuiInit.py \
-		FreeCADGui.dsp \
 		FreeCADGui.vcproj
 
 data_DATA = Icons/FCIcon.xpm
@@ -386,11 +385,7 @@ ui_%.h: %.ui
 # rules for Qt Resource Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
-	cd $(@D) && $(QT_RCC) -name $(<F) $(<F) -o $(@F)
-
-# rule for translation files using python script :
-%.h: %.ts
-	cd $(@D) && $(PYTHON) $(top_srcdir)/../src/Tools/qembed.py $(<F)  $(@F) $(*F)
+	cd $(@D) && $(QT_RCC) -name $(*F) $(<F) -o $(@F)
 
 %Script.h: FreeCAD%.py
 	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(<F) $@

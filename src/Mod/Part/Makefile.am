@@ -5,5 +5,4 @@ datadir = $(prefix)/Mod/Part
 data_DATA = Init.py InitGui.py
 
 EXTRA_DIST = \
-		Init.py \
-		InitGui.py
+		$(data_DATA) 

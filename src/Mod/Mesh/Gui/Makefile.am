@@ -5,14 +5,11 @@ if GTS_LIBRARY_FILES
 lib_LTLIBRARIES=libMeshGui.la MeshGui.la
 
 BUILT_SOURCES=\
-		DlgEvaluateMesh.cpp \
-		DlgEvaluateMesh.h \
-		DlgRegularSolid.cpp \
-		DlgRegularSolid.h \
-		moc_DlgEvaluateMesh.cpp \
+		ui_DlgEvaluateMesh.h \
+		ui_DlgRegularSolid.h \
 		moc_DlgEvaluateMeshImp.cpp \
-		moc_DlgRegularSolid.cpp \
-		Mesh_de.h
+		moc_DlgRegularSolidImp.cpp \
+		qrc_Mesh.cpp 
 
 libMeshGui_la_SOURCES=\
 		Command.cpp \
@@ -85,14 +82,13 @@ moc_%.cpp: %.h
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
-%.h: %.ui
+ui_%.h: %.ui
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui
-	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
-# rule for translation files using python script :
-%.h: %.ts
-	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
+# rules for Qt Resource Compiler:
+# (it adds path to #include automatically, so cd before calling it)
+qrc_%.cpp: %.qrc
+	cd $(@D) && $(QT_RCC) -name $(*F) $(<F) -o $(@F)
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(WM3_CFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I../../../ -I../App
@@ -106,10 +102,10 @@ libdir = $(prefix)/Mod/Mesh
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppMeshGui.dsp \
 		AppMeshGui.vcproj \
 		DlgEvaluateMesh.ui \
 		DlgRegularSolid.ui \
+		Mesh_de.qm \
 		Mesh_de.ts \
 		Libs.cpp \
 		images.h

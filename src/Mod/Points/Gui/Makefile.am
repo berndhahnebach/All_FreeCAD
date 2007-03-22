@@ -2,11 +2,9 @@
 lib_LTLIBRARIES=libPointsGui.la PointsGui.la
 
 BUILT_SOURCES=\
-		DlgPointsRead.cpp \
-		DlgPointsRead.h \
-		moc_DlgPointsRead.cpp \
+		ui_DlgPointsRead.h \
 		moc_DlgPointsReadImp.cpp \
-		Points_de.h
+		qrc_Points.cpp 
 
 libPointsGui_la_SOURCES=\
 		Command.cpp \
@@ -57,14 +55,13 @@ moc_%.cpp: %.h
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
-%.h: %.ui
+ui_%.h: %.ui
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui
-	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
-# rule for translation files using python script :
-%.h: %.ts
-	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
+# rules for Qt Resource Compiler:
+# (it adds path to #include automatically, so cd before calling it)
+qrc_%.cpp: %.qrc
+	cd $(@D) && $(QT_RCC) -name $(*F) $(<F) -o $(@F)
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
@@ -75,7 +72,7 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 		DlgPointsRead.ui \
-		AppPointsGui.dsp \
 		AppPointsGui.vcproj \
+		Points_de.qm \
 		Points_de.ts \
 		Libs.cpp

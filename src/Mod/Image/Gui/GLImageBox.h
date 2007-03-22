@@ -21,6 +21,9 @@
 
 #include "../App/ImageBase.h"
 
+#ifndef __Qt4All__
+# include <Gui/Qt4All.h>
+#endif
 
 namespace ImageGui
 {

@@ -77,5 +77,4 @@ libdir = $(prefix)/Mod/_TEMPLATE_
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		App_TEMPLATE_Gui.dsp \
 		App_TEMPLATE_Gui.vcproj

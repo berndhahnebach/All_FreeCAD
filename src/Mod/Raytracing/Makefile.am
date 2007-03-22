@@ -5,6 +5,4 @@ datadir = $(prefix)/Mod/Raytracing
 data_DATA = Init.py InitGui.py
 
 EXTRA_DIST = \
-		AppRaytracing.dsw \
-		Init.py \
-		InitGui.py
+		$(data_DATA) 

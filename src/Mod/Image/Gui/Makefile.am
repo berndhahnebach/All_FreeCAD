@@ -4,7 +4,7 @@ lib_LTLIBRARIES=libImageGui.la ImageGui.la
 BUILT_SOURCES=\
 		moc_GLImageBox.cpp \
 		moc_ImageView.cpp \
-		Image_de.h
+		qrc_translation.cpp 
 
 libImageGui_la_SOURCES=\
 		AppImageGuiPy.cpp \
@@ -58,14 +58,13 @@ moc_%.cpp: %.h
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
-%.h: %.ui
+ui_%.h: %.ui
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui
-	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
-# rule for translation files using python script :
-%.h: %.ts
-	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
+# rules for Qt Resource Compiler:
+# (it adds path to #include automatically, so cd before calling it)
+qrc_%.cpp: %.qrc
+	cd $(@D) && $(QT_RCC) -name $(*F) $(<F) -o $(@F)
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
@@ -75,8 +74,8 @@ libdir = $(prefix)/Mod/Image
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		AppImageGui.dsp \
 		AppImageGui.vcproj \
 		Libs.cpp \
+		Image_de.qm \
 		Image_de.ts \
 		XpmImages.h

@@ -15,5 +15,4 @@ data_DATA = \
 EXTRA_DIST = \
 		$(data_DATA) \
 		unittestgui.py \
-		AppTest.dsp \
 		AppTest.vcproj

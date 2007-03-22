@@ -55,6 +55,5 @@ INCLUDES= $(all_includes) -I../../../
 libdir = $(prefix)/Mod/Points
 
 EXTRA_DIST = \
-		AppPoints.dsp \
 		AppPoints.vcproj \
 		Libs.cpp

@@ -5,6 +5,4 @@ datadir = $(prefix)/Mod/Points
 data_DATA = Init.py InitGui.py
 
 EXTRA_DIST = \
-		AppPoints.dsw \
-		Init.py \
-		InitGui.py
+		$(data_DATA) 
