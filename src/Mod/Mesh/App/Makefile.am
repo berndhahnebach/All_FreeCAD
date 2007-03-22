@@ -126,6 +126,5 @@ endif
 libdir = $(prefix)/Mod/Mesh
 
 EXTRA_DIST = \
-		AppMesh.dsp \
 		AppMesh.vcproj \
 		Libs.cpp

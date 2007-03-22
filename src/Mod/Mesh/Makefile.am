@@ -5,5 +5,4 @@ datadir = $(prefix)/Mod/Mesh
 data_DATA = Init.py InitGui.py BuildRegularGeoms.py 
 
 EXTRA_DIST = \
-		$(data_DATA) \
-		AppMesh.dsw 
+		$(data_DATA) 

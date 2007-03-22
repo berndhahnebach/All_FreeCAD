@@ -139,7 +139,6 @@ libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 EXTRA_DIST = \
 		DllMain.cpp \
-		FreeCADBase.dsp \
 		FreeCADBase.vcproj \
 		Libs.cpp
 

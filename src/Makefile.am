@@ -5,7 +5,6 @@ EXTRA_DIST = \
 		Build/FreeCADBase.wxs \
 		Build/FreeCADDoc.wxs \
 		Build/FreeCADModules.wxs \
-		Build/Install.dsp \
 		Build/Install.vcproj \
 		Build/LibPackDll.wxi \
 		Build/License.rtf \
@@ -19,14 +18,9 @@ EXTRA_DIST = \
 		Build/Version.wxi.in \
 		Build/BuildDocDoxy.cfg \
 		Build/BuildDocDoxyFull.cfg \
-		Build/BuildSourceDoc.dsp \
 		Build/BuildSourceDoc.vcproj \
-		Build/BuildExtractRevision.dsp \
 		Build/BuildExtractRevision.vcproj \
-		All.dsp \
 		All.vcproj \
-		AllCmdFiles.dsp \
 		AllCmdFiles.vcproj \
-		FreeCADDist.dsw \
 		fc.sh \
 		FCConfig.h

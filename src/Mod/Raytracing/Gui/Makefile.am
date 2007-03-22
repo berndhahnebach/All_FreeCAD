@@ -3,12 +3,10 @@ if OCC_LIBRARY_FILES
 lib_LTLIBRARIES=libRaytracingGui.la RaytracingGui.la
 
 BUILT_SOURCES=\
-		DlgSettingsRay.cpp \
-		DlgSettingsRay.h \
-		moc_DlgSettingsRay.cpp \
+		ui_DlgSettingsRay.h \
 		moc_DlgSettingsRayImp.cpp \
 		FreeCADpov.h \
-		Raytracing_de.h
+		qrc_translation.cpp 
 
 libRaytracingGui_la_SOURCES=\
 		Command.cpp \
@@ -66,14 +64,13 @@ moc_%.cpp: %.h
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
-%.h: %.ui
+ui_%.h: %.ui
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui
-	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
-# rule for translation files using python script :
-%.h: %.ts
-	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
+# rules for Qt Resource Compiler:
+# (it adds path to #include automatically, so cd before calling it)
+qrc_%.cpp: %.qrc
+	cd $(@D) && $(QT_RCC) -name $(*F) $(<F) -o $(@F)
 
 FreeCADpov.h: FreeCADpov
 	$(PYTHON) ../../../Tools/PythonToCPP.py $(<F) $@
@@ -90,7 +87,7 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		DlgSettingsRay.ui \
 		FreeCADpov \
+		Raytracing_de.qm \
 		Raytracing_de.ts \
-		AppRaytracingGui.dsp \
 		AppRaytracingGui.vcproj \
 		Libs.cpp

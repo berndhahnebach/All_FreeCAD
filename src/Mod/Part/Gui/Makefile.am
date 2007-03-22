@@ -3,23 +3,15 @@ if OCC_LIBRARY_FILES
 lib_LTLIBRARIES=libPartGui.la PartGui.la
 
 BUILT_SOURCES=\
-		DlgPartBox.cpp \
-		DlgPartBox.h \
-		DlgPartImportIges.cpp \
-		DlgPartImportIges.h \
-		DlgPartImportStep.cpp \
-		DlgPartImportStep.h \
-		DlgSettings3DViewPart.cpp \
-		DlgSettings3DViewPart.h \
-		moc_DlgPartBox.cpp \
+		ui_DlgPartBox.h \
+		ui_DlgPartImportIges.h \
+		ui_DlgPartImportStep.h \
+		ui_DlgSettings3DViewPart.h \
 		moc_DlgPartBoxImp.cpp \
-		moc_DlgPartImportIges.cpp \
 		moc_DlgPartImportIgesImp.cpp \
-		moc_DlgPartImportStep.cpp \
 		moc_DlgPartImportStepImp.cpp \
-		moc_DlgSettings3DViewPart.cpp \
 		moc_DlgSettings3DViewPartImp.cpp \
-		Part_de.h
+		qrc_Part.cpp 
 
 libPartGui_la_SOURCES=\
 		Command.cpp \
@@ -125,14 +117,13 @@ moc_%.cpp: %.h
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
-%.h: %.ui
+ui_%.h: %.ui
 	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui
-	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
 
-# rule for translation files using python script :
-%.h: %.ts
-	$(PYTHON) ../../../Tools/qembed.py $(<F)  $(@F) $(*F)
+# rules for Qt Resource Compiler:
+# (it adds path to #include automatically, so cd before calling it)
+qrc_%.cpp: %.qrc
+	cd $(@D) && $(QT_RCC) -name $(*F) $(<F) -o $(@F)
 
 # set the include path found by configure
 INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(OCC_INC) -I../../../ -I../App
@@ -150,7 +141,7 @@ EXTRA_DIST = \
 		DlgPartImportIges.ui \
 		DlgPartImportStep.ui \
 		DlgSettings3DViewPart.ui \
+		Part_de.qm \
 		Part_de.ts \
-		AppPartGui.dsp \
-		AppPartGui.vcproj \
-		Libs.cpp
+		Part.qrc \
+		AppPartGui.vcproj

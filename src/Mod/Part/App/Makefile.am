@@ -94,6 +94,5 @@ endif
 libdir = $(prefix)/Mod/Part
 
 EXTRA_DIST = \
-		AppPart.dsp \
 		AppPart.vcproj \
 		Libs.cpp

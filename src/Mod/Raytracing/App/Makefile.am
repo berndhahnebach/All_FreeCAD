@@ -86,7 +86,6 @@ EXTRA_DIST = \
 		resources/FCAnimation.ini \
 		resources/FCAnimation.pov \
 		resources/FCSimple.pov \
-		AppRaytracing.dsp \
 		AppRaytracing.vcproj \
 		FreeCADpov \
 		Libs.cpp
