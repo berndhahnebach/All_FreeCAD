@@ -56,21 +56,24 @@ _TEMPLATE_Gui_la_LIBADD   = \
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
-%.h: %.ui
-	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
-%.cpp: %.h %.ui
-	cd $(@D) && $(QT_UIC) -o $(@F) -impl $(*F).h $(*F).ui
+ui_%.h: %.ui
+	$(QT_UIC) $(srcdir)/$(@D)/$(<F) -o $(@F)
+
+# rules for Qt Resource Compiler:
+# (it adds path to #include automatically, so cd before calling it)
+qrc_%.cpp: %.qrc
+	$(QT_RCC) -name $(*F) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(srcdir)/../App
 
 libdir = $(prefix)/Mod/_TEMPLATE_
 

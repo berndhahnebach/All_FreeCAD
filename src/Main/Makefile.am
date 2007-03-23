@@ -42,7 +42,7 @@ FreeCAD_la_LIBADD=\
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I.. $(QT_CXXFLAGS)
+INCLUDES= $(all_includes) -I$(top_srcdir)/src $(QT_CXXFLAGS)
 
 EXTRA_DIST = \
 		freecad.rc \

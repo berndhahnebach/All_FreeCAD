@@ -33,7 +33,7 @@ _TEMPLATE__la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I../../../
+INCLUDES= $(all_includes) -I$(top_srcdir)/src
 
 libdir = $(prefix)/Mod/_TEMPLATE_
 

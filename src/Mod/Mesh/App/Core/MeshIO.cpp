@@ -329,8 +329,7 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
   MeshPointArray meshPoints;
   MeshFacetArray meshFacets;
 
-  char szLine[200], szKey1[200], szKey2[200];
-  unsigned long ulVertexCt, ulFacetCt=0;
+  char szLine[200], szKey1[200];
   float fX, fY, fZ;
   unsigned int  i1=0,i2=0,i3=0;
   MeshGeomFacet clFacet;
@@ -338,7 +337,6 @@ bool MeshInput::LoadOBJ (std::istream &rstrIn)
   if ( !rstrIn || rstrIn.bad() == true )
     return false;
 
-  long ulSize=ULONG_MAX;
   std::streambuf* buf = rstrIn.rdbuf();
   if ( !buf )
     return false;

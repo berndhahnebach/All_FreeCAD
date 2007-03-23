@@ -84,9 +84,9 @@ BUILT_SOURCES=\
 		Language/qrc_translation.cpp \
 		GuiInitScript.h
 
-SOURCES=\
-		Icons/qrc_resource.cpp \
-		Language/qrc_translation.cpp
+nodist_libFreeCADGui_la_SOURCES=\
+		qrc_resource.cpp \
+		qrc_translation.cpp
 
 libFreeCADGui_la_SOURCES=\
 		propertyeditor/propertyeditor.cpp \
@@ -379,30 +379,38 @@ libFreeCADGui_la_LIBADD   =\
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 ui_%.h: %.ui
-	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
+	$(QT_UIC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rules for Qt Resource Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
-	cd $(@D) && $(QT_RCC) -name $(*F) $(<F) -o $(@F)
+	$(QT_RCC) -name $(*F) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 %Script.h: FreeCAD%.py
-	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(<F) $@
+	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(srcdir)/$(@D)/$(<F) $@
 
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I.. $(QT_CXXFLAGS) -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
+INCLUDES= $(all_includes) -I$(top_srcdir)/src $(QT_CXXFLAGS) -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCGui
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) \
+		moc_propertyeditor.cpp \
+		moc_propertyeditorfile.cpp \
+		moc_propertyeditorfont.cpp \
+		moc_propertyeditorinput.cpp \
+		moc_propertyeditoritem.cpp \
+		moc_Translator.cpp \
+		qrc_resource.cpp \
+		qrc_translation.cpp 

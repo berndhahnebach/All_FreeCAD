@@ -47,24 +47,24 @@ PointsGui_la_LIBADD   = \
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 ui_%.h: %.ui
-	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
+	$(QT_UIC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rules for Qt Resource Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
-	cd $(@D) && $(QT_RCC) -name $(*F) $(<F) -o $(@F)
+	$(QT_RCC) -name $(*F) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I../../../ -I../App -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(srcdir)/../App -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 libdir = $(prefix)/Mod/Points
 
