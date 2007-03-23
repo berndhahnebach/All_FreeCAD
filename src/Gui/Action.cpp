@@ -264,7 +264,29 @@ void ActionGroup::onActivated (QAction* a)
 
 // --------------------------------------------------------------------
 
-WorkbenchComboBox::WorkbenchComboBox(QWidget* parent) : QComboBox(parent)
+namespace Gui {
+
+/**
+ * The WorkbenchActionEvent class is used to send an event of which workbench must be activated.
+ * We cannot activate the workbench directly as we will destroy the widget that emits the signal.
+ * @author Werner Mayer
+ */
+class WorkbenchActionEvent : public QEvent
+{
+public:
+  WorkbenchActionEvent(QAction* a)
+    : QEvent(QEvent::User), act(a)
+  { }
+  ~WorkbenchActionEvent()
+  { }
+  QAction* action() const
+  { return act; }
+private:
+  QAction* act;
+};
+}
+
+WorkbenchComboBox::WorkbenchComboBox(WorkbenchGroup* wb, QWidget* parent) : QComboBox(parent), group(wb)
 {
   connect(this, SIGNAL(activated(int)), this, SLOT(onActivated(int)));
 }
@@ -307,7 +329,9 @@ void WorkbenchComboBox::actionEvent ( QActionEvent* e )
 
 void WorkbenchComboBox::onActivated(int i)
 {
-  this->actions()[i]->trigger();
+  // Send the event to the workbench group to delay the destruction of the emitting widget.
+  WorkbenchActionEvent* ev = new WorkbenchActionEvent(this->actions()[i]);
+  QApplication::postEvent(this->group, ev);
 }
 
 void WorkbenchComboBox::onActivated(QAction* a)
@@ -335,7 +359,7 @@ void WorkbenchGroup::addTo(QWidget *w)
   if (w->inherits("QToolBar"))
   {
     QToolBar* bar = qobject_cast<QToolBar*>(w);
-    QComboBox* box = new WorkbenchComboBox(w);
+    QComboBox* box = new WorkbenchComboBox(this, w);
     box->setToolTip(_action->toolTip());
     box->setStatusTip(_action->statusTip());
     box->setWhatsThis(_action->whatsThis());
@@ -374,6 +398,14 @@ void WorkbenchGroup::refreshWorkbenchList()
   // if less workbenches than actions
   for (int index = numWorkbenches; index < workbenches.count(); index++)
     workbenches[index]->setVisible(false);
+}
+
+void WorkbenchGroup::customEvent( QEvent* e )
+{
+  if (e->type() == QEvent::User) {
+    Gui::WorkbenchActionEvent* ce = (Gui::WorkbenchActionEvent*)e;
+    ce->action()->trigger();
+  }
 }
 
 // --------------------------------------------------------------------

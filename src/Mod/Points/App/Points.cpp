@@ -72,7 +72,7 @@ void PropertyGreyValueList::removeIndices( const std::vector<unsigned long>& uIn
   setValues(remainValue);
 }
 
-void PropertyNormalList::transform(const Matrix4D &mat)
+void PropertyNormalList::transform(const Base::Matrix4D &mat)
 {
   // A normal vector is only a direction with unit length, so we only need to rotate it
   // (no translations or scaling)
@@ -86,7 +86,7 @@ void PropertyNormalList::transform(const Matrix4D &mat)
   s[2] = sqrt(mat[2][0] * mat[2][0] + mat[2][1] * mat[2][1] + mat[2][2] * mat[2][2]);
 
   // Set up the rotation matrix: zero the translations and make the scale factors = 1
-  Matrix4D rot;
+  Base::Matrix4D rot;
   rot.unity();
   for (unsigned short i = 0; i < 3; i++) {
     for (unsigned short j = 0; j < 3; j++) {
@@ -208,7 +208,7 @@ std::vector<float> PropertyCurvatureList::getCurvature( int mode ) const
   return fValues;
 }
 
-void PropertyCurvatureList::transform(const Matrix4D &mat)
+void PropertyCurvatureList::transform(const Base::Matrix4D &mat)
 {
   // The principal direction is only a vector with unit length, so we only need to rotate it
   // (no translations or scaling)
@@ -222,7 +222,7 @@ void PropertyCurvatureList::transform(const Matrix4D &mat)
   s[2] = sqrt(mat[2][0] * mat[2][0] + mat[2][1] * mat[2][1] + mat[2][2] * mat[2][2]);
 
   // Set up the rotation matrix: zero the translations and make the scale factors = 1
-  Matrix4D rot;
+  Base::Matrix4D rot;
   rot.unity();
   for (unsigned short i = 0; i < 3; i++) {
     for (unsigned short j = 0; j < 3; j++) {

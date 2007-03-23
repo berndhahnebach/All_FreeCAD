@@ -179,16 +179,10 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
     return; // empty menu bar
 
   QList<QToolBar*> tbs = toolBars();
-  bool ok = true;
-  QString file = "File";
   for ( QList<QToolBar*>::Iterator it = tbs.begin(); it != tbs.end(); ++it )
   {
-    if ((*it)->objectName() != file) {
-      getMainWindow()->removeToolBar( *it );
-      delete *it;
-    } else {
-      ok = false;
-    }
+    getMainWindow()->removeToolBar( *it );
+    delete *it;
   }
 
   CommandManager& mgr = Application::Instance->commandManager();
@@ -196,8 +190,6 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
 
   for ( QList<ToolBarItem*>::ConstIterator item = items.begin(); item != items.end(); ++item ) 
   {
-    if (!ok && (*item)->command() == file)
-      continue;
     QToolBar* bar = getMainWindow()->addToolBar(QObject::tr((*item)->command())); // i18n
     bar->setObjectName((*item)->command());
 

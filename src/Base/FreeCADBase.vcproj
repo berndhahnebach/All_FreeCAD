@@ -830,28 +830,6 @@
 			>
 		</File>
 		<File
-			RelativePath="BoundBox.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath="BoundBox.h"
 			>
 		</File>
@@ -924,10 +902,6 @@
 					UsePrecompiledHeader="0"
 				/>
 			</FileConfiguration>
-		</File>
-		<File
-			RelativePath="EnvMacros.h"
-			>
 		</File>
 		<File
 			RelativePath="Exception.cpp"
@@ -1534,28 +1508,6 @@
 			>
 		</File>
 		<File
-			RelativePath="Vector3D.cpp"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-		</File>
-		<File
 			RelativePath="Vector3D.h"
 			>
 		</File>
@@ -1585,6 +1537,10 @@
 		</File>
 		<File
 			RelativePath="Writer.h"
+			>
+		</File>
+		<File
+			RelativePath=".\XMLTools.h"
 			>
 		</File>
 	</Files>

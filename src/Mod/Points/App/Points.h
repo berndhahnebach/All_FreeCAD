@@ -31,7 +31,6 @@
 #include <Base/Reader.h>
 #include <Base/Writer.h>
 
-#include <App/DataWithProperty.h>
 #include <App/PropertyStandard.h>
 #include <App/PropertyGeo.h>
 
@@ -93,7 +92,7 @@ public:
 
   /** @name Modify */
   //@{
-  void transform(const Matrix4D &rclMat);
+  void transform(const Base::Matrix4D &rclMat);
   void removeIndices( const std::vector<unsigned long>& );
   //@}
 };
@@ -155,7 +154,7 @@ public:
 
   /** @name Modify */
   //@{
-  void transform(const Matrix4D &rclMat);
+  void transform(const Base::Matrix4D &rclMat);
   void removeIndices( const std::vector<unsigned long>& );
   //@}
 
