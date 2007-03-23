@@ -88,6 +88,35 @@ nodist_libFreeCADGui_la_SOURCES=\
 		qrc_resource.cpp \
 		qrc_translation.cpp
 
+libFreeCADGui_la_UI=\
+		AboutApplication.ui \
+		DlgActions.ui \
+		DlgActivateWindow.ui \
+		DlgAuthorization.ui \
+		DlgChooseIcon.ui \
+		DlgCommands.ui \
+		DlgDisplayProperties.ui \
+		DlgEditor.ui \
+		DlgGeneral.ui \
+		DlgInputDialog.ui \
+		DlgKeyboard.ui \
+		DlgMacroExecute.ui \
+		DlgMacroRecord.ui \
+		DlgMaterialProperties.ui \
+		DlgOnlineHelp.ui \
+		DlgParameter.ui \
+		DlgPreferences.ui \
+		DlgProjectInformation.ui \
+		DlgReportView.ui \
+		DlgSettings3DView.ui \
+		DlgSettingsDocument.ui \
+		DlgSettingsImage.ui \
+		DlgSettingsMacro.ui \
+		DlgSettingsColorGradient.ui \
+		DlgSplasher.ui \
+		DlgTipOfTheDay.ui \
+		DlgToolbars.ui
+
 libFreeCADGui_la_SOURCES=\
 		propertyeditor/propertyeditor.cpp \
 		propertyeditor/propertyeditor.h \
@@ -304,6 +333,7 @@ libFreeCADGui_la_SOURCES=\
 		WorkbenchPy.h
 
 EXTRA_DIST = \
+		$(libFreeCADGui_la_UI) \
 		Icons/BmpFactoryIcons.cpp \
 		Icons/default_background.xpm \
 		Icons/developers.h \
@@ -332,33 +362,6 @@ EXTRA_DIST = \
 		Qt3All.h \
 		Qt4All.h \
 		InventorAll.h \
-		AboutApplication.ui \
-		DlgActions.ui \
-		DlgActivateWindow.ui \
-		DlgAuthorization.ui \
-		DlgChooseIcon.ui \
-		DlgCommands.ui \
-		DlgDisplayProperties.ui \
-		DlgEditor.ui \
-		DlgGeneral.ui \
-		DlgInputDialog.ui \
-		DlgKeyboard.ui \
-		DlgMacroExecute.ui \
-		DlgMacroRecord.ui \
-		DlgMaterialProperties.ui \
-		DlgOnlineHelp.ui \
-		DlgParameter.ui \
-		DlgPreferences.ui \
-		DlgProjectInformation.ui \
-		DlgReportView.ui \
-		DlgSettings3DView.ui \
-		DlgSettingsDocument.ui \
-		DlgSettingsImage.ui \
-		DlgSettingsMacro.ui \
-		DlgSettingsColorGradient.ui \
-		DlgSplasher.ui \
-		DlgTipOfTheDay.ui \
-		DlgToolbars.ui \
 		FreeCADGuiInit.py \
 		FreeCADGui.vcproj
 
@@ -373,30 +376,31 @@ libFreeCADGui_la_LIBADD   =\
 		-lQt3Support\
 		-lQtCore\
 		-lQtGui\
-		-lqui\
+		-lQtNetwork\
+		-lQtOpenGL\
 		-lFreeCADBase \
 		-lFreeCADApp
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$< -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$< -o $(@F)
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 ui_%.h: %.ui
-	$(QT_UIC) $(srcdir)/$(@D)/$(<F) -o $(@F)
+	$(QT_UIC) $(srcdir)/$< -o $(@F)
 
 # rules for Qt Resource Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
-	$(QT_RCC) -name $(*F) $(srcdir)/$(@D)/$(<F) -o $(@F)
+	$(QT_RCC) -name $(*F) $(srcdir)/$< -o $(@F)
 
 %Script.h: FreeCAD%.py
-	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(srcdir)/$(@D)/$(<F) $@
+	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(srcdir)/$< $@
 
 
 # set the include path found by configure
