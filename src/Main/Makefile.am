@@ -45,6 +45,8 @@ FreeCAD_la_LIBADD=\
 INCLUDES= $(all_includes) -I$(top_srcdir)/src $(QT_CXXFLAGS)
 
 EXTRA_DIST = \
+		res/FreeCAD.exe.manifest \
+		res/FreeCADD.exe.manifest \
 		freecad.rc \
 		FreeCADMain.vcproj \
 		FreeCADMainCmd.vcproj \

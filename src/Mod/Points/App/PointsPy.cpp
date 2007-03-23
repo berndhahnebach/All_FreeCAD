@@ -202,7 +202,7 @@ PYFUNCIMP_D(PointsPy,translate)
     return NULL;                         
 
   PY_TRY {
-    Matrix4D m;
+    Base::Matrix4D m;
     m.move(x,y,z);
 //    _pcPoints->transform(m);  
   } PY_CATCH;
@@ -217,7 +217,7 @@ PYFUNCIMP_D(PointsPy,rotate)
     return NULL;                         
 
   PY_TRY {
-    Matrix4D m;
+    Base::Matrix4D m;
     m.rotX(x);
     m.rotY(y);
     m.rotZ(z);
@@ -234,7 +234,7 @@ PYFUNCIMP_D(PointsPy,scale)
     return NULL;                         
 
   PY_TRY {
-    Matrix4D m;
+    Base::Matrix4D m;
     m.scale(s,s,s);
 //    _pcPoints->transform(m);  
   } PY_CATCH;

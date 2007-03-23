@@ -117,12 +117,13 @@ protected:
 
 // --------------------------------------------------------------------
 
+class WorkbenchGroup;
 class GuiExport WorkbenchComboBox : public QComboBox
 {
   Q_OBJECT
 
 public:
-  WorkbenchComboBox(QWidget* parent=0);
+  WorkbenchComboBox(WorkbenchGroup* wb, QWidget* parent=0);
   virtual ~WorkbenchComboBox();
 
 public Q_SLOTS:
@@ -131,6 +132,9 @@ public Q_SLOTS:
 
 protected:
   void actionEvent ( QActionEvent* );
+
+private:
+  WorkbenchGroup* group;
 };
 
 /**
@@ -151,6 +155,9 @@ public:
   virtual ~WorkbenchGroup();
   void addTo ( QWidget * w );
   void refreshWorkbenchList();
+
+protected:
+  void customEvent( QEvent* e );
 };
 
 // --------------------------------------------------------------------

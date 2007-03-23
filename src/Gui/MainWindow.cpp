@@ -33,7 +33,7 @@
 #include "Action.h"
 #include "View.h"
 
-#include "Icons/developers.h"
+#include "Icons/background.xpm"
 #include "WidgetFactory.h"
 #include "Command.h"
 #include "Tree.h"

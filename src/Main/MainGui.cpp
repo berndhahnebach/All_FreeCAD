@@ -46,15 +46,16 @@
 #endif
 
 // FreeCAD header
-#include "../Base/Console.h"
-#include "../Base/Interpreter.h"
-#include "../Base/Parameter.h"
-#include "../Base/Exception.h"
-#include "../Base/Factory.h"
-#include "../App/Application.h"
-#include "../Gui/BitmapFactory.h"
-#include "../Gui/Icons/developers.h"
-#include "../Gui/Application.h"
+#include <Base/Console.h>
+#include <Base/Interpreter.h>
+#include <Base/Parameter.h>
+#include <Base/Exception.h>
+#include <Base/Factory.h>
+#include <App/Application.h>
+#include <Gui/BitmapFactory.h>
+#include <Gui/Icons/background.xpm>
+#include <Gui/Icons/SplashScreen.xpm>
+#include <Gui/Application.h>
 
 // If you stumble here, run the target "BuildExtractRevision" on Windows systems or the Python script "SubWCRev.py" on Linux based systems
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
