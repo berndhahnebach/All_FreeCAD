@@ -74,24 +74,24 @@ MeshGui_la_LIBADD   = \
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	cd $(@D) && $(QT_MOC) $(<F) -o $(@F)
+	$(QT_MOC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 ui_%.h: %.ui
-	cd $(@D) && $(QT_UIC) $(<F) -o $(@F)
+	$(QT_UIC) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # rules for Qt Resource Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
-	cd $(@D) && $(QT_RCC) -name $(*F) $(<F) -o $(@F)
+	$(QT_RCC) -name $(*F) $(srcdir)/$(@D)/$(<F) -o $(@F)
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(WM3_CFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I../../../ -I../App
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(WM3_CFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I$(top_srcdir)/src -I$(srcdir)/../App
 
 endif
 endif

@@ -1826,9 +1826,6 @@ void View3DInventorViewer::setCursorRepresentation(int modearg)
   case View3DInventorViewer::ZOOMING:
     {
     this->setComponentCursor(SoQtCursor::getZoomCursor());
-    const SoQtCursor& z = SoQtCursor::getZoomCursor();
-    SoQtCursor::Shape sh = z.getShape();
-    int i=0;
     }break;
 
   case View3DInventorViewer::SEEK_MODE:

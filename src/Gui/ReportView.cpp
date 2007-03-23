@@ -120,7 +120,7 @@ void ReportHighlighter::highlightBlock ( const QString & text )
   {
     setFormat(0, text.length(), errCol);
   }
-  else if (type == Qt::LogText)
+  else if (type == LogText)
   {
     setFormat(0, text.length(), logCol);
   }

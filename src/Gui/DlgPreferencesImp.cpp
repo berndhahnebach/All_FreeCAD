@@ -217,7 +217,7 @@ QTabWidget* DlgPreferencesImp::getOrAddPreferenceGroup(const QString& name, cons
   int index = tabWidgetStack->addWidget(tabWidget);
   _mGroupIDs[ name ] = index;
 
-  PrefGroupItem* item = new PrefGroupItem(listBox, pixSel, pixUnsel, name, index);
+  (void)new PrefGroupItem(listBox, pixSel, pixUnsel, name, index);
   return tabWidget;
 }
 

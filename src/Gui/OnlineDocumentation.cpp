@@ -112,7 +112,7 @@ QByteArray OnlineDocumentation::loadResource(const QString& filename) const
   if (fn == "favicon.ico") {
     // Return an resource icon in ico format
     res.reserve(navicon_data_len);
-    for (int i=0; i<navicon_data_len;i++) {
+    for (int i=0; i<(int)navicon_data_len;i++) {
       res[i] = navicon_data[i];
     }
   } else if (filename == "/") {

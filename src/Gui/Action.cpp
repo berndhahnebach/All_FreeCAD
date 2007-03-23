@@ -42,7 +42,7 @@ using namespace Gui::Dialog;
  * to the command object.
  */
 Action::Action ( Command* pcCmd,QObject * parent )
-  : QObject(parent), _pcCmd(pcCmd), _action(0)
+  : QObject(parent), _action(0), _pcCmd(pcCmd)
 {
   _action = new QAction( this );
   connect(_action, SIGNAL(triggered(bool)), this, SLOT(onActivated()));
