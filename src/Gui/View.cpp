@@ -300,10 +300,10 @@ void MDIView::setCurrentViewMode( ViewMode b )
     QEvent e( QEvent::Show );
     //QEvent e( QEvent::ShowNormal );
     QApplication::sendEvent( this, &e );
-#if defined(Q_WS_X11)
-    extern void qt_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
-    qt_wait_for_window_manager( this );
-#endif
+//#if defined(Q_WS_X11)
+//    extern void qt_wait_for_window_manager( QWidget* w ); // defined in qwidget_x11.cpp
+//    qt_wait_for_window_manager( this );
+//#endif
 
     setActiveWindow();
     }

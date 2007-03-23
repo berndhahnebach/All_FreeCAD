@@ -219,87 +219,91 @@ fi
 
 dnl checking for Qt (Linux part written by Bastiaan Veelo <Bastiaan.N.Veelo@ntnu.no>)
 dnl **************************************************************************
-
-case `uname -s` in 
-CYGWIN*) 
-AC_MSG_CHECKING([for Qt])
-
-fc_qt_incs=""
-fc_qt_ldflags=""
-fc_qt_libs=""
-fc_qt_dir=""
-AC_PATH_PROG(PKGCONFIG, pkg-config)
-if test x"$PKGCONFIG" != x; then
-	fc_qt_incs=`$PKGCONFIG qt-mt --cflags-only-I`
-	fc_qt_ldflags=`$PKGCONFIG qt-mt --libs-only-L`
-	fc_qt_libs=-lqt-mt
-fi
-
-if test x"$fc_qt_incs" = x; then
-	if test x"$QTDIR" != x; then
-		fc_qt_incs=-I/usr/include/qt3
-		fc_qt_ldflags=-L$QTDIR/lib
-		fc_qt_libs=-lqt-mt
-	fi
-fi
-
-fc_qt_ac_save_cppflags=$CPPFLAGS
-fc_qt_ac_save_ldflags=$LDFLAGS
-fc_qt_ac_save_libs=$LIBS
-CPPFLAGS="$CPPFLAGS $fc_qt_incs"
-LDFLAGS="$LDFLAGS $fc_qt_ldflags"
-LIBS="$fc_qt_libs"
-
-fc_cv_lib_qt_avail=no
-AC_CHECK_HEADER(qapplication.h,[
-AC_MSG_CHECKING([whether Qt lib is available])
-AC_TRY_LINK([#include <qapplication.h>],
-	[
-	 qDebug("App is running...");],
-	[fc_cv_lib_qt_avail=yes
-	AC_MSG_RESULT(yes)],
-	AC_MSG_RESULT(no))])
-
-CPPFLAGS=$fc_qt_ac_save_cppflags
-LDFLAGS=$fc_qt_ac_save_ldflags
-LIBS=$fc_qt_ac_save_libs
-
-if test x"$fc_cv_lib_qt_avail" = xyes; then
-  QT_CXXFLAGS="$fc_qt_incs"
-  QT_LIBS="$fc_qt_ldflags $fc_qt_libs"
-else
-	AC_MSG_ERROR([
-	**** Cannot find Qt devel files. ****
-   ])
-fi
-
-if test x"$QTDIR" != x; then
-	fc_ac_path=$QTDIR/bin:$PATH
-	AC_PATH_PROG(QT_UIC, uic, false, $fc_ac_path)
-	AC_PATH_PROG(QT_MOC, moc, false, $fc_ac_path)
-else
-if test x"$QT_UIC" != xfalse; then
-	AC_MSG_WARN([QTDIR environment variable not set -- this might be an indication of a problem])
-fi
-fi
-
-;;
-*) BNV_HAVE_QT ;;
-esac
-
-dnl check QT_MOC
-if test x$QT_MOC = x; then
-	AC_MSG_ERROR([Cannot find Qt meta object compiler (moc), bye...])
-fi;
-dnl check QT_UIC
-if test x$QT_UIC = x; then
-	AC_MSG_ERROR([Cannot find Qt user interface compiler (uic), bye...])
-fi;
+dnl 
+dnl case `uname -s` in 
+dnl CYGWIN*) 
+dnl AC_MSG_CHECKING([for Qt])
+dnl 
+dnl fc_qt_incs=""
+dnl fc_qt_ldflags=""
+dnl fc_qt_libs=""
+dnl fc_qt_dir=""
+dnl AC_PATH_PROG(PKGCONFIG, pkg-config)
+dnl if test x"$PKGCONFIG" != x; then
+dnl 	fc_qt_incs=`$PKGCONFIG qt-mt --cflags-only-I`
+dnl 	fc_qt_ldflags=`$PKGCONFIG qt-mt --libs-only-L`
+dnl 	fc_qt_libs=-lqt-mt
+dnl fi
+dnl 
+dnl if test x"$fc_qt_incs" = x; then
+dnl 	if test x"$QTDIR" != x; then
+dnl 		fc_qt_incs=-I/usr/include/qt3
+dnl 		fc_qt_ldflags=-L$QTDIR/lib
+dnl 		fc_qt_libs=-lqt-mt
+dnl 	fi
+dnl fi
+dnl 
+dnl fc_qt_ac_save_cppflags=$CPPFLAGS
+dnl fc_qt_ac_save_ldflags=$LDFLAGS
+dnl fc_qt_ac_save_libs=$LIBS
+dnl CPPFLAGS="$CPPFLAGS $fc_qt_incs"
+dnl LDFLAGS="$LDFLAGS $fc_qt_ldflags"
+dnl LIBS="$fc_qt_libs"
+dnl 
+dnl fc_cv_lib_qt_avail=no
+dnl AC_CHECK_HEADER(qapplication.h,[
+dnl AC_MSG_CHECKING([whether Qt lib is available])
+dnl AC_TRY_LINK([#include <qapplication.h>],
+dnl 	[
+dnl 	 qDebug("App is running...");],
+dnl 	[fc_cv_lib_qt_avail=yes
+dnl 	AC_MSG_RESULT(yes)],
+dnl 	AC_MSG_RESULT(no))])
+dnl 
+dnl CPPFLAGS=$fc_qt_ac_save_cppflags
+dnl LDFLAGS=$fc_qt_ac_save_ldflags
+dnl LIBS=$fc_qt_ac_save_libs
+dnl 
+dnl if test x"$fc_cv_lib_qt_avail" = xyes; then
+dnl   QT_CXXFLAGS="$fc_qt_incs"
+dnl   QT_LIBS="$fc_qt_ldflags $fc_qt_libs"
+dnl else
+dnl 	AC_MSG_ERROR([
+dnl 	**** Cannot find Qt devel files. ****
+dnl    ])
+dnl fi
+dnl 
+dnl if test x"$QTDIR" != x; then
+dnl 	fc_ac_path=$QTDIR/bin:$PATH
+dnl 	AC_PATH_PROG(QT_UIC, uic, false, $fc_ac_path)
+dnl 	AC_PATH_PROG(QT_MOC, moc, false, $fc_ac_path)
+dnl else
+dnl if test x"$QT_UIC" != xfalse; then
+dnl 	AC_MSG_WARN([QTDIR environment variable not set -- this might be an indication of a problem])
+dnl fi
+dnl fi
+dnl 
+dnl ;;
+dnl *) BNV_HAVE_QT ;;
+dnl esac
+dnl 
+dnl dnl check QT_MOC
+dnl if test x$QT_MOC = x; then
+dnl 	AC_MSG_ERROR([Cannot find Qt meta object compiler (moc), bye...])
+dnl fi;
+dnl dnl check QT_UIC
+dnl if test x$QT_UIC = x; then
+dnl 	AC_MSG_ERROR([Cannot find Qt user interface compiler (uic), bye...])
+dnl fi;
 
 QT_CXXFLAGS="-I/usr/include/qt4 -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4/Qt3Support -DQT_THREAD_SUPPORT"
+QT_LIBS="-lSM -lICE  -lX11 -lXext -lXmu -lXt -lXi"
 QT_UIC=/usr/share/qt4/bin/uic
 QT_MOC=/usr/share/qt4/bin/moc
 QT_RCC=/usr/share/qt4/bin/rcc
+AC_SUBST(QT_CXXFLAGS)
+AC_SUBST(QT_UIC)
+AC_SUBST(QT_MOC)
 AC_SUBST(QT_RCC)
 
 dnl checking for Coin
