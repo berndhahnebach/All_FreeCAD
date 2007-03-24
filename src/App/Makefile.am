@@ -11,8 +11,6 @@ libFreeCADApp_la_SOURCES=\
 		ApplicationPy.cpp \
 		ColorModel.cpp \
 		ColorModel.h \
-		DataWithProperty.cpp \
-		DataWithProperty.h \
 		Document.cpp \
 		Document.h \
 		DocumentObject.cpp \
@@ -86,8 +84,6 @@ AM_CPPFLAGS=-DFCApp
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
-		DllMain.cpp \
-		Libs.cpp \
 		FreeCADDoc.vcproj \
 		FreeCADInit.py \
 		FreeCADTest.py

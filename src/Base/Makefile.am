@@ -61,10 +61,7 @@ libFreeCADBase_la_SOURCES=\
 		Builder3D.h \
 		Console.cpp \
 		Console.h \
-		Documentation.cpp \
-		Documentation.h \
 		Doxygen.cpp \
-		EnvMacros.h \
 		Exception.cpp \
 		Exception.h \
 		Factory.cpp \
@@ -85,7 +82,6 @@ libFreeCADBase_la_SOURCES=\
 		Matrix.h \
 		MemDebug.cpp \
 		MemDebug.h \
-		Observer.cpp \
 		Observer.h \
 		Parameter.cpp \
 		Parameter.h \
@@ -138,7 +134,5 @@ AM_CPPFLAGS=-DFCBase
 libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 EXTRA_DIST = \
-		DllMain.cpp \
-		FreeCADBase.vcproj \
-		Libs.cpp
+		FreeCADBase.vcproj
 

@@ -113,7 +113,6 @@ libFreeCADGui_la_UI=\
 		DlgSettingsImage.ui \
 		DlgSettingsMacro.ui \
 		DlgSettingsColorGradient.ui \
-		DlgSplasher.ui \
 		DlgTipOfTheDay.ui \
 		DlgToolbars.ui
 
@@ -335,8 +334,7 @@ libFreeCADGui_la_SOURCES=\
 EXTRA_DIST = \
 		$(libFreeCADGui_la_UI) \
 		Icons/BmpFactoryIcons.cpp \
-		Icons/default_background.xpm \
-		Icons/developers.h \
+		Icons/background.xpm \
 		Icons/bulb.xpm \
 		Icons/button_down.xpm \
 		Icons/button_left.xpm \
@@ -357,8 +355,6 @@ EXTRA_DIST = \
 		Language/FreeCAD_fr.ts \
 		Language/qt_de.qm \
 		Language/qt_de.ts \
-		DllMain.cpp \
-		Libs.cpp \
 		Qt3All.h \
 		Qt4All.h \
 		InventorAll.h \

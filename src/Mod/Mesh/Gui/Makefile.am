@@ -108,5 +108,4 @@ EXTRA_DIST = \
 		Mesh.qrc \
 		Mesh_de.qm \
 		Mesh_de.ts \
-		Libs.cpp \
 		images.h

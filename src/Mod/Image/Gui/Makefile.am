@@ -75,7 +75,6 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 		AppImageGui.vcproj \
-		Libs.cpp \
 		translation.qrc \
 		Image_de.qm \
 		Image_de.ts \
