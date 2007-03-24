@@ -40,5 +40,4 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/src
 libdir = $(prefix)/Mod/Image
 
 EXTRA_DIST = \
-		AppImage.vcproj \
-		Libs.cpp
+		AppImage.vcproj

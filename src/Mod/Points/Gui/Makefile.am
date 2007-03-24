@@ -75,5 +75,4 @@ EXTRA_DIST = \
 		AppPointsGui.vcproj \
 		Points.qrc \
 		Points_de.qm \
-		Points_de.ts \
-		Libs.cpp
+		Points_de.ts

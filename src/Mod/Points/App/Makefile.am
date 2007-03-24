@@ -55,5 +55,4 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/src
 libdir = $(prefix)/Mod/Points
 
 EXTRA_DIST = \
-		AppPoints.vcproj \
-		Libs.cpp
+		AppPoints.vcproj

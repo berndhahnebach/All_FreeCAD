@@ -90,5 +90,4 @@ EXTRA_DIST = \
 		translation.qrc \
 		Raytracing_de.qm \
 		Raytracing_de.ts \
-		AppRaytracingGui.vcproj \
-		Libs.cpp
+		AppRaytracingGui.vcproj
