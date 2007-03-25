@@ -975,5 +975,6 @@ void Application::runApplication(void)
     throw;
   }
 
+  mw.saveWindowSettings();
   Base::Console().Log("Init: event loop left\n");
 }
