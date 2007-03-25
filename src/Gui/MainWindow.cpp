@@ -679,16 +679,10 @@ void MainWindow::saveWindowSettings()
 
 void MainWindow::loadLayoutSettings()
 {
-  std::string path = App::GetApplication().Config()["UserHomePath"];
-  std::string name = App::GetApplication().Config()["ExeName"];
-  if(getenv("APPDATA"))
-    path = std::string(getenv("APPDATA"));
-  else
-    name = std::string(".") + name;
-
+  std::string path = App::GetApplication().Config()["UserAppData"];
   QByteArray state;
   QDir dir(path.c_str());
-  if (dir.exists() && dir.cd(name.c_str())) {
+  if (dir.exists()) {
     QString filename = dir.filePath("layout.bin");
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
@@ -707,27 +701,17 @@ void MainWindow::loadLayoutSettings()
 
 void MainWindow::saveLayoutSettings()
 {
-  std::string path = App::GetApplication().Config()["UserHomePath"];
-  std::string name = App::GetApplication().Config()["ExeName"];
-  if(getenv("APPDATA"))
-    path = std::string(getenv("APPDATA"));
-  else
-    name = std::string(".") + name;
-
+  std::string path = App::GetApplication().Config()["UserAppData"];
   QDir dir(path.c_str());
 
   if (dir.exists()) {
-    if (!dir.exists(name.c_str()))
-      dir.mkdir(name.c_str());
-    if (dir.cd(name.c_str())) {
-      QString filename = dir.filePath("layout.bin");
-      QFile file(filename);
-      if (file.open(QIODevice::WriteOnly)) {
-        QByteArray state = saveState();
-        QDataStream str(&file);
-        str << state;
-        file.close();
-      }
+    QString filename = dir.filePath("layout.bin");
+    QFile file(filename);
+    if (file.open(QIODevice::WriteOnly)) {
+      QByteArray state = saveState();
+      QDataStream str(&file);
+      str << state;
+      file.close();
     }
   }
 }

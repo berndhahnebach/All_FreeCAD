@@ -32,7 +32,8 @@
 #define new DEBUG_CLIENTBLOCK
 using namespace App;
 
-PROPERTY_SOURCE(App::DocumentObjectGroup, App::DocumentObject)
+//PROPERTY_SOURCE(App::DocumentObjectGroup, App::DocumentObject)
+PROPERTY_SOURCE(App::DocumentObjectGroup, App::AbstractFeature)
 
 
 DocumentObjectGroup::DocumentObjectGroup() 

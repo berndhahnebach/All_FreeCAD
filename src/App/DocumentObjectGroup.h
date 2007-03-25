@@ -24,7 +24,8 @@
 #ifndef APP_DOCUMENTOBJECTGROUP_H
 #define APP_DOCUMENTOBJECTGROUP_H
 
-#include "DocumentObject.h"
+//#include "DocumentObject.h"
+#include "Feature.h"
 #include "PropertyLinks.h"
 #include <vector>
 
@@ -33,7 +34,9 @@ namespace App
 {
 class DocumentObjectGroupPy;
 
-class AppExport DocumentObjectGroup : public DocumentObject
+//class AppExport DocumentObjectGroup : public DocumentObject
+// Allow to be added to the tree view
+class AppExport DocumentObjectGroup : public AbstractFeature
 {
   PROPERTY_HEADER(App::DocumentObjectGroup);
 
@@ -41,6 +44,9 @@ public:
 	/// Constructor
 	DocumentObjectGroup(void);
   virtual ~DocumentObjectGroup();
+
+  int execute() // dummy implementation
+  { return 0; }
 
   /** @name Object handling  */
 	//@{
