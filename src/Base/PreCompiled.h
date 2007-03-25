@@ -1,28 +1,25 @@
 #ifndef __PRECOMPILED__
 #define __PRECOMPILED__
 
-
-// Std. configurations
 #include "../FCConfig.h"
 
 #ifdef _PreComp_
 
-
-//**************************************************************************
+// Python
+#include <Python.h>
 
 // standard
 #include <stdio.h>
 #include <assert.h>
 #include <time.h>
-//#include <sys/timeb.h>
-#include <direct.h>
 #include <float.h>
 #include <fcntl.h>
 
 #ifdef FC_OS_WIN32
-#  define WIN32_LEAN_AND_MEAN
-#  include <windows.h>
-#  include <crtdbg.h>
+#include <direct.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+#include <crtdbg.h>
 #endif
 
 // STL 
@@ -39,10 +36,6 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-
-// Python
-#include <Python.h>
-
 
 // Xerces
 #include <xercesc/util/PlatformUtils.hpp>
@@ -71,9 +64,7 @@
 #include <xercesc/sax2/XMLReaderFactory.hpp>
 
 
-
-
 #endif //_PreComp_
 
-#endif
+#endif // __PRECOMPILED__
 
