@@ -128,14 +128,28 @@ if test x$fc_py_ver = x; then
 	**** Cannot find Python interpreter. ****
   ])
 fi;
+AC_MSG_RESULT([yes])
+
+dnl Additional test to force version number of >= 2.5
+AC_MSG_CHECKING([for Python version >= 2.5])
+prog="import sys
+s=0x02050000
+sys.exit(sys.hexversion < s)"
+AS_IF([AM_RUN_LOG([python -c "$prog"])],
+      [AC_MSG_RESULT([yes])], 
+      [AC_MSG_ERROR([
+	**** Install Python version 2.5 or later ****
+      ])])
+
+
 
 AC_ARG_WITH(python-includes,
-	AC_HELP_STRING([--with-python-includes], [Path of the header files of your Python installation]),
+	AC_HELP_STRING([--with-python-includes], [Path to the Python header files]),
 	[fc_py_incs=$withval],
 	[fc_py_incs=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`])
 
 AC_ARG_WITH(python-libs,
-	AC_HELP_STRING([--with-python-libs], [Path of the library files of your Python installation]),
+	AC_HELP_STRING([--with-python-libs], [Path to the Python library files]),
 	[fc_py_libs=$withval],
 	[fc_py_libs=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_config_var('LIBDIR')"`])
 
@@ -171,11 +185,12 @@ else
 	])
 fi
 
+
 dnl checking for xerces-c
 dnl **************************************************************************
 AC_MSG_CHECKING([for xerces-c])
 AC_ARG_WITH(xercesc-includes,
-	AC_HELP_STRING([--with-xercesc-includes], [Path of the header files of your xerces-c installation]),
+	AC_HELP_STRING([--with-xercesc-includes], [Path to the xerces-c header files]),
 	[fc_xer_incs=$withval],
 	[fc_xer_incs=/usr/include])
 
@@ -183,7 +198,7 @@ AC_CHECK_FILE($fc_xer_incs/xercesc,,
 	[AC_CHECK_FILE(/usr/local/include/xercesc,[fc_xer_incs=/usr/local/include])])
 
 AC_ARG_WITH(xercesc-libs,
-	AC_HELP_STRING([--with-xercesc-libs], [Path of the library files of your xerces-c installation]),
+	AC_HELP_STRING([--with-xercesc-libs], [Path to the xerces-c library files]),
 	[fc_xer_libs=$withval],
 	[fc_xer_libs=/usr/lib])
 
@@ -217,94 +232,18 @@ else
    ])
 fi
 
-dnl checking for Qt (Linux part written by Bastiaan Veelo <Bastiaan.N.Veelo@ntnu.no>)
-dnl **************************************************************************
-dnl 
-dnl case `uname -s` in 
-dnl CYGWIN*) 
-dnl AC_MSG_CHECKING([for Qt])
-dnl 
-dnl fc_qt_incs=""
-dnl fc_qt_ldflags=""
-dnl fc_qt_libs=""
-dnl fc_qt_dir=""
-dnl AC_PATH_PROG(PKGCONFIG, pkg-config)
-dnl if test x"$PKGCONFIG" != x; then
-dnl 	fc_qt_incs=`$PKGCONFIG qt-mt --cflags-only-I`
-dnl 	fc_qt_ldflags=`$PKGCONFIG qt-mt --libs-only-L`
-dnl 	fc_qt_libs=-lqt-mt
-dnl fi
-dnl 
-dnl if test x"$fc_qt_incs" = x; then
-dnl 	if test x"$QTDIR" != x; then
-dnl 		fc_qt_incs=-I/usr/include/qt3
-dnl 		fc_qt_ldflags=-L$QTDIR/lib
-dnl 		fc_qt_libs=-lqt-mt
-dnl 	fi
-dnl fi
-dnl 
-dnl fc_qt_ac_save_cppflags=$CPPFLAGS
-dnl fc_qt_ac_save_ldflags=$LDFLAGS
-dnl fc_qt_ac_save_libs=$LIBS
-dnl CPPFLAGS="$CPPFLAGS $fc_qt_incs"
-dnl LDFLAGS="$LDFLAGS $fc_qt_ldflags"
-dnl LIBS="$fc_qt_libs"
-dnl 
-dnl fc_cv_lib_qt_avail=no
-dnl AC_CHECK_HEADER(qapplication.h,[
-dnl AC_MSG_CHECKING([whether Qt lib is available])
-dnl AC_TRY_LINK([#include <qapplication.h>],
-dnl 	[
-dnl 	 qDebug("App is running...");],
-dnl 	[fc_cv_lib_qt_avail=yes
-dnl 	AC_MSG_RESULT(yes)],
-dnl 	AC_MSG_RESULT(no))])
-dnl 
-dnl CPPFLAGS=$fc_qt_ac_save_cppflags
-dnl LDFLAGS=$fc_qt_ac_save_ldflags
-dnl LIBS=$fc_qt_ac_save_libs
-dnl 
-dnl if test x"$fc_cv_lib_qt_avail" = xyes; then
-dnl   QT_CXXFLAGS="$fc_qt_incs"
-dnl   QT_LIBS="$fc_qt_ldflags $fc_qt_libs"
-dnl else
-dnl 	AC_MSG_ERROR([
-dnl 	**** Cannot find Qt devel files. ****
-dnl    ])
-dnl fi
-dnl 
-dnl if test x"$QTDIR" != x; then
-dnl 	fc_ac_path=$QTDIR/bin:$PATH
-dnl 	AC_PATH_PROG(QT_UIC, uic, false, $fc_ac_path)
-dnl 	AC_PATH_PROG(QT_MOC, moc, false, $fc_ac_path)
-dnl else
-dnl if test x"$QT_UIC" != xfalse; then
-dnl 	AC_MSG_WARN([QTDIR environment variable not set -- this might be an indication of a problem])
-dnl fi
-dnl fi
-dnl 
-dnl ;;
-dnl *) BNV_HAVE_QT ;;
-dnl esac
-dnl 
-dnl dnl check QT_MOC
-dnl if test x$QT_MOC = x; then
-dnl 	AC_MSG_ERROR([Cannot find Qt meta object compiler (moc), bye...])
-dnl fi;
-dnl dnl check QT_UIC
-dnl if test x$QT_UIC = x; then
-dnl 	AC_MSG_ERROR([Cannot find Qt user interface compiler (uic), bye...])
-dnl fi;
 
-QT_CXXFLAGS="-I/usr/include/qt4 -I/usr/include/qt4/QtCore -I/usr/include/qt4/QtGui -I/usr/include/qt4/Qt3Support -DQT_THREAD_SUPPORT"
-QT_LIBS="-lSM -lICE  -lX11 -lXext -lXmu -lXt -lXi"
-QT_UIC=/usr/share/qt4/bin/uic
-QT_MOC=/usr/share/qt4/bin/moc
-QT_RCC=/usr/share/qt4/bin/rcc
-AC_SUBST(QT_CXXFLAGS)
-AC_SUBST(QT_UIC)
-AC_SUBST(QT_MOC)
-AC_SUBST(QT_RCC)
+dnl checking for boost
+dnl ******************
+
+FREECAD_AC_HAVE_BOOST
+
+
+dnl checking for Qt
+dnl ***************
+
+FREECAD_AC_HAVE_QT
+
 
 dnl checking for Coin
 dnl **************************************************************************
@@ -347,12 +286,12 @@ fi
 
 AC_CHECKING([OpenCascade])
 AC_ARG_WITH(OCC-includes,
-	AC_HELP_STRING([--with-OCC-includes], [Path of the header files of your OpenCascade installation]),
+	AC_HELP_STRING([--with-OCC-includes], [Path to the OpenCascade header files]),
 	[fc_occ_incs=$withval],
 	[fc_occ_incs=$fc_occ_incs_test])
 
 AC_ARG_WITH(OCC-libs,
-	AC_HELP_STRING([--with-OCC-libs], [Path of the library files of your OpenCascade installation]),
+	AC_HELP_STRING([--with-OCC-libs], [Path to the OpenCascade library files]),
 	[fc_occ_libs=$withval],
 	[fc_occ_libs=$fc_occ_libs_test])
 
@@ -408,12 +347,12 @@ dnl checking for WildMagic3
 dnl **************************************************************************
 AC_CHECKING([WildMagic3])
 AC_ARG_WITH(wildmagic-includes,
-	AC_HELP_STRING([--with-wildmagic-includes], [Path of the header files of your WildMagic3 installation]),
+	AC_HELP_STRING([--with-wildmagic-includes], [Path to the WildMagic3 header files]),
 	[fc_wm3_incs=$withval],
 	[fc_wm3_incs=/usr/include/WildMagic3/Include])
 
 AC_ARG_WITH(wildmagic-libs,
-	AC_HELP_STRING([--with-wildmagic-libs], [Path of the library files of your WildMagic3 installation]),
+	AC_HELP_STRING([--with-wildmagic-libs], [Path to the WildMagic3 library files]),
 	[fc_wm3_libs=$withval],
 	[fc_wm3_libs=/usr/lib])
 
@@ -565,47 +504,43 @@ else
 	CPPFLAGS="$CPPFLAGS -w"
 fi
 
-dnl Check if you want precompiled headers (PCH) enabled, or not (currently not used)
+dnl Check if you want precompiled headers (PCH) enabled, or not
+dnl ***********************************************************
+dnl 
+dnl enableval=no
+dnl AC_MSG_CHECKING([whether to use precompiled headers])
+dnl AC_ARG_ENABLE(pch,
+dnl   AC_HELP_STRING([--enable-pch],
+dnl     [use precompiled headers, if available]))
+dnl case "${enableval}" in
+dnl yes)
+dnl   AC_MSG_RESULT(yes)
+dnl   COMP_FLAGS="$COMP_FLAGS -Winvalid-pch"
+dnl   ;;
+dnl no)
+dnl   AC_MSG_RESULT(no)
+dnl   ;;
+dnl *)
+dnl   AC_MSG_ERROR([bad value ${enableval} for --enable-pch, needs yes or no])
+dnl   ;;
+dnl esac
+dnl AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
+dnl 
+dnl CFLAGS="$COMP_FLAGS $OPT_FLAGS"
+dnl CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 dnl **************************************************************************
-#
-#AC_ARG_ENABLE(pch,
-#  [  --enable-pch            enable precompiled headers (gcc 3.4 required)],[
-#    case "$enableval" in
-#      "yes")
-#        MUSECXXFLAGS="$MUSECXXFLAGS -Winvalid-pch"
-#        PCH="yes"
-#        AC_SUBST(PCH)
-#        AC_DEFINE(PCH, 1, [whether or not we use precompiled headers])
-#        ;;
-#      "no")
-#        ;;
-#      *)
-#        AC_MSG_ERROR([must use --enable-pch(=yes/no) or --disable-pch])
-#        ;;
-#    esac
-#  ])
-#AM_CONDITIONAL(PCH, test "$PCH" = "yes")
-enableval=no
-AC_MSG_CHECKING([whether to use precompiled headers])
-AC_ARG_ENABLE(pch,
-  AC_HELP_STRING([--enable-pch],
-    [use precompiled headers, if available]))
-case "${enableval}" in
-yes)
-  AC_MSG_RESULT(yes)
-  COMP_FLAGS="$COMP_FLAGS -Winvalid-pch"
-  ;;
-no)
-  AC_MSG_RESULT(no)
-  ;;
-*)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-pch, needs yes or no])
-  ;;
-esac
-AM_CONDITIONAL(USE_PRECOMPILED_HEADERS, test x"$enableval" = xyes)
-
-CFLAGS="$COMP_FLAGS $OPT_FLAGS"
-CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
+dnl Use this Makefile.am
+dnl if USE_PRECOMPILED_HEADERS
+dnl PreCompiled.h.gch: PreCompiled.h
+dnl 	$(CXXCOMPILE) -xc++-header -o $@ $<
+dnl 
+dnl PRECOMPILED = PreCompiled.h.gch
+dnl else
+dnl PRECOMPILED =
+dnl endif
+dnl 
+dnl BUILT_SOURCES=\
+dnl 		$(PRECOMPILED)
 dnl **************************************************************************
 
 CXX=g++
