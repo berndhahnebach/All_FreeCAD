@@ -5,8 +5,8 @@ dnl Init stuff
 dnl **************************************************************************
 dnl release version number info
 m4_define([FREECAD_MAJOR], [0])
-m4_define([FREECAD_MINOR], [5])
-m4_define([FREECAD_MICRO], [472])
+m4_define([FREECAD_MINOR], [7])
+m4_define([FREECAD_MICRO], [514])
 
 AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[werner.wm.mayer@gmx.de], FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
@@ -121,50 +121,56 @@ fi
 
 dnl checking for Python
 dnl **************************************************************************
-AC_MSG_CHECKING([for Python])
-fc_py_ver=`python -c "import sys; print sys.version[[:3]]"`;
-if test x$fc_py_ver = x; then
-	AC_MSG_ERROR([
-	**** Cannot find Python interpreter. ****
-  ])
-fi;
-AC_MSG_RESULT([yes])
+dnl AC_MSG_CHECKING([for Python])
+dnl fc_py_ver=`python -c "import sys; print sys.version[[:3]]"`;
+dnl if test x$fc_py_ver = x; then
+dnl 	AC_MSG_ERROR([
+dnl 	**** Cannot find Python interpreter. ****
+dnl   ])
+dnl fi;
+dnl AC_MSG_RESULT([yes])
+dnl 
+dnl dnl Additional test to force version number of >= 2.5
+dnl AC_MSG_CHECKING([for Python version >= 2.5])
+dnl prog="import sys
+dnl s=0x02050000
+dnl sys.exit(sys.hexversion < s)"
+dnl AS_IF([AM_RUN_LOG([python -c "$prog"])],
+dnl       [AC_MSG_RESULT([yes])], 
+dnl       [AC_MSG_ERROR([
+dnl 	**** Install Python version 2.5 or later ****
+dnl       ])])
 
-dnl Additional test to force version number of >= 2.5
-AC_MSG_CHECKING([for Python version >= 2.5])
-prog="import sys
-s=0x02050000
-sys.exit(sys.hexversion < s)"
-AS_IF([AM_RUN_LOG([python -c "$prog"])],
-      [AC_MSG_RESULT([yes])], 
-      [AC_MSG_ERROR([
-	**** Install Python version 2.5 or later ****
-      ])])
-
+dnl At least version 2.5 required
+AM_PATH_PYTHON(2.5)
 
 
 AC_ARG_WITH(python-includes,
 	AC_HELP_STRING([--with-python-includes], [Path to the Python header files]),
 	[fc_py_incs=$withval],
-	[fc_py_incs=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`])
+	[fc_py_incs=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`])
 
 AC_ARG_WITH(python-libs,
 	AC_HELP_STRING([--with-python-libs], [Path to the Python library files]),
 	[fc_py_libs=$withval],
-	[fc_py_libs=`python -c "import distutils.sysconfig; print distutils.sysconfig.get_config_var('LIBDIR')"`])
+	[fc_py_libs=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_config_var('LIBDIR')"`])
 
 fc_py_ac_save_cppflags=$CPPFLAGS
 fc_py_ac_save_ldflags=$LDFLAGS
 fc_py_ac_save_libs=$LIBS
 CPPFLAGS="$CPPFLAGS -I$fc_py_incs"
 LDFLAGS="$LDFLAGS -L$fc_py_libs"
-LIBS="-lpython$fc_py_ver"
+LIBS="-lpython$PYTHON_VERSION"
 
+dnl Small test program that only works with Python 2.5 and higher
 fc_cv_lib_py_avail=no
 AC_CHECK_HEADER(Python.h,[
-AC_MSG_CHECKING([whether libpython$fc_py_ver is available])
+AC_MSG_CHECKING([for libpython$PYTHON_VERSION])
 AC_TRY_LINK([#include "Python.h"],
-	[Py_Initialize(); Py_Finalize();],
+	[Py_Initialize(); 
+	 const char* sys = "sys"; 
+	 PyImport_AddModule(sys);
+	 Py_Finalize();],
 	[fc_cv_lib_py_avail=yes
 	AC_MSG_RESULT(yes)],
 	AC_MSG_RESULT(no))])
@@ -177,11 +183,10 @@ if test x"$fc_cv_lib_py_avail" = xyes; then
 	all_includes="$all_includes -I$fc_py_incs"
 	all_libraries="$all_libraries -L$fc_py_libs"
 
-	AC_SUBST([PYTHON],[python])
-	AC_SUBST([PYTHON_LIB], [python$fc_py_ver])
+	AC_SUBST([PYTHON_LIB], [python$PYTHON_VERSION])
 else
 	AC_MSG_ERROR([
-	**** Cannot find Python devel files. ****
+	**** Cannot find Python$PYTHON_VERSION devel files. ****
 	])
 fi
 
