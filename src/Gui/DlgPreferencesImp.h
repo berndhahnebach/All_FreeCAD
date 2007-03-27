@@ -24,7 +24,7 @@
 #ifndef GUI_DIALOG_DLGPREFERENCESIMP_H
 #define GUI_DIALOG_DLGPREFERENCESIMP_H
 
-#include "ui_DlgPreferences.h"
+#include <Gui/ui_DlgPreferences.h>
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
