@@ -44,10 +44,12 @@
 
 // Boost
 #include <boost/signals.hpp>
-#include <boost/bind.hpp>
+//#include <boost/bind.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <boost/utility.hpp>
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/program_options.hpp>
+//namespace po = boost::program_options;
 
 // xerces
 #include <xercesc/util/XercesDefs.hpp>

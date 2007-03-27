@@ -40,8 +40,6 @@
 # include <Shfolder.h>
 #endif
 
-#include <boost/program_options.hpp>
-namespace po = boost::program_options;
 
 
 #include "Application.h"
@@ -75,6 +73,8 @@ namespace po = boost::program_options;
 #include <Build/Version.h>
 
 using namespace App;
+using namespace std;
+using namespace boost::program_options;
 
 
 // scriptings (scripts are build in but can be overriden by command line option)
@@ -1005,6 +1005,7 @@ void Application::LoadParameters(void)
 
 
 #if 0
+// TODO still linker errors when using boost::program_options .....
 // A helper function to simplify the main part.
 template<class T>
 ostream& operator<<(ostream& os, const vector<T>& v)
@@ -1020,54 +1021,53 @@ void Application::ParseOptions(int ac, char ** av)
     
         // Declare a group of options that will be 
         // allowed only on command line
-        po::options_description generic("Generic options");
+        options_description generic("Generic options");
         generic.add_options()
             ("version,v", "print version string")
             ("help", "produce help message")    
-            ;
-    
-        // Declare a group of options that will be 
+            ("include-path,I", value< vector<string> >()->composing(),"include path")
+
+             ;
+ /*       // Declare a group of options that will be 
         // allowed both on command line and in
         // config file
-        po::options_description config("Configuration");
+        boost::program_options::options_description config("Configuration");
         config.add_options()
-            ("optimization", po::value<int>(&opt)->default_value(10), 
-                  "optimization level")
-            ("include-path,I", 
-                 po::value< vector<string> >()->composing(), 
-                 "include path")
+            ("optimization",   boost::program_options::value<int>(&opt)->default_value(10)   ,"optimization level")
+            ("include-path,I", boost::program_options::value< vector<string> >()->composing(),"include path")
             ;
-
+  
+ 
         // Hidden options, will be allowed both on command line and
         // in config file, but will not be shown to the user.
-        po::options_description hidden("Hidden options");
+        boost::program_options::options_description hidden("Hidden options");
         hidden.add_options()
-            ("input-file", po::value< vector<string> >(), "input file")
+            ("input-file",  boost::program_options::value< vector<string> >(), "input file")
             ;
-
+*/
         
-        po::options_description cmdline_options;
-        cmdline_options.add(generic).add(config).add(hidden);
+        options_description cmdline_options;
+        cmdline_options.add(generic);//.add(config).add(hidden);
 
-        po::options_description config_file_options;
+  /*      boost::program_options::options_description config_file_options;
         config_file_options.add(config).add(hidden);
 
-        po::options_description visible("Allowed options");
+        boost::program_options::options_description visible("Allowed options");
         visible.add(generic).add(config);
         
-        po::positional_options_description p;
+        boost::program_options::positional_options_description p;
         p.add("input-file", -1);
-        
-        po::variables_map vm;
-        store(po::command_line_parser(ac, av).
+    */    
+        variables_map vm;
+  /*      store( boost::program_options::command_line_parser(ac, av).
               options(cmdline_options).positional(p).run(), vm);
 
         ifstream ifs("multiple_sources.cfg");
         store(parse_config_file(ifs, config_file_options), vm);
         notify(vm);
-    
+    */
         if (vm.count("help")) {
-            cout << visible << "\n";
+//            cout << visible << "\n";
             exit( 0);
         }
 
