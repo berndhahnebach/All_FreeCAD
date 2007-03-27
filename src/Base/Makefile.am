@@ -126,7 +126,7 @@ libFreeCADBase_la_SOURCES=\
 libFreeCADBase_la_LIBADD   =  -l@PYTHON_LIB@ -lxerces-c -lz
 
 # set the include path found by configure
-INCLUDES= $(all_includes)
+INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCBase
