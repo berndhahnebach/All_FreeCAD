@@ -30,7 +30,8 @@
 #include "MenuManager.h"
 #include "ToolBarManager.h"
 #include "CommandBarManager.h"
-#include "DockWindow.h"
+#include "DockWindowManager.h"
+#include "MainWindow.h"
 
 using namespace Gui;
 
@@ -112,9 +113,16 @@ bool WorkbenchManager::activate( const QString& name, const QString& className )
   Workbench* wb = createWorkbench( name, className );
   if ( wb ) 
   {
+    // save layout of old workbench stuff
+    getMainWindow()->saveLayoutSettings();
     _activeWorkbench = wb;
-    return wb->activate();
+    wb->activate();
+
+    // load layout of new workbench stuff
+    getMainWindow()->loadLayoutSettings();
+    return true;
   }
+  
   return false;
 }
 

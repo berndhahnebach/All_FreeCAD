@@ -43,6 +43,7 @@ namespace Gui {
 
 class MenuItem;
 class ToolBarItem;
+class DockWindowItems;
 class WorkbenchManager;
 
 /**
@@ -83,7 +84,7 @@ public:
    * settings.
    */
   void exportCustomBars( ToolBarItem*, const char* node ) const;
-  /** Sets up the contextmenu for the this workbench. 
+  /** Sets up the contextmenu for this workbench. 
    * The default implementation does nothing.
    */
   virtual void setupContextMenu(const char* recipient,MenuItem*) const;
@@ -93,15 +94,14 @@ public:
   bool activate();
 
 protected:
-  /** Returns a MenuItem tree structure of menus for the this workbench. */
+  /** Returns a MenuItem tree structure of menus for this workbench. */
   virtual MenuItem* setupMenuBar() const=0;
-  /** Returns a ToolBarItem tree structure of toolbars for the this workbench. */
+  /** Returns a ToolBarItem tree structure of toolbars for this workbench. */
   virtual ToolBarItem* setupToolBars() const=0;
-  /** Returns a ToolBarItem tree structure of command bars for the this workbench. */
+  /** Returns a ToolBarItem tree structure of command bars for this workbench. */
   virtual ToolBarItem* setupCommandBars() const=0;
-
-private:
-  void showOrHideToolBars(bool read) const;
+  /** Returns a DockWindowItems structure of dock windows this workbench. */
+  virtual DockWindowItems* setupDockWindows() const=0;
 
 private:
   QString _name;
@@ -132,6 +132,8 @@ protected:
   virtual ToolBarItem* setupToolBars() const;
   /** Defines the standard command bars. */
   virtual ToolBarItem* setupCommandBars() const;
+  /** Returns a DockWindowItems structure of dock windows this workbench. */
+  virtual DockWindowItems* setupDockWindows() const;
 };
 
 /**
@@ -157,6 +159,8 @@ protected:
   virtual ToolBarItem* setupToolBars() const;
   /** Defines the standard command bars. */
   virtual ToolBarItem* setupCommandBars() const;
+  /** Returns a DockWindowItems structure of dock windows this workbench. */
+  virtual DockWindowItems* setupDockWindows() const;
 };
 
 class GuiExport TestWorkbench : public StdWorkbench

@@ -1681,9 +1681,9 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
     </message>
 </context>
 <context>
-    <name>Gui::DockWindow</name>
+    <name>QDockWidget</name>
     <message>
-        <source>Report View</source>
+        <source>Report view</source>
         <translation>Ausgabefenster</translation>
     </message>
     <message>
@@ -1699,7 +1699,7 @@ Wählen Sie bitte ein anderes Verzeichnis aus.</translation>
         <translation>Werkzeugkasten</translation>
     </message>
     <message>
-        <source>Property editor</source>
+        <source>Property view</source>
         <translation>Eigenschaften</translation>
     </message>
 </context>

@@ -26,7 +26,7 @@
 #include "DlgGeneralImp.h"
 #include "Application.h"
 #include "Command.h"
-#include "DockWindow.h"
+#include "DockWindowManager.h"
 #include "MainWindow.h"
 #include "PrefWidgets.h"
 #include "Workbench.h"

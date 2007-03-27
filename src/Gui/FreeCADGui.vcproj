@@ -3925,6 +3925,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DockWindowManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DockWindowManager.h"
+				>
+			</File>
+			<File
 				RelativePath="MenuManager.cpp"
 				>
 				<FileConfiguration

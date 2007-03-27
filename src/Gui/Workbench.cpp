@@ -27,6 +27,7 @@
 #include "WorkbenchPy.h"
 #include "MenuManager.h"
 #include "ToolBarManager.h"
+#include "DockWindowManager.h"
 #include "Application.h"
 #include "Action.h"
 #include "Command.h"
@@ -281,28 +282,6 @@ void Workbench::exportCustomBars( ToolBarItem* toolBar, const char* node ) const
   }
 }
 
-void Workbench::showOrHideToolBars( bool read ) const
-{
-#if 1 //TODO
-  QList<QToolBar*> bars = ToolBarManager::getInstance()->toolBars();
-  if ( read )
-  {
-    for ( QList<QToolBar*>::Iterator it=bars.begin(); it != bars.end(); ++it )
-    {
-      if ( !App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->GetBool( (*it)->name(), true) )
-        (*it)->hide();
-    }
-  }
-  else // write
-  {
-    for ( QList<QToolBar*>::Iterator it=bars.begin(); it != bars.end(); ++it )
-    {
-      App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Workbench")->SetBool( (*it)->name(), !(*it)->isHidden() );
-    }
-  }
-#endif
-}
-
 void Workbench::setupContextMenu(const char* recipient,MenuItem* item) const
 {
 }
@@ -353,9 +332,6 @@ bool Workbench::activate()
     }
   }
 
-  // just checks the toolbars if they must be hidden
-  showOrHideToolBars( false );
-
   ToolBarItem* tb = setupToolBars();
   ToolBarManager::getInstance()->setup( tb );
   delete tb;
@@ -370,12 +346,13 @@ bool Workbench::activate()
   CommandBarManager::getInstance()->customSetup(cc);
   delete cc;
 
+  DockWindowItems* dw = setupDockWindows();
+  DockWindowManager::instance()->setup( dw );
+  delete dw;
+
   MenuItem* mb = setupMenuBar();
   MenuManager::getInstance()->setup( mb );
   delete mb;
-  
-  // just checks the toolbars if they must be hidden
-  showOrHideToolBars( true );
 
   return true;
 }
@@ -400,7 +377,7 @@ StdWorkbench::~StdWorkbench()
 
 void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
 {
-  if ( strcmp(recipient,"View") == 0 )
+  if (strcmp(recipient,"View") == 0)
   {
     MenuItem* StdViews = new MenuItem;
     StdViews->setCommand( "Standard views" );
@@ -412,6 +389,11 @@ void StdWorkbench::setupContextMenu(const char* recipient,MenuItem* item) const
 
     if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
     	*item << "Separator" << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" << "Std_Delete";
+  }
+  else if (strcmp(recipient,"Tree") == 0)
+  {
+    if ( Gui::Selection().countObjectsOfType(App::DocumentObject::getClassTypeId()) > 0 )
+      *item << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" << "Std_Delete";
   }
 }
 
@@ -548,6 +530,17 @@ ToolBarItem* StdWorkbench::setupCommandBars() const
   return root;
 }
 
+DockWindowItems* StdWorkbench::setupDockWindows() const
+{
+  DockWindowItems* root = new DockWindowItems();
+  root->addDockWidget("Std_ToolBox", Qt::RightDockWidgetArea);
+  //root->addDockWidget("Std_HelpView", Qt::RightDockWidgetArea);
+  root->addDockWidget("Std_TreeView", Qt::LeftDockWidgetArea);
+  root->addDockWidget("Std_PropertyView", Qt::LeftDockWidgetArea);
+  root->addDockWidget("Std_ReportView", Qt::BottomDockWidgetArea);
+  return root;
+}
+
 // --------------------------------------------------------------------
 
 TYPESYSTEM_SOURCE(Gui::NoneWorkbench, Gui::StdWorkbench)
@@ -579,6 +572,11 @@ MenuItem* NoneWorkbench::setupMenuBar() const
   MenuItem* edit = new MenuItem( menuBar );
   edit->setCommand( "&Edit" );
   *edit << "Std_DlgPreferences";
+
+  // View
+  MenuItem* view = new MenuItem( menuBar );
+  view->setCommand( "&View" );
+  *view << "Std_Workbench" << "Std_ToolBarMenu" << "Std_DockViewMenu" << "Separator" << "Std_ViewStatusBar" << "Std_UserInterface";
 
   // Separator
   MenuItem* sep = new MenuItem( menuBar );
@@ -615,6 +613,11 @@ ToolBarItem* NoneWorkbench::setupCommandBars() const
 {
   ToolBarItem* root = new ToolBarItem;
   return root;
+}
+
+DockWindowItems* NoneWorkbench::setupDockWindows() const
+{
+  return new DockWindowItems();
 }
 
 // --------------------------------------------------------------------

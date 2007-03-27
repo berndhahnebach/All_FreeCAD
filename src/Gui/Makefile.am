@@ -206,6 +206,8 @@ libFreeCADGui_la_SOURCES=\
 		DlgUndoRedo.h \
 		DockWindow.cpp \
 		DockWindow.h \
+		DockWindowManager.cpp \
+		DockWindowManager.h \
 		Document.cpp \
 		Document.h \
 		DocumentPy.cpp \

@@ -32,11 +32,13 @@
 
 /// Here the FreeCAD includes sorted by Base,App,Gui......
 #include "Macro.h"
-#include "../Base/Interpreter.h"
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
-#include "../App/Application.h"
-#include "DockWindow.h"
+
+#include <Base/Interpreter.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
+#include <App/Application.h>
+
+#include "DockWindowManager.h"
 #include "ReportView.h"
 #include "PythonConsole.h"
 
