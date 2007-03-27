@@ -30,30 +30,35 @@
 
 #include "MainWindow.h"
 #include "Application.h"
+
 #include "Action.h"
+#include "Command.h"
+
+#include "CommandBarManager.h"
+#include "DockWindowManager.h"
+#include "WorkbenchManager.h"
+#include "Workbench.h"
+
+#include "Window.h" 
 #include "View.h"
+#include "Macro.h"
+#include "ProgressBar.h"
 
 #include "Icons/background.xpm"
 #include "WidgetFactory.h"
-#include "Command.h"
-#include "Tree.h"
-#include "PropertyView.h"
 #include "BitmapFactory.h"
 #include "Splashscreen.h"
+
+#include "Tree.h"
+#include "PropertyView.h"
 #include "MenuManager.h"
+#include "ToolBox.h"
+#include "HelpView.h"
+#include "ReportView.h"
 
 #include "DlgTipOfTheDayImp.h"
 #include "DlgUndoRedo.h"
 #include "DlgOnlineHelpImp.h"
-#include "ToolBox.h"
-#include "HelpView.h"
-#include "ReportView.h"
-#include "Macro.h"
-#include "ProgressBar.h"
-#include "Window.h" 
-#include "Workbench.h"
-#include "WorkbenchManager.h"
-#include "CommandBarManager.h"
 
 #include "Language/Translator.h"
 #include "GuiInitScript.h"
@@ -183,40 +188,44 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
   connect( d->workspace, SIGNAL( windowActivated ( QWidget * ) ), this, SLOT( onWindowActivated( QWidget* ) ) );
   connect( d->tabs, SIGNAL( selected( int) ), this, SLOT( onTabSelected(int) ) );
 
-  //TODO Show all dockable windows over the workbench facility
+  DockWindowManager* pDockMgr = DockWindowManager::instance();
+
+  // Show all dockable windows over the workbench facility
   static const char* dockWindows[] = {
-    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Toolbox" ),
-    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Help view" ),
-    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Tree view" ),
-    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Property editor" ),
-    QT_TRANSLATE_NOOP( "Gui::DockWindow", "Report View" )
+    QT_TRANSLATE_NOOP( "QDockWidget", "Toolbox" ),
+    QT_TRANSLATE_NOOP( "QDockWidget", "Help view" ),
+    QT_TRANSLATE_NOOP( "QDockWidget", "Tree view" ),
+    QT_TRANSLATE_NOOP( "QDockWidget", "Property view" ),
+    QT_TRANSLATE_NOOP( "QDockWidget", "Report View" )
   };
 
-  // Cmd Button Group +++++++++++++++++++++++++++++++++++++++++++++++
+  // Toolbox
   ToolBox* toolBox = new ToolBox(this);
+  toolBox->setWindowTitle("Toolbox");
+  pDockMgr->registerDockWindow("Std_ToolBox", toolBox);
   CommandBarManager::getInstance()->setToolBox( toolBox );
-  DockWindowManager* pDockMgr = DockWindowManager::instance();
-  pDockMgr->addDockWindow( dockWindows[0],toolBox, Qt::RightDockWidgetArea );
 
-  // Help View ++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  QString home = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
-  HelpView* pcHelpView = new HelpView( home, this );
-  pDockMgr->addDockWindow(dockWindows[1], pcHelpView, Qt::RightDockWidgetArea );
+  // Help View
+  //QString home = Gui::Dialog::DlgOnlineHelpImp::getStartpage();
+  //HelpView* pcHelpView = new HelpView( home, this );
+  //pDockMgr->registerDockWindow("Std_HelpView", pcHelpView);
 
-  // Tree Bar  ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // Tree view
   pcTree = new TreeView(0,this);
+  pcTree->setWindowTitle("Tree view");
   pcTree->setMinimumWidth(210);
-  pDockMgr->addDockWindow(dockWindows[2], pcTree, Qt::LeftDockWidgetArea );
+  pDockMgr->registerDockWindow("Std_TreeView", pcTree);
 
-  // PropertyView  ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // Property view
   PropertyView* pcPropView = new PropertyView(0);
+  pcPropView->setWindowTitle("Property view");
   pcPropView->setMinimumWidth(210);
-  pDockMgr->addDockWindow(dockWindows[3], pcPropView, Qt::LeftDockWidgetArea );
+  pDockMgr->registerDockWindow("Std_PropertyView", pcPropView);
 
-  // Report View
-  Gui::DockWnd::ReportView* pcOutput = new Gui::DockWnd::ReportView(this);
-  pDockMgr->addDockWindow(dockWindows[4], pcOutput, Qt::BottomDockWidgetArea );
-
+  // Report view
+  Gui::DockWnd::ReportView* pcReport = new Gui::DockWnd::ReportView(this);
+  pcReport->setWindowTitle("Report view");
+  pDockMgr->registerDockWindow("Std_ReportView", pcReport);
 
   // accept drops on the window, get handled in dropEvent, dragEnterEvent
   setAcceptDrops(true);
@@ -682,8 +691,14 @@ void MainWindow::loadLayoutSettings()
   std::string path = App::GetApplication().Config()["UserAppData"];
   QByteArray state;
   QDir dir(path.c_str());
-  if (dir.exists()) {
-    QString filename = dir.filePath("layout.bin");
+  if (dir.exists() && WorkbenchManager::instance()->active()) {
+    QString name = WorkbenchManager::instance()->active()->name();
+    for (int i=0; i<name.length(); i++) {
+      if (!name[i].isLetterOrNumber())
+        name[i] = '_';
+    }
+    name += ".bin";
+    QString filename = dir.filePath(name);
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
       QDataStream str(&file);
@@ -704,8 +719,14 @@ void MainWindow::saveLayoutSettings()
   std::string path = App::GetApplication().Config()["UserAppData"];
   QDir dir(path.c_str());
 
-  if (dir.exists()) {
-    QString filename = dir.filePath("layout.bin");
+  if (dir.exists() && WorkbenchManager::instance()->active()) {
+    QString name = WorkbenchManager::instance()->active()->name();
+    for (int i=0; i<name.length(); i++) {
+      if (!name[i].isLetterOrNumber())
+        name[i] = '_';
+    }
+    name += ".bin";
+    QString filename = dir.filePath(name);
     QFile file(filename);
     if (file.open(QIODevice::WriteOnly)) {
       QByteArray state = saveState();
@@ -807,18 +828,19 @@ void MainWindow::changeEvent(QEvent *e)
 {
   if (e->type() == QEvent::LanguageChange) {
     d->sizeLabel->setText(tr("Dimension"));
-
-    DockWindowManager::instance()->languageChanged();
     
     CommandManager& rclMan = Application::Instance->commandManager();
     vector<Command*> cmd = rclMan.getAllCommands();
     for ( vector<Command*>::iterator it = cmd.begin(); it != cmd.end(); ++it )
       (*it)->languageChange();
 
-    //MenuManager::getInstance()->languageChange();
-    // reload current workbench to translate root items of submenus
+    // reload current workbench to retranslate all actions and winow titles
     Workbench* wb = WorkbenchManager::instance()->active();
-    if (wb) wb->activate();
+    if (wb) {
+      this->saveLayoutSettings();
+      wb->activate();
+      this->loadLayoutSettings();
+    }
   } else {
     QMainWindow::changeEvent(e);
   }

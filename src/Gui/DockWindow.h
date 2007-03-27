@@ -87,34 +87,6 @@ Q_SIGNALS:
   void sendCloseView(MDIView* theView);
 };
 
-/**
- * Class that manages the widgets inside a QDockWidget.
- * \author Werner Mayer
- */
-class GuiExport DockWindowManager
-{
-public:
-  /** Creates the only instance of the DockWindowManager. */
-  static DockWindowManager* instance();
-  static void destruct();
-
-  void addDockWindow( const QString& name, QWidget* widget,  Qt::DockWidgetArea pos = Qt::AllDockWidgetAreas );
-  QWidget* removeDockWindow( const QString& name );
-  void removeDockWindow( QWidget* dock );
-  QWidget* getDockWindow( const QString& name ) const;
-  QList<QWidget*> getDockWindows() const;
-
-  void showDockWindows( const QStringList& );
-  void hideDockWindows( const QStringList& );
-  void languageChanged();
-
-private:
-  DockWindowManager();
-  ~DockWindowManager();
-  static DockWindowManager* _instance;
-  struct DockWindowManagerP* d;
-};
-
 } // namespace Gui
 
 #endif // GUI_DOCKWINDOW_H 

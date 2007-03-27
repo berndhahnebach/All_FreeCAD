@@ -488,21 +488,8 @@ TreeView::~TreeView()
 
 void TreeView::contextMenuEvent ( QContextMenuEvent * e )
 {
-  // check for selected feature items
-  bool selected = false;
-  Q3ListViewItem* item;
-  for ( Q3ListViewItemIterator it = _pcListView->firstChild(); (item=it.current())!=0; it++ ) {
-    if ( item->isSelected() && item->rtti() == 3100 ) {
-      selected = true;
-      break;
-    }
-  }
-
-  MenuItem* view = new MenuItem;
-  if ( selected )
-    *view << "Std_SetMaterial" << "Std_ToggleVisibility" << "Std_RandomColor" << "Separator" << "Std_Delete";
-
   // ask workbenches and view provider, ...
+  MenuItem* view = new MenuItem;
   Gui::Application::Instance->setupContextMenu("Tree", view);
 
   Q3PopupMenu ContextMenu;

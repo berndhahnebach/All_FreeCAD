@@ -178,6 +178,8 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
   if ( !toolBar )
     return; // empty menu bar
 
+  // switch updates off to avoid flickering
+  getMainWindow()->setUpdatesEnabled(false);
   QList<QToolBar*> tbs = toolBars();
   for ( QList<QToolBar*>::Iterator it = tbs.begin(); it != tbs.end(); ++it )
   {
@@ -201,6 +203,9 @@ void ToolBarManager::setup( ToolBarItem* toolBar ) const
         mgr.addTo( (*subitem)->command().latin1(), bar );
     }
   }
+  
+  // switch on updates
+  getMainWindow()->setUpdatesEnabled(true);
 }
 
 void ToolBarManager::customSetup( ToolBarItem* toolBar ) const
