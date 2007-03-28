@@ -33,6 +33,7 @@
 # include <time.h>
 # include <unistd.h>
 # endif
+# include <boost/program_options.hpp>
 #endif
 
 #ifdef FC_OS_WIN32
