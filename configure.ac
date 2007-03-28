@@ -549,13 +549,16 @@ dnl 		$(PRECOMPILED)
 dnl **************************************************************************
 
 CXX=g++
-CXXFLAGS="-Wno-deprecated -frtti"
+CXXFLAGS="$CXXFLAGS -Wno-deprecated -frtti"
 
 AC_CONFIG_FILES([Makefile 
 src/Makefile 
 src/Base/Makefile 
 src/App/Makefile 
 src/Gui/Makefile 
+src/Gui/Icons/Makefile 
+src/Gui/Language/Makefile 
+src/Gui/propertyeditor/Makefile 
 src/Main/Makefile
 src/Mod/Makefile
 src/Mod/Part/Makefile

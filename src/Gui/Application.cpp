@@ -698,7 +698,7 @@ QStringList Application::workbenches(void) const
   }
 
   PyObject *key, *value;
-  int pos = 0;
+  Py_ssize_t pos = 0;
   QStringList wb;
   // insert all items
   while (PyDict_Next(_pcWorkbenchDictionary, &pos, &key, &value)) {
