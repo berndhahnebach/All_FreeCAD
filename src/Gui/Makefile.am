@@ -1,3 +1,5 @@
+SUBDIRS=Icons Language propertyeditor
+
 lib_LTLIBRARIES=libFreeCADGui.la
 
 BUILT_SOURCES=\
@@ -74,19 +76,7 @@ BUILT_SOURCES=\
 		ui_DlgSettingsMacro.h \
 		ui_DlgTipOfTheDay.h \
 		ui_DlgToolbars.h \
-		propertyeditor/moc_propertyeditor.cpp \
-		propertyeditor/moc_propertyeditorfile.cpp \
-		propertyeditor/moc_propertyeditorfont.cpp \
-		propertyeditor/moc_propertyeditorinput.cpp \
-		propertyeditor/moc_propertyeditoritem.cpp \
-		Language/moc_Translator.cpp \
-		Icons/qrc_resource.cpp \
-		Language/qrc_translation.cpp \
 		GuiInitScript.h
-
-nodist_libFreeCADGui_la_SOURCES=\
-		qrc_resource.cpp \
-		qrc_translation.cpp
 
 libFreeCADGui_la_UI=\
 		AboutApplication.ui \
@@ -117,24 +107,6 @@ libFreeCADGui_la_UI=\
 		DlgToolbars.ui
 
 libFreeCADGui_la_SOURCES=\
-		propertyeditor/propertyeditor.cpp \
-		propertyeditor/propertyeditor.h \
-		propertyeditor/propertyeditoritem.cpp \
-		propertyeditor/propertyeditoritem.h \
-		propertyeditor/propertyeditordate.cpp \
-		propertyeditor/propertyeditordate.h \
-		propertyeditor/propertyeditorfile.cpp \
-		propertyeditor/propertyeditorfile.h \
-		propertyeditor/propertyeditorfont.cpp \
-		propertyeditor/propertyeditorfont.h \
-		propertyeditor/propertyeditorinput.cpp \
-		propertyeditor/propertyeditorinput.h \
-		propertyeditor/propertyeditorlist.cpp \
-		propertyeditor/propertyeditorlist.h \
-		\
-		Language/Translator.cpp \
-		Language/Translator.h \
-		\
 		Action.cpp \
 		Action.h \
 		Application.cpp \
@@ -335,40 +307,19 @@ libFreeCADGui_la_SOURCES=\
 
 EXTRA_DIST = \
 		$(libFreeCADGui_la_UI) \
-		Icons/BmpFactoryIcons.cpp \
-		Icons/background.xpm \
-		Icons/bulb.xpm \
-		Icons/button_down.xpm \
-		Icons/button_left.xpm \
-		Icons/button_right.xpm \
-		Icons/button_up.xpm \
-		Icons/Document.xpm \
-		Icons/FCIcon.xpm \
-		Icons/Feature.xpm \
-		Icons/SplashScreen.xpm \
-		Icons/images.cpp \
-		Icons/Icons.h \
-		Icons/ParamDlgImgs.h \
-		Icons/resource.qrc \
-		Language/translation.qrc \
-		Language/FreeCAD.po \
-		Language/FreeCAD_de.qm \
-		Language/FreeCAD_de.ts \
-		Language/FreeCAD_fr.ts \
-		Language/qt_de.qm \
-		Language/qt_de.ts \
 		Qt3All.h \
 		Qt4All.h \
 		InventorAll.h \
 		FreeCADGuiInit.py \
 		FreeCADGui.vcproj
 
-data_DATA = Icons/FCIcon.xpm
-
 # the library search path.
 libFreeCADGui_la_LDFLAGS = -L../Base -L../App $(QT_LIBS) $(sim_ac_coin_ldflags) $(sim_ac_coin_libs) $(sim_ac_soqt_ldflags) $(sim_ac_soqt_libs) $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 libFreeCADGui_la_LIBADD   =\
+		Icons/libIcons.la \
+		Language/libLanguage.la \
+		propertyeditor/libpropertyeditor.la \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
 		-lQt3Support\
@@ -407,12 +358,4 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src $(QT_CXXFLAG
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCGui
 
-CLEANFILES = $(BUILT_SOURCES) \
-		moc_propertyeditor.cpp \
-		moc_propertyeditorfile.cpp \
-		moc_propertyeditorfont.cpp \
-		moc_propertyeditorinput.cpp \
-		moc_propertyeditoritem.cpp \
-		moc_Translator.cpp \
-		qrc_resource.cpp \
-		qrc_translation.cpp 
+CLEANFILES = $(BUILT_SOURCES)

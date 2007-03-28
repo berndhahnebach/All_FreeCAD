@@ -1,0 +1,44 @@
+noinst_LTLIBRARIES=libLanguage.la
+
+BUILT_SOURCES=\
+		moc_Translator.cpp \
+		qrc_translation.cpp
+
+nodist_libLanguage_la_SOURCES=\
+		qrc_translation.cpp
+
+libLanguage_la_SOURCES=\
+		Translator.cpp \
+		Translator.h
+
+EXTRA_DIST = \
+		translation.qrc \
+		FreeCAD.po \
+		FreeCAD_de.qm \
+		FreeCAD_de.ts \
+		FreeCAD_fr.ts \
+		qt_de.qm \
+		qt_de.ts
+
+
+# rule for Qt MetaObject Compiler:
+moc_%.cpp: %.h
+	$(QT_MOC) $(srcdir)/$< -o $(@F)
+
+# rule for Qt MetaObject Compiler:
+%.moc: %.h
+	$(QT_MOC) $(srcdir)/$< -o $(@F)
+
+# rules for Qt Resource Compiler:
+# (it adds path to #include automatically, so cd before calling it)
+qrc_%.cpp: %.qrc
+	$(QT_RCC) -name $(*F) $(srcdir)/$< -o $(@F)
+
+
+# set the include path found by configure
+INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src -I$(srcdir)/.. $(QT_CXXFLAGS)
+
+# set additional defines (for cygwin only)
+AM_CPPFLAGS=-DFCGui
+
+CLEANFILES = $(BUILT_SOURCES)
