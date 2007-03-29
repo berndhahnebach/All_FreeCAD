@@ -25,6 +25,7 @@
 //gcc
 # include <iomanip>
 # include <ios>
+# include <sstream>
 
 #include <Base/FileInfo.h>
 #include <Base/Exception.h>

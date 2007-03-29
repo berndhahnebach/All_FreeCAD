@@ -356,6 +356,11 @@ void Document::OnChange(App::Document::SubjectType &rCaller,App::Document::Messa
   for(it=Reason.NewObjects.begin();it!=Reason.NewObjects.end();it++)
   {
     std::string cName = (*it)->getViewProviderName();
+    if (cName.empty()) {
+      // handle document object with no view provider specified
+      Base::Console().Log("%s has no view provider specified\n", (*it)->getTypeId().getName());
+      continue;
+    }
 
     ViewProviderDocumentObject *pcProvider = (ViewProviderDocumentObject*) Base::Type::createInstanceByName(cName.c_str(),true);
     if ( pcProvider )
