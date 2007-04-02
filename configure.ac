@@ -145,13 +145,13 @@ dnl At least version 2.5 required
 AM_PATH_PYTHON(2.5)
 
 
-AC_ARG_WITH(python-includes,
-	AC_HELP_STRING([--with-python-includes], [Path to the Python header files]),
+AC_ARG_WITH(python-include,
+	AC_HELP_STRING([--with-python-include=DIR], [Path to the Python header files]),
 	[fc_py_incs=$withval],
 	[fc_py_incs=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_python_inc()"`])
 
-AC_ARG_WITH(python-libs,
-	AC_HELP_STRING([--with-python-libs], [Path to the Python library files]),
+AC_ARG_WITH(python-lib,
+	AC_HELP_STRING([--with-python-lib=DIR], [Path to the Python library files]),
 	[fc_py_libs=$withval],
 	[fc_py_libs=`$PYTHON -c "import distutils.sysconfig; print distutils.sysconfig.get_config_var('LIBDIR')"`])
 
@@ -194,16 +194,16 @@ fi
 dnl checking for xerces-c
 dnl **************************************************************************
 AC_MSG_CHECKING([for xerces-c])
-AC_ARG_WITH(xercesc-includes,
-	AC_HELP_STRING([--with-xercesc-includes], [Path to the xerces-c header files]),
+AC_ARG_WITH(xercesc-include,
+	AC_HELP_STRING([--with-xercesc-include=DIR], [Path to the xerces-c header files]),
 	[fc_xer_incs=$withval],
 	[fc_xer_incs=/usr/include])
 
 AC_CHECK_FILE($fc_xer_incs/xercesc,,
 	[AC_CHECK_FILE(/usr/local/include/xercesc,[fc_xer_incs=/usr/local/include])])
 
-AC_ARG_WITH(xercesc-libs,
-	AC_HELP_STRING([--with-xercesc-libs], [Path to the xerces-c library files]),
+AC_ARG_WITH(xercesc-lib,
+	AC_HELP_STRING([--with-xercesc-lib=DIR], [Path to the xerces-c library files]),
 	[fc_xer_libs=$withval],
 	[fc_xer_libs=/usr/lib])
 
@@ -247,7 +247,7 @@ FREECAD_AC_HAVE_BOOST
 dnl checking for Qt
 dnl ***************
 
-FREECAD_AC_HAVE_QT
+FREECAD_AC_HAVE_QT(4.1)
 
 
 dnl checking for Coin
@@ -280,7 +280,7 @@ dnl **************************************************************************
 
 dnl checking for OpenCascade
 dnl **************************************************************************
-dnl Check if CASROOT is set and estimate where the includes and libs could be
+dnl Check if CASROOT is set and estimate where the include and libs could be
 if test x"$CASROOT" != x; then
   fc_occ_incs_test="$CASROOT/inc"
   fc_occ_libs_test="$CASROOT/Linux/lib"
@@ -290,13 +290,13 @@ else
 fi
 
 AC_CHECKING([OpenCascade])
-AC_ARG_WITH(OCC-includes,
-	AC_HELP_STRING([--with-OCC-includes], [Path to the OpenCascade header files]),
+AC_ARG_WITH(occ-include,
+	AC_HELP_STRING([--with-occ-include=DIR], [Path to the OpenCascade header files]),
 	[fc_occ_incs=$withval],
 	[fc_occ_incs=$fc_occ_incs_test])
 
-AC_ARG_WITH(OCC-libs,
-	AC_HELP_STRING([--with-OCC-libs], [Path to the OpenCascade library files]),
+AC_ARG_WITH(occ-lib,
+	AC_HELP_STRING([--with-occ-lib=DIR], [Path to the OpenCascade library files]),
 	[fc_occ_libs=$withval],
 	[fc_occ_libs=$fc_occ_libs_test])
 
@@ -351,13 +351,13 @@ AM_CONDITIONAL(OCC_VERSION6, test x"$fc_cv_lib_occ_ver_6" = xyes)
 dnl checking for WildMagic3
 dnl **************************************************************************
 AC_CHECKING([WildMagic3])
-AC_ARG_WITH(wildmagic-includes,
-	AC_HELP_STRING([--with-wildmagic-includes], [Path to the WildMagic3 header files]),
+AC_ARG_WITH(wm3-include,
+	AC_HELP_STRING([--with-wm3-include=DIR], [Path to the WildMagic3 header files]),
 	[fc_wm3_incs=$withval],
 	[fc_wm3_incs=/usr/include/WildMagic3/Include])
 
-AC_ARG_WITH(wildmagic-libs,
-	AC_HELP_STRING([--with-wildmagic-libs], [Path to the WildMagic3 library files]),
+AC_ARG_WITH(wm3-lib,
+	AC_HELP_STRING([--with-wm3-lib=DIR], [Path to the WildMagic3 library files]),
 	[fc_wm3_libs=$withval],
 	[fc_wm3_libs=/usr/lib])
 

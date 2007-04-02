@@ -128,11 +128,11 @@ if test "$ac_cv_cxx_have_std_iostream" = yes; then
   AC_DEFINE(HAVE_STD_IOSTREAM,,[define if the compiler has std compliant iostream library])
 fi
 ])
-dnl @synopsis FREECAD_AC_HAVE_QT
+dnl @synopsis FREECAD_AC_HAVE_QT(MINIMUM_VERSION)
 dnl
 dnl @summary Search for Trolltech's Qt GUI framework.
 dnl
-dnl Checks for the Qt 4.x library and its tools uic, moc and rcc.
+dnl Checks for the Qt4 library and its tools uic, moc and rcc.
 dnl
 dnl The following variables are exported:
 dnl
@@ -145,48 +145,79 @@ dnl   QT_RCC
 dnl
 AC_DEFUN([FREECAD_AC_HAVE_QT],
 [
-AC_MSG_CHECKING(for Qt)
 
-QT_DIR=xxx
-AC_ARG_WITH([qt-dir],
-             AC_HELP_STRING([--with-qt-dir=DIR], [give prefix location of Qt 4.x]),
-             [QTPATHS="$withval"], [QTPATHS="/usr/share/qt4"])
+AC_ARG_WITH([qt4-dir],
+             AC_HELP_STRING([--with-qt4-dir=DIR], [give prefix location of Qt4]),
+             [fc_qt4_dir="$withval"], 
+             [fc_qt4_dir="/usr/share/qt4"])
 
-for x in $QTPATHS; do
-    if test -d $x ; then
-       QT_DIR="$x"
-    fi
-done
-dnl If the path was not specified we also check for the QTDIR system variable
-if test $QT_DIR = xxx ; then
-    if test -d ${QTDIR} ; then
-       QT_DIR="${QTDIR}"
-    else
-       AC_MSG_ERROR(Could not locate Qt 4.x)
-    fi
-fi
-AC_MSG_RESULT($QT_DIR)
+AC_ARG_WITH([qt4-include],
+             AC_HELP_STRING([--with-qt4-include=DIR], [give include prefix of Qt4]),
+             [fc_qt4_include="$withval"], 
+             [fc_qt4_include="$fc_qt4_dir/include"])
+
+AC_ARG_WITH([qt4-lib],
+             AC_HELP_STRING([--with-qt4-lib=DIR], [give library path to Qt4]),
+             [fc_qt4_lib="$withval"], 
+             [fc_qt4_lib="$fc_qt4_dir/lib"])
+
+AC_ARG_WITH([qt4-bin],
+             AC_HELP_STRING([--with-qt4-bin=DIR], [give path to Qt4 utilities (moc, uic, rcc)]),
+             [fc_qt4_bin="$withval"], 
+             [fc_qt4_bin="$fc_qt4_dir/bin"])
+
+AC_ARG_WITH([qt4-framework],
+             AC_HELP_STRING([--with-qt4-framework], 
+             [give prefix path to the Qt4 framework on Mac OS X]),
+             [fc_qt4_frm="$withval"], 
+             [fc_qt4_frm=""])
+
 AC_MSG_CHECKING(for host)
-host=`uname -a` # AC_CANONICAL_HOST is broken at the time of this writing.
-case $host in
-  MINGW32*)
-    AC_MSG_RESULT(MinGW)
-    QT_LIBS="-L$QT_DIR/lib -lopengl32 -lglu32 -lgdi32 -luser32 -lmingw32 -mthreads -Wl,-enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc -Wl,-s -Wl,-s -Wl,-subsystem,windows"
-    QT_CXXFLAGS="-I$QT_DIR/include -I$QT_DIR/include/QtCore -I$QT_DIR/include/QtGui -I$QT_DIR/include/QtOpenGL -DUNICODE -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DQT_NEEDS_QMAIN -frtti -fexceptions"
-    QT_BIN="$QT_DIR/bin"
+AC_MSG_RESULT($host_os)
+case $host_os in
+  mingw32*)
+    QT_LIBS="-L$fc_qt4_lib -lopengl32 -lglu32 -lgdi32 -luser32 -lmingw32 -mthreads -Wl,-enable-stdcall-fixup -Wl,-enable-auto-import -Wl,-enable-runtime-pseudo-reloc -Wl,-s -Wl,-s -Wl,-subsystem,windows"
+    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtOpenGL -DUNICODE -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -DQT_NEEDS_QMAIN -frtti -fexceptions"
     ;;
-  *)
-    AC_MSG_RESULT(Linux)
+  darwin*)
     AC_PATH_XTRA
-    QT_LIBS="-Wl,-rpath,$QT_DIR/lib -L$QT_DIR/lib $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS -lGLU -lGL -lpthread"
-    QT_CXXFLAGS="-I$QT_DIR/include -I$QT_DIR/include/Qt3Support -I$QT_DIR/include/QtGui -I$QT_DIR/include/QtCore -I$QT_DIR/include/QtOpenGL $X_CFLAGS -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_SHARED -DQT_THREAD_SUPPORT"
-    QT_BIN="$QT_DIR/bin"
+    ac_have_qt_framework=false
+    if test -d $fc_qt4_frm/QtCore.framework; then
+      ac_save_ldflags_fw=$LDFLAGS 
+      LDFLAGS="$LDFLAGS -F$fc_qt4_frm -framework QtCore"
+      AC_CACHE_CHECK(
+        [whether Qt is installed as a framework],
+        ac_have_qt_framework,
+        [AC_TRY_LINK([#include <QtCore/qglobal.h>],
+                 [],
+                 [ac_have_qt_framework=true],
+                 [ac_have_qt_framework=false])
+        ])
+      LDFLAGS=$ac_save_ldflags_fw
+    fi
+    if $ac_have_qt_framework; then
+    # Qt as framework installed 
+    QT_LIBS="-Wl,-F$fc_qt4_frm -Wl,-framework,QtGui -Wl,-framework,QtOpenGL -Wl,-framework,QtCore -Wl,-framework,Qt3Support -Wl,-framework,QtNetwork"
+    QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers -I$fc_qt4_frm/QtGui.framework/Headers -I$fc_qt4_frm/QtCore.framework/Headers -I$fc_qt4_frm/QtOpenGL.framework/Headers -I$fc_qt4_frm/QtNetwork.framework/Headers"
+    else
+    # Qt not as framework installed 
+    QT_LIBS="-L$fc_qt4_lib"
+    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork"
+    fi
+    ;;
+  *)  # UNIX/Linux based
+    AC_PATH_XTRA
+    QT_LIBS="-Wl,-rpath,$fc_qt4_lib -L$fc_qt4_lib $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
+    QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork $X_CFLAGS"
     ;;
 esac
 
-QT_MOC="$QT_BIN/moc"
-QT_UIC="$QT_BIN/uic"
-QT_RCC="$QT_BIN/rcc"
+min_qt_version=ifelse([$1], ,4.0.0, $1)
+
+AC_MSG_CHECKING(for Qt >= $min_qt_version)
+QT_MOC="$fc_qt4_bin/moc"
+QT_UIC="$fc_qt4_bin/uic"
+QT_RCC="$fc_qt4_bin/rcc"
 
 # Now we check whether we can actually build a Qt app.
 cat > myqt.h << EOF
@@ -207,61 +238,69 @@ EOF
 cat > myqt.cpp << EOF
 #include "myqt.h"
 #include <QApplication>
+#include <QByteArray>
+#include <QGlobalStatic>
+#include <QStringList>
+#include <stdio.h>
 int main( int argc, char **argv )
 {
   QApplication app( argc, argv );
   Test t;
   QObject::connect( &t, SIGNAL(send()), &t, SLOT(receive()) );
+
+  // major, minor, patch
+  QString version = "$min_qt_version";
+  QStringList numbers = version.split('.');
+
+  int shift[[3]] = {16,8,0};
+  int minversion = 0, i = 0;
+  for (QStringList::ConstIterator it = numbers.begin(); it != numbers.end(); ++it, ++i) {
+    bool ok;
+    int val = (*it).toInt(&ok);
+    if (ok) {
+      minversion = minversion + (val << shift[[i]]);
+    }
+  }
+
+  exit(QT_VERSION < minversion);
 }
 EOF
 
-AC_MSG_CHECKING(for moc)
 bnv_try_1="$QT_MOC myqt.h -o moc_myqt.cpp"
 AC_TRY_EVAL(bnv_try_1)
 if test x"$ac_status" != x0; then
-   AC_MSG_ERROR(failed)
+   AC_MSG_ERROR([Cannot find Qt meta object compiler (moc), bye...])
 fi
-AC_MSG_RESULT(yes)
-AC_MSG_CHECKING(for correct functioning of moc)
+
 bnv_try_2="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o moc_myqt.o moc_myqt.cpp"
 AC_TRY_EVAL(bnv_try_2)
 if test x"$ac_status" != x0; then
-   AC_MSG_ERROR(failed)
+   AC_MSG_ERROR([Wrong version of Qt meta object compiler (moc), bye...])
 fi
-AC_MSG_RESULT(yes)
-AC_MSG_CHECKING(for compiling and linking with Qt)
+
 bnv_try_3="$CXX $QT_CXXFLAGS -c $CXXFLAGS -o myqt.o myqt.cpp"
 AC_TRY_EVAL(bnv_try_3)
 if test x"$ac_status" != x0; then
-   AC_MSG_ERROR(failed)
+   AC_MSG_ERROR([Failed to compile Qt test app, bye...])
 fi
-nv_try_4="$CXX $QT_LIBS $LIBS -o myqt myqt.o moc_myqt.o"
+bnv_try_4="$CXX $QT_LIBS $LIBS -lQtCore -lQtGui -o myqt myqt.o moc_myqt.o"
 AC_TRY_EVAL(bnv_try_4)
 if test x"$ac_status" != x0; then
-   AC_MSG_ERROR(failed)
+   AC_MSG_ERROR([Failed to link with Qt, bye...])
 fi
-AC_MSG_RESULT(yes)
 
-dnl AC_MSG_CHECKING(for mkoctfile)
-dnl AC_TRY_EVAL(mkoctfile)
-dnl if test x"$ac_status" != x0; then
-dnl    AC_MSG_ERROR(mkoctfile is not in the path)
-dnl fi
-dnl AC_MSG_RESULT(yes)
+AS_IF([AM_RUN_LOG([./myqt])],
+      [AC_MSG_RESULT(yes)], 
+      [AC_MSG_ERROR([Version of Qt4 found but < $min_qt_version])
+])
+
 rm -f moc_myqt.cpp myqt.h myqt.cpp myqt.o myqt moc_myqt.o
 
-dnl check QT_MOC
-if test x$QT_MOC = x; then
-    AC_MSG_ERROR([Cannot find Qt meta object compiler (moc), bye...])
-fi;
-dnl check QT_UIC
-if test x$QT_UIC = x; then
-    AC_MSG_ERROR([Cannot find Qt user interface compiler (uic), bye...])
-fi;
-dnl check QT_RCC
-if test x$QT_RCC = x; then
-    AC_MSG_ERROR([Cannot find Qt resource compiler (rcc), bye...])
-fi;
+if test -d $fc_qt4_dir; then
+   QT_DIR="$fc_qt4_dir"
+else
+   QT_DIR=""
+fi
 
 AC_SUBST(QT_DIR)
 AC_SUBST(QT_CXXFLAGS)
@@ -279,12 +318,12 @@ AC_DEFUN([FREECAD_AC_HAVE_BOOST],
 [
 AC_MSG_CHECKING(for boost)
 
-AC_ARG_WITH(boost-includes,
-	AC_HELP_STRING([--with-boost-includes], [Path to the boost header files]),
+AC_ARG_WITH(boost-include,
+	AC_HELP_STRING([--with-boost-include=DIR], [Path to the boost header files]),
 	[fc_boost_incs=$withval], [fc_boost_incs=/usr/include])
 
-AC_ARG_WITH(boost-libs,
-	AC_HELP_STRING([--with-boost-libs], [Path to the boost library files]),
+AC_ARG_WITH(boost-lib,
+	AC_HELP_STRING([--with-boost-lib=DIR], [Path to the boost library files]),
 	[fc_boost_libs=$withval], [fc_boost_libs=/usr/lib])
 
 fc_boost_ac_save_cppflags=$CPPFLAGS
