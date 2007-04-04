@@ -181,21 +181,23 @@ case $host_os in
     ;;
   darwin*)
     AC_PATH_XTRA
-    ac_have_qt_framework=false
     if test -d $fc_qt4_frm/QtCore.framework; then
       ac_save_ldflags_fw=$LDFLAGS 
       LDFLAGS="$LDFLAGS -F$fc_qt4_frm -framework QtCore"
       AC_CACHE_CHECK(
-        [whether Qt is installed as a framework],
+        [whether Qt is installed as framework],
         ac_have_qt_framework,
-        [AC_TRY_LINK([#include <QtCore/qglobal.h>],
-                 [],
-                 [ac_have_qt_framework=true],
-                 [ac_have_qt_framework=false])
+        [AC_TRY_LINK([#include <QtCore/qglobal.h>
+                      #include <stdio.h>],
+                 [printf("%s\n", qVersion());],
+                 [ac_have_qt_framework=yes],
+                 [ac_have_qt_framework=no])
         ])
       LDFLAGS=$ac_save_ldflags_fw
+    else
+      ac_have_qt_framework=no
     fi
-    if $ac_have_qt_framework; then
+    if test "$ac_have_qt_framework" = yes; then
     # Qt as framework installed 
     QT_LIBS="-Wl,-F$fc_qt4_frm -Wl,-framework,QtGui -Wl,-framework,QtOpenGL -Wl,-framework,QtCore -Wl,-framework,Qt3Support -Wl,-framework,QtNetwork"
     QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers -I$fc_qt4_frm/QtGui.framework/Headers -I$fc_qt4_frm/QtCore.framework/Headers -I$fc_qt4_frm/QtOpenGL.framework/Headers -I$fc_qt4_frm/QtNetwork.framework/Headers"
@@ -333,16 +335,15 @@ CPPFLAGS="$CPPFLAGS -I$fc_boost_incs"
 LDFLAGS="$LDFLAGS -L$fc_boost_libs"
 LIBS="-lboost_program_options"
 
-fc_cv_lib_boost_avail=no
 AC_TRY_LINK([#include <boost/program_options.hpp>],
 	[namespace po = boost::program_options;
 	 po::options_description generic("Generic options");
 	 generic.add_options()
 	     ("version,v", "print version string")
 	     ("help", "produce help message");
-	], [fc_cv_lib_boost_avail=yes
-	AC_MSG_RESULT(yes)],
-	AC_MSG_ERROR(failed))
+	],
+	[AC_MSG_RESULT(yes)],
+	[AC_MSG_ERROR(failed)])
 
 CPPFLAGS=$fc_boost_ac_save_cppflags
 LDFLAGS=$fc_boost_ac_save_ldflags
