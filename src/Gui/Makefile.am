@@ -322,11 +322,6 @@ libFreeCADGui_la_LIBADD   =\
 		propertyeditor/libpropertyeditor.la \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
-		-lQt3Support\
-		-lQtCore\
-		-lQtGui\
-		-lQtNetwork\
-		-lQtOpenGL\
 		-lFreeCADBase \
 		-lFreeCADApp
 
