@@ -203,13 +203,13 @@ case $host_os in
     QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers -I$fc_qt4_frm/QtGui.framework/Headers -I$fc_qt4_frm/QtCore.framework/Headers -I$fc_qt4_frm/QtOpenGL.framework/Headers -I$fc_qt4_frm/QtNetwork.framework/Headers"
     else
     # Qt not as framework installed 
-    QT_LIBS="-L$fc_qt4_lib"
+    QT_LIBS="-L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL"
     QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork"
     fi
     ;;
   *)  # UNIX/Linux based
     AC_PATH_XTRA
-    QT_LIBS="-Wl,-rpath,$fc_qt4_lib -L$fc_qt4_lib $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
+    QT_LIBS="-Wl,-rpath,$fc_qt4_lib -L$fc_qt4_lib -lQtCore -lQtGui -lQt3Support -lQtNetwork -lQtOpenGL $X_LIBS -lX11 -lXext -lXmu -lXt -lXi $X_EXTRA_LIBS"
     QT_CXXFLAGS="-I$fc_qt4_include -I$fc_qt4_include/Qt3Support -I$fc_qt4_include/QtGui -I$fc_qt4_include/QtCore -I$fc_qt4_include/QtOpenGL -I$fc_qt4_include/QtNetwork $X_CFLAGS"
     ;;
 esac
@@ -285,7 +285,7 @@ AC_TRY_EVAL(bnv_try_3)
 if test x"$ac_status" != x0; then
    AC_MSG_ERROR([Failed to compile Qt test app, bye...])
 fi
-bnv_try_4="$CXX $QT_LIBS $LIBS -lQtCore -lQtGui -o myqt myqt.o moc_myqt.o"
+bnv_try_4="$CXX $QT_LIBS $LIBS -o myqt myqt.o moc_myqt.o"
 AC_TRY_EVAL(bnv_try_4)
 if test x"$ac_status" != x0; then
    AC_MSG_ERROR([Failed to link with Qt, bye...])
