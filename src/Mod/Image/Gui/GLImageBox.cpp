@@ -613,7 +613,7 @@ int GLImageBox::calcNumColorMapEntries()
     // Get the maximum number of map entries that the system supports
     // Get the number of bits per sample for the image if it exists and compute the number of pixel values
     // Return the fewer amount of entries
-    int maxMapEntries;
+    GLint maxMapEntries;
     glGetIntegerv(GL_MAX_PIXEL_MAP_TABLE, &maxMapEntries);
     int NumEntries = maxMapEntries;
     if (_image.hasValidData() == true)

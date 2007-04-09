@@ -6,7 +6,7 @@ FreeCAD_SOURCES= \
 	MainGui.cpp
 
 # the library search path.
-FreeCAD_LDFLAGS = -L../Base -L../App -L../Gui $(all_libraries)
+FreeCAD_LDFLAGS = -L../Base -L../App -L../Gui $(QT_LIBS) $(all_libraries)
 
 FreeCAD_LDADD=\
 	-l@PYTHON_LIB@ \
