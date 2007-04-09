@@ -30,9 +30,6 @@ libImageGui_la_LIBADD   = \
 		-lFreeCADGui \
 		-lImage
 
-#		-lGLU \
-#		-lGL \
-
 #--------------------------------------------------------------------------------------
 # Loader of libImageGui
 
