@@ -67,8 +67,7 @@ libPart_la_LIBADD   = \
 		-lTKBRep \
 		-lTKTopAlgo \
 		-lTKGeomAlgo \
-		-lTKPrim \
-		-lXmu   # Required by TKService and OCC 6.1 on some platforms (located in /usr/X11R6/lib/)
+		-lTKPrim
 
 #--------------------------------------------------------------------------------------
 # Loader of libPart
