@@ -27,8 +27,8 @@
 # ifdef FC_OS_WIN32
 # include <windows.h>
 # endif
-# ifdef FC_OS_MACOSX //FIXME: Do we need the whole path or should we add it to the include path list?
-# include </System/Library/Frameworks/OpenGL.Framework/Versions/A/Headers/gl.h>
+# ifdef FC_OS_MACOSX
+# include <OpenGL/gl.h>
 # else
 # include <GL/gl.h>
 # endif

@@ -225,7 +225,7 @@
 			Name="Resource"
 			>
 			<File
-				RelativePath=".\translation.qrc"
+				RelativePath=".\Raytracing.qrc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"

@@ -34,7 +34,7 @@
 
 #include "DlgSettingsRayImp.h"
 #include "Workbench.h"
-#include "qrc_translation.cpp"
+#include "qrc_Raytracing.cpp"
 
 // use a different name to CreateCommand()
 void CreateRaytracingCommands(void);
@@ -68,7 +68,7 @@ void AppRaytracingGuiExport initRaytracingGui() {
   new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );
 
   // add resources and reloads the translators
-  Q_INIT_RESOURCE(translation);
+  Q_INIT_RESOURCE(Raytracing);
   Gui::Translator::instance()->reinstallLanguage();
 
   return;

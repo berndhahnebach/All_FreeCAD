@@ -523,7 +523,7 @@
 			Name="Resource"
 			>
 			<File
-				RelativePath=".\translation.qrc"
+				RelativePath=".\Image.qrc"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
