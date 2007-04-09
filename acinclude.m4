@@ -199,7 +199,7 @@ case $host_os in
     fi
     if test "$ac_have_qt_framework" = yes; then
     # Qt as framework installed 
-    QT_LIBS="-Wl,-F$fc_qt4_frm -Wl,-framework,QtGui -Wl,-framework,QtOpenGL -Wl,-framework,QtCore -Wl,-framework,Qt3Support -Wl,-framework,QtNetwork"
+    QT_LIBS="-Wl,-F$fc_qt4_frm -Wl,-framework,QtGui -Wl,-framework,QtOpenGL -Wl,-framework,QtCore -Wl,-framework,Qt3Support -Wl,-framework,QtNetwork -Wl,-framework,QtXml -Wl,-framework,QtSql"
     QT_CXXFLAGS="-F$fc_qt4_frm -I$fc_qt4_frm/Qt3Support.framework/Headers -I$fc_qt4_frm/QtGui.framework/Headers -I$fc_qt4_frm/QtCore.framework/Headers -I$fc_qt4_frm/QtOpenGL.framework/Headers -I$fc_qt4_frm/QtNetwork.framework/Headers"
     else
     # Qt not as framework installed 

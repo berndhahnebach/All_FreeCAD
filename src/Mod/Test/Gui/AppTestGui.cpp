@@ -29,7 +29,7 @@
 #include "UnitTestPy.h"
 #include "UnitTestImp.h"
 #include <Gui/Language/Translator.h>
-#include "qrc_translation.cpp"
+#include "qrc_Test.cpp"
 
 static PyObject* addTest(PyObject *self, PyObject *args)          
 {
@@ -77,7 +77,7 @@ void AppTestGuiExport initQtUnitGui() {
   PyModule_AddObject(pyModule, "UnitTest", pyDlgType);
 
   // add resources and reloads the translators
-  Q_INIT_RESOURCE(translation);
+  Q_INIT_RESOURCE(Test);
   Gui::Translator::instance()->reinstallLanguage();
   return;
 }

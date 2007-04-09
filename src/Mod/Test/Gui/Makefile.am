@@ -4,7 +4,7 @@ lib_LTLIBRARIES=libQtUnitGui.la QtUnitGui.la
 BUILT_SOURCES=\
 		ui_UnitTest.h \
 		moc_UnitTestImp.cpp \
-		qrc_translation.cpp
+		qrc_Test.cpp
 
 libQtUnitGui_la_SOURCES=\
 		PreCompiled.cpp \
@@ -75,7 +75,7 @@ EXTRA_DIST = \
 		$(data_DATA) \
 		AppTestGui.vcproj \
 		UnitTest.ui \
-		translation.qrc \
+		Test.qrc \
 		Test_de.qm \
 		Test_de.ts \
 		qtunittest.py

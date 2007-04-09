@@ -6,7 +6,7 @@ BUILT_SOURCES=\
 		ui_DlgSettingsRay.h \
 		moc_DlgSettingsRayImp.cpp \
 		FreeCADpov.h \
-		qrc_translation.cpp 
+		qrc_Raytracing.cpp 
 
 libRaytracingGui_la_SOURCES=\
 		Command.cpp \
@@ -87,7 +87,7 @@ CLEANFILES = $(BUILT_SOURCES)
 EXTRA_DIST = \
 		DlgSettingsRay.ui \
 		FreeCADpov \
-		translation.qrc \
+		Raytracing.qrc \
 		Raytracing_de.qm \
 		Raytracing_de.ts \
 		AppRaytracingGui.vcproj

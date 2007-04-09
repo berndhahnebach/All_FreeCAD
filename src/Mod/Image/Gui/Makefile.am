@@ -4,7 +4,7 @@ lib_LTLIBRARIES=libImageGui.la ImageGui.la
 BUILT_SOURCES=\
 		moc_GLImageBox.cpp \
 		moc_ImageView.cpp \
-		qrc_translation.cpp 
+		qrc_Image.cpp 
 
 libImageGui_la_SOURCES=\
 		AppImageGuiPy.cpp \
@@ -75,7 +75,7 @@ CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
 		AppImageGui.vcproj \
-		translation.qrc \
+		Image.qrc \
 		Image_de.qm \
 		Image_de.ts \
 		XpmImages.h
