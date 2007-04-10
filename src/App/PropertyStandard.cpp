@@ -99,7 +99,7 @@ void PropertyInteger::setPyObject(PyObject *value)
 
 void PropertyInteger::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<Integer value=\"" <<  _lValue <<"\"/>" << std::endl;
+  writer.Stream() << writer.ind() << "<Integer value=\"" <<  _lValue <<"\"/>" << std::endl;
 }
 
 void PropertyInteger::Restore(Base::XMLReader &reader)
@@ -449,12 +449,12 @@ void PropertyIntegerList::setPyObject(PyObject *value)
 
 void PropertyIntegerList::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<IntegerList count=\"" <<  getSize() <<"\"/>" << endl;
+  writer.Stream() << writer.ind() << "<IntegerList count=\"" <<  getSize() <<"\">" << endl;
   writer.incInd();
   for(int i = 0;i<getSize(); i++)
-    writer << writer.ind() << "<I v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+    writer.Stream() << writer.ind() << "<I v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
   writer.decInd();
-  writer << "</IntegerList>" << endl ;
+  writer.Stream() << writer.ind() << "</IntegerList>" << endl ;
 }
 
 void PropertyIntegerList::Restore(Base::XMLReader &reader)
@@ -555,7 +555,7 @@ void PropertyFloat::setPyObject(PyObject *value)
 
 void PropertyFloat::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<Float value=\"" <<  _dValue <<"\"/>" << std::endl;
+  writer.Stream() << writer.ind() << "<Float value=\"" <<  _dValue <<"\"/>" << std::endl;
 }
 
 void PropertyFloat::Restore(Base::XMLReader &reader)
@@ -732,12 +732,14 @@ void PropertyFloatList::Save (Writer &writer) const
 {
   if(writer.isForceXML())
   {
-//  writer << "<FloatList count=\"" <<  getSize() <<"\"/>" << endl;
-//  for(int i = 0;i<getSize(); i++)
-//    writer << "<F v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
-//  writer << "</FloatList>" << endl ;
+    writer.Stream() << writer.ind() << "<FloatList count=\"" <<  getSize() <<"\">" << endl;
+    writer.incInd();
+    for(int i = 0;i<getSize(); i++)
+      writer.Stream() << writer.ind() << "<F v=\"" <<  _lValueList[i] <<"\"/>" << endl; ;
+    writer.decInd();
+    writer.Stream() << writer.ind() <<"</FloatList>" << endl ;
   }else{
-    writer << writer.ind() << "<FloatList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<FloatList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
   }
 }
 
@@ -772,8 +774,8 @@ void PropertyFloatList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
-    writer.write((const char*)&uCt, sizeof(unsigned long));
-    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(float));
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(float));
   } catch( const Base::Exception& e) {
     throw e;
   }
@@ -892,7 +894,7 @@ void PropertyString::setPyObject(PyObject *value)
 void PropertyString::Save (Writer &writer) const
 {
   std::string val = encodeAttribute(_cValue);
-  writer << writer.ind() << "<String value=\"" <<  val <<"\"/>" << std::endl;
+  writer.Stream() << writer.ind() << "<String value=\"" <<  val <<"\"/>" << std::endl;
 }
 
 void PropertyString::Restore(Base::XMLReader &reader)
@@ -1026,14 +1028,14 @@ unsigned int PropertyStringList::getMemSize (void) const
 
 void PropertyStringList::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<StringList count=\"" <<  getSize() <<"\">" << endl;
+  writer.Stream() << writer.ind() << "<StringList count=\"" <<  getSize() <<"\">" << endl;
   writer.incInd();
   for(int i = 0;i<getSize(); i++) {
     std::string val = encodeAttribute(_lValueList[i]);
-    writer << writer.ind() << "<String value=\"" <<  val <<"\"/>" << endl;
+    writer.Stream() << writer.ind() << "<String value=\"" <<  val <<"\"/>" << endl;
   }
   writer.decInd();
-  writer << writer.ind() << "</StringList>" << endl ;
+  writer.Stream() << writer.ind() << "</StringList>" << endl ;
 }
 
 void PropertyStringList::Restore(Base::XMLReader &reader)
@@ -1129,12 +1131,12 @@ void PropertyBool::setPyObject(PyObject *value)
 
 void PropertyBool::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<Bool value=\"" ;
+  writer.Stream() << writer.ind() << "<Bool value=\"" ;
   if(_lValue)
-    writer << "true" <<"\"/>" ;
+    writer.Stream() << "true" <<"\"/>" ;
   else
-    writer << "false" <<"\"/>" ;
-  writer << std::endl;
+    writer.Stream() << "false" <<"\"/>" ;
+  writer.Stream() << std::endl;
 
 }
 
@@ -1286,7 +1288,7 @@ void PropertyColor::setPyObject(PyObject *value)
 
 void PropertyColor::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<PropertyColor value=\"" <<  _cCol.getPackedValue() <<"\"/>" << endl;
+  writer.Stream() << writer.ind() << "<PropertyColor value=\"" <<  _cCol.getPackedValue() <<"\"/>" << endl;
 }
 
 void PropertyColor::Restore(Base::XMLReader &reader)
@@ -1418,7 +1420,7 @@ void PropertyColorList::Save (Writer &writer) const
 //      writer << writer.ind() << "<PropertyColor value=\"" <<  _lValueList[i].getPackedValue() <<"\"/>" << endl;
 //    writer << "</ColorList>" << endl ;
   }else{
-    writer << writer.ind() << "<ColorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<ColorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
   }
 }
 
@@ -1453,8 +1455,8 @@ void PropertyColorList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
-    writer.write((const char*)&uCt, sizeof(unsigned long));
-    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(Color));
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Color));
   } catch( const Base::Exception& e) {
     throw e;
   }
@@ -1570,7 +1572,7 @@ void PropertyMaterial::setPyObject(PyObject *value)
 
 void PropertyMaterial::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<PropertyMaterial ambientColor=\"" <<  _cMat.ambientColor.getPackedValue() 
+  writer.Stream() << writer.ind() << "<PropertyMaterial ambientColor=\"" <<  _cMat.ambientColor.getPackedValue() 
     << "\" diffuseColor=\"" <<  _cMat.diffuseColor.getPackedValue() 
     << "\" specularColor=\"" <<  _cMat.specularColor.getPackedValue()
     << "\" emissiveColor=\"" <<  _cMat.emissiveColor.getPackedValue()

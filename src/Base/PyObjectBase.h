@@ -38,7 +38,7 @@
 
 #include<typeinfo>
 #include "Exception.h"
-
+#include "PyCXX/Objects.hxx"
 
 
 /** Python static class macro for definition

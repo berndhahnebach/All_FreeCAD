@@ -471,10 +471,10 @@ void StdCmdDelete::activated(int iMsg)
   const std::vector<App::Document*> docs = App::GetApplication().getDocuments();
   for ( std::vector<App::Document*>::const_iterator it = docs.begin(); it != docs.end(); ++it )
   {
-    const std::vector<App::DocumentObject*> sel = rSel.getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->getName());
+    const std::vector<App::DocumentObject*> sel = rSel.getObjectsOfType(App::DocumentObject::getClassTypeId(), (*it)->Name.getValue());
     for(std::vector<App::DocumentObject*>::const_iterator ft=sel.begin();ft!=sel.end();ft++)
     {
-      doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")",(*it)->getName(), (*ft)->name.getValue());
+      doCommand(Doc,"App.getDocument(\"%s\").removeObject(\"%s\")",(*it)->Name.getValue(), (*ft)->name.getValue());
     }
   }
 

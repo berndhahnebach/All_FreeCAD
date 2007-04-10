@@ -26,6 +26,7 @@
 
 
 #include <Base/PyExport.h>
+#include <Base/PyCXX/Objects.hxx>
 #include <Base/Observer.h>
 #include <Base/Persistance.h>
 #include <Base/Type.h>
@@ -148,17 +149,19 @@ public:
  	/** @name File handling of the document */
 	//@{
 	/// Save the Document under a new Name
-	void saveAs (const char* Name);
-	/// Save the document under the name its been opened
+	//void saveAs (const char* Name);
+	/// Save the document to the file in Property Path
 	bool save (void);
+	/// Restore the document from the file in Property Path
+	void restore (void);
 	/// Opens the document from its file name
-	void open (void);
+	//void open (void);
 	/// Is the document already saved to a file
 	bool isSaved() const;
 	/// Get the document name of a saved document 
-	const char* getName() const;
+  const char* getName() const {return Name.getValue();}
 	/// Get the path of a saved document 
-	const char* getPath() const;
+	//const char* getPath() const;
   //@}
 
   virtual void Save (Base::Writer &writer) const;
@@ -219,6 +222,8 @@ public:
 	//@{
   /// switch the level of Undo/Redo
   void setUndoMode(int iMode);  
+  /// switch the level of Undo/Redo
+  int getUndoMode(void) const;  
   /// switch the tranaction mode
   void setTransactionMode(int iMode);
 	/// Open a new command Undo/Redo, an UTF-8 name can be specified
@@ -248,7 +253,7 @@ public:
 	//@}
 
 
-	virtual Base::PyObjectBase *GetPyObject(void);
+	virtual PyObject *getPyObject(void);
 
 
 	friend class DocumentPy;
@@ -299,7 +304,7 @@ protected:
   Base::Persistance* pDocumentHook;
 
 	// pointer to the python class
-	DocumentPy *_pcDocPy;
+  Py::Object DocumentPythonObject;
 };
 
 

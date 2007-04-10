@@ -79,7 +79,7 @@ void PropertyPointKernel::Save (Base::Writer &writer) const
 {
   if ( writer.isForceXML() ) {
   } else {
-    writer << writer.ind() << "<Points file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<Points file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
   }
 }
 
@@ -98,8 +98,8 @@ void PropertyPointKernel::Restore(Base::XMLReader &reader)
 void PropertyPointKernel::SaveDocFile (Base::Writer &writer) const
 {
   unsigned long uCtPts = _cPoints.size();
-  writer.write((const char*)&uCtPts, sizeof(unsigned long));
-  writer.write((const char*)&(_cPoints[0]), uCtPts*sizeof(Base::Vector3f));
+  writer.Stream().write((const char*)&uCtPts, sizeof(unsigned long));
+  writer.Stream().write((const char*)&(_cPoints[0]), uCtPts*sizeof(Base::Vector3f));
 }
 
 void PropertyPointKernel::RestoreDocFile(Base::Reader &reader)

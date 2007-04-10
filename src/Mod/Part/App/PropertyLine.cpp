@@ -90,7 +90,7 @@ unsigned int PropertyLine::getMemSize (void) const
 
 void PropertyLine::Save (Base::Writer &writer) const
 {
-  writer << writer.ind() << "<PropertyLine bX=\"" <<  _line.b.x << "\" bY=\"" <<  _line.b.y << "\" bZ=\"" <<  _line.b.z 
+  writer.Stream() << writer.ind() << "<PropertyLine bX=\"" <<  _line.b.x << "\" bY=\"" <<  _line.b.y << "\" bZ=\"" <<  _line.b.z 
          << writer.ind() << "\" eX=\"" <<  _line.e.x << "\" eY=\"" <<  _line.e.y << "\" eZ=\"" <<  _line.e.z <<"\"/>" << std::endl;
 }
 
@@ -191,7 +191,7 @@ unsigned int PropertyLineSet::getMemSize (void) const
 
 void PropertyLineSet::Save (Base::Writer &writer) const
 {
-  writer << writer.ind() << "<LineSet file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+  writer.Stream() << writer.ind() << "<LineSet file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
 }
 
 void PropertyLineSet::Restore(Base::XMLReader &reader)
@@ -205,8 +205,8 @@ void PropertyLineSet::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
-    writer.write((const char*)&uCt, sizeof(unsigned long));
-    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(Line3f));
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Line3f));
   } catch( const Base::Exception& e) {
     throw e;
   }

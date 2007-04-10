@@ -60,7 +60,7 @@ public:
 
   std::string getUniquePropertyName(const char *Name) const;
 
-	virtual Base::PyObjectBase *GetPyObject(void);
+	virtual PyObject *getPyObject(void);
 
   friend class FeaturePythonPy;
 

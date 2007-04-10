@@ -68,7 +68,7 @@ public:
 
 };
 
-
+#define PARENTSPropertyContainerPy &PropertyContainerPy::Type,PARENTSPersistancePy
 
 } //namespace App
 

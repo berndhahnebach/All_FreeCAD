@@ -92,19 +92,19 @@ void PropertyContainer::Save (Writer &writer) const
   getPropertyMap(Map);
 
   writer.incInd(); // indention for 'Properties Count'
-  writer << writer.ind() << "<Properties Count=\"" << Map.size() << "\">" << endl;
+  writer.Stream() << writer.ind() << "<Properties Count=\"" << Map.size() << "\">" << endl;
   std::map<std::string,Property*>::iterator it;
   for(it = Map.begin(); it != Map.end(); ++it)
   {
     writer.incInd(); // indention for 'Property name'
-    writer << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" << it->second->getTypeId().getName() << "\">" << endl;;    
+    writer.Stream() << writer.ind() << "<Property name=\"" << it->first << "\" type=\"" << it->second->getTypeId().getName() << "\">" << endl;;    
     writer.incInd(); // indention for the actual property
     it->second->Save(writer);
     writer.decInd(); // indention for the actual property
-    writer << writer.ind() << "</Property>" << endl;    
+    writer.Stream() << writer.ind() << "</Property>" << endl;    
     writer.decInd(); // indention for 'Property name'
   }
-  writer << writer.ind() << "</Properties>" << endl;
+  writer.Stream() << writer.ind() << "</Properties>" << endl;
   writer.decInd(); // indention for 'Properties Count'
 }
 

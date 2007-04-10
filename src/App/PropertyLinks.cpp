@@ -99,7 +99,7 @@ App::DocumentObject * PropertyLink::getValue(Base::Type t) const
 PyObject *PropertyLink::getPyObject(void)
 {
   if(_pcLink)
-    return _pcLink->GetPyObject();
+    return _pcLink->getPyObject();
   else
     Py_Return;
 }
@@ -117,7 +117,7 @@ void PropertyLink::setPyObject(PyObject *value)
 
 void PropertyLink::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<Link value=\"" <<  _pcLink->name.getValue() <<"\"/>" << std::endl;
+  writer.Stream() << writer.ind() << "<Link value=\"" <<  (_pcLink?_pcLink->name.getValue():"") <<"\"/>" << std::endl;
 }
 
 void PropertyLink::Restore(Base::XMLReader &reader)
@@ -130,11 +130,14 @@ void PropertyLink::Restore(Base::XMLReader &reader)
   // Property not in a Feature!
   assert(getContainer()->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-  DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
+  if(name != ""){
+    DocumentObject *pcObject = dynamic_cast<DocumentObject*>(getContainer())->getDocument().getObject(name.c_str());
 
-  assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
+    assert(pcObject->getTypeId().isDerivedFrom(App::DocumentObject::getClassTypeId()) );
 
-  _pcLink = dynamic_cast<DocumentObject*>(pcObject);
+    _pcLink = dynamic_cast<DocumentObject*>(pcObject);
+  }else
+    _pcLink = 0;
 
 }
 
@@ -191,7 +194,7 @@ PyObject *PropertyLinkList::getPyObject(void)
   PyObject* list = PyList_New(	getSize() );
 
   for(int i = 0;i<getSize(); i++)
-     PyList_SetItem( list, i, _lValueList[i]->GetPyObject());
+     PyList_SetItem( list, i, _lValueList[i]->getPyObject());
 
   return list;
 }
@@ -238,12 +241,12 @@ void PropertyLinkList::setPyObject(PyObject *value)
 
 void PropertyLinkList::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
+  writer.Stream() << writer.ind() << "<LinkList count=\"" <<  getSize() <<"\">" << endl;
   writer.incInd();
   for(int i = 0;i<getSize(); i++)
-    writer << writer.ind() << "<Link value=\"" <<  _lValueList[i]->name.getValue() <<"\"/>" << endl; ;
+    writer.Stream() << writer.ind() << "<Link value=\"" <<  _lValueList[i]->name.getValue() <<"\"/>" << endl; ;
   writer.decInd();
-  writer << writer.ind() << "</LinkList>" << endl ;
+  writer.Stream() << writer.ind() << "</LinkList>" << endl ;
 }
 
 void PropertyLinkList::Restore(Base::XMLReader &reader)

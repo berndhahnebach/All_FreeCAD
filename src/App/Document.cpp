@@ -276,6 +276,11 @@ void Document::setUndoMode(int iMode)
   _iUndoMode = iMode;
 }
 
+int Document::getUndoMode(void) const
+{
+  return _iUndoMode;
+}
+
 
 unsigned int Document::getUndoMemSize (void) const
 {
@@ -368,16 +373,15 @@ Document::Document(void)
   _iUndoMode(0),
   activUndoTransaction(0),
   pActiveObject(0),
-  pDocumentHook(0),
-  _pcDocPy(0)
+  pDocumentHook(0)
 {
   // Remark: In a constructor we should never increment a Python object as we cannot be sure
   // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't
   // get a reference then the object wouldn't get deleted in the destructor.
   // So, we must increment only if the interpreter gets a reference.
-	_pcDocPy = new DocumentPy(this);
+	DocumentPythonObject = new DocumentPy(this);
 
-  Console().Log("+App::Document: %p\n",this,_pcDocPy);
+  Console().Log("+App::Document: %p\n",this);
 
 
   ADD_PROPERTY(Name,("Unnamed"));
@@ -393,13 +397,13 @@ Document::Document(void)
 
 Document::~Document()
 {
-  Console().Log("-App::Document: %s %p\n",getName(), this);
+  Console().Log("-App::Document: %s %p\n",Name.getValue(), this);
 
   clearUndos();
   
   std::map<std::string,DocumentObject*>::iterator it;
 
-  Console().Log("-Delete Features of %s \n",getName());
+  Console().Log("-Delete Features of %s \n",Name.getValue());
 
   ObjectArray.clear();
   for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
@@ -408,8 +412,8 @@ Document::~Document()
   }
 
   // Call before decrementing the reference counter, otherwise a heap error can occur
-  _pcDocPy->setInvalid();
-  _pcDocPy->DecRef(); // decrement by one
+  //_pcDocPy->setInvalid();
+  //_pcDocPy->DecRef(); // decrement by one
 }
 
 
@@ -423,47 +427,47 @@ Document::~Document()
 
 void Document::Save (Writer &writer) const
 {
-  writer << "<?xml version='1.0' encoding='utf-8'?>" << endl
-         << "<!--" << endl
-         << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
-         << "-->" << endl;
+  writer.Stream() << "<?xml version='1.0' encoding='utf-8'?>" << endl
+                  << "<!--" << endl
+                  << " FreeCAD Document, see http://free-cad.sourceforge.net for more informations..." << endl
+                  << "-->" << endl;
 
-  writer << "<Document SchemaVersion=\"3\">" << endl;
+  writer.Stream() << "<Document SchemaVersion=\"3\">" << endl;
 
   PropertyContainer::Save(writer);
 
   // writing the features types
   writer.incInd(); // indention for 'Objects count'
-  writer << writer.ind() << "<Objects Count=\"" << ObjectArray.size() <<"\">" << endl;
+  writer.Stream() << writer.ind() << "<Objects Count=\"" << ObjectArray.size() <<"\">" << endl;
 
   writer.incInd(); // indention for 'Object type'
   std::vector<DocumentObject*>::const_iterator it;
   for(it = ObjectArray.begin(); it != ObjectArray.end(); ++it)
   {
-    writer << writer.ind() << "<Object " 
-                             << "type=\"" << (*it)->getTypeId().getName() << "\" "
-                             << "name=\"" << (*it)->name.getValue()       << "\" "
-                           << "/>" << endl;    
+    writer.Stream() << writer.ind() << "<Object " 
+                                    << "type=\"" << (*it)->getTypeId().getName() << "\" "
+                                    << "name=\"" << (*it)->name.getValue()       << "\" "
+                                    << "/>" << endl;    
   }
 
   writer.decInd();  // indention for 'Object type'
-  writer << writer.ind() << "</Objects>" << endl;
+  writer.Stream() << writer.ind() << "</Objects>" << endl;
   
   // writing the features itself
-  writer << writer.ind() << "<ObjectData Count=\"" << ObjectArray.size() <<"\">" << endl;
+  writer.Stream() << writer.ind() << "<ObjectData Count=\"" << ObjectArray.size() <<"\">" << endl;
 
   writer.incInd(); // indention for 'Object name'
   for(it = ObjectArray.begin(); it != ObjectArray.end(); ++it)
   {
-    writer << writer.ind() << "<Object name=\"" << (*it)->name.getValue() << "\">" << endl;   
+    writer.Stream() << writer.ind() << "<Object name=\"" << (*it)->name.getValue() << "\">" << endl;   
     (*it)->Save(writer);
-    writer << writer.ind() << "</Object>" << endl;
+    writer.Stream() << writer.ind() << "</Object>" << endl;
   }
 
   writer.decInd(); // indention for 'Object name'
-  writer << writer.ind() << "</ObjectData>" << endl;
+  writer.Stream() << writer.ind() << "</ObjectData>" << endl;
   writer.decInd();  // indention for 'Objects count'
-  writer << "</Document>" << endl;
+  writer.Stream() << "</Document>" << endl;
 
 }
 
@@ -571,6 +575,7 @@ unsigned int Document::getMemSize (void) const
 
 }
 // Save the Document under a new Name
+/* Obsolet
 void Document::saveAs (const char* name)
 {
   Base::FileInfo File(name);
@@ -592,7 +597,7 @@ void Document::saveAs (const char* name)
 
   Notify(DocChange);
 }
-
+*/
 // Save the document under the name its been opened
 bool Document::save (void)
 {
@@ -601,7 +606,7 @@ bool Document::save (void)
   if(*(FileName.getValue()) != '\0')
   {
     LastModifiedDate.setValue(Base::TimeInfo::currentDateTimeString());
-    Base::Writer writer(FileName.getValue());
+    Base::ZipWriter writer(FileName.getValue());
 
     writer.setComment("FreeCAD Document");
     writer.setLevel( compression );
@@ -617,8 +622,6 @@ bool Document::save (void)
     // write additional files
     writer.writeFiles();
 
-    writer.close();
-
     return true;
   }
 
@@ -626,7 +629,7 @@ bool Document::save (void)
 }
 
 // Open the document
-void Document::open (void)
+void Document::restore (void)
 {
   std::string FilePath = FileName.getValue();
   std::string OrigName = Name.getValue();
@@ -705,17 +708,6 @@ bool Document::isSaved() const
 	return !name.empty();
 }
 
-/// Get the document name of a saved document
-const char* Document::getName() const
-{
-  return GetApplication().getDocumentName(this);
-}
-
-/// Get the path of a saved document
-const char* Document::getPath() const
-{
-  return FileName.getValue();//_hDoc->GetPath().ToExtString();
-}
 
 
 /// Remove all modifications. After this call The document becomesagain Valid.
@@ -815,7 +807,7 @@ void Document::recompute()
     Base::Console().Log("Error in Feature \"%s\": %s\n",(*l)->name.getValue(),(*l)->getErrorString());
 
   Base::Console().Log("Solv: Recomputation of Document \"%s\" with %d new, %d Updated and %d errors finished\n",
-                      getName(),
+                      Name.getValue(),
                       DocChange.NewObjects.size(),
                       DocChange.UpdatedObjects.size(),
                       DocChange.ErrorFeatures.size());
@@ -1189,10 +1181,9 @@ int Document::countObjectsOfType(const Base::Type& typeId) const
 
 
 
-Base::PyObjectBase * Document::GetPyObject(void)
+PyObject * Document::getPyObject(void)
 {
-  _pcDocPy->IncRef();
-  return _pcDocPy;
+  return Py::new_reference_to(DocumentPythonObject);
 }
 
 

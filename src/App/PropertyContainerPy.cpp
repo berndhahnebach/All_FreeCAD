@@ -182,7 +182,7 @@ PyObject *PropertyContainerPy::_getattr(char *attr)				// __getattr__ function: 
         return dict;
       }
       else
-			  _getattr_up(PyObjectBase); 						
+			  _getattr_up(PersistancePy); 						
     }
 	}PY_CATCH;
 

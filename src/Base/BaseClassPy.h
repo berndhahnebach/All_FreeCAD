@@ -71,8 +71,7 @@ protected:
 
 
 };
-
-
+#define PARENTSBaseClassPy &Base::PersistancePy::Type,&Base::PyObjectBase::Type,NULL
 
 } //namespace App
 

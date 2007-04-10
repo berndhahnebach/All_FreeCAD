@@ -68,14 +68,12 @@ public:
     return "PointsGui::ViewProviderPoints";
   }
   // handling the PointsPy object
-  virtual Base::PyObjectBase* GetPyObject(void);
+  virtual PyObject* getPyObject(void);
   //@}
 
 public:
   PropertyPointKernel Points; /**< The point kernel property. */
 
-private:
-  PointsFeaturePy* _featurePy;
 };
 
 /**

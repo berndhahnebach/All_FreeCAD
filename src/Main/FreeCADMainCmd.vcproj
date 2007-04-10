@@ -110,7 +110,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="xcopy   /y   /f   DebugCmd\FreeCADCmdD.exe   ..\..\bin\&#x0D;&#x0A;xcopy   /y   /f   DebugCmd\FreeCADCmdD.pdb   ..\..\bin\"
+				CommandLine="xcopy   /y   /f   DebugCmd\FreeCADCmdD.exe   ..\..\bin\&#x0D;&#x0A;xcopy   /y   /f   DebugCmd\FreeCADCmdD.pdb   ..\..\bin\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -213,6 +213,14 @@
 		</Configuration>
 	</Configurations>
 	<References>
+		<ProjectReference
+			ReferencedProjectIdentifier="{CEFC0332-EDFD-4DAC-BD01-10B6E5D18E5D}"
+			RelativePathToProject="..\App\FreeCADDoc.vcproj"
+		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
+			RelativePathToProject="..\Base\FreeCADBase.vcproj"
+		/>
 	</References>
 	<Files>
 		<File

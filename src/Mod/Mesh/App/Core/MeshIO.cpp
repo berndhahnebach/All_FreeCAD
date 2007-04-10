@@ -1042,28 +1042,28 @@ void MeshOutput::SaveXML (Base::Writer &writer) const
   //  writer << writer.ind() << "<Mesh>" << std::endl;
 
   writer.incInd();
-  writer << writer.ind() << "<Points Count=\"" << _rclMesh.CountPoints() << "\">" << std::endl;
+  writer.Stream() << writer.ind() << "<Points Count=\"" << _rclMesh.CountPoints() << "\">" << std::endl;
 
   writer.incInd();
   for (MeshPointArray::_TConstIterator itp = rPoints.begin(); itp != rPoints.end(); itp++)
   {
-    writer <<  writer.ind() << "<P "
+    writer.Stream() <<  writer.ind() << "<P "
                                << "x=\"" <<  itp->x << "\" "
                                << "y=\"" <<  itp->y << "\" "
                                << "z=\"" <<  itp->z << "\"/>"
                          << std::endl;
   }
   writer.decInd();
-  writer << writer.ind() << "</Points>" << std::endl;
+  writer.Stream() << writer.ind() << "</Points>" << std::endl;
 
   // write the faces....
-  writer <<writer.ind() << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << std::endl;
+  writer.Stream() <<writer.ind() << "<Faces Count=\"" << _rclMesh.CountFacets() << "\">" << std::endl;
 
   writer.incInd();
   for (MeshFacetArray::_TConstIterator it = rFacets.begin(); it != rFacets.end(); it++)
   {
 
-    writer << writer.ind() << "<F "
+    writer.Stream() << writer.ind() << "<F "
                                << "p0=\"" <<  it->_aulPoints[0] << "\" "
                                << "p1=\"" <<  it->_aulPoints[1] << "\" "
                                << "p2=\"" <<  it->_aulPoints[2] << "\" " 
@@ -1073,9 +1073,9 @@ void MeshOutput::SaveXML (Base::Writer &writer) const
                                << std::endl;
   } 
   writer.decInd();
-  writer << writer.ind() << "</Faces>" << std::endl;
+  writer.Stream() << writer.ind() << "</Faces>" << std::endl;
 
-  writer << writer.ind() << "</Mesh>" << std::endl;
+  writer.Stream() << writer.ind() << "</Mesh>" << std::endl;
   writer.decInd();
 }
 

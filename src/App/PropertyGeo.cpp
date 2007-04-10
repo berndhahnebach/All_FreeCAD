@@ -135,7 +135,7 @@ void PropertyVector::setPyObject(PyObject *value)
 
 void PropertyVector::Save (Writer &writer) const
 {
-  writer << writer.ind() << "<PropertyVector valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
+  writer.Stream() << writer.ind() << "<PropertyVector valueX=\"" <<  _cVec.x << "\" valueY=\"" <<  _cVec.y << "\" valueZ=\"" <<  _cVec.z <<"\"/>" << endl;
 }
 
 void PropertyVector::Restore(Base::XMLReader &reader)
@@ -260,7 +260,7 @@ void PropertyVectorList::Save (Writer &writer) const
 //    writer << writer.ind() << "<PropertyVector valueX=\"" <<  _lValueList[i].x << "\" valueY=\"" <<  _lValueList[i].y << "\" valueZ=\"" <<  _lValueList[i].z <<"\"/>" << endl;
 //  writer << "</VectorList>" << endl ;
   }else{
-    writer << writer.ind() << "<VectorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<VectorList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
   }
 }
 
@@ -297,8 +297,8 @@ void PropertyVectorList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
-    writer.write((const char*)&uCt, sizeof(unsigned long));
-    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
   } catch( const Base::Exception& e) {
     throw e;
   }
@@ -404,12 +404,12 @@ void PropertyMatrix::setPyObject(PyObject *value)
 
 void PropertyMatrix::Save (Base::Writer &writer) const
 {
-  writer << writer.ind() << "<PropertyMatrix"; 
-  writer << " a11=\"" <<  _cMat[0][0] << "\" a12=\"" <<  _cMat[0][1] << "\" a13=\"" <<  _cMat[0][2] << "\" a14=\"" <<  _cMat[0][3] << "\"";
-  writer << " a21=\"" <<  _cMat[1][0] << "\" a22=\"" <<  _cMat[1][1] << "\" a23=\"" <<  _cMat[1][2] << "\" a24=\"" <<  _cMat[1][3] << "\"";
-  writer << " a31=\"" <<  _cMat[2][0] << "\" a32=\"" <<  _cMat[2][1] << "\" a33=\"" <<  _cMat[2][2] << "\" a34=\"" <<  _cMat[2][3] << "\"";
-  writer << " a41=\"" <<  _cMat[3][0] << "\" a42=\"" <<  _cMat[3][1] << "\" a43=\"" <<  _cMat[3][2] << "\" a44=\"" <<  _cMat[3][3] << "\"";
-  writer <<"/>" << endl;
+  writer.Stream() << writer.ind() << "<PropertyMatrix"; 
+  writer.Stream() << " a11=\"" <<  _cMat[0][0] << "\" a12=\"" <<  _cMat[0][1] << "\" a13=\"" <<  _cMat[0][2] << "\" a14=\"" <<  _cMat[0][3] << "\"";
+  writer.Stream() << " a21=\"" <<  _cMat[1][0] << "\" a22=\"" <<  _cMat[1][1] << "\" a23=\"" <<  _cMat[1][2] << "\" a24=\"" <<  _cMat[1][3] << "\"";
+  writer.Stream() << " a31=\"" <<  _cMat[2][0] << "\" a32=\"" <<  _cMat[2][1] << "\" a33=\"" <<  _cMat[2][2] << "\" a34=\"" <<  _cMat[2][3] << "\"";
+  writer.Stream() << " a41=\"" <<  _cMat[3][0] << "\" a42=\"" <<  _cMat[3][1] << "\" a43=\"" <<  _cMat[3][2] << "\" a44=\"" <<  _cMat[3][3] << "\"";
+  writer.Stream() <<"/>" << endl;
 }
 
 void PropertyMatrix::Restore(Base::XMLReader &reader)
@@ -504,10 +504,10 @@ void PropertyPlacement::setPyObject(PyObject *value)
 
 void PropertyPlacement::Save (Base::Writer &writer) const
 {
-  writer << writer.ind() << "<PropertyPlacement"; 
-  writer << " Px=\"" <<  _cPos.getPos().x << "\" Py=\"" <<  _cPos.getPos().y << "\" Pz=\"" <<  _cPos.getPos().z << "\"";
-  writer << " Q0=\"" <<  _cPos.getRotation()[0] << "\" Q1=\"" <<  _cPos.getRotation()[1] << "\" Q2=\"" <<  _cPos.getRotation()[2] << "\" Q3=\"" <<  _cPos.getRotation()[3] << "\"";
-  writer <<"/>" << endl;
+  writer.Stream() << writer.ind() << "<PropertyPlacement"; 
+  writer.Stream() << " Px=\"" <<  _cPos.getPos().x << "\" Py=\"" <<  _cPos.getPos().y << "\" Pz=\"" <<  _cPos.getPos().z << "\"";
+  writer.Stream() << " Q0=\"" <<  _cPos.getRotation()[0] << "\" Q1=\"" <<  _cPos.getRotation()[1] << "\" Q2=\"" <<  _cPos.getRotation()[2] << "\" Q3=\"" <<  _cPos.getRotation()[3] << "\"";
+  writer.Stream() <<"/>" << endl;
 }
 
 void PropertyPlacement::Restore(Base::XMLReader &reader)

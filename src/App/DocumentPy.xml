@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
+  <PythonExport Father="PropertyContainerPy" Name="DocumentPy" Twin="Document" Namespace="App" FatherInclude="PropertyContainerPy.h" FatherNamespace="App">
+    <Documentation>
+      <Author Licence="LGPL" Name="Juergen Riegel" EMail="FreeCAD@juergen-riegel.net" />
+      <UserDocu>This is a Document class</UserDocu>
+    </Documentation>
+    <Methode Name="save">
+      <Documentation>
+        <UserDocu>Save the document to disc.</UserDocu>
+      </Documentation>
+    </Methode>
+	  <Methode Name="restore">
+		  <Documentation>
+			  <UserDocu>Save the document to disc.</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="openTransaction">
+		  <Documentation>
+			  <UserDocu>Opens a new Undo/Redo transaction.</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="abortTransaction">
+		  <Documentation>
+			  <UserDocu>Abort a Undo/Redo transaction.</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="commitTransaction">
+		  <Documentation>
+			  <UserDocu>Abort a Undo/Redo transaction.</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="addObject">
+		  <Documentation>
+			  <UserDocu>Add a object to the document.</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="removeObject">
+		  <Documentation>
+			  <UserDocu>Removes a object from the document.</UserDocu>
+		  </Documentation>
+	  </Methode>
+	  <Methode Name="undo">
+      <Documentation>
+        <UserDocu>Undo one operation.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="redo">
+      <Documentation>
+        <UserDocu>Do one redo.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="clearUndos">
+      <Documentation>
+        <UserDocu>Clears the undo stack.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="recompute">
+      <Documentation>
+        <UserDocu>Recompute the document.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="getObject">
+      <Documentation>
+        <UserDocu>Return the object with the given name.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Attribute Name="ActiveObject">
+      <Parameter Name="Objects" Type="Object" />
+    </Attribute>
+    <Attribute Name="Objects">
+      <Parameter Name="ActiveObject" Type="List" />
+    </Attribute>
+    <Attribute Name="UndoMode">
+      <Parameter Name="UndoMode" Type="Int" />
+    </Attribute>
+    <Attribute Name="UndoRedoMemSize">
+      <Parameter Name="UndoRedoMemSize" Type="Int" />
+    </Attribute>
+    <Attribute Name="UndoCount">
+      <Parameter Name="UndoCount" Type="Int"/>
+    </Attribute>
+    <Attribute Name="RedoCount">
+      <Parameter Name="RedoCount" Type="Int">
+      </Parameter>
+    </Attribute>
+    <Attribute Name="UndoNames">
+      <Parameter Name="UndoNames" Type="List">
+      </Parameter>
+    </Attribute>
+    <Attribute Name="RedoNames">
+      <Parameter Name="RedoNames" Type="List">
+      </Parameter>
+    </Attribute>
+		<CustomAttributes/>
+  </PythonExport>
+</GenerateModel>

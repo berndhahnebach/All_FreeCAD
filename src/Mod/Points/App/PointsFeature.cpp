@@ -44,18 +44,13 @@ using namespace Points;
 
 PROPERTY_SOURCE(Points::Feature, App::AbstractFeature)
 
-Feature::Feature() : _featurePy(0)
+Feature::Feature() 
 {
   ADD_PROPERTY(Points, (PointKernel()));
 }
 
 Feature::~Feature()
 {
-  if ( _featurePy )
-  {
-    _featurePy->setInvalid();
-    _featurePy->DecRef();
-  }
 }
 
 int Feature::execute(void)
@@ -90,13 +85,13 @@ void Feature::RestoreDocFile(Base::Reader &reader)
   Points.RestoreDocFile(reader);
 }
 
-Base::PyObjectBase *Feature::GetPyObject(void)
+PyObject *Feature::getPyObject(void)
 {
-  if (!_featurePy) {
-    _featurePy = new PointsFeaturePy(this);
+ if(PythonObject.is(Py::_None())){
+    // ref counter is set to 1
+    PythonObject = new PointsFeaturePy(this);
   }
-  _featurePy->IncRef();
-  return _featurePy;
+  return Py::new_reference_to(PythonObject); 
 }
 
 // ------------------------------------------------------------------

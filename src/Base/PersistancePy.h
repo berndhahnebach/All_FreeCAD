@@ -1,28 +1,5 @@
-/***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
- *                                                                         *
- *   This file is part of the FreeCAD CAx development system.              *
- *                                                                         *
- *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           *
- *   License as published by the Free Software Foundation; either          *
- *   version 2 of the License, or (at your option) any later version.      *
- *                                                                         *
- *   This library  is distributed in the hope that it will be useful,      *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU Library General Public License for more details.                  *
- *                                                                         *
- *   You should have received a copy of the GNU Library General Public     *
- *   License along with this library; see the file COPYING.LIB. If not,    *
- *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
- *   Suite 330, Boston, MA  02111-1307, USA                                *
- *                                                                         *
- ***************************************************************************/
 
- 
-
-
+// This file is generated out of ... Every change you make here get lost at the next full rebuild!
 #ifndef _PersistancePy_h_
 #define _PersistancePy_h_
 
@@ -33,12 +10,11 @@ namespace Base
 
 class Persistance;
 
-
 //===========================================================================
 // PersistancePy - Python wrapper
 //===========================================================================
 
-/** The DocTypeStd python class
+/** The python export class for Persistance
  */
 class BaseExport PersistancePy :public Base::BaseClassPy
 {
@@ -46,32 +22,42 @@ class BaseExport PersistancePy :public Base::BaseClassPy
 	Py_Header;
 
 public:
-	PersistancePy(Persistance *pcDocumentObject, PyTypeObject *T = &Type);
+	PersistancePy(Persistance *pcPersistanceObject, PyTypeObject *T = &Type);
 	static PyObject *PyMake(PyObject *, PyObject *);
 	~PersistancePy();
 
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
 
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
+	virtual PyObject *_repr(void);  				      // the representation
+	PyObject *_getattr(char *attr);					      // __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-	PYFUNCDEF_D(PersistancePy,getMemSize)
 
-  
+  /** @name callbacks and implementer for the python object methodes */
+  //@{
+  //@}
 
-	//---------------------------------------------------------------------
-	// helpers for python exports goes here +++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
+	
+  /** @name callbacks and implementer for the python object methodes */
+  //@{
+  /// geter for the  Content Attribute
+  Py::String getContent(void);
+  /// seter for the  Content Attribute
+	void      setContent(Py::String arg);
+  /// geter for the  MemSize Attribute
+  Py::Int getMemSize(void);
+  /// seter for the  MemSize Attribute
+	void      setMemSize(Py::Int arg);
+  /// getter methode for special Attributes (e.g. dynamic ones)
+  PyObject *getCustomAttributes(const char* attr);
+	/// setter for  special Attributes (e.g. dynamic ones)
+  int setCustomAttributes(const char* attr, PyObject *obj);
+  //@}
+
+	/// geter for the object handled by this class
   Persistance *getPersistanceObject(void) const;
   
 };
+#define PARENTSPersistancePy &PersistancePy::Type,PARENTSBaseClassPy
+}       //namespace Base
+#endif	// _PersistancePy_h_
 
 
-
-} //namespace Base
-
-
-
-#endif
