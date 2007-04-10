@@ -322,6 +322,7 @@ libFreeCADGui_la_LIBADD   =\
 		propertyeditor/libpropertyeditor.la \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lboost_signals \
 		-lFreeCADBase \
 		-lFreeCADApp
 
