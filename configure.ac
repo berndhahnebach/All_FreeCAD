@@ -278,6 +278,20 @@ dnl **************************************************************************
 dnl checking for optional libraies
 dnl **************************************************************************
 
+dnl checking for OpenGL libs
+dnl **************************************************************************
+case $host_os in
+  mingw32*)
+    GL_LIBS="-lopengl32 -lglu32"
+    ;;
+  darwin*)
+    ;;
+  linux*)
+    GL_LIBS="-lGL -lGLU"
+    ;;
+esac
+AC_SUBST(GL_LIBS)
+
 dnl checking for OpenCascade
 dnl **************************************************************************
 dnl Check if CASROOT is set and estimate where the include and libs could be
