@@ -49,13 +49,13 @@ class Persistance;
  * \see App::Persistance
  * \author Juergen Riegel
  */
-class BaseExport Writer: public zipios::ZipOutputStream
+class BaseExport Writer
 {
 
 public:
   /// opens the file and write the first file
-  Writer(const char* FileName);
-  ~Writer();
+  Writer(void);
+  virtual ~Writer();
 
   /// switch the writer in XML only mode (no files allowed)
   void setForceXML(bool on);
@@ -72,7 +72,7 @@ public:
   /// add a write request of a Persitant object
   std::string addFile(const char* Name, const Base::Persistance *Object);
   /// process the requested file writes
-  void writeFiles(void);
+  virtual void writeFiles(void)=0;
   /// get all registered file names
   const std::vector<std::string>& getFilenames() const;
   //@{
@@ -87,8 +87,9 @@ public:
   void decInd(void);
   //@{
 
+  virtual std::ostream &Stream(void)=0;
 
-private:
+protected:
   std::string getUniqueFileName(const char *Name);
   struct FileEntry {
     std::string FileName;
@@ -104,37 +105,60 @@ private:
 };
 
 
-/** The Reader class 
- * This is a important helper class for the restore of objects in FreeCAD. 
- * @see App::Persistance
- * @author Werner Mayer
+/** The ZipWriter class 
+ * This is a important helper class implementation for the store and retrivel system
+ * of objects in FreeCAD. 
+ * \see App::Persistance
+ * \author Juergen Riegel
  */
-/*
-class BaseExport Reader: public zipios::ZipInputStream
+class BaseExport ZipWriter: public Writer
 {
-private:
-  struct FileEntry {
-    std::string FileName;
-    std::string FeatName;
-  };
 
 public:
-  typedef std::vector<FileEntry>::const_iterator  ConstIterator;
+  /// opens the file and write the first file
+  ZipWriter(const char* FileName);
+  ~ZipWriter();
 
-  ConstIterator begin (void) const { return FileList.begin(); }
-  ConstIterator end (void) const { return FileList.end(); }
+  virtual void writeFiles(void);
 
-  /// opens the file and read the first file
-  Reader(const char* FileName);
-  ~Reader();
+  virtual std::ostream &Stream(void){return ZipStream;}
 
-  void addFile(const char* FileName, const char* FeatName);
+  void setComment(const char* str){ZipStream.setComment(str);}
+  void setLevel(int level){ZipStream.setLevel( level );}
+  void putNextEntry(const char* str){ZipStream.putNextEntry(str);}
 
 private:
-  std::vector<FileEntry> FileList;
+  zipios::ZipOutputStream ZipStream;
+
+
 };
-*/
-}
+
+/** The StringWriter class 
+ * This is a important helper class implementation for the store and retrivel system
+ * of objects in FreeCAD. 
+ * \see App::Persistance
+ * \author Juergen Riegel
+ */
+class BaseExport StringWriter: public Writer
+{
+
+public:
+
+  virtual std::ostream &Stream(void){return StrStream;}
+
+  std::string getString(void){return StrStream.str();}
+
+  virtual void writeFiles(void){assert(0);}
+
+private:
+
+  std::stringstream StrStream;
+
+
+};
+
+
+}  //namespace Base
 
 
 #endif

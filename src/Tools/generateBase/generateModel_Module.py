@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Tue Mar 13 21:16:06 2007 by generateDS.py.
+# Generated Sat Apr  7 17:05:05 2007 by generateDS.py.
 #
 
 import sys
@@ -216,10 +216,13 @@ class GenerateModel:
 
 class PythonExport:
     subclass = None
-    def __init__(self, Twin='', Father='', Name='', Documentation=None, Methode=None, Attribute=None):
-        self.Twin = Twin
-        self.Father = Father
+    def __init__(self, FatherNamespace='', Name='', FatherInclude='', Father='', Namespace='', Twin='', Documentation=None, Methode=None, Attribute=None, CustomAttributes=''):
+        self.FatherNamespace = FatherNamespace
         self.Name = Name
+        self.FatherInclude = FatherInclude
+        self.Father = Father
+        self.Namespace = Namespace
+        self.Twin = Twin
         self.Documentation = Documentation
         if Methode is None:
             self.Methode = []
@@ -229,6 +232,7 @@ class PythonExport:
             self.Attribute = []
         else:
             self.Attribute = Attribute
+        self.CustomAttributes = CustomAttributes
     def factory(*args_, **kwargs_):
         if PythonExport.subclass:
             return PythonExport.subclass(*args_, **kwargs_)
@@ -245,12 +249,20 @@ class PythonExport:
     def setAttribute(self, Attribute): self.Attribute = Attribute
     def addAttribute(self, value): self.Attribute.append(value)
     def insertAttribute(self, index, value): self.Attribute[index] = value
-    def getTwin(self): return self.Twin
-    def setTwin(self, Twin): self.Twin = Twin
-    def getFather(self): return self.Father
-    def setFather(self, Father): self.Father = Father
+    def getCustomattributes(self): return self.CustomAttributes
+    def setCustomattributes(self, CustomAttributes): self.CustomAttributes = CustomAttributes
+    def getFathernamespace(self): return self.FatherNamespace
+    def setFathernamespace(self, FatherNamespace): self.FatherNamespace = FatherNamespace
     def getName(self): return self.Name
     def setName(self, Name): self.Name = Name
+    def getFatherinclude(self): return self.FatherInclude
+    def setFatherinclude(self, FatherInclude): self.FatherInclude = FatherInclude
+    def getFather(self): return self.Father
+    def setFather(self, Father): self.Father = Father
+    def getNamespace(self): return self.Namespace
+    def setNamespace(self, Namespace): self.Namespace = Namespace
+    def getTwin(self): return self.Twin
+    def setTwin(self, Twin): self.Twin = Twin
     def export(self, outfile, level, name_='PythonExport'):
         showIndent(outfile, level)
         outfile.write('<%s' % (name_, ))
@@ -260,9 +272,12 @@ class PythonExport:
         showIndent(outfile, level)
         outfile.write('</%s>\n' % name_)
     def exportAttributes(self, outfile, level, name_='PythonExport'):
-        outfile.write(' Twin="%s"' % (self.getTwin(), ))
-        outfile.write(' Father="%s"' % (self.getFather(), ))
+        outfile.write(' FatherNamespace="%s"' % (self.getFathernamespace(), ))
         outfile.write(' Name="%s"' % (self.getName(), ))
+        outfile.write(' FatherInclude="%s"' % (self.getFatherinclude(), ))
+        outfile.write(' Father="%s"' % (self.getFather(), ))
+        outfile.write(' Namespace="%s"' % (self.getNamespace(), ))
+        outfile.write(' Twin="%s"' % (self.getTwin(), ))
     def exportChildren(self, outfile, level, name_='PythonExport'):
         if self.Documentation:
             self.Documentation.export(outfile, level)
@@ -270,17 +285,25 @@ class PythonExport:
             Methode_.export(outfile, level)
         for Attribute_ in self.getAttribute():
             Attribute_.export(outfile, level)
+        showIndent(outfile, level)
+        outfile.write('<CustomAttributes>%s</CustomAttributes>\n' % quote_xml(self.getCustomattributes()))
     def exportLiteral(self, outfile, level, name_='PythonExport'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
         self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, name_):
         showIndent(outfile, level)
-        outfile.write('Twin = "%s",\n' % (self.getTwin(),))
+        outfile.write('FatherNamespace = "%s",\n' % (self.getFathernamespace(),))
+        showIndent(outfile, level)
+        outfile.write('Name = "%s",\n' % (self.getName(),))
+        showIndent(outfile, level)
+        outfile.write('FatherInclude = "%s",\n' % (self.getFatherinclude(),))
         showIndent(outfile, level)
         outfile.write('Father = "%s",\n' % (self.getFather(),))
         showIndent(outfile, level)
-        outfile.write('Name = "%s",\n' % (self.getName(),))
+        outfile.write('Namespace = "%s",\n' % (self.getNamespace(),))
+        showIndent(outfile, level)
+        outfile.write('Twin = "%s",\n' % (self.getTwin(),))
     def exportLiteralChildren(self, outfile, level, name_):
         if self.Documentation:
             showIndent(outfile, level)
@@ -312,6 +335,8 @@ class PythonExport:
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
+        showIndent(outfile, level)
+        outfile.write('CustomAttributes=%s,\n' % quote_python(self.getCustomattributes()))
     def build(self, node_):
         attrs = node_.attributes
         self.buildAttributes(attrs)
@@ -319,12 +344,18 @@ class PythonExport:
             nodeName_ = child_.nodeName.split(':')[-1]
             self.buildChildren(child_, nodeName_)
     def buildAttributes(self, attrs):
-        if attrs.get('Twin'):
-            self.Twin = attrs.get('Twin').value
-        if attrs.get('Father'):
-            self.Father = attrs.get('Father').value
+        if attrs.get('FatherNamespace'):
+            self.FatherNamespace = attrs.get('FatherNamespace').value
         if attrs.get('Name'):
             self.Name = attrs.get('Name').value
+        if attrs.get('FatherInclude'):
+            self.FatherInclude = attrs.get('FatherInclude').value
+        if attrs.get('Father'):
+            self.Father = attrs.get('Father').value
+        if attrs.get('Namespace'):
+            self.Namespace = attrs.get('Namespace').value
+        if attrs.get('Twin'):
+            self.Twin = attrs.get('Twin').value
     def buildChildren(self, child_, nodeName_):
         if child_.nodeType == Node.ELEMENT_NODE and \
             nodeName_ == 'Documentation':
@@ -341,6 +372,12 @@ class PythonExport:
             obj_ = Attribute.factory()
             obj_.build(child_)
             self.Attribute.append(obj_)
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'CustomAttributes':
+            CustomAttributes_ = ''
+            for text__content_ in child_.childNodes:
+                CustomAttributes_ += text__content_.nodeValue
+            self.CustomAttributes = CustomAttributes_
 # end class PythonExport
 
 
@@ -1400,15 +1437,24 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             done = 1
         elif name == 'PythonExport':
             obj = PythonExport.factory()
-            val = attrs.get('Twin', None)
+            val = attrs.get('FatherNamespace', None)
             if val is not None:
-                obj.setTwin(val)
-            val = attrs.get('Father', None)
-            if val is not None:
-                obj.setFather(val)
+                obj.setFathernamespace(val)
             val = attrs.get('Name', None)
             if val is not None:
                 obj.setName(val)
+            val = attrs.get('FatherInclude', None)
+            if val is not None:
+                obj.setFatherinclude(val)
+            val = attrs.get('Father', None)
+            if val is not None:
+                obj.setFather(val)
+            val = attrs.get('Namespace', None)
+            if val is not None:
+                obj.setNamespace(val)
+            val = attrs.get('Twin', None)
+            if val is not None:
+                obj.setTwin(val)
             stackObj = SaxStackElement('PythonExport', obj)
             self.stack.append(stackObj)
             done = 1
@@ -1442,6 +1488,10 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             if val is not None:
                 obj.setName(val)
             stackObj = SaxStackElement('Attribute', obj)
+            self.stack.append(stackObj)
+            done = 1
+        elif name == 'CustomAttributes':
+            stackObj = SaxStackElement('CustomAttributes', None)
             self.stack.append(stackObj)
             done = 1
         elif name == 'Dependencies':
@@ -1548,6 +1598,12 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
         elif name == 'Attribute':
             if len(self.stack) >= 2:
                 self.stack[-2].obj.addAttribute(self.stack[-1].obj)
+                self.stack.pop()
+                done = 1
+        elif name == 'CustomAttributes':
+            if len(self.stack) >= 2:
+                content = self.stack[-1].content
+                self.stack[-2].obj.setCustomattributes(content)
                 self.stack.pop()
                 done = 1
         elif name == 'Dependencies':
@@ -1735,7 +1791,7 @@ def parseLiteral(inFileName):
     rootObj.build(rootNode)
     # Enable Python to collect the space used by the DOM.
     doc = None
-    sys.stdout.write('from test import *\n\n')
+    sys.stdout.write('from generateModel_Module import *\n\n')
     sys.stdout.write('rootObj = GenerateModel(\n')
     rootObj.exportLiteral(sys.stdout, 0, name_="GenerateModel")
     sys.stdout.write(')\n')

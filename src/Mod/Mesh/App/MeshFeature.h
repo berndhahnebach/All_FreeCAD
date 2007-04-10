@@ -87,10 +87,9 @@ public:
   }
 
   /// handles the MeshPy object
-  virtual Base::PyObjectBase* GetPyObject(void);
+  virtual PyObject* getPyObject(void);
 
-private:
-  MeshFeaturePy *pcMeshFeaturePy;
+
 };
 
 } //namespace Mesh

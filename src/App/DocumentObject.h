@@ -30,6 +30,7 @@
 #include <App/PropertyStandard.h>
 
 #include <Base/TimeInfo.h>
+#include <Base/PyCXX/Objects.hxx>
 
 
 namespace App
@@ -74,7 +75,7 @@ public:
   Base::TimeInfo getTouchViewTime(void) const {return touchViewTime;}
 	//@}
 
-	virtual Base::PyObjectBase *GetPyObject(void);
+	virtual PyObject *getPyObject(void);
 
 protected:
   /// get called befor the value is changed
@@ -85,7 +86,9 @@ protected:
 
   Base::TimeInfo touchTime,touchViewTime,touchPropertyTime;
 
-  DocumentObjectPy *pcObjectPy;
+  /// python object of this class and all descendend
+  Py::Object PythonObject;
+  /// pointer to the document this object belongs to
   App::Document* _pDoc;
 };
 

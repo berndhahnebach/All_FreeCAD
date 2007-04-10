@@ -1,71 +1,40 @@
-/***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
- *                                                                         *
- *   This file is part of the FreeCAD CAx development system.              *
- *                                                                         *
- *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           *
- *   License as published by the Free Software Foundation; either          *
- *   version 2 of the License, or (at your option) any later version.      *
- *                                                                         *
- *   This library  is distributed in the hope that it will be useful,      *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU Library General Public License for more details.                  *
- *                                                                         *
- *   You should have received a copy of the GNU Library General Public     *
- *   License along with this library; see the file COPYING.LIB. If not,    *
- *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
- *   Suite 330, Boston, MA  02111-1307, USA                                *
- *                                                                         *
- ***************************************************************************/
-
 
 #include "PreCompiled.h"
 
-#ifndef _PreComp_
-#endif
+#include <Base/PyObjectBase.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
+#include <Base/PyCXX/Objects.hxx>
+using Base::Console;
+using Base::streq;
 
+using Base::Console;
 
 #include "Document.h"
 #include "DocumentPy.h"
-#include "Feature.h"
-
-#include "../Base/PyExport.h"
-#include "../Base/Console.h"
-#include "../Base/Exception.h"
-#include "Application.h"
 #define new DEBUG_CLIENTBLOCK
-using Base::Console;
-using Base::streq;
+
 using namespace App;
 
-
-
-
-
-//--------------------------------------------------------------------------
-// Type structure
-//--------------------------------------------------------------------------
-
+/// Type structure of DocumentPy
 PyTypeObject DocumentPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
-	0,						/*ob_size*/
+	0,						              /*ob_size*/
 	"Document",				/*tp_name*/
-	sizeof(DocumentPy),			/*tp_basicsize*/
-	0,						/*tp_itemsize*/
+	sizeof(DocumentPy), /*tp_basicsize*/
+	0,						              /*tp_itemsize*/
 	/* methods */
-	PyDestructor,	  		/*tp_dealloc*/
-	0,			 			/*tp_print*/
-	__getattr, 				/*tp_getattr*/
-	__setattr, 				/*tp_setattr*/
-	0,						/*tp_compare*/
-	__repr,					/*tp_repr*/
-	0,						/*tp_as_number*/
-	0,						/*tp_as_sequence*/
-	0,						/*tp_as_mapping*/
-	0,						/*tp_hash*/
-	0,						/*tp_call */
+	PyDestructor,	  		        /*tp_dealloc*/
+	0,			 			              /*tp_print*/
+	__getattr, 				          /*tp_getattr*/
+	__setattr, 				          /*tp_setattr*/
+	0,						              /*tp_compare*/
+	__repr,					            /*tp_repr*/
+	0,						              /*tp_as_number*/
+	0,						              /*tp_as_sequence*/
+	0,						              /*tp_as_mapping*/
+	0,						              /*tp_hash*/
+	0,						              /*tp_call */
   0,                                                /*tp_str  */
   0,                                                /*tp_getattro*/
   0,                                                /*tp_setattro*/
@@ -73,17 +42,17 @@ PyTypeObject DocumentPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About Document",                                 /*tp_doc */
+  "About Document",                       /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  App::DocumentPy::Methods,                         /*tp_methods */
+  App::DocumentPy::Methods,                /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
-  &App::PropertyContainerPy::Type,                  /*tp_base */
+  &App::PropertyContainerPy::Type,                        /*tp_base */
   0,                                                /*tp_dict */
   0,                                                /*tp_descr_get */
   0,                                                /*tp_descr_set */
@@ -100,554 +69,901 @@ PyTypeObject DocumentPy::Type = {
   0                                                 /*tp_weaklist */
 };
 
-//--------------------------------------------------------------------------
-// Methods structure
-//--------------------------------------------------------------------------
+/// Methods structure of DocumentPy
 PyMethodDef DocumentPy::Methods[] = {
-//  {"DocType",      (PyCFunction) sPyDocType,         Py_NEWARGS},
-//  PYMETHODEDEF(SaveAs)
-  PYMETHODEDEF(save)
-//  PYMETHODEDEF(SetModified)
-//  PYMETHODEDEF(PurgeModified)
-
-
-  PYMETHODEDEF(setUndoMode)
-  PYMETHODEDEF(openTransaction)
-  PYMETHODEDEF(commitTransaction)
-  PYMETHODEDEF(abortTransaction)
-  PYMETHODEDEF(undo)
-  PYMETHODEDEF(redo)
-  PYMETHODEDEF(clearUndos)
-  PYMETHODEDEF(getUndoMemSize)	
-  PYMETHODEDEF(getAvailableUndoNames)
-	PYMETHODEDEF(getAvailableRedoNames)
-	PYMETHODEDEF(getAvailableUndos)
-	PYMETHODEDEF(getAvailableRedos)
-
-
-  PYMETHODEDEF(recompute)
-  PYMETHODEDEF(update)
-//  PYMETHODEDEF(Dump)
-  PYMETHODEDEF(getActiveObject)
-  PYMETHODEDEF(getObject)
-  PYMETHODEDEF(addObject)
-  PYMETHODEDEF(activeObject)
-  PYMETHODEDEF(getObject)
-  PYMETHODEDEF(removeObject)
-  PYMETHODEDEF(listObjects)
-  PYMETHODEDEF(getName)
-
-  //PYMETHODEDEF(beginTransaction)
-  //PYMETHODEDEF(rollbackTransaction)
-  //PYMETHODEDEF(endTransaction)
-  PYMETHODEDEF(setTransactionMode)
-
-  {NULL, NULL}		/* Sentinel */
+	{"save",(PyCFunction) staticCallback_save,Py_NEWARGS},
+	{"restore",(PyCFunction) staticCallback_restore,Py_NEWARGS},
+	{"openTransaction",(PyCFunction) staticCallback_openTransaction,Py_NEWARGS},
+	{"abortTransaction",(PyCFunction) staticCallback_abortTransaction,Py_NEWARGS},
+	{"commitTransaction",(PyCFunction) staticCallback_commitTransaction,Py_NEWARGS},
+	{"addObject",(PyCFunction) staticCallback_addObject,Py_NEWARGS},
+	{"removeObject",(PyCFunction) staticCallback_removeObject,Py_NEWARGS},
+	{"undo",(PyCFunction) staticCallback_undo,Py_NEWARGS},
+	{"redo",(PyCFunction) staticCallback_redo,Py_NEWARGS},
+	{"clearUndos",(PyCFunction) staticCallback_clearUndos,Py_NEWARGS},
+	{"recompute",(PyCFunction) staticCallback_recompute,Py_NEWARGS},
+	{"getObject",(PyCFunction) staticCallback_getObject,Py_NEWARGS},
+	{NULL, NULL}		/* Sentinel */
 };
+
+// save() callback and implementer
+PyObject * DocumentPy::staticCallback_save (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->save(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::save(PyObject *args){};
+// restore() callback and implementer
+PyObject * DocumentPy::staticCallback_restore (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->restore(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::restore(PyObject *args){};
+// openTransaction() callback and implementer
+PyObject * DocumentPy::staticCallback_openTransaction (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->openTransaction(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::openTransaction(PyObject *args){};
+// abortTransaction() callback and implementer
+PyObject * DocumentPy::staticCallback_abortTransaction (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->abortTransaction(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::abortTransaction(PyObject *args){};
+// commitTransaction() callback and implementer
+PyObject * DocumentPy::staticCallback_commitTransaction (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->commitTransaction(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::commitTransaction(PyObject *args){};
+// addObject() callback and implementer
+PyObject * DocumentPy::staticCallback_addObject (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->addObject(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::addObject(PyObject *args){};
+// removeObject() callback and implementer
+PyObject * DocumentPy::staticCallback_removeObject (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->removeObject(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::removeObject(PyObject *args){};
+// undo() callback and implementer
+PyObject * DocumentPy::staticCallback_undo (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->undo(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::undo(PyObject *args){};
+// redo() callback and implementer
+PyObject * DocumentPy::staticCallback_redo (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->redo(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::redo(PyObject *args){};
+// clearUndos() callback and implementer
+PyObject * DocumentPy::staticCallback_clearUndos (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->clearUndos(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::clearUndos(PyObject *args){};
+// recompute() callback and implementer
+PyObject * DocumentPy::staticCallback_recompute (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->recompute(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::recompute(PyObject *args){};
+// getObject() callback and implementer
+PyObject * DocumentPy::staticCallback_getObject (PyObject *self, PyObject *args, PyObject *kwd)
+{
+  try{ // catches all exeptions coming up from c++ and generate a python exeption
+      return ((DocumentPy*)self)->getObject(args);
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+}
+	// this methode has to be implented in DocumentPyImp.cpp
+	//PyObject*  DocumentPy::getObject(PyObject *args){};
 
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject DocumentPy::Parents[] = {&DocumentPy          ::Type,
-                                        &PropertyContainerPy ::Type, 
-                                        &PersistancePy       ::Type, 
-                                        &BaseClassPy         ::Type, 
-                                        &PyObjectBase        ::Type, 
-                                        NULL};     
+PyParentObject DocumentPy::Parents[] = { PARENTSDocumentPy };
 
 //--------------------------------------------------------------------------
 //t constructor
 //--------------------------------------------------------------------------
-DocumentPy::DocumentPy(Document *pcDoc, PyTypeObject *T)
- : PropertyContainerPy(pcDoc, T)
+DocumentPy::DocumentPy(Document *pcDocument, PyTypeObject *T)
+: PropertyContainerPy(pcDocument, T)
 {
+
 }
 
 PyObject *DocumentPy::PyMake(PyObject *ignored, PyObject *args)	// Python wrapper
 {
-  //return new DocumentPy(name, n, tau, gamma);			// Make new Python-able object
+  // never create such objects with the constructor
 	return 0;
 }
 
 //--------------------------------------------------------------------------
-// destructor 
+// destructor
 //--------------------------------------------------------------------------
 DocumentPy::~DocumentPy()						// Everything handled in parent
 {
-} 
-
+}
 
 //--------------------------------------------------------------------------
-// DocumentPy representation
+// PersistancePy representation
 //--------------------------------------------------------------------------
 PyObject *DocumentPy::_repr(void)
 {
-	return Py_BuildValue("s", "FreeCAD Document");
+  std::stringstream a;
+  a << "Document";
+//  for(std::map<std::string,int>::const_iterator It = _pcFeature->_PropertiesMap.begin();It!=_pcFeature->_PropertiesMap.end();It++)
+//  {
+//    a << It->first << "=" << _pcFeature->GetProperty(It->first.c_str()).GetAsString() << "; ";
+//  }
+  a << "" << std::endl;
+	return Py_BuildValue("s", a.str().c_str());
 }
-
-Document *DocumentPy::getDocument(void) const 
-{
-  return dynamic_cast<Document *>(_pcBaseClass);
-}
-
 //--------------------------------------------------------------------------
-// DocumentPy Attributes
+// PersistancePy Attributes
 //--------------------------------------------------------------------------
 PyObject *DocumentPy::_getattr(char *attr)				// __getattr__ function: note only need to handle new state
-{
-//    if (Base::streq(attr, "__dict__")) {
-//      PyObject *dict = PyDict_New();
-//      if (dict) {
-////        PyDict_SetItemString(dict,"UndoLimit",      Py_BuildValue("i",getDocument()->GetUndoLimit()));
-//        PyDict_SetItemString(dict,"AvailableUndos", Py_BuildValue("i",getDocument()->getAvailableUndos()));
-//        PyDict_SetItemString(dict,"AvailableRedos", Py_BuildValue("i",getDocument()->getAvailableRedos()));
-////        PyDict_SetItemString(dict,"HasOpenCommand", Py_BuildValue("i",getDocument()->HasOpenCommand()?1:0));
-//        PyDict_SetItemString(dict,"Name",           Py_BuildValue("s",getDocument()->getName()));
-//        PyDict_SetItemString(dict,"Path",           Py_BuildValue("s",getDocument()->getPath()));
-//        if (PyErr_Occurred()) { Py_DECREF(dict);dict = NULL;}
-//      }
-//      return dict;
-//    }
-////		else if (streq(attr, "UndoLimit"))
-////			return Py_BuildValue("i", getDocument()->GetUndoLimit());
-//		else if (streq(attr, "AvailableUndos"))
-//			return Py_BuildValue("i", getDocument()->getAvailableUndos()); 
-//		else if (streq(attr, "AvailableRedos"))
-//			return Py_BuildValue("i", _pcDoc->getAvailableRedos()); 
-//	  //else if (streq(attr, "Name"))
-//		 // return Py_BuildValue("s", _pcDoc->getName());
-//	  //else if (streq(attr, "Path"))
-//		 // return Py_BuildValue("s", _pcDoc->getPath());
-////		else if (streq(attr, "Main")){
-////			//_pcDoc->Main()->IncRef();
-////			return new LabelPy(_pcDoc->_hDoc->Main());
-////		}
-////		else if (streq(attr, "IsEmpty"))
-////			return Py_BuildValue("u", _pcDoc->IsEmpty()?1:0);
-////		else if (streq(attr, "IsValid"))
-////			return Py_BuildValue("u", _pcDoc->IsValid()?1:0);
-////		else if (streq(attr, "HasOpenCommand"))
-////			return Py_BuildValue("i", _pcDoc->HasOpenCommand()?1:0);
-////		else if (streq(attr, "StorageFormat"))						
-////			return Py_BuildValue("u", _pcDoc->storageFormat()); 
-//    else{
-      DocumentObject *pObject = getDocument()->getObject(attr);
-      if(pObject)
-        return pObject->GetPyObject();
-      else
-			 _getattr_up(PropertyContainerPy); 						
-//    }
+{ 
+	try{
+		if (streq(attr, "ActiveObject"))						
+			return Py::new_reference_to(getActiveObject()); 
+		if (streq(attr, "Objects"))						
+			return Py::new_reference_to(getObjects()); 
+		if (streq(attr, "UndoMode"))						
+			return Py::new_reference_to(getUndoMode()); 
+		if (streq(attr, "UndoRedoMemSize"))						
+			return Py::new_reference_to(getUndoRedoMemSize()); 
+		if (streq(attr, "UndoCount"))						
+			return Py::new_reference_to(getUndoCount()); 
+		if (streq(attr, "RedoCount"))						
+			return Py::new_reference_to(getRedoCount()); 
+		if (streq(attr, "UndoNames"))						
+			return Py::new_reference_to(getUndoNames()); 
+		if (streq(attr, "RedoNames"))						
+			return Py::new_reference_to(getRedoNames()); 
+    // getter methode for special Attributes (e.g. dynamic ones)
+    PyObject *r = getCustomAttributes(attr);
+		if(r) return r;
+
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
+
+  _getattr_up(PropertyContainerPy); 						
+
 } 
 
 int DocumentPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
-//	if (streq(attr, "UndoLimit")){						// settable new state
-//		_pcDoc->SetUndoLimit(PyInt_AsLong(value)); 
-//		return 1;
-//	}else if (streq(attr, "StorageFormat")){						// settable new state
-//		_pcDoc->changeStorageFormat(const_cast<const short*>((short*)PyUnicode_AS_UNICODE(value))); 
-//		return 1;
-//	}else  
-    // search in object PropertyList
+	try{
+		if (streq(attr, "ActiveObject")){						
+			setActiveObject(Py::Object(value)); 
+			return 0;
+		}
+		if (streq(attr, "Objects")){						
+			setObjects(Py::List(value)); 
+			return 0;
+		}
+		if (streq(attr, "UndoMode")){						
+			setUndoMode(Py::Int(value)); 
+			return 0;
+		}
+		if (streq(attr, "UndoRedoMemSize")){						
+			setUndoRedoMemSize(Py::Int(value)); 
+			return 0;
+		}
+		if (streq(attr, "UndoCount")){						
+			setUndoCount(Py::Int(value)); 
+			return 0;
+		}
+		if (streq(attr, "RedoCount")){						
+			setRedoCount(Py::Int(value)); 
+			return 0;
+		}
+		if (streq(attr, "UndoNames")){						
+			setUndoNames(Py::List(value)); 
+			return 0;
+		}
+		if (streq(attr, "RedoNames")){						
+			setRedoNames(Py::List(value)); 
+			return 0;
+		}
+	  // setter for  special Attributes (e.g. dynamic ones)
+    int r = setCustomAttributes(attr, value);
+		if(r==1) return 1;
 
-    // search in PropertyList
- //Property *prop = _pcDoc->getPropertyByName(attr);
- // if(prop) { 
- //   try {
- //     prop->setPyObject(value);
- //   } catch (Base::Exception &exc) {
- //     PyErr_Format(PyExc_AttributeError, "Attribute (Name: %s) error: '%s' ", attr, exc.what());
- //     return -1;
- //   } catch (...) {
- //     PyErr_Format(PyExc_AttributeError, "Unknown error in attribute %s", attr);
- //     return -1;
- //   }
- // } else {
-		return PropertyContainerPy::_setattr(attr, value);
-  //}
-  //return 0;
+	}
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                   
+  {                                                           
+      std::string str;                                      
+      str += "FreeCAD exception thrown (";                  
+      str += e.what();                                      
+      str += ")";                                           
+      e.ReportException();                                  
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(std::exception &e) // catch other c++ exeptions                                   
+  {                                                           
+      std::string str;                                      
+      str += "FC++ exception thrown (";                     
+      str += e.what();                                      
+      str += ")";                                           
+      Base::Console().Error(str.c_str());                   
+  		Py_Error(PyExc_Exception,str.c_str());                
+  }                                                           
+  catch(...)  // catch the rest!                                                
+  {                                                           
+  		Py_Error(PyExc_Exception,"Unknown C++ exception");    
+  }   
+                                                            
+#else  // DONT_CATCH_CXX_EXCEPTIONS  
+  catch(Base::Exception &e) // catch the FreeCAD exeptions                                    
+  {                                                
+      std::string str;                           
+      str += "FreeCAD exception thrown (";       
+      str += e.what();                           
+      str += ")";                                
+      e.ReportException();                       
+  		Py_Error(PyExc_Exception,str.c_str());     
+  }                                                                 
+                                                           
+#endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
 
-		//return PyObjectBase::_setattr(attr, value); 	// send up to parent
+	return PropertyContainerPy::_setattr(attr, value);
 } 
 
-
-
-//--------------------------------------------------------------------------
-// Python wrappers
-//--------------------------------------------------------------------------
-
-PYFUNCIMP_D(DocumentPy,setUndoMode)
-{ 
-	long  Int;
-  if (!PyArg_ParseTuple(args, "i", &Int))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  PY_TRY {
-	  getDocument()->setUndoMode(Int); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-
-PYFUNCIMP_D(DocumentPy,undo)
-{ 
-  PY_TRY {
-	  getDocument()->undo(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(DocumentPy,redo)
-{ 
-  PY_TRY {
-	  getDocument()->redo(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(DocumentPy,clearUndos)
-{ 
-  PY_TRY {
-	  getDocument()->clearUndos(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-PYFUNCIMP_D(DocumentPy,openTransaction)
-{ 
-  char *pstr=0;
-  if (!PyArg_ParseTuple(args, "|s", &pstr))     // convert args: Python->C 
-      return NULL;                             // NULL triggers exception 
-
-  PY_TRY {
-	  getDocument()->openTransaction(pstr); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-	
-PYFUNCIMP_D(DocumentPy,commitTransaction)
-{ 
-  PY_TRY {
-	  getDocument()->commitTransaction(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-	
-PYFUNCIMP_D(DocumentPy,abortTransaction)
-{ 
-  PY_TRY {
-	  getDocument()->abortTransaction(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-
-PYFUNCIMP_D(DocumentPy,getAvailableUndoNames)
+Document *DocumentPy::getDocumentObject(void) const
 {
-  if (!PyArg_ParseTuple(args, ""))  // convert args: Python->C 
-     return NULL;                   // NULL triggers exception 
-
-  PY_TRY {
-    std::vector<std::string> vList = getDocument()->getAvailableUndoNames();
-	  PyObject* pList = PyList_New(vList.size());  
-    unsigned int i =0;
-    for (std::vector<std::string>::const_iterator It = vList.begin();It!=vList.end();++It,i++)
-      PyList_SetItem(pList, i, PyString_FromString(It->c_str()));
-
-	  return pList;
-
-  }PY_CATCH;
+  return dynamic_cast<Document *>(_pcBaseClass);
 }
 
-PYFUNCIMP_D(DocumentPy,getAvailableRedoNames)
-{
- if (!PyArg_ParseTuple(args, ""))  // convert args: Python->C 
-     return NULL;                   // NULL triggers exception 
-
-  PY_TRY {
-    std::vector<std::string> vList = getDocument()->getAvailableRedoNames();
-	  PyObject* pList = PyList_New(vList.size());  
-    unsigned int i =0;
-    for (std::vector<std::string>::const_iterator It = vList.begin();It!=vList.end();++It,i++)
-      PyList_SetItem(pList, i, PyString_FromString(It->c_str()));
-
-	  return pList;
-
-  }PY_CATCH;
-
-}
-
-PYFUNCIMP_D(DocumentPy,getAvailableUndos)
-{ 
-  PY_TRY {
-	   return Py_BuildValue("i",getDocument()->getAvailableUndos()); 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(DocumentPy,getAvailableRedos)
-{ 
-  PY_TRY {
-	   return Py_BuildValue("i",getDocument()->getAvailableRedos()); 
-  }PY_CATCH;
-} 
-
-#if 0
-
-PYFUNCIMP_D(DocumentPy,beginTransaction)
-{ 
-  PY_TRY {
-    return Py_BuildValue("i",_pcDoc->beginTransaction());
-  }PY_CATCH;
-} 
-
-
-PYFUNCIMP_D(DocumentPy,rollbackTransaction)
-{ 
-  PY_TRY {
-	  _pcDoc->rollbackTransaction(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-
-PYFUNCIMP_D(DocumentPy,endTransaction)
-{ 
-  PY_TRY {
-	   return Py_BuildValue("i",_pcDoc->endTransaction()); 
-  }PY_CATCH;
-} 
-
-#endif
-
-
-PYFUNCIMP_D(DocumentPy,setTransactionMode)
-{ 
-	long  Int;
-  if (!PyArg_ParseTuple(args, "i", &Int))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  PY_TRY {
-	  getDocument()->setTransactionMode(Int); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-
-
-
-
-/*
-PyObject *DocumentPy::PyDocType(PyObject *args)
-{ 
-	return _pcDoc->GetDocType()->GetPyObject();
-}
-PYFUNCIMP_D(DocumentPy,Dump)
-{ 
-  PY_TRY {
-	  //_pcDoc->Dump();
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-
-PYFUNCIMP_D(DocumentPy,SaveAs)
-{
-	char *pstr;
-    if (!PyArg_ParseTuple(args, "s", &pstr))     // convert args: Python->C 
-        return NULL;                             // NULL triggers exception 
-  PY_TRY {
-		_pcDoc->saveAs(pstr);
-  	Py_Return; 
-  }PY_CATCH;
-} 
- */
-
-PYFUNCIMP_D(DocumentPy,save)
-{ 
-  PY_TRY {
-	  getDocument()->save(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-/*
-PYFUNCIMP_D(DocumentPy,SetModified)
-{ 
-  PY_TRY {
-	  assert(0);
-	  _pcDoc->SetModified(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-	
-PYFUNCIMP_D(DocumentPy,PurgeModified)
-{ 
-  PY_TRY {
-	  _pcDoc->PurgeModified(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-	
-PYFUNCIMP_D(DocumentPy,NewCommand)
-{ 
-  PY_TRY {
-	  _pcDoc->NewCommand(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
+/* from here on the methodes you have to implement, but NOT in this module. implement in DocumentPyImp.cpp! This prototypes 
+    are just for convinience!
 		
-*/	
-PYFUNCIMP_D(DocumentPy,recompute)
-{ 
-  PY_TRY {
-	  getDocument()->recompute(); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
 
-PYFUNCIMP_D(DocumentPy,update)
-{ 
-	char *sName;
-  if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C
-    return NULL;                             // NULL triggers exception 
-
-  PY_TRY {
-	  getDocument()->update(sName); 
-	  Py_Return; 
-  }PY_CATCH;
-} 
-
-PYFUNCIMP_D(DocumentPy,addObject)
+PyObject*  DocumentPy::save(PyObject *args)
 {
-	char *sType,*sName=0;
-  if (!PyArg_ParseTuple(args, "s|s", &sType,&sName))     // convert args: Python->C
-    return NULL;                             // NULL triggers exception 
- 
-  DocumentObject *pcFtr;
-  
-  PY_TRY {
-	  pcFtr = getDocument()->addObject(sType,sName);
-  }PY_CATCH;
-	  if(pcFtr)
-		  return pcFtr->GetPyObject();
-	  else
-    {
-      char szBuf[200];
-      snprintf(szBuf, 200, "No document object found of type '%s'", sType);
-		  Py_Error(PyExc_Exception,szBuf);
-    }
+
+}
+PyObject*  DocumentPy::restore(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::openTransaction(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::abortTransaction(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::commitTransaction(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::addObject(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::removeObject(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::undo(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::redo(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::clearUndos(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::recompute(PyObject *args)
+{
+
+}
+PyObject*  DocumentPy::getObject(PyObject *args)
+{
+
 }
 
-
-PYFUNCIMP_D(DocumentPy,getActiveObject)
+Py::Object DocumentPy::getActiveObject(void)
 {
+  return Py::Object();
+}
+
+void  setActiveObject(Py::Object arg)
+{
+  arg;
+}
+
+Py::List DocumentPy::getObjects(void)
+{
+  return Py::List();
+}
+
+void  setObjects(Py::List arg)
+{
+  arg;
+}
+
+Py::Int DocumentPy::getUndoMode(void)
+{
+  return Py::Int();
+}
+
+void  setUndoMode(Py::Int arg)
+{
+  arg;
+}
+
+Py::Int DocumentPy::getUndoRedoMemSize(void)
+{
+  return Py::Int();
+}
+
+void  setUndoRedoMemSize(Py::Int arg)
+{
+  arg;
+}
+
+Py::Int DocumentPy::getUndoCount(void)
+{
+  return Py::Int();
+}
+
+void  setUndoCount(Py::Int arg)
+{
+  arg;
+}
+
+Py::Int DocumentPy::getRedoCount(void)
+{
+  return Py::Int();
+}
+
+void  setRedoCount(Py::Int arg)
+{
+  arg;
+}
+
+Py::List DocumentPy::getUndoNames(void)
+{
+  return Py::List();
+}
+
+void  setUndoNames(Py::List arg)
+{
+  arg;
+}
+
+Py::List DocumentPy::getRedoNames(void)
+{
+  return Py::List();
+}
+
+void  setRedoNames(Py::List arg)
+{
+  arg;
+}
+
+PyObject *DocumentPy::getCustomAttributes(const char* attr)
+{
+  return 0;
+}
+
+int DocumentPy::setCustomAttributes(const char* attr, PyObject *obj)
+{
+  return 0; 
+}
+
+*/
 	
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
-
-  PY_TRY {
-	  DocumentObject *pcFtr = getDocument()->getActiveObject();
-	  if(pcFtr)
-		  return pcFtr->GetPyObject();
-	  else
-		  Py_Error(PyExc_Exception,"No active Object");
-  } PY_CATCH;
-}
-
-PYFUNCIMP_D(DocumentPy,activeObject)
-{
-	
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
-
-  PY_TRY {
-	  DocumentObject *pcFtr = getDocument()->getActiveObject();
-	  if(pcFtr)
-		  return pcFtr->GetPyObject();
-	  else
-		  Py_Error(PyExc_Exception,"No active Object");
-  } PY_CATCH;
-}
-
-PYFUNCIMP_D(DocumentPy,getObject)
-{
-	
-	char *sName;
-  if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C 
-    return NULL;                             // NULL triggers exception 
-
-  PY_TRY {
-	  DocumentObject *pcFtr = getDocument()->getObject(sName);
-	  if(pcFtr)
-		  return pcFtr->GetPyObject();
-	  else
-    {
-      Py_Return;
-
-      //char szBuf[200];
-      //sprintf(szBuf, "No feature found with name '%s'", sName);
-		  //Py_Error(PyExc_Exception,szBuf);
-    }
-  } PY_CATCH;
-}
-
-
-PYFUNCIMP_D(DocumentPy,removeObject)
-{
-  char *sName;
-  if (!PyArg_ParseTuple(args, "s",&sName))     // convert args: Python->C
-    return NULL;                             // NULL triggers exception
-
-  PY_TRY {
-    DocumentObject *pcFtr = getDocument()->getObject(sName);
-    if(pcFtr) {
-      getDocument()->remObject( sName );
-      Py_Return;
-    }
-    else {
-      char szBuf[200];
-      snprintf(szBuf, 200, "No feature found with name '%s'", sName);
-      Py_Error(PyExc_Exception,szBuf);
-    }
-  } PY_CATCH;
-}
-
-PYFUNCIMP_D(DocumentPy,listObjects)
-{
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
-
-  PY_TRY {
-    std::map<std::string,DocumentObject*> features = getDocument()->ObjectMap;
-    PyObject *pDict = PyDict_New();
-    PyObject *pKey; Base::PyObjectBase* pValue;
-    
-    for (std::map<std::string,DocumentObject*>::const_iterator It = features.begin();It != features.end();++It)
-    {
-      pKey   = PyString_FromString(It->first.c_str());
-      // GetPyObject() increments
-      pValue = It->second->GetPyObject();
-      PyDict_SetItem(pDict, pKey, pValue); 
-      // now we can decrement again as PyDict_SetItem also has incremented
-      pValue->DecRef();
-    }
-
-    return pDict;
-  } PY_CATCH;
-}
-
-PYFUNCIMP_D(DocumentPy,getName)
-{
-  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
-    return NULL;                       // NULL triggers exception 
-  PY_TRY {
-    return PyString_FromString(getDocument()->getName());
-  } PY_CATCH;
-}
-
-PYFUNCIMP_D(DocumentPy,getUndoMemSize)
-{ 
-  PY_TRY {
-	   return Py_BuildValue("i",getDocument()->getUndoMemSize()); 
-  }PY_CATCH;
-} 
 

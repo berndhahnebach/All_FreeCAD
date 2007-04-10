@@ -215,7 +215,7 @@ Document* Application::newDocument(const char * Name, const char * UserName)
   if(UserName)
     newDoc->Name.setValue(UserName);
   else
-    newDoc->Name.setValue(Name);
+    newDoc->Name.setValue(name);
 
 	// add the document to the internal list
 	DocMap[name] = newDoc.release(); // now owned by the Application
@@ -371,7 +371,7 @@ Document* Application::openDocument(const char * FileName)
   newDoc->FileName.setValue(File.filePath());
 
   // read the document
-  newDoc->open();
+  newDoc->restore();
 
   return newDoc;
 }

@@ -56,7 +56,7 @@ PROPERTY_SOURCE_ABSTRACT(App::AbstractFeature, App::DocumentObject)
 const char* FeatEnums[]= {"Valid","New","Inactive","Recompute","Error",NULL};
 
 AbstractFeature::AbstractFeature(void)
-:pcFeaturePy(0), _execute(false)
+: _execute(false)
 {
   ADD_PROPERTY(status,(1));
   status.setEnums(FeatEnums);
@@ -64,21 +64,20 @@ AbstractFeature::AbstractFeature(void)
 
 AbstractFeature::~AbstractFeature(void)
 {
-  if (pcFeaturePy)
+ /* if (pcFeaturePy)
   {
     pcFeaturePy->setInvalid();
     pcFeaturePy->DecRef();
-  }
+  }*/
 }
 
-Base::PyObjectBase *AbstractFeature::GetPyObject(void)
+PyObject *AbstractFeature::getPyObject(void)
 {
-  if(!pcFeaturePy){
+ if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    pcFeaturePy = new FeaturePy(this);
+    PythonObject = new FeaturePy(this);
   }
-  pcFeaturePy->IncRef();
-	return pcFeaturePy; 
+  return Py::new_reference_to(PythonObject); 
 }
 
 void AbstractFeature::onChanged(const Property* prop)

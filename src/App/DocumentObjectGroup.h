@@ -85,7 +85,7 @@ public:
   virtual const char* getViewProviderName(void) const {
     return "Gui::ViewProviderDocumentObjectGroup";
   }
-  virtual Base::PyObjectBase *GetPyObject(void);
+  virtual PyObject *getPyObject(void);
 
 protected:
   PropertyLinkList Group;
@@ -97,8 +97,6 @@ protected:
    */
   void removeObject(DocumentObject* obj);
 
-private:
-  DocumentObjectGroupPy* pcGroupPy;
 };
 
 } //namespace App

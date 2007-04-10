@@ -1,100 +1,135 @@
-/***************************************************************************
- *   Copyright (c) Jürgen Riegel          (juergen.riegel@web.de) 2002     *
- *                                                                         *
- *   This file is part of the FreeCAD CAx development system.              *
- *                                                                         *
- *   This library is free software; you can redistribute it and/or         *
- *   modify it under the terms of the GNU Library General Public           *
- *   License as published by the Free Software Foundation; either          *
- *   version 2 of the License, or (at your option) any later version.      *
- *                                                                         *
- *   This library  is distributed in the hope that it will be useful,      *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU Library General Public License for more details.                  *
- *                                                                         *
- *   You should have received a copy of the GNU Library General Public     *
- *   License along with this library; see the file COPYING.LIB. If not,    *
- *   write to the Free Software Foundation, Inc., 59 Temple Place,         *
- *   Suite 330, Boston, MA  02111-1307, USA                                *
- *                                                                         *
- ***************************************************************************/
 
-#ifndef __DocumentPy_H__
-#define __DocumentPy_H__
+// This file is generated out of ... Every change you make here get lost at the next full rebuild!
+#ifndef _DocumentPy_h_
+#define _DocumentPy_h_
 
 #include "PropertyContainerPy.h"
 
+namespace App
+{
 
-namespace App {
-/** The Document python class
+class Document;
+
+//===========================================================================
+// DocumentPy - Python wrapper
+//===========================================================================
+
+/** The python export class for Document
  */
 class AppExport DocumentPy :public App::PropertyContainerPy
 {
 	/// always start with Py_Header
 	Py_Header;
 
-protected:
+public:
+	DocumentPy(Document *pcDocumentObject, PyTypeObject *T = &Type);
+	static PyObject *PyMake(PyObject *, PyObject *);
 	~DocumentPy();
 
-public:
-	DocumentPy(Document *pcDoc, PyTypeObject *T = &Type);
-	static PyObject *PyMake(PyObject *, PyObject *);
 
-  App::Document *getDocument(void) const;
-
-	//---------------------------------------------------------------------
-	// python exports goes here +++++++++++++++++++++++++++++++++++++++++++
-	//---------------------------------------------------------------------
-
-	virtual PyObject *_repr(void);  				// the representation
-	PyObject *_getattr(char *attr);					// __getattr__ function
+	virtual PyObject *_repr(void);  				      // the representation
+	PyObject *_getattr(char *attr);					      // __getattr__ function
 	int _setattr(char *attr, PyObject *value);		// __setattr__ function
-//	PyObject *PyDocType(PyObject *args);		// Python wrapper
-//	static PyObject *sPyDocType(PyObject *self, PyObject *args, PyObject *kwd){return ((DocumentPy*)self)->PyDocType(args);};
-	PYFUNCDEF_D(DocumentPy,save)
-//	PYFUNCDEF_D(DocumentPy,SaveAs)
-//	PYFUNCDEF_D(DocumentPy,SetModified)
-//	PYFUNCDEF_D(DocumentPy,PurgeModified)
 
-//	UndoRedo stuff
-	PYFUNCDEF_D(DocumentPy,setUndoMode)
-	PYFUNCDEF_D(DocumentPy,setTransactionMode)
-	PYFUNCDEF_D(DocumentPy,openTransaction)
-	PYFUNCDEF_D(DocumentPy,commitTransaction)
-	PYFUNCDEF_D(DocumentPy,abortTransaction)
-	PYFUNCDEF_D(DocumentPy,undo)
-	PYFUNCDEF_D(DocumentPy,redo)
-	PYFUNCDEF_D(DocumentPy,clearUndos)
-	PYFUNCDEF_D(DocumentPy,getUndoMemSize)
-	PYFUNCDEF_D(DocumentPy,getAvailableUndoNames)
-	PYFUNCDEF_D(DocumentPy,getAvailableRedoNames)
-	PYFUNCDEF_D(DocumentPy,getAvailableUndos)
-	PYFUNCDEF_D(DocumentPy,getAvailableRedos)
+  /** @name callbacks and implementer for the python object methodes */
+  //@{
+  /// callback for the save() methode
+  static PyObject * staticCallback_save (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the save() methode
+	PyObject*  save(PyObject *args);
+  /// callback for the restore() methode
+  static PyObject * staticCallback_restore (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the restore() methode
+	PyObject*  restore(PyObject *args);
+  /// callback for the openTransaction() methode
+  static PyObject * staticCallback_openTransaction (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the openTransaction() methode
+	PyObject*  openTransaction(PyObject *args);
+  /// callback for the abortTransaction() methode
+  static PyObject * staticCallback_abortTransaction (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the abortTransaction() methode
+	PyObject*  abortTransaction(PyObject *args);
+  /// callback for the commitTransaction() methode
+  static PyObject * staticCallback_commitTransaction (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the commitTransaction() methode
+	PyObject*  commitTransaction(PyObject *args);
+  /// callback for the addObject() methode
+  static PyObject * staticCallback_addObject (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the addObject() methode
+	PyObject*  addObject(PyObject *args);
+  /// callback for the removeObject() methode
+  static PyObject * staticCallback_removeObject (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the removeObject() methode
+	PyObject*  removeObject(PyObject *args);
+  /// callback for the undo() methode
+  static PyObject * staticCallback_undo (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the undo() methode
+	PyObject*  undo(PyObject *args);
+  /// callback for the redo() methode
+  static PyObject * staticCallback_redo (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the redo() methode
+	PyObject*  redo(PyObject *args);
+  /// callback for the clearUndos() methode
+  static PyObject * staticCallback_clearUndos (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the clearUndos() methode
+	PyObject*  clearUndos(PyObject *args);
+  /// callback for the recompute() methode
+  static PyObject * staticCallback_recompute (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the recompute() methode
+	PyObject*  recompute(PyObject *args);
+  /// callback for the getObject() methode
+  static PyObject * staticCallback_getObject (PyObject *self, PyObject *args, PyObject *kwd);
+  /// implementer for the getObject() methode
+	PyObject*  getObject(PyObject *args);
+  //@}
 
+	
+  /** @name callbacks and implementer for the python object methodes */
+  //@{
+  /// geter for the  ActiveObject Attribute
+  Py::Object getActiveObject(void);
+  /// seter for the  ActiveObject Attribute
+	void      setActiveObject(Py::Object arg);
+  /// geter for the  Objects Attribute
+  Py::List getObjects(void);
+  /// seter for the  Objects Attribute
+	void      setObjects(Py::List arg);
+  /// geter for the  UndoMode Attribute
+  Py::Int getUndoMode(void);
+  /// seter for the  UndoMode Attribute
+	void      setUndoMode(Py::Int arg);
+  /// geter for the  UndoRedoMemSize Attribute
+  Py::Int getUndoRedoMemSize(void);
+  /// seter for the  UndoRedoMemSize Attribute
+	void      setUndoRedoMemSize(Py::Int arg);
+  /// geter for the  UndoCount Attribute
+  Py::Int getUndoCount(void);
+  /// seter for the  UndoCount Attribute
+	void      setUndoCount(Py::Int arg);
+  /// geter for the  RedoCount Attribute
+  Py::Int getRedoCount(void);
+  /// seter for the  RedoCount Attribute
+	void      setRedoCount(Py::Int arg);
+  /// geter for the  UndoNames Attribute
+  Py::List getUndoNames(void);
+  /// seter for the  UndoNames Attribute
+	void      setUndoNames(Py::List arg);
+  /// geter for the  RedoNames Attribute
+  Py::List getRedoNames(void);
+  /// seter for the  RedoNames Attribute
+	void      setRedoNames(Py::List arg);
+  /// getter methode for special Attributes (e.g. dynamic ones)
+  PyObject *getCustomAttributes(const char* attr);
+	/// setter for  special Attributes (e.g. dynamic ones)
+  int setCustomAttributes(const char* attr, PyObject *obj);
+  //@}
 
-//	Transaction stuff
-	//PYFUNCDEF_D(DocumentPy,beginTransaction)
-	//PYFUNCDEF_D(DocumentPy,rollbackTransaction)
-	//PYFUNCDEF_D(DocumentPy,endTransaction)
-
-  PYFUNCDEF_D(DocumentPy,recompute)
-  PYFUNCDEF_D(DocumentPy,update)
-
-//	PYFUNCDEF_D(DocumentPy,Dump)
-
-	PYFUNCDEF_D(DocumentPy,activeObject)
-	PYFUNCDEF_D(DocumentPy,addObject)
-	PYFUNCDEF_D(DocumentPy,getObject)
-	PYFUNCDEF_D(DocumentPy,removeObject)
-	PYFUNCDEF_D(DocumentPy,listObjects)
-	PYFUNCDEF_D(DocumentPy,getName)
-
-   // deprecated methods
-	PYFUNCDEF_D(DocumentPy,getActiveObject)
-
+	/// geter for the object handled by this class
+  Document *getDocumentObject(void) const;
+  
 };
+#define PARENTSDocumentPy &DocumentPy::Type,PARENTSPropertyContainerPy
+}       //namespace App
+#endif	// _DocumentPy_h_
 
-} // namespace App
 
-#endif

@@ -119,16 +119,13 @@ public:
 
 
 
-	virtual Base::PyObjectBase *GetPyObject(void);
+	virtual PyObject *getPyObject(void);
 
   friend class FeaturePy;
   friend class Document;
 
 
 protected:
-
-
-  FeaturePy* pcFeaturePy;
 
   std::string _cErrorMessage;
   bool _execute;

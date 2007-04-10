@@ -217,7 +217,7 @@ void PropertyCurvatureList::Save (Base::Writer &writer) const
   if(writer.isForceXML())
   {
   }else{
-    writer << writer.ind() << "<CurvatureList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<CurvatureList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
   }
 }
 
@@ -238,8 +238,8 @@ void PropertyCurvatureList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
-    writer.write((const char*)&uCt, sizeof(unsigned long));
-    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
   } catch( const Base::Exception& e) {
     throw e;
   }
@@ -367,11 +367,11 @@ void PropertyMeshKernel::Save (Base::Writer &writer) const
 {
   if( writer.isForceXML() )
   {
-    writer << writer.ind() << "<Mesh>" << std::endl;
+    writer.Stream() << writer.ind() << "<Mesh>" << std::endl;
     MeshCore::MeshOutput saver(*_pcMesh);
     saver.SaveXML(writer);
   }else{
-    writer << writer.ind() << "<Mesh file=\"" << writer.addFile("MeshKernel.bms", this) << "\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<Mesh file=\"" << writer.addFile("MeshKernel.bms", this) << "\"/>" << std::endl;
   }
 }
 
@@ -394,7 +394,7 @@ void PropertyMeshKernel::Restore(Base::XMLReader &reader)
 void PropertyMeshKernel::SaveDocFile (Base::Writer &writer) const
 {
   try {
-    _pcMesh->Write( writer );
+    _pcMesh->Write( writer.Stream() );
   } catch( const Base::Exception& e) {
     throw e;
   }

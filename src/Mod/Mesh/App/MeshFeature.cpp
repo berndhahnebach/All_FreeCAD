@@ -50,18 +50,12 @@ using namespace Mesh;
 PROPERTY_SOURCE(Mesh::Feature, App::AbstractFeature)
 
 Feature::Feature()
-:pcMeshFeaturePy(0)
 {
   ADD_PROPERTY(Mesh, (MeshCore::MeshKernel()));
 }
 
 Feature::~Feature()
 {
-  if ( pcMeshFeaturePy )
-  {
-    pcMeshFeaturePy->setInvalid();
-    pcMeshFeaturePy->DecRef();
-  }
 }
 
 int Feature::execute(void)
@@ -69,15 +63,13 @@ int Feature::execute(void)
   return 0;
 }
 
-Base::PyObjectBase *Feature::GetPyObject(void)
+PyObject *Feature::getPyObject(void)
 {
-  if(!pcMeshFeaturePy){
-    pcMeshFeaturePy = new MeshFeaturePy(this);
+ if(PythonObject.is(Py::_None())){
+    // ref counter is set to 1
+    PythonObject = new MeshFeaturePy(this);
   }
- 
-  // Increment every time when this object is returned
-  pcMeshFeaturePy->IncRef();
-  return pcMeshFeaturePy; 
+  return Py::new_reference_to(PythonObject); 
 }
 
 void Feature::onChanged(const App::Property* prop)

@@ -2,17 +2,18 @@
 # -*- coding: utf-8 -*-
 # (c) 2006 Juergen Riegel 
 
-import template
+import template,os
 import generateBase.generateModel_Module
 import generateBase.generateTools
 
 class TemplateClassPyExport (template.ModelTemplate):
 	def Generate(self):
-		self.ParentNamespace = "Base"
-		self.Namespace = "Base"
+		#self.ParentNamespace = "Base"
+		#self.Namespace = "Base"
 		print "TemplateClassPyExport",self.path + self.export.Name
-		#file = open(self.path + self.export.Name + "Imp.cpp",'w')
-		#generateBase.generateTools.replace(self.TemplateImplement,locals(),file)
+		if(not os.path.exists(self.path + self.export.Name + "Imp.cpp")):
+			file = open(self.path + self.export.Name + "Imp.cpp",'w')
+			generateBase.generateTools.replace(self.TemplateImplement,locals(),file)
 		file = open(self.path + self.export.Name + ".cpp",'w')
 		generateBase.generateTools.replace(self.TemplateModule,locals(),file)
 		file = open(self.path + self.export.Name + ".h",'w')
@@ -24,13 +25,12 @@ class TemplateClassPyExport (template.ModelTemplate):
 #ifndef _@self.export.Name@_h_
 #define _@self.export.Name@_h_
 
-#include "BaseClassPy.h"
+#include "@self.export.FatherInclude@"
 
-namespace @self.Namespace@
+namespace @self.export.Namespace@
 {
 
 class @self.export.Twin@;
-
 
 //===========================================================================
 // @self.export.Name@ - Python wrapper
@@ -38,7 +38,7 @@ class @self.export.Twin@;
 
 /** The python export class for @self.export.Twin@
  */
-class BaseExport @self.export.Name@ :public @self.export.Father@
+class @self.export.Namespace@Export @self.export.Name@ :public @self.export.FatherNamespace@::@self.export.Father@
 {
 	/// always start with Py_Header
 	Py_Header;
@@ -68,9 +68,15 @@ public:
   //@{
 + for i in self.export.Attribute:
   /// geter for the  @i.Name@ Attribute
-  PyObject* get@i.Name@(void);
+  Py::@i.Parameter.Type@ get@i.Name@(void);
   /// seter for the  @i.Name@ Attribute
-	void      set@i.Name@(PyObject *arg);
+	void      set@i.Name@(Py::@i.Parameter.Type@ arg);
+-
++ if(self.export.CustomAttributes != None):
+  /// getter methode for special Attributes (e.g. dynamic ones)
+  PyObject *getCustomAttributes(const char* attr);
+	/// setter for  special Attributes (e.g. dynamic ones)
+  int setCustomAttributes(const char* attr, PyObject *obj);
 -
   //@}
 
@@ -78,24 +84,29 @@ public:
   @self.export.Twin@ *get@self.export.Twin@Object(void) const;
   
 };
-}       //namespace @self.Namespace@
+#define PARENTS@self.export.Name@ &@self.export.Name@::Type,PARENTS@self.export.Father@
+}       //namespace @self.export.Namespace@
 #endif	// _@self.export.Name@_h_
-	
-"""	
+
+"""
 
 	TemplateModule = """
 #include "PreCompiled.h"
 
-#include "PyObjectBase.h"
-#include "Console.h"
-#include "Exception.h"
+#include <Base/PyObjectBase.h>
+#include <Base/Console.h>
+#include <Base/Exception.h>
+#include <Base/PyCXX/Objects.hxx>
+using Base::Console;
+using Base::streq;
+
 using Base::Console;
 
 #include "@self.export.Twin@.h"
 #include "@self.export.Name@.h"
 #define new DEBUG_CLIENTBLOCK
 
-using namespace @self.Namespace@;
+using namespace @self.export.Namespace@;
 
 /// Type structure of @self.export.Name@
 PyTypeObject @self.export.Name@::Type = {
@@ -130,10 +141,10 @@ PyTypeObject @self.export.Name@::Type = {
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  Base::@self.export.Name@::Methods,                /*tp_methods */
+  @self.export.Namespace@::@self.export.Name@::Methods,                /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
-  &Base::PyObjectBase::Type,                        /*tp_base */
+  &@self.export.FatherNamespace@::@self.export.Father@::Type,                        /*tp_base */
   0,                                                /*tp_dict */
   0,                                                /*tp_descr_get */
   0,                                                /*tp_descr_set */
@@ -209,10 +220,7 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 //--------------------------------------------------------------------------
 // Parents structure
 //--------------------------------------------------------------------------
-PyParentObject @self.export.Name@::Parents[] = { &@self.export.Name@::Type,
-                                                  &BaseClassPy  ::Type, 
-                                                  &PyObjectBase ::Type, 
-                                                  NULL};
+PyParentObject @self.export.Name@::Parents[] = { PARENTS@self.export.Name@ };
 
 //--------------------------------------------------------------------------
 //t constructor
@@ -258,8 +266,14 @@ PyObject *@self.export.Name@::_getattr(char *attr)				// __getattr__ function: n
 	try{
 + for i in self.export.Attribute:
 		if (streq(attr, "@i.Name@"))						
-			return get@self.export.Name@Object()->get@i.Name@(); 
+			return Py::new_reference_to(get@i.Name@()); 
 -
++ if(self.export.CustomAttributes != None):
+    // getter methode for special Attributes (e.g. dynamic ones)
+    PyObject *r = getCustomAttributes(attr);
+		if(r) return r;
+-
+
 	}
 #ifndef DONT_CATCH_CXX_EXCEPTIONS 
   catch(Base::Exception &e) // catch the FreeCAD exeptions                   
@@ -298,19 +312,25 @@ PyObject *@self.export.Name@::_getattr(char *attr)				// __getattr__ function: n
                                                            
 #endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
 
-  _getattr_up(PyObjectBase); 						
+  _getattr_up(@self.export.Father@); 						
 
 } 
 
-int PersistancePy::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
+int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ function: note only need to handle new state
 { 
 	try{
 + for i in self.export.Attribute:
 		if (streq(attr, "@i.Name@")){						
-			get@self.export.Name@Object()->set@i.Name@(value); 
-			return 1;
+			set@i.Name@(Py::@i.Parameter.Type@(value)); 
+			return 0;
 		}
 -
++ if(self.export.CustomAttributes != None):
+	  // setter for  special Attributes (e.g. dynamic ones)
+    int r = setCustomAttributes(attr, value);
+		if(r==1) return 1;
+-
+
 	}
 #ifndef DONT_CATCH_CXX_EXCEPTIONS 
   catch(Base::Exception &e) // catch the FreeCAD exeptions                   
@@ -349,15 +369,50 @@ int PersistancePy::_setattr(char *attr, PyObject *value) 	// __setattr__ functio
                                                            
 #endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
 
-	return PyObjectBase::_setattr(attr, value);
+	return @self.export.Father@::_setattr(attr, value);
 } 
 
-Persistance *PersistancePy::getPersistanceObject(void) const
+@self.export.Twin@ *@self.export.Name@::get@self.export.Twin@Object(void) const
 {
-  return dynamic_cast<Persistance *>(_pcBaseClass);
+  return dynamic_cast<@self.export.Twin@ *>(_pcBaseClass);
 }
 
+/* from here on the methodes you have to implement, but NOT in this module. implement in @self.export.Name@Imp.cpp! This prototypes 
+    are just for convinience!
+		
 
++ for i in self.export.Methode:
+PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
+{
+
+}
+-
++ for i in self.export.Attribute:
+
+Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void)
+{
+  return Py::@i.Parameter.Type@();
+}
+
+void  set@i.Name@(Py::@i.Parameter.Type@ arg)
+{
+  arg;
+}
+-
++ if(self.export.CustomAttributes != None):
+
+PyObject *@self.export.Name@::getCustomAttributes(const char* attr)
+{
+  return 0;
+}
+
+int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
+{
+  return 0; 
+}
+-
+
+*/
 	
 """	
 
@@ -367,12 +422,26 @@ Persistance *PersistancePy::getPersistanceObject(void) const
 #include "PreCompiled.h"
 
 #include "@self.export.Name@.h"
-using namespace @self.export.Name@;
+#include "@self.export.Twin@.h"
+using namespace @self.export.Namespace@;
 
-// TODO This methode implement the function of the Feature
-int @self.export.Name@::execute(void)
++ for i in self.export.Methode:
+PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
 {
-   return 0;
+	return 0;
 }
+-
++ for i in self.export.Attribute:
+
+Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void)
+{
+  return Py::@i.Parameter.Type@();
+}
+
+void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ arg)
+{
+  arg;
+}
+-
 
 """

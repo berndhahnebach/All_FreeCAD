@@ -56,12 +56,12 @@ PyDoc_STRVAR(App_newDocument_doc,
 
 // Application Methods						// Methods structure
 PyMethodDef Application::Methods[] = {
-  {"New",            (PyCFunction) Application::sNew,            1},
-  {"open",           (PyCFunction) Application::sOpen,           1},
-  {"Close",          (PyCFunction) Application::sClose,          1},
+//  {"New",            (PyCFunction) Application::sNew,            1},
+//  {"open",           (PyCFunction) Application::sOpen,           1},
+//  {"Close",          (PyCFunction) Application::sClose,          1},
   {"Import"  ,       (PyCFunction) Application::sImport,         1},
-  {"save",           (PyCFunction) Application::sSave,           1},
-  {"saveAs",         (PyCFunction) Application::sSaveAs,         1},
+//  {"save",           (PyCFunction) Application::sSave,           1},
+//  {"saveAs",         (PyCFunction) Application::sSaveAs,         1},
   {"document",       (PyCFunction) Application::sDocument,       1},
   {"ParamGet",       (PyCFunction) Application::sGetParam,       1},
   {"Version",        (PyCFunction) Application::sGetVersion,     1},
@@ -73,8 +73,8 @@ PyMethodDef Application::Methods[] = {
   {"EndingGet",      (PyCFunction) Application::sEndingGet      ,1},
 
   {"openDocument",   (PyCFunction) Application::sOpenDocument,   1},
-  {"saveDocument",   (PyCFunction) Application::sSaveDocument,   1},
-  {"saveDocumentAs", (PyCFunction) Application::sSaveDocumentAs, 1},
+//  {"saveDocument",   (PyCFunction) Application::sSaveDocument,   1},
+//  {"saveDocumentAs", (PyCFunction) Application::sSaveDocumentAs, 1},
   {"newDocument",    (PyCFunction) Application::sNewDocument,    1, App_newDocument_doc},
   {"closeDocument",  (PyCFunction) Application::sCloseDocument,  1},
   {"activeDocument", (PyCFunction) Application::sActiveDocument, 1},
@@ -93,7 +93,7 @@ PYFUNCIMP_S(Application,sOpen)
 
   try {
     // return new document
-    return (GetApplication().openDocument(pstr)->GetPyObject());
+    return (GetApplication().openDocument(pstr)->getPyObject());
   } catch(Base::Exception e) {
     PyErr_SetString(PyExc_IOError, e.what());
     return 0L;
@@ -107,7 +107,7 @@ PYFUNCIMP_S(Application,sOpenDocument)
     return NULL;                             // NULL triggers exception
   try {
     // return new document
-    return (GetApplication().openDocument(pstr)->GetPyObject());
+    return (GetApplication().openDocument(pstr)->getPyObject());
   } catch(Base::Exception e) {
     PyErr_SetString(PyExc_IOError, e.what());
     return 0L;
@@ -130,7 +130,7 @@ PYFUNCIMP_S(Application,sNew)
         return NULL;                             // NULL triggers exception 
 
 	PY_TRY{
-		return GetApplication().newDocument(pstr)->GetPyObject();
+		return GetApplication().newDocument(pstr)->getPyObject();
 	}PY_CATCH;
 }
 
@@ -141,7 +141,7 @@ PYFUNCIMP_S(Application,sNewDocument)
     return NULL;                             // NULL triggers exception
 
   PY_TRY{
-    return GetApplication().newDocument(pstr)->GetPyObject();
+    return GetApplication().newDocument(pstr)->getPyObject();
   }PY_CATCH;
 }
 
@@ -234,7 +234,7 @@ PYFUNCIMP_S(Application,sSaveDocument)
 
   Py_Return;
 }
-
+/*
 PYFUNCIMP_S(Application,sSaveAs)
 {
   char *pDoc, *pFileName;
@@ -254,7 +254,8 @@ PYFUNCIMP_S(Application,sSaveAs)
 
   Py_Return;
 }
-
+*/
+/*
 PYFUNCIMP_S(Application,sSaveDocumentAs)
 {
   char *pDoc, *pFileName;
@@ -274,7 +275,7 @@ PYFUNCIMP_S(Application,sSaveDocumentAs)
 
   Py_Return;
 }
-
+*/
 PYFUNCIMP_S(Application,sActiveDocument)
 {
   if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
@@ -282,7 +283,7 @@ PYFUNCIMP_S(Application,sActiveDocument)
 
   Document* doc = GetApplication().getActiveDocument();
   if (doc) {
-	  return doc->GetPyObject();
+	  return doc->getPyObject();
   }else{
   	PyErr_SetString(PyExc_Exception, "No active document");
 	  return 0L;
@@ -302,7 +303,7 @@ PYFUNCIMP_S(Application,sGetDocument)
     return 0L;
   }
 
-  return doc->GetPyObject();
+  return doc->getPyObject();
 }
 
 PYFUNCIMP_S(Application,sDocument)
@@ -331,7 +332,7 @@ PYFUNCIMP_S(Application,sDocument)
     }
   }
 
-  return doc->GetPyObject();
+  return doc->getPyObject();
 }
 
 PYFUNCIMP_S(Application,sGetParam)
@@ -474,7 +475,7 @@ PYFUNCIMP_S(Application,sListDocuments)
     {
       pKey   = PyString_FromString(It->first.c_str());
       // GetPyObject() increments
-      pValue = It->second->GetPyObject();
+      pValue = static_cast<Base::PyObjectBase*>(It->second->getPyObject());
       PyDict_SetItem(pDict, pKey, pValue); 
       // now we can decrement again as PyDict_SetItem also has incremented
       pValue->DecRef();

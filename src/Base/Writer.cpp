@@ -44,17 +44,11 @@ using namespace zipios ;
 //  Writer: Constructors and Destructor
 // ---------------------------------------------------------------------------
 
-Writer::Writer(const char* FileName) 
-: ZipOutputStream(FileName),indent(0),forceXML(false)
+Writer::Writer(void) 
+: indent(0),forceXML(false)
 {
   indBuf[0] = '\0';
 
-#ifdef _MSC_VER
-  imbue(std::locale::empty());
-#else
-  //FIXME: Check whether this is correct
-  imbue(std::locale::classic());
-#endif
 }
 
 Writer::~Writer()
@@ -81,14 +75,7 @@ bool Writer::isForceXML(void)
   return forceXML;
 }
 
-void Writer::writeFiles(void)
-{
-  for ( std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it )
-  {
-    putNextEntry(it->FileName);
-    it->Object->SaveDocFile( *this );
-  }
-}
+
 
 std::string Writer::addFile(const char* Name,const Base::Persistance *Object)
 {
@@ -167,25 +154,27 @@ void Writer::decInd(void)
   indBuf[indent] = '\0';
 }
 
-// ---------------------------------------------------------------------------
-//  Reader: Constructors and Destructor
-// ---------------------------------------------------------------------------
-/*
-Reader::Reader(const char* FileName) 
-: ZipInputStream(FileName)
+ZipWriter::ZipWriter(const char* FileName) 
+: ZipStream(FileName)
 {
+#ifdef _MSC_VER
+  ZipStream.imbue(std::locale::empty());
+#else
+  //FIXME: Check whether this is correct
+  ZipStream.imbue(std::locale::classic());
+#endif
 }
 
-Reader::~Reader()
+void ZipWriter::writeFiles(void)
 {
+  for ( std::vector<FileEntry>::const_iterator it = FileList.begin(); it != FileList.end(); ++it )
+  {
+    ZipStream.putNextEntry(it->FileName);
+    it->Object->SaveDocFile( *this );
+  }
 }
 
-void Reader::addFile(const char* FileName, const char* FeatName)
+ZipWriter::~ZipWriter()
 {
-  FileEntry temp;
-  temp.FileName = FileName;
-  temp.FeatName = FeatName;
-  
-  FileList.push_back(temp);
+  ZipStream.close();
 }
-*/

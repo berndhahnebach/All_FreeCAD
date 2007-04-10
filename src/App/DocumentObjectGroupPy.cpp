@@ -181,7 +181,7 @@ PYFUNCIMP_D(DocumentObjectGroupPy,addObject)
 
   DocumentObject *pcObj = getDocumentObjectGroup()->addObject(sType, sName);
   if ( pcObj ) {
-    return pcObj->GetPyObject();
+    return pcObj->getPyObject();
   } else {
     char szBuf[200];
     snprintf(szBuf, 200, "Cannot create object of type '%s'", sType);
@@ -225,7 +225,7 @@ PYFUNCIMP_D(DocumentObjectGroupPy,getObject)
 
   DocumentObject* obj = getDocumentObjectGroup()->getObject(pcName);
   if ( obj ) {
-    return obj->GetPyObject();
+    return obj->getPyObject();
   } else {
     Py_Return;
   }

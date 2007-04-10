@@ -41,7 +41,7 @@ PROPERTY_SOURCE(App::DocumentObject, App::PropertyContainer)
 //===========================================================================
 
 DocumentObject::DocumentObject(void)
-:pcObjectPy(0),_pDoc(0)
+:_pDoc(0)
 {
   ADD_PROPERTY(name,("Unnamed"));
   touchTime.setToActual();
@@ -51,11 +51,11 @@ DocumentObject::DocumentObject(void)
 
 DocumentObject::~DocumentObject(void)
 {
-  if(pcObjectPy)
-  {
-    pcObjectPy->setInvalid();
-    pcObjectPy->DecRef();
-  }
+  //if(pcObjectPy)
+  //{
+  //  pcObjectPy->setInvalid();
+  //  pcObjectPy->DecRef();
+  //}
 }
 
 App::Document &DocumentObject::getDocument(void) const
@@ -81,14 +81,13 @@ void DocumentObject::onChanged(const Property* prop)
     _pDoc->onChangedProperty(this,prop);
 }
 
-Base::PyObjectBase *DocumentObject::GetPyObject(void)
+PyObject *DocumentObject::getPyObject(void)
 {
-  if(!pcObjectPy){
+  if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    pcObjectPy = new DocumentObjectPy(this);
+    PythonObject = new DocumentObjectPy(this);
   }
-  pcObjectPy->IncRef();
-	return pcObjectPy; 
+  return Py::new_reference_to(PythonObject); 
 }
 
 void DocumentObject::Touch(void)

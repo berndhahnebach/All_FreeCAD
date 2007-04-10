@@ -129,10 +129,8 @@ public:
 	//@}
 
 
-  virtual Base::PyObjectBase* GetPyObject(void);
+  virtual PyObject* getPyObject(void);
 
-private:
-  PartFeaturePy* _featurePy;
 };
 
 

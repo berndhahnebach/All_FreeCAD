@@ -272,7 +272,7 @@ void PropertyCurvatureList::Save (Base::Writer &writer) const
   if(writer.isForceXML())
   {
   }else{
-    writer << writer.ind() << "<CurvatureList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<CurvatureList file=\"" << writer.addFile(getName(), this) << "\"/>" << std::endl;
   }
 }
 
@@ -293,8 +293,8 @@ void PropertyCurvatureList::SaveDocFile (Base::Writer &writer) const
 {
   try {
     unsigned long uCt = getSize();
-    writer.write((const char*)&uCt, sizeof(unsigned long));
-    writer.write((const char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
+    writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
+    writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
   } catch( const Base::Exception& e) {
     throw e;
   }

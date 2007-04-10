@@ -37,7 +37,6 @@ PROPERTY_SOURCE(App::DocumentObjectGroup, App::AbstractFeature)
 
 
 DocumentObjectGroup::DocumentObjectGroup() 
-: pcGroupPy(0)
 {
   ADD_PROPERTY(Group,(0));
 
@@ -165,13 +164,11 @@ DocumentObjectGroup* DocumentObjectGroup::getGroupOfObject(DocumentObject* obj)
 }
 
 
-Base::PyObjectBase *DocumentObjectGroup::GetPyObject()
+PyObject *DocumentObjectGroup::getPyObject()
 {
-  if(!pcGroupPy){
+ if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    pcGroupPy = new DocumentObjectGroupPy(this);
+    PythonObject = new DocumentObjectGroupPy(this);
   }
-  
-  pcGroupPy->IncRef();
-  return pcGroupPy;
+  return Py::new_reference_to(PythonObject); 
 }

@@ -14,7 +14,7 @@ def ensureDir(path,mode=0777):
 		#if errno != 17 or not os.path.isdir(path):
 		#	raise
 			
-			
+
 "Yet Another Python Templating Utility, Version 1.2"
 
 import sys

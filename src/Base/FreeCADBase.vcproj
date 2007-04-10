@@ -47,6 +47,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="_USRDLL;FCBase;FC_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -147,6 +148,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories=".."
 				PreprocessorDefinitions="_USRDLL;FCBase"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -797,6 +799,62 @@
 				>
 			</File>
 		</Filter>
+		<Filter
+			Name="PyCXX"
+			>
+			<File
+				RelativePath=".\PyCXX\Config.hxx"
+				>
+			</File>
+			<File
+				RelativePath=".\PyCXX\cxx_extensions.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\PyCXX\cxxextensions.c"
+				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						UsePrecompiledHeader="0"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\PyCXX\cxxsupport.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\PyCXX\Exception.hxx"
+				>
+			</File>
+			<File
+				RelativePath=".\PyCXX\Extensions.hxx"
+				>
+			</File>
+			<File
+				RelativePath=".\PyCXX\IndirectPythonInterface.cxx"
+				>
+			</File>
+			<File
+				RelativePath=".\PyCXX\IndirectPythonInterface.hxx"
+				>
+			</File>
+			<File
+				RelativePath=".\PyCXX\Objects.hxx"
+				>
+			</File>
+		</Filter>
 		<File
 			RelativePath="Base.cpp"
 			>
@@ -1205,6 +1263,32 @@
 		</File>
 		<File
 			RelativePath=".\PersistancePy.h"
+			>
+		</File>
+		<File
+			RelativePath=".\PersistancePy.xml"
+			>
+			<FileConfiguration
+				Name="Debug|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ../Tools/generate.py PersistancePy.xml&#x0D;&#x0A;"
+					Outputs="PersistancePy.cpp;PersistancePy.h"
+				/>
+			</FileConfiguration>
+			<FileConfiguration
+				Name="Release|Win32"
+				>
+				<Tool
+					Name="VCCustomBuildTool"
+					CommandLine="python ../Tools/generate.py PersistancePy.xml&#x0D;&#x0A;"
+					Outputs="PersistancePy.cpp;PersistancePy.h"
+				/>
+			</FileConfiguration>
+		</File>
+		<File
+			RelativePath=".\PersistancePyImp.cpp"
 			>
 		</File>
 		<File

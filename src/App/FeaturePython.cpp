@@ -47,7 +47,7 @@ int FeaturePython::execute(void)
 {
   // Run the callback function of the Python object. There is no need to handle any exceptions here as the calling
   // instance does this for us.
-  Base::Interpreter().runMethodVoid(pcFeaturePy, "execute");
+  Base::Interpreter().runMethodVoid(PythonObject.ptr(), "execute");
 
   return 0;
 }
@@ -165,12 +165,11 @@ string FeaturePython::getUniquePropertyName(const char *Name) const
 	
 }
 
-Base::PyObjectBase *FeaturePython::GetPyObject(void)
+PyObject *FeaturePython::getPyObject(void)
 {
-  if(!pcFeaturePy){
+ if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    pcFeaturePy = new FeaturePythonPy(this);
+    PythonObject = new FeaturePythonPy(this);
   }
-  pcFeaturePy->IncRef();
-	return pcFeaturePy; 
+  return Py::new_reference_to(PythonObject); 
 }

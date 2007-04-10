@@ -274,7 +274,7 @@ void PropertyPartShape::Save (Base::Writer &writer) const
 //    saver.Save(writer);
 //  }else{
     //See SaveDocFile(), RestoreDocFile()
-    writer << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.brp", this) << "\"/>" << std::endl;
+    writer.Stream() << writer.ind() << "<Part file=\"" << writer.addFile("PartShape.brp", this) << "\"/>" << std::endl;
 //  }
 }
 
@@ -319,7 +319,7 @@ void PropertyPartShape::SaveDocFile (Base::Writer &writer) const
     // read in the ASCII file and write back to the stream
     std::strstreambuf sbuf(ulSize);
     file >> &sbuf;
-    writer << &sbuf;
+    writer.Stream() << &sbuf;
   }
 
   file.close();
@@ -355,18 +355,13 @@ void PropertyPartShape::RestoreDocFile(Base::Reader &reader)
 PROPERTY_SOURCE(Part::Feature, App::AbstractFeature)
 
 
-Feature::Feature(void) : _featurePy(0)
+Feature::Feature(void) 
 {
   ADD_PROPERTY(Shape, (TopoDS_Shape()));
 }
 
 Feature::~Feature()
 {
-  if ( _featurePy )
-  {
-    _featurePy->setInvalid();
-    _featurePy->DecRef();
-  }
 }
 
 int Feature::execute(void)
@@ -386,14 +381,13 @@ TopoDS_Shape Feature::getShape(void)
 }
 
 
-Base::PyObjectBase *Feature::GetPyObject(void)
+PyObject *Feature::getPyObject(void)
 {
-  if ( !_featurePy ) {
-    _featurePy = new PartFeaturePy(this);
+ if(PythonObject.is(Py::_None())){
+    // ref counter is set to 1
+    PythonObject = new PartFeaturePy(this);
   }
-
-  _featurePy->IncRef();
-  return _featurePy;
+  return Py::new_reference_to(PythonObject); 
 }
 
 
