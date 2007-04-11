@@ -1483,7 +1483,7 @@ std::string Application::FindHomePath(const char* sCall)
     PyObject* path_importer_cache = PySys_GetObject("path_importer_cache");
     if (path_importer_cache && PyDict_Check(path_importer_cache)) {
       PyObject *key, *value;
-      int pos = 0;
+      Py_ssize_t pos = 0;
       while (PyDict_Next(path_importer_cache, &pos, &key, &value)) {
         const char* KeyName = PyString_AsString(key);
 			  std::string test = std::string(KeyName) + PATHSEP + argv;
