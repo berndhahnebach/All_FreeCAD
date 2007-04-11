@@ -8,8 +8,10 @@
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
-SOURCEOCCDIR = /home/user/Projects/OCC6.1.0/ros/lin/lib
-DESTOCCDIR = $(shell pwd)/debian/freecad/usr/lib/freecad/lib
+WM3ROOTDIR=$(shell echo $(WM3ROOT))
+CASROOTDIR=$(shell echo $(CASROOT))
+SOURCEOCCDIR=$(CASROOTDIR)/lin/lib
+DESTOCCDIR=$(shell pwd)/debian/freecad/usr/lib/freecad/lib
 
 
 # These are used for cross-compiling and for saving the configure script
@@ -29,7 +31,7 @@ endif
 config.status: configure
 	dh_testdir
 	# Add here commands to configure the package.
-	./configure --disable-debug --with-wildmagic-includes=/home/user/Projects/Wm3/include --with-wildmagic-libs=/home/user/Projects/Wm3/lib --with-OCC-includes=/home/user/Projects/OCC6.1.0/ros/inc --with-OCC-libs=/home/user/Projects/OCC6.1.0/ros/lin/lib --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr/lib/freecad --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --datadir=/usr/share/freecad CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
+	./configure --disable-debug --with-wm3-include=$(WM3ROOTDIR)/Include --with-wm3-lib=$(WM3ROOTDIR)/Library --with-occ-include=$(CASROOTDIR)/inc --with-occ-lib=$(CASROOTDIR)/lin/lib --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr/lib/freecad --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --datadir=/usr/share/freecad CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
 
 
 build: build-stamp
