@@ -26,6 +26,7 @@
 
 #include <string>
 #include <vector>
+#include <assert.h>
 
 #include "zipios/zipios-config.h"
 #include "zipios/zipfile.h"
@@ -134,7 +135,7 @@ private:
 };
 
 /** The StringWriter class 
- * This is a important helper class implementation for the store and retrivel system
+ * This is an important helper class implementation for the store and retrieval system
  * of objects in FreeCAD. 
  * \see App::Persistance
  * \author Juergen Riegel

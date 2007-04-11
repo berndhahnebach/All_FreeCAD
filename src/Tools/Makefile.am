@@ -19,16 +19,19 @@ EXTRA_DIST = \
 		generateBase/__init__.py \
 		generateBase/generateModel_Module.py \
 		generateBase/generateDS.py \
+		generateBase/generateTools.py \
 		generateTemplates/__init__.py \
 		generateTemplates/template.py \
-		generateTemplates/templateInitPy.py \
+		generateTemplates/templateClassPyExport.py \
 		generateTemplates/templateCMakeFile.py \
-		generateTemplates/templateInitGuiPy.py \
 		generateTemplates/templateCPPFile.py \
 		generateTemplates/templateHeaderFile.py \
+		generateTemplates/templateInitPy.py \
+		generateTemplates/templateInitGuiPy.py \
 		generateTemplates/templateModule.py \
 		generateTemplates/templateModuleApp.py \
 		generateTemplates/templateModuleGui.py \
+		generateTemplates/templateModuleAppFeature.py \
 		generateTemplates/templateModuleAppMain.py \
 		ImageTools/ImageConv/CmdLine.cpp \
 		ImageTools/ImageConv/CmdLine.h \
@@ -58,6 +61,7 @@ EXTRA_DIST = \
 		post_moc.py \
 		MemoryLeaks.py \
 		PythonToCPP.py \
+		pythondoc.py \
 		tstocpp.py \
 		qembed.py \
 		SubWCRev.py \
