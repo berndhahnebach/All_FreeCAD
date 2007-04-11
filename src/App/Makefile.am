@@ -3,7 +3,11 @@ lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
 		InitScript.h \
-		TestScript.h
+		TestScript.h \
+		DocumentPy.cpp
+
+nodist_libFreeCADApp_la_SOURCES=\
+		DocumentPy.cpp
 
 libFreeCADApp_la_SOURCES=\
 		Application.cpp \
@@ -21,8 +25,7 @@ libFreeCADApp_la_SOURCES=\
 		DocumentObjectGroupPy.h \
 		DocumentObjectPy.cpp \
 		DocumentObjectPy.h \
-		DocumentPy.cpp \
-		DocumentPy.h \
+		DocumentPyImp.cpp \
 		Doxygen.cpp \
 		Feature.cpp \
 		Feature.h \
@@ -66,6 +69,9 @@ libFreeCADApp_la_SOURCES=\
 %Script.h: FreeCAD%.py
 	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(srcdir)/$< $@
 
+%.cpp: %.xml
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py $(srcdir)/$<
+
 # the library search path.
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
@@ -84,6 +90,7 @@ AM_CPPFLAGS=-DFCApp
 CLEANFILES = $(BUILT_SOURCES)
 
 EXTRA_DIST = \
+		DocumentPy.xml \
 		FreeCADDoc.vcproj \
 		FreeCADInit.py \
 		FreeCADTest.py

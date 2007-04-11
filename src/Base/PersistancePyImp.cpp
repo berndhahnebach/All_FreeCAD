@@ -17,7 +17,7 @@ Py::String PersistancePy::getContent(void)
 
 void  PersistancePy::setContent(Py::String arg)
 {
-  arg;
+
 }
 
 Py::Int PersistancePy::getMemSize(void)

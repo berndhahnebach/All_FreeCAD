@@ -1,6 +1,12 @@
 
 lib_LTLIBRARIES=libFreeCADBase.la
 
+BUILT_SOURCES=\
+		PersistancePy.cpp
+
+nodist_libFreeCADBase_la_SOURCES=\
+		PersistancePy.cpp
+
 libFreeCADBase_la_SOURCES=\
 		zipios/backbuffer.h \
 		zipios/basicentry.cpp \
@@ -52,6 +58,15 @@ libFreeCADBase_la_SOURCES=\
 		zipios/zipoutputstreambuf.h \
 		zipios/zipoutputstream.cpp \
 		zipios/zipoutputstream.h \
+		PyCXX/Config.hxx \
+		PyCXX/cxxextensions.c \
+		PyCXX/cxx_extensions.cxx \
+		PyCXX/cxxsupport.cxx \
+		PyCXX/Exception.hxx \
+		PyCXX/Extensions.hxx \
+		PyCXX/IndirectPythonInterface.cxx \
+		PyCXX/IndirectPythonInterface.hxx \
+		PyCXX/Objects.hxx \
 		Base.cpp \
 		Base.h \
 		BaseClassPy.cpp \
@@ -88,8 +103,7 @@ libFreeCADBase_la_SOURCES=\
 		ParameterPy.cpp \
 		Persistance.cpp \
 		Persistance.h \
-		PersistancePy.cpp \
-		PersistancePy.h \
+		PersistancePyImp.cpp \
 		Placement.cpp \
 		Placement.h \
 		PreCompiled.cpp \
@@ -122,6 +136,8 @@ libFreeCADBase_la_SOURCES=\
 		Writer.h \
 		XMLTools.h
 
+%.cpp: %.xml
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py $(srcdir)/$<
 
 libFreeCADBase_la_LIBADD   =  -l@PYTHON_LIB@ -lxerces-c -lz
 
@@ -135,5 +151,6 @@ AM_CPPFLAGS=-DFCBase
 libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 EXTRA_DIST = \
-		FreeCADBase.vcproj
+		FreeCADBase.vcproj \
+		PersistancePy.xml
 
