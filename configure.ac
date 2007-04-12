@@ -285,6 +285,7 @@ case $host_os in
     GL_LIBS="-lopengl32 -lglu32"
     ;;
   darwin*)
+    GL_LIBS="-Wl,-F/System/Library/Frameworks -Wl,-framework,OpenGL"
     ;;
   linux*)
     GL_LIBS="-lGL -lGLU"
