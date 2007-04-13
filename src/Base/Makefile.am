@@ -2,10 +2,13 @@
 lib_LTLIBRARIES=libFreeCADBase.la
 
 BUILT_SOURCES=\
-		PersistancePy.cpp
+		$(nodist_libFreeCADBase_la_SOURCES)
 
 nodist_libFreeCADBase_la_SOURCES=\
 		PersistancePy.cpp
+
+libFreeCADBase_la_BUILT=\
+		PersistancePy.h
 
 libFreeCADBase_la_SOURCES=\
 		zipios/backbuffer.h \
@@ -137,7 +140,7 @@ libFreeCADBase_la_SOURCES=\
 		XMLTools.h
 
 %.cpp: %.xml
-	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --output $(@D) $(srcdir)/$<
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $(srcdir)/$<
 
 libFreeCADBase_la_LIBADD   =  -l@PYTHON_LIB@ -lxerces-c -lz
 
@@ -147,7 +150,7 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCBase
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) $(libFreeCADBase_la_BUILT)
 
 # the library version number
 libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

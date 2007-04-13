@@ -2,12 +2,15 @@
 lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
+		$(nodist_libFreeCADApp_la_SOURCES) \
 		InitScript.h \
-		TestScript.h \
-		DocumentPy.cpp
+		TestScript.h
 
 nodist_libFreeCADApp_la_SOURCES=\
 		DocumentPy.cpp
+
+libFreeCADApp_la_BUILT=\
+		DocumentPy.h
 
 libFreeCADApp_la_SOURCES=\
 		Application.cpp \
@@ -70,7 +73,7 @@ libFreeCADApp_la_SOURCES=\
 	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(srcdir)/$< $@
 
 %.cpp: %.xml
-	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --output $(@D) $(srcdir)/$<
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $(srcdir)/$<
 
 # the library search path.
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
@@ -87,7 +90,7 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCApp
 
-CLEANFILES = $(BUILT_SOURCES)
+CLEANFILES = $(BUILT_SOURCES) $(libFreeCADApp_la_BUILT)
 
 EXTRA_DIST = \
 		DocumentPy.xml \
