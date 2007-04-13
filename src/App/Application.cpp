@@ -1442,7 +1442,7 @@ std::string Application::FindHomePath(const char* call)
   return call; // error
 } 
 
-#elif defined(FC_OS_CYGWIN) || defined(FC_OS_MACOSX)
+#elif defined(FC_OS_CYGWIN)
 void SimplifyPath(std::string& sPath)
 {
 	// remove all unnecessary '/./' from sPath
