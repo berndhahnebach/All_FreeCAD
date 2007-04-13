@@ -64,7 +64,7 @@ qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $(srcdir)/$< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(srcdir)/../App -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src -I$(sim_ac_coin_includedir) -I$(sim_ac_soqt_includedir)
 
 libdir = $(prefix)/Mod/Points
 

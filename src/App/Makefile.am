@@ -70,7 +70,7 @@ libFreeCADApp_la_SOURCES=\
 	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(srcdir)/$< $@
 
 %.cpp: %.xml
-	$(PYTHON) $(top_srcdir)/src/Tools/generate.py $(srcdir)/$<
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --output $(@D) $(srcdir)/$<
 
 # the library search path.
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

@@ -25,7 +25,7 @@ class TemplateClassPyExport (template.ModelTemplate):
 #ifndef _@self.export.Name@_h_
 #define _@self.export.Name@_h_
 
-#include "@self.export.FatherInclude@"
+#include <@self.export.Namespace@/@self.export.FatherInclude@>
 
 namespace @self.export.Namespace@
 {
@@ -416,7 +416,7 @@ int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
 	
 """	
 
-	# here the template for the user part of the implementation. This gets NOT overrite when allready exist
+	# here the template for the user part of the implementation. This gets NOT overridden when already existing
 	TemplateImplement = """
 // 
 #include "PreCompiled.h"
@@ -428,7 +428,7 @@ using namespace @self.export.Namespace@;
 + for i in self.export.Methode:
 PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
 {
-	return 0;
+  return 0;
 }
 -
 + for i in self.export.Attribute:
@@ -440,7 +440,19 @@ Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void)
 
 void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ arg)
 {
-  arg;
+
+}
+-
++ if(self.export.CustomAttributes != None):
+
+PyObject *@self.export.Name@::getCustomAttributes(const char* attr)
+{
+  return 0;
+}
+
+int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
+{
+  return 0; 
 }
 -
 
