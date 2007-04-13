@@ -137,7 +137,7 @@ libFreeCADBase_la_SOURCES=\
 		XMLTools.h
 
 %.cpp: %.xml
-	$(PYTHON) $(top_srcdir)/src/Tools/generate.py $(srcdir)/$<
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --output $(@D) $(srcdir)/$<
 
 libFreeCADBase_la_LIBADD   =  -l@PYTHON_LIB@ -lxerces-c -lz
 
@@ -146,6 +146,8 @@ INCLUDES= $(all_includes) -I$(top_srcdir)/src -I$(top_builddir)/src
 
 # set additional defines (for cygwin only)
 AM_CPPFLAGS=-DFCBase
+
+CLEANFILES = $(BUILT_SOURCES)
 
 # the library version number
 libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
