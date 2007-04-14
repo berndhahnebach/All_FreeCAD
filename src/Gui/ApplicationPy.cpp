@@ -355,7 +355,7 @@ PYFUNCIMP_S(Application,sCreateWorkbench)
     
     // object get incremented
     if (wb) {
-      Base::PyObjectBase* pyObj = wb->GetPyObject();
+      PyObject* pyObj = wb->getPyObject();
       return pyObj;
     } else {
       PyErr_Format(PyExc_KeyError, "Cannot create workbench '%s'", psName);
@@ -379,7 +379,7 @@ PYFUNCIMP_S(Application,sActiveWorkbench)
   }
 
   // object get incremented
-  Base::PyObjectBase* pyObj = actWb->GetPyObject();
+  PyObject* pyObj = actWb->getPyObject();
   return pyObj;
 } 
 
@@ -417,7 +417,7 @@ PYFUNCIMP_S(Application,sGetWorkbench)
   }
 
   // object get incremented
-  return wb->GetPyObject();
+  return wb->getPyObject();
 } 
 
 PYFUNCIMP_S(Application,sHasWorkbench)

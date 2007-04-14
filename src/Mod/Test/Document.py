@@ -109,11 +109,26 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.failUnless(self.Doc.Label_1.Integer == 4711)
     self.failUnless(self.Doc.Label_2.Integer == 4711)
 
+  def testActiveDocument(self):
+    #closing doc
+    FreeCAD.closeDocument("SaveRestoreTests")
+    try:
+        # There might be no active document anymore
+        # This also checks for dangling pointers
+        Doc = FreeCAD.activeDocument()
+        # self.Doc is still a valid object
+        self.failUnless(self.Doc != Doc)
+    except:
+        # Okay, no document open
+        self.failUnless(True)
+    #reopen doc
+    SaveName = self.TempPath + os.sep + "Test1.FCStd"
+    self.Doc = FreeCAD.openDocument(SaveName)
 
 
   def tearDown(self):
     #closing doc
-    #FreeCAD.closeDocument("SaveRestoreTests")
+    FreeCAD.closeDocument("SaveRestoreTests")
     print "TesrDown"
 
 

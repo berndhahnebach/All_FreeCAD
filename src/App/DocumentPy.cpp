@@ -16,22 +16,22 @@ using namespace App;
 /// Type structure of DocumentPy
 PyTypeObject DocumentPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
-	0,						              /*ob_size*/
-	"Document",				/*tp_name*/
-	sizeof(DocumentPy), /*tp_basicsize*/
-	0,						              /*tp_itemsize*/
+	0,                                                /*ob_size*/
+	"Document",                             /*tp_name*/
+	sizeof(DocumentPy),                       /*tp_basicsize*/
+	0,                                                /*tp_itemsize*/
 	/* methods */
-	PyDestructor,	  		        /*tp_dealloc*/
-	0,			 			              /*tp_print*/
-	__getattr, 				          /*tp_getattr*/
-	__setattr, 				          /*tp_setattr*/
-	0,						              /*tp_compare*/
-	__repr,					            /*tp_repr*/
-	0,						              /*tp_as_number*/
-	0,						              /*tp_as_sequence*/
-	0,						              /*tp_as_mapping*/
-	0,						              /*tp_hash*/
-	0,						              /*tp_call */
+	PyDestructor,                                     /*tp_dealloc*/
+	0,                                                /*tp_print*/
+	__getattr,                                        /*tp_getattr*/
+	__setattr,                                        /*tp_setattr*/
+	0,                                                /*tp_compare*/
+	__repr,                                           /*tp_repr*/
+	0,                                                /*tp_as_number*/
+	0,                                                /*tp_as_sequence*/
+	0,                                                /*tp_as_mapping*/
+	0,                                                /*tp_hash*/
+	0,                                                /*tp_call */
 	0,                                                /*tp_str  */
 	0,                                                /*tp_getattro*/
 	0,                                                /*tp_setattro*/
@@ -787,8 +787,8 @@ Document *DocumentPy::getDocumentObject(void) const
 	return dynamic_cast<Document *>(_pcBaseClass);
 }
 
-/* from here on the methodes you have to implement, but NOT in this module. implement in DocumentPyImp.cpp! This prototypes 
-    are just for convinience!
+/* from here on the methods you have to implement, but NOT in this module. Implement in DocumentPyImp.cpp! This prototypes 
+    are just for convenience!
 		
 
 PyObject*  DocumentPy::save(PyObject *args)
@@ -840,7 +840,7 @@ PyObject*  DocumentPy::getObject(PyObject *args)
 
 }
 
-Py::Object DocumentPy::getActiveObject(void)
+Py::Object DocumentPy::getActiveObject(void) const
 {
 	return Py::Object();
 }
@@ -850,7 +850,7 @@ void  setActiveObject(Py::Object arg)
 
 }
 
-Py::List DocumentPy::getObjects(void)
+Py::List DocumentPy::getObjects(void) const
 {
 	return Py::List();
 }
@@ -860,7 +860,7 @@ void  setObjects(Py::List arg)
 
 }
 
-Py::Int DocumentPy::getUndoMode(void)
+Py::Int DocumentPy::getUndoMode(void) const
 {
 	return Py::Int();
 }
@@ -870,7 +870,7 @@ void  setUndoMode(Py::Int arg)
 
 }
 
-Py::Int DocumentPy::getUndoRedoMemSize(void)
+Py::Int DocumentPy::getUndoRedoMemSize(void) const
 {
 	return Py::Int();
 }
@@ -880,7 +880,7 @@ void  setUndoRedoMemSize(Py::Int arg)
 
 }
 
-Py::Int DocumentPy::getUndoCount(void)
+Py::Int DocumentPy::getUndoCount(void) const
 {
 	return Py::Int();
 }
@@ -890,7 +890,7 @@ void  setUndoCount(Py::Int arg)
 
 }
 
-Py::Int DocumentPy::getRedoCount(void)
+Py::Int DocumentPy::getRedoCount(void) const
 {
 	return Py::Int();
 }
@@ -900,7 +900,7 @@ void  setRedoCount(Py::Int arg)
 
 }
 
-Py::List DocumentPy::getUndoNames(void)
+Py::List DocumentPy::getUndoNames(void) const
 {
 	return Py::List();
 }
@@ -910,7 +910,7 @@ void  setUndoNames(Py::List arg)
 
 }
 
-Py::List DocumentPy::getRedoNames(void)
+Py::List DocumentPy::getRedoNames(void) const
 {
 	return Py::List();
 }
@@ -920,7 +920,7 @@ void  setRedoNames(Py::List arg)
 
 }
 
-PyObject *DocumentPy::getCustomAttributes(const char* attr)
+PyObject *DocumentPy::getCustomAttributes(const char* attr) const
 {
 	return 0;
 }

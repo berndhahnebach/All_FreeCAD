@@ -61,15 +61,15 @@ Material::~Material()
   }
 }
 
-Base::PyObjectBase *Material::GetPyObject(void)
-{
-  if (!_materialPy){
-    _materialPy = new MaterialPy(this);
-  }
-
-  _materialPy->IncRef();
-	return _materialPy; 
-}
+//Base::PyObjectBase *Material::GetPyObject(void)
+//{
+//  if (!_materialPy){
+//    _materialPy = new MaterialPy(this);
+//  }
+//
+//  _materialPy->IncRef();
+//	return _materialPy; 
+//}
 
 void Material::set(const char* MatName)
 {

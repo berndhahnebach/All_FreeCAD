@@ -65,15 +65,15 @@ class PyObjectBase;
  *  @see PyHandle
  *  @
  */
-class BaseExport PyHandler
-{
-public:
-	void IncRef(void);
-	void DecRef(void);
-  virtual ~PyHandler();
-	virtual PyObjectBase *GetPyObject(void)=0;
-
-};
+//class BaseExport PyHandler
+//{
+//public:
+//	void IncRef(void);
+//	void DecRef(void);
+//  virtual ~PyHandler();
+//	virtual PyObjectBase *GetPyObject(void)=0;
+//
+//};
 
 
 /** Python Object handle class

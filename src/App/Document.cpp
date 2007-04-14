@@ -411,9 +411,14 @@ Document::~Document()
     delete(it->second);
   }
 
+  // Py::Object handles but does not own the Python object, hence it increments the reference
+  // counter of the Python object when assigning to it. Thus we must decrement the counter to 
+  // avoid a memory leak. And we must invalidate the Python object because it need not to be
+  // destructed right now because the interpreter can own several references to it.
+  Base::PyObjectBase* doc = (Base::PyObjectBase*)DocumentPythonObject.ptr();
   // Call before decrementing the reference counter, otherwise a heap error can occur
-  //_pcDocPy->setInvalid();
-  //_pcDocPy->DecRef(); // decrement by one
+  doc->setInvalid();
+  Py::_XDECREF(doc);  // decrement by one
 }
 
 

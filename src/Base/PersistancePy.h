@@ -39,20 +39,20 @@ public:
 	/** @name callbacks and implementer for the python object methods */
 	//@{
 	/// getter for the Content attribute
-	Py::String getContent(void);
+	Py::String getContent(void) const;
 	/// setter for the Content attribute
 	void setContent(Py::String arg);
 	/// getter for the MemSize attribute
-	Py::Int getMemSize(void);
+	Py::Int getMemSize(void) const;
 	/// setter for the MemSize attribute
 	void setMemSize(Py::Int arg);
 	/// getter methode for special attributes (e.g. dynamic ones)
-	PyObject *getCustomAttributes(const char* attr);
+	PyObject *getCustomAttributes(const char* attr) const;
 	/// setter for special attributes (e.g. dynamic ones)
 	int setCustomAttributes(const char* attr, PyObject *obj);
 	//@}
 
-	/// geter for the object handled by this class
+	/// getter for the object handled by this class
 	Persistance *getPersistanceObject(void) const;
 };
 

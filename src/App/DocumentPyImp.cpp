@@ -1,11 +1,12 @@
 
-// 
+
 #include "PreCompiled.h"
 
 #include "DocumentPy.h"
 #include "Document.h"
 #include "DocumentObject.h"
 #include <Base/PyTools.h>
+
 using namespace App;
 
 PyObject*  DocumentPy::save(PyObject *args)
@@ -114,7 +115,7 @@ PyObject*  DocumentPy::getObject(PyObject *args)
     Py_Return;
 }
 
-Py::Object DocumentPy::getActiveObject(void)
+Py::Object DocumentPy::getActiveObject(void) const
 {
   DocumentObject *pcFtr = getDocumentObject()->getActiveObject();
   if(pcFtr)
@@ -128,7 +129,7 @@ void  DocumentPy::setActiveObject(Py::Object arg)
   arg;
 }
 
-Py::List DocumentPy::getObjects(void)
+Py::List DocumentPy::getObjects(void) const 
 {
   std::map<std::string,DocumentObject*> features = getDocumentObject()->ObjectMap;
   Py::List res;
@@ -144,7 +145,7 @@ void  DocumentPy::setObjects(Py::List arg)
   arg;
 }
 
-Py::Int DocumentPy::getUndoMode(void)
+Py::Int DocumentPy::getUndoMode(void) const
 {
   return Py::Int(getDocumentObject()->getUndoMode());
 }
@@ -154,7 +155,7 @@ void  DocumentPy::setUndoMode(Py::Int arg)
    getDocumentObject()->setUndoMode(arg); 
 }
 
-Py::Int DocumentPy::getUndoRedoMemSize(void)
+Py::Int DocumentPy::getUndoRedoMemSize(void) const
 {
   return Py::Int((long)getDocumentObject()->getUndoMemSize());
 }
@@ -164,7 +165,7 @@ void  DocumentPy::setUndoRedoMemSize(Py::Int arg)
  
 }
 
-Py::Int DocumentPy::getUndoCount(void)
+Py::Int DocumentPy::getUndoCount(void) const
 {
   return Py::Int((long)getDocumentObject()->getAvailableUndos());
 }
@@ -173,7 +174,7 @@ void  DocumentPy::setUndoCount(Py::Int arg)
 {
 }
 
-Py::Int DocumentPy::getRedoCount(void)
+Py::Int DocumentPy::getRedoCount(void) const
 {
   return Py::Int((long)getDocumentObject()->getAvailableRedos());
 }
@@ -182,7 +183,7 @@ void  DocumentPy::setRedoCount(Py::Int arg)
 {
 }
 
-Py::List DocumentPy::getUndoNames(void)
+Py::List DocumentPy::getUndoNames(void) const
 {
   std::vector<std::string> vList = getDocumentObject()->getAvailableUndoNames();
   Py::List res;
@@ -198,7 +199,7 @@ void  DocumentPy::setUndoNames(Py::List arg)
   
 }
 
-Py::List DocumentPy::getRedoNames(void)
+Py::List DocumentPy::getRedoNames(void) const
 {
   std::vector<std::string> vList = getDocumentObject()->getAvailableRedoNames();
   Py::List res;
@@ -215,14 +216,16 @@ void  DocumentPy::setRedoNames(Py::List arg)
   
 }
 
-PyObject *DocumentPy::getCustomAttributes(const char* attr)
+PyObject *DocumentPy::getCustomAttributes(const char* attr) const
 {
   DocumentObject *pObject = getDocumentObject()->getObject(attr);
   if(pObject)
-      return Py::new_reference_to(Py::Object(pObject->getPyObject()));
+    // Note: getPyObject() already increments the Python object thus we must NOT do
+    // it twice. (Werner)
+  //return Py::new_reference_to(Py::Object(pObject->getPyObject()));
+    return pObject->getPyObject();
   else
-    return 0; 						
-
+    return 0;
 }
 
 int DocumentPy::setCustomAttributes(const char* attr, PyObject *obj)
