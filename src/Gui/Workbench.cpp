@@ -357,7 +357,7 @@ bool Workbench::activate()
   return true;
 }
 
-Base::PyObjectBase* Workbench::GetPyObject()
+PyObject* Workbench::getPyObject()
 {
   return new WorkbenchPy(this);
 }
@@ -691,7 +691,7 @@ PythonWorkbench::~PythonWorkbench()
   }
 }
 
-Base::PyObjectBase* PythonWorkbench::GetPyObject()
+PyObject* PythonWorkbench::getPyObject()
 {
   if ( !_workbenchPy )
   {

@@ -99,7 +99,7 @@ public:
   /// Open an existing document from a file
   App::Document* openDocument(const char * FileName=0l);
   /// Retrieve the active document
-  App::Document* getActiveDocument(void);
+  App::Document* getActiveDocument(void) const;
   /// Retrive a named document
   App::Document* getDocument(const char *Name) const;
   /// gets the (internal) name of the document

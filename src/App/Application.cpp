@@ -377,7 +377,7 @@ Document* Application::openDocument(const char * FileName)
 }
 
 
-Document* Application::getActiveDocument(void)
+Document* Application::getActiveDocument(void) const
 {
 	return _pActiveDoc;
 }

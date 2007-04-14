@@ -1,13 +1,14 @@
 
-// 
+
 #include "PreCompiled.h"
 #include "Writer.h"
 #include "PersistancePy.h"
 #include "Persistance.h"
+
 using namespace Base;
 
 
-Py::String PersistancePy::getContent(void)
+Py::String PersistancePy::getContent(void) const
 {
   Base::StringWriter writer;
   getPersistanceObject()->Save(writer);
@@ -20,7 +21,7 @@ void  PersistancePy::setContent(Py::String arg)
 
 }
 
-Py::Int PersistancePy::getMemSize(void)
+Py::Int PersistancePy::getMemSize(void) const
 {
   return Py::Int((long)getPersistanceObject()->getMemSize());
 }
@@ -30,7 +31,7 @@ void  PersistancePy::setMemSize(Py::Int arg)
   
 }
 
-PyObject *PersistancePy::getCustomAttributes(const char* attr)
+PyObject *PersistancePy::getCustomAttributes(const char* attr) const
 {
   return 0;
 }

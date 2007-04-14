@@ -16,22 +16,22 @@ using namespace Base;
 /// Type structure of PersistancePy
 PyTypeObject PersistancePy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
-	0,						              /*ob_size*/
-	"Persistance",				/*tp_name*/
-	sizeof(PersistancePy), /*tp_basicsize*/
-	0,						              /*tp_itemsize*/
+	0,                                                /*ob_size*/
+	"Persistance",                             /*tp_name*/
+	sizeof(PersistancePy),                       /*tp_basicsize*/
+	0,                                                /*tp_itemsize*/
 	/* methods */
-	PyDestructor,	  		        /*tp_dealloc*/
-	0,			 			              /*tp_print*/
-	__getattr, 				          /*tp_getattr*/
-	__setattr, 				          /*tp_setattr*/
-	0,						              /*tp_compare*/
-	__repr,					            /*tp_repr*/
-	0,						              /*tp_as_number*/
-	0,						              /*tp_as_sequence*/
-	0,						              /*tp_as_mapping*/
-	0,						              /*tp_hash*/
-	0,						              /*tp_call */
+	PyDestructor,                                     /*tp_dealloc*/
+	0,                                                /*tp_print*/
+	__getattr,                                        /*tp_getattr*/
+	__setattr,                                        /*tp_setattr*/
+	0,                                                /*tp_compare*/
+	__repr,                                           /*tp_repr*/
+	0,                                                /*tp_as_number*/
+	0,                                                /*tp_as_sequence*/
+	0,                                                /*tp_as_mapping*/
+	0,                                                /*tp_hash*/
+	0,                                                /*tp_call */
 	0,                                                /*tp_str  */
 	0,                                                /*tp_getattro*/
 	0,                                                /*tp_setattro*/
@@ -223,12 +223,12 @@ Persistance *PersistancePy::getPersistanceObject(void) const
 	return dynamic_cast<Persistance *>(_pcBaseClass);
 }
 
-/* from here on the methodes you have to implement, but NOT in this module. implement in PersistancePyImp.cpp! This prototypes 
-    are just for convinience!
+/* from here on the methods you have to implement, but NOT in this module. Implement in PersistancePyImp.cpp! This prototypes 
+    are just for convenience!
 		
 
 
-Py::String PersistancePy::getContent(void)
+Py::String PersistancePy::getContent(void) const
 {
 	return Py::String();
 }
@@ -238,7 +238,7 @@ void  setContent(Py::String arg)
 
 }
 
-Py::Int PersistancePy::getMemSize(void)
+Py::Int PersistancePy::getMemSize(void) const
 {
 	return Py::Int();
 }
@@ -248,7 +248,7 @@ void  setMemSize(Py::Int arg)
 
 }
 
-PyObject *PersistancePy::getCustomAttributes(const char* attr)
+PyObject *PersistancePy::getCustomAttributes(const char* attr) const
 {
 	return 0;
 }

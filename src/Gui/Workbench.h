@@ -32,7 +32,6 @@
 # include "Qt3All.h"
 #endif
 
-#include <Base/PyExport.h>
 #include <Base/Base.h>
 
 namespace Base {
@@ -54,7 +53,7 @@ class WorkbenchManager;
  * loaded into RAM.
  * @author Werner Mayer
  */
-class GuiExport Workbench : public Base::BaseClass, public Base::PyHandler
+class GuiExport Workbench : public Base::BaseClass
 {
     TYPESYSTEM_HEADER();
 
@@ -73,7 +72,7 @@ public:
   /**
    * The default implementation returns an instance of @ref WorkbenchPy.
    */
-  virtual Base::PyObjectBase* GetPyObject();
+  PyObject* getPyObject();
   /**
    * The method imports the user defined toolbars or command bars and creates
    * a ToolBarItem tree structure.
@@ -192,7 +191,7 @@ public:
   /**
    * Creates and returns immediately the corresponding Python workbench object.
    */
-  Base::PyObjectBase* GetPyObject();
+  PyObject* getPyObject();
 
   /** @name Manipulation methods */
   //@{

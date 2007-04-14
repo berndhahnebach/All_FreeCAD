@@ -311,7 +311,7 @@ void Application::OnDocDelete(App::Document* pcDoc)
   // If the active document gets destructed we must set it to 0. If there are further existing documents then the 
   // view that becomes active sets the active document again. So, we needn't worry about this.
   if ( d->_pcActiveDocument == doc->second )
-    d->_pcActiveDocument = 0;
+    setActiveDocument(0);
 
   delete doc->second; // destroy the Gui document
   d->lpcDocuments.erase(doc);

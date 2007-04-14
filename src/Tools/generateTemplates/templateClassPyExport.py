@@ -68,19 +68,19 @@ public:
 	//@{
 + for i in self.export.Attribute:
 	/// getter for the @i.Name@ attribute
-	Py::@i.Parameter.Type@ get@i.Name@(void);
+	Py::@i.Parameter.Type@ get@i.Name@(void) const;
 	/// setter for the @i.Name@ attribute
 	void set@i.Name@(Py::@i.Parameter.Type@ arg);
 -
 + if(self.export.CustomAttributes != None):
 	/// getter methode for special attributes (e.g. dynamic ones)
-	PyObject *getCustomAttributes(const char* attr);
+	PyObject *getCustomAttributes(const char* attr) const;
 	/// setter for special attributes (e.g. dynamic ones)
 	int setCustomAttributes(const char* attr, PyObject *obj);
 -
 	//@}
 
-	/// geter for the object handled by this class
+	/// getter for the object handled by this class
 	@self.export.Twin@ *get@self.export.Twin@Object(void) const;
 };
 
@@ -110,22 +110,22 @@ using namespace @self.export.Namespace@;
 /// Type structure of @self.export.Name@
 PyTypeObject @self.export.Name@::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
-	0,						              /*ob_size*/
-	"@self.export.Twin@",				/*tp_name*/
-	sizeof(@self.export.Name@), /*tp_basicsize*/
-	0,						              /*tp_itemsize*/
+	0,                                                /*ob_size*/
+	"@self.export.Twin@",                             /*tp_name*/
+	sizeof(@self.export.Name@),                       /*tp_basicsize*/
+	0,                                                /*tp_itemsize*/
 	/* methods */
-	PyDestructor,	  		        /*tp_dealloc*/
-	0,			 			              /*tp_print*/
-	__getattr, 				          /*tp_getattr*/
-	__setattr, 				          /*tp_setattr*/
-	0,						              /*tp_compare*/
-	__repr,					            /*tp_repr*/
-	0,						              /*tp_as_number*/
-	0,						              /*tp_as_sequence*/
-	0,						              /*tp_as_mapping*/
-	0,						              /*tp_hash*/
-	0,						              /*tp_call */
+	PyDestructor,                                     /*tp_dealloc*/
+	0,                                                /*tp_print*/
+	__getattr,                                        /*tp_getattr*/
+	__setattr,                                        /*tp_setattr*/
+	0,                                                /*tp_compare*/
+	__repr,                                           /*tp_repr*/
+	0,                                                /*tp_as_number*/
+	0,                                                /*tp_as_sequence*/
+	0,                                                /*tp_as_mapping*/
+	0,                                                /*tp_hash*/
+	0,                                                /*tp_call */
 	0,                                                /*tp_str  */
 	0,                                                /*tp_getattro*/
 	0,                                                /*tp_setattro*/
@@ -367,8 +367,8 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 	return dynamic_cast<@self.export.Twin@ *>(_pcBaseClass);
 }
 
-/* from here on the methodes you have to implement, but NOT in this module. implement in @self.export.Name@Imp.cpp! This prototypes 
-    are just for convinience!
+/* from here on the methods you have to implement, but NOT in this module. Implement in @self.export.Name@Imp.cpp! This prototypes 
+    are just for convenience!
 		
 
 + for i in self.export.Methode:
@@ -379,7 +379,7 @@ PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
 -
 + for i in self.export.Attribute:
 
-Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void)
+Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
 {
 	return Py::@i.Parameter.Type@();
 }
@@ -391,7 +391,7 @@ void  set@i.Name@(Py::@i.Parameter.Type@ arg)
 -
 + if(self.export.CustomAttributes != None):
 
-PyObject *@self.export.Name@::getCustomAttributes(const char* attr)
+PyObject *@self.export.Name@::getCustomAttributes(const char* attr) const
 {
 	return 0;
 }
@@ -408,11 +408,12 @@ int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
 
 	# here the template for the user part of the implementation. This gets NOT overridden when already existing
 	TemplateImplement = """
-// 
+
 #include "PreCompiled.h"
 
 #include "@self.export.Name@.h"
 #include "@self.export.Twin@.h"
+
 using namespace @self.export.Namespace@;
 
 + for i in self.export.Methode:
@@ -423,7 +424,7 @@ PyObject*  @self.export.Name@::@i.Name@(PyObject *args)
 -
 + for i in self.export.Attribute:
 
-Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void)
+Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
 {
 	return Py::@i.Parameter.Type@();
 }
@@ -435,7 +436,7 @@ void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ arg)
 -
 + if(self.export.CustomAttributes != None):
 
-PyObject *@self.export.Name@::getCustomAttributes(const char* attr)
+PyObject *@self.export.Name@::getCustomAttributes(const char* attr) const
 {
 	return 0;
 }

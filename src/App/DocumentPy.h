@@ -87,44 +87,44 @@ public:
 	/** @name callbacks and implementer for the python object methods */
 	//@{
 	/// getter for the ActiveObject attribute
-	Py::Object getActiveObject(void);
+	Py::Object getActiveObject(void) const;
 	/// setter for the ActiveObject attribute
 	void setActiveObject(Py::Object arg);
 	/// getter for the Objects attribute
-	Py::List getObjects(void);
+	Py::List getObjects(void) const;
 	/// setter for the Objects attribute
 	void setObjects(Py::List arg);
 	/// getter for the UndoMode attribute
-	Py::Int getUndoMode(void);
+	Py::Int getUndoMode(void) const;
 	/// setter for the UndoMode attribute
 	void setUndoMode(Py::Int arg);
 	/// getter for the UndoRedoMemSize attribute
-	Py::Int getUndoRedoMemSize(void);
+	Py::Int getUndoRedoMemSize(void) const;
 	/// setter for the UndoRedoMemSize attribute
 	void setUndoRedoMemSize(Py::Int arg);
 	/// getter for the UndoCount attribute
-	Py::Int getUndoCount(void);
+	Py::Int getUndoCount(void) const;
 	/// setter for the UndoCount attribute
 	void setUndoCount(Py::Int arg);
 	/// getter for the RedoCount attribute
-	Py::Int getRedoCount(void);
+	Py::Int getRedoCount(void) const;
 	/// setter for the RedoCount attribute
 	void setRedoCount(Py::Int arg);
 	/// getter for the UndoNames attribute
-	Py::List getUndoNames(void);
+	Py::List getUndoNames(void) const;
 	/// setter for the UndoNames attribute
 	void setUndoNames(Py::List arg);
 	/// getter for the RedoNames attribute
-	Py::List getRedoNames(void);
+	Py::List getRedoNames(void) const;
 	/// setter for the RedoNames attribute
 	void setRedoNames(Py::List arg);
 	/// getter methode for special attributes (e.g. dynamic ones)
-	PyObject *getCustomAttributes(const char* attr);
+	PyObject *getCustomAttributes(const char* attr) const;
 	/// setter for special attributes (e.g. dynamic ones)
 	int setCustomAttributes(const char* attr, PyObject *obj);
 	//@}
 
-	/// geter for the object handled by this class
+	/// getter for the object handled by this class
 	Document *getDocumentObject(void) const;
 };
 

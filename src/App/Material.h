@@ -194,7 +194,7 @@ public:
   MaterialType getType() const
   { return _matType; }
 
-  Base::PyObjectBase* GetPyObject(void);
+  //Base::PyObjectBase* GetPyObject(void);
 
 	/** @name Properties */
 	//@{
