@@ -217,7 +217,7 @@
 	<References>
 		<ProjectReference
 			ReferencedProjectIdentifier="{E1355CE1-FA55-4F55-ADEF-7EC42D88CBD9}"
-			RelativePathToProject="..\Base\FreeCADBase.vcproj"
+			RelativePathToProject=".\src\Base\FreeCADBase.vcproj"
 		/>
 	</References>
 	<Files>
@@ -530,7 +530,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py DocumentPy.xml"
+						CommandLine="python ../Tools/generate.py DocumentPy.xml&#x0D;&#x0A;"
 						Outputs="DocumentPy.h;DocumentPy.cpp"
 					/>
 				</FileConfiguration>
@@ -539,7 +539,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py DocumentPy.xml"
+						CommandLine="python ../Tools/generate.py DocumentPy.xml&#x0D;&#x0A;"
 						Outputs="DocumentPy.h;DocumentPy.cpp"
 					/>
 				</FileConfiguration>
