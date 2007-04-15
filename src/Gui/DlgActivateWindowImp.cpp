@@ -33,7 +33,7 @@
 
 #include "DlgActivateWindowImp.h"
 #include "MainWindow.h"
-#include "View.h"
+#include "MDIView.h"
 
 using namespace Gui::Dialog;
 

@@ -24,7 +24,7 @@
 #ifndef __VIEW3DINVENTOR__
 #define __VIEW3DINVENTOR__
 
-#include "View.h"
+#include "MDIView.h"
 
 #include "Inventor/Qt/viewers/SoQtViewer.h"
 
