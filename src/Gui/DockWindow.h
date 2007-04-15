@@ -26,7 +26,7 @@
 
 
 #include <Base/Parameter.h>
-#include "View.h"
+#include "MDIView.h"
 
 #ifndef __Qt4All__
 # include "Qt4All.h"

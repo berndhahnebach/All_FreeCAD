@@ -18,7 +18,7 @@
 #ifndef ImageView_H
 #define ImageView_H
 
-#include <Gui/View.h>
+#include <Gui/MDIView.h>
 #include "GLImageBox.h"
 
 class QSlider;

@@ -46,7 +46,7 @@ BUILT_SOURCES=\
 		moc_TextEdit.cpp \
 		moc_ToolBox.cpp \
 		moc_Tree.cpp \
-		moc_View.cpp\
+		moc_MDIView.cpp\
 		moc_View3DInventor.cpp \
 		moc_WidgetFactory.cpp \
 		moc_Widgets.cpp \
@@ -195,6 +195,8 @@ libFreeCADGui_la_SOURCES=\
 		Macro.h \
 		MainWindow.cpp \
 		MainWindow.h \
+		MDIView.cpp \
+		MDIView.h \
 		MenuManager.cpp \
 		MenuManager.h \
 		MouseModel.cpp \

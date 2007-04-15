@@ -32,7 +32,7 @@
 # include "Qt3All.h"
 #endif
 
-#include "View.h"
+#include "MDIView.h"
 
 #include <list>
 #include <map>

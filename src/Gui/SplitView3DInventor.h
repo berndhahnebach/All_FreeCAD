@@ -24,7 +24,7 @@
 #ifndef GUI_SPLITVIEW3DINVENTOR_H
 #define GUI_SPLITVIEW3DINVENTOR_H
 
-#include "View.h"
+#include "MDIView.h"
 
 #include <Base/Parameter.h>
 #include <Inventor/Qt/viewers/SoQtViewer.h>

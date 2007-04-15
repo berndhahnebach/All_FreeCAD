@@ -26,7 +26,7 @@
 #include "SoFCColorGradient.h"
 #include "DlgSettingsColorGradientImp.h"
 #include "MainWindow.h"
-#include "View.h"
+#include "MDIView.h"
 
 using namespace Gui;
 
