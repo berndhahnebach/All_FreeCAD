@@ -96,6 +96,8 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     L1 = self.Doc.addObject("App::FeatureTest","Label_1")
     L2 = self.Doc.addObject("App::FeatureTest","Label_2")   
     self.TempPath = os.getenv('TEMP')
+    if self.TempPath == None:
+        self.TempPath = "/tmp";
     print '  Using temp path: ' + self.TempPath + '\n'
     
   def testSaveAndRestore(self):
@@ -110,21 +112,18 @@ class DocumentSaveRestoreCases(unittest.TestCase):
     self.failUnless(self.Doc.Label_2.Integer == 4711)
 
   def testActiveDocument(self):
-    #closing doc
-    FreeCAD.closeDocument("SaveRestoreTests")
+    # open 2nd doc
+    Second = FreeCAD.newDocument("Active")
+    FreeCAD.closeDocument("Active")
     try:
         # There might be no active document anymore
         # This also checks for dangling pointers
-        Doc = FreeCAD.activeDocument()
-        # self.Doc is still a valid object
-        self.failUnless(self.Doc != Doc)
+        Active = FreeCAD.activeDocument()
+        # Second is still a valid object
+        self.failUnless(Second != Active)
     except:
         # Okay, no document open
         self.failUnless(True)
-    #reopen doc
-    SaveName = self.TempPath + os.sep + "Test1.FCStd"
-    self.Doc = FreeCAD.openDocument(SaveName)
-
 
   def tearDown(self):
     #closing doc
