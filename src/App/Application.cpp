@@ -73,8 +73,12 @@
 // which builds src/Build/Version.h. Or create your own from src/Build/Version.h.in!
 #include <Build/Version.h>
 
+#include <boost/tokenizer.hpp>
+#include <boost/token_functions.hpp>
+
 using namespace App;
 using namespace std;
+using namespace boost;
 using namespace boost::program_options;
 
 
@@ -245,6 +249,8 @@ bool Application::closeDocument(const char* name)
   signalDeletedDocument(*pos->second);
 
   // For exception-safety use a smart pointer
+  if(_pActiveDoc == pos->second)
+    setActiveDocument((Document*)0);
   auto_ptr<Document> delDoc (pos->second);
   DocMap.erase( pos );
 
@@ -1005,7 +1011,24 @@ void Application::LoadParameters(void)
 }
 
 
-#if 0
+#if 1
+
+// fix wired error while linking boost???
+namespace boost { namespace program_options {
+  std::string arg;
+} }
+
+pair<string, string> customSyntax(const string& s)
+{
+  if (s.find("-display") == 0) 
+    return make_pair(string("display"), string(""));
+  else if ('@' == s[0])
+    return std::make_pair(string("response-file"), s.substr(1));
+  else
+    return make_pair(string(), string());
+
+}
+
 // TODO still linker errors when using boost::program_options .....
 // A helper function to simplify the main part.
 template<class T>
@@ -1018,23 +1041,25 @@ ostream& operator<<(ostream& os, const vector<T>& v)
 
 void Application::ParseOptions(int ac, char ** av)
 {
-        int opt;
-    
+   
         // Declare a group of options that will be 
         // allowed only on command line
         options_description generic("Generic options");
         generic.add_options()
             ("version,v", "print version string")
-            ("help", "produce help message")    
-            ("include-path,I", value< vector<string> >()->composing(),"include path")
+            ("help,h", "produce help message")   
+            ("console,c", "starts the console")   
+            ("write-log,l", value<string>(), "write a log file")   
+            ("run-test,t",   value<int>()   ,"test level")
+            ("module-path,M", value< vector<string> >()->composing(),"additional module/python paths")
+            ("response-file", value<string>(),"can be specified with '@name', too")
 
              ;
- /*       // Declare a group of options that will be 
+        // Declare a group of options that will be 
         // allowed both on command line and in
         // config file
         boost::program_options::options_description config("Configuration");
         config.add_options()
-            ("optimization",   boost::program_options::value<int>(&opt)->default_value(10)   ,"optimization level")
             ("include-path,I", boost::program_options::value< vector<string> >()->composing(),"include path")
             ;
   
@@ -1044,13 +1069,20 @@ void Application::ParseOptions(int ac, char ** av)
         boost::program_options::options_description hidden("Hidden options");
         hidden.add_options()
             ("input-file",  boost::program_options::value< vector<string> >(), "input file")
+            ("display",  boost::program_options::value< string >(), "set the X-Server")
             ;
-*/
+
+        // Ignored options, will be savely ignored. Mostly uses by underlaying libs.
+        //boost::program_options::options_description x11("X11 options");
+        //x11.add_options()
+        //    ("display",  boost::program_options::value< string >(), "set the X-Server")
+        //    ;
+
         
         options_description cmdline_options;
-        cmdline_options.add(generic);//.add(config).add(hidden);
+        cmdline_options.add(generic).add(config).add(hidden);
 
-  /*      boost::program_options::options_description config_file_options;
+        boost::program_options::options_description config_file_options;
         config_file_options.add(config).add(hidden);
 
         boost::program_options::options_description visible("Allowed options");
@@ -1058,28 +1090,62 @@ void Application::ParseOptions(int ac, char ** av)
         
         boost::program_options::positional_options_description p;
         p.add("input-file", -1);
-    */    
+        
         variables_map vm;
-  /*      store( boost::program_options::command_line_parser(ac, av).
-              options(cmdline_options).positional(p).run(), vm);
+        try{
+          store( boost::program_options::command_line_parser(ac, av).
+                options(cmdline_options).positional(p).extra_parser(customSyntax).run(), vm);
 
-        ifstream ifs("multiple_sources.cfg");
-        store(parse_config_file(ifs, config_file_options), vm);
-        notify(vm);
-    */
+          ifstream ifs("multiple_sources.cfg");
+          store(parse_config_file(ifs, config_file_options), vm);
+          notify(vm);
+        }catch(...){
+          cout << "Wrong or unknown Option, bailing out!" << endl << endl << visible << endl;
+          exit(1);
+        }
+
         if (vm.count("help")) {
-//            cout << visible << "\n";
-            exit( 0);
+          cout << "FreeCAD" << endl<<endl;
+          cout << "For detaild descripton see http://free-cad.sf.net" << endl<<endl;
+          cout << "Usage:" << endl << "FreeCAD [options] File1 File2 ....." << endl;
+          cout << visible << "\n";
+          exit( 0);
         }
 
+        if (vm.count("response-file")) {
+           // Load the file and tokenize it
+           ifstream ifs(vm["response-file"].as<string>().c_str());
+           if (!ifs) {
+               cout << "Could no open the response file\n";
+               exit(1);;
+           }
+           // Read the whole file into a string
+           stringstream ss;
+           ss << ifs.rdbuf();
+           // Split the file content
+           char_separator<char> sep(" \n\r");
+           tokenizer<char_separator<char> > tok(ss.str(), sep);
+           vector<string> args;
+           copy(tok.begin(), tok.end(), back_inserter(args));
+           // Parse the file and store the options
+           store( boost::program_options::command_line_parser(ac, av).
+                options(cmdline_options).positional(p).extra_parser(customSyntax).run(), vm);     
+        }
+
+ 
         if (vm.count("version")) {
-            cout << "Multiple sources example, version 1.0\n";
+            cout << "FreeCAD\n";
             exit( 0);
         }
 
-        if (vm.count("include-path"))
+        if (vm.count("console")) {
+ 						mConfig["RunMode"] = "Cmd";
+
+        }
+
+        if (vm.count("module-path"))
         {
-            cout << "Include paths are: " 
+            cout << "Module paths are: " 
                  << vm["include-path"].as< vector<string> >() << "\n";
         }
 
@@ -1088,8 +1154,32 @@ void Application::ParseOptions(int ac, char ** av)
             cout << "Input files are: " 
                  << vm["input-file"].as< vector<string> >() << "\n";
         }
+        if (vm.count("write-log"))
+        {
+          mConfig["LoggingFile"] = "1";
+          mConfig["LoggingFileName"] = vm["write-log"].as<string>();
+        }
 
-        cout << "Optimization level is " << opt << "\n";    
+        if (vm.count("run-test"))
+        {
+          int level = vm["run-test"].as<int>();
+				  switch (level)  
+				  {   
+					  case '0':  
+						  // test script level 0
+						  mConfig["RunMode"] = "Internal";
+						  mConfig["ScriptFileName"] = "FreeCADTest";
+						  //sScriptName = FreeCADTest;
+						  break;   
+					  default:  
+						  //default testing level 0
+						  mConfig["RunMode"] = "Internal";
+						  mConfig["ScriptFileName"] = "FreeCADTest";
+						  //sScriptName = FreeCADTest;
+						  break;   
+				  };  
+        }
+
 }
 
 #else
