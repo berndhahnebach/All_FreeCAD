@@ -589,50 +589,7 @@ bool Application::activateWorkbench( const char* name )
   else if ( WorkbenchManager::instance()->activate( name, className ) )
     ok = true;
 
-  // update the Std_Workbench command and its action object
-#if 0 //TODO
-  StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
-  if ( pCmd && pCmd->getAction() )
-  {
-    Workbench* curWb = WorkbenchManager::instance()->active();
-    QString curName = (curWb ? curWb->name() : QString(name));
-    pCmd->notify( curName );
-  }
-#endif
-
   return ok;
-}
-
-void Application::refreshWorkbenchList()
-{
-#if 0 //TODO
-  StdCmdWorkbench* pCmd = dynamic_cast<StdCmdWorkbench*>(d->_cCommandManager.getCommandByName("Std_Workbench"));
-
-  if ( pCmd && pCmd->getAction() )
-  {
-    pCmd->refresh();
-#endif
-    Workbench* curWb = WorkbenchManager::instance()->active();
-    QString curWbName = curWb ? curWb->name() : "<none>";
-    PyObject* wb = PyDict_GetItemString(_pcWorkbenchDictionary,curWbName.latin1()); 
-    if ( !wb ) // this workbench has been removed
-    {
-      // then just load the last workbench
-      int ct = PyDict_Size( _pcWorkbenchDictionary );
-      if ( ct > 0 )
-      {
-        PyObject* list = PyDict_Keys( _pcWorkbenchDictionary ); 
-        PyObject* str = PyList_GetItem( list, ct-1 );
-        Py_DECREF(list); // frees the list
-        const char* name = PyString_AsString( str );
-        activateWorkbench( name );
-      }
-    }
-#if 0
-    else
-      pCmd->notify( curWbName );
-  }
-#endif
 }
 
 QPixmap Application::workbenchIcon( const QString& wb ) const

@@ -259,6 +259,15 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
   if (!PyArg_ParseTuple(args, "sO", &psKey,&pcObject))     // convert args: Python->C 
     return NULL;                    // NULL triggers exception 
 
+  try {
+    Base::Interpreter().runMethodObject(pcObject, "Activate");
+    Base::Interpreter().runMethodObject(pcObject, "GetClassName");
+    Base::Interpreter().runMethodObject(pcObject, "GetIcon");
+  } catch (const Base::PyException& e) {
+    PyErr_Format(PyExc_AttributeError, "%s", e.what());
+    return NULL;
+  }
+
   PyObject* wb = PyDict_GetItemString(Instance->_pcWorkbenchDictionary,psKey); 
   if ( wb )
   {
@@ -267,8 +276,6 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
   }
 
   PyDict_SetItemString(Instance->_pcWorkbenchDictionary,psKey,pcObject);
-
-  Instance->refreshWorkbenchList();
 
   Py_INCREF(Py_None);
   return Py_None;
@@ -290,7 +297,21 @@ PYFUNCIMP_S(Application,sRemoveWorkbenchHandler)
 
   PyDict_DelItemString(Instance->_pcWorkbenchDictionary,psKey);
 
-  Instance->refreshWorkbenchList();
+  // If the active workbench gets removed we must load another one
+  Workbench* actWb = WorkbenchManager::instance()->active();
+  if (actWb && actWb->name() == psKey)
+  {
+    // then just load the last workbench
+    int ct = PyDict_Size( Instance->_pcWorkbenchDictionary );
+    if ( ct > 0 )
+    {
+      PyObject* list = PyDict_Keys( Instance->_pcWorkbenchDictionary ); 
+      PyObject* str = PyList_GetItem( list, ct-1 );
+      Py_DECREF(list); // frees the list
+      const char* name = PyString_AsString( str );
+      Instance->activateWorkbench( name );
+    }
+  }
 
   Py_INCREF(Py_None);
   return Py_None;

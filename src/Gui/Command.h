@@ -447,45 +447,6 @@ private:
   std::map<std::string,Command*> _sCommands;
 };
 
-#if 0
-/**
- *  The workbench command
- *  @author Werner Mayer
- */
-class StdCmdWorkbench : public Command
-{
-public:
-  StdCmdWorkbench();
-
-  /** Refreshes the list of available workbenches. */
-  void refresh ();
-
-  /** Activates the workbench \a item. */
-  void activate( const QString& item );
-
-  /** Notifies this command when workbench has been changed from 
-   * outside, e.g. via Python command line. 
-   */
-  void notify( const QString& item );
-  
-  /** Adds the workbench command to a widget. */
-  bool addTo(QWidget *);
-
-protected:
-  /** The item at position \a iMsg is activated. */
-  void activated(int iMsg);
-
-  /** Creates the accompanying Q3Action object to the command. */
-  Q3Action * createAction(void);
-
-private:
-  /** Appends a new workbench \a item. */
-  void addWorkbench ( const QString& item );
-
-  Q3ActionGroup *pcAction;
-};
-#endif
-
 /**
  *  This command which does the handling of recent files.
  *  @author Werner Mayer
