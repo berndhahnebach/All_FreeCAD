@@ -314,12 +314,12 @@ void WorkbenchComboBox::actionEvent ( QActionEvent* e )
     }
   case QEvent::ActionChanged:
     {
-      //TODO
+      //Nothing needs to be done
       break;
     }
   case QEvent::ActionRemoved:
     {
-      //TODO
+      //Nothing needs to be done
       break;
     }
   default:
