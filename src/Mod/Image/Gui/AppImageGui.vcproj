@@ -531,7 +531,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Rcc&apos;ing $(InputName).qrc ..."
-						CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
+						CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)qrc_$(InputName).cpp"
 					/>
 				</FileConfiguration>
@@ -541,7 +541,7 @@
 					<Tool
 						Name="VCCustomBuildTool"
 						Description="Rcc&apos;ing $(InputName).qrc ..."
-						CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;"
+						CommandLine="rcc.exe -name $(InputName) &quot;$(InputPath)&quot; -o &quot;$(InputDir)qrc_$(InputName).cpp&quot;&#x0D;&#x0A;"
 						Outputs="$(InputDir)qrc_$(InputName).cpp"
 					/>
 				</FileConfiguration>

@@ -52,6 +52,13 @@
 // use a different name to CreateCommand()
 void CreateMeshCommands(void);
 
+void loadMeshResource()
+{
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(Mesh);
+  Gui::Translator::instance()->reinstallLanguage();
+}
+
 /* registration table  */
 static struct PyMethodDef MeshGui_methods[] = {
     {NULL, NULL}                   /* end of table marker */
@@ -110,8 +117,7 @@ void GuiMeshExport initMeshGui() {
   MeshGui::Workbench                         ::init();
 
   // add resources and reloads the translators
-  Q_INIT_RESOURCE(Mesh);
-  Gui::Translator::instance()->reinstallLanguage();
+  loadMeshResource();
 
   return;
 }

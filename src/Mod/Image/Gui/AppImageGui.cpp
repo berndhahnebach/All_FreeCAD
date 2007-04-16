@@ -24,6 +24,13 @@
 // use a different name to CreateCommand()
 void CreateImageCommands(void);
 
+void loadImageResource()
+{
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(Image);
+  Gui::Translator::instance()->reinstallLanguage();
+}
+
 /* registration table  */
 extern struct PyMethodDef ImageGui_Import_methods[];
 
@@ -45,8 +52,7 @@ void ImageGuiExport initImageGui() {
   ImageGui::Workbench::init();
 
   // add resources and reloads the translators
-  Q_INIT_RESOURCE(Image);
-  Gui::Translator::instance()->reinstallLanguage();
+  loadImageResource();
 
   return;
 }

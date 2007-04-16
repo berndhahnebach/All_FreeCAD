@@ -66,6 +66,12 @@ static struct PyMethodDef TestGui_methods[] = {
   {NULL, NULL}                   /* end of table marker */
 };
 
+void loadTestResource()
+{
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(Test);
+  Gui::Translator::instance()->reinstallLanguage();
+}
 
 /* Python entry */
 extern "C" {
@@ -77,8 +83,7 @@ void AppTestGuiExport initQtUnitGui() {
   PyModule_AddObject(pyModule, "UnitTest", pyDlgType);
 
   // add resources and reloads the translators
-  Q_INIT_RESOURCE(Test);
-  Gui::Translator::instance()->reinstallLanguage();
+  loadTestResource();
   return;
 }
 

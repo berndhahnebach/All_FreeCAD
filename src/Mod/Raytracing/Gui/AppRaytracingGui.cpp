@@ -39,6 +39,13 @@
 // use a different name to CreateCommand()
 void CreateRaytracingCommands(void);
 
+void loadRaytracingResource()
+{
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(Raytracing);
+  Gui::Translator::instance()->reinstallLanguage();
+}
+
 using namespace RaytracingGui;
 
 
@@ -68,8 +75,7 @@ void AppRaytracingGuiExport initRaytracingGui() {
   new Gui::PrefPageProducer<DlgSettingsRayImp> ( "Raytracing" );
 
   // add resources and reloads the translators
-  Q_INIT_RESOURCE(Raytracing);
-  Gui::Translator::instance()->reinstallLanguage();
+  loadRaytracingResource();
 
   return;
 }

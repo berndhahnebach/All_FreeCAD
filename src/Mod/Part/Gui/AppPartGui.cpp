@@ -37,6 +37,13 @@
 // use a different name to CreateCommand()
 void CreatePartCommands(void);
 
+void loadPartResource()
+{
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(Part);
+  Gui::Translator::instance()->reinstallLanguage();
+}
+
 /* registration table  */
 static struct PyMethodDef PartGui_methods[] = {
     {NULL, NULL}                   /* end of table marker */
@@ -70,8 +77,7 @@ void AppPartGuiExport initPartGui() {
   new Gui::PrefPageProducer<PartGui::DlgSettings3DViewPartImp> ( "Part design" );
 
   // add resources and reloads the translators
-  Q_INIT_RESOURCE(Part);
-  Gui::Translator::instance()->reinstallLanguage();
+  loadPartResource();
 
   // register bitmaps
   Gui::BitmapFactoryInst& rclBmpFactory = Gui::BitmapFactory();

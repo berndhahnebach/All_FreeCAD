@@ -37,6 +37,13 @@
 // use a different name to CreateCommand()
 void CreatePointsCommands(void);
 
+void loadPointsResource()
+{
+  // add resources and reloads the translators
+  Q_INIT_RESOURCE(Points);
+  Gui::Translator::instance()->reinstallLanguage();
+}
+
 
 /* registration table  */
 static struct PyMethodDef PointsGui_methods[] = {
@@ -64,8 +71,7 @@ void PointsGuiExport initPointsGui() {
   PointsGui::Workbench         ::init();
 
   // add resources and reloads the translators
-  Q_INIT_RESOURCE(Points);
-  Gui::Translator::instance()->reinstallLanguage();
+  loadPointsResource();
 
   return;
 }
