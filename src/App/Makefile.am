@@ -82,6 +82,7 @@ libFreeCADApp_la_LIBADD   = \
 		-lFreeCADBase \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lboost_program_options \
 		-lboost_signals
 
 # set the include path found by configure
