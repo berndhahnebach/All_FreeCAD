@@ -49,7 +49,7 @@ using namespace Gui;
 
 // here the implemataion! description should take place in the header file!
 MacroManager::MacroManager()
-:_bIsOpen(false), _bRecordGui(true), _bGuiAsComment(true),_pyc(0)
+:_bIsOpen(false), _bRecordGui(true), _bGuiAsComment(true),_bScriptToPyConsole(false),_pyc(0)
 {
   // Attach to the Parametergroup regarding macros
   Params = App::GetApplication().GetParameterGroupByPath("User parameter:BaseApp/Preferences/Macro");

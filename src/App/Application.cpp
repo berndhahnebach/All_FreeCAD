@@ -1015,7 +1015,7 @@ void Application::LoadParameters(void)
 
 // fix wired error while linking boost???
 namespace boost { namespace program_options {
-  std::string arg;
+  std::string arg="arg";
 } }
 
 pair<string, string> customSyntax(const string& s)
@@ -1047,8 +1047,8 @@ void Application::ParseOptions(int ac, char ** av)
         options_description generic("Generic options");
         generic.add_options()
             ("version,v", "print version string")
-            ("help,h", "produce help message")   
-            ("console,c", "starts the console")   
+            ("help,h", "print help message")   
+            ("console,c", "start in console mode")   
             ("write-log,l", value<string>(), "write a log file")   
             ("run-test,t",   value<int>()   ,"test level")
             ("module-path,M", value< vector<string> >()->composing(),"additional module/python paths")
@@ -1099,8 +1099,11 @@ void Application::ParseOptions(int ac, char ** av)
           ifstream ifs("multiple_sources.cfg");
           store(parse_config_file(ifs, config_file_options), vm);
           notify(vm);
+        }catch(const std::exception& e){
+          cout << e.what() << endl << endl << visible << endl;
+          exit(1);
         }catch(...){
-          cout << "Wrong or unknown Option, bailing out!" << endl << endl << visible << endl;
+          cout << "Wrong or unknown option, bailing out!" << endl << endl << visible << endl;
           exit(1);
         }
 

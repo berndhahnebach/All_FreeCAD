@@ -177,6 +177,12 @@ void DlgSettingsEditorImp::loadSettings()
   QStringList familyNames = fdb.families( QFontDatabase::Any );
   FontDB->insertStringList( familyNames );
 
+#ifdef FC_OS_LINUX
+  FontSize->setCurrentIndex(10);
+#else
+  FontSize->setCurrentIndex(5);
+#endif
+
   FontSize->setCurrentText( hGrp->GetASCII( "FontSize", FontSize->currentText().latin1() ).c_str() );
   FontDB  ->setCurrentText( hGrp->GetASCII( "Font", "Courier" ).c_str() );
 
