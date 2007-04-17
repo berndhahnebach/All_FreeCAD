@@ -39,7 +39,7 @@
 #include <App/Application.h>
 
 #include "DockWindowManager.h"
-#include "ReportView.h"
+#include "MainWindow.h"
 #include "PythonConsole.h"
 
 using namespace Gui;
@@ -170,16 +170,14 @@ void MacroManager::addLine(LineType Type,const char* sLine)
     _sMacroInProgress += "\n";
   }
 
-  if(_bScriptToPyConsole)
-    if(_pyc)
+  if (_bScriptToPyConsole) {
+    // search for the Python console
+    if (!_pyc)
+      _pyc = Gui::getMainWindow()->findChild<Gui::PythonConsole*>();
+    // Python console found?
+    if (_pyc)
       _pyc->printStatement(sLine);
-    else {      
-      _pyc = static_cast<DockWnd::ReportView*> (DockWindowManager::instance()->getDockWindow("Report View"))->getPythonConsole();
-      // PythonConsole have to be there wenn Macro manager starts!
-      assert(_pyc);
-      _pyc->printStatement(sLine);
-    }
-
+  }
 }
 
 void MacroManager::setModule(const char* sModule)
