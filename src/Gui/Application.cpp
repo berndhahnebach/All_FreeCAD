@@ -894,26 +894,29 @@ void Application::runApplication(void)
   mw.showTipOfTheDay();
   Instance->d->_bStartingUp = false;
 
-  Base::Console().Log("Init: Processing command line files\n");
-  unsigned short count = 0;
-  count = atoi(App::Application::Config()["OpenFileCount"].c_str());
+  //Base::Console().Log("Init: Processing command line files\n");
+  //unsigned short count = 0;
+  //count = atoi(App::Application::Config()["OpenFileCount"].c_str());
 
-  std::string File;
-  for (unsigned short i=0; i<count; i++)
-  {
-    // getting file name
-    std::stringstream temp;
-    temp << "OpenFile" << i;
+  //std::string File;
+  //for (unsigned short i=0; i<count; i++)
+  //{
+  //  // getting file name
+  //  std::stringstream temp;
+  //  temp << "OpenFile" << i;
 
-    File = App::Application::Config()[temp.str()];
+  //  File = App::Application::Config()[temp.str()];
 
-    // try to open
-    try {
-      app.open(File.c_str());
-    } catch(...) {
-      Base::Console().Error("Can't open file %s \n",File.c_str());
-    }
-  }
+  //  // try to open
+  //  try {
+  //    app.open(File.c_str());
+  //  } catch(...) {
+  //    Base::Console().Error("Can't open file %s \n",File.c_str());
+  //  }
+  //}
+
+  // processing all command line files
+  App::Application::processCmdLineFiles();
 
   // Create new document?
   ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("Document");

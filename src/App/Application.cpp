@@ -862,89 +862,154 @@ void Application::initApplication(void)
   Interpreter().runString(Base::ScriptFactory().ProduceScript("FreeCADInit"));
 }
 
-void Application::runApplication()
+void Application::processCmdLineFiles(void)
 {
+  Base::Console().Log("Init: Processing command line files\n");
+
   std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
 
   // cycling through all the open files
   unsigned short count = 0;
   count = atoi(mConfig["OpenFileCount"].c_str());
   std::string File;
+
+  if(count == 0 && mConfig["RunMode"] == "Exit")
+    mConfig["RunMode"] = "Cmd";
+
   for (unsigned short i=0; i<count; i++)
   {
-    // getting file name
-    std::ostringstream temp;
-    temp << "OpenFile" << i;
+      // getting file name
+      std::ostringstream temp;
+      temp << "OpenFile" << i;
 
-    FileInfo File(mConfig[temp.str()].c_str());
+      FileInfo File(mConfig[temp.str()].c_str());
 
-    std::string Ext = File.extension();
+      std::string Ext = File.extension();
+      Base::Console().Log("Init:     Processing file: %s\n",File.fileName().c_str());
+    try{
 
-    if(Ext == "FCStd" || Ext == "std")
-    {
-
-      // try to open
-      try{
+      if(Ext == "FCStd" || Ext == "std")
+      {
+        // try to open
         Application::_pcSingelton->openDocument(File.fileName().c_str());
-      }catch(...){
-        Console().Error("Can't open file %s \n",File.fileName().c_str());
+      }else if(Ext == "FCscript"){
+        Base::Interpreter().runFile(File.fileName().c_str());
+      }else if(Ext == "py"){
+        Base::Interpreter().loadModule(File.fileName().c_str());
+      }else if(EndingMap.find(Ext) != EndingMap.end()){
+        Base::Interpreter().loadModule(EndingMap.find(Ext)->second.c_str());
+        Base::Interpreter().runStringArg("import %s",EndingMap.find(Ext)->second.c_str());
+        Base::Interpreter().runStringArg("%s.open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.fileName().c_str());
+        Base::Console().Log("Command line open: %s.Open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.fileName().c_str());
+      }else{
+        Console().Warning("File format not suported: %s \n", File.fileName().c_str());
       }
-    }else if(Ext == "FCscript")
-    {
-      Base::Interpreter().runFile(File.fileName().c_str());
-    }else if(EndingMap.find(Ext) != EndingMap.end())
-    {
-      Base::Interpreter().loadModule(EndingMap.find(Ext)->second.c_str());
-      Base::Interpreter().runStringArg("import %s",EndingMap.find(Ext)->second.c_str());
-      Base::Interpreter().runStringArg("%s.open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.fileName().c_str());
-      Base::Console().Log("Command line open: %s.Open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.fileName().c_str());
-
+    
+    } catch(const Base::Exception& e) {
+      Console().Error("Exception while processing file: %s [%s]\n", File.fileName().c_str(), e.what());
+    } catch(...) {
+      Console().Error("Unknown exception while processing file: %s \n", File.fileName().c_str());
     }
 
   }
+
+}
+
+void Application::runApplication()
+{
+  //std::map<std::string,std::string> EndingMap = App::GetApplication().getOpenType();
+
+  //// cycling through all the open files
+  //unsigned short count = 0;
+  //count = atoi(mConfig["OpenFileCount"].c_str());
+  //std::string File;
+
+  //if(count == 0 && mConfig["RunMode"] == "Exit")
+  //  mConfig["RunMode"] = "Cmd";
+
+  //for (unsigned short i=0; i<count; i++)
+  //{
+  //    // getting file name
+  //    std::ostringstream temp;
+  //    temp << "OpenFile" << i;
+
+  //    FileInfo File(mConfig[temp.str()].c_str());
+
+  //    std::string Ext = File.extension();
+  //  try{
+
+  //    if(Ext == "FCStd" || Ext == "std")
+  //    {
+  //      // try to open
+  //      Application::_pcSingelton->openDocument(File.fileName().c_str());
+  //    }else if(Ext == "FCscript"){
+  //      Base::Interpreter().runFile(File.fileName().c_str());
+  //    }else if(Ext == "py"){
+  //      Base::Interpreter().loadModule(File.fileName().c_str());
+  //    }else if(EndingMap.find(Ext) != EndingMap.end()){
+  //      Base::Interpreter().loadModule(EndingMap.find(Ext)->second.c_str());
+  //      Base::Interpreter().runStringArg("import %s",EndingMap.find(Ext)->second.c_str());
+  //      Base::Interpreter().runStringArg("%s.open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.fileName().c_str());
+  //      Base::Console().Log("Command line open: %s.Open(\"%s\")",EndingMap.find(Ext)->second.c_str(),File.fileName().c_str());
+  //    }else{
+  //      Console().Warning("File format not suported: %s \n", File.fileName().c_str());
+  //    }
+  //  
+  //  } catch(const Base::Exception& e) {
+  //    Console().Error("Exception while processing file: %s [%s]\n", File.fileName().c_str(), e.what());
+  //  } catch(...) {
+  //    Console().Error("Unknown exception while processing file: %s \n", File.fileName().c_str());
+  //  }
+
+  //}
+  // process all files given through command line interface
+  processCmdLineFiles();
 
 	if(mConfig["RunMode"] == "Cmd")
 	{
 		// Run the comandline interface
 		Interpreter().runCommandLine("FreeCAD Console mode");
 	}
-	else if(mConfig["RunMode"] == "Script")
-	{
-		// run a script
-		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
-		Interpreter().runFile(mConfig["FileName"].c_str());
-	}
-	else if(mConfig["RunMode"] == "ScriptCmd")
-	{
-		// run a script
-		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
-    try{
-      Interpreter().runFile(mConfig["FileName"].c_str());
-    }catch(Base::Exception e){
-      e.ReportException();
-    }catch(...){
-      Console().Error("Unknown exception in runing file:%s \n",mConfig["FileName"].c_str());
-    }
-    std::string text;
-    text += "FreeCAD Console mode after runing:\n" + mConfig["FileName"] + "\n";
-		Interpreter().runCommandLine(text.c_str());
-	}
-	else if(mConfig["RunMode"] == "Module")
-	{
-		// run a script
-		Console().Log("Loading module: %s\n",mConfig["ScriptFileName"].c_str());
-		Interpreter().loadModule(mConfig["FileName"].c_str());
-#ifdef FC_DEBUG
-		Interpreter().runCommandLine("FreeCAD Console mode");
-#endif
-	}
+//	else if(mConfig["RunMode"] == "Script")
+//	{
+//		// run a script
+//		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
+//		Interpreter().runFile(mConfig["FileName"].c_str());
+//	}
+//	else if(mConfig["RunMode"] == "ScriptCmd")
+//	{
+//		// run a script
+//		Console().Log("Running script: %s\n",mConfig["ScriptFileName"].c_str());
+//    try{
+//      Interpreter().runFile(mConfig["FileName"].c_str());
+//    }catch(Base::Exception e){
+//      e.ReportException();
+//    }catch(...){
+//      Console().Error("Unknown exception in runing file:%s \n",mConfig["FileName"].c_str());
+//    }
+//    std::string text;
+//    text += "FreeCAD Console mode after runing:\n" + mConfig["FileName"] + "\n";
+//		Interpreter().runCommandLine(text.c_str());
+//	}
+//	else if(mConfig["RunMode"] == "Module")
+//	{
+//		// run a script
+//		Console().Log("Loading module: %s\n",mConfig["ScriptFileName"].c_str());
+//		Interpreter().loadModule(mConfig["FileName"].c_str());
+//#ifdef FC_DEBUG
+//		Interpreter().runCommandLine("FreeCAD Console mode");
+//#endif
+//	}
 	else if(mConfig["RunMode"] == "Internal")
 	{
 		// run internal script
 		Console().Log("Running internal script:\n");
 		Interpreter().runString(Base::ScriptFactory().ProduceScript(mConfig["ScriptFileName"].c_str()));
 
-		//!!! Interpreter().Launch(sScriptName);
+	}	else if(mConfig["RunMode"] == "Exit")
+	{
+		// geting out
+		Console().Log("Exiting on purpose\n");
 	} else {
 
 		Console().Log("Unknown Run mode (%d) in main()?!?\n\n",mConfig["RunMode"].c_str());
@@ -1154,9 +1219,24 @@ void Application::ParseOptions(int ac, char ** av)
 
         if (vm.count("input-file"))
         {
-            cout << "Input files are: " 
-                 << vm["input-file"].as< vector<string> >() << "\n";
+            vector<string> files(vm["input-file"].as< vector<string> >());
+            int OpenFileCount=0;
+            for(vector<string>::const_iterator It = files.begin();It != files.end();++It)
+            {
+
+              //cout << "Input files are: " 
+              //     << vm["input-file"].as< vector<string> >() << "\n";
+
+              std::ostringstream temp;
+              temp << "OpenFile" << OpenFileCount;
+              mConfig[temp.str()] = *It;
+              OpenFileCount++;
+            }
+            std::ostringstream buffer;
+            buffer << OpenFileCount;
+            mConfig["OpenFileCount"] = buffer.str();
         }
+
         if (vm.count("write-log"))
         {
           mConfig["LoggingFile"] = "1";
