@@ -59,8 +59,6 @@ public:
   ReportView( QWidget* parent = 0);
   ~ReportView();
 
-  PythonConsole* getPythonConsole(void) const { return tabPython; }
-
 protected:
   void changeEvent(QEvent *e);
 
