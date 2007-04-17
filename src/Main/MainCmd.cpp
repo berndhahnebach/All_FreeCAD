@@ -76,7 +76,7 @@ int main( int argc, char ** argv )
   try{
     // Init phase ===========================================================
 	  // sets the default run mode for FC, starts with command prompt if not overridden in InitConfig...
-    App::Application::Config()["RunMode"] = "Cmd";
+    App::Application::Config()["RunMode"] = "Exit";
 
 	  // Inits the Application 
 	  App::Application::init(argc,argv);

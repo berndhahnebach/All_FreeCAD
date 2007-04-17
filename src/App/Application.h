@@ -174,6 +174,7 @@ public:
   static void initTypes(void);
 	static void destruct(void);
 	static void destructObserver(void);
+  static void processCmdLineFiles(void);
 	static void runApplication(void);
 	friend Application &GetApplication(void);
 	static std::map<std::string,std::string> &Config(void){return mConfig;}
