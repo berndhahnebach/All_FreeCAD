@@ -79,14 +79,21 @@ StdCmdWorkbench::StdCmdWorkbench()
 
 void StdCmdWorkbench::activated(int iMsg)
 {
-  try{
-    QStringList wb = Application::Instance->workbenches();
-    wb.sort();
-    doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", wb[iMsg].latin1());
-  }
-  catch(const Base::Exception&)
-  {
-    // just do nothing because for sure the exception has already been reported
+  try {
+    QList<QAction*> items = ((WorkbenchGroup*)_pcAction)->actions();
+    doCommand(Gui, "Gui.ActivateWorkbench(\"%s\")", items[iMsg]->text().latin1());
+  } catch(const Base::PyException& e) {
+    QString msg(e.what());
+    // ignore '<type 'exceptions.*Error'>' prefixes
+    QRegExp rx;
+    rx.setPattern("^\\s*<type 'exceptions.\\w*'>:\\s*");
+    int pos = rx.search(msg);
+    if ( pos != -1 )
+      msg = msg.mid(rx.matchedLength());
+    QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), msg); 
+  } catch(...) {
+    QMessageBox::critical(getMainWindow(), QObject::tr("Cannot load workbench"), 
+      QObject::tr("A general error occurred while loading the workbench")); 
   }
 }
 
