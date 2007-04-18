@@ -72,7 +72,7 @@ namespace Gui {
 struct DockWindowManagerP
 {
   QList<QDockWidget*> _dockedWindows;
-  QMap<QString, QWidget*> _dockWindows;
+  QMap<QString, QPointer<QWidget> > _dockWindows;
   DockWindowItems _dockWindowItems;
 };
 } // namespace Gui
@@ -99,6 +99,13 @@ DockWindowManager::DockWindowManager()
 
 DockWindowManager::~DockWindowManager()
 {
+  for (QMap<QString, QPointer<QWidget> >::Iterator it = d->_dockWindows.begin(); it != d->_dockWindows.end(); ++it) {
+    QWidget* dw = it.data();
+    if (dw) {
+      delete dw;
+    }
+  }
+
   d->_dockedWindows.clear();
   delete d;
 }
@@ -251,7 +258,7 @@ void DockWindowManager::languageChanged()
  */
 bool DockWindowManager::registerDockWindow(const QString& name, QWidget* widget)
 {
-  QMap<QString, QWidget*>::Iterator it = d->_dockWindows.find(name);
+  QMap<QString, QPointer<QWidget> >::Iterator it = d->_dockWindows.find(name);
   if (it != d->_dockWindows.end() || !widget)
     return false;
   d->_dockWindows[name] = widget;
@@ -278,7 +285,7 @@ void DockWindowManager::setup( DockWindowItems* items)
 
   const QList<DockWindowItem>& dw = items->dockWidgets();
   for (QList<DockWindowItem>::ConstIterator it = dw.begin(); it != dw.end(); ++it) {
-    QMap<QString, QWidget*>::ConstIterator jt = d->_dockWindows.find((*it).first);
+    QMap<QString, QPointer<QWidget> >::ConstIterator jt = d->_dockWindows.find((*it).first);
     if (jt != d->_dockWindows.end()) {
       addDockWindow(jt.data()->windowTitle(), jt.data(), (*it).second);
       jt.data()->show();

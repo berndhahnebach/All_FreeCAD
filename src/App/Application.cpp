@@ -1550,7 +1550,7 @@ void Application::ExtractUserPath()
 std::string Application::FindHomePath(const char* sCall)
 {
   // We have three ways to start this application either use one of the both executables or
-  // import the FreeCAD.pyd module from a running Python session. In the latter case the 
+  // import the FreeCAD.so module from a running Python session. In the latter case the 
   // Python interpreter is already initialized.
   std::string Call, TempHomePath;
   if (Py_IsInitialized()) {
@@ -1586,6 +1586,8 @@ std::string Application::FindHomePath(const char* sCall)
 #elif defined(FC_OS_MACOSX)
 #include <mach-o/dyld.h>
 #include <string>
+#include <stdlib.h>
+#include <sys/param.h>
 
 std::string Application::FindHomePath(const char* call)
 {
@@ -1597,171 +1599,53 @@ std::string Application::FindHomePath(const char* call)
 
   if (_NSGetExecutablePath(buf, &sz) == 0)
   {
-    //char *sl;
-    // sl = strrchr(buf, '/');
-    //*(sl + 1) = '\0';
-    //
-    //std::string ret(buf);
-    //return ret;
-    std::string Call(buf), TempHomePath; 
+    char resolved[PATH_MAX];
+    char* path = realpath(buf, resolved);
     free(buf);
-    std::string::size_type pos = Call.find_last_of(PATHSEP); 
-    TempHomePath.assign(Call,0,pos); 
-    pos = TempHomePath.find_last_of(PATHSEP); 
-    TempHomePath.assign(TempHomePath,0,pos+1); 
-    return TempHomePath; 
+
+    if (path)
+    {
+      std::string Call(resolved), TempHomePath; 
+      std::string::size_type pos = Call.find_last_of(PATHSEP); 
+      TempHomePath.assign(Call,0,pos); 
+      pos = TempHomePath.find_last_of(PATHSEP); 
+      TempHomePath.assign(TempHomePath,0,pos+1); 
+      return TempHomePath; 
+    }
   }
 
   return call; // error
 } 
 
 #elif defined(FC_OS_CYGWIN)
-void SimplifyPath(std::string& sPath)
-{
-	// remove all unnecessary '/./' from sPath
-	std::string sep; sep += PATHSEP;
-	std::string pattern = sep + '.' + sep;
-	std::string::size_type npos = sPath.find(pattern);
-	while (npos != std::string::npos)
-	{
-		sPath.replace(npos, 3, sep);
-		npos = sPath.find(pattern);
-	}
-
-	// remove all unnecessary '//' from sPath
-	pattern = sep + sep;
-	npos = sPath.find(pattern);
-	while (npos != std::string::npos)
-	{
-		sPath.replace(npos, 2, sep);
-		npos = sPath.find(pattern);
-	}
-}
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/param.h>
 
 std::string Application::FindHomePath(const char* sCall)
 {
-	std::string argv = sCall;
 	std::string absPath;
 	std::string homePath;
-	std::string cwd;
-
-	// get the current working directory
-	char szDir[1024];
-	if ( getcwd(szDir, sizeof(szDir)) == NULL)
-		return homePath;
-	cwd = szDir;
 
   // Called from Python
   if (Py_IsInitialized()) {
-    PyObject* path_importer_cache = PySys_GetObject("path_importer_cache");
-    if (path_importer_cache && PyDict_Check(path_importer_cache)) {
-      PyObject *key, *value;
-      Py_ssize_t pos = 0;
-      while (PyDict_Next(path_importer_cache, &pos, &key, &value)) {
-        const char* KeyName = PyString_AsString(key);
-			  std::string test = std::string(KeyName) + PATHSEP + argv;
-
-			  // does it exist?
-#if defined (__GNUC__)
- 				if ( access(test.c_str(), 0) == 0 )
-#else
- 				if ( _access(test.c_str(), 0) == 0 )
-#endif
-			  {
-				  absPath = test;
-          if (KeyName == "")
-            absPath = cwd + PATHSEP + absPath;
-  			  break;
-				}
-      }
-    }
+    char resolved[PATH_MAX];
+    if (realpath(sCall, resolved))
+      absPath = resolved;
   } else {
-	  // absolute path
-	  if ( argv[0] == PATHSEP )
-	  {
-		  absPath = argv;
-#ifdef FC_DEBUG
-  		printf("Absolute path: %s\n", absPath.c_str());
-#endif
-	  }
-	  // relative path
-	  else if ( argv.find(PATHSEP) != std::string::npos )
-	  {
-		  absPath = cwd + PATHSEP + argv;
-#ifdef FC_DEBUG
-		  printf("Relative path: %s\n", argv.c_str());
-		  printf("Absolute path: %s\n", absPath.c_str());
-#endif
-	  }
-	  // check PATH
-	  else
-	  {
-#ifdef FC_DEBUG
-  		printf("Searching in PATH variable...");
-#endif
-		  const char *pEnv = getenv( "PATH" );
-
-		  if ( pEnv )
-		  {
-			  std::string path = pEnv;
-			  std::vector<std::string> paths;
-
-			  // split into each component
-			  std::string::size_type start = 0;
-			  std::string::size_type npos = path.find(':', start);
-			  while ( npos != std::string::npos )
-			  {
-				  std::string tmp = path.substr(start, npos - start);
-				  paths.push_back( path.substr(start, npos - start) );
-				  start = npos + 1;
-				  npos = path.find(':', start);
-			  }
-
-			  // append also last component
-			  paths.push_back( path.substr(start) );
-
-			  for (std::vector<std::string>::const_iterator it = paths.begin(); it != paths.end(); ++it)
-			  {
-				  std::string test = *it + PATHSEP + argv;
-
-				  // no abs. path
-				  if ( test[0] != PATHSEP )
-					  test = cwd + PATHSEP + test;
-
-				  // does it exist?
-#if defined (__GNUC__)
-  				if ( access(test.c_str(), 0) == 0 )
-#else
-  				if ( _access(test.c_str(), 0) == 0 )
-#endif
-				  {
-					  absPath = test;
-#ifdef FC_DEBUG
-					  printf("found.\n");
-					  printf("Absolute path: %s\n", absPath.c_str());
-#endif
-					  break;
-				  }
-			  }
-		  }
-	  }
+    // Find the path of the executable
+    char resolved[PATH_MAX];
+    int n = readlink("/proc/self/exe", resolved, PATH_MAX);
+    if (n != -1) {
+      absPath = resolved;
+    }
   }
 
 	// should be an absolute path now
-	if (absPath[0] == PATHSEP)
-	{
-		SimplifyPath( absPath );
-		std::string::size_type pos = absPath.find_last_of(PATHSEP);
-		homePath.assign(absPath,0,pos);
-		pos = homePath.find_last_of(PATHSEP);
-		homePath.assign(homePath,0,pos+1);
-	}
-	else
-	{
-    // neither an absolute path in the specified call nor a relative path nor a call in PATH or PYTHONPATH
-		printf("ERROR: no valid home path! (%s)\n", absPath.c_str());
-		exit(0);
-	}
+	std::string::size_type pos = absPath.find_last_of(PATHSEP);
+	homePath.assign(absPath,0,pos);
+	pos = homePath.find_last_of(PATHSEP);
+	homePath.assign(homePath,0,pos+1);
 
 	return homePath;
 }
