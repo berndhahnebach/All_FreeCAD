@@ -81,6 +81,8 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD  ul_reason_for_call, LPVOID lpReserv
 #   define GNU_SOURCE
 # endif
 # include <dlfcn.h>
+#elif defined(FC_OS_CYGWIN)
+# include <windows.h>
 #endif
 
 #ifdef FC_OS_WIN32
@@ -105,6 +107,11 @@ extern "C" {
 
 #if defined(FC_OS_WIN32)
   strcpy(argv[0],App::Application::Config()["AppHomePath"].c_str());
+#elif defined(FC_OS_CYGWIN)
+  HMODULE hModule = GetModuleHandle("FreeCAD.dll");
+  char szFileName [MAX_PATH];
+  GetModuleFileName(hModule, szFileName, MAX_PATH-1);
+  strcpy(argv[0],szFileName);
 #elif defined(FC_OS_LINUX)
   // get whole path of the library
   Dl_info info;
