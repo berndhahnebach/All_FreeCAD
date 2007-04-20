@@ -260,9 +260,17 @@ PYFUNCIMP_S(Application,sAddWorkbenchHandler)
     return NULL;                    // NULL triggers exception 
 
   try {
-    Base::Interpreter().runMethodObject(pcObject, "Activate");
-    Base::Interpreter().runMethodObject(pcObject, "GetClassName");
-    Base::Interpreter().runMethodObject(pcObject, "GetIcon");
+    // Search for some methods without invoking them
+    PyObject* meth = 0;
+    meth = PyObject_GetAttrString(pcObject, "Activate");
+    if (!meth) throw Base::PyException();
+    Py_DECREF(meth);
+    meth = PyObject_GetAttrString(pcObject, "GetClassName");
+    if (!meth) throw Base::PyException();
+    Py_DECREF(meth);
+    meth = PyObject_GetAttrString(pcObject, "GetIcon");
+    if (!meth) throw Base::PyException();
+    Py_DECREF(meth);
   } catch (const Base::PyException& e) {
     PyErr_Format(PyExc_AttributeError, "%s", e.what());
     return NULL;

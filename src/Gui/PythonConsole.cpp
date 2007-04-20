@@ -742,6 +742,19 @@ bool PythonConsole::performPythonCommand()
       Base::Interpreter().runString("PyConsole.restoreStderr()");
       setFocus(); // if focus was lost
     }
+    catch ( const Base::SystemExitException& )
+    {
+      int ret = QMessageBox::question(this, tr("System exit"), tr("The application is still running.\nDo you want to exit?"),
+        QMessageBox::Yes, QMessageBox::No|QMessageBox::Escape|QMessageBox::Default);
+      if (ret == QMessageBox::Yes) {
+        Base::Interpreter().systemExit();
+      } else {
+        // Write Python's error output instead, if there is!
+        PyErr_Clear();
+        Base::Interpreter().runString("PyConsole.restoreStdout()");
+        Base::Interpreter().runString("PyConsole.restoreStderr()");
+      }
+    }
     catch ( const Base::Exception& )
     {
       // Write Python's error output instead, if there is!
