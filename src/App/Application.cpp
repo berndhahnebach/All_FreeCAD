@@ -1214,7 +1214,7 @@ void Application::ParseOptions(int ac, char ** av)
         if (vm.count("module-path"))
         {
             cout << "Module paths are: " 
-                 << vm["include-path"].as< vector<string> >() << "\n";
+                 << vm["module-path"].as< vector<string> >() << "\n";
         }
 
         if (vm.count("input-file"))
