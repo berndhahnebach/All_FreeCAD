@@ -50,9 +50,9 @@ PyException::PyException(void)
 {
   PP_Fetch_Error_Text();    /* fetch (and clear) exception */
   std::string prefix = PP_last_error_type; /* exception name text */
-  prefix += ": ";
+//  prefix += ": ";
   std::string error = PP_last_error_info;            /* exception data text */
-
+#if 0
   // The Python exceptions might be thrown from nested functions, so take
   // into account not to add the same prefix several times
   std::string::size_type pos = error.find(prefix);
@@ -60,6 +60,9 @@ PyException::PyException(void)
     _sErrMsg = prefix + error;
   else
     _sErrMsg = error;
+#endif
+  _sErrMsg = error;
+  _errorType = prefix;
 
 
   _stackTrace = PP_last_error_trace;     /* exception traceback text */
@@ -67,6 +70,20 @@ PyException::PyException(void)
   PyErr_Clear(); // must be called to keep Python interpreter in a valid state (Werner)
 
 }
+
+// ---------------------------------------------------------
+
+SystemExitException::SystemExitException()
+{
+  _sErrMsg = "System exit";
+}
+
+SystemExitException::SystemExitException(const SystemExitException &inst)
+ : Exception(inst)
+{
+}
+
+// ---------------------------------------------------------
 
 
 InterpreterSingleton::InterpreterSingleton()
@@ -168,7 +185,8 @@ void InterpreterSingleton::runInteractiveString(const char *sCmd)
   if(!presult)
   {
 	  if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
-		  systemExit();
+		  //systemExit();
+      throw SystemExitException();
 	  }
     /* get latest python exception information */
     /* and print the error to the error output */
