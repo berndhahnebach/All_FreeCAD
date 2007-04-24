@@ -1078,10 +1078,10 @@ void Application::LoadParameters(void)
 
 #if 1
 
-// fix wired error while linking boost???
-namespace boost { namespace program_options {
-  std::string arg="arg";
-} }
+#if defined(FC_OS_WIN32) || defined(FC_OS_LINUX)
+// fix weird error while linking boost???
+namespace boost { namespace program_options { std::string arg="arg"; } }
+#endif
 
 pair<string, string> customSyntax(const string& s)
 {
