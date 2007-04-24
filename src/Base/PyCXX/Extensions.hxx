@@ -387,16 +387,16 @@ namespace Py
 		virtual Object call( const Object &, const Object & );
 		
 		// Sequence methods
-		virtual int sequence_length();
+		virtual Py_ssize_t sequence_length();
 		virtual Object sequence_concat( const Object & );
-		virtual Object sequence_repeat( int );
-		virtual Object sequence_item( int );
-		virtual Object sequence_slice( int, int );
-		virtual int sequence_ass_item( int, const Object & );
-		virtual int sequence_ass_slice( int, int, const Object & );
+		virtual Object sequence_repeat( Py_ssize_t );
+		virtual Object sequence_item( Py_ssize_t );
+		virtual Object sequence_slice( Py_ssize_t, Py_ssize_t );
+		virtual int sequence_ass_item( Py_ssize_t, const Object & );
+		virtual int sequence_ass_slice( Py_ssize_t, Py_ssize_t, const Object & );
 		
 		// Mapping
-		virtual int mapping_length();
+		virtual Py_ssize_t mapping_length();
 		virtual Object mapping_subscript( const Object & );
 		virtual int mapping_ass_subscript( const Object &, const Object & );
 		
@@ -425,9 +425,9 @@ namespace Py
 		virtual Object number_power( const Object &, const Object & );
 		
 		// Buffer
-		virtual int buffer_getreadbuffer( int, void** );
-		virtual int buffer_getwritebuffer( int, void** );
-		virtual int buffer_getsegcount( int* );
+		virtual Py_ssize_t buffer_getreadbuffer( Py_ssize_t, void** );
+		virtual Py_ssize_t buffer_getwritebuffer( Py_ssize_t, void** );
+		virtual Py_ssize_t buffer_getsegcount( Py_ssize_t* );
 		
 	private:
 		void missing_method( void );
