@@ -1078,7 +1078,7 @@ void Application::LoadParameters(void)
 
 #if 1
 
-#if defined(FC_OS_WIN32) || defined(FC_OS_LINUX)
+#if defined(FC_OS_WIN32)
 // fix weird error while linking boost???
 namespace boost { namespace program_options { std::string arg="arg"; } }
 #endif
