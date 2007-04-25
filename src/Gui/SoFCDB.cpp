@@ -59,6 +59,7 @@ void Gui::SoFCDB::init()
   SoFCEnableHighlightAction::initClass();
   SoFCSelectionColorAction ::initClass();
   SoFCHighlightColorAction ::initClass();
+  SoFCDocumentObjectEvent  ::initClass();
 
 
   EditableItem             ::init();

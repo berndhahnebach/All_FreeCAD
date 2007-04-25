@@ -70,6 +70,8 @@ public:
 	PYFUNCDEF_D(View3DPy,getCameraType)
 	PYFUNCDEF_D(View3DPy,setCameraType)
 	PYFUNCDEF_D(View3DPy,listCameraTypes)
+	PYFUNCDEF_D(View3DPy,getCursorPos)
+	PYFUNCDEF_D(View3DPy,getObjectInfo)
 
 private:
   Gui::View3DInventor *_pcView;

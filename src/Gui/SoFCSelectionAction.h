@@ -25,7 +25,8 @@
 #define _SoFCSelectionAction_h
 
 //#include <Inventor/SoAction.h> 
-#include <Inventor/actions/SoSubAction.h> 
+#include <Inventor/actions/SoSubAction.h>
+#include <Inventor/events/SoSubEvent.h>
 
 class SoSFString;
 class SoSFColor;
@@ -184,6 +185,39 @@ protected:
 
 private:
   static void callDoAction(SoAction *action,SoNode *node);
+};
+
+/**
+ * The SoFCDocumentObjectEvent class is used to get the name of the document, object and component at a certain 
+ * position of an SoFCSelection node. It also returns the appropriate 3d point.
+ * @author Werner Mayer
+ */
+class GuiExport SoFCDocumentObjectEvent : public SoEvent
+{
+  SO_EVENT_HEADER();
+
+public:
+  SoFCDocumentObjectEvent ();
+	~SoFCDocumentObjectEvent();
+
+  void setDocumentName(const SbString&);
+  const SbString& getDocumentName() const;
+  void setObjectName(const SbString&);
+  const SbString& getObjectName() const;
+  void setComponentName(const SbString&);
+  const SbString& getComponentName() const;
+  void setPoint(const SbVec3f&);
+  const SbVec3f& getPoint() const;
+
+  static SbBool isDocumentObjectEvent(const SoEvent *e); 
+
+  static void initClass();
+
+private:
+  SbString documentName;
+  SbString objectName;
+  SbString componentName;
+  SbVec3f pos;
 };
 
 } // namespace Gui

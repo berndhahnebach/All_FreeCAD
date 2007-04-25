@@ -569,3 +569,66 @@ void SoFCDocumentAction::callDoAction(SoAction *action,SoNode *node)
   node->doAction(action);
 }
 
+
+// ---------------------------------------------------------------
+
+SO_EVENT_SOURCE(SoFCDocumentObjectEvent);
+
+void SoFCDocumentObjectEvent::initClass()
+{
+  SO_EVENT_INIT_CLASS(SoFCDocumentObjectEvent, SoEvent);
+}
+
+SoFCDocumentObjectEvent::SoFCDocumentObjectEvent ()
+{
+  this->pos.setValue(FLT_MAX, FLT_MAX, FLT_MAX);
+}
+
+SoFCDocumentObjectEvent::~SoFCDocumentObjectEvent()
+{
+}
+
+void SoFCDocumentObjectEvent::setDocumentName(const SbString& name)
+{
+  this->documentName = name;
+}
+
+const SbString& SoFCDocumentObjectEvent::getDocumentName() const
+{
+  return this->documentName;
+}
+
+void SoFCDocumentObjectEvent::setObjectName(const SbString& name)
+{
+  this->objectName = name;
+}
+
+const SbString& SoFCDocumentObjectEvent::getObjectName() const
+{
+  return this->objectName;
+}
+
+void SoFCDocumentObjectEvent::setComponentName(const SbString& name)
+{
+  this->componentName = name;
+}
+
+const SbString& SoFCDocumentObjectEvent::getComponentName() const
+{
+  return this->componentName;
+}
+
+void SoFCDocumentObjectEvent::setPoint(const SbVec3f& p)
+{
+  this->pos = p;
+}
+
+const SbVec3f& SoFCDocumentObjectEvent::getPoint() const
+{
+  return this->pos;
+}
+
+SbBool SoFCDocumentObjectEvent::isDocumentObjectEvent(const SoEvent *e)
+{
+  return e->isOfType(SoFCDocumentObjectEvent::getClassTypeId());
+}
