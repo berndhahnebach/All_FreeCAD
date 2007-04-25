@@ -304,6 +304,16 @@ SoFCSelection::handleEvent(SoHandleEventAction * action)
       }
     
     }
+  }else if (event->isOfType(SoFCDocumentObjectEvent::getClassTypeId())) {
+    const SoPickedPoint * pp = action->getPickedPoint();
+    if (pp && pp->getPath()->containsPath(action->getCurPath())) {
+      SoFCDocumentObjectEvent* e = (SoFCDocumentObjectEvent*)event;
+      e->setDocumentName(documentName.getValue());
+      e->setObjectName(objectName.getValue());
+      e->setComponentName(subElementName.getValue());
+      e->setPoint(pp->getPoint());
+      action->setHandled();
+    }
   }
 
   inherited::handleEvent(action);

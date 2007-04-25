@@ -25,6 +25,7 @@
 
 #ifndef _PreComp_
 # include <Inventor/actions/SoWriteAction.h>
+# include <Inventor/events/SoLocation2Event.h>
 # include <Inventor/nodes/SoCamera.h>
 # include <Inventor/nodes/SoOrthographicCamera.h>
 # include <Inventor/nodes/SoPerspectiveCamera.h>
@@ -38,7 +39,10 @@
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include "Application.h"
+#include "SoFCSelectionAction.h"
 #include "View3DInventorViewer.h"
+
+#include <Base/PyCXX/Objects.hxx>
 
 using Base::Console;
 using Base::streq;
@@ -52,7 +56,7 @@ using namespace Gui;
 PyTypeObject View3DPy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"GuiView3D",				/*tp_name*/
+	"View3D",				/*tp_name*/
 	sizeof(View3DPy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
@@ -74,14 +78,14 @@ PyTypeObject View3DPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About PyView3D",                                 /*tp_doc */
+  "About View3D",                                 /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */
   0,                                                /*tp_weaklistoffset */
   0,                                                /*tp_iter */
   0,                                                /*tp_iternext */
-  0,                                                /*tp_methods */
+  View3DPy::Methods,                                /*tp_methods */
   0,                                                /*tp_members */
   0,                                                /*tp_getset */
   &Base::PyObjectBase::Type,                        /*tp_base */
@@ -100,6 +104,20 @@ PyTypeObject View3DPy::Type = {
   0,                                                /*tp_subclasses */
   0                                                 /*tp_weaklist */
 };
+
+PyDoc_STRVAR(view_getCursorPos_doc,
+"getCursorPos() -> tuple of integers\n"
+"\n"
+"Return the current cursor position relative to the coordinate system of the\n"
+"viewport region.\n");
+
+PyDoc_STRVAR(view_getObjectInfo_doc,
+"getObjectInfoPos(tuple of integers) -> dictionary or None\n"
+"\n"
+"Return a dictionary with the name of document, object and component. The\n"
+"dictionary also contains the coordinates of the appropriate 3d point of\n"
+"the underlying geometry in the scenegraph.\n"
+"If no geometry was found 'None' is returned, instead.\n");
 
 //--------------------------------------------------------------------------
 // Methods structure
@@ -125,7 +143,8 @@ PyMethodDef View3DPy::Methods[] = {
   PYMETHODEDEF(setStereoType)
   PYMETHODEDEF(getStereoType)
   PYMETHODEDEF(listStereoTypes)
-
+  {"getCursorPos",  (PyCFunction) sgetCursorPos,  Py_NEWARGS, view_getCursorPos_doc },
+  {"getObjectInfo", (PyCFunction) sgetObjectInfo, Py_NEWARGS, view_getObjectInfo_doc},
   {NULL, NULL}		/* Sentinel */
 };
 
@@ -161,7 +180,7 @@ View3DPy::~View3DPy()						// Everything handled in parent
 //--------------------------------------------------------------------------
 PyObject *View3DPy::_repr(void)
 {
-	return Py_BuildValue("s", "FreeCAD 3DView");
+	return Py_BuildValue("s", "3D View");
 }
 //--------------------------------------------------------------------------
 // View3DPy Attributes
@@ -536,3 +555,54 @@ PYFUNCIMP_D(View3DPy,listStereoTypes)
     return pyList;
   }PY_CATCH;
 } 
+
+PYFUNCIMP_D(View3DPy,getCursorPos)
+{
+  if (!PyArg_ParseTuple(args, ""))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+  try {
+    QPoint pos = _pcView->mapFromGlobal(QCursor::pos());
+    Py::Tuple tuple(2);
+    tuple.setItem(0, Py::Int(pos.x()));
+    tuple.setItem(1, Py::Int(_pcView->height()-pos.y()-1));
+    tuple.increment_reference_count(); // increment ref counter
+    return tuple.ptr();
+  } catch (const Py::Exception&) {
+    return NULL;
+  }
+}
+
+PYFUNCIMP_D(View3DPy,getObjectInfo)
+{
+  PyObject* object;
+  if (!PyArg_ParseTuple(args, "O", &object))     // convert args: Python->C 
+    return NULL;                       // NULL triggers exception 
+
+  try {
+    Py::Tuple tuple(object);
+    Py::Int x = tuple[0];
+    Py::Int y = tuple[1];
+
+    Gui::SoFCDocumentObjectEvent ev;
+    ev.setPosition(SbVec2s((long)x,(long)y));
+    SoHandleEventAction action(_pcView->getViewer()->getViewportRegion());
+    action.setEvent(&ev);
+    action.apply(_pcView->getViewer()->getSceneManager()->getSceneGraph());
+
+    if (action.isHandled()) {
+      Py::Dict dict;
+      dict.setItem("Document", Py::String(ev.getDocumentName().getString()));
+      dict.setItem("Object", Py::String(ev.getObjectName().getString()));
+      dict.setItem("Component", Py::String(ev.getComponentName().getString()));
+      dict.setItem("x", Py::Float(ev.getPoint()[0]));
+      dict.setItem("y", Py::Float(ev.getPoint()[1]));
+      dict.setItem("z", Py::Float(ev.getPoint()[2]));
+      dict.increment_reference_count(); // increment ref counter
+      return dict.ptr();
+    } else {
+      Py_Return;
+    }
+  } catch (const Py::Exception&) {
+    return NULL;
+  }
+}
