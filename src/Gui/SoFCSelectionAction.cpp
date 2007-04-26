@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+#  include <float.h>
 #  include <Inventor/nodes/SoCallback.h>
 #  include <Inventor/nodes/SoComplexity.h>
 #  include <Inventor/nodes/SoCoordinate3.h>
@@ -40,8 +41,8 @@
 
 #include "SoFCSelectionAction.h"
 #include "SoFCSelection.h"
-#  include <Inventor/bundles/SoMaterialBundle.h>
-#  include <Inventor/elements/SoSwitchElement.h>
+#include <Inventor/bundles/SoMaterialBundle.h>
+#include <Inventor/elements/SoSwitchElement.h>
 #include "Selection.h"
 
 #include <Inventor/elements/SoComplexityElement.h>

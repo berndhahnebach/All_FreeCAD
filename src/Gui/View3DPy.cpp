@@ -565,8 +565,7 @@ PYFUNCIMP_D(View3DPy,getCursorPos)
     Py::Tuple tuple(2);
     tuple.setItem(0, Py::Int(pos.x()));
     tuple.setItem(1, Py::Int(_pcView->height()-pos.y()-1));
-    tuple.increment_reference_count(); // increment ref counter
-    return tuple.ptr();
+    return Py::new_reference_to(tuple); // increment ref counter
   } catch (const Py::Exception&) {
     return NULL;
   }
@@ -597,10 +596,9 @@ PYFUNCIMP_D(View3DPy,getObjectInfo)
       dict.setItem("x", Py::Float(ev.getPoint()[0]));
       dict.setItem("y", Py::Float(ev.getPoint()[1]));
       dict.setItem("z", Py::Float(ev.getPoint()[2]));
-      dict.increment_reference_count(); // increment ref counter
-      return dict.ptr();
+      return Py::new_reference_to(dict);  // increment ref counter
     } else {
-      Py_Return;
+      return Py::new_reference_to(Py::None());
     }
   } catch (const Py::Exception&) {
     return NULL;

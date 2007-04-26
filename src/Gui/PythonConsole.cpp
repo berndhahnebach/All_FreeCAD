@@ -744,7 +744,7 @@ bool PythonConsole::performPythonCommand()
     }
     catch ( const Base::SystemExitException& )
     {
-      int ret = QMessageBox::question(this, tr("System exit"), tr("The application is still running.\nDo you want to exit?"),
+      int ret = QMessageBox::question(this, tr("System exit"), tr("The application is still running.\nDo you want to exit without saving your data?"),
         QMessageBox::Yes, QMessageBox::No|QMessageBox::Escape|QMessageBox::Default);
       if (ret == QMessageBox::Yes) {
         Base::Interpreter().systemExit();
