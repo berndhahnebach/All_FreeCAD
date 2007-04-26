@@ -24,6 +24,7 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
+# include <Inventor/actions/SoHandleEventAction.h>
 # include <Inventor/actions/SoWriteAction.h>
 # include <Inventor/events/SoLocation2Event.h>
 # include <Inventor/nodes/SoCamera.h>
@@ -578,7 +579,11 @@ PYFUNCIMP_D(View3DPy,getObjectInfo)
     return NULL;                       // NULL triggers exception 
 
   try {
-    Py::Tuple tuple(object);
+    //Note: For gcc (4.2) we need the 'const' keyword to avoid the compiler error:
+    //conversion from 'Py::seqref<Py::Object>' to non-scalar type 'Py::Int' requested
+    //We should report this problem to the PyCXX project as in the documentation is an 
+    //example without the 'const' keyword.
+    const Py::Tuple tuple(object);
     Py::Int x = tuple[0];
     Py::Int y = tuple[1];
 
