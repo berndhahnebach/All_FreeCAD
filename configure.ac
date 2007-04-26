@@ -8,7 +8,7 @@ m4_define([FREECAD_MAJOR], [0])
 m4_define([FREECAD_MINOR], [7])
 m4_define([FREECAD_MICRO], [514])
 
-AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[werner.wm.mayer@gmx.de], FreeCAD)
+AC_INIT(FreeCAD,[FREECAD_MAJOR.FREECAD_MINOR.FREECAD_MICRO],[wmayer@users.sourceforge.net], FreeCAD)
 AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER([config.h])
 AC_LANG_CPLUSPLUS
