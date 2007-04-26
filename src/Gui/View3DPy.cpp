@@ -581,8 +581,8 @@ PYFUNCIMP_D(View3DPy,getObjectInfo)
   try {
     //Note: For gcc (4.2) we need the 'const' keyword to avoid the compiler error:
     //conversion from 'Py::seqref<Py::Object>' to non-scalar type 'Py::Int' requested
-    //We should report this problem to the PyCXX project as in the documentation is an 
-    //example without the 'const' keyword.
+    //We should report this problem to the PyCXX project as in the documentation an 
+    //example without the 'const' keyword is used.
     const Py::Tuple tuple(object);
     Py::Int x = tuple[0];
     Py::Int y = tuple[1];
