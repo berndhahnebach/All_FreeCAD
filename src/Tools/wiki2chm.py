@@ -1,0 +1,164 @@
+﻿#! python
+# -*- coding: utf-8 -*-
+# (c) 2007 Juergen Riegel GPL
+
+Usage = """wiki2chm - conect to a wiki and spider the docu
+
+Usage:
+   wiki2chm [Optionen] WikiBaseUrl TocPageName
+   
+Options:
+ -p, --proxy=ProxyUrl     specify a proxy
+ -o  --out-path=BASPATH   use this base path for inspection plan
+ -h, --help               print this help
+ 
+Exit:
+ 0      No Error or Warning found
+ 1      Argument error, wrong or less Arguments given
+ 2      Run delivers Warnings (printed on standard error)
+ 10     Run stops with an error (printed on standard error)
+ 
+This programm read the wiki and generate all nececary files
+to generat a .chm file.
+
+Examples:
+  
+   wiki2chm  "http://juergen-riegel.net/FreeCAD/Docu/" Online_Help_Toc
+ 
+Autor:
+  (c) 2007 Juergen Riegel
+  juergen.riegel@web.de
+  Licence: GPL
+
+Version:
+  0.1
+"""
+
+import os,sys,string,re,getopt,codecs,binascii,datetime,urllib
+
+
+# Globals
+Woff = 0
+
+proxies = {}
+WikiBaseUrl = ""
+TocPageName = ""
+FetchedArticels =[]
+
+hhcHeader = """<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<HTML>
+<HEAD>
+<meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
+<!-- Sitemap 1.0 -->
+</HEAD><BODY>
+<OBJECT type="text/site properties">
+	<param name="ImageType" value="Folder">
+</OBJECT>
+<UL>
+"""
+hhcFooter="""</UL>
+</BODY></HTML>
+"""
+
+
+def getArticle(Name):
+	global proxies,WikiBaseUrl,TocPageName
+	
+	url = WikiBaseUrl + 'index.php?title=' + Name.replace(" ","_") + '&printable=yes'
+	
+	print "GetFile: " + url
+	
+	urlFile = urllib.urlopen(url,proxies=proxies)
+	Article = urlFile.readlines()
+	file = open(Name.replace(" ","_") + ".html","w")
+	for i in Article:
+		file.write(i)
+	file.close()
+
+def readToc():
+	global proxies,WikiBaseUrl,TocPageName
+	
+	url = WikiBaseUrl + 'index.php?title=Special:Export/' + TocPageName
+	print 'Open Toc url: ' + url
+	urlFile = urllib.urlopen(url,proxies=proxies)
+	Toc = urlFile.readlines()
+	
+	# compile the regexes needed
+	Toc1 = re.compile("^(\*+)\s([\w|\s]*)")
+	Toc2 = re.compile("^(\*+)\s\[\[([\w|\s]*)\|([\w|\s]*)\]\]")
+	Toc3 = re.compile("^(\*+)\s\[\[([\w|\s]*)\\]\]")
+	
+	file = open(TocPageName +".hhc","w")
+	file.write(hhcHeader)
+	
+	for line in Toc:
+		#print line
+		TocMatch = Toc2.search(line);
+		if TocMatch:
+			print "Match2: ", TocMatch.group(1),TocMatch.group(2),TocMatch.group(3)
+			getArticle(TocMatch.group(2))
+			continue
+		TocMatch = Toc3.search(line);
+		if TocMatch:
+			print "Match3: ", TocMatch.group(1),TocMatch.group(2)
+			getArticle(TocMatch.group(2))
+			continue
+		TocMatch = Toc1.search(line);
+		if TocMatch:
+			print "Match1: ", TocMatch.group(1),TocMatch.group(2)
+			continue
+
+
+
+
+def main():
+	global proxies,WikiBaseUrl,TocPageName
+	Qout = None
+	DFQout = None
+	CSVout = None
+	NoOut  = 0
+	
+	try:
+		opts, args = getopt.getopt(sys.argv[1:], "hwp:o:", ["help", "warnoff",  "proxy=","out-path="])
+	except getopt.GetoptError:
+		# print help information and exit:
+		sys.stderr.write(Usage)
+		sys.exit(2)
+
+	# checking on the options
+	for o, a in opts:
+		if o == "-v":
+			verbose = True
+		if o in ("-h", "--help"):
+			sys.stderr.write(Usage)
+			sys.exit()
+		if o in ("-w", "--warnoff"):
+			Woff = 1
+		if o in ("-p", "--proxy"):
+			Proxy = a
+		if o in ("-o", "--out-path"):
+			BasePath = a
+			if (BasePath[0] != '/'):
+				PrintError(0,"Path has to start with / !\n")
+
+	# runing through the files
+	if(Proxy == ""):
+		proxies = {}
+		print 'Using no proxy'
+	else:
+		proxies = {'http':Proxy}
+		print 'Using proxy: ' + Proxy
+
+	if (len(args) !=2):
+		sys.stderr.write("Wrong number of arguments!\n\n")
+		sys.stderr.write(Usage)
+		sys.exit(2)
+	else:
+		WikiBaseUrl = args[0]
+		TocPageName = args[1]
+		readToc()
+		
+
+
+if __name__ == "__main__":
+	main()
