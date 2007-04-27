@@ -583,6 +583,7 @@ PYFUNCIMP_D(View3DPy,getObjectInfo)
     //conversion from 'Py::seqref<Py::Object>' to non-scalar type 'Py::Int' requested
     //We should report this problem to the PyCXX project as in the documentation an 
     //example without the 'const' keyword is used.
+    //Or we can also write Py::Int x(tuple[0]);
     const Py::Tuple tuple(object);
     Py::Int x = tuple[0];
     Py::Int y = tuple[1];

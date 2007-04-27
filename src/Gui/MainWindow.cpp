@@ -630,26 +630,6 @@ void MainWindow::switchToDockedMode()
   QMessageBox::critical(getMainWindow(), "Not implemented yet", "Not implemented yet");
 }
 
-void MainWindow::updateStyle(void)
-{
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp");
-  hGrp = hGrp->GetGroup("Preferences")->GetGroup("General");
-
-  QStyle* curStyle = QApplication::style();
-  QString curStyleName = curStyle->objectName();
-  QString newStyleName = hGrp->GetASCII( "WindowStyle", curStyleName.ascii() ).c_str();
-  curStyleName = curStyleName.toLower();
-  newStyleName = newStyleName.toLower();
-  if ( curStyleName == newStyleName )
-    return; // already set
-  
-  QStyle* newStyle = QStyleFactory::create( newStyleName );
-  if ( newStyle != 0 )
-  {
-    QApplication::setStyle( newStyle );
-  }
-}
-
 void MainWindow::loadWindowSettings()
 {
   loadLayoutSettings();
@@ -663,8 +643,6 @@ void MainWindow::loadWindowSettings()
   resize( w, h );
   move(x, y);
   if (max) showMaximized();
-
-  updateStyle();
 }
 
 void MainWindow::saveWindowSettings()

@@ -115,12 +115,11 @@ void DlgGeneralImp::saveSettings()
   SplashScreen->onSave();
   AllowDragMenu->onSave();
 
-  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
-  hGrp->SetASCII( "WindowStyle", WindowStyle->currentText().latin1() );
+  // set new user defined style
+  (void)QApplication::setStyle(WindowStyle->currentText());
 
-  getMainWindow()->updateStyle();
   setRecentFileSize();
-
+  ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("General");
   QString language = hGrp->GetASCII("Language", "English").c_str();
   if ( QString::compare( Languages->currentText(), language ) != 0 )
   {
@@ -145,9 +144,9 @@ void DlgGeneralImp::loadSettings()
 
   // fill up styles
   //
-  QStringList styles = QStyleFactory::keys ();
+  QStringList styles = QStyleFactory::keys();
   WindowStyle->insertStringList( styles );
-  QString style = QApplication::style()->objectName();
+  QString style = QApplication::style()->objectName().toLower();
   int i=0;
   for (QStringList::ConstIterator it = styles.begin(); it != styles.end(); ++it, i++) {
     if (style == (*it).toLower()) {
