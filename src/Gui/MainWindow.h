@@ -102,9 +102,6 @@ public:
    * Sets the active window to \a view.
    */
   void setActiveWindow( MDIView* view );
-  /** Calls update to style.
-   */
-  void updateStyle(void);
   /**
    * Sets text to the pane in the status bar.
    */
