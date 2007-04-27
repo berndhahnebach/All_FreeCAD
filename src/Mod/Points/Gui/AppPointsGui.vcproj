@@ -240,7 +240,7 @@
 						Name="VCCustomBuildTool"
 						Description="Uic&apos;ing $(InputName).ui ..."
 						CommandLine="uic.exe &quot;$(InputPath)&quot; -o &quot;$(InputDir)ui_$(InputName).h&quot;&#x0D;&#x0A;"
-						Outputs="$(InputDir)$(InputName).h;$(Inpu$(InputDir)ui_$(InputName).h"
+						Outputs="$(InputDir)ui_$(InputName).h"
 					/>
 				</FileConfiguration>
 			</File>
