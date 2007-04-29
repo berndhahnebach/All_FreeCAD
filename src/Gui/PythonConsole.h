@@ -39,6 +39,28 @@
 namespace Gui {
 
 /**
+ * This class implements an interactive Python interpreter.
+ * @author Werner Mayer
+ */
+class GuiExport InteractiveInterpreter
+{
+public:
+  InteractiveInterpreter();
+  ~InteractiveInterpreter();
+
+  bool push(const char*);
+
+private:
+  bool runSource(const char*) const;
+  PyObject* compile(const char*) const;
+  void runCode(PyCodeObject*) const;
+  void setPrompt();
+
+private:
+  struct InteractiveInterpreterP* d;
+};
+
+/**
  * This class implements the history for the Python console.
  * @author Werner Mayer
  */
@@ -82,8 +104,7 @@ public:
   void cut();
   void removeSelectedText ( int selNum = 0 );
 
-  bool printCommand( const QString& cmd );
-  bool printStatement( const char* cmd );
+  bool printStatement( const QString& cmd );
 
 public Q_SLOTS:
   void onSaveHistoryAs();
@@ -97,43 +118,22 @@ protected:
   void contentsDragMoveEvent  ( QDragMoveEvent    * e );
 
   void overwriteParagraph( int para, const QString& txt );
-  bool isComment( const QString& ) const;
-  bool isBlockComment( const QString& ) const;
 
   /** Pops up the context menu with some extensions */
   Q3PopupMenu * createPopupMenu ( const QPoint & pos );
 
-  PYFUNCDEF_S(sStdoutPy);
-  PYFUNCDEF_S(sStderrPy);
-  PYFUNCDEF_S(sStdinPy);
-  PYFUNCDEF_S(sStdout);
-  PYFUNCDEF_S(sStderr);
-  PYFUNCDEF_S(sStdin);
-	static PyMethodDef    Methods[]; 
-
 private:
-  int tabsIndent( const QString& ) const;
-  bool performPythonCommand();
-  void printPrompt();
+  void runSource(const QString&);
+  void printPrompt(bool);
   void insertPythonOutput( const QString& );
   void insertPythonError ( const QString& );
 
 private:
-  int _startPara;
   bool _indent;
   bool _autoTabs;
-  bool _blockComment;
   ConsoleHistory _history;
   QString _output, _error;
   struct PythonConsoleP* d;
-
-  static PythonConsole* _instance;
-  static PyObject* _stdoutPy;
-  static PyObject* _stderrPy;
-  static PyObject* _stdinPy;
-  static PyObject* _stdout;
-  static PyObject* _stderr;
-  static PyObject* _stdin;
 
   friend class PythonStdoutPy;
   friend class PythonStderrPy;
