@@ -41,9 +41,13 @@ using namespace Gui;
 namespace Gui {
 struct PythonConsoleP
 {
+  PyObject *_stdoutPy, *_stderrPy, *_stdinPy;
+  PyObject *_stdout, *_stderr, *_stdin;
+  InteractiveInterpreter* interpreter;
   QMap<QString, QColor> colormap; // Color map
   PythonConsoleP()
   {
+    interpreter = 0;
     colormap["Text"] = Qt::black;
     colormap["Bookmark"] = Qt::cyan;
     colormap["Breakpoint"] = Qt::red;
@@ -60,30 +64,190 @@ struct PythonConsoleP
     colormap["Python error"] = Qt::red;
   }
 };
+struct InteractiveInterpreterP
+{
+  PyObject* interpreter;
+  PyObject* sysmodule;
+  QStringList buffer;
+};
 } // namespace Gui
 
-PythonConsole * PythonConsole::_instance = 0;
-PyObject      * PythonConsole::_stdoutPy = 0;
-PyObject      * PythonConsole::_stderrPy = 0;
-PyObject      * PythonConsole::_stdinPy  = 0;
-PyObject      * PythonConsole::_stdout   = 0;
-PyObject      * PythonConsole::_stderr   = 0;
-PyObject      * PythonConsole::_stdin    = 0;
+InteractiveInterpreter::InteractiveInterpreter()
+{
+  // import code.py and create an instance of InteractiveInterpreter
+  PyObject* module = PyImport_ImportModule("code");
+  if (!module)
+    throw Base::PyException();
+  PyObject* func = PyObject_GetAttrString(module, "InteractiveInterpreter");
+  PyObject* args = Py_BuildValue("()");
+  d = new InteractiveInterpreterP;
+  d->interpreter = PyEval_CallObject(func,args);
+  Py_DECREF(args);
+  Py_DECREF(func);
+  Py_DECREF(module);
+
+  setPrompt();
+}
+
+InteractiveInterpreter::~InteractiveInterpreter()
+{
+  Py_XDECREF(d->interpreter);
+  Py_XDECREF(d->sysmodule);
+  delete d;
+}
+
+/**
+ * Set the ps1 and ps2 members of the sys module if not yet defined.
+ */
+void InteractiveInterpreter::setPrompt()
+{
+  // import code.py and create an instance of InteractiveInterpreter
+  d->sysmodule = PyImport_ImportModule("sys");
+  if (!PyObject_HasAttrString(d->sysmodule, "ps1"))
+    PyObject_SetAttrString(d->sysmodule, "ps1", PyString_FromString(">>> "));
+  if (!PyObject_HasAttrString(d->sysmodule, "ps2"))
+    PyObject_SetAttrString(d->sysmodule, "ps2", PyString_FromString("... "));
+}
+
+/**
+ * Compile a command and determine whether it is incomplete.
+ * 
+ * The source string may contain \n characters.
+ * Return value / exceptions raised:
+ * \item Return a code object if the command is complete and valid
+ * \item Return None if the command is incomplete
+ * \item Raise SyntaxError, ValueError or OverflowError if the command is a
+ * syntax error (OverflowError and ValueError can be produced by
+ * malformed literals).
+ */
+PyObject* InteractiveInterpreter::compile(const char* source) const
+{
+  PyObject* func = PyObject_GetAttrString(d->interpreter, "compile");
+  PyObject* args = Py_BuildValue("(s)", source);
+  PyObject* eval = PyEval_CallObject(func,args);  // must decref later
+
+  Py_DECREF(args);
+  Py_DECREF(func);
+
+  if (eval){
+    return eval;
+  } else {
+    // do not throw Base::PyException as this clears the error indicator
+    throw Base::Exception();
+  }
+
+  // can never happen
+  return 0;
+}
+
+/**
+ * Compile and run some source in the interpreter.
+ *
+ * One several things can happen:
+ *
+ * \item The input is incorrect; compile() raised an exception (SyntaxError or OverflowError).  
+ * A syntax traceback will be printed by calling the showsyntaxerror() method.
+ *
+ * \item The input is incomplete, and more input is required; compile() returned False. 
+ * Nothing happens.
+ *
+ * \item The input is complete; compile() returned true.  The code is executed by calling 
+ * Base::Interpreter().runInteractiveString() (which also handles run-time exceptions, except 
+ * for SystemExit).
+ * 
+ * The return value is True if the input is incomplete, False in the other cases (unless
+ * an exception is raised). The return value can be used to decide whether to use sys.ps1 
+ * or sys.ps2 to prompt the next line.
+ */
+bool InteractiveInterpreter::runSource(const char* source) const
+{
+  PyObject* code;
+  try {
+    code = compile(source);
+  } catch (const Base::Exception&) {
+    // A system, overflow or value error was raised.
+    // We clear the traceback info as this might be a longly
+    // message we don't need.
+    PyObject *errobj, *errdata, *errtraceback;
+    PyErr_Fetch(&errobj, &errdata, &errtraceback);
+    PyErr_Restore(errobj, errdata, 0);
+    // print error message
+    if (PyErr_Occurred()) PyErr_Print();
+    return false;
+  }
+
+  // the command is incomplete
+  if (PyObject_TypeCheck(Py_None, code->ob_type)) {
+    Py_DECREF(code);
+    return true;
+  }
+
+  // run the code and return false
+  runCode((PyCodeObject*)code);
+  return false;
+}
+
+/* Execute a code object.
+ *
+ * When an exception occurs,  a traceback is displayed.
+ * All exceptions are caught except SystemExit, which is reraised.
+ */
+void InteractiveInterpreter::runCode(PyCodeObject* code) const
+{
+  PyObject *module, *dict, *presult;           /* "exec code in d, d" */
+  module = PyImport_AddModule("__main__");     /* get module, init python */
+  if (module == NULL) 
+    throw Base::PyException();                 /* not incref'd */
+  dict = PyModule_GetDict(module);             /* get dict namespace */
+  if (dict == NULL) 
+    throw Base::PyException();                 /* not incref'd */
+
+  presult = PyEval_EvalCode(code, dict, dict); /* run compiled bytecode */
+  Py_XDECREF(code);                            /* decref the code object */
+  if (!presult) {
+	  if (PyErr_ExceptionMatches(PyExc_SystemExit)) {
+		  // throw SystemExit exception
+      throw Base::SystemExitException();
+	  }
+    if ( PyErr_Occurred() )                    /* get latest python exception information */
+      PyErr_Print();                           /* and print the error to the error output */
+  }
+}
+
+bool InteractiveInterpreter::push(const char* line)
+{
+  d->buffer.append(line);
+  QString source = d->buffer.join("\n");
+  try {
+    bool more = runSource(source.toAscii());
+    if (!more)
+      d->buffer.clear();
+    return more;
+  } catch (const Base::SystemExitException& e) {
+    d->buffer.clear();
+    throw e;
+  } catch (const Base::Exception&) {
+    d->buffer.clear();
+  }
+}
 
 /* TRANSLATOR Gui::PythonConsole */
 
 /**
- *  Constructs a PythonConsole which is a child of 'parent', with the
- *  name 'name'. 
+ *  Constructs a PythonConsole which is a child of 'parent'. 
  */
 PythonConsole::PythonConsole(QWidget *parent)
-  : TextEdit(parent), WindowParameter( "Editor" ), _startPara(0), _indent(false), _autoTabs(true), _blockComment(false)
+  : TextEdit(parent), WindowParameter( "Editor" ), _indent(false), _autoTabs(true)
 {
   d = new PythonConsoleP();
-  _instance = this;
-  _stdoutPy = new PythonStdoutPy( _instance );
-  _stderrPy = new PythonStderrPy( _instance );
-  _stdinPy  = new PythonStdinPy ( _instance );
+
+  // create an instance of InteractiveInterpreter
+  try { 
+    d->interpreter = new InteractiveInterpreter();
+  } catch (const Base::Exception& e) {
+    setText(e.what());
+    setEnabled(false);
+  }
 
   // use the console highlighter
   pythonSyntax = new PythonConsoleHighlighter(this);
@@ -108,28 +272,19 @@ PythonConsole::PythonConsole(QWidget *parent)
   viewport()->setAcceptDrops( TRUE );
 
   // try to override Python's stdout/err
-  try
-  {
-    _stdout = PySys_GetObject("stdout");
-    _stderr = PySys_GetObject("stderr");
-    _stdin  = PySys_GetObject("stdin");
-	  (void) Py_InitModule("PyConsole", PythonConsole::Methods);
-    Base::Interpreter().runString("import sys, PyConsole");
-    Base::Interpreter().runString("PyConsole.redirectStdout()");
-    Base::Interpreter().runString("PyConsole.redirectStderr()");
-    Base::Interpreter().runString("PyConsole.redirectStdin()");
-    Base::Interpreter().runString("print 'Python' + sys.version + ' on ' + sys.platform");
-    Base::Interpreter().runString("print \"Type 'help', 'copyright', 'credits' or 'license' for more information.\"");
-    Base::Interpreter().runString("PyConsole.restoreStdout()");
-    Base::Interpreter().runString("PyConsole.restoreStderr()");
-  }
-  catch (...)
-  {
-    setText("Initialization of Python failed.\n");
-  }
+  d->_stdoutPy = new PythonStdoutPy(this);
+  d->_stderrPy = new PythonStderrPy(this);
+  d->_stdinPy  = new PythonStdinPy (this);
+  d->_stdout = PySys_GetObject("stdout");
+  d->_stderr = PySys_GetObject("stderr");
+  d->_stdin  = PySys_GetObject("stdin");
+  PySys_SetObject("stdin", d->_stdinPy);
 
-  printPrompt();
-  moveCursor( MoveLineEnd, false );
+  const char* version  = PyString_AsString(PySys_GetObject("version"));
+  const char* platform = PyString_AsString(PySys_GetObject("platform"));
+  _output = QString("Python %1 on + %2\n"
+    "Type 'help', 'copyright', 'credits' or 'license' for more information.").arg(version).arg(platform);
+  printPrompt(false);
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -137,57 +292,10 @@ PythonConsole::~PythonConsole()
 {
   getWindowParameter()->Detach( this );
   delete pythonSyntax;
-  Py_XDECREF(_stdoutPy);
-  Py_XDECREF(_stderrPy);
-  Py_XDECREF(_stdinPy);
+  Py_XDECREF(d->_stdoutPy);
+  Py_XDECREF(d->_stderrPy);
+  Py_XDECREF(d->_stdinPy);
   delete d;
-}
-
-// PythonConsole Methods						// Methods structure
-PyMethodDef PythonConsole::Methods[] = {
-	{"redirectStdout", (PyCFunction) PythonConsole::sStdoutPy,  1},
-	{"redirectStderr", (PyCFunction) PythonConsole::sStderrPy,  1},
-	{"redirectStdin",  (PyCFunction) PythonConsole::sStdinPy,   1},
-	{"restoreStdout",  (PyCFunction) PythonConsole::sStdout,    1},
-	{"restoreStderr",  (PyCFunction) PythonConsole::sStderr,    1},
-	{"restoreStdin",   (PyCFunction) PythonConsole::sStdin,     1},
-  {NULL, NULL}		/* Sentinel */
-};
-
-PYFUNCIMP_S(PythonConsole,sStdoutPy)
-{
-  PySys_SetObject("stdout", _stdoutPy);
-  return Py_None; 
-}
-
-PYFUNCIMP_S(PythonConsole,sStderrPy)
-{
-  PySys_SetObject("stderr", _stderrPy);
-  return Py_None; 
-}
-
-PYFUNCIMP_S(PythonConsole,sStdinPy)
-{
-  PySys_SetObject("stdin", _stdinPy);
-  return Py_None; 
-}
-
-PYFUNCIMP_S(PythonConsole,sStdout)
-{
-  PySys_SetObject("stdout", _stdout);
-  return Py_None; 
-}
-
-PYFUNCIMP_S(PythonConsole,sStderr)
-{
-  PySys_SetObject("stderr", _stderr);
-  return Py_None; 
-}
-
-PYFUNCIMP_S(PythonConsole,sStdin)
-{
-  PySys_SetObject("stdin", _stdin);
-  return Py_None; 
 }
 
 /** Sets the new color for \a rcColor. */  
@@ -256,7 +364,7 @@ void PythonConsole::doKeyboardAction ( KeyboardAction action )
   else if ( action == ActionBackspace )
   {
     // must not modify ">>> " or "... "
-    if ( index < 5 || para < _startPara )
+    if ( index < 5 || para < paragraphs()-1 )
     {
       QApplication::beep();
       return;
@@ -266,7 +374,7 @@ void PythonConsole::doKeyboardAction ( KeyboardAction action )
   else if ( action == ActionDelete )
   {
     // must not modify ">>> " or "... "
-    if ( index < 4 || para < _startPara )
+    if ( index < 4 || para < paragraphs()-1 )
     {
       QApplication::beep();
       return;
@@ -282,18 +390,17 @@ void PythonConsole::clear ()
   TextEdit::clear();
   setText(">>> ");
   moveCursor( MoveLineEnd, false );
-  _startPara = 0;
   _indent = false;
 }
 
 void PythonConsole::removeSelectedText ( int selNum )
 {
-  int para, index;
-  getCursorPosition ( &para, &index );
+  int paraFrom, indexFrom, paraTo, indexTo;
+  getSelection (&paraFrom, &indexFrom, &paraTo, &indexTo, selNum);
 
   // cannot remove ">>> " or "... "
-  if ( (_startPara <= para) && index > 3 )
-    TextEdit::removeSelectedText( selNum );
+  if (paraTo == paragraphs()-1 && indexTo >= 4)
+    TextEdit::removeSelectedText(selNum);
   else
     QApplication::beep();
 }
@@ -302,13 +409,13 @@ void PythonConsole::removeSelectedText ( int selNum )
 void PythonConsole::paste()
 {
   int para, index, indexFrom, paraTo, indexTo;
-  int paraFrom = _startPara;
+  int paraFrom = paragraphs()-1;
   getCursorPosition ( &para, &index );
   if ( hasSelectedText() )
     getSelection ( &paraFrom, &indexFrom, &paraTo, &indexTo );
 
   // cannot remove ">>> " or "... "
-  if ( (_startPara <= para) && index > 3 && _startPara <= paraFrom )
+  if ( (paragraphs()-1 <= para) && index > 3 && paragraphs()-1 <= paraFrom )
     TextEdit::paste();
   else
     QApplication::beep();
@@ -376,15 +483,15 @@ void PythonConsole::pasteSubType( const QByteArray &subtype )
 /** Allows cutting in the active line only. */
 void PythonConsole::cut()
 {
-  int para, index, paraFrom, indexFrom, paraTo, indexTo;
-  getCursorPosition ( &para, &index );
-  getSelection ( &paraFrom, &indexFrom, &paraTo, &indexTo );
+  //int para, index, paraFrom, indexFrom, paraTo, indexTo;
+  //getCursorPosition ( &para, &index );
+  //getSelection ( &paraFrom, &indexFrom, &paraTo, &indexTo );
 
-  // cannot remove ">>> " or "... "
-  if ( (_startPara <= para) && index > 3 && _startPara <= paraFrom )
+  //// cannot remove ">>> " or "... "
+  //if ( (_startPara <= para) && index > 3 && _startPara <= paraFrom )
     TextEdit::cut();
-  else
-    QApplication::beep();
+  //else
+  //  QApplication::beep();
 }
 
 /**
@@ -398,7 +505,7 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
   getCursorPosition ( &para, &index );
 
   // avoid to modify the first four characters in a line
-  if ( (index < 4 || para < _startPara ) && (e->state() == Qt::NoButton) )
+  if ( (index < 4 || para < paragraphs()-1 ) && (e->state() == Qt::NoButton) )
   {
     // ignore all modifying events
     QString key = e->text();
@@ -420,60 +527,19 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
       // get the last paragraph text
       int para; int idx;
       getCursorPosition(&para, &idx);
-      QString txt = text(para-1);
+      QString line = text(para-1);
 
       // and skip the first 4 characters consisting of either ">>> " or "... "
-      txt = txt.mid(4);
+      line = line.mid(4);
+      // truncate the last whitespace that is appended from QTextEdit
+      line.truncate(line.length()-1);
 
       // put statement to the history
-      if ( txt.length() > 1 )
-      {
-        QString cmd = txt;
-        // truncate the last whitespace that is appended from QTextEdit
-        cmd.truncate( cmd.length()-1 );
-        _history.append( cmd );
-      }
+      if ( line.length() > 0 )
+        _history.append(line);
 
-      // insert tabs if needed
-      int tabs = tabsIndent( txt );
-      if ( isBlockComment( txt ) && tabs == 0 )
-      {
-        insertAt("... ", para, 0 );
-        moveCursor( MoveLineEnd, false );
-
-        // store paragraph where Python command starts
-        if ( _indent == false )
-          _startPara = para - 1;
-        _indent = true;
-        _blockComment = true;
-      }
-      else if ( _blockComment ) // just closed
-      {
-        _blockComment = false;
-        // recursive call to invoke performPythonCommand()
-        QKeyEvent ke( QEvent::KeyPress, Qt::Key_Return, '\n', Qt::NoButton );
-        QApplication::sendEvent( this, &ke );
-      }
-      else if ( tabs > 0 )
-      {
-        insertAt("... ", para, 0 );
-        if ( _autoTabs )
-        {
-          for ( int i=0; i<tabs; i++ )
-            insertAt("\t", para, i+4);
-        }
-        moveCursor( MoveLineEnd, false );
-
-        // store paragraph where Python command starts
-        if ( _indent == false )
-          _startPara = para - 1;
-        _indent = true;
-      }
-      else
-      {
-        // start Python interpreter here
-        performPythonCommand();
-      }
+      // evaluate and run the command
+      runSource(line);
     } break;
   case Qt::Key_Up:
     if ( e->state() & Qt::ControlModifier )
@@ -524,7 +590,7 @@ void PythonConsole::insertPythonError ( const QString& err )
 }
 
 /** Prints the ps1 prompt (>>> ) to the console window. */ 
-void PythonConsole::printPrompt()
+void PythonConsole::printPrompt(bool incomplete)
 {
   // write normal messages
   if (!_output.isEmpty())
@@ -543,64 +609,68 @@ void PythonConsole::printPrompt()
     _error = QString::null;
     pythonSyntax->highlightError(false);
   }
-  // prompt
-  append(">>> ");
 
-  // go to last the paragraph as we don't know sure whether Python 
-  // has written something to the console
-  _startPara = paragraphs() - 1;
-  setCursorPosition(_startPara, 0);
-  moveCursor( MoveLineEnd, false );
-  _indent = false;
+  if (incomplete) {
+    // store paragraph where Python command starts
+    _indent = true;
+    append("... ");
+    moveCursor( MoveLineEnd, false );
+  } else {
+    _indent = false;
+    // go to last the paragraph as we don't know sure whether Python 
+    // has written something to the console
+    append(">>> ");
+    setCursorPosition(paragraphs()-1, 0);
+    moveCursor( MoveLineEnd, false );
+  }
 }
 
 /**
- * Prints a Python command to the console.
+ * Builds up the Python command and pass it to the interpreter.
  */
-bool PythonConsole::printCommand( const QString& cmd )
+void PythonConsole::runSource(const QString& line)
 {
-  bool ok = true;
-  try
-  {
-    Base::Interpreter().runString("PyConsole.redirectStdout()");
-    Base::Interpreter().runString("PyConsole.redirectStderr()");
-    Base::Interpreter().runStringArg("print '%s'", cmd.latin1() );
-    Base::Interpreter().runString("PyConsole.restoreStdout()");
-    Base::Interpreter().runString("PyConsole.restoreStderr()");
-    _history.append( cmd );
-  }
-  catch( ... )
-  {
-    Base::Interpreter().runString("PyConsole.restoreStdout()");
-    Base::Interpreter().runString("PyConsole.restoreStderr()");
-    ok = false; // an error occurred
+  bool complete = false;
+  PySys_SetObject("stdout", d->_stdoutPy);
+  PySys_SetObject("stderr", d->_stderrPy);
+  try {
+    // launch the command now
+    complete = d->interpreter->push(line.toAscii());
+    setFocus(); // if focus was lost
+  } catch (const Base::SystemExitException&) {
+    int ret = QMessageBox::question(this, tr("System exit"), tr("The application is still running.\nDo you want to exit without saving your data?"),
+      QMessageBox::Yes, QMessageBox::No|QMessageBox::Escape|QMessageBox::Default);
+    if (ret == QMessageBox::Yes) {
+      Base::Interpreter().systemExit();
+    } else {
+      PyErr_Clear();
+    }
   }
 
-  printPrompt();
-
-  return ok;
+  PySys_SetObject("stdout", d->_stdout);
+  PySys_SetObject("stderr", d->_stderr);
+  printPrompt(complete);
 }
 
 /**
  * Prints the Python statement cmd to the console.
  * @note The statement gets only printed but not invoked.
  */
-bool PythonConsole::printStatement( const char* cmd )
+bool PythonConsole::printStatement( const QString& cmd )
 {
   // go to the last paragraph before inserting new text 
   int last = paragraphs() - 1;
   setCursorPosition(last, 0);
   moveCursor( MoveLineEnd, false );
 
-  QString line=cmd;
-  QStringList statements = QStringList::split( "\n", line );
+  QStringList statements = QStringList::split( "\n", cmd );
   for ( QStringList::Iterator it = statements.begin(); it != statements.end(); ++it )
   {
     // printed command
     insert( *it );
     _history.append( *it );
     // prompt
-    printPrompt();
+    printPrompt(false);
   }
 
   return true;
@@ -630,7 +700,7 @@ void PythonConsole::contentsDropEvent ( QDropEvent * e )
     for (int i=0; i<ctActions; i++) {
       QString action;
       dataStream >> action;
-      printCommand( QString("Gui.RunCommand(\"%1\")").arg(action));
+      printStatement( QString("Gui.RunCommand(\"%1\")").arg(action));
     }
 
     e->setDropAction(Qt::CopyAction);
@@ -660,115 +730,6 @@ void PythonConsole::contentsDragEnterEvent ( QDragEnterEvent * e )
     e->ignore();
 }
 
-/** Figures out how many tabs must be set next paragraph. 0 indicates that
- * the command must be build (maybe including previous paragraphs) and 
- * given to the Python interpreter.
- */
-int PythonConsole::tabsIndent( const QString& txt ) const
-{
-  int tabs=0;
-
-  // Check if this paragraph is empty (either really empty or consists of whitespace only)
-  QRegExp rx("^\\s+$");
-  if ( txt.find( rx ) == 0 )
-    return 0; // perform command
-  
-  // search for tabs
-  rx.setPattern("^\\s+");
-  if ( txt.find( rx ) == 0 )
-    tabs = rx.matchedLength(); // tabs found at the beginning
-  
-  // Check if Python keyword followed by any characters followed by a colon matches
-  rx.setPattern("\\b(?:class|def|eif|else|except|for|if|try|while)\\b.*:");
-  rx.setMinimal( true ); // not in greedy mode
-  int pos;
-  if ( (pos=txt.find( rx )) > -1 )
-  {
-    // furthermore check if the actual command follows the colon
-    QString cmd = txt.mid( pos + rx.matchedLength() );
-    QRegExp re("^\\s+$");
-    // whitespaces, thus we assume a new block begins
-    if ( cmd.find( re ) > -1) 
-      tabs++; // open new block
-  }
-
-  return tabs;
-}
-
-/**
- * Builds up the Python command and pass it to the interpreter.
- */
-bool PythonConsole::performPythonCommand()
-{
-  bool ok = true;
-  int para; int idx;
-  getCursorPosition(&para, &idx);
-
-  // Build up Python command from startPara to para
-  QString pyCmd;
-  if ( _startPara < para-1 )
-  {
-    for ( int i=_startPara; i<para-1; i++ )
-    {
-      // skip ">>> " or "... "
-      QString line = text( i ).mid( 4 );
-      if ( line.length() > 1 && !isComment(line) )
-      {
-        pyCmd += line;
-        pyCmd += "\n";
-      }
-    }
-  }
-  else
-  {
-    // skip ">>> " or "... "
-    QString line = text( para-1 ).mid( 4 );
-    if ( line.length() > 1 && !isComment(line) )
-    {
-      pyCmd += line;
-      pyCmd += "\n";
-    }
-  }
-
-  if ( !pyCmd.isEmpty() )
-  {
-    try
-    {
-      // launch the command now
-      Base::Interpreter().runString("PyConsole.redirectStdout()");
-      Base::Interpreter().runString("PyConsole.redirectStderr()");
-      Base::Interpreter().runInteractiveString( pyCmd.latin1() );
-      Base::Interpreter().runString("PyConsole.restoreStdout()");
-      Base::Interpreter().runString("PyConsole.restoreStderr()");
-      setFocus(); // if focus was lost
-    }
-    catch ( const Base::SystemExitException& )
-    {
-      int ret = QMessageBox::question(this, tr("System exit"), tr("The application is still running.\nDo you want to exit without saving your data?"),
-        QMessageBox::Yes, QMessageBox::No|QMessageBox::Escape|QMessageBox::Default);
-      if (ret == QMessageBox::Yes) {
-        Base::Interpreter().systemExit();
-      } else {
-        // Write Python's error output instead, if there is!
-        PyErr_Clear();
-        Base::Interpreter().runString("PyConsole.restoreStdout()");
-        Base::Interpreter().runString("PyConsole.restoreStderr()");
-      }
-    }
-    catch ( const Base::Exception& )
-    {
-      // Write Python's error output instead, if there is!
-      Base::Interpreter().runString("PyConsole.restoreStdout()");
-      Base::Interpreter().runString("PyConsole.restoreStderr()");
-      ok = false;
-    }
-  }
-
-  printPrompt();
-
-  return ok;
-}
-
 /**
  * Overwrites the text in paragraph \a para with \a txt.
  */
@@ -779,50 +740,6 @@ void PythonConsole::overwriteParagraph( int para, const QString& txt )
   del();
   setCursorPosition( para, 4 );
   insert( txt );
-}
-
-/**
- * Checks if the string \a text is a comment beginning with '#'. If so, then the line
- * is ignored and not given to the Python interpreter.
- */
-bool PythonConsole::isComment( const QString& text ) const
-{
-  int i = 0;
-  QChar ch;
-  bool ok=false;
-  while ( i < text.length() )
-  {
-    ch = text.at( i ).latin1();
-    if ( ch == '#' )
-    {
-      ok = true; // line comment
-      break;
-    }
-    else if ( ch == ' ' || ch == '\t' ) 
-    {
-      // white space -> continue
-    }
-    // first valid character is part of a command
-    else
-    {
-      ok = false;
-      break;
-    }
-
-    i++;
-  }
-
-  return ok;
-}
-
-bool PythonConsole::isBlockComment( const QString& ) const
-{
-  int mode = pythonSyntax->endStateOfLastParagraph();
-  // for the values 5 and 6 see PythonSyntaxHighlighter::highlightParagraph()
-  if ( mode == 5 || mode == 6 )
-    return true;
-  else
-    return false;
 }
 
 Q3PopupMenu * PythonConsole::createPopupMenu ( const QPoint & pos )
