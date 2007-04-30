@@ -330,24 +330,24 @@ libFreeCADGui_la_LIBADD   =\
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	$(QT_MOC) $(srcdir)/$< -o $(@F)
+	$(QT_MOC) $< -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	$(QT_MOC) $(srcdir)/$< -o $(@F)
+	$(QT_MOC) $< -o $(@F)
 
 # rules for Qt User Interface Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 ui_%.h: %.ui
-	$(QT_UIC) $(srcdir)/$< -o $(@F)
+	$(QT_UIC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
-	$(QT_RCC) -name $(*F) $(srcdir)/$< -o $(@F)
+	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 %Script.h: FreeCAD%.py
-	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(srcdir)/$< $@
+	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $< $@
 
 
 # set the include path found by configure

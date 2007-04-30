@@ -70,10 +70,10 @@ libFreeCADApp_la_SOURCES=\
 		VectorPy.h
 
 %Script.h: FreeCAD%.py
-	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $(srcdir)/$< $@
+	$(PYTHON) $(top_srcdir)/src/Tools/PythonToCPP.py $< $@
 
 %.cpp: %.xml
-	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $(srcdir)/$<
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 # the library search path.
 libFreeCADApp_la_LDFLAGS = -L../Base $(all_libraries) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@

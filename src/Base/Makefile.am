@@ -140,7 +140,7 @@ libFreeCADBase_la_SOURCES=\
 		XMLTools.h
 
 %.cpp: %.xml
-	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $(srcdir)/$<
+	$(PYTHON) $(top_srcdir)/src/Tools/generate.py --outputPath $(@D) $<
 
 libFreeCADBase_la_LIBADD   =  -l@PYTHON_LIB@ -lxerces-c -lz
 
