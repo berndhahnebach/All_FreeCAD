@@ -11,9 +11,11 @@ class TemplateClassPyExport (template.ModelTemplate):
 		#self.ParentNamespace = "Base"
 		#self.Namespace = "Base"
 		print "TemplateClassPyExport",self.path + self.export.Name
+		# Imp.cpp must not exist, neither in self.path nor in self.dirname
 		if(not os.path.exists(self.path + self.export.Name + "Imp.cpp")):
-			file = open(self.path + self.export.Name + "Imp.cpp",'w')
-			generateBase.generateTools.replace(self.TemplateImplement,locals(),file)
+			if(not os.path.exists(self.dirname + self.export.Name + "Imp.cpp")):
+				file = open(self.path + self.export.Name + "Imp.cpp",'w')
+				generateBase.generateTools.replace(self.TemplateImplement,locals(),file)
 		file = open(self.path + self.export.Name + ".cpp",'w')
 		generateBase.generateTools.replace(self.TemplateModule,locals(),file)
 		file = open(self.path + self.export.Name + ".h",'w')
