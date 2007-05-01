@@ -65,5 +65,6 @@ EXTRA_DIST = \
 		tstocpp.py \
 		qembed.py \
 		SubWCRev.py \
+		wiki2chm.py \
 		WixFileTool.py
 
