@@ -170,7 +170,7 @@ PYFUNCIMP_S(Application,sopen)
       Base::Interpreter().runString( cmd.ascii() );
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
-      PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
+      PythonEditView* edit = new PythonEditView(Name, getMainWindow());
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
     }
@@ -195,7 +195,7 @@ PYFUNCIMP_S(Application,sinsert)
       Base::Interpreter().runString( cmd.ascii() );
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
-      PythonEditView* edit = new PythonEditView( Name, getMainWindow(), "Editor" );
+      PythonEditView* edit = new PythonEditView(Name, getMainWindow());
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
     }

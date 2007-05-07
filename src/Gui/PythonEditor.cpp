@@ -63,11 +63,11 @@ struct PythonEditorP
 /* TRANSLATOR Gui::PythonEditor */
 
 /**
- *  Constructs a PythonEditor which is a child of 'parent', with the
- *  name 'name'. 
+ *  Constructs a PythonEditor which is a child of 'parent' and does the
+ *  syntax highlighting for the Python language. 
  */
-PythonEditor::PythonEditor(QWidget *parent,const char *name)
-    : TextEdit(parent, name), WindowParameter( "Editor" )
+PythonEditor::PythonEditor(QWidget* parent)
+  : TextEdit(parent), WindowParameter( "Editor" )
 {
   d = new PythonEditorP();
   pythonSyntax = new PythonSyntaxHighlighter(this);
@@ -81,10 +81,13 @@ PythonEditor::PythonEditor(QWidget *parent,const char *name)
   hPrefGrp->NotifyAll();
 
   // set acelerators
-  Q3Accel*  accelComment = new Q3Accel( this );
-  accelComment->connectItem( accelComment->insertItem( Qt::ALT + Qt::Key_C ),  this, SLOT( onComment() ) );
-  Q3Accel*  accelUncomment = new Q3Accel( this );
-  accelUncomment->connectItem( accelUncomment->insertItem( Qt::ALT + Qt::Key_U ), this, SLOT( onUncomment() ) );
+  QShortcut* comment = new QShortcut(this);
+  comment->setKey(Qt::ALT + Qt::Key_C);
+  connect(comment, SIGNAL(activated()), this, SLOT(onComment()));
+
+  QShortcut* uncomment = new QShortcut(this);
+  uncomment->setKey(Qt::ALT + Qt::Key_U);
+  connect(uncomment, SIGNAL(activated()), this, SLOT(onUncomment()));
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -97,7 +100,6 @@ PythonEditor::~PythonEditor()
 
 void PythonEditor::keyPressEvent ( QKeyEvent * e )
 {
-  bool ok=true;
   if ( e->key() == Qt::Key_Tab )
   {
     ParameterGrp::handle hPrefGrp = getWindowParameter();
@@ -106,22 +108,19 @@ void PythonEditor::keyPressEvent ( QKeyEvent * e )
 
     if ( space == true )
     {
-      ok = false;
-      int para, index;
-      QString str;
-      getCursorPosition ( &para, &index );
-      for ( int i=0; i<indent; i++ )
-        str += " ";
-      insertAt(str,para, index);
-      setCursorPosition ( para, index+indent );
+      QString str(indent, ' ');
+      QTextCursor cursor = textCursor();
+      cursor.beginEditBlock();
+      cursor.insertText(str);
+      cursor.endEditBlock();
+      return;
     }
   }
 
-  if ( ok )
-    Q3TextEdit::keyPressEvent( e );
+  QTextEdit::keyPressEvent( e );
 }
 
-/** Sets the new color for \a rcColor. */  
+/** Sets the font, font size and tab size of the editor. */  
 void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sReason )
 {
   ParameterGrp::handle hPrefGrp = getWindowParameter();
@@ -167,15 +166,15 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
   }
 }
 
-Q3PopupMenu * PythonEditor::createPopupMenu ( const QPoint & pos )
+void PythonEditor::contextMenuEvent ( QContextMenuEvent * e )
 {
-  Q3PopupMenu* menu = TextEdit::createPopupMenu(pos);
-  
-  menu->insertSeparator();
-  menu->insertItem( tr("Comment"), this, SLOT( onComment() ), Qt::ALT + Qt::Key_C );
-  menu->insertItem( tr("Uncomment"), this, SLOT( onUncomment() ), Qt::ALT + Qt::Key_U );
+  QMenu* menu = createStandardContextMenu();
+  menu->addSeparator();
+  menu->addAction( tr("Comment"), this, SLOT( onComment() ), Qt::ALT + Qt::Key_C );
+  menu->addAction( tr("Uncomment"), this, SLOT( onUncomment() ), Qt::ALT + Qt::Key_U );
 
-  return menu;
+  menu->exec(e->globalPos());
+  delete menu;
 }
 
 #if 0 //TODO Reimplement
@@ -328,8 +327,8 @@ public:
 /**
  * Constructs a Python syntax highlighter.
  */
-PythonSyntaxHighlighter::PythonSyntaxHighlighter(Q3TextEdit* edit)
-    : Q3SyntaxHighlighter(edit)
+PythonSyntaxHighlighter::PythonSyntaxHighlighter(QTextEdit* edit)
+    : QSyntaxHighlighter(edit)
 {
   d = new PythonSyntaxHighlighterP;
 }
@@ -407,17 +406,17 @@ QColor PythonSyntaxHighlighter::color( const QString& type )
 
 void PythonSyntaxHighlighter::colorChanged( const QString& type, const QColor& col )
 {
-  rehighlight();
+  // rehighlight
+  document()->setPlainText(document()->toPlainText());
 }
 
 /**
  * Detects all kinds of text to highlight them in the correct color.
  */
-int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
+void PythonSyntaxHighlighter::highlightBlock (const QString & text)
 {
   int i = 0;
   QChar prev, ch;
-  QString buffer;
 
   const int Standard      = 0;     // Standard text
   const int Digit         = 1;     // Digits
@@ -429,12 +428,13 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
   const int ClassName     = 7;     // Text after the keyword class
   const int DefineName    = 8;     // Text after the keyword def
 
-  if (endStateOfLastPara==-2) 
+  int endStateOfLastPara = previousBlockState();
+  if (endStateOfLastPara==-1) 
     endStateOfLastPara=Standard;
 
   while ( i < text.length() )
   {
-    ch = text.at( i ).latin1();
+    ch = text.at( i );
 
     switch ( endStateOfLastPara )
     {
@@ -451,7 +451,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
         case '"':
           {
             // Begin either string literal or block comment
-            if ( text.at(i-1) == '"' && text.at(i-2) == '"')
+            if ((i>=2) && text.at(i-1) == '"' && text.at(i-2) == '"')
             {
               setFormat( i-2, 3, d->cBlockcomment);
               endStateOfLastPara=Blockcomment1;
@@ -465,7 +465,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
         case '\'':
           {
             // Begin either string literal or block comment
-            if ( text.at(i-1) == '\'' && text.at(i-2) == '\'')
+            if ((i>=2) && text.at(i-1) == '\'' && text.at(i-2) == '\'')
             {
               setFormat( i-2, 3, d->cBlockcomment);
               endStateOfLastPara=Blockcomment2;
@@ -480,20 +480,14 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
         case '\t':
           {
             // ignore whitespaces
-            buffer = QString::null;
           } break;
         case '(': case ')': case '[': case ']': 
         case '+': case '-': case '*': case '/': 
-          {
-            setFormat( i, 1, d->cOperator );
-            endStateOfLastPara=Standard;
-            buffer = QString::null;
-          } break;
+        case ':': case '°': case '^': case '~': 
         case '!': case '=': case '<': case '>': // possibly two characters
           {
             setFormat( i, 1, d->cOperator );
             endStateOfLastPara=Standard;
-            buffer = QString::null;
           } break;
         default:
           {
@@ -501,15 +495,14 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
             if ( ch.isLetter() || ch == '_' )
             {
               QString buffer;
+              int j=i;
               while ( ch.isLetterOrNumber() || ch == '_' ) {
                 buffer += ch;
-                i++;
-                ch = text.at( i ).latin1();
+                ++j;
+                if (j >= text.length())
+                  break; // end of text
+                ch = text.at(j);
               }
-
-              // go back by one char
-              if ( buffer.length() > 0 )
-                i--;
 
               if ( d->keywords.contains( buffer ) != 0 ) {
                 if ( buffer == "def")
@@ -517,13 +510,18 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
                 else if ( buffer == "class")
                   endStateOfLastPara = ClassName;
 
-                QFont font = textEdit()->currentFont();
-                font.setBold( true );
-                setFormat( i - buffer.length()+1, buffer.length(),font,d->cKeyword);
+                QTextCharFormat keywordFormat;
+                keywordFormat.setForeground(d->cKeyword);
+                keywordFormat.setFontWeight(QFont::Bold);
+                setFormat( i, buffer.length(), keywordFormat);
               }
               else {
-                setFormat( i - buffer.length()+1, buffer.length(),d->cNormalText);
+                setFormat( i, buffer.length(),d->cNormalText);
               }
+
+              // increment i
+              if ( !buffer.isEmpty() )
+                i = j-1;
             }
             // this is the beginning of a number
             else if ( ch.isDigit() )
@@ -538,38 +536,33 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
             }
           }
         }
-      }break;
+      } break;
     case Comment:
       {
         setFormat( i, 1, d->cComment);
-        buffer = QString::null;
       } break;
     case Literal1:
       {
         setFormat( i, 1, d->cLiteral);
-        buffer = QString::null;
         if ( ch == '"' )
           endStateOfLastPara = Standard;
       } break;
     case Literal2:
       {
         setFormat( i, 1, d->cLiteral);
-        buffer = QString::null;
         if ( ch == '\'' )
           endStateOfLastPara = Standard;
       } break;
     case Blockcomment1:
       {
         setFormat( i, 1, d->cBlockcomment);
-        buffer = QString::null;
-        if ( ch == '"' && text.at(i-1) == '"' && text.at(i-2) == '"')
+        if ( i>=2 && ch == '"' && text.at(i-1) == '"' && text.at(i-2) == '"')
           endStateOfLastPara = Standard;
       } break;
     case Blockcomment2:
       {
         setFormat( i, 1, d->cBlockcomment);
-        buffer = QString::null;
-        if ( ch == '\'' && text.at(i-1) == '\'' && text.at(i-2) == '\'')
+        if ( i>=2 && ch == '\'' && text.at(i-1) == '\'' && text.at(i-2) == '\'')
           endStateOfLastPara = Standard;
       } break;
     case DefineName:
@@ -584,7 +577,6 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
             setFormat( i, 1, d->cOperator );
           endStateOfLastPara = Standard;
         }
-        buffer = QString::null;
       } break;
     case ClassName:
       {
@@ -598,7 +590,6 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
             setFormat( i, 1, d->cOperator );
           endStateOfLastPara = Standard;
         }
-        buffer = QString::null;
       } break;
     case Digit:
       {
@@ -612,7 +603,6 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
             setFormat( i, 1, d->cOperator );
           endStateOfLastPara = Standard;
         }
-        buffer = QString::null;
       }break;
     }
 
@@ -626,7 +616,7 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
     endStateOfLastPara = Standard ;
   } 
 
-  return endStateOfLastPara;
+  setCurrentBlockState(endStateOfLastPara);
 }
 
 // ------------------------------------------------------------------------
@@ -637,23 +627,26 @@ int PythonSyntaxHighlighter::highlightParagraph ( const QString & text, int endS
  *  Constructs a PythonEditView which is a child of 'parent', with the
  *  name 'name'.
  */
-PythonEditView::PythonEditView( const QString& file, QWidget* parent, const char* name)
-    : MDIView(0,parent, name, Qt::WDestructiveClose), WindowParameter( "Editor" )
+PythonEditView::PythonEditView( const QString& file, QWidget* parent)
+    : MDIView(0,parent, 0, Qt::WDestructiveClose), WindowParameter( "Editor" )
 {
-  Q3HBox* hbox = new Q3HBox( this );
-
   // create the editor first
   _textEdit = new PythonEditor(this);
-  _lineMarker = new LineMarker( reinterpret_cast<PythonEditor*>(_textEdit), hbox,"LineMarker");
-  // and reparent it 
-  _textEdit->reparent(hbox, QPoint());
-  _lineMarker->show();
-  _textEdit->setWordWrap( Q3TextEdit::NoWrap );
-  setIcon( Gui::BitmapFactory().pixmap("python_small") );
-
-
+  _textEdit->setLineWrapMode( QTextEdit::NoWrap );
   setFocusProxy( _textEdit );
-  setCentralWidget( hbox );
+  _lineMarker = new LineMarker( reinterpret_cast<PythonEditor*>(_textEdit), this,"LineMarker");
+
+  // Create the layout containing the workspace and a tab bar
+  QFrame* hbox = new QFrame(this);
+  hbox->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
+  QHBoxLayout* layout = new QHBoxLayout();
+  layout->setMargin(1);
+  layout->addWidget(_lineMarker);
+  layout->addWidget(_textEdit);
+  hbox->setLayout(layout);
+  setCentralWidget(hbox);
+
+  setIcon( Gui::BitmapFactory().pixmap("python_small") );
 
   ParameterGrp::handle hPrefGrp = getWindowParameter();
   hPrefGrp->Attach( this );
@@ -671,8 +664,6 @@ PythonEditView::~PythonEditView()
   _pcActivityTimer->stop();
   delete _pcActivityTimer;
   getWindowParameter()->Detach( this );
-  delete _textEdit;
-  delete _lineMarker;
 }
 
 void PythonEditView::OnChange( Base::Subject<const char*> &rCaller,const char* rcReason )
@@ -694,8 +685,9 @@ void PythonEditView::checkTimestamp()
   uint timeStamp =  fi.lastModified().toTime_t();
   if ( timeStamp != _timeStamp )
   {
-    switch( QMessageBox::question( this, tr("Modified file"), tr("%1.\n\nThis has been modified outside of the source editor. Do you want to reload it?").arg( _fileName ),
-                                   QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape) )
+    switch( QMessageBox::question( this, tr("Modified file"), 
+      tr("%1.\n\nThis has been modified outside of the source editor. Do you want to reload it?").arg( _fileName ),
+      QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape) )
     {
     case QMessageBox::Yes:
       // updates time stamp and timer
@@ -958,7 +950,7 @@ void PythonEditView::redo(void)
  * Shows the printer dialog.
  */
 void PythonEditView::print()
-{
+{/*
 #ifndef QT_NO_PRINTER
   QPrinter printer( QPrinter::HighResolution );
   int pageNo = 1;
@@ -1006,7 +998,7 @@ void PythonEditView::print()
 
     p.end();
   }
-#endif
+#endif*/
 }
 
 /**

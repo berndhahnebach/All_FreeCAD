@@ -23,28 +23,22 @@
 
 #include "PreCompiled.h"
 
-//#ifndef _PreComp_
-//# include <q3accel.h>
-//# include <qapplication.h>
-//# include <q3listbox.h>
-//# include <qregexp.h>
-////Added by qt3to4:
-//#include <QMouseEvent>
-//#endif
+#ifndef _PreComp_
+#endif
 
 #include "TextEdit.h"
 
 using namespace Gui;
 
 /**
- *  Constructs a TextEdit which is a child of 'parent', with the
- *  name 'name' and installs the Python syntax highlighter.
+ *  Constructs a TextEdit which is a child of 'parent'.
  */
-TextEdit::TextEdit(QWidget *parent,const char *name)
-    : Q3TextEdit(parent, name), listBox( 0 )
+TextEdit::TextEdit(QWidget* parent)
+  : QTextEdit(parent), listBox(0)
 {
-  Q3Accel *accel = new Q3Accel(this);
-  accel->connectItem(accel->insertItem(Qt::CTRL+Qt::Key_Space), this, SLOT(complete()));
+  QShortcut* shortcut = new QShortcut(this);
+  shortcut->setKey(Qt::CTRL+Qt::Key_Space);
+  connect(shortcut, SIGNAL(activated()), this, SLOT(complete()));
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -57,11 +51,11 @@ TextEdit::~TextEdit()
  */
 void TextEdit::complete()
 {
-  int cursorPara;
-  int cursorPos;
-  getCursorPosition(&cursorPara, &cursorPos);
-
-  QString para = text(cursorPara);
+  QTextBlock block = textCursor().block();
+  if (!block.isValid())
+    return;
+  int cursorPos = textCursor().position()-block.position();
+  QString para = block.text();
   int wordStart = cursorPos;
   while (wordStart > 0 && para[wordStart - 1].isLetterOrNumber())
     --wordStart;
@@ -84,14 +78,13 @@ void TextEdit::complete()
     if (!listBox)
       createListBox();
     listBox->clear();
-    listBox->insertStringList(map.values());
+    listBox->addItems(map.values());
 
     QPoint point = textCursorPoint();
-    adjustListBoxSize(qApp->desktop()->height() - point.y(), width() / 2);
+    listBox->adjustListBoxSize(qApp->desktop()->height() - point.y(), width() / 2);
     point.setX( point.x()+5 ); // insert space
-    int h = visibleHeight();
     // list box is (partly) hidden
-    if ( point.y() + listBox->height() > h )
+    if ( point.y() + listBox->height() > height() )
       point.setY( point.y() - listBox->height() );
     listBox->popup( point );
   }
@@ -102,21 +95,18 @@ void TextEdit::complete()
  */
 QPoint TextEdit::textCursorPoint() const
 {
-  int cursorPara;
-  int cursorPos;
-  getCursorPosition(&cursorPara, &cursorPos);
-  QRect rect = paragraphRect(cursorPara);
+  QTextCursor cursor = textCursor();
+  QTextBlock block = cursor.block();
+  QRect rect = cursorRect(cursor);
   QPoint point(rect.left(), rect.bottom());
-  while (charAt(point, 0) < cursorPos)
-    point.rx() += 10;
-  return mapToGlobal(contentsToViewport(point));
+  return mapToGlobal(point);
 }
 
 /**
  * If an item was chosen (either by clicking or pressing enter) the rest of the word is completed.
  * The listbox is closed without destroying it.
  */
-void TextEdit::itemChosen(Q3ListBoxItem *item)
+void TextEdit::itemChosen(QListWidgetItem *item)
 {
   if (item)
     insert(item->text().mid(wordPrefix.length()));
@@ -130,63 +120,81 @@ void TextEdit::itemChosen(Q3ListBoxItem *item)
  */
 void TextEdit::createListBox()
 {
-  listBox = new CompletionBox(this, "listBox");
-  Q3Accel *accel = new Q3Accel(listBox);
-  accel->connectItem(accel->insertItem(Qt::Key_Escape), listBox, SLOT(close()));
-
-  connect(listBox, SIGNAL(clicked(Q3ListBoxItem *)),
-            this, SLOT(itemChosen(Q3ListBoxItem *)));
-  connect(listBox,
-            SIGNAL(returnPressed(Q3ListBoxItem *)),
-            this, SLOT(itemChosen(Q3ListBoxItem *)));
-}
-
-void TextEdit::adjustListBoxSize(int maxHeight, int maxWidth)
-{
-  if (!listBox->count())
-    return;
-  int totalHeight = listBox->itemHeight(0) * listBox->count();
-  if (listBox->variableHeight()) {
-    totalHeight = 0;
-    for (int i = 0; i < (int)listBox->count(); ++i)
-      totalHeight += listBox->itemHeight(i);
-   }
-   listBox->setFixedHeight(QMIN(totalHeight+20, maxHeight));
-   listBox->setFixedWidth(qMin<int>(listBox->maxItemWidth()+20, maxWidth));
+  listBox = new CompletionBox(this);
+  connect(listBox, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(itemChosen(QListWidgetItem *)));
 }
 
 // ------------------------------------------------------------------------------
 
-CompletionBox::CompletionBox( QWidget* parent, const char*  name )
-  :  Q3ListBox( parent, name, Qt::WType_Popup )
+CompletionBox::CompletionBox(QWidget* parent)
+  :  QWidget(parent)
 {
-  setFrameStyle( WinPanel|Raised );
-  setMouseTracking( true );
-  setMargin(3);
+  setWindowFlags(Qt::Popup);
+  listView = new QListWidget(this);
+  connect(listView, SIGNAL(itemClicked(QListWidgetItem *)), this, SIGNAL(itemClicked(QListWidgetItem *)));
+
+  QVBoxLayout *layout = new QVBoxLayout;
+  layout->setMargin(3);
+  layout->addWidget(listView);
+  setLayout(layout);
+
+  listView->installEventFilter(this);
 }
 
 CompletionBox::~CompletionBox()
 {
+  listView->removeEventFilter(this);
 }
 
-void CompletionBox::popup( const QPoint& pos )
+void CompletionBox::popup(const QPoint& pos)
 {
-  move( pos );
+  move(pos);
   show();
+  listView->setFocus();
   // select the first item
-  setSelected ( 0, true );
-//  raise();
-//  setFocus();
+  listView->setCurrentRow(0);
 }
 
-void CompletionBox::mousePressEvent( QMouseEvent* e )
+void CompletionBox::adjustListBoxSize(int maxHeight, int maxWidth)
 {
-  Q3ListBox::mousePressEvent( e );
-  // if the mouse button was pressed outside
-  if  (!rect().contains( e->pos() ))
-  {
-    close();
+  if (!listView->count())
+    return;
+
+  QFontMetrics fm(listView->font());
+  int totalHeight = 0;
+  int maxItemWidth = 0;
+
+  for (int i = 0; i < (int)listView->count(); ++i) {
+    QString text = listView->item(i)->text();
+    maxItemWidth = qMax<int>(maxItemWidth, fm.width(text));
+    totalHeight += fm.height();
   }
+  
+  setFixedHeight(qMin<int>(totalHeight+40, maxHeight));
+  setFixedWidth(qMin<int>(maxItemWidth+40, maxWidth));
+}
+
+void CompletionBox::addItems(const QStringList& items)
+{
+  listView->addItems(items);
+}
+
+void CompletionBox::clear()
+{
+  listView->clear();
+}
+
+bool CompletionBox::eventFilter(QObject * watched, QEvent * event)
+{
+  if (watched == listView && event->type() == QEvent::KeyPress) {
+    QKeyEvent *keyEvent = static_cast<QKeyEvent*>(event);
+    if (keyEvent->key() == Qt::Key_Return) {
+      itemClicked(listView->currentItem());
+      return true;
+    }
+  }
+
+  return QWidget::eventFilter(watched, event);
 }
 
 #include "moc_TextEdit.cpp" 

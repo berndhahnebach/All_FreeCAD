@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef PYTHON_CONSOLE_H
-#define PYTHON_CONSOLE_H
+#ifndef GUI_PYTHONCONSOLE_H
+#define GUI_PYTHONCONSOLE_H
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
@@ -111,16 +111,16 @@ public Q_SLOTS:
   void onInsertFileName();
 
 protected:
-  void keyPressEvent          ( QKeyEvent         * e );
-  void showEvent              ( QShowEvent        * e );
-  void contentsDropEvent      ( QDropEvent        * e );
-  void contentsDragEnterEvent ( QDragEnterEvent   * e );
-  void contentsDragMoveEvent  ( QDragMoveEvent    * e );
+  void keyPressEvent  ( QKeyEvent         * e );
+  void showEvent      ( QShowEvent        * e );
+  void dropEvent      ( QDropEvent        * e );
+  void dragEnterEvent ( QDragEnterEvent   * e );
+  void dragMoveEvent  ( QDragMoveEvent    * e );
 
-  void overwriteParagraph( int para, const QString& txt );
+  void overrideCursor(const QString& txt);
 
   /** Pops up the context menu with some extensions */
-  Q3PopupMenu * createPopupMenu ( const QPoint & pos );
+  void contextMenuEvent ( QContextMenuEvent* e );
 
 private:
   void runSource(const QString&);
@@ -149,10 +149,10 @@ private:
 class GuiExport PythonConsoleHighlighter : public PythonSyntaxHighlighter
 {
 public:
-  PythonConsoleHighlighter(Q3TextEdit* );
+  PythonConsoleHighlighter(QTextEdit* );
   ~PythonConsoleHighlighter();
 
-  int highlightParagraph ( const QString & text, int endStateOfLastPara );
+  void highlightBlock ( const QString & text );
 
   void highlightOutput (bool b);
   void highlightError (bool b);
@@ -161,15 +161,10 @@ protected:
   void colorChanged( const QString& type, const QColor& col );
 
 private:
-  int endStateOfLastParagraph() const;
-
-private:
   bool _output, _error;
-  int _endState;
-
   friend class PythonConsole;
 };
 
 } // namespace Gui
 
-#endif // __PYTHON_EDITOR_H__
+#endif // GUI_PYTHONCONSOLE_H
