@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef TEXT_EDIT_H_
-#define TEXT_EDIT_H_
+#ifndef GUI_TEXTEDIT_H
+#define GUI_TEXTEDIT_H
 
 #include "View.h"
 #include "Window.h"
@@ -34,16 +34,6 @@
 #ifndef __Qt3All__
 # include "Qt3All.h"
 #endif
-
-//#include <q3listbox.h>
-//#include <q3textedit.h>
-////#include <q3textdocument.h>
-////Added by qt3to4:
-//#include <QtGui/QMouseEvent>
-////#include <private/qrichtext_p.h>
-
-//class Q3ListBox;
-//class Q3ListBoxItem;
 
 namespace Gui {
 class CompletionBox;
@@ -65,26 +55,20 @@ class CompletionBox;
  * \remark The original sources are taken from Qt Quarterly (Customizing for Completion).
  * \author Werner Mayer
  */
-class GuiExport TextEdit : public Q3TextEdit
+class GuiExport TextEdit : public QTextEdit
 {
   Q_OBJECT
 
 public:
-  TextEdit(QWidget *parent = 0,const char *name = 0);
+  TextEdit(QWidget *parent = 0);
   virtual ~TextEdit();
-
-  Q3TextDocument *document() const 
-  { 
-    return Q3TextEdit::document(); 
-  }
 
 private Q_SLOTS:
   void complete();
-  void itemChosen( Q3ListBoxItem *item );
+  void itemChosen(QListWidgetItem *item);
 
 private:
   void createListBox();
-  void adjustListBoxSize(int maxHeight = 32767, int maxWidth = 32767);
   QPoint textCursorPoint() const;
 
 private:
@@ -94,27 +78,35 @@ private:
 
 /**
  * The CompletionBox class provides a list box that pops up in a text edit if the user has pressed
- * an accelerator to complete the current word he is typing in..
+ * an accelerator to complete the current word he is typing in.
  * @author Werner Mayer
  */
-class CompletionBox : public Q3ListBox
+class CompletionBox : public QWidget
 {
+    Q_OBJECT
+
 public:
   /// Construction
-  CompletionBox( QWidget* parent = 0, const char*  name=0 );
+  CompletionBox(QWidget* parent = 0);
   /// Destruction
   ~CompletionBox();
 
   /// Opens the list box at position \a pos.
-  void popup( const QPoint& pos );
+  void popup(const QPoint& pos);
+  void clear();
+  void addItems(const QStringList&);
+  void adjustListBoxSize(int maxHeight = 32767, int maxWidth = 32767);
+
+Q_SIGNALS:
+  void itemClicked(QListWidgetItem *);
 
 protected:
-  void mousePressEvent( QMouseEvent * );
+  bool eventFilter(QObject *, QEvent *);
     
 private:
-  QWidget* popupParent;
+  QListWidget* listView;
 };
 
 } // namespace Gui
 
-#endif // TEXT_EDIT_H_
+#endif // GUI_TEXTEDIT_H

@@ -51,7 +51,7 @@ class GuiExport PythonEditor : public TextEdit, public WindowParameter
   Q_OBJECT
 
 public:
-  PythonEditor(QWidget *parent = 0,const char *name = 0);
+  PythonEditor(QWidget *parent = 0);
   ~PythonEditor();
 
   void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
@@ -71,7 +71,7 @@ public Q_SLOTS:
 protected:
   void keyPressEvent ( QKeyEvent * e );
   /** Pops up the context menu with some extensions */
-  Q3PopupMenu * createPopupMenu ( const QPoint & pos );
+  void contextMenuEvent ( QContextMenuEvent* e );
 
 private:
   PythonSyntaxHighlighter* pythonSyntax;
@@ -82,13 +82,13 @@ private:
  * Syntax highlighter for Python.
  * \author Werner Mayer
  */
-class GuiExport PythonSyntaxHighlighter : public Q3SyntaxHighlighter
+class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
 {
 public:
-  PythonSyntaxHighlighter(Q3TextEdit* );
+  PythonSyntaxHighlighter(QTextEdit* );
   virtual ~PythonSyntaxHighlighter();
 
-  int highlightParagraph ( const QString & text, int endStateOfLastPara );
+  void highlightBlock ( const QString & text );
   
   void setColor( const QString& type, const QColor& col );
   QColor color( const QString& type );
@@ -132,11 +132,11 @@ class GuiExport PythonEditView : public MDIView, public WindowParameter
   Q_OBJECT
 
 public:
-  PythonEditView( const QString& file, QWidget* parent, const char* name );
+  PythonEditView(const QString& file, QWidget* parent);
   ~PythonEditView();
 
-  void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
-  Q3TextEdit* editor() const { return _textEdit; }
+  void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
+  QTextEdit* editor() const { return _textEdit; }
 
   const char *getName(void) const {return "PythonEditView";}
   void onUpdate(void){};
@@ -174,7 +174,7 @@ private:
 
 private:
   LineMarker* _lineMarker;
-  Q3TextEdit* _textEdit;
+  QTextEdit* _textEdit;
   QString _fileName;
   QTimer*  _pcActivityTimer;
   uint _timeStamp;

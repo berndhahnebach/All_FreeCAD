@@ -268,8 +268,7 @@ PythonConsole::PythonConsole(QWidget *parent)
   setTabStopWidth(32);
   // disable undo/redo stuff
   setUndoRedoEnabled( false );
-  setAcceptDrops( TRUE );
-  viewport()->setAcceptDrops( TRUE );
+  setAcceptDrops( true );
 
   // try to override Python's stdout/err
   d->_stdoutPy = new PythonStdoutPy(this);
@@ -285,6 +284,10 @@ PythonConsole::PythonConsole(QWidget *parent)
   _output = QString("Python %1 on + %2\n"
     "Type 'help', 'copyright', 'credits' or 'license' for more information.").arg(version).arg(platform);
   printPrompt(false);
+
+
+  _history.append("import sys");
+  _history.append("dir(sys)");
 }
 
 /** Destroys the object and frees any allocated resources */
@@ -300,7 +303,7 @@ PythonConsole::~PythonConsole()
 
 /** Sets the new color for \a rcColor. */  
 void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sReason )
-{
+{/*
   ParameterGrp::handle hPrefGrp = getWindowParameter();
 
   QFont font = currentFont();
@@ -340,7 +343,7 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
       color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
       pythonSyntax->setColor( sReason, color );
     }
-  }
+  }*/
 }
 
 /** 
@@ -348,7 +351,7 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
  * event is performed. 
  */
 void PythonConsole::doKeyboardAction ( KeyboardAction action )
-{
+{/*
   int para, index;
   getCursorPosition ( &para, &index );
 
@@ -381,7 +384,7 @@ void PythonConsole::doKeyboardAction ( KeyboardAction action )
     }
   }
 
-  TextEdit::doKeyboardAction( action );
+  TextEdit::doKeyboardAction( action );*/
 }
 
 /** Clears the content and writes the propmpt. */
@@ -394,7 +397,7 @@ void PythonConsole::clear ()
 }
 
 void PythonConsole::removeSelectedText ( int selNum )
-{
+{/*
   int paraFrom, indexFrom, paraTo, indexTo;
   getSelection (&paraFrom, &indexFrom, &paraTo, &indexTo, selNum);
 
@@ -402,12 +405,12 @@ void PythonConsole::removeSelectedText ( int selNum )
   if (paraTo == paragraphs()-1 && indexTo >= 4)
     TextEdit::removeSelectedText(selNum);
   else
-    QApplication::beep();
+    QApplication::beep();*/
 }
 
 /** Allows pasting in the active line only. */
 void PythonConsole::paste()
-{
+{/*
   int para, index, indexFrom, paraTo, indexTo;
   int paraFrom = paragraphs()-1;
   getCursorPosition ( &para, &index );
@@ -418,7 +421,7 @@ void PythonConsole::paste()
   if ( (paragraphs()-1 <= para) && index > 3 && paragraphs()-1 <= paraFrom )
     TextEdit::paste();
   else
-    QApplication::beep();
+    QApplication::beep();*/
 }
 
 /**
@@ -499,7 +502,7 @@ void PythonConsole::cut()
  * After a command is prompted completely the Python interpreter is started.
  */
 void PythonConsole::keyPressEvent(QKeyEvent * e)
-{
+{/*
   // find current cursor position
   int para, index;
   getCursorPosition ( &para, &index );
@@ -514,9 +517,96 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
       setCursorPosition( paragraphs()-1, 0 );
       moveCursor( MoveLineEnd, false );
     }
-  }
+  }*/
 
-  TextEdit::keyPressEvent(e);
+    if (e->modifiers() & Qt::ControlModifier) {
+        switch( e->key() ) 
+        {
+        case Qt::Key_X:
+        case Qt::Key_F20:  // Cut key on Sun keyboards
+            {
+                QTextCursor cursor = textCursor();
+                if (cursor.hasSelection()) {
+                    QTextBlock block = cursor.block();
+                    int pos = cursor.position();
+                    int beg = cursor.selectionStart();
+
+                    QTextBlock b;
+                    int line=0;
+                    for (b = document()->begin();b!=document()->end();b = b.next()){
+                        if (b==block)
+                            break;
+                        line++;
+                    }
+
+
+                    // must be in the last line
+                    QTextBlock last = document()->end();
+                    last = last.previous();
+                    if (block != last) {
+                        cursor.beginEditBlock();
+                        cursor.clearSelection();
+                        cursor.endEditBlock();
+                        QApplication::beep();
+                        return;
+                    }
+                    //int paraFrom, indexFrom, paraTo, indexTo;
+                    //getSelection (&paraFrom, &indexFrom, &paraTo, &indexTo, selNum);
+
+                    //// cannot remove ">>> " or "... "
+                    //if (paraTo == paragraphs()-1 && indexTo >= 4)
+                    //    TextEdit::removeSelectedText(selNum);
+                    //else
+                    //    QApplication::beep();
+                }
+            } break;
+        case Qt::Key_V:
+        case Qt::Key_F18:  // Paste key on Sun keyboards
+            //paste();
+            break;
+        case Qt::Key_Backspace:
+            //d->cursor.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
+            //goto process;
+            break;
+        case Qt::Key_Delete:
+            //d->cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
+            //goto process;
+            break;
+        case Qt::Key_K: {
+            //QTextBlock block = d->cursor.block();
+            //if (d->cursor.position() == block.position() + block.length() - 2)
+            //    d->cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
+            //else
+            //    d->cursor.movePosition(QTextCursor::EndOfBlock, QTextCursor::KeepAnchor);
+            //d->cursor.deleteChar();
+            break;
+        }
+        case Qt::Key_Up:
+        {
+            if ( !_history.isEmpty() )
+            {
+                if ( _history.prev() )
+                {
+                    QString cmd = _history.value();
+                    overrideCursor(cmd);
+                }   return;
+            }
+        }   break;
+        case Qt::Key_Down:
+        {
+            if ( !_history.isEmpty() )
+            {
+                if ( _history.next() )
+                {
+                    QString cmd = _history.value();
+                    overrideCursor(cmd);
+                }   return;
+            }
+        }   break;
+        default:
+            break;
+        }
+    }
 
   switch (e->key())
   {
@@ -525,14 +615,11 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
   case Qt::Key_Enter:
     {
       // get the last paragraph text
-      int para; int idx;
-      getCursorPosition(&para, &idx);
-      QString line = text(para-1);
+      QTextBlock block = textCursor().block();
+      QString line = block.text();
 
       // and skip the first 4 characters consisting of either ">>> " or "... "
       line = line.mid(4);
-      // truncate the last whitespace that is appended from QTextEdit
-      line.truncate(line.length()-1);
 
       // put statement to the history
       if ( line.length() > 0 )
@@ -541,34 +628,10 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
       // evaluate and run the command
       runSource(line);
     } break;
-  case Qt::Key_Up:
-    if ( e->state() & Qt::ControlModifier )
-    {
-      if ( !_history.isEmpty() )
-      {
-        if ( _history.prev() )
-        {
-          QString cmd = _history.value();
-          overwriteParagraph( paragraphs()-1, cmd );
-        }
-      }
-    }
-    break;
-  case Qt::Key_Down:
-    if ( e->state() & Qt::ControlModifier )
-    {
-      if ( !_history.isEmpty() )
-      {
-        if ( _history.next() )
-        {
-          QString cmd = _history.value();
-          overwriteParagraph( paragraphs()-1, cmd );
-        }
-      }
-    }
-    break;
-  default: break;
-  }
+  default: 
+      TextEdit::keyPressEvent(e);
+      break;
+  }  
 }
 
 /**
@@ -620,8 +683,8 @@ void PythonConsole::printPrompt(bool incomplete)
     // go to last the paragraph as we don't know sure whether Python 
     // has written something to the console
     append(">>> ");
-    setCursorPosition(paragraphs()-1, 0);
-    moveCursor( MoveLineEnd, false );
+//    setCursorPosition(paragraphs()-1, 0);
+//    moveCursor( MoveLineEnd, false );
   }
 }
 
@@ -659,9 +722,9 @@ void PythonConsole::runSource(const QString& line)
 bool PythonConsole::printStatement( const QString& cmd )
 {
   // go to the last paragraph before inserting new text 
-  int last = paragraphs() - 1;
-  setCursorPosition(last, 0);
-  moveCursor( MoveLineEnd, false );
+  //int last = paragraphs() - 1;
+  //setCursorPosition(last, 0);
+  //moveCursor( MoveLineEnd, false );
 
   QStringList statements = QStringList::split( "\n", cmd );
   for ( QStringList::Iterator it = statements.begin(); it != statements.end(); ++it )
@@ -689,7 +752,7 @@ void PythonConsole::showEvent ( QShowEvent * e )
 /**
  * Drops the event \a e and writes the right Python command.
  */
-void PythonConsole::contentsDropEvent ( QDropEvent * e )
+void PythonConsole::dropEvent ( QDropEvent * e )
 {
   const QMimeData* mimeData = e->mimeData();
   if ( mimeData->hasFormat("text/x-action-items") ) {
@@ -711,7 +774,7 @@ void PythonConsole::contentsDropEvent ( QDropEvent * e )
 }
 
 /** Dragging of action objects is allowed. */ 
-void PythonConsole::contentsDragMoveEvent( QDragMoveEvent *e )
+void PythonConsole::dragMoveEvent( QDragMoveEvent *e )
 {
   const QMimeData* mimeData = e->mimeData();
   if ( mimeData->hasFormat("text/x-action-items") )
@@ -721,7 +784,7 @@ void PythonConsole::contentsDragMoveEvent( QDragMoveEvent *e )
 }
 
 /** Dragging of action objects is allowed. */ 
-void PythonConsole::contentsDragEnterEvent ( QDragEnterEvent * e )
+void PythonConsole::dragEnterEvent ( QDragEnterEvent * e )
 {
   const QMimeData* mimeData = e->mimeData();
   if ( mimeData->hasFormat("text/x-action-items") )
@@ -731,23 +794,30 @@ void PythonConsole::contentsDragEnterEvent ( QDragEnterEvent * e )
 }
 
 /**
- * Overwrites the text in paragraph \a para with \a txt.
+ * Overwrites the text of the cursor.
  */
-void PythonConsole::overwriteParagraph( int para, const QString& txt )
+void PythonConsole::overrideCursor(const QString& txt)
 {
-  QString oldText = text( para );
-  setSelection( para, 4, para, oldText.length() );
-  del();
-  setCursorPosition( para, 4 );
-  insert( txt );
+    // Go to the last line and the fourth position, right after the prompt
+    QTextCursor cursor = textCursor();
+    QTextBlock block = cursor.block();
+    cursor.movePosition(QTextCursor::End);
+    cursor.movePosition(QTextCursor::StartOfLine);
+    cursor.movePosition(QTextCursor::Right, QTextCursor::MoveAnchor, 4);
+    cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, block.text().length());
+    cursor.removeSelectedText();
+    cursor.insertText(txt);
 }
 
-Q3PopupMenu * PythonConsole::createPopupMenu ( const QPoint & pos )
+void PythonConsole::contextMenuEvent ( QContextMenuEvent * e )
 {
-  Q3PopupMenu* menu = Q3TextEdit::createPopupMenu(pos);
-  menu->insertItem( tr("Save history as..."), this, SLOT(onSaveHistoryAs()));
-  menu->insertItem( tr("Insert file name..."), this, SLOT(onInsertFileName()));
-  return menu;
+    QMenu* menu = createStandardContextMenu();
+    menu->addSeparator();
+    menu->addAction( tr("Save history as..."), this, SLOT(onSaveHistoryAs()));
+    menu->addAction( tr("Insert file name..."), this, SLOT(onInsertFileName()));
+
+    menu->exec(e->globalPos());
+    delete menu;
 }
 
 void PythonConsole::onSaveHistoryAs()
@@ -773,19 +843,21 @@ void PythonConsole::onSaveHistoryAs()
 
 void PythonConsole::onInsertFileName()
 {
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "All Files (*.*)", Gui::getMainWindow() );
-	if ( fn.isEmpty() )
-		return;
-
-  //fn.replace('\\',"/");
-  insert( fn );
-
+    QString fn = Gui::FileDialog::getOpenFileName(QString::null, "All Files (*.*)", Gui::getMainWindow());
+    if ( fn.isEmpty() )
+        return;
+    insertPlainText(fn);
 }
 
 // ---------------------------------------------------------------------
 
-PythonConsoleHighlighter::PythonConsoleHighlighter(Q3TextEdit* edit)
-  : PythonSyntaxHighlighter(edit),_output(false), _error(false), _endState(-2)
+struct OutputData : public QTextBlockUserData
+{
+    int outputType;
+};
+
+PythonConsoleHighlighter::PythonConsoleHighlighter(QTextEdit* edit)
+  : PythonSyntaxHighlighter(edit),_output(false), _error(false)
 {
 }
 
@@ -793,49 +865,46 @@ PythonConsoleHighlighter::~PythonConsoleHighlighter()
 {
 }
 
-int PythonConsoleHighlighter::highlightParagraph ( const QString & text, int endStateOfLastPara )
+void PythonConsoleHighlighter::highlightBlock ( const QString & text )
 {
   const int ErrorOutput   = 20;
   const int MessageOutput = 21;
 
+  int endStateOfLastPara = 0;
   if ( _output )
     endStateOfLastPara=MessageOutput;
   else if ( _error )
     endStateOfLastPara=ErrorOutput;
-  else if ( endStateOfLastPara==MessageOutput || endStateOfLastPara==ErrorOutput)
-    endStateOfLastPara=0;
+
+  OutputData* data = (OutputData*)currentBlockUserData();
+  if (!data) {
+    data = new OutputData;
+    data->outputType = endStateOfLastPara;
+    setCurrentBlockUserData(data);
+  } else {
+      endStateOfLastPara = data->outputType;
+  }
 
   switch ( endStateOfLastPara )
   {
   case ErrorOutput:
     {
       // begin a comment
-      QFont font = textEdit()->currentFont();
-      font.setBold( false );
-      font.setItalic( true );
-      setFormat( 0, text.length(), font, color("Python error"));
-      endStateOfLastPara=ErrorOutput;
+      QTextCharFormat errorFormat;
+      errorFormat.setForeground(color("Python error"));
+      errorFormat.setFontItalic(true);
+      setFormat( 0, text.length(), errorFormat);
     } break;
   case MessageOutput:
     {
       // begin a comment
       setFormat( 0, text.length(), color("Python output"));
-      endStateOfLastPara=MessageOutput;
     } break;
   default:
     {
-      endStateOfLastPara=PythonSyntaxHighlighter::highlightParagraph( text, endStateOfLastPara );
+      PythonSyntaxHighlighter::highlightBlock(text);
     } break;
   }
-
-  _endState = endStateOfLastPara;
-
-  return endStateOfLastPara;
-}
-
-int PythonConsoleHighlighter::endStateOfLastParagraph() const
-{
-  return _endState;
 }
 
 void PythonConsoleHighlighter::colorChanged( const QString& type, const QColor& col )

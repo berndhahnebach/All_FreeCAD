@@ -178,7 +178,7 @@ void DlgMacroExecuteImp::on_createButton_clicked()
     else
     {
       QString file = QString("%1/%2").arg(dir.absPath()).arg( fn );
-      PythonEditView* edit = new PythonEditView( file, getMainWindow(), "Editor" );
+      PythonEditView* edit = new PythonEditView(file, getMainWindow());
       edit->setWindowTitle( fn );
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
