@@ -148,8 +148,8 @@ void DlgSettingsEditorImp::saveSettings()
   for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it)
     hGrp->SetUnsigned((*it).first.latin1(), (*it).second);
 
-  hGrp->SetASCII( "FontSize", FontSize->currentText().latin1() );
-  hGrp->SetASCII( "Font", FontDB->currentText().latin1() );
+  hGrp->SetASCII( "FontSize", fontSize->currentText().latin1() );
+  hGrp->SetASCII( "Font", fontFamily->currentText().latin1() );
 }
 
 void DlgSettingsEditorImp::loadSettings()
@@ -175,16 +175,16 @@ void DlgSettingsEditorImp::loadSettings()
   //
   QFontDatabase fdb;
   QStringList familyNames = fdb.families( QFontDatabase::Any );
-  FontDB->insertStringList( familyNames );
+  fontFamily->insertStringList( familyNames );
 
 #ifdef FC_OS_LINUX
-  FontSize->setCurrentIndex(10);
+  fontSize->setCurrentIndex(10);
 #else
-  FontSize->setCurrentIndex(5);
+  fontSize->setCurrentIndex(5);
 #endif
 
-  FontSize->setCurrentText( hGrp->GetASCII( "FontSize", FontSize->currentText().latin1() ).c_str() );
-  FontDB  ->setCurrentText( hGrp->GetASCII( "Font", "Courier" ).c_str() );
+  fontSize->setCurrentText( hGrp->GetASCII( "FontSize", fontSize->currentText().latin1() ).c_str() );
+  fontFamily  ->setCurrentText( hGrp->GetASCII( "Font", "Courier" ).c_str() );
 
   ListBox1->setCurrentItem(0);
 }
@@ -195,9 +195,9 @@ void DlgSettingsEditorImp::loadSettings()
 void DlgSettingsEditorImp::changeEvent(QEvent *e)
 {
   if (e->type() == QEvent::LanguageChange) {
-    int pos = FontSize->currentItem();
+    int pos = fontSize->currentItem();
     retranslateUi(this);
-    FontSize->setCurrentItem( pos );
+    fontSize->setCurrentItem( pos );
 
     int index = 0;
     for (QVector<QPair<QString, unsigned long> >::ConstIterator it = d->colormap.begin(); it != d->colormap.end(); ++it)
@@ -205,6 +205,37 @@ void DlgSettingsEditorImp::changeEvent(QEvent *e)
   } else {
     QWidget::changeEvent(e);
   }
+}
+
+void DlgSettingsEditorImp::on_fontFamily_activated(const QString& fontFamily)
+{
+    // select the whole document to apply the new format (that only works on selection)
+    QTextCursor cursor = textEdit1->textCursor();
+    QTextCharFormat format = cursor.charFormat();
+    format.setFontFamily(fontFamily);
+    cursor.setPosition(0);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    cursor.mergeCharFormat(format);
+    cursor.clearSelection();
+}
+
+void DlgSettingsEditorImp::on_fontSize_activated(const QString& fontSize)
+{
+    bool ok;
+    int size = fontSize.toInt(&ok);
+    if (ok) {
+        // Create the new text format applying the given size
+        QTextCursor cursor = textEdit1->textCursor();
+        QTextCharFormat format = cursor.charFormat();
+        QFont font = format.font();
+        font.setPointSize(size);
+        format.setFont(font);
+        // select the whole document and apply the text format
+        cursor.setPosition(0);
+        cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+        cursor.mergeCharFormat(format);
+        cursor.clearSelection();
+    }
 }
 
 #include "moc_DlgEditorImp.cpp"

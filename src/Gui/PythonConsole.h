@@ -45,19 +45,19 @@ namespace Gui {
 class GuiExport InteractiveInterpreter
 {
 public:
-  InteractiveInterpreter();
-  ~InteractiveInterpreter();
+    InteractiveInterpreter();
+    ~InteractiveInterpreter();
 
-  bool push(const char*);
-
-private:
-  bool runSource(const char*) const;
-  PyObject* compile(const char*) const;
-  void runCode(PyCodeObject*) const;
-  void setPrompt();
+    bool push(const char*);
 
 private:
-  struct InteractiveInterpreterP* d;
+    bool runSource(const char*) const;
+    PyObject* compile(const char*) const;
+    void runCode(PyCodeObject*) const;
+    void setPrompt();
+
+private:
+    struct InteractiveInterpreterP* d;
 };
 
 /**
@@ -67,20 +67,20 @@ private:
 class GuiExport ConsoleHistory
 {
 public:
-  ConsoleHistory();
-  ~ConsoleHistory();
+    ConsoleHistory();
+    ~ConsoleHistory();
 
-  void first();
-  bool more();
-  bool next();
-  bool prev();
-  bool isEmpty() const;
-  QString value() const;
-  void append( const QString& );
+    void first();
+    bool more();
+    bool next();
+    bool prev();
+    bool isEmpty() const;
+    QString value() const;
+    void append( const QString& );
 
 private:
-  QStringList _history;
-  QStringList::ConstIterator it;
+    QStringList _history;
+    QStringList::ConstIterator it;
 };
 
 /**
@@ -90,56 +90,52 @@ private:
 class PythonConsoleHighlighter;
 class GuiExport PythonConsole : public TextEdit, public WindowParameter
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  PythonConsole(QWidget *parent = 0);
-  ~PythonConsole();
+    PythonConsole(QWidget *parent = 0);
+    ~PythonConsole();
 
-  void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
-  void doKeyboardAction ( KeyboardAction action );
-  void clear ();
-  void paste();
-  void pasteSubType( const QByteArray &subtype );
-  void cut();
-  void removeSelectedText ( int selNum = 0 );
-
-  bool printStatement( const QString& cmd );
+    void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
+    bool printStatement( const QString& cmd );
 
 public Q_SLOTS:
-  void onSaveHistoryAs();
-  void onInsertFileName();
+    void onSaveHistoryAs();
+    void onInsertFileName();
 
 protected:
-  void keyPressEvent  ( QKeyEvent         * e );
-  void showEvent      ( QShowEvent        * e );
-  void dropEvent      ( QDropEvent        * e );
-  void dragEnterEvent ( QDragEnterEvent   * e );
-  void dragMoveEvent  ( QDragMoveEvent    * e );
+    void keyPressEvent  ( QKeyEvent         * e );
+    void showEvent      ( QShowEvent        * e );
+    void dropEvent      ( QDropEvent        * e );
+    void dragEnterEvent ( QDragEnterEvent   * e );
+    void dragMoveEvent  ( QDragMoveEvent    * e );
 
-  void overrideCursor(const QString& txt);
+    void overrideCursor(const QString& txt);
 
-  /** Pops up the context menu with some extensions */
-  void contextMenuEvent ( QContextMenuEvent* e );
-
-private:
-  void runSource(const QString&);
-  void printPrompt(bool);
-  void insertPythonOutput( const QString& );
-  void insertPythonError ( const QString& );
+    /** Pops up the context menu with some extensions */
+    void contextMenuEvent ( QContextMenuEvent* e );
+    bool canInsertFromMimeData ( const QMimeData * source ) const;
+    QMimeData * createMimeDataFromSelection () const;
+    void insertFromMimeData ( const QMimeData * source );
 
 private:
-  bool _indent;
-  bool _autoTabs;
-  ConsoleHistory _history;
-  QString _output, _error;
-  struct PythonConsoleP* d;
-
-  friend class PythonStdoutPy;
-  friend class PythonStderrPy;
+    void runSource(const QString&);
+    void printPrompt(bool);
+    void insertPythonOutput( const QString& );
+    void insertPythonError ( const QString& );
 
 private:
-  PythonConsoleHighlighter* pythonSyntax;
+    bool _indent;
+    bool _autoTabs;
+    ConsoleHistory _history;
+    QString _output, _error;
+    struct PythonConsoleP* d;
+
+    friend class PythonStdoutPy;
+    friend class PythonStderrPy;
+
+private:
+    PythonConsoleHighlighter* pythonSyntax;
 };
 
 /**
@@ -149,20 +145,20 @@ private:
 class GuiExport PythonConsoleHighlighter : public PythonSyntaxHighlighter
 {
 public:
-  PythonConsoleHighlighter(QTextEdit* );
-  ~PythonConsoleHighlighter();
+    PythonConsoleHighlighter(QTextEdit* );
+    ~PythonConsoleHighlighter();
 
-  void highlightBlock ( const QString & text );
+    void highlightBlock ( const QString & text );
 
-  void highlightOutput (bool b);
-  void highlightError (bool b);
+    void highlightOutput (bool b);
+    void highlightError (bool b);
 
 protected:
-  void colorChanged( const QString& type, const QColor& col );
+    void colorChanged( const QString& type, const QColor& col );
 
 private:
-  bool _output, _error;
-  friend class PythonConsole;
+    bool _output, _error;
+    friend class PythonConsole;
 };
 
 } // namespace Gui
