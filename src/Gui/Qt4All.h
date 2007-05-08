@@ -71,6 +71,7 @@
 #include <qtabwidget.h>
 #include <QTextBrowser>
 #include <QTextDocument>
+#include <QTextDocumentFragment>
 #include <QTextEdit>
 #include <QToolBar>
 #include <qtoolbox.h>

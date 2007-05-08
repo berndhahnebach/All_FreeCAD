@@ -72,6 +72,13 @@ PythonEditor::PythonEditor(QWidget* parent)
   d = new PythonEditorP();
   pythonSyntax = new PythonSyntaxHighlighter(this);
 
+#ifdef FC_OS_LINUX
+    QFont serifFont( "Courier", 15, QFont::Normal );
+#else
+    QFont serifFont( "Courier", 10, QFont::Normal );
+#endif
+    setCurrentFont(serifFont);
+
   ParameterGrp::handle hPrefGrp = getWindowParameter();
   // set default to 4 characters
   hPrefGrp->SetInt( "TabSize", 4 );
@@ -129,20 +136,40 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
   font.setBold( false ); // if current font is bold we must reset it first
   if (strcmp(sReason, "FontSize") == 0)
   {
-    QString txt = hPrefGrp->GetASCII( "FontSize", "9" ).c_str();
-
     bool ok;
-    int size = txt.toInt(&ok);
-    if ( !ok ) size = 9;
+#ifdef FC_OS_LINUX
+    QString fontSize = hPrefGrp->GetASCII( "FontSize", "15" ).c_str();
+    int size = fontSize.toInt(&ok);
+    if ( !ok ) size = 15; 
+#else
+    QString fontSize = hPrefGrp->GetASCII( "FontSize", "10" ).c_str();
+    int size = fontSize.toInt(&ok);
+    if ( !ok ) size = 10; 
+#endif
 
-    font.setPointSize( size );
-    setFont( font );
+    // Create the new text format applying the given size
+    QTextCursor cursor = textCursor();
+    QTextCharFormat format = cursor.charFormat();
+    QFont font = format.font();
+    font.setPointSize(size);
+    format.setFont(font);
+    // select the whole document and apply the text format
+    cursor.setPosition(0);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    cursor.mergeCharFormat(format);
+    cursor.clearSelection();
   }
   else if (strcmp(sReason, "Font") == 0)
   {
-    QString family = hPrefGrp->GetASCII( "Font", "Courier" ).c_str();
-    font.setFamily( family );
-    setFont( font );
+    QString fontFamily = hPrefGrp->GetASCII( "Font", "Courier" ).c_str();
+    // select the whole document to apply the new format (that only works on selection)
+    QTextCursor cursor = textCursor();
+    QTextCharFormat format = cursor.charFormat();
+    format.setFontFamily(fontFamily);
+    cursor.setPosition(0);
+    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+    cursor.mergeCharFormat(format);
+    cursor.clearSelection();
   }
   else
   {
@@ -410,6 +437,11 @@ void PythonSyntaxHighlighter::colorChanged( const QString& type, const QColor& c
   document()->setPlainText(document()->toPlainText());
 }
 
+int PythonSyntaxHighlighter::maximumUserState() const
+{
+    return 8;
+}
+
 /**
  * Detects all kinds of text to highlight them in the correct color.
  */
@@ -429,8 +461,8 @@ void PythonSyntaxHighlighter::highlightBlock (const QString & text)
   const int DefineName    = 8;     // Text after the keyword def
 
   int endStateOfLastPara = previousBlockState();
-  if (endStateOfLastPara==-1) 
-    endStateOfLastPara=Standard;
+  if (endStateOfLastPara < 0 || endStateOfLastPara > maximumUserState()) 
+    endStateOfLastPara = Standard;
 
   while ( i < text.length() )
   {

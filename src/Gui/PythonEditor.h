@@ -89,6 +89,7 @@ public:
   virtual ~PythonSyntaxHighlighter();
 
   void highlightBlock ( const QString & text );
+  int maximumUserState() const;
   
   void setColor( const QString& type, const QColor& col );
   QColor color( const QString& type );
