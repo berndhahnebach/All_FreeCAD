@@ -184,7 +184,7 @@ void DlgSettingsEditorImp::loadSettings()
 #endif
 
   fontSize->setCurrentText( hGrp->GetASCII( "FontSize", fontSize->currentText().latin1() ).c_str() );
-  fontFamily  ->setCurrentText( hGrp->GetASCII( "Font", "Courier" ).c_str() );
+  fontFamily->setCurrentText( hGrp->GetASCII( "Font", "Courier" ).c_str() );
 
   ListBox1->setCurrentItem(0);
 }

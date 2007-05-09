@@ -41,12 +41,15 @@ using namespace Gui;
 namespace Gui {
 struct PythonConsoleP
 {
+    enum CopyType {Normal, History, Command};
+    CopyType type;
     PyObject *_stdoutPy, *_stderrPy, *_stdinPy;
     PyObject *_stdout, *_stderr, *_stdin;
     InteractiveInterpreter* interpreter;
     QMap<QString, QColor> colormap; // Color map
     PythonConsoleP()
     {
+        type = Normal;
         interpreter = 0;
         colormap["Text"] = Qt::black;
         colormap["Bookmark"] = Qt::cyan;
@@ -146,14 +149,13 @@ PyObject* InteractiveInterpreter::compile(const char* source) const
  * One several things can happen:
  *
  * \item The input is incorrect; compile() raised an exception (SyntaxError or OverflowError).  
- * A syntax traceback will be printed by calling the showsyntaxerror() method.
+ * A syntax traceback will be printed by calling Python's PyErr_Print() method to the redirected stderr.
  *
- * \item The input is incomplete, and more input is required; compile() returned False. 
+ * \item The input is incomplete, and more input is required; compile() returned 'None'. 
  * Nothing happens.
  *
- * \item The input is complete; compile() returned true.  The code is executed by calling 
- * Base::Interpreter().runInteractiveString() (which also handles run-time exceptions, except 
- * for SystemExit).
+ * \item The input is complete; compile() returned a code object.  The code is executed by calling 
+ * runCode() (which also handles run-time exceptions, except for SystemExit).
  * 
  * The return value is True if the input is incomplete, False in the other cases (unless
  * an exception is raised). The return value can be used to decide whether to use sys.ps1 
@@ -214,6 +216,10 @@ void InteractiveInterpreter::runCode(PyCodeObject* code) const
     }
 }
 
+/**
+ * Store the line into the internal buffer and compile the total buffer.
+ * In case it is a complete Python command the buffer is emptied.
+ */
 bool InteractiveInterpreter::push(const char* line)
 {
     d->buffer.append(line);
@@ -295,7 +301,7 @@ PythonConsole::~PythonConsole()
     delete d;
 }
 
-/** Sets the new color for \a rcColor. */  
+/** Set new font and colors according to the paramerts. */  
 void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sReason )
 {
     ParameterGrp::handle hPrefGrp = getWindowParameter();
@@ -420,14 +426,16 @@ void PythonConsole::insertPythonOutput( const QString& msg )
 
 /**
  * Insert an error message to the console. This message comes from
- * the Python interpreter and is redirected from sys.stdout.
+ * the Python interpreter and is redirected from sys.stderr.
  */
 void PythonConsole::insertPythonError ( const QString& err )
 {
     _error += err;
 }
 
-/** Prints the ps1 prompt (>>> ) to the console window. */ 
+/** Prints the ps1 prompt (>>> ) for complete and ps2 prompt (... ) for
+ * incomplete commands to the console window. 
+ */ 
 void PythonConsole::printPrompt(bool incomplete)
 {
     // write normal messages
@@ -567,34 +575,45 @@ bool PythonConsole::canInsertFromMimeData ( const QMimeData * source ) const
 
 QMimeData * PythonConsole::createMimeDataFromSelection () const
 {
-    const QTextDocumentFragment fragment(textCursor());
     QMimeData* mime = new QMimeData();
-    mime->setText(fragment.toPlainText());
-    return mime;
+    
+    switch (d->type) {
+        case PythonConsoleP::Normal:
+            {
+                const QTextDocumentFragment fragment(textCursor());
+                mime->setText(fragment.toPlainText());
+            }   break;
+        case PythonConsoleP::Command:
+            {
+                QTextCursor cursor = textCursor();
+                int s = cursor.selectionStart();
+                int e = cursor.selectionEnd();
+                QTextBlock b;
+                QStringList lines;
+                for (b = document()->begin(); b.isValid(); b = b.next()) {
+                    int pos = b.position();
+                    if ( pos >= s && pos <= e ) {
+                        if (b.userState() > -1 && b.userState() < pythonSyntax->maximumUserState()) {
+                            QString line = b.text();
+                            // and skip the first 4 characters consisting of either ">>> " or "... "
+                            line = line.mid(4);
+                            lines << line;
+                        }
+                    }
+                }
 
-#if 0
-    QTextCursor cursor = textCursor();
-    int s = cursor.selectionStart();
-    int e = cursor.selectionEnd();
-    QTextBlock b;
-    QStringList lines;
-    for (b = document()->begin(); b != document()->end(); b = b.next()) {
-        int pos = b.position();
-        if ( pos >= s && pos <= e ) {
-            if (b.userState() > -1 && b.userState() < pythonSyntax->maximumUserState()) {
-                QString line = b.text();
-                // and skip the first 4 characters consisting of either ">>> " or "... "
-                line = line.mid(4);
-                lines << line;
-            }
-        }
+                QString text = lines.join("\n");
+                mime->setText(text);
+            }   break;
+        case PythonConsoleP::History:
+            {
+                const QStringList& hist = _history.values();
+                QString text = hist.join("\n");
+                mime->setText(text);
+            }   break;
     }
 
-    QString text = lines.join("\n");
-    QMimeData* mime = new QMimeData();
-    mime->setText(text);
     return mime;
-#endif
 }
 
 /**
@@ -648,9 +667,30 @@ void PythonConsole::overrideCursor(const QString& txt)
 
 void PythonConsole::contextMenuEvent ( QContextMenuEvent * e )
 {
-    QMenu* menu = createStandardContextMenu();
+    QMenu* menu = new QMenu(this);
+    QAction *a;
+
+    a = menu->addAction(QTextEdit::tr("&Copy"), this, SLOT(copy()), Qt::CTRL+Qt::Key_C);
+    a->setEnabled(textCursor().hasSelection());
+
+    a = menu->addAction(tr("&Copy command"), this, SLOT(onCopyCommand()));
+    a->setEnabled(textCursor().hasSelection());
+
+    a = menu->addAction(tr("&Copy history"), this, SLOT(onCopyHistory()));
+    a->setEnabled(!_history.isEmpty());
+
+    a = menu->addAction( tr("Save history as..."), this, SLOT(onSaveHistoryAs()));
+    a->setEnabled(!_history.isEmpty());
+
     menu->addSeparator();
-    menu->addAction( tr("Save history as..."), this, SLOT(onSaveHistoryAs()));
+    a = menu->addAction(QTextEdit::tr("&Paste"), this, SLOT(paste()), Qt::CTRL+Qt::Key_V);
+    const QMimeData *md = QApplication::clipboard()->mimeData();
+    a->setEnabled(md && canInsertFromMimeData(md));
+
+    a = menu->addAction(QTextEdit::tr("Select All"), this, SLOT(selectAll()), Qt::CTRL+Qt::Key_A);
+    a->setEnabled(!document()->isEmpty());
+
+    menu->addSeparator();
     menu->addAction( tr("Insert file name..."), this, SLOT(onInsertFileName()));
 
     menu->exec(e->globalPos());
@@ -667,8 +707,9 @@ void PythonConsole::onSaveHistoryAs()
             QFile f(fn);
             if (f.open(QIODevice::WriteOnly)) {
                 QTextStream t (&f);
-                for ( _history.first(); _history.more(); _history.next() )
-                    t << _history.value() << "\n";
+                const QStringList& hist = _history.values();
+                for (QStringList::ConstIterator it = hist.begin(); it != hist.end(); ++it)
+                    t << *it << "\n";
                 f.close();
             }
         }
@@ -681,6 +722,29 @@ void PythonConsole::onInsertFileName()
     if ( fn.isEmpty() )
         return;
     insertPlainText(fn);
+}
+
+/**
+ * Copy the history of the console into the clipboard.
+ */
+void PythonConsole::onCopyHistory()
+{
+    if (_history.isEmpty())
+        return;
+    d->type = PythonConsoleP::History;
+    QMimeData *data = createMimeDataFromSelection();
+    QApplication::clipboard()->setMimeData(data);
+    d->type = PythonConsoleP::Normal;
+}
+
+/**
+ * Copy the selected commands into the clipboard. This is a subset of the history.
+ */
+void PythonConsole::onCopyCommand()
+{
+    d->type = PythonConsoleP::Command;
+    copy();
+    d->type = PythonConsoleP::Normal;
 }
 
 // ---------------------------------------------------------------------
@@ -815,6 +879,11 @@ void ConsoleHistory::append( const QString& item )
 {
     _history.append( item );
     it = _history.end();
+}
+
+const QStringList& ConsoleHistory::values() const
+{
+    return this->_history;
 }
 
 #include "moc_PythonConsole.cpp"

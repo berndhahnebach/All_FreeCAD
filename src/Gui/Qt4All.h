@@ -22,6 +22,7 @@
 #include <qvariant.h>
 #include <QWaitCondition>
 // QtGui
+#include <QAbstractTextDocumentLayout>
 #include <qaction.h>
 #include <QActionGroup>
 #include <qapplication.h>
@@ -53,7 +54,8 @@
 #include <qpainter.h>
 #include <qpalette.h>
 #include <qpixmap.h>
-#include <qprinter.h>
+#include <QPrinter>
+#include <QPrintDialog>
 #include <QProgressBar>
 #include <qpushbutton.h>
 #include <qradiobutton.h>

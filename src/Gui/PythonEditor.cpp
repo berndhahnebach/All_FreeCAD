@@ -124,16 +124,13 @@ void PythonEditor::keyPressEvent ( QKeyEvent * e )
     }
   }
 
-  QTextEdit::keyPressEvent( e );
+  TextEdit::keyPressEvent( e );
 }
 
 /** Sets the font, font size and tab size of the editor. */  
 void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sReason )
 {
   ParameterGrp::handle hPrefGrp = getWindowParameter();
-
-  QFont font = currentFont();
-  font.setBold( false ); // if current font is bold we must reset it first
   if (strcmp(sReason, "FontSize") == 0)
   {
     bool ok;
@@ -204,123 +201,52 @@ void PythonEditor::contextMenuEvent ( QContextMenuEvent * e )
   delete menu;
 }
 
-#if 0 //TODO Reimplement
-class PythonComment : public QTextCommand
-{
-public:
-  PythonComment ( QTextDocument *d ) 
-    : QTextCommand( d ) 
-  {
-  }
-
-  virtual ~PythonComment()
-  {
-  }
-
-  Commands type() const { return Insert; }
-
-  void addParagraph( int par)
-  {
-    para.append(par);
-  }
-
-  virtual QTextCursor *execute( QTextCursor *c )
-  {
-    for ( Q3ValueList<int>::Iterator it = para.begin(); it != para.end(); ++it )
-    {
-      QTextParagraph* paragr = doc->paragAt(*it);
-      paragr->insert( 0, "#" );
-    }
-
-    doc->removeSelection( QTextDocument::Standard );
-    return c;
-  }
-
-  virtual QTextCursor *unexecute( QTextCursor *c )
-  {
-    for ( Q3ValueList<int>::Iterator it = para.begin(); it != para.end(); ++it )
-    {
-      QTextParagraph* paragr = doc->paragAt(*it);
-      if ( paragr->at( 0 )->c == '#' )
-        paragr->remove( 0, 1 );
-    }
-
-    doc->removeSelection( QTextDocument::Standard );
-    return c;
-  }
-
-protected:
-  Q3ValueList<int> para;
-};
-
-class PythonUncomment : public PythonComment
-{
-public:
-  PythonUncomment (QTextDocument *d) 
-    : PythonComment( d ) 
-  {
-  }
-
-  virtual ~PythonUncomment()
-  {
-  }
-
-  Commands type() const { return Delete; }
-  QTextCursor *execute( QTextCursor *c ) { return PythonComment::unexecute( c ); }
-  QTextCursor *unexecute( QTextCursor *c ) { return PythonComment::execute( c ); }
-};
-#endif
 void PythonEditor::onComment()
 {
-#if 0 //TODO Reimplement
-  PythonComment* cmd = new PythonComment(document());
-  document()->addCommand(cmd);
+    QTextCursor cursor = textCursor();
+    int selStart = cursor.selectionStart();
+    int selEnd = cursor.selectionEnd();
+    QTextBlock block;
+    cursor.beginEditBlock();
+    for (block = document()->begin(); block.isValid(); block = block.next()) {
+        int pos = block.position();
+        int off = block.length();
+        // at least one char of the block is part of the selection
+        if ( pos >= selStart || pos+off >= selStart) {
+            if ( pos+1 > selEnd )
+                break; // end of selection reached
+            cursor.setPosition(block.position());
+            cursor.insertText("#");
+                selEnd++;
+        }
+    }
 
-  QTextParagraph *from = document()->selectionStartCursor( QTextDocument::Standard ).paragraph();
-  QTextParagraph *to = document()->selectionEndCursor( QTextDocument::Standard ).paragraph();
-  if ( !from || !to )
-    from = to = textCursor()->paragraph();
-  while ( from ) {
-    if ( from == to && textCursor()->index() == 0 )
-      break;
-    from->insert( 0, "#" );
-    cmd->addParagraph(from->paragId());
-    if ( from == to )
-      break;
-    from = from->next();
-  }
-
-  document()->removeSelection( QTextDocument::Standard );
-  repaintChanged();
-  setModified( true );
-#endif
+    cursor.endEditBlock();
 }
 
 void PythonEditor::onUncomment()
 {
-#if 0 //TODO Reimplement
-  PythonComment* cmd = new PythonUncomment(document());
-  document()->addCommand(cmd);
+    QTextCursor cursor = textCursor();
+    int selStart = cursor.selectionStart();
+    int selEnd = cursor.selectionEnd();
+    QTextBlock block;
+    cursor.beginEditBlock();
+    for (block = document()->begin(); block.isValid(); block = block.next()) {
+        int pos = block.position();
+        int off = block.length();
+        // at least one char of the block is part of the selection
+        if ( pos >= selStart || pos+off >= selStart) {
+            if ( pos+1 > selEnd )
+                break; // end of selection reached
+            if (block.text().startsWith("#")) {
+                cursor.setPosition(block.position());
+                cursor.deleteChar();
+                selEnd--;
+            }
+        }
+    }
 
-  QTextParagraph* from = document()->selectionStartCursor( QTextDocument::Standard ).paragraph();
-  QTextParagraph* to = document()->selectionEndCursor( QTextDocument::Standard ).paragraph();
-  if ( !from || !to )
-    from = to = textCursor()->paragraph();
-  while ( from ) {
-    if ( from == to && textCursor()->index() == 0 )
-      break;
-    if ( from->at( 0 )->c == '#' )
-      from->remove( 0, 1 );
-    cmd->addParagraph(from->paragId());
-    if ( from == to )
-      break;
-    from = from->next();
-  }
-
-  document()->removeSelection( QTextDocument::Standard );
-  repaintChanged();
-  setModified( true );
-#endif
+    cursor.endEditBlock();
 }
 
 // ------------------------------------------------------------------------
@@ -663,10 +589,11 @@ PythonEditView::PythonEditView( const QString& file, QWidget* parent)
     : MDIView(0,parent, 0, Qt::WDestructiveClose), WindowParameter( "Editor" )
 {
   // create the editor first
-  _textEdit = new PythonEditor(this);
+  _textEdit = new PythonEditor();
   _textEdit->setLineWrapMode( QTextEdit::NoWrap );
   setFocusProxy( _textEdit );
-  _lineMarker = new LineMarker( reinterpret_cast<PythonEditor*>(_textEdit), this,"LineMarker");
+  _lineMarker = new LineMarker();
+  _lineMarker->setTextEdit(_textEdit);
 
   // Create the layout containing the workspace and a tab bar
   QFrame* hbox = new QFrame(this);
@@ -686,7 +613,7 @@ PythonEditView::PythonEditView( const QString& file, QWidget* parent)
 
   _pcActivityTimer = new QTimer(this);
   connect( _pcActivityTimer, SIGNAL(timeout()),this, SLOT(checkTimestamp()) );
-  connect( _textEdit, SIGNAL(modificationChanged ( bool )),this, SLOT(onModified(bool)) );
+  connect( _textEdit, SIGNAL(textChanged()),this, SLOT(onModified()) );
   openFile( file );
 }
 
@@ -734,19 +661,9 @@ void PythonEditView::checkTimestamp()
   _pcActivityTimer->start( 3000, true );
 }
 
-void PythonEditView::onModified(bool b)
+void PythonEditView::onModified()
 {
-  QString cap = caption();
-  if ( b && !cap.endsWith(" *"))
-  {
-    cap += " *";
-    setCaption(cap);
-  }
-  else if ( !b && cap.endsWith(" *"))
-  {
-    cap = cap.left(cap.length()-2);
-    setCaption(cap);
-  }
+    setWindowModified(_textEdit->document()->isModified());
 }
 
 /**
@@ -911,17 +828,20 @@ void PythonEditView::openFile (const QString& fileName)
   if( !file.open(QIODevice::ReadOnly))
     return;
 
+  // file name with placeholder to mark as modified
+  QString title = fileName + "[*]";
+  setWindowTitle(title);
+
   QTextStream in(&file);
-  _textEdit->setText( in.read() );
-  _lineMarker->onRepaint();
+  _textEdit->setPlainText( in.read() );
 
   file.close();
   QFileInfo fi(_fileName);
   _timeStamp =  fi.lastModified().toTime_t();
   _pcActivityTimer->start( 3000, true );	
 
-  _textEdit->setModified(false);
-  setCaption(fileName);
+  setWindowModified(false);
+  _textEdit->document()->setModified(false);
 
   message( tr("Loaded document %1").arg( fileName ), 2000 );
 }
@@ -982,55 +902,29 @@ void PythonEditView::redo(void)
  * Shows the printer dialog.
  */
 void PythonEditView::print()
-{/*
-#ifndef QT_NO_PRINTER
-  QPrinter printer( QPrinter::HighResolution );
-  int pageNo = 1;
+{
+    QPrinter printer(QPrinter::HighResolution);
+    printer.setFullPage(true);
+    QPrintDialog dlg(&printer, this);
+    if (dlg.exec() == QDialog::Accepted) {
+        this->_textEdit->document()->print(&printer);
+    }
+}
 
-  if ( printer.setup(this) ) 
-  {
-    // printer dialog
-    printer.setFullPage( TRUE );
-    message( tr("Printing..."), 0 );
-
-    QPainter p;
-    if ( !p.begin( &printer ) )
-      return; // paint on printer
-
-    Q3PaintDeviceMetrics metrics( p.device() );
-    int dpiy = metrics.logicalDpiY();
-    int margin = (int) ( (2/2.54)*dpiy ); // 2 cm margins
-    QRect body( margin, margin, metrics.width() - 2*margin, metrics.height() - 2*margin );
-    Q3SimpleRichText richText( Q3StyleSheet::convertFromPlainText(_textEdit->text()),
-          QFont(),
-          _textEdit->context(),
-          _textEdit->styleSheet(),
-          _textEdit->mimeSourceFactory(),
-          body.height() );
-    richText.setWidth( &p, body.width() );
-    QRect view( body );
-
-    int page = 1;
-    do 
-    {
-      richText.draw( &p, body.left(), body.top(), view, colorGroup() );
-      view.moveBy( 0, body.height() );
-      p.translate( 0 , -body.height() );
-      p.drawText( view.right() - p.fontMetrics().width( QString::number( page ) ),
-      view.bottom() + p.fontMetrics().ascent() + 5, QString::number( page ) );
-      if ( view.top()  >= richText.height() )
-        break;
-      QString msg( "Printing (page " );
-      msg += QString::number( ++pageNo );
-      msg += ")...";
-      message( msg, 0 );
-      printer.newPage();
-      page++;
-    } while (true);
-
-    p.end();
-  }
-#endif*/
+/**
+ * Prints the document into a Pdf file.
+ */
+void PythonEditView::printPdf()
+{
+    QString filename = QFileDialog::getSaveFileName(this, tr("Print Pdf file (*.pdf)"), QString(), tr("Pdf file"));
+    if (!filename.isEmpty()) {
+        QPrinter printer(QPrinter::HighResolution);
+        printer.setFullPage(true);
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setColorMode(QPrinter::Color);
+        printer.setOutputFileName(filename);
+        this->_textEdit->document()->print(&printer);
+    }
 }
 
 /**
@@ -1050,7 +944,7 @@ void PythonEditView::saveFile()
   QFileInfo fi(_fileName);
   _timeStamp =  fi.lastModified().toTime_t();
 
-  setCaption(_fileName);
+  setWindowTitle(_fileName + "[*]");
 
   message( tr( "File %1 saved" ).arg( _fileName ), 2000 );
 
@@ -1062,7 +956,7 @@ void PythonEditView::saveFile()
  */
 bool PythonEditView::isSavedOnce()
 {
-  return (!_fileName.isEmpty());
+    return (!_fileName.isEmpty());
 }
 
 /**
@@ -1070,22 +964,7 @@ bool PythonEditView::isSavedOnce()
  */
 QStringList PythonEditView::undoActions() const
 {
-#if 0 //TODO Reimplement
-  QTextDocument* doc = dynamic_cast<TextEdit*>(_textEdit)->document();
-  QTextCommandHistory* hist = doc->commands();
-
-  int curr = hist->currentPosition();
-
-  QStringList lst;
-
-  if ( hist->isUndoAvailable() ) {
-    for ( int i=0; i<curr+1;i++ )
-      lst << "Modified";
-  }
-  return lst;
-#else
-  return QStringList();
-#endif
+    return QStringList();
 }
 
 /**
@@ -1093,118 +972,55 @@ QStringList PythonEditView::undoActions() const
  */
 QStringList PythonEditView::redoActions() const
 {
-#if 0 //TODO Reimplement
-  QTextDocument* doc = dynamic_cast<TextEdit*>(_textEdit)->document();
-  QTextCommandHistory* hist = doc->commands();
-
-  int size = hist->historySize();
-  int curr = hist->currentPosition();
-  
-  QStringList lst;
-  if ( hist->isRedoAvailable() ) {
-    for ( int i=0; i<size-curr;i++ )
-      lst << "Modified";
-  }
-  return lst;
-#else
-  return QStringList();
-#endif
+    return QStringList();
 }
 
+// ---------------------------------------------------------
 
-LineMarker::LineMarker( TextEdit* textEdit, QWidget* parent, const char* name )
-	: QWidget( parent, name, Qt::WNoAutoErase | Qt::WStaticContents | Qt::WResizeNoErase ),
-	  _textEdit( textEdit )
+LineMarker::LineMarker(QWidget* parent)
+    : QWidget(parent)
 {
-	connect( _textEdit->verticalScrollBar(), SIGNAL( valueChanged( int ) ), this, SLOT( onRepaint() ) );
-	connect( _textEdit, SIGNAL( textChanged() ), this, SLOT( onRepaint() ) );
-  onRepaint();
-
-  QFontMetrics fm( _font );
-  setFixedWidth( fm.width( "0000" ) + 10 );
+    setFixedWidth( fontMetrics().width( QString("0000") ) );
 }
 
 LineMarker::~LineMarker()
 {
 }
 
-void LineMarker::setFont( QFont f )
+void LineMarker::setTextEdit(QTextEdit *edit)
 {
-  _font = f;
-}  
-
-void LineMarker::resizeEvent( QResizeEvent *e )
-{
-	_buffer.resize( e->size() );
-	QWidget::resizeEvent( e );
+    this->edit = edit;
+    connect( edit->document()->documentLayout(), SIGNAL( update(const QRectF &) ),
+	     this, SLOT( update() ) );
+    connect( edit->verticalScrollBar(), SIGNAL(valueChanged(int) ),
+	     this, SLOT( update() ) );
 }
 
-void LineMarker::paintEvent( QPaintEvent* /*e*/ )
+void LineMarker::paintEvent( QPaintEvent* )
 {
-#if 0 //TODO Reimplement
-	_buffer.fill();
+    QAbstractTextDocumentLayout *layout = edit->document()->documentLayout();
+    int contentsY = edit->verticalScrollBar()->value();
+    qreal pageBottom = contentsY + edit->viewport()->height();
+    const QFontMetrics fm = fontMetrics();
+    const int ascent = fontMetrics().ascent() + 1; // height = ascent + descent + 1
+    int lineCount = 1;
 
-	QTextParagraph *p = _textEdit->document()->firstParagraph();
+    QPainter p(this);
 
-  QPainter painter( &_buffer );
-	int y = _textEdit->contentsY();
-	while ( p ) 
-  {
-		if ( !p->isVisible() ) 
-    {
-			p = p->next();
-			continue;
-		}
+    for ( QTextBlock block = edit->document()->begin();
+	  block.isValid(); block = block.next(), ++lineCount ) {
 
-		if ( p->rect().y() + p->rect().height() - y < 0 ) 
-    {
-			p = p->next();
-			continue;
-		}
+        const QRectF boundingRect = layout->blockBoundingRect( block );
 
-		if ( p->rect().y() - y > height() )
-			break;
-    painter.setFont( _font );
-		painter.drawText( 0, p->rect().y() - y,
-				  _buffer.width() - 10, p->rect().height(),
-				  Qt::AlignRight | Qt::AlignTop,
-				  QString::number(p->paragId()+1) );
-/*    if (p->paragId()==5)
-    {
-      bool b=p->isListItem();
-      p->setListItem(true);
-    }*/
-/*      painter.save();
-      painter.setBrush(QColor(0,255,255));
-      painter.drawRoundRect(5,p->rect().y()-y, p->rect().height()+8, p->rect().height());
-      painter.setBrush(Qt::red);
-      painter.drawEllipse(8,p->rect().y()-y, p->rect().height(), p->rect().height());
-      painter.restore();
+        QPointF position = boundingRect.topLeft();
+        if ( position.y() + boundingRect.height() < contentsY )
+            continue;
+        if ( position.y() > pageBottom )
+            break;
+
+        const QString txt = QString::number( lineCount );
+        p.drawText( width() - fm.width(txt), qRound( position.y() ) - contentsY + ascent, txt );
     }
-    else if (p->paragId()==6)
-    {
-      int w=p->rect().height();
-      int b=p->rect().y()-y;
-      painter.drawRect(5,b, w-1, w-1);
-      painter.save();
-      painter.setPen(Qt::blue);
-      painter.moveTo(QPoint(8,b+w/2-1));
-      painter.lineTo(QPoint(w,b+w/2-1));
-      painter.moveTo(QPoint(4+w/2,b+3));
-      painter.lineTo(QPoint(4+w/2,b+w-5));
-      painter.restore();
-    }
-    else if (p->paragId()>=8&&p->paragId()<12)
-    {
-      p->hide();
-    }*/
-		p = p->next();
-	}
-
-	painter.end();
-	bitBlt( this, 0, 0, &_buffer );
-#endif
 }
-
 
 #include "moc_PythonEditor.cpp"
