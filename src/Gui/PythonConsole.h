@@ -77,6 +77,7 @@ public:
     bool isEmpty() const;
     QString value() const;
     void append( const QString& );
+    const QStringList& values() const;
 
 private:
     QStringList _history;
@@ -84,7 +85,7 @@ private:
 };
 
 /**
- * Python text console with syntax highlighting..
+ * Python text console with syntax highlighting.
  * @author Werner Mayer
  */
 class PythonConsoleHighlighter;
@@ -102,6 +103,8 @@ public:
 public Q_SLOTS:
     void onSaveHistoryAs();
     void onInsertFileName();
+    void onCopyHistory();
+    void onCopyCommand();
 
 protected:
     void keyPressEvent  ( QKeyEvent         * e );
@@ -140,7 +143,7 @@ private:
 
 /**
  * Syntax highlighter for Python console.
- * \author Werner Mayer
+ * @author Werner Mayer
  */
 class GuiExport PythonConsoleHighlighter : public PythonSyntaxHighlighter
 {

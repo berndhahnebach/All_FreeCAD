@@ -101,26 +101,22 @@ private:
   PythonSyntaxHighlighterP* d;
 };
 
+class LineMarkerP;
 class LineMarker: public QWidget
 {
     Q_OBJECT
 
 public:
-  LineMarker(TextEdit* textEdit, QWidget* parent, const char* name );
-  virtual ~LineMarker();
+    LineMarker(QWidget* parent=0);
+    virtual ~LineMarker();
 
-public Q_SLOTS:
-  void onRepaint() { repaint( FALSE ); }
-  void setFont( QFont f );
+    void setTextEdit(QTextEdit *edit);
 
 protected:
-  void resizeEvent( QResizeEvent* );
-  void paintEvent ( QPaintEvent * );
+    void paintEvent ( QPaintEvent * );
 
 private:
-  TextEdit* _textEdit;
-  QPixmap _buffer;
-  QFont _font;
+    QTextEdit *edit;
 };
 
 /**
@@ -147,6 +143,7 @@ public:
 
   bool canClose(void);
   void print();
+  void printPdf();
   void openFile (const QString& fileName);
 
   /** @name Standard actions of the editor */
@@ -168,7 +165,7 @@ public:
 
 private Q_SLOTS:
   void checkTimestamp();
-  void onModified(bool);
+  void onModified();
 
 private:
   void saveFile();
