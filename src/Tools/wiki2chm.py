@@ -9,7 +9,7 @@ Usage:
    
 Options:
  -p, --proxy=ProxyUrl     specify a proxy
- -o  --out-path=BASPATH   use this base path for inspection plan
+ -o  --out-path=BASPATH   use this base path the HTML Project
  -h, --help               print this help
  
 Exit:
@@ -44,6 +44,7 @@ proxies = {}
 WikiBaseUrl = ""
 TocPageName = ""
 FetchedArticels =[]
+BasePath = ""
 
 hhcHeader = """<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <HTML>
@@ -51,9 +52,6 @@ hhcHeader = """<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <meta name="GENERATOR" content="Microsoft&reg; HTML Help Workshop 4.1">
 <!-- Sitemap 1.0 -->
 </HEAD><BODY>
-<OBJECT type="text/site properties">
-	<param name="ImageType" value="Folder">
-</OBJECT>
 <UL>
 """
 hhcFooter="""</UL>
@@ -62,7 +60,7 @@ hhcFooter="""</UL>
 
 
 def getArticle(Name):
-	global proxies,WikiBaseUrl,TocPageName
+	global proxies,WikiBaseUrl,TocPageName,BasePath
 	
 	url = WikiBaseUrl + 'index.php?title=' + Name.replace(" ","_") + '&printable=yes'
 	
@@ -70,13 +68,35 @@ def getArticle(Name):
 	
 	urlFile = urllib.urlopen(url,proxies=proxies)
 	Article = urlFile.readlines()
-	file = open(Name.replace(" ","_") + ".html","w")
+	file = open(BasePath + Name.replace(" ","_") + ".htm","w")
 	for i in Article:
+		temp = i.replace("/FreeCAD/Docu/skins/common/commonPrint.css","Test.css")
 		file.write(i)
 	file.close()
 
+def insertTocEntry(file,Indent,points,name,folder=0):
+	print "TocEntry",Indent,points,name
+	name = name.replace("\n","")
+	IndentStr = ""
+	for i in range(points):IndentStr += "   "
+
+	if(points > Indent):
+		for i in range(points-Indent):
+			file.write("<UL>")
+		file.write("\n")
+	if(points < Indent):
+		for i in range(Indent-points):
+			file.write("</UL>")
+		file.write("\n")
+	file.write(IndentStr + '<LI><OBJECT type="text/sitemap">\n')
+	file.write(IndentStr + '      <param name="Name" value="'+ name +'">\n')
+	if(not folder):
+		file.write(IndentStr + '      <param name="Local" value="'+ name.replace(" ","_") + '.htm' +'">\n')
+	file.write(IndentStr + '   </OBJECT>\n')
+	return points
+	
 def readToc():
-	global proxies,WikiBaseUrl,TocPageName
+	global proxies,WikiBaseUrl,TocPageName,BasePath
 	
 	url = WikiBaseUrl + 'index.php?title=Special:Export/' + TocPageName
 	print 'Open Toc url: ' + url
@@ -88,8 +108,9 @@ def readToc():
 	Toc2 = re.compile("^(\*+)\s\[\[([\w|\s]*)\|([\w|\s]*)\]\]")
 	Toc3 = re.compile("^(\*+)\s\[\[([\w|\s]*)\\]\]")
 	
-	file = open(TocPageName +".hhc","w")
+	file = open(BasePath + TocPageName +".hhc","w")
 	file.write(hhcHeader)
+	ListIndent = 1
 	
 	for line in Toc:
 		#print line
@@ -97,22 +118,31 @@ def readToc():
 		if TocMatch:
 			print "Match2: ", TocMatch.group(1),TocMatch.group(2),TocMatch.group(3)
 			getArticle(TocMatch.group(2))
+			ListIndent = insertTocEntry(file,ListIndent,len(TocMatch.group(1)),TocMatch.group(2))
 			continue
 		TocMatch = Toc3.search(line);
 		if TocMatch:
 			print "Match3: ", TocMatch.group(1),TocMatch.group(2)
 			getArticle(TocMatch.group(2))
+			ListIndent = insertTocEntry(file,ListIndent,len(TocMatch.group(1)),TocMatch.group(2))
 			continue
 		TocMatch = Toc1.search(line);
 		if TocMatch:
 			print "Match1: ", TocMatch.group(1),TocMatch.group(2)
+			ListIndent = insertTocEntry(file,ListIndent,len(TocMatch.group(1)),TocMatch.group(2),1)
 			continue
+	for i in range(ListIndent-1):
+		file.write("</UL>")
+	file.write("\n")
+
+	file.write(hhcFooter)
 
 
 
 
 def main():
-	global proxies,WikiBaseUrl,TocPageName
+	global proxies,WikiBaseUrl,TocPageName,BasePath
+	Proxy = ""
 	Qout = None
 	DFQout = None
 	CSVout = None
@@ -137,9 +167,8 @@ def main():
 		if o in ("-p", "--proxy"):
 			Proxy = a
 		if o in ("-o", "--out-path"):
+			print "Using output path: " + a +"\n"
 			BasePath = a
-			if (BasePath[0] != '/'):
-				PrintError(0,"Path has to start with / !\n")
 
 	# runing through the files
 	if(Proxy == ""):

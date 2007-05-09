@@ -27,7 +27,6 @@
 #include "Type.h"
 
 
-
 /// define for subclassing Base::BaseClass
 #define TYPESYSTEM_HEADER() \
 public: \
