@@ -124,18 +124,6 @@ insert(PyObject *self, PyObject *args)
 }
 
 static PyObject *                        
-newMesh(PyObject *self, PyObject *args)
-{
-  if (! PyArg_ParseTuple(args, "") )			 
-    return NULL;                         
-
-  PY_TRY {
-    // load the mesh and create a mesh python object with it
-    return new MeshPy();    
-  } PY_CATCH;
-}
-
-static PyObject *                        
 loftOnCurve(PyObject *self, PyObject *args)
 {
 #if 0
@@ -197,22 +185,6 @@ PyDoc_STRVAR(open_doc,
 PyDoc_STRVAR(inst_doc,
 "insert(string, string) -- Create a Mesh::Import feature to load the file into the given document.");
 
-PyDoc_STRVAR(mesh_doc,
-"mesh() -- Create an empty mesh object.\n"
-"\n"
-"This class allows to manipulate the mesh object by adding new faces, deleting faces, importing from an STL file,\n"
-"transforming the mesh and much more.\n"
-"For a complete overview of what can be done see also the documentation of mesh.\n"
-"A mesh object cannot be added to an existing document directly. Therefore the document must create an object\n"
-"with a property class that supports meshes.\n"
-"Example:\n"
-"  m = Mesh.mesh()\n"
-"  ... # Manipulate the mesh\n"
-"  d = FreeCAD.activeDocument() # Get a reference to the actie document\n"
-"  f = d.addObject(\"Mesh::Feature\", \"Mesh\") # Create a mesh feature\n"
-"  f.Mesh = m # Assign the mesh object to the internal property\n"
-"  d.recompute()\n");
-
 PyDoc_STRVAR(loft_doc,
 "Loft on curve.");
 
@@ -221,7 +193,6 @@ PyDoc_STRVAR(loft_doc,
 struct PyMethodDef Mesh_Import_methods[] = { 
     {"open"       ,open ,       METH_VARARGS, open_doc},				
     {"insert"     ,insert,      METH_VARARGS, inst_doc},
-    {"newMesh"    ,newMesh,     METH_VARARGS, mesh_doc},
     {"loftOnCurve",loftOnCurve, METH_VARARGS, loft_doc},
     {NULL, NULL}  /* sentinel */
 };

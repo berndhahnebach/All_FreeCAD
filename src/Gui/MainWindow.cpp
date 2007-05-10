@@ -392,18 +392,43 @@ void MainWindow::removeWindow( Gui::MDIView* view )
 
 void MainWindow::tabChanged( MDIView* view )
 {
-  for ( int i = 0; i < d->tabs->count(); i++ ) {
-    if ( d->tabs->tabData(i).value<QWidget*>() == view ) {
-      // remove file separators
-      QString cap = view->caption();
-      int pos = cap.findRev('/');
-      cap = cap.mid( pos+1 );
-      pos = cap.findRev('\\');
-      cap = cap.mid( pos+1 );
-      d->tabs->setTabText(i, cap );
-      break;
+    for ( int i = 0; i < d->tabs->count(); i++ ) {
+        if ( d->tabs->tabData(i).value<QWidget*>() == view ) {
+            // remove file separators
+            QString cap = view->windowTitle();
+            int pos = cap.findRev('/');
+            cap = cap.mid( pos+1 );
+            pos = cap.findRev('\\');
+            cap = cap.mid( pos+1 );
+
+            QString placeHolder(QLatin1String("[*]"));
+
+            int index = cap.indexOf(placeHolder);
+
+            while (index != -1) {
+                index += placeHolder.length();
+                int count = 1;
+                while (cap.indexOf(placeHolder, index) == index) {
+                    ++count;
+                    index += placeHolder.length();
+                }
+
+                if (count%2) { // odd number of [*] -> replace last one
+                    int lastIndex = cap.lastIndexOf(placeHolder, index - 1);
+                    if (view->isWindowModified() && view->style()->styleHint(QStyle::SH_TitleBar_ModifyNotification, 0, view))
+                        cap.replace(lastIndex, 3, QWidget::tr("*"));
+                    else
+                        cap.replace(lastIndex, 3, QLatin1String(""));
+                }
+
+                index = cap.indexOf(placeHolder, index);
+            }
+
+            cap.replace(QLatin1String("[*][*]"), QLatin1String("[*]"));
+            d->tabs->setTabText(i, cap );
+            break;
+        }
     }
-  }
 }
 
 MDIView* MainWindow::getWindowWithCaption( const QString& cap ) const

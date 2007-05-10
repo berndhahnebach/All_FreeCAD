@@ -52,7 +52,7 @@ using namespace App;
 PyTypeObject App::FeaturePy::Type = {
 	PyObject_HEAD_INIT(&PyType_Type)
 	0,						/*ob_size*/
-	"App.Feature",				/*tp_name*/
+	"Feature",				/*tp_name*/
 	sizeof(FeaturePy),			/*tp_basicsize*/
 	0,						/*tp_itemsize*/
 	/* methods */
@@ -74,7 +74,7 @@ PyTypeObject App::FeaturePy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_CLASS,        /*tp_flags */
-  "About FeaturePy",                                /*tp_doc */
+  "About Feature",                                  /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */

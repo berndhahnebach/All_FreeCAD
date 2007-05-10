@@ -210,7 +210,7 @@ void PythonEditor::onComment()
     cursor.beginEditBlock();
     for (block = document()->begin(); block.isValid(); block = block.next()) {
         int pos = block.position();
-        int off = block.length();
+        int off = block.length()-1;
         // at least one char of the block is part of the selection
         if ( pos >= selStart || pos+off >= selStart) {
             if ( pos+1 > selEnd )
@@ -233,7 +233,7 @@ void PythonEditor::onUncomment()
     cursor.beginEditBlock();
     for (block = document()->begin(); block.isValid(); block = block.next()) {
         int pos = block.position();
-        int off = block.length();
+        int off = block.length()-1;
         // at least one char of the block is part of the selection
         if ( pos >= selStart || pos+off >= selStart) {
             if ( pos+1 > selEnd )
@@ -591,7 +591,6 @@ PythonEditView::PythonEditView( const QString& file, QWidget* parent)
   // create the editor first
   _textEdit = new PythonEditor();
   _textEdit->setLineWrapMode( QTextEdit::NoWrap );
-  setFocusProxy( _textEdit );
   _lineMarker = new LineMarker();
   _lineMarker->setTextEdit(_textEdit);
 
