@@ -133,12 +133,6 @@ QSize MDIView::minimumSizeHint () const
   return QSize(400, 300);
 }
 
-void MDIView::setCaption ( const QString& cap )
-{
-  QMainWindow::setCaption( cap );
-  getMainWindow()->tabChanged( this );
-}
-
 /**
  * Reimplemented from QWidget.
  * Forces this window to be the active view of the main window.
@@ -252,6 +246,22 @@ void MDIView::setCurrentViewMode( ViewMode b )
     releaseKeyboard();
   }
   */
+}
+
+void MDIView::changeEvent( QEvent *e )
+{
+    switch (e->type()) {
+        case QEvent::WindowTitleChange:
+        case QEvent::ModifiedChange:
+            {
+                // sets the appropriate tab of the tabbar
+                getMainWindow()->tabChanged( this );
+            }   break;
+        default:
+            {
+                QMainWindow::changeEvent(e);
+            }   break;
+    }
 }
 
 #include "moc_MDIView.cpp"

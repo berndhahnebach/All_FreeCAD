@@ -80,9 +80,6 @@ public:
 
   QSize minimumSizeHint () const;
 
-  /// sets the caption and its appropriate tab of tab bar (if registered)
-  virtual void setCaption ( const QString & );
-
   /// MDI view mode enum
   enum ViewMode {
     Normal,     /**< Normal viewing, view is docked inside the MDI application window */  
@@ -110,6 +107,8 @@ protected Q_SLOTS:
 protected:
   void windowActivationChange( bool oldActive );
   void closeEvent    ( QCloseEvent *e );
+  /** \internal */
+  void changeEvent( QEvent *e );
 
   ViewMode _actualMode;
 };

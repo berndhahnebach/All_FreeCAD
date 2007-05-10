@@ -128,10 +128,6 @@ private:
     void insertPythonError ( const QString& );
 
 private:
-    bool _indent;
-    bool _autoTabs;
-    ConsoleHistory _history;
-    QString _output, _error;
     struct PythonConsoleP* d;
 
     friend class PythonStdoutPy;

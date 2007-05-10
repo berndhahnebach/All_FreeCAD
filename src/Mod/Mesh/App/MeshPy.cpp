@@ -55,10 +55,26 @@ using namespace MeshCore;
 // Type structure
 //--------------------------------------------------------------------------
 
+PyDoc_STRVAR(mesh_doc,
+"mesh() -- Create an empty mesh object.\n"
+"\n"
+"This class allows to manipulate the mesh object by adding new faces, deleting faces, importing from an STL file,\n"
+"transforming the mesh and much more.\n"
+"For a complete overview of what can be done see also the documentation of mesh.\n"
+"A mesh object cannot be added to an existing document directly. Therefore the document must create an object\n"
+"with a property class that supports meshes.\n"
+"Example:\n"
+"  m = Mesh.mesh()\n"
+"  ... # Manipulate the mesh\n"
+"  d = FreeCAD.activeDocument() # Get a reference to the actie document\n"
+"  f = d.addObject(\"Mesh::Feature\", \"Mesh\") # Create a mesh feature\n"
+"  f.Mesh = m # Assign the mesh object to the internal property\n"
+"  d.recompute()\n");
+
 PyTypeObject MeshPy::Type = {
   PyObject_HEAD_INIT(&PyType_Type)
   0,                      /*ob_size*/
-  "Mesh.Mesh",        /*tp_name*/
+  "Mesh.mesh",        /*tp_name*/
   sizeof(MeshPy),  /*tp_basicsize*/
   0,                      /*tp_itemsize*/
                           /* methods */
@@ -80,7 +96,7 @@ PyTypeObject MeshPy::Type = {
   0,                                                /* tp_as_buffer */
   /* --- Flags to define presence of optional/expanded features */
   Py_TPFLAGS_HAVE_CLASS,                            /*tp_flags */
-  "About Mesh",                                     /*tp_doc */
+  mesh_doc,                                         /*tp_doc */
   0,                                                /*tp_traverse */
   0,                                                /*tp_clear */
   0,                                                /*tp_richcompare */

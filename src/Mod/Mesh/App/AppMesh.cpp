@@ -68,7 +68,7 @@ void AppMeshExport initMesh() {
   // This function is responsible for adding inherited slots from a type's base class.
   PyObject* pyMeshType = (PyObject *)&Mesh::MeshPy::Type;
   if(PyType_Ready(&Mesh::MeshPy::Type) < 0) return;
-  PyModule_AddObject(meshModule, "Mesh", pyMeshType);
+  PyModule_AddObject(meshModule, "mesh", pyMeshType);
   PyObject* pyMeshFeatureType = (PyObject *)&Mesh::MeshFeaturePy::Type;
   if(PyType_Ready(&Mesh::MeshFeaturePy::Type) < 0) return; // needed to generate documentation
   PyModule_AddObject(meshModule, "__MeshFeature__", pyMeshFeatureType);
