@@ -23,16 +23,16 @@ EXTRA_DIST = \
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	$(QT_MOC) $(srcdir)/$< -o $(@F)
+	$(QT_MOC) $< -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	$(QT_MOC) $(srcdir)/$< -o $(@F)
+	$(QT_MOC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
-	$(QT_RCC) -name $(*F) $(srcdir)/$< -o $(@F)
+	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 
 # set the include path found by configure

@@ -395,7 +395,12 @@ QColor PythonSyntaxHighlighter::color( const QString& type )
 void PythonSyntaxHighlighter::colorChanged( const QString& type, const QColor& col )
 {
   // rehighlight
-  document()->setPlainText(document()->toPlainText());
+#if QT_VERSION >= 0x040200
+    rehighlight();
+#else
+    document()->setPlainText(document()->toPlainText());
+    document()->setModified(false);
+#endif
 }
 
 int PythonSyntaxHighlighter::maximumUserState() const

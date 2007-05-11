@@ -60,7 +60,7 @@
 #include <qpushbutton.h>
 #include <qradiobutton.h>
 #include <qscrollbar.h>
-#include <QShortCut>
+#include <QShortcut>
 #include <qslider.h>
 #include <qspinbox.h>
 #include <qsplashscreen.h>

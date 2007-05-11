@@ -237,6 +237,8 @@ bool InteractiveInterpreter::push(const char* line)
     } catch (const Base::Exception&) {
         d->buffer.clear();
     }
+
+    return false;
 }
 
 /* TRANSLATOR Gui::PythonConsole */
@@ -466,7 +468,6 @@ void PythonConsole::printPrompt(bool incomplete)
     // In this case, however, we should not add a new text block. We force
     // the current block to be normal text (user state = 0) to be highlighted 
     // correctly and append the '>>> ' or '... ' to this block.
-    int len = block.length();
     if (block.length() > 1)
         cursor.insertBlock(cursor.blockFormat(), cursor.charFormat());
     else
