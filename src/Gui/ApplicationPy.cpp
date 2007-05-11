@@ -34,7 +34,7 @@
 #include "Command.h"
 #include "Document.h"
 #include "MainWindow.h"
-#include "PythonEditor.h"
+#include "PythonView.h"
 #include "WidgetFactory.h"
 #include "Workbench.h"
 #include "WorkbenchManager.h"
@@ -170,7 +170,8 @@ PYFUNCIMP_S(Application,sopen)
       Base::Interpreter().runString( cmd.ascii() );
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
-      PythonEditView* edit = new PythonEditView(Name, getMainWindow());
+      PythonView* edit = new PythonView(getMainWindow());
+      edit->open(Name);
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
     }
@@ -195,7 +196,8 @@ PYFUNCIMP_S(Application,sinsert)
       Base::Interpreter().runString( cmd.ascii() );
     }
     else if ( ext == "py" || ext == "fcmacro" || ext == "fcscript" ) {
-      PythonEditView* edit = new PythonEditView(Name, getMainWindow());
+      PythonView* edit = new PythonView(getMainWindow());
+      edit->open(Name);
       edit->resize( 400, 300 );
       getMainWindow()->addWindow( edit );
     }

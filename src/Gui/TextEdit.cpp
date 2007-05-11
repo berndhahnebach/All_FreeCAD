@@ -50,7 +50,7 @@ TextEdit::~TextEdit()
  * Completes the word.
  */
 void TextEdit::complete()
-{
+{return;
   QTextBlock block = textCursor().block();
   if (!block.isValid())
     return;
@@ -81,12 +81,13 @@ void TextEdit::complete()
     listBox->addItems(map.values());
 
     QPoint point = textCursorPoint();
-    listBox->adjustListBoxSize(qApp->desktop()->height() - point.y(), width() / 2);
+//    listBox->adjustListBoxSize(qApp->desktop()->height() - point.y(), width() / 2);
     point.setX( point.x()+5 ); // insert space
     // list box is (partly) hidden
     if ( point.y() + listBox->height() > height() )
       point.setY( point.y() - listBox->height() );
-    listBox->popup( point );
+//    listBox->popup( point );
+    listBox->show();
   }
 }
 
@@ -108,10 +109,18 @@ QPoint TextEdit::textCursorPoint() const
  */
 void TextEdit::itemChosen(QListWidgetItem *item)
 {
-  if (item)
-    insert(item->text().mid(wordPrefix.length()));
-  listBox->close();
-  setFocus();
+    listBox->hide();
+    QString text = item->data(Qt::UserRole).toString();
+    //QString texte = item->text();
+//    wordUnderCursor(QPoint(), true);
+    textCursor().insertText( text );
+    ensureCursorVisible();
+    setFocus( Qt::OtherFocusReason );
+    return;
+  //if (item)
+  //  insert(item->text().mid(wordPrefix.length()));
+  //listBox->close();
+  //setFocus();
 }
 
 /**
@@ -120,8 +129,42 @@ void TextEdit::itemChosen(QListWidgetItem *item)
  */
 void TextEdit::createListBox()
 {
-  listBox = new CompletionBox(this);
-  connect(listBox, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(itemChosen(QListWidgetItem *)));
+    listBox = new CompletionList(this);
+    installEventFilter(listBox);
+    listBox->setSelectionMode( QAbstractItemView::SingleSelection );
+    listBox->hide();
+    connect(listBox, SIGNAL(itemActivated(QListWidgetItem *)), this, SLOT(itemChosen(QListWidgetItem *)) );
+//  listBox = new CompletionBox(this);
+//  connect(listBox, SIGNAL(itemClicked(QListWidgetItem *)), this, SLOT(itemChosen(QListWidgetItem *)));
+}
+
+// ------------------------------------------------------------------------------
+
+CompletionList::CompletionList(QTextEdit* parent)
+  :  QListWidget(parent), textEdit(parent)
+{
+}
+
+CompletionList::~CompletionList()
+{
+}
+
+bool CompletionList::eventFilter(QObject * watched, QEvent * event)
+{
+    if (isVisible()) {
+        if (watched == textEdit && event->type() == QEvent::KeyPress) {
+            QKeyEvent* ke = (QKeyEvent*)event;
+            if (ke->key() == Qt::Key_Up) {
+                keyPressEvent(ke);
+                return true;
+            } else if (ke->key() == Qt::Key_Down) {
+                keyPressEvent(ke);
+                return true;
+            }
+        }
+    }
+
+    return QListWidget::eventFilter(watched, event);
 }
 
 // ------------------------------------------------------------------------------

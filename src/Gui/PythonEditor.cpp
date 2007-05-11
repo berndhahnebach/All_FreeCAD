@@ -28,7 +28,6 @@
 #include "BitmapFactory.h"
 #include "FileDialog.h"
 #include "DlgEditorImp.h"
-#include "Macro.h"
 
 #include <Base/Interpreter.h>
 #include <Base/Exception.h>
@@ -56,6 +55,7 @@ struct PythonEditorP
     colormap["Operator"] = QColor(160, 160, 164);
     colormap["Python output"] = QColor(170, 170, 127);
     colormap["Python error"] = Qt::red;
+    colormap["Line"] = QColor(224,224,224);
   }
 };
 } // namespace Gui
@@ -199,6 +199,41 @@ void PythonEditor::contextMenuEvent ( QContextMenuEvent * e )
 
   menu->exec(e->globalPos());
   delete menu;
+}
+
+void PythonEditor::paintEvent ( QPaintEvent * e )
+{
+#if 0
+    const QColor& color = d->colormap["Line"];
+    if ( color.isValid() )
+    {
+        //QPainter painter( viewport() );
+        //QRect r = cursorRect();
+        //r.setX( 0 );
+        //r.setWidth( viewport()->width() );
+        //painter.fillRect( r, QBrush( color ) );
+        //painter.end();
+
+    QPainter p(viewport());
+
+    const int xOffset = horizontalScrollBar()->value();
+    const int yOffset = verticalScrollBar()->value();
+
+    QRect r = e->rect();
+    p.translate(-xOffset, -yOffset);
+    r.translate(xOffset, yOffset);
+    p.setClipRect(r);
+    /** Start of shown current line highligh... */
+
+    QColor highlightLineColor(232, 242, 254);
+    QRect highlightLineRect = cursorRect();
+    highlightLineRect.setX(0);
+    highlightLineRect.setWidth(r.width());
+    highlightLineRect.translate(xOffset, yOffset);
+    p.fillRect(highlightLineRect, QBrush(highlightLineColor));
+    }
+#endif
+    TextEdit::paintEvent( e );
 }
 
 void PythonEditor::onComment()
@@ -575,451 +610,6 @@ void PythonSyntaxHighlighter::highlightBlock (const QString & text)
   } 
 
   setCurrentBlockState(endStateOfLastPara);
-}
-
-// ------------------------------------------------------------------------
-
-/* TRANSLATOR Gui::PythonEditView */
-
-/**
- *  Constructs a PythonEditView which is a child of 'parent', with the
- *  name 'name'.
- */
-PythonEditView::PythonEditView( const QString& file, QWidget* parent)
-    : MDIView(0,parent, 0, Qt::WDestructiveClose), WindowParameter( "Editor" )
-{
-  // create the editor first
-  _textEdit = new PythonEditor();
-  _textEdit->setLineWrapMode( QTextEdit::NoWrap );
-  _lineMarker = new LineMarker();
-  _lineMarker->setTextEdit(_textEdit);
-
-  // Create the layout containing the workspace and a tab bar
-  QFrame* hbox = new QFrame(this);
-  hbox->setFrameStyle( QFrame::StyledPanel | QFrame::Sunken );
-  QHBoxLayout* layout = new QHBoxLayout();
-  layout->setMargin(1);
-  layout->addWidget(_lineMarker);
-  layout->addWidget(_textEdit);
-  hbox->setLayout(layout);
-  setCentralWidget(hbox);
-
-  setIcon( Gui::BitmapFactory().pixmap("python_small") );
-
-  ParameterGrp::handle hPrefGrp = getWindowParameter();
-  hPrefGrp->Attach( this );
-  hPrefGrp->NotifyAll();
-
-  _pcActivityTimer = new QTimer(this);
-  connect( _pcActivityTimer, SIGNAL(timeout()),this, SLOT(checkTimestamp()) );
-  connect( _textEdit, SIGNAL(textChanged()),this, SLOT(onModified()) );
-  openFile( file );
-}
-
-/** Destroys the object and frees any allocated resources */
-PythonEditView::~PythonEditView()
-{
-  _pcActivityTimer->stop();
-  delete _pcActivityTimer;
-  getWindowParameter()->Detach( this );
-}
-
-void PythonEditView::OnChange( Base::Subject<const char*> &rCaller,const char* rcReason )
-{
-  ParameterGrp::handle hPrefGrp = getWindowParameter();
-  if (strcmp(rcReason, "EnableLineNumber") == 0)
-  {
-    bool show = hPrefGrp->GetBool( "EnableLineNumber", true );
-    if ( show )
-      _lineMarker->show();
-    else
-      _lineMarker->hide();
-  }
-}
-
-void PythonEditView::checkTimestamp()
-{
-  QFileInfo fi(_fileName);
-  uint timeStamp =  fi.lastModified().toTime_t();
-  if ( timeStamp != _timeStamp )
-  {
-    switch( QMessageBox::question( this, tr("Modified file"), 
-      tr("%1.\n\nThis has been modified outside of the source editor. Do you want to reload it?").arg( _fileName ),
-      QMessageBox::Yes|QMessageBox::Default, QMessageBox::No|QMessageBox::Escape) )
-    {
-    case QMessageBox::Yes:
-      // updates time stamp and timer
-      openFile( _fileName );
-      return;
-    case QMessageBox::No:
-      _timeStamp = timeStamp;
-      break;
-    }
-  }
-
-  _pcActivityTimer->start( 3000, true );
-}
-
-void PythonEditView::onModified()
-{
-    setWindowModified(_textEdit->document()->isModified());
-}
-
-/**
- * Runs the action specified by \a pMsg.
- */
-bool PythonEditView::onMsg(const char* pMsg,const char** ppReturn)
-{
-  if (strcmp(pMsg,"Save")==0){
-    save();
-    return true;
-  }
-  else if (strcmp(pMsg,"Run")==0){
-    run();
-    return true;
-  }
-  else if (strcmp(pMsg,"SaveAs")==0){
-    saveAs();
-    return true;
-  }
-  else if (strcmp(pMsg,"Cut")==0){
-    cut();
-    return true;
-  }
-  else if (strcmp(pMsg,"Copy")==0){
-    copy();
-    return true;
-  }
-  else if (strcmp(pMsg,"Paste")==0){
-    paste();
-    return true;
-  }
-  else if (strcmp(pMsg,"Undo")==0){
-    undo();
-    return true;
-  }
-  else if (strcmp(pMsg,"Redo")==0){
-    redo();
-    return true;
-  }
-  else if (strcmp(pMsg,"ViewFit")==0){
-    // just ignore this
-    return true;
-  }
-
-  return false;
-}
-
-/**
- * Checks if the action \a pMsg is available. This is for enabling/disabling
- * the corresponding buttons or menu items for this action.
- */
-bool PythonEditView::onHasMsg(const char* pMsg) const
-{
-  if (strcmp(pMsg,"Save")==0)  return true;
-  if (strcmp(pMsg,"Run")==0)  return true;
-  if (strcmp(pMsg,"SaveAs")==0)  return true;
-  if (strcmp(pMsg,"Print")==0) return true;
-  if (strcmp(pMsg,"Cut")==0)
-  {
-    bool canWrite = !_textEdit->isReadOnly();
-    return (canWrite && (_textEdit->hasSelectedText()));
-  }
-  if (strcmp(pMsg,"Copy")==0)
-  {
-    return ( _textEdit->hasSelectedText() );
-  }
-  if (strcmp(pMsg,"Paste")==0)
-  {
-    QClipboard *cb = QApplication::clipboard();
-    QString text;
-
-    // Copy text from the clipboard (paste)
-    text = cb->text();
-
-    bool canWrite = !_textEdit->isReadOnly();
-    return ( !text.isEmpty() && canWrite );
-  }
-  if (strcmp(pMsg,"Undo")==0)
-  {
-    return _textEdit->isUndoAvailable ();
-  }
-  if (strcmp(pMsg,"Redo")==0)
-  {
-    return _textEdit->isRedoAvailable ();
-  }
-  return false;
-}
-
-/** Checking on close state. */
-bool PythonEditView::canClose(void)
-{
-  if ( !_textEdit->isModified() )
-    return true;
-#ifndef FC_DEBUG
-    setFocus();
-#endif
-  switch( QMessageBox::question( this, tr("Unsaved document"), tr("Save changes to %1?").arg( caption() ),
-                                 QMessageBox::Yes|QMessageBox::Default, QMessageBox::No, 
-                                 QMessageBox::Cancel|QMessageBox::Escape))
-  {
-  case QMessageBox::Yes:
-    return save();
-  case QMessageBox::No:
-    return true;
-  case QMessageBox::Cancel:
-    return false;
-  default:
-    return false;
-  }
-}
-
-/**
- * Saves the changes of the editor to a file. If the input has not been saved yet before
- * a file dialog appears.
- */
-bool PythonEditView::save()
-{
-  if ( !_textEdit->isModified() )
-    return true;
-
-  // check if saved ever before
-  if ( isSavedOnce() )
-  {
-    saveFile();
-    return true;
-  }
-  else
-  {
-    return saveAs();
-  }
-}
-
-/**
- * Saves the content of the editor to a file specified by the appearing file dialog.
- */
-bool PythonEditView::saveAs(void)
-{
-  QString fn = FileDialog::getSaveFileName(QString::null, "FreeCAD macro (*.FCMacro);;Python (*.py)", 
-                                           this, QObject::tr("Save Macro"));
-  if (!fn.isEmpty())
-  {
-    _fileName = fn;
-    saveFile();
-    return true;
-  }
-  else
-  {
-    message( tr("Saving aborted"), 2000 );
-    return false;
-  }
-}
-
-/**
- * Opens the file \a fileName.
- */
-void PythonEditView::openFile (const QString& fileName)
-{
-  QString line;
-  _fileName = fileName;
-  QFile file(fileName);
-
-  if( !file.open(QIODevice::ReadOnly))
-    return;
-
-  // file name with placeholder to mark as modified
-  QString title = fileName + "[*]";
-  setWindowTitle(title);
-
-  QTextStream in(&file);
-  _textEdit->setPlainText( in.read() );
-
-  file.close();
-  QFileInfo fi(_fileName);
-  _timeStamp =  fi.lastModified().toTime_t();
-  _pcActivityTimer->start( 3000, true );	
-
-  setWindowModified(false);
-  _textEdit->document()->setModified(false);
-
-  message( tr("Loaded document %1").arg( fileName ), 2000 );
-}
-
-/**
- * Runs the opened script in the macro manager.
- */
-void PythonEditView::run(void)
-{
-  Application::Instance->macroManager()->run(Gui::MacroManager::File,_fileName.latin1());
-}
-
-/**
- * Copies the selected text to the clipboard and deletes it from the text edit.
- * If there is no selected text nothing happens.
- */
-void PythonEditView::cut(void)
-{
-  _textEdit->cut();
-}
-
-/**
- * Copies any selected text to the clipboard.
- */
-void PythonEditView::copy(void)
-{
-  _textEdit->copy();
-}
-
-/**
- * Pastes the text from the clipboard into the text edit at the current cursor position. 
- * If there is no text in the clipboard nothing happens.
- */
-void PythonEditView::paste(void)
-{
-  _textEdit->paste();
-}
-
-/**
- * Undoes the last operation.
- * If there is no operation to undo, i.e. there is no undo step in the undo/redo history, nothing happens.
- */
-void PythonEditView::undo(void)
-{
-  _textEdit->undo();
-}
-
-/**
- * Redoes the last operation.
- * If there is no operation to undo, i.e. there is no undo step in the undo/redo history, nothing happens.
- */
-void PythonEditView::redo(void)
-{
-  _textEdit->redo();
-}
-
-/**
- * Shows the printer dialog.
- */
-void PythonEditView::print()
-{
-    QPrinter printer(QPrinter::HighResolution);
-    printer.setFullPage(true);
-    QPrintDialog dlg(&printer, this);
-    if (dlg.exec() == QDialog::Accepted) {
-        this->_textEdit->document()->print(&printer);
-    }
-}
-
-/**
- * Prints the document into a Pdf file.
- */
-void PythonEditView::printPdf()
-{
-    QString filename = QFileDialog::getSaveFileName(this, tr("Print Pdf file (*.pdf)"), QString(), tr("Pdf file"));
-    if (!filename.isEmpty()) {
-        QPrinter printer(QPrinter::HighResolution);
-        printer.setFullPage(true);
-        printer.setOutputFormat(QPrinter::PdfFormat);
-        printer.setColorMode(QPrinter::Color);
-        printer.setOutputFileName(filename);
-        this->_textEdit->document()->print(&printer);
-    }
-}
-
-/**
- * Saves the contents to a file.
- */
-void PythonEditView::saveFile()
-{
-  QFile file(_fileName);
-  if( !file.open(QIODevice::WriteOnly))
-    return;
-
-  QTextStream out(&file);
-  out << _textEdit->text();
-  file.close();
-
-  _textEdit->setModified(false);
-  QFileInfo fi(_fileName);
-  _timeStamp =  fi.lastModified().toTime_t();
-
-  setWindowTitle(_fileName + "[*]");
-
-  message( tr( "File %1 saved" ).arg( _fileName ), 2000 );
-
-  return;
-}
-
-/**
- * Checks if the contents has been saved once to a file.
- */
-bool PythonEditView::isSavedOnce()
-{
-    return (!_fileName.isEmpty());
-}
-
-/**
- * \Todo: Get the undo history.
- */
-QStringList PythonEditView::undoActions() const
-{
-    return QStringList();
-}
-
-/**
- * \Todo: Get the redo history.
- */
-QStringList PythonEditView::redoActions() const
-{
-    return QStringList();
-}
-
-// ---------------------------------------------------------
-
-LineMarker::LineMarker(QWidget* parent)
-    : QWidget(parent)
-{
-    setFixedWidth( fontMetrics().width( QString("0000") ) );
-}
-
-LineMarker::~LineMarker()
-{
-}
-
-void LineMarker::setTextEdit(QTextEdit *edit)
-{
-    this->edit = edit;
-    connect( edit->document()->documentLayout(), SIGNAL( update(const QRectF &) ),
-	     this, SLOT( update() ) );
-    connect( edit->verticalScrollBar(), SIGNAL(valueChanged(int) ),
-	     this, SLOT( update() ) );
-}
-
-void LineMarker::paintEvent( QPaintEvent* )
-{
-    QAbstractTextDocumentLayout *layout = edit->document()->documentLayout();
-    int contentsY = edit->verticalScrollBar()->value();
-    qreal pageBottom = contentsY + edit->viewport()->height();
-    const QFontMetrics fm = fontMetrics();
-    const int ascent = fontMetrics().ascent() + 1; // height = ascent + descent + 1
-    int lineCount = 1;
-
-    QPainter p(this);
-
-    for ( QTextBlock block = edit->document()->begin();
-	  block.isValid(); block = block.next(), ++lineCount ) {
-
-        const QRectF boundingRect = layout->blockBoundingRect( block );
-
-        QPointF position = boundingRect.topLeft();
-        if ( position.y() + boundingRect.height() < contentsY )
-            continue;
-        if ( position.y() > pageBottom )
-            break;
-
-        const QString txt = QString::number( lineCount );
-        p.drawText( width() - fm.width(txt), qRound( position.y() ) - contentsY + ascent, txt );
-    }
 }
 
 #include "moc_PythonEditor.cpp"

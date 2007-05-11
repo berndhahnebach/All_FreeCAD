@@ -77,6 +77,7 @@ public:
   virtual bool canClose(void){return true;}
   /// print function of the view
   virtual void print();
+  virtual void printPdf();
 
   QSize minimumSizeHint () const;
 

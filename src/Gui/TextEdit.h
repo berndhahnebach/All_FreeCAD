@@ -73,7 +73,25 @@ private:
 
 private:
   QString wordPrefix;
-  CompletionBox *listBox;
+  //CompletionBox *listBox;
+  QListWidget *listBox;
+};
+
+class CompletionList : public QListWidget
+{
+    Q_OBJECT
+
+public:
+  /// Construction
+  CompletionList(QTextEdit* parent = 0);
+  /// Destruction
+  ~CompletionList();
+
+protected:
+  bool eventFilter(QObject *, QEvent *);
+
+private:
+    QTextEdit* textEdit;
 };
 
 /**
