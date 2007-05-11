@@ -267,7 +267,7 @@ PythonConsole::PythonConsole(QWidget *parent)
 #else
     QFont serifFont( "Courier", 10, QFont::Normal );
 #endif
-    setCurrentFont(serifFont);
+    setFont(serifFont);
     
     // set colors and font from settings
     ParameterGrp::handle hPrefGrp = getWindowParameter();
@@ -310,39 +310,16 @@ void PythonConsole::OnChange( Base::Subject<const char*> &rCaller,const char* sR
 {
     ParameterGrp::handle hPrefGrp = getWindowParameter();
 
-    if (strcmp(sReason, "FontSize") == 0) {
-        bool ok;
+    if (strcmp(sReason, "FontSize") == 0 || strcmp(sReason, "Font") == 0) {
 #ifdef FC_OS_LINUX
-        QString fontSize = hPrefGrp->GetASCII( "FontSize", "15" ).c_str();
-        int size = fontSize.toInt(&ok);
-        if ( !ok ) size = 15; 
+        int fontSize = hPrefGrp->GetInt("FontSize", 15);
 #else
-        QString fontSize = hPrefGrp->GetASCII( "FontSize", "10" ).c_str();
-        int size = fontSize.toInt(&ok);
-        if ( !ok ) size = 10; 
+        int fontSize = hPrefGrp->GetInt("FontSize", 10);
 #endif
-
-        // Create the new text format applying the given size
-        QTextCursor cursor = textCursor();
-        QTextCharFormat format = cursor.charFormat();
-        QFont font = format.font();
-        font.setPointSize(size);
-        format.setFont(font);
-        // select the whole document and apply the text format
-        cursor.setPosition(0);
-        cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-        cursor.mergeCharFormat(format);
-        cursor.clearSelection();
-    } else if (strcmp(sReason, "Font") == 0) {
         QString fontFamily = hPrefGrp->GetASCII( "Font", "Courier" ).c_str();
-        // select the whole document to apply the new format (that only works on selection)
-        QTextCursor cursor = textCursor();
-        QTextCharFormat format = cursor.charFormat();
-        format.setFontFamily(fontFamily);
-        cursor.setPosition(0);
-        cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-        cursor.mergeCharFormat(format);
-        cursor.clearSelection();
+        
+        QFont font(fontFamily, fontSize);
+        setFont(font);
     } else {
         QMap<QString, QColor>::ConstIterator it = d->colormap.find(sReason);
         if (it != d->colormap.end()) {

@@ -38,25 +38,25 @@ using namespace Gui;
 namespace Gui {
 struct PythonEditorP
 {
-  QMap<QString, QColor> colormap; // Color map
-  PythonEditorP()
-  {
-    colormap["Text"] = Qt::black;
-    colormap["Bookmark"] = Qt::cyan;
-    colormap["Breakpoint"] = Qt::red;
-    colormap["Keyword"] = Qt::blue;
-    colormap["Comment"] = QColor(0, 170, 0);
-    colormap["Block comment"] = QColor(160, 160, 164);
-    colormap["Number"] = Qt::blue;
-    colormap["String"] = Qt::red;
-    colormap["Character"] = Qt::red;
-    colormap["Class name"] = QColor(255, 170, 0);
-    colormap["Define name"] = QColor(255, 170, 0);
-    colormap["Operator"] = QColor(160, 160, 164);
-    colormap["Python output"] = QColor(170, 170, 127);
-    colormap["Python error"] = Qt::red;
-    colormap["Line"] = QColor(224,224,224);
-  }
+    QMap<QString, QColor> colormap; // Color map
+    PythonEditorP()
+    {
+        colormap["Text"] = Qt::black;
+        colormap["Bookmark"] = Qt::cyan;
+        colormap["Breakpoint"] = Qt::red;
+        colormap["Keyword"] = Qt::blue;
+        colormap["Comment"] = QColor(0, 170, 0);
+        colormap["Block comment"] = QColor(160, 160, 164);
+        colormap["Number"] = Qt::blue;
+        colormap["String"] = Qt::red;
+        colormap["Character"] = Qt::red;
+        colormap["Class name"] = QColor(255, 170, 0);
+        colormap["Define name"] = QColor(255, 170, 0);
+        colormap["Operator"] = QColor(160, 160, 164);
+        colormap["Python output"] = QColor(170, 170, 127);
+        colormap["Python error"] = Qt::red;
+        colormap["Line"] = QColor(224,224,224);
+    }
 };
 } // namespace Gui
 
@@ -69,170 +69,135 @@ struct PythonEditorP
 PythonEditor::PythonEditor(QWidget* parent)
   : TextEdit(parent), WindowParameter( "Editor" )
 {
-  d = new PythonEditorP();
-  pythonSyntax = new PythonSyntaxHighlighter(this);
+    d = new PythonEditorP();
+    pythonSyntax = new PythonSyntaxHighlighter(this);
 
 #ifdef FC_OS_LINUX
     QFont serifFont( "Courier", 15, QFont::Normal );
 #else
     QFont serifFont( "Courier", 10, QFont::Normal );
 #endif
-    setCurrentFont(serifFont);
+    setFont(serifFont);
 
-  ParameterGrp::handle hPrefGrp = getWindowParameter();
-  // set default to 4 characters
-  hPrefGrp->SetInt( "TabSize", 4 );
-  hPrefGrp->Attach( this );
+    ParameterGrp::handle hPrefGrp = getWindowParameter();
+    // set default to 4 characters
+    hPrefGrp->SetInt( "TabSize", 4 );
+    hPrefGrp->Attach( this );
 
-  // set colors and font
-  hPrefGrp->NotifyAll();
+    // set colors and font
+    hPrefGrp->NotifyAll();
 
-  // set acelerators
-  QShortcut* comment = new QShortcut(this);
-  comment->setKey(Qt::ALT + Qt::Key_C);
-  connect(comment, SIGNAL(activated()), this, SLOT(onComment()));
+    // set acelerators
+    QShortcut* comment = new QShortcut(this);
+    comment->setKey(Qt::ALT + Qt::Key_C);
 
-  QShortcut* uncomment = new QShortcut(this);
-  uncomment->setKey(Qt::ALT + Qt::Key_U);
-  connect(uncomment, SIGNAL(activated()), this, SLOT(onUncomment()));
+    QShortcut* uncomment = new QShortcut(this);
+    uncomment->setKey(Qt::ALT + Qt::Key_U);
+
+    connect(comment, SIGNAL(activated()), 
+            this, SLOT(onComment()));
+    connect(uncomment, SIGNAL(activated()), 
+            this, SLOT(onUncomment()));
+    connect(this, SIGNAL(cursorPositionChanged()), 
+            this, SLOT(onCursorPositionChanged()));
 }
 
 /** Destroys the object and frees any allocated resources */
 PythonEditor::~PythonEditor()
 {
-  getWindowParameter()->Detach( this );
-  delete pythonSyntax;
-  delete d;
+    getWindowParameter()->Detach( this );
+    delete pythonSyntax;
+    delete d;
 }
 
 void PythonEditor::keyPressEvent ( QKeyEvent * e )
 {
-  if ( e->key() == Qt::Key_Tab )
-  {
-    ParameterGrp::handle hPrefGrp = getWindowParameter();
-    int indent = hPrefGrp->GetInt( "IndentSize", 4 );
-    bool space = hPrefGrp->GetBool( "Spaces", false );
-
-    if ( space == true )
+    if ( e->key() == Qt::Key_Tab )
     {
-      QString str(indent, ' ');
-      QTextCursor cursor = textCursor();
-      cursor.beginEditBlock();
-      cursor.insertText(str);
-      cursor.endEditBlock();
-      return;
-    }
-  }
+        ParameterGrp::handle hPrefGrp = getWindowParameter();
+        int indent = hPrefGrp->GetInt( "IndentSize", 4 );
+        bool space = hPrefGrp->GetBool( "Spaces", false );
 
-  TextEdit::keyPressEvent( e );
+        if ( space == true )
+        {
+            QString str(indent, ' ');
+            QTextCursor cursor = textCursor();
+            cursor.beginEditBlock();
+            cursor.insertText(str);
+            cursor.endEditBlock();
+            return;
+        }
+    }
+
+    TextEdit::keyPressEvent( e );
 }
 
 /** Sets the font, font size and tab size of the editor. */  
 void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sReason )
 {
-  ParameterGrp::handle hPrefGrp = getWindowParameter();
-  if (strcmp(sReason, "FontSize") == 0)
-  {
-    bool ok;
+    ParameterGrp::handle hPrefGrp = getWindowParameter();
+    if (strcmp(sReason, "FontSize") == 0 || strcmp(sReason, "Font") == 0) {
 #ifdef FC_OS_LINUX
-    QString fontSize = hPrefGrp->GetASCII( "FontSize", "15" ).c_str();
-    int size = fontSize.toInt(&ok);
-    if ( !ok ) size = 15; 
+        int fontSize = hPrefGrp->GetInt("FontSize", 15);
 #else
-    QString fontSize = hPrefGrp->GetASCII( "FontSize", "10" ).c_str();
-    int size = fontSize.toInt(&ok);
-    if ( !ok ) size = 10; 
+        int fontSize = hPrefGrp->GetInt("FontSize", 10);
 #endif
-
-    // Create the new text format applying the given size
-    QTextCursor cursor = textCursor();
-    QTextCharFormat format = cursor.charFormat();
-    QFont font = format.font();
-    font.setPointSize(size);
-    format.setFont(font);
-    // select the whole document and apply the text format
-    cursor.setPosition(0);
-    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    cursor.mergeCharFormat(format);
-    cursor.clearSelection();
-  }
-  else if (strcmp(sReason, "Font") == 0)
-  {
-    QString fontFamily = hPrefGrp->GetASCII( "Font", "Courier" ).c_str();
-    // select the whole document to apply the new format (that only works on selection)
-    QTextCursor cursor = textCursor();
-    QTextCharFormat format = cursor.charFormat();
-    format.setFontFamily(fontFamily);
-    cursor.setPosition(0);
-    cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
-    cursor.mergeCharFormat(format);
-    cursor.clearSelection();
-  }
-  else
-  {
-    QMap<QString, QColor>::ConstIterator it = d->colormap.find(sReason);
-    if (it != d->colormap.end()) {
-      QColor color = it.data();
-      unsigned long col = (color.red() << 24) | (color.green() << 16) | (color.blue() << 8);
-      col = hPrefGrp->GetUnsigned( sReason, col);
-      color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
-      pythonSyntax->setColor( sReason, color );
+        QString fontFamily = hPrefGrp->GetASCII( "Font", "Courier" ).c_str();
+        
+        QFont font(fontFamily, fontSize);
+        setFont(font);
+    } else {
+        QMap<QString, QColor>::ConstIterator it = d->colormap.find(sReason);
+        if (it != d->colormap.end()) {
+            QColor color = it.data();
+            unsigned long col = (color.red() << 24) | (color.green() << 16) | (color.blue() << 8);
+            col = hPrefGrp->GetUnsigned( sReason, col);
+            color.setRgb((col>>24)&0xff, (col>>16)&0xff, (col>>8)&0xff);
+            pythonSyntax->setColor( sReason, color );
+        }
     }
-  }
-  if (strcmp(sReason, "TabSize") == 0 || strcmp(sReason, "FontSize") == 0)
-  {
-    int tabWidth  = hPrefGrp->GetInt( "TabSize", 4 );
-    QString str;
-    for (int i=0; i<tabWidth;i++) str += '0';
-    QFontMetrics fm( currentFont() );
-    tabWidth = fm.width( str );
-    setTabStopWidth( tabWidth );
-  }
+
+    if (strcmp(sReason, "TabSize") == 0 || strcmp(sReason, "FontSize") == 0) {
+        int tabWidth  = hPrefGrp->GetInt( "TabSize", 4 );
+        QString str;
+        for (int i=0; i<tabWidth;i++) str += '0';
+        QFontMetrics fm( currentFont() );
+        tabWidth = fm.width( str );
+        setTabStopWidth( tabWidth );
+    }
 }
 
 void PythonEditor::contextMenuEvent ( QContextMenuEvent * e )
 {
-  QMenu* menu = createStandardContextMenu();
-  menu->addSeparator();
-  menu->addAction( tr("Comment"), this, SLOT( onComment() ), Qt::ALT + Qt::Key_C );
-  menu->addAction( tr("Uncomment"), this, SLOT( onUncomment() ), Qt::ALT + Qt::Key_U );
+    QMenu* menu = createStandardContextMenu();
+    menu->addSeparator();
+    menu->addAction( tr("Comment"), this, SLOT( onComment() ), Qt::ALT + Qt::Key_C );
+    menu->addAction( tr("Uncomment"), this, SLOT( onUncomment() ), Qt::ALT + Qt::Key_U );
 
-  menu->exec(e->globalPos());
-  delete menu;
+    menu->exec(e->globalPos());
+    delete menu;
+}
+
+void PythonEditor::onCursorPositionChanged()
+{
+    const QColor& color = d->colormap["Line"];
+    if ( color.isValid() )
+        viewport()->update();
 }
 
 void PythonEditor::paintEvent ( QPaintEvent * e )
 {
-#if 0
     const QColor& color = d->colormap["Line"];
     if ( color.isValid() )
     {
-        //QPainter painter( viewport() );
-        //QRect r = cursorRect();
-        //r.setX( 0 );
-        //r.setWidth( viewport()->width() );
-        //painter.fillRect( r, QBrush( color ) );
-        //painter.end();
-
-    QPainter p(viewport());
-
-    const int xOffset = horizontalScrollBar()->value();
-    const int yOffset = verticalScrollBar()->value();
-
-    QRect r = e->rect();
-    p.translate(-xOffset, -yOffset);
-    r.translate(xOffset, yOffset);
-    p.setClipRect(r);
-    /** Start of shown current line highligh... */
-
-    QColor highlightLineColor(232, 242, 254);
-    QRect highlightLineRect = cursorRect();
-    highlightLineRect.setX(0);
-    highlightLineRect.setWidth(r.width());
-    highlightLineRect.translate(xOffset, yOffset);
-    p.fillRect(highlightLineRect, QBrush(highlightLineColor));
+        QPainter painter( viewport() );
+        QRect r = cursorRect();
+        r.setX( 0 );
+        r.setWidth( viewport()->width() );
+        painter.fillRect( r, QBrush( color ) );
+        painter.end();
     }
-#endif
+
     TextEdit::paintEvent( e );
 }
 

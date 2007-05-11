@@ -62,8 +62,8 @@ public:
   void loadSettings();
 
 protected Q_SLOTS:
-  void on_fontFamily_activated(const QString&);
-  void on_fontSize_activated(const QString&);
+  void on_fontFamily_activated();
+  void on_fontSize_valueChanged();
 
 protected:
   void changeEvent(QEvent *e);
