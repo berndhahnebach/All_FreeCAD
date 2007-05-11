@@ -40,6 +40,7 @@ BUILT_SOURCES=\
 		moc_PropertyView.cpp \
 		moc_PythonConsole.cpp \
 		moc_PythonEditor.cpp \
+		moc_PythonView.cpp \
 		moc_ReportView.cpp \
 		moc_SpinBox.cpp \
 		moc_Splashscreen.cpp \
@@ -223,6 +224,8 @@ libFreeCADGui_la_SOURCES=\
 		PythonConsolePy.h \
 		PythonEditor.cpp \
 		PythonEditor.h \
+		PythonView.cpp \
+		PythonView.h \
 		ReportView.cpp \
 		ReportView.h \
 		resource.cpp \

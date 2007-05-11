@@ -128,6 +128,12 @@ void MDIView::print()
   assert(0);
 }
 
+void MDIView::printPdf()
+{
+  // print command specified but print method not overriden!
+  assert(0);
+}
+
 QSize MDIView::minimumSizeHint () const
 {
   return QSize(400, 300);

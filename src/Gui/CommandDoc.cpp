@@ -254,6 +254,35 @@ bool StdCmdPrint::isActive(void)
 }
 
 //===========================================================================
+// Std_PrintPdf
+//===========================================================================
+DEF_STD_CMD_A(StdCmdPrintPdf);
+
+StdCmdPrintPdf::StdCmdPrintPdf()
+  :Command("Std_PrintPdf")
+{
+  sGroup        = QT_TR_NOOP("File");
+  sMenuText     = QT_TR_NOOP("&Export PDF...");
+  sToolTipText  = QT_TR_NOOP("Export the document as PDF");
+  sWhatsThis    = QT_TR_NOOP("Export the document as PDF");
+  sStatusTip    = QT_TR_NOOP("Export the document as PDF");
+}
+
+void StdCmdPrintPdf::activated(int iMsg)
+{
+  if ( getMainWindow()->activeWindow() )
+  {
+    getMainWindow()->statusBar()->message("Exporting PDF...");
+    getMainWindow()->activeWindow()->printPdf();
+  }
+}
+
+bool StdCmdPrintPdf::isActive(void)
+{
+  return getGuiApplication()->sendHasMsgToActiveView("PrintPdf");
+}
+
+//===========================================================================
 // Std_Quit
 //===========================================================================
 
@@ -534,6 +563,7 @@ void CreateDocCommands(void)
   rcCmdMgr.addCommand(new StdCmdUndo());
   rcCmdMgr.addCommand(new StdCmdRedo());
   rcCmdMgr.addCommand(new StdCmdPrint());
+  rcCmdMgr.addCommand(new StdCmdPrintPdf());
   rcCmdMgr.addCommand(new StdCmdQuit());
   rcCmdMgr.addCommand(new StdCmdCut());
   rcCmdMgr.addCommand(new StdCmdCopy());

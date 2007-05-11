@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,8 +21,8 @@
  ***************************************************************************/
 
 
-#ifndef GUI_PYTHONEDITOR_H
-#define GUI_PYTHONEDITOR_H
+#ifndef GUI_PYTHONVIEW_H
+#define GUI_PYTHONVIEW_H
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
@@ -32,75 +32,81 @@
 # include "Qt3All.h"
 #endif
 
+#include "MDIView.h"
 #include "Window.h"
-#include "TextEdit.h"
 
 namespace Gui {
 
-class PythonSyntaxHighlighter;
-class PythonSyntaxHighlighterP;
-
-/**
- * Python text editor with syntax highlighting..
- * \author Werner Mayer
- */
-class GuiExport PythonEditor : public TextEdit, public WindowParameter
+class LineMarkerP;
+class LineMarker: public QWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  PythonEditor(QWidget *parent = 0);
-  ~PythonEditor();
+    LineMarker(QWidget* parent=0);
+    virtual ~LineMarker();
 
-  void OnChange( Base::Subject<const char*> &rCaller,const char* rcReason );
-
-public Q_SLOTS:
-  /** Inserts a '#' at the beginning of each selected line or the current line if 
-   * nothing is selected
-   */
-  void onComment();
-  /**
-   * Removes the leading '#' from each selected line or the current line if
-   * nothing is selected. In case a line hasn't a leading '#' then
-   * this line is skipped.
-   */
-  void onUncomment();
+    void setTextEdit(QTextEdit *edit);
 
 protected:
-  void keyPressEvent ( QKeyEvent * e );
-  /** Pops up the context menu with some extensions */
-  void contextMenuEvent ( QContextMenuEvent* e );
-  /** Draw a beam in the line where the cursor is. */
-  void paintEvent ( QPaintEvent * e );
+    void paintEvent ( QPaintEvent * );
 
 private:
-  PythonSyntaxHighlighter* pythonSyntax;
-  struct PythonEditorP* d;
+    QTextEdit *edit;
 };
 
 /**
- * Syntax highlighter for Python.
+ * A special view class which sends the messages from the application to
+ * the Python editor and embeds the editor in a window.
  * \author Werner Mayer
  */
-class GuiExport PythonSyntaxHighlighter : public QSyntaxHighlighter
+class PythonViewP;
+class GuiExport PythonView : public MDIView, public WindowParameter
 {
+    Q_OBJECT
+
 public:
-  PythonSyntaxHighlighter(QTextEdit* );
-  virtual ~PythonSyntaxHighlighter();
+    PythonView(QWidget* parent);
+    ~PythonView();
 
-  void highlightBlock ( const QString & text );
-  int maximumUserState() const;
-  
-  void setColor( const QString& type, const QColor& col );
-  QColor color( const QString& type );
+    void OnChange(Base::Subject<const char*> &rCaller,const char* rcReason);
 
-protected:
-  virtual void colorChanged( const QString& type, const QColor& col );
+    const char *getName(void) const {return "PythonView";}
+    void onUpdate(void){};
+
+    bool onMsg(const char* pMsg,const char** ppReturn);
+    bool onHasMsg(const char* pMsg) const;
+
+    bool canClose(void);
+
+    /** @name Standard actions of the editor */
+    //@{
+    bool open   (const QString &f);
+    bool saveAs ();
+    void cut    ();
+    void copy   ();
+    void paste  ();
+    void undo   ();
+    void redo   ();
+    void run    ();
+    void print  ();
+    void printPdf();
+    //@}
+
+    QStringList undoActions() const;
+    QStringList redoActions() const;
+
+private Q_SLOTS:
+    void checkTimestamp();
 
 private:
-  PythonSyntaxHighlighterP* d;
+    void setCurrentFileName(const QString &fileName);
+    bool saveFile();
+
+private:
+    PythonViewP* d;
 };
 
 } // namespace Gui
 
-#endif // GUI_PYTHONEDITOR_H
+#endif // GUI_PYTHONVIEW_H
