@@ -66,6 +66,9 @@ public Q_SLOTS:
    */
   void onUncomment();
 
+private Q_SLOTS:
+    void onCursorPositionChanged();
+
 protected:
   void keyPressEvent ( QKeyEvent * e );
   /** Pops up the context menu with some extensions */

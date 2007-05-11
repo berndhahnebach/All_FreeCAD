@@ -8,8 +8,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>449</width>
-    <height>477</height>
+    <width>494</width>
+    <height>553</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -22,291 +22,19 @@
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="2" column="0" >
-    <widget class="QGroupBox" name="GroupBox1" >
-     <property name="title" >
-      <string>Colors</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="1" column="0" >
-       <widget class="Gui::ColorButton" name="ColorBtn" >
-        <property name="minimumSize" >
-         <size>
-          <width>140</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="focusPolicy" >
-         <enum>Qt::TabFocus</enum>
-        </property>
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" >
-       <widget class="Q3ListBox" name="ListBox1" />
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="1" >
-    <widget class="QGroupBox" name="GroupBox2_2" >
-     <property name="title" >
-      <string>Sample</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="0" column="0" >
-       <widget class="QTextEdit" name="textEdit1" >
-        <property name="html" >
-         <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;/head>&lt;body style=" white-space: pre-wrap; font-family:MS Shell Dlg 2; font-size:7.8pt; font-weight:400; font-style:normal; text-decoration:none;">&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;"># Short Python sample&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">import sys&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">def foo(begin, end):&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">	i=begin&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">	while (i&amp;lt;end):&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">		print i&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">		i=i+1&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">		print "Text"&lt;/p>&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">&lt;/p>&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">foo(0, 20)&lt;/p>&lt;p style="-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;">&lt;/p>&lt;/body>&lt;/html></string>
-        </property>
-        <property name="tabStopWidth" >
-         <number>40</number>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QGroupBox" name="groupBoxIndent" >
-     <property name="title" >
-      <string>Tabs</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="1" column="1" >
-       <widget class="Gui::PrefRadioButton" name="radioSpaces" >
-        <property name="text" >
-         <string>Insert spaces</string>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>Spaces</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>Editor</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" >
-       <widget class="Gui::PrefRadioButton" name="radioTabs" >
-        <property name="text" >
-         <string>Keep tabs</string>
-        </property>
-        <property name="checked" >
-         <bool>true</bool>
-        </property>
-        <property name="prefEntry" stdset="0" >
-         <cstring>Tabs</cstring>
-        </property>
-        <property name="prefPath" stdset="0" >
-         <cstring>Editor</cstring>
-        </property>
-       </widget>
-      </item>
-      <item rowspan="2" row="0" column="0" >
-       <layout class="QGridLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item row="0" column="1" >
-         <widget class="Gui::PrefSpinBox" name="tabSize" >
-          <property name="value" >
-           <number>4</number>
-          </property>
-          <property name="prefEntry" stdset="0" >
-           <cstring>TabSize</cstring>
-          </property>
-          <property name="prefPath" stdset="0" >
-           <cstring>Editor</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" >
-         <widget class="Gui::PrefSpinBox" name="indentSize" >
-          <property name="value" >
-           <number>4</number>
-          </property>
-          <property name="prefEntry" stdset="0" >
-           <cstring>IndentSize</cstring>
-          </property>
-          <property name="prefPath" stdset="0" >
-           <cstring>Editor</cstring>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" >
-         <widget class="QLabel" name="textLabel1" >
-          <property name="text" >
-           <string>Tab size:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="textLabel2" >
-          <property name="text" >
-           <string>Indent size:</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="0" >
-    <widget class="QGroupBox" name="GroupBox5" >
-     <property name="title" >
-      <string>Font settings:</string>
-     </property>
-     <layout class="QGridLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item row="0" column="1" >
-       <widget class="QLabel" name="TextLabel4" >
-        <property name="text" >
-         <string>Size:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0" >
-       <widget class="QLabel" name="TextLabel3" >
-        <property name="text" >
-         <string>Font:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1" >
-       <widget class="QComboBox" name="fontSize" >
-        <property name="currentIndex" >
-         <number>4</number>
-        </property>
-        <item>
-         <property name="text" >
-          <string>5</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>6</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>7</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>8</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>9</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>10</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>11</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>12</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>13</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>14</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>15</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>16</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>17</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>18</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>19</string>
-         </property>
-        </item>
-        <item>
-         <property name="text" >
-          <string>20</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="1" column="0" >
-       <widget class="QComboBox" name="fontFamily" />
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="1" >
+   <item row="1" column="0" >
     <widget class="QGroupBox" name="GroupBox2" >
      <property name="title" >
-      <string>Window settings</string>
+      <string>Options</string>
      </property>
-     <layout class="QGridLayout" >
+     <layout class="QVBoxLayout" >
       <property name="margin" >
-       <number>11</number>
+       <number>9</number>
       </property>
       <property name="spacing" >
        <number>6</number>
       </property>
-      <item row="0" column="0" >
+      <item>
        <widget class="Gui::PrefCheckBox" name="EnableLineNumber" >
         <property name="focusPolicy" >
          <enum>Qt::TabFocus</enum>
@@ -325,7 +53,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" >
+      <item>
        <widget class="Gui::PrefCheckBox" name="EnableFolding" >
         <property name="text" >
          <string>Enable folding</string>
@@ -338,6 +66,220 @@
         </property>
         <property name="prefPath" stdset="0" >
          <cstring>Editor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Ignored</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QGroupBox" name="groupBoxIndent" >
+     <property name="title" >
+      <string>Indentation</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="3" column="0" colspan="2" >
+       <widget class="Gui::PrefRadioButton" name="radioSpaces" >
+        <property name="text" >
+         <string>Insert spaces</string>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>Spaces</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Editor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="textLabel1" >
+        <property name="text" >
+         <string>Tab size:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="Gui::PrefSpinBox" name="tabSize" >
+        <property name="value" >
+         <number>4</number>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>TabSize</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Editor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="textLabel2" >
+        <property name="text" >
+         <string>Indent size:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="Gui::PrefSpinBox" name="indentSize" >
+        <property name="value" >
+         <number>4</number>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>IndentSize</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Editor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="Gui::PrefRadioButton" name="radioTabs" >
+        <property name="text" >
+         <string>Keep tabs</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>Tabs</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Editor</cstring>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2" >
+    <widget class="QGroupBox" name="GroupBox5" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>7</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title" >
+      <string>Syntax Highlighting</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="2" >
+       <widget class="Gui::PrefSpinBox" name="fontSize" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimum" >
+         <number>1</number>
+        </property>
+        <property name="value" >
+         <number>10</number>
+        </property>
+        <property name="prefEntry" stdset="0" >
+         <cstring>FontSize</cstring>
+        </property>
+        <property name="prefPath" stdset="0" >
+         <cstring>Editor</cstring>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="4" row="0" column="0" >
+       <widget class="Q3ListBox" name="ListBox1" />
+      </item>
+      <item row="4" column="0" >
+       <widget class="Gui::ColorButton" name="ColorBtn" >
+        <property name="minimumSize" >
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="focusPolicy" >
+         <enum>Qt::TabFocus</enum>
+        </property>
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QLabel" name="TextLabel3" >
+        <property name="text" >
+         <string>Family:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QLabel" name="TextLabel4" >
+        <property name="text" >
+         <string>Size:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QComboBox" name="fontFamily" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>7</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2" >
+       <widget class="QLabel" name="label" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>5</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Preview:</string>
+        </property>
+       </widget>
+      </item>
+      <item rowspan="2" row="3" column="1" colspan="2" >
+       <widget class="QTextEdit" name="textEdit1" >
+        <property name="tabStopWidth" >
+         <number>40</number>
         </property>
        </widget>
       </item>
@@ -387,7 +329,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>fontFamily</tabstop>
-  <tabstop>fontSize</tabstop>
   <tabstop>EnableLineNumber</tabstop>
   <tabstop>EnableFolding</tabstop>
   <tabstop>tabSize</tabstop>
