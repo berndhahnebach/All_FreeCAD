@@ -26,11 +26,11 @@ libpropertyeditor_la_SOURCES=\
 
 # rule for Qt MetaObject Compiler:
 moc_%.cpp: %.h
-	$(QT_MOC) $(srcdir)/$< -o $(@F)
+	$(QT_MOC) $< -o $(@F)
 
 # rule for Qt MetaObject Compiler:
 %.moc: %.h
-	$(QT_MOC) $(srcdir)/$< -o $(@F)
+	$(QT_MOC) $< -o $(@F)
 
 
 # set the include path found by configure

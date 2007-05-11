@@ -28,7 +28,7 @@ data_DATA = FCIcon.xpm
 # rules for Qt Resource Compiler:
 # (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
-	$(QT_RCC) -name $(*F) $(srcdir)/$< -o $(@F)
+	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 
 # set the include path found by configure
