@@ -4,6 +4,7 @@ lib_LTLIBRARIES=libFreeCADGui.la
 
 BUILT_SOURCES=\
 		moc_Action.cpp \
+		moc_CallTips.cpp \
 		moc_DlgActionsImp.cpp \
 		moc_DlgCmdbarsImp.cpp \
 		moc_DlgCommandsImp.cpp \
@@ -115,6 +116,8 @@ libFreeCADGui_la_SOURCES=\
 		Application.h \
 		BitmapFactory.cpp \
 		BitmapFactory.h \
+		CallTips.cpp \
+		CallTips.h \
 		Command.cpp \
 		Command.h \
 		CommandBarManager.cpp \

@@ -617,7 +617,7 @@ AC_MSG_NOTICE([
   FreeCAD configuration settings:
 
   C++ compiler:              $CXX
-  Python version:            $fc_py_ver
+  Python version:            $PYTHON_VERSION
   Log info enabled:          $fc_set_loginfo
   Debug info enabled:        $fc_set_debug
   Thread enabled (forced):   $fc_set_thread
