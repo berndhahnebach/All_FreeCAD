@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -21,13 +21,13 @@
                                                                         
    Juergen Riegel 2005                                                  
 -->
-<Include>
-	<Directory Id='ModImage' Name='Image' src='..\..\Mod\Image'>
-	   <Component Id='CompModImage' Guid='23FF207E-6D03-4273-8475-D0F675A3319C'>
-		  <File Id='ImageInitPy'    Name='Init.py'     DiskId='1' />
-		  <File Id='ImageInitGuiPy' Name='InitGui.py'   DiskId='1' />
-		  <File Id='Imagepyd'       Name='Image.pyd'    DiskId='1' />
-		  <File Id='ImageGuipyd'    Name='ImageGui.pyd' DiskId='1' />
-	   </Component>
-	</Directory>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Directory Id="ModPart" Name="Part" FileSource="..\Mod\Part">
+        <Component Id="CompModPart" Guid="C2B9C611-A685-4777-8BF5-C03C9B25F1FD">
+            <File Id="PartInitPy" Name="Init.py" DiskId="1" />
+            <File Id="PartInitGuiPy" Name="InitGui.py" DiskId="1" />
+            <File Id="Partpyd" Name="Part.pyd" DiskId="1" />
+            <File Id="PartGuipyd" Name="PartGui.pyd" DiskId="1" />
+        </Component>
+    </Directory>
 </Include>
