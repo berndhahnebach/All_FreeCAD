@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -21,13 +21,13 @@
                                                                         
    Juergen Riegel 2005                                                  
 -->
-<Include>
-	<Directory Id='ModPart' Name='Part' src='..\..\Mod\Part'>
-	   <Component Id='CompModPart' Guid='C2B9C611-A685-4777-8BF5-C03C9B25F1FD'>
-		  <File Id='PartInitPy'    Name='Init.py'     DiskId='1' />
-		  <File Id='PartInitGuiPy' Name='InitGui.py'  DiskId='1' />
-		  <File Id='Partpyd'       Name='Part.pyd'    DiskId='1' />
-		  <File Id='PartGuipyd'    Name='PartGui.pyd' DiskId='1' />
-	   </Component>
-	</Directory>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Directory Id="ModRaytracing" ShortName="Raytr" Name="Raytracing" FileSource="..\Mod\Raytracing">
+        <Component Id="CompModRaytracing" Guid="80A38BA9-B6BF-4909-94F8-221782DB7B4D">
+            <File Id="RaytracingInitPy" Name="Init.py" DiskId="1" />
+            <File Id="RaytracingInitGuiPy" Name="InitGui.py" DiskId="1" />
+            <File Id="Raytracingpyd" ShortName="Raytra.pyd" Name="Raytracing.pyd" DiskId="1" />
+            <File Id="RaytracingGuipyd" ShortName="RaytraG.pyd" Name="RaytracingGui.pyd" DiskId="1" />
+        </Component>
+    </Directory>
 </Include>

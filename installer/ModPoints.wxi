@@ -1,4 +1,4 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -21,13 +21,13 @@
                                                                         
    Juergen Riegel 2005                                                  
 -->
-<Include>
-	<Directory Id='ModRaytracing' Name='Raytr' LongName='Raytracing' src='..\..\Mod\Raytracing'>
-	   <Component Id='CompModRaytracing' Guid='80A38BA9-B6BF-4909-94F8-221782DB7B4D'>
-		  <File Id='RaytracingInitPy'    Name='Init.py'                                  DiskId='1' />
-		  <File Id='RaytracingInitGuiPy' Name='InitGui.py'                               DiskId='1' />
-		  <File Id='Raytracingpyd'       Name='Raytra.pyd'  LongName='Raytracing.pyd'    DiskId='1' />
-		  <File Id='RaytracingGuipyd'    Name='RaytraG.pyd' LongName='RaytracingGui.pyd' DiskId='1' />
-	   </Component>
-	</Directory>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Directory Id="ModPoints" Name="Points" FileSource="..\Mod\Points">
+        <Component Id="CompModPoints" Guid="F14D207D-B088-41e6-A758-A44DDDDD56F8">
+            <File Id="PointsInitPy" Name="Init.py" DiskId="1" />
+            <File Id="PointsInitGuiPy" Name="InitGui.py" DiskId="1" />
+            <File Id="Pointspyd" Name="Points.pyd" DiskId="1" />
+            <File Id="PointsGuipyd" ShortName="PoinGui.pyd" Name="PointsGui.pyd" DiskId="1" />
+        </Component>
+    </Directory>
 </Include>

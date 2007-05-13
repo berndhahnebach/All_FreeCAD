@@ -1,5 +1,4 @@
-<?xml version='1.0'?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -20,21 +19,15 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
    USA                                                                  
                                                                         
-   Juergen Riegel 2005                                                 
+   Juergen Riegel 2005                                                  
 -->
-<Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
-  <Fragment Id='FreeCADDoc'>
-    <DirectoryRef Id='DocDir' src='../../doc/'>
-      <Component Id='DocComp' Guid='8A17000C-47B0-46f7-9C17-10BC167580ED'>
-        <File Id='DocPdf' Name='doc.pdf' LongName='FreeCAD-SpecsDesign.pdf' DiskId='1' >
-          <Shortcut Id='FCDocShortcut' 
-                    Directory='MenuDir' 
-                    Name='Doc' 
-                    LongName='User manual' 
-                    Description='FreeCAD the one and only open source CAD package' 
-                    Advertise='no'/>
-        </File>
-      </Component>
-    </DirectoryRef>
-  </Fragment>
-</Wix>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Directory Id="ModImage" Name="Image" FileSource="..\Mod\Image">
+        <Component Id="CompModImage" Guid="23FF207E-6D03-4273-8475-D0F675A3319C">
+            <File Id="ImageInitPy" Name="Init.py" DiskId="1" />
+            <File Id="ImageInitGuiPy" Name="InitGui.py" DiskId="1" />
+            <File Id="Imagepyd" Name="Image.pyd" DiskId="1" />
+            <File Id="ImageGuipyd" Name="ImageGui.pyd" DiskId="1" />
+        </Component>
+    </Directory>
+</Include>

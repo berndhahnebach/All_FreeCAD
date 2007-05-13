@@ -24,7 +24,7 @@ set INCLUDE=%INCLUDE%;%FREECADLIB%\include\soqt141
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\Wm3_VC8
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\xerces260
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\zlib123
-set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\
+set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\Qt
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\Qt3Support
 set INCLUDE=%INCLUDE%;%FREECADLIB%\include\qt414\QtAssistent
@@ -44,7 +44,7 @@ set LIB=%LIB%;%PROGRAMFILES%\Microsoft Visual Studio\VC98\Lib
 set LIB=%LIB%;%QTDIR%\lib
 set LIB=%LIB%;%FREECADLIB%\lib
 
-START /LOW vcbuild D:\Develop\Projekte\FreeCAD\FreeCAD_0.7\FreeCAD.sln /useenv
+START /LOW vcbuild D:\Develop\Projekte\FreeCAD\FreeCAD_0.7\FreeCAD.sln /useenv /rebuild
 
 rem call "C:\Programme\Microsoft Visual Studio 8\VC\vcvarsall.bat"
 rem MSBuild.exe FreeCAD.sln /p:Configuration=RELEASE

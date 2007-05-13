@@ -44,6 +44,7 @@ class DocumentBasicCases(unittest.TestCase):
     self.failUnless(L1.Float-47.11<0.001)
     self.failUnless(L1.Bool    == True)
     self.failUnless(L1.String  == "empty")
+    self.failUnless(L1.Path  == "c:/temp")
     self.failUnless(L1.Angle-3.0<0.001)
     self.failUnless(L1.Distance-47.11<0.001)
 

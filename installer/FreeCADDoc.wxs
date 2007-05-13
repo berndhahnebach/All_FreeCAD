@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
@@ -19,16 +20,16 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
    USA                                                                  
                                                                         
-   Juergen Riegel 2005                                                  
+   Juergen Riegel 2005                                                 
 -->
-<Include>
-	<Directory Id='ModMesh' Name='Mesh' src='..\..\Mod\Mesh'>
-	   <Component Id='CompModMesh' Guid='209D916B-10C6-445d-8973-F276E28E2A72'>
-		  <File Id='MeshInitPy'    Name='Init.py'     DiskId='1' />
-		  <File Id='MeshInitGuiPy' Name='InitGui.py'   DiskId='1' />
-		  <File Id='Meshpyd'       Name='Mesh.pyd'    DiskId='1' />
-		  <File Id='MeshGuipyd'    Name='MeshGui.pyd' DiskId='1' />
-		  <File Id='BuildRegpy'    Name='BldRegGe.py' LongName='BuildRegularGeoms.py' DiskId='1' />
-	   </Component>
-	</Directory>
-</Include>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment Id="FreeCADDoc">
+        <DirectoryRef Id="DocDir" FileSource="../../doc/">
+            <Component Id="DocComp" Guid="8A17000C-47B0-46f7-9C17-10BC167580ED">
+                <File Id="DocPdf" ShortName="doc.pdf" Name="FreeCAD-SpecsDesign.pdf" DiskId="1">
+                    <Shortcut Id="FCDocShortcut" Directory="MenuDir" ShortName="Doc" Name="User manual" Description="FreeCAD the one and only open source CAD package" Advertise="no" />
+                </File>
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+</Wix>

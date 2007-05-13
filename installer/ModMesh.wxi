@@ -1,5 +1,4 @@
-<?xml version='1.0'?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
    (c) Juergen Riegel (juergen.riegel@web.de) 2005                       
                                                                         
    This file is part of the FreeCAD CAx development system.             
@@ -20,16 +19,16 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 
    USA                                                                  
                                                                         
-   Juergen Riegel 2005                                                 
+   Juergen Riegel 2005                                                  
 -->
-<Wix xmlns='http://schemas.microsoft.com/wix/2003/01/wi'>
-  <Fragment Id='FreeCADModules'>
-    <DirectoryRef Id='ModDir' >
-      <?include ModMesh.wxi ?>
-      <?include ModPart.wxi ?>
-      <?include ModPoints.wxi ?>
-      <?include ModImage.wxi ?>
-      <?include ModRaytracing.wxi ?>
-    </DirectoryRef>
-  </Fragment>
-</Wix>
+<Include xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Directory Id="ModMesh" Name="Mesh" FileSource="..\Mod\Mesh">
+        <Component Id="CompModMesh" Guid="209D916B-10C6-445d-8973-F276E28E2A72">
+            <File Id="MeshInitPy" Name="Init.py" DiskId="1" />
+            <File Id="MeshInitGuiPy" Name="InitGui.py" DiskId="1" />
+            <File Id="Meshpyd" Name="Mesh.pyd" DiskId="1" />
+            <File Id="MeshGuipyd" Name="MeshGui.pyd" DiskId="1" />
+            <File Id="BuildRegpy" ShortName="BldRegGe.py" Name="BuildRegularGeoms.py" DiskId="1" />
+        </Component>
+    </Directory>
+</Include>
