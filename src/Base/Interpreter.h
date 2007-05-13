@@ -113,6 +113,8 @@ public:
 	/* Loads a module
 	 */
 	bool loadModule(const char* psModName);
+  /// Adds addtional pyhton paths
+  void addPythonPaths(const char* Path);
 	//@}
 
   /** @name Cleanup

@@ -47,6 +47,7 @@ public:
   App::PropertyFloat        Float;
   App::PropertyBool         Bool;
   App::PropertyString       String;
+  App::PropertyPath         Path;
 
   // special types
   App::PropertyDistance     Distance;

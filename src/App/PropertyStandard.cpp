@@ -124,6 +124,120 @@ void PropertyInteger::Paste(const Property &from)
   hasSetValue();
 }
 
+
+//**************************************************************************
+//**************************************************************************
+// PropertyPath
+//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+TYPESYSTEM_SOURCE(App::PropertyPath , App::Property);
+
+//**************************************************************************
+// Construction/Destruction
+
+       
+PropertyPath::PropertyPath()
+{
+
+}
+
+
+PropertyPath::~PropertyPath()
+{
+
+}
+
+
+
+//**************************************************************************
+// Base class implementer
+
+
+//**************************************************************************
+// Seter getter for the property
+
+
+void PropertyPath::setValue(const boost::filesystem::path &Path)
+{
+  aboutToSetValue();
+	_cValue = Path;
+  hasSetValue();
+
+}
+
+void PropertyPath::setValue(const char * Path)
+{
+  aboutToSetValue();
+  _cValue = boost::filesystem::path(Path,boost::filesystem::no_check );
+  //_cValue = boost::filesystem::path(Path,boost::filesystem::native );
+  hasSetValue();
+
+}
+
+boost::filesystem::path PropertyPath::getValue(void) const
+{
+	return _cValue;
+}
+
+PyObject *PropertyPath::getPyObject(void)
+{
+  PyObject *p = PyUnicode_DecodeUTF8(_cValue.string().c_str(),_cValue.string().size(),0);
+  if(!p)
+    throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
+  Py_INCREF(p);
+  return p;
+
+  //return Py_BuildValue("s", _cValue.c_str());
+
+}
+
+void PropertyPath::setPyObject(PyObject *value)
+{
+  if(PyUnicode_Check( value ))
+    value = PyUnicode_AsUTF8String(value);
+
+  if(PyString_Check( value) )
+  {
+    aboutToSetValue();
+    _cValue = PyString_AsString(value);
+    hasSetValue();
+
+  }else
+    throw "Not allowed type used (string expected)...";
+
+}
+
+
+void PropertyPath::Save (Writer &writer) const
+{
+  std::string val = encodeAttribute(_cValue.string());
+  writer.Stream() << writer.ind() << "<Path value=\"" <<  val <<"\"/>" << std::endl;
+}
+
+void PropertyPath::Restore(Base::XMLReader &reader)
+{
+  // read my Element
+  reader.readElement("Path");
+  // get the value of my Attribute
+  _cValue = reader.getAttribute("value");
+}
+
+
+Property *PropertyPath::Copy(void) const
+{
+  PropertyPath *p= new PropertyPath();
+  p->_cValue = _cValue;
+  return p;
+}
+
+void PropertyPath::Paste(const Property &from)
+{
+  aboutToSetValue();
+  _cValue = dynamic_cast<const PropertyPath&>(from)._cValue;
+  hasSetValue();
+}
+
+
 //**************************************************************************
 //**************************************************************************
 // PropertyEnumeration

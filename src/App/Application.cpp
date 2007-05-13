@@ -666,6 +666,8 @@ void Application::init(int argc, char ** argv)
 
     initTypes();
 
+    boost::filesystem::path::default_name_check(boost::filesystem::no_check);
+
     if(argc==0)
     {
       char* buf = new char[256];
@@ -1086,7 +1088,35 @@ namespace boost { namespace program_options { std::string arg="arg"; } }
 pair<string, string> customSyntax(const string& s)
 {
   if (s.find("-display") == 0) 
-    return make_pair(string("display"), string(""));
+    return make_pair(string("display"), string("null"));
+  else if (s.find("-geometry") == 0) 
+    return make_pair(string("geometry"), string("null"));
+  else if (s.find("-fn") == 0) 
+    return make_pair(string("fn"), string("null"));
+  else if (s.find("-background") == 0) 
+    return make_pair(string("background"), string("null"));
+  else if (s.find("-bg") == 0) 
+    return make_pair(string("bg"), string("null"));
+  else if (s.find("-foreground") == 0) 
+    return make_pair(string("foreground"), string("null"));
+  else if (s.find("-fg") == 0) 
+    return make_pair(string("fg"), string("null"));
+  else if (s.find("-button") == 0) 
+    return make_pair(string("button"), string("null"));
+  else if (s.find("-button") == 0) 
+    return make_pair(string("button"), string("null"));
+  else if (s.find("-btn") == 0) 
+    return make_pair(string("btn"), string("null"));
+  else if (s.find("-name") == 0) 
+    return make_pair(string("name"), string("null"));
+  else if (s.find("-title") == 0) 
+    return make_pair(string("title"), string("null"));
+  else if (s.find("-visual") == 0) 
+    return make_pair(string("visual"), string("null"));
+//  else if (s.find("-ncols") == 0) 
+//    return make_pair(string("ncols"), boost::program_options::value<int>(1));
+//  else if (s.find("-cmap") == 0) 
+//    return make_pair(string("cmap"), string("null"));
   else if ('@' == s[0])
     return std::make_pair(string("response-file"), s.substr(1));
   else
@@ -1114,9 +1144,6 @@ void Application::ParseOptions(int ac, char ** av)
             ("version,v", "print version string")
             ("help,h", "print help message")   
             ("console,c", "start in console mode")   
-            ("write-log,l", value<string>(), "write a log file")   
-            ("run-test,t",   value<int>()   ,"test level")
-            ("module-path,M", value< vector<string> >()->composing(),"additional module/python paths")
             ("response-file", value<string>(),"can be specified with '@name', too")
 
              ;
@@ -1125,7 +1152,10 @@ void Application::ParseOptions(int ac, char ** av)
         // config file
         boost::program_options::options_description config("Configuration");
         config.add_options()
-            ("include-path,I", boost::program_options::value< vector<string> >()->composing(),"include path")
+            ("write-log,l", value<string>(), "write a log file")   
+            ("run-test,t",   value<int>()   ,"test level")
+            ("module-path,M", value< vector<string> >()->composing(),"additional module paths")
+            ("python-path,P", value< vector<string> >()->composing(),"additional python paths")
             ;
   
  
@@ -1134,7 +1164,21 @@ void Application::ParseOptions(int ac, char ** av)
         boost::program_options::options_description hidden("Hidden options");
         hidden.add_options()
             ("input-file",  boost::program_options::value< vector<string> >(), "input file")
-            ("display",  boost::program_options::value< string >(), "set the X-Server")
+            // this are to ignore for the window system (QApplication)
+            ("display",    boost::program_options::value< string >(), "set the X-Server")
+            ("geometry ",  boost::program_options::value< string >(), "set the X-Window geometry")
+            ("fn",         boost::program_options::value< string >(), "set the X-Window font")
+            ("background", boost::program_options::value< string >(), "set the X-Window background color")
+            ("bg",         boost::program_options::value< string >(), "set the X-Window background color")
+            ("foreground", boost::program_options::value< string >(), "set the X-Window foreground color")
+            ("fg",         boost::program_options::value< string >(), "set the X-Window foreground color")
+            ("button",     boost::program_options::value< string >(), "set the X-Window button color")
+            ("btn",        boost::program_options::value< string >(), "set the X-Window button color")
+            ("name",       boost::program_options::value< string >(), "set the X-Window name")
+            ("title",      boost::program_options::value< string >(), "set the X-Window title")
+            ("visual",     boost::program_options::value< string >(), "set the X-Window to color scema")
+            ("ncols",      boost::program_options::value< int    >(), "set the X-Window to color scema")
+            ("cmap",                                                  "set the X-Window to color scema")
             ;
 
         // Ignored options, will be savely ignored. Mostly uses by underlaying libs.
@@ -1161,7 +1205,7 @@ void Application::ParseOptions(int ac, char ** av)
           store( boost::program_options::command_line_parser(ac, av).
                 options(cmdline_options).positional(p).extra_parser(customSyntax).run(), vm);
 
-          ifstream ifs("multiple_sources.cfg");
+          ifstream ifs("FreeCAD.cfg");
           store(parse_config_file(ifs, config_file_options), vm);
           notify(vm);
         }catch(const std::exception& e){
@@ -1184,8 +1228,8 @@ void Application::ParseOptions(int ac, char ** av)
            // Load the file and tokenize it
            ifstream ifs(vm["response-file"].as<string>().c_str());
            if (!ifs) {
-               cout << "Could no open the response file\n";
-               exit(1);;
+             Base::Console().Error("Could no open the response file\n");
+             exit(1);;
            }
            // Read the whole file into a string
            stringstream ss;
@@ -1213,8 +1257,21 @@ void Application::ParseOptions(int ac, char ** av)
 
         if (vm.count("module-path"))
         {
-            cout << "Module paths are: " 
-                 << vm["module-path"].as< vector<string> >() << "\n";
+            vector<string> Mods = vm["module-path"].as< vector<string> >();
+            string temp;
+            for ( vector<string>::const_iterator It= Mods.begin();It != Mods.end();++It)
+              temp += *It + ";";
+            temp.erase(temp.end()-1);
+            
+            mConfig["AdditionalModulePaths"] = temp;
+        }
+
+        if (vm.count("python-path"))
+        {
+            vector<string> Paths = vm["python-path"].as< vector<string> >();
+            string temp;
+            for ( vector<string>::const_iterator It= Paths.begin();It != Paths.end();++It)
+              Base::Interpreter().addPythonPaths( It->c_str());
         }
 
         if (vm.count("input-file"))
