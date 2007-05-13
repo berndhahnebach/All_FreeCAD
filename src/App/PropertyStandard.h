@@ -30,6 +30,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <boost/filesystem/path.hpp >
 
 #ifdef _MSC_VER
 # pragma warning( disable : 4251 )
@@ -85,6 +86,49 @@ public:
 protected:
 
 	long _lValue;
+
+};
+
+/** Path properties
+ * This properties handling file system paths.
+ */
+class AppExport PropertyPath: public Property
+{
+  TYPESYSTEM_HEADER();
+
+public:
+  
+	PropertyPath();
+	~PropertyPath();
+
+	/** Sets the property 
+	 */
+	void setValue(const boost::filesystem::path &);
+
+  /** Sets the property 
+	 */
+	void setValue(const char *);
+
+	/** This method returns a string representation of the property
+	 */
+  boost::filesystem::path getValue(void) const;
+
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::TextEditorItem"; }
+
+  virtual PyObject *getPyObject(void);
+  virtual void setPyObject(PyObject *);
+
+  virtual void Save (Base::Writer &writer) const;
+  virtual void Restore(Base::XMLReader &reader);
+
+  virtual Property *Copy(void) const;
+  virtual void Paste(const Property &from);
+
+  virtual unsigned int getMemSize (void) const{return _cValue.string().size();}
+
+protected:
+
+	boost::filesystem::path _cValue;
 
 };
 

@@ -60,6 +60,8 @@ def InitApplications():
 	Log("Using "+ModDir+" as module path!\n")
 	# Searching modules dirs +++++++++++++++++++++++++++++++++++++++++++++++++++
 	ModDirs = dircache.listdir(ModDir)
+	#AddModPaths = App.ParamGet("System parameter:AdditionalModulePaths")
+	#Err( AddModPaths)
 	PathExtension = ""
 	#print ModDirs
 	Log('Init:   Searching modules...\n')

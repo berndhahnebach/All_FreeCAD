@@ -179,7 +179,6 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 	try { // catches all exeptions coming up from c++ and generate a python exeption
 	  return ((@self.export.Name@*)self)->@i.Name@(args);
 	}
-#ifndef DONT_CATCH_CXX_EXCEPTIONS 
 	catch(Base::Exception &e) // catch the FreeCAD exeptions
 	{
 		std::string str;
@@ -189,6 +188,19 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 		e.ReportException();
 		Py_Error(PyExc_Exception,str.c_str());
 	}
+	catch(boost::filesystem::filesystem_error &e) // catch boost filesystem exeption
+	{
+		std::string str;
+		str += "File system exeption thrown (";
+		//str += e.who();
+    //str += ", ";
+		str += e.what();
+		str += ")\\n";
+		Base::Console().Error(str.c_str());
+		Py_Error(PyExc_Exception,str.c_str());
+	}
+// in debug not all exceptions will be catcht to get the attentation of the developer!
+#ifndef DONT_CATCH_CXX_EXCEPTIONS 
 	catch(std::exception &e) // catch other c++ exeptions
 	{
 		std::string str;
@@ -202,17 +214,7 @@ PyObject * @self.export.Name@::staticCallback_@i.Name@ (PyObject *self, PyObject
 	{
 		Py_Error(PyExc_Exception,"Unknown C++ exception");
 	}
-#else  // DONT_CATCH_CXX_EXCEPTIONS
-	catch(Base::Exception &e) // catch the FreeCAD exeptions
-	{
-		std::string str;
-		str += "FreeCAD exception thrown (";
-		str += e.what();
-		str += ")";
-		e.ReportException();
-		Py_Error(PyExc_Exception,str.c_str());
-	}
-#endif  // DONT_CATCH_CXX_EXCEPTIONS
+#endif
 }
 -
 

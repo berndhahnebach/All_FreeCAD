@@ -233,6 +233,12 @@ bool InterpreterSingleton::loadModule(const char* psModName)
 	return true;
 }
 
+void InterpreterSingleton::addPythonPaths(const char* Path)
+{
+  // not implemented so far
+  assert(0);
+}
+
 int InterpreterSingleton::cleanup(void (*func)(void))
 {
   return Py_AtExit( func );
