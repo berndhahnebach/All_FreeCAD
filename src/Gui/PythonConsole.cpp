@@ -25,6 +25,7 @@
 
 #include "PythonConsole.h"
 #include "PythonConsolePy.h"
+#include "CallTips.h"
 #include "Application.h"
 #include "Action.h"
 #include "Command.h"
@@ -46,6 +47,7 @@ struct PythonConsoleP
     PyObject *_stdoutPy, *_stderrPy, *_stdinPy;
     PyObject *_stdout, *_stderr, *_stdin;
     InteractiveInterpreter* interpreter;
+    CallTipsList* callTipsList;
     ConsoleHistory history;
     QString output, error;
     QMap<QString, QColor> colormap; // Color map
@@ -262,6 +264,15 @@ PythonConsole::PythonConsole(QWidget *parent)
     // use the console highlighter
     pythonSyntax = new PythonConsoleHighlighter(this);
 
+    // create the window for call tips
+    d->callTipsList = new CallTipsList(this);
+    d->callTipsList->setFrameStyle(QFrame::Box|QFrame::Raised);
+    d->callTipsList->setLineWidth(2);
+    installEventFilter(d->callTipsList);
+    viewport()->installEventFilter(d->callTipsList);
+    d->callTipsList->setSelectionMode( QAbstractItemView::SingleSelection );
+    d->callTipsList->hide();
+
 #ifdef FC_OS_LINUX
     QFont serifFont( "Courier", 15, QFont::Normal );
 #else
@@ -390,9 +401,25 @@ void PythonConsole::keyPressEvent(QKeyEvent * e)
             // evaluate and run the command
             runSource(line);
         }   break;
-    default: 
+    case Qt::Key_Period:
+        {
+            QTextCursor cursor = textCursor();
+            cursor.movePosition(QTextCursor::StartOfWord);
+            cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
+            QString text = cursor.selectedText();
             TextEdit::keyPressEvent(e);
-            break;
+            d->callTipsList->showTips(text);
+        }   break;
+    default: 
+        {
+            TextEdit::keyPressEvent(e);
+
+            // This can't be done in CallTipsList::eventFilter() because we must first perform
+            // the event and afterwards update the list widget
+            if (d->callTipsList->isVisible()) {
+                d->callTipsList->validateCursor();
+            }
+        }   break;
     }  
 }
 

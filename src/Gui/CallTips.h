@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2004 Werner Mayer <werner.wm.mayer@gmx.de>              *
+ *   Copyright (c) 2007 Werner Mayer <werner.wm.mayer@gmx.de>              *
  *                                                                         *
  *   This file is part of the FreeCAD CAx development system.              *
  *                                                                         *
@@ -21,91 +21,59 @@
  ***************************************************************************/
 
 
-#ifndef GUI_TEXTEDIT_H
-#define GUI_TEXTEDIT_H
-
-#include "View.h"
-#include "Window.h"
+#ifndef GUI_CALLTIPS_H
+#define GUI_CALLTIPS_H
 
 #ifndef __Qt4All__
 # include "Qt4All.h"
 #endif
 
-#ifndef __Qt3All__
-# include "Qt3All.h"
-#endif
-
 namespace Gui {
-class CompletionBox;
 
-/**
- * Completion is a means by which an editor automatically completes words that the user is typing. 
- * For example, in a code editor, a programmer might type "sur", then Tab, and the editor will complete 
- * the word the programmer was typing so that "sur" is replaced by "surnameLineEdit". This is very 
- * useful for text that contains long words or variable names. The completion mechanism usually works 
- * by looking at the existing text to see if any words begin with what the user has typed, and in most 
- * editors completion is invoked by a special key sequence.
- *
- * TextEdit can detect a special key sequence to invoke the completion mechanism, and can handle three 
- * different situations:
- * \li There are no possible completions.
- * \li There is a single possible completion.
- * \li There are two or more possible completions.
- * 
- * \remark The original sources are taken from Qt Quarterly (Customizing for Completion).
- * @author Werner Mayer
- */
-class CompletionList;
-class GuiExport TextEdit : public QTextEdit
+class CallTip
 {
-    Q_OBJECT
-
 public:
-    TextEdit(QWidget *parent = 0);
-    virtual ~TextEdit();
-
-private Q_SLOTS:
-    void complete();
-
-protected:
-    void keyPressEvent(QKeyEvent *);
-
-private:
-    void createListBox();
-
-private:
-    QString wordPrefix;
-    int cursorPosition;
-    CompletionList *listBox;
+    enum Type {Unknown, Class, Method, Atribute};
+    CallTip():type(Unknown) {}
+    QString name;
+    QString description;
+    QString parameter;
+    Type type;
 };
 
 /**
- * The CompletionList class provides a list box that pops up in a text edit if the user has pressed
- * an accelerator to complete the current word he is typing in.
  * @author Werner Mayer
  */
-class CompletionList : public QListWidget
+class CallTipsList : public QListWidget
 {
     Q_OBJECT
 
 public:
     /// Construction
-    CompletionList(QTextEdit* parent);
+    CallTipsList(QTextEdit* parent);
     /// Destruction
-    ~CompletionList();
+    ~CallTipsList();
 
     void findCurrentWord(const QString&);
+    void showTips(const QString&);
+    void validateCursor();
 
 protected:
     bool eventFilter(QObject *, QEvent *);
 
 private Q_SLOTS:
-    void completionItem(QListWidgetItem *item);
+    void callTipItemActivated(QListWidgetItem *item);
+
+private:
+    QMap<QString, CallTip> extractTips(const QString&) const;
 
 private:
     QTextEdit* textEdit;
+    int cursorPos;
+    QList<int> hideKeys;
+    QList<int> compKeys;
 };
 
 } // namespace Gui
 
-#endif // GUI_TEXTEDIT_H
+#endif // GUI_CALLTIPS_H

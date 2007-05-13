@@ -110,8 +110,7 @@ public:
         return;
     }
 
-    msg = QString("\n %1").arg(msg);
-    splash->message( msg, alignment, textColor );
+    splash->message( msg.replace(QString("\n"), QString()), alignment, textColor );
     QMutex mutex;
     mutex.lock();
     QWaitCondition().wait(&mutex, 50);

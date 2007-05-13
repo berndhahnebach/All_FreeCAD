@@ -112,21 +112,83 @@ PythonEditor::~PythonEditor()
 
 void PythonEditor::keyPressEvent ( QKeyEvent * e )
 {
-    if ( e->key() == Qt::Key_Tab )
-    {
+    if ( e->key() == Qt::Key_Tab ) {
+        ParameterGrp::handle hPrefGrp = getWindowParameter();
+        int indent = hPrefGrp->GetInt( "IndentSize", 4 );
+        bool space = hPrefGrp->GetBool( "Spaces", false );
+        QString ch = space ? QString(indent, ' ') : QString("\t");
+
+        QTextCursor cursor = textCursor();
+        if (!cursor.hasSelection()) {
+            // insert a single tab or several spaces
+            cursor.beginEditBlock();
+            cursor.insertText(ch);
+            cursor.endEditBlock();
+        } else {
+            // for each selected block insert a tab or spaces
+            int selStart = cursor.selectionStart();
+            int selEnd = cursor.selectionEnd();
+            QTextBlock block;
+            cursor.beginEditBlock();
+            for (block = document()->begin(); block.isValid(); block = block.next()) {
+                int pos = block.position();
+                int off = block.length()-1;
+                // at least one char of the block is part of the selection
+                if ( pos >= selStart || pos+off >= selStart) {
+                    if ( pos+1 > selEnd )
+                        break; // end of selection reached
+                    cursor.setPosition(block.position());
+                    cursor.insertText(ch);
+                        selEnd += ch.length();
+                }
+            }
+
+            cursor.endEditBlock();
+        }
+
+        return;
+    } else if (e->key() == Qt::Key_Backtab) {
+        QTextCursor cursor = textCursor();
+        if (!cursor.hasSelection())
+            return; // Shift+Tab should not do anything
+        // If some text is selected we remove a leading tab or
+        // spaces from each selected block
         ParameterGrp::handle hPrefGrp = getWindowParameter();
         int indent = hPrefGrp->GetInt( "IndentSize", 4 );
         bool space = hPrefGrp->GetBool( "Spaces", false );
 
-        if ( space == true )
-        {
-            QString str(indent, ' ');
-            QTextCursor cursor = textCursor();
-            cursor.beginEditBlock();
-            cursor.insertText(str);
-            cursor.endEditBlock();
-            return;
+        int selStart = cursor.selectionStart();
+        int selEnd = cursor.selectionEnd();
+        QTextBlock block;
+        cursor.beginEditBlock();
+        for (block = document()->begin(); block.isValid(); block = block.next()) {
+            int pos = block.position();
+            int off = block.length()-1;
+            // at least one char of the block is part of the selection
+            if ( pos >= selStart || pos+off >= selStart) {
+                if ( pos+1 > selEnd )
+                    break; // end of selection reached
+                // if possible remove one tab or several spaces
+                QString text = block.text();
+                if (text.startsWith("\t")) {
+                    cursor.setPosition(block.position());
+                    cursor.deleteChar();
+                    selEnd--;
+                } else {
+                    cursor.setPosition(block.position());
+                    for (int i=0; i<indent; i++) {
+                        if (!text.startsWith(" "))
+                            break;
+                        text = text.mid(1);
+                        cursor.deleteChar();
+                        selEnd--;
+                    }
+                }
+            }
         }
+
+        cursor.endEditBlock();
+        return;
     }
 
     TextEdit::keyPressEvent( e );
@@ -158,12 +220,9 @@ void PythonEditor::OnChange( Base::Subject<const char*> &rCaller,const char* sRe
     }
 
     if (strcmp(sReason, "TabSize") == 0 || strcmp(sReason, "FontSize") == 0) {
-        int tabWidth  = hPrefGrp->GetInt( "TabSize", 4 );
-        QString str;
-        for (int i=0; i<tabWidth;i++) str += '0';
-        QFontMetrics fm( currentFont() );
-        tabWidth = fm.width( str );
-        setTabStopWidth( tabWidth );
+        int tabWidth = hPrefGrp->GetInt("TabSize", 4);
+        int fontSize = hPrefGrp->GetInt("FontSize");
+        setTabStopWidth(tabWidth * fontSize);
     }
 }
 

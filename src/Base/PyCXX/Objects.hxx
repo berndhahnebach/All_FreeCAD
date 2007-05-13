@@ -993,7 +993,7 @@ namespace Py
 	// ...the base class for all sequence types
 
 	template<TEMPLATE_TYPENAME T>
-	class BaseExport SeqBase: public Object
+	class SeqBase: public Object
 		{
 	public:
 		// STL definitions
@@ -1109,7 +1109,8 @@ namespace Py
 
 		seqref<T> front()
 			{
-			return seqref<T>(this, 0);
+            //NOTE: The seqref<T> class has no constructor that accepts a pointer but a reference (Werner 2007-05-13)
+			return seqref<T>(*this, 0);
 			}
 
 		const T back () const
@@ -1119,7 +1120,8 @@ namespace Py
 
 		seqref<T> back()
 			{
-			return seqref<T>(this, size()-1);
+            //NOTE: The seqref<T> class has no constructor that accepts a pointer but a reference (Werner 2007-05-13)
+			return seqref<T>(*this, size()-1);
 			}
 
 		void verify_length(size_type required_size) const
@@ -1416,19 +1418,19 @@ namespace Py
 	template <TEMPLATE_TYPENAME T> bool operator>=(const EXPLICIT_TYPENAME SeqBase<T>::const_iterator& left, const EXPLICIT_TYPENAME SeqBase<T>::const_iterator& right); 
 
 
-	extern bool operator==(const Sequence::iterator& left, const Sequence::iterator& right);
-	extern bool operator!=(const Sequence::iterator& left, const Sequence::iterator& right);
-	extern bool operator< (const Sequence::iterator& left, const Sequence::iterator& right);
-	extern bool operator> (const Sequence::iterator& left, const Sequence::iterator& right);
-	extern bool operator<=(const Sequence::iterator& left, const Sequence::iterator& right);
-	extern bool operator>=(const Sequence::iterator& left, const Sequence::iterator& right);
+	BaseExport extern bool operator==(const Sequence::iterator& left, const Sequence::iterator& right);
+	BaseExport extern bool operator!=(const Sequence::iterator& left, const Sequence::iterator& right);
+	BaseExport extern bool operator< (const Sequence::iterator& left, const Sequence::iterator& right);
+	BaseExport extern bool operator> (const Sequence::iterator& left, const Sequence::iterator& right);
+	BaseExport extern bool operator<=(const Sequence::iterator& left, const Sequence::iterator& right);
+	BaseExport extern bool operator>=(const Sequence::iterator& left, const Sequence::iterator& right);
 
-	extern bool operator==(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-	extern bool operator!=(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-	extern bool operator< (const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-	extern bool operator> (const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-	extern bool operator<=(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
-	extern bool operator>=(const Sequence::const_iterator& left, const Sequence::const_iterator& right); 
+	BaseExport extern bool operator==(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+	BaseExport extern bool operator!=(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+	BaseExport extern bool operator< (const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+	BaseExport extern bool operator> (const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+	BaseExport extern bool operator<=(const Sequence::const_iterator& left, const Sequence::const_iterator& right);
+	BaseExport extern bool operator>=(const Sequence::const_iterator& left, const Sequence::const_iterator& right); 
 
 	// ==================================================
 	// class Char
@@ -2051,7 +2053,7 @@ namespace Py
 		}
 
 	template<TEMPLATE_TYPENAME T>
-	class BaseExport MapBase: public Object
+	class MapBase: public Object
 		{
 	protected:
 		explicit MapBase<T>()
@@ -2255,7 +2257,7 @@ namespace Py
 			}
 #endif // 0
 
-		class BaseExport iterator
+		class iterator
 			{
 			// : public forward_iterator_parent( std::pair<const T,T> ) {
 		protected:
@@ -2383,6 +2385,13 @@ namespace Py
 				, pos( p )
 				{}
 
+            //NOTE: Add constructor with the same parameters as the matching iterator class (Werner 2007-05-13)
+			const_iterator (const MapBase<T>* m, bool end = false )
+				: map( m )
+				, keys( m->keys() )
+				, pos( end ? keys.end() : keys.begin() )
+				{}
+
 			const_iterator(const const_iterator& other)
 				: map( other.map )
 				, keys( other.keys )
@@ -2430,12 +2439,16 @@ namespace Py
 
 		const_iterator begin () const
 			{
-			return const_iterator(this, 0);
+            //NOTE: No constructor defined that accepts (MapBase<T>*, int) (Werner 2007-05-13)
+            return const_iterator(this);
+			//return const_iterator(this, 0);
 			}
 
 		const_iterator end () const
 			{
-			return const_iterator(this, length());
+            //NOTE: No constructor defined that accepts (MapBase<T>*, int) (Werner 2007-05-13)
+            return const_iterator(this, true);
+			//return const_iterator(this, length());
 			}
 
 		};	// end of MapBase<T>
@@ -2447,10 +2460,10 @@ namespace Py
 	template <TEMPLATE_TYPENAME T> bool operator==(const EXPLICIT_TYPENAME MapBase<T>::const_iterator& left, const EXPLICIT_TYPENAME MapBase<T>::const_iterator& right);
 	template <TEMPLATE_TYPENAME T> bool operator!=(const EXPLICIT_TYPENAME MapBase<T>::const_iterator& left, const EXPLICIT_TYPENAME MapBase<T>::const_iterator& right);
 
-	extern bool operator==(const Mapping::iterator& left, const Mapping::iterator& right);
-	extern bool operator!=(const Mapping::iterator& left, const Mapping::iterator& right);
-	extern bool operator==(const Mapping::const_iterator& left, const Mapping::const_iterator& right);
-	extern bool operator!=(const Mapping::const_iterator& left, const Mapping::const_iterator& right);
+	BaseExport extern bool operator==(const Mapping::iterator& left, const Mapping::iterator& right);
+	BaseExport extern bool operator!=(const Mapping::iterator& left, const Mapping::iterator& right);
+	BaseExport extern bool operator==(const Mapping::const_iterator& left, const Mapping::const_iterator& right);
+	BaseExport extern bool operator!=(const Mapping::const_iterator& left, const Mapping::const_iterator& right);
 
 
 	// ==================================================

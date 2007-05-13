@@ -69,7 +69,7 @@ DlgGeneralImp::DlgGeneralImp( QWidget* parent )
 
   // do not save the content but the current item only
   AutoloadTabCombo->setKeepPreference( true );
-  QWidget* dw = DockWindowManager::instance()->getDockWindow("Report View");
+  QWidget* dw = DockWindowManager::instance()->getDockWindow("Report view");
   if ( dw )
   {
     watched = dw->findChild<QTabWidget*>();
