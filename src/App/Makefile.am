@@ -82,6 +82,7 @@ libFreeCADApp_la_LIBADD   = \
 		-lFreeCADBase \
 		-l@PYTHON_LIB@ \
 		-lxerces-c \
+		-lboost_filesystem \
 		-lboost_program_options \
 		-lboost_signals
 
