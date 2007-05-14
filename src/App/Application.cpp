@@ -1089,8 +1089,12 @@ pair<string, string> customSyntax(const string& s)
 {
   if (s.find("-display") == 0) 
     return make_pair(string("display"), string("null"));
+  else if (s.find("-style") == 0) 
+    return make_pair(string("style"), string("null"));
   else if (s.find("-geometry") == 0) 
     return make_pair(string("geometry"), string("null"));
+  else if (s.find("-font") == 0) 
+    return make_pair(string("font"), string("null"));
   else if (s.find("-fn") == 0) 
     return make_pair(string("fn"), string("null"));
   else if (s.find("-background") == 0) 
@@ -1165,8 +1169,10 @@ void Application::ParseOptions(int ac, char ** av)
         hidden.add_options()
             ("input-file",  boost::program_options::value< vector<string> >(), "input file")
             // this are to ignore for the window system (QApplication)
+            ("style",      boost::program_options::value< string >(), "set the application GUI style")
             ("display",    boost::program_options::value< string >(), "set the X-Server")
             ("geometry ",  boost::program_options::value< string >(), "set the X-Window geometry")
+            ("font",       boost::program_options::value< string >(), "set the X-Window font")
             ("fn",         boost::program_options::value< string >(), "set the X-Window font")
             ("background", boost::program_options::value< string >(), "set the X-Window background color")
             ("bg",         boost::program_options::value< string >(), "set the X-Window background color")

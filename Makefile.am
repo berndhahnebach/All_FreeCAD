@@ -1,6 +1,19 @@
 SUBDIRS=src debian
 
 EXTRA_DIST = \
+		Installer/BuildInstaller.bat \
+		Installer/FreeCAD.wxs \
+		Installer/FreeCADBase.wxs \
+		Installer/FreeCADDoc.wxs \
+		Installer/FreeCADModules.wxs \
+		Installer/LibPackDll.wxi \
+		Installer/License.rtf \
+		Installer/ModImage.wxi \
+		Installer/ModMesh.wxi \
+		Installer/ModPart.wxi \
+		Installer/ModPoints.wxi \
+		Installer/ModRaytracing.wxi \
+		Installer/Version.wxi.in \
 		FreeCAD.sln \
 		autogen.sh \
 		ChangeLog.txt \
