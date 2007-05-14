@@ -30,7 +30,7 @@
 #include <string>
 #include <list>
 #include <vector>
-#include <boost/filesystem/path.hpp >
+#include <boost/filesystem/path.hpp>
 
 #ifdef _MSC_VER
 # pragma warning( disable : 4251 )

@@ -26,8 +26,8 @@
 #ifndef _PreComp_
 #endif
 
-#include "CallTips.h"
 #include <Base/PyCXX/Objects.hxx>
+#include "CallTips.h"
 
 using namespace Gui;
 
@@ -168,109 +168,6 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
     } catch (const Py::Exception& ) {
         // Just do nothing
     }
-/*
-    // get the global dictionary
-    PyObject *module, *dict;
-    module = PyImport_AddModule("__main__");
-    dict = PyModule_GetDict(module);
-
-    // search for the given object
-    module = PyDict_GetItemString(dict, context.toAscii());
-
-        // it's a class object, no module
-        PyObject* list = PyObject_Dir(module);
-        if (list) {
-            Py_ssize_t count = PyList_Size(list);
-            for (Py_ssize_t i=0; i<count; ++i) {
-                PyObject* key = PyList_GetItem(list, i);
-                PyObject* attr = PyObject_GetAttr(module, key);
-                if (attr) {
-                    QString funcName = PyString_AsString(key);
-                    if (!funcName.startsWith("__")) {
-                        CallTip tip;
-                        tip.name = funcName;
-                        PyObject* doc = PyObject_GetAttrString(attr, "__doc__");
-                        if (doc && PyString_Check(doc)) {
-                            tip.longdoc = PyString_AsString(doc);
-                            int pos = tip.longdoc.indexOf(QChar('\n'));
-                            pos = qMin(pos, 70);
-                            if (pos < 0) pos = qMin(tip.longdoc.length()-1, 70);
-                            tip.tooltip = tip.longdoc.left(pos);
-                            Py_DECREF(doc);
-                        }
-                    
-                        tips[funcName] = tip;
-                    }
-
-                    Py_DECREF(attr);
-                }
-            }
-            
-            Py_DECREF(list);
-        }
-
-*/
-#if 0
-    // get the global dictionary
-    PyObject *module, *dict;
-    module = PyImport_AddModule("__main__");
-    dict = PyModule_GetDict(module);
-
-    // search for the given object
-    module = PyDict_GetItemString(dict, context.toAscii());
-    if (!module) return tips;
-    if (PyModule_Check(module)){
-        // get the dictionary of the module
-        PyObject* dict = PyModule_GetDict(module);
-
-        PyObject *key, *value;
-        Py_ssize_t pos = 0;
-        while (PyDict_Next(dict, &pos, &key, &value)) {
-            // get all methods of the module
-            QString funcName = PyString_AsString(key);
-            if (!funcName.startsWith("__")) {
-                CallTip tip;
-                tip.name = funcName;
-                // get the name of the method and its doc string, if available
-                PyObject* doc = PyObject_GetAttrString(value, "__doc__");
-                if (doc && PyString_Check(doc)) {
-                    tip.longdoc = PyString_AsString(doc);
-                    Py_DECREF(doc);
-                }
-
-                tips[funcName] = tip;
-            }
-        }
-    } else {
-        // it's a class object, no module
-        PyObject* list = PyObject_Dir(module);
-        if (list) {
-            Py_ssize_t count = PyList_Size(list);
-            for (Py_ssize_t i=0; i<count; ++i) {
-                PyObject* key = PyList_GetItem(list, i);
-                PyObject* attr = PyObject_GetAttr(module, key);
-                if (attr) {
-                    QString funcName = PyString_AsString(key);
-                    if (!funcName.startsWith("__")) {
-                        CallTip tip;
-                        tip.name = funcName;
-                        PyObject* doc = PyObject_GetAttrString(attr, "__doc__");
-                        if (doc && PyString_Check(doc)) {
-                            tip.longdoc = PyString_AsString(doc);
-                            Py_DECREF(doc);
-                        }
-                    
-                        tips[funcName] = tip;
-                    }
-
-                    Py_DECREF(attr);
-                }
-            }
-            
-            Py_DECREF(list);
-        }
-    }
-#endif
 
     return tips;
 }
@@ -377,7 +274,6 @@ void CallTipsList::showTips(const QString& context)
     int posX = rect.x();
     int posY = rect.y();
     int boxH = h;
-    int boxW = w;
 
     // Decide whether to show downstairs or upstairs
     if (posY > textEdit->viewport()->height()/2) {

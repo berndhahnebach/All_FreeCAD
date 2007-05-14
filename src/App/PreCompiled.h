@@ -3,7 +3,6 @@
 
 #include "../FCConfig.h"
 
-#ifdef _PreComp_
 
 /// here get the warnings of to long specifieres disabled (needed for VC6)
 #ifdef _MSC_VER
@@ -53,16 +52,14 @@
 #include <boost/program_options.hpp>
 //namespace po = boost::program_options;
 
-#include <boost/filesystem/path.hpp >
-#include <boost/filesystem/operations.hpp >
-#include <boost/filesystem/exception.hpp >
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/exception.hpp>
 
 // xerces
 #include <xercesc/util/XercesDefs.hpp>
 #include <xercesc/sax2/Attributes.hpp>
 #include <xercesc/sax2/DefaultHandler.hpp>
 
-
-#endif //_PreComp_
 
 #endif
