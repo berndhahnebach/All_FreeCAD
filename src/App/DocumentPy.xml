@@ -66,10 +66,10 @@
       </Documentation>
     </Methode>
     <Attribute Name="ActiveObject">
-      <Parameter Name="Objects" Type="Object" />
+      <Parameter Name="ActiveObject" Type="Object" />
     </Attribute>
     <Attribute Name="Objects">
-      <Parameter Name="ActiveObject" Type="List" />
+      <Parameter Name="Objects" Type="List" />
     </Attribute>
     <Attribute Name="UndoMode">
       <Parameter Name="UndoMode" Type="Int" />
