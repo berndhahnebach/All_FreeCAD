@@ -102,7 +102,10 @@ void CallTipsList::validateCursor()
         QString word = cursor.selectedText();
         if (currentPos > this->cursorPos+word.length()) {
             hide();
-        } else {
+        } else if (!word.isEmpty()){
+            // If the word is empty we should not allow to do a search,
+            // otherwise we may select the next item which is not okay in this
+            // context. This might happen if e.g. Shift is pressed.
             keyboardSearch(word);
         }
     }
