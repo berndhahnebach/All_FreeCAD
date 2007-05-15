@@ -233,9 +233,9 @@ bool InteractiveInterpreter::push(const char* line)
         if (!more)
             d->buffer.clear();
         return more;
-    } catch (const Base::SystemExitException& e) {
+    } catch (const Base::SystemExitException&) {
         d->buffer.clear();
-        throw e;
+        throw;
     } catch (const Base::Exception&) {
         d->buffer.clear();
     }

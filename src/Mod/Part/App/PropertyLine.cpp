@@ -150,15 +150,16 @@ void PropertyLineSet::setPyObject(PyObject *value)
     std::vector<Line3f> lines;
     lines.resize(nSize);
 
-    for (int i=0; i<nSize;++i) {
-      PyObject* item = PyList_GetItem(value, i);
-      try {
+    try {
+      for (int i=0; i<nSize;++i) {
+        PyObject* item = PyList_GetItem(value, i);
         PropertyLine val;
         val.setPyObject(item);
         lines[i] = val.getValue();
-      } catch (const Base::Exception& e) {
-        throw e;
       }
+    } catch (const Base::Exception&) {
+      lines.resize(1);
+      throw;
     }
 
     setValues(lines);
@@ -207,8 +208,8 @@ void PropertyLineSet::SaveDocFile (Base::Writer &writer) const
     unsigned long uCt = getSize();
     writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
     writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Line3f));
-  } catch( const Base::Exception& e) {
-    throw e;
+  } catch( const Base::Exception&) {
+    throw;
   }
 }
 
@@ -220,7 +221,7 @@ void PropertyLineSet::RestoreDocFile(Base::Reader &reader)
     reader.read((char*)&uCt, sizeof(unsigned long));
     _lValueList.resize(uCt);
     reader.read((char*)&(_lValueList[0]), uCt*sizeof(Line3f));
-  } catch( const Base::Exception& e) {
-    throw e;
+  } catch( const Base::Exception&) {
+    throw;
   }
 }

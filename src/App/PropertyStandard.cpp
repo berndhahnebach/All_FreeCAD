@@ -181,10 +181,10 @@ boost::filesystem::path PropertyPath::getValue(void) const
 
 PyObject *PropertyPath::getPyObject(void)
 {
+  // Returns a new reference, don't increment it!
   PyObject *p = PyUnicode_DecodeUTF8(_cValue.string().c_str(),_cValue.string().size(),0);
   if(!p)
     throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
-  Py_INCREF(p);
   return p;
 
   //return Py_BuildValue("s", _cValue.c_str());

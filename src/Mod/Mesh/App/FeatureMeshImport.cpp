@@ -109,7 +109,7 @@ int Import::execute(void)
       snprintf(szBuf, 200, "Import of file '%s' aborted.", FileName.getValue());
       e.setMessage( szBuf );
       delete pcKernel;
-      throw e;
+      throw; // Throw the same instance of Base::AbortException
     }
   }
 

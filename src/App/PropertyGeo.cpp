@@ -220,18 +220,18 @@ void PropertyVectorList::setPyObject(PyObject *value)
     int nSize = PyList_Size(value);
     _lValueList.resize(nSize);
 
-    for (int i=0; i<nSize;++i)
-    {
-      PyObject* item = PyList_GetItem(value, i);
-      try {
+    try {
+      for (int i=0; i<nSize;++i)
+      {
+        PyObject* item = PyList_GetItem(value, i);
         PropertyVector val;
         val.setPyObject( item );
         _lValueList[i] = val.getValue();
-      } catch (const Base::Exception& e) {
-        _lValueList.resize(1);
-        _lValueList[0] = Base::Vector3f();
-        throw e;
       }
+    } catch (const Base::Exception&) {
+      _lValueList.resize(1);
+      _lValueList[0] = Base::Vector3f();
+      throw;
     }
 
     hasSetValue();
@@ -299,8 +299,8 @@ void PropertyVectorList::SaveDocFile (Base::Writer &writer) const
     unsigned long uCt = getSize();
     writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
     writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
-  } catch( const Base::Exception& e) {
-    throw e;
+  } catch( const Base::Exception&) {
+    throw;
   }
 }
 
@@ -312,8 +312,8 @@ void PropertyVectorList::RestoreDocFile(Base::Reader &reader)
     reader.read((char*)&uCt, sizeof(unsigned long));
     _lValueList.resize(uCt);
     reader.read((char*)&(_lValueList[0]), uCt*sizeof(Base::Vector3f));
-  } catch( const Base::Exception& e) {
-    throw e;
+  } catch( const Base::Exception&) {
+    throw;
   }
 }
 

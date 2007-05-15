@@ -240,8 +240,8 @@ void PropertyCurvatureList::SaveDocFile (Base::Writer &writer) const
     unsigned long uCt = getSize();
     writer.Stream().write((const char*)&uCt, sizeof(unsigned long));
     writer.Stream().write((const char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
-  } catch( const Base::Exception& e) {
-    throw e;
+  } catch( const Base::Exception&) {
+    throw;
   }
 }
 
@@ -253,8 +253,8 @@ void PropertyCurvatureList::RestoreDocFile(Base::Reader &reader)
     reader.read((char*)&uCt, sizeof(unsigned long));
     _lValueList.resize(uCt);
     reader.read((char*)&(_lValueList[0]), uCt*sizeof(CurvatureInfo));
-  } catch( const Base::Exception& e) {
-    throw e;
+  } catch( const Base::Exception&) {
+    throw;
   }
 }
 
@@ -395,8 +395,8 @@ void PropertyMeshKernel::SaveDocFile (Base::Writer &writer) const
 {
   try {
     _pcMesh->Write( writer.Stream() );
-  } catch( const Base::Exception& e) {
-    throw e;
+  } catch( const Base::Exception&) {
+    throw;
   }
 }
 
@@ -404,8 +404,8 @@ void PropertyMeshKernel::RestoreDocFile(Base::Reader &reader)
 {
   try {
     _pcMesh->Read( reader );
-  } catch( const Base::Exception& e) {
-    throw e;
+  } catch( const Base::Exception&) {
+    throw;
   }
 }
 
