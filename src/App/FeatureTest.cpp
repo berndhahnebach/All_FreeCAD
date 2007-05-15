@@ -47,7 +47,7 @@ FeatureTest::FeatureTest()
   ADD_PROPERTY(Float  ,(47.11f) );
   ADD_PROPERTY(Bool   ,(true)  );
   ADD_PROPERTY(String ,("4711"));
-  ADD_PROPERTY(Path   ,("c:/temp"));
+  ADD_PROPERTY(Path   ,("c:\\temp"));
 
   ADD_PROPERTY(Enum   ,(4));
   Enum.setEnums(enums);
