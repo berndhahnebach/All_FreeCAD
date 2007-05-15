@@ -261,7 +261,7 @@ void DlgPreferencesImp::on_buttonApply_clicked()
           listBox->setCurrentItem( it.data() );
           tab->setCurrentPage( i );
           QMessageBox::warning( this, tr("Wrong parameter"), e.what() );
-          throw e;
+          throw;
         }
       }
     }

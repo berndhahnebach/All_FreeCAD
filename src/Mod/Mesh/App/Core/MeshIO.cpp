@@ -302,16 +302,16 @@ bool MeshInput::LoadSTL (std::istream &rstrIn)
   catch( const Base::MemoryException& e ){
     _rclMesh.Clear();
     Base::Sequencer().halt();
-    throw e;
+    throw; // Throw the same instance of Base::MemoryException
   }
-  catch( const Base::AbortException& e ){
+  catch( const Base::AbortException& ){
     _rclMesh.Clear();
-    throw e;
+    throw; // Throw the same instance of Base::AbortException
   }
   catch ( const Base::Exception& e ){
     _rclMesh.Clear();
     Base::Sequencer().halt();
-    throw e;
+    throw;  // Throw the same instance of Base::Exception
   }
   catch (...)
   {
