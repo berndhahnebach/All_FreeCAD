@@ -576,6 +576,7 @@ bool Application::activateWorkbench( const char* name )
     PyObject* res = Base::Interpreter().runMethodObject(pcWorkbench, "GetClassName");
     if ( PyString_Check( res) )
      className = PyString_AsString(res);
+    Py_XDECREF(res);
   } catch ( const Base::Exception& e ) {
     Base::Console().Log("%s\n", e.what() );
     return false;
@@ -594,42 +595,46 @@ bool Application::activateWorkbench( const char* name )
 
 QPixmap Application::workbenchIcon( const QString& wb ) const
 {
-  // get the python workbench object from the dictionary
-  PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.latin1());
-  // test if the workbench exists
-  if ( pcWorkbench )
-  {
-    // call its GetIcon method if possible
-    try{
-      PyObject* res = Base::Interpreter().runMethodObject(pcWorkbench, "GetIcon");
-      if ( PyList_Check(res) )
-      {
-        // create temporary buffer
-        int ct = PyList_Size(res);
-        QByteArray ary;
+    // make a unique icon name
+    QString iconName = QString("workbench_%1").arg(wb);
+    if (BitmapFactory().hasXPM(iconName.toAscii()))
+        return BitmapFactory().pixmap(iconName.toAscii());
+    // get the python workbench object from the dictionary
+    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.latin1());
+    // test if the workbench exists
+    if ( pcWorkbench ) {
+        // call its GetIcon method if possible
+        try {
+            PyObject* res = Base::Interpreter().runMethodObject(pcWorkbench, "GetIcon");
+            if ( !PyList_Check(res) ) {
+                Py_DECREF(res);
+            } else {
+                // create temporary buffer
+                int ct = PyList_Size(res);
+                QByteArray ary;
 
-        if ( ct > 0 )
-        {
-          PyObject* line = PyList_GetItem(res,0);
-          if ( line && PyString_Check(line) )
-          {
-            const char* szBuf = PyString_AsString(line);
-            int strlen = PyString_Size(line);
-            ary.resize(strlen);
-            for ( int j=0; j<strlen; j++ )
-              ary[j]=szBuf[j];
-          }
+                if ( ct > 0 ) {
+                    PyObject* line = PyList_GetItem(res,0);
+                    if ( line && PyString_Check(line) ) {
+                        const char* szBuf = PyString_AsString(line);
+                        int strlen = PyString_Size(line);
+                        ary.resize(strlen);
+                        for ( int j=0; j<strlen; j++ )
+                            ary[j]=szBuf[j];
+                    }
+                }
+
+                Py_DECREF(res);
+                QPixmap px; px.loadFromData(ary, "XPM");
+                BitmapFactory().addXPM(iconName.toAscii(), px);
+                return px;
+            }
+        } catch ( const Base::Exception& e ) {
+            Base::Console().Log("%s\n", e.what() );
         }
-
-        QPixmap px; px.loadFromData(ary, "XPM");
-        return px;
-      }
-    } catch ( const Base::Exception& e ) {
-      Base::Console().Log("%s\n", e.what() );
     }
-  }
 
-  return QPixmap();
+    return QPixmap();
 }
 
 QStringList Application::workbenches(void) const

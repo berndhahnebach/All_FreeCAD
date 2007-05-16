@@ -36,124 +36,165 @@
 
 using namespace Gui;
 
+namespace Gui {
+class BitmapFactoryInstP
+{
+public:
+    QMap<QString, const char**> xpmMap;
+    QMap<QString, QPixmap> xpmCache;
+    QStringList paths;
+};
+}
+
 BitmapFactoryInst* BitmapFactoryInst::_pcSingleton = NULL;
 
 BitmapFactoryInst& BitmapFactoryInst::instance(void)
 {
-  if (_pcSingleton == NULL)
-  {
-    _pcSingleton = new BitmapFactoryInst;
-    _pcSingleton->addPath("../Icons");
-    _pcSingleton->addPath(App::GetApplication().GetHomePath());
+    if (_pcSingleton == NULL)
+    {
+        _pcSingleton = new BitmapFactoryInst;
+        _pcSingleton->addPath("../Icons");
+        _pcSingleton->addPath(App::GetApplication().GetHomePath());
 
-    RegisterIcons();
-  }
+        RegisterIcons();
+    }
 
-  return *_pcSingleton;
+    return *_pcSingleton;
 }
 
 void BitmapFactoryInst::destruct (void)
 {
-  if (_pcSingleton != 0)
+    if (_pcSingleton != 0)
     delete _pcSingleton;
-  _pcSingleton = 0;
+    _pcSingleton = 0;
+}
+
+BitmapFactoryInst::BitmapFactoryInst()
+{
+    d = new BitmapFactoryInstP;
+}
+
+BitmapFactoryInst::~BitmapFactoryInst()
+{
+    delete d;
 }
 
 void BitmapFactoryInst::addPath(const char* sPath)
 {
-  _vsPaths.push_back( sPath );
+    d->paths.push_back( sPath );
 }
 
 void BitmapFactoryInst::removePath(const char* sPath)
 {
-  _vsPaths.erase( _vsPaths.find( sPath ) );
+    d->paths.erase( d->paths.find( sPath ) );
 }
 
 void BitmapFactoryInst::addXPM(const char* sName, const char** pXPM)
 {
-  _mpXPM[sName] = pXPM;
+    d->xpmMap[sName] = pXPM;
 }
 
-void BitmapFactoryInst::removeXPM(const char* sName)
+void BitmapFactoryInst::addXPM(const char* sName, const QPixmap& pXPM)
 {
-  _mpXPM.erase(sName);
+    d->xpmCache[sName] = pXPM;
 }
 
-QPixmap BitmapFactoryInst::pixmap(const char* sName)
+bool BitmapFactoryInst::hasXPM(const char* sName) const
 {
-  // first try to find it in the built-in XPM
-  QMap<QString,const char**>::ConstIterator It = _mpXPM.find(sName);
+    if (d->xpmMap.find(sName) != d->xpmMap.end())
+        return true;
+    if (d->xpmCache.find(sName) != d->xpmCache.end())
+        return true;
+    return false;
+}
 
-  if(It != _mpXPM.end())
-    return QPixmap( It.data() );
+QPixmap BitmapFactoryInst::pixmap(const char* sName) const
+{
+    // as very first test check whether the pixmap is in the cache
+    QMap<QString, QPixmap>::ConstIterator it = d->xpmCache.find(sName);
+    if (it != d->xpmCache.end())
+        return it.value();
 
-  // If an absolute path is given
-  if (QFile(sName).exists())
-    return QPixmap(sName);
+    // now try to find it in the built-in XPM
+    QPixmap icon;
+    QMap<QString,const char**>::ConstIterator It = d->xpmMap.find(sName);
+    if (It != d->xpmMap.end())
+        icon = QPixmap(It.value());
 
-  // try to find it in the given directories
-  QList<QByteArray> formats = QImageReader::supportedImageFormats();
-  for (QStringList::ConstIterator pt = _vsPaths.begin(); pt != _vsPaths.end(); ++pt) {
-    QDir d(*pt);
-    QString fileName = d.path() + QDir::separator() + sName;
-    if (QFile(fileName).exists()) {
-      return QPixmap(fileName);
-    } else {
-      for (QList<QByteArray>::iterator fm = formats.begin(); fm != formats.end(); ++fm) {
-        QString path = fileName + "." + QString((*fm).lower().data());
-        if (QFile(path).exists())
-          return QPixmap(path);
-      }
+    // If an absolute path is given
+    if (icon.isNull() && QFile(sName).exists())
+        icon.load(sName);
+
+    // try to find it in the given directories
+    if (icon.isNull()) {
+        QList<QByteArray> formats = QImageReader::supportedImageFormats();
+        for (QStringList::ConstIterator pt = d->paths.begin(); pt != d->paths.end(); ++pt) {
+            QDir d(*pt);
+            QString fileName = d.path() + QDir::separator() + sName;
+            if (QFile(fileName).exists()) {
+                icon.load(fileName);
+                break;
+            } else {
+                for (QList<QByteArray>::iterator fm = formats.begin(); fm != formats.end(); ++fm) {
+                    QString path = fileName + "." + QString((*fm).lower().data());
+                    if (QFile(path).exists()) {
+                        icon.load(path);
+                        break;
+                    }
+                }
+            }
+        }
     }
-  }
 
-  Base::Console().Warning("Can't find Pixmap:%s\n",sName);
+    if (!icon.isNull()) {
+        d->xpmCache[sName] = icon;
+        return icon;
+    }
 
-  return QPixmap(px);
+    Base::Console().Warning("Can't find Pixmap:%s\n",sName);
+    return QPixmap(px);
 }
 
-QPixmap BitmapFactoryInst::pixmap(const char* sName, const char* sMask, Position pos)
+QPixmap BitmapFactoryInst::pixmap(const char* sName, const char* sMask, Position pos) const
 {
-  QPixmap p1 = pixmap(sName);
-  QPixmap p2 = pixmap(sMask);
+    QPixmap p1 = pixmap(sName);
+    QPixmap p2 = pixmap(sMask);
 
-  int x = 0, y = 0;
+    int x = 0, y = 0;
 
-  switch (pos)
-  {
+    switch (pos)
+    {
     case Qt::TopLeftCorner:
-      break;
+        break;
     case Qt::TopRightCorner:
-      x = p1.width () - p2.width ();
-      break;
+        x = p1.width () - p2.width ();
+        break;
     case Qt::BottomLeftCorner:
-      y = p1.height() - p2.height();
-      break;
+        y = p1.height() - p2.height();
+        break;
     case Qt::BottomRightCorner:
-      x = p1.width () - p2.width ();
-      y = p1.height() - p2.height();
-      break;
-  }
+        x = p1.width () - p2.width ();
+        y = p1.height() - p2.height();
+        break;
+    }
 
-  QPixmap p = p1;
-  p = Tools::fillOpaqueRect(x, y, p2.width(), p2.height(), p);
+    QPixmap p = p1;
+    p = Tools::fillOpaqueRect(x, y, p2.width(), p2.height(), p);
 
-  QPainter pt;
-  pt.begin( &p );
-  pt.setPen(Qt::NoPen);
-  pt.drawRect(x, y, p2.width(), p2.height());
-  pt.drawPixmap(x, y, p2);
-  pt.end();
+    QPainter pt;
+    pt.begin( &p );
+    pt.setPen(Qt::NoPen);
+    pt.drawRect(x, y, p2.width(), p2.height());
+    pt.drawPixmap(x, y, p2);
+    pt.end();
 
-  return p;
+    return p;
 }
 
 QStringList BitmapFactoryInst::pixmapNames() const
 {
-  QStringList names;
-  for ( QMap<QString,const char**>::ConstIterator It = _mpXPM.begin(); It != _mpXPM.end(); ++It )
-  {
-    names << It.key();
-  }
-  return names;
+    QStringList names;
+    for ( QMap<QString,const char**>::ConstIterator It = d->xpmMap.begin(); It != d->xpmMap.end(); ++It )
+        names << It.key();
+    return names;
 }
