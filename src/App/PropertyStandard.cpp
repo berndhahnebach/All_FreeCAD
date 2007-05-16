@@ -991,7 +991,6 @@ PyObject *PropertyString::getPyObject(void)
   PyObject *p = PyUnicode_DecodeUTF8(_cValue.c_str(),_cValue.size(),0);
   if(!p)
     throw Base::Exception("UTF8 conversion failure at PropertyString::getPyObject()");
-  Py_INCREF(p);
   return p;
 
   //return Py_BuildValue("s", _cValue.c_str());

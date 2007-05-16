@@ -115,10 +115,13 @@ std::string InterpreterSingleton::runString(const char *sCmd)
     throw PyException();
   }
 
-  presult = PyObject_Repr( presult) ;
-  if(presult)
+  PyObject* repr = PyObject_Repr(presult);
+  Py_DECREF(presult);
+  if(repr)
   {
-    return std::string(PyString_AsString(presult));
+    std::string ret(PyString_AsString(repr));
+    Py_DECREF(repr);
+    return ret;
   }
   else
   {
