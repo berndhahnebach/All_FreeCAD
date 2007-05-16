@@ -38,54 +38,55 @@ namespace Gui {
   * as a single point of accessing bitmaps in FreeCAD
   * \author Werner Mayer, Jürgen Riegel
   */
+class BitmapFactoryInstP;
 class GuiExport BitmapFactoryInst : public Base::Factory
 {
 public:
-  enum Position
-  {
-    TopLeft,  /**< Place to the top left corner */
-    TopRight, /**< Place to the top right corner */
-    BottomLeft, /**< Place to the bottom left corner */
-    BottomRight /**< Place to the bottom right corner */
-  };
+    enum Position
+    {
+        TopLeft,  /**< Place to the top left corner */
+        TopRight, /**< Place to the top right corner */
+        BottomLeft, /**< Place to the bottom left corner */
+        BottomRight /**< Place to the bottom right corner */
+    };
 
-  static BitmapFactoryInst& instance(void);
-  static void destruct (void);
+    static BitmapFactoryInst& instance(void);
+    static void destruct (void);
 
-  /// Adds a path where pixmaps can be found
-  void addPath(const char* sPath);
-  /// Removes a path from the list of pixmap paths
-  void removePath(const char* sPath);
-  /// Adds a build in XPM pixmap under a given name
-  void addXPM(const char* sName, const char** pXPM);
-  /// Removes a build in pixmap by a given name
-  void removeXPM(const char* sName);
-  /// Retrieves a pixmap by name
-  QPixmap pixmap(const char* sName);
-  /** Retrieves a pixmap by name
-   * specifying also the name and possition of a smaller pixmap.
-   * The the smaller pixmap is drawn into the bigger pixmap.
-   */
-  QPixmap pixmap(const char* sName, const char* sMask, Position pos = BitmapFactoryInst::BottomLeft);
-  /** Returns the names of all registered pixmaps.
-   * To get the appropriate pixmaps call pixmap() for each name.
-   */
-  QStringList pixmapNames() const;
+    /// Adds a path where pixmaps can be found
+    void addPath(const char* sPath);
+    /// Removes a path from the list of pixmap paths
+    void removePath(const char* sPath);
+    /// Adds a build in XPM pixmap under a given name
+    void addXPM(const char* sName, const char** pXPM);
+    /// Adds a build in XPM pixmap under a given name
+    void addXPM(const char* sName, const QPixmap& pXPM);
+    /// Checks whether the pixmap is already registered.
+    bool hasXPM(const char* sName) const;
+    /// Retrieves a pixmap by name
+    QPixmap pixmap(const char* sName) const;
+    /** Retrieves a pixmap by name
+    * specifying also the name and possition of a smaller pixmap.
+    * The the smaller pixmap is drawn into the bigger pixmap.
+    */
+    QPixmap pixmap(const char* sName, const char* sMask, Position pos = BitmapFactoryInst::BottomLeft) const;
+    /** Returns the names of all registered pixmaps.
+    * To get the appropriate pixmaps call pixmap() for each name.
+    */
+    QStringList pixmapNames() const;
 
 private:
-  static BitmapFactoryInst* _pcSingleton;
+    static BitmapFactoryInst* _pcSingleton;
+    BitmapFactoryInst();
+    ~BitmapFactoryInst();
 
-  BitmapFactoryInst(){}
-  ~BitmapFactoryInst(){}
-
-  QMap<QString,const char**> _mpXPM;
-  QStringList _vsPaths;
+    BitmapFactoryInstP* d;
 };
 
 /// Get the global instance
 inline GuiExport BitmapFactoryInst& BitmapFactory(void)
 {
-  return BitmapFactoryInst::instance();
+    return BitmapFactoryInst::instance();
 }
 
 } // namespace Gui
