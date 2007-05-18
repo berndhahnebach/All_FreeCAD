@@ -218,7 +218,8 @@ void StdCmdRecentFiles::removeRecentFile ( const QString& item )
 /** Refreshes the recent file list. */
 void StdCmdRecentFiles::refreshRecentFileList()
 {
-  qobject_cast<RecentFilesAction*>(_pcAction)->setRecentFiles( _vMRU );
+  RecentFilesAction* act = qobject_cast<RecentFilesAction*>(_pcAction);
+  if (act) act->setRecentFiles( _vMRU );
 }
 
 /** 
@@ -253,9 +254,9 @@ void StdCmdRecentFiles::load()
 
 void StdCmdRecentFiles::save()
 {
-  // save recent file list
+  // save recent file list only if the action once has been added to the menu 
   Command* pCmd = Application::Instance->commandManager().getCommandByName("Std_RecentFiles");
-  if (pCmd)
+  if (pCmd && pCmd->getAction())
   {
     char szBuf[200];
     int i=0;

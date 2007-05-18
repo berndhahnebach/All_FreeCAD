@@ -39,12 +39,21 @@ class DocumentBasicCases(unittest.TestCase):
 
   def testObjects(self):
     L1 = self.Doc.addObject("App::FeatureTest","Label_1")
+    #call members to check for errors in ref counting
+    self.Doc.ActiveObject
+    self.Doc.Objects
+    self.Doc.UndoMode
+    self.Doc.UndoRedoMemSize
+    self.Doc.UndoCount
+    self.Doc.RedoCount
+    self.Doc.UndoNames
+    self.Doc.RedoNames
     self.Doc.recompute()
     self.failUnless(L1.Integer == 4711)
     self.failUnless(L1.Float-47.11<0.001)
     self.failUnless(L1.Bool    == True)
     self.failUnless(L1.String  == "empty")
-		# temporarely not checked because of strange behavior of boost::fielesystem JR
+    #temporarily not checked because of strange behavior of boost::fielesystem JR
     #self.failUnless(L1.Path  == "c:/temp")
     self.failUnless(L1.Angle-3.0<0.001)
     self.failUnless(L1.Distance-47.11<0.001)

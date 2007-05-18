@@ -54,6 +54,7 @@
 #include <qpainter.h>
 #include <qpalette.h>
 #include <qpixmap.h>
+#include <QPixmapCache>
 #include <QPrinter>
 #include <QPrintDialog>
 #include <QProgressBar>

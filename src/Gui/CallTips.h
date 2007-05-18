@@ -54,7 +54,7 @@ public:
     /// Destruction
     ~CallTipsList();
 
-    void findCurrentWord(const QString&);
+    void keyboardSearch (const QString&);
     void showTips(const QString&);
     void validateCursor();
 

@@ -68,10 +68,10 @@ namespace Gui {
 class GuiExport WaitCursor
 {
 public:
-  WaitCursor();
-  ~WaitCursor();
-  void setWaitCursor();
-  void restoreCursor();
+    WaitCursor();
+    ~WaitCursor();
+    void setWaitCursor();
+    void restoreCursor();
 };
 
 } // namespace Gui
