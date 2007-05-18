@@ -36,6 +36,7 @@
 
 #include <Base/Interpreter.h>
 #include <Base/Exception.h>
+#include <Base/PyCXX/Exception.hxx>
 
 using namespace Gui;
 
@@ -236,8 +237,12 @@ bool InteractiveInterpreter::push(const char* line)
     } catch (const Base::SystemExitException&) {
         d->buffer.clear();
         throw;
-    } catch (const Base::Exception&) {
+    } catch (...) {
+        // indication of unhandled exception
         d->buffer.clear();
+        if (PyErr_Occurred())
+            PyErr_Print();
+        throw;
     }
 
     return false;
@@ -505,6 +510,12 @@ void PythonConsole::runSource(const QString& line)
         } else {
             PyErr_Clear();
         }
+    } catch (const Py::Exception&) {
+        QMessageBox::critical(this, tr("Python console"), tr("Unhandled PyCXX exception."));
+    } catch (const Base::Exception&) {
+        QMessageBox::critical(this, tr("Python console"), tr("Unhandled FreeCAD exception."));
+    } catch (...) {
+        QMessageBox::critical(this, tr("Python console"), tr("Unhandled unknown C++ exception."));
     }
 
     PySys_SetObject("stdout", d->_stdout);

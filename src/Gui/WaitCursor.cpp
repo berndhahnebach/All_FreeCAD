@@ -79,6 +79,8 @@ void WaitCursorP::setBusy( bool on )
 
 bool WaitCursorP::eventFilter( QObject*, QEvent* e)
 {
+  // Note: This might cause problems when we want to open a modal dialog at the lifetime 
+  // of a WaitCursor instance because the incoming events are still filtered.
   if ( e->type() == QEvent::KeyPress ||
        e->type() == QEvent::KeyRelease ||
        e->type() == QEvent::MouseButtonPress ||
@@ -89,7 +91,10 @@ bool WaitCursorP::eventFilter( QObject*, QEvent* e)
 }
 
 /**
- * Constructs this object and shows the wait cursor immediately.
+ * Constructs this object and shows the wait cursor immediately. If you need to open a dialog as 
+ * long as an instance of WaitCursor exists you must call restoreCursor() before and setWaitCursor() 
+ * afterwards because all key events and mouse button events are filtered, otherwise you will run
+ * into strange behaviour.
  */
 WaitCursor::WaitCursor()
 {

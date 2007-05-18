@@ -138,7 +138,7 @@ CommandBase::~CommandBase()
   //delete _pcAction;
 }
 
-Action* CommandBase::getAction() 
+Action* CommandBase::getAction() const
 { 
   return _pcAction; 
 }

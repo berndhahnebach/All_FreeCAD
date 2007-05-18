@@ -94,17 +94,18 @@ void BitmapFactoryInst::addXPM(const char* sName, const char** pXPM)
     d->xpmMap[sName] = pXPM;
 }
 
-void BitmapFactoryInst::addXPM(const char* sName, const QPixmap& pXPM)
+void BitmapFactoryInst::addPixmapToCache(const QString& name, const QPixmap& pXPM)
 {
-    d->xpmCache[sName] = pXPM;
+    d->xpmCache[name] = pXPM;
 }
 
-bool BitmapFactoryInst::hasXPM(const char* sName) const
+bool BitmapFactoryInst::findPixmapInCache(const QString& name, QPixmap& px) const
 {
-    if (d->xpmMap.find(sName) != d->xpmMap.end())
+    QMap<QString, QPixmap>::ConstIterator it = d->xpmCache.find(name);
+    if (it != d->xpmCache.end()) {
+        px = it.value();
         return true;
-    if (d->xpmCache.find(sName) != d->xpmCache.end())
-        return true;
+    }
     return false;
 }
 

@@ -595,14 +595,17 @@ bool Application::activateWorkbench( const char* name )
 
 QPixmap Application::workbenchIcon( const QString& wb ) const
 {
-    // make a unique icon name
-    QString iconName = QString("workbench_%1").arg(wb);
-    if (BitmapFactory().hasXPM(iconName.toAscii()))
-        return BitmapFactory().pixmap(iconName.toAscii());
     // get the python workbench object from the dictionary
-    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.latin1());
+    PyObject* pcWorkbench = PyDict_GetItemString(_pcWorkbenchDictionary, wb.toAscii());
     // test if the workbench exists
     if ( pcWorkbench ) {
+        // make a unique icon name
+        QString iconName;
+        iconName.sprintf("%p", static_cast<const void *>(pcWorkbench));
+        QPixmap icon;
+        if (BitmapFactory().findPixmapInCache(iconName, icon))
+            return icon;
+
         // call its GetIcon method if possible
         try {
             PyObject* res = Base::Interpreter().runMethodObject(pcWorkbench, "GetIcon");
@@ -626,7 +629,7 @@ QPixmap Application::workbenchIcon( const QString& wb ) const
 
                 Py_DECREF(res);
                 QPixmap px; px.loadFromData(ary, "XPM");
-                BitmapFactory().addXPM(iconName.toAscii(), px);
+                BitmapFactory().addPixmapToCache(iconName.toAscii(), px);
                 return px;
             }
         } catch ( const Base::Exception& e ) {

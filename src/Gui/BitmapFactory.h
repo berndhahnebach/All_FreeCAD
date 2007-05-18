@@ -60,9 +60,9 @@ public:
     /// Adds a build in XPM pixmap under a given name
     void addXPM(const char* sName, const char** pXPM);
     /// Adds a build in XPM pixmap under a given name
-    void addXPM(const char* sName, const QPixmap& pXPM);
+    void addPixmapToCache(const QString& name, const QPixmap& px);
     /// Checks whether the pixmap is already registered.
-    bool hasXPM(const char* sName) const;
+    bool findPixmapInCache(const QString& name, QPixmap& px) const;
     /// Retrieves a pixmap by name
     QPixmap pixmap(const char* sName) const;
     /** Retrieves a pixmap by name

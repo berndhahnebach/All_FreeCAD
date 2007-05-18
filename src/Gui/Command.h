@@ -86,7 +86,7 @@ public:
   /**
    * Returns the Action object of this command, or 0 if it doesn't exist.
    */
-  Action*  getAction();
+  Action*  getAction() const;
 
   /** @name Methods to override when creating a new command */
   //@{

@@ -27,6 +27,7 @@
 #endif
 
 #include <Base/PyCXX/Objects.hxx>
+#include <Base/PyObjectBase.h>
 #include "CallTips.h"
 
 using namespace Gui;
@@ -77,7 +78,7 @@ CallTipsList::~CallTipsList()
 {
 }
 
-void CallTipsList::findCurrentWord(const QString& wordPrefix)
+void CallTipsList::keyboardSearch(const QString& wordPrefix)
 { 
     for (int i=0; i<count(); ++i) {
         QString text = item(i)->text();
@@ -116,19 +117,29 @@ QMap<QString, CallTip> CallTipsList::extractTips(const QString& context) const
     QMap<QString, CallTip> tips;
 
     try {
-        // search for the given object
+        // search for the given object in the dict of the main module
         Py::Module module("__main__");
         Py::Dict dict = module.getDict();
         if (!dict.hasKey(std::string(context.toAscii())))
-            return tips;
+            return tips; // unknown object
+
+        // get the Python object we need
         Py::Object obj = dict.getItem(std::string(context.toAscii()));
+        
+        // Checks whether the type is a subclass of PyObjectBase because to get the doc string
+        // of a member we must get it by its type instead of its instance otherwise we get the
+        // wrong string, namely that of the type of the member. 
+        Py::Type type = obj.type();
+        bool subclass = PyObject_IsSubclass(type.ptr(), (PyObject*)(&Base::PyObjectBase::Type));
+        if (subclass)
+            obj = type;
         Py::List list(PyObject_Dir(obj.ptr()), true);
         for (Py::List::iterator it = list.begin(); it != list.end(); ++it) {
-            Py::String funcname(*it);
-            Py::Object attr = obj.getAttr(funcname.as_string());
+            Py::String attrname(*it);
+            Py::Object attr = obj.getAttr(attrname.as_string());
 
             CallTip tip;
-            QString str = funcname.as_string().c_str();
+            QString str = attrname.as_string().c_str();
             tip.name = str;
 
             if (attr.isCallable())

@@ -172,11 +172,21 @@ PyObject *PyObjectBase::_getattr(char *attr)
 
 int PyObjectBase::_setattr(char *attr, PyObject *value)
 {
-  if (!streq(attr,"softspace")) {
-	  PyTypeObject *tp = this->ob_type;
-	  PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
-  }
-  return -1;
+    if (streq(attr,"softspace"))
+        return -1; // filter out softspace
+    PyObject *w;
+    // As fallback solution use Python's default method to get generic attributes
+    w = PyString_InternFromString(attr);
+    if (w != NULL) {
+        // call methods from tp_getset if defined
+        int res = PyObject_GenericSetAttr(this, w, value);
+        return res;
+    } else {
+        // Throw an exception for unknown attributes
+        PyTypeObject *tp = this->ob_type;
+        PyErr_Format(PyExc_AttributeError, "%.50s instance has no attribute '%.400s'", tp->tp_name, attr);
+        return -1;
+    }
 }
 
 /*------------------------------
