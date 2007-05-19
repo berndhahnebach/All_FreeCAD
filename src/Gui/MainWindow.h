@@ -109,7 +109,7 @@ public:
   /**
    * MRU: Appends \a file to the list of recent files.
    */
-  void appendRecentFile(const char* file);
+  void appendRecentFile(const QString& filename);
   /**
    * Returns true that the context menu contains the 'Customize...' menu item.
    */

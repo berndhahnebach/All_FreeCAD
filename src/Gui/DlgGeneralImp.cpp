@@ -24,8 +24,8 @@
 #include "PreCompiled.h"
 
 #include "DlgGeneralImp.h"
+#include "Action.h"
 #include "Application.h"
-#include "Command.h"
 #include "DockWindowManager.h"
 #include "MainWindow.h"
 #include "PrefWidgets.h"
@@ -92,19 +92,17 @@ DlgGeneralImp::~DlgGeneralImp()
     watched->removeEventFilter(this);
 }
 
-/** Sets the size of the recent file list (MRU) in the
- * user parameters.
- * @see StdCmdMRU
+/** Sets the size of the recent file list from the user parameters.
+ * @see RecentFilesAction
+ * @see StdCmdRecentFiles
  */
 void DlgGeneralImp::setRecentFileSize()
 {
-  CommandManager& rclMan = Application::Instance->commandManager();
-  Command* pCmd = rclMan.getCommandByName("Std_RecentFiles");
-  if (pCmd)
-  {
-    ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("RecentFiles");
-    ((StdCmdRecentFiles*)pCmd)->setMaxCount(hGrp->GetInt("RecentFiles", 4));
-  }
+    RecentFilesAction *recent = getMainWindow()->findChild<RecentFilesAction *>(QString("recentFiles"));
+    if (recent) {
+        ParameterGrp::handle hGrp = WindowParameter::getDefaultParameter()->GetGroup("RecentFiles");
+        recent->resizeList(hGrp->GetInt("RecentFiles", 4));
+    }
 }
 
 void DlgGeneralImp::saveSettings()

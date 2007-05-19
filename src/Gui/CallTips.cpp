@@ -80,9 +80,19 @@ CallTipsList::~CallTipsList()
 
 void CallTipsList::keyboardSearch(const QString& wordPrefix)
 { 
+    // first search for the item that matches perfectly
     for (int i=0; i<count(); ++i) {
         QString text = item(i)->text();
         if (text.startsWith(wordPrefix)) {
+            setCurrentRow(i);
+            return;
+        }
+    }
+
+    // now do a case insensitive comparison
+    for (int i=0; i<count(); ++i) {
+        QString text = item(i)->text();
+        if (text.startsWith(wordPrefix, Qt::CaseInsensitive)) {
             setCurrentRow(i);
             return;
         }

@@ -234,12 +234,6 @@ MainWindow::MainWindow(QWidget * parent, Qt::WFlags f)
 
 MainWindow::~MainWindow()
 {
-  //TODO Redesign StdCmdRecentFiles
-  // save recent file list
-  // Note: the recent files are restored in StdCmdRecentFiles::createAction(), because we need
-  //       a valid instance of StdCmdRecentFiles to do this
-  StdCmdRecentFiles::save();
-
   delete d->status;
   delete d;
   instance = 0;
@@ -610,14 +604,12 @@ void MainWindow::closeEvent ( QCloseEvent * e )
   }
 }
 
-void MainWindow::appendRecentFile(const char* file)
+void MainWindow::appendRecentFile(const QString& filename)
 {
-  StdCmdRecentFiles* pCmd = dynamic_cast<StdCmdRecentFiles*>(Application::Instance->commandManager().getCommandByName("Std_RecentFiles"));
-  if (pCmd)
-  {
-    pCmd->addRecentFile( file );
-    pCmd->refreshRecentFileList();
-  }
+    RecentFilesAction *recent = getMainWindow()->findChild<RecentFilesAction *>(QString("recentFiles"));
+    if (recent) {
+        recent->appendFile(filename);
+    }
 }
 
 void MainWindow::updateActions()
