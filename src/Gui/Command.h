@@ -447,50 +447,6 @@ private:
   std::map<std::string,Command*> _sCommands;
 };
 
-/**
- *  This command which does the handling of recent files.
- *  @author Werner Mayer
- */
-class StdCmdRecentFiles : public Command
-{
-public:
-  StdCmdRecentFiles();
-  
-  /** Adds the new item to the recent files. */
-  void addRecentFile ( const QString& item );
-  /** Removes \a item from the recent files. */
-  void removeRecentFile ( const QString& item );
-
-  /** Refreshes the recent file list. */
-  void refreshRecentFileList();
-
-  int  maxCount() const { return _nMaxItems; }
-  void setMaxCount (int i) { _nMaxItems = i;    }
-
-  QStringList recentFiles() const;
-
-  /** @name Methods to load or save from preferences */
-  //@{
-  /** Loads all recent files from the preferences. */
-  static void load();
-  /** Saves all recent files to the preferences. */
-  static void save();
-  //@}
-
-protected:
-  bool isActive(void){return true;}
-
-  /** The item at position \a iMsg is activated. */
-  void activated(int iMsg);
-
-  /** Creates the accompanying Action object to the command. */
-  Action * createAction(void);
-
-private:
-  QStringList _vMRU;
-  int _nMaxItems;
-};
-
 } // namespace Gui
 
 

@@ -124,16 +124,17 @@ Action * StdCmdWorkbench::createAction(void)
 
 /* TRANSLATOR Gui::StdCmdRecentFiles */
 
+DEF_STD_CMD_C(StdCmdRecentFiles)
+
 StdCmdRecentFiles::StdCmdRecentFiles()
-  :Command("Std_RecentFiles"), _nMaxItems(4)
+  :Command("Std_RecentFiles")
 {
-  sGroup        = QT_TR_NOOP("File");
-  sMenuText     = QT_TR_NOOP("Recent files");
-  sToolTipText  = QT_TR_NOOP("Recent file list");
-  sWhatsThis    = QT_TR_NOOP("Recent file list");
-  sStatusTip    = QT_TR_NOOP("Recent file list");
-  //	sPixmap			= "";
-  iAccel        = 0;
+    sGroup        = QT_TR_NOOP("File");
+    sMenuText     = QT_TR_NOOP("Recent files");
+    sToolTipText  = QT_TR_NOOP("Recent file list");
+    sWhatsThis    = QT_TR_NOOP("Recent file list");
+    sStatusTip    = QT_TR_NOOP("Recent file list");
+    iAccel        = 0;
 }
 
 /**
@@ -143,22 +144,8 @@ StdCmdRecentFiles::StdCmdRecentFiles()
  */
 void StdCmdRecentFiles::activated(int iMsg)
 {
-  if (iMsg < 0 || iMsg >= int(_vMRU.size()))
-    return; // not in range
-
-  QString f = _vMRU[iMsg];
-  QFileInfo fi(f);
-  if ( !fi.exists() || !fi.isFile())
-  {
-    QMessageBox::critical(getMainWindow(), QObject::tr("File not found"), QObject::tr("The file '%1' cannot be opened.").arg(f));
-    removeRecentFile( f );
-    // rebuild the recent file list
-    qobject_cast<RecentFilesAction*>(_pcAction)->setRecentFiles(_vMRU);
-  }
-  else
-  {
-    getGuiApplication()->open( f.latin1() );
-  }
+    RecentFilesAction* act = qobject_cast<RecentFilesAction*>(_pcAction);
+    if (act) act->activateFile( iMsg );
 }
 
 /**
@@ -166,116 +153,15 @@ void StdCmdRecentFiles::activated(int iMsg)
  */
 Action * StdCmdRecentFiles::createAction(void)
 {
-  // load recent file list
-  StdCmdRecentFiles::load();
-
-  RecentFilesAction* pcAction = new RecentFilesAction( this, _nMaxItems, getMainWindow() );
+  RecentFilesAction* pcAction = new RecentFilesAction(this, getMainWindow());
+  pcAction->setObjectName(QString("recentFiles"));
   pcAction->setDropDownMenu(true);
   pcAction->setText(QObject::tr(sMenuText));
   pcAction->setToolTip(QObject::tr(sToolTipText));
   pcAction->setStatusTip(QObject::tr(sStatusTip));
   pcAction->setWhatsThis(QObject::tr(sWhatsThis));
-  if(sPixmap)
-    pcAction->setIcon(Gui::BitmapFactory().pixmap(sPixmap));
-  pcAction->setShortcut(iAccel);
-
-  pcAction->setRecentFiles( _vMRU );
-
   return pcAction;
 }
-
-/**
- * Adds the recent file item with name \a item.
- */
-void StdCmdRecentFiles::addRecentFile ( const QString& item )
-{
-  if ( _vMRU.contains( item ) )
-    removeRecentFile( item ); // already inserted
-
-  if ( _nMaxItems > (int)_vMRU.size() )
-  {
-    _vMRU.prepend( item );
-  }
-  else if ( _nMaxItems > 0 )
-  {
-    _vMRU.remove ( _vMRU.last() );
-    _vMRU.prepend( item );
-  }
-}
-
-/**
- * Removes the recent file item with name \a item.
- */
-void StdCmdRecentFiles::removeRecentFile ( const QString& item )
-{
-  QStringList::Iterator it = _vMRU.find(item);
-  if ( it != _vMRU.end() )
-  {
-    _vMRU.remove( it );
-  }
-}
-
-/** Refreshes the recent file list. */
-void StdCmdRecentFiles::refreshRecentFileList()
-{
-  RecentFilesAction* act = qobject_cast<RecentFilesAction*>(_pcAction);
-  if (act) act->setRecentFiles( _vMRU );
-}
-
-/** 
- * Returns a list of the recent files.
- */
-QStringList StdCmdRecentFiles::recentFiles() const
-{
-  return _vMRU;
-}
-
-void StdCmdRecentFiles::load()
-{
-  ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences");
-  if (hGrp->HasGroup("RecentFiles"))
-  {
-    hGrp = hGrp->GetGroup("RecentFiles");
-    StdCmdRecentFiles* pCmd = dynamic_cast<StdCmdRecentFiles*>(Application::Instance->commandManager().getCommandByName("Std_RecentFiles"));
-    if (pCmd)
-    {
-      int maxCnt = hGrp->GetInt("RecentFiles", 4);
-      pCmd->setMaxCount( maxCnt );
-      std::vector<std::string> MRU = hGrp->GetASCIIs("MRU");
-
-      // append the items in reverse mode to preserve the order
-      for (std::vector<std::string>::reverse_iterator it = MRU.rbegin(); it!=MRU.rend();++it)
-      {
-        pCmd->addRecentFile( it->c_str() );
-      }
-    }
-  }
-}
-
-void StdCmdRecentFiles::save()
-{
-  // save recent file list only if the action once has been added to the menu 
-  Command* pCmd = Application::Instance->commandManager().getCommandByName("Std_RecentFiles");
-  if (pCmd && pCmd->getAction())
-  {
-    char szBuf[200];
-    int i=0;
-    ParameterGrp::handle hGrp = App::GetApplication().GetUserParameter().GetGroup("BaseApp")->GetGroup("Preferences")->GetGroup("RecentFiles");
-    hGrp->Clear();
-    hGrp->SetInt("RecentFiles", ((StdCmdRecentFiles*)pCmd)->maxCount());
-
-    QStringList files = ((StdCmdRecentFiles*)pCmd)->recentFiles();
-    if ( files.size() > 0 )
-    {
-      for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it, i++ )
-      {
-        snprintf(szBuf, 200, "MRU%d", i);
-        hGrp->SetASCII(szBuf, (*it).latin1());
-      }
-    }
-  }
-}
-
 
 //===========================================================================
 // Std_About

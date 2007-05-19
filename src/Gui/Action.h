@@ -168,12 +168,25 @@ protected:
  */
 class GuiExport RecentFilesAction : public ActionGroup
 {
-  Q_OBJECT
+    Q_OBJECT
 
 public:
-  RecentFilesAction ( Command* pcCmd, int maxRecentFiles, QObject * parent = 0 );
-  virtual ~RecentFilesAction();
-  void setRecentFiles( const QStringList& );
+    RecentFilesAction ( Command* pcCmd, QObject * parent = 0 );
+    virtual ~RecentFilesAction();
+
+    void appendFile(const QString&);
+    void activateFile(int);
+    void resizeList(int);
+
+private:
+    void setFiles(const QStringList&);
+    QStringList files() const;
+    void restore();
+    void save();
+
+private:
+    int visibleItems; /**< Number of visible items */
+    int maximumItems; /**< Number of maximum items */ 
 };
 
 // --------------------------------------------------------------------
