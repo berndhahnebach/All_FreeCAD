@@ -138,7 +138,8 @@ Py::List DocumentPy::getObjects(void) const
     Py::List res;
 
     for (std::map<std::string,DocumentObject*>::const_iterator It = features.begin();It != features.end();++It)
-        res.append(Py::Object(It->second->getPyObject()));
+        //Note: Here we must force the Py::Object to own this Python object as getPyObject() increments the counter
+        res.append(Py::Object(It->second->getPyObject(), true));
 
     return res;
 }
@@ -222,11 +223,18 @@ void  DocumentPy::setRedoNames(Py::List arg)
 
 PyObject *DocumentPy::getCustomAttributes(const char* attr) const
 {
-    // FIXME: This method should only be called if attr is a property
-    App::Property* prop = getDocumentObject()->getPropertyByName(attr);
-    if (prop)
-        return prop->getPyObject();
-    return 0;
+    //// FIXME: This method should only be called if attr is a property
+    //App::Property* prop = getDocumentObject()->getPropertyByName(attr);
+    //if (prop)
+    //    return prop->getPyObject();
+    ////FIXME: What should happen if a document object has the same name as an attribute
+    //
+    // search for an object with this name
+    DocumentObject *pcFtr = getDocumentObject()->getObject(attr);
+    if(pcFtr)
+        return pcFtr->getPyObject();
+    else
+        return NULL;
 }
 
 int DocumentPy::setCustomAttributes(const char* attr, PyObject *obj)
@@ -234,10 +242,10 @@ int DocumentPy::setCustomAttributes(const char* attr, PyObject *obj)
     // FIXME: This method should only be called if attr is a property
     App::Property* prop = getDocumentObject()->getPropertyByName(attr);
     if (prop) {
-        // Just allow to set the 'Comment' ,nothing more
-        if (Base::streq(attr, "Comment")) {
+        // Do not allow to set all properties
+        if (Base::streq(attr, "Comment") || Base::streq(attr, "FileName")) {
             prop->setPyObject(obj);
-            return 1;
+            return 0;
         } else {
             char szBuf[200];
             snprintf(szBuf, 200, "'Document' object attribute '%s' is read-only", attr);
