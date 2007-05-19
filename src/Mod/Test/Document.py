@@ -35,6 +35,8 @@ class DocumentBasicCases(unittest.TestCase):
     self.Doc = FreeCAD.newDocument("CreateTest")
 
   def testCreateDestroy(self):
+    #FIXME: Causes somehow a ref count error but it's _not_ FreeCAD.getDocument()!!!
+    #If we remove the whole method no error appears.
     self.failUnless(FreeCAD.getDocument("CreateTest")!= None,"Creating Document failed")
 
   def testObjects(self):

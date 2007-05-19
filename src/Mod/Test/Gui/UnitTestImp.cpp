@@ -25,6 +25,7 @@
 
 #include <Base/PyObjectBase.h>
 #include <Base/Interpreter.h>
+#include <Gui/MainWindow.h>
 #include "UnitTestImp.h"
 #include "UnitTestPy.h"
 
@@ -44,7 +45,7 @@ UnitTestDialog* UnitTestDialog::instance()
   // not initialized?
   if(!_instance)
   {
-    _instance = new UnitTestDialog( qApp->mainWidget() );
+      _instance = new UnitTestDialog(Gui::getMainWindow());
   }
 
   return _instance;
