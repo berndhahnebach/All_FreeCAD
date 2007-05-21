@@ -36,7 +36,7 @@ using namespace PartGui;
 DlgSettings3DViewPartImp::DlgSettings3DViewPartImp( QWidget* parent )
   : PreferencePage( parent )
 {
-  this->setupUi(this);
+    this->setupUi(this);
 }
 
 /** 
@@ -44,7 +44,7 @@ DlgSettings3DViewPartImp::DlgSettings3DViewPartImp( QWidget* parent )
  */
 DlgSettings3DViewPartImp::~DlgSettings3DViewPartImp()
 {
-  // no need to delete child widgets, Qt does it all for us
+    // no need to delete child widgets, Qt does it all for us
 }
 
 /**
@@ -52,22 +52,20 @@ DlgSettings3DViewPartImp::~DlgSettings3DViewPartImp()
  */
 void DlgSettings3DViewPartImp::warnInventor(bool b)
 {
-  if ( b )
-    Base::Console().Warning("The inventor Viewer is highly experimental. Usage can cause FreeCAD to crash!\n");
 }
 
 void DlgSettings3DViewPartImp::saveSettings()
 {
-  prefFloatSpinBox1->onSave();
-  prefCheckBox8->onSave();
-  prefCheckBox3->onSave();
+    prefFloatSpinBox1->onSave();
+    prefCheckBox8->onSave();
+    prefCheckBox3->onSave();
 }
 
 void DlgSettings3DViewPartImp::loadSettings()
 {
-  prefFloatSpinBox1->onRestore();
-  prefCheckBox8->onRestore();
-  prefCheckBox3->onRestore();
+    prefFloatSpinBox1->onRestore();
+    prefCheckBox8->onRestore();
+    prefCheckBox3->onRestore();
 }
 
 #include "moc_DlgSettings3DViewPartImp.cpp"
