@@ -43,6 +43,7 @@ using namespace PartGui;
 DlgPartImportIgesImp::DlgPartImportIgesImp( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
+    this->setupUi(this);
 }
 
 /*  
@@ -63,11 +64,11 @@ void DlgPartImportIgesImp::OnApply()
 
 void DlgPartImportIgesImp::onChooseFileName()
 {
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", Gui::getMainWindow() );
-	if (! fn.isEmpty() )
-	{
-    FileName->setText(fn);
-	}
+    QString fn = Gui::FileDialog::getOpenFileName( QString::null, "IGES (*.igs *.iges);;All Files (*.*)", Gui::getMainWindow() );
+    if (! fn.isEmpty() )
+    {
+        FileName->setText(fn);
+    }
 }
 
 

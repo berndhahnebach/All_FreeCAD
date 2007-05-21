@@ -42,7 +42,7 @@ using namespace PartGui;
 DlgPartImportStepImp::DlgPartImportStepImp( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
-
+    this->setupUi(this);
 }
 
 /*  
@@ -63,11 +63,11 @@ void DlgPartImportStepImp::OnApply()
 
 void DlgPartImportStepImp::onChooseFileName()
 {
-  QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", Gui::getMainWindow() );
-	if (! fn.isEmpty() )
-	{
-    FileName->setText(fn);
-	}
+    QString fn = Gui::FileDialog::getOpenFileName( QString::null, "STEP (*.stp *.step);;All Files (*.*)", Gui::getMainWindow() );
+    if (! fn.isEmpty() )
+    {
+        FileName->setText(fn);
+    }
 }
 
 

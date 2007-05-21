@@ -72,57 +72,6 @@ void CmdPartPickCurveNet::activated(int iMsg)
 }
 
 //===========================================================================
-// Std_Test1
-//===========================================================================
-DEF_STD_CMD(CmdPartTest1);
-
-CmdPartTest1::CmdPartTest1()
-  :Command("Part_Test1")
-{
-  sAppModule  = "Part";
-  sGroup      = QT_TR_NOOP("Part");
-  sMenuText   = QT_TR_NOOP("Test1...");
-  sToolTipText= QT_TR_NOOP("Part Test function 1");
-  sWhatsThis  = sToolTipText;
-  sStatusTip  = sToolTipText;
-  sPixmap     = "Test1";
-  iAccel      = Qt::CTRL+Qt::Key_T;
-}
-
-
-void CmdPartTest1::activated(int iMsg)
-{
-  PartGui::DlgPartBoxImp cDlg(Gui::getMainWindow());
-  cDlg.exec();
-}
-
-//===========================================================================
-// Std_Test2
-//===========================================================================
-DEF_STD_CMD(CmdPartTest2);
-
-CmdPartTest2::CmdPartTest2()
-  :Command("Part_Test2")
-{
-  sAppModule  = "Part";
-  sGroup      = QT_TR_NOOP("Part");
-  sMenuText   = QT_TR_NOOP("Test2");
-  sToolTipText= QT_TR_NOOP("Part Test function 2");
-  sWhatsThis  = sToolTipText;
-  sStatusTip  = sToolTipText;
-  sPixmap     = "Test2";
-  iAccel      = 0;
-}
-
-
-void CmdPartTest2::activated(int iMsg)
-{
-  App::Document *pcDoc = getDocument();
-  if(!pcDoc) return;
-  updateActive();
-}
-
-//===========================================================================
 // Part_NewDoc
 //===========================================================================
 DEF_STD_CMD(CmdPartNewDoc);
@@ -422,9 +371,6 @@ bool CmdPartImportCurveNet::isActive(void)
 void CreatePartCommands(void)
 {
   Gui::CommandManager &rcCmdMgr = Gui::Application::Instance->commandManager();
-
-  rcCmdMgr.addCommand(new CmdPartTest1());
-  rcCmdMgr.addCommand(new CmdPartTest2());
 
   rcCmdMgr.addCommand(new CmdPartCut());
   rcCmdMgr.addCommand(new CmdPartBox());

@@ -39,6 +39,7 @@ using namespace PartGui;
 DlgPartBoxImp::DlgPartBoxImp( QWidget* parent, Qt::WFlags fl )
   : QDialog( parent, fl )
 {
+    this->setupUi(this);
 }
 
 /*  

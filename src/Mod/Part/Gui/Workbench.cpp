@@ -54,8 +54,7 @@ Gui::MenuItem* Workbench::setupMenuBar() const
   Gui::MenuItem* part = new Gui::MenuItem;
   root->insertItem( item, part );
   part->setCommand( menuItems[0] );
-  *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
-        << "Separator" << "Part_Test1" << "Part_Test2";
+  *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
   return root;
 }
 
@@ -68,8 +67,7 @@ Gui::ToolBarItem* Workbench::setupToolBars() const
   Gui::ToolBarItem* root = StdWorkbench::setupToolBars();
   Gui::ToolBarItem* part = new Gui::ToolBarItem( root );
   part->setCommand( toolItems[0] );
-  *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut"
-        << "Separator" << "Part_Test1" << "Part_Test2";
+  *part << "Part_Import" << "Separator" << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
   return root;
 }
 
@@ -91,10 +89,6 @@ Gui::ToolBarItem* Workbench::setupCommandBars() const
   Gui::ToolBarItem* bol = new Gui::ToolBarItem( root );
   bol->setCommand( toolItems[1] );
   *bol << "Part_Box" << "Part_Box2" << "Part_Box3" << "Part_Cut";
-
-  Gui::ToolBarItem* test = new Gui::ToolBarItem( root );
-  test->setCommand( toolItems[2] );
-  *test << "Part_Test1" << "Part_Test2";
   
   return root;
 }
