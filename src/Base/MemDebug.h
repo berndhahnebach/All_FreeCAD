@@ -24,13 +24,29 @@
 #define __MEMDEBUG_H__
 
 // Std. configurations
+#if defined(_MSC_VER)
 
 namespace Base
 {
 
+class BaseExport MemCheck
+{
+public:
+    MemCheck();
+    ~MemCheck();
 
+    void setNextCheckpoint();
+    static bool checkMemory();
+    static bool dumpLeaks();
+    static bool isValidHeapPointer(const void*);
+
+private:
+    _CrtMemState s1, s2, s3;
+};
 
 } //namespace Base
+
+#endif
 
 #endif // __FILETEMPLATE_H__
 

@@ -236,4 +236,46 @@ void __cdecl MemDebug::sDumpClientHook(
 
 }
 
+// -----------------------------------------------------
+
+MemCheck::MemCheck()
+{
+    // Store a memory checkpoint in the s1 memory-state structure
+    _CrtMemCheckpoint( &s1 );
+}
+
+MemCheck::~MemCheck()
+{
+    // Store a 2nd memory checkpoint in s2
+    _CrtMemCheckpoint( &s2 );
+    if ( _CrtMemDifference( &s3, &s1, &s2 ) )
+        _CrtMemDumpStatistics( &s3 );
+}
+
+void MemCheck::setNextCheckpoint()
+{
+    // Store a 2nd memory checkpoint in s2
+    _CrtMemCheckpoint( &s2 );
+    if ( _CrtMemDifference( &s3, &s1, &s2 ) )
+        _CrtMemDumpStatistics( &s3 );
+
+    // Store a memory checkpoint in the s1 memory-state structure
+    _CrtMemCheckpoint( &s1 );
+}
+
+bool MemCheck::checkMemory()
+{
+    return _CrtCheckMemory() ? true : false;
+}
+
+bool MemCheck::dumpLeaks()
+{
+    return _CrtDumpMemoryLeaks() ? true : false;
+}
+
+bool MemCheck::isValidHeapPointer(const void* userData)
+{
+    return _CrtIsValidHeapPointer(userData) ? true : false;
+}
+
 #endif
