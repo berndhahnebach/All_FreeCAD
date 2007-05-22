@@ -23,12 +23,12 @@
 #ifndef __MEMDEBUG_H__
 #define __MEMDEBUG_H__
 
-// Std. configurations
-#if defined(_MSC_VER)
-
 namespace Base
 {
 
+
+// Std. configurations
+#if defined(_MSC_VER)
 class BaseExport MemCheck
 {
 public:
@@ -44,9 +44,9 @@ private:
     _CrtMemState s1, s2, s3;
 };
 
-} //namespace Base
-
 #endif
+
+} //namespace Base
 
 #endif // __FILETEMPLATE_H__
 
