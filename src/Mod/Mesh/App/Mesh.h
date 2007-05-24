@@ -159,6 +159,7 @@ public:
   void applyTransformation( const Base::Matrix4D& rclTrf );
   void deletePointIndices ( const std::vector<unsigned long>& );
   void deleteFacetIndices ( const std::vector<unsigned long>& );
+  void setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& );
   void clear();
   //@}
 

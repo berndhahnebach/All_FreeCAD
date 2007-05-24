@@ -327,6 +327,8 @@ public:
   void Transform (const Base::Matrix4D &rclMat);
   /** Moves the point at the given index along the vector \a rclTrans. */
   inline void MovePoint (unsigned long ulPtIndex, const Base::Vector3f &rclTrans);
+  /** Sets the point at the given index to the new \a rPoint. */
+  inline void SetPoint (unsigned long ulPtIndex, const Base::Vector3f &rPoint);
   /**
    * CheckFacets() is invoked within this method and all found facets get deleted from the mesh structure. 
    * The facets to be deleted are returned with their geometric reprsentation.
@@ -439,6 +441,11 @@ inline void MeshKernel::GetFacetNeighbours (unsigned long ulIndex, unsigned long
 inline void MeshKernel::MovePoint (unsigned long ulPtIndex, const Base::Vector3f &rclTrans)
 {
   _aclPointArray[ulPtIndex] += rclTrans;
+}
+
+inline void MeshKernel::SetPoint (unsigned long ulPtIndex, const Base::Vector3f &rPoint)
+{
+  _aclPointArray[ulPtIndex] = rPoint;
 }
 
 inline void MeshKernel::AdjustNormal (MeshFacet &rclFacet, const Base::Vector3f &rclNormal)
