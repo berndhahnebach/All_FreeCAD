@@ -338,6 +338,14 @@ void PropertyMeshKernel::deleteFacetIndices( const std::vector<unsigned long>& i
   hasSetValue();
 }
 
+void PropertyMeshKernel::setPointIndices( const std::vector<std::pair<unsigned long, Base::Vector3f> >& inds )
+{
+  aboutToSetValue();
+  for (std::vector<std::pair<unsigned long, Base::Vector3f> >::const_iterator it = inds.begin(); it != inds.end(); ++it)
+    _pcMesh->SetPoint(it->first, it->second);
+  hasSetValue();
+}
+
 /**
  * Clears the mesh kernel and frees any allocated memory.
  * \note If you replace the current with an empty mesh kernel with setValue() then the memory doesn't get freed.
