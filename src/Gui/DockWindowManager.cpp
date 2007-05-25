@@ -118,16 +118,21 @@ void DockWindowManager::addDockWindow( const QString& name, QWidget* widget, Qt:
   // creates the dock widget as container to embed this widget
   MainWindow* mw = getMainWindow();
   QDockWidget* dw = new QDockWidget(mw);
+  // Note: By default all dock widgets are hidden but the user can show them manually in the view menu.
+  // First, hide immediately the dock widget to avoid flickering, after setting up the dock widgets
+  // MainWindow::loadLayoutSettings() is called to restore the layout.
+  dw->hide();
+  mw->addDockWidget(pos, dw);
+
+  // add the widget to the dock widget
+  widget->setParent(dw);
+  dw->setWidget(widget);
 
   // set object name and window title needed for i18n stuff
   dw->setObjectName(name);
   dw->setWindowTitle(QDockWidget::tr(name));
   dw->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-  // add the dock widget to the main window
-  widget->setParent(dw);
-  dw->setWidget(widget);
-  mw->addDockWidget(pos, dw);
   d->_dockedWindows.push_back(dw);
 }
 
