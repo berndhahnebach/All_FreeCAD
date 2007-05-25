@@ -177,9 +177,17 @@ void MenuManager::setup( MenuItem* menuBar ) const
   if ( !menuBar )
     return; // empty menu bar
 
-  // clear menubar
-  QMenuBar* bar = getMainWindow()->menuBar();
-  bar->clear();
+  // create a new menu bar and disable update to avoid flickering when building up
+  // the menus
+  // Note: To free immediately the acquired memory by the menu bar we must destruct it rather than
+  // clear its menus, otherwise we free this memory not before the application exits
+  QMenuBar* bar = new QMenuBar(getMainWindow());
+  bar->setUpdatesEnabled(false);
+
+  // set the new menu bar and destroy the old one
+  QMenuBar* old = getMainWindow()->menuBar();
+  getMainWindow()->layout()->setMenuBar(bar);
+  delete old;
 
   QList<MenuItem*> items = menuBar->getItems();
   for ( QList<MenuItem*>::ConstIterator it = items.begin(); it != items.end(); ++it )
@@ -192,6 +200,9 @@ void MenuManager::setup( MenuItem* menuBar ) const
       setup(*it, menu);
     }
   }
+
+  // enable update again
+  bar->setUpdatesEnabled(true);
 }
 
 void MenuManager::setup( MenuItem* item, QMenu* menu ) const
