@@ -10,37 +10,37 @@
         <UserDocu>Save the document to disc.</UserDocu>
       </Documentation>
     </Methode>
-	  <Methode Name="restore">
-		  <Documentation>
-			  <UserDocu>Save the document to disc.</UserDocu>
-		  </Documentation>
-	  </Methode>
-	  <Methode Name="openTransaction">
-		  <Documentation>
-			  <UserDocu>Opens a new Undo/Redo transaction.</UserDocu>
-		  </Documentation>
-	  </Methode>
-	  <Methode Name="abortTransaction">
-		  <Documentation>
-			  <UserDocu>Abort a Undo/Redo transaction.</UserDocu>
-		  </Documentation>
-	  </Methode>
-	  <Methode Name="commitTransaction">
-		  <Documentation>
-			  <UserDocu>Abort a Undo/Redo transaction.</UserDocu>
-		  </Documentation>
-	  </Methode>
-	  <Methode Name="addObject">
-		  <Documentation>
-			  <UserDocu>Add a object to the document.</UserDocu>
-		  </Documentation>
-	  </Methode>
-	  <Methode Name="removeObject">
-		  <Documentation>
-			  <UserDocu>Removes a object from the document.</UserDocu>
-		  </Documentation>
-	  </Methode>
-	  <Methode Name="undo">
+    <Methode Name="restore">
+      <Documentation>
+        <UserDocu>Save the document to disc.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="openTransaction">
+      <Documentation>
+        <UserDocu>Opens a new Undo/Redo transaction.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="abortTransaction">
+      <Documentation>
+        <UserDocu>Abort a Undo/Redo transaction.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="commitTransaction">
+      <Documentation>
+        <UserDocu>Abort a Undo/Redo transaction.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="addObject">
+      <Documentation>
+        <UserDocu>Add a object to the document.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="removeObject">
+      <Documentation>
+        <UserDocu>Removes a object from the document.</UserDocu>
+      </Documentation>
+    </Methode>
+    <Methode Name="undo">
       <Documentation>
         <UserDocu>Undo one operation.</UserDocu>
       </Documentation>
@@ -65,33 +65,57 @@
         <UserDocu>Return the object with the given name.</UserDocu>
       </Documentation>
     </Methode>
-    <Attribute Name="ActiveObject">
+    <Attribute Name="ActiveObject" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The active object of the document</UserDocu>
+      </Documentation>
       <Parameter Name="ActiveObject" Type="Object" />
     </Attribute>
-    <Attribute Name="Objects">
+    <Attribute Name="Objects" ReadOnly="true">
+      <Documentation>
+        <UserDocu>The active object of the document</UserDocu>
+      </Documentation>
       <Parameter Name="Objects" Type="List" />
     </Attribute>
-    <Attribute Name="UndoMode">
+    <Attribute Name="UndoMode" ReadOnly="false">
+      <Documentation>
+        <UserDocu>The Undo mode of the Document (0 = no Undo, 1 = Undo/Redo)</UserDocu>
+      </Documentation>
       <Parameter Name="UndoMode" Type="Int" />
     </Attribute>
-    <Attribute Name="UndoRedoMemSize">
+    <Attribute Name="UndoRedoMemSize" ReadOnly="true">
+      <Documentation>
+        <UserDocu>The active object of the document</UserDocu>
+      </Documentation>
       <Parameter Name="UndoRedoMemSize" Type="Int" />
     </Attribute>
-    <Attribute Name="UndoCount">
-      <Parameter Name="UndoCount" Type="Int"/>
+    <Attribute Name="UndoCount" ReadOnly="true">
+      <Documentation>
+        <UserDocu>The active object of the document</UserDocu>
+      </Documentation>
+      <Parameter Name="UndoCount" Type="Int" />
     </Attribute>
-    <Attribute Name="RedoCount">
+    <Attribute Name="RedoCount" ReadOnly="true">
+      <Documentation>
+        <UserDocu>The active object of the document</UserDocu>
+      </Documentation>
       <Parameter Name="RedoCount" Type="Int">
       </Parameter>
     </Attribute>
-    <Attribute Name="UndoNames">
+    <Attribute Name="UndoNames" ReadOnly="true">
+      <Documentation>
+        <UserDocu>The active object of the document</UserDocu>
+      </Documentation>
       <Parameter Name="UndoNames" Type="List">
       </Parameter>
     </Attribute>
-    <Attribute Name="RedoNames">
+    <Attribute Name="RedoNames" ReadOnly="true">
+      <Documentation>
+        <UserDocu>The active object of the document</UserDocu>
+      </Documentation>
       <Parameter Name="RedoNames" Type="List">
       </Parameter>
     </Attribute>
-		<CustomAttributes/>
+    <CustomAttributes />
   </PythonExport>
 </GenerateModel>
