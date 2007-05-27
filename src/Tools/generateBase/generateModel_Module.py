@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Sat Apr  7 17:05:05 2007 by generateDS.py.
+# Generated Sun May 27 16:29:48 2007 by generateDS.py.
 #
 
 import sys
@@ -470,8 +470,10 @@ class Methode:
 
 class Attribute:
     subclass = None
-    def __init__(self, Name='', Parameter=None):
+    def __init__(self, ReadOnly=0, Name='', Documentation=None, Parameter=None):
+        self.ReadOnly = ReadOnly
         self.Name = Name
+        self.Documentation = Documentation
         self.Parameter = Parameter
     def factory(*args_, **kwargs_):
         if Attribute.subclass:
@@ -479,8 +481,12 @@ class Attribute:
         else:
             return Attribute(*args_, **kwargs_)
     factory = staticmethod(factory)
+    def getDocumentation(self): return self.Documentation
+    def setDocumentation(self, Documentation): self.Documentation = Documentation
     def getParameter(self): return self.Parameter
     def setParameter(self, Parameter): self.Parameter = Parameter
+    def getReadonly(self): return self.ReadOnly
+    def setReadonly(self, ReadOnly): self.ReadOnly = ReadOnly
     def getName(self): return self.Name
     def setName(self, Name): self.Name = Name
     def export(self, outfile, level, name_='Attribute'):
@@ -492,8 +498,11 @@ class Attribute:
         showIndent(outfile, level)
         outfile.write('</%s>\n' % name_)
     def exportAttributes(self, outfile, level, name_='Attribute'):
+        outfile.write(' ReadOnly="%s"' % (self.getReadonly(), ))
         outfile.write(' Name="%s"' % (self.getName(), ))
     def exportChildren(self, outfile, level, name_='Attribute'):
+        if self.Documentation:
+            self.Documentation.export(outfile, level)
         if self.Parameter:
             self.Parameter.export(outfile, level)
     def exportLiteral(self, outfile, level, name_='Attribute'):
@@ -502,8 +511,16 @@ class Attribute:
         self.exportLiteralChildren(outfile, level, name_)
     def exportLiteralAttributes(self, outfile, level, name_):
         showIndent(outfile, level)
+        outfile.write('ReadOnly = "%s",\n' % (self.getReadonly(),))
+        showIndent(outfile, level)
         outfile.write('Name = "%s",\n' % (self.getName(),))
     def exportLiteralChildren(self, outfile, level, name_):
+        if self.Documentation:
+            showIndent(outfile, level)
+            outfile.write('Documentation=Documentation(\n')
+            self.Documentation.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
         if self.Parameter:
             showIndent(outfile, level)
             outfile.write('Parameter=Parameter(\n')
@@ -517,10 +534,22 @@ class Attribute:
             nodeName_ = child_.nodeName.split(':')[-1]
             self.buildChildren(child_, nodeName_)
     def buildAttributes(self, attrs):
+        if attrs.get('ReadOnly'):
+            if attrs.get('ReadOnly').value in ('true', '1'):
+                self.ReadOnly = 1
+            elif attrs.get('ReadOnly').value in ('false', '0'):
+                self.ReadOnly = 0
+            else:
+                raise ValueError('Bad boolean attribute (ReadOnly)')
         if attrs.get('Name'):
             self.Name = attrs.get('Name').value
     def buildChildren(self, child_, nodeName_):
         if child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'Documentation':
+            obj_ = Documentation.factory()
+            obj_.build(child_)
+            self.setDocumentation(obj_)
+        elif child_.nodeType == Node.ELEMENT_NODE and \
             nodeName_ == 'Parameter':
             obj_ = Parameter.factory()
             obj_.build(child_)
@@ -1484,6 +1513,14 @@ class SaxGeneratemodelHandler(handler.ContentHandler):
             done = 1
         elif name == 'Attribute':
             obj = Attribute.factory()
+            val = attrs.get('ReadOnly', None)
+            if val is not None:
+                if val in ('true', '1'):
+                    obj.setReadonly(1)
+                elif val in ('false', '0'):
+                    obj.setReadonly(0)
+                else:
+                    self.reportError('"ReadOnly" attribute must be boolean ("true", "1", "false", "0")')
             val = attrs.get('Name', None)
             if val is not None:
                 obj.setName(val)

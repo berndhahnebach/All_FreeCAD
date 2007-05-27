@@ -6,10 +6,16 @@
       <DeveloperDocu>This is the Persistance class</DeveloperDocu>
       <UserDocu>This is a persitance class</UserDocu>
     </Documentation>
-    <Attribute Name="Content">
+    <Attribute Name="Content" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Content of the object in XML representation</UserDocu>
+      </Documentation>
       <Parameter Name="Content" Type="String" />
     </Attribute>
-    <Attribute Name="MemSize">
+    <Attribute Name="MemSize" ReadOnly="true">
+      <Documentation>
+        <UserDocu>Memory size of the object in Byte</UserDocu>
+      </Documentation>
       <Parameter Name="MemSize" Type="Int">
       </Parameter>
     </Attribute>

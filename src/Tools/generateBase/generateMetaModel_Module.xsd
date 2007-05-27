@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
+<!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von Juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
 <!-- Mit XMLSpy v2006 rel. 3 U bearbeitet (http://www.altova.com) von juergen Riegel (DCX) -->
@@ -16,7 +17,7 @@
 							<xs:element name="Methode" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element ref="Documentation" minOccurs="0"/>
+										<xs:element ref="Documentation"/>
 										<xs:element ref="Parameter" minOccurs="0" maxOccurs="unbounded"/>
 									</xs:sequence>
 									<xs:attribute name="Name" type="xs:string" use="required"/>
@@ -25,9 +26,11 @@
 							<xs:element name="Attribute" minOccurs="0" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element ref="Parameter" minOccurs="0"/>
+										<xs:element ref="Documentation"/>
+										<xs:element ref="Parameter"/>
 									</xs:sequence>
 									<xs:attribute name="Name" type="xs:string" use="required"/>
+									<xs:attribute name="ReadOnly" type="xs:boolean" use="required"/>
 								</xs:complexType>
 							</xs:element>
 							<xs:element name="CustomAttributes" minOccurs="0"/>
