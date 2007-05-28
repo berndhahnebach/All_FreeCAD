@@ -32,7 +32,7 @@
 # include "Qt3All.h"
 #endif
 
-#include <Base/Base.h>
+#include <Base/BaseClass.h>
 
 namespace Base {
 class PyObjectBase;

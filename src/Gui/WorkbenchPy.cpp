@@ -73,7 +73,7 @@ PyParentObject WorkbenchPy::Parents[] = {&PyObjectBase::Type, NULL};
 // Constructor
 //--------------------------------------------------------------------------
 WorkbenchPy::WorkbenchPy(Workbench *pcWb, PyTypeObject *T)
- : PyObjectBase( T), _pcWorkbench(pcWb)
+ : PyObjectBase(0, T), _pcWorkbench(pcWb)
 {
   Base::Console().Log("Create StandardWorkbenchPy (%d)\n",this);
 }

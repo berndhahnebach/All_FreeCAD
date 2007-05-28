@@ -29,7 +29,7 @@
 
 #include <assert.h>
 
-#include "Base.h"
+#include "BaseClass.h"
 #include "zipios/zipinputstream.h"
 
 namespace Base

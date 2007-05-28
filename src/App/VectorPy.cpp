@@ -115,7 +115,7 @@ PyParentObject App::VectorPy::Parents[] = {&PyObjectBase::Type, NULL};
 //t constructor
 //--------------------------------------------------------------------------
 App::VectorPy::VectorPy(const Base::Vector3f &rcVector, PyTypeObject *T)
-: PyObjectBase( T), _cVector(rcVector)
+: PyObjectBase(0, T), _cVector(rcVector)
 {
 	Base::Console().Log("Create VectorPy: %p \n",this);
 }

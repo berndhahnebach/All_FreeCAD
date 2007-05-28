@@ -27,7 +27,7 @@
 #include <exception>
 #include <string>
 #include "FileInfo.h"
-#include "Base.h"
+#include "BaseClass.h"
 
 namespace Base
 {

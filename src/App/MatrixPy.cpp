@@ -127,7 +127,7 @@ PyParentObject App::MatrixPy::Parents[] = {&PyObjectBase::Type, NULL};
 //t constructor
 //--------------------------------------------------------------------------
 App::MatrixPy::MatrixPy(const Base::Matrix4D &rcMatrix, PyTypeObject *T)
-: PyObjectBase( T), _cMatrix(rcMatrix)
+: PyObjectBase(0, T), _cMatrix(rcMatrix)
 {
 	Base::Console().Log("Create MatrixPy: %p \n",this);
 }

@@ -123,7 +123,7 @@ PyParentObject TestGui::UnitTestPy::Parents[] = {&PyObjectBase::Type, NULL};
 // Constructor
 //--------------------------------------------------------------------------
 TestGui::UnitTestPy::UnitTestPy(PyTypeObject *T)
-: PyObjectBase( T)
+: PyObjectBase(0, T)
 {
 }
 

@@ -73,7 +73,7 @@ PyMethodDef PythonStdoutPy::Methods[] = {
 PyParentObject PythonStdoutPy::Parents[] = {&PyObjectBase::Type, NULL};     
 
 PythonStdoutPy::PythonStdoutPy(PythonConsole *con, PyTypeObject *T)
- : PyObjectBase( T), pyConsole(con)
+ : PyObjectBase(0, T), pyConsole(con)
 {
 }
 
@@ -164,7 +164,7 @@ PyMethodDef PythonStderrPy::Methods[] = {
 PyParentObject PythonStderrPy::Parents[] = {&PyObjectBase::Type, NULL};     
 
 PythonStderrPy::PythonStderrPy(PythonConsole *con, PyTypeObject *T)
- : PyObjectBase( T), pyConsole(con)
+ : PyObjectBase(0, T), pyConsole(con)
 {
 }
 
@@ -254,7 +254,7 @@ PyMethodDef PythonStdinPy::Methods[] = {
 PyParentObject PythonStdinPy::Parents[] = {&PyObjectBase::Type, NULL};     
 
 PythonStdinPy::PythonStdinPy(PythonConsole *con, PyTypeObject *T)
- : PyObjectBase( T), pyConsole(con)
+ : PyObjectBase(0, T), pyConsole(con)
 {
 }
 

@@ -88,14 +88,14 @@ PyParentObject PointsPy::Parents[] = {&Base::PyObjectBase::Type, NULL};
 // constructor
 //--------------------------------------------------------------------------
 PointsPy::PointsPy(const PointKernel& rcPoints, PyTypeObject *T)
-: Base::PyObjectBase(T)
+: Base::PyObjectBase(0,T)
 {
   Base::Console().Log("Create PointsPy: %p \n",this);
   _cPoints = rcPoints;
 }
 
 PointsPy::PointsPy(PyTypeObject *T)
-: Base::PyObjectBase(T)
+: Base::PyObjectBase(0,T)
 {
   Base::Console().Log("Create PointsPy: %p \n",this);
 }

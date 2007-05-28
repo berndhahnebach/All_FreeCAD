@@ -79,8 +79,12 @@ public:
 	Py::@i.Parameter.Type@ get@i.Name@(void) const;
 	/// seter callback for the @i.Name@ attribute
 	static int staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure);
++ if (i.ReadOnly):
+	// no seter methode,  @i.Name@ is read only!
+= else:
 	/// seter for the @i.Name@ attribute
 	void set@i.Name@(Py::@i.Parameter.Type@ arg);
+-
 -
 
 + if(self.export.CustomAttributes != None):
@@ -425,8 +429,9 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 	return dynamic_cast<@self.export.Twin@ *>(_pcBaseClass);
 }
 
+#if 0
 /* from here on the methods you have to implement, but NOT in this module. Implement in @self.export.Name@Imp.cpp! This prototypes 
-    are just for convenience!
+    are just for convenience! */
 		
 
 + for i in self.export.Methode:
@@ -442,10 +447,14 @@ Py::@i.Parameter.Type@ @self.export.Name@::get@i.Name@(void) const
 	return Py::@i.Parameter.Type@();
 }
 
-void  set@i.Name@(Py::@i.Parameter.Type@ arg)
++ if (i.ReadOnly):
+	// no seter methode,  @i.Name@ is read only!
+= else:
+void  @self.export.Name@::set@i.Name@(Py::@i.Parameter.Type@ arg)
 {
 
 }
+-
 -
 + if(self.export.CustomAttributes != None):
 
@@ -460,17 +469,20 @@ int @self.export.Name@::setCustomAttributes(const char* attr, PyObject *obj)
 }
 -
 
-*/
+#endif
+
 	
 """	
 
 	# here the template for the user part of the implementation. This gets NOT overridden when already existing
 	TemplateImplement = """
-
 #include "PreCompiled.h"
 
-#include "@self.export.Name@.h"
 #include "@self.export.Twin@.h"
+
+// inclution of the generated files (generated out of @self.export.Name@.xml)
+#include "@self.export.Name@.h"
+#include "@self.export.Name@.cpp"
 
 using namespace @self.export.Namespace@;
 

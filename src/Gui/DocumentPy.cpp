@@ -128,7 +128,7 @@ PyParentObject DocumentPy::Parents[] = {&PyObjectBase::Type, NULL};
 //t constructor
 //--------------------------------------------------------------------------
 DocumentPy::DocumentPy(Document *pcDoc, PyTypeObject *T)
- : PyObjectBase( T), _pcDoc(pcDoc)
+ : PyObjectBase(0, T), _pcDoc(pcDoc)
 {
   Base::Console().Log("Create DocumentPy: %p \n",this);
 }

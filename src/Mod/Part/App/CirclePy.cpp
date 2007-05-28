@@ -127,12 +127,12 @@ int CirclePy::PyInit(PyObject* self, PyObject* args, PyObject*)
 }
 
 CirclePy::CirclePy(PyTypeObject *T)
-  : PyObjectBase(T)
+  : PyObjectBase(0,T)
 {
 }
 
 CirclePy::CirclePy(const gp_Circ &rcCircle, PyTypeObject *T)
-  : PyObjectBase(T), _circle(rcCircle)
+  : PyObjectBase(0,T), _circle(rcCircle)
 {
 }
 

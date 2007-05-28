@@ -856,35 +856,37 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath="Base.cpp"
+			RelativePath=".\BaseClass.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\BaseClass.h"
+			>
+		</File>
+		<File
+			RelativePath=".\BaseClassPy.xml"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
 				>
 				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
+					Name="VCCustomBuildTool"
+					CommandLine="python ../Tools/generate.py  BaseClassPy.xml&#x0D;&#x0A;"
+					Outputs="BaseClassPy.h;BaseClassPy.cpp"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
 				>
 				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
+					Name="VCCustomBuildTool"
+					CommandLine="python ../Tools/generate.py BaseClassPy.xml&#x0D;&#x0A;"
+					Outputs="BaseClassPy.h;BaseClassPy.cpp"
 				/>
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="Base.h"
-			>
-		</File>
-		<File
-			RelativePath=".\BaseClassPy.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\BaseClassPy.h"
+			RelativePath=".\BaseClassPyImp.cpp"
 			>
 		</File>
 		<File
@@ -1234,35 +1236,11 @@
 			</FileConfiguration>
 		</File>
 		<File
-			RelativePath="Persistance.cpp"
+			RelativePath=".\Persistance.cpp"
 			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				>
-				<Tool
-					Name="VCCLCompilerTool"
-					PreprocessorDefinitions=""
-				/>
-			</FileConfiguration>
 		</File>
 		<File
 			RelativePath="Persistance.h"
-			>
-		</File>
-		<File
-			RelativePath=".\PersistancePy.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\PersistancePy.h"
 			>
 		</File>
 		<File

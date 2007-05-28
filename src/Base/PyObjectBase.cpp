@@ -35,7 +35,8 @@ using namespace Base;
 
 
 // Constructor
-PyObjectBase::PyObjectBase(PyTypeObject *T) 				
+PyObjectBase::PyObjectBase(BaseClass* p,PyTypeObject *T)
+:_pcBaseClass(p)
 {
   this->ob_type = T;
   _Py_NewReference(this);

@@ -37,7 +37,7 @@
 //#include <Qt3Support/q3mainwindow.h>
 ////Added by qt3to4:
 //#include <QtGui/QCloseEvent>
-#include <Base/Base.h>
+#include <Base/BaseClass.h>
 
 namespace App
 {
