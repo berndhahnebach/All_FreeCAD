@@ -28,6 +28,10 @@
 #include <string>
 #include <vector>
 
+#ifndef __Qt4All__
+# include "Qt4All.h"
+#endif
+
 #include "propertyeditoritem.h"
 
 namespace App {
@@ -36,6 +40,60 @@ class Property;
 
 namespace Gui {
 namespace PropertyEditor {
+
+class PropertyModel;
+class PropertyEditor : public QTreeView
+{
+    Q_OBJECT
+
+public:
+    PropertyEditor(QWidget *parent = 0);
+    ~PropertyEditor();
+
+    /** Builds up the list view with the properties. */
+    void buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct );
+
+protected:
+    virtual void currentChanged (const QModelIndex & current, const QModelIndex & previous);
+    virtual void drawBranches(QPainter *painter, const QRect &rect, const QModelIndex &index) const;
+    virtual QStyleOptionViewItem viewOptions() const;
+
+private:
+    PropertyModel* propertyModel;
+};
+
+class PropertyModel : public QAbstractItemModel
+{
+public:
+    PropertyModel(QObject* parent);
+    virtual ~PropertyModel();
+
+    QModelIndex buddy ( const QModelIndex & index ) const;
+    int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
+    QVariant data ( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+    bool setData ( const QModelIndex & idx, const QVariant & value, int role );
+    Qt::ItemFlags flags(const QModelIndex &index) const;
+    QModelIndex index ( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
+    QModelIndex parent ( const QModelIndex & index ) const;
+    int rowCount ( const QModelIndex & parent = QModelIndex() ) const;
+    QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    bool setHeaderData ( int section, Qt::Orientation orientation, const QVariant & value, int role = Qt::EditRole );
+    void buildUp( const std::map<std::pair<std::string, int>, std::vector<App::Property*> >& props, unsigned long ct );
+
+private:
+    PropertyItem *rootItem;
+};
+
+
+
+
+
+
+
+
+
+
+
 
 /** Implementation of a property editor similar to this one of Qt designer.
  *

@@ -32,7 +32,220 @@
 #include "propertyeditoritem.h"
 
 using namespace Gui::PropertyEditor;
- 
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyItem, Base::BaseClass);
+
+PropertyItem::PropertyItem() : parentItem(0)
+{
+}
+
+PropertyItem::~PropertyItem()
+{
+    qDeleteAll(childItems);
+}
+
+void PropertyItem::reset()
+{
+    qDeleteAll(childItems);
+    childItems.clear();
+}
+
+void PropertyItem::setProperty( const std::vector<App::Property*>& items)
+{
+    propertyItems = items;
+}
+
+const std::vector<App::Property*>& PropertyItem::getProperty() const
+{
+    return propertyItems;
+}
+
+void PropertyItem::setParent(PropertyItem* parent)
+{
+    parentItem = parent;
+}
+
+void PropertyItem::appendChild(PropertyItem *item)
+{
+    childItems.append(item);
+}
+
+PropertyItem *PropertyItem::child(int row)
+{
+    return childItems.value(row);
+}
+
+int PropertyItem::childCount() const
+{
+    return childItems.count();
+}
+
+int PropertyItem::columnCount() const
+{
+    return 2;
+}
+
+QVariant PropertyItem::pixmapData(const App::Property* prop) const
+{
+    return QVariant();
+}
+
+QVariant PropertyItem::displayData(const App::Property* prop) const
+{
+    return propertyData(prop);
+}
+
+QVariant PropertyItem::propertyData(const App::Property* prop) const
+{
+    return QVariant();
+}
+
+void PropertyItem::setPropertyData(const QVariant& value)
+{
+}
+
+QWidget* PropertyItem::createEditor(QWidget* parent) const
+{
+    return 0;
+}
+
+void PropertyItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+}
+
+QVariant PropertyItem::editorData(QWidget *editor) const
+{
+    return QVariant();
+}
+
+QVariant PropertyItem::data(int column, int role) const
+{
+    // no properties set
+    if (propertyItems.empty())
+        return QVariant();
+    
+    // property name
+    if (column == 0) {
+        if (role == Qt::DisplayRole)
+            return QVariant(QString(propertyItems[0]->getName()));
+        else
+            return QVariant();
+    } else {
+        if (role == Qt::EditRole)
+            return propertyData(propertyItems[0]);
+        else if (role == Qt::DecorationRole)
+            return pixmapData(propertyItems[0]);
+        else if (role == Qt::DisplayRole)
+            return displayData(propertyItems[0]);
+        else
+            return QVariant();
+    }
+}
+
+bool PropertyItem::setData (const QVariant& value)
+{
+    if (propertyItems.empty())
+        return false;
+    setPropertyData(value);
+    return true;
+}
+
+Qt::ItemFlags PropertyItem::flags(int column) const
+{
+    Qt::ItemFlags basicFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    if (column == 1)
+        return basicFlags | Qt::ItemIsEditable;
+    else
+        return basicFlags;
+}
+
+PropertyItem *PropertyItem::parent()
+{
+    return parentItem;
+}
+
+int PropertyItem::row() const
+{
+    if (parentItem)
+        return parentItem->childItems.indexOf(const_cast<PropertyItem*>(this));
+
+    return 0;
+}
+
+// --------------------------------------------------------------------
+
+PropertyItemEditorFactory::PropertyItemEditorFactory()
+{
+}
+
+PropertyItemEditorFactory::~PropertyItemEditorFactory()
+{
+}
+
+QWidget * PropertyItemEditorFactory::createEditor ( QVariant::Type type, QWidget * parent ) const
+{
+    // do not allow to create any editor widgets because we do that in subclasses of PropertyItem
+    return 0;
+}
+
+QByteArray PropertyItemEditorFactory::valuePropertyName ( QVariant::Type type ) const
+{
+    // do not allow to set properties because we do that in subclasses of PropertyItem
+    return "";
+}
+
+// --------------------------------------------------------------------
+
+PropertyItemDelegate::PropertyItemDelegate(QObject* parent)
+    : QItemDelegate(parent)
+{
+}
+
+PropertyItemDelegate::~PropertyItemDelegate()
+{
+}
+
+QWidget * PropertyItemDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    if (!index.isValid())
+        return 0;
+
+    PropertyItem *childItem = static_cast<PropertyItem*>(index.internalPointer());
+    return childItem->createEditor(parent);
+}
+
+void PropertyItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+    QVariant data = index.data(Qt::EditRole);
+    PropertyItem *childItem = static_cast<PropertyItem*>(index.internalPointer());
+    childItem->setEditorData(editor, data);
+    return;
+}
+
+void PropertyItemDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
+{
+    PropertyItem *childItem = static_cast<PropertyItem*>(index.internalPointer());
+    QVariant data = childItem->editorData(editor);
+    model->setData(index, data, Qt::EditRole);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ///* XPM */
 //static const char * applyproperty_xpm[] = {
 //"14 14 3 1",

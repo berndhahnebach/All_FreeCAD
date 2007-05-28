@@ -39,6 +39,112 @@ namespace Gui {
 namespace PropertyEditor {
 
 /**
+ * Change a string property.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyStringItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyStringItem();
+};
+
+/**
+ * Change a number.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyIntegerItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyIntegerItem();
+};
+
+/**
+ * Change a number with constraints.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyIntegerConstraintItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyIntegerConstraintItem();
+};
+
+/**
+ * Change a floating point number.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyFloatItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant displayData(const App::Property*) const;
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyFloatItem();
+};
+
+/**
+ * Change a floating point number with constraints.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyFloatConstraintItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant displayData(const App::Property*) const;
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyFloatConstraintItem();
+};
+
+
+
+
+
+/**
  * Change a text property.
  * \author Werner Mayer
  */

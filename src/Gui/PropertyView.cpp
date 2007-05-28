@@ -45,7 +45,6 @@
 #include "propertyeditor/propertyeditorinput.h"
 #include "propertyeditor/propertyeditordate.h"
 
-
 using namespace std;
 using namespace Gui;
 using namespace Gui::DockWnd;
@@ -61,39 +60,35 @@ QPixmap* PropertyView::pcAttribute=0;
 PropertyView::PropertyView(Gui::Document* pcDocument, QWidget *parent)
   : DockWindow(pcDocument,parent)
 {
-  setWindowTitle( tr( "Property View" ) );
+    setWindowTitle( tr( "Property View" ) );
 
-  QGridLayout* pLayout = new QGridLayout( this ); 
-  pLayout->setSpacing( 0 );
-  pLayout->setMargin ( 0 );
+    QGridLayout* pLayout = new QGridLayout( this ); 
+    pLayout->setSpacing( 0 );
+    pLayout->setMargin ( 0 );
 
-  tabs = new QTabWidget (this);
-  tabs->setObjectName(QString::fromUtf8("propertyTab"));
-  tabs->setTabPosition(QTabWidget::South);
-  tabs->setTabShape(QTabWidget::Triangular);
-  pLayout->addWidget( tabs, 0, 0 );
+    tabs = new QTabWidget (this);
+    tabs->setObjectName(QString::fromUtf8("propertyTab"));
+    tabs->setTabPosition(QTabWidget::South);
+    tabs->setTabShape(QTabWidget::Triangular);
+    pLayout->addWidget( tabs, 0, 0 );
 
-  _pPropEditorView = new EditableListView();
-  tabs->addTab(_pPropEditorView, trUtf8("View"));
-  _pPropEditorView->addColumn(trUtf8("Name"));
-  _pPropEditorView->addColumn(trUtf8("Value"));
+    propertyEditorView = new Gui::PropertyEditor::PropertyEditor();
+    tabs->addTab(propertyEditorView, trUtf8("View"));
+    propertyEditorData = new Gui::PropertyEditor::PropertyEditor();
+    tabs->addTab(propertyEditorData, trUtf8("Data"));
 
-  _pPropEditorData = new EditableListView();
-  tabs->addTab(_pPropEditorData, trUtf8("Data"));
-  _pPropEditorData->addColumn(trUtf8("Name"));
-  _pPropEditorData->addColumn(trUtf8("Value"));
 
-  // retrieve the Pixmaps
-  pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
-  pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
-  pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
+    // retrieve the Pixmaps
+    pcLabelOpen   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelOpen"));
+    pcLabelClosed = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_LabelClosed"));
+    pcAttribute   = new QPixmap(Gui::BitmapFactory().pixmap("RawTree_Attr"));
 
-  //_pcListView->setSize(200,400);
-  resize( 200, 400 );
+    //_pcListView->setSize(200,400);
+    resize( 200, 400 );
 
-  onUpdate();
+    onUpdate();
 
-  Gui::Selection().Attach(this);
+    Gui::Selection().Attach(this);
 }
 
 PropertyView::~PropertyView()
@@ -150,8 +145,8 @@ void PropertyView::OnChange(Gui::SelectionSingleton::SubjectType &rCaller,Gui::S
       }
     }
 
-    _pPropEditorData->buildUp(propDataMap, array.size());
-    _pPropEditorView->buildUp(propViewMap, array.size());
+    propertyEditorView->buildUp(propViewMap, array.size());
+    propertyEditorData->buildUp(propDataMap, array.size());
   }
 }
 
@@ -168,10 +163,6 @@ bool PropertyView::onMsg(const char* pMsg)
 void PropertyView::changeEvent(QEvent *e)
 {
   if (e->type() == QEvent::LanguageChange) {
-    _pPropEditorView->setColumnText(0, trUtf8("Name"));
-    _pPropEditorView->setColumnText(1, trUtf8("Value"));
-    _pPropEditorData->setColumnText(0, trUtf8("Name"));
-    _pPropEditorData->setColumnText(1, trUtf8("Value"));
     tabs->setTabText(0, trUtf8("View"));
     tabs->setTabText(1, trUtf8("Data"));
   }

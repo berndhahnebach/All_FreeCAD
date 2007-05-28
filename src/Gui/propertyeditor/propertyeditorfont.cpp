@@ -36,6 +36,80 @@
 
 using namespace Gui::PropertyEditor;
 
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyColorItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyColorItem::PropertyColorItem()
+{
+}
+
+QVariant PropertyColorItem::displayData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()));
+
+    App::Color value = ((App::PropertyColor*)prop)->getValue();
+    QString color = QString("[%1, %2, %3]").arg((int)(255.0f*value.r)).arg((int)(255.0f*value.g)).arg((int)(255.0f*value.b));
+    return QVariant(color);
+}
+
+QVariant PropertyColorItem::propertyData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()));
+
+    App::Color value = ((App::PropertyColor*)prop)->getValue();
+    return QVariant(QColor((int)(255.0f*value.r),(int)(255.0f*value.g),(int)(255.0f*value.b)));
+}
+
+void PropertyColorItem::setPropertyData(const QVariant& value)
+{
+    QColor col = value.value<QColor>();
+    App::Color val;
+    val.r = (float)col.red()/255.0f;
+    val.g = (float)col.green()/255.0f;
+    val.b = (float)col.blue()/255.0f;
+    const std::vector<App::Property*>& items = getProperty();
+    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+        assert((*it)->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()));
+        ((App::PropertyColor*)*it)->setValue(val);
+    }
+}
+
+QWidget* PropertyColorItem::createEditor(QWidget* parent) const
+{
+    Gui::ColorButton* cb = new Gui::ColorButton( parent );
+    return cb;
+}
+
+void PropertyColorItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    Gui::ColorButton *cb = qobject_cast<Gui::ColorButton*>(editor);
+    QColor color = data.value<QColor>();
+    cb->setColor(color);
+}
+
+QVariant PropertyColorItem::editorData(QWidget *editor) const
+{
+    Gui::ColorButton *cb = qobject_cast<Gui::ColorButton*>(editor);
+    QVariant var;
+    var.setValue(cb->color());
+    return var;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::FontEditorItem, Gui::PropertyEditor::EditableItem);
 
 FontEditorItem::FontEditorItem()
@@ -216,3 +290,5 @@ void ColorEditorItem::convertToProperty(const QVariant& val)
 
 #include "moc_propertyeditorfont.cpp"
 
+
+// --------------------------------------------------------------------

@@ -31,6 +31,31 @@ namespace Gui {
 namespace PropertyEditor {
 
 /**
+ * Change a color property.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyColorItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant displayData(const App::Property*) const;
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyColorItem();
+};
+
+
+
+
+
+/**
  * Change a font property.
  * \author Werner Mayer
  */

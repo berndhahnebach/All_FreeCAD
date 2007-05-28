@@ -45,57 +45,72 @@ using namespace Gui::PropertyEditor;
 
 void Gui::SoFCDB::init()
 {
-  SoFCColorBarBase         ::initClass();
-  SoFCColorBar             ::initClass();
-  SoFCColorLegend          ::initClass();
-  SoFCColorGradient        ::initClass();
-  SoFCBackgroundGradient   ::initClass();
-  SoInteraction            ::init();
-  SoFCSelection            ::initClass();
-  SoFCSelectionAction      ::initClass();
-  SoFCDocumentAction       ::initClass();
-  SoFCInteractiveElement   ::initClass();
-  SoFCEnableSelectionAction::initClass();
-  SoFCEnableHighlightAction::initClass();
-  SoFCSelectionColorAction ::initClass();
-  SoFCHighlightColorAction ::initClass();
-  SoFCDocumentObjectEvent  ::initClass();
+    SoFCColorBarBase                ::initClass();
+    SoFCColorBar                    ::initClass();
+    SoFCColorLegend                 ::initClass();
+    SoFCColorGradient               ::initClass();
+    SoFCBackgroundGradient          ::initClass();
+    SoInteraction                   ::init();
+    SoFCSelection                   ::initClass();
+    SoFCSelectionAction             ::initClass();
+    SoFCDocumentAction              ::initClass();
+    SoFCInteractiveElement          ::initClass();
+    SoFCEnableSelectionAction       ::initClass();
+    SoFCEnableHighlightAction       ::initClass();
+    SoFCSelectionColorAction        ::initClass();
+    SoFCHighlightColorAction        ::initClass();
+    SoFCDocumentObjectEvent         ::initClass();
 
 
-  EditableItem             ::init();
-  TimeEditorItem           ::init();
-  DateEditorItem           ::init();
-  DateTimeEditorItem       ::init();
-  FileEditorItem           ::init();
-  PixmapEditorItem         ::init();
-  ChildrenEditorItem       ::init();
-  FontEditorItem           ::init();
-  ColorEditorItem          ::init();
-  TextEditorItem           ::init();
-  IntEditorItem            ::init();
-  IntConstraintEditorItem  ::init();
-  FloatEditorItem          ::init();
-  FloatConstraintEditorItem::init();
-  BoolEditorItem           ::init();
-  ListEditorItem           ::init();
-  ComboEditorItem          ::init();
-  CursorEditorItem         ::init();
+    PropertyItem                    ::init();
+    PropertyStringItem              ::init();
+    PropertyIntegerItem             ::init();
+    PropertyIntegerConstraintItem   ::init();
+    PropertyFloatItem               ::init();
+    PropertyFloatConstraintItem     ::init();
+    PropertyBoolItem                ::init();
+    PropertyEnumItem                ::init();
+    PropertyStringListItem          ::init();
+    PropertyColorItem               ::init();
+    PropertyFileItem                ::init();
+    PropertyPathItem                ::init();
+
+
+    // deprecated ...
+    EditableItem                    ::init();
+    TimeEditorItem                  ::init();
+    DateEditorItem                  ::init();
+    DateTimeEditorItem              ::init();
+    FileEditorItem                  ::init();
+    PixmapEditorItem                ::init();
+    ChildrenEditorItem              ::init();
+    FontEditorItem                  ::init();
+    ColorEditorItem                 ::init();
+    TextEditorItem                  ::init();
+    IntEditorItem                   ::init();
+    IntConstraintEditorItem         ::init();
+    FloatEditorItem                 ::init();
+    FloatConstraintEditorItem       ::init();
+    BoolEditorItem                  ::init();
+    ListEditorItem                  ::init();
+    ComboEditorItem                 ::init();
+    CursorEditorItem                ::init();
 }
 
 void Gui::SoFCDB::finish()
 {
-  // Coin doesn't provide a mechanism to free static members of own data types. Hence, we need to define a static method e.g. 'finish()' for all new types 
-  // to invoke the private member function 'atexit_cleanup()'.
-  SoFCColorBarBase         ::finish();
-  SoFCColorBar             ::finish();
-  SoFCColorLegend          ::finish();
-  SoFCColorGradient        ::finish();
-  SoFCBackgroundGradient   ::finish();
-  SoFCSelection            ::finish();
-  SoFCSelectionAction      ::finish();
-  SoFCDocumentAction       ::finish();
-  SoFCEnableSelectionAction::finish();
-  SoFCEnableHighlightAction::finish();
-  SoFCSelectionColorAction ::finish();
-  SoFCHighlightColorAction ::finish();
+    // Coin doesn't provide a mechanism to free static members of own data types. Hence, we need to define a static method e.g. 'finish()' for all new types 
+    // to invoke the private member function 'atexit_cleanup()'.
+    SoFCColorBarBase                ::finish();
+    SoFCColorBar                    ::finish();
+    SoFCColorLegend                 ::finish();
+    SoFCColorGradient               ::finish();
+    SoFCBackgroundGradient          ::finish();
+    SoFCSelection                   ::finish();
+    SoFCSelectionAction             ::finish();
+    SoFCDocumentAction              ::finish();
+    SoFCEnableSelectionAction       ::finish();
+    SoFCEnableHighlightAction       ::finish();
+    SoFCSelectionColorAction        ::finish();
+    SoFCHighlightColorAction        ::finish();
 }
