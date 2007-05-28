@@ -32,6 +32,25 @@
 namespace MeshGui {
 
 /**
+ * Display data of a mesh kernel.
+ * \author Werner Mayer
+ */
+class GuiMeshExport PropertyMeshKernelItem: public Gui::PropertyEditor::PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+protected:
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyMeshKernelItem();
+};
+
+
+
+
+/**
  * Change a text property.
  * \author Werner Mayer
  */

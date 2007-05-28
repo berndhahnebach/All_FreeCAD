@@ -39,6 +39,278 @@
 
 using namespace Gui::PropertyEditor;
 
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyStringItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyStringItem::PropertyStringItem()
+{
+}
+
+QVariant PropertyStringItem::propertyData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyString::getClassTypeId()));
+
+    std::string value = ((App::PropertyString*)prop)->getValue();
+    return QVariant(QString(value.c_str()));
+}
+
+void PropertyStringItem::setPropertyData(const QVariant& value)
+{
+    QString val = value.toString();
+    const std::vector<App::Property*>& items = getProperty();
+    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+        assert((*it)->getTypeId().isDerivedFrom(App::PropertyString::getClassTypeId()));
+        ((App::PropertyString*)*it)->setValue(val.toAscii());
+    }
+}
+
+QWidget* PropertyStringItem::createEditor(QWidget* parent) const
+{
+    QLineEdit *le = new QLineEdit(parent);
+    le->setFrame(false);
+    return le;
+}
+
+void PropertyStringItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    QLineEdit *le = qobject_cast<QLineEdit*>(editor);
+    le->setText(data.toString());
+}
+
+QVariant PropertyStringItem::editorData(QWidget *editor) const
+{
+    QLineEdit *le = qobject_cast<QLineEdit*>(editor);
+    return QVariant(le->text());
+}
+
+// --------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyIntegerItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyIntegerItem::PropertyIntegerItem()
+{
+}
+
+QVariant PropertyIntegerItem::propertyData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()));
+
+    long value = ((App::PropertyInteger*)prop)->getValue();
+    return QVariant(value);
+}
+
+void PropertyIntegerItem::setPropertyData(const QVariant& value)
+{
+    int val = value.toInt();
+    const std::vector<App::Property*>& items = getProperty();
+    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+        assert((*it)->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()));
+        ((App::PropertyInteger*)*it)->setValue(val);
+    }
+}
+
+QWidget* PropertyIntegerItem::createEditor(QWidget* parent) const
+{
+    QSpinBox *sb = new QSpinBox(parent);
+    sb->setFrame(false);
+    return sb;
+}
+
+void PropertyIntegerItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    QSpinBox *sb = qobject_cast<QSpinBox*>(editor);
+    sb->setValue(data.toInt());
+}
+
+QVariant PropertyIntegerItem::editorData(QWidget *editor) const
+{
+    QSpinBox *sb = qobject_cast<QSpinBox*>(editor);
+    return QVariant(sb->value());
+}
+
+// --------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyIntegerConstraintItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyIntegerConstraintItem::PropertyIntegerConstraintItem()
+{
+}
+
+QVariant PropertyIntegerConstraintItem::propertyData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyIntegerConstraint::getClassTypeId()));
+
+    long value = ((App::PropertyIntegerConstraint*)prop)->getValue();
+    return QVariant(value);
+}
+
+void PropertyIntegerConstraintItem::setPropertyData(const QVariant& value)
+{
+    int val = value.toInt();
+    const std::vector<App::Property*>& items = getProperty();
+    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+        assert((*it)->getTypeId().isDerivedFrom(App::PropertyIntegerConstraint::getClassTypeId()));
+        ((App::PropertyIntegerConstraint*)*it)->setValue(val);
+    }
+}
+
+QWidget* PropertyIntegerConstraintItem::createEditor(QWidget* parent) const
+{
+    QSpinBox *sb = new QSpinBox(parent);
+    sb->setFrame(false);
+    return sb;
+}
+
+void PropertyIntegerConstraintItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    const std::vector<App::Property*>& items = getProperty();
+    App::PropertyIntegerConstraint* prop = (App::PropertyIntegerConstraint*)items[0];
+
+    const App::PropertyIntegerConstraint::Constraints* c = ((App::PropertyIntegerConstraint*)prop)->getConstraints();
+    QSpinBox *sb = qobject_cast<QSpinBox*>(editor);
+    sb->setValue(prop->getValue());
+    if (c) {
+        sb->setMinimum(c->LowerBound);
+        sb->setMaximum(c->UpperBound);
+        sb->setSingleStep(c->StepSize);
+    }
+}
+
+QVariant PropertyIntegerConstraintItem::editorData(QWidget *editor) const
+{
+    QSpinBox *sb = qobject_cast<QSpinBox*>(editor);
+    return QVariant(sb->value());
+}
+
+// --------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyFloatItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyFloatItem::PropertyFloatItem()
+{
+}
+
+QVariant PropertyFloatItem::displayData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
+
+    double value = ((App::PropertyFloat*)prop)->getValue();
+    QString data;
+    data.sprintf("%.2f", value);
+    return QVariant(data);
+}
+
+QVariant PropertyFloatItem::propertyData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
+
+    double value = ((App::PropertyFloat*)prop)->getValue();
+    return QVariant(value);
+}
+
+void PropertyFloatItem::setPropertyData(const QVariant& value)
+{
+    double val = value.toDouble();
+    const std::vector<App::Property*>& items = getProperty();
+    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+        assert((*it)->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
+        ((App::PropertyFloat*)*it)->setValue(val);
+    }
+}
+
+QWidget* PropertyFloatItem::createEditor(QWidget* parent) const
+{
+    QDoubleSpinBox *sb = new QDoubleSpinBox(parent);
+    sb->setFrame(false);
+    return sb;
+}
+
+void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
+    sb->setValue(data.toDouble());
+}
+
+QVariant PropertyFloatItem::editorData(QWidget *editor) const
+{
+    QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
+    return QVariant(sb->value());
+}
+
+// --------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyFloatConstraintItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyFloatConstraintItem::PropertyFloatConstraintItem()
+{
+}
+
+QVariant PropertyFloatConstraintItem::displayData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
+
+    double value = ((App::PropertyFloat*)prop)->getValue();
+    QString data;
+    data.sprintf("%.2f", value);
+    return QVariant(data);
+}
+
+QVariant PropertyFloatConstraintItem::propertyData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloatConstraint::getClassTypeId()));
+
+    double value = ((App::PropertyFloatConstraint*)prop)->getValue();
+    return QVariant(value);
+}
+
+void PropertyFloatConstraintItem::setPropertyData(const QVariant& value)
+{
+    double val = value.toDouble();
+    const std::vector<App::Property*>& items = getProperty();
+    for (std::vector<App::Property*>::const_iterator it = items.begin(); it != items.end(); ++it) {
+        assert((*it)->getTypeId().isDerivedFrom(App::PropertyFloatConstraint::getClassTypeId()));
+        ((App::PropertyFloatConstraint*)*it)->setValue(val);
+    }
+}
+
+QWidget* PropertyFloatConstraintItem::createEditor(QWidget* parent) const
+{
+    QDoubleSpinBox *sb = new QDoubleSpinBox(parent);
+    sb->setFrame(false);
+    return sb;
+}
+
+void PropertyFloatConstraintItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+    const std::vector<App::Property*>& items = getProperty();
+    App::PropertyFloatConstraint* prop = (App::PropertyFloatConstraint*)items[0];
+
+    const App::PropertyFloatConstraint::Constraints* c = ((App::PropertyFloatConstraint*)prop)->getConstraints();
+    QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
+    sb->setValue(prop->getValue());
+    if (c) {
+        sb->setMinimum(c->LowerBound);
+        sb->setMaximum(c->UpperBound);
+        sb->setSingleStep(c->StepSize);
+    }
+}
+
+QVariant PropertyFloatConstraintItem::editorData(QWidget *editor) const
+{
+    QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
+    return QVariant(sb->value());
+}
+
+
+
+
+
+
+
+
+
+
+
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::TextEditorItem, Gui::PropertyEditor::EditableItem);
 
 TextEditorItem::TextEditorItem()
@@ -316,3 +588,5 @@ QWidget* FloatConstraintEditorItem::createEditor( int column, QWidget* parent )
 }
 
 #include "moc_propertyeditorinput.cpp"
+
+// --------------------------------------------------------------------

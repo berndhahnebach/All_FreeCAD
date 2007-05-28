@@ -34,6 +34,69 @@ namespace PropertyEditor {
  * Edit properties of boolean type. 
  * \author Werner Mayer
  */
+class GuiExport PropertyBoolItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyBoolItem();
+};
+
+/**
+ * Edit properties of enum type. 
+ * \author Werner Mayer
+ */
+class GuiExport PropertyEnumItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+protected:
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyEnumItem();
+};
+
+/**
+ * Edit properties of enum type. 
+ * \author Werner Mayer
+ */
+class GuiExport PropertyStringListItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+
+protected:
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyStringListItem();
+};
+
+
+
+
+
+/**
+ * Edit properties of boolean type. 
+ * \author Werner Mayer
+ */
 class GuiExport BoolEditorItem: public EditableItem
 {
   TYPESYSTEM_HEADER();

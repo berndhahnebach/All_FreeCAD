@@ -35,12 +35,86 @@
 #include <vector>
 
 #include <Base/Type.h>
-#include <App/Property.h>
+#include <App/PropertyStandard.h>
 
 class QPushButton;
 
 namespace Gui {
 namespace PropertyEditor {
+
+class GuiExport PropertyItem : public Base::BaseClass
+{
+    TYPESYSTEM_HEADER();
+
+public:
+    ~PropertyItem();
+
+    /** Sets the current property object. */
+    void setProperty( const std::vector<App::Property*>& );
+    const std::vector<App::Property*>& getProperty() const;
+
+    /** Creates the appropriate editor for this item and sets the editor to the value of overrideValue(). */
+    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual void setEditorData(QWidget *editor, const QVariant& data) const;
+    virtual QVariant editorData(QWidget *editor) const;
+
+    void setParent(PropertyItem* parent);
+    void appendChild(PropertyItem *child);
+
+    PropertyItem *child(int row);
+    int childCount() const;
+    int columnCount() const;
+    QVariant data(int column, int role) const;
+    bool setData (const QVariant& value);
+    Qt::ItemFlags flags(int column) const;
+    int row() const;
+    PropertyItem *parent();
+    void reset();
+
+protected:
+    PropertyItem();
+    virtual QVariant pixmapData(const App::Property*) const;
+    virtual QVariant displayData(const App::Property*) const;
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+private:
+    QList<PropertyItem*> childItems;
+    QList<QVariant> itemData;
+    std::vector<App::Property*> propertyItems;
+    PropertyItem *parentItem;
+};
+
+class PropertyItemEditorFactory : public QItemEditorFactory
+{
+public:
+    PropertyItemEditorFactory();
+    virtual ~PropertyItemEditorFactory();
+
+    virtual QWidget * createEditor ( QVariant::Type type, QWidget * parent ) const;
+    virtual QByteArray valuePropertyName ( QVariant::Type type ) const;
+};
+
+class PropertyItemDelegate : public QItemDelegate
+{
+    Q_OBJECT
+
+public:
+    PropertyItemDelegate(QObject* parent);
+    ~PropertyItemDelegate();
+
+    virtual QWidget * createEditor (QWidget *, const QStyleOptionViewItem&, const QModelIndex&) const;
+    virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    virtual void setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index ) const;
+};
+
+
+
+
+
+
+
+
 
 /** Implementation of a property editor similar to this one of Qt designer.
  *

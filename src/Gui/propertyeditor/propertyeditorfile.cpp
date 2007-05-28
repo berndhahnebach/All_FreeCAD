@@ -47,6 +47,44 @@
 using Gui::PreviewLabel;
 using namespace Gui::PropertyEditor;
 
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyFileItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyFileItem::PropertyFileItem()
+{
+}
+
+QVariant PropertyFileItem::propertyData(const App::Property* prop) const
+{
+    assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFile::getClassTypeId()));
+
+    std::string value = ((App::PropertyFile*)prop)->getValue();
+    return QVariant(QString(value.c_str()));
+}
+
+void PropertyFileItem::setPropertyData(const QVariant& value)
+{
+}
+
+// --------------------------------------------------------------------
+
+TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyPathItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyPathItem::PropertyPathItem()
+{
+}
+
+QVariant PropertyPathItem::propertyData(const App::Property* prop) const
+{
+    return QVariant();
+}
+
+void PropertyPathItem::setPropertyData(const QVariant& value)
+{
+}
+
+
+
 /* TRANSLATOR Gui::PropertyEditor::FileEditorItem */
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::FileEditorItem, Gui::PropertyEditor::EditableItem);
@@ -336,3 +374,5 @@ void ChildrenEditorItem::convertToProperty(const QVariant&)
 }
 
 #include "moc_propertyeditorfile.cpp"
+
+// --------------------------------------------------------------------

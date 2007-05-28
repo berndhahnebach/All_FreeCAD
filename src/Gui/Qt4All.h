@@ -22,6 +22,7 @@
 #include <qvariant.h>
 #include <QWaitCondition>
 // QtGui
+#include <QAbstractItemModel>
 #include <QAbstractTextDocumentLayout>
 #include <qaction.h>
 #include <QActionGroup>
@@ -42,6 +43,8 @@
 #include <qimage.h>
 #include <QImageWriter>
 #include <qinputdialog.h>
+#include <QItemDelegate>
+#include <QItemEditorFactory>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qlineedit.h>
@@ -80,6 +83,8 @@
 #include <qtoolbox.h>
 #include <qtoolbutton.h>
 #include <qtooltip.h>
+#include <QTreeView>
+#include <QTreeWidget>
 #include <qvalidator.h>
 #include <QWhatsThisClickedEvent>
 #include <qwidget.h>

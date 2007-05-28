@@ -49,6 +49,7 @@ namespace PropertyEditor {
 
 class EditableListView;
 class EditableItem;
+class PropertyEditor;
 
 } // namespace PropertyEditor
 } // namespace Gui
@@ -88,8 +89,8 @@ public:
 
   static QPixmap *pcLabelOpen, *pcLabelClosed, *pcAttribute;
 
-  Gui::PropertyEditor::EditableListView * _pPropEditorView;
-  Gui::PropertyEditor::EditableListView * _pPropEditorData;
+  Gui::PropertyEditor::PropertyEditor* propertyEditorView;
+  Gui::PropertyEditor::PropertyEditor* propertyEditorData;
 
 protected:
   void changeEvent( QEvent *e );

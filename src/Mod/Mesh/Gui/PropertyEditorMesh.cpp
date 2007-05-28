@@ -34,6 +34,24 @@ using namespace MeshGui;
 using MeshCore::MeshKernel;
 
 
+TYPESYSTEM_SOURCE(MeshGui::PropertyMeshKernelItem, Gui::PropertyEditor::PropertyItem);
+
+PropertyMeshKernelItem::PropertyMeshKernelItem()
+{
+}
+
+QVariant PropertyMeshKernelItem::propertyData(const App::Property* prop) const
+{
+    return QVariant();
+}
+
+void PropertyMeshKernelItem::setPropertyData(const QVariant& value)
+{
+}
+
+
+
+
 TYPESYSTEM_SOURCE(MeshGui::PropertyEditorMesh, Gui::PropertyEditor::EditableItem);
 
 PropertyEditorMesh::PropertyEditorMesh()
@@ -103,3 +121,5 @@ QVariant PropertyEditorMesh::convertFromProperty(const std::vector<App::Property
 void PropertyEditorMesh::convertToProperty(const QVariant&)
 {
 }
+
+// --------------------------------------------------------------------

@@ -70,7 +70,7 @@ public:
 	 */
 	long getValue(void) const;
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::IntEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyIntegerItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -113,7 +113,7 @@ public:
 	 */
   boost::filesystem::path getValue(void) const;
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::TextEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyPathItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -185,7 +185,7 @@ public:
   const char** getEnums(void) const;
   //@}
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::ComboEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyEnumItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -230,7 +230,7 @@ public:
   const Constraints*  getConstraints(void) const;
   //@}
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::IntConstraintEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyIntegerConstraintItem"; }
 
   virtual void setPyObject(PyObject *);
 
@@ -335,7 +335,7 @@ public:
 	void setValue(float lValue);
 	float getValue(void) const;
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -398,7 +398,7 @@ public:
   const Constraints*  getConstraints(void) const;
   //@}
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatConstraintEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatConstraintItem"; }
 
   virtual void setPyObject(PyObject *);
 
@@ -419,7 +419,7 @@ class AppExport PropertyDistance: public PropertyFloat
 public:
   PropertyDistance(void){}
   virtual ~PropertyDistance(){}
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatItem"; }
 };
 
 /** Angle property
@@ -432,7 +432,7 @@ class AppExport PropertyAngle: public PropertyFloat
 public:
   PropertyAngle(void){}
   virtual ~PropertyAngle(){}
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FloatEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFloatItem"; }
 };
 
 
@@ -519,7 +519,7 @@ public:
 
   bool isEmpty(void){return _cValue.empty();}
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::TextEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyStringItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -572,7 +572,7 @@ public:
 
   const std::vector<std::string> &getValues(void) const{return _lValueList;}
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::ListEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyStringListItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -615,7 +615,7 @@ public:
 	void setValue(bool lValue);
 	bool getValue(void) const;
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::BoolEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyBoolItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -664,7 +664,7 @@ public:
 	 */
 	const Color &getValue(void) const;
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::ColorEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyColorItem"; }
 
   virtual PyObject *getPyObject(void);
   virtual void setPyObject(PyObject *);
@@ -792,7 +792,7 @@ public:
 	PropertyFile(void);
 	virtual ~PropertyFile();
 
-  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::FileEditorItem"; }
+  virtual const char* getEditorName(void) const { return "Gui::PropertyEditor::PropertyFileItem"; }
 };
 
 

@@ -31,6 +31,41 @@ namespace Gui {
 namespace PropertyEditor {
 
 /**
+ * Change a file.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyFileItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+protected:
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyFileItem();
+};
+
+/**
+ * Change a path.
+ * \author Werner Mayer
+ */
+class GuiExport PropertyPathItem: public PropertyItem
+{
+    TYPESYSTEM_HEADER();
+
+protected:
+    virtual QVariant propertyData(const App::Property*) const;
+    virtual void setPropertyData(const QVariant&);
+
+protected:
+    PropertyPathItem();
+};
+
+
+
+
+/**
  * Select a file.url.
  * \author Werner Mayer
  */
