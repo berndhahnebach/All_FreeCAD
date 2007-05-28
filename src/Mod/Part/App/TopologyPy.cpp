@@ -161,13 +161,13 @@ PyParentObject TopoShapePy::Parents[] = {&Base::PyObjectBase::Type,&TopoShapePy:
 // constructor
 //--------------------------------------------------------------------------
 TopoShapePy::TopoShapePy(PyTypeObject *T)
-: Base::PyObjectBase(T)
+: Base::PyObjectBase(0,T)
 {
   Base::Console().Log("Create TopoShape: %p \n",this);
 }
 
 TopoShapePy::TopoShapePy(const TopoDS_Shape &cShape, PyTypeObject *T) 
- : PyObjectBase( T), _cTopoShape(cShape)
+ : PyObjectBase( 0,T), _cTopoShape(cShape)
 {
 	Console().Log("Create TopoShape %p\n",this);
 }

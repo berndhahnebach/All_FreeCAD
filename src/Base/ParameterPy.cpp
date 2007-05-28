@@ -199,7 +199,7 @@ PyParentObject ParameterGrpPy::Parents[] = {&PyObjectBase::Type,&ParameterGrpPy:
 // constructor
 //--------------------------------------------------------------------------
 ParameterGrpPy::ParameterGrpPy(const FCHandle<ParameterGrp> &rcParamGrp, PyTypeObject *T ) 
- : PyObjectBase( T),_cParamGrp(rcParamGrp)
+ : PyObjectBase(0, T),_cParamGrp(rcParamGrp)
 {
 	//Console().Log("Create Param Group %p\n",this);
 }

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <GenerateModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="generateMetaModel_Module.xsd">
   <PythonExport Father="PropertyContainerPy" Name="DocumentPy" Twin="Document" Namespace="App" FatherInclude="PropertyContainerPy.h" FatherNamespace="App">
     <Documentation>
@@ -7,12 +7,12 @@
     </Documentation>
     <Methode Name="save">
       <Documentation>
-        <UserDocu>Save the document to disc.</UserDocu>
+        <UserDocu>Save the document to disc</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="restore">
       <Documentation>
-        <UserDocu>Save the document to disc.</UserDocu>
+        <UserDocu>Restore the document from dics</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="openTransaction">
@@ -22,37 +22,37 @@
     </Methode>
     <Methode Name="abortTransaction">
       <Documentation>
-        <UserDocu>Abort a Undo/Redo transaction.</UserDocu>
+        <UserDocu>Abort a Undo/Redo transaction (rollback)</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="commitTransaction">
       <Documentation>
-        <UserDocu>Abort a Undo/Redo transaction.</UserDocu>
+        <UserDocu>Commit a Undo/Redo transaction</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="addObject">
       <Documentation>
-        <UserDocu>Add a object to the document.</UserDocu>
+        <UserDocu>Add a object with given type and name to the document</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="removeObject">
       <Documentation>
-        <UserDocu>Removes a object from the document.</UserDocu>
+        <UserDocu>Removes a object</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="undo">
       <Documentation>
-        <UserDocu>Undo one operation.</UserDocu>
+        <UserDocu>Undo one transaction</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="redo">
       <Documentation>
-        <UserDocu>Do one redo.</UserDocu>
+        <UserDocu>Redo a previos undoed transaction</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="clearUndos">
       <Documentation>
-        <UserDocu>Clears the undo stack.</UserDocu>
+        <UserDocu>Clears the undo stack of the document</UserDocu>
       </Documentation>
     </Methode>
     <Methode Name="recompute">
@@ -73,7 +73,7 @@
     </Attribute>
     <Attribute Name="Objects" ReadOnly="true">
       <Documentation>
-        <UserDocu>The active object of the document</UserDocu>
+        <UserDocu>The list of object handled by this document</UserDocu>
       </Documentation>
       <Parameter Name="Objects" Type="List" />
     </Attribute>
@@ -85,36 +85,33 @@
     </Attribute>
     <Attribute Name="UndoRedoMemSize" ReadOnly="true">
       <Documentation>
-        <UserDocu>The active object of the document</UserDocu>
+        <UserDocu>The size of the Undo stack in byte</UserDocu>
       </Documentation>
       <Parameter Name="UndoRedoMemSize" Type="Int" />
     </Attribute>
     <Attribute Name="UndoCount" ReadOnly="true">
       <Documentation>
-        <UserDocu>The active object of the document</UserDocu>
+        <UserDocu>Number of possible Undos</UserDocu>
       </Documentation>
       <Parameter Name="UndoCount" Type="Int" />
     </Attribute>
     <Attribute Name="RedoCount" ReadOnly="true">
       <Documentation>
-        <UserDocu>The active object of the document</UserDocu>
+        <UserDocu>Number of possible Redos</UserDocu>
       </Documentation>
-      <Parameter Name="RedoCount" Type="Int">
-      </Parameter>
+      <Parameter Name="RedoCount" Type="Int"/>
     </Attribute>
     <Attribute Name="UndoNames" ReadOnly="true">
       <Documentation>
-        <UserDocu>The active object of the document</UserDocu>
+        <UserDocu>A list of Undo names</UserDocu>
       </Documentation>
-      <Parameter Name="UndoNames" Type="List">
-      </Parameter>
+      <Parameter Name="UndoNames" Type="List"/>
     </Attribute>
     <Attribute Name="RedoNames" ReadOnly="true">
       <Documentation>
-        <UserDocu>The active object of the document</UserDocu>
+        <UserDocu>A List of Redo names</UserDocu>
       </Documentation>
-      <Parameter Name="RedoNames" Type="List">
-      </Parameter>
+      <Parameter Name="RedoNames" Type="List"/>
     </Attribute>
     <CustomAttributes />
   </PythonExport>

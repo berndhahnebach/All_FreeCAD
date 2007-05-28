@@ -41,6 +41,7 @@
 #include "PyCXX/Objects.hxx"
 
 
+
 /** Python static class macro for definition
  * sets up a static function entry in a class inheriting 
  * from FCPythonExport. Its a pure confiniance macro. You can also do
@@ -81,6 +82,9 @@
 
 namespace Base
 {
+
+  class BaseClass;
+ 
 
 inline int streq(const char *A, const char *B)	// define "streq"
 { return strcmp(A,B) == 0;};
@@ -187,7 +191,7 @@ public:
  	 *  Sets the Type of the object (for inherintance) and decrease the
  	 *  the reference count of the PyObject.
  	 */
-	PyObjectBase(PyTypeObject *T);
+	PyObjectBase(BaseClass*, PyTypeObject *T);
 	/// Wrapper for the Python destructor
 	static void PyDestructor(PyObject *P)				// python wrapper
 		{  delete ((PyObjectBase *) P);  }
@@ -290,6 +294,9 @@ public:
 
 private:
   bool _valid;
+protected:
+  /// pointer to the handled class
+  BaseClass * _pcBaseClass;
 };
 
 
@@ -438,7 +445,8 @@ static PyObject * s##DFUNC (PyObject *self, PyObject *args, PyObject *kwd){retur
                                                              
 #endif  // DONT_CATCH_CXX_EXCEPTIONS                                                          
 
-
+/// Root definition of the inheritance tree of the FreeCAD python objects
+#define PARENTSPyObjectBase &Base::PyObjectBase::Type,NULL
 
 /** Python helper class 
  *  This class encapsulate the Decoding of UTF8 to a python object.

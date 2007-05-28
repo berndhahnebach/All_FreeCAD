@@ -54,7 +54,7 @@
 #include <Base/Factory.h>
 #include <Base/FileInfo.h>
 #include <Base/Type.h>
-#include <Base/Base.h>
+#include <Base/BaseClass.h>
 #include <Base/Persistance.h>
 #include <Base/Reader.h>
 

@@ -303,7 +303,7 @@ PyParentObject PyResource::Parents[] = {&PyObjectBase::Type,&PyResource::Type, N
 // constructor
 //--------------------------------------------------------------------------
 PyResource::PyResource(PyTypeObject *T)
-    : PyObjectBase( T), myDlg(0L)
+    : PyObjectBase(0, T), myDlg(0L)
 {
 }
 

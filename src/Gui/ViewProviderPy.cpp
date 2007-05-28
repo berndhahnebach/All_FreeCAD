@@ -115,7 +115,7 @@ PyParentObject Gui::ViewProviderPy::Parents[] = { &ViewProviderPy::Type, &PyObje
 // Constructor
 //--------------------------------------------------------------------------
 Gui::ViewProviderPy::ViewProviderPy(ViewProvider *pcViewProvider, PyTypeObject *T)
-  : PyObjectBase( T), _pcViewProvider(pcViewProvider)
+  : PyObjectBase(0, T), _pcViewProvider(pcViewProvider)
 {
 }
 

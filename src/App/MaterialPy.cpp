@@ -120,7 +120,7 @@ PyParentObject App::MaterialPy::Parents[] = {&PyObjectBase::Type, NULL};
 //t constructor
 //--------------------------------------------------------------------------
 App::MaterialPy::MaterialPy(Material *pcMaterial, PyTypeObject *T)
-: PyObjectBase( T), _pcMaterial(pcMaterial)
+: PyObjectBase(0, T), _pcMaterial(pcMaterial)
 {
 	Base::Console().Log("Create MaterialPy: %p \n",this);
 }

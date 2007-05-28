@@ -120,12 +120,12 @@ int LinePy::PyInit(PyObject* self, PyObject* args, PyObject*)
 }
 
 LinePy::LinePy(PyTypeObject *T)
-  : PyObjectBase(T)
+  : PyObjectBase(0,T)
 {
 }
 
 LinePy::LinePy(const Part::Line3f &rcLine, PyTypeObject *T)
-  : PyObjectBase(T), _Line(rcLine)
+  : PyObjectBase(0,T), _Line(rcLine)
 {
 }
 

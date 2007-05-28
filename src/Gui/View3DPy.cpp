@@ -158,7 +158,7 @@ PyParentObject View3DPy::Parents[] = {&View3DPy::Type,&PyObjectBase::Type, NULL}
 //t constructor
 //--------------------------------------------------------------------------
 View3DPy::View3DPy(View3DInventor *pcView, PyTypeObject *T)
- : PyObjectBase( T), _pcView(pcView)
+ : PyObjectBase(0, T), _pcView(pcView)
 {
 }
 

@@ -207,13 +207,13 @@ int MeshPy::PyInit(PyObject* self, PyObject* args, PyObject*)
 // constructor
 //--------------------------------------------------------------------------
 MeshPy::MeshPy(PyTypeObject *T)
-: Base::PyObjectBase(T)
+: Base::PyObjectBase(0,T)
 {
   Base::Console().Log("Create MeshPy: %p \n",this);
 }
 
 MeshPy::MeshPy(const MeshCore::MeshKernel& rcMesh, PyTypeObject *T)
-: Base::PyObjectBase(T), _cMesh(rcMesh)
+: Base::PyObjectBase(0,T), _cMesh(rcMesh)
 {
   Base::Console().Log("Create MeshPy: %p \n",this);
 }
