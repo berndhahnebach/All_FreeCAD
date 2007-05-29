@@ -75,7 +75,7 @@ PyObject *AbstractFeature::getPyObject(void)
 {
  if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    PythonObject = new FeaturePy(this);
+    PythonObject.set(new FeaturePy(this),false);
   }
   return Py::new_reference_to(PythonObject); 
 }

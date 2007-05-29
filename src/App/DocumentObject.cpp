@@ -90,7 +90,7 @@ PyObject *DocumentObject::getPyObject(void)
 {
   if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    PythonObject = new DocumentObjectPy(this);
+    PythonObject.set(new DocumentObjectPy(this),false);
   }
   return Py::new_reference_to(PythonObject); 
 }

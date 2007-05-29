@@ -379,7 +379,7 @@ Document::Document(void)
   // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't
   // get a reference then the object wouldn't get deleted in the destructor.
   // So, we must increment only if the interpreter gets a reference.
-	DocumentPythonObject = new DocumentPy(this);
+	DocumentPythonObject.set(new DocumentPy(this),false);
 
   Console().Log("+App::Document: %p\n",this);
 
