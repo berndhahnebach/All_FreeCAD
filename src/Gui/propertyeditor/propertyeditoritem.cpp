@@ -85,26 +85,52 @@ int PropertyItem::columnCount() const
     return 2;
 }
 
-QVariant PropertyItem::pixmapData(const App::Property* prop) const
+bool PropertyItem::isEditable() const
+{
+    return true;
+}
+
+QVariant PropertyItem::propertyName(const App::Property* prop) const
+{
+    if (!prop)
+        return QVariant(QString("<empty>"));
+    const QString name = prop->getName();
+    QString display;
+    for (int i=0; i<name.length(); i++) {
+        if (name[i].isUpper() && !display.isEmpty()) {
+            display += " ";
+        }
+        display += name[i];
+    }
+
+    return QVariant(display);
+}
+
+QVariant PropertyItem::toolTip(const App::Property* prop) const
 {
     return QVariant();
 }
 
-QVariant PropertyItem::displayData(const App::Property* prop) const
-{
-    return propertyData(prop);
-}
-
-QVariant PropertyItem::propertyData(const App::Property* prop) const
+QVariant PropertyItem::decoration(const App::Property* prop) const
 {
     return QVariant();
 }
 
-void PropertyItem::setPropertyData(const QVariant& value)
+QVariant PropertyItem::toString(const App::Property* prop) const
+{
+    return value(prop);
+}
+
+QVariant PropertyItem::value(const App::Property* prop) const
+{
+    return QVariant();
+}
+
+void PropertyItem::setValue(const QVariant& value)
 {
 }
 
-QWidget* PropertyItem::createEditor(QWidget* parent) const
+QWidget* PropertyItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
     return 0;
 }
@@ -127,16 +153,18 @@ QVariant PropertyItem::data(int column, int role) const
     // property name
     if (column == 0) {
         if (role == Qt::DisplayRole)
-            return QVariant(QString(propertyItems[0]->getName()));
+            return propertyName(propertyItems[0]);
         else
             return QVariant();
     } else {
         if (role == Qt::EditRole)
-            return propertyData(propertyItems[0]);
+            return value(propertyItems[0]);
         else if (role == Qt::DecorationRole)
-            return pixmapData(propertyItems[0]);
+            return decoration(propertyItems[0]);
         else if (role == Qt::DisplayRole)
-            return displayData(propertyItems[0]);
+            return toString(propertyItems[0]);
+        else if (role == Qt::ToolTipRole)
+            return toolTip(propertyItems[0]);
         else
             return QVariant();
     }
@@ -146,14 +174,14 @@ bool PropertyItem::setData (const QVariant& value)
 {
     if (propertyItems.empty())
         return false;
-    setPropertyData(value);
+    setValue(value);
     return true;
 }
 
 Qt::ItemFlags PropertyItem::flags(int column) const
 {
     Qt::ItemFlags basicFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    if (column == 1)
+    if (column == 1 && isEditable())
         return basicFlags | Qt::ItemIsEditable;
     else
         return basicFlags;
@@ -211,19 +239,34 @@ QWidget * PropertyItemDelegate::createEditor ( QWidget * parent, const QStyleOpt
         return 0;
 
     PropertyItem *childItem = static_cast<PropertyItem*>(index.internalPointer());
-    return childItem->createEditor(parent);
+    if (!childItem)
+        return 0;
+    return childItem->createEditor(parent, this, SLOT(valueChanged()));
+}
+
+void PropertyItemDelegate::valueChanged()
+{
+    QWidget* editor = qobject_cast<QWidget*>(sender());
+    if (editor)
+        commitData(editor);
 }
 
 void PropertyItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
+    if (!index.isValid())
+        return;
     QVariant data = index.data(Qt::EditRole);
     PropertyItem *childItem = static_cast<PropertyItem*>(index.internalPointer());
+    editor->blockSignals(true);
     childItem->setEditorData(editor, data);
+    editor->blockSignals(false);
     return;
 }
 
 void PropertyItemDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
 {
+    if (!index.isValid())
+        return;
     PropertyItem *childItem = static_cast<PropertyItem*>(index.internalPointer());
     QVariant data = childItem->editorData(editor);
     model->setData(index, data, Qt::EditRole);

@@ -49,12 +49,12 @@ class GuiExport PropertyItem : public Base::BaseClass
 public:
     ~PropertyItem();
 
-    /** Sets the current property object. */
+    /** Sets the current property objects. */
     void setProperty( const std::vector<App::Property*>& );
     const std::vector<App::Property*>& getProperty() const;
 
     /** Creates the appropriate editor for this item and sets the editor to the value of overrideValue(). */
-    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
     virtual QVariant editorData(QWidget *editor) const;
 
@@ -73,10 +73,14 @@ public:
 
 protected:
     PropertyItem();
-    virtual QVariant pixmapData(const App::Property*) const;
-    virtual QVariant displayData(const App::Property*) const;
-    virtual QVariant propertyData(const App::Property*) const;
-    virtual void setPropertyData(const QVariant&);
+
+    virtual bool isEditable() const;
+    QVariant propertyName(const App::Property*) const;
+    virtual QVariant decoration(const App::Property*) const;
+    virtual QVariant toolTip(const App::Property*) const;
+    virtual QVariant toString(const App::Property*) const;
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
 
 private:
     QList<PropertyItem*> childItems;
@@ -106,6 +110,9 @@ public:
     virtual QWidget * createEditor (QWidget *, const QStyleOptionViewItem&, const QModelIndex&) const;
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
     virtual void setModelData (QWidget *editor, QAbstractItemModel *model, const QModelIndex& index ) const;
+
+public Q_SLOTS:
+    void valueChanged();
 };
 
 

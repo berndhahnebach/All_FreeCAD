@@ -39,8 +39,8 @@ class GuiExport PropertyFileItem: public PropertyItem
     TYPESYSTEM_HEADER();
 
 protected:
-    virtual QVariant propertyData(const App::Property*) const;
-    virtual void setPropertyData(const QVariant&);
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
 
 protected:
     PropertyFileItem();
@@ -55,8 +55,8 @@ class GuiExport PropertyPathItem: public PropertyItem
     TYPESYSTEM_HEADER();
 
 protected:
-    virtual QVariant propertyData(const App::Property*) const;
-    virtual void setPropertyData(const QVariant&);
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
 
 protected:
     PropertyPathItem();

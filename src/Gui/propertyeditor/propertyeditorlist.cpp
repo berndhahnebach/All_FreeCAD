@@ -42,7 +42,7 @@ PropertyBoolItem::PropertyBoolItem()
 {
 }
 
-QVariant PropertyBoolItem::propertyData(const App::Property* prop) const
+QVariant PropertyBoolItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyBool::getClassTypeId()));
     
@@ -50,7 +50,7 @@ QVariant PropertyBoolItem::propertyData(const App::Property* prop) const
     return QVariant(value);
 }
 
-void PropertyBoolItem::setPropertyData(const QVariant& value)
+void PropertyBoolItem::setValue(const QVariant& value)
 {
     bool val = value.toBool();
     const std::vector<App::Property*>& items = getProperty();
@@ -61,12 +61,13 @@ void PropertyBoolItem::setPropertyData(const QVariant& value)
     }
 }
 
-QWidget* PropertyBoolItem::createEditor(QWidget* parent) const
+QWidget* PropertyBoolItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
     QComboBox *cb = new QComboBox(parent);
     cb->setFrame(false);
     cb->addItem("false");
     cb->addItem("true");
+    QObject::connect(cb, SIGNAL(activated(int)), receiver, method);
     return cb;
 }
 
@@ -90,7 +91,7 @@ PropertyEnumItem::PropertyEnumItem()
 {
 }
 
-QVariant PropertyEnumItem::propertyData(const App::Property* prop) const
+QVariant PropertyEnumItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyEnumeration::getClassTypeId()));
 
@@ -99,7 +100,7 @@ QVariant PropertyEnumItem::propertyData(const App::Property* prop) const
     return QVariant(QString(value[currentItem].c_str()));
 }
 
-void PropertyEnumItem::setPropertyData(const QVariant& value)
+void PropertyEnumItem::setValue(const QVariant& value)
 {
     QStringList items = value.toStringList();
     if ( !items.isEmpty() ) {
@@ -112,10 +113,11 @@ void PropertyEnumItem::setPropertyData(const QVariant& value)
     }
 }
 
-QWidget* PropertyEnumItem::createEditor(QWidget* parent) const
+QWidget* PropertyEnumItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
     QComboBox *cb = new QComboBox(parent);
     cb->setFrame(false);
+    QObject::connect(cb, SIGNAL(activated(int)), receiver, method);
     return cb;
 }
 
@@ -147,7 +149,7 @@ PropertyStringListItem::PropertyStringListItem()
 {
 }
 
-QWidget* PropertyStringListItem::createEditor(QWidget* parent) const
+QWidget* PropertyStringListItem::createEditor(QWidget* parent, QObject* receiver, const char* method) const
 {
     QComboBox *cb = new QComboBox(parent);
     cb->setFrame(false);
@@ -160,7 +162,7 @@ void PropertyStringListItem::setEditorData(QWidget *editor, const QVariant& data
     cb->insertItems(0, data.toStringList());
 }
 
-QVariant PropertyStringListItem::propertyData(const App::Property* prop) const
+QVariant PropertyStringListItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyStringList::getClassTypeId()));
 
@@ -173,7 +175,7 @@ QVariant PropertyStringListItem::propertyData(const App::Property* prop) const
     return QVariant(list);
 }
 
-void PropertyStringListItem::setPropertyData(const QVariant& value)
+void PropertyStringListItem::setValue(const QVariant& value)
 {
     QStringList values = value.toStringList();
     std::vector<std::string> list;

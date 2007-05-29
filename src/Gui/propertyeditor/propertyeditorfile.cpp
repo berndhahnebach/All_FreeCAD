@@ -54,7 +54,7 @@ PropertyFileItem::PropertyFileItem()
 {
 }
 
-QVariant PropertyFileItem::propertyData(const App::Property* prop) const
+QVariant PropertyFileItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFile::getClassTypeId()));
 
@@ -62,7 +62,7 @@ QVariant PropertyFileItem::propertyData(const App::Property* prop) const
     return QVariant(QString(value.c_str()));
 }
 
-void PropertyFileItem::setPropertyData(const QVariant& value)
+void PropertyFileItem::setValue(const QVariant& value)
 {
 }
 
@@ -74,12 +74,12 @@ PropertyPathItem::PropertyPathItem()
 {
 }
 
-QVariant PropertyPathItem::propertyData(const App::Property* prop) const
+QVariant PropertyPathItem::value(const App::Property* prop) const
 {
     return QVariant();
 }
 
-void PropertyPathItem::setPropertyData(const QVariant& value)
+void PropertyPathItem::setValue(const QVariant& value)
 {
 }
 

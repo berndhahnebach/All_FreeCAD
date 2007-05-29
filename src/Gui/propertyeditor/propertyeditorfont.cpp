@@ -43,7 +43,19 @@ PropertyColorItem::PropertyColorItem()
 {
 }
 
-QVariant PropertyColorItem::displayData(const App::Property* prop) const
+QVariant PropertyColorItem::decoration(const App::Property* prop) const
+{
+    App::Color value = ((App::PropertyColor*)prop)->getValue();
+    QColor color((int)(255.0f*value.r),(int)(255.0f*value.g),(int)(255.0f*value.b));
+
+    int size = QApplication::style()->pixelMetric(QStyle::PM_ListViewIconSize);
+    QPixmap p(size, size);
+    p.fill(color);
+
+    return QVariant(p);
+}
+
+QVariant PropertyColorItem::toString(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()));
 
@@ -52,7 +64,7 @@ QVariant PropertyColorItem::displayData(const App::Property* prop) const
     return QVariant(color);
 }
 
-QVariant PropertyColorItem::propertyData(const App::Property* prop) const
+QVariant PropertyColorItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyColor::getClassTypeId()));
 
@@ -60,7 +72,7 @@ QVariant PropertyColorItem::propertyData(const App::Property* prop) const
     return QVariant(QColor((int)(255.0f*value.r),(int)(255.0f*value.g),(int)(255.0f*value.b)));
 }
 
-void PropertyColorItem::setPropertyData(const QVariant& value)
+void PropertyColorItem::setValue(const QVariant& value)
 {
     QColor col = value.value<QColor>();
     App::Color val;
@@ -74,9 +86,10 @@ void PropertyColorItem::setPropertyData(const QVariant& value)
     }
 }
 
-QWidget* PropertyColorItem::createEditor(QWidget* parent) const
+QWidget* PropertyColorItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
     Gui::ColorButton* cb = new Gui::ColorButton( parent );
+    QObject::connect(cb, SIGNAL(changed()), receiver, method);
     return cb;
 }
 

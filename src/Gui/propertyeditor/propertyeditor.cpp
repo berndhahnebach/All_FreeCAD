@@ -111,7 +111,7 @@ QModelIndex PropertyModel::buddy ( const QModelIndex & index ) const
 
 int PropertyModel::columnCount ( const QModelIndex & parent ) const
 {
-    // <name, value>, hence always 2
+    // <property, value>, hence always 2
     if (parent.isValid())
         return static_cast<PropertyItem*>(parent.internalPointer())->columnCount();
     else
@@ -131,8 +131,16 @@ bool PropertyModel::setData(const QModelIndex& index, const QVariant & value, in
 {
     if (!index.isValid())
         return false;
-    PropertyItem *item = static_cast<PropertyItem*>(index.internalPointer());
-    return item->setData(value);
+
+    // we check whether the data has really changed, otherwise we ignore it
+    if (role == Qt::EditRole) {
+        PropertyItem *item = static_cast<PropertyItem*>(index.internalPointer());
+        QVariant data = item->data(index.column(), role);
+        if (data != value)
+            return item->setData(value);
+    }
+
+    return true;
 }
 
 Qt::ItemFlags PropertyModel::flags(const QModelIndex &index) const
@@ -189,7 +197,7 @@ QVariant PropertyModel::headerData ( int section, Qt::Orientation orientation, i
         if (role != Qt::DisplayRole)
             return QVariant();
         if (section == 0)
-            return tr("Name");
+            return tr("Property");
         if (section == 1)
             return tr("Value");
     }

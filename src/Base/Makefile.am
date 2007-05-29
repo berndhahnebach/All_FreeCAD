@@ -4,10 +4,11 @@ lib_LTLIBRARIES=libFreeCADBase.la
 BUILT_SOURCES=\
 		$(nodist_libFreeCADBase_la_SOURCES)
 
-nodist_libFreeCADBase_la_SOURCES=\
-		PersistancePy.cpp
+#nodist_libFreeCADBase_la_SOURCES=\
+#		PersistancePy.cpp
 
 libFreeCADBase_la_BUILT=\
+		BaseClassPy.h \
 		PersistancePy.h
 
 libFreeCADBase_la_SOURCES=\
@@ -70,8 +71,8 @@ libFreeCADBase_la_SOURCES=\
 		PyCXX/IndirectPythonInterface.cxx \
 		PyCXX/IndirectPythonInterface.hxx \
 		PyCXX/Objects.hxx \
-		Base.cpp \
-		Base.h \
+		BaseClass.cpp \
+		BaseClass.h \
 		BaseClassPy.cpp \
 		BaseClassPy.h \
 		BoundBox.h \
@@ -157,5 +158,6 @@ libFreeCADBase_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 
 EXTRA_DIST = \
 		FreeCADBase.vcproj \
+		BaseClassPy.xml \
 		PersistancePy.xml
 

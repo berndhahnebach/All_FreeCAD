@@ -40,16 +40,47 @@ PropertyMeshKernelItem::PropertyMeshKernelItem()
 {
 }
 
-QVariant PropertyMeshKernelItem::propertyData(const App::Property* prop) const
+QVariant PropertyMeshKernelItem::value(const App::Property*) const
+{
+    int ctP = 0;
+    int ctE = 0;
+    int ctF = 0;
+
+    std::vector<App::Property*> props = getProperty();
+    for ( std::vector<App::Property*>::const_iterator pt = props.begin(); pt != props.end(); ++pt ) {
+        Mesh::PropertyMeshKernel* pPropMesh = (Mesh::PropertyMeshKernel*)(*pt);
+        const MeshKernel& rMesh = pPropMesh->getValue();
+        ctP += (int)rMesh.CountPoints();
+        ctE += (int)rMesh.CountEdges();
+        ctF += (int)rMesh.CountFacets();
+    }
+
+    QString  str = QString("[Points: %1, Edges: %2 Faces: %3]").arg(ctP).arg(ctE).arg(ctF);
+    return QVariant(str);
+}
+
+QVariant PropertyMeshKernelItem::toolTip(const App::Property* prop) const
+{
+    return value(prop);
+}
+
+void PropertyMeshKernelItem::setValue(const QVariant& value)
+{
+}
+
+QWidget* PropertyMeshKernelItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
+{
+    return 0;
+}
+
+void PropertyMeshKernelItem::setEditorData(QWidget *editor, const QVariant& data) const
+{
+}
+
+QVariant PropertyMeshKernelItem::editorData(QWidget *editor) const
 {
     return QVariant();
 }
-
-void PropertyMeshKernelItem::setPropertyData(const QVariant& value)
-{
-}
-
-
 
 
 TYPESYSTEM_SOURCE(MeshGui::PropertyEditorMesh, Gui::PropertyEditor::EditableItem);

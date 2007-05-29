@@ -46,7 +46,7 @@ PropertyStringItem::PropertyStringItem()
 {
 }
 
-QVariant PropertyStringItem::propertyData(const App::Property* prop) const
+QVariant PropertyStringItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyString::getClassTypeId()));
 
@@ -54,7 +54,7 @@ QVariant PropertyStringItem::propertyData(const App::Property* prop) const
     return QVariant(QString(value.c_str()));
 }
 
-void PropertyStringItem::setPropertyData(const QVariant& value)
+void PropertyStringItem::setValue(const QVariant& value)
 {
     QString val = value.toString();
     const std::vector<App::Property*>& items = getProperty();
@@ -64,10 +64,11 @@ void PropertyStringItem::setPropertyData(const QVariant& value)
     }
 }
 
-QWidget* PropertyStringItem::createEditor(QWidget* parent) const
+QWidget* PropertyStringItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
     QLineEdit *le = new QLineEdit(parent);
     le->setFrame(false);
+    QObject::connect(le, SIGNAL(textChanged(const QString&)), receiver, method);
     return le;
 }
 
@@ -91,7 +92,7 @@ PropertyIntegerItem::PropertyIntegerItem()
 {
 }
 
-QVariant PropertyIntegerItem::propertyData(const App::Property* prop) const
+QVariant PropertyIntegerItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()));
 
@@ -99,7 +100,7 @@ QVariant PropertyIntegerItem::propertyData(const App::Property* prop) const
     return QVariant(value);
 }
 
-void PropertyIntegerItem::setPropertyData(const QVariant& value)
+void PropertyIntegerItem::setValue(const QVariant& value)
 {
     int val = value.toInt();
     const std::vector<App::Property*>& items = getProperty();
@@ -109,16 +110,18 @@ void PropertyIntegerItem::setPropertyData(const QVariant& value)
     }
 }
 
-QWidget* PropertyIntegerItem::createEditor(QWidget* parent) const
+QWidget* PropertyIntegerItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
     QSpinBox *sb = new QSpinBox(parent);
     sb->setFrame(false);
+    QObject::connect(sb, SIGNAL(valueChanged(int)), receiver, method);
     return sb;
 }
 
 void PropertyIntegerItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
     QSpinBox *sb = qobject_cast<QSpinBox*>(editor);
+    sb->setRange(INT_MIN, INT_MAX);
     sb->setValue(data.toInt());
 }
 
@@ -136,7 +139,7 @@ PropertyIntegerConstraintItem::PropertyIntegerConstraintItem()
 {
 }
 
-QVariant PropertyIntegerConstraintItem::propertyData(const App::Property* prop) const
+QVariant PropertyIntegerConstraintItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyIntegerConstraint::getClassTypeId()));
 
@@ -144,7 +147,7 @@ QVariant PropertyIntegerConstraintItem::propertyData(const App::Property* prop) 
     return QVariant(value);
 }
 
-void PropertyIntegerConstraintItem::setPropertyData(const QVariant& value)
+void PropertyIntegerConstraintItem::setValue(const QVariant& value)
 {
     int val = value.toInt();
     const std::vector<App::Property*>& items = getProperty();
@@ -154,10 +157,11 @@ void PropertyIntegerConstraintItem::setPropertyData(const QVariant& value)
     }
 }
 
-QWidget* PropertyIntegerConstraintItem::createEditor(QWidget* parent) const
+QWidget* PropertyIntegerConstraintItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
     QSpinBox *sb = new QSpinBox(parent);
     sb->setFrame(false);
+    QObject::connect(sb, SIGNAL(valueChanged(int)), receiver, method);
     return sb;
 }
 
@@ -190,7 +194,7 @@ PropertyFloatItem::PropertyFloatItem()
 {
 }
 
-QVariant PropertyFloatItem::displayData(const App::Property* prop) const
+QVariant PropertyFloatItem::toString(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
 
@@ -200,7 +204,7 @@ QVariant PropertyFloatItem::displayData(const App::Property* prop) const
     return QVariant(data);
 }
 
-QVariant PropertyFloatItem::propertyData(const App::Property* prop) const
+QVariant PropertyFloatItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
 
@@ -208,7 +212,7 @@ QVariant PropertyFloatItem::propertyData(const App::Property* prop) const
     return QVariant(value);
 }
 
-void PropertyFloatItem::setPropertyData(const QVariant& value)
+void PropertyFloatItem::setValue(const QVariant& value)
 {
     double val = value.toDouble();
     const std::vector<App::Property*>& items = getProperty();
@@ -218,16 +222,18 @@ void PropertyFloatItem::setPropertyData(const QVariant& value)
     }
 }
 
-QWidget* PropertyFloatItem::createEditor(QWidget* parent) const
+QWidget* PropertyFloatItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
     QDoubleSpinBox *sb = new QDoubleSpinBox(parent);
     sb->setFrame(false);
+    QObject::connect(sb, SIGNAL(valueChanged(double)), receiver, method);
     return sb;
 }
 
 void PropertyFloatItem::setEditorData(QWidget *editor, const QVariant& data) const
 {
     QDoubleSpinBox *sb = qobject_cast<QDoubleSpinBox*>(editor);
+    sb->setRange((double)INT_MIN, (double)INT_MAX);
     sb->setValue(data.toDouble());
 }
 
@@ -245,7 +251,7 @@ PropertyFloatConstraintItem::PropertyFloatConstraintItem()
 {
 }
 
-QVariant PropertyFloatConstraintItem::displayData(const App::Property* prop) const
+QVariant PropertyFloatConstraintItem::toString(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloat::getClassTypeId()));
 
@@ -255,7 +261,7 @@ QVariant PropertyFloatConstraintItem::displayData(const App::Property* prop) con
     return QVariant(data);
 }
 
-QVariant PropertyFloatConstraintItem::propertyData(const App::Property* prop) const
+QVariant PropertyFloatConstraintItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyFloatConstraint::getClassTypeId()));
 
@@ -263,7 +269,7 @@ QVariant PropertyFloatConstraintItem::propertyData(const App::Property* prop) co
     return QVariant(value);
 }
 
-void PropertyFloatConstraintItem::setPropertyData(const QVariant& value)
+void PropertyFloatConstraintItem::setValue(const QVariant& value)
 {
     double val = value.toDouble();
     const std::vector<App::Property*>& items = getProperty();
@@ -273,10 +279,11 @@ void PropertyFloatConstraintItem::setPropertyData(const QVariant& value)
     }
 }
 
-QWidget* PropertyFloatConstraintItem::createEditor(QWidget* parent) const
+QWidget* PropertyFloatConstraintItem::createEditor(QWidget* parent, const QObject* receiver, const char* method) const
 {
     QDoubleSpinBox *sb = new QDoubleSpinBox(parent);
     sb->setFrame(false);
+    QObject::connect(sb, SIGNAL(valueChanged(double)), receiver, method);
     return sb;
 }
 
