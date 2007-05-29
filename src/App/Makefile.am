@@ -2,12 +2,9 @@
 lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
-		$(nodist_libFreeCADApp_la_SOURCES) \
+		DocumentPy.cpp \
 		InitScript.h \
 		TestScript.h
-
-#nodist_libFreeCADApp_la_SOURCES=\
-#		DocumentPy.cpp
 
 libFreeCADApp_la_BUILT=\
 		DocumentPy.h

@@ -2,10 +2,9 @@
 lib_LTLIBRARIES=libFreeCADBase.la
 
 BUILT_SOURCES=\
-		$(nodist_libFreeCADBase_la_SOURCES)
+		BaseClassPy.cpp \
+		PersistancePy.cpp
 
-#nodist_libFreeCADBase_la_SOURCES=\
-#		PersistancePy.cpp
 
 libFreeCADBase_la_BUILT=\
 		BaseClassPy.h \
@@ -73,8 +72,7 @@ libFreeCADBase_la_SOURCES=\
 		PyCXX/Objects.hxx \
 		BaseClass.cpp \
 		BaseClass.h \
-		BaseClassPy.cpp \
-		BaseClassPy.h \
+		BaseClassPyImp.cpp \
 		BoundBox.h \
 		Builder3D.cpp \
 		Builder3D.h \
