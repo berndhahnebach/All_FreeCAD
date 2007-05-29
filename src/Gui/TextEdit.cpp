@@ -130,7 +130,6 @@ void TextEdit::complete()
         int posX = rect.x();
         int posY = rect.y();
         int boxH = h;
-        int boxW = w;
 
         // Decide whether to show downstairs or upstairs
         if (posY > viewport()->height()/2) {

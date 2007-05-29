@@ -3,6 +3,12 @@
 // Every change you make here get lost at the next full rebuild!
 #include "PreCompiled.h"
 
+#ifndef _PreComp_
+#   include <boost/filesystem/path.hpp>
+#   include <boost/filesystem/operations.hpp>
+#   include <boost/filesystem/exception.hpp>
+#endif
+
 #include <Base/PyObjectBase.h>
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -115,7 +121,8 @@ PyObject * BaseClassPy::staticCallback_isDerivedFrom (PyObject *self, PyObject *
 		str += e.what();
 		str += ")";
 		e.ReportException();
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return NULL;
 	}
 	catch(boost::filesystem::filesystem_error &e) // catch boost filesystem exeption
 	{
@@ -126,7 +133,8 @@ PyObject * BaseClassPy::staticCallback_isDerivedFrom (PyObject *self, PyObject *
 		str += e.what();
 		str += ")\n";
 		Base::Console().Error(str.c_str());
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return NULL;
 	}
 // in debug not all exceptions will be catcht to get the attentation of the developer!
 #ifndef DONT_CATCH_CXX_EXCEPTIONS 
@@ -137,11 +145,13 @@ PyObject * BaseClassPy::staticCallback_isDerivedFrom (PyObject *self, PyObject *
 		str += e.what();
 		str += ")";
 		Base::Console().Error(str.c_str());
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return NULL;
 	}
 	catch(...)  // catch the rest!
 	{
-		Py_Error(PyExc_Exception,"Unknown C++ exception");
+		PyErr_SetString(PyExc_Exception,"Unknown C++ exception");
+		return NULL;
 	}
 #endif
 }
@@ -160,7 +170,8 @@ PyObject * BaseClassPy::staticCallback_getAllDerivedFrom (PyObject *self, PyObje
 		str += e.what();
 		str += ")";
 		e.ReportException();
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return NULL;
 	}
 	catch(boost::filesystem::filesystem_error &e) // catch boost filesystem exeption
 	{
@@ -171,7 +182,8 @@ PyObject * BaseClassPy::staticCallback_getAllDerivedFrom (PyObject *self, PyObje
 		str += e.what();
 		str += ")\n";
 		Base::Console().Error(str.c_str());
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return NULL;
 	}
 // in debug not all exceptions will be catcht to get the attentation of the developer!
 #ifndef DONT_CATCH_CXX_EXCEPTIONS 
@@ -182,11 +194,13 @@ PyObject * BaseClassPy::staticCallback_getAllDerivedFrom (PyObject *self, PyObje
 		str += e.what();
 		str += ")";
 		Base::Console().Error(str.c_str());
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return NULL;
 	}
 	catch(...)  // catch the rest!
 	{
-		Py_Error(PyExc_Exception,"Unknown C++ exception");
+		PyErr_SetString(PyExc_Exception,"Unknown C++ exception");
+		return NULL;
 	}
 #endif
 }
@@ -199,14 +213,14 @@ PyObject * BaseClassPy::staticCallback_getType (PyObject *self, void *closure)
     try {
         return Py::new_reference_to(((BaseClassPy*)self)->getType());
     } catch (...) {
-		    PyErr_SetString(PyExc_Exception, "Unknown exeption while stting Attribute!");
-        return NULL;
+		PyErr_SetString(PyExc_Exception, "Unknown exeption while stting Attribute!");
+		return NULL;
     }
 }
 int BaseClassPy::staticCallback_setType (PyObject *self, PyObject *value, void *closure)
 {
  		PyErr_SetString(PyExc_Exception, "Can not write a read only Attribute!");
-    return -1;
+		return -1;
 }
 
 // Module() callback and implementer
@@ -218,14 +232,14 @@ PyObject * BaseClassPy::staticCallback_getModule (PyObject *self, void *closure)
     try {
         return Py::new_reference_to(((BaseClassPy*)self)->getModule());
     } catch (...) {
-		    PyErr_SetString(PyExc_Exception, "Unknown exeption while stting Attribute!");
-        return NULL;
+		PyErr_SetString(PyExc_Exception, "Unknown exeption while stting Attribute!");
+		return NULL;
     }
 }
 int BaseClassPy::staticCallback_setModule (PyObject *self, PyObject *value, void *closure)
 {
  		PyErr_SetString(PyExc_Exception, "Can not write a read only Attribute!");
-    return -1;
+		return -1;
 }
 
 
@@ -290,7 +304,8 @@ PyObject *BaseClassPy::_getattr(char *attr)				// __getattr__ function: note onl
 		str += e.what();
 		str += ")";
 		e.ReportException();
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return NULL;
 	}
 	catch(std::exception &e) // catch other c++ exeptions
 	{
@@ -299,11 +314,13 @@ PyObject *BaseClassPy::_getattr(char *attr)				// __getattr__ function: note onl
 		str += e.what();
 		str += ")";
 		Base::Console().Error(str.c_str());
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return NULL;
 	}
 	catch(...)  // catch the rest!
 	{
-		Py_Error(PyExc_Exception,"Unknown C++ exception");
+		PyErr_SetString(PyExc_Exception,"Unknown C++ exception");
+		return NULL;
 	}
 #else  // DONT_CATCH_CXX_EXCEPTIONS  
 	catch(Base::Exception &e) // catch the FreeCAD exeptions
@@ -313,7 +330,8 @@ PyObject *BaseClassPy::_getattr(char *attr)				// __getattr__ function: note onl
 		str += e.what();
 		str += ")";
 		e.ReportException();
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return NULL;
 	}
 #endif  // DONT_CATCH_CXX_EXCEPTIONS
 
@@ -335,7 +353,8 @@ int BaseClassPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function:
 		str += e.what();
 		str += ")";
 		e.ReportException();
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return -1;
 	}
 	catch(std::exception &e) // catch other c++ exeptions
 	{
@@ -344,11 +363,13 @@ int BaseClassPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function:
 		str += e.what();
 		str += ")";
 		Base::Console().Error(str.c_str());
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return -1;
 	}
 	catch(...)  // catch the rest!
 	{
-		Py_Error(PyExc_Exception,"Unknown C++ exception");
+		PyErr_SetString(PyExc_Exception,"Unknown C++ exception");
+		return -1;
 	}
 #else  // DONT_CATCH_CXX_EXCEPTIONS  
 	catch(Base::Exception &e) // catch the FreeCAD exeptions
@@ -358,7 +379,8 @@ int BaseClassPy::_setattr(char *attr, PyObject *value) 	// __setattr__ function:
 		str += e.what();
 		str += ")";
 		e.ReportException();
-		Py_Error(PyExc_Exception,str.c_str());
+		PyErr_SetString(PyExc_Exception,str.c_str());
+		return -1;
 	}
 #endif  // DONT_CATCH_CXX_EXCEPTIONS
 

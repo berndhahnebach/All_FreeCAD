@@ -96,7 +96,7 @@ QVariant PropertyIntegerItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyInteger::getClassTypeId()));
 
-    long value = ((App::PropertyInteger*)prop)->getValue();
+    int value = (int)((App::PropertyInteger*)prop)->getValue();
     return QVariant(value);
 }
 
@@ -143,7 +143,7 @@ QVariant PropertyIntegerConstraintItem::value(const App::Property* prop) const
 {
     assert(prop && prop->getTypeId().isDerivedFrom(App::PropertyIntegerConstraint::getClassTypeId()));
 
-    long value = ((App::PropertyIntegerConstraint*)prop)->getValue();
+    int value = (int)((App::PropertyIntegerConstraint*)prop)->getValue();
     return QVariant(value);
 }
 
