@@ -212,24 +212,18 @@ PyObject *DocumentPy::getCustomAttributes(const char* attr) const
     if(pcFtr)
         return pcFtr->getPyObject();
     else
-        return NULL;
+        return 0;
 }
 
 int DocumentPy::setCustomAttributes(const char* attr, PyObject *obj)
 {
-    // FIXME: This method should only be called if attr is a property
-    App::Property* prop = getDocumentObject()->getPropertyByName(attr);
-    if (prop) {
-        // Do not allow to set all properties
-        if (Base::streq(attr, "Comment") || Base::streq(attr, "FileName")) {
-            prop->setPyObject(obj);
-            return 0;
-        } else {
-            char szBuf[200];
-            snprintf(szBuf, 200, "'Document' object attribute '%s' is read-only", attr);
-            throw Py::AttributeError(szBuf); 
-        }
-    }
-
-    return 0;
+  DocumentObject *pcFtr = getDocumentObject()->getObject(attr);
+  if(pcFtr)
+  {
+    char szBuf[200];
+    snprintf(szBuf, 200, "'Document' object attribute '%s' must not set this way!", attr);
+    throw Py::AttributeError(szBuf); 
+  }
+    
+  return 0;
 }

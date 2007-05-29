@@ -116,9 +116,9 @@ namespace Py
 		//
 		PyObject* p;
 
-	protected:
+	public:
 
-		void set (PyObject* pyob, bool owned = false)
+		void set (PyObject* pyob, bool owned)
 			{
 			release();
 			p = pyob;
@@ -128,6 +128,13 @@ namespace Py
 				}
 			validate();
 			}
+	protected:
+
+		void set (PyObject* pyob)
+			{
+			set(pyob,false);
+			}
+	public:
 
 		void release ()
 			{
@@ -180,14 +187,14 @@ namespace Py
 			set(rhs.p);
 			return *this;
 			}
-
+protected:
 		Object& operator= (PyObject* rhsp)
 			{
 			if(ptr() == rhsp) return *this;
 			set (rhsp);
 			return *this;
 			}
-
+public:
 		// Destructor
 		virtual ~Object ()
 			{
@@ -477,7 +484,7 @@ namespace Py
 		{
 	public:
 		// Constructor
-		explicit Int (PyObject *pyob, bool owned = false): Object (pyob, owned)
+		explicit Int (PyObject *pyob, bool owned): Object (pyob, owned)
 			{
 			validate();
 			}
@@ -550,7 +557,7 @@ namespace Py
 		{
 	public:
 		// Constructor
-		explicit Long (PyObject *pyob, bool owned = false): Object (pyob, owned)
+		explicit Long (PyObject *pyob, bool owned ): Object (pyob, owned)
 			{
 			validate();
 			}
@@ -628,7 +635,7 @@ namespace Py
 		{
 	public:
 		// Constructor
-		explicit Float (PyObject *pyob, bool owned = false): Object(pyob, owned)
+		explicit Float (PyObject *pyob, bool owned): Object(pyob, owned)
 			{
 			validate();
 			}
@@ -705,7 +712,7 @@ namespace Py
 		{
 	public:
 		// Constructor
-		explicit Complex (PyObject *pyob, bool owned = false): Object(pyob, owned)
+		explicit Complex (PyObject *pyob, bool owned ): Object(pyob, owned)
 			{
 			validate();
 			}
@@ -1032,7 +1039,7 @@ namespace Py
 			validate();
 			}
 
-		explicit SeqBase<T> (PyObject* pyob, bool owned=false)
+		explicit SeqBase<T> (PyObject* pyob, bool owned)
 			: Object(pyob, owned)
 			{
 			validate();
@@ -1443,7 +1450,7 @@ namespace Py
 	class BaseExport Char: public Object
 		{
 	public:
-		explicit Char (PyObject *pyob, bool owned = false): Object(pyob, owned)
+		explicit Char (PyObject *pyob, bool owned): Object(pyob, owned)
 			{
 			validate();
 			}
@@ -1531,7 +1538,7 @@ namespace Py
 			return max_size();
 			}
 
-		explicit String (PyObject *pyob, bool owned = false): SeqBase<Char>(pyob, owned)
+		explicit String (PyObject *pyob, bool owned): SeqBase<Char>(pyob, owned)
 			{
 			validate();
 			}
@@ -1630,11 +1637,11 @@ namespace Py
 			{
 			if( isUnicode() )
 			{
-				return String( PyUnicode_AsEncodedString( ptr(), encoding, error ) );
+				return String( PyUnicode_AsEncodedString( ptr(), encoding, error ),false );
 			}
 			else
 			{
-				return String( PyString_AsEncodedObject( ptr(), encoding, error ) );
+				return String( PyString_AsEncodedObject( ptr(), encoding, error ),false );
 			}
 			}
 
@@ -2748,7 +2755,7 @@ namespace Py
 		PyObject *ptype, *pvalue, *ptrace;
 		PyErr_Fetch(&ptype, &pvalue, &ptrace);
 		Object result;
-		if(pvalue) result = pvalue;
+		if(pvalue) result.set(pvalue,false);
 		PyErr_Restore(ptype, pvalue, ptrace);
 		return result;
 		}
@@ -2758,7 +2765,7 @@ namespace Py
 		PyObject *ptype, *pvalue, *ptrace;
 		PyErr_Fetch(&ptype, &pvalue, &ptrace);
 		Object result;
-		if(ptrace) result = pvalue;
+		if(ptrace) result.set(pvalue,false);
 		PyErr_Restore(ptype, pvalue, ptrace);
 		return result;
 		}

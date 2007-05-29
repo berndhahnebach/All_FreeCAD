@@ -285,7 +285,7 @@ int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *va
 int @self.export.Name@::staticCallback_set@i.Name@ (PyObject *self, PyObject *value, void *closure)
 {
     try {
-        ((@self.export.Name@*)self)->set@i.Name@(Py::@i.Parameter.Type@(value));
+        ((@self.export.Name@*)self)->set@i.Name@(Py::@i.Parameter.Type@(value,false));
         return 0;
     } catch (...) {
 		PyErr_SetString(PyExc_Exception, "Unknown exeption while stting Attribute!");
@@ -397,7 +397,7 @@ int @self.export.Name@::_setattr(char *attr, PyObject *value) 	// __setattr__ fu
 	try {
 		// setter for  special Attributes (e.g. dynamic ones)
 		int r = setCustomAttributes(attr, value);
-		if(r==1) return 1;
+		if(r==1) return 0;
 	}
 #ifndef DONT_CATCH_CXX_EXCEPTIONS 
 	catch(Base::Exception &e) // catch the FreeCAD exeptions

@@ -277,11 +277,20 @@
 				>
 			</File>
 			<File
-				RelativePath=".\PropertyContainerPy.cpp"
+				RelativePath=".\PropertyContainerPy.xml"
 				>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="python ../Tools/generate.py PropertyContainerPy.xml"
+						Outputs="PropertyContainerPy.cpp;PropertyContainerPy.h"
+					/>
+				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\PropertyContainerPy.h"
+				RelativePath=".\PropertyContainerPyImp.cpp"
 				>
 			</File>
 			<File

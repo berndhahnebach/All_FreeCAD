@@ -36,7 +36,7 @@ bool Object::isType (const Type& t) const
 
 Char::operator String() const
 	{
-	return String(ptr());
+	return String(ptr(),false);
 	}
 
 // TMM: non-member operaters for iterators - see above
