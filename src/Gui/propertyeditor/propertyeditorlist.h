@@ -38,13 +38,13 @@ class GuiExport PropertyBoolItem: public PropertyItem
 {
     TYPESYSTEM_HEADER();
 
-    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
     virtual QVariant editorData(QWidget *editor) const;
 
 protected:
-    virtual QVariant propertyData(const App::Property*) const;
-    virtual void setPropertyData(const QVariant&);
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
 
 protected:
     PropertyBoolItem();
@@ -58,13 +58,13 @@ class GuiExport PropertyEnumItem: public PropertyItem
 {
     TYPESYSTEM_HEADER();
 
-    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual QWidget* createEditor(QWidget* parent, const QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
     virtual QVariant editorData(QWidget *editor) const;
 
 protected:
-    virtual QVariant propertyData(const App::Property*) const;
-    virtual void setPropertyData(const QVariant&);
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
 
 protected:
     PropertyEnumItem();
@@ -78,12 +78,12 @@ class GuiExport PropertyStringListItem: public PropertyItem
 {
     TYPESYSTEM_HEADER();
 
-    virtual QWidget* createEditor(QWidget* parent) const;
+    virtual QWidget* createEditor(QWidget* parent, QObject* receiver, const char* method) const;
     virtual void setEditorData(QWidget *editor, const QVariant& data) const;
 
 protected:
-    virtual QVariant propertyData(const App::Property*) const;
-    virtual void setPropertyData(const QVariant&);
+    virtual QVariant value(const App::Property*) const;
+    virtual void setValue(const QVariant&);
 
 protected:
     PropertyStringListItem();

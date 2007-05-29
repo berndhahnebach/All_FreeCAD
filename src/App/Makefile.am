@@ -6,8 +6,8 @@ BUILT_SOURCES=\
 		InitScript.h \
 		TestScript.h
 
-nodist_libFreeCADApp_la_SOURCES=\
-		DocumentPy.cpp
+#nodist_libFreeCADApp_la_SOURCES=\
+#		DocumentPy.cpp
 
 libFreeCADApp_la_BUILT=\
 		DocumentPy.h
