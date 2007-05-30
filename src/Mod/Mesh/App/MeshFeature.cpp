@@ -67,7 +67,7 @@ PyObject *Feature::getPyObject(void)
 {
  if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    PythonObject = new MeshFeaturePy(this);
+    PythonObject.set(new MeshFeaturePy(this),false);
   }
   return Py::new_reference_to(PythonObject); 
 }
