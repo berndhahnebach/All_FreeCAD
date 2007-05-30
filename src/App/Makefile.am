@@ -3,11 +3,13 @@ lib_LTLIBRARIES=libFreeCADApp.la
 
 BUILT_SOURCES=\
 		DocumentPy.cpp \
+		PropertyContainerPy.cpp \
 		InitScript.h \
 		TestScript.h
 
 libFreeCADApp_la_BUILT=\
-		DocumentPy.h
+		DocumentPy.h \
+		PropertyContainerPy.h
 
 libFreeCADApp_la_SOURCES=\
 		Application.cpp \
@@ -55,8 +57,7 @@ libFreeCADApp_la_SOURCES=\
 		PropertyGeo.h \
 		PropertyContainer.cpp \
 		PropertyContainer.h \
-		PropertyContainerPy.cpp \
-		PropertyContainerPy.h \
+		PropertyContainerPyImp.cpp \
 		PropertyLinks.cpp \
 		PropertyLinks.h \
 		PropertyStandard.cpp \
@@ -93,6 +94,7 @@ CLEANFILES = $(BUILT_SOURCES) $(libFreeCADApp_la_BUILT)
 
 EXTRA_DIST = \
 		DocumentPy.xml \
+		PropertyContainerPy.xml \
 		FreeCADDoc.vcproj \
 		FreeCADInit.py \
 		FreeCADTest.py
