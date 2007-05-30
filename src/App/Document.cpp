@@ -366,59 +366,60 @@ const Transaction *Document::getTransaction(int pos) const
 // constructor
 //--------------------------------------------------------------------------
 Document::Document(void)
-: _iTransactionMode(0),
-  iTransactionCount(0),
-  activTransaction(0),
-  bRollback(false),
-  _iUndoMode(0),
-  activUndoTransaction(0),
-  pActiveObject(0),
-  pDocumentHook(0)
+  : _iTransactionMode(0),
+    iTransactionCount(0),
+    activTransaction(0),
+    bRollback(false),
+    _iUndoMode(0),
+    activUndoTransaction(0),
+    pActiveObject(0),
+    pDocumentHook(0)
 {
-  // Remark: In a constructor we should never increment a Python object as we cannot be sure
-  // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't
-  // get a reference then the object wouldn't get deleted in the destructor.
-  // So, we must increment only if the interpreter gets a reference.
-	DocumentPythonObject.set(new DocumentPy(this),false);
+    // Remark: In a constructor we should never increment a Python object as we cannot be sure
+    // if the Python interpreter gets a reference of it. E.g. if we increment but Python don't
+    // get a reference then the object wouldn't get deleted in the destructor.
+    // So, we must increment only if the interpreter gets a reference.
+    // Remark: We force the document Python object to own the DocumentPy instance, thus we don't
+    // have to care about ref counting any more.
+	DocumentPythonObject.set(new DocumentPy(this), true);
 
-  Console().Log("+App::Document: %p\n",this);
+    Console().Log("+App::Document: %p\n",this);
 
 
-  ADD_PROPERTY(Name,("Unnamed"));
-  ADD_PROPERTY(FileName,(""));
-  ADD_PROPERTY(CreatedBy,(""));
-  ADD_PROPERTY(CreationDate,(Base::TimeInfo::currentDateTimeString()));
-  ADD_PROPERTY(LastModifiedBy,(""));
-  ADD_PROPERTY(LastModifiedDate,("Unknown"));
-  ADD_PROPERTY(Company,(""));
-  ADD_PROPERTY(Comment,(""));
-
+    ADD_PROPERTY(Name,("Unnamed"));
+    ADD_PROPERTY(FileName,(""));
+    ADD_PROPERTY(CreatedBy,(""));
+    ADD_PROPERTY(CreationDate,(Base::TimeInfo::currentDateTimeString()));
+    ADD_PROPERTY(LastModifiedBy,(""));
+    ADD_PROPERTY(LastModifiedDate,("Unknown"));
+    ADD_PROPERTY(Company,(""));
+    ADD_PROPERTY(Comment,(""));
 }
 
 Document::~Document()
 {
-  Console().Log("-App::Document: %s %p\n",Name.getValue(), this);
+    Console().Log("-App::Document: %s %p\n",Name.getValue(), this);
 
-  clearUndos();
-  
-  std::map<std::string,DocumentObject*>::iterator it;
+    clearUndos();
 
-  Console().Log("-Delete Features of %s \n",Name.getValue());
+    std::map<std::string,DocumentObject*>::iterator it;
 
-  ObjectArray.clear();
-  for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
-  {
-    delete(it->second);
-  }
+    Console().Log("-Delete Features of %s \n",Name.getValue());
 
-  // Py::Object handles but does not own the Python object, hence it increments the reference
-  // counter of the Python object when assigning to it. Thus we must decrement the counter to 
-  // avoid a memory leak. And we must invalidate the Python object because it need not to be
-  // destructed right now because the interpreter can own several references to it.
-  Base::PyObjectBase* doc = (Base::PyObjectBase*)DocumentPythonObject.ptr();
-  // Call before decrementing the reference counter, otherwise a heap error can occur
-  doc->setInvalid();
-  Py::_XDECREF(doc);  // decrement by one
+    ObjectArray.clear();
+    for(it = ObjectMap.begin(); it != ObjectMap.end(); ++it)
+    {
+        delete(it->second);
+    }
+
+    // Remark: The API of Py::Object has been changed to set whether the wrapper owns the passed 
+    // Python object or not. In the constructor we forced the wrapper to own the object so we need
+    // not to dec'ref the Python object any more.
+    // But we must still invalidate the Python object because it need not to be
+    // destructed right now because the interpreter can own several references to it.
+    Base::PyObjectBase* doc = (Base::PyObjectBase*)DocumentPythonObject.ptr();
+    // Call before decrementing the reference counter, otherwise a heap error can occur
+    doc->setInvalid();
 }
 
 

@@ -52,14 +52,14 @@ DocumentObject::DocumentObject(void)
 DocumentObject::~DocumentObject(void)
 {
   if (!PythonObject.is(Py::_None())){
-    // Py::Object handles but does not own the Python object, hence it increments the reference
-    // counter of the Python object when assigning to it. Thus we must decrement the counter to 
-    // avoid a memory leak. And we must invalidate the Python object because it need not to be
+    // Remark: The API of Py::Object has been changed to set whether the wrapper owns the passed 
+    // Python object or not. In the constructor we forced the wrapper to own the object so we need
+    // not to dec'ref the Python object any more.
+    // But we must still invalidate the Python object because it need not to be
     // destructed right now because the interpreter can own several references to it.
     Base::PyObjectBase* obj = (Base::PyObjectBase*)PythonObject.ptr();
     // Call before decrementing the reference counter, otherwise a heap error can occur
     obj->setInvalid();
-    Py::_XDECREF(obj);  // decrement by one
   }
 }
 
@@ -90,7 +90,7 @@ PyObject *DocumentObject::getPyObject(void)
 {
   if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    PythonObject.set(new DocumentObjectPy(this),false);
+    PythonObject.set(new DocumentObjectPy(this),true);
   }
   return Py::new_reference_to(PythonObject); 
 }

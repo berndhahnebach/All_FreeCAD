@@ -168,7 +168,7 @@ PyObject *DocumentObjectGroup::getPyObject()
 {
  if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    PythonObject.set(new DocumentObjectGroupPy(this),false);
+    PythonObject.set(new DocumentObjectGroupPy(this),true);
   }
   return Py::new_reference_to(PythonObject); 
 }
