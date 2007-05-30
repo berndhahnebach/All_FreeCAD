@@ -284,7 +284,7 @@
 					>
 					<Tool
 						Name="VCCustomBuildTool"
-						CommandLine="python ../Tools/generate.py PropertyContainerPy.xml"
+						CommandLine="python ../Tools/generate.py PropertyContainerPy.xml&#x0D;&#x0A;"
 						Outputs="PropertyContainerPy.cpp;PropertyContainerPy.h"
 					/>
 				</FileConfiguration>

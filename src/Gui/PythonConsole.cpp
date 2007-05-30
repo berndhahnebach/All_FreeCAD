@@ -305,7 +305,7 @@ PythonConsole::PythonConsole(QWidget *parent)
 
     const char* version  = PyString_AsString(PySys_GetObject("version"));
     const char* platform = PyString_AsString(PySys_GetObject("platform"));
-    d->output = QString("Python %1 on + %2\n"
+    d->output = QString("Python %1 on %2\n"
     "Type 'help', 'copyright', 'credits' or 'license' for more information.").arg(version).arg(platform);
     printPrompt(false);
 }
