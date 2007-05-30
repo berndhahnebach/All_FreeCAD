@@ -89,7 +89,7 @@ PyObject *Feature::getPyObject(void)
 {
  if(PythonObject.is(Py::_None())){
     // ref counter is set to 1
-    PythonObject = new PointsFeaturePy(this);
+    PythonObject.set(new PointsFeaturePy(this),false);
   }
   return Py::new_reference_to(PythonObject); 
 }
