@@ -26,7 +26,7 @@
 #ifndef _DocumentObjectPy_h_
 #define _DocumentObjectPy_h_
 
-#include "PropertyContainerPy.h"
+#include <App/PropertyContainerPy.h>
 
 namespace App
 {
