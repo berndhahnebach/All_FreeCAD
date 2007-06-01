@@ -55,7 +55,7 @@ int TransformDemolding::execute(void)
   if(!pcFirst || pcFirst->getStatus() != Valid)
     return 1;
 
-  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->getMesh()); // Result Meshkernel
+  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->Mesh.getValue()); // Result Meshkernel
   Base::Matrix4D trans(Base::Vector3f(0,0,0), Axis.getValue(), Rotation.getValue()  );
   //Matrix4D trans;
   //trans.rotLine( Axis.getValue(), Rotation.getValue()  );

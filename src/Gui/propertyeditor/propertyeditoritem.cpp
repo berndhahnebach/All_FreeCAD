@@ -35,7 +35,7 @@ using namespace Gui::PropertyEditor;
 
 TYPESYSTEM_SOURCE(Gui::PropertyEditor::PropertyItem, Base::BaseClass);
 
-PropertyItem::PropertyItem() : parentItem(0)
+PropertyItem::PropertyItem() : parentItem(0), readonly(false)
 {
 }
 
@@ -85,25 +85,14 @@ int PropertyItem::columnCount() const
     return 2;
 }
 
-bool PropertyItem::isEditable() const
+void PropertyItem::setReadOnly(bool ro)
 {
-    return true;
+    readonly = ro;
 }
 
-QVariant PropertyItem::propertyName(const App::Property* prop) const
+bool PropertyItem::isReadOnly() const
 {
-    if (!prop)
-        return QVariant(QString("<empty>"));
-    const QString name = prop->getName();
-    QString display;
-    for (int i=0; i<name.length(); i++) {
-        if (name[i].isUpper() && !display.isEmpty()) {
-            display += " ";
-        }
-        display += name[i];
-    }
-
-    return QVariant(display);
+    return readonly;
 }
 
 QVariant PropertyItem::toolTip(const App::Property* prop) const
@@ -144,6 +133,26 @@ QVariant PropertyItem::editorData(QWidget *editor) const
     return QVariant();
 }
 
+QString PropertyItem::propertyName() const
+{
+    if (propName.isEmpty())
+        return QString("<empty>");
+    return propName;
+}
+
+void PropertyItem::setPropertyName(const QString& name)
+{
+    QString display;
+    for (int i=0; i<name.length(); i++) {
+        if (name[i].isUpper() && !display.isEmpty()) {
+            display += " ";
+        }
+        display += name[i];
+    }
+
+    propName = display;
+}
+
 QVariant PropertyItem::data(int column, int role) const
 {
     // no properties set
@@ -153,7 +162,7 @@ QVariant PropertyItem::data(int column, int role) const
     // property name
     if (column == 0) {
         if (role == Qt::DisplayRole)
-            return propertyName(propertyItems[0]);
+            return propertyName();
         else
             return QVariant();
     } else {
@@ -181,7 +190,7 @@ bool PropertyItem::setData (const QVariant& value)
 Qt::ItemFlags PropertyItem::flags(int column) const
 {
     Qt::ItemFlags basicFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    if (column == 1 && isEditable())
+    if (column == 1 && !isReadOnly())
         return basicFlags | Qt::ItemIsEditable;
     else
         return basicFlags;

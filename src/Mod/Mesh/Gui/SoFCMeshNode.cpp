@@ -143,7 +143,7 @@ void SoFCMeshNode::setMesh(const Mesh::Feature* mesh)
  */
 void SoFCMeshNode::createRoughModel(bool simplest)
 {
-  const Base::BoundBox3f& cBox = _mesh->getMesh().GetBoundBox();
+  const Base::BoundBox3f& cBox = _mesh->Mesh.getValue().GetBoundBox();
 
   if ( simplest ) {
     int triangles[36] = {
@@ -169,7 +169,7 @@ void SoFCMeshNode::createRoughModel(bool simplest)
     point.setValues (0,8,points);
   } else {
     // Check the boundings and the average edge length
-    float fAvgLen = 5.0f * MeshCore::MeshAlgorithm(_mesh->getMesh()).GetAverageEdgeLength();
+    float fAvgLen = 5.0f * MeshCore::MeshAlgorithm(_mesh->Mesh.getValue()).GetAverageEdgeLength();
 
     // create maximum 50 grids in each direction 
     fAvgLen = std::max<float>(fAvgLen, (cBox.MaxX-cBox.MinX)/50.0f);
@@ -179,7 +179,7 @@ void SoFCMeshNode::createRoughModel(bool simplest)
     MeshCore::MeshGeomFacet face;
     std::vector<MeshCore::MeshGeomFacet> facets;
 
-    MeshCore::MeshPointGrid cGrid(_mesh->getMesh(), fAvgLen);
+    MeshCore::MeshPointGrid cGrid(_mesh->Mesh.getValue(), fAvgLen);
     unsigned long ulMaxX, ulMaxY, ulMaxZ;
     cGrid.GetCtGrids(ulMaxX, ulMaxY, ulMaxZ);
     MeshCore::MeshGridIterator cIter(cGrid);
@@ -319,8 +319,8 @@ void SoFCMeshNode::drawFaces(SbBool needNormals) const
 {
   // Use the data structure directly and not through MeshFacetIterator as this
   // class is quite slowly (at least for rendering)
-  const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
-  const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
+  const MeshCore::MeshPointArray& rPoints = _mesh->Mesh.getValue().GetPoints();
+  const MeshCore::MeshFacetArray& rFacets = _mesh->Mesh.getValue().GetFacets();
 
   if (needNormals)
   {
@@ -364,8 +364,8 @@ void SoFCMeshNode::drawPoints(SbBool needNormals) const
 {
   // Use the data structure directly and not through MeshFacetIterator as this
   // class is quite slowly (at least for rendering)
-  const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
-  const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
+  const MeshCore::MeshPointArray& rPoints = _mesh->Mesh.getValue().GetPoints();
+  const MeshCore::MeshFacetArray& rFacets = _mesh->Mesh.getValue().GetFacets();
   int mod = rFacets.size()/MaximumTriangles+1;
 
   float size = std::min<float>((float)mod,3.0f);
@@ -432,8 +432,8 @@ void SoFCMeshNode::generatePrimitives(SoAction* action)
   {
     // Use the data structure directly and not through MeshFacetIterator as this
     // class is quite slowly (at least for rendering)
-    const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
-    const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
+    const MeshCore::MeshPointArray& rPoints = _mesh->Mesh.getValue().GetPoints();
+    const MeshCore::MeshFacetArray& rFacets = _mesh->Mesh.getValue().GetFacets();
 
     // In case we have too many triangles we just create a rough model of the original mesh
     if ( this->MaximumTriangles < rFacets.size() ) {
@@ -543,7 +543,7 @@ void SoFCMeshNode::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &center)
 {
   // Get the bbox directly from the mesh kernel
   if (countTriangles() > 0) {
-    const Base::BoundBox3f& cBox = _mesh->getMesh().GetBoundBox();
+    const Base::BoundBox3f& cBox = _mesh->Mesh.getValue().GetBoundBox();
     box.setBounds(SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
 		              SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MaxZ));
     Base::Vector3f mid = cBox.CalcCenter();
@@ -569,7 +569,7 @@ void SoFCMeshNode::getPrimitiveCount(SoGetPrimitiveCountAction * action)
  */
 unsigned int SoFCMeshNode::countTriangles() const
 {
-  return (_mesh ? _mesh->getMesh().CountFacets() : 0);
+  return (_mesh ? _mesh->Mesh.getValue().CountFacets() : 0);
 }
 
 /**
@@ -583,8 +583,8 @@ void SoFCMeshNode::write( SoWriteAction* action )
     this->addWriteReference(out, FALSE);
   }
   else if (out->getStage() == SoOutput::WRITE) {
-    const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
-    const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
+    const MeshCore::MeshPointArray& rPoints = _mesh->Mesh.getValue().GetPoints();
+    const MeshCore::MeshFacetArray& rFacets = _mesh->Mesh.getValue().GetFacets();
     if (this->writeHeader(out, FALSE, FALSE)) return;
     point.setNum(rPoints.size());
     unsigned int pos=0;
@@ -689,8 +689,8 @@ void SoFCMeshOpenEdge::drawLines() const
 {
   // Use the data structure directly and not through MeshFacetIterator as this
   // class is quite slowly (at least for rendering)
-  const MeshCore::MeshPointArray& rPoints = _mesh->getMesh().GetPoints();
-  const MeshCore::MeshFacetArray& rFacets = _mesh->getMesh().GetFacets();
+  const MeshCore::MeshPointArray& rPoints = _mesh->Mesh.getValue().GetPoints();
+  const MeshCore::MeshFacetArray& rFacets = _mesh->Mesh.getValue().GetFacets();
 
   // When rendering open edges use the given line width * 3 
   GLfloat lineWidth;
@@ -723,7 +723,7 @@ void SoFCMeshOpenEdge::computeBBox(SoAction *action, SbBox3f &box, SbVec3f &cent
 {
   // Get the bbox directly from the mesh kernel
   if (_mesh) {
-    const Base::BoundBox3f& cBox = _mesh->getMesh().GetBoundBox();
+    const Base::BoundBox3f& cBox = _mesh->Mesh.getValue().GetBoundBox();
     box.setBounds(SbVec3f(cBox.MinX,cBox.MinY,cBox.MinZ),
 		              SbVec3f(cBox.MaxX,cBox.MaxY,cBox.MaxZ));
     Base::Vector3f mid = cBox.CalcCenter();
@@ -745,7 +745,7 @@ void SoFCMeshOpenEdge::getPrimitiveCount(SoGetPrimitiveCountAction * action)
   // Count number of open edges first
   int ctEdges=0;
 
-  const MeshCore::MeshFacetArray& rFaces = _mesh->getMesh().GetFacets();
+  const MeshCore::MeshFacetArray& rFaces = _mesh->Mesh.getValue().GetFacets();
   for ( MeshCore::MeshFacetArray::_TConstIterator jt = rFaces.begin(); jt != rFaces.end(); ++jt ) {
     for ( int i=0; i<3; i++ ) {
       if ( jt->_aulNeighbours[i] == ULONG_MAX ) {

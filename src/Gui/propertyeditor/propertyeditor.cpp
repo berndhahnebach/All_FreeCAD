@@ -235,6 +235,7 @@ void PropertyModel::buildUp( const std::map<std::pair<std::string, int>, std::ve
                     PropertyItem* child = (PropertyItem*)item;
                     child->setParent(rootItem);
                     rootItem->appendChild(child);
+                    child->setPropertyName(prop->getName());
                     child->setProperty(it->second);
                 }
             }

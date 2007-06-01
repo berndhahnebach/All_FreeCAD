@@ -142,7 +142,7 @@ void ViewProviderMeshOrientation::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshOrientation::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->getMesh();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
   MeshCore::MeshEvalOrientation eval(rMesh);
   
   std::vector<unsigned long> inds = eval.GetIndices();
@@ -210,7 +210,7 @@ void ViewProviderMeshNonManifolds::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshNonManifolds::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->getMesh();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
   MeshCore::MeshEvalTopology eval(rMesh);
   eval.Evaluate();
   
@@ -283,7 +283,7 @@ void ViewProviderMeshDuplicatedFaces::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshDuplicatedFaces::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->getMesh();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
   MeshCore::MeshEvalDuplicateFacets eval(rMesh);
   
   std::vector<unsigned long> inds = eval.GetIndices();
@@ -369,7 +369,7 @@ void ViewProviderMeshDegenerations::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshDegenerations::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->getMesh();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
   MeshCore::MeshEvalDegeneratedFacets eval(rMesh);
   
   std::vector<unsigned long> inds = eval.GetIndices();
@@ -473,7 +473,7 @@ void ViewProviderMeshIndices::attach(App::DocumentObject* pcFeat)
 void ViewProviderMeshIndices::showDefects()
 {
   Mesh::Feature* f = dynamic_cast<Mesh::Feature*>(pcObject);
-  const MeshCore::MeshKernel & rMesh = f->getMesh();
+  const MeshCore::MeshKernel & rMesh = f->Mesh.getValue();
   MeshCore::MeshEvalNeighbourhood nb(rMesh);
   MeshCore::MeshEvalRangeFacet rf(rMesh);
   MeshCore::MeshEvalRangePoint rp(rMesh);

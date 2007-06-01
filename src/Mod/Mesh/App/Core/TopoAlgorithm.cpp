@@ -158,8 +158,10 @@ void MeshTopoAlgorithm::OptimizeTopology(float fMaxAngle)
   // fill up this list with all internal edges and perform swap edges until this list is empty
   std::list<std::pair<unsigned long, unsigned long> > aEdgeList;
   std::map<std::pair<unsigned long, unsigned long>, std::vector<unsigned long> >::iterator pE;
-  for (pE = aEdge2Face.begin(); pE != aEdge2Face.end(); ++pE)
-    aEdgeList.push_back(pE->first);
+  for (pE = aEdge2Face.begin(); pE != aEdge2Face.end(); ++pE) {
+    if (pE->second.size() == 2) // make sure that we really have an internal edge
+      aEdgeList.push_back(pE->first);
+  }
 
   // to be sure to avoid an endless loop
   unsigned long uMaxIter = 5 * aEdge2Face.size();

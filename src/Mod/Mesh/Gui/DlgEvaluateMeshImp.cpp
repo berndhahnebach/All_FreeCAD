@@ -227,7 +227,7 @@ void DlgEvaluateMeshImp::on_meshNameButton_activated(int i)
     analyzeDegeneratedButton->setEnabled(true);
     analyzeIndicesButton->setEnabled(true);
 
-    const MeshKernel& rMesh = _meshFeature->getMesh();
+    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
     textLabel4->setText( QString("%1").arg(rMesh.CountFacets()) );
     textLabel5->setText( QString("%1").arg(rMesh.CountEdges()) );
     textLabel6->setText( QString("%1").arg(rMesh.CountPoints()) );
@@ -310,7 +310,7 @@ void DlgEvaluateMeshImp::on_analyzeOrientationButton_clicked()
     qApp->processEvents();
     qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->getMesh();
+    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
     MeshEvalOrientation eval(rMesh);
     std::vector<unsigned long> inds = eval.GetIndices();
     
@@ -371,7 +371,7 @@ void DlgEvaluateMeshImp::on_analyzeNonmanifoldsButton_clicked()
     qApp->processEvents();
     qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->getMesh();
+    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
     MeshEvalTopology eval(rMesh);
     
     if ( eval.Evaluate() )
@@ -416,7 +416,7 @@ void DlgEvaluateMeshImp::on_analyzeIndicesButton_clicked()
     qApp->processEvents();
     qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->getMesh();
+    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
     MeshEvalNeighbourhood nb(rMesh);
     MeshEvalRangeFacet rf(rMesh);
     MeshEvalRangePoint rp(rMesh);
@@ -495,7 +495,7 @@ void DlgEvaluateMeshImp::on_analyzeDegeneratedButton_clicked()
     qApp->processEvents();
     qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->getMesh();
+    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
     MeshEvalDegeneratedFacets eval(rMesh);
     std::vector<unsigned long> degen = eval.GetIndices();
     
@@ -556,7 +556,7 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedFacesButton_clicked()
     qApp->processEvents();
     qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->getMesh();
+    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
     MeshEvalDuplicateFacets eval(rMesh);
     std::vector<unsigned long> dupl = eval.GetIndices();
     
@@ -617,7 +617,7 @@ void DlgEvaluateMeshImp::on_analyzeDuplicatedPointsButton_clicked()
     qApp->processEvents();
     qApp->setOverrideCursor(Qt::WaitCursor);
 
-    const MeshKernel& rMesh = _meshFeature->getMesh();
+    const MeshKernel& rMesh = _meshFeature->Mesh.getValue();
     MeshEvalDuplicatePoints eval(rMesh);
     
     if ( eval.Evaluate() )

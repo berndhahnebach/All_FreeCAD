@@ -376,8 +376,19 @@ void ViewProviderMesh::attach(App::DocumentObject *pcFeat)
 
 void ViewProviderMesh::updateData(void)
 {
-  Mesh::Feature* mesh = dynamic_cast<Mesh::Feature*>(pcObject);
-  createMesh(mesh->getMesh());
+    // search for a mesh property
+    std::map<std::string, App::Property*> Map;
+    Mesh::PropertyMeshKernel* kernel=0;
+    pcObject->getPropertyMap(Map);
+    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+        if (it->second->getTypeId().isDerivedFrom(Mesh::PropertyMeshKernel::getClassTypeId())) {
+            kernel = (Mesh::PropertyMeshKernel*)it->second;
+            break;
+        }
+    }
+
+    assert(kernel);
+    createMesh(kernel->getValue());
 }
 
 QPixmap ViewProviderMesh::getIcon() const
@@ -627,6 +638,9 @@ bool ViewProviderMesh::handleEvent(const SoEvent * const ev,Gui::View3DInventorV
 
 void ViewProviderMesh::showOpenEdges(bool show)
 {
+  Mesh::Feature* meshFeature = dynamic_cast<Mesh::Feature*>(pcObject);
+  if (!meshFeature)
+      return;
   if ( show ) {
     SoGroup* pcLineRoot = new SoGroup();
     SoDrawStyle* lineStyle = new SoDrawStyle();
@@ -645,7 +659,7 @@ void ViewProviderMesh::showOpenEdges(bool show)
 
     // Build up the lines with indices to the list of vertices 'pcMeshCoord'
     int index=0;
-    const MeshCore::MeshKernel& rMesh = dynamic_cast<Mesh::Feature*>(pcObject)->getMesh();
+    const MeshCore::MeshKernel& rMesh = meshFeature->Mesh.getValue();
     const MeshCore::MeshFacetArray& rFaces = rMesh.GetFacets();
     for ( MeshCore::MeshFacetArray::_TConstIterator it = rFaces.begin(); it != rFaces.end(); ++it ) {
       for ( int i=0; i<3; i++ ) {
