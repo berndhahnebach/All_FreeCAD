@@ -25,9 +25,10 @@
 
 #ifndef _PreComp_
 # include <algorithm>
-# include <Wm3MeshCurvature.h>
-# include <Wm3Vector3.h>
 #endif
+
+#include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
 
 #include "TopoAlgorithm.h"
 #include "Iterator.h"
@@ -234,11 +235,11 @@ void MeshTopoAlgorithm::OptimizeTopology(float fMaxAngle)
 
 void MeshTopoAlgorithm::AdjustEdgesToCurvatureDirection()
 {
-  std::vector< Wm3::Vector3<float> > aPnts;
+  std::vector< Wm4::Vector3<float> > aPnts;
   MeshPointIterator cPIt( _rclMesh );
   aPnts.reserve(_rclMesh.CountPoints());
   for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
-    aPnts.push_back( Wm3::Vector3<float>( cPIt->x, cPIt->y, cPIt->z ) );
+    aPnts.push_back( Wm4::Vector3<float>( cPIt->x, cPIt->y, cPIt->z ) );
 
   // get all point connections
   std::vector<int> aIdx;
@@ -262,11 +263,11 @@ void MeshTopoAlgorithm::AdjustEdgesToCurvatureDirection()
   }
 
   // compute vertex based curvatures
-  Wm3::MeshCurvature<float> meshCurv(_rclMesh.CountPoints(), &(aPnts[0]), _rclMesh.CountFacets(), &(aIdx[0]));
+  Wm4::MeshCurvature<float> meshCurv(_rclMesh.CountPoints(), &(aPnts[0]), _rclMesh.CountFacets(), &(aIdx[0]));
 
   // get curvature information now
-  const Wm3::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
-  const Wm3::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
+  const Wm4::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
+  const Wm4::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
   const float* aMaxCurv = meshCurv.GetMaxCurvatures();
   const float* aMinCurv = meshCurv.GetMinCurvatures();
 
@@ -291,7 +292,7 @@ void MeshTopoAlgorithm::AdjustEdgesToCurvatureDirection()
       side = rFace2.Side(uPt1, uPt2);
       uPt4 = rFace2._aulPoints[(side+2)%3];
       
-      Wm3::Vector3<float> dir;
+      Wm4::Vector3<float> dir;
       float fActCurvature;
       if ( fabs(aMinCurv[uPt1]) > fabs(aMaxCurv[uPt1]) ) {
         fActCurvature = aMinCurv[uPt1];

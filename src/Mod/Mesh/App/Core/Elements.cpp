@@ -24,20 +24,21 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <Wm3IntrSegment3Plane3.h>
-# include <Wm3IntrSegment3Box3.h>
-# include <Wm3IntrTriangle3Triangle3.h>
-# include <Wm3DistVector3Triangle3.h>
-# include <Wm3DistSegment3Segment3.h>
-# include <Wm3DistSegment3Triangle3.h>
 #endif
+
+#include <Mod/Mesh/App/WildMagic4/Wm4IntrSegment3Plane3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4IntrSegment3Box3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4IntrTriangle3Triangle3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4DistVector3Triangle3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4DistSegment3Segment3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4DistSegment3Triangle3.h>
 
 #include "Elements.h"
 #include "Algorithm.h"
 #include "tritritest.h"
 
 using namespace MeshCore;
-using namespace Wm3;
+using namespace Wm4;
 
 unsigned long MeshPointArray::Get (const MeshPoint &rclPoint)
 {

@@ -11,6 +11,6 @@
     \brief The namespace of the Mesh Core library
 */ 
 
-/*! \namespace Wm3
+/*! \namespace Wm4
     \brief The namespace of the WildMagic library
 */

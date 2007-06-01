@@ -24,12 +24,13 @@
 #include "PreCompiled.h"
 
 #ifndef _PreComp_
-# include <Wm3IntrSegment3Plane3.h>
-# include <Wm3Matrix3.h>
-# include <Wm3Vector3.h>
 # include <algorithm>
 # include <vector>
 #endif
+
+#include <Mod/Mesh/App/WildMagic4/Wm4IntrSegment3Plane3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Matrix3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
 
 #include "Evaluation.h"
 #include "Iterator.h"
@@ -877,15 +878,15 @@ void MeshEigensystem::CalculateLocalSystem()
   szz = szz - mz*mz/((float)nSize);
 
   // Kovarianzmatrix
-  Wm3::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
+  Wm4::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
 #endif
 
-  Wm3::Matrix3<float> rkRot, rkDiag;
+  Wm4::Matrix3<float> rkRot, rkDiag;
   akMat.EigenDecomposition(rkRot, rkDiag);
 
-  Wm3::Vector3<float> U = rkRot.GetColumn(0);
-  Wm3::Vector3<float> V = rkRot.GetColumn(1);
-  Wm3::Vector3<float> W = rkRot.GetColumn(2);
+  Wm4::Vector3<float> U = rkRot.GetColumn(0);
+  Wm4::Vector3<float> V = rkRot.GetColumn(1);
+  Wm4::Vector3<float> W = rkRot.GetColumn(2);
 
   _cC.Set(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
   _cU.Set(U.X(), U.Y(), U.Z());

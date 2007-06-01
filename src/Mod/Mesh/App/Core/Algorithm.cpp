@@ -25,9 +25,10 @@
 
 #ifndef _PreComp_
 # include <algorithm>
-# include <Wm3Matrix3.h>
-# include <Wm3Vector3.h>
 #endif
+
+#include <Mod/Mesh/App/WildMagic4/Wm4Matrix3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
 
 #include "Algorithm.h"
 #include "Elements.h"
@@ -1120,13 +1121,13 @@ bool MeshAlgorithm::NearestPointFromPoint (const Base::Vector3f &rclPt, const Me
   return true;
 }
 
-bool MeshAlgorithm::CutWithPlane (const Wm3::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid,
+bool MeshAlgorithm::CutWithPlane (const Wm4::Plane3<float> &rclPlane, const MeshFacetGrid &rclGrid,
                                   std::list<std::vector<Base::Vector3f> > &rclResult, float fMinEps) const
 {
   Base::Vector3f  clBase, clNormal; // Schnittebene
 
-  Wm3::Vector3<float> clPos = rclPlane.Normal * rclPlane.Constant;
-  Wm3::Vector3<float> clDir = rclPlane.Normal;
+  Wm4::Vector3<float> clPos = rclPlane.Normal * rclPlane.Constant;
+  Wm4::Vector3<float> clDir = rclPlane.Normal;
   clBase.Set(clPos.X(), clPos.Y(), clPos.Z());
   clNormal.Set(clDir.X(), clDir.Y(), clDir.Z());
 
@@ -1341,13 +1342,13 @@ bool MeshAlgorithm::ConnectPolygons(std::list<std::vector<Base::Vector3f> > &clP
   return true;
 }
 
-void MeshAlgorithm::GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Wm3::Plane3<float>& clPlane, const Base::Vector3f &rclLeft,
+void MeshAlgorithm::GetFacetsFromPlane (const MeshFacetGrid &rclGrid, const Wm4::Plane3<float>& clPlane, const Base::Vector3f &rclLeft,
                                         const Base::Vector3f &rclRight, std::vector<unsigned long> &rclRes) const
 {
   std::vector<unsigned long> aulFacets;
  
-  Wm3::Vector3<float> clPos = clPlane.Normal * clPlane.Constant;
-  Wm3::Vector3<float> clDir = clPlane.Normal;
+  Wm4::Vector3<float> clPos = clPlane.Normal * clPlane.Constant;
+  Wm4::Vector3<float> clDir = clPlane.Normal;
 
   Base::Vector3f clBase(float(clPos.X()), float(clPos.Y()), float(clPos.Z()));
   Base::Vector3f clNormal(float(clDir.X()), float(clDir.Y()), float(clDir.Z()));
@@ -1894,13 +1895,13 @@ Base::Vector3f MeshPolygonTriangulation::TransformToFitPlane()
   szz = szz - mz*mz/((float)nSize);
 
   // Kovarianzmatrix
-  Wm3::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
-  Wm3::Matrix3<float> rkRot, rkDiag;
+  Wm4::Matrix3<float> akMat(sxx,sxy,sxz,sxy,syy,syz,sxz,syz,szz);
+  Wm4::Matrix3<float> rkRot, rkDiag;
   akMat.EigenDecomposition(rkRot, rkDiag);
 
-  Wm3::Vector3<float> U = rkRot.GetColumn(1);
-  Wm3::Vector3<float> V = rkRot.GetColumn(2);
-  Wm3::Vector3<float> W = rkRot.GetColumn(0);
+  Wm4::Vector3<float> U = rkRot.GetColumn(1);
+  Wm4::Vector3<float> V = rkRot.GetColumn(2);
+  Wm4::Vector3<float> W = rkRot.GetColumn(0);
 
   Base::Vector3f base(mx/(float)nSize, my/(float)nSize, mz/(float)nSize);
   Base::Vector3f ex(U.X(), U.Y(), U.Z());

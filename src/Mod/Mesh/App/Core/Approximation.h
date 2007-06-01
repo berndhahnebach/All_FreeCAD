@@ -24,9 +24,9 @@
 #ifndef MESH_APPROXIMATION_H
 #define MESH_APPROXIMATION_H
 
-#include <Wm3Vector3.h>
-#include <Wm3QuadricSurface.h>
-#include <Wm3Eigen.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4QuadricSurface.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Eigen.h>
 #include <list>
 #include <set>
 #include <vector>
@@ -109,18 +109,18 @@ public:
 
 protected:
   /**
-   * Converts point from Wm3::Vector3 to Base::Vector3f.
+   * Converts point from Wm4::Vector3 to Base::Vector3f.
    */
-  static void Convert( const Wm3::Vector3<float>&, Base::Vector3f&);
+  static void Convert( const Wm4::Vector3<float>&, Base::Vector3f&);
   /**
-   * Converts point from Base::Vector3f to Wm3::Vector3.
+   * Converts point from Base::Vector3f to Wm4::Vector3.
    */
-  static void Convert( const Base::Vector3f&, Wm3::Vector3<float>&);
+  static void Convert( const Base::Vector3f&, Wm4::Vector3<float>&);
 
   /**
-   * Creates a vector of Wm3::Vector3 elements.
+   * Creates a vector of Wm4::Vector3 elements.
    */
-  void GetMgcVectorArray( std::vector< Wm3::Vector3<float> >& rcPts ) const;
+  void GetMgcVectorArray( std::vector< Wm4::Vector3<float> >& rcPts ) const;
 
   std::list< Base::Vector3f > _vPoints; /**< Holds the points for the fit algorithm.  */
   bool _bIsFitted; /**< Flag, whether the fit has been called. */
@@ -334,9 +334,9 @@ public:
     aoD2F[4] = &Fyz;
     aoD2F[5] = &Fzz;
 
-    pImplSurf = new Wm3::QuadricSurface<float>( oF, aoDF, aoD2F );*/
+    pImplSurf = new Wm4::QuadricSurface<float>( oF, aoDF, aoD2F );*/
 
-    pImplSurf = new Wm3::QuadricSurface<float>( dKoeff );
+    pImplSurf = new Wm4::QuadricSurface<float>( dKoeff );
   }
 
   /**
@@ -378,20 +378,20 @@ public:
    */
   bool CurvatureInfo( float x, float y, float z, 
                       float &rfCurv0, float &rfCurv1,
-                      Wm3::Vector3<float> &rkDir0,  Wm3::Vector3<float> &rkDir1, float &dDistance )
+                      Wm4::Vector3<float> &rkDir0,  Wm4::Vector3<float> &rkDir1, float &dDistance )
   {
-    return pImplSurf->ComputePrincipalCurvatureInfo( Wm3::Vector3<float>(x, y, z),rfCurv0, rfCurv1, rkDir0, rkDir1 );
+    return pImplSurf->ComputePrincipalCurvatureInfo( Wm4::Vector3<float>(x, y, z),rfCurv0, rfCurv1, rkDir0, rkDir1 );
   }
 
   Base::Vector3f GetGradient( float x, float y, float z ) const
   {
-    Wm3::Vector3<float> grad = pImplSurf->GetGradient( Wm3::Vector3<float>(x, y, z) );
+    Wm4::Vector3<float> grad = pImplSurf->GetGradient( Wm4::Vector3<float>(x, y, z) );
     return Base::Vector3f( grad.X(), grad.Y(), grad.Z() );
   }
 
   Base::Matrix4D GetHessian( float x, float y, float z ) const
   {
-    Wm3::Matrix3<float> hess = pImplSurf->GetHessian( Wm3::Vector3<float>(x, y, z) );
+    Wm4::Matrix3<float> hess = pImplSurf->GetHessian( Wm4::Vector3<float>(x, y, z) );
     Base::Matrix4D cMat; cMat.unity();
     cMat[0][0] = hess[0][0]; cMat[0][1] = hess[0][1]; cMat[0][2] = hess[0][2];
     cMat[1][0] = hess[1][0]; cMat[1][1] = hess[1][1]; cMat[1][2] = hess[1][2];
@@ -472,7 +472,7 @@ public:
    
 protected:
   static float dKoeff[ 10 ];     /**< Koeffizienten der Quadric */
-  Wm3::ImplicitSurface<float> *pImplSurf;  /**< Zugriff auf die MGC-Bibliothek */
+  Wm4::ImplicitSurface<float> *pImplSurf;  /**< Zugriff auf die MGC-Bibliothek */
 
 private:
   /**

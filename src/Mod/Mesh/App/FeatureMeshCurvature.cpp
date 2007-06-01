@@ -23,14 +23,14 @@
 
 #include "PreCompiled.h"
 #ifndef _PreComp_
-# include <Wm3Vector3.h>
-# include <Wm3MeshCurvature.h>
 #endif
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
 #include <Base/Matrix.h>
 #include <Base/Sequencer.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4MeshCurvature.h>
 #include "FeatureMeshCurvature.h"
 #include "MeshFeature.h"
 
@@ -61,10 +61,10 @@ int Curvature::execute(void)
  
     // get all points
     const MeshKernel& rMesh = pcFeat->Mesh.getValue();
-    std::vector< Wm3::Vector3<float> > aPnts;
+    std::vector< Wm4::Vector3<float> > aPnts;
     MeshPointIterator cPIt( rMesh );
     for ( cPIt.Init(); cPIt.More(); cPIt.Next() ) {
-        Wm3::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
+        Wm4::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
         aPnts.push_back( cP );
     }
 
@@ -78,11 +78,11 @@ int Curvature::execute(void)
     }
 
     // compute vertex based curvatures
-    Wm3::MeshCurvature<float> meshCurv(rMesh.CountPoints(), &(aPnts[0]), rMesh.CountFacets(), &(aIdx[0]));
+    Wm4::MeshCurvature<float> meshCurv(rMesh.CountPoints(), &(aPnts[0]), rMesh.CountFacets(), &(aIdx[0]));
 
     // get curvature information now
-    const Wm3::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
-    const Wm3::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
+    const Wm4::Vector3<float>* aMaxCurvDir = meshCurv.GetMaxDirections();
+    const Wm4::Vector3<float>* aMinCurvDir = meshCurv.GetMinDirections();
     const float* aMaxCurv = meshCurv.GetMaxCurvatures();
     const float* aMinCurv = meshCurv.GetMinCurvatures();
 

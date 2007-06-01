@@ -25,28 +25,29 @@
 #include "Approximation.h"
 
 #ifndef _PreComp_
-# include <Wm3ApprQuadraticFit3.h>
-# include <Wm3ApprPlaneFit3.h>
-# include <Wm3DistVector3Plane3.h>
-# include <Wm3Matrix3.h>
 # include <math_Matrix.hxx>
 # include <gp_Ax2.hxx>
 # include <gp_Dir.hxx>
 # include <math_Gauss.hxx>
 #endif
 
-using namespace Wm3;
+#include <Mod/Mesh/App/WildMagic4/Wm4ApprQuadraticFit3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4ApprPlaneFit3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4DistVector3Plane3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Matrix3.h>
+
+using namespace Wm4;
 using namespace MeshCore;
 
 
-void MeshPointFit::Convert( const Wm3::Vector3<float>& wm3, Base::Vector3f& pt)
+void MeshPointFit::Convert( const Wm4::Vector3<float>& Wm4, Base::Vector3f& pt)
 {
-  pt.Set( wm3.X(), wm3.Y(), wm3.Z() );
+  pt.Set( Wm4.X(), Wm4.Y(), Wm4.Z() );
 }
 
-void MeshPointFit::Convert( const Base::Vector3f& pt, Wm3::Vector3<float>& wm3)
+void MeshPointFit::Convert( const Base::Vector3f& pt, Wm4::Vector3<float>& Wm4)
 {
-  wm3.X() = pt.x; wm3.Y() = pt.y; wm3.Z() = pt.z;
+  Wm4.X() = pt.x; Wm4.Y() = pt.y; Wm4.Z() = pt.z;
 }
 
 void MeshPointFit::AddPoint( const Base::Vector3f &rcVector )
@@ -106,12 +107,12 @@ void MeshPointFit::Clear()
   _bIsFitted = false;
 }
 
-void MeshPointFit::GetMgcVectorArray( std::vector< Wm3::Vector3<float> >& rcPts ) const
+void MeshPointFit::GetMgcVectorArray( std::vector< Wm4::Vector3<float> >& rcPts ) const
 {
   std::list< Base::Vector3f >::const_iterator It;
   for( It = _vPoints.begin(); It != _vPoints.end(); It++ )
   {
-    Wm3::Vector3<float> pt( (*It).x, (*It).y, (*It).z );
+    Wm4::Vector3<float> pt( (*It).x, (*It).y, (*It).z );
     rcPts.push_back( pt );
   }
 }
@@ -134,7 +135,7 @@ float MeshPlaneFit::Fit()
  
   if( CountPoints() > 2 )
   {
-    std::vector< Wm3::Vector3<float> > cPts;
+    std::vector< Wm4::Vector3<float> > cPts;
     GetMgcVectorArray( cPts );
     Plane3<float > akPln = OrthogonalPlaneFit3<float>( CountPoints(), &(cPts[0]) );
     Convert( akPln.Normal, _vNormal );
@@ -316,7 +317,7 @@ float MeshQuadraticFit::Fit()
 
   if( CountPoints() > 0 )
   {
-    std::vector< Wm3::Vector3<float> > cPts;
+    std::vector< Wm4::Vector3<float> > cPts;
     GetMgcVectorArray( cPts );
     fResult = QuadraticFit3<float>( CountPoints(), &(cPts[0]), _fCoeff );
     _fLastResult = fResult;

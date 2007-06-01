@@ -161,7 +161,7 @@ unsigned long MeshSearchNeighbours::NeighboursFromSampledFacets (unsigned long u
   _fMaxDistanceP2 = fDistance * fDistance;
   _clCenter       = _rclMesh.GetFacet(ulFacetIdx).GetGravityPoint();
 
-  _akSphere.Center = Wm3::Vector3<float>(_clCenter.x, _clCenter.y, _clCenter.z);
+  _akSphere.Center = Wm4::Vector3<float>(_clCenter.x, _clCenter.y, _clCenter.z);
   _akSphere.Radius = fDistance;
 
   unsigned long ulVisited = 1;
