@@ -86,9 +86,3 @@ void Feature::onChanged(const App::Property* prop)
     AbstractFeature::onChanged(prop);
   }
 }
-
-const MeshCore::MeshKernel& Feature::getMesh() const
-{
-  return Mesh.getValue();
-}
-

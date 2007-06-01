@@ -60,8 +60,8 @@ int SetOperations::execute(void)
 
   if ((mesh1 != NULL) && (mesh2 != NULL))
   {
-    const MeshCore::MeshKernel& meshKernel1 = mesh1->getMesh();
-    const MeshCore::MeshKernel& meshKernel2 = mesh2->getMesh();
+    const MeshCore::MeshKernel& meshKernel1 = mesh1->Mesh.getValue();
+    const MeshCore::MeshKernel& meshKernel2 = mesh2->Mesh.getValue();
 
     MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(); // Result Meshkernel
 

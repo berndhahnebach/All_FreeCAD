@@ -76,8 +76,8 @@ int SegmentByMesh::execute(void)
     return 1;
   }
 
-  const MeshKernel& rMeshKernel = pcMesh->getMesh();
-  const MeshKernel& rToolMesh   = pcTool->getMesh();
+  const MeshKernel& rMeshKernel = pcMesh->Mesh.getValue();
+  const MeshKernel& rToolMesh   = pcTool->Mesh.getValue();
 
   // check if the toolmesh is a solid
   if ( !MeshEvalSolid(rToolMesh).Evaluate() )

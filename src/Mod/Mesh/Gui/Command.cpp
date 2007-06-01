@@ -630,7 +630,7 @@ void CmdMeshEvaluateSolid::activated(int iMsg)
   {
     Mesh::Feature* mesh = (Mesh::Feature*)(*it);
     QString msg = QString("The mesh '%1' is ").arg(mesh->name.getValue());
-    if ( mesh->getMesh().HasOpenEdges() )
+    if ( mesh->Mesh.getValue().HasOpenEdges() )
       msg += "not a solid.";
     else
       msg += "a solid.";
@@ -885,7 +885,7 @@ void CmdMeshBoundingBox::activated(int iMsg)
   std::vector<App::DocumentObject*> meshes = getSelection().getObjectsOfType(Mesh::Feature::getClassTypeId());
   for ( std::vector<App::DocumentObject*>::const_iterator it = meshes.begin(); it != meshes.end(); ++it )
   {
-    const MeshCore::MeshKernel& rMesh = ((Mesh::Feature*)(*it))->getMesh();
+    const MeshCore::MeshKernel& rMesh = ((Mesh::Feature*)(*it))->Mesh.getValue();
     const Base::BoundBox3f& box = rMesh.GetBoundBox();
     QString minX, maxX, minY, maxY, minZ, maxZ;
     minX.sprintf("Min X=%f", box.MinX);

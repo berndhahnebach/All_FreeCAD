@@ -24,10 +24,11 @@
 #ifndef FeatureMeshCurvature_H
 #define FeatureMeshCurvature_H
 
-#include "MeshFeature.h"
-
+#include <App/Feature.h>
 #include <App/PropertyLinks.h>
 #include <App/PropertyGeo.h>
+
+#include "Mesh.h"
 
 namespace Base {
 class Matrix4D;
@@ -37,30 +38,27 @@ namespace Mesh
 {
 
 /**
- * The Import class reads the any supported mesh format
- * into the FreeCAD workspace.
+ * The Curvature class calculates the curvature values of a related mesh feature.
  * @author Werner Mayer
  */
-class AppMeshExport Curvature : public Mesh::Feature
+class AppMeshExport Curvature : public App::AbstractFeature
 {
-  PROPERTY_HEADER(Mesh::Curvature);
+    PROPERTY_HEADER(Mesh::Curvature);
 
 public:
-  Curvature();
+    Curvature();
 
-  App::PropertyLink Source;
-  PropertyCurvatureList CurvInfo;
-  /// Get the mesh kernel of the feature of 'Source'.
-  const MeshCore::MeshKernel& getMesh() const;
+    App::PropertyLink Source;
+    PropertyCurvatureList CurvInfo;
 
-  /** @name methods overide Feature */
-  //@{
-  /// recalculate the Feature
-  virtual int execute(void);
-  /// returns the type name of the ViewProvider
-  virtual const char* getViewProviderName(void) const { 
-    return "MeshGui::ViewProviderMeshCurvature"; 
-  }
+    /** @name methods overide Feature */
+    //@{
+    /// recalculate the Feature
+    virtual int execute(void);
+    /// returns the type name of the ViewProvider
+    virtual const char* getViewProviderName(void) const { 
+        return "MeshGui::ViewProviderMeshCurvature"; 
+    }
   //@}
 };
 

@@ -54,13 +54,6 @@ int FixDefects::execute(void)
   return 0;
 }
 
-const MeshCore::MeshKernel& FixDefects::getMesh() const
-{
-//  Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-//  return pcFeat->getMesh();
-  return Feature::getMesh();
-}
-
 // ----------------------------------------------------------------------
 
 PROPERTY_SOURCE(Mesh::HarmonizeNormals, Mesh::FixDefects)
@@ -76,7 +69,7 @@ HarmonizeNormals::~HarmonizeNormals()
 int HarmonizeNormals::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
 
   MeshCore::MeshFixOrientation eval(*kernel);
   eval.Fixup();
@@ -100,7 +93,7 @@ FlipNormals::~FlipNormals()
 int FlipNormals::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
 
   MeshCore::MeshTopoAlgorithm cTopAlg(*kernel);
   cTopAlg.FlipNormals();
@@ -141,7 +134,7 @@ FixDuplicatedFaces::~FixDuplicatedFaces()
 int FixDuplicatedFaces::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
 
   MeshCore::MeshFixDuplicateFacets eval(*kernel);
   eval.Fixup();
@@ -165,7 +158,7 @@ FixDuplicatedPoints::~FixDuplicatedPoints()
 int FixDuplicatedPoints::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
 
   MeshCore::MeshFixDuplicatePoints eval(*kernel);
   eval.Fixup();
@@ -189,7 +182,7 @@ FixDegenerations::~FixDegenerations()
 int FixDegenerations::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
 
   MeshCore::MeshFixDegeneratedFacets eval(*kernel);
   eval.Fixup();
@@ -214,7 +207,7 @@ FixDeformations::~FixDeformations()
 int FixDeformations::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
 
   MeshCore::MeshFixDeformedFacets eval(*kernel, MaxAngle.getValue());
   eval.Fixup();
@@ -238,7 +231,7 @@ FixIndices::~FixIndices()
 int FixIndices::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
 
   MeshCore::MeshEvalNeighbourhood nb(*kernel);
   if ( !nb.Evaluate() ) {
@@ -285,7 +278,7 @@ FillHoles::~FillHoles()
 int FillHoles::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
 
   MeshCore::MeshTopoAlgorithm cTopAlg(*kernel);
   cTopAlg.FillupHoles(FillupHolesOfLength.getValue());
@@ -311,7 +304,7 @@ RemoveComponents::~RemoveComponents()
 int RemoveComponents::execute(void)
 {
   Mesh::Feature *pcFeat  = dynamic_cast<Mesh::Feature*>(Source.getValue() );
-  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->getMesh() ); 
+  MeshCore::MeshKernel* kernel = new MeshCore::MeshKernel( pcFeat->Mesh.getValue() ); 
 
   MeshCore::MeshTopoAlgorithm cTopAlg(*kernel);
   cTopAlg.RemoveComponents(RemoveCompOfSize.getValue());

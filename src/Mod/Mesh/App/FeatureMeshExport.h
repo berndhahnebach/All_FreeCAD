@@ -21,11 +21,10 @@
  ***************************************************************************/
 
 
-#ifndef FEATURE_MESH_Export_H
-#define FEATURE_MESH_Export_H
+#ifndef MESH_FEATUREMESHEXPORT_H
+#define MESH_FEATUREMESHEXPORT_H
 
-#include "MeshFeature.h"
-
+#include <App/Feature.h>
 #include <App/PropertyStandard.h>
 #include <App/PropertyLinks.h>
 
@@ -33,33 +32,32 @@ namespace Mesh
 {
 
 /**
- * The Export class reads the any supported mesh format
- * into the FreeCAD workspace.
+ * The Export class writes any supported mesh format into a file.
  * @author Werner Mayer
  */
-class AppMeshExport Export : public Mesh::Feature
+class AppMeshExport Export : public App::AbstractFeature
 {
-  PROPERTY_HEADER(Mesh::Export);
+    PROPERTY_HEADER(Mesh::Export);
 
 public:
-  Export();
+    Export();
 
-  App::PropertyLink   Source;
-  App::PropertyString FileName;
-  App::PropertyString Format;
-  /// Get the mesh kernel of the feature of 'Source'.
-  const MeshCore::MeshKernel& getMesh() const;
-  virtual const char* getViewProviderName(void) const {
+    App::PropertyLink   Source;
+    App::PropertyString FileName;
+    App::PropertyString Format;
+    //FIXME: We should have an empty view provider which just does nothing
+    //or even allow to have objects with no view provider related.
+    virtual const char* getViewProviderName(void) const {
     return "MeshGui::ViewProviderExport";
-  }
+    }
 
-  /** @name methods override Feature */
-  //@{
-  /// recalculate the Feature
-  virtual int execute(void);
-  //@}
+    /** @name methods override feature */
+    //@{
+    /// recalculate the Feature
+    virtual int execute(void);
+    //@}
 };
 
 }
 
-#endif // FEATURE_MESH_Export_H 
+#endif // MESH_FEATUREMESHEXPORT_H 

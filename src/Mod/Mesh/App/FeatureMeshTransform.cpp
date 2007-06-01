@@ -57,7 +57,7 @@ int Transform::execute(void)
   Matrix4D Matrix =Position.getValue();
 
  
-  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->getMesh()); // Result Meshkernel
+  MeshCore::MeshKernel *pcKernel = new MeshCore::MeshKernel(pcFirst->Mesh.getValue()); // Result Meshkernel
   pcKernel->Transform(Matrix);
   Mesh.setValue(pcKernel);
 

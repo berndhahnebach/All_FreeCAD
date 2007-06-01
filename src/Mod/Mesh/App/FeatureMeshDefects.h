@@ -46,7 +46,6 @@ public:
   /** @name Properties */
   //@{
   App::PropertyLink   Source;
-  virtual const MeshCore::MeshKernel& getMesh() const;
   //@}
 
   /** @name methods override Feature */

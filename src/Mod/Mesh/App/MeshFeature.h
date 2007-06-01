@@ -62,16 +62,6 @@ public:
   //@{
   /** Property that holds the mesh data. */
   PropertyMeshKernel Mesh;
-  /** Returns a reference to the mesh kernel object. This can be reimplemented in subclasses that
-   * has a link property to another mesh feature to return the correct mesh kernel object.
-   *
-   * For example a curvature feature has a link to another mesh feature and a container with the curvature
-   * information. Its own mesh kernel is emtpy.
-   * To render the mesh with curvature information we must get the mesh kernel of the other mesh feature.
-   *
-   * The default implementation returns a reference to its own mesh kernel.
-   */
-  virtual const MeshCore::MeshKernel& getMesh() const;
   //@}
 
   /** @name methods overide Feature */

@@ -206,7 +206,31 @@ void ViewProviderMeshCurvature::attach(App::DocumentObject *pcFeat)
 
 void ViewProviderMeshCurvature::updateData(void)
 {
-  inherited::updateData();
+    // search for a linked object with a mesh property
+    std::map<std::string, App::Property*> Map;
+    App::PropertyLink* linkObject;
+    pcObject->getPropertyMap(Map);
+    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+        if (it->second->getTypeId().isDerivedFrom(App::PropertyLink::getClassTypeId())) {
+            linkObject = (App::PropertyLink*)it->second;
+            break;
+        }
+    }
+
+    assert(linkObject && linkObject->getValue());
+
+    // search for a mesh property in the linked object
+    Mesh::PropertyMeshKernel* kernel=0;
+    linkObject->getValue()->getPropertyMap(Map);
+    for (std::map<std::string, App::Property*>::iterator it = Map.begin(); it != Map.end(); ++it) {
+        if (it->second->getTypeId().isDerivedFrom(Mesh::PropertyMeshKernel::getClassTypeId())) {
+            kernel = (Mesh::PropertyMeshKernel*)it->second;
+            break;
+        }
+    }
+
+    assert(kernel);
+    createMesh(kernel->getValue());
 }
 
 SoSeparator* ViewProviderMeshCurvature::getFrontRoot(void) const

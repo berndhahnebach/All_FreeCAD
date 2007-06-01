@@ -37,8 +37,6 @@
 #include <Base/Type.h>
 #include <App/PropertyStandard.h>
 
-class QPushButton;
-
 namespace Gui {
 namespace PropertyEditor {
 
@@ -61,9 +59,14 @@ public:
     void setParent(PropertyItem* parent);
     void appendChild(PropertyItem *child);
 
+    void setReadOnly(bool);
+    bool isReadOnly() const;
+
     PropertyItem *child(int row);
     int childCount() const;
     int columnCount() const;
+    QString propertyName() const;
+    void setPropertyName(const QString&);
     QVariant data(int column, int role) const;
     bool setData (const QVariant& value);
     Qt::ItemFlags flags(int column) const;
@@ -74,8 +77,6 @@ public:
 protected:
     PropertyItem();
 
-    virtual bool isEditable() const;
-    QVariant propertyName(const App::Property*) const;
     virtual QVariant decoration(const App::Property*) const;
     virtual QVariant toolTip(const App::Property*) const;
     virtual QVariant toString(const App::Property*) const;
@@ -83,10 +84,12 @@ protected:
     virtual void setValue(const QVariant&);
 
 private:
-    QList<PropertyItem*> childItems;
-    QList<QVariant> itemData;
+    QString propName;
+    QVariant propData;
     std::vector<App::Property*> propertyItems;
     PropertyItem *parentItem;
+    QList<PropertyItem*> childItems;
+    bool readonly;
 };
 
 class PropertyItemEditorFactory : public QItemEditorFactory
