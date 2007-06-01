@@ -24,9 +24,9 @@
 #ifndef MESH_TOOLS_H
 #define MESH_TOOLS_H
 
-#include <Wm3DistVector3Triangle3.h>
-#include <Wm3Sphere3.h>
-#include <Wm3Triangle3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4DistVector3Triangle3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Sphere3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Triangle3.h>
 
 #include "MeshKernel.h"
 #include "Algorithm.h"
@@ -83,7 +83,7 @@ protected:
   std::vector<Base::Vector3f> _aclPointsResult;  // result as vertex
   std::vector<std::vector<Base::Vector3f> > _aclSampledFacets; // sample points from each facet
   float _fSampleDistance;  // distance between two sampled points
-  Wm3::Sphere3<float> _akSphere;
+  Wm4::Sphere3<float> _akSphere;
   bool _bTooFewPoints;    
 
 private:
@@ -126,12 +126,12 @@ inline bool MeshSearchNeighbours::TriangleCutsSphere (const MeshFacet &rclF) con
   Base::Vector3f cP1 = _rclPAry[rclF._aulPoints[1]];
   Base::Vector3f cP2 = _rclPAry[rclF._aulPoints[2]];
 
-  Wm3::Vector3<float> akP0(cP0.x, cP0.y, cP0.z);
-  Wm3::Vector3<float> akP1(cP1.x, cP1.y, cP1.z);
-  Wm3::Vector3<float> akP2(cP2.x, cP2.y, cP2.z);
+  Wm4::Vector3<float> akP0(cP0.x, cP0.y, cP0.z);
+  Wm4::Vector3<float> akP1(cP1.x, cP1.y, cP1.z);
+  Wm4::Vector3<float> akP2(cP2.x, cP2.y, cP2.z);
 
-  Wm3::Triangle3<float> akTri(akP0, akP1, akP2);
-  Wm3::DistVector3Triangle3<float> akDistVecTri(_akSphere.Center, akTri);
+  Wm4::Triangle3<float> akTri(akP0, akP1, akP2);
+  Wm4::DistVector3Triangle3<float> akDistVecTri(_akSphere.Center, akTri);
 
   float fSqrDist = akDistVecTri.GetSquared();
   float fRSqr = _akSphere.Radius*_akSphere.Radius;

@@ -25,9 +25,10 @@
 
 #ifndef _PreComp_
 # include <sstream>
-# include <Wm3Delaunay3.h>
-# include <Wm3Vector3.h>
 #endif
+
+#include <Mod/Mesh/App/WildMagic4/Wm4Delaunay3.h>
+#include <Mod/Mesh/App/WildMagic4/Wm4Vector3.h>
 
 #include <Base/Console.h>
 #include <Base/Exception.h>
@@ -840,19 +841,15 @@ PYFUNCIMP_D(MeshPy,testDelaunay)
     MeshPy* pyMesh = new MeshPy();
     
     // get all points
-    std::vector< Wm3::Vector3<float> > aPnts;
+    std::vector< Wm4::Vector3<float> > aPnts;
     MeshPointIterator cPIt( _cMesh );
     for ( cPIt.Init(); cPIt.More(); cPIt.Next() )
     {
-      Wm3::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
+      Wm4::Vector3<float> cP( cPIt->x, cPIt->y, cPIt->z );
       aPnts.push_back( cP );
     }
 
-#if WM3_VERSION <= 330
-    Wm3::Delaunay3<float> triaDel(aPnts.size(), &(aPnts[0]), MESH_MIN_PT_DIST, false);
-#else
-    Wm3::Delaunay3<float> triaDel(aPnts.size(), &(aPnts[0]), MESH_MIN_PT_DIST, false, Wm3::Query::QT_INTEGER);
-#endif
+    Wm4::Delaunay3<float> triaDel(aPnts.size(), &(aPnts[0]), MESH_MIN_PT_DIST, false, Wm4::Query::QT_INTEGER);
     int cnt; int* idx;
 
     if ( triaDel.GetHull(cnt, idx) )
