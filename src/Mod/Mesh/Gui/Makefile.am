@@ -1,5 +1,4 @@
 if OCC_LIBRARY_FILES
-if WM3_LIBRARY_FILES
 if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMeshGui.la MeshGui.la
@@ -81,19 +80,16 @@ moc_%.cpp: %.h
 	$(QT_MOC) $< -o $(@F)
 
 # rules for Qt User Interface Compiler:
-# (it adds path to #include automatically, so cd before calling it)
 ui_%.h: %.ui
 	$(QT_UIC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
-# (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
 # set the include path found by configure
-INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(WM3_CFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= $(all_includes) $(QT_CXXFLAGS) $(GTS_CFLAGS) -I$(OCC_INC) -I$(top_srcdir)/src -I$(top_builddir)/src
 
-endif
 endif
 endif
 

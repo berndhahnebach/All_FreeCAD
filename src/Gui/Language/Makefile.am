@@ -30,7 +30,6 @@ moc_%.cpp: %.h
 	$(QT_MOC) $< -o $(@F)
 
 # rules for Qt Resource Compiler:
-# (it adds path to #include automatically, so cd before calling it)
 qrc_%.cpp: %.qrc
 	$(QT_RCC) -name $(*F) $< -o $(@F)
 
