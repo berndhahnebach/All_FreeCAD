@@ -1,5 +1,4 @@
 if OCC_LIBRARY_FILES
-if WM3_LIBRARY_FILES
 if GTS_LIBRARY_FILES
 
 lib_LTLIBRARIES=libMesh.la Mesh.la
@@ -266,15 +265,14 @@ libMesh_la_SOURCES=\
 
 
 # the library search path.
-libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -L$(OCC_LIB) $(WM3_LDFLAGS) $(GTS_LIBS) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
-libMesh_la_CPPFLAGS = -DAppMeshExport= -DWM3_VERSION=$(WM3_VERSION)
+libMesh_la_LDFLAGS = -L../../../Base -L../../../App $(all_libraries) -L$(OCC_LIB) $(GTS_LIBS) -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libMesh_la_CPPFLAGS = -DAppMeshExport= 
 
 libMesh_la_LIBADD   = \
 		-lxerces-c \
 		-l@PYTHON_LIB@ \
 		-lFreeCADBase \
 		-lFreeCADApp \
-		$(WM3_LIBS) \
 		-lTKernel \
 		-lTKG2d \
 		-lTKG3d \
@@ -302,9 +300,8 @@ Mesh_la_LIBADD   = \
 #--------------------------------------------------------------------------------------
 
 # set the include path found by configure
-INCLUDES= $(all_includes) -I$(OCC_INC) $(WM3_CFLAGS) $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
+INCLUDES= $(all_includes) -I$(OCC_INC) $(GTS_CFLAGS) -I$(top_srcdir)/src -I$(top_builddir)/src
 
-endif
 endif
 endif
 

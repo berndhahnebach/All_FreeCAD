@@ -18,7 +18,6 @@ o zlib (http://www.zlib.net/)
 
 And for the Mesh module of FreeCAD the additional libraries
 o GTS Library (http://gts.sourceforge.net)
-o Wild Magic (http://www.geometrictools.com)
 o OpenCascade (http://www.opencascade.org), >= 5.2
 are required. OpenCascade is also needed by the Part module.
 

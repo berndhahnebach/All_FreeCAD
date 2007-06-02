@@ -60,6 +60,8 @@ float Math<float>::FastInvSqrt (float fValue)
     return fValue;
 }
 //----------------------------------------------------------------------------
+//Does not compile with gcc 4.1.2
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 template <>
 double Math<double>::FastInvSqrt (double dValue)
 {
@@ -74,4 +76,5 @@ double Math<double>::FastInvSqrt (double dValue)
     dValue = dValue*(1.5 - dHalf*dValue*dValue);
     return dValue;
 }
+#endif
 //----------------------------------------------------------------------------

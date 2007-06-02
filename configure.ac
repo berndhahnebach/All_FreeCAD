@@ -365,61 +365,61 @@ AM_CONDITIONAL(OCC_VERSION6, test x"$fc_cv_lib_occ_ver_6" = xyes)
 
 dnl checking for WildMagic3
 dnl **************************************************************************
-AC_CHECKING([WildMagic3])
-AC_ARG_WITH(wm3-include,
-	AC_HELP_STRING([--with-wm3-include=DIR], [Path to the WildMagic3 header files]),
-	[fc_wm3_incs=$withval],
-	[fc_wm3_incs=/usr/include/WildMagic3/Include])
-
-AC_ARG_WITH(wm3-lib,
-	AC_HELP_STRING([--with-wm3-lib=DIR], [Path to the WildMagic3 library files]),
-	[fc_wm3_libs=$withval],
-	[fc_wm3_libs=/usr/lib])
-
-AC_CHECK_FILE($fc_wm3_incs/Wm3Query.h,fc_wm3_ver=340,fc_wm3_ver=330)
-
+dnl AC_CHECKING([WildMagic3])
+dnl AC_ARG_WITH(wm3-include,
+dnl 	AC_HELP_STRING([--with-wm3-include=DIR], [Path to the WildMagic3 header files]),
+dnl 	[fc_wm3_incs=$withval],
+dnl 	[fc_wm3_incs=/usr/include/WildMagic3/Include])
+dnl 
+dnl AC_ARG_WITH(wm3-lib,
+dnl 	AC_HELP_STRING([--with-wm3-lib=DIR], [Path to the WildMagic3 library files]),
+dnl 	[fc_wm3_libs=$withval],
+dnl 	[fc_wm3_libs=/usr/lib])
+dnl 
+dnl AC_CHECK_FILE($fc_wm3_incs/Wm3Query.h,fc_wm3_ver=340,fc_wm3_ver=330)
+dnl 
 dnl Set the appropriate library name
-if test x"$fc_wm3_ver" = x"330"; then
-	fc_wm3_lib="WildMagic3"
-	fc_wm3_txt="Version <= 3.3.0"
-else
-	fc_wm3_lib="Wm3Foundation"
-	fc_wm3_txt="Version >= 3.4.0"
-fi
-
-fc_wm3_ac_save_cppflags=$CPPFLAGS
-fc_wm3_ac_save_ldflags=$LDFLAGS
-fc_wm3_ac_save_libs=$LIBS
-CPPFLAGS="$CPPFLAGS -I$fc_wm3_incs"
-LDFLAGS="$LDFLAGS -L$fc_wm3_libs"
-LIBS="-l$fc_wm3_lib"
-
-fc_cv_lib_wm3_avail=no
-AC_CHECK_HEADER(Wm3Math.h,[
-AC_MSG_CHECKING([whether WildMagic lib is available])
-AC_TRY_LINK([#include <Wm3Math.h>],
-	[double val = Wm3::Math<double>::Cos(0.0);],
-	[fc_cv_lib_wm3_avail=yes
-	AC_MSG_RESULT(yes)],
-	AC_MSG_RESULT(no))])
-
-CPPFLAGS=$fc_wm3_ac_save_cppflags
-LDFLAGS=$fc_wm3_ac_save_ldflags
-LIBS=$fc_wm3_ac_save_libs
-
-if test x"$fc_cv_lib_wm3_avail" = xyes; then
-	AC_SUBST([WM3_CFLAGS], [-I$fc_wm3_incs])
-	AC_SUBST([WM3_LDFLAGS], [-L$fc_wm3_libs])
-	AC_SUBST([WM3_LIBS], [-l$fc_wm3_lib])
-	AC_SUBST([WM3_VERSION], [$fc_wm3_ver])
-else
-	AC_MSG_WARN([
-	**** Cannot find WildMagic devel files.
-	Modules that depend on this library cannot be built. ****
-  ])
-fi
-
-AM_CONDITIONAL(WM3_LIBRARY_FILES, test x"$fc_cv_lib_wm3_avail" = xyes)
+dnl if test x"$fc_wm3_ver" = x"330"; then
+dnl 	fc_wm3_lib="WildMagic3"
+dnl 	fc_wm3_txt="Version <= 3.3.0"
+dnl else
+dnl 	fc_wm3_lib="Wm3Foundation"
+dnl 	fc_wm3_txt="Version >= 3.4.0"
+dnl fi
+dnl 
+dnl fc_wm3_ac_save_cppflags=$CPPFLAGS
+dnl fc_wm3_ac_save_ldflags=$LDFLAGS
+dnl fc_wm3_ac_save_libs=$LIBS
+dnl CPPFLAGS="$CPPFLAGS -I$fc_wm3_incs"
+dnl LDFLAGS="$LDFLAGS -L$fc_wm3_libs"
+dnl LIBS="-l$fc_wm3_lib"
+dnl 
+dnl fc_cv_lib_wm3_avail=no
+dnl AC_CHECK_HEADER(Wm3Math.h,[
+dnl AC_MSG_CHECKING([whether WildMagic lib is available])
+dnl AC_TRY_LINK([#include <Wm3Math.h>],
+dnl 	[double val = Wm3::Math<double>::Cos(0.0);],
+dnl 	[fc_cv_lib_wm3_avail=yes
+dnl 	AC_MSG_RESULT(yes)],
+dnl 	AC_MSG_RESULT(no))])
+dnl 
+dnl CPPFLAGS=$fc_wm3_ac_save_cppflags
+dnl LDFLAGS=$fc_wm3_ac_save_ldflags
+dnl LIBS=$fc_wm3_ac_save_libs
+dnl 
+dnl if test x"$fc_cv_lib_wm3_avail" = xyes; then
+dnl 	AC_SUBST([WM3_CFLAGS], [-I$fc_wm3_incs])
+dnl 	AC_SUBST([WM3_LDFLAGS], [-L$fc_wm3_libs])
+dnl 	AC_SUBST([WM3_LIBS], [-l$fc_wm3_lib])
+dnl 	AC_SUBST([WM3_VERSION], [$fc_wm3_ver])
+dnl else
+dnl 	AC_MSG_WARN([
+dnl 	**** Cannot find WildMagic devel files.
+dnl 	Modules that depend on this library cannot be built. ****
+dnl   ])
+dnl fi
+dnl 
+dnl AM_CONDITIONAL(WM3_LIBRARY_FILES, test x"$fc_cv_lib_wm3_avail" = xyes)
 
 dnl checking for GTS
 dnl **************************************************************************
