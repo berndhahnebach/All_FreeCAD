@@ -41,54 +41,38 @@ using namespace Gui;
 QString FileDialog::getOpenFileName( QWidget * parent, const QString & caption, const QString & dir, 
                                      const QString & filter, QString * selectedFilter, Options options )
 {
-  // The string 'startWith' can also contain the file name that is shown in the lineedit.
-  QString dirName = dir;
-  QString selName = QString::null;
-  if ( !dir.isEmpty() ) {
-    Q3UrlOperator u( dir );
-    if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
-      dirName = dir;
-    } else {
-      if ( u.isLocalFile() ) {
-        QFileInfo fi( u.dirPath() );
-        if ( fi.exists() ) {
-          dirName = u.dirPath();
-          selName = u.fileName();
+    QString dirName = dir;
+    QString selName = QString::null;
+    if (!dir.isEmpty()) {
+        QFileInfo info(dir);
+        if (info.isFile() && info.exists()) {
+            selName = info.fileName();
+            dirName = info.absolutePath();
         }
-      } else {
-        dirName = u.toString();
-        selName = QString::null;
-      }
+    } else {
+        dirName = getWorkingDirectory();
     }
-  }
 
-  FileDialog fd(parent, caption, dirName, filter);
-
-  fd.setMode( ExistingFile );
-  if ( !caption.isNull() )
-    fd.setCaption( caption );
-  else
-    fd.setCaption( FileDialog::tr( "Open" ) );
-//  if ( !selName.isEmpty() )
-//    fd.setSelection( selName );
-  if ( selectedFilter )
-    fd.setFilter( *selectedFilter );
-  //if ( buttonText != QString::null )
-  //{
-  //  // search for the OK button to change its text
-  //  QObject* btn = fd.child( "OK", "QPushButton", true );
-  //  if ( btn )
-  //    static_cast<QPushButton*>(btn)->setText( buttonText );
-  //}
-
-  if ( fd.exec() == QDialog::Accepted )
-  {
+    FileDialog fd(parent, caption, dirName, filter);
+    fd.setAcceptMode(QFileDialog::AcceptOpen);
+    fd.setMode( ExistingFile );
+    if ( caption.isEmpty() )
+        fd.setCaption( FileDialog::tr( "Open" ) );
+    if ( !selName.isEmpty() )
+        fd.selectFile( selName );
     if ( selectedFilter )
-      *selectedFilter = fd.selectedFilter();
-    return fd.selectedFile();
-  }
-  else
-    return QString::null;
+        fd.setFilter( *selectedFilter );
+  //if ( buttonText != QString::null )
+  //  fd.setLabelText(QFileDialog::Accept, buttonText);
+
+    if ( fd.exec() == QDialog::Accepted ) {
+        if ( selectedFilter )
+            *selectedFilter = fd.selectedFilter();
+        QString file = fd.selectedFile();
+        setWorkingDirectory(file);
+        return file;
+    } else
+        return QString::null;
 }
 
 /**
@@ -97,54 +81,38 @@ QString FileDialog::getOpenFileName( QWidget * parent, const QString & caption, 
 QString FileDialog::getSaveFileName ( QWidget * parent, const QString & caption, const QString & dir, 
                                       const QString & filter, QString * selectedFilter, Options options )
 {
-  // The string 'startWith' can also contain the file name that is shown in the lineedit.
-  QString dirName = dir;
-  QString selName = QString::null;
-  if ( !dir.isEmpty() ) {
-    Q3UrlOperator u( dir );
-    if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
-      dirName = dir;
-    } else {
-      if ( u.isLocalFile() ) {
-        QFileInfo fi( u.dirPath() );
-        if ( fi.exists() ) {
-          dirName = u.dirPath();
-          selName = u.fileName();
+    QString dirName = dir;
+    QString selName = QString::null;
+    if (!dir.isEmpty()) {
+        QFileInfo info(dir);
+        if (!info.isDir()) {
+            selName = info.fileName();
+            dirName = info.absolutePath();
         }
-      } else {
-        dirName = u.toString();
-        selName = QString::null;
-      }
+    } else {
+        dirName = getWorkingDirectory();
     }
-  }
 
-  FileDialog fd(parent, caption, dirName, filter);
-
-  fd.setMode( AnyFile );
-  if ( !caption.isNull() )
-    fd.setCaption( caption );
-  else
-    fd.setCaption( FileDialog::tr( "Save as" ) );
-//  if ( !selName.isEmpty() )
-//    fd.setSelection( selName );
-  if ( selectedFilter )
-    fd.setFilter( *selectedFilter );
-  //if ( buttonText != QString::null )
-  //{
-  //  // search for the OK button to change its text
-  //  QObject* btn = fd.child( "OK", "QPushButton", true );
-  //  if ( btn )
-  //    static_cast<QPushButton*>(btn)->setText( buttonText );
-  //}
-
-  if ( fd.exec() == QDialog::Accepted )
-  {
+    FileDialog fd(parent, caption, dirName, filter);
+    fd.setAcceptMode(QFileDialog::AcceptSave);
+    fd.setMode( AnyFile );
+    if ( caption.isEmpty() )
+        fd.setCaption( FileDialog::tr( "Save as" ) );
+    if ( !selName.isEmpty() )
+        fd.selectFile( selName );
     if ( selectedFilter )
-      *selectedFilter = fd.selectedFilter();
-    return fd.selectedFile();
-  }
-  else
-    return QString::null;
+        fd.setFilter( *selectedFilter );
+  //if ( buttonText != QString::null )
+  //  fd.setLabelText(QFileDialog::Accept, buttonText);
+
+    if ( fd.exec() == QDialog::Accepted ) {
+        if ( selectedFilter )
+            *selectedFilter = fd.selectedFilter();
+        QString file = fd.selectedFile();
+        setWorkingDirectory(file);
+        return file;
+    } else
+        return QString::null;
 }
 
 /**
@@ -152,15 +120,14 @@ QString FileDialog::getSaveFileName ( QWidget * parent, const QString & caption,
  */
 QString FileDialog::getExistingDirectory( QWidget * parent, const QString & caption, const QString & dir, Options options )
 {
-  QString path = QFileDialog::getExistingDirectory(parent, caption, dir, options);
-  // valid path was selected
-  if ( !path.isEmpty() )
-  {
-    QDir d(path);
-    path = d.path(); // get path in Qt manner
-  }
+    QString path = QFileDialog::getExistingDirectory(parent, caption, dir, options);
+    // valid path was selected
+    if ( !path.isEmpty() ) {
+        QDir d(path);
+        path = d.path(); // get path in Qt manner
+    }
 
-  return path;
+    return path;
 }
 
 /**
@@ -169,28 +136,27 @@ QString FileDialog::getExistingDirectory( QWidget * parent, const QString & capt
 QStringList FileDialog::getOpenFileNames ( QWidget * parent, const QString & caption, const QString & dir,
                                            const QString & filter, QString * selectedFilter, Options options )
 {
-  FileDialog fd(parent, caption, dir, filter);
-  fd.setMode( ExistingFiles );
-  fd.setCaption(caption);
-  if ( selectedFilter )
-    fd.setFilter( *selectedFilter );
-  //if ( buttonText != QString::null )
-  //{
-  //  // search for the OK button to change its text
-  //  QObject* btn = fd.child( "OK", "QPushButton", true );
-  //  if ( btn )
-  //    static_cast<QPushButton*>(btn)->setText( buttonText );
-  //}
-
-  QStringList lst;
-  if ( fd.exec() == QDialog::Accepted )
-  {
+    QString dirName = dir.isEmpty() ? getWorkingDirectory() : dir;
+    FileDialog fd(parent, caption, dirName, filter);
+    fd.setAcceptMode(QFileDialog::AcceptOpen);
+    fd.setMode( ExistingFiles );
+    fd.setCaption(caption);
     if ( selectedFilter )
-      *selectedFilter = fd.selectedFilter();
-    lst = fd.selectedFiles();
-  }
+        fd.setFilter( *selectedFilter );
+  //if ( buttonText != QString::null )
+  //  fd.setLabelText(QFileDialog::Accept, buttonText);
 
-  return lst;
+    QStringList files;
+    if ( fd.exec() == QDialog::Accepted ) {
+        if ( selectedFilter )
+            *selectedFilter = fd.selectedFilter();
+        files = fd.selectedFiles();
+        if (!files.isEmpty()) {
+            setWorkingDirectory(files.front());
+        }
+    }
+
+    return files;
 }
 
 /**
@@ -200,10 +166,10 @@ QStringList FileDialog::getOpenFileNames ( QWidget * parent, const QString & cap
  */
 QString FileDialog::getWorkingDirectory()
 {
-  std::string path = App::GetApplication().Config()["UserHomePath"];
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
+    std::string path = App::GetApplication().Config()["UserHomePath"];
+    FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
-  return hPath->GetASCII("FileOpenSavePath", path.c_str()).c_str();
+    return hPath->GetASCII("FileOpenSavePath", path.c_str()).c_str();
 }
 
 /**
@@ -213,26 +179,17 @@ QString FileDialog::getWorkingDirectory()
  */
 void FileDialog::setWorkingDirectory( const QString& dir )
 {
-  QString dirName = dir;
-  if ( !dir.isEmpty() ) {
-    Q3UrlOperator u( dir );
-    if ( u.isLocalFile() && QFileInfo( u.path() ).isDir() ) {
-      dirName = dir;
-    } else {
-      if ( u.isLocalFile() ) {
-        QFileInfo fi( u.dirPath() );
-        if ( fi.exists() ) {
-          dirName = u.dirPath();
+    QString dirName = dir;
+    if (!dir.isEmpty()) {
+        QFileInfo info(dir);
+        if (info.isFile()) {
+            dirName = info.absolutePath();
         }
-      } else {
-        dirName = u.toString();
-      }
     }
-  }
 
-  FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
+    FCHandle<ParameterGrp> hPath = App::GetApplication().GetUserParameter().GetGroup("BaseApp")
                                ->GetGroup("Preferences")->GetGroup("General");
-  hPath->SetASCII("FileOpenSavePath", dirName.latin1());
+    hPath->SetASCII("FileOpenSavePath", dirName.latin1());
 }
 
 /**
@@ -259,30 +216,6 @@ FileDialog::FileDialog ( QWidget* parent, const QString& caption, const QString&
 
 FileDialog::~FileDialog()
 {
-}
-
-/**
- * Hides the modal dialog and sets the result code to Accepted.
- */
-void FileDialog::accept()
-{
-  // if not in multi-selection mode
-  if ( mode() != ExistingFiles )
-  {
-    QString fn = selectedFileName();
-
-    if ( QFile(fn).exists() && mode() == AnyFile )
-    {
-      QString msg = tr("'%1' already exists.\nReplace existing file?").arg(fn);
-      if ( QMessageBox::question(this, tr("Existing file"), msg, QMessageBox::Yes, 
-           QMessageBox::No|QMessageBox::Default|QMessageBox::Escape) != QMessageBox::Yes )
-        return;
-    }
-
-//    setSelection( fn );
-  }
-
-  QFileDialog::accept();
 }
 
 /**

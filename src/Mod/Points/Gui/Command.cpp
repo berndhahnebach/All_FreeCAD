@@ -66,8 +66,7 @@ CmdPointsImport::CmdPointsImport()
 
 void CmdPointsImport::activated(int iMsg)
 {
-  QString dir = Gui::FileDialog::getWorkingDirectory();
-  QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString::null, dir, "Ascii Points (*.asc);;All Files (*.*)");
+  QString fn = Gui::FileDialog::getOpenFileName(Gui::getMainWindow(), QString::null, QString(), "Ascii Points (*.asc);;All Files (*.*)");
   if ( fn.isEmpty() )
     return;
 
@@ -82,7 +81,6 @@ void CmdPointsImport::activated(int iMsg)
     commitCommand();
  
     updateActive();
-    Gui::FileDialog::setWorkingDirectory(fn);
   }
 }
 
@@ -110,8 +108,7 @@ CmdPointsExport::CmdPointsExport()
 
 void CmdPointsExport::activated(int iMsg)
 {
-  QString dir = Gui::FileDialog::getWorkingDirectory();
-  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QString::null, dir, "Ascii Points (*.asc);;All Files (*.*)");
+  QString fn = Gui::FileDialog::getSaveFileName(Gui::getMainWindow(), QString::null, QString(), "Ascii Points (*.asc);;All Files (*.*)");
   if ( fn.isEmpty() )
     return;
 
@@ -134,7 +131,6 @@ void CmdPointsExport::activated(int iMsg)
     doCommand(Doc,"f.Sources = l");
     commitCommand();
     updateActive();
-    Gui::FileDialog::setWorkingDirectory(fn);
   }
 }
 

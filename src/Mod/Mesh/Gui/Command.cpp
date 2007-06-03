@@ -309,8 +309,6 @@ CmdMeshImport::CmdMeshImport()
 void CmdMeshImport::activated(int iMsg)
 {
   // use current path as default
-  QString dir = Gui::FileDialog::getWorkingDirectory();
-
   QStringList filter;
   filter << "All Mesh Files (*.stl *.ast *.bms *.obj)";
   filter << "Binary STL (*.stl)";
@@ -322,7 +320,7 @@ void CmdMeshImport::activated(int iMsg)
   filter << "All Files (*.*)";
 
   // Allow multi selection
-  QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(), QObject::tr("Import mesh"), dir, filter.join(";;"));
+  QStringList fn = Gui::FileDialog::getOpenFileNames(Gui::getMainWindow(), QObject::tr("Import mesh"), QString(), filter.join(";;"));
   for ( QStringList::Iterator it = fn.begin(); it != fn.end(); ++it )
   {
     QFileInfo fi;
@@ -333,9 +331,6 @@ void CmdMeshImport::activated(int iMsg)
     doCommand(Doc,"f.FileName = \"%s\"",(const char*)(*it).toAscii());
     commitCommand();
     updateActive();
-
-    if ( it == fn.begin() )
-      Gui::FileDialog::setWorkingDirectory(*it);
   }
 }
 
@@ -373,7 +368,7 @@ void CmdMeshExport::activated(int iMsg)
 
   App::DocumentObject* docObj = docObjs.front();
 
-  QString dir = Gui::FileDialog::getWorkingDirectory();
+  QString dir = QDir::currentDirPath();
   dir += "/";
   dir += docObj->name.getValue();
 
@@ -397,8 +392,6 @@ void CmdMeshExport::activated(int iMsg)
     doCommand(Doc,"f.Source = App.document().%s",docObj->name.getValue());
     commitCommand();
     updateActive();
-
-    Gui::FileDialog::setWorkingDirectory(fn);
   }
 }
 
