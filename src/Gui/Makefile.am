@@ -78,6 +78,7 @@ BUILT_SOURCES=\
 		ui_DlgSettingsMacro.h \
 		ui_DlgTipOfTheDay.h \
 		ui_DlgToolbars.h \
+		ui_DlgTreeWidget.h \
 		GuiInitScript.h
 
 libFreeCADGui_la_UI=\
@@ -106,7 +107,8 @@ libFreeCADGui_la_UI=\
 		DlgSettingsMacro.ui \
 		DlgSettingsColorGradient.ui \
 		DlgTipOfTheDay.ui \
-		DlgToolbars.ui
+		DlgToolbars.ui \
+		DlgTreeWidget.ui
 
 libFreeCADGui_la_SOURCES=\
 		Action.cpp \
